@@ -1,1 +1,14 @@
 node_modules/
+
+# Downloaded during the execution.
+unshield.7z
+isx.7z
+setup.exe
+
+# Generated during execution.
+unshield/
+ISx/
+setup_u/
+data2/
+PRONOTE/
+modules/
