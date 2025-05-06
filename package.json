@@ -1,5 +1,10 @@
 {
+  "type": "module",
   "dependencies": {
-    "cheerio": "^1.0.0"
+    "cheerio": "^1.0.0",
+    "prettier": "^3.5.3"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.12"
   }
 }
