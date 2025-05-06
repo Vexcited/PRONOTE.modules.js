@@ -3,7 +3,6 @@ import { readFile } from 'node:fs/promises';
 export async function readVersionFromMetadata (path: string): Promise<string> {
   const content = await readFile(path, 'utf16le');
   const lines = content.split('\r\n');
-  console.log(lines)
 
   // e.g.: `VALUE "ProductVersion",    "2024.3.11.0"`
   let versionLine = lines.find(line => line.includes('VALUE "ProductVersion",'));
