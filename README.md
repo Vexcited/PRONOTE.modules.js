@@ -4,15 +4,15 @@ A datamine concerning JS modules publicly exposed contained in the PRONOTE.net s
 
 ## Motivation
 
-Because of new features in PRONOTE and potential breaking changes, we have to follow them in order to make projects like `Pawnote` and `pronotepy` still run smoothly.
+Because of new features in PRONOTE and potential breaking changes, we have to follow them in order to make projects like `Pawnote` and `pronotepy` work smoothly.
 
 ## Prerequisites
 
 You may need to have some tools pre-installed depending on your platform.
 
-- [`bun`](https://bun.sh) to execute the main script
+- [Bun](https://bun.sh) to execute the main script
 - `7z` command available at `C:\Program Files\7-Zip\7z.exe` on Windows, and available globally on any other platform
-- `wine` command available globally if you're on anything else than Windows, it will allow us to run tools that are only running on Windows
+- [`wine`](https://gitlab.winehq.org/wine/wine) command available globally if you're on anything else than Windows, it will allow us to run tools that are only running on Windows
 
 ## Usage
 
@@ -24,17 +24,17 @@ cd PRONOTE.modules.js
 bun install
 
 # Run the whole process
-bun run ./src/index.ts
+bun run src/index.ts
 
 # You can now read every extracted modules
-ls modules/
+ls modules
 ```
 
 It should work on every platform, if not please open an issue !
 
 ## Credits
 
-We'd like to thank those projects for making this available.
+I'd like to thank those projects for making this available.
 
 - [Cheerio](https://cheerio.js.org/) to scrap the setup download URL from PRONOTE's frontpage
 - [ISx](https://github.com/lifenjoiner/ISx) to extract files from the InstallShield installer
