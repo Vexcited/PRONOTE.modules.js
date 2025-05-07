@@ -1,7 +1,10 @@
 import { writeFile } from "node:fs/promises";
 import { exists } from "./exists";
 
-export async function downloadFile(url: string, fileName: string): Promise<void> {
+export async function downloadFile(
+  url: string,
+  fileName: string,
+): Promise<void> {
   if (await exists(fileName)) {
     console.log(`File ${fileName} already exists. Skipping download.`);
     return;
