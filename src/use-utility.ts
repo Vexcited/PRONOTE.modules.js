@@ -14,8 +14,10 @@ export async function useUtility(
   switch (name) {
     case "isx":
       command = path.join("ISx", "ISx.exe");
+      break;
     case "unshield":
       command = path.join("unshield", "unshield.exe");
+      break;
   }
 
   const proc = spawn([...PREFIX_COMMAND, command, ...args]);
