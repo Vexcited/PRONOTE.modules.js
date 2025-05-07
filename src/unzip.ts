@@ -1,7 +1,5 @@
 import { spawn } from "bun";
 
-// Since we're running the action on Windows,
-// we need to use the Windows version of 7-Zip.
 const PATH_7ZIP =
   process.platform === "win32" ? "C:\\Program Files\\7-Zip\\7z.exe" : "7z";
 
