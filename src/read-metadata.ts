@@ -8,6 +8,7 @@ export async function readVersionFromMetadata(path: string): Promise<string> {
   let versionLine = lines.find((line) =>
     line.includes('VALUE "ProductVersion",'),
   );
+
   if (!versionLine) {
     throw new Error("Version line not found in metadata");
   }
@@ -21,7 +22,5 @@ export async function readVersionFromMetadata(path: string): Promise<string> {
 
   // Remove quotes.
   // e.g: `2024.3.11.0`
-  const version = versionWithQuotes.replaceAll('"', "");
-
-  return version;
+  return versionWithQuotes.replaceAll('"', "");
 }
