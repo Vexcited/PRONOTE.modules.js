@@ -31,8 +31,12 @@ jobs:
           bun src/index.ts
 
           Set-Location ../modules
+
           Remove-Item -Force -Recurse "*.js" -ErrorAction SilentlyContinue
           Move-Item ../main/modules/*.js .
+
+          Remove-Item -Force -Recurse "unused" -ErrorAction SilentlyContinue
+          Move-Item ../main/modules/unused .
 
           $version = (Get-Content ../main/version -Raw).Trim()
 
