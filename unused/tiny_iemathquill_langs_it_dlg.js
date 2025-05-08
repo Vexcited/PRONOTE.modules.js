@@ -1,0 +1,15 @@
+tinyMCE.addI18n("it.iEMathquill_dlg", {
+  title: "Editor di equazioni",
+  Symboles: "Simboli",
+  Operateurs: "Operatori",
+  Relations: "Relazioni",
+  Fleches: "Frecce",
+  Divers: "Altro",
+  Delimiteurs: "Delimitatori",
+  Formules: "Formule",
+  editionLatex: "Edizione in formato laTeX",
+  editionMathquill: "Edizione online",
+  choixRendu: "Restituzione grafica",
+  genererImage: "Genera l'immagine",
+  renduVolumineux: "L'immagine da generare è troppo grande.",
+});
