@@ -6,18 +6,19 @@ export async function downloadFile(
   fileName: string,
 ): Promise<void> {
   if (await exists(fileName)) {
-    console.log(`File ${fileName} already exists. Skipping download.`);
     return;
   }
 
-  console.log(`Downloading ${fileName}...`);
+  console.log(`Requesting ${fileName}...`);
   const response = await fetch(url);
 
   if (!response.ok) {
     throw new Error(`Failed to download file: ${response.statusText}`);
   }
 
-  console.log(`Writing ${fileName}...`);
+  console.log(`Receiving ${fileName}...`);
   const buffer = await response.arrayBuffer();
+
+  console.log(`Writing ${fileName}...`);
   await writeFile(fileName, Buffer.from(buffer));
 }

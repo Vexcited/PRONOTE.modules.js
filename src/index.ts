@@ -9,12 +9,14 @@ import { useUtility } from "./use-utility";
 import path from "node:path";
 import { writeFile } from "node:fs/promises";
 
-// Make sure we have all the binaries to proceed.
-await downloadUtilities();
+await Promise.all([
+  // Make sure we have all the binaries to proceed.
+  downloadUtilities(),
+  // Grab the URL to download the setup.
+  grabDownloadUrl().then((url) => downloadFile(url, "setup.exe")),
+]);
 
-// Grab the URL to download the setup.
-const downloadUrl = await grabDownloadUrl();
-await downloadFile(downloadUrl, "setup.exe");
+console.log("Utilities and setup are downloaded, let's start processing...");
 
 // Extract CAB file from the setup executable.
 await removeRecursiveForce("setup_u"); // Clean up any previous extraction.
