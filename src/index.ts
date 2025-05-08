@@ -21,12 +21,7 @@ await useUtility("isx", ["setup.exe"]);
 
 // Extract the CAB file.
 await removeRecursiveForce("data2"); // Clean up any previous extraction.
-await useUtility("unshield", [
-  "-d",
-  "data2",
-  "x",
-  path.join("setup_u", "disk1", "data2.cab"),
-]);
+await useUtility("unshield", ["-d", "data2", "x", "setup_u/disk1/data2.cab"]);
 
 await removeRecursiveForce("PRONOTE"); // Clean up any previous extraction.
 await unzip(path.join("data2", "exe", "PRONOTE.net.exe"), "PRONOTE");
