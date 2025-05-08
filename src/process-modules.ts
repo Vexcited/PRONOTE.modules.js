@@ -1,14 +1,19 @@
 import fs from "node:fs/promises";
-import * as prettier from "prettier";
+import { Biome, Distribution } from "@biomejs/js-api";
 import { removeRecursiveForce } from "./remove-recursive-force";
 
 const EXPORT_REGEX = /},fn:(['"]).*?\1}\);/;
 const REQUIRE_FILENAME_REGEX = /require\((['"])(?<fileName>.*?)\1\);/g;
 const REQUIRE_CSS_REGEX = /require\((['"])([^'")]*?\.css)\1\)/g;
 
+const biome = await Biome.create({
+  distribution: Distribution.NODE,
+});
+
 export async function processModules(
   modulesDirectory: string,
 ): Promise<number> {
+  let time = performance.now();
   let files = await fs.readdir(modulesDirectory);
   files = files.filter((file) => file.endsWith("_JS"));
 
@@ -57,24 +62,16 @@ export async function processModules(
         realFileNames[fileName.toLowerCase()] = fileName;
       });
 
-      const content = await prettier
-        .format(rawContent, { parser: "babel" })
-        .catch((error) => {
-          console.error(
-            `Error formatting ${fileName}, see the stack frame below`,
-            rawContent.substring(0, 100),
-            "...",
-            rawContent.substring(rawContent.length - 100, rawContent.length),
-          );
-          throw error;
-        });
-
       fileName = fileName
         .replace(/^WEB_/, "")
         .replace(/_MOINS_/g, "-")
         .replace(/_MIN/, ".min")
         .replace(/_JS$/, "")
         .toLowerCase();
+
+      const { content } = biome.formatContent(rawContent, {
+        filePath: fileName + ".js",
+      });
 
       modules[fileName] = content;
     }),

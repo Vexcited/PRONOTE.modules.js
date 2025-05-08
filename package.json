@@ -1,8 +1,9 @@
 {
   "type": "module",
   "dependencies": {
-    "cheerio": "^1.0.0",
-    "prettier": "^3.5.3"
+    "@biomejs/js-api": "^0.7.1",
+    "@biomejs/wasm-nodejs": "^1.9.4",
+    "cheerio": "^1.0.0"
   },
   "devDependencies": {
     "@types/bun": "^1.2.12"
