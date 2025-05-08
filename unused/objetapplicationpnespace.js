@@ -4,12 +4,12 @@ require("DeclarationImagePN.js");
 require("DeclarationCollectivite.js");
 require("DeclarationImagesConnexionDynamiques.js");
 global.Start = function (aParam) {
-  GApplication = new ObjetApplicationPNEspace();
-  GApplication.lancer(aParam);
+	GApplication = new ObjetApplicationPNEspace();
+	GApplication.lancer(aParam);
 };
 class ObjetApplicationPNEspace extends ObjetApplicationScoEspace_1.ObjetApplicationScoEspace {
-  constructor() {
-    super();
-  }
+	constructor() {
+		super();
+	}
 }
 exports.ObjetApplicationPNEspace = ObjetApplicationPNEspace;

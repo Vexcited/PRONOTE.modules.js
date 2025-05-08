@@ -17,1603 +17,1603 @@ const ObjetSupport_1 = require("ObjetSupport");
 const Enumere_BoutonSouris_1 = require("Enumere_BoutonSouris");
 const Enumere_EvenementTreeView_1 = require("Enumere_EvenementTreeView");
 class ObjetTreeView extends ObjetIdentite_1.Identite {
-  constructor(...aParams) {
-    super(...aParams);
-    this.idConteneur = this.Nom + "_conteneur";
-    this.idScroll = this.Nom + "_scroll";
-    this.idMenuContextuel = this.Nom + ".menuContextuel";
-    this.idDraggable = this.Nom + "_drag";
-    this.idBoutons = this.Nom + "_boutons";
-    if (this.avecEventResizeNavigateur()) {
-      this.ajouterEvenementGlobal(
-        Enumere_Event_1.EEvent.SurPreResize,
-        this._surResize.bind(this, true),
-      );
-      this.ajouterEvenementGlobal(
-        Enumere_Event_1.EEvent.SurPostResize,
-        this._surResize.bind(this, false),
-      );
-    }
-    this.setParametres();
-  }
-  getControleur(aInstance) {
-    return $.extend(true, super.getControleur(aInstance), {
-      scroll: function (api) {
-        aInstance.apiScroll = api;
-      },
-    });
-  }
-  detruireInstances() {}
-  recupererDonnees() {}
-  setParametres() {
-    this.couleurs = GCouleur.liste;
-    this.largeurDeploiement = 8;
-    this.ecartDroitDeploiement = 2;
-    this.largeurDropInterLigne = 200;
-    this.hauteurDropInterLigne = 4;
-  }
-  setDonnees(aDonneeTreeView) {
-    this.donneesRecus = true;
-    this._enEdition = false;
-    this.donneeTreeView = aDonneeTreeView;
-    if (this.donneeTreeView) {
-      this.donneeTreeView.parent = this;
-      this.donneeTreeView.couleurs = this.couleurs;
-      this.donneeTreeView.construireNodes();
-    }
-    this.nodeSelection = null;
-    this.nodeSelectionFocus = null;
-    this._construireBoutons();
-    this.actualiser();
-    this._donneesRecus = true;
-    this._surResize();
-  }
-  surResize() {
-    this._surResize(true);
-    this._surResize(false);
-  }
-  _surResize(aPreResize) {
-    const lClientRect = ObjetPosition_1.GPosition.getClientRect(this.Nom);
-    const lWidth = aPreResize
-      ? 50
-      : Math.floor(lClientRect.contentWidth) +
-        (ObjetSupport_1.Support.bordureExterneDIV ? 0 : -2) -
-        (this._avecBoutons
-          ? ObjetPosition_1.GPosition.getWidth(this.idBoutons)
-          : 0);
-    const lHeight = aPreResize
-      ? 50
-      : Math.floor(lClientRect.contentHeight) +
-        (ObjetSupport_1.Support.bordureExterneDIV ? 0 : -2);
-    if (!aPreResize) {
-      ObjetPosition_1.GPosition.setTaille(this.idScroll, lWidth, lHeight);
-    }
-    if (aPreResize) {
-      ObjetPosition_1.GPosition.setTaille(this.idScroll, lWidth, lHeight);
-    }
-    if (this._objetDrag && aPreResize) {
-      window.clearTimeout(this._timerDrag);
-      ObjetHtml_1.GHtml.setHtml(this._objetDrag.elementDrag, "");
-      ObjetHtml_1.GHtml.setDisplay(this._objetDrag.elementDrag, false);
-      delete this._objetDrag;
-    }
-    this.$refreshSelf();
-  }
-  construireAffichage() {
-    const H = [];
-    H.push('<div class="ObjetTreeView">');
-    H.push(
-      '<div id="',
-      this.idDraggable,
-      '" class="Liste_Suppression Texte10 Gras" style="display:none;"></div>',
-    );
-    H.push('<div class="flex-contain flex-start">');
-    H.push(
-      '<div class="fluid-bloc Maigre" style="',
-      ObjetStyle_1.GStyle.composeCouleurBordure(this.couleurs.bordure, 1),
-      '">',
-    );
-    H.push(
-      '<div ie-scroll="scroll" id="',
-      this.idScroll,
-      '" class="full-size" style="',
-      ObjetStyle_1.GStyle.composeCouleurFond(GCouleur.blanc),
-      "min-height:",
-      ObjetTreeView.CONST_hauteurMin,
-      'px;">',
-    );
-    H.push('<div id="', this.idConteneur, '" class="SansMain">');
-    H.push(this._construireTreeView());
-    H.push("</div>");
-    H.push("</div>");
-    H.push("</div>");
-    H.push(
-      '<div class="fix-bloc boutons-commande p-top" id="' +
-        this.idBoutons +
-        '" style="display:none"></div>',
-    );
-    H.push("</div>");
-    H.push("</div>");
-    return H.join("");
-  }
-  actualiser(aAvecCallbackSelection) {
-    if (!this.donneesRecus) {
-      return;
-    }
-    this._supprimerElementEdition();
-    this._construireTreeView();
-    this.$refreshSelf();
-    this.setSelectionParContenuDeNode(
-      this.nodeSelection,
-      aAvecCallbackSelection,
-    );
-  }
-  _construireBoutons() {
-    if (!this.donneeTreeView) {
-      return;
-    }
-    this._boutons = {
-      avecCreation: this.donneeTreeView.avecBoutonsEvenementDuGenre(
-        Enumere_EvenementTreeView_1.EGenreEvenementTreeView.creation,
-      ),
-      avecEdition: this.donneeTreeView.avecBoutonsEvenementDuGenre(
-        Enumere_EvenementTreeView_1.EGenreEvenementTreeView.edition,
-      ),
-      avecSuppression: this.donneeTreeView.avecBoutonsEvenementDuGenre(
-        Enumere_EvenementTreeView_1.EGenreEvenementTreeView.suppression,
-      ),
-      avecDeplacement: this.donneeTreeView.avecBoutonsEvenementDuGenre(
-        Enumere_EvenementTreeView_1.EGenreEvenementTreeView.deplacement,
-      ),
-    };
-    this._avecBoutons = false;
-    for (const i in this._boutons) {
-      if (this._boutons[i]) {
-        this._avecBoutons = true;
-      }
-    }
-    if (!this._avecBoutons) {
-      return;
-    }
-    const H = [];
-    if (this._boutons.avecDeplacement) {
-      H.push('<div id="' + (this.Nom + ".boutonHaut") + '"></div>');
-      H.push('<div id="' + (this.Nom + ".boutonBas") + '"></div>');
-    }
-    if (this._boutons.avecCreation) {
-      H.push('<div id="' + (this.Nom + ".boutonC") + '"></div>');
-    }
-    if (this._boutons.avecEdition) {
-      H.push('<div id="' + (this.Nom + ".boutonE") + '"></div>');
-    }
-    if (this._boutons.avecSuppression) {
-      H.push('<div id="' + (this.Nom + ".boutonS") + '"></div>');
-    }
-    ObjetHtml_1.GHtml.setHtml(this.idBoutons, H.join(""), true);
-    ObjetHtml_1.GHtml.setDisplay(this.idBoutons, true);
-    if (this._boutons.avecCreation) {
-      this.boutonC = new ObjetBoutonTreeView(
-        this.Nom + ".boutonC",
-        this,
-        this._evenementSurBouton,
-      );
-      this.boutonC.setParametres(
-        Enumere_EvenementTreeView_1.EGenreEvenementTreeView.creation,
-        null,
-        this.donneeTreeView.getHintBoutonsEvenementDuGenre(
-          Enumere_EvenementTreeView_1.EGenreEvenementTreeView.creation,
-        ),
-      );
-      this.boutonC.initialiser();
-    }
-    if (this._boutons.avecEdition) {
-      this.boutonE = new ObjetBoutonTreeView(
-        this.Nom + ".boutonE",
-        this,
-        this._evenementSurBouton,
-      );
-      this.boutonE.setParametres(
-        Enumere_EvenementTreeView_1.EGenreEvenementTreeView.edition,
-        null,
-        this.donneeTreeView.getHintBoutonsEvenementDuGenre(
-          Enumere_EvenementTreeView_1.EGenreEvenementTreeView.edition,
-        ),
-      );
-      this.boutonE.initialiser();
-    }
-    if (this._boutons.avecSuppression) {
-      this.boutonS = new ObjetBoutonTreeView(
-        this.Nom + ".boutonS",
-        this,
-        this._evenementSurBouton,
-      );
-      this.boutonS.setParametres(
-        Enumere_EvenementTreeView_1.EGenreEvenementTreeView.suppression,
-        null,
-        this.donneeTreeView.getHintBoutonsEvenementDuGenre(
-          Enumere_EvenementTreeView_1.EGenreEvenementTreeView.suppression,
-        ),
-      );
-      this.boutonS.initialiser();
-    }
-    if (this._boutons.avecDeplacement) {
-      this.boutonHaut = new ObjetBoutonTreeView(
-        this.Nom + ".boutonHaut",
-        this,
-        this._evenementSurBouton,
-      );
-      this.boutonHaut.setParametres(
-        Enumere_EvenementTreeView_1.EGenreEvenementTreeView.deplacement,
-        true,
-        this.donneeTreeView.getHintBoutonsEvenementDuGenre(
-          Enumere_EvenementTreeView_1.EGenreEvenementTreeView.deplacement,
-          true,
-        ),
-      );
-      this.boutonHaut.initialiser();
-      this.boutonBas = new ObjetBoutonTreeView(
-        this.Nom + ".boutonBas",
-        this,
-        this._evenementSurBouton,
-      );
-      this.boutonBas.setParametres(
-        Enumere_EvenementTreeView_1.EGenreEvenementTreeView.deplacement,
-        false,
-        this.donneeTreeView.getHintBoutonsEvenementDuGenre(
-          Enumere_EvenementTreeView_1.EGenreEvenementTreeView.deplacement,
-        ),
-      );
-      this.boutonBas.initialiser();
-    }
-    this._actualiserBoutons();
-  }
-  _actualiserBoutons() {
-    let lNodeSelection = this.nodeSelection;
-    let lMultiSelection = false;
-    if (MethodesObjet_1.MethodesObjet.isArray(this.nodeSelection)) {
-      lNodeSelection = this.nodeSelection[0];
-      lMultiSelection = this.nodeSelection.length > 1;
-    }
-    if (this._boutons.avecCreation) {
-      this.boutonC.setActif(
-        !lMultiSelection &&
-          this.donneeTreeView.avecCreation(lNodeSelection, null) &&
-          this.donneeTreeView.avecMenuContextuelSurBouton(
-            lNodeSelection,
-            Enumere_EvenementTreeView_1.EGenreEvenementTreeView.creation,
-          ),
-      );
-    }
-    if (this._boutons.avecEdition) {
-      this.boutonE.setActif(
-        lNodeSelection &&
-          !lMultiSelection &&
-          this.donneeTreeView.avecEdition(lNodeSelection),
-      );
-    }
-    if (this._boutons.avecSuppression) {
-      this.boutonS.setActif(
-        lNodeSelection && this.donneeTreeView.avecSuppression(lNodeSelection),
-      );
-    }
-    if (this._boutons.avecDeplacement) {
-      let lDeplacementHautActif = false;
-      let lDeplacementBasActif = false;
-      const lDragAutorise =
-        lNodeSelection &&
-        !lMultiSelection &&
-        this.donneeTreeView.avecDragNDrop() &&
-        this.donneeTreeView.dragAutorise(lNodeSelection);
-      if (lDragAutorise) {
-        lDeplacementHautActif = this.donneeTreeView.dropAutorise(
-          lNodeSelection,
-          lNodeSelection.frerePrecedent(),
-          true,
-        );
-        lDeplacementBasActif = this.donneeTreeView.dropAutorise(
-          lNodeSelection,
-          lNodeSelection.frereSuivant(),
-          false,
-        );
-      }
-      this.boutonHaut.setActif(lDeplacementHautActif);
-      this.boutonBas.setActif(lDeplacementBasActif);
-    }
-  }
-  _construireTreeView() {
-    if (!this.donneesRecus) {
-      return;
-    }
-    const lConteneur = ObjetHtml_1.GHtml.getElement(this.idConteneur);
-    ObjetHtml_1.GHtml.setHtml(lConteneur, "");
-    if (this.donneeTreeView && this.donneeTreeView.listeNodes) {
-      const lListeRacines = this.donneeTreeView.listeRacines();
-      for (let i = 0, lnb = lListeRacines.length; i < lnb; i++) {
-        this._construireLigneDeNode(lConteneur, lListeRacines[i]);
-      }
-    }
-    const lEventMap = {
-      mouseup: this._surMouseUpTreeView.bind(this),
-      keydown: this._surKeyDownTreeView.bind(this),
-      mouseenter: this._surMouseEnterTreeView.bind(this),
-      mouseleave: this._surMouseLeaveTreeView.bind(this),
-    };
-    $("#" + this.idConteneur.escapeJQ())
-      .off()
-      .on(lEventMap, { instance: this });
-  }
-  _construireLigneDeNode(aElementConteneur, aNode) {
-    let lTdImage;
-    let lDiv = null;
-    let lEventMap;
-    aNode.DOM = {};
-    const lNiveau = aNode.getNiveau();
-    const lLibelle = this.donneeTreeView.getLibelle(aNode);
-    const lPaddingLeft = this.donneeTreeView.getIndent(aNode) * lNiveau;
-    const lStyleVisible = this.donneeTreeView.getVisible(aNode)
-      ? ""
-      : "display:none";
-    const lClassIcon = this.donneeTreeView.getClassIcon(aNode);
-    const lDivLigne = document.createElement("div");
-    ObjetHtml_1.GHtml.setClass(lDivLigne, "NoWrap");
-    const lStyle =
-      (lPaddingLeft > 0 ? "padding-left:" + lPaddingLeft + "px;" : "") +
-      lStyleVisible;
-    if (lStyle) {
-      ObjetStyle_1.GStyle.setStyle(lDivLigne, lStyle);
-    }
-    $(lDivLigne).mouseup(
-      { instance: this, node: aNode },
-      this._surMouseUpLigne,
-    );
-    aNode.DOM.dropInterLigne = lDivLigne;
-    const lTdDeploiement = document.createElement("div");
-    ObjetHtml_1.GHtml.setClass(
-      lTdDeploiement,
-      "InlineBlock AlignementMilieuVertical",
-    );
-    ObjetStyle_1.GStyle.setStyle(
-      lTdDeploiement,
-      ObjetStyle_1.GStyle.composeWidth(this.largeurDeploiement) +
-        "padding-right:" +
-        this.ecartDroitDeploiement +
-        "px;",
-    );
-    if (this.donneeTreeView.getAvecDeploiement(aNode)) {
-      lDiv = document.createElement("div");
-      ObjetHtml_1.GHtml.setClass(
-        lDiv,
-        "AvecMain " +
-          (aNode.deploye
-            ? "Image_DeploiementListe_Deploye"
-            : "Image_DeploiementListe_NonDeploye"),
-      );
-      $(lDiv).mousedown(
-        { instance: this, node: aNode },
-        this._surMouseDownDeploiement,
-      );
-      ObjetHtml_1.GHtml.setTexte(lDiv, " ");
-      aNode.DOM.deploiement = lDiv;
-      lTdDeploiement.appendChild(lDiv);
-    }
-    lDivLigne.appendChild(lTdDeploiement);
-    if (lClassIcon) {
-      lTdImage = document.createElement("div");
-      ObjetHtml_1.GHtml.setClass(
-        lTdImage,
-        "InlineBlock AlignementMilieuVertical",
-      );
-      ObjetStyle_1.GStyle.setStyle(
-        lTdImage,
-        "padding-right : 2px; font-size: 1.1em;",
-      );
-      lDiv = document.createElement("i");
-      ObjetHtml_1.GHtml.setClass(lDiv, lClassIcon);
-      lEventMap = {
-        dblclick: this._surDblClickImage.bind(this),
-        mousedown: this._surMouseDownImage.bind(this),
-        mouseover: this._surMouseOverImage.bind(this),
-        mouseout: this._surMouseOutImage.bind(this),
-        mouseup: this._surMouseUpImage.bind(this),
-      };
-      aNode.DOM.image = lDiv;
-      $(lTdImage).on(lEventMap, { instance: this, node: aNode });
-      lTdImage.appendChild(lDiv);
-      lDivLigne.appendChild(lTdImage);
-    }
-    const lDivConteneur = $(
-      '<div class="InlineBlock AlignementMilieuVertical" style="margin:1px">',
-    ).get(0);
-    lDiv = document.createElement("div");
-    const lStyleLibelle = this.donneeTreeView.getStyleLibelle(aNode);
-    const lClassLibelle = this.donneeTreeView.getClassLibelle(aNode);
-    ObjetHtml_1.GHtml.setClass(lDiv, lClassLibelle ? lClassLibelle : "");
-    if (lStyleLibelle) {
-      ObjetStyle_1.GStyle.setStyle(lDiv, lStyleLibelle);
-    }
-    ObjetHtml_1.GHtml.setHtml(lDiv, lLibelle, true);
-    lDiv.tabIndex = 1;
-    lEventMap = {
-      mousedown: this._surMouseDownLibelle.bind(this),
-      mouseover: this._surMouseOverLibelle.bind(this),
-      mouseout: this._surMouseOutLibelle.bind(this),
-      mouseup: this._surMouseUpLibelle.bind(this),
-      dblclick: this._surDblClickLibelle.bind(this),
-      focus: this._surFocusLibelle.bind(this),
-      blur: this._surBlurLibelle.bind(this),
-    };
-    $(lDiv).on(lEventMap, { instance: this, node: aNode });
-    aNode.DOM.libelle = lDiv;
-    lDivConteneur.appendChild(lDiv);
-    lDivLigne.appendChild(lDivConteneur);
-    aElementConteneur.appendChild(lDivLigne);
-    const lListeFils = aNode.listeFils();
-    if (lListeFils.length > 0) {
-      lDiv = document.createElement("div");
-      if (!aNode.deploye) {
-        ObjetHtml_1.GHtml.setDisplay(lDiv, false);
-      }
-      aNode.DOM.conteneurFils = lDiv;
-      for (let i = 0, lNb = lListeFils.length; i < lNb; i++) {
-        this._construireLigneDeNode(lDiv, lListeFils[i]);
-      }
-      aElementConteneur.appendChild(lDiv);
-    }
-  }
-  _construireInterLigneDeNode(aObjetDrag) {
-    this._detruireInterLignesDrop(aObjetDrag);
-    aObjetDrag.listeNoeudsDOM = [];
-    const lNode = aObjetDrag.source;
-    const lListeNodes = lNode.pere
-      ? lNode.pere.listeFils()
-      : lNode.listeRacines();
-    const lEventMap = {
-      mouseover: this._surMouseOverInterLigne,
-      mouseout: this._surMouseOutInterLigne,
-      mouseup: this._surMouseUpInterLigne,
-    };
-    let lNodeCourant, lDiv, lDivInterligne, lDernierDecendant;
-    for (let i = 0; i < lListeNodes.length; i++) {
-      lNodeCourant = lListeNodes[i];
-      lDiv = document.createElement("div");
-      aObjetDrag.listeNoeudsDOM.push(lDiv);
-      ObjetStyle_1.GStyle.setStyle(
-        lDiv,
-        "position:relative; height:0px; top:0px; font-size:0px;",
-      );
-      ObjetHtml_1.GHtml.insererElementDOM(
-        lNodeCourant.DOM.dropInterLigne,
-        lDiv,
-        true,
-      );
-      if (
-        this.donneeTreeView.dropAutorise(aObjetDrag.source, lNodeCourant, true)
-      ) {
-        lDivInterligne = document.createElement("div");
-        ObjetStyle_1.GStyle.setStyle(
-          lDivInterligne,
-          this.getStyleInterLigne(-1),
-        );
-        ObjetHtml_1.GHtml.insererElementDOM(lDiv, lDivInterligne);
-        $(lDivInterligne).on(lEventMap, {
-          instance: this,
-          node: lNodeCourant,
-          dernierElement: false,
-        });
-      }
-      if (
-        i === lListeNodes.length - 1 &&
-        this.donneeTreeView.dropAutorise(aObjetDrag.source, lNodeCourant, false)
-      ) {
-        lDivInterligne = document.createElement("div");
-        lDernierDecendant =
-          this.donneeTreeView.getDifferenceIndexDernierDescendantVisible(
-            lNodeCourant,
-          );
-        const lTop =
-          ObjetPosition_1.GPosition.getHeight(lNodeCourant.DOM.dropInterLigne) *
-          (lDernierDecendant + 1);
-        ObjetStyle_1.GStyle.setStyle(
-          lDivInterligne,
-          this.getStyleInterLigne(lTop),
-        );
-        ObjetHtml_1.GHtml.insererElementDOM(lDiv, lDivInterligne);
-        $(lDivInterligne).on(lEventMap, {
-          instance: this,
-          node: lNodeCourant,
-          dernierElement: true,
-        });
-      }
-    }
-  }
-  getStyleInterLigne(aTop) {
-    return (
-      "position:absolute; z-index:1;" +
-      "height:" +
-      this.hauteurDropInterLigne +
-      "px;" +
-      "top:" +
-      aTop +
-      "px;" +
-      "left:" +
-      (this.largeurDeploiement + this.ecartDroitDeploiement) +
-      "px;" +
-      "width:" +
-      this.largeurDropInterLigne +
-      "px;"
-    );
-  }
-  _detruireInterLignesDrop(aObjetDrag) {
-    if (!aObjetDrag || !aObjetDrag.listeNoeudsDOM) {
-      return;
-    }
-    for (let i = 0; i < aObjetDrag.listeNoeudsDOM.length; i++) {
-      const lNoeud = aObjetDrag.listeNoeudsDOM[i];
-      ObjetHtml_1.GHtml.supprimerElementDOM(lNoeud);
-    }
-    delete aObjetDrag.listeNoeudsDOM;
-  }
-  _surDragDebut(aNode) {
-    if (!aNode) {
-      return;
-    }
-    this._posSourisX = GNavigateur.pointerX;
-    this._posSourisY = GNavigateur.pointerY;
-    const lDraggable = ObjetHtml_1.GHtml.getElement(this.idDraggable);
-    ObjetHtml_1.GHtml.delClass(lDraggable, "Liste_Rouge Blanc");
-    ObjetStyle_1.GStyle.setVisible(lDraggable, false);
-    ObjetHtml_1.GHtml.setDisplay(lDraggable, true);
-    const lPositionX = Math.min(
-      this._posSourisX,
-      GNavigateur.clientL - ObjetPosition_1.GPosition.getWidth(lDraggable),
-    );
-    ObjetPosition_1.GPosition.setPosition(
-      lDraggable,
-      lPositionX + 8,
-      this._posSourisY + 5,
-      true,
-    );
-    GNavigateur.debDeplacement(this, lDraggable);
-    this._objetDrag = {
-      elementDrag: lDraggable,
-      source: aNode,
-      visible: false,
-      cible: null,
-      insertionAvant: null,
-      setContenuHtml: function (aContenu) {
-        if (this.contenuHtml === aContenu) {
-          return;
-        }
-        this.contenuHtml = aContenu;
-        ObjetHtml_1.GHtml.setHtml(this.elementDrag, this.contenuHtml, true);
-      },
-    };
-    this._objetDrag.setContenuHtml(
-      this.donneeTreeView.getContenuDraggableInterdit(this._objetDrag.source),
-    );
-    window.clearTimeout(this._timerDrag);
-    this._timerDrag = setTimeout(
-      this._surDraggableAfficher.bind(this, true),
-      500,
-    );
-    $(document)
-      .off("mouseup.treeview ", this._surMouseUp)
-      .off("mousemove.treeview ", this._surMouseMove)
-      .on(
-        {
-          "mouseup.treeview": this._surMouseUp,
-          "mousemove.treeview": this._surMouseMove,
-        },
-        { instance: this },
-      );
-  }
-  _surDraggableAfficher(AAfficher) {
-    if (
-      this._objetDrag &&
-      !this._objetDrag.visible &&
-      GNavigateur.SourisBouton
-    ) {
-      if (
-        AAfficher ||
-        (this._posSourisX - GNavigateur.pointerX) *
-          (this._posSourisX - GNavigateur.pointerX) +
-          (this._posSourisY - GNavigateur.pointerY) *
-            (this._posSourisY - GNavigateur.pointerY) >
-          20
-      ) {
-        ObjetStyle_1.GStyle.setVisible(this._objetDrag.elementDrag, true);
-        this._objetDrag.visible = true;
-        this._construireInterLigneDeNode(this._objetDrag);
-        if (
-          this.donneeTreeView.avecEvenementDeGenre(
-            Enumere_EvenementTreeView_1.EGenreEvenementTreeView.dragDebut,
-            this._objetDrag.source,
-          )
-        ) {
-          this.callback.appel(
-            Enumere_EvenementTreeView_1.EGenreEvenementTreeView.dragDebut,
-            this._objetDrag,
-          );
-        }
-      }
-    }
-  }
-  _surDragFin() {
-    $(document)
-      .off("mouseup.treeview ", this._surMouseUp)
-      .off("mousemove.treeview ", this._surMouseMove);
-    if (this._objetDrag && this._objetDrag.visible) {
-      window.clearTimeout(this._timerDrag);
-      ObjetHtml_1.GHtml.setHtml(this._objetDrag.elementDrag, "");
-      ObjetHtml_1.GHtml.setDisplay(this._objetDrag.elementDrag, false);
-      if (
-        this.donneeTreeView.avecEvenementDeGenre(
-          Enumere_EvenementTreeView_1.EGenreEvenementTreeView.dragFin,
-          this._objetDrag.source,
-        )
-      ) {
-        this.callback.appel(
-          Enumere_EvenementTreeView_1.EGenreEvenementTreeView.dragFin,
-          this._objetDrag,
-        );
-      }
-      if (this._objetDrag.horsZone && this._objetDrag.source) {
-        this.surSuppression(this._objetDrag.source);
-      } else if (this._objetDrag.source && !this._objetDrag.annulerDrop) {
-        this.surDeplacement(
-          this._objetDrag.source,
-          this._objetDrag.cible,
-          this._objetDrag.insertionAvant,
-        );
-      }
-    }
-    this._detruireInterLignesDrop(this._objetDrag);
-    delete this._objetDrag;
-  }
-  surDeplacement(aNodeSource, aNodeCible, aInsertionAvant) {
-    if (
-      this.donneeTreeView.surDeplacement(
-        aNodeSource,
-        aNodeCible,
-        aInsertionAvant,
-      )
-    ) {
-      this.donneeTreeView.construireNodes();
-      this.actualiser(false);
-      if (this.donneeTreeView.avecEtatSaisie()) {
-        this.setEtatSaisie(true);
-      }
-      if (
-        this.donneeTreeView.avecEvenementDeGenre(
-          Enumere_EvenementTreeView_1.EGenreEvenementTreeView.deplacement,
-          aNodeSource,
-        )
-      ) {
-        this.callback.appel(
-          Enumere_EvenementTreeView_1.EGenreEvenementTreeView.deplacement,
-          aNodeSource,
-        );
-      }
-    }
-  }
-  _setSelectionNode(aNode) {
-    if (this._enEdition) {
-      return;
-    }
-    let lNodeSelection = this.donneeTreeView.getSelection(aNode);
-    if (this.donneeTreeView.avecMultiSelection()) {
-      if (!MethodesObjet_1.MethodesObjet.isArray(lNodeSelection)) {
-        lNodeSelection = [lNodeSelection];
-      }
-      if (this.nodeSelection) {
-        if (GNavigateur.CtrlTouche) {
-          const lNodes = this.nodeSelection;
-          for (let i = 0; i < lNodes.length; i++) {
-            const lIndex = lNodeSelection.indexOf(lNodes[i]);
-            if (lIndex >= 0) {
-              MethodesTableau_1.MethodesTableau.supprimerElement(
-                lNodeSelection,
-                lIndex,
-              );
-            } else {
-              lNodeSelection.push(lNodes[i]);
-            }
-          }
-        }
-      }
-    }
-    this._appliquerSelection(lNodeSelection, true, true);
-  }
-  _appliquerSelection(aNode, aInteractionUtilisateur, aAvecCallbackSelection) {
-    if (this.donneeTreeView.avecMultiSelection()) {
-      let lNodes = aNode;
-      if (!MethodesObjet_1.MethodesObjet.isArray(lNodes)) {
-        lNodes = [lNodes];
-      }
-      if (this.nodeSelection) {
-        const lNodes = this.nodeSelection;
-        for (let i = 0; i < lNodes.length; i++) {
-          if (!lNodes.includes(lNodes[i])) {
-            this.setDeselectionNode(lNodes[i]);
-          }
-        }
-      }
-      this.nodeSelection = [];
-      if (lNodes) {
-        for (let i = 0; i < lNodes.length; i++) {
-          if (lNodes[i]) {
-            this.nodeSelection.push(lNodes[i]);
-            ObjetStyle_1.GStyle.setStyle(
-              lNodes[i].DOM.libelle,
-              this.donneeTreeView.getStyleLibelle(lNodes[i], true),
-            );
-          }
-        }
-      }
-    } else {
-      const lNode = aNode;
-      if (this.nodeSelection && !this.nodeSelection.identique(lNode)) {
-        this.setDeselectionNode(this.nodeSelection);
-      }
-      this.nodeSelection = lNode;
-      if (lNode) {
-        ObjetStyle_1.GStyle.setStyle(
-          lNode.DOM.libelle,
-          this.donneeTreeView.getStyleLibelle(lNode, true),
-        );
-      }
-    }
-    this._actualiserBoutons();
-    if (
-      aAvecCallbackSelection &&
-      this.donneeTreeView.avecEvenementDeGenre(
-        Enumere_EvenementTreeView_1.EGenreEvenementTreeView.selection,
-        this.nodeSelection,
-      )
-    ) {
-      this.callback.appel(
-        Enumere_EvenementTreeView_1.EGenreEvenementTreeView.selection,
-        this.nodeSelection,
-        aInteractionUtilisateur,
-      );
-    }
-  }
-  setSelectionParContenuDeNode(aNode, aAvecCallbackSelection) {
-    if (!aNode) {
-      this._appliquerSelection(null, false, aAvecCallbackSelection);
-    } else {
-      if (this.donneeTreeView.avecMultiSelection()) {
-        let lNodes = aNode;
-        if (!MethodesObjet_1.MethodesObjet.isArray(lNodes)) {
-          lNodes = [lNodes];
-        }
-        const lNodesSelection = [];
-        for (let i = 0; i < lNodes.length; i++) {
-          const lNode = this.donneeTreeView.getNodeParContenu(
-            lNodes[i].contenu,
-          );
-          if (lNode) {
-            lNodesSelection.push(lNode);
-          }
-        }
-        this._appliquerSelection(
-          lNodesSelection,
-          false,
-          aAvecCallbackSelection,
-        );
-      } else {
-        this._appliquerSelection(
-          this.donneeTreeView.getNodeParContenu(aNode.contenu),
-          false,
-          aAvecCallbackSelection,
-        );
-      }
-    }
-  }
-  setDeselectionNode(aNode) {
-    if (aNode) {
-      ObjetStyle_1.GStyle.setStyle(
-        aNode.DOM.libelle,
-        this.donneeTreeView.getStyleLibelle(aNode, false),
-      );
-    }
-  }
-  getNodeSelection() {
-    return this.nodeSelection;
-  }
-  getOrdreSelection() {
-    const lResult = [];
-    if (this.nodeSelection) {
-      let lNodes = this.nodeSelection;
-      if (!MethodesObjet_1.MethodesObjet.isArray(lNodes)) {
-        lNodes = [lNodes];
-      }
-      for (let i = 0; i < lNodes.length; i++) {
-        const lIndex = this.donneeTreeView.listeNodes.indexOf(lNodes[i]);
-        if (lIndex >= 0) {
-          lResult.push(lIndex);
-        }
-      }
-    }
-    return lResult;
-  }
-  setSelectionParOrdre(aOrdres, aAvecCallbackSelection) {
-    if (aOrdres === null || aOrdres === undefined) {
-      this._appliquerSelection(null, false, aAvecCallbackSelection);
-    } else {
-      if (!MethodesObjet_1.MethodesObjet.isArray(aOrdres)) {
-        aOrdres = [aOrdres];
-      }
-      let lNode;
-      if (this.donneeTreeView.avecMultiSelection()) {
-        const lNodesSelection = [];
-        for (let i = 0; i < aOrdres.length; i++) {
-          lNode = this.donneeTreeView.listeNodes[aOrdres[i]];
-          if (lNode) {
-            lNodesSelection.push(lNode);
-          }
-        }
-        this._appliquerSelection(
-          lNodesSelection,
-          false,
-          aAvecCallbackSelection,
-        );
-      } else {
-        lNode = this.donneeTreeView.listeNodes[aOrdres[0]];
-        this._appliquerSelection(lNode, false, aAvecCallbackSelection);
-      }
-    }
-  }
-  _ouvrirMenuContextuel(aNode, aSurBouton, aGenreEvenement) {
-    if (this.menuContextuel) {
-      this.menuContextuel.free();
-    }
-    this.menuContextuel = new ObjetMenuContextuel_1.ObjetMenuContextuel(
-      this.idMenuContextuel,
-      null,
-      this,
-      this._evenementMenuContextuel.bind(this, aNode),
-    );
-    IEZoneFenetre_1.ZoneFenetre.ajouterFenetre(this.menuContextuel.getNom());
-    if (!aSurBouton) {
-      this.donneeTreeView.initialisationMenuContextuel(
-        this.menuContextuel,
-        aNode,
-      );
-    } else {
-      this.donneeTreeView.initialisationMenuContextuelSurBouton(
-        this.menuContextuel,
-        aNode,
-        aGenreEvenement,
-      );
-    }
-    if (!this.menuContextuel.contientAuMoinsUneLigne()) {
-      this.menuContextuel.free();
-      delete this.menuContextuel;
-    }
-  }
-  _evenementMenuContextuel(aNode, aLigne) {
-    this.menuContextuel.free();
-    ObjetHtml_1.GHtml.setHtml(this.menuContextuel.getNom(), "");
-    delete this.menuContextuel;
-    const lInfosMenuContextuel = this.donneeTreeView.evenementMenuContextuel(
-      aNode,
-      aLigne,
-    );
-    if (lInfosMenuContextuel) {
-      switch (lInfosMenuContextuel.evenementTreeView) {
-        case Enumere_EvenementTreeView_1.EGenreEvenementTreeView.suppression: {
-          this.surSuppression(aNode);
-          return;
-        }
-        case Enumere_EvenementTreeView_1.EGenreEvenementTreeView.edition: {
-          this.demarrerEdition(aNode);
-          return;
-        }
-        case Enumere_EvenementTreeView_1.EGenreEvenementTreeView.creation: {
-          this.demarrerCreation(
-            lInfosMenuContextuel.nodePere,
-            lInfosMenuContextuel.contenu,
-          );
-          return;
-        }
-      }
-      if (
-        lInfosMenuContextuel.avecEtatSaisie &&
-        this.donneeTreeView.avecEtatSaisie()
-      ) {
-        this.setEtatSaisie(true);
-      }
-      if (lInfosMenuContextuel.avecActualisation) {
-        this.donneeTreeView.construireNodes();
-        this.actualiser(true);
-      }
-    }
-    if (
-      this.donneeTreeView.avecEvenementDeGenre(
-        Enumere_EvenementTreeView_1.EGenreEvenementTreeView.menuContextuel,
-        aNode,
-      )
-    ) {
-      this.callback.appel(
-        Enumere_EvenementTreeView_1.EGenreEvenementTreeView.menuContextuel,
-        aNode,
-        true,
-        aLigne,
-      );
-    }
-  }
-  demarrerCreation(aNodePere, aContenu) {
-    if (!this.donneeTreeView.avecCreation(aNodePere, aContenu)) {
-      return;
-    }
-    if (this.donneeTreeView.surCreation(aNodePere, aContenu)) {
-      this.donneeTreeView.construireNodes();
-      this.actualiser(false);
-      if (this.donneeTreeView.avecEtatSaisie()) {
-        this.setEtatSaisie(true);
-      }
-      const lNode = this.donneeTreeView.getNodeParContenu(aContenu);
-      this._appliquerSelection(lNode, false, true);
-      if (
-        this.donneeTreeView.avecEvenementDeGenre(
-          Enumere_EvenementTreeView_1.EGenreEvenementTreeView.creation,
-          lNode,
-        )
-      ) {
-        this.callback.appel(
-          Enumere_EvenementTreeView_1.EGenreEvenementTreeView.creation,
-          lNode,
-        );
-      }
-      if (lNode && this.donneeTreeView.avecEditionApresCreation(lNode)) {
-        this.demarrerEdition(lNode);
-      }
-    }
-  }
-  demarrerEdition(aNode) {
-    if (!this.donneeTreeView.avecEdition(aNode)) {
-      return;
-    }
-    this._supprimerElementEdition();
-    this.apiScroll.scrollToElement(aNode.DOM.libelle);
-    this.conteneurEdition = ObjetHtml_1.GHtml.htmlToDOM(
-      IE.jsx.str("div", { class: "Liste_Cellule_ZoneTexte Texte10 FondBlanc" }),
-    );
-    ObjetHtml_1.GHtml.getElement(this.Nom).appendChild(this.conteneurEdition);
-    const lLibelle = this.donneeTreeView.getLibelleNode(aNode);
-    aNode._valeurEdition = lLibelle;
-    this.textAreaEdition = ObjetHtml_1.GHtml.htmlToDOM(
-      IE.jsx.str("input", { value: lLibelle, class: "Texte10" }),
-    );
-    const lWidth =
-      ObjetChaine_1.GChaine.getLongueurChaineDansDiv(
-        ObjetChaine_1.GChaine.enleverEntites(lLibelle),
-        10,
-        false,
-      ) + 10;
-    ObjetStyle_1.GStyle.setStyle(
-      this.textAreaEdition,
-      ObjetStyle_1.GStyle.composeCouleurBordure(
-        this.couleurs.editable.getBordure(false),
-        1,
-      ) +
-        ObjetStyle_1.GStyle.composeHeight(
-          this.donneeTreeView.getHauteurLigneMin(),
-        ) +
-        ObjetStyle_1.GStyle.composeWidth(lWidth),
-    );
-    this.conteneurEdition.appendChild(this.textAreaEdition);
-    const lEventMap = {
-      keydown: this._surKeyDownEdition,
-      "input keyup paste cut change": this._surKeyUpEdition,
-      blur: this._surBlurEdition,
-      destroyed(aEvent) {
-        aEvent.data.instance.sortirEdition(aEvent.data.node);
-        aEvent.data.instance.setDeselectionNode(aEvent.data.node);
-      },
-    };
-    $(this.textAreaEdition).on(lEventMap, { instance: this, node: aNode });
-    this.apiScroll.actualiser();
-    ObjetStyle_1.GStyle.setVisible(aNode.DOM.libelle, false);
-    const lScroll = ObjetHtml_1.GHtml.getElement(this.idScroll);
-    ObjetPosition_1.GPosition.placer(
-      this.conteneurEdition,
-      ObjetPosition_1.GPosition.getLeft(aNode.DOM.libelle) -
-        lScroll.scrollLeft -
-        1,
-      ObjetPosition_1.GPosition.getTop(aNode.DOM.libelle) - lScroll.scrollTop,
-    );
-    $(this.textAreaEdition).one(
-      "focus",
-      { instance: this, node: aNode },
-      () => {
-        this._enEdition = true;
-        if (
-          this.donneeTreeView.avecEvenementDeGenre(
-            Enumere_EvenementTreeView_1.EGenreEvenementTreeView.editionDebut,
-            aNode,
-          )
-        ) {
-          this.callback.appel(
-            Enumere_EvenementTreeView_1.EGenreEvenementTreeView.editionDebut,
-            aNode,
-          );
-        }
-        setTimeout(() => {
-          $("#" + this.idScroll.escapeJQ()).on(
-            "scroll.treeview",
-            { instance: this, node: aNode },
-            this._surBlurEdition,
-          );
-        }, 100);
-      },
-    );
-    ObjetHtml_1.GHtml.setFocusEdit(this.textAreaEdition);
-    ObjetHtml_1.GHtml.setSelectionEdit(this.textAreaEdition);
-  }
-  enEdition(aNode, aValue) {
-    const lValue = this.donneeTreeView.surEdition(aNode, aValue);
-    aNode._valeurEdition = lValue;
-    if (lValue !== ObjetHtml_1.GHtml.getValue(this.textAreaEdition)) {
-      ObjetHtml_1.GHtml.setValue(this.textAreaEdition, lValue);
-    }
-    ObjetPosition_1.GPosition.setWidth(
-      this.textAreaEdition,
-      ObjetChaine_1.GChaine.getLongueurChaineDansDiv(
-        ObjetChaine_1.GChaine.enleverEntites(lValue),
-        10,
-        false,
-      ) + 10,
-    );
-    this.$refreshSelf();
-  }
-  sortirEdition(aNode) {
-    this._supprimerElementEdition();
-    ObjetStyle_1.GStyle.setVisible(aNode.DOM.libelle, true);
-    this.modifierLibelleNode(aNode, this.donneeTreeView.getLibelle(aNode));
-    if (this._enEdition) {
-      this._enEdition = false;
-      const lValeurEdition = aNode._valeurEdition;
-      delete aNode._valeurEdition;
-      if (this.donneeTreeView.surEditionFin(aNode, lValeurEdition)) {
-        if (this.donneeTreeView.avecEtatSaisie()) {
-          this.setEtatSaisie(true);
-        }
-        this.actualiser(true);
-        if (
-          this.donneeTreeView.avecEvenementDeGenre(
-            Enumere_EvenementTreeView_1.EGenreEvenementTreeView.edition,
-            aNode,
-          )
-        ) {
-          this.callback.appel(
-            Enumere_EvenementTreeView_1.EGenreEvenementTreeView.edition,
-            aNode,
-          );
-        }
-      }
-    }
-    this.$refreshSelf();
-    if (
-      this.donneeTreeView.avecEvenementDeGenre(
-        Enumere_EvenementTreeView_1.EGenreEvenementTreeView.editionFin,
-        aNode,
-      )
-    ) {
-      this.callback.appel(
-        Enumere_EvenementTreeView_1.EGenreEvenementTreeView.editionFin,
-        aNode,
-      );
-    }
-  }
-  _supprimerElementEdition() {
-    $("#" + this.idScroll.escapeJQ()).off("scroll.treeview");
-    if (!ObjetHtml_1.GHtml.estElement(this.conteneurEdition)) {
-      return;
-    }
-    ObjetHtml_1.GHtml.supprimerElementDOM(this.conteneurEdition);
-    this.conteneurEdition = null;
-    this.textAreaEdition = null;
-  }
-  modifierLibelleNode(aNode, aValeur) {
-    if (aNode && aNode.DOM && aNode.DOM.libelle) {
-      ObjetHtml_1.GHtml.setHtml(aNode.DOM.libelle, aValeur);
-      this.$refreshSelf();
-    }
-  }
-  surSuppression(aNode) {
-    if (!aNode) {
-      return;
-    }
-    if (this.donneeTreeView.avecSuppression(aNode)) {
-      if (this.donneeTreeView.surSuppressionConfirmation(aNode)) {
-        const lThis = this;
-        GApplication.getMessage().afficher({
-          type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
-          message: this.donneeTreeView.getMessageSuppressionConfirmation(aNode),
-          callback: function (aAccepte) {
-            lThis._surSuppressionApresConfirmation(aAccepte, aNode);
-          },
-        });
-      } else {
-        this._surSuppressionApresConfirmation(
-          Enumere_Action_1.EGenreAction.Valider,
-          aNode,
-        );
-      }
-    }
-  }
-  _surSuppressionApresConfirmation(AAccepte, aNode) {
-    if (AAccepte === Enumere_Action_1.EGenreAction.Valider) {
-      this.donneeTreeView.surSuppression(aNode);
-      this.donneeTreeView.construireNodes();
-      this.actualiser(true);
-      if (
-        this.donneeTreeView.avecEvenementDeGenre(
-          Enumere_EvenementTreeView_1.EGenreEvenementTreeView.suppression,
-          aNode,
-        )
-      ) {
-        this.callback.appel(
-          Enumere_EvenementTreeView_1.EGenreEvenementTreeView.suppression,
-          aNode,
-        );
-      }
-      if (this.donneeTreeView.avecEtatSaisie()) {
-        this.setEtatSaisie(true);
-      }
-    }
-  }
-  _evenementSurBouton(aGenreEvenement, aDeplacementHaut) {
-    let lNodeSelection = this.nodeSelection;
-    if (MethodesObjet_1.MethodesObjet.isArray(this.nodeSelection)) {
-      lNodeSelection = this.nodeSelection[0];
-    }
-    switch (aGenreEvenement) {
-      case Enumere_EvenementTreeView_1.EGenreEvenementTreeView.creation: {
-        if (
-          this.donneeTreeView.avecMenuContextuelSurBouton(
-            lNodeSelection,
-            aGenreEvenement,
-          )
-        ) {
-          this._ouvrirMenuContextuel(lNodeSelection, true, aGenreEvenement);
-        }
-        break;
-      }
-      case Enumere_EvenementTreeView_1.EGenreEvenementTreeView.suppression: {
-        if (lNodeSelection) {
-          this.surSuppression(lNodeSelection);
-        }
-        break;
-      }
-      case Enumere_EvenementTreeView_1.EGenreEvenementTreeView.edition: {
-        if (lNodeSelection) {
-          this.demarrerEdition(lNodeSelection);
-        }
-        break;
-      }
-      case Enumere_EvenementTreeView_1.EGenreEvenementTreeView.deplacement: {
-        if (aDeplacementHaut) {
-          this.surDeplacement(
-            lNodeSelection,
-            lNodeSelection.frerePrecedent(),
-            true,
-          );
-        } else {
-          this.surDeplacement(
-            lNodeSelection,
-            lNodeSelection.frereSuivant(),
-            false,
-          );
-        }
-        break;
-      }
-    }
-  }
-  _surMouseDownDeploiement(aEvent) {
-    aEvent.data.instance._surMouseDownLibelle(aEvent);
-    aEvent.data.instance._surDeploiement(aEvent);
-  }
-  _surDeploiement(aEvent) {
-    const lNode = aEvent.data.node;
-    if (aEvent.data.instance.donneeTreeView.getAvecDeploiement(lNode)) {
-      lNode.deploye = !lNode.deploye;
-      const lInstance = aEvent.data.instance;
-      $(lNode.DOM.conteneurFils).slideToggle("fast", () => {
-        lInstance.$refreshSelf();
-      });
-      ObjetHtml_1.GHtml.modifierClass(
-        lNode.DOM.deploiement,
-        lNode.deploye
-          ? "Image_DeploiementListe_NonDeploye"
-          : "Image_DeploiementListe_Deploye",
-        lNode.deploye
-          ? "Image_DeploiementListe_Deploye"
-          : "Image_DeploiementListe_NonDeploye",
-      );
-      if (lNode.DOM.image) {
-        ObjetHtml_1.GHtml.setClass(
-          lNode.DOM.image,
-          lInstance.donneeTreeView.getClassIcon(lNode),
-        );
-      }
-    }
-  }
-  _surDblClickImage(event) {
-    this._surDeploiement(event);
-  }
-  _surMouseDownImage(event) {
-    this._surMouseDownLibelle(event);
-  }
-  _surMouseUpImage(aEvent) {
-    this._surMouseUpLibelle(aEvent);
-    ObjetHtml_1.GHtml.setFocus(aEvent.data.node.DOM.libelle, true);
-  }
-  _surMouseOverImage(aEvent) {
-    this._surMouseOverLibelle(aEvent);
-  }
-  _surMouseOutImage(aEvent) {
-    this._surMouseOutLibelle(aEvent);
-  }
-  _surMouseDownLibelle(aEvent) {
-    const lInstance = aEvent.data.instance;
-    lInstance._setSelectionNode(aEvent.data.node);
-    if (
-      GNavigateur.getBoutonSouris(aEvent.originalEvent) !==
-        Enumere_BoutonSouris_1.EGenreBoutonSouris.Droite &&
-      lInstance.donneeTreeView.avecDragNDrop()
-    ) {
-      if (lInstance.donneeTreeView.dragAutorise(aEvent.data.node)) {
-        lInstance._surDragDebut(aEvent.data.node);
-        return false;
-      }
-    }
-  }
-  _surMouseUpLibelle(aEvent) {
-    const lInstance = aEvent.data.instance;
-    if (lInstance._objetDrag && lInstance._objetDrag.visible) {
-      if (
-        lInstance.donneeTreeView.dropAutorise(
-          lInstance._objetDrag.source,
-          aEvent.data.node,
-          null,
-        )
-      ) {
-        lInstance._objetDrag.cible = aEvent.data.node;
-      } else {
-        lInstance._objetDrag.annulerDrop = true;
-      }
-      lInstance._surDragFin();
-    }
-  }
-  _surMouseOverLibelle(aEvent) {
-    const lInstance = aEvent.data.instance;
-    if (lInstance._objetDrag && lInstance._objetDrag.visible) {
-      lInstance._objetDrag.surSurvolDrop = true;
-      if (
-        lInstance.donneeTreeView.dropAutorise(
-          lInstance._objetDrag.source,
-          aEvent.data.node,
-          null,
-        )
-      ) {
-        ObjetStyle_1.GStyle.setStyle(
-          aEvent.data.node.DOM.libelle,
-          lInstance.donneeTreeView.getStyleLibelle(aEvent.data.node, true),
-        );
-        lInstance._objetDrag.setContenuHtml(
-          lInstance.donneeTreeView.getContenuDraggableInclusion(
-            lInstance._objetDrag.source,
-            aEvent.data.node,
-          ),
-        );
-      } else {
-        lInstance._objetDrag.setContenuHtml(
-          lInstance.donneeTreeView.getContenuDraggableInterdit(
-            lInstance._objetDrag.source,
-          ),
-        );
-      }
-    }
-    if (
-      ObjetHint_1.ObjetHint &&
-      lInstance.donneeTreeView.avecHintDeLibelle(aEvent.data.node)
-    ) {
-      lInstance._hintCourant = ObjetHint_1.ObjetHint.start(
-        lInstance.donneeTreeView.getHintDeLibelle(aEvent.data.node),
-      );
-    }
-  }
-  _surMouseOutLibelle(aEvent) {
-    const lInstance = aEvent.data.instance;
-    if (lInstance._objetDrag && lInstance._objetDrag.visible) {
-      delete lInstance._objetDrag.surSurvolDrop;
-      if (
-        lInstance.donneeTreeView.dropAutorise(
-          lInstance._objetDrag.source,
-          aEvent.data.node,
-          null,
-        )
-      ) {
-        lInstance._objetDrag.setContenuHtml(
-          lInstance.donneeTreeView.getContenuDraggableInterdit(
-            lInstance._objetDrag.source,
-          ),
-        );
-        ObjetStyle_1.GStyle.setStyle(
-          aEvent.data.node.DOM.libelle,
-          lInstance.donneeTreeView.getStyleLibelle(aEvent.data.node, false),
-        );
-      } else {
-        lInstance._objetDrag.setContenuHtml(
-          lInstance.donneeTreeView.getContenuDraggableInterdit(
-            lInstance._objetDrag.source,
-          ),
-        );
-      }
-    }
-    if (lInstance._hintCourant) {
-      ObjetHint_1.ObjetHint.stop(lInstance._hintCourant);
-      lInstance._hintCourant = null;
-    }
-  }
-  _surDblClickLibelle(aEvent) {
-    const lInstance = aEvent.data.instance;
-    if (lInstance.donneeTreeView.avecEdition(aEvent.data.node)) {
-      lInstance.demarrerEdition(aEvent.data.node);
-    } else if (
-      lInstance.donneeTreeView.avecEvenementDeGenre(
-        Enumere_EvenementTreeView_1.EGenreEvenementTreeView.selectionDblClick,
-        aEvent.data.node,
-      )
-    ) {
-      lInstance.callback.appel(
-        Enumere_EvenementTreeView_1.EGenreEvenementTreeView.selectionDblClick,
-        aEvent.data.node,
-        true,
-      );
-    }
-  }
-  _surFocusLibelle(aEvent) {
-    const lNode = aEvent.data.instance.donneeTreeView.getSelectionFocus(
-      aEvent.data.node,
-    );
-    aEvent.data.instance.nodeSelectionFocus = lNode;
-  }
-  _surBlurLibelle(aEvent) {
-    aEvent.data.instance.nodeSelectionFocus = null;
-  }
-  _surMouseOverInterLigne(event) {
-    const lInstance = event.data.instance;
-    if (lInstance._objetDrag && lInstance._objetDrag.visible) {
-      lInstance._objetDrag.surSurvolDrop = true;
-      ObjetStyle_1.GStyle.setCouleurFond(this, lInstance.couleurs.bordure);
-      lInstance._objetDrag.setContenuHtml(
-        lInstance.donneeTreeView.getContenuDraggableDeplacement(
-          lInstance._objetDrag.source,
-        ),
-      );
-    }
-  }
-  _surMouseOutInterLigne(event) {
-    const lInstance = event.data.instance;
-    if (lInstance._objetDrag && lInstance._objetDrag.visible) {
-      delete lInstance._objetDrag.surSurvolDrop;
-      ObjetStyle_1.GStyle.setCouleurFond(this, "");
-      lInstance._objetDrag.setContenuHtml(
-        lInstance.donneeTreeView.getContenuDraggableInterdit(
-          lInstance._objetDrag.source,
-        ),
-      );
-    }
-  }
-  _surMouseUpInterLigne(event) {
-    const lInstance = event.data.instance;
-    if (lInstance._objetDrag && lInstance._objetDrag.visible) {
-      lInstance._objetDrag.cible = event.data.node;
-      lInstance._objetDrag.insertionAvant = !event.data.dernierElement;
-      lInstance._surDragFin();
-    }
-  }
-  _surMouseUpLigne(aEvent) {
-    if (
-      GNavigateur.estSourisBoutonDroit() &&
-      aEvent.data.instance.donneeTreeView.avecMenuContextuel(aEvent.data.node)
-    ) {
-      aEvent.data.instance._ouvrirMenuContextuel(aEvent.data.node);
-      aEvent.data.instance._bloquerMenuContextuelTreeView = true;
-    }
-  }
-  _surMouseUpTreeView(event) {
-    const lInstance = event.data.instance;
-    if (
-      !lInstance._bloquerMenuContextuelTreeView &&
-      GNavigateur.estSourisBoutonDroit() &&
-      lInstance.donneeTreeView.avecMenuContextuel(null)
-    ) {
-      lInstance._ouvrirMenuContextuel(null);
-    }
-    delete lInstance._bloquerMenuContextuelTreeView;
-    if (lInstance._objetDrag && lInstance._objetDrag.visible) {
-      lInstance._surDragFin();
-    }
-  }
-  _surMouseEnterTreeView(event) {
-    const lInstance = event.data.instance;
-    if (lInstance._objetDrag && lInstance._objetDrag.visible) {
-      if (lInstance._objetDrag.horsZone) {
-        ObjetHtml_1.GHtml.delClass(
-          lInstance._objetDrag.elementDrag,
-          "Liste_Rouge Blanc",
-        );
-        lInstance._objetDrag.setContenuHtml(
-          lInstance.donneeTreeView.getContenuDraggableInterdit(
-            lInstance._objetDrag.source,
-          ),
-        );
-        lInstance._objetDrag.horsZone = false;
-      }
-      if (
-        !lInstance._objetDrag.surSurvolDrop &&
-        lInstance._objetDrag.source &&
-        lInstance.donneeTreeView.surDeplacement(
-          lInstance._objetDrag.source,
-          null,
-          null,
-        )
-      ) {
-        lInstance._objetDrag.setContenuHtml(
-          lInstance.donneeTreeView.getContenuDraggableInclusion(
-            lInstance._objetDrag.source,
-            null,
-          ),
-        );
-      }
-    }
-  }
-  _surMouseLeaveTreeView(event) {
-    const lInstance = event.data.instance;
-    if (lInstance._objetDrag && lInstance._objetDrag.visible) {
-      const lAvecSuppression = lInstance.donneeTreeView.avecSuppression(
-        lInstance._objetDrag.source,
-      );
-      const lContenu = lAvecSuppression
-        ? lInstance.donneeTreeView.getContenuDraggableSuppression(
-            lInstance._objetDrag.source,
-          )
-        : lInstance.donneeTreeView.getContenuDraggableInterdit(
-            lInstance._objetDrag.source,
-          );
-      if (lAvecSuppression) {
-        ObjetHtml_1.GHtml.addClass(
-          lInstance._objetDrag.elementDrag,
-          "Liste_Rouge Blanc",
-        );
-      }
-      lInstance._objetDrag.setContenuHtml(lContenu);
-      lInstance._objetDrag.horsZone = true;
-    }
-  }
-  _surKeyDownTreeView(event) {
-    const lInstance = event.data.instance;
-    if (!lInstance.donneeTreeView) {
-      return;
-    }
-    let lNode;
-    if (GNavigateur.isToucheSupprimer() && !lInstance._enEdition) {
-      lInstance.surSuppression(lInstance.nodeSelection);
-    } else if (GNavigateur.isToucheFlecheBas()) {
-      lNode = lInstance.donneeTreeView.selectionFocusSuivant(
-        lInstance.nodeSelectionFocus,
-        true,
-      );
-      if (lNode && lNode.DOM.libelle) {
-        lInstance.apiScroll.scrollV.scrollToElement(lNode.DOM.libelle);
-        lInstance.apiScroll.scrollH.scrollToElement(lNode.DOM.libelle);
-        ObjetHtml_1.GHtml.setFocus(lNode.DOM.libelle, true);
-      }
-    } else if (GNavigateur.isToucheFlecheHaut()) {
-      lNode = lInstance.donneeTreeView.selectionFocusSuivant(
-        lInstance.nodeSelectionFocus,
-        false,
-      );
-      if (lNode && lNode.DOM.libelle) {
-        lInstance.apiScroll.scrollToElement(lNode.DOM.libelle);
-        ObjetHtml_1.GHtml.setFocus(lNode.DOM.libelle, true);
-      }
-    } else if (GNavigateur.isToucheSelection()) {
-      lInstance._setSelectionNode(lInstance.nodeSelectionFocus);
-    }
-  }
-  _surMouseMove(event) {
-    if (!event.data.instance.donneeTreeView) {
-      return;
-    }
-    event.data.instance._surDraggableAfficher();
-  }
-  _surMouseUp(event) {
-    if (!event.data.instance.donneeTreeView) {
-      return;
-    }
-    event.data.instance._surDragFin();
-  }
-  _surKeyDownEdition(aEvent) {
-    if (GNavigateur.isToucheRetourChariot()) {
-      aEvent.data.instance.sortirEdition(aEvent.data.node);
-      GNavigateur.stopperEvenement(aEvent.originalEvent);
-    }
-  }
-  _surKeyUpEdition(aEvent) {
-    aEvent.data.instance.enEdition(
-      aEvent.data.node,
-      ObjetHtml_1.GHtml.getValue(this),
-    );
-  }
-  _surBlurEdition(aEvent) {
-    aEvent.data.instance.sortirEdition(aEvent.data.node);
-  }
+	constructor(...aParams) {
+		super(...aParams);
+		this.idConteneur = this.Nom + "_conteneur";
+		this.idScroll = this.Nom + "_scroll";
+		this.idMenuContextuel = this.Nom + ".menuContextuel";
+		this.idDraggable = this.Nom + "_drag";
+		this.idBoutons = this.Nom + "_boutons";
+		if (this.avecEventResizeNavigateur()) {
+			this.ajouterEvenementGlobal(
+				Enumere_Event_1.EEvent.SurPreResize,
+				this._surResize.bind(this, true),
+			);
+			this.ajouterEvenementGlobal(
+				Enumere_Event_1.EEvent.SurPostResize,
+				this._surResize.bind(this, false),
+			);
+		}
+		this.setParametres();
+	}
+	getControleur(aInstance) {
+		return $.extend(true, super.getControleur(aInstance), {
+			scroll: function (api) {
+				aInstance.apiScroll = api;
+			},
+		});
+	}
+	detruireInstances() {}
+	recupererDonnees() {}
+	setParametres() {
+		this.couleurs = GCouleur.liste;
+		this.largeurDeploiement = 8;
+		this.ecartDroitDeploiement = 2;
+		this.largeurDropInterLigne = 200;
+		this.hauteurDropInterLigne = 4;
+	}
+	setDonnees(aDonneeTreeView) {
+		this.donneesRecus = true;
+		this._enEdition = false;
+		this.donneeTreeView = aDonneeTreeView;
+		if (this.donneeTreeView) {
+			this.donneeTreeView.parent = this;
+			this.donneeTreeView.couleurs = this.couleurs;
+			this.donneeTreeView.construireNodes();
+		}
+		this.nodeSelection = null;
+		this.nodeSelectionFocus = null;
+		this._construireBoutons();
+		this.actualiser();
+		this._donneesRecus = true;
+		this._surResize();
+	}
+	surResize() {
+		this._surResize(true);
+		this._surResize(false);
+	}
+	_surResize(aPreResize) {
+		const lClientRect = ObjetPosition_1.GPosition.getClientRect(this.Nom);
+		const lWidth = aPreResize
+			? 50
+			: Math.floor(lClientRect.contentWidth) +
+				(ObjetSupport_1.Support.bordureExterneDIV ? 0 : -2) -
+				(this._avecBoutons
+					? ObjetPosition_1.GPosition.getWidth(this.idBoutons)
+					: 0);
+		const lHeight = aPreResize
+			? 50
+			: Math.floor(lClientRect.contentHeight) +
+				(ObjetSupport_1.Support.bordureExterneDIV ? 0 : -2);
+		if (!aPreResize) {
+			ObjetPosition_1.GPosition.setTaille(this.idScroll, lWidth, lHeight);
+		}
+		if (aPreResize) {
+			ObjetPosition_1.GPosition.setTaille(this.idScroll, lWidth, lHeight);
+		}
+		if (this._objetDrag && aPreResize) {
+			window.clearTimeout(this._timerDrag);
+			ObjetHtml_1.GHtml.setHtml(this._objetDrag.elementDrag, "");
+			ObjetHtml_1.GHtml.setDisplay(this._objetDrag.elementDrag, false);
+			delete this._objetDrag;
+		}
+		this.$refreshSelf();
+	}
+	construireAffichage() {
+		const H = [];
+		H.push('<div class="ObjetTreeView">');
+		H.push(
+			'<div id="',
+			this.idDraggable,
+			'" class="Liste_Suppression Texte10 Gras" style="display:none;"></div>',
+		);
+		H.push('<div class="flex-contain flex-start">');
+		H.push(
+			'<div class="fluid-bloc Maigre" style="',
+			ObjetStyle_1.GStyle.composeCouleurBordure(this.couleurs.bordure, 1),
+			'">',
+		);
+		H.push(
+			'<div ie-scroll="scroll" id="',
+			this.idScroll,
+			'" class="full-size" style="',
+			ObjetStyle_1.GStyle.composeCouleurFond(GCouleur.blanc),
+			"min-height:",
+			ObjetTreeView.CONST_hauteurMin,
+			'px;">',
+		);
+		H.push('<div id="', this.idConteneur, '" class="SansMain">');
+		H.push(this._construireTreeView());
+		H.push("</div>");
+		H.push("</div>");
+		H.push("</div>");
+		H.push(
+			'<div class="fix-bloc boutons-commande p-top" id="' +
+				this.idBoutons +
+				'" style="display:none"></div>',
+		);
+		H.push("</div>");
+		H.push("</div>");
+		return H.join("");
+	}
+	actualiser(aAvecCallbackSelection) {
+		if (!this.donneesRecus) {
+			return;
+		}
+		this._supprimerElementEdition();
+		this._construireTreeView();
+		this.$refreshSelf();
+		this.setSelectionParContenuDeNode(
+			this.nodeSelection,
+			aAvecCallbackSelection,
+		);
+	}
+	_construireBoutons() {
+		if (!this.donneeTreeView) {
+			return;
+		}
+		this._boutons = {
+			avecCreation: this.donneeTreeView.avecBoutonsEvenementDuGenre(
+				Enumere_EvenementTreeView_1.EGenreEvenementTreeView.creation,
+			),
+			avecEdition: this.donneeTreeView.avecBoutonsEvenementDuGenre(
+				Enumere_EvenementTreeView_1.EGenreEvenementTreeView.edition,
+			),
+			avecSuppression: this.donneeTreeView.avecBoutonsEvenementDuGenre(
+				Enumere_EvenementTreeView_1.EGenreEvenementTreeView.suppression,
+			),
+			avecDeplacement: this.donneeTreeView.avecBoutonsEvenementDuGenre(
+				Enumere_EvenementTreeView_1.EGenreEvenementTreeView.deplacement,
+			),
+		};
+		this._avecBoutons = false;
+		for (const i in this._boutons) {
+			if (this._boutons[i]) {
+				this._avecBoutons = true;
+			}
+		}
+		if (!this._avecBoutons) {
+			return;
+		}
+		const H = [];
+		if (this._boutons.avecDeplacement) {
+			H.push('<div id="' + (this.Nom + ".boutonHaut") + '"></div>');
+			H.push('<div id="' + (this.Nom + ".boutonBas") + '"></div>');
+		}
+		if (this._boutons.avecCreation) {
+			H.push('<div id="' + (this.Nom + ".boutonC") + '"></div>');
+		}
+		if (this._boutons.avecEdition) {
+			H.push('<div id="' + (this.Nom + ".boutonE") + '"></div>');
+		}
+		if (this._boutons.avecSuppression) {
+			H.push('<div id="' + (this.Nom + ".boutonS") + '"></div>');
+		}
+		ObjetHtml_1.GHtml.setHtml(this.idBoutons, H.join(""), true);
+		ObjetHtml_1.GHtml.setDisplay(this.idBoutons, true);
+		if (this._boutons.avecCreation) {
+			this.boutonC = new ObjetBoutonTreeView(
+				this.Nom + ".boutonC",
+				this,
+				this._evenementSurBouton,
+			);
+			this.boutonC.setParametres(
+				Enumere_EvenementTreeView_1.EGenreEvenementTreeView.creation,
+				null,
+				this.donneeTreeView.getHintBoutonsEvenementDuGenre(
+					Enumere_EvenementTreeView_1.EGenreEvenementTreeView.creation,
+				),
+			);
+			this.boutonC.initialiser();
+		}
+		if (this._boutons.avecEdition) {
+			this.boutonE = new ObjetBoutonTreeView(
+				this.Nom + ".boutonE",
+				this,
+				this._evenementSurBouton,
+			);
+			this.boutonE.setParametres(
+				Enumere_EvenementTreeView_1.EGenreEvenementTreeView.edition,
+				null,
+				this.donneeTreeView.getHintBoutonsEvenementDuGenre(
+					Enumere_EvenementTreeView_1.EGenreEvenementTreeView.edition,
+				),
+			);
+			this.boutonE.initialiser();
+		}
+		if (this._boutons.avecSuppression) {
+			this.boutonS = new ObjetBoutonTreeView(
+				this.Nom + ".boutonS",
+				this,
+				this._evenementSurBouton,
+			);
+			this.boutonS.setParametres(
+				Enumere_EvenementTreeView_1.EGenreEvenementTreeView.suppression,
+				null,
+				this.donneeTreeView.getHintBoutonsEvenementDuGenre(
+					Enumere_EvenementTreeView_1.EGenreEvenementTreeView.suppression,
+				),
+			);
+			this.boutonS.initialiser();
+		}
+		if (this._boutons.avecDeplacement) {
+			this.boutonHaut = new ObjetBoutonTreeView(
+				this.Nom + ".boutonHaut",
+				this,
+				this._evenementSurBouton,
+			);
+			this.boutonHaut.setParametres(
+				Enumere_EvenementTreeView_1.EGenreEvenementTreeView.deplacement,
+				true,
+				this.donneeTreeView.getHintBoutonsEvenementDuGenre(
+					Enumere_EvenementTreeView_1.EGenreEvenementTreeView.deplacement,
+					true,
+				),
+			);
+			this.boutonHaut.initialiser();
+			this.boutonBas = new ObjetBoutonTreeView(
+				this.Nom + ".boutonBas",
+				this,
+				this._evenementSurBouton,
+			);
+			this.boutonBas.setParametres(
+				Enumere_EvenementTreeView_1.EGenreEvenementTreeView.deplacement,
+				false,
+				this.donneeTreeView.getHintBoutonsEvenementDuGenre(
+					Enumere_EvenementTreeView_1.EGenreEvenementTreeView.deplacement,
+				),
+			);
+			this.boutonBas.initialiser();
+		}
+		this._actualiserBoutons();
+	}
+	_actualiserBoutons() {
+		let lNodeSelection = this.nodeSelection;
+		let lMultiSelection = false;
+		if (MethodesObjet_1.MethodesObjet.isArray(this.nodeSelection)) {
+			lNodeSelection = this.nodeSelection[0];
+			lMultiSelection = this.nodeSelection.length > 1;
+		}
+		if (this._boutons.avecCreation) {
+			this.boutonC.setActif(
+				!lMultiSelection &&
+					this.donneeTreeView.avecCreation(lNodeSelection, null) &&
+					this.donneeTreeView.avecMenuContextuelSurBouton(
+						lNodeSelection,
+						Enumere_EvenementTreeView_1.EGenreEvenementTreeView.creation,
+					),
+			);
+		}
+		if (this._boutons.avecEdition) {
+			this.boutonE.setActif(
+				lNodeSelection &&
+					!lMultiSelection &&
+					this.donneeTreeView.avecEdition(lNodeSelection),
+			);
+		}
+		if (this._boutons.avecSuppression) {
+			this.boutonS.setActif(
+				lNodeSelection && this.donneeTreeView.avecSuppression(lNodeSelection),
+			);
+		}
+		if (this._boutons.avecDeplacement) {
+			let lDeplacementHautActif = false;
+			let lDeplacementBasActif = false;
+			const lDragAutorise =
+				lNodeSelection &&
+				!lMultiSelection &&
+				this.donneeTreeView.avecDragNDrop() &&
+				this.donneeTreeView.dragAutorise(lNodeSelection);
+			if (lDragAutorise) {
+				lDeplacementHautActif = this.donneeTreeView.dropAutorise(
+					lNodeSelection,
+					lNodeSelection.frerePrecedent(),
+					true,
+				);
+				lDeplacementBasActif = this.donneeTreeView.dropAutorise(
+					lNodeSelection,
+					lNodeSelection.frereSuivant(),
+					false,
+				);
+			}
+			this.boutonHaut.setActif(lDeplacementHautActif);
+			this.boutonBas.setActif(lDeplacementBasActif);
+		}
+	}
+	_construireTreeView() {
+		if (!this.donneesRecus) {
+			return;
+		}
+		const lConteneur = ObjetHtml_1.GHtml.getElement(this.idConteneur);
+		ObjetHtml_1.GHtml.setHtml(lConteneur, "");
+		if (this.donneeTreeView && this.donneeTreeView.listeNodes) {
+			const lListeRacines = this.donneeTreeView.listeRacines();
+			for (let i = 0, lnb = lListeRacines.length; i < lnb; i++) {
+				this._construireLigneDeNode(lConteneur, lListeRacines[i]);
+			}
+		}
+		const lEventMap = {
+			mouseup: this._surMouseUpTreeView.bind(this),
+			keydown: this._surKeyDownTreeView.bind(this),
+			mouseenter: this._surMouseEnterTreeView.bind(this),
+			mouseleave: this._surMouseLeaveTreeView.bind(this),
+		};
+		$("#" + this.idConteneur.escapeJQ())
+			.off()
+			.on(lEventMap, { instance: this });
+	}
+	_construireLigneDeNode(aElementConteneur, aNode) {
+		let lTdImage;
+		let lDiv = null;
+		let lEventMap;
+		aNode.DOM = {};
+		const lNiveau = aNode.getNiveau();
+		const lLibelle = this.donneeTreeView.getLibelle(aNode);
+		const lPaddingLeft = this.donneeTreeView.getIndent(aNode) * lNiveau;
+		const lStyleVisible = this.donneeTreeView.getVisible(aNode)
+			? ""
+			: "display:none";
+		const lClassIcon = this.donneeTreeView.getClassIcon(aNode);
+		const lDivLigne = document.createElement("div");
+		ObjetHtml_1.GHtml.setClass(lDivLigne, "NoWrap");
+		const lStyle =
+			(lPaddingLeft > 0 ? "padding-left:" + lPaddingLeft + "px;" : "") +
+			lStyleVisible;
+		if (lStyle) {
+			ObjetStyle_1.GStyle.setStyle(lDivLigne, lStyle);
+		}
+		$(lDivLigne).mouseup(
+			{ instance: this, node: aNode },
+			this._surMouseUpLigne,
+		);
+		aNode.DOM.dropInterLigne = lDivLigne;
+		const lTdDeploiement = document.createElement("div");
+		ObjetHtml_1.GHtml.setClass(
+			lTdDeploiement,
+			"InlineBlock AlignementMilieuVertical",
+		);
+		ObjetStyle_1.GStyle.setStyle(
+			lTdDeploiement,
+			ObjetStyle_1.GStyle.composeWidth(this.largeurDeploiement) +
+				"padding-right:" +
+				this.ecartDroitDeploiement +
+				"px;",
+		);
+		if (this.donneeTreeView.getAvecDeploiement(aNode)) {
+			lDiv = document.createElement("div");
+			ObjetHtml_1.GHtml.setClass(
+				lDiv,
+				"AvecMain " +
+					(aNode.deploye
+						? "Image_DeploiementListe_Deploye"
+						: "Image_DeploiementListe_NonDeploye"),
+			);
+			$(lDiv).mousedown(
+				{ instance: this, node: aNode },
+				this._surMouseDownDeploiement,
+			);
+			ObjetHtml_1.GHtml.setTexte(lDiv, " ");
+			aNode.DOM.deploiement = lDiv;
+			lTdDeploiement.appendChild(lDiv);
+		}
+		lDivLigne.appendChild(lTdDeploiement);
+		if (lClassIcon) {
+			lTdImage = document.createElement("div");
+			ObjetHtml_1.GHtml.setClass(
+				lTdImage,
+				"InlineBlock AlignementMilieuVertical",
+			);
+			ObjetStyle_1.GStyle.setStyle(
+				lTdImage,
+				"padding-right : 2px; font-size: 1.1em;",
+			);
+			lDiv = document.createElement("i");
+			ObjetHtml_1.GHtml.setClass(lDiv, lClassIcon);
+			lEventMap = {
+				dblclick: this._surDblClickImage.bind(this),
+				mousedown: this._surMouseDownImage.bind(this),
+				mouseover: this._surMouseOverImage.bind(this),
+				mouseout: this._surMouseOutImage.bind(this),
+				mouseup: this._surMouseUpImage.bind(this),
+			};
+			aNode.DOM.image = lDiv;
+			$(lTdImage).on(lEventMap, { instance: this, node: aNode });
+			lTdImage.appendChild(lDiv);
+			lDivLigne.appendChild(lTdImage);
+		}
+		const lDivConteneur = $(
+			'<div class="InlineBlock AlignementMilieuVertical" style="margin:1px">',
+		).get(0);
+		lDiv = document.createElement("div");
+		const lStyleLibelle = this.donneeTreeView.getStyleLibelle(aNode);
+		const lClassLibelle = this.donneeTreeView.getClassLibelle(aNode);
+		ObjetHtml_1.GHtml.setClass(lDiv, lClassLibelle ? lClassLibelle : "");
+		if (lStyleLibelle) {
+			ObjetStyle_1.GStyle.setStyle(lDiv, lStyleLibelle);
+		}
+		ObjetHtml_1.GHtml.setHtml(lDiv, lLibelle, true);
+		lDiv.tabIndex = 1;
+		lEventMap = {
+			mousedown: this._surMouseDownLibelle.bind(this),
+			mouseover: this._surMouseOverLibelle.bind(this),
+			mouseout: this._surMouseOutLibelle.bind(this),
+			mouseup: this._surMouseUpLibelle.bind(this),
+			dblclick: this._surDblClickLibelle.bind(this),
+			focus: this._surFocusLibelle.bind(this),
+			blur: this._surBlurLibelle.bind(this),
+		};
+		$(lDiv).on(lEventMap, { instance: this, node: aNode });
+		aNode.DOM.libelle = lDiv;
+		lDivConteneur.appendChild(lDiv);
+		lDivLigne.appendChild(lDivConteneur);
+		aElementConteneur.appendChild(lDivLigne);
+		const lListeFils = aNode.listeFils();
+		if (lListeFils.length > 0) {
+			lDiv = document.createElement("div");
+			if (!aNode.deploye) {
+				ObjetHtml_1.GHtml.setDisplay(lDiv, false);
+			}
+			aNode.DOM.conteneurFils = lDiv;
+			for (let i = 0, lNb = lListeFils.length; i < lNb; i++) {
+				this._construireLigneDeNode(lDiv, lListeFils[i]);
+			}
+			aElementConteneur.appendChild(lDiv);
+		}
+	}
+	_construireInterLigneDeNode(aObjetDrag) {
+		this._detruireInterLignesDrop(aObjetDrag);
+		aObjetDrag.listeNoeudsDOM = [];
+		const lNode = aObjetDrag.source;
+		const lListeNodes = lNode.pere
+			? lNode.pere.listeFils()
+			: lNode.listeRacines();
+		const lEventMap = {
+			mouseover: this._surMouseOverInterLigne,
+			mouseout: this._surMouseOutInterLigne,
+			mouseup: this._surMouseUpInterLigne,
+		};
+		let lNodeCourant, lDiv, lDivInterligne, lDernierDecendant;
+		for (let i = 0; i < lListeNodes.length; i++) {
+			lNodeCourant = lListeNodes[i];
+			lDiv = document.createElement("div");
+			aObjetDrag.listeNoeudsDOM.push(lDiv);
+			ObjetStyle_1.GStyle.setStyle(
+				lDiv,
+				"position:relative; height:0px; top:0px; font-size:0px;",
+			);
+			ObjetHtml_1.GHtml.insererElementDOM(
+				lNodeCourant.DOM.dropInterLigne,
+				lDiv,
+				true,
+			);
+			if (
+				this.donneeTreeView.dropAutorise(aObjetDrag.source, lNodeCourant, true)
+			) {
+				lDivInterligne = document.createElement("div");
+				ObjetStyle_1.GStyle.setStyle(
+					lDivInterligne,
+					this.getStyleInterLigne(-1),
+				);
+				ObjetHtml_1.GHtml.insererElementDOM(lDiv, lDivInterligne);
+				$(lDivInterligne).on(lEventMap, {
+					instance: this,
+					node: lNodeCourant,
+					dernierElement: false,
+				});
+			}
+			if (
+				i === lListeNodes.length - 1 &&
+				this.donneeTreeView.dropAutorise(aObjetDrag.source, lNodeCourant, false)
+			) {
+				lDivInterligne = document.createElement("div");
+				lDernierDecendant =
+					this.donneeTreeView.getDifferenceIndexDernierDescendantVisible(
+						lNodeCourant,
+					);
+				const lTop =
+					ObjetPosition_1.GPosition.getHeight(lNodeCourant.DOM.dropInterLigne) *
+					(lDernierDecendant + 1);
+				ObjetStyle_1.GStyle.setStyle(
+					lDivInterligne,
+					this.getStyleInterLigne(lTop),
+				);
+				ObjetHtml_1.GHtml.insererElementDOM(lDiv, lDivInterligne);
+				$(lDivInterligne).on(lEventMap, {
+					instance: this,
+					node: lNodeCourant,
+					dernierElement: true,
+				});
+			}
+		}
+	}
+	getStyleInterLigne(aTop) {
+		return (
+			"position:absolute; z-index:1;" +
+			"height:" +
+			this.hauteurDropInterLigne +
+			"px;" +
+			"top:" +
+			aTop +
+			"px;" +
+			"left:" +
+			(this.largeurDeploiement + this.ecartDroitDeploiement) +
+			"px;" +
+			"width:" +
+			this.largeurDropInterLigne +
+			"px;"
+		);
+	}
+	_detruireInterLignesDrop(aObjetDrag) {
+		if (!aObjetDrag || !aObjetDrag.listeNoeudsDOM) {
+			return;
+		}
+		for (let i = 0; i < aObjetDrag.listeNoeudsDOM.length; i++) {
+			const lNoeud = aObjetDrag.listeNoeudsDOM[i];
+			ObjetHtml_1.GHtml.supprimerElementDOM(lNoeud);
+		}
+		delete aObjetDrag.listeNoeudsDOM;
+	}
+	_surDragDebut(aNode) {
+		if (!aNode) {
+			return;
+		}
+		this._posSourisX = GNavigateur.pointerX;
+		this._posSourisY = GNavigateur.pointerY;
+		const lDraggable = ObjetHtml_1.GHtml.getElement(this.idDraggable);
+		ObjetHtml_1.GHtml.delClass(lDraggable, "Liste_Rouge Blanc");
+		ObjetStyle_1.GStyle.setVisible(lDraggable, false);
+		ObjetHtml_1.GHtml.setDisplay(lDraggable, true);
+		const lPositionX = Math.min(
+			this._posSourisX,
+			GNavigateur.clientL - ObjetPosition_1.GPosition.getWidth(lDraggable),
+		);
+		ObjetPosition_1.GPosition.setPosition(
+			lDraggable,
+			lPositionX + 8,
+			this._posSourisY + 5,
+			true,
+		);
+		GNavigateur.debDeplacement(this, lDraggable);
+		this._objetDrag = {
+			elementDrag: lDraggable,
+			source: aNode,
+			visible: false,
+			cible: null,
+			insertionAvant: null,
+			setContenuHtml: function (aContenu) {
+				if (this.contenuHtml === aContenu) {
+					return;
+				}
+				this.contenuHtml = aContenu;
+				ObjetHtml_1.GHtml.setHtml(this.elementDrag, this.contenuHtml, true);
+			},
+		};
+		this._objetDrag.setContenuHtml(
+			this.donneeTreeView.getContenuDraggableInterdit(this._objetDrag.source),
+		);
+		window.clearTimeout(this._timerDrag);
+		this._timerDrag = setTimeout(
+			this._surDraggableAfficher.bind(this, true),
+			500,
+		);
+		$(document)
+			.off("mouseup.treeview ", this._surMouseUp)
+			.off("mousemove.treeview ", this._surMouseMove)
+			.on(
+				{
+					"mouseup.treeview": this._surMouseUp,
+					"mousemove.treeview": this._surMouseMove,
+				},
+				{ instance: this },
+			);
+	}
+	_surDraggableAfficher(AAfficher) {
+		if (
+			this._objetDrag &&
+			!this._objetDrag.visible &&
+			GNavigateur.SourisBouton
+		) {
+			if (
+				AAfficher ||
+				(this._posSourisX - GNavigateur.pointerX) *
+					(this._posSourisX - GNavigateur.pointerX) +
+					(this._posSourisY - GNavigateur.pointerY) *
+						(this._posSourisY - GNavigateur.pointerY) >
+					20
+			) {
+				ObjetStyle_1.GStyle.setVisible(this._objetDrag.elementDrag, true);
+				this._objetDrag.visible = true;
+				this._construireInterLigneDeNode(this._objetDrag);
+				if (
+					this.donneeTreeView.avecEvenementDeGenre(
+						Enumere_EvenementTreeView_1.EGenreEvenementTreeView.dragDebut,
+						this._objetDrag.source,
+					)
+				) {
+					this.callback.appel(
+						Enumere_EvenementTreeView_1.EGenreEvenementTreeView.dragDebut,
+						this._objetDrag,
+					);
+				}
+			}
+		}
+	}
+	_surDragFin() {
+		$(document)
+			.off("mouseup.treeview ", this._surMouseUp)
+			.off("mousemove.treeview ", this._surMouseMove);
+		if (this._objetDrag && this._objetDrag.visible) {
+			window.clearTimeout(this._timerDrag);
+			ObjetHtml_1.GHtml.setHtml(this._objetDrag.elementDrag, "");
+			ObjetHtml_1.GHtml.setDisplay(this._objetDrag.elementDrag, false);
+			if (
+				this.donneeTreeView.avecEvenementDeGenre(
+					Enumere_EvenementTreeView_1.EGenreEvenementTreeView.dragFin,
+					this._objetDrag.source,
+				)
+			) {
+				this.callback.appel(
+					Enumere_EvenementTreeView_1.EGenreEvenementTreeView.dragFin,
+					this._objetDrag,
+				);
+			}
+			if (this._objetDrag.horsZone && this._objetDrag.source) {
+				this.surSuppression(this._objetDrag.source);
+			} else if (this._objetDrag.source && !this._objetDrag.annulerDrop) {
+				this.surDeplacement(
+					this._objetDrag.source,
+					this._objetDrag.cible,
+					this._objetDrag.insertionAvant,
+				);
+			}
+		}
+		this._detruireInterLignesDrop(this._objetDrag);
+		delete this._objetDrag;
+	}
+	surDeplacement(aNodeSource, aNodeCible, aInsertionAvant) {
+		if (
+			this.donneeTreeView.surDeplacement(
+				aNodeSource,
+				aNodeCible,
+				aInsertionAvant,
+			)
+		) {
+			this.donneeTreeView.construireNodes();
+			this.actualiser(false);
+			if (this.donneeTreeView.avecEtatSaisie()) {
+				this.setEtatSaisie(true);
+			}
+			if (
+				this.donneeTreeView.avecEvenementDeGenre(
+					Enumere_EvenementTreeView_1.EGenreEvenementTreeView.deplacement,
+					aNodeSource,
+				)
+			) {
+				this.callback.appel(
+					Enumere_EvenementTreeView_1.EGenreEvenementTreeView.deplacement,
+					aNodeSource,
+				);
+			}
+		}
+	}
+	_setSelectionNode(aNode) {
+		if (this._enEdition) {
+			return;
+		}
+		let lNodeSelection = this.donneeTreeView.getSelection(aNode);
+		if (this.donneeTreeView.avecMultiSelection()) {
+			if (!MethodesObjet_1.MethodesObjet.isArray(lNodeSelection)) {
+				lNodeSelection = [lNodeSelection];
+			}
+			if (this.nodeSelection) {
+				if (GNavigateur.CtrlTouche) {
+					const lNodes = this.nodeSelection;
+					for (let i = 0; i < lNodes.length; i++) {
+						const lIndex = lNodeSelection.indexOf(lNodes[i]);
+						if (lIndex >= 0) {
+							MethodesTableau_1.MethodesTableau.supprimerElement(
+								lNodeSelection,
+								lIndex,
+							);
+						} else {
+							lNodeSelection.push(lNodes[i]);
+						}
+					}
+				}
+			}
+		}
+		this._appliquerSelection(lNodeSelection, true, true);
+	}
+	_appliquerSelection(aNode, aInteractionUtilisateur, aAvecCallbackSelection) {
+		if (this.donneeTreeView.avecMultiSelection()) {
+			let lNodes = aNode;
+			if (!MethodesObjet_1.MethodesObjet.isArray(lNodes)) {
+				lNodes = [lNodes];
+			}
+			if (this.nodeSelection) {
+				const lNodes = this.nodeSelection;
+				for (let i = 0; i < lNodes.length; i++) {
+					if (!lNodes.includes(lNodes[i])) {
+						this.setDeselectionNode(lNodes[i]);
+					}
+				}
+			}
+			this.nodeSelection = [];
+			if (lNodes) {
+				for (let i = 0; i < lNodes.length; i++) {
+					if (lNodes[i]) {
+						this.nodeSelection.push(lNodes[i]);
+						ObjetStyle_1.GStyle.setStyle(
+							lNodes[i].DOM.libelle,
+							this.donneeTreeView.getStyleLibelle(lNodes[i], true),
+						);
+					}
+				}
+			}
+		} else {
+			const lNode = aNode;
+			if (this.nodeSelection && !this.nodeSelection.identique(lNode)) {
+				this.setDeselectionNode(this.nodeSelection);
+			}
+			this.nodeSelection = lNode;
+			if (lNode) {
+				ObjetStyle_1.GStyle.setStyle(
+					lNode.DOM.libelle,
+					this.donneeTreeView.getStyleLibelle(lNode, true),
+				);
+			}
+		}
+		this._actualiserBoutons();
+		if (
+			aAvecCallbackSelection &&
+			this.donneeTreeView.avecEvenementDeGenre(
+				Enumere_EvenementTreeView_1.EGenreEvenementTreeView.selection,
+				this.nodeSelection,
+			)
+		) {
+			this.callback.appel(
+				Enumere_EvenementTreeView_1.EGenreEvenementTreeView.selection,
+				this.nodeSelection,
+				aInteractionUtilisateur,
+			);
+		}
+	}
+	setSelectionParContenuDeNode(aNode, aAvecCallbackSelection) {
+		if (!aNode) {
+			this._appliquerSelection(null, false, aAvecCallbackSelection);
+		} else {
+			if (this.donneeTreeView.avecMultiSelection()) {
+				let lNodes = aNode;
+				if (!MethodesObjet_1.MethodesObjet.isArray(lNodes)) {
+					lNodes = [lNodes];
+				}
+				const lNodesSelection = [];
+				for (let i = 0; i < lNodes.length; i++) {
+					const lNode = this.donneeTreeView.getNodeParContenu(
+						lNodes[i].contenu,
+					);
+					if (lNode) {
+						lNodesSelection.push(lNode);
+					}
+				}
+				this._appliquerSelection(
+					lNodesSelection,
+					false,
+					aAvecCallbackSelection,
+				);
+			} else {
+				this._appliquerSelection(
+					this.donneeTreeView.getNodeParContenu(aNode.contenu),
+					false,
+					aAvecCallbackSelection,
+				);
+			}
+		}
+	}
+	setDeselectionNode(aNode) {
+		if (aNode) {
+			ObjetStyle_1.GStyle.setStyle(
+				aNode.DOM.libelle,
+				this.donneeTreeView.getStyleLibelle(aNode, false),
+			);
+		}
+	}
+	getNodeSelection() {
+		return this.nodeSelection;
+	}
+	getOrdreSelection() {
+		const lResult = [];
+		if (this.nodeSelection) {
+			let lNodes = this.nodeSelection;
+			if (!MethodesObjet_1.MethodesObjet.isArray(lNodes)) {
+				lNodes = [lNodes];
+			}
+			for (let i = 0; i < lNodes.length; i++) {
+				const lIndex = this.donneeTreeView.listeNodes.indexOf(lNodes[i]);
+				if (lIndex >= 0) {
+					lResult.push(lIndex);
+				}
+			}
+		}
+		return lResult;
+	}
+	setSelectionParOrdre(aOrdres, aAvecCallbackSelection) {
+		if (aOrdres === null || aOrdres === undefined) {
+			this._appliquerSelection(null, false, aAvecCallbackSelection);
+		} else {
+			if (!MethodesObjet_1.MethodesObjet.isArray(aOrdres)) {
+				aOrdres = [aOrdres];
+			}
+			let lNode;
+			if (this.donneeTreeView.avecMultiSelection()) {
+				const lNodesSelection = [];
+				for (let i = 0; i < aOrdres.length; i++) {
+					lNode = this.donneeTreeView.listeNodes[aOrdres[i]];
+					if (lNode) {
+						lNodesSelection.push(lNode);
+					}
+				}
+				this._appliquerSelection(
+					lNodesSelection,
+					false,
+					aAvecCallbackSelection,
+				);
+			} else {
+				lNode = this.donneeTreeView.listeNodes[aOrdres[0]];
+				this._appliquerSelection(lNode, false, aAvecCallbackSelection);
+			}
+		}
+	}
+	_ouvrirMenuContextuel(aNode, aSurBouton, aGenreEvenement) {
+		if (this.menuContextuel) {
+			this.menuContextuel.free();
+		}
+		this.menuContextuel = new ObjetMenuContextuel_1.ObjetMenuContextuel(
+			this.idMenuContextuel,
+			null,
+			this,
+			this._evenementMenuContextuel.bind(this, aNode),
+		);
+		IEZoneFenetre_1.ZoneFenetre.ajouterFenetre(this.menuContextuel.getNom());
+		if (!aSurBouton) {
+			this.donneeTreeView.initialisationMenuContextuel(
+				this.menuContextuel,
+				aNode,
+			);
+		} else {
+			this.donneeTreeView.initialisationMenuContextuelSurBouton(
+				this.menuContextuel,
+				aNode,
+				aGenreEvenement,
+			);
+		}
+		if (!this.menuContextuel.contientAuMoinsUneLigne()) {
+			this.menuContextuel.free();
+			delete this.menuContextuel;
+		}
+	}
+	_evenementMenuContextuel(aNode, aLigne) {
+		this.menuContextuel.free();
+		ObjetHtml_1.GHtml.setHtml(this.menuContextuel.getNom(), "");
+		delete this.menuContextuel;
+		const lInfosMenuContextuel = this.donneeTreeView.evenementMenuContextuel(
+			aNode,
+			aLigne,
+		);
+		if (lInfosMenuContextuel) {
+			switch (lInfosMenuContextuel.evenementTreeView) {
+				case Enumere_EvenementTreeView_1.EGenreEvenementTreeView.suppression: {
+					this.surSuppression(aNode);
+					return;
+				}
+				case Enumere_EvenementTreeView_1.EGenreEvenementTreeView.edition: {
+					this.demarrerEdition(aNode);
+					return;
+				}
+				case Enumere_EvenementTreeView_1.EGenreEvenementTreeView.creation: {
+					this.demarrerCreation(
+						lInfosMenuContextuel.nodePere,
+						lInfosMenuContextuel.contenu,
+					);
+					return;
+				}
+			}
+			if (
+				lInfosMenuContextuel.avecEtatSaisie &&
+				this.donneeTreeView.avecEtatSaisie()
+			) {
+				this.setEtatSaisie(true);
+			}
+			if (lInfosMenuContextuel.avecActualisation) {
+				this.donneeTreeView.construireNodes();
+				this.actualiser(true);
+			}
+		}
+		if (
+			this.donneeTreeView.avecEvenementDeGenre(
+				Enumere_EvenementTreeView_1.EGenreEvenementTreeView.menuContextuel,
+				aNode,
+			)
+		) {
+			this.callback.appel(
+				Enumere_EvenementTreeView_1.EGenreEvenementTreeView.menuContextuel,
+				aNode,
+				true,
+				aLigne,
+			);
+		}
+	}
+	demarrerCreation(aNodePere, aContenu) {
+		if (!this.donneeTreeView.avecCreation(aNodePere, aContenu)) {
+			return;
+		}
+		if (this.donneeTreeView.surCreation(aNodePere, aContenu)) {
+			this.donneeTreeView.construireNodes();
+			this.actualiser(false);
+			if (this.donneeTreeView.avecEtatSaisie()) {
+				this.setEtatSaisie(true);
+			}
+			const lNode = this.donneeTreeView.getNodeParContenu(aContenu);
+			this._appliquerSelection(lNode, false, true);
+			if (
+				this.donneeTreeView.avecEvenementDeGenre(
+					Enumere_EvenementTreeView_1.EGenreEvenementTreeView.creation,
+					lNode,
+				)
+			) {
+				this.callback.appel(
+					Enumere_EvenementTreeView_1.EGenreEvenementTreeView.creation,
+					lNode,
+				);
+			}
+			if (lNode && this.donneeTreeView.avecEditionApresCreation(lNode)) {
+				this.demarrerEdition(lNode);
+			}
+		}
+	}
+	demarrerEdition(aNode) {
+		if (!this.donneeTreeView.avecEdition(aNode)) {
+			return;
+		}
+		this._supprimerElementEdition();
+		this.apiScroll.scrollToElement(aNode.DOM.libelle);
+		this.conteneurEdition = ObjetHtml_1.GHtml.htmlToDOM(
+			IE.jsx.str("div", { class: "Liste_Cellule_ZoneTexte Texte10 FondBlanc" }),
+		);
+		ObjetHtml_1.GHtml.getElement(this.Nom).appendChild(this.conteneurEdition);
+		const lLibelle = this.donneeTreeView.getLibelleNode(aNode);
+		aNode._valeurEdition = lLibelle;
+		this.textAreaEdition = ObjetHtml_1.GHtml.htmlToDOM(
+			IE.jsx.str("input", { value: lLibelle, class: "Texte10" }),
+		);
+		const lWidth =
+			ObjetChaine_1.GChaine.getLongueurChaineDansDiv(
+				ObjetChaine_1.GChaine.enleverEntites(lLibelle),
+				10,
+				false,
+			) + 10;
+		ObjetStyle_1.GStyle.setStyle(
+			this.textAreaEdition,
+			ObjetStyle_1.GStyle.composeCouleurBordure(
+				this.couleurs.editable.getBordure(false),
+				1,
+			) +
+				ObjetStyle_1.GStyle.composeHeight(
+					this.donneeTreeView.getHauteurLigneMin(),
+				) +
+				ObjetStyle_1.GStyle.composeWidth(lWidth),
+		);
+		this.conteneurEdition.appendChild(this.textAreaEdition);
+		const lEventMap = {
+			keydown: this._surKeyDownEdition,
+			"input keyup paste cut change": this._surKeyUpEdition,
+			blur: this._surBlurEdition,
+			destroyed(aEvent) {
+				aEvent.data.instance.sortirEdition(aEvent.data.node);
+				aEvent.data.instance.setDeselectionNode(aEvent.data.node);
+			},
+		};
+		$(this.textAreaEdition).on(lEventMap, { instance: this, node: aNode });
+		this.apiScroll.actualiser();
+		ObjetStyle_1.GStyle.setVisible(aNode.DOM.libelle, false);
+		const lScroll = ObjetHtml_1.GHtml.getElement(this.idScroll);
+		ObjetPosition_1.GPosition.placer(
+			this.conteneurEdition,
+			ObjetPosition_1.GPosition.getLeft(aNode.DOM.libelle) -
+				lScroll.scrollLeft -
+				1,
+			ObjetPosition_1.GPosition.getTop(aNode.DOM.libelle) - lScroll.scrollTop,
+		);
+		$(this.textAreaEdition).one(
+			"focus",
+			{ instance: this, node: aNode },
+			() => {
+				this._enEdition = true;
+				if (
+					this.donneeTreeView.avecEvenementDeGenre(
+						Enumere_EvenementTreeView_1.EGenreEvenementTreeView.editionDebut,
+						aNode,
+					)
+				) {
+					this.callback.appel(
+						Enumere_EvenementTreeView_1.EGenreEvenementTreeView.editionDebut,
+						aNode,
+					);
+				}
+				setTimeout(() => {
+					$("#" + this.idScroll.escapeJQ()).on(
+						"scroll.treeview",
+						{ instance: this, node: aNode },
+						this._surBlurEdition,
+					);
+				}, 100);
+			},
+		);
+		ObjetHtml_1.GHtml.setFocusEdit(this.textAreaEdition);
+		ObjetHtml_1.GHtml.setSelectionEdit(this.textAreaEdition);
+	}
+	enEdition(aNode, aValue) {
+		const lValue = this.donneeTreeView.surEdition(aNode, aValue);
+		aNode._valeurEdition = lValue;
+		if (lValue !== ObjetHtml_1.GHtml.getValue(this.textAreaEdition)) {
+			ObjetHtml_1.GHtml.setValue(this.textAreaEdition, lValue);
+		}
+		ObjetPosition_1.GPosition.setWidth(
+			this.textAreaEdition,
+			ObjetChaine_1.GChaine.getLongueurChaineDansDiv(
+				ObjetChaine_1.GChaine.enleverEntites(lValue),
+				10,
+				false,
+			) + 10,
+		);
+		this.$refreshSelf();
+	}
+	sortirEdition(aNode) {
+		this._supprimerElementEdition();
+		ObjetStyle_1.GStyle.setVisible(aNode.DOM.libelle, true);
+		this.modifierLibelleNode(aNode, this.donneeTreeView.getLibelle(aNode));
+		if (this._enEdition) {
+			this._enEdition = false;
+			const lValeurEdition = aNode._valeurEdition;
+			delete aNode._valeurEdition;
+			if (this.donneeTreeView.surEditionFin(aNode, lValeurEdition)) {
+				if (this.donneeTreeView.avecEtatSaisie()) {
+					this.setEtatSaisie(true);
+				}
+				this.actualiser(true);
+				if (
+					this.donneeTreeView.avecEvenementDeGenre(
+						Enumere_EvenementTreeView_1.EGenreEvenementTreeView.edition,
+						aNode,
+					)
+				) {
+					this.callback.appel(
+						Enumere_EvenementTreeView_1.EGenreEvenementTreeView.edition,
+						aNode,
+					);
+				}
+			}
+		}
+		this.$refreshSelf();
+		if (
+			this.donneeTreeView.avecEvenementDeGenre(
+				Enumere_EvenementTreeView_1.EGenreEvenementTreeView.editionFin,
+				aNode,
+			)
+		) {
+			this.callback.appel(
+				Enumere_EvenementTreeView_1.EGenreEvenementTreeView.editionFin,
+				aNode,
+			);
+		}
+	}
+	_supprimerElementEdition() {
+		$("#" + this.idScroll.escapeJQ()).off("scroll.treeview");
+		if (!ObjetHtml_1.GHtml.estElement(this.conteneurEdition)) {
+			return;
+		}
+		ObjetHtml_1.GHtml.supprimerElementDOM(this.conteneurEdition);
+		this.conteneurEdition = null;
+		this.textAreaEdition = null;
+	}
+	modifierLibelleNode(aNode, aValeur) {
+		if (aNode && aNode.DOM && aNode.DOM.libelle) {
+			ObjetHtml_1.GHtml.setHtml(aNode.DOM.libelle, aValeur);
+			this.$refreshSelf();
+		}
+	}
+	surSuppression(aNode) {
+		if (!aNode) {
+			return;
+		}
+		if (this.donneeTreeView.avecSuppression(aNode)) {
+			if (this.donneeTreeView.surSuppressionConfirmation(aNode)) {
+				const lThis = this;
+				GApplication.getMessage().afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+					message: this.donneeTreeView.getMessageSuppressionConfirmation(aNode),
+					callback: function (aAccepte) {
+						lThis._surSuppressionApresConfirmation(aAccepte, aNode);
+					},
+				});
+			} else {
+				this._surSuppressionApresConfirmation(
+					Enumere_Action_1.EGenreAction.Valider,
+					aNode,
+				);
+			}
+		}
+	}
+	_surSuppressionApresConfirmation(AAccepte, aNode) {
+		if (AAccepte === Enumere_Action_1.EGenreAction.Valider) {
+			this.donneeTreeView.surSuppression(aNode);
+			this.donneeTreeView.construireNodes();
+			this.actualiser(true);
+			if (
+				this.donneeTreeView.avecEvenementDeGenre(
+					Enumere_EvenementTreeView_1.EGenreEvenementTreeView.suppression,
+					aNode,
+				)
+			) {
+				this.callback.appel(
+					Enumere_EvenementTreeView_1.EGenreEvenementTreeView.suppression,
+					aNode,
+				);
+			}
+			if (this.donneeTreeView.avecEtatSaisie()) {
+				this.setEtatSaisie(true);
+			}
+		}
+	}
+	_evenementSurBouton(aGenreEvenement, aDeplacementHaut) {
+		let lNodeSelection = this.nodeSelection;
+		if (MethodesObjet_1.MethodesObjet.isArray(this.nodeSelection)) {
+			lNodeSelection = this.nodeSelection[0];
+		}
+		switch (aGenreEvenement) {
+			case Enumere_EvenementTreeView_1.EGenreEvenementTreeView.creation: {
+				if (
+					this.donneeTreeView.avecMenuContextuelSurBouton(
+						lNodeSelection,
+						aGenreEvenement,
+					)
+				) {
+					this._ouvrirMenuContextuel(lNodeSelection, true, aGenreEvenement);
+				}
+				break;
+			}
+			case Enumere_EvenementTreeView_1.EGenreEvenementTreeView.suppression: {
+				if (lNodeSelection) {
+					this.surSuppression(lNodeSelection);
+				}
+				break;
+			}
+			case Enumere_EvenementTreeView_1.EGenreEvenementTreeView.edition: {
+				if (lNodeSelection) {
+					this.demarrerEdition(lNodeSelection);
+				}
+				break;
+			}
+			case Enumere_EvenementTreeView_1.EGenreEvenementTreeView.deplacement: {
+				if (aDeplacementHaut) {
+					this.surDeplacement(
+						lNodeSelection,
+						lNodeSelection.frerePrecedent(),
+						true,
+					);
+				} else {
+					this.surDeplacement(
+						lNodeSelection,
+						lNodeSelection.frereSuivant(),
+						false,
+					);
+				}
+				break;
+			}
+		}
+	}
+	_surMouseDownDeploiement(aEvent) {
+		aEvent.data.instance._surMouseDownLibelle(aEvent);
+		aEvent.data.instance._surDeploiement(aEvent);
+	}
+	_surDeploiement(aEvent) {
+		const lNode = aEvent.data.node;
+		if (aEvent.data.instance.donneeTreeView.getAvecDeploiement(lNode)) {
+			lNode.deploye = !lNode.deploye;
+			const lInstance = aEvent.data.instance;
+			$(lNode.DOM.conteneurFils).slideToggle("fast", () => {
+				lInstance.$refreshSelf();
+			});
+			ObjetHtml_1.GHtml.modifierClass(
+				lNode.DOM.deploiement,
+				lNode.deploye
+					? "Image_DeploiementListe_NonDeploye"
+					: "Image_DeploiementListe_Deploye",
+				lNode.deploye
+					? "Image_DeploiementListe_Deploye"
+					: "Image_DeploiementListe_NonDeploye",
+			);
+			if (lNode.DOM.image) {
+				ObjetHtml_1.GHtml.setClass(
+					lNode.DOM.image,
+					lInstance.donneeTreeView.getClassIcon(lNode),
+				);
+			}
+		}
+	}
+	_surDblClickImage(event) {
+		this._surDeploiement(event);
+	}
+	_surMouseDownImage(event) {
+		this._surMouseDownLibelle(event);
+	}
+	_surMouseUpImage(aEvent) {
+		this._surMouseUpLibelle(aEvent);
+		ObjetHtml_1.GHtml.setFocus(aEvent.data.node.DOM.libelle, true);
+	}
+	_surMouseOverImage(aEvent) {
+		this._surMouseOverLibelle(aEvent);
+	}
+	_surMouseOutImage(aEvent) {
+		this._surMouseOutLibelle(aEvent);
+	}
+	_surMouseDownLibelle(aEvent) {
+		const lInstance = aEvent.data.instance;
+		lInstance._setSelectionNode(aEvent.data.node);
+		if (
+			GNavigateur.getBoutonSouris(aEvent.originalEvent) !==
+				Enumere_BoutonSouris_1.EGenreBoutonSouris.Droite &&
+			lInstance.donneeTreeView.avecDragNDrop()
+		) {
+			if (lInstance.donneeTreeView.dragAutorise(aEvent.data.node)) {
+				lInstance._surDragDebut(aEvent.data.node);
+				return false;
+			}
+		}
+	}
+	_surMouseUpLibelle(aEvent) {
+		const lInstance = aEvent.data.instance;
+		if (lInstance._objetDrag && lInstance._objetDrag.visible) {
+			if (
+				lInstance.donneeTreeView.dropAutorise(
+					lInstance._objetDrag.source,
+					aEvent.data.node,
+					null,
+				)
+			) {
+				lInstance._objetDrag.cible = aEvent.data.node;
+			} else {
+				lInstance._objetDrag.annulerDrop = true;
+			}
+			lInstance._surDragFin();
+		}
+	}
+	_surMouseOverLibelle(aEvent) {
+		const lInstance = aEvent.data.instance;
+		if (lInstance._objetDrag && lInstance._objetDrag.visible) {
+			lInstance._objetDrag.surSurvolDrop = true;
+			if (
+				lInstance.donneeTreeView.dropAutorise(
+					lInstance._objetDrag.source,
+					aEvent.data.node,
+					null,
+				)
+			) {
+				ObjetStyle_1.GStyle.setStyle(
+					aEvent.data.node.DOM.libelle,
+					lInstance.donneeTreeView.getStyleLibelle(aEvent.data.node, true),
+				);
+				lInstance._objetDrag.setContenuHtml(
+					lInstance.donneeTreeView.getContenuDraggableInclusion(
+						lInstance._objetDrag.source,
+						aEvent.data.node,
+					),
+				);
+			} else {
+				lInstance._objetDrag.setContenuHtml(
+					lInstance.donneeTreeView.getContenuDraggableInterdit(
+						lInstance._objetDrag.source,
+					),
+				);
+			}
+		}
+		if (
+			ObjetHint_1.ObjetHint &&
+			lInstance.donneeTreeView.avecHintDeLibelle(aEvent.data.node)
+		) {
+			lInstance._hintCourant = ObjetHint_1.ObjetHint.start(
+				lInstance.donneeTreeView.getHintDeLibelle(aEvent.data.node),
+			);
+		}
+	}
+	_surMouseOutLibelle(aEvent) {
+		const lInstance = aEvent.data.instance;
+		if (lInstance._objetDrag && lInstance._objetDrag.visible) {
+			delete lInstance._objetDrag.surSurvolDrop;
+			if (
+				lInstance.donneeTreeView.dropAutorise(
+					lInstance._objetDrag.source,
+					aEvent.data.node,
+					null,
+				)
+			) {
+				lInstance._objetDrag.setContenuHtml(
+					lInstance.donneeTreeView.getContenuDraggableInterdit(
+						lInstance._objetDrag.source,
+					),
+				);
+				ObjetStyle_1.GStyle.setStyle(
+					aEvent.data.node.DOM.libelle,
+					lInstance.donneeTreeView.getStyleLibelle(aEvent.data.node, false),
+				);
+			} else {
+				lInstance._objetDrag.setContenuHtml(
+					lInstance.donneeTreeView.getContenuDraggableInterdit(
+						lInstance._objetDrag.source,
+					),
+				);
+			}
+		}
+		if (lInstance._hintCourant) {
+			ObjetHint_1.ObjetHint.stop(lInstance._hintCourant);
+			lInstance._hintCourant = null;
+		}
+	}
+	_surDblClickLibelle(aEvent) {
+		const lInstance = aEvent.data.instance;
+		if (lInstance.donneeTreeView.avecEdition(aEvent.data.node)) {
+			lInstance.demarrerEdition(aEvent.data.node);
+		} else if (
+			lInstance.donneeTreeView.avecEvenementDeGenre(
+				Enumere_EvenementTreeView_1.EGenreEvenementTreeView.selectionDblClick,
+				aEvent.data.node,
+			)
+		) {
+			lInstance.callback.appel(
+				Enumere_EvenementTreeView_1.EGenreEvenementTreeView.selectionDblClick,
+				aEvent.data.node,
+				true,
+			);
+		}
+	}
+	_surFocusLibelle(aEvent) {
+		const lNode = aEvent.data.instance.donneeTreeView.getSelectionFocus(
+			aEvent.data.node,
+		);
+		aEvent.data.instance.nodeSelectionFocus = lNode;
+	}
+	_surBlurLibelle(aEvent) {
+		aEvent.data.instance.nodeSelectionFocus = null;
+	}
+	_surMouseOverInterLigne(event) {
+		const lInstance = event.data.instance;
+		if (lInstance._objetDrag && lInstance._objetDrag.visible) {
+			lInstance._objetDrag.surSurvolDrop = true;
+			ObjetStyle_1.GStyle.setCouleurFond(this, lInstance.couleurs.bordure);
+			lInstance._objetDrag.setContenuHtml(
+				lInstance.donneeTreeView.getContenuDraggableDeplacement(
+					lInstance._objetDrag.source,
+				),
+			);
+		}
+	}
+	_surMouseOutInterLigne(event) {
+		const lInstance = event.data.instance;
+		if (lInstance._objetDrag && lInstance._objetDrag.visible) {
+			delete lInstance._objetDrag.surSurvolDrop;
+			ObjetStyle_1.GStyle.setCouleurFond(this, "");
+			lInstance._objetDrag.setContenuHtml(
+				lInstance.donneeTreeView.getContenuDraggableInterdit(
+					lInstance._objetDrag.source,
+				),
+			);
+		}
+	}
+	_surMouseUpInterLigne(event) {
+		const lInstance = event.data.instance;
+		if (lInstance._objetDrag && lInstance._objetDrag.visible) {
+			lInstance._objetDrag.cible = event.data.node;
+			lInstance._objetDrag.insertionAvant = !event.data.dernierElement;
+			lInstance._surDragFin();
+		}
+	}
+	_surMouseUpLigne(aEvent) {
+		if (
+			GNavigateur.estSourisBoutonDroit() &&
+			aEvent.data.instance.donneeTreeView.avecMenuContextuel(aEvent.data.node)
+		) {
+			aEvent.data.instance._ouvrirMenuContextuel(aEvent.data.node);
+			aEvent.data.instance._bloquerMenuContextuelTreeView = true;
+		}
+	}
+	_surMouseUpTreeView(event) {
+		const lInstance = event.data.instance;
+		if (
+			!lInstance._bloquerMenuContextuelTreeView &&
+			GNavigateur.estSourisBoutonDroit() &&
+			lInstance.donneeTreeView.avecMenuContextuel(null)
+		) {
+			lInstance._ouvrirMenuContextuel(null);
+		}
+		delete lInstance._bloquerMenuContextuelTreeView;
+		if (lInstance._objetDrag && lInstance._objetDrag.visible) {
+			lInstance._surDragFin();
+		}
+	}
+	_surMouseEnterTreeView(event) {
+		const lInstance = event.data.instance;
+		if (lInstance._objetDrag && lInstance._objetDrag.visible) {
+			if (lInstance._objetDrag.horsZone) {
+				ObjetHtml_1.GHtml.delClass(
+					lInstance._objetDrag.elementDrag,
+					"Liste_Rouge Blanc",
+				);
+				lInstance._objetDrag.setContenuHtml(
+					lInstance.donneeTreeView.getContenuDraggableInterdit(
+						lInstance._objetDrag.source,
+					),
+				);
+				lInstance._objetDrag.horsZone = false;
+			}
+			if (
+				!lInstance._objetDrag.surSurvolDrop &&
+				lInstance._objetDrag.source &&
+				lInstance.donneeTreeView.surDeplacement(
+					lInstance._objetDrag.source,
+					null,
+					null,
+				)
+			) {
+				lInstance._objetDrag.setContenuHtml(
+					lInstance.donneeTreeView.getContenuDraggableInclusion(
+						lInstance._objetDrag.source,
+						null,
+					),
+				);
+			}
+		}
+	}
+	_surMouseLeaveTreeView(event) {
+		const lInstance = event.data.instance;
+		if (lInstance._objetDrag && lInstance._objetDrag.visible) {
+			const lAvecSuppression = lInstance.donneeTreeView.avecSuppression(
+				lInstance._objetDrag.source,
+			);
+			const lContenu = lAvecSuppression
+				? lInstance.donneeTreeView.getContenuDraggableSuppression(
+						lInstance._objetDrag.source,
+					)
+				: lInstance.donneeTreeView.getContenuDraggableInterdit(
+						lInstance._objetDrag.source,
+					);
+			if (lAvecSuppression) {
+				ObjetHtml_1.GHtml.addClass(
+					lInstance._objetDrag.elementDrag,
+					"Liste_Rouge Blanc",
+				);
+			}
+			lInstance._objetDrag.setContenuHtml(lContenu);
+			lInstance._objetDrag.horsZone = true;
+		}
+	}
+	_surKeyDownTreeView(event) {
+		const lInstance = event.data.instance;
+		if (!lInstance.donneeTreeView) {
+			return;
+		}
+		let lNode;
+		if (GNavigateur.isToucheSupprimer() && !lInstance._enEdition) {
+			lInstance.surSuppression(lInstance.nodeSelection);
+		} else if (GNavigateur.isToucheFlecheBas()) {
+			lNode = lInstance.donneeTreeView.selectionFocusSuivant(
+				lInstance.nodeSelectionFocus,
+				true,
+			);
+			if (lNode && lNode.DOM.libelle) {
+				lInstance.apiScroll.scrollV.scrollToElement(lNode.DOM.libelle);
+				lInstance.apiScroll.scrollH.scrollToElement(lNode.DOM.libelle);
+				ObjetHtml_1.GHtml.setFocus(lNode.DOM.libelle, true);
+			}
+		} else if (GNavigateur.isToucheFlecheHaut()) {
+			lNode = lInstance.donneeTreeView.selectionFocusSuivant(
+				lInstance.nodeSelectionFocus,
+				false,
+			);
+			if (lNode && lNode.DOM.libelle) {
+				lInstance.apiScroll.scrollToElement(lNode.DOM.libelle);
+				ObjetHtml_1.GHtml.setFocus(lNode.DOM.libelle, true);
+			}
+		} else if (GNavigateur.isToucheSelection()) {
+			lInstance._setSelectionNode(lInstance.nodeSelectionFocus);
+		}
+	}
+	_surMouseMove(event) {
+		if (!event.data.instance.donneeTreeView) {
+			return;
+		}
+		event.data.instance._surDraggableAfficher();
+	}
+	_surMouseUp(event) {
+		if (!event.data.instance.donneeTreeView) {
+			return;
+		}
+		event.data.instance._surDragFin();
+	}
+	_surKeyDownEdition(aEvent) {
+		if (GNavigateur.isToucheRetourChariot()) {
+			aEvent.data.instance.sortirEdition(aEvent.data.node);
+			GNavigateur.stopperEvenement(aEvent.originalEvent);
+		}
+	}
+	_surKeyUpEdition(aEvent) {
+		aEvent.data.instance.enEdition(
+			aEvent.data.node,
+			ObjetHtml_1.GHtml.getValue(this),
+		);
+	}
+	_surBlurEdition(aEvent) {
+		aEvent.data.instance.sortirEdition(aEvent.data.node);
+	}
 }
 exports.ObjetTreeView = ObjetTreeView;
 ObjetTreeView.CONST_hauteurMin = 80;
 class ObjetBoutonTreeView extends ObjetIdentite_1.Identite {
-  constructor(aNom, aPere, aEvenement) {
-    super(aNom, null, aPere, aEvenement);
-  }
-  setParametres(aGenreEvenement, aDeplacementHaut, aHint) {
-    this.hint = aHint ? aHint : "";
-    this.genreEvenement = aGenreEvenement;
-    this.deplacementHaut = aDeplacementHaut;
-  }
-  getControleur(aInstance) {
-    return $.extend(true, super.getControleur(aInstance), {
-      btn: {
-        event: function () {
-          aInstance.callback.appel(
-            aInstance.genreEvenement,
-            aInstance.deplacementHaut,
-          );
-        },
-        getDisabled: function () {
-          return !aInstance.Actif;
-        },
-      },
-    });
-  }
-  recupererDonnees() {
-    this._construireBouton();
-  }
-  _construireBouton() {
-    const lElement = ObjetHtml_1.GHtml.getElement(this.Nom);
-    if (!ObjetHtml_1.GHtml.elementExiste(lElement)) {
-      return;
-    }
-    let lImage = "";
-    switch (this.genreEvenement) {
-      case Enumere_EvenementTreeView_1.EGenreEvenementTreeView.creation:
-        lImage = "icon_plus";
-        break;
-      case Enumere_EvenementTreeView_1.EGenreEvenementTreeView.edition:
-        lImage = "icon_pencil";
-        break;
-      case Enumere_EvenementTreeView_1.EGenreEvenementTreeView.deplacement:
-        lImage = this.deplacementHaut ? "icon_chevron_up" : "icon_chevron_down";
-        break;
-      case Enumere_EvenementTreeView_1.EGenreEvenementTreeView.suppression:
-        lImage = "icon_trash";
-        break;
-      default:
-    }
-    const H = [
-      '<ie-btnimage ie-model="btn" class="btnImageIcon ',
-      lImage,
-      '"',
-      this.hint ? ' title="' + this.hint + '"' : "",
-      "></ie-btnimage>",
-    ];
-    ObjetHtml_1.GHtml.setHtml(lElement, H.join(""), {
-      controleur: this.controleur,
-    });
-  }
+	constructor(aNom, aPere, aEvenement) {
+		super(aNom, null, aPere, aEvenement);
+	}
+	setParametres(aGenreEvenement, aDeplacementHaut, aHint) {
+		this.hint = aHint ? aHint : "";
+		this.genreEvenement = aGenreEvenement;
+		this.deplacementHaut = aDeplacementHaut;
+	}
+	getControleur(aInstance) {
+		return $.extend(true, super.getControleur(aInstance), {
+			btn: {
+				event: function () {
+					aInstance.callback.appel(
+						aInstance.genreEvenement,
+						aInstance.deplacementHaut,
+					);
+				},
+				getDisabled: function () {
+					return !aInstance.Actif;
+				},
+			},
+		});
+	}
+	recupererDonnees() {
+		this._construireBouton();
+	}
+	_construireBouton() {
+		const lElement = ObjetHtml_1.GHtml.getElement(this.Nom);
+		if (!ObjetHtml_1.GHtml.elementExiste(lElement)) {
+			return;
+		}
+		let lImage = "";
+		switch (this.genreEvenement) {
+			case Enumere_EvenementTreeView_1.EGenreEvenementTreeView.creation:
+				lImage = "icon_plus";
+				break;
+			case Enumere_EvenementTreeView_1.EGenreEvenementTreeView.edition:
+				lImage = "icon_pencil";
+				break;
+			case Enumere_EvenementTreeView_1.EGenreEvenementTreeView.deplacement:
+				lImage = this.deplacementHaut ? "icon_chevron_up" : "icon_chevron_down";
+				break;
+			case Enumere_EvenementTreeView_1.EGenreEvenementTreeView.suppression:
+				lImage = "icon_trash";
+				break;
+			default:
+		}
+		const H = [
+			'<ie-btnimage ie-model="btn" class="btnImageIcon ',
+			lImage,
+			'"',
+			this.hint ? ' title="' + this.hint + '"' : "",
+			"></ie-btnimage>",
+		];
+		ObjetHtml_1.GHtml.setHtml(lElement, H.join(""), {
+			controleur: this.controleur,
+		});
+	}
 }

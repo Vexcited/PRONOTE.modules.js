@@ -13,65 +13,65 @@ const InterfacePageEnt_1 = require("InterfacePageEnt");
 const InterfaceParametrageWsFedSco_1 = require("InterfaceParametrageWsFedSco");
 const InterfacePageSecurite_1 = require("InterfacePageSecurite");
 class ObjetApplicationConsoleServeurHttpSco extends ObjetApplicationConsoles_1.ObjetApplicationConsoles {
-  constructor() {
-    super();
-  }
-  start(aParams) {
-    this.msgEvnts =
-      new MessagesEvenements_ConsoleServeurHTTP_1.MessagesEvenements_ConsoleAdministration_ServeurHTTP();
-    this.gestionEvnts =
-      new GestionnaireEvenements_ConsoleAdminServeurHTTP_1.GestionnaireEvenements_ConsoleAdmin_ServeurHTTP();
-    this.etatServeurHttp = new EtatServeurHttp_1.EtatServeurHttp();
-    this.descriptionWS =
-      new Description_ServicesWeb_ServeurHttpPN_1.Description_ServicesWeb_ServeurHttpPN(
-        this.getParametresDescriptionWS(),
-      );
-    const lPositionDeGenreOnglet = [0, 1, 2, 3];
-    this.etatConsole = {
-      selectionCourante: {
-        genre:
-          Enumere_Onglet_Console_NET_1.EGenreOnglet_Console_NET.publication,
-        position:
-          lPositionDeGenreOnglet[
-            Enumere_Onglet_Console_NET_1.EGenreOnglet_Console_NET.publication
-          ],
-      },
-    };
-    this.IHM =
-      new InterfaceConsoleAdministrationServeurHttp_1.InterfaceConsoleAdministrationServeurHttp(
-        "GApplication.IHM",
-      );
-    super.start(aParams);
-    GApplication.IHM.setDonnees();
-  }
-  initialiserObjetsGraphique() {}
-  initialiserObjetsPage() {
-    this.ajouterObjetGraphique(
-      Enumere_Onglet_Console_NET_1.EGenreOnglet_Console_NET.publication,
-      InterfacePagePublication_1.InterfacePagePublication,
-    );
-    this.ajouterObjetGraphique(
-      Enumere_Onglet_Console_NET_1.EGenreOnglet_Console_NET.ent,
-      InterfacePageEnt_1.InterfacePageEnt,
-    );
-    this.ajouterObjetGraphique(
-      Enumere_Onglet_Console_NET_1.EGenreOnglet_Console_NET
-        .authentificationWsFed,
-      InterfaceParametrageWsFedSco_1.InterfaceParametrageWsFedSco,
-    );
-    this.ajouterObjetGraphique(
-      Enumere_Onglet_Console_NET_1.EGenreOnglet_Console_NET.securite,
-      InterfacePageSecurite_1.InterfacePageSecurite,
-    );
-  }
-  creerCallbackSOAP(aPere, aEvenement, aEvenementSurException, aIdentifiant) {
-    return new Callback_ConsoleAdministration_1.Callback_ConsoleAdministration(
-      aPere,
-      aEvenement,
-      aEvenementSurException,
-      aIdentifiant,
-    );
-  }
+	constructor() {
+		super();
+	}
+	start(aParams) {
+		this.msgEvnts =
+			new MessagesEvenements_ConsoleServeurHTTP_1.MessagesEvenements_ConsoleAdministration_ServeurHTTP();
+		this.gestionEvnts =
+			new GestionnaireEvenements_ConsoleAdminServeurHTTP_1.GestionnaireEvenements_ConsoleAdmin_ServeurHTTP();
+		this.etatServeurHttp = new EtatServeurHttp_1.EtatServeurHttp();
+		this.descriptionWS =
+			new Description_ServicesWeb_ServeurHttpPN_1.Description_ServicesWeb_ServeurHttpPN(
+				this.getParametresDescriptionWS(),
+			);
+		const lPositionDeGenreOnglet = [0, 1, 2, 3];
+		this.etatConsole = {
+			selectionCourante: {
+				genre:
+					Enumere_Onglet_Console_NET_1.EGenreOnglet_Console_NET.publication,
+				position:
+					lPositionDeGenreOnglet[
+						Enumere_Onglet_Console_NET_1.EGenreOnglet_Console_NET.publication
+					],
+			},
+		};
+		this.IHM =
+			new InterfaceConsoleAdministrationServeurHttp_1.InterfaceConsoleAdministrationServeurHttp(
+				"GApplication.IHM",
+			);
+		super.start(aParams);
+		GApplication.IHM.setDonnees();
+	}
+	initialiserObjetsGraphique() {}
+	initialiserObjetsPage() {
+		this.ajouterObjetGraphique(
+			Enumere_Onglet_Console_NET_1.EGenreOnglet_Console_NET.publication,
+			InterfacePagePublication_1.InterfacePagePublication,
+		);
+		this.ajouterObjetGraphique(
+			Enumere_Onglet_Console_NET_1.EGenreOnglet_Console_NET.ent,
+			InterfacePageEnt_1.InterfacePageEnt,
+		);
+		this.ajouterObjetGraphique(
+			Enumere_Onglet_Console_NET_1.EGenreOnglet_Console_NET
+				.authentificationWsFed,
+			InterfaceParametrageWsFedSco_1.InterfaceParametrageWsFedSco,
+		);
+		this.ajouterObjetGraphique(
+			Enumere_Onglet_Console_NET_1.EGenreOnglet_Console_NET.securite,
+			InterfacePageSecurite_1.InterfacePageSecurite,
+		);
+	}
+	creerCallbackSOAP(aPere, aEvenement, aEvenementSurException, aIdentifiant) {
+		return new Callback_ConsoleAdministration_1.Callback_ConsoleAdministration(
+			aPere,
+			aEvenement,
+			aEvenementSurException,
+			aIdentifiant,
+		);
+	}
 }
 exports.ObjetApplicationConsoleServeurHttpSco =
-  ObjetApplicationConsoleServeurHttpSco;
+	ObjetApplicationConsoleServeurHttpSco;

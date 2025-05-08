@@ -4,6 +4,6 @@ const CollectionRequetes_1 = require("CollectionRequetes");
 class ObjetRequeteSaisieJetonAppliMobile extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
 exports.ObjetRequeteSaisieJetonAppliMobile = ObjetRequeteSaisieJetonAppliMobile;
 CollectionRequetes_1.Requetes.inscrire(
-  "JetonAppliMobile",
-  ObjetRequeteSaisieJetonAppliMobile,
+	"JetonAppliMobile",
+	ObjetRequeteSaisieJetonAppliMobile,
 );

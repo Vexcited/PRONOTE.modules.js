@@ -3,9 +3,9 @@ const _ObjetFenetre_1 = require("_ObjetFenetre");
 class ObjetFenetre extends _ObjetFenetre_1._ObjetFenetre {}
 exports.ObjetFenetre = ObjetFenetre;
 if (IE.estMobile) {
-  const { ObjetFenetreMobile } = require("ObjetFenetre_Mobile.js");
-  exports.ObjetFenetre = ObjetFenetre = ObjetFenetreMobile;
+	const { ObjetFenetreMobile } = require("ObjetFenetre_Mobile.js");
+	exports.ObjetFenetre = ObjetFenetre = ObjetFenetreMobile;
 } else {
-  const { ObjetFenetreEspace } = require("ObjetFenetre_Espace.js");
-  exports.ObjetFenetre = ObjetFenetre = ObjetFenetreEspace;
+	const { ObjetFenetreEspace } = require("ObjetFenetre_Espace.js");
+	exports.ObjetFenetre = ObjetFenetre = ObjetFenetreEspace;
 }

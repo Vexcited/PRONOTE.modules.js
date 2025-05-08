@@ -4,6 +4,6 @@ const CollectionRequetes_1 = require("CollectionRequetes");
 class ObjetRequeteParametresUtilisateur extends ObjetRequeteJSON_1.ObjetRequeteConsultation {}
 exports.ObjetRequeteParametresUtilisateur = ObjetRequeteParametresUtilisateur;
 CollectionRequetes_1.Requetes.inscrire(
-  "ParametresUtilisateur",
-  ObjetRequeteParametresUtilisateur,
+	"ParametresUtilisateur",
+	ObjetRequeteParametresUtilisateur,
 );

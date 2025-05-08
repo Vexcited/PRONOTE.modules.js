@@ -16,66 +16,66 @@ const UtilitairePagePubliqueEtablissement_1 = require("UtilitairePagePubliqueEta
 const UtilitairePageCommune_1 = require("UtilitairePageCommune");
 const ObjetEtatUtilisateur_1 = require("ObjetEtatUtilisateur");
 class ObjetApplicationCommunSco extends ObjetApplicationProduit_1.ObjetApplicationProduit {
-  async lancer(aParametres) {
-    this.setDemo(!!aParametres.d);
-    const lNumeroSession = aParametres.h;
-    this.numeroEspace = aParametres.a || Enumere_Espace_1.EGenreEspace.Commun;
-    Invocateur_1.Invocateur.evenement(
-      Invocateur_1.ObjetInvocateur.events.initChiffrement,
-      aParametres,
-    );
-    this.setCommunication(
-      new CommunicationProduit_1.CommunicationProduit(
-        this.numeroEspace,
-        lNumeroSession,
-      ),
-    );
-    this.actionSurRecupererDonnees(
-      await new ObjetRequetePageCommune_1.ObjetRequetePageCommune(
-        this,
-      ).lancerRequete(),
-    );
-  }
-  actionSurRecupererDonnees(aParam) {
-    global.GParametres = Object.assign({}, aParam);
-    global.GEtatUtilisateur = new ObjetEtatUtilisateur_1.ObjetEtatUtilisateur(
-      this.numeroEspace,
-    );
-    ThemesCouleurs_1.ThemesCouleurs.setTheme(aParam.Theme);
-    global.GCouleur = new _ObjetCouleur_1._ObjetCouleur();
-    let lParam = Object.assign({ id: this.getIdConteneur() }, aParam);
-    if (GParametres.avecPagePubliqueEtab === true) {
-      this.utilitairePagePubliqueEtablissement =
-        new UtilitairePagePubliqueEtablissement_1.UtilitairePagePubliqueEtablissement(
-          { estSurMobile: false, estPrimaire: this.estPrimaire },
-        );
-      this.utilitairePagePubliqueEtablissement.initGlobales();
-      this.donneesRequete =
-        this.utilitairePagePubliqueEtablissement.initDonneesRequete();
-      CollectionRequetes_1.Requetes.inscrire(
-        "PagePubliqueEtablissement",
-        ObjetRequeteJSON_1.ObjetRequeteConsultation,
-      );
-      (0, CollectionRequetes_1.Requetes)("PagePubliqueEtablissement", this)
-        .lancerRequete(this.donneesRequete)
-        .then((aParam) => {
-          $.extend(lParam, aParam);
-          this.utilitairePagePubliqueEtablissement.construire(
-            lParam,
-            this.donneesRequete,
-          );
-        });
-    } else {
-      $.extend(lParam, {
-        initBandeau: function (aBandeau) {
-          aBandeau.setParametres({
-            logoDepartementImage: GParametres.logoDepartementImage,
-            logoDepartementLien: GParametres.logoDepartementLien,
-          });
-        },
-      });
-      new UtilitairePageCommune_1.UtilitairePageCommune().construire(lParam);
-    }
-  }
+	async lancer(aParametres) {
+		this.setDemo(!!aParametres.d);
+		const lNumeroSession = aParametres.h;
+		this.numeroEspace = aParametres.a || Enumere_Espace_1.EGenreEspace.Commun;
+		Invocateur_1.Invocateur.evenement(
+			Invocateur_1.ObjetInvocateur.events.initChiffrement,
+			aParametres,
+		);
+		this.setCommunication(
+			new CommunicationProduit_1.CommunicationProduit(
+				this.numeroEspace,
+				lNumeroSession,
+			),
+		);
+		this.actionSurRecupererDonnees(
+			await new ObjetRequetePageCommune_1.ObjetRequetePageCommune(
+				this,
+			).lancerRequete(),
+		);
+	}
+	actionSurRecupererDonnees(aParam) {
+		global.GParametres = Object.assign({}, aParam);
+		global.GEtatUtilisateur = new ObjetEtatUtilisateur_1.ObjetEtatUtilisateur(
+			this.numeroEspace,
+		);
+		ThemesCouleurs_1.ThemesCouleurs.setTheme(aParam.Theme);
+		global.GCouleur = new _ObjetCouleur_1._ObjetCouleur();
+		let lParam = Object.assign({ id: this.getIdConteneur() }, aParam);
+		if (GParametres.avecPagePubliqueEtab === true) {
+			this.utilitairePagePubliqueEtablissement =
+				new UtilitairePagePubliqueEtablissement_1.UtilitairePagePubliqueEtablissement(
+					{ estSurMobile: false, estPrimaire: this.estPrimaire },
+				);
+			this.utilitairePagePubliqueEtablissement.initGlobales();
+			this.donneesRequete =
+				this.utilitairePagePubliqueEtablissement.initDonneesRequete();
+			CollectionRequetes_1.Requetes.inscrire(
+				"PagePubliqueEtablissement",
+				ObjetRequeteJSON_1.ObjetRequeteConsultation,
+			);
+			(0, CollectionRequetes_1.Requetes)("PagePubliqueEtablissement", this)
+				.lancerRequete(this.donneesRequete)
+				.then((aParam) => {
+					$.extend(lParam, aParam);
+					this.utilitairePagePubliqueEtablissement.construire(
+						lParam,
+						this.donneesRequete,
+					);
+				});
+		} else {
+			$.extend(lParam, {
+				initBandeau: function (aBandeau) {
+					aBandeau.setParametres({
+						logoDepartementImage: GParametres.logoDepartementImage,
+						logoDepartementLien: GParametres.logoDepartementLien,
+					});
+				},
+			});
+			new UtilitairePageCommune_1.UtilitairePageCommune().construire(lParam);
+		}
+	}
 }
 exports.ObjetApplicationCommunSco = ObjetApplicationCommunSco;

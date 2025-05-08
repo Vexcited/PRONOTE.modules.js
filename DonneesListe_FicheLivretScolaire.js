@@ -7,744 +7,744 @@ const { TUtilitaireCompetences } = require("UtilitaireCompetences.js");
 const { GTraductions } = require("ObjetTraduction.js");
 const { EGenreRessource } = require("Enumere_Ressource.js");
 class DonneesListe_FicheLivretScolaire extends ObjetDonneesListe {
-  constructor(aDonnees, aParam) {
-    aDonnees.donnees.parcourir((D) => {
-      if ((D.avecRegroupement || D.titreEnseignement) && !D.periode) {
-        D.estUnDeploiement = true;
-        D.estDeploye = true;
-      }
-    });
-    super(aDonnees.donnees);
-    this.donneesClasse = aDonnees.donneesClasse;
-    this.parametres = Object.assign(
-      {
-        affichage: aParam.affichage,
-        avecFiliere: aParam.avecFiliere,
-        initMenuContextuel: aParam.initMenuContextuel,
-        instance: aParam.instance,
-        listeEvaluations: aParam.listeEvaluations,
-        tailleMax: aParam.tailleMax,
-        eleveRedoublant: false,
-      },
-      aParam,
-    );
-    this.celluleCourante;
-    this.parametres.instance.setOptionsListe({
-      colonnesCachees: this._getContexteColonnes(
-        this.parametres.affichage,
-        this.parametres.eleveRedoublant,
-      ),
-    });
-    this.setOptions({
-      avecEvnt_Selection: true,
-      avecSuppression: false,
-      avecDeploiement: true,
-      avecCelluleSuivanteSurFinEdition: true,
-      editionApresSelection: false,
-      avecEvnt_KeyPressListe: true,
-      avecEvnt_KeyUpListe: false,
-      selectionParCellule: true,
-      avecSelectionSurNavigationClavier: true,
-    });
-    this.moteur = new ObjetMoteurReleveBulletin();
-  }
-  avecSelection(aParams) {
-    if (
-      aParams.idColonne &&
-      aParams.idColonne.startsWith(
-        DonneesListe_FicheLivretScolaire.colonnes.saisieEval,
-      )
-    ) {
-      return aParams.article.livretEditable;
-    }
-    return false;
-  }
-  avecEdition(aParams) {
-    return (
-      this._avecEditionAppreciation(aParams) ||
-      this._avecEditionConserverAnciennesNotes(aParams)
-    );
-  }
-  getHintForce(aParams) {
-    switch (aParams.idColonne) {
-      case DonneesListe_FicheLivretScolaire.colonnes.anciennesNotes:
-        return aParams.article.conserveAnciennesNotes
-          ? GTraductions.getValeur("ficheScolaire.HintCocheAnneePrecedente", [
-              aParams.article.hintAnciennesNotes,
-            ])
-          : "";
-      default:
-        return;
-    }
-  }
-  _avecEditionConserverAnciennesNotes(aParams) {
-    return (
-      aParams.idColonne ===
-        DonneesListe_FicheLivretScolaire.colonnes.anciennesNotes &&
-      GEtatUtilisateur.getUtilisateur().getGenre() ===
-        EGenreRessource.Enseignant &&
-      this.parametres.eleveRedoublant &&
-      ((!!aParams.article.services && aParams.article.services.count() > 0) ||
-        (!!aParams.article.service && aParams.article.service.existeNumero()))
-    );
-  }
-  _avecEditionAppreciation(aParams) {
-    return (
-      aParams.article.appreciationAnnuelle &&
-      aParams.article.appreciationAnnuelle.editable &&
-      ((aParams.idColonne ===
-        DonneesListe_FicheLivretScolaire.colonnes.appreciation &&
-        !this.parametres.affichage.avecColonneAppreciationsAnnuelles) ||
-        aParams.idColonne ===
-          DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle)
-    );
-  }
-  avecEvenementSelection(aParams) {
-    this.celluleCourante = aParams.article;
-    return true;
-  }
-  _avecEvaluationCompetenceLS(aColonne, aArticle, aParams) {
-    return (
-      ((aParams.idColonne ===
-        DonneesListe_FicheLivretScolaire.colonnes.saisieEval &&
-        (aArticle.avecServices || aArticle.estSansObligationDeNotation)) ||
-        _estCelluleCompetence(aParams)) &&
-      aArticle.livretEditable
-    );
-  }
-  avecEvenementEdition(aParams) {
-    this.celluleCourante = aParams.article;
-    return (
-      (this._avecEditionAppreciation(aParams) &&
-        (GEtatUtilisateur.assistantSaisieActif ||
-          (aParams.article.services &&
-            aParams.article.services.count() > 1))) ||
-      this._avecEvaluationCompetenceLS(
-        aParams.colonne,
-        aParams.article,
-        aParams,
-      )
-    );
-  }
-  autoriserChaineVideSurEdition() {
-    return true;
-  }
-  avecDeploiementSurColonne(aParams) {
-    return (
-      aParams.idColonne ===
-      DonneesListe_FicheLivretScolaire.colonnes.regroupement
-    );
-  }
-  avecImageSurColonneDeploiement(aParams) {
-    return (
-      aParams.idColonne ===
-      DonneesListe_FicheLivretScolaire.colonnes.regroupement
-    );
-  }
-  avecContenuTronque(aParams) {
-    return (
-      aParams.idColonne !==
-        DonneesListe_FicheLivretScolaire.colonnes.appreciation &&
-      aParams.idColonne !==
-        DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle
-    );
-  }
-  getTri() {
-    return [
-      ObjetTri.initRecursif("pere", [
-        ObjetTri.init("Genre"),
-        ObjetTri.init((D) => {
-          return D.Libelle;
-        }),
-      ]),
-    ];
-  }
-  surDeploiement(I, J, D) {
-    D.estDeploye = !D.estDeploye;
-    for (
-      let index = J + 1, lFlag = true, lNbr = this.Donnees.count();
-      index < lNbr && lFlag;
-      index++
-    ) {
-      const lLigne = this.Donnees.get(index);
-      lFlag =
-        (lLigne.avecRegroupement || this.parametres.avecFiliere) &&
-        !lLigne.estUnDeploiement;
-      if (lFlag) {
-        lLigne.estDeploye = !lLigne.estDeploye;
-      }
-    }
-  }
-  getValeur(aParams) {
-    if (_estCelluleCompetence(aParams)) {
-      return aParams.article.listeCompetences.get(
-        aParams.declarationColonne.rangColonne,
-      ).evaluation.abbreviation;
-    } else if (
-      aParams.idColonne.startsWith(
-        DonneesListe_FicheLivretScolaire.colonnes.jaugeEval,
-      )
-    ) {
-      if (aParams.article.listeCompetences) {
-        const lCompetence = aParams.article.listeCompetences.get(
-          aParams.declarationColonne.rangJauge,
-        );
-        if (!!lCompetence && !!lCompetence.listeNiveaux) {
-          const lOptionsJauge = {
-            listeNiveaux: lCompetence.listeNiveaux,
-            hint: lCompetence.hintNiveaux || "",
-            listeGenreNiveauxIgnores: [],
-          };
-          return TUtilitaireCompetences.composeJaugeParNiveaux(lOptionsJauge);
-        }
-      }
-      return "";
-    }
-    switch (aParams.idColonne) {
-      case DonneesListe_FicheLivretScolaire.colonnes.discipline:
-        return aParams.article.getLibelle();
-      case DonneesListe_FicheLivretScolaire.colonnes.periode:
-        return aParams.article.periode
-          ? '<span class="Texte9">' +
-              aParams.article.periode.getLibelle() +
-              "</span>"
-          : "";
-      case DonneesListe_FicheLivretScolaire.colonnes.rang: {
-        const H = [];
-        const lInfoClasse = this.donneesClasse
-          ? this.donneesClasse.get(aParams.ligne).rangTotal
-          : aParams.article.rangTotal;
-        if (!isNaN(aParams.article.rangEleve) && !isNaN(lInfoClasse)) {
-          H.push(aParams.article.rangEleve);
-          H.push(`<span class="Texte9">/${lInfoClasse}</span>`);
-        }
-        return H.join("");
-      }
-      case DonneesListe_FicheLivretScolaire.colonnes.moyEleve: {
-        const T = [];
-        if (aParams.article.estMoyNR === true) {
-          T.push(this.moteur.composeHtmlMoyNR());
-        } else if (
-          aParams.article.moyEleve !== null &&
-          aParams.article.moyEleve !== undefined
-        ) {
-          T.push(aParams.article.moyEleve.note);
-        }
-        return T.join("");
-      }
-      case DonneesListe_FicheLivretScolaire.colonnes.moyClasse:
-        return this.donneesClasse
-          ? this.donneesClasse.get(aParams.ligne).moyClasse
-            ? this.donneesClasse.get(aParams.ligne).moyClasse.note
-            : ""
-          : aParams.article.moyClasse
-            ? aParams.article.moyClasse.note
-            : "";
-      case DonneesListe_FicheLivretScolaire.colonnes.inf8:
-        return this.donneesClasse
-          ? this.donneesClasse.get(aParams.ligne).inf8 !== undefined
-            ? this.donneesClasse.get(aParams.ligne).inf8 + " %"
-            : ""
-          : aParams.article.inf8 !== undefined
-            ? aParams.article.inf8 + " %"
-            : "";
-      case DonneesListe_FicheLivretScolaire.colonnes.de8a12:
-        return this.donneesClasse
-          ? this.donneesClasse.get(aParams.ligne).de8a12 !== undefined
-            ? this.donneesClasse.get(aParams.ligne).de8a12 + " %"
-            : ""
-          : aParams.article.de8a12 !== undefined
-            ? aParams.article.de8a12 + " %"
-            : "";
-      case DonneesListe_FicheLivretScolaire.colonnes.sup12:
-        return this.donneesClasse
-          ? this.donneesClasse.get(aParams.ligne).sup12 !== undefined
-            ? this.donneesClasse.get(aParams.ligne).sup12 + " %"
-            : ""
-          : aParams.article.sup12 !== undefined
-            ? aParams.article.sup12 + " %"
-            : "";
-      case DonneesListe_FicheLivretScolaire.colonnes.evaluation:
-        return aParams.article.itemLivretScolaire
-          ? aParams.article.itemLivretScolaire.getLibelle()
-          : "";
-      case DonneesListe_FicheLivretScolaire.colonnes.saisieEval:
-        return aParams.article.itemLivretScolaire
-          ? aParams.article.itemLivretScolaire.evaluation.abbreviation
-          : "";
-      case DonneesListe_FicheLivretScolaire.colonnes.appreciation: {
-        if (aParams.article.appreciation) {
-          return aParams.article.appreciation;
-        } else if (aParams.article.appreciationAnnuelle) {
-          if (!!aParams.article.appreciationAnnuelle.estRattache) {
-            return GTraductions.getValeur(
-              "ficheScolaire.messageServiceRattache",
-            );
-          } else {
-            return aParams.article.appreciationAnnuelle.getLibelle();
-          }
-        } else {
-          return "";
-        }
-      }
-      case DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle:
-        return aParams.article.appreciationAnnuelle
-          ? aParams.article.appreciationAnnuelle.getLibelle()
-          : "";
-      case DonneesListe_FicheLivretScolaire.colonnes.anciennesNotes:
-        return aParams.article && this.parametres.eleveRedoublant
-          ? aParams.article.conserveAnciennesNotes
-          : false;
-      default:
-        return "";
-    }
-  }
-  getTypeValeur(aParams) {
-    if (
-      _estCelluleCompetence(aParams) ||
-      aParams.idColonne.startsWith(
-        DonneesListe_FicheLivretScolaire.colonnes.jaugeEval,
-      )
-    ) {
-      return ObjetDonneesListe.ETypeCellule.Html;
-    }
-    switch (aParams.idColonne) {
-      case DonneesListe_FicheLivretScolaire.colonnes.regroupement:
-        return aParams.article.estUnDeploiement === true
-          ? ObjetDonneesListe.ETypeCellule.CocheDeploiement
-          : ObjetDonneesListe.ETypeCellule.Html;
-      case DonneesListe_FicheLivretScolaire.colonnes.moyEleve:
-      case DonneesListe_FicheLivretScolaire.colonnes.periode:
-      case DonneesListe_FicheLivretScolaire.colonnes.rang:
-      case DonneesListe_FicheLivretScolaire.colonnes.inf8:
-      case DonneesListe_FicheLivretScolaire.colonnes.de8a12:
-      case DonneesListe_FicheLivretScolaire.colonnes.sup12:
-      case DonneesListe_FicheLivretScolaire.colonnes.saisieEval:
-        return ObjetDonneesListe.ETypeCellule.Html;
-      case DonneesListe_FicheLivretScolaire.colonnes.discipline:
-      case DonneesListe_FicheLivretScolaire.colonnes.moyClasse:
-      case DonneesListe_FicheLivretScolaire.colonnes.evaluation:
-        return ObjetDonneesListe.ETypeCellule.Texte;
-      case DonneesListe_FicheLivretScolaire.colonnes.appreciation:
-      case DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle:
-        return ObjetDonneesListe.ETypeCellule.ZoneTexte;
-      case DonneesListe_FicheLivretScolaire.colonnes.anciennesNotes:
-        return ObjetDonneesListe.ETypeCellule.Coche;
-      default:
-        return ObjetDonneesListe.ETypeCellule.Texte;
-    }
-  }
-  surEdition(aParams, aValeur) {
-    if (
-      aParams.idColonne ===
-        DonneesListe_FicheLivretScolaire.colonnes.appreciation ||
-      aParams.idColonne ===
-        DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle
-    ) {
-      aParams.article.appreciationAnnuelle.setEtat(EGenreEtat.Modification);
-      aParams.article.appreciation = aValeur;
-      aParams.article.appreciationAnnuelle.setLibelle(aValeur);
-      aParams.article.appreciationAnnuelle._validationSaisie = true;
-    }
-    if (
-      aParams.idColonne ===
-      DonneesListe_FicheLivretScolaire.colonnes.anciennesNotes
-    ) {
-      aParams.article.modifConserveAnciennesNotes = true;
-      aParams.article.conserveAnciennesNotes = aValeur;
-    }
-  }
-  getControleCaracteresInput(aParams) {
-    switch (aParams.idColonne) {
-      case DonneesListe_FicheLivretScolaire.colonnes.appreciation:
-      case DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle:
-        if (this.parametres.tailleMax) {
-          return { tailleMax: this.parametres.tailleMax };
-        } else {
-          return {
-            tailleMax: aParams.article.appreciationAnnuelle.tailleMaxSaisie,
-          };
-        }
-      default:
-        return null;
-    }
-  }
-  remplirMenuContextuel(aParametres) {
-    this.parametres.initMenuContextuel(aParametres);
-  }
-  evenementMenuContextuel(aParametres) {
-    const lSelection = aParametres.menuContextuel.ligne.data,
-      lEval = MethodesObjet.dupliquer(this.listeEval.get(lSelection)),
-      lCelluleCourante = aParametres.article;
-    if (!lSelection) {
-      lEval.setEtat(EGenreEtat.Suppression);
-    } else {
-      lEval.setEtat(EGenreEtat.Modification);
-    }
-    if (_estCelluleCompetence(aParametres)) {
-      lCelluleCourante.listeCompetences.get(
-        aParametres.declarationColonne.rangColonne,
-      ).evaluation = lEval;
-      lCelluleCourante.setEtat(EGenreEtat.FilsModification);
-      lCelluleCourante.listeCompetences
-        .get(aParametres.declarationColonne.rangColonne)
-        .setEtat(EGenreEtat.FilsModification);
-    } else {
-      lCelluleCourante.itemLivretScolaire.evaluation = lEval;
-      lCelluleCourante.setEtat(EGenreEtat.FilsModification);
-      lCelluleCourante.itemLivretScolaire.setEtat(EGenreEtat.FilsModification);
-    }
-  }
-  getClass(aParams) {
-    const T = [];
-    if (
-      aParams.idColonne ===
-        DonneesListe_FicheLivretScolaire.colonnes.moyEleve ||
-      (aParams.idColonne ===
-        DonneesListe_FicheLivretScolaire.colonnes.discipline &&
-        aParams.article.titreDiscipline)
-    ) {
-      T.push("Gras");
-    }
-    if (
-      aParams.idColonne ===
-        DonneesListe_FicheLivretScolaire.colonnes.discipline &&
-      (aParams.article.titreEnseignant || aParams.article.titreService)
-    ) {
-      T.push("Italique");
-    }
-    if (
-      [
-        DonneesListe_FicheLivretScolaire.colonnes.periode,
-        DonneesListe_FicheLivretScolaire.colonnes.rang,
-        DonneesListe_FicheLivretScolaire.colonnes.moyEleve,
-        DonneesListe_FicheLivretScolaire.colonnes.moyClasse,
-        DonneesListe_FicheLivretScolaire.colonnes.inf8,
-        DonneesListe_FicheLivretScolaire.colonnes.de8a12,
-        DonneesListe_FicheLivretScolaire.colonnes.sup12,
-      ].includes(aParams.idColonne)
-    ) {
-      T.push("AlignementDroit");
-    }
-    if (
-      aParams.idColonne === DonneesListe_FicheLivretScolaire.colonnes.saisieEval
-    ) {
-      T.push("AlignementMilieu");
-    }
-    if (
-      ((aParams.idColonne ===
-        DonneesListe_FicheLivretScolaire.colonnes.appreciation &&
-        !this.parametres.affichage.avecColonneAppreciationsAnnuelles) ||
-        aParams.idColonne ===
-          DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle) &&
-      GEtatUtilisateur.assistantSaisieActif &&
-      aParams.article.appreciationAnnuelle &&
-      aParams.article.appreciationAnnuelle.editable
-    ) {
-      T.push("Curseur_AssistantSaisieActif");
-    }
-    return T.join(" ");
-  }
-  getClassCelluleConteneur(aParams) {
-    const T = [];
-    if (
-      aParams.idColonne.startsWith(
-        DonneesListe_FicheLivretScolaire.colonnes.jaugeEval,
-      )
-    ) {
-      T.push("dl_fls_Jauge");
-    }
-    if (
-      ((aParams.idColonne ===
-        DonneesListe_FicheLivretScolaire.colonnes.appreciation &&
-        !this.parametres.affichage.avecColonneAppreciationsAnnuelles) ||
-        aParams.idColonne ===
-          DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle) &&
-      GEtatUtilisateur.assistantSaisieActif &&
-      aParams.article.appreciationAnnuelle &&
-      aParams.article.appreciationAnnuelle.editable
-    ) {
-      T.push("Curseur_AssistantSaisieActif");
-    }
-    if (_estCelluleCompetence(aParams)) {
-      T.push("Gras AlignementMilieu");
-    }
-    return T;
-  }
-  alignVCenter(aParams) {
-    return (
-      _estCelluleCompetence(aParams) ||
-      aParams.idColonne ===
-        DonneesListe_FicheLivretScolaire.colonnes.anciennesNotes
-    );
-  }
-  getCouleurCellule(aParams) {
-    let lColor = ObjetDonneesListe.ECouleurCellule.Fixe;
-    if (
-      aParams.idColonne !==
-        DonneesListe_FicheLivretScolaire.colonnes.discipline &&
-      aParams.idColonne !== DonneesListe_FicheLivretScolaire.colonnes.periode
-    ) {
-      lColor = ObjetDonneesListe.ECouleurCellule.Gris;
-    }
-    if (
-      aParams.idColonne ===
-        DonneesListe_FicheLivretScolaire.colonnes.moyEleve ||
-      aParams.idColonne === DonneesListe_FicheLivretScolaire.colonnes.moyClasse
-    ) {
-      lColor = ObjetDonneesListe.ECouleurCellule.Total;
-    }
-    if (_estCelluleDeploiement(aParams)) {
-      lColor = ObjetDonneesListe.ECouleurCellule.Deploiement;
-      return lColor;
-    }
-    if (
-      aParams.idColonne ===
-      DonneesListe_FicheLivretScolaire.colonnes.regroupement
-    ) {
-      lColor = aParams.article.avecRegroupement
-        ? ObjetDonneesListe.ECouleurCellule.Deploiement
-        : ObjetDonneesListe.ECouleurCellule.Fixe;
-    }
-    if (
-      (((aParams.idColonne ===
-        DonneesListe_FicheLivretScolaire.colonnes.appreciation &&
-        !this.parametres.affichage.avecColonneAppreciationsAnnuelles) ||
-        aParams.idColonne ===
-          DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle) &&
-        aParams.article.appreciationAnnuelle &&
-        aParams.article.appreciationAnnuelle.editable) ||
-      (((aParams.idColonne ===
-        DonneesListe_FicheLivretScolaire.colonnes.saisieEval &&
-        (aParams.article.avecServices ||
-          aParams.article.estSansObligationDeNotation)) ||
-        _estCelluleCompetence(aParams)) &&
-        aParams.article.livretEditable)
-    ) {
-      lColor = ObjetDonneesListe.ECouleurCellule.Blanc;
-    }
-    if (this._avecEditionConserverAnciennesNotes(aParams)) {
-      lColor = ObjetDonneesListe.ECouleurCellule.Blanc;
-    }
-    return lColor;
-  }
-  getStyle(aParams) {
-    if (
-      aParams.idColonne ===
-        DonneesListe_FicheLivretScolaire.colonnes.discipline &&
-      !aParams.article.avecServices &&
-      !aParams.article.estSansObligationDeNotation &&
-      aParams.article.metaMatiere
-    ) {
-      return "color:" + GCouleur.rouge + ";";
-    }
-  }
-  avecBordureBas(aParamsLigne) {
-    let lResultat = true;
-    if (
-      !aParamsLigne.article.derniereligne &&
-      aParamsLigne.idColonne ===
-        DonneesListe_FicheLivretScolaire.colonnes.regroupement &&
-      aParamsLigne.article.avecRegroupement
-    ) {
-      lResultat = false;
-    }
-    if (
-      (aParamsLigne.idColonne ===
-        DonneesListe_FicheLivretScolaire.colonnes.discipline ||
-        aParamsLigne.idColonne ===
-          DonneesListe_FicheLivretScolaire.colonnes.regroupement) &&
-      !aParamsLigne.article.derniereligne &&
-      !_estCelluleDeploiement(aParamsLigne)
-    ) {
-      lResultat = false;
-    }
-    if (
-      aParamsLigne.article.derniereligne &&
-      aParamsLigne.idColonne ===
-        DonneesListe_FicheLivretScolaire.colonnes.regroupement &&
-      aParamsLigne.article.avecRegroupement &&
-      aParamsLigne.celluleLigneSuivante.article.avecRegroupement &&
-      !_estCelluleDeploiement(aParamsLigne.celluleLigneSuivante)
-    ) {
-      lResultat = false;
-    }
-    if (
-      !aParamsLigne.article.derniereligne &&
-      aParamsLigne.article.estChefDOeuvre &&
-      !_estCelluleDeploiement(aParamsLigne.celluleLigneSuivante)
-    ) {
-      lResultat = false;
-    }
-    return lResultat;
-  }
-  rechercheTexteForcerLignePrecSuivVisible(
-    aParamsLigneVisible,
-    aParamsLignePrecSuivCachee,
-  ) {
-    if (aParamsLigneVisible.ligne < aParamsLignePrecSuivCachee.ligne) {
-      return !aParamsLigneVisible.article.derniereligne;
-    } else {
-      return !aParamsLignePrecSuivCachee.article.derniereligne;
-    }
-  }
-  avecBordureDroite(aParamsLigne) {
-    const lEstColDiscipline =
-      aParamsLigne.idColonne ===
-        DonneesListe_FicheLivretScolaire.colonnes.discipline ||
-      (aParamsLigne.idColonne ===
-        DonneesListe_FicheLivretScolaire.colonnes.regroupement &&
-        !aParamsLigne.article.avecRegroupement) ||
-      _estCelluleDeploiement(aParamsLigne);
-    if (lEstColDiscipline) {
-      return false;
-    }
-    return true;
-  }
-  fusionCelluleAvecColonnePrecedente(aParams) {
-    if (
-      _estCelluleDeploiement(aParams) &&
-      aParams.idColonne !== DonneesListe_FicheLivretScolaire.colonnes.discipline
-    ) {
-      return true;
-    }
-    if (
-      aParams.idColonne === DonneesListe_FicheLivretScolaire.colonnes.saisieEval
-    ) {
-      return !aParams.article.itemLivretScolaire;
-    }
-    return false;
-  }
-  fusionCelluleAvecLignePrecedente(aParamsCellule) {
-    if (
-      aParamsCellule.idColonne ===
-      DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle
-    ) {
-      return (
-        !aParamsCellule.celluleLignePrecedente.article.derniereligne &&
-        !aParamsCellule.article.titreDiscipline
-      );
-    }
-    if (
-      _estCelluleCompetence(aParamsCellule) ||
-      aParamsCellule.idColonne.startsWith(
-        DonneesListe_FicheLivretScolaire.colonnes.jaugeEval,
-      )
-    ) {
-      return !aParamsCellule.celluleLignePrecedente.article.derniereligne;
-    }
-    if (this.parametres.avecFiliere) {
-      switch (aParamsCellule.idColonne) {
-        case DonneesListe_FicheLivretScolaire.colonnes.anciennesNotes:
-          return (
-            !aParamsCellule.celluleLignePrecedente.article.derniereligne &&
-            !aParamsCellule.article.titreDiscipline
-          );
-        case DonneesListe_FicheLivretScolaire.colonnes.appreciation:
-          return (
-            !aParamsCellule.celluleLignePrecedente.article.derniereligne &&
-            !aParamsCellule.article.titreDiscipline
-          );
-        case DonneesListe_FicheLivretScolaire.colonnes.regroupement:
-        case DonneesListe_FicheLivretScolaire.colonnes.discipline:
-          return false;
-        case DonneesListe_FicheLivretScolaire.colonnes.evaluation:
-        case DonneesListe_FicheLivretScolaire.colonnes.saisieEval:
-          return (
-            !aParamsCellule.article.titreDiscipline &&
-            !aParamsCellule.article.titreEnseignement &&
-            !!aParamsCellule.article.metaMatiere &&
-            !!aParamsCellule.celluleLignePrecedente.article.metaMatiere &&
-            aParamsCellule.article.metaMatiere.getNumero() ===
-              aParamsCellule.celluleLignePrecedente.article.metaMatiere.getNumero() &&
-            !aParamsCellule.article.itemLivretScolaire &&
-            !aParamsCellule.celluleLignePrecedente.article.itemLivretScolaire
-          );
-        default:
-          return (
-            (aParamsCellule.celluleLignePrecedente.article.periode ||
-              (!aParamsCellule.celluleLignePrecedente.article.periode &&
-                !aParamsCellule.celluleLignePrecedente.article.derniereligne &&
-                !_estCelluleDeploiement(
-                  aParamsCellule.celluleLignePrecedente,
-                ))) &&
-            !aParamsCellule.article.periode &&
-            !_estCelluleDeploiement(aParamsCellule)
-          );
-      }
-    }
-  }
-  _getContexteColonnes(aParam, aEstRedoublant) {
-    const T = [];
-    if (!aEstRedoublant) {
-      T.push(DonneesListe_FicheLivretScolaire.colonnes.anciennesNotes);
-    }
-    if (aParam) {
-      if (!aParam.avecCompetences) {
-        T.push(DonneesListe_FicheLivretScolaire.colonnes.evaluation);
-        T.push(DonneesListe_FicheLivretScolaire.colonnes.saisieEval);
-      }
-      if (!aParam.avecRangEleve) {
-        T.push(DonneesListe_FicheLivretScolaire.colonnes.rang);
-      }
-      if (!aParam.avecMoyenneEleve) {
-        T.push(DonneesListe_FicheLivretScolaire.colonnes.moyEleve);
-      }
-      if (!aParam.avecMoyenneClasse) {
-        T.push(DonneesListe_FicheLivretScolaire.colonnes.moyClasse);
-      }
-      if (!aParam.avecRepartition) {
-        T.push(DonneesListe_FicheLivretScolaire.colonnes.inf8);
-        T.push(DonneesListe_FicheLivretScolaire.colonnes.de8a12);
-        T.push(DonneesListe_FicheLivretScolaire.colonnes.sup12);
-      }
-      if (!aParam.avecAppreciationsPeriode) {
-        T.push(DonneesListe_FicheLivretScolaire.colonnes.appreciation);
-      }
-      if (!aParam.avecColonneAppreciationsAnnuelles) {
-        T.push(DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle);
-      }
-    }
-    return T;
-  }
-  static estUneColonneCompetence(aParams) {
-    return (
-      !!aParams &&
-      aParams.idColonne &&
-      aParams.idColonne.startsWith(
-        DonneesListe_FicheLivretScolaire.colonnes.saisieEval,
-      )
-    );
-  }
+	constructor(aDonnees, aParam) {
+		aDonnees.donnees.parcourir((D) => {
+			if ((D.avecRegroupement || D.titreEnseignement) && !D.periode) {
+				D.estUnDeploiement = true;
+				D.estDeploye = true;
+			}
+		});
+		super(aDonnees.donnees);
+		this.donneesClasse = aDonnees.donneesClasse;
+		this.parametres = Object.assign(
+			{
+				affichage: aParam.affichage,
+				avecFiliere: aParam.avecFiliere,
+				initMenuContextuel: aParam.initMenuContextuel,
+				instance: aParam.instance,
+				listeEvaluations: aParam.listeEvaluations,
+				tailleMax: aParam.tailleMax,
+				eleveRedoublant: false,
+			},
+			aParam,
+		);
+		this.celluleCourante;
+		this.parametres.instance.setOptionsListe({
+			colonnesCachees: this._getContexteColonnes(
+				this.parametres.affichage,
+				this.parametres.eleveRedoublant,
+			),
+		});
+		this.setOptions({
+			avecEvnt_Selection: true,
+			avecSuppression: false,
+			avecDeploiement: true,
+			avecCelluleSuivanteSurFinEdition: true,
+			editionApresSelection: false,
+			avecEvnt_KeyPressListe: true,
+			avecEvnt_KeyUpListe: false,
+			selectionParCellule: true,
+			avecSelectionSurNavigationClavier: true,
+		});
+		this.moteur = new ObjetMoteurReleveBulletin();
+	}
+	avecSelection(aParams) {
+		if (
+			aParams.idColonne &&
+			aParams.idColonne.startsWith(
+				DonneesListe_FicheLivretScolaire.colonnes.saisieEval,
+			)
+		) {
+			return aParams.article.livretEditable;
+		}
+		return false;
+	}
+	avecEdition(aParams) {
+		return (
+			this._avecEditionAppreciation(aParams) ||
+			this._avecEditionConserverAnciennesNotes(aParams)
+		);
+	}
+	getHintForce(aParams) {
+		switch (aParams.idColonne) {
+			case DonneesListe_FicheLivretScolaire.colonnes.anciennesNotes:
+				return aParams.article.conserveAnciennesNotes
+					? GTraductions.getValeur("ficheScolaire.HintCocheAnneePrecedente", [
+							aParams.article.hintAnciennesNotes,
+						])
+					: "";
+			default:
+				return;
+		}
+	}
+	_avecEditionConserverAnciennesNotes(aParams) {
+		return (
+			aParams.idColonne ===
+				DonneesListe_FicheLivretScolaire.colonnes.anciennesNotes &&
+			GEtatUtilisateur.getUtilisateur().getGenre() ===
+				EGenreRessource.Enseignant &&
+			this.parametres.eleveRedoublant &&
+			((!!aParams.article.services && aParams.article.services.count() > 0) ||
+				(!!aParams.article.service && aParams.article.service.existeNumero()))
+		);
+	}
+	_avecEditionAppreciation(aParams) {
+		return (
+			aParams.article.appreciationAnnuelle &&
+			aParams.article.appreciationAnnuelle.editable &&
+			((aParams.idColonne ===
+				DonneesListe_FicheLivretScolaire.colonnes.appreciation &&
+				!this.parametres.affichage.avecColonneAppreciationsAnnuelles) ||
+				aParams.idColonne ===
+					DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle)
+		);
+	}
+	avecEvenementSelection(aParams) {
+		this.celluleCourante = aParams.article;
+		return true;
+	}
+	_avecEvaluationCompetenceLS(aColonne, aArticle, aParams) {
+		return (
+			((aParams.idColonne ===
+				DonneesListe_FicheLivretScolaire.colonnes.saisieEval &&
+				(aArticle.avecServices || aArticle.estSansObligationDeNotation)) ||
+				_estCelluleCompetence(aParams)) &&
+			aArticle.livretEditable
+		);
+	}
+	avecEvenementEdition(aParams) {
+		this.celluleCourante = aParams.article;
+		return (
+			(this._avecEditionAppreciation(aParams) &&
+				(GEtatUtilisateur.assistantSaisieActif ||
+					(aParams.article.services &&
+						aParams.article.services.count() > 1))) ||
+			this._avecEvaluationCompetenceLS(
+				aParams.colonne,
+				aParams.article,
+				aParams,
+			)
+		);
+	}
+	autoriserChaineVideSurEdition() {
+		return true;
+	}
+	avecDeploiementSurColonne(aParams) {
+		return (
+			aParams.idColonne ===
+			DonneesListe_FicheLivretScolaire.colonnes.regroupement
+		);
+	}
+	avecImageSurColonneDeploiement(aParams) {
+		return (
+			aParams.idColonne ===
+			DonneesListe_FicheLivretScolaire.colonnes.regroupement
+		);
+	}
+	avecContenuTronque(aParams) {
+		return (
+			aParams.idColonne !==
+				DonneesListe_FicheLivretScolaire.colonnes.appreciation &&
+			aParams.idColonne !==
+				DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle
+		);
+	}
+	getTri() {
+		return [
+			ObjetTri.initRecursif("pere", [
+				ObjetTri.init("Genre"),
+				ObjetTri.init((D) => {
+					return D.Libelle;
+				}),
+			]),
+		];
+	}
+	surDeploiement(I, J, D) {
+		D.estDeploye = !D.estDeploye;
+		for (
+			let index = J + 1, lFlag = true, lNbr = this.Donnees.count();
+			index < lNbr && lFlag;
+			index++
+		) {
+			const lLigne = this.Donnees.get(index);
+			lFlag =
+				(lLigne.avecRegroupement || this.parametres.avecFiliere) &&
+				!lLigne.estUnDeploiement;
+			if (lFlag) {
+				lLigne.estDeploye = !lLigne.estDeploye;
+			}
+		}
+	}
+	getValeur(aParams) {
+		if (_estCelluleCompetence(aParams)) {
+			return aParams.article.listeCompetences.get(
+				aParams.declarationColonne.rangColonne,
+			).evaluation.abbreviation;
+		} else if (
+			aParams.idColonne.startsWith(
+				DonneesListe_FicheLivretScolaire.colonnes.jaugeEval,
+			)
+		) {
+			if (aParams.article.listeCompetences) {
+				const lCompetence = aParams.article.listeCompetences.get(
+					aParams.declarationColonne.rangJauge,
+				);
+				if (!!lCompetence && !!lCompetence.listeNiveaux) {
+					const lOptionsJauge = {
+						listeNiveaux: lCompetence.listeNiveaux,
+						hint: lCompetence.hintNiveaux || "",
+						listeGenreNiveauxIgnores: [],
+					};
+					return TUtilitaireCompetences.composeJaugeParNiveaux(lOptionsJauge);
+				}
+			}
+			return "";
+		}
+		switch (aParams.idColonne) {
+			case DonneesListe_FicheLivretScolaire.colonnes.discipline:
+				return aParams.article.getLibelle();
+			case DonneesListe_FicheLivretScolaire.colonnes.periode:
+				return aParams.article.periode
+					? '<span class="Texte9">' +
+							aParams.article.periode.getLibelle() +
+							"</span>"
+					: "";
+			case DonneesListe_FicheLivretScolaire.colonnes.rang: {
+				const H = [];
+				const lInfoClasse = this.donneesClasse
+					? this.donneesClasse.get(aParams.ligne).rangTotal
+					: aParams.article.rangTotal;
+				if (!isNaN(aParams.article.rangEleve) && !isNaN(lInfoClasse)) {
+					H.push(aParams.article.rangEleve);
+					H.push(`<span class="Texte9">/${lInfoClasse}</span>`);
+				}
+				return H.join("");
+			}
+			case DonneesListe_FicheLivretScolaire.colonnes.moyEleve: {
+				const T = [];
+				if (aParams.article.estMoyNR === true) {
+					T.push(this.moteur.composeHtmlMoyNR());
+				} else if (
+					aParams.article.moyEleve !== null &&
+					aParams.article.moyEleve !== undefined
+				) {
+					T.push(aParams.article.moyEleve.note);
+				}
+				return T.join("");
+			}
+			case DonneesListe_FicheLivretScolaire.colonnes.moyClasse:
+				return this.donneesClasse
+					? this.donneesClasse.get(aParams.ligne).moyClasse
+						? this.donneesClasse.get(aParams.ligne).moyClasse.note
+						: ""
+					: aParams.article.moyClasse
+						? aParams.article.moyClasse.note
+						: "";
+			case DonneesListe_FicheLivretScolaire.colonnes.inf8:
+				return this.donneesClasse
+					? this.donneesClasse.get(aParams.ligne).inf8 !== undefined
+						? this.donneesClasse.get(aParams.ligne).inf8 + " %"
+						: ""
+					: aParams.article.inf8 !== undefined
+						? aParams.article.inf8 + " %"
+						: "";
+			case DonneesListe_FicheLivretScolaire.colonnes.de8a12:
+				return this.donneesClasse
+					? this.donneesClasse.get(aParams.ligne).de8a12 !== undefined
+						? this.donneesClasse.get(aParams.ligne).de8a12 + " %"
+						: ""
+					: aParams.article.de8a12 !== undefined
+						? aParams.article.de8a12 + " %"
+						: "";
+			case DonneesListe_FicheLivretScolaire.colonnes.sup12:
+				return this.donneesClasse
+					? this.donneesClasse.get(aParams.ligne).sup12 !== undefined
+						? this.donneesClasse.get(aParams.ligne).sup12 + " %"
+						: ""
+					: aParams.article.sup12 !== undefined
+						? aParams.article.sup12 + " %"
+						: "";
+			case DonneesListe_FicheLivretScolaire.colonnes.evaluation:
+				return aParams.article.itemLivretScolaire
+					? aParams.article.itemLivretScolaire.getLibelle()
+					: "";
+			case DonneesListe_FicheLivretScolaire.colonnes.saisieEval:
+				return aParams.article.itemLivretScolaire
+					? aParams.article.itemLivretScolaire.evaluation.abbreviation
+					: "";
+			case DonneesListe_FicheLivretScolaire.colonnes.appreciation: {
+				if (aParams.article.appreciation) {
+					return aParams.article.appreciation;
+				} else if (aParams.article.appreciationAnnuelle) {
+					if (!!aParams.article.appreciationAnnuelle.estRattache) {
+						return GTraductions.getValeur(
+							"ficheScolaire.messageServiceRattache",
+						);
+					} else {
+						return aParams.article.appreciationAnnuelle.getLibelle();
+					}
+				} else {
+					return "";
+				}
+			}
+			case DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle:
+				return aParams.article.appreciationAnnuelle
+					? aParams.article.appreciationAnnuelle.getLibelle()
+					: "";
+			case DonneesListe_FicheLivretScolaire.colonnes.anciennesNotes:
+				return aParams.article && this.parametres.eleveRedoublant
+					? aParams.article.conserveAnciennesNotes
+					: false;
+			default:
+				return "";
+		}
+	}
+	getTypeValeur(aParams) {
+		if (
+			_estCelluleCompetence(aParams) ||
+			aParams.idColonne.startsWith(
+				DonneesListe_FicheLivretScolaire.colonnes.jaugeEval,
+			)
+		) {
+			return ObjetDonneesListe.ETypeCellule.Html;
+		}
+		switch (aParams.idColonne) {
+			case DonneesListe_FicheLivretScolaire.colonnes.regroupement:
+				return aParams.article.estUnDeploiement === true
+					? ObjetDonneesListe.ETypeCellule.CocheDeploiement
+					: ObjetDonneesListe.ETypeCellule.Html;
+			case DonneesListe_FicheLivretScolaire.colonnes.moyEleve:
+			case DonneesListe_FicheLivretScolaire.colonnes.periode:
+			case DonneesListe_FicheLivretScolaire.colonnes.rang:
+			case DonneesListe_FicheLivretScolaire.colonnes.inf8:
+			case DonneesListe_FicheLivretScolaire.colonnes.de8a12:
+			case DonneesListe_FicheLivretScolaire.colonnes.sup12:
+			case DonneesListe_FicheLivretScolaire.colonnes.saisieEval:
+				return ObjetDonneesListe.ETypeCellule.Html;
+			case DonneesListe_FicheLivretScolaire.colonnes.discipline:
+			case DonneesListe_FicheLivretScolaire.colonnes.moyClasse:
+			case DonneesListe_FicheLivretScolaire.colonnes.evaluation:
+				return ObjetDonneesListe.ETypeCellule.Texte;
+			case DonneesListe_FicheLivretScolaire.colonnes.appreciation:
+			case DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle:
+				return ObjetDonneesListe.ETypeCellule.ZoneTexte;
+			case DonneesListe_FicheLivretScolaire.colonnes.anciennesNotes:
+				return ObjetDonneesListe.ETypeCellule.Coche;
+			default:
+				return ObjetDonneesListe.ETypeCellule.Texte;
+		}
+	}
+	surEdition(aParams, aValeur) {
+		if (
+			aParams.idColonne ===
+				DonneesListe_FicheLivretScolaire.colonnes.appreciation ||
+			aParams.idColonne ===
+				DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle
+		) {
+			aParams.article.appreciationAnnuelle.setEtat(EGenreEtat.Modification);
+			aParams.article.appreciation = aValeur;
+			aParams.article.appreciationAnnuelle.setLibelle(aValeur);
+			aParams.article.appreciationAnnuelle._validationSaisie = true;
+		}
+		if (
+			aParams.idColonne ===
+			DonneesListe_FicheLivretScolaire.colonnes.anciennesNotes
+		) {
+			aParams.article.modifConserveAnciennesNotes = true;
+			aParams.article.conserveAnciennesNotes = aValeur;
+		}
+	}
+	getControleCaracteresInput(aParams) {
+		switch (aParams.idColonne) {
+			case DonneesListe_FicheLivretScolaire.colonnes.appreciation:
+			case DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle:
+				if (this.parametres.tailleMax) {
+					return { tailleMax: this.parametres.tailleMax };
+				} else {
+					return {
+						tailleMax: aParams.article.appreciationAnnuelle.tailleMaxSaisie,
+					};
+				}
+			default:
+				return null;
+		}
+	}
+	remplirMenuContextuel(aParametres) {
+		this.parametres.initMenuContextuel(aParametres);
+	}
+	evenementMenuContextuel(aParametres) {
+		const lSelection = aParametres.menuContextuel.ligne.data,
+			lEval = MethodesObjet.dupliquer(this.listeEval.get(lSelection)),
+			lCelluleCourante = aParametres.article;
+		if (!lSelection) {
+			lEval.setEtat(EGenreEtat.Suppression);
+		} else {
+			lEval.setEtat(EGenreEtat.Modification);
+		}
+		if (_estCelluleCompetence(aParametres)) {
+			lCelluleCourante.listeCompetences.get(
+				aParametres.declarationColonne.rangColonne,
+			).evaluation = lEval;
+			lCelluleCourante.setEtat(EGenreEtat.FilsModification);
+			lCelluleCourante.listeCompetences
+				.get(aParametres.declarationColonne.rangColonne)
+				.setEtat(EGenreEtat.FilsModification);
+		} else {
+			lCelluleCourante.itemLivretScolaire.evaluation = lEval;
+			lCelluleCourante.setEtat(EGenreEtat.FilsModification);
+			lCelluleCourante.itemLivretScolaire.setEtat(EGenreEtat.FilsModification);
+		}
+	}
+	getClass(aParams) {
+		const T = [];
+		if (
+			aParams.idColonne ===
+				DonneesListe_FicheLivretScolaire.colonnes.moyEleve ||
+			(aParams.idColonne ===
+				DonneesListe_FicheLivretScolaire.colonnes.discipline &&
+				aParams.article.titreDiscipline)
+		) {
+			T.push("Gras");
+		}
+		if (
+			aParams.idColonne ===
+				DonneesListe_FicheLivretScolaire.colonnes.discipline &&
+			(aParams.article.titreEnseignant || aParams.article.titreService)
+		) {
+			T.push("Italique");
+		}
+		if (
+			[
+				DonneesListe_FicheLivretScolaire.colonnes.periode,
+				DonneesListe_FicheLivretScolaire.colonnes.rang,
+				DonneesListe_FicheLivretScolaire.colonnes.moyEleve,
+				DonneesListe_FicheLivretScolaire.colonnes.moyClasse,
+				DonneesListe_FicheLivretScolaire.colonnes.inf8,
+				DonneesListe_FicheLivretScolaire.colonnes.de8a12,
+				DonneesListe_FicheLivretScolaire.colonnes.sup12,
+			].includes(aParams.idColonne)
+		) {
+			T.push("AlignementDroit");
+		}
+		if (
+			aParams.idColonne === DonneesListe_FicheLivretScolaire.colonnes.saisieEval
+		) {
+			T.push("AlignementMilieu");
+		}
+		if (
+			((aParams.idColonne ===
+				DonneesListe_FicheLivretScolaire.colonnes.appreciation &&
+				!this.parametres.affichage.avecColonneAppreciationsAnnuelles) ||
+				aParams.idColonne ===
+					DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle) &&
+			GEtatUtilisateur.assistantSaisieActif &&
+			aParams.article.appreciationAnnuelle &&
+			aParams.article.appreciationAnnuelle.editable
+		) {
+			T.push("Curseur_AssistantSaisieActif");
+		}
+		return T.join(" ");
+	}
+	getClassCelluleConteneur(aParams) {
+		const T = [];
+		if (
+			aParams.idColonne.startsWith(
+				DonneesListe_FicheLivretScolaire.colonnes.jaugeEval,
+			)
+		) {
+			T.push("dl_fls_Jauge");
+		}
+		if (
+			((aParams.idColonne ===
+				DonneesListe_FicheLivretScolaire.colonnes.appreciation &&
+				!this.parametres.affichage.avecColonneAppreciationsAnnuelles) ||
+				aParams.idColonne ===
+					DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle) &&
+			GEtatUtilisateur.assistantSaisieActif &&
+			aParams.article.appreciationAnnuelle &&
+			aParams.article.appreciationAnnuelle.editable
+		) {
+			T.push("Curseur_AssistantSaisieActif");
+		}
+		if (_estCelluleCompetence(aParams)) {
+			T.push("Gras AlignementMilieu");
+		}
+		return T;
+	}
+	alignVCenter(aParams) {
+		return (
+			_estCelluleCompetence(aParams) ||
+			aParams.idColonne ===
+				DonneesListe_FicheLivretScolaire.colonnes.anciennesNotes
+		);
+	}
+	getCouleurCellule(aParams) {
+		let lColor = ObjetDonneesListe.ECouleurCellule.Fixe;
+		if (
+			aParams.idColonne !==
+				DonneesListe_FicheLivretScolaire.colonnes.discipline &&
+			aParams.idColonne !== DonneesListe_FicheLivretScolaire.colonnes.periode
+		) {
+			lColor = ObjetDonneesListe.ECouleurCellule.Gris;
+		}
+		if (
+			aParams.idColonne ===
+				DonneesListe_FicheLivretScolaire.colonnes.moyEleve ||
+			aParams.idColonne === DonneesListe_FicheLivretScolaire.colonnes.moyClasse
+		) {
+			lColor = ObjetDonneesListe.ECouleurCellule.Total;
+		}
+		if (_estCelluleDeploiement(aParams)) {
+			lColor = ObjetDonneesListe.ECouleurCellule.Deploiement;
+			return lColor;
+		}
+		if (
+			aParams.idColonne ===
+			DonneesListe_FicheLivretScolaire.colonnes.regroupement
+		) {
+			lColor = aParams.article.avecRegroupement
+				? ObjetDonneesListe.ECouleurCellule.Deploiement
+				: ObjetDonneesListe.ECouleurCellule.Fixe;
+		}
+		if (
+			(((aParams.idColonne ===
+				DonneesListe_FicheLivretScolaire.colonnes.appreciation &&
+				!this.parametres.affichage.avecColonneAppreciationsAnnuelles) ||
+				aParams.idColonne ===
+					DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle) &&
+				aParams.article.appreciationAnnuelle &&
+				aParams.article.appreciationAnnuelle.editable) ||
+			(((aParams.idColonne ===
+				DonneesListe_FicheLivretScolaire.colonnes.saisieEval &&
+				(aParams.article.avecServices ||
+					aParams.article.estSansObligationDeNotation)) ||
+				_estCelluleCompetence(aParams)) &&
+				aParams.article.livretEditable)
+		) {
+			lColor = ObjetDonneesListe.ECouleurCellule.Blanc;
+		}
+		if (this._avecEditionConserverAnciennesNotes(aParams)) {
+			lColor = ObjetDonneesListe.ECouleurCellule.Blanc;
+		}
+		return lColor;
+	}
+	getStyle(aParams) {
+		if (
+			aParams.idColonne ===
+				DonneesListe_FicheLivretScolaire.colonnes.discipline &&
+			!aParams.article.avecServices &&
+			!aParams.article.estSansObligationDeNotation &&
+			aParams.article.metaMatiere
+		) {
+			return "color:" + GCouleur.rouge + ";";
+		}
+	}
+	avecBordureBas(aParamsLigne) {
+		let lResultat = true;
+		if (
+			!aParamsLigne.article.derniereligne &&
+			aParamsLigne.idColonne ===
+				DonneesListe_FicheLivretScolaire.colonnes.regroupement &&
+			aParamsLigne.article.avecRegroupement
+		) {
+			lResultat = false;
+		}
+		if (
+			(aParamsLigne.idColonne ===
+				DonneesListe_FicheLivretScolaire.colonnes.discipline ||
+				aParamsLigne.idColonne ===
+					DonneesListe_FicheLivretScolaire.colonnes.regroupement) &&
+			!aParamsLigne.article.derniereligne &&
+			!_estCelluleDeploiement(aParamsLigne)
+		) {
+			lResultat = false;
+		}
+		if (
+			aParamsLigne.article.derniereligne &&
+			aParamsLigne.idColonne ===
+				DonneesListe_FicheLivretScolaire.colonnes.regroupement &&
+			aParamsLigne.article.avecRegroupement &&
+			aParamsLigne.celluleLigneSuivante.article.avecRegroupement &&
+			!_estCelluleDeploiement(aParamsLigne.celluleLigneSuivante)
+		) {
+			lResultat = false;
+		}
+		if (
+			!aParamsLigne.article.derniereligne &&
+			aParamsLigne.article.estChefDOeuvre &&
+			!_estCelluleDeploiement(aParamsLigne.celluleLigneSuivante)
+		) {
+			lResultat = false;
+		}
+		return lResultat;
+	}
+	rechercheTexteForcerLignePrecSuivVisible(
+		aParamsLigneVisible,
+		aParamsLignePrecSuivCachee,
+	) {
+		if (aParamsLigneVisible.ligne < aParamsLignePrecSuivCachee.ligne) {
+			return !aParamsLigneVisible.article.derniereligne;
+		} else {
+			return !aParamsLignePrecSuivCachee.article.derniereligne;
+		}
+	}
+	avecBordureDroite(aParamsLigne) {
+		const lEstColDiscipline =
+			aParamsLigne.idColonne ===
+				DonneesListe_FicheLivretScolaire.colonnes.discipline ||
+			(aParamsLigne.idColonne ===
+				DonneesListe_FicheLivretScolaire.colonnes.regroupement &&
+				!aParamsLigne.article.avecRegroupement) ||
+			_estCelluleDeploiement(aParamsLigne);
+		if (lEstColDiscipline) {
+			return false;
+		}
+		return true;
+	}
+	fusionCelluleAvecColonnePrecedente(aParams) {
+		if (
+			_estCelluleDeploiement(aParams) &&
+			aParams.idColonne !== DonneesListe_FicheLivretScolaire.colonnes.discipline
+		) {
+			return true;
+		}
+		if (
+			aParams.idColonne === DonneesListe_FicheLivretScolaire.colonnes.saisieEval
+		) {
+			return !aParams.article.itemLivretScolaire;
+		}
+		return false;
+	}
+	fusionCelluleAvecLignePrecedente(aParamsCellule) {
+		if (
+			aParamsCellule.idColonne ===
+			DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle
+		) {
+			return (
+				!aParamsCellule.celluleLignePrecedente.article.derniereligne &&
+				!aParamsCellule.article.titreDiscipline
+			);
+		}
+		if (
+			_estCelluleCompetence(aParamsCellule) ||
+			aParamsCellule.idColonne.startsWith(
+				DonneesListe_FicheLivretScolaire.colonnes.jaugeEval,
+			)
+		) {
+			return !aParamsCellule.celluleLignePrecedente.article.derniereligne;
+		}
+		if (this.parametres.avecFiliere) {
+			switch (aParamsCellule.idColonne) {
+				case DonneesListe_FicheLivretScolaire.colonnes.anciennesNotes:
+					return (
+						!aParamsCellule.celluleLignePrecedente.article.derniereligne &&
+						!aParamsCellule.article.titreDiscipline
+					);
+				case DonneesListe_FicheLivretScolaire.colonnes.appreciation:
+					return (
+						!aParamsCellule.celluleLignePrecedente.article.derniereligne &&
+						!aParamsCellule.article.titreDiscipline
+					);
+				case DonneesListe_FicheLivretScolaire.colonnes.regroupement:
+				case DonneesListe_FicheLivretScolaire.colonnes.discipline:
+					return false;
+				case DonneesListe_FicheLivretScolaire.colonnes.evaluation:
+				case DonneesListe_FicheLivretScolaire.colonnes.saisieEval:
+					return (
+						!aParamsCellule.article.titreDiscipline &&
+						!aParamsCellule.article.titreEnseignement &&
+						!!aParamsCellule.article.metaMatiere &&
+							!!aParamsCellule.celluleLignePrecedente.article.metaMatiere &&
+						aParamsCellule.article.metaMatiere.getNumero() ===
+							aParamsCellule.celluleLignePrecedente.article.metaMatiere.getNumero() &&
+						!aParamsCellule.article.itemLivretScolaire &&
+						!aParamsCellule.celluleLignePrecedente.article.itemLivretScolaire
+					);
+				default:
+					return (
+						(aParamsCellule.celluleLignePrecedente.article.periode ||
+							(!aParamsCellule.celluleLignePrecedente.article.periode &&
+								!aParamsCellule.celluleLignePrecedente.article.derniereligne &&
+								!_estCelluleDeploiement(
+									aParamsCellule.celluleLignePrecedente,
+								))) &&
+						!aParamsCellule.article.periode &&
+						!_estCelluleDeploiement(aParamsCellule)
+					);
+			}
+		}
+	}
+	_getContexteColonnes(aParam, aEstRedoublant) {
+		const T = [];
+		if (!aEstRedoublant) {
+			T.push(DonneesListe_FicheLivretScolaire.colonnes.anciennesNotes);
+		}
+		if (aParam) {
+			if (!aParam.avecCompetences) {
+				T.push(DonneesListe_FicheLivretScolaire.colonnes.evaluation);
+				T.push(DonneesListe_FicheLivretScolaire.colonnes.saisieEval);
+			}
+			if (!aParam.avecRangEleve) {
+				T.push(DonneesListe_FicheLivretScolaire.colonnes.rang);
+			}
+			if (!aParam.avecMoyenneEleve) {
+				T.push(DonneesListe_FicheLivretScolaire.colonnes.moyEleve);
+			}
+			if (!aParam.avecMoyenneClasse) {
+				T.push(DonneesListe_FicheLivretScolaire.colonnes.moyClasse);
+			}
+			if (!aParam.avecRepartition) {
+				T.push(DonneesListe_FicheLivretScolaire.colonnes.inf8);
+				T.push(DonneesListe_FicheLivretScolaire.colonnes.de8a12);
+				T.push(DonneesListe_FicheLivretScolaire.colonnes.sup12);
+			}
+			if (!aParam.avecAppreciationsPeriode) {
+				T.push(DonneesListe_FicheLivretScolaire.colonnes.appreciation);
+			}
+			if (!aParam.avecColonneAppreciationsAnnuelles) {
+				T.push(DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle);
+			}
+		}
+		return T;
+	}
+	static estUneColonneCompetence(aParams) {
+		return (
+			!!aParams &&
+			aParams.idColonne &&
+			aParams.idColonne.startsWith(
+				DonneesListe_FicheLivretScolaire.colonnes.saisieEval,
+			)
+		);
+	}
 }
 DonneesListe_FicheLivretScolaire.colonnes = {
-  regroupement: "livretScolaire_regroupement",
-  discipline: "livretScolaire_discipline",
-  periode: "livretScolaire_periode",
-  anciennesNotes: "livretScolaire_anciennesNotes",
-  rang: "livretScolaire_rang",
-  moyEleve: "livretScolaire_moyEleve",
-  moyClasse: "livretScolaire_moyClasse",
-  inf8: "livretScolaire_inf8",
-  de8a12: "livretScolaire_de8a12",
-  sup12: "livretScolaire_sup12",
-  evaluation: "livretScolaire_evaluation",
-  saisieEval: "livretScolaire_saisieEval",
-  appreciation: "livretScolaire_appreciation",
-  apprAnnuelle: "livretScolaire_apprAnnuelle",
-  jaugeEval: "livretScolaire_jaugeEval",
+	regroupement: "livretScolaire_regroupement",
+	discipline: "livretScolaire_discipline",
+	periode: "livretScolaire_periode",
+	anciennesNotes: "livretScolaire_anciennesNotes",
+	rang: "livretScolaire_rang",
+	moyEleve: "livretScolaire_moyEleve",
+	moyClasse: "livretScolaire_moyClasse",
+	inf8: "livretScolaire_inf8",
+	de8a12: "livretScolaire_de8a12",
+	sup12: "livretScolaire_sup12",
+	evaluation: "livretScolaire_evaluation",
+	saisieEval: "livretScolaire_saisieEval",
+	appreciation: "livretScolaire_appreciation",
+	apprAnnuelle: "livretScolaire_apprAnnuelle",
+	jaugeEval: "livretScolaire_jaugeEval",
 };
 function _estCelluleDeploiement(aParams) {
-  return (
-    (aParams.article.avecRegroupement || aParams.article.titreEnseignement) &&
-    !aParams.article.periode
-  );
+	return (
+		(aParams.article.avecRegroupement || aParams.article.titreEnseignement) &&
+		!aParams.article.periode
+	);
 }
 function _estCelluleCompetence(aParams) {
-  if (aParams.declarationColonne.rangColonne !== undefined) {
-    return true;
-  } else {
-    return false;
-  }
+	if (aParams.declarationColonne.rangColonne !== undefined) {
+		return true;
+	} else {
+		return false;
+	}
 }
 module.exports = { DonneesListe_FicheLivretScolaire };

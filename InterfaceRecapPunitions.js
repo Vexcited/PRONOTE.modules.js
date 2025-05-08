@@ -18,358 +18,358 @@ const TypeHttpGenerationPDFSco_1 = require("TypeHttpGenerationPDFSco");
 const ObjetRequeteDetailAbsences_1 = require("ObjetRequeteDetailAbsences");
 const ObjetRequeteListeRegimesEleve_1 = require("ObjetRequeteListeRegimesEleve");
 CollectionRequetes_1.Requetes.inscrire(
-  "RecapPunitions",
-  ObjetRequeteJSON_1.ObjetRequeteConsultation,
+	"RecapPunitions",
+	ObjetRequeteJSON_1.ObjetRequeteConsultation,
 );
 class InterfaceRecapPunitions extends _InterfaceRecapVS_1._InterfaceRecapVS {
-  constructor(...aParams) {
-    super(...aParams);
-  }
-  construireInstances() {
-    super.construireInstances();
-    this.identParamEtFiltres = this.add(
-      ParamAffRecapPunitions_1.ParamAffRecapPunitions,
-      this._evntSurParamAff,
-    );
-    this.identRecap = this.add(ObjetListe_1.ObjetListe, this._evntSurListe);
-  }
-  setAutorisations() {}
-  _evntSurParamAff(aParam) {
-    switch (aParam.evnt) {
-      case ParamAffRecapPunitions_1.ParamAffRecapPunitions.GenreCallback
-        .actualiserDonnees:
-        if (aParam.avecModifCBGpe) {
-          this._actualiserVisibiliteColonnes();
-        }
-        this.requeteDonneesRecap(this._parametres);
-        break;
-    }
-  }
-  _actualiserVisibiliteColonnes() {
-    const lColonnesCachees = [];
-    const lCacherColPunition =
-      !this.droits.avecPunitions ||
-      !this._parametres.criteresFiltres.avecGpePunitions ||
-      !this.applicationSco.droits.get(
-        ObjetDroitsPN_1.TypeDroits.punition.avecRecapPunitions,
-      );
-    const lCacherColSanction =
-      !this._parametres.criteresFiltres.avecGpeSanctions ||
-      !this.applicationSco.droits.get(
-        ObjetDroitsPN_1.TypeDroits.punition.avecRecapSanctions,
-      );
-    if (lCacherColPunition && !!this._parametres.listeNaturePunition) {
-      this._parametres.listeNaturePunition.parcourir(
-        (aNaturePunition, aIndice) => {
-          lColonnesCachees.push(
-            DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
-              .prefixe_punition + aIndice,
-          );
-        },
-      );
-    }
-    if (lCacherColSanction && !!this._parametres.listeNatureSanction) {
-      this._parametres.listeNatureSanction.parcourir(
-        (aNatureSanction, aIndice) => {
-          lColonnesCachees.push(
-            DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
-              .prefixe_sanction + aIndice,
-          );
-        },
-      );
-    }
-    if (!this.droits.avecChoixRepas && !this.droits.avecChoixInternat) {
-      lColonnesCachees.push(
-        DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
-          .regimes,
-      );
-    }
-    this.getInstance(this.identRecap).setOptionsListe(
-      { colonnesCachees: lColonnesCachees },
-      true,
-    );
-  }
-  requeteDonneesRecap(aParam) {
-    aParam.classes.setSerialisateurJSON({ ignorerEtatsElements: true });
-    aParam.regimes.setSerialisateurJSON({ ignorerEtatsElements: true });
-    aParam.criteresFiltres.motifsPunitions.setSerialisateurJSON({
-      ignorerEtatsElements: true,
-    });
-    (0, CollectionRequetes_1.Requetes)(
-      "RecapPunitions",
-      this,
-      this.surRecupererDonneesRecap.bind(this, aParam),
-    ).lancerRequete({
-      classes: aParam.classes,
-      regimes: aParam.regimes,
-      criteres: aParam.criteresFiltres,
-      domaine: aParam.domaine,
-    });
-  }
-  surRecupererDonneesRecap(aParamDonnees, aParam) {
-    Invocateur_1.Invocateur.evenement(
-      Invocateur_1.ObjetInvocateur.events.activationImpression,
-      Enumere_GenreImpression_1.EGenreImpression.GenerationPDF,
-      this,
-      () => {
-        return {
-          genreGenerationPDF:
-            TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco
-              .RecapPunitionSanction,
-          classes: aParamDonnees.classes,
-          regimes: aParamDonnees.regimes,
-          criteres: aParamDonnees.criteresFiltres,
-          domaine: aParamDonnees.domaine,
-        };
-      },
-    );
-    this.getInstance(this.identRecap).setDonnees(
-      new DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions(
-        aParam.ListeLignes,
-        aParam.LigneCumul,
-      ),
-    );
-    this._actualiserVisibiliteColonnes();
-  }
-  _evntSurListe(aParametres) {
-    switch (aParametres.genreEvenement) {
-      case Enumere_EvenementListe_1.EGenreEvenementListe.SelectionClick: {
-        const lDonneesListe = this.getInstance(
-          this.identRecap,
-        ).getDonneesListe();
-        const lEstColonnePunition = lDonneesListe.estColonnePunition(
-          aParametres.idColonne,
-        );
-        const lEstColonneSanction = lDonneesListe.estColonneSanction(
-          aParametres.idColonne,
-        );
-        if (lEstColonnePunition || lEstColonneSanction) {
-          let lGenreAbsence;
-          if (lEstColonnePunition) {
-            lGenreAbsence = Enumere_Ressource_1.EGenreRessource.Punition;
-          } else {
-            lGenreAbsence = Enumere_Ressource_1.EGenreRessource.Sanction;
-          }
-          let lNatureAbsence;
-          if (lEstColonnePunition) {
-            const lIndicePunition = lDonneesListe.getIndicePunitionDeColonne(
-              aParametres.idColonne,
-            );
-            lNatureAbsence =
-              aParametres.article.listeRubriquePunition.get(lIndicePunition);
-          } else {
-            const lIndiceSanction = lDonneesListe.getIndiceSanctionDeColonne(
-              aParametres.idColonne,
-            );
-            lNatureAbsence =
-              aParametres.article.listeRubriqueSanction.get(lIndiceSanction);
-          }
-          const lDetailAbsenceCourante = {
-            genreAbsence: lGenreAbsence,
-            absence: lNatureAbsence,
-          };
-          lNatureAbsence.listeAbsences.setSerialisateurJSON({
-            ignorerEtatsElements: true,
-          });
-          new ObjetRequeteDetailAbsences_1.ObjetRequeteDetailAbsences(
-            this,
-            this.actionSurRecupererDetailAbsences.bind(
-              this,
-              aParametres.article,
-              lDetailAbsenceCourante,
-            ),
-          ).lancerRequete({
-            eleve: aParametres.article.eleve,
-            domaine: this._parametres.domaine,
-            genreAbsence: lGenreAbsence,
-            natureAbsence: lNatureAbsence,
-            listeAbsences: lNatureAbsence.listeAbsences,
-          });
-        }
-        break;
-      }
-    }
-  }
-  requeteCriteresSelection() {
-    new ObjetRequeteListeRegimesEleve_1.ObjetRequeteListeRegimesEleve(
-      this,
-      this.surRecupererCriteresSelection,
-    ).lancerRequete({
-      avecRegimesEleves: true,
-      avecSeulementUtilises: true,
-      avecAucun: true,
-      avecMotifsAbsence: false,
-      avecMotifsAbsRepas: false,
-      avecMotifsAbsInternat: false,
-      avecMotifsRetard: false,
-      avecMotifsInfirmerie: false,
-      avecIssuesInfirmerie: false,
-      avecDetailElts: false,
-      avecObservations: false,
-      avecMotifsPunition: true,
-      avecPunitions: true,
-      avecSanctions: true,
-    });
-  }
-  getCriteresSelectionParDefaut() {
-    return {
-      uniquementPlusJeunesQue: false,
-      borneAge: 18,
-      avecGpePunitions: this.droits.avecPunitions,
-      avecGpeSanctions: true,
-      motifsPunitions: new ObjetListeElements_1.ObjetListeElements(),
-      uniquementFilles: true,
-      uniquementGarcons: true,
-    };
-  }
-  aFaireSurRecupererCriteresSelection(aParam) {
-    $.extend(this._parametres.criteresFiltres, {
-      motifsPunitions: aParam.motifs,
-    });
-    this.getInstance(this.identParamEtFiltres).setDonnees({
-      selection: this._parametres.criteresFiltres,
-      motifsPunitions: aParam.motifs,
-    });
-    $.extend(this._parametres, {
-      listeNaturePunition: aParam.listeNaturePunition,
-    });
-    const lColonnes = [];
-    lColonnes.push({
-      id: DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
-        .eleves,
-      titre: ObjetTraduction_1.GTraductions.getValeur("RecapAbs.colEleves"),
-      taille: 200,
-    });
-    lColonnes.push({
-      id: DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
-        .classes,
-      titre: ObjetTraduction_1.GTraductions.getValeur("RecapAbs.colClasses"),
-      taille: 100,
-    });
-    lColonnes.push({
-      id: DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
-        .dateNaissance,
-      titre: ObjetTraduction_1.GTraductions.getValeur("RecapAbs.colNaiss"),
-      taille: 100,
-    });
-    lColonnes.push({
-      id: DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
-        .regimes,
-      titre: ObjetTraduction_1.GTraductions.getValeur("RecapAbs.colRegime"),
-      taille: 250,
-    });
-    if (!!this._parametres.listeNaturePunition) {
-      this._parametres.listeNaturePunition.parcourir(
-        (aNaturePunition, aIndice) => {
-          lColonnes.push({
-            id:
-              DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
-                .prefixe_punition + aIndice,
-            titre: [
-              {
-                libelle: ObjetTraduction_1.GTraductions.getValeur(
-                  "RecapPunition.colPunition",
-                ),
-                avecFusionColonne: true,
-              },
-              {
-                libelle: aNaturePunition.libCourt,
-                title: aNaturePunition.getLibelle(),
-              },
-            ],
-            taille: 70,
-          });
-        },
-      );
-    }
-    $.extend(this._parametres, {
-      listeNatureSanction: aParam.listeNatureSanction,
-    });
-    if (!!this._parametres.listeNatureSanction) {
-      this._parametres.listeNatureSanction.parcourir(
-        (aNatureSanction, aIndice) => {
-          lColonnes.push({
-            id:
-              DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
-                .prefixe_sanction + aIndice,
-            titre: [
-              {
-                libelle: ObjetTraduction_1.GTraductions.getValeur(
-                  "RecapPunition.colSanction",
-                ),
-                avecFusionColonne: true,
-              },
-              {
-                libelle: aNatureSanction.libCourt,
-                title: aNatureSanction.getLibelle(),
-              },
-            ],
-            taille: 70,
-          });
-        },
-      );
-    }
-    const lColonnesCachees = [];
-    if (!this.droits.avecChoixRepas && !this.droits.avecChoixInternat) {
-      lColonnesCachees.push(
-        DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
-          .regimes,
-      );
-    }
-    this.getInstance(this.identRecap).setOptionsListe(
-      {
-        colonnes: lColonnes,
-        colonnesCachees: lColonnesCachees,
-        avecLigneTotal: true,
-        scrollHorizontal: true,
-      },
-      true,
-    );
-  }
-  actionSurRecupererDetailAbsences(
-    aDonnee,
-    aDetailAbsenceCourante,
-    aListeAbsences,
-  ) {
-    const lDate = IE.Cycles.dateDebutCycle(
-      this._parametres.domaine.getPremierePosition(),
-    );
-    const lStrDate = ObjetDate_1.GDate.formatDate(lDate, "%JJ/%MM/%AAAA");
-    const lTitre = [aDonnee.eleve.getLibelle()];
-    let lNbAbs = 0;
-    for (
-      let i = 0, lNbr = aListeAbsences.listeAbsences.count();
-      i < lNbr;
-      i++
-    ) {
-      if (!aListeAbsences.listeAbsences.get(i).estUnDeploiement) {
-        lNbAbs++;
-      }
-    }
-    lTitre.push(
-      ObjetChaine_1.GChaine.format(
-        ObjetTraduction_1.GTraductions.getValeur(
-          lNbAbs > 1 ? "AbsenceVS.sanctionsDepuis" : "AbsenceVS.sanctionDepuis",
-        ),
-        [lNbAbs, aDetailAbsenceCourante.absence.getLibelle(), lStrDate],
-      ),
-    );
-    this.getInstance(this.identFenetreAbsParCours).setOptionsFenetre({
-      titre: lTitre.join(" - "),
-    });
-    const lGenreAbsence = aDetailAbsenceCourante.absence.estExclusion
-      ? Enumere_Ressource_1.EGenreRessource.Exclusion
-      : aDetailAbsenceCourante.genreAbsence;
-    this.getInstance(this.identFenetreAbsParCours).setDonnees(
-      null,
-      null,
-      true,
-      aDonnee.eleve,
-      aListeAbsences,
-      lGenreAbsence,
-      !!aDetailAbsenceCourante.absence.getNumero(),
-    );
-    this.getInstance(this.identFenetreAbsParCours).afficher();
-  }
+	constructor(...aParams) {
+		super(...aParams);
+	}
+	construireInstances() {
+		super.construireInstances();
+		this.identParamEtFiltres = this.add(
+			ParamAffRecapPunitions_1.ParamAffRecapPunitions,
+			this._evntSurParamAff,
+		);
+		this.identRecap = this.add(ObjetListe_1.ObjetListe, this._evntSurListe);
+	}
+	setAutorisations() {}
+	_evntSurParamAff(aParam) {
+		switch (aParam.evnt) {
+			case ParamAffRecapPunitions_1.ParamAffRecapPunitions.GenreCallback
+				.actualiserDonnees:
+				if (aParam.avecModifCBGpe) {
+					this._actualiserVisibiliteColonnes();
+				}
+				this.requeteDonneesRecap(this._parametres);
+				break;
+		}
+	}
+	_actualiserVisibiliteColonnes() {
+		const lColonnesCachees = [];
+		const lCacherColPunition =
+			!this.droits.avecPunitions ||
+			!this._parametres.criteresFiltres.avecGpePunitions ||
+			!this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.punition.avecRecapPunitions,
+			);
+		const lCacherColSanction =
+			!this._parametres.criteresFiltres.avecGpeSanctions ||
+			!this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.punition.avecRecapSanctions,
+			);
+		if (lCacherColPunition && !!this._parametres.listeNaturePunition) {
+			this._parametres.listeNaturePunition.parcourir(
+				(aNaturePunition, aIndice) => {
+					lColonnesCachees.push(
+						DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
+							.prefixe_punition + aIndice,
+					);
+				},
+			);
+		}
+		if (lCacherColSanction && !!this._parametres.listeNatureSanction) {
+			this._parametres.listeNatureSanction.parcourir(
+				(aNatureSanction, aIndice) => {
+					lColonnesCachees.push(
+						DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
+							.prefixe_sanction + aIndice,
+					);
+				},
+			);
+		}
+		if (!this.droits.avecChoixRepas && !this.droits.avecChoixInternat) {
+			lColonnesCachees.push(
+				DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
+					.regimes,
+			);
+		}
+		this.getInstance(this.identRecap).setOptionsListe(
+			{ colonnesCachees: lColonnesCachees },
+			true,
+		);
+	}
+	requeteDonneesRecap(aParam) {
+		aParam.classes.setSerialisateurJSON({ ignorerEtatsElements: true });
+		aParam.regimes.setSerialisateurJSON({ ignorerEtatsElements: true });
+		aParam.criteresFiltres.motifsPunitions.setSerialisateurJSON({
+			ignorerEtatsElements: true,
+		});
+		(0, CollectionRequetes_1.Requetes)(
+			"RecapPunitions",
+			this,
+			this.surRecupererDonneesRecap.bind(this, aParam),
+		).lancerRequete({
+			classes: aParam.classes,
+			regimes: aParam.regimes,
+			criteres: aParam.criteresFiltres,
+			domaine: aParam.domaine,
+		});
+	}
+	surRecupererDonneesRecap(aParamDonnees, aParam) {
+		Invocateur_1.Invocateur.evenement(
+			Invocateur_1.ObjetInvocateur.events.activationImpression,
+			Enumere_GenreImpression_1.EGenreImpression.GenerationPDF,
+			this,
+			() => {
+				return {
+					genreGenerationPDF:
+						TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco
+							.RecapPunitionSanction,
+					classes: aParamDonnees.classes,
+					regimes: aParamDonnees.regimes,
+					criteres: aParamDonnees.criteresFiltres,
+					domaine: aParamDonnees.domaine,
+				};
+			},
+		);
+		this.getInstance(this.identRecap).setDonnees(
+			new DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions(
+				aParam.ListeLignes,
+				aParam.LigneCumul,
+			),
+		);
+		this._actualiserVisibiliteColonnes();
+	}
+	_evntSurListe(aParametres) {
+		switch (aParametres.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.SelectionClick: {
+				const lDonneesListe = this.getInstance(
+					this.identRecap,
+				).getDonneesListe();
+				const lEstColonnePunition = lDonneesListe.estColonnePunition(
+					aParametres.idColonne,
+				);
+				const lEstColonneSanction = lDonneesListe.estColonneSanction(
+					aParametres.idColonne,
+				);
+				if (lEstColonnePunition || lEstColonneSanction) {
+					let lGenreAbsence;
+					if (lEstColonnePunition) {
+						lGenreAbsence = Enumere_Ressource_1.EGenreRessource.Punition;
+					} else {
+						lGenreAbsence = Enumere_Ressource_1.EGenreRessource.Sanction;
+					}
+					let lNatureAbsence;
+					if (lEstColonnePunition) {
+						const lIndicePunition = lDonneesListe.getIndicePunitionDeColonne(
+							aParametres.idColonne,
+						);
+						lNatureAbsence =
+							aParametres.article.listeRubriquePunition.get(lIndicePunition);
+					} else {
+						const lIndiceSanction = lDonneesListe.getIndiceSanctionDeColonne(
+							aParametres.idColonne,
+						);
+						lNatureAbsence =
+							aParametres.article.listeRubriqueSanction.get(lIndiceSanction);
+					}
+					const lDetailAbsenceCourante = {
+						genreAbsence: lGenreAbsence,
+						absence: lNatureAbsence,
+					};
+					lNatureAbsence.listeAbsences.setSerialisateurJSON({
+						ignorerEtatsElements: true,
+					});
+					new ObjetRequeteDetailAbsences_1.ObjetRequeteDetailAbsences(
+						this,
+						this.actionSurRecupererDetailAbsences.bind(
+							this,
+							aParametres.article,
+							lDetailAbsenceCourante,
+						),
+					).lancerRequete({
+						eleve: aParametres.article.eleve,
+						domaine: this._parametres.domaine,
+						genreAbsence: lGenreAbsence,
+						natureAbsence: lNatureAbsence,
+						listeAbsences: lNatureAbsence.listeAbsences,
+					});
+				}
+				break;
+			}
+		}
+	}
+	requeteCriteresSelection() {
+		new ObjetRequeteListeRegimesEleve_1.ObjetRequeteListeRegimesEleve(
+			this,
+			this.surRecupererCriteresSelection,
+		).lancerRequete({
+			avecRegimesEleves: true,
+			avecSeulementUtilises: true,
+			avecAucun: true,
+			avecMotifsAbsence: false,
+			avecMotifsAbsRepas: false,
+			avecMotifsAbsInternat: false,
+			avecMotifsRetard: false,
+			avecMotifsInfirmerie: false,
+			avecIssuesInfirmerie: false,
+			avecDetailElts: false,
+			avecObservations: false,
+			avecMotifsPunition: true,
+			avecPunitions: true,
+			avecSanctions: true,
+		});
+	}
+	getCriteresSelectionParDefaut() {
+		return {
+			uniquementPlusJeunesQue: false,
+			borneAge: 18,
+			avecGpePunitions: this.droits.avecPunitions,
+			avecGpeSanctions: true,
+			motifsPunitions: new ObjetListeElements_1.ObjetListeElements(),
+			uniquementFilles: true,
+			uniquementGarcons: true,
+		};
+	}
+	aFaireSurRecupererCriteresSelection(aParam) {
+		$.extend(this._parametres.criteresFiltres, {
+			motifsPunitions: aParam.motifs,
+		});
+		this.getInstance(this.identParamEtFiltres).setDonnees({
+			selection: this._parametres.criteresFiltres,
+			motifsPunitions: aParam.motifs,
+		});
+		$.extend(this._parametres, {
+			listeNaturePunition: aParam.listeNaturePunition,
+		});
+		const lColonnes = [];
+		lColonnes.push({
+			id: DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
+				.eleves,
+			titre: ObjetTraduction_1.GTraductions.getValeur("RecapAbs.colEleves"),
+			taille: 200,
+		});
+		lColonnes.push({
+			id: DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
+				.classes,
+			titre: ObjetTraduction_1.GTraductions.getValeur("RecapAbs.colClasses"),
+			taille: 100,
+		});
+		lColonnes.push({
+			id: DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
+				.dateNaissance,
+			titre: ObjetTraduction_1.GTraductions.getValeur("RecapAbs.colNaiss"),
+			taille: 100,
+		});
+		lColonnes.push({
+			id: DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
+				.regimes,
+			titre: ObjetTraduction_1.GTraductions.getValeur("RecapAbs.colRegime"),
+			taille: 250,
+		});
+		if (!!this._parametres.listeNaturePunition) {
+			this._parametres.listeNaturePunition.parcourir(
+				(aNaturePunition, aIndice) => {
+					lColonnes.push({
+						id:
+							DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
+								.prefixe_punition + aIndice,
+						titre: [
+							{
+								libelle: ObjetTraduction_1.GTraductions.getValeur(
+									"RecapPunition.colPunition",
+								),
+								avecFusionColonne: true,
+							},
+							{
+								libelle: aNaturePunition.libCourt,
+								title: aNaturePunition.getLibelle(),
+							},
+						],
+						taille: 70,
+					});
+				},
+			);
+		}
+		$.extend(this._parametres, {
+			listeNatureSanction: aParam.listeNatureSanction,
+		});
+		if (!!this._parametres.listeNatureSanction) {
+			this._parametres.listeNatureSanction.parcourir(
+				(aNatureSanction, aIndice) => {
+					lColonnes.push({
+						id:
+							DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
+								.prefixe_sanction + aIndice,
+						titre: [
+							{
+								libelle: ObjetTraduction_1.GTraductions.getValeur(
+									"RecapPunition.colSanction",
+								),
+								avecFusionColonne: true,
+							},
+							{
+								libelle: aNatureSanction.libCourt,
+								title: aNatureSanction.getLibelle(),
+							},
+						],
+						taille: 70,
+					});
+				},
+			);
+		}
+		const lColonnesCachees = [];
+		if (!this.droits.avecChoixRepas && !this.droits.avecChoixInternat) {
+			lColonnesCachees.push(
+				DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
+					.regimes,
+			);
+		}
+		this.getInstance(this.identRecap).setOptionsListe(
+			{
+				colonnes: lColonnes,
+				colonnesCachees: lColonnesCachees,
+				avecLigneTotal: true,
+				scrollHorizontal: true,
+			},
+			true,
+		);
+	}
+	actionSurRecupererDetailAbsences(
+		aDonnee,
+		aDetailAbsenceCourante,
+		aListeAbsences,
+	) {
+		const lDate = IE.Cycles.dateDebutCycle(
+			this._parametres.domaine.getPremierePosition(),
+		);
+		const lStrDate = ObjetDate_1.GDate.formatDate(lDate, "%JJ/%MM/%AAAA");
+		const lTitre = [aDonnee.eleve.getLibelle()];
+		let lNbAbs = 0;
+		for (
+			let i = 0, lNbr = aListeAbsences.listeAbsences.count();
+			i < lNbr;
+			i++
+		) {
+			if (!aListeAbsences.listeAbsences.get(i).estUnDeploiement) {
+				lNbAbs++;
+			}
+		}
+		lTitre.push(
+			ObjetChaine_1.GChaine.format(
+				ObjetTraduction_1.GTraductions.getValeur(
+					lNbAbs > 1 ? "AbsenceVS.sanctionsDepuis" : "AbsenceVS.sanctionDepuis",
+				),
+				[lNbAbs, aDetailAbsenceCourante.absence.getLibelle(), lStrDate],
+			),
+		);
+		this.getInstance(this.identFenetreAbsParCours).setOptionsFenetre({
+			titre: lTitre.join(" - "),
+		});
+		const lGenreAbsence = aDetailAbsenceCourante.absence.estExclusion
+			? Enumere_Ressource_1.EGenreRessource.Exclusion
+			: aDetailAbsenceCourante.genreAbsence;
+		this.getInstance(this.identFenetreAbsParCours).setDonnees(
+			null,
+			null,
+			true,
+			aDonnee.eleve,
+			aListeAbsences,
+			lGenreAbsence,
+			!!aDetailAbsenceCourante.absence.getNumero(),
+		);
+		this.getInstance(this.identFenetreAbsParCours).afficher();
+	}
 }
 exports.InterfaceRecapPunitions = InterfaceRecapPunitions;

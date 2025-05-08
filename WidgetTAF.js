@@ -18,411 +18,411 @@ const ObjetElement_1 = require("ObjetElement");
 const ObjetGalerieCarrousel_1 = require("ObjetGalerieCarrousel");
 const TypeGenreMiniature_1 = require("TypeGenreMiniature");
 class WidgetTAF extends ObjetWidget_1.Widget.ObjetWidget {
-  creerObjetsTAF() {
-    this.utilitaireCDT =
-      new ObjetUtilitaireCahierDeTexte_1.ObjetUtilitaireCahierDeTexte(
-        this.Nom + ".utilitaireCDT",
-        this,
-        this.surUtilitaireCDT,
-      );
-  }
-  surUtilitaireCDT() {
-    this.callback.appel(
-      this.donnees.genre,
-      Enumere_EvenementWidget_1.EGenreEvenementWidget.ActualiserWidget,
-    );
-  }
-  getControleur(aInstance) {
-    return $.extend(true, super.getControleur(aInstance), {
-      surTAF(aNumeroTaf) {
-        $(this.node).eventValidation(() => {
-          aInstance._surTAF(aNumeroTaf);
-        });
-      },
-      getCarrouselTAF(aNumeroTAF) {
-        return {
-          class: ObjetGalerieCarrousel_1.ObjetGalerieCarrousel,
-          pere: aInstance,
-          init: (aCarrousel) => {
-            aCarrousel.setOptions({
-              dimensionPhoto: IE.estMobile ? 200 : 250,
-              tailleFixe: true,
-              nbMaxDiaposEnZoneVisible: 10,
-              sansBlocLibelle: true,
-              altImage: ObjetTraduction_1.GTraductions.getValeur(
-                "CahierDeTexte.altImage.TAF",
-              ),
-            });
-            aCarrousel.initialiser();
-          },
-          start: (aCarrousel) => {
-            let lTAF =
-              aInstance.donnees.listeTAF.getElementParNumero(aNumeroTAF);
-            const lListeDiapos = new ObjetListeElements_1.ObjetListeElements();
-            if (lTAF && lTAF.listeDocumentJoint) {
-              lTAF.listeDocumentJoint.parcourir((aPJ) => {
-                if (aPJ.avecMiniaturePossible) {
-                  let lDiapo = new ObjetElement_1.ObjetElement();
-                  lDiapo.setLibelle(aPJ.getLibelle());
-                  aPJ.miniature = IE.estMobile
-                    ? TypeGenreMiniature_1.TypeGenreMiniature.GM_400
-                    : TypeGenreMiniature_1.TypeGenreMiniature.GM_500;
-                  lDiapo.documentCasier = aPJ;
-                  lListeDiapos.add(lDiapo);
-                }
-              });
-            }
-            aCarrousel.setDonnees({ listeDiapos: lListeDiapos });
-          },
-        };
-      },
-      modelBoutonQCMTAF: {
-        event(aNumeroTAF) {
-          aInstance._surQCMTAF(aNumeroTAF);
-        },
-      },
-    });
-  }
-  construire(aParams) {
-    this.donnees = aParams.donnees;
-    this.peuFaireTAF = [
-      Enumere_Espace_1.EGenreEspace.Eleve,
-      Enumere_Espace_1.EGenreEspace.Mobile_Eleve,
-    ].includes(GEtatUtilisateur.GenreEspace);
-    const lThis = this;
-    $.extend(this.controleur, {
-      cbTAFFait: {
-        getValue: function (aNumeroTaf) {
-          const lTAF = lThis.donnees.listeTAF.getElementParNumero(aNumeroTaf);
-          return !!lTAF && lTAF.TAFFait;
-        },
-        setValue: function (aNumeroTaf, aValue) {
-          const lTAF = lThis.donnees.listeTAF.getElementParNumero(aNumeroTaf);
-          if (!!lTAF) {
-            lTAF.TAFFait = aValue;
-            lTAF.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
-            new ObjetRequeteSaisieTAFFaitEleve_1.ObjetRequeteSaisieTAFFaitEleve(
-              lThis,
-              lThis.surUtilitaireCDT,
-            ).lancerRequete({ listeTAF: lThis.donnees.listeTAF });
-          }
-        },
-        getHint: function (aNumeroTaf) {
-          let lHint = "";
-          const lTAF = lThis.donnees.listeTAF.getElementParNumero(aNumeroTaf);
-          if (!!lTAF) {
-            lHint = lTAF.TAFFait
-              ? ObjetTraduction_1.GTraductions.getValeur(
-                  "accueil.hintTravailFait",
-                )
-              : ObjetTraduction_1.GTraductions.getValeur(
-                  "accueil.hintTravailAFaire",
-                );
-          }
-          return lHint;
-        },
-        getDisabled: function () {
-          return !lThis.peuFaireTAF;
-        },
-      },
-    });
-    this.creerObjetsTAF();
-    if (this.donnees.listeTAF) {
-      this.donnees.listeTAF.setTri([
-        ObjetTri_1.ObjetTri.init("ordre"),
-        ObjetTri_1.ObjetTri.init((aElement) => {
-          return aElement.matiere.getLibelle();
-        }),
-      ]);
-      this.donnees.listeTAF.trier();
-    }
-    const H = [];
-    let lDate, lTaf, i;
-    const T = [];
-    if (this.donnees.listeTAF && this.donnees.listeTAF.count() > 0) {
-      H.push('<div class="conteneur-liste-CDT">');
-      H.push('<ul class="liste-imbriquee">');
-      for (let I = 0; I < this.donnees.listeTAF.count(); I++) {
-        lTaf = this.donnees.listeTAF.get(I);
-        lTaf.indice = I;
-        if (!T[lTaf.pourLe]) {
-          T[lTaf.pourLe] = [];
-        }
-        T[lTaf.pourLe].push(lTaf);
-      }
-      if (this.donnees.listeTAF.count() > 0) {
-        for (lDate in T) {
-          const lDateConcernee = new Date(lDate);
-          H.push(
-            '<li aria-labelledby="' +
-              this.getIdDate(lDateConcernee) +
-              '" tabindex="0">',
-          );
-          H.push(this.composeDate(lDateConcernee));
-          this.indiceLigne = 0;
-          H.push('<ul class="sub-liste cols">');
-          for (i in T[lDate]) {
-            lTaf = T[lDate][i];
-            H.push(this.composeTAF(lTaf.indice, lTaf, lDateConcernee));
-          }
-          H.push("</ul>");
-          H.push("</li>");
-        }
-      }
-      H.push("</ul>");
-      H.push("</div>");
-    }
-    const lWidget = {
-      html: H.join(""),
-      nbrElements: this.donnees.listeTAF ? this.donnees.listeTAF.count() : 0,
-      afficherMessage:
-        !this.donnees.listeTAF || this.donnees.listeTAF.count() === 0,
-    };
-    $.extend(true, this.donnees, lWidget);
-    aParams.construireWidget(this.donnees);
-  }
-  getIdDate(aDate) {
-    const lIdDate = [this.donnees.id, "_date"];
-    if (aDate) {
-      lIdDate.push("_", aDate.getFullYear().toString());
-      lIdDate.push("_", aDate.getMonth().toString());
-      lIdDate.push("_", aDate.getDate().toString());
-    }
-    return lIdDate.join("");
-  }
-  composeDate(aDate) {
-    const H = [];
-    H.push('<h3 id="', this.getIdDate(aDate), '">');
-    H.push(
-      "<span>",
-      (
-        ObjetTraduction_1.GTraductions.getValeur("accueil.pour") +
-        "</span>" +
-        " " +
-        ObjetDate_1.GDate.formatDate(aDate, "[" + "%JJJJ %J %MMM" + "]")
-      )
-        .toLowerCase()
-        .ucfirst(),
-    );
-    H.push("</h3>");
-    return H.join("");
-  }
-  composeMatiere(aTaf) {
-    const H = [];
-    H.push(
-      '<span class="titre-matiere ',
-      (!!aTaf.executionQCM ? aTaf.QCMFait : aTaf.TAFFait) ? "est-fait" : "",
-      '">',
-      aTaf.matiere.getLibelle(),
-      "</span>",
-    );
-    return H.join("");
-  }
-  composeTAF(i, aTaf, aDateConcernee) {
-    const H = [];
-    const lAvecERendu =
-      TypeGenreRenduTAF_1.TypeGenreRenduTAFUtil.estUnRenduEnligne(
-        aTaf.genreRendu,
-      );
-    const lEstQCM = !!aTaf.executionQCM;
-    const lEstFait = lEstQCM ? aTaf.QCMFait : aTaf.TAFFait;
-    H.push(
-      "<li ",
-      ObjetWAI_1.GObjetWAI.composeAttribut({
-        genre: ObjetWAI_1.EGenreAttribut.labelledby,
-        valeur: this.getIdDate(aDateConcernee),
-      }),
-      ">",
-    );
-    H.push('<div class="wrap conteneur-item">');
-    let lTitleTafFait = "";
-    if (!this.peuFaireTAF && aTaf.TAFFait) {
-      lTitleTafFait = ObjetTraduction_1.GTraductions.getValeur(
-        "accueil.hintParentTravailFait",
-        [GEtatUtilisateur.getMembre().getLibelle()],
-      );
-    }
-    H.push(
-      '<div tabindex="0" role="link" ie-node="surTAF(\'' +
-        aTaf.getNumero() +
-        '\')" class="as-header"',
-      lTitleTafFait ? 'title="' + lTitleTafFait + '"' : "",
-      ">",
-      '<div class="with-color" style="--couleur-matiere:',
-      aTaf.couleurFond,
-      ';margin-left:.8rem;">',
-      this.composeMatiere(aTaf),
-      "</div>",
-    );
-    H.push(
-      ' <ie-chips class="tag-style ',
-      lEstFait ? "ThemeCat-pedagogie" : "",
-      '">',
-      lEstFait
-        ? ObjetTraduction_1.GTraductions.getValeur("TAFEtContenu.TAFFait")
-        : ObjetTraduction_1.GTraductions.getValeur("TAFEtContenu.TAFNonFait"),
-      "</ie-chips>",
-    );
-    H.push("</div>");
-    H.push(
-      ' <div class="m-left">',
-      '<div tabindex="0" class="as-content ',
-      " avecAction",
-      lEstFait && !lEstQCM ? " done" : "",
-      '" aria-labelledby="' + this.Nom + "_" + i + '">',
-    );
-    if (aTaf.listeDocumentJoint) {
-      aTaf.listeDocumentJoint.trier();
-    }
-    H.push(
-      '<div class="description widgetTAF ',
-      !lEstQCM ? "tiny-view " : "",
-      lEstFait ? "est-fait" : "",
-      '" id="' + this.Nom + "_" + i + '">',
-      lEstQCM
-        ? '<i class="icon_qcm ThemeCat-pedagogie"></i>' +
-            (lEstFait ? aTaf.descriptifCourt : aTaf.descriptif)
-        : aTaf.descriptif,
-      "</div>",
-    );
-    if (aTaf.listeDocumentJoint && aTaf.listeDocumentJoint.count() > 0) {
-      H.push(this.composePiecesJointes(aTaf));
-    }
-    H.push("</div>", "</div>");
-    if (!lEstQCM && !lAvecERendu) {
-      if (
-        aTaf.genreRendu ===
-          TypeGenreRenduTAF_1.TypeGenreRenduTAF.GRTAF_RenduPapier &&
-        !aTaf.TAFFait
-      ) {
-        H.push('<div class="taf-a-rendre">');
-        H.push(
-          '<div class="taf-btn-conteneur">',
-          '<span class="as-info-light">',
-          TypeGenreRenduTAF_1.TypeGenreRenduTAFUtil.getLibelleDeposer(
-            aTaf.genreRendu,
-            false,
-          ),
-          "</span></div>",
-        );
-        H.push("</div>");
-      }
-      if (GEtatUtilisateur.estEspaceEleve()) {
-        H.push(
-          '<div class="flex-contain conteneur-cb"><ie-checkbox class="cb-termine colored-label" ie-textleft ie-model="cbTAFFait(\'',
-          aTaf.getNumero(),
-          "')\">",
-          ObjetTraduction_1.GTraductions.getValeur("TAFEtContenu.cbTermine"),
-          "</ie-checkbox></div>",
-        );
-      }
-    } else if (lEstQCM) {
-      const lAvecAction = UtilitaireQCM_1.UtilitaireQCM.estCliquable(
-        aTaf.executionQCM,
-      );
-      if (lAvecAction) {
-        const lBoutonExecution =
-          !lEstFait && aTaf.executionQCM.estEnPublication;
-        const lLibelleBouton =
-          !lBoutonExecution &&
-          (!GEtatUtilisateur.estEspacePourEleve() ||
-            !UtilitaireQCM_1.UtilitaireQCM.estJouable(aTaf.executionQCM))
-            ? ObjetTraduction_1.GTraductions.getValeur("TAFEtContenu.voirQCM")
-            : ObjetTraduction_1.GTraductions.getValeur(
-                "TAFEtContenu.executerQCM",
-              );
-        const lClasseBouton = !lBoutonExecution
-          ? "themeBoutonNeutre"
-          : "themeBoutonSecondaire";
-        const lIeModelBouton = "modelBoutonQCMTAF('" + aTaf.getNumero() + "')";
-        H.push(
-          IE.jsx.str(
-            IE.jsx.fragment,
-            null,
-            IE.jsx.str(
-              "div",
-              { class: "flex-contain btn-qcm" },
-              IE.jsx.str(
-                "ie-bouton",
-                { "ie-model": lIeModelBouton, class: lClasseBouton },
-                lLibelleBouton,
-              ),
-            ),
-          ),
-        );
-      }
-    } else {
-      H.push('<div class="taf-a-rendre">');
-      H.push(
-        this.utilitaireCDT.composeTAFARendrePourWidget(aTaf, {
-          nom: this.Nom,
-          controleur: this.controleur,
-          listeTAF: this.donnees.listeTAF,
-        }),
-      );
-      H.push("</div>");
-    }
-    H.push("</div>");
-    H.push("</li>");
-    return H.join("");
-  }
-  composePiecesJointes(aElement) {
-    const lHtml = [],
-      lListe = aElement.listeDocumentJoint;
-    lHtml.push('<div class="piece-jointe">');
-    let lAvecImage = false;
-    for (let I = 0; I < lListe.count(); I++) {
-      const lPieceJointe = lListe.get(I);
-      if (!lPieceJointe.avecMiniaturePossible) {
-        lHtml.push(
-          '<div class="chips-pj">',
-          ObjetChaine_1.GChaine.composerUrlLienExterne({
-            documentJoint: lPieceJointe,
-            maxWidth: 300,
-          }),
-          "</div>",
-        );
-      } else {
-        lAvecImage = true;
-      }
-    }
-    lHtml.push("</div>");
-    if (lAvecImage) {
-      lHtml.push(
-        "<div ie-identite=\"getCarrouselTAF('",
-        aElement.getNumero(),
-        "')\"></div>",
-      );
-    }
-    return lHtml.join("");
-  }
-  _surQCMTAF(aNumeroTaf) {
-    const lTaf = this.donnees.listeTAF.getElementParNumero(aNumeroTaf);
-    this.callback.appel(
-      this.donnees.genre,
-      Enumere_EvenementWidget_1.EGenreEvenementWidget.AfficherExecutionQCM,
-      lTaf.executionQCM,
-    );
-  }
-  _surTAF(aNumeroTaf) {
-    const lTaf = this.donnees.listeTAF.getElementParNumero(aNumeroTaf);
-    let lPageDestination;
-    if (GEtatUtilisateur.estEspaceMobile()) {
-      lPageDestination = {
-        genreOngletDest: Enumere_Onglet_1.EGenreOnglet.CDT_TAF,
-        taf: lTaf,
-      };
-    } else {
-      lPageDestination = {
-        Onglet: Enumere_Onglet_1.EGenreOnglet.CDT_TAF,
-        taf: lTaf,
-      };
-    }
-    this.callback.appel(
-      this.donnees.genre,
-      Enumere_EvenementWidget_1.EGenreEvenementWidget.NavigationVersPage,
-      lPageDestination,
-    );
-  }
+	creerObjetsTAF() {
+		this.utilitaireCDT =
+			new ObjetUtilitaireCahierDeTexte_1.ObjetUtilitaireCahierDeTexte(
+				this.Nom + ".utilitaireCDT",
+				this,
+				this.surUtilitaireCDT,
+			);
+	}
+	surUtilitaireCDT() {
+		this.callback.appel(
+			this.donnees.genre,
+			Enumere_EvenementWidget_1.EGenreEvenementWidget.ActualiserWidget,
+		);
+	}
+	getControleur(aInstance) {
+		return $.extend(true, super.getControleur(aInstance), {
+			surTAF(aNumeroTaf) {
+				$(this.node).eventValidation(() => {
+					aInstance._surTAF(aNumeroTaf);
+				});
+			},
+			getCarrouselTAF(aNumeroTAF) {
+				return {
+					class: ObjetGalerieCarrousel_1.ObjetGalerieCarrousel,
+					pere: aInstance,
+					init: (aCarrousel) => {
+						aCarrousel.setOptions({
+							dimensionPhoto: IE.estMobile ? 200 : 250,
+							tailleFixe: true,
+							nbMaxDiaposEnZoneVisible: 10,
+							sansBlocLibelle: true,
+							altImage: ObjetTraduction_1.GTraductions.getValeur(
+								"CahierDeTexte.altImage.TAF",
+							),
+						});
+						aCarrousel.initialiser();
+					},
+					start: (aCarrousel) => {
+						let lTAF =
+							aInstance.donnees.listeTAF.getElementParNumero(aNumeroTAF);
+						const lListeDiapos = new ObjetListeElements_1.ObjetListeElements();
+						if (lTAF && lTAF.listeDocumentJoint) {
+							lTAF.listeDocumentJoint.parcourir((aPJ) => {
+								if (aPJ.avecMiniaturePossible) {
+									let lDiapo = new ObjetElement_1.ObjetElement();
+									lDiapo.setLibelle(aPJ.getLibelle());
+									aPJ.miniature = IE.estMobile
+										? TypeGenreMiniature_1.TypeGenreMiniature.GM_400
+										: TypeGenreMiniature_1.TypeGenreMiniature.GM_500;
+									lDiapo.documentCasier = aPJ;
+									lListeDiapos.add(lDiapo);
+								}
+							});
+						}
+						aCarrousel.setDonnees({ listeDiapos: lListeDiapos });
+					},
+				};
+			},
+			modelBoutonQCMTAF: {
+				event(aNumeroTAF) {
+					aInstance._surQCMTAF(aNumeroTAF);
+				},
+			},
+		});
+	}
+	construire(aParams) {
+		this.donnees = aParams.donnees;
+		this.peuFaireTAF = [
+			Enumere_Espace_1.EGenreEspace.Eleve,
+			Enumere_Espace_1.EGenreEspace.Mobile_Eleve,
+		].includes(GEtatUtilisateur.GenreEspace);
+		const lThis = this;
+		$.extend(this.controleur, {
+			cbTAFFait: {
+				getValue: function (aNumeroTaf) {
+					const lTAF = lThis.donnees.listeTAF.getElementParNumero(aNumeroTaf);
+					return !!lTAF && lTAF.TAFFait;
+				},
+				setValue: function (aNumeroTaf, aValue) {
+					const lTAF = lThis.donnees.listeTAF.getElementParNumero(aNumeroTaf);
+					if (!!lTAF) {
+						lTAF.TAFFait = aValue;
+						lTAF.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+						new ObjetRequeteSaisieTAFFaitEleve_1.ObjetRequeteSaisieTAFFaitEleve(
+							lThis,
+							lThis.surUtilitaireCDT,
+						).lancerRequete({ listeTAF: lThis.donnees.listeTAF });
+					}
+				},
+				getHint: function (aNumeroTaf) {
+					let lHint = "";
+					const lTAF = lThis.donnees.listeTAF.getElementParNumero(aNumeroTaf);
+					if (!!lTAF) {
+						lHint = lTAF.TAFFait
+							? ObjetTraduction_1.GTraductions.getValeur(
+									"accueil.hintTravailFait",
+								)
+							: ObjetTraduction_1.GTraductions.getValeur(
+									"accueil.hintTravailAFaire",
+								);
+					}
+					return lHint;
+				},
+				getDisabled: function () {
+					return !lThis.peuFaireTAF;
+				},
+			},
+		});
+		this.creerObjetsTAF();
+		if (this.donnees.listeTAF) {
+			this.donnees.listeTAF.setTri([
+				ObjetTri_1.ObjetTri.init("ordre"),
+				ObjetTri_1.ObjetTri.init((aElement) => {
+					return aElement.matiere.getLibelle();
+				}),
+			]);
+			this.donnees.listeTAF.trier();
+		}
+		const H = [];
+		let lDate, lTaf, i;
+		const T = [];
+		if (this.donnees.listeTAF && this.donnees.listeTAF.count() > 0) {
+			H.push('<div class="conteneur-liste-CDT">');
+			H.push('<ul class="liste-imbriquee">');
+			for (let I = 0; I < this.donnees.listeTAF.count(); I++) {
+				lTaf = this.donnees.listeTAF.get(I);
+				lTaf.indice = I;
+				if (!T[lTaf.pourLe]) {
+					T[lTaf.pourLe] = [];
+				}
+				T[lTaf.pourLe].push(lTaf);
+			}
+			if (this.donnees.listeTAF.count() > 0) {
+				for (lDate in T) {
+					const lDateConcernee = new Date(lDate);
+					H.push(
+						'<li aria-labelledby="' +
+							this.getIdDate(lDateConcernee) +
+							'" tabindex="0">',
+					);
+					H.push(this.composeDate(lDateConcernee));
+					this.indiceLigne = 0;
+					H.push('<ul class="sub-liste cols">');
+					for (i in T[lDate]) {
+						lTaf = T[lDate][i];
+						H.push(this.composeTAF(lTaf.indice, lTaf, lDateConcernee));
+					}
+					H.push("</ul>");
+					H.push("</li>");
+				}
+			}
+			H.push("</ul>");
+			H.push("</div>");
+		}
+		const lWidget = {
+			html: H.join(""),
+			nbrElements: this.donnees.listeTAF ? this.donnees.listeTAF.count() : 0,
+			afficherMessage:
+				!this.donnees.listeTAF || this.donnees.listeTAF.count() === 0,
+		};
+		$.extend(true, this.donnees, lWidget);
+		aParams.construireWidget(this.donnees);
+	}
+	getIdDate(aDate) {
+		const lIdDate = [this.donnees.id, "_date"];
+		if (aDate) {
+			lIdDate.push("_", aDate.getFullYear().toString());
+			lIdDate.push("_", aDate.getMonth().toString());
+			lIdDate.push("_", aDate.getDate().toString());
+		}
+		return lIdDate.join("");
+	}
+	composeDate(aDate) {
+		const H = [];
+		H.push('<h3 id="', this.getIdDate(aDate), '">');
+		H.push(
+			"<span>",
+			(
+				ObjetTraduction_1.GTraductions.getValeur("accueil.pour") +
+				"</span>" +
+				" " +
+				ObjetDate_1.GDate.formatDate(aDate, "[" + "%JJJJ %J %MMM" + "]")
+			)
+				.toLowerCase()
+				.ucfirst(),
+		);
+		H.push("</h3>");
+		return H.join("");
+	}
+	composeMatiere(aTaf) {
+		const H = [];
+		H.push(
+			'<span class="titre-matiere ',
+			(!!aTaf.executionQCM ? aTaf.QCMFait : aTaf.TAFFait) ? "est-fait" : "",
+			'">',
+			aTaf.matiere.getLibelle(),
+			"</span>",
+		);
+		return H.join("");
+	}
+	composeTAF(i, aTaf, aDateConcernee) {
+		const H = [];
+		const lAvecERendu =
+			TypeGenreRenduTAF_1.TypeGenreRenduTAFUtil.estUnRenduEnligne(
+				aTaf.genreRendu,
+			);
+		const lEstQCM = !!aTaf.executionQCM;
+		const lEstFait = lEstQCM ? aTaf.QCMFait : aTaf.TAFFait;
+		H.push(
+			"<li ",
+			ObjetWAI_1.GObjetWAI.composeAttribut({
+				genre: ObjetWAI_1.EGenreAttribut.labelledby,
+				valeur: this.getIdDate(aDateConcernee),
+			}),
+			">",
+		);
+		H.push('<div class="wrap conteneur-item">');
+		let lTitleTafFait = "";
+		if (!this.peuFaireTAF && aTaf.TAFFait) {
+			lTitleTafFait = ObjetTraduction_1.GTraductions.getValeur(
+				"accueil.hintParentTravailFait",
+				[GEtatUtilisateur.getMembre().getLibelle()],
+			);
+		}
+		H.push(
+			'<div tabindex="0" role="link" ie-node="surTAF(\'' +
+				aTaf.getNumero() +
+				'\')" class="as-header"',
+			lTitleTafFait ? 'title="' + lTitleTafFait + '"' : "",
+			">",
+			'<div class="with-color" style="--couleur-matiere:',
+			aTaf.couleurFond,
+			';margin-left:.8rem;">',
+			this.composeMatiere(aTaf),
+			"</div>",
+		);
+		H.push(
+			' <ie-chips class="tag-style ',
+			lEstFait ? "ThemeCat-pedagogie" : "",
+			'">',
+			lEstFait
+				? ObjetTraduction_1.GTraductions.getValeur("TAFEtContenu.TAFFait")
+				: ObjetTraduction_1.GTraductions.getValeur("TAFEtContenu.TAFNonFait"),
+			"</ie-chips>",
+		);
+		H.push("</div>");
+		H.push(
+			' <div class="m-left">',
+			'<div tabindex="0" class="as-content ',
+			" avecAction",
+			lEstFait && !lEstQCM ? " done" : "",
+			'" aria-labelledby="' + this.Nom + "_" + i + '">',
+		);
+		if (aTaf.listeDocumentJoint) {
+			aTaf.listeDocumentJoint.trier();
+		}
+		H.push(
+			'<div class="description widgetTAF ',
+			!lEstQCM ? "tiny-view " : "",
+			lEstFait ? "est-fait" : "",
+			'" id="' + this.Nom + "_" + i + '">',
+			lEstQCM
+				? '<i class="icon_qcm ThemeCat-pedagogie"></i>' +
+						(lEstFait ? aTaf.descriptifCourt : aTaf.descriptif)
+				: aTaf.descriptif,
+			"</div>",
+		);
+		if (aTaf.listeDocumentJoint && aTaf.listeDocumentJoint.count() > 0) {
+			H.push(this.composePiecesJointes(aTaf));
+		}
+		H.push("</div>", "</div>");
+		if (!lEstQCM && !lAvecERendu) {
+			if (
+				aTaf.genreRendu ===
+					TypeGenreRenduTAF_1.TypeGenreRenduTAF.GRTAF_RenduPapier &&
+				!aTaf.TAFFait
+			) {
+				H.push('<div class="taf-a-rendre">');
+				H.push(
+					'<div class="taf-btn-conteneur">',
+					'<span class="as-info-light">',
+					TypeGenreRenduTAF_1.TypeGenreRenduTAFUtil.getLibelleDeposer(
+						aTaf.genreRendu,
+						false,
+					),
+					"</span></div>",
+				);
+				H.push("</div>");
+			}
+			if (GEtatUtilisateur.estEspaceEleve()) {
+				H.push(
+					'<div class="flex-contain conteneur-cb"><ie-checkbox class="cb-termine colored-label" ie-textleft ie-model="cbTAFFait(\'',
+					aTaf.getNumero(),
+					"')\">",
+					ObjetTraduction_1.GTraductions.getValeur("TAFEtContenu.cbTermine"),
+					"</ie-checkbox></div>",
+				);
+			}
+		} else if (lEstQCM) {
+			const lAvecAction = UtilitaireQCM_1.UtilitaireQCM.estCliquable(
+				aTaf.executionQCM,
+			);
+			if (lAvecAction) {
+				const lBoutonExecution =
+					!lEstFait && aTaf.executionQCM.estEnPublication;
+				const lLibelleBouton =
+					!lBoutonExecution &&
+					(!GEtatUtilisateur.estEspacePourEleve() ||
+						!UtilitaireQCM_1.UtilitaireQCM.estJouable(aTaf.executionQCM))
+						? ObjetTraduction_1.GTraductions.getValeur("TAFEtContenu.voirQCM")
+						: ObjetTraduction_1.GTraductions.getValeur(
+								"TAFEtContenu.executerQCM",
+							);
+				const lClasseBouton = !lBoutonExecution
+					? "themeBoutonNeutre"
+					: "themeBoutonSecondaire";
+				const lIeModelBouton = "modelBoutonQCMTAF('" + aTaf.getNumero() + "')";
+				H.push(
+					IE.jsx.str(
+						IE.jsx.fragment,
+						null,
+						IE.jsx.str(
+							"div",
+							{ class: "flex-contain btn-qcm" },
+							IE.jsx.str(
+								"ie-bouton",
+								{ "ie-model": lIeModelBouton, class: lClasseBouton },
+								lLibelleBouton,
+							),
+						),
+					),
+				);
+			}
+		} else {
+			H.push('<div class="taf-a-rendre">');
+			H.push(
+				this.utilitaireCDT.composeTAFARendrePourWidget(aTaf, {
+					nom: this.Nom,
+					controleur: this.controleur,
+					listeTAF: this.donnees.listeTAF,
+				}),
+			);
+			H.push("</div>");
+		}
+		H.push("</div>");
+		H.push("</li>");
+		return H.join("");
+	}
+	composePiecesJointes(aElement) {
+		const lHtml = [],
+			lListe = aElement.listeDocumentJoint;
+		lHtml.push('<div class="piece-jointe">');
+		let lAvecImage = false;
+		for (let I = 0; I < lListe.count(); I++) {
+			const lPieceJointe = lListe.get(I);
+			if (!lPieceJointe.avecMiniaturePossible) {
+				lHtml.push(
+					'<div class="chips-pj">',
+					ObjetChaine_1.GChaine.composerUrlLienExterne({
+						documentJoint: lPieceJointe,
+						maxWidth: 300,
+					}),
+					"</div>",
+				);
+			} else {
+				lAvecImage = true;
+			}
+		}
+		lHtml.push("</div>");
+		if (lAvecImage) {
+			lHtml.push(
+				"<div ie-identite=\"getCarrouselTAF('",
+				aElement.getNumero(),
+				"')\"></div>",
+			);
+		}
+		return lHtml.join("");
+	}
+	_surQCMTAF(aNumeroTaf) {
+		const lTaf = this.donnees.listeTAF.getElementParNumero(aNumeroTaf);
+		this.callback.appel(
+			this.donnees.genre,
+			Enumere_EvenementWidget_1.EGenreEvenementWidget.AfficherExecutionQCM,
+			lTaf.executionQCM,
+		);
+	}
+	_surTAF(aNumeroTaf) {
+		const lTaf = this.donnees.listeTAF.getElementParNumero(aNumeroTaf);
+		let lPageDestination;
+		if (GEtatUtilisateur.estEspaceMobile()) {
+			lPageDestination = {
+				genreOngletDest: Enumere_Onglet_1.EGenreOnglet.CDT_TAF,
+				taf: lTaf,
+			};
+		} else {
+			lPageDestination = {
+				Onglet: Enumere_Onglet_1.EGenreOnglet.CDT_TAF,
+				taf: lTaf,
+			};
+		}
+		this.callback.appel(
+			this.donnees.genre,
+			Enumere_EvenementWidget_1.EGenreEvenementWidget.NavigationVersPage,
+			lPageDestination,
+		);
+	}
 }
 exports.WidgetTAF = WidgetTAF;

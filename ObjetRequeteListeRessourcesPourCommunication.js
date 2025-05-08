@@ -3,8 +3,8 @@ const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
 const CollectionRequetes_1 = require("CollectionRequetes");
 class ObjetRequeteListeRessourcesPourCommunication extends ObjetRequeteJSON_1.ObjetRequeteConsultation {}
 exports.ObjetRequeteListeRessourcesPourCommunication =
-  ObjetRequeteListeRessourcesPourCommunication;
+	ObjetRequeteListeRessourcesPourCommunication;
 CollectionRequetes_1.Requetes.inscrire(
-  "ListeRessourcesPourCommunication",
-  ObjetRequeteListeRessourcesPourCommunication,
+	"ListeRessourcesPourCommunication",
+	ObjetRequeteListeRessourcesPourCommunication,
 );

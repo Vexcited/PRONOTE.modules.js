@@ -1,17 +1,17 @@
 exports.EGenreEvenementWidget = void 0;
 var EGenreEvenementWidget;
 (function (EGenreEvenementWidget) {
-  EGenreEvenementWidget[(EGenreEvenementWidget["NavigationVersPage"] = 0)] =
-    "NavigationVersPage";
-  EGenreEvenementWidget[(EGenreEvenementWidget["SaisieWidget"] = 1)] =
-    "SaisieWidget";
-  EGenreEvenementWidget[(EGenreEvenementWidget["AfficherExecutionQCM"] = 2)] =
-    "AfficherExecutionQCM";
-  EGenreEvenementWidget[(EGenreEvenementWidget["ActualiserWidget"] = 3)] =
-    "ActualiserWidget";
-  EGenreEvenementWidget[(EGenreEvenementWidget["EvenementPersonnalise"] = 4)] =
-    "EvenementPersonnalise";
+	EGenreEvenementWidget[(EGenreEvenementWidget["NavigationVersPage"] = 0)] =
+		"NavigationVersPage";
+	EGenreEvenementWidget[(EGenreEvenementWidget["SaisieWidget"] = 1)] =
+		"SaisieWidget";
+	EGenreEvenementWidget[(EGenreEvenementWidget["AfficherExecutionQCM"] = 2)] =
+		"AfficherExecutionQCM";
+	EGenreEvenementWidget[(EGenreEvenementWidget["ActualiserWidget"] = 3)] =
+		"ActualiserWidget";
+	EGenreEvenementWidget[(EGenreEvenementWidget["EvenementPersonnalise"] = 4)] =
+		"EvenementPersonnalise";
 })(
-  EGenreEvenementWidget ||
-    (exports.EGenreEvenementWidget = EGenreEvenementWidget = {}),
+	EGenreEvenementWidget ||
+		(exports.EGenreEvenementWidget = EGenreEvenementWidget = {}),
 );
