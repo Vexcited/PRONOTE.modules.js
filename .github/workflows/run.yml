@@ -1,9 +1,12 @@
 name: Update modules in branch
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
   schedule:
-    - cron: '0 */2 * * *' # Every 2 hours
+    - cron: "0 */2 * * *" # Every 2 hours
 
 jobs:
   run:
@@ -11,4 +14,30 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      # TODO
+        with:
+          ref: main
+          path: main
+
+      - uses: actions/checkout@v4
+        with:
+          ref: modules
+          path: modules
+
+      - uses: oven-sh/setup-bun@v2
+
+      - run: |
+          Set-Location main
+          bun install
+          bun src/index.ts
+
+          Set-Location ../modules
+          Remove-Item -Force -Recurse "*.js" -ErrorAction SilentlyContinue
+          Move-Item ../main/modules/*.js .
+
+          $version = (Get-Content ../main/version -Raw).Trim()
+
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add -A
+          git commit -m "ci: v$version"
+          git push -u origin modules --force
