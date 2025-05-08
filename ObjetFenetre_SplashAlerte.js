@@ -1,0 +1,113 @@
+exports.ObjetFenetre_SplashAlerte = void 0;
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TypeOrigineCreationModeleAlerte_1 = require("TypeOrigineCreationModeleAlerte");
+class ObjetFenetre_SplashAlerte extends ObjetFenetre_1.ObjetFenetre {
+  constructor(...aParams) {
+    super(...aParams);
+    this.classExercice = "color-danger";
+    this.setOptionsFenetre({
+      modale: true,
+      fermerFenetreSurClicHorsFenetre: true,
+      largeur: null,
+      largeurMin: 450,
+      hauteurBandeau: 25,
+      couleurFond: "white",
+      listeBoutons: [
+        ObjetTraduction_1.GTraductions.getValeur("Fermer"),
+        ObjetTraduction_1.GTraductions.getValeur(
+          "SplashAlerte.OuvrirDiscussion",
+        ),
+      ],
+    });
+  }
+  composeContenu() {
+    if (!this.message) {
+      return "";
+    }
+    return IE.jsx.str(
+      "div",
+      { class: "ofsa_contenu" },
+      IE.jsx.str(
+        "div",
+        null,
+        IE.jsx.str("div", { class: this.optionsFenetre.classImageAlerte }),
+        this.message.exercice
+          ? IE.jsx.str(
+              "div",
+              {
+                class: `AlignementMilieu Texte12 PetitEspaceHaut Gras ${this.classExercice}`,
+              },
+              ObjetTraduction_1.GTraductions.getValeur(
+                "SplashAlerte.Exercice",
+              ).toUpperCase(),
+            )
+          : "",
+      ),
+      IE.jsx.str("div", { class: "tiny-view" }, this.message.contenu),
+    );
+  }
+  composeBas() {
+    return this.message
+      ? IE.jsx.str("div", { class: "ofsa_lancerPar" }, this._strLanceePar())
+      : "";
+  }
+  setMessage(aMessage, aTitre) {
+    this.message = aMessage;
+    let lClassImage = "";
+    switch (this.message.genreAlerte) {
+      case TypeOrigineCreationModeleAlerte_1.TypeOrigineCreationModeleAlerte
+        .OCMA_Pre_Incendie:
+        lClassImage = "Image_AlerteIncendie";
+        this.classExercice = "color-incendie";
+        break;
+      case TypeOrigineCreationModeleAlerte_1.TypeOrigineCreationModeleAlerte
+        .OCMA_Pre_Confinement:
+        lClassImage = "Image_AlerteConfinement";
+        this.classExercice = "color-confinement";
+        break;
+      case TypeOrigineCreationModeleAlerte_1.TypeOrigineCreationModeleAlerte
+        .OCMA_Pre_Inondation:
+        lClassImage = "Image_AlerteInondation";
+        this.classExercice = "color-inondation";
+        break;
+      case TypeOrigineCreationModeleAlerte_1.TypeOrigineCreationModeleAlerte
+        .OCMA_Pre_Nucleaire:
+        lClassImage = "Image_AlerteNucleaire";
+        this.classExercice = "color-nucleaire";
+        break;
+      case TypeOrigineCreationModeleAlerte_1.TypeOrigineCreationModeleAlerte
+        .OCMA_Pre_Tsunami:
+        lClassImage = "Image_AlerteTsunami";
+        this.classExercice = "color-tsunami";
+        break;
+      case TypeOrigineCreationModeleAlerte_1.TypeOrigineCreationModeleAlerte
+        .OCMA_Pre_Defaut:
+      case TypeOrigineCreationModeleAlerte_1.TypeOrigineCreationModeleAlerte
+        .OCMA_Utilisateur:
+        lClassImage = "Image_AlerteDanger";
+        this.classExercice = "color-danger";
+        break;
+      default:
+    }
+    this.setOptionsFenetre({
+      titre: aTitre.toUpperCase(),
+      classImageAlerte: lClassImage,
+    });
+  }
+  _strLanceePar() {
+    return this.message
+      ? ObjetChaine_1.GChaine.format(
+          ObjetTraduction_1.GTraductions.getValeur("SplashAlerte.LanceeLeAPar"),
+          [
+            ObjetDate_1.GDate.formatDate(this.message.dateSplash, "%JJ/%MM"),
+            ObjetDate_1.GDate.formatDate(this.message.dateSplash, "%hh%sh%mm"),
+            this.message.strEmetteur,
+          ],
+        )
+      : "";
+  }
+}
+exports.ObjetFenetre_SplashAlerte = ObjetFenetre_SplashAlerte;

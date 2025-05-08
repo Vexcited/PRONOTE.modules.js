@@ -1,0 +1,1433 @@
+exports.DonneesListe_CDTPlanning = void 0;
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetStyle_1 = require("ObjetStyle");
+const ObjetDate_1 = require("ObjetDate");
+const UtilitaireDuree_1 = require("UtilitaireDuree");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const UtilitaireUrl_1 = require("UtilitaireUrl");
+const TypeOrigineCreationCategorieCahierDeTexte_1 = require("TypeOrigineCreationCategorieCahierDeTexte");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetHtml_1 = require("ObjetHtml");
+const UtilitaireQCM_1 = require("UtilitaireQCM");
+const ObjetChaine_1 = require("ObjetChaine");
+const Enumere_Onglet_1 = require("Enumere_Onglet");
+const TypeGenreParcoursEducatif_1 = require("TypeGenreParcoursEducatif");
+const ObjetUtilitaireCahierDeTexte_1 = require("ObjetUtilitaireCahierDeTexte");
+const Invocateur_1 = require("Invocateur");
+const ComparateurChaines_1 = require("ComparateurChaines");
+class DonneesListe_CDTPlanning extends ObjetDonneesListe_1.ObjetDonneesListe {
+  constructor(aDonnees, aParams) {
+    super(_construireListe(aDonnees));
+    this.heightMaxCellule = 80;
+    this.avecParcoursEducatifs = GApplication.parametresUtilisateur.get(
+      "CDT.ParcoursEducatifs.ActiverSaisie",
+    );
+    const lOngletQCM = GEtatUtilisateur.listeOnglets.getElementParGenre(
+      Enumere_Onglet_1.EGenreOnglet.QCM_Saisie,
+    );
+    this.params = aParams;
+    this.setOptions({
+      avecEdition: false,
+      avecEvnt_Suppression: true,
+      avecEvnt_Selection: true,
+      avecInterruptionSuppression: true,
+      avecLinkQCM: !!lOngletQCM && !!lOngletQCM.Actif,
+      suppression: null,
+      modificationContenu: null,
+      copier: null,
+      coller: null,
+      ficheCDT: null,
+      dsEval: null,
+      affectationProg: null,
+      publier: null,
+    });
+  }
+  getControleur(aDonneesListe, aListe) {
+    return $.extend(true, super.getControleur(aDonneesListe, aListe), {
+      btnTAF: {
+        event: function (aLigne) {
+          const lArticle = aDonneesListe.Donnees.get(aLigne);
+          aDonneesListe.options.ficheCDT(lArticle);
+        },
+      },
+      getNodeListePJs: function () {
+        $(this.node)
+          .find("a")
+          .on("mousedown", (aEvent) => {
+            aEvent.stopPropagation();
+          });
+      },
+      getHintCommentaire(aCommenatire) {
+        return aCommenatire;
+      },
+      getHintTaf: function (aNumeroLigne) {
+        const lArticle = aDonneesListe.Donnees.get(aNumeroLigne);
+        if (!lArticle || !lArticle.taf) {
+          return "";
+        }
+        return aDonneesListe._construireHintTaf(lArticle.taf);
+      },
+      getNodeQCM: function () {
+        $(this.node).on("click", (aEvent) => {
+          aEvent.stopPropagation();
+          Invocateur_1.Invocateur.evenement(
+            Invocateur_1.ObjetInvocateur.events.navigationOnglet,
+            Enumere_Onglet_1.EGenreOnglet.QCM_Saisie,
+          );
+        });
+      },
+    });
+  }
+  getValeur(aParams) {
+    const H = [];
+    let lLibelle;
+    const lCdt = aParams.article.cdt;
+    switch (aParams.idColonne) {
+      case DonneesListe_CDTPlanning.colonnes.cours:
+        return _construireCours.call(this, aParams);
+      case DonneesListe_CDTPlanning.colonnes.absences:
+        return aParams.article.cours.nbAbsences || "";
+      case DonneesListe_CDTPlanning.colonnes.categories: {
+        if (!aParams.article.contenu || !aParams.article.contenu.categorie) {
+          return "";
+        }
+        lLibelle = aParams.article.contenu.categorie.getLibelle();
+        const lImage =
+          TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.getImage(
+            aParams.article.contenu.categorie.getGenre(),
+          );
+        if (lImage) {
+          return [
+            '<div class="cdtplanning_dl_cdt_contenu_cat">',
+            "<div>",
+            lLibelle,
+            "</div>",
+            '<div class="',
+            lImage,
+            '"></div>',
+            "</div>",
+          ].join("");
+        }
+        return lLibelle;
+      }
+      case DonneesListe_CDTPlanning.colonnes.themes:
+        return aParams.article.contenu &&
+          aParams.article.contenu.ListeThemes &&
+          aParams.article.contenu.ListeThemes.count()
+          ? aParams.article.contenu.ListeThemes.getTableauLibelles().join(", ")
+          : "";
+      case DonneesListe_CDTPlanning.colonnes.contenu:
+        return this._construireContenu(aParams);
+      case DonneesListe_CDTPlanning.colonnes.commentaire:
+        return this._construireCommentaire(aParams);
+      case DonneesListe_CDTPlanning.colonnes.parcours:
+        if (!aParams.article.contenu) {
+          return "";
+        }
+        if (
+          aParams.article.contenu.parcoursEducatif === undefined ||
+          (aParams.article.contenu.parcoursEducatif &&
+            aParams.article.contenu.parcoursEducatif === -1)
+        ) {
+          return "";
+        }
+        lLibelle =
+          TypeGenreParcoursEducatif_1.TypeGenreParcoursEducatifUtil.getLibelle(
+            aParams.article.contenu.parcoursEducatif,
+          );
+        return [
+          '<div class="cdtplanning_dl_cdt_contenu_cat">',
+          "<div>",
+          lLibelle,
+          "</div>",
+          "</div>",
+        ].join("");
+      case DonneesListe_CDTPlanning.colonnes.eltProg:
+        if (
+          !lCdt.listeElementsProgrammeCDT ||
+          lCdt.listeElementsProgrammeCDT.count() === 0
+        ) {
+          return "";
+        }
+        H.push(
+          '<div class="cdtplanning_dl_cdt_eltProg" ie-hintoverflow',
+          this._getAttrConteneurHtml(aParams),
+          "><ul>",
+        );
+        lCdt.listeElementsProgrammeCDT.parcourir((aElement) => {
+          if (aElement.existe()) {
+            H.push("<li>", aElement.getLibelle(), "</li>");
+          }
+        });
+        H.push("</ul></div>");
+        return H.join("");
+      case DonneesListe_CDTPlanning.colonnes.taf:
+        return this._construireTaf(aParams);
+      case DonneesListe_CDTPlanning.colonnes.noteProchaineSeance:
+        return this._construireCommentaire(aParams);
+      case DonneesListe_CDTPlanning.colonnes.visaI:
+        return !!lCdt.visaI;
+      case DonneesListe_CDTPlanning.colonnes.visaC:
+        return !!lCdt.visaC;
+      case DonneesListe_CDTPlanning.colonnes.publie:
+        return aParams.article.cours.publie ||
+          aParams.article.cdt.datePublication
+          ? "Image_Publie"
+          : "Image_NonPublie";
+      default:
+    }
+    return "";
+  }
+  getTypeValeur(aParams) {
+    switch (aParams.idColonne) {
+      case DonneesListe_CDTPlanning.colonnes.visaI:
+      case DonneesListe_CDTPlanning.colonnes.visaC:
+        return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Coche;
+      case DonneesListe_CDTPlanning.colonnes.publie:
+        return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Image;
+    }
+    return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
+  }
+  getHintForce(aParams) {
+    switch (aParams.idColonne) {
+      case DonneesListe_CDTPlanning.colonnes.publie:
+        return aParams.article.cdt.datePublication
+          ? ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.publieLe", [
+              ObjetDate_1.GDate.formatDate(
+                aParams.article.cdt.datePublication,
+                "%JJ/%MM/%AAAA",
+              ),
+            ])
+          : ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.nonPublie");
+      case DonneesListe_CDTPlanning.colonnes.absences:
+        if (
+          aParams.article.cours.hintsAbsences &&
+          aParams.article.cours.hintsAbsences.length > 0
+        ) {
+          return aParams.article.cours.hintsAbsences.join("\n");
+        }
+        return "";
+      default:
+        break;
+    }
+  }
+  getPadding(aParams) {
+    if (aParams.idColonne === DonneesListe_CDTPlanning.colonnes.cours) {
+      return 0;
+    }
+  }
+  getClass(aParams) {
+    if (aParams.idColonne === DonneesListe_CDTPlanning.colonnes.absences) {
+      return "AlignementDroit";
+    }
+  }
+  getStyle(aParams) {
+    switch (aParams.idColonne) {
+      case DonneesListe_CDTPlanning.colonnes.publie:
+        return "margin-left:auto;margin-right:auto;";
+      case DonneesListe_CDTPlanning.colonnes.cours:
+        return "height:100%;";
+    }
+  }
+  fusionCelluleAvecLignePrecedente(aParams) {
+    const lCDTPrecedent =
+      aParams.celluleLignePrecedente &&
+      aParams.celluleLignePrecedente.article &&
+      aParams.celluleLignePrecedente.article.cdt
+        ? aParams.celluleLignePrecedente.article.cdt
+        : null;
+    if (!lCDTPrecedent) {
+      return false;
+    }
+    if (
+      !lCDTPrecedent ||
+      !aParams.article.cdt ||
+      lCDTPrecedent.getNumero() !== aParams.article.cdt.getNumero() ||
+      !aParams.article.cdt.existeNumero() ||
+      !lCDTPrecedent.existeNumero()
+    ) {
+      return false;
+    }
+    switch (aParams.idColonne) {
+      case DonneesListe_CDTPlanning.colonnes.categories:
+      case DonneesListe_CDTPlanning.colonnes.parcours:
+      case DonneesListe_CDTPlanning.colonnes.contenu:
+      case DonneesListe_CDTPlanning.colonnes.themes:
+        return (
+          aParams.article.contenu ===
+            aParams.celluleLignePrecedente.article.contenu ||
+          !aParams.article.contenu
+        );
+      case DonneesListe_CDTPlanning.colonnes.taf:
+        return (
+          aParams.article.taf === aParams.celluleLignePrecedente.article.taf ||
+          !aParams.article.taf
+        );
+    }
+    return true;
+  }
+  alignVCenter(aParams) {
+    return this._estColonneCDT(aParams.idColonne);
+  }
+  selectionParCellule(aColonne) {
+    return !this._estColonneCDT(this.getId(aColonne));
+  }
+  avecEvenementEdition(aParams) {
+    switch (aParams.idColonne) {
+      case DonneesListe_CDTPlanning.colonnes.publie:
+        return this._publieEditable(aParams.article);
+      case DonneesListe_CDTPlanning.colonnes.categories:
+      case DonneesListe_CDTPlanning.colonnes.themes:
+      case DonneesListe_CDTPlanning.colonnes.parcours:
+      case DonneesListe_CDTPlanning.colonnes.contenu:
+      case DonneesListe_CDTPlanning.colonnes.eltProg:
+      case DonneesListe_CDTPlanning.colonnes.taf:
+        return this._estArticleEditable(aParams.article);
+      case DonneesListe_CDTPlanning.colonnes.commentaire:
+      case DonneesListe_CDTPlanning.colonnes.noteProchaineSeance:
+        return (
+          !GApplication.droits.get(
+            ObjetDroitsPN_1.TypeDroits.estEnConsultation,
+          ) &&
+          aParams.article.cours &&
+          aParams.article.cours.commentaireEditable
+        );
+    }
+    return false;
+  }
+  getCouleurCellule(aParams, aCouleurCellule) {
+    if (aParams.idColonne === DonneesListe_CDTPlanning.colonnes.cours) {
+      return Object.assign(aCouleurCellule, {
+        fond: aParams.article.cours.couleur,
+      });
+    }
+    if (this.avecEvenementEdition(aParams)) {
+      return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
+    }
+  }
+  remplirMenuContextuel(aParams) {
+    if (!aParams.menuContextuel || aParams.surFondListe) {
+      return;
+    }
+    const lEstEditable = this._estArticleEditable(aParams.article);
+    switch (aParams.idColonne) {
+      case DonneesListe_CDTPlanning.colonnes.categories:
+      case DonneesListe_CDTPlanning.colonnes.parcours:
+      case DonneesListe_CDTPlanning.colonnes.contenu:
+      case DonneesListe_CDTPlanning.colonnes.themes:
+        aParams.menuContextuel.addTitre(
+          ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.contenus"),
+        );
+        break;
+      case DonneesListe_CDTPlanning.colonnes.eltProg:
+        aParams.menuContextuel.addTitre(
+          ObjetTraduction_1.GTraductions.getValeur(
+            "InterfaceCDTPlanning.ColPlanningEltsDuPgm",
+          ),
+        );
+        break;
+      case DonneesListe_CDTPlanning.colonnes.taf:
+        aParams.menuContextuel.addTitre(
+          ObjetTraduction_1.GTraductions.getValeur(
+            "CahierDeTexte.TravailAFaire",
+          ),
+        );
+        break;
+      default:
+        aParams.menuContextuel.addTitre(
+          ObjetTraduction_1.GTraductions.getValeur(
+            "CahierDeTexte.cahierDeTextes",
+          ),
+        );
+    }
+    let lAvecDS = false;
+    let lAvecEval = false;
+    switch (aParams.idColonne) {
+      case DonneesListe_CDTPlanning.colonnes.categories:
+      case DonneesListe_CDTPlanning.colonnes.parcours:
+      case DonneesListe_CDTPlanning.colonnes.contenu:
+      case DonneesListe_CDTPlanning.colonnes.themes:
+        aParams.menuContextuel.add(
+          ObjetTraduction_1.GTraductions.getValeur(
+            "InterfaceCDTPlanning.MenuAjout",
+          ),
+          lEstEditable,
+          () => {
+            this.options.modificationContenu(aParams, true);
+          },
+        );
+        aParams.menuContextuel.add(
+          ObjetTraduction_1.GTraductions.getValeur("liste.modifier"),
+          this._avecSuppression(aParams),
+          () => {
+            this.options.modificationContenu(aParams, false);
+          },
+        );
+        aParams.menuContextuel.add(
+          ObjetTraduction_1.GTraductions.getValeur("liste.supprimer"),
+          this._avecSuppression(aParams),
+          () => {
+            this.options.suppression(aParams);
+          },
+        );
+        this._addCmdCopyPaste(aParams);
+        aParams.menuContextuel.avecSeparateurSurSuivant();
+        if (aParams.article.cdt && aParams.article.cdt.listeContenus) {
+          aParams.article.cdt.listeContenus.parcourir((aElement) => {
+            if (aElement.categorie) {
+              if (
+                aElement.categorie.getGenre() ===
+                TypeOrigineCreationCategorieCahierDeTexte_1
+                  .TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Devoir
+              ) {
+                lAvecDS = true;
+              } else if (
+                aElement.categorie.getGenre() ===
+                TypeOrigineCreationCategorieCahierDeTexte_1
+                  .TypeOrigineCreationCategorieCahierDeTexte
+                  .OCCCDT_Pre_Evaluation
+              ) {
+                lAvecEval = true;
+              }
+            }
+          });
+        }
+        if (this.params.avecGestionNotation) {
+          aParams.menuContextuel.add(
+            ObjetTraduction_1.GTraductions.getValeur(
+              "CahierDeTexte.ProgrammerDS",
+            ),
+            lEstEditable && !lAvecDS,
+            () => {
+              this.options.dsEval(
+                Object.assign({ estDS: true, contenu: null }, aParams),
+              );
+            },
+          );
+        }
+        aParams.menuContextuel.add(
+          ObjetTraduction_1.GTraductions.getValeur(
+            "CahierDeTexte.ProgrammerEval",
+          ),
+          lEstEditable && !lAvecEval,
+          () => {
+            this.options.dsEval(
+              Object.assign({ estDS: false, contenu: null }, aParams),
+            );
+          },
+        );
+        if (this.params.avecGestionNotation) {
+          aParams.menuContextuel.add(
+            ObjetTraduction_1.GTraductions.getValeur(
+              "CahierDeTexte.ModifierDS",
+            ),
+            lEstEditable &&
+              !!aParams.article.contenu &&
+              !!aParams.article.contenu.categorie &&
+              aParams.article.contenu.categorie.getGenre() ===
+                TypeOrigineCreationCategorieCahierDeTexte_1
+                  .TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Devoir,
+            () => {
+              this.options.dsEval(
+                Object.assign(
+                  { estDS: true, contenu: aParams.article.contenu },
+                  aParams,
+                ),
+              );
+            },
+          );
+        }
+        aParams.menuContextuel.add(
+          ObjetTraduction_1.GTraductions.getValeur(
+            "CahierDeTexte.ModifierEval",
+          ),
+          lEstEditable &&
+            !!aParams.article.contenu &&
+            !!aParams.article.contenu.categorie &&
+            aParams.article.contenu.categorie.getGenre() ===
+              TypeOrigineCreationCategorieCahierDeTexte_1
+                .TypeOrigineCreationCategorieCahierDeTexte
+                .OCCCDT_Pre_Evaluation,
+          () => {
+            this.options.dsEval(
+              Object.assign(
+                { estDS: false, contenu: aParams.article.contenu },
+                aParams,
+              ),
+            );
+          },
+        );
+        break;
+      case DonneesListe_CDTPlanning.colonnes.eltProg:
+        aParams.menuContextuel.add(
+          ObjetTraduction_1.GTraductions.getValeur(
+            "InterfaceCDTPlanning.MenuAjout",
+          ),
+          lEstEditable,
+          () => {
+            this.options.modificationContenu(aParams, true);
+          },
+        );
+        aParams.menuContextuel.add(
+          ObjetTraduction_1.GTraductions.getValeur("liste.modifier"),
+          this._avecSuppression(aParams),
+          () => {
+            this.options.modificationContenu(aParams, false);
+          },
+        );
+        aParams.menuContextuel.add(
+          ObjetTraduction_1.GTraductions.getValeur("liste.supprimer"),
+          this._avecSuppression(aParams),
+          () => {
+            this.options.suppression(aParams);
+          },
+        );
+        this._addCmdCopyPaste(aParams);
+        break;
+      case DonneesListe_CDTPlanning.colonnes.taf:
+        aParams.menuContextuel.add(
+          ObjetTraduction_1.GTraductions.getValeur(
+            "InterfaceCDTPlanning.MenuAjout",
+          ),
+          lEstEditable,
+          () => {
+            this.options.modificationContenu(aParams, true);
+          },
+        );
+        aParams.menuContextuel.add(
+          ObjetTraduction_1.GTraductions.getValeur(
+            "InterfaceCDTPlanning.MenuAddQCM",
+          ),
+          lEstEditable,
+          () => {
+            this.options.ajoutQCMTaf(aParams);
+          },
+        );
+        aParams.menuContextuel.add(
+          ObjetTraduction_1.GTraductions.getValeur("liste.modifier"),
+          this._avecSuppression(aParams),
+          () => {
+            this.options.modificationContenu(aParams, false);
+          },
+        );
+        aParams.menuContextuel.add(
+          ObjetTraduction_1.GTraductions.getValeur("liste.supprimer"),
+          this._avecSuppression(aParams),
+          () => {
+            this.options.suppression(aParams);
+          },
+        );
+        this._addCmdCopyPaste(aParams);
+        break;
+      case DonneesListe_CDTPlanning.colonnes.cours:
+      case DonneesListe_CDTPlanning.colonnes.commentaire:
+      case DonneesListe_CDTPlanning.colonnes.noteProchaineSeance:
+      case DonneesListe_CDTPlanning.colonnes.visaI:
+      case DonneesListe_CDTPlanning.colonnes.visaC:
+      case DonneesListe_CDTPlanning.colonnes.publie:
+      case DonneesListe_CDTPlanning.colonnes.absences:
+        this._addCmdCopyPaste(aParams);
+        aParams.menuContextuel.add(
+          ObjetTraduction_1.GTraductions.getValeur("liste.supprimer"),
+          this._avecSuppression(aParams),
+          () => {
+            this.options.suppression(aParams);
+          },
+        );
+        aParams.menuContextuel.add(
+          ObjetTraduction_1.GTraductions.getValeur(
+            "CahierDeTexte.MenuPublierCahier",
+          ),
+          this._publieEditable(aParams.article) &&
+            !aParams.article.cdt.datePublication,
+          () => {
+            this.options.publier(aParams, true);
+          },
+        );
+        aParams.menuContextuel.add(
+          ObjetTraduction_1.GTraductions.getValeur(
+            "CahierDeTexte.MenuDepublierCahier",
+          ),
+          this._publieEditable(aParams.article) &&
+            !!aParams.article.cdt.datePublication,
+          () => {
+            this.options.publier(aParams, false);
+          },
+        );
+        break;
+      default:
+    }
+    if (aParams.idColonne !== DonneesListe_CDTPlanning.colonnes.eltProg) {
+      aParams.menuContextuel.addTitre(
+        ObjetTraduction_1.GTraductions.getValeur("progression.progression"),
+      );
+      aParams.menuContextuel.add(
+        ObjetTraduction_1.GTraductions.getValeur(
+          "CahierDeTexte.AffectationEltsProgressionAUnCahier",
+        ),
+        lEstEditable,
+        () => {
+          this.options.affectationProg(aParams);
+        },
+      );
+      if (
+        aParams.idColonne === DonneesListe_CDTPlanning.colonnes.categories ||
+        aParams.idColonne === DonneesListe_CDTPlanning.colonnes.contenu ||
+        aParams.idColonne === DonneesListe_CDTPlanning.colonnes.parcours ||
+        aParams.idColonne === DonneesListe_CDTPlanning.colonnes.themes
+      ) {
+        aParams.menuContextuel.add(
+          ObjetTraduction_1.GTraductions.getValeur(
+            "CahierDeTexte.PoursuivreProgression",
+          ),
+          lEstEditable &&
+            (!aParams.article.contenu || aParams.article.contenu.estVide),
+          this.options.continuerProgression.bind(this, aParams),
+        );
+      }
+      aParams.menuContextuel.add(
+        ObjetTraduction_1.GTraductions.getValeur(
+          "CahierDeTexte.AjouterElementsCDT",
+        ),
+        lEstEditable &&
+          !!aParams.article.cdt &&
+          ((aParams.article.cdt.listeContenus.getNbrElementsExistes() > 0 &&
+            !aParams.article.cdt.listeContenus.aUnElementVide()) ||
+            aParams.article.cdt.ListeTravailAFaire.getNbrElementsExistes() > 0),
+        () => {
+          this.options.ajouterElementsCDT(aParams);
+        },
+      );
+    }
+  }
+  getTri(aColonneDeTri, aGenreTri) {
+    const T = [];
+    const lUniquementTitre = GApplication.parametresUtilisateur.get(
+      "CDT.Planning.UniqTitre",
+    );
+    switch (this.getId(aColonneDeTri)) {
+      case DonneesListe_CDTPlanning.colonnes.cours:
+        T.push(
+          ObjetTri_1.ObjetTri.init("cours.date", aGenreTri),
+          ObjetTri_1.ObjetTri.init("cours.annulation", aGenreTri),
+        );
+        break;
+      case DonneesListe_CDTPlanning.colonnes.absences:
+        T.push(ObjetTri_1.ObjetTri.init("cours.nbAbsences", aGenreTri));
+        break;
+      case DonneesListe_CDTPlanning.colonnes.categories:
+        T.push(
+          ObjetTri_1.ObjetTri.init((aElement) => {
+            let lResult = ComparateurChaines_1.ComparateurChaines.MAX_STRING;
+            if (
+              aElement.cdt.listeContenus &&
+              aElement.cdt.listeContenus.count() > 0
+            ) {
+              aElement.cdt.listeContenus.parcourir((aContenu) => {
+                if (aContenu.categorie && aContenu.categorie.getLibelle()) {
+                  lResult = aContenu.categorie.getLibelle();
+                  return false;
+                }
+              });
+            }
+            return lResult;
+          }, aGenreTri),
+        );
+        break;
+      case DonneesListe_CDTPlanning.colonnes.themes:
+        T.push(
+          ObjetTri_1.ObjetTri.init((aElement) => {
+            return aElement.contenu.ListeThemes.getTableauLibelles().join("");
+          }, aGenreTri),
+        );
+        break;
+      case DonneesListe_CDTPlanning.colonnes.contenu:
+        T.push(
+          ObjetTri_1.ObjetTri.init((aElement) => {
+            let lLibelle = ComparateurChaines_1.ComparateurChaines.MAX_STRING;
+            if (
+              aElement.cdt.listeContenus &&
+              aElement.cdt.listeContenus.count() > 0
+            ) {
+              aElement.cdt.listeContenus.parcourir((aContenu) => {
+                let lLib = "";
+                if (aContenu.getLibelle()) {
+                  lLib += aContenu.getLibelle();
+                }
+                if (aContenu.descriptif && !lUniquementTitre) {
+                  lLib += ObjetChaine_1.GChaine.supprimerBalisesHtml(
+                    aContenu.descriptif,
+                  );
+                }
+                if (lLib) {
+                  lLibelle = lLib;
+                  return false;
+                }
+              });
+            }
+            return lLibelle;
+          }, aGenreTri),
+        );
+        break;
+      case DonneesListe_CDTPlanning.colonnes.commentaire:
+        T.push(
+          ObjetTri_1.ObjetTri.init((aElement) => {
+            if (aElement.cdt.commentairePrive) {
+              return aElement.cdt.commentairePrive;
+            }
+            return ComparateurChaines_1.ComparateurChaines.MAX_STRING;
+          }, aGenreTri),
+        );
+        break;
+      case DonneesListe_CDTPlanning.colonnes.eltProg:
+        T.push(
+          ObjetTri_1.ObjetTri.init((aElement) => {
+            if (
+              aElement.cdt.listeElementsProgrammeCDT &&
+              aElement.cdt.listeElementsProgrammeCDT.count() > 0
+            ) {
+              return aElement.cdt.listeElementsProgrammeCDT
+                .getTableauLibelles()
+                .join(" ");
+            }
+            return ComparateurChaines_1.ComparateurChaines.MAX_STRING;
+          }, aGenreTri),
+        );
+        break;
+      case DonneesListe_CDTPlanning.colonnes.taf:
+        T.push(
+          ObjetTri_1.ObjetTri.init((aElement) => {
+            if (
+              aElement.cdt.ListeTravailAFaire &&
+              aElement.cdt.ListeTravailAFaire.count() > 0
+            ) {
+              return aElement.cdt.ListeTravailAFaire.get(0).PourLe;
+            }
+            return Number.MAX_VALUE;
+          }, aGenreTri),
+        );
+        break;
+      case DonneesListe_CDTPlanning.colonnes.noteProchaineSeance:
+        T.push(
+          ObjetTri_1.ObjetTri.init((aElement) => {
+            if (aElement.cdt.noteProchaineSeance) {
+              return aElement.cdt.noteProchaineSeance;
+            }
+            return ComparateurChaines_1.ComparateurChaines.MAX_STRING;
+          }, aGenreTri),
+        );
+        break;
+      case DonneesListe_CDTPlanning.colonnes.visaI:
+        T.push(
+          ObjetTri_1.ObjetTri.init((aElement) => {
+            return !(aElement.cdt && aElement.cdt.visaI);
+          }, aGenreTri),
+        );
+        break;
+      case DonneesListe_CDTPlanning.colonnes.visaC:
+        T.push(
+          ObjetTri_1.ObjetTri.init((aElement) => {
+            return !(aElement.cdt && aElement.cdt.visaC);
+          }, aGenreTri),
+        );
+        break;
+      case DonneesListe_CDTPlanning.colonnes.publie:
+        T.push(
+          ObjetTri_1.ObjetTri.init((aElement) => {
+            return !(aElement.cdt && aElement.cours.publie);
+          }, aGenreTri),
+        );
+        break;
+      default:
+    }
+    T.push(
+      ObjetTri_1.ObjetTri.init("cours.date"),
+      ObjetTri_1.ObjetTri.init("cours.annulation"),
+    );
+    return T;
+  }
+  avecDessinHover(aParams) {
+    if (
+      aParams.idColonne === DonneesListe_CDTPlanning.colonnes.cours &&
+      aParams.article.cours &&
+      aParams.article.cours.tafsAttendus &&
+      aParams.article.cours.tafsAttendus.count() > 0
+    ) {
+      return true;
+    }
+    if (
+      aParams.idColonne === DonneesListe_CDTPlanning.colonnes.taf &&
+      aParams.article.taf
+    ) {
+      return true;
+    }
+  }
+  estConcerneParDessinHover(aParams, aParamsCelluleSurvol) {
+    if (
+      aParams.idColonne === DonneesListe_CDTPlanning.colonnes.taf &&
+      aParamsCelluleSurvol.idColonne ===
+        DonneesListe_CDTPlanning.colonnes.cours &&
+      aParams.article.taf &&
+      aParamsCelluleSurvol.article.cours.tafsAttendus &&
+      aParamsCelluleSurvol.article.cours.tafsAttendus.count() > 0 &&
+      aParamsCelluleSurvol.article.cours.tafsAttendus.getElementParNumero(
+        aParams.article.taf.getNumero(),
+      )
+    ) {
+      return true;
+    }
+    if (
+      aParams.idColonne === DonneesListe_CDTPlanning.colonnes.cours &&
+      aParamsCelluleSurvol.idColonne ===
+        DonneesListe_CDTPlanning.colonnes.taf &&
+      aParamsCelluleSurvol.article.taf &&
+      aParams.article.cours.tafsAttendus &&
+      aParams.article.cours.tafsAttendus.count() > 0 &&
+      aParams.article.cours.tafsAttendus.getElementParNumero(
+        aParamsCelluleSurvol.article.taf.getNumero(),
+      )
+    ) {
+      return true;
+    }
+  }
+  avecSuppression(aParams) {
+    if (!aParams) {
+      return false;
+    }
+    return this._avecSuppression(aParams);
+  }
+  getLibelleDraggable(aParams) {
+    if (!aParams.article || !aParams.article.cdt) {
+      return "";
+    }
+    switch (aParams.idColonne) {
+      case DonneesListe_CDTPlanning.colonnes.categories:
+      case DonneesListe_CDTPlanning.colonnes.contenu:
+        return aParams.article.contenu
+          ? aParams.article.contenu.getLibelle()
+            ? aParams.article.contenu.getLibelle()
+            : ObjetTraduction_1.GTraductions.getValeur(
+                "InterfaceCDTPlanning.AucunTitre",
+              ) +
+              " : " +
+              aParams.article.contenu.descriptif
+          : "";
+      case DonneesListe_CDTPlanning.colonnes.eltProg:
+        return "";
+      case DonneesListe_CDTPlanning.colonnes.taf:
+        return aParams.article.taf
+          ? ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.PourLe") +
+              " " +
+              ObjetDate_1.GDate.formatDate(
+                aParams.article.taf.PourLe,
+                "%JJ/%MM",
+              ) +
+              " " +
+              aParams.article.taf.descriptif
+          : "";
+      default:
+        return (
+          aParams.article.cours.strMatiere +
+          " - " +
+          aParams.article.cours.strPublic
+        );
+    }
+  }
+  suppressionConfirmation() {
+    return false;
+  }
+  surCopier(aParams) {
+    if (!this._acceptCopier(aParams)) {
+      return false;
+    }
+    switch (aParams.idColonne) {
+      case DonneesListe_CDTPlanning.colonnes.categories:
+      case DonneesListe_CDTPlanning.colonnes.parcours:
+      case DonneesListe_CDTPlanning.colonnes.contenu:
+      case DonneesListe_CDTPlanning.colonnes.themes:
+        this.options.donnees.element_copie = {
+          estContenu: true,
+          element: aParams.article.contenu,
+        };
+        break;
+      case DonneesListe_CDTPlanning.colonnes.eltProg:
+        this.options.donnees.element_copie = {
+          estPgm: true,
+          element: aParams.article.cdt.listeElementsProgrammeCDT,
+          cdt: aParams.article.cdt,
+        };
+        break;
+      case DonneesListe_CDTPlanning.colonnes.taf:
+        this.options.donnees.element_copie = {
+          estTAF: true,
+          element: aParams.article.taf,
+        };
+        break;
+      default:
+        this.options.donnees.element_copie = {
+          estCDT: true,
+          element: aParams.article.cdt,
+        };
+    }
+    return true;
+  }
+  surColler(aParams) {
+    if (this._acceptColler(aParams)) {
+      this.options.coller(aParams);
+    }
+    return false;
+  }
+  estCelluleCopie(aParams) {
+    if (!this.options.donnees.element_copie) {
+      return false;
+    }
+    if (
+      this.options.donnees.element_copie.estCDT &&
+      aParams.article.cdt &&
+      this.options.donnees.element_copie.element.getNumero() ===
+        aParams.article.cdt.getNumero()
+    ) {
+      return true;
+    }
+    switch (aParams.idColonne) {
+      case DonneesListe_CDTPlanning.colonnes.categories:
+      case DonneesListe_CDTPlanning.colonnes.parcours:
+      case DonneesListe_CDTPlanning.colonnes.contenu:
+      case DonneesListe_CDTPlanning.colonnes.themes:
+        return (
+          this.options.donnees.element_copie.estContenu &&
+          aParams.article.contenu &&
+          this.options.donnees.element_copie.element.getNumero() ===
+            aParams.article.contenu.getNumero()
+        );
+      case DonneesListe_CDTPlanning.colonnes.eltProg:
+        if (
+          this.options.donnees.element_copie.estPgm &&
+          aParams.article.cdt.listeElementsProgrammeCDT &&
+          this.options.donnees.element_copie.cdt &&
+          this.options.donnees.element_copie.cdt.getNumero() ===
+            aParams.article.cdt.getNumero() &&
+          this.options.donnees.element_copie.element.count() ===
+            aParams.article.cdt.listeElementsProgrammeCDT.count()
+        ) {
+          let lResult = true;
+          this.options.donnees.element_copie.element.parcourir(
+            (aElement, aIndex) => {
+              if (
+                aParams.article.cdt.listeElementsProgrammeCDT
+                  .get(aIndex)
+                  .getNumero() !== aElement.getNumero()
+              ) {
+                lResult = false;
+                return false;
+              }
+            },
+          );
+          return lResult;
+        }
+        return false;
+      case DonneesListe_CDTPlanning.colonnes.taf:
+        return (
+          this.options.donnees.element_copie.estTAF &&
+          aParams.article.taf &&
+          this.options.donnees.element_copie.element.getNumero() ===
+            aParams.article.taf.getNumero()
+        );
+    }
+    return false;
+  }
+  _addCmdCopyPaste(aParams) {
+    aParams.menuContextuel.add(
+      ObjetTraduction_1.GTraductions.getValeur("InterfaceCDTPlanning.MenuCopy"),
+      !!this._acceptCopier(aParams),
+      () => {
+        aParams.copier(aParams);
+      },
+    );
+    aParams.menuContextuel.add(
+      ObjetTraduction_1.GTraductions.getValeur(
+        "InterfaceCDTPlanning.MenuPaste",
+      ),
+      !!this._acceptColler(aParams),
+      () => {
+        aParams.coller(aParams);
+      },
+    );
+  }
+  _acceptCopier(aParams) {
+    switch (aParams.idColonne) {
+      case DonneesListe_CDTPlanning.colonnes.categories:
+      case DonneesListe_CDTPlanning.colonnes.parcours:
+      case DonneesListe_CDTPlanning.colonnes.contenu:
+      case DonneesListe_CDTPlanning.colonnes.themes:
+        return aParams.article.contenu && !aParams.article.contenu.estVide;
+      case DonneesListe_CDTPlanning.colonnes.eltProg:
+        return (
+          aParams.article.cdt.listeElementsProgrammeCDT &&
+          aParams.article.cdt.listeElementsProgrammeCDT.count() > 0
+        );
+      case DonneesListe_CDTPlanning.colonnes.taf:
+        return aParams.article.taf && !aParams.article.taf.estVide;
+      default:
+        return (
+          this._estArticleEditable(aParams.article) &&
+          aParams.article.cdt &&
+          !aParams.article.cdt.estCDTVide
+        );
+    }
+  }
+  _acceptColler(aParams) {
+    const lEstEditable = this._estArticleEditable(aParams.article);
+    switch (aParams.idColonne) {
+      case DonneesListe_CDTPlanning.colonnes.categories:
+      case DonneesListe_CDTPlanning.colonnes.parcours:
+      case DonneesListe_CDTPlanning.colonnes.contenu:
+      case DonneesListe_CDTPlanning.colonnes.themes:
+        return (
+          this.options.donnees.element_copie &&
+          this.options.donnees.element_copie.estContenu &&
+          lEstEditable
+        );
+      case DonneesListe_CDTPlanning.colonnes.eltProg:
+        return (
+          this.options.donnees.element_copie &&
+          this.options.donnees.element_copie.estPgm &&
+          lEstEditable
+        );
+      case DonneesListe_CDTPlanning.colonnes.taf:
+        return (
+          this.options.donnees.element_copie &&
+          this.options.donnees.element_copie.estTAF &&
+          lEstEditable
+        );
+      default:
+        return (
+          this.options.donnees.element_copie &&
+          this.options.donnees.element_copie.estCDT &&
+          lEstEditable
+        );
+    }
+  }
+  _getAttrConteneurHtml(aParams) {
+    let lStyle = "";
+    switch (aParams.idColonne) {
+      case DonneesListe_CDTPlanning.colonnes.contenu: {
+        const lNbContenus = aParams.article.cdt.listeContenus.count();
+        lStyle =
+          "max-height:" +
+          (lNbContenus >= aParams.article.indice + 1
+            ? 1
+            : aParams.article.nbLignesCDT - lNbContenus + 1) *
+            this.heightMaxCellule +
+          "px;";
+        break;
+      }
+      case DonneesListe_CDTPlanning.colonnes.taf: {
+        const lNbTAF = aParams.article.cdt.ListeTravailAFaire.count();
+        lStyle =
+          "max-height:" +
+          (lNbTAF >= aParams.article.indice + 1
+            ? 1
+            : aParams.article.nbLignesCDT - lNbTAF + 1) *
+            this.heightMaxCellule +
+          "px;";
+        break;
+      }
+      case DonneesListe_CDTPlanning.colonnes.eltProg:
+      case DonneesListe_CDTPlanning.colonnes.commentaire:
+      case DonneesListe_CDTPlanning.colonnes.noteProchaineSeance:
+        lStyle =
+          "max-height:" +
+          (aParams.article.nbLignesCDT || 1) * this.heightMaxCellule +
+          "px;";
+        break;
+    }
+    return ' style="overflow:hidden; ' + lStyle + '" ';
+  }
+  _construireLienQCM(aLibelle, aExecutionQCM) {
+    let lLibelle = ObjetChaine_1.GChaine.format("%s (%s)", [
+      aLibelle,
+      UtilitaireQCM_1.UtilitaireQCM.getStrResumeModalites(aExecutionQCM),
+    ]);
+    if (this.options.avecLinkQCM) {
+      lLibelle =
+        '<label class="LienAccueil" ie-node="getNodeQCM">' +
+        lLibelle +
+        "</label>";
+    }
+    return lLibelle;
+  }
+  _construireContenu(aParams) {
+    if (!aParams.article.contenu || aParams.article.contenu.estVide) {
+      return "";
+    }
+    const lUniquementTitre = GApplication.parametresUtilisateur.get(
+      "CDT.Planning.UniqTitre",
+    );
+    const H = [];
+    H.push("<div ie-hintoverflow", this._getAttrConteneurHtml(aParams), ">");
+    if (aParams.article.contenu.getLibelle()) {
+      H.push(
+        '<div class="cdtplanning_dl_cdt_contenu_titre">',
+        aParams.article.contenu.getLibelle(),
+        "</div>",
+      );
+    } else if (lUniquementTitre) {
+      H.push(
+        '<div class="cdtplanning_dl_cdt_contenu_titre_aucun">',
+        ObjetTraduction_1.GTraductions.getValeur(
+          "InterfaceCDTPlanning.AucunTitre",
+        ),
+        "</div>",
+      );
+    }
+    if (!lUniquementTitre) {
+      if (aParams.article.contenu.descriptif) {
+        H.push(
+          '<div class="tiny-view">',
+          aParams.article.contenu.descriptif,
+          "</div>",
+        );
+      }
+      if (
+        aParams.article.contenu.listeExecutionQCM &&
+        aParams.article.contenu.listeExecutionQCM.count() > 0
+      ) {
+        H.push('<div class="cdtplanning_dl_cdt_contenu_qcm">');
+        H.push(
+          '<label class="Gras">',
+          ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.ExosQCM"),
+          " : </label>",
+        );
+        const lLibelles = [];
+        aParams.article.contenu.listeExecutionQCM.parcourir((aExecutionQCM) => {
+          lLibelles.push(
+            this._construireLienQCM(
+              aExecutionQCM.QCM.getLibelle(),
+              aExecutionQCM,
+            ),
+          );
+        });
+        H.push(lLibelles.join(", "));
+        H.push("</div>");
+      }
+      if (
+        aParams.article.contenu.ListePieceJointe &&
+        aParams.article.contenu.ListePieceJointe.count() > 0
+      ) {
+        H.push(
+          '<div class="cdtplanning_dl_cdt_contenu_pj" ie-node="getNodeListePJs">',
+          UtilitaireUrl_1.UtilitaireUrl.construireListeUrls(
+            aParams.article.contenu.ListePieceJointe.trier(),
+            { maxWidth: 300 },
+          ),
+          "</div>",
+        );
+      }
+    }
+    H.push("</div>");
+    return H.join("");
+  }
+  _construireCommentaire(aParams) {
+    let lCommentaire = "";
+    switch (aParams.idColonne) {
+      case DonneesListe_CDTPlanning.colonnes.commentaire:
+        lCommentaire = aParams.article.cdt.commentairePrive
+          ? ObjetChaine_1.GChaine.replaceRCToHTML(
+              aParams.article.cdt.commentairePrive,
+            )
+          : "";
+        break;
+      case DonneesListe_CDTPlanning.colonnes.noteProchaineSeance:
+        lCommentaire = aParams.article.cdt.noteProchaineSeance
+          ? ObjetChaine_1.GChaine.replaceRCToHTML(
+              aParams.article.cdt.noteProchaineSeance,
+            )
+          : "";
+        break;
+    }
+    if (lCommentaire === "") {
+      return "";
+    }
+    const H = [];
+    H.push(
+      "<div",
+      this._getAttrConteneurHtml(aParams),
+      ObjetHtml_1.GHtml.composeAttr("ie-hint", "getHintCommentaire", [
+        ObjetChaine_1.GChaine.toTitle(lCommentaire),
+      ]),
+      ">",
+      lCommentaire,
+      "</div>",
+    );
+    return H.join("");
+  }
+  _construireHintTaf(aTaf) {
+    const lListe = new ObjetListeElements_1.ObjetListeElements().addElement(
+      aTaf,
+    );
+    return (
+      '<div style="min-width:400px;">' +
+      new ObjetUtilitaireCahierDeTexte_1.ObjetUtilitaireCahierDeTexte().composeTAF(
+        new ObjetElement_1.ObjetElement(),
+        lListe,
+        { nom: "", avecDetailTAF: true, ignorerTAFFait: true },
+        true,
+      ) +
+      "</div>"
+    );
+  }
+  _construireTaf(aParams) {
+    if (!aParams.article.taf) {
+      return "";
+    }
+    const H = [];
+    H.push(
+      "<div",
+      this._getAttrConteneurHtml(aParams),
+      ObjetHtml_1.GHtml.composeAttr("ie-hint", "getHintTaf", [aParams.ligne]),
+      ">",
+    );
+    H.push(
+      '<div class="cdtplanning_dl_cdt_contenu_titre cdtplanning_dl_cdt_contenu_titre_taf">',
+      ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.PourLe") +
+        " " +
+        ObjetDate_1.GDate.formatDate(aParams.article.taf.PourLe, "%JJ/%MM"),
+      "</div>",
+    );
+    H.push(
+      "<div>",
+      aParams.article.taf.executionQCM
+        ? '<label class="Gras">' +
+            ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.ExosQCM") +
+            " : </label>" +
+            this._construireLienQCM(
+              aParams.article.taf.descriptif,
+              aParams.article.taf.executionQCM,
+            )
+        : IE.jsx.str(
+            "div",
+            { class: "tiny-view" },
+            aParams.article.taf.descriptif,
+          ),
+      "</div>",
+    );
+    if (
+      aParams.article.taf.ListePieceJointe &&
+      aParams.article.taf.ListePieceJointe.count() > 0
+    ) {
+      H.push(
+        '<div class="cdtplanning_dl_cdt_contenu_pj" ie-node="getNodeListePJs">',
+        UtilitaireUrl_1.UtilitaireUrl.construireListeUrls(
+          aParams.article.taf.ListePieceJointe.trier(),
+          { maxWidth: 300 },
+        ),
+        "</div>",
+      );
+    }
+    H.push("</div>");
+    return H.join("");
+  }
+  _estColonneCDT(aIdColonne) {
+    return [
+      DonneesListe_CDTPlanning.colonnes.cours,
+      DonneesListe_CDTPlanning.colonnes.publie,
+      DonneesListe_CDTPlanning.colonnes.visaI,
+      DonneesListe_CDTPlanning.colonnes.visaC,
+      DonneesListe_CDTPlanning.colonnes.absences,
+    ].includes(aIdColonne);
+  }
+  _publieEditable(aArticle) {
+    return (
+      this._estArticleEditable(aArticle) &&
+      !aArticle.cdt.estCDTVide &&
+      !!aArticle.cours.publieEditable
+    );
+  }
+  _estArticleEditable(aArticle) {
+    return (
+      !!aArticle.cdt &&
+      !aArticle.cdt.verrouille &&
+      !!aArticle.cours.avecEdition &&
+      !GApplication.droits.get(ObjetDroitsPN_1.TypeDroits.estEnConsultation)
+    );
+  }
+  _avecSuppression(aParams) {
+    if (
+      !aParams.article ||
+      ((!this._estArticleEditable(aParams.article) ||
+        aParams.article.cdt.estCDTVide) &&
+        !(
+          aParams.article.cours.commentaireEditable &&
+          (aParams.article.cdt.commentairePrive ||
+            aParams.article.cdt.noteProchaineSeance)
+        ))
+    ) {
+      return false;
+    }
+    switch (aParams.idColonne) {
+      case DonneesListe_CDTPlanning.colonnes.categories:
+      case DonneesListe_CDTPlanning.colonnes.contenu:
+      case DonneesListe_CDTPlanning.colonnes.themes:
+        return !!aParams.article.contenu && !aParams.article.contenu.estVide;
+      case DonneesListe_CDTPlanning.colonnes.taf:
+        return !!aParams.article.taf && !aParams.article.taf.estVide;
+      case DonneesListe_CDTPlanning.colonnes.eltProg:
+        return (
+          !!aParams.article.cdt.listeElementsProgrammeCDT &&
+          aParams.article.cdt.listeElementsProgrammeCDT.count() > 0
+        );
+      default:
+        return true;
+    }
+  }
+}
+exports.DonneesListe_CDTPlanning = DonneesListe_CDTPlanning;
+(function (DonneesListe_CDTPlanning) {
+  let colonnes;
+  (function (colonnes) {
+    colonnes["cours"] = "0";
+    colonnes["absences"] = "abs";
+    colonnes["themes"] = "1";
+    colonnes["categories"] = "2";
+    colonnes["contenu"] = "3";
+    colonnes["commentaire"] = "4";
+    colonnes["parcours"] = "5";
+    colonnes["eltProg"] = "6";
+    colonnes["taf"] = "7";
+    colonnes["noteProchaineSeance"] = "8";
+    colonnes["visaI"] = "9";
+    colonnes["visaC"] = "10";
+    colonnes["publie"] = "11";
+  })(
+    (colonnes =
+      DonneesListe_CDTPlanning.colonnes ||
+      (DonneesListe_CDTPlanning.colonnes = {})),
+  );
+})(
+  DonneesListe_CDTPlanning ||
+    (exports.DonneesListe_CDTPlanning = DonneesListe_CDTPlanning = {}),
+);
+function _construireListe(aDonnees) {
+  const lListe = new ObjetListeElements_1.ObjetListeElements();
+  aDonnees.parcourir((aLigne) => {
+    const lCDT = aLigne.cdt;
+    lCDT.ListeTravailAFaire.setTri([
+      ObjetTri_1.ObjetTri.init("PourLe"),
+      ObjetTri_1.ObjetTri.init("DonneLe"),
+      ObjetTri_1.ObjetTri.init("Genre"),
+    ]).trier();
+    const lNb = Math.max(
+      lCDT.listeContenus.count(),
+      lCDT.ListeTravailAFaire.count(),
+    );
+    function _add() {
+      const lElement = new ObjetElement_1.ObjetElement("", aLigne.getNumero());
+      lElement.cours = aLigne;
+      lElement.cdt = lCDT;
+      lElement.indice = 0;
+      lElement.nbLignesCDT = lNb;
+      lElement.contenu = null;
+      lElement.taf = null;
+      lListe.addElement(lElement);
+      return lElement;
+    }
+    if (lNb === 0) {
+      _add();
+    } else {
+      for (let i = 0; i < lNb; i++) {
+        const lElement = _add();
+        lElement.indice = i;
+        lElement.contenu = lCDT.listeContenus.get(i);
+        lElement.taf = lCDT.ListeTravailAFaire.get(i);
+      }
+    }
+  });
+  return lListe;
+}
+function _construireCours(aParams) {
+  const H = [];
+  H.push('<div class="cdtplanning_dl_cours">', "<div></div>");
+  H.push(
+    '<div style="',
+    ObjetStyle_1.GStyle.composeCouleurFond(
+      GCouleur.getCouleurTransformationCours(aParams.article.cours.couleur),
+    ),
+    '">',
+  );
+  const lAvecTafAttendus =
+    aParams.article.cours.tafsAttendus &&
+    aParams.article.cours.tafsAttendus.count() > 0;
+  if (lAvecTafAttendus || aParams.article.cours.notePourCetteSeance) {
+    H.push(
+      '<div class="cdtplanning_dl_cours_imageBasDroit">',
+      aParams.article.cours.notePourCetteSeance
+        ? `<i class="icon_comment" ${ObjetHtml_1.GHtml.composeAttr("ie-hint", "getHintCommentaire", [ObjetChaine_1.GChaine.toTitle(ObjetChaine_1.GChaine.replaceRCToHTML(aParams.article.cours.notePourCetteSeance))])}></i>`
+        : "",
+      lAvecTafAttendus
+        ? `<ie-btnimage ${ObjetHtml_1.GHtml.composeAttr("ie-model", "btnTAF", [aParams.ligne])} class="Image_TravailDonnePourCours" style="width:18px;" title="${ObjetTraduction_1.GTraductions.getValeur("InterfaceCDTPlanning.ColPlanningAFaireAutreSeance") + " : " + aParams.article.cours.tafsAttendus.count()}"></ie-btnimage>`
+        : "",
+      "</div>",
+    );
+  }
+  H.push(
+    '<div class="cdtplanning_dl_cours_entete">',
+    '<div class="cdtplanning_dl_cours_horaire">',
+    ObjetDate_1.GDate.formatDate(aParams.article.cours.date, "%JJ/%MM"),
+    "</div>",
+  );
+  H.push('<div class="cdtplanning_dl_cours_entete_jours">');
+  IE.Cycles.indicesJoursOuvres().forEach((aJour) => {
+    H.push(
+      "<div ",
+      aParams.article.cours.date.getDay() - 1 === aJour
+        ? ' class="cdtplanning_dl_cours_entete_jours_courant"'
+        : "",
+      ">",
+      ObjetTraduction_1.GTraductions.getValeur("Jours")[aJour][0].toUpperCase(),
+      "</div>",
+    );
+  });
+  H.push("</div>");
+  H.push(
+    "<div>",
+    ObjetDate_1.GDate.formatDate(aParams.article.cours.date, "%hh%sh%mm") +
+      " - " +
+      ObjetDate_1.GDate.formatDate(
+        new Date(
+          aParams.article.cours.date.getTime() +
+            UtilitaireDuree_1.TUtilitaireDuree.dureeEnMs(
+              aParams.article.cours.duree,
+            ),
+        ),
+        "%hh%sh%mm",
+      ),
+    "</div>",
+    "</div>",
+    aParams.article.cours.annulation
+      ? [
+          '<div class="cdtplanning_dl_cours_annulation" style="',
+          ObjetStyle_1.GStyle.composeCouleurTexte(
+            aParams.article.cours.couleurAnnulation,
+          ),
+          '">',
+          aParams.article.cours.annulation,
+          "</div>",
+        ].join("")
+      : "",
+    '<div class="cdtplanning_dl_cours_contenu">',
+    "<div>",
+    aParams.article.cours.strMatiere,
+    "</div>",
+    "<div>",
+    aParams.article.cours.strPublic,
+    "</div>",
+    "</div>",
+    "</div>",
+  );
+  H.push("</div>");
+  return H.join("");
+}
