@@ -32,6 +32,17 @@ ls modules
 
 It should work on every platform, if not please open an issue !
 
+## Where to find?
+
+You can watch the previous runs in the `modules` branch.
+It is filled by a CI that runs every two hours and checks if any update has been released.
+
+## What is the `unused` folder?
+
+This is a folder where we put modules that are not used in any `require(...)` statement in the whole codebase.
+
+There's some issues with parsing require so that's why we put them there in case we need them later, notably for scripts imported directly via the `<script>` tag and not tracked here.
+
 ## Credits
 
 I'd like to thank those projects for making this available.
