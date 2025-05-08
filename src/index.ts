@@ -7,6 +7,7 @@ import { readVersionFromMetadata } from "./read-metadata";
 import { processModules } from "./process-modules";
 import { useUtility } from "./use-utility";
 import path from "node:path";
+import { writeFile } from "node:fs/promises";
 
 // Make sure we have all the binaries to proceed.
 await downloadUtilities();
@@ -38,3 +39,6 @@ const version = await readVersionFromMetadata(
 console.log(
   `Done! Processed ${modulesLength} modules within version ${version}`,
 );
+
+// Writing the version to a file for easier grabing during CI.
+await writeFile("version", version, "utf8");
