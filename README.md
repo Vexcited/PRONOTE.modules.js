@@ -4,7 +4,7 @@ A datamine concerning JS modules publicly exposed contained in the PRONOTE.net s
 
 ## Motivation
 
-Because of new features in PRONOTE and potential breaking changes, we have to follow them in order to make projects like `Pawnote` and `pronotepy` work smoothly.
+Because of new features in PRONOTE and potential breaking changes, we have to follow them in order to make projects like [Pawnote](https://pawnote.docs.literate.ink) and [pronotepy](https://github.com/bain3/pronotepy) work smoothly.
 
 ## Prerequisites
 
@@ -34,7 +34,7 @@ It should work on every platform, if not please open an issue !
 
 ## Where to find?
 
-You can watch the previous runs in the `modules` branch.
+You can watch the previous runs in the [`modules` branch](https://github.com/Vexcited/PRONOTE.modules.js/tree/modules).
 It is filled by a CI that runs every two hours and checks if any update has been released.
 
 ## What is the `unused` folder?
