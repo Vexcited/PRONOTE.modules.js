@@ -10,7 +10,7 @@ on:
 
 jobs:
   run:
-    runs-on: windows-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v4
@@ -25,23 +25,31 @@ jobs:
 
       - uses: oven-sh/setup-bun@v2
 
-      - run: |
-          Set-Location main
+      - name: install wine
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo mkdir -pm755 /etc/apt/keyrings
+          wget -O - https://dl.winehq.org/wine-builds/winehq.key | sudo gpg --dearmor -o /etc/apt/keyrings/winehq-archive.key -
+          sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/noble/winehq-noble.sources
+          sudo apt update
+          sudo apt install --install-recommends winehq-stable 
+
+      - name: extract modules
+        run: |
+          cd main
           bun install
           bun src/index.ts
 
-          Set-Location ../modules
+          cd ../modules
 
-          Remove-Item -Force -Recurse "*.js" -ErrorAction SilentlyContinue
-          Move-Item ../main/modules/*.js .
+          rm -rf ./*.js
+          mv ../main/modules/*.js .
 
-          Remove-Item -Force -Recurse "unused" -ErrorAction SilentlyContinue
-          Move-Item ../main/modules/unused .
-
-          $version = (Get-Content ../main/version -Raw).Trim()
+          rm -rf unused
+          mv ../main/modules/unused .
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "ci: v$version"
+          git commit -m "ci: v$(cat ../main/version)"
           git push -u origin modules --force
