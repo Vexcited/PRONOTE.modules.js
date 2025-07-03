@@ -1,7 +1,7 @@
 import * as cheerio from "cheerio";
 
 const FRONT_PAGE_URL =
-  "https://www.index-education.com/fr/telecharger-pronote.php";
+  "https://www.index-education.com/fr/telecharger-pronote-pre-version.php";
 
 export async function grabDownloadUrl(): Promise<string> {
   const response = await fetch(FRONT_PAGE_URL);
