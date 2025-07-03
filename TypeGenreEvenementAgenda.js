@@ -39,6 +39,13 @@ var TypeGenreEvenementAgenda;
 		"tgea_Commission";
 	TypeGenreEvenementAgenda[(TypeGenreEvenementAgenda["tgea_RendezVous"] = 13)] =
 		"tgea_RendezVous";
+	TypeGenreEvenementAgenda[(TypeGenreEvenementAgenda["tgea_Election"] = 14)] =
+		"tgea_Election";
+	TypeGenreEvenementAgenda[
+		(TypeGenreEvenementAgenda["tgea_ConseilsDiscipline"] = 15)
+	] = "tgea_ConseilsDiscipline";
+	TypeGenreEvenementAgenda[(TypeGenreEvenementAgenda["tgea_JourFerie"] = 16)] =
+		"tgea_JourFerie";
 })(
 	TypeGenreEvenementAgenda ||
 		(exports.TypeGenreEvenementAgenda = TypeGenreEvenementAgenda = {}),

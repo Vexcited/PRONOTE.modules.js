@@ -107,10 +107,6 @@ class ObjetSelection extends ObjetIdentite_1.Identite {
 					avecBoutonsPrecSuiv: this.options.avecBoutonsPrecedentSuivant,
 					avecBoutonsPrecSuiv_boucle: true,
 					initAutoSelectionAvecUnElement: false,
-					avecBouton: false,
-					iconeGauche: this.options.avecBoutonsPrecedentSuivant
-						? false
-						: this.options.icone,
 					getContenuCellule: (aElement) => {
 						const lHtml = [];
 						if (this.options.getTitre) {
@@ -160,7 +156,7 @@ class ObjetSelection extends ObjetIdentite_1.Identite {
 									: ObjetChaine_1.GChaine.insecable(lElement.getLibelle()),
 								"</div>",
 								lElement.sousTitre
-									? '<div ie-ellipsis style="margin-left:18px;" class="taille-m Gris truncate">' +
+									? '<div ie-ellipsis style="margin-left:18px;" class="taille-m color-neutre-foncee truncate">' +
 											lElement.sousTitre +
 											"</div>"
 									: "",

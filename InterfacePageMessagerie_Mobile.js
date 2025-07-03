@@ -6,12 +6,10 @@ const ObjetTraduction_1 = require("ObjetTraduction");
 const Enumere_Espace_1 = require("Enumere_Espace");
 const UtilitaireMessagerie_1 = require("UtilitaireMessagerie");
 const ObjetDiscussion_Mobile_1 = require("ObjetDiscussion_Mobile");
-const ObjetIdentite_1 = require("ObjetIdentite");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetDroitsPN_1 = require("ObjetDroitsPN");
 const TypeOrigineCreationEtiquetteMessage_1 = require("TypeOrigineCreationEtiquetteMessage");
 const ObjetListe_1 = require("ObjetListe");
-const tag_1 = require("tag");
 const DonneesListe_Messagerie_1 = require("DonneesListe_Messagerie");
 const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
 const MoteurMessagerie_1 = require("MoteurMessagerie");
@@ -52,10 +50,10 @@ class InterfacePageMessagerie_Mobile extends InterfacePage_Mobile_1.InterfacePag
 				instance: this,
 				avecFiltreNonLues: true,
 			});
-		this.pageDiscussion = ObjetIdentite_1.Identite.creerInstance(
-			ObjetDiscussion_Mobile_1.ObjetDiscussion_Mobile,
-			{ pere: this, moteurMessagerie: this.moteurMessagerie },
-		);
+		this.pageDiscussion = new ObjetDiscussion_Mobile_1.ObjetDiscussion_Mobile({
+			pere: this,
+			moteurMessagerie: this.moteurMessagerie,
+		});
 		this.pageDiscussion.setOptions({
 			estChat: false,
 			estDiscussionResponsables:
@@ -100,10 +98,11 @@ class InterfacePageMessagerie_Mobile extends InterfacePage_Mobile_1.InterfacePag
 						? aInstance.etiquetteSelectionnee.getLibelle()
 						: "";
 				},
-				getIcone() {
+				getIconeHtml() {
 					if (aInstance.etiquetteSelectionnee) {
 						if (aInstance.etiquetteSelectionnee.estSansEtiquette) {
 							return IE.jsx.str("div", {
+								role: "presentation",
 								class: "utilMess_etiquette sans-etiquette",
 							});
 						}
@@ -142,31 +141,34 @@ class InterfacePageMessagerie_Mobile extends InterfacePage_Mobile_1.InterfacePag
 					start: function (aListe) {
 						aInstance.instanceListeMessagerie = aListe;
 						const lListeBoutons = [];
-						lListeBoutons.push({
-							html: (0, tag_1.tag)(
-								"ie-checkbox",
-								{ "ie-model": "cbNonLu", "ie-textleft": true },
-								ObjetTraduction_1.GTraductions.getValeur("Messagerie.NonLues"),
-							),
-							controleur: {
-								cbNonLu: {
-									getValue: function () {
-										return aInstance.applicationSco.parametresUtilisateur.get(
-											"Communication.DiscussionNonLues",
-										);
-									},
-									setValue: function (aValue) {
-										aInstance.applicationSco.parametresUtilisateur.set(
-											"Communication.DiscussionNonLues",
-											!!aValue,
-										);
-										aInstance.moteurMessagerie.modifierVisibiliteListeMessagerie(
-											null,
-										);
-										aListe.actualiser();
-									},
+						const lJSXModelCBNonLu = () => {
+							return {
+								getValue() {
+									return aInstance.applicationSco.parametresUtilisateur.get(
+										"Communication.DiscussionNonLues",
+									);
 								},
-							},
+								setValue(aValue) {
+									aInstance.applicationSco.parametresUtilisateur.set(
+										"Communication.DiscussionNonLues",
+										!!aValue,
+									);
+									aInstance.moteurMessagerie.modifierVisibiliteListeMessagerie(
+										null,
+									);
+									aListe.actualiser();
+								},
+							};
+						};
+						lListeBoutons.push({
+							getHtml: () =>
+								IE.jsx.str(
+									"ie-checkbox",
+									{ "ie-model": lJSXModelCBNonLu, "ie-textleft": true },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"Messagerie.NonLues",
+									),
+								),
 						});
 						if (
 							aInstance.moteurMessagerie.avecIconeAvertissementListeMessagerie()
@@ -293,7 +295,7 @@ class InterfacePageMessagerie_Mobile extends InterfacePage_Mobile_1.InterfacePag
 			this._jetonPositionScrollListe =
 				this.instanceListeMessagerie.getPositionScrollV();
 		}
-		const lHtml = IE.jsx.str(
+		const H = IE.jsx.str(
 			IE.jsx.fragment,
 			null,
 			IE.jsx.str(
@@ -318,7 +320,7 @@ class InterfacePageMessagerie_Mobile extends InterfacePage_Mobile_1.InterfacePag
 				style: "display:none;",
 			}),
 		);
-		this.afficher(lHtml);
+		this.afficher(H);
 	}
 	async _retourListe() {
 		this.surAffichageDiscussions = true;
@@ -444,7 +446,7 @@ class InterfacePageMessagerie_Mobile extends InterfacePage_Mobile_1.InterfacePag
 		this.pageDiscussion.setDonnees({
 			message: this.message,
 			creationDiscussion: true,
-			estPrimParentSurEtiquetteCL: lEstPrimParentSurEtiquetteCL,
+			estPrimParentSurEtiquetteCL: !!lEstPrimParentSurEtiquetteCL,
 			listeDestinatairesCarnetLiaison: lListeDestCarnetLiaison,
 			eleveCarnetLiaison: lEleveCarnetLiaison,
 			titre: lEstPrimParentSurEtiquetteCL
@@ -518,8 +520,6 @@ class InterfacePageMessagerie_Mobile extends InterfacePage_Mobile_1.InterfacePag
 			pere: this,
 			initialiser(aFenetre) {
 				aFenetre.setOptionsFenetre({
-					heightMax_mobile: true,
-					empilerFenetre: false,
 					titre: ObjetTraduction_1.GTraductions.getValeur(
 						"Messagerie.MesDossiersDiscussions",
 					),

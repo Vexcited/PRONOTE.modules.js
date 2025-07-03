@@ -1,25 +1,25 @@
-const { DonneesListe_PieceJointe } = require("DonneesListe_PieceJointe.js");
-const {
-	DonneesListe_PieceJointeFlat,
-} = require("DonneesListe_PieceJointeFlat.js");
-const { ObjetFenetre_PieceJointeCP } = require("ObjetFenetre_PieceJointeCP.js");
-const { GChaine } = require("ObjetChaine.js");
-const { GStyle } = require("ObjetStyle.js");
-const { EGenreDocumentJoint } = require("Enumere_DocumentJoint.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { ObjetSaisiePN } = require("ObjetSaisiePN.js");
-const { GUID } = require("GUID.js");
-class ObjetFenetre_PieceJointe extends ObjetFenetre_PieceJointeCP {
+exports.ObjetFenetre_PieceJointe = void 0;
+const DonneesListe_PieceJointe_1 = require("DonneesListe_PieceJointe");
+const DonneesListe_PieceJointeFlat_1 = require("DonneesListe_PieceJointeFlat");
+const ObjetFenetre_PieceJointeCP_1 = require("ObjetFenetre_PieceJointeCP");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetStyle_1 = require("ObjetStyle");
+const Enumere_DocumentJoint_1 = require("Enumere_DocumentJoint");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetSaisiePN_1 = require("ObjetSaisiePN");
+const GUID_1 = require("GUID");
+class ObjetFenetre_PieceJointe extends ObjetFenetre_PieceJointeCP_1.ObjetFenetre_PieceJointeCP {
 	constructor(...aParams) {
 		super(...aParams);
-		this.ids = { deploiementFiltres: GUID.getId(), zoneFiltres: GUID.getId() };
+		this.ids = {
+			deploiementFiltres: GUID_1.GUID.getId(),
+			zoneFiltres: GUID_1.GUID.getId(),
+		};
 		this.PourMemeMatiere = false;
 		this.PourMemeClasseEtGroupe = false;
 		this.DateDeb = GParametres.PremiereDate;
@@ -42,7 +42,7 @@ class ObjetFenetre_PieceJointe extends ObjetFenetre_PieceJointeCP {
 		});
 	}
 	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
+		return $.extend(true, super.getControleur(aInstance), {
 			btnMaj: {
 				getDisabled: function () {
 					if (aInstance.estModeFlat()) {
@@ -51,7 +51,7 @@ class ObjetFenetre_PieceJointe extends ObjetFenetre_PieceJointeCP {
 					const lListe = aInstance.getListeEltsSelect();
 					return (
 						lListe.count() !== 1 ||
-						!DonneesListe_PieceJointe.suppressionAutoriseePJ(
+						!DonneesListe_PieceJointe_1.DonneesListe_PieceJointe.suppressionAutoriseePJ(
 							lListe.get(0),
 							aInstance.parametres.genreRessourceDocJoint,
 						)
@@ -70,7 +70,7 @@ class ObjetFenetre_PieceJointe extends ObjetFenetre_PieceJointeCP {
 					let lAvecSuppression = true;
 					lListe.parcourir((D) => {
 						if (
-							!DonneesListe_PieceJointe.suppressionAutoriseePJ(
+							!DonneesListe_PieceJointe_1.DonneesListe_PieceJointe.suppressionAutoriseePJ(
 								D,
 								aInstance.parametres.genreRessourceDocJoint,
 							)
@@ -86,24 +86,27 @@ class ObjetFenetre_PieceJointe extends ObjetFenetre_PieceJointeCP {
 				const lMap = {
 					click: function () {
 						const lEstDeploye =
-							$("#" + this.ids.zoneFiltres.escapeJQ()).css("display") !==
+							$("#" + aInstance.ids.zoneFiltres.escapeJQ()).css("display") !==
 							"none";
 						if (lEstDeploye) {
-							$("#" + this.ids.zoneFiltres.escapeJQ()).css("display", "none");
-							$("#" + this.ids.deploiementFiltres.escapeJQ())
+							$("#" + aInstance.ids.zoneFiltres.escapeJQ()).css(
+								"display",
+								"none",
+							);
+							$("#" + aInstance.ids.deploiementFiltres.escapeJQ())
 								.children()
 								.first()
 								.removeClass("icon_chevron_up")
 								.addClass("icon_chevron_down");
 						} else {
-							$("#" + this.ids.zoneFiltres.escapeJQ()).css("display", "");
-							$("#" + this.ids.deploiementFiltres.escapeJQ())
+							$("#" + aInstance.ids.zoneFiltres.escapeJQ()).css("display", "");
+							$("#" + aInstance.ids.deploiementFiltres.escapeJQ())
 								.children()
 								.first()
 								.removeClass("icon_chevron_down")
 								.addClass("icon_chevron_up");
 						}
-					}.bind(aInstance),
+					},
 				};
 				$(this.node).on(lMap);
 			},
@@ -128,18 +131,19 @@ class ObjetFenetre_PieceJointe extends ObjetFenetre_PieceJointeCP {
 		});
 	}
 	avecGestionLibelleSurLiens() {
-		return this.Genre === EGenreDocumentJoint.Url;
+		return this.Genre === Enumere_DocumentJoint_1.EGenreDocumentJoint.Url;
 	}
-	construireInstances(...aParams) {
-		super.construireInstances(...aParams);
+	construireInstances() {
+		super.construireInstances();
 		this.IdentCombo = this.add(
-			ObjetSaisiePN,
-			_EvenementSurCombo,
-			_InitialiserCombo,
+			ObjetSaisiePN_1.ObjetSaisiePN,
+			this._evenementSurCombo,
+			this._initialiserCombo,
 		);
 	}
 	setOptions(aOptions) {
 		this.setOptionsFenetre(aOptions);
+		return this;
 	}
 	afficherFenetrePJ(aParam) {
 		this._setDocumentsJointsActifs(aParam.listePJTot, aParam.listePJContexte);
@@ -151,7 +155,7 @@ class ObjetFenetre_PieceJointe extends ObjetFenetre_PieceJointeCP {
 			avecFiltre: aParam.avecFiltre,
 			listePeriodes: aParam.listePeriodes
 				? aParam.listePeriodes
-				: _getListePeriodesParDefaut.call(this),
+				: this._getListePeriodesParDefaut(),
 			dateCours: aParam.dateCours,
 			avecEtatSaisie: aParam.avecEtatSaisie,
 			optionsSelecFile: aParam.optionsSelecFile,
@@ -168,11 +172,12 @@ class ObjetFenetre_PieceJointe extends ObjetFenetre_PieceJointeCP {
 		super.setDonnees(
 			$.extend(
 				{
-					genre: EGenreDocumentJoint.Fichier,
+					genre: Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier,
 					avecFiltre: { date: false, classeMatiere: false },
 					listePeriodes: null,
 					dateCours: null,
-					genreRessourceDocJoint: EGenreRessource.DocumentJoint,
+					genreRessourceDocJoint:
+						Enumere_Ressource_1.EGenreRessource.DocumentJoint,
 				},
 				aParametres,
 			),
@@ -181,17 +186,20 @@ class ObjetFenetre_PieceJointe extends ObjetFenetre_PieceJointeCP {
 			this.parametres.avecFiltre &&
 			this.parametres.avecFiltre.date &&
 			this.parametres.genreRessourceDocJoint !==
-				EGenreRessource.DocJointEtablissement;
+				Enumere_Ressource_1.EGenreRessource.DocJointEtablissement;
 		this.getInstance(this.IdentCombo).setVisible(lAvecDate);
 		this.DateCours = this.parametres.dateCours
-			? GDate.getJour(this.parametres.dateCours)
+			? ObjetDate_1.GDate.getJour(this.parametres.dateCours)
 			: this.parametres.dateCours;
 		const lAvecFiltres =
 			lAvecDate ||
 			(this.parametres.avecFiltre && this.parametres.avecFiltre.classeMatiere);
-		GStyle.setDisplay(this.ids.deploiementFiltres, lAvecFiltres);
-		GStyle.setDisplay(this.Nom + "_Filtre_1", lAvecFiltres && lAvecDate);
-		GStyle.setDisplay(
+		ObjetStyle_1.GStyle.setDisplay(this.ids.deploiementFiltres, lAvecFiltres);
+		ObjetStyle_1.GStyle.setDisplay(
+			this.Nom + "_Filtre_1",
+			lAvecFiltres && lAvecDate,
+		);
+		ObjetStyle_1.GStyle.setDisplay(
 			this.Nom + "_Filtre_2",
 			lAvecFiltres && this.parametres.avecFiltre.classeMatiere,
 		);
@@ -199,28 +207,35 @@ class ObjetFenetre_PieceJointe extends ObjetFenetre_PieceJointeCP {
 		if (this.parametres.listePeriodes && this.parametres.dateCours) {
 			this.parametres.listePeriodes.setLibelle(
 				0,
-				GDate.formatDate(
+				ObjetDate_1.GDate.formatDate(
 					this.parametres.dateCours,
-					GChaine.format(GTraductions.getValeur("fenetrePJ.le"), ["%JJ %MMMM"]),
+					ObjetChaine_1.GChaine.format(
+						ObjetTraduction_1.GTraductions.getValeur("fenetrePJ.le"),
+						["%JJ %MMMM"],
+					),
 				),
 			);
 		}
 		const lInstance = this.getInstance(this.IdentCombo);
 		lInstance.setLabel(
-			this.Genre === EGenreDocumentJoint.Url
-				? GTraductions.getValeur("fenetrePJ.filtre.uniquementLiensUtilisees")
-				: GTraductions.getValeur("fenetrePJ.filtre.uniquementPJUtilisees"),
+			this.Genre === Enumere_DocumentJoint_1.EGenreDocumentJoint.Url
+				? ObjetTraduction_1.GTraductions.getValeur(
+						"fenetrePJ.filtre.uniquementLiensUtilisees",
+					)
+				: ObjetTraduction_1.GTraductions.getValeur(
+						"fenetrePJ.filtre.uniquementPJUtilisees",
+					),
 		);
 		lInstance.setDonnees(
 			this.parametres.listePeriodes,
 			this.parametres.genreRessourceDocJoint !==
-				EGenreRessource.DocJointEtablissement
+				Enumere_Ressource_1.EGenreRessource.DocJointEtablissement
 				? 1
 				: undefined,
 		);
 	}
 	_getDonneesListe() {
-		let lDonneesListe = new DonneesListe_PieceJointe(
+		let lDonneesListe = new DonneesListe_PieceJointe_1.DonneesListe_PieceJointe(
 			this.ListePiecesJointes,
 			this.parametres.avecEtatSaisie,
 			this.Genre,
@@ -237,22 +252,17 @@ class ObjetFenetre_PieceJointe extends ObjetFenetre_PieceJointeCP {
 		});
 	}
 	_getDonneesListeFlat() {
-		let lDonneesListe = new DonneesListe_PieceJointeFlat(
-			this.ListePiecesJointes,
-			this.parametres.avecEtatSaisie,
-			this.Genre,
-			this.parametres.genreRessourceDocJoint,
-			this.parametres.modeLien,
-			this.avecGestionLibelleSurLiens(),
-			this.parametres.callbacks,
-		);
-		return lDonneesListe.setOptions({
-			avecEtatSaisie: this.parametres.avecEtatSaisie,
-			optionsSelecFile: this.parametres.optionsSelecFile,
-			listeFichiers: this.ListeFichiers,
-			avecMultiSelection: this.parametres.modeLien,
-			avecBordure: !IE.estMobile,
-		});
+		let lDonneesListe =
+			new DonneesListe_PieceJointeFlat_1.DonneesListe_PieceJointeFlat(
+				this.ListePiecesJointes,
+				this.parametres.avecEtatSaisie,
+				this.Genre,
+				this.parametres.genreRessourceDocJoint,
+				this.parametres.modeLien,
+				this.avecGestionLibelleSurLiens(),
+				this.parametres.callbacks,
+			);
+		return lDonneesListe.setOptions({});
 	}
 	composeContenu() {
 		const T = [];
@@ -265,12 +275,16 @@ class ObjetFenetre_PieceJointe extends ObjetFenetre_PieceJointeCP {
 				this.ids.deploiementFiltres,
 				'" class="filtres-header">',
 			);
-			T.push('    <i class="icon_chevron_down"></i>');
+			T.push('    <i class="icon_chevron_down" role="presentation"></i>');
 			T.push(
 				"    <h3>",
-				this.Genre === EGenreDocumentJoint.Url
-					? GTraductions.getValeur("fenetrePJ.filtre.titreRechercheSites")
-					: GTraductions.getValeur("fenetrePJ.filtre.titreRecherchePJ"),
+				this.Genre === Enumere_DocumentJoint_1.EGenreDocumentJoint.Url
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"fenetrePJ.filtre.titreRechercheSites",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"fenetrePJ.filtre.titreRecherchePJ",
+						),
 				"</h3>",
 			);
 			T.push("  </div>");
@@ -282,7 +296,7 @@ class ObjetFenetre_PieceJointe extends ObjetFenetre_PieceJointeCP {
 			`      <div class="field-contain" id="${this.Nom}_Filtre_1" ${this.parametres.avecFiltre && this.parametres.avecFiltre.date ? `` : `style="display:none"`}>\n                    <div id="${this.getNomInstance(this.IdentCombo)}"></div>\n                  </div>`,
 		);
 		T.push(
-			`      <div class="field-contain" id="${this.Nom}_Filtre_2" ${this.parametres.avecFiltre && this.parametres.avecFiltre.classeMatiere ? `` : `style="display:none"`}>\n                    <ie-checkbox class="m-right-l" ie-model="checkFiltreMemeMatiere">${GTraductions.getValeur("fenetrePJ.filtre.memeMatiere")}</ie-checkbox>\n                    <ie-checkbox ie-model="checkFiltreMemeClasseGroupe">${GTraductions.getValeur("fenetrePJ.filtre.memeClasseGpe")}</ie-checkbox>\n                  </div>`,
+			`      <div class="field-contain" id="${this.Nom}_Filtre_2" ${this.parametres.avecFiltre && this.parametres.avecFiltre.classeMatiere ? `` : `style="display:none"`}>\n                    <ie-checkbox class="m-right-l" ie-model="checkFiltreMemeMatiere">${ObjetTraduction_1.GTraductions.getValeur("fenetrePJ.filtre.memeMatiere")}</ie-checkbox>\n                    <ie-checkbox ie-model="checkFiltreMemeClasseGroupe">${ObjetTraduction_1.GTraductions.getValeur("fenetrePJ.filtre.memeClasseGpe")}</ie-checkbox>\n                  </div>`,
 		);
 		T.push(`    </div>`);
 		T.push(
@@ -297,7 +311,7 @@ class ObjetFenetre_PieceJointe extends ObjetFenetre_PieceJointeCP {
 	setDonneesListe() {
 		if (this.objPJListe) {
 			this.objPJListe.setDonnees(
-				this.parametres.avecFiltre,
+				!!this.parametres.avecFiltre,
 				this.PourMemeMatiere,
 				this.PourMemeClasseEtGroupe,
 				this.DateDeb,
@@ -307,82 +321,91 @@ class ObjetFenetre_PieceJointe extends ObjetFenetre_PieceJointeCP {
 			super.setDonneesListe();
 		}
 	}
-}
-function _InitialiserCombo(aInstance) {
-	const lStr =
-		this.Genre === EGenreDocumentJoint.Url
-			? GTraductions.getValeur("fenetrePJ.filtre.uniquementLiensUtilisees")
-			: GTraductions.getValeur("fenetrePJ.filtre.uniquementPJUtilisees");
-	const lParam = { labelWAICellule: lStr };
-	const lLabel = lStr;
-	$.extend(
-		lParam,
-		IE.estMobile
-			? { libelleHaut: lLabel, longueur: 200 }
-			: { texteEdit: lLabel, longueur: 150 },
-	);
-	aInstance.setOptionsObjetSaisie(lParam);
-}
-function _getListePeriodesParDefaut() {
-	const lListePeriodesParDefaut = new ObjetListeElements();
-	lListePeriodesParDefaut.addElement(
-		new ObjetElement(
-			GTraductions.getValeur("fenetrePJ.filtre.today"),
-			this.genrePeriodeFiltre.jourCourant,
-			this.genrePeriodeFiltre.jourCourant,
-		),
-	);
-	lListePeriodesParDefaut.addElement(
-		new ObjetElement(
-			GTraductions.getValeur("fenetrePJ.filtre.15jours"),
-			this.genrePeriodeFiltre.demiMois,
-			this.genrePeriodeFiltre.demiMois,
-		),
-	);
-	lListePeriodesParDefaut.addElement(
-		new ObjetElement(
-			GTraductions.getValeur("fenetrePJ.filtre.1mois"),
-			this.genrePeriodeFiltre.unMois,
-			this.genrePeriodeFiltre.unMois,
-		),
-	);
-	lListePeriodesParDefaut.addElement(
-		new ObjetElement(
-			GTraductions.getValeur("fenetrePJ.filtre.3mois"),
-			this.genrePeriodeFiltre.troisMois,
-			this.genrePeriodeFiltre.troisMois,
-		),
-	);
-	lListePeriodesParDefaut.addElement(
-		new ObjetElement(
-			GTraductions.getValeur("fenetrePJ.filtre.6mois"),
-			this.genrePeriodeFiltre.sixMois,
-			this.genrePeriodeFiltre.sixMois,
-		),
-	);
-	lListePeriodesParDefaut.addElement(
-		new ObjetElement(
-			GTraductions.getValeur("fenetrePJ.filtre.12mois"),
-			this.genrePeriodeFiltre.unAn,
-			this.genrePeriodeFiltre.unAn,
-		),
-	);
-	return lListePeriodesParDefaut;
-}
-function _EvenementSurCombo(aParams) {
-	if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
-		const LNbrMois = [0, 0.5, 1, 3, 6];
-		if (aParams.indice === this.genrePeriodeFiltre.unAn) {
-			this.DateDeb = GParametres.PremiereDate;
-			this.DateFin = GParametres.DerniereDate;
-		} else {
-			const lDate = this.DateCours ? this.DateCours : new Date();
-			this.DateDeb = new Date(
-				lDate - 30 * (1000 * 60 * 60 * 24) * LNbrMois[aParams.indice],
-			);
-			this.DateFin = lDate;
+	_initialiserCombo(aInstance) {
+		const lStr =
+			this.Genre === Enumere_DocumentJoint_1.EGenreDocumentJoint.Url
+				? ObjetTraduction_1.GTraductions.getValeur(
+						"fenetrePJ.filtre.uniquementLiensUtilisees",
+					)
+				: ObjetTraduction_1.GTraductions.getValeur(
+						"fenetrePJ.filtre.uniquementPJUtilisees",
+					);
+		const lParam = { labelWAICellule: lStr };
+		const lLabel = lStr;
+		$.extend(
+			lParam,
+			IE.estMobile
+				? { libelleHaut: lLabel, longueur: 200 }
+				: { texteEdit: lLabel, longueur: 150 },
+		);
+		aInstance.setOptionsObjetSaisie(lParam);
+	}
+	_getListePeriodesParDefaut() {
+		const lListePeriodesParDefaut =
+			new ObjetListeElements_1.ObjetListeElements();
+		lListePeriodesParDefaut.addElement(
+			new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur("fenetrePJ.filtre.today"),
+				this.genrePeriodeFiltre.jourCourant,
+				this.genrePeriodeFiltre.jourCourant,
+			),
+		);
+		lListePeriodesParDefaut.addElement(
+			new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur("fenetrePJ.filtre.15jours"),
+				this.genrePeriodeFiltre.demiMois,
+				this.genrePeriodeFiltre.demiMois,
+			),
+		);
+		lListePeriodesParDefaut.addElement(
+			new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur("fenetrePJ.filtre.1mois"),
+				this.genrePeriodeFiltre.unMois,
+				this.genrePeriodeFiltre.unMois,
+			),
+		);
+		lListePeriodesParDefaut.addElement(
+			new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur("fenetrePJ.filtre.3mois"),
+				this.genrePeriodeFiltre.troisMois,
+				this.genrePeriodeFiltre.troisMois,
+			),
+		);
+		lListePeriodesParDefaut.addElement(
+			new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur("fenetrePJ.filtre.6mois"),
+				this.genrePeriodeFiltre.sixMois,
+				this.genrePeriodeFiltre.sixMois,
+			),
+		);
+		lListePeriodesParDefaut.addElement(
+			new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur("fenetrePJ.filtre.12mois"),
+				this.genrePeriodeFiltre.unAn,
+				this.genrePeriodeFiltre.unAn,
+			),
+		);
+		return lListePeriodesParDefaut;
+	}
+	_evenementSurCombo(aParams) {
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
+			const LNbrMois = [0, 0.5, 1, 3, 6];
+			if (aParams.indice === this.genrePeriodeFiltre.unAn) {
+				this.DateDeb = GParametres.PremiereDate;
+				this.DateFin = GParametres.DerniereDate;
+			} else {
+				const lDate = this.DateCours ? this.DateCours : new Date();
+				this.DateDeb = new Date(
+					lDate.getTime() -
+						30 * (1000 * 60 * 60 * 24) * LNbrMois[aParams.indice],
+				);
+				this.DateFin = lDate;
+			}
+			this.setDonneesListe();
 		}
-		this.setDonneesListe();
 	}
 }
-module.exports = ObjetFenetre_PieceJointe;
+exports.ObjetFenetre_PieceJointe = ObjetFenetre_PieceJointe;

@@ -231,7 +231,15 @@ class ObjetDestinatairesMessagerie extends ObjetIdentite_1.Identite {
 					),
 					IE.jsx.str(
 						"ie-bouton",
-						{ id: lId, "ie-model": `bouton(${aParams.genre})` },
+						{
+							id: lId,
+							"ie-model": `bouton(${aParams.genre})`,
+							"ie-tooltiplabel":
+								Enumere_Ressource_1.EGenreRessourceUtil.getTitreFenetreSelectionRessource(
+									aParams.genre,
+								),
+							"aria-haspopup": "dialog",
+						},
 						lLibelleBouton,
 					),
 					IE.jsx.str("span", {

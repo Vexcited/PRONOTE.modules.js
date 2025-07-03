@@ -1,13 +1,11 @@
-const { GestionnaireBlocDeBase } = require("GestionnaireBloc.js");
-const { ObjetDiapoCarrousel } = require("ObjetDiapoCarrousel.js");
-class GestionnaireBlocDiapoCarrousel extends GestionnaireBlocDeBase {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.GestionnaireBlocDiapoCarrousel = void 0;
+const GestionnaireBloc_1 = require("GestionnaireBloc");
+const ObjetDiapoCarrousel_1 = require("ObjetDiapoCarrousel");
+class GestionnaireBlocDiapoCarrousel extends GestionnaireBloc_1.GestionnaireBlocDeBase {
 	composeBloc(aDataBloc) {
 		const lInstance = this.getInstanceObjetMetier(
 			aDataBloc,
-			ObjetDiapoCarrousel,
+			ObjetDiapoCarrousel_1.ObjetDiapoCarrousel,
 		);
 		return {
 			html: this.composeZoneInstance(lInstance),
@@ -18,4 +16,4 @@ class GestionnaireBlocDiapoCarrousel extends GestionnaireBlocDeBase {
 		return '<div id="' + aInstance.getNom() + '" class="container-bloc"></div>';
 	}
 }
-module.exports = { GestionnaireBlocDiapoCarrousel };
+exports.GestionnaireBlocDiapoCarrousel = GestionnaireBlocDiapoCarrousel;

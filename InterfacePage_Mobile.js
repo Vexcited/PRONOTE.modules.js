@@ -2,6 +2,7 @@ exports.InterfacePage_Mobile = void 0;
 const ObjetHtml_1 = require("ObjetHtml");
 const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
 const _InterfacePageProduit_1 = require("_InterfacePageProduit");
+const AccessApp_1 = require("AccessApp");
 class InterfacePage_Mobile extends _InterfacePageProduit_1._InterfacePageProduit {
 	constructor(...aParams) {
 		super(...aParams);
@@ -16,22 +17,13 @@ class InterfacePage_Mobile extends _InterfacePageProduit_1._InterfacePageProduit
 	setGenreAffichage(aGenreAffichage) {
 		this.genreAffichage = aGenreAffichage;
 	}
-	afficherMessage(aMessage) {
-		ObjetHtml_1.GHtml.setHtml(
-			this.getInstance(this.IdentZoneAlClient).getNom(),
-			this.composeAucuneDonnee(aMessage),
-		);
-	}
-	composeAucuneDonnee(aHtml) {
-		return ObjetHtml_1.GHtml.composeFondAucuneDonnee(aHtml);
-	}
 	construireStructureAffichageVerticale() {
 		const H = [];
 		let lInfo;
 		if (this.AddSurZone.length) {
-			H.push(this.construireStructureAffichageBandeau());
+			this.construireStructureAffichageBandeau();
 		} else {
-			$("#" + GApplication.idLigneBandeau.escapeJQ())
+			$("#" + (0, AccessApp_1.getApp)().idLigneBandeau.escapeJQ())
 				.html("")
 				.hide();
 		}
@@ -87,11 +79,12 @@ class InterfacePage_Mobile extends _InterfacePageProduit_1._InterfacePageProduit
 				H.push("</div>");
 			}
 		}
-		ObjetHtml_1.GHtml.setHtml(GApplication.idLigneBandeau, H.join(""), {
-			controleur: this.controleur,
-			instance: this,
-		});
-		$("#" + GApplication.idLigneBandeau.escapeJQ()).show();
+		ObjetHtml_1.GHtml.setHtml(
+			(0, AccessApp_1.getApp)().idLigneBandeau,
+			H.join(""),
+			{ controleur: this.controleur, instance: this },
+		);
+		$("#" + (0, AccessApp_1.getApp)().idLigneBandeau.escapeJQ()).show();
 		for (let I = 0, lNbr = this.AddSurZone.length; I < lNbr; I++) {
 			const lInfo = this._getInfosSurZone(I);
 			if (lInfo.controleur) {

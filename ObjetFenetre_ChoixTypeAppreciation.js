@@ -1,16 +1,14 @@
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-class ObjetFenetre_ChoixTypeAppreciation extends ObjetFenetre {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetFenetre_ChoixTypeAppreciation = void 0;
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+class ObjetFenetre_ChoixTypeAppreciation extends ObjetFenetre_1.ObjetFenetre {
 	construireInstances() {
 		this.identListeTypesAppreciation = this.add(
-			ObjetListe,
-			_evenementSurListeTypesAppreciation.bind(this),
-			_initialiserListeTypesAppreciation,
+			ObjetListe_1.ObjetListe,
+			this._evenementSurListeTypesAppreciation.bind(this),
+			this._initialiserListeTypesAppreciation,
 		);
 	}
 	composeContenu() {
@@ -30,31 +28,24 @@ class ObjetFenetre_ChoixTypeAppreciation extends ObjetFenetre {
 			new DonneesListe_ChoixTypeAppreciation(aListeTypeAppreciation),
 		);
 	}
-}
-function _initialiserListeTypesAppreciation(aInstance) {
-	const lColonnes = [];
-	lColonnes.push({
-		id: DonneesListe_ChoixTypeAppreciation.colonnes.libelle,
-		taille: "100%",
-	});
-	aInstance.setOptionsListe({ colonnes: lColonnes });
-}
-function _evenementSurListeTypesAppreciation(
-	aParametres,
-	aGenreEvenementListe,
-	aColonne,
-	aLigne,
-) {
-	switch (aGenreEvenementListe) {
-		case EGenreEvenementListe.Selection:
-			this.typeAppreciationCourant = this.listeTypesAppreciation
-				.get(aLigne)
-				.getLibelle();
-			this.setBoutonActif(1, true);
-			break;
+	_initialiserListeTypesAppreciation(aInstance) {
+		const lColonnes = [];
+		lColonnes.push({ id: Colonnes.libelle, taille: "100%" });
+		aInstance.setOptionsListe({ colonnes: lColonnes });
+	}
+	_evenementSurListeTypesAppreciation(aParametres) {
+		switch (aParametres.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Selection:
+				this.typeAppreciationCourant = this.listeTypesAppreciation
+					.get(aParametres.ligne)
+					.getLibelle();
+				this.setBoutonActif(1, true);
+				break;
+		}
 	}
 }
-class DonneesListe_ChoixTypeAppreciation extends ObjetDonneesListe {
+exports.ObjetFenetre_ChoixTypeAppreciation = ObjetFenetre_ChoixTypeAppreciation;
+class DonneesListe_ChoixTypeAppreciation extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees) {
 		super(aDonnees);
 		this.setOptions({
@@ -66,16 +57,16 @@ class DonneesListe_ChoixTypeAppreciation extends ObjetDonneesListe {
 	}
 	getValeur(aParams) {
 		switch (aParams.idColonne) {
-			case DonneesListe_ChoixTypeAppreciation.colonnes.libelle:
+			case Colonnes.libelle:
 				return aParams.article.getLibelle();
 		}
 		return "";
 	}
 	getCouleurCellule() {
-		return ObjetDonneesListe.ECouleurCellule.Blanc;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
 	}
 }
-DonneesListe_ChoixTypeAppreciation.colonnes = {
-	libelle: "DL_ChoixTypeAppreciation_libelle",
-};
-module.exports = { ObjetFenetre_ChoixTypeAppreciation };
+var Colonnes;
+(function (Colonnes) {
+	Colonnes["libelle"] = "DL_ChoixTypeAppreciation_libelle";
+})(Colonnes || (Colonnes = {}));

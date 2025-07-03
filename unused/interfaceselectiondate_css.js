@@ -1,0 +1,20 @@
+exports.StylesInterfaceSelectionDate = void 0;
+exports.StylesInterfaceSelectionDate = {
+	InterfaceSelectionDate: "InterfaceSelectionDate",
+	combosContainer: "combos-container",
+	ObjetSaisie: "ObjetSaisie",
+	titreJours: "titre-jours",
+	ouvre: "ouvre",
+	jours: "jours",
+	previousDate: "previous-date",
+	firstSelectableDate: "first-selectable-date",
+	selectedDate: "selected-date",
+	actif: "actif",
+	withMark: "with-mark",
+	currentMonth: "current-month",
+	currentDate: "current-date",
+	bTop: "b-top",
+	bBottom: "b-bottom",
+	bLeft: "b-left",
+	bRight: "b-right",
+};

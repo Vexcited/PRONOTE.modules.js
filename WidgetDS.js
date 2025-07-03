@@ -6,10 +6,12 @@ const Enumere_LienDS_1 = require("Enumere_LienDS");
 const Enumere_Onglet_1 = require("Enumere_Onglet");
 const Enumere_EvenementWidget_1 = require("Enumere_EvenementWidget");
 const ObjetWidget_1 = require("ObjetWidget");
+const AccessApp_1 = require("AccessApp");
 class WidgetDS extends ObjetWidget_1.Widget.ObjetWidget {
 	constructor(...aParams) {
 		super(...aParams);
-		this.etatUtilisateurPN = GEtatUtilisateur;
+		const lApplicationSco = (0, AccessApp_1.getApp)();
+		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
 	}
 	construire(aParams) {
 		this.donnees = aParams.donnees;
@@ -18,20 +20,21 @@ class WidgetDS extends ObjetWidget_1.Widget.ObjetWidget {
 			this.donnees.listeDS.trier();
 		}
 		const lWidget = {
-			html: this.composeWidgetDS(Enumere_LienDS_1.EGenreLienDS.tGL_Devoir),
+			getHtml: this.composeWidgetDS.bind(
+				this,
+				Enumere_LienDS_1.EGenreLienDS.tGL_Devoir,
+			),
 			nbrElements: this.donnees.listeDS.count(),
 		};
 		$.extend(true, this.donnees, lWidget);
 		aParams.construireWidget(this.donnees);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			surDS(i) {
-				$(this.node).eventValidation(() => {
-					aInstance.surDS(i);
-				});
-			},
-		});
+	jsxNodeSurDS(aDevoirSurveille) {
+		return (aNode) => {
+			$(aNode).eventValidation(() => {
+				this.surDS(aDevoirSurveille);
+			});
+		};
 	}
 	composeWidgetDS(aGenreLienDS) {
 		const H = [];
@@ -74,8 +77,8 @@ class WidgetDS extends ObjetWidget_1.Widget.ObjetWidget {
 								{
 									tabindex: "0",
 									class: "wrapper-link",
-									"aria-haspopup": !IE.estMobile && "dialog",
-									"ie-node": "surDS(" + i + ")",
+									"aria-haspopup": (!IE.estMobile && "dialog") || false,
+									"ie-node": this.jsxNodeSurDS(lDS),
 								},
 								IE.jsx.str(
 									"div",
@@ -120,27 +123,29 @@ class WidgetDS extends ObjetWidget_1.Widget.ObjetWidget {
 		}
 		return H.join("");
 	}
-	surDS(i) {
-		const lDS = this.donnees.listeDS
-			? this.donnees.listeDS.get(i)
-			: this.donneesSurveille.listeDS.get(i);
-		if (IE.estMobile) {
-			this.etatUtilisateurPN.setNavigationDate(lDS.dateDebut);
-			const lPageDestination = {
-				genreOngletDest: Enumere_Onglet_1.EGenreOnglet.CDT_Contenu,
-			};
-			this.callback.appel(
-				this.donnees.genre,
-				Enumere_EvenementWidget_1.EGenreEvenementWidget.NavigationVersPage,
-				lPageDestination,
-			);
-		} else {
-			const lParamsRequeteFicheCDT = { pourCDT: true, contenu: lDS };
-			this.callback.appel(
-				this.donnees.genre,
-				Enumere_EvenementWidget_1.EGenreEvenementWidget.EvenementPersonnalise,
-				lParamsRequeteFicheCDT,
-			);
+	surDS(aDevoirSurveille) {
+		if (aDevoirSurveille) {
+			if (IE.estMobile) {
+				this.etatUtilisateurSco.setNavigationDate(aDevoirSurveille.dateDebut);
+				const lPageDestination = {
+					genreOngletDest: Enumere_Onglet_1.EGenreOnglet.CDT_Contenu,
+				};
+				this.callback.appel(
+					this.donnees.genre,
+					Enumere_EvenementWidget_1.EGenreEvenementWidget.NavigationVersPage,
+					lPageDestination,
+				);
+			} else {
+				const lParamsRequeteFicheCDT = {
+					pourCDT: true,
+					contenu: aDevoirSurveille,
+				};
+				this.callback.appel(
+					this.donnees.genre,
+					Enumere_EvenementWidget_1.EGenreEvenementWidget.EvenementPersonnalise,
+					lParamsRequeteFicheCDT,
+				);
+			}
 		}
 	}
 }

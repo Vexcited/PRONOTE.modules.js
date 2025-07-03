@@ -1,35 +1,36 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	InterfaceSuivisAbsenceRetard,
-} = require("InterfaceSuivisAbsenceRetard.js");
-class ObjetFenetre_SuiviUnique extends ObjetFenetre {
+exports.ObjetFenetre_SuiviUnique = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const InterfaceSuivisAbsenceRetard_1 = require("InterfaceSuivisAbsenceRetard");
+class ObjetFenetre_SuiviUnique extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
+		this.etatSaisie = false;
 		this.setOptionsFenetre({
 			hauteur: 350,
 			largeur: 760,
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 		});
-		this.etatSaisie = false;
 	}
-	getControleur() {
-		return $.extend(true, super.getControleur(this), {
+	getControleur(aInstance) {
+		return $.extend(true, super.getControleur(aInstance), {
 			fenetreBtn: {
 				getDisabled: function (aBoutonRepeat) {
 					if (aBoutonRepeat.element.index === 0) {
 						return false;
 					}
-					return !this.instance.etatSaisie;
+					return !aInstance.etatSaisie;
 				},
 			},
 		});
 	}
 	construireInstances() {
-		this.identSuivi = this.add(InterfaceSuivisAbsenceRetard);
+		this.identSuivi = this.add(
+			InterfaceSuivisAbsenceRetard_1.InterfaceSuivisAbsenceRetard,
+		);
 	}
 	composeContenu() {
 		const T = [];
@@ -60,4 +61,4 @@ class ObjetFenetre_SuiviUnique extends ObjetFenetre {
 		}
 	}
 }
-module.exports = { ObjetFenetre_SuiviUnique };
+exports.ObjetFenetre_SuiviUnique = ObjetFenetre_SuiviUnique;

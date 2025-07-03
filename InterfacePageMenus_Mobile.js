@@ -60,6 +60,10 @@ class ObjetAffichagePageMenus_Mobile extends InterfacePage_Mobile_1.InterfacePag
 									{
 										primaire: true,
 										icone: "icon_legende",
+										ariaLabel:
+											ObjetTraduction_1.GTraductions.getValeur(
+												"menus.TitreFenetre",
+											),
 										callback: aInstance.ouvrirFenetreIcones.bind(aInstance),
 									},
 								],

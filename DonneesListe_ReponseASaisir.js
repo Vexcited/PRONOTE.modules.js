@@ -5,6 +5,7 @@ const ObjetDonneesListe_1 = require("ObjetDonneesListe");
 const TypeGenreExerciceDeQuestionnaire_1 = require("TypeGenreExerciceDeQuestionnaire");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetIndexsUnique_1 = require("ObjetIndexsUnique");
+const AccessApp_1 = require("AccessApp");
 class DonneesListe_ReponseASaisir extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aGenre, aCaseSensitive, aHauteurDonnees) {
 		super(aDonnees);
@@ -134,7 +135,9 @@ class DonneesListe_ReponseASaisir extends ObjetDonneesListe_1.ObjetDonneesListe 
 					);
 				}
 				if (lMessageRefusEdition) {
-					GApplication.getMessage().afficher({ message: lMessageRefusEdition });
+					(0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({ message: lMessageRefusEdition });
 				} else {
 					aParams.article.setLibelle(V);
 				}

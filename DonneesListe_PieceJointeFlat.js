@@ -1,11 +1,10 @@
-const { ObjetTri } = require("ObjetTri.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-class DonneesListe_PieceJointeFlat extends ObjetDonneesListeFlatDesign {
+exports.DonneesListe_PieceJointeFlat = void 0;
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const Enumere_Etat_1 = require("Enumere_Etat");
+class DonneesListe_PieceJointeFlat extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(
 		aDonnees,
 		aAvecEtatSaisie,
@@ -22,18 +21,11 @@ class DonneesListe_PieceJointeFlat extends ObjetDonneesListeFlatDesign {
 		this.callbacks = aCallbacks;
 		this.PourMemeMatiere = false;
 		this.PourMemeClasseEtGroupe = false;
-		if (this.avecGestionLibelleSurLiens) {
-			this.creerIndexUnique(["url", "Libelle", "Genre"]);
-		} else {
-			this.creerIndexUnique(["Libelle", "Genre"]);
-		}
 		this.setOptions({
 			avecCB: true,
 			avecCocheCBSurLigne: true,
 			avecEvnt_Creation: true,
 			avecSelection: false,
-			avecEdition: false,
-			avecSuppression: false,
 			avecBoutonActionLigne: true,
 		});
 	}
@@ -41,7 +33,7 @@ class DonneesListe_PieceJointeFlat extends ObjetDonneesListeFlatDesign {
 		return aParams.article ? aParams.article.Actif : false;
 	}
 	setValueCB(aParams, aValue) {
-		aParams.article.setEtat(EGenreEtat.Modification);
+		aParams.article.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 		aParams.article.Actif = aValue;
 	}
 	getTitreZonePrincipale(aParams) {
@@ -76,7 +68,7 @@ class DonneesListe_PieceJointeFlat extends ObjetDonneesListeFlatDesign {
 		this.DateCours = aDateCours;
 	}
 	getTri() {
-		return [ObjetTri.init("Libelle")];
+		return [ObjetTri_1.ObjetTri.init("Libelle")];
 	}
 	getVisible(D) {
 		const lEstDansDate =
@@ -92,12 +84,13 @@ class DonneesListe_PieceJointeFlat extends ObjetDonneesListeFlatDesign {
 				((!this.avecFiltre || !this.PourMemeMatiere || D.PourMemeMatiere) &&
 					(!this.PourMemeClasseEtGroupe || D.PourMemeClasseEtGroupe) &&
 					lEstDansDate)) &&
-			(D.getEtat() === EGenreEtat.Creation || D.existeNumero())
+			(D.getEtat() === Enumere_Etat_1.EGenreEtat.Creation || D.existeNumero())
 		);
 	}
 	editionAutorisee(aParams) {
 		return (
-			this.genreRessourceDocJoint !== EGenreRessource.DocJointEtablissement ||
+			this.genreRessourceDocJoint !==
+				Enumere_Ressource_1.EGenreRessource.DocJointEtablissement ||
 			this.suppressionAutoriseePJ(aParams.article, this.genreRessourceDocJoint)
 		);
 	}
@@ -105,7 +98,10 @@ class DonneesListe_PieceJointeFlat extends ObjetDonneesListeFlatDesign {
 		if (!aPJ) {
 			return false;
 		}
-		if (aGenreRessource !== EGenreRessource.DocJointEtablissement) {
+		if (
+			aGenreRessource !==
+			Enumere_Ressource_1.EGenreRessource.DocJointEtablissement
+		) {
 			return true;
 		} else {
 			return aPJ.modifiable !== false;
@@ -115,7 +111,7 @@ class DonneesListe_PieceJointeFlat extends ObjetDonneesListeFlatDesign {
 		const lMenu = aParams.menuContextuel;
 		const lArticle = aParams.article;
 		lMenu.add(
-			GTraductions.getValeur("Modifier"),
+			ObjetTraduction_1.GTraductions.getValeur("Modifier"),
 			this.editionAutorisee(aParams),
 			() => {
 				this.callbacks.editerSiteWeb({
@@ -127,7 +123,7 @@ class DonneesListe_PieceJointeFlat extends ObjetDonneesListeFlatDesign {
 			{ icon: "icon_pencil" },
 		);
 		lMenu.add(
-			GTraductions.getValeur("Supprimer"),
+			ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
 			this.suppressionAutoriseePJ(lArticle, this.genreRessourceDocJoint),
 			() => {
 				this.callbacks.supprimerSiteWeb({ data: lArticle });
@@ -136,4 +132,4 @@ class DonneesListe_PieceJointeFlat extends ObjetDonneesListeFlatDesign {
 		);
 	}
 }
-module.exports = { DonneesListe_PieceJointeFlat };
+exports.DonneesListe_PieceJointeFlat = DonneesListe_PieceJointeFlat;

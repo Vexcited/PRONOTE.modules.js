@@ -14,7 +14,7 @@ const UtilitaireContactVieScolaire_Mobile_1 = require("UtilitaireContactVieScola
 const ThemesPrimaire_1 = require("ThemesPrimaire");
 const DeclarationOngletsMobile_1 = require("DeclarationOngletsMobile");
 const TypeEtatExecutionQCMPourRepondant_1 = require("TypeEtatExecutionQCMPourRepondant");
-const InterfaceBandeauPied = require("InterfaceBandeauPied");
+const InterfaceBandeauPied_1 = require("InterfaceBandeauPied");
 const Enumere_Commande_1 = require("Enumere_Commande");
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
 const UtilitairePartenaire_1 = require("UtilitairePartenaire");
@@ -112,7 +112,10 @@ class ObjetInterfaceMobile extends _InterfaceMobile_1._InterfaceMobile {
 		}
 		return lGenrePremierOngletPublie;
 	}
-	setDonnees() {
+	setDonnees(aListeRessource) {
+		this.getInstance(this.identEnteteMobile).setAvecMembre(
+			aListeRessource && aListeRessource.count() > 0,
+		);
 		if (
 			UtilitaireContactVieScolaire_Mobile_1.UtilitaireContactVieScolaire_Mobile
 		) {
@@ -148,6 +151,7 @@ class ObjetInterfaceMobile extends _InterfaceMobile_1._InterfaceMobile {
 				Enumere_Espace_1.EGenreEspace.Mobile_Accompagnant,
 				Enumere_Espace_1.EGenreEspace.Mobile_PrimAccompagnant,
 				Enumere_Espace_1.EGenreEspace.Mobile_Tuteur,
+				Enumere_Espace_1.EGenreEspace.Mobile_Entreprise,
 			].includes(this.application.getEtatUtilisateur().GenreEspace)
 		) {
 			this.application
@@ -174,6 +178,7 @@ class ObjetInterfaceMobile extends _InterfaceMobile_1._InterfaceMobile {
 				Enumere_Espace_1.EGenreEspace.Mobile_Accompagnant,
 				Enumere_Espace_1.EGenreEspace.Mobile_PrimAccompagnant,
 				Enumere_Espace_1.EGenreEspace.Mobile_Tuteur,
+				Enumere_Espace_1.EGenreEspace.Mobile_Entreprise,
 			].includes(this.application.getEtatUtilisateur().GenreEspace) &&
 			this.application
 				.getEtatUtilisateur()
@@ -209,6 +214,7 @@ class ObjetInterfaceMobile extends _InterfaceMobile_1._InterfaceMobile {
 				Enumere_Espace_1.EGenreEspace.Mobile_Accompagnant,
 				Enumere_Espace_1.EGenreEspace.Mobile_PrimAccompagnant,
 				Enumere_Espace_1.EGenreEspace.Mobile_Tuteur,
+				Enumere_Espace_1.EGenreEspace.Mobile_Entreprise,
 			].includes(this.application.getEtatUtilisateur().GenreEspace)
 		) {
 			result =
@@ -253,6 +259,7 @@ class ObjetInterfaceMobile extends _InterfaceMobile_1._InterfaceMobile {
 							Enumere_Espace_1.EGenreEspace.Mobile_Accompagnant,
 							Enumere_Espace_1.EGenreEspace.Mobile_PrimAccompagnant,
 							Enumere_Espace_1.EGenreEspace.Mobile_Tuteur,
+							Enumere_Espace_1.EGenreEspace.Mobile_Entreprise,
 						].includes(this.application.getEtatUtilisateur().GenreEspace) ||
 						(aParam.executionQCM.estUneActivite &&
 							[
@@ -390,7 +397,10 @@ class ObjetInterfaceMobile extends _InterfaceMobile_1._InterfaceMobile {
 		);
 	}
 	ajouterBandeauPied() {
-		return this.add(InterfaceBandeauPied, this.evenementCommande);
+		return this.add(
+			InterfaceBandeauPied_1.ObjetAffichageBandeauPied,
+			this.evenementCommande,
+		);
 	}
 	evenementCommande(aParam) {
 		switch (aParam.genreCmd) {
@@ -407,8 +417,15 @@ class ObjetInterfaceMobile extends _InterfaceMobile_1._InterfaceMobile {
 		) {
 			new ObjetRequeteAccesSecurisePageProfil_1.ObjetRequeteAccesSecurisePageProfil(
 				this,
-				this.actionSurRequetePageProfil,
-			).lancerRequete();
+			)
+				.lancerRequete()
+				.then((aReponse) => {
+					this.actionSurRequetePageProfil(
+						aReponse.titre,
+						aReponse.message,
+						aReponse.url,
+					);
+				});
 		}
 	}
 	actionSurRequetePageProfil(aTitre, aMessage, aUrl) {

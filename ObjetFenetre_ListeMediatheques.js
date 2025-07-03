@@ -29,18 +29,18 @@ class ObjetFenetre_ListeMediatheques extends ObjetFenetre_1.ObjetFenetre {
 		this._actualiserListe();
 	}
 	composeContenu() {
-		const T = [];
-		T.push(
+		const H = [];
+		H.push(
 			IE.jsx.str(
 				IE.jsx.fragment,
 				null,
 				IE.jsx.str("div", {
 					style: "height:400px",
-					id: this.getInstance(this.identListe).getNom(),
+					id: this.getNomInstance(this.identListe),
 				}),
 			),
 		);
-		return T.join("");
+		return H.join("");
 	}
 	getParametresValidation(aNumeroBouton) {
 		const lParametresValidation = {

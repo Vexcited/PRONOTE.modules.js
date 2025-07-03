@@ -2,6 +2,7 @@ const TinyInit_1 = require("TinyInit");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const Invocateur_1 = require("Invocateur");
 const ToucheClavier_1 = require("ToucheClavier");
+const AccessApp_1 = require("AccessApp");
 TinyInit_1.TinyInit.setOptionsInitTiny({
 	setupParDefaut(editor) {
 		editor.on("keydown", (aEvent) => {
@@ -21,10 +22,12 @@ TinyInit_1.TinyInit.setOptionsInitTiny({
 		});
 	},
 	afficherMessage() {
-		GApplication.getMessage().afficher({
-			message: ObjetTraduction_1.GTraductions.getValeur(
-				"CahierDeTexte.MessageSuppressionImage",
-			),
-		});
+		(0, AccessApp_1.getApp)()
+			.getMessage()
+			.afficher({
+				message: ObjetTraduction_1.GTraductions.getValeur(
+					"CahierDeTexte.MessageSuppressionImage",
+				),
+			});
 	},
 });

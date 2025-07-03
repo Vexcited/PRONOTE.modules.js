@@ -1,24 +1,22 @@
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { Type3Etats } = require("Type3Etats.js");
-const { TypeEtatCours } = require("TypeEtatCours.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { tag } = require("tag.js");
-const { UtilitaireVisios } = require("UtilitaireVisiosSco.js");
-const { EGenreTriElement } = require("Enumere_TriElement.js");
-const { ObjetTri } = require("ObjetTri.js");
-class DonneesListe_RencontresPlanning extends ObjetDonneesListeFlatDesign {
+exports.DonneesListe_RencontresPlanning = void 0;
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Type3Etats_1 = require("Type3Etats");
+const TypeEtatCours_1 = require("TypeEtatCours");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetElement_1 = require("ObjetElement");
+const UtilitaireVisiosSco_1 = require("UtilitaireVisiosSco");
+const Enumere_TriElement_1 = require("Enumere_TriElement");
+const ObjetTri_1 = require("ObjetTri");
+class DonneesListe_RencontresPlanning extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees, aAvecRencontreNonPlacee, aParams) {
 		super(aDonnees);
 		this.avecSaisie = [
-			EGenreEspace.Professeur,
-			EGenreEspace.Mobile_Professeur,
-			EGenreEspace.Etablissement,
-			EGenreEspace.Mobile_Etablissement,
+			Enumere_Espace_1.EGenreEspace.Professeur,
+			Enumere_Espace_1.EGenreEspace.Mobile_Professeur,
+			Enumere_Espace_1.EGenreEspace.Etablissement,
+			Enumere_Espace_1.EGenreEspace.Mobile_Etablissement,
 		].includes(GEtatUtilisateur.GenreEspace);
 		this.setOptions({
 			avecEvnt_Selection: false,
@@ -35,13 +33,13 @@ class DonneesListe_RencontresPlanning extends ObjetDonneesListeFlatDesign {
 	}
 	getProfPersonnels(aArticle) {
 		const lHtml = [];
-		const lProfPersonnels = new ObjetListeElements();
-		lProfPersonnels.add([aArticle.professeurs, aArticle.personnels]);
+		const lProfPersonnels = new ObjetListeElements_1.ObjetListeElements();
+		lProfPersonnels.add(aArticle.professeurs).add(aArticle.personnels);
 		lHtml.push(lProfPersonnels.getTableauLibelles().join(", "));
 		lHtml.push(aArticle.eleve.getLibelle());
 		const lLibelleProf = lProfPersonnels.getTableauLibelles().join(", ");
 		const lLibelle = GEtatUtilisateur.avecPlusieursMembres()
-			? GTraductions.getValeur("Rencontres.pourEleve", [
+			? ObjetTraduction_1.GTraductions.getValeur("Rencontres.pourEleve", [
 					lLibelleProf,
 					aArticle.eleve.getLibelle(),
 				])
@@ -56,114 +54,130 @@ class DonneesListe_RencontresPlanning extends ObjetDonneesListeFlatDesign {
 	getTitreZonePrincipale(aParams) {
 		let lTitre = "";
 		if (
-			[EGenreEspace.Parent, EGenreEspace.Mobile_Parent].includes(
-				GEtatUtilisateur.GenreEspace,
-			)
+			[
+				Enumere_Espace_1.EGenreEspace.Parent,
+				Enumere_Espace_1.EGenreEspace.Mobile_Parent,
+			].includes(GEtatUtilisateur.GenreEspace)
 		) {
-			const lProfPersonnels = new ObjetListeElements();
-			lProfPersonnels.add([
-				aParams.article.professeurs,
-				aParams.article.personnels,
-			]);
 			lTitre = this.getProfPersonnels(aParams.article);
 		} else {
 			lTitre = this.getEleveClasse(aParams.article);
 		}
 		return lTitre;
 	}
+	jsxModeleCheckboxNomPropriete(aArticle) {
+		return {
+			getValue: () => {
+				return aArticle.aEuLieu === Type3Etats_1.Type3Etats.TE_Oui;
+			},
+			setValue: (aValue) => {
+				aArticle.aEuLieu = aValue
+					? Type3Etats_1.Type3Etats.TE_Oui
+					: Type3Etats_1.Type3Etats.TE_Non;
+				if (this.params.callback) {
+					this.params.callback(aArticle);
+				}
+			},
+		};
+	}
 	getZoneMessage(aParams) {
+		const lStrSalle = [];
+		if (aParams.article.salle && aParams.article.salle.existeNumero()) {
+			lStrSalle.push(
+				IE.jsx.str(
+					"span",
+					{ class: "m-right-l fluid-bloc" },
+					ObjetTraduction_1.GTraductions.getValeur("Salle"),
+					" : ",
+					aParams.article.salle.getLibelle(),
+				),
+			);
+		}
+		const lContenuJaiVuLaFamille = [];
+		if (this.avecSaisie) {
+			lContenuJaiVuLaFamille.push(
+				IE.jsx.str(
+					"ie-checkbox",
+					{
+						class: ["m-right-xl short"],
+						"ie-model": this.jsxModeleCheckboxNomPropriete.bind(
+							this,
+							aParams.article,
+						),
+					},
+					ObjetTraduction_1.GTraductions.getValeur("Rencontres.jaiVuLaFamille"),
+				),
+			);
+		}
 		const H = [];
 		H.push(
-			tag(
+			IE.jsx.str(
 				"div",
 				{ class: "flex-contain cols m-top" },
-				aParams.article.salle.existeNumero()
-					? `<span class="m-right-l fluid-bloc">${GTraductions.getValeur("Salle")} : ${aParams.article.salle.getLibelle()} </span>`
-					: "",
-				tag(
+				lStrSalle.join(""),
+				IE.jsx.str(
 					"div",
-					{ class: ["cta-contain"] },
-					this.avecSaisie
-						? tag(
-								"ie-checkbox",
-								{
-									class: ["m-right-xl short"],
-									"ie-model": tag.funcAttr("cbFamilleVu", [
-										aParams.article.getNumero(),
-									]),
-								},
-								GTraductions.getValeur("Rencontres.jaiVuLaFamille"),
-							)
-						: "",
+					{ class: "cta-contain" },
+					lContenuJaiVuLaFamille.join(""),
 				),
 			),
 		);
 		return H.join("");
 	}
 	getZoneGauche(aParams) {
-		return `<div class="time-contain colore"> ${aParams.article.strDebutRencontre} </div>`;
+		return IE.jsx.str(
+			"div",
+			{ class: "time-contain colore" },
+			" ",
+			aParams.article.strDebutRencontre,
+			" ",
+		);
 	}
 	getZoneComplementaire(aParams) {
-		return tag(
+		return IE.jsx.str(
 			"div",
 			{ class: "flex-contain" },
-			tag(
+			IE.jsx.str(
 				"span",
 				{ class: "self-center p-right-l" },
-				aParams.article.duree.toString() +
-					" " +
-					GTraductions.getValeur("Rencontres.abbrMin"),
+				aParams.article.duree.toString(),
+				" ",
+				ObjetTraduction_1.GTraductions.getValeur("Rencontres.abbrMin"),
 			),
-			_composeLienVisio.call(this, aParams.article),
+			this._composeLienVisio(aParams.article),
 		);
 	}
 	getInfosSuppZonePrincipale(aParams) {
-		return [EGenreEspace.Parent, EGenreEspace.Mobile_Parent].includes(
-			GEtatUtilisateur.GenreEspace,
-		)
-			? aParams.article.strMatiereFonction
-			: tag(
+		const H = [];
+		if (
+			[
+				Enumere_Espace_1.EGenreEspace.Parent,
+				Enumere_Espace_1.EGenreEspace.Mobile_Parent,
+			].includes(GEtatUtilisateur.GenreEspace)
+		) {
+			H.push(aParams.article.strMatiereFonction);
+		} else {
+			H.push(
+				IE.jsx.str(
 					"span",
+					null,
 					this.getResponsables(aParams.article),
-					"<br>",
-					tag("span", aParams.article.strMatiereFonction),
-				);
+					IE.jsx.str("br", null),
+					IE.jsx.str("span", null, aParams.article.strMatiereFonction),
+				),
+			);
+		}
+		return H.join("");
 	}
 	getVisible(D) {
 		return (
-			D.etat === TypeEtatCours.Impose ||
-			D.etat === TypeEtatCours.Pose ||
+			D.etat === TypeEtatCours_1.TypeEtatCours.Impose ||
+			D.etat === TypeEtatCours_1.TypeEtatCours.Pose ||
 			this.avecRencontreNonPlacee
 		);
 	}
 	setAvecRencontreNonPlacee(aAvecRencontreNonPlacee) {
 		this.avecRencontreNonPlacee = aAvecRencontreNonPlacee;
-	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
-			cbFamilleVu: {
-				getValue: function (aNumero) {
-					if (aNumero) {
-						const lElement = aInstance.Donnees.getElementParNumero(aNumero);
-						return lElement && lElement.aEuLieu === Type3Etats.TE_Oui;
-					}
-				},
-				setValue: function (aNumero, aValue) {
-					if (aNumero) {
-						const lElement = aInstance.Donnees.getElementParNumero(aNumero);
-						lElement.aEuLieu = aValue ? Type3Etats.TE_Oui : Type3Etats.TE_Non;
-						if (this.instance.callback) {
-							this.instance.callback.appel(lElement);
-						}
-					}
-				},
-			},
-			getNodeVisio: function (aNumero) {
-				$(this.node).on("click", () => {
-					_ouvrirLienVisio.call(aInstance, aNumero, false);
-				});
-			},
-		});
 	}
 	avecMenuContextuel(aParams) {
 		return !!aParams.article && this.avecSaisie;
@@ -176,35 +190,31 @@ class DonneesListe_RencontresPlanning extends ObjetDonneesListeFlatDesign {
 			? "Rencontres.modifierLienVisio"
 			: "Rencontres.creerLienVisio";
 		aParametres.menuContextuel.add(
-			GTraductions.getValeur(lCleLienVisio),
+			ObjetTraduction_1.GTraductions.getValeur(lCleLienVisio),
 			true,
-			function () {
-				_ouvrirLienVisio.call(
-					this.Donnees,
-					aParametres.article.getNumero(),
-					true,
-				);
+			() => {
+				this._ouvrirLienVisio(aParametres.article, true);
 			},
 			{ icon: "icon_cours_virtuel" },
 		);
 		const lRencontreVu =
-			aParametres.article.aEuLieu === Type3Etats.TE_Oui
+			aParametres.article.aEuLieu === Type3Etats_1.Type3Etats.TE_Oui
 				? "Rencontres.jeNaiPasVuLaFamille"
 				: "Rencontres.jaiVuLaFamille";
 		const lIconeRencontre =
-			aParametres.article.aEuLieu === Type3Etats.TE_Oui
-				? "icon_eye_open"
-				: "icon_eye_close";
+			aParametres.article.aEuLieu === Type3Etats_1.Type3Etats.TE_Oui
+				? "icon_eye_close"
+				: "icon_eye_open";
 		aParametres.menuContextuel.add(
-			GTraductions.getValeur(lRencontreVu),
+			ObjetTraduction_1.GTraductions.getValeur(lRencontreVu),
 			true,
-			function () {
+			() => {
 				aParametres.article.aEuLieu =
-					aParametres.article.aEuLieu === Type3Etats.TE_Oui
-						? Type3Etats.TE_Non
-						: Type3Etats.TE_Oui;
-				if (this.callback) {
-					this.callback.appel(aParametres.article);
+					aParametres.article.aEuLieu === Type3Etats_1.Type3Etats.TE_Oui
+						? Type3Etats_1.Type3Etats.TE_Non
+						: Type3Etats_1.Type3Etats.TE_Oui;
+				if (this.params.callback) {
+					this.params.callback(aParametres.article);
 				}
 			},
 			{ icon: lIconeRencontre },
@@ -213,62 +223,80 @@ class DonneesListe_RencontresPlanning extends ObjetDonneesListeFlatDesign {
 	}
 	getTri() {
 		return [
-			ObjetTri.init("place", EGenreTriElement.Croissant),
-			ObjetTri.init("strMatiereFonction"),
-			ObjetTri.init("eleve.Libelle"),
+			ObjetTri_1.ObjetTri.init(
+				"place",
+				Enumere_TriElement_1.EGenreTriElement.Croissant,
+			),
+			ObjetTri_1.ObjetTri.init("strMatiereFonction"),
+			ObjetTri_1.ObjetTri.init("eleve.Libelle"),
 		];
 	}
-}
-function _ouvrirLienVisio(aNumero, aEnSaisie) {
-	const lElement = this.Donnees.getElementParNumero(aNumero);
-	if (lElement) {
-		let strResponsables = this.getResponsables(lElement);
+	_ouvrirLienVisio(aArticle, aEnSaisie) {
+		let strResponsables = this.getResponsables(aArticle);
 		if (this.avecSaisie && aEnSaisie) {
-			let lVisio = lElement.visio ? lElement.visio : new ObjetElement();
-			lVisio.titreFenetre = GTraductions.getValeur(
+			let lVisio = aArticle.visio
+				? aArticle.visio
+				: new ObjetElement_1.ObjetElement();
+			lVisio.titreFenetre = ObjetTraduction_1.GTraductions.getValeur(
 				"Rencontres.lienRencontreAvec",
-				[this.getEleveClasse(lElement), strResponsables],
+				[this.getEleveClasse(aArticle), strResponsables],
 			);
-			UtilitaireVisios.ouvrirFenetreEditionVisios(
+			UtilitaireVisiosSco_1.UtilitaireVisios.ouvrirFenetreEditionVisios(
 				lVisio,
 				null,
 				(aGenreBouton, aVisio) => {
-					if (this.params && this.params.callbackVisio) {
-						this.params.callbackVisio(aVisio, lElement);
+					if (this.params && this.params.callback) {
+						this.params.callback(aArticle, aVisio);
 					}
 				},
 			);
-		} else if (lElement.visio) {
+		} else if (aArticle.visio) {
 			const lTitre = this.avecSaisie
-				? this.getEleveClasse(lElement) + "<br>" + strResponsables
-				: GTraductions.getValeur("Rencontres.lienRencontreAvec", [
-						this.getProfPersonnels(lElement),
-						"<br>" + lElement.strMatiereFonction,
-					]);
+				? this.getEleveClasse(aArticle) + "<br>" + strResponsables
+				: ObjetTraduction_1.GTraductions.getValeur(
+						"Rencontres.lienRencontreAvec",
+						[
+							this.getProfPersonnels(aArticle),
+							"<br>" + aArticle.strMatiereFonction,
+						],
+					);
 			const lOptions = { titre: lTitre };
-			UtilitaireVisios.ouvrirFenetreConsultVisio(lElement.visio, lOptions);
+			UtilitaireVisiosSco_1.UtilitaireVisios.ouvrirFenetreConsultVisio(
+				aArticle.visio,
+				lOptions,
+			);
 		}
 	}
-}
-function _composeLienVisio(aElement) {
-	if (aElement.visio) {
-		const H = tag("ie-btnicon", {
-			class: [
-				"theme_color_foncee i-large avecFond",
-				UtilitaireVisios.getNomIconePresenceVisios(),
-			],
-			"ie-node": tag.funcAttr("getNodeVisio", [aElement.getNumero()]),
-			"ie-hint": UtilitaireVisios.getHintVisio(aElement),
-			title: UtilitaireVisios.getHintVisio(aElement),
-		});
-		return ([EGenreEspace.Professeur, EGenreEspace.Mobile_Professeur].includes(
-			GEtatUtilisateur.GenreEspace,
-		) &&
-			this.avecSaisie) ||
-			aElement
-			? H
-			: "";
+	jsxModeleBoutonLienVisio(aArticle) {
+		return {
+			event: () => {
+				this._ouvrirLienVisio(aArticle, false);
+			},
+		};
 	}
-	return "";
+	_composeLienVisio(aElement) {
+		if (aElement.visio) {
+			let lLabel = aElement.visio.libelleLien || aElement.visio.url;
+			const H = IE.jsx.str("ie-btnicon", {
+				class: [
+					"theme_color_foncee i-large avecFond",
+					UtilitaireVisiosSco_1.UtilitaireVisios.getNomIconePresenceVisios(),
+				],
+				"ie-model": this.jsxModeleBoutonLienVisio.bind(this, aElement),
+				"ie-tooltipdescribe":
+					UtilitaireVisiosSco_1.UtilitaireVisios.getHintVisio(aElement.visio),
+				"aria-label": lLabel,
+			});
+			return ([
+				Enumere_Espace_1.EGenreEspace.Professeur,
+				Enumere_Espace_1.EGenreEspace.Mobile_Professeur,
+			].includes(GEtatUtilisateur.GenreEspace) &&
+				this.avecSaisie) ||
+				aElement
+				? H
+				: "";
+		}
+		return "";
+	}
 }
-module.exports = { DonneesListe_RencontresPlanning };
+exports.DonneesListe_RencontresPlanning = DonneesListe_RencontresPlanning;

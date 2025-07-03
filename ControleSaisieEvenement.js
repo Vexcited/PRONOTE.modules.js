@@ -1,16 +1,19 @@
 exports.ControleSaisieEvenement = void 0;
 const Invocateur_1 = require("Invocateur");
 const MethodesObjet_1 = require("MethodesObjet");
+const AccessApp_1 = require("AccessApp");
 let uSaisieEnCours = null,
 	uSaisieEnCoursExecution = false;
 const ControleSaisieEvenement = (aCallback, aSansControleNavigation) => {
+	var _a;
 	if (!aCallback || !MethodesObjet_1.MethodesObjet.isFunction(aCallback)) {
 		return;
 	}
 	if (
 		aSansControleNavigation !== true &&
-		window.GApplication &&
-		!GApplication.getModeExclusif()
+		!((_a = (0, AccessApp_1.getApp)()) === null || _a === void 0
+			? void 0
+			: _a.getModeExclusif())
 	) {
 		let lCallback = null;
 		if (_avecSaisieEnCoursActive()) {
@@ -86,7 +89,12 @@ function _avecSaisieEnCoursActive() {
 	return false;
 }
 exports.ControleSaisieEvenement.saisieEnCours = (...aParams) => {
-	if (window.GApplication && GApplication.getModeExclusif()) {
+	var _a;
+	if (
+		(_a = (0, AccessApp_1.getApp)()) === null || _a === void 0
+			? void 0
+			: _a.getModeExclusif()
+	) {
 		uSaisieEnCours = null;
 		uSaisieEnCoursExecution = false;
 		return false;
@@ -112,8 +120,13 @@ exports.ControleSaisieEvenement.saisieEnCours = (...aParams) => {
 	return false;
 };
 exports.ControleSaisieEvenement.addSaisieEnCours = (aCallback) => {
+	var _a;
 	uSaisieEnCoursExecution = false;
-	if (window.GApplication && GApplication.getModeExclusif()) {
+	if (
+		(_a = (0, AccessApp_1.getApp)()) === null || _a === void 0
+			? void 0
+			: _a.getModeExclusif()
+	) {
 		uSaisieEnCours = null;
 		return;
 	}

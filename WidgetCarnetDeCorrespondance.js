@@ -9,10 +9,11 @@ const ObjetElement_1 = require("ObjetElement");
 const ObjetTri_1 = require("ObjetTri");
 const Enumere_EvenementWidget_1 = require("Enumere_EvenementWidget");
 const ObjetWidget_1 = require("ObjetWidget");
+const AccessApp_1 = require("AccessApp");
 class WidgetCarnetDeCorrespondance extends ObjetWidget_1.Widget.ObjetWidget {
 	constructor(...aParams) {
 		super(...aParams);
-		const lApplicationSco = GApplication;
+		const lApplicationSco = (0, AccessApp_1.getApp)();
 		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
 	}
 	construire(aParams) {
@@ -20,7 +21,7 @@ class WidgetCarnetDeCorrespondance extends ObjetWidget_1.Widget.ObjetWidget {
 		this.donnees = aParams.donnees;
 		this.creerObjetsCarnetDeCorrespondance();
 		const lWidget = {
-			html: this.composeWidgetCarnetDeCorrespondance(),
+			getHtml: this.composeWidgetCarnetDeCorrespondance.bind(this),
 			nbrElements:
 				(_a = this.donnees.listeObservations) === null || _a === void 0
 					? void 0
@@ -34,14 +35,12 @@ class WidgetCarnetDeCorrespondance extends ObjetWidget_1.Widget.ObjetWidget {
 		aParams.construireWidget(aParams.donnees);
 		this.initialiserObjetsCarnetDeCorrespondance();
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			nodeObservation(aNumeroObservation) {
-				$(this.node).eventValidation(() => {
-					aInstance._surObservation(aNumeroObservation);
-				});
-			},
-		});
+	jsxNodeObservation(aObservation) {
+		return (aNode) => {
+			$(aNode).eventValidation(() => {
+				this._surObservation(aObservation);
+			});
+		};
 	}
 	creerObjetsCarnetDeCorrespondance() {
 		this.classeCarnetDeCorrespondance = ObjetIdentite_1.Identite.creerInstance(
@@ -123,7 +122,7 @@ class WidgetCarnetDeCorrespondance extends ObjetWidget_1.Widget.ObjetWidget {
 	}
 	actualiserWidgetCarnetDeCorrespondance(aRessource) {
 		const lWidget = {
-			html: this.composeWidgetCarnetDeCorrespondance(aRessource),
+			getHtml: this.composeWidgetCarnetDeCorrespondance.bind(this, aRessource),
 			nbrElements: this._nbrElevesDeRessource(aRessource),
 			afficherMessage: this._nbrElevesDeRessource(aRessource) === 0,
 		};
@@ -143,50 +142,65 @@ class WidgetCarnetDeCorrespondance extends ObjetWidget_1.Widget.ObjetWidget {
 							{ genreObservation: lObservation.genreObservation },
 						);
 					H.push(
-						"<li>",
-						'<a tabindex="0" title="',
-						lObservation.commentaire,
-						'" ie-node="nodeObservation(\'',
-						lObservation.getNumero(),
-						"')\"",
-						' class="wrapper-link icon ',
-						lClassIcon,
-						lObservation.estObservation ? " est-observation" : "",
-						'">',
-						'<div class="wrap">',
-						"<h3>",
-						lObservation.eleve.getLibelle(),
-						" ",
-						lObservation.classe
-							? '<span class="nom-classe">' +
-									" - " +
-									lObservation.classe.getLibelle() +
-									"</span>"
-							: "",
-						"</h3>",
-						'<span class="date">',
-						ObjetTraduction_1.GTraductions.getValeur(
-							"Dates.LeDate",
-							lObservation.strDate,
+						IE.jsx.str(
+							"li",
+							null,
+							IE.jsx.str(
+								"a",
+								{
+									tabindex: "0",
+									title: lObservation.commentaire,
+									"ie-node": this.jsxNodeObservation(lObservation),
+									class:
+										"wrapper-link icon " +
+										lClassIcon +
+										(lObservation.estObservation ? " est-observation" : ""),
+								},
+								IE.jsx.str(
+									"div",
+									{ class: "wrap" },
+									IE.jsx.str(
+										"h3",
+										null,
+										lObservation.eleve.getLibelle(),
+										" ",
+										lObservation.classe
+											? IE.jsx.str(
+													"span",
+													{ class: "nom-classe" },
+													" - ",
+													lObservation.classe.getLibelle(),
+												)
+											: "",
+									),
+									IE.jsx.str(
+										"span",
+										{ class: "date" },
+										ObjetTraduction_1.GTraductions.getValeur(
+											"Dates.LeDate",
+											lObservation.strDate,
+										),
+									),
+									"-",
+									lObservation.strObservation
+										? IE.jsx.str(
+												"span",
+												{ class: "observation" },
+												lObservation.strObservation,
+											)
+										: "",
+								),
+								lObservation.strDateLue
+									? IE.jsx.str("div", {
+											class: "as-read icon icon_eye_open",
+											title: ObjetTraduction_1.GTraductions.getValeur(
+												"accueil.carnetDeCorrespondance.vueLe",
+												[lObservation.strDateLue],
+											),
+										})
+									: "",
+							),
 						),
-						"</span>",
-						" - ",
-						lObservation.strObservation
-							? '<span class="observation">' +
-									lObservation.strObservation +
-									"</span>"
-							: "",
-						"</div>",
-						lObservation.strDateLue
-							? '<div class="as-read icon icon_eye_open" title="' +
-									ObjetTraduction_1.GTraductions.getValeur(
-										"accueil.carnetDeCorrespondance.vueLe",
-										[lObservation.strDateLue],
-									) +
-									'"></div>'
-							: "",
-						"</a>",
-						"</li>",
 					);
 				}
 			}
@@ -231,18 +245,15 @@ class WidgetCarnetDeCorrespondance extends ObjetWidget_1.Widget.ObjetWidget {
 		}
 		return false;
 	}
-	_surObservation(aNumeroObservation) {
-		const lObservation = this.donnees.listeObservations
-			? this.donnees.listeObservations.getElementParNumero(aNumeroObservation)
-			: null;
-		if (lObservation) {
+	_surObservation(aObservation) {
+		if (aObservation) {
 			this.etatUtilisateurSco.Navigation.setRessource(
 				Enumere_Ressource_1.EGenreRessource.Classe,
-				lObservation.classe,
+				aObservation.classe,
 			);
 			this.etatUtilisateurSco.Navigation.setRessource(
 				Enumere_Ressource_1.EGenreRessource.Eleve,
-				lObservation.eleve,
+				aObservation.eleve,
 			);
 			let lPageDestination;
 			if (this.etatUtilisateurSco.estEspaceMobile()) {

@@ -7,6 +7,8 @@ var DocumentsATelecharger;
 		GenreRubriqueDAT[(GenreRubriqueDAT["documents"] = 2)] = "documents";
 		GenreRubriqueDAT[(GenreRubriqueDAT["documentsAFournir"] = 3)] =
 			"documentsAFournir";
+		GenreRubriqueDAT[(GenreRubriqueDAT["documentsASigner"] = 4)] =
+			"documentsASigner";
 	})(
 		(GenreRubriqueDAT =
 			DocumentsATelecharger.GenreRubriqueDAT ||

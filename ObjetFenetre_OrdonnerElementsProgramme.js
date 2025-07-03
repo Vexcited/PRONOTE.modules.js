@@ -1,17 +1,20 @@
-const { ObjetFenetre_Liste } = require("ObjetFenetre_Liste.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { DonneesListe_Simple } = require("DonneesListe_Simple.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-class ObjetFenetre_OrdonnerElementsProgramme extends ObjetFenetre_Liste {
+exports.ObjetFenetre_OrdonnerElementsProgramme = void 0;
+const ObjetFenetre_Liste_1 = require("ObjetFenetre_Liste");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetListe_1 = require("ObjetListe");
+const DonneesListe_Simple_1 = require("DonneesListe_Simple");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+class ObjetFenetre_OrdonnerElementsProgramme extends ObjetFenetre_Liste_1.ObjetFenetre_Liste {
 	constructor(...aParams) {
 		super(...aParams);
 		this.optionsAffichage = {
-			titre: GTraductions.getValeur("Fenetre_OrdonnerElementsProgramme.Titre"),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"Fenetre_OrdonnerElementsProgramme.Titre",
+			),
 			largeur: 600,
 			hauteur: 300,
-			listeBoutons: [GTraductions.getValeur("Fermer")],
+			listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
 		};
 		this.donnees = {
 			service: null,
@@ -26,18 +29,18 @@ class ObjetFenetre_OrdonnerElementsProgramme extends ObjetFenetre_Liste {
 		lParamsListe.optionsListe = {
 			boutons: [
 				{
-					genre: ObjetListe.typeBouton.supprimer,
+					genre: ObjetListe_1.ObjetListe.typeBouton.supprimer,
 					event: function (aParam) {
-						_supprimerElementProgramme.call(lThis, aParam);
+						lThis._supprimerElementProgramme(aParam);
 					},
-					getDisabled: _getDisabledBoutonsListe,
+					getDisabled: this._getDisabledBoutonsListe,
 				},
 				{
 					class: "Image_OptionOrdonnerPourListe",
-					title: GTraductions.getValeur(
+					title: ObjetTraduction_1.GTraductions.getValeur(
 						"Fenetre_OrdonnerElementsProgramme.HintBoutonOrdonnerParOccurenceCDT",
 					),
-					event: function (aParam) {
+					event: (aParam) => {
 						const lListeOriginale = lThis.donnees.listeElementsProgramme;
 						if (!!lListeOriginale) {
 							const lListeDupliquee = lListeOriginale.getListeElements();
@@ -49,14 +52,16 @@ class ObjetFenetre_OrdonnerElementsProgramme extends ObjetFenetre_Liste {
 								periode: lThis.donnees.periode,
 								liste: lListeDupliquee,
 							};
-							Requetes("OrdonnerListeElementsProgramme", this)
+							new ObjetRequeteOrdonnerListeElementsProgramme(this)
 								.lancerRequete(lParamsRequete)
 								.then((aJSONReponse) => {
 									lThis.donnees.listeElementsProgramme.vider();
 									lThis.donnees.listeElementsProgramme.add(
 										aJSONReponse.listeOrdonnee,
 									);
-									_marquerSaisieListe(lThis.donnees.listeElementsProgramme);
+									this._marquerSaisieListe(
+										lThis.donnees.listeElementsProgramme,
+									);
 									aParam.liste.actualiser(false, true);
 								});
 						}
@@ -65,8 +70,8 @@ class ObjetFenetre_OrdonnerElementsProgramme extends ObjetFenetre_Liste {
 						return false;
 					},
 				},
-				{ genre: ObjetListe.typeBouton.monter },
-				{ genre: ObjetListe.typeBouton.descendre },
+				{ genre: ObjetListe_1.ObjetListe.typeBouton.monter },
+				{ genre: ObjetListe_1.ObjetListe.typeBouton.descendre },
 			],
 		};
 		this.setOptionsFenetre({
@@ -83,14 +88,16 @@ class ObjetFenetre_OrdonnerElementsProgramme extends ObjetFenetre_Liste {
 			periode: aDonnees.periode,
 			listeElementsProgramme: aDonnees.listeElementsProgramme,
 		};
-		_actualiserPositionsElementProgramme(this.donnees.listeElementsProgramme);
-		const lDonneesListe = new DonneesListe_Simple(
+		this._actualiserPositionsElementProgramme(
+			this.donnees.listeElementsProgramme,
+		);
+		const lDonneesListe = new DonneesListe_Simple_1.DonneesListe_Simple(
 			this.donnees.listeElementsProgramme,
 		).setOptions({ avecLigneDroppable: true, avecLigneDraggable: true });
-		lDonneesListe.surDeplacementElementSurLigne = function (
+		lDonneesListe.surDeplacementElementSurLigne = (
 			aParamsLigneDestination,
 			aParamsSource,
-		) {
+		) => {
 			const lPositionDest = aParamsLigneDestination.article.Position;
 			const lPositionSource = aParamsSource.article.Position;
 			this.donnees.listeElementsProgramme.parcourir((aElement) => {
@@ -109,8 +116,8 @@ class ObjetFenetre_OrdonnerElementsProgramme extends ObjetFenetre_Liste {
 				}
 			});
 			aParamsSource.article.Position = lPositionDest;
-			_marquerSaisieListe(this.donnees.listeElementsProgramme);
-		}.bind(this);
+			this._marquerSaisieListe(this.donnees.listeElementsProgramme);
+		};
 		this.setDonnees(lDonneesListe);
 	}
 	surValidation() {
@@ -121,52 +128,59 @@ class ObjetFenetre_OrdonnerElementsProgramme extends ObjetFenetre_Liste {
 		}
 		this.callback.appel(lListe ? lListe.avecSaisie : false);
 	}
-}
-Requetes.inscrire("OrdonnerListeElementsProgramme", ObjetRequeteConsultation);
-function _marquerSaisieListe(aListe) {
-	if (!!aListe) {
-		aListe.avecSaisie = true;
+	_marquerSaisieListe(aListe) {
+		if (!!aListe) {
+			aListe.avecSaisie = true;
+		}
 	}
-}
-function _actualiserPositionsElementProgramme(aListeElementsProgramme) {
-	if (!!aListeElementsProgramme) {
-		let lPosition = 1;
-		aListeElementsProgramme.parcourir((D) => {
-			if (D.existe()) {
-				D.Position = lPosition;
-				lPosition++;
-			}
-		});
-	}
-}
-function _getDisabledBoutonsListe(aParam) {
-	const lListeSelection = aParam.liste.getListeElementsSelection();
-	if (lListeSelection.count() !== 1 || !lListeSelection.get(0)) {
-		return true;
-	}
-	if (aParam.bouton.genre === ObjetListe.typeBouton.supprimer) {
-		return false;
-	} else if (aParam.bouton.genre === ObjetListe.typeBouton.monter) {
-		return lListeSelection.get(0).getPosition() <= 1;
-	}
-	return (
-		lListeSelection.get(0).getPosition() >=
-		aParam.liste.getListeArticles().count()
-	);
-}
-function _supprimerElementProgramme(aParam) {
-	const lListeSelection = aParam.liste.getListeElementsSelection();
-	if (lListeSelection.count() > 0) {
-		const lElementASupprimer = lListeSelection.get(0);
-		const lListeElmtsProgramme = this.donnees.listeElementsProgramme;
-		if (lListeElmtsProgramme) {
-			lListeElmtsProgramme.removeFilter((D) => {
-				return D.getNumero() === lElementASupprimer.getNumero();
+	_actualiserPositionsElementProgramme(aListeElementsProgramme) {
+		if (!!aListeElementsProgramme) {
+			let lPosition = 1;
+			aListeElementsProgramme.parcourir((D) => {
+				if (D.existe()) {
+					D.Position = lPosition;
+					lPosition++;
+				}
 			});
-			_marquerSaisieListe(lListeElmtsProgramme);
-			_actualiserPositionsElementProgramme(lListeElmtsProgramme);
-			aParam.liste.actualiser(false, true);
+		}
+	}
+	_getDisabledBoutonsListe(aParam) {
+		const lListeSelection = aParam.liste.getListeElementsSelection();
+		if (lListeSelection.count() !== 1 || !lListeSelection.get(0)) {
+			return true;
+		}
+		if (aParam.bouton.genre === ObjetListe_1.ObjetListe.typeBouton.supprimer) {
+			return false;
+		} else if (
+			aParam.bouton.genre === ObjetListe_1.ObjetListe.typeBouton.monter
+		) {
+			return lListeSelection.get(0).getPosition() <= 1;
+		}
+		return (
+			lListeSelection.get(0).getPosition() >=
+			aParam.liste.getListeArticles().count()
+		);
+	}
+	_supprimerElementProgramme(aParam) {
+		const lListeSelection = aParam.liste.getListeElementsSelection();
+		if (lListeSelection.count() > 0) {
+			const lElementASupprimer = lListeSelection.get(0);
+			const lListeElmtsProgramme = this.donnees.listeElementsProgramme;
+			if (lListeElmtsProgramme) {
+				lListeElmtsProgramme.removeFilter((D) => {
+					return D.getNumero() === lElementASupprimer.getNumero();
+				});
+				this._marquerSaisieListe(lListeElmtsProgramme);
+				this._actualiserPositionsElementProgramme(lListeElmtsProgramme);
+				aParam.liste.actualiser(false, true);
+			}
 		}
 	}
 }
-module.exports = { ObjetFenetre_OrdonnerElementsProgramme };
+exports.ObjetFenetre_OrdonnerElementsProgramme =
+	ObjetFenetre_OrdonnerElementsProgramme;
+class ObjetRequeteOrdonnerListeElementsProgramme extends ObjetRequeteJSON_1.ObjetRequeteConsultation {}
+CollectionRequetes_1.Requetes.inscrire(
+	"OrdonnerListeElementsProgramme",
+	ObjetRequeteOrdonnerListeElementsProgramme,
+);

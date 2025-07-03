@@ -1,31 +1,42 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const {
-	ObjetFenetre_SelectionRessource,
-} = require("ObjetFenetre_SelectionRessource.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-class ObjetFenetre_SelectionRegimeEleve extends ObjetFenetre_SelectionRessource {
+exports.ObjetFenetre_SelectionRegimeEleve = void 0;
+const ObjetFenetre_SelectionRessource_1 = require("ObjetFenetre_SelectionRessource");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const ObjetListe_1 = require("ObjetListe");
+class ObjetFenetre_SelectionRegimeEleve extends ObjetFenetre_SelectionRessource_1.ObjetFenetre_SelectionRessource {
 	constructor(...aParams) {
 		super(...aParams);
 		this.setOptionsFenetre({
-			titre: GTraductions.getValeur("RecapAbs.titreFenetreRegimes"),
-			largeur: 350,
-			hauteur: 400,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"RecapAbs.titreFenetreRegimes",
+			),
+			largeur: 450,
+			hauteur: 700,
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 		});
 		this.setSelectionObligatoire(true);
 		this.setAutoriseEltAucun(true);
 		this.indexBtnValider = 1;
 	}
-	setDonnees(aListeRessources, aListeRessourcesSelectionnees) {
-		this.listeRessourcesSelectionnees = aListeRessourcesSelectionnees;
-		this.genreRessource = EGenreRessource.RegimeEleve;
+	_initialiserListe(aInstance) {
+		let lOptions = {
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+			avecCBToutCocher: !!this._options.avecCocheRessources,
+			forcerOmbreScrollBottom: true,
+			boutons: [{ genre: ObjetListe_1.ObjetListe.typeBouton.rechercher }],
+		};
+		aInstance.setOptionsListe(lOptions);
+	}
+	setDonnees(aParams) {
+		this.listeRessourcesSelectionnees = aParams.listeRessourcesSelectionnees;
+		this.genreRessource = Enumere_Ressource_1.EGenreRessource.RegimeEleve;
 		this.construireListeRessource(
-			aListeRessources,
-			aListeRessourcesSelectionnees,
+			aParams.listeRessources,
+			aParams.listeRessourcesSelectionnees,
 		);
 		this.afficher();
 		this._actualiserListe();
@@ -33,45 +44,38 @@ class ObjetFenetre_SelectionRegimeEleve extends ObjetFenetre_SelectionRessource 
 	_actualiserListe() {
 		this.setBoutonActif(
 			this.indexBtnValider,
-			!this.selectionObligatoire || this._nbRessourcesCochees() > 0,
+			!this.estSelectionObligatoire() || this._nbRessourcesCochees() > 0,
 		);
 		this.getInstance(this.identListe).setDonnees(
 			new DonneesListe_SelectionRegimeEleve(this.listeRessources),
 		);
 	}
 }
-class DonneesListe_SelectionRegimeEleve extends ObjetDonneesListe {
+exports.ObjetFenetre_SelectionRegimeEleve = ObjetFenetre_SelectionRegimeEleve;
+class DonneesListe_SelectionRegimeEleve extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees) {
 		super(aDonnees);
 		this.setOptions({
-			avecSuppression: false,
-			avecEvnt_ApresEdition: true,
-			avecEtatSaisie: false,
+			avecSelection: false,
 			avecTri: false,
+			avecCB: true,
+			avecEvnt_CB: true,
+			avecCocheCBSurLigne: true,
+			avecBoutonActionLigne: false,
 		});
 	}
-	avecEdition(aParams) {
-		return aParams.colonne === 0;
+	getDisabledCB(aParams) {
+		let D = aParams.article;
+		return !!D.nonEditable;
 	}
-	getTypeValeur(aParams) {
-		if (aParams.colonne === 0) {
-			return ObjetDonneesListe.ETypeCellule.Coche;
-		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+	getValueCB(aParams) {
+		return aParams.article ? aParams.article.selectionne : false;
 	}
-	getValeur(aParams) {
-		switch (aParams.colonne) {
-			case 0:
-				return aParams.article.selectionne
-					? ObjetDonneesListe.EGenreCoche.Verte
-					: ObjetDonneesListe.EGenreCoche.Aucune;
-			case 1:
-				return aParams.article.getLibelle();
-		}
-		return "";
+	setValueCB(aParams, aValue) {
+		aParams.article.selectionne = aValue;
 	}
-	surEdition(aParams, V) {
-		aParams.article.selectionne = V;
+	getTitreZonePrincipale(aParams) {
+		let D = aParams.article;
+		return D.getLibelle();
 	}
 }
-module.exports = { ObjetFenetre_SelectionRegimeEleve };

@@ -5,13 +5,14 @@ const ObjetScroll_2 = require("ObjetScroll");
 const ObjetScroll_3 = require("ObjetScroll");
 const MethodesObjet_1 = require("MethodesObjet");
 const UtilitaireResizeObserver_1 = require("UtilitaireResizeObserver");
-const ObjetIdentite_1 = require("ObjetIdentite");
+const AccessApp_1 = require("AccessApp");
 IEHtml.addAttribut(
 	"ie-scroll",
-	(aContexteCourant, aNodeName, aAttributValue, aOutils) => {
+	(aContexteCourant, aNodeName, aAttributValue, aOutils, aComp, aAttrName) => {
 		const lValue = _creerScroll(
 			aContexteCourant,
 			aAttributValue,
+			aAttrName,
 			aOutils,
 			true,
 			true,
@@ -21,10 +22,11 @@ IEHtml.addAttribut(
 );
 IEHtml.addAttribut(
 	"ie-scrollv",
-	(aContexteCourant, aNodeName, aAttributValue, aOutils) => {
+	(aContexteCourant, aNodeName, aAttributValue, aOutils, aComp, aAttrName) => {
 		const lValue = _creerScroll(
 			aContexteCourant,
 			aAttributValue,
+			aAttrName,
 			aOutils,
 			true,
 			false,
@@ -34,10 +36,11 @@ IEHtml.addAttribut(
 );
 IEHtml.addAttribut(
 	"ie-scrollh",
-	(aContexteCourant, aNodeName, aAttributValue, aOutils) => {
+	(aContexteCourant, aNodeName, aAttributValue, aOutils, aComp, aAttrName) => {
 		const lValue = _creerScroll(
 			aContexteCourant,
 			aAttributValue,
+			aAttrName,
 			aOutils,
 			false,
 			true,
@@ -48,13 +51,11 @@ IEHtml.addAttribut(
 function _creerScroll(
 	aContexteCourant,
 	aAttributValue,
+	aAttrName,
 	aOutils,
 	aAvecScrollV,
 	aAvecScrollH,
 ) {
-	if (!aContexteCourant.controleur) {
-		return true;
-	}
 	let lReserverPlaceScrollVisible = false;
 	if (aContexteCourant.node.hasAttribute("ie-scrollReservation")) {
 		lReserverPlaceScrollVisible = true;
@@ -86,7 +87,8 @@ function _creerScroll(
 		heightContenuMinZone: false,
 		reserverPlaceScrollVisible: lReserverPlaceScrollVisible,
 		reserverPlaceScrollFixe: lReserverPlaceScrollFixe,
-		couleurBoucheTrou: GCouleur.themeNeutre.legere,
+		couleurBoucheTrou: (0, AccessApp_1.getApp)().getCouleur().themeNeutre
+			.legere,
 		decalageScrollH: 1,
 		decalageScrollV: 1,
 		avecResizeObserver: true,
@@ -113,11 +115,15 @@ function _creerScroll(
 		widthContenu: 0,
 	};
 	if (lNom) {
-		lInfosCallback = aOutils.getAccesParametres(lNom, aContexteCourant);
+		lInfosCallback = aOutils.getAccesParametres(
+			lNom,
+			aAttrName,
+			aContexteCourant,
+		);
 		if (!lInfosCallback.estFonction) {
 			return true;
 		}
-		lInfosCallback.callback([lApi]);
+		lInfosCallback.callback([lApi, aContexteCourant.node]);
 	}
 	lJNode = $(aContexteCourant.node);
 	lJNode.wrapInner('<div role="presentation">');
@@ -134,62 +140,54 @@ function _creerScroll(
 	let lPere = {};
 	let lLargeur;
 	if (lApi.avecScrollV) {
-		lInstanceV = ObjetIdentite_1.Identite.creerInstance(
-			ObjetScroll_1.ObjetScroll,
-			{
-				pere: lPere,
-				evenement: function (aGenre, aScrollTop) {
-					switch (aGenre) {
-						case ObjetScroll_3.EGenreScrollEvenement.Deplacement:
-							return aScrollTop;
-						case ObjetScroll_3.EGenreScrollEvenement.TailleZone:
-							return (
-								lApi.heightZone +
-								(lApi.scrollsVisible.h && !lApi.reserverPlaceScrollFixe
-									? -lLargeur
-									: 0)
-							);
-						case ObjetScroll_3.EGenreScrollEvenement.TailleContenu:
-							return lApi.heightContenu;
-					}
-				},
-				genre: ObjetScroll_2.EGenreScroll.Vertical,
+		lInstanceV = new ObjetScroll_1.ObjetScroll({
+			pere: lPere,
+			evenement(aGenre, aScrollTop) {
+				switch (aGenre) {
+					case ObjetScroll_3.EGenreScrollEvenement.Deplacement:
+						return aScrollTop;
+					case ObjetScroll_3.EGenreScrollEvenement.TailleZone:
+						return (
+							lApi.heightZone +
+							(lApi.scrollsVisible.h && !lApi.reserverPlaceScrollFixe
+								? -lLargeur
+								: 0)
+						);
+					case ObjetScroll_3.EGenreScrollEvenement.TailleContenu:
+						return lApi.heightContenu;
+				}
 			},
-		);
+			genre: ObjetScroll_2.EGenreScroll.Vertical,
+		});
 		lApi.scrollV = lInstanceV;
 		lPere.Nom = "pere_" + lApi.scrollV.getNom();
 		lApi.scrollV.pas = 30;
 		lApi.scrollV.Largeur = lApi.tailleScroll;
-		lApi.scrollV.avecScrollEnTactile = true;
 	}
 	if (lApi.avecScrollH) {
-		lInstanceH = ObjetIdentite_1.Identite.creerInstance(
-			ObjetScroll_1.ObjetScroll,
-			{
-				pere: lPere,
-				evenement: function (aGenre, aScrollTop) {
-					switch (aGenre) {
-						case ObjetScroll_3.EGenreScrollEvenement.Deplacement:
-							return aScrollTop;
-						case ObjetScroll_3.EGenreScrollEvenement.TailleZone:
-							return (
-								lApi.widthZone +
-								(lApi.scrollsVisible.v && !lApi.reserverPlaceScrollFixe
-									? -lLargeur
-									: 0)
-							);
-						case ObjetScroll_3.EGenreScrollEvenement.TailleContenu:
-							return lApi.widthContenu;
-					}
-				},
-				genre: ObjetScroll_2.EGenreScroll.Horizontal,
+		lInstanceH = new ObjetScroll_1.ObjetScroll({
+			pere: lPere,
+			evenement(aGenre, aScrollTop) {
+				switch (aGenre) {
+					case ObjetScroll_3.EGenreScrollEvenement.Deplacement:
+						return aScrollTop;
+					case ObjetScroll_3.EGenreScrollEvenement.TailleZone:
+						return (
+							lApi.widthZone +
+							(lApi.scrollsVisible.v && !lApi.reserverPlaceScrollFixe
+								? -lLargeur
+								: 0)
+						);
+					case ObjetScroll_3.EGenreScrollEvenement.TailleContenu:
+						return lApi.widthContenu;
+				}
 			},
-		);
+			genre: ObjetScroll_2.EGenreScroll.Horizontal,
+		});
 		lApi.scrollH = lInstanceH;
 		lPere.Nom = "pere_" + lApi.scrollH.getNom();
 		lApi.scrollH.pas = 30;
 		lApi.scrollH.Largeur = lApi.tailleScroll;
-		lApi.scrollH.avecScrollEnTactile = true;
 	}
 	lJNode.css({ position: "relative", overflow: "hidden" });
 	const lCss = { overflow: "hidden", "box-sizing": "border-box" };

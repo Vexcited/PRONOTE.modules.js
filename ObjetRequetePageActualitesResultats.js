@@ -1,13 +1,8 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const {
-	TypeGenreReponseInternetActualite,
-} = require("TypeGenreReponseInternetActualite.js");
-class ObjetRequetePageActualitesResultats extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-		this.actualite = null;
-	}
+exports.ObjetRequetePageActualitesResultats = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const TypeGenreReponseInternetActualite_1 = require("TypeGenreReponseInternetActualite");
+class ObjetRequetePageActualitesResultats extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aParametres) {
 		this.actualite = aParametres.actualite;
 		$.extend(this.JSON, aParametres);
@@ -40,7 +35,8 @@ class ObjetRequetePageActualitesResultats extends ObjetRequeteConsultation {
 							lElement.estUnDeploiement =
 								!this.actualite.reponseAnonyme ||
 								lQuestion.genreReponse ===
-									TypeGenreReponseInternetActualite.Textuelle ||
+									TypeGenreReponseInternetActualite_1
+										.TypeGenreReponseInternetActualite.Textuelle ||
 								lQuestion.resultats.listeRepondant.getIndiceElementParFiltre(
 									_getIndicePremierFils,
 								) > -1;
@@ -70,8 +66,9 @@ class ObjetRequetePageActualitesResultats extends ObjetRequeteConsultation {
 		this.callbackReussite.appel(this.actualite);
 	}
 }
-Requetes.inscrire(
+exports.ObjetRequetePageActualitesResultats =
+	ObjetRequetePageActualitesResultats;
+CollectionRequetes_1.Requetes.inscrire(
 	"PageActualitesResultats",
 	ObjetRequetePageActualitesResultats,
 );
-module.exports = { ObjetRequetePageActualitesResultats };

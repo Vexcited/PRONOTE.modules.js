@@ -1,8 +1,8 @@
-require("Object.js");
+require("Object");
 require("String");
 require("Math");
-require("Promise.js");
+require("Promise");
 if (!global.ResizeObserver) {
 	global.ResizeObserver = require("ResizeObserver_polyfill.js");
 }
-require("IntersectionObserver_polyfill.js");
+require("IntersectionObserver_polyfill");

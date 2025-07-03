@@ -15,6 +15,7 @@ const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetFenetre_SelectionQCM_1 = require("ObjetFenetre_SelectionQCM");
 const UtilitaireQCM_1 = require("UtilitaireQCM");
 const ObjetFenetre_1 = require("ObjetFenetre");
+const AccessApp_1 = require("AccessApp");
 class PageBibliothequeQCM extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
@@ -89,7 +90,10 @@ class PageBibliothequeQCM extends ObjetInterface_1.ObjetInterface {
 		lClassesSaisieWrapper.push("display:none;");
 		lClassesSaisieWrapper.push("overflow:hidden;");
 		lClassesSaisieWrapper.push(
-			ObjetStyle_1.GStyle.composeCouleurBordure(GCouleur.bordure, 1),
+			ObjetStyle_1.GStyle.composeCouleurBordure(
+				(0, AccessApp_1.getApp)().getCouleur().bordure,
+				1,
+			),
 		);
 		T.push(
 			IE.jsx.str(
@@ -106,7 +110,7 @@ class PageBibliothequeQCM extends ObjetInterface_1.ObjetInterface {
 							{ class: "main-content ly-cols-1", style: "width: 50%;" },
 							IE.jsx.str("div", {
 								class: "content-bloc",
-								id: this.getInstance(this.identListeQCM).getNom(),
+								id: this.getNomInstance(this.identListeQCM),
 								style: "overflow:hidden; height:calc(100% - 4.8rem);",
 							}),
 							IE.jsx.str(
@@ -154,7 +158,7 @@ class PageBibliothequeQCM extends ObjetInterface_1.ObjetInterface {
 								},
 								IE.jsx.str("div", {
 									class: "full-height",
-									id: this.getInstance(this.idSaisieQCM).getNom(),
+									id: this.getNomInstance(this.idSaisieQCM),
 								}),
 							),
 							IE.jsx.str(
@@ -348,7 +352,7 @@ class PageBibliothequeQCM extends ObjetInterface_1.ObjetInterface {
 			);
 		lFenetreSelectionQCM.setDonnees(aListeQCM, aMessage);
 	}
-	getClassePourCopiePromise() {
+	async getClassePourCopiePromise() {
 		return Promise.resolve().then(() => {
 			return null;
 		});
@@ -393,23 +397,27 @@ class PageBibliothequeQCM extends ObjetInterface_1.ObjetInterface {
 		if (!!this.questionsEnCopies) {
 			this.questionsEnCopies.vider();
 		}
-		GApplication.getMessage().afficher({
-			type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-			message: ObjetTraduction_1.GTraductions.getValeur(
-				"SaisieQCM.copieqcm.ok",
-			),
-		});
+		(0, AccessApp_1.getApp)()
+			.getMessage()
+			.afficher({
+				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+				message: ObjetTraduction_1.GTraductions.getValeur(
+					"SaisieQCM.copieqcm.ok",
+				),
+			});
 	}
 	actionCopieQuestionQCM() {
 		if (!!this.questionsEnCopies) {
 			this.questionsEnCopies.vider();
 		}
-		GApplication.getMessage().afficher({
-			type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-			message: ObjetTraduction_1.GTraductions.getValeur(
-				"SaisieQCM.copiequest.ok",
-			),
-		});
+		(0, AccessApp_1.getApp)()
+			.getMessage()
+			.afficher({
+				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+				message: ObjetTraduction_1.GTraductions.getValeur(
+					"SaisieQCM.copiequest.ok",
+				),
+			});
 	}
 	lancerVisuQCM(aQCM) {
 		const lFenetreVisuEleveQCM =

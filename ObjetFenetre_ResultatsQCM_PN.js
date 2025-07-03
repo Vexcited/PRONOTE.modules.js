@@ -39,7 +39,7 @@ class ObjetFenetre_ResultatsQCM_PN extends ObjetFenetre_ResultatsQCM_1.ObjetFene
 			ObjetFenetre_SaisieQCMResultat_1.ObjetFenetre_SaisieQCMResultat,
 			{
 				pere: this,
-				evenement: (aParamFenetreOut) => {
+				evenement: (aNumeroBouton, aParamFenetreOut) => {
 					new ObjetRequeteSaisieQCMResultat_1.ObjetRequeteSaisieQCMResultat(
 						this,
 					)

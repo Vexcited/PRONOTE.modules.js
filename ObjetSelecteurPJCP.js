@@ -11,6 +11,7 @@ const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetModulePJ_1 = require("ObjetModulePJ");
 const ObjetFenetre_ActionContextuelle_1 = require("ObjetFenetre_ActionContextuelle");
 const UtilitaireSelecFile_1 = require("UtilitaireSelecFile");
+const AccessApp_1 = require("AccessApp");
 class ObjetSelecteurPJCP extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
@@ -26,7 +27,9 @@ class ObjetSelecteurPJCP extends ObjetInterface_1.ObjetInterface {
 		this._options = {
 			genrePJ: Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier,
 			genreRessourcePJ: -1,
-			title: "",
+			title: ObjetTraduction_1.GTraductions.getValeur(
+				"selecteurPJ.ajoutNouvellePJ",
+			),
 			maxFiles: 0,
 			maxSize: 1048576,
 			avecAjoutExistante: false,
@@ -286,6 +289,7 @@ class ObjetSelecteurPJCP extends ObjetInterface_1.ObjetInterface {
 		this.getInstance(this.identPJ).setIdPourLibellesPJ(aIdListePJ);
 	}
 	ouvrirFenetreChoixListeCloud(aCallbackParFichier, aCallbackFinal) {}
+	ouvrirFenetreCloudENEJ(aCallbackParFichier, aCallbackFinal) {}
 	_getOptionsSelecFile() {
 		return {
 			title: this._options.title,
@@ -326,10 +330,12 @@ class ObjetSelecteurPJCP extends ObjetInterface_1.ObjetInterface {
 					this.setEtatSaisie(true);
 				}
 			} else {
-				GApplication.getMessage().afficher({
-					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-					message: lControle.msg,
-				});
+				(0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+						message: lControle.msg,
+					});
 			}
 			this.getInstance(this.identPJ).setLibellesPJ(this.listePJ);
 			if (lParam) {
@@ -367,7 +373,7 @@ class ObjetSelecteurPJCP extends ObjetInterface_1.ObjetInterface {
 			event() {
 				lThis._ouvrirFenetrePJ();
 			},
-			class: "bg-util-vert-claire",
+			class: "bg-green-claire",
 		});
 		if (GEtatUtilisateur.avecGestionAppareilPhoto()) {
 			lTabActions.push({
@@ -390,7 +396,7 @@ class ObjetSelecteurPJCP extends ObjetInterface_1.ObjetInterface {
 					accept: "image/*",
 				},
 				selecFile: true,
-				class: "bg-util-marron-claire",
+				class: "bg-orange-claire",
 			});
 			lTabActions.push({
 				libelle: ObjetTraduction_1.GTraductions.getValeur(
@@ -412,7 +418,7 @@ class ObjetSelecteurPJCP extends ObjetInterface_1.ObjetInterface {
 					accept: "image/*",
 				},
 				selecFile: true,
-				class: "bg-util-marron-claire",
+				class: "bg-orange-claire",
 			});
 		}
 		const lAvecCloud =
@@ -439,7 +445,7 @@ class ObjetSelecteurPJCP extends ObjetInterface_1.ObjetInterface {
 					lThis._addFiles(aParamsInput);
 				}
 			},
-			class: "bg-util-marron-claire",
+			class: "bg-orange-claire",
 		});
 		if (lAvecCloud) {
 			lTabActions.push({
@@ -453,8 +459,21 @@ class ObjetSelecteurPJCP extends ObjetInterface_1.ObjetInterface {
 						aParametresCloud.callbackChoixFichierFinal,
 					);
 				},
-				class: "bg-util-marron-claire",
+				class: "bg-orange-claire",
 			});
+			if (GEtatUtilisateur.avecCloudENEJDisponible()) {
+				const lActionENEJ =
+					ObjetFenetre_ActionContextuelle_1.ObjetFenetre_ActionContextuelle.getActionENEJ(
+						() =>
+							lThis.ouvrirFenetreCloudENEJ(
+								aParametresCloud.callbackChoixFichierParFichier,
+								aParametresCloud.callbackChoixFichierFinal,
+							),
+					);
+				if (lActionENEJ) {
+					lTabActions.push(lActionENEJ);
+				}
+			}
 		}
 		const lParams = {};
 		if (lTabActions.length > 1) {
@@ -579,7 +598,8 @@ class ObjetSelecteurPJCP extends ObjetInterface_1.ObjetInterface {
 						aElementASupprimer.getLibelle(),
 					])) +
 			"</div>";
-		GApplication.getMessage()
+		(0, AccessApp_1.getApp)()
+			.getMessage()
 			.afficher({
 				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
 				message: message,

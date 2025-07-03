@@ -1,27 +1,29 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const {
-	ObjetRequeteDonneesEditionInformation,
-} = require("ObjetRequeteDonneesEditionInformation.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { TypeHttpNotificationDonnes } = require("TypeHttpNotificationDonnes.js");
-const ObjetFenetre_PieceJointe = require("ObjetFenetre_PieceJointe.js");
+exports.MoteurGestionPJPN = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetElement_1 = require("ObjetElement");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetRequeteDonneesEditionInformation_1 = require("ObjetRequeteDonneesEditionInformation");
+const MethodesObjet_1 = require("MethodesObjet");
+const TypeHttpNotificationDonnes_1 = require("TypeHttpNotificationDonnes");
+const ObjetFenetre_PieceJointe_1 = require("ObjetFenetre_PieceJointe");
+const UtilitaireGestionCloudEtPDF_1 = require("UtilitaireGestionCloudEtPDF");
+const AccessApp_1 = require("AccessApp");
 class MoteurGestionPJPN {
 	ouvrirModaleSelectionPJ(aParam) {
 		let lAvecSaisie = false;
 		$.extend(aParam, {
-			genreRessourceDocJoint: EGenreRessource.DocJointEtablissement,
+			genreRessourceDocJoint:
+				Enumere_Ressource_1.EGenreRessource.DocJointEtablissement,
 		});
-		const lModaleSelect = ObjetFenetre.creerInstanceFenetre(
-			ObjetFenetre_PieceJointe,
+		const lModaleSelect = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_PieceJointe_1.ObjetFenetre_PieceJointe,
 			{
 				pere: aParam.instance,
 				evenement: function (aNumeroBouton, aParamsFenetre) {
 					const lListeFichiers = aParamsFenetre.instance.ListeFichiers;
 					aParam.listePiecesJointes.parcourir((aDocument) => {
-						if (aDocument.getEtat() !== EGenreEtat.Aucun) {
+						if (aDocument.getEtat() !== Enumere_Etat_1.EGenreEtat.Aucun) {
 							lAvecSaisie = true;
 						}
 						let lDocumentJoint = aParam.listePJContexte.getElementParNumero(
@@ -31,18 +33,18 @@ class MoteurGestionPJPN {
 						if (lDocumentJoint) {
 							if (
 								aDocument.existe() &&
-								aDocument.getEtat() === EGenreEtat.Modification
+								aDocument.getEtat() === Enumere_Etat_1.EGenreEtat.Modification
 							) {
 								lDocumentJoint.setLibelle(aDocument.getLibelle());
 							}
 							if (!lActif) {
-								lDocumentJoint.setEtat(EGenreEtat.Suppression);
-								aParam.element.setEtat(EGenreEtat.Modification);
+								lDocumentJoint.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+								aParam.element.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 								lAvecSaisie = true;
 							}
 						} else {
 							if (lActif) {
-								lDocumentJoint = new ObjetElement(
+								lDocumentJoint = new ObjetElement_1.ObjetElement(
 									aDocument.getLibelle(),
 									aDocument.getNumero(),
 									aDocument.getGenre(),
@@ -53,8 +55,8 @@ class MoteurGestionPJPN {
 									lDocumentJoint.nomOriginal = aDocument.Fichier.nomOriginal;
 									lDocumentJoint.file = aDocument.Fichier.file;
 								}
-								lDocumentJoint.setEtat(EGenreEtat.Creation);
-								aParam.element.setEtat(EGenreEtat.Modification);
+								lDocumentJoint.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
+								aParam.element.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 								aParam.listePJContexte.addElement(lDocumentJoint);
 								lAvecSaisie = true;
 							}
@@ -82,27 +84,61 @@ class MoteurGestionPJPN {
 			listePJContexte: aParam.listePJContexte,
 			genrePJ: aParam.genre,
 			genreRessourcePJ: aParam.genreRessourceDocJoint,
-			avecFiltre: false,
+			avecFiltre: undefined,
 			optionsSelecFile: { maxSize: aParam.maxSize },
 			modeLien: false,
 			surValiderAvantFermer: null,
 			validationAuto: null,
 		});
 	}
-	getDonneesEditionInformation() {
-		return new ObjetRequeteDonneesEditionInformation(this).lancerRequete({
-			init: true,
+	ouvrirFenetreChoixListeCloud(aParam) {
+		UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF.ouvrirFenetreCloud(
+			{ instance: this },
+		).then((aListeDocuments) => {
+			if (aListeDocuments.count() > 0) {
+				aParam.element.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+				aListeDocuments.parcourir((aDocument) => {
+					aParam.listePJContexte.addElement(aDocument);
+					aParam.listePiecesJointes.addElement(aDocument);
+				});
+				aParam.validation(null, null, true);
+			}
 		});
 	}
+	async ouvrirFenetreChoixFichierCloud(aParam) {
+		var _a;
+		const lListeDocuments =
+			await UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF.ouvrirFenetreChoixFichierCloud(
+				{
+					instance: (_a = aParam.instance) !== null && _a !== void 0 ? _a : {},
+					service: aParam.service,
+				},
+			);
+		if (lListeDocuments.count() > 0) {
+			aParam.element.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+			lListeDocuments.parcourir((aDocument) => {
+				aParam.listePJContexte.addElement(aDocument);
+				aParam.listePiecesJointes.addElement(aDocument);
+			});
+			aParam.validation(null, null, true);
+		}
+	}
+	getDonneesEditionInformation() {
+		return new ObjetRequeteDonneesEditionInformation_1.ObjetRequeteDonneesEditionInformation(
+			this,
+		).lancerRequete({ init: true });
+	}
 	getListePJEtablissement() {
-		return GEtatUtilisateur.listeDonnees !== null &&
-			GEtatUtilisateur.listeDonnees !== undefined
-			? MethodesObjet.dupliquer(
-					GEtatUtilisateur.listeDonnees[
-						TypeHttpNotificationDonnes.THND_ListeDocJointEtablissement
+		const lEtatutil = (0, AccessApp_1.getApp)().getEtatUtilisateur();
+		return lEtatutil.listeDonnees !== null &&
+			lEtatutil.listeDonnees !== undefined
+			? MethodesObjet_1.MethodesObjet.dupliquer(
+					lEtatutil.listeDonnees[
+						TypeHttpNotificationDonnes_1.TypeHttpNotificationDonnes
+							.THND_ListeDocJointEtablissement
 					],
 				)
 			: null;
 	}
 }
-module.exports = { MoteurGestionPJPN };
+exports.MoteurGestionPJPN = MoteurGestionPJPN;

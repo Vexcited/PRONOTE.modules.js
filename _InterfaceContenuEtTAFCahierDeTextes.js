@@ -18,6 +18,7 @@ const Enumere_DocumentJoint_1 = require("Enumere_DocumentJoint");
 const UtilitaireGestionCloudEtPDF_1 = require("UtilitaireGestionCloudEtPDF");
 const ObjetDroitsPN_1 = require("ObjetDroitsPN");
 const UtilitaireSaisieCDT_1 = require("UtilitaireSaisieCDT");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
 class _InterfaceContenuEtTAFCahierDeTextes extends InterfacePage_1.InterfacePage {
 	constructor(...aParams) {
 		super(...aParams);
@@ -86,6 +87,12 @@ class _InterfaceContenuEtTAFCahierDeTextes extends InterfacePage_1.InterfacePage
 								aInstance.etatUtilisateur.avecCloudDisponibles()
 									? () => {
 											aInstance.evenementSurBoutonCloud();
+										}
+									: null,
+							callbackChoixDepuisCloudENEJ:
+								aInstance.etatUtilisateur.avecCloudENEJDisponible()
+									? () => {
+											aInstance.ouvrirFenetreCloudENEJ();
 										}
 									: null,
 							callbackNouvelleURL: (aNouvelleURL) => {
@@ -199,9 +206,9 @@ class _InterfaceContenuEtTAFCahierDeTextes extends InterfacePage_1.InterfacePage
 	}
 	construireInstances() {}
 	construireEditeur() {
-		const lHTML = [];
-		if (GNavigateur.withContentEditable) {
-			lHTML.push(
+		const H = [];
+		if (ObjetNavigateur_1.Navigateur.withContentEditable) {
+			H.push(
 				'<div id="',
 				this.idDescriptif,
 				'" ',
@@ -211,20 +218,20 @@ class _InterfaceContenuEtTAFCahierDeTextes extends InterfacePage_1.InterfacePage
 					genre: ObjetWAI_1.EGenreAttribut.multiline,
 					valeur: "true",
 				}),
-				' style="width:100%;height:75px;" class="round-style" tabindex="0">',
+				' class="full-width is-tiny" style="width:100%;height:75px;"  tabindex="0">',
 				"</div>",
 			);
 		} else {
-			lHTML.push(
+			H.push(
 				'<textarea id="',
 				this.idDescriptif,
-				'" maxlength="0" class="round-style" style="width:100%;height:75px;" onkeyup="',
+				'" maxlength="0"  style="width:100%;height:75px;" onkeyup="',
 				this.Nom,
-				'.mettreAJourDescriptif ()" oncontextmenu="GNavigateur.stopperEvenement (event); return false;">',
+				'.mettreAJourDescriptif ()" oncontextmenu="Navigateur.stopperEvenement (event); return false;">',
 				"</textarea>",
 			);
 		}
-		return lHTML.join("");
+		return H.join("");
 	}
 	avecBoutonEditeurHTML() {
 		return false;
@@ -235,21 +242,21 @@ class _InterfaceContenuEtTAFCahierDeTextes extends InterfacePage_1.InterfacePage
 	}
 	evntSurBtnQCM() {}
 	construireBoutonsLiens() {
-		const T = [];
+		const H = [];
 		if (this.avecBoutonEditeurHTML()) {
-			T.push(
+			H.push(
 				UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnMiseEnFormeTexte(
 					"btnMiseEnFormeTexte",
 				),
 			);
 		}
-		T.push(
+		H.push(
 			UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnPiecesJointes(
 				"btnAfficherPiecesJointes",
 				this.idBtnPJ,
 			),
 		);
-		return T.join("");
+		return H.join("");
 	}
 	setParametresGeneraux() {
 		this.GenreStructure =
@@ -281,7 +288,7 @@ class _InterfaceContenuEtTAFCahierDeTextes extends InterfacePage_1.InterfacePage
 		if (!ObjetHtml_1.GHtml.elementExiste(lId)) {
 			return;
 		}
-		if (GNavigateur.withContentEditable) {
+		if (ObjetNavigateur_1.Navigateur.withContentEditable) {
 			this._debloquerTiny();
 			this._guidBlocageTiny =
 				GestionnaireModale_1.GestionnaireModale.bloquerInterface({
@@ -290,7 +297,7 @@ class _InterfaceContenuEtTAFCahierDeTextes extends InterfacePage_1.InterfacePage
 				});
 			TinyInit_1.TinyInit.init({
 				id: lId,
-				labelWAI: ObjetTraduction_1.GTraductions.getValeur(
+				ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
 					"CahierDeTexte.labelWAISaisieContenu",
 				),
 				height: this.paramsAffichage.height[Number(this.pleinEcran)],
@@ -331,7 +338,7 @@ class _InterfaceContenuEtTAFCahierDeTextes extends InterfacePage_1.InterfacePage
 	editorResize(aHeight) {
 		this.paramsAffichage.height = [aHeight.toString(), aHeight.toString()];
 		if (aHeight > 100) {
-			if (GNavigateur.withContentEditable) {
+			if (ObjetNavigateur_1.Navigateur.withContentEditable) {
 				TinyInit_1.TinyInit.setHeight(this.idDescriptif, aHeight, 2);
 			}
 		}
@@ -363,6 +370,12 @@ class _InterfaceContenuEtTAFCahierDeTextes extends InterfacePage_1.InterfacePage
 		};
 		UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF.creerFenetreGestion(
 			lParams,
+		);
+	}
+	ouvrirFenetreCloudENEJ() {
+		this._evenementSurBoutonPieceJoint(
+			Enumere_DocumentJoint_1.EGenreDocumentJoint.Cloud,
+			this.etatUtilisateur.getCloudENEJ(),
 		);
 	}
 	evenementFenetreChoixCloud(aLigne) {

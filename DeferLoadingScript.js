@@ -129,6 +129,7 @@ function createLoaderScript(aUrl, aCallback, aParams) {
 		},
 	};
 	function onScriptError(evt) {
+		var _a;
 		finScript(evt);
 		lLoader.loadedFail = true;
 		lLoader.finChargement();
@@ -136,6 +137,7 @@ function createLoaderScript(aUrl, aCallback, aParams) {
 	return lLoader;
 }
 function _loadSingletonModule(aNom, aParams) {
+	var _a;
 	const lNom = aNom.toLowerCase(),
 		lModule = lModules[lNom];
 	lModule.nom = lNom;
@@ -181,11 +183,12 @@ function _loadSingletonModule(aNom, aParams) {
 	lModuleEnCours = lNom;
 	let lUrl, i, lScript, LPrevScript;
 	function _callback(aLoader) {
+		var _a;
 		if (lModule.interrupt) {
 			return;
 		}
 		if (aLoader.loadedFail) {
-			aLoader.next = null;
+			aLoader.next = undefined;
 			lModule.interrupt = true;
 			uUrlsProcess[aLoader.url].failed = true;
 			lCallbackPile(true);
@@ -197,7 +200,7 @@ function _loadSingletonModule(aNom, aParams) {
 		}
 	}
 	let lSurStartLoading = true;
-	lModule.first = null;
+	lModule.first = undefined;
 	for (i = 0; i < lModule.urls.length; i++) {
 		lUrl = lModule.urls[i];
 		if (!uUrlsProcess[lUrl]) {
@@ -310,8 +313,8 @@ exports.deferLoadingScript = {
 		}
 		const lParams = Object.assign(
 			{
-				done: null,
-				fail: null,
+				done: undefined,
+				fail: undefined,
 				eventIO: false,
 				timeoutLoadGroupe: -1,
 				timeoutLoad: -1,
@@ -337,8 +340,8 @@ exports.deferLoadingScript = {
 			return exports.deferLoadingScript;
 		}
 	},
-	loadAsync(aNom, aParam) {
-		return new Promise((aResolve, aReject) => {
+	async loadAsync(aNom, aParam) {
+		return await new Promise((aResolve, aReject) => {
 			const lParams = Object.assign(aParam || {}, {
 				done: function (aParam) {
 					aResolve(aParam);

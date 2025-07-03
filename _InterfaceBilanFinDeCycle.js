@@ -20,10 +20,11 @@ const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
 const TypeEnseignementComplement_1 = require("TypeEnseignementComplement");
 const TypePointsEnseignementComplement_1 = require("TypePointsEnseignementComplement");
 const Enumere_Espace_1 = require("Enumere_Espace");
+const AccessApp_1 = require("AccessApp");
 class _InterfaceBilanFinDeCycle extends InterfacePage_1.InterfacePage {
 	constructor(...aParams) {
 		super(...aParams);
-		const lApplicationSco = GApplication;
+		const lApplicationSco = (0, AccessApp_1.getApp)();
 		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
 		this.parametresSco = lApplicationSco.getObjetParametres();
 		this.idZoneAppreciation = GUID_1.GUID.getId();
@@ -129,27 +130,6 @@ class _InterfaceBilanFinDeCycle extends InterfacePage_1.InterfacePage {
 			},
 			estZoneAppreciationAffichee() {
 				return !aInstance.affichageDecompteDesResultats();
-			},
-			getLibelleAppreciation() {
-				let lLibelleApp = "";
-				const lPeriodeActive =
-					aInstance.etatUtilisateurSco.Navigation.getRessource(
-						Enumere_Ressource_1.EGenreRessource.Periode,
-					);
-				if (
-					!!lPeriodeActive &&
-					lPeriodeActive.existeNumero() &&
-					!aInstance.estParentOuEleve
-				) {
-					lLibelleApp = ObjetTraduction_1.GTraductions.getValeur(
-						"competences.AppreciationDeLEleve",
-					);
-				} else {
-					lLibelleApp = ObjetTraduction_1.GTraductions.getValeur(
-						"competences.Synthese",
-					);
-				}
-				return lLibelleApp;
 			},
 			appreciation: {
 				getValue() {
@@ -280,6 +260,26 @@ class _InterfaceBilanFinDeCycle extends InterfacePage_1.InterfacePage {
 			},
 		});
 	}
+	jsxGetLibelleAppreciation() {
+		let lLibelleApp = "";
+		const lPeriodeActive = this.etatUtilisateurSco.Navigation.getRessource(
+			Enumere_Ressource_1.EGenreRessource.Periode,
+		);
+		if (
+			!!lPeriodeActive &&
+			lPeriodeActive.existeNumero() &&
+			!this.estParentOuEleve
+		) {
+			lLibelleApp = ObjetTraduction_1.GTraductions.getValeur(
+				"competences.AppreciationDeLEleve",
+			);
+		} else {
+			lLibelleApp = ObjetTraduction_1.GTraductions.getValeur(
+				"competences.Synthese",
+			);
+		}
+		return lLibelleApp;
+	}
 	construireStructureAffichageAutre() {
 		const H = [];
 		H.push(
@@ -324,10 +324,11 @@ class _InterfaceBilanFinDeCycle extends InterfacePage_1.InterfacePage {
 							class: "EspaceHaut10",
 							"ie-if": "estZoneAppreciationAffichee",
 						},
-						IE.jsx.str("div", {
+						IE.jsx.str("label", {
 							class: "Gras EspaceBas",
 							id: this.idLabelAppreciation,
-							"ie-html": "getLibelleAppreciation",
+							for: this.idAppreciation,
+							"ie-html": this.jsxGetLibelleAppreciation.bind(this),
 						}),
 						IE.jsx.str(
 							"div",
@@ -372,10 +373,16 @@ class _InterfaceBilanFinDeCycle extends InterfacePage_1.InterfacePage {
 							IE.jsx.str("ie-combo", {
 								"ie-model": "comboEnseignementComplement",
 								class: "InlineBlock",
+								"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+									"competences.EnseignementDeComplement",
+								),
 							}),
 							IE.jsx.str("ie-combo", {
 								"ie-model": "comboEnseignementComplementPoint",
 								class: "InlineBlock MargeGauche",
+								"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+									"competences.EnseignementDeComplement",
+								),
 							}),
 						),
 					),

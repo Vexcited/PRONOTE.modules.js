@@ -1,0 +1,22 @@
+exports.StylesObjetDetailElementVS = void 0;
+exports.StylesObjetDetailElementVS = {
+	ObjetDetailElementVS: "ObjetDetailElementVS",
+	colorTexte: "colorTexte",
+	colorVS: "colorVS",
+	LigneDetailDuree: "LigneDetailDuree",
+	LigneDetailMotif: "LigneDetailMotif",
+	MotifNonSaisissable: "MotifNonSaisissable",
+	LigneDetailDocuments: "LigneDetailDocuments",
+	LigneSaisieDocumentJoint: "LigneSaisieDocumentJoint",
+	LigneDetailCommentaire: "LigneDetailCommentaire",
+	LigneMessageInfosMotif: "LigneMessageInfosMotif",
+	LigneDetailleeJustification: "LigneDetailleeJustification",
+	ovsSaisieAbsence: "ovs-saisie-absence",
+	ObjetFenetre_Edition_Contenu: "ObjetFenetre_Edition_Contenu",
+	fieldContain: "field-contain",
+	borderBottom: "border-bottom",
+	messageInfosMotif: "messageInfosMotif",
+	feaTime: "fea-time",
+	feaBaseline: "fea-baseline",
+	minHeightCommentaire: "min-height-commentaire",
+};

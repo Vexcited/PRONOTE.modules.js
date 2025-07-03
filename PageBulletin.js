@@ -1,72 +1,68 @@
-const { GChaine } = require("ObjetChaine.js");
-const { Identite } = require("ObjetIdentite.js");
-const { ObjetIdentite_Mobile } = require("ObjetIdentite_Mobile.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { TypeNote } = require("TypeNote.js");
-const {
-	UtilitaireBulletinEtReleve_Mobile,
-} = require("UtilitaireBulletinEtReleve_Mobile.js");
-const {
-	EGenreEvolution,
-	EGenreEvolutionUtil,
-} = require("Enumere_Evolution.js");
-const {
-	EGenreNiveauDAcquisitionUtil,
-} = require("Enumere_NiveauDAcquisition.js");
-const { EGenreDirectionSlide } = require("EGenreDirectionSlide.js");
-const { PiedDeBulletinMobile } = require("PiedDeBulletinMobile.js");
-const { TypeContexteBulletin } = require("TypeContexteBulletin.js");
-const { TypeReleveBulletin } = require("TypeReleveBulletin.js");
-const { ObjetBoutonFlottant } = require("ObjetBoutonFlottant.js");
-const { GenerationPDF } = require("UtilitaireGenerationPDF.js");
-const { OptionsPDFSco } = require("OptionsPDFSco.js");
-const { TypeHttpGenerationPDFSco } = require("TypeHttpGenerationPDFSco.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { ObjetMoteurReleveBulletin } = require("ObjetMoteurReleveBulletin.js");
-const {
-	UtilitaireGestionCloudEtPDF,
-} = require("UtilitaireGestionCloudEtPDF.js");
-const { TypePositionnementUtil } = require("TypePositionnement.js");
-const { EGenreOnglet } = require("Enumere_Onglet.js");
-class PageBulletinMobile extends ObjetIdentite_Mobile {
+exports.PageBulletinMobile = void 0;
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetIdentite_1 = require("ObjetIdentite");
+const ObjetIdentite_Mobile_1 = require("ObjetIdentite_Mobile");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const TypeNote_1 = require("TypeNote");
+const UtilitaireBulletinEtReleve_Mobile_1 = require("UtilitaireBulletinEtReleve_Mobile");
+const Enumere_Evolution_1 = require("Enumere_Evolution");
+const Enumere_NiveauDAcquisition_1 = require("Enumere_NiveauDAcquisition");
+const EGenreDirectionSlide_1 = require("EGenreDirectionSlide");
+const PiedDeBulletinMobile_1 = require("PiedDeBulletinMobile");
+const TypeContexteBulletin_1 = require("TypeContexteBulletin");
+const TypeReleveBulletin_1 = require("TypeReleveBulletin");
+const ObjetBoutonFlottant_1 = require("ObjetBoutonFlottant");
+const UtilitaireGenerationPDF_1 = require("UtilitaireGenerationPDF");
+const OptionsPDFSco_1 = require("OptionsPDFSco");
+const TypeHttpGenerationPDFSco_1 = require("TypeHttpGenerationPDFSco");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetMoteurReleveBulletin_1 = require("ObjetMoteurReleveBulletin");
+const UtilitaireGestionCloudEtPDF_1 = require("UtilitaireGestionCloudEtPDF");
+const TypePositionnement_1 = require("TypePositionnement");
+const Enumere_Onglet_1 = require("Enumere_Onglet");
+const AccessApp_1 = require("AccessApp");
+class PageBulletinMobile extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 	constructor(...aParams) {
 		super(...aParams);
+		this.appScoMobile = (0, AccessApp_1.getApp)();
+		this.etatUtilScoMobile = this.appScoMobile.getEtatUtilisateur();
 		this.estCtxBulletinClasse =
-			GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.ConseilDeClasse;
+			this.etatUtilScoMobile.getGenreOnglet() ===
+			Enumere_Onglet_1.EGenreOnglet.ConseilDeClasse;
 		this.donneesRecues = false;
-		this.moteur = new ObjetMoteurReleveBulletin();
-		this.instancePiedDeBulletin = Identite.creerInstance(PiedDeBulletinMobile, {
-			pere: this,
-			evenement: null,
-		});
+		this.moteur = new ObjetMoteurReleveBulletin_1.ObjetMoteurReleveBulletin();
+		this.instancePiedDeBulletin = ObjetIdentite_1.Identite.creerInstance(
+			PiedDeBulletinMobile_1.PiedDeBulletinMobile,
+			{ pere: this, evenement: null },
+		);
 		this.instancePiedDeBulletin.setDonneesContexte({
 			typeContexteBulletin: this.estCtxBulletinClasse
-				? TypeContexteBulletin.CB_Classe
-				: TypeContexteBulletin.CB_Eleve,
+				? TypeContexteBulletin_1.TypeContexteBulletin.CB_Classe
+				: TypeContexteBulletin_1.TypeContexteBulletin.CB_Eleve,
 			avecSaisie: false,
-			typeReleveBulletin: TypeReleveBulletin.BulletinNotes,
+			typeReleveBulletin: TypeReleveBulletin_1.TypeReleveBulletin.BulletinNotes,
 		});
 	}
 	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
+		return $.extend(true, super.getControleur(aInstance), {
 			getIdentiteBouton: function () {
 				return {
-					class: ObjetBoutonFlottant,
+					class: ObjetBoutonFlottant_1.ObjetBoutonFlottant,
 					pere: this,
-					init: function (aBtn) {
+					init(aBtn) {
 						aInstance.identBtnFlottant = aBtn;
 						const lParam = {
 							listeBoutons: [
 								{
 									primaire: true,
-									icone: "icon_pdf",
-									callback: aInstance.afficherModalitesGenerationPDF.bind(
-										this,
-										aInstance,
-										_genererPdf,
+									icone: "icon_uniF1C1",
+									ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
+										"GenerationPDF.TitreCommande",
 									),
+									callback:
+										aInstance.afficherModalitesGenerationPDF.bind(aInstance),
 								},
 							],
 						};
@@ -76,22 +72,26 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 			},
 		});
 	}
-	afficherModalitesGenerationPDF(aInstance) {
+	afficherModalitesGenerationPDF() {
 		let lParams = {
-			callbaskEvenement: aInstance.surEvenementFenetre.bind(aInstance),
-			modeGestion: UtilitaireGestionCloudEtPDF.modeGestion.PDFEtCloud,
+			callbaskEvenement: this.surEvenementFenetre.bind(this),
+			modeGestion:
+				UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF.modeGestion
+					.PDFEtCloud,
 			avecDepot: true,
 			avecTitreSelonOnglet: true,
 		};
-		UtilitaireGestionCloudEtPDF.creerFenetreGestion(lParams);
+		UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF.creerFenetreGestion(
+			lParams,
+		);
 	}
 	surEvenementFenetre(aLigne) {
-		const lService = GEtatUtilisateur.listeCloudDepotServeur.get(aLigne);
-		_genererPdf.call(this, !!lService ? lService.getGenre() : null);
+		const lService = this.etatUtilScoMobile.listeCloudDepotServeur.get(aLigne);
+		this._genererPdf(!!lService ? lService.getGenre() : null);
 	}
 	construireAffichage() {
-		this.listeRegroupements = new ObjetListeElements();
-		this.listeServices = new ObjetListeElements();
+		this.listeRegroupements = new ObjetListeElements_1.ObjetListeElements();
+		this.listeServices = new ObjetListeElements_1.ObjetListeElements();
 		const lHtml = [];
 		if (!!this.Message) {
 			lHtml.push(this.composeAucuneDonnee(this.Message));
@@ -113,12 +113,14 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 			);
 			lHtml.push("</div>");
 			if (
-				GApplication.droits.get(
-					TypeDroits.autoriserImpressionBulletinReleveBrevet,
+				this.appScoMobile.droits.get(
+					ObjetDroitsPN_1.TypeDroits.autoriserImpressionBulletinReleveBrevet,
 				) &&
 				!this.identBtnFlottant
 			) {
-				$("#" + GInterface.idZonePrincipale).ieHtmlAppend(
+				$(
+					"#" + this.appScoMobile.getInterfaceMobile().idZonePrincipale,
+				).ieHtmlAppend(
 					'<div class="is-sticky" ie-identite="getIdentiteBouton"></div>',
 					{ controleur: this.controleur, avecCommentaireConstructeur: false },
 				);
@@ -160,7 +162,7 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 			this.Nom,
 			".ouvrirPanel('",
 			aService.getNumero(),
-			'\')" style="padding:3px 12px;">',
+			"')\">",
 		);
 		const lLibelleService = aService.getLibelle();
 		this.listeServices.addElement(aService);
@@ -222,8 +224,8 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 				) {
 					lHtml.push(
 						"<div>",
-						GChaine.replaceRCToHTML(
-							lSousService.ListeProfesseurs.getTableauLibelles().join("<br>"),
+						ObjetChaine_1.GChaine.replaceRCToHTML(
+							lSousService.ListeProfesseurs.getTableauLibelles().join("<br />"),
 						),
 						"</div>",
 					);
@@ -273,11 +275,7 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 				true,
 				')">',
 			);
-			lHtml.push(
-				'<div class="title left-align InlineBlock" style="width:86%;">' +
-					lService.SurMatiere.getLibelle() +
-					"</div>",
-			);
+			lHtml.push("<span>" + lService.SurMatiere.getLibelle() + "</span>");
 			let lMoyenneRegroupement = "";
 			const lServiceDansRegroupement =
 				this.tableauSurMatieres[lService.regroupement];
@@ -287,11 +285,7 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 					{},
 				);
 			}
-			lHtml.push(
-				'<div class="title right-align InlineBlock" style="width:13%;">',
-				lMoyenneRegroupement,
-				"</div>",
-			);
+			lHtml.push("<span>", lMoyenneRegroupement, "</span>");
 			lHtml.push("</li>");
 		}
 		return lHtml.join("");
@@ -311,7 +305,7 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 			this.ListeElements = this.getListeDonneesLineaire(aListeElements);
 			this.Affichage = aAffichage;
 			this.donneesRecues = true;
-			this.Message = false;
+			this.Message = "";
 		}
 		if (aTableauSurMatieres) {
 			this.tableauSurMatieres = aTableauSurMatieres;
@@ -328,16 +322,16 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 		this.periodeCourante = aPeriodeCourante;
 		let lSensSlide;
 		if (this.precedentePosition === aPositionMax && aPositionPeriode === 0) {
-			lSensSlide = EGenreDirectionSlide.Droite;
+			lSensSlide = EGenreDirectionSlide_1.EGenreDirectionSlide.Droite;
 		} else if (this.precedentePosition === 0 && aPositionPeriode > 1) {
-			lSensSlide = EGenreDirectionSlide.Gauche;
+			lSensSlide = EGenreDirectionSlide_1.EGenreDirectionSlide.Gauche;
 		} else {
 			lSensSlide =
 				aPositionPeriode === this.precedentePosition
-					? EGenreDirectionSlide.Aucune
+					? EGenreDirectionSlide_1.EGenreDirectionSlide.Aucune
 					: aPositionPeriode < this.precedentePosition
-						? EGenreDirectionSlide.Gauche
-						: EGenreDirectionSlide.Droite;
+						? EGenreDirectionSlide_1.EGenreDirectionSlide.Gauche
+						: EGenreDirectionSlide_1.EGenreDirectionSlide.Droite;
 		}
 		this.precedentePosition = aPositionPeriode;
 		this.afficher(null, lSensSlide);
@@ -353,7 +347,7 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 	}
 	getListeDonneesLineaire(aListeElements) {
 		let lService, lSousService, lCmpActifs, lIndiceDernier, lIndiceDernierActif;
-		const lListe = new ObjetListeElements();
+		const lListe = new ObjetListeElements_1.ObjetListeElements();
 		for (let I = 0, lNbr = aListeElements.count(); I < lNbr; I++) {
 			lService = aListeElements.get(I);
 			lService.estService = true;
@@ -410,11 +404,11 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 			for (let I = 0; I < lNombreService; I++) {
 				lService = this.ListeElements.get(I);
 				if (lService.NombrePointsEleve) {
-					lTotal += lService.NombrePointsEleve.valeur;
+					lTotal += lService.NombrePointsEleve.getValeur();
 				}
 			}
 		}
-		return new TypeNote(lTotal, 2);
+		return new TypeNote_1.TypeNote(lTotal, 2);
 	}
 	composeMoyenneGenerale() {
 		const lHtml = [];
@@ -425,9 +419,9 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 				'.ouvrirPanel()">',
 			);
 			lHtml.push(
-				'<div class="title text-left InlineBlock" style="width:86%;" >',
-				GTraductions.getValeur("BulletinEtReleve.MoyGen"),
-				"</div>",
+				"<span>",
+				ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.MoyGen"),
+				"</span>",
 			);
 			let lMoyenneGenerale = "";
 			if (this.MoyenneGenerale) {
@@ -446,11 +440,7 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 						lMoyenneGenerale = this.MoyenneGenerale.MoyenneEleve.getNote();
 					}
 				}
-				lHtml.push(
-					'<div class="title text-right InlineBlock" style="width:13%;">',
-					lMoyenneGenerale,
-					"</div>",
-				);
+				lHtml.push("<span>", lMoyenneGenerale, "</span>");
 			}
 			lHtml.push("</li>");
 		}
@@ -461,9 +451,9 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 		if (!!lService) {
 			if (!!aOuvrirePanelRegroupement) {
 				const lRegr = this.composePanelRegroupement(lService);
-				GInterface.openPanel(lRegr.html, {
+				this.appScoMobile.getInterfaceMobile().openPanel(lRegr.html, {
 					optionsFenetre: {
-						titre: GTraductions.getValeur(
+						titre: ObjetTraduction_1.GTraductions.getValeur(
 							"BulletinEtReleve.DetailsRegroupement",
 						),
 						avecNavigation: true,
@@ -478,30 +468,33 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 					},
 				});
 			} else {
-				GInterface.openPanel(this.composePanelService(lService), {
-					optionsFenetre: {
-						titre: GTraductions.getValeur("BulletinEtReleve.DetailsMatiere"),
-						avecNavigation: true,
-						titreNavigation: () => {
-							return this.composeBandeauService(lService);
+				this.appScoMobile
+					.getInterfaceMobile()
+					.openPanel(this.composePanelService(lService), {
+						optionsFenetre: {
+							titre: ObjetTraduction_1.GTraductions.getValeur(
+								"BulletinEtReleve.DetailsMatiere",
+							),
+							avecNavigation: true,
+							titreNavigation: () => {
+								return this.composeBandeauService(lService);
+							},
+							callbackNavigation: (aSuivant) => {
+								this.surClickProchainElement(lService.getNumero(), aSuivant);
+							},
 						},
-						callbackNavigation: (aSuivant) => {
-							this.surClickProchainElement(lService.getNumero(), aSuivant);
-						},
-					},
-				});
+					});
 			}
 		} else {
-			GInterface.openPanel(
-				this.composePanelMoyenneGenerale(this.MoyenneGenerale),
-				{
+			this.appScoMobile
+				.getInterfaceMobile()
+				.openPanel(this.composePanelMoyenneGenerale(this.MoyenneGenerale), {
 					optionsFenetre: {
-						titre: GTraductions.getValeur(
+						titre: ObjetTraduction_1.GTraductions.getValeur(
 							"BulletinEtReleve.DetailsMoyenneGenerale",
 						),
 					},
-				},
-			);
+				});
 		}
 	}
 	composePanelRegroupement(aService) {
@@ -529,7 +522,7 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 		if (aMoyenneGenerale) {
 			lHtml.push(
 				'<div class="flex-contain cols flex-center ie-texte"><span>' +
-					GTraductions.getValeur("BulletinEtReleve.MoyGen") +
+					ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.MoyGen") +
 					"</span>",
 				this.Affichage.AvecMoyenneEleve &&
 					aMoyenneGenerale.MoyenneEleve &&
@@ -552,14 +545,14 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 		const lHtml = [];
 		if (aService) {
 			if (!!this.composeDetails(aService, false)) {
-				lHtml.push('<div class="details-conteneur ">');
+				lHtml.push('<div class="details-conteneur">');
 				lHtml.push(this.composeDetails(aService, false));
 				lHtml.push("</div>");
 			}
 			lHtml.push(this.composeElementProgrammeBulletin(aService));
 			lHtml.push(this.composeAppreciationsService(aService));
 			if (aService.estService && aService.nbSousServicesTotal > 0) {
-				lHtml.push('<ul class="collapsible popout">');
+				lHtml.push('<ul class="collapsible popout bulletin">');
 				for (let J = 0; J < aService.nbSousServicesTotal; J++) {
 					const lSousService = aService.ListeElements.get(J);
 					lHtml.push(this.composeSousService(lSousService));
@@ -578,34 +571,34 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 			lHtml.push(" - ", libelleProfesseur);
 		}
 		lHtml.push("</span>");
-		lHtml.push('<div class="infos-moy-eleve-bandeau">');
+		lHtml.push('<span class="infos-moy-eleve-bandeau">');
 		lHtml.push(
-			"<div>" +
+			"<span>" +
 				this.getNoteService(aService, {
 					estMoyNR: aService.estMoyNR,
 					surMemeLigne: true,
 				}) +
-				"</div>",
+				"</span>",
 		);
 		lHtml.push(
-			'<div class="nivMaitrise-eleve-bandeau">' +
+			'<span class="nivMaitrise-eleve-bandeau">' +
 				this.getNivMaitriseService(aService) +
-				"</div>",
+				"</span>",
 		);
-		lHtml.push("</div>");
+		lHtml.push("</span>");
 		if (
 			this.Affichage.avecECTS &&
 			aService.ECTS &&
 			aService.ECTS &&
 			aService.ECTS !== ""
 		) {
-			lHtml.push("<div>");
+			lHtml.push("<span>");
 			lHtml.push(
-				GTraductions.getValeur("BulletinEtReleve.ECTS"),
+				ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.ECTS"),
 				"&nbsp;",
 				aService.ECTS,
 			);
-			lHtml.push("</div>");
+			lHtml.push("</span>");
 		}
 		return lHtml.join("");
 	}
@@ -619,15 +612,11 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 		lHtml.push("<li>");
 		lHtml.push(
 			'<div class="collapsible-header',
-			lDetailSousService ? " active" : " empty-body",
+			!!lDetailSousService ? " active" : " empty-body",
 			'">',
 		);
-		lHtml.push("<div>");
-		lHtml.push(
-			'<div class="InlineBlock truncate" style="',
-			lDetailSousService ? "width:69%;" : "",
-			'">',
-		);
+		lHtml.push('<div class="libelle">');
+		lHtml.push('<div class="truncate fluid-bloc">');
 		if (!!libelleSousService && libelleSousService !== "") {
 			lHtml.push("<div>", libelleSousService, "</div>");
 		}
@@ -637,18 +626,14 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 		) {
 			lHtml.push(
 				"<div>",
-				GChaine.replaceRCToHTML(
+				ObjetChaine_1.GChaine.replaceRCToHTML(
 					aSousService.ListeProfesseurs.getTableauLibelles().join("<br>"),
 				),
 				"</div>",
 			);
 		}
 		lHtml.push("</div>");
-		lHtml.push(
-			'<div class="InlineBlock" style="width:30%;',
-			!lDetailSousService ? "float:right;" : "",
-			'">',
-		);
+		lHtml.push('<div class="fix-bloc">');
 		lHtml.push(
 			'<div class="right-align Italique InlineBlock" style="width:100%;">',
 			this.getNoteService(aSousService, {}),
@@ -698,8 +683,8 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 				aParam.VolumeHoraire !== ""
 			) {
 				lHtml.push(
-					UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-						GTraductions.getValeur("BulletinEtReleve.VolH"),
+					UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+						ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.VolH"),
 						aParam.VolumeHoraire,
 						lEstMultiLignes,
 					),
@@ -711,8 +696,8 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 				aParam.Coefficient.getNote() !== ""
 			) {
 				lHtml.push(
-					UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-						GTraductions.getValeur("BulletinEtReleve.Coeff"),
+					UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+						ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.Coeff"),
 						aParam.Coefficient.getNote(),
 						lEstMultiLignes,
 					),
@@ -724,8 +709,10 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 				aParam.NombreDevoirs !== ""
 			) {
 				lHtml.push(
-					UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-						GTraductions.getValeur("BulletinEtReleve.NbrNotes"),
+					UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"BulletinEtReleve.NbrNotes",
+						),
 						aParam.NombreDevoirs,
 						lEstMultiLignes,
 					),
@@ -737,8 +724,8 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 				aParam.ClassementEleve !== ""
 			) {
 				lHtml.push(
-					UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-						GTraductions.getValeur("BulletinEtReleve.Rang"),
+					UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+						ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.Rang"),
 						aParam.ClassementEleve,
 						lEstMultiLignes,
 					),
@@ -748,13 +735,16 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 				this.Affichage.AvecEvolution &&
 				!!aParam.Evolution &&
 				aParam.Evolution.getGenre() !== null &&
-				aParam.Evolution.getGenre() !== EGenreEvolution.Aucune
+				aParam.Evolution.getGenre() !==
+					Enumere_Evolution_1.EGenreEvolution.Aucune
 			) {
 				lHtml.push(
-					UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-						GTraductions.getValeur("BulletinEtReleve.Evol"),
+					UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+						ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.Evol"),
 						"<div>" +
-							EGenreEvolutionUtil.getImage(aParam.Evolution.getGenre()) +
+							Enumere_Evolution_1.EGenreEvolutionUtil.getImage(
+								aParam.Evolution.getGenre(),
+							) +
 							"</div>",
 						lEstMultiLignes,
 					),
@@ -779,8 +769,10 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 					H.push(aParam.MoyenneAnnuelle.getNote());
 				}
 				lHtml.push(
-					UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-						GTraductions.getValeur("BulletinEtReleve.MoyAnnee"),
+					UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"BulletinEtReleve.MoyAnnee",
+						),
 						H.join(""),
 						lEstMultiLignes,
 					),
@@ -793,16 +785,17 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 						aParam.ListeNiveauDAcquisitionPeriodes.count() &&
 						aParam.ListeNiveauDAcquisitionPeriodes.existeNumero(I)
 					) {
-						const lNiveauDacquisition =
-							GParametres.listeNiveauxDAcquisitions.getElementParNumero(
+						const lNiveauDacquisition = this.appScoMobile
+							.getObjetParametres()
+							.listeNiveauxDAcquisitions.getElementParNumero(
 								aParam.ListeNiveauDAcquisitionPeriodes.getNumero(I),
 							);
 						lHtml.push(
-							UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+							UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
 								this.Affichage.listePeriodes.getLibelle(I),
-								EGenreNiveauDAcquisitionUtil.getImagePositionnement({
-									niveauDAcquisition: lNiveauDacquisition,
-								}),
+								Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImagePositionnement(
+									{ niveauDAcquisition: lNiveauDacquisition },
+								),
 								lEstMultiLignes,
 							),
 						);
@@ -827,7 +820,7 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 							H.push(aParam.ListeMoyennesPeriodes[I].getNote());
 						}
 						lHtml.push(
-							UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+							UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
 								this.Affichage.listePeriodes.getLibelle(I),
 								H.join(""),
 								lEstMultiLignes,
@@ -840,22 +833,22 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 				aParam.NombrePointsEleve = this.calculerNombrePointsEleve();
 				if (
 					!!this.Affichage.AvecNombrePointsEleve &&
-					aParam.NombrePointsEleve.valeur !== 0
+					aParam.NombrePointsEleve.getValeur() !== 0
 				) {
 					lHtml.push(
-						UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-							GTraductions.getValeur("BulletinEtReleve.Pts"),
+						UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+							ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.Pts"),
 							aParam.NombrePointsEleve.getNote(),
 							lEstMultiLignes,
 						),
 					);
 				}
-				aParam.TotalECTS = this.calculerTotalECTS();
-				if (!!this.Affichage.avecECTS && aParam.TotalECTS > 0) {
+				const lTotalECTS = this.calculerTotalECTS();
+				if (!!this.Affichage.avecECTS && lTotalECTS > 0) {
 					lHtml.push(
-						UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-							GTraductions.getValeur("BulletinEtReleve.ECTS"),
-							aParam.TotalECTS,
+						UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+							ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.ECTS"),
+							lTotalECTS,
 							lEstMultiLignes,
 						),
 					);
@@ -866,8 +859,8 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 				aParam.NombrePointsEleve.getNote() !== ""
 			) {
 				lHtml.push(
-					UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-						GTraductions.getValeur("BulletinEtReleve.Pts"),
+					UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+						ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.Pts"),
 						aParam.NombrePointsEleve.getNote(),
 						lEstMultiLignes,
 					),
@@ -879,8 +872,8 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 				aParam.MoyenneClasse.getNote() !== ""
 			) {
 				lHtml.push(
-					UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-						GTraductions.getValeur("BulletinEtReleve.Classe"),
+					UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+						ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.Classe"),
 						aParam.MoyenneClasse.getNote(),
 						lEstMultiLignes,
 					),
@@ -892,8 +885,8 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 				aParam.MoyenneInf.getNote() !== ""
 			) {
 				lHtml.push(
-					UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-						GTraductions.getValeur("BulletinEtReleve.MoyInf"),
+					UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+						ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.MoyInf"),
 						aParam.MoyenneInf.getNote(),
 						lEstMultiLignes,
 					),
@@ -905,8 +898,8 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 				aParam.MoyenneSup.getNote() !== ""
 			) {
 				lHtml.push(
-					UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-						GTraductions.getValeur("BulletinEtReleve.MoySup"),
+					UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+						ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.MoySup"),
 						aParam.MoyenneSup.getNote(),
 						lEstMultiLignes,
 					),
@@ -918,8 +911,10 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 				aParam.MoyenneMediane.getNote() !== ""
 			) {
 				lHtml.push(
-					UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-						GTraductions.getValeur("BulletinEtReleve.Mediane"),
+					UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"BulletinEtReleve.Mediane",
+						),
 						aParam.MoyenneMediane.getNote(),
 						lEstMultiLignes,
 					),
@@ -927,22 +922,28 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 			}
 			if (!!this.Affichage.AvecNombrePointsEntre && !!aParam.NombreNotesEntre) {
 				lHtml.push(
-					UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-						GTraductions.getValeur("BulletinEtReleve.MoyInf8"),
+					UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"BulletinEtReleve.MoyInf8",
+						),
 						aParam.NombreNotesEntre[0] || "0",
 						lEstMultiLignes,
 					),
 				);
 				lHtml.push(
-					UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-						GTraductions.getValeur("BulletinEtReleve.MoyEntre"),
+					UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"BulletinEtReleve.MoyEntre",
+						),
 						aParam.NombreNotesEntre[1] || "0",
 						lEstMultiLignes,
 					),
 				);
 				lHtml.push(
-					UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-						GTraductions.getValeur("BulletinEtReleve.MoySup12"),
+					UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"BulletinEtReleve.MoySup12",
+						),
 						aParam.NombreNotesEntre[2] || "0",
 						lEstMultiLignes,
 					),
@@ -954,8 +955,8 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 				aParam.DureeDesAbsences !== ""
 			) {
 				lHtml.push(
-					UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-						GTraductions.getValeur("BulletinEtReleve.HAbs"),
+					UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+						ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.HAbs"),
 						aParam.DureeDesAbsences,
 						lEstMultiLignes,
 					),
@@ -969,47 +970,57 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 		}
 	}
 	composeLegende(aService) {
-		const lAvecInfoNR = _existeInfoNRPourService.call(this, aService);
+		const lAvecInfoNR = this._existeInfoNRPourService(aService);
 		const lAvecNiveauAcqu = aService.NiveauDAcquisition;
 		const lExisteLegende = lAvecInfoNR || lAvecNiveauAcqu;
 		const lHtml = [];
 		if (lExisteLegende) {
 			lHtml.push('<div class="', this.Nom, '_legende legende-conteneur">');
 			lHtml.push(
-				"<h5>",
-				GTraductions.getValeur("BulletinEtReleve.Legende"),
-				"</h5>",
+				'<div class="libelle">',
+				ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.Legende"),
+				"</div>",
 			);
-			lHtml.push("<ul>");
+			lHtml.push('<ul class="descriptif">');
 			if (lAvecNiveauAcqu) {
 				let lNiveauDAcquisition, lLibelle;
 				const lGenrePositionnement =
-					TypePositionnementUtil.getGenrePositionnementParDefaut(
+					TypePositionnement_1.TypePositionnementUtil.getGenrePositionnementParDefaut(
 						aService.TypePositionnementClasse,
 					);
 				for (
 					let i = 0;
-					i < GParametres.listeNiveauxDAcquisitions.count();
+					i <
+					this.appScoMobile
+						.getObjetParametres()
+						.listeNiveauxDAcquisitions.count();
 					i++
 				) {
-					lNiveauDAcquisition = GParametres.listeNiveauxDAcquisitions.get(i);
-					lLibelle = EGenreNiveauDAcquisitionUtil.getLibellePositionnement({
-						niveauDAcquisition: lNiveauDAcquisition,
-						avecPositionnementVide: true,
-						genrePositionnement: lGenrePositionnement,
-					});
+					lNiveauDAcquisition = this.appScoMobile
+						.getObjetParametres()
+						.listeNiveauxDAcquisitions.get(i);
+					lLibelle =
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getLibellePositionnement(
+							{
+								niveauDAcquisition: lNiveauDAcquisition,
+								avecPositionnementVide: true,
+								genrePositionnement: lGenrePositionnement,
+							},
+						);
 					if (
 						lLibelle &&
-						EGenreNiveauDAcquisitionUtil.getNombrePointsBrevet(
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getNombrePointsBrevet(
 							lNiveauDAcquisition,
 						).getValeur() > 0
 					) {
 						lHtml.push(
 							"<li>",
-							EGenreNiveauDAcquisitionUtil.getImagePositionnement({
-								niveauDAcquisition: lNiveauDAcquisition,
-								genrePositionnement: lGenrePositionnement,
-							}),
+							Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImagePositionnement(
+								{
+									niveauDAcquisition: lNiveauDAcquisition,
+									genrePositionnement: lGenrePositionnement,
+								},
+							),
 							'<span class="libelle">',
 							lLibelle,
 							"</span>",
@@ -1023,7 +1034,9 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 					'<li style="display:flex; align-items:flex-start; margin-top:1rem;">',
 					this.moteur.composeHtmlMoyNR(),
 					'<span class="libelle EspaceGauche">',
-					GTraductions.getValeur("Notes.Colonne.HintMoyenneNR"),
+					ObjetTraduction_1.GTraductions.getValeur(
+						"Notes.Colonne.HintMoyenneNR",
+					),
 					"</span>",
 					"</li>",
 				);
@@ -1043,13 +1056,12 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 				const lIntituleAppreciation =
 					this.Affichage.ListeIntitulesAppreciations.get(I).getLibelle();
 				lHtml.push(
-					UtilitaireBulletinEtReleve_Mobile.composeAppreciation({
-						intituleDAppreciation: lIntituleAppreciation,
-						contenuDAppreciation: lAppreciationSurService,
-						styleBlockIntitule: "color : #616161;",
-						styleBlockContenu:
-							"border:1px solid #616161; background-color: #F1F1F1;",
-					}),
+					UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composeAppreciation(
+						{
+							intituleDAppreciation: lIntituleAppreciation,
+							contenuDAppreciation: lAppreciationSurService,
+						},
+					),
 				);
 			}
 		}
@@ -1061,19 +1073,22 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 				aService.NiveauDAcquisition &&
 				aService.NiveauDAcquisition.existeNumero()
 			) {
-				const lNiveauDAcquisition =
-					GParametres.listeNiveauxDAcquisitions.getElementParNumero(
+				const lNiveauDAcquisition = this.appScoMobile
+					.getObjetParametres()
+					.listeNiveauxDAcquisitions.getElementParNumero(
 						aService.NiveauDAcquisition.getNumero(),
 					);
 				return (
 					"<div>" +
-					EGenreNiveauDAcquisitionUtil.getImagePositionnement({
-						niveauDAcquisition: lNiveauDAcquisition,
-						genrePositionnement:
-							TypePositionnementUtil.getGenrePositionnementParDefaut(
-								aService.TypePositionnementClasse,
-							),
-					}) +
+					Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImagePositionnement(
+						{
+							niveauDAcquisition: lNiveauDAcquisition,
+							genrePositionnement:
+								TypePositionnement_1.TypePositionnementUtil.getGenrePositionnementParDefaut(
+									aService.TypePositionnementClasse,
+								),
+						},
+					) +
 					"</div>"
 				);
 			}
@@ -1086,38 +1101,45 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 			this.Affichage.AvecMoyenneEleve
 		) {
 			if (
+				"avisReligionPropose" in aService &&
 				aService.avisReligionPropose &&
 				aService.avisReligionPropose.getLibelle() !== ""
 			) {
 				return aService.avisReligionPropose.getLibelle();
 			} else if (
+				"avisReligionDelibere" in aService &&
 				aService.avisReligionDelibere &&
 				aService.avisReligionDelibere.getLibelle() !== ""
 			) {
 				return aService.avisReligionDelibere.getLibelle();
 			} else if (
+				"moyenneDeliberee" in aService &&
 				aService.moyenneDeliberee &&
 				aService.moyenneDeliberee.getNote() !== ""
 			) {
 				return aService.moyenneDeliberee.getNote();
 			} else if (
+				"NiveauDAcquisition" in aService &&
 				aService.NiveauDAcquisition &&
 				aService.NiveauDAcquisition.existeNumero() &&
 				!this.Affichage.AvecNivMaitriseEleve
 			) {
-				const lNiveauDAcquisition =
-					GParametres.listeNiveauxDAcquisitions.getElementParNumero(
+				const lNiveauDAcquisition = this.appScoMobile
+					.getObjetParametres()
+					.listeNiveauxDAcquisitions.getElementParNumero(
 						aService.NiveauDAcquisition.getNumero(),
 					);
 				return (
 					'<div style="position: relative; float: right; top: 3px;">' +
-					EGenreNiveauDAcquisitionUtil.getImagePositionnement({
-						niveauDAcquisition: lNiveauDAcquisition,
-						genrePositionnement:
-							TypePositionnementUtil.getGenrePositionnementParDefaut(
-								aService.TypePositionnementClasse,
-							),
-					}) +
+					Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImagePositionnement(
+						{
+							niveauDAcquisition: lNiveauDAcquisition,
+							genrePositionnement:
+								TypePositionnement_1.TypePositionnementUtil.getGenrePositionnementParDefaut(
+									aService.TypePositionnementClasse,
+								),
+						},
+					) +
 					"</div>"
 				);
 			} else if (
@@ -1133,6 +1155,7 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 				if (aService.MoyenneEleve && aService.MoyenneEleve.getNote() !== "") {
 					if (
 						!(
+							"estMoyNR" in aService &&
 							aService.estMoyNR === true &&
 							this.Affichage.avecMoyNRUniquement === true
 						)
@@ -1155,7 +1178,7 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 			aService.MoyenneClasse.getNote() !== ""
 		) {
 			return (
-				GTraductions.getValeur("BulletinEtReleve.ClasseAbr") +
+				ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.ClasseAbr") +
 				"&nbsp;" +
 				aService.MoyenneClasse.getNote()
 			);
@@ -1182,7 +1205,7 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 			aService.Coefficient.getNote() !== ""
 		) {
 			return (
-				GTraductions.getValeur("BulletinEtReleve.Coeff") +
+				ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.Coeff") +
 				aService.Coefficient.getNote()
 			);
 		} else {
@@ -1195,7 +1218,9 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 			this.Affichage.avecElementProgramme &&
 			aService.ElementsProgrammeBulletin.count() > 0
 		) {
-			aService.ElementsProgrammeBulletin.setTri([ObjetTri.init("Libelle")]);
+			aService.ElementsProgrammeBulletin.setTri([
+				ObjetTri_1.ObjetTri.init("Libelle"),
+			]);
 			aService.ElementsProgrammeBulletin.trier();
 			lHtml.push('<ul class="browser-default">');
 			for (let I = 0; I < aService.ElementsProgrammeBulletin.count(); I++) {
@@ -1208,12 +1233,12 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 				}
 			}
 			lHtml.push("</ul>");
-			return UtilitaireBulletinEtReleve_Mobile.composeAppreciation({
-				intituleDAppreciation: this.Affichage.intituleElementProgramme,
-				contenuDAppreciation: lHtml,
-				styleBlockIntitule: "color : #616161;",
-				styleBlockContenu: "border:1px solid #616161;",
-			});
+			return UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composeAppreciation(
+				{
+					intituleDAppreciation: this.Affichage.intituleElementProgramme,
+					contenuDAppreciation: lHtml,
+				},
+			);
 		}
 		return "";
 	}
@@ -1253,45 +1278,46 @@ class PageBulletinMobile extends ObjetIdentite_Mobile {
 			this.ouvrirPanel(lProchainElement.getNumero(), aRegroupementSuivant);
 		}
 	}
-	free(...aParams) {
-		super.free(...aParams);
+	free() {
+		super.free();
 		if (this.identBtnFlottant) {
 			$("#" + this.identBtnFlottant.getNom().escapeJQ()).remove();
 		}
 	}
-}
-function _genererPdf(aService) {
-	const lParametrageAffichage = {
-		genreGenerationPDF: TypeHttpGenerationPDFSco.Bulletin,
-		periode: this.periodeCourante,
-		avecCodeCompetences: GEtatUtilisateur.estAvecCodeCompetences(),
-	};
-	GenerationPDF.genererPDF({
-		paramPDF: lParametrageAffichage,
-		optionsPDF: OptionsPDFSco.Bulletin,
-		cloudCible: aService,
-	});
-}
-function _existeInfoNRPourService(aService) {
-	let lAvecInfoNR =
-		aService &&
-		(aService.estMoyNR === true || aService.estMoyAnnuelleNR === true);
-	if (
-		lAvecInfoNR !== true &&
-		this.Affichage.AvecMoyennePeriode &&
-		aService.ListeMoyNRPeriodes !== null &&
-		aService.ListeMoyNRPeriodes !== undefined
-	) {
-		for (
-			let lIndice = 0;
-			lIndice < this.Affichage.NombreMoyennesPeriodes;
-			lIndice++
+	_genererPdf(aService) {
+		const lParametrageAffichage = {
+			genreGenerationPDF:
+				TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.Bulletin,
+			periode: this.periodeCourante,
+			avecCodeCompetences: this.etatUtilScoMobile.estAvecCodeCompetences(),
+		};
+		UtilitaireGenerationPDF_1.GenerationPDF.genererPDF({
+			paramPDF: lParametrageAffichage,
+			optionsPDF: OptionsPDFSco_1.OptionsPDFSco.Bulletin,
+			cloudCible: aService,
+		});
+	}
+	_existeInfoNRPourService(aService) {
+		let lAvecInfoNR =
+			aService &&
+			(aService.estMoyNR === true || aService.estMoyAnnuelleNR === true);
+		if (
+			lAvecInfoNR !== true &&
+			this.Affichage.AvecMoyennePeriode &&
+			aService.ListeMoyNRPeriodes !== null &&
+			aService.ListeMoyNRPeriodes !== undefined
 		) {
-			if (lAvecInfoNR === false && aService.ListeMoyNRPeriodes[lIndice]) {
-				lAvecInfoNR = true;
+			for (
+				let lIndice = 0;
+				lIndice < this.Affichage.NombreMoyennesPeriodes;
+				lIndice++
+			) {
+				if (lAvecInfoNR === false && aService.ListeMoyNRPeriodes[lIndice]) {
+					lAvecInfoNR = true;
+				}
 			}
 		}
+		return lAvecInfoNR;
 	}
-	return lAvecInfoNR;
 }
-module.exports = { PageBulletinMobile };
+exports.PageBulletinMobile = PageBulletinMobile;

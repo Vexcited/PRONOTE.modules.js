@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieDeposerCorrigesEleves extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieDeposerCorrigesEleves = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieDeposerCorrigesEleves extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParametres) {
 		this.JSON = aParametres;
 		if (!!this.JSON.listeFichiers) {
@@ -14,11 +12,10 @@ class ObjetRequeteSaisieDeposerCorrigesEleves extends ObjetRequeteSaisie {
 		}
 		return this.appelAsynchrone();
 	}
-	actionApresRequete() {
-		this.callbackReussite.appel(this.JSONReponse, this.JSONRapportSaisie);
-	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteSaisieDeposerCorrigesEleves =
+	ObjetRequeteSaisieDeposerCorrigesEleves;
+CollectionRequetes_1.Requetes.inscrire(
 	"DeposerCorrigesEleves",
 	ObjetRequeteSaisieDeposerCorrigesEleves,
 );
@@ -26,4 +23,3 @@ function _serialiserFichier(aElement, aJSON) {
 	aJSON.idFichier = aElement.idFichier;
 	aJSON.eleve = aElement.eleve;
 }
-module.exports = ObjetRequeteSaisieDeposerCorrigesEleves;

@@ -136,7 +136,7 @@ class ObjetInvocateur {
 		}
 		const lInstanceAbo = this.isInstanceAbonnable(aParams.inst)
 			? aParams.inst
-			: null;
+			: undefined;
 		if (aParams.unicite) {
 			this.desabonner(aParams.e, aParams.callB, lInstanceAbo);
 		}
@@ -184,7 +184,7 @@ class ObjetInvocateur {
 						delete this.pileEvents[lElement.e][lId];
 					}
 				}
-				lElement = null;
+				lElement = undefined;
 				if (this.pile[lId]) {
 					this.pile[lId].__INACTIF__ = true;
 				}
@@ -199,15 +199,16 @@ class ObjetInvocateur {
 			const lTab = aParam.e.split(" ");
 			for (let i = 0, lNb = lTab.length; i < lNb; i++) {
 				lEvent = lTab[i].trim();
-				lIds.push(
-					this._abonner({
-						e: lEvent,
-						callB: aParam.callB,
-						inst: aParam.inst,
-						unicite: aParam.unicite,
-						u: aParam.u,
-					}),
-				);
+				const lId = this._abonner({
+					e: lEvent,
+					callB: aParam.callB,
+					inst: aParam.inst,
+					unicite: aParam.unicite,
+					u: aParam.u,
+				});
+				if (lId) {
+					lIds.push(lId);
+				}
 			}
 		}
 		if (lIds.length === 0) {
@@ -263,7 +264,7 @@ class ObjetInvocateur {
 		}
 	}
 	isInstanceAbonnable(aInstance) {
-		return (
+		return !!(
 			aInstance &&
 			"getPileAbonnement" in aInstance &&
 			MethodesObjet_1.MethodesObjet.isFunction(aInstance.getPileAbonnement)
@@ -295,6 +296,7 @@ exports.ObjetInvocateur = ObjetInvocateur;
 		events["erreurCommunication"] = "IEE_erreurCommunication";
 		events["navigationOnglet"] = "IEE_navigationOnglet";
 		events["changerMembre"] = "IEE_changerMembre";
+		events["nettoyerJSX"] = "IEE_nettoyerJSX";
 		events["toucheDEBUG"] = "IIE_ToucheDEBUG";
 		events["DEBUG_log"] = "IIE_ADDLOG";
 		events["DEBUG_logRequete"] = "IIE_ADDLOG_REQUETE";

@@ -1,12 +1,12 @@
-const { TypeReleveBulletin } = require("TypeReleveBulletin.js");
-const {
-	_InterfaceSaisieApprReleveBulletin,
-} = require("_InterfaceSaisieApprReleveBulletin.js");
-class InterfaceSaisieAvisParcoursup extends _InterfaceSaisieApprReleveBulletin {
+exports.InterfaceSaisieAvisParcoursup = void 0;
+const TypeReleveBulletin_1 = require("TypeReleveBulletin");
+const _InterfaceSaisieApprReleveBulletin_1 = require("_InterfaceSaisieApprReleveBulletin");
+class InterfaceSaisieAvisParcoursup extends _InterfaceSaisieApprReleveBulletin_1._InterfaceSaisieApprReleveBulletin {
 	constructor(...aParams) {
 		super(...aParams);
-		this.typeReleveBulletin = TypeReleveBulletin.AvisParcoursup;
+		this.typeReleveBulletin =
+			TypeReleveBulletin_1.TypeReleveBulletin.AvisParcoursup;
 		this.avecComboPeriode = false;
 	}
 }
-module.exports = InterfaceSaisieAvisParcoursup;
+exports.InterfaceSaisieAvisParcoursup = InterfaceSaisieAvisParcoursup;

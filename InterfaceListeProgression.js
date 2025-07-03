@@ -17,11 +17,12 @@ const ObjetHtml_1 = require("ObjetHtml");
 const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
 const ObjetFenetre_SelectionNiveauProgression_1 = require("ObjetFenetre_SelectionNiveauProgression");
 const ObjetFenetre_SelectionMatiere_1 = require("ObjetFenetre_SelectionMatiere");
+const AccessApp_1 = require("AccessApp");
 class InterfaceListeProgression extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
 		this.donnees = {};
-		this.applicationSco = GApplication;
+		this.applicationSco = (0, AccessApp_1.getApp)();
 		this.AvecCadre = false;
 		this.options = {
 			callbackSelectionProgression: null,
@@ -42,7 +43,7 @@ class InterfaceListeProgression extends ObjetInterface_1.ObjetInterface {
 	construireStructureAffichageAutre() {
 		return [
 			'<div id="',
-			this.getInstance(this.identListe).getNom(),
+			this.getNomInstance(this.identListe),
 			'" style="height:100%;"></div>',
 		].join("");
 	}
@@ -149,7 +150,7 @@ class InterfaceListeProgression extends ObjetInterface_1.ObjetInterface {
 						.biblio,
 					titre: {
 						libelleHtml:
-							'<i class="icon_sondage_bibliotheque" style="font-size:1.4rem;"></i>',
+							'<i class="icon_sondage_bibliotheque" style="font-size:1.4rem;" role="presentation"></i>',
 						title: ObjetTraduction_1.GTraductions.getValeur(
 							"progression.ProgressionDeBibliotheque",
 						),
@@ -161,7 +162,7 @@ class InterfaceListeProgression extends ObjetInterface_1.ObjetInterface {
 						.partage,
 					titre: {
 						libelleHtml:
-							'<i class="icon_fiche_cours_partage" style="font-size:1.4rem;"></i>',
+							'<i class="icon_fiche_cours_partage" style="font-size:1.4rem;" role="presentation"></i>',
 						title: ObjetTraduction_1.GTraductions.getValeur(
 							"progression.ProgressionPartagee",
 						),

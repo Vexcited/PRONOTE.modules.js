@@ -10,12 +10,14 @@ const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetMenuPrincipal_1 = require("ObjetMenuPrincipal");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetWAI_1 = require("ObjetWAI");
-const ToucheClavier_1 = require("ToucheClavier");
 const ObjetBandeauEspace_1 = require("ObjetBandeauEspace");
 const UtilitaireDeconnexion_1 = require("UtilitaireDeconnexion");
 const ObjetWrapperCentraleNotifications_Espace_1 = require("ObjetWrapperCentraleNotifications_Espace");
 const ObjetWrapperAideContextuelle_Espace_1 = require("ObjetWrapperAideContextuelle_Espace");
 const ObjetMenuContextuel_1 = require("ObjetMenuContextuel");
+const AccessApp_1 = require("AccessApp");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const Tooltip_1 = require("Tooltip");
 var GenreCommande;
 (function (GenreCommande) {
 	GenreCommande[(GenreCommande["accessibilite"] = 0)] = "accessibilite";
@@ -43,7 +45,7 @@ var GenreCommandePersonnel;
 class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
-		this.applicationProduit = GApplication;
+		this.applicationProduit = (0, AccessApp_1.getApp)();
 		this.idSecondMenu = this.Nom + "_secondMenu";
 		this.NomWrapperSecondMenu = this.Nom + "_WrapperSecondMenu";
 		this.NomBtnCommunication = this.Nom + "_btncommunication";
@@ -62,6 +64,10 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 			},
 			this,
 		);
+		Invocateur_1.Invocateur.abonner("apresNavigationOngletDesktop", () => {
+			this.calculWidthSousMenu();
+			this._setMenuResponsive();
+		});
 		if (this.surPreResize) {
 			this.ajouterEvenementGlobal(
 				Enumere_Event_1.EEvent.SurPreResize,
@@ -149,6 +155,9 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 		}
 	}
 	creerMenuOngletLudique() {}
+	composeBoutonHarcelement() {
+		return "";
+	}
 	avecAide() {
 		return false;
 	}
@@ -213,20 +222,6 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
 			getNodeEtab() {},
-			nodeSecondMenuContainer() {
-				$(this.node).eventValidation((aEvent) => {
-					const lTarget = $(aEvent.target).closest("li");
-					if (aEvent.pointerType === "touch") {
-						if (lTarget.hasClass("has-submenu")) {
-							aEvent.stopImmediatePropagation();
-							return;
-						}
-					}
-					aInstance
-						.getInstanceMenuOnglet()
-						.selectionnerSousOnglet(lTarget.attr("data-genre"));
-				});
-			},
 			btnDroite: {
 				event(aGenre) {
 					aInstance.evenementBouton({ genreCmd: aGenre });
@@ -239,12 +234,16 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 				});
 			},
 			getAttrBoutonAfficherMasquerMenuLateral() {
+				const lMenuVisible = $(".objetBandeauEntete_menu").hasClass(
+					"show-menu",
+				);
 				return {
-					title: $(".objetBandeauEntete_menu").hasClass("show-menu")
+					"aria-label": lMenuVisible
 						? ObjetTraduction_1.GTraductions.getValeur("Navigation.MasquerMenu")
 						: ObjetTraduction_1.GTraductions.getValeur(
 								"Navigation.AfficherMenu",
 							),
+					"aria-expanded": lMenuVisible ? "true" : "false",
 				};
 			},
 		});
@@ -255,6 +254,9 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 			avecPlusieursNiveau: true,
 			avecGroupeCliquable: true,
 			niveauMaximum: this.niveauMaxMenuOnglet(),
+			sansClicPrincipal: true,
+			avecCollapse: true,
+			avecScrollSousMenu: true,
 			masquerLibelleOnglet: this.masquerLibelleMenuOnglet(),
 			avecCompteur: true,
 		});
@@ -313,15 +315,13 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 					lGenreOngletPere,
 				);
 		}
-		let lLibelleOnglet = "",
-			lLibelleOngletPere = "";
+		let lLibelleOngletPere = "";
 		if (lGenreOnglet !== this.getGenreOngletAccueil() && !!lOngletPere) {
 			if (!!lOngletPere.onglet) {
 				lLibelleOngletPere = lOngletPere.onglet
 					.getLibelle()
 					.replace("<br />", " ");
 			}
-			lLibelleOnglet = lOngletPere.getLibelle();
 		}
 		if (
 			GEtatUtilisateur.estEspaceAvecMembre() &&
@@ -337,42 +337,20 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 				lDivMembre.join("") + (!!lLibelleOngletPere ? lLibelleOngletPere : "");
 		}
 		$(".fil-ariane.pere").html(lLibelleOngletPere);
-		$(".fil-ariane.fils").html(lLibelleOnglet);
+		if (this.existeInstance(this.identMenuAccueil)) {
+			$(
+				`#${this.getInstance(this.identMenuAccueil).getNom().escapeJQ()} li[role="menuitem"]`,
+			).attr(
+				"aria-current",
+				lGenreOnglet === this.getGenreOngletAccueil() ? "page" : null,
+			);
+		}
 		$(
 			`#${this.getInstance(this.identMenuOnglets).getNom().escapeJQ()} li[aria-current="page"]`,
 		).attr("aria-current", null);
 		$(
 			`#${this.getInstance(this.identMenuOnglets).getNom().escapeJQ()} li[data-genre="${lGenreOnglet}"]`,
 		).attr("aria-current", "page");
-		$("#" + this.idSecondMenu.escapeJQ() + " >div:first")
-			.html(
-				this.getInstanceMenuOnglet().getListeDeGenreOnglet(lGenreOnglet, [
-					this.getGenreOngletAccueil(),
-				]),
-			)
-			.find('li[data-genre="' + lGenreOngletPere + '"]')
-			.addClass("selected")
-			.attr("aria-current", "page")
-			.end()
-			.find(">ul")
-			.attr("role", "group")
-			.end()
-			.find(">ul >li")
-			.attr("tabindex", "-1")
-			.end()
-			.off("keyup")
-			.on("keyup", "li", { aObjet: this }, function (aEvent) {
-				if (
-					aEvent.type === "keyup" &&
-					aEvent.which !== ToucheClavier_1.ToucheClavier.RetourChariot
-				) {
-					return;
-				}
-				aEvent.data.aObjet
-					.getInstanceMenuOnglet()
-					.selectionnerSousOnglet($(this).attr("data-genre"));
-				aEvent.stopImmediatePropagation();
-			});
 	}
 	setVisibiliteIntegrationSite() {
 		if (this.estConnexionEDT()) {
@@ -450,16 +428,22 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 		const lRoleNavigation = ObjetWAI_1.GObjetWAI.composeRole(
 			ObjetWAI_1.EGenreRole.Navigation,
 		);
-		this.getInstance(this.identBandeauEspace).setParametres(
-			this._getParametresBandeauEspace(),
-		);
+		const lInstanceBandeauEspace = this.getInstance(this.identBandeauEspace);
+		if (lInstanceBandeauEspace) {
+			lInstanceBandeauEspace === null || lInstanceBandeauEspace === void 0
+				? void 0
+				: lInstanceBandeauEspace.setParametres(
+						this._getParametresBandeauEspace(),
+					);
+		}
 		lHtml.push(
 			"<div",
 			this.getInstance(this.identMenuOngletsLudique)
 				? ">"
 				: ' class="objetbandeauentete_global">',
-			'<div id="' + this.getInstance(this.identBandeauEspace).getNom() + '">',
-			"</div>",
+			!!lInstanceBandeauEspace
+				? '<div id="' + lInstanceBandeauEspace.getNom() + '"></div>'
+				: "",
 			'<div id="' + this.NomWrapperSecondMenu + '" style="display:none;">',
 			"</div>",
 		);
@@ -479,14 +463,12 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 					"ie-attr": "getAttrBoutonAfficherMasquerMenuLateral",
 					role: "button",
 					tabindex: "0",
-					title: ObjetTraduction_1.GTraductions.getValeur(
-						"Navigation.AfficherMenu",
-					),
+					"data-tooltip": Tooltip_1.Tooltip.Type.default,
 				}),
 				'<p class="fil-ariane pere"></p>',
 				this.getInstance(this.identMenuOngletsLudique)
 					? '<div id="' +
-							this.getInstance(this.identMenuOngletsLudique).getNom() +
+							this.getNomInstance(this.identMenuOngletsLudique) +
 							'" ' +
 							lRoleMenuBar +
 							"></div>"
@@ -533,10 +515,7 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 						"Navigation.MenuSecondaire",
 					) +
 					'">',
-				'<p class="fil-ariane fils"></p>',
-				'<div ie-node="nodeSecondMenuContainer" class="secondmenu-container" ' +
-					lRoleMenuBar +
-					"></div>",
+				`<div class="flex-contain flex-center">${this.composeTitreOnglet()}</div>`,
 				this.getInstanceMenuMembres() && this.estConnexionEDT()
 					? '<div id="' +
 							this.getInstance(this.identMenuMembres).getNom() +
@@ -545,7 +524,7 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 				'<div class="objetBandeauEntete_fullsize"></div>',
 				this.getInstance(this.identCommande)
 					? '<div class="menu-commandes" id="' +
-							this.getInstance(this.identCommande).getNom() +
+							this.getNomInstance(this.identCommande) +
 							'"></div>'
 					: "",
 				"</div>",
@@ -571,15 +550,13 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 				ObjetTraduction_1.GTraductions.getValeur(
 					"Navigation.MenuDeTroisiemeNiveau",
 				) +
-				'">',
-			this.composeBaseLigneBandeau(),
-			"</div>",
+				'"></div>',
 		);
 		if (this.getInstance(this.identMenuOngletsLudique)) {
 			lHtml.push(
 				this.getInstance(this.identCommande)
 					? '<div class="menu-commandes" id="' +
-							this.getInstance(this.identCommande).getNom() +
+							this.getNomInstance(this.identCommande) +
 							'"></div>'
 					: "",
 				"</div>",
@@ -588,12 +565,22 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 		lHtml.push("</div>", "</div>");
 		return lHtml.join("");
 	}
-	composeBaseLigneBandeau() {
+	composeTitreOnglet(aLibelle = "") {
 		return (
 			'<h1 id="' +
 			this.applicationProduit.idBreadcrumb +
-			'" class="titre-onglet" tabindex="0"></h1>'
+			'" class="titre-onglet" tabindex="0">' +
+			aLibelle +
+			" </h1>"
 		);
+	}
+	actualiserLibelleSecondMenu(aLibelle) {
+		const lHtml = this.composeTitreOnglet(aLibelle);
+		if (this.getInstance(this.identMenuOngletsLudique)) {
+			$(`#${this.applicationProduit.idLigneBandeau.escapeJQ()}`).html(lHtml);
+		} else {
+			$("#" + this.idSecondMenu.escapeJQ() + " >div:first").html(lHtml);
+		}
 	}
 	actualiserListeMembres(AListeRessources) {
 		let lElementCourant;
@@ -675,6 +662,7 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 		}
 	}
 	setLibelleMenuOnglet(aOnglet) {
+		var _a, _b;
 		const lLibelle = aOnglet
 			? aOnglet.libelleLong
 				? aOnglet.libelleLong
@@ -682,7 +670,15 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 					? aOnglet.getLibelle()
 					: ""
 			: "";
-		$("#" + this.applicationProduit.idBreadcrumb.escapeJQ()).html(lLibelle);
+		this.actualiserLibelleSecondMenu(
+			(_b =
+				(_a = this.getInstanceMenuOnglet()) === null || _a === void 0
+					? void 0
+					: _a.getLibelleDOngletDeGenreOnglet(aOnglet.getGenre())) !== null &&
+				_b !== void 0
+				? _b
+				: lLibelle,
+		);
 		$("#" + this.applicationProduit.idBreadcrumbPerso.escapeJQ()).html(
 			lLibelle,
 		);
@@ -725,16 +721,15 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 				ignorerHistorique: aIgnorerHistorique,
 			});
 		}
-		this._widthSsMenu =
-			$(".objetBandeauEntete_secondmenu>.secondmenu-container").outerWidth() ||
-			0;
+	}
+	calculWidthSousMenu() {
+		this._widthSsMenu = 0;
 		const lJMenu = $(".objetBandeauEntete_secondmenu>.menu-commandes");
 		if (lJMenu.length > 0) {
 			lJMenu.addClass("menu-commandes-calcul");
 			this._widthSsMenu += lJMenu.outerWidth();
 			lJMenu.removeClass("menu-commandes-calcul");
 		}
-		this._setMenuResponsive();
 	}
 	changerMembre(aElement) {
 		this.evenementSurMenuMembres(aElement);
@@ -749,10 +744,13 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 				aElement,
 			);
 			this.evenementSurMenuOnglets();
-			this.getInstance(this.identBandeauEspace).setParametres(
-				this._getParametresBandeauEspace(),
-			);
-			this.getInstance(this.identBandeauEspace).initialiser();
+			const lInstanceBandeauEspace = this.getInstance(this.identBandeauEspace);
+			if (lInstanceBandeauEspace) {
+				lInstanceBandeauEspace.setParametres(
+					this._getParametresBandeauEspace(),
+				);
+				lInstanceBandeauEspace.initialiser();
+			}
 		});
 	}
 	evenementSurMenuAccueil(aElement) {
@@ -803,7 +801,10 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 		this.actualiserListeMembres(this.listeMembres);
 	}
 	focusAuDebut() {
-		this.getInstance(this.identBandeauEspace).focusSurPremierElement();
+		const lInstanceBandeauEspace = this.getInstance(this.identBandeauEspace);
+		if (lInstanceBandeauEspace) {
+			lInstanceBandeauEspace.focusSurPremierElement();
+		}
 	}
 	evenementBouton(aParam, aGenreBouton) {
 		if (aGenreBouton !== 1) {
@@ -863,9 +864,49 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 			);
 		}
 	}
+	getLogoDepartementImage() {
+		return GParametres.logoDepartementImage || "";
+	}
+	getLogoDepartementLien() {
+		return GParametres.logoDepartementLien || "";
+	}
+	getObjetPhotoBandeauEspace() {
+		return {
+			getUrlPhoto: () => {
+				return this.getUrlPhoto();
+			},
+		};
+	}
+	getClickDeconnexionBandeauEspace() {
+		return () => {
+			this._evenementBouton({
+				genreCommande: this.genreCommandePersonnel.deconnexion,
+			});
+		};
+	}
+	getNomUtilBandeauEspace() {
+		return () => {
+			const T = [];
+			const lLibelle = this.getLibelleUtilisateur();
+			const lNomEspace = GParametres.getNomEspace();
+			if (lNomEspace) {
+				T.push(lNomEspace);
+			}
+			if (lLibelle) {
+				T.push(lLibelle);
+			}
+			return T.join(" - ");
+		};
+	}
+	getAvecLiensEvitement() {
+		return true;
+	}
+	getAvecFicheEtablissement() {
+		return GEtatUtilisateur.avecFicheEtablissement();
+	}
 	_getParametresBandeauEspace() {
 		return {
-			labelConteneur: GNavigateur.isMacOs
+			labelConteneur: ObjetNavigateur_1.Navigateur.isMacOs
 				? ObjetTraduction_1.GTraductions.getValeur(
 						"Navigation.AideRaccourcisClavierMacOs",
 					)
@@ -877,20 +918,9 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 					),
 			nomEtab: this.getLibelleEtablissement(),
 			urlLogoEtab: this.getUrlLogoEtablissement(),
-			logoDepartementImage: GParametres.logoDepartementImage || "",
-			logoDepartementLien: GParametres.logoDepartementLien || "",
-			getNomUtil: () => {
-				const T = [];
-				const lLibelle = this.getLibelleUtilisateur();
-				const lNomEspace = GParametres.getNomEspace();
-				if (lNomEspace) {
-					T.push(lNomEspace);
-				}
-				if (lLibelle) {
-					T.push(lLibelle);
-				}
-				return T.join(" - ");
-			},
+			logoDepartementImage: this.getLogoDepartementImage(),
+			logoDepartementLien: this.getLogoDepartementLien(),
+			getNomUtil: this.getNomUtilBandeauEspace(),
 			clickUtilisateur: (aEvent, aNode) => {
 				ObjetMenuContextuel_1.ObjetMenuContextuel.afficher({
 					pere: this,
@@ -908,21 +938,13 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 					valeur: "true",
 				}),
 			ariaLabelUtil: this.getLibelleOngletPersonnel(),
-			photo: {
-				getUrlPhoto: () => {
-					return this.getUrlPhoto();
-				},
-			},
+			photo: this.getObjetPhotoBandeauEspace(),
 			clickAccesMobile: this.getCallbackBandeauAccesMobile(),
-			clickDeconnexion: () => {
-				this._evenementBouton({
-					genreCommande: this.genreCommandePersonnel.deconnexion,
-				});
-			},
+			clickDeconnexion: this.getClickDeconnexionBandeauEspace(),
 			isEDT: !!this.estConnexionEDT(),
 			clickEtablissement: this.getCallbackBandeauEtablissement(),
-			avecFicheEtablissement: GEtatUtilisateur.avecFicheEtablissement(),
-			avecLiensEvitement: true,
+			avecFicheEtablissement: this.getAvecFicheEtablissement(),
+			avecLiensEvitement: this.getAvecLiensEvitement(),
 			liensEvitement: {
 				menuOnglet:
 					!!this.getInstance(this.identMenuOnglets) ||
@@ -940,45 +962,91 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 			.show();
 	}
 	_composeBoutonsDroite() {
-		var _a;
-		return [
-			'<div class="objetBandeauEntete_boutons">',
-			this.avecCloudIndex()
-				? "<span>" +
-					'<ie-btnimage ie-model="btnDroite(' +
-					this.getCommande(this.genreCommande.cloudIndex) +
-					')" class="icon_cloud_pronote btnImageIcon" title="' +
-					ObjetTraduction_1.GTraductions.getValeur(
-						"cloudIndex.utilisationCloud",
-					) +
-					'">' +
-					"</ie-btnimage></span>"
-				: "",
-			(_a =
-				this === null || this === void 0
-					? void 0
-					: this.composeBoutonHarcelement) === null || _a === void 0
-				? void 0
-				: _a.call(this),
-			this.composeBtnCommunication(this.NomBtnCommunication),
-			this.composeCreationAlertePPMS(),
-			this.composeConversation(),
-			this.getInstance(this.identBoutonNotif) || this.composeAlertePPMS()
-				? '<hr class="objetBandeauEntete_sep_boutons"></hr>'
-				: "",
-			this.getInstance(this.identBoutonNotif)
-				? '<div id="' +
-					this.getInstance(this.identBoutonNotif).getNom() +
-					'" class="objetBandeauEntete_boutons_ifc"></div>'
-				: "",
-			this.getInstance(this.identBoutonAide)
-				? '<div id="' +
-					this.getInstance(this.identBoutonAide).getNom() +
-					'" class="objetBandeauEntete_boutons_ifc"></div>'
-				: "",
-			this.composeAlertePPMS(),
-			"</div>",
-		].join("");
+		const lBoutonCloud = [];
+		if (this.avecCloudIndex()) {
+			lBoutonCloud.push(
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
+						"span",
+						null,
+						IE.jsx.str("ie-btnimage", {
+							"ie-model":
+								"btnDroite(" +
+								this.getCommande(this.genreCommande.cloudIndex) +
+								")",
+							class: "icon_cloud_pronote btnImageIcon",
+							title: ObjetTraduction_1.GTraductions.getValeur(
+								"cloudIndex.utilisationCloud",
+							),
+						}),
+					),
+				),
+			);
+		}
+		const lExisteCentraleNotifications = !!this.getInstance(
+			this.identBoutonNotif,
+		);
+		const lExisteAideContextuelle = !!this.getInstance(this.identBoutonAide);
+		const lExisteBtnAlertePPMS = !!this.composeAlertePPMS();
+		const lSeparateur = [];
+		if (
+			lExisteCentraleNotifications ||
+			lExisteAideContextuelle ||
+			lExisteBtnAlertePPMS
+		) {
+			lSeparateur.push(
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str("hr", { class: "objetBandeauEntete_sep_boutons" }),
+				),
+			);
+		}
+		const lDivBoutonCentraleNotifications = [];
+		if (lExisteCentraleNotifications) {
+			lDivBoutonCentraleNotifications.push(
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str("div", {
+						id: this.getInstance(this.identBoutonNotif).getNom(),
+						class: "objetBandeauEntete_boutons_ifc",
+					}),
+				),
+			);
+		}
+		const lDivBoutonAideContextuelle = [];
+		if (lExisteAideContextuelle) {
+			lDivBoutonAideContextuelle.push(
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str("div", {
+						id: this.getInstance(this.identBoutonAide).getNom(),
+						class: "objetBandeauEntete_boutons_ifc",
+					}),
+				),
+			);
+		}
+		return IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			IE.jsx.str(
+				"div",
+				{ class: "objetBandeauEntete_boutons focusVisibleContrasted" },
+				lBoutonCloud.join(""),
+				this.composeBoutonHarcelement(),
+				this.composeBtnCommunication(this.NomBtnCommunication),
+				this.composeCreationAlertePPMS(),
+				this.composeConversation(),
+				lSeparateur.join(""),
+				lDivBoutonCentraleNotifications.join(""),
+				lDivBoutonAideContextuelle.join(""),
+				this.composeAlertePPMS(),
+			),
+		);
 	}
 	_composeMembre(aParams) {
 		const lUrl = this.getUrlPhotoMembre(aParams.membre);
@@ -997,7 +1065,7 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 		const H = [];
 		H.push(
 			'<div class="membre-photo_container">',
-			'<div class="membre-photo">',
+			'<div class="membre-photo" aria-hidden="true">',
 		);
 		if (
 			lUrl &&
@@ -1049,6 +1117,7 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 		const lWidth_wrapper = lMenuWrapper.outerWidth() || 0;
 		const lGlobaMenusSize =
 			lWidth_wrapper - ($(".objetBandeauEntete_boutons").outerWidth() || 0);
+		let lSortieReponsive = false;
 		if (
 			(lGlobaMenusSize > 0 && lMenuSize > lGlobaMenusSize) ||
 			(lWidth_wrapper > 0 && this._widthSsMenu > lWidth_wrapper)
@@ -1057,15 +1126,20 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 				? lMenuWrapper.addClass("as-responsive")
 				: "";
 		} else {
-			lMenuWrapper.hasClass("as-responsive")
-				? lMenuWrapper.removeClass("as-responsive")
-				: "";
+			if (lMenuWrapper.hasClass("as-responsive")) {
+				lMenuWrapper.removeClass("as-responsive");
+				lSortieReponsive = true;
+			}
 		}
 		if (this.getInstance(this.identMenuOnglets)) {
 			this.getInstance(this.identMenuOnglets).changeResponsive();
 		}
 		if (this.getInstance(this.identMenuMembres)) {
 			this.getInstance(this.identMenuMembres).changeResponsive();
+		}
+		if (lSortieReponsive) {
+			this.calculWidthSousMenu();
+			this._setMenuResponsive();
 		}
 	}
 }

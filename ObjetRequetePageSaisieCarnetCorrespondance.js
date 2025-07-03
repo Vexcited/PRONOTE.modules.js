@@ -1,9 +1,7 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequetePageSaisieCarnetCorrespondance extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequetePageSaisieCarnetCorrespondance = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequetePageSaisieCarnetCorrespondance extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aEleve) {
 		this.JSON = { Eleve: aEleve };
 		return this.appelAsynchrone();
@@ -22,8 +20,9 @@ class ObjetRequetePageSaisieCarnetCorrespondance extends ObjetRequeteConsultatio
 		});
 	}
 }
-Requetes.inscrire(
+exports.ObjetRequetePageSaisieCarnetCorrespondance =
+	ObjetRequetePageSaisieCarnetCorrespondance;
+CollectionRequetes_1.Requetes.inscrire(
 	"PageSaisieCarnetCorrespondance",
 	ObjetRequetePageSaisieCarnetCorrespondance,
 );
-module.exports = { ObjetRequetePageSaisieCarnetCorrespondance };

@@ -1,64 +1,82 @@
-const { GHtml } = require("ObjetHtml.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetInvocateur, Invocateur } = require("Invocateur.js");
-const { EModeAffichageTimeline } = require("Enumere_ModeAffichageTimeline.js");
-const { ObjetInterface } = require("ObjetInterface.js");
-const { GPosition } = require("ObjetPosition.js");
-const { GUID } = require("GUID.js");
-const { EEvent } = require("Enumere_Event.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GDate } = require("ObjetDate.js");
-const { EGenreBordure } = require("ObjetStyle.js");
-const { GStyle } = require("ObjetStyle.js");
-const { TypeEnsembleNombre } = require("TypeEnsembleNombre.js");
-const { UtilitaireHtml } = require("UtilitaireHtml.js");
-const { GChaine } = require("ObjetChaine.js");
-const EModePliage = { blocEntier: 1, contenu: 2, aucun: 3 };
-class ObjetTimeline extends ObjetInterface {
+exports.ObjetTimeline = void 0;
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Invocateur_1 = require("Invocateur");
+const Enumere_ModeAffichageTimeline_1 = require("Enumere_ModeAffichageTimeline");
+const ObjetInterface_1 = require("ObjetInterface");
+const ObjetPosition_1 = require("ObjetPosition");
+const GUID_1 = require("GUID");
+const Enumere_Event_1 = require("Enumere_Event");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetStyle_1 = require("ObjetStyle");
+const ObjetStyle_2 = require("ObjetStyle");
+const TypeEnsembleNombre_1 = require("TypeEnsembleNombre");
+const UtilitaireHtml_1 = require("UtilitaireHtml");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const AccessApp_1 = require("AccessApp");
+var EModePliage;
+(function (EModePliage) {
+	EModePliage[(EModePliage["blocEntier"] = 1)] = "blocEntier";
+	EModePliage[(EModePliage["contenu"] = 2)] = "contenu";
+	EModePliage[(EModePliage["aucun"] = 3)] = "aucun";
+})(EModePliage || (EModePliage = {}));
+class ObjetTimeline extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
+		var _a, _b;
 		super(...aParams);
-		this.idBlocDate = GUID.getId();
+		this.idBlocDate = GUID_1.GUID.getId();
 		this.modePliage = EModePliage.contenu;
 		this.avecBoutonsFixes = false;
-		this.avecModeCompact = false;
 		this.avecBlocDates = true;
-		this.modeAffichage = EModeAffichageTimeline.classique;
+		this.modeAffichage =
+			Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.classique;
 		this._formatDate = "[%JJJ %JJ %MMM]";
 		this._formatDateJourNum = "%JJ";
 		this._formatDateMois = "%MMM";
 		this._formatDateGrille =
 			'<div class="Texte20 InlineBlock AlignementMilieuVertical EspaceDroit">%JJ</div><div class="InlineBlock AlignementMilieuVertical" style="height:22px;width:1px;' +
-			GStyle.composeCouleurBordure(
-				GCouleur.themeNeutre.moyen2,
+			ObjetStyle_2.GStyle.composeCouleurBordure(
+				(0, AccessApp_1.getApp)().getCouleur().themeNeutre.moyen2,
 				1,
-				EGenreBordure.gauche,
+				ObjetStyle_1.EGenreBordure.gauche,
 			) +
 			'"></div><div class="Texte20 InlineBlock AlignementMilieuVertical EspaceGauche"><div class="Texte12 Gras">%Jjj</div><div class="Texte10 affichageMois">%Mmm</div></div>';
 		this._formatDatePourId = "%JJ%MM%AAAA";
-		this.hauteurDisponible = GPosition.getHeight(this.Pere.Nom);
+		this.hauteurDisponible = ObjetPosition_1.GPosition.getHeight(
+			(_b = (_a = this.Pere).getNom) === null || _b === void 0
+				? void 0
+				: _b.call(_a),
+		);
 		this.hauteurMinimaleCellule = 250;
-		this.ajouterEvenementGlobal(EEvent.SurPreResize, this.surPreResize);
-		this.ajouterEvenementGlobal(EEvent.SurPostResize, this.surPostResize);
+		this.ajouterEvenementGlobal(
+			Enumere_Event_1.EEvent.SurPreResize,
+			this.surPreResize,
+		);
+		this.ajouterEvenementGlobal(
+			Enumere_Event_1.EEvent.SurPostResize,
+			this.surPostResize,
+		);
 	}
 	static composeChoix(aGroupeRadioId, aSelectedModeAffichage) {
 		const lListeRadios = [];
 		lListeRadios.push({
-			libelle: GTraductions.getValeur("VueChronologique"),
-			value: this.avecModeCompact
-				? EModeAffichageTimeline.compact
-				: EModeAffichageTimeline.classique,
+			libelle: ObjetTraduction_1.GTraductions.getValeur("VueChronologique"),
+			value: ObjetTimeline.avecModeCompact
+				? Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.compact
+				: Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.classique,
 		});
 		lListeRadios.push({
-			libelle: GTraductions.getValeur("VueHebdomadaire"),
-			value: EModeAffichageTimeline.grille,
+			libelle: ObjetTraduction_1.GTraductions.getValeur("VueHebdomadaire"),
+			value: Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.grille,
 		});
-		return UtilitaireHtml.composeGroupeRadiosBoutons({
+		return UtilitaireHtml_1.UtilitaireHtml.composeGroupeRadiosBoutons({
 			id: aGroupeRadioId,
 			listeRadios: lListeRadios,
 			selectedValue: aSelectedModeAffichage,
 		});
 	}
-	construireInstances() {}
 	setOptions(aParam) {
 		if (aParam.modeAffichage !== null && aParam.modeAffichage !== undefined) {
 			this.modeAffichage = aParam.modeAffichage;
@@ -89,31 +107,36 @@ class ObjetTimeline extends ObjetInterface {
 		this.msgAucun =
 			aParam.msgAucun !== null && aParam.msgAucun !== undefined
 				? aParam.msgAucun
-				: GTraductions.getValeur("timeline.aucun");
+				: ObjetTraduction_1.GTraductions.getValeur("timeline.aucun");
 		this.hauteurOccupee = aParam.hauteurOccupee;
 		this.avecJoursOuvres = aParam.avecJoursOuvres
 			? aParam.avecJoursOuvres
 			: false;
 		this.joursAffiches = aParam.joursAffiches
 			? aParam.joursAffiches
-			: new TypeEnsembleNombre().add([0, 1, 2, 3, 4, 5, 6]);
+			: new TypeEnsembleNombre_1.TypeEnsembleNombre().add([
+					0, 1, 2, 3, 4, 5, 6,
+				]);
 		this.debutGrille = aParam.debutGrille
 			? aParam.debutGrille
-			: GDate.PremierLundi;
-		this.finGrille = aParam.finGrille ? aParam.finGrille : GDate.derniereDate;
+			: ObjetDate_1.GDate.PremierLundi;
+		this.finGrille = aParam.finGrille
+			? aParam.finGrille
+			: ObjetDate_1.GDate.derniereDate;
 		if (aParam.formatDate) {
 			this._formatDate = aParam.formatDate;
 		}
 		if (aParam.formatDateGrille) {
 			this._formatDateGrille = aParam.formatDateGrille;
 		}
+		return this;
 	}
 	setDonnees(aParametres) {
 		this.donneesRecues = true;
 		const lParametres = {
-			liste: new ObjetListeElements(),
+			liste: new ObjetListeElements_1.ObjetListeElements(),
 			gestionnairesBlocs: [],
-			dateCourante: GDate.aujourdhui,
+			dateCourante: ObjetDate_1.GDate.aujourdhui,
 		};
 		$.extend(lParametres, aParametres);
 		const lInstance = this;
@@ -123,8 +146,7 @@ class ObjetTimeline extends ObjetInterface {
 		const hauteurPere = this.calculerTailleDisponible({
 			hauteurZoneADeduire: aParametres.hauteurZoneADeduire,
 		});
-		let hauteurFreres = calculerHauteurFreres.call(
-			this,
+		let hauteurFreres = this.calculerHauteurFreres(
 			$(("#" + this.Nom).escapeJQ()),
 		);
 		if (hauteurFreres === hauteurPere || !this.avecBoutonsFixes) {
@@ -140,7 +162,8 @@ class ObjetTimeline extends ObjetInterface {
 				lTris.push(lParametres.tris);
 			}
 		}
-		const lListeSansDateManquante = new ObjetListeElements();
+		const lListeSansDateManquante =
+			new ObjetListeElements_1.ObjetListeElements();
 		lParametres.liste.parcourir((aElt) => {
 			if (aElt.DateDebut !== undefined) {
 				lListeSansDateManquante.addElement(aElt);
@@ -163,10 +186,10 @@ class ObjetTimeline extends ObjetInterface {
 		});
 		taille -= 10;
 		switch (this.modeAffichage) {
-			case EModeAffichageTimeline.grille:
+			case Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.grille:
 				$("#conteneur-page").height(this.hauteurInterface);
 				break;
-			case EModeAffichageTimeline.liste:
+			case Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.liste:
 				if (!IE.estMobile) {
 					$("#scroll-panel").height(taille);
 					$("aside").height(taille);
@@ -182,17 +205,18 @@ class ObjetTimeline extends ObjetInterface {
 				$("#scroll-panel").height(this.hauteurInterface);
 		}
 		if (
-			this.modeAffichage !== EModeAffichageTimeline.grille &&
-			this.modeAffichage !== EModeAffichageTimeline.compact
+			this.modeAffichage !==
+				Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.grille &&
+			this.modeAffichage !==
+				Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.compact
 		) {
 			this.positionnerScroll(lParametres.dateCourante);
 		}
 	}
 	calculerTailleDisponible(aParam) {
-		Invocateur.evenement(ObjetInvocateur.events.refreshIEHtml);
-		if (this.Pere.getHauteurDisponibleTimeLine) {
-			return this.Pere.getHauteurDisponibleTimeLine();
-		}
+		Invocateur_1.Invocateur.evenement(
+			Invocateur_1.ObjetInvocateur.events.refreshIEHtml,
+		);
 		let offset = 25;
 		if (
 			aParam.hauteurZoneADeduire !== null &&
@@ -220,16 +244,19 @@ class ObjetTimeline extends ObjetInterface {
 	}
 	positionnerScroll(aDate) {
 		const panel = $("#scroll-panel");
-		const lDateLaPlusProche = getDateLaPlusProche.call(this, aDate);
+		const lDateLaPlusProche = this.getDateLaPlusProche(aDate);
 		if (!!lDateLaPlusProche) {
-			const lNode = GHtml.getElement(
+			const lNode = ObjetHtml_1.GHtml.getElement(
 				this.idBlocDate +
 					"_" +
-					GDate.formatDate(lDateLaPlusProche, this._formatDatePourId),
+					ObjetDate_1.GDate.formatDate(
+						lDateLaPlusProche,
+						this._formatDatePourId,
+					),
 			);
 			if (panel.length === 1) {
 				const lElementPanel = panel.get(0);
-				GPosition.scrollToElement(lNode, lElementPanel);
+				ObjetPosition_1.GPosition.scrollToElement(lNode, lElementPanel);
 				lElementPanel.scrollTop = lElementPanel.scrollTop + 2;
 			}
 		}
@@ -247,8 +274,10 @@ class ObjetTimeline extends ObjetInterface {
 				for (let i = 0; i < nbElements; i++) {
 					const Element = this.listeEvenements.get(i);
 					if (
-						GDate.getNbrJoursEntreDeuxDates(Element.DateDebut, dateCourante) !==
-						0
+						ObjetDate_1.GDate.getNbrJoursEntreDeuxDates(
+							Element.DateDebut,
+							dateCourante,
+						) !== 0
 					) {
 						dateCourante = Element.DateDebut;
 						H.push(this.composeBlocTimeline(dateCourante, false));
@@ -268,7 +297,7 @@ class ObjetTimeline extends ObjetInterface {
 		const H = [];
 		H.push('<div class="Timeline">');
 		H.push(
-			'<div tabindex="-1" id="scroll-panel" class="ObjetTimeline_Container overflow-auto" >',
+			'<div tabindex="-1" id="scroll-panel" class="ObjetTimeline_Container overflow-auto">',
 		);
 		if (this.donneesRecues) {
 			const nbElements = this.listeEvenements.count();
@@ -277,8 +306,10 @@ class ObjetTimeline extends ObjetInterface {
 				for (let i = 0; i < nbElements; i++) {
 					const Element = this.listeEvenements.get(i);
 					if (
-						GDate.getNbrJoursEntreDeuxDates(Element.DateDebut, dateCourante) !==
-						0
+						ObjetDate_1.GDate.getNbrJoursEntreDeuxDates(
+							Element.DateDebut,
+							dateCourante,
+						) !== 0
 					) {
 						dateCourante = Element.DateDebut;
 						H.push(this.composeBlocTimeline(dateCourante, false));
@@ -308,13 +339,16 @@ class ObjetTimeline extends ObjetInterface {
 			const nbElements = this.listeEvenements.count();
 			i = 0;
 			const lLargeurObjet =
-				GPosition.getWidth(this.Nom) -
-				GNavigateur.getLargeurBarreDeScroll() -
+				ObjetPosition_1.GPosition.getWidth(this.Nom) -
+				ObjetNavigateur_1.Navigateur.getLargeurBarreDeScroll() -
 				10;
 			const lLargeurColonne =
 				Math.floor(lLargeurObjet / nbJoursParLigne) + "px";
 			const lNombreDeJours =
-				GDate.getNbrJoursEntreDeuxDates(this.debutGrille, this.finGrille) + 1;
+				ObjetDate_1.GDate.getNbrJoursEntreDeuxDates(
+					this.debutGrille,
+					this.finGrille,
+				) + 1;
 			const lNbSemaines =
 				Math.floor(lNombreDeJours / 7) + (lNombreDeJours % 7 === 0 ? 0 : 1);
 			const lTailleDisponible = this.hauteurInterface - 34 * lNbSemaines - 5;
@@ -331,11 +365,11 @@ class ObjetTimeline extends ObjetInterface {
 			for (
 				dateCourante = this.debutGrille;
 				dateCourante <= this.finGrille;
-				dateCourante = GDate.getJourSuivant(dateCourante, 1)
+				dateCourante = ObjetDate_1.GDate.getJourSuivant(dateCourante, 1)
 			) {
-				const jour = GDate.getJourDeSemaine(dateCourante);
+				const jour = ObjetDate_1.GDate.getJourDeSemaine(dateCourante);
 				const afficher = this.avecJoursOuvres
-					? GDate.estUnJourOuvre(dateCourante)
+					? ObjetDate_1.GDate.estUnJourOuvre(dateCourante)
 					: this.joursAffiches.contains(jour);
 				while (
 					indiceCourant > 0 &&
@@ -347,12 +381,14 @@ class ObjetTimeline extends ObjetInterface {
 				if (!afficher) {
 					if (
 						Element &&
-						GDate.getNbrJoursEntreDeuxDates(Element.DateDebut, dateCourante) ===
-							0
+						ObjetDate_1.GDate.getNbrJoursEntreDeuxDates(
+							Element.DateDebut,
+							dateCourante,
+						) === 0
 					) {
 						while (
 							indiceCourant > 0 &&
-							GDate.getNbrJoursEntreDeuxDates(
+							ObjetDate_1.GDate.getNbrJoursEntreDeuxDates(
 								Element.DateDebut,
 								this.listeEvenements.get(indiceCourant - 1).DateDebut,
 							) === 0
@@ -364,28 +400,33 @@ class ObjetTimeline extends ObjetInterface {
 					continue;
 				}
 				if (i % nbJoursParLigne === 0) {
-					H.push('<div style="display:flex;">');
+					H.push('<div class="flex-contain">');
 					indiceSemaine++;
 				}
 				let aTitreSeul = false;
 				const lEstFinDeSemaine = i % nbJoursParLigne === nbJoursParLigne - 1;
 				const lEstDerniereSemaine = indiceSemaine === lNbSemaines;
 				lEstUnJourFerie = GParametres.JoursFeries.getValeur(
-					GDate.getNbrJoursEntreDeuxDates(
+					ObjetDate_1.GDate.getNbrJoursEntreDeuxDates(
 						IE.Cycles.dateDebutPremierCycle(),
 						dateCourante,
 					) + 1,
 				);
 				lEstGrisePassee =
-					this.griseJoursPasses && GDate.estAvantJourCourant(dateCourante);
-				lEstAujourdHui = GDate.estJourCourant(dateCourante);
-				if (this.modeAffichage === EModeAffichageTimeline.grille) {
+					this.griseJoursPasses &&
+					ObjetDate_1.GDate.estAvantJourCourant(dateCourante);
+				lEstAujourdHui = ObjetDate_1.GDate.estJourCourant(dateCourante);
+				if (
+					this.modeAffichage ===
+					Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.grille
+				) {
 					const lClass = lEstAujourdHui ? "couleurClaireDuTheme " : "";
-					const lLibelleJour = GDate.formatDate(
+					const lLibelleJour = ObjetDate_1.GDate.formatDate(
 						dateCourante,
 						this._formatDateGrille,
 					);
-					const lNbJour = GDate.getNbrJoursDepuisPremiereLundi(dateCourante);
+					const lNbJour =
+						ObjetDate_1.GDate.getNbrJoursDepuisPremiereLundi(dateCourante);
 					const ajouterCreation =
 						this.eventCreation && !lEstGrisePassee && !lEstUnJourFerie
 							? ' onclick="' +
@@ -399,16 +440,23 @@ class ObjetTimeline extends ObjetInterface {
 					let lCouleurFond = "background-color : white;";
 					if (lEstUnJourFerie) {
 						lCouleurFond =
-							"background-color : " + GCouleur.themeNeutre.legere + ";";
+							"background-color : " +
+							(0, AccessApp_1.getApp)().getCouleur().themeNeutre.legere +
+							";";
 					} else if (lEstGrisePassee) {
 						lCouleurFond =
-							"background-color : " + GCouleur.themeNeutre.light + ";";
+							"background-color : " +
+							(0, AccessApp_1.getApp)().getCouleur().themeNeutre.light +
+							";";
 					}
 					let lCouleurDate;
 					if (lEstAujourdHui) {
 						lCouleurDate = "color:var(--theme-moyen1);";
 					} else {
-						lCouleurDate = "color : " + GCouleur.themeNeutre.foncee + ";";
+						lCouleurDate =
+							"color : " +
+							(0, AccessApp_1.getApp)().getCouleur().themeNeutre.foncee +
+							";";
 					}
 					H.push(
 						'<div class="',
@@ -420,17 +468,20 @@ class ObjetTimeline extends ObjetInterface {
 						'" ',
 						ajouterCreation,
 						' role="group" aria-label="',
-						GDate.formatDate(dateCourante, "%JJJJ %MMMM %AAAA").toAttrValue(),
+						ObjetDate_1.GDate.formatDate(
+							dateCourante,
+							"%JJJJ %MMMM %AAAA",
+						).toAttrValue(),
 						'">',
 					);
 					H.push(
 						'  <div class="PetitEspaceHaut" style="' +
-							GStyle.composeCouleurBordure(
-								GCouleur.bordure,
+							ObjetStyle_2.GStyle.composeCouleurBordure(
+								(0, AccessApp_1.getApp)().getCouleur().bordure,
 								1,
-								EGenreBordure.gauche +
-									EGenreBordure.haut +
-									(lEstFinDeSemaine ? EGenreBordure.droite : 0),
+								ObjetStyle_1.EGenreBordure.gauche +
+									ObjetStyle_1.EGenreBordure.haut +
+									(lEstFinDeSemaine ? ObjetStyle_1.EGenreBordure.droite : 0),
 							) +
 							'">',
 					);
@@ -452,12 +503,12 @@ class ObjetTimeline extends ObjetInterface {
 								? aBouton.getActif(lNbJour)
 								: true;
 							if (lAfficherBouton) {
-								const lId = GUID.getId();
+								const lId = GUID_1.GUID.getId();
 								const lTheme = !!aBouton.theme
 									? aBouton.theme
 									: "themeBoutonNeutre";
 								const lHint = !!aBouton.hint
-									? GChaine.toTitle(aBouton.hint)
+									? ObjetChaine_1.GChaine.toTitle(aBouton.hint)
 									: "";
 								H.push(
 									'<ie-btnicon ie-model="',
@@ -499,22 +550,25 @@ class ObjetTimeline extends ObjetInterface {
 					";height:",
 					lHauteurCellule,
 					"px;",
-					GStyle.composeCouleurBordure(
-						GCouleur.bordure,
+					ObjetStyle_2.GStyle.composeCouleurBordure(
+						(0, AccessApp_1.getApp)().getCouleur().bordure,
 						1,
-						EGenreBordure.gauche +
-							(lEstDerniereSemaine ? EGenreBordure.bas : 0) +
-							(lEstFinDeSemaine ? EGenreBordure.droite : 0),
+						ObjetStyle_1.EGenreBordure.gauche +
+							(lEstDerniereSemaine ? ObjetStyle_1.EGenreBordure.bas : 0) +
+							(lEstFinDeSemaine ? ObjetStyle_1.EGenreBordure.droite : 0),
 					),
 					';min-height:0; overflow : auto; position:relative;" class="ObjetTimeline_classScrollPanel">',
 				);
 				if (
 					Element &&
-					GDate.getNbrJoursEntreDeuxDates(Element.DateDebut, dateCourante) === 0
+					ObjetDate_1.GDate.getNbrJoursEntreDeuxDates(
+						Element.DateDebut,
+						dateCourante,
+					) === 0
 				) {
 					while (
 						indiceCourant > 0 &&
-						GDate.getNbrJoursEntreDeuxDates(
+						ObjetDate_1.GDate.getNbrJoursEntreDeuxDates(
 							Element.DateDebut,
 							this.listeEvenements.get(indiceCourant - 1).DateDebut,
 						) === 0
@@ -553,8 +607,10 @@ class ObjetTimeline extends ObjetInterface {
 				for (let i = 0; i < nbElements; i++) {
 					const Element = this.listeEvenements.get(i);
 					if (
-						GDate.getNbrJoursEntreDeuxDates(Element.DateDebut, dateCourante) !==
-						0
+						ObjetDate_1.GDate.getNbrJoursEntreDeuxDates(
+							Element.DateDebut,
+							dateCourante,
+						) !== 0
 					) {
 						dateCourante = Element.DateDebut;
 						H.push(
@@ -580,13 +636,13 @@ class ObjetTimeline extends ObjetInterface {
 	construireAffichage() {
 		const H = [];
 		switch (this.modeAffichage) {
-			case EModeAffichageTimeline.grille:
+			case Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.grille:
 				H.push(this.construireAffichageGrille());
 				break;
-			case EModeAffichageTimeline.compact:
+			case Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.compact:
 				H.push(this.construireAffichageCompact());
 				break;
-			case EModeAffichageTimeline.liste:
+			case Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.liste:
 				H.push(this.construireAffichageListe());
 				break;
 			default:
@@ -599,17 +655,22 @@ class ObjetTimeline extends ObjetInterface {
 			aTitreSeul = false;
 		}
 		const H = [];
-		const idDate = GDate.formatDate(aDate, this._formatDatePourId).toString();
-		const lCouleurBloc = GDate.estAvantJourCourant(aDate)
-			? GCouleur.themeNeutre.foncee
-			: GCouleur.themeCouleur.foncee;
+		const idDate = ObjetDate_1.GDate.formatDate(
+			aDate,
+			this._formatDatePourId,
+		).toString();
+		const lCouleurBloc = ObjetDate_1.GDate.estAvantJourCourant(aDate)
+			? (0, AccessApp_1.getApp)().getCouleur().themeNeutre.foncee
+			: (0, AccessApp_1.getApp)().getCouleur().themeCouleur.foncee;
 		const idBloc = this.idBlocDate + "_" + idDate;
 		const displayBlocDate = "display:none;";
 		const classeConteneur = "ObjetTimeline_section";
 		const classeItem = "ObjetTimeline_column";
 		const classeEtiquette = "blocTimeline-etiquette";
 		const styleSpan =
-			GStyle.composeCouleurTexte(GCouleur.blanc) + "margin:5px;";
+			ObjetStyle_2.GStyle.composeCouleurTexte(
+				(0, AccessApp_1.getApp)().getCouleur().blanc,
+			) + "margin:5px;";
 		H.push('<div id="' + idBloc + '" class="', classeConteneur, '">');
 		H.push(
 			'  <div id="' + idBloc + '_date" style="',
@@ -624,12 +685,12 @@ class ObjetTimeline extends ObjetInterface {
 			'    <div class="',
 			classeEtiquette,
 			' Espace AlignementMilieu" style="' +
-				GStyle.composeCouleurFond(lCouleurBloc) +
+				ObjetStyle_2.GStyle.composeCouleurFond(lCouleurBloc) +
 				'">',
 		);
 		H.push(
 			'        <span style="' + styleSpan + '">',
-			GDate.formatDate(aDate, this._formatDate),
+			ObjetDate_1.GDate.formatDate(aDate, this._formatDate),
 			"</span>",
 		);
 		H.push("    </div>");
@@ -651,7 +712,7 @@ class ObjetTimeline extends ObjetInterface {
 				'<div class="',
 				classeItem,
 				'" style="border-bottom: solid 2px ',
-				GCouleur.themeNeutre.moyen2,
+				(0, AccessApp_1.getApp)().getCouleur().themeNeutre.moyen2,
 				'"></div>',
 			);
 		}
@@ -664,7 +725,10 @@ class ObjetTimeline extends ObjetInterface {
 			this.ajouterElementAuBloc(
 				this.idBlocDate +
 					"_" +
-					GDate.formatDate(aElement.DateDebut, this._formatDatePourId) +
+					ObjetDate_1.GDate.formatDate(
+						aElement.DateDebut,
+						this._formatDatePourId,
+					) +
 					"_events",
 				aElement,
 			);
@@ -672,14 +736,14 @@ class ObjetTimeline extends ObjetInterface {
 	}
 	ajouterElementAuBloc(aIdBloc, aElement) {
 		const lEltBloc = this.composeElementTimeline(aElement);
-		const lIdEltBloc = aIdBloc + GUID.getId();
+		const lIdEltBloc = aIdBloc + GUID_1.GUID.getId();
 		aElement.idBloc = lIdEltBloc;
 		let lStyle;
 		switch (this.modeAffichage) {
-			case EModeAffichageTimeline.grille:
+			case Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.grille:
 				lStyle = ' style="margin-bottom: 5px;"';
 				break;
-			case EModeAffichageTimeline.compact:
+			case Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.compact:
 				lStyle = "";
 				break;
 			default:
@@ -687,7 +751,7 @@ class ObjetTimeline extends ObjetInterface {
 		}
 		const lElementAvecMarge =
 			"<div" + lStyle + ' id="' + lIdEltBloc + '">' + lEltBloc.html + "</div>";
-		GHtml.addHtml(aIdBloc, lElementAvecMarge, {
+		ObjetHtml_1.GHtml.addHtml(aIdBloc, lElementAvecMarge, {
 			controleur: lEltBloc.controleur,
 		});
 	}
@@ -703,10 +767,13 @@ class ObjetTimeline extends ObjetInterface {
 			aTitreSeul = false;
 		}
 		const H = [];
-		const idDate = GDate.formatDate(aDate, this._formatDatePourId).toString();
-		const lCouleurBloc = GDate.estAvantJourCourant(aDate)
-			? GCouleur.themeNeutre.legere2
-			: GCouleur.themeCouleur.claire;
+		const idDate = ObjetDate_1.GDate.formatDate(
+			aDate,
+			this._formatDatePourId,
+		).toString();
+		const lCouleurBloc = ObjetDate_1.GDate.estAvantJourCourant(aDate)
+			? (0, AccessApp_1.getApp)().getCouleur().themeNeutre.legere2
+			: (0, AccessApp_1.getApp)().getCouleur().themeCouleur.claire;
 		const idBloc = this.idBlocDate + "_" + idDate;
 		let classeConteneur = "";
 		let classeItem = "";
@@ -714,31 +781,38 @@ class ObjetTimeline extends ObjetInterface {
 		let styleSpan = "";
 		let displayBlocDate = "display:none;";
 		switch (this.modeAffichage) {
-			case EModeAffichageTimeline.classique: {
+			case Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.classique: {
 				classeConteneur = "ObjetTimeline_section";
 				classeItem = "ObjetTimeline_column";
 				classeEtiquette = "blocTimeline-etiquette";
 				displayBlocDate = this.avecBlocDates ? "" : "display:none;";
-				const lCouleurTexte = GDate.estAvantJourCourant(aDate)
-					? GCouleur.themeNeutre.sombre
-					: GCouleur.themeCouleur.foncee;
-				styleSpan = GStyle.composeCouleurTexte(lCouleurTexte);
+				const lCouleurTexte = ObjetDate_1.GDate.estAvantJourCourant(aDate)
+					? (0, AccessApp_1.getApp)().getCouleur().themeNeutre.sombre
+					: (0, AccessApp_1.getApp)().getCouleur().themeCouleur.foncee;
+				styleSpan = ObjetStyle_2.GStyle.composeCouleurTexte(lCouleurTexte);
 				break;
 			}
-			case EModeAffichageTimeline.liste:
+			case Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.liste:
 				classeConteneur = "ObjetTimeline_section";
 				classeItem = "ObjetTimeline_columnListe";
 				classeEtiquette = "blocTimeline-etiquette";
-				styleSpan = GStyle.composeCouleurTexte(GCouleur.blanc);
+				styleSpan = ObjetStyle_2.GStyle.composeCouleurTexte(
+					(0, AccessApp_1.getApp)().getCouleur().blanc,
+				);
 				break;
-			case EModeAffichageTimeline.grille:
-				styleSpan = GStyle.composeCouleurTexte(GCouleur.blanc);
+			case Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.grille:
+				styleSpan = ObjetStyle_2.GStyle.composeCouleurTexte(
+					(0, AccessApp_1.getApp)().getCouleur().blanc,
+				);
 				break;
-			case EModeAffichageTimeline.compact:
+			case Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.compact:
 				classeConteneur = "ObjetTimeline_section";
 				classeItem = "ObjetTimeline_column";
 				classeEtiquette = "blocTimeline-etiquette";
-				styleSpan = GStyle.composeCouleurTexte(GCouleur.blanc) + "margin:5px;";
+				styleSpan =
+					ObjetStyle_2.GStyle.composeCouleurTexte(
+						(0, AccessApp_1.getApp)().getCouleur().blanc,
+					) + "margin:5px;";
 				break;
 		}
 		H.push(
@@ -759,12 +833,12 @@ class ObjetTimeline extends ObjetInterface {
 			'    <div class="',
 			classeEtiquette,
 			' Espace AlignementMilieu" style="' +
-				GStyle.composeCouleurFond(lCouleurBloc) +
+				ObjetStyle_2.GStyle.composeCouleurFond(lCouleurBloc) +
 				'">',
 		);
 		H.push(
 			'        <span style="' + styleSpan + '">',
-			GDate.formatDate(aDate, this._formatDate),
+			ObjetDate_1.GDate.formatDate(aDate, this._formatDate),
 			"</span>",
 		);
 		H.push("    </div>");
@@ -786,11 +860,16 @@ class ObjetTimeline extends ObjetInterface {
 		return H.join("");
 	}
 	surResizeInterface() {
+		var _a, _b;
 		super.surResizeInterface();
-		this.hauteurDisponible = GPosition.getHeight(this.Pere.Nom);
+		this.hauteurDisponible = ObjetPosition_1.GPosition.getHeight(
+			(_b = (_a = this.Pere).getNom) === null || _b === void 0
+				? void 0
+				: _b.call(_a),
+		);
 	}
 	surPreResize() {
-		GHtml.setHtml(this.Nom, "&nbsp;");
+		ObjetHtml_1.GHtml.setHtml(this.Nom, "&nbsp;");
 	}
 	surPostResize() {
 		customResize.call(this);
@@ -872,53 +951,54 @@ class ObjetTimeline extends ObjetInterface {
 			return lGestionnaire.composeBlocComplet(aElement);
 		}
 	}
-}
-function calculerHauteurFreres(aDiv) {
-	let hauteurFreres = 0;
-	const freres = aDiv.siblings();
-	let lAuMoinsUnVisible = false;
-	freres.each(function (i) {
-		if ($(this).css("display") !== "none" || lAuMoinsUnVisible) {
-			lAuMoinsUnVisible = true;
-		}
-		hauteurFreres +=
-			($(this).css("display") !== "inline-block" || i === 0) &&
-			$(this).css("display") !== "none"
-				? $(this).height()
-				: 0;
-	});
-	hauteurFreres = hauteurFreres * (lAuMoinsUnVisible ? 1 : 0);
-	return hauteurFreres;
-}
-function getDateLaPlusProche(aDate) {
-	let lIndiceEvenement = -1;
-	if (!!this.listeEvenements && this.listeEvenements.count() > 0) {
-		let min = 365;
-		for (let i = 0; i < this.listeEvenements.count(); i++) {
-			if (
-				Math.abs(
-					GDate.getNbrJoursEntreDeuxDates(
-						this.listeEvenements.get(i).DateDebut,
-						aDate,
-					),
-				) <= min
-			) {
-				min = Math.abs(
-					GDate.getNbrJoursEntreDeuxDates(
-						this.listeEvenements.get(i).DateDebut,
-						aDate,
-					),
-				);
-				lIndiceEvenement = i;
-				if (min === 0) {
-					break;
+	calculerHauteurFreres(aDiv) {
+		let hauteurFreres = 0;
+		const freres = aDiv.siblings();
+		let lAuMoinsUnVisible = false;
+		freres.each(function (i) {
+			if ($(this).css("display") !== "none" || lAuMoinsUnVisible) {
+				lAuMoinsUnVisible = true;
+			}
+			hauteurFreres +=
+				($(this).css("display") !== "inline-block" || i === 0) &&
+				$(this).css("display") !== "none"
+					? $(this).height()
+					: 0;
+		});
+		hauteurFreres = hauteurFreres * (lAuMoinsUnVisible ? 1 : 0);
+		return hauteurFreres;
+	}
+	getDateLaPlusProche(aDate) {
+		let lIndiceEvenement = -1;
+		if (!!this.listeEvenements && this.listeEvenements.count() > 0) {
+			let min = 365;
+			for (let i = 0; i < this.listeEvenements.count(); i++) {
+				if (
+					Math.abs(
+						ObjetDate_1.GDate.getNbrJoursEntreDeuxDates(
+							this.listeEvenements.get(i).DateDebut,
+							aDate,
+						),
+					) <= min
+				) {
+					min = Math.abs(
+						ObjetDate_1.GDate.getNbrJoursEntreDeuxDates(
+							this.listeEvenements.get(i).DateDebut,
+							aDate,
+						),
+					);
+					lIndiceEvenement = i;
+					if (min === 0) {
+						break;
+					}
 				}
 			}
 		}
+		return lIndiceEvenement >= 0
+			? this.listeEvenements.get(lIndiceEvenement).DateDebut
+			: null;
 	}
-	return lIndiceEvenement >= 0
-		? this.listeEvenements.get(lIndiceEvenement).DateDebut
-		: null;
 }
+exports.ObjetTimeline = ObjetTimeline;
+ObjetTimeline.avecModeCompact = false;
 function customResize() {}
-module.exports = { ObjetTimeline };

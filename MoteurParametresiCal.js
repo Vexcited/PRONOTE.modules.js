@@ -11,6 +11,7 @@ const Toast_1 = require("Toast");
 const ComparateurChaines_1 = require("ComparateurChaines");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
 class MoteurParametresiCal {
 	constructor() {
 		this.application = GApplication;
@@ -267,7 +268,8 @@ class MoteurParametresiCal {
 				lGenre === TypeGenreICal_1.TypeGenreICal.ICal_Agenda ? "fh=1" : "";
 			lParams += "&o=" + lGenre;
 			aArticle.href = `ical/${aArticle.nom}.ics?icalsecurise=${aArticle.paramICal}&version=${lVersion}&param=${new forge.util.ByteBuffer(lParams).toHex()}`;
-			aArticle.lienNavigateur = GNavigateur.getHost() + aArticle.href;
+			aArticle.lienNavigateur =
+				ObjetNavigateur_1.Navigateur.getHost() + aArticle.href;
 		}
 	}
 	async requeteSaisie(aParam) {

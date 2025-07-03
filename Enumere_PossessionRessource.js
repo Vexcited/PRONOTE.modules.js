@@ -5,13 +5,11 @@ var EGenrePossessionRessource;
 		"mesQCM";
 	EGenrePossessionRessource[(EGenrePossessionRessource["etabQCM"] = 1)] =
 		"etabQCM";
-	EGenrePossessionRessource[(EGenrePossessionRessource["nathanQCM"] = 2)] =
-		"nathanQCM";
-	EGenrePossessionRessource[(EGenrePossessionRessource["mesProg"] = 3)] =
+	EGenrePossessionRessource[(EGenrePossessionRessource["mesProg"] = 2)] =
 		"mesProg";
-	EGenrePossessionRessource[(EGenrePossessionRessource["etabProg"] = 4)] =
+	EGenrePossessionRessource[(EGenrePossessionRessource["etabProg"] = 3)] =
 		"etabProg";
-	EGenrePossessionRessource[(EGenrePossessionRessource["BOProg"] = 5)] =
+	EGenrePossessionRessource[(EGenrePossessionRessource["BOProg"] = 4)] =
 		"BOProg";
 })(
 	EGenrePossessionRessource ||

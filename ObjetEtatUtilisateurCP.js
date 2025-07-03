@@ -1,7 +1,9 @@
 exports.ObjetEtatUtilisateurCP = void 0;
 const Invocateur_1 = require("Invocateur");
 const TypeEnsembleNombre_1 = require("TypeEnsembleNombre");
-const ThemesCouleurs_1 = require("ThemesCouleurs");
+const TypeClientRest_1 = require("TypeClientRest");
+const AccessApp_1 = require("AccessApp");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
 global.GEtatUtilisateur = null;
 class ObjetEtatUtilisateurCP {
 	constructor() {
@@ -45,12 +47,6 @@ class ObjetEtatUtilisateurCP {
 	}
 	avecFicheEtablissement() {
 		return false;
-	}
-	estModeAccessible() {
-		return false;
-	}
-	estAvecThemeAccessible() {
-		return ThemesCouleurs_1.ThemesCouleurs.getModeAccessible();
 	}
 	getUtilisateur() {
 		return null;
@@ -147,9 +143,21 @@ class ObjetEtatUtilisateurCP {
 	avecCloudDisponibles() {
 		return this.listeCloud && this.listeCloud.count() > 0;
 	}
+	avecCloudENEJDisponible() {
+		return this.avecCloudDisponibles() && !!this.getCloudENEJ();
+	}
+	getCloudENEJ() {
+		return GEtatUtilisateur.listeCloud.getElementParFiltre((aCloud) =>
+			[TypeClientRest_1.TypeClientRest.crENEJ].includes(aCloud.typeClientRest),
+		);
+	}
 	avecGestionAppareilPhoto() {
 		return (
-			IE.estMobile && !(GNavigateur.isAndroid && GApplication.estAppliMobile)
+			IE.estMobile &&
+			!(
+				ObjetNavigateur_1.Navigateur.isAndroid &&
+				(0, AccessApp_1.getApp)().estAppliMobile
+			)
 		);
 	}
 	getPageCourante() {
@@ -159,6 +167,17 @@ class ObjetEtatUtilisateurCP {
 		this.pageCourante = aInstancePage;
 	}
 	estAvecCodeCompetences() {
+		return false;
+	}
+	getCategorie() {
+		return null;
+	}
+	setCategorie(aCategorie) {}
+	getInfoSond() {
+		return null;
+	}
+	setInfoSond(aInfosSond) {}
+	estEspaceExecutionQCM() {
 		return false;
 	}
 }

@@ -1,79 +1,83 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const {
-	ObjetFenetre_DevoirSurTable,
-} = require("ObjetFenetre_DevoirSurTable.js");
-const {
-	DonneesListe_DevoirsSurTable,
-} = require("DonneesListe_DevoirsSurTable.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GChaine } = require("ObjetChaine.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { ObjetCalendrier } = require("ObjetCalendrier.js");
-const { ObjetCelluleDate } = require("ObjetCelluleDate.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { TypeDomaine } = require("TypeDomaine.js");
-const { InterfacePage } = require("InterfacePage.js");
-const { ObjetDeserialiser } = require("ObjetDeserialiser.js");
-const {
-	ObjetFenetre_SelectionClasseGroupe,
-} = require("ObjetFenetre_SelectionClasseGroupe.js");
-const {
-	ObjetRequeteSaisieCahierDeTextes,
-} = require("ObjetRequeteSaisieCahierDeTextes.js");
-const { UtilitaireInitCalendrier } = require("UtilitaireInitCalendrier.js");
-const { TUtilitaireListePeriodes } = require("UtilitaireListePeriodes.js");
-Requetes.inscrire("ListeDevoirSurTable", ObjetRequeteConsultation);
-class InterfaceListeDevoirSurTable extends InterfacePage {
+exports.InterfaceListeDevoirSurTable = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const ObjetFenetre_DevoirSurTable_1 = require("ObjetFenetre_DevoirSurTable");
+const DonneesListe_DevoirsSurTable_1 = require("DonneesListe_DevoirsSurTable");
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetChaine_1 = require("ObjetChaine");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const ObjetCalendrier_1 = require("ObjetCalendrier");
+const ObjetCelluleDate_1 = require("ObjetCelluleDate");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TypeDomaine_1 = require("TypeDomaine");
+const InterfacePage_1 = require("InterfacePage");
+const ObjetDeserialiser_1 = require("ObjetDeserialiser");
+const ObjetFenetre_SelectionClasseGroupe_1 = require("ObjetFenetre_SelectionClasseGroupe");
+const ObjetRequeteSaisieCahierDeTextes_1 = require("ObjetRequeteSaisieCahierDeTextes");
+const UtilitaireInitCalendrier_1 = require("UtilitaireInitCalendrier");
+const UtilitaireListePeriodes_1 = require("UtilitaireListePeriodes");
+const AccessApp_1 = require("AccessApp");
+class ObjetRequeteListeDevoirSurTable extends ObjetRequeteJSON_1.ObjetRequeteConsultation {}
+CollectionRequetes_1.Requetes.inscrire(
+	"ListeDevoirSurTable",
+	ObjetRequeteListeDevoirSurTable,
+);
+class InterfaceListeDevoirSurTable extends InterfacePage_1.InterfacePage {
 	constructor(...aParams) {
 		super(...aParams);
-		const lListe = GEtatUtilisateur.getListeClasses({
+		this.applicationScoEspace = (0, AccessApp_1.getApp)();
+		this.etatUtil = this.applicationScoEspace.getEtatUtilisateur();
+		this.objetParamsSco = this.applicationScoEspace.getObjetParametres();
+		const lListe = this.etatUtil.getListeClasses({
 				avecClasse: true,
 				uniquementClasseEnseignee: true,
 			}),
-			lDomaine = GEtatUtilisateur.getDomaineSelectionne();
-		if (!GEtatUtilisateur.getOnglet().params) {
-			GEtatUtilisateur.getOnglet().params = {
+			lDomaine = this.etatUtil.getDomaineSelectionne();
+		if (!this.etatUtil.getOnglet().params) {
+			this.etatUtil.getOnglet().params = {
 				mesDonnees: true,
-				listeClassesSelectionne: MethodesObjet.dupliquer(lListe),
+				listeClassesSelectionne:
+					MethodesObjet_1.MethodesObjet.dupliquer(lListe),
 			};
 		}
 		this.parametres = {
 			init: false,
 			listeClasses: lListe,
-			dateDebut: GDate.getDateBornee(
+			dateDebut: ObjetDate_1.GDate.getDateBornee(
 				IE.Cycles.dateDebutCycle(lDomaine.getPremierePosition()),
 			),
-			dateFin: GDate.getDateBornee(
+			dateFin: ObjetDate_1.GDate.getDateBornee(
 				IE.Cycles.dateFinCycle(lDomaine.getDernierePosition()),
 			),
 		};
 	}
 	construireInstances() {
 		this.identCalendrier = this.add(
-			ObjetCalendrier,
-			_evenementSurCalendrier,
-			_initialiserCalendrier,
+			ObjetCalendrier_1.ObjetCalendrier,
+			this._evenementSurCalendrier,
+			this._initialiserCalendrier,
 		);
-		this.identListe = this.add(ObjetListe, _evenementListe, _initListe);
+		this.identListe = this.add(
+			ObjetListe_1.ObjetListe,
+			this._evenementListe,
+			this._initListe,
+		);
 		this.identDateDebut = this.add(
-			ObjetCelluleDate,
-			_eventSurDate.bind(this, true),
-			_initSurDate.bind(this),
+			ObjetCelluleDate_1.ObjetCelluleDate,
+			this._eventSurDate.bind(this, true),
+			this._initSurDate.bind(this),
 		);
 		this.identDateFin = this.add(
-			ObjetCelluleDate,
-			_eventSurDate.bind(this, false),
-			_initSurDate.bind(this),
+			ObjetCelluleDate_1.ObjetCelluleDate,
+			this._eventSurDate.bind(this, false),
+			this._initSurDate.bind(this),
 		);
 	}
 	setParametresGeneraux() {
@@ -81,31 +85,55 @@ class InterfaceListeDevoirSurTable extends InterfacePage {
 		this.avecBandeau = true;
 		this.AddSurZone.push(
 			{
-				html: '<div class="GrandEspaceGauche"><ie-bouton ie-model="btnClasse">...</ie-bouton></div>',
+				html: IE.jsx.str(
+					"div",
+					{ class: "GrandEspaceGauche" },
+					IE.jsx.str(
+						"ie-bouton",
+						{
+							"ie-model": "btnClasse",
+							"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+								"fenetreSelectionClasseGroupe.titre",
+							),
+						},
+						"...",
+					),
+				),
 			},
 			{
-				html: '<div class="PetitEspaceGauche NoWrap" ie-html="libelleClasse"></div>',
+				html: IE.jsx.str("div", {
+					class: "PetitEspaceGauche NoWrap",
+					"ie-html": "libelleClasse",
+				}),
 			},
 			{
-				html:
-					'<div class="GrandEspaceGauche"><ie-checkbox ie-model="cbMesDonnees" class="NoWrap">' +
-					GChaine.insecable(
-						GTraductions.getValeur("ListeDevoirSurTable.UniquementMesDonnees"),
-					) +
-					"</ie-checkbox></div>",
+				html: IE.jsx.str(
+					"div",
+					{ class: "GrandEspaceGauche" },
+					IE.jsx.str(
+						"ie-checkbox",
+						{ "ie-model": "cbMesDonnees", class: "NoWrap" },
+						ObjetChaine_1.GChaine.insecable(
+							ObjetTraduction_1.GTraductions.getValeur(
+								"ListeDevoirSurTable.UniquementMesDonnees",
+							),
+						),
+					),
+				),
 			},
 			{ separateur: true },
 			{
-				html:
-					'<div class="EspaceGauche NoWrap">' +
-					GTraductions.getValeur("Periode") +
-					" : " +
-					"</div>",
+				html: IE.jsx.str(
+					"div",
+					{ class: "EspaceGauche NoWrap" },
+					ObjetTraduction_1.GTraductions.getValeur("Periode") + " : ",
+					" ",
+				),
 			},
-			{ html: '<ie-combo ie-model="comboPeriodes"></ie-combo>' },
-			{ html: GTraductions.getValeur("Du") },
+			{ html: IE.jsx.str("ie-combo", { "ie-model": "comboPeriodes" }) },
+			{ html: ObjetTraduction_1.GTraductions.getValeur("Du") },
 			{ ident: this.identDateDebut },
-			{ html: GTraductions.getValeur("Au") },
+			{ html: ObjetTraduction_1.GTraductions.getValeur("Au") },
 			{ ident: this.identDateFin },
 		);
 	}
@@ -113,45 +141,49 @@ class InterfaceListeDevoirSurTable extends InterfacePage {
 		return $.extend(true, super.getControleur(aInstance), {
 			btnClasse: {
 				event: function () {
-					const lInstance = ObjetFenetre.creerInstanceFenetre(
-						ObjetFenetre_SelectionClasseGroupe,
-						{ pere: aInstance, evenement: _surEvenementFenetreClasses },
+					const lInstance = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+						ObjetFenetre_SelectionClasseGroupe_1.ObjetFenetre_SelectionClasseGroupe,
+						{
+							pere: aInstance,
+							evenement: aInstance._surEvenementFenetreClasses,
+						},
 					);
 					lInstance.setAvecCumul(true);
 					lInstance.setDonnees({
 						listeRessources: aInstance.parametres.listeClasses,
 						listeRessourcesSelectionnees:
-							GEtatUtilisateur.getOnglet().params.listeClassesSelectionne,
+							aInstance.etatUtil.getOnglet().params.listeClassesSelectionne,
 					});
 				},
 			},
 			libelleClasse: function () {
 				const lNb = aInstance.parametres.listeClasses.count(),
-					lNbSelec =
-						GEtatUtilisateur.getOnglet().params.listeClassesSelectionne.count();
+					lNbSelec = aInstance.etatUtil
+						.getOnglet()
+						.params.listeClassesSelectionne.count();
 				return (
-					GTraductions.getValeur("Classes") +
+					ObjetTraduction_1.GTraductions.getValeur("Classes") +
 					" (" +
 					(lNb === lNbSelec
-						? GTraductions.getValeur("toutes")
+						? ObjetTraduction_1.GTraductions.getValeur("toutes")
 						: lNbSelec + "/" + lNb) +
 					")"
 				);
 			},
 			cbMesDonnees: {
 				getValue: function () {
-					return GEtatUtilisateur.getOnglet().params.mesDonnees;
+					return aInstance.etatUtil.getOnglet().params.mesDonnees;
 				},
 				setValue: function (aValue) {
-					GEtatUtilisateur.getOnglet().params.mesDonnees = aValue;
-					_actualiser.call(aInstance);
+					aInstance.etatUtil.getOnglet().params.mesDonnees = aValue;
+					aInstance._actualiser();
 				},
 			},
 			comboPeriodes: {
 				init: function (aInstance) {
 					aInstance.setOptionsObjetSaisie({
 						longueur: 150,
-						labelWAICellule: GTraductions.getValeur(
+						labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
 							"WAI.ListeSelectionPeriode",
 						),
 					});
@@ -162,22 +194,31 @@ class InterfaceListeDevoirSurTable extends InterfacePage {
 					}
 					if (!aInstance.parametres.listePeriodes) {
 						aInstance.parametres.listePeriodes =
-							TUtilitaireListePeriodes.construireListePeriodes([
-								TUtilitaireListePeriodes.choix.aujourdhui,
-								TUtilitaireListePeriodes.choix.semainePrecedente,
-								TUtilitaireListePeriodes.choix.semaineCourante,
-								TUtilitaireListePeriodes.choix.semaineSuivante,
-								TUtilitaireListePeriodes.choix.moisCourant,
-								TUtilitaireListePeriodes.choix.annee,
-								TUtilitaireListePeriodes.choix.periodes,
-								TUtilitaireListePeriodes.choix.mois,
-							]);
+							UtilitaireListePeriodes_1.TUtilitaireListePeriodes.construireListePeriodes(
+								[
+									UtilitaireListePeriodes_1.TUtilitaireListePeriodes.choix
+										.aujourdhui,
+									UtilitaireListePeriodes_1.TUtilitaireListePeriodes.choix
+										.semainePrecedente,
+									UtilitaireListePeriodes_1.TUtilitaireListePeriodes.choix
+										.semaineCourante,
+									UtilitaireListePeriodes_1.TUtilitaireListePeriodes.choix
+										.semaineSuivante,
+									UtilitaireListePeriodes_1.TUtilitaireListePeriodes.choix
+										.moisCourant,
+									UtilitaireListePeriodes_1.TUtilitaireListePeriodes.choix
+										.annee,
+									UtilitaireListePeriodes_1.TUtilitaireListePeriodes.choix
+										.periodes,
+									UtilitaireListePeriodes_1.TUtilitaireListePeriodes.choix.mois,
+								],
+							);
 					}
 					return aInstance.parametres.listePeriodes;
 				},
 				getIndiceSelection: function (aInstanceCombo) {
 					aInstance.parametres.indiceComboPeriode =
-						_getIndiceListePeriodeSelonDates.call(aInstance);
+						aInstance._getIndiceListePeriodeSelonDates();
 					if (aInstance.parametres.indiceComboPeriode < 0) {
 						aInstanceCombo.setContenu("");
 					}
@@ -186,14 +227,15 @@ class InterfaceListeDevoirSurTable extends InterfacePage {
 				event: function (aParametres) {
 					if (
 						aParametres.genreEvenement ===
-							EGenreEvenementObjetSaisie.selection &&
+							Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+								.selection &&
 						aParametres.element
 					) {
 						aInstance.parametres.dateDebut = aParametres.element.dates.debut;
 						aInstance.parametres.dateFin = aParametres.element.dates.fin;
 						aInstance.parametres.indiceComboPeriode = aParametres.indice;
 						if (aParametres.interactionUtilisateur) {
-							_actualiser.call(aInstance);
+							aInstance._actualiser();
 						}
 					}
 				},
@@ -203,246 +245,262 @@ class InterfaceListeDevoirSurTable extends InterfacePage {
 	recupererDonnees() {
 		this.parametres.init = true;
 		const lCalendrier = this.getInstance(this.identCalendrier);
-		lCalendrier.setFrequences(GParametres.frequences, true);
-		lCalendrier.setDomaine(GEtatUtilisateur.getDomaineSelectionne());
-		_actualiser.call(this);
+		lCalendrier.setFrequences(this.objetParamsSco.frequences, true);
+		lCalendrier.setDomaine(this.etatUtil.getDomaineSelectionne());
+		this._actualiser();
 	}
-}
-function _initialiserCalendrier(aInstance) {
-	UtilitaireInitCalendrier.init(aInstance, {
-		avecMultiSemainesContinues: true,
-	});
-}
-function _evenementSurCalendrier(aNumeroSemaine, aDomaine) {
-	GEtatUtilisateur.setDomaineSelectionne(aDomaine);
-	if (this.getInstance(this.identCalendrier).InteractionUtilisateur) {
-		this.parametres.dateDebut = GDate.getDateBornee(
-			IE.Cycles.dateDebutCycle(aDomaine.getPremierePosition()),
-		);
-		this.parametres.dateFin = GDate.getDateBornee(
-			IE.Cycles.dateFinCycle(aDomaine.getDernierePosition()),
-		);
-		_actualiser.call(this, true);
+	_initialiserCalendrier(aInstance) {
+		UtilitaireInitCalendrier_1.UtilitaireInitCalendrier.init(aInstance, {
+			avecMultiSemainesContinues: true,
+		});
 	}
-}
-function _initListe(aInstance) {
-	const lColonnes = [];
-	lColonnes.push({
-		id: DonneesListe_DevoirsSurTable.colonnes.date,
-		titre: GTraductions.getValeur("Date"),
-		taille: 170,
-	});
-	lColonnes.push({
-		id: DonneesListe_DevoirsSurTable.colonnes.prof,
-		titre: GTraductions.getValeur("Professeur"),
-		taille: ObjetListe.initColonne(100, 50),
-	});
-	lColonnes.push({
-		id: DonneesListe_DevoirsSurTable.colonnes.public,
-		titre:
-			GTraductions.getValeur("Classe") + "/" + GTraductions.getValeur("Groupe"),
-		taille: ObjetListe.initColonne(100, 50),
-	});
-	lColonnes.push({
-		id: DonneesListe_DevoirsSurTable.colonnes.matiere,
-		titre: GTraductions.getValeur("Matiere"),
-		taille: ObjetListe.initColonne(100, 50),
-	});
-	lColonnes.push({
-		id: DonneesListe_DevoirsSurTable.colonnes.salle,
-		titre: GTraductions.getValeur("Salle"),
-		taille: ObjetListe.initColonne(70, 50),
-	});
-	lColonnes.push({
-		id: DonneesListe_DevoirsSurTable.colonnes.info,
-		titre: GTraductions.getValeur("ListeDevoirSurTable.InfosLien"),
-		taille: ObjetListe.initColonne(100, 50),
-	});
-	aInstance.setOptionsListe({ colonnes: lColonnes });
-	GEtatUtilisateur.setTriListe({
-		liste: aInstance,
-		tri: [
-			DonneesListe_DevoirsSurTable.colonnes.date,
-			DonneesListe_DevoirsSurTable.colonnes.prof,
-		],
-	});
-}
-function _saisieCDT(aListeCDTs, aContenu) {
-	this.setEtatSaisie(false);
-	new ObjetRequeteSaisieCahierDeTextes(
-		this,
-		_actualiser.bind(this),
-	).lancerRequete(
-		aContenu.cours.Numero,
-		aContenu.numeroCycle,
-		undefined,
-		undefined,
-		undefined,
-		aListeCDTs,
-	);
-}
-function _evenementListe(aParametres) {
-	switch (aParametres.genreEvenement) {
-		case EGenreEvenementListe.Suppression:
-			if (!!aParametres.article && !!aParametres.article.listeContenus) {
-				const lCahiers = _creerStructureCDTsPourSaisieContenu(
-						aParametres.article,
-					),
-					lCahier = lCahiers.get(0);
-				aParametres.article.listeContenus.parcourir((aContenu) => {
-					aContenu.setEtat(EGenreEtat.Suppression);
-					lCahier.listeContenus.addElement(aContenu);
-				});
-				_saisieCDT.call(this, lCahiers, aParametres.article);
-			}
-			break;
-	}
-}
-function _initSurDate(aInstance) {
-	aInstance.setParametresFenetre(
-		GParametres.PremierLundi,
-		GParametres.PremiereDate,
-		GParametres.DerniereDate,
-	);
-}
-function _eventSurDate(aEstDateDebut, aDate) {
-	if (aEstDateDebut) {
-		this.parametres.dateDebut = aDate;
-		if (this.parametres.dateDebut > this.parametres.dateFin) {
-			this.parametres.dateFin = aDate;
-			this.getInstance(this.identDateFin).setDonnees(this.parametres.dateFin);
-		}
-	} else {
-		this.parametres.dateFin = aDate;
-		if (this.parametres.dateFin < this.parametres.dateDebut) {
-			this.parametres.dateDebut = aDate;
-			this.getInstance(this.identDateDebut).setDonnees(
-				this.parametres.dateDebut,
+	_evenementSurCalendrier(aNumeroSemaine, aDomaine) {
+		this.etatUtil.setDomaineSelectionne(aDomaine);
+		if (this.getInstance(this.identCalendrier).InteractionUtilisateur) {
+			this.parametres.dateDebut = ObjetDate_1.GDate.getDateBornee(
+				IE.Cycles.dateDebutCycle(aDomaine.getPremierePosition()),
 			);
+			this.parametres.dateFin = ObjetDate_1.GDate.getDateBornee(
+				IE.Cycles.dateFinCycle(aDomaine.getDernierePosition()),
+			);
+			this._actualiser();
 		}
 	}
-	_actualiser.call(this);
-}
-function _surEvenementFenetreClasses(
-	aGenreRessource,
-	aListeRessources,
-	aNumeroBouton,
-) {
-	if (aNumeroBouton === 1) {
-		_actualiser.call(this);
+	_initListe(aInstance) {
+		const lColonnes = [];
+		lColonnes.push({
+			id: DonneesListe_DevoirsSurTable_1.DonneesListe_DevoirsSurTable.colonnes
+				.date,
+			titre: ObjetTraduction_1.GTraductions.getValeur("Date"),
+			taille: 170,
+		});
+		lColonnes.push({
+			id: DonneesListe_DevoirsSurTable_1.DonneesListe_DevoirsSurTable.colonnes
+				.prof,
+			titre: ObjetTraduction_1.GTraductions.getValeur("Professeur"),
+			taille: ObjetListe_1.ObjetListe.initColonne(100, 50),
+		});
+		lColonnes.push({
+			id: DonneesListe_DevoirsSurTable_1.DonneesListe_DevoirsSurTable.colonnes
+				.public,
+			titre:
+				ObjetTraduction_1.GTraductions.getValeur("Classe") +
+				"/" +
+				ObjetTraduction_1.GTraductions.getValeur("Groupe"),
+			taille: ObjetListe_1.ObjetListe.initColonne(100, 50),
+		});
+		lColonnes.push({
+			id: DonneesListe_DevoirsSurTable_1.DonneesListe_DevoirsSurTable.colonnes
+				.matiere,
+			titre: ObjetTraduction_1.GTraductions.getValeur("Matiere"),
+			taille: ObjetListe_1.ObjetListe.initColonne(100, 50),
+		});
+		lColonnes.push({
+			id: DonneesListe_DevoirsSurTable_1.DonneesListe_DevoirsSurTable.colonnes
+				.salle,
+			titre: ObjetTraduction_1.GTraductions.getValeur("Salle"),
+			taille: ObjetListe_1.ObjetListe.initColonne(70, 50),
+		});
+		lColonnes.push({
+			id: DonneesListe_DevoirsSurTable_1.DonneesListe_DevoirsSurTable.colonnes
+				.info,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"ListeDevoirSurTable.InfosLien",
+			),
+			taille: ObjetListe_1.ObjetListe.initColonne(100, 50),
+		});
+		aInstance.setOptionsListe({ colonnes: lColonnes });
+		this.etatUtil.setTriListe({
+			liste: aInstance,
+			tri: [
+				DonneesListe_DevoirsSurTable_1.DonneesListe_DevoirsSurTable.colonnes
+					.date,
+				DonneesListe_DevoirsSurTable_1.DonneesListe_DevoirsSurTable.colonnes
+					.prof,
+			],
+		});
 	}
-}
-function _getIndiceListePeriodeSelonDates() {
-	let lIndice = -1;
-	const lDateDebut = this.parametres.dateDebut;
-	const lDateFin = this.parametres.dateFin;
-	this.parametres.listePeriodes.parcourir((D, aIndice) => {
-		if (
-			GDate.estJourEgal(lDateDebut, D.dates.debut) &&
-			GDate.estJourEgal(lDateFin, D.dates.fin)
-		) {
-			lIndice = aIndice;
-			return false;
+	_saisieCDT(aListeCDTs, aContenu) {
+		this.setEtatSaisie(false);
+		new ObjetRequeteSaisieCahierDeTextes_1.ObjetRequeteSaisieCahierDeTextes(
+			this,
+			this._actualiser.bind(this),
+		).lancerRequete(
+			aContenu.cours.Numero,
+			aContenu.numeroCycle,
+			undefined,
+			undefined,
+			undefined,
+			aListeCDTs,
+		);
+	}
+	_evenementListe(aParametres) {
+		switch (aParametres.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Suppression:
+				if (!!aParametres.article && !!aParametres.article.listeContenus) {
+					const lCahiers = this._creerStructureCDTsPourSaisieContenu(
+							aParametres.article,
+						),
+						lCahier = lCahiers.get(0);
+					aParametres.article.listeContenus.parcourir((aContenu) => {
+						aContenu.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+						lCahier.listeContenus.addElement(aContenu);
+					});
+					this._saisieCDT(lCahiers, aParametres.article);
+				}
+				break;
 		}
-	});
-	return lIndice;
-}
-function _creerStructureCDTsPourSaisieContenu(aElement) {
-	const lCahiers = new ObjetListeElements();
-	const lCahier = new ObjetElement("", aElement.getNumero());
-	lCahiers.addElement(lCahier);
-	lCahier.setEtat(EGenreEtat.Modification);
-	lCahier.listeContenus = new ObjetListeElements();
-	lCahier.listeContenus.verifierAvantValidation =
-		ObjetDeserialiser._verifierAvantValidation;
-	return lCahiers;
-}
-function _evenementSurFenetreDevoirSurTable(
-	aElement,
-	aValider,
-	aParametres,
-	aAvecLien,
-) {
-	if (!aValider) {
-		return;
 	}
-	const lCahiers = _creerStructureCDTsPourSaisieContenu(aElement);
-	const lCahier = lCahiers.get(0);
-	const lContenu = new ObjetElement("", aElement.listeContenus.getNumero(0));
-	lCahier.listeContenus.addElement(lContenu);
-	lContenu.setEtat(EGenreEtat.Modification);
-	lContenu.Libelle = aParametres.contenu.getLibelle();
-	lContenu.descriptif = aParametres.contenu.descriptif;
-	lContenu.genreLienDS = aParametres.genreLienDS;
-	if (aParametres.surModification_suppression) {
-		lContenu.suppressionLien = true;
-	} else if (aAvecLien) {
-		lContenu.infosDS = $.extend({}, aParametres);
+	_initSurDate(aInstance) {
+		aInstance.setParametresFenetre(
+			this.objetParamsSco.PremierLundi,
+			this.objetParamsSco.PremiereDate,
+			this.objetParamsSco.DerniereDate,
+		);
 	}
-	_saisieCDT.call(this, lCahiers, aElement);
-}
-function _callbackSaisieSalle(
-	aInstanceFenetre,
-	aElement,
-	aCours,
-	aParamFenetre,
-) {
-	aInstanceFenetre.fermer();
-	_ouvertureFenetreDevoirSurTable.call(this, aElement, aParamFenetre);
-}
-function _ouvertureFenetreDevoirSurTable(aElement, aParamFenetre) {
-	const lInstance = ObjetFenetre.creerInstanceFenetre(
-		ObjetFenetre_DevoirSurTable,
-		{
-			pere: this,
-			evenement: _evenementSurFenetreDevoirSurTable.bind(this, aElement),
-		},
-	);
-	lInstance.setDonnees({
-		cours: aElement.cours,
-		date: aElement.date,
-		numeroCycle: aElement.numeroCycle,
-		contenu: aElement.listeContenus.get(0),
-		contenuPourDescription: aParamFenetre
-			? null
-			: aElement.listeContenus.get(0),
-		genreLienDS: aElement.getGenre(),
-		callbackSaisieSalle: _callbackSaisieSalle.bind(this, lInstance, aElement),
-		paramsFenetreOrigine: aParamFenetre,
-	});
-}
-function _callbackModifierLigne(aElement) {
-	_ouvertureFenetreDevoirSurTable.call(this, aElement, null);
-}
-function _apresRequete(aJSON) {
-	this.getInstance(this.identListe).setDonnees(
-		new DonneesListe_DevoirsSurTable(aJSON.liste, {
-			callbackModifier: _callbackModifierLigne.bind(this),
-		}),
-	);
-}
-function _actualiser() {
-	if (!this.parametres.init) {
-		return;
+	_eventSurDate(aEstDateDebut, aDate) {
+		if (aEstDateDebut) {
+			this.parametres.dateDebut = aDate;
+			if (this.parametres.dateDebut > this.parametres.dateFin) {
+				this.parametres.dateFin = aDate;
+				this.getInstance(this.identDateFin).setDonnees(this.parametres.dateFin);
+			}
+		} else {
+			this.parametres.dateFin = aDate;
+			if (this.parametres.dateFin < this.parametres.dateDebut) {
+				this.parametres.dateDebut = aDate;
+				this.getInstance(this.identDateDebut).setDonnees(
+					this.parametres.dateDebut,
+				);
+			}
+		}
+		this._actualiser();
 	}
-	this.getInstance(this.identDateDebut).setDonnees(this.parametres.dateDebut);
-	this.getInstance(this.identDateFin).setDonnees(this.parametres.dateFin);
-	const lDomaine = new TypeDomaine();
-	lDomaine.setValeur(
-		true,
-		IE.Cycles.cycleDeLaDate(this.parametres.dateDebut),
-		IE.Cycles.cycleDeLaDate(this.parametres.dateFin),
-	);
-	GEtatUtilisateur.setDomaineSelectionne(lDomaine);
-	this.getInstance(this.identCalendrier).setDomaine(lDomaine);
-	GEtatUtilisateur.getOnglet().params.listeClassesSelectionne.setSerialisateurJSON(
-		{ ignorerEtatsElements: true },
-	);
-	Requetes("ListeDevoirSurTable", this, _apresRequete).lancerRequete({
-		dateDebut: this.parametres.dateDebut,
-		dateFin: this.parametres.dateFin,
-		listeClasses: GEtatUtilisateur.getOnglet().params.listeClassesSelectionne,
-		mesDonnees: GEtatUtilisateur.getOnglet().params.mesDonnees,
-	});
+	_surEvenementFenetreClasses(
+		aGenreRessource,
+		aListeRessources,
+		aNumeroBouton,
+	) {
+		if (aNumeroBouton === 1) {
+			this._actualiser();
+		}
+	}
+	_getIndiceListePeriodeSelonDates() {
+		let lIndice = -1;
+		const lDateDebut = this.parametres.dateDebut;
+		const lDateFin = this.parametres.dateFin;
+		this.parametres.listePeriodes.parcourir((D, aIndice) => {
+			if (
+				ObjetDate_1.GDate.estJourEgal(lDateDebut, D.dates.debut) &&
+				ObjetDate_1.GDate.estJourEgal(lDateFin, D.dates.fin)
+			) {
+				lIndice = aIndice;
+				return false;
+			}
+		});
+		return lIndice;
+	}
+	_creerStructureCDTsPourSaisieContenu(aElement) {
+		const lCahiers = new ObjetListeElements_1.ObjetListeElements();
+		const lCahier = new ObjetElement_1.ObjetElement("", aElement.getNumero());
+		lCahiers.addElement(lCahier);
+		lCahier.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+		lCahier.listeContenus = new ObjetListeElements_1.ObjetListeElements();
+		lCahier.listeContenus.verifierAvantValidation =
+			ObjetDeserialiser_1.ObjetDeserialiser._verifierAvantValidation;
+		return lCahiers;
+	}
+	_evenementSurFenetreDevoirSurTable(
+		aElement,
+		aValider,
+		aParametres,
+		aAvecLien,
+	) {
+		if (!aValider) {
+			return;
+		}
+		const lCahiers = this._creerStructureCDTsPourSaisieContenu(aElement);
+		const lCahier = lCahiers.get(0);
+		const lContenu = new ObjetElement_1.ObjetElement(
+			"",
+			aElement.listeContenus.getNumero(0),
+		);
+		lCahier.listeContenus.addElement(lContenu);
+		lContenu.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+		lContenu.Libelle = aParametres.contenu.getLibelle();
+		lContenu.descriptif = aParametres.contenu.descriptif;
+		lContenu.genreLienDS = aParametres.genreLienDS;
+		if (aParametres.surModification_suppression) {
+			lContenu.suppressionLien = true;
+		} else if (aAvecLien) {
+			lContenu.infosDS = $.extend({}, aParametres);
+		}
+		this._saisieCDT(lCahiers, aElement);
+	}
+	_callbackSaisieSalle(aInstanceFenetre, aElement, aCours, aParamFenetre) {
+		aInstanceFenetre.fermer();
+		this._ouvertureFenetreDevoirSurTable(aElement, aParamFenetre);
+	}
+	_ouvertureFenetreDevoirSurTable(aElement, aParamFenetre) {
+		const lInstance = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_DevoirSurTable_1.ObjetFenetre_DevoirSurTable,
+			{
+				pere: this,
+				evenement: this._evenementSurFenetreDevoirSurTable.bind(this, aElement),
+			},
+		);
+		lInstance.setDonnees({
+			cours: aElement.cours,
+			numeroCycle: aElement.numeroCycle,
+			contenu: aElement.listeContenus.get(0),
+			contenuPourDescription: aParamFenetre
+				? null
+				: aElement.listeContenus.get(0),
+			genreLienDS: aElement.getGenre(),
+			callbackSaisieSalle: this._callbackSaisieSalle.bind(
+				this,
+				lInstance,
+				aElement,
+			),
+			paramsFenetreOrigine: aParamFenetre,
+		});
+	}
+	_callbackModifierLigne(aElement) {
+		this._ouvertureFenetreDevoirSurTable(aElement, null);
+	}
+	async _actualiser() {
+		if (!this.parametres.init) {
+			return;
+		}
+		this.getInstance(this.identDateDebut).setDonnees(this.parametres.dateDebut);
+		this.getInstance(this.identDateFin).setDonnees(this.parametres.dateFin);
+		const lDomaine = new TypeDomaine_1.TypeDomaine();
+		lDomaine.setValeur(
+			true,
+			IE.Cycles.cycleDeLaDate(this.parametres.dateDebut),
+			IE.Cycles.cycleDeLaDate(this.parametres.dateFin),
+		);
+		this.etatUtil.setDomaineSelectionne(lDomaine);
+		this.getInstance(this.identCalendrier).setDomaine(lDomaine);
+		this.etatUtil
+			.getOnglet()
+			.params.listeClassesSelectionne.setSerialisateurJSON({
+				ignorerEtatsElements: true,
+			});
+		const lReponse = await new ObjetRequeteListeDevoirSurTable(
+			this,
+		).lancerRequete({
+			dateDebut: this.parametres.dateDebut,
+			dateFin: this.parametres.dateFin,
+			listeClasses: this.etatUtil.getOnglet().params.listeClassesSelectionne,
+			mesDonnees: this.etatUtil.getOnglet().params.mesDonnees,
+		});
+		this.getInstance(this.identListe).setDonnees(
+			new DonneesListe_DevoirsSurTable_1.DonneesListe_DevoirsSurTable(
+				lReponse.liste,
+				{ callbackModifier: this._callbackModifierLigne.bind(this) },
+			),
+		);
+	}
 }
-module.exports = { InterfaceListeDevoirSurTable };
+exports.InterfaceListeDevoirSurTable = InterfaceListeDevoirSurTable;

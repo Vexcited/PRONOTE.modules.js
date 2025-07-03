@@ -1,8 +1,10 @@
 exports.ObjetRequeteAuthentificationPN = void 0;
-const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
 const CollectionRequetes_1 = require("CollectionRequetes");
 const ObjetTraduction_1 = require("ObjetTraduction");
-class ObjetRequeteAuthentificationPN extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
+const ObjetMoteurConnexion_1 = require("ObjetMoteurConnexion");
+const TypesRequeteJSON_1 = require("TypesRequeteJSON");
+class ObjetRequeteAuthentificationPN extends ObjetMoteurConnexion_1
+	.ObjetMoteurConnexion.ObjetRequeteAuthentificationCP {
 	constructor(...aParams) {
 		super(...aParams);
 		this.setOptions({
@@ -19,6 +21,6 @@ class ObjetRequeteAuthentificationPN extends ObjetRequeteJSON_1.ObjetRequeteCons
 }
 exports.ObjetRequeteAuthentificationPN = ObjetRequeteAuthentificationPN;
 CollectionRequetes_1.Requetes.inscrire(
-	"Authentification",
+	TypesRequeteJSON_1.ConstantesIdRequetesAjaxCP.authentification,
 	ObjetRequeteAuthentificationPN,
 );

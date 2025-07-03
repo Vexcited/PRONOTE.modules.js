@@ -1,5 +1,5 @@
 require("NamespaceIE");
-require("DeclarationJQuery.js");
+require("DeclarationJQuery");
 const Invocateur_1 = require("Invocateur");
 let _actif = false;
 let _actifRequete = false;

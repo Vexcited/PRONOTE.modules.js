@@ -106,11 +106,14 @@ class InterfaceCompetences_GrillesParMatiere extends InterfaceCompetences_Grille
 		}
 		const lReferentielSelectionne = this._getReferentielSelectionne();
 		const lListeElementsPilier = new ObjetListeElements_1.ObjetListeElements();
-		const lElementAucun = new ObjetElement_1.ObjetElement(
-			ObjetTraduction_1.GTraductions.getValeur("Aucun"),
+		lListeElementsPilier.addElement(
+			ObjetElement_1.ObjetElement.create({
+				Libelle: ObjetTraduction_1.GTraductions.getValeur("Aucun"),
+				listeElementsPilier: null,
+				estLVE: null,
+				accepteRestrictionDomaine: true,
+			}),
 		);
-		lElementAucun.accepteRestrictionDomaine = true;
-		lListeElementsPilier.addElement(lElementAucun);
 		if (!!this.donnees.listeTousLesDomaines) {
 			this.donnees.listeTousLesDomaines.parcourir((aPilier, aIndexPilier) => {
 				if (

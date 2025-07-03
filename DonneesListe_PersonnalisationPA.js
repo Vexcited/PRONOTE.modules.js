@@ -4,6 +4,7 @@ const UtilitaireDuree_1 = require("UtilitaireDuree");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
 const ObjetFenetre_1 = require("ObjetFenetre");
+const AccessApp_1 = require("AccessApp");
 let ObjetFenetre_DetailsPIEleve = null;
 class DonneesListe_PersonnalisationPA extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aOptions) {
@@ -105,11 +106,13 @@ class DonneesListe_PersonnalisationPA extends ObjetDonneesListe_1.ObjetDonneesLi
 		}
 	}
 	getMessageEditionImpossible(aParams, aMessageErreur) {
-		if (!GApplication.getMessage().EnAffichage) {
-			GApplication.getMessage().afficher({
-				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-				message: aMessageErreur,
-			});
+		if (!(0, AccessApp_1.getApp)().getMessage().EnAffichage) {
+			(0, AccessApp_1.getApp)()
+				.getMessage()
+				.afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+					message: aMessageErreur,
+				});
 		}
 		return "";
 	}

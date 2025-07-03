@@ -20,6 +20,8 @@ const ObjetFenetre_DestMessageInstantane_1 = require("ObjetFenetre_DestMessageIn
 const MoteurMessagerie_1 = require("MoteurMessagerie");
 const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
 const GUID_1 = require("GUID");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const GlossaireMessagerie_1 = require("GlossaireMessagerie");
 class ClasseUtilitaireContactVieScolaire_Espace extends UtilitaireContactVieScolaire_1.UtilitaireContactVieScolaire {
 	constructor() {
 		super(...arguments);
@@ -299,7 +301,7 @@ class ClasseUtilitaireContactVieScolaire_Espace extends UtilitaireContactVieScol
 						"ie-bouton",
 						{
 							"ie-model": "destinatairesChat.btn",
-							"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+							"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
 								"Messagerie.ChoisirDestinataires",
 							),
 							"aria-describedby": lId,
@@ -374,12 +376,11 @@ class ClasseUtilitaireContactVieScolaire_Espace extends UtilitaireContactVieScol
 				lOptionsFenetre.listeBoutons = [];
 			}
 			lOptionsFenetre.listeBoutons.push({
-				libelle: ObjetTraduction_1.GTraductions.getValeur(
-					"Messagerie.QuitterModeInstantane",
-				),
-				title: ObjetTraduction_1.GTraductions.getValeur(
-					"Messagerie.HintQuitterModeInstantane",
-				),
+				libelle:
+					GlossaireMessagerie_1.TradGlossaireMessagerie.QuitterModeInstantane,
+				title:
+					GlossaireMessagerie_1.TradGlossaireMessagerie
+						.HintQuitterModeInstantane,
 				estSortieConversation: true,
 			});
 		}
@@ -407,7 +408,11 @@ class ClasseUtilitaireContactVieScolaire_Espace extends UtilitaireContactVieScol
 		const lCompteur = Object.keys(lFenetresPosition).length;
 		lFenetresPosition[lFenetre.getNom()] = true;
 		lFenetre.coordonnees = {
-			left: GNavigateur.clientL - lLargeur - 30 - lCompteur * lEcart,
+			left:
+				ObjetNavigateur_1.Navigateur.clientL -
+				lLargeur -
+				30 -
+				lCompteur * lEcart,
 			top: 90 + lCompteur * lEcart,
 		};
 		lFenetre.setOptions(lOptionsFenetreDiscussion);
@@ -476,10 +481,13 @@ class ClasseUtilitaireContactVieScolaire_Espace extends UtilitaireContactVieScol
 			lFiche._indicePosition = lIndicePosition;
 		}
 		const lEcart = 5;
-		const lLeft = Math.max(0, GNavigateur.ecranL - 330 - lEcart);
+		const lLeft = Math.max(
+			0,
+			ObjetNavigateur_1.Navigateur.ecranL - 330 - lEcart,
+		);
 		const lTop = Math.max(
 			lEcart,
-			GNavigateur.ecranH -
+			ObjetNavigateur_1.Navigateur.ecranH -
 				88 * (lIndicePosition + 1) -
 				(lIndicePosition > 0 ? 5 : 0) -
 				lEcart,

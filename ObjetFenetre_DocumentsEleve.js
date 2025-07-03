@@ -1,38 +1,45 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const {
-	DonneesListe_DocumentsEleve,
-} = require("DonneesListe_DocumentsEleve.js");
-const { ObjetRequeteDocumentsEleve } = require("ObjetRequeteDocumentsEleve.js");
-class ObjetFenetre_DocumentsEleve extends ObjetFenetre {
+exports.ObjetFenetre_DocumentsEleve = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const DonneesListe_DocumentsEleve_1 = require("DonneesListe_DocumentsEleve");
+const ObjetRequeteDocumentsEleve_1 = require("ObjetRequeteDocumentsEleve");
+class ObjetFenetre_DocumentsEleve extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.setOptionsFenetre({
-			titre: GTraductions.getValeur("FenetreDocumentsEleve.titre"),
-			listeBoutons: [GTraductions.getValeur("Fermer")],
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"FenetreDocumentsEleve.titre",
+			),
+			listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
 		});
 	}
 	construireInstances() {
-		this.identListe = this.add(ObjetListe, null, this.initialiserListe);
+		this.identListe = this.add(
+			ObjetListe_1.ObjetListe,
+			null,
+			this.initialiserListe,
+		);
 	}
 	setDonnees(aEleve) {
-		new ObjetRequeteDocumentsEleve(
+		new ObjetRequeteDocumentsEleve_1.ObjetRequeteDocumentsEleve(
 			this,
 			this._reponseRequeteDocumentsEleve,
-		).lancerRequete({ eleve: aEleve });
+		).lancerRequete(aEleve);
 	}
 	_reponseRequeteDocumentsEleve(aParams) {
 		this.afficher();
 		const lListeDonnees = aParams.listeDocumentsEleve;
 		this.formatDonnees(lListeDonnees);
 		this.getInstance(this.identListe).setDonnees(
-			new DonneesListe_DocumentsEleve(lListeDonnees),
+			new DonneesListe_DocumentsEleve_1.DonneesListe_DocumentsEleve(
+				lListeDonnees,
+			),
 		);
 	}
 	formatDonnees(aListe) {
-		aListe.setTri([ObjetTri.init("Genre")]);
+		aListe.setTri([ObjetTri_1.ObjetTri.init("Genre")]);
 		aListe.trier();
 		aListe.parcourir((aElement, aIndex, aListeElementsCourant) => {
 			if (!aElement.estPere) {
@@ -56,20 +63,34 @@ class ObjetFenetre_DocumentsEleve extends ObjetFenetre {
 		});
 	}
 	initialiserListe(aInstance) {
-		aInstance.setOptionsListe({
-			colonnes: [
-				{ id: DonneesListe_DocumentsEleve.colonnes.document, taille: "250" },
-				{ id: DonneesListe_DocumentsEleve.colonnes.date, taille: "80" },
-				{ id: DonneesListe_DocumentsEleve.colonnes.nature, taille: "150" },
-				{
-					id: DonneesListe_DocumentsEleve.colonnes.proprietaire,
-					taille: "150",
-				},
-			],
+		const lColonnes = [];
+		lColonnes.push({
+			id: DonneesListe_DocumentsEleve_1.DonneesListe_DocumentsEleve.colonnes
+				.document,
+			taille: "250",
 		});
+		lColonnes.push({
+			id: DonneesListe_DocumentsEleve_1.DonneesListe_DocumentsEleve.colonnes
+				.date,
+			taille: "80",
+		});
+		lColonnes.push({
+			id: DonneesListe_DocumentsEleve_1.DonneesListe_DocumentsEleve.colonnes
+				.nature,
+			taille: "150",
+		});
+		lColonnes.push({
+			id: DonneesListe_DocumentsEleve_1.DonneesListe_DocumentsEleve.colonnes
+				.proprietaire,
+			taille: "150",
+		});
+		aInstance.setOptionsListe({ colonnes: lColonnes });
 	}
 	composeContenu() {
-		return `<div id="${this.getNomInstance(this.identListe)}" style="height: 200px;"></div>`;
+		return IE.jsx.str("div", {
+			id: this.getNomInstance(this.identListe),
+			style: "height: 200px;",
+		});
 	}
 }
-module.exports = { ObjetFenetre_DocumentsEleve };
+exports.ObjetFenetre_DocumentsEleve = ObjetFenetre_DocumentsEleve;

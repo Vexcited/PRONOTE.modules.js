@@ -95,7 +95,7 @@ class WidgetPlanning extends ObjetWidget_1.Widget.ObjetWidget {
 		});
 		this._creerObjetsPlanning();
 		const lWidget = {
-			html: this.composeWidgetEDT(),
+			getHtml: this.composeWidgetEDT.bind(this),
 			titre: ObjetTraduction_1.GTraductions.getValeur("accueil.planning"),
 			resize: () => {
 				this.grille.getInstanceGrille().surPostResize();
@@ -109,7 +109,7 @@ class WidgetPlanning extends ObjetWidget_1.Widget.ObjetWidget {
 				{
 					html:
 						'<span ie-if="WidgetPlanning.avecBoutonCoursAnnules">' +
-						UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnAfficherCoursAnnules(
+						UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnAfficherCoursAnnulesControleur(
 							"WidgetPlanning.btnAfficherCoursAnnules",
 						) +
 						"</span>",
@@ -344,16 +344,11 @@ class WidgetPlanning extends ObjetWidget_1.Widget.ObjetWidget {
 			avecParametresUtilisateursPrefsHorairesEtPas: true,
 			optionsGrille: {
 				grilleInverse: true,
-				tailleMINPasHoraire: GNavigateur.isLayoutTactile
-					? Math.max(10, 550 / this.parametresSco.PlacesParJour)
-					: 10,
-				tailleMAXPasHoraire: 75,
+				tailleMINPasHoraire: 10,
 				frequences: this.parametresSco.frequences,
 				avecSelection: true,
 				margeHauteur: 0,
 				tailleMaxLibelleTranche: 100,
-				avecScrollEnTactileH: true,
-				avecScrollEnTactileV: true,
 			},
 			evenementMouseDownPlace: () => {
 				this._fermerFiches();

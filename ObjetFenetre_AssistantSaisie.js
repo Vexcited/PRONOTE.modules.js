@@ -1,27 +1,20 @@
-const {
-	ObjetFenetre_ChoixTypeAppreciation,
-} = require("ObjetFenetre_ChoixTypeAppreciation.js");
-const {
-	DonneesListe_AssSaisie_Appreciation,
-} = require("DonneesListe_AssSaisie_Appreciation.js");
-const {
-	DonneesListe_AssSaisie_Categorie,
-} = require("DonneesListe_AssSaisie_Categorie.js");
-const { GHtml } = require("ObjetHtml.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { EGenreOnglet } = require("Enumere_Onglet.js");
-const { ETypeAppreciation } = require("Enumere_TypeAppreciation.js");
-const {
-	EBoutonFenetreAssistantSaisie,
-} = require("EBoutonFenetreAssistantSaisie.js");
-class ObjetFenetre_AssistantSaisie extends ObjetFenetre {
+exports.ObjetFenetre_AssistantSaisie = void 0;
+const ObjetFenetre_ChoixTypeAppreciation_1 = require("ObjetFenetre_ChoixTypeAppreciation");
+const DonneesListe_AssSaisie_Appreciation_1 = require("DonneesListe_AssSaisie_Appreciation");
+const DonneesListe_AssSaisie_Categorie_1 = require("DonneesListe_AssSaisie_Categorie");
+const ObjetHtml_1 = require("ObjetHtml");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_Onglet_1 = require("Enumere_Onglet");
+const Enumere_TypeAppreciation_1 = require("Enumere_TypeAppreciation");
+const EBoutonFenetreAssistantSaisie_1 = require("EBoutonFenetreAssistantSaisie");
+class ObjetFenetre_AssistantSaisie extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this._parametres = {
@@ -36,52 +29,39 @@ class ObjetFenetre_AssistantSaisie extends ObjetFenetre {
 			largeurMin: 600,
 			hauteurMin: 150,
 			listeBoutons: [
-				GTraductions.getValeur("Fermer"),
-				GTraductions.getValeur("Appreciations.PasserEnSaisie"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Fermer"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"Appreciations.PasserEnSaisie",
+				),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 		});
 		this.estAssistantModifie = false;
 	}
 	construireInstances() {
 		this.identListeCategories = this.add(
-			ObjetListe,
+			ObjetListe_1.ObjetListe,
 			this.evntSurListeCategories,
 			_initListeCategories,
 		);
 		this.identListeAppreciations = this.add(
-			ObjetListe,
+			ObjetListe_1.ObjetListe,
 			this.evntSurListeAppreciations,
 			_initListeAppreciations,
 		);
 		this.identFenetreChoixTypeAppreciation = this.add(
-			ObjetFenetre_ChoixTypeAppreciation,
+			ObjetFenetre_ChoixTypeAppreciation_1.ObjetFenetre_ChoixTypeAppreciation,
 			this.evntChoixTypeAppreciation,
 			_initFenetreChoixTypeAppreciation,
 		);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
-			avecCheckBoxNePasUtiliserAssistant: function () {
-				return aInstance.estAvecCheckBoxNePasUtiliserAssistant();
-			},
-			cbNePasUtiliserAssistant: {
-				getValue: function () {
-					return !!aInstance.nePasUtiliserAssistantActif;
-				},
-				setValue: function (aValue) {
-					aInstance.nePasUtiliserAssistantActif = aValue;
-				},
-			},
-		});
-	}
 	evntSurListeCategories(aParametres) {
 		switch (aParametres.genreEvenement) {
-			case EGenreEvenementListe.Creation:
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Creation:
 				this.categorieCourante = null;
 				this._afficherMessageZoneAppreciations();
 				break;
-			case EGenreEvenementListe.Selection: {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Selection: {
 				const lElmt = this.listeCategoriesPourAffichage.get(aParametres.ligne);
 				this.categorieCourante = lElmt.estUneCategorie
 					? aParametres.ligne
@@ -95,7 +75,7 @@ class ObjetFenetre_AssistantSaisie extends ObjetFenetre {
 					const llisteAppreciations = lElmt.listeAppreciations;
 					if (llisteAppreciations) {
 						lInstanceListe.setDonnees(
-							new DonneesListe_AssSaisie_Appreciation(
+							new DonneesListe_AssSaisie_Appreciation_1.DonneesListe_AssSaisie_Appreciation(
 								llisteAppreciations,
 								this.getTailleMaxAppreciation(),
 								this._parametres.avecEtatSaisie,
@@ -107,18 +87,18 @@ class ObjetFenetre_AssistantSaisie extends ObjetFenetre {
 				}
 				break;
 			}
-			case EGenreEvenementListe.ApresSuppression:
+			case Enumere_EvenementListe_1.EGenreEvenementListe.ApresSuppression:
 				this.categorieCourante = null;
 				if (!this._selectionCategorieParDefaut()) {
 					this._afficherMessageZoneAppreciations();
 				}
 				this.estAssistantModifie = true;
 				break;
-			case EGenreEvenementListe.ApresCreation:
+			case Enumere_EvenementListe_1.EGenreEvenementListe.ApresCreation:
 				for (let I = 0; I < this.listeCategoriesPourAffichage.count(); I++) {
 					const lElmt = this.listeCategoriesPourAffichage.get(I);
 					if (
-						lElmt.getEtat() === EGenreEtat.Creation &&
+						lElmt.getEtat() === Enumere_Etat_1.EGenreEtat.Creation &&
 						lElmt.traiterApresCreation
 					) {
 						if (this.listeElementsTypeAppreciation.count() === 1) {
@@ -136,40 +116,42 @@ class ObjetFenetre_AssistantSaisie extends ObjetFenetre {
 				}
 				this.estAssistantModifie = true;
 				break;
-			case EGenreEvenementListe.ApresEdition:
+			case Enumere_EvenementListe_1.EGenreEvenementListe.ApresEdition:
 				this.estAssistantModifie = true;
 				break;
 		}
 	}
 	_afficherMessageZoneAppreciations() {
 		this.getInstance(this.identListeAppreciations).effacer();
-		GHtml.setHtml(
+		ObjetHtml_1.GHtml.setHtml(
 			this.getNomInstance(this.identListeAppreciations),
 			this.composeMessage(
-				GTraductions.getValeur("Appreciations.SelectionnerCategorie"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"Appreciations.SelectionnerCategorie",
+				),
 			),
 		);
 	}
-	evntSurListeAppreciations(
-		aParametres,
-		aGenreEvenementListe,
-		aColonne,
-		aLigne,
-	) {
-		switch (aGenreEvenementListe) {
-			case EGenreEvenementListe.Selection:
-				this.appreciationCourante = aLigne;
-				this.setBoutonActif(EBoutonFenetreAssistantSaisie.Valider, true);
+	evntSurListeAppreciations(aParametres) {
+		switch (aParametres.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Selection:
+				this.appreciationCourante = aParametres.ligne;
+				this.setBoutonActif(
+					EBoutonFenetreAssistantSaisie_1.EBoutonFenetreAssistantSaisie.Valider,
+					true,
+				);
 				break;
-			case EGenreEvenementListe.SelectionDblClick:
-				this.surValidation(EBoutonFenetreAssistantSaisie.Valider);
+			case Enumere_EvenementListe_1.EGenreEvenementListe.SelectionDblClick:
+				this.surValidation(
+					EBoutonFenetreAssistantSaisie_1.EBoutonFenetreAssistantSaisie.Valider,
+				);
 				break;
-			case EGenreEvenementListe.Suppression:
-			case EGenreEvenementListe.ApresEdition:
-			case EGenreEvenementListe.Creation:
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Suppression:
+			case Enumere_EvenementListe_1.EGenreEvenementListe.ApresEdition:
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Creation:
 				this.listeCategoriesPourAffichage
 					.get(this.categorieCourante)
-					.setEtat(EGenreEtat.Modification);
+					.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 				this.estAssistantModifie = true;
 				break;
 		}
@@ -247,29 +229,50 @@ class ObjetFenetre_AssistantSaisie extends ObjetFenetre {
 		return this._parametres.rangAppreciations;
 	}
 	composeContenu() {
-		const T = [];
-		T.push('<div class="flex-contain cols flex-gap full-size">');
-		T.push('  <div class="flex-contain justify-between fluid-bloc flex-gap">');
-		T.push(
-			'    <div class="fix-bloc" id="' +
-				this.getNomInstance(this.identListeCategories) +
-				'" style="min-width:250px;"></div>',
+		const lavecCheckBoxNePasUtiliserAssistant = () => {
+			return this.estAvecCheckBoxNePasUtiliserAssistant();
+		};
+		const lcbNePasUtiliserAssistant = () => {
+			return {
+				getValue: () => {
+					return !!this.nePasUtiliserAssistantActif;
+				},
+				setValue: (aValue) => {
+					this.nePasUtiliserAssistantActif = aValue;
+				},
+			};
+		};
+		return IE.jsx.str(
+			"div",
+			{ class: "flex-contain cols flex-gap full-size" },
+			IE.jsx.str(
+				"div",
+				{ class: "flex-contain justify-between fluid-bloc flex-gap" },
+				IE.jsx.str("div", {
+					class: "fix-bloc",
+					id: this.getNomInstance(this.identListeCategories),
+					style: "min-width:250px;",
+				}),
+				IE.jsx.str("div", {
+					class: "fluid-bloc",
+					id: this.getNomInstance(this.identListeAppreciations),
+				}),
+			),
+			IE.jsx.str(
+				"div",
+				{
+					"ie-if": lavecCheckBoxNePasUtiliserAssistant,
+					class: "fix-bloc flex-contain full-width",
+				},
+				IE.jsx.str(
+					"ie-checkbox",
+					{ "ie-model": lcbNePasUtiliserAssistant },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"Appreciations.NePasUtiliserAssistant",
+					),
+				),
+			),
 		);
-		T.push(
-			'    <div class="fluid-bloc" id="' +
-				this.getNomInstance(this.identListeAppreciations) +
-				'"></div>',
-		);
-		T.push("  </div>");
-		T.push(
-			'<div ie-if="avecCheckBoxNePasUtiliserAssistant" class="fix-bloc flex-contain full-width">',
-			'<ie-checkbox ie-model="cbNePasUtiliserAssistant">',
-			GTraductions.getValeur("Appreciations.NePasUtiliserAssistant"),
-			"</ie-checkbox>",
-			"</div>",
-		);
-		T.push("</div>");
-		return T.join("");
 	}
 	setParametres(aParametres) {
 		Object.assign(this._parametres, aParametres);
@@ -278,10 +281,11 @@ class ObjetFenetre_AssistantSaisie extends ObjetFenetre {
 		this.estAssistantModifie = false;
 		this.nePasUtiliserAssistantActif = false;
 		this.listeElementsTypeAppreciation = aListeElementsTypeAppreciation;
-		this.listeCategoriesPourAffichage = new ObjetListeElements();
+		this.listeCategoriesPourAffichage =
+			new ObjetListeElements_1.ObjetListeElements();
 		const lNbrTypeAppreciation = aListeElementsTypeAppreciation.count();
 		for (let I = 0; I < lNbrTypeAppreciation; I++) {
-			const lElementTypeAppreciation = new ObjetElement();
+			const lElementTypeAppreciation = new ObjetElement_1.ObjetElement();
 			if (lNbrTypeAppreciation > 1) {
 				lElementTypeAppreciation.Genre = aListeElementsTypeAppreciation
 					.get(I)
@@ -315,17 +319,25 @@ class ObjetFenetre_AssistantSaisie extends ObjetFenetre {
 			}
 		}
 		this.listeCategoriesPourAffichage
-			.setTri([ObjetTri.initRecursif("pere", [ObjetTri.init("Libelle")])])
+			.setTri([
+				ObjetTri_1.ObjetTri.initRecursif("pere", [
+					ObjetTri_1.ObjetTri.init("Libelle"),
+				]),
+			])
 			.trier();
 		this.afficher(null);
 		this.setOptionsFenetre({ titre: _getTitreFenetre() });
-		this.setBoutonActif(EBoutonFenetreAssistantSaisie.Valider, false);
+		this.setBoutonActif(
+			EBoutonFenetreAssistantSaisie_1.EBoutonFenetreAssistantSaisie.Valider,
+			false,
+		);
 		this.setBoutonVisible(
-			EBoutonFenetreAssistantSaisie.PasserEnSaisie,
+			EBoutonFenetreAssistantSaisie_1.EBoutonFenetreAssistantSaisie
+				.PasserEnSaisie,
 			this._parametres.avecBoutonPasserEnSaisie,
 		);
 		this.getInstance(this.identListeCategories).setDonnees(
-			new DonneesListe_AssSaisie_Categorie(
+			new DonneesListe_AssSaisie_Categorie_1.DonneesListe_AssSaisie_Categorie(
 				this.listeCategoriesPourAffichage,
 				this._parametres.avecEtatSaisie,
 			),
@@ -340,7 +352,7 @@ class ObjetFenetre_AssistantSaisie extends ObjetFenetre {
 			const lElement = this.listeCategoriesPourAffichage.get(lLigne);
 			if (
 				lElement.estUneCategorie &&
-				lElement.getEtat() !== EGenreEtat.Suppression
+				lElement.getEtat() !== Enumere_Etat_1.EGenreEtat.Suppression
 			) {
 				this._selectionnerElementDansListeCategorie(lLigne);
 				return true;
@@ -364,110 +376,132 @@ class ObjetFenetre_AssistantSaisie extends ObjetFenetre {
 		this.getInstance(this.identListeCategories).surPostResize();
 		this.getInstance(this.identListeAppreciations).surPostResize();
 	}
-	getParametresValidation(...aParams) {
-		const lParametres = super.getParametresValidation(...aParams);
+	getParametresValidation(aNumeroBouton) {
+		const lParametres = super.getParametresValidation(aNumeroBouton);
 		lParametres.appreciationSelectionnee = this.getAppreciationSelectionnee();
 		return lParametres;
 	}
 }
+exports.ObjetFenetre_AssistantSaisie = ObjetFenetre_AssistantSaisie;
 function _initListeCategories(aInstance) {
 	const lColonnes = [];
 	lColonnes.push({
-		id: DonneesListe_AssSaisie_Categorie.colonnes.libelle,
-		titre: GTraductions.getValeur("Appreciations.TitreColCategorie"),
+		id: DonneesListe_AssSaisie_Categorie_1.DonneesListe_AssSaisie_Categorie
+			.colonnes.libelle,
+		titre: ObjetTraduction_1.GTraductions.getValeur(
+			"Appreciations.TitreColCategorie",
+		),
 		taille: "100%",
 	});
 	aInstance.setOptionsListe({
 		colonnes: lColonnes,
+		ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
+			"Appreciations.ListeCategories",
+		),
 		listeCreations: 0,
 		avecLigneCreation: true,
-		titreCreation: GTraductions.getValeur(
+		titreCreation: ObjetTraduction_1.GTraductions.getValeur(
 			"Appreciations.LigneCreationCategorie",
 		),
 	});
 }
 function _initListeAppreciations(aInstance, aTitreColonne) {
 	if (!aTitreColonne) {
-		aTitreColonne = GTraductions.getValeur(
+		aTitreColonne = ObjetTraduction_1.GTraductions.getValeur(
 			"Appreciations.TitreColAppreciation",
 		);
 	}
 	const lColonnes = [];
 	lColonnes.push({
-		id: DonneesListe_AssSaisie_Appreciation.colonnes.libelle,
+		id: DonneesListe_AssSaisie_Appreciation_1
+			.DonneesListe_AssSaisie_Appreciation.colonnes.libelle,
 		titre: aTitreColonne,
 		taille: "100%",
 	});
 	aInstance.setOptionsListe({
 		colonnes: lColonnes,
+		ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
+			"Appreciations.ListeAppreciations",
+		),
 		listeCreations: 0,
 		avecLigneCreation: true,
-		titreCreation: GTraductions.getValeur(
+		titreCreation: ObjetTraduction_1.GTraductions.getValeur(
 			"Appreciations.LigneCreationAppreciation",
 		),
-		boutons: [{ genre: ObjetListe.typeBouton.editer }],
+		boutons: [{ genre: ObjetListe_1.ObjetListe.typeBouton.editer }],
 	});
 }
 function _initFenetreChoixTypeAppreciation(aInstance) {
 	aInstance.setOptionsFenetre({
 		modale: true,
-		titre: GTraductions.getValeur("Appreciations.SelectionnerTypeAppr"),
+		titre: ObjetTraduction_1.GTraductions.getValeur(
+			"Appreciations.SelectionnerTypeAppr",
+		),
 		largeur: 200,
 		hauteur: 200,
 		listeBoutons: [
-			GTraductions.getValeur("Annuler"),
-			GTraductions.getValeur("Valider"),
+			ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+			ObjetTraduction_1.GTraductions.getValeur("Valider"),
 		],
 	});
 }
 function _getTitreFenetre() {
 	switch (GEtatUtilisateur.getGenreOnglet()) {
-		case EGenreOnglet.LivretScolaire_Fiche:
-		case EGenreOnglet.LivretScolaire_Appreciations:
-		case EGenreOnglet.LivretScolaire_Competences:
-		case EGenreOnglet.FicheBrevet:
-			return GTraductions.getValeur("Appreciations.TitreAss_Brevet");
-		case EGenreOnglet.ConseilDeClasse:
-		case EGenreOnglet.Bulletins:
-		case EGenreOnglet.SaisieAppreciationsBulletin:
-		case EGenreOnglet.ReleveEvaluationsParService:
-			return GTraductions.getValeur("Appreciations.TitreAss_Bulletin");
-		case EGenreOnglet.Releve:
-		case EGenreOnglet.SaisieAppreciationsReleve:
-			return GTraductions.getValeur("Appreciations.TitreAss_Releve");
-		case EGenreOnglet.SaisieAppreciationsGenerales:
-		case EGenreOnglet.SaisieAppreciationsGenerales_Competences:
-			return GTraductions.getValeur("Appreciations.TitreAss_Bulletin");
+		case Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche:
+		case Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Appreciations:
+		case Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Competences:
+		case Enumere_Onglet_1.EGenreOnglet.FicheBrevet:
+			return ObjetTraduction_1.GTraductions.getValeur(
+				"Appreciations.TitreAss_Brevet",
+			);
+		case Enumere_Onglet_1.EGenreOnglet.ConseilDeClasse:
+		case Enumere_Onglet_1.EGenreOnglet.Bulletins:
+		case Enumere_Onglet_1.EGenreOnglet.SaisieAppreciationsBulletin:
+		case Enumere_Onglet_1.EGenreOnglet.ReleveEvaluationsParService:
+			return ObjetTraduction_1.GTraductions.getValeur(
+				"Appreciations.TitreAss_Bulletin",
+			);
+		case Enumere_Onglet_1.EGenreOnglet.Releve:
+		case Enumere_Onglet_1.EGenreOnglet.SaisieAppreciationsReleve:
+			return ObjetTraduction_1.GTraductions.getValeur(
+				"Appreciations.TitreAss_Releve",
+			);
+		case Enumere_Onglet_1.EGenreOnglet.SaisieAppreciationsGenerales:
+		case Enumere_Onglet_1.EGenreOnglet.SaisieAppreciationsGenerales_Competences:
+			return ObjetTraduction_1.GTraductions.getValeur(
+				"Appreciations.TitreAss_Bulletin",
+			);
 		default:
-			return GTraductions.getValeur("Appreciations.AssistantSaisie");
+			return ObjetTraduction_1.GTraductions.getValeur(
+				"Appreciations.AssistantSaisie",
+			);
 	}
 }
 function _getTitreListeAppreciations(aTypeAppreciation) {
 	switch (aTypeAppreciation) {
-		case ETypeAppreciation.Appreciations:
-			return GTraductions.getValeur("Appreciations.ApprA");
-		case ETypeAppreciation.Progression:
-			return GTraductions.getValeur("Appreciations.ApprB");
-		case ETypeAppreciation.Conseil:
-			return GTraductions.getValeur("Appreciations.ApprC");
-		case ETypeAppreciation.Assiduite:
-			return GTraductions.getValeur("Appreciations.ApprA");
-		case ETypeAppreciation.Autonomie:
-			return GTraductions.getValeur("Appreciations.ApprB");
-		case ETypeAppreciation.Globale:
-			return GTraductions.getValeur("Appreciations.ApprC");
-		case ETypeAppreciation.Commentaire1:
-			return GTraductions.getValeur("Appreciations.CommA");
-		case ETypeAppreciation.Commentaire2:
-			return GTraductions.getValeur("Appreciations.CommB");
-		case ETypeAppreciation.Commentaire3:
-			return GTraductions.getValeur("Appreciations.CommC");
-		case ETypeAppreciation.CPE:
-			return GTraductions.getValeur("Appreciations.CPE");
-		case ETypeAppreciation.FG_Annuelle:
-			return GTraductions.getValeur("Appreciations.Annuelle");
+		case Enumere_TypeAppreciation_1.ETypeAppreciation.Appreciations:
+			return ObjetTraduction_1.GTraductions.getValeur("Appreciations.ApprA");
+		case Enumere_TypeAppreciation_1.ETypeAppreciation.Progression:
+			return ObjetTraduction_1.GTraductions.getValeur("Appreciations.ApprB");
+		case Enumere_TypeAppreciation_1.ETypeAppreciation.Conseil:
+			return ObjetTraduction_1.GTraductions.getValeur("Appreciations.ApprC");
+		case Enumere_TypeAppreciation_1.ETypeAppreciation.Assiduite:
+			return ObjetTraduction_1.GTraductions.getValeur("Appreciations.ApprA");
+		case Enumere_TypeAppreciation_1.ETypeAppreciation.Autonomie:
+			return ObjetTraduction_1.GTraductions.getValeur("Appreciations.ApprB");
+		case Enumere_TypeAppreciation_1.ETypeAppreciation.Globale:
+			return ObjetTraduction_1.GTraductions.getValeur("Appreciations.ApprC");
+		case Enumere_TypeAppreciation_1.ETypeAppreciation.Commentaire1:
+			return ObjetTraduction_1.GTraductions.getValeur("Appreciations.CommA");
+		case Enumere_TypeAppreciation_1.ETypeAppreciation.Commentaire2:
+			return ObjetTraduction_1.GTraductions.getValeur("Appreciations.CommB");
+		case Enumere_TypeAppreciation_1.ETypeAppreciation.Commentaire3:
+			return ObjetTraduction_1.GTraductions.getValeur("Appreciations.CommC");
+		case Enumere_TypeAppreciation_1.ETypeAppreciation.CPE:
+			return ObjetTraduction_1.GTraductions.getValeur("Appreciations.CPE");
+		case Enumere_TypeAppreciation_1.ETypeAppreciation.FG_Annuelle:
+			return ObjetTraduction_1.GTraductions.getValeur("Appreciations.Annuelle");
 		default:
 			return "";
 	}
 }
-module.exports = { ObjetFenetre_AssistantSaisie };

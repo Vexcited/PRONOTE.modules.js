@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieCategorieEvaluation extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieCategorieEvaluation = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieCategorieEvaluation extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aListeCategorie) {
 		aListeCategorie.setSerialisateurJSON({
 			methodeSerialisation: this._serialisation.bind(this),
@@ -16,8 +14,9 @@ class ObjetRequeteSaisieCategorieEvaluation extends ObjetRequeteSaisie {
 		aJSON.couleur = aElement.couleur;
 	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteSaisieCategorieEvaluation =
+	ObjetRequeteSaisieCategorieEvaluation;
+CollectionRequetes_1.Requetes.inscrire(
 	"SaisieCategorieEvaluation",
 	ObjetRequeteSaisieCategorieEvaluation,
 );
-module.exports = { ObjetRequeteSaisieCategorieEvaluation };

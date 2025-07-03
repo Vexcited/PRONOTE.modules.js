@@ -1,3 +1,4 @@
+exports.ObjetFenetre_ListeRedacteursBillet = void 0;
 const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetListe_1 = require("ObjetListe");
 const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
@@ -28,18 +29,10 @@ class ObjetFenetre_ListeRedacteursBillet extends ObjetFenetre_1.ObjetFenetre {
 		);
 	}
 	composeContenu() {
-		const T = [];
-		T.push(
-			IE.jsx.str(
-				IE.jsx.fragment,
-				null,
-				IE.jsx.str("div", {
-					id: this.getInstance(this.identListe).getNom(),
-					class: "full-height",
-				}),
-			),
-		);
-		return T.join("");
+		return IE.jsx.str("div", {
+			id: this.getNomInstance(this.identListe),
+			class: "full-height",
+		});
 	}
 	_initialiserListe(aInstance) {
 		aInstance.setOptionsListe({
@@ -48,6 +41,7 @@ class ObjetFenetre_ListeRedacteursBillet extends ObjetFenetre_1.ObjetFenetre {
 		});
 	}
 }
+exports.ObjetFenetre_ListeRedacteursBillet = ObjetFenetre_ListeRedacteursBillet;
 class DonneesListe_RedacteursBillet extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees) {
 		super(aDonnees);
@@ -59,7 +53,7 @@ class DonneesListe_RedacteursBillet extends ObjetDonneesListeFlatDesign_1.ObjetD
 	}
 	getZoneGauche(aParams) {
 		const H = [];
-		let lSrcPhoto = ObjetChaine_1.GChaine.creerUrlBruteLienExterne(
+		const lSrcPhoto = ObjetChaine_1.GChaine.creerUrlBruteLienExterne(
 			aParams.article,
 			{ libelle: "photo.jpg" },
 		);
@@ -74,15 +68,12 @@ class DonneesListe_RedacteursBillet extends ObjetDonneesListeFlatDesign_1.ObjetD
 						"ie-load-src": lSrcPhoto,
 						class: "img-portrait",
 						"ie-imgviewer": true,
-						"aria-hidden": "true",
+						alt: aParams.article.getLibelle(),
+						"data-libelle": aParams.article.getLibelle(),
 					}),
 				),
 			),
 		);
 		return H.join("");
 	}
-	getTitreZonePrincipale(aParams) {
-		return aParams.article.getLibelle();
-	}
 }
-module.exports = { ObjetFenetre_ListeRedacteursBillet };

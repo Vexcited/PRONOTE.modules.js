@@ -3,7 +3,6 @@ const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const TypesAnnexePedagogique_1 = require("TypesAnnexePedagogique");
 const GUID_1 = require("GUID");
-const jsx_1 = require("jsx");
 const MethodesObjet_1 = require("MethodesObjet");
 const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
 class ObjetFenetre_AnnexePedagogiquePN extends ObjetFenetre_1.ObjetFenetre {
@@ -19,6 +18,88 @@ class ObjetFenetre_AnnexePedagogiquePN extends ObjetFenetre_1.ObjetFenetre {
 				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 		});
+	}
+	jsxModeleTextareaAnnexePeda(aTypeAnnexePedagogique) {
+		return {
+			getValue: () => {
+				switch (aTypeAnnexePedagogique) {
+					case TypesAnnexePedagogique_1.TypeAnnexePedagogique.TAP_SujetDetaille:
+						return this.donnees.sujetDetaille;
+					case TypesAnnexePedagogique_1.TypeAnnexePedagogique
+						.TAP_ActivitesDejaRealisees:
+						return this.donnees.activitesDejaRealisees;
+					case TypesAnnexePedagogique_1.TypeAnnexePedagogique
+						.TAP_CompetencesMobilisees:
+						return this.donnees.competencesMobilisees;
+					case TypesAnnexePedagogique_1.TypeAnnexePedagogique.TAP_Objectifs:
+						return this.donnees.objectifs;
+					case TypesAnnexePedagogique_1.TypeAnnexePedagogique
+						.TAP_ActivitesPrevues:
+						return this.donnees.activitesPrevues;
+					case TypesAnnexePedagogique_1.TypeAnnexePedagogique
+						.TAP_MoyensMobilises:
+						return this.donnees.moyensMobilises;
+					case TypesAnnexePedagogique_1.TypeAnnexePedagogique
+						.TAP_CompetencesVisees:
+						return this.donnees.competencesVisees;
+					case TypesAnnexePedagogique_1.TypeAnnexePedagogique
+						.TAP_TravauxAuxMineurs:
+						return this.donnees.travauxAuxMineurs;
+					case TypesAnnexePedagogique_1.TypeAnnexePedagogique
+						.TAP_ModalitesDeConcertation:
+						return this.donnees.modalitesConcertation;
+					case TypesAnnexePedagogique_1.TypeAnnexePedagogique
+						.TAP_ModalitesDEvaluation:
+						return this.donnees.modalitesEvaluation;
+				}
+			},
+			setValue: (aValue) => {
+				if (!!this.donnees) {
+					switch (aTypeAnnexePedagogique) {
+						case TypesAnnexePedagogique_1.TypeAnnexePedagogique
+							.TAP_SujetDetaille:
+							this.donnees.sujetDetaille = aValue;
+							break;
+						case TypesAnnexePedagogique_1.TypeAnnexePedagogique
+							.TAP_ActivitesDejaRealisees:
+							this.donnees.activitesDejaRealisees = aValue;
+							break;
+						case TypesAnnexePedagogique_1.TypeAnnexePedagogique
+							.TAP_CompetencesMobilisees:
+							this.donnees.competencesMobilisees = aValue;
+							break;
+						case TypesAnnexePedagogique_1.TypeAnnexePedagogique.TAP_Objectifs:
+							this.donnees.objectifs = aValue;
+							break;
+						case TypesAnnexePedagogique_1.TypeAnnexePedagogique
+							.TAP_ActivitesPrevues:
+							this.donnees.activitesPrevues = aValue;
+							break;
+						case TypesAnnexePedagogique_1.TypeAnnexePedagogique
+							.TAP_MoyensMobilises:
+							this.donnees.moyensMobilises = aValue;
+							break;
+						case TypesAnnexePedagogique_1.TypeAnnexePedagogique
+							.TAP_CompetencesVisees:
+							this.donnees.competencesVisees = aValue;
+							break;
+						case TypesAnnexePedagogique_1.TypeAnnexePedagogique
+							.TAP_TravauxAuxMineurs:
+							this.donnees.travauxAuxMineurs = aValue;
+							break;
+						case TypesAnnexePedagogique_1.TypeAnnexePedagogique
+							.TAP_ModalitesDeConcertation:
+							this.donnees.modalitesConcertation = aValue;
+							break;
+						case TypesAnnexePedagogique_1.TypeAnnexePedagogique
+							.TAP_ModalitesDEvaluation:
+							this.donnees.modalitesEvaluation = aValue;
+							break;
+					}
+					this.verifierDonnees();
+				}
+			},
+		};
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
@@ -69,87 +150,6 @@ class ObjetFenetre_AnnexePedagogiquePN extends ObjetFenetre_1.ObjetFenetre {
 							aInstance.donnees.typeModalitesEvaluation = aParametres.element;
 							aInstance.verifierDonnees();
 						}
-					}
-				},
-			},
-			txtAnnexePeda: {
-				getValue: function (aTypeAnnexePedagogique) {
-					switch (aTypeAnnexePedagogique) {
-						case TypesAnnexePedagogique_1.TypeAnnexePedagogique
-							.TAP_SujetDetaille:
-							return aInstance.donnees.sujetDetaille;
-						case TypesAnnexePedagogique_1.TypeAnnexePedagogique
-							.TAP_ActivitesDejaRealisees:
-							return aInstance.donnees.activitesDejaRealisees;
-						case TypesAnnexePedagogique_1.TypeAnnexePedagogique
-							.TAP_CompetencesMobilisees:
-							return aInstance.donnees.competencesMobilisees;
-						case TypesAnnexePedagogique_1.TypeAnnexePedagogique.TAP_Objectifs:
-							return aInstance.donnees.objectifs;
-						case TypesAnnexePedagogique_1.TypeAnnexePedagogique
-							.TAP_ActivitesPrevues:
-							return aInstance.donnees.activitesPrevues;
-						case TypesAnnexePedagogique_1.TypeAnnexePedagogique
-							.TAP_MoyensMobilises:
-							return aInstance.donnees.moyensMobilises;
-						case TypesAnnexePedagogique_1.TypeAnnexePedagogique
-							.TAP_CompetencesVisees:
-							return aInstance.donnees.competencesVisees;
-						case TypesAnnexePedagogique_1.TypeAnnexePedagogique
-							.TAP_TravauxAuxMineurs:
-							return aInstance.donnees.travauxAuxMineurs;
-						case TypesAnnexePedagogique_1.TypeAnnexePedagogique
-							.TAP_ModalitesDeConcertation:
-							return aInstance.donnees.modalitesConcertation;
-						case TypesAnnexePedagogique_1.TypeAnnexePedagogique
-							.TAP_ModalitesDEvaluation:
-							return aInstance.donnees.modalitesEvaluation;
-					}
-				},
-				setValue: function (aTypeAnnexePedagogique, aValeur) {
-					if (!!aInstance.donnees) {
-						switch (aTypeAnnexePedagogique) {
-							case TypesAnnexePedagogique_1.TypeAnnexePedagogique
-								.TAP_SujetDetaille:
-								aInstance.donnees.sujetDetaille = aValeur;
-								break;
-							case TypesAnnexePedagogique_1.TypeAnnexePedagogique
-								.TAP_ActivitesDejaRealisees:
-								aInstance.donnees.activitesDejaRealisees = aValeur;
-								break;
-							case TypesAnnexePedagogique_1.TypeAnnexePedagogique
-								.TAP_CompetencesMobilisees:
-								aInstance.donnees.competencesMobilisees = aValeur;
-								break;
-							case TypesAnnexePedagogique_1.TypeAnnexePedagogique.TAP_Objectifs:
-								aInstance.donnees.objectifs = aValeur;
-								break;
-							case TypesAnnexePedagogique_1.TypeAnnexePedagogique
-								.TAP_ActivitesPrevues:
-								aInstance.donnees.activitesPrevues = aValeur;
-								break;
-							case TypesAnnexePedagogique_1.TypeAnnexePedagogique
-								.TAP_MoyensMobilises:
-								aInstance.donnees.moyensMobilises = aValeur;
-								break;
-							case TypesAnnexePedagogique_1.TypeAnnexePedagogique
-								.TAP_CompetencesVisees:
-								aInstance.donnees.competencesVisees = aValeur;
-								break;
-							case TypesAnnexePedagogique_1.TypeAnnexePedagogique
-								.TAP_TravauxAuxMineurs:
-								aInstance.donnees.travauxAuxMineurs = aValeur;
-								break;
-							case TypesAnnexePedagogique_1.TypeAnnexePedagogique
-								.TAP_ModalitesDeConcertation:
-								aInstance.donnees.modalitesConcertation = aValeur;
-								break;
-							case TypesAnnexePedagogique_1.TypeAnnexePedagogique
-								.TAP_ModalitesDEvaluation:
-								aInstance.donnees.modalitesEvaluation = aValeur;
-								break;
-						}
-						aInstance.verifierDonnees();
 					}
 				},
 			},
@@ -221,8 +221,8 @@ class ObjetFenetre_AnnexePedagogiquePN extends ObjetFenetre_1.ObjetFenetre {
 						maxlength:
 							TypesAnnexePedagogique_1.TypeAnnexePedagogiqueUtil.getLongueurMax(),
 						class: "min-height:4rem; max-height:8rem;",
-						"ie-model": (0, jsx_1.jsxFuncAttr)(
-							"txtAnnexePeda",
+						"ie-model": this.jsxModeleTextareaAnnexePeda.bind(
+							this,
 							this.parametres.genre,
 						),
 					}),
@@ -244,8 +244,8 @@ class ObjetFenetre_AnnexePedagogiquePN extends ObjetFenetre_1.ObjetFenetre {
 							maxlength:
 								TypesAnnexePedagogique_1.TypeAnnexePedagogiqueUtil.getLongueurMax(),
 							class: "min-height:4rem; max-height:8rem;",
-							"ie-model": (0, jsx_1.jsxFuncAttr)(
-								"txtAnnexePeda",
+							"ie-model": this.jsxModeleTextareaAnnexePeda.bind(
+								this,
 								this.parametres.genreSecondaire,
 							),
 						}),

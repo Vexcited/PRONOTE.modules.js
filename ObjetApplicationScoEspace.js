@@ -7,7 +7,6 @@ require("DeclarationGeogebra.js");
 require("ObjetNavigateur.js");
 const ObjetApplicationSco_1 = require("ObjetApplicationSco");
 require("Parametres.js");
-require("ObjetRequetePresence.js");
 const DeferLoadingScript_1 = require("DeferLoadingScript");
 const CommunicationProduit_1 = require("CommunicationProduit");
 const Enumere_Espace_1 = require("Enumere_Espace");
@@ -91,7 +90,6 @@ class ObjetApplicationScoEspace extends ObjetApplicationSco_1.ObjetApplicationSc
 				aParametres.genreEspace,
 			);
 			global.GEtatUtilisateur.premierChargement = true;
-			this.notificationActive = false;
 		} catch (e) {
 			window.messageErreur('Erreur sur initialisation de "GCommunication"');
 		}
@@ -99,13 +97,11 @@ class ObjetApplicationScoEspace extends ObjetApplicationSco_1.ObjetApplicationSc
 	async initialisationApresParametres(aParametres) {
 		super.initialisationApresParametres(aParametres);
 		this.getEtatUtilisateur().initialiser();
-		const lInterface = (window.GInterface =
-			new InterfaceConnexionEspace_1.InterfaceConnexionEspace(
-				"GInterface",
-				null,
-				null,
-				null,
-			));
+		const lInterface = (global.GInterface =
+			new InterfaceConnexionEspace_1.InterfaceConnexionEspace({
+				nomComplet: "GInterface",
+				estRacine: true,
+			}));
 		lInterface.initialiser();
 		if (this.acces.estConnexionCAS() || this.acces.estConnexionCookie()) {
 			lInterface.traiterEvenementValidation(
@@ -153,18 +149,28 @@ class ObjetApplicationScoEspace extends ObjetApplicationSco_1.ObjetApplicationSc
 			if (GInterface && GInterface.free) {
 				GInterface.free();
 			}
-			const { ObjetInterfaceEspace } = await Promise.resolve().then(() =>
+			const MultiObjetInterfaceEspace = await Promise.resolve().then(() =>
 				require("InterfaceEspace"),
 			);
-			GInterface = new ObjetInterfaceEspace("GInterface", null, null, null);
-			GInterface.setDonnees(aParametres.libelle, aParametres.listeRessource);
-			this.getCommunication().activerPresence();
+			if (!MultiObjetInterfaceEspace) {
+				throw new Error(`Erreur await import('InterfaceEspace')`);
+			}
+			const lInterfaceEspace = (GInterface =
+				new MultiObjetInterfaceEspace.ObjetInterfaceEspace({
+					nomComplet: "GInterface",
+					estRacine: true,
+				}));
+			lInterfaceEspace.setDonnees(
+				aParametres.libelle,
+				aParametres.listeRessource,
+			);
+			this.getCommunication().activerPolling();
 			if (this.avecGestionModeExclusif()) {
 				if (this.getModeExclusif()) {
 					this.entreeModeExclusif();
 				}
 			}
-			GInterface.focusAuDebut();
+			lInterfaceEspace.focusAuDebut();
 		} catch (e) {
 			if (window.messageErreur) {
 				window.messageErreur("apresAuthentification/" + e);

@@ -1,19 +1,10 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieParametresUtilisateurBase extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
-	lancerRequete(aParams) {
-		this.JSON = {
-			optionPublicationCDT: aParams.optionPublicationCDT,
-			partagePJAutorisee: aParams.partagePJAutorisee,
-		};
-		return this.appelAsynchrone();
-	}
-}
-Requetes.inscrire(
+exports.ObjetRequeteSaisieParametresUtilisateurBase = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieParametresUtilisateurBase extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
+exports.ObjetRequeteSaisieParametresUtilisateurBase =
+	ObjetRequeteSaisieParametresUtilisateurBase;
+CollectionRequetes_1.Requetes.inscrire(
 	"SaisieParametresUtilisateurBase",
 	ObjetRequeteSaisieParametresUtilisateurBase,
 );
-module.exports = { ObjetRequeteSaisieParametresUtilisateurBase };

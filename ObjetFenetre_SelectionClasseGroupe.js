@@ -1,40 +1,40 @@
-const { MethodesObjet } = require("MethodesObjet.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const {
-	ObjetFenetre_SelectionRessource,
-} = require("ObjetFenetre_SelectionRessource.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { TypeThemeBouton } = require("Type_ThemeBouton.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { ObjetListe } = require("ObjetListe.js");
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-class ObjetFenetre_SelectionClasseGroupe extends ObjetFenetre_SelectionRessource {
+exports.ObjetFenetre_SelectionClasseGroupe = void 0;
+const MethodesObjet_1 = require("MethodesObjet");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetFenetre_SelectionRessource_1 = require("ObjetFenetre_SelectionRessource");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const Type_ThemeBouton_1 = require("Type_ThemeBouton");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+class ObjetFenetre_SelectionClasseGroupe extends ObjetFenetre_SelectionRessource_1.ObjetFenetre_SelectionRessource {
 	constructor(...aParams) {
 		super(...aParams);
 		this.avecCumul = false;
 		this.setOptionsFenetre({
 			listeBoutons: [
 				{
-					libelle: GTraductions.getValeur("Annuler"),
-					theme: TypeThemeBouton.secondaire,
+					libelle: ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+					theme: Type_ThemeBouton_1.TypeThemeBouton.secondaire,
 				},
 				{
-					libelle: GTraductions.getValeur("Valider"),
-					theme: TypeThemeBouton.primaire,
+					libelle: ObjetTraduction_1.GTraductions.getValeur("Valider"),
+					theme: Type_ThemeBouton_1.TypeThemeBouton.primaire,
 				},
 			],
-			largeur: 320,
-			hauteur: 400,
-			heightMax_mobile: true,
+			largeur: 450,
+			hauteur: 700,
 		});
 		this.setOptionsFenetreSelectionRessource({
 			avecBarreTitre: true,
-			optionsListe: { nonEditable: false, avecCelluleEditableTriangle: false },
+			optionsListe: {
+				nonEditable: false,
+				avecCelluleEditableTriangle: false,
+				boutons: [{ genre: ObjetListe_1.ObjetListe.typeBouton.rechercher }],
+			},
 		});
 		this.setSelectionObligatoire(true);
 		this.indexBtnValider = 1;
@@ -44,7 +44,7 @@ class ObjetFenetre_SelectionClasseGroupe extends ObjetFenetre_SelectionRessource
 	}
 	setDonnees(aParam) {
 		this.listeRessourcesSelectionnees = aParam.listeRessourcesSelectionnees;
-		this.genreRessource = EGenreRessource.Classe;
+		this.genreRessource = Enumere_Ressource_1.EGenreRessource.Classe;
 		if (this.avecCumul) {
 			this._construireListeRessourceAvecCumul(
 				aParam.listeRessources,
@@ -60,7 +60,9 @@ class ObjetFenetre_SelectionClasseGroupe extends ObjetFenetre_SelectionRessource
 			this.setOptionsFenetre({ titre: aParam.titre });
 		} else {
 			this.setOptionsFenetre({
-				titre: GTraductions.getValeur("fenetreSelectionClasseGroupe.titre"),
+				titre: ObjetTraduction_1.GTraductions.getValeur(
+					"fenetreSelectionClasseGroupe.titreClasses",
+				),
 			});
 		}
 		this.afficher();
@@ -73,9 +75,12 @@ class ObjetFenetre_SelectionClasseGroupe extends ObjetFenetre_SelectionRessource
 		const lColonnes = [{ id: "", taille: "100%" }];
 		let lOptions = {
 			colonnes: lColonnes,
-			skin: ObjetListe.skin.flatDesign,
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
 			avecCBToutCocher: !!this._options.avecCocheRessources,
 			forcerOmbreScrollBottom: true,
+			ariaLabel: () => {
+				return this.optionsFenetre.titre;
+			},
 		};
 		if (this._options.optionsListe) {
 			$.extend(lOptions, this._options.optionsListe);
@@ -85,7 +90,7 @@ class ObjetFenetre_SelectionClasseGroupe extends ObjetFenetre_SelectionRessource
 	_actualiserListe() {
 		this.setBoutonActif(
 			this.indexBtnValider,
-			!this._options.selectionObligatoire || this._nbRessourcesCochees() > 0,
+			!this.estSelectionObligatoire() || this._nbRessourcesCochees() > 0,
 		);
 		this.getInstance(this.identListe).setDonnees(
 			new DonneesListe_SelectionClasseGroupe(this.listeRessources),
@@ -95,21 +100,25 @@ class ObjetFenetre_SelectionClasseGroupe extends ObjetFenetre_SelectionRessource
 		aListeRessources,
 		aListeRessourcesSelectionnees,
 	) {
-		let lCumulGroupe = new ObjetElement(
-			GTraductions.getValeur("Groupes"),
+		let lCumulGroupe = new ObjetElement_1.ObjetElement(
+			ObjetTraduction_1.GTraductions.getValeur("Groupes"),
 			0,
-			EGenreRessource.Groupe,
+			Enumere_Ressource_1.EGenreRessource.Groupe,
 		);
 		lCumulGroupe.estDeploye = false;
 		lCumulGroupe.estUnDeploiement = true;
 		lCumulGroupe.setActif(true);
-		let lListeCumul = new ObjetListeElements(),
+		let lListeCumul = new ObjetListeElements_1.ObjetListeElements(),
 			lAvecGroupe = false;
-		this.listeRessources = new ObjetListeElements();
+		this.listeRessources = new ObjetListeElements_1.ObjetListeElements();
 		for (let i = 0; i < aListeRessources.count(); i++) {
 			if (aListeRessources.get(i).existeNumero()) {
-				let lRessource = MethodesObjet.dupliquer(aListeRessources.get(i));
-				if (lRessource.getGenre() === EGenreRessource.Groupe) {
+				let lRessource = MethodesObjet_1.MethodesObjet.dupliquer(
+					aListeRessources.get(i),
+				);
+				if (
+					lRessource.getGenre() === Enumere_Ressource_1.EGenreRessource.Groupe
+				) {
 					lAvecGroupe = true;
 					lRessource.pere = lCumulGroupe;
 				} else {
@@ -119,7 +128,7 @@ class ObjetFenetre_SelectionClasseGroupe extends ObjetFenetre_SelectionRessource
 						),
 					);
 					if (!lNiveau) {
-						lNiveau = new ObjetElement(
+						lNiveau = new ObjetElement_1.ObjetElement(
 							lRessource.niveau.getLibelle(),
 							lRessource.niveau.getNumero(),
 							0,
@@ -134,7 +143,7 @@ class ObjetFenetre_SelectionClasseGroupe extends ObjetFenetre_SelectionRessource
 					aListeRessourcesSelectionnees.getElementParElement(lRessource);
 				lRessource.selectionne = !!(
 					lRessourceTrouve &&
-					lRessourceTrouve.getEtat() !== EGenreEtat.Suppression
+					lRessourceTrouve.getEtat() !== Enumere_Etat_1.EGenreEtat.Suppression
 				);
 				this.listeRessources.addElement(lRessource);
 			}
@@ -146,27 +155,26 @@ class ObjetFenetre_SelectionClasseGroupe extends ObjetFenetre_SelectionRessource
 			this.listeRessources.addElement(lListeCumul.get(i));
 		}
 		this.listeRessources.setTri([
-			ObjetTri.init((D) => {
-				return D.getGenre() === EGenreRessource.Groupe;
+			ObjetTri_1.ObjetTri.init((D) => {
+				return D.getGenre() === Enumere_Ressource_1.EGenreRessource.Groupe;
 			}),
-			ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.init((D) => {
 				return D.pere ? D.pere.getLibelle() : D.getLibelle();
 			}),
-			ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.init((D) => {
 				return !!D.pere;
 			}),
-			ObjetTri.init("Libelle"),
+			ObjetTri_1.ObjetTri.init("Libelle"),
 		]);
 		this.listeRessources.trier();
 	}
 }
-class DonneesListe_SelectionClasseGroupe extends ObjetDonneesListeFlatDesign {
+exports.ObjetFenetre_SelectionClasseGroupe = ObjetFenetre_SelectionClasseGroupe;
+class DonneesListe_SelectionClasseGroupe extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(ADonnees) {
 		super(ADonnees);
 		this.setOptions({
 			avecSelection: false,
-			avecSuppression: false,
-			avecEtatSaisie: false,
 			avecTri: false,
 			avecCB: true,
 			avecEvnt_CB: true,
@@ -174,7 +182,6 @@ class DonneesListe_SelectionClasseGroupe extends ObjetDonneesListeFlatDesign {
 			avecDeploiement: true,
 			avecEvnt_Deploiement: true,
 			avecEventDeploiementSurCellule: true,
-			avecEvnt_ApresEdition: true,
 			avecBoutonActionLigne: false,
 		});
 	}
@@ -196,4 +203,3 @@ class DonneesListe_SelectionClasseGroupe extends ObjetDonneesListeFlatDesign {
 		return true;
 	}
 }
-module.exports = { ObjetFenetre_SelectionClasseGroupe };

@@ -33,6 +33,13 @@ var TypeGenreFonctionPersonnel;
 	TypeGenreFonctionPersonnel[
 		(TypeGenreFonctionPersonnel["FP_MairieDirection"] = 11)
 	] = "FP_MairieDirection";
+	TypeGenreFonctionPersonnel[
+		(TypeGenreFonctionPersonnel["FP_Intendance"] = 12)
+	] = "FP_Intendance";
+	TypeGenreFonctionPersonnel[(TypeGenreFonctionPersonnel["FP_Social"] = 13)] =
+		"FP_Social";
+	TypeGenreFonctionPersonnel[(TypeGenreFonctionPersonnel["FP_PsyEN"] = 14)] =
+		"FP_PsyEN";
 })(
 	TypeGenreFonctionPersonnel ||
 		(exports.TypeGenreFonctionPersonnel = TypeGenreFonctionPersonnel = {}),

@@ -1,70 +1,42 @@
-const {
-	DonneesListe_ResultatsActualite,
-	ETypeFiltreRepondus,
-} = require("DonneesListe_ResultatsActualite.js");
-const { GHtml } = require("ObjetHtml.js");
-const { GUID } = require("GUID.js");
-const { DonneesListe_Simple } = require("DonneesListe_Simple.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { ZoneFenetre } = require("IEZoneFenetre.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetHint } = require("ObjetHint.js");
-const { Identite } = require("ObjetIdentite.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { MoteurInfoSondage } = require("MoteurInfoSondage.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { tag } = require("tag.js");
-const { GDate } = require("ObjetDate.js");
-const TypeEvenementCallback = {
-	RenvoyerNotification: "RenvoyerNotification",
-	ChangerCumulClasse: "ChangerCumulClasse",
-};
-class ObjetResultatsActualite extends Identite {
+exports.ObjetResultatsActualite = exports.TypeEvenementCallback = void 0;
+const DonneesListe_ResultatsActualite_1 = require("DonneesListe_ResultatsActualite");
+const DonneesListe_ResultatsActualite_Mobile_1 = require("DonneesListe_ResultatsActualite_Mobile");
+const ObjetHtml_1 = require("ObjetHtml");
+const GUID_1 = require("GUID");
+const DonneesListe_Simple_1 = require("DonneesListe_Simple");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetHint_1 = require("ObjetHint");
+const ObjetIdentite_1 = require("ObjetIdentite");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const MoteurInfoSondage_1 = require("MoteurInfoSondage");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+var TypeEvenementCallback;
+(function (TypeEvenementCallback) {
+	TypeEvenementCallback["RenvoyerNotification"] = "RenvoyerNotification";
+	TypeEvenementCallback["ChangerCumulClasse"] = "ChangerCumulClasse";
+})(
+	TypeEvenementCallback ||
+		(exports.TypeEvenementCallback = TypeEvenementCallback = {}),
+);
+class ObjetResultatsActualite extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
 		this.idLibelleAnonyme = this.Nom + "_libelleAnonyme";
-		this.idListeQuestions = this.Nom + ".listeQuestions";
-		this.idListeResultats = this.Nom + ".listeResultats";
 		this.idVisuQuestion = this.Nom + ".visuQuestion";
-		this.classVisuQuestion = GUID.getClassCss();
-		this.objetListeQuestions = new ObjetListe(
-			this.idListeQuestions,
-			null,
-			this,
-			this._eventListeQuestions,
-		);
-		this.objetListeQuestions.setOptionsListe({
-			colonnes: [
-				{ taille: 100, titre: GTraductions.getValeur("actualites.Question") },
-			],
-			hauteurAdapteContenu: false,
-			avecMultiSelection: true,
+		this.classVisuQuestion = GUID_1.GUID.getClassCss();
+		this.objetListeQuestions = new ObjetListe_1.ObjetListe({
+			pere: this,
+			evenement: this._eventListeQuestions,
 		});
-		this.listeResultats = new ObjetListe(
-			this.idListeResultats,
-			null,
-			this,
-			null,
-		);
-		this.idFenetreGraph = this.Nom + ".objetFenetreGraph";
-		this.objetFenetreGraph = new ObjetFenetre(this.idFenetreGraph, null, this);
-		ZoneFenetre.ajouterFenetre(this.objetFenetreGraph.getNom());
-		this.objetFenetreGraph.setOptionsFenetre({
-			modale: true,
-			hauteur: 400,
-			hauteurMin: 400,
-			largeur: 400,
-			largeurMin: 400,
-			listeBoutons: [GTraductions.getValeur("Fermer")],
-			avecRetaillage: true,
-		});
-		this.objetFenetreGraph.initialiser();
-		this.filtreRepondu = ETypeFiltreRepondus.tous;
+		this.listeResultats = new ObjetListe_1.ObjetListe({ pere: this });
+		this.filtreRepondu =
+			DonneesListe_ResultatsActualite_1.ETypeFiltreRepondus.tous;
 		this.avecNombreReponses = false;
 		this._options = {
 			avecBarreTitre: true,
@@ -72,7 +44,35 @@ class ObjetResultatsActualite extends Identite {
 			avecSeparationNomPrenom: true,
 		};
 		this.donneesAffichage = { avecAffichageCumulClasses: true };
+		this.objetListeQuestions.setOptionsListe({
+			colonnes: [
+				{
+					taille: 100,
+					titre: ObjetTraduction_1.GTraductions.getValeur(
+						"actualites.Question",
+					),
+				},
+			],
+			hauteurAdapteContenu: false,
+		});
+		this.construireInstanceListeFlat();
 	}
+	construireInstanceListeFlat() {
+		this.identListe = ObjetIdentite_1.Identite.creerInstance(
+			ObjetListe_1.ObjetListe,
+			{ pere: this, evenement: this.evenementListe },
+		);
+		this.initOptions(this.identListe);
+	}
+	initOptions(aInstance) {
+		aInstance.setOptionsListe({
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+			nonEditable: true,
+			scrollHorizontal: false,
+			avecModeAccessible: true,
+		});
+	}
+	evenementListe() {}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
 			comboFiltreSelonRepondus: {
@@ -81,33 +81,41 @@ class ObjetResultatsActualite extends Identite {
 						longueur: 350,
 						hauteur: 16,
 						hauteurLigneDefault: 16,
-						labelWAICellule: GTraductions.getValeur(
+						labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
 							"infoSond.Edition.LabelFiltreDestinataire",
 						),
 					});
 				},
 				getDonnees: function (aDonnees) {
 					if (!aDonnees && aInstance) {
-						aInstance.listeChoixFiltres = new ObjetListeElements();
+						aInstance.listeChoixFiltres =
+							new ObjetListeElements_1.ObjetListeElements();
 						aInstance.listeChoixFiltres.addElement(
-							new ObjetElement(
-								GTraductions.getValeur("infoSond.Edition.FiltreTous"),
+							new ObjetElement_1.ObjetElement(
+								ObjetTraduction_1.GTraductions.getValeur(
+									"infoSond.Edition.FiltreTous",
+								),
 								0,
-								ETypeFiltreRepondus.tous,
+								DonneesListe_ResultatsActualite_1.ETypeFiltreRepondus.tous,
 							),
 						);
 						aInstance.listeChoixFiltres.addElement(
-							new ObjetElement(
-								GTraductions.getValeur("infoSond.Edition.FiltreRepondu"),
+							new ObjetElement_1.ObjetElement(
+								ObjetTraduction_1.GTraductions.getValeur(
+									"infoSond.Edition.FiltreRepondu",
+								),
 								0,
-								ETypeFiltreRepondus.repondus,
+								DonneesListe_ResultatsActualite_1.ETypeFiltreRepondus.repondus,
 							),
 						);
 						aInstance.listeChoixFiltres.addElement(
-							new ObjetElement(
-								GTraductions.getValeur("infoSond.Edition.FiltreNonRepondu"),
+							new ObjetElement_1.ObjetElement(
+								ObjetTraduction_1.GTraductions.getValeur(
+									"infoSond.Edition.FiltreNonRepondu",
+								),
 								0,
-								ETypeFiltreRepondus.nonRepondus,
+								DonneesListe_ResultatsActualite_1.ETypeFiltreRepondus
+									.nonRepondus,
 							),
 						);
 						return aInstance.listeChoixFiltres;
@@ -127,7 +135,8 @@ class ObjetResultatsActualite extends Identite {
 				event: function (aParametres) {
 					if (
 						aParametres.genreEvenement ===
-							EGenreEvenementObjetSaisie.selection &&
+							Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+								.selection &&
 						!!aParametres.element &&
 						!!aInstance.filtreRepondu !== aParametres.element.Genre
 					) {
@@ -157,14 +166,14 @@ class ObjetResultatsActualite extends Identite {
 				},
 				getLibelle() {
 					const H = [
-						GTraductions.getValeur(
+						ObjetTraduction_1.GTraductions.getValeur(
 							"actualites.Edition.AfficherCumulParClasses",
 						),
 					];
 					if (aInstance.estUnSondageAnonyme()) {
 						H.push(
 							" (",
-							GTraductions.getValeur(
+							ObjetTraduction_1.GTraductions.getValeur(
 								"actualites.Edition.NonActifSurSondageAnonyme",
 							),
 							")",
@@ -191,10 +200,11 @@ class ObjetResultatsActualite extends Identite {
 	}
 	setOptions(aOptions) {
 		$.extend(this._options, aOptions);
+		return this;
 	}
 	setUtilitaires(aUtilitaires) {
 		this.utilitaires = aUtilitaires;
-		this.moteur = new MoteurInfoSondage(aUtilitaires);
+		this.moteur = new MoteurInfoSondage_1.MoteurInfoSondage(aUtilitaires);
 	}
 	setDonnees(aActualite) {
 		let lEstMemeActualite = false;
@@ -209,13 +219,13 @@ class ObjetResultatsActualite extends Identite {
 		if (this.estUnSondageAnonyme()) {
 			this.donneesAffichage.avecAffichageCumulClasses = false;
 		}
-		_miseAJourLibelleAnonyme.bind(this)();
+		this._miseAJourLibelleAnonyme();
 		if (this.actualite.avecResultats) {
 			$("#" + this.Nom.escapeJQ() + " > table").show();
 			this.objetListeQuestions.setDonnees(
-				new DonneesListe_Simple(
-					_getListeQuestionsConcernees.call(this, this.actualite),
-					{ avecMenuContextuel: false, avecMultiSelection: true },
+				new DonneesListe_Simple_1.DonneesListe_Simple(
+					this._getListeQuestionsConcernees(this.actualite),
+					{ avecMultiSelection: true },
 				),
 			);
 			let lIndiceLigneASelectionner = 0;
@@ -228,8 +238,7 @@ class ObjetResultatsActualite extends Identite {
 					for (const lQuestionSelectionnee of this.questionsSelectionnees) {
 						const lQuestionConcernee = lQuestionSelectionnee.article;
 						if (lQuestionConcernee) {
-							let lIndiceRetrouvee = _getIndiceDeQuestionsConcernees.call(
-								this,
+							let lIndiceRetrouvee = this._getIndiceDeQuestionsConcernees(
 								this.actualite,
 								lQuestionConcernee,
 							);
@@ -252,8 +261,11 @@ class ObjetResultatsActualite extends Identite {
 	initialiserListeReponses(aInstance) {
 		const lColonnes = [];
 		lColonnes.push({
-			id: DonneesListe_ResultatsActualite.colonnes.destinataires,
-			genreColonne: DonneesListe_ResultatsActualite.colonnes.destinataires,
+			id: DonneesListe_ResultatsActualite_1.DonneesListe_ResultatsActualite
+				.colonnes.destinataires,
+			genreColonne:
+				DonneesListe_ResultatsActualite_1.DonneesListe_ResultatsActualite
+					.colonnes.destinataires,
 			taille: IE.estMobile
 				? "100%"
 				: this.avecSeparationNomPrenom
@@ -261,28 +273,40 @@ class ObjetResultatsActualite extends Identite {
 					: "25rem",
 			titre: this._options.avecBarreTitre
 				? this.avecSeparationNomPrenom
-					? GTraductions.getValeur("actualites.Edition.ColonneNom")
-					: GTraductions.getValeur("actualites.Edition.ColonneDest")
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"actualites.Edition.ColonneNom",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"actualites.Edition.ColonneDest",
+						)
 				: null,
 		});
 		let lIdPremiereColonneScrollable = null;
 		if (this.avecSeparationNomPrenom) {
 			lColonnes.push({
-				id: DonneesListe_ResultatsActualite.colonnes.prenom,
-				genreColonne: DonneesListe_ResultatsActualite.colonnes.prenom,
+				id: DonneesListe_ResultatsActualite_1.DonneesListe_ResultatsActualite
+					.colonnes.prenom,
+				genreColonne:
+					DonneesListe_ResultatsActualite_1.DonneesListe_ResultatsActualite
+						.colonnes.prenom,
 				taille: IE.estMobile ? "100%" : "14rem",
 				titre: this._options.avecBarreTitre
-					? GTraductions.getValeur("actualites.Edition.ColonnePrenom")
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"actualites.Edition.ColonnePrenom",
+						)
 					: null,
 			});
 		}
-		if (!IE.estMobile && _avecColonneClasse.call(this)) {
+		if (!IE.estMobile && this._avecColonneClasse()) {
 			lColonnes.push({
-				id: DonneesListe_ResultatsActualite.colonnes.classe,
-				genreColonne: DonneesListe_ResultatsActualite.colonnes.classe,
+				id: DonneesListe_ResultatsActualite_1.DonneesListe_ResultatsActualite
+					.colonnes.classe,
+				genreColonne:
+					DonneesListe_ResultatsActualite_1.DonneesListe_ResultatsActualite
+						.colonnes.classe,
 				taille: "10rem",
 				titre: this._options.avecBarreTitre
-					? GTraductions.getValeur("actualites.Classe")
+					? ObjetTraduction_1.GTraductions.getValeur("actualites.Classe")
 					: null,
 			});
 		}
@@ -309,14 +333,16 @@ class ObjetResultatsActualite extends Identite {
 							)) ||
 						lQuestion.avecAR
 					) {
-						lTitre = GTraductions.getValeur("actualites.Edition.ColonneARRecu");
+						lTitre = ObjetTraduction_1.GTraductions.getValeur(
+							"actualites.Edition.ColonneARRecu",
+						);
 					} else if (
 						lAvecGenreReponse &&
 						this.utilitaires.genreReponse.estGenreTextuelle(
 							lQuestion.genreReponse,
 						)
 					) {
-						lTitre = GTraductions.getValeur(
+						lTitre = ObjetTraduction_1.GTraductions.getValeur(
 							"actualites.Edition.ColonneReponse",
 						);
 					} else if (
@@ -328,19 +354,24 @@ class ObjetResultatsActualite extends Identite {
 								lQuestion.genreReponse,
 							))
 					) {
-						lTitre = GTraductions.getValeur(
+						lTitre = ObjetTraduction_1.GTraductions.getValeur(
 							"actualites.Edition.ColonneRepondu",
 						);
 					} else {
 					}
 					const lIdColonne =
-						DonneesListe_ResultatsActualite.colonnes.reponse + "_" + i;
+						DonneesListe_ResultatsActualite_1.DonneesListe_ResultatsActualite
+							.colonnes.reponse +
+						"_" +
+						i;
 					let lColonneTitre = lAvecMultiSelection
 						? [lFusionColonne, lTitre]
 						: lTitre;
 					lColonnes.push({
 						id: lIdColonne,
-						genreColonne: DonneesListe_ResultatsActualite.colonnes.reponse,
+						genreColonne:
+							DonneesListe_ResultatsActualite_1.DonneesListe_ResultatsActualite
+								.colonnes.reponse,
 						numeroQuestion: lQuestion.getNumero(),
 						taille: "5rem",
 						titre: this._options.avecBarreTitre ? lColonneTitre : null,
@@ -365,11 +396,14 @@ class ObjetResultatsActualite extends Identite {
 								: aChoix.getLibelle();
 							lColonnes.push({
 								id:
-									DonneesListe_ResultatsActualite.colonnes.choix +
+									DonneesListe_ResultatsActualite_1
+										.DonneesListe_ResultatsActualite.colonnes.choix +
 									"_" +
 									aChoix.getNumero(),
 								numeroChoix: j,
-								genreColonne: DonneesListe_ResultatsActualite.colonnes.choix,
+								genreColonne:
+									DonneesListe_ResultatsActualite_1
+										.DonneesListe_ResultatsActualite.colonnes.choix,
 								estChoixAutre: !!aChoix.estReponseLibre,
 								numeroQuestion: lQuestion.getNumero(),
 								taille: "5rem",
@@ -383,78 +417,106 @@ class ObjetResultatsActualite extends Identite {
 		}
 		aInstance.setOptionsListe({
 			colonnes: lColonnes,
-			boutons: [{ genre: ObjetListe.typeBouton.deployer }],
+			boutons: [{ genre: ObjetListe_1.ObjetListe.typeBouton.deployer }],
 			nonEditable: false,
 			avecCelluleEditableTriangle: false,
 			scrollHorizontal:
 				lIdPremiereColonneScrollable ||
-				DonneesListe_ResultatsActualite.colonnes.destinataires,
+				DonneesListe_ResultatsActualite_1.DonneesListe_ResultatsActualite
+					.colonnes.destinataires,
 		});
 	}
 	recupererDonnees() {}
 	construireAffichage() {
-		return tag(
-			"div",
-			{
-				class: ["flex-contain", "flex-cols", "flex-gap"],
-				style: ["height:100%"],
-			},
-			() => {
-				const H = [];
-				if (!IE.estMobile) {
-					H.push(
-						tag(
-							"div",
-							{ class: ["flex-contain", "flex-gap-l"] },
-							tag("ie-combo", { "ie-model": "comboFiltreSelonRepondus" }),
-							tag(
-								"ie-checkbox",
-								{ "ie-model": "cbAfficherNbReponses" },
-								GTraductions.getValeur("actualites.Edition.AvecNombreRepondu"),
+		const lHtmlFiltres = [];
+		if (!IE.estMobile) {
+			lHtmlFiltres.push(
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
+						"div",
+						{ class: ["flex-contain", "flex-gap-l"] },
+						IE.jsx.str("ie-combo", { "ie-model": "comboFiltreSelonRepondus" }),
+						IE.jsx.str(
+							"ie-checkbox",
+							{ "ie-model": "cbAfficherNbReponses" },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"actualites.Edition.AvecNombreRepondu",
 							),
 						),
-					);
-					H.push(
-						"<div>",
-						'<ie-checkbox ie-model="cbAvecCumulParClasses"></ie-checkbox>',
-						"</div>",
-					);
-					H.push(
-						'<div class="Texte10" id="',
-						this.idLibelleAnonyme,
-						'"></div>',
-					);
-				}
-				H.push(
-					tag(
-						"div",
-						{ class: ["flex-contain", "fluid-bloc"] },
-						tag("div", { id: this.idListeQuestions }),
-						tag("div", { class: ["fluid-bloc"] }, () => {
-							const T = [];
-							T.push(
-								'<table class="full-size">',
-								'<tr class="',
-								this.classVisuQuestion,
-								'"><td class="full-width"><div id="',
-								this.idVisuQuestion,
-								'" class="Bordure MargeBas" style="margin-right:',
-								GNavigateur.getLargeurBarreDeScroll
-									? GNavigateur.getLargeurBarreDeScroll()
-									: 10,
-								'px; box-sizing: border-box;"></div></td></tr>',
-								'<tr><td class="full-size"><div id="',
-								this.idListeResultats,
-								'" class="full-size"></div></td></tr>',
-								"</table>",
-							);
-							return T.join("");
-						}),
 					),
-				);
-				return H.join("");
-			},
-		);
+					IE.jsx.str(
+						"div",
+						null,
+						IE.jsx.str("ie-checkbox", { "ie-model": "cbAvecCumulParClasses" }),
+					),
+					IE.jsx.str("div", { class: "Texte10", id: this.idLibelleAnonyme }),
+				),
+			);
+		}
+		if (IE.estMobile) {
+			return IE.jsx.str(
+				"div",
+				null,
+				IE.jsx.str("div", {
+					id: this.identListe.getNom(),
+					class: "full-height",
+				}),
+			);
+		} else {
+			return IE.jsx.str(
+				"div",
+				{
+					class: ["flex-contain", "flex-cols", "flex-gap"],
+					style: "height:100%;",
+				},
+				lHtmlFiltres.join(""),
+				IE.jsx.str(
+					"div",
+					{ class: ["flex-contain", "fluid-bloc"] },
+					IE.jsx.str("div", { id: this.objetListeQuestions.getNom() }),
+					IE.jsx.str(
+						"div",
+						{ class: "fluid-bloc" },
+						IE.jsx.str(
+							"table",
+							{ class: "full-size" },
+							IE.jsx.str(
+								"tr",
+								{ class: this.classVisuQuestion },
+								IE.jsx.str(
+									"td",
+									{ class: "full-width" },
+									IE.jsx.str("div", {
+										id: this.idVisuQuestion,
+										class: "Bordure MargeBas",
+										style:
+											"margin-right:" +
+											(ObjetNavigateur_1.Navigateur.getLargeurBarreDeScroll
+												? ObjetNavigateur_1.Navigateur.getLargeurBarreDeScroll()
+												: 10) +
+											"px; box-sizing: border-box;",
+									}),
+								),
+							),
+							IE.jsx.str(
+								"tr",
+								null,
+								IE.jsx.str(
+									"td",
+									{ class: "full-size" },
+									IE.jsx.str("div", {
+										id: this.listeResultats.getNom(),
+										class: "full-size",
+									}),
+								),
+							),
+						),
+					),
+				),
+			);
+		}
 	}
 	actualiserListe() {
 		if (this.actualite === null || this.actualite === undefined) {
@@ -490,31 +552,43 @@ class ObjetResultatsActualite extends Identite {
 				}),
 			);
 			lHtml.push("</div></div>");
-			GHtml.setHtml(this.idVisuQuestion, lHtml.join(""), {
+			ObjetHtml_1.GHtml.setHtml(this.idVisuQuestion, lHtml.join(""), {
 				controleur: this.controleur,
 			});
 		}
-		_visibiliteQuestions.call(this);
-		this.listeResultats.setDonnees(
-			new DonneesListe_ResultatsActualite(
-				{
-					donnees: _formatDonnees.call(this),
-					pere: this,
-					evenement: this.evenementMenuContextuelListe,
-					genre: this.question.genreReponse,
-					niveauMaxCumul: this.question.niveauMaxCumul,
-					filtreRepondu: this.filtreRepondu,
-					avecNombreReponses: this.avecNombreReponses,
-					avecCommandeRenvoyerNotfication:
-						_avecCommandeRenvoyerNotfication.call(this, this.actualite),
-					avecSeparationNomPrenom: this.avecSeparationNomPrenom,
-				},
-				{ genreReponse: this.utilitaires.genreReponse },
-			),
-		);
+		this._visibiliteQuestions();
+		if (!this.estUnSondage() && IE.estMobile) {
+			const lListe = this._formatDonnees();
+			const flatDonneesListe =
+				new DonneesListe_ResultatsActualite_Mobile_1.DonneesListe_ResultatsActualite_Mobile(
+					lListe,
+				);
+			this.identListe.setDonnees(flatDonneesListe);
+		} else {
+			this.listeResultats.setDonnees(
+				new DonneesListe_ResultatsActualite_1.DonneesListe_ResultatsActualite(
+					{
+						donnees: this._formatDonnees(),
+						pere: this,
+						evenement: this.evenementMenuContextuelListe,
+						genre: this.question.genreReponse,
+						niveauMaxCumul: this.question.niveauMaxCumul,
+						filtreRepondu: this.filtreRepondu,
+						avecNombreReponses: this.avecNombreReponses,
+						avecCommandeRenvoyerNotfication:
+							this._avecCommandeRenvoyerNotfication(this.actualite),
+						avecSeparationNomPrenom: this.avecSeparationNomPrenom,
+					},
+					{ genreReponse: this.utilitaires.genreReponse },
+				),
+			);
+		}
 	}
 	_eventListeQuestions(aParametres) {
-		if (aParametres.genreEvenement === EGenreEvenementListe.Selection) {
+		if (
+			aParametres.genreEvenement ===
+			Enumere_EvenementListe_1.EGenreEvenementListe.Selection
+		) {
 			this.questionsSelectionnees =
 				aParametres.instance.getTableauCellulesSelection();
 			this.question = this.actualite.listeQuestions.getElementParNumero(
@@ -524,17 +598,24 @@ class ObjetResultatsActualite extends Identite {
 		}
 	}
 	evenementMenuContextuelListe(aCommande, aElement) {
+		var _a;
 		if (
-			aCommande === DonneesListe_ResultatsActualite.genreCommande.graphique ||
-			aCommande === DonneesListe_ResultatsActualite.genreCommande.graphiqueTotal
+			aCommande ===
+				DonneesListe_ResultatsActualite_1.DonneesListe_ResultatsActualite
+					.genreCommande.graphique ||
+			aCommande ===
+				DonneesListe_ResultatsActualite_1.DonneesListe_ResultatsActualite
+					.genreCommande.graphiqueTotal
 		) {
 			let lElement;
 			if (
-				aCommande === DonneesListe_ResultatsActualite.genreCommande.graphique
+				aCommande ===
+				DonneesListe_ResultatsActualite_1.DonneesListe_ResultatsActualite
+					.genreCommande.graphique
 			) {
 				lElement = aElement;
 			} else {
-				lElement = new ObjetElement();
+				lElement = new ObjetElement_1.ObjetElement();
 				lElement.valeurCumul = [];
 				lElement.nbRecue = 0;
 				lElement.nbAttendue = 0;
@@ -615,7 +696,9 @@ class ObjetResultatsActualite extends Identite {
 					'<div style="width:' +
 						lLargeurColonne +
 						';overflow:hidden;white-space:nowrap;text-overflow:ellipsis;text-align:center;" class="Texte10 InlineBlock">' +
-						GTraductions.getValeur("actualites.Edition.ColonneRepondu") +
+						ObjetTraduction_1.GTraductions.getValeur(
+							"actualites.Edition.ColonneRepondu",
+						) +
 						"</div>",
 				);
 				lHtmlBarres.push(
@@ -623,7 +706,9 @@ class ObjetResultatsActualite extends Identite {
 						lLargeurColonne +
 						';height:100%;position:relative;" class="Texte10 InlineBlock">',
 					'<div class="objetResultatsActualiteBarreGraph" data-libelle="',
-					GTraductions.getValeur("actualites.Edition.ColonneRepondu"),
+					ObjetTraduction_1.GTraductions.getValeur(
+						"actualites.Edition.ColonneRepondu",
+					),
 					'" data-valeur="',
 					lElement.nbRecue,
 					'" data-hauteur="',
@@ -643,7 +728,9 @@ class ObjetResultatsActualite extends Identite {
 				'<div style="width:' +
 					lLargeurColonne +
 					';overflow:hidden;white-space:nowrap;text-overflow:ellipsis;text-align:center;" class="Texte10 InlineBlock">' +
-					GTraductions.getValeur("actualites.Edition.ColonneNonRepondu") +
+					ObjetTraduction_1.GTraductions.getValeur(
+						"actualites.Edition.ColonneNonRepondu",
+					) +
 					"</div>",
 			);
 			lHtmlBarres.push(
@@ -651,7 +738,9 @@ class ObjetResultatsActualite extends Identite {
 					lLargeurColonne +
 					';height:100%;position:relative;" class="Texte10 InlineBlock">',
 				'<div class="objetResultatsActualiteBarreGraph" data-libelle="',
-				GTraductions.getValeur("actualites.Edition.ColonneNonRepondu"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"actualites.Edition.ColonneNonRepondu",
+				),
 				'" data-valeur="',
 				lElement.nbAttendue - lElement.nbRecue,
 				'" data-hauteur="',
@@ -707,14 +796,34 @@ class ObjetResultatsActualite extends Identite {
 				"</div>",
 				"</div>",
 			];
-			if (this.objetFenetreGraph.EnAffichage) {
+			if (
+				(_a = this.objetFenetreGraph) === null || _a === void 0
+					? void 0
+					: _a.EnAffichage
+			) {
 				this.objetFenetreGraph.fermer();
 			}
+			this.objetFenetreGraph = new ObjetFenetre_1.ObjetFenetre({
+				pere: this,
+			}).initAfficher({
+				options: {
+					modale: true,
+					hauteur: 400,
+					hauteurMin: 400,
+					largeur: 400,
+					largeurMin: 400,
+					listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
+					avecRetaillage: true,
+				},
+				surFermeture: () => {
+					delete this.objetFenetreGraph;
+				},
+			});
 			this.objetFenetreGraph.afficher(lHtml.join(""));
 			$(".objetResultatsActualiteBarreGraph")
 				.height("0%")
 				.on("mousemove", function () {
-					ObjetHint.start(
+					ObjetHint_1.ObjetHint.start(
 						"<strong>" +
 							$(this).attr("data-libelle") +
 							"</strong><br />" +
@@ -724,7 +833,7 @@ class ObjetResultatsActualite extends Identite {
 					$(this).css({ border: "#000 1px solid", borderBottom: "0px" });
 				})
 				.on("mouseleave", function () {
-					ObjetHint.stop();
+					ObjetHint_1.ObjetHint.stop();
 					$(this).css({ border: "0px" });
 				})
 				.each(function () {
@@ -734,21 +843,24 @@ class ObjetResultatsActualite extends Identite {
 				});
 			let lTitreFenetre;
 			if (
-				aCommande === DonneesListe_ResultatsActualite.genreCommande.graphique
+				aCommande ===
+				DonneesListe_ResultatsActualite_1.DonneesListe_ResultatsActualite
+					.genreCommande.graphique
 			) {
-				lTitreFenetre = GTraductions.getValeur(
+				lTitreFenetre = ObjetTraduction_1.GTraductions.getValeur(
 					"actualites.Edition.TitreGrapheCumul",
 					[lElement.getLibelle()],
 				);
 			} else {
-				lTitreFenetre = GTraductions.getValeur(
+				lTitreFenetre = ObjetTraduction_1.GTraductions.getValeur(
 					"actualites.Edition.TitreGrapheTotal",
 				);
 			}
 			this.objetFenetreGraph.setOptionsFenetre({ titre: lTitreFenetre });
 		} else if (
 			aCommande ===
-			DonneesListe_ResultatsActualite.genreCommande.renvoyerNotification
+			DonneesListe_ResultatsActualite_1.DonneesListe_ResultatsActualite
+				.genreCommande.renvoyerNotification
 		) {
 			this.callback.appel(TypeEvenementCallback.RenvoyerNotification, {
 				actualite: this.actualite,
@@ -756,130 +868,136 @@ class ObjetResultatsActualite extends Identite {
 			});
 		}
 	}
-}
-function _getIndiceDeQuestionsConcernees(aActualite, aQuestionRecherchee) {
-	let lIndiceTrouve = -1;
-	const lListeQuestionsConcernees = _getListeQuestionsConcernees.call(
-		this,
-		aActualite,
-	);
-	if (lListeQuestionsConcernees) {
-		lIndiceTrouve =
-			lListeQuestionsConcernees.getIndiceParElement(aQuestionRecherchee);
-	}
-	return lIndiceTrouve;
-}
-function _getListeQuestionsConcernees(aActualite) {
-	let lListeQuestions = new ObjetListeElements();
-	if (!!aActualite && !!aActualite.listeQuestions) {
-		lListeQuestions = aActualite.listeQuestions.getListeElements((D) => {
-			if (this.utilitaires.genreReponse.estGenreSansReponse(D.genreReponse)) {
-				return false;
-			}
-			return true;
-		});
-	}
-	return lListeQuestions;
-}
-function _visibiliteQuestions() {
-	const lListeQuestionsActu = _getListeQuestionsConcernees.call(
-		this,
-		this.actualite,
-	);
-	if (lListeQuestionsActu.getNbrElementsExistes() > 1) {
-		$("#" + this.idListeQuestions.escapeJQ()).show();
-		this.objetListeQuestions.actualiser(true);
-	} else {
-		$("#" + this.idListeQuestions.escapeJQ()).hide();
-	}
-}
-function _miseAJourLibelleAnonyme() {
-	let lLibelle = "";
-	if (this.estUnSondage()) {
-		lLibelle = this.actualite.reponseAnonyme
-			? GTraductions.getValeur("actualites.InfoAnonyme")
-			: GTraductions.getValeur("actualites.InfoNominatif");
-	}
-	GHtml.setHtml(this.idLibelleAnonyme, lLibelle);
-	if (this.estUnSondage()) {
-		$("#" + this.idLibelleAnonyme.escapeJQ()).show();
-	} else {
-		$("#" + this.idLibelleAnonyme.escapeJQ()).hide();
-	}
-}
-function _avecColonneClasse() {
-	let lAvecClasse = false;
-	if (!this.estUnSondageAnonyme()) {
-		if (this.questionsSelectionnees && this.questionsSelectionnees.length > 0) {
-			for (let i = 0; i < this.questionsSelectionnees.length; i++) {
-				const lQuestion = this.questionsSelectionnees[i];
-				if (
-					!!lQuestion.article &&
-					!!lQuestion.article.resultats &&
-					!!lQuestion.article.resultats.listeRepondant
-				) {
-					lQuestion.article.resultats.listeRepondant.parcourir((aRepondant) => {
-						if (!!aRepondant.libelleClasse && aRepondant.libelleClasse !== "") {
-							lAvecClasse = true;
-						}
-					});
-				}
-			}
+	_getIndiceDeQuestionsConcernees(aActualite, aQuestionRecherchee) {
+		let lIndiceTrouve = -1;
+		const lListeQuestionsConcernees =
+			this._getListeQuestionsConcernees(aActualite);
+		if (lListeQuestionsConcernees) {
+			lIndiceTrouve =
+				lListeQuestionsConcernees.getIndiceParElement(aQuestionRecherchee);
 		}
+		return lIndiceTrouve;
 	}
-	return lAvecClasse;
-}
-function _formatDonnees() {
-	const lListe = new ObjetListeElements();
-	if (this.questionsSelectionnees.length === 0) {
-		return lListe;
-	}
-	for (let i = 0; i < this.questionsSelectionnees.length; i++) {
-		const lQuestion = this.questionsSelectionnees[i];
-		if (!!lQuestion && !!lQuestion.article.resultats) {
-			lQuestion.article.resultats.listeRepondant.parcourir((aRepondant) => {
-				const lReponse = new ObjetElement(
-					lQuestion.article.getLibelle(),
-					lQuestion.article.getNumero(),
-					lQuestion.article.genreReponse,
-				);
-				lReponse.nbRecue = aRepondant.nbRecue;
-				lReponse.nbAttendue = aRepondant.nbAttendue;
-				lReponse.pourcentageRecue = aRepondant.pourcentageRecue;
-				lReponse.texteReponse = aRepondant.texteReponse;
-				lReponse.repondu = aRepondant.repondu;
-				lReponse.domaineReponse = aRepondant.domaineReponse;
-				lReponse.valeurCumul = aRepondant.valeurCumul;
-				lReponse.percentCumul = aRepondant.percentCumul;
-				const lElement = lListe.get(
-					lListe.getIndiceElementParFiltre((aElement) => {
-						return (
-							aElement.NumeroArticleLigne === aRepondant.NumeroArticleLigne
-						);
-					}),
-				);
-				if (!!lElement) {
-					lElement.listeReponses.add(lReponse);
-				} else {
-					aRepondant.listeReponses = new ObjetListeElements();
-					aRepondant.listeReponses.add(lReponse);
-					lListe.add(aRepondant);
+	_getListeQuestionsConcernees(aActualite) {
+		let lListeQuestions = new ObjetListeElements_1.ObjetListeElements();
+		if (!!aActualite && !!aActualite.listeQuestions) {
+			lListeQuestions = aActualite.listeQuestions.getListeElements((D) => {
+				if (this.utilitaires.genreReponse.estGenreSansReponse(D.genreReponse)) {
+					return false;
 				}
+				return true;
 			});
 		}
+		return lListeQuestions;
 	}
-	return lListe;
+	_visibiliteQuestions() {
+		const lListeQuestionsActu = this._getListeQuestionsConcernees(
+			this.actualite,
+		);
+		if (lListeQuestionsActu.getNbrElementsExistes() > 1) {
+			$("#" + this.objetListeQuestions.getNom().escapeJQ()).show();
+			this.objetListeQuestions.actualiser(true);
+		} else {
+			$("#" + this.objetListeQuestions.getNom().escapeJQ()).hide();
+		}
+	}
+	_miseAJourLibelleAnonyme() {
+		let lLibelle = "";
+		if (this.estUnSondage()) {
+			lLibelle = this.actualite.reponseAnonyme
+				? ObjetTraduction_1.GTraductions.getValeur("actualites.InfoAnonyme")
+				: ObjetTraduction_1.GTraductions.getValeur("actualites.InfoNominatif");
+		}
+		ObjetHtml_1.GHtml.setHtml(this.idLibelleAnonyme, lLibelle);
+		if (this.estUnSondage()) {
+			$("#" + this.idLibelleAnonyme.escapeJQ()).show();
+		} else {
+			$("#" + this.idLibelleAnonyme.escapeJQ()).hide();
+		}
+	}
+	_avecColonneClasse() {
+		let lAvecClasse = false;
+		if (!this.estUnSondageAnonyme()) {
+			if (
+				this.questionsSelectionnees &&
+				this.questionsSelectionnees.length > 0
+			) {
+				for (let i = 0; i < this.questionsSelectionnees.length; i++) {
+					const lQuestion = this.questionsSelectionnees[i];
+					if (
+						!!lQuestion.article &&
+						!!lQuestion.article.resultats &&
+						!!lQuestion.article.resultats.listeRepondant
+					) {
+						lQuestion.article.resultats.listeRepondant.parcourir(
+							(aRepondant) => {
+								if (
+									!!aRepondant.libelleClasse &&
+									aRepondant.libelleClasse !== ""
+								) {
+									lAvecClasse = true;
+								}
+							},
+						);
+					}
+				}
+			}
+		}
+		return lAvecClasse;
+	}
+	_formatDonnees() {
+		const lListe = new ObjetListeElements_1.ObjetListeElements();
+		if (this.questionsSelectionnees.length === 0) {
+			return lListe;
+		}
+		for (let i = 0; i < this.questionsSelectionnees.length; i++) {
+			const lQuestion = this.questionsSelectionnees[i];
+			if (!!lQuestion && !!lQuestion.article.resultats) {
+				lQuestion.article.resultats.listeRepondant.parcourir((aRepondant) => {
+					const lReponse = new ObjetElement_1.ObjetElement(
+						lQuestion.article.getLibelle(),
+						lQuestion.article.getNumero(),
+						lQuestion.article.genreReponse,
+					);
+					lReponse.nbRecue = aRepondant.nbRecue;
+					lReponse.nbAttendue = aRepondant.nbAttendue;
+					lReponse.pourcentageRecue = aRepondant.pourcentageRecue;
+					lReponse.texteReponse = aRepondant.texteReponse;
+					lReponse.repondu = aRepondant.repondu;
+					lReponse.domaineReponse = aRepondant.domaineReponse;
+					lReponse.valeurCumul = aRepondant.valeurCumul;
+					lReponse.percentCumul = aRepondant.percentCumul;
+					const lElement = lListe.get(
+						lListe.getIndiceElementParFiltre((aElement) => {
+							return (
+								aElement.NumeroArticleLigne === aRepondant.NumeroArticleLigne
+							);
+						}),
+					);
+					if (!!lElement) {
+						lElement.listeReponses.add(lReponse);
+					} else {
+						aRepondant.listeReponses =
+							new ObjetListeElements_1.ObjetListeElements();
+						aRepondant.listeReponses.add(lReponse);
+						lListe.add(aRepondant);
+					}
+				});
+			}
+		}
+		return lListe;
+	}
+	_avecCommandeRenvoyerNotfication(aActualite) {
+		return (
+			!IE.estMobile &&
+			this._options.avecNotificationRelance &&
+			aActualite.nbIndividusSansReponses > 0 &&
+			aActualite.pourcentRepondu < 100 &&
+			aActualite.publie &&
+			(ObjetDate_1.GDate.estAvantJourCourant(aActualite.dateDebut) ||
+				ObjetDate_1.GDate.estJourCourant(aActualite.dateDebut)) &&
+			!ObjetDate_1.GDate.estAvantJourCourant(aActualite.dateFin)
+		);
+	}
 }
-function _avecCommandeRenvoyerNotfication(aActualite) {
-	return (
-		!IE.estMobile &&
-		this._options.avecNotificationRelance &&
-		aActualite.nbIndividusSansReponses > 0 &&
-		aActualite.pourcentRepondu < 100 &&
-		aActualite.publie &&
-		(GDate.estAvantJourCourant(aActualite.dateDebut) ||
-			GDate.estJourCourant(aActualite.dateDebut)) &&
-		!GDate.estAvantJourCourant(aActualite.dateFin)
-	);
-}
-module.exports = { ObjetResultatsActualite, TypeEvenementCallback };
+exports.ObjetResultatsActualite = ObjetResultatsActualite;

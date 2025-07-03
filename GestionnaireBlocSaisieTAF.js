@@ -1,15 +1,13 @@
-const { GestionnaireBlocDeBase } = require("GestionnaireBloc.js");
-const { ObjetBlocSaisieTAF } = require("ObjetBlocSaisieTAF.js");
-const { Identite } = require("ObjetIdentite.js");
-const { BlocCard } = require("BlocCard.js");
-class GestionnaireBlocSaisieTAF extends GestionnaireBlocDeBase {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.GestionnaireBlocSaisieTAF = void 0;
+const GestionnaireBloc_1 = require("GestionnaireBloc");
+const ObjetBlocSaisieTAF_1 = require("ObjetBlocSaisieTAF");
+const ObjetIdentite_1 = require("ObjetIdentite");
+const BlocCard_1 = require("BlocCard");
+class GestionnaireBlocSaisieTAF extends GestionnaireBloc_1.GestionnaireBlocDeBase {
 	composeBloc(aDataBloc) {
 		const lInstance = this.getInstanceObjetMetier(
 			aDataBloc,
-			ObjetBlocSaisieTAF,
+			ObjetBlocSaisieTAF_1.ObjetBlocSaisieTAF,
 		);
 		return {
 			html: this.composeZoneInstance(lInstance),
@@ -17,8 +15,10 @@ class GestionnaireBlocSaisieTAF extends GestionnaireBlocDeBase {
 		};
 	}
 	composeBlocMsg(aMsg) {
-		const lBloc = Identite.creerInstance(BlocCard, { pere: this });
+		const lBloc = ObjetIdentite_1.Identite.creerInstance(BlocCard_1.BlocCard, {
+			pere: this,
+		});
 		return { html: lBloc.composeHtmlMsg(aMsg) };
 	}
 }
-module.exports = { GestionnaireBlocSaisieTAF };
+exports.GestionnaireBlocSaisieTAF = GestionnaireBlocSaisieTAF;

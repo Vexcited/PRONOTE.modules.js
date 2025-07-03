@@ -1,103 +1,101 @@
-const {
-	PanelDetailServiceNotationPN,
-} = require("PanelDetailServiceNotationPN.js");
-const { ObjetFenetre_DevoirPN } = require("ObjetFenetre_DevoirPN.js");
-const { TypeCallbackFenetreDevoir } = require("ObjetFenetre_Devoir.js");
-const {
-	ObjetFenetre_MethodeCalculMoyenne,
-} = require("ObjetFenetre_MethodeCalculMoyenne.js");
-const { TypeThemeBouton } = require("Type_ThemeBouton.js");
-const { ObjetInvocateur, Invocateur } = require("Invocateur.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GHtml } = require("ObjetHtml.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { EGenreEleveDansDevoir } = require("Enumere_EleveDansDevoir.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const {
-	EGenreEvenementNotesEtAppreciations,
-} = require("Enumere_EvenementNotesEtAppreciations.js");
-const {
-	EGenreEvenementSaisieNotes,
-} = require("Enumere_EvenementSaisieNotes.js");
-const { EGenreImpression } = require("Enumere_GenreImpression.js");
-const { EStructureAffichage } = require("Enumere_StructureAffichage.js");
-const { EGenreTriElement } = require("Enumere_TriElement.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetFenetre_Periode } = require("ObjetFenetre_Periode.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { TypeNote } = require("TypeNote.js");
-const { EGenreEvntMenusDeroulants } = require("Enumere_EvntMenusDeroulants.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { InterfacePage } = require("InterfacePage.js");
-const {
-	ObjetAffichagePageAvecMenusDeroulants,
-} = require("InterfacePageAvecMenusDeroulants.js");
-const ObjetRequetePageNotes = require("ObjetRequetePageNotes.js");
-const { ObjetRequeteSaisieNotes } = require("ObjetRequeteSaisieNotes.js");
-const ObjetFenetre_CompetencesParEvaluation = require("ObjetFenetre_CompetencesParEvaluation.js");
-const {
-	ObjetFenetre_ParamSaisieNotes,
-} = require("ObjetFenetre_ParamSaisieNotes.js");
-const {
-	ObjetRequeteSaisieNotesUnitaire,
-} = require("ObjetRequeteSaisieNotesUnitaire.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const {
-	GestionnaireImportExport_PN,
-} = require("GestionnaireImportExport_PN.js");
-const {
-	ENatureOperation,
-	EFormatFichierIE,
-} = require("GestionnaireImportExport.js");
-const { EGenreAnnotation } = require("Enumere_Annotation.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { DonneesListe_PageNotes } = require("DonneesListe_PageNotes.js");
-const { DonneesListe_PageNotesPN } = require("DonneesListe_PageNotesPN.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { ObjetMoteurReleveBulletin } = require("ObjetMoteurReleveBulletin.js");
-const { EGenreAction } = require("Enumere_Action.js");
-const { UtilitaireBoutonBandeau } = require("UtilitaireBoutonBandeau.js");
-const { ObjetUtilitaireDevoir } = require("ObjetUtilitaireDevoir.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { EGenreDocumentJoint } = require("Enumere_DocumentJoint.js");
-class InterfacePageNotes extends InterfacePage {
-	constructor(...aParams) {
-		super(...aParams);
+exports.InterfacePageNotes = void 0;
+const PanelDetailServiceNotationPN_1 = require("PanelDetailServiceNotationPN");
+const ObjetFenetre_DevoirPN_1 = require("ObjetFenetre_DevoirPN");
+const ObjetFenetre_Devoir_1 = require("ObjetFenetre_Devoir");
+const ObjetFenetre_MethodeCalculMoyenne_1 = require("ObjetFenetre_MethodeCalculMoyenne");
+const Type_ThemeBouton_1 = require("Type_ThemeBouton");
+const Invocateur_1 = require("Invocateur");
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetHtml_1 = require("ObjetHtml");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_EleveDansDevoir_1 = require("Enumere_EleveDansDevoir");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_EvenementNotesEtAppreciations_1 = require("Enumere_EvenementNotesEtAppreciations");
+const Enumere_EvenementSaisieNotes_1 = require("Enumere_EvenementSaisieNotes");
+const Enumere_GenreImpression_1 = require("Enumere_GenreImpression");
+const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
+const Enumere_TriElement_1 = require("Enumere_TriElement");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetFenetre_Periode_1 = require("ObjetFenetre_Periode");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const TypeNote_1 = require("TypeNote");
+const Enumere_EvntMenusDeroulants_1 = require("Enumere_EvntMenusDeroulants");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const InterfacePage_1 = require("InterfacePage");
+const InterfacePageAvecMenusDeroulants_1 = require("InterfacePageAvecMenusDeroulants");
+const ObjetRequetePageNotes_1 = require("ObjetRequetePageNotes");
+const ObjetRequeteSaisieNotes_1 = require("ObjetRequeteSaisieNotes");
+const ObjetFenetre_CompetencesParEvaluation_1 = require("ObjetFenetre_CompetencesParEvaluation");
+const ObjetFenetre_ParamSaisieNotes_1 = require("ObjetFenetre_ParamSaisieNotes");
+const ObjetRequeteSaisieNotesUnitaire_1 = require("ObjetRequeteSaisieNotesUnitaire");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const Enumere_Annotation_1 = require("Enumere_Annotation");
+const ObjetListe_1 = require("ObjetListe");
+const DonneesListe_PageNotes_1 = require("DonneesListe_PageNotes");
+const DonneesListe_PageNotesPN_1 = require("DonneesListe_PageNotesPN");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetMoteurReleveBulletin_1 = require("ObjetMoteurReleveBulletin");
+const Enumere_Action_1 = require("Enumere_Action");
+const UtilitaireBoutonBandeau_1 = require("UtilitaireBoutonBandeau");
+const ObjetUtilitaireDevoir_1 = require("ObjetUtilitaireDevoir");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const Enumere_DocumentJoint_1 = require("Enumere_DocumentJoint");
+const AccessApp_1 = require("AccessApp");
+class InterfacePageNotes extends InterfacePage_1.InterfacePage {
+	constructor() {
+		super(...arguments);
+		this.appScoEspace = (0, AccessApp_1.getApp)();
+		this.etatUtilSco = this.appScoEspace.getEtatUtilisateur();
 		this.ordreDevoir = 100;
-		this.moteur = new ObjetMoteurReleveBulletin();
+		this.moteur = new ObjetMoteurReleveBulletin_1.ObjetMoteurReleveBulletin();
+		this.optionsAffichageListe = {
+			afficherProjetsAccompagnement: false,
+			afficherMoyenneBrute: false,
+		};
 	}
 	construireInstances() {
 		this.IdentTripleCombo = this.add(
-			ObjetAffichagePageAvecMenusDeroulants,
+			InterfacePageAvecMenusDeroulants_1.ObjetAffichagePageAvecMenusDeroulants,
 			this.evenementSurDernierMenuDeroulant,
 			this.initialiserTripleCombo,
 		);
-		this.identListe = this.add(ObjetListe, this.evenementSurListe, null);
+		this.identListe = this.add(
+			ObjetListe_1.ObjetListe,
+			this.evenementSurListe,
+			(aListe) => {
+				aListe.setOptionsListe({
+					ariaLabel: () => {
+						var _a, _b, _c;
+						return `${this.etatUtilSco.getLibelleLongOnglet()} ${((_a = this.etatUtilSco.Navigation.getRessource(Enumere_Ressource_1.EGenreRessource.Classe)) === null || _a === void 0 ? void 0 : _a.getLibelle()) || ""} ${((_b = this.etatUtilSco.Navigation.getRessource(Enumere_Ressource_1.EGenreRessource.Periode)) === null || _b === void 0 ? void 0 : _b.getLibelle()) || ""} ${((_c = this.etatUtilSco.Navigation.getRessource(Enumere_Ressource_1.EGenreRessource.Service)) === null || _c === void 0 ? void 0 : _c.getLibelle()) || ""}`.trim();
+					},
+				});
+			},
+		);
 		this.identFicheService = this.add(
-			PanelDetailServiceNotationPN,
+			PanelDetailServiceNotationPN_1.PanelDetailServiceNotationPN,
 			this.evenementSurFicheService,
 			this.initialiserFicheService,
 		);
 		this.IdentFenetreDevoir = this.add(
-			ObjetFenetre_DevoirPN,
+			ObjetFenetre_DevoirPN_1.ObjetFenetre_DevoirPN,
 			this.evenementSurFenetreDevoir,
 			this.initialiserFenetreDevoir,
 		);
 		this.identFenetrePeriode = this.addFenetre(
-			ObjetFenetre_Periode,
+			ObjetFenetre_Periode_1.ObjetFenetre_Periode,
 			this.evenementSurFenetrePeriode,
 			this.initialiserFenetrePeriode,
 		);
 		this.identFenetreParametresAffichage = this.add(
-			ObjetFenetre_ParamSaisieNotes,
-			_evenementSurFenetreParametresAffichage,
-			_initialiserFenetreParametresAffichage,
+			ObjetFenetre_ParamSaisieNotes_1.ObjetFenetre_ParamSaisieNotes,
+			this._evenementSurFenetreParametresAffichage,
+			this._initialiserFenetreParametresAffichage,
 		);
 		this.identFenetreMethodeCalculMoyenne = this.add(
-			ObjetFenetre_MethodeCalculMoyenne,
+			ObjetFenetre_MethodeCalculMoyenne_1.ObjetFenetre_MethodeCalculMoyenne,
 			this._gestionFocusApresFenetreCalculMoyenne,
 			this.initialiserMethodeCalculMoyenne,
 		);
@@ -111,147 +109,129 @@ class InterfacePageNotes extends InterfacePage {
 			).getPremierElement();
 		}
 		this.identFenetreCompetences = this.addFenetre(
-			ObjetFenetre_CompetencesParEvaluation,
-			_evenementFenetreCompetences.bind(this),
+			ObjetFenetre_CompetencesParEvaluation_1.ObjetFenetre_CompetencesParEvaluation,
+			this._evenementFenetreCompetences.bind(this),
 		);
-		if (GEtatUtilisateur.avecImports()) {
-			this.identImports = this.add(
-				GestionnaireImportExport_PN,
-				_eventImport.bind(this),
-				_initImport.bind(this),
-			);
-		}
 		this.construireFicheEleveEtFichePhoto();
 	}
 	setParametresGeneraux() {
-		this.GenreStructure = EStructureAffichage.Autre;
+		this.GenreStructure =
+			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 		this.IdentZoneAlClient = this.identListe;
 		this.avecBandeau = true;
 		this.AddSurZone = [];
 		this.AddSurZone.push(this.IdentTripleCombo);
-		this.AddSurZone.push({ html: '<span ie-html = "getInfoCloture"></span>' });
+		this.AddSurZone.push({ html: '<span ie-html="getInfoCloture"></span>' });
 		this.AddSurZone.push({ blocGauche: true });
 		this.AddSurZone.push({
-			html: UtilitaireBoutonBandeau.getHtmlBtnTriOrdreChronologique(
-				"btnTriDevoirs",
+			html: UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnTriOrdreChronologique(
+				this.jsxModeleBoutonTriDevoir.bind(this),
 			),
 		});
 		this.AddSurZone.push({
-			html: UtilitaireBoutonBandeau.getHtmlBtnAfficherMasquerZone(
-				"btnAfficherParametresServices",
-			),
-		});
-		this.AddSurZone.push({
-			html: UtilitaireBoutonBandeau.getHtmlBtnMonsieurFiche(
-				"btnAfficherMonsieurFiche",
-			),
+			html: IE.jsx.str("ie-btnicon", {
+				"ie-model": "btnAfficherMonsieurFiche",
+				class: "bt-activable icon_legende",
+				title: ObjetTraduction_1.GTraductions.getValeur("Notes.Bouton.Aide"),
+				"aria-haspopup": "dialog",
+			}),
 		});
 		this.addSurZoneFicheEleve();
 		this.addSurZonePhotoEleve();
 		this.AddSurZone.push({
-			html: UtilitaireBoutonBandeau.getHtmlBtnParametrer("btnOptionsAffichage"),
+			html: UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnParametrer(
+				"btnOptionsAffichage",
+			),
 		});
 		this.AddSurZone.push({ blocDroit: true });
 	}
 	construireStructureAffichageAutre() {
 		const H = [];
-		H.push('<div class="flex-contain cols flex-gap-l p-all-l">');
 		H.push(
-			'  <div id="',
-			this.getInstance(this.identListe).getNom() +
-				'" class="fluid-bloc"></div>',
+			IE.jsx.str(
+				"div",
+				{ class: "flex-contain cols flex-gap-l p-all-l" },
+				IE.jsx.str("div", {
+					id: this.getInstance(this.identListe).getNom(),
+					class: "fluid-bloc",
+				}),
+				IE.jsx.str("div", {
+					id: this.getInstance(this.identFicheService).getNom(),
+					class: "fix-bloc",
+				}),
+			),
 		);
-		H.push(
-			'  <div id="' +
-				this.getInstance(this.identFicheService).getNom() +
-				'" class="fix-bloc"></div>',
-		);
-		H.push("</div>");
 		return H.join("");
 	}
 	evenementAfficherMessage(aGenreMessage) {
-		GHtml.setDisplay(this.getInstance(this.identFicheService).getNom(), false);
+		ObjetHtml_1.GHtml.setDisplay(
+			this.getInstance(this.identFicheService).getNom(),
+			false,
+		);
 		this.getInstance(this.identListe).effacer();
 		this._evenementAfficherMessage(aGenreMessage);
+	}
+	jsxModeleBoutonTriDevoir() {
+		return {
+			event: () => {
+				this.etatUtilSco.inverserTriDevoirs();
+				if (this.identFenetreMethodeCalculMoyenne) {
+					const lFenetre = this.getInstance(
+						this.identFenetreMethodeCalculMoyenne,
+					);
+					if (lFenetre.estAffiche()) {
+						const l1 = { ordreChronologique: this.etatUtilSco.getTriDevoirs() };
+						const l2 = $.extend({}, lFenetre.getParametresCalcul(), l1);
+						lFenetre.setDonnees(l2);
+					}
+				}
+				this.actualiser();
+			},
+			getTitle: () => {
+				if (this.etatUtilSco.getTriDevoirs()) {
+					return ObjetTraduction_1.GTraductions.getValeur(
+						"Notes.Bouton.OrdreChronologiqueInverse",
+					);
+				}
+				return ObjetTraduction_1.GTraductions.getValeur(
+					"Notes.Bouton.OrdreChronologique",
+				);
+			},
+			getSelection: () => {
+				return this.etatUtilSco.getTriDevoirs();
+			},
+		};
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
 			getInfoCloture: function () {
 				return aInstance.strInfoCloture ? aInstance.strInfoCloture : "";
 			},
-			btnTriDevoirs: {
-				event() {
-					GEtatUtilisateur.inverserTriDevoirs();
-					if (aInstance.identFenetreMethodeCalculMoyenne) {
-						const lFenetre = aInstance.getInstance(
-							aInstance.identFenetreMethodeCalculMoyenne,
-						);
-						if (lFenetre.estAffiche()) {
-							const l1 = {
-								ordreChronologique: GEtatUtilisateur.getTriDevoirs(),
-							};
-							const l2 = $.extend({}, lFenetre.parametresCalcul, l1);
-							lFenetre.setDonnees(l2);
-						}
-					}
-					aInstance.actualiser();
-				},
-				getTitle() {
-					if (GEtatUtilisateur.getTriDevoirs()) {
-						return GTraductions.getValeur(
-							"Notes.Bouton.OrdreChronologiqueInverse",
-						);
-					}
-					return GTraductions.getValeur("Notes.Bouton.OrdreChronologique");
-				},
-				getSelection() {
-					return GEtatUtilisateur.getTriDevoirs();
-				},
-			},
-			btnAfficherParametresServices: {
-				event() {
-					GEtatUtilisateur.inverserAfficherFicheService();
-					aInstance.actualiser();
-				},
-				getTitle() {
-					return GTraductions.getValeur("Notes.Bouton.ParametresServices");
-				},
-				getSelection() {
-					return GEtatUtilisateur.getAfficherFicheService();
-				},
-			},
 			btnAfficherMonsieurFiche: {
 				event() {
-					let lMrFiche;
-					if (TypeNote.estAnnotationPermise(EGenreAnnotation.absentZero)) {
-						lMrFiche = "Notes.MFicheNotationSpecifiqueWetZ";
-					} else {
-						lMrFiche = "Notes.MFicheNotationSpecifique";
-					}
-					GApplication.getMessage().afficher({ idRessource: lMrFiche });
-				},
-				getTitle() {
-					return GTraductions.getValeur("Notes.Bouton.Aide");
+					aInstance.appScoEspace
+						.getMessage()
+						.afficher({
+							idRessource: TypeNote_1.TypeNote.estAnnotationPermise(
+								Enumere_Annotation_1.EGenreAnnotation.absentZero,
+							)
+								? "Notes.MFicheNotationSpecifiqueWetZ"
+								: "Notes.MFicheNotationSpecifique",
+						});
 				},
 			},
 			btnOptionsAffichage: {
 				event() {
-					const lOptionsAffichage = aInstance
-						.getInstance(aInstance.identListe)
-						.getDonneesListe()
-						.getOptionsAffichage();
 					const lFenetreOptionsAffichage = aInstance.getInstance(
 						aInstance.identFenetreParametresAffichage,
 					);
-					lFenetreOptionsAffichage.setDonnees({
-						afficherProjetsAccompagnement:
-							lOptionsAffichage.afficherProjetsAccompagnement,
-						afficherMoyenneBrute: lOptionsAffichage.afficherMoyenneBrute,
-					});
+					lFenetreOptionsAffichage.setDonnees(aInstance.optionsAffichageListe);
 					lFenetreOptionsAffichage.afficher();
 				},
 				getTitle() {
-					return GTraductions.getValeur("Notes.parametresAffichage");
+					return ObjetTraduction_1.GTraductions.getValeur(
+						"Notes.parametresAffichage",
+					);
 				},
 				getSelection() {
 					return aInstance
@@ -264,9 +244,9 @@ class InterfacePageNotes extends InterfacePage {
 	initialiserTripleCombo(aInstance) {
 		aInstance.setParametres(
 			[
-				EGenreRessource.Classe,
-				EGenreRessource.Periode,
-				EGenreRessource.Service,
+				Enumere_Ressource_1.EGenreRessource.Classe,
+				Enumere_Ressource_1.EGenreRessource.Periode,
+				Enumere_Ressource_1.EGenreRessource.Service,
 			],
 			true,
 		);
@@ -275,12 +255,14 @@ class InterfacePageNotes extends InterfacePage {
 	initialiserMethodeCalculMoyenne(aInstance) {
 		aInstance.setOptionsFenetre({
 			modale: false,
-			titre: GTraductions.getValeur(
+			titre: ObjetTraduction_1.GTraductions.getValeur(
 				"BulletinEtReleve.TitreFenetreCalculMoyenne",
 			),
 			largeur: 600,
 			hauteur: 300,
-			listeBoutons: [GTraductions.getValeur("principal.fermer")],
+			listeBoutons: [
+				ObjetTraduction_1.GTraductions.getValeur("principal.fermer"),
+			],
 			largeurMin: 600,
 			hauteurMin: 150,
 		});
@@ -293,7 +275,9 @@ class InterfacePageNotes extends InterfacePage {
 	}
 	initialiserFenetrePeriode(aInstance) {
 		aInstance.setOptionsFenetre({
-			titre: GTraductions.getValeur("Notes.SelectionnerPeriode"),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"Notes.SelectionnerPeriode",
+			),
 		});
 	}
 	getPageImpression(aProportion) {
@@ -314,8 +298,8 @@ class InterfacePageNotes extends InterfacePage {
 				break;
 		}
 		const lImpression = {
-			titre1: GEtatUtilisateur.getLibelleImpression(
-				GTraductions.getValeur("Notes.TitreImpression"),
+			titre1: this.etatUtilSco.getLibelleImpression(
+				ObjetTraduction_1.GTraductions.getValeur("Notes.TitreImpression"),
 				true,
 				true,
 				false,
@@ -323,7 +307,7 @@ class InterfacePageNotes extends InterfacePage {
 				true,
 			),
 			contenu: this.getInstance(this.identListe).composeImpression(lProportion),
-			legende: composeLegendePageImpression(this.listeDevoirs),
+			legende: this.composeLegendePageImpression(this.listeDevoirs),
 		};
 		this.actualiser(null, false);
 		return lImpression;
@@ -346,37 +330,27 @@ class InterfacePageNotes extends InterfacePage {
 		this.periode = aPeriode;
 		this.LibelleService = aService.getLibelle();
 		this.NumeroService = aService.getNumero();
-		if (GEtatUtilisateur.avecImports()) {
-			this.getInstance(this.identImports).setContexteImport({
-				service: this.Service,
-				periode: this.Periode,
-				professeur: this.Professeur,
-				niveau: this.Classe,
-			});
-		}
 		this.afficherPage();
 	}
 	evenementSurListe(aParamEvnt) {
 		switch (aParamEvnt.genreEvnt) {
-			case EGenreEvenementSaisieNotes.EditionDevoir: {
-				this._objGestionFocus_apresFenetreDevoir = {
-					element: aParamEvnt.devoir,
-				};
+			case Enumere_EvenementSaisieNotes_1.EGenreEvenementSaisieNotes
+				.EditionDevoir: {
 				const lFenetreDevoir = this.getInstance(this.IdentFenetreDevoir);
 				const lListeBoutons = [];
 				if (this.Service.getActif()) {
 					lListeBoutons.push(
-						GTraductions.getValeur("Supprimer"),
+						ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
 						"",
-						GTraductions.getValeur("Annuler"),
-						GTraductions.getValeur("Valider"),
+						ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+						ObjetTraduction_1.GTraductions.getValeur("Valider"),
 						"",
 					);
 				} else {
 					lListeBoutons.push(
 						"",
 						"",
-						GTraductions.getValeur("principal.fermer"),
+						ObjetTraduction_1.GTraductions.getValeur("principal.fermer"),
 						"",
 						"",
 					);
@@ -395,10 +369,12 @@ class InterfacePageNotes extends InterfacePage {
 				);
 				break;
 			}
-			case EGenreEvenementSaisieNotes.SurDeselection:
+			case Enumere_EvenementSaisieNotes_1.EGenreEvenementSaisieNotes
+				.SurDeselection:
 				this.surDeselection(aParamEvnt);
 				break;
-			case EGenreEvenementSaisieNotes.CreationDevoir: {
+			case Enumere_EvenementSaisieNotes_1.EGenreEvenementSaisieNotes
+				.CreationDevoir: {
 				this._objGestionFocus_apresFenetreDevoir = {
 					id: this.getInstance(this.identListe).getDonneesListe()
 						.idBtnCreerDevoir,
@@ -407,11 +383,11 @@ class InterfacePageNotes extends InterfacePage {
 					listeBoutons: [
 						"",
 						"",
-						GTraductions.getValeur("Annuler"),
+						ObjetTraduction_1.GTraductions.getValeur("Annuler"),
 						"",
 						{
-							libelle: GTraductions.getValeur("Notes.Creer"),
-							theme: TypeThemeBouton.primaire,
+							libelle: ObjetTraduction_1.GTraductions.getValeur("Notes.Creer"),
+							theme: Type_ThemeBouton_1.TypeThemeBouton.primaire,
 						},
 					],
 				});
@@ -429,7 +405,7 @@ class InterfacePageNotes extends InterfacePage {
 								return lThis.Professeur
 									? aEle.professeur.getNumero() === lThis.Professeur.getNumero()
 									: aEle.professeur.getNumero() ===
-											GEtatUtilisateur.getUtilisateur().getNumero();
+											this.etatUtilSco.getUtilisateur().getNumero();
 							});
 						lServiceDefaut = lListeServiceFiltre.get(0);
 					}
@@ -450,13 +426,14 @@ class InterfacePageNotes extends InterfacePage {
 				);
 				break;
 			}
-			case EGenreEvenementSaisieNotes.Competences: {
+			case Enumere_EvenementSaisieNotes_1.EGenreEvenementSaisieNotes
+				.Competences: {
 				if (aParamEvnt.devoir.evaluation) {
 					const lOptionsAffichage = this.getInstance(this.identListe)
 						.getDonneesListe()
 						.getOptionsAffichage();
-					const lAvecSaisieNotes = !GApplication.droits.get(
-						TypeDroits.estEnConsultation,
+					const lAvecSaisieNotes = !this.appScoEspace.droits.get(
+						ObjetDroitsPN_1.TypeDroits.estEnConsultation,
 					);
 					this.getInstance(
 						this.identFenetreCompetences,
@@ -464,15 +441,14 @@ class InterfacePageNotes extends InterfacePage {
 					this.getInstance(this.identFenetreCompetences).setDonnees(
 						{
 							devoir: aParamEvnt.devoir,
-							classe: GEtatUtilisateur.Navigation.getRessource(
-								EGenreRessource.Classe,
+							classe: this.etatUtilSco.Navigation.getRessource(
+								Enumere_Ressource_1.EGenreRessource.Classe,
 							),
 							droitSaisieNotes: lAvecSaisieNotes,
 						},
 						{
 							afficherProjetsAccompagnement:
 								lOptionsAffichage.afficherProjetsAccompagnement,
-							afficherMoyenneBrute: lOptionsAffichage.afficherMoyenneBrute,
 							afficherCommentaireSurNote:
 								!!aParamEvnt.devoir.avecCommentaireSurNoteEleve,
 						},
@@ -480,25 +456,32 @@ class InterfacePageNotes extends InterfacePage {
 				}
 				break;
 			}
-			case EGenreEvenementNotesEtAppreciations.MethodeCalculMoyenne: {
+			case Enumere_EvenementNotesEtAppreciations_1
+				.EGenreEvenementNotesEtAppreciations.MethodeCalculMoyenne: {
 				let lClasse = aParamEvnt.classe
 					? aParamEvnt.classe
-					: GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Classe);
+					: this.etatUtilSco.Navigation.getRessource(
+							Enumere_Ressource_1.EGenreRessource.Classe,
+						);
 				if (
 					lClasse !== null &&
 					lClasse !== undefined &&
 					lClasse.getNumero() === -1 &&
-					lClasse.getGenre() === EGenreRessource.Aucune
+					lClasse.getGenre() === Enumere_Ressource_1.EGenreRessource.Aucune
 				) {
 					let lEleve = aParamEvnt.eleve;
 					lClasse = lEleve.classe;
 				}
 				const lPeriode = aParamEvnt.periode
 					? aParamEvnt.periode
-					: GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Periode);
+					: this.etatUtilSco.Navigation.getRessource(
+							Enumere_Ressource_1.EGenreRessource.Periode,
+						);
 				const lService = aParamEvnt.service
 					? aParamEvnt.service
-					: GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Service);
+					: this.etatUtilSco.Navigation.getRessource(
+							Enumere_Ressource_1.EGenreRessource.Service,
+						);
 				const lParametresCalcul = {
 					libelleEleve: aParamEvnt.eleve.getLibelle(),
 					numeroEleve: aParamEvnt.eleve.getNumero(),
@@ -510,7 +493,7 @@ class InterfacePageNotes extends InterfacePage {
 					genreChoixNotation: lPeriode.getGenre(),
 					moyenneTrimestrielle: true,
 					pourMoyenneNette: aParamEvnt.estMoyenneNette,
-					ordreChronologique: GEtatUtilisateur.getTriDevoirs(),
+					ordreChronologique: this.etatUtilSco.getTriDevoirs(),
 				};
 				if (this.identFenetreMethodeCalculMoyenne) {
 					this.getInstance(this.identFenetreMethodeCalculMoyenne).setDonnees(
@@ -519,24 +502,26 @@ class InterfacePageNotes extends InterfacePage {
 				}
 				break;
 			}
-			case EGenreEvenementNotesEtAppreciations.SelectionLigne: {
-				GEtatUtilisateur.Navigation.setRessource(
-					EGenreRessource.Eleve,
+			case Enumere_EvenementNotesEtAppreciations_1
+				.EGenreEvenementNotesEtAppreciations.SelectionLigne: {
+				this.etatUtilSco.Navigation.setRessource(
+					Enumere_Ressource_1.EGenreRessource.Eleve,
 					aParamEvnt.eleve,
 				);
 				this.surSelectionEleve(true);
 				break;
 			}
-			case EGenreEvenementSaisieNotes.Import: {
-				this.getInstance(this.identImports).surSelectionFichierImport(
-					aParamEvnt.file,
-				);
+			case Enumere_EvenementSaisieNotes_1.EGenreEvenementSaisieNotes.Import: {
 				break;
 			}
-			case EGenreEvenementSaisieNotes.CommentaireSurNote: {
+			case Enumere_EvenementSaisieNotes_1.EGenreEvenementSaisieNotes
+				.CommentaireSurNote: {
 				if (aParamEvnt.devoir.avecCommentaireSurNoteEleve) {
-					const lAvecSaisieNotes = !GApplication.droits.get(
-						TypeDroits.estEnConsultation,
+					const lOptionsAffichage = this.getInstance(this.identListe)
+						.getDonneesListe()
+						.getOptionsAffichage();
+					const lAvecSaisieNotes = !this.appScoEspace.droits.get(
+						ObjetDroitsPN_1.TypeDroits.estEnConsultation,
 					);
 					this.getInstance(
 						this.identFenetreCompetences,
@@ -548,6 +533,8 @@ class InterfacePageNotes extends InterfacePage {
 							baremeParDefaut: this.baremeParDefaut,
 						},
 						{
+							afficherProjetsAccompagnement:
+								lOptionsAffichage.afficherProjetsAccompagnement,
 							afficherCommentaireSurNote:
 								!!aParamEvnt.devoir.avecCommentaireSurNoteEleve,
 						},
@@ -555,36 +542,41 @@ class InterfacePageNotes extends InterfacePage {
 				}
 				break;
 			}
-			case EGenreEvenementSaisieNotes.EditionCommentaireSurNote: {
+			case Enumere_EvenementSaisieNotes_1.EGenreEvenementSaisieNotes
+				.EditionCommentaireSurNote: {
 				if (aParamEvnt.eleveDeDevoir) {
-					_ouvrirFenetreCommentaireSurNote.call(this, aParamEvnt);
+					this._ouvrirFenetreCommentaireSurNote(aParamEvnt);
 				}
 				break;
 			}
 			default: {
 				switch (aParamEvnt.genreEvenement) {
-					case EGenreEvenementListe.Edition: {
+					case Enumere_EvenementListe_1.EGenreEvenementListe.Edition: {
 						switch (aParamEvnt.idColonne) {
-							case DonneesListe_PageNotes.colonnes.moyNR: {
+							case DonneesListe_PageNotes_1.DonneesListe_PageNotes.colonnes
+								.moyNR: {
 								const lEleve = aParamEvnt.article;
 								if (lEleve.estMoyNREditable) {
 									if (!lEleve.estMoyNR) {
-										GApplication.getMessage().afficher({
-											type: EGenreBoiteMessage.Confirmation,
-											titre: GTraductions.getValeur(
+										this.appScoEspace.getMessage().afficher({
+											type: Enumere_BoiteMessage_1.EGenreBoiteMessage
+												.Confirmation,
+											titre: ObjetTraduction_1.GTraductions.getValeur(
 												"Notes.TitreConfirmationMoyNR",
 											),
-											message: GTraductions.getValeur(
+											message: ObjetTraduction_1.GTraductions.getValeur(
 												"Notes.ConfirmationMoyNR",
 											),
-											callback: function (aGenreAction) {
-												if (aGenreAction === EGenreAction.Valider) {
-													_basculerMoyNRDEleve.call(this, lEleve);
+											callback: (aGenreAction) => {
+												if (
+													aGenreAction === Enumere_Action_1.EGenreAction.Valider
+												) {
+													this._basculerMoyNRDEleve(lEleve);
 												}
-											}.bind(this),
+											},
 										});
 									} else {
-										_basculerMoyNRDEleve.call(this, lEleve);
+										this._basculerMoyNRDEleve(lEleve);
 									}
 								}
 								break;
@@ -602,27 +594,36 @@ class InterfacePageNotes extends InterfacePage {
 		}
 	}
 	surDeselection(aParamEvnt) {
-		if (GApplication.droits.get(TypeDroits.estEnConsultation)) {
+		if (
+			this.appScoEspace.droits.get(ObjetDroitsPN_1.TypeDroits.estEnConsultation)
+		) {
 			this.setEtatSaisie(true);
 		}
 		this.surModifContexteAffichage();
-		if (!GApplication.droits.get(TypeDroits.estEnConsultation)) {
+		if (
+			!this.appScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.estEnConsultation,
+			)
+		) {
 			aParamEvnt.periode = this.Periode;
 			aParamEvnt.service = this.Service;
-			new ObjetRequeteSaisieNotesUnitaire(this, () => {
-				if (aParamEvnt && aParamEvnt.eleve) {
-					aParamEvnt.eleve.setEtat(EGenreEtat.Aucun);
-					if (aParamEvnt.devoir && aParamEvnt.devoir.listeEleves) {
-						const lEleveDuDevoir =
-							aParamEvnt.devoir.listeEleves.getElementParNumero(
-								aParamEvnt.eleve.getNumero(),
-							);
-						if (lEleveDuDevoir) {
-							lEleveDuDevoir.setEtat(EGenreEtat.Aucun);
+			new ObjetRequeteSaisieNotesUnitaire_1.ObjetRequeteSaisieNotesUnitaire(
+				this,
+				() => {
+					if (aParamEvnt && aParamEvnt.eleve) {
+						aParamEvnt.eleve.setEtat(Enumere_Etat_1.EGenreEtat.Aucun);
+						if (aParamEvnt.devoir && aParamEvnt.devoir.listeEleves) {
+							const lEleveDuDevoir =
+								aParamEvnt.devoir.listeEleves.getElementParNumero(
+									aParamEvnt.eleve.getNumero(),
+								);
+							if (lEleveDuDevoir) {
+								lEleveDuDevoir.setEtat(Enumere_Etat_1.EGenreEtat.Aucun);
+							}
 						}
 					}
-				}
-			}).lancerRequete(aParamEvnt);
+				},
+			).lancerRequete(aParamEvnt);
 		}
 		if (aParamEvnt.avecActualisation) {
 			const lInstanceListe = this.getInstance(this.identListe);
@@ -644,10 +645,12 @@ class InterfacePageNotes extends InterfacePage {
 	}
 	surEvntMenusDeroulants(aParam) {
 		switch (aParam.genreEvenement) {
-			case EGenreEvntMenusDeroulants.surOuvertureCombo:
+			case Enumere_EvntMenusDeroulants_1.EGenreEvntMenusDeroulants
+				.surOuvertureCombo:
 				this.surModifContexteAffichage();
 				break;
-			case EGenreEvntMenusDeroulants.ressourceNonTrouve:
+			case Enumere_EvntMenusDeroulants_1.EGenreEvntMenusDeroulants
+				.ressourceNonTrouve:
 				this.surRessourceCouranteNonTrouveeDansCombo(aParam);
 				break;
 		}
@@ -655,21 +658,25 @@ class InterfacePageNotes extends InterfacePage {
 	surModifContexteAffichage() {
 		if (this.identFenetreMethodeCalculMoyenne) {
 			const lFenetre = this.getInstance(this.identFenetreMethodeCalculMoyenne);
-			if (lFenetre.EstAffiche) {
+			if (lFenetre.estAffiche) {
 				lFenetre.fermer();
 			}
 		}
 	}
 	evenementSurFicheService() {
-		if (GApplication.droits.get(TypeDroits.estEnConsultation)) {
+		if (
+			this.appScoEspace.droits.get(ObjetDroitsPN_1.TypeDroits.estEnConsultation)
+		) {
 			this.setEtatSaisie(true);
 		}
 		this.surModifContexteAffichage();
-		const lScrollTop = GHtml.getElement(this.Nom).scrollTop;
+		const lScrollTop = ObjetHtml_1.GHtml.getElement(this.Nom).scrollTop;
 		const lCallbackApresReussite = () => {
-			GHtml.getElement(this.Nom).scrollTop = lScrollTop;
+			ObjetHtml_1.GHtml.getElement(this.Nom).scrollTop = lScrollTop;
 		};
-		if (GApplication.droits.get(TypeDroits.estEnConsultation)) {
+		if (
+			this.appScoEspace.droits.get(ObjetDroitsPN_1.TypeDroits.estEnConsultation)
+		) {
 			this.actualiser(lCallbackApresReussite);
 		} else {
 			this.valider(lCallbackApresReussite);
@@ -694,7 +701,11 @@ class InterfacePageNotes extends InterfacePage {
 		}
 	}
 	evenementSurFenetreDevoir(aGenreEvenement, aParam) {
-		if (aGenreEvenement === TypeCallbackFenetreDevoir.periode) {
+		const lDevoir = aParam.devoir;
+		if (
+			aGenreEvenement ===
+			ObjetFenetre_Devoir_1.TypeCallbackFenetreDevoir.periode
+		) {
 			this.selection_ClasseDevoir = aParam.classe;
 			this.selection_PeriodeDevoir = aParam.periode;
 			const lClasse = this.listeClasses.getElementParNumero(
@@ -706,49 +717,52 @@ class InterfacePageNotes extends InterfacePage {
 				false,
 				false,
 			);
-		} else if (aGenreEvenement === TypeCallbackFenetreDevoir.validation) {
+		} else if (
+			aGenreEvenement ===
+			ObjetFenetre_Devoir_1.TypeCallbackFenetreDevoir.validation
+		) {
 			switch (aParam.bouton) {
 				case this.getInstance(this.IdentFenetreDevoir).genreBouton.annuler: {
 					break;
 				}
 				case this.getInstance(this.IdentFenetreDevoir).genreBouton.supprimer: {
 					this.listeDevoirs.addElement(
-						aParam.devoir,
-						this.listeDevoirs.getIndiceParElement(aParam.devoir),
+						lDevoir,
+						this.listeDevoirs.getIndiceParElement(lDevoir),
 					);
-					aParam.devoir.setEtat(EGenreEtat.Suppression);
+					lDevoir.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 					break;
 				}
 				case this.getInstance(this.IdentFenetreDevoir).genreBouton.valider: {
 					this.listeDevoirs.addElement(
-						aParam.devoir,
-						this.listeDevoirs.getIndiceParElement(aParam.devoir),
+						lDevoir,
+						this.listeDevoirs.getIndiceParElement(lDevoir),
 					);
-					this.synchroniserSujetEtCorrige(aParam.devoir);
-					for (let i = 0; i < aParam.devoir.listeEleves.count(); i++) {
-						const lEleve = aParam.devoir.listeEleves.get(i);
-						if (lEleve.Note.getValeur() > aParam.devoir.bareme.getValeur()) {
-							lEleve.Note = new TypeNote(aParam.devoir.bareme.getValeur());
-							lEleve.setEtat(aParam.devoir.Modification);
+					this.synchroniserSujetEtCorrige(lDevoir);
+					for (let i = 0; i < lDevoir.listeEleves.count(); i++) {
+						const lEleve = lDevoir.listeEleves.get(i);
+						if (lEleve.Note.getValeur() > lDevoir.bareme.getValeur()) {
+							lEleve.Note = new TypeNote_1.TypeNote(lDevoir.bareme.getValeur());
+							lEleve.setEtat(lDevoir.Modification);
 						}
 					}
-					aParam.devoir.setEtat(EGenreEtat.Modification);
+					lDevoir.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 					break;
 				}
 				case this.getInstance(this.IdentFenetreDevoir).genreBouton.creer: {
-					if (aParam.devoir.service && aParam.devoir.service.listeEleves) {
-						aParam.devoir.listeEleves = this.creerDevoirParDefautListeEleves(
-							aParam.devoir.service.listeEleves,
+					if (lDevoir.service && lDevoir.service.listeEleves) {
+						lDevoir.listeEleves = this.creerDevoirParDefautListeEleves(
+							lDevoir.service.listeEleves,
 						);
 					}
-					aParam.devoir.ordre = this.ordreDevoir--;
-					this.synchroniserSujetEtCorrige(aParam.devoir);
-					this.listeDevoirs.addElement(aParam.devoir);
+					lDevoir.ordre = this.ordreDevoir--;
+					this.synchroniserSujetEtCorrige(lDevoir);
+					this.listeDevoirs.addElement(lDevoir);
 					break;
 				}
 			}
 			if (
-				MethodesObjet.isNumeric(aParam.bouton) &&
+				MethodesObjet_1.MethodesObjet.isNumeric(aParam.bouton) &&
 				aParam.bouton !== -1 &&
 				aParam.bouton !==
 					this.getInstance(this.IdentFenetreDevoir).genreBouton.annuler
@@ -792,13 +806,20 @@ class InterfacePageNotes extends InterfacePage {
 						}
 					};
 				}
-				if (GApplication.droits.get(TypeDroits.estEnConsultation)) {
+				if (
+					this.appScoEspace.droits.get(
+						ObjetDroitsPN_1.TypeDroits.estEnConsultation,
+					)
+				) {
 					this.actualiser();
 					this.setEtatSaisie(true);
 				}
 				this.valider(lCallbackFocusApresSaisie);
 			}
-		} else if (aGenreEvenement === TypeCallbackFenetreDevoir.service) {
+		} else if (
+			aGenreEvenement ===
+			ObjetFenetre_Devoir_1.TypeCallbackFenetreDevoir.service
+		) {
 			let lListeService = null;
 			if (this.Service.estUnService && this.Service.listeServices.count() > 0) {
 				this.getInstance(this.IdentFenetreDevoir).avecSelectionService = true;
@@ -839,14 +860,20 @@ class InterfacePageNotes extends InterfacePage {
 							aPeriodeDevoir.existeNumero() ? aPeriodeDevoir.getLibelle() : "",
 						);
 						this.selection_PeriodeDevoir.setActif(true);
-						this.selection_PeriodeDevoir.setEtat(EGenreEtat.Modification);
+						this.selection_PeriodeDevoir.setEtat(
+							Enumere_Etat_1.EGenreEtat.Modification,
+						);
 						this.selection_PeriodeDevoir.estEvaluationCloturee =
 							aPeriodeDevoir.estEvaluationCloturee;
 					} else {
-						GApplication.getMessage().afficher({
-							type: EGenreBoiteMessage.Information,
-							message: GTraductions.getValeur("Notes.PeriodeDejaAffectee"),
-						});
+						this.appScoEspace
+							.getMessage()
+							.afficher({
+								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+								message: ObjetTraduction_1.GTraductions.getValeur(
+									"Notes.PeriodeDejaAffectee",
+								),
+							});
 					}
 				}
 				this.getInstance(this.IdentFenetreDevoir).actualiser();
@@ -864,7 +891,7 @@ class InterfacePageNotes extends InterfacePage {
 			numeroService: this.NumeroService,
 			periode: this.periode,
 		};
-		new ObjetRequetePageNotes(
+		new ObjetRequetePageNotes_1.ObjetRequetePageNotes(
 			this,
 			this.actionSurEvenementAfficherPage.bind(this, aCallbackApresAffichage),
 		).lancerRequete(lParam);
@@ -891,21 +918,22 @@ class InterfacePageNotes extends InterfacePage {
 	}
 	actualiser(aCallbackApresAffichage, aPourImpression) {
 		if (this.listeEleves && this.listeEleves.count()) {
-			Invocateur.evenement(
-				ObjetInvocateur.events.activationImpression,
-				EGenreImpression.Format,
+			Invocateur_1.Invocateur.evenement(
+				Invocateur_1.ObjetInvocateur.events.activationImpression,
+				Enumere_GenreImpression_1.EGenreImpression.Format,
 				this,
 			);
 			this.controlerElevesClotures();
-			GHtml.setDisplay(this.Nom + "_Bandeau", true);
+			ObjetHtml_1.GHtml.setDisplay(this.Nom + "_Bandeau", true);
 			this.getInstance(this.identFicheService).setVisible(
-				GEtatUtilisateur.getAfficherFicheService() &&
-					this.Periode.existeNumero(),
+				this.Periode.existeNumero(),
 			);
 			this.surResizeInterface();
 			const lCloture = this.laPeriodeEstClotureePourNotation(
 				this.Periode,
-				this.Classe.getGenre() === EGenreRessource.Classe ? this.Classe : null,
+				this.Classe.getGenre() === Enumere_Ressource_1.EGenreRessource.Classe
+					? this.Classe
+					: null,
 			);
 			const lClotureGlobal = this.laPeriodeEstClotureePourNotation(
 				this.Periode,
@@ -925,11 +953,11 @@ class InterfacePageNotes extends InterfacePage {
 				lClotureGlobal,
 			);
 			this.listeDevoirs.setTri([
-				ObjetTri.init(
+				ObjetTri_1.ObjetTri.init(
 					"date",
-					GEtatUtilisateur.getTriDevoirs()
-						? EGenreTriElement.Croissant
-						: EGenreTriElement.Decroissant,
+					this.etatUtilSco.getTriDevoirs()
+						? Enumere_TriElement_1.EGenreTriElement.Croissant
+						: Enumere_TriElement_1.EGenreTriElement.Decroissant,
 				),
 			]);
 			this.listeDevoirs.trier();
@@ -943,13 +971,15 @@ class InterfacePageNotes extends InterfacePage {
 					})
 					.count() > 0;
 			this.getInstance(this.identListe).setDonnees(
-				new DonneesListe_PageNotesPN(
+				new DonneesListe_PageNotesPN_1.DonneesListe_PageNotesPN(
 					{ listeEleves: this.listeEleves, listeDevoirs: this.listeDevoirs },
 					{
 						avecColonneClasse:
-							this.Classe.getGenre() === EGenreRessource.Groupe ||
+							this.Classe.getGenre() ===
+								Enumere_Ressource_1.EGenreRessource.Groupe ||
 							(this.Classe.getNumero() === -1 &&
-								this.Classe.getGenre() === EGenreRessource.Aucune &&
+								this.Classe.getGenre() ===
+									Enumere_Ressource_1.EGenreRessource.Aucune &&
 								!!this.Service &&
 								this.Service.estUnServiceEnGroupe),
 						matiere: this.Matiere,
@@ -964,11 +994,9 @@ class InterfacePageNotes extends InterfacePage {
 						avecNomProfesseur: false,
 						callbackEvnt: this.evenementSurListe.bind(this),
 						instance: this.getInstance(this.identListe),
-						optionsAffichage: this.getInstance(
-							this.identFenetreParametresAffichage,
-						),
+						optionsAffichage: this.optionsAffichageListe,
 						pourImpression: aPourImpression,
-						avecImport: GEtatUtilisateur.avecImports(),
+						avecImport: this.etatUtilSco.avecImports(),
 						avecColNR: this.avecColNR,
 					},
 				),
@@ -985,33 +1013,37 @@ class InterfacePageNotes extends InterfacePage {
 				);
 			}
 		} else {
-			Invocateur.evenement(
-				ObjetInvocateur.events.activationImpression,
-				EGenreImpression.Aucune,
+			Invocateur_1.Invocateur.evenement(
+				Invocateur_1.ObjetInvocateur.events.activationImpression,
+				Enumere_GenreImpression_1.EGenreImpression.Aucune,
 			);
 			if (this.listeEleves) {
 				this.evenementAfficherMessage(
-					GTraductions.getValeur("Notes.AucunEleve"),
+					ObjetTraduction_1.GTraductions.getValeur("Notes.AucunEleve"),
 				);
 			}
 		}
 		if (
 			!!aCallbackApresAffichage &&
-			MethodesObjet.isFunction(aCallbackApresAffichage)
+			MethodesObjet_1.MethodesObjet.isFunction(aCallbackApresAffichage)
 		) {
 			aCallbackApresAffichage();
 		}
 	}
 	valider(aCallbackApresSaisie) {
-		const lListeSujetsEtCorriges = new ObjetListeElements();
+		const lListeSujetsEtCorriges =
+			new ObjetListeElements_1.ObjetListeElements();
 		lListeSujetsEtCorriges.add(this.listeSujets);
 		lListeSujetsEtCorriges.add(this.listeCorriges);
 		const lListeCloud = lListeSujetsEtCorriges.getListeElements((aElement) => {
-			return aElement.getGenre() === EGenreDocumentJoint.Cloud;
+			return (
+				aElement.getGenre() ===
+				Enumere_DocumentJoint_1.EGenreDocumentJoint.Cloud
+			);
 		});
-		new ObjetRequeteSaisieNotes(
+		new ObjetRequeteSaisieNotes_1.ObjetRequeteSaisieNotes(
 			this,
-			_surSaisieNotes.bind(this, aCallbackApresSaisie),
+			this._surSaisieNotes.bind(this, aCallbackApresSaisie),
 		)
 			.addUpload({
 				listeFichiers: lListeSujetsEtCorriges,
@@ -1026,16 +1058,18 @@ class InterfacePageNotes extends InterfacePage {
 			});
 	}
 	creerDevoirParDefaut(aService) {
-		const lDevoir = new ObjetElement();
+		const lDevoir = new ObjetElement_1.ObjetElement();
 		lDevoir.service = aService || this.Service;
 		lDevoir.estDevoirEditable = lDevoir.service.getActif();
-		lDevoir.matiere = MethodesObjet.dupliquer(this.Matiere);
-		lDevoir.date = GDate.getDateCourante();
-		lDevoir.coefficient = new TypeNote(1.0);
-		lDevoir.bareme = new TypeNote(this.baremeParDefaut.getValeur());
+		lDevoir.matiere = MethodesObjet_1.MethodesObjet.dupliquer(this.Matiere);
+		lDevoir.date = ObjetDate_1.GDate.getDateCourante();
+		lDevoir.coefficient = new TypeNote_1.TypeNote(1.0);
+		lDevoir.bareme = new TypeNote_1.TypeNote(this.baremeParDefaut.getValeur());
 		lDevoir.commentaire = "";
 		lDevoir.datePublication =
-			ObjetUtilitaireDevoir.getDatePublicationDevoirParDefaut(lDevoir.date);
+			ObjetUtilitaireDevoir_1.ObjetUtilitaireDevoir.getDatePublicationDevoirParDefaut(
+				lDevoir.date,
+			);
 		lDevoir.listeClasses = this.creerDevoirParDefautListeClasses();
 		lDevoir.listeEleves = this.creerDevoirParDefautListeEleves();
 		lDevoir.verrouille = false;
@@ -1044,26 +1078,30 @@ class InterfacePageNotes extends InterfacePage {
 		lDevoir.ramenerSur20 = false;
 		lDevoir.listeSujet = "";
 		lDevoir.libelleCorrige = "";
-		lDevoir.listeSujets = new ObjetListeElements();
-		lDevoir.listeCorriges = new ObjetListeElements();
-		lDevoir.libelleCBTheme = GTraductions.getValeur("Theme.libelleCB.devoir");
+		lDevoir.listeSujets = new ObjetListeElements_1.ObjetListeElements();
+		lDevoir.listeCorriges = new ObjetListeElements_1.ObjetListeElements();
+		lDevoir.libelleCBTheme = ObjetTraduction_1.GTraductions.getValeur(
+			"Theme.libelleCB.devoir",
+		);
 		lDevoir.avecCommentaireSurNoteEleve = false;
-		lDevoir.setEtat(EGenreEtat.Creation);
+		lDevoir.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 		return lDevoir;
 	}
 	creerDevoirParDefautListeClasses() {
-		const llisteClasses = new ObjetListeElements();
+		const llisteClasses = new ObjetListeElements_1.ObjetListeElements();
 		for (let i = 0, lNbr = this.listeClasses.count(); i < lNbr; i++) {
 			let lClasse = this.listeClasses.get(i);
-			const lClasseDevoir = MethodesObjet.dupliquer(lClasse);
-			lClasseDevoir.service = MethodesObjet.dupliquer(lClasse.service);
+			const lClasseDevoir = MethodesObjet_1.MethodesObjet.dupliquer(lClasse);
+			lClasseDevoir.service = MethodesObjet_1.MethodesObjet.dupliquer(
+				lClasse.service,
+			);
 			let lPeriode = lClasse.listePeriodes.getElementParNumero(
 				this.periode.getNumero(),
 			);
 			if (!lPeriode) {
 				lPeriode = lClasse.periodeParDefaut;
 			}
-			let lPremierePeriodeDevoir = new ObjetElement(
+			let lPremierePeriodeDevoir = new ObjetElement_1.ObjetElement(
 				lPeriode.getLibelle(),
 				lPeriode.getNumero(),
 				null,
@@ -1072,24 +1110,28 @@ class InterfacePageNotes extends InterfacePage {
 			);
 			lPremierePeriodeDevoir.estEvaluationCloturee =
 				lPeriode.estEvaluationCloturee;
-			lClasseDevoir.listePeriodes = new ObjetListeElements();
+			lClasseDevoir.listePeriodes =
+				new ObjetListeElements_1.ObjetListeElements();
 			lClasseDevoir.listePeriodes.addElement(lPremierePeriodeDevoir);
 			lClasseDevoir.listePeriodes.addElement(
-				new ObjetElement("", 0, null, null, true),
+				new ObjetElement_1.ObjetElement("", 0, null, null, true),
 			);
 			llisteClasses.addElement(lClasseDevoir);
 		}
 		return llisteClasses;
 	}
 	creerDevoirParDefautListeEleves(aListeEleves) {
-		const lListeEleves = new ObjetListeElements();
+		const lListeEleves = new ObjetListeElements_1.ObjetListeElements();
 		if (!aListeEleves) {
 			aListeEleves = this.listeEleves;
 		}
 		for (let I = 0; I < aListeEleves.count(); I++) {
 			const lEleve = aListeEleves.get(I);
-			const lEleveDevoir = new ObjetElement("", lEleve.getNumero());
-			lEleveDevoir.Note = new TypeNote("");
+			const lEleveDevoir = new ObjetElement_1.ObjetElement(
+				"",
+				lEleve.getNumero(),
+			);
+			lEleveDevoir.Note = new TypeNote_1.TypeNote("");
 			lListeEleves.addElement(lEleveDevoir);
 		}
 		return lListeEleves;
@@ -1206,8 +1248,8 @@ class InterfacePageNotes extends InterfacePage {
 	}
 	selectionnerEleveCourant() {
 		let lTrouve = false;
-		const lEleve = GEtatUtilisateur.Navigation.getRessource(
-			EGenreRessource.Eleve,
+		const lEleve = this.etatUtilSco.Navigation.getRessource(
+			Enumere_Ressource_1.EGenreRessource.Eleve,
 		);
 		if (lEleve && !lEleve.multiSelection) {
 			const lNbEleves = this.listeEleves.count();
@@ -1236,7 +1278,8 @@ class InterfacePageNotes extends InterfacePage {
 				if (
 					lEleveDevoir &&
 					lEleveDevoir.Note &&
-					lEleveDansDevoir === EGenreEleveDansDevoir.Oui &&
+					lEleveDansDevoir ===
+						Enumere_EleveDansDevoir_1.EGenreEleveDansDevoir.Oui &&
 					this.getInstance(this.identListe)
 						.getDonneesListe()
 						.devoirDansPeriode(aDevoir, lEleve, this.periode.getNumero())
@@ -1276,7 +1319,10 @@ class InterfacePageNotes extends InterfacePage {
 							lIndexDevoir = this.getInstance(this.identListe)
 								.getDonneesListe()
 								.getNumeroColonneDId(
-									DonneesListe_PageNotes.colonnes.devoir + "_" + lIndexDevoir,
+									DonneesListe_PageNotes_1.DonneesListe_PageNotes.colonnes
+										.devoir +
+										"_" +
+										lIndexDevoir,
 								);
 							this.getInstance(this.identListe).demarrerEditionSurCellule(
 								lIndexEleve,
@@ -1298,12 +1344,12 @@ class InterfacePageNotes extends InterfacePage {
 			default:
 				break;
 		}
-		let lID = this.getInstance(this.identListe).Nom;
+		let lID = this.getInstance(this.identListe).getNom();
 		if (this._objGestionFocus_apresFenetreDevoir.id) {
 			lID = this._objGestionFocus_apresFenetreDevoir.id;
 			delete this._objGestionFocus_apresFenetreDevoir.element;
 		}
-		GHtml.setFocus(lID);
+		ObjetHtml_1.GHtml.setFocus(lID);
 	}
 	_gestionFocusApresFenetreCalculMoyenne() {}
 	_gestionFocusApresFenetreSelectionPeriode() {
@@ -1311,148 +1357,158 @@ class InterfacePageNotes extends InterfacePage {
 			this._objGestionFocus_apresFenetreSelectionPeriode &&
 			this._objGestionFocus_apresFenetreSelectionPeriode.id
 		) {
-			GHtml.setFocus(this._objGestionFocus_apresFenetreSelectionPeriode.id);
+			ObjetHtml_1.GHtml.setFocus(
+				this._objGestionFocus_apresFenetreSelectionPeriode.id,
+			);
 		}
 		this._objGestionFocus_apresFenetreSelectionPeriode = null;
 	}
-}
-function _initImport(aInstance) {
-	aInstance.setOptions({
-		genreOperation: ENatureOperation.import,
-		genreImport: EFormatFichierIE.workbook,
-	});
-}
-function _eventImport() {
-	this.setEtatSaisie(true);
-	this.valider();
-}
-function _evenementFenetreCompetences() {
-	this.afficherPage();
-}
-function composeLegendePageImpression(aListeDevoirs) {
-	const H = [];
-	if (!!aListeDevoirs && aListeDevoirs.getNbrElementsExistes() > 0) {
-		aListeDevoirs.parcourir((aDevoir, aIndex) => {
-			if (!!aDevoir && aDevoir.existe() && !!aDevoir.commentaire) {
-				H.push("<div>(", aIndex + 1, ") ", aDevoir.commentaire, "</div>");
-			}
+	_evenementFenetreCompetences() {
+		this.afficherPage();
+	}
+	composeLegendePageImpression(aListeDevoirs) {
+		const H = [];
+		if (!!aListeDevoirs && aListeDevoirs.getNbrElementsExistes() > 0) {
+			aListeDevoirs.parcourir((aDevoir, aIndex) => {
+				if (!!aDevoir && aDevoir.existe() && !!aDevoir.commentaire) {
+					H.push("<div>(", aIndex + 1, ") ", aDevoir.commentaire, "</div>");
+				}
+			});
+		}
+		return H.join("");
+	}
+	_initialiserFenetreParametresAffichage(aInstance) {
+		aInstance.setOptionsFenetre({
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"Notes.parametresAffichage",
+			),
+			largeur: 350,
+			hauteur: 80,
+			listeBoutons: [
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
+			],
 		});
 	}
-	return H.join("");
-}
-function _initialiserFenetreParametresAffichage(aInstance) {
-	aInstance.setOptionsFenetre({
-		titre: GTraductions.getValeur("Notes.parametresAffichage"),
-		largeur: 350,
-		hauteur: 80,
-		listeBoutons: [
-			GTraductions.getValeur("Annuler"),
-			GTraductions.getValeur("Valider"),
-		],
-	});
-}
-function _evenementSurFenetreParametresAffichage(aNumeroBouton, aParametres) {
-	if (aNumeroBouton === 1) {
-		this.getInstance(this.identListe)
-			.getDonneesListe()
-			.setOptionsAffichage({
-				afficherProjetsAccompagnement:
-					aParametres.afficherProjetsAccompagnement,
-				afficherMoyenneBrute: aParametres.afficherMoyenneBrute,
-			});
-		this.actualiser();
-	}
-}
-function _surSaisieNotes(aCallbackApresSaisie, aJSONReponse) {
-	let lCallbackApresSaisie;
-	if (!!aCallbackApresSaisie) {
-		lCallbackApresSaisie = aCallbackApresSaisie.bind(this, aJSONReponse);
-	}
-	this.actionSurValidation(lCallbackApresSaisie);
-}
-function _basculerMoyNRDEleve(aEleve) {
-	if (aEleve.estMoyNREditable) {
-		this.moteur.saisieMoyNR({
-			paramRequete: {
-				estMoyNR: !aEleve.estMoyNR,
-				periode: GEtatUtilisateur.Navigation.getRessource(
-					EGenreRessource.Periode,
-				),
-				eleve: aEleve,
-				service: GEtatUtilisateur.Navigation.getRessource(
-					EGenreRessource.Service,
-				),
-			},
-			instanceListe: this.getInstance(this.identListe),
-			clbckSucces: function (aParamSucces) {
-				const lDonneesListe = this.getInstance(
-					this.identListe,
-				).getListeArticles();
-				const lLignes = lDonneesListe.getListeElements((aLigne) => {
-					return aLigne.getNumero() === aParamSucces.numeroEleve;
-				});
-				const lLigne = lLignes.get(0);
-				lLigne.estMoyNR = aParamSucces.estMoyNRSaisie;
+	_evenementSurFenetreParametresAffichage(aNumeroBouton, aParametres) {
+		if (aNumeroBouton === 1) {
+			(this.optionsAffichageListe.afficherProjetsAccompagnement =
+				aParametres.afficherProjetsAccompagnement),
+				(this.optionsAffichageListe.afficherMoyenneBrute =
+					aParametres.afficherMoyenneBrute),
 				this.getInstance(this.identListe)
 					.getDonneesListe()
-					.actualiserMoyennes();
-			}.bind(this),
-			paramCellSuivante: null,
-			clbckEchec: function () {}.bind(this),
-		});
+					.setOptionsAffichage(this.optionsAffichageListe);
+			this.actualiser();
+		}
 	}
-}
-function _ouvrirFenetreCommentaireSurNote(aParams = {}) {
-	if (!aParams.eleveDeDevoir) {
-		return;
+	_surSaisieNotes(aCallbackApresSaisie, aJSONReponse) {
+		let lCallbackApresSaisie;
+		if (!!aCallbackApresSaisie) {
+			lCallbackApresSaisie = aCallbackApresSaisie.bind(this, aJSONReponse);
+		}
+		this.actionSurValidation(lCallbackApresSaisie);
 	}
-	const lCommentaireDupliquer = aParams.eleveDeDevoir.commentaire
-		? MethodesObjet.dupliquer(aParams.eleveDeDevoir.commentaire)
-		: "";
-	const lFenetre = ObjetFenetre.creerInstanceFenetre(ObjetFenetre, {
-		pere: this,
-		initialiser: (aInstanceFenetre) => {
-			aInstanceFenetre.setOptionsFenetre({
-				titre: GTraductions.getValeur("Notes.remarque"),
-				avecTailleSelonContenu: true,
-				largeur: 400,
-				hauteur: 200,
-				listeBoutons: [
-					GTraductions.getValeur("Annuler"),
-					GTraductions.getValeur("Valider"),
-				],
+	_basculerMoyNRDEleve(aEleve) {
+		if (aEleve.estMoyNREditable) {
+			this.moteur.saisieMoyNR({
+				paramRequete: {
+					estMoyNR: !aEleve.estMoyNR,
+					periode: this.etatUtilSco.Navigation.getRessource(
+						Enumere_Ressource_1.EGenreRessource.Periode,
+					),
+					eleve: aEleve,
+					service: this.etatUtilSco.Navigation.getRessource(
+						Enumere_Ressource_1.EGenreRessource.Service,
+					),
+				},
+				instanceListe: this.getInstance(this.identListe),
+				clbckSucces: (aParamSucces) => {
+					const lDonneesListe = this.getInstance(
+						this.identListe,
+					).getListeArticles();
+					const lLignes = lDonneesListe.getListeElements((aLigne) => {
+						return aLigne.getNumero() === aParamSucces.numeroEleve;
+					});
+					const lLigne = lLignes.get(0);
+					lLigne.estMoyNR = aParamSucces.estMoyNRSaisie;
+					this.getInstance(this.identListe)
+						.getDonneesListe()
+						.actualiserMoyennes();
+				},
+				clbckEchec: function () {},
 			});
-		},
-		evenement: (aGenreBouton, aParamFenetre) => {
-			if (aGenreBouton === 1) {
-				aParams.eleveDeDevoir.commentaire = aParamFenetre.instance.commentaire;
-				if (!aParams.eleveDeDevoir.note && aParams.eleveDeDevoir.Note) {
-					aParams.eleveDeDevoir.note = aParams.eleveDeDevoir.Note;
-				}
-				this.surDeselection({
-					avecActualisation: true,
-					devoir: aParams.devoir,
-					eleve: aParams.eleveDeDevoir,
-					note: aParams.eleveDeDevoir.note,
-				});
-			}
-		},
-	});
-	lFenetre.commentaire = lCommentaireDupliquer;
-	lFenetre.controleur.textareamax = {
-		getValue() {
-			return this.instance.commentaire;
-		},
-		setValue(aValue) {
-			this.instance.commentaire = aValue;
-		},
-	};
-	const H = [];
-	H.push(
-		`<div class="field-contain">`,
-		`<ie-textareamax ie-model="textareamax" class="round-style fluid-bloc" placeholder='' maxlength="10000" style="min-height: 7rem;" ></ie-textareamax>`,
-		`</div>`,
-	);
-	lFenetre.afficher(H.join(""));
+		}
+	}
+	_ouvrirFenetreCommentaireSurNote(aParams) {
+		if (!aParams.eleveDeDevoir) {
+			return;
+		}
+		let lCommentaire = aParams.eleveDeDevoir.commentaire
+			? MethodesObjet_1.MethodesObjet.dupliquer(
+					aParams.eleveDeDevoir.commentaire,
+				)
+			: "";
+		const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_1.ObjetFenetre,
+			{
+				pere: this,
+				initialiser: (aInstanceFenetre) => {
+					aInstanceFenetre.setOptionsFenetre({
+						titre: ObjetTraduction_1.GTraductions.getValeur("Notes.remarque"),
+						avecTailleSelonContenu: true,
+						largeur: 400,
+						hauteur: 200,
+						listeBoutons: [
+							ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+							ObjetTraduction_1.GTraductions.getValeur("Valider"),
+						],
+					});
+				},
+				evenement: (aGenreBouton, aParamFenetre) => {
+					if (aGenreBouton === 1) {
+						aParams.eleveDeDevoir.commentaire = lCommentaire;
+						if (!aParams.eleveDeDevoir.note && aParams.eleveDeDevoir.Note) {
+							aParams.eleveDeDevoir.note = aParams.eleveDeDevoir.Note;
+						}
+						this.surDeselection({
+							avecActualisation: true,
+							devoir: aParams.devoir,
+							eleve: aParams.eleveDeDevoir,
+							note: aParams.eleveDeDevoir.note,
+						});
+					}
+				},
+			},
+		);
+		const ljsxtextareamax = () => {
+			return {
+				getValue() {
+					return lCommentaire;
+				},
+				setValue(aValue) {
+					lCommentaire = aValue;
+				},
+			};
+		};
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "field-contain" },
+				IE.jsx.str("ie-textareamax", {
+					"ie-model": ljsxtextareamax,
+					class: "fluid-bloc",
+					placeholder: "",
+					maxlength: "10000",
+					style: "min-height: 7rem;",
+					"aria-label":
+						ObjetTraduction_1.GTraductions.getValeur("Notes.remarque"),
+				}),
+			),
+		);
+		lFenetre.afficher(H.join(""));
+	}
+	automateDebug(aRequeteSuivante) {}
 }
-module.exports = InterfacePageNotes;
+exports.InterfacePageNotes = InterfacePageNotes;

@@ -1,15 +1,18 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GCache } = require("Cache.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { EGenreOnglet } = require("Enumere_Onglet.js");
-class ObjetRequeteLivretScolaire extends ObjetRequeteConsultation {
+exports.ObjetRequeteLivretScolaire = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const Cache_1 = require("Cache");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const Enumere_Onglet_1 = require("Enumere_Onglet");
+class ObjetRequeteLivretScolaire extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	constructor(...aParams) {
 		super(...aParams);
-		if (GEtatUtilisateur.GenreEspace === EGenreEspace.Professeur) {
-			this.cache = GCache.livretScolaire;
+		if (
+			GEtatUtilisateur.GenreEspace === Enumere_Espace_1.EGenreEspace.Professeur
+		) {
+			this.cache = Cache_1.GCache.livretScolaire;
 		}
 	}
 	lancerRequete(aObjet) {
@@ -59,14 +62,18 @@ class ObjetRequeteLivretScolaire extends ObjetRequeteConsultation {
 			lResult.message = lJSON.message;
 		} else {
 			if (lJSON.classe) {
-				lResult.classe = new ObjetElement().fromJSON(lJSON.classe);
+				lResult.classe = new ObjetElement_1.ObjetElement().fromJSON(
+					lJSON.classe,
+				);
 				lResult.classe.nombrePeriodes = lJSON.classe.nombrePeriodes;
-				lResult.classe.listeLivret = new ObjetListeElements();
+				lResult.classe.listeLivret =
+					new ObjetListeElements_1.ObjetListeElements();
 				this.recupererDonnees(
 					lJSON.classe.listeLivret,
 					lResult.classe.listeLivret,
 				);
-				lResult.classe.listeMoyenne = new ObjetListeElements();
+				lResult.classe.listeMoyenne =
+					new ObjetListeElements_1.ObjetListeElements();
 				this.recupererDonnees(
 					lJSON.classe.listeMoyenne,
 					lResult.classe.listeMoyenne,
@@ -89,7 +96,8 @@ class ObjetRequeteLivretScolaire extends ObjetRequeteConsultation {
 			} else {
 				if (
 					this.cache &&
-					this.donnees.genre === EGenreOnglet.LivretScolaire_Fiche
+					this.donnees.genre ===
+						Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche
 				) {
 					lResult.classe = this.cache.getDonnee(
 						this.donnees.genre +
@@ -105,17 +113,19 @@ class ObjetRequeteLivretScolaire extends ObjetRequeteConsultation {
 				}
 			}
 			if (lJSON.eleve) {
-				lResult.eleve = new ObjetElement().fromJSON(lJSON.eleve);
+				lResult.eleve = new ObjetElement_1.ObjetElement().fromJSON(lJSON.eleve);
 				lResult.eleve.estRedoublant = !!lJSON.eleve.estRedoublant;
 				lResult.eleve.libelleEnseignement = lJSON.eleve.libelleEnseignement;
-				lResult.eleve.listeLivret = new ObjetListeElements();
+				lResult.eleve.listeLivret =
+					new ObjetListeElements_1.ObjetListeElements();
 				if (lJSON.eleve.listeLivret) {
 					this.recupererDonnees(
 						lJSON.eleve.listeLivret,
 						lResult.eleve.listeLivret,
 					);
 				}
-				lResult.eleve.listeMoyenne = new ObjetListeElements();
+				lResult.eleve.listeMoyenne =
+					new ObjetListeElements_1.ObjetListeElements();
 				if (lJSON.eleve.listeMoyenne) {
 					this.recupererDonnees(
 						lJSON.eleve.listeMoyenne,
@@ -124,17 +134,21 @@ class ObjetRequeteLivretScolaire extends ObjetRequeteConsultation {
 				}
 			}
 			if (lJSON.service) {
-				lResult.service = new ObjetElement().fromJSON(lJSON.service);
+				lResult.service = new ObjetElement_1.ObjetElement().fromJSON(
+					lJSON.service,
+				);
 				lResult.service.titre = lJSON.service.titre;
 				lResult.service.libelleEnseignement = lJSON.service.libelleEnseignement;
-				lResult.service.listeLivret = new ObjetListeElements();
+				lResult.service.listeLivret =
+					new ObjetListeElements_1.ObjetListeElements();
 				if (lJSON.service.listeLivret) {
 					this.recupererDonnees(
 						lJSON.service.listeLivret,
 						lResult.service.listeLivret,
 					);
 				}
-				lResult.service.listeMoyenne = new ObjetListeElements();
+				lResult.service.listeMoyenne =
+					new ObjetListeElements_1.ObjetListeElements();
 				const lIDCache =
 					this.donnees.genre +
 					this.donnees.classe.getCle() +
@@ -151,7 +165,8 @@ class ObjetRequeteLivretScolaire extends ObjetRequeteConsultation {
 				} else {
 					if (
 						this.cache &&
-						this.donnees.genre !== EGenreOnglet.LivretScolaire_Fiche &&
+						this.donnees.genre !==
+							Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche &&
 						this.cache.existeDonnee(lIDCache)
 					) {
 						lResult.service.listeMoyenne = this.cache.getDonnee(lIDCache);
@@ -190,30 +205,34 @@ class ObjetRequeteLivretScolaire extends ObjetRequeteConsultation {
 			if (lJSON.avecAvisCE && lJSON.avisCE) {
 				aDonnees.piedDePage.avisCE = lJSON.avisCE;
 				if (!lJSON.avisCE.infosLivret) {
-					aDonnees.piedDePage.avisCE.infosLivret = new ObjetElement();
+					aDonnees.piedDePage.avisCE.infosLivret =
+						new ObjetElement_1.ObjetElement();
 					aDonnees.piedDePage.avisCE.infosLivret.avis = null;
 					aDonnees.piedDePage.avisCE.infosLivret.commentaire = "";
-					aDonnees.piedDePage.avisCE.infosLivret.auteur = new ObjetElement();
+					aDonnees.piedDePage.avisCE.infosLivret.auteur =
+						new ObjetElement_1.ObjetElement();
 					aDonnees.piedDePage.avisCE.infosLivret.date = null;
 				}
 			}
 			if (lJSON.avecEngagements && lJSON.engagements) {
 				aDonnees.piedDePage.engagements = lJSON.engagements;
 				if (!lJSON.engagements.infosLivret) {
-					aDonnees.piedDePage.engagements.infosLivret = new ObjetElement();
+					aDonnees.piedDePage.engagements.infosLivret =
+						new ObjetElement_1.ObjetElement();
 					aDonnees.piedDePage.engagements.infosLivret.commentaire = "";
 					aDonnees.piedDePage.engagements.infosLivret.auteur =
-						new ObjetElement();
+						new ObjetElement_1.ObjetElement();
 					aDonnees.piedDePage.engagements.infosLivret.date = null;
 				}
 			}
 			if (lJSON.avecInvestissement && lJSON.investissement) {
 				aDonnees.piedDePage.investissement = lJSON.investissement;
 				if (!lJSON.investissement.infosLivret) {
-					aDonnees.piedDePage.investissement.infosLivret = new ObjetElement();
+					aDonnees.piedDePage.investissement.infosLivret =
+						new ObjetElement_1.ObjetElement();
 					aDonnees.piedDePage.investissement.infosLivret.commentaire = "";
 					aDonnees.piedDePage.investissement.infosLivret.auteur =
-						new ObjetElement();
+						new ObjetElement_1.ObjetElement();
 					aDonnees.piedDePage.investissement.infosLivret.date = null;
 				}
 			}
@@ -221,15 +240,18 @@ class ObjetRequeteLivretScolaire extends ObjetRequeteConsultation {
 				aDonnees.piedDePage.pfmp = lJSON.pfmp;
 				aDonnees.piedDePage.pfmp.editable = lJSON.pfmp.editable;
 				if (!lJSON.pfmp.liste) {
-					aDonnees.piedDePage.pfmp.liste = new ObjetListeElements();
+					aDonnees.piedDePage.pfmp.liste =
+						new ObjetListeElements_1.ObjetListeElements();
 				}
 				if (!lJSON.pfmp.infosLSEleve) {
-					aDonnees.piedDePage.pfmp.infosLSEleve = new ObjetElement();
+					aDonnees.piedDePage.pfmp.infosLSEleve =
+						new ObjetElement_1.ObjetElement();
 					aDonnees.piedDePage.pfmp.infosLSEleve.nombreSemaines = 0;
 					aDonnees.piedDePage.pfmp.infosLSEleve.aLEtranger = false;
 					aDonnees.piedDePage.pfmp.infosLSEleve.estExportSynthese = false;
 					aDonnees.piedDePage.pfmp.infosLSEleve.appreciation = "";
-					aDonnees.piedDePage.pfmp.infosLSEleve.auteur = new ObjetElement();
+					aDonnees.piedDePage.pfmp.infosLSEleve.auteur =
+						new ObjetElement_1.ObjetElement();
 				}
 			}
 		} else {
@@ -237,7 +259,7 @@ class ObjetRequeteLivretScolaire extends ObjetRequeteConsultation {
 		}
 	}
 	_ajouterItemLivret(aJSON, aParametre) {
-		const lElement = new ObjetElement().fromJSON(aJSON);
+		const lElement = new ObjetElement_1.ObjetElement().fromJSON(aJSON);
 		lElement.titreEnseignement = aJSON.titreEnseignement
 			? aJSON.titreEnseignement
 			: false;
@@ -278,10 +300,14 @@ class ObjetRequeteLivretScolaire extends ObjetRequeteConsultation {
 			? aJSON.hintAnciennesNotes
 			: "";
 		if (aJSON.metaMatiere) {
-			lElement.metaMatiere = new ObjetElement().fromJSON(aJSON.metaMatiere);
+			lElement.metaMatiere = new ObjetElement_1.ObjetElement().fromJSON(
+				aJSON.metaMatiere,
+			);
 		}
 		if (aJSON.service) {
-			lElement.service = new ObjetElement().fromJSON(aJSON.service);
+			lElement.service = new ObjetElement_1.ObjetElement().fromJSON(
+				aJSON.service,
+			);
 		}
 		if (aJSON.services) {
 			lElement.services = aJSON.services;
@@ -293,10 +319,12 @@ class ObjetRequeteLivretScolaire extends ObjetRequeteConsultation {
 			lElement.estChefDOeuvre = aJSON.estChefDOeuvre;
 		}
 		if (aJSON.eleve) {
-			lElement.eleve = new ObjetElement().fromJSON(aJSON.eleve);
+			lElement.eleve = new ObjetElement_1.ObjetElement().fromJSON(aJSON.eleve);
 		}
 		if (aJSON.periode) {
-			lElement.periode = new ObjetElement().fromJSON(aJSON.periode);
+			lElement.periode = new ObjetElement_1.ObjetElement().fromJSON(
+				aJSON.periode,
+			);
 		}
 		if (aJSON.rangEleve) {
 			lElement.rangEleve = aJSON.rangEleve;
@@ -326,22 +354,24 @@ class ObjetRequeteLivretScolaire extends ObjetRequeteConsultation {
 			lElement.sup12 = aJSON.sup12;
 		}
 		if (aJSON.itemLS) {
-			lElement.itemLivretScolaire = new ObjetElement().fromJSON(aJSON.itemLS);
+			lElement.itemLivretScolaire = new ObjetElement_1.ObjetElement().fromJSON(
+				aJSON.itemLS,
+			);
 			this._ajouterCompetence(aJSON.itemLS, lElement.itemLivretScolaire);
 		}
 		if (aJSON.listeCompetences) {
-			lElement.listeCompetences = new ObjetListeElements().fromJSON(
-				aJSON.listeCompetences,
-				this._ajouterCompetence,
-			);
+			lElement.listeCompetences =
+				new ObjetListeElements_1.ObjetListeElements().fromJSON(
+					aJSON.listeCompetences,
+					this._ajouterCompetence,
+				);
 		}
 		if (aJSON.appr) {
 			lElement.appreciation = aJSON.appr;
 		}
 		if (aJSON.apprAnnuelle) {
-			lElement.appreciationAnnuelle = new ObjetElement().fromJSON(
-				aJSON.apprAnnuelle,
-			);
+			lElement.appreciationAnnuelle =
+				new ObjetElement_1.ObjetElement().fromJSON(aJSON.apprAnnuelle);
 			if (aJSON.apprAnnuelle.editable) {
 				lElement.appreciationAnnuelle.editable = aJSON.apprAnnuelle.editable;
 			}
@@ -359,9 +389,8 @@ class ObjetRequeteLivretScolaire extends ObjetRequeteConsultation {
 	}
 	_ajouterService(aJSON, aElement) {
 		if (aJSON.apprAnnuelle) {
-			aElement.appreciationAnnuelle = new ObjetElement().fromJSON(
-				aJSON.apprAnnuelle,
-			);
+			aElement.appreciationAnnuelle =
+				new ObjetElement_1.ObjetElement().fromJSON(aJSON.apprAnnuelle);
 			if (aJSON.apprAnnuelle.editable) {
 				aElement.appreciationAnnuelle.editable = aJSON.apprAnnuelle.editable;
 			}
@@ -378,15 +407,20 @@ class ObjetRequeteLivretScolaire extends ObjetRequeteConsultation {
 	_ajouterCompetence(aJSON, aElement) {
 		aElement.estEvaluationLV = aJSON.estEvaluationLV;
 		if (aJSON.evaluation) {
-			aElement.evaluation = new ObjetElement().fromJSON(aJSON.evaluation);
+			aElement.evaluation = new ObjetElement_1.ObjetElement().fromJSON(
+				aJSON.evaluation,
+			);
 			aElement.evaluation.abbreviation = aJSON.evaluation.abbreviation;
 		} else {
-			aElement.evaluation = new ObjetElement("", null, 0);
+			aElement.evaluation = new ObjetElement_1.ObjetElement("", null, 0);
 			aElement.evaluation.abbreviation = "";
 		}
 		aElement.listeNiveaux = aJSON.listeNiveaux;
 		aElement.hintNiveaux = aJSON.hintNiveaux;
 	}
 }
-Requetes.inscrire("LivretScolaire", ObjetRequeteLivretScolaire);
-module.exports = { ObjetRequeteLivretScolaire };
+exports.ObjetRequeteLivretScolaire = ObjetRequeteLivretScolaire;
+CollectionRequetes_1.Requetes.inscrire(
+	"LivretScolaire",
+	ObjetRequeteLivretScolaire,
+);

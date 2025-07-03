@@ -27,8 +27,8 @@ class ObjetFenetre_ListePassageInfirmerie extends ObjetFenetre_1.ObjetFenetre {
 		);
 	}
 	composeContenu() {
-		const T = [];
-		T.push(
+		const H = [];
+		H.push(
 			IE.jsx.str(
 				IE.jsx.fragment,
 				null,
@@ -39,7 +39,7 @@ class ObjetFenetre_ListePassageInfirmerie extends ObjetFenetre_1.ObjetFenetre {
 				),
 			),
 		);
-		return T.join("");
+		return H.join("");
 	}
 	_initialiserListe(aInstance) {
 		const lColonnes = [];

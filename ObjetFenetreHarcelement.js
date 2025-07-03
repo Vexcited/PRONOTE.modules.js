@@ -10,7 +10,6 @@ class ObjetFenetreHarcelement extends ObjetFenetre_1.ObjetFenetre {
 		this.etatUtilisateurSco = GEtatUtilisateur;
 		this.setOptionsFenetre({
 			fermerFenetreSurClicHorsFenetre: true,
-			heightMax_mobile: true,
 			largeur: 600,
 			titre: ObjetTraduction_1.GTraductions.getValeur(
 				"fenetreHarcelement.titreFenetre",

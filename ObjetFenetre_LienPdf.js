@@ -1,5 +1,5 @@
 exports.ObjetFenetre_LienPdf = void 0;
-require("DeclarationJQuery.js");
+require("DeclarationJQuery");
 const ObjetChaine_1 = require("ObjetChaine");
 const ObjetHtml_1 = require("ObjetHtml");
 const ObjetFenetre_1 = require("ObjetFenetre");

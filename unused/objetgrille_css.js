@@ -1,0 +1,27 @@
+exports.StylesObjetGrille = void 0;
+exports.StylesObjetGrille = {
+	Cours: "Cours",
+	ObjetGrille: "ObjetGrille",
+	AvecThemeFond: "AvecThemeFond",
+	Titre_Jours_Grille: "Titre_Jours_Grille",
+	GrilleNonInverse: "GrilleNonInverse",
+	GrilleInverse: "GrilleInverse",
+	decorateurTitre_conteneur_BlocTranche:
+		"decorateurTitre_conteneur_BlocTranche",
+	titreEntete: "titre-entete",
+	decorateurTitre_BlocTranche: "decorateurTitre_BlocTranche",
+	conteneurAbs: "conteneurAbs",
+	TraitHoraire: "TraitHoraire",
+	PiedTrancheNonInverse: "PiedTrancheNonInverse",
+	PiedTrancheScroll: "PiedTrancheScroll",
+	PiedHoraireScroll: "PiedHoraireScroll",
+	corpsGrille: "corpsGrille",
+	piedScroll: "piedScroll",
+	FondTrancheBlocHoraire: "FondTrancheBlocHoraire",
+	calqueFondTranchesHtml: "calqueFondTranchesHtml",
+	FondTrancheBlocHoraireTexte: "FondTrancheBlocHoraireTexte",
+	calqueContenusHtml: "calqueContenusHtml",
+	CelluleGrille: "CelluleGrille",
+	PiedHoraireContenu: "PiedHoraireContenu",
+	PiedTrancheContenu: "PiedTrancheContenu",
+};

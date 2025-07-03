@@ -1,27 +1,37 @@
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreReponseSaisie } = require("ObjetRequeteJSON.js");
-const DonneesListe_CategoriesDiscussion = require("DonneesListe_CategoriesDiscussion.js");
-const {
-	ObjetFenetre_SelecteurCouleur,
-} = require("ObjetFenetre_SelecteurCouleur.js");
-Requetes.inscrire("SaisieEtiquetteMessage", ObjetRequeteSaisie);
-class ObjetFenetre_ListeCategoriesDiscussion extends ObjetFenetre {
+exports.ObjetFenetre_ListeCategoriesDiscussion = void 0;
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetRequeteJSON_2 = require("ObjetRequeteJSON");
+const DonneesListe_CategoriesDiscussion_1 = require("DonneesListe_CategoriesDiscussion");
+const ObjetFenetre_SelecteurCouleur_1 = require("ObjetFenetre_SelecteurCouleur");
+const AccessApp_1 = require("AccessApp");
+const TypeOrigineCreationEtiquetteMessage_1 = require("TypeOrigineCreationEtiquetteMessage");
+const ObjetElement_1 = require("ObjetElement");
+class ObjetRequeteSaisieEtiquetteMessage extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieEtiquetteMessage",
+	ObjetRequeteSaisieEtiquetteMessage,
+);
+class ObjetFenetre_ListeCategoriesDiscussion extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
+		this.applicationSco = (0, AccessApp_1.getApp)();
 		this.setOptionsFenetre({ largeur: 350 });
 		this.parametres = {};
 	}
 	construireInstances() {
-		this.IdentListe = this.add(ObjetListe, _evenementSurListe);
+		this.IdentListe = this.add(
+			ObjetListe_1.ObjetListe,
+			this._evenementSurListe.bind(this),
+		);
 	}
 	setDonnees(aParametres) {
 		this.parametres = Object.assign(
@@ -30,72 +40,93 @@ class ObjetFenetre_ListeCategoriesDiscussion extends ObjetFenetre {
 		);
 		this.setOptionsFenetre({
 			titre: this.parametres.listeMessages
-				? GTraductions.getValeur(
+				? ObjetTraduction_1.GTraductions.getValeur(
 						"Messagerie.categorie.SelectionnerCategorieEtiquette",
 					)
-				: GTraductions.getValeur(
+				: ObjetTraduction_1.GTraductions.getValeur(
 						"Messagerie.categorie.EditerCategorieEtiquette",
 					),
 			listeBoutons: this.parametres.listeMessages
-				? [GTraductions.getValeur("Annuler"), GTraductions.getValeur("Valider")]
-				: [GTraductions.getValeur("Fermer")],
+				? [
+						ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+						ObjetTraduction_1.GTraductions.getValeur("Valider"),
+					]
+				: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
 		});
 		this.afficher();
 		const lColonnes = [];
 		if (this.parametres.listeMessages) {
 			lColonnes.push({
-				id: DonneesListe_CategoriesDiscussion.colonnes.coche,
+				id: DonneesListe_CategoriesDiscussion_1
+					.DonneesListe_CategoriesDiscussion.colonnes.coche,
 				titre: "",
 				taille: 20,
 			});
 		}
 		lColonnes.push(
 			{
-				id: DonneesListe_CategoriesDiscussion.colonnes.couleur,
+				id: DonneesListe_CategoriesDiscussion_1
+					.DonneesListe_CategoriesDiscussion.colonnes.couleur,
 				titre: { classeCssImage: "Image_PaletteDesCouleurs" },
 				taille: 18,
 			},
 			{
-				id: DonneesListe_CategoriesDiscussion.colonnes.nom,
-				titre: GTraductions.getValeur("Messagerie.categorie.Nom"),
+				id: DonneesListe_CategoriesDiscussion_1
+					.DonneesListe_CategoriesDiscussion.colonnes.nom,
+				titre: ObjetTraduction_1.GTraductions.getValeur(
+					"Messagerie.categorie.Nom",
+				),
 				taille: "100%",
 			},
 			{
-				id: DonneesListe_CategoriesDiscussion.colonnes.abr,
-				titre: GTraductions.getValeur("Messagerie.categorie.Abrev"),
+				id: DonneesListe_CategoriesDiscussion_1
+					.DonneesListe_CategoriesDiscussion.colonnes.abr,
+				titre: ObjetTraduction_1.GTraductions.getValeur(
+					"Messagerie.categorie.Abrev",
+				),
 				taille: IE.estMobile ? 45 : 40,
 			},
 		);
 		this.getInstance(this.IdentListe).setOptionsListe({
 			colonnes: lColonnes,
-			avecLigneCreation: !GApplication.droits.get(TypeDroits.estEnConsultation),
-			listeCreations: [DonneesListe_CategoriesDiscussion.colonnes.nom],
+			avecLigneCreation: !this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.estEnConsultation,
+			),
+			listeCreations: [
+				DonneesListe_CategoriesDiscussion_1.DonneesListe_CategoriesDiscussion
+					.colonnes.nom,
+			],
 			titreCreation: IE.estMobile
-				? GTraductions.getValeur("liste.nouveau")
-				: GTraductions.getValeur(
+				? ObjetTraduction_1.GTraductions.getValeur("liste.nouveau")
+				: ObjetTraduction_1.GTraductions.getValeur(
 						"Messagerie.categorie.CreerCategorieEtiquette",
 					),
-			boutons: IE.estMobile ? [] : [{ genre: ObjetListe.typeBouton.supprimer }],
-			nonEditable: GApplication.droits.get(TypeDroits.estEnConsultation),
+			boutons: IE.estMobile
+				? []
+				: [{ genre: ObjetListe_1.ObjetListe.typeBouton.supprimer }],
+			nonEditable: this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.estEnConsultation,
+			),
 			hauteurAdapteContenu: true,
 			hauteurMaxAdapteContenu: 500,
 		});
-		_actualiserListe.call(this);
+		this._actualiserListe();
 		this.positionnerFenetre();
 	}
 	composeContenu() {
 		const T = [];
-		T.push('<div id="' + this.getNomInstance(this.IdentListe) + '"></div>');
+		T.push(IE.jsx.str("div", { id: this.getNomInstance(this.IdentListe) }));
 		return T.join("");
 	}
-	surValidation(ANumeroBouton) {
+	surValidation(aNumeroBouton) {
 		if (this._saisieEnCours) {
 			return;
 		}
 		Promise.resolve()
 			.then(() => {
-				if (this.parametres.listeMessages && ANumeroBouton === 1) {
-					const lListePossessions = new ObjetListeElements();
+				if (this.parametres.listeMessages && aNumeroBouton === 1) {
+					const lListePossessions =
+						new ObjetListeElements_1.ObjetListeElements();
 					this.parametres.listeMessages.parcourir((aMessage) => {
 						if (aMessage.possessionMessage) {
 							lListePossessions.addElement(aMessage.possessionMessage);
@@ -104,17 +135,21 @@ class ObjetFenetre_ListeCategoriesDiscussion extends ObjetFenetre {
 						} else {
 						}
 					});
-					const lListeEtiquettesPlus = new ObjetListeElements(),
-						lListeEtiquettesMoins = new ObjetListeElements();
+					const lListeEtiquettesPlus =
+							new ObjetListeElements_1.ObjetListeElements(),
+						lListeEtiquettesMoins =
+							new ObjetListeElements_1.ObjetListeElements();
 					this.getInstance(this.IdentListe)
 						.getListeArticles()
 						.parcourir((aArticle) => {
-							if (aArticle.getEtat() === EGenreEtat.Modification) {
+							if (
+								aArticle.getEtat() === Enumere_Etat_1.EGenreEtat.Modification
+							) {
 								switch (aArticle.coche) {
-									case ObjetDonneesListe.EGenreCoche.Aucune:
+									case ObjetDonneesListe_1.ObjetDonneesListe.EGenreCoche.Aucune:
 										lListeEtiquettesMoins.addElement(aArticle.etiquette);
 										break;
-									case ObjetDonneesListe.EGenreCoche.Verte:
+									case ObjetDonneesListe_1.ObjetDonneesListe.EGenreCoche.Verte:
 										lListeEtiquettesPlus.addElement(aArticle.etiquette);
 										break;
 									default:
@@ -125,7 +160,7 @@ class ObjetFenetre_ListeCategoriesDiscussion extends ObjetFenetre {
 						lListeEtiquettesPlus.count() > 0 ||
 						lListeEtiquettesMoins.count() > 0
 					) {
-						return _saisie(this, {
+						return this._saisie({
 							commande: "modifierEtiquettesMessages",
 							listePossessionsMessages: lListePossessions.setSerialisateurJSON({
 								ignorerEtatsElements: true,
@@ -144,114 +179,203 @@ class ObjetFenetre_ListeCategoriesDiscussion extends ObjetFenetre {
 				this.fermer();
 			});
 	}
-}
-function _saisie(aInstance, aParametres) {
-	const lListe = aInstance.getInstance(aInstance.IdentListe);
-	let lSelections = lListe.getListeElementsSelection();
-	aInstance._saisieEnCours = true;
-	return Requetes("SaisieEtiquetteMessage", aInstance)
-		.lancerRequete(aParametres)
-		.then(
-			(aParams) => {
-				if (aParams && aParams.genreReponse === EGenreReponseSaisie.succes) {
-					aInstance.optionsFenetre.surSaisieEtiquette(aParametres.commande);
-					if (aParams.JSONReponse && aParams.JSONReponse.listeEtiquettes) {
-						aInstance.parametres.listeEtiquettes =
-							aParams.JSONReponse.listeEtiquettes.trier();
-					}
+	_saisie(aParametres) {
+		const lListe = this.getInstance(this.IdentListe);
+		let lSelections = lListe.getListeElementsSelection();
+		this._saisieEnCours = true;
+		return new ObjetRequeteSaisieEtiquetteMessage(this)
+			.lancerRequete(aParametres)
+			.then(
+				(aParams) => {
 					if (
-						aParametres.commande === "creation" &&
-						aParams.JSONRapportSaisie &&
-						aParams.JSONRapportSaisie.etiquetteCree
+						aParams &&
+						aParams.genreReponse ===
+							ObjetRequeteJSON_2.EGenreReponseSaisie.succes
 					) {
-						lSelections = new ObjetListeElements().addElement(
-							aParams.JSONRapportSaisie.etiquetteCree,
+						this.optionsFenetre.surSaisieEtiquette();
+						if (aParams.JSONReponse && aParams.JSONReponse.listeEtiquettes) {
+							this.parametres.listeEtiquettes =
+								aParams.JSONReponse.listeEtiquettes.trier();
+						}
+						if (
+							aParametres.commande === "creation" &&
+							aParams.JSONRapportSaisie &&
+							aParams.JSONRapportSaisie.etiquetteCree
+						) {
+							lSelections =
+								new ObjetListeElements_1.ObjetListeElements().addElement(
+									aParams.JSONRapportSaisie.etiquetteCree,
+								);
+						}
+					}
+					return aParams;
+				},
+				() => {},
+			)
+			.then(() => {
+				this._actualiserListe();
+				lListe.setListeElementsSelection(lSelections);
+			})
+			.finally(() => {
+				delete this._saisieEnCours;
+			});
+	}
+	_evenementSurListe(aParams) {
+		switch (aParams.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Edition:
+				switch (aParams.idColonne) {
+					case DonneesListe_CategoriesDiscussion_1
+						.DonneesListe_CategoriesDiscussion.colonnes.couleur:
+						ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+							ObjetFenetre_SelecteurCouleur_1.ObjetFenetre_SelecteurCouleur,
+							{
+								pere: this,
+								evenement: function (aGenreBouton, aCouleur) {
+									if (aGenreBouton === 1) {
+										if (aParams.article.etiquette.couleur !== aCouleur) {
+											this._saisie({
+												commande: "couleur",
+												etiquette: aParams.article.etiquette,
+												couleur: aCouleur,
+											});
+										}
+									}
+								},
+							},
+						).setDonnees(aParams.article.etiquette.couleur);
+						break;
+					default:
+				}
+				break;
+			case Enumere_EvenementListe_1.EGenreEvenementListe.ApresEdition:
+				switch (aParams.idColonne) {
+					case DonneesListe_CategoriesDiscussion_1
+						.DonneesListe_CategoriesDiscussion.colonnes.nom:
+						if (
+							aParams.article.getLibelle() &&
+							aParams.article.getLibelle() !==
+								aParams.article.etiquette.getLibelle()
+						) {
+							this._saisie({
+								commande: "libelle",
+								etiquette: aParams.article.etiquette,
+								libelle: aParams.article.getLibelle(),
+							});
+						}
+						break;
+					case DonneesListe_CategoriesDiscussion_1
+						.DonneesListe_CategoriesDiscussion.colonnes.abr:
+						if (aParams.article.abr !== aParams.article.etiquette.abr) {
+							this._saisie({
+								commande: "abr",
+								etiquette: aParams.article.etiquette,
+								abr: aParams.article.abr,
+							});
+						}
+						break;
+					default:
+				}
+				break;
+			case Enumere_EvenementListe_1.EGenreEvenementListe.ApresCreation:
+				this._saisie({
+					commande: "creation",
+					libelle: aParams.article.getLibelle(),
+				});
+				break;
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Suppression:
+				this._saisie({
+					commande: "suppression",
+					etiquette: aParams.article.etiquette,
+				});
+				break;
+		}
+	}
+	_actualiserListe() {
+		const lListe = this.getInstance(this.IdentListe);
+		const lOldListeAffichage = lListe.getDonneesListe()
+			? lListe.getListeArticles()
+			: null;
+		const lListeDonneesListe = this.formatterDonnees(
+			this.parametres.listeEtiquettes,
+			this.parametres.listeMessages,
+			lOldListeAffichage,
+		);
+		lListe.setDonnees(
+			new DonneesListe_CategoriesDiscussion_1.DonneesListe_CategoriesDiscussion(
+				lListeDonneesListe,
+			),
+		);
+	}
+	formatterDonnees(aListeEtiquettes, aListeMessages, aOldListeAffichage) {
+		const lListe = new ObjetListeElements_1.ObjetListeElements();
+		aListeEtiquettes.parcourir((aEtiquette) => {
+			if (
+				!TypeOrigineCreationEtiquetteMessage_1.TypeOrigineCreationEtiquetteMessageUtil.estEtiquettePerso(
+					aEtiquette.getGenre(),
+				)
+			) {
+				return true;
+			}
+			const lElement = new ObjetElement_1.ObjetElement(
+				aEtiquette.getLibelle(),
+				aEtiquette.getNumero(),
+			);
+			lElement.estPerso = aEtiquette.estPerso;
+			lElement.etiquette = aEtiquette;
+			lListe.addElement(lElement);
+			lElement.coche = ObjetDonneesListe_1.ObjetDonneesListe.EGenreCoche.Aucune;
+			let lInit = false;
+			if (aListeMessages) {
+				aListeMessages.parcourir((aMessage) => {
+					let lEtiquetteExiste = null;
+					if (aMessage && aMessage.listeEtiquettes) {
+						lEtiquetteExiste = aMessage.listeEtiquettes.getElementParNumero(
+							aEtiquette.getNumero(),
 						);
 					}
-				}
-				return aParams;
-			},
-			() => {},
-		)
-		.then(() => {
-			_actualiserListe.call(aInstance);
-			lListe.setListeElementsSelection(lSelections);
-		})
-		.finally(() => {
-			delete aInstance._saisieEnCours;
-		});
-}
-function _evenementSurListe(aParams) {
-	switch (aParams.genreEvenement) {
-		case EGenreEvenementListe.Edition:
-			switch (aParams.idColonne) {
-				case DonneesListe_CategoriesDiscussion.colonnes.couleur:
-					ObjetFenetre.creerInstanceFenetre(ObjetFenetre_SelecteurCouleur, {
-						pere: this,
-						evenement: function (aGenreBouton, aCouleur) {
-							if (aGenreBouton === 1) {
-								if (aParams.article.etiquette.couleur !== aCouleur) {
-									_saisie(this, {
-										commande: "couleur",
-										etiquette: aParams.article.etiquette,
-										couleur: aCouleur,
-									});
-								}
-							}
-						},
-					}).setDonnees(aParams.article.etiquette.couleur);
-					break;
-				default:
-			}
-			break;
-		case EGenreEvenementListe.ApresEdition:
-			switch (aParams.idColonne) {
-				case DonneesListe_CategoriesDiscussion.colonnes.nom:
 					if (
-						aParams.article.getLibelle() &&
-						aParams.article.getLibelle() !==
-							aParams.article.etiquette.getLibelle()
+						!lEtiquetteExiste &&
+						lElement.coche ===
+							ObjetDonneesListe_1.ObjetDonneesListe.EGenreCoche.Verte
 					) {
-						_saisie(this, {
-							commande: "libelle",
-							etiquette: aParams.article.etiquette,
-							libelle: aParams.article.getLibelle(),
-						});
+						lElement.coche =
+							ObjetDonneesListe_1.ObjetDonneesListe.EGenreCoche.Grise;
+						return false;
 					}
-					break;
-				case DonneesListe_CategoriesDiscussion.colonnes.abr:
-					if (aParams.article.abr !== aParams.article.etiquette.abr) {
-						_saisie(this, {
-							commande: "abr",
-							etiquette: aParams.article.etiquette,
-							abr: aParams.article.abr,
-						});
+					if (
+						lEtiquetteExiste &&
+						lElement.coche ===
+							ObjetDonneesListe_1.ObjetDonneesListe.EGenreCoche.Aucune
+					) {
+						lElement.coche = lInit
+							? ObjetDonneesListe_1.ObjetDonneesListe.EGenreCoche.Grise
+							: ObjetDonneesListe_1.ObjetDonneesListe.EGenreCoche.Verte;
 					}
-					break;
-				default:
+					if (
+						lElement.coche ===
+						ObjetDonneesListe_1.ObjetDonneesListe.EGenreCoche.Grise
+					) {
+						return false;
+					}
+					lInit = true;
+				});
 			}
-			break;
-		case EGenreEvenementListe.ApresCreation:
-			_saisie(this, {
-				commande: "creation",
-				libelle: aParams.article.getLibelle(),
-			});
-			break;
-		case EGenreEvenementListe.Suppression:
-			_saisie(this, {
-				commande: "suppression",
-				etiquette: aParams.article.etiquette,
-			});
-			break;
+			if (aOldListeAffichage) {
+				const lOldEtiquette = aOldListeAffichage.getElementParNumeroEtGenre(
+					lElement.getNumero(),
+				);
+				if (
+					lOldEtiquette &&
+					lOldEtiquette.getEtat() === Enumere_Etat_1.EGenreEtat.Modification &&
+					lElement.coche !== lOldEtiquette.coche
+				) {
+					lElement.coche = lOldEtiquette.coche;
+					lElement.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+				}
+			}
+		});
+		return lListe;
 	}
 }
-function _actualiserListe() {
-	const lListe = this.getInstance(this.IdentListe);
-	const lOldListeAffichage = lListe.getDonneesListe()
-		? lListe.getListeArticles()
-		: null;
-	lListe.setDonnees(
-		new DonneesListe_CategoriesDiscussion(this.parametres, lOldListeAffichage),
-	);
-}
-module.exports = ObjetFenetre_ListeCategoriesDiscussion;
+exports.ObjetFenetre_ListeCategoriesDiscussion =
+	ObjetFenetre_ListeCategoriesDiscussion;

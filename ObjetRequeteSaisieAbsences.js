@@ -1,13 +1,12 @@
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { TypeGenrePunition } = require("TypeGenrePunition.js");
-class ObjetRequeteSaisieAbsences extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieAbsences = void 0;
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const TypeGenrePunition_1 = require("TypeGenrePunition");
+const AccessApp_1 = require("AccessApp");
+class ObjetRequeteSaisieAbsences extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParametres) {
 		this.JSON = {};
 		if (!!aParametres.cours) {
@@ -60,12 +59,16 @@ class ObjetRequeteSaisieAbsences extends ObjetRequeteSaisie {
 		return this.appelAsynchrone();
 	}
 }
-Requetes.inscrire("SaisieAbsences", ObjetRequeteSaisieAbsences);
+exports.ObjetRequeteSaisieAbsences = ObjetRequeteSaisieAbsences;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieAbsences",
+	ObjetRequeteSaisieAbsences,
+);
 function _serialiserEleve(aElement, aJSON) {
 	if (!aElement.existeNumero()) {
 		return false;
 	}
-	if (aElement.getEtat() === EGenreEtat.Suppression) {
+	if (aElement.getEtat() === Enumere_Etat_1.EGenreEtat.Suppression) {
 		return true;
 	}
 	if (aElement.ListeAbsences) {
@@ -133,11 +136,12 @@ function _serialiserAbsenceEleve(aElement, aJSON) {
 	aJSON.placeDebut = aElement.PlaceDebut;
 	aJSON.placeFin = aElement.PlaceFin;
 	switch (aElement.getGenre()) {
-		case EGenreRessource.Absence:
+		case Enumere_Ressource_1.EGenreRessource.Absence:
 			aJSON.ouverte = !!aElement.EstOuverte;
 			if (
-				GApplication.droits.get(
-					TypeDroits.fonctionnalites.appelSaisirMotifJustifDAbsence,
+				(0, AccessApp_1.getApp)().droits.get(
+					ObjetDroitsPN_1.TypeDroits.fonctionnalites
+						.appelSaisirMotifJustifDAbsence,
 				)
 			) {
 				if (aElement.listeMotifs && aElement.listeMotifs.count() > 0) {
@@ -149,15 +153,19 @@ function _serialiserAbsenceEleve(aElement, aJSON) {
 				aJSON.tabAbs = aElement.tabAbs;
 			}
 			break;
-		case EGenreRessource.Retard:
+		case Enumere_Ressource_1.EGenreRessource.Retard:
 			aJSON.duree = aElement.Duree;
-			if (GApplication.droits.get(TypeDroits.absences.avecSaisieMotifRetard)) {
+			if (
+				(0, AccessApp_1.getApp)().droits.get(
+					ObjetDroitsPN_1.TypeDroits.absences.avecSaisieMotifRetard,
+				)
+			) {
 				if (aElement.listeMotifs && aElement.listeMotifs.count() > 0) {
 					aJSON.motif = aElement.listeMotifs.get(0);
 				}
 			}
 			break;
-		case EGenreRessource.Exclusion:
+		case Enumere_Ressource_1.EGenreRessource.Exclusion:
 			if (!!aElement.listeMotifs) {
 				aElement.listeMotifs.setSerialisateurJSON({
 					ignorerEtatsElements: true,
@@ -166,13 +174,13 @@ function _serialiserAbsenceEleve(aElement, aJSON) {
 			}
 			if (!!aElement.documents) {
 				aElement.documents.setSerialisateurJSON({
-					methodeSerialisation: _serialiser_Documents.bind(this),
+					methodeSerialisation: _serialiser_Documents,
 				});
 				aJSON.documents = aElement.documents;
 			}
 			if (!!aElement.documentsTAF) {
 				aElement.documentsTAF.setSerialisateurJSON({
-					methodeSerialisation: _serialiser_Documents.bind(this),
+					methodeSerialisation: _serialiser_Documents,
 				});
 				aJSON.documentsTAF = aElement.documentsTAF;
 			}
@@ -183,19 +191,22 @@ function _serialiserAbsenceEleve(aElement, aJSON) {
 				aJSON.datePublication = aElement.datePublication;
 			}
 			break;
-		case EGenreRessource.Infirmerie:
+		case Enumere_Ressource_1.EGenreRessource.Infirmerie:
 			aJSON.dateDebut = aElement.DateDebut;
 			aJSON.dateFin = aElement.DateFin;
 			aJSON.accompagnateur = aElement.Accompagnateur;
 			aJSON.commentaire = aElement.commentaire;
 			aJSON.publicationWeb = aElement.estPubliee;
 			break;
-		case EGenreRessource.ObservationProfesseurEleve:
+		case Enumere_Ressource_1.EGenreRessource.ObservationProfesseurEleve:
 			aJSON.observation = aElement.observation;
 			aJSON.commentaire = aElement.commentaire;
 			aJSON.estPubliee = aElement.estPubliee;
+			if (aElement.dateFinMiseEnEvidence) {
+				aJSON.dateFinMiseEnEvidence = aElement.dateFinMiseEnEvidence;
+			}
 			break;
-		case EGenreRessource.RepasAPreparer:
+		case Enumere_Ressource_1.EGenreRessource.RepasAPreparer:
 			aJSON.type = aElement.type;
 			break;
 	}
@@ -208,7 +219,7 @@ function _serialiser_Documents(aDocument, aJSON) {
 	$.extend(aJSON, aDocument.copieToJSON());
 }
 function _serialiserPunitionEleve(aElement, aJSON) {
-	if (aElement.getEtat() !== EGenreEtat.Suppression) {
+	if (aElement.getEtat() !== Enumere_Etat_1.EGenreEtat.Suppression) {
 		aJSON.nature = aElement.naturePunition;
 		if (!!aElement.listeMotifs) {
 			aElement.listeMotifs.setSerialisateurJSON({ ignorerEtatsElements: true });
@@ -216,13 +227,13 @@ function _serialiserPunitionEleve(aElement, aJSON) {
 		}
 		if (!!aElement.documents) {
 			aElement.documents.setSerialisateurJSON({
-				methodeSerialisation: _serialiser_Documents.bind(this),
+				methodeSerialisation: _serialiser_Documents,
 			});
 			aJSON.documents = aElement.documents;
 		}
 		if (!!aElement.documentsTAF) {
 			aElement.documentsTAF.setSerialisateurJSON({
-				methodeSerialisation: _serialiser_Documents.bind(this),
+				methodeSerialisation: _serialiser_Documents,
 			});
 			aJSON.documentsTAF = aElement.documentsTAF;
 		}
@@ -240,7 +251,8 @@ function _serialiserPunitionEleve(aElement, aJSON) {
 		}
 		if (
 			aElement.naturePunition &&
-			aElement.naturePunition.getGenre() !== TypeGenrePunition.GP_Devoir
+			aElement.naturePunition.getGenre() !==
+				TypeGenrePunition_1.TypeGenrePunition.GP_Devoir
 		) {
 			aJSON.duree = aElement.duree;
 		} else {
@@ -251,7 +263,7 @@ function _serialiserPunitionEleve(aElement, aJSON) {
 	}
 }
 function _serialiserDispenseEleve(aElement, aJSON) {
-	if (aElement.getEtat() !== EGenreEtat.Suppression) {
+	if (aElement.getEtat() !== Enumere_Etat_1.EGenreEtat.Suppression) {
 		aJSON.matiere = aElement.matiere;
 		if (aElement.commentaire) {
 			aJSON.commentaire = aElement.commentaire;
@@ -261,25 +273,24 @@ function _serialiserDispenseEleve(aElement, aJSON) {
 	}
 }
 function _serialiserDemandeDispenseEleve(aElement, aJSON) {
-	if (aElement.getEtat() !== EGenreEtat.Suppression) {
+	if (aElement.getEtat() !== Enumere_Etat_1.EGenreEtat.Suppression) {
 		aJSON.estRefusee = aElement.estRefusee;
 		aJSON.estValider = aElement.estValider;
 		aJSON.eleve = aElement.eleve.toJSON();
 	}
 }
 function _serialiserMemoEleve(aElement, aJSON) {
-	if (aElement.getEtat() !== EGenreEtat.Suppression) {
+	if (aElement.getEtat() !== Enumere_Etat_1.EGenreEtat.Suppression) {
 		aJSON.date = aElement.date;
 		aJSON.publie = !!aElement.publie;
 		aJSON.publieVS = !!aElement.publieVS;
 	}
 }
 function _serialiserAbsenceNonRegleeEleve(aElement, aJSON) {
-	if (aElement.getEtat() === EGenreEtat.Modification) {
-		if (aElement.motif.getEtat() === EGenreEtat.Modification) {
+	if (aElement.getEtat() === Enumere_Etat_1.EGenreEtat.Modification) {
+		if (aElement.motif.getEtat() === Enumere_Etat_1.EGenreEtat.Modification) {
 			aJSON.motif = aElement.motif;
 		}
 		aJSON.reglee = !!aElement.reglee;
 	}
 }
-module.exports = { ObjetRequeteSaisieAbsences };

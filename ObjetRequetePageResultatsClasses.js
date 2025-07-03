@@ -1,46 +1,34 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { GCache } = require("Cache.js");
-class ObjetRequetePageResultatsClasses extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-		this.cache = GCache.resultatsClasses;
-	}
-	lancerRequete(
-		aClasse,
-		aPeriode,
-		aAbsences,
-		aCompetences,
-		aAvecSousServices,
-		aUniquementSousServices,
-		aMatiereEquivalence,
-		aParamBulletin,
-		aMasquerSansNotes,
-		aAvecCouleurMoyenne,
-		aTypeMoyenne,
-	) {
-		this.classeCourant = aClasse;
-		this.periodeCourant = aPeriode;
-		const lJSON = {
-			classe: aClasse,
-			periode: aPeriode,
-			absences: aAbsences,
-			competences: aCompetences,
-			afficherSousServices: aAvecSousServices,
-			afficherSeulementSousServices: aUniquementSousServices,
-			matiereEquivalence: aMatiereEquivalence,
-			paramBulletin: aParamBulletin,
-			masquerSansNotes: aMasquerSansNotes,
-			typeCalculMoyenne: aTypeMoyenne,
-			avecCouleurMoyenne: aAvecCouleurMoyenne,
-		};
-		$.extend(this.JSON, lJSON);
+exports.ObjetRequetePageResultatsClasses = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequetePageResultatsClasses extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
+	lancerRequete(aParams) {
+		$.extend(this.JSON, aParams);
 		return this.appelAsynchrone();
 	}
 	actionApresRequete() {
-		const lDonnees = this.JSONReponse;
-		this.callbackReussite.appel(lDonnees);
+		this.callbackReussite.appel(this.JSONReponse);
 	}
 }
-Requetes.inscrire("ResultatsClasses", ObjetRequetePageResultatsClasses);
-module.exports = { ObjetRequetePageResultatsClasses };
+exports.ObjetRequetePageResultatsClasses = ObjetRequetePageResultatsClasses;
+CollectionRequetes_1.Requetes.inscrire(
+	"ResultatsClasses",
+	ObjetRequetePageResultatsClasses,
+);
+(function (ObjetRequetePageResultatsClasses) {
+	let TypeMoyenneAffichee;
+	(function (TypeMoyenneAffichee) {
+		TypeMoyenneAffichee[(TypeMoyenneAffichee["Calculee"] = 0)] = "Calculee";
+		TypeMoyenneAffichee[(TypeMoyenneAffichee["Proposee"] = 1)] = "Proposee";
+		TypeMoyenneAffichee[(TypeMoyenneAffichee["Deliberee"] = 2)] = "Deliberee";
+	})(
+		(TypeMoyenneAffichee =
+			ObjetRequetePageResultatsClasses.TypeMoyenneAffichee ||
+			(ObjetRequetePageResultatsClasses.TypeMoyenneAffichee = {})),
+	);
+})(
+	ObjetRequetePageResultatsClasses ||
+		(exports.ObjetRequetePageResultatsClasses =
+			ObjetRequetePageResultatsClasses =
+				{}),
+);

@@ -10,10 +10,28 @@ require("IEHtml.BoutonHebergement.js");
 const ObjetComposeHtml_1 = require("ObjetComposeHtml");
 const ObjetInterface_1 = require("ObjetInterface");
 const ObjetTraduction_1 = require("ObjetTraduction");
+const AccessApp_1 = require("AccessApp");
+const ObjetTraduction_2 = require("ObjetTraduction");
+const TradInterfacePageSecurite = ObjetTraduction_2.TraductionsModule.getModule(
+	"InterfacePageSecurite",
+	{
+		labelArreterPublicationPourModifierParametres: "",
+		durees: ["", "", "", "", "", "", ""],
+		suspendreIP: "",
+		dureeSuspension: "",
+		messageSuspendreIP1: "",
+		messageNbrTentatives: "",
+		tentatives: "",
+		deconnexionAutomatiqueTitre: "",
+		deconnexionAutomatique1: "",
+		deconnexionAutomatique2: "",
+		minutes: "",
+	},
+);
 class InterfacePageSecurite extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
-		this.appConsole = GApplication;
+		this.appConsole = (0, AccessApp_1.getApp)();
 		this.messagesEvenements = this.appConsole.msgEvnts.getMessagesUnite(
 			"InterfacePageSecurite.js",
 		);
@@ -24,17 +42,15 @@ class InterfacePageSecurite extends ObjetInterface_1.ObjetInterface {
 		this.donneesRecues = false;
 		this.recupererDonneesPage();
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			btnViserBlackList: {
-				event() {
-					aInstance.evenementBoutonViderBlackList();
-				},
-				getCssImage() {
-					return "Image_Cmd_viderBlackList";
-				},
+	jsxModelBtnViderBlackList() {
+		return {
+			event: () => {
+				this.evenementBoutonViderBlackList();
 			},
-		});
+			getCssImage: () => {
+				return "Icone_Cmd_viderBlackList";
+			},
+		};
 	}
 	recupererDonneesPage() {
 		const lParam = {
@@ -73,7 +89,7 @@ class InterfacePageSecurite extends ObjetInterface_1.ObjetInterface {
 	setParametresSecurite(aDonnees) {
 		let lMessage;
 		try {
-			this.gestionSecurite = aDonnees.getElement("return").valeur;
+			this.gestionSecurite = aDonnees.getElement("return").getValeur();
 		} catch (e) {
 			lMessage = this.messagesEvenements.getMessageEchecBlocTry(e);
 			this.appConsole.gestionEvnts.traiter(
@@ -108,9 +124,7 @@ class InterfacePageSecurite extends ObjetInterface_1.ObjetInterface {
 		const H = [];
 		const llabelExplicatif =
 			this.appConsole.etatServeurHttp.getEtatActif() === true
-				? ObjetTraduction_1.GTraductions.getValeur(
-						"pageParametresSecurite.labelArreterPublicationPourModifierParametres",
-					)
+				? TradInterfacePageSecurite.labelArreterPublicationPourModifierParametres
 				: "";
 		if (this.donneesRecues) {
 			H.push(
@@ -149,15 +163,17 @@ class InterfacePageSecurite extends ObjetInterface_1.ObjetInterface {
 		const H = [];
 		H.push(
 			'<fieldset class="Espace AlignementGauche Texte10" style="border:1px solid ',
-			GCouleur.intermediaire,
+			(0, AccessApp_1.getApp)().getCouleur().intermediaire,
 			';">',
 		);
-		H.push('<legend class="Gras Espace" style="color:', GCouleur.texte, ';">');
+		H.push(
+			'<legend class="Gras Espace" style="color:',
+			(0, AccessApp_1.getApp)().getCouleur().texte,
+			';">',
+		);
 		H.push(
 			"<label>",
-			ObjetTraduction_1.GTraductions.getValeur(
-				"pageParametresSecurite.deconnexionAutomatiqueTitre",
-			),
+			TradInterfacePageSecurite.deconnexionAutomatiqueTitre,
 			"</label>",
 		);
 		H.push("</legend>");
@@ -166,9 +182,7 @@ class InterfacePageSecurite extends ObjetInterface_1.ObjetInterface {
 		H.push(
 			' <td class="Espace" style="width:10px;">',
 			ObjetChaine_1.GChaine.insecable(
-				ObjetTraduction_1.GTraductions.getValeur(
-					"pageParametresSecurite.deconnexionAutomatique1",
-				),
+				TradInterfacePageSecurite.deconnexionAutomatique1,
 			),
 			"</td>",
 		);
@@ -180,9 +194,7 @@ class InterfacePageSecurite extends ObjetInterface_1.ObjetInterface {
 		H.push(
 			' <td class="Espace" style="width:100%;">',
 			ObjetChaine_1.GChaine.insecable(
-				ObjetTraduction_1.GTraductions.getValeur(
-					"pageParametresSecurite.deconnexionAutomatique2",
-				),
+				TradInterfacePageSecurite.deconnexionAutomatique2,
 			),
 			"</td>",
 		);
@@ -208,11 +220,7 @@ class InterfacePageSecurite extends ObjetInterface_1.ObjetInterface {
 				aVal === this.gestionSecurite.dureeExpirationSession ? "selected" : "";
 			H.push(
 				"<option " + lOptionSelected + ">",
-				aVal +
-					" " +
-					ObjetTraduction_1.GTraductions.getValeur(
-						"pageParametresSecurite.minutes",
-					),
+				aVal + " " + TradInterfacePageSecurite.minutes,
 				"</option>",
 			);
 		});
@@ -270,26 +278,22 @@ class InterfacePageSecurite extends ObjetInterface_1.ObjetInterface {
 		const H = [];
 		H.push(
 			'<fieldset class="Espace AlignementGauche Texte10" style="border:1px solid ',
-			GCouleur.intermediaire,
+			(0, AccessApp_1.getApp)().getCouleur().intermediaire,
 			';">',
 		);
-		H.push('<legend class="Gras Espace" style="color:', GCouleur.texte, ';">');
 		H.push(
-			"<label>",
-			ObjetTraduction_1.GTraductions.getValeur(
-				"pageParametresSecurite.suspendreIP",
-			),
-			"</label>",
+			'<legend class="Gras Espace" style="color:',
+			(0, AccessApp_1.getApp)().getCouleur().texte,
+			';">',
 		);
+		H.push(IE.jsx.str("label", null, TradInterfacePageSecurite.suspendreIP));
 		H.push("</legend>");
 		H.push('<table class="Texte10">');
 		H.push("<tr>");
 		H.push(
 			' <td class="Espace" style="width:10px;">',
 			ObjetChaine_1.GChaine.insecable(
-				ObjetTraduction_1.GTraductions.getValeur(
-					"pageParametresSecurite.dureeSuspension",
-				),
+				TradInterfacePageSecurite.dureeSuspension,
 			),
 			"</td>",
 		);
@@ -308,9 +312,7 @@ class InterfacePageSecurite extends ObjetInterface_1.ObjetInterface {
 		H.push(
 			' <td class="Espace" style="width:10px;">',
 			ObjetChaine_1.GChaine.insecable(
-				ObjetTraduction_1.GTraductions.getValeur(
-					"pageParametresSecurite.messageNbrTentatives",
-				),
+				TradInterfacePageSecurite.messageNbrTentatives,
 			),
 			"</td>",
 		);
@@ -323,9 +325,7 @@ class InterfacePageSecurite extends ObjetInterface_1.ObjetInterface {
 		H.push("</tr>");
 		H.push(
 			'<tr><td class="Espace" colspan="3">',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"pageParametresSecurite.messageSuspendreIP1",
-			),
+			TradInterfacePageSecurite.messageSuspendreIP1,
 			"</td></tr>",
 		);
 		H.push("</table>");
@@ -353,11 +353,7 @@ class InterfacePageSecurite extends ObjetInterface_1.ObjetInterface {
 				lNbrTentatives === this.gestionSecurite.nbrTentatives ? "selected" : "";
 			H.push(
 				"<option " + lOptionSelected + ">",
-				lNbrTentatives +
-					" " +
-					ObjetTraduction_1.GTraductions.getValeur(
-						"pageParametresSecurite.tentatives",
-					),
+				lNbrTentatives + " " + TradInterfacePageSecurite.tentatives,
 				"</option>",
 			);
 		}
@@ -418,16 +414,12 @@ class InterfacePageSecurite extends ObjetInterface_1.ObjetInterface {
 			this.Nom,
 			'.surOnChangeComboDuree()" ' + lActif + ">",
 		);
-		for (const I in ObjetTraduction_1.GTraductions.getTabValeurs(
-			"pageParametresSecurite.durees",
-		)) {
+		for (const I in TradInterfacePageSecurite.durees) {
 			const lOptionSelected =
 				parseInt(I) === this.gestionSecurite.dureeQuarantaine ? "selected" : "";
 			H.push(
 				"<option " + lOptionSelected + ">",
-				ObjetTraduction_1.GTraductions.getTabValeurs(
-					"pageParametresSecurite.durees",
-				)[I],
+				TradInterfacePageSecurite.durees[I],
 				"</option>",
 			);
 		}
@@ -478,19 +470,35 @@ class InterfacePageSecurite extends ObjetInterface_1.ObjetInterface {
 	}
 	composeViderBlacklist() {
 		const H = [];
-		H.push('<table class="Texte10" style="width:100%;">');
-		H.push("<tr>");
 		H.push(
-			'<ie-boutonhebergement ie-model="btnViserBlackList" style="width:230px;" title="',
-			ObjetTraduction_1.GTraductions.getValeur("principal.btnDeploquerIPs"),
-			'">',
-			ObjetChaine_1.GChaine.insecable(
-				ObjetTraduction_1.GTraductions.getValeur("principal.btnDeploquerIPs"),
+			IE.jsx.str(
+				"table",
+				{ class: "Texte10", style: "width:100%;" },
+				IE.jsx.str(
+					"tr",
+					null,
+					IE.jsx.str(
+						"td",
+						null,
+						IE.jsx.str(
+							"ie-boutonhebergement",
+							{
+								"ie-model": this.jsxModelBtnViderBlackList.bind(this),
+								style: "width:230px;",
+								title: ObjetTraduction_1.GTraductions.getValeur(
+									"principal.btnDeploquerIPs",
+								),
+							},
+							ObjetChaine_1.GChaine.insecable(
+								ObjetTraduction_1.GTraductions.getValeur(
+									"principal.btnDeploquerIPs",
+								),
+							),
+						),
+					),
+				),
 			),
-			"</ie-boutonhebergement>",
 		);
-		H.push("</tr>");
-		H.push("</table>");
 		return H.join("");
 	}
 }

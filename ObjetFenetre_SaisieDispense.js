@@ -182,7 +182,7 @@ class ObjetFenetre_SaisieDispense extends ObjetFenetre_1.ObjetFenetre {
 						libelleHaut: ObjetTraduction_1.GTraductions.getValeur(
 							"AbsenceVS.dispense.labelMatiere",
 						),
-						describedById: this.ids.describedMatiere,
+						ariaDescribedBy: this.ids.describedMatiere,
 						multiSelection: true,
 						placeHolder: ObjetTraduction_1.GTraductions.getValeur(
 							"AbsenceVS.dispense.placeholderMatiere",
@@ -239,7 +239,7 @@ class ObjetFenetre_SaisieDispense extends ObjetFenetre_1.ObjetFenetre {
 											lNbMaxJoursDeclarationDispLD,
 										)
 									: ObjetDate_1.GDate.derniereDate,
-							labelledById: aEstDateDebut
+							ariaLabelledBy: aEstDateDebut
 								? this.ids.labelDateDebut
 								: this.ids.labelDateFin,
 							required: true,
@@ -305,10 +305,7 @@ class ObjetFenetre_SaisieDispense extends ObjetFenetre_1.ObjetFenetre {
 					);
 				},
 				getIcone() {
-					return IE.jsx.str("i", {
-						class: "icon_piece_jointe",
-						"aria-hidden": "true",
-					});
+					return "icon_piece_jointe";
 				},
 				getDisabled: () => {
 					var _a, _b;
@@ -642,7 +639,7 @@ class ObjetFenetre_SaisieDispense extends ObjetFenetre_1.ObjetFenetre {
 					"ie-model": "commentaire",
 					"ie-autoresize": true,
 					maxlength: "200",
-					class: ["txt-comment", "round-style", "fluid-bloc"],
+					class: ["txt-comment", "fluid-bloc"],
 					placeholder: ObjetTraduction_1.GTraductions.getValeur(
 						"AbsenceVS.AjouterUnCommentaire",
 					),

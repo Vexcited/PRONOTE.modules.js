@@ -6,6 +6,7 @@ const Enumere_Event_1 = require("Enumere_Event");
 const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
 const IEZoneFenetre_1 = require("IEZoneFenetre");
 const ObjetWAI_1 = require("ObjetWAI");
+const AccessApp_1 = require("AccessApp");
 class ObjetInterface extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
@@ -14,6 +15,7 @@ class ObjetInterface extends ObjetIdentite_1.Identite {
 		this.NombreGenreAffichage = 0;
 		this._pileInfosFenetres = [];
 		this._pileFenetre = [];
+		this.EnConstruction = false;
 		this.EtatIdCourant = true;
 		this.reinitialiser();
 		this.AvecCadre = true;
@@ -222,9 +224,7 @@ class ObjetInterface extends ObjetIdentite_1.Identite {
 			this.construireInstances();
 			this.setParametresGeneraux();
 			ObjetHtml_1.GHtml.setHtml(
-				this.Pere === null || this.Pere === undefined
-					? GApplication.getIdConteneur()
-					: this.Nom,
+				this.estRacine ? (0, AccessApp_1.getApp)().getIdConteneur() : this.Nom,
 				this._construireStructureAffichage(),
 				{ instance: this },
 			);
@@ -235,6 +235,9 @@ class ObjetInterface extends ObjetIdentite_1.Identite {
 		this.recupererDonnees();
 		this.surResizeInterface();
 		return this;
+	}
+	getEnConstruction() {
+		return this.EnConstruction;
 	}
 	appartientAZone(AIdent) {
 		for (let I = 0; I < this.AddSurZone.length; I++) {
@@ -314,19 +317,19 @@ class ObjetInterface extends ObjetIdentite_1.Identite {
 	construireInstances() {}
 	setParametresGeneraux() {}
 	construireStructureAffichage() {
-		const lHtml = [];
+		const H = [];
 		switch (this.GenreStructure) {
 			case Enumere_StructureAffichage_1.EStructureAffichage.Verticale:
-				lHtml.push(this.construireStructureAffichageVerticale());
+				H.push(this.construireStructureAffichageVerticale());
 				break;
 			default:
-				lHtml.push(this.construireStructureAffichageAutre());
+				H.push(this.construireStructureAffichageAutre());
 				break;
 		}
 		if (this.AddSurZone.length || this.avecBandeau) {
 			this.construireStructureAffichageBandeau();
 		}
-		return lHtml.join("");
+		return H.join("");
 	}
 	construireStructureAffichageBandeau() {}
 	construireAffichage() {
@@ -421,10 +424,10 @@ class ObjetInterface extends ObjetIdentite_1.Identite {
 		return;
 	}
 	_construireStructureAffichage() {
-		const lHtml = [];
-		lHtml.push(this.construireStructureFenetres());
-		lHtml.push(this.construireStructureAffichage());
-		return lHtml.join("");
+		const H = [];
+		H.push(this.construireStructureFenetres());
+		H.push(this.construireStructureAffichage());
+		return H.join("");
 	}
 	_effacerFenetres() {
 		if (this._pileFenetre) {

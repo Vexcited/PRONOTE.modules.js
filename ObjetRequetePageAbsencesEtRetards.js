@@ -1,27 +1,27 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetTri } = require("ObjetTri.js");
-class ObjetRequetePageAbsencesEtRetards extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequetePageAbsencesEtRetards = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTri_1 = require("ObjetTri");
+class ObjetRequetePageAbsencesEtRetards extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aDateDebut, aDateFin) {
 		this.JSON = { dateDebut: aDateDebut, dateFin: aDateFin };
 		return this.appelAsynchrone();
 	}
 	actionApresRequete() {
-		let lListeAbsences = new ObjetListeElements();
-		if (!!this.JSONReponse.ListeAbsencesEtRetards) {
-			lListeAbsences = this.JSONReponse.ListeAbsencesEtRetards;
-			lListeAbsences.setTri([
-				ObjetTri.init("eleve.Libelle"),
-				ObjetTri.init("DateDebut"),
-			]);
-			lListeAbsences.trier();
-		}
-		this.callbackReussite.appel(lListeAbsences, this.JSONReponse.avecSaisieRA);
+		this.JSONReponse.ListeAbsencesEtRetards =
+			this.JSONReponse.ListeAbsencesEtRetards ||
+			new ObjetListeElements_1.ObjetListeElements();
+		this.JSONReponse.ListeAbsencesEtRetards.setTri([
+			ObjetTri_1.ObjetTri.init("eleve.Libelle"),
+			ObjetTri_1.ObjetTri.init("DateDebut"),
+		]);
+		this.JSONReponse.ListeAbsencesEtRetards.trier();
+		this.callbackReussite.appel(this.JSONReponse);
 	}
 }
-Requetes.inscrire("PageAbsencesEtRetards", ObjetRequetePageAbsencesEtRetards);
-module.exports = { ObjetRequetePageAbsencesEtRetards };
+exports.ObjetRequetePageAbsencesEtRetards = ObjetRequetePageAbsencesEtRetards;
+CollectionRequetes_1.Requetes.inscrire(
+	"PageAbsencesEtRetards",
+	ObjetRequetePageAbsencesEtRetards,
+);

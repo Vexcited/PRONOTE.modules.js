@@ -1,14 +1,13 @@
-const { GestionnaireBlocDeBase } = require("GestionnaireBloc.js");
-const { ObjetBlocBillet } = require("ObjetBlocBillet.js");
-class GestionnaireBlocBilletsBlog extends GestionnaireBlocDeBase {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.GestionnaireBlocBilletsBlog = void 0;
+const GestionnaireBloc_1 = require("GestionnaireBloc");
+const ObjetBlocBillet_1 = require("ObjetBlocBillet");
+class GestionnaireBlocBilletsBlog extends GestionnaireBloc_1.GestionnaireBlocDeBase {
 	setOptions(aOptions) {
 		super.setOptions(aOptions);
 		for (const lInstanceBloc of this._instances) {
 			lInstanceBloc.setOptions(this._options);
 		}
+		return this;
 	}
 	ouvrirFenetreCommentairesDeBillet(aBillet) {
 		if (aBillet) {
@@ -23,11 +22,14 @@ class GestionnaireBlocBilletsBlog extends GestionnaireBlocDeBase {
 		}
 	}
 	composeBloc(aDataBloc) {
-		const lInstance = this.getInstanceObjetMetier(aDataBloc, ObjetBlocBillet);
+		const lInstance = this.getInstanceObjetMetier(
+			aDataBloc,
+			ObjetBlocBillet_1.ObjetBlocBillet,
+		);
 		return {
 			html: this.composeZoneInstance(lInstance),
 			controleur: lInstance.controleur,
 		};
 	}
 }
-module.exports = { GestionnaireBlocBilletsBlog };
+exports.GestionnaireBlocBilletsBlog = GestionnaireBlocBilletsBlog;

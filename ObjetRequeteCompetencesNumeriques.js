@@ -1,10 +1,8 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-class ObjetRequeteCompetencesNumeriques extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteCompetencesNumeriques = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+class ObjetRequeteCompetencesNumeriques extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aParametres) {
 		const lParametres = Object.assign(
 			{ classe: null, eleve: null, filtrerNiveauxSansEvaluation: false },
@@ -23,14 +21,15 @@ class ObjetRequeteCompetencesNumeriques extends ObjetRequeteConsultation {
 			let lPereEvaluation = null;
 			this.JSONReponse.listeCompetences.parcourir((D) => {
 				if (
-					D.getGenre() !== EGenreRessource.Evaluation &&
-					D.getGenre() !== EGenreRessource.EvaluationHistorique
+					D.getGenre() !== Enumere_Ressource_1.EGenreRessource.Evaluation &&
+					D.getGenre() !==
+						Enumere_Ressource_1.EGenreRessource.EvaluationHistorique
 				) {
 					lPereEvaluation = D;
 				}
 				D.pere =
 					lTableauPeres[
-						_getGenrePere(
+						this._getGenrePere(
 							D.getGenre(),
 							!!lPereEvaluation ? lPereEvaluation.getGenre() : null,
 						)
@@ -44,19 +43,22 @@ class ObjetRequeteCompetencesNumeriques extends ObjetRequeteConsultation {
 		}
 		this.callbackReussite.appel(this.JSONReponse);
 	}
-}
-Requetes.inscrire("CompetencesNumeriques", ObjetRequeteCompetencesNumeriques);
-function _getGenrePere(aGenre, aGenrePourEvaluation) {
-	switch (aGenre) {
-		case EGenreRessource.ElementPilier:
-			return EGenreRessource.Pilier;
-		case EGenreRessource.Competence:
-			return EGenreRessource.ElementPilier;
-		case EGenreRessource.SousItem:
-			return EGenreRessource.Competence;
-		case EGenreRessource.Evaluation:
-		case EGenreRessource.EvaluationHistorique:
-			return aGenrePourEvaluation;
+	_getGenrePere(aGenre, aGenrePourEvaluation) {
+		switch (aGenre) {
+			case Enumere_Ressource_1.EGenreRessource.ElementPilier:
+				return Enumere_Ressource_1.EGenreRessource.Pilier;
+			case Enumere_Ressource_1.EGenreRessource.Competence:
+				return Enumere_Ressource_1.EGenreRessource.ElementPilier;
+			case Enumere_Ressource_1.EGenreRessource.SousItem:
+				return Enumere_Ressource_1.EGenreRessource.Competence;
+			case Enumere_Ressource_1.EGenreRessource.Evaluation:
+			case Enumere_Ressource_1.EGenreRessource.EvaluationHistorique:
+				return aGenrePourEvaluation;
+		}
 	}
 }
-module.exports = { ObjetRequeteCompetencesNumeriques };
+exports.ObjetRequeteCompetencesNumeriques = ObjetRequeteCompetencesNumeriques;
+CollectionRequetes_1.Requetes.inscrire(
+	"CompetencesNumeriques",
+	ObjetRequeteCompetencesNumeriques,
+);

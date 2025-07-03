@@ -185,7 +185,7 @@ class InterfacePageProgrammesBO extends InterfacePage_1.InterfacePage {
 	_initialiserComboTypeCumuls(aInstance) {
 		aInstance.setOptionsObjetSaisie({
 			longueur: 100,
-			labelledById: this.applicationSco.idBreadcrumb,
+			ariaLabelledBy: this.applicationSco.idBreadcrumb,
 		});
 		aInstance.setControleNavigation(true);
 	}

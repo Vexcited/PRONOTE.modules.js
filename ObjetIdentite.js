@@ -6,38 +6,46 @@ const IEHtml = require("IEHtml");
 const Callback_1 = require("Callback");
 const GUID_1 = require("GUID");
 const Invocateur_1 = require("Invocateur");
-const MethodesObjet_1 = require("MethodesObjet");
 const ObjetHtml_1 = require("ObjetHtml");
 const ObjetStyle_1 = require("ObjetStyle");
 const Enumere_Direction_1 = require("Enumere_Direction");
 const Enumere_OrientationAffichage_1 = require("Enumere_OrientationAffichage");
 const IEZoneFenetre_1 = require("IEZoneFenetre");
-const lGenerateurGUID = new GUID_1.GUID.generateur();
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const MethodesObjet_1 = require("MethodesObjet");
+const uGenerateurGUIDIdentite = new GUID_1.GUID.generateur();
 class Identite {
-	constructor(ANom, AIdent, APere, AEvenement) {
+	constructor(aParamsCreate, AIdent, APere, AEvenement) {
 		this.pileAbonnementInvocateur = {};
-		if (typeof ANom === "string") {
-			this.Nom = this.construireNom(ANom, AIdent);
+		let lNomConstructionCollection = "";
+		if (typeof aParamsCreate === "string") {
+			this.Nom = this.construireNom(aParamsCreate, AIdent);
 			this.Pere = APere;
 			this.Evenement = AEvenement;
+			this.estRacine = !this.Pere;
 		} else {
 			const lParametres = {
 				nomComplet: "",
 				nomObjet: undefined,
-				pere: null,
+				pere: undefined,
 				evenement: undefined,
 			};
-			$.extend(lParametres, ANom);
-			this.Pere = lParametres.pere;
+			$.extend(lParametres, aParamsCreate);
+			this.Pere = lParametres.pere || {};
 			this.Evenement = lParametres.evenement;
+			this.estRacine = !!lParametres.estRacine;
 			if (
 				lParametres.nomObjet &&
 				lParametres.pere &&
 				lParametres.pere instanceof Identite
 			) {
 				this.Nom = lParametres.pere.Nom + "." + lParametres.nomObjet;
-			} else {
+			} else if (lParametres.nomComplet) {
 				this.Nom = lParametres.nomComplet || "";
+			} else {
+				lNomConstructionCollection = uGenerateurGUIDIdentite.get();
+				this.Nom = `IE.Identite.collection.${lNomConstructionCollection}` || "";
+				IE.Identite.collection[lNomConstructionCollection] = this;
 			}
 		}
 		this.callback = new Callback_1.Callback(this.Pere, this.Evenement);
@@ -61,6 +69,13 @@ class Identite {
 		if (this.controleur) {
 			this.controleur.instance = this;
 		}
+		if (lNomConstructionCollection) {
+			this.ajouterCallbackSurDestruction(() => {
+				if (IE.Identite.collection[lNomConstructionCollection]) {
+					delete IE.Identite.collection[lNomConstructionCollection];
+				}
+			});
+		}
 	}
 	setOptions(aOptions) {
 		Object.assign(this.options, aOptions);
@@ -83,6 +98,9 @@ class Identite {
 	recupererDonnees() {}
 	construireAffichage(...aParams) {
 		return "&nbsp;";
+	}
+	getGenre() {
+		return this.Genre;
 	}
 	setGenre(AGenre) {
 		this.Genre = AGenre;
@@ -167,7 +185,7 @@ class Identite {
 	composeMessage(aMessage) {
 		return IE.jsx.str(
 			"div",
-			{ role: "note", tabindex: "0" },
+			{ role: "note" },
 			IE.jsx.str(
 				"p",
 				{
@@ -179,13 +197,15 @@ class Identite {
 		);
 	}
 	navigationClavier(AId) {
-		if (GNavigateur.isToucheFleche()) {
+		if (ObjetNavigateur_1.Navigateur.isToucheFleche()) {
 			this.focusSuivant(
 				AId,
-				GNavigateur.isToucheFlecheGauche() || GNavigateur.isToucheFlecheDroite()
+				ObjetNavigateur_1.Navigateur.isToucheFlecheGauche() ||
+					ObjetNavigateur_1.Navigateur.isToucheFlecheDroite()
 					? Enumere_OrientationAffichage_1.EGenreOrientationAffichage.Horizontal
 					: Enumere_OrientationAffichage_1.EGenreOrientationAffichage.Vertical,
-				GNavigateur.isToucheFlecheGauche() || GNavigateur.isToucheFlecheHaut()
+				ObjetNavigateur_1.Navigateur.isToucheFlecheGauche() ||
+					ObjetNavigateur_1.Navigateur.isToucheFlecheHaut()
 					? Enumere_Direction_1.EGenreDirection.SensInverse
 					: Enumere_Direction_1.EGenreDirection.SensNormal,
 			);
@@ -271,13 +291,13 @@ class Identite {
 		}
 	}
 	ajouterEvenementGlobal(aEvenement, aMethode) {
-		if (!GNavigateur.addEvent) {
+		if (!ObjetNavigateur_1.Navigateur.addEvent) {
 			return;
 		}
 		if (!aMethode) {
 			return;
 		}
-		GNavigateur.addEvent(aEvenement, this, aMethode);
+		ObjetNavigateur_1.Navigateur.addEvent(aEvenement, this, aMethode);
 		this.pileEvenementGlobaux.push({
 			evenement: aEvenement,
 			methode: aMethode,
@@ -286,7 +306,10 @@ class Identite {
 	}
 	viderEvenementGlobaux() {
 		for (let i = 0; i < this.pileEvenementGlobaux.length; i++) {
-			GNavigateur.delEvent(this.pileEvenementGlobaux[i].evenement, this);
+			ObjetNavigateur_1.Navigateur.delEvent(
+				this.pileEvenementGlobaux[i].evenement,
+				this,
+			);
 		}
 		this.pileEvenementGlobaux = [];
 	}
@@ -351,19 +374,14 @@ class Identite {
 		if (!aConstructeur) {
 			return null;
 		}
-		const lNom = lGenerateurGUID.get(),
-			lNomComplet = "IE.Identite.collection." + lNom;
-		$.extend(aParametres, { nomComplet: lNomComplet });
 		const lInstance = new aConstructeur(aParametres);
-		if (aParametres.options) {
+		if (
+			aParametres === null || aParametres === void 0
+				? void 0
+				: aParametres.options
+		) {
 			lInstance.setOptions(aParametres.options);
 		}
-		lInstance.ajouterCallbackSurDestruction(() => {
-			if (IE.Identite.collection[lNom]) {
-				delete IE.Identite.collection[lNom];
-			}
-		});
-		IE.Identite.collection[lNom] = lInstance;
 		return lInstance;
 	}
 	_viderEvenements() {

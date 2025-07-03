@@ -21,17 +21,20 @@ const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
 const ObjetPreferenceAccessibilite_1 = require("ObjetPreferenceAccessibilite");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetPreferenceMessagerie_1 = require("ObjetPreferenceMessagerie");
-const ObjetRequeteSaisieInformations = require("ObjetRequeteSaisieInformations");
+const ObjetRequeteSaisieInformations_1 = require("ObjetRequeteSaisieInformations");
 const ObjetMessagerieSignature_1 = require("ObjetMessagerieSignature");
 const ObjetPreferenceCahierDeTexte_1 = require("ObjetPreferenceCahierDeTexte");
 const UtilitaireSyntheseVocale_1 = require("UtilitaireSyntheseVocale");
 const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
 const MoteurParametresiCal_1 = require("MoteurParametresiCal");
+const InterfaceParamListeAppareilsMobile_1 = require("InterfaceParamListeAppareilsMobile");
+const TraductionsDoubleAuth_1 = require("TraductionsDoubleAuth");
 class PageCompteMobile extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 	constructor(...aParams) {
 		super(...aParams);
 		this.applicationSco = GApplication;
 		this.etatUtilisateurSco = this.applicationSco.getEtatUtilisateur();
+		this.parametresSco = this.applicationSco.getObjetParametres();
 		this.IdZoneChk = "_zoneChk";
 		this.idIntersticial = GUID_1.GUID.getId();
 		this.idMainPage = GUID_1.GUID.getId();
@@ -44,13 +47,13 @@ class PageCompteMobile extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 			maskMDP: "*********",
 			avecInfosEntreprise:
 				this.etatUtilisateurSco.GenreEspace ===
-				Enumere_Espace_1.EGenreEspace.Entreprise,
+				Enumere_Espace_1.EGenreEspace.Mobile_Entreprise,
 			avecTelFixe:
 				this.etatUtilisateurSco.GenreEspace ===
-				Enumere_Espace_1.EGenreEspace.Entreprise,
+				Enumere_Espace_1.EGenreEspace.Mobile_Entreprise,
 			avecTelFax:
 				this.etatUtilisateurSco.GenreEspace ===
-				Enumere_Espace_1.EGenreEspace.Entreprise,
+				Enumere_Espace_1.EGenreEspace.Mobile_Entreprise,
 			avecNumeroINE: [
 				Enumere_Espace_1.EGenreEspace.Eleve,
 				Enumere_Espace_1.EGenreEspace.Mobile_Eleve,
@@ -68,6 +71,8 @@ class PageCompteMobile extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 		const notificationPush =
 			this.etatUtilisateurSco.Identification.ressource.notificationsPush;
 		this.avecPush = notificationPush;
+		this.listeDelais =
+			UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.getListeDelaiNotif();
 		this.donnees =
 			UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.getDonneesDefaut();
 		this.instanceListeFiltre = ObjetIdentite_1.Identite.creerInstance(
@@ -94,6 +99,10 @@ class PageCompteMobile extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 					this._evenementSecurisation(aParam);
 				},
 			},
+		);
+		this.instanceAppareilsMobile = ObjetIdentite_1.Identite.creerInstance(
+			InterfaceParamListeAppareilsMobile_1.InterfaceParamListeAppareilsMobile,
+			{ pere: this, evenement: (aParam) => {} },
 		);
 		this.instanceChoixStratSecurisation =
 			ObjetIdentite_1.Identite.creerInstance(
@@ -170,6 +179,19 @@ class PageCompteMobile extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 								aInstance.applicationSco
 									.getObject("transformationFlux")
 									.setActif(aValue);
+							},
+						},
+						cbMasquerDonneesAutresProfesseurs: {
+							getValue: function () {
+								return aInstance.applicationSco.parametresUtilisateur.get(
+									"masquerDonneesAutresProfesseurs",
+								);
+							},
+							setValue: function (aValue) {
+								aInstance.applicationSco.parametresUtilisateur.set(
+									"masquerDonneesAutresProfesseurs",
+									aValue,
+								);
 							},
 						},
 					},
@@ -360,7 +382,10 @@ class PageCompteMobile extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 				!!lStructure.signature && !!lStructure.signature.listeFichiers
 					? lStructure.signature.listeFichiers
 					: new ObjetListeElements_1.ObjetListeElements();
-			new ObjetRequeteSaisieInformations(this, this.recupererDonnees)
+			new ObjetRequeteSaisieInformations_1.ObjetRequeteSaisieInformations(
+				this,
+				this.recupererDonnees,
+			)
 				.addUpload({ listeFichiers: lFichiers })
 				.lancerRequete(lStructure);
 		}
@@ -401,11 +426,16 @@ class PageCompteMobile extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 		return lLibelleAffichage;
 	}
 	_selectionnerFiltre(aGenreAffichageCourant) {
+		var _a, _b, _c;
 		const H = [];
 		let lAvecContenu = true;
 		H.push('<div class="navheader">');
 		H.push(
-			'  <ie-btnimage ie-node="getNodeHeader" class="fleche-nav btnImageIcon icon_retour_mobile"></ie-btnimage>',
+			IE.jsx.str("ie-btnimage", {
+				"ie-node": "getNodeHeader",
+				class: "fleche-nav btnImageIcon icon_retour_mobile",
+				"aria-label": ObjetTraduction_1.GTraductions.getValeur("Precedent"),
+			}),
 		);
 		H.push(
 			"  <h3>",
@@ -415,7 +445,10 @@ class PageCompteMobile extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 		H.push("</div>");
 		switch (aGenreAffichageCourant) {
 			case Enumere_DonneesPersonnelles_3.TypeFiltreAffichage.securisation: {
-				if (this.etatUtilisateurSco.derniereConnexion) {
+				if (
+					this.etatUtilisateurSco.derniereConnexion &&
+					!this.parametresSco.estAfficheDansENT
+				) {
 					H.push(
 						UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
 							ObjetTraduction_1.GTraductions.getValeur(
@@ -468,9 +501,7 @@ class PageCompteMobile extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 					H.push('<div class="pc_traitSeparation"></div>');
 					H.push(
 						UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
-							ObjetTraduction_1.GTraductions.getValeur(
-								"DoubleAuth.SecuriteRenforcee",
-							),
+							TraductionsDoubleAuth_1.TradDoubleAuth.SecuriteRenforcee,
 							Enumere_DonneesPersonnelles_1.EGenreTypeContenu.sourcesConnexions,
 							{
 								idSourcesConnexions:
@@ -487,11 +518,26 @@ class PageCompteMobile extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 					H.push('<div class="pc_traitSeparation"></div>');
 					H.push(
 						UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
-							ObjetTraduction_1.GTraductions.getValeur(
-								"DoubleAuth.AppareilsIdentifies",
-							),
+							TraductionsDoubleAuth_1.TradDoubleAuth.AppareilsIdentifies,
 							Enumere_DonneesPersonnelles_1.EGenreTypeContenu.sourcesConnexions,
 							{ idSourcesConnexions: this.instanceSourcesConnexions.getNom() },
+						),
+					);
+				}
+				if (
+					((_b =
+						(_a = this.etatUtilisateurSco) === null || _a === void 0
+							? void 0
+							: _a.listeAppareilsMobile) === null || _b === void 0
+						? void 0
+						: _b.count()) > 0
+				) {
+					H.push(
+						UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
+							InterfaceParamListeAppareilsMobile_1.InterfaceParamListeAppareilsMobile.getTitre(),
+							Enumere_DonneesPersonnelles_1.EGenreTypeContenu
+								.listeAppareilsMobile,
+							{ idAppareilsMobile: this.instanceAppareilsMobile.getNom() },
 						),
 					);
 				}
@@ -685,8 +731,8 @@ class PageCompteMobile extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 					);
 				}
 				break;
-			case Enumere_DonneesPersonnelles_3.TypeFiltreAffichage.signature:
-				if (this.donnees.Signature) {
+			case Enumere_DonneesPersonnelles_3.TypeFiltreAffichage.signature: {
+				if (this.donnees.Signature && this.applicationSco.estPrimaire) {
 					H.push(
 						UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
 							ObjetTraduction_1.GTraductions.getValeur(
@@ -697,10 +743,10 @@ class PageCompteMobile extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 						),
 					);
 				}
-				break;
-			case Enumere_DonneesPersonnelles_3.TypeFiltreAffichage
-				.messagerieSignature:
-				if (this.donnees.messagerieSignature) {
+				if (
+					this.donnees.messagerieSignature &&
+					this.etatUtilisateurSco.messagerieSignature
+				) {
 					H.push(
 						UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
 							ObjetTraduction_1.GTraductions.getValeur(
@@ -712,6 +758,7 @@ class PageCompteMobile extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 					);
 				}
 				break;
+			}
 			case Enumere_DonneesPersonnelles_3.TypeFiltreAffichage.deconnexion:
 				H.push(
 					UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
@@ -799,6 +846,15 @@ class PageCompteMobile extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 						this.donnees.securisation.listeSourcesConnexions,
 					);
 				}
+				if (
+					(_c = this.etatUtilisateurSco) === null || _c === void 0
+						? void 0
+						: _c.listeAppareilsMobile
+				) {
+					this.instanceAppareilsMobile.setDonnees(
+						this.etatUtilisateurSco.listeAppareilsMobile,
+					);
+				}
 				break;
 		}
 		const lThis = this;
@@ -814,29 +870,29 @@ class PageCompteMobile extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 		});
 	}
 	_construireAutorisationsSupp() {
-		const lHtml = [];
+		const H = [];
 		if (this.donnees.Autorisations.listeEleves.count() > 0) {
-			lHtml.push(
+			H.push(
 				'<div class="Gras EspaceHaut" style="clear:both;">',
 				ObjetTraduction_1.GTraductions.getValeur("infosperso.titreRecevoir"),
 				"</div>",
 			);
 		}
-		return lHtml.join("");
+		return H.join("");
 	}
 	_construirePage() {
-		const lHtml = [];
-		lHtml.push('<div class="ObjetCompte">');
-		lHtml.push(
+		const H = [];
+		H.push('<div class="ObjetCompte">');
+		H.push(
 			'<div class="compte-contain" id="',
 			this.idIntersticial,
 			'" style="display:none;"></div>',
 		);
-		lHtml.push('<div id="', this.idMainPage, '" style="display:block;">');
-		lHtml.push('<div id="', this.instanceListeFiltre.getNom(), '"></div>');
-		lHtml.push("</div>");
-		lHtml.push("</div>");
-		return lHtml.join("");
+		H.push('<div id="', this.idMainPage, '" style="display:block;">');
+		H.push('<div id="', this.instanceListeFiltre.getNom(), '"></div>');
+		H.push("</div>");
+		H.push("</div>");
+		return H.join("");
 	}
 	_callbackMDP() {
 		UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.fenetreModificationMDP(

@@ -1,23 +1,10 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteAccesSecurisePageProfil extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
-	lancerRequete(aParam) {
-		this.JSON = aParam;
-		return this.appelAsynchrone();
-	}
-	actionApresRequete() {
-		this.callbackReussite.appel(
-			this.JSONReponse.titre,
-			this.JSONReponse.message,
-			this.JSONReponse.url,
-		);
-	}
-}
-Requetes.inscrire(
+exports.ObjetRequeteAccesSecurisePageProfil = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteAccesSecurisePageProfil extends ObjetRequeteJSON_1.ObjetRequeteConsultation {}
+exports.ObjetRequeteAccesSecurisePageProfil =
+	ObjetRequeteAccesSecurisePageProfil;
+CollectionRequetes_1.Requetes.inscrire(
 	"AccesSecurisePageProfil",
 	ObjetRequeteAccesSecurisePageProfil,
 );
-module.exports = { ObjetRequeteAccesSecurisePageProfil };

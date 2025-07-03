@@ -3,7 +3,6 @@ const ObjetChaine_1 = require("ObjetChaine");
 const ObjetFenetre_1 = require("ObjetFenetre");
 const Type_ThemeBouton_1 = require("Type_ThemeBouton");
 const ObjetTraduction_1 = require("ObjetTraduction");
-const tag_1 = require("tag");
 class ObjetFenetre_EditionUrl extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
@@ -98,71 +97,81 @@ class ObjetFenetre_EditionUrl extends ObjetFenetre_1.ObjetFenetre {
 		this.afficher();
 	}
 	composeContenu() {
+		const lIdInpLien = `${this.Nom}_inp_lien`;
+		const lIdInpLib = `${this.Nom}_inp_lib`;
+		const lIdInpComm = `${this.Nom}_inp_comm`;
 		const lHtml = [];
-		lHtml.push('<div class="fen_edition_url">');
 		lHtml.push(
-			(0, tag_1.tag)(
-				"div",
-				{ class: ["feu_libelle"] },
-				ObjetTraduction_1.GTraductions.getValeur("fenetreEditionUrl.lien") +
-					" *",
-			),
-		);
-		lHtml.push(
-			(0, tag_1.tag)("input", {
-				class: ["feu_input", "as-input"],
-				"ie-model": "inputLien",
-			}),
-		);
-		lHtml.push('<div ie-if="avecAffichageLibelle">');
-		lHtml.push(
-			(0, tag_1.tag)(
-				"div",
-				{ class: ["feu_libelle avecMarge"] },
-				ObjetTraduction_1.GTraductions.getValeur("fenetreEditionUrl.libelle"),
-			),
-		);
-		lHtml.push(
-			(0, tag_1.tag)("input", {
-				class: ["feu_input", "as-input"],
-				"ie-model": "inputLibelle",
-			}),
-		);
-		lHtml.push("</div>");
-		lHtml.push('<div ie-if="avecAffichageCommentaire">');
-		lHtml.push(
-			(0, tag_1.tag)(
-				"div",
-				{ class: ["feu_libelle avecMarge"] },
-				ObjetTraduction_1.GTraductions.getValeur(
-					"fenetreEditionUrl.commentaire",
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"div",
+					{ class: "fen_edition_url" },
+					IE.jsx.str(
+						"label",
+						{ class: "feu_libelle", for: lIdInpLien },
+						ObjetTraduction_1.GTraductions.getValeur("fenetreEditionUrl.lien"),
+						" *",
+					),
+					IE.jsx.str("input", {
+						id: lIdInpLien,
+						type: "text",
+						class: "feu_input as-input",
+						"ie-model": "inputLien",
+					}),
+					IE.jsx.str(
+						"div",
+						{ "ie-if": "avecAffichageLibelle" },
+						IE.jsx.str(
+							"label",
+							{ class: "feu_libelle avecMarge", for: lIdInpLib },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"fenetreEditionUrl.libelle",
+							),
+						),
+						IE.jsx.str("input", {
+							id: lIdInpLib,
+							type: "text",
+							class: "feu_input as-input",
+							"ie-model": "inputLibelle",
+						}),
+					),
+					IE.jsx.str(
+						"div",
+						{ "ie-if": "avecAffichageCommentaire" },
+						IE.jsx.str(
+							"label",
+							{ class: "feu_libelle avecMarge", for: lIdInpComm },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"fenetreEditionUrl.commentaire",
+							),
+						),
+						IE.jsx.str("ie-textareamax", {
+							id: lIdInpComm,
+							class: "feu_commentaire",
+							"ie-model": "inputCommentaire",
+							maxlength: "255",
+						}),
+					),
 				),
 			),
 		);
-		lHtml.push(
-			(0, tag_1.tag)("ie-textareamax", {
-				class: ["feu_commentaire"],
-				"ie-model": "inputCommentaire",
-				maxlength: 255,
-			}),
-		);
-		lHtml.push("</div>");
-		lHtml.push("</div>");
 		return lHtml.join("");
 	}
 	composeBas() {
-		const lHTML = [];
-		lHTML.push(
-			(0, tag_1.tag)(
+		return IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			IE.jsx.str(
 				"div",
-				{ class: ["feu_obligatoire"] },
-				"* " +
-					ObjetTraduction_1.GTraductions.getValeur(
-						"fenetreEditionUrl.obligatoire",
-					),
+				{ class: "feu_obligatoire" },
+				"* ",
+				ObjetTraduction_1.GTraductions.getValeur(
+					"fenetreEditionUrl.obligatoire",
+				),
 			),
 		);
-		return lHTML.join("");
 	}
 	getParametresValidation(aNumeroBouton) {
 		const lParametres = super.getParametresValidation(aNumeroBouton);

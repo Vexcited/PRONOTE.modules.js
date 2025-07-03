@@ -1,8 +1,12 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteReleveDEvaluations extends ObjetRequeteConsultation {
+exports.ObjetRequeteReleveDEvaluations = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const AccessApp_1 = require("AccessApp");
+class ObjetRequeteReleveDEvaluations extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	constructor(...aParams) {
 		super(...aParams);
+		const lApplicationSco = (0, AccessApp_1.getApp)();
+		this.parametresSco = lApplicationSco.getObjetParametres();
 	}
 	lancerRequete(aParam) {
 		$.extend(this.JSON, aParam);
@@ -14,31 +18,37 @@ class ObjetRequeteReleveDEvaluations extends ObjetRequeteConsultation {
 			lListeEleves.parcourir((aEleve) => {
 				if (!!aEleve.simulations) {
 					aEleve.simulations.parcourir((aNiveau) => {
-						const lNiveauGlobal = _getNiveauGlobalDeGenre(aNiveau.getGenre());
+						const lNiveauGlobal = this._getNiveauGlobalDeGenre(
+							aNiveau.getGenre(),
+						);
 						Object.assign(aNiveau, lNiveauGlobal);
 					});
 				}
 				if (!!aEleve.posLSUNiveau) {
-					const lNiveauAcquiGlobal = _getNiveauGlobalDeGenre(
+					const lNiveauAcquiGlobal = this._getNiveauGlobalDeGenre(
 						aEleve.posLSUNiveau.getGenre(),
 					);
 					Object.assign(aEleve.posLSUNiveau, lNiveauAcquiGlobal);
 				}
 				if (!!aEleve.posPrecedents) {
 					aEleve.posPrecedents.parcourir((aNiveau) => {
-						const lNiveauGlobal = _getNiveauGlobalDeGenre(aNiveau.getGenre());
+						const lNiveauGlobal = this._getNiveauGlobalDeGenre(
+							aNiveau.getGenre(),
+						);
 						Object.assign(aNiveau, lNiveauGlobal);
 					});
 				}
 				if (!!aEleve.nivAcquiPilier) {
-					const lNiveauAcquiGlobal = _getNiveauGlobalDeGenre(
+					const lNiveauAcquiGlobal = this._getNiveauGlobalDeGenre(
 						aEleve.nivAcquiPilier.getGenre(),
 					);
 					Object.assign(aEleve.nivAcquiPilier, lNiveauAcquiGlobal);
 				}
 				if (aEleve.listeNiveauxDAcquisitions) {
 					aEleve.listeNiveauxDAcquisitions.parcourir((aNiveau) => {
-						const lNiveauGlobal = _getNiveauGlobalDeGenre(aNiveau.getGenre());
+						const lNiveauGlobal = this._getNiveauGlobalDeGenre(
+							aNiveau.getGenre(),
+						);
 						Object.assign(aNiveau, lNiveauGlobal);
 					});
 				}
@@ -46,13 +56,13 @@ class ObjetRequeteReleveDEvaluations extends ObjetRequeteConsultation {
 					aEleve.listeValeursColonnesLSL.parcourir((aValeurColonneLSL) => {
 						if (aValeurColonneLSL) {
 							if (aValeurColonneLSL.niveau) {
-								const lNiveauGlobal = _getNiveauGlobalDeGenre(
+								const lNiveauGlobal = this._getNiveauGlobalDeGenre(
 									aValeurColonneLSL.niveau.getGenre(),
 								);
 								Object.assign(aValeurColonneLSL.niveau, lNiveauGlobal);
 							}
 							if (aValeurColonneLSL.niveauMoyenne) {
-								const lNiveauMoyenneGlobal = _getNiveauGlobalDeGenre(
+								const lNiveauMoyenneGlobal = this._getNiveauGlobalDeGenre(
 									aValeurColonneLSL.niveauMoyenne.getGenre(),
 								);
 								Object.assign(
@@ -63,7 +73,7 @@ class ObjetRequeteReleveDEvaluations extends ObjetRequeteConsultation {
 							if (aValeurColonneLSL.listeNiveauxDAcquisitions) {
 								aValeurColonneLSL.listeNiveauxDAcquisitions.parcourir(
 									(aNiveau) => {
-										const lNiveauGlobal = _getNiveauGlobalDeGenre(
+										const lNiveauGlobal = this._getNiveauGlobalDeGenre(
 											aNiveau.getGenre(),
 										);
 										Object.assign(aNiveau, lNiveauGlobal);
@@ -77,9 +87,31 @@ class ObjetRequeteReleveDEvaluations extends ObjetRequeteConsultation {
 		}
 		this.callbackReussite.appel(this.JSONReponse);
 	}
+	_getNiveauGlobalDeGenre(aGenre) {
+		return this.parametresSco.listeNiveauxDAcquisitions.getElementParGenre(
+			aGenre,
+		);
+	}
 }
-Requetes.inscrire("ReleveDEvaluations", ObjetRequeteReleveDEvaluations);
-function _getNiveauGlobalDeGenre(aGenre) {
-	return GParametres.listeNiveauxDAcquisitions.getElementParGenre(aGenre);
-}
-module.exports = { ObjetRequeteReleveDEvaluations };
+exports.ObjetRequeteReleveDEvaluations = ObjetRequeteReleveDEvaluations;
+CollectionRequetes_1.Requetes.inscrire(
+	"ReleveDEvaluations",
+	ObjetRequeteReleveDEvaluations,
+);
+(function (ObjetRequeteReleveDEvaluations) {
+	let TypeAffichage;
+	(function (TypeAffichage) {
+		TypeAffichage[(TypeAffichage["AffichageParService"] = 0)] =
+			"AffichageParService";
+		TypeAffichage[(TypeAffichage["AffichageParClasse"] = 1)] =
+			"AffichageParClasse";
+	})(
+		(TypeAffichage =
+			ObjetRequeteReleveDEvaluations.TypeAffichage ||
+			(ObjetRequeteReleveDEvaluations.TypeAffichage = {})),
+	);
+})(
+	ObjetRequeteReleveDEvaluations ||
+		(exports.ObjetRequeteReleveDEvaluations = ObjetRequeteReleveDEvaluations =
+			{}),
+);

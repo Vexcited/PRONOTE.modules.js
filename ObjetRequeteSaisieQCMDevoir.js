@@ -1,10 +1,8 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { SerialiserQCM_PN } = require("SerialiserQCM_PN.js");
-class ObjetRequeteSaisieQCMDevoir extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieQCMDevoir = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const SerialiserQCM_PN_1 = require("SerialiserQCM_PN");
+class ObjetRequeteSaisieQCMDevoir extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParametres) {
 		const lDevoir = aParametres.devoir.toJSON();
 		lDevoir.service = aParametres.devoir.service.toJSON();
@@ -59,7 +57,7 @@ class ObjetRequeteSaisieQCMDevoir extends ObjetRequeteSaisie {
 			lDevoir.listeCompetences = lListeCompetences;
 		}
 		lDevoir.executionQCM = aParametres.devoir.executionQCM.toJSON();
-		new SerialiserQCM_PN().executionQCM(
+		new SerialiserQCM_PN_1.SerialiserQCM_PN().executionQCM(
 			aParametres.devoir.executionQCM,
 			lDevoir.executionQCM,
 		);
@@ -67,7 +65,11 @@ class ObjetRequeteSaisieQCMDevoir extends ObjetRequeteSaisie {
 		return this.appelAsynchrone();
 	}
 }
-Requetes.inscrire("SaisieQCMDevoir", ObjetRequeteSaisieQCMDevoir);
+exports.ObjetRequeteSaisieQCMDevoir = ObjetRequeteSaisieQCMDevoir;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieQCMDevoir",
+	ObjetRequeteSaisieQCMDevoir,
+);
 function serialiserCompetences(aElement, aJSON) {
 	aJSON.coefficient = aElement.coefficient;
 }
@@ -75,4 +77,3 @@ function serialiserClasse(aElement, aJSON) {
 	aJSON.listePeriodes = aElement.listePeriodes;
 	aJSON.service = aElement.service.toJSON();
 }
-module.exports = { ObjetRequeteSaisieQCMDevoir };

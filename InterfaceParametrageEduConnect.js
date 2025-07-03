@@ -3,10 +3,11 @@ const AppelSOAP_1 = require("AppelSOAP");
 const ObjetInterface_1 = require("ObjetInterface");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const WSGestionEduConnect_1 = require("WSGestionEduConnect");
+const AccessApp_1 = require("AccessApp");
 class InterfaceParametrageEduConnect extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
-		this.objetApplicationConsoles = GApplication;
+		this.objetApplicationConsoles = (0, AccessApp_1.getApp)();
 		this.donneesRecues = false;
 		this.urlDeclare = false;
 		this.demandeEnCours = false;
@@ -40,7 +41,7 @@ class InterfaceParametrageEduConnect extends ObjetInterface_1.ObjetInterface {
 						case WSGestionEduConnect_1.ETypeStatutDeclaration.Sd_Declaree:
 							return (
 								'<span style="color:' +
-								GCouleur.vert +
+								(0, AccessApp_1.getApp)().getCouleur().vert +
 								';">' +
 								ObjetTraduction_1.GTraductions.getValeur(
 									"pageParametrageEduConnect.message.ok",
@@ -50,7 +51,7 @@ class InterfaceParametrageEduConnect extends ObjetInterface_1.ObjetInterface {
 						case WSGestionEduConnect_1.ETypeStatutDeclaration.Sd_NonPilote:
 							return (
 								'<span style="color:' +
-								GCouleur.rouge +
+								(0, AccessApp_1.getApp)().getCouleur().rouge +
 								';">' +
 								ObjetTraduction_1.GTraductions.getValeur(
 									"pageParametrageEduConnect.message.nonPilote",
@@ -110,10 +111,10 @@ class InterfaceParametrageEduConnect extends ObjetInterface_1.ObjetInterface {
 				).replaceRCToHTML(),
 				"</div>",
 				'<fieldset class="AlignementGauche Texte10" style="padding: 3px; margin: 0px; border:1px solid ',
-				GCouleur.intermediaire,
+				(0, AccessApp_1.getApp)().getCouleur().intermediaire,
 				';">',
 				'<legend class="Espace Gras" style="color:',
-				GCouleur.texte,
+				(0, AccessApp_1.getApp)().getCouleur().texte,
 				';">',
 				ObjetTraduction_1.GTraductions.getValeur(
 					"pageParametrageEduConnect.titreDeclaration",
@@ -147,7 +148,7 @@ class InterfaceParametrageEduConnect extends ObjetInterface_1.ObjetInterface {
 			methode: "DeclarerUrlDeService",
 		})
 			.then((aDonnees) => {
-				this.status = aDonnees.getElement("return").valeur;
+				this.status = aDonnees.getElement("return").getValeur();
 				this.fenetre.setBoutonActif(
 					0,
 					this.status !==

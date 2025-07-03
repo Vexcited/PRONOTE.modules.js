@@ -73,18 +73,10 @@ class ObjetFenetre_ListeCategorieBillet extends ObjetFenetre_1.ObjetFenetre {
 		this._actualiserListe();
 	}
 	composeContenu() {
-		const T = [];
-		T.push(
-			IE.jsx.str(
-				IE.jsx.fragment,
-				null,
-				IE.jsx.str("div", {
-					style: "height:100%;",
-					id: this.getNomInstance(this.identListe),
-				}),
-			),
-		);
-		return T.join("");
+		return IE.jsx.str("div", {
+			style: "height:100%;",
+			id: this.getNomInstance(this.identListe),
+		});
 	}
 	surValidation(aNumeroBouton) {
 		this.callback.appel(aNumeroBouton, {

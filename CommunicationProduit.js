@@ -6,7 +6,6 @@ const MethodesObjet_1 = require("MethodesObjet");
 const ObjetChaine_1 = require("ObjetChaine");
 const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
 const Enumere_Cryptage_1 = require("Enumere_Cryptage");
-const Enumere_IdsRequeteAjax_1 = require("Enumere_IdsRequeteAjax");
 const ObjetCryptage_1 = require("ObjetCryptage");
 const ObjetRequete_1 = require("ObjetRequete");
 const ObjetTraduction_1 = require("ObjetTraduction");
@@ -17,22 +16,23 @@ const Enumere_Etat_1 = require("Enumere_Etat");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const TypeEtatRequeteAjax_1 = require("TypeEtatRequeteAjax");
 const ModuleMD5_RequeteUploadFile_1 = require("ModuleMD5_RequeteUploadFile");
-CollectionRequetes_1.Requetes.inscrire(
-	"annulation",
-	ObjetRequeteJSON_1.ObjetRequeteConsultation,
-);
+const AccessApp_1 = require("AccessApp");
+const TypesRequeteJSON_1 = require("TypesRequeteJSON");
 class CommunicationProduit {
 	constructor(AGenreEspace, aNumeroSession) {
 		this.nom = "GCommunication";
 		this._pileTimerEnAttente = {};
 		this._attenteEnCours = false;
 		this.FDureeEnCours = 1000 * 0.5;
-		this._dureeTimerPresence = CommunicationProduit.cDureeTimerPresence;
 		this.GenreEspace = AGenreEspace;
 		this.NomRequete = "appelfonction";
 		this.pileRequetes = [];
 		this.compteurRequete = 0;
-		this.NumeroDeSession = aNumeroSession ? aNumeroSession : "0";
+		this.NumeroDeSession = MethodesObjet_1.MethodesObjet.isNumber(
+			aNumeroSession,
+		)
+			? aNumeroSession
+			: 0;
 		this.NumeroOrdreCommunication = 1;
 		this.cleAES = new forge.util.ByteBuffer();
 		this.ivAES = new forge.util.ByteBuffer();
@@ -44,7 +44,7 @@ class CommunicationProduit {
 		};
 		this.polling = {
 			nbRequetes: 0,
-			numeroOrdre: 1,
+			numeroOrdre: -1,
 			nbRepetitionEchecReseau: 15,
 			delaiRepetitionEchecReseau: 3000,
 			delaiTimeoutEchecReseau: 30 * 60 * 1000,
@@ -76,7 +76,7 @@ class CommunicationProduit {
 		this._requeteBeaconDeconnexion();
 		clearTimeout(this._timeoutRequeteBackup);
 		this.estArrete = true;
-		this.desactiverPresence();
+		this.desactiverPolling();
 		delete this.ivAES;
 		delete this.cleAES;
 		delete this.NumeroOrdreCommunication;
@@ -180,27 +180,6 @@ class CommunicationProduit {
 		this._envoieRequete();
 		return lRequete;
 	}
-	setMAJServeurEnCours(aMAJEnCours) {
-		this._MAJServeurEnCours = aMAJEnCours;
-		if (this._requetePresenceActive) {
-			this._requetePresenceDelai();
-		}
-	}
-	activerPresence() {
-		this._requetePresenceActive = true;
-		this._requetePresenceDelai();
-		this._envoiRequetePolling();
-	}
-	desactiverPresence() {
-		this._requetePresenceActive = false;
-		window.clearTimeout(this.timerPresence);
-	}
-	setDureeTimerPresence(aDureeMs) {
-		this._dureeTimerPresence = aDureeMs;
-		if (this._requetePresenceActive) {
-			this._requetePresenceDelai();
-		}
-	}
 	requeteEnCours() {
 		return (
 			(this.pileRequetes[0] && this.pileRequetes[0].enAttente()) ||
@@ -259,22 +238,26 @@ class CommunicationProduit {
 				navigator.sendBeacon(
 					"LogClientLeger",
 					ObjetJSON_1.ObjetJSON.toJSON({
-						ns: parseInt(this.NumeroDeSession, 10),
+						ns: this.NumeroDeSession,
 						msg: aMessage,
 					}),
 				);
 			} catch (e) {}
 		}
 	}
-	startPolling() {
+	activerPolling() {
+		this._pollingActif = true;
 		this._envoiRequetePolling();
+	}
+	desactiverPolling() {
+		this._pollingActif = false;
 	}
 	_traiterJSONEnvoi(aJSON) {
 		const lResult = { JSON: aJSON, JSONStr_clair: "", chronoStr: "" };
 		if (!aJSON) {
 			return lResult;
 		}
-		const lSecurise = !CommunicationProduit.optionsSecurite.sansCryptageAES;
+		const lSecurise = !!CommunicationProduit.optionsSecurite.avecCryptageAES;
 		let lChrono;
 		if (lSecurise) {
 			if (
@@ -294,7 +277,8 @@ class CommunicationProduit {
 				cle: this.cleAES,
 				iv: lSecurise ? this.ivAES : null,
 				avecCompression:
-					lSecurise && !CommunicationProduit.optionsSecurite.sansCompressionAES,
+					lSecurise &&
+					!!CommunicationProduit.optionsSecurite.avecCompressionAES,
 			});
 			if (lChrono) {
 				lResult.chronoStr = lChrono.toString();
@@ -308,7 +292,6 @@ class CommunicationProduit {
 			{
 				listeFichiers: null,
 				moduleMD5: ModuleMD5_RequeteUploadFile_1.ModuleMD5_RequeteUploadFile,
-				conserverIdFichier: false,
 				filtreFichiers: function (D) {
 					return (
 						!!D &&
@@ -322,12 +305,14 @@ class CommunicationProduit {
 				},
 				getFormData: (aFichier) => {
 					return {
-						numeroOrdre: this.getChaineChiffreeAES(
-							this.NumeroOrdreCommunication,
-						),
-						numeroSession: this.NumeroDeSession,
-						nomRequete: lDonnees.nomRequete,
-						idFichier: aFichier.idFichier,
+						[TypesRequeteJSON_1.ConstantesUploadFile.numeroOrdre]:
+							this.getChaineChiffreeAES(this.NumeroOrdreCommunication),
+						[TypesRequeteJSON_1.ConstantesUploadFile.numeroSession]:
+							this.NumeroDeSession,
+						[TypesRequeteJSON_1.ConstantesUploadFile.idRequete]:
+							lDonnees.nomRequete,
+						[TypesRequeteJSON_1.ConstantesUploadFile.idFichier]:
+							aFichier.idFichier,
 					};
 				},
 				getUrl: () => {
@@ -338,7 +323,7 @@ class CommunicationProduit {
 					]);
 				},
 				callbackInterrupt: function () {
-					(0, CollectionRequetes_1.Requetes)("annulation")
+					new ObjetRequeteAnnulation()
 						.setOptions({ requetePrioritaire: true })
 						.lancerRequete({ annulationUpload: true });
 				},
@@ -385,9 +370,6 @@ class CommunicationProduit {
 						this._setRequeteEtatTermine(aParams.requete);
 					} else {
 					}
-					if (!CommunicationProduit.optionsSecurite.avecPollingActif) {
-						this.activerPresence();
-					}
 					this._envoieRequete();
 				},
 			},
@@ -400,9 +382,7 @@ class CommunicationProduit {
 					const lElement = MethodesObjet_1.MethodesObjet.dupliquer(D);
 					lElement.file = D.file;
 					lListe.addElement(lElement);
-					if (!lDonnees.conserverIdFichier) {
-						D.idFichier = CommunicationProduit.c_IdFichierAIgnorer;
-					}
+					D.idFichier = CommunicationProduit.c_IdFichierAIgnorer;
 				}
 			});
 		}
@@ -460,9 +440,6 @@ class CommunicationProduit {
 					),
 				});
 			} else if (lRequete.estUploadFile && lEstRequeteUpload) {
-				if (!CommunicationProduit.optionsSecurite.avecPollingActif) {
-					this.desactiverPresence();
-				}
 				lRequete.envoiRequete();
 			} else {
 			}
@@ -523,23 +500,18 @@ class CommunicationProduit {
 			return;
 		}
 		const lNumeroSession =
-			aJSON[Enumere_IdsRequeteAjax_1.EGenreIdsRequeteAjax.numeroSession];
-		const lNumeroOrdre =
-			aJSON[Enumere_IdsRequeteAjax_1.EGenreIdsRequeteAjax.numeroOrdre];
+			aJSON[TypesRequeteJSON_1.ConstantesJSON.numeroSession];
+		const lNumeroOrdre = aJSON[TypesRequeteJSON_1.ConstantesJSON.numeroOrdre];
 		const lDonneesSecurisees =
-			aJSON[Enumere_IdsRequeteAjax_1.EGenreIdsRequeteAjax.donneesSecurisee];
-		const lSecurise = !CommunicationProduit.optionsSecurite.sansCryptageAES;
+			aJSON[TypesRequeteJSON_1.ConstantesJSON.donneesSecurisee];
+		const lSecurise = !!CommunicationProduit.optionsSecurite.avecCryptageAES;
 		let lNomRequete =
-			aJSON[Enumere_IdsRequeteAjax_1.EGenreIdsRequeteAjax.nomFonction] +
-			"Reponse";
+			aJSON[TypesRequeteJSON_1.ConstantesJSON.idRequete] + "Reponse";
 		const lErreur = this._getErreurConnexionInterrompue();
 		if (aSurPolling) {
 			lNomRequete = "pollingReponse";
 		}
-		if (
-			parseInt(this.NumeroDeSession, 10) !== lNumeroSession &&
-			lNumeroSession !== 0
-		) {
+		if (this.NumeroDeSession !== lNumeroSession && lNumeroSession !== 0) {
 			if (!aJSON.Erreur) {
 				aJSON.Erreur = lErreur;
 			}
@@ -556,7 +528,7 @@ class CommunicationProduit {
 		);
 		let lEstErreurNumeroOrdre = false;
 		if (aSurPolling) {
-			lEstErreurNumeroOrdre = lNumOrdreServeur !== this.polling.numeroOrdre - 1;
+			lEstErreurNumeroOrdre = lNumOrdreServeur !== this.polling.numeroOrdre + 1;
 		} else {
 			lEstErreurNumeroOrdre =
 				lNumOrdreServeur !== this.NumeroOrdreCommunication + 1;
@@ -582,14 +554,14 @@ class CommunicationProduit {
 				lChrono = new Chronometre_1.Chronometre();
 			}
 			const lReponse = ObjetCryptage_1.GCryptage.decrypter({
-				genreCryptage: CommunicationProduit.optionsSecurite.sansCryptageAES
-					? Enumere_Cryptage_1.EGenreCryptage.Unicode
-					: Enumere_Cryptage_1.EGenreCryptage.AES,
+				genreCryptage: CommunicationProduit.optionsSecurite.avecCryptageAES
+					? Enumere_Cryptage_1.EGenreCryptage.AES
+					: Enumere_Cryptage_1.EGenreCryptage.Unicode,
 				chaine: lDonneesSecurisees,
 				cle: this.cleAES,
 				iv: this.ivAES,
 				avecCompression:
-					!CommunicationProduit.optionsSecurite.sansCompressionAES,
+					!!CommunicationProduit.optionsSecurite.avecCompressionAES,
 			});
 			aJSON.donnees = ObjetJSON_1.ObjetJSON.parseJSON(lReponse);
 			if (lChrono && IE.log.getActifRequete()) {
@@ -598,18 +570,14 @@ class CommunicationProduit {
 		} else {
 			aJSON.donnees = lDonneesSecurisees;
 		}
-		delete aJSON[
-			Enumere_IdsRequeteAjax_1.EGenreIdsRequeteAjax.donneesSecurisee
-		];
+		delete aJSON[TypesRequeteJSON_1.ConstantesJSON.donneesSecurisee];
 		if (!aJSON.donnees) {
 			aJSON.Erreur = lErreur;
 			return null;
 		}
 		aJSON.donnees = ObjetJSON_1.ObjetJSON.parseVariables(aJSON.donnees, {
 			JSONCollection:
-				aJSON[
-					Enumere_IdsRequeteAjax_1.EGenreIdsRequeteAjax.donneesNonSecurisee
-				],
+				aJSON[TypesRequeteJSON_1.ConstantesJSON.donneesNonSecurisee],
 		});
 		try {
 			if (IE.log.getActifRequete()) {
@@ -664,10 +632,14 @@ class CommunicationProduit {
 				} else {
 					const lJSONAttente =
 						lJSONReseau.donnees[
-							Enumere_IdsRequeteAjax_1.EGenreIdsRequeteAjax.SignatureAttente
+							TypesRequeteJSON_1.ConstantesJSON.SignatureAttente
 						];
 					const lParametresAttente = lJSONAttente
-						? this._recupererParametresAttente(lJSONAttente.Parametres)
+						? this._recupererParametresAttente(
+								lJSONAttente[
+									TypesRequeteJSON_1.ConstantesJSON.SignatureAttenteParametres
+								],
+							)
 						: {};
 					if (lJSONAttente) {
 						if (!lParametresAttente.sansBlocageInterface) {
@@ -726,7 +698,10 @@ class CommunicationProduit {
 				if (this._renvoyerRequeteSurErreur(ARequete, lStatut)) {
 					return;
 				}
-				if (!window.GApplication || !GApplication._unloadEnCours) {
+				if (
+					!(0, AccessApp_1.getApp)() ||
+					!(0, AccessApp_1.getApp)().unloadEnCours
+				) {
 					let lMessage = `erreur ajax - requete : ${ARequete} - statut : ${AStatut}`;
 					if (ARequete.Parametres && ARequete.Parametres.estBackup) {
 						lMessage += " (backup)";
@@ -836,19 +811,16 @@ class CommunicationProduit {
 		if (aParametres.parametresAttente.repeterRequete) {
 			lJSON = aParametres.requeteModele.Parametres.jsonOrigine;
 			if (
-				!(
-					lJSON &&
-					lJSON[Enumere_IdsRequeteAjax_1.EGenreIdsRequeteAjax.SignatureAttente]
-				) &&
+				!(lJSON && lJSON[TypesRequeteJSON_1.ConstantesJSON.SignatureAttente]) &&
 				aParametres.JSONAttente
 			) {
-				lJSON[Enumere_IdsRequeteAjax_1.EGenreIdsRequeteAjax.SignatureAttente] =
+				lJSON[TypesRequeteJSON_1.ConstantesJSON.SignatureAttente] =
 					MethodesObjet_1.MethodesObjet.dupliquer(aParametres.JSONAttente);
 			}
 		} else {
 			lJSON = {};
 			if (aParametres.JSONAttente) {
-				lJSON[Enumere_IdsRequeteAjax_1.EGenreIdsRequeteAjax.SignatureAttente] =
+				lJSON[TypesRequeteJSON_1.ConstantesJSON.SignatureAttente] =
 					MethodesObjet_1.MethodesObjet.dupliquer(aParametres.JSONAttente);
 			}
 		}
@@ -942,7 +914,6 @@ class CommunicationProduit {
 				);
 			});
 		}
-		this._requetePresenceDelai();
 	}
 	_surReception(aRequete, aJSON, aDonneesEchec) {
 		this._setRequeteEtatTermine(aRequete);
@@ -972,6 +943,9 @@ class CommunicationProduit {
 			Invocateur_1.ObjetInvocateur.events.fermerFenetres,
 			true,
 		);
+		Invocateur_1.Invocateur.evenement(
+			Invocateur_1.ObjetInvocateur.events.nettoyerJSX,
+		);
 	}
 	_requeteBeaconDeconnexion() {
 		if (
@@ -990,7 +964,7 @@ class CommunicationProduit {
 					navigator.sendBeacon(
 						"appeldeconnexion/" + lNumeroOrdre + "/" + new Date().getTime(),
 						ObjetJSON_1.ObjetJSON.toJSON({
-							ns: parseInt(this.NumeroDeSession, 10),
+							ns: this.NumeroDeSession,
 							no: lNumeroOrdre,
 						}),
 					);
@@ -998,45 +972,16 @@ class CommunicationProduit {
 			}
 		}
 	}
-	_requetePresenceDelai() {
-		window.clearTimeout(this.timerPresence);
-		this.timerPresence = setTimeout(
-			this._requeteDePresence.bind(this),
-			this._getDureeTimerPresence(),
-		);
-	}
-	_getDureeTimerPresence() {
-		return this._MAJServeurEnCours
-			? Math.min(
-					CommunicationProduit.cDureeTimerPresenceMAJServeurEnCours,
-					this._dureeTimerPresence,
-				)
-			: this._dureeTimerPresence;
-	}
-	_requeteDePresence() {
-		if (CommunicationProduit.optionsSecurite.avecPollingActif) {
-			return;
-		}
-		if (
-			!this.requeteEnCours() &&
-			this._requetePresenceActive &&
-			this._requetePresenceEnPause !== true
-		) {
-		}
-		this._requetePresenceDelai();
-	}
 	_modificationPresenceUtilisateur(aPresenceUtilisateur) {
 		if (this.estArrete) {
 			return;
 		}
 		let lNomRequete;
 		if (aPresenceUtilisateur) {
-			delete this._requetePresenceEnPause;
-			this._requeteDePresence();
+			delete this._utilisateurInacif;
 			this._envoiRequetePolling({ presence: true });
 		} else {
-			this._requetePresenceEnPause = true;
-			window.clearTimeout(this.timerPresence);
+			this._utilisateurInacif = true;
 			for (lNomRequete in this._pileTimerEnAttente) {
 				if (this._pileTimerEnAttente[lNomRequete]) {
 					this._eventInterruptionRequete({ nomRequete: lNomRequete });
@@ -1055,9 +1000,6 @@ class CommunicationProduit {
 		}
 	}
 	_envoiRequetePolling(aParams) {
-		if (!CommunicationProduit.optionsSecurite.avecPollingActif) {
-			return;
-		}
 		if (this.estArrete) {
 			return;
 		}
@@ -1071,7 +1013,7 @@ class CommunicationProduit {
 		}
 		if (
 			!this.polling.echecReseau &&
-			(this._requetePresenceEnPause || !this._requetePresenceActive)
+			(this._utilisateurInacif || !this._pollingActif)
 		) {
 			if (this.polling.messageDecoEnCours) {
 				this.polling.messageDecoEnCours = false;
@@ -1107,7 +1049,7 @@ class CommunicationProduit {
 					typeof aStatut === "number" ? aStatut : parseInt(aStatut, 10);
 				switch (lStatut) {
 					case 200: {
-						this.polling.numeroOrdre += 1;
+						this.polling.numeroOrdre -= 1;
 						delete this.polling.echecReseau;
 						if (this.polling.messageDecoEnCours) {
 							this.polling.messageDecoEnCours = false;
@@ -1164,7 +1106,10 @@ class CommunicationProduit {
 								Date.now() - this.polling.echecReseau.timeDebut >
 									this.polling.delaiTimeoutEchecReseau)
 						) {
-							if (!global.GApplication || !global.GApplication._unloadEnCours) {
+							if (
+								!(0, AccessApp_1.getApp)() ||
+								!(0, AccessApp_1.getApp)().unloadEnCours
+							) {
 								this.sendLogClient(`erreur polling - statut : ${aStatut}`);
 							}
 							IE.log.addLog(
@@ -1236,9 +1181,10 @@ class CommunicationProduit {
 }
 exports.CommunicationProduit = CommunicationProduit;
 CommunicationProduit.optionsSecurite = {};
-CommunicationProduit.cDureeTimerPresence = 2 * 60 * 1000;
 CommunicationProduit.cDureeTimerPresenceMAJServeurEnCours = 20 * 1000;
 CommunicationProduit.c_IdFichierAIgnorer = "__idFichierAIgnorer__";
+class ObjetRequeteAnnulation extends ObjetRequeteJSON_1.ObjetRequeteConsultation {}
+CollectionRequetes_1.Requetes.inscrire("annulation", ObjetRequeteAnnulation);
 Invocateur_1.Invocateur.abonner(
 	Invocateur_1.ObjetInvocateur.events.initChiffrement,
 	(aParam) => {
@@ -1246,14 +1192,11 @@ Invocateur_1.Invocateur.abonner(
 		if (aParam.http) {
 			lOptionsSecurite.http = true;
 		}
-		if (aParam.sCrA) {
-			lOptionsSecurite.sansCryptageAES = true;
+		if (aParam.CrA) {
+			lOptionsSecurite.avecCryptageAES = true;
 		}
-		if (aParam.sCoA) {
-			lOptionsSecurite.sansCompressionAES = true;
-		}
-		if (aParam.poll) {
-			lOptionsSecurite.avecPollingActif = true;
+		if (aParam.CoA) {
+			lOptionsSecurite.avecCompressionAES = true;
 		}
 		CommunicationProduit.optionsSecurite = lOptionsSecurite;
 	},

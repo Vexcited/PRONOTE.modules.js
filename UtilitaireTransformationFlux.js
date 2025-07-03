@@ -19,6 +19,9 @@ const tag_1 = require("tag");
 const Type_ThemeBouton_1 = require("Type_ThemeBouton");
 const UploadFileAjax_1 = require("UploadFileAjax");
 const MethodesObjet_1 = require("MethodesObjet");
+const jsx_1 = require("jsx");
+const AccessApp_1 = require("AccessApp");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
 var TypeEtapeTransformationFlux;
 (function (TypeEtapeTransformationFlux) {
 	TypeEtapeTransformationFlux[
@@ -190,7 +193,10 @@ class ObjetFenetre_Transformationflux extends ObjetFenetre_1.ObjetFenetre {
 				},
 			],
 			avecScroll: true,
-			hauteurMaxContenu: Math.max(200, GNavigateur.clientH - 400),
+			hauteurMaxContenu: Math.max(
+				200,
+				ObjetNavigateur_1.Navigateur.clientH - 400,
+			),
 		});
 		this._uneTransfoFaite = false;
 	}
@@ -206,6 +212,24 @@ class ObjetFenetre_Transformationflux extends ObjetFenetre_1.ObjetFenetre {
 			this._initIdentifiantTransfoFichier(aFichier);
 		});
 		this.listeFichiersOrigine = aListeFichiers;
+	}
+	jsxModeleRadioTransfoFichier(aIndexFichier, aIndexProduit, aIdentifiant) {
+		return {
+			getValue: () => {
+				const lFichier = this.fichiers[aIndexFichier];
+				return lFichier.identifiantTransfo === aIdentifiant;
+			},
+			setValue: (aValue) => {
+				const lFichier = this.fichiers[aIndexFichier];
+				lFichier.identifiantTransfo = aIdentifiant;
+				if (this._uneTransfoFaite) {
+					this._transformationFichiers();
+				}
+			},
+			getName: () => {
+				return `utiltransflux-produit-${aIndexFichier}`;
+			},
+		};
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
@@ -243,7 +267,8 @@ class ObjetFenetre_Transformationflux extends ObjetFenetre_1.ObjetFenetre {
 			chipsOrigine: {
 				eventBtn(aIndexFichier) {
 					const lFichier = aInstance.fichiers[aIndexFichier];
-					GApplication.getMessage()
+					(0, AccessApp_1.getApp)()
+						.getMessage()
 						.afficher({
 							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
 							message: ObjetTraduction_1.GTraductions.getValeur(
@@ -333,19 +358,6 @@ class ObjetFenetre_Transformationflux extends ObjetFenetre_1.ObjetFenetre {
 			htmlChoixFichier(aIndexFichier) {
 				return aInstance._construireChoixDeFichier(aIndexFichier);
 			},
-			rbChoixTransfoFichier: {
-				getValue(aIndexFichier, aIndexProduit, aIdentifiant) {
-					const lFichier = aInstance.fichiers[aIndexFichier];
-					return lFichier.identifiantTransfo === aIdentifiant;
-				},
-				setValue(aIndexFichier, aIndexProduit, aIdentifiant) {
-					const lFichier = aInstance.fichiers[aIndexFichier];
-					lFichier.identifiantTransfo = aIdentifiant;
-					if (aInstance._uneTransfoFaite) {
-						aInstance._transformationFichiers();
-					}
-				},
-			},
 		});
 	}
 	composeContenu() {
@@ -384,10 +396,16 @@ class ObjetFenetre_Transformationflux extends ObjetFenetre_1.ObjetFenetre {
 		return lParametres;
 	}
 	composeBas() {
-		return (0, tag_1.tag)(
-			"ie-checkbox",
-			{ "ie-model": "cbActivationTransformationFlux" },
-			ObjetTraduction_1.GTraductions.getValeur("DesactiverCompressionAutoPDF"),
+		return IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			IE.jsx.str(
+				"ie-checkbox",
+				{ "ie-model": "cbActivationTransformationFlux" },
+				ObjetTraduction_1.GTraductions.getValeur(
+					"DesactiverCompressionAutoPDF",
+				),
+			),
 		);
 	}
 	surValidation(aNumeroBouton) {
@@ -408,7 +426,7 @@ class ObjetFenetre_Transformationflux extends ObjetFenetre_1.ObjetFenetre {
 		return [
 			(0, tag_1.tag)("div", (aTab) => {
 				aTab.push(
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"div",
 						{ class: "legende ie-titre-petit" },
 						ObjetTraduction_1.GTraductions.getValeur(
@@ -419,46 +437,55 @@ class ObjetFenetre_Transformationflux extends ObjetFenetre_1.ObjetFenetre {
 				this.fichiers.forEach((aFichier, aIndexFichier) => {
 					const lClasseIcone = this._getIconeFichier(aFichier.nom);
 					aTab.push(
-						(0, tag_1.tag)(
+						IE.jsx.str(
 							"div",
 							{ class: "file" },
-							(0, tag_1.tag)(
+							IE.jsx.str(
 								"div",
 								{ class: "entete" },
-								(0, tag_1.tag)(
+								IE.jsx.str(
 									"ie-chips",
 									{
 										href: "bidon",
 										target: "_blank",
 										class: lClasseIcone ? ["iconic", lClasseIcone] : false,
-										"ie-model": tag_1.tag.funcAttr(
+										"ie-model": (0, jsx_1.jsxFuncAttr)(
 											"chipsOrigine",
 											aIndexFichier,
 										),
 									},
 									aFichier.nom,
 								),
-								(0, tag_1.tag)(
+								IE.jsx.str(
 									"span",
 									{ class: "file-size" },
 									ObjetChaine_1.GChaine.tailleOctetsToStr(aFichier.file.size),
 								),
 							),
-							(0, tag_1.tag)("div", {
-								"ie-html": tag_1.tag.funcAttr(
+							IE.jsx.str("div", {
+								"ie-html": (0, jsx_1.jsxFuncAttr)(
 									"htmlChoixFichier",
 									aIndexFichier,
 								),
 							}),
 							this.optionsFenetre.avecCloudDisponible
-								? (0, tag_1.tag)(
+								? IE.jsx.str(
 										"ie-checkbox",
 										{
-											"ie-model": tag_1.tag.funcAttr("cbCloud", aIndexFichier),
+											"ie-model": (0, jsx_1.jsxFuncAttr)(
+												"cbCloud",
+												aIndexFichier,
+											),
 											"ie-textleft": true,
 											class: "cb-cloud",
 										},
-										`${ObjetTraduction_1.GTraductions.getValeur("TransformationFlux.ChoixCloud")}  ${(0, tag_1.tag)("i", { class: "icon_cloud" })}`,
+										ObjetTraduction_1.GTraductions.getValeur(
+											"TransformationFlux.ChoixCloud",
+										),
+										IE.jsx.str("i", {
+											class: "icon_cloud m-left",
+											role: "presentation",
+										}),
 									)
 								: "",
 						),
@@ -476,29 +503,39 @@ class ObjetFenetre_Transformationflux extends ObjetFenetre_1.ObjetFenetre {
 					lFichier.avecTransformation.libelle,
 				);
 				H.push(
-					(0, tag_1.tag)(
-						"div",
-						{ class: "fleche-transfo" },
-						(0, tag_1.tag)("i", { class: "icon_fleche_droite" }),
-					),
-					(0, tag_1.tag)(
-						"div",
-						{ class: "transfo-chips" },
-						(0, tag_1.tag)(
-							"ie-chips",
-							{
-								href: "bidon",
-								target: "_blank",
-								class: lClasseIcone ? ["iconic", lClasseIcone] : false,
-								"ie-model": tag_1.tag.funcAttr("chipsTransfo", aIndexFichier),
-							},
-							lFichier.avecTransformation.libelle,
+					IE.jsx.str(
+						IE.jsx.fragment,
+						null,
+						IE.jsx.str(
+							"div",
+							{ class: "fleche-transfo" },
+							IE.jsx.str("i", {
+								class: "icon_fleche_droite",
+								role: "presentation",
+							}),
 						),
-						(0, tag_1.tag)(
-							"span",
-							{ class: "file-size" },
-							ObjetChaine_1.GChaine.tailleOctetsToStr(
-								lFichier.avecTransformation.file.size,
+						IE.jsx.str(
+							"div",
+							{ class: "transfo-chips" },
+							IE.jsx.str(
+								"ie-chips",
+								{
+									href: "bidon",
+									target: "_blank",
+									class: lClasseIcone ? ["iconic", lClasseIcone] : false,
+									"ie-model": (0, jsx_1.jsxFuncAttr)(
+										"chipsTransfo",
+										aIndexFichier,
+									),
+								},
+								lFichier.avecTransformation.libelle,
+							),
+							IE.jsx.str(
+								"span",
+								{ class: "file-size" },
+								ObjetChaine_1.GChaine.tailleOctetsToStr(
+									lFichier.avecTransformation.file.size,
+								),
 							),
 						),
 					),
@@ -506,21 +543,32 @@ class ObjetFenetre_Transformationflux extends ObjetFenetre_1.ObjetFenetre {
 			} else {
 				const lClasseIcone = this._getIconeFichier(lFichier.nom);
 				H.push(
-					(0, tag_1.tag)(
-						"div",
-						{ class: "fleche-transfo" },
-						(0, tag_1.tag)("i", { class: "icon_fleche_droite" }),
-					),
-					(0, tag_1.tag)(
-						"div",
-						{ class: "transfo-chips" },
-						(0, tag_1.tag)(
-							"ie-chips",
-							{
-								class: lClasseIcone ? ["iconic", lClasseIcone] : false,
-								"ie-model": tag_1.tag.funcAttr("chipsErreur", aIndexFichier),
-							},
-							lFichier.nom,
+					IE.jsx.str(
+						IE.jsx.fragment,
+						null,
+						IE.jsx.str(
+							"div",
+							{ class: "fleche-transfo" },
+							IE.jsx.str("i", {
+								class: "icon_fleche_droite",
+								role: "presentation",
+							}),
+						),
+						",",
+						IE.jsx.str(
+							"div",
+							{ class: "transfo-chips" },
+							IE.jsx.str(
+								"ie-chips",
+								{
+									class: lClasseIcone ? ["iconic", lClasseIcone] : false,
+									"ie-model": (0, jsx_1.jsxFuncAttr)(
+										"chipsErreur",
+										aIndexFichier,
+									),
+								},
+								lFichier.nom,
+							),
 						),
 					),
 				);
@@ -528,7 +576,10 @@ class ObjetFenetre_Transformationflux extends ObjetFenetre_1.ObjetFenetre {
 					(0, tag_1.tag)(
 						"div",
 						{ class: "errors" },
-						(0, tag_1.tag)("i", { class: "icon_warning_sign" }),
+						IE.jsx.str("i", {
+							class: "icon_warning_sign",
+							role: "presentation",
+						}),
 						(0, tag_1.tag)("ul", (aTab) => {
 							if (
 								lFichier.avecTransformation.errors &&
@@ -547,38 +598,50 @@ class ObjetFenetre_Transformationflux extends ObjetFenetre_1.ObjetFenetre {
 		const lApplicables =
 			lFichier.transformateursApplicables[lFichier.choixDestinataire];
 		if (lApplicables.length > 0) {
-			return (0, tag_1.tag)("div", { class: "choix" }, (aTab) => {
-				lApplicables.forEach((aProduit, aIndexProduit) => {
-					aTab.push(
-						(0, tag_1.tag)(
+			const lArrayApplicables = [];
+			lApplicables.forEach((aProduit, aIndexProduit) => {
+				const lStrSuggestion = [];
+				if (aProduit.suggestion) {
+					lStrSuggestion.push(
+						IE.jsx.str(
+							IE.jsx.fragment,
+							null,
+							IE.jsx.str("br", null),
+							IE.jsx.str(
+								"span",
+								{ class: "suggestion" },
+								aProduit.suggestion.replaceRCToHTML(),
+							),
+						),
+					);
+				}
+				lArrayApplicables.push(
+					IE.jsx.str(
+						IE.jsx.fragment,
+						null,
+						IE.jsx.str(
 							"ie-radio",
 							{
-								"ie-model": tag_1.tag.funcAttr("rbChoixTransfoFichier", [
+								"ie-model": this.jsxModeleRadioTransfoFichier.bind(
+									this,
 									aIndexFichier,
 									aIndexProduit,
 									aProduit.identifiant,
-								]),
-								name: `produit-${aIndexFichier}`,
+								),
 							},
-							(0, tag_1.tag)("span", aProduit.description),
-							aProduit.suggestion
-								? (0, tag_1.tag)("br") +
-										(0, tag_1.tag)(
-											"span",
-											{ class: "suggestion" },
-											aProduit.suggestion.replaceRCToHTML(),
-										)
-								: "",
+							IE.jsx.str("span", null, aProduit.description),
+							lStrSuggestion.join(""),
 						),
-						(0, tag_1.tag)("br"),
-					);
-				});
+						IE.jsx.str("br", null),
+					),
+				);
 			});
+			return IE.jsx.str("div", { class: "choix" }, lArrayApplicables.join(""));
 		}
 		return (0, tag_1.tag)(
 			"div",
 			{ class: "errors" },
-			(0, tag_1.tag)("i", { class: "icon_warning_sign" }),
+			IE.jsx.str("i", { class: "icon_warning_sign", role: "presentation" }),
 			(0, tag_1.tag)(
 				"div",
 				(0, tag_1.tag)("ul", (aTab) => {
@@ -606,7 +669,12 @@ class ObjetFenetre_Transformationflux extends ObjetFenetre_1.ObjetFenetre {
 						) {
 							lHtml = ObjetTraduction_1.GTraductions.getValeur(
 								"TransformationFlux.PropositionCibleCloud_S",
-								[(0, tag_1.tag)("i", { class: "icon_cloud" })],
+								[
+									IE.jsx.str("i", {
+										class: "icon_cloud",
+										role: "presentation",
+									}),
+								],
 							);
 						} else if (
 							lFichier.faisabiliteTransfertCloud &&
@@ -792,7 +860,7 @@ class ObjetFenetre_Transformationflux extends ObjetFenetre_1.ObjetFenetre {
 					[lFichier.nom],
 				),
 				params: {
-					htmlPied: (0, tag_1.tag)(
+					htmlPied: IE.jsx.str(
 						"ie-bouton",
 						{ "ie-model": "btnInterrupt" },
 						ObjetTraduction_1.GTraductions.getValeur(

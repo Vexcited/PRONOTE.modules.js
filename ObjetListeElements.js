@@ -7,11 +7,14 @@ const ObjetTri_1 = require("ObjetTri");
 const ObjetElement_1 = require("ObjetElement");
 const ComparateurChaines_1 = require("ComparateurChaines");
 class ObjetListeElements {
-	constructor() {
+	constructor(aElement) {
 		this.ListeElements = [];
 		this._tris = null;
 		this.serialisateurJSON = null;
 		this.vider();
+		if (aElement) {
+			this.add(aElement);
+		}
 	}
 	add(aElement) {
 		if (aElement) {
@@ -42,11 +45,19 @@ class ObjetListeElements {
 	get(aIndex) {
 		return this.ListeElements[aIndex];
 	}
-	remove(aIndice) {
-		if (aIndice >= 0 && MethodesObjet_1.MethodesObjet.isNumber(aIndice)) {
+	remove(aIndexOuTabIndex) {
+		if (
+			aIndexOuTabIndex >= 0 &&
+			MethodesObjet_1.MethodesObjet.isNumber(aIndexOuTabIndex)
+		) {
 			MethodesTableau_1.MethodesTableau.supprimerElement(
 				this.ListeElements,
-				aIndice,
+				aIndexOuTabIndex,
+			);
+		} else if (aIndexOuTabIndex && Array.isArray(aIndexOuTabIndex)) {
+			MethodesTableau_1.MethodesTableau.supprimerTabIndex(
+				this.ListeElements,
+				aIndexOuTabIndex,
 			);
 		}
 		return this;
@@ -209,29 +220,50 @@ class ObjetListeElements {
 		}
 	}
 	getNumero(I) {
-		return this.ListeElements[I].Numero;
+		var _a;
+		return (_a = this.ListeElements[I]) === null || _a === void 0
+			? void 0
+			: _a.Numero;
 	}
 	getGenre(I) {
-		return this.ListeElements[I].Genre;
+		var _a;
+		return (_a = this.ListeElements[I]) === null || _a === void 0
+			? void 0
+			: _a.Genre;
 	}
 	getLibelle(I) {
-		return this.ListeElements[I].Libelle;
+		var _a;
+		return (_a = this.ListeElements[I]) === null || _a === void 0
+			? void 0
+			: _a.Libelle;
 	}
 	getActif(I) {
-		return this.ListeElements[I].Actif;
+		var _a;
+		return (_a = this.ListeElements[I]) === null || _a === void 0
+			? void 0
+			: _a.Actif;
 	}
 	getPosition(I) {
-		return this.ListeElements[I].Position;
+		var _a;
+		return (_a = this.ListeElements[I]) === null || _a === void 0
+			? void 0
+			: _a.Position;
 	}
 	existeNumero(I) {
 		const N = this.getNumero(I);
 		return !!(N && N !== "0");
 	}
 	existe(I) {
-		return this.ListeElements[I].existe();
+		var _a;
+		return (_a = this.ListeElements[I]) === null || _a === void 0
+			? void 0
+			: _a.existe();
 	}
 	pourValidation(I) {
-		return this.ListeElements[I].pourValidation();
+		var _a;
+		return (_a = this.ListeElements[I]) === null || _a === void 0
+			? void 0
+			: _a.pourValidation();
 	}
 	setLibelle(I, ALibelle) {
 		this.ListeElements[I].Libelle = ALibelle;

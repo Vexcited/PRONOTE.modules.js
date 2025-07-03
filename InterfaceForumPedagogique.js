@@ -3,7 +3,6 @@ const ObjetInterfacePageCP_1 = require("ObjetInterfacePageCP");
 const ObjetListe_1 = require("ObjetListe");
 const MoteurForumPedagogique_1 = require("MoteurForumPedagogique");
 const DonneesListe_Forum_ListeSujets_1 = require("DonneesListe_Forum_ListeSujets");
-const tag_1 = require("tag");
 const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
@@ -59,6 +58,7 @@ class InterfaceForumPedagogique extends ObjetInterfacePageCP_1.InterfacePageCP {
 				(aListe) => {
 					aListe.setOptionsListe({
 						skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+						ariaLabel: this.etatUtilisateurSco.getLibelleLongOnglet(),
 					});
 				},
 			);
@@ -80,6 +80,10 @@ class InterfaceForumPedagogique extends ObjetInterfacePageCP_1.InterfacePageCP {
 					messageContenuVide: ObjetTraduction_1.GTraductions.getValeur(
 						"ForumPeda.AucunForum",
 					),
+					ariaLabel: () => {
+						var _a;
+						return `${this.etatUtilisateurSco.getLibelleLongOnglet()} ${this.options.avecListeMatieres && ((_a = this.filtres.matiereSelec) === null || _a === void 0 ? void 0 : _a.getLibelle) ? this.filtres.matiereSelec.getLibelle() : ""}`.trim();
+					},
 				});
 			},
 		);
@@ -95,23 +99,35 @@ class InterfaceForumPedagogique extends ObjetInterfacePageCP_1.InterfacePageCP {
 		);
 	}
 	construireStructureAffichageAutre() {
-		return (0, tag_1.tag)(
-			"div",
-			{ class: "InterfaceForumPedagogique" },
-			this.options.avecListeMatieres
-				? (0, tag_1.tag)("section", {
+		const lSectionListeMatieres = [];
+		if (this.options.avecListeMatieres) {
+			lSectionListeMatieres.push(
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str("section", {
 						class: "liste-matieres",
-						id: this.getInstance(this.identListeMatieres).getNom(),
-					})
-				: "",
-			(0, tag_1.tag)("section", {
-				class: "liste-sujets",
-				id: this.getInstance(this.identListeSujets).getNom(),
-			}),
-			(0, tag_1.tag)("aside", {
-				class: ["posts"],
-				id: this.getInstance(this.identPosts).getNom(),
-			}),
+						id: this.getNomInstance(this.identListeMatieres),
+					}),
+				),
+			);
+		}
+		return IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			IE.jsx.str(
+				"div",
+				{ class: "InterfaceForumPedagogique" },
+				lSectionListeMatieres.join(""),
+				IE.jsx.str("section", {
+					class: "liste-sujets",
+					id: this.getNomInstance(this.identListeSujets),
+				}),
+				IE.jsx.str("aside", {
+					class: "posts",
+					id: this.getNomInstance(this.identPosts),
+				}),
+			),
 		);
 	}
 	_requeteSujetsPromise(aParams) {

@@ -36,7 +36,7 @@ class ObjetIndexsUnique {
 	}
 	estDoublon(a, b) {
 		for (let i = 0; i < this._indexsUnique.length; i++) {
-			if (_estDoublonComparaisonET(this._indexsUnique[i], a, b)) {
+			if (this._estDoublonComparaisonET(this._indexsUnique[i], a, b)) {
 				return true;
 			}
 		}
@@ -53,6 +53,61 @@ class ObjetIndexsUnique {
 	existeIndex() {
 		return this._indexsUnique.length > 0;
 	}
+	_estDoublonComparaisonET(aIndexUnique, a, b) {
+		let lResult = false;
+		for (let i = 0; i < aIndexUnique.length; i++) {
+			if (aIndexUnique[i]) {
+				if (this._comparateurChampIndex(aIndexUnique[i], a, b)) {
+					lResult = true;
+				} else {
+					return false;
+				}
+			}
+		}
+		return lResult;
+	}
+	_comparateurChampIndex(aChampIndex, a, b) {
+		if (!aChampIndex || !aChampIndex.valeur) {
+			return false;
+		}
+		if (!a || !b) {
+			return false;
+		}
+		let lValeurA;
+		let lValeurB;
+		if (aChampIndex.estFonction) {
+			lValeurA = aChampIndex.valeur(a);
+			lValeurB = aChampIndex.valeur(b);
+		} else if (aChampIndex.estAccesseurChaine) {
+			lValeurA = MethodesObjet_1.MethodesObjet.get(a, aChampIndex.valeur);
+			lValeurB = MethodesObjet_1.MethodesObjet.get(b, aChampIndex.valeur);
+		} else {
+			lValeurA = a[aChampIndex.valeur];
+			lValeurB = b[aChampIndex.valeur];
+		}
+		if (lValeurA && lValeurA.getTime) {
+			lValeurA = lValeurA.getTime();
+		}
+		if (lValeurB && lValeurB.getTime) {
+			lValeurB = lValeurB.getTime();
+		}
+		if (aChampIndex.sensibleCasse !== true) {
+			if (lValeurA && lValeurA.toLowerCase) {
+				lValeurA = lValeurA.toLowerCase();
+			}
+			if (lValeurB && lValeurB.toLowerCase) {
+				lValeurB = lValeurB.toLowerCase();
+			}
+		}
+		if (
+			lValeurA === lValeurB &&
+			(lValeurA === "" || lValeurA === undefined || lValeurA === null)
+		) {
+			return !!aChampIndex.videEstDoublon;
+		} else {
+			return lValeurA === lValeurB;
+		}
+	}
 	static ajouterChamp(aValeur, aVideEstDoublon, aSensibleCasse) {
 		return {
 			valeur: aValeur,
@@ -66,58 +121,3 @@ class ObjetIndexsUnique {
 	}
 }
 exports.ObjetIndexsUnique = ObjetIndexsUnique;
-function _estDoublonComparaisonET(aIndexUnique, a, b) {
-	let lResult = false;
-	for (let i = 0; i < aIndexUnique.length; i++) {
-		if (aIndexUnique[i]) {
-			if (_comparateurChampIndex(aIndexUnique[i], a, b)) {
-				lResult = true;
-			} else {
-				return false;
-			}
-		}
-	}
-	return lResult;
-}
-function _comparateurChampIndex(aChampIndex, a, b) {
-	if (!aChampIndex || !aChampIndex.valeur) {
-		return false;
-	}
-	if (!a || !b) {
-		return false;
-	}
-	let lValeurA;
-	let lValeurB;
-	if (aChampIndex.estFonction) {
-		lValeurA = aChampIndex.valeur(a);
-		lValeurB = aChampIndex.valeur(b);
-	} else if (aChampIndex.estAccesseurChaine) {
-		lValeurA = MethodesObjet_1.MethodesObjet.get(a, aChampIndex.valeur);
-		lValeurB = MethodesObjet_1.MethodesObjet.get(b, aChampIndex.valeur);
-	} else {
-		lValeurA = a[aChampIndex.valeur];
-		lValeurB = b[aChampIndex.valeur];
-	}
-	if (lValeurA && lValeurA.getTime) {
-		lValeurA = lValeurA.getTime();
-	}
-	if (lValeurB && lValeurB.getTime) {
-		lValeurB = lValeurB.getTime();
-	}
-	if (aChampIndex.sensibleCasse !== true) {
-		if (lValeurA && lValeurA.toLowerCase) {
-			lValeurA = lValeurA.toLowerCase();
-		}
-		if (lValeurB && lValeurB.toLowerCase) {
-			lValeurB = lValeurB.toLowerCase();
-		}
-	}
-	if (
-		lValeurA === lValeurB &&
-		(lValeurA === "" || lValeurA === undefined || lValeurA === null)
-	) {
-		return !!aChampIndex.videEstDoublon;
-	} else {
-		return lValeurA === lValeurB;
-	}
-}

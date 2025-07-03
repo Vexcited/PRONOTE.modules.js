@@ -23,7 +23,7 @@ const TinyInit_1 = require("TinyInit");
 const MoteurMessagerie_1 = require("MoteurMessagerie");
 const ObjetDestinatairesMessagerie_1 = require("ObjetDestinatairesMessagerie");
 const ObjetFenetre_SelectionPublic_1 = require("ObjetFenetre_SelectionPublic");
-const jsx_1 = require("jsx");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
 class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
@@ -75,6 +75,39 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 				instance: this,
 				avecTiny: this.optionsFenetre.avecTiny,
 			});
+	}
+	jsxModeleCheckboxDestProfsUniquement(aNumeroArticle, aGenre) {
+		return {
+			getValue: () => {
+				return !!this.listeSelectionDestProfsUniquement.getElementParNumero(
+					aNumeroArticle,
+				);
+			},
+			setValue: (aValue) => {
+				if (!aValue) {
+					if (this.listeSelectionDestProfsUniquement.count() === 1) {
+						return;
+					}
+					const lIndice =
+						this.listeSelectionDestProfsUniquement.getIndiceParNumeroEtGenre(
+							aNumeroArticle,
+						);
+					if (lIndice >= 0) {
+						this.listeSelectionDestProfsUniquement.remove(lIndice);
+					}
+				} else {
+					if (
+						!this.listeSelectionDestProfsUniquement.getElementParNumero(
+							aNumeroArticle,
+						)
+					) {
+						this.listeSelectionDestProfsUniquement.add(
+							new ObjetElement_1.ObjetElement("", aNumeroArticle, aGenre),
+						);
+					}
+				}
+			},
+		};
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
@@ -153,37 +186,6 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 							this.node,
 						);
 					},
-				},
-			},
-			cbDestProfsUniquement: {
-				getValue: function (aNumeroArticle) {
-					return !!aInstance.listeSelectionDestProfsUniquement.getElementParNumero(
-						aNumeroArticle,
-					);
-				},
-				setValue: function (aNumeroArticle, aGenre, aValue) {
-					if (!aValue) {
-						if (aInstance.listeSelectionDestProfsUniquement.count() === 1) {
-							return;
-						}
-						const lIndice =
-							aInstance.listeSelectionDestProfsUniquement.getIndiceParNumeroEtGenre(
-								aNumeroArticle,
-							);
-						if (lIndice >= 0) {
-							aInstance.listeSelectionDestProfsUniquement.remove(lIndice);
-						}
-					} else {
-						if (
-							!aInstance.listeSelectionDestProfsUniquement.getElementParNumero(
-								aNumeroArticle,
-							)
-						) {
-							aInstance.listeSelectionDestProfsUniquement.add(
-								new ObjetElement_1.ObjetElement("", aNumeroArticle, aGenre),
-							);
-						}
-					}
 				},
 			},
 			cbTypeDestinatairePourEleve: {
@@ -351,7 +353,10 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 		return this.optionsFenetre.avecPieceJointe;
 	}
 	_autoriseTiny() {
-		return this.optionsFenetre.avecTiny && GNavigateur.withContentEditable;
+		return (
+			this.optionsFenetre.avecTiny &&
+			ObjetNavigateur_1.Navigateur.withContentEditable
+		);
 	}
 	construireInstances() {
 		if (this._autorisePJ()) {
@@ -431,7 +436,7 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 						lNb++;
 						lHint.push(lElt.getLibelle());
 					}
-					if (lElt.listeRessources) {
+					if ("listeRessources" in lElt && lElt.listeRessources) {
 						for (
 							let j = 0, lNbrJ = lElt.listeRessources.count();
 							j < lNbrJ;
@@ -473,7 +478,7 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 							}
 						}
 					}
-					if (lElt.listePP) {
+					if ("listePP" in lElt && lElt.listePP) {
 						lElt.listePP.parcourir((aPP) => {
 							if (
 								aPP.existeNumero() &&
@@ -486,7 +491,7 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 							}
 						});
 					}
-					if (!!lElt.listeTuteurs) {
+					if ("listeTuteurs" in lElt && !!lElt.listeTuteurs) {
 						lElt.listeTuteurs.parcourir((aTuteurEleve) => {
 							if (
 								aTuteurEleve.existeNumero() &&
@@ -499,7 +504,7 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 							}
 						});
 					}
-					if (!!lElt.listeEquipePeda) {
+					if ("listeEquipePeda" in lElt && !!lElt.listeEquipePeda) {
 						lElt.listeEquipePeda.parcourir((aMembreEquipePeda) => {
 							if (
 								aMembreEquipePeda.existeNumero() &&
@@ -860,19 +865,40 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 		if (this.etatUtilisateurSco.pourPrimaire()) {
 			if (this.message.destinataireMairie) {
 				T.push(
-					'<div class="m-left-xl m-bottom-l">',
-					ObjetTraduction_1.GTraductions.getValeur(
-						"fenetreCommunication.personnelMairie",
+					IE.jsx.str(
+						IE.jsx.fragment,
+						null,
+						IE.jsx.str(
+							"div",
+							{ class: "m-left-xl m-bottom-l" },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"fenetreCommunication.personnelMairie",
+							),
+							" :",
+							IE.jsx.str(
+								"ie-bouton",
+								{
+									class: "small-bt",
+									"ie-model": "btnSelectionPersonnel",
+									"ie-tooltiplabel":
+										Enumere_Ressource_1.EGenreRessourceUtil.getTitreFenetreSelectionRessource(
+											Enumere_Ressource_1.EGenreRessource.Personnel,
+										),
+									"aria-haspopup": "dialog",
+								},
+								"...",
+							),
+							IE.jsx.str("span", { "ie-html": "getNbrDest" }),
+						),
+						IE.jsx.str(
+							"div",
+							{ class: "m-bottom-l" },
+							UtilitaireMessagerie_1.UtilitaireMessagerie.composeMettreEnCopie({
+								avecDirection: true,
+								avecEnseigantDEleve: true,
+							}),
+						),
 					),
-					' : <ie-bouton class="small-bt" ie-model="btnSelectionPersonnel">...</ie-bouton> <span ie-html="getNbrDest"></span></div>',
-				);
-				T.push(
-					'<div class="m-bottom-l">',
-					UtilitaireMessagerie_1.UtilitaireMessagerie.composeMettreEnCopie({
-						avecDirection: true,
-						avecEnseigantDEleve: true,
-					}),
-					"</div>",
 				);
 			} else {
 				if (
@@ -895,10 +921,12 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 											IE.jsx.str(
 												"ie-checkbox",
 												{
-													"ie-model": (0, jsx_1.jsxFuncAttr)(
-														"cbDestProfsUniquement",
-														[aProf.getNumero(), aProf.getGenre()],
-													),
+													"ie-model":
+														this.jsxModeleCheckboxDestProfsUniquement.bind(
+															this,
+															aProf.getNumero(),
+															aProf.getGenre(),
+														),
 													disabled: lNb === 1 ? "disabled" : false,
 													class: "p-bottom",
 												},
@@ -958,15 +986,17 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 						);
 						lListeChoixProfs.parcourir((D) => {
 							T.push(
-								"<ie-checkbox",
-								ObjetHtml_1.GHtml.composeAttr(
-									"ie-model",
-									"cbDestProfsUniquement",
-									[D.getNumero(), D.getGenre()],
+								IE.jsx.str(
+									"ie-checkbox",
+									{
+										"ie-model": this.jsxModeleCheckboxDestProfsUniquement.bind(
+											this,
+											D.getNumero(),
+											D.getGenre(),
+										),
+									},
+									D.getLibelle(),
 								),
-								">",
-								D.getLibelle(),
-								"</ie-checkbox>",
 							);
 						});
 						T.push("</div>");
@@ -977,16 +1007,16 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 							D.getGenre() === Enumere_Ressource_1.EGenreRessource.Responsable
 						) {
 							T.push(
-								"<ie-checkbox ",
-								ObjetHtml_1.GHtml.composeAttr("ie-model", "cbInclureResp2"),
-								' class="PetitEspaceHaut">',
-								D.getLibelle(),
-								"</ie-checkbox>",
+								IE.jsx.str(
+									"ie-checkbox",
+									{ "ie-model": "cbInclureResp2", class: "PetitEspaceHaut" },
+									D.getLibelle(),
+								),
 							);
 						} else {
-							T.push('<label class="m-left-xl">');
-							T.push(D.getLibelle());
-							T.push("</label>");
+							T.push(
+								IE.jsx.str("label", { class: "m-left-xl" }, D.getLibelle()),
+							);
 						}
 					});
 					T.push("</div>");
@@ -1326,11 +1356,11 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 		}
 	}
 	composeContenu() {
-		const T = [];
-		T.push(this._composeZoneEnteteMsg());
-		T.push(this._composeZoneContenuMsg());
+		const H = [];
+		H.push(this._composeZoneEnteteMsg());
+		H.push(this._composeZoneContenuMsg());
 		if (this.optionsFenetre.transfertMessage) {
-			T.push(
+			H.push(
 				'<div class="EspaceHaut">',
 				'<div id="',
 				this.idDiscussion,
@@ -1338,7 +1368,7 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 				"</div>",
 			);
 		}
-		return T.join("");
+		return H.join("");
 	}
 	controlerSaisieMsg(aListeDestinataires) {
 		const lResult = {
@@ -1378,8 +1408,10 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 			commande: this.message.commande,
 			estCreationCarnetLiaison: this.message.estCreationCarnetLiaison,
 			estCreationDossierDecrochage: this.message.estCreationDossierDecrochage,
+			estCreationRechercheDeStage: this.message.estCreationRechercheDeStage,
 			eleveCarnetLiaison: this.message.eleveCarnetLiaison,
 			dossier: this.message.dossier,
+			rechercheDeStage: this.message.rechercheDeStage,
 			listeMessagesTransfert: this.message.listeMessagesTransfert,
 			genreDiscussion: this.genreDiscussion,
 		};
@@ -1453,8 +1485,10 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 				listeEtiquettes: null,
 				estCreationCarnetLiaison: false,
 				estCreationDossierDecrochage: false,
+				estCreationRechercheDeStage: false,
 				eleveCarnetLiaison: null,
 				dossier: null,
+				rechercheDeStage: null,
 			},
 			aOptions,
 		);
@@ -1462,15 +1496,17 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 			{
 				genresRessources: [],
 				message: {
-					objet: "",
+					objet: lOptions.objet,
 					contenu: "",
 					placeholder: "",
 					messageAvertissement: "",
 					listeEtiquettes: lOptions.listeEtiquettes,
 					estCreationCarnetLiaison: lOptions.estCreationCarnetLiaison,
 					estCreationDossierDecrochage: lOptions.estCreationDossierDecrochage,
+					estCreationRechercheDeStage: lOptions.estCreationRechercheDeStage,
 					eleveCarnetLiaison: lOptions.eleveCarnetLiaison,
 					dossier: lOptions.dossier,
+					rechercheDeStage: lOptions.rechercheDeStage,
 				},
 				avecIndicationDiscussionInterdit: [
 					Enumere_Espace_1.EGenreEspace.Professeur,
@@ -1492,7 +1528,7 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 		}
 		const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
 			ObjetFenetre_Message,
-			{ pere: aInstance },
+			{ pere: aInstance, evenement: lOptions.eventApresDiscussion },
 			{ avecChoixDestinataires: lOptions.avecChoixDestinataires },
 		);
 		if (lOptions.avecSauvegardeBrouillon) {
@@ -1619,10 +1655,10 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 		this.message.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 	}
 	_initTiny() {
-		if (GNavigateur.withContentEditable) {
+		if (ObjetNavigateur_1.Navigateur.withContentEditable) {
 			TinyInit_1.TinyInit.init({
 				id: this.idContenuMsg,
-				labelWAI: ObjetTraduction_1.GTraductions.getValeur(
+				ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
 					"Messagerie.labelWAIMessage",
 				),
 				modeMail: true,
@@ -1646,12 +1682,12 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 		return lResult;
 	}
 	_composeChampDestinataires() {
-		const T = [];
+		const H = [];
 		if (!this.optionsFenetre.avecChoixDestinataires) {
-			T.push(
+			H.push(
 				'<div id="',
 				this.id_destinataires_conteneur,
-				'" class="field-contain Gras label-up" role="group" aria-label="',
+				'" class="field-contain semi-bold label-up" role="group" aria-label="',
 				ObjetTraduction_1.GTraductions.getValeur(
 					"Messagerie.DestinatairesMsg",
 				).toAttrValue(),
@@ -1674,21 +1710,21 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 				"</div>",
 			);
 		} else {
-			T.push(
+			H.push(
 				'<div id="',
 				this.getNomInstance(this.identDestinataire),
 				'"></div>',
 			);
 		}
-		return T.join("");
+		return H.join("");
 	}
 	_composeChampObjet() {
 		return IE.jsx.str(
-			"label",
-			{ class: "flex-contain cols m-top-l m-bottom-l" },
+			"div",
+			{ class: "champ-conteneur" },
 			IE.jsx.str(
-				"span",
-				{ class: "ie-titre-petit m-bottom" },
+				"label",
+				{ for: "champObjet", class: "ie-titre-petit" },
 				ObjetTraduction_1.GTraductions.getValeur("Messagerie.ObjetMsg"),
 			),
 			() => {
@@ -1696,86 +1732,102 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 					return IE.jsx.str("div", { "ie-html": "getObjetTexte" });
 				} else {
 					return IE.jsx.str("input", {
+						id: "champObjet",
+						class: "full-width",
 						"ie-model": "inputObjet",
+						"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+							"Messagerie.ObjetMsg",
+						),
 						maxlength:
 							UtilitaireMessagerie_1.UtilitaireMessagerie.C_TailleObjetMessage,
 						type: "text",
-						class: "round-style",
 					});
 				}
 			},
 		);
 	}
 	_composeChampPJ() {
-		const T = [];
-		T.push(
+		const H = [];
+		H.push(
 			`<div class="pj-global-conteneur" id="${this.getNomInstance(this.identSelecteurPJ)}"></div>`,
 		);
-		return T.join("");
+		return H.join("");
 	}
 	_composeZoneEnteteMsg() {
-		const T = [];
-		T.push('<div id="', this.idEntete, '" class="full-width m-top">');
-		T.push(this._composeChampDestinataires());
-		T.push(
+		const H = [];
+		H.push('<div id="', this.idEntete, '" class="full-width m-top">');
+		H.push(this._composeChampDestinataires());
+		H.push(
 			IE.jsx.str("div", {
 				"ie-html": "getLegende",
 				"ie-display": "afficherLegende",
 				class: "m-bottom-xl",
 			}),
 		);
-		T.push(this._composeChampObjet());
-		T.push("</div>");
-		return T.join("");
+		H.push(this._composeChampObjet());
+		H.push("</div>");
+		return H.join("");
 	}
 	_composeZoneContenuMsg() {
-		const T = [];
+		const H = [];
 		const lAvecPJ = this._autorisePJ();
+		const lAvecTiny = this._autoriseTiny();
 		const lAvecCloud = GEtatUtilisateur.listeCloud.count() > 0;
-		T.push(`<div class="flex-contain">`);
+		const lTitre =
+			ObjetTraduction_1.GTraductions.getValeur("Messagerie.Contenu");
+		H.push(`<div class="flex-contain">`);
 		if (this._autorisePJ()) {
-			T.push(`<div class="fix-bloc flex-contain cols">\n                ${this._composeChampPJ()}
+			H.push(`<div class="fix-bloc flex-contain cols">\n                ${this._composeChampPJ()}
             </div>`);
 		}
-		T.push(
-			`<div class="fluid-bloc">\n              <textarea id="${this.idContenuMsg}" ${!this._autoriseTiny() ? ' ie-model="textareaSansTiny" maxlength="10000"' : ""} class="round-style" style="height:300px;width:100%;"></textarea>`,
-			this.etatUtilisateurSco.messagerieSignature &&
-				this.etatUtilisateurSco.messagerieSignature.signature
-				? IE.jsx.str(
-						"ie-bouton",
-						{
-							"ie-model": "btnSignature",
-							"ie-icon": "icon_signature",
-							class: "themeBoutonNeutre m-top-l",
-						},
-						ObjetTraduction_1.GTraductions.getValeur(
-							"Messagerie.HintAjouterSignature",
-						),
-					)
-				: "",
-			`</div>`,
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "fluid-bloc" },
+				IE.jsx.str("textarea", {
+					id: this.idContenuMsg,
+					"ie-model": !lAvecTiny ? "textareaSansTiny" : "",
+					maxlength: !lAvecTiny ? "10000" : false,
+					"aria-label": lTitre,
+					style: "height:300px;width:100%;",
+				}),
+				this.etatUtilisateurSco.messagerieSignature &&
+					this.etatUtilisateurSco.messagerieSignature.signature
+					? IE.jsx.str(
+							"ie-bouton",
+							{
+								"ie-model": "btnSignature",
+								"ie-icon": "icon_signature",
+								class: "themeBoutonNeutre m-top-l",
+							},
+							ObjetTraduction_1.GTraductions.getValeur(
+								"Messagerie.HintAjouterSignature",
+							),
+						)
+					: "",
+			),
 		);
-		T.push(`</div>`);
+		H.push(`</div>`);
 		if (lAvecPJ || lAvecCloud) {
-			T.push('<div class="m-top-l">');
+			H.push('<div class="m-top-l">');
 			if (lAvecPJ) {
-				T.push(
+				H.push(
 					'<div id="',
 					this.idLibellePJ,
 					'" class="pj-liste-conteneur"></div>',
 				);
 			}
 			if (lAvecCloud) {
-				T.push(
+				H.push(
 					'<div id="',
 					this.idLibelleCloud,
 					'" class="pj-liste-conteneur"></div>',
 				);
 			}
-			T.push("</div>");
+			H.push("</div>");
 		}
-		const lContenu = T.join("");
-		if (this._autoriseTiny() || this._autorisePJ()) {
+		const lContenu = H.join("");
+		if (lAvecTiny || this._autorisePJ()) {
 			const lId = `${this.Nom}_labelcontenu`;
 			return IE.jsx.str(
 				"div",
@@ -1789,12 +1841,12 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 			);
 		}
 		return IE.jsx.str(
-			"label",
-			{ class: "flex-contain cols" },
+			"div",
+			{ class: "champ-conteneur" },
 			IE.jsx.str(
-				"span",
-				{ class: "ie-titre-petit m-bottom" },
-				ObjetTraduction_1.GTraductions.getValeur("Messagerie.Contenu"),
+				"label",
+				{ for: this.idContenuMsg, class: "ie-titre-petit m-bottom" },
+				lTitre,
 			),
 			lContenu,
 		);

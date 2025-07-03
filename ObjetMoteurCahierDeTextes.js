@@ -1,40 +1,36 @@
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { GChaine } = require("ObjetChaine.js");
-const { GDate } = require("ObjetDate.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	TypeGenreRenduTAF,
-	TypeGenreRenduTAFUtil,
-} = require("TypeGenreRenduTAF.js");
-const { TypeNiveauDifficulteUtil } = require("TypeNiveauDifficulte.js");
-const {
-	TypeOrigineCreationCategorieCahierDeTexteUtil,
-} = require("TypeOrigineCreationCategorieCahierDeTexte.js");
-const {
-	ObjetRequeteSaisieCahierDeTextes,
-} = require("ObjetRequeteSaisieCahierDeTextes.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { UtilitaireQCM } = require("UtilitaireQCM.js");
-const { EGenreDocumentJoint } = require("Enumere_DocumentJoint.js");
-const EGenreEvntCdT = {
-	publierCdT: "publierCdT",
-	publierDate: "publierDate",
-	copierCdT: "copierCdT",
-	collerCdT: "collerCdT",
-	deleteCdT: "deleteCdT",
-	createContenu: "createContenu",
-	editContenu: "editContenu",
-	deleteContenu: "deleteContenu",
-	createTAF: "createTAF",
-	editTAF: "editTAF",
-	deleteTAF: "deleteTAF",
-	actualiserFicheTAFDuCours: "actualiserFicheTAFDuCours",
-	editNoteProchaineSeance: "editNoteProchaineSeance",
-	editCommentairePrive: "editCommentairePrive",
-};
+exports.ObjetMoteurCDT = exports.EGenreEvntCdT = void 0;
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TypeGenreRenduTAF_1 = require("TypeGenreRenduTAF");
+const TypeNiveauDifficulte_1 = require("TypeNiveauDifficulte");
+const TypeOrigineCreationCategorieCahierDeTexte_1 = require("TypeOrigineCreationCategorieCahierDeTexte");
+const ObjetRequeteSaisieCahierDeTextes_1 = require("ObjetRequeteSaisieCahierDeTextes");
+const MethodesObjet_1 = require("MethodesObjet");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const UtilitaireQCM_1 = require("UtilitaireQCM");
+const Enumere_DocumentJoint_1 = require("Enumere_DocumentJoint");
+const AccessApp_1 = require("AccessApp");
+var EGenreEvntCdT;
+(function (EGenreEvntCdT) {
+	EGenreEvntCdT["publierCdT"] = "publierCdT";
+	EGenreEvntCdT["publierDate"] = "publierDate";
+	EGenreEvntCdT["copierCdT"] = "copierCdT";
+	EGenreEvntCdT["collerCdT"] = "collerCdT";
+	EGenreEvntCdT["deleteCdT"] = "deleteCdT";
+	EGenreEvntCdT["createContenu"] = "createContenu";
+	EGenreEvntCdT["editContenu"] = "editContenu";
+	EGenreEvntCdT["deleteContenu"] = "deleteContenu";
+	EGenreEvntCdT["createTAF"] = "createTAF";
+	EGenreEvntCdT["editTAF"] = "editTAF";
+	EGenreEvntCdT["deleteTAF"] = "deleteTAF";
+	EGenreEvntCdT["actualiserFicheTAFDuCours"] = "actualiserFicheTAFDuCours";
+	EGenreEvntCdT["editNoteProchaineSeance"] = "editNoteProchaineSeance";
+	EGenreEvntCdT["editCommentairePrive"] = "editCommentairePrive";
+})(EGenreEvntCdT || (exports.EGenreEvntCdT = EGenreEvntCdT = {}));
 class ObjetMoteurCDT {
 	estContenuVide(aContenu) {
 		return (
@@ -43,7 +39,9 @@ class ObjetMoteurCDT {
 			!this.estContenuAvecCategorie(aContenu) &&
 			!this.estContenuAvecPJ(aContenu) &&
 			!this.estContenuAvecExecQCM(aContenu) &&
-			(!GApplication.parametresUtilisateur.get("avecGestionDesThemes") ||
+			(!(0, AccessApp_1.getApp)().parametresUtilisateur.get(
+				"avecGestionDesThemes",
+			) ||
 				!this.estContenuAvecThemes(aContenu))
 		);
 	}
@@ -87,7 +85,7 @@ class ObjetMoteurCDT {
 		return (
 			aCategorie &&
 			aCategorie.getGenre() &&
-			TypeOrigineCreationCategorieCahierDeTexteUtil.estTypeAvecImage(
+			TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.estTypeAvecIcone(
 				aCategorie.getGenre(),
 			)
 		);
@@ -99,25 +97,27 @@ class ObjetMoteurCDT {
 	}
 	htmlIconCategorie(aCategorie) {
 		if (aCategorie) {
-			return (
-				'<div class="' +
-				TypeOrigineCreationCategorieCahierDeTexteUtil.getImage(
+			const lIcone =
+				TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.getIcone(
 					aCategorie.getGenre(),
-				) +
-				'"></div>'
-			);
+				);
+			if (lIcone) {
+				return `<i class="${lIcone}" role="presentation">${aCategorie.libelleIcone || ""}</i>`;
+			}
 		}
 	}
 	estContenuAvecThemes(aContenu) {
 		return (
 			!!aContenu.ListeThemes &&
 			aContenu.ListeThemes.count() &&
-			GApplication.parametresUtilisateur.get("avecGestionDesThemes")
+			(0, AccessApp_1.getApp)().parametresUtilisateur.get(
+				"avecGestionDesThemes",
+			)
 		);
 	}
 	strThemesContenu(aContenu) {
 		return (
-			GTraductions.getValeur("Themes") +
+			ObjetTraduction_1.GTraductions.getValeur("Themes") +
 			" : " +
 			aContenu.ListeThemes.getTableauLibelles().join(", ")
 		);
@@ -139,7 +139,7 @@ class ObjetMoteurCDT {
 	getListePJDeContenu(aContenu) {
 		return aContenu !== null && aContenu !== undefined
 			? aContenu.ListePieceJointe
-			: new ObjetListeElements();
+			: new ObjetListeElements_1.ObjetListeElements();
 	}
 	estContenuAvecExecQCM(aContenu) {
 		return this.getListeExecQCMDeContenu(aContenu).getNbrElementsExistes() > 0;
@@ -147,39 +147,48 @@ class ObjetMoteurCDT {
 	getListeExecQCMDeContenu(aContenu) {
 		return aContenu !== null && aContenu !== undefined
 			? aContenu.listeExecutionQCM
-			: new ObjetListeElements();
+			: new ObjetListeElements_1.ObjetListeElements();
 	}
 	creerContenuParDefaut() {
-		const lContenu = new ObjetElement();
+		const lContenu = new ObjetElement_1.ObjetElement();
 		lContenu.Libelle = "";
 		lContenu.descriptif = "";
 		lContenu.estVide = true;
-		lContenu.categorie = new ObjetElement("", 0);
-		lContenu.ListePieceJointe = new ObjetListeElements();
-		lContenu.listeExecutionQCM = new ObjetListeElements();
-		lContenu.setEtat(EGenreEtat.Creation);
-		lContenu.libelleCBTheme = GTraductions.getValeur("Theme.libelleCB.contenu");
+		lContenu.categorie = new ObjetElement_1.ObjetElement("", 0);
+		lContenu.ListePieceJointe = new ObjetListeElements_1.ObjetListeElements();
+		lContenu.listeExecutionQCM = new ObjetListeElements_1.ObjetListeElements();
+		lContenu.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
+		lContenu.libelleCBTheme = ObjetTraduction_1.GTraductions.getValeur(
+			"Theme.libelleCB.contenu",
+		);
 		return lContenu;
 	}
 	creerTAFParDefaut(aParam) {
-		const lTAF = new ObjetElement();
-		lTAF.setEtat(EGenreEtat.Creation);
+		const lTAF = new ObjetElement_1.ObjetElement();
+		lTAF.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 		Object.assign(lTAF, {
 			descriptif: "",
-			PourLe: aParam && aParam.date ? aParam.date : GDate.getDateCourante(),
-			listeEleves: new ObjetListeElements(),
+			PourLe:
+				aParam && aParam.date
+					? aParam.date
+					: ObjetDate_1.GDate.getDateCourante(),
+			listeEleves: new ObjetListeElements_1.ObjetListeElements(),
 			estPourTous: true,
 			pourTousLesEleves: true,
-			avecMiseEnForme: GApplication.parametresUtilisateur.get(
+			avecMiseEnForme: (0, AccessApp_1.getApp)().parametresUtilisateur.get(
 				"CDT.TAF.ActiverMiseEnForme",
 			),
-			niveauDifficulte: GApplication.parametresUtilisateur.get(
+			niveauDifficulte: (0, AccessApp_1.getApp)().parametresUtilisateur.get(
 				"CDT.TAF.NiveauDifficulte",
 			),
-			duree: GApplication.parametresUtilisateur.get("CDT.TAF.Duree"),
-			genreRendu: TypeGenreRenduTAF.GRTAF_AucunRendu,
-			ListePieceJointe: new ObjetListeElements(),
-			libelleCBTheme: GTraductions.getValeur("Theme.libelleCB.taf"),
+			duree: (0, AccessApp_1.getApp)().parametresUtilisateur.get(
+				"CDT.TAF.Duree",
+			),
+			genreRendu: TypeGenreRenduTAF_1.TypeGenreRenduTAF.GRTAF_AucunRendu,
+			ListePieceJointe: new ObjetListeElements_1.ObjetListeElements(),
+			libelleCBTheme: ObjetTraduction_1.GTraductions.getValeur(
+				"Theme.libelleCB.taf",
+			),
 		});
 		return lTAF;
 	}
@@ -210,9 +219,11 @@ class ObjetMoteurCDT {
 				: false;
 		const lStr = [];
 		if (lAvecTraduc) {
-			lStr.push(GTraductions.getValeur("CahierDeTexte.PourLe") + " ");
+			lStr.push(
+				ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.PourLe") + " ",
+			);
 		}
-		lStr.push(GDate.formatDate(aTAF.PourLe, "%JJJ %J %MMM"));
+		lStr.push(ObjetDate_1.GDate.formatDate(aTAF.PourLe, "%JJJ %J %MMM"));
 		return lStr.join("");
 	}
 	strDonneLeTAF(aTAF, aParam) {
@@ -222,9 +233,11 @@ class ObjetMoteurCDT {
 				: false;
 		const lStr = [];
 		if (lAvecTraduc) {
-			lStr.push(GTraductions.getValeur("TAFEtContenu.donneLe") + " ");
+			lStr.push(
+				ObjetTraduction_1.GTraductions.getValeur("TAFEtContenu.donneLe") + " ",
+			);
 		}
-		lStr.push(GDate.formatDate(aTAF.DonneLe, " %JJ/%MM"));
+		lStr.push(ObjetDate_1.GDate.formatDate(aTAF.DonneLe, " %JJ/%MM"));
 		return lStr.join("");
 	}
 	strModeRenduTAF(aTAF, aOptions) {
@@ -232,7 +245,7 @@ class ObjetMoteurCDT {
 		lStr.push(
 			aTAF.executionQCM
 				? ""
-				: TypeGenreRenduTAFUtil.getLibelle(aTAF.genreRendu),
+				: TypeGenreRenduTAF_1.TypeGenreRenduTAFUtil.getLibelle(aTAF.genreRendu),
 		);
 		if (
 			aOptions !== null &&
@@ -253,7 +266,9 @@ class ObjetMoteurCDT {
 			lStr.push("<a ", lAction, ">");
 		}
 		lStr.push(
-			GTraductions.getValeur("CahierDeTexte.TAFARendre.RenduPar"),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.TAFARendre.RenduPar",
+			),
 			" ",
 			aTAF.nbrRendus,
 			"/",
@@ -273,7 +288,9 @@ class ObjetMoteurCDT {
 			lStr.push("<a ", lAction, ">");
 		}
 		lStr.push(
-			GTraductions.getValeur("CahierDeTexte.TAFARendre.FaitPar"),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.TAFARendre.FaitPar",
+			),
 			" ",
 			aTAF.nbrFaitsSelonEleve,
 			"/",
@@ -288,8 +305,10 @@ class ObjetMoteurCDT {
 		const lLibelleCourt = aParam.avecLibellesCourt === true;
 		if (!aTAF || aTAF.estPourTous || aTAF.pourTousLesEleves) {
 			return lLibelleCourt
-				? GTraductions.getValeur("tous")
-				: GTraductions.getValeur("CahierDeTexte.tousLesEleves");
+				? ObjetTraduction_1.GTraductions.getValeur("tous")
+				: ObjetTraduction_1.GTraductions.getValeur(
+						"CahierDeTexte.tousLesEleves",
+					);
 		}
 		const lNombresDElevesDeTAF = aTAF.listeEleves
 			? aTAF.listeEleves.count()
@@ -297,10 +316,10 @@ class ObjetMoteurCDT {
 		const lNbrTotal = aParam.listeTousEleves.count();
 		return lLibelleCourt
 			? lNombresDElevesDeTAF + "/" + lNbrTotal
-			: GChaine.format(
+			: ObjetChaine_1.GChaine.format(
 					lNombresDElevesDeTAF === 1
-						? GTraductions.getValeur("CahierDeTexte.eleve")
-						: GTraductions.getValeur("CahierDeTexte.eleves"),
+						? ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.eleve")
+						: ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.eleves"),
 					[lNombresDElevesDeTAF, lNbrTotal],
 				);
 	}
@@ -309,7 +328,7 @@ class ObjetMoteurCDT {
 		if (aTAF.duree) {
 			const lFormatMin = aTAF.duree > 60 ? "%mm" : "%xm";
 			lStr.push(
-				GDate.formatDureeEnMillisecondes(
+				ObjetDate_1.GDate.formatDureeEnMillisecondes(
 					aTAF.duree * 60 * 1000,
 					aTAF.duree > 60 ? "%xh%sh" + lFormatMin : lFormatMin + "mn",
 				),
@@ -340,16 +359,18 @@ class ObjetMoteurCDT {
 		);
 	}
 	strDifficulteTAF(aTAF) {
-		return TypeNiveauDifficulteUtil.typeToStr(aTAF.niveauDifficulte);
+		return TypeNiveauDifficulte_1.TypeNiveauDifficulteUtil.typeToStr(
+			aTAF.niveauDifficulte,
+		);
 	}
 	htmlIconDifficulteTAF(aTAF, aOptions) {
-		return TypeNiveauDifficulteUtil.getImage(aTAF.niveauDifficulte, {
-			color: aOptions.color,
-			avecTitle: aOptions.avecTitle,
-		});
+		return TypeNiveauDifficulte_1.TypeNiveauDifficulteUtil.getImage(
+			aTAF.niveauDifficulte,
+			{ color: aOptions.color, avecTitle: aOptions.avecTitle },
+		);
 	}
 	getListeDifficulte() {
-		return TypeNiveauDifficulteUtil.toListe(true);
+		return TypeNiveauDifficulte_1.TypeNiveauDifficulteUtil.toListe(true);
 	}
 	iconPublicTAF() {
 		return "icon_group";
@@ -364,17 +385,24 @@ class ObjetMoteurCDT {
 		return "icon_calendar_empty";
 	}
 	estTAFAvecRendu(aTAF) {
-		return !TypeGenreRenduTAFUtil.estSansRendu(aTAF.genreRendu);
+		return !TypeGenreRenduTAF_1.TypeGenreRenduTAFUtil.estSansRendu(
+			aTAF.genreRendu,
+		);
 	}
 	estTAFAvecERendu(aTAF) {
-		return TypeGenreRenduTAFUtil.estUnRenduEnligne(aTAF.genreRendu, false);
+		return TypeGenreRenduTAF_1.TypeGenreRenduTAFUtil.estUnRenduEnligne(
+			aTAF.genreRendu,
+			false,
+		);
 	}
 	iconSuiviRenduTAF() {
 		return "icon_inbox";
 	}
 	getListeModeRendu() {
-		const lTabAExclure = [TypeGenreRenduTAF.GRTAF_RenduKiosque];
-		return TypeGenreRenduTAFUtil.toListe(lTabAExclure);
+		const lTabAExclure = [
+			TypeGenreRenduTAF_1.TypeGenreRenduTAF.GRTAF_RenduKiosque,
+		];
+		return TypeGenreRenduTAF_1.TypeGenreRenduTAFUtil.toListe(lTabAExclure);
 	}
 	estTAFAvecPJ(aTAF) {
 		return this.getListePJDeTAF(aTAF).getNbrElementsExistes() > 0;
@@ -382,7 +410,7 @@ class ObjetMoteurCDT {
 	getListePJDeTAF(aTAF) {
 		return aTAF !== null && aTAF !== undefined && !aTAF.executionQCM
 			? aTAF.ListePieceJointe
-			: new ObjetListeElements();
+			: new ObjetListeElements_1.ObjetListeElements();
 	}
 	getHtmlCategorie(aCategorie) {
 		const H = [];
@@ -405,10 +433,12 @@ class ObjetMoteurCDT {
 				aCategorie.libelleHtmlTitre = lHtmlCategorie;
 			}
 		});
-		const lEltAucun = new ObjetElement("", 0);
+		const lEltAucun = new ObjetElement_1.ObjetElement("", 0);
 		const lHtmlAucun =
 			"<div>" +
-			GTraductions.getValeur("CahierDeTexte.CategorieAucune") +
+			ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.CategorieAucune",
+			) +
 			"</div>";
 		lEltAucun.libelleHtml = lHtmlAucun;
 		lEltAucun.libelleHtmlTitre = lHtmlAucun;
@@ -416,33 +446,39 @@ class ObjetMoteurCDT {
 		lListeCategories.trier();
 		return aParams;
 	}
-	saisieCdT(aParam) {
-		return new ObjetRequeteSaisieCahierDeTextes(this)
-			.addUpload({
-				listeFichiers: aParam.listeFichiersUpload || new ObjetListeElements(),
-				listeDJCloud: aParam.listeDocumentsJoints,
-			})
-			.lancerRequete(
-				aParam.cours.getNumero(),
-				aParam.numeroSemaine,
-				aParam.listeCategories,
-				aParam.listeDocumentsJoints,
-				aParam.listeModeles,
-				new ObjetListeElements().addElement(aParam.cdt),
+	async saisieCdT(aParam) {
+		var _a, _b;
+		const lResult =
+			await new ObjetRequeteSaisieCahierDeTextes_1.ObjetRequeteSaisieCahierDeTextes(
+				this,
 			)
-			.then((aArgs) => {
-				let lJSONRapportSaisie = null;
-				if (aArgs && aArgs[1]) {
-					lJSONRapportSaisie = aArgs[1];
-				}
-				aParam.clbck({
-					contenu: lJSONRapportSaisie ? lJSONRapportSaisie.contenu : null,
-					taf: lJSONRapportSaisie ? lJSONRapportSaisie.taf : null,
-				});
-			});
+				.addUpload({
+					listeFichiers:
+						aParam.listeFichiersUpload ||
+						new ObjetListeElements_1.ObjetListeElements(),
+					listeDJCloud: aParam.listeDocumentsJoints,
+				})
+				.lancerRequete(
+					aParam.cours.getNumero(),
+					aParam.numeroSemaine,
+					aParam.listeCategories,
+					aParam.listeDocumentsJoints,
+					aParam.listeModeles,
+					new ObjetListeElements_1.ObjetListeElements().addElement(aParam.cdt),
+				);
+		aParam.clbck({
+			contenu:
+				(_a = lResult.JSONRapportSaisie) === null || _a === void 0
+					? void 0
+					: _a.contenu,
+			taf:
+				(_b = lResult.JSONRapportSaisie) === null || _b === void 0
+					? void 0
+					: _b.taf,
+		});
 	}
 	getListeTousEleves(aParam) {
-		const lListeTousEleves = new ObjetListeElements();
+		const lListeTousEleves = new ObjetListeElements_1.ObjetListeElements();
 		if (aParam.listeClassesEleves) {
 			aParam.listeClassesEleves.parcourir((aClasse) => {
 				if (!!aClasse.listeEleves) {
@@ -454,13 +490,15 @@ class ObjetMoteurCDT {
 		return lListeTousEleves;
 	}
 	getListeSelectionEleves(aParam) {
-		let lListeSelectionEleves = new ObjetListeElements();
+		let lListeSelectionEleves = new ObjetListeElements_1.ObjetListeElements();
 		if (!aParam.listeEleves || aParam.listeEleves.count() === 0) {
-			lListeSelectionEleves = MethodesObjet.dupliquer(aParam.listeTousEleves);
+			lListeSelectionEleves = MethodesObjet_1.MethodesObjet.dupliquer(
+				aParam.listeTousEleves,
+			);
 		} else {
 			aParam.listeEleves.parcourir((D) => {
-				const lEleve = MethodesObjet.dupliquer(D);
-				lEleve.Genre = EGenreRessource.Eleve;
+				const lEleve = MethodesObjet_1.MethodesObjet.dupliquer(D);
+				lEleve.Genre = Enumere_Ressource_1.EGenreRessource.Eleve;
 				lListeSelectionEleves.addElement(lEleve);
 			});
 		}
@@ -469,8 +507,8 @@ class ObjetMoteurCDT {
 	majDataTAFSurModifPublic(aParam) {
 		const lTAF = aParam.data;
 		let lEstPourTousInitial = lTAF.estPourTous;
-		const lListeDetaches = new ObjetListeElements();
-		const lListeEnCours = new ObjetListeElements();
+		const lListeDetaches = new ObjetListeElements_1.ObjetListeElements();
+		const lListeEnCours = new ObjetListeElements_1.ObjetListeElements();
 		aParam.listeTousEleves.parcourir((aElement) => {
 			if (aElement.estElevesDetachesDuCours) {
 				lListeDetaches.addElement(aElement);
@@ -478,7 +516,7 @@ class ObjetMoteurCDT {
 				lListeEnCours.addElement(aElement);
 			}
 		});
-		lTAF.listeEleves = new ObjetListeElements();
+		lTAF.listeEleves = new ObjetListeElements_1.ObjetListeElements();
 		const lListe = aParam.listeRessourcesSelectionnees;
 		if (!lListeDetaches || lListeDetaches.count() === 0) {
 			lTAF.estPourTous = lListe.count() === aParam.listeTousEleves.count();
@@ -491,28 +529,29 @@ class ObjetMoteurCDT {
 		}
 		lTAF.pourTousLesEleves = lTAF.estPourTous;
 		lTAF.nbrEleves = lListe.count();
-		if (!lTAF.estPourTous) {
-			lListe.parcourir((D) => {
-				D.setEtat(EGenreEtat.Modification);
-				lTAF.listeEleves.addElement(D);
-			});
-		} else {
+		lListe.parcourir((D) => {
+			D.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+			lTAF.listeEleves.addElement(D);
+		});
+		if (lTAF.estPourTous) {
 			if (lEstPourTousInitial !== lTAF.estPourTous) {
 				lTAF.avecModificationPublic = true;
 			}
 		}
-		lTAF.setEtat(EGenreEtat.Modification);
+		lTAF.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 	}
 	getListeRessourcesDeGenre(aParam) {
 		return aParam.data.ListePieceJointe.getListeElements((aElt) => {
 			const lParam = { documentJoint: aElt };
 			if (
-				aParam.genreRessource === EGenreDocumentJoint.LienKiosque ||
-				aParam.genreRessource === EGenreDocumentJoint.Url
+				aParam.genreRessource ===
+					Enumere_DocumentJoint_1.EGenreDocumentJoint.LienKiosque ||
+				aParam.genreRessource ===
+					Enumere_DocumentJoint_1.EGenreDocumentJoint.Url
 			) {
 				$.extend(lParam, { afficherIconeDocument: false });
 			}
-			aElt.libelleHtml = GChaine.composerUrlLienExterne(lParam);
+			aElt.libelleHtml = ObjetChaine_1.GChaine.composerUrlLienExterne(lParam);
 			if (aElt.getGenre() === aParam.genreRessource) {
 				aElt.avecSaisie = aParam.avecSaisie;
 			}
@@ -525,7 +564,7 @@ class ObjetMoteurCDT {
 			aParam.genreRessource,
 		);
 		if (lRessource !== null && lRessource !== undefined) {
-			lRessource.setEtat(EGenreEtat.Suppression);
+			lRessource.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 		}
 	}
 	majDataContenuCdT(aParam) {
@@ -536,20 +575,20 @@ class ObjetMoteurCDT {
 			aParam.contenuARemplacer !== null &&
 			aParam.contenuARemplacer !== undefined
 		) {
-			aParam.contenuARemplacer.setEtat(EGenreEtat.Suppression);
+			aParam.contenuARemplacer.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 			aParam.contenuARemplacer.ListePieceJointe.parcourir((D) => {
-				D.setEtat(EGenreEtat.Suppression);
+				D.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 			});
 		}
-		const lContenu = MethodesObjet.dupliquer(aParam.contenu);
+		const lContenu = MethodesObjet_1.MethodesObjet.dupliquer(aParam.contenu);
 		aParam.cdt.listeContenus.addElement(lContenu);
-		aParam.cdt.setEtat(EGenreEtat.Modification);
-		lContenu.setEtat(EGenreEtat.Creation);
+		aParam.cdt.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+		lContenu.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 		lContenu.ListePieceJointe.parcourir((D) => {
-			D.setEtat(EGenreEtat.Creation);
+			D.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 		});
 		lContenu.listeExecutionQCM.parcourir((D) => {
-			D.setEtat(EGenreEtat.Creation);
+			D.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 		});
 	}
 	majDataTAFCdT(aParam) {
@@ -557,24 +596,24 @@ class ObjetMoteurCDT {
 			return;
 		}
 		if (aParam.tafARemplacer) {
-			aParam.tafARemplacer.setEtat(EGenreEtat.Suppression);
+			aParam.tafARemplacer.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 			aParam.tafARemplacer.ListePieceJointe.parcourir((D) => {
-				D.setEtat(EGenreEtat.Suppression);
+				D.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 			});
 		}
-		const lTAF = MethodesObjet.dupliquer(aParam.taf);
+		const lTAF = MethodesObjet_1.MethodesObjet.dupliquer(aParam.taf);
 		aParam.cdt.ListeTravailAFaire.addElement(lTAF);
-		aParam.cdt.setEtat(EGenreEtat.Modification);
+		aParam.cdt.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 		lTAF.PourLe = aParam.date;
-		lTAF.listeEleves = new ObjetListeElements();
+		lTAF.listeEleves = new ObjetListeElements_1.ObjetListeElements();
 		lTAF.estPourTous = true;
 		lTAF.pourTousLesEleves = true;
-		lTAF.setEtat(EGenreEtat.Creation);
+		lTAF.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 		if (lTAF.executionQCM) {
-			lTAF.executionQCM.setEtat(EGenreEtat.Creation);
+			lTAF.executionQCM.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 		} else {
 			lTAF.ListePieceJointe.parcourir((D) => {
-				D.setEtat(EGenreEtat.Creation);
+				D.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 			});
 		}
 	}
@@ -584,10 +623,10 @@ class ObjetMoteurCDT {
 		}
 		for (let I = 0; I < aParam.cdt.ListeTravailAFaire.count(); I++) {
 			let lTAF = aParam.cdt.ListeTravailAFaire.get(I);
-			lTAF.setEtat(EGenreEtat.Suppression);
+			lTAF.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 			for (let J = 0; J < lTAF.ListePieceJointe.count(); J++) {
 				let lPJ = lTAF.ListePieceJointe.get(J);
-				lPJ.setEtat(EGenreEtat.Suppression);
+				lPJ.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 			}
 		}
 		aParam.listeTAFs.parcourir((aTaf) => {
@@ -602,11 +641,11 @@ class ObjetMoteurCDT {
 			return;
 		}
 		aParam.cible.publie = aParam.source.publie;
-		aParam.cible.setEtat(EGenreEtat.Modification);
+		aParam.cible.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 		aParam.cible.listeContenus.parcourir((aContenu) => {
-			aContenu.setEtat(EGenreEtat.Suppression);
+			aContenu.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 			aContenu.ListePieceJointe.parcourir((D) => {
-				D.setEtat(EGenreEtat.Suppression);
+				D.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 			});
 		});
 		aParam.source.listeContenus.parcourir((aContenu) => {
@@ -621,11 +660,13 @@ class ObjetMoteurCDT {
 		});
 		if (aParam.avecCopieEltPgm && aParam.source.listeElementsProgrammeCDT) {
 			if (!aParam.cible.listeElementsProgrammeCDT) {
-				aParam.cible.listeElementsProgrammeCDT = new ObjetListeElements();
+				aParam.cible.listeElementsProgrammeCDT =
+					new ObjetListeElements_1.ObjetListeElements();
 			}
-			aParam.cible.listeElementsProgrammeCDT = new ObjetListeElements().add(
-				aParam.source.listeElementsProgrammeCDT,
-			);
+			aParam.cible.listeElementsProgrammeCDT =
+				new ObjetListeElements_1.ObjetListeElements().add(
+					aParam.source.listeElementsProgrammeCDT,
+				);
 			aParam.cible.listeElementsProgrammeCDT.avecSaisie = true;
 			aParam.cible.listeElementsProgrammeCDT.setSerialisateurJSON({
 				ignorerEtatsElements: true,
@@ -639,11 +680,13 @@ class ObjetMoteurCDT {
 		H.push(
 			"<div>",
 			lExec.estEnPublication === true
-				? GTraductions.getValeur("ExecutionQCM.RepondreQCM")
-				: GDate.formatDate(
+				? ObjetTraduction_1.GTraductions.getValeur("ExecutionQCM.RepondreQCM")
+				: ObjetDate_1.GDate.formatDate(
 						lExec.dateDebutPublication,
 						"" +
-							GTraductions.getValeur("ExecutionQCM.QCMPublieLe") +
+							ObjetTraduction_1.GTraductions.getValeur(
+								"ExecutionQCM.QCMPublieLe",
+							) +
 							" %J %MMMM",
 					),
 			" : ",
@@ -662,7 +705,7 @@ class ObjetMoteurCDT {
 		H.push(
 			aParam.descriptif,
 			" (",
-			UtilitaireQCM.getStrResumeModalites(lExec, true),
+			UtilitaireQCM_1.UtilitaireQCM.getStrResumeModalites(lExec, true),
 			")",
 		);
 		H.push("<br />");
@@ -671,17 +714,23 @@ class ObjetMoteurCDT {
 			"<span " +
 			lAction +
 			">" +
-			GDate.formatDate(lExec.dateDebutPublication, "%JJ/%MM - %hh%sh%mm") +
+			ObjetDate_1.GDate.formatDate(
+				lExec.dateDebutPublication,
+				"%JJ/%MM - %hh%sh%mm",
+			) +
 			"</span> ";
 		H.push(
-			GTraductions.getValeur("CahierDeTexte.taf.DisponibleAPartirDuNet", [
-				lHtml,
-			]),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.taf.DisponibleAPartirDuNet",
+				[lHtml],
+			),
 		);
 		if (!aParam.CDTPublie) {
 			H.push(
 				"(",
-				GTraductions.getValeur("CahierDeTexte.taf.SousReserveQueCDTSoitPublie"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"CahierDeTexte.taf.SousReserveQueCDTSoitPublie",
+				),
 				")",
 			);
 		}
@@ -691,7 +740,7 @@ class ObjetMoteurCDT {
 		const lHtml = [];
 		lHtml.push(
 			'<div style="display:flex; flex-wrap:nowrap;">',
-			'<i class="icon_qcm ThemeCat-pedagogie AlignementMilieuVertical"></i>',
+			'<i role="presentation" class="icon_qcm ThemeCat-pedagogie AlignementMilieuVertical"></i>',
 			"<div>",
 			aParam.libelle,
 			"</div>",
@@ -700,4 +749,4 @@ class ObjetMoteurCDT {
 		return lHtml.join("");
 	}
 }
-module.exports = { ObjetMoteurCDT, EGenreEvntCdT };
+exports.ObjetMoteurCDT = ObjetMoteurCDT;

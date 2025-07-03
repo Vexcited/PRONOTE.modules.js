@@ -1,7 +1,6 @@
 exports.ObjetFenetre_ParametrageWsFed = void 0;
 const MethodesObjet_1 = require("MethodesObjet");
 const ObjetChaine_1 = require("ObjetChaine");
-const ObjetHtml_1 = require("ObjetHtml");
 const ObjetStyle_1 = require("ObjetStyle");
 const ObjetDonneesListe_1 = require("ObjetDonneesListe");
 const ObjetFenetre_1 = require("ObjetFenetre");
@@ -11,6 +10,7 @@ const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const WSGestionWsFed_1 = require("WSGestionWsFed");
 const WSGestionWsFed_2 = require("WSGestionWsFed");
+const AccessApp_1 = require("AccessApp");
 class ObjetFenetre_ParametrageWsFed extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
@@ -33,109 +33,122 @@ class ObjetFenetre_ParametrageWsFed extends ObjetFenetre_1.ObjetFenetre {
 	setOptionsFenetresParametrageWSFed(aOptions) {
 		Object.assign(this.optionsFenetreParametrageWSFed, aOptions);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			inputGenre: {
-				getValue(aGenre) {
-					return aInstance.getInfosParGenre(aGenre).libelle;
-				},
-				setValue() {},
-				getDisabled(aGenre) {
-					if (
-						aGenre !==
-							WSGestionWsFed_1.ETypeAttributUtilisateurWsFedSvcW
-								.Auwf_IdentifiantUnique &&
-						aInstance.parametresWsFed
-					) {
-						return !aInstance.parametresWsFed.rechercheParIdentite;
-					}
+	jsxModelInputGenre(aGenre) {
+		return {
+			getValue: () => {
+				return this.getInfosParGenre(aGenre).libelle;
+			},
+			setValue: () => {},
+			getDisabled: () => {
+				if (
+					aGenre !==
+						WSGestionWsFed_1.ETypeAttributUtilisateurWsFedSvcW
+							.Auwf_IdentifiantUnique &&
+					this.parametresWsFed
+				) {
+					return !this.parametresWsFed.rechercheParIdentite;
+				}
+				return false;
+			},
+		};
+	}
+	jsxGetTitleInputGenre(aGenre) {
+		return this.getInfosParGenre(aGenre).uri;
+	}
+	jsxModelBoutonGenre(aGenre) {
+		return {
+			event: () => {
+				this.ouvrirFenetreRevendications(aGenre);
+			},
+			getDisabled: () => {
+				if (
+					aGenre !==
+						WSGestionWsFed_1.ETypeAttributUtilisateurWsFedSvcW
+							.Auwf_IdentifiantUnique &&
+					this.parametresWsFed
+				) {
+					return !this.parametresWsFed.rechercheParIdentite;
+				}
+				return false;
+			},
+		};
+	}
+	jsxModelCheckboxRechercheParIdentite() {
+		return {
+			getValue: () => {
+				return this.parametresWsFed
+					? this.parametresWsFed.rechercheParIdentite
+					: false;
+			},
+			setValue: (aValue) => {
+				if (this.parametresWsFed) {
+					this.parametresWsFed.rechercheParIdentite = aValue;
+				}
+			},
+		};
+	}
+	jsxModelInputGroupe(aGenreProfil) {
+		return {
+			getValue: () => {
+				return this.getValueGroupe(aGenreProfil);
+			},
+			setValue: (aValue) => {
+				this.setValueGroupe(aGenreProfil, aValue);
+			},
+			getDisabled: () => {
+				if (
+					this.parametresWsFed &&
+					this.parametresWsFed.rechercheParIdentite &&
+					this.getInfosParGenre(
+						WSGestionWsFed_1.ETypeAttributUtilisateurWsFedSvcW.Auwf_Groupe,
+					).uri !== ""
+				) {
 					return false;
-				},
+				}
+				return true;
 			},
-			getTitleInputGenre(aGenre) {
-				return aInstance.getInfosParGenre(aGenre).uri;
-			},
-			btnGenre: {
-				event(aGenre) {
-					aInstance.ouvrirFenetreRevendications(aGenre);
-				},
-				getDisabled(aGenre) {
-					if (
-						aGenre !==
-							WSGestionWsFed_1.ETypeAttributUtilisateurWsFedSvcW
-								.Auwf_IdentifiantUnique &&
-						aInstance.parametresWsFed
-					) {
-						return !aInstance.parametresWsFed.rechercheParIdentite;
-					}
-					return false;
-				},
-			},
-			cbIdentite: {
-				getValue() {
-					return aInstance.parametresWsFed
-						? aInstance.parametresWsFed.rechercheParIdentite
-						: false;
-				},
-				setValue(aValue) {
-					if (aInstance.parametresWsFed) {
-						aInstance.parametresWsFed.rechercheParIdentite = aValue;
-					}
-				},
-			},
-			inputGroupe: {
-				getValue(aGenreProfil) {
-					return aInstance.getValueGroupe(aGenreProfil);
-				},
-				setValue(aGenreProfil, aValue) {
-					aInstance.setValueGroupe(aGenreProfil, aValue);
-				},
-				getDisabled: function () {
-					if (
-						aInstance.parametresWsFed &&
-						aInstance.parametresWsFed.rechercheParIdentite &&
-						aInstance.getInfosParGenre(
-							WSGestionWsFed_1.ETypeAttributUtilisateurWsFedSvcW.Auwf_Groupe,
-						).uri !== ""
-					) {
-						return false;
-					}
-					return true;
-				},
-			},
-		});
+		};
 	}
 	composeContenu() {
 		const H = [];
 		H.push(
-			'<div class="Espace">',
-			this.composeRevendication(
-				WSGestionWsFed_1.ETypeAttributUtilisateurWsFedSvcW
-					.Auwf_IdentifiantUnique,
+			IE.jsx.str(
+				"div",
+				{ class: "Espace" },
+				this.composeRevendication(
+					WSGestionWsFed_1.ETypeAttributUtilisateurWsFedSvcW
+						.Auwf_IdentifiantUnique,
+				),
+				IE.jsx.str(
+					"div",
+					null,
+					IE.jsx.str(
+						"ie-checkbox",
+						{
+							"ie-model": this.jsxModelCheckboxRechercheParIdentite.bind(this),
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"wsfed.RechercheParIdentite",
+						),
+					),
+				),
+				this.composeRevendication(
+					WSGestionWsFed_1.ETypeAttributUtilisateurWsFedSvcW.Auwf_Nom,
+				),
+				this.composeRevendication(
+					WSGestionWsFed_1.ETypeAttributUtilisateurWsFedSvcW.Auwf_Prenom,
+				),
+				this.composeRevendication(
+					WSGestionWsFed_1.ETypeAttributUtilisateurWsFedSvcW.Auwf_DateNaissance,
+				),
+				this.composeRevendication(
+					WSGestionWsFed_1.ETypeAttributUtilisateurWsFedSvcW.Auwf_CodePostal,
+				),
+				this.composeRevendication(
+					WSGestionWsFed_1.ETypeAttributUtilisateurWsFedSvcW.Auwf_Groupe,
+				),
+				this.composeGroupeUtilisateur(),
 			),
-			"<div>",
-			"<label>",
-			'<input type="checkbox" ie-model="cbIdentite" />',
-			ObjetTraduction_1.GTraductions.getValeur("wsfed.RechercheParIdentite"),
-			"</label>",
-			"</div>",
-			this.composeRevendication(
-				WSGestionWsFed_1.ETypeAttributUtilisateurWsFedSvcW.Auwf_Nom,
-			),
-			this.composeRevendication(
-				WSGestionWsFed_1.ETypeAttributUtilisateurWsFedSvcW.Auwf_Prenom,
-			),
-			this.composeRevendication(
-				WSGestionWsFed_1.ETypeAttributUtilisateurWsFedSvcW.Auwf_DateNaissance,
-			),
-			this.composeRevendication(
-				WSGestionWsFed_1.ETypeAttributUtilisateurWsFedSvcW.Auwf_CodePostal,
-			),
-			this.composeRevendication(
-				WSGestionWsFed_1.ETypeAttributUtilisateurWsFedSvcW.Auwf_Groupe,
-			),
-			this.composeGroupeUtilisateur(),
-			"</div>",
 		);
 		return H.join("");
 	}
@@ -165,7 +178,10 @@ class ObjetFenetre_ParametrageWsFed extends ObjetFenetre_1.ObjetFenetre {
 	}
 	surValidation(aNumeroBouton) {
 		this.fermer();
-		this.callback.appel(aNumeroBouton === 1 ? this.parametresWsFed : null);
+		this.callback.appel(
+			aNumeroBouton,
+			aNumeroBouton === 1 ? this.parametresWsFed : null,
+		);
 	}
 	getValueGroupe(aGenreProfil) {
 		let lLibelle = "";
@@ -284,7 +300,7 @@ class ObjetFenetre_ParametrageWsFed extends ObjetFenetre_1.ObjetFenetre {
 		const lDonneesListe = new ObjetDonneesListe_1.ObjetDonneesListe(
 			lListeReference,
 		);
-		lDonneesListe.getHintForce = function (aParams) {
+		lDonneesListe.getTooltip = function (aParams) {
 			return aParams.article.uri;
 		};
 		lDonneesListe.setOptions({
@@ -407,31 +423,43 @@ class ObjetFenetre_ParametrageWsFed extends ObjetFenetre_1.ObjetFenetre {
 		}
 	}
 	composeValeurGoupe(aGenreProfil) {
-		const H = [],
-			lEcart = 8;
+		const H = [];
+		const lEcart = 8;
 		H.push(
-			'<div class="NoWrap">',
-			'<div class="InlineBlock AlignementMilieuVertical AlignementDroit PetitEspaceDroit" style="',
-			ObjetStyle_1.GStyle.composeWidth(
-				this.optionsFenetreParametrageWSFed.largeurLibelle - lEcart - 3,
+			IE.jsx.str(
+				"div",
+				{ class: "NoWrap" },
+				IE.jsx.str(
+					"div",
+					{
+						class:
+							"InlineBlock AlignementMilieuVertical AlignementDroit PetitEspaceDroit",
+						style: ObjetStyle_1.GStyle.composeWidth(
+							this.optionsFenetreParametrageWSFed.largeurLibelle - lEcart - 3,
+						),
+					},
+					this.getLibelleGroupe(aGenreProfil),
+					" :",
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "InlineBlock AlignementMilieuVertical EspaceGauche" },
+					IE.jsx.str("input", {
+						type: "text",
+						"ie-model": this.jsxModelInputGroupe.bind(this, aGenreProfil),
+						style:
+							ObjetStyle_1.GStyle.composeHeight(
+								this.optionsFenetreParametrageWSFed.heightZone,
+							) +
+							ObjetStyle_1.GStyle.composeWidth(
+								this.optionsFenetreParametrageWSFed.largeurInput,
+							) +
+							ObjetStyle_1.GStyle.composeCouleurBordure(
+								(0, AccessApp_1.getApp)().getCouleur().noir,
+							),
+					}),
+				),
 			),
-			'">',
-			this.getLibelleGroupe(aGenreProfil) + " :",
-			"</div>",
-			'<div class="InlineBlock AlignementMilieuVertical EspaceGauche">',
-			'<input type="text" ',
-			ObjetHtml_1.GHtml.composeAttr("ie-model", "inputGroupe", aGenreProfil),
-			' style="',
-			ObjetStyle_1.GStyle.composeHeight(
-				this.optionsFenetreParametrageWSFed.heightZone,
-			),
-			ObjetStyle_1.GStyle.composeWidth(
-				this.optionsFenetreParametrageWSFed.largeurInput,
-			),
-			ObjetStyle_1.GStyle.composeCouleurBordure(GCouleur.noir),
-			'" />',
-			"</div>",
-			"</div>",
 		);
 		return H.join("");
 	}
@@ -444,12 +472,14 @@ class ObjetFenetre_ParametrageWsFed extends ObjetFenetre_1.ObjetFenetre {
 			' padding:5px; margin:2px; width:1px;">',
 		);
 		H.push(
-			'<legend class="Legende">',
-			ObjetChaine_1.GChaine.format(
-				ObjetTraduction_1.GTraductions.getValeur("wsfed.Groupes_S"),
-				[ObjetTraduction_1.GTraductions.getValeur("wsfed.Groupe")],
+			IE.jsx.str(
+				"legend",
+				{ class: "Legende" },
+				ObjetChaine_1.GChaine.format(
+					ObjetTraduction_1.GTraductions.getValeur("wsfed.Groupes_S"),
+					[ObjetTraduction_1.GTraductions.getValeur("wsfed.Groupe")],
+				),
 			),
-			"</legend>",
 		);
 		this.optionsFenetreParametrageWSFed.groupesUtilisateur.forEach((aGenre) => {
 			H.push(this.composeValeurGoupe(aGenre));
@@ -461,35 +491,49 @@ class ObjetFenetre_ParametrageWsFed extends ObjetFenetre_1.ObjetFenetre {
 	composeRevendication(aGenre) {
 		const H = [];
 		H.push(
-			'<div class="NoWrap">',
-			'<div class="InlineBlock AlignementMilieuVertical" style="',
-			ObjetStyle_1.GStyle.composeWidth(
-				this.optionsFenetreParametrageWSFed.largeurLibelle,
+			IE.jsx.str(
+				"div",
+				{ class: "NoWrap" },
+				IE.jsx.str(
+					"div",
+					{
+						class: "InlineBlock AlignementMilieuVertical",
+						style: ObjetStyle_1.GStyle.composeWidth(
+							this.optionsFenetreParametrageWSFed.largeurLibelle,
+						),
+					},
+					this.getLibelleRevendicationDeGenre(aGenre),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "InlineBlock AlignementMilieuVertical EspaceGauche" },
+					IE.jsx.str("input", {
+						type: "text",
+						"ie-model": this.jsxModelInputGenre.bind(this, aGenre),
+						readonly: true,
+						"ie-title": this.jsxGetTitleInputGenre.bind(this, aGenre),
+						style:
+							ObjetStyle_1.GStyle.composeHeight(
+								this.optionsFenetreParametrageWSFed.heightZone,
+							) +
+							ObjetStyle_1.GStyle.composeWidth(
+								this.optionsFenetreParametrageWSFed.largeurInput,
+							) +
+							ObjetStyle_1.GStyle.composeCouleurBordure(
+								(0, AccessApp_1.getApp)().getCouleur().noir,
+							),
+					}),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "InlineBlock AlignementMilieuVertical EspaceGauche" },
+					IE.jsx.str(
+						"ie-bouton",
+						{ "ie-model": this.jsxModelBoutonGenre.bind(this, aGenre) },
+						"...",
+					),
+				),
 			),
-			'">',
-			this.getLibelleRevendicationDeGenre(aGenre),
-			"</div>",
-			'<div class="InlineBlock AlignementMilieuVertical EspaceGauche">',
-			'<input type="text" ',
-			ObjetHtml_1.GHtml.composeAttr("ie-model", "inputGenre", aGenre),
-			" readonly ",
-			ObjetHtml_1.GHtml.composeAttr("ie-title", "getTitleInputGenre", aGenre),
-			' style="',
-			ObjetStyle_1.GStyle.composeHeight(
-				this.optionsFenetreParametrageWSFed.heightZone,
-			),
-			ObjetStyle_1.GStyle.composeWidth(
-				this.optionsFenetreParametrageWSFed.largeurInput,
-			),
-			ObjetStyle_1.GStyle.composeCouleurBordure(GCouleur.noir),
-			'" />',
-			"</div>",
-			'<div class="InlineBlock AlignementMilieuVertical EspaceGauche">',
-			"<ie-bouton ",
-			ObjetHtml_1.GHtml.composeAttr("ie-model", "btnGenre", aGenre),
-			">...</ie-bouton>",
-			"</div>",
-			"</div>",
 		);
 		return H.join("");
 	}

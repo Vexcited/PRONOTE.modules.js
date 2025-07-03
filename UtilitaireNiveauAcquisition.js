@@ -70,30 +70,26 @@ const UtilitaireNiveauAcquisition = {
 		if (aParams.estPastillePositionnement) {
 			lClassesNiveauAcquisition.push("NiveauAcquisition_Positionnement");
 		}
-		const lAttributTitle = !!aParams.title
-			? ' title="' + aParams.title + '"'
-			: "";
-		const lAriaLabel = aParams.libelleImage
-			? ` aria-label="${ObjetChaine_1.GChaine.toTitle(aParams.libelleImage)}"`
-			: "";
 		let lCouleurPastille = "white";
 		if (!!aParams.couleurIcone) {
 			lCouleurPastille = aParams.couleurIcone;
 		}
 		if (!!aParams.nomIcone) {
 			H.push(
-				'<span role="img" class="',
-				lClassesNiveauAcquisition.join(" "),
-				'"',
-				lAttributTitle || "",
-				lAriaLabel || "",
-				">",
-				'<i class="',
-				aParams.nomIcone,
-				'" style="color:',
-				lCouleurPastille,
-				';"></i>',
-				"</span>",
+				IE.jsx.str(
+					"span",
+					{
+						role: "img",
+						class: lClassesNiveauAcquisition,
+						"ie-tooltiplabel": aParams.title || false,
+						"aria-hidden": aParams.title ? false : "true",
+					},
+					IE.jsx.str("i", {
+						class: aParams.nomIcone,
+						style: { color: lCouleurPastille },
+						"aria-hidden": "true",
+					}),
+				),
 			);
 		} else {
 			let lContenu = "&nbsp;";
@@ -108,16 +104,17 @@ const UtilitaireNiveauAcquisition = {
 				lStyles.push("color: ", lCouleurContenu, ";");
 			}
 			H.push(
-				'<span role="img" class="',
-				lClassesNiveauAcquisition.join(" "),
-				'" style="',
-				lStyles.join(""),
-				'"',
-				lAttributTitle || "",
-				lAriaLabel || "",
-				">",
-				lContenu,
-				"</span>",
+				IE.jsx.str(
+					"span",
+					{
+						role: "img",
+						class: lClassesNiveauAcquisition,
+						style: lStyles.join(""),
+						"ie-tooltiplabel": aParams.title || false,
+						"aria-hidden": aParams.title ? false : "true",
+					},
+					lContenu,
+				),
 			);
 		}
 		return H.join("");

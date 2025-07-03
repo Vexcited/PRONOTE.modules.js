@@ -7,10 +7,12 @@ const ObjetFenetre_ListeTAFFaits_1 = require("ObjetFenetre_ListeTAFFaits");
 const Enumere_Ressource_1 = require("Enumere_Ressource");
 const Enumere_EvenementWidget_1 = require("Enumere_EvenementWidget");
 const ObjetWidget_1 = require("ObjetWidget");
+const AccessApp_1 = require("AccessApp");
 class WidgetTAFARendre extends ObjetWidget_1.Widget.ObjetWidget {
 	constructor(...aParams) {
 		super(...aParams);
-		this.etatUtilisateurSco = GEtatUtilisateur;
+		const lApplicationSco = (0, AccessApp_1.getApp)();
+		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
 	}
 	construire(aParams) {
 		this.donnees = aParams.donnees;
@@ -64,7 +66,7 @@ class WidgetTAFARendre extends ObjetWidget_1.Widget.ObjetWidget {
 		this.donnees.avecGenresRessourcePedagogiqueSelectionnes =
 			lGenresRessourcesActifs;
 		const lWidget = {
-			html: this.composeWidget(),
+			getHtml: this.composeWidget.bind(this),
 			afficherMessage: !lAuMoinsUnTafExiste,
 			listeElementsGraphiques: [{ id: this.selecteurDate.getNom() }],
 		};
@@ -133,7 +135,7 @@ class WidgetTAFARendre extends ObjetWidget_1.Widget.ObjetWidget {
 			ObjetFenetre_ListeTAFFaits_1.ObjetFenetre_ListeTAFFaits.ouvrir(
 				{
 					pere: this,
-					evenement: function () {
+					evenement: () => {
 						if (lAvecRechargementDonneesSurFermeture) {
 							this.callback.appel(
 								this.donnees.genre,

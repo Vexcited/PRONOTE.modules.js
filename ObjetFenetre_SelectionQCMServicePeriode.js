@@ -1,24 +1,19 @@
-const { GDate } = require("ObjetDate.js");
-const { GChaine } = require("ObjetChaine.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { TypeThemeBouton } = require("Type_ThemeBouton.js");
-const { UtilitaireSaisieCDT } = require("UtilitaireSaisieCDT.js");
-class ObjetFenetre_SelectionQCMServicePeriode extends ObjetFenetre {
-	constructor(...aParams) {
-		super(...aParams);
-	}
-	construireInstances() {}
+exports.ObjetFenetre_SelectionQCMServicePeriode = void 0;
+const ObjetDate_1 = require("ObjetDate");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Type_ThemeBouton_1 = require("Type_ThemeBouton");
+const UtilitaireSaisieCDT_1 = require("UtilitaireSaisieCDT");
+class ObjetFenetre_SelectionQCMServicePeriode extends ObjetFenetre_1.ObjetFenetre {
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
 			fenetreBtn: {
 				getDisabled: function (aBoutonRepeat) {
 					if (aInstance.donnees && aBoutonRepeat.element.valider) {
-						return !_verifierDonnees.call(aInstance, aInstance.donnees);
+						return !aInstance._verifierDonnees(aInstance.donnees);
 					}
 					return (
 						aInstance.optionsFenetre.listeBoutonsInactifs &&
@@ -30,29 +25,26 @@ class ObjetFenetre_SelectionQCMServicePeriode extends ObjetFenetre {
 			},
 			selectQCM: {
 				bouton: function () {
-					$(this.node).eventValidation(_selectionQCM.bind(aInstance));
+					$(this.node).eventValidation(aInstance._selectionQCM.bind(aInstance));
 				},
 				libelle: function () {
 					if (!!aInstance.donnees && !!aInstance.donnees.qcm) {
-						return GChaine.enleverEntites(aInstance.donnees.qcm.getLibelle());
+						return ObjetChaine_1.GChaine.enleverEntites(
+							aInstance.donnees.qcm.getLibelle(),
+						);
 					} else {
 						return "";
 					}
 				},
 			},
 			comboService: {
-				init: function (aInstance) {
-					aInstance.setOptionsObjetSaisie(
-						Object.assign(
-							{
-								longueur: "100%",
-								labelWAICellule: GTraductions.getValeur(
-									"CahierDeTexte.TAFQCM.Service",
-								),
-							},
-							_getOptionsComboService.call(aInstance),
+				init: function (aCombo) {
+					aCombo.setOptionsObjetSaisie({
+						longueur: "100%",
+						labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+							"CahierDeTexte.TAFQCM.Service",
 						),
-					);
+					});
 				},
 				getDonnees: function (aDonnees) {
 					if (
@@ -84,7 +76,8 @@ class ObjetFenetre_SelectionQCMServicePeriode extends ObjetFenetre {
 				event: function (aParametres) {
 					if (
 						aParametres.genreEvenement ===
-							EGenreEvenementObjetSaisie.selection &&
+							Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+								.selection &&
 						aParametres.element &&
 						(!aInstance.donnees.service ||
 							!aInstance.donnees.service.egalParNumeroEtGenre(
@@ -103,17 +96,12 @@ class ObjetFenetre_SelectionQCMServicePeriode extends ObjetFenetre {
 			},
 			comboPeriode: {
 				init: function (aInstance) {
-					aInstance.setOptionsObjetSaisie(
-						Object.assign(
-							{
-								longueur: "100%",
-								labelWAICellule: GTraductions.getValeur(
-									"CahierDeTexte.TAFQCM.Periode",
-								),
-							},
-							_getOptionsComboService.call(aInstance),
+					aInstance.setOptionsObjetSaisie({
+						longueur: "100%",
+						labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+							"CahierDeTexte.TAFQCM.Periode",
 						),
-					);
+					});
 				},
 				getDonnees: function (aDonnees) {
 					if (
@@ -142,7 +130,7 @@ class ObjetFenetre_SelectionQCMServicePeriode extends ObjetFenetre {
 							lResult =
 								aInstance.donnees.service.periodes.getIndiceElementParFiltre(
 									(aElement) => {
-										return GDate.dateEntreLesDates(
+										return ObjetDate_1.GDate.dateEntreLesDates(
 											aInstance.donnees.dateCreationTAF,
 											aElement.debut,
 											aElement.fin,
@@ -156,7 +144,8 @@ class ObjetFenetre_SelectionQCMServicePeriode extends ObjetFenetre {
 				event: function (aParametres) {
 					if (
 						aParametres.genreEvenement ===
-							EGenreEvenementObjetSaisie.selection &&
+							Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+								.selection &&
 						aParametres.element
 					) {
 						aInstance.donnees.periode = aParametres.element;
@@ -188,21 +177,21 @@ class ObjetFenetre_SelectionQCMServicePeriode extends ObjetFenetre {
 	setDonnees(aDonnees) {
 		this.donnees = aDonnees;
 		this.afficher();
-		_selectionQCM.call(this);
+		this._selectionQCM();
 	}
 	static ouvrir(aParams) {
 		const lParams = Object.assign(
 			{
 				instance: null,
 				pourEvaluation: false,
-				services: new ObjetListeElements(),
+				services: new ObjetListeElements_1.ObjetListeElements(),
 				dateCreationTAF: null,
 				dateFinCours: null,
 			},
 			aParams,
 		);
 		return new Promise((aResolve) => {
-			const lFenetre = ObjetFenetre.creerInstanceFenetre(
+			const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
 				ObjetFenetre_SelectionQCMServicePeriode,
 				{
 					pere: lParams.instance,
@@ -217,17 +206,21 @@ class ObjetFenetre_SelectionQCMServicePeriode extends ObjetFenetre {
 				{
 					modale: true,
 					titre: lParams.pourEvaluation
-						? GTraductions.getValeur("CahierDeTexte.TAFQCM.AddQCMEvaluation")
-						: GTraductions.getValeur("CahierDeTexte.TAFQCM.AddQCMDevoir"),
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"CahierDeTexte.TAFQCM.AddQCMEvaluation",
+							)
+						: ObjetTraduction_1.GTraductions.getValeur(
+								"CahierDeTexte.TAFQCM.AddQCMDevoir",
+							),
 					listeBoutons: [
 						{
-							libelle: GTraductions.getValeur("Annuler"),
-							theme: TypeThemeBouton.secondaire,
+							libelle: ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+							theme: Type_ThemeBouton_1.TypeThemeBouton.secondaire,
 						},
 						{
-							libelle: GTraductions.getValeur("Valider"),
+							libelle: ObjetTraduction_1.GTraductions.getValeur("Valider"),
 							valider: true,
-							theme: TypeThemeBouton.primaire,
+							theme: Type_ThemeBouton_1.TypeThemeBouton.primaire,
 						},
 					],
 					largeur: 520,
@@ -242,33 +235,32 @@ class ObjetFenetre_SelectionQCMServicePeriode extends ObjetFenetre {
 			});
 		});
 	}
-}
-function _verifierDonnees(aDonnees) {
-	let lResult = false;
-	if (!!aDonnees) {
-		lResult = !!aDonnees.qcm && !!aDonnees.service && !!aDonnees.periode;
-	}
-	return lResult;
-}
-function _selectionQCM() {
-	UtilitaireSaisieCDT.choisirQCM({
-		instance: this,
-		paramsRequete: { pourEvaluation: this.donnees.pourEvaluation },
-	}).then((aParamQCM) => {
-		if (aParamQCM.eltQCM) {
-			this.donnees.qcm = aParamQCM.eltQCM;
+	_verifierDonnees(aDonnees) {
+		let lResult = false;
+		if (!!aDonnees) {
+			lResult = !!aDonnees.qcm && !!aDonnees.service && !!aDonnees.periode;
 		}
-	});
+		return lResult;
+	}
+	_selectionQCM() {
+		UtilitaireSaisieCDT_1.UtilitaireSaisieCDT.choisirQCM({
+			instance: this,
+			paramsRequete: { pourEvaluation: this.donnees.pourEvaluation },
+		}).then((aParamQCM) => {
+			if (aParamQCM.eltQCM) {
+				this.donnees.qcm = aParamQCM.eltQCM;
+			}
+		});
+	}
 }
-function _getOptionsComboService() {
-	return {};
-}
+exports.ObjetFenetre_SelectionQCMServicePeriode =
+	ObjetFenetre_SelectionQCMServicePeriode;
 function _composeQCM() {
 	const lHTML = [];
 	lHTML.push(
 		'<div class="selqcm_zone selqcm_z_qcm">',
 		'<div class="selqcm_label">',
-		GTraductions.getValeur("CahierDeTexte.TAFQCM.QCM"),
+		ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.TAFQCM.QCM"),
 		"</div>",
 		'<div class="like-input selqcm_qcm AvecMain" tabindex="0" ie-node="selectQCM.bouton"><div class="selqcm_qcm_content" ie-texte="selectQCM.libelle"></div></div>',
 		"</div>",
@@ -280,7 +272,7 @@ function _composeService() {
 	lHTML.push(
 		'<div class="selqcm_zone selqcm_z_service">',
 		'<div class="selqcm_label">',
-		GTraductions.getValeur("CahierDeTexte.TAFQCM.Service"),
+		ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.TAFQCM.Service"),
 		"</div>",
 		'<div class="selqcm_service"><ie-combo class="selqcm_service" ie-model="comboService"></ie-combo></div>',
 		"</div>",
@@ -292,11 +284,10 @@ function _composePeriode() {
 	lHTML.push(
 		'<div class="selqcm_zone selqcm_z_periode">',
 		'<div class="selqcm_label">',
-		GTraductions.getValeur("CahierDeTexte.TAFQCM.Periode"),
+		ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.TAFQCM.Periode"),
 		"</div>",
 		'<div class="selqcm_periode"><ie-combo class="selqcm_periode" ie-model="comboPeriode"></ie-combo></div>',
 		"</div>",
 	);
 	return lHTML.join("");
 }
-module.exports = ObjetFenetre_SelectionQCMServicePeriode;

@@ -1,12 +1,10 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetSerialiser } = require("ObjetSerialiser.js");
-class ObjetRequeteSaisieParcoursEducatifs extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieParcoursEducatifs = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetSerialiser_1 = require("ObjetSerialiser");
+class ObjetRequeteSaisieParcoursEducatifs extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParam) {
-		const lSerialisateur = new ObjetSerialiser();
+		const lSerialisateur = new ObjetSerialiser_1.ObjetSerialiser();
 		aParam.listeParcours.setSerialisateurJSON({
 			methodeSerialisation:
 				lSerialisateur.parcoursEducatif.bind(lSerialisateur),
@@ -14,12 +12,10 @@ class ObjetRequeteSaisieParcoursEducatifs extends ObjetRequeteSaisie {
 		$.extend(this.JSON, aParam);
 		return this.appelAsynchrone();
 	}
-	actionApresRequete() {
-		this.callbackReussite.appel(this.JSONRapportSaisie);
-	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteSaisieParcoursEducatifs =
+	ObjetRequeteSaisieParcoursEducatifs;
+CollectionRequetes_1.Requetes.inscrire(
 	"SaisieParcoursEducatifs",
 	ObjetRequeteSaisieParcoursEducatifs,
 );
-module.exports = ObjetRequeteSaisieParcoursEducatifs;

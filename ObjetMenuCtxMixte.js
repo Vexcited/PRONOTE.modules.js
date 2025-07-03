@@ -113,6 +113,9 @@ class ObjetMenuCtxMixte extends ObjetIdentite_1.Identite {
 	actualiser() {
 		return this.afficher();
 	}
+	getMenuContextuel() {
+		return this.menuContextuel;
+	}
 	_getListeCmdDeGenre(aGenre) {
 		return this.menuContextuel.getListeLignes().getListeElements((D) => {
 			if (aGenre === Enumere_MenuCtxModeMixte_1.ETypeAffEnModeMixte.ellipsis) {

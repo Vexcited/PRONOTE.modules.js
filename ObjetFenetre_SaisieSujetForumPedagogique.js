@@ -1,6 +1,5 @@
 exports.ObjetFenetre_SaisieSujetForumPedagogique = void 0;
 const ObjetFenetre_1 = require("ObjetFenetre");
-const tag_1 = require("tag");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetElement_1 = require("ObjetElement");
@@ -76,53 +75,120 @@ class ObjetFenetre_SaisieSujetForumPedagogique extends ObjetFenetre_1.ObjetFenet
 		this.sujet.listeFichiers.addElement(aPJ);
 		this.listePJs.addElement(aPJ);
 	}
+	jsxModeleBoutonDest(aPourMembre, aGenreRessource) {
+		return {
+			event: () => {
+				this._requetePublic(aPourMembre, aGenreRessource);
+			},
+		};
+	}
+	jsxGetHtmlBoutonDest(aPourMembre, aGenreRessource) {
+		return this._compteurRessources(aPourMembre, aGenreRessource);
+	}
+	jsxGetHtmlNbDest(aPourMembre) {
+		return "(" + this._compteurRessources(aPourMembre, null) + ")";
+	}
+	jsxNodeDestMobile(aPourMembre, aNode) {
+		$(aNode).eventValidation(() => {
+			this._ouvrirFenetreDestMobile(aPourMembre);
+		});
+	}
+	jsxComboModelMatiere() {
+		return {
+			init: (aCombo) => {
+				const lListeMatieres = new ObjetListeElements_1.ObjetListeElements()
+					.add(ObjetElement_1.ObjetElement.create({ Libelle: "", vide: true }))
+					.add(this.sujet.listeMatieresDispo);
+				const lMatiereSujet = this.sujet.matiere;
+				if (
+					lMatiereSujet &&
+					!lListeMatieres.getElementParNumeroEtGenre(lMatiereSujet.getNumero())
+				) {
+					lListeMatieres.add(lMatiereSujet);
+				}
+				lListeMatieres.trier();
+				let lIndiceSelection = 0;
+				if (lMatiereSujet) {
+					lIndiceSelection = lListeMatieres.getIndiceParNumeroEtGenre(
+						lMatiereSujet.getNumero(),
+					);
+				}
+				aCombo
+					.setOptionsObjetSaisie({
+						longueur: "100%",
+						labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+							"ForumPeda.ChoisirMatiere",
+						),
+						placeHolder: ObjetTraduction_1.GTraductions.getValeur(
+							"ForumPeda.ChoisirMatiere",
+						),
+					})
+					.setDonneesObjetSaisie({
+						liste: lListeMatieres,
+						selection: lIndiceSelection || 0,
+					});
+			},
+			event: (aParams) => {
+				if (aParams.estSelectionManuelle && aParams.element) {
+					this.sujet.matiere = aParams.element.vide ? null : aParams.element;
+					this._actualiserSelectThemes();
+				}
+			},
+		};
+	}
+	jsxGetHtmlChipsFichier() {
+		return UtilitaireUrl_1.UtilitaireUrl.construireListeUrls(
+			this.sujet.listeFichiers || new ObjetListeElements_1.ObjetListeElements(),
+			{
+				separateur: " ",
+				IEModelChips: "chipsFichier",
+				maxWidth: IE.estMobile ? 0 : 300,
+			},
+		);
+	}
+	jsxModeleInputTime(aEstHoraireAvant) {
+		return {
+			getValueInit: () => {
+				return ObjetDate_1.GDate.formatDate(
+					aEstHoraireAvant ? this.sujet.heureAvant : this.sujet.heureApres,
+					"%hh:%mm",
+				);
+			},
+			exitChange: (aValue, aParamsSetter) => {
+				const lDate = aEstHoraireAvant
+					? this.sujet.heureAvant
+					: this.sujet.heureApres;
+				lDate.setHours(aParamsSetter.time.heure);
+				lDate.setMinutes(aParamsSetter.time.minute);
+				if (
+					this.sujet.heureAvant.getTime() <= this.sujet.heureApres.getTime()
+				) {
+					if (aEstHoraireAvant) {
+						if (aParamsSetter.time.heure <= 1) {
+							this.sujet.heureApres.setHours(0);
+							this.sujet.heureApres.setMinutes(1);
+						} else {
+							this.sujet.heureApres.setHours(aParamsSetter.time.heure - 1);
+							this.sujet.heureApres.setMinutes(aParamsSetter.time.minute);
+						}
+					} else {
+						if (aParamsSetter.time.heure >= 23) {
+							this.sujet.heureAvant.setHours(23);
+							this.sujet.heureAvant.setMinutes(59);
+						} else {
+							this.sujet.heureAvant.setHours(aParamsSetter.time.heure + 1);
+							this.sujet.heureAvant.setMinutes(aParamsSetter.time.minute);
+						}
+					}
+				}
+			},
+			getDisabled: () => {
+				return !this.sujet.avecHoraires;
+			},
+		};
+	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
-			btnDest: {
-				event(aPourMembre, aGenreRessource) {
-					aInstance._requetePublic(aPourMembre, aGenreRessource);
-				},
-			},
-			getHtmlBtnDest(aPourMembre, aGenreRessource) {
-				return aInstance._compteurRessources(aPourMembre, aGenreRessource);
-			},
-			getHtmlNbDest(aPourMembre) {
-				return "(" + aInstance._compteurRessources(aPourMembre, null) + ")";
-			},
-			nodeDestMobile(aPourMembre) {
-				$(this.node).eventValidation(() => {
-					aInstance._ouvrirFenetreDestMobile(aPourMembre);
-				});
-			},
-			cbVisiteur: {
-				getValue(aEstPourSPR) {
-					let lIncl = [TypesForumPedagogique_1.TypeGenreVisiteurForum.GVF_SPR];
-					if (!aEstPourSPR) {
-						lIncl = [
-							TypesForumPedagogique_1.TypeGenreVisiteurForum.GVF_Responsable,
-							TypesForumPedagogique_1.TypeGenreVisiteurForum.GVF_Accompagnant,
-						];
-					}
-					return aInstance.sujet.visiteurs.contains(lIncl);
-				},
-				setValue(aEstPourSPR, aValue) {
-					let lIncl = [TypesForumPedagogique_1.TypeGenreVisiteurForum.GVF_SPR];
-					if (!aEstPourSPR) {
-						lIncl = [
-							TypesForumPedagogique_1.TypeGenreVisiteurForum.GVF_Responsable,
-							TypesForumPedagogique_1.TypeGenreVisiteurForum.GVF_Accompagnant,
-						];
-					}
-					if (aValue) {
-						aInstance.sujet.visiteurs.add(lIncl);
-					} else {
-						aInstance.sujet.visiteurs.remove(lIncl);
-					}
-				},
-				getDisabled(aEstPourSPR) {
-					return aEstPourSPR;
-				},
-			},
 			inputTitre: {
 				getValue() {
 					return aInstance.sujet.titre;
@@ -130,64 +196,6 @@ class ObjetFenetre_SaisieSujetForumPedagogique extends ObjetFenetre_1.ObjetFenet
 				setValue(aValue) {
 					aInstance.sujet.titre = aValue;
 				},
-			},
-			comboMatiere: {
-				init(aCombo) {
-					const lListeMatieres = new ObjetListeElements_1.ObjetListeElements()
-						.add(
-							ObjetElement_1.ObjetElement.create({ Libelle: "", vide: true }),
-						)
-						.add(aInstance.sujet.listeMatieresDispo);
-					const lMatiereSujet = aInstance.sujet.matiere;
-					if (
-						lMatiereSujet &&
-						!lListeMatieres.getElementParNumeroEtGenre(
-							lMatiereSujet.getNumero(),
-						)
-					) {
-						lListeMatieres.add(lMatiereSujet);
-					}
-					lListeMatieres.trier();
-					let lIndiceSelection = 0;
-					if (lMatiereSujet) {
-						lIndiceSelection = lListeMatieres.getIndiceParNumeroEtGenre(
-							lMatiereSujet.getNumero(),
-						);
-					}
-					aCombo
-						.setOptionsObjetSaisie({
-							longueur: "100%",
-							labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
-								"ForumPeda.ChoisirMatiere",
-							),
-							placeHolder: ObjetTraduction_1.GTraductions.getValeur(
-								"ForumPeda.ChoisirMatiere",
-							),
-						})
-						.setDonneesObjetSaisie({
-							liste: lListeMatieres,
-							selection: lIndiceSelection || 0,
-						});
-				},
-				event(aParametres) {
-					if (aParametres.estSelectionManuelle && aParametres.element) {
-						aInstance.sujet.matiere = aParametres.element.vide
-							? null
-							: aParametres.element;
-						aInstance._actualiserSelectThemes();
-					}
-				},
-			},
-			getHtmlChipsFichiers() {
-				return UtilitaireUrl_1.UtilitaireUrl.construireListeUrls(
-					aInstance.sujet.listeFichiers ||
-						new ObjetListeElements_1.ObjetListeElements(),
-					{
-						separateur: " ",
-						IEModelChips: "chipsFichier",
-						maxWidth: IE.estMobile ? 0 : 300,
-					},
-				);
 			},
 			chipsFichier: {
 				eventBtn: function (aIndice) {
@@ -210,7 +218,7 @@ class ObjetFenetre_SaisieSujetForumPedagogique extends ObjetFenetre_1.ObjetFenet
 				fromDisplay(aEstHtml, aValue) {
 					let lValue = aValue;
 					if (aEstHtml) {
-						const lJNode = $((0, tag_1.tag)("div", aValue));
+						const lJNode = $("<div>" + aValue + "</div>");
 						const lAvec = ObjetHtml_1.GHtml.nettoyerEditeurRiche(lJNode);
 						if (lAvec) {
 							lValue = lJNode.get(0).innerHTML;
@@ -227,86 +235,74 @@ class ObjetFenetre_SaisieSujetForumPedagogique extends ObjetFenetre_1.ObjetFenet
 					return lValue;
 				},
 			},
-			rbModeration: {
-				getValue(aGenreModeration) {
-					return aInstance.sujet.genreModeration === aGenreModeration;
-				},
-				setValue(aGenreModeration) {
-					aInstance.sujet.genreModeration = aGenreModeration;
-				},
-				getDisabled() {
-					return !aInstance.applicationSco.droits.get(
-						ObjetDroitsPN_1.TypeDroits.forum.avecModificationForumAPosteriori,
-					);
-				},
-			},
-			cbHoraires: {
-				getValue() {
-					return aInstance.sujet.avecHoraires;
-				},
-				setValue(aValue) {
-					aInstance.sujet.avecHoraires = aValue;
-				},
-				getDisabled() {
-					return (
-						aInstance._compteurRessources(
-							true,
-							Enumere_Ressource_1.EGenreRessource.Eleve,
-						) === 0
-					);
-				},
-			},
-			inputTime: {
-				getValueInit(aHoraireAvant) {
-					return ObjetDate_1.GDate.formatDate(
-						aHoraireAvant
-							? aInstance.sujet.heureAvant
-							: aInstance.sujet.heureApres,
-						"%hh:%mm",
-					);
-				},
-				exitChange(aHoraireAvant, aValue, aParamsSetter) {
-					const lDate = aHoraireAvant
-						? aInstance.sujet.heureAvant
-						: aInstance.sujet.heureApres;
-					lDate.setHours(aParamsSetter.time.heure);
-					lDate.setMinutes(aParamsSetter.time.minute);
-					if (
-						aInstance.sujet.heureAvant.getTime() <=
-						aInstance.sujet.heureApres.getTime()
-					) {
-						if (aHoraireAvant) {
-							if (aParamsSetter.time.heure <= 1) {
-								aInstance.sujet.heureApres.setHours(0);
-								aInstance.sujet.heureApres.setMinutes(1);
-							} else {
-								aInstance.sujet.heureApres.setHours(
-									aParamsSetter.time.heure - 1,
-								);
-								aInstance.sujet.heureApres.setMinutes(
-									aParamsSetter.time.minute,
-								);
-							}
-						} else {
-							if (aParamsSetter.time.heure >= 23) {
-								aInstance.sujet.heureAvant.setHours(23);
-								aInstance.sujet.heureAvant.setMinutes(59);
-							} else {
-								aInstance.sujet.heureAvant.setHours(
-									aParamsSetter.time.heure + 1,
-								);
-								aInstance.sujet.heureAvant.setMinutes(
-									aParamsSetter.time.minute,
-								);
-							}
-						}
-					}
-				},
-				getDisabled() {
-					return !aInstance.sujet.avecHoraires;
-				},
-			},
 		});
+	}
+	jsxModeleCheckboxVisiteur(aEstPourSPR) {
+		return {
+			getValue: () => {
+				let lIncl = [TypesForumPedagogique_1.TypeGenreVisiteurForum.GVF_SPR];
+				if (!aEstPourSPR) {
+					lIncl = [
+						TypesForumPedagogique_1.TypeGenreVisiteurForum.GVF_Responsable,
+						TypesForumPedagogique_1.TypeGenreVisiteurForum.GVF_Accompagnant,
+					];
+				}
+				return this.sujet.visiteurs.contains(lIncl);
+			},
+			setValue: (aValue) => {
+				let lIncl = [TypesForumPedagogique_1.TypeGenreVisiteurForum.GVF_SPR];
+				if (!aEstPourSPR) {
+					lIncl = [
+						TypesForumPedagogique_1.TypeGenreVisiteurForum.GVF_Responsable,
+						TypesForumPedagogique_1.TypeGenreVisiteurForum.GVF_Accompagnant,
+					];
+				}
+				if (aValue) {
+					this.sujet.visiteurs.add(lIncl);
+				} else {
+					this.sujet.visiteurs.remove(lIncl);
+				}
+			},
+			getDisabled: () => {
+				return aEstPourSPR;
+			},
+		};
+	}
+	jsxModeleRadioModeration(aGenreModeration) {
+		return {
+			getValue: () => {
+				return this.sujet.genreModeration === aGenreModeration;
+			},
+			setValue: (aValue) => {
+				this.sujet.genreModeration = aGenreModeration;
+			},
+			getDisabled: () => {
+				return !this.applicationSco.droits.get(
+					ObjetDroitsPN_1.TypeDroits.forum.avecModificationForumAPosteriori,
+				);
+			},
+			getName: () => {
+				return `${this.Nom}_Moderation`;
+			},
+		};
+	}
+	jsxModeleCheckboxActiverHoraires() {
+		return {
+			getValue: () => {
+				return this.sujet.avecHoraires;
+			},
+			setValue: (aValue) => {
+				this.sujet.avecHoraires = aValue;
+			},
+			getDisabled: () => {
+				return (
+					this._compteurRessources(
+						true,
+						Enumere_Ressource_1.EGenreRessource.Eleve,
+					) === 0
+				);
+			},
+		};
 	}
 	construireInstances() {
 		const lThis = this;
@@ -435,25 +431,25 @@ class ObjetFenetre_SaisieSujetForumPedagogique extends ObjetFenetre_1.ObjetFenet
 	_composeContenuDesktop() {
 		const T = [];
 		T.push(
-			(0, tag_1.tag)(
+			IE.jsx.str(
 				"div",
 				{ class: "dest" },
 				this._construireDestinatairesDesktop(),
 			),
 		);
 		T.push(
-			(0, tag_1.tag)(
+			IE.jsx.str(
 				"div",
 				{ class: "visiteurs" },
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"ie-checkbox",
-					{ "ie-model": tag_1.tag.funcAttr("cbVisiteur", false) },
+					{ "ie-model": this.jsxModeleCheckboxVisiteur.bind(this, false) },
 					ObjetTraduction_1.GTraductions.getValeur("ForumPeda.VisiteurRespAcc"),
 				),
-				(0, tag_1.tag)("br"),
-				(0, tag_1.tag)(
+				IE.jsx.str("br", null),
+				IE.jsx.str(
 					"ie-checkbox",
-					{ "ie-model": tag_1.tag.funcAttr("cbVisiteur", true) },
+					{ "ie-model": this.jsxModeleCheckboxVisiteur.bind(this, true) },
 					ObjetTraduction_1.GTraductions.getValeur("ForumPeda.VisiteurSPR"),
 				),
 			),
@@ -468,12 +464,10 @@ class ObjetFenetre_SaisieSujetForumPedagogique extends ObjetFenetre_1.ObjetFenet
 					{ for: lIdTitre },
 					ObjetTraduction_1.GTraductions.getValeur("ForumPeda.Titre"),
 				),
-				IE.jsx.str("input", {
-					class: "round-style",
-					"ie-model": "inputTitre",
-					id: lIdTitre,
+				IE.jsx.str("input", { "ie-model": "inputTitre", id: lIdTitre }),
+				IE.jsx.str("ie-combo", {
+					"ie-model": this.jsxComboModelMatiere.bind(this),
 				}),
-				IE.jsx.str("ie-combo", { "ie-model": "comboMatiere" }),
 				this.getInstance(this.identSelecTheme)
 					? IE.jsx.str(
 							IE.jsx.fragment,
@@ -485,25 +479,25 @@ class ObjetFenetre_SaisieSujetForumPedagogique extends ObjetFenetre_1.ObjetFenet
 							),
 							IE.jsx.str("div", {
 								class: "selec-theme",
-								id: this.getInstance(this.identSelecTheme).getNom(),
+								id: this.getNomInstance(this.identSelecTheme),
 							}),
 						)
 					: "",
 			),
 		);
 		T.push(
-			(0, tag_1.tag)(
+			IE.jsx.str(
 				"div",
 				{ class: "flex-contain p-left-l" },
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"div",
 					{ class: "fix-bloc flex-contain cols" },
 					this._composeChampPJDesktop(),
 				),
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"div",
 					{ class: "fluid-bloc" },
-					(0, tag_1.tag)("div", {
+					IE.jsx.str("div", {
 						class: "editeur",
 						"ie-identite": "identiteEditeurHTML",
 					}),
@@ -511,16 +505,16 @@ class ObjetFenetre_SaisieSujetForumPedagogique extends ObjetFenetre_1.ObjetFenet
 			),
 		);
 		T.push(
-			(0, tag_1.tag)("div", {
-				"ie-html": "getHtmlChipsFichiers",
+			IE.jsx.str("div", {
+				"ie-html": this.jsxGetHtmlChipsFichier.bind(this),
 				class: "m-top m-bottom-l m-left-big p-left-lb",
 			}),
 		);
 		T.push(
-			(0, tag_1.tag)(
+			IE.jsx.str(
 				"div",
 				{ class: "options" },
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"fieldset",
 					{
 						class: [
@@ -533,15 +527,16 @@ class ObjetFenetre_SaisieSujetForumPedagogique extends ObjetFenetre_1.ObjetFenet
 								: "disabled",
 						],
 					},
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"legend",
+						null,
 						ObjetTraduction_1.GTraductions.getValeur("ForumPeda.Moderation"),
 					),
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"ie-radio",
 						{
-							"ie-model": tag_1.tag.funcAttr(
-								"rbModeration",
+							"ie-model": this.jsxModeleRadioModeration.bind(
+								this,
 								TypesForumPedagogique_1.TypeGenreModerationForum.GMF_APriori,
 							),
 						},
@@ -549,18 +544,18 @@ class ObjetFenetre_SaisieSujetForumPedagogique extends ObjetFenetre_1.ObjetFenet
 							"ForumPeda.AvantPublication",
 						),
 					),
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"label",
 						{ class: "legendeCB" },
 						ObjetTraduction_1.GTraductions.getValeur(
 							"ForumPeda.AvantPublicationExplication",
 						),
 					),
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"ie-radio",
 						{
-							"ie-model": tag_1.tag.funcAttr(
-								"rbModeration",
+							"ie-model": this.jsxModeleRadioModeration.bind(
+								this,
 								TypesForumPedagogique_1.TypeGenreModerationForum
 									.GMF_APosteriori,
 							),
@@ -569,7 +564,7 @@ class ObjetFenetre_SaisieSujetForumPedagogique extends ObjetFenetre_1.ObjetFenet
 							"ForumPeda.ApresPublication",
 						),
 					),
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"label",
 						{ class: "legendeCB last" },
 						ObjetTraduction_1.GTraductions.getValeur(
@@ -577,44 +572,48 @@ class ObjetFenetre_SaisieSujetForumPedagogique extends ObjetFenetre_1.ObjetFenet
 						),
 					),
 				),
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"fieldset",
-					(0, tag_1.tag)(
+					null,
+					IE.jsx.str(
 						"legend",
+						null,
 						ObjetTraduction_1.GTraductions.getValeur("ForumPeda.Horaires"),
 					),
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"ie-checkbox",
-						{ "ie-model": "cbHoraires" },
+						{ "ie-model": this.jsxModeleCheckboxActiverHoraires.bind(this) },
 						ObjetTraduction_1.GTraductions.getValeur(
 							"ForumPeda.ActiverHoraires",
 						),
 					),
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"div",
 						{ class: "horaires" },
-						(0, tag_1.tag)(
+						IE.jsx.str(
 							"label",
+							{ for: "labelFrom" },
 							ObjetTraduction_1.GTraductions.getValeur(
 								"ForumPeda.HorairesApres",
 							),
-							(0, tag_1.tag)("input", {
-								type: "time",
-								class: "round-style",
-								"ie-model": tag_1.tag.funcAttr("inputTime", false),
-							}),
 						),
-						(0, tag_1.tag)(
+						IE.jsx.str("input", {
+							id: "labelFrom",
+							type: "time",
+							"ie-model": this.jsxModeleInputTime.bind(this, false),
+						}),
+						IE.jsx.str(
 							"label",
+							{ for: "labelTo" },
 							ObjetTraduction_1.GTraductions.getValeur(
 								"ForumPeda.HorairesAvant",
 							),
-							(0, tag_1.tag)("input", {
-								type: "time",
-								class: "round-style",
-								"ie-model": tag_1.tag.funcAttr("inputTime", true),
-							}),
 						),
+						IE.jsx.str("input", {
+							id: "labelTo",
+							type: "time",
+							"ie-model": this.jsxModeleInputTime.bind(this, true),
+						}),
 					),
 				),
 			),
@@ -649,54 +648,81 @@ class ObjetFenetre_SaisieSujetForumPedagogique extends ObjetFenetre_1.ObjetFenet
 		}
 	}
 	_construireDestinatairesDesktop() {
+		const lListeMembres = [];
+		for (const lGenre of this._getTabRessourcesDest(true)) {
+			lListeMembres.push(
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str("label", null, this._getTitreDestDeGenre(lGenre)),
+					IE.jsx.str(
+						"ie-bouton",
+						{
+							"ie-model": this.jsxModeleBoutonDest.bind(this, true, lGenre),
+							"ie-tooltiplabel":
+								Enumere_Ressource_1.EGenreRessourceUtil.getTitreFenetreSelectionRessource(
+									lGenre,
+								),
+							"aria-haspopup": "dialog",
+						},
+						"...",
+					),
+					IE.jsx.str("div", {
+						"ie-html": this.jsxGetHtmlBoutonDest.bind(this, true, lGenre),
+					}),
+				),
+			);
+		}
+		const lListeModerateurs = [];
+		for (const lGenre of this._getTabRessourcesDest(false)) {
+			lListeModerateurs.push(
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str("label", null, this._getTitreDestDeGenre(lGenre)),
+					IE.jsx.str(
+						"ie-bouton",
+						{
+							"ie-model": this.jsxModeleBoutonDest.bind(this, false, lGenre),
+							"ie-tooltiplabel":
+								Enumere_Ressource_1.EGenreRessourceUtil.getTitreFenetreSelectionRessource(
+									lGenre,
+								),
+							"aria-haspopup": "dialog",
+						},
+						"...",
+					),
+					IE.jsx.str("div", {
+						"ie-html": this.jsxGetHtmlBoutonDest.bind(this, false, lGenre),
+					}),
+				),
+			);
+		}
 		const H = [];
 		H.push(
-			(0, tag_1.tag)(
-				"fieldset",
-				(0, tag_1.tag)(
-					"legend",
-					ObjetTraduction_1.GTraductions.getValeur("ForumPeda.Membres"),
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"fieldset",
+					null,
+					IE.jsx.str(
+						"legend",
+						null,
+						ObjetTraduction_1.GTraductions.getValeur("ForumPeda.Membres"),
+					),
+					IE.jsx.str("div", null, lListeMembres.join("")),
 				),
-				(0, tag_1.tag)("div", (aHtml) => {
-					for (const lGenre of this._getTabRessourcesDest(true)) {
-						aHtml.push(
-							(0, tag_1.tag)("label", this._getTitreDestDeGenre(lGenre)),
-							(0, tag_1.tag)(
-								"ie-bouton",
-								{ "ie-model": tag_1.tag.funcAttr("btnDest", [true, lGenre]) },
-								"...",
-							),
-							(0, tag_1.tag)("div", {
-								"ie-html": tag_1.tag.funcAttr("getHtmlBtnDest", [true, lGenre]),
-							}),
-						);
-					}
-				}),
-			),
-			(0, tag_1.tag)(
-				"fieldset",
-				(0, tag_1.tag)(
-					"legend",
-					ObjetTraduction_1.GTraductions.getValeur("ForumPeda.Moderateurs"),
+				IE.jsx.str(
+					"fieldset",
+					null,
+					IE.jsx.str(
+						"legend",
+						null,
+						ObjetTraduction_1.GTraductions.getValeur("ForumPeda.Moderateurs"),
+					),
+					IE.jsx.str("div", null, lListeModerateurs.join("")),
 				),
-				(0, tag_1.tag)("div", (aHtml) => {
-					for (const lGenre of this._getTabRessourcesDest(false)) {
-						aHtml.push(
-							(0, tag_1.tag)("label", this._getTitreDestDeGenre(lGenre)),
-							(0, tag_1.tag)(
-								"ie-bouton",
-								{ "ie-model": tag_1.tag.funcAttr("btnDest", [false, lGenre]) },
-								"...",
-							),
-							(0, tag_1.tag)("div", {
-								"ie-html": tag_1.tag.funcAttr("getHtmlBtnDest", [
-									false,
-									lGenre,
-								]),
-							}),
-						);
-					}
-				}),
 			),
 		);
 		return H.join("");
@@ -704,94 +730,105 @@ class ObjetFenetre_SaisieSujetForumPedagogique extends ObjetFenetre_1.ObjetFenet
 	_composeChampPJDesktop() {
 		const T = [];
 		T.push(
-			`<div class="pj-global-conteneur" id="${this.getNomInstance(this.identSelecteurPJ)}" style="height:2.4rem;"></div>`,
+			IE.jsx.str("div", {
+				class: "pj-global-conteneur",
+				id: this.getNomInstance(this.identSelecteurPJ),
+				style: "height:2.4rem;",
+			}),
 		);
 		return T.join("");
 	}
 	_composeContenuMobile() {
 		const T = [];
 		T.push(
-			(0, tag_1.tag)(
-				"div",
-				{ class: "field-contain" },
-				(0, tag_1.tag)(
+			IE.jsx.str(
+				"fieldset",
+				null,
+				IE.jsx.str(
 					"div",
 					{
-						class: "selec-dest",
-						"ie-node": tag_1.tag.funcAttr("nodeDestMobile", true),
-						tabindex: 0,
+						class: "selec-dest m-all-l",
+						"ie-node": this.jsxNodeDestMobile.bind(this, true),
+						tabindex: "0",
 						role: "button",
 					},
-					(0, tag_1.tag)("i", { class: "icon_ul" }),
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"span",
+						null,
 						ObjetTraduction_1.GTraductions.getValeur("ForumPeda.Membres"),
-						(0, tag_1.tag)("span", {
+						IE.jsx.str("span", {
 							class: "compteur",
-							"ie-html": tag_1.tag.funcAttr("getHtmlNbDest", [true]),
+							"ie-html": this.jsxGetHtmlNbDest.bind(this, true),
 						}),
 					),
 				),
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"div",
 					{
-						class: "selec-dest m-bottom-l",
-						"ie-node": tag_1.tag.funcAttr("nodeDestMobile", false),
-						tabindex: 0,
+						class: "selec-dest m-all-l",
+						"ie-node": this.jsxNodeDestMobile.bind(this, false),
+						tabindex: "0",
 						role: "button",
 					},
-					(0, tag_1.tag)("i", { class: "icon_ul" }),
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"span",
+						null,
 						ObjetTraduction_1.GTraductions.getValeur("ForumPeda.Moderateurs"),
-						(0, tag_1.tag)("span", {
+						IE.jsx.str("span", {
 							class: "compteur",
-							"ie-html": tag_1.tag.funcAttr("getHtmlNbDest", [false]),
+							"ie-html": this.jsxGetHtmlNbDest.bind(this, false),
 						}),
 					),
 				),
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"ie-checkbox",
 					{
-						"ie-model": tag_1.tag.funcAttr("cbVisiteur", false),
-						class: "p-bottom",
+						"ie-model": this.jsxModeleCheckboxVisiteur.bind(this, false),
+						class: "long-text m-all-l",
 					},
 					ObjetTraduction_1.GTraductions.getValeur("ForumPeda.VisiteurRespAcc"),
 				),
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"ie-checkbox",
-					{ "ie-model": tag_1.tag.funcAttr("cbVisiteur", true) },
+					{
+						class: "long-text m-x-l m-bottom-l",
+						"ie-model": this.jsxModeleCheckboxVisiteur.bind(this, true),
+					},
 					ObjetTraduction_1.GTraductions.getValeur("ForumPeda.VisiteurSPR"),
 				),
 			),
 		);
+		T.push(`<fieldset>`);
 		T.push(
-			(0, tag_1.tag)(
-				"div",
-				{ class: "field-contain" },
-				(0, tag_1.tag)(
-					"label",
-					{ class: "active ie-titre-petit" },
-					ObjetTraduction_1.GTraductions.getValeur("Matiere"),
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"div",
+					{ class: "field-contain" },
+					IE.jsx.str(
+						"label",
+						{ class: "active ie-titre-petit" },
+						ObjetTraduction_1.GTraductions.getValeur("Matiere"),
+					),
+					IE.jsx.str("ie-combo", {
+						"ie-model": this.jsxComboModelMatiere.bind(this),
+					}),
 				),
-				(0, tag_1.tag)("ie-combo", {
-					"ie-model": "comboMatiere",
-					class: "combo-selecteur",
-				}),
 			),
 		);
 		if (this.getInstance(this.identSelecTheme)) {
-			let lId = this.getInstance(this.identSelecTheme).getNom();
+			let lId = this.getNomInstance(this.identSelecTheme);
 			T.push(
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"div",
 					{ class: "field-contain" },
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"label",
-						{ class: "active ie-titre-petit", for: lId },
+						{ for: lId, class: "active ie-titre-petit" },
 						ObjetTraduction_1.GTraductions.getValeur("ForumPeda.Theme"),
 					),
-					(0, tag_1.tag)("div", { class: "selec-theme on-mobile", id: lId }),
+					IE.jsx.str("div", { class: "selec-theme", id: lId }),
 				),
 			);
 		}
@@ -799,110 +836,161 @@ class ObjetFenetre_SaisieSujetForumPedagogique extends ObjetFenetre_1.ObjetFenet
 			this.moteurFormSaisie.composeFormText({
 				label: ObjetTraduction_1.GTraductions.getValeur("ForumPeda.Titre"),
 				model: "inputTitre",
+				id: `${this.Nom}_input_titre`,
 			}),
 		);
 		T.push(
 			this.moteurFormSaisie.composeFormContenuEditable({
 				label: ObjetTraduction_1.GTraductions.getValeur("ForumPeda.Contenu"),
-				model: tag_1.tag.funcAttr("modelEditeurNonTiny", true),
+				model: "modelEditeurNonTiny(true)",
+				id: `${this.Nom}_input_contenu`,
 			}),
 		);
 		T.push(
-			(0, tag_1.tag)(
-				"div",
-				{ class: "pj-global-conteneur p-all-l p-bottom-xl m-bottom-l" },
-				(0, tag_1.tag)("div", {
-					id: this.getNomInstance(this.identSelecteurPJ),
-				}),
-				(0, tag_1.tag)("div", {
-					"ie-html": "getHtmlChipsFichiers",
-					class: "docs-joints",
-				}),
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"div",
+					{ class: "pj-global-conteneur p-all-l p-bottom-xl m-bottom-l" },
+					IE.jsx.str("div", { id: this.getNomInstance(this.identSelecteurPJ) }),
+					IE.jsx.str("div", {
+						"ie-html": this.jsxGetHtmlChipsFichier.bind(this),
+						class: "docs-joints",
+					}),
+				),
+			),
+		);
+		T.push(`</fieldset>`);
+		T.push(
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"fieldset",
+					null,
+					IE.jsx.str(
+						"div",
+						{ class: "champ-conteneur m-x-l" },
+						IE.jsx.str(
+							"label",
+							{ class: "active" },
+							ObjetTraduction_1.GTraductions.getValeur("ForumPeda.Moderation"),
+						),
+						IE.jsx.str(
+							"ie-radio",
+							{
+								class: "long-text m-bottom",
+								"ie-model": this.jsxModeleRadioModeration.bind(
+									this,
+									TypesForumPedagogique_1.TypeGenreModerationForum.GMF_APriori,
+								),
+							},
+							ObjetTraduction_1.GTraductions.getValeur(
+								"ForumPeda.AvantPublication",
+							),
+							IE.jsx.str(
+								"span",
+								{ class: "legendeCB" },
+								" (",
+								ObjetTraduction_1.GTraductions.getValeur(
+									"ForumPeda.AvantPublicationExplication",
+								),
+								")",
+							),
+						),
+						IE.jsx.str(
+							"ie-radio",
+							{
+								class: "long-text",
+								"ie-model": this.jsxModeleRadioModeration.bind(
+									this,
+									TypesForumPedagogique_1.TypeGenreModerationForum
+										.GMF_APosteriori,
+								),
+							},
+							ObjetTraduction_1.GTraductions.getValeur(
+								"ForumPeda.ApresPublication",
+							),
+							IE.jsx.str(
+								"span",
+								{ class: "legendeCB" },
+								" (",
+								ObjetTraduction_1.GTraductions.getValeur(
+									"ForumPeda.ApresPublicationExplication",
+								),
+								")",
+							),
+						),
+					),
+				),
 			),
 		);
 		T.push(
-			(0, tag_1.tag)(
-				"div",
-				{ class: "field-contain" },
-				(0, tag_1.tag)(
-					"label",
-					{ class: "active ie-titre-petit" },
-					ObjetTraduction_1.GTraductions.getValeur("ForumPeda.Moderation"),
-				),
-				(0, tag_1.tag)(
-					"ie-radio",
-					{
-						"ie-model": tag_1.tag.funcAttr(
-							"rbModeration",
-							TypesForumPedagogique_1.TypeGenreModerationForum.GMF_APriori,
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"fieldset",
+					null,
+					IE.jsx.str(
+						"div",
+						{ class: "champ-conteneur m-x-l" },
+						IE.jsx.str(
+							"label",
+							{ class: "active" },
+							ObjetTraduction_1.GTraductions.getValeur("ForumPeda.Horaires"),
 						),
-						class: "p-bottom",
-					},
-					ObjetTraduction_1.GTraductions.getValeur(
-						"ForumPeda.AvantPublication",
-					) +
-						(0, tag_1.tag)(
-							"span",
-							{ class: "legendeCB" },
-							` (${ObjetTraduction_1.GTraductions.getValeur("ForumPeda.AvantPublicationExplication")})`,
+						IE.jsx.str(
+							"ie-checkbox",
+							{ "ie-model": this.jsxModeleCheckboxActiverHoraires.bind(this) },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"ForumPeda.ActiverHoraires",
+							),
 						),
-				),
-				(0, tag_1.tag)(
-					"ie-radio",
-					{
-						"ie-model": tag_1.tag.funcAttr(
-							"rbModeration",
-							TypesForumPedagogique_1.TypeGenreModerationForum.GMF_APosteriori,
+						IE.jsx.str(
+							"div",
+							{ class: "flex-contain flex-gap-xl justify-between" },
+							IE.jsx.str(
+								"div",
+								{ class: "horaire" },
+								IE.jsx.str(
+									"label",
+									{ for: "id_Fp_apres" },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"ForumPeda.HorairesApres",
+									),
+								),
+								IE.jsx.str("input", {
+									id: "id_Fp_apres",
+									type: "time",
+									"ie-model": this.jsxModeleInputTime.bind(this, false),
+									"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+										"ForumPeda.HorairesApres",
+									),
+								}),
+							),
+							IE.jsx.str(
+								"div",
+								{ class: "horaire" },
+								IE.jsx.str(
+									"label",
+									{ for: "id_Fp_avant" },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"ForumPeda.HorairesAvant",
+									),
+								),
+								IE.jsx.str("input", {
+									id: "id_Fp_avant",
+									type: "time",
+									"ie-model": this.jsxModeleInputTime.bind(this, true),
+									"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+										"ForumPeda.HorairesAvant",
+									),
+								}),
+							),
 						),
-					},
-					ObjetTraduction_1.GTraductions.getValeur(
-						"ForumPeda.ApresPublication",
-					) +
-						(0, tag_1.tag)(
-							"span",
-							{ class: "legendeCB" },
-							` (${ObjetTraduction_1.GTraductions.getValeur("ForumPeda.ApresPublicationExplication")})`,
-						),
-				),
-			),
-			(0, tag_1.tag)(
-				"div",
-				{ class: "field-contain" },
-				(0, tag_1.tag)(
-					"label",
-					{ class: "active ie-titre-petit" },
-					ObjetTraduction_1.GTraductions.getValeur("ForumPeda.Horaires"),
-				),
-				(0, tag_1.tag)(
-					"ie-checkbox",
-					{ "ie-model": "cbHoraires" },
-					ObjetTraduction_1.GTraductions.getValeur("ForumPeda.ActiverHoraires"),
-				),
-				(0, tag_1.tag)(
-					"div",
-					{ class: "horaire" },
-					(0, tag_1.tag)(
-						"span",
-						ObjetTraduction_1.GTraductions.getValeur("ForumPeda.HorairesApres"),
 					),
-					(0, tag_1.tag)("input", {
-						type: "time",
-						class: "round-style",
-						"ie-model": tag_1.tag.funcAttr("inputTime", false),
-					}),
-				),
-				(0, tag_1.tag)(
-					"div",
-					{ class: "horaire" },
-					(0, tag_1.tag)(
-						"span",
-						ObjetTraduction_1.GTraductions.getValeur("ForumPeda.HorairesAvant"),
-					),
-					(0, tag_1.tag)("input", {
-						type: "time",
-						class: "round-style",
-						"ie-model": tag_1.tag.funcAttr("inputTime", true),
-					}),
 				),
 			),
 		);
@@ -1064,38 +1152,42 @@ class ObjetFenetre_SaisieSujetForumPedagogique extends ObjetFenetre_1.ObjetFenet
 			});
 	}
 	_ouvrirFenetreDestMobile(aPourMembre) {
+		let lFenetre;
+		const lJsxNodeDestGenre = (aGenreRessource, aNode) => {
+			$(aNode).eventValidation(() => {
+				lFenetre.fermer();
+				this._requetePublic(aPourMembre, aGenreRessource);
+			});
+		};
+		const lJsxGetHtmlNbDest = (aGenreRessource) => {
+			return "(" + this._compteurRessources(aPourMembre, aGenreRessource) + ")";
+		};
 		const T = [];
+		T.push('<div class="field-contain">');
 		for (const lGenre of this._getTabRessourcesDest(aPourMembre)) {
 			T.push(
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"div",
-					{ class: "field-contain" },
-					(0, tag_1.tag)(
-						"div",
-						{
-							class: "selec-dest",
-							"ie-node": tag_1.tag.funcAttr("nodeDestGenre", lGenre),
-							tabindex: 0,
-							role: "button",
-						},
-						(0, tag_1.tag)("i", { class: "icon_ul" }),
-						(0, tag_1.tag)(
-							"span",
-							(0, tag_1.tag)("span", this._getTitreDestDeGenre(lGenre)),
-							(0, tag_1.tag)("span", {
-								class: "compteur",
-								"ie-html": tag_1.tag.funcAttr("getHtmlNbDest", [
-									aPourMembre,
-									lGenre,
-								]),
-							}),
-						),
+					{
+						class: "selec-dest m-y-l",
+						"ie-node": lJsxNodeDestGenre.bind(this, lGenre),
+						tabindex: "0",
+						role: "button",
+					},
+					IE.jsx.str(
+						"span",
+						null,
+						IE.jsx.str("span", null, this._getTitreDestDeGenre(lGenre)),
+						IE.jsx.str("span", {
+							class: "compteur",
+							"ie-html": lJsxGetHtmlNbDest.bind(this, lGenre),
+						}),
 					),
 				),
 			);
 		}
-		const lThis = this;
-		ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+		T.push("</div>");
+		lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
 			ObjetFenetre_1.ObjetFenetre,
 			{
 				pere: this,
@@ -1108,26 +1200,11 @@ class ObjetFenetre_SaisieSujetForumPedagogique extends ObjetFenetre_1.ObjetFenet
 								),
 						listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
 						cssFenetre: "ObjetFenetre_SaisieSujetForumPedagogique_racine",
-						empilerFenetre: false,
-					});
-					Object.assign(aFenetre.controleur, {
-						nodeDestGenre(aGenreRessource) {
-							$(this.node).eventValidation(() => {
-								aFenetre.fermer();
-								lThis._requetePublic(aPourMembre, aGenreRessource);
-							});
-						},
-						getHtmlNbDest(aPourMembre, aGenreRessource) {
-							return (
-								"(" +
-								lThis._compteurRessources(aPourMembre, aGenreRessource) +
-								")"
-							);
-						},
 					});
 				},
 			},
-		).afficher(T.join(""));
+		);
+		lFenetre.afficher(T.join(""));
 	}
 	_actualiserSelecteurPJ() {
 		this.getInstance(this.identSelecteurPJ).setDonnees({

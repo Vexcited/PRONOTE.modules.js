@@ -1,11 +1,10 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const {
-	EGenreNiveauDAcquisitionUtil,
-} = require("Enumere_NiveauDAcquisition.js");
-const { TUtilitaireCompetences } = require("UtilitaireCompetences.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class DonneesListe_BilanParDomaineLVE extends ObjetDonneesListe {
+exports.DonneesListe_BilanParDomaineLVE = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const Enumere_NiveauDAcquisition_1 = require("Enumere_NiveauDAcquisition");
+const UtilitaireCompetences_1 = require("UtilitaireCompetences");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class DonneesListe_BilanParDomaineLVE extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParametres) {
 		super(aDonnees);
 		this.parametres = aParametres;
@@ -22,7 +21,7 @@ class DonneesListe_BilanParDomaineLVE extends ObjetDonneesListe {
 		let lInfosService = null;
 		if (!!aArticle && !!aArticle.listeInfosServices) {
 			let lNumeroServiceColonne = null;
-			if (_estUneColonneDeServiceLVE(aDeclarationColonne)) {
+			if (this._estUneColonneDeServiceLVE(aDeclarationColonne)) {
 				lNumeroServiceColonne = aDeclarationColonne.serviceLVE.getNumero();
 				if (!!lNumeroServiceColonne) {
 					aArticle.listeInfosServices.parcourir((aService) => {
@@ -39,7 +38,7 @@ class DonneesListe_BilanParDomaineLVE extends ObjetDonneesListe {
 	}
 	getCouleurCellule(aParams) {
 		if (this.avecEdition(aParams)) {
-			return ObjetDonneesListe.ECouleurCellule.Blanc;
+			return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
 		}
 		if (!!aParams.article && aParams.article.estUnDeploiement) {
 			return GCouleur.liste.cumul;
@@ -56,7 +55,7 @@ class DonneesListe_BilanParDomaineLVE extends ObjetDonneesListe {
 		if (aParams.article.estUnDeploiement) {
 			lClasses.push("Gras");
 		}
-		if (_estUneColonneNiveau(aParams.idColonne)) {
+		if (this._estUneColonneNiveau(aParams.idColonne)) {
 			lClasses.push("AlignementMilieu");
 		} else if (
 			aParams.idColonne === DonneesListe_BilanParDomaineLVE.colonnes.libelle
@@ -68,19 +67,19 @@ class DonneesListe_BilanParDomaineLVE extends ObjetDonneesListe {
 		return lClasses.join(" ");
 	}
 	selectionParCellule(I) {
-		if (_estUneColonneNiveau(this.getId(I))) {
+		if (this._estUneColonneNiveau(this.getId(I))) {
 			return true;
 		}
 		return false;
 	}
 	avecEvenementSelectionClick(aParams) {
-		if (_estUneColonneJauge(aParams.idColonne)) {
+		if (this._estUneColonneJauge(aParams.idColonne)) {
 			return true;
 		}
 		return false;
 	}
 	avecEdition(aParams) {
-		if (_estUneColonneNiveau(aParams.idColonne)) {
+		if (this._estUneColonneNiveau(aParams.idColonne)) {
 			const lInfosService = this.getInfosService(
 				aParams.declarationColonne,
 				aParams.article,
@@ -93,26 +92,28 @@ class DonneesListe_BilanParDomaineLVE extends ObjetDonneesListe {
 		return this.avecEdition(aParams);
 	}
 	getValeur(aParams) {
-		if (_estUneColonneDeServiceLVE(aParams.declarationColonne)) {
+		if (this._estUneColonneDeServiceLVE(aParams.declarationColonne)) {
 			const lInfosService = this.getInfosService(
 				aParams.declarationColonne,
 				aParams.article,
 			);
 			if (!!lInfosService) {
-				if (_estUneColonneJauge(aParams.idColonne)) {
+				if (this._estUneColonneJauge(aParams.idColonne)) {
 					const lValeurCelluleJauge = [];
 					if (!!lInfosService.listeNiveaux) {
 						lValeurCelluleJauge.push(
-							TUtilitaireCompetences.composeJaugeParNiveaux({
-								listeNiveaux: lInfosService.listeNiveaux,
-								hint: TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionParNiveauOuPastille(
-									lInfosService.listeNiveaux,
-								),
-							}),
+							UtilitaireCompetences_1.TUtilitaireCompetences.composeJaugeParNiveaux(
+								{
+									listeNiveaux: lInfosService.listeNiveaux,
+									hint: UtilitaireCompetences_1.TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionParNiveauOuPastille(
+										lInfosService.listeNiveaux,
+									),
+								},
+							),
 						);
 					}
 					return lValeurCelluleJauge.join("");
-				} else if (_estUneColonneNiveau(aParams.idColonne)) {
+				} else if (this._estUneColonneNiveau(aParams.idColonne)) {
 					const lValeurCelluleNiveau = [];
 					if (!lInfosService.estNiveauxMultiples) {
 						if (
@@ -136,7 +137,7 @@ class DonneesListe_BilanParDomaineLVE extends ObjetDonneesListe {
 								}
 								if (!!lNiveauAcquisitionGlobal) {
 									lValeurCelluleNiveau.push(
-										EGenreNiveauDAcquisitionUtil.getImage(
+										Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
 											lNiveauAcquisitionGlobal,
 											{ avecTitle: false },
 										),
@@ -145,7 +146,9 @@ class DonneesListe_BilanParDomaineLVE extends ObjetDonneesListe {
 							}
 						}
 					} else {
-						lValeurCelluleNiveau.push(GTraductions.getValeur("Multiple"));
+						lValeurCelluleNiveau.push(
+							ObjetTraduction_1.GTraductions.getValeur("Multiple"),
+						);
 					}
 					return lValeurCelluleNiveau.join("");
 				}
@@ -168,13 +171,13 @@ class DonneesListe_BilanParDomaineLVE extends ObjetDonneesListe {
 						lLibelle.push('<span style="float: right;">');
 						if (!!aParams.article.estActiviteLangagiere) {
 							lLibelle.push(
-								TUtilitaireCompetences.construitInfoActiviteLangagiere(),
+								UtilitaireCompetences_1.TUtilitaireCompetences.construitInfoActiviteLangagiere(),
 							);
 						} else {
 							lLibelle.push(
 								'<i style="color:',
 								this.parametres.couleurs.grilleMM,
-								';" class="icon_star"></i>',
+								';" class="icon_star" role="presentation"></i>',
 							);
 						}
 						lLibelle.push("</span>");
@@ -186,22 +189,22 @@ class DonneesListe_BilanParDomaineLVE extends ObjetDonneesListe {
 		return "";
 	}
 	getTypeValeur() {
-		return ObjetDonneesListe.ETypeCellule.Html;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 	}
 	avecMenuContextuel(aParams) {
 		return !!aParams.article && !!this.parametres.callbackInitMenuContextuel;
 	}
-	remplirMenuContextuel(aParametres) {
-		this.parametres.callbackInitMenuContextuel(aParametres);
+	remplirMenuContextuel(aParams) {
+		this.parametres.callbackInitMenuContextuel(aParams);
 	}
 	getContenuTotal(aParams) {
 		if (
 			aParams.idColonne === DonneesListe_BilanParDomaineLVE.colonnes.libelle
 		) {
-			return GTraductions.getValeur(
+			return ObjetTraduction_1.GTraductions.getValeur(
 				"competences.bilanpardomaine.NiveauMaitriseLVE",
 			);
-		} else if (_estUneColonneNiveau(aParams.idColonne)) {
+		} else if (this._estUneColonneNiveau(aParams.idColonne)) {
 			const lNiveauMaitrise = [];
 			const lServiceConcerne = aParams.declarationColonne.serviceLVE;
 			if (!lServiceConcerne.estNiveauxMultiples) {
@@ -218,14 +221,17 @@ class DonneesListe_BilanParDomaineLVE extends ObjetDonneesListe {
 					}
 					if (!!lNiveauAcquisitionGlobal) {
 						lNiveauMaitrise.push(
-							EGenreNiveauDAcquisitionUtil.getImage(lNiveauAcquisitionGlobal, {
-								avecTitle: false,
-							}),
+							Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+								lNiveauAcquisitionGlobal,
+								{ avecTitle: false },
+							),
 						);
 					}
 				}
 			} else {
-				lNiveauMaitrise.push(GTraductions.getValeur("Multiple"));
+				lNiveauMaitrise.push(
+					ObjetTraduction_1.GTraductions.getValeur("Multiple"),
+				);
 			}
 			return lNiveauMaitrise.join("");
 		}
@@ -237,56 +243,59 @@ class DonneesListe_BilanParDomaineLVE extends ObjetDonneesListe {
 			aParams.idColonne === DonneesListe_BilanParDomaineLVE.colonnes.libelle
 		) {
 			lClasses.push("AlignementDroit");
-		} else if (_estUneColonneNiveau(aParams.idColonne)) {
+		} else if (this._estUneColonneNiveau(aParams.idColonne)) {
 			lClasses.push("AlignementMilieu");
 		}
-		if (_avecEditionCelluleTotal(aParams)) {
+		if (this._avecEditionCelluleTotal(aParams)) {
 			lClasses.push("AvecMain");
 		}
 		return lClasses.join(" ");
 	}
 	getTypeCelluleTotal(aParams) {
-		if (_avecEditionCelluleTotal(aParams)) {
-			return ObjetDonneesListe.typeCelluleTotal.editable;
+		if (this._avecEditionCelluleTotal(aParams)) {
+			return ObjetDonneesListe_1.ObjetDonneesListe.typeCelluleTotal.editable;
 		}
-		return ObjetDonneesListe.typeCelluleTotal.defaut;
+		return ObjetDonneesListe_1.ObjetDonneesListe.typeCelluleTotal.defaut;
 	}
 	avecEvenementSelectionClickTotal(aParams) {
-		return _avecEditionCelluleTotal(aParams);
+		return this._avecEditionCelluleTotal(aParams);
+	}
+	_estUneColonneDeServiceLVE(aDeclarationColonne) {
+		return !!aDeclarationColonne && !!aDeclarationColonne.serviceLVE;
+	}
+	_estUneColonneJauge(aColonneId) {
+		return (
+			aColonneId.indexOf(
+				DonneesListe_BilanParDomaineLVE.colonnes.prefixeJauge,
+			) === 0
+		);
+	}
+	_estUneColonneNiveau(aColonneId) {
+		return (
+			aColonneId.indexOf(
+				DonneesListe_BilanParDomaineLVE.colonnes.prefixeNiveau,
+			) === 0
+		);
+	}
+	_avecEditionCelluleTotal(aParams) {
+		if (this._estUneColonneNiveau(aParams.idColonne)) {
+			const lServiceLVE = aParams.declarationColonne.serviceLVE;
+			return !!lServiceLVE && !!lServiceLVE.niveauAcquiDomaineEditable;
+		}
+		return false;
 	}
 }
+exports.DonneesListe_BilanParDomaineLVE = DonneesListe_BilanParDomaineLVE;
+DonneesListe_BilanParDomaineLVE.unNiveauEquivalenceCEPeutEtreDefini = (
+	aArticle,
+) => {
+	return (
+		!!aArticle &&
+		aArticle.getGenre() === Enumere_Ressource_1.EGenreRessource.ElementPilier
+	);
+};
 DonneesListe_BilanParDomaineLVE.colonnes = {
 	libelle: "DLBilanLVE_libelle",
 	prefixeJauge: "DLBilanLVE_jauge_",
 	prefixeNiveau: "DLBilanLVE_niveau_",
 };
-function _estUneColonneDeServiceLVE(aDeclarationColonne) {
-	return !!aDeclarationColonne && !!aDeclarationColonne.serviceLVE;
-}
-function _estUneColonneJauge(aColonneId) {
-	return (
-		aColonneId.indexOf(
-			DonneesListe_BilanParDomaineLVE.colonnes.prefixeJauge,
-		) === 0
-	);
-}
-function _estUneColonneNiveau(aColonneId) {
-	return (
-		aColonneId.indexOf(
-			DonneesListe_BilanParDomaineLVE.colonnes.prefixeNiveau,
-		) === 0
-	);
-}
-function _avecEditionCelluleTotal(aParams) {
-	if (_estUneColonneNiveau(aParams.idColonne)) {
-		const lServiceLVE = aParams.declarationColonne.serviceLVE;
-		return !!lServiceLVE && !!lServiceLVE.niveauAcquiDomaineEditable;
-	}
-	return false;
-}
-DonneesListe_BilanParDomaineLVE.unNiveauEquivalenceCEPeutEtreDefini = function (
-	aArticle,
-) {
-	return !!aArticle && aArticle.getGenre() === EGenreRessource.ElementPilier;
-};
-module.exports = { DonneesListe_BilanParDomaineLVE };

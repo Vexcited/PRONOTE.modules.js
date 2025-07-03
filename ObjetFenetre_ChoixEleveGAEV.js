@@ -1,91 +1,122 @@
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { EGenreTriElement } = require("Enumere_TriElement.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetSaisie } = require("ObjetSaisie.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const DonneesListe_ElevesGAEV = require("DonneesListe_ElevesGAEV.js");
-const ObjetRequeteListeElevesGAEV = require("ObjetRequeteListeElevesGAEV.js");
-class ObjetFenetre_ChoixEleveGAEV extends ObjetFenetre {
+exports.ObjetFenetre_ChoixEleveGAEV = void 0;
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const Enumere_TriElement_1 = require("Enumere_TriElement");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetSaisie_1 = require("ObjetSaisie");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const DonneesListe_ElevesGAEV_1 = require("DonneesListe_ElevesGAEV");
+const ObjetRequeteListeElevesGAEV_1 = require("ObjetRequeteListeElevesGAEV");
+var GenreTri;
+(function (GenreTri) {
+	GenreTri[(GenreTri["ordreAlphabetique"] = 0)] = "ordreAlphabetique";
+	GenreTri[(GenreTri["classe"] = 1)] = "classe";
+})(GenreTri || (GenreTri = {}));
+class ObjetFenetre_ChoixEleveGAEV extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
-		this.genreTri = { ordreAlphabetique: 0, classe: 1 };
+		this.filtres = {
+			dansLeGroupe: true,
+			dansAutreGroupe: true,
+			aucunGroupe: true,
+			presents: true,
+		};
 	}
 	construireInstances() {
 		this.identListeEleves = this.add(
-			ObjetListe,
+			ObjetListe_1.ObjetListe,
 			this.evenementListeEleves,
 			this.initialiserListeEleves,
 		);
 		this.identComboTri = this.add(
-			ObjetSaisie,
+			ObjetSaisie_1.ObjetSaisie,
 			this.evenementComboTri,
 			this.initialiserComboTri,
 		);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
-			checkDansLeGroupe: {
-				getValue: function () {
-					return ObjetFenetre_ChoixEleveGAEV.filtres.dansLeGroupe;
-				},
-				setValue: function (aValeur) {
-					ObjetFenetre_ChoixEleveGAEV.filtres.dansLeGroupe = aValeur;
-					aInstance.getInstance(aInstance.identListeEleves).actualiser();
-				},
+	jsxModelCheckboxDansLeGroupe() {
+		return {
+			getValue: () => {
+				return this.filtres.dansLeGroupe;
 			},
-			checkAutresGroupes: {
-				getValue: function () {
-					return ObjetFenetre_ChoixEleveGAEV.filtres.dansAutreGroupe;
-				},
-				setValue: function (aValeur) {
-					ObjetFenetre_ChoixEleveGAEV.filtres.dansAutreGroupe = aValeur;
-					aInstance.getInstance(aInstance.identListeEleves).actualiser();
-				},
+			setValue: (aValue) => {
+				this.filtres.dansLeGroupe = aValue;
+				this.getInstance(this.identListeEleves).actualiser();
 			},
-			checkAucunGroupe: {
-				getValue: function () {
-					return ObjetFenetre_ChoixEleveGAEV.filtres.aucunGroupe;
-				},
-				setValue: function (aValeur) {
-					ObjetFenetre_ChoixEleveGAEV.filtres.aucunGroupe = aValeur;
-					aInstance.getInstance(aInstance.identListeEleves).actualiser();
-				},
+		};
+	}
+	jsxModelCheckboxAutresGroupes() {
+		return {
+			getValue: () => {
+				return this.filtres.dansAutreGroupe;
 			},
-			checkUniquementPresents: {
-				getValue: function () {
-					return ObjetFenetre_ChoixEleveGAEV.filtres.presents;
-				},
-				setValue: function (aValeur) {
-					ObjetFenetre_ChoixEleveGAEV.filtres.presents = aValeur;
-					aInstance.getInstance(aInstance.identListeEleves).actualiser();
-				},
+			setValue: (aValue) => {
+				this.filtres.dansAutreGroupe = aValue;
+				this.getInstance(this.identListeEleves).actualiser();
 			},
-		});
+		};
+	}
+	jsxModelCheckboxAucunGroupe() {
+		return {
+			getValue: () => {
+				return this.filtres.aucunGroupe;
+			},
+			setValue: (aValue) => {
+				this.filtres.aucunGroupe = aValue;
+				this.getInstance(this.identListeEleves).actualiser();
+			},
+		};
+	}
+	jsxModelCheckboxUniquementPresents() {
+		return {
+			getValue: () => {
+				return this.filtres.presents;
+			},
+			setValue: (aValue) => {
+				this.filtres.presents = aValue;
+				this.getInstance(this.identListeEleves).actualiser();
+			},
+		};
 	}
 	setDonnees(aCours, aGroupe, aDomaine) {
-		this.domaine = aDomaine;
-		new ObjetRequeteListeElevesGAEV(
+		new ObjetRequeteListeElevesGAEV_1.ObjetRequeteListeElevesGAEV(
 			this,
 			this._actionSurRequeteListeElevesGAEV,
 			this._surEchecListeElevesGAEV,
-		).lancerRequete({ cours: aCours, groupe: aGroupe, domaine: this.domaine });
+		).lancerRequete({ cours: aCours, groupe: aGroupe, domaine: aDomaine });
+	}
+	getListeTrisDisponibles() {
+		const lListeTris = new ObjetListeElements_1.ObjetListeElements();
+		lListeTris.addElement(
+			new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"ChoixEleveGAEV.ordreAlphabetique",
+				),
+				null,
+				GenreTri.ordreAlphabetique,
+			),
+		);
+		lListeTris.addElement(
+			new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"ChoixEleveGAEV.colonne.classe",
+				),
+				null,
+				GenreTri.classe,
+			),
+		);
+		return lListeTris;
 	}
 	_actionSurRequeteListeElevesGAEV(aJSON) {
-		function getListeElevesSelectionnes(aElement) {
-			return aElement.estTotalementDesGroupes;
-		}
 		this.listeEleves = aJSON.listeElevesGAEV;
-		this.listeClasses = new ObjetListeElements();
+		const lListeClasses = new ObjetListeElements_1.ObjetListeElements();
 		let lElmClasse;
-		this.trierListeSelonGenre(this.genreTri.classe);
+		this.trierListeSelonGenre(GenreTri.classe);
 		let lClasse = "";
 		for (let I = 0; I < this.listeEleves.count(); I++) {
 			const lEleve = this.listeEleves.get(I);
@@ -93,33 +124,33 @@ class ObjetFenetre_ChoixEleveGAEV extends ObjetFenetre {
 			lEleve.estUneClasse = false;
 			lEleve.estUnDeploiement = false;
 			lEleve.estDeploye = true;
-			lEleve.estVisible = null;
 			lEleve.visible = true;
 			lEleve.initial = {
 				estTotalementDesGroupes: lEleve.estTotalementDesGroupes,
 				estPartiellementDesGroupes: lEleve.estPartiellementDesGroupes,
 			};
 			if (!lEleve.estUneClasse && lClasse !== lEleve.classe) {
-				lElmClasse = new ObjetElement(lEleve.classe);
+				lElmClasse = new ObjetElement_1.ObjetElement(lEleve.classe);
 				lElmClasse.pere = null;
 				lElmClasse.classe = lEleve.classe;
 				lElmClasse.estUneClasse = true;
 				lElmClasse.visible = false;
 				lElmClasse.estUnDeploiement = true;
 				lElmClasse.estDeploye = true;
-				lElmClasse.estVisible = null;
-				this.listeClasses.addElement(lElmClasse);
+				lListeClasses.addElement(lElmClasse);
 			}
 			lClasse = lEleve.classe;
 		}
-		for (let I = 0; I < this.listeClasses.count(); I++) {
-			lElmClasse = this.listeClasses.get(I);
+		for (let I = 0; I < lListeClasses.count(); I++) {
+			lElmClasse = lListeClasses.get(I);
 			lClasse = lElmClasse.classe;
 			const lListeEleves = this.listeEleves.getListeElements((aEleve) => {
 				return aEleve.classe === lClasse;
 			});
 			const lListeElevesSelectionne = lListeEleves.getListeElements(
-				getListeElevesSelectionnes,
+				(aEleve) => {
+					return aEleve.estTotalementDesGroupes;
+				},
 			);
 			lElmClasse.estTotalementDesGroupes =
 				lListeElevesSelectionne.count() > 0
@@ -128,16 +159,17 @@ class ObjetFenetre_ChoixEleveGAEV extends ObjetFenetre {
 						: null
 					: "";
 		}
-		this.listeEleves.add(this.listeClasses);
-		this.getInstance(this.identComboTri).setDonnees(this.listeTri);
-		this.triCourant = this.genreTri.ordreAlphabetique;
+		this.listeEleves.add(lListeClasses);
+		const lListeTris = this.getListeTrisDisponibles();
+		this.getInstance(this.identComboTri).setDonnees(lListeTris);
+		this.triCourant = GenreTri.ordreAlphabetique;
 		this.getInstance(this.identComboTri).initSelection(this.triCourant);
 		this.trierListeSelonGenre(this.triCourant);
 		this.afficher();
 		this.getInstance(this.identListeEleves).setDonnees(
-			new DonneesListe_ElevesGAEV(
+			new DonneesListe_ElevesGAEV_1.DonneesListe_ElevesGAEV(
 				this.listeEleves,
-				ObjetFenetre_ChoixEleveGAEV.filtres,
+				this.filtres,
 				this.triCourant,
 			),
 		);
@@ -149,111 +181,143 @@ class ObjetFenetre_ChoixEleveGAEV extends ObjetFenetre {
 			this.optionsFenetre.hauteur - 23 - 30 - 5 - 4 * 20 - 20 - 15;
 		const T = [];
 		T.push(
-			'<div class="flex-contain flex-center m-bottom">',
-			'<ie-checkbox ie-model="checkDansLeGroupe" class="EspaceDroit">',
-			GTraductions.getValeur("ChoixEleveGAEV.coche.presentDansGroupe"),
-			"</ie-checkbox>",
-			'<i class="Image_CocheVerte as-icon self-start m-bottom-l"></i>',
-			"</div>",
-		);
-		T.push(
-			'<div class="flex-contain flex-center m-bottom">',
-			'<ie-checkbox ie-model="checkAutresGroupes" class="EspaceDroit">',
-			GTraductions.getValeur("ChoixEleveGAEV.coche.affectesAutresGroupes"),
-			"</ie-checkbox>",
-			'<i class="Image_DiagAffEleTGris as-icon self-start"></i>',
-			"</div>",
-		);
-		T.push(
-			"<div>",
-			'<ie-checkbox ie-model="checkAucunGroupe">',
-			GTraductions.getValeur("ChoixEleveGAEV.coche.affectesAucunGroupe"),
-			"</ie-checkbox>",
-			"</div>",
-		);
-		T.push(
-			'<hr style="text-align:left; margin-left:2rem; margin-bottom:.4rem; width: 200px;" />',
-		);
-		T.push(
-			'<div class="EspaceBas">',
-			'<ie-checkbox ie-model="checkUniquementPresents">',
-			GTraductions.getValeur("ChoixEleveGAEV.coche.uniquementsPresents"),
-			"</ie-checkbox>",
-			"</div>",
-		);
-		T.push(
-			'<div id="',
-			this.getNomInstance(this.identComboTri),
-			'" class="EspaceBas"></div>',
-		);
-		T.push(
-			'<div id="',
-			this.getNomInstance(this.identListeEleves),
-			'" style="width:100%; height:',
-			lHeightListe,
-			'px;"></div>',
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"div",
+					{ class: "flex-contain flex-center m-bottom" },
+					IE.jsx.str(
+						"ie-checkbox",
+						{
+							"ie-model": this.jsxModelCheckboxDansLeGroupe.bind(this),
+							class: "EspaceDroit",
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"ChoixEleveGAEV.coche.presentDansGroupe",
+						),
+					),
+					IE.jsx.str("i", {
+						class: "Image_CocheVerte as-icon self-start m-bottom-l",
+						role: "presentation",
+					}),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "flex-contain flex-center m-bottom" },
+					IE.jsx.str(
+						"ie-checkbox",
+						{
+							"ie-model": this.jsxModelCheckboxAutresGroupes.bind(this),
+							class: "EspaceDroit",
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"ChoixEleveGAEV.coche.affectesAutresGroupes",
+						),
+					),
+					IE.jsx.str("i", {
+						class: "Image_DiagAffEleTGris as-icon self-start",
+						role: "presentation",
+					}),
+				),
+				IE.jsx.str(
+					"div",
+					null,
+					IE.jsx.str(
+						"ie-checkbox",
+						{ "ie-model": this.jsxModelCheckboxAucunGroupe.bind(this) },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"ChoixEleveGAEV.coche.affectesAucunGroupe",
+						),
+					),
+				),
+				IE.jsx.str("hr", {
+					style:
+						"text-align:left; margin-left:2rem; margin-bottom:.4rem; width: 200px;",
+				}),
+				IE.jsx.str(
+					"div",
+					{ class: "EspaceBas" },
+					IE.jsx.str(
+						"ie-checkbox",
+						{ "ie-model": this.jsxModelCheckboxUniquementPresents.bind(this) },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"ChoixEleveGAEV.coche.uniquementsPresents",
+						),
+					),
+				),
+				IE.jsx.str("div", {
+					id: this.getNomInstance(this.identComboTri),
+					class: "EspaceBas",
+				}),
+				IE.jsx.str("div", {
+					id: this.getNomInstance(this.identListeEleves),
+					style: "width:100%; height:" + lHeightListe + "px;",
+				}),
+			),
 		);
 		return T.join("");
 	}
 	initialiserComboTri(aInstance) {
-		aInstance.setOptionsObjetSaisie({ longueur: 150 });
 		aInstance.setOptionsObjetSaisie({
-			texteEdit: GTraductions.getValeur("ChoixEleveGAEV.classerPar") + " ",
+			longueur: 150,
+			texteEdit:
+				ObjetTraduction_1.GTraductions.getValeur("ChoixEleveGAEV.classerPar") +
+				" ",
 		});
-		this.listeTri = new ObjetListeElements();
-		this.listeTri.addElement(
-			new ObjetElement(
-				GTraductions.getValeur("ChoixEleveGAEV.ordreAlphabetique"),
-				null,
-				this.genreTri.ordreAlphabetique,
-			),
-		);
-		this.listeTri.addElement(
-			new ObjetElement(
-				GTraductions.getValeur("ChoixEleveGAEV.colonne.classe"),
-				null,
-				this.genreTri.classe,
-			),
-		);
 	}
 	initialiserListeEleves(aInstance) {
 		const lColonnes = [];
 		lColonnes.push({
-			id: DonneesListe_ElevesGAEV.colonnes.coche,
+			id: DonneesListe_ElevesGAEV_1.DonneesListe_ElevesGAEV.colonnes.coche,
 			titre: { title: "", estCoche: true },
 			taille: 20,
 		});
 		lColonnes.push({
-			id: DonneesListe_ElevesGAEV.colonnes.nom,
-			titre: GTraductions.getValeur("ChoixEleveGAEV.colonne.nom"),
+			id: DonneesListe_ElevesGAEV_1.DonneesListe_ElevesGAEV.colonnes.nom,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"ChoixEleveGAEV.colonne.nom",
+			),
 			taille: 150,
 		});
 		lColonnes.push({
-			id: DonneesListe_ElevesGAEV.colonnes.diagnostic,
-			titre: GTraductions.getValeur("ChoixEleveGAEV.colonne.diagnostic"),
+			id: DonneesListe_ElevesGAEV_1.DonneesListe_ElevesGAEV.colonnes.diagnostic,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"ChoixEleveGAEV.colonne.diagnostic",
+			),
 			taille: 40,
 		});
 		lColonnes.push({
-			id: DonneesListe_ElevesGAEV.colonnes.classe,
-			titre: GTraductions.getValeur("ChoixEleveGAEV.colonne.classe"),
+			id: DonneesListe_ElevesGAEV_1.DonneesListe_ElevesGAEV.colonnes.classe,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"ChoixEleveGAEV.colonne.classe",
+			),
 			taille: 50,
 		});
 		lColonnes.push({
-			id: DonneesListe_ElevesGAEV.colonnes.options,
-			titre: GTraductions.getValeur("ChoixEleveGAEV.colonne.options"),
+			id: DonneesListe_ElevesGAEV_1.DonneesListe_ElevesGAEV.colonnes.options,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"ChoixEleveGAEV.colonne.options",
+			),
 			taille: "100%",
 		});
-		aInstance.setOptionsListe({ colonnes: lColonnes });
+		aInstance.setOptionsListe({
+			colonnes: lColonnes,
+			boutons: [{ genre: ObjetListe_1.ObjetListe.typeBouton.deployer }],
+		});
 	}
 	evenementComboTri(aParams) {
-		if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
 			this.triCourant = aParams.element.getGenre();
 			if (this.listeEleves) {
 				this.trierListeSelonGenre(this.triCourant);
 				this.getInstance(this.identListeEleves).setDonnees(
-					new DonneesListe_ElevesGAEV(
+					new DonneesListe_ElevesGAEV_1.DonneesListe_ElevesGAEV(
 						this.listeEleves,
-						ObjetFenetre_ChoixEleveGAEV.filtres,
+						this.filtres,
 						this.triCourant,
 					),
 				);
@@ -261,10 +325,10 @@ class ObjetFenetre_ChoixEleveGAEV extends ObjetFenetre {
 		}
 	}
 	trierListeSelonGenre(aGenreTri) {
-		if (aGenreTri === this.genreTri.ordreAlphabetique) {
+		if (aGenreTri === GenreTri.ordreAlphabetique) {
 			this.listeEleves.setTri([
-				ObjetTri.init("Libelle"),
-				ObjetTri.init("classe"),
+				ObjetTri_1.ObjetTri.init("Libelle"),
+				ObjetTri_1.ObjetTri.init("classe"),
 			]);
 			this.listeEleves.trier();
 			for (let I = 0; I < this.listeEleves.count(); I++) {
@@ -277,9 +341,12 @@ class ObjetFenetre_ChoixEleveGAEV extends ObjetFenetre {
 			}
 		} else {
 			this.listeEleves.setTri([
-				ObjetTri.init("classe"),
-				ObjetTri.init("estUneClasse", EGenreTriElement.Decroissant),
-				ObjetTri.init("Libelle"),
+				ObjetTri_1.ObjetTri.init("classe"),
+				ObjetTri_1.ObjetTri.init(
+					"estUneClasse",
+					Enumere_TriElement_1.EGenreTriElement.Decroissant,
+				),
+				ObjetTri_1.ObjetTri.init("Libelle"),
 			]);
 			this.listeEleves.trier();
 			let lElmPere = null;
@@ -295,14 +362,17 @@ class ObjetFenetre_ChoixEleveGAEV extends ObjetFenetre {
 		}
 	}
 	evenementListeEleves(aParametres) {
-		if (aParametres.genreEvenement === EGenreEvenementListe.ApresEdition) {
+		if (
+			aParametres.genreEvenement ===
+			Enumere_EvenementListe_1.EGenreEvenementListe.ApresEdition
+		) {
 			this.setBoutonActif(1, this.estListeElevesModifie());
 		}
 	}
 	estListeElevesModifie() {
 		for (let I = 0; I < this.listeEleves.count(); I++) {
 			const lEleve = this.listeEleves.get(I);
-			if (_estEleveModifie(lEleve)) {
+			if (this._estEleveModifie(lEleve)) {
 				return true;
 			}
 		}
@@ -317,32 +387,26 @@ class ObjetFenetre_ChoixEleveGAEV extends ObjetFenetre {
 			});
 			for (let I = 0; I < lListeEleves.count(); I++) {
 				const lEleve = lListeEleves.get(I);
-				if (_estEleveModifie(lEleve)) {
+				if (this._estEleveModifie(lEleve)) {
 					lEleve.setEtat(
 						lEleve.estTotalementDesGroupes
-							? EGenreEtat.Modification
-							: EGenreEtat.Suppression,
+							? Enumere_Etat_1.EGenreEtat.Modification
+							: Enumere_Etat_1.EGenreEtat.Suppression,
 					);
 				}
 			}
 		}
 		this.callback.appel(aGenreBouton, lListeEleves);
 	}
+	_estEleveModifie(aEleve) {
+		return (
+			aEleve &&
+			!aEleve.estUneClasse &&
+			(aEleve.initial.estTotalementDesGroupes !==
+				aEleve.estTotalementDesGroupes ||
+				aEleve.initial.estPartiellementDesGroupes !==
+					aEleve.estPartiellementDesGroupes)
+		);
+	}
 }
-ObjetFenetre_ChoixEleveGAEV.filtres = {
-	dansLeGroupe: true,
-	dansAutreGroupe: true,
-	aucunGroupe: true,
-	presents: true,
-};
-function _estEleveModifie(aEleve) {
-	return (
-		aEleve &&
-		!aEleve.estUneClasse &&
-		(aEleve.initial.estTotalementDesGroupes !==
-			aEleve.estTotalementDesGroupes ||
-			aEleve.initial.estPartiellementDesGroupes !==
-				aEleve.estPartiellementDesGroupes)
-	);
-}
-module.exports = ObjetFenetre_ChoixEleveGAEV;
+exports.ObjetFenetre_ChoixEleveGAEV = ObjetFenetre_ChoixEleveGAEV;

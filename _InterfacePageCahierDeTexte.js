@@ -1,91 +1,80 @@
-const { Identite } = require("ObjetIdentite.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { GChaine } = require("ObjetChaine.js");
-const { GHtml } = require("ObjetHtml.js");
-const { GDate } = require("ObjetDate.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { GUID } = require("GUID.js");
-const { ObjetInvocateur, Invocateur } = require("Invocateur.js");
-const { EGenreImpression } = require("Enumere_GenreImpression.js");
-const {
-	EGenreAffichageCahierDeTextes,
-} = require("Enumere_AffichageCahierDeTextes.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { EGenreOnglet } = require("Enumere_Onglet.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { EModeAffichageTimeline } = require("Enumere_ModeAffichageTimeline.js");
-const { EGenreBtnActionBlocTAF } = require("GestionnaireBlocTAF.js");
-const { EGenreBtnActionBlocCDC } = require("GestionnaireBlocCDC.js");
-const { ObjetListeArborescente } = require("ObjetListeArborescente.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GestionnaireBlocTAF } = require("GestionnaireBlocTAF.js");
-const { GestionnaireBlocCDC } = require("GestionnaireBlocCDC.js");
-const {
-	ObjetRequetePageCahierDeTexte,
-} = require("ObjetRequetePageCahierDeTexte.js");
-const {
-	ObjetUtilitaireCahierDeTexte,
-} = require("ObjetUtilitaireCahierDeTexte.js");
-const { EGenreTriCDT } = require("EGenreTriCDT.js");
-const { TypeDomaine } = require("TypeDomaine.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { EGenreTriElement } = require("Enumere_TriElement.js");
-const { ObjetFenetre_ListeTAFFaits } = require("ObjetFenetre_ListeTAFFaits.js");
-const { ObjetFenetre_Bloc } = require("ObjetFenetre_Bloc.js");
-const { ObjetFenetreVisuEleveQCM } = require("ObjetFenetreVisuEleveQCM.js");
-const { PageCahierDeTexte } = require("PageCahierDeTexte.js");
-const {
-	EGenreRessourcePedagogique,
-	EGenreRessourcePedagogiqueUtil,
-} = require("Enumere_RessourcePedagogique.js");
-const { PageCahierDeTexteEleve } = require("PageCahierDeTexteEleve.js");
-const {
-	ObjetRequeteSaisieTAFFaitEleve,
-} = require("ObjetRequeteSaisieTAFFaitEleve.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreMessage } = require("Enumere_Message.js");
-const {
-	ObjetInterfacePageCahierDeTexteCP,
-} = require("InterfacePageCahierDeTexteCP.js");
-const { ObjetCelluleSemaine } = require("ObjetCelluleSemaine.js");
-const {
-	EGenreTypeRessourcesPedagogiques,
-} = require("Enumere_TypeRessourcesPedagogiques.js");
-const { UtilitaireQCMPN } = require("UtilitaireQCMPN.js");
-const { ObjetDeserialiser } = require("ObjetDeserialiser.js");
-const { ObjetGalerieCarrousel } = require("ObjetGalerieCarrousel.js");
-const { TypeGenreMiniature } = require("TypeGenreMiniature.js");
-const { TypeCallbackVisuEleveQCM } = require("ObjetVisuEleveQCM.js");
-Requetes.inscrire("donneesContenusCDT", ObjetRequeteConsultation);
-class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
+exports._InterfacePageCahierDeTexte = void 0;
+const ObjetIdentite_1 = require("ObjetIdentite");
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const GUID_1 = require("GUID");
+const Invocateur_1 = require("Invocateur");
+const Enumere_GenreImpression_1 = require("Enumere_GenreImpression");
+const Enumere_AffichageCahierDeTextes_1 = require("Enumere_AffichageCahierDeTextes");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const Enumere_Onglet_1 = require("Enumere_Onglet");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const Enumere_ModeAffichageTimeline_1 = require("Enumere_ModeAffichageTimeline");
+const GestionnaireBlocTAF_1 = require("GestionnaireBlocTAF");
+const GestionnaireBlocCDC_1 = require("GestionnaireBlocCDC");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const GestionnaireBlocTAF_2 = require("GestionnaireBlocTAF");
+const GestionnaireBlocCDC_2 = require("GestionnaireBlocCDC");
+const ObjetRequetePageCahierDeTexte_1 = require("ObjetRequetePageCahierDeTexte");
+const ObjetUtilitaireCahierDeTexte_1 = require("ObjetUtilitaireCahierDeTexte");
+const EGenreTriCDT_1 = require("EGenreTriCDT");
+const TypeDomaine_1 = require("TypeDomaine");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_TriElement_1 = require("Enumere_TriElement");
+const ObjetFenetre_ListeTAFFaits_1 = require("ObjetFenetre_ListeTAFFaits");
+const ObjetFenetre_Bloc_1 = require("ObjetFenetre_Bloc");
+const ObjetFenetreVisuEleveQCM_1 = require("ObjetFenetreVisuEleveQCM");
+const PageCahierDeTexte_1 = require("PageCahierDeTexte");
+const Enumere_RessourcePedagogique_1 = require("Enumere_RessourcePedagogique");
+const PageCahierDeTexteEleve_1 = require("PageCahierDeTexteEleve");
+const ObjetRequeteSaisieTAFFaitEleve_1 = require("ObjetRequeteSaisieTAFFaitEleve");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_Message_1 = require("Enumere_Message");
+const InterfacePageCahierDeTexteCP_1 = require("InterfacePageCahierDeTexteCP");
+const ObjetCelluleSemaine_1 = require("ObjetCelluleSemaine");
+const Enumere_TypeRessourcesPedagogiques_1 = require("Enumere_TypeRessourcesPedagogiques");
+const UtilitaireQCMPN_1 = require("UtilitaireQCMPN");
+const ObjetDeserialiser_1 = require("ObjetDeserialiser");
+const ObjetVisuEleveQCM_1 = require("ObjetVisuEleveQCM");
+const ObjetRequeteDonneesContenusCDT_1 = require("ObjetRequeteDonneesContenusCDT");
+const AccessApp_1 = require("AccessApp");
+class _InterfacePageCahierDeTexte extends InterfacePageCahierDeTexteCP_1.ObjetInterfacePageCahierDeTexteCP {
 	constructor(...aParams) {
 		super(...aParams);
-		this.date = GEtatUtilisateur.getNavigationDate() || GDate.aujourdhui;
-		this.idBlocRessourcesNumeriques = GUID.getId();
+		this.appSco = (0, AccessApp_1.getApp)();
+		this.etatUtilSco = this.appSco.getEtatUtilisateur();
+		this.idTitreRessourcesPeda = GUID_1.GUID.getId();
+		this.idBlocSujetsCorriges = GUID_1.GUID.getId();
+		this.idBlocTravauxRendus = GUID_1.GUID.getId();
+		this.idBlocQCM = GUID_1.GUID.getId();
+		this.idBlocRessourcesGranulaires = GUID_1.GUID.getId();
+		this.idBlocForumPedagogique = GUID_1.GUID.getId();
+		this.idBlocDocumentsAutres = GUID_1.GUID.getId();
+		this.idBlocRessourcesNumeriques = GUID_1.GUID.getId();
 		this.listeRessourcesNumeriques = null;
-		this.idZoneBlocsRessourcesPedagogiques = GUID.getId();
-		this.ListeCahierDeTextes = new ObjetListeElements();
-		this.ListeTravailAFaire = new ObjetListeElements();
-		this.modeTimeLine = GEtatUtilisateur.getModeAffichageTimeLine();
-		if (!this.modeTimeLine) {
-			this.modeTimeLine = EModeAffichageTimeline.classique;
-			GEtatUtilisateur.setModeAffichageTimeLine(this.modeTimeLine);
-		}
-		this.peuFaireTAF = [EGenreEspace.Eleve].includes(
-			GEtatUtilisateur.GenreEspace,
+		this.idZoneBlocsRessourcesPedagogiques = GUID_1.GUID.getId();
+		this.ListeCahierDeTextes = new ObjetListeElements_1.ObjetListeElements();
+		this.ListeTravailAFaire = new ObjetListeElements_1.ObjetListeElements();
+		this.peuFaireTAF = [Enumere_Espace_1.EGenreEspace.Eleve].includes(
+			this.etatUtilSco.GenreEspace,
 		);
 		this.ModeAffichage =
-			GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.CDT_TAF
-				? EGenreAffichageCahierDeTextes.TravailAFaire
-				: EGenreAffichageCahierDeTextes.ContenuDeCours;
-		this.utilitaireCDT = new ObjetUtilitaireCahierDeTexte(
-			this.Nom + "_utilitaireCDT",
-			this,
-		);
+			this.etatUtilSco.getGenreOnglet() ===
+			Enumere_Onglet_1.EGenreOnglet.CDT_TAF
+				? Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+						.TravailAFaire
+				: Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+						.ContenuDeCours;
+		this.utilitaireCDT =
+			new ObjetUtilitaireCahierDeTexte_1.ObjetUtilitaireCahierDeTexte(
+				this.Nom + "_utilitaireCDT",
+				this,
+			);
 		this.inclureTAFFait = true;
 		this.inclureTAFAFaire = true;
 		this.infoRessourceDeploye = {
@@ -97,49 +86,53 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 			documentsAutres: false,
 			forumPedagogique: false,
 		};
-		this.avecBandeau = true;
 		this.optionsBloc = {};
+		this.date =
+			this.etatUtilSco.getNavigationDate() || ObjetDate_1.GDate.aujourdhui;
+		this.modeTimeLine = this.etatUtilSco.getModeAffichageTimeLine();
+		if (!this.modeTimeLine) {
+			this.modeTimeLine =
+				Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.classique;
+			this.etatUtilSco.setModeAffichageTimeLine(this.modeTimeLine);
+		}
+		this.avecBandeau = true;
 	}
 	construireInstances() {
 		super.construireInstances();
 		this.IdentCahierDeTexte = this.add(
-			PageCahierDeTexteEleve,
+			PageCahierDeTexteEleve_1.PageCahierDeTexteEleve,
 			this.surEvenementPage,
 		);
-		this.gestionnaireTAF = Identite.creerInstance(GestionnaireBlocTAF, {
-			pere: this,
-			evenement: this.evenementSurBlocTAF.bind(this, { fenetre: false }),
-		});
-		this.gestionnaireCDC = Identite.creerInstance(GestionnaireBlocCDC, {
-			pere: this,
-			evenement: this.evenementSurBlocCDC,
-		});
+		this.gestionnaireTAF = ObjetIdentite_1.Identite.creerInstance(
+			GestionnaireBlocTAF_2.GestionnaireBlocTAF,
+			{
+				pere: this,
+				evenement: this.evenementSurBlocTAF.bind(this, { fenetre: false }),
+			},
+		);
+		this.gestionnaireCDC = ObjetIdentite_1.Identite.creerInstance(
+			GestionnaireBlocCDC_2.GestionnaireBlocCDC,
+			{ pere: this, evenement: this.evenementSurBlocCDC },
+		);
 		this.identCelluleSemaine = this.add(
-			ObjetCelluleSemaine,
+			ObjetCelluleSemaine_1.ObjetCelluleSemaine,
 			this._evntCelluleSemaine,
 			this._initCelluleSemaine,
 		);
 		this.identFenetreVisuQCM = this.addFenetre(
-			ObjetFenetreVisuEleveQCM,
+			ObjetFenetreVisuEleveQCM_1.ObjetFenetreVisuEleveQCM,
 			this.evenementSurVisuEleve,
 		);
 		this.identDetailCDT = this.addFenetre(
-			ObjetFenetre_Bloc,
+			ObjetFenetre_Bloc_1.ObjetFenetre_Bloc,
 			null,
-			_initDetailCDT,
+			this._initDetailCDT,
 		);
 		this.identImpression = this.add(
-			PageCahierDeTexte,
+			PageCahierDeTexte_1.PageCahierDeTexte,
 			null,
-			_initialiserCDTpourImpression,
+			this._initialiserCDTpourImpression,
 		);
-		this.idTitreRessourcesPeda = GUID.getId();
-		this.idBlocSujetsCorriges = GUID.getId();
-		this.idBlocTravauxRendus = GUID.getId();
-		this.idBlocQCM = GUID.getId();
-		this.idBlocRessourcesGranulaires = GUID.getId();
-		this.idBlocForumPedagogique = GUID.getId();
-		this.idBlocDocumentsAutres = GUID.getId();
 	}
 	construireStructureListeADroite() {
 		return [
@@ -181,10 +174,10 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 	}
 	setModeTimeline(aModeTimeline) {
 		this.modeTimeLine = aModeTimeline;
-		if (this.getInstance(this.identDetailCDT)) {
+		if (this.existeInstance(this.identDetailCDT)) {
 			this.getInstance(this.identDetailCDT).fermer();
 		}
-		GEtatUtilisateur.setModeAffichageTimeLine(this.modeTimeLine);
+		this.etatUtilSco.setModeAffichageTimeLine(this.modeTimeLine);
 	}
 	evenementSurPage() {
 		this.recupererDonnees();
@@ -195,24 +188,26 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 	}
 	presetDates() {
 		this.gestionnaireBloc =
-			this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire
+			this.ModeAffichage ===
+			Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+				.TravailAFaire
 				? this.gestionnaireTAF
 				: this.gestionnaireCDC;
 		this.initialiserBloc(this.gestionnaireBloc);
 		this.gestionnaireBloc.initialiser();
-		this.domaine = GEtatUtilisateur.getDomaineSelectionne();
-		this.dateDepuis = GEtatUtilisateur.getDateDebutTimeLineCDT();
-		this.estNavigationTAF = GEtatUtilisateur.getPage();
+		this.domaine = this.etatUtilSco.getDomaineSelectionne();
+		this.dateDepuis = this.etatUtilSco.getDateDebutTimeLineCDT();
+		this.estNavigationTAF = this.etatUtilSco.getPage();
 		if (this.estNavigationTAF && this.estNavigationTAF.date) {
-			const lDomaine = new TypeDomaine();
+			const lDomaine = new TypeDomaine_1.TypeDomaine();
 			const lSemaine = IE.Cycles.cycleDeLaDate(this.estNavigationTAF.date);
 			lDomaine.vider();
 			lDomaine.setValeur(true, lSemaine);
 			this.domaine = lDomaine;
 		}
-		GEtatUtilisateur.resetPage();
-		this.domaineChronologique = initDomaineChronologique(this.dateDepuis);
-		this.dateDepuis = GDate.getDateBornee(
+		this.etatUtilSco.resetPage();
+		this.domaineChronologique = this.initDomaineChronologique(this.dateDepuis);
+		this.dateDepuis = ObjetDate_1.GDate.getDateBornee(
 			IE.Cycles.dateDebutCycle(
 				this.domaineChronologique.getPremierePosition(true),
 			),
@@ -253,39 +248,40 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 	}
 	evenementSurBlocTAF(aObjet, aTAF, aGenreEvnt, aParam) {
 		switch (aGenreEvnt) {
-			case EGenreBtnActionBlocTAF.documentRendu:
+			case GestionnaireBlocTAF_1.EGenreBtnActionBlocTAF.documentRendu:
 				if (aObjet && aObjet.fenetre && aObjet.contexte) {
-					Requetes(
-						"donneesContenusCDT",
+					new ObjetRequeteDonneesContenusCDT_1.ObjetRequeteDonneesContenusCDT(
 						this,
-						_actionApresRequeteDonneesTAFCDT.bind(this, {
+						this._actionApresRequeteDonneesTAFCDT.bind(this, {
 							contexte: aObjet.contexte,
 						}),
 					).lancerRequete({
-						cahierDeTextes: new ObjetElement("", aObjet.contexte.getNumero()),
+						cahierDeTextes: new ObjetElement_1.ObjetElement(
+							"",
+							aObjet.contexte.getNumero(),
+						),
 						pourTAF: true,
 					});
 				} else {
 					this.evenementSurCalendrier(this.getDomaineSelonAffichage());
 				}
 				break;
-			case EGenreBtnActionBlocTAF.executionQCM:
+			case GestionnaireBlocTAF_1.EGenreBtnActionBlocTAF.executionQCM:
 				this.surExecutionQCM(aParam.event, aTAF.getNumero(), aObjet);
 				break;
-			case EGenreBtnActionBlocTAF.voirQCM:
+			case GestionnaireBlocTAF_1.EGenreBtnActionBlocTAF.voirQCM:
 				this.surExecutionQCM(aParam.event, aTAF.getNumero(), aObjet);
 				break;
-			case EGenreBtnActionBlocTAF.voirContenu:
-				Requetes(
-					"donneesContenusCDT",
+			case GestionnaireBlocTAF_1.EGenreBtnActionBlocTAF.voirContenu:
+				new ObjetRequeteDonneesContenusCDT_1.ObjetRequeteDonneesContenusCDT(
 					this,
-					_actionApresRequeteDonneesContenusCDT,
+					this._actionApresRequeteDonneesContenusCDT,
 				).lancerRequete({ cahierDeTextes: aTAF.cahierDeTextes });
 				break;
-			case EGenreBtnActionBlocTAF.detailTAF:
+			case GestionnaireBlocTAF_1.EGenreBtnActionBlocTAF.detailTAF:
 				this.surDetailRendu(aParam.event, aTAF.getNumero(), aObjet);
 				break;
-			case EGenreBtnActionBlocTAF.tafFait: {
+			case GestionnaireBlocTAF_1.EGenreBtnActionBlocTAF.tafFait: {
 				const lTAF = this.ListeTravailAFaire.getElementParNumero(
 					aTAF.getNumero(),
 				);
@@ -295,8 +291,8 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 				}
 				break;
 			}
-			case EGenreBtnActionBlocTAF.executionKiosque:
-				window.open(GChaine.creerUrlBruteLienExterne(aTAF));
+			case GestionnaireBlocTAF_1.EGenreBtnActionBlocTAF.executionKiosque:
+				window.open(ObjetChaine_1.GChaine.creerUrlBruteLienExterne(aTAF));
 				break;
 			default:
 				break;
@@ -304,19 +300,21 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 	}
 	evenementSurBlocCDC(aElement, aGenreEvnt, aParam) {
 		switch (aGenreEvnt) {
-			case EGenreBtnActionBlocCDC.executionQCM:
+			case GestionnaireBlocCDC_1.EGenreBtnActionBlocCDC.executionQCM:
 				this.surExecutionQCMContenu(aParam.event, aElement);
 				break;
-			case EGenreBtnActionBlocCDC.navigationTAF:
-				Requetes(
-					"donneesContenusCDT",
+			case GestionnaireBlocCDC_1.EGenreBtnActionBlocCDC.navigationTAF:
+				new ObjetRequeteDonneesContenusCDT_1.ObjetRequeteDonneesContenusCDT(
 					this,
-					_actionApresRequeteDonneesTAFCDT.bind(this, {
+					this._actionApresRequeteDonneesTAFCDT.bind(this, {
 						contexte: aElement,
 						pourLe: true,
 					}),
 				).lancerRequete({
-					cahierDeTextes: new ObjetElement("", aElement.getNumero()),
+					cahierDeTextes: new ObjetElement_1.ObjetElement(
+						"",
+						aElement.getNumero(),
+					),
 					pourTAF: true,
 				});
 				break;
@@ -327,9 +325,11 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 	initialiserBloc(aInstance, aEstAffContenuDesCours) {
 		let lEvent = null;
 		if (this.estHebdomadaire()) {
-			lEvent = _afficheFenetreDetail.bind(
+			lEvent = this._afficheFenetreDetail.bind(
 				this,
-				this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire,
+				this.ModeAffichage ===
+					Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+						.TravailAFaire,
 			);
 		}
 		aInstance.setOptions(
@@ -338,14 +338,17 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 					avecPastille: false,
 					modeAffichage: this.modeTimeLine,
 					formatDate:
-						this.modeTimeLine === EModeAffichageTimeline.compact
+						this.modeTimeLine ===
+						Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.compact
 							? "%Jjj %JJ %Mmm"
 							: null,
 					avecZoneAction: !this.estHebdomadaire() && !aEstAffContenuDesCours,
 					avecBordure: this.estHebdomadaire(),
 					initPlie: this.estHebdomadaire(),
 					callBackTitre: lEvent,
-					pourLe: this.modeTimeLine === EModeAffichageTimeline.compact,
+					pourLe:
+						this.modeTimeLine ===
+						Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.compact,
 					avecPourLeEtDonneeLe: true,
 				},
 				this.optionsBloc,
@@ -353,7 +356,7 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 		);
 	}
 	modifierDomaine(aDomaine) {
-		const lDomaine = new TypeDomaine();
+		const lDomaine = new TypeDomaine_1.TypeDomaine();
 		const lSemaine = aDomaine.getPremierePosition(true);
 		lDomaine.vider();
 		lDomaine.setValeur(true, lSemaine, lSemaine);
@@ -361,43 +364,44 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 		this.evenementSurCalendrier(this.domaine);
 	}
 	modifierDate(aDate) {
-		this.domaineChronologique = initDomaineChronologique(aDate);
-		this.dateDepuis = GDate.getDateBornee(
+		this.domaineChronologique = this.initDomaineChronologique(aDate);
+		this.dateDepuis = ObjetDate_1.GDate.getDateBornee(
 			IE.Cycles.dateDebutCycle(
 				this.domaineChronologique.getPremierePosition(true),
 			),
 		);
-		GEtatUtilisateur.setDateDebutTimeLineCDT(this.dateDepuis);
+		this.etatUtilSco.setDateDebutTimeLineCDT(this.dateDepuis);
 		this.evenementSurCalendrier(this.domaineChronologique);
 	}
 	evenementSurCalendrier(aDomaine) {
 		if (this.estHebdomadaire()) {
-			GEtatUtilisateur.setDomaineSelectionne(aDomaine);
+			this.etatUtilSco.setDomaineSelectionne(aDomaine);
 		}
-		if (this.getInstance(this.identDetailCDT)) {
+		if (this.existeInstance(this.identDetailCDT)) {
 			this.getInstance(this.identDetailCDT).fermer();
 		}
 		const lParams = { domaine: aDomaine };
 		if (
 			[
-				EGenreEspace.Academie,
-				EGenreEspace.Etablissement,
-				EGenreEspace.Professeur,
-				EGenreEspace.PrimProfesseur,
-				EGenreEspace.PrimDirection,
-			].includes(GEtatUtilisateur.GenreEspace)
+				Enumere_Espace_1.EGenreEspace.Academie,
+				Enumere_Espace_1.EGenreEspace.Etablissement,
+				Enumere_Espace_1.EGenreEspace.Professeur,
+				Enumere_Espace_1.EGenreEspace.PrimProfesseur,
+				Enumere_Espace_1.EGenreEspace.PrimDirection,
+			].includes(this.etatUtilSco.GenreEspace)
 		) {
-			lParams.ressource = GEtatUtilisateur.Navigation.getRessource(
-				EGenreRessource.Classe,
+			lParams.ressource = this.etatUtilSco.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.Classe,
 			);
 			if (
 				!!lParams.ressource &&
-				lParams.ressource.getGenre() !== EGenreRessource.Classe
+				lParams.ressource.getGenre() !==
+					Enumere_Ressource_1.EGenreRessource.Classe
 			) {
 				lParams.ressource = null;
 			}
 		}
-		new ObjetRequetePageCahierDeTexte(
+		new ObjetRequetePageCahierDeTexte_1.ObjetRequetePageCahierDeTexte(
 			this,
 			this.actionSurEvenementSurCalendrier,
 		).lancerRequete(lParams);
@@ -405,11 +409,11 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 	actualiserPage() {
 		const lParamsRequete = {
 			domaine: this.getDomaineSelonAffichage(),
-			ressource: GEtatUtilisateur.Navigation.getRessource(
-				EGenreRessource.Classe,
+			ressource: this.etatUtilSco.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.Classe,
 			),
 		};
-		new ObjetRequetePageCahierDeTexte(
+		new ObjetRequetePageCahierDeTexte_1.ObjetRequetePageCahierDeTexte(
 			this,
 			this.actionSurEvenementSurCalendrier,
 		).lancerRequete(lParamsRequete);
@@ -417,28 +421,29 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 	surEvenementPage(aParams) {
 		if (aParams) {
 			if (aParams.cours) {
-				Requetes(
-					"donneesContenusCDT",
+				new ObjetRequeteDonneesContenusCDT_1.ObjetRequeteDonneesContenusCDT(
 					this,
-					_actionApresRequeteDonneesTAFCDT.bind(this, {
+					this._actionApresRequeteDonneesTAFCDT.bind(this, {
 						contexte: aParams.cours,
 						pourLe: true,
 					}),
 				).lancerRequete({
-					cahierDeTextes: new ObjetElement("", aParams.cours.getNumero()),
+					cahierDeTextes: new ObjetElement_1.ObjetElement(
+						"",
+						aParams.cours.getNumero(),
+					),
 					pourTAF: true,
 				});
 			}
 			if (aParams.taf) {
 				switch (aParams.GenreBtnAction) {
-					case EGenreBtnActionBlocTAF.voirContenu:
-						Requetes(
-							"donneesContenusCDT",
+					case GestionnaireBlocTAF_1.EGenreBtnActionBlocTAF.voirContenu:
+						new ObjetRequeteDonneesContenusCDT_1.ObjetRequeteDonneesContenusCDT(
 							this,
-							_actionApresRequeteDonneesContenusCDT,
+							this._actionApresRequeteDonneesContenusCDT,
 						).lancerRequete({ cahierDeTextes: aParams.taf.cahierDeTextes });
 						break;
-					case EGenreBtnActionBlocTAF.detailTAF:
+					case GestionnaireBlocTAF_1.EGenreBtnActionBlocTAF.detailTAF:
 						this.surDetailRendu(null, aParams.taf.getNumero(), aParams.objet);
 						break;
 					default:
@@ -449,7 +454,9 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 			if (aParams.executionQCM) {
 				let i, j, k, lNbr, lElement, lContenu, lExecutionQCM;
 				if (
-					this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire
+					this.ModeAffichage ===
+					Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+						.TravailAFaire
 				) {
 					if (aParams.CDT) {
 						lElement = aParams.CDT;
@@ -480,7 +487,7 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 								break;
 							}
 						}
-						this.surExecutionQCMContenu(null, lExecutionQCM, aParams);
+						this.surExecutionQCMContenu(null, lExecutionQCM);
 					} else {
 						for (i = 0, lNbr = this.ListeTravailAFaire.count(); i < lNbr; i++) {
 							lElement = this.ListeTravailAFaire.get(i);
@@ -506,7 +513,7 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 								return false;
 							}
 						});
-						_ouvrirExecutionQCM.call(this, lExecutionQCM);
+						this._ouvrirExecutionQCM(lExecutionQCM);
 					} else if (aParams.TAFQCM) {
 						lContenu = aParams.TAFQCM;
 						for (
@@ -567,7 +574,7 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 				}
 			}
 			if (aParams.nodeDeploye) {
-				_setInfoRessourceDeploye.call(this, aParams.nodeDeploye);
+				this._setInfoRessourceDeploye(aParams.nodeDeploye);
 			}
 		} else {
 			this.apresModificationTAF = true;
@@ -583,32 +590,37 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 	}
 	evenementFiche(aParam) {
 		if (aParam && aParam.surTAFARendre) {
-			this.recupererDonnees(true);
+			this.recupererDonnees();
 		} else if (aParam && aParam.executionQCM) {
-			_ouvrirExecutionQCM.call(this, aParam.executionQCM);
+			this._ouvrirExecutionQCM(aParam.executionQCM);
 		}
 	}
 	actualiser() {
 		this.ModeAffichage =
-			GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.CDT_TAF
-				? EGenreAffichageCahierDeTextes.TravailAFaire
-				: EGenreAffichageCahierDeTextes.ContenuDeCours;
-		Invocateur.evenement(
-			ObjetInvocateur.events.activationImpression,
-			EGenreImpression.Aucune,
+			this.etatUtilSco.getGenreOnglet() ===
+			Enumere_Onglet_1.EGenreOnglet.CDT_TAF
+				? Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+						.TravailAFaire
+				: Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+						.ContenuDeCours;
+		Invocateur_1.Invocateur.evenement(
+			Invocateur_1.ObjetInvocateur.events.activationImpression,
+			Enumere_GenreImpression_1.EGenreImpression.Aucune,
 		);
 		const lDonnees = this.formatDonnees();
 		if (lDonnees && lDonnees.count()) {
-			Invocateur.evenement(
-				ObjetInvocateur.events.activationImpression,
-				EGenreImpression.Normale,
+			Invocateur_1.Invocateur.evenement(
+				Invocateur_1.ObjetInvocateur.events.activationImpression,
+				Enumere_GenreImpression_1.EGenreImpression.Normale,
 				this,
 			);
 		}
 		let lCompteurRessources = 0;
 		if (
 			!this.estHebdomadaire() &&
-			this.ModeAffichage === EGenreAffichageCahierDeTextes.ContenuDeCours &&
+			this.ModeAffichage ===
+				Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+					.ContenuDeCours &&
 			!!this.listeRessourcesNumeriques &&
 			this.listeRessourcesNumeriques.count() > 0
 		) {
@@ -619,7 +631,7 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 				this.filtreMatiere,
 				this.infoRessourceDeploye,
 			);
-			GHtml.setHtml(
+			ObjetHtml_1.GHtml.setHtml(
 				this.idBlocRessourcesNumeriques,
 				lHtmlRessourcesNumerique,
 				this.getInstance(this.IdentCahierDeTexte).controleur,
@@ -630,30 +642,31 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 			$("#" + this.idBlocRessourcesNumeriques.escapeJQ()).hide();
 		}
 		const lRessourcesPedagogiquesParType =
-			_regrouperRessourcesPedagogiquesParType.call(
-				this,
+			this._regrouperRessourcesPedagogiquesParType(
 				this.listeRessourcesPedagogiques,
 				this.filtreMatiere,
 				this.filtreThemes,
 			);
 		if (
-			!GEtatUtilisateur.estModeAccessible() &&
 			!this.estHebdomadaire() &&
-			this.ModeAffichage === EGenreAffichageCahierDeTextes.ContenuDeCours &&
+			this.ModeAffichage ===
+				Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+					.ContenuDeCours &&
 			((!!this.listeRessourcesPedagogiques &&
 				this.listeRessourcesPedagogiques.count() > 0) ||
 				(!!this.listeRessourcesNumeriques &&
 					this.listeRessourcesNumeriques.count() > 0))
 		) {
-			for (const lKey of MethodesObjet.enumKeys(
-				EGenreTypeRessourcesPedagogiques,
+			for (const lKey of MethodesObjet_1.MethodesObjet.enumKeys(
+				Enumere_TypeRessourcesPedagogiques_1.EGenreTypeRessourcesPedagogiques,
 			)) {
-				const lType = EGenreTypeRessourcesPedagogiques[lKey];
+				const lType =
+					Enumere_TypeRessourcesPedagogiques_1.EGenreTypeRessourcesPedagogiques[
+						lKey
+					];
 				let lHtmlListeRessourcesPeda = "";
-				const lIdBlocRessources = _getIdBlocRessourcesPedagogiquePourType.call(
-					this,
-					lType,
-				);
+				const lIdBlocRessources =
+					this._getIdBlocRessourcesPedagogiquePourType(lType);
 				if (
 					!!lIdBlocRessources &&
 					!!lRessourcesPedagogiquesParType[lType] &&
@@ -667,14 +680,14 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 						this.infoRessourceDeploye,
 					);
 				}
-				GHtml.setHtml(
+				ObjetHtml_1.GHtml.setHtml(
 					lIdBlocRessources,
 					lHtmlListeRessourcesPeda,
 					this.getInstance(this.IdentCahierDeTexte).controleur,
 				);
 				lCompteurRessources += lHtmlListeRessourcesPeda.length;
 			}
-			GHtml.setHtml(
+			ObjetHtml_1.GHtml.setHtml(
 				this.idTitreRessourcesPeda,
 				lCompteurRessources > 0
 					? this.getInstance(
@@ -696,131 +709,145 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 		} else {
 			$("#" + this.idZoneBlocsRessourcesPedagogiques.escapeJQ()).hide();
 		}
-		if (GEtatUtilisateur.estModeAccessible()) {
-			this.afficherListeAccessible(lDonnees, lRessourcesPedagogiquesParType);
-		} else {
-			const lDomaine = this.getDomaineSelonAffichage();
-			const lParams = {
-				modeAffichage: this.modeTimeLine,
-				avecJoursOuvres: true,
-				debutGrille: IE.Cycles.dateDebutCycle(
-					lDomaine.getPremierePosition(true),
-				),
-				finGrille: IE.Cycles.dateFinCycle(lDomaine.getDernierePosition(true)),
-			};
-			this.gestionnaireBloc =
-				this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire
-					? this.gestionnaireTAF
-					: this.gestionnaireCDC;
-			this.initialiserBloc(
-				this.gestionnaireBloc,
-				this.ModeAffichage === EGenreAffichageCahierDeTextes.ContenuDeCours,
+		const lDomaine = this.getDomaineSelonAffichage();
+		const lParams = {
+			modeAffichage: this.modeTimeLine,
+			avecJoursOuvres: true,
+			debutGrille: IE.Cycles.dateDebutCycle(lDomaine.getPremierePosition(true)),
+			finGrille: IE.Cycles.dateFinCycle(lDomaine.getDernierePosition(true)),
+		};
+		this.gestionnaireBloc =
+			this.ModeAffichage ===
+			Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+				.TravailAFaire
+				? this.gestionnaireTAF
+				: this.gestionnaireCDC;
+		this.initialiserBloc(
+			this.gestionnaireBloc,
+			this.ModeAffichage ===
+				Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+					.ContenuDeCours,
+		);
+		this.getInstance(this.IdentTimeLine).setOptions(lParams);
+		const lTris = [];
+		if (
+			this.modeTimeLine ===
+			Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.grille
+		) {
+			lTris.push(
+				ObjetTri_1.ObjetTri.init((a) => {
+					return ObjetDate_1.GDate.getJour(a.DateDebut);
+				}, Enumere_TriElement_1.EGenreTriElement.Decroissant),
 			);
-			this.getInstance(this.IdentTimeLine).setOptions(lParams);
-			const lTris = [];
-			if (this.modeTimeLine === EModeAffichageTimeline.grille) {
-				lTris.push(
-					ObjetTri.init((a) => {
-						return GDate.getJour(a.DateDebut);
-					}, EGenreTriElement.Decroissant),
-				);
-				lTris.push(ObjetTri.init("DateDebut", EGenreTriElement.Croissant));
-			} else {
-				lTris.push(ObjetTri.init("DateDebut", EGenreTriElement.Decroissant));
+			lTris.push(
+				ObjetTri_1.ObjetTri.init(
+					"DateDebut",
+					Enumere_TriElement_1.EGenreTriElement.Croissant,
+				),
+			);
+		} else {
+			lTris.push(
+				ObjetTri_1.ObjetTri.init(
+					"DateDebut",
+					Enumere_TriElement_1.EGenreTriElement.Decroissant,
+				),
+			);
+		}
+		lDonnees.setTri(lTris);
+		lDonnees.trier();
+		if (!this.estHebdomadaire()) {
+			$("#" + this.getInstance(this.IdentTimeLine).getNom().escapeJQ()).hide();
+			$(
+				"#" + this.getInstance(this.IdentCahierDeTexte).getNom().escapeJQ(),
+			).show();
+		} else {
+			$(
+				"#" + this.getInstance(this.IdentCahierDeTexte).getNom().escapeJQ(),
+			).hide();
+			$("#" + this.getInstance(this.IdentTimeLine).getNom().escapeJQ()).show();
+		}
+		if (lDonnees.count() > 0 || this.estHebdomadaire()) {
+			const lListeFiltree =
+				this.ModeAffichage ===
+				Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+					.TravailAFaire
+					? this.listeTAFFiltres
+					: this.listeCDCFiltres;
+			const lParamsTL = {
+				liste: !this.estHebdomadaire() ? lListeFiltree : lDonnees,
+				gestionnairesBlocs: [this.gestionnaireBloc],
+				avecFiltrage: this.filtreMatiere !== null,
+			};
+			if (this.estNavigationTAF && this.estNavigationTAF.date) {
+				lParamsTL.dateCourante = this.estNavigationTAF.date;
+				this.estNavigationTAF = null;
 			}
-			lDonnees.setTri(lTris);
-			lDonnees.trier();
 			if (!this.estHebdomadaire()) {
 				$(
-					"#" + this.getInstance(this.IdentTimeLine).getNom().escapeJQ(),
-				).hide();
-				$(
 					"#" + this.getInstance(this.IdentCahierDeTexte).getNom().escapeJQ(),
-				).show();
+				).get(0).style.maxWidth = "80rem";
+				this.getInstance(this.IdentCahierDeTexte).setDonnees(lParamsTL);
 			} else {
-				$(
-					"#" + this.getInstance(this.IdentCahierDeTexte).getNom().escapeJQ(),
-				).hide();
-				$(
-					"#" + this.getInstance(this.IdentTimeLine).getNom().escapeJQ(),
-				).show();
-			}
-			if (lDonnees.count() > 0 || this.estHebdomadaire()) {
-				const lListeFiltree =
-					this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire
-						? this.listeTAFFiltres
-						: this.listeCDCFiltres;
-				const lParamsTL = {
-					liste: !this.estHebdomadaire() ? lListeFiltree : lDonnees,
-					gestionnairesBlocs: [this.gestionnaireBloc],
-					avecFiltrage: this.filtreMatiere !== null,
-				};
-				if (this.estNavigationTAF && this.estNavigationTAF.date) {
-					lParamsTL.dateCourante = this.estNavigationTAF.date;
-					this.estNavigationTAF = null;
-				}
-				if (!this.estHebdomadaire()) {
-					$(
-						"#" + this.getInstance(this.IdentCahierDeTexte).getNom().escapeJQ(),
-					).get(0).style.maxWidth = "80rem";
-					this.getInstance(this.IdentCahierDeTexte).setDonnees(lParamsTL);
-				} else {
-					this.getInstance(this.IdentTimeLine).setDonnees(lParamsTL);
-					const lJqBloc = $(
-						"#" + this.getNomInstance(this.IdentTimeLine).escapeJQ(),
-					);
-					const lJqContenu = lJqBloc.find(".PourFenetreBloc_Contenu");
-					lJqContenu.each(function () {
-						$(this)
-							.parents(".UtilitaireBloc_containerNormal")
-							.first()
-							.css({ "justify-content": "flex-start" });
-					});
-				}
-			} else {
-				let lMessage = "";
-				const lClasse = GEtatUtilisateur.Navigation.getRessource(
-					EGenreRessource.Classe,
+				this.getInstance(this.IdentTimeLine).setDonnees(lParamsTL);
+				const lJqBloc = $(
+					"#" + this.getNomInstance(this.IdentTimeLine).escapeJQ(),
 				);
+				const lJqContenu = lJqBloc.find(".PourFenetreBloc_Contenu");
+				lJqContenu.each(function () {
+					$(this)
+						.parents(".UtilitaireBloc_containerNormal")
+						.first()
+						.css({ "justify-content": "flex-start" });
+				});
+			}
+		} else {
+			let lMessage = "";
+			const lClasse = this.etatUtilSco.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.Classe,
+			);
+			if (
+				[
+					Enumere_Espace_1.EGenreEspace.Academie,
+					Enumere_Espace_1.EGenreEspace.Etablissement,
+					Enumere_Espace_1.EGenreEspace.Professeur,
+					Enumere_Espace_1.EGenreEspace.PrimProfesseur,
+					Enumere_Espace_1.EGenreEspace.PrimDirection,
+				].includes(this.etatUtilSco.GenreEspace) &&
+				(!lClasse ||
+					lClasse.getGenre() !== Enumere_Ressource_1.EGenreRessource.Classe)
+			) {
+				lMessage =
+					ObjetTraduction_1.GTraductions.getValeur("Message")[
+						Enumere_Message_1.EGenreMessage.SelectionClasse
+					];
+			} else {
 				if (
-					[
-						EGenreEspace.Academie,
-						EGenreEspace.Etablissement,
-						EGenreEspace.Professeur,
-						EGenreEspace.PrimProfesseur,
-						EGenreEspace.PrimDirection,
-					].includes(GEtatUtilisateur.GenreEspace) &&
-					(!lClasse || lClasse.getGenre() !== EGenreRessource.Classe)
+					this.ModeAffichage ===
+					Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+						.TravailAFaire
 				) {
-					lMessage =
-						GTraductions.getValeur("Message")[EGenreMessage.SelectionClasse];
-				} else {
-					if (
-						this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire
-					) {
-						if (this.listeMatieres && this.listeMatieres.count() > 0) {
-							lMessage = GTraductions.getValeur(
-								"CahierDeTexte.AucunTAFAVenirSelonCriteres",
-							);
-						} else {
-							lMessage = GTraductions.getValeur(
-								"CahierDeTexte.AucunTAFJoursAVenir",
-								[GDate.formatDate(this.dateDepuis, "%JJ/%MM/%AAAA")],
-							);
-						}
+					if (this.listeMatieres && this.listeMatieres.count() > 0) {
+						lMessage = ObjetTraduction_1.GTraductions.getValeur(
+							"CahierDeTexte.AucunTAFAVenirSelonCriteres",
+						);
 					} else {
-						lMessage = GTraductions.getValeur(
-							"CahierDeTexte.AucunContenuJoursAVenir",
-							[GDate.formatDate(this.dateDepuis, "%JJ/%MM/%AAAA")],
+						lMessage = ObjetTraduction_1.GTraductions.getValeur(
+							"CahierDeTexte.AucunTAFJoursAVenir",
+							[ObjetDate_1.GDate.formatDate(this.dateDepuis, "%JJ/%MM/%AAAA")],
 						);
 					}
+				} else {
+					lMessage = ObjetTraduction_1.GTraductions.getValeur(
+						"CahierDeTexte.AucunContenuJoursAVenir",
+						[ObjetDate_1.GDate.formatDate(this.dateDepuis, "%JJ/%MM/%AAAA")],
+					);
 				}
-				this.getInstance(this.IdentCahierDeTexte).afficher(
-					'<div class="message-vide card card-nodata"><div class="card-content">' +
-						this.composeMessage(lMessage) +
-						'</div><div class="Image_No_Data" aria-hidden="true"></div></div>',
-				);
 			}
+			this.getInstance(this.IdentCahierDeTexte).afficher(
+				'<div class="message-vide card card-nodata"><div class="card-content">' +
+					this.composeMessage(lMessage) +
+					'</div><div class="Image_No_Data" aria-hidden="true"></div></div>',
+			);
 		}
 	}
 	actionSurEvenementSurCalendrier(aParametres) {
@@ -830,9 +857,9 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 		this.listeRessourcesNumeriques = aParametres.listeRessourcesNumeriques;
 		this.listeRessourcesPedagogiques = aParametres.listeRessourcesPedagogiques;
 		this.gestionMatiere();
-		this.listeThemes = this.getListeThemes(this);
+		this.listeThemes = this.getListeThemes();
 		let lScrollTop = 0;
-		const lElementScroll = GHtml.getElement(
+		const lElementScroll = ObjetHtml_1.GHtml.getElement(
 			this.getInstance(this.IdentCahierDeTexte).getNom(),
 		);
 		lScrollTop = lElementScroll.scrollTop;
@@ -840,15 +867,21 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 		lElementScroll.scrollTop = lScrollTop;
 		if (
 			this.estChronologique() &&
-			this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire
+			this.ModeAffichage ===
+				Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+					.TravailAFaire
 		) {
 			this.mettreFocusSurProchainTAF(this.ListeTravailAFaire);
 		}
 	}
 	getListeThemes() {
-		let lResult = new ObjetListeElements();
+		let lResult = new ObjetListeElements_1.ObjetListeElements();
 		let lThemeDeLaListe;
-		if (this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire) {
+		if (
+			this.ModeAffichage ===
+			Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+				.TravailAFaire
+		) {
 			this.ListeTravailAFaire.parcourir((aElement) => {
 				if (
 					!!aElement &&
@@ -858,7 +891,7 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 					aElement.ListeThemes.parcourir((aTheme) => {
 						lThemeDeLaListe = lResult.getElementParNumero(aTheme.getNumero());
 						if (!lThemeDeLaListe) {
-							lThemeDeLaListe = MethodesObjet.dupliquer(aTheme);
+							lThemeDeLaListe = MethodesObjet_1.MethodesObjet.dupliquer(aTheme);
 							lResult.addElement(lThemeDeLaListe);
 						}
 					});
@@ -882,7 +915,8 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 									aTheme.getNumero(),
 								);
 								if (!lThemeDeLaListe) {
-									lThemeDeLaListe = MethodesObjet.dupliquer(aTheme);
+									lThemeDeLaListe =
+										MethodesObjet_1.MethodesObjet.dupliquer(aTheme);
 									lResult.addElement(lThemeDeLaListe);
 								}
 							});
@@ -900,7 +934,8 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 						aRessource.ListeThemes.parcourir((aTheme) => {
 							lThemeDeLaListe = lResult.getElementParNumero(aTheme.getNumero());
 							if (!lThemeDeLaListe) {
-								lThemeDeLaListe = MethodesObjet.dupliquer(aTheme);
+								lThemeDeLaListe =
+									MethodesObjet_1.MethodesObjet.dupliquer(aTheme);
 								lResult.addElement(lThemeDeLaListe);
 							}
 						});
@@ -908,11 +943,11 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 				});
 			}
 		}
-		lResult.setTri([ObjetTri.init("Libelle")]);
+		lResult.setTri([ObjetTri_1.ObjetTri.init("Libelle")]);
 		lResult.trier();
 		lResult.insererElement(
-			new ObjetElement(
-				GTraductions.getValeur("CahierDeTexte.tousLesThemes"),
+			new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.tousLesThemes"),
 				null,
 				-1,
 			),
@@ -927,22 +962,28 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 		);
 		this.getInstance(this.identImpression).actualiser(
 			this.ModeAffichage,
-			EGenreTriCDT.ParDatePourLe,
+			EGenreTriCDT_1.EGenreTriCDT.ParDatePourLe,
 		);
 		return {
 			contenu: this.getInstance(this.identImpression).composePage(true),
 		};
 	}
 	getListeMatieres() {
-		const lResult = new ObjetListeElements();
+		const lResult = new ObjetListeElements_1.ObjetListeElements();
 		let lMatiereDeLaListe;
-		if (this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire) {
+		if (
+			this.ModeAffichage ===
+			Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+				.TravailAFaire
+		) {
 			this.ListeTravailAFaire.parcourir((aElement) => {
 				lMatiereDeLaListe = lResult.getElementParNumero(
 					aElement.Matiere.getNumero(),
 				);
 				if (!lMatiereDeLaListe) {
-					lMatiereDeLaListe = MethodesObjet.dupliquer(aElement.Matiere);
+					lMatiereDeLaListe = MethodesObjet_1.MethodesObjet.dupliquer(
+						aElement.Matiere,
+					);
 					lMatiereDeLaListe.nbElementsConcernes = 0;
 					lMatiereDeLaListe.couleurFond = aElement.CouleurFond;
 					lResult.addElement(lMatiereDeLaListe);
@@ -960,7 +1001,9 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 						aElement.Matiere.getNumero(),
 					);
 					if (!lMatiereDeLaListe) {
-						lMatiereDeLaListe = MethodesObjet.dupliquer(aElement.Matiere);
+						lMatiereDeLaListe = MethodesObjet_1.MethodesObjet.dupliquer(
+							aElement.Matiere,
+						);
 						lMatiereDeLaListe.nbElementsConcernes = 0;
 						lMatiereDeLaListe.couleurFond = aElement.CouleurFond;
 						lResult.addElement(lMatiereDeLaListe);
@@ -975,7 +1018,9 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 							aRessource.matiere.getNumero(),
 						);
 						if (!lMatiereDeLaListe) {
-							lMatiereDeLaListe = MethodesObjet.dupliquer(aRessource.matiere);
+							lMatiereDeLaListe = MethodesObjet_1.MethodesObjet.dupliquer(
+								aRessource.matiere,
+							);
 							lMatiereDeLaListe.nbElementsConcernes = 0;
 							lMatiereDeLaListe.couleurFond = aRessource.matiere.CouleurFond;
 							lResult.addElement(lMatiereDeLaListe);
@@ -985,12 +1030,14 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 				});
 			}
 		}
-		lResult.setTri([ObjetTri.init("Libelle")]);
+		lResult.setTri([ObjetTri_1.ObjetTri.init("Libelle")]);
 		lResult.trier();
 		if (lResult.count() > 0) {
 			lResult.insererElement(
-				new ObjetElement(
-					GTraductions.getValeur("TAFEtContenu.toutesLesMatieres"),
+				new ObjetElement_1.ObjetElement(
+					ObjetTraduction_1.GTraductions.getValeur(
+						"TAFEtContenu.toutesLesMatieres",
+					),
 					null,
 					-1,
 				),
@@ -1000,11 +1047,15 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 		return lResult;
 	}
 	formatDonnees() {
-		let lListeTAF = new ObjetListeElements();
-		let lListeCDC = new ObjetListeElements();
+		let lListeTAF = new ObjetListeElements_1.ObjetListeElements();
+		let lListeCDC = new ObjetListeElements_1.ObjetListeElements();
 		const lAvecTestFiltreMatiere = this.estChronologique();
 		let llTestFiltreMatiere;
-		if (this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire) {
+		if (
+			this.ModeAffichage ===
+			Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+				.TravailAFaire
+		) {
 			lListeTAF = this.ListeTravailAFaire.getListeElements((aElement) => {
 				const lFait = aElement.executionQCM
 					? aElement.QCMFait
@@ -1033,7 +1084,7 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 			}
 		} else {
 			this.ListeCahierDeTextes.parcourir((aEl) => {
-				lListeCDC.add(Object.assign(new ObjetElement(), aEl));
+				lListeCDC.add(Object.assign(new ObjetElement_1.ObjetElement(), aEl));
 			});
 			lListeCDC = lListeCDC.getListeElements((aElement) => {
 				llTestFiltreMatiere =
@@ -1074,7 +1125,9 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 			avecTAF: true,
 			nom: this.Nom,
 			pere: this,
-			avecDetailTAF: GEtatUtilisateur.GenreEspace === EGenreEspace.Professeur,
+			avecDetailTAF:
+				this.etatUtilSco.GenreEspace ===
+				Enumere_Espace_1.EGenreEspace.Professeur,
 			controleur: this.controleur,
 		});
 	}
@@ -1087,10 +1140,10 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 				? this.listeTAFDeContenu
 				: this.ListeTravailAFaire;
 		const lElement = lListeTAF.getElementParNumero(aNumeroElement);
-		ObjetFenetre_ListeTAFFaits.ouvrir(
+		ObjetFenetre_ListeTAFFaits_1.ObjetFenetre_ListeTAFFaits.ouvrir(
 			{
 				pere: this,
-				evenement: _surEvenementFenetreListeTAFFaits.bind(this, aObjet),
+				evenement: this._surEvenementFenetreListeTAFFaits.bind(this),
 			},
 			lElement,
 		);
@@ -1114,7 +1167,7 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 		this.evenementFiche({ executionQCM: aElement });
 	}
 	evenementSurVisuEleve(aParam) {
-		if (aParam.action === TypeCallbackVisuEleveQCM.close) {
+		if (aParam.action === ObjetVisuEleveQCM_1.TypeCallbackVisuEleveQCM.close) {
 			this.evenementSurCalendrier(this.getDomaineSelonAffichage());
 		}
 	}
@@ -1130,917 +1183,394 @@ class _InterfacePageCahierDeTexte extends ObjetInterfacePageCahierDeTexteCP {
 				this.inclureTAFFait = true;
 			}
 		}
-		if (this.getInstance(this.identDetailCDT)) {
+		if (this.existeInstance(this.identDetailCDT)) {
 			this.getInstance(this.identDetailCDT).fermer();
 		}
 		this.actualiser();
 	}
-	afficherListeAccessible(aDonnees, aListeRessourcesPedagogiques) {
-		const lIdListe = this.Nom + "_Liste";
-		this._objetListeArborescente = new ObjetListeArborescente(
-			lIdListe,
-			0,
-			this,
-			null,
-		);
-		const lRacine = this._objetListeArborescente.construireRacine();
-		this._objetListeArborescente.setParametres(false);
-		let I,
-			lTitre,
-			lNoeudListeElements,
-			lNoeudElement,
-			lDonnee,
-			lHashDate = {},
-			lStrDate;
-		if (this.estChronologique()) {
-			const lStrDateDepuis = !!this.dateDepuis
-				? GDate.formatDate(this.dateDepuis, "%JJJJ %JJ %MMMM")
-				: "";
-			lTitre = GTraductions.getValeur("CahierDeTexte.depuisLe", [
-				lStrDateDepuis,
-			]);
+	_initialiserCDTpourImpression(aInstance) {
+		aInstance.setParametres(true, true);
+		aInstance.setVisible(false);
+	}
+	_initDetailCDT(aInstance) {
+		aInstance.setOptionsFenetre({ modale: false });
+	}
+	initDomaineChronologique(aDate) {
+		const lResult = new TypeDomaine_1.TypeDomaine();
+		let lDate;
+		if (aDate) {
+			lDate = aDate;
 		} else {
-			const lDateDebSemaine = GDate.formatDate(
-				IE.Cycles.dateDebutCycle(this.domaine.getPremierePosition(true)),
-				"%JJJJ %JJ %MMMM",
-			);
-			const lDateFinSemaine = GDate.formatDate(
-				IE.Cycles.dateDernierJourOuvreCycle(
-					this.domaine.getPremierePosition(true),
-				),
-				"%JJJJ %JJ %MMMM",
-			);
-			lTitre =
-				GTraductions.getValeur("Du") +
-				" " +
-				lDateDebSemaine +
-				" " +
-				GTraductions.getValeur("Au") +
-				" " +
-				lDateFinSemaine;
+			lDate = new Date();
+			lDate.setDate(lDate.getDate() - 30);
 		}
-		lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-			lRacine,
-			null,
-			lTitre,
-			"Gras",
+		lDate = ObjetDate_1.GDate.getDateBornee(lDate);
+		const lSemaine = IE.Cycles.cycleDeLaDate(lDate);
+		lResult.vider();
+		lResult.setValeur(
 			true,
-			true,
+			lSemaine,
+			TypeDomaine_1.TypeDomaine.C_MaxDomaineCycle,
 		);
-		if (aDonnees.count() > 0) {
-			for (I = 0; I < aDonnees.count(); I++) {
-				lDonnee = aDonnees.get(I);
-				lStrDate = GDate.formatDate(lDonnee.Date, "%JJJJ %JJ %MMMM");
-				if (!lHashDate[lStrDate]) {
-					lTitre = lStrDate;
-					lNoeudElement = lHashDate[lStrDate] =
-						this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-							lNoeudListeElements,
-							null,
-							lTitre,
-							"Gras",
-							true,
-						);
-				} else {
-					lNoeudElement = lHashDate[lStrDate];
-				}
-				if (GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.CDT_TAF) {
-					_construitAccessibiliteTAF.call(this, lNoeudElement, lDonnee);
-				} else {
-					_construitAccessibiliteContenu.call(this, lNoeudElement, lDonnee);
-				}
-			}
+		return lResult;
+	}
+	_actionApresRequeteDonneesContenusCDT(aJSON) {
+		const lDonnee =
+			aJSON.ListeCahierDeTextes && aJSON.ListeCahierDeTextes.count() === 1
+				? aJSON.ListeCahierDeTextes.getPremierElement()
+				: null;
+		this.listeContenuDeTAF = aJSON.ListeCahierDeTextes;
+		if (lDonnee) {
+			new ObjetDeserialiser_1.ObjetDeserialiser().deserialiserCahierDeTexte(
+				lDonnee,
+			);
+			this._afficheFenetreDetail(false, lDonnee);
+		} else {
 		}
-		if (GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.CDT_Contenu) {
-			if (
-				this.estChronologique() &&
-				!!this.listeRessourcesNumeriques &&
-				this.listeRessourcesNumeriques.count()
-			) {
-				_construitAccessibiliteListeManuelsNumeriques.call(
-					this,
-					lNoeudListeElements,
-					this.listeRessourcesNumeriques,
-				);
-			}
-			if (this.estChronologique() && !!aListeRessourcesPedagogiques) {
-				_construitAccessibiliteListeRessourcesPedagogiques.call(
-					this,
-					lNoeudListeElements,
-					aListeRessourcesPedagogiques,
-				);
-			}
+	}
+	_actionApresRequeteDonneesTAFCDT(aParams, aJSON) {
+		const lDonnee =
+			aJSON.ListeCahierDeTextes && aJSON.ListeCahierDeTextes.count() === 1
+				? aJSON.ListeCahierDeTextes.getPremierElement()
+				: null;
+		this.listeTAFDeContenu = lDonnee.ListeTravailAFaire;
+		if (lDonnee) {
+			this._afficheFenetreDetail(true, lDonnee);
+		} else {
 		}
-		GHtml.setHtml(
-			this.getNomInstance(this.IdentCahierDeTexte),
-			this._objetListeArborescente.construireAffichage(),
-		);
-		this._objetListeArborescente.setDonnees(lRacine);
 	}
-}
-function _initialiserCDTpourImpression(aInstance) {
-	aInstance.setParametres(true, true);
-	aInstance.setVisible(false);
-}
-function _initDetailCDT(aInstance) {
-	aInstance.setOptionsFenetre({ modale: false });
-}
-function initDomaineChronologique(aDate) {
-	const lResult = new TypeDomaine();
-	let lDate;
-	if (aDate) {
-		lDate = aDate;
-	} else {
-		lDate = new Date();
-		lDate.setDate(lDate.getDate() - 30);
-	}
-	lDate = GDate.getDateBornee(lDate);
-	const lSemaine = IE.Cycles.cycleDeLaDate(lDate);
-	lResult.vider();
-	lResult.setValeur(true, lSemaine, TypeDomaine.C_MaxDomaineCycle);
-	return lResult;
-}
-function _actionApresRequeteDonneesContenusCDT(aJSON) {
-	const lDonnee =
-		aJSON.ListeCahierDeTextes && aJSON.ListeCahierDeTextes.count() === 1
-			? aJSON.ListeCahierDeTextes.getPremierElement()
-			: null;
-	this.listeContenuDeTAF = aJSON.ListeCahierDeTextes;
-	if (lDonnee) {
-		new ObjetDeserialiser().deserialiserCahierDeTexte(lDonnee);
-		_afficheFenetreDetail.call(this, false, lDonnee);
-	} else {
-	}
-}
-function _actionApresRequeteDonneesTAFCDT(aParams, aJSON) {
-	const lDonnee =
-		aJSON.ListeCahierDeTextes && aJSON.ListeCahierDeTextes.count() === 1
-			? aJSON.ListeCahierDeTextes.getPremierElement()
-			: null;
-	this.listeTAFDeContenu = lDonnee.ListeTravailAFaire;
-	if (lDonnee) {
-		_afficheFenetreDetail.call(this, true, lDonnee);
-	} else {
-	}
-}
-function _afficheFenetreDetail(aEstTAF, aDonnee) {
-	const lRessource =
-		aDonnee.ressources && aDonnee.ressources.getPremierElement()
-			? aDonnee.ressources.getPremierElement()
-			: null;
-	const lDonnee = lRessource ? lRessource.elementOriginal : aDonnee;
-	this.donnee = lDonnee;
-	if (this.fenetre) {
-		this.fenetre.fermer();
-	}
-	this.fenetre = ObjetFenetre.creerInstanceFenetre(ObjetFenetre, {
-		pere: this,
-		evenement: function (aGenreBouton) {
-			if (aGenreBouton !== 1) {
-				this.donnee = null;
-			}
-		},
-		initialiser: function (aInstance) {
-			aInstance.setOptionsFenetre({
-				titre: aEstTAF
-					? GTraductions.getValeur("CahierDeTexte.TravailAFaire")
-					: GTraductions.getValeur("CahierDeTexte.ContenuDuCours"),
-				largeur: 600,
-				hauteurMaxContenu: 600,
-				avecScroll: true,
-				listeBoutons: [GTraductions.getValeur("Fermer")],
-			});
-		},
-	});
-	$.extend(this.fenetre.controleur, {
-		appelQCM: {
-			event: function (aDonnee, aNumeroQCM) {
-				if (aEstTAF) {
-					this.surEvenementPage({
-						TAFQCM: aDonnee,
-						executionQCM: aNumeroQCM,
-						fenetre: this.fenetre,
-						contexte: true,
+	_afficheFenetreDetail(aEstTAF, aDonnee) {
+		const lRessource =
+			"ressources" in aDonnee &&
+			aDonnee.ressources &&
+			aDonnee.ressources.getPremierElement()
+				? aDonnee.ressources.getPremierElement()
+				: null;
+		const lDonnee = lRessource ? lRessource.elementOriginal : aDonnee;
+		this.donnee = lDonnee;
+		if (this.fenetre) {
+			this.fenetre.fermer();
+		}
+		this.fenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_1.ObjetFenetre,
+			{
+				pere: this,
+				evenement: function (aGenreBouton) {
+					if (aGenreBouton !== 1) {
+						this.donnee = null;
+					}
+				},
+				initialiser: function (aInstance) {
+					aInstance.setOptionsFenetre({
+						titre: aEstTAF
+							? ObjetTraduction_1.GTraductions.getValeur(
+									"CahierDeTexte.TravailAFaire",
+								)
+							: ObjetTraduction_1.GTraductions.getValeur(
+									"CahierDeTexte.ContenuDuCours",
+								),
+						largeur: 600,
+						hauteurMaxContenu: 600,
+						avecScroll: true,
+						listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
 					});
-				} else {
-					this.surEvenementPage({
-						CDT: aDonnee,
-						executionQCM: aNumeroQCM,
-						fenetre: this.fenetre,
-						contexte: true,
-					});
-				}
-			}.bind(this, lDonnee),
-		},
-		evenementTafFait: {
-			getValue: function (aNumeroTaf) {
-				const lElement = lDonnee.ListeTravailAFaire
-					? lDonnee.ListeTravailAFaire.getElementParNumero(aNumeroTaf)
-					: lDonnee;
-				return lElement.TAFFait;
+				},
 			},
-			setValue: function (aNumeroTaf) {
-				const lElement = lDonnee.ListeTravailAFaire
-					? lDonnee.ListeTravailAFaire.getElementParNumero(aNumeroTaf)
-					: lDonnee;
-				if (!!lElement.TAFFait) {
-					lElement.TAFFait = false;
-				} else {
-					lElement.TAFFait = true;
-				}
-				lElement.setEtat(EGenreEtat.Modification);
-				new ObjetRequeteSaisieTAFFaitEleve(this)
-					.lancerRequete({
-						listeTAF: lDonnee.ListeTravailAFaire
-							? lDonnee.ListeTravailAFaire
-							: new ObjetListeElements().add(lDonnee),
-					})
-					.then(() => {
-						if (
-							this.estHebdomadaire() &&
-							this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire
-						) {
-							this.callback.appel();
-						}
-						this.fenetre.actualiser();
-						let lHtml;
-						lHtml = this.getInstance(this.IdentCahierDeTexte).composeTAF(
-							lDonnee,
-							this.fenetre.controleur,
-							this.estChronologique(),
-						);
-						GHtml.setHtml(this.fenetre.IdContenu, lHtml, {
-							controleur: this.fenetre.controleur,
-						});
-					});
-			}.bind(this),
-		},
-		appelDetailTAF: {
-			event: function (aNumero) {
-				let lTAF = this.ListeTravailAFaire.getElementParNumero(aNumero);
-				if (!lTAF) {
-					lTAF = this.listeTAFDeContenu.getElementParNumero(aNumero);
-					this.surEvenementPage({
-						GenreBtnAction: EGenreBtnActionBlocTAF.detailTAF,
-						taf: lTAF,
-						objet: { fenetre: this.fenetre, contexte: lTAF },
-					});
-				} else {
-					this.surEvenementPage({
-						GenreBtnAction: EGenreBtnActionBlocTAF.detailTAF,
-						taf: lTAF,
-					});
-				}
-			}.bind(this),
-		},
-		appelCours: {
-			event: function (aNumero) {
-				let lTAF = this.ListeTravailAFaire.getElementParNumero(aNumero);
-				if (!lTAF) {
-					lTAF = this.listeTAFDeContenu.getElementParNumero(aNumero);
-				}
-				Requetes(
-					"donneesContenusCDT",
-					this,
-					_actionApresRequeteDonneesContenusCDT,
-				).lancerRequete({ cahierDeTextes: lTAF.cahierDeTextes });
-			}.bind(this),
-		},
-		appelTAF: {
-			event: function (aNumero) {
-				let lCours = this.ListeCahierDeTextes.getElementParNumero(aNumero);
-				if (!lCours) {
-					lCours = this.listeContenuDeTAF.getElementParNumero(aNumero);
-				}
-				Requetes(
-					"donneesContenusCDT",
-					this,
-					_actionApresRequeteDonneesTAFCDT.bind(this, {
-						contexte: lCours,
-						pourLe: true,
-					}),
-				).lancerRequete({
-					cahierDeTextes: new ObjetElement("", lCours.getNumero()),
-					pourTAF: true,
-				});
-			}.bind(this),
-		},
-		getCarrouselTAF(aNumeroTAF) {
-			return {
-				class: ObjetGalerieCarrousel,
-				pere: this,
-				init: (aCarrousel) => {
-					aCarrousel.setOptions({
-						dimensionPhoto: 250,
-						nbMaxDiaposEnZoneVisible: 10,
-						justifieAGauche: true,
-						sansBlocLibelle: true,
-						altImage: GTraductions.getValeur("CahierDeTexte.altImage.TAF"),
-					});
-					aCarrousel.initialiser();
-				},
-				start: (aCarrousel) => {
-					let lTAF = lDonnee.ListeTravailAFaire
-						? lDonnee.ListeTravailAFaire.getElementParNumero(aNumeroTAF)
-						: lDonnee;
-					const lListeDiapos = new ObjetListeElements();
-					if (lTAF && lTAF.ListePieceJointe) {
-						lTAF.ListePieceJointe.parcourir((aPJ) => {
-							if (aPJ.avecMiniaturePossible) {
-								let lDiapo = new ObjetElement();
-								lDiapo.setLibelle(aPJ.getLibelle());
-								aPJ.miniature = TypeGenreMiniature.GM_500;
-								lDiapo.documentCasier = aPJ;
-								lListeDiapos.add(lDiapo);
-							}
-						});
-					}
-					aCarrousel.setDonnees({ listeDiapos: lListeDiapos });
-				},
-			};
-		},
-		getCarrouselCDC(aNumeroContenu) {
-			return {
-				class: ObjetGalerieCarrousel,
-				pere: this,
-				init: (aCarrousel) => {
-					aCarrousel.setOptions({
-						dimensionPhoto: 250,
-						nbMaxDiaposEnZoneVisible: 10,
-						justifieAGauche: true,
-						sansBlocLibelle: true,
-						altImage: GTraductions.getValeur("CahierDeTexte.altImage.CDC"),
-					});
-					aCarrousel.initialiser();
-				},
-				start: (aCarrousel) => {
-					let lContenu;
-					if (!!lDonnee.listeContenus) {
-						lDonnee.listeContenus.parcourir((aCDC) => {
-							if (aCDC.getNumero() === aNumeroContenu) {
-								lContenu = aCDC;
-							}
-						});
-					}
-					const lListeDiapos = new ObjetListeElements();
-					if (lContenu && lContenu.ListePieceJointe) {
-						lContenu.ListePieceJointe.parcourir((aPJ) => {
-							if (aPJ.avecMiniaturePossible) {
-								let lDiapo = new ObjetElement();
-								lDiapo.setLibelle(aPJ.getLibelle());
-								aPJ.miniature = TypeGenreMiniature.GM_500;
-								lDiapo.documentCasier = aPJ;
-								lListeDiapos.add(lDiapo);
-							}
-						});
-					}
-					aCarrousel.setDonnees({ listeDiapos: lListeDiapos });
-				},
-			};
-		},
-	});
-	if (aEstTAF) {
-		this.fenetre.afficher(
-			this.getInstance(this.IdentCahierDeTexte).composeTAF(
-				lDonnee,
-				this.fenetre.controleur,
-				this.estChronologique(),
-			),
 		);
-	} else {
-		this.fenetre.afficher(
-			this.getInstance(this.IdentCahierDeTexte).composeCours(
-				lDonnee,
-				this.estChronologique(),
-			),
-		);
-	}
-}
-function _ouvrirExecutionQCM(aExecutionQCM) {
-	UtilitaireQCMPN.executerQCM(
-		this.getInstance(this.identFenetreVisuQCM),
-		aExecutionQCM,
-	);
-}
-function _regrouperRessourcesPedagogiquesParType(
-	aListeRessources,
-	aMatiereFiltrante,
-	aFiltreTheme,
-) {
-	const lRessourcesPedagogiquesParType = {};
-	if (!!aListeRessources) {
-		aListeRessources.parcourir((D) => {
-			if (
-				!D.matiere ||
-				!aMatiereFiltrante ||
-				D.matiere.getNumero() === aMatiereFiltrante.getNumero()
-			) {
-				let lEstRessourceFiltree = true;
-				if (aFiltreTheme) {
-					lEstRessourceFiltree = false;
-					if (D.ListeThemes && D.ListeThemes.count()) {
-						D.ListeThemes.parcourir((aTheme) => {
-							if (aTheme.getNumero() === aFiltreTheme.getNumero()) {
-								lEstRessourceFiltree = true;
-							}
+		const lThis = this;
+		$.extend(this.fenetre.controleur, {
+			appelQCM: {
+				event: function (aNumeroQCM) {
+					if (aEstTAF) {
+						lThis.surEvenementPage({
+							TAFQCM: lDonnee,
+							executionQCM: aNumeroQCM,
+							fenetre: lThis.fenetre,
+							contexte: true,
 						});
-					}
-				}
-				if (lEstRessourceFiltree) {
-					let lTypeListe;
-					if (
-						D.getGenre() === EGenreRessourcePedagogique.sujet ||
-						D.getGenre() === EGenreRessourcePedagogique.corrige
-					) {
-						lTypeListe = EGenreTypeRessourcesPedagogiques.SujetOuCorrige;
-					} else if (D.getGenre() === EGenreRessourcePedagogique.travailRendu) {
-						lTypeListe = EGenreTypeRessourcesPedagogiques.TravailRendu;
-					} else if (D.getGenre() === EGenreRessourcePedagogique.QCM) {
-						lTypeListe = EGenreTypeRessourcesPedagogiques.QCM;
-					} else if (D.estForumPeda) {
-						lTypeListe = EGenreTypeRessourcesPedagogiques.ForumPedagogique;
-					} else if (D.getGenre() === EGenreRessourcePedagogique.kiosque) {
-						lTypeListe = EGenreTypeRessourcesPedagogiques.RessourcesGranulaires;
 					} else {
-						lTypeListe = EGenreTypeRessourcesPedagogiques.Autre;
+						lThis.surEvenementPage({
+							CDT: lDonnee,
+							executionQCM: aNumeroQCM,
+							fenetre: lThis.fenetre,
+							contexte: true,
+						});
 					}
-					if (!lRessourcesPedagogiquesParType[lTypeListe]) {
-						lRessourcesPedagogiquesParType[lTypeListe] =
-							new ObjetListeElements();
+				},
+			},
+			evenementTafFait: {
+				getValue: function (aNumeroTaf) {
+					const lElement = lDonnee.ListeTravailAFaire
+						? lDonnee.ListeTravailAFaire.getElementParNumero(aNumeroTaf)
+						: lDonnee;
+					return lElement.TAFFait;
+				},
+				setValue: function (aNumeroTaf) {
+					const lElement = lDonnee.ListeTravailAFaire
+						? lDonnee.ListeTravailAFaire.getElementParNumero(aNumeroTaf)
+						: lDonnee;
+					if (!!lElement.TAFFait) {
+						lElement.TAFFait = false;
+					} else {
+						lElement.TAFFait = true;
 					}
-					lRessourcesPedagogiquesParType[lTypeListe].addElement(D);
-				}
-			}
-		});
-	}
-	return lRessourcesPedagogiquesParType;
-}
-function _getIdBlocRessourcesPedagogiquePourType(aType) {
-	let lIdBloc = null;
-	switch (aType) {
-		case EGenreTypeRessourcesPedagogiques.SujetOuCorrige:
-			lIdBloc = this.idBlocSujetsCorriges;
-			break;
-		case EGenreTypeRessourcesPedagogiques.TravailRendu:
-			lIdBloc = this.idBlocTravauxRendus;
-			break;
-		case EGenreTypeRessourcesPedagogiques.QCM:
-			lIdBloc = this.idBlocQCM;
-			break;
-		case EGenreTypeRessourcesPedagogiques.ForumPedagogique:
-			lIdBloc = this.idBlocForumPedagogique;
-			break;
-		case EGenreTypeRessourcesPedagogiques.RessourcesGranulaires:
-			lIdBloc = this.idBlocRessourcesGranulaires;
-			break;
-		case EGenreTypeRessourcesPedagogiques.Autre:
-			lIdBloc = this.idBlocDocumentsAutres;
-			break;
-		default:
-			break;
-	}
-	return lIdBloc;
-}
-function _setInfoRessourceDeploye(aNode) {
-	const lIdBloc = aNode.parent().get(0).id;
-	switch (lIdBloc) {
-		case this.idBlocRessourcesNumeriques:
-			this.infoRessourceDeploye.ressourcesNumeriques =
-				!this.infoRessourceDeploye.ressourcesNumeriques;
-			break;
-		case this.idBlocSujetsCorriges:
-			this.infoRessourceDeploye.sujetsCorriges =
-				!this.infoRessourceDeploye.sujetsCorriges;
-			break;
-		case this.idBlocTravauxRendus:
-			this.infoRessourceDeploye.travauxRendu =
-				!this.infoRessourceDeploye.travauxRendu;
-			break;
-		case this.idBlocQCM:
-			this.infoRessourceDeploye.QCM = !this.infoRessourceDeploye.QCM;
-			break;
-		case this.idBlocRessourcesGranulaires:
-			this.infoRessourceDeploye.ressourcesGranulaires =
-				!this.infoRessourceDeploye.ressourcesGranulaires;
-			break;
-		case this.idBlocForumPedagogique:
-			this.infoRessourceDeploye.forumPedagogique =
-				!this.infoRessourceDeploye.forumPedagogique;
-			break;
-		case this.idBlocDocumentsAutres:
-			this.infoRessourceDeploye.documentsAutres =
-				!this.infoRessourceDeploye.documentsAutres;
-			break;
-		default:
-			break;
-	}
-}
-function _surEvenementFenetreListeTAFFaits() {
-	this.actualiserPage();
-}
-function _construitAccessibiliteTAF(aNoeudElement, aDonnee) {
-	let J,
-		lIPJ,
-		lTitre,
-		lNoeudDonneLe,
-		lNoeudMatiere,
-		lNoeudPJ,
-		lNbrElements,
-		lPieceJointe,
-		lTAF,
-		lHashDateDonneLe;
-	lNoeudMatiere = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-		aNoeudElement,
-		null,
-		aDonnee.getLibelle(),
-		"",
-		true,
-	);
-	lHashDateDonneLe = {};
-	lNbrElements = aDonnee.ressources
-		? aDonnee.ressources.count()
-		: this.ListeTravailAFaire.count();
-	for (J = 0; J < lNbrElements; J++) {
-		lTAF = aDonnee.ressources
-			? this.ListeTravailAFaire.getElementParNumero(
-					aDonnee.ressources.get(J).getNumero(),
-				)
-			: this.ListeTravailAFaire.get(J);
-		if (!lHashDateDonneLe[lTAF.DonneLe.toString()]) {
-			const lNbJours = GDate.getDifferenceJours(lTAF.PourLe, lTAF.DonneLe);
-			const lStrJours = (
-				lNbJours > 1
-					? GTraductions.getValeur("TAFEtContenu.jours")
-					: GTraductions.getValeur("TAFEtContenu.jour")
-			).toLowerCase();
-			lTitre =
-				GTraductions.getValeur("TAFEtContenu.donneLe") +
-				GDate.formatDate(lTAF.DonneLe, " %JJ %MMMM %AAAA") +
-				" [" +
-				lNbJours +
-				" " +
-				lStrJours +
-				"]";
-			lNoeudDonneLe = lHashDateDonneLe[lTAF.DonneLe.toString()] =
-				this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-					lNoeudMatiere,
-					null,
-					lTitre,
-					"",
-					false,
-				);
-		} else {
-			lNoeudDonneLe = lHashDateDonneLe[lTAF.DonneLe.toString()];
-		}
-		this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-			lNoeudDonneLe,
-			"",
-			lTAF.descriptif,
-		);
-		if (lTAF.ListePieceJointe.count() > 0) {
-			lNoeudPJ = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lNoeudDonneLe,
-				null,
-				GTraductions.getValeur("CahierDeTexte.documentsAConsulter"),
-				"",
-				false,
-			);
-			for (lIPJ = 0; lIPJ < lTAF.ListePieceJointe.count(); lIPJ++) {
-				lPieceJointe = lTAF.ListePieceJointe.get(lIPJ);
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudPJ,
-					"",
-					GChaine.composerUrlLienExterne({ documentJoint: lPieceJointe }),
-				);
-			}
-		}
-	}
-}
-function _construitAccessibiliteContenu(aNoeudElement, aDonnee) {
-	let i,
-		lIPJ,
-		lTitre,
-		lNoeudContenu,
-		lNoeudMatiere,
-		lNoeudPJ,
-		lPieceJointe,
-		lElement,
-		lContenu;
-	lTitre =
-		aDonnee.getLibelle() +
-		" " +
-		GTraductions.getValeur("CahierDeTexte.le") +
-		GDate.formatDate(
-			aDonnee.Date,
-			" %JJ %MMMM %AAAA " +
-				GTraductions.getValeur("CahierDeTexte.a") +
-				" %hh%sh%mm",
-		);
-	lNoeudMatiere = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-		aNoeudElement,
-		null,
-		lTitre,
-		"",
-		true,
-	);
-	lElement = this.ListeCahierDeTextes.getElementParNumero(
-		aDonnee.ressources.getNumero(0),
-	);
-	for (i = 0; i < lElement.listeContenus.count(); i++) {
-		lContenu = lElement.listeContenus.get(i);
-		lTitre =
-			(lContenu.categorie.Libelle ? lContenu.categorie.Libelle + " - " : "") +
-			lContenu.Libelle;
-		lNoeudContenu = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-			lNoeudMatiere,
-			null,
-			lTitre,
-			"",
-			false,
-		);
-		if (lContenu.descriptif.length > 0) {
-			this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-				lNoeudContenu,
-				"",
-				lContenu.descriptif,
-			);
-		}
-		if (lContenu.ListePieceJointe.count() > 0) {
-			lNoeudPJ = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lNoeudContenu,
-				null,
-				GTraductions.getValeur("CahierDeTexte.documentsAConsulter"),
-				"",
-				false,
-			);
-			for (lIPJ = 0; lIPJ < lContenu.ListePieceJointe.count(); lIPJ++) {
-				lPieceJointe = lContenu.ListePieceJointe.get(lIPJ);
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudPJ,
-					null,
-					GChaine.composerUrlLienExterne({ documentJoint: lPieceJointe }),
-				);
-			}
-		}
-	}
-}
-function _construitAccessibiliteListeManuelsNumeriques(
-	aNoeudElement,
-	aListeManuelsNumeriques,
-) {
-	const lThis = this;
-	const lNoeudManuelsNumeriques =
-		this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-			aNoeudElement,
-			null,
-			GTraductions.getValeur(
-				"CahierDeTexte.ContenuCours.RessourcesPedagogiques.RessourcesGranulaires",
-			),
-			"Gras",
-			true,
-		);
-	aListeManuelsNumeriques.parcourir((D) => {
-		let lAccepteRessNum = false;
-		if (
-			!lThis.filtreMatiere &&
-			(!D.listeMatieres || D.listeMatieres.count() === 0)
-		) {
-			lAccepteRessNum = true;
-		} else if (
-			!!lThis.filtreMatiere &&
-			!!D.listeMatieres.getElementParNumero(lThis.filtreMatiere.getNumero())
-		) {
-			lAccepteRessNum = true;
-		}
-		if (lAccepteRessNum) {
-			lThis._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-				lNoeudManuelsNumeriques,
-				null,
-				GChaine.composerUrlLienExterne({
-					documentJoint: D,
-					title: D.description,
-					libelleEcran: D.titre,
-					libelle: D.titre,
-				}),
-			);
-		}
-	});
-}
-function _construitAccessibiliteListeRessourcesPedagogiques(
-	aNoeudElement,
-	aListeRessourcesPedagogiques,
-) {
-	const lThis = this;
-	const lNoeudRessourcesPedagogiques =
-		this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-			aNoeudElement,
-			null,
-			GTraductions.getValeur(
-				"CahierDeTexte.ContenuCours.RessourcesPedagogiques.ListeDesRessourcesPedagogiques",
-			),
-			"Gras",
-			true,
-		);
-	if (
-		!!aListeRessourcesPedagogiques[
-			EGenreTypeRessourcesPedagogiques.SujetOuCorrige
-		]
-	) {
-		aListeRessourcesPedagogiques[
-			EGenreTypeRessourcesPedagogiques.SujetOuCorrige
-		].parcourir((D) => {
-			if (!!D.ressource) {
-				const lStrDevoirEvaluation = [];
-				if (!lThis.filtreMatiere && !!D.matiere) {
-					lStrDevoirEvaluation.push(D.matiere.getLibelle(), " - ");
-				}
-				if (D.ressource.getGenre() === EGenreRessource.Devoir) {
-					lStrDevoirEvaluation.push(
-						GTraductions.getValeur(
-							"CahierDeTexte.ContenuCours.RessourcesPedagogiques.DevoirDu",
-							[GDate.formatDate(D.date, "%JJ/%MM/%AAAA")],
+					lElement.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+					new ObjetRequeteSaisieTAFFaitEleve_1.ObjetRequeteSaisieTAFFaitEleve(
+						lThis,
+					)
+						.lancerRequete({
+							listeTAF: lDonnee.ListeTravailAFaire
+								? lDonnee.ListeTravailAFaire
+								: new ObjetListeElements_1.ObjetListeElements().add(lDonnee),
+						})
+						.then(() => {
+							if (
+								lThis.estHebdomadaire() &&
+								lThis.ModeAffichage ===
+									Enumere_AffichageCahierDeTextes_1
+										.EGenreAffichageCahierDeTextes.TravailAFaire
+							) {
+								lThis.callback.appel();
+							}
+							lThis.fenetre.actualiser();
+							let lHtml;
+							lHtml = lThis
+								.getInstance(lThis.IdentCahierDeTexte)
+								.composeTAF(
+									lDonnee,
+									lThis.fenetre.controleur,
+									lThis.estChronologique(),
+								);
+							ObjetHtml_1.GHtml.setHtml(lThis.fenetre.IdContenu, lHtml, {
+								controleur: lThis.fenetre.controleur,
+							});
+						});
+				},
+			},
+			appelDetailTAF: {
+				event: function (aNumero) {
+					let lTAF = lThis.ListeTravailAFaire.getElementParNumero(aNumero);
+					if (!lTAF) {
+						lTAF = lThis.listeTAFDeContenu.getElementParNumero(aNumero);
+						lThis.surEvenementPage({
+							GenreBtnAction:
+								GestionnaireBlocTAF_1.EGenreBtnActionBlocTAF.detailTAF,
+							taf: lTAF,
+							objet: { fenetre: lThis.fenetre, contexte: lTAF },
+						});
+					} else {
+						lThis.surEvenementPage({
+							GenreBtnAction:
+								GestionnaireBlocTAF_1.EGenreBtnActionBlocTAF.detailTAF,
+							taf: lTAF,
+						});
+					}
+				},
+			},
+			appelCours: {
+				event: function (aNumero) {
+					let lTAF = lThis.ListeTravailAFaire.getElementParNumero(aNumero);
+					if (!lTAF) {
+						lTAF = lThis.listeTAFDeContenu.getElementParNumero(aNumero);
+					}
+					new ObjetRequeteDonneesContenusCDT_1.ObjetRequeteDonneesContenusCDT(
+						lThis,
+						lThis._actionApresRequeteDonneesContenusCDT,
+					).lancerRequete({ cahierDeTextes: lTAF.cahierDeTextes });
+				},
+			},
+			appelTAF: {
+				event: function (aNumero) {
+					let lCours = lThis.ListeCahierDeTextes.getElementParNumero(aNumero);
+					if (!lCours) {
+						lCours = lThis.listeContenuDeTAF.getElementParNumero(aNumero);
+					}
+					new ObjetRequeteDonneesContenusCDT_1.ObjetRequeteDonneesContenusCDT(
+						lThis,
+						lThis._actionApresRequeteDonneesTAFCDT.bind(lThis, {
+							contexte: lCours,
+							pourLe: true,
+						}),
+					).lancerRequete({
+						cahierDeTextes: new ObjetElement_1.ObjetElement(
+							"",
+							lCours.getNumero(),
 						),
-					);
-				} else {
-					lStrDevoirEvaluation.push(
-						GTraductions.getValeur(
-							"CahierDeTexte.ContenuCours.RessourcesPedagogiques.EvaluationDu",
-							[GDate.formatDate(D.date, "%JJ/%MM/%AAAA")],
-						),
-					);
-				}
-				if (!!D.ressource.commentaire) {
-					lStrDevoirEvaluation.push(" - ", D.ressource.commentaire);
-				}
-				const lNoeudDevoirEvaluation =
-					lThis._objetListeArborescente.ajouterUnNoeudAuNoeud(
-						lNoeudRessourcesPedagogiques,
-						null,
-						lStrDevoirEvaluation.join(""),
-						"Gras",
-						false,
-					);
-				const lStrNoeudRessourcePeda =
-					EGenreRessourcePedagogiqueUtil.getLibelleDeGenreEtNombre(
-						D.getGenre(),
-					) +
-					" : " +
-					GChaine.composerUrlLienExterne({
-						documentJoint: D.ressource,
-						genreRessource: D.ressource.getGenre(),
-						libelle: D.ressource.getLibelle(),
+						pourTAF: true,
 					});
-				lThis._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudDevoirEvaluation,
-					null,
-					lStrNoeudRessourcePeda,
-				);
-			}
+				},
+			},
 		});
+		if (aEstTAF) {
+			this.fenetre.afficher(
+				this.getInstance(this.IdentCahierDeTexte).composeTAF(
+					lDonnee,
+					this.fenetre.controleur,
+					this.estChronologique(),
+				),
+			);
+		} else {
+			this.fenetre.afficher(
+				this.getInstance(this.IdentCahierDeTexte).composeCours(
+					lDonnee,
+					this.estChronologique(),
+				),
+			);
+		}
 	}
-	if (
-		!!aListeRessourcesPedagogiques[
-			EGenreTypeRessourcesPedagogiques.TravailRendu
-		]
+	_ouvrirExecutionQCM(aExecutionQCM) {
+		UtilitaireQCMPN_1.UtilitaireQCMPN.executerQCM(
+			this.getInstance(this.identFenetreVisuQCM),
+			aExecutionQCM,
+		);
+	}
+	_regrouperRessourcesPedagogiquesParType(
+		aListeRessources,
+		aMatiereFiltrante,
+		aFiltreTheme,
 	) {
-		aListeRessourcesPedagogiques[
-			EGenreTypeRessourcesPedagogiques.TravailRendu
-		].parcourir((D) => {
-			if (!!D.ressource) {
-				const lStrTravailARendre = [];
-				if (!lThis.filtreMatiere && !!D.matiere) {
-					lStrTravailARendre.push(D.matiere.getLibelle(), " - ");
+		const lRessourcesPedagogiquesParType = {};
+		if (!!aListeRessources) {
+			aListeRessources.parcourir((D) => {
+				if (
+					!D.matiere ||
+					!aMatiereFiltrante ||
+					D.matiere.getNumero() === aMatiereFiltrante.getNumero()
+				) {
+					let lEstRessourceFiltree = true;
+					if (aFiltreTheme) {
+						lEstRessourceFiltree = false;
+						if (D.ListeThemes && D.ListeThemes.count()) {
+							D.ListeThemes.parcourir((aTheme) => {
+								if (aTheme.getNumero() === aFiltreTheme.getNumero()) {
+									lEstRessourceFiltree = true;
+								}
+							});
+						}
+					}
+					if (lEstRessourceFiltree) {
+						let lTypeListe;
+						if (
+							D.getGenre() ===
+								Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique
+									.sujet ||
+							D.getGenre() ===
+								Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique
+									.corrige
+						) {
+							lTypeListe =
+								Enumere_TypeRessourcesPedagogiques_1
+									.EGenreTypeRessourcesPedagogiques.SujetOuCorrige;
+						} else if (
+							D.getGenre() ===
+							Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique
+								.travailRendu
+						) {
+							lTypeListe =
+								Enumere_TypeRessourcesPedagogiques_1
+									.EGenreTypeRessourcesPedagogiques.TravailRendu;
+						} else if (
+							D.getGenre() ===
+							Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique.QCM
+						) {
+							lTypeListe =
+								Enumere_TypeRessourcesPedagogiques_1
+									.EGenreTypeRessourcesPedagogiques.QCM;
+						} else if (D.estForumPeda) {
+							lTypeListe =
+								Enumere_TypeRessourcesPedagogiques_1
+									.EGenreTypeRessourcesPedagogiques.ForumPedagogique;
+						} else if (
+							D.getGenre() ===
+							Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique.kiosque
+						) {
+							lTypeListe =
+								Enumere_TypeRessourcesPedagogiques_1
+									.EGenreTypeRessourcesPedagogiques.RessourcesGranulaires;
+						} else {
+							lTypeListe =
+								Enumere_TypeRessourcesPedagogiques_1
+									.EGenreTypeRessourcesPedagogiques.Autre;
+						}
+						if (!lRessourcesPedagogiquesParType[lTypeListe]) {
+							lRessourcesPedagogiquesParType[lTypeListe] =
+								new ObjetListeElements_1.ObjetListeElements();
+						}
+						lRessourcesPedagogiquesParType[lTypeListe].addElement(D);
+					}
 				}
-				lStrTravailARendre.push(
-					GTraductions.getValeur(
-						"CahierDeTexte.ContenuCours.RessourcesPedagogiques.TravailARendrePourLe",
-						[
-							!!D.ressource.pourLe
-								? GDate.formatDate(D.ressource.pourLe, "%JJ/%MM/%AAAA")
-								: "",
-						],
-					),
-				);
-				const lNoeudTravailARendre =
-					lThis._objetListeArborescente.ajouterUnNoeudAuNoeud(
-						lNoeudRessourcesPedagogiques,
-						null,
-						lStrTravailARendre.join(""),
-						"Gras",
-						false,
-					);
-				lThis._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudTravailARendre,
-					null,
-					GChaine.composerUrlLienExterne({
-						documentJoint: D.ressource,
-						genreRessource: D.ressource.getGenre(),
-						libelle: D.ressource.getLibelle(),
-					}),
-				);
-			}
-		});
+			});
+		}
+		return lRessourcesPedagogiquesParType;
 	}
-	if (!!aListeRessourcesPedagogiques[EGenreTypeRessourcesPedagogiques.QCM]) {
-		aListeRessourcesPedagogiques[
-			EGenreTypeRessourcesPedagogiques.QCM
-		].parcourir((D) => {
-			if (!!D.ressource && !!D.ressource.QCM) {
-				const lStrQCM = [];
-				if (!lThis.filtreMatiere && !!D.matiere) {
-					lStrQCM.push(D.matiere.getLibelle(), " - ");
-				}
-				lStrQCM.push(
-					GTraductions.getValeur(
-						"CahierDeTexte.ContenuCours.RessourcesPedagogiques.QCMDu",
-						[GDate.formatDate(D.date, "%JJ/%MM/%AAAA")],
-					),
-				);
-				const lNoeudQCM = lThis._objetListeArborescente.ajouterUnNoeudAuNoeud(
-					lNoeudRessourcesPedagogiques,
-					null,
-					lStrQCM.join(""),
-					"Gras",
-					false,
-				);
-				lThis._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudQCM,
-					null,
-					D.ressource.QCM.getLibelle(),
-				);
-			}
-		});
+	_getIdBlocRessourcesPedagogiquePourType(aType) {
+		let lIdBloc = null;
+		switch (aType) {
+			case Enumere_TypeRessourcesPedagogiques_1.EGenreTypeRessourcesPedagogiques
+				.SujetOuCorrige:
+				lIdBloc = this.idBlocSujetsCorriges;
+				break;
+			case Enumere_TypeRessourcesPedagogiques_1.EGenreTypeRessourcesPedagogiques
+				.TravailRendu:
+				lIdBloc = this.idBlocTravauxRendus;
+				break;
+			case Enumere_TypeRessourcesPedagogiques_1.EGenreTypeRessourcesPedagogiques
+				.QCM:
+				lIdBloc = this.idBlocQCM;
+				break;
+			case Enumere_TypeRessourcesPedagogiques_1.EGenreTypeRessourcesPedagogiques
+				.ForumPedagogique:
+				lIdBloc = this.idBlocForumPedagogique;
+				break;
+			case Enumere_TypeRessourcesPedagogiques_1.EGenreTypeRessourcesPedagogiques
+				.RessourcesGranulaires:
+				lIdBloc = this.idBlocRessourcesGranulaires;
+				break;
+			case Enumere_TypeRessourcesPedagogiques_1.EGenreTypeRessourcesPedagogiques
+				.Autre:
+				lIdBloc = this.idBlocDocumentsAutres;
+				break;
+			default:
+				break;
+		}
+		return lIdBloc;
 	}
-	if (
-		!!aListeRessourcesPedagogiques[
-			EGenreTypeRessourcesPedagogiques.ForumPedagogique
-		]
-	) {
-		aListeRessourcesPedagogiques[
-			EGenreTypeRessourcesPedagogiques.ForumPedagogique
-		].parcourir((D) => {
-			if (!!D.ressource) {
-				const lTab = [];
-				if (!this.filtreMatiere && !!D.matiere) {
-					lTab.push(D.matiere.getLibelle());
-				}
-				lTab.push(GTraductions.getValeur("ForumPeda.TitreListeSujet"));
-				if (D.date) {
-					lTab.push(
-						GTraductions.getValeur("ForumPeda.DernierPost") +
-							" : " +
-							GDate.formatDate(D.date, "[%JJJ %JJ %MMM]"),
-					);
-				}
-				const lNoeud = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-					lNoeudRessourcesPedagogiques,
-					null,
-					lTab.join(" - "),
-					"Gras",
-					false,
-				);
-				lThis._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeud,
-					null,
-					D.ressource.getLibelle(),
-				);
-			}
-		});
+	_setInfoRessourceDeploye(aNode) {
+		const lIdBloc = aNode.parent().get(0).id;
+		switch (lIdBloc) {
+			case this.idBlocRessourcesNumeriques:
+				this.infoRessourceDeploye.ressourcesNumeriques =
+					!this.infoRessourceDeploye.ressourcesNumeriques;
+				break;
+			case this.idBlocSujetsCorriges:
+				this.infoRessourceDeploye.sujetsCorriges =
+					!this.infoRessourceDeploye.sujetsCorriges;
+				break;
+			case this.idBlocTravauxRendus:
+				this.infoRessourceDeploye.travauxRendu =
+					!this.infoRessourceDeploye.travauxRendu;
+				break;
+			case this.idBlocQCM:
+				this.infoRessourceDeploye.QCM = !this.infoRessourceDeploye.QCM;
+				break;
+			case this.idBlocRessourcesGranulaires:
+				this.infoRessourceDeploye.ressourcesGranulaires =
+					!this.infoRessourceDeploye.ressourcesGranulaires;
+				break;
+			case this.idBlocForumPedagogique:
+				this.infoRessourceDeploye.forumPedagogique =
+					!this.infoRessourceDeploye.forumPedagogique;
+				break;
+			case this.idBlocDocumentsAutres:
+				this.infoRessourceDeploye.documentsAutres =
+					!this.infoRessourceDeploye.documentsAutres;
+				break;
+			default:
+				break;
+		}
 	}
-	if (!!aListeRessourcesPedagogiques[EGenreTypeRessourcesPedagogiques.Autre]) {
-		aListeRessourcesPedagogiques[
-			EGenreTypeRessourcesPedagogiques.Autre
-		].parcourir((D) => {
-			if (!!D.ressource) {
-				const lStrDocumentDeposeLe = [];
-				if (!lThis.filtreMatiere && !!D.matiere) {
-					lStrDocumentDeposeLe.push(D.matiere.getLibelle(), " - ");
-				}
-				lStrDocumentDeposeLe.push(
-					GTraductions.getValeur(
-						"CahierDeTexte.ContenuCours.RessourcesPedagogiques.DocumentDeposeLe",
-						[GDate.formatDate(D.date, "%JJ/%MM/%AAAA")],
-					),
-				);
-				const lNoeudDocumentAutre =
-					lThis._objetListeArborescente.ajouterUnNoeudAuNoeud(
-						lNoeudRessourcesPedagogiques,
-						null,
-						lStrDocumentDeposeLe.join(""),
-						"Gras",
-						false,
-					);
-				lThis._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudDocumentAutre,
-					null,
-					GChaine.composerUrlLienExterne({
-						documentJoint: D.ressource,
-						genreRessource: D.ressource.getGenre(),
-						libelle: D.ressource.getLibelle(),
-					}),
-				);
-			}
-		});
+	_surEvenementFenetreListeTAFFaits() {
+		this.actualiserPage();
 	}
 }
-module.exports = { _InterfacePageCahierDeTexte };
+exports._InterfacePageCahierDeTexte = _InterfacePageCahierDeTexte;

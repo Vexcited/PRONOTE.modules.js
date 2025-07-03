@@ -1,12 +1,34 @@
-exports.TypeNote = void 0;
+exports.TypeNote = exports.TradTypeNote = void 0;
 const Enumere_ChampsJSON_1 = require("Enumere_ChampsJSON");
 const TypeHttpVariable_1 = require("TypeHttpVariable");
 const Enumere_Annotation_1 = require("Enumere_Annotation");
-const ObjetTraduction_1 = require("ObjetTraduction");
 const ToucheClavier_1 = require("ToucheClavier");
 const ObjetChaine_1 = require("ObjetChaine");
 const MethodesObjet_1 = require("MethodesObjet");
 const ObjetTri_1 = require("ObjetTri");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TradTypeNote = ObjetTraduction_1.TraductionsModule.getModule("TypeNote", {
+	Annotation: {
+		Absent: "",
+		Dispense: "",
+		NonNote: "",
+		Inapte: "",
+		NonRendu: "",
+		Felicitations: "",
+	},
+	CaractereAnnotation: {
+		Absent: "",
+		Dispense: "",
+		NonNote: "",
+		Inapte: "",
+		NonRendu: "",
+		AbsentZero: "",
+		NonRenduZero: "",
+		Felicitations: "",
+	},
+	InputNote: { LabelChamps: "", MinMax: "" },
+});
+exports.TradTypeNote = TradTypeNote;
 class TypeNote {
 	constructor(aParametre, N) {
 		this.note = "0.00";
@@ -58,52 +80,34 @@ class TypeNote {
 		for (const x in aArrayGenresNote) {
 			switch (aArrayGenresNote[x]) {
 				case Enumere_Annotation_1.EGenreAnnotation.absent:
-					lCaractereAnnotation.Absent =
-						ObjetTraduction_1.GTraductions.getValeur(
-							"TypeNote.CaractereAnnotation.Absent",
-						);
+					lCaractereAnnotation.Absent = TradTypeNote.CaractereAnnotation.Absent;
 					break;
 				case Enumere_Annotation_1.EGenreAnnotation.dispense:
 					lCaractereAnnotation.Dispense =
-						ObjetTraduction_1.GTraductions.getValeur(
-							"TypeNote.CaractereAnnotation.Dispense",
-						);
+						TradTypeNote.CaractereAnnotation.Dispense;
 					break;
 				case Enumere_Annotation_1.EGenreAnnotation.nonNote:
 					lCaractereAnnotation.NonNote =
-						ObjetTraduction_1.GTraductions.getValeur(
-							"TypeNote.CaractereAnnotation.NonNote",
-						);
+						TradTypeNote.CaractereAnnotation.NonNote;
 					break;
 				case Enumere_Annotation_1.EGenreAnnotation.inapte:
-					lCaractereAnnotation.Inapte =
-						ObjetTraduction_1.GTraductions.getValeur(
-							"TypeNote.CaractereAnnotation.Inapte",
-						);
+					lCaractereAnnotation.Inapte = TradTypeNote.CaractereAnnotation.Inapte;
 					break;
 				case Enumere_Annotation_1.EGenreAnnotation.nonRendu:
 					lCaractereAnnotation.NonRendu =
-						ObjetTraduction_1.GTraductions.getValeur(
-							"TypeNote.CaractereAnnotation.NonRendu",
-						);
+						TradTypeNote.CaractereAnnotation.NonRendu;
 					break;
 				case Enumere_Annotation_1.EGenreAnnotation.absentZero:
 					lCaractereAnnotation.AbsentZero =
-						ObjetTraduction_1.GTraductions.getValeur(
-							"TypeNote.CaractereAnnotation.AbsentZero",
-						);
+						TradTypeNote.CaractereAnnotation.AbsentZero;
 					break;
 				case Enumere_Annotation_1.EGenreAnnotation.nonRenduZero:
 					lCaractereAnnotation.NonRenduZero =
-						ObjetTraduction_1.GTraductions.getValeur(
-							"TypeNote.CaractereAnnotation.NonRenduZero",
-						);
+						TradTypeNote.CaractereAnnotation.NonRenduZero;
 					break;
 				case Enumere_Annotation_1.EGenreAnnotation.felicitations:
 					lCaractereAnnotation.Felicitations =
-						ObjetTraduction_1.GTraductions.getValeur(
-							"TypeNote.CaractereAnnotation.Felicitations",
-						);
+						TradTypeNote.CaractereAnnotation.Felicitations;
 					break;
 			}
 		}
@@ -148,6 +152,12 @@ class TypeNote {
 	}
 	estUneValeur() {
 		return !isNaN(this.valeur);
+	}
+	setBareme(aBareme) {
+		this.bareme = aBareme;
+	}
+	getChaine() {
+		return this.chaine;
 	}
 	toString() {
 		return this.note;
@@ -319,44 +329,28 @@ class TypeNote {
 		let lGenreAnnotation = null;
 		if (!!aCaractere && aCaractere.toLowerCase) {
 			switch (aCaractere.toLowerCase()) {
-				case ObjetTraduction_1.GTraductions.getValeur(
-					"TypeNote.CaractereAnnotation.Absent",
-				):
+				case TradTypeNote.CaractereAnnotation.Absent:
 					lGenreAnnotation = Enumere_Annotation_1.EGenreAnnotation.absent;
 					break;
-				case ObjetTraduction_1.GTraductions.getValeur(
-					"TypeNote.CaractereAnnotation.Dispense",
-				):
+				case TradTypeNote.CaractereAnnotation.Dispense:
 					lGenreAnnotation = Enumere_Annotation_1.EGenreAnnotation.dispense;
 					break;
-				case ObjetTraduction_1.GTraductions.getValeur(
-					"TypeNote.CaractereAnnotation.NonNote",
-				):
+				case TradTypeNote.CaractereAnnotation.NonNote:
 					lGenreAnnotation = Enumere_Annotation_1.EGenreAnnotation.nonNote;
 					break;
-				case ObjetTraduction_1.GTraductions.getValeur(
-					"TypeNote.CaractereAnnotation.Inapte",
-				):
+				case TradTypeNote.CaractereAnnotation.Inapte:
 					lGenreAnnotation = Enumere_Annotation_1.EGenreAnnotation.inapte;
 					break;
-				case ObjetTraduction_1.GTraductions.getValeur(
-					"TypeNote.CaractereAnnotation.NonRendu",
-				):
+				case TradTypeNote.CaractereAnnotation.NonRendu:
 					lGenreAnnotation = Enumere_Annotation_1.EGenreAnnotation.nonRendu;
 					break;
-				case ObjetTraduction_1.GTraductions.getValeur(
-					"TypeNote.CaractereAnnotation.AbsentZero",
-				):
+				case TradTypeNote.CaractereAnnotation.AbsentZero:
 					lGenreAnnotation = Enumere_Annotation_1.EGenreAnnotation.absentZero;
 					break;
-				case ObjetTraduction_1.GTraductions.getValeur(
-					"TypeNote.CaractereAnnotation.NonRenduZero",
-				):
+				case TradTypeNote.CaractereAnnotation.NonRenduZero:
 					lGenreAnnotation = Enumere_Annotation_1.EGenreAnnotation.nonRenduZero;
 					break;
-				case ObjetTraduction_1.GTraductions.getValeur(
-					"TypeNote.CaractereAnnotation.Felicitations",
-				):
+				case TradTypeNote.CaractereAnnotation.Felicitations:
 					lGenreAnnotation =
 						Enumere_Annotation_1.EGenreAnnotation.felicitations;
 					break;
@@ -379,9 +373,7 @@ class TypeNote {
 			aAvecMoins === null || aAvecMoins === undefined ? true : aAvecMoins;
 		aCaractereAnnotation =
 			aCaractereAnnotation === null || aCaractereAnnotation === undefined
-				? ObjetTraduction_1.GTraductions.getValeur(
-						"TypeNote.CaractereAnnotation",
-					)
+				? TradTypeNote.CaractereAnnotation
 				: aCaractereAnnotation;
 		let lRegExp = "0-9";
 		if (aAvecLettre) {
@@ -446,8 +438,7 @@ class TypeNote {
 			min: 0,
 			max: 100,
 			titreMessageMinMax: "",
-			messageMinMax:
-				ObjetTraduction_1.GTraductions.getValeur("InputNote.MinMax"),
+			messageMinMax: TradTypeNote.InputNote.MinMax,
 		};
 		const lOptions = $.extend(lDefaultOptions, aOptions);
 		if (typeof aValeur !== "string") {
@@ -547,18 +538,14 @@ function _getTableauNotations() {
 	if (!lTableauNotations) {
 		lTableauNotations = [
 			"",
-			ObjetTraduction_1.GTraductions.getValeur("TypeNote.Annotation.Absent"),
-			ObjetTraduction_1.GTraductions.getValeur("TypeNote.Annotation.Dispense"),
-			ObjetTraduction_1.GTraductions.getValeur("TypeNote.Annotation.NonNote"),
-			ObjetTraduction_1.GTraductions.getValeur("TypeNote.Annotation.Inapte"),
-			ObjetTraduction_1.GTraductions.getValeur("TypeNote.Annotation.NonRendu"),
-			ObjetTraduction_1.GTraductions.getValeur("TypeNote.Annotation.Absent") +
-				"*",
-			ObjetTraduction_1.GTraductions.getValeur("TypeNote.Annotation.NonRendu") +
-				"*",
-			ObjetTraduction_1.GTraductions.getValeur(
-				"TypeNote.Annotation.Felicitations",
-			),
+			TradTypeNote.Annotation.Absent,
+			TradTypeNote.Annotation.Dispense,
+			TradTypeNote.Annotation.NonNote,
+			TradTypeNote.Annotation.Inapte,
+			TradTypeNote.Annotation.NonRendu,
+			TradTypeNote.Annotation.Absent + "*",
+			TradTypeNote.Annotation.NonRendu + "*",
+			TradTypeNote.Annotation.Felicitations,
 		];
 	}
 	return lTableauNotations;

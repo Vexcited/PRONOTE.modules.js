@@ -1,13 +1,11 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetSerialiser } = require("ObjetSerialiser.js");
-class ObjetRequeteSaisieAssistantSaisie extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieAssistantSaisie = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetSerialiser_1 = require("ObjetSerialiser");
+class ObjetRequeteSaisieAssistantSaisie extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParam) {
 		if (!!aParam.listeTypesAppreciations) {
-			const lObjetSerialiser = new ObjetSerialiser();
+			const lObjetSerialiser = new ObjetSerialiser_1.ObjetSerialiser();
 			aParam.listeTypesAppreciations.setSerialisateurJSON({
 				ignorerEtatsElements: true,
 				methodeSerialisation:
@@ -19,9 +17,9 @@ class ObjetRequeteSaisieAssistantSaisie extends ObjetRequeteSaisie {
 		}
 		return this.appelAsynchrone();
 	}
-	actionApresRequete() {
-		this.callbackReussite.appel(this.JSONRapportSaisie);
-	}
 }
-Requetes.inscrire("SaisieAssistantSaisie", ObjetRequeteSaisieAssistantSaisie);
-module.exports = { ObjetRequeteSaisieAssistantSaisie };
+exports.ObjetRequeteSaisieAssistantSaisie = ObjetRequeteSaisieAssistantSaisie;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieAssistantSaisie",
+	ObjetRequeteSaisieAssistantSaisie,
+);

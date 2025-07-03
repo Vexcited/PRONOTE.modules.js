@@ -59,7 +59,7 @@ class DonneesListe_BibliothequeProgression extends ObjetDonneesListe_1.ObjetDonn
 		}
 		return lClasses.join(" ");
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		const lHint = [];
 		if (!aParams.article.estUnDeploiement) {
 			const lLibelleMatiere = !!aParams.article.pere

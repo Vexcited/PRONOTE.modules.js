@@ -1,51 +1,44 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { EGenreDocumentJoint } = require("Enumere_DocumentJoint.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-class ObjetRequeteListeEvaluations extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
-	lancerRequete(aParams) {
-		this.JSON = {
-			service: aParams.service,
-			ressource: aParams.ressource,
-			periode: aParams.periode,
-		};
-		return this.appelAsynchrone();
-	}
+exports.ObjetRequeteListeEvaluations = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const Enumere_DocumentJoint_1 = require("Enumere_DocumentJoint");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const Enumere_Espace_1 = require("Enumere_Espace");
+class ObjetRequeteListeEvaluations extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	actionApresRequete() {
 		const lListeEvaluations = this.JSONReponse.listeEvaluations;
 		lListeEvaluations.parcourir((aElement) => {
-			if (GEtatUtilisateur.GenreEspace === EGenreEspace.Etablissement) {
+			if (
+				GEtatUtilisateur.GenreEspace ===
+				Enumere_Espace_1.EGenreEspace.Etablissement
+			) {
 				aElement.serviceLVE =
 					aElement.service && aElement.service.existeNumero()
 						? aElement.service
 						: null;
 			}
-			aElement.listeSujets = new ObjetListeElements();
+			aElement.listeSujets = new ObjetListeElements_1.ObjetListeElements();
 			if (!!aElement.elmSujet) {
 				aElement.listeSujets.addElement(aElement.elmSujet);
 			} else if (!!aElement.libelleSujet) {
 				aElement.listeSujets.addElement(
-					new ObjetElement(
+					new ObjetElement_1.ObjetElement(
 						aElement.libelleSujet,
 						aElement.getNumero(),
-						EGenreDocumentJoint.Fichier,
+						Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier,
 					),
 				);
 			}
-			aElement.listeCorriges = new ObjetListeElements();
+			aElement.listeCorriges = new ObjetListeElements_1.ObjetListeElements();
 			if (!!aElement.elmCorrige) {
 				aElement.listeCorriges.addElement(aElement.elmCorrige);
 			} else if (!!aElement.libelleCorrige) {
 				aElement.listeCorriges.addElement(
-					new ObjetElement(
+					new ObjetElement_1.ObjetElement(
 						aElement.libelleCorrige,
 						aElement.getNumero(),
-						EGenreDocumentJoint.Fichier,
+						Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier,
 					),
 				);
 			}
@@ -69,7 +62,7 @@ class ObjetRequeteListeEvaluations extends ObjetRequeteConsultation {
 				}
 				if (!!lCompetence.informationQCM) {
 					lCompetence.informationQCM.listeQuestions =
-						new ObjetListeElements().fromJSON(
+						new ObjetListeElements_1.ObjetListeElements().fromJSON(
 							lCompetence.informationQCM.listeQuestions,
 							_ajouterQuestionQCM,
 						);
@@ -97,18 +90,22 @@ class ObjetRequeteListeEvaluations extends ObjetRequeteConsultation {
 		});
 	}
 }
-Requetes.inscrire("ListeEvaluations", ObjetRequeteListeEvaluations);
+exports.ObjetRequeteListeEvaluations = ObjetRequeteListeEvaluations;
+CollectionRequetes_1.Requetes.inscrire(
+	"ListeEvaluations",
+	ObjetRequeteListeEvaluations,
+);
 function _ajouterQuestionQCM(aJSON, aElement) {
 	aElement.copieJSON(aJSON);
 	aElement.nouvellePosition = aElement.position;
 	if (aJSON.listeReponses) {
-		aElement.listeReponses = new ObjetListeElements().fromJSON(
-			aJSON.listeReponses,
-			_ajouterReponseQCM,
-		);
+		aElement.listeReponses =
+			new ObjetListeElements_1.ObjetListeElements().fromJSON(
+				aJSON.listeReponses,
+				_ajouterReponseQCM,
+			);
 	}
 }
 function _ajouterReponseQCM(aJSON, aElement) {
 	aElement.copieJSON(aJSON);
 }
-module.exports = { ObjetRequeteListeEvaluations };

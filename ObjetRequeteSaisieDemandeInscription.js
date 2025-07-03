@@ -1,12 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieDemandeInscription extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
-	actionApresRequete() {
-		this.callbackReussite.appel(this.JSONRapportSaisie);
-	}
+exports.ObjetRequeteSaisieDemandeInscription = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieDemandeInscription extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParam) {
 		$.extend(this.JSON, aParam);
 		if (aParam.identite && aParam.identite.adresse) {
@@ -62,8 +57,13 @@ class ObjetRequeteSaisieDemandeInscription extends ObjetRequeteSaisie {
 		}
 		return this.appelAsynchrone();
 	}
+	actionApresRequete() {
+		this.callbackReussite.appel(this.JSONRapportSaisie);
+	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteSaisieDemandeInscription =
+	ObjetRequeteSaisieDemandeInscription;
+CollectionRequetes_1.Requetes.inscrire(
 	"SaisieDemandeInscription",
 	ObjetRequeteSaisieDemandeInscription,
 );
@@ -88,4 +88,3 @@ function _serialiserDocuments(aDocument, aJSON) {
 	aJSON.nomFichier = aDocument.nomFichier;
 	aJSON.nature = aDocument.natureDocument;
 }
-module.exports = { ObjetRequeteSaisieDemandeInscription };

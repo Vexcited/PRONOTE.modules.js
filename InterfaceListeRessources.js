@@ -11,6 +11,11 @@ const InterfacePage_1 = require("InterfacePage");
 const InterfacePageAvecMenusDeroulants_1 = require("InterfacePageAvecMenusDeroulants");
 const ObjetRequeteListeRessources_1 = require("ObjetRequeteListeRessources");
 const Enumere_TriElement_1 = require("Enumere_TriElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const AccessApp_1 = require("AccessApp");
+const ObjetFenetre_Discussion_1 = require("ObjetFenetre_Discussion");
 class InterfaceListeRessources extends InterfacePage_1.InterfacePage {
 	construireInstances() {
 		if (
@@ -94,6 +99,13 @@ class InterfaceListeRessources extends InterfacePage_1.InterfacePage {
 							"ListeRessources.HintElevesTutores",
 						),
 						taille: 140,
+					},
+					{
+						id: Colonnes.email,
+						titre: ObjetTraduction_1.GTraductions.getValeur(
+							"ListeRessources.email",
+						),
+						taille: 240,
 					},
 				];
 				lNumeroColonneTriDefaut = [Colonnes.nom, Colonnes.prenom];
@@ -201,6 +213,13 @@ class InterfaceListeRessources extends InterfacePage_1.InterfacePage {
 						),
 						taille: 140,
 					},
+					{
+						id: Colonnes.email,
+						titre: ObjetTraduction_1.GTraductions.getValeur(
+							"ListeRessources.email",
+						),
+						taille: 240,
+					},
 				];
 				lNumeroColonneTriDefaut = [Colonnes.nom, Colonnes.prenom];
 				break;
@@ -208,6 +227,11 @@ class InterfaceListeRessources extends InterfacePage_1.InterfacePage {
 		}
 		aListe.setOptionsListe({
 			colonnes: lColonnes,
+			colonnesCachees: !this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.communication.avecDiscussion,
+			)
+				? [Colonnes.email]
+				: null,
 			nonEditable: true,
 			scrollHorizontal: true,
 			boutons: [{ genre: ObjetListe_1.ObjetListe.typeBouton.rechercher }],
@@ -249,15 +273,29 @@ class InterfaceListeRessources extends InterfacePage_1.InterfacePage {
 }
 exports.InterfaceListeRessources = InterfaceListeRessources;
 class DonneesListe_Ressources extends ObjetDonneesListe_1.ObjetDonneesListe {
-	constructor(aDonnees) {
-		super(aDonnees);
-		this.setOptions({ avecSelection: false });
+	constructor() {
+		super(...arguments);
+		this.applicationSco = (0, AccessApp_1.getApp)();
+	}
+	avecSelection(aParams) {
+		return this.avecMenuContextuel(aParams);
 	}
 	selectionParCellule() {
 		return false;
 	}
-	avecMenuContextuel() {
-		return false;
+	avecMenuContextuel(aParams) {
+		if (this.applicationSco.getEtatUtilisateur().pourPrimaire()) {
+			return false;
+		}
+		return (
+			aParams.article &&
+			this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.communication.avecDiscussion,
+			) &&
+			!this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.communication.discussionInterdit,
+			)
+		);
 	}
 	_getGenreTri(aListeColonnesTriInverse, aColonne, aGenreTri) {
 		let result;
@@ -311,7 +349,7 @@ class DonneesListe_Ressources extends ObjetDonneesListe_1.ObjetDonneesListe {
 		}
 		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		if (aParams.idColonne === Colonnes.elevesTutores) {
 			return aParams.article.elevesTutores;
 		}
@@ -333,6 +371,10 @@ class DonneesListe_Ressources extends ObjetDonneesListe_1.ObjetDonneesListe {
 				return aParams.article.getLibelle();
 			case Colonnes.prenom:
 				return aParams.article.prenom;
+			case Colonnes.email:
+				return aParams.article.email
+					? ObjetChaine_1.GChaine.composerEmail(aParams.article.email)
+					: "";
 			case Colonnes.niveau:
 				return aParams.article.niveau;
 			case Colonnes.notation:
@@ -352,7 +394,11 @@ class DonneesListe_Ressources extends ObjetDonneesListe_1.ObjetDonneesListe {
 						" ",
 						IE.jsx.str("i", {
 							class: "icon_accompagnant",
+							role: "img",
 							title: ObjetTraduction_1.GTraductions.getValeur(
+								"PersonnelAccompagnant",
+							),
+							"aria-label": ObjetTraduction_1.GTraductions.getValeur(
 								"PersonnelAccompagnant",
 							),
 						}),
@@ -403,12 +449,39 @@ class DonneesListe_Ressources extends ObjetDonneesListe_1.ObjetDonneesListe {
 		}
 		return "";
 	}
+	remplirMenuContextuel(aParametres) {
+		if (!aParametres.menuContextuel) {
+			return;
+		}
+		const lAvecAfficherDiscussion =
+			this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.communication.avecDiscussion,
+			) &&
+			!this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.communication.discussionInterdit,
+			);
+		if (lAvecAfficherDiscussion) {
+			aParametres.menuContextuel.add(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"fenetreCommunication.bouton.discussionsCommunes",
+				),
+				true,
+				ObjetFenetre_Discussion_1.ObjetFenetre_Discussion.afficherDiscussionsCommunes.bind(
+					this,
+					new ObjetListeElements_1.ObjetListeElements().add(
+						aParametres.article,
+					),
+				),
+			);
+		}
+	}
 }
 var Colonnes;
 (function (Colonnes) {
 	Colonnes["civilite"] = "civilite";
 	Colonnes["nom"] = "nom";
 	Colonnes["prenom"] = "prenom";
+	Colonnes["email"] = "email";
 	Colonnes["niveau"] = "niveau";
 	Colonnes["notation"] = "notation";
 	Colonnes["pp"] = "pp";

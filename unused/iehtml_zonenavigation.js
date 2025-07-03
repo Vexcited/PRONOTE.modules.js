@@ -3,7 +3,7 @@ const ToucheClavier_1 = require("ToucheClavier");
 const ObjetWAI_1 = require("ObjetWAI");
 IEHtml.addAttribut(
 	"ie-zonenavigation",
-	(aContexteCourant, aNodeName, aAttributValue, aOutils) => {
+	(aContexteCourant, aNodeName, aAttributValue, aOutils, aComp, aAttrName) => {
 		const lParams = {
 			returnNavNode(aNode) {
 				$(aNode).focus();
@@ -11,15 +11,16 @@ IEHtml.addAttribut(
 			retourNavigationDefaut: null,
 			nodeBackup: null,
 		};
-		if (aAttributValue && aContexteCourant.controleur) {
+		if (aAttributValue) {
 			const lInfos = aOutils.getAccesParametres(
 				aAttributValue,
+				aAttrName,
 				aContexteCourant,
 			);
 			if (!lInfos.estFonction) {
 				return true;
 			}
-			Object.assign(lParams, lInfos.callback());
+			Object.assign(lParams, lInfos.callback([aContexteCourant.node]));
 		}
 		if (!lParams) {
 			return true;

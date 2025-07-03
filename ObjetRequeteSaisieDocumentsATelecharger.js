@@ -1,6 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieDocumentsATelecharger extends ObjetRequeteSaisie {
+exports.ObjetRequeteSaisieDocumentsATelecharger = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieDocumentsATelecharger extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	constructor(...aParams) {
 		super(...aParams);
 	}
@@ -8,25 +9,29 @@ class ObjetRequeteSaisieDocumentsATelecharger extends ObjetRequeteSaisie {
 		$.extend(this.JSON, aParams);
 		if (!!aParams.listeNaturesDocumentsAFournir) {
 			this.JSON.listeNaturesDocumentsAFournir.setSerialisateurJSON({
-				methodeSerialisation: _ajouterNatureDocuments,
+				methodeSerialisation: this._ajouterNatureDocuments.bind(this),
 			});
 		}
 		return this.appelAsynchrone();
 	}
+	_ajouterNatureDocuments(aElement, aJSON) {
+		if ("genreDestinataireCollecte" in aElement) {
+			aJSON.genreDestinataireCollecte = aElement.genreDestinataireCollecte;
+		}
+		if (!!aElement.listePJ) {
+			aJSON.listePJ = aElement.listePJ;
+			aJSON.listePJ.setSerialisateurJSON({
+				methodeSerialisation: this._serialiserFichier.bind(this),
+			});
+		}
+	}
+	_serialiserFichier(aElement, aJSON) {
+		aJSON.idFichier = aElement.idFichier;
+	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteSaisieDocumentsATelecharger =
+	ObjetRequeteSaisieDocumentsATelecharger;
+CollectionRequetes_1.Requetes.inscrire(
 	"SaisieDocumentATelecharger",
 	ObjetRequeteSaisieDocumentsATelecharger,
 );
-function _ajouterNatureDocuments(aElement, aJSON) {
-	if (!!aElement.listePJ) {
-		aJSON.listePJ = aElement.listePJ;
-		aJSON.listePJ.setSerialisateurJSON({
-			methodeSerialisation: _serialiserFichier,
-		});
-	}
-}
-function _serialiserFichier(aElement, aJSON) {
-	aJSON.idFichier = aElement.idFichier;
-}
-module.exports = { ObjetRequeteSaisieDocumentsATelecharger };

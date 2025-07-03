@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieListeAbsenceRetard extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieListeAbsenceRetard = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieListeAbsenceRetard extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aListe) {
 		this.JSON = {};
 		if (!!aListe) {
@@ -17,8 +15,9 @@ class ObjetRequeteSaisieListeAbsenceRetard extends ObjetRequeteSaisie {
 		return this.appelAsynchrone();
 	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteSaisieListeAbsenceRetard =
+	ObjetRequeteSaisieListeAbsenceRetard;
+CollectionRequetes_1.Requetes.inscrire(
 	"SaisieListeAbsenceRetard",
 	ObjetRequeteSaisieListeAbsenceRetard,
 );
-module.exports = { ObjetRequeteSaisieListeAbsenceRetard };

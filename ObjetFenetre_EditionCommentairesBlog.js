@@ -34,15 +34,6 @@ class ObjetFenetre_EditionCommentairesBlog extends ObjetFenetre_1.ObjetFenetre {
 						ObjetDroitsPN_1.TypeDroits.estEnConsultation,
 					);
 				},
-				node() {
-					$(this.node).attr(
-						"placeholder",
-						ObjetTraduction_1.GTraductions.getValeur(
-							"blog.placeholderCommentaire",
-						),
-					);
-					$(this.node).attr("maxlength", aInstance.tailleMaxCommentaires);
-				},
 			},
 			btnEnvoyerCommentaire: {
 				event() {
@@ -255,6 +246,13 @@ class ObjetFenetre_EditionCommentairesBlog extends ObjetFenetre_1.ObjetFenetre {
 				IE.jsx.str("ie-textareamax", {
 					class: "editComment-input",
 					"ie-model": "saisieNouveauCommentaireBlog",
+					placeholder: ObjetTraduction_1.GTraductions.getValeur(
+						"blog.placeholderCommentaire",
+					),
+					"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+						"blog.placeholderCommentaire",
+					),
+					maxlength: this.tailleMaxCommentaires,
 				}),
 				IE.jsx.str("ie-btnicon", {
 					class: "icon_envoyer editComment-btnEnvoi",

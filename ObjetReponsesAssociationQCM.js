@@ -10,6 +10,9 @@ const UtilitaireTraitementImage_1 = require("UtilitaireTraitementImage");
 const ObjetHtml_1 = require("ObjetHtml");
 const ObjetElement_1 = require("ObjetElement");
 const UtilitaireAudio_1 = require("UtilitaireAudio");
+const jsx_1 = require("jsx");
+const ObjetChaine_1 = require("ObjetChaine");
+const AccessApp_1 = require("AccessApp");
 var TypeEvenementReponsesAssociation;
 (function (TypeEvenementReponsesAssociation) {
 	TypeEvenementReponsesAssociation[
@@ -90,12 +93,14 @@ class ObjetReponsesAssociationQCM extends ObjetIdentite_1.Identite {
 				if (
 					error === UtilitaireAudio_1.UtilitaireAudio.ExceptionFichierNonValide
 				) {
-					GApplication.getMessage().afficher({
-						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-						message: ObjetTraduction_1.GTraductions.getValeur(
-							"ExecutionQCM.FichierSonNonValide",
-						),
-					});
+					(0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+							message: ObjetTraduction_1.GTraductions.getValeur(
+								"ExecutionQCM.FichierSonNonValide",
+							),
+						});
 				}
 			}
 		}
@@ -133,7 +138,8 @@ class ObjetReponsesAssociationQCM extends ObjetIdentite_1.Identite {
 							);
 						}
 						const lThis = this;
-						GApplication.getMessage()
+						(0, AccessApp_1.getApp)()
+							.getMessage()
 							.afficher({
 								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
 								message: lMessageConfirmation,
@@ -291,23 +297,25 @@ class ObjetReponsesAssociationQCM extends ObjetIdentite_1.Identite {
 						aInstance.getReponseAssociation(aIndexReponse);
 					if (!!lReponseAssociation) {
 						const lThis = this;
-						GApplication.getMessage().afficher({
-							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
-							message: ObjetTraduction_1.GTraductions.getValeur(
-								"SaisieQCM.ConfirmSuppression",
-							),
-							callback: function (aGenreAction) {
-								if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
-									lReponseAssociation.setEtat(
-										Enumere_Etat_1.EGenreEtat.Suppression,
-									);
-									aInstance.updateGraphiqueListeReponses(lThis.controleur);
-									aInstance.callback.appel(
-										TypeEvenementReponsesAssociation.Modification,
-									);
-								}
-							},
-						});
+						(0, AccessApp_1.getApp)()
+							.getMessage()
+							.afficher({
+								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+								message: ObjetTraduction_1.GTraductions.getValeur(
+									"SaisieQCM.ConfirmSuppression",
+								),
+								callback: function (aGenreAction) {
+									if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
+										lReponseAssociation.setEtat(
+											Enumere_Etat_1.EGenreEtat.Suppression,
+										);
+										aInstance.updateGraphiqueListeReponses(lThis.controleur);
+										aInstance.callback.appel(
+											TypeEvenementReponsesAssociation.Modification,
+										);
+									}
+								},
+							});
 					}
 				},
 				getDisabled() {
@@ -328,6 +336,8 @@ class ObjetReponsesAssociationQCM extends ObjetIdentite_1.Identite {
 							associationB: ObjetElement_1.ObjetElement.create({
 								Genre: lTypeAssociationB,
 							}),
+							fractionReponse: undefined,
+							editionAvancee: undefined,
 						});
 					lNouvelleReponseAssociation.bonneReponse =
 						lNouvelleReponseAssociation.associationB;
@@ -526,27 +536,39 @@ class ObjetReponsesAssociationQCM extends ObjetIdentite_1.Identite {
 		const H = [];
 		if (!!aReponseAssociation) {
 			H.push(
-				'<div class="CellElementAssociation">',
-				this.composeContenuElementAssociation(
-					aIndexReponseAssociation,
-					aReponseAssociation.associationA,
-					true,
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
+						"div",
+						{ class: "CellElementAssociation" },
+						this.composeContenuElementAssociation(
+							aIndexReponseAssociation,
+							aReponseAssociation.associationA,
+							true,
+						),
+					),
+					IE.jsx.str(
+						"div",
+						{ class: "CellElementAssociation" },
+						this.composeContenuElementAssociation(
+							aIndexReponseAssociation,
+							aReponseAssociation.associationB,
+							false,
+						),
+					),
+					IE.jsx.str(
+						"div",
+						{ class: "CellBtnSupprimerAssociation" },
+						IE.jsx.str("ie-btnimage", {
+							class: "BtnSupprimerAssociation icon_trash btnImageIcon",
+							title: ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
+							"ie-model": (0, jsx_1.jsxFuncAttr)("btnSupprimerReponse", [
+								aIndexReponseAssociation,
+							]),
+						}),
+					),
 				),
-				"</div>",
-			);
-			H.push(
-				'<div class="CellElementAssociation">',
-				this.composeContenuElementAssociation(
-					aIndexReponseAssociation,
-					aReponseAssociation.associationB,
-					false,
-				),
-				"</div>",
-			);
-			H.push(
-				'<div class="CellBtnSupprimerAssociation"><ie-btnimage class="BtnSupprimerAssociation icon_trash btnImageIcon" ie-model="btnSupprimerReponse(',
-				aIndexReponseAssociation,
-				')"></ie-btnimage></div>',
 			);
 		}
 		return H.join("");
@@ -562,11 +584,20 @@ class ObjetReponsesAssociationQCM extends ObjetIdentite_1.Identite {
 				case TypeGenreAssociationQuestionQCM_1.TypeGenreElementAssociation
 					.GEA_Texte:
 					H.push(
-						'<input type="text" ie-model="txtValeurElementAssociation(',
-						aIndexReponseAssociation,
-						",",
-						aEstAssociationA,
-						')" />',
+						IE.jsx.str("input", {
+							type: "text",
+							"aria-label": aEstAssociationA
+								? ObjetTraduction_1.GTraductions.getValeur(
+										"QCM_Divers.AssociationSource",
+									)
+								: ObjetTraduction_1.GTraductions.getValeur(
+										"QCM_Divers.AssociationReponse",
+									),
+							"ie-model": (0, jsx_1.jsxFuncAttr)(
+								"txtValeurElementAssociation",
+								[aIndexReponseAssociation, aEstAssociationA],
+							),
+						}),
 					);
 					break;
 				case TypeGenreAssociationQuestionQCM_1.TypeGenreElementAssociation
@@ -608,8 +639,8 @@ class ObjetReponsesAssociationQCM extends ObjetIdentite_1.Identite {
 					} else {
 						if (aElementAssociation.strImage) {
 							H.push(
-								'<img src="data:image/png;base64,',
-								aElementAssociation.strImage,
+								'<img alt="" src="data:image/png;base64,',
+								ObjetChaine_1.GChaine.supprimerRC(aElementAssociation.strImage),
 								'" onerror="" onload="" />',
 							);
 						} else {

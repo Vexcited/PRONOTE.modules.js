@@ -1,12 +1,11 @@
-const { EGenreCommandeMenu } = require("Enumere_CommandeMenu.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	TypeGenreStatutProtagonisteIncident,
-} = require("TypeGenreStatutProtagonisteIncident.js");
-const { GDate } = require("ObjetDate.js");
-class DonneesListe_Protagonistes extends ObjetDonneesListe {
+exports.DonneesListe_Protagonistes = void 0;
+const Enumere_CommandeMenu_1 = require("Enumere_CommandeMenu");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TypeGenreStatutProtagonisteIncident_1 = require("TypeGenreStatutProtagonisteIncident");
+const ObjetDate_1 = require("ObjetDate");
+class DonneesListe_Protagonistes extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParam) {
 		super(aDonnees);
 		this._avecSaisie = aParam.avecSaisie;
@@ -25,17 +24,18 @@ class DonneesListe_Protagonistes extends ObjetDonneesListe {
 			case DonneesListe_Protagonistes.colonnes.publication:
 			case DonneesListe_Protagonistes.colonnes.avecSanction:
 			case DonneesListe_Protagonistes.colonnes.sansSanction:
-				return ObjetDonneesListe.ETypeCellule.Coche;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Coche;
 		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
 	avecEdition(aParams) {
 		if (
 			!this._avecSaisie &&
 			(aParams.idColonne !== DonneesListe_Protagonistes.colonnes.publication ||
-				[EGenreEspace.Administrateur, EGenreEspace.PrimDirection].includes(
-					GEtatUtilisateur.GenreEspace,
-				))
+				[
+					Enumere_Espace_1.EGenreEspace.Administrateur,
+					Enumere_Espace_1.EGenreEspace.PrimDirection,
+				].includes(GEtatUtilisateur.GenreEspace))
 		) {
 			return false;
 		}
@@ -47,28 +47,32 @@ class DonneesListe_Protagonistes extends ObjetDonneesListe {
 					aParams.article.avecEditionMesure &&
 					this._saisiePunition &&
 					aParams.article.Genre ===
-						TypeGenreStatutProtagonisteIncident.GSP_Auteur
+						TypeGenreStatutProtagonisteIncident_1
+							.TypeGenreStatutProtagonisteIncident.GSP_Auteur
 				);
 			case DonneesListe_Protagonistes.colonnes.date:
-				return (
+				return !!(
 					aParams.article.avecEditionDate &&
 					this._saisiePunition &&
 					aParams.article.Genre ===
-						TypeGenreStatutProtagonisteIncident.GSP_Auteur &&
+						TypeGenreStatutProtagonisteIncident_1
+							.TypeGenreStatutProtagonisteIncident.GSP_Auteur &&
 					aParams.article.mesure
 				);
 			case DonneesListe_Protagonistes.colonnes.pubDossier:
-				return (
+				return !!(
 					aParams.article.avecEditionPublicationDossier &&
 					aParams.article.Genre ===
-						TypeGenreStatutProtagonisteIncident.GSP_Auteur &&
+						TypeGenreStatutProtagonisteIncident_1
+							.TypeGenreStatutProtagonisteIncident.GSP_Auteur &&
 					aParams.article.dossier
 				);
 			case DonneesListe_Protagonistes.colonnes.publication:
 				return (
 					aParams.article.avecEditionPublication &&
 					aParams.article.Genre ===
-						TypeGenreStatutProtagonisteIncident.GSP_Auteur
+						TypeGenreStatutProtagonisteIncident_1
+							.TypeGenreStatutProtagonisteIncident.GSP_Auteur
 				);
 		}
 		return false;
@@ -85,14 +89,16 @@ class DonneesListe_Protagonistes extends ObjetDonneesListe {
 					aParams.article.avecEditionMesure &&
 					this._saisiePunition &&
 					aParams.article.Genre ===
-						TypeGenreStatutProtagonisteIncident.GSP_Auteur
+						TypeGenreStatutProtagonisteIncident_1
+							.TypeGenreStatutProtagonisteIncident.GSP_Auteur
 				);
 			case DonneesListe_Protagonistes.colonnes.date:
 				return (
 					aParams.article.avecEditionDate &&
 					this._saisiePunition &&
 					aParams.article.Genre ===
-						TypeGenreStatutProtagonisteIncident.GSP_Auteur
+						TypeGenreStatutProtagonisteIncident_1
+							.TypeGenreStatutProtagonisteIncident.GSP_Auteur
 				);
 		}
 		return false;
@@ -103,17 +109,19 @@ class DonneesListe_Protagonistes extends ObjetDonneesListe {
 		}
 		switch (aParams.idColonne) {
 			case DonneesListe_Protagonistes.colonnes.pubDossier:
-				return (
+				return !!(
 					aParams.article.avecEditionPublicationDossier &&
 					aParams.article.Genre ===
-						TypeGenreStatutProtagonisteIncident.GSP_Auteur &&
+						TypeGenreStatutProtagonisteIncident_1
+							.TypeGenreStatutProtagonisteIncident.GSP_Auteur &&
 					aParams.article.dossier
 				);
 			case DonneesListe_Protagonistes.colonnes.publication:
 				return (
 					aParams.article.avecEditionPublication &&
 					aParams.article.Genre ===
-						TypeGenreStatutProtagonisteIncident.GSP_Auteur
+						TypeGenreStatutProtagonisteIncident_1
+							.TypeGenreStatutProtagonisteIncident.GSP_Auteur
 				);
 		}
 		return false;
@@ -137,7 +145,8 @@ class DonneesListe_Protagonistes extends ObjetDonneesListe {
 			this._avecSaisie &&
 			(aParams.article.avecEditionMesure ||
 				aParams.article.Genre !==
-					TypeGenreStatutProtagonisteIncident.GSP_Auteur)
+					TypeGenreStatutProtagonisteIncident_1
+						.TypeGenreStatutProtagonisteIncident.GSP_Auteur)
 		);
 	}
 	getLibelleDraggable(aParams) {
@@ -157,9 +166,13 @@ class DonneesListe_Protagonistes extends ObjetDonneesListe {
 				return aParams.article.mesure && aParams.article.mesure.nature
 					? aParams.article.mesure.nature.getLibelle()
 					: aParams.article.sansSanction
-						? GTraductions.getValeur("incidents.protagonistes.aucuneMesure")
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"incidents.protagonistes.aucuneMesure",
+							)
 						: aParams.article.avecSanction
-							? GTraductions.getValeur("incidents.protagonistes.enAttente")
+							? ObjetTraduction_1.GTraductions.getValeur(
+									"incidents.protagonistes.enAttente",
+								)
 							: "";
 			case DonneesListe_Protagonistes.colonnes.date:
 				return aParams.article.strDate || "";
@@ -171,12 +184,15 @@ class DonneesListe_Protagonistes extends ObjetDonneesListe {
 				return !!aParams.article.publication;
 			case DonneesListe_Protagonistes.colonnes.vuLe:
 				return aParams.article.dateARParent
-					? GDate.formatDate(aParams.article.dateARParent, "%JJ/%MM/%AAAA")
+					? ObjetDate_1.GDate.formatDate(
+							aParams.article.dateARParent,
+							"%JJ/%MM/%AAAA",
+						)
 					: "";
 		}
 		return "";
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_Protagonistes.colonnes.date:
 				if (aParams.article.mesure && aParams.article.mesure.dateDemande) {
@@ -199,7 +215,8 @@ class DonneesListe_Protagonistes extends ObjetDonneesListe {
 			if (this.listeTypesProtagonistes) {
 				this.listeTypesProtagonistes.parcourir((lTypeProtagoniste) => {
 					switch (lTypeProtagoniste.getGenre()) {
-						case TypeGenreStatutProtagonisteIncident.GSP_Auteur:
+						case TypeGenreStatutProtagonisteIncident_1
+							.TypeGenreStatutProtagonisteIncident.GSP_Auteur:
 							aParametres.menuContextuel.addCommande(
 								DonneesListe_Protagonistes.genreAction.ajout_Auteur,
 								lTypeProtagoniste.getLibelle(),
@@ -207,13 +224,14 @@ class DonneesListe_Protagonistes extends ObjetDonneesListe {
 								lTypeProtagoniste,
 							);
 							break;
-						case TypeGenreStatutProtagonisteIncident.GSP_Victime:
+						case TypeGenreStatutProtagonisteIncident_1
+							.TypeGenreStatutProtagonisteIncident.GSP_Victime:
 							aParametres.menuContextuel.addSeparateur();
 							aParametres.menuContextuel.addCommande(
 								DonneesListe_Protagonistes.genreAction.ajout_Victime_Eleve,
 								lTypeProtagoniste.getLibelle() +
 									" > " +
-									GTraductions.getValeur("Eleve"),
+									ObjetTraduction_1.GTraductions.getValeur("Eleve"),
 								true,
 								lTypeProtagoniste,
 							);
@@ -221,7 +239,7 @@ class DonneesListe_Protagonistes extends ObjetDonneesListe {
 								DonneesListe_Protagonistes.genreAction.ajout_Victime_Professeur,
 								lTypeProtagoniste.getLibelle() +
 									" > " +
-									GTraductions.getValeur("Professeur"),
+									ObjetTraduction_1.GTraductions.getValeur("Professeur"),
 								true,
 								lTypeProtagoniste,
 							);
@@ -229,18 +247,19 @@ class DonneesListe_Protagonistes extends ObjetDonneesListe {
 								DonneesListe_Protagonistes.genreAction.ajout_Victime_Personnel,
 								lTypeProtagoniste.getLibelle() +
 									" > " +
-									GTraductions.getValeur("Personnel"),
+									ObjetTraduction_1.GTraductions.getValeur("Personnel"),
 								true,
 								lTypeProtagoniste,
 							);
 							break;
-						case TypeGenreStatutProtagonisteIncident.GSP_Temoin:
+						case TypeGenreStatutProtagonisteIncident_1
+							.TypeGenreStatutProtagonisteIncident.GSP_Temoin:
 							aParametres.menuContextuel.addSeparateur();
 							aParametres.menuContextuel.addCommande(
 								DonneesListe_Protagonistes.genreAction.ajout_Temoin_Eleve,
 								lTypeProtagoniste.getLibelle() +
 									" > " +
-									GTraductions.getValeur("Eleve"),
+									ObjetTraduction_1.GTraductions.getValeur("Eleve"),
 								true,
 								lTypeProtagoniste,
 							);
@@ -248,7 +267,7 @@ class DonneesListe_Protagonistes extends ObjetDonneesListe {
 								DonneesListe_Protagonistes.genreAction.ajout_Temoin_Professeur,
 								lTypeProtagoniste.getLibelle() +
 									" > " +
-									GTraductions.getValeur("Professeur"),
+									ObjetTraduction_1.GTraductions.getValeur("Professeur"),
 								true,
 								lTypeProtagoniste,
 							);
@@ -256,7 +275,7 @@ class DonneesListe_Protagonistes extends ObjetDonneesListe {
 								DonneesListe_Protagonistes.genreAction.ajout_Temoin_Personnel,
 								lTypeProtagoniste.getLibelle() +
 									" > " +
-									GTraductions.getValeur("Personnel"),
+									ObjetTraduction_1.GTraductions.getValeur("Personnel"),
 								true,
 								lTypeProtagoniste,
 							);
@@ -268,8 +287,10 @@ class DonneesListe_Protagonistes extends ObjetDonneesListe {
 			}
 		} else {
 			aParametres.menuContextuel.addCommande(
-				EGenreCommandeMenu.Suppression,
-				GTraductions.getValeur("incidents.protagonistes.supprimer"),
+				Enumere_CommandeMenu_1.EGenreCommandeMenu.Suppression,
+				ObjetTraduction_1.GTraductions.getValeur(
+					"incidents.protagonistes.supprimer",
+				),
 				this.avecSuppression(aParametres) && !aParametres.nonEditable,
 			);
 		}
@@ -279,24 +300,44 @@ class DonneesListe_Protagonistes extends ObjetDonneesListe {
 		this.callbackMenuContextuel(aParametres.ligneMenu);
 	}
 }
-DonneesListe_Protagonistes.colonnes = {
-	identite: "DL_Protagonistes_identite",
-	implication: "DL_Protagonistes_implication",
-	avecSanction: "DL_Protagonistes_avecSanction",
-	sansSanction: "DL_Protagonistes_sansSanction",
-	mesure: "DL_Protagonistes_mesure",
-	date: "DL_Protagonistes_date",
-	pubDossier: "DL_Protagonistes_pubDossier",
-	publication: "DL_Protagonistes_publication",
-	vuLe: "DL_Protagonistes_vuLe",
-};
-DonneesListe_Protagonistes.genreAction = {
-	ajout_Auteur: 1,
-	ajout_Victime_Eleve: 2,
-	ajout_Victime_Professeur: 3,
-	ajout_Victime_Personnel: 4,
-	ajout_Temoin_Eleve: 5,
-	ajout_Temoin_Professeur: 6,
-	ajout_Temoin_Personnel: 7,
-};
-module.exports = { DonneesListe_Protagonistes };
+exports.DonneesListe_Protagonistes = DonneesListe_Protagonistes;
+(function (DonneesListe_Protagonistes) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["identite"] = "DL_Protagonistes_identite";
+		colonnes["implication"] = "DL_Protagonistes_implication";
+		colonnes["avecSanction"] = "DL_Protagonistes_avecSanction";
+		colonnes["sansSanction"] = "DL_Protagonistes_sansSanction";
+		colonnes["mesure"] = "DL_Protagonistes_mesure";
+		colonnes["date"] = "DL_Protagonistes_date";
+		colonnes["pubDossier"] = "DL_Protagonistes_pubDossier";
+		colonnes["publication"] = "DL_Protagonistes_publication";
+		colonnes["vuLe"] = "DL_Protagonistes_vuLe";
+	})(
+		(colonnes =
+			DonneesListe_Protagonistes.colonnes ||
+			(DonneesListe_Protagonistes.colonnes = {})),
+	);
+	let genreAction;
+	(function (genreAction) {
+		genreAction[(genreAction["ajout_Auteur"] = 1)] = "ajout_Auteur";
+		genreAction[(genreAction["ajout_Victime_Eleve"] = 2)] =
+			"ajout_Victime_Eleve";
+		genreAction[(genreAction["ajout_Victime_Professeur"] = 3)] =
+			"ajout_Victime_Professeur";
+		genreAction[(genreAction["ajout_Victime_Personnel"] = 4)] =
+			"ajout_Victime_Personnel";
+		genreAction[(genreAction["ajout_Temoin_Eleve"] = 5)] = "ajout_Temoin_Eleve";
+		genreAction[(genreAction["ajout_Temoin_Professeur"] = 6)] =
+			"ajout_Temoin_Professeur";
+		genreAction[(genreAction["ajout_Temoin_Personnel"] = 7)] =
+			"ajout_Temoin_Personnel";
+	})(
+		(genreAction =
+			DonneesListe_Protagonistes.genreAction ||
+			(DonneesListe_Protagonistes.genreAction = {})),
+	);
+})(
+	DonneesListe_Protagonistes ||
+		(exports.DonneesListe_Protagonistes = DonneesListe_Protagonistes = {}),
+);

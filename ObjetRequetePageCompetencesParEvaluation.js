@@ -1,10 +1,8 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetUtilitaireEvaluation } = require("ObjetUtilitaireEvaluation.js");
-class ObjetRequetePageCompetencesParEvaluation extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequetePageCompetencesParEvaluation = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetUtilitaireEvaluation_1 = require("ObjetUtilitaireEvaluation");
+class ObjetRequetePageCompetencesParEvaluation extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aParams) {
 		this.evaluation = aParams.evaluation
 			? aParams.evaluation
@@ -35,10 +33,9 @@ class ObjetRequetePageCompetencesParEvaluation extends ObjetRequeteConsultation 
 		});
 		lListeEleves.trier();
 		this.evaluation.listeEleves = lListeEleves;
-		ObjetUtilitaireEvaluation.initEvaluation(
+		ObjetUtilitaireEvaluation_1.ObjetUtilitaireEvaluation.initEvaluation(
 			this.evaluation,
 			lListeEleves,
-			this.evaluation.listePiliers,
 		);
 		const lEvaluation = this.evaluation;
 		let lEleveEvaluation = null;
@@ -93,8 +90,9 @@ class ObjetRequetePageCompetencesParEvaluation extends ObjetRequeteConsultation 
 		this.callbackReussite.appel(this.evaluation);
 	}
 }
-Requetes.inscrire(
+exports.ObjetRequetePageCompetencesParEvaluation =
+	ObjetRequetePageCompetencesParEvaluation;
+CollectionRequetes_1.Requetes.inscrire(
 	"PageCompetencesParEvaluation",
 	ObjetRequetePageCompetencesParEvaluation,
 );
-module.exports = { ObjetRequetePageCompetencesParEvaluation };

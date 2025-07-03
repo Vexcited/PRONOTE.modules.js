@@ -1,44 +1,47 @@
-const { GTraductions } = require("ObjetTraduction.js");
-const { Identite } = require("ObjetIdentite.js");
-class ObjetPreferenceAccessibilite extends Identite {
+exports.ObjetPreferenceAccessibilite = void 0;
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetIdentite_1 = require("ObjetIdentite");
+const AccessApp_1 = require("AccessApp");
+class ObjetPreferenceAccessibilite extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
+		const lApplicationSco = (0, AccessApp_1.getApp)();
+		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
 	}
-	getControleur() {
-		return $.extend(true, super.getControleur(this), {
-			cbRemplacerPastillesCompetences: {
-				getValue: function () {
-					return GEtatUtilisateur.estAvecCodeCompetences();
-				},
-				setValue: function (aValue) {
-					GEtatUtilisateur.setAvecCodeCompetences(aValue);
-				},
-				getLibelle: function () {
-					return GTraductions.getValeur(
-						"infosperso.RemplacerPastillesCompetences",
-					);
-				},
+	jsxModeleCheckboxRemplacerPastillesCompetences() {
+		return {
+			getValue: () => {
+				return this.etatUtilisateurSco.estAvecCodeCompetences();
 			},
-			cbThemeAccessible: {
-				getValue: function () {
-					return GEtatUtilisateur.estAvecThemeAccessible();
-				},
-				setValue: function (aValue) {
-					GEtatUtilisateur.setAvecThemeAccessible(aValue);
-				},
-				getLibelle: function () {
-					return GTraductions.getValeur(
-						"ParametresUtilisateur.AppliquerThemeAccessible",
-					);
-				},
+			setValue: (aValue) => {
+				this.etatUtilisateurSco.setAvecCodeCompetences(aValue);
 			},
-		});
+		};
 	}
 	construireAffichage() {
 		const H = [];
-		H.push(`<ie-checkbox ie-model="cbRemplacerPastillesCompetences"></ie-checkbox>\n              <ie-checkbox ie-model="cbThemeAccessible"></ie-checkbox>\n              ${""}
-            `);
+		H.push(
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"div",
+					{ class: "champ-conteneur" },
+					IE.jsx.str(
+						"ie-switch",
+						{
+							class: "long-text",
+							"ie-model":
+								this.jsxModeleCheckboxRemplacerPastillesCompetences.bind(this),
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"infosperso.RemplacerPastillesCompetences",
+						),
+					),
+				),
+			),
+		);
 		return H.join("");
 	}
 }
-module.exports = { ObjetPreferenceAccessibilite };
+exports.ObjetPreferenceAccessibilite = ObjetPreferenceAccessibilite;

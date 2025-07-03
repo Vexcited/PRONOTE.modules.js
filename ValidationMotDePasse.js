@@ -1,9 +1,26 @@
-exports.ValidationMotDePasse = void 0;
+exports.ValidationMotDePasse = exports.TradValidationMotDePasse = void 0;
 const MethodesObjet_1 = require("MethodesObjet");
 const ObjetChaine_1 = require("ObjetChaine");
-const ObjetTraduction_1 = require("ObjetTraduction");
 const TypeEnsembleNombre_1 = require("TypeEnsembleNombre");
 const TypeOptionGenerationMotDePasse_1 = require("TypeOptionGenerationMotDePasse");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TradValidationMotDePasse = ObjetTraduction_1.TraductionsModule.getModule(
+	"ValidationMotDePasse",
+	{
+		titre: "",
+		longueurMDPMinMax: "",
+		longueurMDPMin: "",
+		chiffre: "",
+		lettre: "",
+		special: "",
+		MajMin: "",
+		login: "",
+		mdpDifferent: "",
+		RegleValide: "",
+		RegleInvalide: "",
+	},
+);
+exports.TradValidationMotDePasse = TradValidationMotDePasse;
 exports.ValidationMotDePasse = {
 	leMotDePasseRespecteReglesSecurite(aMDP, aReglesSaisieMotDePasse) {
 		if (
@@ -85,7 +102,7 @@ exports.ValidationMotDePasse = {
 			'<li class="',
 			lOptions.avecEspace ? "m-bottom" : "",
 			' Gras">',
-			ObjetTraduction_1.GTraductions.getValeur("validationMDP.titre") + " :",
+			TradValidationMotDePasse.titre + " :",
 			"</li>",
 		);
 		H.push(
@@ -93,15 +110,11 @@ exports.ValidationMotDePasse = {
 				lErreursMDP ? lErreursMDP.erreurTailleMDP : undefined,
 				MethodesObjet_1.MethodesObjet.isNumber(aReglesSaisieMotDePasse.max)
 					? ObjetChaine_1.GChaine.format(
-							ObjetTraduction_1.GTraductions.getValeur(
-								"validationMDP.longueurMDPMinMax",
-							),
+							TradValidationMotDePasse.longueurMDPMinMax,
 							[aReglesSaisieMotDePasse.min, aReglesSaisieMotDePasse.max],
 						)
 					: ObjetChaine_1.GChaine.format(
-							ObjetTraduction_1.GTraductions.getValeur(
-								"validationMDP.longueurMDPMin",
-							),
+							TradValidationMotDePasse.longueurMDPMin,
 							[aReglesSaisieMotDePasse.min],
 						),
 				lOptions,
@@ -121,7 +134,7 @@ exports.ValidationMotDePasse = {
 									.OGMDP_AvecAuMoinsUnChiffre,
 							)
 						: undefined,
-					ObjetTraduction_1.GTraductions.getValeur("validationMDP.chiffre"),
+					TradValidationMotDePasse.chiffre,
 					lOptions,
 				),
 			);
@@ -140,7 +153,7 @@ exports.ValidationMotDePasse = {
 									.OGMDP_AvecAuMoinsUneLettre,
 							)
 						: undefined,
-					ObjetTraduction_1.GTraductions.getValeur("validationMDP.lettre"),
+					TradValidationMotDePasse.lettre,
 					lOptions,
 				),
 			);
@@ -159,7 +172,7 @@ exports.ValidationMotDePasse = {
 									.OGMDP_AvecAuMoinsUnCaractereSpecial,
 							)
 						: undefined,
-					ObjetTraduction_1.GTraductions.getValeur("validationMDP.special"),
+					TradValidationMotDePasse.special,
 					lOptions,
 				),
 			);
@@ -178,7 +191,7 @@ exports.ValidationMotDePasse = {
 									.OGMDP_AvecMelangeMinusculeMajuscule,
 							)
 						: undefined,
-					ObjetTraduction_1.GTraductions.getValeur("validationMDP.MajMin"),
+					TradValidationMotDePasse.MajMin,
 					lOptions,
 				),
 			);
@@ -198,7 +211,7 @@ exports.ValidationMotDePasse = {
 									.OGMDP_AvecControleIdentifiantDifferent,
 							)
 						: undefined,
-					ObjetTraduction_1.GTraductions.getValeur("validationMDP.login"),
+					TradValidationMotDePasse.login,
 					lOptions,
 				),
 			);
@@ -207,9 +220,7 @@ exports.ValidationMotDePasse = {
 			H.push(
 				_construireLigneValidateur(
 					lErreursMDP ? !!lErreursMDP.MDPIdentique : undefined,
-					ObjetTraduction_1.GTraductions.getValeur(
-						"validationMDP.mdpDifferent",
-					),
+					TradValidationMotDePasse.mdpDifferent,
 					lOptions,
 				),
 			);
@@ -235,12 +246,8 @@ function _construireLigneValidateur(aEchec, aTraduction, aOptions) {
 						!aEchec ? "icon_ok ico-green" : "icon_remove ico-red",
 					],
 					"aria-label": aEchec
-						? ObjetTraduction_1.GTraductions.getValeur(
-								"validationMDP.RegleInvalide",
-							)
-						: ObjetTraduction_1.GTraductions.getValeur(
-								"validationMDP.RegleValide",
-							),
+						? TradValidationMotDePasse.RegleInvalide
+						: TradValidationMotDePasse.RegleValide,
 				})
 			: "",
 		IE.jsx.str("p", null, aTraduction),

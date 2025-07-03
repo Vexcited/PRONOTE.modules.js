@@ -1,26 +1,33 @@
-const { MethodesObjet } = require("MethodesObjet.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { GStyle } = require("ObjetStyle.js");
-const { GDate } = require("ObjetDate.js");
-const {
-	TypeModeCalculPositionnementService,
-	TypeModeCalculPositionnementServiceUtil,
-} = require("TypeModeCalculPositionnementService.js");
-const { TypeModeValidationAuto } = require("TypeModeValidationAuto.js");
-const { ObjetHint } = require("ObjetHint.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const {
-	ObjetRequeteValidationAutoPositionnement,
-} = require("ObjetRequeteValidationAutoPositionnement.js");
-const { ObjetJSON } = require("ObjetJSON.js");
-const TypeEvenementValidationAutoPositionnement = {
-	Saisie: "saisie",
-	AfficherPreferencesCalcul: "afficherPrefCalcul",
-};
-class ObjetFenetre_CalculAutoPositionnement extends ObjetFenetre {
+exports.ObjetFenetre_CalculAutoPositionnement =
+	exports.TypeEvenementValidationAutoPositionnement = void 0;
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetStyle_1 = require("ObjetStyle");
+const ObjetDate_1 = require("ObjetDate");
+const TypeModeCalculPositionnementService_1 = require("TypeModeCalculPositionnementService");
+const TypeModeValidationAuto_1 = require("TypeModeValidationAuto");
+const ObjetHint_1 = require("ObjetHint");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetRequeteValidationAutoPositionnement_1 = require("ObjetRequeteValidationAutoPositionnement");
+const ObjetJSON_1 = require("ObjetJSON");
+const AccessApp_1 = require("AccessApp");
+var TypeEvenementValidationAutoPositionnement;
+(function (TypeEvenementValidationAutoPositionnement) {
+	TypeEvenementValidationAutoPositionnement["Saisie"] = "saisie";
+	TypeEvenementValidationAutoPositionnement["AfficherPreferencesCalcul"] =
+		"afficherPrefCalcul";
+})(
+	TypeEvenementValidationAutoPositionnement ||
+		(exports.TypeEvenementValidationAutoPositionnement =
+			TypeEvenementValidationAutoPositionnement =
+				{}),
+);
+class ObjetFenetre_CalculAutoPositionnement extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
+		this.appSco = (0, AccessApp_1.getApp)();
+		this.etatUtilSco = this.appSco.getEtatUtilisateur();
 		this.donneesAffichage = {
 			messageRestrictionsSurCalculAuto: null,
 			message: "",
@@ -40,15 +47,25 @@ class ObjetFenetre_CalculAutoPositionnement extends ObjetFenetre {
 		this.setOptionsFenetre({
 			largeur: 500,
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 		});
 	}
+	jsxModeleCheckboxRemplacerPositionnementsExistants() {
+		return {
+			getValue: () => {
+				return this.etatUtilSco.remplacerNiveauxDAcquisitions;
+			},
+			setValue: (aValue) => {
+				this.etatUtilSco.remplacerNiveauxDAcquisitions = aValue;
+			},
+		};
+	}
 	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
+		return $.extend(true, super.getControleur(aInstance), {
 			getLibelleModeCalcul(aModeCalcul) {
-				return TypeModeCalculPositionnementServiceUtil.getLibelleComplet(
+				return TypeModeCalculPositionnementService_1.TypeModeCalculPositionnementServiceUtil.getLibelleComplet(
 					aModeCalcul,
 					aInstance.donnees.donneesModeCalcul,
 				);
@@ -60,7 +77,7 @@ class ObjetFenetre_CalculAutoPositionnement extends ObjetFenetre {
 					);
 				},
 				getTitle() {
-					return GTraductions.getValeur(
+					return ObjetTraduction_1.GTraductions.getValeur(
 						"FenetrePreferencesCalculPositionnement.MesPreferencesCalculPos",
 					);
 				},
@@ -71,25 +88,17 @@ class ObjetFenetre_CalculAutoPositionnement extends ObjetFenetre {
 				},
 				setValue(aModeCalcul) {
 					aInstance.donnees.modeCalculPositionnement = aModeCalcul;
-					GApplication.parametresUtilisateur.set(
+					aInstance.appSco.parametresUtilisateur.set(
 						"CalculPositionnementEleveParService.ModeCalcul",
 						aInstance.donnees.modeCalculPositionnement,
 					);
-				},
-			},
-			surCbRemplacerPosExistants: {
-				getValue() {
-					return GEtatUtilisateur.remplacerNiveauxDAcquisitions;
-				},
-				setValue(aValue) {
-					GEtatUtilisateur.remplacerNiveauxDAcquisitions = aValue;
 				},
 			},
 			surAfficherMrFiche: {
 				event() {
 					const lJSONMrFiche = aInstance._getJSONMrFiche();
 					if (!!lJSONMrFiche) {
-						ObjetHint.start(lJSONMrFiche.html, { sansDelai: true });
+						ObjetHint_1.ObjetHint.start(lJSONMrFiche.html, { sansDelai: true });
 					}
 				},
 			},
@@ -97,9 +106,10 @@ class ObjetFenetre_CalculAutoPositionnement extends ObjetFenetre {
 	}
 	_getDetailPointsCompetences() {
 		let lDetailPointCompetences;
-		const lListeGlobalNiveauxDAcquisitions = MethodesObjet.dupliquer(
-			GParametres.listeNiveauxDAcquisitions,
-		);
+		const lListeGlobalNiveauxDAcquisitions =
+			MethodesObjet_1.MethodesObjet.dupliquer(
+				this.appSco.getObjetParametres().listeNiveauxDAcquisitions,
+			);
 		if (
 			!!lListeGlobalNiveauxDAcquisitions &&
 			lListeGlobalNiveauxDAcquisitions.count() > 0
@@ -109,11 +119,11 @@ class ObjetFenetre_CalculAutoPositionnement extends ObjetFenetre {
 				if (!!D.ponderation && D.ponderation.estUneValeur()) {
 					lDetailPointCompetences.push(
 						'<span class="InlineBlock AlignementDroit" style="' +
-							GStyle.composeWidth(40) +
+							ObjetStyle_1.GStyle.composeWidth(40) +
 							'">' +
 							D.ponderation.getNoteEntier() +
 							" " +
-							GTraductions.getValeur("BulletinEtReleve.Pts") +
+							ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.Pts") +
 							"</span> : " +
 							D.getLibelle(),
 					);
@@ -131,18 +141,19 @@ class ObjetFenetre_CalculAutoPositionnement extends ObjetFenetre {
 			} else {
 				if (
 					this.donnees.modeValidationAuto ===
-					TypeModeValidationAuto.tmva_PosAvecNoteSelonEvaluation
+					TypeModeValidationAuto_1.TypeModeValidationAuto
+						.tmva_PosAvecNoteSelonEvaluation
 				) {
-					lMrFiche = GTraductions.getValeur(
+					lMrFiche = ObjetTraduction_1.GTraductions.getValeur(
 						"BulletinEtReleve.MFicheCalculNoteAutomatique",
 					);
 				} else {
-					lMrFiche = GTraductions.getValeur(
+					lMrFiche = ObjetTraduction_1.GTraductions.getValeur(
 						"BulletinEtReleve.MFichePostionnement",
 					);
 				}
 			}
-			lJsonMrFiche = ObjetJSON.parse(lMrFiche);
+			lJsonMrFiche = ObjetJSON_1.ObjetJSON.parse(lMrFiche);
 		}
 		return lJsonMrFiche;
 	}
@@ -169,10 +180,10 @@ class ObjetFenetre_CalculAutoPositionnement extends ObjetFenetre {
 		} else {
 			const lDetailPointCompetences = this._getDetailPointsCompetences();
 			const lExplicationCalcul = this.donnees.calculMultiServices
-				? GTraductions.getValeur(
+				? ObjetTraduction_1.GTraductions.getValeur(
 						"competences.fenetreValidationAutoPositionnement.messageCalculTousServices",
 					)
-				: GTraductions.getValeur(
+				: ObjetTraduction_1.GTraductions.getValeur(
 						"competences.fenetreValidationAutoPositionnement.message",
 					);
 			T.push(
@@ -183,7 +194,7 @@ class ObjetFenetre_CalculAutoPositionnement extends ObjetFenetre {
 				"</div>",
 				'<div class="EspaceHaut">',
 				"<div>",
-				GTraductions.getValeur(
+				ObjetTraduction_1.GTraductions.getValeur(
 					"competences.fenetreValidationAutoPositionnement.detailPoints",
 				),
 				"</div>",
@@ -200,18 +211,24 @@ class ObjetFenetre_CalculAutoPositionnement extends ObjetFenetre {
 		if (!!this.donnees.borneDateDebut && !!this.donnees.borneDateFin) {
 			T.push(
 				'<div class="EspaceHaut">',
-				GTraductions.getValeur(
+				ObjetTraduction_1.GTraductions.getValeur(
 					"competences.fenetreValidationAutoPositionnement.messageOptionnel",
 					[
-						GDate.formatDate(this.donnees.borneDateDebut, "%JJ/%MM/%AAAA"),
-						GDate.formatDate(this.donnees.borneDateFin, "%JJ/%MM/%AAAA"),
+						ObjetDate_1.GDate.formatDate(
+							this.donnees.borneDateDebut,
+							"%JJ/%MM/%AAAA",
+						),
+						ObjetDate_1.GDate.formatDate(
+							this.donnees.borneDateFin,
+							"%JJ/%MM/%AAAA",
+						),
 					],
 				),
 				"</div>",
 			);
 		}
 		this.donnees.modeCalculPositionnement =
-			GApplication.parametresUtilisateur.get(
+			this.appSco.parametresUtilisateur.get(
 				"CalculPositionnementEleveParService.ModeCalcul",
 			);
 		if (
@@ -219,12 +236,12 @@ class ObjetFenetre_CalculAutoPositionnement extends ObjetFenetre {
 			this.donnees.modeCalculPositionnement !== 0
 		) {
 			this.donnees.modeCalculPositionnement =
-				TypeModeCalculPositionnementService.tMCPS_Defaut;
+				TypeModeCalculPositionnementService_1.TypeModeCalculPositionnementService.tMCPS_Defaut;
 		}
 		if (this.donneesAffichage.avecChoixCalcul) {
 			T.push(
 				'<div class="EspaceHaut">',
-				GTraductions.getValeur(
+				ObjetTraduction_1.GTraductions.getValeur(
 					"competences.fenetreValidationAutoPositionnement.indiquezModeCalculPositionnement",
 				),
 			);
@@ -235,15 +252,15 @@ class ObjetFenetre_CalculAutoPositionnement extends ObjetFenetre {
 			}
 			T.push("</div>");
 			this.donnees.donneesModeCalcul = {
-				dernieresEvaluations: GApplication.parametresUtilisateur.get(
+				dernieresEvaluations: this.appSco.parametresUtilisateur.get(
 					"CalculPositionnementEleveParService.NDernieresEvaluations",
 				),
-				meilleuresEvals: GApplication.parametresUtilisateur.get(
+				meilleuresEvals: this.appSco.parametresUtilisateur.get(
 					"CalculPositionnementEleveParService.NMeilleuresEvaluations",
 				),
 			};
 			T.push('<div class="EspaceGauche">');
-			for (const sModeCalcul in TypeModeCalculPositionnementServiceUtil.getListe()) {
+			for (const sModeCalcul in TypeModeCalculPositionnementService_1.TypeModeCalculPositionnementServiceUtil.getListe()) {
 				const lModeCalcul = parseInt(sModeCalcul);
 				T.push(
 					'<div class="PetitEspaceHaut">',
@@ -260,7 +277,7 @@ class ObjetFenetre_CalculAutoPositionnement extends ObjetFenetre {
 		} else {
 			T.push(
 				'<div class="EspaceHaut">',
-				GTraductions.getValeur(
+				ObjetTraduction_1.GTraductions.getValeur(
 					"competences.fenetreValidationAutoPositionnement.voulezVousContinuer",
 				),
 				"</div>",
@@ -269,22 +286,32 @@ class ObjetFenetre_CalculAutoPositionnement extends ObjetFenetre {
 		let lLibelleRemplacerExistants;
 		if (
 			this.donnees.modeValidationAuto ===
-			TypeModeValidationAuto.tmva_PosAvecNoteSelonEvaluation
+			TypeModeValidationAuto_1.TypeModeValidationAuto
+				.tmva_PosAvecNoteSelonEvaluation
 		) {
-			lLibelleRemplacerExistants = GTraductions.getValeur(
+			lLibelleRemplacerExistants = ObjetTraduction_1.GTraductions.getValeur(
 				"competences.fenetreValidationAutoPositionnement.remplacerPositionnementsNote",
 			);
 		} else {
-			lLibelleRemplacerExistants = GTraductions.getValeur(
+			lLibelleRemplacerExistants = ObjetTraduction_1.GTraductions.getValeur(
 				"competences.fenetreValidationAutoPositionnement.remplacerPositionnementsExistants",
 			);
 		}
 		T.push(
-			'<div class="EspaceHaut10 EspaceGauche10">',
-			'<ie-checkbox ie-model="surCbRemplacerPosExistants">',
-			lLibelleRemplacerExistants,
-			"</ie-checkbox>",
-			"</div>",
+			IE.jsx.str(
+				"div",
+				{ class: "EspaceHaut10 EspaceGauche10" },
+				IE.jsx.str(
+					"ie-checkbox",
+					{
+						"ie-model":
+							this.jsxModeleCheckboxRemplacerPositionnementsExistants.bind(
+								this,
+							),
+					},
+					lLibelleRemplacerExistants,
+				),
+			),
 		);
 		if (!!this.donnees.modeValidationAuto) {
 			const lJsonMrFiche = this._getJSONMrFiche();
@@ -320,38 +347,40 @@ class ObjetFenetre_CalculAutoPositionnement extends ObjetFenetre {
 	lancerRequeteSaisie() {
 		let lService = !!this.donnees.calculMultiServices
 			? null
-			: GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Service);
-		let lRessource = GEtatUtilisateur.Navigation.getRessource(
-			EGenreRessource.Classe,
+			: this.etatUtilSco.Navigation.getRessource(
+					Enumere_Ressource_1.EGenreRessource.Service,
+				);
+		let lRessource = this.etatUtilSco.Navigation.getRessource(
+			Enumere_Ressource_1.EGenreRessource.Classe,
 		);
 		if (
 			lRessource !== null &&
 			lRessource !== undefined &&
 			lRessource.getNumero() === -1 &&
-			lRessource.getGenre() === EGenreRessource.Aucune
+			lRessource.getGenre() === Enumere_Ressource_1.EGenreRessource.Aucune
 		) {
 			if (lService !== null && lService !== undefined) {
 				let lGpeDuService = lService.groupe;
 				if (lGpeDuService && lGpeDuService.existeNumero()) {
-					lGpeDuService.Genre = EGenreRessource.Groupe;
+					lGpeDuService.Genre = Enumere_Ressource_1.EGenreRessource.Groupe;
 					lRessource = lGpeDuService;
 				} else {
 					let lClasseDuService = lService.classe;
 					if (lClasseDuService && lClasseDuService.existeNumero()) {
-						lClasseDuService.Genre = EGenreRessource.Classe;
+						lClasseDuService.Genre = Enumere_Ressource_1.EGenreRessource.Classe;
 						lRessource = lClasseDuService;
 					}
 				}
 			}
 		}
 		const lParamsSaisie = {
-			periode: GEtatUtilisateur.Navigation.getRessource(
-				EGenreRessource.Periode,
+			periode: this.etatUtilSco.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.Periode,
 			),
 			calculMultiServices: !!this.donnees.calculMultiServices,
 			service: lService,
 			ressource: lRessource,
-			remplacerPosExistants: GEtatUtilisateur.remplacerNiveauxDAcquisitions,
+			remplacerPosExistants: this.etatUtilSco.remplacerNiveauxDAcquisitions,
 			modeValidationAuto: this.donnees.modeValidationAuto,
 			modeCalcul: this.donnees.modeCalculPositionnement,
 			borneDateDebut: this.donnees.borneDateDebut,
@@ -360,7 +389,7 @@ class ObjetFenetre_CalculAutoPositionnement extends ObjetFenetre {
 		if (!!this.donnees.listeEleves) {
 			lParamsSaisie.listeEleves = this.donnees.listeEleves;
 		}
-		new ObjetRequeteValidationAutoPositionnement(
+		new ObjetRequeteValidationAutoPositionnement_1.ObjetRequeteValidationAutoPositionnement(
 			this,
 			this.surRequeteSaisieCalculAutoPositionnement,
 		).lancerRequete(lParamsSaisie);
@@ -370,7 +399,5 @@ class ObjetFenetre_CalculAutoPositionnement extends ObjetFenetre {
 		this.fermer();
 	}
 }
-module.exports = {
-	TypeEvenementValidationAutoPositionnement,
-	ObjetFenetre_CalculAutoPositionnement,
-};
+exports.ObjetFenetre_CalculAutoPositionnement =
+	ObjetFenetre_CalculAutoPositionnement;

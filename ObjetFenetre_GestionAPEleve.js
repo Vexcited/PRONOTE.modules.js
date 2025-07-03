@@ -1,76 +1,76 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { TypeDomaine } = require("TypeDomaine.js");
-const { tag } = require("tag.js");
-const { ObjetListe } = require("ObjetListe.js");
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetCalendrier } = require("ObjetCalendrier.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { UtilitaireInitCalendrier } = require("UtilitaireInitCalendrier.js");
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { GChaine } = require("ObjetChaine.js");
-const { ObjetInvocateur, Invocateur } = require("Invocateur.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { GDate } = require("ObjetDate.js");
-const { EGenreAction } = require("Enumere_Action.js");
-const { ControleSaisieEvenement } = require("ControleSaisieEvenement.js");
-module.exports = {
+exports.GestionAPEleve = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const TypeDomaine_1 = require("TypeDomaine");
+const tag_1 = require("tag");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetCalendrier_1 = require("ObjetCalendrier");
+const ObjetTri_1 = require("ObjetTri");
+const UtilitaireInitCalendrier_1 = require("UtilitaireInitCalendrier");
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetChaine_1 = require("ObjetChaine");
+const Invocateur_1 = require("Invocateur");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const ObjetDate_1 = require("ObjetDate");
+const Enumere_Action_1 = require("Enumere_Action");
+const ControleSaisieEvenement_1 = require("ControleSaisieEvenement");
+const AccessApp_1 = require("AccessApp");
+exports.GestionAPEleve = {
 	ouvrirFenetrePromise(aInstance, aEleve, aDate) {
-		const lDomaine = new TypeDomaine().setValeur(
+		const lDomaine = new TypeDomaine_1.TypeDomaine().setValeur(
 			true,
 			IE.Cycles.cycleDeLaDate(aDate),
 		);
 		return new Promise((aResolve) => {
-			ControleSaisieEvenement(() => {
+			(0, ControleSaisieEvenement_1.ControleSaisieEvenement)(() => {
 				aResolve();
 			});
-		}).then(() => {
-			return new ObjetRequeteSaisieGestionAPEleve(aInstance)
-				.lancerRequete({ eleve: aEleve, domaine: lDomaine })
-				.then((aParams) => {
-					if (aParams.JSONReponse) {
-						if (!aParams.JSONReponse.listeGroupes) {
-							return GApplication.getMessage().afficher({
-								message: aParams.JSONReponse.message || "",
-							});
-						}
-						return ObjetFenetre.creerInstanceFenetre(
-							ObjetFenetre_GestionAPEleve,
-							{ pere: aInstance },
-							{
-								titre: GChaine.format("%s - %s", [
-									aEleve.getLibelle(),
-									GTraductions.getValeur(
-										"ObjetFenetre_GestionAPEleve.GroupeGAEVEleve",
-									),
-								]),
-							},
-						).setDonneespromise({
-							domaine: lDomaine,
-							eleve: aEleve,
-							groupes: aParams.JSONReponse,
-						});
-					}
+		}).then(async () => {
+			const lResult = await new ObjetRequeteSaisieGestionAPEleve(
+				aInstance,
+			).lancerRequete({ eleve: aEleve, domaine: lDomaine });
+			if (lResult.JSONReponse) {
+				if (!lResult.JSONReponse.listeGroupes) {
+					GApplication.getMessage().afficher({
+						message: lResult.JSONReponse.message || "",
+					});
+					return;
+				}
+				return ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+					ObjetFenetre_GestionAPEleve,
+					{ pere: aInstance },
+					{
+						titre: ObjetChaine_1.GChaine.format("%s - %s", [
+							aEleve.getLibelle(),
+							ObjetTraduction_1.GTraductions.getValeur(
+								"ObjetFenetre_GestionAPEleve.GroupeGAEVEleve",
+							),
+						]),
+					},
+				).setDonneespromise({
+					domaine: lDomaine,
+					eleve: aEleve,
+					groupes: lResult.JSONReponse,
 				});
+			}
 		});
 	},
 };
-class ObjetFenetre_GestionAPEleve extends ObjetFenetre {
+class ObjetFenetre_GestionAPEleve extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.setOptionsFenetre({
 			largeur: 700,
 			hauteur: 600,
-			listeBoutons: [GTraductions.getValeur("Fermer")],
+			listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
 		});
 		this._groupeSelection = null;
-		Invocateur.abonner(
-			ObjetInvocateur.events.modeExclusif,
+		Invocateur_1.Invocateur.abonner(
+			Invocateur_1.ObjetInvocateur.events.modeExclusif,
 			() => {
 				this.fermer();
 			},
@@ -79,44 +79,48 @@ class ObjetFenetre_GestionAPEleve extends ObjetFenetre {
 	}
 	construireInstances() {
 		this.identCalendrier = this.add(
-			ObjetCalendrier,
+			ObjetCalendrier_1.ObjetCalendrier,
 			(ASelection, aDomaine) => {
 				this.donnees.domaine = aDomaine;
 				if (
 					this.getInstance(this.identCalendrier).estUneInteractionUtilisateur()
 				) {
-					_requeteListeGroupes.call(this);
+					this._requeteListeGroupes();
 				}
 			},
 			(aCalendrier) => {
-				UtilitaireInitCalendrier.init(aCalendrier, {
+				UtilitaireInitCalendrier_1.UtilitaireInitCalendrier.init(aCalendrier, {
 					avecMultiSemainesContinues: true,
 				});
-				aCalendrier.setFrequences(GParametres.frequences, true);
+				aCalendrier.setFrequences(
+					(0, AccessApp_1.getApp)().getObjetParametres().frequences,
+					true,
+				);
 			},
 		);
 		this.identListeGroupe = this.add(
-			ObjetListe,
+			ObjetListe_1.ObjetListe,
 			(aParametres) => {
 				switch (aParametres.genreEvenement) {
-					case EGenreEvenementListe.ModificationSelection: {
+					case Enumere_EvenementListe_1.EGenreEvenementListe
+						.ModificationSelection: {
 						this._groupeSelection = aParametres.instance.getElementSelection();
-						_surSelectionGroupe.call(this);
+						this._surSelectionGroupe();
 						break;
 					}
 				}
 			},
 			(aListe) => {
 				aListe.setOptionsListe({
-					skin: ObjetListe.skin.flatDesign,
-					boutons: [{ genre: ObjetListe.typeBouton.rechercher }],
+					skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+					boutons: [{ genre: ObjetListe_1.ObjetListe.typeBouton.rechercher }],
 				});
 			},
 		);
-		this.identListeEleve = this.add(ObjetListe, null, (aListe) => {
+		this.identListeEleve = this.add(ObjetListe_1.ObjetListe, null, (aListe) => {
 			aListe.setOptionsListe({
-				skin: ObjetListe.skin.flatDesign,
-				boutons: [{ genre: ObjetListe.typeBouton.rechercher }],
+				skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+				boutons: [{ genre: ObjetListe_1.ObjetListe.typeBouton.rechercher }],
 			});
 		});
 	}
@@ -128,7 +132,7 @@ class ObjetFenetre_GestionAPEleve extends ObjetFenetre {
 			this.donnees.domaine,
 			true,
 		);
-		_actualiserListeGroupes.call(this);
+		this._actualiserListeGroupes();
 		return lPromise.then(() => {
 			return { avecSaisie: this.avecSaisie };
 		});
@@ -136,28 +140,28 @@ class ObjetFenetre_GestionAPEleve extends ObjetFenetre {
 	composeContenu() {
 		const T = [];
 		T.push(
-			tag(
+			IE.jsx.str(
 				"div",
 				{ class: "container" },
-				tag("div", {
-					id: this.getInstance(this.identCalendrier).Nom,
+				IE.jsx.str("div", {
+					id: this.getInstance(this.identCalendrier).getNom(),
 					class: "calendrier",
 				}),
-				tag("label", { class: "legende", "ie-html": "getHtmlLegende" }),
-				tag(
+				IE.jsx.str("label", { class: "legende", "ie-html": "getHtmlLegende" }),
+				IE.jsx.str(
 					"div",
 					{ class: "listes" },
-					tag("div", {
-						id: this.getInstance(this.identListeGroupe).Nom,
+					IE.jsx.str("div", {
+						id: this.getInstance(this.identListeGroupe).getNom(),
 						class: "liste-groupe",
 					}),
-					tag(
+					IE.jsx.str(
 						"div",
 						{
-							id: this.getInstance(this.identListeEleve).Nom,
+							id: this.getInstance(this.identListeEleve).getNom(),
 							class: "liste-eleve",
 						},
-						_getMessageVide(),
+						this._getMessageVide(),
 					),
 				),
 			),
@@ -173,146 +177,155 @@ class ObjetFenetre_GestionAPEleve extends ObjetFenetre {
 			},
 		});
 	}
-}
-function _requeteListeGroupes() {
-	new ObjetRequeteSaisieGestionAPEleve(this)
-		.lancerRequete({ eleve: this.donnees.eleve, domaine: this.donnees.domaine })
-		.then((aParams) => {
-			if (aParams.JSONReponse) {
-				this.donnees.groupes = aParams.JSONReponse;
-				_actualiserListeGroupes.call(this);
-			}
-		});
-}
-function _actualiserListeGroupes() {
-	const lJSelecListe = $(`#${this.Nom.escapeJQ()} .container>.listes`);
-	if (!this.donnees.groupes.listeGroupes) {
-		this._groupeSelection = null;
-		_surSelectionGroupe.call(this);
-		lJSelecListe.hide();
-	} else {
-		lJSelecListe.show();
-		this.getInstance(this.identListeGroupe).setDonnees(
-			new DonneesListe_ListeGroupes(
-				this.donnees.groupes.listeGroupes,
-			).setOptions({
-				callbackSaisie: (aGroupe, aAjout) => {
-					_saisie.call(this, aGroupe, this.donnees.eleve, aAjout);
-				},
-			}),
-		);
-		if (
-			!this._groupeSelection ||
-			!this.donnees.groupes.listeGroupes.getElementParElement(
-				this._groupeSelection,
-			)
-		) {
-			this._groupeSelection = null;
-			_surSelectionGroupe.call(this);
-		} else {
-			this.getInstance(this.identListeGroupe).setListeElementsSelection(
-				new ObjetListeElements().add(this._groupeSelection),
-				{ avecScroll: true },
-			);
-		}
-	}
-}
-function _surSelectionGroupe() {
-	const lListeEleves = this.getInstance(this.identListeEleve);
-	if (!this._groupeSelection) {
-		lListeEleves.setDonnees(
-			new DonneesListe_ListeEleves(new ObjetListeElements()),
-		);
-		lListeEleves.afficher(_getMessageVide());
-	} else {
+	_requeteListeGroupes() {
 		new ObjetRequeteSaisieGestionAPEleve(this)
 			.lancerRequete({
-				pourListeEleves: true,
-				groupe: this._groupeSelection,
 				eleve: this.donnees.eleve,
 				domaine: this.donnees.domaine,
 			})
 			.then((aParams) => {
-				lListeEleves.setDonnees(
-					new DonneesListe_ListeEleves(
-						aParams.JSONReponse.listeEleves,
-					).setOptions({
-						callbackSuppr: (aEleve) => {
-							_saisie.call(this, this._groupeSelection, aEleve, false);
-						},
-					}),
-				);
+				if (aParams.JSONReponse) {
+					this.donnees.groupes = aParams.JSONReponse;
+					this._actualiserListeGroupes();
+				}
 			});
 	}
-}
-function _getMessageVide() {
-	return tag(
-		"div",
-		{ class: "text-empty" },
-		tag(
-			"label",
-			GTraductions.getValeur("ObjetFenetre_GestionAPEleve.SelectionnezGroupe"),
-		),
-	);
-}
-function _saisie(aGroupe, aEleve, aAjout) {
-	return Promise.resolve()
-		.then(() => {
-			if (!aAjout) {
-				return GApplication.getMessage()
-					.afficher({
-						type: EGenreBoiteMessage.Confirmation,
-						message: GChaine.format(
-							GTraductions.getValeur(
-								"ObjetFenetre_GestionAPEleve.ConfirmezVous_Si",
-							),
-							[
-								aEleve.getLibelle(),
-								aGroupe.getLibelle(),
-								GDate.formatDate(
-									IE.Cycles.dateDebutCycle(
-										this.donnees.domaine.getPremierePosition(),
-									),
-									"%JJ/%MM/%AAAA",
-								),
-								GDate.formatDate(
-									IE.Cycles.dateFinCycle(
-										this.donnees.domaine.getDernierePosition(),
-									),
-									"%JJ/%MM/%AAAA",
-								),
-							],
-						),
-					})
-					.then((aGenreAction) => {
-						if (aGenreAction !== EGenreAction.Valider) {
-							return false;
-						}
-					});
+	_actualiserListeGroupes() {
+		const lJSelecListe = $(`#${this.Nom.escapeJQ()} .container>.listes`);
+		if (!this.donnees.groupes.listeGroupes) {
+			this._groupeSelection = null;
+			this._surSelectionGroupe();
+			lJSelecListe.hide();
+		} else {
+			lJSelecListe.show();
+			this.getInstance(this.identListeGroupe).setDonnees(
+				new DonneesListe_ListeGroupes(
+					this.donnees.groupes.listeGroupes,
+				).setOptions({
+					callbackSaisie: (aGroupe, aAjout) => {
+						this._saisie(aGroupe, this.donnees.eleve, aAjout);
+					},
+				}),
+			);
+			if (
+				!this._groupeSelection ||
+				!this.donnees.groupes.listeGroupes.getElementParElement(
+					this._groupeSelection,
+				)
+			) {
+				this._groupeSelection = null;
+				this._surSelectionGroupe();
+			} else {
+				this.getInstance(this.identListeGroupe).setListeElementsSelection(
+					new ObjetListeElements_1.ObjetListeElements().add(
+						this._groupeSelection,
+					),
+					{ avecScroll: true },
+				);
 			}
-		})
-		.then((aResult) => {
-			if (aResult === false) {
-				return;
-			}
-			return new ObjetRequeteSaisieGestionAPEleve(this)
+		}
+	}
+	_surSelectionGroupe() {
+		const lListeEleves = this.getInstance(this.identListeEleve);
+		if (!this._groupeSelection) {
+			lListeEleves.setDonnees(
+				new DonneesListe_ListeEleves(
+					new ObjetListeElements_1.ObjetListeElements(),
+				),
+			);
+			lListeEleves.afficher(this._getMessageVide());
+		} else {
+			new ObjetRequeteSaisieGestionAPEleve(this)
 				.lancerRequete({
-					estSaisie: true,
-					groupe: aGroupe,
-					ajout: aAjout,
-					eleve: aEleve,
+					pourListeEleves: true,
+					groupe: this._groupeSelection,
+					eleve: this.donnees.eleve,
 					domaine: this.donnees.domaine,
 				})
 				.then((aParams) => {
-					this.avecSaisie = true;
-					if (aParams.JSONReponse && aParams.JSONReponse.listeGroupes) {
-						this.donnees.groupes = aParams.JSONReponse;
-						_actualiserListeGroupes.call(this);
-					}
+					lListeEleves.setDonnees(
+						new DonneesListe_ListeEleves(
+							aParams.JSONReponse.listeEleves,
+						).setOptions({
+							callbackSuppr: (aEleve) => {
+								this._saisie(this._groupeSelection, aEleve, false);
+							},
+						}),
+					);
 				});
-		});
+		}
+	}
+	_getMessageVide() {
+		return (0, tag_1.tag)(
+			"div",
+			{ class: "text-empty" },
+			(0, tag_1.tag)(
+				"label",
+				ObjetTraduction_1.GTraductions.getValeur(
+					"ObjetFenetre_GestionAPEleve.SelectionnezGroupe",
+				),
+			),
+		);
+	}
+	_saisie(aGroupe, aEleve, aAjout) {
+		return Promise.resolve()
+			.then(() => {
+				if (!aAjout) {
+					return GApplication.getMessage()
+						.afficher({
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+							message: ObjetChaine_1.GChaine.format(
+								ObjetTraduction_1.GTraductions.getValeur(
+									"ObjetFenetre_GestionAPEleve.ConfirmezVous_Si",
+								),
+								[
+									aEleve.getLibelle(),
+									aGroupe.getLibelle(),
+									ObjetDate_1.GDate.formatDate(
+										IE.Cycles.dateDebutCycle(
+											this.donnees.domaine.getPremierePosition(),
+										),
+										"%JJ/%MM/%AAAA",
+									),
+									ObjetDate_1.GDate.formatDate(
+										IE.Cycles.dateFinCycle(
+											this.donnees.domaine.getDernierePosition(),
+										),
+										"%JJ/%MM/%AAAA",
+									),
+								],
+							),
+						})
+						.then((aGenreAction) => {
+							if (aGenreAction !== Enumere_Action_1.EGenreAction.Valider) {
+								return false;
+							}
+						});
+				}
+			})
+			.then((aResult) => {
+				if (aResult === false) {
+					return;
+				}
+				return new ObjetRequeteSaisieGestionAPEleve(this)
+					.lancerRequete({
+						estSaisie: true,
+						groupe: aGroupe,
+						ajout: aAjout,
+						eleve: aEleve,
+						domaine: this.donnees.domaine,
+					})
+					.then((aParams) => {
+						this.avecSaisie = true;
+						if (aParams.JSONReponse && aParams.JSONReponse.listeGroupes) {
+							this.donnees.groupes = aParams.JSONReponse;
+							this._actualiserListeGroupes();
+						}
+					});
+			});
+	}
 }
-class ObjetRequeteSaisieGestionAPEleve extends ObjetRequeteSaisie {
+class ObjetRequeteSaisieGestionAPEleve extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aJSON) {
 		if (aJSON && !aJSON.estSaisie) {
 			this.setOptions({ messageDetail: "" });
@@ -320,8 +333,11 @@ class ObjetRequeteSaisieGestionAPEleve extends ObjetRequeteSaisie {
 		return super.lancerRequete(aJSON);
 	}
 }
-Requetes.inscrire("SaisieGestionAPEleve", ObjetRequeteSaisieGestionAPEleve);
-class DonneesListe_ListeGroupes extends ObjetDonneesListeFlatDesign {
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieGestionAPEleve",
+	ObjetRequeteSaisieGestionAPEleve,
+);
+class DonneesListe_ListeGroupes extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees) {
 		super(aDonnees);
 		aDonnees.parcourir((aArticle) => {
@@ -355,39 +371,40 @@ class DonneesListe_ListeGroupes extends ObjetDonneesListeFlatDesign {
 		return !aParams.article.estCumul;
 	}
 	getTri() {
-		return ObjetTri.initRecursif("pere", [ObjetTri.init("Libelle")]);
+		return [
+			ObjetTri_1.ObjetTri.initRecursif("pere", [
+				ObjetTri_1.ObjetTri.init("Libelle"),
+			]),
+		];
 	}
 }
-class DonneesListe_ListeEleves extends ObjetDonneesListeFlatDesign {
+class DonneesListe_ListeEleves extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees) {
 		super(aDonnees);
 		this.setOptions({ avecSelection: false, avecBoutonActionLigne: false });
 	}
-	getControleur(aDonneeListe, aListe) {
-		return $.extend(true, super.getControleur(aDonneeListe, aListe), {
-			btnSuppr: {
-				event(aNumeroLigne) {
-					const lArticle = aDonneeListe.Donnees.get(aNumeroLigne);
-					aDonneeListe.options.callbackSuppr(lArticle);
-				},
+	jsxModeleBoutonSuppr(aArticle) {
+		return {
+			event: () => {
+				this.options.callbackSuppr(aArticle);
 			},
-		});
+		};
 	}
 	getZoneComplementaire(aParams) {
 		if (aParams.article.estActif) {
-			return tag(
+			return IE.jsx.str(
 				"div",
 				{ class: "icones-conteneur" },
-				tag("ie-btnicon", {
+				IE.jsx.str("ie-btnicon", {
 					class: "icon_trash icon",
-					"ie-model": tag.funcAttr("btnSuppr", [aParams.ligne]),
+					"ie-model": this.jsxModeleBoutonSuppr.bind(this, aParams.article),
 					title: aParams.article.titleBtn,
 				}),
 			);
 		}
 		return "";
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		return aParams.article.hint || "";
 	}
 	estLigneOff(aParams) {

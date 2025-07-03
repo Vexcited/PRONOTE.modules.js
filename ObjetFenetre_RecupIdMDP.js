@@ -8,9 +8,9 @@ const ToucheClavier_1 = require("ToucheClavier");
 const ValidationMotDePasse_1 = require("ValidationMotDePasse");
 const UtilitaireEmail_1 = require("UtilitaireEmail");
 const UtilitaireRecupMDP_1 = require("UtilitaireRecupMDP");
-const tag_1 = require("tag");
 const ObjetRequeteRecupIdMDP_1 = require("ObjetRequeteRecupIdMDP");
 const ObjetHtml_1 = require("ObjetHtml");
+const AccessApp_1 = require("AccessApp");
 class ObjetFenetreRecupIdMDP extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
@@ -50,159 +50,149 @@ class ObjetFenetreRecupIdMDP extends ObjetFenetre_1.ObjetFenetre {
 			Invocateur_1.ObjetInvocateur.events.autorisationRechargementPage,
 		);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			classEtape: function (aEtape) {
-				const lClass = ["etape", "fluid-bloc"];
-				if (aEtape !== aInstance.stage) {
-					lClass.push("is-disabled");
+	jsxGetClassEtape(aNumeroEtape) {
+		const lClass = ["etape", "fluid-bloc"];
+		if (aNumeroEtape !== this.stage) {
+			lClass.push("is-disabled");
+		}
+		return lClass.join(" ");
+	}
+	jsxGetStyleSaisieEmail() {
+		return {
+			color:
+				this.courriel &&
+				!UtilitaireEmail_1.TUtilitaireEmail.estValide(this.courriel.trim())
+					? "red"
+					: "",
+		};
+	}
+	jsxModeleInputMail() {
+		return {
+			getValue: () => {
+				return this.courriel;
+			},
+			setValue: (aValue) => {
+				this.courriel = aValue;
+			},
+			keyupEnter: () => {
+				if (
+					UtilitaireEmail_1.TUtilitaireEmail.estValide(this.courriel.trim())
+				) {
+					this.evenementBouton();
 				}
-				return lClass.join(" ");
 			},
-			inputMail: {
-				getValue: function () {
-					return aInstance.courriel;
-				},
-				setValue: function (aValue) {
-					aInstance.courriel = aValue;
-				},
-				keyupEnter: function () {
-					if (
-						UtilitaireEmail_1.TUtilitaireEmail.estValide(
-							aInstance.courriel.trim(),
-						)
-					) {
-						aInstance.evenementBouton();
-					}
-				},
-				getStyleCourriel: function () {
-					return {
-						color:
-							aInstance.courriel &&
-							!UtilitaireEmail_1.TUtilitaireEmail.estValide(
-								aInstance.courriel.trim(),
-							)
-								? "red"
-								: "",
-					};
-				},
-				getDisabled: function () {
-					return aInstance.stage !== 1;
-				},
+			getDisabled: () => {
+				return this.stage !== 1;
 			},
-			inputNom: {
-				getValue: function () {
-					return aInstance._nom;
-				},
-				setValue: function (aValue) {
-					aInstance._nom = aValue;
-				},
-				getDisabled: function () {
-					return aInstance.stage !== 1;
-				},
+		};
+	}
+	jsxModeleInputNom() {
+		return {
+			getValue: () => {
+				return this._nom;
 			},
-			inputPrenom: {
-				getValue: function () {
-					return aInstance._prenom;
-				},
-				setValue: function (aValue) {
-					aInstance._prenom = aValue;
-				},
-				getDisabled: function () {
-					return aInstance.stage !== 1;
-				},
+			setValue: (aValue) => {
+				this._nom = aValue;
 			},
-			inputCode: {
-				getValue: function () {
-					return aInstance.code;
-				},
-				setValue: function (aValue) {
-					aInstance.code = aValue;
-				},
-				keyupEnter: function () {
-					aInstance.evenementBouton();
-				},
-				getStyle: function () {
-					return {
-						color:
-							aInstance.code &&
-							!UtilitaireRecupMDP_1.UtilitaireRecupMDP.estCodeValide(
-								aInstance.code,
-							)
-								? "red"
-								: "",
-					};
-				},
-				getDisabled: function () {
-					return aInstance.stage !== 2;
-				},
+			getDisabled: () => {
+				return this.stage !== 1;
 			},
-			iMDP: {
-				getValue: function (aNr) {
-					if (!!aInstance.mds) {
-						return aInstance.mds[aNr] || "";
-					}
-					return "";
-				},
-				setValue: function (aNr, aValue) {
-					if (!aInstance.mds) {
-						aInstance.mds = {};
-					}
-					aInstance.mds[aNr] = aValue;
-				},
-				getDisabled: function () {
-					return aInstance.stage !== 3;
-				},
+		};
+	}
+	jsxModeleInputPrenom() {
+		return {
+			getValue: () => {
+				return this._prenom;
 			},
-			btn: {
-				visible: function (etape) {
-					return aInstance.stage === etape;
-				},
-				etape: {
-					event: function () {
-						aInstance.evenementBouton();
-					},
-					getDisabled: function (etape) {
-						if (etape === 1) {
-							return (
-								!UtilitaireEmail_1.TUtilitaireEmail.estValide(
-									aInstance.courriel.trim(),
-								) && !aInstance.optionsFenetre.estCreation
-							);
-						} else if (etape === 2) {
-							return aInstance.code.trim() === "";
-						} else if (etape === 3) {
-							return $("#" + aInstance.idMdp.escapeJQ()).val() === "";
-						}
-					},
-				},
+			setValue: (aValue) => {
+				this._prenom = aValue;
 			},
-			montrerMasquerMotDePasse: {
-				getModel: {
-					event: function (aId) {
-						const lTarget = ObjetHtml_1.GHtml.getElement(aId);
-						lTarget.type = lTarget.type === "password" ? "text" : "password";
-						this.controleur.$refreshSelf();
-					},
-				},
-				getClass(aId) {
-					const lTarget = ObjetHtml_1.GHtml.getElement(aId);
-					return (lTarget === null || lTarget === void 0
-						? void 0
-						: lTarget.type) === "password"
-						? "icon_eye_open"
-						: "icon_eye_close";
-				},
-				getTitle(aId) {
-					const lTarget = ObjetHtml_1.GHtml.getElement(aId);
-					return (lTarget === null || lTarget === void 0
-						? void 0
-						: lTarget.type) === "password"
-						? ObjetTraduction_1.GTraductions.getValeur("connexion.VoirMDP")
-						: ObjetTraduction_1.GTraductions.getValeur("connexion.masquerMDP");
-				},
+			getDisabled: () => {
+				return this.stage !== 1;
 			},
-		});
+		};
+	}
+	jsxModeleInputCode() {
+		return {
+			getValue: () => {
+				return this.code;
+			},
+			setValue: (aValue) => {
+				this.code = aValue;
+			},
+			keyupEnter: () => {
+				this.evenementBouton();
+			},
+			getDisabled: () => {
+				return this.stage !== 2;
+			},
+		};
+	}
+	jsxModeleInputMDP(aNumeroMDP) {
+		return {
+			getValue: () => {
+				if (!!this.mds) {
+					return this.mds[aNumeroMDP] || "";
+				}
+				return "";
+			},
+			setValue: (aValue) => {
+				if (!this.mds) {
+					this.mds = {};
+				}
+				this.mds[aNumeroMDP] = aValue;
+			},
+			getDisabled: () => {
+				return this.stage !== 3;
+			},
+		};
+	}
+	jsxDisplayBoutonValider(aNumeroEtape) {
+		return this.stage === aNumeroEtape;
+	}
+	jsxModeleBoutonValider(aNumeroEtape) {
+		return {
+			event: () => {
+				this.evenementBouton();
+			},
+			getDisabled: () => {
+				if (aNumeroEtape === 1) {
+					return (
+						!UtilitaireEmail_1.TUtilitaireEmail.estValide(
+							this.courriel.trim(),
+						) && !this.optionsFenetre.estCreation
+					);
+				} else if (aNumeroEtape === 2) {
+					return this.code.trim() === "";
+				} else if (aNumeroEtape === 3) {
+					return $("#" + this.idMdp.escapeJQ()).val() === "";
+				}
+			},
+		};
+	}
+	jsxModeleBoutonMontrerMasquerMDP(aId) {
+		return {
+			event: () => {
+				const lTarget = ObjetHtml_1.GHtml.getElement(aId);
+				lTarget.type = lTarget.type === "password" ? "text" : "password";
+				this.controleur.$refreshSelf();
+			},
+			getTitle: () => {
+				const lTarget = ObjetHtml_1.GHtml.getElement(aId);
+				return (lTarget === null || lTarget === void 0
+					? void 0
+					: lTarget.type) === "password"
+					? ObjetTraduction_1.GTraductions.getValeur("connexion.VoirMDP")
+					: ObjetTraduction_1.GTraductions.getValeur("connexion.masquerMDP");
+			},
+		};
+	}
+	jsxGetClassMontrerMasquerMDP(aId) {
+		const lTarget = ObjetHtml_1.GHtml.getElement(aId);
+		return (lTarget === null || lTarget === void 0 ? void 0 : lTarget.type) ===
+			"password"
+			? "icon_eye_open"
+			: "icon_eye_close";
 	}
 	composeContenu() {
 		const lTraductionsRecupMDP =
@@ -210,23 +200,19 @@ class ObjetFenetreRecupIdMDP extends ObjetFenetre_1.ObjetFenetre {
 				this.optionsFenetre.estCreation,
 				this.options.avecRecupParParent,
 			);
-		return (0, tag_1.tag)(
+		return IE.jsx.str(
 			"div",
-			{ class: ["ObjetRecupIdMdp"] },
-			(0, tag_1.tag)(
-				"p",
-				{ class: ["message"] },
-				lTraductionsRecupMDP.texteHeader,
-			),
-			(0, tag_1.tag)(
+			{ class: "ObjetRecupIdMdp" },
+			IE.jsx.str("p", { class: "message" }, lTraductionsRecupMDP.texteHeader),
+			IE.jsx.str(
 				"div",
-				{ class: ["RecupIDMdp_Global_wrapper"] },
+				{ class: "RecupIDMdp_Global_wrapper" },
 				this.composeEtape1(lTraductionsRecupMDP),
 				this.composeEtape2(lTraductionsRecupMDP),
 				this.composeEtape3(lTraductionsRecupMDP),
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"div",
-					{ class: ["lien-conteneur"] },
+					{ class: "lien-conteneur" },
 					LienPolitiqueMotDePasse_1.TLienPolitiqueMotDePasse.getLien(),
 				),
 			),
@@ -234,99 +220,90 @@ class ObjetFenetreRecupIdMDP extends ObjetFenetre_1.ObjetFenetre {
 	}
 	composeEtape1(aTraductions) {
 		const lLabel = `${aTraductions.texteStage} 1 : ${aTraductions.texteStage1} ${!this.optionsFenetre.estCreation ? `<span>${aTraductions.texteStage1_bis}</span>` : ""}`;
-		const lBtn = (0, tag_1.tag)("ie-btnicon", {
-			class: ["icon_envoyer", "bt-activable", "bt-big"],
-			"ie-model": tag_1.tag.funcAttr("btn.etape", [1]),
-			"ie-display": tag_1.tag.funcAttr("btn.visible", [1]),
+		const lBtn = IE.jsx.str("ie-btnicon", {
+			class: "icon_envoyer bt-activable bt-big",
+			"ie-model": this.jsxModeleBoutonValider.bind(this, 1),
+			"ie-display": this.jsxDisplayBoutonValider.bind(this, 1),
 			title: ObjetTraduction_1.GTraductions.getValeur("Valider"),
 		});
-		return (0, tag_1.tag)(
+		return IE.jsx.str(
 			"div",
-			{ class: ["flex-contain", "cols", "etape_main"] },
-			(0, tag_1.tag)("label", { for: this.idCourriel }, lLabel),
-			(0, tag_1.tag)(
+			{ class: "flex-contain cols etape_main" },
+			IE.jsx.str("label", { for: this.idCourriel }, lLabel),
+			IE.jsx.str(
 				"div",
-				{ class: ["etape_wrapper"] },
-				(0, tag_1.tag)(
+				{ class: "etape_wrapper" },
+				IE.jsx.str(
 					"div",
-					{ "ie-class": tag_1.tag.funcAttr("classEtape", [1]) },
+					{ "ie-class": this.jsxGetClassEtape.bind(this, 1) },
 					this.composeCoordonnees(aTraductions),
 				),
-				(0, tag_1.tag)(
-					"div",
-					{ class: ["etape_btn", "fix-bloc", "self-end"] },
-					lBtn,
-				),
+				IE.jsx.str("div", { class: "etape_btn fix-bloc self-end" }, lBtn),
 			),
 		);
 	}
 	composeCoordonnees(aTraductions) {
 		if (this.optionsFenetre.estCreation) {
-			return [
-				(0, tag_1.tag)(
+			return IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
 					"div",
-					{ class: ["input-field"] },
-					(0, tag_1.tag)("label", { for: this.idNom }, aTraductions.texteNom),
-					(0, tag_1.tag)("input", {
+					{ class: "input-field" },
+					IE.jsx.str("label", { for: this.idNom }, aTraductions.texteNom),
+					IE.jsx.str("input", {
 						id: this.idNom,
+						type: "text",
 						name: "nom",
-						class: ["round-style"],
-						type: "text",
 						"aria-required": "true",
-						"ie-model": "inputNom",
+						"ie-model": this.jsxModeleInputNom.bind(this),
 						tabindex: "0",
 					}),
 				),
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"div",
-					{ class: ["input-field"] },
-					(0, tag_1.tag)(
-						"label",
-						{ for: this.idPrenom },
-						aTraductions.textePrenom,
-					),
-					(0, tag_1.tag)("input", {
+					{ class: "input-field" },
+					IE.jsx.str("label", { for: this.idPrenom }, aTraductions.textePrenom),
+					IE.jsx.str("input", {
 						id: this.idPrenom,
-						name: "prenom",
-						class: ["round-style"],
 						type: "text",
+						name: "prenom",
 						"aria-required": "true",
-						"ie-model": "inputPrenom",
+						"ie-model": this.jsxModeleInputPrenom.bind(this),
 						tabindex: "0",
 					}),
 				),
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"div",
-					{ class: ["input-field"] },
-					(0, tag_1.tag)(
+					{ class: "input-field" },
+					IE.jsx.str(
 						"label",
 						{ for: this.idCourriel },
 						aTraductions.texteEMail,
 					),
-					(0, tag_1.tag)("input", {
+					IE.jsx.str("input", {
 						id: this.idCourriel,
-						name: "courriel",
-						class: ["round-style"],
 						type: "email",
+						name: "courriel",
 						"aria-required": "true",
-						"ie-model": "inputMail",
-						"ie-style": "getStyleCourriel",
+						"ie-model": this.jsxModeleInputMail.bind(this),
+						"aria-label": aTraductions.texteEMail,
+						"ie-style": this.jsxGetStyleSaisieEmail.bind(this),
 						tabindex: "0",
 					}),
 				),
-			].join("");
+			);
 		} else {
-			return (0, tag_1.tag)(
+			return IE.jsx.str(
 				"div",
-				{ class: ["input-field"] },
-				(0, tag_1.tag)("input", {
+				{ class: "input-field" },
+				IE.jsx.str("input", {
+					type: "email",
 					id: this.idCourriel,
 					name: "courriel",
-					class: ["round-style"],
-					type: "email",
 					"aria-required": "true",
-					"ie-model": "inputMail",
-					"ie-style": "getStyleCourriel",
+					"ie-model": this.jsxModeleInputMail.bind(this),
+					"ie-style": this.jsxGetStyleSaisieEmail.bind(this),
 					tabindex: "0",
 				}),
 			);
@@ -334,135 +311,128 @@ class ObjetFenetreRecupIdMDP extends ObjetFenetre_1.ObjetFenetre {
 	}
 	composeEtape2(aTraductions) {
 		const lLabel = `${aTraductions.texteStage} 2 : ${aTraductions.texteStage2}`;
-		const lBtn = (0, tag_1.tag)("ie-btnicon", {
-			class: ["icon_envoyer", "bt-activable", "bt-big"],
-			"ie-model": tag_1.tag.funcAttr("btn.etape", [2]),
-			"ie-display": tag_1.tag.funcAttr("btn.visible", [2]),
+		const lBtn = IE.jsx.str("ie-btnicon", {
+			class: "icon_envoyer bt-activable bt-big",
+			"ie-model": this.jsxModeleBoutonValider.bind(this, 2),
+			"ie-display": this.jsxDisplayBoutonValider.bind(this, 2),
 			title: ObjetTraduction_1.GTraductions.getValeur("Valider"),
 		});
-		return (0, tag_1.tag)(
+		return IE.jsx.str(
 			"div",
-			{ class: ["flex-contain", "cols", "etape_main"] },
-			(0, tag_1.tag)("label", { for: this.idCode }, lLabel),
-			(0, tag_1.tag)(
+			{ class: "flex-contain cols etape_main" },
+			IE.jsx.str("label", { for: this.idCode }, lLabel),
+			IE.jsx.str(
 				"div",
-				{ class: ["etape_wrapper"] },
-				(0, tag_1.tag)(
+				{ class: "etape_wrapper" },
+				IE.jsx.str(
 					"div",
-					{ "ie-class": tag_1.tag.funcAttr("classEtape", [2]) },
-					(0, tag_1.tag)(
+					{ "ie-class": this.jsxGetClassEtape.bind(this, 2) },
+					IE.jsx.str(
 						"div",
-						{ class: ["input-field"] },
-						(0, tag_1.tag)("input", {
-							id: this.idCode,
-							"ie-model": "inputCode",
-							class: ["round-style"],
+						{ class: "input-field" },
+						IE.jsx.str("input", {
 							type: "text",
+							id: this.idCode,
+							"ie-model": this.jsxModeleInputCode.bind(this),
 							disabled: "disabled",
 							tabindex: "0",
 							"aria-required": "true",
 						}),
 					),
 				),
-				(0, tag_1.tag)(
-					"div",
-					{ class: ["etape_btn", "fix-bloc", "self-end"] },
-					lBtn,
-				),
+				IE.jsx.str("div", { class: "etape_btn fix-bloc self-end" }, lBtn),
 			),
 		);
 	}
 	composeEtape3(aTraductions) {
+		const lIdLabel = this.Nom + "_group_mdp";
 		const lLabel = `${aTraductions.texteStage} 3 : ${aTraductions.texteStage3}`;
-		const lBtn = (0, tag_1.tag)("ie-btnicon", {
-			class: ["icon_disquette_pleine", "bt-activable", "bt-big"],
-			"ie-model": tag_1.tag.funcAttr("btn.etape", [3]),
-			"ie-display": tag_1.tag.funcAttr("btn.visible", [3]),
+		const lBtn = IE.jsx.str("ie-btnicon", {
+			class: "icon_disquette_pleine bt-activable bt-big",
+			"ie-model": this.jsxModeleBoutonValider.bind(this, 3),
+			"ie-display": this.jsxDisplayBoutonValider.bind(this, 3),
 			title: ObjetTraduction_1.GTraductions.getValeur("Valider"),
 		});
-		return (0, tag_1.tag)(
+		return IE.jsx.str(
 			"div",
-			{ class: ["flex-contain", "cols", "etape_main"] },
-			(0, tag_1.tag)("label", { id: `${this.Nom}_group_mdp` }, lLabel),
-			(0, tag_1.tag)(
+			{ class: "flex-contain cols etape_main" },
+			IE.jsx.str("label", { id: lIdLabel }, lLabel),
+			IE.jsx.str(
 				"div",
-				{ class: ["etape_wrapper"] },
-				(0, tag_1.tag)(
+				{ class: "etape_wrapper" },
+				IE.jsx.str(
 					"div",
 					{
-						"ie-class": tag_1.tag.funcAttr("classEtape", [3]),
+						"ie-class": this.jsxGetClassEtape.bind(this, 3),
 						role: "group",
-						"aria-labelledby": `${this.Nom}_group_mdp`,
+						"aria-labelledby": lIdLabel,
 					},
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"div",
-						{ class: ["input-field", "mdp"] },
-						(0, tag_1.tag)("label", { for: this.idMdp }, aTraductions.texteMdp),
-						(0, tag_1.tag)(
+						{ class: "input-field mdp" },
+						IE.jsx.str("label", { for: this.idMdp }, aTraductions.texteMdp),
+						IE.jsx.str(
 							"div",
-							{ class: ["as-input", "as-password"] },
-							(0, tag_1.tag)("input", {
-								id: this.idMdp,
-								"ie-model": "iMDP(1)",
+							{ class: "as-input as-password" },
+							IE.jsx.str("input", {
 								type: "password",
+								id: this.idMdp,
+								"ie-model": this.jsxModeleInputMDP.bind(this, 1),
 								disabled: "disabled",
 								tabindex: "0",
 								"aria-required": "true",
-								"auto-complete": "new-password",
+								autocomplete: "new-password",
 							}),
-							(0, tag_1.tag)("ie-btnicon", {
-								class: ["icon_eye_open"],
-								"ie-model":
-									"montrerMasquerMotDePasse.getModel('" + this.idMdp + "')",
-								"ie-class":
-									"montrerMasquerMotDePasse.getClass('" + this.idMdp + "')",
-								"ie-title":
-									"montrerMasquerMotDePasse.getTitle('" + this.idMdp + "')",
+							IE.jsx.str("ie-btnicon", {
+								class: "icon_eye_open",
+								"ie-model": this.jsxModeleBoutonMontrerMasquerMDP.bind(
+									this,
+									this.idMdp,
+								),
+								"ie-class": this.jsxGetClassMontrerMasquerMDP.bind(
+									this,
+									this.idMdp,
+								),
 							}),
 						),
 					),
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"div",
-						{ class: ["input-field", "mdp"] },
-						(0, tag_1.tag)(
+						{ class: "input-field mdp" },
+						IE.jsx.str(
 							"label",
 							{ for: this.idMdpbis },
 							aTraductions.texteConfirmation,
 						),
-						(0, tag_1.tag)(
+						IE.jsx.str(
 							"div",
-							{ class: ["as-input", "as-password"] },
-							(0, tag_1.tag)("input", {
-								id: this.idMdpbis,
-								"ie-model": "iMDP(2)",
+							{ class: "as-input as-password" },
+							IE.jsx.str("input", {
 								type: "password",
+								id: this.idMdpbis,
+								"ie-model": this.jsxModeleInputMDP.bind(this, 2),
 								disabled: "disabled",
 								tabindex: "0",
 								"aria-required": "true",
-								"auto-complete": "new-password",
+								autocomplete: "new-password",
 							}),
-							(0, tag_1.tag)("ie-btnicon", {
-								class: ["icon_eye_open"],
-								"ie-model":
-									"montrerMasquerMotDePasse.getModel('" + this.idMdpbis + "')",
-								"ie-class":
-									"montrerMasquerMotDePasse.getClass('" + this.idMdpbis + "')",
-								"ie-title":
-									"montrerMasquerMotDePasse.getTitle('" + this.idMdpbis + "')",
+							IE.jsx.str("ie-btnicon", {
+								class: "icon_eye_open",
+								"ie-model": this.jsxModeleBoutonMontrerMasquerMDP.bind(
+									this,
+									this.idMdpbis,
+								),
+								"ie-class": this.jsxGetClassMontrerMasquerMDP.bind(
+									this,
+									this.idMdpbis,
+								),
 							}),
 						),
 					),
 				),
-				(0, tag_1.tag)(
-					"div",
-					{ class: ["etape_btn", "fix-bloc", "self-end"] },
-					lBtn,
-				),
+				IE.jsx.str("div", { class: "etape_btn fix-bloc self-end" }, lBtn),
 			),
-			(0, tag_1.tag)("div", {
-				id: this.idValidationMdp,
-				class: ["validationMdp"],
-			}),
+			IE.jsx.str("div", { id: this.idValidationMdp, class: "validationMdp" }),
 		);
 	}
 	evenementBouton() {
@@ -503,12 +473,14 @@ class ObjetFenetreRecupIdMDP extends ObjetFenetre_1.ObjetFenetre {
 				);
 			}
 			lMessage.push("</ul>");
-			GApplication.getMessage().afficher({
-				titre: ObjetTraduction_1.GTraductions.getValeur(
-					"fenetreRecupIdMDP.EchecValidation",
-				),
-				message: lMessage.join(""),
-			});
+			(0, AccessApp_1.getApp)()
+				.getMessage()
+				.afficher({
+					titre: ObjetTraduction_1.GTraductions.getValeur(
+						"fenetreRecupIdMDP.EchecValidation",
+					),
+					message: lMessage.join(""),
+				});
 		} else {
 			this.evenementBoutonApresVerification();
 		}
@@ -541,11 +513,13 @@ class ObjetFenetreRecupIdMDP extends ObjetFenetre_1.ObjetFenetre {
 			);
 		} else if (this.stage === 2) {
 			if (!UtilitaireRecupMDP_1.UtilitaireRecupMDP.estCodeValide(this.code)) {
-				await GApplication.getMessage().afficher({
-					message: ObjetTraduction_1.GTraductions.getValeur(
-						"fenetreRecupIdMDP.CodeInvalide",
-					),
-				});
+				await (0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
+						message: ObjetTraduction_1.GTraductions.getValeur(
+							"fenetreRecupIdMDP.CodeInvalide",
+						),
+					});
 				$(`#${this.idCode.escapeJQ()}`).focus();
 				return;
 			} else {
@@ -555,11 +529,13 @@ class ObjetFenetreRecupIdMDP extends ObjetFenetre_1.ObjetFenetre {
 			const lMdp = $("#" + this.idMdp.escapeJQ()).val();
 			const lMdpBis = $("#" + this.idMdpbis.escapeJQ()).val();
 			if (!lMdp || lMdp !== lMdpBis) {
-				GApplication.getMessage().afficher({
-					message: ObjetTraduction_1.GTraductions.getValeur(
-						"saisieMDP.ConfirmationIncorrecte",
-					),
-				});
+				(0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
+						message: ObjetTraduction_1.GTraductions.getValeur(
+							"saisieMDP.ConfirmationIncorrecte",
+						),
+					});
 				$("#" + this.idMdpbis.escapeJQ())
 					.val("")
 					.focus();
@@ -600,19 +576,21 @@ class ObjetFenetreRecupIdMDP extends ObjetFenetre_1.ObjetFenetre {
 			Invocateur_1.Invocateur.desabonner(
 				Invocateur_1.ObjetInvocateur.events.autorisationRechargementPage,
 			);
-			await GApplication.getMessage().afficher({
-				titre: aResult.messageErreur ? aResult.messageErreur.titre : "",
-				message:
-					aResult.messageErreur && aResult.messageErreur.message
-						? aResult.messageErreur.message
-						: this.optionsFenetre.estCreation
-							? ObjetTraduction_1.GTraductions.getValeur(
-									"fenetreRecupIdMDP.EchecCreationCompte",
-								)
-							: ObjetTraduction_1.GTraductions.getValeur(
-									"fenetreRecupIdMDP.EchecRecuperation",
-								),
-			});
+			await (0, AccessApp_1.getApp)()
+				.getMessage()
+				.afficher({
+					titre: aResult.messageErreur ? aResult.messageErreur.titre : "",
+					message:
+						aResult.messageErreur && aResult.messageErreur.message
+							? aResult.messageErreur.message
+							: this.optionsFenetre.estCreation
+								? ObjetTraduction_1.GTraductions.getValeur(
+										"fenetreRecupIdMDP.EchecCreationCompte",
+									)
+								: ObjetTraduction_1.GTraductions.getValeur(
+										"fenetreRecupIdMDP.EchecRecuperation",
+									),
+				});
 			location.reload();
 			return;
 		}
@@ -627,10 +605,12 @@ class ObjetFenetreRecupIdMDP extends ObjetFenetre_1.ObjetFenetre {
 				this.setBoutonActif(0, false);
 				this.stage = 2;
 				const lThis = this;
-				await GApplication.getMessage().afficher({
-					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-					message: lTraductionsRecupMDP.texteMailOk,
-				});
+				await (0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+						message: lTraductionsRecupMDP.texteMailOk,
+					});
 				$("#" + lThis.idCode.escapeJQ()).focus();
 			} else if (aResult.nbrUtilisateurs >= 0) {
 				if (this.optionsFenetre.estCreation) {
@@ -644,12 +624,14 @@ class ObjetFenetreRecupIdMDP extends ObjetFenetre_1.ObjetFenetre {
 							"<br />" +
 							lTraductionsRecupMDP.texteStage2_ko_creation3;
 					}
-					await GApplication.getMessage().afficher({
-						titre: ObjetTraduction_1.GTraductions.getValeur(
-							"fenetreRecupIdMDP.EchecCreation",
-						),
-						message: lMessage,
-					});
+					await (0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({
+							titre: ObjetTraduction_1.GTraductions.getValeur(
+								"fenetreRecupIdMDP.EchecCreation",
+							),
+							message: lMessage,
+						});
 					this.fermer();
 				} else if (
 					aResult.nbrUtilisateurs === 0 ||
@@ -671,18 +653,22 @@ class ObjetFenetreRecupIdMDP extends ObjetFenetre_1.ObjetFenetre {
 							lMessage += lTraductionsRecupMDP.texteStage2_ko_multi2;
 						}
 					}
-					await GApplication.getMessage().afficher({ message: lMessage });
+					await (0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({ message: lMessage });
 					$("#" + this.idCourriel.escapeJQ()).focus();
 				}
 			} else {
-				await GApplication.getMessage().afficher({
-					titre: aResult.messageErreur ? aResult.messageErreur.titre : "",
-					message: aResult.messageErreur
-						? aResult.messageErreur.message
-						: ObjetTraduction_1.GTraductions.getValeur(
-								"fenetreRecupIdMDP.erreurSMTP",
-							),
-				});
+				await (0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
+						titre: aResult.messageErreur ? aResult.messageErreur.titre : "",
+						message: aResult.messageErreur
+							? aResult.messageErreur.message
+							: ObjetTraduction_1.GTraductions.getValeur(
+									"fenetreRecupIdMDP.erreurSMTP",
+								),
+					});
 				Invocateur_1.Invocateur.desabonner(
 					Invocateur_1.ObjetInvocateur.events.autorisationRechargementPage,
 				);
@@ -705,15 +691,17 @@ class ObjetFenetreRecupIdMDP extends ObjetFenetre_1.ObjetFenetre {
 		} else if (this.stage === 3) {
 			if (aResult.erreurMDP) {
 				const lJMdp = $("#" + this.idMdp.escapeJQ());
-				await GApplication.getMessage().afficher({
-					titre: ObjetTraduction_1.GTraductions.getValeur(
-						"saisieMDP.EchecModification",
-					),
-					message: ValidationMotDePasse_1.ValidationMotDePasse.construire(
-						GEtatUtilisateur.reglesSaisieMotDePasse,
-						aResult.erreurMDP,
-					),
-				});
+				await (0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
+						titre: ObjetTraduction_1.GTraductions.getValeur(
+							"saisieMDP.EchecModification",
+						),
+						message: ValidationMotDePasse_1.ValidationMotDePasse.construire(
+							GEtatUtilisateur.reglesSaisieMotDePasse,
+							aResult.erreurMDP,
+						),
+					});
 				lJMdp.focus();
 				$("#" + this.idValidationMdp.escapeJQ()).html(
 					ValidationMotDePasse_1.ValidationMotDePasse.construire(
@@ -735,33 +723,37 @@ class ObjetFenetreRecupIdMDP extends ObjetFenetre_1.ObjetFenetre {
 						Invocateur_1.ObjetInvocateur.events.autorisationRechargementPage,
 					);
 					if (this.optionsFenetre.estCreation) {
-						await GApplication.getMessage().afficher({
-							titre: lTraductionsRecupMDP.texteStage3_ok_creation,
-							message: lTraductionsRecupMDP.texteStage3_ok_creationbis,
-						});
+						await (0, AccessApp_1.getApp)()
+							.getMessage()
+							.afficher({
+								titre: lTraductionsRecupMDP.texteStage3_ok_creation,
+								message: lTraductionsRecupMDP.texteStage3_ok_creationbis,
+							});
 						this.fermer();
 						this.callback.appel(this.stage, {
 							identifiant: this.courriel.trim(),
 						});
 					} else {
-						await GApplication.getMessage().afficher({
-							message: lTraductionsRecupMDP.texteStage3_ok,
-						});
+						await (0, AccessApp_1.getApp)()
+							.getMessage()
+							.afficher({ message: lTraductionsRecupMDP.texteStage3_ok });
 						location.reload();
 					}
 				} else {
 					Invocateur_1.Invocateur.desabonner(
 						Invocateur_1.ObjetInvocateur.events.autorisationRechargementPage,
 					);
-					await GApplication.getMessage().afficher({
-						titre: aResult.messageErreur ? aResult.messageErreur.titre : "",
-						message:
-							aResult.messageErreur && aResult.messageErreur.message
-								? aResult.messageErreur.message
-								: ObjetTraduction_1.GTraductions.getValeur(
-										"fenetreRecupIdMDP.EchecRecuperation",
-									),
-					});
+					await (0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({
+							titre: aResult.messageErreur ? aResult.messageErreur.titre : "",
+							message:
+								aResult.messageErreur && aResult.messageErreur.message
+									? aResult.messageErreur.message
+									: ObjetTraduction_1.GTraductions.getValeur(
+											"fenetreRecupIdMDP.EchecRecuperation",
+										),
+						});
 					location.reload();
 				}
 			}
@@ -778,12 +770,14 @@ class ObjetFenetreRecupIdMDP extends ObjetFenetre_1.ObjetFenetre {
 	}
 	async afficher() {
 		if (this.erreurSMTP) {
-			GApplication.getMessage().afficher({
-				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-				message: ObjetTraduction_1.GTraductions.getValeur(
-					"fenetreRecupIdMDP.erreurSMTP",
-				),
-			});
+			(0, AccessApp_1.getApp)()
+				.getMessage()
+				.afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+					message: ObjetTraduction_1.GTraductions.getValeur(
+						"fenetreRecupIdMDP.erreurSMTP",
+					),
+				});
 			Invocateur_1.Invocateur.desabonner(
 				Invocateur_1.ObjetInvocateur.events.autorisationRechargementPage,
 			);

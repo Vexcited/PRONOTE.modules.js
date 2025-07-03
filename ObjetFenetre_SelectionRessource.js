@@ -10,13 +10,11 @@ const DonneesListe_SelectionRessource_fd_1 = require("DonneesListe_SelectionRess
 const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetTri_1 = require("ObjetTri");
-const tag_1 = require("tag");
 class ObjetFenetre_SelectionRessource extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.setOptionsFenetre({
 			largeur: 350,
-			heightMax_mobile: true,
 			hauteur: 500,
 			listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Valider")],
 		});
@@ -50,6 +48,9 @@ class ObjetFenetre_SelectionRessource extends ObjetFenetre_1.ObjetFenetre {
 	}
 	setSelectionObligatoire(aValeur) {
 		this.setOptionsFenetreSelectionRessource({ selectionObligatoire: aValeur });
+	}
+	estSelectionObligatoire() {
+		return this._options.selectionObligatoire;
 	}
 	setAutoriseEltAucun(aValeur) {
 		this.setOptionsFenetreSelectionRessource({ autoriseEltAucun: aValeur });
@@ -101,15 +102,17 @@ class ObjetFenetre_SelectionRessource extends ObjetFenetre_1.ObjetFenetre {
 		if (this._options.filtres) {
 			for (const i in this._options.filtres) {
 				const lFiltre = this._options.filtres[i];
-				T.push("<div>");
 				T.push(
-					(0, tag_1.tag)(
-						"ie-checkbox",
-						{ "ie-model": tag_1.tag.funcAttr("cbFiltre", i) },
-						lFiltre.libelle,
+					IE.jsx.str(
+						"div",
+						null,
+						IE.jsx.str(
+							"ie-checkbox",
+							{ "ie-model": "cbFiltre(" + i + ")" },
+							lFiltre.libelle,
+						),
 					),
 				);
-				T.push("</div>");
 			}
 		}
 		ObjetHtml_1.GHtml.setHtml(this.idConteneurFiltre, T.join(""), {
@@ -148,21 +151,22 @@ class ObjetFenetre_SelectionRessource extends ObjetFenetre_1.ObjetFenetre {
 		);
 	}
 	composeContenu() {
-		return (0, tag_1.tag)(
-			"div",
-			{ class: "flex-contain cols full-height" },
-			(T) => {
-				T.push(
-					'<div id="',
-					this.idConteneurFiltre,
-					'" class="fix-bloc p-bottom" style="display:none"></div>',
-				);
-				T.push(
-					'<div id="' +
-						this.getNomInstance(this.identListe) +
-						'" class="fluid-bloc"></div>',
-				);
-			},
+		return IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			IE.jsx.str(
+				"div",
+				{ class: "flex-contain cols full-height" },
+				IE.jsx.str("div", {
+					id: this.idConteneurFiltre,
+					class: "fix-bloc p-bottom",
+					style: "display:none",
+				}),
+				IE.jsx.str("div", {
+					id: this.getNomInstance(this.identListe),
+					class: "fluid-bloc",
+				}),
+			),
 		);
 	}
 	construireListeRessource(aListeRessources, aListeRessourcesSelectionnees) {
@@ -211,7 +215,7 @@ class ObjetFenetre_SelectionRessource extends ObjetFenetre_1.ObjetFenetre {
 		this.listeRessources.trier();
 	}
 	_initialiserListe(aInstance) {
-		const lOptions = {};
+		const lOptions = { ariaLabel: this.optionsFenetre.titre };
 		if (this._options.listeFlatDesign) {
 			Object.assign(lOptions, {
 				skin: ObjetListe_1.ObjetListe.skin.flatDesign,

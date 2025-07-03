@@ -2,7 +2,7 @@ exports.InterfaceBilanFinDeCycle_Consultation = void 0;
 const _InterfaceBilanFinDeCycle_1 = require("_InterfaceBilanFinDeCycle");
 const ObjetElement_1 = require("ObjetElement");
 const ObjetTraduction_1 = require("ObjetTraduction");
-const ObjetRequeteSaisieAccuseReceptionDocument = require("ObjetRequeteSaisieAccuseReceptionDocument");
+const ObjetRequeteSaisieAccuseReceptionDocument_1 = require("ObjetRequeteSaisieAccuseReceptionDocument");
 const ObjetListeElements_1 = require("ObjetListeElements");
 class InterfaceBilanFinDeCycle_Consultation extends _InterfaceBilanFinDeCycle_1._InterfaceBilanFinDeCycle {
 	constructor(...aParams) {
@@ -15,12 +15,17 @@ class InterfaceBilanFinDeCycle_Consultation extends _InterfaceBilanFinDeCycle_1.
 		if (this.avecGestionAccuseReception) {
 			this.AddSurZone.push({ separateur: true });
 			this.AddSurZone.push({
-				html:
-					'<ie-checkbox class="AlignementMilieuVertical" ie-model="cbAccuseReception" ie-if="cbAccuseReception.estVisible">' +
+				html: IE.jsx.str(
+					"ie-checkbox",
+					{
+						class: "AlignementMilieuVertical",
+						"ie-model": this.jsxModeleCheckboxAccuseReception.bind(this),
+						"ie-if": this.jsxAfficherCheckboxAccuseReception.bind(this),
+					},
 					ObjetTraduction_1.GTraductions.getValeur(
 						"BulletinEtReleve.JAiPrisConnaissanceDuBulletin",
-					) +
-					"</ie-checkbox>",
+					),
+				),
 			});
 			return true;
 		}
@@ -30,39 +35,35 @@ class InterfaceBilanFinDeCycle_Consultation extends _InterfaceBilanFinDeCycle_1.
 		super.recupererDonnees();
 		this.lancerRequeteRecuperationDonnees();
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			cbAccuseReception: {
-				getValue() {
-					const lResponsableAR = aInstance._getResponsableAccuseReception();
-					return !!lResponsableAR ? lResponsableAR.aPrisConnaissance : false;
-				},
-				setValue(aValue) {
-					const lResponsableAR = aInstance._getResponsableAccuseReception();
-					if (!!lResponsableAR) {
-						lResponsableAR.aPrisConnaissance = aValue;
-						new ObjetRequeteSaisieAccuseReceptionDocument(
-							aInstance,
-						).lancerRequete({
-							periode: aInstance.periodeSelectionnee,
-							aPrisConnaissance: aValue,
-						});
-					}
-				},
-				getDisabled() {
-					const lResponsableAR = aInstance._getResponsableAccuseReception();
-					return !!lResponsableAR ? lResponsableAR.aPrisConnaissance : true;
-				},
-				estVisible() {
-					const lResponsableAR = aInstance._getResponsableAccuseReception();
-					return (
-						!aInstance.avecMessage &&
-						aInstance.avecGestionAccuseReception &&
-						!!lResponsableAR
-					);
-				},
+	jsxModeleCheckboxAccuseReception() {
+		return {
+			getValue: () => {
+				const lResponsableAR = this._getResponsableAccuseReception();
+				return !!lResponsableAR ? lResponsableAR.aPrisConnaissance : false;
 			},
-		});
+			setValue: (aValue) => {
+				const lResponsableAR = this._getResponsableAccuseReception();
+				if (!!lResponsableAR) {
+					lResponsableAR.aPrisConnaissance = aValue;
+					new ObjetRequeteSaisieAccuseReceptionDocument_1.ObjetRequeteSaisieAccuseReceptionDocument(
+						this,
+					).lancerRequete({
+						periode: this.periodeSelectionnee,
+						aPrisConnaissance: aValue,
+					});
+				}
+			},
+			getDisabled: () => {
+				const lResponsableAR = this._getResponsableAccuseReception();
+				return !!lResponsableAR ? lResponsableAR.aPrisConnaissance : true;
+			},
+		};
+	}
+	jsxAfficherCheckboxAccuseReception() {
+		const lResponsableAR = this._getResponsableAccuseReception();
+		return (
+			!this.avecMessage && this.avecGestionAccuseReception && !!lResponsableAR
+		);
 	}
 	_getResponsableAccuseReception() {
 		let lReponsableAccuseReception = null;

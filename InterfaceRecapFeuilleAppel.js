@@ -1,4 +1,5 @@
-exports.InterfaceRecapFeuilleAppel = void 0;
+exports.InterfaceRecapFeuilleAppel = exports.ObjetRequeteRecapFeuilleAppel =
+	void 0;
 const ObjetDroitsPN_1 = require("ObjetDroitsPN");
 const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
 const _InterfaceRecapVS_1 = require("_InterfaceRecapVS");
@@ -17,9 +18,11 @@ const TypeGenreObservationVS_1 = require("TypeGenreObservationVS");
 const TypeHttpGenerationPDFSco_1 = require("TypeHttpGenerationPDFSco");
 const ObjetRequeteDetailAbsences_1 = require("ObjetRequeteDetailAbsences");
 const ObjetRequeteListeRegimesEleve_1 = require("ObjetRequeteListeRegimesEleve");
+class ObjetRequeteRecapFeuilleAppel extends ObjetRequeteJSON_1.ObjetRequeteConsultation {}
+exports.ObjetRequeteRecapFeuilleAppel = ObjetRequeteRecapFeuilleAppel;
 CollectionRequetes_1.Requetes.inscrire(
 	"RecapFeuilleAppel",
-	ObjetRequeteJSON_1.ObjetRequeteConsultation,
+	ObjetRequeteRecapFeuilleAppel,
 );
 class InterfaceRecapFeuilleAppel extends _InterfaceRecapVS_1._InterfaceRecapVS {
 	constructor(...aParams) {
@@ -87,6 +90,7 @@ class InterfaceRecapFeuilleAppel extends _InterfaceRecapVS_1._InterfaceRecapVS {
 			avecMotifsAbsence: false,
 			avecMotifsAbsRepas: false,
 			avecMotifsAbsInternat: false,
+			avecMotifsRetardInternat: false,
 			avecMotifsRetard: false,
 			avecMotifsInfirmerie: false,
 			avecIssuesInfirmerie: false,
@@ -178,8 +182,7 @@ class InterfaceRecapFeuilleAppel extends _InterfaceRecapVS_1._InterfaceRecapVS {
 		aParam.rubriquesObservation.setSerialisateurJSON({
 			ignorerEtatsElements: true,
 		});
-		(0, CollectionRequetes_1.Requetes)(
-			"RecapFeuilleAppel",
+		new ObjetRequeteRecapFeuilleAppel(
 			this,
 			this.surRecupererDonneesRecap.bind(this, aParam),
 		).lancerRequete({

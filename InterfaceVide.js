@@ -1,15 +1,16 @@
-const { EStructureAffichage } = require("Enumere_StructureAffichage.js");
-const { ObjetInterface } = require("ObjetInterface.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class InterfaceVide extends ObjetInterface {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.InterfaceVide = void 0;
+const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
+const ObjetInterface_1 = require("ObjetInterface");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class InterfaceVide extends ObjetInterface_1.ObjetInterface {
 	setParametresGeneraux() {
-		this.GenreStructure = EStructureAffichage.Autre;
+		this.GenreStructure =
+			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 	}
 	construireStructureAffichageAutre() {
-		return this.composeMessage(GTraductions.getValeur("SelectionAffichage"));
+		return this.composeMessage(
+			ObjetTraduction_1.GTraductions.getValeur("SelectionAffichage"),
+		);
 	}
 }
-module.exports = { InterfaceVide };
+exports.InterfaceVide = InterfaceVide;

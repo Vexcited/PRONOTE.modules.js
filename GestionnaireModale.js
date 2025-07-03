@@ -3,6 +3,7 @@ const ObjetHtml_1 = require("ObjetHtml");
 const ObjetStyle_1 = require("ObjetStyle");
 const Invocateur_1 = require("Invocateur");
 const GUID_1 = require("GUID");
+const AccessApp_1 = require("AccessApp");
 var TypePrioriteBlocageInterface;
 (function (TypePrioriteBlocageInterface) {
 	TypePrioriteBlocageInterface[(TypePrioriteBlocageInterface["voile"] = 1)] =
@@ -141,8 +142,8 @@ exports.GestionnaireModale = (function () {
 				}
 			}
 			let lId = aId;
-			if (lElement.blocageGeneral && global.GApplication) {
-				lId = global.GApplication.getIdConteneur();
+			if (lElement.blocageGeneral && (0, AccessApp_1.getApp)()) {
+				lId = (0, AccessApp_1.getApp)().getIdConteneur();
 			}
 			if (lElement.estBloque) {
 				$("#" + lId.escapeJQ()).addClass(uClassBloquageInterface);

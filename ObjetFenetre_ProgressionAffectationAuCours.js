@@ -1,7 +1,6 @@
 exports.ObjetFenetre_ProgressionAffectationAuCours = void 0;
 const MethodesObjet_1 = require("MethodesObjet");
 const ObjetHtml_1 = require("ObjetHtml");
-const ObjetStyle_1 = require("ObjetStyle");
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
 const Enumere_EvenementTreeView_1 = require("Enumere_EvenementTreeView");
 const ObjetCelluleDate_1 = require("ObjetCelluleDate");
@@ -43,141 +42,228 @@ class ObjetFenetre_ProgressionAffectationAuCours extends ObjetFenetre_1.ObjetFen
 			},
 		);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			radioCompositionTitre: {
-				getValue: function (aTypeComposition) {
-					return (
-						ObjetFenetre_ProgressionAffectationAuCours.indiceChoixTitreProgression ===
-						aTypeComposition
-					);
-				},
-				setValue: function (aTypeComposition) {
-					ObjetFenetre_ProgressionAffectationAuCours.indiceChoixTitreProgression =
-						aTypeComposition;
-				},
-			},
-			cb: {
-				getValue: function (aNomChamp) {
-					return aInstance.parametres[aNomChamp];
-				},
-				setValue: function (aNomChamp, aValue) {
-					aInstance.parametres[aNomChamp] = aValue;
-					aInstance._evenementSurCheckBox();
-				},
-			},
-			avecTAF: function () {
-				return aInstance.parametres.avecTAFVisible;
-			},
-			getStyleFieldContenu: function () {
-				return { width: aInstance.parametres.avecTAFVisible ? 250 : 500 };
-			},
-		});
-	}
 	_initialiserTreeView(aInstance) {
 		aInstance.setParametres();
 	}
+	jsxModelRadioCompositionTitre(aTypeComposition) {
+		return {
+			getValue: () => {
+				return (
+					ObjetFenetre_ProgressionAffectationAuCours.indiceChoixTitreProgression ===
+					aTypeComposition
+				);
+			},
+			setValue: (aValue) => {
+				ObjetFenetre_ProgressionAffectationAuCours.indiceChoixTitreProgression =
+					aTypeComposition;
+			},
+			getName: () => {
+				return `${this.Nom}_CompositionTitre`;
+			},
+		};
+	}
+	jsxModelCheckboxAffichage(aNomChamp) {
+		return {
+			getValue: () => {
+				return this.parametres[aNomChamp];
+			},
+			setValue: (aValue) => {
+				this.parametres[aNomChamp] = aValue;
+				this._evenementSurCheckBox();
+			},
+		};
+	}
+	jsxDisplayInfosAvecTAF() {
+		return this.parametres.avecTAFVisible;
+	}
+	jsxGetStyleFieldContenu() {
+		return { width: this.parametres.avecTAFVisible ? 250 : 500 };
+	}
 	composeContenu() {
-		const lHtml = [];
-		lHtml.push('<div class="NoWrap">');
-		lHtml.push(
-			'<div class="InlineBlock AlignementHaut">',
-			'<fieldset class="Espace AlignementGauche BorderBox" ie-style="getStyleFieldContenu" style="height:85px;',
-			ObjetStyle_1.GStyle.composeCouleurBordure(GCouleur.fenetre.bordure),
-			'">',
-			"<legend>",
-			ObjetTraduction_1.GTraductions.getValeur("progression.Contenu") +
-				" - " +
-				ObjetTraduction_1.GTraductions.getValeur(
-					"progression.MsgOptionsTitreElement",
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "flex-contain flex-gap-l m-bottom-l" },
+				IE.jsx.str(
+					"div",
+					null,
+					IE.jsx.str(
+						"fieldset",
+						{ "ie-style": this.jsxGetStyleFieldContenu.bind(this) },
+						IE.jsx.str(
+							"legend",
+							null,
+							ObjetTraduction_1.GTraductions.getValeur("progression.Contenu"),
+							" - ",
+							ObjetTraduction_1.GTraductions.getValeur(
+								"progression.MsgOptionsTitreElement",
+							),
+						),
+						IE.jsx.str(
+							"div",
+							null,
+							IE.jsx.str(
+								"div",
+								{ class: "EspaceBas" },
+								IE.jsx.str(
+									"ie-radio",
+									{
+										"ie-model": this.jsxModelRadioCompositionTitre.bind(
+											this,
+											ObjetDonneesTreeViewProgression_1
+												._ObjetDonneesTreeViewProgression.genreTitreContenu
+												.Titre,
+										),
+									},
+									ObjetTraduction_1.GTraductions.getValeur(
+										"progression.OptionTitre",
+									),
+								),
+							),
+							IE.jsx.str(
+								"div",
+								{ class: "EspaceBas" },
+								IE.jsx.str(
+									"ie-radio",
+									{
+										"ie-model": this.jsxModelRadioCompositionTitre.bind(
+											this,
+											ObjetDonneesTreeViewProgression_1
+												._ObjetDonneesTreeViewProgression.genreTitreContenu
+												.SsDossierTitre,
+										),
+									},
+									ObjetTraduction_1.GTraductions.getValeur(
+										"progression.OptionSousDossierTitre",
+									),
+								),
+							),
+							IE.jsx.str(
+								"div",
+								null,
+								IE.jsx.str(
+									"ie-radio",
+									{
+										"ie-model": this.jsxModelRadioCompositionTitre.bind(
+											this,
+											ObjetDonneesTreeViewProgression_1
+												._ObjetDonneesTreeViewProgression.genreTitreContenu
+												.DossierSsDossierTitre,
+										),
+									},
+									ObjetTraduction_1.GTraductions.getValeur(
+										"progression.OptionDossierSousDossierTitre",
+									),
+								),
+							),
+						),
+					),
 				),
-			"</legend>",
-			"<div>",
-			'<div class="EspaceBas">',
-			'<ie-radio ie-model="radioCompositionTitre(',
-			ObjetDonneesTreeViewProgression_1._ObjetDonneesTreeViewProgression
-				.genreTitreContenu.Titre,
-			')">',
-			ObjetTraduction_1.GTraductions.getValeur("progression.OptionTitre"),
-			"</ie-radio>",
-			"</div>",
-			'<div class="EspaceBas">',
-			'<ie-radio ie-model="radioCompositionTitre(',
-			ObjetDonneesTreeViewProgression_1._ObjetDonneesTreeViewProgression
-				.genreTitreContenu.SsDossierTitre,
-			')">',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"progression.OptionSousDossierTitre",
+				IE.jsx.str(
+					"div",
+					{
+						class: "flex-contain",
+						"ie-display": this.jsxDisplayInfosAvecTAF.bind(this),
+					},
+					IE.jsx.str(
+						"fieldset",
+						{ class: "p-all-xl", style: "width:250px;" },
+						IE.jsx.str(
+							"legend",
+							null,
+							ObjetTraduction_1.GTraductions.getValeur(
+								"CahierDeTexte.TravailAFaire",
+							),
+							" :",
+						),
+						IE.jsx.str(
+							"div",
+							{ class: "flex-contain flex-center flex-gap" },
+							IE.jsx.str(
+								"div",
+								null,
+								ObjetTraduction_1.GTraductions.getValeur(
+									"CahierDeTexte.PourLe",
+								),
+							),
+							IE.jsx.str("div", { id: this.getNomInstance(this.identDateTAF) }),
+						),
+					),
+				),
 			),
-			"</ie-radio>",
-			"</div>",
-			"<div>",
-			'<ie-radio ie-model="radioCompositionTitre(',
-			ObjetDonneesTreeViewProgression_1._ObjetDonneesTreeViewProgression
-				.genreTitreContenu.DossierSsDossierTitre,
-			')">',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"progression.OptionDossierSousDossierTitre",
+		);
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "p-y" },
+				IE.jsx.str(
+					"div",
+					{ class: "PetitEspaceBas" },
+					IE.jsx.str(
+						"ie-checkbox",
+						{
+							"ie-model": this.jsxModelCheckboxAffichage.bind(
+								this,
+								"avecElementsAssoc",
+							),
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"progression.ElementsNonAssocies",
+						),
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{
+						class: "PetitEspaceBas",
+						"ie-display": this.jsxDisplayInfosAvecTAF.bind(this),
+					},
+					IE.jsx.str(
+						"ie-checkbox",
+						{
+							"ie-model": this.jsxModelCheckboxAffichage.bind(
+								this,
+								"avecContenu",
+							),
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"progression.AfficherContenus",
+						),
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{
+						class: "PetitEspaceBas",
+						"ie-display": this.jsxDisplayInfosAvecTAF.bind(this),
+					},
+					IE.jsx.str(
+						"ie-checkbox",
+						{
+							"ie-model": this.jsxModelCheckboxAffichage.bind(this, "avecTAF"),
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"progression.AfficherTAFs",
+						),
+					),
+				),
 			),
-			"</ie-radio>",
-			"</div>",
-			"</div>",
-			"</fieldset></div>",
 		);
-		lHtml.push(
-			'<div ie-display="avecTAF" class="InlineBlock AlignementHaut">',
-			'<fieldset class="Espace AlignementGauche BorderBox NoWrap" style="width:250px; height:85px;',
-			ObjetStyle_1.GStyle.composeCouleurBordure(GCouleur.fenetre.bordure),
-			'">',
-			"<legend>",
-			ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.TravailAFaire") +
-				" :",
-			"</legend>",
-			'<div style="padding-top:12px; padding-left:20px;">',
-			'<div class="InlineBlock AlignementMilieuVertical EspaceDroit">',
-			ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.PourLe"),
-			"</div>",
-			'<div class="InlineBlock AlignementMilieuVertical" id="',
-			this.getNomInstance(this.identDateTAF),
-			'"></div>',
-			"</div>",
-			"</fieldset>",
-			"</div>",
+		H.push(
+			IE.jsx.str("div", {
+				id: this.getNomInstance(this.identTreeView),
+				style: "width:500px; height:300px;",
+			}),
 		);
-		lHtml.push("</div>");
-		lHtml.push(
-			'<div class="PetitEspaceHaut">',
-			'<div class="PetitEspaceBas"><ie-checkbox',
-			ObjetHtml_1.GHtml.composeAttr("ie-model", "cb", ["avecElementsAssoc"]),
-			">",
-			ObjetTraduction_1.GTraductions.getValeur(
-				"progression.ElementsNonAssocies",
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "PetitEspaceHaut" },
+				IE.jsx.str("span", { id: this.idLegende, class: "Italique" }),
 			),
-			"</ie-checkbox></div>",
-			'<div class="PetitEspaceBas" ie-display="avecTAF"><ie-checkbox',
-			ObjetHtml_1.GHtml.composeAttr("ie-model", "cb", ["avecContenu"]),
-			">",
-			ObjetTraduction_1.GTraductions.getValeur("progression.AfficherContenus"),
-			"</ie-checkbox></div>",
-			'<div class="PetitEspaceBas" ie-display="avecTAF"><ie-checkbox',
-			ObjetHtml_1.GHtml.composeAttr("ie-model", "cb", ["avecTAF"]),
-			">",
-			ObjetTraduction_1.GTraductions.getValeur("progression.AfficherTAFs"),
-			"</ie-checkbox></div>",
-			"</div>",
 		);
-		lHtml.push(
-			'<div id="',
-			this.getNomInstance(this.identTreeView),
-			'" style="width:500px; height:300px;"></div>',
-		);
-		lHtml.push(
-			'<div class="PetitEspaceHaut"><span id="',
-			this.idLegende,
-			'" class="Italique">',
-			"</span></div>",
-		);
-		return lHtml.join("");
+		return H.join("");
 	}
 	setDonnees(aParams) {
 		Object.assign(this.parametres, aParams);

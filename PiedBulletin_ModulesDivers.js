@@ -1,16 +1,25 @@
-const { GHtml } = require("ObjetHtml.js");
-const { GStyle } = require("ObjetStyle.js");
-const { Identite } = require("ObjetIdentite.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const {
-	TypeModeAffichagePiedBulletin,
-} = require("TypeModeAffichagePiedBulletin.js");
-const { GDate } = require("ObjetDate.js");
-class PiedBulletin_VieScolaire extends Identite {
-	constructor(...aParams) {
-		super(...aParams);
-		this.params = { modeAffichage: TypeModeAffichagePiedBulletin.MAPB_Onglets };
+exports.PiedBulletin_Engagements =
+	exports.PiedBulletin_Credits =
+	exports.PiedBulletin_Projets =
+	exports.PiedBulletin_Legende =
+	exports.PiedBulletin_Mentions =
+	exports.PiedBulletin_Stages =
+	exports.PiedBulletin_VieScolaire =
+		void 0;
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetStyle_1 = require("ObjetStyle");
+const ObjetIdentite_1 = require("ObjetIdentite");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TypeModeAffichagePiedBulletin_1 = require("TypeModeAffichagePiedBulletin");
+const ObjetDate_1 = require("ObjetDate");
+class PiedBulletin_VieScolaire extends ObjetIdentite_1.Identite {
+	constructor() {
+		super(...arguments);
+		this.params = {
+			modeAffichage:
+				TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+					.MAPB_Onglets,
+		};
 	}
 	setDonnees(aParam) {
 		$.extend(true, this.params, aParam);
@@ -21,9 +30,14 @@ class PiedBulletin_VieScolaire extends Identite {
 	afficher(aParam) {
 		$.extend(true, this.params, aParam);
 		switch (aParam.modeAffichage) {
-			case TypeModeAffichagePiedBulletin.MAPB_Onglets:
-			case TypeModeAffichagePiedBulletin.MAPB_Lineaire:
-				GHtml.setHtml(this.Nom, this._construireAbsences(this.params.absences));
+			case TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+				.MAPB_Onglets:
+			case TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+				.MAPB_Lineaire:
+				ObjetHtml_1.GHtml.setHtml(
+					this.Nom,
+					this._construireAbsences(this.params.absences),
+				);
 				break;
 		}
 	}
@@ -37,45 +51,41 @@ class PiedBulletin_VieScolaire extends Identite {
 		const H = [];
 		if (T.length > 0) {
 			H.push(
-				'<div class="PetitEspaceHaut PetitEspaceBas Gras" style="',
-				GStyle.composeCouleurTexte(GCouleur.themeCouleur.foncee),
+				'<h2 class="p-y ie-titre-petit Gras" style="',
+				ObjetStyle_1.GStyle.composeCouleurTexte(GCouleur.themeCouleur.foncee),
 				'">',
-				GTraductions.getValeur("PiedDeBulletin.VieScolaire"),
-				"</div>",
+				ObjetTraduction_1.GTraductions.getValeur("PiedDeBulletin.VieScolaire"),
+				"</h2>",
 			);
 			H.push(T.join(" - "));
 		}
 		return H.join("");
 	}
-	getListeArborescente(aParam) {
-		for (const lAbs in this.params.absences) {
-			if (this.params.absences[lAbs]) {
-				aParam.listeArb.ajouterUneFeuilleAuNoeud(
-					aParam.racine,
-					"",
-					this.params.absences[lAbs],
-				);
-			}
-		}
-	}
 }
-class PiedBulletin_Stages extends Identite {
-	constructor(...aParams) {
-		super(...aParams);
-		this.params = { modeAffichage: TypeModeAffichagePiedBulletin.MAPB_Onglets };
+exports.PiedBulletin_VieScolaire = PiedBulletin_VieScolaire;
+class PiedBulletin_Stages extends ObjetIdentite_1.Identite {
+	constructor() {
+		super(...arguments);
+		this.params = {
+			modeAffichage:
+				TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+					.MAPB_Onglets,
+		};
 	}
 	setDonnees(aParam) {
 		$.extend(true, this.params, aParam);
 	}
 	estAffiche() {
-		return this.params.listeStages && this.params.listeStages.count();
+		return !!(this.params.listeStages && this.params.listeStages.count());
 	}
 	afficher(aParam) {
 		$.extend(true, this.params, aParam);
 		switch (aParam.modeAffichage) {
-			case TypeModeAffichagePiedBulletin.MAPB_Onglets:
-			case TypeModeAffichagePiedBulletin.MAPB_Lineaire:
-				GHtml.setHtml(
+			case TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+				.MAPB_Onglets:
+			case TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+				.MAPB_Lineaire:
+				ObjetHtml_1.GHtml.setHtml(
 					this.Nom,
 					this._construireStages(this.params.listeStages),
 				);
@@ -95,9 +105,12 @@ class PiedBulletin_Stages extends Identite {
 				if (!!aStage.dateInterruption) {
 					lLibelleStage.push(
 						" - ",
-						GTraductions.getValeur("stage.InterrompuLe"),
+						ObjetTraduction_1.GTraductions.getValeur("stage.InterrompuLe"),
 						" ",
-						GDate.formatDate(aStage.dateInterruption, "%JJ/%MM/%AAAA"),
+						ObjetDate_1.GDate.formatDate(
+							aStage.dateInterruption,
+							"%JJ/%MM/%AAAA",
+						),
 					);
 				}
 				T.push("<div>", lLibelleStage.join(""), "</div>");
@@ -137,27 +150,33 @@ class PiedBulletin_Stages extends Identite {
 		}
 		return T.join("");
 	}
-	getListeArborescente() {}
 }
-class PiedBulletin_Mentions extends Identite {
-	constructor(...aParams) {
-		super(...aParams);
-		this.params = { modeAffichage: TypeModeAffichagePiedBulletin.MAPB_Onglets };
+exports.PiedBulletin_Stages = PiedBulletin_Stages;
+class PiedBulletin_Mentions extends ObjetIdentite_1.Identite {
+	constructor() {
+		super(...arguments);
+		this.params = {
+			modeAffichage:
+				TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+					.MAPB_Onglets,
+		};
 	}
 	setDonnees(aParam) {
 		$.extend(true, this.params, aParam);
 	}
 	estAffiche() {
-		return (
+		return !!(
 			this.params.listeMentionsClasse && this.params.listeMentionsClasse.count()
 		);
 	}
 	afficher(aParam) {
 		$.extend(true, this.params, aParam);
 		switch (aParam.modeAffichage) {
-			case TypeModeAffichagePiedBulletin.MAPB_Onglets:
-			case TypeModeAffichagePiedBulletin.MAPB_Lineaire:
-				GHtml.setHtml(
+			case TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+				.MAPB_Onglets:
+			case TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+				.MAPB_Lineaire:
+				ObjetHtml_1.GHtml.setHtml(
 					this.Nom,
 					this._construireMentions(this.params.listeMentionsClasse),
 				);
@@ -171,13 +190,17 @@ class PiedBulletin_Mentions extends Identite {
 		const T = [];
 		if (aParam && aParam.count()) {
 			const lClass =
-				this.params.modeAffichage === TypeModeAffichagePiedBulletin.MAPB_Onglets
+				this.params.modeAffichage ===
+				TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+					.MAPB_Onglets
 					? "Espace"
 					: "";
 			T.push('<div class="', lClass, '" >');
 			T.push(
 				'<div style="display: inline;">' +
-					GTraductions.getValeur("PiedDeConseilDeClasse.Mentions") +
+					ObjetTraduction_1.GTraductions.getValeur(
+						"PiedDeConseilDeClasse.Mentions",
+					) +
 					"&nbsp;:&nbsp;" +
 					"</div>",
 			);
@@ -195,37 +218,15 @@ class PiedBulletin_Mentions extends Identite {
 		}
 		return T.join("");
 	}
-	getListeArborescente(aParam) {
-		const lListe = this.params.listeMentionsClasse;
-		if (lListe.count()) {
-			const lNoeudMentions = aParam.listeArb.ajouterUnNoeudAuNoeud(
-				aParam.racine,
-				"",
-				GTraductions.getValeur("PiedDeConseilDeClasse.Mentions"),
-				null,
-				false,
-			);
-			lListe.setTri([ObjetTri.init("Genre")]);
-			lListe.trier();
-			for (let i = 0, lNbr = lListe.count(); i < lNbr; i++) {
-				const lElt = lListe.get(i);
-				if (lElt) {
-					const lLibelle = lElt.getLibelle() + " : " + lElt.Nombre[0];
-					aParam.listeArb.ajouterUneFeuilleAuNoeud(
-						lNoeudMentions,
-						"",
-						lLibelle,
-					);
-				}
-			}
-		}
-	}
 }
-class PiedBulletin_Legende extends Identite {
-	constructor(...aParams) {
-		super(...aParams);
+exports.PiedBulletin_Mentions = PiedBulletin_Mentions;
+class PiedBulletin_Legende extends ObjetIdentite_1.Identite {
+	constructor() {
+		super(...arguments);
 		this.params = {
-			modeAffichage: TypeModeAffichagePiedBulletin.MAPB_Lineaire,
+			modeAffichage:
+				TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+					.MAPB_Lineaire,
 		};
 	}
 	setDonnees(aParam) {
@@ -237,9 +238,14 @@ class PiedBulletin_Legende extends Identite {
 	afficher(aParam) {
 		$.extend(true, this.params, aParam);
 		switch (aParam.modeAffichage) {
-			case TypeModeAffichagePiedBulletin.MAPB_Onglets:
-			case TypeModeAffichagePiedBulletin.MAPB_Lineaire:
-				GHtml.setHtml(this.Nom, this._construireLegende(this.params.legende));
+			case TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+				.MAPB_Onglets:
+			case TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+				.MAPB_Lineaire:
+				ObjetHtml_1.GHtml.setHtml(
+					this.Nom,
+					this._construireLegende(this.params.legende),
+				);
 				break;
 		}
 	}
@@ -252,13 +258,15 @@ class PiedBulletin_Legende extends Identite {
 		}
 		return T.join("");
 	}
-	getListeArborescente() {}
 }
-class PiedBulletin_Projets extends Identite {
-	constructor(...aParams) {
-		super(...aParams);
+exports.PiedBulletin_Legende = PiedBulletin_Legende;
+class PiedBulletin_Projets extends ObjetIdentite_1.Identite {
+	constructor() {
+		super(...arguments);
 		this.params = {
-			modeAffichage: TypeModeAffichagePiedBulletin.MAPB_Lineaire,
+			modeAffichage:
+				TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+					.MAPB_Lineaire,
 		};
 	}
 	setDonnees(aParam) {
@@ -270,9 +278,11 @@ class PiedBulletin_Projets extends Identite {
 	afficher(aParam) {
 		$.extend(true, this.params, aParam);
 		switch (aParam.modeAffichage) {
-			case TypeModeAffichagePiedBulletin.MAPB_Onglets:
-			case TypeModeAffichagePiedBulletin.MAPB_Lineaire:
-				GHtml.setHtml(
+			case TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+				.MAPB_Onglets:
+			case TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+				.MAPB_Lineaire:
+				ObjetHtml_1.GHtml.setHtml(
 					this.Nom,
 					this._construireProjets(this.params.listeProjets),
 				);
@@ -282,35 +292,43 @@ class PiedBulletin_Projets extends Identite {
 	_construireProjets(aParam) {
 		if (aParam) {
 			if (aParam.count()) {
-				return GTraductions.getValeur("BulletinEtReleve.Projets.Detail", [
-					aParam.getTableauLibelles().join(", "),
-				]);
+				return ObjetTraduction_1.GTraductions.getValeur(
+					"BulletinEtReleve.Projets.Detail",
+					[aParam.getTableauLibelles().join(", ")],
+				);
 			} else {
-				return GTraductions.getValeur("BulletinEtReleve.Projets.Aucun");
+				return ObjetTraduction_1.GTraductions.getValeur(
+					"BulletinEtReleve.Projets.Aucun",
+				);
 			}
 		}
 		return "";
 	}
 }
-class PiedBulletin_Credits extends Identite {
-	constructor(...aParams) {
-		super(...aParams);
+exports.PiedBulletin_Projets = PiedBulletin_Projets;
+class PiedBulletin_Credits extends ObjetIdentite_1.Identite {
+	constructor() {
+		super(...arguments);
 		this.params = {
-			modeAffichage: TypeModeAffichagePiedBulletin.MAPB_Lineaire,
+			modeAffichage:
+				TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+					.MAPB_Lineaire,
 		};
 	}
 	setDonnees(aParam) {
 		$.extend(true, this.params, aParam);
 	}
 	estAffiche() {
-		return this.params && this.params.listeCredits;
+		return !!(this.params && this.params.listeCredits);
 	}
 	afficher(aParam) {
 		$.extend(true, this.params, aParam);
 		switch (aParam.modeAffichage) {
-			case TypeModeAffichagePiedBulletin.MAPB_Onglets:
-			case TypeModeAffichagePiedBulletin.MAPB_Lineaire:
-				GHtml.setHtml(
+			case TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+				.MAPB_Onglets:
+			case TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+				.MAPB_Lineaire:
+				ObjetHtml_1.GHtml.setHtml(
 					this.Nom,
 					this._construireCredits(this.params.listeCredits),
 				);
@@ -337,7 +355,7 @@ class PiedBulletin_Credits extends Identite {
 			'<tr style="text-align:center;border:solid 1px',
 			GCouleur.bordure,
 			";",
-			GStyle.composeCouleurFond(GCouleur.grisClair),
+			ObjetStyle_1.GStyle.composeCouleurFond(GCouleur.grisClair),
 			'">',
 		);
 		H.push('<td style="width:100px;">&nbsp;</td>');
@@ -352,7 +370,7 @@ class PiedBulletin_Credits extends Identite {
 			'<td style="border:solid 1px',
 			GCouleur.bordure,
 			';">',
-			GTraductions.getValeur("PiedDeBulletin.Credits"),
+			ObjetTraduction_1.GTraductions.getValeur("PiedDeBulletin.Credits"),
 			"</td>",
 		);
 		H.push(donnees.join(""));
@@ -360,24 +378,26 @@ class PiedBulletin_Credits extends Identite {
 		H.push("</table>");
 		return H.join("");
 	}
-	getListeArborescente() {}
 }
-class PiedBulletin_Engagements extends Identite {
-	constructor(...aParams) {
-		super(...aParams);
+exports.PiedBulletin_Credits = PiedBulletin_Credits;
+class PiedBulletin_Engagements extends ObjetIdentite_1.Identite {
+	constructor() {
+		super(...arguments);
 		this.params = {
-			modeAffichage: TypeModeAffichagePiedBulletin.MAPB_Lineaire,
+			modeAffichage:
+				TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+					.MAPB_Lineaire,
 		};
 	}
 	setDonnees(aParam) {
 		$.extend(true, this.params, aParam);
 	}
 	estAffiche() {
-		return this.params && this.params.listeEngagements;
+		return !!(this.params && this.params.listeEngagements);
 	}
 	afficher(aParam) {
 		$.extend(true, this.params, aParam);
-		GHtml.setHtml(
+		ObjetHtml_1.GHtml.setHtml(
 			this.Nom,
 			this._construireEngagements(
 				this.params.listeEngagements,
@@ -387,30 +407,25 @@ class PiedBulletin_Engagements extends Identite {
 	}
 	_construireEngagements(aListeEngagements, aModeAffichage) {
 		const H = [];
-		let lLibelle = GTraductions.getValeur("PiedDeBulletin.AucunEngagement");
+		let lLibelle = ObjetTraduction_1.GTraductions.getValeur(
+			"PiedDeBulletin.AucunEngagement",
+		);
 		if (aListeEngagements.count()) {
 			lLibelle = aListeEngagements.getTableauLibelles().join(", ");
 		}
 		switch (aModeAffichage) {
-			case TypeModeAffichagePiedBulletin.MAPB_Onglets:
+			case TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+				.MAPB_Onglets:
 				H.push(`<p class="m-all">${lLibelle}</p>`);
 				break;
-			case TypeModeAffichagePiedBulletin.MAPB_Lineaire:
+			case TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+				.MAPB_Lineaire:
 				H.push(
-					`<p class="m-top"><span class="ie-titre-petit theme_color_foncee Gras"> ${GTraductions.getValeur("PiedDeBulletin.Engagements")} :</span><br> ${lLibelle}</p>`,
+					`<h2 class="p-y ie-titre-petit theme_color_foncee Gras">${ObjetTraduction_1.GTraductions.getValeur("PiedDeBulletin.Engagements")} :</h2><p>${lLibelle}</p>`,
 				);
 				break;
 		}
 		return H.join("");
 	}
-	getListeArborescente() {}
 }
-module.exports = {
-	PiedBulletin_VieScolaire,
-	PiedBulletin_Stages,
-	PiedBulletin_Mentions,
-	PiedBulletin_Legende,
-	PiedBulletin_Projets,
-	PiedBulletin_Credits,
-	PiedBulletin_Engagements,
-};
+exports.PiedBulletin_Engagements = PiedBulletin_Engagements;

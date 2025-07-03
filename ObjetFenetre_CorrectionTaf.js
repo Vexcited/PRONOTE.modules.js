@@ -1,20 +1,23 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { UtilitaireUrl } = require("UtilitaireUrl.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { TypeFichierExterneHttpSco } = require("TypeFichierExterneHttpSco.js");
-class ObjetFenetre_CorrectionTaf extends ObjetFenetre {
+exports.ObjetFenetre_CorrectionTaf = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const UtilitaireUrl_1 = require("UtilitaireUrl");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TypeFichierExterneHttpSco_1 = require("TypeFichierExterneHttpSco");
+class ObjetFenetre_CorrectionTaf extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
+		this.applicationSco = GApplication;
+		this.etatUtilisateurSco = this.applicationSco.getEtatUtilisateur();
 		this.setOptionsFenetre({
 			modale: true,
-			titre: GTraductions.getValeur(
+			titre: ObjetTraduction_1.GTraductions.getValeur(
 				"CahierDeTexte.TAFARendre.Eleve.CorrectionDeLEnseignant",
 			),
 			largeur: 400,
 			hauteur: 150,
 			fermerFenetreSurClicHorsFenetre: true,
-			avecCroixFermeture: !GEtatUtilisateur.estEspaceMobile(),
+			avecCroixFermeture: !this.etatUtilisateurSco.estEspaceMobile(),
 		});
 		this.donnees = { taf: null };
 	}
@@ -35,12 +38,14 @@ class ObjetFenetre_CorrectionTaf extends ObjetFenetre {
 					!!aInstance.donnees.taf.documentCorrige
 				) {
 					lHtml.push(
-						UtilitaireUrl.construireListeUrls(
-							new ObjetListeElements().add(
+						UtilitaireUrl_1.UtilitaireUrl.construireListeUrls(
+							new ObjetListeElements_1.ObjetListeElements().add(
 								aInstance.donnees.taf.documentCorrige,
 							),
 							{
-								genreRessource: TypeFichierExterneHttpSco.TAFCorrigeRenduEleve,
+								genreRessource:
+									TypeFichierExterneHttpSco_1.TypeFichierExterneHttpSco
+										.TAFCorrigeRenduEleve,
 							},
 						),
 					);
@@ -65,16 +70,19 @@ class ObjetFenetre_CorrectionTaf extends ObjetFenetre {
 		});
 	}
 	composeContenu() {
-		const T = [];
-		T.push("<div>");
-		T.push(
-			'<div ie-if="estDocumentCorrigeVisible" ie-html="getHtmlDocumentCorrige"></div>',
+		return IE.jsx.str(
+			"div",
+			null,
+			IE.jsx.str("div", {
+				"ie-if": "estDocumentCorrigeVisible",
+				"ie-html": "getHtmlDocumentCorrige",
+			}),
+			IE.jsx.str("div", {
+				"ie-if": "estCommentaireCorrigeVisible",
+				"ie-html": "getHtmlCommentaireCorrige",
+				class: "EspaceHaut10",
+			}),
 		);
-		T.push(
-			'<div ie-if="estCommentaireCorrigeVisible" ie-html="getHtmlCommentaireCorrige" class="EspaceHaut10"></div>',
-		);
-		T.push("</div>");
-		return T.join("");
 	}
 }
-module.exports = { ObjetFenetre_CorrectionTaf };
+exports.ObjetFenetre_CorrectionTaf = ObjetFenetre_CorrectionTaf;

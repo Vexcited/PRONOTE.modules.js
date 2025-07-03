@@ -27,7 +27,7 @@ const ObjetFenetre_1 = require("ObjetFenetre");
 const TypeCommandeMessagerie_1 = require("TypeCommandeMessagerie");
 const Enumere_MenuCtxModeMixte_1 = require("Enumere_MenuCtxModeMixte");
 const TypeGenreDiscussion_1 = require("TypeGenreDiscussion");
-const ObjetFenetre_ListeCategoriesDiscussion = require("ObjetFenetre_ListeCategoriesDiscussion");
+const MultipleObjetFenetre_ListeCategoriesDiscussion = require("ObjetFenetre_ListeCategoriesDiscussion");
 const ToucheClavier_1 = require("ToucheClavier");
 const ObjetMenuCtxMixte_1 = require("ObjetMenuCtxMixte");
 const ObjetListe_1 = require("ObjetListe");
@@ -298,6 +298,15 @@ class MoteurMessagerie {
 			return;
 		}
 		uFenetreAvertissementASignaler = false;
+		const lTitreFenetre = IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			IE.jsx.str("i", { class: "icon_warning_sign" }),
+			" ",
+			ObjetTraduction_1.GTraductions.getValeur(
+				"Messagerie.TitreFenetreAvertissement",
+			),
+		);
 		uFenetreAvertissement = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
 			ObjetFenetre_1.ObjetFenetre,
 			{ pere: this.options.instance },
@@ -305,12 +314,7 @@ class MoteurMessagerie {
 				largeur: 500,
 				modale: false,
 				cssFenetre: "fenetre-messagerie-avertissement",
-				titre:
-					(0, tag_1.tag)("i", { class: "icon_warning_sign" }) +
-					" " +
-					ObjetTraduction_1.GTraductions.getValeur(
-						"Messagerie.TitreFenetreAvertissement",
-					),
+				titre: lTitreFenetre,
 				listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
 				callbackFermer: function () {
 					uFenetreAvertissement = null;
@@ -603,24 +607,28 @@ class MoteurMessagerie {
 		aListeEtiquettes,
 		aCallback,
 	) {
-		let lAvecModif = false;
-		ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
-			ObjetFenetre_ListeCategoriesDiscussion,
-			{ pere: this.options.instance },
-			{
-				surSaisieEtiquette: function () {
-					lAvecModif = true;
-				},
-				callbackFermer: function () {
-					if (lAvecModif) {
-						aCallback();
-					}
-				},
-			},
-		).setDonnees({
-			listeEtiquettes: aListeEtiquettes,
-			listeMessages: aListeMessages,
-		});
+		if (MultipleObjetFenetre_ListeCategoriesDiscussion) {
+			let lAvecModif = false;
+			const lFenetreListeCategoriesDiscussion =
+				ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+					MultipleObjetFenetre_ListeCategoriesDiscussion.ObjetFenetre_ListeCategoriesDiscussion,
+					{ pere: this.options.instance },
+					{
+						surSaisieEtiquette: function () {
+							lAvecModif = true;
+						},
+						callbackFermer: function () {
+							if (lAvecModif) {
+								aCallback();
+							}
+						},
+					},
+				);
+			lFenetreListeCategoriesDiscussion.setDonnees({
+				listeEtiquettes: aListeEtiquettes,
+				listeMessages: aListeMessages,
+			});
+		}
 	}
 	getInfosTitreDroite(aMessage) {
 		if (!aMessage || !this.donneesListeMessagerie.listeMessagerie) {
@@ -749,15 +757,11 @@ class MoteurMessagerie {
 								"ie-ellipsis": true,
 								"ie-hint":
 									lAvecInfosParticipants && !lOptions.ieNodeSousTitre
-										? tag_1.tag.funcAttr(
-												"moteurMessagerie.hintPublicBandeauDroite",
-											)
+										? "moteurMessagerie.hintPublicBandeauDroite"
 										: false,
 								"ie-node":
 									lAvecInfosParticipants && lOptions.ieNodeSousTitre
-										? tag_1.tag.funcAttr(
-												"moteurMessagerie.nodePublicBandeauDroite",
-											)
+										? "moteurMessagerie.nodePublicBandeauDroite"
 										: false,
 							},
 							lSousTitre,
@@ -770,10 +774,8 @@ class MoteurMessagerie {
 			(lOptions.avecMenuPublic || lOptions.avecMenuActions)
 		) {
 			H.push(
-				(0, tag_1.tag)("div", {
-					"ie-identite": tag_1.tag.funcAttr(
-						"moteurMessagerie.getCtxMixteBandeauDroite",
-					),
+				IE.jsx.str("div", {
+					"ie-identite": "moteurMessagerie.getCtxMixteBandeauDroite",
 				}),
 			);
 		}
@@ -1165,7 +1167,8 @@ class MoteurMessagerie {
 					!aParams.message.estNonPossede &&
 					aParams.listeEtiquettes &&
 					aParams.listeMessagerie &&
-					!!ObjetFenetre_ListeCategoriesDiscussion
+					!!MultipleObjetFenetre_ListeCategoriesDiscussion &&
+					!!MultipleObjetFenetre_ListeCategoriesDiscussion.ObjetFenetre_ListeCategoriesDiscussion
 				) {
 					_add(
 						aParams.message.listeEtiquettes &&
@@ -1722,22 +1725,27 @@ class MoteurMessagerie {
 		};
 		return lFenetre
 			.afficher(
-				(0, tag_1.tag)(
-					"span",
-					ObjetTraduction_1.GTraductions.getValeur(
-						"Messagerie.SaisieObjetDiscussion",
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
+						"span",
+						null,
+						ObjetTraduction_1.GTraductions.getValeur(
+							"Messagerie.SaisieObjetDiscussion",
+						),
 					),
-				) +
-					(0, tag_1.tag)("br") +
-					(0, tag_1.tag)("br") +
-					(0, tag_1.tag)("input", {
-						class: IE.estMobile ? "" : "round-style",
+					IE.jsx.str("br", null),
+					IE.jsx.str("br", null),
+					IE.jsx.str("input", {
+						type: "text",
+						class: "full-width",
 						"ie-model": "input",
-						"ie-trim": true,
+						"ie-trim": "true",
 						maxlength:
 							UtilitaireMessagerie_1.UtilitaireMessagerie.C_TailleObjetMessage,
-						style: "width:100%;",
 					}),
+				),
 			)
 			.then((aParams) => {
 				if (aParams.bouton && aParams.bouton.valider && lObjet) {
@@ -1882,30 +1890,31 @@ class MoteurMessagerie {
 		}
 		if (this.donneesListeMessagerie.messagerieDesactivee) {
 			H.push(
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"div",
 					{ class: "panelAvert-conteneur-desactive" },
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"b",
+						null,
 						ObjetTraduction_1.GTraductions.getValeur(
 							"Messagerie.MessagerieDesactivee",
 						),
 					),
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"ie-bouton",
 						{
 							"ie-model": "_panelAvert_.btnRecupererMessageDesactivation",
-							class: [Type_ThemeBouton_1.TypeThemeBouton.neutre, "small-bt"],
+							class: Type_ThemeBouton_1.TypeThemeBouton.neutre + " small-bt",
 						},
 						ObjetTraduction_1.GTraductions.getValeur(
 							"Messagerie.RecupererMessageDesactivation",
 						),
 					),
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"ie-bouton",
 						{
 							"ie-model": "_panelAvert_.btnModifierPreferencesDesactivation",
-							class: [Type_ThemeBouton_1.TypeThemeBouton.neutre, "small-bt"],
+							class: Type_ThemeBouton_1.TypeThemeBouton.neutre + " small-bt",
 						},
 						ObjetTraduction_1.GTraductions.getValeur(
 							"Messagerie.ModifierPreferencesDesactivation",
@@ -1920,29 +1929,45 @@ class MoteurMessagerie {
 	_discussionsInactivesDansCorbeille() {
 		const H = [];
 		H.push(
-			"<b>",
-			ObjetTraduction_1.GTraductions.getValeur(
-				"Messagerie.ConfirmationCorbeilleInactive_Titre",
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"b",
+					null,
+					ObjetTraduction_1.GTraductions.getValeur(
+						"Messagerie.ConfirmationCorbeilleInactive_Titre",
+					),
+				),
+				IE.jsx.str("br", null),
+				IE.jsx.str("br", null),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"Messagerie.ConfirmationCorbeilleInactive_1",
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "listeMessagerie_messConfirm" },
+					IE.jsx.str(
+						"div",
+						{ class: "Insecable" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"Messagerie.ConfirmationCorbeilleInactive_2",
+						),
+					),
+					IE.jsx.str(
+						"div",
+						null,
+						IE.jsx.str("ie-combo", { "ie-model": "combo" }),
+					),
+					IE.jsx.str(
+						"div",
+						null,
+						ObjetTraduction_1.GTraductions.getValeur(
+							"Messagerie.ConfirmationCorbeilleInactive_3",
+						),
+					),
+				),
 			),
-			"</b>",
-			"<br>",
-			"<br>",
-			ObjetTraduction_1.GTraductions.getValeur(
-				"Messagerie.ConfirmationCorbeilleInactive_1",
-			),
-			'<div class="listeMessagerie_messConfirm">',
-			'<div class="Insecable">',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"Messagerie.ConfirmationCorbeilleInactive_2",
-			),
-			"</div>",
-			'<div><ie-combo ie-model="combo"></ie-combo></div>',
-			"<div>",
-			ObjetTraduction_1.GTraductions.getValeur(
-				"Messagerie.ConfirmationCorbeilleInactive_3",
-			),
-			"</div>",
-			"</div>",
 		);
 		const lChoix = [15, 30, 60];
 		const lIndiceSelection = 0;

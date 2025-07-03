@@ -79,19 +79,31 @@ class InterfaceCDTPlanning extends InterfacePage_1.InterfacePage {
 								Enumere_Message_1.EGenreMessage.SelectionMatiere
 							],
 						getContenuElement: function (aParams) {
-							return [
-								'<div  style="display:flex; align-items:center;">',
-								'<div style="width:20rem;flex:none; padding-right:2rem;" ie-ellipsis>',
-								aParams.element.getLibelle(),
-								"</div>",
-								'<div style="width:20rem; flex:none; padding-right:2rem;" ie-ellipsis>',
-								aParams.element.strPublic,
-								"</div>",
-								'<div style=" padding-right:2rem;" ie-ellipsis-fixe>',
-								aParams.element.strProfs,
-								"</div>",
-								"</div>",
-							].join("");
+							return IE.jsx.str(
+								"div",
+								{ style: "display:flex; align-items:center;" },
+								IE.jsx.str(
+									"div",
+									{
+										style: "width:20rem;flex:none; padding-right:2rem;",
+										"ie-ellipsis": true,
+									},
+									aParams.element.getLibelle(),
+								),
+								IE.jsx.str(
+									"div",
+									{
+										style: "width:20rem; flex:none; padding-right:2rem;",
+										"ie-ellipsis": true,
+									},
+									aParams.element.strPublic,
+								),
+								IE.jsx.str(
+									"div",
+									{ style: " padding-right:2rem;", "ie-ellipsis-fixe": true },
+									aParams.element.strProfs,
+								),
+							);
 						},
 						getClassElement: function (aParams) {
 							return aParams.element.estUneMatiereDuProf
@@ -217,7 +229,7 @@ class InterfaceCDTPlanning extends InterfacePage_1.InterfacePage {
 			InterfacePageAvecMenusDeroulants_1.ObjetAffichagePageAvecMenusDeroulants,
 			function _evenementSurDernierMenuDeroulant() {
 				ObjetHtml_1.GHtml.setDisplay(
-					this.getInstance(this.identCalendrier).getNom(),
+					this.getNomInstance(this.identCalendrier),
 					false,
 				);
 				new ObjetRequeteListeMatieresPublicsCDTPlanning(this)
@@ -285,7 +297,7 @@ class InterfaceCDTPlanning extends InterfacePage_1.InterfacePage {
 	}
 	recupererDonnees() {
 		ObjetHtml_1.GHtml.setDisplay(
-			this.getInstance(this.identCalendrier).getNom(),
+			this.getNomInstance(this.identCalendrier),
 			false,
 		);
 	}
@@ -294,10 +306,10 @@ class InterfaceCDTPlanning extends InterfacePage_1.InterfacePage {
 		H.push(
 			'<div class="InterfaceCDTPlanning">',
 			'<div id="',
-			this.getInstance(this.identCalendrier).getNom(),
+			this.getNomInstance(this.identCalendrier),
 			'"></div>',
 			'<div id="',
-			this.getInstance(this.identListe).getNom(),
+			this.getNomInstance(this.identListe),
 			'" class="cdtplanning_liste"></div>',
 			"</div>",
 		);
@@ -416,6 +428,12 @@ class InterfaceCDTPlanning extends InterfacePage_1.InterfacePage {
 					UtilitaireSaisieCDT_1.UtilitaireSaisieCDT.affecterProgressionAuCdT({
 						instance: this,
 						avecTAFVisible: true,
+						paramsAutorisationCreationTAF: {
+							ajoutNouveauTAFInterdit:
+								aParams.article.saisieCDT.ajoutNouveauTAFInterdit,
+							messageSurNouveauTAF:
+								aParams.article.saisieCDT.messageSurNouveauTAF,
+						},
 						cours: aParams.article.cours,
 						numeroSemaine: aParams.article.cours.numeroSemaine,
 						cdt: aParams.article.cdt,
@@ -445,13 +463,17 @@ class InterfaceCDTPlanning extends InterfacePage_1.InterfacePage {
 					});
 				});
 			},
-			ajoutQCMTaf: (aParams) => {
-				UtilitaireSaisieCDT_1.UtilitaireSaisieCDT.choisirQCM({
-					instance: this,
-				}).then((aParamQCM) => {
-					if (aParamQCM.eltQCM) {
-						return this._getDetailsSaisieCDTPromise(aParams.article).then(
-							() => {
+			ajoutQCMTaf: async (aParams) => {
+				this._getDetailsSaisieCDTPromise(aParams.article).then(async () => {
+					const lAutoriserAjoutTAF =
+						await UtilitaireSaisieCDT_1.UtilitaireSaisieCDT.autoriserCreationTAF(
+							aParams.article.saisieCDT,
+						);
+					if (lAutoriserAjoutTAF) {
+						UtilitaireSaisieCDT_1.UtilitaireSaisieCDT.choisirQCM({
+							instance: this,
+						}).then((aParamQCM) => {
+							if (aParamQCM.eltQCM) {
 								const lTAF =
 									UtilitaireSaisieCDT_1.UtilitaireSaisieCDT.creerTAFAvecQCM({
 										qcm: aParamQCM.eltQCM,
@@ -459,14 +481,18 @@ class InterfaceCDTPlanning extends InterfacePage_1.InterfacePage {
 											aParams.article.saisieCDT.dateCoursSuivantTAF ||
 											aParams.article.saisieCDT.DateTravailAFaire,
 										dateFinCours: aParams.article.saisieCDT.DateCoursFin,
+										listeTousEleves:
+											UtilitaireSaisieCDT_1.UtilitaireSaisieCDT.getListeToutLesEleves(
+												aParams.article.saisieCDT.listeClassesEleves,
+											),
 									});
 								aParams.article.cdt.ListeTravailAFaire.addElement(lTAF);
 								aParams.article.cdt.setEtat(
 									Enumere_Etat_1.EGenreEtat.Modification,
 								);
 								this._requeteSaisieCDT(aParams.article);
-							},
-						);
+							}
+						});
 					}
 				});
 			},
@@ -698,13 +724,25 @@ class InterfaceCDTPlanning extends InterfacePage_1.InterfacePage {
 					.contenu,
 				taille: ObjetListe_1.ObjetListe.initColonne(100, 200, 500),
 				titre: {
-					libelleHtml:
+					libelleHtml: IE.jsx.str(
+						IE.jsx.fragment,
+						null,
 						ObjetTraduction_1.GTraductions.getValeur(
 							"InterfaceCDTPlanning.ColPlanningContenuDeLaSeance",
-						) +
-						'<div class="cdtplanning_dl_cdt_titreContenu">' +
-						'<ie-btnimage ie-model="btnTitreContenu" class="cdtplanning_dl_cdt_imageTitreContenu TitreListeSansTri" style="width:18px;"></ie-btnimage>' +
-						"</div>",
+						),
+						IE.jsx.str(
+							"div",
+							{ class: "cdtplanning_dl_cdt_titreContenu" },
+							IE.jsx.str("ie-btnimage", {
+								"ie-model": "btnTitreContenu",
+								class: [
+									"cdtplanning_dl_cdt_imageTitreContenu",
+									ObjetListe_1.ObjetListe.StyleElementInteractifTitreSansTri,
+								],
+								style: "width:18px;",
+							}),
+						),
+					),
 					controleur: {
 						btnTitreContenu: {
 							event: function () {
@@ -823,9 +861,20 @@ class InterfaceCDTPlanning extends InterfacePage_1.InterfacePage {
 			{
 				id: DonneesListe_CDTPlanning_1.DonneesListe_CDTPlanning.colonnes.publie,
 				taille: 30,
-				titre: ObjetTraduction_1.GTraductions.getValeur(
-					"InterfaceCDTPlanning.ColPlanningpublie",
-				),
+				titre: {
+					getLibelleHtml: () => {
+						return IE.jsx.str("i", {
+							class: "icon_info_sondage_publier mix-icon_ok i-green",
+							role: "presentation",
+						});
+					},
+					libelleParametrageColonne: ObjetTraduction_1.GTraductions.getValeur(
+						"InterfaceCDTPlanning.ColPlanningpublie",
+					),
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"InterfaceCDTPlanning.ColPlanningpublie",
+					),
+				},
 			},
 		];
 		const lColonneCachees = [];
@@ -983,62 +1032,88 @@ class InterfaceCDTPlanning extends InterfacePage_1.InterfacePage {
 			});
 	}
 	_surEditionContenu(aArticle, aPourTAF, aAjout) {
-		return this._getDetailsSaisieCDTPromise(aArticle).then(() => {
-			let lElement = null;
-			if (!aAjout) {
-				lElement = aPourTAF ? aArticle.taf : aArticle.contenu;
-			}
+		return this._getDetailsSaisieCDTPromise(aArticle)
+			.then(async () => {
+				let lAutoriserEdition = true;
+				if (aPourTAF) {
+					if (aAjout || !aArticle.taf) {
+						lAutoriserEdition =
+							await UtilitaireSaisieCDT_1.UtilitaireSaisieCDT.autoriserCreationTAF(
+								aArticle.saisieCDT,
+							);
+					}
+				}
+				return lAutoriserEdition;
+			})
+			.then((aAutoriserEdition) => {
+				if (!aAutoriserEdition) {
+					return;
+				}
+				let lElement = null;
+				if (!aAjout) {
+					lElement = aPourTAF ? aArticle.taf : aArticle.contenu;
+				}
+				const lFenetreSaisieCDTPlanning =
+					ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+						ObjetFenetre_Saisie_CDTPlanning_1.ObjetFenetre_Saisie_CDTPlanning,
+						{
+							pere: this,
+							evenement: (aNumeroBouton, aParams) => {
+								if (aParams.avecSaisie) {
+									aArticle.cdt.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+									this.donnees.listeCategories = aParams.listeCategories;
+									this._requeteSaisieCDT(
+										aArticle,
+										aParams.element.listeFichiersFenetrePJ,
+									);
+								}
+							},
+						},
+						{
+							titre: ObjetChaine_1.GChaine.format("%s %s %s - %s", [
+								ObjetDate_1.GDate.formatDate(
+									aArticle.cours.date,
+									"%JJJ %JJ/%MM",
+								),
+								ObjetTraduction_1.GTraductions.getValeur("A"),
+								ObjetDate_1.GDate.formatDate(aArticle.cours.date, "%hh%sh%mm"),
+								aArticle.cours.strPublic,
+							]),
+						},
+					);
+				lFenetreSaisieCDTPlanning.setDonnees({
+					contenu: lElement,
+					pourTAF: aPourTAF,
+					cdt: aArticle.cdt,
+					cours: aArticle.cours,
+					ListeDocumentsJoints: aArticle.saisieCDT.ListeDocumentsJoints,
+					listeCategories: this.donnees.listeCategories,
+					verrouille: false,
+					saisieCDT: aArticle.saisieCDT,
+				});
+			});
+	}
+	_ouvrirFenetreElementsProgramme(aArticle) {
+		const lFenetreElementsProgramme =
 			ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
-				ObjetFenetre_Saisie_CDTPlanning_1.ObjetFenetre_Saisie_CDTPlanning,
+				ObjetFenetre_ElementsProgramme_1.ObjetFenetre_ElementsProgramme,
 				{
 					pere: this,
-					evenement: (aNumeroBouton, aParams) => {
-						if (aParams.avecSaisie) {
-							aArticle.cdt.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
-							this.donnees.listeCategories = aParams.listeCategories;
-							this._requeteSaisieCDT(
-								aArticle,
-								aParams.element.listeFichiersFenetrePJ,
+					evenement: (aValider, aDonnees) => {
+						aArticle.cours.cdt.listeElementsProgrammeCDT =
+							aDonnees.listeElementsProgramme;
+						this.donnees.palierElementTravailleSelectionne =
+							aDonnees.palierActif;
+						if (aValider) {
+							aArticle.cours.cdt.setEtat(
+								Enumere_Etat_1.EGenreEtat.Modification,
 							);
+							this._requeteSaisieCDT(aArticle);
 						}
 					},
 				},
-				{
-					titre: ObjetChaine_1.GChaine.format("%s %s %s - %s", [
-						ObjetDate_1.GDate.formatDate(aArticle.cours.date, "%JJJ %JJ/%MM"),
-						ObjetTraduction_1.GTraductions.getValeur("A"),
-						ObjetDate_1.GDate.formatDate(aArticle.cours.date, "%hh%sh%mm"),
-						aArticle.cours.strPublic,
-					]),
-				},
-			).setDonnees({
-				contenu: lElement,
-				pourTAF: aPourTAF,
-				cdt: aArticle.cdt,
-				cours: aArticle.cours,
-				ListeDocumentsJoints: aArticle.saisieCDT.ListeDocumentsJoints,
-				listeCategories: this.donnees.listeCategories,
-				verrouille: false,
-				saisieCDT: aArticle.saisieCDT,
-			});
-		});
-	}
-	_ouvrirFenetreElementsProgramme(aArticle) {
-		ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
-			ObjetFenetre_ElementsProgramme_1.ObjetFenetre_ElementsProgramme,
-			{
-				pere: this,
-				evenement: (aValider, aDonnees) => {
-					aArticle.cours.cdt.listeElementsProgrammeCDT =
-						aDonnees.listeElementsProgramme;
-					this.donnees.palierElementTravailleSelectionne = aDonnees.palierActif;
-					if (aValider) {
-						aArticle.cours.cdt.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
-						this._requeteSaisieCDT(aArticle);
-					}
-				},
-			},
-		).setDonnees({
+			);
+		lFenetreElementsProgramme.setDonnees({
 			cours: aArticle.cours,
 			numeroSemaine: aArticle.cours.numeroSemaine,
 			listeElementsProgramme: aArticle.cours.cdt.listeElementsProgrammeCDT,

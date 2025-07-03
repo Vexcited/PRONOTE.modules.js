@@ -1,5 +1,8 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-class DonneesListe_SelectionDemandeur extends ObjetDonneesListe {
+exports.DonneesListe_SelectionDemandeur_Fd =
+	exports.DonneesListe_SelectionDemandeur = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+class DonneesListe_SelectionDemandeur extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees) {
 		super(aDonnees);
 		this.setOptions({
@@ -10,7 +13,7 @@ class DonneesListe_SelectionDemandeur extends ObjetDonneesListe {
 		});
 	}
 	getTypeValeur() {
-		return ObjetDonneesListe.ETypeCellule.Html;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 	}
 	avecSelection(aParams) {
 		return !aParams.article.estUnDeploiement;
@@ -35,4 +38,27 @@ class DonneesListe_SelectionDemandeur extends ObjetDonneesListe {
 		return GCouleur.liste.editable;
 	}
 }
-module.exports = { DonneesListe_SelectionDemandeur };
+exports.DonneesListe_SelectionDemandeur = DonneesListe_SelectionDemandeur;
+class DonneesListe_SelectionDemandeur_Fd extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
+	constructor(aDonnees) {
+		super(aDonnees);
+		this.setOptions({
+			avecEvnt_SelectionClick: true,
+			avecEvnt_Selection: true,
+			avecDeploiement: true,
+		});
+	}
+	getTitreZonePrincipale(aDonnee) {
+		return aDonnee.article.getLibelle();
+	}
+	avecBoutonActionLigne(aParams) {
+		return false;
+	}
+	avecSelection(aParams) {
+		return !aParams.article.estUnDeploiement;
+	}
+	surSelectionLigne(J, D, aSelectionner) {
+		D.selectionne = aSelectionner && !D.estUnDeploiement;
+	}
+}
+exports.DonneesListe_SelectionDemandeur_Fd = DonneesListe_SelectionDemandeur_Fd;

@@ -51,6 +51,18 @@ MethodesTableau.insererElement = function (aValeur, aTableau, aIndex) {
 MethodesTableau.supprimerElement = function (aTableau, aIndex) {
 	aTableau.splice(aIndex, 1);
 };
+MethodesTableau.supprimerTabIndex = function (aTableau, aTabIndexSuppr) {
+	if (aTabIndexSuppr && Array.isArray(aTabIndexSuppr)) {
+		[...aTabIndexSuppr]
+			.sort((a, b) => a - b)
+			.reverse()
+			.forEach((aIndiceSuppr) => {
+				if (aIndiceSuppr >= 0) {
+					aTableau.splice(aIndiceSuppr, 1);
+				}
+			});
+	}
+};
 MethodesTableau.remove = function (aTableau, aElement) {
 	let lIndex = aTableau.indexOf(aElement);
 	let lResult = false;

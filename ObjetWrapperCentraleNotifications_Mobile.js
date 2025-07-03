@@ -31,7 +31,6 @@ class _ObjetFenetreNotifications_Mobile extends ObjetFenetre_1.ObjetFenetre {
 		super(...aParams);
 		this.setOptionsFenetre({
 			fermerFenetreSurClicHorsFenetre: true,
-			heightMax_mobile: true,
 			listeBoutons: [],
 			avecCroixFermeture: false,
 			themeMenuDark: true,
@@ -50,7 +49,7 @@ class _ObjetFenetreNotifications_Mobile extends ObjetFenetre_1.ObjetFenetre {
 	}
 	composeContenu() {
 		return IE.jsx.str("div", {
-			id: this.getInstance(this.identNotif).getNom(),
+			id: this.getNomInstance(this.identNotif),
 			style: "height:100%",
 		});
 	}

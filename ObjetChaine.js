@@ -15,7 +15,13 @@ const ComparateurChaines_1 = require("ComparateurChaines");
 const tag_1 = require("tag");
 const UtilitaireEmail_1 = require("UtilitaireEmail");
 const ObjetTraduction_1 = require("ObjetTraduction");
+const AccessApp_1 = require("AccessApp");
 let GChaine;
+var TypeFormatSIRET;
+(function (TypeFormatSIRET) {
+	TypeFormatSIRET[(TypeFormatSIRET["FR"] = 0)] = "FR";
+	TypeFormatSIRET[(TypeFormatSIRET["IT"] = 1)] = "IT";
+})(TypeFormatSIRET || (TypeFormatSIRET = {}));
 class ObjetChaine {
 	constructor() {
 		this.maskTelephone = "99 99 99 99 99 99";
@@ -139,6 +145,30 @@ class ObjetChaine {
 		}
 		return lEstValide;
 	}
+	estAdresseIPV4Avant(aStr1AdresseIPV4, aStr2AdresseIPV4) {
+		if (
+			this.estAdresseIPV4Valide(aStr1AdresseIPV4) &&
+			this.estAdresseIPV4Valide(aStr2AdresseIPV4) &&
+			aStr1AdresseIPV4 !== aStr2AdresseIPV4
+		) {
+			const lValeursAdresse1 = aStr1AdresseIPV4.split(".");
+			const lValeursAdresse2 = aStr2AdresseIPV4.split(".");
+			let lResult = null;
+			for (let i = 0; i < lValeursAdresse1.length; i++) {
+				const lValeur1 = parseInt(lValeursAdresse1[i]);
+				const lValeur2 = parseInt(lValeursAdresse2[i]);
+				if (lValeur1 < lValeur2) {
+					lResult = true;
+					break;
+				} else if (lValeur2 < lValeur1) {
+					lResult = false;
+					break;
+				}
+			}
+			return lResult;
+		}
+		return null;
+	}
 	format(aChaine, aTabElements) {
 		if (!aChaine || !aChaine.format) {
 			return aChaine;
@@ -238,7 +268,7 @@ class ObjetChaine {
 		}
 		return lIndicatif + aNumeroTel;
 	}
-	geStrTelephoneAvecEspaces(aNumTel) {
+	getStrTelephoneAvecEspaces(aNumTel) {
 		if (!aNumTel || !aNumTel.length) {
 			return "";
 		}
@@ -258,9 +288,9 @@ class ObjetChaine {
 		let E = document.getElementById(ldLongueurChaineEnPixel);
 		if (!E) {
 			let lConteneur = document.body;
-			if (global.GApplication) {
+			if ((0, AccessApp_1.getApp)()) {
 				lConteneur =
-					document.getElementById(GApplication.getIdConteneur()) ||
+					document.getElementById((0, AccessApp_1.getApp)().getIdConteneur()) ||
 					document.body;
 			}
 			lConteneur.insertAdjacentHTML(
@@ -473,6 +503,9 @@ class ObjetChaine {
 	replaceRCToHTML(AChaine, aChaineRemplacement) {
 		return AChaine ? AChaine.replaceRCToHTML(aChaineRemplacement) : "";
 	}
+	supprimerRC(aString) {
+		return aString.replace(/\r\n/g, "");
+	}
 	fromHTML(AChaine) {
 		return AChaine ? AChaine.replace(/<br( \/)?>/gi, "\n") : "";
 	}
@@ -527,7 +560,9 @@ class ObjetChaine {
 		return aTexte !== lTexteAvecLiensURL;
 	}
 	creerUrlBruteLienExterne(aDocumentJoint, aParam) {
-		if (!("getCommunication" in GApplication)) {
+		var _a, _b;
+		const lApp = (0, AccessApp_1.getApp)();
+		if (!("getCommunication" in lApp)) {
 			return;
 		}
 		if (!aDocumentJoint) {
@@ -547,9 +582,15 @@ class ObjetChaine {
 		if (!MethodesObjet_1.MethodesObjet.isNumber(lGenreDocumentJoint)) {
 			lGenreDocumentJoint = aDocumentJoint.getGenre();
 		}
-		let lLibelleLienExterne = aParam.libelle;
+		let lLibelleLienExterne =
+			(_b =
+				(_a = aParam.libelle) === null || _a === void 0
+					? void 0
+					: _a.enleverEntites) === null || _b === void 0
+				? void 0
+				: _b.call(_a);
 		if (!lLibelleLienExterne) {
-			lLibelleLienExterne = aDocumentJoint.getLibelle();
+			lLibelleLienExterne = aDocumentJoint.getLibelle().enleverEntites();
 		}
 		if (
 			lGenreDocumentJoint === Enumere_DocumentJoint_1.EGenreDocumentJoint.Url
@@ -567,10 +608,12 @@ class ObjetChaine {
 		if (aParam.miniature !== null && aParam.miniature !== undefined) {
 			Object.assign(lInfoFichier, { miniature: aParam.miniature });
 		}
-		lUrl = GApplication.getCommunication().composeUrlFichierExterne(
-			this.encoderComposantUrl(lLibelleLienExterne, true),
-			lInfoFichier,
-		);
+		lUrl = lApp
+			.getCommunication()
+			.composeUrlFichierExterne(
+				this.encoderComposantUrl(lLibelleLienExterne, true),
+				lInfoFichier,
+			);
 		if (aParam.forcerURLComplete) {
 			const lBalise = document.createElement("a");
 			lBalise.href = lUrl;
@@ -771,13 +814,16 @@ class ObjetChaine {
 		if (!aIndividu || !aIndividu.getNumero) {
 			return "";
 		}
-		if (!("getCommunication" in GApplication)) {
+		const lApp = (0, AccessApp_1.getApp)();
+		if (!("getCommunication" in lApp)) {
 			return;
 		}
-		return GApplication.getCommunication().composeUrlFichierExterne(
-			aIndividu.getLibelle().replace(/[\s]/gi, "_") + ".jpg",
-			new ObjetElement_1.ObjetElement("", aIndividu.getNumero()),
-		);
+		return lApp
+			.getCommunication()
+			.composeUrlFichierExterne(
+				aIndividu.getLibelle().replace(/[\s]/gi, "_") + ".jpg",
+				new ObjetElement_1.ObjetElement("", aIndividu.getNumero()),
+			);
 	}
 	supprimerEspaces(aChaine) {
 		return aChaine && aChaine.replace ? aChaine.replace(/ /g, "") : aChaine;
@@ -809,6 +855,39 @@ class ObjetChaine {
 			return false;
 		}
 		return UtilitaireEmail_1.TUtilitaireEmail.estValide(aEmail);
+	}
+	getLongueurMaximaleSIRET(aTypeFormatSIRET = TypeFormatSIRET.FR) {
+		if (aTypeFormatSIRET === TypeFormatSIRET.IT) {
+			return 11;
+		}
+		return 17;
+	}
+	formaterChaineEnSIRET(aChaine, aTypeFormatSIRET = TypeFormatSIRET.FR) {
+		const lChaineFormatee = [];
+		if (aTypeFormatSIRET === TypeFormatSIRET.IT) {
+			lChaineFormatee.push(aChaine);
+		} else {
+			if (aChaine.length <= 3) {
+				lChaineFormatee.push(aChaine);
+			} else {
+				lChaineFormatee.push(aChaine.substring(0, 3), " ");
+				if (aChaine.length <= 6) {
+					lChaineFormatee.push(aChaine.substring(3));
+				} else {
+					lChaineFormatee.push(aChaine.substring(3, 6), " ");
+					if (aChaine.length <= 9) {
+						lChaineFormatee.push(aChaine.substring(6));
+					} else {
+						lChaineFormatee.push(
+							aChaine.substring(6, 9),
+							" ",
+							aChaine.substring(9),
+						);
+					}
+				}
+			}
+		}
+		return lChaineFormatee.join("");
 	}
 	controleTailleTexte(aParam) {
 		let lResult = { controleOK: true, chaine: aParam.chaine };
@@ -854,7 +933,7 @@ class ObjetChaine {
 		);
 		let lResult;
 		const lOptions = Object.assign(
-			{ couleur: GCouleur.surlignageTexte },
+			{ couleur: (0, AccessApp_1.getApp)().getCouleur().surlignageTexte },
 			aOptions,
 		);
 		if (Array.isArray(aRecherches)) {

@@ -10,7 +10,7 @@ class WidgetCasier extends ObjetWidget_1.Widget.ObjetWidget {
 	construire(aParams) {
 		this.donnees = aParams.donnees;
 		const lWidget = {
-			html: this._composeWidgetCasier(),
+			getHtml: this._composeWidgetCasier.bind(this),
 			nbrElements: this.donnees.listeDocuments
 				? this.donnees.listeDocuments.count()
 				: 0,
@@ -21,28 +21,24 @@ class WidgetCasier extends ObjetWidget_1.Widget.ObjetWidget {
 		$.extend(true, this.donnees, lWidget);
 		aParams.construireWidget(aParams.donnees);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			surDocumentCasier: function (aNumeroDocument) {
-				$(this.node).eventValidation(() => {
-					aInstance._surDocumentCasier(aNumeroDocument);
-				});
-			},
-		});
+	jsxNodeDocumentCasier(aDocumentCasier) {
+		return (aNode) => {
+			$(aNode).eventValidation(() => {
+				this._surDocumentCasier(aDocumentCasier);
+			});
+		};
 	}
-	_surDocumentCasier(aNumeroDocument) {
-		const lDocument =
-			this.donnees.listeDocuments.getElementParNumero(aNumeroDocument);
-		if (!!lDocument) {
-			window.open(ObjetChaine_1.GChaine.creerUrlBruteLienExterne(lDocument));
+	_surDocumentCasier(aDocument) {
+		if (aDocument) {
+			window.open(ObjetChaine_1.GChaine.creerUrlBruteLienExterne(aDocument));
 			new ObjetRequeteSaisieCasier_1.ObjetRequeteSaisieCasier(
 				this,
 				this._surRequeteSaisieCasier,
 			).lancerRequete({
 				genreSaisie:
-					ObjetRequeteSaisieCasier_1.ObjetRequeteSaisieCasier.genreSaisie
+					ObjetRequeteSaisieCasier_1.ObjetRequeteSaisieCasier.EGenreSaisie
 						.marquerLectureDocument,
-				documentLu: lDocument,
+				documentLu: aDocument,
 			});
 		}
 	}
@@ -72,33 +68,43 @@ class WidgetCasier extends ObjetWidget_1.Widget.ObjetWidget {
 						),
 					);
 				H.push(
-					"<li>",
-					'<a tabindex="0" ie-node="surDocumentCasier(\'',
-					lDocument.getNumero(),
-					"')\"",
-					' class="wrapper-link icon ',
-					lTypefile,
-					'">',
-					'<div class="wrap">',
-					"<h3>",
-					lDocument.getLibelle(),
-					"</h3>",
-					'<span aria-label="',
-					ObjetDate_1.GDate.formatDate(
-						lDocument.date,
-						"[" + " %JJJJ %JJ %MMMM" + "]",
-					),
-					'"> ',
-					ObjetChaine_1.GChaine.format(
-						ObjetTraduction_1.GTraductions.getValeur(
-							"accueil.casier.deposePar",
+					IE.jsx.str(
+						"li",
+						null,
+						IE.jsx.str(
+							"a",
+							{
+								tabindex: "0",
+								"ie-node": this.jsxNodeDocumentCasier(lDocument),
+								class: "wrapper-link icon " + lTypefile,
+							},
+							IE.jsx.str(
+								"div",
+								{ class: "wrap" },
+								IE.jsx.str("h3", null, lDocument.getLibelle()),
+								IE.jsx.str(
+									"span",
+									{
+										"aria-label": ObjetDate_1.GDate.formatDate(
+											lDocument.date,
+											"[" + " %JJJJ %JJ %MMMM" + "]",
+										),
+									},
+									ObjetChaine_1.GChaine.format(
+										ObjetTraduction_1.GTraductions.getValeur(
+											"accueil.casier.deposePar",
+										),
+										[lDocument.infoDepositaire],
+									) +
+										" - " +
+										ObjetDate_1.GDate.formatDate(
+											lDocument.date,
+											"[" + " %JJ %MMM" + "]",
+										),
+								),
+							),
 						),
-						[lDocument.infoDepositaire],
 					),
-					" - ",
-					ObjetDate_1.GDate.formatDate(lDocument.date, "[" + " %JJ %MMM" + "]"),
-					"</span>",
-					"</div></a></li>",
 				);
 			}
 			H.push("</ul>");

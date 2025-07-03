@@ -4,10 +4,11 @@ const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
 const CollectionRequetes_1 = require("CollectionRequetes");
 const Enumere_Etat_1 = require("Enumere_Etat");
 const Enumere_Ressource_1 = require("Enumere_Ressource");
+const AccessApp_1 = require("AccessApp");
 class ObjetRequeteSaisieCompetencesGrilles extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	constructor(...aParams) {
 		super(...aParams);
-		const lApplicationSco = GApplication;
+		const lApplicationSco = (0, AccessApp_1.getApp)();
 		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
 	}
 	lancerRequete(aParams) {
@@ -51,6 +52,9 @@ class ObjetRequeteSaisieCompetencesGrilles extends ObjetRequeteJSON_1.ObjetReque
 					if (aElementCompetence.evaluableEditable) {
 						aJSON.evaluable = aElementCompetence.evaluable;
 					}
+					if (aElementCompetence.estPartageEditable) {
+						aJSON.estPartage = aElementCompetence.estPartage;
+					}
 					if (
 						aElementCompetence.coefficient &&
 						aElementCompetence.coefficientEditable
@@ -87,7 +91,7 @@ CollectionRequetes_1.Requetes.inscrire(
 	"SaisieCompetencesGrilles",
 	ObjetRequeteSaisieCompetencesGrilles,
 );
-const CommandeSaisieCompetencesGrilles = {
+exports.CommandeSaisieCompetencesGrilles = {
 	saisieClasses: "saisieClasses",
 	saisieReferentiel: "saisieReferentiel",
 	suppressionReferentiel: "suppressionReferentiel",
@@ -101,6 +105,7 @@ const CommandeSaisieCompetencesGrilles = {
 		"editionElementsCompetenceLibelleBulletin",
 	editionElementsCompetenceCoefficient: "editionElementsCompetenceCoefficient",
 	editionElementsCompetenceEvaluable: "editionElementsCompetenceEvaluable",
+	editionElementsCompetencePartage: "editionElementsCompetencePartage",
 	suppressionElementsCompetence: "suppressionElementsCompetence",
 	saisieDomainesDuSocleAssocie: "saisieDomainesDuSocleAssocie",
 	saisieElementSignifiant: "saisieElementSignifiant",
@@ -112,4 +117,3 @@ const CommandeSaisieCompetencesGrilles = {
 	saisieParametrageGrille: "saisieParametrageGrille",
 	saisieElementCompetenceApprentissage: "saisieElementCompetenceApprentissage",
 };
-exports.CommandeSaisieCompetencesGrilles = CommandeSaisieCompetencesGrilles;

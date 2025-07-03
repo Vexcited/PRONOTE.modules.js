@@ -20,8 +20,10 @@ class ObjetEtatUtilisateurPersonnel extends ObjetEtatUtilisateur_Espace_1.ObjetE
 			Enumere_Onglet_1.EGenreOnglet.CompetencesNumeriques,
 		].includes(lGenreOnglet);
 		const lSeuleMesClasse =
-			lGenreOnglet !==
-				Enumere_Onglet_1.EGenreOnglet.Trombinoscope_EquipePedagogique &&
+			![
+				Enumere_Onglet_1.EGenreOnglet.Trombinoscope_EquipePedagogique,
+				Enumere_Onglet_1.EGenreOnglet.SaisieAppreciationDeFinDeStage,
+			].includes(lGenreOnglet) &&
 			!(
 				lGenreOnglet === Enumere_Onglet_1.EGenreOnglet.TrombinoscopeClasse &&
 				this.applicationSco.droits.get(
@@ -29,10 +31,14 @@ class ObjetEtatUtilisateurPersonnel extends ObjetEtatUtilisateur_Espace_1.ObjetE
 						.autoriseAConsulterPhotosDeTousLesEleves,
 				)
 			);
+		const lSeuleClasseStagiaire = [
+			Enumere_Onglet_1.EGenreOnglet.SaisieAppreciationDeFinDeStage,
+		].includes(lGenreOnglet);
 		return this.getListeClasses({
 			avecClasse: lAvecClasse,
 			avecGroupe: lAvecGroupe,
 			uniquementClasseEnseignee: lSeuleMesClasse,
+			uniquementClasseStagiaire: lSeuleClasseStagiaire,
 		});
 	}
 	getListeProfesseurs() {

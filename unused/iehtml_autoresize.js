@@ -1,5 +1,5 @@
-const IEHtml = require("IEHtml");
-IEHtml.addAttribut(
+const IEHtml_1 = require("IEHtml");
+IEHtml_1.default.addAttribut(
 	"ie-autoresize",
 	(aContexteCourant, aNodeName, aAttributValue, aOutils) => {
 		if (aNodeName === "ie-textareamax") {
@@ -38,10 +38,11 @@ IEHtml.addAttribut(
 			lInitBesoinObserveur = false;
 			aContexteCourant.node.style.height = "5px";
 			const lComputedStyle = global.getComputedStyle(aContexteCourant.node);
-			const lTaille =
+			let lTaille = Math.ceil(
 				aContexteCourant.node.scrollHeight +
-				parseFloat(lComputedStyle.getPropertyValue("border-top-width")) +
-				parseFloat(lComputedStyle.getPropertyValue("border-bottom-width"));
+					parseFloat(lComputedStyle.getPropertyValue("border-top-width")) +
+					parseFloat(lComputedStyle.getPropertyValue("border-bottom-width")),
+			);
 			aContexteCourant.node.style.height = lTaille + "px";
 			if (lEstTextAreaMaxWrapper) {
 				const lNodeWrapper = aContexteCourant.node.closest(
@@ -51,9 +52,9 @@ IEHtml.addAttribut(
 					return;
 				}
 				const lHeightParent = $(lNodeWrapper).height();
-				if (Math.ceil(lTaille) > lHeightParent) {
+				if (lTaille > lHeightParent) {
 					aContexteCourant.node.style.height = lHeightParent + "px";
-				} else if (Math.ceil(lTaille) < lHeightParent) {
+				} else if (lTaille < lHeightParent) {
 					aContexteCourant.node.style.height = "100%";
 				}
 			}

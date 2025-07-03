@@ -1,36 +1,31 @@
-const { EGenreBordure } = require("ObjetStyle.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GChaine } = require("ObjetChaine.js");
-const { GHtml } = require("ObjetHtml.js");
-const { GPosition } = require("ObjetPosition.js");
-const { GStyle } = require("ObjetStyle.js");
-const { EGenreAction } = require("Enumere_Action.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EEvent } = require("Enumere_Event.js");
-const { GDate } = require("ObjetDate.js");
-const { Identite } = require("ObjetIdentite.js");
-const { ObjetScroll } = require("ObjetScroll.js");
-const { EGenreScroll } = require("ObjetScroll.js");
-const { EGenreScrollEvenement } = require("ObjetScroll.js");
-const { GTableau } = require("ObjetTableau.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const {
-	GObjetWAI,
-	EGenreRole,
-	EGenreAttribut,
-	EGenreObjet,
-} = require("ObjetWAI.js");
-const { EGenreDemiJours } = require("Enumere_DemiJours.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const {
-	EGenreEvenementSaisieAbsence,
-} = require("Enumere_EvenementSaisieAbsences.js");
-const { EGenreBorne } = require("EGenreBorne.js");
-const { TypeGenreIndividuAuteur } = require("TypeGenreIndividuAuteur.js");
-const { tag } = require("tag.js");
+exports.PageSaisieAbsences = void 0;
+const ObjetStyle_1 = require("ObjetStyle");
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetPosition_1 = require("ObjetPosition");
+const ObjetStyle_2 = require("ObjetStyle");
+const Enumere_Action_1 = require("Enumere_Action");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_Event_1 = require("Enumere_Event");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetIdentite_1 = require("ObjetIdentite");
+const ObjetScroll_1 = require("ObjetScroll");
+const ObjetScroll_2 = require("ObjetScroll");
+const ObjetScroll_3 = require("ObjetScroll");
+const ObjetTableau_1 = require("ObjetTableau");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetWAI_1 = require("ObjetWAI");
+const Enumere_DemiJours_1 = require("Enumere_DemiJours");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const Enumere_EvenementSaisieAbsences_1 = require("Enumere_EvenementSaisieAbsences");
+const EGenreBorne_1 = require("EGenreBorne");
+const TypeGenreIndividuAuteur_1 = require("TypeGenreIndividuAuteur");
+const tag_1 = require("tag");
+const AccessApp_1 = require("AccessApp");
 class ObjetDonneeAffichage_Absence_Ligne {
 	constructor(aExisteAbsenceOuverte, aDernierePlace) {
 		this.ExisteAbsenceOuverte = aExisteAbsenceOuverte;
@@ -48,9 +43,11 @@ class ObjetDonneeAffichage_Absence_Cellule {
 		this.TexteInfirmerie = "";
 	}
 }
-class PageSaisieAbsences extends Identite {
+class PageSaisieAbsences extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
+		this.appScoEspace = (0, AccessApp_1.getApp)();
+		this.etatUtilScoEspace = this.appScoEspace.getEtatUtilisateur();
 		this.IdBorne = this.Nom + "_";
 		this.IdTrait = this.Nom + "_Trait_";
 		this.IdLigneEleve = this.Nom + "_Ligne_";
@@ -58,89 +55,109 @@ class PageSaisieAbsences extends Identite {
 		this.avecMessageConfirmation = false;
 		this.EnAffichage = false;
 		this.NbrElevesVisibles = 0;
-		this.ScrollV = new ObjetScroll(
+		this.TexteExclusion = ObjetTraduction_1.GTraductions.getValeur(
+			"AbsenceVS.ExclusionAbr",
+		);
+		this.TexteRetard = "";
+		this.TexteInfirmerie = ObjetTraduction_1.GTraductions.getValeur(
+			"AbsenceVS.InfirmerieAbr",
+		);
+		this.ScrollV = new ObjetScroll_1.ObjetScroll(
 			this.Nom + ".ScrollV",
 			null,
 			this,
 			this.getScrollTop,
-			EGenreScroll.Vertical,
+			ObjetScroll_2.EGenreScroll.Vertical,
 		);
-		this.ScrollH = new ObjetScroll(
+		this.ScrollH = new ObjetScroll_1.ObjetScroll(
 			this.Nom + ".ScrollH",
 			null,
 			this,
 			this.getScrollLeft,
-			EGenreScroll.Horizontal,
+			ObjetScroll_2.EGenreScroll.Horizontal,
 		);
-		this.ajouterEvenementGlobal(EEvent.SurPreResize, this.surPreResize);
-		this.ajouterEvenementGlobal(EEvent.SurPostResize, this.surPostResize);
-		this.ajouterEvenementGlobal(EEvent.SurMouseMove, this.evenementMouseMove);
-		this.ajouterEvenementGlobal(EEvent.SurMouseUp, this.evenementMouseUp);
+		this.ajouterEvenementGlobal(
+			Enumere_Event_1.EEvent.SurPreResize,
+			this.surPreResize,
+		);
+		this.ajouterEvenementGlobal(
+			Enumere_Event_1.EEvent.SurPostResize,
+			this.surPostResize,
+		);
+		this.ajouterEvenementGlobal(
+			Enumere_Event_1.EEvent.SurMouseMove,
+			this.evenementMouseMove,
+		);
+		this.ajouterEvenementGlobal(
+			Enumere_Event_1.EEvent.SurMouseUp,
+			this.evenementMouseUp,
+		);
 		this.options = {
 			couleurFondEleve: GCouleur.themeNeutre.moyen1,
 			couleurTexteEleve: GCouleur.noir,
 			heightLigneAjoutEleve: 20,
 		};
-		this.TexteExclusion = GTraductions.getValeur("AbsenceVS.ExclusionAbr");
-		this.TexteRetard = "";
-		this.TexteInfirmerie = GTraductions.getValeur("AbsenceVS.InfirmerieAbr");
 	}
-	getControleur() {
-		return $.extend(true, super.getControleur(this), {
+	getControleur(aInstance) {
+		return $.extend(true, super.getControleur(aInstance), {
 			surEventAjoutEleve: function () {
-				this.instance.callbackAjoutEleve();
+				aInstance.callbackAjoutEleve();
 			},
 			contexteMenuEleve: function (aLigne, aSurImage) {
-				const lEleve = this.instance.ListeElements.get(aLigne);
+				const lEleve = aInstance.ListeElements.get(aLigne);
 				if (!!lEleve && !lEleve.estDetache) {
-					this.instance.callback.appel(EGenreEvenementSaisieAbsence.ClicDroit, {
-						surImage: aSurImage,
-						eleve: this.instance.ListeElements.get(aLigne),
-						avecPunition: this.instance.avecSaisiePunition,
-					});
+					aInstance.callback.appel(
+						Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+							.ClicDroit,
+						{
+							surImage: aSurImage,
+							eleve: aInstance.ListeElements.get(aLigne),
+							avecPunition: aInstance.avecSaisiePunition,
+						},
+					);
 				}
 			},
 			displayCBEleve: function (aLigne) {
-				const lEleve = this.instance.ListeElements.get(aLigne);
+				const lEleve = aInstance.ListeElements.get(aLigne);
 				if (!lEleve || lEleve.estDetache) {
 					return false;
 				}
 				return _avecSaisieAutoriseSelonEleveEtTypeAbsence(
 					lEleve,
-					this.instance.TypeAbsence,
-					this.instance.cours,
+					aInstance.TypeAbsence,
+					aInstance.cours,
 				);
 			},
 			getStyleLigneEleve: function (aLigne, aPlace) {
-				const lEleve = this.instance.ListeElements.get(aLigne),
+				const lEleve = aInstance.ListeElements.get(aLigne),
 					lSaisieAutorise = _avecSaisieAutoriseSelonEleveEtTypeAbsence(
 						lEleve,
-						this.instance.TypeAbsence,
-						this.instance.cours,
+						aInstance.TypeAbsence,
+						aInstance.cours,
 					),
 					LAvecCurseur =
-						this.instance.estUneCelluleActive(aPlace) &&
-						this.instance.avecSaisieGrille &&
+						aInstance.estUneCelluleActive(aPlace) &&
+						aInstance.avecSaisieGrille &&
 						lSaisieAutorise,
-					LCursor = this.instance.determinerCurseur();
+					LCursor = aInstance.determinerCurseur();
 				return {
 					cursor: LAvecCurseur ? "url(" + LCursor + "), auto;" : "",
 					"background-color":
-						!this.instance.estUneCelluleGrisee(aPlace) && lSaisieAutorise
+						!aInstance.estUneCelluleGrisee(aPlace) && lSaisieAutorise
 							? GCouleur.liste.editable.fond
 							: GCouleur.liste.nonEditable.fond,
 				};
 			},
 			getClassLigneEleve: function (aLigne, aPlace) {
-				const lEleve = this.instance.ListeElements.get(aLigne),
+				const lEleve = aInstance.ListeElements.get(aLigne),
 					lSaisieAutorise = _avecSaisieAutoriseSelonEleveEtTypeAbsence(
 						lEleve,
-						this.instance.TypeAbsence,
-						this.instance.cours,
+						aInstance.TypeAbsence,
+						aInstance.cours,
 					),
 					LAvecCurseur =
-						this.instance.estUneCelluleActive(aPlace) &&
-						this.instance.avecSaisieGrille &&
+						aInstance.estUneCelluleActive(aPlace) &&
+						aInstance.avecSaisieGrille &&
 						lSaisieAutorise;
 				return LAvecCurseur ? "AvecMain" : "AvecInterdiction";
 			},
@@ -157,13 +174,13 @@ class PageSaisieAbsences extends Identite {
 		this.CouleurRetard = ACouleurRetard;
 		this.CouleurInfirmerie = ACouleurInfirmerie;
 		this.CouleurFondTransparent = "transparent";
-		this.couleurDejaAbsent = "red";
+		this.couleurDejaAbsent = "var(--color-red-moyen)";
 	}
 	setParametres(APlacesParJour, APlacesParHeure, ALibelleHeures) {
 		this.PlacesParJour = APlacesParJour;
 		this.PlacesParHeure = APlacesParHeure;
 		this.ListeHeures = ALibelleHeures;
-		this.TypeAbsence = EGenreRessource.Absence;
+		this.TypeAbsence = Enumere_Ressource_1.EGenreRessource.Absence;
 		this.LargeurMin = 30;
 		this.LargeurMax = 75;
 		this.LargeurColonneEleve = 180;
@@ -209,13 +226,13 @@ class PageSaisieAbsences extends Identite {
 		this.ListeElements.trier();
 		this.NbrElevesVisibles =
 			this.ListeElements.getListeElements((D) => {
-				return D.getEtat() !== EGenreEtat.Suppression;
+				return D.getEtat() !== Enumere_Etat_1.EGenreEtat.Suppression;
 			}).count() - 1;
 		this.avecColonneClasse = false;
 		let lStrClasse = "";
 		const lSelf = this;
 		this.ListeElements.parcourir((aEleve) => {
-			if (aEleve.getEtat() !== EGenreEtat.Suppression) {
+			if (aEleve.getEtat() !== Enumere_Etat_1.EGenreEtat.Suppression) {
 				if (aEleve.strClasse && lStrClasse && lStrClasse !== aEleve.strClasse) {
 					lSelf.avecColonneClasse = true;
 					return false;
@@ -240,7 +257,7 @@ class PageSaisieAbsences extends Identite {
 			lEleve.getLibelle() +
 			(lEleve.complementInfo ? " " + lEleve.complementInfo : "");
 		lTitleEleve +=
-			GChaine.getLongueurChaine(
+			ObjetChaine_1.GChaine.getLongueurChaine(
 				lEleve.getLibelle(),
 				10,
 				true,
@@ -252,7 +269,7 @@ class PageSaisieAbsences extends Identite {
 				? lEleve.getLibelle()
 				: "";
 		if (lEleve.absentAuDernierCours || lEleve.sortiePeda || lEleve.estDetache) {
-			GStyle.setCouleurTexte(
+			ObjetStyle_2.GStyle.setCouleurTexte(
 				this._getIDLigneLibelleEleve(lIndiceEleve),
 				this._getCouleurLibelleEleve(lIndiceEleve),
 			);
@@ -260,7 +277,9 @@ class PageSaisieAbsences extends Identite {
 				lTitleEleve =
 					lLibelleEleve +
 					" " +
-					GTraductions.getValeur("AbsenceVS.EleveAbsentAuDernierCours");
+					ObjetTraduction_1.GTraductions.getValeur(
+						"AbsenceVS.EleveAbsentAuDernierCours",
+					);
 			}
 			if (lEleve.sortiePeda) {
 				lTitleEleve =
@@ -278,12 +297,12 @@ class PageSaisieAbsences extends Identite {
 		if (lEleve.strStatut) {
 			lTitleEleve = (lTitleEleve ? lTitleEleve + "\n" : "") + lEleve.strStatut;
 		}
-		GHtml.setHtml(
+		ObjetHtml_1.GHtml.setHtml(
 			this._getIDLigneLibelleEleve(lIndiceEleve),
 			lLibelleEleve +
 				(lEleve.sortiePeda ? " *" : "") +
 				(lEleve.estDetache
-					? tag("i", {
+					? (0, tag_1.tag)("i", {
 							class: [
 								this.cours && this.cours.estSortiePedagogique
 									? "icon_remove"
@@ -294,8 +313,14 @@ class PageSaisieAbsences extends Identite {
 						})
 					: ""),
 		);
-		GHtml.setTitle(this._getIDLigneLibelleEleve(lIndiceEleve), lTitleEleve);
-		GStyle.setDisplay(this._getIDLignePunition(lIndiceEleve), lAvecPunition);
+		ObjetHtml_1.GHtml.setTitle(
+			this._getIDLigneLibelleEleve(lIndiceEleve),
+			lTitleEleve,
+		);
+		ObjetStyle_2.GStyle.setDisplay(
+			this._getIDLignePunition(lIndiceEleve),
+			lAvecPunition,
+		);
 	}
 	setDonneesDureeRetard(ADureeRetard) {
 		this.DureeRetard = ADureeRetard;
@@ -325,9 +350,9 @@ class PageSaisieAbsences extends Identite {
 		this.$refreshSelf();
 	}
 	setDonneesCheckBox(I) {
-		GHtml.setCheckBox(this.getIdCheckBoxEleve(I), false);
+		ObjetHtml_1.GHtml.setCheckBox(this.getIdCheckBoxEleve(I), false);
 		if (this.estUneLigneAvecAbsence(I)) {
-			GHtml.setCheckBox(this.getIdCheckBoxEleve(I), true);
+			ObjetHtml_1.GHtml.setCheckBox(this.getIdCheckBoxEleve(I), true);
 		}
 	}
 	setDonneesLigne(I) {
@@ -337,15 +362,15 @@ class PageSaisieAbsences extends Identite {
 		}
 	}
 	setDonneesCellule(I, J) {
-		const LCellule = this.construireCellule(I, J, true);
-		if (LCellule !== GHtml.getHtml(this.getIdCellule(I, J))) {
-			GHtml.setHtml(this.getIdCellule(I, J), LCellule);
+		const LCellule = this.construireCellule(I, J);
+		if (LCellule !== ObjetHtml_1.GHtml.getHtml(this.getIdCellule(I, J))) {
+			ObjetHtml_1.GHtml.setHtml(this.getIdCellule(I, J), LCellule);
 		}
 	}
 	_getCouleurLibelleEleve(aLigne) {
 		const lEleve = this.ListeElements.get(aLigne);
 		if (lEleve.sortiePeda) {
-			return "gray";
+			return "var(--theme-neutre-moyen3)";
 		}
 		if (lEleve.absentAuDernierCours) {
 			return this.couleurDejaAbsent;
@@ -357,48 +382,51 @@ class PageSaisieAbsences extends Identite {
 			return;
 		}
 		if (aSelection) {
-			GStyle.setCouleur(this.IdLigneEleve + ALigne, GCouleur.selection.fond);
-			GStyle.setCouleur(
+			ObjetStyle_2.GStyle.setCouleur(
+				this.IdLigneEleve + ALigne,
+				GCouleur.selection.fond,
+			);
+			ObjetStyle_2.GStyle.setCouleur(
 				this._getIDLigneLibelleEleve(ALigne),
 				null,
 				GCouleur.selection.texte,
 			);
-			GStyle.setCouleur(
+			ObjetStyle_2.GStyle.setCouleur(
 				this._getIDLigneLibelleEleve(ALigne) + "_classe",
 				null,
 				GCouleur.selection.texte,
 			);
-			GStyle.setCouleur(
+			ObjetStyle_2.GStyle.setCouleur(
 				this.IdLigneEleve + "_Coche_" + ALigne,
 				GCouleur.selection.fond,
 				GCouleur.selection.texte,
 			);
-			GStyle.setCouleur(
+			ObjetStyle_2.GStyle.setCouleur(
 				this._getIDLignePunition(ALigne),
 				GCouleur.selection.fond,
 				GCouleur.selection.texte,
 			);
 		} else {
-			GStyle.setCouleur(
+			ObjetStyle_2.GStyle.setCouleur(
 				this.IdLigneEleve + ALigne,
 				this.options.couleurFondEleve,
 			);
-			GStyle.setCouleur(
+			ObjetStyle_2.GStyle.setCouleur(
 				this._getIDLigneLibelleEleve(ALigne),
 				null,
 				this._getCouleurLibelleEleve(ALigne),
 			);
-			GStyle.setCouleur(
+			ObjetStyle_2.GStyle.setCouleur(
 				this._getIDLigneLibelleEleve(ALigne) + "_classe",
 				null,
 				this._getCouleurLibelleEleve(ALigne),
 			);
-			GStyle.setCouleur(
+			ObjetStyle_2.GStyle.setCouleur(
 				this.IdLigneEleve + "_Coche_" + ALigne,
 				this.options.couleurFondEleve,
 				this.options.couleurTexteEleve,
 			);
-			GStyle.setCouleur(
+			ObjetStyle_2.GStyle.setCouleur(
 				this._getIDLignePunition(ALigne),
 				this.options.couleurFondEleve,
 				this.options.couleurTexteEleve,
@@ -406,14 +434,14 @@ class PageSaisieAbsences extends Identite {
 		}
 		for (let J = this.PlaceDebut; J <= this.PlaceFin; J++) {
 			if (ALigne - 1 >= 0) {
-				GStyle.setCouleurBordureBas(
+				ObjetStyle_2.GStyle.setCouleurBordureBas(
 					this.getIdCellule(ALigne - 1, J),
 					aSelection
 						? this.options.couleurTexteEleve
 						: GCouleur.liste.editable.getBordure(),
 				);
 			}
-			GStyle.setCouleurBordureBas(
+			ObjetStyle_2.GStyle.setCouleurBordureBas(
 				this.getIdCellule(ALigne, J),
 				aSelection
 					? this.options.couleurTexteEleve
@@ -450,24 +478,24 @@ class PageSaisieAbsences extends Identite {
 		}
 	}
 	initialiserCellule(I, J) {
-		const LFondCellule = GTableau.getCouleurCellule(
+		const LFondCellule = ObjetTableau_1.GTableau.getCouleurCellule(
 			!this.estUneCelluleGrisee(J),
 		);
-		GStyle.setCouleurFond(this.getIdCellule(I, J), LFondCellule);
-		GStyle.setCouleurFond(this.getIdZoneCellule(I, J), "");
-		GStyle.setCouleurFond(this.getIdZoneHautDroit(I, J), "");
-		GStyle.setCouleurFond(this.getIdZoneBasDroit(I, J), "");
-		GHtml.setHtml(this.getIdZoneHautGauche(I, J), "");
-		GHtml.setHtml(this.getIdZoneHautCentre(I, J), "");
-		GHtml.setHtml(this.getIdZoneHautGauche(I, J), "");
-		GHtml.setHtml(this.getIdZoneHautDroit(I, J), "");
-		GHtml.setHtml(this.getIdZoneBasGauche(I, J), "");
-		GHtml.setHtml(this.getIdZoneBasDroit(I, J), "");
+		ObjetStyle_2.GStyle.setCouleurFond(this.getIdCellule(I, J), LFondCellule);
+		ObjetStyle_2.GStyle.setCouleurFond(this.getIdZoneCellule(I, J), "");
+		ObjetStyle_2.GStyle.setCouleurFond(this.getIdZoneHautDroit(I, J), "");
+		ObjetStyle_2.GStyle.setCouleurFond(this.getIdZoneBasDroit(I, J), "");
+		ObjetHtml_1.GHtml.setHtml(this.getIdZoneHautGauche(I, J), "");
+		ObjetHtml_1.GHtml.setHtml(this.getIdZoneHautCentre(I, J), "");
+		ObjetHtml_1.GHtml.setHtml(this.getIdZoneHautGauche(I, J), "");
+		ObjetHtml_1.GHtml.setHtml(this.getIdZoneHautDroit(I, J), "");
+		ObjetHtml_1.GHtml.setHtml(this.getIdZoneBasGauche(I, J), "");
+		ObjetHtml_1.GHtml.setHtml(this.getIdZoneBasDroit(I, J), "");
 	}
 	actualiserCellule(I, J, LObjetDonneesAffichageCellule) {
 		if (LObjetDonneesAffichageCellule) {
 			if (!this.TableauCellules[I][J]) {
-				GHtml.setHtml(
+				ObjetHtml_1.GHtml.setHtml(
 					this.getIdCellule(I, J),
 					this.construireCelluleVierge(I, J),
 				);
@@ -475,19 +503,19 @@ class PageSaisieAbsences extends Identite {
 				this.initialiserCellule(I, J);
 			}
 			if (LObjetDonneesAffichageCellule.AvecExclusion) {
-				GStyle.setCouleurTexte(
+				ObjetStyle_2.GStyle.setCouleurTexte(
 					this.getIdZoneHautCentre(I, J),
 					this.CouleurExclusion,
 				);
-				GStyle.setCouleurTexte(
+				ObjetStyle_2.GStyle.setCouleurTexte(
 					this.getIdZoneHautDroit(I, J),
 					this.CouleurExclusion,
 				);
-				GHtml.setHtml(
+				ObjetHtml_1.GHtml.setHtml(
 					this.getIdZoneHautDroit(I, J),
 					this.dessinerTraitHorizontal(this.CouleurExclusion),
 				);
-				GHtml.setHtml(
+				ObjetHtml_1.GHtml.setHtml(
 					this.getIdZoneHautCentre(I, J),
 					this._construireDemiCelluleCentre(
 						true,
@@ -495,46 +523,50 @@ class PageSaisieAbsences extends Identite {
 					),
 				);
 				if (LObjetDonneesAffichageCellule.AvecExclusionDebut) {
-					GStyle.setCouleurTexte(
+					ObjetStyle_2.GStyle.setCouleurTexte(
 						this.getIdZoneHautGauche(I, J),
 						this.CouleurExclusion,
 					);
-					GHtml.setHtml(
+					ObjetHtml_1.GHtml.setHtml(
 						this.getIdZoneHautGauche(I, J),
 						this.dessinerTraitHorizontal(this.CouleurExclusion),
 					);
-					if (this.TypeAbsence === EGenreRessource.Exclusion) {
-						GHtml.setTitle(
+					if (
+						this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Exclusion
+					) {
+						ObjetHtml_1.GHtml.setTitle(
 							this.getIdZoneHautGauche(I, J),
 							LObjetDonneesAffichageCellule.libelleMotif,
 						);
 					}
 				}
-				if (this.TypeAbsence === EGenreRessource.Exclusion) {
-					GHtml.setTitle(
+				if (
+					this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Exclusion
+				) {
+					ObjetHtml_1.GHtml.setTitle(
 						this.getIdZoneHautCentre(I, J),
 						LObjetDonneesAffichageCellule.libelleMotif,
 					);
-					GHtml.setTitle(
+					ObjetHtml_1.GHtml.setTitle(
 						this.getIdZoneHautDroit(I, J),
 						LObjetDonneesAffichageCellule.libelleMotif,
 					);
 				}
 			}
 			if (LObjetDonneesAffichageCellule.AvecInfirmerie) {
-				GStyle.setCouleurTexte(
+				ObjetStyle_2.GStyle.setCouleurTexte(
 					this.getIdZoneBasCentre(I, J),
 					this.CouleurInfirmerie,
 				);
-				GStyle.setCouleurTexte(
+				ObjetStyle_2.GStyle.setCouleurTexte(
 					this.getIdZoneBasDroit(I, J),
 					this.CouleurInfirmerie,
 				);
-				GHtml.setHtml(
+				ObjetHtml_1.GHtml.setHtml(
 					this.getIdZoneBasDroit(I, J),
 					this.dessinerTraitHorizontal(this.CouleurInfirmerie),
 				);
-				GHtml.setHtml(
+				ObjetHtml_1.GHtml.setHtml(
 					this.getIdZoneBasCentre(I, J),
 					this._construireDemiCelluleCentre(
 						false,
@@ -542,56 +574,60 @@ class PageSaisieAbsences extends Identite {
 					),
 				);
 				if (LObjetDonneesAffichageCellule.AvecInfirmerieDebut) {
-					GStyle.setCouleurTexte(
+					ObjetStyle_2.GStyle.setCouleurTexte(
 						this.getIdZoneBasGauche(I, J),
 						this.CouleurInfirmerie,
 					);
-					GHtml.setHtml(
+					ObjetHtml_1.GHtml.setHtml(
 						this.getIdZoneBasGauche(I, J),
 						this.dessinerTraitHorizontal(this.CouleurInfirmerie),
 					);
 					if (
-						this.TypeAbsence === EGenreRessource.Infirmerie &&
+						this.TypeAbsence ===
+							Enumere_Ressource_1.EGenreRessource.Infirmerie &&
 						this.estUneCelluleActive(J)
 					) {
-						GHtml.setTitle(
+						ObjetHtml_1.GHtml.setTitle(
 							this.getIdZoneBasGauche(I, J),
 							this.determinerHintInfirmerie(),
 						);
 					}
 				}
 				if (
-					this.TypeAbsence === EGenreRessource.Infirmerie &&
+					this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Infirmerie &&
 					this.estUneCelluleActive(J)
 				) {
-					GHtml.setTitle(
+					ObjetHtml_1.GHtml.setTitle(
 						this.getIdZoneBasCentre(I, J),
 						this.determinerHintInfirmerie(),
 					);
-					GHtml.setTitle(
+					ObjetHtml_1.GHtml.setTitle(
 						this.getIdZoneBasDroit(I, J),
 						this.determinerHintInfirmerie(),
 					);
 				}
 			}
 			if (LObjetDonneesAffichageCellule.AvecAbsence) {
-				GStyle.setCouleurFond(this.getIdZoneCellule(I, J), this.CouleurAbsence);
+				ObjetStyle_2.GStyle.setCouleurFond(
+					this.getIdZoneCellule(I, J),
+					this.CouleurAbsence,
+				);
 			}
 			if (
 				this.determinerSiEstUneCelluleAvecDispense(I, J) ||
 				this.determinerSiEstUneCelluleAvecExclusionTemporaire(I, J)
 			) {
-				GStyle.setImageFond(
+				ObjetStyle_2.GStyle.setImageFond(
 					this.getIdZoneCellule(I, J),
 					"images/ObliqueGris.png",
 				);
 			}
 			if (LObjetDonneesAffichageCellule.AvecRetard) {
-				GStyle.setCouleurTexte(
+				ObjetStyle_2.GStyle.setCouleurTexte(
 					this.getIdZoneHautGauche(I, J),
 					this.CouleurRetard,
 				);
-				GHtml.setHtml(
+				ObjetHtml_1.GHtml.setHtml(
 					this.getIdZoneHautGauche(I, J),
 					LObjetDonneesAffichageCellule.TexteRetard,
 				);
@@ -665,18 +701,18 @@ class PageSaisieAbsences extends Identite {
 			LStyleTable += this.determinerStyleImageFond(I, J);
 			const LHintExclusion =
 				LObjetDonneesAffichageCellule.AvecExclusion &&
-				this.TypeAbsence === EGenreRessource.Exclusion
+				this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Exclusion
 					? 'title="' + LObjetDonneesAffichageCellule.libelleMotif + '"'
 					: "";
 			const LHintInfirmerie =
 				LObjetDonneesAffichageCellule.AvecInfirmerie &&
-				this.TypeAbsence === EGenreRessource.Infirmerie &&
+				this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Infirmerie &&
 				this.estUneCelluleActive(J)
 					? 'title="' + this.determinerHintInfirmerie() + '"'
 					: "";
 			const lCurseurInfirmerie =
 				LObjetDonneesAffichageCellule.AvecInfirmerie &&
-				this.TypeAbsence === EGenreRessource.Infirmerie &&
+				this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Infirmerie &&
 				this.estUneCelluleActive(J)
 					? "cursor: url(" + this.determinerCurseur() + "), auto;"
 					: "";
@@ -687,7 +723,9 @@ class PageSaisieAbsences extends Identite {
 				!LObjetDonneesAffichageCellule.AvecDebutAbsencePostPlaceHeureCourante;
 			const LCouleurFondSelonOuverture = LAvecOuvertureFermeture
 				? "background-color:" +
-					(LObjetDonneesAffichageCellule.EstOuverte ? "#00CC00" : "red") +
+					(LObjetDonneesAffichageCellule.EstOuverte
+						? "#00CC00"
+						: "var(--color-red-moyen)") +
 					";"
 				: "";
 			T.push(
@@ -716,7 +754,7 @@ class PageSaisieAbsences extends Identite {
 			T.push(
 				LObjetDonneesAffichageCellule.AvecRetard
 					? '<div style="position:relative; overflow:hidden; left:2px; top:6px; ' +
-							GStyle.composeHeight(this._getHauteurDemiCellule()) +
+							ObjetStyle_2.GStyle.composeHeight(this._getHauteurDemiCellule()) +
 							'">' +
 							LObjetDonneesAffichageCellule.TexteRetard +
 							"</div>"
@@ -752,10 +790,14 @@ class PageSaisieAbsences extends Identite {
 				if (this.AvecAutorisationSaisieAbsOuverte) {
 					T.push(
 						' title="' +
-							GChaine.toTitle(
+							ObjetChaine_1.GChaine.toTitle(
 								LObjetDonneesAffichageCellule.EstOuverte
-									? GTraductions.getValeur("Absence.HintFermerAbsence")
-									: GTraductions.getValeur("Absence.HintOuvrirAbsence"),
+									? ObjetTraduction_1.GTraductions.getValeur(
+											"Absence.HintFermerAbsence",
+										)
+									: ObjetTraduction_1.GTraductions.getValeur(
+											"Absence.HintOuvrirAbsence",
+										),
 							),
 						'"',
 					);
@@ -854,7 +896,7 @@ class PageSaisieAbsences extends Identite {
 					aPourExclusion ? this.CouleurExclusion : this.CouleurInfirmerie,
 				)
 			: '<div class="AlignementMilieu" style="overflow:hidden; ' +
-					GStyle.composeHeight(this._getHauteurDemiCellule()) +
+					ObjetStyle_2.GStyle.composeHeight(this._getHauteurDemiCellule()) +
 					'">' +
 					(aPourExclusion ? this.TexteExclusion : this.TexteInfirmerie) +
 					"</div>";
@@ -867,12 +909,16 @@ class PageSaisieAbsences extends Identite {
 				if (this.nbElevesStage > 0) {
 					this.afficher(
 						this.composeMessage(
-							GTraductions.getValeur("Absence.TousLesElevesEnStage"),
+							ObjetTraduction_1.GTraductions.getValeur(
+								"Absence.TousLesElevesEnStage",
+							),
 						),
 					);
 				} else {
 					this.afficher(
-						this.composeMessage(GTraductions.getValeur("Absence.AucunEleve")),
+						this.composeMessage(
+							ObjetTraduction_1.GTraductions.getValeur("Absence.AucunEleve"),
+						),
 					);
 				}
 			} else {
@@ -881,14 +927,16 @@ class PageSaisieAbsences extends Identite {
 				}
 				this.LargeurCellules = this.calculerLargeurCellules();
 				this.LargeurPourGrille = this.getScrollLeft(
-					EGenreScrollEvenement.TailleZone,
+					ObjetScroll_3.EGenreScrollEvenement.TailleZone,
 				);
 				this.HauteurPourGrille = this.getScrollTop(
-					EGenreScrollEvenement.TailleZone,
+					ObjetScroll_3.EGenreScrollEvenement.TailleZone,
 				);
 				this.afficher(this.composePage());
 				this.LargeurDemiBorne =
-					GPosition.getWidth(this.IdBorne + EGenreBorne.Inferieure) / 2;
+					ObjetPosition_1.GPosition.getWidth(
+						this.IdBorne + EGenreBorne_1.EGenreBorne.Inferieure,
+					) / 2;
 				this.ScrollV.setDonnees(0, 1);
 				this.ScrollH.setDonnees(1, 2);
 				$('[id$="_Appel_Termine"]').width(
@@ -896,6 +944,7 @@ class PageSaisieAbsences extends Identite {
 				);
 			}
 		}
+		return "";
 	}
 	construireBorne(AGenreBorne) {
 		const LClass = this.AvecDeplacementBornes ? "AvecMove" : "AvecInterdiction";
@@ -903,7 +952,7 @@ class PageSaisieAbsences extends Identite {
 			? ' onmousedown="' + this.Nom + ".enDeplacement (" + AGenreBorne + ')"'
 			: "";
 		const LAlt = this.AvecDeplacementBornes
-			? GTraductions.getValeur("Absence.HintBorne")
+			? ObjetTraduction_1.GTraductions.getValeur("Absence.HintBorne")
 			: "";
 		const H = [];
 		H.push(
@@ -928,7 +977,7 @@ class PageSaisieAbsences extends Identite {
 				"px; height:" +
 				this.HauteurPourGrille +
 				"px;" +
-				GStyle.composeCouleurFond(GCouleur.texte) +
+				ObjetStyle_2.GStyle.composeCouleurFond(GCouleur.texte) +
 				'z-index:10;"></div>',
 		);
 		return H.join("");
@@ -938,24 +987,24 @@ class PageSaisieAbsences extends Identite {
 		const LLargeurZoneEleve =
 			this.LargeurColonneEleve + this.LargeurColonneCheckBox;
 		const H = [];
-		H.push(this.construireBorne(EGenreBorne.Inferieure));
-		H.push(this.construireBorne(EGenreBorne.Superieure));
+		H.push(this.construireBorne(EGenreBorne_1.EGenreBorne.Inferieure));
+		H.push(this.construireBorne(EGenreBorne_1.EGenreBorne.Superieure));
 		H.push(
 			'<span tabindex="-1" class="sr-only" id="',
 			this.Nom,
 			'_infoWAI" ',
-			GObjetWAI.composeAttribut({
-				genre: EGenreAttribut.live,
+			ObjetWAI_1.GObjetWAI.composeAttribut({
+				genre: ObjetWAI_1.EGenreAttribut.live,
 				valeur: "polite",
 			}),
 			" ></span>",
 		);
 		H.push(
 			"<table ",
-			GObjetWAI.composeRole(EGenreRole.Grid),
+			ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_1.EGenreRole.Grid),
 			" ",
-			GObjetWAI.composeAttribut({
-				genre: EGenreAttribut.labelledby,
+			ObjetWAI_1.GObjetWAI.composeAttribut({
+				genre: ObjetWAI_1.EGenreAttribut.labelledby,
 				valeur: this.Nom + "_infoWAI",
 			}),
 			" ",
@@ -979,7 +1028,7 @@ class PageSaisieAbsences extends Identite {
 			'<label class="EspaceGauche">' +
 			this.NbrElevesVisibles +
 			" " +
-			GTraductions.getValeur("AbsenceVS.Eleves") +
+			ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.Eleves") +
 			"</label>";
 		H.push("<tr>");
 		H.push(
@@ -1005,13 +1054,13 @@ class PageSaisieAbsences extends Identite {
 				"px; line-height:",
 				this.options.heightLigneAjoutEleve,
 				"px;",
-				GStyle.composeCouleurFond(GCouleur.blanc),
+				ObjetStyle_2.GStyle.composeCouleurFond(GCouleur.blanc),
 				'" ie-event="click->surEventAjoutEleve">',
-				'<i class="icon_plus_cercle liste-creation"></i>',
+				'<i class="icon_plus_cercle liste-creation" role="presentation"></i>',
 				'<div class="Italique PetitEspaceGauche InlineBlock AlignementMilieuVertical" style="',
-				GStyle.composeCouleurTexte(GCouleur.texteListeCreation),
+				ObjetStyle_2.GStyle.composeCouleurTexte(GCouleur.texteListeCreation),
 				'">',
-				GTraductions.getValeur("AbsenceVS.ajouterUnEleve"),
+				ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.ajouterUnEleve"),
 				"</div>",
 				"</div>",
 				"</td>",
@@ -1038,12 +1087,16 @@ class PageSaisieAbsences extends Identite {
 	}
 	composeLibelleHoraires(LClassTable, LLargeurGrille) {
 		const H = [];
-		H.push("<div ", GObjetWAI.composeRole(EGenreRole.Row), ' tabindex="-1">');
+		H.push(
+			"<div ",
+			ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_1.EGenreRole.Row),
+			' tabindex="-1">',
+		);
 		for (let J = 0; J < this.PlacesParJour; J++) {
 			if (this.ListeHeures.getActif(J)) {
 				H.push(
 					"<div ",
-					GObjetWAI.composeRole(EGenreRole.Columnheader),
+					ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_1.EGenreRole.Columnheader),
 					' id="' +
 						this._getIdLibelleH(J) +
 						'" class="' +
@@ -1088,35 +1141,40 @@ class PageSaisieAbsences extends Identite {
 		return H.join("");
 	}
 	_positionnerHoraire(aDecalage) {
-		const lLargeur = GChaine.getLongueurChaine("99h99", 9, true);
+		const lLargeur = ObjetChaine_1.GChaine.getLongueurChaine("99h99", 9, true);
 		const lPositionLeft =
 			this.LargeurColonneEleve + this.LargeurColonneCheckBox;
 		const lPositionVertical =
 			this.PositionVerticaleBorne +
 			this.HauteurImage +
 			20 -
-			(GChaine.getHauteurPolice(10) +
-				Math.round(GChaine.getHauteurPolice(10) / 2)) +
+			(ObjetChaine_1.GChaine.getHauteurPolice(10) +
+				Math.round(ObjetChaine_1.GChaine.getHauteurPolice(10) / 2)) +
 			5;
 		for (let J = 0; J < this.PlacesParJour; J++) {
 			if (this.ListeHeures.getActif(J)) {
-				const lElement = GHtml.getElement(this._getIdLibelleH(J));
+				const lElement = ObjetHtml_1.GHtml.getElement(this._getIdLibelleH(J));
 				if (!lElement.style) {
 					return;
 				}
-				GPosition.setTop(lElement, lPositionVertical);
+				ObjetPosition_1.GPosition.setTop(lElement, lPositionVertical);
 				const lLeft =
 					lPositionLeft +
 					J * this.LargeurCellules -
-					(MethodesObjet.isUndefined(aDecalage) ? 0 : aDecalage);
+					(MethodesObjet_1.MethodesObjet.isUndefined(aDecalage)
+						? 0
+						: aDecalage);
 				if (
 					lLeft <= this.PosRight - Math.round(lLargeur / 2) &&
 					lLeft >= this.PosLeft
 				) {
-					GStyle.setDisplay(lElement, true);
-					GPosition.setLeft(lElement, lLeft - Math.round(lLargeur / 2));
+					ObjetStyle_2.GStyle.setDisplay(lElement, true);
+					ObjetPosition_1.GPosition.setLeft(
+						lElement,
+						lLeft - Math.round(lLargeur / 2),
+					);
 				} else {
-					GStyle.setDisplay(lElement, false);
+					ObjetStyle_2.GStyle.setDisplay(lElement, false);
 				}
 			}
 		}
@@ -1146,7 +1204,9 @@ class PageSaisieAbsences extends Identite {
 			lEleve = this.ListeElements.get(I);
 			const lTitleEleve = lEleve.estAttendu
 				? ""
-				: GTraductions.getValeur("AbsenceVS.SortieEtabAutorisee");
+				: ObjetTraduction_1.GTraductions.getValeur(
+						"AbsenceVS.SortieEtabAutorisee",
+					);
 			lHtml.push(
 				'<tr id="' +
 					this._getIDLigneTitreEleve(I) +
@@ -1158,21 +1218,21 @@ class PageSaisieAbsences extends Identite {
 				'<td id="',
 				this.IdLigneEleve + I,
 				'" class="EspaceGauche" ',
-				GObjetWAI.composeRole(EGenreRole.Rowheader),
+				ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_1.EGenreRole.Rowheader),
 				' title="',
 				lTitleEleve,
 				'" style="',
-				GStyle.composeCouleur(
+				ObjetStyle_2.GStyle.composeCouleur(
 					this.options.couleurFondEleve,
 					lEleve.estAttendu ? this.options.couleurTexteEleve : GCouleur.vert,
 					GCouleur.bordure,
 					1,
-					EGenreBordure.gauche + EGenreBordure.bas,
+					ObjetStyle_1.EGenreBordure.gauche + ObjetStyle_1.EGenreBordure.bas,
 				),
 				'">',
 				'<div style="',
-				GStyle.composeWidth(this.LargeurColonneEleve - 5 - 1),
-				GStyle.composeHeight(this.HauteurCelluleGrille - 1),
+				ObjetStyle_2.GStyle.composeWidth(this.LargeurColonneEleve - 5 - 1),
+				ObjetStyle_2.GStyle.composeHeight(this.HauteurCelluleGrille - 1),
 				"line-height:",
 				this.HauteurCelluleGrille - 1,
 				'px;">',
@@ -1183,7 +1243,7 @@ class PageSaisieAbsences extends Identite {
 						this._getIDLigneLibelleEleve(I) +
 						"_classe" +
 						'" style="float:right;margin:0 1px 0 0;',
-					GStyle.composeWidth(lLargeurClasse),
+					ObjetStyle_2.GStyle.composeWidth(lLargeurClasse),
 					'">',
 					lEleve.strClasse,
 					"</div>",
@@ -1194,7 +1254,9 @@ class PageSaisieAbsences extends Identite {
 					'<div class="InlineBlock" style="float:right;margin:0 1px 0 0;" title="' +
 						lEleve.anniv +
 						'">',
-					'<i class="icon_anniversaire"></i>',
+					'<i class="icon_anniversaire" role="img" aria-label="' +
+						lEleve.anniv +
+						'"></i>',
 					"</div>",
 				);
 			}
@@ -1202,7 +1264,7 @@ class PageSaisieAbsences extends Identite {
 				'<div id="' +
 					this._getIDLignePunition(I) +
 					'" class="InlineBlock" style="float:right;margin:0 1px 0 0;',
-				GStyle.composeWidth(this.largeurImagePunition),
+				ObjetStyle_2.GStyle.composeWidth(this.largeurImagePunition),
 				'display:none;"',
 				' ie-event="contextmenu->contexteMenuEleve(',
 				I,
@@ -1224,12 +1286,12 @@ class PageSaisieAbsences extends Identite {
 				'<td id="',
 				this.IdLigneEleve + "_Coche_" + I,
 				'" class="AvecMain AlignementMilieuVertical AlignementMilieu" style="',
-				GStyle.composeCouleur(
+				ObjetStyle_2.GStyle.composeCouleur(
 					this.options.couleurFondEleve,
 					this.options.couleurTexteEleve,
 					GCouleur.bordure,
 					1,
-					EGenreBordure.droite + EGenreBordure.bas,
+					ObjetStyle_1.EGenreBordure.droite + ObjetStyle_1.EGenreBordure.bas,
 				),
 				"width:",
 				this.LargeurColonneCheckBox,
@@ -1283,17 +1345,18 @@ class PageSaisieAbsences extends Identite {
 			for (let J = this.PlaceDebut; J <= this.PlaceFin; J++) {
 				H.push(
 					"<td  ",
-					GObjetWAI.composeRole(EGenreRole.Gridcell),
+					ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_1.EGenreRole.Gridcell),
 					' id="' + this.getIdCellule(I, J) + '" class="' + LClassTable + '"',
 					' style="height:' +
 						(this.HauteurCelluleGrille - 1) +
 						"px; width:" +
 						(this.LargeurCellules - 1) +
 						"px;" +
-						GStyle.composeCouleurBordure(
+						ObjetStyle_2.GStyle.composeCouleurBordure(
 							GCouleur.bordure,
 							1,
-							EGenreBordure.droite + EGenreBordure.bas,
+							ObjetStyle_1.EGenreBordure.droite +
+								ObjetStyle_1.EGenreBordure.bas,
 						),
 					'"',
 					' ie-style="getStyleLigneEleve (',
@@ -1354,28 +1417,35 @@ class PageSaisieAbsences extends Identite {
 			const N = LEleve.ListeAbsences.count();
 			for (let J = 0; J < N; J++) {
 				const LAbsence = LEleve.ListeAbsences.get(J);
-				if (LAbsence.getEtat() !== EGenreEtat.Suppression) {
+				if (LAbsence.getEtat() !== Enumere_Etat_1.EGenreEtat.Suppression) {
 					if (
-						LAbsence.getGenre() === EGenreRessource.Absence &&
+						LAbsence.getGenre() ===
+							Enumere_Ressource_1.EGenreRessource.Absence &&
 						AColonne === LAbsence.PlaceFin
 					) {
 						if (this.AvecAutorisationSaisieAbsOuverte) {
 							if (this.autoriseDeChangerLAbsence(LAbsence, LEleve)) {
 								const LMessage = LAbsence.EstOuverte
-									? GTraductions.getValeur("AbsenceVS.msgClotureAbsence")
-									: GChaine.format(
-											GTraductions.getValeur("AbsenceVS.msgOuvrirAbsence"),
+									? ObjetTraduction_1.GTraductions.getValeur(
+											"AbsenceVS.msgClotureAbsence",
+										)
+									: ObjetChaine_1.GChaine.format(
+											ObjetTraduction_1.GTraductions.getValeur(
+												"AbsenceVS.msgOuvrirAbsence",
+											),
 											[
-												GDate.formatDate(this.Date, "%JJ/%MM"),
-												GDate.formatDate(
-													GDate.placeAnnuelleEnDate(LAbsence.PlaceDebut),
+												ObjetDate_1.GDate.formatDate(this.Date, "%JJ/%MM"),
+												ObjetDate_1.GDate.formatDate(
+													ObjetDate_1.GDate.placeAnnuelleEnDate(
+														LAbsence.PlaceDebut,
+													),
 													"%hh%sh%mm ?",
 												),
 											],
 										);
 								const lThis = this;
-								GApplication.getMessage().afficher({
-									type: EGenreBoiteMessage.Confirmation,
+								this.appScoEspace.getMessage().afficher({
+									type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
 									message: LMessage,
 									callback: function (aGenreAction) {
 										lThis.surValidationChangerEtatAbsence(
@@ -1388,15 +1458,19 @@ class PageSaisieAbsences extends Identite {
 							}
 							if (
 								!this.AvecOptionSaisieAutresProfs &&
-								GDate.placeAnnuelleEnDate(this.PlaceSaisieFin, true) <
-									new Date()
+								ObjetDate_1.GDate.placeAnnuelleEnDate(
+									this.PlaceSaisieFin,
+									true,
+								) < new Date()
 							) {
-								GApplication.getMessage().afficher({
-									type: EGenreBoiteMessage.Information,
-									message: GTraductions.getValeur(
-										"AbsenceVS.msgImpossibleOuvrirAbsence",
-									),
-								});
+								this.appScoEspace
+									.getMessage()
+									.afficher({
+										type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+										message: ObjetTraduction_1.GTraductions.getValeur(
+											"AbsenceVS.msgImpossibleOuvrirAbsence",
+										),
+									});
 							}
 						}
 					}
@@ -1407,12 +1481,17 @@ class PageSaisieAbsences extends Identite {
 		}
 	}
 	autoriseDeChangerLAbsence(aAbsence, aEleve) {
-		const lPlaceAnnuelleCourante = GDate.dateEnPlaceAnnuelle(new Date());
+		const lPlaceAnnuelleCourante = ObjetDate_1.GDate.dateEnPlaceAnnuelle(
+			new Date(),
+		);
 		const lAbsencePrecedent = this.absencePrecedentContigu(aAbsence, aEleve);
 		const lPlaceDebut = lAbsencePrecedent
 			? lAbsencePrecedent.PlaceDebut
 			: aAbsence.PlaceDebut;
-		const JourMeme = GDate.estJourSemaineEgal(this.Date, new Date());
+		const JourMeme = ObjetDate_1.GDate.estJourSemaineEgal(
+			this.Date,
+			new Date(),
+		);
 		const HeureActuellePassee = lPlaceDebut <= lPlaceAnnuelleCourante;
 		const SurPremierCellule =
 			lPlaceAnnuelleCourante > this.PlaceSaisieDebut ||
@@ -1446,41 +1525,46 @@ class PageSaisieAbsences extends Identite {
 		return null;
 	}
 	surValidationChangerEtatAbsence(AAccepte, ALigne, AColonne) {
-		if (AAccepte === EGenreAction.Valider) {
+		if (AAccepte === Enumere_Action_1.EGenreAction.Valider) {
 			if (this.estUneCelluleActive(AColonne)) {
 				const LEleve = this.ListeElements.get(ALigne);
 				LEleve.ExisteAbsenceOuverte = false;
 				const N = LEleve.ListeAbsences.count(),
-					lPlaceCourante = GDate.dateEnPlaceAnnuelle(new Date());
+					lPlaceCourante = ObjetDate_1.GDate.dateEnPlaceAnnuelle(new Date());
 				for (let J = 0; J < N; J++) {
 					let LAbsence = LEleve.ListeAbsences.get(J);
-					if (LAbsence.getEtat() !== EGenreEtat.Suppression) {
+					if (LAbsence.getEtat() !== Enumere_Etat_1.EGenreEtat.Suppression) {
 						if (
-							LAbsence.getGenre() === EGenreRessource.Absence &&
+							LAbsence.getGenre() ===
+								Enumere_Ressource_1.EGenreRessource.Absence &&
 							AColonne === LAbsence.PlaceFin
 						) {
 							if (this.AvecAutorisationSaisieAbsOuverte) {
 								if (
-									GDate.estJourSemaineEgal(this.Date, new Date()) &&
+									ObjetDate_1.GDate.estJourSemaineEgal(this.Date, new Date()) &&
 									(this.AvecOptionSaisieAutresProfs ||
-										GDate.placeAnnuelleEnDate(this.PlaceSaisieFin, true) >
-											new Date())
+										ObjetDate_1.GDate.placeAnnuelleEnDate(
+											this.PlaceSaisieFin,
+											true,
+										) > new Date())
 								) {
 									if (LAbsence.PlaceDebut > lPlaceCourante) {
-										LAbsence.setEtat(EGenreEtat.Suppression);
+										LAbsence.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 										LAbsence = this.absencePrecedentContigu(LAbsence, LEleve);
 									}
 									LAbsence.PlaceFin = lPlaceCourante;
 									LAbsence.EstOuverte = !LAbsence.EstOuverte;
-									LAbsence.setEtat(EGenreEtat.Modification);
+									LAbsence.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 								}
 							}
 						}
 					}
 				}
-				this.callback.appel(EGenreEvenementSaisieAbsence.CalculInfoEleve, {
-					eleve: LEleve,
-				});
+				this.callback.appel(
+					Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+						.CalculInfoEleve,
+					{ eleve: LEleve },
+				);
 				this.creerTableauCellules();
 				this.setDonneesLigne(ALigne);
 				this.setEtatSaisie(true);
@@ -1489,7 +1573,7 @@ class PageSaisieAbsences extends Identite {
 	}
 	surPreResize() {
 		if (this.EnAffichage) {
-			GHtml.setHtml(this.Nom, "&nbsp;");
+			ObjetHtml_1.GHtml.setHtml(this.Nom, "&nbsp;");
 			if (this.FenetreInfirmerie && this.FenetreInfirmerie.estAffiche()) {
 				this.FenetreInfirmerie.surValidation(0);
 			}
@@ -1516,28 +1600,34 @@ class PageSaisieAbsences extends Identite {
 		this.LigneSelectionnee = I;
 		let lLabelWAI = this.ListeElements.get(I).getLibelle();
 		lLabelWAI +=
-			this.TypeAbsence === EGenreRessource.Absence
-				? GTraductions.getValeur("Absence.TitreAbsences")
-				: this.TypeAbsence === EGenreRessource.Retard
-					? GTraductions.getValeur("Absence.TitreRetards")
-					: this.TypeAbsence === EGenreRessource.Infirmerie
-						? GTraductions.getValeur("Absence.TitreInfirmeries")
-						: this.TypeAbsence === EGenreRessource.Exclusion
-							? GTraductions.getValeur("Absence.TitreExclusions")
+			this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Absence
+				? ObjetTraduction_1.GTraductions.getValeur("Absence.TitreAbsences")
+				: this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Retard
+					? ObjetTraduction_1.GTraductions.getValeur("Absence.TitreRetards")
+					: this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Infirmerie
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"Absence.TitreInfirmeries",
+							)
+						: this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Exclusion
+							? ObjetTraduction_1.GTraductions.getValeur(
+									"Absence.TitreExclusions",
+								)
 							: "";
 		lLabelWAI +=
 			" " +
 			(document.getElementById(this.getIdCheckBoxEleve(I)).checked
-				? GTraductions.getValeur("Absence.Coche")
-				: GTraductions.getValeur("Absence.NonCoche")) +
+				? ObjetTraduction_1.GTraductions.getValeur("Absence.Coche")
+				: ObjetTraduction_1.GTraductions.getValeur("Absence.NonCoche")) +
 			" ";
-		lLabelWAI += GObjetWAI.getInfo(
-			EGenreObjet.NavigationVerticalAvecValidation,
+		lLabelWAI += ObjetWAI_1.GObjetWAI.getInfo(
+			ObjetWAI_1.EGenreObjet.NavigationVerticalAvecValidation,
 		);
-		GHtml.setHtml(this.Nom + "_infoWAI", lLabelWAI);
-		this.callback.appel(EGenreEvenementSaisieAbsence.SelectionEleve, {
-			eleve: this.ListeElements.get(I),
-		});
+		ObjetHtml_1.GHtml.setHtml(this.Nom + "_infoWAI", lLabelWAI);
+		this.callback.appel(
+			Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.SelectionEleve,
+			{ eleve: this.ListeElements.get(I) },
+		);
 	}
 	mouseUpTitre(aLigne, aSurImage) {
 		if (!this.avecSaisiePunition) {
@@ -1547,10 +1637,11 @@ class PageSaisieAbsences extends Identite {
 			return;
 		}
 		if (GNavigateur.estSourisBoutonDroit()) {
-			this.callback.appel(EGenreEvenementSaisieAbsence.ClicDroit, {
-				surImage: aSurImage,
-				eleve: this.ListeElements.get(aLigne),
-			});
+			this.callback.appel(
+				Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+					.ClicDroit,
+				{ surImage: aSurImage, eleve: this.ListeElements.get(aLigne) },
+			);
 		}
 	}
 	surKeyUp() {
@@ -1575,48 +1666,59 @@ class PageSaisieAbsences extends Identite {
 				this.LigneSelectionnee !== null &&
 				this.LigneSelectionnee !== undefined
 			) {
-				GHtml.setCheckBox(
+				ObjetHtml_1.GHtml.setCheckBox(
 					this.getIdCheckBoxEleve(this.LigneSelectionnee),
-					!GHtml.getCheckBox(this.getIdCheckBoxEleve(this.LigneSelectionnee)),
+					!ObjetHtml_1.GHtml.getCheckBox(
+						this.getIdCheckBoxEleve(this.LigneSelectionnee),
+					),
 				);
 				this.evenementSurCheckBoxEleve(this.LigneSelectionnee);
 				this.surSelectionEleve(this.LigneSelectionnee);
 			}
 		} else if (GNavigateur.isToucheOnlyTab()) {
-			this.surSelectionEleve(0, this.LigneSelectionnee === undefined);
+			this.surSelectionEleve(0);
 		} else if (GNavigateur.isToucheShiftTab()) {
-			this.surSelectionEleve(0, true);
+			this.surSelectionEleve(0);
 		} else if (this.LigneSelectionnee === undefined) {
 			this.setStyleLigne(0, false);
 		}
 	}
 	evenementSurCheckBoxEleve(AIndiceEleve) {
-		this.TypeSaisie = GHtml.getCheckBox(this.getIdCheckBoxEleve(AIndiceEleve))
-			? EGenreEtat.Creation
-			: EGenreEtat.Suppression;
+		this.TypeSaisie = ObjetHtml_1.GHtml.getCheckBox(
+			this.getIdCheckBoxEleve(AIndiceEleve),
+		)
+			? Enumere_Etat_1.EGenreEtat.Creation
+			: Enumere_Etat_1.EGenreEtat.Suppression;
 		let lAvecAbsenceBloquee = false;
 		let lEtatSaisieBloquee = 0;
-		let LMessage = GTraductions.getValeur("AbsenceVS.msgConfimation");
-		const lPlaceAnnuelleCourante = GDate.dateEnPlaceAnnuelle(new Date());
+		let LMessage = ObjetTraduction_1.GTraductions.getValeur(
+			"AbsenceVS.msgConfimation",
+		);
+		const lPlaceAnnuelleCourante = ObjetDate_1.GDate.dateEnPlaceAnnuelle(
+			new Date(),
+		);
 		let lGenreIndividuAyantSaisiAbs = null;
 		for (let I = this.PlaceSaisieDebut; I <= this.PlaceSaisieFin; I++) {
 			if (
-				this.TypeAbsence === EGenreRessource.Absence &&
-				this.TypeSaisie === EGenreEtat.Creation &&
+				this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Absence &&
+				this.TypeSaisie === Enumere_Etat_1.EGenreEtat.Creation &&
 				this.TableauLignes[AIndiceEleve].ExisteAbsenceOuverte &&
 				I >= lPlaceAnnuelleCourante
 			) {
 				lAvecAbsenceBloquee = true;
 				lEtatSaisieBloquee = 4;
-				LMessage = GTraductions.getValeur("AbsenceVS.msgEleveAbsenceOuverte");
+				LMessage = ObjetTraduction_1.GTraductions.getValeur(
+					"AbsenceVS.msgEleveAbsenceOuverte",
+				);
 			}
 			if (this.determinerSiSaisieBloquee(AIndiceEleve, I)) {
 				lAvecAbsenceBloquee =
-					GEtatUtilisateur.GenreEspace !== EGenreEspace.Etablissement;
+					this.etatUtilScoEspace.GenreEspace !==
+					Enumere_Espace_1.EGenreEspace.Etablissement;
 				const lEtat = !this.getNumeroProfesseurAbsence(AIndiceEleve, I)
-					? (this.TypeAbsence === EGenreRessource.Absence &&
+					? (this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Absence &&
 							this.avecSuppressionAutreAbsence) ||
-						(this.TypeAbsence === EGenreRessource.Retard &&
+						(this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Retard &&
 							this.avecSuppressionRetardDeVS)
 						? 1
 						: 2
@@ -1632,8 +1734,8 @@ class PageSaisieAbsences extends Identite {
 				}
 			}
 			if (
-				this.TypeAbsence === EGenreRessource.Absence &&
-				this.TypeSaisie === EGenreEtat.Creation &&
+				this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Absence &&
+				this.TypeSaisie === Enumere_Etat_1.EGenreEtat.Creation &&
 				this.determinerSiEstUneCelluleAvecDispense(AIndiceEleve, I)
 			) {
 				lAvecAbsenceBloquee =
@@ -1653,29 +1755,43 @@ class PageSaisieAbsences extends Identite {
 		if (lAvecAbsenceBloquee) {
 			switch (lEtatSaisieBloquee) {
 				case 0:
-					LMessage = GTraductions.getValeur("AbsenceVS.msgDispense");
+					LMessage = ObjetTraduction_1.GTraductions.getValeur(
+						"AbsenceVS.msgDispense",
+					);
 					break;
 				case 1:
-					LMessage = GTraductions.getValeur("AbsenceVS.msgConfimation");
+					LMessage = ObjetTraduction_1.GTraductions.getValeur(
+						"AbsenceVS.msgConfimation",
+					);
 					break;
 				case 2:
-					LMessage = GTraductions.getValeur("AbsenceVS.msgPasAutorise");
+					LMessage = ObjetTraduction_1.GTraductions.getValeur(
+						"AbsenceVS.msgPasAutorise",
+					);
 					break;
 				case 3:
 					LMessage =
 						lGenreIndividuAyantSaisiAbs ===
-						TypeGenreIndividuAuteur.GIA_Personnel
-							? GTraductions.getValeur("AbsenceVS.msgAutrePersonnel")
-							: GTraductions.getValeur("AbsenceVS.msgAutreProf");
+						TypeGenreIndividuAuteur_1.TypeGenreIndividuAuteur.GIA_Personnel
+							? ObjetTraduction_1.GTraductions.getValeur(
+									"AbsenceVS.msgAutrePersonnel",
+								)
+							: ObjetTraduction_1.GTraductions.getValeur(
+									"AbsenceVS.msgAutreProf",
+								);
 					break;
 				case 4:
-					LMessage = GTraductions.getValeur("AbsenceVS.msgEleveAbsenceOuverte");
+					LMessage = ObjetTraduction_1.GTraductions.getValeur(
+						"AbsenceVS.msgEleveAbsenceOuverte",
+					);
 					break;
 				case 5:
-					LMessage = GTraductions.getValeur("AbsenceVS.msgExclusionTemporaire");
+					LMessage = ObjetTraduction_1.GTraductions.getValeur(
+						"AbsenceVS.msgExclusionTemporaire",
+					);
 					break;
 				case 6:
-					LMessage = GTraductions.getValeur(
+					LMessage = ObjetTraduction_1.GTraductions.getValeur(
 						"AbsenceVS.msgSaisieAbsSurDispenseSansPresence",
 					);
 					break;
@@ -1684,8 +1800,8 @@ class PageSaisieAbsences extends Identite {
 			}
 			if (lEtatSaisieBloquee < 2) {
 				const lThis = this;
-				GApplication.getMessage().afficher({
-					type: EGenreBoiteMessage.Confirmation,
+				this.appScoEspace.getMessage().afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
 					message: LMessage,
 					callback: function (aGenreAction) {
 						lThis.surConfirmationCheckBox(aGenreAction, AIndiceEleve);
@@ -1693,11 +1809,16 @@ class PageSaisieAbsences extends Identite {
 				});
 			} else {
 				const lIdCB = this.getIdCheckBoxEleve(AIndiceEleve);
-				GHtml.setCheckBox(lIdCB, !GHtml.getCheckBox(lIdCB));
-				GApplication.getMessage().afficher({
-					type: EGenreBoiteMessage.Information,
-					message: LMessage,
-				});
+				ObjetHtml_1.GHtml.setCheckBox(
+					lIdCB,
+					!ObjetHtml_1.GHtml.getCheckBox(lIdCB),
+				);
+				this.appScoEspace
+					.getMessage()
+					.afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+						message: LMessage,
+					});
 			}
 		} else {
 			this.evenementSaisieAbsence(
@@ -1723,9 +1844,9 @@ class PageSaisieAbsences extends Identite {
 			lResult = false;
 		}
 		if (!lResult) {
-			GHtml.setCheckBox(
+			ObjetHtml_1.GHtml.setCheckBox(
 				this.getIdCheckBoxEleve(AIndiceEleve),
-				!GHtml.getCheckBox(this.getIdCheckBoxEleve(AIndiceEleve)),
+				!ObjetHtml_1.GHtml.getCheckBox(this.getIdCheckBoxEleve(AIndiceEleve)),
 			);
 		}
 	}
@@ -1737,8 +1858,8 @@ class PageSaisieAbsences extends Identite {
 				ALigne,
 				ACol,
 			)
-				? EGenreEtat.Suppression
-				: EGenreEtat.Creation;
+				? Enumere_Etat_1.EGenreEtat.Suppression
+				: Enumere_Etat_1.EGenreEtat.Creation;
 			this.surSelectionEleve(ALigne);
 			if (
 				!_avecSaisieAutoriseSelonEleveEtTypeAbsence(
@@ -1751,65 +1872,82 @@ class PageSaisieAbsences extends Identite {
 			}
 			const lThis = this;
 			if (this.determinerSiEstUneCelluleAvecExclusionTemporaire(ALigne, ACol)) {
-				GApplication.getMessage().afficher({
-					type: EGenreBoiteMessage.Information,
-					message: GTraductions.getValeur("AbsenceVS.msgExclusionTemporaire"),
-				});
+				this.appScoEspace
+					.getMessage()
+					.afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+						message: ObjetTraduction_1.GTraductions.getValeur(
+							"AbsenceVS.msgExclusionTemporaire",
+						),
+					});
 			} else if (
-				this.TypeAbsence === EGenreRessource.Absence &&
-				this.TypeSaisie === EGenreEtat.Creation &&
+				this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Absence &&
+				this.TypeSaisie === Enumere_Etat_1.EGenreEtat.Creation &&
 				this.determinerSiEstUneCelluleAvecDispense(ALigne, ACol)
 			) {
 				this.avecMessageConfirmation =
 					this.determinerSiEstUneCelluleAvecDispensePresenceOblig(ALigne, ACol);
 				if (this.avecMessageConfirmation) {
-					GApplication.getMessage().afficher({
-						type: EGenreBoiteMessage.Confirmation,
-						message: GTraductions.getValeur("AbsenceVS.msgDispense"),
+					this.appScoEspace.getMessage().afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+						message: ObjetTraduction_1.GTraductions.getValeur(
+							"AbsenceVS.msgDispense",
+						),
 						callback: function (aGenreAction) {
 							lThis.surConfirmationAbsence(aGenreAction, ALigne, ACol);
 						},
 					});
 				} else {
-					GApplication.getMessage().afficher({
-						type: EGenreBoiteMessage.Information,
-						message: GTraductions.getValeur(
-							"AbsenceVS.msgSaisieAbsSurDispenseSansPresence",
-						),
-					});
+					this.appScoEspace
+						.getMessage()
+						.afficher({
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+							message: ObjetTraduction_1.GTraductions.getValeur(
+								"AbsenceVS.msgSaisieAbsSurDispenseSansPresence",
+							),
+						});
 				}
 			} else if (
 				this.determinerSiSaisieBloquee(ALigne, ACol) &&
-				GEtatUtilisateur.GenreEspace !== EGenreEspace.Etablissement
+				this.etatUtilScoEspace.GenreEspace !==
+					Enumere_Espace_1.EGenreEspace.Etablissement
 			) {
 				let lGenreIndividuAyantSaisiAbs = this.getGenreProfesseurAbsence(
 					ALigne,
 					ACol,
 				);
 				const lMessage = !this.getNumeroProfesseurAbsence(ALigne, ACol)
-					? GTraductions.getValeur("AbsenceVS.msgPasAutorise")
+					? ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.msgPasAutorise")
 					: lGenreIndividuAyantSaisiAbs ===
-							TypeGenreIndividuAuteur.GIA_Personnel
-						? GTraductions.getValeur("AbsenceVS.msgAutrePersonnel")
-						: GTraductions.getValeur("AbsenceVS.msgAutreProf");
+							TypeGenreIndividuAuteur_1.TypeGenreIndividuAuteur.GIA_Personnel
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"AbsenceVS.msgAutrePersonnel",
+							)
+						: ObjetTraduction_1.GTraductions.getValeur(
+								"AbsenceVS.msgAutreProf",
+							);
 				if (
-					(this.TypeAbsence === EGenreRessource.Absence &&
+					(this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Absence &&
 						!this.avecSuppressionAutreAbsence) ||
-					(this.TypeAbsence === EGenreRessource.Retard &&
+					(this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Retard &&
 						!this.avecSuppressionRetardDeVS) ||
 					(this.getNumeroProfesseurAbsence(ALigne, ACol) !==
-						GEtatUtilisateur.getMembre().getNumero() &&
+						this.etatUtilScoEspace.getMembre().getNumero() &&
 						!!this.getNumeroProfesseurAbsence(ALigne, ACol))
 				) {
-					GApplication.getMessage().afficher({
-						type: EGenreBoiteMessage.Information,
-						message: lMessage,
-					});
+					this.appScoEspace
+						.getMessage()
+						.afficher({
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+							message: lMessage,
+						});
 				} else {
 					this.avecMessageConfirmation = true;
-					GApplication.getMessage().afficher({
-						type: EGenreBoiteMessage.Confirmation,
-						message: GTraductions.getValeur("AbsenceVS.msgConfimation"),
+					this.appScoEspace.getMessage().afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+						message: ObjetTraduction_1.GTraductions.getValeur(
+							"AbsenceVS.msgConfimation",
+						),
 						callback: function (aGenreAction) {
 							lThis.surConfirmationAbsence(aGenreAction, ALigne, ACol);
 						},
@@ -1821,13 +1959,17 @@ class PageSaisieAbsences extends Identite {
 		} else {
 			if (
 				this.estUneCelluleActive(ACol) &&
-				this.TypeAbsence === EGenreRessource.Infirmerie &&
+				this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Infirmerie &&
 				GNavigateur.estSourisBoutonDroit() &&
-				this.callback.appel(EGenreEvenementSaisieAbsence.RecupererAbsence, {
-					numeroEleve: this.ListeElements.get(ALigne).getNumero(),
-					genreAbsence: this.TypeAbsence,
-					place: ACol,
-				})
+				this.callback.appel(
+					Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+						.RecupererAbsence,
+					{
+						numeroEleve: this.ListeElements.get(ALigne).getNumero(),
+						genreAbsence: this.TypeAbsence,
+						place: ACol,
+					},
+				)
 			) {
 				this._afficherFenetreInfirmerie = true;
 			}
@@ -1835,29 +1977,37 @@ class PageSaisieAbsences extends Identite {
 	}
 	_mouseup(aLigne, aCol) {
 		if (this._afficherFenetreInfirmerie) {
-			this.callback.appel(EGenreEvenementSaisieAbsence.Infirmerie, {
-				numeroEleve: this.ListeElements.get(aLigne).getNumero(),
-				place: aCol,
-			});
+			this.callback.appel(
+				Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+					.Infirmerie,
+				{
+					numeroEleve: this.ListeElements.get(aLigne).getNumero(),
+					place: aCol,
+				},
+			);
 			this._afficherFenetreInfirmerie = false;
 		}
 	}
 	surConfirmationAbsence(aAccepte, aLigne, aCol) {
 		if (!aAccepte) {
 			if (
-				this.TypeAbsence === EGenreRessource.Absence &&
-				this.TypeSaisie === EGenreEtat.Creation &&
+				this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Absence &&
+				this.TypeSaisie === Enumere_Etat_1.EGenreEtat.Creation &&
 				this.TableauLignes[aLigne].ExisteAbsenceOuverte &&
 				aCol > this.TableauLignes[aLigne].DernierePlace
 			) {
-				GApplication.getMessage().afficher({
-					type: EGenreBoiteMessage.Information,
-					message: GTraductions.getValeur("AbsenceVS.msgEleveAbsenceOuverte"),
-				});
+				this.appScoEspace
+					.getMessage()
+					.afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+						message: ObjetTraduction_1.GTraductions.getValeur(
+							"AbsenceVS.msgEleveAbsenceOuverte",
+						),
+					});
 			} else {
 				if (
-					this.TypeAbsence !== EGenreRessource.Infirmerie ||
-					this.TypeSaisie === EGenreEtat.Creation ||
+					this.TypeAbsence !== Enumere_Ressource_1.EGenreRessource.Infirmerie ||
+					this.TypeSaisie === Enumere_Etat_1.EGenreEtat.Creation ||
 					!GNavigateur.estSourisBoutonDroit()
 				) {
 					const LMessage = new Array("");
@@ -1874,43 +2024,44 @@ class PageSaisieAbsences extends Identite {
 						this.ColonneCourante = aCol;
 						this.SensCroissant = true;
 						if (
-							this.TypeAbsence === EGenreRessource.Exclusion &&
-							this.TypeSaisie === EGenreEtat.Creation
+							this.TypeAbsence ===
+								Enumere_Ressource_1.EGenreRessource.Exclusion &&
+							this.TypeSaisie === Enumere_Etat_1.EGenreEtat.Creation
 						) {
 							return;
 						}
 						const LObjetDonneesAffichageCellule =
 							this.creerObjetDonneeAffichageAbsenceCellule(
 								this.determinerSiEstUneCelluleAvecAbsence(
-									EGenreRessource.Absence,
+									Enumere_Ressource_1.EGenreRessource.Absence,
 									aLigne,
 									aCol,
 									true,
 								),
 								this.determinerSiEstUneCelluleAvecAbsence(
-									EGenreRessource.Retard,
+									Enumere_Ressource_1.EGenreRessource.Retard,
 									aLigne,
 									aCol,
 								),
 								this.determinerSiEstUneCelluleAvecAbsence(
-									EGenreRessource.Exclusion,
+									Enumere_Ressource_1.EGenreRessource.Exclusion,
 									aLigne,
 									aCol,
 								),
 								this.determinerSiEstUneCelluleAvecAbsence(
-									EGenreRessource.Exclusion,
+									Enumere_Ressource_1.EGenreRessource.Exclusion,
 									aLigne,
 									aCol,
 								) &&
 									this.TableauCellules[aLigne][aCol] &&
 									this.TableauCellules[aLigne][aCol].AvecExclusionDebut,
 								this.determinerSiEstUneCelluleAvecAbsence(
-									EGenreRessource.Infirmerie,
+									Enumere_Ressource_1.EGenreRessource.Infirmerie,
 									aLigne,
 									aCol,
 								),
 								this.determinerSiEstUneCelluleAvecAbsence(
-									EGenreRessource.Infirmerie,
+									Enumere_Ressource_1.EGenreRessource.Infirmerie,
 									aLigne,
 									aCol,
 								) &&
@@ -1920,10 +2071,12 @@ class PageSaisieAbsences extends Identite {
 						this.actualiserCellule(aLigne, aCol, LObjetDonneesAffichageCellule);
 						this.setEtatSaisie(true);
 					} else {
-						GApplication.getMessage().afficher({
-							type: EGenreBoiteMessage.Information,
-							message: LMessage[0],
-						});
+						this.appScoEspace
+							.getMessage()
+							.afficher({
+								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+								message: LMessage[0],
+							});
 					}
 				} else {
 					if (GNavigateur.estSourisBoutonDroit()) {
@@ -1942,10 +2095,10 @@ class PageSaisieAbsences extends Identite {
 			if (this.Deplacement) {
 				let LPlace;
 				this.Deplacement = false;
-				const X_initiale = GPosition.getLeft(
+				const X_initiale = ObjetPosition_1.GPosition.getLeft(
 					this.getIdZoneBorne(this.PlaceDebut),
 				);
-				const X_borne = GPosition.getLeft(
+				const X_borne = ObjetPosition_1.GPosition.getLeft(
 					this.IdBorne + this.GenreBorneDeplacee,
 				);
 				const Quotient = parseInt(
@@ -1958,16 +2111,19 @@ class PageSaisieAbsences extends Identite {
 				) {
 					LPlace = this.PlaceDebut + Quotient;
 				} else {
-					if (this.GenreBorneDeplacee === EGenreBorne.Superieure) {
+					if (
+						this.GenreBorneDeplacee === EGenreBorne_1.EGenreBorne.Superieure
+					) {
 						LPlace = this.PlaceDebut + Quotient;
 					} else {
 						LPlace = this.PlaceDebut + Quotient + 1;
 					}
 				}
-				this.callback.appel(EGenreEvenementSaisieAbsence.DeplacementBorne, {
-					genreBorne: this.GenreBorneDeplacee,
-					place: LPlace,
-				});
+				this.callback.appel(
+					Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+						.DeplacementBorne,
+					{ genreBorne: this.GenreBorneDeplacee, place: LPlace },
+				);
 			} else if (this.SaisieEnCours) {
 				this.SaisieEnCours = false;
 				this.FinColonne = this.estUneCelluleActive(this.ColonneCourante)
@@ -1978,14 +2134,16 @@ class PageSaisieAbsences extends Identite {
 					(this.DebutColonne === this.FinColonne && this.SensCroissant)
 				) {
 					if (
-						this.TypeAbsence === EGenreRessource.Absence ||
-						(this.TypeAbsence !== EGenreRessource.Absence &&
+						this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Absence ||
+						(this.TypeAbsence !== Enumere_Ressource_1.EGenreRessource.Absence &&
 							this.FinColonne === this.DebutColonne &&
 							this.LigneCourante === this.LigneSaisie)
 					) {
 						const LFinSaisie =
-							this.TypeAbsence === EGenreRessource.Exclusion ||
-							this.TypeAbsence === EGenreRessource.Infirmerie
+							this.TypeAbsence ===
+								Enumere_Ressource_1.EGenreRessource.Exclusion ||
+							this.TypeAbsence ===
+								Enumere_Ressource_1.EGenreRessource.Infirmerie
 								? this.DebutColonne <= this.PlaceSaisieFin &&
 									this.DebutColonne >= this.PlaceSaisieDebut
 									? this.PlaceSaisieFin
@@ -2001,33 +2159,44 @@ class PageSaisieAbsences extends Identite {
 							typeSaisie: this.TypeSaisie,
 						};
 						if (
-							this.TypeAbsence === EGenreRessource.Exclusion &&
-							this.TypeSaisie === EGenreEtat.Creation
+							this.TypeAbsence ===
+								Enumere_Ressource_1.EGenreRessource.Exclusion &&
+							this.TypeSaisie === Enumere_Etat_1.EGenreEtat.Creation
 						) {
 							this.callback.appel(
-								EGenreEvenementSaisieAbsence.CreerExclusion,
+								Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+									.CreerExclusion,
 								lParametres,
 							);
 						} else {
 							this.callback.appel(
-								EGenreEvenementSaisieAbsence.ActionSurAbsence,
+								Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+									.ActionSurAbsence,
 								lParametres,
 							);
 						}
-					} else if (this.TypeAbsence !== EGenreRessource.Absence) {
+					} else if (
+						this.TypeAbsence !== Enumere_Ressource_1.EGenreRessource.Absence
+					) {
 						this.setDonneesCellule(this.LigneSaisie, this.DebutColonne);
 					}
 				} else {
-					if (this.TypeAbsence !== EGenreRessource.Absence) {
+					if (
+						this.TypeAbsence !== Enumere_Ressource_1.EGenreRessource.Absence
+					) {
 						this.setDonneesCellule(this.LigneSaisie, this.DebutColonne);
 					} else {
-						this.callback.appel(EGenreEvenementSaisieAbsence.ActionSurAbsence, {
-							numeroEleve: this.ListeElements.getNumero(this.LigneSaisie),
-							placeDebut: this.DebutColonne,
-							placeFin: this.DebutColonne,
-							typeAbsence: this.TypeAbsence,
-							typeSaisie: this.TypeSaisie,
-						});
+						this.callback.appel(
+							Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+								.ActionSurAbsence,
+							{
+								numeroEleve: this.ListeElements.getNumero(this.LigneSaisie),
+								placeDebut: this.DebutColonne,
+								placeFin: this.DebutColonne,
+								typeAbsence: this.TypeAbsence,
+								typeSaisie: this.TypeSaisie,
+							},
+						);
 					}
 				}
 			}
@@ -2038,24 +2207,30 @@ class PageSaisieAbsences extends Identite {
 			const LIdBorneDeplacee = this.IdBorne + this.GenreBorneDeplacee;
 			let lLeftBorneDeplacee = $("#" + LIdBorneDeplacee.escapeJQ()).position()
 				.left;
-			GPosition.setTop(LIdBorneDeplacee, _getTopBornes.call(this));
+			ObjetPosition_1.GPosition.setTop(LIdBorneDeplacee, this._getTopBornes());
 			const LPosMinBorneSuperieure =
-				this.PositionHorizontaleBornes[EGenreBorne.Inferieure] +
+				this.PositionHorizontaleBornes[EGenreBorne_1.EGenreBorne.Inferieure] +
 				this.LargeurCellules;
 			if (
-				this.GenreBorneDeplacee === EGenreBorne.Superieure &&
+				this.GenreBorneDeplacee === EGenreBorne_1.EGenreBorne.Superieure &&
 				lLeftBorneDeplacee < LPosMinBorneSuperieure
 			) {
-				GPosition.setLeft(LIdBorneDeplacee, LPosMinBorneSuperieure);
+				ObjetPosition_1.GPosition.setLeft(
+					LIdBorneDeplacee,
+					LPosMinBorneSuperieure,
+				);
 			} else {
 				const LPosMaxBorneInferieure =
-					this.PositionHorizontaleBornes[EGenreBorne.Superieure] -
+					this.PositionHorizontaleBornes[EGenreBorne_1.EGenreBorne.Superieure] -
 					this.LargeurCellules;
 				if (
-					this.GenreBorneDeplacee === EGenreBorne.Inferieure &&
+					this.GenreBorneDeplacee === EGenreBorne_1.EGenreBorne.Inferieure &&
 					lLeftBorneDeplacee > LPosMaxBorneInferieure
 				) {
-					GPosition.setLeft(LIdBorneDeplacee, LPosMaxBorneInferieure);
+					ObjetPosition_1.GPosition.setLeft(
+						LIdBorneDeplacee,
+						LPosMaxBorneInferieure,
+					);
 				}
 			}
 			lLeftBorneDeplacee = $("#" + LIdBorneDeplacee.escapeJQ()).position().left;
@@ -2063,18 +2238,22 @@ class PageSaisieAbsences extends Identite {
 				this.LargeurDemiBorne + this.EpaisseurBorderBorne;
 			const LPosCentreBorneDeplacee = lLeftBorneDeplacee + LEpaisseurDemiBorne;
 			if (LPosCentreBorneDeplacee < this.PosLeft) {
-				GPosition.setLeft(LIdBorneDeplacee, this.PosLeft - LEpaisseurDemiBorne);
+				ObjetPosition_1.GPosition.setLeft(
+					LIdBorneDeplacee,
+					this.PosLeft - LEpaisseurDemiBorne,
+				);
 			}
 			if (LPosCentreBorneDeplacee > this.PosRight) {
-				GPosition.setLeft(
+				ObjetPosition_1.GPosition.setLeft(
 					LIdBorneDeplacee,
 					this.PosRight - LEpaisseurDemiBorne,
 				);
 			}
 			lLeftBorneDeplacee = $("#" + LIdBorneDeplacee.escapeJQ()).position().left;
-			GPosition.setLeft(
+			ObjetPosition_1.GPosition.setLeft(
 				this.IdTrait + this.GenreBorneDeplacee,
-				lLeftBorneDeplacee + GPosition.getWidth(LIdBorneDeplacee) / 2,
+				lLeftBorneDeplacee +
+					ObjetPosition_1.GPosition.getWidth(LIdBorneDeplacee) / 2,
 			);
 		}
 	}
@@ -2084,42 +2263,42 @@ class PageSaisieAbsences extends Identite {
 			ACol >= this.DebutColonne &&
 			this.estUneCelluleActive(ACol)
 		) {
-			if (this.TypeAbsence === EGenreRessource.Absence) {
+			if (this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Absence) {
 				if (this.ColonneCourante < ACol) {
 					this.SensCroissant = true;
 					for (let I = this.DebutColonne; I <= ACol; I++) {
 						const LObjetDonneesAffichageCellule =
 							this.creerObjetDonneeAffichageAbsenceCellule(
 								this.determinerSiEstUneCelluleAvecAbsence(
-									EGenreRessource.Absence,
+									Enumere_Ressource_1.EGenreRessource.Absence,
 									this.LigneSaisie,
 									I,
 									this.SensCroissant,
 								),
 								this.determinerSiEstUneCelluleAvecAbsence(
-									EGenreRessource.Retard,
+									Enumere_Ressource_1.EGenreRessource.Retard,
 									this.LigneSaisie,
 									I,
 								),
 								this.determinerSiEstUneCelluleAvecAbsence(
-									EGenreRessource.Exclusion,
+									Enumere_Ressource_1.EGenreRessource.Exclusion,
 									this.LigneSaisie,
 									I,
 								),
 								this.determinerSiEstUneCelluleAvecAbsence(
-									EGenreRessource.Exclusion,
+									Enumere_Ressource_1.EGenreRessource.Exclusion,
 									ALigne,
 									I,
 								) &&
 									this.TableauCellules[ALigne][I] &&
 									this.TableauCellules[ALigne][I].AvecExclusionDebut,
 								this.determinerSiEstUneCelluleAvecAbsence(
-									EGenreRessource.Infirmerie,
+									Enumere_Ressource_1.EGenreRessource.Infirmerie,
 									this.LigneSaisie,
 									I,
 								),
 								this.determinerSiEstUneCelluleAvecAbsence(
-									EGenreRessource.Infirmerie,
+									Enumere_Ressource_1.EGenreRessource.Infirmerie,
 									ALigne,
 									I,
 								) &&
@@ -2146,7 +2325,7 @@ class PageSaisieAbsences extends Identite {
 		this.LigneCourante = ALigne;
 	}
 	evenementAbsence(aNumeroEleve, aRessourceAbsence) {
-		if (aRessourceAbsence === EGenreRessource.Infirmerie) {
+		if (aRessourceAbsence === Enumere_Ressource_1.EGenreRessource.Infirmerie) {
 			this._afficherFenetreInfirmerie = false;
 		}
 		this.creerTableauCellules();
@@ -2160,7 +2339,8 @@ class PageSaisieAbsences extends Identite {
 			this.LargeurColonneEleve +
 			this.LargeurColonneCheckBox;
 		const LLargeurBrute = parseInt(
-			(GPosition.getWidth(this.Nom) - LLargeur) / this.PlacesParJour,
+			(ObjetPosition_1.GPosition.getWidth(this.Nom) - LLargeur) /
+				this.PlacesParJour,
 		);
 		return LLargeurBrute < this.LargeurMin
 			? this.LargeurMin
@@ -2178,14 +2358,22 @@ class PageSaisieAbsences extends Identite {
 			(APlace - this.PlaceDebut) * this.LargeurCellules -
 			this.LargeurDemiBorne -
 			this.EpaisseurBorderBorne;
-		if (AGenreBorne === EGenreBorne.Superieure) {
+		if (AGenreBorne === EGenreBorne_1.EGenreBorne.Superieure) {
 			X += this.LargeurCellules;
 		}
 		return X;
 	}
 	afficherBorne(ADecalage) {
-		this.placerBorne(EGenreBorne.Inferieure, this.PlaceSaisieDebut, ADecalage);
-		this.placerBorne(EGenreBorne.Superieure, this.PlaceSaisieFin, ADecalage);
+		this.placerBorne(
+			EGenreBorne_1.EGenreBorne.Inferieure,
+			this.PlaceSaisieDebut,
+			ADecalage,
+		);
+		this.placerBorne(
+			EGenreBorne_1.EGenreBorne.Superieure,
+			this.PlaceSaisieFin,
+			ADecalage,
+		);
 		this._positionnerHoraire(!ADecalage ? 0 : ADecalage);
 	}
 	placerBorne(AGenreBorne, APlace, ADecalage) {
@@ -2195,23 +2383,23 @@ class PageSaisieAbsences extends Identite {
 			"#" + this.getIdZoneBorne(APlace).escapeJQ(),
 		).position().top;
 		if (this.determinerSiBorneDansLesLimites(AGenreBorne)) {
-			GHtml.setDisplay(this.IdBorne + AGenreBorne, true);
-			GHtml.setDisplay(this.IdTrait + AGenreBorne, true);
-			GPosition.setPosition(
+			ObjetHtml_1.GHtml.setDisplay(this.IdBorne + AGenreBorne, true);
+			ObjetHtml_1.GHtml.setDisplay(this.IdTrait + AGenreBorne, true);
+			ObjetPosition_1.GPosition.setPosition(
 				this.IdBorne + AGenreBorne,
 				this.PositionHorizontaleBornes[AGenreBorne],
-				_getTopBornes.call(this) +
+				this._getTopBornes() +
 					(this.ajoutEleveAutorise ? -this.options.heightLigneAjoutEleve : 0),
 			);
-			GPosition.setPosition(
+			ObjetPosition_1.GPosition.setPosition(
 				this.IdTrait + AGenreBorne,
 				this.PositionHorizontaleBornes[AGenreBorne] +
-					GPosition.getWidth(this.IdBorne + AGenreBorne) / 2,
-				_getTopBornes.call(this) + this.HauteurImage + 21,
+					ObjetPosition_1.GPosition.getWidth(this.IdBorne + AGenreBorne) / 2,
+				this._getTopBornes() + this.HauteurImage + 21,
 			);
 		} else {
-			GHtml.setDisplay(this.IdBorne + AGenreBorne, false);
-			GHtml.setDisplay(this.IdTrait + AGenreBorne, false);
+			ObjetHtml_1.GHtml.setDisplay(this.IdBorne + AGenreBorne, false);
+			ObjetHtml_1.GHtml.setDisplay(this.IdTrait + AGenreBorne, false);
 		}
 	}
 	getIdCellule(ALigne, ACol) {
@@ -2254,10 +2442,10 @@ class PageSaisieAbsences extends Identite {
 		return "borne" + ACol;
 	}
 	getScrollTop(AGenre, AScrollTop) {
-		if (AGenre === EGenreScrollEvenement.TailleContenu) {
+		if (AGenre === ObjetScroll_3.EGenreScrollEvenement.TailleContenu) {
 			return null;
 		}
-		if (AGenre === EGenreScrollEvenement.TailleZone) {
+		if (AGenre === ObjetScroll_3.EGenreScrollEvenement.TailleZone) {
 			AScrollTop =
 				$("#" + this.Nom.escapeJQ())
 					.parent()
@@ -2266,9 +2454,9 @@ class PageSaisieAbsences extends Identite {
 				41 -
 				60 -
 				27 -
-				($("#" + this.ScrollH.Nom.escapeJQ()).height() || 0);
+				($("#" + this.ScrollH.getNom().escapeJQ()).height() || 0);
 			if (
-				GPosition.getWidth(this.Nom) <=
+				ObjetPosition_1.GPosition.getWidth(this.Nom) <=
 				this.LargeurCellules * this.PlacesParJour +
 					this.LargeurColonneEleve +
 					this.LargeurColonneCheckBox +
@@ -2284,21 +2472,21 @@ class PageSaisieAbsences extends Identite {
 		);
 	}
 	getScrollLeft(AGenre, AScrollLeft) {
-		if (AGenre === EGenreScrollEvenement.TailleContenu) {
+		if (AGenre === ObjetScroll_3.EGenreScrollEvenement.TailleContenu) {
 			return null;
 		}
-		if (AGenre === EGenreScrollEvenement.TailleZone) {
+		if (AGenre === ObjetScroll_3.EGenreScrollEvenement.TailleZone) {
 			const LLargeurZoneEleve =
 				this.LargeurColonneEleve + this.LargeurColonneCheckBox;
 			AScrollLeft =
-				GPosition.getWidth(this.Nom) -
-				(LLargeurZoneEleve + this.ScrollV.getTaille() + 20);
+				ObjetPosition_1.GPosition.getWidth(this.Nom) -
+				(LLargeurZoneEleve + this.ScrollV.getTaille(undefined) + 20);
 		}
 		const lScrollLeft = Math.min(
 			Math.floor(AScrollLeft / this.LargeurCellules) * this.LargeurCellules,
 			this.LargeurCellules * this.PlacesParJour,
 		);
-		if (AGenre === EGenreScrollEvenement.Deplacement) {
+		if (AGenre === ObjetScroll_3.EGenreScrollEvenement.Deplacement) {
 			this.afficherBorne(lScrollLeft);
 		}
 		return lScrollLeft;
@@ -2322,7 +2510,9 @@ class PageSaisieAbsences extends Identite {
 	creerTableauCellules() {
 		this.TableauLignes = [];
 		this.TableauCellules = [];
-		const lPlaceAnnuelleCourante = GDate.dateEnPlaceAnnuelle(new Date());
+		const lPlaceAnnuelleCourante = ObjetDate_1.GDate.dateEnPlaceAnnuelle(
+			new Date(),
+		);
 		for (let I = 0; I < this.NbrElevesVisibles; I++) {
 			this.TableauCellules[I] = [];
 			const LEleve = this.ListeElements.get(I);
@@ -2345,7 +2535,7 @@ class PageSaisieAbsences extends Identite {
 							}
 							LCellule = this.TableauCellules[I][K];
 							switch (LAbsence.getGenre()) {
-								case EGenreRessource.Absence: {
+								case Enumere_Ressource_1.EGenreRessource.Absence: {
 									LCellule.AvecAbsence = true;
 									LCellule.EstOuverte = LAbsence.EstOuverte;
 									LCellule.AvecAbsenceFin = K === LAbsence.PlaceFin;
@@ -2354,14 +2544,14 @@ class PageSaisieAbsences extends Identite {
 									LCellule.Professeur = LAbsence.Professeur;
 									break;
 								}
-								case EGenreRessource.Retard: {
+								case Enumere_Ressource_1.EGenreRessource.Retard: {
 									LCellule.AvecRetard = true;
 									LCellule.TexteRetard = LAbsence.Duree + "'";
 									LCellule.TexteExclusion = null;
 									LCellule.Professeur = LAbsence.Professeur;
 									break;
 								}
-								case EGenreRessource.Exclusion: {
+								case Enumere_Ressource_1.EGenreRessource.Exclusion: {
 									if (K === LAbsence.PlaceDebut) {
 										LCellule.TexteExclusion = this.TexteExclusion;
 									}
@@ -2369,7 +2559,9 @@ class PageSaisieAbsences extends Identite {
 									LCellule.AvecExclusionDebut = K !== LAbsence.PlaceDebut;
 									LCellule.libelleMotif = "";
 									if (LAbsence.listeMotifs) {
-										LAbsence.listeMotifs.setTri(ObjetTri.init("Libelle"));
+										LAbsence.listeMotifs.setTri([
+											ObjetTri_1.ObjetTri.init("Libelle"),
+										]);
 										LAbsence.listeMotifs.trier();
 										LCellule.libelleMotif = LAbsence.listeMotifs
 											.getTableauLibelles()
@@ -2377,7 +2569,7 @@ class PageSaisieAbsences extends Identite {
 									}
 									break;
 								}
-								case EGenreRessource.Infirmerie: {
+								case Enumere_Ressource_1.EGenreRessource.Infirmerie: {
 									if (K === LAbsence.PlaceDebut) {
 										LCellule.TexteInfirmerie = this.TexteInfirmerie;
 									}
@@ -2480,37 +2672,50 @@ class PageSaisieAbsences extends Identite {
 				!this.determinerSiEstUneSaisieValide(AIndiceEleve, I, LMessage)
 			) {
 				LSaisieValide = false;
-				GApplication.getMessage().afficher({
-					type: EGenreBoiteMessage.Information,
-					message: LMessage[0],
-				});
+				this.appScoEspace
+					.getMessage()
+					.afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+						message: LMessage[0],
+					});
 			}
 		}
 		if (LSaisieValide) {
 			if (
-				AGenreAbsence === EGenreRessource.Exclusion &&
-				ATypeSaisie === EGenreEtat.Creation
+				AGenreAbsence === Enumere_Ressource_1.EGenreRessource.Exclusion &&
+				ATypeSaisie === Enumere_Etat_1.EGenreEtat.Creation
 			) {
 				const lIdCB = this.getIdCheckBoxEleve(AIndiceEleve);
-				this.callback.appel(EGenreEvenementSaisieAbsence.CreerExclusion, {
+				this.callback.appel(
+					Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+						.CreerExclusion,
+					{
+						numeroEleve: this.ListeElements.get(AIndiceEleve).getNumero(),
+						placeDebut: this.PlaceSaisieDebut,
+						placeFin: this.PlaceSaisieFin,
+						typeAbsence: AGenreAbsence,
+						typeSaisie: ATypeSaisie,
+						callbackAnnulation: function () {
+							ObjetHtml_1.GHtml.setCheckBox(
+								lIdCB,
+								!ObjetHtml_1.GHtml.getCheckBox(lIdCB),
+							);
+						},
+					},
+				);
+				return;
+			}
+			this.callback.appel(
+				Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+					.ActionSurAbsence,
+				{
 					numeroEleve: this.ListeElements.get(AIndiceEleve).getNumero(),
 					placeDebut: this.PlaceSaisieDebut,
 					placeFin: this.PlaceSaisieFin,
 					typeAbsence: AGenreAbsence,
 					typeSaisie: ATypeSaisie,
-					callbackAnnulation: function () {
-						GHtml.setCheckBox(lIdCB, !GHtml.getCheckBox(lIdCB));
-					},
-				});
-				return;
-			}
-			this.callback.appel(EGenreEvenementSaisieAbsence.ActionSurAbsence, {
-				numeroEleve: this.ListeElements.get(AIndiceEleve).getNumero(),
-				placeDebut: this.PlaceSaisieDebut,
-				placeFin: this.PlaceSaisieFin,
-				typeAbsence: AGenreAbsence,
-				typeSaisie: ATypeSaisie,
-			});
+				},
+			);
 		} else {
 			this.creerTableauCellules();
 			this.setDonneesLigne(AIndiceEleve);
@@ -2550,21 +2755,21 @@ class PageSaisieAbsences extends Identite {
 	}
 	estUneCelluleAvecAbsence(ATypeAbsence, ALigne, ACol) {
 		const LTableauCellule = this.TableauCellules[ALigne][ACol];
-		return ATypeAbsence === EGenreRessource.Absence
+		return ATypeAbsence === Enumere_Ressource_1.EGenreRessource.Absence
 			? !!(LTableauCellule && LTableauCellule.AvecAbsence)
-			: ATypeAbsence === EGenreRessource.Retard
+			: ATypeAbsence === Enumere_Ressource_1.EGenreRessource.Retard
 				? !!(LTableauCellule && LTableauCellule.AvecRetard)
-				: ATypeAbsence === EGenreRessource.Exclusion
+				: ATypeAbsence === Enumere_Ressource_1.EGenreRessource.Exclusion
 					? !!(LTableauCellule && LTableauCellule.AvecExclusion)
 					: !!(LTableauCellule && LTableauCellule.AvecInfirmerie);
 	}
 	estUneCelluleAvecTexteAbsence(ATypeAbsence, ALigne, ACol) {
 		const LTableauCellule = this.TableauCellules[ALigne][ACol];
-		return ATypeAbsence === EGenreRessource.Absence
+		return ATypeAbsence === Enumere_Ressource_1.EGenreRessource.Absence
 			? false
-			: ATypeAbsence === EGenreRessource.Retard
+			: ATypeAbsence === Enumere_Ressource_1.EGenreRessource.Retard
 				? !!(LTableauCellule && LTableauCellule.TexteRetard)
-				: ATypeAbsence === EGenreRessource.Exclusion
+				: ATypeAbsence === Enumere_Ressource_1.EGenreRessource.Exclusion
 					? !!(LTableauCellule && LTableauCellule.TexteExclusion)
 					: !!(LTableauCellule && LTableauCellule.TexteInfirmerie);
 	}
@@ -2573,13 +2778,16 @@ class PageSaisieAbsences extends Identite {
 	}
 	estUneCelluleActive(APlace) {
 		const LIndiceDemiJournee =
-			APlace < this.PlaceDebut + GParametres.PlaceDemiJournee
-				? EGenreDemiJours.Matin
-				: EGenreDemiJours.ApresMidi;
+			APlace <
+			this.PlaceDebut + this.appScoEspace.getObjetParametres().PlaceDemiJournee
+				? Enumere_DemiJours_1.EGenreDemiJours.Matin
+				: Enumere_DemiJours_1.EGenreDemiJours.ApresMidi;
 		if (
-			!GParametres.DemiJourneesOuvrees[LIndiceDemiJournee].contains(
-				GDate.getJourDeDate(this.Date),
-			)
+			!this.appScoEspace
+				.getObjetParametres()
+				.DemiJourneesOuvrees[LIndiceDemiJournee].contains(
+					ObjetDate_1.GDate.getJourDeDate(this.Date),
+				)
 		) {
 			return false;
 		} else if (this.AvecOptionSaisieAutresProfs) {
@@ -2590,37 +2798,39 @@ class PageSaisieAbsences extends Identite {
 	}
 	determinerSiEstUneCelluleAvecAbsence(ATypeAbsence, I, J, ASensCroissant) {
 		if (this.TypeAbsence === ATypeAbsence) {
-			if (ATypeAbsence === EGenreRessource.Absence) {
+			if (ATypeAbsence === Enumere_Ressource_1.EGenreRessource.Absence) {
 				if (
-					(this.TypeSaisie === EGenreEtat.Creation && ASensCroissant) ||
-					(this.TypeSaisie === EGenreEtat.Suppression && !ASensCroissant)
+					(this.TypeSaisie === Enumere_Etat_1.EGenreEtat.Creation &&
+						ASensCroissant) ||
+					(this.TypeSaisie === Enumere_Etat_1.EGenreEtat.Suppression &&
+						!ASensCroissant)
 				) {
 					return true;
 				}
-			} else if (this.TypeSaisie === EGenreEtat.Creation) {
+			} else if (this.TypeSaisie === Enumere_Etat_1.EGenreEtat.Creation) {
 				return true;
 			}
 		} else {
 			if (
-				ATypeAbsence === EGenreRessource.Retard &&
+				ATypeAbsence === Enumere_Ressource_1.EGenreRessource.Retard &&
 				this.TableauCellules[I][J] &&
 				this.TableauCellules[I][J].AvecRetard
 			) {
 				return true;
 			} else if (
-				ATypeAbsence === EGenreRessource.Exclusion &&
+				ATypeAbsence === Enumere_Ressource_1.EGenreRessource.Exclusion &&
 				this.TableauCellules[I][J] &&
 				this.TableauCellules[I][J].AvecExclusion
 			) {
 				return true;
 			} else if (
-				ATypeAbsence === EGenreRessource.Absence &&
+				ATypeAbsence === Enumere_Ressource_1.EGenreRessource.Absence &&
 				this.TableauCellules[I][J] &&
 				this.TableauCellules[I][J].AvecAbsence
 			) {
 				return true;
 			} else if (
-				ATypeAbsence === EGenreRessource.Infirmerie &&
+				ATypeAbsence === Enumere_Ressource_1.EGenreRessource.Infirmerie &&
 				this.TableauCellules[I][J] &&
 				this.TableauCellules[I][J].AvecInfirmerie
 			) {
@@ -2678,28 +2888,30 @@ class PageSaisieAbsences extends Identite {
 	}
 	determinerSiEstUneSaisieValide(ALigne, ACol, AMessage) {
 		let LSaisieValide = true;
-		if (this.TypeAbsence === EGenreRessource.Absence) {
+		if (this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Absence) {
 			if (
 				this.determinerSiEstUneCelluleAvecAbsence(
-					EGenreRessource.Retard,
+					Enumere_Ressource_1.EGenreRessource.Retard,
 					ALigne,
 					ACol,
 				)
 			) {
-				AMessage[0] = GTraductions.getValeur("AbsenceVS.msgEleveRetard");
+				AMessage[0] = ObjetTraduction_1.GTraductions.getValeur(
+					"AbsenceVS.msgEleveRetard",
+				);
 				LSaisieValide = false;
 			}
 		} else {
 			if (
 				this.determinerSiEstUneCelluleAvecAbsence(
-					EGenreRessource.Absence,
+					Enumere_Ressource_1.EGenreRessource.Absence,
 					ALigne,
 					ACol,
 					true,
 				)
 			) {
-				if (this.TypeAbsence === EGenreRessource.Retard) {
-					AMessage[0] = GTraductions.getValeur(
+				if (this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Retard) {
+					AMessage[0] = ObjetTraduction_1.GTraductions.getValeur(
 						"AbsenceVS.msgEleveAbsenceRetard",
 					);
 					LSaisieValide = false;
@@ -2710,25 +2922,25 @@ class PageSaisieAbsences extends Identite {
 	}
 	determinerSiSaisieBloquee(ALigne, ACol) {
 		return (
-			(this.TypeAbsence === EGenreRessource.Absence ||
-				this.TypeAbsence === EGenreRessource.Retard) &&
-			this.TypeSaisie === EGenreEtat.Suppression &&
+			(this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Absence ||
+				this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Retard) &&
+			this.TypeSaisie === Enumere_Etat_1.EGenreEtat.Suppression &&
 			this.getNumeroProfesseurAbsence(ALigne, ACol) !== -1 &&
 			(this.getNumeroProfesseurAbsence(ALigne, ACol) === 0 ||
 				this.getNumeroProfesseurAbsence(ALigne, ACol) !==
-					GEtatUtilisateur.getMembre().getNumero())
+					this.etatUtilScoEspace.getMembre().getNumero())
 		);
 	}
 	determinerCurseur() {
-		return this.TypeAbsence === EGenreRessource.Retard &&
+		return this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Retard &&
 			(!this.cours || !this.cours.estAppelVerrouille)
 			? "images/CurseurRetard.cur"
-			: this.TypeAbsence === EGenreRessource.Absence &&
+			: this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Absence &&
 					(!this.cours || !this.cours.estAppelVerrouille)
 				? "images/CurseurAbsence.cur"
-				: this.TypeAbsence === EGenreRessource.Exclusion
+				: this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Exclusion
 					? "images/CurseurEclusion.cur"
-					: this.TypeAbsence === EGenreRessource.Infirmerie
+					: this.TypeAbsence === Enumere_Ressource_1.EGenreRessource.Infirmerie
 						? "images/CurseurInfirmerie.cur"
 						: this.cours && this.cours.estAppelVerrouille
 							? "FichiersRessource/CurseurAppelVerrouille.cur"
@@ -2736,10 +2948,19 @@ class PageSaisieAbsences extends Identite {
 	}
 	determinerHintInfirmerie() {
 		return this.avecSaisieGrille === false
-			? GTraductions.getValeur("AbsenceVS.hintInfirmerieSansSaisieGrille")
-			: GTraductions.getValeur("AbsenceVS.hintInfirmerie");
+			? ObjetTraduction_1.GTraductions.getValeur(
+					"AbsenceVS.hintInfirmerieSansSaisieGrille",
+				)
+			: ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.hintInfirmerie");
+	}
+	_getTopBornes() {
+		return (
+			this.PositionVerticaleBorne +
+			(this.ajoutEleveAutorise ? this.options.heightLigneAjoutEleve + 5 : 0)
+		);
 	}
 }
+exports.PageSaisieAbsences = PageSaisieAbsences;
 function _avecSaisieAutoriseSelonEleveEtTypeAbsence(
 	aEleve,
 	aTypeAbsence,
@@ -2755,23 +2976,17 @@ function _avecSaisieAutoriseSelonEleveEtTypeAbsence(
 	}
 	if (aCours) {
 		return (
-			((aTypeAbsence !== EGenreRessource.Absence &&
-				aTypeAbsence !== EGenreRessource.Retard) ||
+			((aTypeAbsence !== Enumere_Ressource_1.EGenreRessource.Absence &&
+				aTypeAbsence !== Enumere_Ressource_1.EGenreRessource.Retard) ||
 				!aCours.estAppelVerrouille) &&
 			(!aEleve.eleveAjouteAuCours ||
-				(aTypeAbsence !== EGenreRessource.Absence &&
-					aTypeAbsence !== EGenreRessource.Exclusion))
+				(aTypeAbsence !== Enumere_Ressource_1.EGenreRessource.Absence &&
+					aTypeAbsence !== Enumere_Ressource_1.EGenreRessource.Exclusion))
 		);
 	} else {
 		return (
-			!aEleve.eleveAjouteAuCours || aTypeAbsence !== EGenreRessource.Absence
+			!aEleve.eleveAjouteAuCours ||
+			aTypeAbsence !== Enumere_Ressource_1.EGenreRessource.Absence
 		);
 	}
 }
-function _getTopBornes() {
-	return (
-		this.PositionVerticaleBorne +
-		(this.ajoutEleveAutorise ? this.options.heightLigneAjoutEleve + 5 : 0)
-	);
-}
-module.exports = { PageSaisieAbsences };

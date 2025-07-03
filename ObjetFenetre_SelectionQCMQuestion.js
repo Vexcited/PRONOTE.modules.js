@@ -1,4 +1,4 @@
-exports.TypeBibliothequeQCM = exports.ObjetFenetre_SelectionQCMQuestion =
+exports.ObjetFenetre_SelectionQCMQuestion = exports.TypeBibliothequeQCM =
 	void 0;
 const DonneesListe_SelectionQCM_1 = require("DonneesListe_SelectionQCM");
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
@@ -11,10 +11,10 @@ const ObjetRequeteQCMQuestions_1 = require("ObjetRequeteQCMQuestions");
 const ObjetSaisieQCM_1 = require("ObjetSaisieQCM");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const Toast_1 = require("Toast");
+const AccessApp_1 = require("AccessApp");
 var TypeBibliothequeQCM;
 (function (TypeBibliothequeQCM) {
 	TypeBibliothequeQCM["Etablissement"] = "Etablissement";
-	TypeBibliothequeQCM["Editeur"] = "Editeur";
 	TypeBibliothequeQCM["Collaboratif"] = "Collaboratif";
 	TypeBibliothequeQCM["Personnel"] = "Personnel";
 })(
@@ -27,10 +27,6 @@ const TypeBibliothequeQCMUtil = {
 			case TypeBibliothequeQCM.Etablissement:
 				return ObjetTraduction_1.GTraductions.getValeur(
 					"SaisieQCM.ListeDesQCMEtablissement",
-				);
-			case TypeBibliothequeQCM.Editeur:
-				return ObjetTraduction_1.GTraductions.getValeur(
-					"SaisieQCM.ListeDesQCMEditeur",
 				);
 			case TypeBibliothequeQCM.Collaboratif:
 				return ObjetTraduction_1.GTraductions.getValeur(
@@ -99,16 +95,12 @@ class ObjetFenetre_SelectionQCMQuestion extends ObjetFenetre_1.ObjetFenetre {
 		this.setOptionsFenetre({ titre: lTitre });
 		const lParamsRequete = {
 			qcmPerso: false,
-			qcmNathan: false,
 			qcmCollab: false,
 			qcmEtab: false,
 		};
 		switch (aDonnees.typeBibilioQCM) {
 			case TypeBibliothequeQCM.Personnel:
 				lParamsRequete.qcmPerso = true;
-				break;
-			case TypeBibliothequeQCM.Editeur:
-				lParamsRequete.qcmNathan = true;
 				break;
 			case TypeBibliothequeQCM.Collaboratif:
 				lParamsRequete.qcmCollab = true;
@@ -126,13 +118,15 @@ class ObjetFenetre_SelectionQCMQuestion extends ObjetFenetre_1.ObjetFenetre {
 	}
 	actionSurListeQCMCumuls(aListeQCM, aMessage) {
 		if (aMessage) {
-			GApplication.getMessage().afficher({
-				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-				message: aMessage,
-				callback: () => {
-					this.fermer();
-				},
-			});
+			(0, AccessApp_1.getApp)()
+				.getMessage()
+				.afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+					message: aMessage,
+					callback: () => {
+						this.fermer();
+					},
+				});
 		} else {
 			this.listeQCM = aListeQCM;
 			this.actualiser();
@@ -195,7 +189,7 @@ class ObjetFenetre_SelectionQCMQuestion extends ObjetFenetre_1.ObjetFenetre {
 	initialiserListeQCM(aInstance) {
 		aInstance.setOptionsListe({
 			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
-			labelWAI: ObjetTraduction_1.GTraductions.getValeur(
+			ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
 				"SaisieQCM.ListeDesQCM",
 			),
 		});

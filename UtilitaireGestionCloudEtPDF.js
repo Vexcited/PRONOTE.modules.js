@@ -94,6 +94,24 @@ exports.UtilitaireGestionCloudEtPDF = {
 		lFenetre.afficher();
 		return lFenetre;
 	},
+	async ouvrirFenetreChoixFichierCloud(aParams) {
+		return await new Promise((aResolve) => {
+			ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+				ObjetFenetre_FichiersCloud_1.ObjetFenetre_FichiersCloud,
+				{
+					pere: aParams.instance || {},
+					evenement(aParam) {
+						if (
+							aParam.listeNouveauxDocs &&
+							aParam.listeNouveauxDocs.count() > 0
+						) {
+							aResolve(aParam.listeNouveauxDocs);
+						}
+					},
+				},
+			).setDonnees({ service: aParams.service.getGenre() });
+		});
+	},
 	async ouvrirFenetreCloud(aParams) {
 		const lParams = Object.assign(
 			{
@@ -105,23 +123,14 @@ exports.UtilitaireGestionCloudEtPDF = {
 		return await new Promise((aResolve) => {
 			exports.UtilitaireGestionCloudEtPDF.creerFenetreGestion(
 				Object.assign(lParams, {
-					callbaskEvenement: (aLigne) => {
+					callbaskEvenement: async (aLigne) => {
 						if (aLigne >= 0) {
 							const lService = GEtatUtilisateur.listeCloud.get(aLigne);
-							ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
-								ObjetFenetre_FichiersCloud_1.ObjetFenetre_FichiersCloud,
-								{
-									pere: lParams.instance || {},
-									evenement(aParam) {
-										if (
-											aParam.listeNouveauxDocs &&
-											aParam.listeNouveauxDocs.count() > 0
-										) {
-											aResolve(aParam.listeNouveauxDocs);
-										}
-									},
-								},
-							).setDonnees({ service: lService.getGenre() });
+							const lResult =
+								await exports.UtilitaireGestionCloudEtPDF.ouvrirFenetreChoixFichierCloud(
+									{ service: lService, instance: lParams.instance || {} },
+								);
+							aResolve(lResult);
 						}
 					},
 				}),

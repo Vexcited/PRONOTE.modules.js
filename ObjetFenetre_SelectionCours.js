@@ -15,7 +15,6 @@ class ObjetFenetre_SelectionCours extends ObjetFenetre_1.ObjetFenetre {
 			hauteur: 700,
 			largeur: 350,
 			listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
-			heightMax_mobile: true,
 		});
 	}
 	construireInstances() {

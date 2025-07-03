@@ -9,6 +9,9 @@ const WSGestionCAS_1 = require("WSGestionCAS");
 const WSGestionCAS_2 = require("WSGestionCAS");
 const WSGestionCAS_3 = require("WSGestionCAS");
 const WSGestionCAS_4 = require("WSGestionCAS");
+const GUID_1 = require("GUID");
+const AccessApp_1 = require("AccessApp");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
 var GenreChoixIdentifiantCommunCAS;
 (function (GenreChoixIdentifiantCommunCAS) {
 	GenreChoixIdentifiantCommunCAS[
@@ -23,22 +26,34 @@ class ObjetFenetre_ParametresCAS extends ObjetFenetre_1.ObjetFenetre {
 		super(...aParams);
 		this.idSaisieAttributCAS = this.Nom + "_AttributCAS_";
 		this.idSaisieCategories = this.Nom + "_inputSaisieCategories_";
-		this.idIdentifiantCommunSubject =
-			this.Nom + "_" + GenreChoixIdentifiantCommunCAS.subject;
-		this.idIdentifiantCommunAttributCAS =
-			this.Nom + "_" + GenreChoixIdentifiantCommunCAS.login;
 		this.idComboMethodeIdentification =
 			this.Nom + "_comboMethodeIdentification";
 		this.idComboTypeDestinataire = this.Nom + "_comboTypeDestinataire";
 		this.idEcran = this.Nom + "_EcranMI_";
-		this.nameRadioIdentifiantCommun = this.Nom + "identifiantCommun";
 		this.donneesRecues = false;
+		const lTitreFenetre = [];
+		lTitreFenetre.push(
+			IE.jsx.str(
+				"div",
+				{ class: "flex-contain flex-center full-width" },
+				IE.jsx.str(
+					"div",
+					{ class: "fluid-bloc" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"pageParametrageCAS.titreFenetreParametresCAS",
+					),
+				),
+				IE.jsx.str("ie-btnimage", {
+					class: "icon_question btnImageIcon mrfiche",
+					"ie-model": this.jsxModeleBoutonMrFiche.bind(this),
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"fenetreParametresCAS.titreMrFiche",
+					),
+				}),
+			),
+		);
 		this.setOptionsFenetre({
-			titre:
-				ObjetTraduction_1.GTraductions.getValeur(
-					"pageParametrageCAS.titreFenetreParametresCAS",
-				) +
-				'<ie-btnicon class="icon_question bt-activable" style="float:right;" ie-model="btnMrFiche"></ie-btnicon>',
+			titre: lTitreFenetre.join(""),
 			largeur: 750,
 			avecScroll: true,
 			hauteurMaxContenu: 380,
@@ -74,11 +89,12 @@ class ObjetFenetre_ParametresCAS extends ObjetFenetre_1.ObjetFenetre {
 			messageInterdireModeDoubleAuthentification: "",
 		};
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			btnMrFiche: {
-				event() {
-					GApplication.getMessage().afficher({
+	jsxModeleBoutonMrFiche() {
+		return {
+			event: () => {
+				(0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
 						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.MrFiche,
 						titre: ObjetTraduction_1.GTraductions.getValeur(
 							"fenetreParametresCAS.titreMrFiche",
@@ -87,15 +103,52 @@ class ObjetFenetre_ParametresCAS extends ObjetFenetre_1.ObjetFenetre {
 							"fenetreParametresCAS.msgMrFiche",
 						),
 					});
-				},
 			},
-		});
+		};
 	}
-	getParametresSelonInactif(aInactif = false) {
-		const lParamsInactifs =
+	jsxModeleRadioIdentifiantCommun(aGenreIdentifiantCommun) {
+		return {
+			getValue: () => {
+				let lEstChecked = false;
+				if (aGenreIdentifiantCommun === GenreChoixIdentifiantCommunCAS.login) {
+					lEstChecked = !!this.utiliserAttributLogin;
+				} else {
+					lEstChecked = !this.utiliserAttributLogin;
+				}
+				return lEstChecked;
+			},
+			setValue: (aValue) => {
+				if (aGenreIdentifiantCommun === GenreChoixIdentifiantCommunCAS.login) {
+					this.utiliserAttributLogin = aValue;
+				} else {
+					this.utiliserAttributLogin = !aValue;
+				}
+				const lAttributCAS = this.getAttributCASParGenre(
+					WSGestionCAS_1.ETypeAttributUtilisateurCASSvcW.AUC_Login,
+				);
+				const lId = this._getIdSaisieAttributsCAS(lAttributCAS.genre);
+				ObjetHtml_1.GHtml.setDisabled(
+					lId,
+					aGenreIdentifiantCommun !== GenreChoixIdentifiantCommunCAS.login,
+				);
+			},
+			getName: () => {
+				return `${this.Nom}_IdentifiantCommun`;
+			},
+			getDisabled: () => {
+				return this.estParametresInactifs();
+			},
+		};
+	}
+	estParametresInactifs(aInactif = false) {
+		return (
 			this.estServeurActif() ||
 			this.donneesFenetre.avecParametresInactifs() ||
-			(aInactif !== null && aInactif !== undefined ? aInactif : false);
+			(aInactif !== null && aInactif !== undefined ? aInactif : false)
+		);
+	}
+	getParametresSelonInactif(aInactif = false) {
+		const lParamsInactifs = this.estParametresInactifs(aInactif);
 		return {
 			actif: lParamsInactifs ? "disabled" : "",
 			curseur: lParamsInactifs ? "SansMain" : "AvecMain",
@@ -121,16 +174,20 @@ class ObjetFenetre_ParametresCAS extends ObjetFenetre_1.ObjetFenetre {
 	composeContenu() {
 		const H = [];
 		H.push(
-			'<div class="Texte10">',
-			this.composeChoixIdentifiantCommun(),
-			"</div>",
-		);
-		H.push(
-			'<div style="height:',
-			this.donneesFenetre.hauteurContenuCAS,
-			'px" class="Texte10">',
-			this.composeGroupBox1ereConnexion(),
-			"</div>",
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"div",
+					{ class: "MargeDroit" },
+					this.composeChoixIdentifiantCommun(),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "MargeDroit" },
+					this.composeGroupBox1ereConnexion(),
+				),
+			),
 		);
 		return H.join("");
 	}
@@ -138,123 +195,119 @@ class ObjetFenetre_ParametresCAS extends ObjetFenetre_1.ObjetFenetre {
 		const H = [];
 		if (this.donneesRecues) {
 			H.push(
-				'<fieldset class="Espace AlignementGauche Texte10" style="border:1px solid ',
-				GCouleur.intermediaire,
+				'<fieldset class="Espace AlignementGauche" style="border:1px solid ',
+				(0, AccessApp_1.getApp)().getCouleur().intermediaire,
 				';">',
 			);
 			H.push(
-				'<legend class="Gras Espace" style="color:',
-				GCouleur.texte,
-				';">',
-			);
-			H.push(
-				"<label>",
-				ObjetTraduction_1.GTraductions.getValeur(
-					"fenetreParametresCAS.lblGroupBoxIdCommun",
+				IE.jsx.str(
+					"legend",
+					{
+						class: "Gras Espace",
+						style: { color: (0, AccessApp_1.getApp)().getCouleur().texte },
+					},
+					IE.jsx.str(
+						"label",
+						null,
+						ObjetTraduction_1.GTraductions.getValeur(
+							"fenetreParametresCAS.lblGroupBoxIdCommun",
+						),
+					),
 				),
-				"</label>",
-			);
-			H.push("</legend>");
-			H.push('<table class="Texte10 Espace">');
-			H.push("<tr>");
-			const lLoginChecked = this.utiliserAttributLogin ? "checked" : "";
-			const lSubjectChecked = this.utiliserAttributLogin ? "" : "checked";
-			const p = this.getParametresSelonInactif();
-			H.push(
-				'<td style="width:270px;">',
-				'<input name="' +
-					this.nameRadioIdentifiantCommun +
-					'" id="' +
-					this.idIdentifiantCommunSubject +
-					'" type="radio" ' +
-					lSubjectChecked +
-					" " +
-					p.actif +
-					' onclick ="' +
-					this.Nom +
-					".surClickBtnRadioIdentifiantCommun(" +
-					GenreChoixIdentifiantCommunCAS.subject +
-					')" ></input>',
-				'<label for="' + this.idIdentifiantCommunSubject + '">',
-				ObjetTraduction_1.GTraductions.getValeur(
-					"fenetreParametresCAS.idSubject",
-				),
-				"</label>",
-				"</td>",
-			);
-			H.push(
-				" <td>",
-				'<input name="' +
-					this.nameRadioIdentifiantCommun +
-					'" id="' +
-					this.idIdentifiantCommunAttributCAS +
-					'" type="radio" ' +
-					lLoginChecked +
-					" " +
-					p.actif +
-					' onclick ="' +
-					this.Nom +
-					".surClickBtnRadioIdentifiantCommun(" +
-					GenreChoixIdentifiantCommunCAS.login +
-					')"></input>',
-				'<label for="' + this.idIdentifiantCommunAttributCAS + '">',
-				ObjetTraduction_1.GTraductions.getValeur(
-					"fenetreParametresCAS.idAttribut",
-				),
-				"</label>",
-				"</td>",
 			);
 			const lAttributCAS = this.getAttributCASParGenre(
 				WSGestionCAS_1.ETypeAttributUtilisateurCASSvcW.AUC_Login,
 			);
+			const lIdRadioIdentifiantLogin = "radioIdentifiantCommunLogin";
 			H.push(
-				' <td class="Espace">',
-				this.composeZoneSaisieAttributCAS(
-					lAttributCAS,
-					!this.utiliserAttributLogin,
+				IE.jsx.str(
+					"table",
+					{ class: "Espace" },
+					IE.jsx.str(
+						"tr",
+						null,
+						IE.jsx.str(
+							"td",
+							{ style: "width:270px;" },
+							IE.jsx.str(
+								"ie-radio",
+								{
+									"ie-model": this.jsxModeleRadioIdentifiantCommun.bind(
+										this,
+										GenreChoixIdentifiantCommunCAS.subject,
+									),
+								},
+								ObjetTraduction_1.GTraductions.getValeur(
+									"fenetreParametresCAS.idSubject",
+								),
+							),
+						),
+						IE.jsx.str(
+							"td",
+							null,
+							IE.jsx.str(
+								"ie-radio",
+								{
+									id: "lIdRadioIdentifiantLogin",
+									"ie-model": this.jsxModeleRadioIdentifiantCommun.bind(
+										this,
+										GenreChoixIdentifiantCommunCAS.login,
+									),
+								},
+								ObjetTraduction_1.GTraductions.getValeur(
+									"fenetreParametresCAS.idAttribut",
+								),
+							),
+						),
+						IE.jsx.str(
+							"td",
+							{ class: "Espace" },
+							this.composeZoneSaisieAttributCAS(
+								lAttributCAS,
+								lIdRadioIdentifiantLogin,
+								!this.utiliserAttributLogin,
+							),
+						),
+					),
 				),
-				"</td>",
 			);
-			H.push("</tr>");
-			H.push("</table>");
 			H.push("</fieldset>");
 		}
 		return H.join("");
-	}
-	surClickBtnRadioIdentifiantCommun(aChoixIdentifiantCommunCAS) {
-		const lAttributCAS = this.getAttributCASParGenre(
-			WSGestionCAS_1.ETypeAttributUtilisateurCASSvcW.AUC_Login,
-		);
-		const lId = this._getIdSaisieAttributsCAS(lAttributCAS.genre);
-		ObjetHtml_1.GHtml.setDisabled(
-			lId,
-			aChoixIdentifiantCommunCAS !== GenreChoixIdentifiantCommunCAS.login,
-		);
 	}
 	composeGroupBox1ereConnexion() {
 		const H = [];
 		if (this.donneesRecues) {
 			H.push(
-				'<fieldset style="height:100%" class="Espace AlignementGauche Texte10" style="border:1px solid ',
-				GCouleur.intermediaire,
-				';">',
-			);
-			H.push(
-				'<legend class="Gras Espace" style="color:',
-				GCouleur.texte,
-				';">',
-			);
-			H.push(
-				"<label>",
-				ObjetTraduction_1.GTraductions.getValeur(
-					"fenetreParametresCAS.lblGroupBoxPremiereConnexion",
+				IE.jsx.str(
+					"fieldset",
+					{
+						class: "Espace AlignementGauche",
+						style: {
+							height: "100%",
+							border:
+								"1px solid " +
+								(0, AccessApp_1.getApp)().getCouleur().intermediaire,
+						},
+					},
+					IE.jsx.str(
+						"legend",
+						{
+							class: "Gras Espace",
+							style: { color: (0, AccessApp_1.getApp)().getCouleur().texte },
+						},
+						IE.jsx.str(
+							"label",
+							null,
+							ObjetTraduction_1.GTraductions.getValeur(
+								"fenetreParametresCAS.lblGroupBoxPremiereConnexion",
+							),
+						),
+					),
+					this.composeComboMethodeIdentification(),
+					this.composeEcransMethodeIdentification(),
 				),
-				"</label>",
 			);
-			H.push("</legend>");
-			H.push(this.composeComboMethodeIdentification());
-			H.push(this.composeEcransMethodeIdentification());
-			H.push("</fieldset>");
 		}
 		return H.join("");
 	}
@@ -293,6 +346,7 @@ class ObjetFenetre_ParametresCAS extends ObjetFenetre_1.ObjetFenetre {
 		}
 	}
 	composeIdentificationChercherIdParProduit() {
+		const lIdLabelAttributCas = "attributcas_" + GUID_1.GUID.getId();
 		const H = [];
 		H.push(
 			'<div id="' +
@@ -310,10 +364,13 @@ class ObjetFenetre_ParametresCAS extends ObjetFenetre_1.ObjetFenetre {
 		H.push("<table>");
 		H.push("<tr>");
 		H.push(
-			"<td>" +
+			'<td id="',
+			lIdLabelAttributCas,
+			'">' +
 				ObjetTraduction_1.GTraductions.getValeur(
-					"fenetreParametresCAS.attributCAS",
-				)[WSGestionCAS_1.ETypeAttributUtilisateurCASSvcW.AUC_IdProduit] +
+					"fenetreParametresCAS.attributCAS." +
+						WSGestionCAS_1.ETypeAttributUtilisateurCASSvcW.AUC_IdProduit,
+				) +
 				"</td>",
 		);
 		H.push(
@@ -322,6 +379,7 @@ class ObjetFenetre_ParametresCAS extends ObjetFenetre_1.ObjetFenetre {
 					this.getAttributCASParGenre(
 						WSGestionCAS_1.ETypeAttributUtilisateurCASSvcW.AUC_IdProduit,
 					),
+					lIdLabelAttributCas,
 				) +
 				"</td>",
 		);
@@ -392,12 +450,12 @@ class ObjetFenetre_ParametresCAS extends ObjetFenetre_1.ObjetFenetre {
 		if (this.donneesRecues) {
 			H.push(
 				'<fieldset class="Espace AlignementGauche Texte10" style="border:1px solid ',
-				GCouleur.intermediaire,
+				(0, AccessApp_1.getApp)().getCouleur().intermediaire,
 				';">',
 			);
 			H.push(
 				'<legend class="Gras Espace" style="color:',
-				GCouleur.texte,
+				(0, AccessApp_1.getApp)().getCouleur().texte,
 				';">',
 			);
 			H.push(
@@ -416,20 +474,26 @@ class ObjetFenetre_ParametresCAS extends ObjetFenetre_1.ObjetFenetre {
 			H.push('<table class="Texte10 full-width">');
 			const lNbr = this.correspEspaceCategories.length;
 			for (let i = 0; i < lNbr; i++) {
+				const lIdLabel = "idLblCorrespondanceEsp_" + i;
 				const lCorresp = this.correspEspaceCategories[i];
 				H.push("<tr>");
 				H.push(
 					'<td style="width:200px;" class="EspaceDroit AlignementDroit">',
+					'<label id="',
+					lIdLabel,
+					'">',
 					ObjetTraduction_1.GTraductions.getValeur(
 						"fenetreParametresCAS.espace." + lCorresp.espace,
 					),
+					"</label>",
 					"</td>",
 				);
 				H.push(
-					'<td  class="EspaceGauche PetitEspaceBas GrandEspaceDroit">',
+					'<td class="EspaceGauche PetitEspaceBas GrandEspaceDroit">',
 					this.composeZoneSaisie(
 						this._getIdSaisieCategories(lCorresp.espace),
 						lCorresp.categories,
+						lIdLabel,
 					),
 					"</td>",
 				);
@@ -456,12 +520,12 @@ class ObjetFenetre_ParametresCAS extends ObjetFenetre_1.ObjetFenetre {
 		if (this.donneesRecues) {
 			H.push(
 				'<fieldset class="Espace AlignementGauche Texte10" style="border:1px solid ',
-				GCouleur.intermediaire,
+				(0, AccessApp_1.getApp)().getCouleur().intermediaire,
 				';">',
 			);
 			H.push(
 				'<legend class="Gras Espace" style="color:',
-				GCouleur.texte,
+				(0, AccessApp_1.getApp)().getCouleur().texte,
 				';">',
 			);
 			H.push(
@@ -478,8 +542,11 @@ class ObjetFenetre_ParametresCAS extends ObjetFenetre_1.ObjetFenetre {
 				if (i % 2 === 0) {
 					H.push("<tr>");
 				}
+				const lIdLabelAttributCas = GUID_1.GUID.getId();
 				H.push(
-					'<td style="width:10px;" class="EspaceGauche">',
+					'<td style="width:10px;" class="EspaceGauche" id="',
+					lIdLabelAttributCas,
+					'">',
 					ObjetChaine_1.GChaine.insecable(
 						ObjetTraduction_1.GTraductions.getValeur(
 							"fenetreParametresCAS.attributCAS",
@@ -489,7 +556,10 @@ class ObjetFenetre_ParametresCAS extends ObjetFenetre_1.ObjetFenetre {
 				);
 				H.push(
 					'<td style="width:120px;" class="GrandEspaceDroit PetitEspaceBas EspaceGauche">',
-					this.composeZoneSaisieAttributCAS(this.getAttributCASParGenre(T[i])),
+					this.composeZoneSaisieAttributCAS(
+						this.getAttributCASParGenre(T[i]),
+						lIdLabelAttributCas,
+					),
 					"</td>",
 				);
 				if (i % 2 === 1 || i === T.length - 1) {
@@ -501,10 +571,11 @@ class ObjetFenetre_ParametresCAS extends ObjetFenetre_1.ObjetFenetre {
 		}
 		return H.join("");
 	}
-	composeZoneSaisieAttributCAS(aAttributCAS, aInactif = false) {
+	composeZoneSaisieAttributCAS(aAttributCAS, aIdLabelledBy, aInactif = false) {
 		return this.composeZoneSaisie(
 			this._getIdSaisieAttributsCAS(aAttributCAS.genre),
 			aAttributCAS.nom,
+			aIdLabelledBy,
 			aInactif,
 		);
 	}
@@ -520,24 +591,28 @@ class ObjetFenetre_ParametresCAS extends ObjetFenetre_1.ObjetFenetre {
 		}
 		return null;
 	}
-	composeZoneSaisie(aId, aContenu, aInactif = false) {
+	composeZoneSaisie(aId, aContenu, aIdLabelledBy, aInactif = false) {
 		const H = [];
 		const p = this.getParametresSelonInactif(aInactif);
 		H.push(
 			'<input id="' +
 				aId +
+				'" aria-labelledby="' +
+				aIdLabelledBy +
 				'" onkeyup="' +
 				this.Nom +
 				'.surEvenementKeyUp()" class="Texte10 EspaceGauche ' +
 				p.curseur +
 				'" style="width:100%; ',
-			ObjetStyle_1.GStyle.composeCouleurBordure(GCouleur.noir),
+			ObjetStyle_1.GStyle.composeCouleurBordure(
+				(0, AccessApp_1.getApp)().getCouleur().noir,
+			),
 			'" type="text" value="' + aContenu + '" ' + p.actif + "></input>",
 		);
 		return H.join("");
 	}
 	surEvenementKeyUp() {
-		if (GNavigateur.isToucheRetourChariot()) {
+		if (ObjetNavigateur_1.Navigateur.isToucheRetourChariot()) {
 			this.setBoutonFocus(0);
 		}
 	}
@@ -564,10 +639,12 @@ class ObjetFenetre_ParametresCAS extends ObjetFenetre_1.ObjetFenetre {
 				if (lVerif.estCorrect) {
 					this.callback.appel(aNumeroBouton, lDonnees);
 				} else {
-					GApplication.getMessage().afficher({
-						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-						message: lVerif.msgErreur,
-					});
+					(0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+							message: lVerif.msgErreur,
+						});
 					lFermer = false;
 				}
 				break;
@@ -616,9 +693,7 @@ class ObjetFenetre_ParametresCAS extends ObjetFenetre_1.ObjetFenetre {
 			this.idComboMethodeIdentification,
 		);
 		return {
-			utiliserAttributLogin: ObjetHtml_1.GHtml.getCheckBox(
-				this.idIdentifiantCommunAttributCAS,
-			),
+			utiliserAttributLogin: this.utiliserAttributLogin,
 			modePremiereConnexion:
 				this.donneesFenetre.ordreModePremiereConnexionCasSvcW[
 					lHtmlComboElem.selectedIndex

@@ -97,8 +97,12 @@ exports.TypeDroits = {
 	listeDiffusion: { avecPublication: 1 },
 	casierNumerique: {
 		avecAccesALaListeDesDocumentEleve: 1,
+		gererLaCollecteDeDocuments: 1,
+		collecterDocsAupresDesEleves: 1,
+		collecterDocsAupresDesResponsables: 1,
 		avecSaisieDocumentsCasiersIntervenant: 1,
 		avecSaisieDocumentsCasiersResponsable: 1,
+		accesSignatureNumerique: 1,
 	},
 	dossierVS: {
 		creerDossiersVS: 1,
@@ -171,7 +175,6 @@ exports.TypeDroits = {
 		appelSaisirMotifJustifDAbsence: 1,
 		gestionTwitter: 1,
 		gestionBulletinClasse: 1,
-		gestionNathan: 1,
 		gestionPunitions: 1,
 		gestionInfirmerie: 1,
 		gestionPermanence: 1,
@@ -187,10 +190,13 @@ exports.TypeDroits = {
 		afficherProjetsAccompagnement: 1,
 		saisieEtendueAbsenceDepuisAppel: 1,
 		importExportEducationNationale: 1,
+		avecCommissions: 1,
 		gestionCDT: 1,
 		gestionPeriodeNotation: 1,
 		gestionARBulletins: 1,
 		avecTransformationFluxFichier: 1,
+		gestionQCM: 1,
+		gestionInfosSondage: 1,
 	},
 	avecAccesRemplacementsProfs: 1,
 	voirAbsencesEtRemplacementsProfs: 1,
@@ -435,6 +441,15 @@ class ObjetDroitsPN {
 				);
 			case exports.TypeDroits.casierNumerique.avecAccesALaListeDesDocumentEleve:
 				return this._droits.avecAccesALaListeDesDocumentEleve;
+			case exports.TypeDroits.casierNumerique.gererLaCollecteDeDocuments:
+				return this._droits.gererLaCollecteDeDocuments;
+			case exports.TypeDroits.casierNumerique.collecterDocsAupresDesEleves:
+				return this._droits.collecterDocsAupresDesEleves;
+			case exports.TypeDroits.casierNumerique
+				.collecterDocsAupresDesResponsables:
+				return this._droits.collecterDocsAupresDesResponsables;
+			case exports.TypeDroits.casierNumerique.accesSignatureNumerique:
+				return this._droits.accesSignatureNumerique;
 			case exports.TypeDroits.dossierVS.creerDossiersVS:
 				return this._droits.CreerDossiersVS && !lEstEnConsultation;
 			case exports.TypeDroits.dossierVS.modifierDossiersVS:
@@ -662,8 +677,6 @@ class ObjetDroitsPN {
 				return this._droitsSession.fonctionnalites.gestionTwitter;
 			case exports.TypeDroits.fonctionnalites.gestionBulletinClasse:
 				return this._droitsSession.fonctionnalites.gestionBulletinClasse;
-			case exports.TypeDroits.fonctionnalites.gestionNathan:
-				return this._droitsSession.fonctionnalites.gestionNathan;
 			case exports.TypeDroits.fonctionnalites.gestionPunitions:
 				return this._droitsSession.fonctionnalites.gestionPunitions;
 			case exports.TypeDroits.fonctionnalites.gestionCDT:
@@ -704,6 +717,12 @@ class ObjetDroitsPN {
 			case exports.TypeDroits.fonctionnalites.avecTransformationFluxFichier:
 				return this._droitsSession.fonctionnalites
 					.avecTransformationFluxFichier;
+			case exports.TypeDroits.fonctionnalites.avecCommissions:
+				return this._droits.avecCommissions;
+			case exports.TypeDroits.fonctionnalites.gestionQCM:
+				return this._droitsSession.fonctionnalites.gestionQCM;
+			case exports.TypeDroits.fonctionnalites.gestionInfosSondage:
+				return this._droitsSession.fonctionnalites.gestionInfosSondage;
 			default:
 				return false;
 		}
@@ -773,6 +792,10 @@ class ObjetDroitsPN {
 			avecSaisieDocumentsCasiersIntervenant: false,
 			avecSaisieDocumentsCasiersResponsable: false,
 			avecAccesALaListeDesDocumentEleve: false,
+			gererLaCollecteDeDocuments: false,
+			collecterDocsAupresDesEleves: false,
+			collecterDocsAupresDesResponsables: false,
+			accesSignatureNumerique: false,
 			CreerDossiersVS: false,
 			ModifierDossiersVS: false,
 			SaisieMotifsDossiersVS: false,
@@ -789,6 +812,7 @@ class ObjetDroitsPN {
 			avecRecapPunitions: false,
 			avecRecapSanctions: false,
 			avecCreerMotifIncidentPunitionSanction: false,
+			avecCommissions: false,
 			avecAccesRemplacementsProfs: false,
 			voirAbsencesEtRemplacementsProfs: false,
 			sePorterVolontaireRemplacement: false,
@@ -876,7 +900,6 @@ class ObjetDroitsPN {
 				appelSaisirMotifJustifDAbsence: false,
 				gestionTwitter: false,
 				gestionBulletinClasse: true,
-				gestionNathan: true,
 				gestionPunitions: true,
 				gestionInfirmerie: true,
 				gestionPermanence: true,
@@ -896,6 +919,8 @@ class ObjetDroitsPN {
 				gestionPeriodeNotation: true,
 				gestionARBulletins: false,
 				avecTransformationFluxFichier: false,
+				gestionQCM: true,
+				gestionInfosSondage: true,
 			},
 		};
 	}

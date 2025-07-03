@@ -1,8 +1,8 @@
-const { GChaine } = require("ObjetChaine.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class DonneesListe_CoursNonAssures extends ObjetDonneesListe {
+exports.DonneesListe_CoursNonAssures = void 0;
+const ObjetDate_1 = require("ObjetDate");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class DonneesListe_CoursNonAssures extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aOptions) {
 		let lCumul = null;
 		aDonnees.parcourir((D) => {
@@ -51,14 +51,24 @@ class DonneesListe_CoursNonAssures extends ObjetDonneesListe {
 						? aParams.article.strProf || ""
 						: aParams.article.strMatiere
 							? aParams.article.coEnseignement
-								? aParams.article.strMatiere +
-									'<i style="float:right; font-size:1.4rem;" class="icon_co_enseignement" ie-hint="\'' +
-									GChaine.toTitle(
-										GTraductions.getValeur("CoursNonAssures.CoEnseignement"),
-									) +
-									"'\"></i>"
+								? IE.jsx.str(
+										IE.jsx.fragment,
+										null,
+										aParams.article.strMatiere,
+										IE.jsx.str("i", {
+											style: "float:right; font-size:1.4rem;",
+											class: "icon_co_enseignement",
+											"ie-tooltiplabel":
+												ObjetTraduction_1.GTraductions.getValeur(
+													"CoursNonAssures.CoEnseignement",
+												),
+											role: "img",
+										}),
+									)
 								: aParams.article.strMatiere
-							: GTraductions.getValeur("CoursNonAssures.SansSalle");
+							: ObjetTraduction_1.GTraductions.getValeur(
+									"CoursNonAssures.SansSalle",
+								);
 				} else {
 					result = aParams.article.strProf || "";
 				}
@@ -74,7 +84,10 @@ class DonneesListe_CoursNonAssures extends ObjetDonneesListe {
 				return aParams.article.strDebut || "";
 			case DonneesListe_CoursNonAssures.colonnes.date:
 				return aParams.article.dateDuCours
-					? GDate.formatDate(aParams.article.dateDuCours, "%JJ/%MM/%AAAA")
+					? ObjetDate_1.GDate.formatDate(
+							aParams.article.dateDuCours,
+							"%JJ/%MM/%AAAA",
+						)
 					: "";
 			case DonneesListe_CoursNonAssures.colonnes.aDonneLieu:
 				return aParams.article.strRemplacement || "";
@@ -85,14 +98,14 @@ class DonneesListe_CoursNonAssures extends ObjetDonneesListe {
 		if (
 			aParams.idColonne === DonneesListe_CoursNonAssures.colonnes.professeur
 		) {
-			return ObjetDonneesListe.ETypeCellule.Html;
+			return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
 	getContenuTotal(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_CoursNonAssures.colonnes.professeur:
-				return GTraductions.getValeur("Total");
+				return ObjetTraduction_1.GTraductions.getValeur("Total");
 			case DonneesListe_CoursNonAssures.colonnes.duree:
 				return this.Donnees.total;
 		}
@@ -108,7 +121,7 @@ class DonneesListe_CoursNonAssures extends ObjetDonneesListe {
 	}
 	getCouleurCellule(aParams) {
 		if (aParams.article.estUnDeploiement) {
-			return ObjetDonneesListe.ECouleurCellule.Deploiement;
+			return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Deploiement;
 		}
 	}
 	getClass(aParams) {
@@ -123,13 +136,23 @@ class DonneesListe_CoursNonAssures extends ObjetDonneesListe {
 		return lClasses.join(" ");
 	}
 }
-DonneesListe_CoursNonAssures.colonnes = {
-	professeur: "CoursNonAssures_professeur",
-	matiere: "CoursNonAssures_matiere",
-	classe: "CoursNonAssures_classe",
-	duree: "CoursNonAssures_duree",
-	date: "CoursNonAssures_date",
-	debut: "CoursNonAssures_debut",
-	aDonneLieu: "CoursNonAssures_aDonneLieu",
-};
-module.exports = DonneesListe_CoursNonAssures;
+exports.DonneesListe_CoursNonAssures = DonneesListe_CoursNonAssures;
+(function (DonneesListe_CoursNonAssures) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["professeur"] = "CoursNonAssures_professeur";
+		colonnes["matiere"] = "CoursNonAssures_matiere";
+		colonnes["classe"] = "CoursNonAssures_classe";
+		colonnes["duree"] = "CoursNonAssures_duree";
+		colonnes["date"] = "CoursNonAssures_date";
+		colonnes["debut"] = "CoursNonAssures_debut";
+		colonnes["aDonneLieu"] = "CoursNonAssures_aDonneLieu";
+	})(
+		(colonnes =
+			DonneesListe_CoursNonAssures.colonnes ||
+			(DonneesListe_CoursNonAssures.colonnes = {})),
+	);
+})(
+	DonneesListe_CoursNonAssures ||
+		(exports.DonneesListe_CoursNonAssures = DonneesListe_CoursNonAssures = {}),
+);

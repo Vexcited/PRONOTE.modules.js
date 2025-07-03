@@ -5,10 +5,10 @@ const ObjetChaine_1 = require("ObjetChaine");
 const UtilitaireUrl_1 = require("UtilitaireUrl");
 const MethodesObjet_1 = require("MethodesObjet");
 const ObjetTraduction_1 = require("ObjetTraduction");
-const jsx_1 = require("jsx");
 const Enumere_Etat_1 = require("Enumere_Etat");
 const Enumere_Action_1 = require("Enumere_Action");
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
 class ObjetFenetre_DemandeDispense extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
@@ -21,29 +21,32 @@ class ObjetFenetre_DemandeDispense extends ObjetFenetre_1.ObjetFenetre {
 			],
 		});
 		if (!IE.estMobile) {
-			this.setOptionsFenetre({ hauteurMaxContenu: GNavigateur.clientH - 300 });
+			this.setOptionsFenetre({
+				hauteurMaxContenu: ObjetNavigateur_1.Navigateur.clientH - 300,
+			});
 		}
+	}
+	jsxModeleRadioValidation(aDispense, aEstAccepte) {
+		return {
+			getValue: () => {
+				if (this.filtreElementASaisir(aDispense)) {
+					return aDispense.estValider === aEstAccepte;
+				}
+				return false;
+			},
+			setValue: (aValue) => {
+				if (aDispense) {
+					aDispense.estValider = aEstAccepte;
+					aDispense.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+				}
+			},
+			getName: () => {
+				return `${this.Nom}_Validation_${aDispense.getNumero()}`;
+			},
+		};
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
-			chipsValidation: {
-				getValue(aEstAccepter, aNumero) {
-					const lElem =
-						aInstance.listeDemandesDispense.getElementParNumero(aNumero);
-					if (aInstance.filtreElementASaisir(lElem)) {
-						return lElem.estValider === aEstAccepter;
-					}
-					return false;
-				},
-				setValue(aEstAccepter, aNumero) {
-					const lElem =
-						aInstance.listeDemandesDispense.getElementParNumero(aNumero);
-					if (lElem) {
-						lElem.estValider = aEstAccepter;
-						lElem.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
-					}
-				},
-			},
 			fenetreBtn: {
 				getDisabled: function (aBoutonRepeat) {
 					var _a, _b, _c, _d;
@@ -140,8 +143,10 @@ class ObjetFenetre_DemandeDispense extends ObjetFenetre_1.ObjetFenetre {
 										ObjetChaine_1.GChaine.creerUrlBruteLienExterne(lEleve, {
 											libelle: "photo.jpg",
 										}),
-									"aria-hidden": "true",
 									class: "img-portrait",
+									"ie-imgviewer": true,
+									alt: lEleve.getLibelle(),
+									"data-libelle": lEleve.getLibelle(),
 								}),
 							),
 						),
@@ -181,11 +186,11 @@ class ObjetFenetre_DemandeDispense extends ObjetFenetre_1.ObjetFenetre {
 							"ie-radio",
 							{
 								class: "as-chips",
-								name: aDemande.getNumero(),
-								"ie-model": (0, jsx_1.jsxFuncAttr)("chipsValidation", [
+								"ie-model": this.jsxModeleRadioValidation.bind(
+									this,
+									aDemande,
 									true,
-									aDemande.getNumero(),
-								]),
+								),
 							},
 							ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.Accepter"),
 						),
@@ -193,11 +198,11 @@ class ObjetFenetre_DemandeDispense extends ObjetFenetre_1.ObjetFenetre {
 							"ie-radio",
 							{
 								class: ["as-chips", "indisponibilites"],
-								name: aDemande.getNumero(),
-								"ie-model": (0, jsx_1.jsxFuncAttr)("chipsValidation", [
+								"ie-model": this.jsxModeleRadioValidation.bind(
+									this,
+									aDemande,
 									false,
-									aDemande.getNumero(),
-								]),
+								),
 							},
 							ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.Refuser"),
 						),

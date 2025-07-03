@@ -46,4 +46,5 @@ var EGenreEspace;
 	EGenreEspace[(EGenreEspace["PrimDirection"] = 37)] = "PrimDirection";
 	EGenreEspace[(EGenreEspace["Mobile_PrimDirection"] = 38)] =
 		"Mobile_PrimDirection";
+	EGenreEspace[(EGenreEspace["Mobile_Entreprise"] = 39)] = "Mobile_Entreprise";
 })(EGenreEspace || (exports.EGenreEspace = EGenreEspace = {}));

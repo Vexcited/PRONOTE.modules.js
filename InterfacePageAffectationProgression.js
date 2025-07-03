@@ -38,6 +38,9 @@ const ObjetFenetre_ListeTAFFaits_2 = require("ObjetFenetre_ListeTAFFaits");
 const UtilitaireBoutonBandeau_1 = require("UtilitaireBoutonBandeau");
 const UtilitaireQCMPN_1 = require("UtilitaireQCMPN");
 const InterfaceGrilleEDT_1 = require("InterfaceGrilleEDT");
+const _ObjetDonneesTreeView_1 = require("_ObjetDonneesTreeView");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const UtilitaireSaisieCDT_1 = require("UtilitaireSaisieCDT");
 class InterfacePageAffectationProgression extends InterfacePage_1.InterfacePage {
 	constructor() {
 		super(...arguments);
@@ -85,7 +88,7 @@ class InterfacePageAffectationProgression extends InterfacePage_1.InterfacePage 
 		});
 		this.AddSurZone.push({ separateur: true });
 		this.AddSurZone.push({
-			html: UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnAfficherCoursAnnules(
+			html: UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnAfficherCoursAnnulesControleur(
 				"btnCoursAnnules",
 			),
 		});
@@ -124,7 +127,7 @@ class InterfacePageAffectationProgression extends InterfacePage_1.InterfacePage 
 			"div",
 			{ class: "full-height p-all flex-contain flex-gap" },
 			IE.jsx.str("div", {
-				id: this.getInstance(this.identSelectionProgression).getNom(),
+				id: this.getNomInstance(this.identSelectionProgression),
 				style: `min-width:400px; width:${this._getLargeurTreeView()}px`,
 			}),
 			IE.jsx.str(
@@ -132,7 +135,7 @@ class InterfacePageAffectationProgression extends InterfacePage_1.InterfacePage 
 				{ class: "fluid-bloc full-height flex-contain cols" },
 				IE.jsx.str("div", {
 					class: "fix-bloc",
-					id: this.getInstance(this.IdentCalendrier).getNom(),
+					id: this.getNomInstance(this.IdentCalendrier),
 				}),
 				IE.jsx.str("div", {
 					class: "fluid-bloc",
@@ -384,14 +387,14 @@ class InterfacePageAffectationProgression extends InterfacePage_1.InterfacePage 
 						this.draggable.setContenuHtml(
 							this.getContenuDraggable(
 								"Image_Arbre_Drag_Interdit",
-								ObjetTraduction_1.GTraductions.getValeur("treeview.interdit"),
+								_ObjetDonneesTreeView_1.TradTreeview.interdit,
 							),
 						);
 					} else if (lParam.cours.AvecVisa) {
 						this.draggable.setContenuHtml(
 							this.getContenuDraggable(
 								"Image_Arbre_Drag_Interdit",
-								ObjetTraduction_1.GTraductions.getValeur("treeview.interdit") +
+								_ObjetDonneesTreeView_1.TradTreeview.interdit +
 									" : " +
 									ObjetTraduction_1.GTraductions.getValeur(
 										"progression.LeCahierEstVerrouille",
@@ -463,7 +466,7 @@ class InterfacePageAffectationProgression extends InterfacePage_1.InterfacePage 
 					}
 				} else {
 					if (
-						GNavigateur.BoutonSouris !==
+						ObjetNavigateur_1.Navigateur.BoutonSouris !==
 						Enumere_BoutonSouris_1.EGenreBoutonSouris.Gauche
 					) {
 						const lInstanceMenu = this.getInstance(this.IdentMenuContextuel);
@@ -682,11 +685,24 @@ class InterfacePageAffectationProgression extends InterfacePage_1.InterfacePage 
 		}
 		this.valider(aCours);
 	}
-	_reponseRequeteApresDropCours(aNode, aCours, aJSONReponse) {
+	async _reponseRequeteApresDropCours(aNode, aCours, aJSONReponse) {
 		let lTitre;
 		let H = [];
 		let lControleur;
 		let lFuncCreationElement = null;
+		if (
+			aNode.contenu.getGenre() ===
+			Enumere_Ressource_1.EGenreRessource.TravailAFaire
+		) {
+			let lAccepte =
+				await UtilitaireSaisieCDT_1.UtilitaireSaisieCDT.autoriserCreationTAF({
+					ajoutNouveauTAFInterdit: aJSONReponse.ajoutNouveauTAFInterdit,
+					messageSurNouveauTAF: aJSONReponse.messageSurNouveauTAF,
+				});
+			if (!lAccepte) {
+				return;
+			}
+		}
 		switch (aNode.contenu.getGenre()) {
 			case Enumere_Ressource_1.EGenreRessource.ContenuDeCours: {
 				lTitre = aJSONReponse.contenuRemplace

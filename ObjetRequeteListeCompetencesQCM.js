@@ -1,16 +1,9 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteListeCompetencesQCM extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
-	lancerRequete(aParam) {
-		$.extend(this.JSON, aParam);
-		return this.appelAsynchrone();
-	}
-	actionApresRequete() {
-		this.callbackReussite.appel(this.JSONReponse);
-	}
-}
-Requetes.inscrire("ListeCompetencesQCM", ObjetRequeteListeCompetencesQCM);
-module.exports = { ObjetRequeteListeCompetencesQCM };
+exports.ObjetRequeteListeCompetencesQCM = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteListeCompetencesQCM extends ObjetRequeteJSON_1.ObjetRequeteConsultation {}
+exports.ObjetRequeteListeCompetencesQCM = ObjetRequeteListeCompetencesQCM;
+CollectionRequetes_1.Requetes.inscrire(
+	"ListeCompetencesQCM",
+	ObjetRequeteListeCompetencesQCM,
+);

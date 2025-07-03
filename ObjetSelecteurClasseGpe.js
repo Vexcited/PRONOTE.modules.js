@@ -9,14 +9,9 @@ class ObjetSelecteurClasseGpe extends _ObjetSelecteur_1._ObjetSelecteur {
 	constructor(...aParams) {
 		super(...aParams);
 		this.setOptions({
-			labelWAI:
-				ObjetTraduction_1.GTraductions.getValeur(
-					"Fenetre_SaisieAgenda.PublicConcerne",
-				) +
-				" " +
-				ObjetTraduction_1.GTraductions.getValeur(
-					"Fenetre_SaisieAgenda.ClassesGroupes",
-				),
+			tooltip: ObjetTraduction_1.GTraductions.getValeur(
+				"fenetreSelectionClasseGroupe.titre",
+			),
 			avecSelectionObligatoire: false,
 		});
 	}
@@ -27,7 +22,7 @@ class ObjetSelecteurClasseGpe extends _ObjetSelecteur_1._ObjetSelecteur {
 		);
 	}
 	construitChaineLibelleNbSelections() {
-		const T = [];
+		const H = [];
 		const lNombresRessource = this._getNbClassesEtGroupesDuPublic(
 			this.listeSelection,
 			this.listeTotale,
@@ -46,7 +41,7 @@ class ObjetSelecteurClasseGpe extends _ObjetSelecteur_1._ObjetSelecteur {
 				lNombresRessource.nbClasses === lNombresRessource.nbTotalClasses &&
 				lLibelleClassesToutes
 			) {
-				T.push(lLibelleClassesToutes);
+				H.push(lLibelleClassesToutes);
 			} else {
 				const lLibelleClasses = lLibelleClassesParam
 					? lLibelleClassesParam
@@ -57,7 +52,7 @@ class ObjetSelecteurClasseGpe extends _ObjetSelecteur_1._ObjetSelecteur {
 						: lNombresRessource.nbClasses +
 							"/" +
 							lNombresRessource.nbTotalClasses;
-				T.push(lLibelleClasses + " (" + lDetail + ")");
+				H.push(lLibelleClasses + " (" + lDetail + ")");
 			}
 		}
 		if (lNombresRessource.nbGroupes > 0) {
@@ -65,7 +60,7 @@ class ObjetSelecteurClasseGpe extends _ObjetSelecteur_1._ObjetSelecteur {
 				lNombresRessource.nbGroupes === lNombresRessource.nbTotalGroupes &&
 				lLibelleGroupesTous
 			) {
-				T.push(lLibelleGroupesTous);
+				H.push(lLibelleGroupesTous);
 			} else {
 				const lLibelleGroupes = lLibelleGroupesParam
 					? lLibelleGroupesParam
@@ -76,10 +71,10 @@ class ObjetSelecteurClasseGpe extends _ObjetSelecteur_1._ObjetSelecteur {
 						: lNombresRessource.nbGroupes +
 							"/" +
 							lNombresRessource.nbTotalGroupes;
-				T.push(lLibelleGroupes + " (" + lDetail + ")");
+				H.push(lLibelleGroupes + " (" + lDetail + ")");
 			}
 		}
-		return ObjetChaine_1.GChaine.insecable(T.join(" "));
+		return ObjetChaine_1.GChaine.insecable(H.join(" "));
 	}
 	evntBtnSelection() {
 		const lInstance = this.getInstance(this.identFenetreSelection);

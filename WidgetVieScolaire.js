@@ -15,10 +15,12 @@ const ObjetTri_1 = require("ObjetTri");
 const Enumere_TriElement_1 = require("Enumere_TriElement");
 const UtilitaireContactReferents_1 = require("UtilitaireContactReferents");
 const ObjetMenuContextuel_1 = require("ObjetMenuContextuel");
+const AccessApp_1 = require("AccessApp");
 class WidgetVieScolaire extends ObjetWidget_1.Widget.ObjetWidget {
 	constructor(...aParams) {
 		super(...aParams);
-		this.etatUtilisateurSco = GEtatUtilisateur;
+		const lApplicationSco = (0, AccessApp_1.getApp)();
+		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
 		this.estEspaceParent = [
 			Enumere_Espace_1.EGenreEspace.Parent,
 			Enumere_Espace_1.EGenreEspace.PrimParent,
@@ -214,7 +216,7 @@ class WidgetVieScolaire extends ObjetWidget_1.Widget.ObjetWidget {
 		this.donnees = aParams.donnees;
 		this.creerObjets();
 		const lWidget = {
-			html: this.composeWidget(),
+			getHtml: this.composeWidget.bind(this),
 			nbrElements: this.donnees.listeAbsences.count(),
 			afficherMessage: false,
 		};
@@ -321,7 +323,7 @@ class WidgetVieScolaire extends ObjetWidget_1.Widget.ObjetWidget {
 					ObjetFenetre_DetailElementVS_1.ObjetFenetre_DetailElementVS,
 					{
 						pere: this,
-						evenement(aTypeEvenement, aDonnees) {
+						evenement(aNumeroBouton, aDonnees) {
 							this.utilitaireAbsence.eventApresFiche.call(this, lAbsence, {
 								element: aDonnees.element,
 								documents: aDonnees.documents,
@@ -370,16 +372,16 @@ class WidgetVieScolaire extends ObjetWidget_1.Widget.ObjetWidget {
 						lAbsence.getNumero(),
 					],
 				),
-				ieHintPJ: ObjetHtml_1.GHtml.composeAttr("ie-hint", "hintPJ", [
-					lAbsence.getNumero(),
-				]),
-				ieHintCommentaire: ObjetHtml_1.GHtml.composeAttr(
-					"ie-hint",
-					"hintCommentaire",
-					[lAbsence.getNumero()],
-				),
 			});
-			lFenetreDetailElement.setDonnees(lAbsence);
+			const lPropCommentaireObligatoire =
+				lAbsence.getGenre() === Enumere_Ressource_1.EGenreRessource.Absence
+					? "commentaireAbsenceObligatoire"
+					: "commentaireRetardObligatoire";
+			const lAvecCommentaireObligatoire =
+				!!this.donnees[lPropCommentaireObligatoire];
+			lFenetreDetailElement.setDonnees(lAbsence, {
+				avecCommentaireObligatoire: lAvecCommentaireObligatoire,
+			});
 		} else if (
 			lAbsence.getGenre() === Enumere_Ressource_1.EGenreRessource.Dispense &&
 			lEstAvecSaisie

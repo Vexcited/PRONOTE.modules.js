@@ -42,6 +42,12 @@ var TypeOrigineCreationCategorieCahierDeTexte;
 	TypeOrigineCreationCategorieCahierDeTexte[
 		(TypeOrigineCreationCategorieCahierDeTexte["OCCCDT_Pre_LienVisio"] = 12)
 	] = "OCCCDT_Pre_LienVisio";
+	TypeOrigineCreationCategorieCahierDeTexte[
+		(TypeOrigineCreationCategorieCahierDeTexte["OCCCDT_Pre_CCF"] = 13)
+	] = "OCCCDT_Pre_CCF";
+	TypeOrigineCreationCategorieCahierDeTexte[
+		(TypeOrigineCreationCategorieCahierDeTexte["OCCCDT_Pre_EC"] = 14)
+	] = "OCCCDT_Pre_EC";
 })(
 	TypeOrigineCreationCategorieCahierDeTexte ||
 		(exports.TypeOrigineCreationCategorieCahierDeTexte =
@@ -49,34 +55,22 @@ var TypeOrigineCreationCategorieCahierDeTexte;
 				{}),
 );
 const TypeOrigineCreationCategorieCahierDeTexteUtil = {
-	getImage(aGenre) {
+	getIcone(aGenre) {
 		switch (aGenre) {
-			case TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Devoir:
-				return "Image_IconeDS";
-			case TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Evaluation:
-				return "Image_IconeEvaluation";
-			case TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_EPI:
-				return "Image_IconeEPI";
-			case TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_AP:
-				return "Image_IconeAP";
 			case TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_LienVisio:
-				return "Image_CoursVirtuelCDT";
+				return "icon_cours_virtuel";
+			case TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Devoir:
+			case TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Evaluation:
+			case TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_EPI:
+			case TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_AP:
+			case TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_CCF:
+			case TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_EC:
+				return "icon-text";
 		}
 		return "";
 	},
-	getListeTypesAvecImage() {
-		return [
-			TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Devoir,
-			TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Evaluation,
-			TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_EPI,
-			TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_AP,
-			TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_LienVisio,
-		];
-	},
-	estTypeAvecImage(aType) {
-		return TypeOrigineCreationCategorieCahierDeTexteUtil.getListeTypesAvecImage().includes(
-			aType,
-		);
+	estTypeAvecIcone(aType) {
+		return TypeOrigineCreationCategorieCahierDeTexteUtil.getIcone(aType) !== "";
 	},
 };
 exports.TypeOrigineCreationCategorieCahierDeTexteUtil =

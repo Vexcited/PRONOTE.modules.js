@@ -2,19 +2,18 @@ exports.WidgetEDTJournalier = void 0;
 const ObjetIdentite_1 = require("ObjetIdentite");
 const ObjetCelluleDate_1 = require("ObjetCelluleDate");
 const ObjetDroitsPN_1 = require("ObjetDroitsPN");
-const tag_1 = require("tag");
-const UtilitaireEDTJournalier_1 = require("UtilitaireEDTJournalier");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetDate_1 = require("ObjetDate");
 const ObjetListeElements_1 = require("ObjetListeElements");
-const UtilitaireWidget_1 = require("UtilitaireWidget");
 const Enumere_EvenementWidget_1 = require("Enumere_EvenementWidget");
 const Enumere_Espace_1 = require("Enumere_Espace");
 const ObjetWidget_1 = require("ObjetWidget");
+const AccessApp_1 = require("AccessApp");
+const UtilitaireEDTJournalier_1 = require("UtilitaireEDTJournalier");
 class WidgetEDTJournalier extends ObjetWidget_1.Widget.ObjetWidget {
 	constructor(...aParams) {
 		super(...aParams);
-		this.applicationSco = GApplication;
+		this.applicationSco = (0, AccessApp_1.getApp)();
 		this.optionsFenetre = {};
 		this.parametres = {
 			avecCoursAnnule: true,
@@ -29,7 +28,7 @@ class WidgetEDTJournalier extends ObjetWidget_1.Widget.ObjetWidget {
 				$(this.node).on("click", () => {
 					if (aInstance.listeCoursFormate) {
 						const lCours = aInstance.listeCoursFormate.get(aIndex);
-						if (lCours.listeCours) {
+						if ("listeCours" in lCours && lCours.listeCours) {
 							UtilitaireEDTJournalier_1.UtilitaireEDTJournalier.popupCoursMultiple(
 								aInstance,
 								lCours,
@@ -42,7 +41,7 @@ class WidgetEDTJournalier extends ObjetWidget_1.Widget.ObjetWidget {
 			getNodeVisioCours: function (aNumeroCours, aIndexCours) {
 				$(this.node).on("click", () => {
 					const lCours = aInstance.listeCoursFormate.get(aIndexCours);
-					if (lCours && lCours.coursOriginal) {
+					if (lCours && "coursOriginal" in lCours && lCours.coursOriginal) {
 						let lCopieCours = lCours.coursOriginal;
 						if (lCours.coursOriginal.coursMultiple) {
 							lCopieCours =
@@ -66,17 +65,18 @@ class WidgetEDTJournalier extends ObjetWidget_1.Widget.ObjetWidget {
 		return lListeCours;
 	}
 	construire(aParams) {
-		this.donnees = aParams.instance.donnees;
-		this.donneesRequete = aParams.instance.donneesRequete;
-		this.donnees.EDT.jourSelectionne =
-			this.donneesRequete.EDT.date || this.donnees.EDT.dateSelection;
+		this.donnees = aParams.donnees;
+		this.donneesRequete =
+			aParams.instance.donneesRequete && aParams.instance.donneesRequete.EDT;
+		this.donnees.jourSelectionne =
+			this.donneesRequete.date || this.donnees.dateSelection;
 		this.listeCours = this.formatListeCours(
 			aParams.donnees.listeCours,
-			this.donnees.EDT.jourSelectionne,
+			this.donnees.jourSelectionne,
 		);
 		this._creerObjetsEDT();
 		const lWidget = {
-			html: this._composeWidgetEDTJournalier(),
+			getHtml: this._composeWidgetEDTJournalier.bind(this),
 			titre: [
 				Enumere_Espace_1.EGenreEspace.Accompagnant,
 				Enumere_Espace_1.EGenreEspace.Mobile_Accompagnant,
@@ -90,8 +90,8 @@ class WidgetEDTJournalier extends ObjetWidget_1.Widget.ObjetWidget {
 				{ id: this.dateEDT ? this.dateEDT.getNom() : null },
 			],
 		};
-		$.extend(true, this.donnees.EDT, lWidget);
-		aParams.construireWidget(this.donnees.EDT);
+		$.extend(true, this.donnees, lWidget);
+		aParams.construireWidget(this.donnees);
 		this._initialiserObjetsEDT();
 	}
 	_initialiserDateEDT(aInstance) {
@@ -113,73 +113,64 @@ class WidgetEDTJournalier extends ObjetWidget_1.Widget.ObjetWidget {
 	}
 	_evenementDateEDT(aDate) {
 		const lNumeroSemaine = IE.Cycles.cycleDeLaDate(aDate);
-		this.donneesRequete.EDT.date = aDate;
-		this.donneesRequete.EDT.numeroSemaine = lNumeroSemaine;
-		this.donnees.EDT.jourSelectionne = aDate;
-		this.donnees.EDT.numeroSemaine = lNumeroSemaine;
+		this.donneesRequete.date = aDate;
+		this.donneesRequete.numeroSemaine = lNumeroSemaine;
+		this.donnees.jourSelectionne = aDate;
+		this.donnees.numeroSemaine = lNumeroSemaine;
 		this.callback.appel(
-			this.donnees.EDT.genre,
+			this.donnees.genre,
 			Enumere_EvenementWidget_1.EGenreEvenementWidget.ActualiserWidget,
 		);
 	}
 	evenementProchaineDate() {
-		if (this.donnees && this.donnees.EDT && this.donnees.EDT.prochaineDate) {
-			this.donnees.EDT.jourSelectionne = this.donnees.EDT.prochaineDate;
-			this.donneesRequete.EDT.date = this.donnees.EDT.prochaineDate;
-			this.donneesRequete.EDT.numeroSemaine = IE.Cycles.cycleDeLaDate(
-				this.donnees.EDT.prochaineDate,
+		if (this.donnees && this.donnees && this.donnees.prochaineDate) {
+			this.donnees.jourSelectionne = this.donnees.prochaineDate;
+			this.donneesRequete.date = this.donnees.prochaineDate;
+			this.donneesRequete.numeroSemaine = IE.Cycles.cycleDeLaDate(
+				this.donnees.prochaineDate,
 			);
 			this.listeCours = this.formatListeCours(
-				this.donnees.EDT.listeCours,
-				this.donnees.EDT.prochaineDate,
+				this.donnees.listeCours,
+				this.donnees.prochaineDate,
 			);
-			this.donnees.EDT.prochaineDate = null;
+			this.donnees.prochaineDate = null;
 			this.afficherProchainJour = true;
-			this.actualiserWidgetEDT();
+			this.donnees.debutDemiPensionHebdo =
+				GParametres.PlacesParJour + this.donnees.debutDemiPensionHebdo;
+			this.donnees.finDemiPensionHebdo =
+				GParametres.PlacesParJour + this.donnees.finDemiPensionHebdo;
+			return {
+				listeCours: this.listeCours,
+				date: this.donneesRequete.date,
+				debutDemiPensionHebdo: this.donnees.debutDemiPensionHebdo,
+				finDemiPensionHebdo: this.donnees.finDemiPensionHebdo,
+			};
 		}
 	}
-	actualiserWidgetEDT() {
-		const lWidget = {
-			html: this._composeWidgetEDTJournalier(),
-			titre: [
-				Enumere_Espace_1.EGenreEspace.Accompagnant,
-				Enumere_Espace_1.EGenreEspace.Mobile_Accompagnant,
-			].includes(GEtatUtilisateur.GenreEspace)
-				? ObjetTraduction_1.GTraductions.getValeur("accueil.monEmploiDuTemps")
-				: "",
-			hint: ObjetTraduction_1.GTraductions.getValeur("accueil.emploiDuTemps"),
-			nbrElements: null,
-			afficherMessage: false,
-			listeElementsGraphiques: [
-				{ id: this.dateEDT ? this.dateEDT.getNom() : null },
-			],
-		};
-		$.extend(true, this.donnees.EDT, lWidget);
-		UtilitaireWidget_1.UtilitaireWidget.actualiserWidget(this);
-	}
 	_composeWidgetEDTJournalier() {
-		const lParams = {
+		let lParams = {
 			listeCours: this.listeCours,
-			date: this.donneesRequete.EDT.date || this.donnees.EDT.dateSelection,
-			exclusions:
-				this.donnees.EDT.absences && this.donnees.EDT.absences.joursCycle,
-			joursStage: this.donnees.EDT.joursStage,
-			disponibilites: this.donnees.EDT.disponibilites,
+			date: this.donneesRequete.date || this.donnees.dateSelection,
+			exclusions: this.donnees.absences && this.donnees.absences.joursCycle,
+			joursStage: this.donnees.joursStage,
+			disponibilites: this.donnees.disponibilites,
 			avecTrouEDT: true,
 			avecIconeAppel: true,
-			debutDemiPensionHebdo: this.donnees.EDT.debutDemiPensionHebdo,
-			finDemiPensionHebdo: this.donnees.EDT.finDemiPensionHebdo,
-			premierePlaceHebdoDuJour: this.donnees.EDT.premierePlaceHebdoDuJour,
+			debutDemiPensionHebdo: this.donnees.debutDemiPensionHebdo,
+			finDemiPensionHebdo: this.donnees.finDemiPensionHebdo,
+			premierePlaceHebdoDuJour: this.donnees.premierePlaceHebdoDuJour,
 			jourCycleSelectionne: 0,
 		};
-		if (this.donnees.EDT.prochaineDate) {
+		if (this.donnees.prochaineDate) {
 			const lEstJourCourant = ObjetDate_1.GDate.estJourCourant(lParams.date);
 			const lPlaceCourante = ObjetDate_1.GDate.dateEnPlaceHebdomadaire(
 				new Date(),
 			);
 			if (this.listeCours.count() === 0) {
-				this.evenementProchaineDate();
-				return;
+				lParams = Object.assign(
+					Object.assign({}, lParams),
+					this.evenementProchaineDate(),
+				);
 			} else {
 				const lDernierCours = this.listeCours.get(this.listeCours.count() - 1);
 				if (lDernierCours) {
@@ -193,31 +184,34 @@ class WidgetEDTJournalier extends ObjetWidget_1.Widget.ObjetWidget {
 						lPlaceCourante > lDernierCours.place &&
 						!lEstEnCours
 					) {
-						this.evenementProchaineDate();
-						return;
+						lParams = Object.assign(
+							Object.assign({}, lParams),
+							this.evenementProchaineDate(),
+						);
 					}
 				}
 			}
 		}
 		lParams.jourCycleSelectionne = this.afficherProchainJour
-			? this.donnees.EDT.prochainJourCycle
-			: this.donnees.EDT.jourCycleSelectionne;
+			? this.donnees.prochainJourCycle
+			: this.donnees.jourCycleSelectionne;
 		const lDonnees =
 			UtilitaireEDTJournalier_1.UtilitaireEDTJournalier.formaterDonnees(
 				lParams,
 			);
 		this.listeCoursFormate = lDonnees.listeDonnees;
 		const lNumeroSemaine =
-			this.donneesRequete.EDT && this.donneesRequete.EDT.numeroSemaine
-				? this.donneesRequete.EDT.numeroSemaine
+			this.donneesRequete && this.donneesRequete.numeroSemaine
+				? this.donneesRequete.numeroSemaine
 				: this.numeroSemaineParDefaut;
 		const H = [];
 		H.push(
-			(0, tag_1.tag)(
-				"h2",
+			IE.jsx.str(
+				"div",
 				{
 					class: "text-center ie-titre-couleur-lowercase m-top m-bottom",
-					tabindex: 0,
+					role: "heading",
+					"aria-level": "3",
 				},
 				UtilitaireEDTJournalier_1.UtilitaireEDTJournalier.getTitreSemaine(
 					lNumeroSemaine,
@@ -227,14 +221,14 @@ class WidgetEDTJournalier extends ObjetWidget_1.Widget.ObjetWidget {
 		if (this.listeCoursFormate && this.listeCoursFormate.count() > 0) {
 			H.push(
 				lDonnees.soustitre
-					? (0, tag_1.tag)(
-							"h3",
-							{ class: ["text-center ie-sous-titre", lDonnees.soustitre.type] },
+					? IE.jsx.str(
+							"h4",
+							{ class: ["text-center", lDonnees.soustitre.type] },
 							lDonnees.soustitre.libelle,
 						)
 					: "",
 			);
-			H.push('<ul class="liste-cours m-top-l" role="list">');
+			H.push('<ul class="liste-cours m-top-l">');
 			this.listeCoursFormate.parcourir((aCours, aIndex) => {
 				H.push(
 					UtilitaireEDTJournalier_1.UtilitaireEDTJournalier.composeCours(
@@ -257,11 +251,10 @@ class WidgetEDTJournalier extends ObjetWidget_1.Widget.ObjetWidget {
 	}
 	_initialiserObjetsEDT() {
 		if (this.dateEDT) {
-			const lDate =
-				this.donneesRequete.EDT.date || this.donnees.EDT.dateSelection;
+			const lDate = this.donneesRequete.date || this.donnees.dateSelection;
 			this.dateEDT.initialiser();
 			this.dateEDT.setDonnees(lDate);
-			this.donnees.EDT.numeroSemaine = IE.Cycles.cycleDeLaDate(lDate);
+			this.donnees.numeroSemaine = IE.Cycles.cycleDeLaDate(lDate);
 		}
 	}
 }

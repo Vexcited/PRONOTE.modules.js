@@ -8,7 +8,6 @@ const _InterfacePage_1 = require("_InterfacePage");
 const Enumere_Action_1 = require("Enumere_Action");
 const ObjetListe_1 = require("ObjetListe");
 const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
-const tag_1 = require("tag");
 const ObjetFenetre_js_1 = require("ObjetFenetre.js");
 class ObjetInterfaceFicheStageCP extends _InterfacePage_1._InterfacePage {
 	construireInstances() {
@@ -49,12 +48,12 @@ class ObjetInterfaceFicheStageCP extends _InterfacePage_1._InterfacePage {
 		H.push('<div class="InterfaceFicheStage">');
 		H.push(
 			'<div id="',
-			this.getInstance(this.identListeOnglet).getNom(),
+			this.getNomInstance(this.identListeOnglet),
 			'" class="conteneur-listeOnglet"></div>',
 		);
 		H.push(
 			'<div id="',
-			this.getInstance(this.identPageStage).getNom(),
+			this.getNomInstance(this.identPageStage),
 			'" class="conteneur-PageFicheStage"></div>',
 		);
 		H.push("</div>");
@@ -95,7 +94,7 @@ class ObjetInterfaceFicheStageCP extends _InterfacePage_1._InterfacePage {
 			typeof aMessage === "number"
 				? ObjetTraduction_1.GTraductions.getValeur("Message")[aMessage]
 				: aMessage;
-		$("#" + this.getInstance(this.identPageStage).getNom().escapeJQ())
+		$("#" + this.getNomInstance(this.identPageStage).escapeJQ())
 			.html(this.composeMessage(lMessage))
 			.show();
 	}
@@ -110,6 +109,7 @@ class ObjetInterfaceFicheStageCP extends _InterfacePage_1._InterfacePage {
 			colonnes: lColonnes,
 			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
 			hauteurZoneContenuListeMin: 100,
+			ariaLabel: GEtatUtilisateur.getLibelleLongOnglet(),
 		});
 	}
 	_initCmbStage(aInstance) {
@@ -128,8 +128,6 @@ class DonneesListe_SelectionOngletStage extends ObjetDonneesListeFlatDesign_1.Ob
 		super(aDonnees);
 		this.stage = aStage;
 		this.setOptions({
-			avecEdition: false,
-			avecSuppression: false,
 			avecEvnt_Selection: true,
 			avecTri: false,
 			flatDesignMinimal: true,
@@ -143,8 +141,16 @@ class DonneesListe_SelectionOngletStage extends ObjetDonneesListeFlatDesign_1.Ob
 					const T = [];
 					let lIcon = "";
 					let lInfoAcc = "";
-					if (!!aDonneesListe.stage.convention) {
-						aDonneesListe.stage.convention.roles.parcourir((aRole) => {
+					let lConventionSigneeElectroniquement = null;
+					if (aDonneesListe.stage.listeDocumentsSignes) {
+						aDonneesListe.stage.listeDocumentsSignes.parcourir((aDoc) => {
+							if (aDoc.estConventionParDefaut) {
+								lConventionSigneeElectroniquement = aDoc;
+							}
+						});
+					}
+					if (lConventionSigneeElectroniquement) {
+						lConventionSigneeElectroniquement.roles.parcourir((aRole) => {
 							if (aRole.aSignee) {
 								lIcon = "icon_ok";
 								lInfoAcc = ObjetTraduction_1.GTraductions.getValeur(
@@ -161,10 +167,19 @@ class DonneesListe_SelectionOngletStage extends ObjetDonneesListeFlatDesign_1.Ob
 								lLibelle += ` (${ObjetTraduction_1.GTraductions.getValeur("FicheStageCP.Optionnel")})`;
 							}
 							T.push(
-								(0, tag_1.tag)(
-									"div",
-									(0, tag_1.tag)("i", { class: lIcon, "aria-label": lInfoAcc }),
-									lLibelle,
+								IE.jsx.str(
+									IE.jsx.fragment,
+									null,
+									IE.jsx.str(
+										"div",
+										{ class: "item-hint" },
+										IE.jsx.str("i", {
+											class: lIcon,
+											"ie-tooltiplabel": lInfoAcc,
+											role: "img",
+										}),
+										lLibelle,
+									),
 								),
 							);
 						});
@@ -181,10 +196,21 @@ class DonneesListe_SelectionOngletStage extends ObjetDonneesListeFlatDesign_1.Ob
 							);
 						}
 						T.push(
-							(0, tag_1.tag)(
-								"div",
-								(0, tag_1.tag)("i", { class: lIcon, "aria-label": lInfoAcc }),
-								ObjetTraduction_1.GTraductions.getValeur("FicheStage.parEleve"),
+							IE.jsx.str(
+								IE.jsx.fragment,
+								null,
+								IE.jsx.str(
+									"div",
+									{ class: "item-hint" },
+									IE.jsx.str("i", {
+										class: lIcon,
+										"ie-tooltiplabel": lInfoAcc,
+										role: "img",
+									}),
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.parEleve",
+									),
+								),
 							),
 						);
 						if (aDonneesListe.stage.conventionSigneeEntreprise) {
@@ -199,11 +225,20 @@ class DonneesListe_SelectionOngletStage extends ObjetDonneesListeFlatDesign_1.Ob
 							);
 						}
 						T.push(
-							(0, tag_1.tag)(
-								"div",
-								(0, tag_1.tag)("i", { class: lIcon, "aria-label": lInfoAcc }),
-								ObjetTraduction_1.GTraductions.getValeur(
-									"FicheStage.parEntreprise",
+							IE.jsx.str(
+								IE.jsx.fragment,
+								null,
+								IE.jsx.str(
+									"div",
+									{ class: "item-hint" },
+									IE.jsx.str("i", {
+										class: lIcon,
+										"ie-tooltiplabel": lInfoAcc,
+										role: "img",
+									}),
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.parEntreprise",
+									),
 								),
 							),
 						);
@@ -219,17 +254,26 @@ class DonneesListe_SelectionOngletStage extends ObjetDonneesListeFlatDesign_1.Ob
 							);
 						}
 						T.push(
-							(0, tag_1.tag)(
-								"div",
-								(0, tag_1.tag)("i", { class: lIcon, "aria-label": lInfoAcc }),
-								ObjetTraduction_1.GTraductions.getValeur(
-									"FicheStage.parEtablissement",
+							IE.jsx.str(
+								IE.jsx.fragment,
+								null,
+								IE.jsx.str(
+									"div",
+									{ class: "item-hint" },
+									IE.jsx.str("i", {
+										class: lIcon,
+										"ie-tooltiplabel": lInfoAcc,
+										role: "img",
+									}),
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.parEtablissement",
+									),
 								),
 							),
 						);
 					}
 					aDonneesListe.getInfoConvention(
-						(0, tag_1.tag)("div", { class: "hint-convention" }, T.join("")),
+						IE.jsx.str("div", { class: "hint-convention" }, T.join("")),
 					);
 				},
 			},

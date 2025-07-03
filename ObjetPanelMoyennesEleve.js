@@ -1,229 +1,227 @@
-const { ObjetIdentite_Mobile } = require("ObjetIdentite_Mobile.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { GUID } = require("GUID.js");
-const { MoteurNotesCP } = require("MoteurNotesCP.js");
-const { MoteurNotes } = require("MoteurNotes.js");
-const { GDate } = require("ObjetDate.js");
-class ObjetPanelMoyennesEleve extends ObjetIdentite_Mobile {
+exports.ObjetPanelMoyennesEleve = void 0;
+const ObjetIdentite_Mobile_1 = require("ObjetIdentite_Mobile");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const GUID_1 = require("GUID");
+const MoteurNotesCP_1 = require("MoteurNotesCP");
+const MoteurNotes_1 = require("MoteurNotes");
+const ObjetDate_1 = require("ObjetDate");
+const AccessApp_1 = require("AccessApp");
+class ObjetPanelMoyennesEleve extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 	constructor(...aParams) {
 		super(...aParams);
-		this.moteurNotes = new MoteurNotes();
-		this.moteurNotesCP = new MoteurNotesCP(this.moteurNotes);
+		const lApplicationScoMobile = (0, AccessApp_1.getApp)();
+		this.interfaceScoMobile = lApplicationScoMobile.getInterfaceMobile();
+		this.moteurNotes = new MoteurNotes_1.MoteurNotes();
 		this.ids = {
-			panel: GUID.getId(),
-			bonus: GUID.getId(),
-			moyennes: GUID.getId(),
+			panel: GUID_1.GUID.getId(),
+			bonus: GUID_1.GUID.getId(),
+			moyennes: GUID_1.GUID.getId(),
 		};
-		this.dimensions = {
-			largeurBonus: 75,
-			largeurMoyenne: 100,
-			fontSizeTitres: 17,
-			hauteurTitres: 60,
-		};
-	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
-			nodeFlecheRetour: {
-				event: function () {
-					aInstance.callback.appel({
-						genreEvnt: ObjetPanelMoyennesEleve.genreEvnt.valider,
-						validationAuto: false,
-					});
-					GInterface.closePanel();
-				},
-			},
-			surClickElevePrecedent: function (aNumero) {
-				_getProchainElement.call(aInstance, aNumero, false);
-			},
-			surClickEleveSuivant: function (aNumeroEleve) {
-				_getProchainElement.call(aInstance, aNumeroEleve, true);
-			},
-		});
 	}
 	setDonnees(aDonnees) {
 		this.donnees = aDonnees;
 		this.afficher();
 	}
 	afficher() {
-		GInterface.openPanel(_composeDetailMoyennesEleve.call(this), {
+		this.interfaceScoMobile.openPanel(this._composeDetailMoyennesEleve(), {
 			controleur: this.controleur,
 			optionsFenetre: {
-				titre: GTraductions.getValeur("Notes.MoyenneEleve"),
-				avecNavigation: this.donnees && this.donnees.eleve,
+				titre: ObjetTraduction_1.GTraductions.getValeur("Notes.MoyenneEleve"),
+				avecNavigation: !!(this.donnees && this.donnees.eleve),
 				titreNavigation: () => {
-					return (
-						this.donnees.eleve.getLibelle() +
-						(!!this.donnees.eleve.niveau && this.donnees.eleve.niveau !== ""
-							? `<div class="niveau">${this.donnees.eleve.niveau.getLibelle()}</div>`
-							: "")
-					);
+					const lEleve = this.donnees.eleve;
+					const H = [];
+					if (lEleve) {
+						H.push(lEleve.getLibelle());
+						if ("niveau" in lEleve && !!lEleve.niveau) {
+							let lLibelleNiveau = lEleve.niveau.getLibelle();
+							if (lLibelleNiveau) {
+								H.push(`<div class="niveau">${lLibelleNiveau}</div>`);
+							}
+						}
+					}
+					return H.join("");
 				},
 				callbackNavigation: (aSuivant) => {
-					_getProchainElement.call(
-						this,
-						this.donnees.eleve.getNumero(),
-						aSuivant,
-					);
+					this._getProchainElement(this.donnees.eleve.getNumero(), aSuivant);
 				},
 			},
 		});
 	}
-}
-ObjetPanelMoyennesEleve.genreEvnt = {
-	valider: "valider",
-	majMoyennes: "majMoyennes",
-};
-function _composeDetailMoyennesEleve() {
-	if (this.donnees === null || this.donnees === undefined) {
-		return "";
-	}
-	const H = [];
-	H.push('<div class="ObjetPanelMoyennesEleve p-top-xxl">');
-	H.push(
-		'<h4 class="ie-sous-titre">',
-		GTraductions.getValeur("Moyennes"),
-		"</h4>",
-	);
-	H.push(
-		'<div class="flex-contain p-x-xl p-y-l cols cols moyennes" id="',
-		this.ids.moyennes,
-		'">',
-		_composeMoyennes.call(this),
-		"</div>",
-	);
-	H.push(
-		'<h4 class="ie-sous-titre">',
-		GTraductions.getValeur("Notes.Devoirs"),
-		"</h4>",
-	);
-	H.push(
-		'<div class="flex-contain p-x-xl p-y-l cols devoirs">',
-		_composeDevoirs.call(this),
-		"</div>",
-	);
-	H.push("</div>");
-	return H.join("");
-}
-function _composeLigneMoyenne(aParams) {
-	const H = [];
-	const lMoyenne = aParams.moyenne;
-	let lStrNote =
-		lMoyenne && !lMoyenne.estUneNoteVide() ? lMoyenne.getNote() : "";
-	const lClass = ["ligne"];
-	if (aParams.avecSeparateur) {
-		lClass.push("separateur-top");
-	}
-	H.push(
-		`<section class="${lClass.join(" ")}">`,
-		`<article>`,
-		`<p>${aParams.titre}</p>`,
-		`</article>`,
-		`<article>`,
-		`<p>${lStrNote}</p>`,
-		`</article>`,
-		`</section>`,
-	);
-	return H.join("");
-}
-function _composeLigneDevoir(aParams) {
-	const lNote = this.moteurNotes.getNoteEleveAuDevoirParNumero({
-		listeDevoirs: this.donnees.listeDevoirs,
-		numeroDevoir: aParams.devoir.getNumero(),
-		numeroEleve: this.donnees.eleve.getNumero(),
-	});
-	const lAvecSsServices = this.donnees.avecSsServices;
-	const lCoef = aParams.devoir.coefficient;
-	const lAvecCoeff = lCoef && !lCoef.estCoefficientParDefaut();
-	const lBareme = aParams.devoir.bareme;
-	const lBaremeParDefaut = this.donnees.baremeParDefaut;
-	const lAvecBareme =
-		lBareme && lBareme.getValeur() !== lBaremeParDefaut.getValeur();
-	const lClass = ["ligne"];
-	if (!aParams.estDernierElement) {
-		lClass.push("separateur-bottom");
-	}
-	let lStrNote = "";
-	if (lNote && !lNote.estUneNoteVide()) {
-		lStrNote = lNote.getNote();
-		if (lAvecBareme) {
-			lStrNote += `<span class="bareme">${lBareme.getBaremeEntier()}</span>`;
+	_composeDetailMoyennesEleve() {
+		if (this.donnees === null || this.donnees === undefined) {
+			return "";
 		}
-	}
-	const H = [];
-	H.push(
-		`<section class="${lClass.join(" ")}">`,
-		`<article class="ctn-gauche">`,
-		`<div class="date-contain">${GDate.formatDate(aParams.devoir.date, "%J %MMM")}</div>`,
-		`</article>`,
-		`<article class="ctn-centre">`,
-		lAvecSsServices
-			? `<p>${aParams.devoir.service.matiere.getLibelle()}</p>`
-			: "",
-		lAvecCoeff
-			? `<div class="ie-sous-titre">${GTraductions.getValeur("Notes.Coefficient")} ${lCoef.getCoefficientEntier()}</div>`
-			: "",
-		`</article>`,
-		`<article class="ctn-droite">`,
-		`<p>${lStrNote}</p>`,
-		`</article>`,
-		`</section>`,
-	);
-	return H.join("");
-}
-function _composeDevoirs() {
-	const H = [];
-	this.donnees.listeDevoirs.parcourir((aDevoir, aIndex) => {
+		const H = [];
 		H.push(
-			_composeLigneDevoir.call(this, {
-				estDernierElement: this.donnees.listeDevoirs.count() - 1 === aIndex,
-				devoir: aDevoir,
-			}),
+			IE.jsx.str(
+				"div",
+				{ class: "ObjetPanelMoyennesEleve p-top-xxl" },
+				IE.jsx.str(
+					"h4",
+					{ class: "ie-sous-titre" },
+					ObjetTraduction_1.GTraductions.getValeur("Moyennes"),
+				),
+				IE.jsx.str(
+					"div",
+					{
+						class: "flex-contain p-x-xl p-y-l cols cols moyennes",
+						id: this.ids.moyennes,
+					},
+					this._composeMoyennes(),
+				),
+				IE.jsx.str(
+					"h4",
+					{ class: "ie-sous-titre" },
+					ObjetTraduction_1.GTraductions.getValeur("Notes.Devoirs"),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "flex-contain p-x-xl p-y-l cols devoirs" },
+					this._composeDevoirs(),
+				),
+			),
 		);
-	});
-	return H.join("");
-}
-function _composeMoyennes() {
-	const H = [];
-	const lEleve = this.donnees.eleve;
-	H.push(
-		_composeLigneMoyenne.call(this, {
-			titre: this.donnees.service.matiere.getLibelle(),
-			moyenne: lEleve.moyennes[MoteurNotesCP.genreMoyenne.Moyenne],
-		}),
-	);
-	if (this.donnees.avecSsServices) {
-		const lService = this.donnees.service;
-		lService.listeServices.parcourir((aService, aIndex) => {
+		return H.join("");
+	}
+	_composeLigneMoyenne(aParams) {
+		const H = [];
+		const lMoyenne = aParams.moyenne;
+		let lStrNote =
+			lMoyenne && !lMoyenne.estUneNoteVide() ? lMoyenne.getNote() : "";
+		const lClass = ["ligne"];
+		if (aParams.avecSeparateur) {
+			lClass.push("separateur-top");
+		}
+		H.push(
+			IE.jsx.str(
+				"section",
+				{ class: lClass.join(" ") },
+				IE.jsx.str("article", null, IE.jsx.str("p", null, aParams.titre)),
+				IE.jsx.str("article", null, IE.jsx.str("p", null, lStrNote)),
+			),
+		);
+		return H.join("");
+	}
+	_composeLigneDevoir(aParams) {
+		const lNote = this.moteurNotes.getNoteEleveAuDevoirParNumero({
+			listeDevoirs: this.donnees.listeDevoirs,
+			numeroDevoir: aParams.devoir.getNumero(),
+			numeroEleve: this.donnees.eleve.getNumero(),
+		});
+		const lAvecSsServices = this.donnees.avecSsServices;
+		const lCoef = aParams.devoir.coefficient;
+		const lAvecCoeff = lCoef && !lCoef.estCoefficientParDefaut();
+		const lBareme = aParams.devoir.bareme;
+		const lBaremeParDefaut = this.donnees.baremeParDefaut;
+		const lAvecBareme =
+			lBareme && lBareme.getValeur() !== lBaremeParDefaut.getValeur();
+		const lClass = ["ligne"];
+		if (!aParams.estDernierElement) {
+			lClass.push("separateur-bottom");
+		}
+		let lStrNote = "";
+		if (lNote && !lNote.estUneNoteVide()) {
+			lStrNote = lNote.getNote();
+			if (lAvecBareme) {
+				lStrNote += IE.jsx.str(
+					"span",
+					{ class: "bareme" },
+					lBareme.getBaremeEntier(),
+				);
+			}
+		}
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				"section",
+				{ class: lClass.join(" ") },
+				IE.jsx.str(
+					"article",
+					{ class: "ctn-gauche" },
+					IE.jsx.str(
+						"div",
+						{ class: "date-contain" },
+						ObjetDate_1.GDate.formatDate(aParams.devoir.date, "%J %MMM"),
+					),
+				),
+				IE.jsx.str(
+					"article",
+					{ class: "ctn-centre" },
+					lAvecSsServices
+						? `<p>${aParams.devoir.service.matiere.getLibelle()}</p>`
+						: "",
+					lAvecCoeff
+						? `<div class="ie-sous-titre">${ObjetTraduction_1.GTraductions.getValeur("Notes.Coefficient")} ${lCoef.getCoefficientEntier()}</div>`
+						: "",
+				),
+				IE.jsx.str(
+					"article",
+					{ class: "ctn-droite" },
+					IE.jsx.str("p", null, lStrNote),
+				),
+			),
+		);
+		return H.join("");
+	}
+	_composeDevoirs() {
+		const H = [];
+		this.donnees.listeDevoirs.parcourir((aDevoir, aIndex) => {
 			H.push(
-				_composeLigneMoyenne.call(this, {
-					avecSeparateur: true,
-					titre: aService.matiere.getLibelle(),
-					moyenne:
-						lEleve.moyennes[
-							MoteurNotesCP.genreMoyenne.MoyenneSousService - aIndex
-						],
+				this._composeLigneDevoir({
+					estDernierElement: this.donnees.listeDevoirs.count() - 1 === aIndex,
+					devoir: aDevoir,
 				}),
 			);
 		});
+		return H.join("");
 	}
-	return H.join("");
-}
-function _getProchainElement(aNumeroElement, aEstSuivant) {
-	const lListeEleves = this.donnees.listeEleves;
-	let lIndiceElementActuel, lIndiceProchainElement, lProchainElement;
-	lIndiceElementActuel = lListeEleves.getIndiceParNumeroEtGenre(aNumeroElement);
-	if (!!aEstSuivant) {
-		lIndiceProchainElement =
-			lIndiceElementActuel + 1 < lListeEleves.count()
-				? lIndiceElementActuel + 1
-				: 0;
-	} else {
-		lIndiceProchainElement =
-			lIndiceElementActuel === 0
-				? lListeEleves.count() - 1
-				: lIndiceElementActuel - 1;
+	_composeMoyennes() {
+		const H = [];
+		const lEleve = this.donnees.eleve;
+		H.push(
+			this._composeLigneMoyenne({
+				titre: this.donnees.service.matiere.getLibelle(),
+				moyenne:
+					lEleve.moyennes[MoteurNotesCP_1.MoteurNotesCP.genreMoyenne.Moyenne],
+			}),
+		);
+		if (this.donnees.avecSsServices) {
+			const lService = this.donnees.service;
+			lService.listeServices.parcourir((aService, aIndex) => {
+				H.push(
+					this._composeLigneMoyenne({
+						avecSeparateur: true,
+						titre: aService.matiere.getLibelle(),
+						moyenne:
+							lEleve.moyennes[
+								MoteurNotesCP_1.MoteurNotesCP.genreMoyenne.MoyenneSousService -
+									aIndex
+							],
+					}),
+				);
+			});
+		}
+		return H.join("");
 	}
-	lProchainElement = lListeEleves.get(lIndiceProchainElement);
-	this.setDonnees($.extend({}, this.donnees, { eleve: lProchainElement }));
+	_getProchainElement(aNumeroElement, aEstSuivant) {
+		const lListeEleves = this.donnees.listeEleves;
+		let lIndiceElementActuel, lIndiceProchainElement, lProchainElement;
+		lIndiceElementActuel =
+			lListeEleves.getIndiceParNumeroEtGenre(aNumeroElement);
+		if (!!aEstSuivant) {
+			lIndiceProchainElement =
+				lIndiceElementActuel + 1 < lListeEleves.count()
+					? lIndiceElementActuel + 1
+					: 0;
+		} else {
+			lIndiceProchainElement =
+				lIndiceElementActuel === 0
+					? lListeEleves.count() - 1
+					: lIndiceElementActuel - 1;
+		}
+		lProchainElement = lListeEleves.get(lIndiceProchainElement);
+		this.setDonnees($.extend({}, this.donnees, { eleve: lProchainElement }));
+	}
 }
-module.exports = { ObjetPanelMoyennesEleve };
+exports.ObjetPanelMoyennesEleve = ObjetPanelMoyennesEleve;

@@ -1,7 +1,8 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { EGenreTriElement } = require("Enumere_TriElement.js");
-class DonneesListe_SuiviResultatsCompClasse extends ObjetDonneesListe {
+exports.DonneesListe_SuiviResultatsCompClasse = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_TriElement_1 = require("Enumere_TriElement");
+class DonneesListe_SuiviResultatsCompClasse extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees) {
 		super(aDonnees);
 		this.setOptions({ avecEdition: false, avecSuppression: false });
@@ -15,7 +16,7 @@ class DonneesListe_SuiviResultatsCompClasse extends ObjetDonneesListe {
 		return false;
 	}
 	getTypeValeur() {
-		return ObjetDonneesListe.ETypeCellule.Html;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 	}
 	getValeur(aParams) {
 		switch (aParams.idColonne) {
@@ -49,25 +50,25 @@ class DonneesListe_SuiviResultatsCompClasse extends ObjetDonneesListe {
 		const lTris = [];
 		switch (this.getId(aCol)) {
 			case DonneesListe_SuiviResultatsCompClasse.colonnes.eleve:
-				lTris.push(ObjetTri.init("Position", aGenreTri));
+				lTris.push(ObjetTri_1.ObjetTri.init("Position", aGenreTri));
 				break;
 			case DonneesListe_SuiviResultatsCompClasse.colonnes.nbEchecs:
 				lTris.push(
-					ObjetTri.init(
+					ObjetTri_1.ObjetTri.init(
 						"nbElemCompEchecs",
-						aGenreTri === EGenreTriElement.Croissant
-							? EGenreTriElement.Decroissant
-							: EGenreTriElement.Croissant,
+						aGenreTri === Enumere_TriElement_1.EGenreTriElement.Croissant
+							? Enumere_TriElement_1.EGenreTriElement.Decroissant
+							: Enumere_TriElement_1.EGenreTriElement.Croissant,
 					),
 				);
 				break;
 			case DonneesListe_SuiviResultatsCompClasse.colonnes.nbSucces:
 				lTris.push(
-					ObjetTri.init(
+					ObjetTri_1.ObjetTri.init(
 						"nbElemCompSucces",
-						aGenreTri === EGenreTriElement.Croissant
-							? EGenreTriElement.Decroissant
-							: EGenreTriElement.Croissant,
+						aGenreTri === Enumere_TriElement_1.EGenreTriElement.Croissant
+							? Enumere_TriElement_1.EGenreTriElement.Decroissant
+							: Enumere_TriElement_1.EGenreTriElement.Croissant,
 					),
 				);
 				break;
@@ -75,9 +76,10 @@ class DonneesListe_SuiviResultatsCompClasse extends ObjetDonneesListe {
 		return lTris;
 	}
 }
+exports.DonneesListe_SuiviResultatsCompClasse =
+	DonneesListe_SuiviResultatsCompClasse;
 DonneesListe_SuiviResultatsCompClasse.colonnes = {
 	eleve: "DLSuiviCpt_eleve",
 	nbEchecs: "DLSuiviCpt_echecs",
 	nbSucces: "DLSuiviCpt_succes",
 };
-module.exports = { DonneesListe_SuiviResultatsCompClasse };

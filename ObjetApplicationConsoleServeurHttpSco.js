@@ -12,6 +12,7 @@ const InterfacePagePublication_1 = require("InterfacePagePublication");
 const InterfacePageEnt_1 = require("InterfacePageEnt");
 const InterfaceParametrageWsFedSco_1 = require("InterfaceParametrageWsFedSco");
 const InterfacePageSecurite_1 = require("InterfacePageSecurite");
+const AccessApp_1 = require("AccessApp");
 class ObjetApplicationConsoleServeurHttpSco extends ObjetApplicationConsoles_1.ObjetApplicationConsoles {
 	constructor() {
 		super();
@@ -42,7 +43,7 @@ class ObjetApplicationConsoleServeurHttpSco extends ObjetApplicationConsoles_1.O
 				"GApplication.IHM",
 			);
 		super.start(aParams);
-		GApplication.IHM.setDonnees();
+		(0, AccessApp_1.getApp)().IHM.setDonnees();
 	}
 	initialiserObjetsGraphique() {}
 	initialiserObjetsPage() {

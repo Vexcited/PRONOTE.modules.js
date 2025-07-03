@@ -11,15 +11,12 @@ const GestionnaireBlocPN_1 = require("GestionnaireBlocPN");
 const GestionnaireBlocPN_2 = require("GestionnaireBlocPN");
 const GestionnaireBlocPN_3 = require("GestionnaireBlocPN");
 const Enumere_EvenementWidget_1 = require("Enumere_EvenementWidget");
-const ObjetGalerieCarrousel_1 = require("ObjetGalerieCarrousel");
-const ObjetListeElements_1 = require("ObjetListeElements");
-const ObjetElement_1 = require("ObjetElement");
-const TypeGenreMiniature_1 = require("TypeGenreMiniature");
 const ObjetWidget_1 = require("ObjetWidget");
+const AccessApp_1 = require("AccessApp");
 class WidgetActualites extends ObjetWidget_1.Widget.ObjetWidget {
 	constructor(...aParams) {
 		super(...aParams);
-		const lApplicationSco = GApplication;
+		const lApplicationSco = (0, AccessApp_1.getApp)();
 		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
 	}
 	construire(aParams) {
@@ -77,7 +74,7 @@ class WidgetActualites extends ObjetWidget_1.Widget.ObjetWidget {
 			}
 		}
 		const lWidget = {
-			html: this.composeWidgetActualites(),
+			getHtml: this.composeWidgetActualites.bind(this),
 			nbrElements: lNbrElements,
 			nbrListes: lNbrListes,
 			liste: this.listeActualites,
@@ -102,7 +99,12 @@ class WidgetActualites extends ObjetWidget_1.Widget.ObjetWidget {
 					if (I !== 0) {
 						H.push("</ul></li>");
 					}
-					H.push('<li tabindex="0">', "<h3>", lElement.getLibelle(), "</h3>");
+					H.push(
+						'<li tabindex="0">',
+						'<div class="titre-parent Gras" role="heading" aria-level="3">',
+						lElement.getLibelle(),
+						"</div>",
+					);
 					H.push('<ul class="liste-clickable">');
 				} else {
 					if (I === 0) {
@@ -122,49 +124,6 @@ class WidgetActualites extends ObjetWidget_1.Widget.ObjetWidget {
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(this), {
-			getCarrouselInfoSondage(aNumeroInfoSondage) {
-				return {
-					class: ObjetGalerieCarrousel_1.ObjetGalerieCarrousel,
-					pere: aInstance,
-					init: (aCarrousel) => {
-						aCarrousel.setOptions({
-							dimensionPhoto: 300,
-							tailleFixe: true,
-							nbMaxDiaposEnZoneVisible: 10,
-							sansBlocLibelle: true,
-							altImage: ObjetTraduction_1.GTraductions.getValeur(
-								"infoSond.altImgViewer",
-							),
-						});
-						aCarrousel.initialiser();
-					},
-					start: (aCarrousel) => {
-						let lComposante = null;
-						aInstance.listeActualites.parcourir((aActualite) => {
-							if (!lComposante) {
-								lComposante =
-									aActualite.listeQuestions.getElementParNumero(
-										aNumeroInfoSondage,
-									);
-							}
-						});
-						const lListeDiapos = new ObjetListeElements_1.ObjetListeElements();
-						if (lComposante && lComposante.listePiecesJointes) {
-							lComposante.listePiecesJointes.parcourir((aPJ) => {
-								if (aPJ.avecMiniaturePossible) {
-									let lDiapo = new ObjetElement_1.ObjetElement();
-									lDiapo.setLibelle(aPJ.getLibelle());
-									aPJ.miniature =
-										TypeGenreMiniature_1.TypeGenreMiniature.GM_600;
-									lDiapo.documentCasier = aPJ;
-									lListeDiapos.add(lDiapo);
-								}
-							});
-						}
-						aCarrousel.setDonnees({ listeDiapos: lListeDiapos });
-					},
-				};
-			},
 			surActualite(aIndiceActualite) {
 				$(this.node).eventValidation(() => {
 					aInstance._surActualite(aIndiceActualite);
@@ -217,7 +176,7 @@ class WidgetActualites extends ObjetWidget_1.Widget.ObjetWidget {
 				'" tabindex="0" id="',
 				lID,
 				'"',
-				' title="' +
+				' data-tooltip data-tooltip-text="' +
 					(aActualite.estInformation
 						? ObjetTraduction_1.GTraductions.getValeur(
 								"accueil.informations.hintLien.information",
@@ -234,7 +193,18 @@ class WidgetActualites extends ObjetWidget_1.Widget.ObjetWidget {
 			);
 		}
 		H.push('<div class="wrap">');
-		H.push("<h4>", lTitre, "</h4>", aActualite.auteur ? aActualite.auteur : "");
+		H.push(
+			IE.jsx.str(
+				"div",
+				{
+					class: "titre",
+					role: "heading",
+					"aria-level": aActualite.pere ? 4 : 3,
+				},
+				lTitre,
+			),
+			aActualite.auteur ? aActualite.auteur : "",
+		);
 		H.push("</div>");
 		if (
 			this.options.estModeSansAuth !== true &&

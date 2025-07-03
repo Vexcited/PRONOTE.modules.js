@@ -1,42 +1,51 @@
-const { MethodesObjet } = require("MethodesObjet.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-class ObjetFenetre_SelectionServicesDEvaluation extends ObjetFenetre {
+exports.ObjetFenetre_SelectionServicesDEvaluation = void 0;
+const MethodesObjet_1 = require("MethodesObjet");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_Espace_1 = require("Enumere_Espace");
+class ObjetFenetre_SelectionServicesDEvaluation extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.setOptionsFenetre({
 			largeur: 250,
 			hauteur: 500,
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 		});
 	}
 	setDonnees(aListeServices, aAvecMultiSelection, aAvecDetailServices) {
-		this.listeServices = MethodesObjet.dupliquer(aListeServices);
+		this.listeServices =
+			MethodesObjet_1.MethodesObjet.dupliquer(aListeServices);
 		this.avecMultiSelection = aAvecMultiSelection;
 		this.avecDetailServices = aAvecDetailServices;
 		const lNbrServices = this.listeServices.count();
 		if (lNbrServices === 0) {
 			GApplication.getMessage().afficher({
-				type: EGenreBoiteMessage.Information,
-				message: GTraductions.getValeur("competences.ImpossibleDeDupliquer"),
+				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+				message: ObjetTraduction_1.GTraductions.getValeur(
+					"competences.ImpossibleDeDupliquer",
+				),
 			});
 		} else if (lNbrServices === 1) {
 			this.callback.appel(aListeServices, 1);
 		} else {
 			const lTitreFenetre =
-				GEtatUtilisateur.GenreEspace === EGenreEspace.Etablissement
-					? GTraductions.getValeur("competences.DupliquerEvalLVE")
-					: GTraductions.getValeur("competences.DupliquerEvalService");
+				GEtatUtilisateur.GenreEspace ===
+				Enumere_Espace_1.EGenreEspace.Etablissement
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"competences.DupliquerEvalLVE",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"competences.DupliquerEvalService",
+						);
 			this.setOptionsFenetre({ titre: lTitreFenetre });
 			this._initialiserListe(this.getInstance(this.identListe));
 			this.afficher();
@@ -45,7 +54,7 @@ class ObjetFenetre_SelectionServicesDEvaluation extends ObjetFenetre {
 		}
 	}
 	surValidation(ANumeroBouton) {
-		let lListeSelection = new ObjetListeElements();
+		let lListeSelection = new ObjetListeElements_1.ObjetListeElements();
 		if (ANumeroBouton === 1) {
 			lListeSelection = this.getInstance(
 				this.identListe,
@@ -55,7 +64,10 @@ class ObjetFenetre_SelectionServicesDEvaluation extends ObjetFenetre {
 		this.callback.appel(lListeSelection, ANumeroBouton);
 	}
 	construireInstances() {
-		this.identListe = this.add(ObjetListe, _evenementSurListe.bind(this));
+		this.identListe = this.add(
+			ObjetListe_1.ObjetListe,
+			this._evenementSurListe.bind(this),
+		);
 	}
 	composeContenu() {
 		const T = [];
@@ -72,25 +84,25 @@ class ObjetFenetre_SelectionServicesDEvaluation extends ObjetFenetre {
 			lColonnes.push({
 				id: DonneesListeSelectionService.colonnes.classeGroupe,
 				titre:
-					GTraductions.getValeur("Classe") +
+					ObjetTraduction_1.GTraductions.getValeur("Classe") +
 					"/" +
-					GTraductions.getValeur("Groupe"),
+					ObjetTraduction_1.GTraductions.getValeur("Groupe"),
 				taille: 90,
 			});
 			lColonnes.push({
 				id: DonneesListeSelectionService.colonnes.service,
-				titre: GTraductions.getValeur("Matiere"),
+				titre: ObjetTraduction_1.GTraductions.getValeur("Matiere"),
 				taille: 150,
 			});
 			lColonnes.push({
 				id: DonneesListeSelectionService.colonnes.professeurs,
-				titre: GTraductions.getValeur("Professeurs"),
+				titre: ObjetTraduction_1.GTraductions.getValeur("Professeurs"),
 				taille: 150,
 			});
 		} else {
 			lColonnes.push({
 				id: DonneesListeSelectionService.colonnes.classeGroupe,
-				titre: GTraductions.getValeur("Classe"),
+				titre: ObjetTraduction_1.GTraductions.getValeur("Classe"),
 				taille: 150,
 			});
 		}
@@ -105,19 +117,22 @@ class ObjetFenetre_SelectionServicesDEvaluation extends ObjetFenetre {
 			),
 		);
 	}
-}
-function _evenementSurListe(aParametres) {
-	switch (aParametres.genreEvenement) {
-		case EGenreEvenementListe.Selection:
-			this.setBoutonActif(
-				1,
-				this.getInstance(this.identListe).getListeElementsSelection().count() >
-					0,
-			);
-			break;
+	_evenementSurListe(aParametres) {
+		switch (aParametres.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Selection:
+				this.setBoutonActif(
+					1,
+					this.getInstance(this.identListe)
+						.getListeElementsSelection()
+						.count() > 0,
+				);
+				break;
+		}
 	}
 }
-class DonneesListeSelectionService extends ObjetDonneesListe {
+exports.ObjetFenetre_SelectionServicesDEvaluation =
+	ObjetFenetre_SelectionServicesDEvaluation;
+class DonneesListeSelectionService extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aAvecMultiSelection) {
 		super(aDonnees);
 		this.setOptions({
@@ -130,11 +145,11 @@ class DonneesListeSelectionService extends ObjetDonneesListe {
 	getTri() {
 		const lTris = [];
 		lTris.push(
-			ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.init((D) => {
 				return D.strClasseGroupe || "";
 			}),
 		);
-		lTris.push(ObjetTri.init("Libelle"));
+		lTris.push(ObjetTri_1.ObjetTri.init("Libelle"));
 		return lTris;
 	}
 	getValeur(aParams) {
@@ -149,9 +164,15 @@ class DonneesListeSelectionService extends ObjetDonneesListe {
 		return "";
 	}
 }
-DonneesListeSelectionService.colonnes = {
-	classeGroupe: "SelectionService_classeGroupe",
-	service: "SelectionService_service",
-	professeurs: "SelectionService_profs",
-};
-module.exports = { ObjetFenetre_SelectionServicesDEvaluation };
+(function (DonneesListeSelectionService) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["classeGroupe"] = "SelectionService_classeGroupe";
+		colonnes["service"] = "SelectionService_service";
+		colonnes["professeurs"] = "SelectionService_profs";
+	})(
+		(colonnes =
+			DonneesListeSelectionService.colonnes ||
+			(DonneesListeSelectionService.colonnes = {})),
+	);
+})(DonneesListeSelectionService || (DonneesListeSelectionService = {}));

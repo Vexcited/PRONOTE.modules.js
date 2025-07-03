@@ -87,7 +87,7 @@ class DonneesListe_Progression extends ObjetDonneesListe_1.ObjetDonneesListe {
 			ObjetTri_1.ObjetTri.init("matiere.Libelle"),
 		];
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_Progression.colonnes.biblio:
 				return aParams.article.estPublic

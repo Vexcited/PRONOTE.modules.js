@@ -1,30 +1,36 @@
-const { GChaine } = require("ObjetChaine.js");
-const { GHtml } = require("ObjetHtml.js");
-const { EGenreDirection } = require("Enumere_Direction.js");
-const { EEvent } = require("Enumere_Event.js");
-const { GDate } = require("ObjetDate.js");
-const { Identite } = require("ObjetIdentite.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { GObjetWAI, EGenreRole, EGenreObjet } = require("ObjetWAI.js");
-const {
-	EGenreAffichageCahierDeTextes,
-} = require("Enumere_AffichageCahierDeTextes.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const {
-	ObjetUtilitaireCahierDeTexte,
-} = require("ObjetUtilitaireCahierDeTexte.js");
-const { EGenreTriCDT } = require("EGenreTriCDT.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { ObjetElement } = require("ObjetElement.js");
-class PageCahierDeTexte extends Identite {
+exports.PageCahierDeTexte = void 0;
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetHtml_1 = require("ObjetHtml");
+const Enumere_Direction_1 = require("Enumere_Direction");
+const Enumere_Event_1 = require("Enumere_Event");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetIdentite_1 = require("ObjetIdentite");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetWAI_1 = require("ObjetWAI");
+const Enumere_AffichageCahierDeTextes_1 = require("Enumere_AffichageCahierDeTextes");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetUtilitaireCahierDeTexte_1 = require("ObjetUtilitaireCahierDeTexte");
+const EGenreTriCDT_1 = require("EGenreTriCDT");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const ObjetElement_1 = require("ObjetElement");
+const AccessApp_1 = require("AccessApp");
+class PageCahierDeTexte extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
+		this.etatUtilSco = (0, AccessApp_1.getApp)().getEtatUtilisateur();
 		this.afficheTitre = true;
 		this.afficheTitresContenuEtTAF = false;
-		this.ajouterEvenementGlobal(EEvent.SurPreResize, this.surPreResize);
-		this.ajouterEvenementGlobal(EEvent.SurPostResize, this.surPostResize);
-		this.utilitaireCDT = new ObjetUtilitaireCahierDeTexte();
+		this.utilitaireCDT =
+			new ObjetUtilitaireCahierDeTexte_1.ObjetUtilitaireCahierDeTexte();
+		this.ajouterEvenementGlobal(
+			Enumere_Event_1.EEvent.SurPreResize,
+			this.surPreResize,
+		);
+		this.ajouterEvenementGlobal(
+			Enumere_Event_1.EEvent.SurPostResize,
+			this.surPostResize,
+		);
 		this.options = { callbackContextMenuCDT: null };
 		this.IdPremierElement = this.Nom + "_Contenu_cdt";
 	}
@@ -61,47 +67,57 @@ class PageCahierDeTexte extends Identite {
 		this.NumeroMatiereSelectionne = aNumeroMatiere;
 		if (this.TypeTri !== null && this.TypeTri !== undefined) {
 			const LListe =
-				this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire
+				this.ModeAffichage ===
+				Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+					.TravailAFaire
 					? this.ListeTravailAFaire
 					: this.ListeCahierDeTextes;
-			if (this.ModeAffichage !== EGenreAffichageCahierDeTextes.TravailAFaire) {
+			if (
+				this.ModeAffichage !==
+				Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+					.TravailAFaire
+			) {
 				LListe.parcourir((D) => {
 					if (D.ListeTravailAFaire) {
 						D.ListeTravailAFaire.setTri([
-							ObjetTri.init("PourLe"),
-							ObjetTri.init("Genre"),
-							ObjetTri.init("Numero"),
+							ObjetTri_1.ObjetTri.init("PourLe"),
+							ObjetTri_1.ObjetTri.init("Genre"),
+							ObjetTri_1.ObjetTri.init("Numero"),
 						]);
 						D.ListeTravailAFaire.trier();
 					}
 				});
 			}
-			if (this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire) {
+			if (
+				this.ModeAffichage ===
+				Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+					.TravailAFaire
+			) {
 				LListe.setTri([
-					ObjetTri.init((D) => {
-						return this.TypeTri === EGenreTriCDT.ParDatePourLe
+					ObjetTri_1.ObjetTri.init((D) => {
+						return this.TypeTri === EGenreTriCDT_1.EGenreTriCDT.ParDatePourLe
 							? D.PourLe
 							: D.Matiere.Numero === this.NumeroMatiereSelectionne;
 					}),
-					ObjetTri.init("Matiere.Libelle"),
-					ObjetTri.init((D) => {
-						return this.TypeTri === EGenreTriCDT.ParDatePourLe
+					ObjetTri_1.ObjetTri.init("Matiere.Libelle"),
+					ObjetTri_1.ObjetTri.init((D) => {
+						return this.TypeTri === EGenreTriCDT_1.EGenreTriCDT.ParDatePourLe
 							? null
 							: D.PourLe;
 					}),
-					ObjetTri.init("DonneLe"),
-					ObjetTri.init("Genre"),
-					ObjetTri.init("Numero"),
+					ObjetTri_1.ObjetTri.init("DonneLe"),
+					ObjetTri_1.ObjetTri.init("Genre"),
+					ObjetTri_1.ObjetTri.init("Numero"),
 				]);
 			} else {
 				LListe.setTri([
-					ObjetTri.init((D) => {
-						return this.TypeTri === EGenreTriCDT.ParMatiere
+					ObjetTri_1.ObjetTri.init((D) => {
+						return this.TypeTri === EGenreTriCDT_1.EGenreTriCDT.ParMatiere
 							? D.Matiere.Numero === this.NumeroMatiereSelectionne
 							: false;
 					}),
-					ObjetTri.init("Date"),
-					ObjetTri.init("Numero"),
+					ObjetTri_1.ObjetTri.init("Date"),
+					ObjetTri_1.ObjetTri.init("Numero"),
 				]);
 			}
 			LListe.trier();
@@ -122,7 +138,7 @@ class PageCahierDeTexte extends Identite {
 				"contextmenu",
 				{ instance: this },
 				function (event) {
-					const lIndice = GHtml.extraireNombreDId(this.id),
+					const lIndice = ObjetHtml_1.GHtml.extraireNombreDId(this.id),
 						lInstance = event.data.instance,
 						lElement = lInstance.ListeCahierDeTextes.get(lIndice);
 					lInstance.options.callbackContextMenuCDT(event, lElement);
@@ -154,39 +170,53 @@ class PageCahierDeTexte extends Identite {
 		);
 		if (this.afficheTitre) {
 			lHtml.push(
-				GObjetWAI.composeSpan(
-					this.TypeTri === EGenreTriCDT.ParDatePourLe
-						? GTraductions.getValeur("CahierDeTexte.wai.SelectJour") + ", "
-						: GTraductions.getValeur("CahierDeTexte.wai.SelectMatiere") + ", ",
+				ObjetWAI_1.GObjetWAI.composeSpan(
+					this.TypeTri === EGenreTriCDT_1.EGenreTriCDT.ParDatePourLe
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"CahierDeTexte.wai.SelectJour",
+							) + ", "
+						: ObjetTraduction_1.GTraductions.getValeur(
+								"CahierDeTexte.wai.SelectMatiere",
+							) + ", ",
 				),
-				GObjetWAI.composeSpan(EGenreObjet.NavigationVertical),
-				GObjetWAI.composeSpan(
-					this.TypeTri === EGenreTriCDT.ParDatePourLe
-						? GTraductions.getValeur("CahierDeTexte.wai.DetailsMatiereDuJour") +
-								" "
-						: GTraductions.getValeur(
+				ObjetWAI_1.GObjetWAI.composeSpan(
+					ObjetWAI_1.EGenreObjet.NavigationVertical,
+				),
+				ObjetWAI_1.GObjetWAI.composeSpan(
+					this.TypeTri === EGenreTriCDT_1.EGenreTriCDT.ParDatePourLe
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"CahierDeTexte.wai.DetailsMatiereDuJour",
+							) + " "
+						: ObjetTraduction_1.GTraductions.getValeur(
 								"CahierDeTexte.wai.DetailsJourDeLaMatiere",
 							) + " ",
 				),
 			);
 		}
 		lHtml.push(
-			GObjetWAI.composeSpan(
-				this.TypeTri === EGenreTriCDT.ParDatePourLe
-					? GTraductions.getValeur("CahierDeTexte.wai.NavigationMatiere") + ", "
-					: GTraductions.getValeur("CahierDeTexte.wai.NavigationJour") + ", ",
+			ObjetWAI_1.GObjetWAI.composeSpan(
+				this.TypeTri === EGenreTriCDT_1.EGenreTriCDT.ParDatePourLe
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"CahierDeTexte.wai.NavigationMatiere",
+						) + ", "
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"CahierDeTexte.wai.NavigationJour",
+						) + ", ",
 			),
-			GObjetWAI.composeSpan(EGenreObjet.NavigationVertical),
+			ObjetWAI_1.GObjetWAI.composeSpan(
+				ObjetWAI_1.EGenreObjet.NavigationVertical,
+			),
 		);
 		if (this.afficheTitre) {
 			lHtml.push(
-				GObjetWAI.composeSpan(
-					this.TypeTri === EGenreTriCDT.ParDatePourLe
-						? GTraductions.getValeur(
+				ObjetWAI_1.GObjetWAI.composeSpan(
+					this.TypeTri === EGenreTriCDT_1.EGenreTriCDT.ParDatePourLe
+						? ObjetTraduction_1.GTraductions.getValeur(
 								"CahierDeTexte.wai.NavigationMatiereRetour",
 							) + " "
-						: GTraductions.getValeur("CahierDeTexte.wai.NavigationJourRetour") +
-								" ",
+						: ObjetTraduction_1.GTraductions.getValeur(
+								"CahierDeTexte.wai.NavigationJourRetour",
+							) + " ",
 				),
 			);
 		}
@@ -196,7 +226,9 @@ class PageCahierDeTexte extends Identite {
 			'">',
 		);
 		const lListe =
-			this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire
+			this.ModeAffichage ===
+			Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+				.TravailAFaire
 				? this.ListeTravailAFaire
 				: this.ListeCahierDeTextes;
 		const lNbrElements = lListe.count();
@@ -204,8 +236,10 @@ class PageCahierDeTexte extends Identite {
 			const lTravailAFaire = lListe.get(I);
 			if (this.verifieConditionAffichageElement(lTravailAFaire)) {
 				this.ValeurPrincipaleElementCourant =
-					this.TypeTri === EGenreTriCDT.ParDatePourLe
-						? this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire
+					this.TypeTri === EGenreTriCDT_1.EGenreTriCDT.ParDatePourLe
+						? this.ModeAffichage ===
+							Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+								.TravailAFaire
 							? lTravailAFaire.PourLe
 							: new Date(
 									lTravailAFaire.Date.getFullYear(),
@@ -214,20 +248,24 @@ class PageCahierDeTexte extends Identite {
 								)
 						: lTravailAFaire.Matiere.Libelle;
 				this.TitrePrincipaleElementCourant =
-					this.TypeTri === EGenreTriCDT.ParDatePourLe
+					this.TypeTri === EGenreTriCDT_1.EGenreTriCDT.ParDatePourLe
 						? " "
-						: GTraductions.getValeur("Matiere") + " : ";
+						: ObjetTraduction_1.GTraductions.getValeur("Matiere") + " : ";
 				this.ValeurSecondaireElementCourant =
-					this.TypeTri === EGenreTriCDT.ParDatePourLe
-						? this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire
+					this.TypeTri === EGenreTriCDT_1.EGenreTriCDT.ParDatePourLe
+						? this.ModeAffichage ===
+							Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+								.TravailAFaire
 							? lTravailAFaire.Matiere.Libelle
 							: lTravailAFaire.Date
-						: this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire
+						: this.ModeAffichage ===
+								Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+									.TravailAFaire
 							? lTravailAFaire.PourLe
 							: lTravailAFaire.Date;
 				this.TitreSecondaireElementCourant =
-					this.TypeTri === EGenreTriCDT.ParDatePourLe
-						? GTraductions.getValeur("Matiere") + " : "
+					this.TypeTri === EGenreTriCDT_1.EGenreTriCDT.ParDatePourLe
+						? ObjetTraduction_1.GTraductions.getValeur("Matiere") + " : "
 						: " ";
 				if (
 					this.verifieConditionNouvelleDonneePrincipale(
@@ -236,11 +274,7 @@ class PageCahierDeTexte extends Identite {
 					)
 				) {
 					lHtml.push(
-						this.composeNouvelleDonneePrincipale(
-							lTravailAFaire,
-							lListe,
-							aPourImpression,
-						),
+						this.composeNouvelleDonneePrincipale(lTravailAFaire, lListe),
 					);
 				}
 				if (
@@ -251,26 +285,25 @@ class PageCahierDeTexte extends Identite {
 				) {
 					if (
 						this.ModeAffichage ===
-							EGenreAffichageCahierDeTextes.TravailAFaire &&
+							Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+								.TravailAFaire &&
 						this.DonneLeCourant !== ""
 					) {
 						lHtml.push(this.composeFermetureGenre());
 					}
+					lHtml.push(this.composeNouvelleDonneeSecondaire(lTravailAFaire, I));
 					lHtml.push(
-						this.composeNouvelleDonneeSecondaire(
-							lTravailAFaire,
-							I,
-							aPourImpression,
-						),
-					);
-					lHtml.push(
-						this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire
+						this.ModeAffichage ===
+							Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+								.TravailAFaire
 							? this.composeDevoirsDonneLe(lTravailAFaire)
 							: this.composeContenu(lTravailAFaire),
 					);
 				} else {
 					lHtml.push(
-						this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire
+						this.ModeAffichage ===
+							Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+								.TravailAFaire
 							? this.composeDevoirSelonDonneLe(lTravailAFaire)
 							: this.composeContenu(lTravailAFaire),
 					);
@@ -286,9 +319,9 @@ class PageCahierDeTexte extends Identite {
 		aDonneePrincipaleCourante,
 		aValeurPrincipaleElementCourant,
 	) {
-		if (this.TypeTri === EGenreTriCDT.ParDatePourLe) {
+		if (this.TypeTri === EGenreTriCDT_1.EGenreTriCDT.ParDatePourLe) {
 			if (
-				!GDate.estDateEgale(
+				!ObjetDate_1.GDate.estDateEgale(
 					aDonneePrincipaleCourante,
 					aValeurPrincipaleElementCourant,
 				)
@@ -309,7 +342,7 @@ class PageCahierDeTexte extends Identite {
 		aDonneeSecondaireCourante,
 		aValeurSecondaireElementCourant,
 	) {
-		if (this.TypeTri === EGenreTriCDT.ParDatePourLe) {
+		if (this.TypeTri === EGenreTriCDT_1.EGenreTriCDT.ParDatePourLe) {
 			if (aDonneeSecondaireCourante !== aValeurSecondaireElementCourant) {
 				return true;
 			} else {
@@ -317,7 +350,7 @@ class PageCahierDeTexte extends Identite {
 			}
 		} else {
 			if (
-				!GDate.estDateEgale(
+				!ObjetDate_1.GDate.estDateEgale(
 					aDonneeSecondaireCourante,
 					aValeurSecondaireElementCourant,
 				)
@@ -329,7 +362,7 @@ class PageCahierDeTexte extends Identite {
 		}
 	}
 	verifieConditionAffichageElement(aObjetTravailAFaire) {
-		if (this.TypeTri === EGenreTriCDT.ParDatePourLe) {
+		if (this.TypeTri === EGenreTriCDT_1.EGenreTriCDT.ParDatePourLe) {
 			return true;
 		} else {
 			if (
@@ -341,13 +374,13 @@ class PageCahierDeTexte extends Identite {
 			}
 		}
 	}
-	composeNouvelleDonneePrincipale(
-		aObjetTravailAFaire,
-		aListeDonnees,
-		aPourImpression,
-	) {
+	composeNouvelleDonneePrincipale(aObjetTravailAFaire, aListeDonnees) {
 		const lHtml = [];
-		if (this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire) {
+		if (
+			this.ModeAffichage ===
+			Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+				.TravailAFaire
+		) {
 			if (this.DonneLeCourant !== "") {
 				lHtml.push(this.composeFermetureGenre());
 				lHtml.push(this.composeFermetureTitreSecondaire());
@@ -355,50 +388,38 @@ class PageCahierDeTexte extends Identite {
 		} else if (this.DonneePrincipaleCourante !== "") {
 			lHtml.push(this.composeFermetureTitreSecondaire());
 		}
-		lHtml.push(
-			this.composeTitrePrincipal(
-				aObjetTravailAFaire,
-				aListeDonnees,
-				aPourImpression,
-			),
-		);
+		lHtml.push(this.composeTitrePrincipal(aObjetTravailAFaire, aListeDonnees));
 		this.DonneeSecondaireCourante = "";
 		this.DonneLeCourant = "";
 		return lHtml.join("");
 	}
-	composeNouvelleDonneeSecondaire(
-		aObjetTravailAFaire,
-		aIndice,
-		aPourImpression,
-	) {
+	composeNouvelleDonneeSecondaire(aObjetTravailAFaire, aIndice) {
 		const lHtml = [];
 		if (this.DonneeSecondaireCourante !== "") {
 			lHtml.push(this.composeFermetureTitreSecondaire());
 		}
-		lHtml.push(
-			this.composeTitreSecondaire(
-				aObjetTravailAFaire,
-				aIndice,
-				aPourImpression,
-			),
-		);
+		lHtml.push(this.composeTitreSecondaire(aObjetTravailAFaire, aIndice));
 		return lHtml.join("");
 	}
-	composeTitrePrincipal(aObjetTravailAFaire, aListeDonnees, aPourImpression) {
+	composeTitrePrincipal(aObjetTravailAFaire, aListeDonnees) {
 		const lHtml = [];
 		this.DonneePrincipaleCourante =
-			this.TypeTri === EGenreTriCDT.ParDatePourLe
+			this.TypeTri === EGenreTriCDT_1.EGenreTriCDT.ParDatePourLe
 				? this.ValeurPrincipaleElementCourant
 				: aObjetTravailAFaire.Matiere.Libelle;
 		const lLibelle =
-			this.TypeTri === EGenreTriCDT.ParDatePourLe
-				? GDate.formatDate(
+			this.TypeTri === EGenreTriCDT_1.EGenreTriCDT.ParDatePourLe
+				? ObjetDate_1.GDate.formatDate(
 						this.DonneePrincipaleCourante,
-						(this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire
-							? GTraductions.getValeur("CahierDeTexte.pourLe") + " "
+						(this.ModeAffichage ===
+						Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+							.TravailAFaire
+							? ObjetTraduction_1.GTraductions.getValeur(
+									"CahierDeTexte.pourLe",
+								) + " "
 							: "") + "%JJJJ %JJ %MMMM %AAAA",
 					)
-				: GChaine.insecable(this.DonneePrincipaleCourante);
+				: ObjetChaine_1.GChaine.insecable(this.DonneePrincipaleCourante);
 		this.IdPrincipaleElement = this.Nom + "_Nav_" + this.NumeroPrincipal;
 		if (this.PremierPrincipaleElement === "") {
 			this.PremierPrincipaleElement = this.IdPrincipaleElement;
@@ -408,7 +429,7 @@ class PageCahierDeTexte extends Identite {
 				this.IDSecondairPrecedent,
 				this.IdPrincipaleElement,
 				null,
-				EGenreDirection.SensNormal,
+				Enumere_Direction_1.EGenreDirection.SensNormal,
 			);
 		}
 		if (this.IDPrincipalPrecedent !== "") {
@@ -416,7 +437,7 @@ class PageCahierDeTexte extends Identite {
 				this.IDPrincipalPrecedent,
 				this.IdPrincipaleElement,
 				null,
-				EGenreDirection.DeuxSenses,
+				Enumere_Direction_1.EGenreDirection.DeuxSenses,
 			);
 		}
 		this.IDPrincipalPrecedent = this.IdPrincipaleElement;
@@ -428,16 +449,12 @@ class PageCahierDeTexte extends Identite {
 				'<div id="',
 				this.IdPrincipaleElement,
 				'" tabindex="0" ',
-				GObjetWAI.composeRole(EGenreRole.Document),
+				ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_1.EGenreRole.Document),
 				' class="Bandeau theme-neutre_bg_moyen1" onkeyup="',
 				this.Nom,
 				'.surPremierSecondaire (id); if (GNavigateur.isToucheFleche () || GNavigateur.isToucheSelection ()) GNavigateur.stopperEvenement (event);">',
-				GObjetWAI.composeSpan(this.TitrePrincipaleElementCourant),
-				this.composeLibelleTitrePrincipal(
-					aListeDonnees,
-					lLibelle,
-					aPourImpression,
-				),
+				ObjetWAI_1.GObjetWAI.composeSpan(this.TitrePrincipaleElementCourant),
+				this.composeLibelleTitrePrincipal(aListeDonnees, lLibelle),
 				"</div>",
 			);
 		}
@@ -446,17 +463,23 @@ class PageCahierDeTexte extends Identite {
 	composeLibelleTitrePrincipal(aListeDonnees, aLibelle) {
 		return aLibelle;
 	}
-	composeTitreSecondaire(aObjetTravailAFaire, aIndice, aPourImpression) {
+	composeTitreSecondaire(aObjetTravailAFaire, aIndice) {
 		const lHtml = [];
 		this.DonneeSecondaireCourante =
-			this.TypeTri === EGenreTriCDT.ParDatePourLe
-				? this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire
+			this.TypeTri === EGenreTriCDT_1.EGenreTriCDT.ParDatePourLe
+				? this.ModeAffichage ===
+					Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+						.TravailAFaire
 					? aObjetTravailAFaire.Matiere.Libelle
-					: GDate.formatDate(aObjetTravailAFaire.Date, "%hh%sh%mm - ") +
-						aObjetTravailAFaire.Matiere.Libelle
-				: this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire
+					: ObjetDate_1.GDate.formatDate(
+							aObjetTravailAFaire.Date,
+							"%hh%sh%mm - ",
+						) + aObjetTravailAFaire.Matiere.Libelle
+				: this.ModeAffichage ===
+						Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+							.TravailAFaire
 					? aObjetTravailAFaire.PourLe
-					: GDate.formatDate(
+					: ObjetDate_1.GDate.formatDate(
 							aObjetTravailAFaire.Date,
 							"%JJJJ %JJ %MMMM - %hh%sh%mm ",
 						);
@@ -466,13 +489,13 @@ class PageCahierDeTexte extends Identite {
 			this.ajouterAuTableaux(
 				this.IdPrincipaleElement,
 				lID,
-				EGenreDirection.SensNormal,
+				Enumere_Direction_1.EGenreDirection.SensNormal,
 			);
 			this.ajouterAuTableaux(
 				this.IdPrincipaleElement,
 				lID,
 				null,
-				EGenreDirection.SensInverse,
+				Enumere_Direction_1.EGenreDirection.SensInverse,
 			);
 		}
 		if (this.IDSecondairPrecedent !== "") {
@@ -480,32 +503,34 @@ class PageCahierDeTexte extends Identite {
 				this.IDSecondairPrecedent,
 				lID,
 				null,
-				EGenreDirection.DeuxSenses,
+				Enumere_Direction_1.EGenreDirection.DeuxSenses,
 			);
 		}
 		this.ajouterAuTableaux(
 			this.IdPrincipaleElement,
 			lID,
-			EGenreDirection.SensInverse,
+			Enumere_Direction_1.EGenreDirection.SensInverse,
 		);
 		this.IDSecondairPrecedent = lID;
 		this.NumeroSecondair++;
-		let lLibelle = GChaine.insecable(
-			this.TypeTri === EGenreTriCDT.ParDatePourLe
+		let lLibelle = ObjetChaine_1.GChaine.insecable(
+			this.TypeTri === EGenreTriCDT_1.EGenreTriCDT.ParDatePourLe
 				? this.DonneeSecondaireCourante
-				: this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire
-					? GDate.formatDate(
+				: this.ModeAffichage ===
+						Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+							.TravailAFaire
+					? ObjetDate_1.GDate.formatDate(
 							this.DonneeSecondaireCourante,
-							GTraductions.getValeur("CahierDeTexte.pourLe") +
+							ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.pourLe") +
 								" %JJJJ %JJ %MMMM %AAAA",
 						)
 					: this.DonneeSecondaireCourante,
 		);
-		let lClasseSelectionnee = GEtatUtilisateur.Navigation.getRessource(
-			EGenreRessource.Classe,
+		let lClasseSelectionnee = this.etatUtilSco.Navigation.getRessource(
+			Enumere_Ressource_1.EGenreRessource.Classe,
 		);
-		if (!lClasseSelectionnee && GEtatUtilisateur.getMembre()) {
-			lClasseSelectionnee = GEtatUtilisateur.getMembre().Classe;
+		if (!lClasseSelectionnee && this.etatUtilSco.getMembre()) {
+			lClasseSelectionnee = this.etatUtilSco.getMembre().Classe;
 		}
 		if (
 			aObjetTravailAFaire.listeGroupes &&
@@ -523,11 +548,11 @@ class PageCahierDeTexte extends Identite {
 			'<div id="',
 			lID,
 			'" tabindex="0" ',
-			GObjetWAI.composeRole(EGenreRole.Document),
+			ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_1.EGenreRole.Document),
 			' class="fluid-bloc p-x p-top flex-contain cols" onkeyup="',
 			this.Nom,
 			'.navigationClavier (id); if (GNavigateur.isToucheFleche () || GNavigateur.isToucheSelection ()) GNavigateur.stopperEvenement (event);">',
-			GObjetWAI.composeSpan(this.TitreSecondaireElementCourant),
+			ObjetWAI_1.GObjetWAI.composeSpan(this.TitreSecondaireElementCourant),
 			'<div class="full-width flex-contain flex-center justify-between semi-bold p-all" id="' +
 				(this.Nom + "_ind_" + aIndice) +
 				'" style="border-bottom:1px solid black;">',
@@ -535,40 +560,47 @@ class PageCahierDeTexte extends Identite {
 			lLibelle,
 			"</span>",
 			'<div class="flex-contain flex-center justify-end flex-gap">',
-			this.composeVisas(aObjetTravailAFaire, aIndice, aPourImpression),
+			this.composeVisas(aObjetTravailAFaire),
 			"</div>",
 			"</div>",
 		);
-		lHtml.push(GObjetWAI.composeSpan(". "));
+		lHtml.push(ObjetWAI_1.GObjetWAI.composeSpan(". "));
 		return lHtml.join("");
 	}
 	composeVisas(aObjetTravailAFaire) {
 		const lHtml = [];
 		if (
 			[
-				EGenreEspace.Professeur,
-				EGenreEspace.Mobile_Professeur,
-				EGenreEspace.PrimProfesseur,
-				EGenreEspace.Mobile_PrimProfesseur,
-				EGenreEspace.PrimDirection,
-				EGenreEspace.Mobile_PrimDirection,
-			].includes(GEtatUtilisateur.GenreEspace)
+				Enumere_Espace_1.EGenreEspace.Professeur,
+				Enumere_Espace_1.EGenreEspace.Mobile_Professeur,
+				Enumere_Espace_1.EGenreEspace.PrimProfesseur,
+				Enumere_Espace_1.EGenreEspace.Mobile_PrimProfesseur,
+				Enumere_Espace_1.EGenreEspace.PrimDirection,
+				Enumere_Espace_1.EGenreEspace.Mobile_PrimDirection,
+			].includes(this.etatUtilSco.GenreEspace)
 		) {
 			if (aObjetTravailAFaire.dateVisaI) {
 				lHtml.push(
 					'<div class="Image_VisaInspecteur" ie-hint="',
 					aObjetTravailAFaire.individuVisaI
-						? GChaine.format(GTraductions.getValeur("CahierDeTexte.HintVisa"), [
-								GDate.formatDate(
-									aObjetTravailAFaire.dateVisaI,
-									"%JJ/%MM/%AAAA",
+						? ObjetChaine_1.GChaine.format(
+								ObjetTraduction_1.GTraductions.getValeur(
+									"CahierDeTexte.HintVisa",
 								),
-								aObjetTravailAFaire.individuVisaI,
-							])
-						: GChaine.format(
-								GTraductions.getValeur("CahierDeTexte.HintVisaSansI"),
 								[
-									GDate.formatDate(
+									ObjetDate_1.GDate.formatDate(
+										aObjetTravailAFaire.dateVisaI,
+										"%JJ/%MM/%AAAA",
+									),
+									aObjetTravailAFaire.individuVisaI,
+								],
+							)
+						: ObjetChaine_1.GChaine.format(
+								ObjetTraduction_1.GTraductions.getValeur(
+									"CahierDeTexte.HintVisaSansI",
+								),
+								[
+									ObjetDate_1.GDate.formatDate(
 										aObjetTravailAFaire.dateVisaI,
 										"%JJ/%MM/%AAAA",
 									),
@@ -581,14 +613,24 @@ class PageCahierDeTexte extends Identite {
 				lHtml.push(
 					'<div class="Image_VisaEtablissement" ie-hint="',
 					aObjetTravailAFaire.individuVisa
-						? GChaine.format(GTraductions.getValeur("CahierDeTexte.HintVisa"), [
-								GDate.formatDate(aObjetTravailAFaire.dateVisa, "%JJ/%MM/%AAAA"),
-								aObjetTravailAFaire.individuVisa,
-							])
-						: GChaine.format(
-								GTraductions.getValeur("CahierDeTexte.HintVisaSansI"),
+						? ObjetChaine_1.GChaine.format(
+								ObjetTraduction_1.GTraductions.getValeur(
+									"CahierDeTexte.HintVisa",
+								),
 								[
-									GDate.formatDate(
+									ObjetDate_1.GDate.formatDate(
+										aObjetTravailAFaire.dateVisa,
+										"%JJ/%MM/%AAAA",
+									),
+									aObjetTravailAFaire.individuVisa,
+								],
+							)
+						: ObjetChaine_1.GChaine.format(
+								ObjetTraduction_1.GTraductions.getValeur(
+									"CahierDeTexte.HintVisaSansI",
+								),
+								[
+									ObjetDate_1.GDate.formatDate(
 										aObjetTravailAFaire.dateVisa,
 										"%JJ/%MM/%AAAA",
 									),
@@ -622,7 +664,7 @@ class PageCahierDeTexte extends Identite {
 		const lDate = aObjetTravailAFaire.DonneLe
 			? aObjetTravailAFaire.DonneLe
 			: aObjetTravailAFaire.PourLe;
-		if (!GDate.estDateEgale(this.DonneLeCourant, lDate)) {
+		if (!ObjetDate_1.GDate.estDateEgale(this.DonneLeCourant, lDate)) {
 			const lHtml = [];
 			if (this.DonneLeCourant !== "") {
 				lHtml.push(this.composeFermetureGenre());
@@ -639,35 +681,37 @@ class PageCahierDeTexte extends Identite {
 			? aObjetTravailAFaire.DonneLe
 			: aObjetTravailAFaire.PourLe;
 		const lNbJours = aObjetTravailAFaire.DonneLe
-			? GDate.getDifferenceJours(
+			? ObjetDate_1.GDate.getDifferenceJours(
 					aObjetTravailAFaire.PourLe,
 					aObjetTravailAFaire.DonneLe,
 				)
 			: 0;
 		const lStrJours = (
 			lNbJours > 1
-				? GTraductions.getValeur("TAFEtContenu.jours")
-				: GTraductions.getValeur("TAFEtContenu.jour")
+				? ObjetTraduction_1.GTraductions.getValeur("TAFEtContenu.jours")
+				: ObjetTraduction_1.GTraductions.getValeur("TAFEtContenu.jour")
 		).toLowerCase();
 		const lLibelleDonneLe = aObjetTravailAFaire.DonneLe
-			? GDate.formatDate(
+			? ObjetDate_1.GDate.formatDate(
 					aObjetTravailAFaire.DonneLe,
-					GTraductions.getValeur("TAFEtContenu.donneLe") + " %JJ/%MM",
+					ObjetTraduction_1.GTraductions.getValeur("TAFEtContenu.donneLe") +
+						" %JJ/%MM",
 				) +
 				" [" +
 				lNbJours +
 				" " +
 				lStrJours +
 				"] : "
-			: GDate.formatDate(
+			: ObjetDate_1.GDate.formatDate(
 					aObjetTravailAFaire.PourLe,
-					GTraductions.getValeur("CahierDeTexte.pourLe") + " %JJ/%MM",
+					ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.pourLe") +
+						" %JJ/%MM",
 				) + " : ";
 		const lHtml = [];
 		lHtml.push(
 			'<div class="flex-contain flex-start">',
 			'<div style="width:10rem;" class="fix-bloc semi-bold">',
-			GChaine.insecable(lLibelleDonneLe),
+			ObjetChaine_1.GChaine.insecable(lLibelleDonneLe),
 			"</div>",
 			this.composeDevoir(aObjetTravailAFaire),
 		);
@@ -709,7 +753,9 @@ class PageCahierDeTexte extends Identite {
 		) {
 			lHtml.push(
 				'<div class="p-all semi-bold">',
-				GTraductions.getValeur("CahierDeTexte.ElementsProgramme"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"CahierDeTexte.ElementsProgramme",
+				),
 				" :",
 				"</div>",
 			);
@@ -724,8 +770,8 @@ class PageCahierDeTexte extends Identite {
 		}
 		if (aCDT.ListeTravailAFaire.count() > 0) {
 			aCDT.ListeTravailAFaire.setTri([
-				ObjetTri.init("Genre"),
-				ObjetTri.init("PourLe"),
+				ObjetTri_1.ObjetTri.init("Genre"),
+				ObjetTri_1.ObjetTri.init("PourLe"),
 			]);
 			aCDT.ListeTravailAFaire.trier();
 			lHtml.push('<div class="p-all">');
@@ -752,7 +798,9 @@ class PageCahierDeTexte extends Identite {
 	}
 	surExecutionQCM(aEvent, I) {
 		const lPos = I.match(
-			new RegExp(`^${ObjetElement.regexCaptureNumero}_([0-9]+)$`),
+			new RegExp(
+				`^${ObjetElement_1.ObjetElement.regexCaptureNumero}_([0-9]+)$`,
+			),
 		);
 		const lExecutionQCM = this.ListeCahierDeTextes.getElementParNumero(
 			lPos[1],
@@ -761,10 +809,10 @@ class PageCahierDeTexte extends Identite {
 	}
 	composeDevoirPourLe(aObjetTravailAFaire) {
 		const lHtml = [];
-		const lLibelle = GChaine.insecable(
-			GTraductions.getValeur("CahierDeTexte.PourLe") +
+		const lLibelle = ObjetChaine_1.GChaine.insecable(
+			ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.PourLe") +
 				" " +
-				GDate.formatDate(aObjetTravailAFaire.PourLe, "%JJ/%MM") +
+				ObjetDate_1.GDate.formatDate(aObjetTravailAFaire.PourLe, "%JJ/%MM") +
 				" : ",
 		);
 		lHtml.push(
@@ -790,7 +838,9 @@ class PageCahierDeTexte extends Identite {
 				'<div class="p-y">',
 				this.PourImpression
 					? lPieceJointe.getLibelle()
-					: GChaine.composerUrlLienExterne({ documentJoint: lPieceJointe }),
+					: ObjetChaine_1.GChaine.composerUrlLienExterne({
+							documentJoint: lPieceJointe,
+						}),
 				"</div>",
 			);
 		}
@@ -818,7 +868,7 @@ class PageCahierDeTexte extends Identite {
 	surExecutionQCMContenu(aEvent, I) {
 		const lPos = I.match(
 			new RegExp(
-				`^${ObjetElement.regexCaptureNumero}_${ObjetElement.regexCaptureNumero}_([0-9]+)$`,
+				`^${ObjetElement_1.ObjetElement.regexCaptureNumero}_${ObjetElement_1.ObjetElement.regexCaptureNumero}_([0-9]+)$`,
 			),
 		);
 		const lExecutionQCM = this.ListeCahierDeTextes.getElementParNumero(lPos[1])
@@ -838,7 +888,11 @@ class PageCahierDeTexte extends Identite {
 	}
 	composeFermeture() {
 		const lHtml = [];
-		if (this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire) {
+		if (
+			this.ModeAffichage ===
+			Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+				.TravailAFaire
+		) {
 			lHtml.push(this.composeFermetureGenre());
 		}
 		lHtml.push(this.composeFermetureTitreSecondaire());
@@ -846,16 +900,16 @@ class PageCahierDeTexte extends Identite {
 	}
 	surPremierPrincipaleElement() {
 		if (GNavigateur.isToucheFleche() || GNavigateur.isToucheSelection()) {
-			GHtml.setFocus(this.PremierPrincipaleElement);
+			ObjetHtml_1.GHtml.setFocus(this.PremierPrincipaleElement);
 		}
 	}
 	surPremierSecondaire(aID) {
 		if (GNavigateur.isToucheSelection()) {
-			GHtml.setFocus(this.PremierID[aID]);
+			ObjetHtml_1.GHtml.setFocus(this.PremierID[aID]);
 		}
 		if (GNavigateur.isToucheFleche()) {
 			this.navigationClavier(aID);
 		}
 	}
 }
-module.exports = { PageCahierDeTexte };
+exports.PageCahierDeTexte = PageCahierDeTexte;

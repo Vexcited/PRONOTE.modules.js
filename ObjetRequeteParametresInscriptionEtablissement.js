@@ -1,9 +1,7 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteParametresInscriptionEtablissement extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteParametresInscriptionEtablissement = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteParametresInscriptionEtablissement extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aParametres) {
 		const lParametres = $.extend({}, aParametres);
 		$.extend(this.JSON, lParametres);
@@ -19,19 +17,20 @@ class ObjetRequeteParametresInscriptionEtablissement extends ObjetRequeteConsult
 			listeMatieres: this.JSONReponse.listeMatieres,
 			listePays: this.JSONReponse.listePays,
 			listeVilles: this.JSONReponse.listeVilles,
-			listeNiveauxResponsabilites: this.JSONReponse.listeNiveauxResponsabilites,
-			listeSessionsInscriptions: this.JSONReponse.listeSessionsInscriptions,
-			historiqueDemandes: this.JSONReponse.historiqueDemandes,
 			listeLienParente: this.JSONReponse.listeLienParente,
 			listeProjetsAccompagnement: this.JSONReponse.listeProjetsAccompagnement,
 			listeLV1: this.JSONReponse.listeLV1,
 			listeLV2: this.JSONReponse.listeLV2,
+			listeNiveauxResponsabilites: this.JSONReponse.listeNiveauxResponsabilites,
+			listeSessionsInscriptions: this.JSONReponse.listeSessionsInscriptions,
+			historiqueDemandes: this.JSONReponse.historiqueDemandes,
 		};
 		this.callbackReussite.appel(lParam);
 	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteParametresInscriptionEtablissement =
+	ObjetRequeteParametresInscriptionEtablissement;
+CollectionRequetes_1.Requetes.inscrire(
 	"ParametresInscriptionEtablissement",
 	ObjetRequeteParametresInscriptionEtablissement,
 );
-module.exports = { ObjetRequeteParametresInscriptionEtablissement };

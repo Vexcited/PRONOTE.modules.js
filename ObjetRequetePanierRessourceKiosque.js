@@ -1,16 +1,9 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequetePanierRessourceKiosque extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
-	lancerRequete(aParametres) {
-		$.extend(this.JSON, aParametres);
-		return this.appelAsynchrone();
-	}
-	actionApresRequete() {
-		this.callbackReussite.appel(this.JSONReponse);
-	}
-}
-Requetes.inscrire("listeRessourceKiosque", ObjetRequetePanierRessourceKiosque);
-module.exports = ObjetRequetePanierRessourceKiosque;
+exports.ObjetRequetePanierRessourceKiosque = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequetePanierRessourceKiosque extends ObjetRequeteJSON_1.ObjetRequeteConsultation {}
+exports.ObjetRequetePanierRessourceKiosque = ObjetRequetePanierRessourceKiosque;
+CollectionRequetes_1.Requetes.inscrire(
+	"listeRessourceKiosque",
+	ObjetRequetePanierRessourceKiosque,
+);

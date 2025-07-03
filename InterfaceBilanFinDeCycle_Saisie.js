@@ -16,12 +16,16 @@ class InterfaceBilanFinDeCycle_Saisie extends _InterfaceBilanFinDeCycle_1._Inter
 		this.AddSurZone.push(this.identTripleCombo);
 		this.AddSurZone.push({ blocGauche: true });
 		this.AddSurZone.push({
-			html:
-				'<ie-checkbox ie-model="cbJaugeParPeriode" ie-display="avecCheckboxJaugeParPeriode">' +
+			html: IE.jsx.str(
+				"ie-checkbox",
+				{
+					"ie-model": this.jsxModelCheckboxJaugeParPeriode.bind(this),
+					"ie-display": this.jsxIfAvecCbJaugeParPeriode.bind(this),
+				},
 				ObjetTraduction_1.GTraductions.getValeur(
 					"competences.AfficherUneJaugeParPeriode",
-				) +
-				"</ie-checkbox>",
+				),
+			),
 		});
 		this.AddSurZone.push({ html: this.getHtmlBoutonBandeauGraphe() });
 		this.AddSurZone.push({ blocDroit: true });
@@ -36,32 +40,28 @@ class InterfaceBilanFinDeCycle_Saisie extends _InterfaceBilanFinDeCycle_1._Inter
 			this.identTripleCombo,
 		).getPremierElement();
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			avecCheckboxJaugeParPeriode() {
-				const lPeriode = aInstance.etatUtilisateurSco.Navigation.getRessource(
-					Enumere_Ressource_1.EGenreRessource.Periode,
-				);
-				return (
-					lPeriode &&
-					!lPeriode.existeNumero() &&
-					!aInstance.affichageDecompteDesResultats()
-				);
+	jsxIfAvecCbJaugeParPeriode() {
+		const lPeriode = this.etatUtilisateurSco.Navigation.getRessource(
+			Enumere_Ressource_1.EGenreRessource.Periode,
+		);
+		return (
+			lPeriode &&
+			!lPeriode.existeNumero() &&
+			!this.affichageDecompteDesResultats()
+		);
+	}
+	jsxModelCheckboxJaugeParPeriode() {
+		return {
+			getValue: () => {
+				return this.optionsAffichage.uneJaugeParPeriode;
 			},
-			cbJaugeParPeriode: {
-				getValue() {
-					return aInstance.optionsAffichage.uneJaugeParPeriode;
-				},
-				setValue(aValeur) {
-					aInstance.optionsAffichage.uneJaugeParPeriode = aValeur;
-					aInstance
-						.getInstance(aInstance.identBilanFinDeCycle)
-						.setOptionsAffichageListe({
-							uneJaugeParPeriode: aInstance.optionsAffichage.uneJaugeParPeriode,
-						});
-				},
+			setValue: (aValue) => {
+				this.optionsAffichage.uneJaugeParPeriode = aValue;
+				this.getInstance(this.identBilanFinDeCycle).setOptionsAffichageListe({
+					uneJaugeParPeriode: this.optionsAffichage.uneJaugeParPeriode,
+				});
 			},
-		});
+		};
 	}
 	initialiserTripleCombo(aInstance) {
 		aInstance.setParametres([

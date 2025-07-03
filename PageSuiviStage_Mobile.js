@@ -1,6 +1,7 @@
-const { ObjetIdentite_Mobile } = require("ObjetIdentite_Mobile.js");
-const { UtilitaireFicheStage } = require("UtilitaireFicheStage.js");
-class PageSuiviStage_Mobile extends ObjetIdentite_Mobile {
+exports.PageSuiviStage_Mobile = void 0;
+const ObjetIdentite_Mobile_1 = require("ObjetIdentite_Mobile");
+const UtilitaireFicheStage_1 = require("UtilitaireFicheStage");
+class PageSuiviStage_Mobile extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 	constructor(...aParams) {
 		super(...aParams);
 		this.initParametres();
@@ -12,7 +13,7 @@ class PageSuiviStage_Mobile extends ObjetIdentite_Mobile {
 		$.extend(this.parametres, aParametres);
 	}
 	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
+		return $.extend(true, super.getControleur(aInstance), {
 			retourPrec: {
 				event: function () {
 					aInstance.callback.appel();
@@ -32,18 +33,23 @@ class PageSuiviStage_Mobile extends ObjetIdentite_Mobile {
 	construireAffichage() {
 		const H = [];
 		if (this.suivi) {
-			H.push('<div class="conteneur-FicheStage">');
 			H.push(
-				UtilitaireFicheStage.composeSurSuivi(this.suivi, {
-					parametres: this.parametres,
-					controleur: this.controleur,
-					stage: this.stage,
-					evenements: this.evenements,
-					lieux: this.lieux,
-					pere: this.Nom,
-				}),
+				IE.jsx.str(
+					"div",
+					{ class: "conteneur-FicheStage" },
+					UtilitaireFicheStage_1.UtilitaireFicheStage.composeSurSuivi(
+						this.suivi,
+						{
+							parametres: this.parametres,
+							controleur: this.controleur,
+							stage: this.stage,
+							evenements: this.evenements,
+							lieux: this.lieux,
+							pere: this.Nom,
+						},
+					),
+				),
 			);
-			H.push("</div>");
 		}
 		return H.join("");
 	}
@@ -55,4 +61,4 @@ class PageSuiviStage_Mobile extends ObjetIdentite_Mobile {
 		}
 	}
 }
-module.exports = { PageSuiviStage_Mobile };
+exports.PageSuiviStage_Mobile = PageSuiviStage_Mobile;

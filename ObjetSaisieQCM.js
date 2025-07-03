@@ -11,6 +11,7 @@ const MethodesObjet_1 = require("MethodesObjet");
 const DonneesListe_QuestionQCM_1 = require("DonneesListe_QuestionQCM");
 const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
 const ObjetElement_1 = require("ObjetElement");
+const AccessApp_1 = require("AccessApp");
 class ObjetSaisieQCM extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
@@ -255,6 +256,13 @@ class ObjetSaisieQCM extends ObjetInterface_1.ObjetInterface {
 			},
 			initCommandes: (aInstance) => {
 				this._ajoutItemsTypeQuestion(aInstance);
+				aInstance.addSeparateur();
+				aInstance.addCommande(
+					DonneesListe_QuestionQCM_1.DonneesListe_QuestionQCM
+						.GenreCommandeMenuContextuel.SavoirPlus,
+					ObjetTraduction_1.GTraductions.getValeur("QCM_Divers.EnSavoirPlus"),
+					true,
+				);
 			},
 		});
 	}
@@ -484,9 +492,9 @@ class ObjetSaisieQCM extends ObjetInterface_1.ObjetInterface {
 					break;
 				case DonneesListe_QuestionQCM_1.DonneesListe_QuestionQCM
 					.GenreCommandeMenuContextuel.SavoirPlus:
-					GApplication.getMessage().afficher({
-						idRessource: "SaisieQCM.MFicheTypeDeQuestions",
-					});
+					(0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({ idRessource: "SaisieQCM.MFicheTypeDeQuestions" });
 					break;
 				case DonneesListe_QuestionQCM_1.DonneesListe_QuestionQCM
 					.GenreCommandeMenuContextuel.CopierQuestion:

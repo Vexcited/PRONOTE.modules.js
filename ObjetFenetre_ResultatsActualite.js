@@ -1,17 +1,25 @@
-const {
-	ObjetResultatsActualite,
-	TypeEvenementCallback,
-} = require("ObjetResultatsActualite.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const TypeBoutonFenetreResultatActualite = { DiffuserResultats: 0, Fermer: 1 };
-class ObjetFenetre_ResultatsActualite extends ObjetFenetre {
-	constructor(...aParams) {
-		super(...aParams);
-		this.setOptionsFenetre({ heightMax_mobile: true });
-	}
+exports.ObjetFenetre_ResultatsActualite =
+	exports.TypeBoutonFenetreResultatActualite = void 0;
+const ObjetResultatsActualite_1 = require("ObjetResultatsActualite");
+const ObjetFenetre_1 = require("ObjetFenetre");
+var TypeBoutonFenetreResultatActualite;
+(function (TypeBoutonFenetreResultatActualite) {
+	TypeBoutonFenetreResultatActualite[
+		(TypeBoutonFenetreResultatActualite["DiffuserResultats"] = 0)
+	] = "DiffuserResultats";
+	TypeBoutonFenetreResultatActualite[
+		(TypeBoutonFenetreResultatActualite["Fermer"] = 1)
+	] = "Fermer";
+})(
+	TypeBoutonFenetreResultatActualite ||
+		(exports.TypeBoutonFenetreResultatActualite =
+			TypeBoutonFenetreResultatActualite =
+				{}),
+);
+class ObjetFenetre_ResultatsActualite extends ObjetFenetre_1.ObjetFenetre {
 	construireInstances() {
 		this.identResultats = this.add(
-			ObjetResultatsActualite,
+			ObjetResultatsActualite_1.ObjetResultatsActualite,
 			this.evenementResultats,
 			this.initResultats,
 		);
@@ -23,13 +31,16 @@ class ObjetFenetre_ResultatsActualite extends ObjetFenetre {
 		const H = [];
 		H.push(
 			'<div style="height:100%;" id="',
-			this.getInstance(this.identResultats).getNom(),
+			this.getNomInstance(this.identResultats),
 			'"></div>',
 		);
 		return H.join("");
 	}
 	evenementResultats(aTypeCommande, aDonnees) {
-		if (aTypeCommande === TypeEvenementCallback.ChangerCumulClasse) {
+		if (
+			aTypeCommande ===
+			ObjetResultatsActualite_1.TypeEvenementCallback.ChangerCumulClasse
+		) {
 			this.setActualite(aDonnees.actualite);
 		}
 	}
@@ -37,7 +48,7 @@ class ObjetFenetre_ResultatsActualite extends ObjetFenetre {
 		aInstance.setUtilitaires(this.utilitaires);
 		aInstance.setOptions({ avecBarreTitre: !IE.estMobile });
 	}
-	lancerRequeteRecupererResultatsActualite() {}
+	lancerRequeteRecupererResultatsActualite(aDonneesRequete, aCallback) {}
 	setActualite(aActualite) {
 		const lDonneesRequete = {
 			actualite: aActualite,
@@ -56,7 +67,4 @@ class ObjetFenetre_ResultatsActualite extends ObjetFenetre {
 		);
 	}
 }
-module.exports = {
-	ObjetFenetre_ResultatsActualite,
-	TypeBoutonFenetreResultatActualite,
-};
+exports.ObjetFenetre_ResultatsActualite = ObjetFenetre_ResultatsActualite;

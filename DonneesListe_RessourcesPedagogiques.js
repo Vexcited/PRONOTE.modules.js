@@ -1,14 +1,12 @@
-const { EGenreTriElement } = require("Enumere_TriElement.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const {
-	EGenreRessourcePedagogique,
-	EGenreRessourcePedagogiqueUtil,
-} = require("Enumere_RessourcePedagogique.js");
-const { UtilitaireQCM } = require("UtilitaireQCM.js");
-class DonneesListe_RessourcesPedagogiques extends ObjetDonneesListe {
+exports.DonneesListe_RessourcesPedagogiques = void 0;
+const Enumere_TriElement_1 = require("Enumere_TriElement");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_RessourcePedagogique_1 = require("Enumere_RessourcePedagogique");
+const UtilitaireQCM_1 = require("UtilitaireQCM");
+class DonneesListe_RessourcesPedagogiques extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aGenresAffiches, aCallbackExecutionQCM) {
 		super(aDonnees.ensembleDocuments);
 		aDonnees.ensembleDocuments.parcourir((D) => {
@@ -21,30 +19,12 @@ class DonneesListe_RessourcesPedagogiques extends ObjetDonneesListe {
 			avecEdition: false,
 		});
 	}
-	getControleur(aInstanceDonneesListe, aInstanceListe) {
-		return $.extend(
-			true,
-			super.getControleur(aInstanceDonneesListe, aInstanceListe),
-			{
-				eventLigne: function (aLigne) {
-					const lElement = aInstanceDonneesListe.Donnees.get(aLigne);
-					if (
-						lElement &&
-						(lElement.genres.contains(EGenreRessourcePedagogique.QCM) ||
-							lElement.genres.contains(EGenreRessourcePedagogique.corrige))
-					) {
-						aInstanceDonneesListe.callbackExecutionQCM(lElement.ressource);
-					} else {
-					}
-				},
-			},
-		);
-	}
 	avecEvenementSelection(aParams) {
 		return (
 			aParams.idColonne ===
 				DonneesListe_RessourcesPedagogiques.colonnes.libelle &&
-			aParams.article.getGenre() === EGenreRessourcePedagogique.kiosque
+			aParams.article.getGenre() ===
+				Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique.kiosque
 		);
 	}
 	getClass(aParams) {
@@ -63,9 +43,22 @@ class DonneesListe_RessourcesPedagogiques extends ObjetDonneesListe {
 		switch (aParams.idColonne) {
 			case DonneesListe_RessourcesPedagogiques.colonnes.types:
 			case DonneesListe_RessourcesPedagogiques.colonnes.libelle:
-				return ObjetDonneesListe.ETypeCellule.Html;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
+	}
+	eventQCM(aParams) {
+		if (
+			aParams.article.genres.contains(
+				Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique.QCM,
+			) ||
+			aParams.article.genres.contains(
+				Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique.corrige,
+			)
+		) {
+			this.callbackExecutionQCM(aParams.article.ressource);
+		} else {
+		}
 	}
 	getValeur(aParams) {
 		const H = [];
@@ -75,8 +68,10 @@ class DonneesListe_RessourcesPedagogiques extends ObjetDonneesListe {
 				for (let i = 0; i < lItems.length; i++) {
 					H.push(
 						'<i class="' +
-							EGenreRessourcePedagogiqueUtil.getIcone(lItems[i]) +
-							'" style="font-size:1.6rem;"></i>',
+							Enumere_RessourcePedagogique_1.EGenreRessourcePedagogiqueUtil.getIcone(
+								lItems[i],
+							) +
+							'" style="font-size:1.6rem;" role="presentation"></i>',
 					);
 				}
 				return H.join(" ");
@@ -86,14 +81,26 @@ class DonneesListe_RessourcesPedagogiques extends ObjetDonneesListe {
 					? aParams.article.matiere.getLibelle()
 					: "";
 			case DonneesListe_RessourcesPedagogiques.colonnes.libelle:
-				if (aParams.article.getGenre() === EGenreRessourcePedagogique.QCM) {
-					if (UtilitaireQCM.estCliquable(aParams.article.ressource)) {
+				if (
+					aParams.article.getGenre() ===
+					Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique.QCM
+				) {
+					if (
+						UtilitaireQCM_1.UtilitaireQCM.estCliquable(
+							aParams.article.ressource,
+						)
+					) {
 						H.push(
-							'<span class="LienAccueil" ie-event="mouseup->eventLigne(',
-							aParams.ligne,
-							')">',
-							aParams.article.ressource.QCM.getLibelle(),
-							"</span>",
+							IE.jsx.str(
+								"span",
+								{
+									class: "LienAccueil",
+									"ie-eventvalidation": this.eventQCM.bind(this, aParams),
+									role: "button",
+									tabindex: "0",
+								},
+								aParams.article.ressource.QCM.getLibelle(),
+							),
 						);
 					} else {
 						H.push(
@@ -105,17 +112,21 @@ class DonneesListe_RessourcesPedagogiques extends ObjetDonneesListe {
 					return H.join("");
 				} else {
 					H.push(
-						EGenreRessourcePedagogiqueUtil.composerURL(
+						Enumere_RessourcePedagogique_1.EGenreRessourcePedagogiqueUtil.composerURL(
 							aParams.article.getGenre(),
 							aParams.article.ressource,
 							aParams.article.getGenre() ===
-								EGenreRessourcePedagogique.travailRendu
-								? GTraductions.getValeur("RessourcePedagogique.DevoirDu", [
-										GDate.formatDate(
-											aParams.article.ressource.pourLe,
-											"%JJ/%MM/%AA",
-										),
-									])
+								Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique
+									.travailRendu
+								? ObjetTraduction_1.GTraductions.getValeur(
+										"RessourcePedagogique.DevoirDu",
+										[
+											ObjetDate_1.GDate.formatDate(
+												aParams.article.ressource.pourLe,
+												"%JJ/%MM/%AA",
+											),
+										],
+									)
 								: null,
 						),
 					);
@@ -126,12 +137,12 @@ class DonneesListe_RessourcesPedagogiques extends ObjetDonneesListe {
 				if (aParams.article.dates) {
 					lDate = aParams.article.dates[0];
 				}
-				return GDate.formatDate(lDate, "%JJ/%MM/%AA");
+				return ObjetDate_1.GDate.formatDate(lDate, "%JJ/%MM/%AA");
 			}
 		}
 		return "";
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		if (
 			aParams.idColonne === DonneesListe_RessourcesPedagogiques.colonnes.date &&
 			aParams.article.dates
@@ -147,7 +158,7 @@ class DonneesListe_RessourcesPedagogiques extends ObjetDonneesListe {
 				if (lLibelle.length > 0) {
 					lLibelle += "\n";
 				}
-				lLibelle += GDate.formatDate(aDate, "%JJ/%MM/%AA");
+				lLibelle += ObjetDate_1.GDate.formatDate(aDate, "%JJ/%MM/%AA");
 			});
 			return lLibelle;
 		}
@@ -158,15 +169,15 @@ class DonneesListe_RessourcesPedagogiques extends ObjetDonneesListe {
 		switch (this.getId(aColonne)) {
 			case DonneesListe_RessourcesPedagogiques.colonnes.types:
 				lTris.push(
-					ObjetTri.init((D) => {
+					ObjetTri_1.ObjetTri.init((D) => {
 						return D.genres.count();
 					}, aGenreTri),
 				);
-				lTris.push(ObjetTri.init("Genre", aGenreTri));
+				lTris.push(ObjetTri_1.ObjetTri.init("Genre", aGenreTri));
 				break;
 			case DonneesListe_RessourcesPedagogiques.colonnes.libelle:
 				lTris.push(
-					ObjetTri.init((D) => {
+					ObjetTri_1.ObjetTri.init((D) => {
 						return D.ressource.QCM
 							? D.ressource.QCM.getLibelle()
 							: D.ressource.getLibelle();
@@ -175,39 +186,52 @@ class DonneesListe_RessourcesPedagogiques extends ObjetDonneesListe {
 				break;
 			case DonneesListe_RessourcesPedagogiques.colonnes.date:
 				lTris.push(
-					ObjetTri.init(
+					ObjetTri_1.ObjetTri.init(
 						"date",
-						aGenreTri === EGenreTriElement.Decroissant
-							? EGenreTriElement.Croissant
-							: EGenreTriElement.Decroissant,
+						aGenreTri === Enumere_TriElement_1.EGenreTriElement.Decroissant
+							? Enumere_TriElement_1.EGenreTriElement.Croissant
+							: Enumere_TriElement_1.EGenreTriElement.Decroissant,
 					),
 				);
 				break;
 			case DonneesListe_RessourcesPedagogiques.colonnes.matiere:
 				lTris.push(
-					ObjetTri.init((D) => {
+					ObjetTri_1.ObjetTri.init((D) => {
 						return D.matiere.getLibelle();
 					}, aGenreTri),
 				);
 				lTris.push(
-					ObjetTri.init((D) => {
+					ObjetTri_1.ObjetTri.init((D) => {
 						return D.matiere.getNumero();
 					}, aGenreTri),
 				);
 				break;
 		}
-		lTris.push(ObjetTri.init("Libelle", aGenreTri));
-		lTris.push(ObjetTri.init("date", aGenreTri));
+		lTris.push(ObjetTri_1.ObjetTri.init("Libelle", aGenreTri));
+		lTris.push(ObjetTri_1.ObjetTri.init("date", aGenreTri));
 		return lTris;
 	}
 	getVisible(D) {
 		return D.visible;
 	}
 }
-DonneesListe_RessourcesPedagogiques.colonnes = {
-	types: "Dl_RessPeda_types",
-	libelle: "Dl_RessPeda_libelle",
-	date: "Dl_RessPeda_date",
-	matiere: "Dl_RessPeda_matiere",
-};
-module.exports = { DonneesListe_RessourcesPedagogiques };
+exports.DonneesListe_RessourcesPedagogiques =
+	DonneesListe_RessourcesPedagogiques;
+(function (DonneesListe_RessourcesPedagogiques) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["types"] = "Dl_RessPeda_types";
+		colonnes["libelle"] = "Dl_RessPeda_libelle";
+		colonnes["date"] = "Dl_RessPeda_date";
+		colonnes["matiere"] = "Dl_RessPeda_matiere";
+	})(
+		(colonnes =
+			DonneesListe_RessourcesPedagogiques.colonnes ||
+			(DonneesListe_RessourcesPedagogiques.colonnes = {})),
+	);
+})(
+	DonneesListe_RessourcesPedagogiques ||
+		(exports.DonneesListe_RessourcesPedagogiques =
+			DonneesListe_RessourcesPedagogiques =
+				{}),
+);

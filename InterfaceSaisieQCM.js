@@ -20,6 +20,8 @@ const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetFenetre_SelectionCategoriesQCM_1 = require("ObjetFenetre_SelectionCategoriesQCM");
 const ObjetFenetre_SelectionRessource_1 = require("ObjetFenetre_SelectionRessource");
 const DonneesListe_ResultatsQCM_1 = require("DonneesListe_ResultatsQCM");
+const AccessApp_1 = require("AccessApp");
+const GlossaireCP_1 = require("GlossaireCP");
 class InterfaceSaisieQCM extends _InterfacePage_1._InterfacePage {
 	constructor(...aParams) {
 		super(...aParams);
@@ -48,7 +50,20 @@ class InterfaceSaisieQCM extends _InterfacePage_1._InterfacePage {
 		}
 		if (this.avecFiltreGlobalMatiere()) {
 			this.AddSurZone.push({
-				html: '<span class="EspaceGauche10"><ie-bouton ie-model="FiltreGlobal.Matiere.btnChoixMatieres">...</ie-bouton></span>',
+				html: IE.jsx.str(
+					"span",
+					{ class: "EspaceGauche10" },
+					IE.jsx.str(
+						"ie-bouton",
+						{
+							"ie-model": "FiltreGlobal.Matiere.btnChoixMatieres",
+							"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+								"SaisieQCM.Filtres.SelectionnerMatieres",
+							),
+						},
+						"...",
+					),
+				),
 			});
 			this.AddSurZone.push({
 				html: '<span ie-html="FiltreGlobal.Matiere.getStrAffichage"></span>',
@@ -56,7 +71,20 @@ class InterfaceSaisieQCM extends _InterfacePage_1._InterfacePage {
 		}
 		if (this.avecFiltreGlobalNiveau()) {
 			this.AddSurZone.push({
-				html: '<span class="GrandEspaceGauche"><ie-bouton ie-model="FiltreGlobal.Niveau.btnChoixNiveaux">...</ie-bouton></span>',
+				html: IE.jsx.str(
+					"span",
+					{ class: "GrandEspaceGauche" },
+					IE.jsx.str(
+						"ie-bouton",
+						{
+							"ie-model": "FiltreGlobal.Niveau.btnChoixNiveaux",
+							"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+								"SaisieQCM.Filtres.SelectionnerNiveaux",
+							),
+						},
+						"...",
+					),
+				),
 			});
 			this.AddSurZone.push({
 				html: '<span ie-html="FiltreGlobal.Niveau.getStrAffichage"></span>',
@@ -80,7 +108,7 @@ class InterfaceSaisieQCM extends _InterfacePage_1._InterfacePage {
 					btnChoixMatieres: {
 						event: function () {
 							const lTitreFenetre = ObjetTraduction_1.GTraductions.getValeur(
-								"SaisieQCM.Filtres.ListeMatieres",
+								"SaisieQCM.Filtres.SelectionnerMatieres",
 							);
 							aInstance.ouvrirFenetreSelectionFiltresGlobaux(
 								aInstance.FiltresGlobaux.Matiere.liste,
@@ -121,7 +149,7 @@ class InterfaceSaisieQCM extends _InterfacePage_1._InterfacePage {
 					btnChoixNiveaux: {
 						event: function () {
 							const lTitreFenetre = ObjetTraduction_1.GTraductions.getValeur(
-								"SaisieQCM.Filtres.ListeNiveaux",
+								"SaisieQCM.Filtres.SelectionnerNiveaux",
 							);
 							aInstance.ouvrirFenetreSelectionFiltresGlobaux(
 								aInstance.FiltresGlobaux.Niveau.liste,
@@ -223,7 +251,7 @@ class InterfaceSaisieQCM extends _InterfacePage_1._InterfacePage {
 						if (!lMatiereDepuisNouvelleListe) {
 							if (lNumeroMatiereDeListe === 0) {
 								lMatiereDepuisNouvelleListe = new ObjetElement_1.ObjetElement(
-									ObjetTraduction_1.GTraductions.getValeur("fenetre.Aucune"),
+									GlossaireCP_1.TradGlossaireCP.Aucune,
 									lNumeroMatiereDeListe,
 								);
 								lMatiereDepuisNouvelleListe.Position = 0;
@@ -259,7 +287,7 @@ class InterfaceSaisieQCM extends _InterfacePage_1._InterfacePage {
 						if (!lNiveauDepuisNouvelleListe) {
 							if (lNumeroNiveauDeListe === 0) {
 								lNiveauDepuisNouvelleListe = new ObjetElement_1.ObjetElement(
-									ObjetTraduction_1.GTraductions.getValeur("fenetre.Aucun"),
+									GlossaireCP_1.TradGlossaireCP.Aucun,
 									lNumeroNiveauDeListe,
 								);
 								lNiveauDepuisNouvelleListe.Position = 0;
@@ -289,18 +317,18 @@ class InterfaceSaisieQCM extends _InterfacePage_1._InterfacePage {
 		T.push('<div class="ISQ_gauche" ie-if="avecListeFiltresQCM">');
 		T.push(
 			'<div id="',
-			this.getInstance(this.identListeFiltresQCM).getNom(),
+			this.getNomInstance(this.identListeFiltresQCM),
 			'" class="ISQ_gauche_ListeFiltresQCM"></div>',
 		);
 		T.push("</div>");
 		T.push(
 			'<div class="ISQ_milieu" id="',
-			this.getInstance(this.interfaceListeQCM).getNom(),
+			this.getNomInstance(this.interfaceListeQCM),
 			'"></div>',
 		);
 		T.push(
 			'<div class="ISQ_droite" id="',
-			this.getInstance(this.interfaceDetailSelectionQCM).getNom(),
+			this.getNomInstance(this.interfaceDetailSelectionQCM),
 			'"></div>',
 		);
 		T.push("</div>");
@@ -539,11 +567,13 @@ class InterfaceSaisieQCM extends _InterfacePage_1._InterfacePage {
 	}
 	actionSurSaisieDirecteQCM(aJSON) {
 		if (aJSON !== null && aJSON !== undefined && aJSON.message) {
-			GApplication.getMessage().afficher({
-				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-				message: aJSON.message,
-				callback: this.actionSurValidationQCM.bind(this),
-			});
+			(0, AccessApp_1.getApp)()
+				.getMessage()
+				.afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+					message: aJSON.message,
+					callback: this.actionSurValidationQCM.bind(this),
+				});
 		} else {
 			this.actionSurValidationQCM();
 		}

@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieListeDiffusion extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieListeDiffusion = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieListeDiffusion extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParam) {
 		aParam.liste.setSerialisateurJSON({
 			methodeSerialisation: _serialiserListeDiffusion.bind(this),
@@ -11,18 +9,16 @@ class ObjetRequeteSaisieListeDiffusion extends ObjetRequeteSaisie {
 		this.JSON = { liste: aParam.liste };
 		return this.appelAsynchrone();
 	}
-	actionApresRequete() {
-		this.callbackReussite.appel(this.JSONRapportSaisie);
-	}
 }
-Requetes.inscrire("SaisieListeDiffusion", ObjetRequeteSaisieListeDiffusion);
+exports.ObjetRequeteSaisieListeDiffusion = ObjetRequeteSaisieListeDiffusion;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieListeDiffusion",
+	ObjetRequeteSaisieListeDiffusion,
+);
 function _serialiserListeDiffusion(aElement, aJSON) {
 	aJSON.estPublique = aElement.estPublique;
-	aJSON.listePublicEntite = aElement.listePublicEntite;
-	aJSON.genresPublicEntite = aElement.genresPublicEntite;
 	aJSON.listePublicIndividu = aElement.listePublicIndividu;
 	if (aJSON.listePublicIndividu) {
 		aJSON.listePublicIndividu.setSerialisateurJSON({ avecLibelle: false });
 	}
 }
-module.exports = { ObjetRequeteSaisieListeDiffusion };

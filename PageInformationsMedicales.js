@@ -1,180 +1,55 @@
-const { GHtml } = require("ObjetHtml.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetInterface } = require("ObjetInterface.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetFenetre_InfoMedicale } = require("ObjetFenetre_InfoMedicale.js");
-const {
-	UtilitairePageDonneesPersonnelles,
-} = require("UtilitairePageDonneesPersonnelles.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EListeIds } = require("Enumere_DonneesPersonnelles.js");
-const {
-	ObjetRequeteSaisieCompteEnfant,
-} = require("ObjetRequeteSaisieCompteEnfant.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-class PageInformationsMedicales extends ObjetInterface {
+exports.PageInformationsMedicales = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetInterface_1 = require("ObjetInterface");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetFenetre_InfoMedicale_1 = require("ObjetFenetre_InfoMedicale");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetRequeteSaisieCompteEnfant_1 = require("ObjetRequeteSaisieCompteEnfant");
+const MethodesObjet_1 = require("MethodesObjet");
+const AccessApp_1 = require("AccessApp");
+const ObjetStyle_1 = require("ObjetStyle");
+class PageInformationsMedicales extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
+		this.applicationSco = (0, AccessApp_1.getApp)();
 		this.donnees = {
 			infosMedicales: null,
 			listeRestrictionsAlimentaires: null,
+			listeRestrictionsAlimentairesSauvegarde: null,
+			allergies: null,
+			allergiesSauvegarde: null,
 		};
 		this.mangeALaCantine = false;
 		this.donneesRecues = false;
-		this.idNom = "ZoneEditNomMedecin";
 		this.idCommentaire = "ZoneEditCommentaire";
-		this.IdPremierElement = this.idNom;
+		this.IdPremierElement = this.idCommentaire;
 	}
-	construireInstances() {}
 	valider() {
 		const lInformationsMedicales = this.getDossierMedicalModifie();
 		const lInformationsAllergies = this.getAllergiesModifie();
 		this.setEtatSaisie(false);
-		new ObjetRequeteSaisieCompteEnfant(
+		new ObjetRequeteSaisieCompteEnfant_1.ObjetRequeteSaisieCompteEnfant(
 			this,
-			this.controleur.composeListeAllergies,
 		).lancerRequete({
 			informationsMedicales: lInformationsMedicales,
 			allergies: lInformationsAllergies,
 			restrictionsAlimentaires: this.donnees.listeRestrictionsAlimentaires,
 		});
 	}
-	getControleur(aInstance) {
-		const lControleurUtilitairePageDonneesPerso =
-			UtilitairePageDonneesPersonnelles.getControleur(aInstance);
-		Object.assign(lControleurUtilitairePageDonneesPerso, {
-			btnAjouterAllergie: {
-				event() {
-					aInstance.ouvrirFenetreChoixAllergie();
-				},
-			},
-			composeListeAllergies() {
-				let lListeAllergiesActives = null;
-				const lListeAllergies = aInstance.getListeAllergies();
-				if (lListeAllergies) {
-					lListeAllergiesActives = lListeAllergies.getListeElements((D) => {
-						return (
-							(D.getActif() === true &&
-								D.getEtat() !== EGenreEtat.Modification) ||
-							(D.getEtat() === EGenreEtat.Modification &&
-								D.getActif() === false)
-						);
-					});
-				}
-				const H = [];
-				const lAvecCroix = aInstance.allergiesModifiables;
-				if (lListeAllergiesActives) {
-					lListeAllergiesActives.parcourir((aAllergie) => {
-						const lIEModel = lAvecCroix
-							? `btnSupprimerAllergie('${aAllergie.getNumero()}')`
-							: "";
-						H.push(
-							`<ie-chips ie-model="${lIEModel}" class="m-all">${aAllergie.getLibelle()}</ie-chips>`,
-						);
-					});
-				}
-				return H.join("");
-			},
-			btnSupprimerAllergie: {
-				eventBtn(aNumeroAllergie) {
-					const lListeAllergies = aInstance.getListeAllergies();
-					let lAuMoinsUneAllergie = false;
-					if (lListeAllergies) {
-						let lAllergie =
-							lListeAllergies.getElementParNumero(aNumeroAllergie);
-						if (lAllergie) {
-							lAllergie.setActif(false);
-							lAllergie.setEtat(EGenreEtat.Modification);
-							lListeAllergies.parcourir((aAllergene) => {
-								if (aAllergene.getActif() === true) {
-									lAuMoinsUneAllergie = true;
-								}
-							});
-							if (lAuMoinsUneAllergie) {
-								aInstance.donnees.allergies.autoriseConsultationAllergies = true;
-							}
-							aInstance.callback.appel();
-						}
-					}
-				},
-			},
-			avecZoneRestrictionsAlimentaires() {
-				return (
-					!!aInstance.mangeALaCantine &&
-					aInstance.donnees.listeRestrictionsAlimentairesSauvegarde
-				);
-			},
-			avecZoneAllergies() {
-				return aInstance.donnees && aInstance.donnees.allergies;
-			},
-			btnAjouterRestrictionAlimentaire: {
-				event() {
-					aInstance.ouvrirFenetreChoixRestrictionAlimentaire();
-				},
-			},
-			composeListeRestrictionsAlim() {
-				let lListeRestrictionsActives = null;
-				if (aInstance.donnees.listeRestrictionsAlimentaires) {
-					lListeRestrictionsActives =
-						aInstance.donnees.listeRestrictionsAlimentaires.getListeElements(
-							(D) => {
-								return D.getActif();
-							},
-						);
-				}
-				const H = [];
-				const lAvecCroix = aInstance.regimesAlimentairesModifiables;
-				if (lListeRestrictionsActives) {
-					lListeRestrictionsActives.parcourir((aRestrictionAlim) => {
-						const lIEModel = lAvecCroix
-							? `btnSupprimerRestrictionAlim('${aRestrictionAlim.getNumero()}')`
-							: "";
-						H.push(
-							`<ie-chips ie-model="${lIEModel}" class="m-all">${aRestrictionAlim.getLibelle()}</ie-chips>`,
-						);
-					});
-				}
-				return H.join("");
-			},
-			btnSupprimerRestrictionAlim: {
-				eventBtn(aNumeroRestrictionAlim) {
-					if (aInstance.donnees.listeRestrictionsAlimentaires) {
-						let lRestrictionAlim =
-							aInstance.donnees.listeRestrictionsAlimentaires.getElementParNumero(
-								aNumeroRestrictionAlim,
-							);
-						if (lRestrictionAlim) {
-							lRestrictionAlim.setActif(false);
-							lRestrictionAlim.setEtat(EGenreEtat.Modification);
-							aInstance.callback.appel();
-						}
-					}
-				},
-			},
-		});
-		return $.extend(
-			true,
-			super.getControleur(aInstance),
-			lControleurUtilitairePageDonneesPerso,
-		);
-	}
 	setDonnees(aParam) {
 		this.donnees.infosMedicales = aParam.infosMedicales;
-		this.donnees.listeRestrictionsAlimentaires = MethodesObjet.dupliquer(
-			aParam.restrictionsAlimentaires,
-		);
+		this.donnees.listeRestrictionsAlimentaires =
+			MethodesObjet_1.MethodesObjet.dupliquer(aParam.restrictionsAlimentaires);
 		this.donnees.listeRestrictionsAlimentairesSauvegarde =
 			aParam.restrictionsAlimentaires;
 		this.mangeALaCantine = aParam.mangeALaCantine;
-		this.donnees.allergies = MethodesObjet.dupliquer(aParam.allergies);
+		this.donnees.allergies = MethodesObjet_1.MethodesObjet.dupliquer(
+			aParam.allergies,
+		);
 		this.donnees.allergiesSauvegarde = aParam.allergies;
 		this.allergiesModifiables = aParam.allergiesModifiables;
 		this.regimesAlimentairesModifiables = aParam.regimesAlimentairesModifiables;
-		this.largeur = 500;
 		this.donneesRecues = true;
-		this.hauteur = {};
-		this.hauteur.infoRestrictions = 140;
-		this.lignesCommentaire = 5;
 		this.afficher(this.construireAffichage());
 	}
 	getListeAllergies() {
@@ -188,155 +63,213 @@ class PageInformationsMedicales extends ObjetInterface {
 		}
 		return "";
 	}
+	jsxIfAffichageZoneAllergies() {
+		return this.donnees && !!this.donnees.allergies;
+	}
+	jsxIfAffichageZoneRestrictionsAlimentaires() {
+		return (
+			!!this.mangeALaCantine &&
+			!!this.donnees.listeRestrictionsAlimentairesSauvegarde
+		);
+	}
 	composePage() {
-		const lHTML = [];
-		const lEstPrimaire = GApplication.estPrimaire;
+		const H = [];
+		const lEstPrimaire = this.applicationSco.estPrimaire;
 		const lDoitEtreAffiche = !!this.donnees.infosMedicales;
 		const lAvecAllergies = this.allergiesModifiables;
 		const lAvecRegimes = this.regimesAlimentairesModifiables;
 		if (lEstPrimaire) {
-			lHTML.push(`<h3>${GTraductions.getValeur("InfosMedicales.Titre")}</h3>`);
+			H.push(
+				IE.jsx.str(
+					"h3",
+					null,
+					ObjetTraduction_1.GTraductions.getValeur("InfosMedicales.Titre"),
+				),
+			);
 		}
 		if (lDoitEtreAffiche) {
-			lHTML.push(`<div class="item-conteneur">`);
+			const lTitreInfoMedicale = [];
 			if (!lEstPrimaire) {
-				lHTML.push(
-					`<h2>${GTraductions.getValeur("InfosMedicales.Titre")}</h2>`,
+				lTitreInfoMedicale.push(
+					IE.jsx.str(
+						"h2",
+						null,
+						ObjetTraduction_1.GTraductions.getValeur("InfosMedicales.Titre"),
+					),
 				);
 			}
-			lHTML.push(
-				`<div class="valeur-contain ${GApplication.estPrimaire ? "sansMarges" : ""}">`,
+			H.push(
+				IE.jsx.str(
+					"div",
+					{ class: "item-conteneur" },
+					lTitreInfoMedicale.join(""),
+					IE.jsx.str(
+						"div",
+						{ class: ["valeur-contain", lEstPrimaire ? "sansMarges" : ""] },
+						this.composeMedecin(),
+					),
+				),
 			);
-			lHTML.push(UtilitairePageDonneesPersonnelles.composeMedecin());
-			lHTML.push("</div>");
-			lHTML.push("</div>");
 			if (lEstPrimaire && this.donnees.allergies) {
-				lHTML.push(
-					`<h3>${GTraductions.getValeur("InfosMedicales.AllergiesAutres")}</h3>`,
+				H.push(
+					IE.jsx.str(
+						"h3",
+						null,
+						ObjetTraduction_1.GTraductions.getValeur(
+							"InfosMedicales.AllergiesAutres",
+						),
+					),
 				);
 			}
-			lHTML.push(`<div class="item-conteneur" ie-if="avecZoneAllergies">`);
+			const lTitreAllergiesAutres = [];
 			if (!lEstPrimaire) {
-				lHTML.push(
-					`<h2 id="asLabelIdCommentaire">${GTraductions.getValeur("InfosMedicales.AllergiesAutres")}</h2>`,
+				lTitreAllergiesAutres.push(
+					IE.jsx.str(
+						"h2",
+						{ id: "asLabelIdCommentaire" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"InfosMedicales.AllergiesAutres",
+						),
+					),
 				);
 			}
-			lHTML.push(
-				`<div class="valeur-contain ${GApplication.estPrimaire ? "sansMarges" : ""}">`,
+			H.push(
+				IE.jsx.str(
+					"div",
+					{
+						class: "item-conteneur",
+						"ie-if": this.jsxIfAffichageZoneAllergies.bind(this),
+					},
+					lTitreAllergiesAutres.join(""),
+					IE.jsx.str(
+						"div",
+						{ class: ["valeur-contain", lEstPrimaire ? "sansMarges" : ""] },
+						this._composeAutresAllergies(),
+					),
+				),
 			);
-			lHTML.push(_composeAutresAllergies.call(this));
-			lHTML.push("</div>");
-			lHTML.push("</div>");
 		}
-		lHTML.push(
-			`<div class="item-conteneur ${GApplication.estPrimaire ? "sansMarges" : ""}" ie-if="avecZoneAllergies">`,
+		H.push(
+			IE.jsx.str(
+				"div",
+				{
+					class: ["item-conteneur", lEstPrimaire ? "sansMarges" : ""],
+					"ie-if": this.jsxIfAffichageZoneAllergies.bind(this),
+				},
+				IE.jsx.str(
+					"h2",
+					null,
+					ObjetTraduction_1.GTraductions.getValeur(
+						"InfosMedicales.AllergiesRepertoriees",
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "valeur-contain" },
+					this._composeAllergies(lAvecAllergies),
+				),
+			),
 		);
-		lHTML.push(
-			`<h2>${GTraductions.getValeur("InfosMedicales.AllergiesRepertoriees")}</h2>`,
+		H.push(
+			IE.jsx.str(
+				"div",
+				{
+					class: "item-conteneur",
+					"ie-if": this.jsxIfAffichageZoneRestrictionsAlimentaires.bind(this),
+				},
+				IE.jsx.str(
+					"h2",
+					null,
+					ObjetTraduction_1.GTraductions.getValeur(
+						"PageCompte.PratiquesAlimentaires",
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "valeur-contain" },
+					this._composeRestrictionsAlimentaires(lAvecRegimes),
+				),
+			),
 		);
-		lHTML.push(`<div class="valeur-contain">`);
-		lHTML.push(_composeAllergies.call(this, lAvecAllergies));
-		lHTML.push("</div>");
-		lHTML.push("</div>");
-		lHTML.push(
-			`<div class="item-conteneur" ie-if="avecZoneRestrictionsAlimentaires">\n                  <h2>${GTraductions.getValeur("PageCompte.PratiquesAlimentaires")}</h2>\n                  <div class="valeur-contain">`,
-		);
-		lHTML.push(_composeRestrictionsAlimentaires.call(this, lAvecRegimes));
-		lHTML.push("</div>");
-		lHTML.push("</div>");
-		return lHTML.join("");
+		return H.join("");
 	}
 	ouvrirFenetreChoixAllergie() {
-		const lFenetreChoixAllergie = ObjetFenetre.creerInstanceFenetre(
-			ObjetFenetre_InfoMedicale,
-			{
-				pere: this,
-				evenement: function (aBouton) {
-					if (aBouton === 1) {
-						this.donnees.allergies.listeAllergenes =
-							this.copieTravailListeAllergies;
-						let lAuMoinsUneAllergie = false;
-						this.donnees.allergies.listeAllergenes.parcourir((aAllergene) => {
-							if (aAllergene.getActif() === true) {
-								lAuMoinsUneAllergie = true;
+		const lFenetreChoixAllergie =
+			ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+				ObjetFenetre_InfoMedicale_1.ObjetFenetre_InfoMedicale,
+				{
+					pere: this,
+					evenement: (aBouton) => {
+						if (aBouton === 1) {
+							this.donnees.allergies.listeAllergenes =
+								this.copieTravailListeAllergies;
+							let lAuMoinsUneAllergie = false;
+							this.donnees.allergies.listeAllergenes.parcourir((aAllergene) => {
+								if (aAllergene.getActif() === true) {
+									lAuMoinsUneAllergie = true;
+								}
+							});
+							if (lAuMoinsUneAllergie) {
+								this.donnees.allergies.autoriseConsultationAllergies = true;
 							}
-						});
-						if (lAuMoinsUneAllergie) {
-							this.donnees.allergies.autoriseConsultationAllergies = true;
+							this.callback.appel();
 						}
-						this.callback.appel();
-					}
+					},
+					initialiser: (aInstance) => {
+						aInstance.setOptionsFenetre({
+							titre: ObjetTraduction_1.GTraductions.getValeur(
+								"InfosMedicales.SaisieAllergiesRepertoriees",
+							),
+							largeur: 450,
+							hauteur: 600,
+							listeBoutons: [
+								ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+								ObjetTraduction_1.GTraductions.getValeur("Valider"),
+							],
+						});
+					},
 				},
-				initialiser: function (aInstance) {
-					aInstance.setParametresInfoMedicale(
-						GTraductions.getValeur("InfosMedicales.Allergies"),
-					);
-					aInstance.setOptionsFenetre({
-						titre: GTraductions.getValeur(
-							"InfosMedicales.SaisieAllergiesRepertoriees",
-						),
-						largeur: 450,
-						hauteur: 600,
-						listeBoutons: [
-							GTraductions.getValeur("Annuler"),
-							GTraductions.getValeur("Valider"),
-						],
-					});
-				},
-			},
-		);
-		this.copieTravailListeAllergies = MethodesObjet.dupliquer(
+			);
+		this.copieTravailListeAllergies = MethodesObjet_1.MethodesObjet.dupliquer(
 			this.getListeAllergies(),
 		);
-		lFenetreChoixAllergie.setDonnees(this.copieTravailListeAllergies, true);
+		lFenetreChoixAllergie.setListeAllergenes(this.copieTravailListeAllergies);
 	}
 	ouvrirFenetreChoixRestrictionAlimentaire() {
 		const lFenetreChoixRestrictionAlimentaire =
-			ObjetFenetre.creerInstanceFenetre(ObjetFenetre_InfoMedicale, {
-				pere: this,
-				evenement: function (aBouton) {
-					if (aBouton === 1) {
-						this.donnees.listeRestrictionsAlimentaires =
-							this.copieTravailListeRestrictions;
-						this.callback.appel();
-					}
+			ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+				ObjetFenetre_InfoMedicale_1.ObjetFenetre_InfoMedicale,
+				{
+					pere: this,
+					evenement: (aBouton) => {
+						if (aBouton === 1) {
+							this.donnees.listeRestrictionsAlimentaires =
+								this.copieTravailListeRestrictions;
+							this.callback.appel();
+						}
+					},
+					initialiser: (aInstance) => {
+						aInstance.setOptionsFenetre({
+							titre: ObjetTraduction_1.GTraductions.getValeur(
+								"InfosMedicales.SaisieRestrictions",
+							),
+							largeur: 300,
+							hauteur: 300,
+							listeBoutons: [
+								ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+								ObjetTraduction_1.GTraductions.getValeur("Valider"),
+							],
+						});
+					},
 				},
-				initialiser: function (aInstance) {
-					aInstance.setParametresInfoMedicale(
-						GTraductions.getValeur("InfosMedicales.Restrictions"),
-					);
-					aInstance.setOptionsFenetre({
-						titre: GTraductions.getValeur("InfosMedicales.SaisieRestrictions"),
-						largeur: 300,
-						hauteur: 300,
-						listeBoutons: [
-							GTraductions.getValeur("Annuler"),
-							GTraductions.getValeur("Valider"),
-						],
-					});
-				},
-			});
-		this.copieTravailListeRestrictions = MethodesObjet.dupliquer(
-			this.donnees.listeRestrictionsAlimentaires,
-		);
-		lFenetreChoixRestrictionAlimentaire.setDonnees(
+			);
+		this.copieTravailListeRestrictions =
+			MethodesObjet_1.MethodesObjet.dupliquer(
+				this.donnees.listeRestrictionsAlimentaires,
+			);
+		lFenetreChoixRestrictionAlimentaire.setListeRestrictionsAlimentaires(
 			this.copieTravailListeRestrictions,
 		);
-	}
-	setValidation(aID) {
-		switch (aID) {
-			case this.idNom:
-				this.donnees.infosMedicales.nomMedecin = GHtml.getValue(this.idNom);
-				break;
-			case this.idCommentaire:
-				this.donnees.infosMedicales.commentaire = GHtml.getValue(
-					this.idCommentaire,
-				);
-				break;
-			default:
-				break;
-		}
-		this.callback.appel();
 	}
 	getDossierMedicalModifie() {
 		return this.donnees.infosMedicales;
@@ -347,66 +280,829 @@ class PageInformationsMedicales extends ObjetInterface {
 	getAlimentationModifie() {
 		return this.donnees.listeRestrictionsAlimentaires;
 	}
-}
-function _composeAllergies(aAvecSaisie) {
-	const lHTML = [];
-	lHTML.push(
-		`<p class="m-top m-bottom-l">${GTraductions.getValeur("infosperso.infosImperieusesTitre")}</p>`,
-	);
-	lHTML.push(
-		`<p class="m-top m-bottom-l">${GTraductions.getValeur("infosperso.infosImperieusesAllergiesComplement")}</p>`,
-	);
-	if (aAvecSaisie) {
-		lHTML.push(
-			`<ie-bouton ie-model="btnAjouterAllergie" class="themeBoutonNeutre" title="${GTraductions.getValeur("InfosMedicales.AjouterAllergie")}">${GTraductions.getValeur("Ajouter")}</ie-bouton>`,
+	jsxModeleBoutonAjouterAllergie() {
+		return {
+			event: () => {
+				this.ouvrirFenetreChoixAllergie();
+			},
+		};
+	}
+	jsxModeleChipsAllergene(aAllergene) {
+		return {
+			eventBtn: () => {
+				if (aAllergene) {
+					aAllergene.setActif(false);
+					aAllergene.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+					let lAuMoinsUnAllergeneActif = false;
+					const lListeAllergies = this.getListeAllergies();
+					lListeAllergies.parcourir((aTempAllergene) => {
+						if (aTempAllergene.getActif() === true) {
+							lAuMoinsUnAllergeneActif = true;
+						}
+					});
+					if (lAuMoinsUnAllergeneActif) {
+						this.donnees.allergies.autoriseConsultationAllergies = true;
+					}
+					this.callback.appel();
+				}
+			},
+		};
+	}
+	jsxGetHtmlListeAllergies() {
+		let lListeAllergiesActives = null;
+		const lListeAllergies = this.getListeAllergies();
+		if (lListeAllergies) {
+			lListeAllergiesActives = lListeAllergies.getListeElements((D) => {
+				return (
+					(D.getActif() === true &&
+						D.getEtat() !== Enumere_Etat_1.EGenreEtat.Modification) ||
+					(D.getEtat() === Enumere_Etat_1.EGenreEtat.Modification &&
+						D.getActif() === false)
+				);
+			});
+		}
+		const H = [];
+		const lAvecCroix = this.allergiesModifiables;
+		if (lListeAllergiesActives) {
+			lListeAllergiesActives.parcourir((aAllergie) => {
+				H.push(
+					IE.jsx.str(
+						"ie-chips",
+						{
+							"ie-model": lAvecCroix
+								? this.jsxModeleChipsAllergene.bind(this, aAllergie)
+								: false,
+							class: "m-all",
+						},
+						aAllergie.getLibelle(),
+					),
+				);
+			});
+		}
+		return H.join("");
+	}
+	jsxModeleAutoriserConsultationAllergies() {
+		return {
+			getValue: () => {
+				return this.donnees.allergies
+					? this.donnees.allergies.autoriseConsultationAllergies
+					: false;
+			},
+			setValue: (aValue) => {
+				if (this.donnees.allergies) {
+					this.donnees.allergies.autoriseConsultationAllergies = aValue;
+					this.valider();
+				}
+			},
+		};
+	}
+	_composeAllergies(aAvecSaisie) {
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"p",
+					{ class: "a-savoir-conteneur" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"infosperso.infosImperieusesTitre",
+					),
+				),
+				IE.jsx.str(
+					"p",
+					{ class: "a-savoir-conteneur" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"infosperso.infosImperieusesAllergiesComplement",
+					),
+				),
+			),
+		);
+		if (aAvecSaisie) {
+			H.push(
+				IE.jsx.str(
+					"div",
+					{ class: "text-right" },
+					IE.jsx.str(
+						"ie-bouton",
+						{
+							"ie-model": this.jsxModeleBoutonAjouterAllergie.bind(this),
+							class: "themeBoutonNeutre",
+							title: ObjetTraduction_1.GTraductions.getValeur(
+								"InfosMedicales.AjouterAllergie",
+							),
+						},
+						ObjetTraduction_1.GTraductions.getValeur("Ajouter"),
+					),
+				),
+			);
+		}
+		H.push(
+			IE.jsx.str("div", {
+				class: "liste-chips",
+				"ie-html": this.jsxGetHtmlListeAllergies.bind(this),
+			}),
+		);
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "champ-conteneur" },
+				IE.jsx.str(
+					"ie-switch",
+					{
+						class: "long-text",
+						"ie-model": this.jsxModeleAutoriserConsultationAllergies.bind(this),
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"infosperso.infosAllergiesConsultables",
+					),
+				),
+			),
+		);
+		return H.join("");
+	}
+	jsxModeleChipsRestrictionAlimentaire(aRestrictionAlim) {
+		return {
+			eventBtn: () => {
+				if (aRestrictionAlim && this.donnees.listeRestrictionsAlimentaires) {
+					aRestrictionAlim.setActif(false);
+					aRestrictionAlim.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+					this.callback.appel();
+				}
+			},
+		};
+	}
+	jsxGetHtmlListeRestrictionsAlimentaires() {
+		let lListeRestrictionsActives = null;
+		if (this.donnees.listeRestrictionsAlimentaires) {
+			lListeRestrictionsActives =
+				this.donnees.listeRestrictionsAlimentaires.getListeElements((D) => {
+					return D.getActif();
+				});
+		}
+		const H = [];
+		const lAvecCroix = this.regimesAlimentairesModifiables;
+		if (lListeRestrictionsActives) {
+			lListeRestrictionsActives.parcourir((aRestrictionAlim) => {
+				H.push(
+					IE.jsx.str(
+						"ie-chips",
+						{
+							"ie-model": lAvecCroix
+								? this.jsxModeleChipsRestrictionAlimentaire.bind(
+										this,
+										aRestrictionAlim,
+									)
+								: false,
+							class: "m-all",
+						},
+						aRestrictionAlim.getLibelle(),
+					),
+				);
+			});
+		}
+		return H.join("");
+	}
+	jsxModeleBoutonAjouterRestrictionAlimentaire() {
+		return {
+			event: () => {
+				this.ouvrirFenetreChoixRestrictionAlimentaire();
+			},
+		};
+	}
+	_composeRestrictionsAlimentaires(aAvecSaisie) {
+		const H = [];
+		if (aAvecSaisie) {
+			H.push(
+				IE.jsx.str(
+					"div",
+					{ class: "text-right" },
+					IE.jsx.str(
+						"ie-bouton",
+						{
+							"ie-model":
+								this.jsxModeleBoutonAjouterRestrictionAlimentaire.bind(this),
+							class: "themeBoutonNeutre",
+							title: ObjetTraduction_1.GTraductions.getValeur(
+								"InfosMedicales.AjouterRestriction",
+							),
+						},
+						ObjetTraduction_1.GTraductions.getValeur("Ajouter"),
+					),
+				),
+			);
+		}
+		H.push(
+			IE.jsx.str("div", {
+				class: "liste-chips",
+				"ie-html": this.jsxGetHtmlListeRestrictionsAlimentaires.bind(this),
+			}),
+		);
+		return H.join("");
+	}
+	jsxTextareaCommentaire() {
+		return {
+			getValue: () => {
+				return this.donnees.infosMedicales &&
+					this.donnees.infosMedicales.avecCommentaireAutorise
+					? this.donnees.infosMedicales.commentaire
+					: "";
+			},
+			setValue: (aValue) => {
+				if (
+					this.donnees.infosMedicales &&
+					this.donnees.infosMedicales.avecCommentaireAutorise
+				) {
+					this.donnees.infosMedicales.commentaire = aValue;
+				}
+			},
+		};
+	}
+	jsxModeleAutoriserConsultationAutresAllergies() {
+		return {
+			getValue: () => {
+				return this.donnees.infosMedicales
+					? this.donnees.infosMedicales.estConsultable
+					: false;
+			},
+			setValue: (aValue) => {
+				if (this.donnees.infosMedicales) {
+					this.donnees.infosMedicales.estConsultable = aValue;
+					this.valider();
+				}
+			},
+		};
+	}
+	_composeAutresAllergies() {
+		const H = [];
+		const lNbLignesCommentaire = 5;
+		const lHauteurInfoRestrictions = 140;
+		const lLignes =
+			lNbLignesCommentaire +
+			(this.mangeALaCantine
+				? 0
+				: Math.floor(lHauteurInfoRestrictions / (2 * 12)));
+		if (this.donnees.infosMedicales.avecCommentaireAutorise) {
+			H.push(
+				IE.jsx.str(
+					"div",
+					{ class: "champ-conteneur" },
+					IE.jsx.str("ie-textareamax", {
+						maxlength: "1000",
+						"aria-labelledby": "asLabelIdCommentaire",
+						id: this.idCommentaire,
+						name: this.idCommentaire,
+						"ie-model": this.jsxTextareaCommentaire.bind(this),
+						rows: "" + lLignes,
+						style:
+							"width:100%;" +
+							"height:" +
+							(this.mangeALaCantine ? 50 : 120) +
+							"px;",
+					}),
+				),
+			);
+			H.push(
+				IE.jsx.str(
+					"p",
+					{ class: "a-savoir-conteneur" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"infosperso.infosMedicalesTitre",
+					),
+				),
+			);
+			H.push(
+				IE.jsx.str(
+					"div",
+					{ class: "champ-conteneur" },
+					IE.jsx.str(
+						"ie-switch",
+						{
+							class: "long-text",
+							"ie-model":
+								this.jsxModeleAutoriserConsultationAutresAllergies.bind(this),
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"infosperso.infosMedicalesConsultables",
+						),
+					),
+				),
+			);
+		} else {
+			H.push(
+				IE.jsx.str(
+					"p",
+					{ class: "a-savoir-conteneur" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"infosperso.msgCommentaireMedical",
+					),
+				),
+			);
+		}
+		return H.join("");
+	}
+	jsxModeleNomMedecin() {
+		return {
+			getValue: () => {
+				if (
+					this.donnees.infosMedicales &&
+					this.donnees.infosMedicales.medecin
+				) {
+					return this.donnees.infosMedicales.medecin.nomMedecin || "";
+				}
+				return "";
+			},
+			setValue: (aValue) => {
+				if (
+					this.donnees.infosMedicales &&
+					this.donnees.infosMedicales.medecin
+				) {
+					this.donnees.infosMedicales.medecin.nomMedecin = aValue;
+					this.setEtatSaisie(true);
+				}
+			},
+		};
+	}
+	jsxModeleAdresseMedecin(aIndice) {
+		return {
+			getValue: () => {
+				if (
+					this.donnees.infosMedicales &&
+					this.donnees.infosMedicales.medecin
+				) {
+					return this.donnees.infosMedicales.medecin[`adresse${aIndice}`];
+				}
+				return "";
+			},
+			setValue: (aValue) => {
+				if (
+					this.donnees.infosMedicales &&
+					this.donnees.infosMedicales.medecin
+				) {
+					this.donnees.infosMedicales.medecin[`adresse${aIndice}`] = aValue;
+					this.setEtatSaisie(true);
+				}
+			},
+		};
+	}
+	jsxModeleCPMedecin() {
+		return {
+			getValue: () => {
+				if (
+					this.donnees.infosMedicales &&
+					this.donnees.infosMedicales.medecin
+				) {
+					return this.donnees.infosMedicales.medecin.codePostal || "";
+				}
+				return "";
+			},
+			setValue: (aValue) => {
+				if (
+					this.donnees.infosMedicales &&
+					this.donnees.infosMedicales.medecin
+				) {
+					this.donnees.infosMedicales.medecin.codePostal = aValue;
+					this.setEtatSaisie(true);
+				}
+			},
+		};
+	}
+	jsxModeleVilleMedecin() {
+		return {
+			getValue: () => {
+				if (
+					this.donnees.infosMedicales &&
+					this.donnees.infosMedicales.medecin
+				) {
+					return this.donnees.infosMedicales.medecin.libellePostal || "";
+				}
+				return "";
+			},
+			setValue: (aValue) => {
+				if (
+					this.donnees.infosMedicales &&
+					this.donnees.infosMedicales.medecin
+				) {
+					this.donnees.infosMedicales.medecin.libellePostal = aValue;
+					this.setEtatSaisie(true);
+				}
+			},
+		};
+	}
+	jsxModeleIndicatifFixeMedecin() {
+		return {
+			getValue: () => {
+				if (
+					this.donnees.infosMedicales &&
+					this.donnees.infosMedicales.medecin
+				) {
+					return this.donnees.infosMedicales.medecin.indFixe || "";
+				}
+				return "";
+			},
+			setValue: (aValue) => {
+				if (
+					this.donnees.infosMedicales &&
+					this.donnees.infosMedicales.medecin
+				) {
+					this.donnees.infosMedicales.medecin.indFixe = aValue;
+					this.setEtatSaisie(true);
+				}
+			},
+		};
+	}
+	jsxModeleNumeroFixeMedecin() {
+		return {
+			getValue: () => {
+				if (
+					this.donnees.infosMedicales &&
+					this.donnees.infosMedicales.medecin
+				) {
+					return this.donnees.infosMedicales.medecin.telFixe || "";
+				}
+				return "";
+			},
+			setValue: (aValue) => {
+				if (
+					this.donnees.infosMedicales &&
+					this.donnees.infosMedicales.medecin
+				) {
+					this.donnees.infosMedicales.medecin.telFixe = aValue;
+					this.setEtatSaisie(true);
+				}
+			},
+		};
+	}
+	jsxModeleIndicatifPortableMedecin() {
+		return {
+			getValue: () => {
+				if (
+					this.donnees.infosMedicales &&
+					this.donnees.infosMedicales.medecin
+				) {
+					return this.donnees.infosMedicales.medecin.indMobile || "";
+				}
+				return "";
+			},
+			setValue: (aValue) => {
+				if (
+					this.donnees.infosMedicales &&
+					this.donnees.infosMedicales.medecin
+				) {
+					this.donnees.infosMedicales.medecin.indMobile = aValue;
+					this.setEtatSaisie(true);
+				}
+			},
+		};
+	}
+	jsxModeleNumeroPortableMedecin() {
+		return {
+			getValue: () => {
+				if (
+					this.donnees.infosMedicales &&
+					this.donnees.infosMedicales.medecin
+				) {
+					return this.donnees.infosMedicales.medecin.telMobile || "";
+				}
+				return "";
+			},
+			setValue: (aValue) => {
+				if (
+					this.donnees.infosMedicales &&
+					this.donnees.infosMedicales.medecin
+				) {
+					this.donnees.infosMedicales.medecin.telMobile = aValue;
+					this.setEtatSaisie(true);
+				}
+			},
+		};
+	}
+	jsxModeleAutoriserHospitalisation() {
+		return {
+			getValue: () => {
+				return this.donnees.infosMedicales
+					? this.donnees.infosMedicales.autoriseHospitalisation
+					: false;
+			},
+			setValue: (aValue) => {
+				if (this.donnees.infosMedicales) {
+					this.donnees.infosMedicales.autoriseHospitalisation = aValue;
+					this.valider();
+				}
+			},
+		};
+	}
+	composeMedecin() {
+		const lLargeurIndicatif = 36;
+		const lLargeurTel = 110;
+		const lStyle = { width: 380 };
+		return IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			IE.jsx.str(
+				"h3",
+				null,
+				ObjetTraduction_1.GTraductions.getValeur(
+					"InfosMedicales.MedecinTraitant",
+				),
+			),
+			IE.jsx.str(
+				"div",
+				{ class: "champ-conteneur" },
+				IE.jsx.str(
+					"label",
+					{ for: "idNom", class: "icon_user" },
+					ObjetTraduction_1.GTraductions.getValeur("InfosMedicales.NomMedecin"),
+					" ",
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "champ-valeur" },
+					IE.jsx.str("input", {
+						type: "text",
+						id: "idNom",
+						name: "idNom",
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"InfosMedicales.TitreNom",
+						),
+						placeholder: ObjetTraduction_1.GTraductions.getValeur(
+							"InfosMedicales.TitreNom",
+						),
+						"ie-model": this.jsxModeleNomMedecin.bind(this),
+						style: lStyle,
+						maxlength: "50",
+					}),
+				),
+			),
+			IE.jsx.str(
+				"div",
+				{ class: "groupe-champs-conteneur" },
+				IE.jsx.str(
+					"div",
+					{ class: "champ-conteneur" },
+					IE.jsx.str(
+						"label",
+						{ class: "icon_envelope" },
+						ObjetTraduction_1.GTraductions.getValeur("InfosMedicales.adresse1"),
+					),
+					IE.jsx.str(
+						"div",
+						{ class: "champ-valeur" },
+						IE.jsx.str("input", {
+							type: "text",
+							id: "idAdresse1",
+							title: ObjetTraduction_1.GTraductions.getValeur(
+								"InfosMedicales.adresse1",
+							),
+							style: lStyle,
+							maxlength: "50",
+							"ie-model": this.jsxModeleAdresseMedecin.bind(this, 1),
+						}),
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "champ-conteneur" },
+					IE.jsx.str(
+						"label",
+						{ class: "icon_envelope" },
+						ObjetTraduction_1.GTraductions.getValeur("InfosMedicales.adresse2"),
+					),
+					IE.jsx.str(
+						"div",
+						{ class: "champ-valeur" },
+						IE.jsx.str("input", {
+							type: "text",
+							id: "idAdresse2",
+							title: ObjetTraduction_1.GTraductions.getValeur(
+								"InfosMedicales.adresse2",
+							),
+							style: lStyle,
+							maxlength: "50",
+							"ie-model": this.jsxModeleAdresseMedecin.bind(this, 2),
+						}),
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "champ-conteneur" },
+					IE.jsx.str(
+						"label",
+						{ class: "icon_envelope" },
+						ObjetTraduction_1.GTraductions.getValeur("InfosMedicales.adresse3"),
+					),
+					IE.jsx.str(
+						"div",
+						{ class: "champ-valeur" },
+						IE.jsx.str("input", {
+							type: "text",
+							id: "idAdresse3",
+							title: ObjetTraduction_1.GTraductions.getValeur(
+								"InfosMedicales.adresse3",
+							),
+							style: lStyle,
+							maxlength: "50",
+							"ie-model": this.jsxModeleAdresseMedecin.bind(this, 3),
+						}),
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "champ-conteneur" },
+					IE.jsx.str(
+						"label",
+						{ class: "icon_envelope" },
+						ObjetTraduction_1.GTraductions.getValeur("InfosMedicales.adresse4"),
+					),
+					IE.jsx.str(
+						"div",
+						{ class: "champ-valeur" },
+						IE.jsx.str("input", {
+							type: "text",
+							title: ObjetTraduction_1.GTraductions.getValeur(
+								"InfosMedicales.adresse4",
+							),
+							style: lStyle,
+							maxlength: "50",
+							"ie-model": this.jsxModeleAdresseMedecin.bind(this, 4),
+						}),
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "champ-conteneur" },
+					IE.jsx.str(
+						"div",
+						{ "aria-hidden": "true", class: "champ-libelle icon_envelope" },
+						ObjetTraduction_1.GTraductions.getValeur("InfosMedicales.cpVille"),
+					),
+					IE.jsx.str(
+						"div",
+						null,
+						IE.jsx.str(
+							"div",
+							{ class: "champ-valeur" },
+							IE.jsx.str(
+								"label",
+								{ for: "idCpMedecin", class: "sr-only" },
+								ObjetTraduction_1.GTraductions.getValeur(
+									"InfosMedicales.CodePostal",
+								),
+							),
+							IE.jsx.str("input", {
+								type: "text",
+								id: "idCpMedecin",
+								maxlength: "8",
+								title: ObjetTraduction_1.GTraductions.getValeur(
+									"InfosMedicales.CodePostal",
+								),
+								"ie-model": this.jsxModeleCPMedecin.bind(this),
+								style: "width: 6.5rem;margin-right:.4rem;",
+							}),
+							IE.jsx.str(
+								"label",
+								{ for: "idVilleMedecin", class: "sr-only" },
+								ObjetTraduction_1.GTraductions.getValeur(
+									"InfosMedicales.Ville",
+								),
+							),
+							IE.jsx.str("input", {
+								id: "idVilleMedecin",
+								type: "text",
+								title: ObjetTraduction_1.GTraductions.getValeur(
+									"InfosMedicales.Ville",
+								),
+								"ie-model": this.jsxModeleVilleMedecin.bind(this),
+								style: ObjetStyle_1.GStyle.composeWidth(lLargeurTel),
+							}),
+						),
+					),
+				),
+			),
+			IE.jsx.str(
+				"div",
+				{ class: "groupe-champs-conteneur" },
+				IE.jsx.str(
+					"div",
+					{ class: "champ-conteneur" },
+					IE.jsx.str(
+						"div",
+						{ class: "champ-libelle icon_home" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"InfosMedicales.Telephone",
+						),
+					),
+					IE.jsx.str(
+						"div",
+						{ class: "champ-valeur" },
+						IE.jsx.str(
+							"label",
+							{ for: "idIndFixeMedecin", class: "sr-only" },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"InfosMedicales.IndicatifTelephone",
+							),
+						),
+						IE.jsx.str("input", {
+							id: "idIndFixeMedecin",
+							"ie-model": this.jsxModeleIndicatifFixeMedecin.bind(this),
+							class: "m-right ",
+							"ie-indicatiftel": true,
+							style: ObjetStyle_1.GStyle.composeWidth(lLargeurIndicatif) + ";",
+							type: "text",
+							title: ObjetTraduction_1.GTraductions.getValeur(
+								"InfosMedicales.IndicatifTelephone",
+							),
+						}),
+						IE.jsx.str(
+							"label",
+							{ for: "idTelFixeMedecin", class: "sr-only" },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"InfosMedicales.Telephone",
+							),
+						),
+						IE.jsx.str("input", {
+							id: "idTelFixeMedecin",
+							"ie-model": this.jsxModeleNumeroFixeMedecin.bind(this),
+							"ie-telephone": true,
+							type: "text",
+							title: ObjetTraduction_1.GTraductions.getValeur(
+								"InfosMedicales.TitreTelephone",
+							),
+						}),
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "champ-conteneur" },
+					IE.jsx.str(
+						"div",
+						{
+							class: "champ-libelle icon_mobile_phone",
+							"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+								"InfosMedicales.MobileTelephone",
+							),
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"infosperso.libelleTelPort",
+						),
+					),
+					IE.jsx.str(
+						"div",
+						{ class: "champ-valeur" },
+						IE.jsx.str(
+							"label",
+							{ for: "idIndPortMedecin", class: "sr-only" },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"InfosMedicales.IndicatifTelephone",
+							),
+						),
+						IE.jsx.str("input", {
+							id: "idIndPortMedecin",
+							"ie-model": this.jsxModeleIndicatifPortableMedecin.bind(this),
+							class: "m-right",
+							"ie-indicatiftel": true,
+							style: ObjetStyle_1.GStyle.composeWidth(lLargeurIndicatif) + ";",
+							type: "text",
+							title: ObjetTraduction_1.GTraductions.getValeur(
+								"InfosMedicales.IndicatifTelephone",
+							),
+						}),
+						IE.jsx.str(
+							"label",
+							{ for: "idTelPortMedecin", class: "sr-only" },
+							ObjetTraduction_1.GTraductions.getValeur("infosperso.SMS"),
+						),
+						IE.jsx.str("input", {
+							id: "idTelPortMedecin",
+							"ie-model": this.jsxModeleNumeroPortableMedecin.bind(this),
+							"ie-telephone": true,
+							type: "text",
+							title: ObjetTraduction_1.GTraductions.getValeur(
+								"InfosMedicales.MobileTelephone",
+							),
+						}),
+					),
+				),
+			),
+			IE.jsx.str(
+				"div",
+				{ class: "groupe-champs-conteneur" },
+				IE.jsx.str(
+					"div",
+					{ class: "champ-conteneur" },
+					IE.jsx.str(
+						"ie-switch",
+						{
+							class: "long-text",
+							"ie-model": this.jsxModeleAutoriserHospitalisation.bind(this),
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"infosperso.autoriserHospitalisation",
+						),
+					),
+				),
+			),
 		);
 	}
-	lHTML.push('<div class="liste-chips" ie-html="composeListeAllergies"></div>');
-	lHTML.push(
-		'<div class="switch-contain">',
-		UtilitairePageDonneesPersonnelles.composerSwitch(
-			EListeIds.cbAutoriserAllergies,
-			GTraductions.getValeur("infosperso.infosAllergiesConsultables"),
-			"autoriseConsultationAllergies",
-		),
-		"</div>",
-	);
-	return lHTML.join("");
 }
-function _composeRestrictionsAlimentaires(aAvecSaisie) {
-	const lHTML = [];
-	if (aAvecSaisie) {
-		lHTML.push(
-			`<ie-bouton ie-model="btnAjouterRestrictionAlimentaire" class="themeBoutonNeutre" title="${GTraductions.getValeur("InfosMedicales.AjouterRestriction")}">${GTraductions.getValeur("Ajouter")}</ie-bouton>`,
-		);
-	}
-	lHTML.push(
-		'<div class="liste-chips" ie-html="composeListeRestrictionsAlim"></div>',
-	);
-	return lHTML.join("");
-}
-function _composeAutresAllergies() {
-	const lHTML = [];
-	const lLignes =
-		this.lignesCommentaire +
-		(this.mangeALaCantine
-			? 0
-			: Math.floor(this.hauteur.infoRestrictions / (2 * 12)));
-	lHTML.push(
-		`<div class="item-contain">\n  <textarea maxlength="1000" aria-labelledby="asLabelIdCommentaire" tabindex="0" id="${this.idCommentaire}" name="${this.idCommentaire}" onchange="${this.Nom}.setValidation (id)" class="round-style" rows="${lLignes}" style="width:100%;height:${this.mangeALaCantine ? 50 : 120}px;">\n  ${this.donnees.infosMedicales.commentaire ? this.donnees.infosMedicales.commentaire : ``}</textarea>\n  </div>`,
-	);
-	lHTML.push(
-		`<p class="m-top m-bottom">${GTraductions.getValeur("infosperso.infosMedicalesTitre")}</p>`,
-	);
-	lHTML.push(
-		'<div class="switch-contain">',
-		UtilitairePageDonneesPersonnelles.composerSwitch(
-			EListeIds.cbExposerDossierMedical,
-			GTraductions.getValeur("infosperso.infosMedicalesConsultables"),
-			"estConsultable",
-		),
-		"</div>",
-	);
-	return lHTML.join("");
-}
-module.exports = { PageInformationsMedicales };
+exports.PageInformationsMedicales = PageInformationsMedicales;

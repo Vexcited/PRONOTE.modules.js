@@ -15,10 +15,11 @@ const UtilitaireSelecFile_1 = require("UtilitaireSelecFile");
 const ObjetFenetre_PanierRessourceKiosque_1 = require("ObjetFenetre_PanierRessourceKiosque");
 const InterfaceContenuCahierDeTextes_1 = require("InterfaceContenuCahierDeTextes");
 const InterfaceTAFCahierDeTextes_1 = require("InterfaceTAFCahierDeTextes");
+const AccessApp_1 = require("AccessApp");
 class ObjetFenetre_Saisie_CDTPlanning extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
-		this.applicationSco = GApplication;
+		this.applicationSco = (0, AccessApp_1.getApp)();
 		this.etatUtilisateur = this.applicationSco.getEtatUtilisateur();
 		this.setOptionsFenetre({
 			largeur: 800,
@@ -77,6 +78,10 @@ class ObjetFenetre_Saisie_CDTPlanning extends ObjetFenetre_1.ObjetFenetre {
 			valider: true,
 		});
 		this.setOptionsFenetre({ listeBoutons: lListeBoutons });
+		this.donnees.listeTousEleves =
+			UtilitaireSaisieCDT_1.UtilitaireSaisieCDT.getListeToutLesEleves(
+				this.donnees.saisieCDT.listeClassesEleves,
+			);
 		if (this.donnees.surCreation) {
 			if (this.donnees.pourTAF) {
 				this.donnees.contenu = new ObjetElement_1.ObjetElement("");
@@ -85,6 +90,7 @@ class ObjetFenetre_Saisie_CDTPlanning extends ObjetFenetre_1.ObjetFenetre {
 					this.donnees.contenu,
 					this.donnees.saisieCDT.dateCoursSuivantTAF ||
 						this.donnees.saisieCDT.DateTravailAFaire,
+					this.donnees.listeTousEleves,
 				);
 				this.donnees.contenu.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 				this.donnees.contenu.estVide = true;
@@ -313,50 +319,55 @@ class ObjetFenetre_Saisie_CDTPlanning extends ObjetFenetre_1.ObjetFenetre {
 				});
 				break;
 			case EGenreEvenementContenuCahierDeTextes_1
-				.EGenreEvenementContenuCahierDeTextes.ajouterLienKiosque:
-				ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
-					ObjetFenetre_PanierRessourceKiosque_1.ObjetFenetre_PanierRessourceKiosque,
-					{
-						pere: this,
-						evenement: (aParams) => {
-							if (
-								aParams.genreBouton === 1 &&
-								!!aParams.selection &&
-								aParams.selection.count() > 0
-							) {
-								for (let i = 0; i < aParams.selection.count(); i++) {
-									const lElement = aParams.selection.get(i);
-									if (lElement && lElement.ressource) {
-										const lLienKiosque = new ObjetElement_1.ObjetElement(
-											lElement.ressource.getLibelle(),
-											null,
-											Enumere_DocumentJoint_1.EGenreDocumentJoint.LienKiosque,
-										);
-										lLienKiosque.ressource = lElement.ressource;
-										lLienKiosque.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
-										if (
-											!UtilitaireSaisieCDT_1.UtilitaireSaisieCDT.ressourceGranulaireKiosqueEstDejaPresentDanslesPJ(
-												lLienKiosque,
-												aElement.ListePieceJointe,
-											)
-										) {
-											this.donnees.saisieCDT.ListeDocumentsJoints.addElement(
-												lLienKiosque,
+				.EGenreEvenementContenuCahierDeTextes.ajouterLienKiosque: {
+				const lFenetrePanierRessourceKiosque =
+					ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+						ObjetFenetre_PanierRessourceKiosque_1.ObjetFenetre_PanierRessourceKiosque,
+						{
+							pere: this,
+							evenement: (aParams) => {
+								if (
+									aParams.genreBouton === 1 &&
+									!!aParams.selection &&
+									aParams.selection.count() > 0
+								) {
+									for (let i = 0; i < aParams.selection.count(); i++) {
+										const lElement = aParams.selection.get(i);
+										if (lElement && lElement.ressource) {
+											const lLienKiosque = new ObjetElement_1.ObjetElement(
+												lElement.ressource.getLibelle(),
+												null,
+												Enumere_DocumentJoint_1.EGenreDocumentJoint.LienKiosque,
 											);
-											aElement.ListePieceJointe.addElement(lLienKiosque);
-											aElement.estVide = false;
-											aElement.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
-											this.avecSaisie = true;
-											this._actualiserContenu();
+											lLienKiosque.ressource = lElement.ressource;
+											lLienKiosque.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
+											if (
+												!UtilitaireSaisieCDT_1.UtilitaireSaisieCDT.ressourceGranulaireKiosqueEstDejaPresentDanslesPJ(
+													lLienKiosque,
+													aElement.ListePieceJointe,
+												)
+											) {
+												this.donnees.saisieCDT.ListeDocumentsJoints.addElement(
+													lLienKiosque,
+												);
+												aElement.ListePieceJointe.addElement(lLienKiosque);
+												aElement.estVide = false;
+												aElement.setEtat(
+													Enumere_Etat_1.EGenreEtat.Modification,
+												);
+												this.avecSaisie = true;
+												this._actualiserContenu();
+											}
 										}
 									}
 								}
-							}
+							},
 						},
-					},
-					{ avecMultiSelection: true },
-				).afficherFenetre();
+					);
+				lFenetrePanierRessourceKiosque.setOptions({ avecMultiSelection: true });
+				lFenetrePanierRessourceKiosque.afficherFenetre();
 				break;
+			}
 			default:
 		}
 	}

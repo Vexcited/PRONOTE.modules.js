@@ -1,29 +1,27 @@
-const { GUID } = require("GUID.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GChaine } = require("ObjetChaine.js");
-const { GHtml } = require("ObjetHtml.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { Identite } = require("ObjetIdentite.js");
-const { ObjetSaisie } = require("ObjetSaisie.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class PageEntreprise extends Identite {
-	constructor(...aParams) {
-		super(...aParams);
-		this.hauteurs = {};
-		this.hauteurs.libelle = 20;
-		this.largeurs = {};
-		this.largeurs.libelle = 160;
-		this.largeurs.combo = 70;
-		this.largeurs.field = 375;
-		this.largeurs.indicatif = 40;
-		this.id = {};
-		this.id.nomContact = this.Nom + "_nomContact";
-		this.id.prenomContact = this.Nom + "_prenomContact";
-		this.id.emailContact = this.Nom + "_emailContact";
-		this.id.fonctionContact = this.Nom + "_fonctionContact";
-		this.id.estResponsable = this.Nom + "_estResponsable";
-		this.classFloatPere = GUID.getClassCss();
-		this.classFloatInfo = GUID.getClassCss();
+exports.PageEntreprise = void 0;
+const GUID_1 = require("GUID");
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetHtml_1 = require("ObjetHtml");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetIdentite_1 = require("ObjetIdentite");
+const ObjetSaisie_1 = require("ObjetSaisie");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetStyle_1 = require("ObjetStyle");
+class PageEntreprise extends ObjetIdentite_1.Identite {
+	constructor() {
+		super(...arguments);
+		this.hauteurs = { libelle: 20 };
+		this.largeurs = { libelle: 160, combo: 70, field: 375, indicatif: 40 };
+		this.id = {
+			nomContact: this.Nom + "_nomContact",
+			prenomContact: this.Nom + "_prenomContact",
+			emailContact: this.Nom + "_emailContact",
+			fonctionContact: this.Nom + "_fonctionContact",
+			estResponsable: this.Nom + "_estResponsable",
+		};
+		this.classFloatPere = GUID_1.GUID.getClassCss();
+		this.classFloatInfo = GUID_1.GUID.getClassCss();
 		this.typeZoneSaisie = {
 			fax: 1,
 			siret: 2,
@@ -33,18 +31,14 @@ class PageEntreprise extends Identite {
 			eMailResp: 8,
 			siteWeb: 12,
 		};
-		this.comboCivilite = new ObjetSaisie(
-			this.Nom + ".comboCivilite",
-			null,
-			this,
-			this.evenementSurComboCivilite,
-		);
-		this.comboContact = new ObjetSaisie(
-			this.Nom + ".comboContact",
-			null,
-			this,
-			this.evenementSurComboContact,
-		);
+		this.comboCivilite = new ObjetSaisie_1.ObjetSaisie({
+			pere: this,
+			evenement: this.evenementSurComboCivilite,
+		});
+		this.comboContact = new ObjetSaisie_1.ObjetSaisie({
+			pere: this,
+			evenement: this.evenementSurComboContact,
+		});
 	}
 	initialiserObjetsGraphique() {
 		this.comboCivilite.setOptionsObjetSaisie({
@@ -52,6 +46,14 @@ class PageEntreprise extends Identite {
 			hauteur: this.hauteurs.libelle - 2,
 			controlerNbrElements: null,
 			classTexte: "",
+			labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+				"entreprise.infoCivilite",
+			),
+			getContenuElement(aParamsLigne) {
+				return aParamsLigne.element.getNumero() === 0
+					? ObjetTraduction_1.GTraductions.getValeur("Aucune")
+					: aParamsLigne.element.getLibelle();
+			},
 		});
 		this.comboCivilite.setOptionsObjetSaisie({
 			largeurTexteEdit: this.largeurs.libelle,
@@ -71,6 +73,9 @@ class PageEntreprise extends Identite {
 			hauteur: this.hauteurs.libelle - 2,
 			controlerNbrElements: null,
 			classTexte: "",
+			labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+				"entreprise.infoContact",
+			),
 		});
 		this.comboContact.setOptionsObjetSaisie({
 			largeurTexteEdit: this.largeurs.libelle,
@@ -81,43 +86,11 @@ class PageEntreprise extends Identite {
 			this.indexContactCourant ? this.indexContactCourant : 0,
 		);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			TelEntreprise: {
-				getValue: function (aChamp) {
-					return aInstance.entrepriseSaisie[aChamp];
-				},
-				setValue: function (aChamp, aValue) {
-					aInstance.entrepriseSaisie[aChamp] = aValue;
-				},
-				getDisabled: function () {
-					return !aInstance.autorisations.avecSaisie;
-				},
-			},
-			TelResp: {
-				getValue: function (aChamp) {
-					return aInstance.entrepriseSaisie.contacts.get(
-						aInstance.indexContactCourant,
-					)[aChamp];
-				},
-				setValue: function (aChamp, aValue) {
-					const lContact = aInstance.entrepriseSaisie.contacts.get(
-						aInstance.indexContactCourant,
-					);
-					lContact[aChamp] = aValue;
-					lContact.setEtat(EGenreEtat.Modification);
-				},
-				getDisabled: function () {
-					return !aInstance.autorisations.avecSaisie;
-				},
-			},
-		});
-	}
-	setParametres() {}
 	setDonnees(aEntreprise, aAutorisations, aContactSelectionne) {
 		this.entreprise = aEntreprise;
 		this.autorisations = aAutorisations;
-		this.entrepriseSaisie = MethodesObjet.dupliquer(aEntreprise);
+		this.entrepriseSaisie =
+			MethodesObjet_1.MethodesObjet.dupliquer(aEntreprise);
 		this.indexContactCourant = aContactSelectionne ? aContactSelectionne : 0;
 		this.DonneesRecues = true;
 		this.actualiserAffichage();
@@ -138,7 +111,7 @@ class PageEntreprise extends Identite {
 			Math.floor(($("#" + this.Nom.escapeJQ()).width() - 10) / 2) - 27;
 		this.largeurs.field = Math.max(lWidth, 375);
 		if (!aSurResize) {
-			GHtml.setHtml(this.Nom, this.construireAffichage(), {
+			ObjetHtml_1.GHtml.setHtml(this.Nom, this.construireAffichage(), {
 				controleur: this.controleur,
 			});
 			this.initialiserObjetsGraphique();
@@ -154,7 +127,7 @@ class PageEntreprise extends Identite {
 			!this.entrepriseSaisie.contacts ||
 			this.entrepriseSaisie.contacts.count() < 2
 		) {
-			$("#" + (this.Nom + ".comboContact").escapeJQ()).hide();
+			$(`#${this.comboContact.getNom().escapeJQ()}`).hide();
 		}
 	}
 	construireAffichage() {
@@ -166,7 +139,7 @@ class PageEntreprise extends Identite {
 		lHtml.push(
 			'<div class="bloc-infos">',
 			"  <h4>",
-			GTraductions.getValeur("entreprise.titreEntreprise"),
+			ObjetTraduction_1.GTraductions.getValeur("entreprise.titreEntreprise"),
 			"</h4>",
 			"  <fieldset>",
 			this.composeEntreprise(),
@@ -180,7 +153,7 @@ class PageEntreprise extends Identite {
 			lHtml.push(
 				'<div class="bloc-infos">',
 				"  <h4>",
-				GTraductions.getValeur("entreprise.titreResponsable"),
+				ObjetTraduction_1.GTraductions.getValeur("entreprise.titreResponsable"),
 				"</h4>",
 				"  <fieldset>",
 				this.composeResponsable(),
@@ -212,8 +185,7 @@ class PageEntreprise extends Identite {
 		this.contact = this.entrepriseSaisie.contacts.get(this.indexContactCourant);
 		const lHtml = [];
 		lHtml.push(
-			'<div id="',
-			this.Nom + '.comboContact" class="m-bottom"></div>',
+			IE.jsx.str("div", { id: this.comboContact.getNom(), class: "m-bottom" }),
 			this.composeNomResponsable(),
 			this.composePrenomResponsable(),
 			'<div id="',
@@ -238,23 +210,21 @@ class PageEntreprise extends Identite {
 		if (this.autorisations.avecSaisie) {
 			lHtml.push(
 				'<div class="field-contain">',
-				'<label class="resp-name"><span>',
-				GTraductions.getValeur("entreprise.nom"),
-				'</span><div id="',
-				this.Nom + '.comboCivilite"></div>',
+				'<label class="resp-name">',
+				ObjetTraduction_1.GTraductions.getValeur("entreprise.nom"),
 				"</label>",
-				'<input id="',
-				this.id.nomContact,
-				'" class="round-style" type="text" value="',
-				this.contact.nom,
-				'" size="30" title="',
-				GTraductions.getValeur("entreprise.infoNom"),
-				'" ',
-				' tabindex="0" onchange="',
-				this.Nom,
-				".evenementSurZone(",
-				this.typeZoneSaisie.nomResp,
-				', this)">',
+				IE.jsx.str("div", {
+					class: "m-right",
+					id: this.comboCivilite.getNom(),
+				}),
+				IE.jsx.str("input", {
+					id: this.id.nomContact,
+					type: "text",
+					value: this.contact.nom,
+					title: ObjetTraduction_1.GTraductions.getValeur("entreprise.infoNom"),
+					style: { width: 210 },
+					onchange: `${this.Nom}.evenementSurZone(${this.typeZoneSaisie.nomResp}, this)`,
+				}),
 				"</div>",
 			);
 		} else {
@@ -262,7 +232,7 @@ class PageEntreprise extends Identite {
 				lHtml.push(
 					'<div class="field-contain">',
 					"<label>",
-					GTraductions.getValeur("entreprise.nom"),
+					ObjetTraduction_1.GTraductions.getValeur("entreprise.nom"),
 					"</label>",
 					"<label>",
 					this.contact.nom,
@@ -279,20 +249,18 @@ class PageEntreprise extends Identite {
 			lHtml.push(
 				'<div class="field-contain">',
 				"<label>",
-				GTraductions.getValeur("entreprise.prenom"),
+				ObjetTraduction_1.GTraductions.getValeur("entreprise.prenom"),
 				"</label>",
-				'<input id="',
-				this.id.prenomContact,
-				'" class="round-style" type="text" value="',
-				this.contact.prenoms,
-				'" size="30" title="',
-				GTraductions.getValeur("entreprise.infoPrenom"),
-				'" ',
-				' tabindex="0" onchange="',
-				this.Nom,
-				".evenementSurZone(",
-				this.typeZoneSaisie.prenomResp,
-				', this)">',
+				IE.jsx.str("input", {
+					id: this.id.prenomContact,
+					type: "text",
+					value: this.contact.prenoms,
+					style: { width: 210 },
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"entreprise.infoPrenom",
+					),
+					onchange: `${this.Nom}.evenementSurZone(${this.typeZoneSaisie.prenomResp}, this)`,
+				}),
 				"</div>",
 			);
 		} else {
@@ -300,7 +268,7 @@ class PageEntreprise extends Identite {
 				lHtml.push(
 					'<div class="field-contain">',
 					"<label>",
-					GTraductions.getValeur("entreprise.nom"),
+					ObjetTraduction_1.GTraductions.getValeur("entreprise.nom"),
 					"</label>",
 					"<label>",
 					this.contact.prenoms,
@@ -319,12 +287,16 @@ class PageEntreprise extends Identite {
 			this.contact.fonction.existeNumero()
 		) {
 			lHtml.push(
-				'<div class="field-contain">',
-				"<label></label>",
-				"<label>",
-				this.contact.fonction.getLibelle(),
-				"</label>",
-				"</div>",
+				IE.jsx.str(
+					"div",
+					{ class: "field-contain" },
+					IE.jsx.str("label", null),
+					IE.jsx.str(
+						"label",
+						{ class: "description" },
+						this.contact.fonction.getLibelle(),
+					),
+				),
 			);
 		}
 		return lHtml.join("");
@@ -333,20 +305,24 @@ class PageEntreprise extends Identite {
 		const lHtml = [];
 		let lLibelle = "";
 		if (this.contact.estResponsable) {
-			lLibelle += GTraductions.getValeur(
+			lLibelle += ObjetTraduction_1.GTraductions.getValeur(
 				"entreprise.responsableEntreprise",
 			).toLowerCase();
 		}
 		if (this.contact.estMaitreDeStage) {
 			lLibelle +=
-				(lLibelle ? " " + GTraductions.getValeur("Et") + " " : "") +
-				GTraductions.getValeur("entreprise.maitreDeStage").toLowerCase();
+				(lLibelle
+					? " " + ObjetTraduction_1.GTraductions.getValeur("Et") + " "
+					: "") +
+				ObjetTraduction_1.GTraductions.getValeur(
+					"entreprise.maitreDeStage",
+				).toLowerCase();
 		}
 		if (lLibelle) {
 			lHtml.push(
 				'<div class="field-contain">',
 				"<label></label>",
-				"<label>",
+				'<label class="description">',
 				lLibelle.ucfirst(),
 				"</label>",
 				"</div>",
@@ -355,61 +331,262 @@ class PageEntreprise extends Identite {
 		return lHtml.join("");
 	}
 	composeTelFixeResp() {
-		const lHtml = [];
-		lHtml.push(
-			'<div class="field-contain">',
-			"<label>",
-			GTraductions.getValeur("entreprise.telephoneFixe"),
-			"</label>",
-			'<input ie-model="TelResp(\'indicatifFixe\')" ie-indicatiftel ie-etatsaisie class="round-style" type="text" tabindex="0" />',
-			'<input ie-model="TelResp(\'fixe\')" ie-telephone ie-etatsaisie class="round-style"',
-			' title="',
-			GTraductions.getValeur("entreprise.responsable", [
-				GTraductions.getValeur("entreprise.infoTelephoneFixe"),
-			]),
-			'"',
-			'type="text" tabindex="0"/>',
-			"</div>",
+		const lJsxTelEntrepriseIndicatifFixe = () => {
+			return {
+				getValue: () => {
+					const lContact = this.entrepriseSaisie.contacts.get(
+						this.indexContactCourant,
+					);
+					return lContact ? lContact.indicatifFixe : "";
+				},
+				setValue: (aValue) => {
+					const lContact = this.entrepriseSaisie.contacts.get(
+						this.indexContactCourant,
+					);
+					if (lContact) {
+						lContact.indicatifFixe = aValue;
+						lContact.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+					}
+				},
+				getDisabled: () => {
+					return !this.autorisations.avecSaisie;
+				},
+			};
+		};
+		const lJsxTelEntrepriseTelephoneFixe = () => {
+			return {
+				getValue: () => {
+					const lContact = this.entrepriseSaisie.contacts.get(
+						this.indexContactCourant,
+					);
+					return lContact ? lContact.fixe : "";
+				},
+				setValue: (aValue) => {
+					const lContact = this.entrepriseSaisie.contacts.get(
+						this.indexContactCourant,
+					);
+					if (lContact) {
+						lContact.fixe = aValue;
+						lContact.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+					}
+				},
+				getDisabled: () => {
+					return !this.autorisations.avecSaisie;
+				},
+			};
+		};
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "field-contain" },
+				IE.jsx.str(
+					"label",
+					null,
+					ObjetTraduction_1.GTraductions.getValeur("entreprise.telephoneFixe"),
+				),
+				IE.jsx.str("input", {
+					"ie-model": lJsxTelEntrepriseIndicatifFixe.bind(this),
+					"ie-indicatiftel": true,
+					"ie-etatsaisie": true,
+					class: "indicatif-tel",
+					type: "text",
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"entreprise.responsable",
+						[
+							ObjetTraduction_1.GTraductions.getValeur(
+								"entreprise.infoIndTelephoneFixe",
+							),
+						],
+					),
+				}),
+				IE.jsx.str("input", {
+					"ie-model": lJsxTelEntrepriseTelephoneFixe.bind(this),
+					"ie-telephone": true,
+					"ie-etatsaisie": true,
+					type: "text",
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"entreprise.responsable",
+						[
+							ObjetTraduction_1.GTraductions.getValeur(
+								"entreprise.infoTelephoneFixe",
+							),
+						],
+					),
+				}),
+			),
 		);
-		return lHtml.join("");
+		return H.join("");
 	}
 	composeTelPortResp() {
-		const lHtml = [];
-		lHtml.push(
-			'<div class="field-contain">',
-			"<label>",
-			GTraductions.getValeur("entreprise.telephonePortable"),
-			"</label>",
-			'<input ie-model="TelResp(\'indicatifPort\')" ie-indicatiftel ie-etatsaisie class="round-style" type="text" tabindex="0" />',
-			'<input ie-model="TelResp(\'portable\')" ie-telephone ie-etatsaisie class="round-style"',
-			' title="',
-			GTraductions.getValeur("entreprise.responsable", [
-				GTraductions.getValeur("entreprise.infoPortable"),
-			]),
-			'"',
-			'type="text" tabindex="0"/>',
-			"</div>",
+		const lJsxTelEntrepriseIndicatifPortable = () => {
+			return {
+				getValue: () => {
+					const lContact = this.entrepriseSaisie.contacts.get(
+						this.indexContactCourant,
+					);
+					return lContact ? lContact.indicatifPort : "";
+				},
+				setValue: (aValue) => {
+					const lContact = this.entrepriseSaisie.contacts.get(
+						this.indexContactCourant,
+					);
+					if (lContact) {
+						lContact.indicatifPort = aValue;
+						lContact.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+					}
+				},
+				getDisabled: () => {
+					return !this.autorisations.avecSaisie;
+				},
+			};
+		};
+		const lJsxTelEntrepriseTelephonePortable = () => {
+			return {
+				getValue: () => {
+					const lContact = this.entrepriseSaisie.contacts.get(
+						this.indexContactCourant,
+					);
+					return lContact ? lContact.portable : "";
+				},
+				setValue: (aValue) => {
+					const lContact = this.entrepriseSaisie.contacts.get(
+						this.indexContactCourant,
+					);
+					if (lContact) {
+						lContact.portable = aValue;
+						lContact.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+					}
+				},
+				getDisabled: () => {
+					return !this.autorisations.avecSaisie;
+				},
+			};
+		};
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "field-contain" },
+				IE.jsx.str(
+					"label",
+					null,
+					ObjetTraduction_1.GTraductions.getValeur(
+						"entreprise.telephonePortable",
+					),
+				),
+				IE.jsx.str("input", {
+					"ie-model": lJsxTelEntrepriseIndicatifPortable.bind(this),
+					"ie-indicatiftel": true,
+					"ie-etatsaisie": true,
+					class: "indicatif-tel",
+					type: "text",
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"entreprise.responsable",
+						[
+							ObjetTraduction_1.GTraductions.getValeur(
+								"entreprise.infoIndPortable",
+							),
+						],
+					),
+				}),
+				IE.jsx.str("input", {
+					"ie-model": lJsxTelEntrepriseTelephonePortable.bind(this),
+					"ie-telephone": true,
+					"ie-etatsaisie": true,
+					type: "text",
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"entreprise.responsable",
+						[
+							ObjetTraduction_1.GTraductions.getValeur(
+								"entreprise.infoPortable",
+							),
+						],
+					),
+				}),
+			),
 		);
-		return lHtml.join("");
+		return H.join("");
 	}
 	composeFaxResp() {
-		const lHtml = [];
-		lHtml.push(
-			'<div class="field-contain">',
-			"<label>",
-			GTraductions.getValeur("entreprise.fax"),
-			"</label>",
-			'<input ie-model="TelResp(\'indicatifFax\')" ie-indicatiftel ie-etatsaisie class="round-style" type="text" tabindex="0" />',
-			'<input ie-model="TelResp(\'fax\')" ie-telephone ie-etatsaisie class="round-style"',
-			' title="',
-			GTraductions.getValeur("entreprise.responsable", [
-				GTraductions.getValeur("entreprise.infoFax"),
-			]),
-			'"',
-			'type="text" tabindex="0"/>',
-			"</div>",
+		const lJsxTelEntrepriseIndicatifFax = () => {
+			return {
+				getValue: () => {
+					const lContact = this.entrepriseSaisie.contacts.get(
+						this.indexContactCourant,
+					);
+					return lContact ? lContact.indicatifFax : "";
+				},
+				setValue: (aValue) => {
+					const lContact = this.entrepriseSaisie.contacts.get(
+						this.indexContactCourant,
+					);
+					if (lContact) {
+						lContact.indicatifFax = aValue;
+						lContact.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+					}
+				},
+				getDisabled: () => {
+					return !this.autorisations.avecSaisie;
+				},
+			};
+		};
+		const lJsxTelEntrepriseNumeroFax = () => {
+			return {
+				getValue: () => {
+					const lContact = this.entrepriseSaisie.contacts.get(
+						this.indexContactCourant,
+					);
+					return lContact ? lContact.fax : "";
+				},
+				setValue: (aValue) => {
+					const lContact = this.entrepriseSaisie.contacts.get(
+						this.indexContactCourant,
+					);
+					if (lContact) {
+						lContact.fax = aValue;
+						lContact.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+					}
+				},
+				getDisabled: () => {
+					return !this.autorisations.avecSaisie;
+				},
+			};
+		};
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "field-contain" },
+				IE.jsx.str(
+					"label",
+					null,
+					ObjetTraduction_1.GTraductions.getValeur("entreprise.fax"),
+				),
+				IE.jsx.str("input", {
+					"ie-model": lJsxTelEntrepriseIndicatifFax.bind(this),
+					"ie-indicatiftel": true,
+					"ie-etatsaisie": true,
+					class: "indicatif-tel",
+					type: "text",
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"entreprise.responsable",
+						[ObjetTraduction_1.GTraductions.getValeur("entreprise.infoIndFax")],
+					),
+				}),
+				IE.jsx.str("input", {
+					"ie-model": lJsxTelEntrepriseNumeroFax.bind(this),
+					"ie-telephone": true,
+					"ie-etatsaisie": true,
+					type: "text",
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"entreprise.responsable",
+						[ObjetTraduction_1.GTraductions.getValeur("entreprise.infoFax")],
+					),
+				}),
+			),
 		);
-		return lHtml.join("");
+		return H.join("");
 	}
 	composeEmailResp() {
 		const lHtml = [];
@@ -417,16 +594,17 @@ class PageEntreprise extends Identite {
 			lHtml.push(
 				'<div class="field-contain">',
 				"<label>",
-				GTraductions.getValeur("entreprise.email"),
+				ObjetTraduction_1.GTraductions.getValeur("entreprise.email"),
 				"</label>",
 				'<input id="',
 				this.id.emailContact,
-				'" class="round-style" type="text" value="',
+				'"  type="text" value="',
 				this.contact.email,
-				'" size="30" title="',
-				GTraductions.getValeur("entreprise.infoEmail"),
+				'" title="',
+				ObjetTraduction_1.GTraductions.getValeur("entreprise.infoEmail"),
 				'" ',
-				' tabindex="0" onchange="',
+				`style="${ObjetStyle_1.GStyle.composeWidth(210)}"`,
+				'onchange="',
 				this.Nom,
 				".evenementSurZone(",
 				this.typeZoneSaisie.eMailResp,
@@ -434,18 +612,18 @@ class PageEntreprise extends Identite {
 				"</div>",
 			);
 		} else {
-			lHtml.push(
-				this.contact.email
-					? ('<div class="field-contain">',
-						"<label>",
-						GTraductions.getValeur("entreprise.siret"),
-						"</label>",
-						"<label>",
-						this.contact.email,
-						"</label>",
-						"</div>")
-					: "",
-			);
+			if (this.contact.email) {
+				lHtml.push(
+					'<div class="field-contain">',
+					"<label>",
+					ObjetTraduction_1.GTraductions.getValeur("entreprise.siret"),
+					"</label>",
+					"<label>",
+					this.contact.email,
+					"</label>",
+					"</div>",
+				);
+			}
 		}
 		return lHtml.join("");
 	}
@@ -515,69 +693,213 @@ class PageEntreprise extends Identite {
 				? "<br/>" + this.entrepriseSaisie.province
 				: "",
 			"<label>",
-			"<label>",
-			this.entrepriseSaisie.pays ? "<br/>" + this.entrepriseSaisie.pays : "",
-			"</label>",
 			"</div>",
 		);
 		return lHtml.join("");
 	}
 	composeTelephoneFixe() {
-		const lHtml = [];
-		lHtml.push(
-			'<div class="field-contain">',
-			"<label>",
-			GTraductions.getValeur("entreprise.telephoneFixe"),
-			"</label>",
-			'<input ie-model="TelEntreprise(\'indicatifFixe\')" ie-indicatiftel ie-etatsaisie class="round-style" type="text" tabindex="0" />',
-			'<input ie-model="TelEntreprise(\'fixe\')" ie-telephone ie-etatsaisie class="round-style"',
-			' title="',
-			GTraductions.getValeur("entreprise.etablissement", [
-				GTraductions.getValeur("entreprise.infoTelephoneFixe"),
-			]),
-			'"',
-			'type="text" tabindex="0"/>',
-			"</div>",
+		const lJsxTelEntrepriseIndicatifFixe = () => {
+			return {
+				getValue: () => {
+					return this.entrepriseSaisie.indicatifFixe;
+				},
+				setValue: (aValue) => {
+					this.entrepriseSaisie.indicatifFixe = aValue;
+				},
+				getDisabled: () => {
+					return !this.autorisations.avecSaisie;
+				},
+			};
+		};
+		const lJsxTelEntrepriseTelephoneFixe = () => {
+			return {
+				getValue: () => {
+					return this.entrepriseSaisie.fixe;
+				},
+				setValue: (aValue) => {
+					this.entrepriseSaisie.fixe = aValue;
+				},
+				getDisabled: () => {
+					return !this.autorisations.avecSaisie;
+				},
+			};
+		};
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "field-contain" },
+				IE.jsx.str(
+					"label",
+					null,
+					ObjetTraduction_1.GTraductions.getValeur("entreprise.telephoneFixe"),
+				),
+				IE.jsx.str("input", {
+					"ie-model": lJsxTelEntrepriseIndicatifFixe.bind(this),
+					"ie-indicatiftel": true,
+					"ie-etatsaisie": true,
+					class: "indicatif-tel",
+					type: "text",
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"entreprise.etablissement",
+						[
+							ObjetTraduction_1.GTraductions.getValeur(
+								"entreprise.infoIndTelephoneFixe",
+							),
+						],
+					),
+				}),
+				IE.jsx.str("input", {
+					"ie-model": lJsxTelEntrepriseTelephoneFixe.bind(this),
+					"ie-telephone": true,
+					"ie-etatsaisie": true,
+					type: "text",
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"entreprise.etablissement",
+						[
+							ObjetTraduction_1.GTraductions.getValeur(
+								"entreprise.infoTelephoneFixe",
+							),
+						],
+					),
+				}),
+			),
 		);
-		return lHtml.join("");
+		return H.join("");
 	}
 	composeTelephonePort() {
-		const lHtml = [];
-		lHtml.push(
-			'<div class="field-contain">',
-			"<label>",
-			GTraductions.getValeur("entreprise.telephonePortable"),
-			"</label>",
-			'<input ie-model="TelEntreprise(\'indicatifPort\')" ie-indicatiftel ie-etatsaisie class="round-style" type="text" tabindex="0" />',
-			'<input ie-model="TelEntreprise(\'portable\')" ie-telephone ie-etatsaisie class="round-style"',
-			' title="',
-			GTraductions.getValeur("entreprise.etablissement", [
-				GTraductions.getValeur("entreprise.infoPortable"),
-			]),
-			'"',
-			'type="text" tabindex="0"/>',
-			"</div>",
+		const lJsxTelEntrepriseIndicatifPortable = () => {
+			return {
+				getValue: () => {
+					return this.entrepriseSaisie.indicatifPort;
+				},
+				setValue: (aValue) => {
+					this.entrepriseSaisie.indicatifPort = aValue;
+				},
+				getDisabled: () => {
+					return !this.autorisations.avecSaisie;
+				},
+			};
+		};
+		const lJsxTelEntrepriseTelephonePortable = () => {
+			return {
+				getValue: () => {
+					return this.entrepriseSaisie.portable;
+				},
+				setValue: (aValue) => {
+					this.entrepriseSaisie.portable = aValue;
+				},
+				getDisabled: () => {
+					return !this.autorisations.avecSaisie;
+				},
+			};
+		};
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "field-contain" },
+				IE.jsx.str(
+					"label",
+					null,
+					ObjetTraduction_1.GTraductions.getValeur(
+						"entreprise.telephonePortable",
+					),
+				),
+				IE.jsx.str("input", {
+					"ie-model": lJsxTelEntrepriseIndicatifPortable.bind(this),
+					"ie-indicatiftel": true,
+					"ie-etatsaisie": true,
+					class: "indicatif-tel",
+					type: "text",
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"entreprise.etablissement",
+						[
+							ObjetTraduction_1.GTraductions.getValeur(
+								"entreprise.infoIndPortable",
+							),
+						],
+					),
+				}),
+				IE.jsx.str("input", {
+					"ie-model": lJsxTelEntrepriseTelephonePortable.bind(this),
+					"ie-telephone": true,
+					"ie-etatsaisie": true,
+					type: "text",
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"entreprise.etablissement",
+						[
+							ObjetTraduction_1.GTraductions.getValeur(
+								"entreprise.infoPortable",
+							),
+						],
+					),
+				}),
+			),
 		);
-		return lHtml.join("");
+		return H.join("");
 	}
 	composeFax() {
-		const lHtml = [];
-		lHtml.push(
-			'<div class="field-contain">',
-			"<label>",
-			GTraductions.getValeur("entreprise.fax"),
-			"</label>",
-			'<input ie-model="TelEntreprise(\'indicatifFax\')" ie-indicatiftel ie-etatsaisie class="round-style" type="text" tabindex="0" />',
-			'<input ie-model="TelEntreprise(\'fax\')" ie-telephone ie-etatsaisie class="round-style"',
-			' title="',
-			GTraductions.getValeur("entreprise.etablissement", [
-				GTraductions.getValeur("entreprise.infoFax"),
-			]),
-			'"',
-			'type="text" tabindex="0"/>',
-			"</div>",
+		const lJsxTelEntrepriseIndicatifFax = () => {
+			return {
+				getValue: () => {
+					return this.entrepriseSaisie.indicatifFax;
+				},
+				setValue: (aValue) => {
+					this.entrepriseSaisie.indicatifFax = aValue;
+				},
+				getDisabled: () => {
+					return !this.autorisations.avecSaisie;
+				},
+			};
+		};
+		const lJsxTelEntrepriseNumeroFax = () => {
+			return {
+				getValue: () => {
+					return this.entrepriseSaisie.fax;
+				},
+				setValue: (aValue) => {
+					this.entrepriseSaisie.fax = aValue;
+				},
+				getDisabled: () => {
+					return !this.autorisations.avecSaisie;
+				},
+			};
+		};
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "field-contain" },
+				IE.jsx.str(
+					"label",
+					null,
+					ObjetTraduction_1.GTraductions.getValeur("entreprise.fax"),
+				),
+				IE.jsx.str("input", {
+					"ie-model": lJsxTelEntrepriseIndicatifFax.bind(this),
+					"ie-indicatiftel": true,
+					"ie-etatsaisie": true,
+					class: "indicatif-tel",
+					type: "text",
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"entreprise.etablissement",
+						[ObjetTraduction_1.GTraductions.getValeur("entreprise.infoIndFax")],
+					),
+				}),
+				IE.jsx.str("input", {
+					"ie-model": lJsxTelEntrepriseNumeroFax.bind(this),
+					"ie-telephone": true,
+					"ie-etatsaisie": true,
+					type: "text",
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"entreprise.etablissement",
+						[ObjetTraduction_1.GTraductions.getValeur("entreprise.infoFax")],
+					),
+				}),
+			),
 		);
-		return lHtml.join("");
+		return H.join("");
 	}
 	composeSIRET() {
 		const lHtml = [];
@@ -585,32 +907,30 @@ class PageEntreprise extends Identite {
 			lHtml.push(
 				'<div class="field-contain">',
 				"<label>",
-				GTraductions.getValeur("entreprise.siret"),
+				ObjetTraduction_1.GTraductions.getValeur("entreprise.siret"),
 				"</label>",
-				'<input class="round-style social-num" type="text" value="',
+				'<input class="social-num" type="text" value="',
 				this.entrepriseSaisie.siret,
 				'" size="15" title="',
-				GTraductions.getValeur("entreprise.infoSIRET"),
+				ObjetTraduction_1.GTraductions.getValeur("entreprise.infoSIRET"),
 				'" ',
-				' tabindex="0" onchange="',
+				'onchange="',
 				this.Nom,
 				".evenementSurZone(",
 				this.typeZoneSaisie.siret,
 				', this)">',
 				"</div>",
 			);
-		} else {
+		} else if (this.entrepriseSaisie.siret) {
 			lHtml.push(
-				this.entrepriseSaisie.siret
-					? ('<div class="field-contain">',
-						"<label>",
-						GTraductions.getValeur("entreprise.siret"),
-						"</label>",
-						"<label>",
-						this.entrepriseSaisie.siret,
-						"</label>",
-						"</div>")
-					: "",
+				'<div class="field-contain">',
+				"<label>",
+				ObjetTraduction_1.GTraductions.getValeur("entreprise.siret"),
+				"</label>",
+				"<label>",
+				this.entrepriseSaisie.siret,
+				"</label>",
+				"</div>",
 			);
 		}
 		return lHtml.join("");
@@ -619,35 +939,39 @@ class PageEntreprise extends Identite {
 		const lHtml = [];
 		if (this.autorisations.avecSaisie) {
 			lHtml.push(
-				'<div class="field-contain">',
-				"<label>",
-				GTraductions.getValeur("entreprise.urssaf"),
-				"</label>",
-				'<input class="round-style social-num" type="text" value="',
-				this.entrepriseSaisie.urssaf,
-				'" size="15" title="',
-				GTraductions.getValeur("entreprise.infoURSSAF"),
-				'" ',
-				' tabindex="0" onchange="',
-				this.Nom,
-				".evenementSurZone(",
-				this.typeZoneSaisie.urssaf,
-				', this)">',
-				"</div>",
+				IE.jsx.str(
+					"div",
+					{ class: "field-contain" },
+					IE.jsx.str(
+						"label",
+						null,
+						ObjetTraduction_1.GTraductions.getValeur("entreprise.urssaf"),
+					),
+					IE.jsx.str("input", {
+						class: "social-num",
+						type: "text",
+						value: this.entrepriseSaisie.urssaf,
+						style: { width: 120 },
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"entreprise.infoURSSAF",
+						),
+						onchange: `${this.Nom}.evenementSurZone(${this.typeZoneSaisie.urssaf}, this)`,
+					}),
+				),
 			);
 		} else {
-			lHtml.push(
-				this.entrepriseSaisie.urssaf
-					? ('<div class="field-contain">',
-						"<label>",
-						GTraductions.getValeur("entreprise.urssaf"),
-						"</label>",
-						"<label>",
-						this.entrepriseSaisie.urssaf,
-						"</label>",
-						"</div>")
-					: "",
-			);
+			if (this.entrepriseSaisie.urssaf) {
+				lHtml.push(
+					'<div class="field-contain">',
+					"<label>",
+					ObjetTraduction_1.GTraductions.getValeur("entreprise.urssaf"),
+					"</label>",
+					"<label>",
+					this.entrepriseSaisie.urssaf,
+					"</label>",
+					"</div>",
+				);
+			}
 		}
 		return lHtml.join("");
 	}
@@ -655,42 +979,49 @@ class PageEntreprise extends Identite {
 		const lHtml = [];
 		if (this.autorisations.avecSaisie) {
 			lHtml.push(
-				'<div class="field-contain">',
-				"<label>",
-				GTraductions.getValeur("entreprise.siteWeb"),
-				"</label>",
-				'<input class="round-style" type="text" value="',
-				this.entrepriseSaisie.siteWeb,
-				'" size="45" title="',
-				GTraductions.getValeur("entreprise.infoSiteWeb"),
-				'" ',
-				' tabindex="0" onchange="',
-				this.Nom,
-				".evenementSurZone(",
-				this.typeZoneSaisie.siteWeb,
-				', this)">',
-				"</div>",
+				IE.jsx.str(
+					"div",
+					{ class: "field-contain" },
+					IE.jsx.str(
+						"label",
+						null,
+						ObjetTraduction_1.GTraductions.getValeur("entreprise.siteWeb"),
+					),
+					IE.jsx.str("input", {
+						type: "text",
+						value: this.entrepriseSaisie.siteWeb,
+						style: { width: 300 },
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"entreprise.infoSiteWeb",
+						),
+						onchange: `${this.Nom}.evenementSurZone(${this.typeZoneSaisie.siteWeb}, this)`,
+					}),
+				),
 			);
 		} else {
-			lHtml.push(
-				this.entrepriseSaisie.siteWeb
-					? ('<div class="field-contain">',
-						"<label>",
-						GTraductions.getValeur("entreprise.siteWeb"),
-						"</label>",
-						'<a href="' +
-							this.entrepriseSaisie.siteWeb +
-							'">' +
-							GChaine.replaceRCToHTML(this.entrepriseSaisie.siteWeb) +
-							"</a>",
-						"</div>")
-					: "",
-			);
+			if (this.entrepriseSaisie.siteWeb) {
+				lHtml.push(
+					'<div class="field-contain">',
+					"<label>",
+					ObjetTraduction_1.GTraductions.getValeur("entreprise.siteWeb"),
+					"</label>",
+					'<a href="' +
+						this.entrepriseSaisie.siteWeb +
+						'">' +
+						ObjetChaine_1.GChaine.replaceRCToHTML(
+							this.entrepriseSaisie.siteWeb,
+						) +
+						"</a>",
+					"</div>",
+				);
+			}
 		}
 		return lHtml.join("");
 	}
 	_getValeurTelephone(aElement) {
-		return GChaine.supprimerEspaces($(aElement).val().replace(/_/g, ""));
+		return ObjetChaine_1.GChaine.supprimerEspaces(
+			$(aElement).val().replace(/_/g, ""),
+		);
 	}
 	evenementSurZone(aTypeSaisie, aElement) {
 		this.setEtatSaisie(true);
@@ -699,25 +1030,25 @@ class PageEntreprise extends Identite {
 				this.entrepriseSaisie.fax = this._getValeurTelephone(aElement);
 				break;
 			case this.typeZoneSaisie.siret:
-				this.entrepriseSaisie.siret = GHtml.getValue(aElement);
+				this.entrepriseSaisie.siret = ObjetHtml_1.GHtml.getValue(aElement);
 				break;
 			case this.typeZoneSaisie.urssaf:
-				this.entrepriseSaisie.urssaf = GHtml.getValue(aElement);
+				this.entrepriseSaisie.urssaf = ObjetHtml_1.GHtml.getValue(aElement);
 				break;
 			case this.typeZoneSaisie.siteWeb:
-				this.entrepriseSaisie.siteWeb = GHtml.getValue(aElement);
+				this.entrepriseSaisie.siteWeb = ObjetHtml_1.GHtml.getValue(aElement);
 				break;
 			case this.typeZoneSaisie.nomResp:
-				this.contact.nom = GHtml.getValue(aElement);
+				this.contact.nom = ObjetHtml_1.GHtml.getValue(aElement);
 				break;
 			case this.typeZoneSaisie.prenomResp:
-				this.contact.prenoms = GHtml.getValue(aElement);
+				this.contact.prenoms = ObjetHtml_1.GHtml.getValue(aElement);
 				break;
 			case this.typeZoneSaisie.eMailResp:
-				this.contact.email = GHtml.getValue(aElement);
+				this.contact.email = ObjetHtml_1.GHtml.getValue(aElement);
 				break;
 		}
-		this.contact.setEtat(EGenreEtat.Modification);
+		this.contact.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 	}
 	surValidation() {
 		this.callback.appel(0, this.entrepriseSaisie);
@@ -729,7 +1060,7 @@ class PageEntreprise extends Identite {
 		}
 		if (this.contact.civilite.getNumero() !== aParams.element.getNumero()) {
 			this.contact.civilite = aParams.element;
-			this.contact.setEtat(EGenreEtat.Modification);
+			this.contact.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 			this.setEtatSaisie(true);
 		}
 	}
@@ -742,13 +1073,15 @@ class PageEntreprise extends Identite {
 			this.contact = this.entrepriseSaisie.contacts.get(
 				this.indexContactCourant,
 			);
-			GHtml.setValue(this.id.nomContact, this.contact.nom);
-			GHtml.setValue(this.id.prenomContact, this.contact.prenoms);
-			GHtml.setValue(this.id.emailContact, this.contact.email);
-			GHtml.setHtml(this.id.fonctionContact, this.composeFonction(), {
-				controleur: this.controleur,
-			});
-			GHtml.setHtml(
+			ObjetHtml_1.GHtml.setValue(this.id.nomContact, this.contact.nom);
+			ObjetHtml_1.GHtml.setValue(this.id.prenomContact, this.contact.prenoms);
+			ObjetHtml_1.GHtml.setValue(this.id.emailContact, this.contact.email);
+			ObjetHtml_1.GHtml.setHtml(
+				this.id.fonctionContact,
+				this.composeFonction(),
+				{ controleur: this.controleur },
+			);
+			ObjetHtml_1.GHtml.setHtml(
 				this.id.estResponsable,
 				this.composeEstResponsableMaitreDeStage(),
 				{ controleur: this.controleur },
@@ -763,4 +1096,4 @@ class PageEntreprise extends Identite {
 		}
 	}
 }
-module.exports = PageEntreprise;
+exports.PageEntreprise = PageEntreprise;

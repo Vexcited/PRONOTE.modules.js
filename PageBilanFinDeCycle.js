@@ -13,11 +13,14 @@ const UtilitaireCompetences_1 = require("UtilitaireCompetences");
 const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
 const ObjetMoteurReleveBulletin_1 = require("ObjetMoteurReleveBulletin");
 const Enumere_Onglet_1 = require("Enumere_Onglet");
+const AccessApp_1 = require("AccessApp");
+const GlossaireCompetences_1 = require("GlossaireCompetences");
 class PageBilanFinDeCycle extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
-		const lApplicationSco = GApplication;
-		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
+		this.applicationSco = (0, AccessApp_1.getApp)();
+		this._avecEventResizeNavigateur = true;
+		this.etatUtilisateurSco = this.applicationSco.getEtatUtilisateur();
 		this.donneesPageBilanFinDeCycle = {
 			listePiliers: null,
 			infoColonneNbPointsExamen: null,
@@ -28,6 +31,14 @@ class PageBilanFinDeCycle extends ObjetInterface_1.ObjetInterface {
 			boutonValidationAuto: true,
 		};
 		this.moteur = new ObjetMoteurReleveBulletin_1.ObjetMoteurReleveBulletin();
+	}
+	setAvecEventResizeNavigateur(aVal) {
+		this._avecEventResizeNavigateur = aVal;
+	}
+	avecEventResizeNavigateur() {
+		return this._avecEventResizeNavigateur
+			? super.avecEventResizeNavigateur()
+			: false;
 	}
 	construireInstances() {
 		this.identListe = this.add(
@@ -287,7 +298,6 @@ class PageBilanFinDeCycle extends ObjetInterface_1.ObjetInterface {
 		);
 	}
 	initialiserListe(aInstance) {
-		const lInstance = this;
 		const lColonnes = [];
 		lColonnes.push({
 			id: DonneesListe_BilanFinDeCycle_1.DonneesListe_BilanFinDeCycle.colonnes
@@ -295,48 +305,62 @@ class PageBilanFinDeCycle extends ObjetInterface_1.ObjetInterface {
 			taille: ObjetListe_1.ObjetListe.initColonne(100, 200, 400),
 			titre: ObjetTraduction_1.GTraductions.getValeur("competences.Domaines"),
 		});
-		const lTitreColonneEvaluations = [];
-		lTitreColonneEvaluations.push(
-			`<div class="flex-contain flex-center justify-center">`,
-		);
-		lTitreColonneEvaluations.push(
-			`<ie-btnimage ie-model="btnBasculeJauge" class="Image_BasculeJauge" style="width: 18px;"></ie-btnimage>`,
-		);
-		lTitreColonneEvaluations.push(
-			`<span>${ObjetTraduction_1.GTraductions.getValeur("competences.evaluations")}</span>`,
-		);
-		lTitreColonneEvaluations.push(`</div>`);
 		lColonnes.push({
 			id: DonneesListe_BilanFinDeCycle_1.DonneesListe_BilanFinDeCycle.colonnes
 				.jauge,
 			taille: ObjetListe_1.ObjetListe.initColonne(100, 200, 300),
 			titre: {
-				libelleHtml: lTitreColonneEvaluations.join(""),
+				getLibelleHtml: () => {
+					const lJsxModeleBoutonBasculeJauge = () => {
+						return {
+							event: () => {
+								this.setOptionsAffichageListe({
+									jaugeChronologique:
+										!this.optionsAffichageListe.jaugeChronologique,
+								});
+							},
+							getTitle: () => {
+								return this.optionsAffichageListe.jaugeChronologique
+									? ObjetTraduction_1.GTraductions.getValeur(
+											"BulletinEtReleve.hintBtnAfficherJaugeParNiveau",
+										)
+									: ObjetTraduction_1.GTraductions.getValeur(
+											"BulletinEtReleve.hintBtnAfficherJaugeChronologique",
+										);
+							},
+						};
+					};
+					const lJsxGetClasseBoutonBasculeJauge = () => {
+						if (this.optionsAffichageListe.jaugeChronologique) {
+							return UtilitaireCompetences_1.TUtilitaireCompetences
+								.ClasseIconeJaugeChronologique;
+						}
+						return UtilitaireCompetences_1.TUtilitaireCompetences
+							.ClasseIconeJaugeParNiveau;
+					};
+					const lTitreColonneEvaluations = [];
+					lTitreColonneEvaluations.push(
+						IE.jsx.str(
+							"div",
+							{ class: "flex-contain flex-center justify-center" },
+							IE.jsx.str("ie-btnicon", {
+								"ie-model": lJsxModeleBoutonBasculeJauge,
+								"ie-class": lJsxGetClasseBoutonBasculeJauge,
+							}),
+							IE.jsx.str(
+								"span",
+								{ class: "EspaceGauche" },
+								ObjetTraduction_1.GTraductions.getValeur(
+									"competences.evaluations",
+								),
+							),
+						),
+					);
+					return lTitreColonneEvaluations.join("");
+				},
 				title: ObjetTraduction_1.GTraductions.getValeur(
 					"competences.hintEvaluations",
 				),
-				controleur: {
-					btnBasculeJauge: {
-						event() {
-							lInstance.setOptionsAffichageListe({
-								jaugeChronologique:
-									!lInstance.optionsAffichageListe.jaugeChronologique,
-							});
-						},
-						getTitle() {
-							return lInstance.optionsAffichageListe.jaugeChronologique
-								? ObjetTraduction_1.GTraductions.getValeur(
-										"BulletinEtReleve.hintBtnAfficherJaugeParNiveau",
-									)
-								: ObjetTraduction_1.GTraductions.getValeur(
-										"BulletinEtReleve.hintBtnAfficherJaugeChronologique",
-									);
-						},
-						getSelection() {
-							return lInstance.optionsAffichageListe.jaugeChronologique;
-						},
-					},
-				},
 			},
 		});
 		const lNiveauxAcquiOrdonnes = getListeNiveauxAcquisitionsOrdonnes();
@@ -363,47 +387,51 @@ class PageBilanFinDeCycle extends ObjetInterface_1.ObjetInterface {
 					lNiveauxAcquiOrdonnes[i],
 				);
 			if (lNiveauDAcquisition) {
-				let lControleur = null;
 				const lObjTitreColonne = {};
 				if (i === 0) {
-					const lSuperTitreNiveauMaitrise = [];
-					lSuperTitreNiveauMaitrise.push('<div class="InlineBlock">');
-					if (this.optionsAffichageListe.boutonValidationAuto) {
-						lSuperTitreNiveauMaitrise.push(
-							'<ie-btnicon ie-model="btnValidationAuto" ie-hint="getHintHtmlBoutonValidationAuto" class="icon_sigma color-neutre MargeDroit"></ie-btnicon>',
-						);
-					}
-					lSuperTitreNiveauMaitrise.push(
-						ObjetTraduction_1.GTraductions.getValeur(
-							"competences.niveauDeMaitrise",
-						),
-					);
-					lSuperTitreNiveauMaitrise.push("</div>");
-					lObjTitreColonne.libelleHtml = lSuperTitreNiveauMaitrise.join("");
-					lControleur = {
-						btnValidationAuto: {
-							event() {
-								UtilitaireCompetences_1.TUtilitaireCompetences.surBoutonValidationAuto(
-									{
-										estPourLaClasse: !!lInstance.listeElevesDeClasse,
-										avecChoixCalcul: true,
-										instance: lInstance,
-										periode: lInstance.getPeriode(),
-										listePiliers:
-											lInstance.donneesPageBilanFinDeCycle.listePiliers,
-										listeEleves: lInstance.getListeElevesConcernes(),
-									},
-								);
+					lObjTitreColonne.getLibelleHtml = () => {
+						return IE.jsx.str(
+							"div",
+							{ class: "InlineBlock" },
+							() => {
+								if (this.optionsAffichageListe.boutonValidationAuto) {
+									const lJsxBtnValidationAuto = () => {
+										return {
+											event: () => {
+												UtilitaireCompetences_1.TUtilitaireCompetences.surBoutonValidationAuto(
+													{
+														estPourLaClasse: !!this.listeElevesDeClasse,
+														avecChoixCalcul: true,
+														instance: this,
+														periode: this.getPeriode(),
+														listePiliers:
+															this.donneesPageBilanFinDeCycle.listePiliers,
+														listeEleves: this.getListeElevesConcernes(),
+													},
+												);
+											},
+										};
+									};
+									const lJsxTooltip = () => {
+										return this._getHtmlHintDetailPointsNiveauxAcqui(
+											getListeNiveauxAcquisitionsOrdonnes(),
+											GlossaireCompetences_1.TradGlossaireCompetences
+												.validationAuto.hintBoutonDomaines,
+										);
+									};
+									return IE.jsx.str("ie-btnicon", {
+										"ie-model": lJsxBtnValidationAuto,
+										"ie-tooltiplabel": lJsxTooltip,
+										class: "icon_sigma color-neutre MargeDroit",
+										"aria-haspopup": "dialog",
+									});
+								}
+								return "";
 							},
-						},
-						getHintHtmlBoutonValidationAuto() {
-							return lInstance._getHtmlHintDetailPointsNiveauxAcqui(
-								getListeNiveauxAcquisitionsOrdonnes(),
-								ObjetTraduction_1.GTraductions.getValeur(
-									"competences.validationAuto.hintBoutonDomaines",
-								),
-							);
-						},
+							ObjetTraduction_1.GTraductions.getValeur(
+								"competences.niveauDeMaitrise",
+							),
+						);
 					};
 				} else {
 					lObjTitreColonne.libelle =
@@ -425,7 +453,6 @@ class PageBilanFinDeCycle extends ObjetInterface_1.ObjetInterface {
 								Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getLibelle(
 									lNiveauDAcquisition,
 								),
-							controleur: lControleur,
 						},
 					],
 				});
@@ -436,20 +463,20 @@ class PageBilanFinDeCycle extends ObjetInterface_1.ObjetInterface {
 				.nbPointsExamen,
 			taille: 70,
 			titre: {
-				libelleHtml: '<span ie-html="getLibelleColNbPointsExamen"></span>',
+				getLibelleHtml: () => {
+					const lJsxFuncHtmlLibelleColNbPoints = () => {
+						return this.donneesPageBilanFinDeCycle.infoColonneNbPointsExamen
+							? this.donneesPageBilanFinDeCycle.infoColonneNbPointsExamen.titre
+							: "";
+					};
+					return IE.jsx.str("span", {
+						"ie-html": lJsxFuncHtmlLibelleColNbPoints,
+					});
+				},
 				titleHtml: () =>
 					this.donneesPageBilanFinDeCycle.infoColonneNbPointsExamen
 						? this.donneesPageBilanFinDeCycle.infoColonneNbPointsExamen.hint
 						: "",
-				controleur: {
-					getLibelleColNbPointsExamen() {
-						return lInstance.donneesPageBilanFinDeCycle
-							.infoColonneNbPointsExamen
-							? lInstance.donneesPageBilanFinDeCycle.infoColonneNbPointsExamen
-									.titre
-							: "";
-					},
-				},
 			},
 		});
 		aInstance.setOptionsListe({
@@ -469,10 +496,9 @@ class PageBilanFinDeCycle extends ObjetInterface_1.ObjetInterface {
 				aListeNiveauxAcqui[i] !==
 				Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisition.Dispense
 			) {
-				const lNiveauDAcquisition =
-					GParametres.listeNiveauxDAcquisitions.getElementParGenre(
-						aListeNiveauxAcqui[i],
-					);
+				const lNiveauDAcquisition = this.applicationSco
+					.getObjetParametres()
+					.listeNiveauxDAcquisitions.getElementParGenre(aListeNiveauxAcqui[i]);
 				lListeNiveaux.push({
 					niveau: lNiveauDAcquisition,
 					valeurPonderation: !!lNiveauDAcquisition.ponderation

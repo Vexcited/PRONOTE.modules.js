@@ -24,10 +24,11 @@ const ObjetMenuContextuel_1 = require("ObjetMenuContextuel");
 const UtilitaireSelecFile_1 = require("UtilitaireSelecFile");
 const Enumere_Ressource_1 = require("Enumere_Ressource");
 const ObjetFenetre_Liste_1 = require("ObjetFenetre_Liste");
+const AccessApp_1 = require("AccessApp");
 class InterfaceBlog_Mediatheque extends ObjetInterfacePageCP_1.InterfacePageCP {
 	constructor(...aParams) {
 		super(...aParams);
-		this.applicationSco = GApplication;
+		this.applicationSco = (0, AccessApp_1.getApp)();
 		this.moteur = new ObjetMoteurBlog_1.ObjetMoteurBlog();
 		this.listeClouds = new ObjetListeElements_1.ObjetListeElements();
 	}
@@ -113,7 +114,7 @@ class InterfaceBlog_Mediatheque extends ObjetInterfacePageCP_1.InterfacePageCP {
 					});
 					aFenetre.paramsListe = {
 						optionsListe: {
-							labelWAI:
+							ariaLabel:
 								ObjetTraduction_1.GTraductions.getValeur("blog.ChoixDuBlog"),
 							skin: ObjetListe_1.ObjetListe.skin.flatDesign,
 						},
@@ -330,7 +331,7 @@ class InterfaceBlog_Mediatheque extends ObjetInterfacePageCP_1.InterfacePageCP {
 					null,
 					IE.jsx.str("div", {
 						class: "ObjetListeMediatheques",
-						id: this.getInstance(this.identListeMediatheques).getNom(),
+						id: this.getNomInstance(this.identListeMediatheques),
 					}),
 				),
 			);
@@ -341,7 +342,7 @@ class InterfaceBlog_Mediatheque extends ObjetInterfacePageCP_1.InterfacePageCP {
 				null,
 				IE.jsx.str("div", {
 					class: "ContentPrincipal",
-					id: this.getInstance(this.identInterfaceMediatheque).getNom(),
+					id: this.getNomInstance(this.identInterfaceMediatheque),
 				}),
 			),
 		);
@@ -537,7 +538,7 @@ class InterfaceBlog_Mediatheque extends ObjetInterfacePageCP_1.InterfacePageCP {
 					accept: "image/*",
 				},
 				selecFile: true,
-				class: "bg-util-marron-claire",
+				class: "bg-orange-claire",
 			});
 			lActions.push({
 				libelle: ObjetTraduction_1.GTraductions.getValeur(
@@ -559,7 +560,7 @@ class InterfaceBlog_Mediatheque extends ObjetInterfacePageCP_1.InterfacePageCP {
 					accept: "image/*",
 				},
 				selecFile: true,
-				class: "bg-util-marron-claire",
+				class: "bg-orange-claire",
 			});
 		}
 		const lAvecCloud = GEtatUtilisateur.listeCloud.count() > 0;
@@ -587,7 +588,7 @@ class InterfaceBlog_Mediatheque extends ObjetInterfacePageCP_1.InterfacePageCP {
 				avecTransformationFlux_versCloud: lAvecCloud,
 			},
 			selecFile: true,
-			class: "bg-util-marron-claire",
+			class: "bg-orange-claire",
 		});
 		if (lAvecCloud) {
 			const lThis = this;
@@ -599,8 +600,17 @@ class InterfaceBlog_Mediatheque extends ObjetInterfacePageCP_1.InterfacePageCP {
 				event() {
 					lThis.ouvrirFenetreChoixListeCloud(aMediathequeOuDossier);
 				},
-				class: "bg-util-marron-claire",
+				class: "bg-orange-claire",
 			});
+		}
+		if (GEtatUtilisateur.avecCloudENEJDisponible()) {
+			const lActionENEJ =
+				ObjetFenetre_ActionContextuelle_1.ObjetFenetre_ActionContextuelle.getActionENEJ(
+					() => this.ouvrirFenetreCloudENEJ(aMediathequeOuDossier),
+				);
+			if (lActionENEJ) {
+				lActions.push(lActionENEJ);
+			}
 		}
 		lActions.push({
 			libelle: ObjetTraduction_1.GTraductions.getValeur(
@@ -610,7 +620,7 @@ class InterfaceBlog_Mediatheque extends ObjetInterfacePageCP_1.InterfacePageCP {
 			event: () => {
 				this._ouvrirFenetreEditionSiteWeb(aMediathequeOuDossier);
 			},
-			class: "bg-util-bleu-claire",
+			class: "bg-blue-claire",
 		});
 		ObjetFenetre_ActionContextuelle_1.ObjetFenetre_ActionContextuelle.ouvrir(
 			lActions,
@@ -633,6 +643,9 @@ class InterfaceBlog_Mediatheque extends ObjetInterfacePageCP_1.InterfacePageCP {
 					lFichier.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 					const lDocumentMediatheque = ObjetElement_1.ObjetElement.create({
 						Numero: lFichier.getNumero(),
+						documentCasier: undefined,
+						estSelectionne: false,
+						libelle: undefined,
 					});
 					lDocumentMediatheque.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 					lDocumentMediatheque.documentCasier = lFichier;
@@ -668,35 +681,7 @@ class InterfaceBlog_Mediatheque extends ObjetInterfacePageCP_1.InterfacePageCP {
 			callbaskEvenement: (aLigne) => {
 				if (aLigne >= 0) {
 					const lService = GEtatUtilisateur.listeCloud.get(aLigne);
-					lThis.moteur.choisirFichierCloud({
-						instance: lThis,
-						element: null,
-						numeroService: lService.getGenre(),
-						listeDocumentsJoints: lThis.listeClouds,
-						evntSelectFichierCloud: lThis._ajoutFichierCloud.bind(lThis),
-						evntValidFichierCloud: (aParam) => {
-							const lMediathequeCorrespondante =
-								this.getMediathequeDeMediathequeOuDossierSelectionne(
-									aMediathequeOuDossier,
-								);
-							if (
-								aMediathequeOuDossier.getGenre() ===
-								Enumere_Ressource_1.EGenreRessource.DossierMediatheque
-							) {
-								const lDossier = aMediathequeOuDossier;
-								if (aParam.listeDocumentsJoints) {
-									for (const lDocJoint of aParam.listeDocumentsJoints) {
-										lDocJoint.dossierMediatheque = lDossier;
-									}
-								}
-							}
-							this.lancerRequeteSaisieDocument(
-								lMediathequeCorrespondante,
-								new ObjetListeElements_1.ObjetListeElements(),
-								aParam.listeDocumentsJoints,
-							);
-						},
-					});
+					lThis.choisirFichierCloud(aMediathequeOuDossier, lService);
 				}
 			},
 			modeGestion:
@@ -706,6 +691,43 @@ class InterfaceBlog_Mediatheque extends ObjetInterfacePageCP_1.InterfacePageCP {
 		UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF.creerFenetreGestion(
 			lParams,
 		);
+	}
+	ouvrirFenetreCloudENEJ(aMediathequeOuDossier) {
+		this.choisirFichierCloud(
+			aMediathequeOuDossier,
+			GEtatUtilisateur.getCloudENEJ(),
+		);
+	}
+	choisirFichierCloud(aMediathequeOuDossier, aService) {
+		this.moteur.choisirFichierCloud({
+			instance: this,
+			element: null,
+			numeroService: aService.getGenre(),
+			listeDocumentsJoints: this.listeClouds,
+			evntSelectFichierCloud: this._ajoutFichierCloud.bind(this),
+			evntValidFichierCloud: (aParam) => {
+				const lMediathequeCorrespondante =
+					this.getMediathequeDeMediathequeOuDossierSelectionne(
+						aMediathequeOuDossier,
+					);
+				if (
+					aMediathequeOuDossier.getGenre() ===
+					Enumere_Ressource_1.EGenreRessource.DossierMediatheque
+				) {
+					const lDossier = aMediathequeOuDossier;
+					if (aParam.listeDocumentsJoints) {
+						for (const lDocJoint of aParam.listeDocumentsJoints) {
+							lDocJoint.dossierMediatheque = lDossier;
+						}
+					}
+				}
+				this.lancerRequeteSaisieDocument(
+					lMediathequeCorrespondante,
+					new ObjetListeElements_1.ObjetListeElements(),
+					aParam.listeDocumentsJoints,
+				);
+			},
+		});
 	}
 	_ouvrirFenetreEditionSiteWeb(aMediathequeOuDossier) {
 		const lFenetreEditionSiteWeb =
@@ -722,6 +744,9 @@ class InterfaceBlog_Mediatheque extends ObjetInterfacePageCP_1.InterfacePageCP {
 							const lDocumentMediatheque = ObjetElement_1.ObjetElement.create({
 								Numero: ObjetElement_1.ObjetElement.getNumeroCreation(),
 								Libelle: aParams.donnee.libelle,
+								documentCasier: undefined,
+								estSelectionne: false,
+								libelle: undefined,
 							});
 							lDocumentMediatheque.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 							lDocumentMediatheque.documentCasier = lDocCasier;
@@ -776,6 +801,9 @@ class InterfaceBlog_Mediatheque extends ObjetInterfacePageCP_1.InterfacePageCP {
 		const lDocMediatheque = ObjetElement_1.ObjetElement.create({
 			Numero: ObjetElement_1.ObjetElement.getNumeroCreation(),
 			Libelle: aParam.libelle,
+			documentCasier: undefined,
+			estSelectionne: false,
+			libelle: undefined,
 		});
 		lDocMediatheque.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 		return lDocMediatheque;

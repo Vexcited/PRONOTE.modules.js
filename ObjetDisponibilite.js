@@ -353,7 +353,6 @@ class ObjetDisponibilite extends ObjetInterface_1.ObjetInterface {
 					id: lIdLabelInput,
 					type: "time",
 					"ie-model": aParam.modelHeure,
-					class: "round-style",
 					style: aParam.styleHeure || "width:auto;",
 				}),
 			);

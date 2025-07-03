@@ -11,11 +11,13 @@ const ObjetInterface_1 = require("ObjetInterface");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const WSGestionCAS_1 = require("WSGestionCAS");
 const ObjetFenetre_ParametresCAS_1 = require("ObjetFenetre_ParametresCAS");
+const AccessApp_1 = require("AccessApp");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
 const GenreURLServeurCas = { serveurCas: 0, login: 1, validation: 2 };
 class InterfaceParametrageCAS extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
-		this.objetApplicationConsoles = GApplication;
+		this.objetApplicationConsoles = (0, AccessApp_1.getApp)();
 		this.messagesEvenements =
 			this.objetApplicationConsoles.msgEvnts.getMessagesUnite(
 				"InterfaceParametrageCAS.js",
@@ -26,10 +28,8 @@ class InterfaceParametrageCAS extends ObjetInterface_1.ObjetInterface {
 		this.idSaisieURLLogin = this.idSaisieURL + "Login";
 		this.idSaisieURLValid = this.idSaisieURL + "Valid";
 		this.idNext = this.Nom + "_nextPourFocus";
-		this.idCBAccesDirect = this.Nom + "_AutoriserAccesDirect";
-		this.idCB2Adresses = GUID_1.GUID.getId();
 		this.idComboModelesConfigENT = GUID_1.GUID.getId();
-		this.parametreLargeurCol1 = 135;
+		this.parametreLargeurCol1 = 150;
 		this.donneesRecues = false;
 		this.optionsCAS = {
 			avecModeles: false,
@@ -90,13 +90,6 @@ class InterfaceParametrageCAS extends ObjetInterface_1.ObjetInterface {
 					return aInstance.avecParametresInactifs();
 				},
 			},
-			btnMrFicheAccesDirect: {
-				event() {
-					GApplication.getMessage().afficher({
-						idRessource: "pageParametrageCAS.mFicheAuthentification",
-					});
-				},
-			},
 			radioAuthentification: {
 				getValue(aAccesDirectToutLeTemps) {
 					if (
@@ -131,10 +124,21 @@ class InterfaceParametrageCAS extends ObjetInterface_1.ObjetInterface {
 					}
 				});
 			},
-			getNodeCb2Adresses() {
-				$(this.node).on("click", () => {
-					aInstance.surCBChoixConfig();
-				});
+			cbDeuxAdresses: {
+				getValue() {
+					return !aInstance.gestionCAS.configStandard;
+				},
+				setValue(aValeur) {
+					const lStandard = !aValeur;
+					if (lStandard !== aInstance.gestionCAS.configStandard) {
+						aInstance.gestionCAS.configStandard = lStandard;
+						aInstance.verifierSelonModele();
+						aInstance.initialiser(true);
+					}
+				},
+				getDisabled() {
+					return aInstance.avecParametresInactifs();
+				},
 			},
 			getNodeSelect() {
 				if (aInstance.optionsCAS.avecModeles) {
@@ -146,6 +150,18 @@ class InterfaceParametrageCAS extends ObjetInterface_1.ObjetInterface {
 					});
 				}
 			},
+			cbAutoriserAccesDirect: {
+				getValue() {
+					return aInstance.gestionCAS.accesDirectAuxEspaces;
+				},
+				setValue(aValeur) {
+					aInstance.gestionCAS.accesDirectAuxEspaces = aValeur;
+					aInstance.$refreshSelf();
+				},
+				getDisabled() {
+					return aInstance.avecParametresInactifs();
+				},
+			},
 		});
 	}
 	estServeurActif() {
@@ -155,14 +171,6 @@ class InterfaceParametrageCAS extends ObjetInterface_1.ObjetInterface {
 	}
 	avecParametresInactifs() {
 		return this.estServeurActif() || !this.gestionCAS;
-	}
-	surCBChoixConfig() {
-		const lStandard = !ObjetHtml_1.GHtml.getElement(this.idCB2Adresses).checked;
-		if (lStandard !== this.gestionCAS.configStandard) {
-			this.gestionCAS.configStandard = lStandard;
-			this.verifierSelonModele();
-			this.initialiser(true);
-		}
 	}
 	verifierSelonModele() {
 		let lTest = true;
@@ -258,7 +266,13 @@ class InterfaceParametrageCAS extends ObjetInterface_1.ObjetInterface {
 					"pageParametresDeleguerLAuthentification.NomDeLaDelegation",
 				) + " :",
 				"</span>",
-				'<input ie-model="inputNomDelegation" style="width:450px;" />',
+				IE.jsx.str("input", {
+					"ie-model": "inputNomDelegation",
+					style: "width:450px;",
+					"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+						"pageParametresDeleguerLAuthentification.NomDeLaDelegation",
+					),
+				}),
 				"</div>",
 				'<ie-bouton ie-model="btnParametres" title="',
 				ObjetTraduction_1.GTraductions.getValeur(
@@ -280,27 +294,40 @@ class InterfaceParametrageCAS extends ObjetInterface_1.ObjetInterface {
 		return H.join("");
 	}
 	composeAvecCAS() {
+		let lDivModelesConfiguration = "";
+		if (this.optionsCAS.avecModeles) {
+			lDivModelesConfiguration = this.composeModelesConfiguration();
+		}
 		const H = [];
 		H.push(
-			'<table id="',
-			this.idParametresAvecCAS,
-			'", class="Texte10 AvecSelectionTexte full-width">',
+			IE.jsx.str(
+				"table",
+				{
+					id: this.idParametresAvecCAS,
+					class: "Texte10 AvecSelectionTexte full-width",
+				},
+				lDivModelesConfiguration,
+				IE.jsx.str(
+					"tr",
+					null,
+					IE.jsx.str("td", { class: "Espace" }, this.composeURLsServeurCAS()),
+				),
+				IE.jsx.str(
+					"tr",
+					null,
+					IE.jsx.str("td", { class: "Espace" }, this.composeURLClientCAS()),
+				),
+				IE.jsx.str(
+					"tr",
+					null,
+					IE.jsx.str(
+						"td",
+						{ class: "Espace" },
+						this.composeCheckBoxAutoriserAccesDirect(),
+					),
+				),
+			),
 		);
-		H.push(
-			this.optionsCAS.avecModeles ? this.composeModelesConfiguration() : "",
-		);
-		H.push(
-			'<tr><td class="Espace">',
-			this.composeURLsServeurCAS(),
-			"</td></tr>",
-		);
-		H.push('<tr><td class="Espace">', this.composeURLClientCAS(), "</td></tr>");
-		H.push(
-			'<tr><td class="Espace">',
-			this.composeCheckBoxAutoriserAccesDirect(),
-			"</td></tr>",
-		);
-		H.push("</table>");
 		return H.join("");
 	}
 	_urlCASNonRenseigne() {
@@ -323,22 +350,29 @@ class InterfaceParametrageCAS extends ObjetInterface_1.ObjetInterface {
 	}
 	initialiserFenetreParametres(aInstanceFenetreParametres) {}
 	surEvenementKeyUp() {
-		if (GNavigateur.isToucheRetourChariot()) {
+		if (ObjetNavigateur_1.Navigateur.isToucheRetourChariot()) {
 			ObjetHtml_1.GHtml.setFocus(this.idNext);
 		}
 	}
 	composeURLsServeurCAS() {
 		const H = [];
 		H.push(
-			'<div class="InlineBlock Espace Gras" style="width:',
-			this.parametreLargeurCol1,
-			'px;">',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"pageParametrageCAS.urlServeurCAS",
+			IE.jsx.str(
+				"div",
+				{ class: "flex-contain flex-center" },
+				IE.jsx.str(
+					"span",
+					{
+						class: "Gras",
+						style: "width:" + this.parametreLargeurCol1 + "px;",
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"pageParametrageCAS.urlServeurCAS",
+					),
+				),
+				this.composeCBChoixConfig(),
 			),
-			"</div>",
 		);
-		H.push('<div class="InlineBlock">', this.composeCBChoixConfig(), "</div>");
 		if (this.gestionCAS.modelePersonnalise) {
 			H.push(this.composeWarningParametresNonConformesAuModele());
 		}
@@ -364,7 +398,12 @@ class InterfaceParametrageCAS extends ObjetInterface_1.ObjetInterface {
 		);
 		H.push(
 			'<td class="Espace">',
-			this.composeZoneSaisieURLServeurCAS(GenreURLServeurCas.login),
+			this.composeZoneSaisieURLServeurCAS(
+				GenreURLServeurCas.login,
+				ObjetTraduction_1.GTraductions.getValeur(
+					"pageParametrageCAS.urlAuthServeurCAS",
+				),
+			),
 			"</td>",
 		);
 		H.push("</tr>");
@@ -396,7 +435,12 @@ class InterfaceParametrageCAS extends ObjetInterface_1.ObjetInterface {
 		);
 		H.push(
 			'<td class="Espace">',
-			this.composeZoneSaisieURLServeurCAS(GenreURLServeurCas.validation),
+			this.composeZoneSaisieURLServeurCAS(
+				GenreURLServeurCas.validation,
+				ObjetTraduction_1.GTraductions.getValeur(
+					"pageParametrageCAS.urlValidationServeurCAS",
+				),
+			),
 			"</td>",
 		);
 		H.push("</tr>");
@@ -427,7 +471,12 @@ class InterfaceParametrageCAS extends ObjetInterface_1.ObjetInterface {
 		H.push("<tr>");
 		H.push(
 			'<td colspan="2" class="Espace GrandEspaceGauche">',
-			this.composeZoneSaisieURLServeurCAS(GenreURLServeurCas.serveurCas),
+			this.composeZoneSaisieURLServeurCAS(
+				GenreURLServeurCas.serveurCas,
+				ObjetTraduction_1.GTraductions.getValeur(
+					"pageParametrageCAS.urlServeurCAS",
+				),
+			),
 			"</td>",
 		);
 		H.push("</tr>");
@@ -465,27 +514,16 @@ class InterfaceParametrageCAS extends ObjetInterface_1.ObjetInterface {
 		return H.join("");
 	}
 	composeCBChoixConfig() {
-		const lActif = this.avecParametresInactifs() ? "disabled" : "";
-		const lClass = this.avecParametresInactifs() ? "" : "AvecMain";
 		const H = [];
-		H.push('<label class="', lClass, '">');
 		H.push(
-			'<input ie-node="getNodeCb2Adresses" type="checkbox" id="',
-			this.idCB2Adresses,
-			'" ',
-			this.gestionCAS.configStandard ? "" : "checked",
-			" ",
-			lActif,
-			' class="',
-			lClass,
-			'" style="margin-right:5px; margin-left:15px;"/>',
-		);
-		H.push(
-			ObjetTraduction_1.GTraductions.getValeur(
-				"pageParametrageCAS.adressesDifferentes",
+			IE.jsx.str(
+				"ie-checkbox",
+				{ "ie-model": "cbDeuxAdresses", style: "margin-left:15px;" },
+				ObjetTraduction_1.GTraductions.getValeur(
+					"pageParametrageCAS.adressesDifferentes",
+				),
 			),
 		);
-		H.push("</label>");
 		return H.join("");
 	}
 	getInfosServeurCASSelonTypeURL(aGenreUrl) {
@@ -519,7 +557,7 @@ class InterfaceParametrageCAS extends ObjetInterface_1.ObjetInterface {
 			}
 		}
 	}
-	composeZoneSaisieURLServeurCAS(aGenreUrl) {
+	composeZoneSaisieURLServeurCAS(aGenreUrl, aLabel) {
 		const H = [];
 		const lInfos = this.getInfosServeurCASSelonTypeURL(aGenreUrl);
 		const lParametresInactifs = this.avecParametresInactifs();
@@ -537,26 +575,40 @@ class InterfaceParametrageCAS extends ObjetInterface_1.ObjetInterface {
 				'.surEvenementKeyUp()" class="Texte10 EspaceGauche ' +
 				lCurseur +
 				'" style="width:100%; ',
-			ObjetStyle_1.GStyle.composeCouleurBordure(GCouleur.noir),
-			'" type="text" value="' + lInfos.contenu + '" ' + lActif + " />",
+			ObjetStyle_1.GStyle.composeCouleurBordure(
+				(0, AccessApp_1.getApp)().getCouleur().noir,
+			),
+			'" type="text" value="' +
+				lInfos.contenu +
+				'" ' +
+				lActif +
+				' aria-label="',
+			aLabel,
+			'"/>',
 		);
 		return H.join("");
 	}
 	composeURLClientCAS() {
 		const H = [];
 		H.push(
-			'<div class="EspaceHaut">',
-			"<span>",
-			ObjetChaine_1.GChaine.insecable(
-				ObjetTraduction_1.GTraductions.getValeur(
-					"pageParametrageCAS.urlClientCAS",
+			IE.jsx.str(
+				"div",
+				{ class: "EspaceHaut" },
+				IE.jsx.str(
+					"span",
+					null,
+					ObjetChaine_1.GChaine.insecable(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"pageParametrageCAS.urlClientCAS",
+						),
+					),
+				),
+				IE.jsx.str(
+					"span",
+					{ class: "Gras m-left-s" },
+					this.gestionCAS.urlClientCAS,
 				),
 			),
-			" </span>",
-			'<span class="Gras m-left-s">',
-			this.gestionCAS.urlClientCAS,
-			"</span>",
-			"</div>",
 		);
 		return H.join("");
 	}
@@ -580,58 +632,84 @@ class InterfaceParametrageCAS extends ObjetInterface_1.ObjetInterface {
 		);
 	}
 	composeCheckBoxAutoriserAccesDirect() {
-		const lCocheChecked = this.gestionCAS.accesDirectAuxEspaces
-			? "checked"
-			: "";
-		const lParametresInactifs = this.avecParametresInactifs();
-		const lActif = lParametresInactifs ? "disabled" : "";
-		const lCurseur = lParametresInactifs ? "SansMain" : "AvecMain";
+		const lAdresseDirectCliquable = [];
+		if (this.optionsCAS.accesDirectPourServeurHttp) {
+			lAdresseDirectCliquable.push(
+				'<div class="GrandEspaceGauche EspaceHaut">',
+				this._composeAdresseCliquable(
+					this.gestionCAS.accesDirectAuxEspaces,
+					this.gestionCAS.urlAccesDirect,
+				),
+				"</div>",
+			);
+		}
+		const lMrFicheAccesDirect = [];
+		if (
+			!this.optionsCAS.accesDirectPourServeurHttp &&
+			this.optionsCAS.avecMrFicheAccesDirect
+		) {
+			lMrFicheAccesDirect.push(
+				IE.jsx.str("div", {
+					"ie-mrfiche": "pageParametrageCAS.mFicheAuthentification",
+					class: "InlineBlock p-left-l AlignementMilieuVertical",
+				}),
+			);
+		}
 		const H = [];
-		H.push('<div  class="EspaceHaut">', '<table class="Texte10 full-width">');
-		H.push("<tr>");
 		H.push(
-			'<td colspan="2">',
-			'<label onclick="' +
-				this.Nom +
-				'.surOnclickCBAutoriserAccesDirect ()" class="',
-			lCurseur,
-			'">',
-			'<input id="',
-			this.idCBAccesDirect,
-			'" type="checkbox" ',
-			lCocheChecked,
-			" ",
-			lActif,
-			' class="',
-			lCurseur,
-			'"></input>',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"pageParametrageCAS.autoriserAccesDirect",
+			IE.jsx.str(
+				"div",
+				{ class: "EspaceHaut" },
+				IE.jsx.str(
+					"div",
+					{ class: "flex-contain flex-center" },
+					IE.jsx.str(
+						"ie-checkbox",
+						{ "ie-model": "cbAutoriserAccesDirect" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"pageParametrageCAS.autoriserAccesDirect",
+						),
+					),
+					lMrFicheAccesDirect.join(""),
+				),
+				lAdresseDirectCliquable.join(""),
 			),
-			"</label>",
-			this.composeSuiteCBAccesDirect(),
-			"</td>",
 		);
-		H.push("</tr>");
-		H.push("</table>", "</div>");
 		if (!this.optionsCAS.accesDirectPourServeurHttp) {
-			H.push('<div class="GrandEspaceGauche EspaceHaut">');
 			H.push(
-				'<label class="AvecMain"><input ie-model="radioAuthentification(true)" type="radio" name="authDirecteCAS" class="AvecMain"/>',
-				ObjetTraduction_1.GTraductions.getValeur(
-					"pageParametrageCAS.DirectToutLeTemps",
+				IE.jsx.str(
+					"div",
+					{ class: "GrandEspaceGauche EspaceHaut" },
+					IE.jsx.str(
+						"div",
+						null,
+						IE.jsx.str(
+							"ie-radio",
+							{
+								"ie-model": "radioAuthentification(true)",
+								name: "authDirectCAS",
+							},
+							ObjetTraduction_1.GTraductions.getValeur(
+								"pageParametrageCAS.DirectToutLeTemps",
+							),
+						),
+					),
+					IE.jsx.str(
+						"div",
+						null,
+						IE.jsx.str(
+							"ie-radio",
+							{
+								"ie-model": "radioAuthentification(false)",
+								name: "authDirectCAS",
+							},
+							ObjetTraduction_1.GTraductions.getValeur(
+								"pageParametrageCAS.DirectPasDeReponse",
+							),
+						),
+					),
 				),
-				"</label>",
-				"<br />",
 			);
-			H.push(
-				'<label class="AvecMain"><input ie-model="radioAuthentification(false)" type="radio" name="authDirecteCAS" class="AvecMain"/>',
-				ObjetTraduction_1.GTraductions.getValeur(
-					"pageParametrageCAS.DirectPasDeReponse",
-				),
-				"</label>",
-			);
-			H.push("</div>");
 		}
 		return H.join("");
 	}
@@ -683,16 +761,6 @@ class InterfaceParametrageCAS extends ObjetInterface_1.ObjetInterface {
 		}
 		this.verifierSelonModele();
 		this.initialiser(true);
-	}
-	surOnclickCBAutoriserAccesDirect() {
-		if (!this.avecParametresInactifs()) {
-			const lEtatCocheAutoriserAccesDirect =
-				!this.gestionCAS.accesDirectAuxEspaces;
-			ObjetHtml_1.GHtml.getElement(this.idCBAccesDirect).checked =
-				lEtatCocheAutoriserAccesDirect;
-			this.gestionCAS.accesDirectAuxEspaces = lEtatCocheAutoriserAccesDirect;
-		}
-		this.$refreshSelf();
 	}
 	getDonneesFenetreParametre() {
 		return {
@@ -797,11 +865,11 @@ class InterfaceParametrageCAS extends ObjetInterface_1.ObjetInterface {
 				aTabParametres.getElement("AIdModele").setValeur(aIdModele);
 			},
 		}).then((aDonnees) => {
-			this.gestionCASdeModele = aDonnees.getElement("return").valeur;
+			this.gestionCASdeModele = aDonnees.getElement("return").getValeur();
 		});
 	}
 	callbackSurGetModelesConfigENT(aDonnees) {
-		const lTabModeles = aDonnees.getElement("return").valeur;
+		const lTabModeles = aDonnees.getElement("return").getValeur();
 		this.tabModeles = [];
 		const lDefault = new WSGestionCAS_1.TModeleConfigENT(
 			0,
@@ -871,13 +939,17 @@ class InterfaceParametrageCAS extends ObjetInterface_1.ObjetInterface {
 		}
 		H.push("</select>");
 		H.push(
-			'<div class="InlineBlock AlignementMilieuVertical">',
-			'<ie-btnimage ie-model="btnActualiserModeles" class="Image_BtnActualiser" style="width:21px;" title="',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"pageParametrageCAS.hintActualiserModeles",
+			IE.jsx.str(
+				"div",
+				{ class: "InlineBlock AlignementMilieuVertical p-left-l" },
+				IE.jsx.str("ie-btnicon", {
+					"ie-model": "btnActualiserModeles",
+					class: "bt-activable icon_refresh",
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"pageParametrageCAS.hintActualiserModeles",
+					),
+				}),
 			),
-			'"></ie-btnimage>',
-			"</div>",
 		);
 		H.push("</div>");
 		H.push(
@@ -925,28 +997,6 @@ class InterfaceParametrageCAS extends ObjetInterface_1.ObjetInterface {
 		H.push("</div>");
 		return H.join("");
 	}
-	composeSuiteCBAccesDirect() {
-		if (this.optionsCAS.accesDirectPourServeurHttp) {
-			return (
-				'<div class="GrandEspaceGauche EspaceHaut">' +
-				this._composeAdresseCliquable(
-					this.gestionCAS.accesDirectAuxEspaces,
-					this.gestionCAS.urlAccesDirect,
-				) +
-				"</div>"
-			);
-		} else {
-			const T = [];
-			if (this.optionsCAS.avecMrFicheAccesDirect) {
-				T.push(
-					'<div class="InlineBlock AlignementBas" style="padding-left:10px;">',
-					'<ie-btnicon ie-model="btnMrFicheAccesDirect" class="icon_question bt-activable"></ie-btnicon>',
-					"</div>",
-				);
-			}
-			return T.join("");
-		}
-	}
 	surSelectionModeleConfigENT(aIdModele) {
 		if (aIdModele !== this.gestionCAS.idModeleConfig) {
 			if (aIdModele === 0 || this._urlCASNonRenseigne()) {
@@ -956,14 +1006,16 @@ class InterfaceParametrageCAS extends ObjetInterface_1.ObjetInterface {
 				);
 			} else {
 				const lModele = this.tabModeles[this.getIndiceDuModele(aIdModele)];
-				GApplication.getMessage().afficher({
-					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
-					message: ObjetTraduction_1.GTraductions.getValeur(
-						"pageParametrageCAS.confirmModifModele",
-						[lModele.libelle],
-					),
-					callback: this.appliquerModeleConfigENT.bind(this, aIdModele),
-				});
+				(0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+						message: ObjetTraduction_1.GTraductions.getValeur(
+							"pageParametrageCAS.confirmModifModele",
+							[lModele.libelle],
+						),
+						callback: this.appliquerModeleConfigENT.bind(this, aIdModele),
+					});
 			}
 		}
 	}

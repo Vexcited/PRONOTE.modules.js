@@ -2,12 +2,6 @@ exports.ObjetFenetre_EditionScolarite = void 0;
 const ObjetFenetre_1 = require("ObjetFenetre");
 const InterfaceFicheEleve_1 = require("InterfaceFicheEleve");
 class ObjetFenetre_EditionScolarite extends ObjetFenetre_1.ObjetFenetre {
-	constructor(...aParams) {
-		super(...aParams);
-		const lApplicationSco = GApplication;
-		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
-		this.initialiser();
-	}
 	construireInstances() {
 		this.idFicheEleve = this.add(InterfaceFicheEleve_1.InterfaceFicheEleve);
 	}
@@ -17,7 +11,6 @@ class ObjetFenetre_EditionScolarite extends ObjetFenetre_1.ObjetFenetre {
 		this.getInstance(this.idFicheEleve).initialiser();
 		this.getInstance(this.idFicheEleve).setDonnees({
 			onglet: aOngletSelection,
-			formatTitrePrimaire: this.etatUtilisateurSco.pourPrimaire(),
 		});
 	}
 	surValidation(ANumeroBouton) {
@@ -31,14 +24,17 @@ class ObjetFenetre_EditionScolarite extends ObjetFenetre_1.ObjetFenetre {
 				null,
 				IE.jsx.str("div", {
 					class: "fiche-wrapper full-size",
-					id: this.getInstance(this.idFicheEleve).getNom(),
+					id: this.getNomInstance(this.idFicheEleve),
 				}),
 			),
 		);
 		return T.join("");
 	}
+	composeBas() {
+		return this.getInstance(this.idFicheEleve).composeBoutonsCommunication();
+	}
 	setOngletParDefaut(aGenreOnglet) {
-		this.getInstance(this.idFicheEleve).setOngletParDefaut(aGenreOnglet);
+		this.genreOnglet = aGenreOnglet;
 	}
 }
 exports.ObjetFenetre_EditionScolarite = ObjetFenetre_EditionScolarite;

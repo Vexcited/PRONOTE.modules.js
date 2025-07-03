@@ -28,7 +28,11 @@ class MoteurAjax {
 				this.requeteur.open(this.methode, aURLCible, this.modeAsynchrone);
 			}
 		} catch (e) {
-			alert(e.name + " | " + e.message);
+			if (e instanceof Error) {
+				alert(e.name + " | " + e.message);
+			} else {
+				alert(e);
+			}
 		}
 	}
 	envoyerRequete(aDonnees) {

@@ -1,14 +1,10 @@
-const { _ObjetRequeteResultat } = require("_ObjetRequeteResultat.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetElement } = require("ObjetElement.js");
-const {
-	UtilitaireDeserialiserPiedBulletin,
-} = require("UtilitaireDeserialiserPiedBulletin.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-class ObjetRequetePageReleve extends _ObjetRequeteResultat {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequetePageReleve = void 0;
+const _ObjetRequeteResultat_1 = require("_ObjetRequeteResultat");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetElement_1 = require("ObjetElement");
+const UtilitaireDeserialiserPiedBulletin_1 = require("UtilitaireDeserialiserPiedBulletin");
+const ObjetListeElements_1 = require("ObjetListeElements");
+class ObjetRequetePageReleve extends _ObjetRequeteResultat_1._ObjetRequeteResultat {
 	lancerRequete(aParam) {
 		const lParam = {
 			numeroEleve: 0,
@@ -18,11 +14,18 @@ class ObjetRequetePageReleve extends _ObjetRequeteResultat {
 		};
 		$.extend(lParam, aParam);
 		this.JSON = {
-			eleve: new ObjetElement("", lParam.numeroEleve),
-			periode: new ObjetElement("", lParam.numeroPeriode, lParam.genrePeriode),
+			eleve: new ObjetElement_1.ObjetElement("", lParam.numeroEleve),
+			periode: new ObjetElement_1.ObjetElement(
+				"",
+				lParam.numeroPeriode,
+				lParam.genrePeriode,
+			),
 		};
 		if (lParam.numeroClasse) {
-			this.JSON.classe = new ObjetElement("", lParam.numeroClasse);
+			this.JSON.classe = new ObjetElement_1.ObjetElement(
+				"",
+				lParam.numeroClasse,
+			);
 		}
 		return this.appelAsynchrone();
 	}
@@ -107,7 +110,7 @@ class ObjetRequetePageReleve extends _ObjetRequeteResultat {
 				if (lAvecServiceDansSurMatiere) {
 					lTabSurMatiere[aSurMatiere.getNumero()] = aSurMatiere;
 				} else {
-					const lListe = new ObjetListeElements();
+					const lListe = new ObjetListeElements_1.ObjetListeElements();
 					for (
 						let i = 0, lNbr = lParam.aCopier.ListeElements.count();
 						i < lNbr;
@@ -127,12 +130,12 @@ class ObjetRequetePageReleve extends _ObjetRequeteResultat {
 			lParam.aCopier.MoyenneGenerale = this.JSONReponse.General;
 			$.extend(
 				lParam.absences,
-				new UtilitaireDeserialiserPiedBulletin().creerAbsences(
+				new UtilitaireDeserialiserPiedBulletin_1.UtilitaireDeserialiserPiedBulletin().creerAbsences(
 					this.JSONReponse,
 				),
 			);
 			lParam.aCopier.PiedDePage =
-				new UtilitaireDeserialiserPiedBulletin().creerPiedDePage(
+				new UtilitaireDeserialiserPiedBulletin_1.UtilitaireDeserialiserPiedBulletin().creerPiedDePage(
 					this.JSONReponse,
 				);
 			lParam.listeAccusesReception = this.JSONReponse.listeAccusesReception;
@@ -140,5 +143,5 @@ class ObjetRequetePageReleve extends _ObjetRequeteResultat {
 		this.callbackReussite.appel(lParam);
 	}
 }
-Requetes.inscrire("PageReleve", ObjetRequetePageReleve);
-module.exports = { ObjetRequetePageReleve };
+exports.ObjetRequetePageReleve = ObjetRequetePageReleve;
+CollectionRequetes_1.Requetes.inscrire("PageReleve", ObjetRequetePageReleve);

@@ -1,4 +1,4 @@
-const IEHtml = require("IEHtml");
+const IEHtml_1 = require("IEHtml");
 const MethodesObjet_1 = require("MethodesObjet");
 const ObjetHtml_1 = require("ObjetHtml");
 const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
@@ -6,7 +6,7 @@ const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetSaisie_1 = require("ObjetSaisie");
 const ObjetElement_1 = require("ObjetElement");
 const ObjetIdentite_1 = require("ObjetIdentite");
-IEHtml.addBalise("ie-combo", (aContexteCourant, aOutils) => {
+IEHtml_1.default.addBalise("ie-combo", (aContexteCourant, aOutils) => {
 	function _listesIdentiques(aListe1, aListe2) {
 		return aListe1 && aListe1.listeIdentiqueParElementsOrdonnes
 			? aListe1.listeIdentiqueParElementsOrdonnes(aListe2)
@@ -46,7 +46,6 @@ IEHtml.addBalise("ie-combo", (aContexteCourant, aOutils) => {
 			"getDisabled",
 			aContexteCourant,
 		),
-		lAvecControleSaisie = aOutils.getControleSaisieEvent(aContexteCourant),
 		lRefresh = aContexteCourant.contexte.refresh;
 	let lListeSelectionsBackup = null;
 	const lStrAriaLabel = aContexteCourant.node.getAttribute("aria-label");
@@ -66,7 +65,7 @@ IEHtml.addBalise("ie-combo", (aContexteCourant, aOutils) => {
 	let lInstanceCombo = ObjetIdentite_1.Identite.creerInstance(
 		ObjetSaisie_1.ObjetSaisie,
 		{
-			pere: aContexteCourant.controleur,
+			pere: {},
 			evenement: function (aParams) {
 				const lParametres = aParams;
 				const lCallback = function () {
@@ -109,39 +108,30 @@ IEHtml.addBalise("ie-combo", (aContexteCourant, aOutils) => {
 			},
 		},
 	);
-	lInstanceCombo.ControleNavigation = !!lAvecControleSaisie;
 	const lRacine = ObjetHtml_1.GHtml.htmlToDOM(
-			'<div id="' + lInstanceCombo.getNom() + '"></div>',
+			IE.jsx.str("div", { id: lInstanceCombo.getNom() }),
 		),
 		lJRacine = $(lRacine);
+	const lAvecControleSaisie = aOutils.getControleSaisieEvent(
+		aContexteCourant.node,
+	);
+	lInstanceCombo.ControleNavigation = !!lAvecControleSaisie;
 	if (
 		IE.estMobile &&
 		!aContexteCourant.node.classList.contains("combo-classic")
 	) {
 		if (aContexteCourant.node.classList.contains("membre-combo")) {
-			lInstanceCombo.setOptionsObjetSaisie({
-				iconeGauche: "",
-				avecBouton: true,
-			});
 		} else if (aContexteCourant.node.classList.contains("search-contain")) {
-			lInstanceCombo.setOptionsObjetSaisie({
-				avecDesignMobile: true,
-				iconeGauche: "",
-				avecBouton: true,
-			});
+			lInstanceCombo.setOptionsObjetSaisie({ avecDesignMobile: true });
 		} else {
-			lInstanceCombo.setOptionsObjetSaisie({
-				avecDesignMobile: true,
-				iconeGauche: "icon_reorder",
-				avecBouton: false,
-			});
+			lInstanceCombo.setOptionsObjetSaisie({ avecDesignMobile: true });
 		}
 	}
 	if (lStrAriaLabel || lStrAriaLabelledBy || lStrAriaDescribedBy) {
 		lInstanceCombo.setOptionsObjetSaisie({
 			labelWAICellule: lStrAriaLabel || "",
-			labelledById: lStrAriaLabelledBy || "",
-			describedById: lStrAriaDescribedBy || "",
+			ariaLabelledBy: lStrAriaLabelledBy || "",
+			ariaDescribedBy: lStrAriaDescribedBy || "",
 		});
 	}
 	const lParams = {
@@ -204,7 +194,7 @@ IEHtml.addBalise("ie-combo", (aContexteCourant, aOutils) => {
 	}
 	aOutils.injectHTML({
 		element: lRacine,
-		html: lInstanceCombo.construireAffichage(),
+		html: lInstanceCombo.construireHtml(),
 		controleur: lInstanceCombo.controleur,
 		ignorerScroll: true,
 		contexte: aContexteCourant.contexte,
@@ -415,7 +405,7 @@ IEHtml.addBalise("ie-combo", (aContexteCourant, aOutils) => {
 			aContexteCourant,
 		);
 	}
-	if (lModele && aContexteCourant.data.$modeleParsed) {
+	if (lModele) {
 		aOutils.surNodeEtNodeAfter(aContexteCourant);
 	}
 	aOutils.copyAttributs(aContexteCourant.node, lRacine, (aName) => {
@@ -425,7 +415,7 @@ IEHtml.addBalise("ie-combo", (aContexteCourant, aOutils) => {
 	});
 	lJRacine.addClass("ObjetSaisie ie-combo");
 	aOutils.replaceNode(aContexteCourant.node, lRacine);
-	aOutils.addCommentaireDebug(lRacine, 'ie-combo ie-model="' + lModele + '"');
+	aOutils.addCommentaireDebug(lRacine, "ie-combo");
 	if (lStrAriaLabel) {
 		aOutils.addCommentaireDebug(
 			lRacine,

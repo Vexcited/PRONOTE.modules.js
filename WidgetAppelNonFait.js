@@ -4,13 +4,13 @@ const ObjetTri_1 = require("ObjetTri");
 const UtilitaireWidget_1 = require("UtilitaireWidget");
 const ObjetDate_1 = require("ObjetDate");
 const ObjetTraduction_1 = require("ObjetTraduction");
-const tag_1 = require("tag");
 const Enumere_EvenementWidget_1 = require("Enumere_EvenementWidget");
 const ObjetWidget_1 = require("ObjetWidget");
+const AccessApp_1 = require("AccessApp");
 class WidgetAppelNonFait extends ObjetWidget_1.Widget.ObjetWidget {
 	constructor(...aParams) {
 		super(...aParams);
-		const lApplicationSco = GApplication;
+		const lApplicationSco = (0, AccessApp_1.getApp)();
 		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
 	}
 	construire(aParams) {
@@ -25,7 +25,7 @@ class WidgetAppelNonFait extends ObjetWidget_1.Widget.ObjetWidget {
 			? this.donnees.listeAppelNonFait.count()
 			: 0;
 		const lWidget = {
-			html: this.composeWidgetAppelNonFait(),
+			getHtml: this.composeWidgetAppelNonFait.bind(this),
 			nbrElements: lNbrElements,
 			afficherMessage: lNbrElements === 0,
 		};
@@ -33,89 +33,83 @@ class WidgetAppelNonFait extends ObjetWidget_1.Widget.ObjetWidget {
 		UtilitaireWidget_1.UtilitaireWidget.actualiserWidget(this);
 		aParams.construireWidget(aParams.donnees);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			nodeAppelNonFait(aNumeroAppelNonFait, aDateDebutInMillis) {
-				$(this.node).eventValidation(() => {
-					aInstance._surAppelNonFait(aNumeroAppelNonFait, aDateDebutInMillis);
-				});
-			},
-		});
+	jsxNodeAppelNonFait(aAppelNonFait) {
+		return (aNode) => {
+			$(aNode).eventValidation(() => {
+				this._surAppelNonFait(aAppelNonFait);
+			});
+		};
 	}
 	composeWidgetAppelNonFait() {
 		const H = [];
 		H.push('<ul class="liste-clickable">');
-		for (let i = 0; i < this.donnees.listeAppelNonFait.count(); i++) {
-			const lAppelNonFait = this.donnees.listeAppelNonFait.get(i);
-			H.push("<li>");
-			H.push(
-				'<a class="wrapper-link" tabindex="0" ie-node="nodeAppelNonFait(\'',
-				lAppelNonFait.getNumero(),
-				"', ",
-				lAppelNonFait.dateDebut ? lAppelNonFait.dateDebut.getTime() : 0,
-				')">',
-				'<div class="wrap">',
-				!lAppelNonFait.estVerrouille
-					? "<h3>" +
-							ObjetDate_1.GDate.formatDate(
-								lAppelNonFait.dateDebut,
-								"[%JJJ %JJ]",
-							) +
-							" - " +
-							lAppelNonFait.strHeure +
-							" </h3>"
-					: "",
-				'<div class="infos-conteneur">',
-			);
-			if (lAppelNonFait.estSortiePeda) {
+		if (this.donnees.listeAppelNonFait) {
+			for (const lAppelNonFait of this.donnees.listeAppelNonFait) {
 				H.push(
-					(0, tag_1.tag)(
-						"span",
-						{
-							class: "icon-sortie-peda",
-							title: ObjetTraduction_1.GTraductions.getValeur(
-								"accueil.appelNonFait.HintAcc",
+					IE.jsx.str(
+						"li",
+						null,
+						IE.jsx.str(
+							"a",
+							{
+								class: "wrapper-link",
+								tabindex: "0",
+								"ie-node": this.jsxNodeAppelNonFait(lAppelNonFait),
+							},
+							IE.jsx.str(
+								"div",
+								{ class: "wrap" },
+								!lAppelNonFait.estVerrouille
+									? IE.jsx.str(
+											"h3",
+											null,
+											ObjetDate_1.GDate.formatDate(
+												lAppelNonFait.dateDebut,
+												"[%JJJ %JJ]",
+											) +
+												" - " +
+												lAppelNonFait.strHeure,
+										)
+									: "",
+								IE.jsx.str(
+									"div",
+									{ class: "infos-conteneur" },
+									lAppelNonFait.estSortiePeda
+										? IE.jsx.str(
+												"span",
+												{
+													class: "icon-sortie-peda",
+													title: ObjetTraduction_1.GTraductions.getValeur(
+														"accueil.appelNonFait.HintAcc",
+													),
+												},
+												ObjetTraduction_1.GTraductions.getValeur(
+													"accueil.appelNonFait.InitialeAbsAccompagnement",
+												),
+											)
+										: "",
+									IE.jsx.str("span", null, lAppelNonFait.strMatiere),
+								),
 							),
-						},
-						ObjetTraduction_1.GTraductions.getValeur(
-							"accueil.appelNonFait.InitialeAbsAccompagnement",
+							lAppelNonFait.strClasse || lAppelNonFait.strClasse !== ""
+								? IE.jsx.str(
+										"div",
+										{ class: "as-info fixed" },
+										lAppelNonFait.strClasse,
+									)
+								: "",
 						),
 					),
 				);
 			}
-			H.push("<span>", lAppelNonFait.strMatiere, "</span>");
-			H.push("</div>", "</div>");
-			H.push(
-				lAppelNonFait.strClasse || lAppelNonFait.strClasse !== ""
-					? '<div class="as-info fixed">' + lAppelNonFait.strClasse + "</div>"
-					: "",
-			);
-			H.push("</a>");
-			H.push("</li>");
 		}
 		H.push("</ul>");
 		return H.join("");
 	}
-	_surAppelNonFait(aNumeroAppelNonFait, aDateDebutInMillis) {
-		let lAppelNonFaitConcerne = null;
-		if (this.donnees.listeAppelNonFait) {
-			for (const lAppelNonFait of this.donnees.listeAppelNonFait) {
-				if (lAppelNonFait.getNumero() === aNumeroAppelNonFait) {
-					if (
-						(!lAppelNonFait.dateDebut && !aDateDebutInMillis) ||
-						lAppelNonFait.dateDebut.getTime() === aDateDebutInMillis
-					) {
-						lAppelNonFaitConcerne = lAppelNonFait;
-						break;
-					}
-				}
-			}
-		}
-		if (lAppelNonFaitConcerne) {
-			this.etatUtilisateurSco.setNavigationCours(lAppelNonFaitConcerne);
-			this.etatUtilisateurSco.setNavigationDate(
-				lAppelNonFaitConcerne.dateDebut,
-			);
+	_surAppelNonFait(aAppelNonFait) {
+		if (aAppelNonFait) {
+			this.etatUtilisateurSco.setNavigationCours(aAppelNonFait);
+			this.etatUtilisateurSco.setNavigationDate(aAppelNonFait.dateDebut);
 			let lPageDestination;
 			if (this.etatUtilisateurSco.estEspaceMobile()) {
 				lPageDestination = { genreOngletDest: this.donnees.page.Onglet };

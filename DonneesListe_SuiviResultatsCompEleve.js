@@ -1,7 +1,8 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { TUtilitaireCompetences } = require("UtilitaireCompetences.js");
-class DonneesListe_SuiviResultatsCompEleve extends ObjetDonneesListe {
+exports.DonneesListe_SuiviResultatsCompEleve = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const UtilitaireCompetences_1 = require("UtilitaireCompetences");
+class DonneesListe_SuiviResultatsCompEleve extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParams = {}) {
 		super(aDonnees);
 		this.optionsAffichage = {
@@ -25,8 +26,10 @@ class DonneesListe_SuiviResultatsCompEleve extends ObjetDonneesListe {
 	getColonneDeFusion(aParams) {
 		if (aParams.article.estUnDeploiement) {
 			if (
-				aParams.article.getGenre() === EGenreRessource.Palier ||
-				aParams.article.getGenre() === EGenreRessource.Pilier
+				aParams.article.getGenre() ===
+					Enumere_Ressource_1.EGenreRessource.Palier ||
+				aParams.article.getGenre() ===
+					Enumere_Ressource_1.EGenreRessource.Pilier
 			) {
 				return DonneesListe_SuiviResultatsCompEleve.colonnes.libelle;
 			}
@@ -34,7 +37,7 @@ class DonneesListe_SuiviResultatsCompEleve extends ObjetDonneesListe {
 		return null;
 	}
 	getTypeValeur() {
-		return ObjetDonneesListe.ETypeCellule.Html;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 	}
 	getClassCelluleConteneur(aParams) {
 		const lClasses = [];
@@ -71,19 +74,25 @@ class DonneesListe_SuiviResultatsCompEleve extends ObjetDonneesListe {
 			case DonneesListe_SuiviResultatsCompEleve.colonnes.jauge: {
 				let lJauge = "";
 				if (this.optionsAffichage.afficheJaugeChronologique) {
-					lJauge = TUtilitaireCompetences.composeJaugeChronologique({
-						listeNiveaux: aParams.article.listeNiveaux,
-						hint: TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionChronologique(
-							aParams.article.listeNiveaux,
-						),
-					});
+					lJauge =
+						UtilitaireCompetences_1.TUtilitaireCompetences.composeJaugeChronologique(
+							{
+								listeNiveaux: aParams.article.listeNiveaux,
+								hint: UtilitaireCompetences_1.TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionChronologique(
+									aParams.article.listeNiveaux,
+								),
+							},
+						);
 				} else {
-					lJauge = TUtilitaireCompetences.composeJaugeParNiveaux({
-						listeNiveaux: aParams.article.listeNiveauxParNiveau,
-						hint: TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionParNiveauOuPastille(
-							aParams.article.listeNiveauxParNiveau,
-						),
-					});
+					lJauge =
+						UtilitaireCompetences_1.TUtilitaireCompetences.composeJaugeParNiveaux(
+							{
+								listeNiveaux: aParams.article.listeNiveauxParNiveau,
+								hint: UtilitaireCompetences_1.TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionParNiveauOuPastille(
+									aParams.article.listeNiveauxParNiveau,
+								),
+							},
+						);
 				}
 				return lJauge;
 			}
@@ -93,13 +102,13 @@ class DonneesListe_SuiviResultatsCompEleve extends ObjetDonneesListe {
 	getCouleurCellule(aParams) {
 		if (!!aParams.article) {
 			switch (aParams.article.getGenre()) {
-				case EGenreRessource.Palier:
-				case EGenreRessource.Pilier:
+				case Enumere_Ressource_1.EGenreRessource.Palier:
+				case Enumere_Ressource_1.EGenreRessource.Pilier:
 					return GCouleur.liste.cumul[0];
-				case EGenreRessource.ElementPilier:
+				case Enumere_Ressource_1.EGenreRessource.ElementPilier:
 					return GCouleur.liste.cumul[1];
-				case EGenreRessource.Competence:
-				case EGenreRessource.SousItem:
+				case Enumere_Ressource_1.EGenreRessource.Competence:
+				case Enumere_Ressource_1.EGenreRessource.SousItem:
 					return GCouleur.liste.cumul[2];
 			}
 		}
@@ -115,8 +124,9 @@ class DonneesListe_SuiviResultatsCompEleve extends ObjetDonneesListe {
 		return 0;
 	}
 }
+exports.DonneesListe_SuiviResultatsCompEleve =
+	DonneesListe_SuiviResultatsCompEleve;
 DonneesListe_SuiviResultatsCompEleve.colonnes = {
 	libelle: "DLSuiviCpt_libelle",
 	jauge: "DLSuiviCpt_jauge",
 };
-module.exports = { DonneesListe_SuiviResultatsCompEleve };

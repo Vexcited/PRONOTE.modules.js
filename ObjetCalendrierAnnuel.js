@@ -8,6 +8,7 @@ const ObjetIdentite_1 = require("ObjetIdentite");
 const ObjetElement_1 = require("ObjetElement");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetTri_1 = require("ObjetTri");
+const AccessApp_1 = require("AccessApp");
 var GenreEditionPeriode;
 (function (GenreEditionPeriode) {
 	GenreEditionPeriode[(GenreEditionPeriode["Ajout"] = 0)] = "Ajout";
@@ -29,16 +30,24 @@ class ObjetCalendrierAnnuel extends ObjetIdentite_1.Identite {
 			nbrContainers: 0,
 			cadreTotal: false,
 			joursOuvres: {
-				fond: { couleur: GCouleur.cumul },
-				texte: { couleur: GCouleur.blanc, alignement: "center", poid: "bold" },
+				fond: { couleur: (0, AccessApp_1.getApp)().getCouleur().cumul },
+				texte: {
+					couleur: (0, AccessApp_1.getApp)().getCouleur().blanc,
+					alignement: "center",
+					poid: "bold",
+				},
 				domaine: GParametres.JoursOuvres,
 				symbolImpression: "-",
 				editable: false,
 				editablePeriode: false,
 			},
 			joursFeries: {
-				fond: { couleur: GCouleur.cumul },
-				texte: { couleur: GCouleur.blanc, alignement: "center", poid: "bold" },
+				fond: { couleur: (0, AccessApp_1.getApp)().getCouleur().cumul },
+				texte: {
+					couleur: (0, AccessApp_1.getApp)().getCouleur().blanc,
+					alignement: "center",
+					poid: "bold",
+				},
 				domaine: GParametres.JoursFeries,
 				symbolImpression: "-",
 				editable: false,
@@ -76,41 +85,51 @@ class ObjetCalendrierAnnuel extends ObjetIdentite_1.Identite {
 	setParametres(aOptions) {
 		const lStyle = {
 			defaut: {
-				bordure: { couleur: GCouleur.bordure, taille: "1px", style: "solid" },
-				fond: { couleur: GCouleur.blanc },
-				texte: { couleur: GCouleur.noir, alignement: "center", poid: "bold" },
+				bordure: {
+					couleur: (0, AccessApp_1.getApp)().getCouleur().bordure,
+					taille: "1px",
+					style: "solid",
+				},
+				fond: { couleur: (0, AccessApp_1.getApp)().getCouleur().blanc },
+				texte: {
+					couleur: (0, AccessApp_1.getApp)().getCouleur().noir,
+					alignement: "center",
+					poid: "bold",
+				},
 			},
 			surbrillance: {
 				bordure: {
-					couleur: GCouleur.themeCouleur.sombre,
+					couleur: (0, AccessApp_1.getApp)().getCouleur().themeCouleur.sombre,
 					taille: "2px",
 					style: "solid",
 				},
 			},
 			jourCourant: {
 				bordure: {
-					couleur: GCouleur.themeCouleur.sombre,
+					couleur: (0, AccessApp_1.getApp)().getCouleur().themeCouleur.sombre,
 					taille: "2px",
 					style: "solid",
 				},
 			},
 			titre: {
 				bordure: {
-					couleur: GCouleur.titre.bordure,
+					couleur: (0, AccessApp_1.getApp)().getCouleur().titre.bordure,
 					taille: "1px",
 					style: "solid",
 				},
-				fond: { couleur: GCouleur.titre.fond },
+				fond: { couleur: (0, AccessApp_1.getApp)().getCouleur().titre.fond },
 				texte: {
-					couleur: GCouleur.titre.texte,
+					couleur: (0, AccessApp_1.getApp)().getCouleur().titre.texte,
 					alignement: "center",
 					poid: "bold",
 				},
 			},
 			nomJour: {
-				fond: { couleur: GCouleur.themeNeutre.legere },
+				fond: {
+					couleur: (0, AccessApp_1.getApp)().getCouleur().themeNeutre.legere,
+				},
 				texte: {
-					couleur: GCouleur.themeNeutre.sombre,
+					couleur: (0, AccessApp_1.getApp)().getCouleur().themeNeutre.sombre,
 					alignement: "center",
 					poid: "normal",
 				},
@@ -124,12 +143,18 @@ class ObjetCalendrierAnnuel extends ObjetIdentite_1.Identite {
 		const lOptionsTemp = {
 			style: lStyle,
 			joursOuvres: {
-				fond: { couleur: GCouleur.themeNeutre.claire },
-				texte: { couleur: GCouleur.blanc },
+				fond: {
+					couleur: (0, AccessApp_1.getApp)().getCouleur().themeNeutre.claire,
+				},
+				texte: {
+					couleur: (0, AccessApp_1.getApp)().getCouleur().themeNeutre.sombre,
+				},
 			},
 			joursFeries: {
-				fond: { couleur: GCouleur.themeNeutre.sombre },
-				texte: { couleur: GCouleur.blanc },
+				fond: {
+					couleur: (0, AccessApp_1.getApp)().getCouleur().themeNeutre.sombre,
+				},
+				texte: { couleur: (0, AccessApp_1.getApp)().getCouleur().blanc },
 			},
 		};
 		$.extend(true, this.options, lOptionsTemp, aOptions);
@@ -631,23 +656,23 @@ class ObjetCalendrierAnnuel extends ObjetIdentite_1.Identite {
 		$(aNoeudDom)
 			.find("#" + this.idJourCourantHov.escapeJQ())
 			.remove();
-		for (const prop in this.donnees) {
+		let prop;
+		for (prop in this.donnees) {
 			if (!MethodesObjet_1.MethodesObjet.isFunction(this.donnees[prop])) {
+				const lDonneesProp = this.donnees[prop];
 				const lDonnees = MethodesObjet_1.MethodesObjet.isFunction(
-					this.donnees[prop].filtre,
+					lDonneesProp.filtre,
 				)
-					? this.donnees[prop].donnees.getListeElements(
-							this.donnees[prop].filtre,
-						)
-					: this.donnees[prop].donnees;
+					? lDonneesProp.donnees.getListeElements(lDonneesProp.filtre)
+					: lDonneesProp.donnees;
 				for (let i = 0; i < lDonnees.count(); i++) {
 					const lElement = lDonnees.get(i);
 					if (!lElement.existe()) {
 						continue;
 					}
-					const lStart = lElement[this.donnees[prop].variables[0]];
-					const lStop = this.donnees[prop].variables[1]
-						? lElement[this.donnees[prop].variables[1]]
+					const lStart = lElement[lDonneesProp.variables[0]];
+					const lStop = lDonneesProp.variables[1]
+						? lElement[lDonneesProp.variables[1]]
 						: lStart;
 					for (
 						let j = lStart;
@@ -664,7 +689,7 @@ class ObjetCalendrierAnnuel extends ObjetIdentite_1.Identite {
 								j.getFullYear() +
 								"_cel",
 						);
-						lJqCel.text(this.donnees[prop].symbolImpression || "");
+						lJqCel.text(lDonneesProp.symbolImpression || "");
 					}
 				}
 			}
@@ -778,30 +803,28 @@ class ObjetCalendrierAnnuel extends ObjetIdentite_1.Identite {
 			.data("couleurOrigineTexte", lCouleurTexteFerie);
 		for (prop in this.donnees) {
 			if (!MethodesObjet_1.MethodesObjet.isFunction(this.donnees[prop])) {
+				const lDonneesProp = this.donnees[prop];
 				const lDonnees = MethodesObjet_1.MethodesObjet.isFunction(
-					this.donnees[prop].filtre,
+					lDonneesProp.filtre,
 				)
-					? this.donnees[prop].donnees.getListeElements(
-							this.donnees[prop].filtre,
-						)
-					: this.donnees[prop].donnees;
-				const lCouleur = this.donnees[prop].couleur;
+					? lDonneesProp.donnees.getListeElements(lDonneesProp.filtre)
+					: lDonneesProp.donnees;
+				const lCouleur = lDonneesProp.couleur;
 				const lNoContainer =
-					this.options.nbrContainers > 0 &&
-					this.donnees[prop].index !== undefined
-						? this.donnees[prop].index
+					this.options.nbrContainers > 0 && lDonneesProp.index !== undefined
+						? lDonneesProp.index
 						: undefined;
-				const lContainerActif = this.donnees[prop].actif;
+				const lContainerActif = lDonneesProp.actif;
 				const lCouleurTexte =
-					this.donnees[prop].texte && this.donnees[prop].texte.couleur
-						? this.donnees[prop].texte.couleur
+					lDonneesProp.texte && lDonneesProp.texte.couleur
+						? lDonneesProp.texte.couleur
 						: this.options.style.defaut.texte.couleur;
-				const lEstNonEditable = !!this.donnees[prop].nonEditable;
+				const lEstNonEditable = !!lDonneesProp.nonEditable;
 				let lEstEditable = false;
-				if (this.donnees[prop].editable) {
+				if (lDonneesProp.editable) {
 					this.listeDonneesEditable.push(prop);
 					lEstEditable = true;
-					if (this.donnees[prop].editablePeriode) {
+					if (lDonneesProp.editablePeriode) {
 						this.listeDonneesEditablePeriode.push(
 							this.listeDonneesEditable.length - 1,
 						);
@@ -812,9 +835,9 @@ class ObjetCalendrierAnnuel extends ObjetIdentite_1.Identite {
 					if (!lElement.existe()) {
 						continue;
 					}
-					const lStart = lElement[this.donnees[prop].variables[0]];
-					const lStop = this.donnees[prop].variables[1]
-						? lElement[this.donnees[prop].variables[1]]
+					const lStart = lElement[lDonneesProp.variables[0]];
+					const lStop = lDonneesProp.variables[1]
+						? lElement[lDonneesProp.variables[1]]
 						: lStart;
 					for (
 						j = lStart;

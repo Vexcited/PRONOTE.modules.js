@@ -27,7 +27,6 @@ const UtilitaireUrl_1 = require("UtilitaireUrl");
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
 const ObjetDate_js_1 = require("ObjetDate.js");
 const TypeColonneTravauxIntendance_1 = require("TypeColonneTravauxIntendance");
-const jsx_1 = require("jsx");
 class PageMissionsDemande extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
@@ -82,26 +81,51 @@ class PageMissionsDemande extends ObjetIdentite_1.Identite {
 	evenementSurDateEcheance(aDateEcheance) {
 		this.demandeCourante.dateEcheance = aDateEcheance;
 	}
+	jsxModeleRadioDestination(aTypeDest) {
+		return {
+			getValue: () => {
+				return (
+					!!this.demandeCourante &&
+					"destination" in this.demandeCourante &&
+					this.demandeCourante.destination === aTypeDest
+				);
+			},
+			setValue: (aValue) => {
+				this.demandeCourante.destination = aTypeDest;
+			},
+			getDisabled: () => {
+				return !this._estEditable(
+					TypeColonneTravauxIntendance_1.TypeColonneTravauxIntendance
+						.tcti_Destination,
+				);
+			},
+			getName: () => {
+				return `${this.Nom}_Destination`;
+			},
+		};
+	}
+	jsxModeleChipsSalleLieu(aSalleLieuConcerne) {
+		return {
+			eventBtn: (aEvent) => {
+				aEvent.stopPropagation();
+				if (
+					this._estEditable(
+						TypeColonneTravauxIntendance_1.TypeColonneTravauxIntendance
+							.tcti_Lieu,
+					)
+				) {
+					this._evntSupprLieuxSalle(aSalleLieuConcerne);
+				}
+			},
+			getDisabled: () => {
+				return !this._estEditable(
+					TypeColonneTravauxIntendance_1.TypeColonneTravauxIntendance.tcti_Lieu,
+				);
+			},
+		};
+	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
-			radioDestination: {
-				getValue: function (aTypeDest) {
-					return (
-						!!aInstance.demandeCourante &&
-						"destination" in aInstance.demandeCourante &&
-						aInstance.demandeCourante.destination === aTypeDest
-					);
-				},
-				setValue: function (aTypeDest) {
-					aInstance.demandeCourante.destination = aTypeDest;
-				},
-				getDisabled: function () {
-					return !aInstance._estEditable(
-						TypeColonneTravauxIntendance_1.TypeColonneTravauxIntendance
-							.tcti_Destination,
-					);
-				},
-			},
 			cmbNature: {
 				init: function (aCombo) {
 					aCombo.setOptionsObjetSaisie({
@@ -193,15 +217,12 @@ class PageMissionsDemande extends ObjetIdentite_1.Identite {
 			},
 			selectionSalleLieu: {
 				event() {
-					aInstance.lFenetreselectionSalleLieu =
+					aInstance.fenetreselectionSalleLieu =
 						ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
 							ObjetFenetre_SelectionSalleLieu_js_1.ObjetFenetre_SelectionSalleLieu,
 							{
 								pere: aInstance,
-								evenement: function (
-									aGenreRessource,
-									aListeRessourcesSelectionnees,
-								) {
+								evenement: (aGenreRessource, aListeRessourcesSelectionnees) => {
 									aInstance._evntFenetreSalleLieu(
 										aGenreRessource,
 										aListeRessourcesSelectionnees,
@@ -209,7 +230,6 @@ class PageMissionsDemande extends ObjetIdentite_1.Identite {
 								},
 								initialiser: (aInstance) => {
 									const lparamsListe = {
-										skin: _ObjetListe_1.ObjetListe.skin.flatDesign,
 										optionsListe: {
 											skin: _ObjetListe_1.ObjetListe.skin.flatDesign,
 										},
@@ -232,7 +252,7 @@ class PageMissionsDemande extends ObjetIdentite_1.Identite {
 								},
 							},
 						);
-					aInstance.lFenetreselectionSalleLieu.setDonnees({
+					aInstance.fenetreselectionSalleLieu.setDonnees({
 						listeRessources: aInstance.listeSallesLieu,
 						listeRessourcesSelectionnees:
 							aInstance.demandeCourante.listeLieux.getListeElements(
@@ -249,31 +269,6 @@ class PageMissionsDemande extends ObjetIdentite_1.Identite {
 							: aInstance._getHtmlSalleLieux) === null || _a === void 0
 						? void 0
 						: _a.call(aInstance);
-				},
-				getDisabled: function () {
-					return !aInstance._estEditable(
-						TypeColonneTravauxIntendance_1.TypeColonneTravauxIntendance
-							.tcti_Lieu,
-					);
-				},
-			},
-			chipsSalleLieux: {
-				event: function () {
-					return !aInstance._estEditable(
-						TypeColonneTravauxIntendance_1.TypeColonneTravauxIntendance
-							.tcti_Lieu,
-					);
-				},
-				eventBtn: function (aNumero, aEvent) {
-					aEvent.stopPropagation();
-					if (
-						aInstance._estEditable(
-							TypeColonneTravauxIntendance_1.TypeColonneTravauxIntendance
-								.tcti_Lieu,
-						)
-					) {
-						aInstance._evntSupprLieuxSalle(aNumero);
-					}
 				},
 				getDisabled: function () {
 					return !aInstance._estEditable(
@@ -331,7 +326,6 @@ class PageMissionsDemande extends ObjetIdentite_1.Identite {
 	}
 	setDonnees(aParam) {
 		this.param = MethodesObjet_1.MethodesObjet.dupliquer(aParam);
-		this.droits = aParam.droits;
 		this.listeSallesLieu = this.param.listeSalleLieu;
 		this.listeNatureTvx = this.param.listeNatureTvx;
 		this.listeNiveauUrgence = this.param.listeNiveauUrgence;
@@ -345,7 +339,6 @@ class PageMissionsDemande extends ObjetIdentite_1.Identite {
 					Enumere_Espace_1.EGenreEspace.PrimMairie,
 			);
 		this.destination = aParam.destination;
-		this.genreTravaux = this.param.genreTravaux;
 		this.dateEcheance = aParam.dateEcheance;
 		this.estEnCreation = aParam.estEnCreation;
 		this.enModification = aParam.enModification;
@@ -363,7 +356,8 @@ class PageMissionsDemande extends ObjetIdentite_1.Identite {
 			this.estEnCreation = true;
 			this.enModification = true;
 		}
-		this.moteur = new ObjetMoteurTravaux_js_1.ObjetMoteurTravaux(this.param);
+		this.moteur = new ObjetMoteurTravaux_js_1.ObjetMoteurTravaux();
+		this.genreTravaux = this.moteur.getGenreTravaux();
 		this.afficher(this.composeContenu());
 		this.identDateEcheance.initialiser();
 		this.identDateEcheance.setParametresFenetre(
@@ -451,11 +445,7 @@ class PageMissionsDemande extends ObjetIdentite_1.Identite {
 				{ class: "field-contain in-row chips-contain" },
 				IE.jsx.str(
 					"label",
-					{
-						class: "ie-titre-petit m-right-l",
-						id: idLabelLieu,
-						style: lWidthLabel,
-					},
+					{ class: "ie-titre-petit", id: idLabelLieu, style: lWidthLabel },
 					ObjetTraduction_1.GTraductions.getValeur(
 						"TvxIntendance.colonne.lieu",
 					),
@@ -464,44 +454,41 @@ class PageMissionsDemande extends ObjetIdentite_1.Identite {
 					id: this.idZoneLieuxSalle,
 					"ie-model": "selectionSalleLieu",
 					"aria-labelledby": idLabelLieu,
-					class: "chips-inside",
+					class: "chips-inside fluid-bloc",
 				}),
 			),
 		);
 		const lComboPrimaire = IE.jsx.str(
-			IE.jsx.fragment,
-			null,
+			"div",
+			{ class: "field-contain cols flex-gap" },
 			IE.jsx.str(
-				"div",
-				{ class: "field-contain cols flex-gap" },
-				IE.jsx.str(
-					"ie-radio",
-					{
-						class: "ThemeCat-communication self-start",
-						"ie-model": (0, jsx_1.jsxFuncAttr)("radioDestination", [
-							TypeDestinationDemandeTravaux_1.TypeDestinationDemandeTravaux
-								.DDT_Interne,
-						]),
-					},
-					TypeDestinationDemandeTravaux_1.TypeDestinationDemandeTravauxUtil.getLibelle(
+				"ie-radio",
+				{
+					class: "ThemeCat-communication self-start",
+					"ie-model": this.jsxModeleRadioDestination.bind(
+						this,
 						TypeDestinationDemandeTravaux_1.TypeDestinationDemandeTravaux
 							.DDT_Interne,
 					),
+				},
+				TypeDestinationDemandeTravaux_1.TypeDestinationDemandeTravauxUtil.getLibelle(
+					TypeDestinationDemandeTravaux_1.TypeDestinationDemandeTravaux
+						.DDT_Interne,
 				),
-				IE.jsx.str(
-					"ie-radio",
-					{
-						class: "ThemeCat-communication self-start",
-						"ie-model": (0, jsx_1.jsxFuncAttr)("radioDestination", [
-							TypeDestinationDemandeTravaux_1.TypeDestinationDemandeTravaux
-								.DDT_Collectivite,
-						]),
-					},
-					" ",
-					TypeDestinationDemandeTravaux_1.TypeDestinationDemandeTravauxUtil.getLibelle(
+			),
+			IE.jsx.str(
+				"ie-radio",
+				{
+					class: "ThemeCat-communication self-start",
+					"ie-model": this.jsxModeleRadioDestination.bind(
+						this,
 						TypeDestinationDemandeTravaux_1.TypeDestinationDemandeTravaux
 							.DDT_Collectivite,
 					),
+				},
+				TypeDestinationDemandeTravaux_1.TypeDestinationDemandeTravauxUtil.getLibelle(
+					TypeDestinationDemandeTravaux_1.TypeDestinationDemandeTravaux
+						.DDT_Collectivite,
 				),
 			),
 		);
@@ -519,7 +506,7 @@ class PageMissionsDemande extends ObjetIdentite_1.Identite {
 					),
 				),
 				IE.jsx.str("div", {
-					class: "flex-contain flex-center flex-gap",
+					class: "flex-contain flex-center flex-gap justify-end",
 					id: this.identDateEcheance.getNom(),
 					style: lWidthLabel,
 				}),
@@ -527,6 +514,7 @@ class PageMissionsDemande extends ObjetIdentite_1.Identite {
 		);
 		const idNature = GUID_js_1.GUID.getId();
 		const idUrgence = GUID_js_1.GUID.getId();
+		const lIdDemande = `${this.Nom}_ta_demande`;
 		return IE.jsx.str(
 			IE.jsx.fragment,
 			null,
@@ -559,6 +547,7 @@ class PageMissionsDemande extends ObjetIdentite_1.Identite {
 						),
 					),
 					IE.jsx.str("ie-combo", {
+						class: "full-width",
 						style: lWidthLabel,
 						"ie-model": "cmbNature",
 						"aria-labelledby": idNature,
@@ -569,7 +558,7 @@ class PageMissionsDemande extends ObjetIdentite_1.Identite {
 					{ class: "field-contain label-up p-top-l no-line" },
 					IE.jsx.str(
 						"label",
-						{ class: "ie-titre-petit" },
+						{ for: lIdDemande, class: "ie-titre-petit" },
 						!lEstCommande
 							? ObjetTraduction_1.GTraductions.getValeur(
 									"TvxIntendance.colonne.description",
@@ -580,7 +569,8 @@ class PageMissionsDemande extends ObjetIdentite_1.Identite {
 					),
 					IE.jsx.str("ie-textareamax", {
 						"ie-model": "inputDemande",
-						class: "round-style ie-autoresize m-bottom-l",
+						id: lIdDemande,
+						class: "ie-autoresize m-bottom-l",
 						placeholder: !lEstCommande
 							? ObjetTraduction_1.GTraductions.getValeur(
 									"TvxIntendance.DescriptionMission",
@@ -639,8 +629,8 @@ class PageMissionsDemande extends ObjetIdentite_1.Identite {
 			) {
 				return ObjetTraduction_1.GTraductions.getValeur("Aucun");
 			}
-			this.demandeCourante.listeLieux.parcourir((aLieux) => {
-				if (aLieux.existe()) {
+			this.demandeCourante.listeLieux.parcourir((aLieu) => {
+				if (aLieu.existe()) {
 					if (
 						this._estEditable(
 							TypeColonneTravauxIntendance_1.TypeColonneTravauxIntendance
@@ -652,17 +642,15 @@ class PageMissionsDemande extends ObjetIdentite_1.Identite {
 								"ie-chips",
 								{
 									class: ["avec-event", "m-right"],
-									"ie-model": (0, jsx_1.jsxFuncAttr)("chipsSalleLieux", [
-										aLieux.getNumero(),
-									]),
-									title: aLieux.getLibelle() ? aLieux.getLibelle() : false,
+									"ie-model": this.jsxModeleChipsSalleLieu.bind(this, aLieu),
+									title: aLieu.getLibelle() ? aLieu.getLibelle() : false,
 								},
-								aLieux.getLibelle(),
+								aLieu.getLibelle(),
 							),
 						);
 					} else {
 						T.push(
-							IE.jsx.str("ie-chips", { class: "m-all" }, aLieux.getLibelle()),
+							IE.jsx.str("ie-chips", { class: "m-all" }, aLieu.getLibelle()),
 						);
 					}
 				}
@@ -704,16 +692,18 @@ class PageMissionsDemande extends ObjetIdentite_1.Identite {
 			}
 		}
 	}
-	_evntSupprLieuxSalle(aNumeroCoAuteur) {
-		const lIndice = this.demandeCourante.listeLieux.getIndiceElementParFiltre(
-			(aElement) => {
-				return aElement.getNumero() === aNumeroCoAuteur;
-			},
-		);
-		const lLieu = this.demandeCourante.listeLieux.get(lIndice);
-		if (!!lLieu) {
-			lLieu.ancienEtat = lLieu.Etat;
-			lLieu.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+	_evntSupprLieuxSalle(aSalleLieuConcerne) {
+		if (aSalleLieuConcerne) {
+			const lIndice = this.demandeCourante.listeLieux.getIndiceElementParFiltre(
+				(aElement) => {
+					return aElement.getNumero() === aSalleLieuConcerne.getNumero();
+				},
+			);
+			const lLieu = this.demandeCourante.listeLieux.get(lIndice);
+			if (!!lLieu) {
+				lLieu.ancienEtat = lLieu.Etat;
+				lLieu.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+			}
 		}
 	}
 	_evntSelecteurPJ() {

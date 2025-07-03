@@ -9,6 +9,9 @@ class ObjetSelecteurBourse extends _ObjetSelecteur_1._ObjetSelecteur {
 		this.setOptions({
 			titreLibelle:
 				ObjetTraduction_1.GTraductions.getValeur("RecapAbs.bourses"),
+			tooltip: ObjetTraduction_1.GTraductions.getValeur(
+				"RecapAbs.titreFenetreBourses",
+			),
 		});
 	}
 	construireInstanceFenetreSelection() {
@@ -18,10 +21,12 @@ class ObjetSelecteurBourse extends _ObjetSelecteur_1._ObjetSelecteur {
 		);
 	}
 	evntBtnSelection() {
-		this.getInstance(this.identFenetreSelection).setDonnees(
-			this.listeTotale,
-			MethodesObjet_1.MethodesObjet.dupliquer(this.listeSelection),
-		);
+		this.getInstance(this.identFenetreSelection).setDonnees({
+			listeRessources: this.listeTotale,
+			listeRessourcesSelectionnees: MethodesObjet_1.MethodesObjet.dupliquer(
+				this.listeSelection,
+			),
+		});
 	}
 }
 exports.ObjetSelecteurBourse = ObjetSelecteurBourse;

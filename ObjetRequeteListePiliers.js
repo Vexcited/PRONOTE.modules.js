@@ -1,16 +1,9 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteListePiliers extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
-	lancerRequete(aParams) {
-		this.JSON = aParams;
-		return this.appelAsynchrone();
-	}
-	actionApresRequete() {
-		this.callbackReussite.appel(this.JSONReponse);
-	}
-}
-Requetes.inscrire("ListePiliers", ObjetRequeteListePiliers);
-module.exports = { ObjetRequeteListePiliers };
+exports.ObjetRequeteListePiliers = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteListePiliers extends ObjetRequeteJSON_1.ObjetRequeteConsultation {}
+exports.ObjetRequeteListePiliers = ObjetRequeteListePiliers;
+CollectionRequetes_1.Requetes.inscrire(
+	"ListePiliers",
+	ObjetRequeteListePiliers,
+);

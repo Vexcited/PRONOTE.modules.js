@@ -50,12 +50,12 @@ class InterfaceCommissions extends InterfacePage_1.InterfacePage {
 					"div",
 					{ class: "flex-contain full-size" },
 					IE.jsx.str("div", {
-						id: this.getInstance(this.identCommissions).getNom(),
+						id: this.getNomInstance(this.identCommissions),
 						class: "full-height",
 						style: "width:65rem;",
 					}),
 					IE.jsx.str("div", {
-						id: this.getInstance(this.identObjetDetailCommission).getNom(),
+						id: this.getNomInstance(this.identObjetDetailCommission),
 						class: "flex-contain flex-cols full-height p-all-xl",
 						style: "width:85rem;",
 						tabindex: "0",
@@ -129,18 +129,24 @@ class InterfaceCommissions extends InterfacePage_1.InterfacePage {
 				lListeCommissions,
 			);
 		}
+		let lIndiceListeCommission = -1;
+		if (this.commissionSelectionnee) {
+			lIndiceListeCommission = lListeCommissions.getIndiceParElement(
+				this.commissionSelectionnee,
+			);
+		}
 		lBoutons.push({ genre: ObjetListe_1.ObjetListe.typeBouton.rechercher });
 		this.getInstance(this.identCommissions).setOptionsListe({
 			boutons: lBoutons,
 		});
 		this.getInstance(this.identCommissions).setDonnees(
 			lDonneesListeCommissions,
+			lIndiceListeCommission,
+			{ avecEvenementSelection: true },
 		);
-		this._actualiserDetailsCommission();
 	}
 	_initListeCommission(aInstance) {
 		aInstance.setOptionsListe({
-			colonnes: [{ taille: "100%" }],
 			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
 			avecOmbreDroite: true,
 			messageContenuVide: ObjetTraduction_1.GTraductions.getValeur(
@@ -180,6 +186,7 @@ class DonneesListe_CommissionVisuProf extends ObjetDonneesListeFlatDesign_1.Obje
 				: aParametres.evenementFiltre;
 		this.setOptions({
 			avecBoutonActionLigne: false,
+			avecEvnt_Selection: true,
 			avecEvnt_SelectionClick: true,
 		});
 	}
@@ -210,66 +217,85 @@ class DonneesListe_CommissionVisuProf extends ObjetDonneesListeFlatDesign_1.Obje
 	}
 	getZoneComplementaire(aParams) {
 		const H = [];
-		const lAvecListeMembre =
+		const lAvecListeMembres =
 			aParams.article.listeMembres && aParams.article.listeMembres.count();
 		const lAvecPublieeParents = aParams.article.avecPublicationParent;
-		if (lAvecListeMembre || lAvecPublieeParents) {
+		if (lAvecListeMembres || lAvecPublieeParents) {
 			H.push(
-				`<div ${lAvecListeMembre && lAvecPublieeParents ? 'class="flex-contain"' : ""}>`,
+				`<div ${lAvecListeMembres && lAvecPublieeParents ? 'class="flex-contain"' : ""}>`,
 			);
-			if (lAvecListeMembre) {
+			if (lAvecListeMembres) {
 				H.push(
-					`<i class="icon_intervenants i-medium i-as-deco" title="${ObjetTraduction_1.GTraductions.getValeur("Commissions.listeMembres", [aParams.article.listeMembres.getTableauLibelles().join(", ")])}"></i>`,
+					IE.jsx.str("i", {
+						class: "icon_intervenants i-medium i-as-deco",
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"Commissions.listeMembres",
+							[aParams.article.listeMembres.getTableauLibelles().join(", ")],
+						),
+						role: "img",
+					}),
 				);
 			}
 			if (lAvecPublieeParents) {
+				const lClasses = [
+					"icon_info_sondage_publier",
+					"mix-icon_ok",
+					"i-as-deco",
+				];
+				if (lAvecListeMembres) {
+					lClasses.push("m-left-l");
+				}
 				H.push(
-					`<i class="icon_info_sondage_publier mix-icon_ok i-as-deco ${lAvecListeMembre ? "m-left-l" : ""}" title="${ObjetTraduction_1.GTraductions.getValeur("Commissions.publieePourParents")}"></i>`,
+					IE.jsx.str("i", {
+						class: lClasses.join(" "),
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"Commissions.publieePourParents",
+						),
+						role: "img",
+					}),
 				);
 			}
 			H.push("</div>");
 		}
 		return H.join("");
 	}
-	getControleurFiltres(aDonneesListe, aInstanceListe) {
+	jsxComboModelFiltreNatures() {
 		return {
-			cmbNature: {
-				init: function (aCombo) {
-					aCombo.setOptionsObjetSaisie({
-						estLargeurAuto: true,
-						libelleHaut: ObjetTraduction_1.GTraductions.getValeur(
-							"Commissions.naturesCommissions",
-						),
-						avecDesignMobile: true,
-						multiSelection: true,
-						avecElementObligatoire: true,
-						getLibelleCelluleMultiSelection: function (aListeSelections) {
-							return aListeSelections &&
-								aListeSelections.count() !==
-									aDonneesListe.donneesFiltre.filtreListeNatures.count()
-								? aListeSelections.getTableauLibelles().join(", ")
-								: ObjetTraduction_1.GTraductions.getValeur(
-										"Commissions.toutesLesCommissions",
-									);
-						},
-					});
-				},
-				getDonnees() {
-					return aDonneesListe.donneesFiltre.filtreListeNatures;
-				},
-				getIndiceSelection() {
-					return aDonneesListe.donneesFiltre.natures;
-				},
-				event(aInstanceCombo) {
-					if (
-						aInstanceCombo.listeSelections !== null &&
-						aInstanceCombo.interactionUtilisateur
-					) {
-						aDonneesListe.donneesFiltre.natures =
-							aInstanceCombo.listeSelections;
-						aDonneesListe.evenementFiltre(aDonneesListe.donneesFiltre);
-					}
-				},
+			init: (aCombo) => {
+				aCombo.setOptionsObjetSaisie({
+					estLargeurAuto: true,
+					libelleHaut: ObjetTraduction_1.GTraductions.getValeur(
+						"Commissions.naturesCommissions",
+					),
+					avecDesignMobile: true,
+					multiSelection: true,
+					avecElementObligatoire: true,
+					getLibelleCelluleMultiSelection: (aListeSelections) => {
+						return aListeSelections &&
+							aListeSelections.count() !==
+								this.donneesFiltre.filtreListeNatures.count()
+							? aListeSelections.getTableauLibelles().join(", ")
+							: ObjetTraduction_1.GTraductions.getValeur(
+									"Commissions.toutesLesCommissions",
+								);
+					},
+				});
+			},
+			getDonnees: () => {
+				return this.donneesFiltre.filtreListeNatures;
+			},
+			getIndiceSelection: () => {
+				return this.donneesFiltre.natures;
+			},
+			event: (aParams) => {
+				aParams.interactionUtilisateur;
+				if (
+					aParams.listeSelections !== null &&
+					aParams.interactionUtilisateur
+				) {
+					this.donneesFiltre.natures = aParams.listeSelections;
+					this.evenementFiltre(this.donneesFiltre);
+				}
 			},
 		};
 	}
@@ -277,7 +303,9 @@ class DonneesListe_CommissionVisuProf extends ObjetDonneesListeFlatDesign_1.Obje
 		if (!this.donneesFiltre) {
 			return "";
 		}
-		return IE.jsx.str("ie-combo", { "ie-model": "cmbNature" });
+		return IE.jsx.str("ie-combo", {
+			"ie-model": this.jsxComboModelFiltreNatures.bind(this),
+		});
 	}
 	reinitFiltres() {
 		if (this.donneesFiltre) {

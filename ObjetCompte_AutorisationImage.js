@@ -1,59 +1,55 @@
-const { Identite } = require("ObjetIdentite.js");
-const { GHtml } = require("ObjetHtml.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class ObjetCompte_AutorisationImage extends Identite {
-	constructor(...aParams) {
-		super(...aParams);
+exports.ObjetCompte_AutorisationImage = void 0;
+const ObjetIdentite_1 = require("ObjetIdentite");
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class ObjetCompte_AutorisationImage extends ObjetIdentite_1.Identite {
+	constructor() {
+		super(...arguments);
 		this.donneesRecues = false;
 		this.param = { autoriserImage: false };
 	}
 	setDonnees(aParam) {
 		$.extend(this.param, aParam);
 		this.donneesRecues = true;
-		GHtml.setHtml(this.Nom, this.construireAffichage(), {
+		ObjetHtml_1.GHtml.setHtml(this.Nom, this.construireAffichage(), {
 			controleur: this.controleur,
-		});
-	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			switchAutoriserImage: {
-				getValue: function () {
-					return !aInstance.param.autoriserImage;
-				},
-				setValue: function (aValeur) {
-					aInstance.param.autoriserImage = !aValeur;
-					aInstance.declencherCallback({ estAutorise: !aValeur });
-				},
-			},
 		});
 	}
 	construireAffichage() {
 		if (this.donneesRecues) {
-			return _composeAutorisationImage.call(this);
+			return this._composeAutorisationImage();
 		}
 		return "";
 	}
 	getTitre() {
-		return GTraductions.getValeur("ParametresUtilisateur.DroitALImage");
+		return ObjetTraduction_1.GTraductions.getValeur(
+			"ParametresUtilisateur.DroitALImage",
+		);
 	}
-	declencherCallback(aParam) {
-		if (this.Pere && this.Evenement) {
-			this.callback.appel(aParam);
-		}
+	jsxModeleSw() {
+		return {
+			getValue: () => {
+				return !this.param.autoriserImage;
+			},
+			setValue: (aValue) => {
+				this.param.autoriserImage = !aValue;
+				this.callback.appel({ estAutorise: !aValue });
+			},
+		};
+	}
+	_composeAutorisationImage() {
+		return IE.jsx.str(
+			"div",
+			{ class: "NoWrap" },
+			IE.jsx.str(
+				"ie-switch",
+				{ "ie-model": this.jsxModeleSw.bind(this) },
+				ObjetTraduction_1.GTraductions.getValeur(
+					"infosperso.autoriserImageParents",
+					[GEtatUtilisateur.getMembre().getLibelle(), GApplication.nomProduit],
+				),
+			),
+		);
 	}
 }
-function _composeAutorisationImage() {
-	const H = [];
-	H.push('<div class="NoWrap">');
-	H.push(
-		'<ie-switch ie-model="switchAutoriserImage">',
-		GTraductions.getValeur("infosperso.autoriserImageParents", [
-			GEtatUtilisateur.getMembre().getLibelle(),
-			GApplication.nomProduit,
-		]),
-		"</ie-switch>",
-	);
-	H.push("</div>");
-	return H.join("");
-}
-module.exports = { ObjetCompte_AutorisationImage };
+exports.ObjetCompte_AutorisationImage = ObjetCompte_AutorisationImage;

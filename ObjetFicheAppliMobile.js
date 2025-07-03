@@ -1,10 +1,11 @@
 exports.ObjetFicheAppliMobile = void 0;
-const ObjetFiche_1 = require("ObjetFiche");
 const ObjetRequeteSaisieJetonAppliMobile_1 = require("ObjetRequeteSaisieJetonAppliMobile");
-const ObjetTraduction_1 = require("ObjetTraduction");
 const GUID_1 = require("GUID");
 const UtilitaireQRCode_1 = require("UtilitaireQRCode");
-class ObjetFicheAppliMobile extends ObjetFiche_1.ObjetFiche {
+const TraductionsAppliMobile_1 = require("TraductionsAppliMobile");
+const AccessApp_1 = require("AccessApp");
+const ObjetFenetre_1 = require("ObjetFenetre");
+class ObjetFicheAppliMobile extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.code = "";
@@ -15,102 +16,161 @@ class ObjetFicheAppliMobile extends ObjetFiche_1.ObjetFiche {
 		this.idLien = GUID_1.GUID.getId();
 		this.url = "";
 		this.setOptionsFenetre({
-			titre: ObjetTraduction_1.GTraductions.getValeur("AppliMobile.titreFiche"),
+			titre: TraductionsAppliMobile_1.TradAppliMobile.titreFiche,
+			positionSurSouris: true,
 		});
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			inputCode: {
-				getValue() {
-					return aInstance.code;
-				},
-				setValue(aValue) {
-					aInstance.code = aValue.substring(0, 4);
-				},
-			},
-			btnCode: {
-				event: function () {
-					new ObjetRequeteSaisieJetonAppliMobile_1.ObjetRequeteSaisieJetonAppliMobile(
-						aInstance,
-					)
-						.lancerRequete({ code: aInstance.code })
-						.then(
-							(aData) => {
-								const lData = aData.JSONReponse;
-								if (lData && lData.jeton && lData.login) {
-									lData.url = aInstance.url;
-									$("#" + aInstance.idLien.escapeJQ()).hide();
-									$("#" + aInstance.idCodeWrapper.escapeJQ()).hide();
-									$("#" + aInstance.idConfigWrapper.escapeJQ()).show();
-									$("#" + aInstance.idLienWrapper.escapeJQ())
-										.html(
-											UtilitaireQRCode_1.UtilitaireQRCode.genererImage(
-												JSON.stringify(lData),
-												{
-													taille: 320,
-													alt: ObjetTraduction_1.GTraductions.getValeur(
-														"QRCodeAppliMobile",
-													),
-												},
-											),
-										)
-										.show();
-								} else {
-									GApplication.getMessage()
-										.afficher({
-											message: ObjetTraduction_1.GTraductions.getValeur(
-												"AppliMobile.ErreurRequete",
-											),
-										})
-										.then(() => {
-											aInstance.fermer();
-										});
-								}
-							},
-							() => {
-								GApplication.getMessage()
-									.afficher({
-										message: ObjetTraduction_1.GTraductions.getValeur(
-											"AppliMobile.ErreurRequete",
+	jsxModeleBoutonCode() {
+		return {
+			event: () => {
+				new ObjetRequeteSaisieJetonAppliMobile_1.ObjetRequeteSaisieJetonAppliMobile(
+					this,
+				)
+					.lancerRequete({ code: this.code })
+					.then(
+						(aData) => {
+							const lData = aData.JSONReponse;
+							if (lData && lData.jeton && lData.login) {
+								lData.url = this.url;
+								$("#" + this.idLien.escapeJQ()).hide();
+								$("#" + this.idCodeWrapper.escapeJQ()).hide();
+								$("#" + this.idConfigWrapper.escapeJQ()).show();
+								$("#" + this.idLienWrapper.escapeJQ())
+									.html(
+										UtilitaireQRCode_1.UtilitaireQRCode.genererImage(
+											JSON.stringify(lData),
+											{
+												taille: 320,
+												alt: TraductionsAppliMobile_1.TradAppliMobile
+													.QRCodeAppliMobile,
+											},
 										),
+									)
+									.show();
+							} else {
+								(0, AccessApp_1.getApp)()
+									.getMessage()
+									.afficher({
+										message:
+											TraductionsAppliMobile_1.TradAppliMobile.ErreurRequete,
 									})
 									.then(() => {
-										aInstance.fermer();
+										this.fermer();
 									});
-							},
-						);
-				},
-				getDisabled: function () {
-					return !aInstance.code || aInstance.code.length !== 4;
-				},
+							}
+						},
+						() => {
+							(0, AccessApp_1.getApp)()
+								.getMessage()
+								.afficher({
+									message:
+										TraductionsAppliMobile_1.TradAppliMobile.ErreurRequete,
+								})
+								.then(() => {
+									this.fermer();
+								});
+						},
+					);
 			},
-		});
+			getDisabled: () => {
+				return !this.code || this.code.length !== 4;
+			},
+		};
+	}
+	jsxModeleInputCode() {
+		return {
+			getValue: () => {
+				return this.code;
+			},
+			setValue: (aValue) => {
+				this.code = aValue.substring(0, 4);
+			},
+			getDisabled: () => {
+				return false;
+			},
+		};
 	}
 	composeContenu() {
 		if (this.url) {
-			const H = [];
-			H.push(
-				'<div style="width:475px;"  class="ie-texte">',
-				`<div id="${this.idCodeWrapper}" class="m-bottom-xl">`,
-				`<p class="m-top-none">${ObjetTraduction_1.GTraductions.getValeur("AppliMobile.ModeOpQrCode", [GApplication.nomProduit])}</p>`,
-				`<label class="m-y-xl semi-bold" for="${this.idInputCode}">${ObjetTraduction_1.GTraductions.getValeur("AppliMobile.CodeVerification")}`,
-				`<input id="${this.idInputCode}" type="password" ie-mask="/[^0-9]/i" maxlength="4" size="2" class="m-left as-input" ie-model="inputCode" autocomplete="new-password"/></label>`,
-				`<div style="text-align:right;"><ie-bouton ie-model="btnCode">${ObjetTraduction_1.GTraductions.getValeur("AppliMobile.GenererQRCode")}</ie-bouton></div>`,
-				"</div>",
-				`<div id="${this.idConfigWrapper}" style="display:none;">`,
-				`<ul style="list-style: decimal;"><li>${ObjetTraduction_1.GTraductions.getValeur("AppliMobile.MethodeConfig", [GApplication.nomProduit])}</li>`,
-				`<li>${ObjetTraduction_1.GTraductions.getValeur("AppliMobile.MethodeConfigSuite")}</li>`,
-				`<li>${ObjetTraduction_1.GTraductions.getValeur("AppliMobile.MethodeConfigSuite2")}</li>`,
-				`<li>${ObjetTraduction_1.GTraductions.getValeur("AppliMobile.MethodeConfigFin")}</li></ul>`,
-				"</div>",
-				`<div id="${this.idLienWrapper}" class="text-center m-y-none m-x-auto" style="background-color:#fff;display:none;"></div>`,
-				`<div id="${this.idLien}" class="ie-texte-small">`,
-				`<p>${ObjetTraduction_1.GTraductions.getValeur("AppliMobile.AccesSiteMobile")}</p>`,
-				`<a href="${this.url}" target="_blank">${this.url}</a>`,
-				"</div>",
-				"</div>",
+			return IE.jsx.str(
+				"div",
+				{ style: { width: "475px" }, class: "ie-texte" },
+				IE.jsx.str(
+					"div",
+					{ id: this.idCodeWrapper, class: "m-bottom-xl" },
+					IE.jsx.str(
+						"p",
+						{ class: "m-top-none" },
+						TraductionsAppliMobile_1.TradAppliMobile.ModeOpQrCode.format([
+							(0, AccessApp_1.getApp)().nomProduit,
+						]),
+					),
+					IE.jsx.str(
+						"label",
+						{ class: "m-y-xl semi-bold", for: this.idInputCode },
+						TraductionsAppliMobile_1.TradAppliMobile.CodeVerification,
+						IE.jsx.str("input", {
+							id: this.idInputCode,
+							type: "password",
+							"ie-mask": "/[^0-9]/i",
+							maxlength: "4",
+							style: { width: "4.3rem" },
+							class: "m-left as-input",
+							"ie-model": this.jsxModeleInputCode.bind(this),
+							autocomplete: "new-password",
+						}),
+					),
+					IE.jsx.str(
+						"div",
+						{ style: { textAlign: "right" } },
+						IE.jsx.str(
+							"ie-bouton",
+							{ "ie-model": this.jsxModeleBoutonCode.bind(this) },
+							TraductionsAppliMobile_1.TradAppliMobile.GenererQRCode,
+						),
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{ id: this.idConfigWrapper, style: { display: "none" } },
+					IE.jsx.str(
+						"ul",
+						{ style: { listStyle: "decimal" } },
+						IE.jsx.str(
+							"li",
+							null,
+							TraductionsAppliMobile_1.TradAppliMobile.MethodeConfig.format([
+								(0, AccessApp_1.getApp)().nomProduit,
+							]),
+						),
+						IE.jsx.str(
+							"li",
+							null,
+							TraductionsAppliMobile_1.TradAppliMobile.MethodeConfigSuite,
+						),
+						IE.jsx.str(
+							"li",
+							null,
+							TraductionsAppliMobile_1.TradAppliMobile.MethodeConfigFin,
+						),
+					),
+				),
+				IE.jsx.str("div", {
+					id: this.idLienWrapper,
+					class: "text-center m-y-none m-x-auto",
+					style: { backgroundColor: "#fff", display: "none" },
+				}),
+				IE.jsx.str(
+					"div",
+					{ id: this.idLien, class: "ie-texte-small" },
+					IE.jsx.str(
+						"p",
+						null,
+						TraductionsAppliMobile_1.TradAppliMobile.AccesSiteMobile,
+					),
+					IE.jsx.str("a", { href: this.url, target: "_blank" }, this.url),
+				),
 			);
-			return H.join("");
 		}
 		return "";
 	}
@@ -121,7 +181,7 @@ class ObjetFicheAppliMobile extends ObjetFiche_1.ObjetFiche {
 			lUrl.push(aUrlMobile);
 			this.url = lUrl.join("/");
 		}
-		return super.afficher();
+		return super.afficher(this.composeContenu());
 	}
 }
 exports.ObjetFicheAppliMobile = ObjetFicheAppliMobile;

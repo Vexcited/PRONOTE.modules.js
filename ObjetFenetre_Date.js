@@ -13,6 +13,7 @@ class ObjetFenetre_Date extends ObjetFenetre_1.ObjetFenetre {
 			hauteur: 100,
 			fermerFenetreSurClicHorsFenetre: IE.estMobile,
 			avecTailleSelonContenu: true,
+			avecTailleSelonContenuMobile: true,
 			listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
 			avecAucuneDate: false,
 		});
@@ -26,7 +27,7 @@ class ObjetFenetre_Date extends ObjetFenetre_1.ObjetFenetre {
 		const T = [];
 		T.push(
 			'<div id="',
-			this.getInstance(this.identSelecteur).getNom(),
+			this.getNomInstance(this.identSelecteur),
 			'" class="ContentBox"></div>',
 		);
 		return T.join("");

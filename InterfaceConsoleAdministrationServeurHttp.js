@@ -4,10 +4,11 @@ const AppelMethodeDistante_1 = require("AppelMethodeDistante");
 const ObjetStyle_1 = require("ObjetStyle");
 const InterfaceEnteteConsoleAdministrationServeurHttp_1 = require("InterfaceEnteteConsoleAdministrationServeurHttp");
 const ObjetInterface_1 = require("ObjetInterface");
+const AccessApp_1 = require("AccessApp");
 class InterfaceConsoleAdministrationServeurHttp extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
-		this.objetApplicationConsoles = GApplication;
+		this.objetApplicationConsoles = (0, AccessApp_1.getApp)();
 	}
 	construireInstances() {
 		this.identEntete = this.add(
@@ -33,21 +34,21 @@ class InterfaceConsoleAdministrationServeurHttp extends ObjetInterface_1.ObjetIn
 						this.getIdLigne(this.identEntete) +
 						'"><td id="' +
 						this.getInstance(this.identEntete).getNom() +
-						'" style="height:10px;" ></td></tr>'
+						'" style="height:10px;"></td></tr>'
 				: "",
 			this.identPage >= 0
 				? '<tr id="' +
 						this.getIdLigne(this.identPage) +
 						'"><td id="' +
 						this.getInstance(this.identPage).getNom() +
-						'" style="height:100%;" ></td></tr>'
+						'" style="height:100%;"></td></tr>'
 				: "",
 			"</table>",
 		);
 		return H.join("");
 	}
 	getIdLigne(aIdent) {
-		return this.getInstance(aIdent).getNom() + "_";
+		return this.getNomInstance(aIdent) + "_";
 	}
 	setDonnees() {
 		const lParam = {

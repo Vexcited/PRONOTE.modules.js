@@ -1,33 +1,44 @@
-const { InterfacePage } = require("InterfacePage.js");
-const { EStructureAffichage } = require("Enumere_StructureAffichage.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { ObjetMoteurReleveBulletin } = require("ObjetMoteurReleveBulletin.js");
-const { ObjetMoteurPiedDeBulletin } = require("ObjetMoteurPiedDeBulletin.js");
-const { TypeReleveBulletin } = require("TypeReleveBulletin.js");
-const { DonneesListe_BulletinNotes } = require("DonneesListe_BulletinNotes.js");
-const { ObjetRequetePageBulletins } = require("ObjetRequetePageBulletins.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreImpression } = require("Enumere_GenreImpression.js");
-const { ObjetInvocateur, Invocateur } = require("Invocateur.js");
-const { ObjetFicheGraphe } = require("ObjetFicheGraphe.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { GUID } = require("GUID.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-class _InterfaceBulletinNotes extends InterfacePage {
-	constructor(aNom, aIdent, aPere, aEvenement, aParam) {
-		super(aNom, aIdent, aPere, aEvenement);
+exports._InterfaceBulletinNotes = void 0;
+const InterfacePage_1 = require("InterfacePage");
+const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetMoteurReleveBulletin_1 = require("ObjetMoteurReleveBulletin");
+const ObjetMoteurPiedDeBulletin_1 = require("ObjetMoteurPiedDeBulletin");
+const TypeReleveBulletin_1 = require("TypeReleveBulletin");
+const DonneesListe_BulletinNotes_1 = require("DonneesListe_BulletinNotes");
+const ObjetRequetePageBulletins_1 = require("ObjetRequetePageBulletins");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_GenreImpression_1 = require("Enumere_GenreImpression");
+const Invocateur_1 = require("Invocateur");
+const ObjetFicheGraphe_1 = require("ObjetFicheGraphe");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const GUID_1 = require("GUID");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const AccessApp_1 = require("AccessApp");
+class _InterfaceBulletinNotes extends InterfacePage_1.InterfacePage {
+	constructor(aParams) {
+		super(aParams);
+		this.appScoEspace = (0, AccessApp_1.getApp)();
+		this.etatUtilScoEspace = this.appScoEspace.getEtatUtilisateur();
+		this.moteur = new ObjetMoteurReleveBulletin_1.ObjetMoteurReleveBulletin();
+		this.moteurPdB =
+			new ObjetMoteurPiedDeBulletin_1.ObjetMoteurPiedDeBulletin();
+		this.idBulletin = GUID_1.GUID.getId();
+		this.aCopier = {};
 		this.param = $.extend(
 			{ avecSaisie: false, avecInfosEleve: false, avecDocsATelecharger: false },
-			aParam,
+			aParams.params,
 		);
-		this.moteur = new ObjetMoteurReleveBulletin();
-		this.moteurPdB = new ObjetMoteurPiedDeBulletin();
-		this.idBulletin = GUID.getId();
 	}
-	instancierCombos() {}
-	instancierBulletin() {}
-	instancierPiedBulletin() {}
-	instancierDocsATelecharger() {}
+	instancierBulletin() {
+		return;
+	}
+	instancierPiedBulletin() {
+		return;
+	}
+	instancierDocsATelecharger() {
+		return;
+	}
 	instancierAssistantSaisie() {}
 	addSurZoneAssistantSaisie() {}
 	addSurZoneFichesEleve() {}
@@ -42,17 +53,23 @@ class _InterfaceBulletinNotes extends InterfacePage {
 		return lEleve !== null && lEleve !== undefined && lEleve.existeNumero();
 	}
 	getEleve() {
-		return GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Eleve);
+		return this.etatUtilScoEspace.Navigation.getRessource(
+			Enumere_Ressource_1.EGenreRessource.Eleve,
+		);
 	}
 	getClasse() {
-		return GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Classe);
+		return this.etatUtilScoEspace.Navigation.getRessource(
+			Enumere_Ressource_1.EGenreRessource.Classe,
+		);
 	}
 	getPeriode() {
-		return GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Periode);
+		return this.etatUtilScoEspace.Navigation.getRessource(
+			Enumere_Ressource_1.EGenreRessource.Periode,
+		);
 	}
 	setPeriode(aElementPeriode) {
-		GEtatUtilisateur.Navigation.setRessource(
-			EGenreRessource.Periode,
+		this.etatUtilScoEspace.Navigation.setRessource(
+			Enumere_Ressource_1.EGenreRessource.Periode,
 			aElementPeriode,
 		);
 	}
@@ -68,9 +85,15 @@ class _InterfaceBulletinNotes extends InterfacePage {
 			).getPremierElement();
 		}
 		this.identListe = this.instancierBulletin();
+		this.getInstance(this.identListe).setOptionsListe({
+			ariaLabel: () => {
+				var _a;
+				return `${this.etatUtilScoEspace.getLibelleLongOnglet()} ${((_a = this.etatUtilScoEspace.getPeriode()) === null || _a === void 0 ? void 0 : _a.getLibelle()) || ""}`.trim();
+			},
+		});
 		this.identPiedPage = this.instancierPiedBulletin();
 		if (this.param.avecGraphe) {
-			this.identFicheGraphe = this.add(ObjetFicheGraphe);
+			this.identFicheGraphe = this.add(ObjetFicheGraphe_1.ObjetFicheGraphe);
 		}
 		if (this.param.avecSaisie) {
 			this.instancierAssistantSaisie();
@@ -110,7 +133,8 @@ class _InterfaceBulletinNotes extends InterfacePage {
 		return H.join("");
 	}
 	setParametresGeneraux() {
-		this.GenreStructure = EStructureAffichage.Autre;
+		this.GenreStructure =
+			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 		this.IdentZoneAlClient = this.identListe;
 		this.avecBandeau = true;
 		this.AddSurZone = [this.identTripleCombo];
@@ -137,7 +161,7 @@ class _InterfaceBulletinNotes extends InterfacePage {
 		this._evenementAfficherMessage(aGenreMessage);
 	}
 	envoyerRequeteBulletin(aParam) {
-		new ObjetRequetePageBulletins(
+		new ObjetRequetePageBulletins_1.ObjetRequetePageBulletins(
 			this,
 			this.actionSurRecupererDonnees.bind(this),
 		).lancerRequete(aParam);
@@ -146,23 +170,24 @@ class _InterfaceBulletinNotes extends InterfacePage {
 		this.setGraphe(null);
 		if (aParam.Message) {
 			this.evenementAfficherMessage(aParam.Message);
-			_masquerVisibilitePiedPage.call(this, true);
+			this._masquerVisibilitePiedPage(true);
 			this.desactiverImpression();
 		} else {
-			_masquerVisibilitePiedPage.call(this, false);
+			this._masquerVisibilitePiedPage(false);
+			Object.assign(this.aCopier, aParam.aCopier);
 			$.extend(this, aParam.aCopier);
 			this.donneesAbsences = aParam.absences;
 			if (this.param.avecSaisie) {
 				this.getListeAnnotationsPourAvisReligion();
 			}
-			_afficherBulletin.call(this);
-			_afficherPiedPage.call(this);
+			this._afficherBulletin();
+			this._afficherPiedPage();
 			if (
-				GApplication.droits.get(
-					TypeDroits.autoriserImpressionBulletinReleveBrevet,
+				this.appScoEspace.droits.get(
+					ObjetDroitsPN_1.TypeDroits.autoriserImpressionBulletinReleveBrevet,
 				)
 			) {
-				_activerImpression.call(this);
+				this._activerImpression();
 			}
 		}
 		if (this.param.avecGraphe && !!this.identFicheGraphe) {
@@ -173,26 +198,28 @@ class _InterfaceBulletinNotes extends InterfacePage {
 			if (aParam.aCopier.graph) {
 				this.setGraphe({
 					image: [aParam.aCopier.graph],
-					titre: GTraductions.getValeur("BulletinEtReleve.titreGraphe"),
-					message: GTraductions.getValeur(
+					titre: ObjetTraduction_1.GTraductions.getValeur(
+						"BulletinEtReleve.titreGraphe",
+					),
+					message: ObjetTraduction_1.GTraductions.getValeur(
 						"BulletinEtReleve.pasDAffichageGraphe",
 					),
-					alt: _construireAltGraph.call(this),
+					alt: this._construireAltGraph(),
 				});
 			}
 			this.surResizeInterface();
 		}
 	}
 	desactiverImpression() {
-		Invocateur.evenement(
-			ObjetInvocateur.events.activationImpression,
-			EGenreImpression.Aucune,
+		Invocateur_1.Invocateur.evenement(
+			Invocateur_1.ObjetInvocateur.events.activationImpression,
+			Enumere_GenreImpression_1.EGenreImpression.Aucune,
 		);
 	}
 	initPiedPage(aParam) {
 		const lInstancePdP = this.getInstance(this.identPiedPage);
 		const lParam = {
-			typeReleveBulletin: TypeReleveBulletin.BulletinNotes,
+			typeReleveBulletin: TypeReleveBulletin_1.TypeReleveBulletin.BulletinNotes,
 			typeContexteBulletin: aParam.typeContexteBulletin,
 			avecSaisie: this.param.avecSaisie,
 		};
@@ -202,11 +229,12 @@ class _InterfaceBulletinNotes extends InterfacePage {
 				periode: this.getPeriode(),
 				eleve: this.getEleve(),
 				service: null,
-				typeReleveBulletin: TypeReleveBulletin.BulletinNotes,
+				typeReleveBulletin:
+					TypeReleveBulletin_1.TypeReleveBulletin.BulletinNotes,
 			};
 			$.extend(lParam, {
 				avecValidationAuto: true,
-				clbckValidationAutoSurEdition: _clbckValidationAutoSurEdition.bind(
+				clbckValidationAutoSurEdition: this._clbckValidationAutoSurEdition.bind(
 					this,
 					lContexte,
 				),
@@ -215,120 +243,135 @@ class _InterfaceBulletinNotes extends InterfacePage {
 		this.moteurPdB.initPiedPage(lInstancePdP, lParam);
 		lInstancePdP.initialiser(true);
 	}
-}
-function _activerImpression() {
-	const lGenreImpression = this.moteur.getGenreImpression({
-		typeReleveBulletin: TypeReleveBulletin.BulletinNotes,
-	});
-	Invocateur.evenement(
-		ObjetInvocateur.events.activationImpression,
-		lGenreImpression,
-		this,
-		lGenreImpression === EGenreImpression.GenerationPDF
-			? getParametresPDF.bind(this)
-			: null,
-	);
-}
-function getParametresPDF() {
-	const lParam = {
-		genreGenerationPDF: this.moteur.getGenreGenerationPdf({
-			typeReleveBulletin: TypeReleveBulletin.BulletinNotes,
-		}),
-		periode: this.getPeriode(),
-		avecCodeCompetences: GEtatUtilisateur.estAvecCodeCompetences(),
-	};
-	if (this.param.avecSaisie) {
-		$.extend(lParam, { classe: this.getClasse(), eleve: this.getEleve() });
-	}
-	return lParam;
-}
-function _clbckValidationAutoSurEdition(aCtx, aParam) {
-	this.moteurPdB.clbckValidationAutoSurEditionPdB(
-		$.extend(aCtx, {
-			clbckSaisieAppreciation: this.saisieAppreciation.bind(this),
-		}),
-		aParam,
-	);
-}
-function _afficherPiedPage() {
-	if (this.identPiedPage && this.getInstance(this.identPiedPage)) {
-		this.getInstance(this.identPiedPage).setDonnees({
-			donnees: this.PiedDePage,
-			absences: this.donneesAbsences,
+	_activerImpression() {
+		const lGenreImpression = this.moteur.getGenreImpression({
+			typeReleveBulletin: TypeReleveBulletin_1.TypeReleveBulletin.BulletinNotes,
 		});
-	}
-}
-function _masquerVisibilitePiedPage(aMasquer) {
-	if (this.identPiedPage && this.getInstance(this.identPiedPage)) {
-		$("#" + this.getInstance(this.identPiedPage).getNom().escapeJQ()).css(
-			"display",
-			aMasquer ? "none" : "",
+		Invocateur_1.Invocateur.evenement(
+			Invocateur_1.ObjetInvocateur.events.activationImpression,
+			lGenreImpression,
+			this,
+			lGenreImpression ===
+				Enumere_GenreImpression_1.EGenreImpression.GenerationPDF
+				? this.getParametresPDF.bind(this)
+				: null,
 		);
 	}
-}
-function _afficherBulletin() {
-	const lExisteEleve = this.estCtxEleve();
-	this.listeElementsLineaire = this.moteur._getListeDonneesLineaire(
-		this.ListeElements,
-		{ typeReleveBulletin: TypeReleveBulletin.BulletinNotes },
-	);
-	const lDonneesAcRegroup = this.moteur._formatterDonneesPourRegroupements.call(
-		this,
-		this.listeElementsLineaire,
-		this.tableauSurMatieres,
-		{ typeReleveBulletin: TypeReleveBulletin.BulletinNotes },
-	);
-	let lParamDonneesListe = {
-		instanceListe: this.getInstance(this.identListe),
-		estCtxClasse: !lExisteEleve,
-		affichage: this.Affichage,
-		estEnConsultation: !this.param.avecSaisie,
-		saisie: this.param.avecSaisie && this.ServiceEditable,
-		periode: GEtatUtilisateur.getPeriode(),
-		total: this.MoyenneGenerale,
-	};
-	if (this.param.avecSaisie) {
-		lParamDonneesListe = $.extend(lParamDonneesListe, {
-			baremeNotationNiveau:
-				this.baremeNotationNiveau !== null &&
-				this.baremeNotationNiveau !== undefined
-					? this.baremeNotationNiveau
-					: GParametres.baremeNotation,
-			avecCrayonEltPgm:
-				GEtatUtilisateur.GenreEspace === EGenreEspace.Professeur &&
-				lExisteEleve,
-			tailleMaxAppreciation: this.moteur.getTailleMaxAppreciation({
-				estCtxPied: false,
-				eleve: this.getEleve(),
-				typeReleveBulletin: TypeReleveBulletin.BulletinNotes,
+	getParametresPDF() {
+		const lParam = {
+			genreGenerationPDF: this.moteur.getGenreGenerationPdf({
+				typeReleveBulletin:
+					TypeReleveBulletin_1.TypeReleveBulletin.BulletinNotes,
 			}),
-		});
+			periode: this.getPeriode(),
+			avecCodeCompetences: this.etatUtilScoEspace.estAvecCodeCompetences(),
+		};
+		if (this.param.avecSaisie) {
+			$.extend(lParam, { classe: this.getClasse(), eleve: this.getEleve() });
+		}
+		return lParam;
 	}
-	this.getInstance(this.identListe).setDonnees(
-		new DonneesListe_BulletinNotes(lDonneesAcRegroup, lParamDonneesListe),
-	);
-}
-function _construireAltGraph() {
-	const H = [];
-	if (this.ListeElements && this.ListeElements.count()) {
-		H.push(
-			GTraductions.getValeur("BulletinEtReleve.BaremeClasse", [
-				this.moteur.getStrNote(this.baremeParDefaut),
-			]),
+	saisieAppreciation(aParamss, aParamRequete) {}
+	_clbckValidationAutoSurEdition(aCtx, aParam) {
+		this.moteurPdB.clbckValidationAutoSurEditionPdB(
+			$.extend(aCtx, {
+				clbckSaisieAppreciation: this.saisieAppreciation.bind(this),
+			}),
+			aParam,
 		);
-		this.ListeElements.parcourir((aService) => {
-			if (
-				aService.MoyenneClasse &&
-				aService.MoyenneClasse.estUneValeur() &&
-				aService.MoyenneEleve &&
-				aService.MoyenneEleve.estUneValeur()
-			) {
-				H.push(
-					`${aService.getLibelle()} : ${GTraductions.getValeur("BulletinEtReleve.MoyEleve")} ${this.moteur.getStrNote(aService.MoyenneEleve)} ${GTraductions.getValeur("BulletinEtReleve.MoyenneClasse")} ${this.moteur.getStrNote(aService.MoyenneClasse)}`,
-				);
-			}
-		});
 	}
-	return H.join(". ");
+	_afficherPiedPage() {
+		if (this.identPiedPage && this.getInstance(this.identPiedPage)) {
+			this.getInstance(this.identPiedPage).setDonnees({
+				donnees: this.aCopier.PiedDePage,
+				absences: this.donneesAbsences,
+			});
+		}
+	}
+	_masquerVisibilitePiedPage(aMasquer) {
+		if (this.identPiedPage && this.getInstance(this.identPiedPage)) {
+			$("#" + this.getInstance(this.identPiedPage).getNom().escapeJQ()).css(
+				"display",
+				aMasquer ? "none" : "",
+			);
+		}
+	}
+	_afficherBulletin() {
+		const lExisteEleve = this.estCtxEleve();
+		this.listeElementsLineaire = this.moteur._getListeDonneesLineaire(
+			this.aCopier.ListeElements,
+			{
+				typeReleveBulletin:
+					TypeReleveBulletin_1.TypeReleveBulletin.BulletinNotes,
+			},
+		);
+		const lDonneesAcRegroup =
+			this.moteur._formatterDonneesPourRegroupements.call(
+				this,
+				this.listeElementsLineaire,
+				this.aCopier.tableauSurMatieres,
+				{
+					typeReleveBulletin:
+						TypeReleveBulletin_1.TypeReleveBulletin.BulletinNotes,
+				},
+			);
+		let lParamDonneesListe = {
+			instanceListe: this.getInstance(this.identListe),
+			estCtxClasse: !lExisteEleve,
+			affichage: this.aCopier.Affichage,
+			estEnConsultation: !this.param.avecSaisie,
+			saisie: this.param.avecSaisie && this.aCopier.ServiceEditable,
+			periode: this.etatUtilScoEspace.getPeriode(),
+			total: this.aCopier.MoyenneGenerale,
+		};
+		if (this.param.avecSaisie) {
+			lParamDonneesListe = $.extend(lParamDonneesListe, {
+				baremeNotationNiveau:
+					this.aCopier.baremeNotationNiveau !== null &&
+					this.aCopier.baremeNotationNiveau !== undefined
+						? this.aCopier.baremeNotationNiveau
+						: GParametres.baremeNotation,
+				avecCrayonEltPgm:
+					this.etatUtilScoEspace.GenreEspace ===
+						Enumere_Espace_1.EGenreEspace.Professeur && lExisteEleve,
+				tailleMaxAppreciation: this.moteur.getTailleMaxAppreciation({
+					estCtxPied: false,
+					eleve: this.getEleve(),
+					typeReleveBulletin:
+						TypeReleveBulletin_1.TypeReleveBulletin.BulletinNotes,
+				}),
+			});
+		}
+		this.getInstance(this.identListe).setDonnees(
+			new DonneesListe_BulletinNotes_1.DonneesListe_BulletinNotes(
+				lDonneesAcRegroup,
+				lParamDonneesListe,
+			),
+		);
+	}
+	_construireAltGraph() {
+		const H = [];
+		if (this.aCopier.ListeElements && this.aCopier.ListeElements.count()) {
+			H.push(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"BulletinEtReleve.BaremeClasse",
+					[this.moteur.getStrNote(this.aCopier.baremeParDefaut)],
+				),
+			);
+			this.aCopier.ListeElements.parcourir((aService) => {
+				if (
+					aService.MoyenneClasse &&
+					aService.MoyenneClasse.estUneValeur() &&
+					aService.MoyenneEleve &&
+					aService.MoyenneEleve.estUneValeur()
+				) {
+					H.push(
+						`${aService.getLibelle()} : ${ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.MoyEleve")} ${this.moteur.getStrNote(aService.MoyenneEleve)} ${ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.MoyenneClasse")} ${this.moteur.getStrNote(aService.MoyenneClasse)}`,
+					);
+				}
+			});
+		}
+		return H.join(". ");
+	}
 }
-module.exports = { _InterfaceBulletinNotes };
+exports._InterfaceBulletinNotes = _InterfaceBulletinNotes;

@@ -1,87 +1,359 @@
-const { GChaine } = require("ObjetChaine.js");
-const { GDate } = require("ObjetDate.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { tag } = require("tag.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const ObjetRequeteSaisieAppreciationFinDeStage = require("ObjetRequeteSaisieAppreciationFinDeStage.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const {
-	ObjetFenetre_UploadFichiers,
-} = require("ObjetFenetre_UploadFichiers.js");
-const { EGenreAction } = require("Enumere_Action.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const {
-	ObjetFenetre_AnnexePedagogiquePN,
-} = require("ObjetFenetre_AnnexePedagogiquePN.js");
-const { ObjetFenetre_SuiviStage } = require("ObjetFenetre_SuiviStage.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetMenuCtxMixte } = require("ObjetMenuCtxMixte.js");
-const { ETypeAffEnModeMixte } = require("Enumere_MenuCtxModeMixte.js");
-const ObjetFenetre_AppreciationsStage = require("ObjetFenetre_AppreciationsStage.js");
-const { ObjetTri } = require("ObjetTri.js");
-const {
-	ObjetRequeteURLSignataire,
-	TypeActionSignataire,
-} = require("ObjetRequeteURLSignataire.js");
-const { TUtilitairePartenaire } = require("UtilitairePartenaire.js");
-const {
-	TypeOrigineCreationLibelleDocJointEleve,
-} = require("TypeOrigineCreationLibelleDocJointEleve.js");
-const {
-	TypeAnnexePedagogique,
-	TypeModaliteDEvaluationMilieuProfessionnel,
-} = require("TypesAnnexePedagogique.js");
-const UtilitaireFicheStage = {};
-UtilitaireFicheStage.composeBlocDetails = function (aDonnees, aParams) {
-	const H = [];
-	H.push(_composeBlocDetailsEntrepriseAccueil(aDonnees));
-	if (!!aDonnees.maitreDeStage && aDonnees.maitreDeStage.count()) {
-		H.push(_composeBlocDetailsMDS(aDonnees));
-	}
-	H.push(_composeBlocDetailsEnseignants(aDonnees));
-	H.push(_composeBlocDetailsHoraires(aDonnees));
-	if (
-		(aDonnees.listePJ && aDonnees.listePJ.count()) ||
-		(aDonnees.convention && aDonnees.convention.document)
-	) {
-		H.push(_composeBlocDocumentsJoints(aDonnees, aParams));
-	}
-	if (aParams.parametres.avecEditionDocumentsJoints) {
-		_ajoutControleurEditionDetails(aDonnees, aParams);
-	}
-	return H.join("");
+exports.UtilitaireFicheStage = void 0;
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetRequeteSaisieAppreciationFinDeStage_1 = require("ObjetRequeteSaisieAppreciationFinDeStage");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_UploadFichiers_1 = require("ObjetFenetre_UploadFichiers");
+const Enumere_Action_1 = require("Enumere_Action");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetFenetre_AnnexePedagogiquePN_1 = require("ObjetFenetre_AnnexePedagogiquePN");
+const ObjetFenetre_SuiviStage_1 = require("ObjetFenetre_SuiviStage");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetMenuCtxMixte_1 = require("ObjetMenuCtxMixte");
+const Enumere_MenuCtxModeMixte_1 = require("Enumere_MenuCtxModeMixte");
+const ObjetFenetre_AppreciationsStage_1 = require("ObjetFenetre_AppreciationsStage");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetRequeteURLSignataire_1 = require("ObjetRequeteURLSignataire");
+const UtilitairePartenaire_1 = require("UtilitairePartenaire");
+const TypeOrigineCreationLibelleDocJointEleve_1 = require("TypeOrigineCreationLibelleDocJointEleve");
+const TypesAnnexePedagogique_1 = require("TypesAnnexePedagogique");
+const TypeHebergementStage_1 = require("TypeHebergementStage");
+const AccessApp_1 = require("AccessApp");
+exports.UtilitaireFicheStage = {
+	composeBlocDetails(aDonnees, aParams) {
+		const H = [];
+		H.push(_composeBlocDetailsEntrepriseAccueil(aDonnees));
+		if (!!aDonnees.maitreDeStage && aDonnees.maitreDeStage.count()) {
+			H.push(_composeBlocDetailsMDS(aDonnees));
+		}
+		H.push(_composeBlocDetailsReferents(aDonnees));
+		H.push(_composeBlocDetailsHoraires(aDonnees));
+		H.push(_composeBlocDetailsPresenceEtablissement(aDonnees));
+		if (
+			(aDonnees.listePJ && aDonnees.listePJ.count()) ||
+			(aDonnees.listeDocumentsSignes && aDonnees.listeDocumentsSignes.count())
+		) {
+			H.push(_composeBlocDocumentsJoints(aDonnees, aParams));
+		}
+		if (aParams.parametres.avecEditionDocumentsJoints) {
+			_ajoutControleurEditionDetails(aDonnees, aParams);
+		}
+		return H.join("");
+	},
+	composeBlocAnnexe(aDonnees, aParams) {
+		const H = [];
+		H.push(_composeBlocAnnexes(aDonnees, aParams));
+		return H.join("");
+	},
+	composeSurSuivi(aDonnee, aParams) {
+		const H = [];
+		const lSuivi = aDonnee;
+		const lAvecEdition =
+			aParams.parametres.avecEditionSuivisDeStage && !!lSuivi.editable;
+		H.push('<div class="Bloc-suivi">');
+		if (IE.estMobile) {
+			H.push(
+				IE.jsx.str(
+					"div",
+					{ class: "flex-contain conteneur-header" },
+					IE.jsx.str("ie-btnicon", {
+						class: "icon_retour_mobile",
+						"ie-model": "retourPrec",
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"FicheStage.listeSuivis.RetourListeSuivi",
+						),
+					}),
+					IE.jsx.str(
+						"div",
+						{ class: "ie-titre titre-suivi" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"FicheStage.listeSuivis.SuiviDuX",
+							ObjetDate_1.GDate.formatDate(lSuivi.date, "%JJ/%MM/%AAAA"),
+						),
+					),
+				),
+			);
+		}
+		if (lAvecEdition) {
+			H.push(
+				IE.jsx.str("div", {
+					class: "flex-contain conteneur-icones",
+					"ie-identite": "menuCtxSuivi",
+				}),
+			);
+		}
+		H.push(
+			'<div class="conteneur-suivi',
+			!lAvecEdition ? " margin-espace-haut" : "",
+			'">',
+			IE.jsx.str(
+				"div",
+				{ class: "flex-contain conteneur-info-suivi" },
+				IE.jsx.str(
+					"time",
+					{
+						class: [
+							"m-right-l date-contain",
+							!!lSuivi.evenement.couleur ? "ie-line-color left" : "",
+						],
+						style: !!lSuivi.evenement.couleur
+							? `--color-line :${lSuivi.evenement.couleur};`
+							: false,
+						datetime: ObjetDate_1.GDate.formatDate(lSuivi.date, "%MM-%JJ"),
+					},
+					ObjetDate_1.GDate.formatDate(lSuivi.date, "%JJ %MMM"),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "conteneur-milieu" },
+					IE.jsx.str(
+						"div",
+						{ class: "ie-titre Gras" },
+						lSuivi.evenement.getLibelle(),
+					),
+					lSuivi.responsable
+						? IE.jsx.str(
+								"div",
+								{ class: "ie-titre-petit" },
+								lSuivi.responsable.getLibelle(),
+							)
+						: "",
+					aParams.parametres.avecEditionSuivisDeStage && lSuivi.publier
+						? IE.jsx.str(
+								"div",
+								null,
+								IE.jsx.str("i", {
+									class: "icon_info_sondage_publier",
+									role: "presentation",
+								}),
+								IE.jsx.str(
+									"span",
+									{ class: "ie-titre-petit" },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.listeSuivis.etatPublie",
+									),
+								),
+							)
+						: "",
+				),
+			),
+		);
+		if (lSuivi.avecHeure || !!lSuivi.lieu) {
+			const lHeures = [ObjetDate_1.GDate.formatDate(lSuivi.date, "%hh%sh%mm")];
+			if (lSuivi.avecHeureFin) {
+				lHeures.push(ObjetDate_1.GDate.formatDate(lSuivi.dateFin, "%hh%sh%mm"));
+			}
+			H.push(
+				IE.jsx.str(
+					"div",
+					{ class: "conteneur-heure-lieu" },
+					lSuivi.avecHeure
+						? IE.jsx.str(
+								"div",
+								null,
+								IE.jsx.str(
+									"span",
+									null,
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.listeSuivis.Heure",
+									) + " : ",
+								),
+								IE.jsx.str(
+									"span",
+									{ class: "ie-titre-petit" },
+									lHeures.join(" - "),
+								),
+							)
+						: "",
+					!!lSuivi.lieu && lSuivi.lieu.getLibelle()
+						? IE.jsx.str(
+								"div",
+								null,
+								IE.jsx.str(
+									"span",
+									null,
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.listeSuivis.Lieu",
+									) + " : ",
+								),
+								IE.jsx.str(
+									"span",
+									{ class: "ie-titre-petit" },
+									lSuivi.lieu.getLibelle(),
+								),
+							)
+						: "",
+				),
+			);
+		}
+		if (lSuivi.commentaire) {
+			H.push(
+				IE.jsx.str(
+					"div",
+					{ class: "conteneur-commentaire" },
+					ObjetChaine_1.GChaine.replaceRCToHTML(lSuivi.commentaire),
+				),
+			);
+		}
+		if (lAvecEdition) {
+			H.push('<div class="conteneur-pj">');
+			H.push(
+				IE.jsx.str("ie-btnselecteur", {
+					class: "pj",
+					"ie-model": "ajoutPJSuivi",
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"FicheStage.AjouterPiecesJointes",
+					),
+					role: "button",
+				}),
+			);
+			if (!!lSuivi.listePJ && lSuivi.listePJ.count()) {
+				const lIEModelChips = _getIEModelChipsPJSuivi(lSuivi, aParams);
+				H.push('<div class="flex-contain f-wrap m-top">');
+				for (let i = 0, lNbr = lSuivi.listePJ.count(); i < lNbr; i++) {
+					H.push(
+						IE.jsx.str(
+							"div",
+							{ class: "chips-pj" },
+							ObjetChaine_1.GChaine.composerUrlLienExterne({
+								documentJoint: lSuivi.listePJ.get(i),
+								maxWidth: 250,
+								ieModelChips: lIEModelChips,
+								argsIEModel: [lSuivi.listePJ.get(i).getNumero()],
+							}),
+						),
+					);
+				}
+				H.push("</div>");
+				H.push("</div>");
+			}
+		} else if (lSuivi.listePJ && lSuivi.listePJ.count()) {
+			H.push('<div class="flex-contain f-wrap conteneur-pj">');
+			for (let i = 0, lNbr = lSuivi.listePJ.count(); i < lNbr; i++) {
+				H.push(
+					IE.jsx.str(
+						"div",
+						{ class: "chips-pj" },
+						ObjetChaine_1.GChaine.composerUrlLienExterne({
+							documentJoint: lSuivi.listePJ.get(i),
+							maxWidth: 250,
+						}),
+					),
+				);
+			}
+			H.push("</div>");
+		}
+		H.push("</div>");
+		H.push("</div>");
+		if (aParams.controleur) {
+			_ajoutControleurSurSuivi(lSuivi, aParams);
+		}
+		return H.join("");
+	},
+	composeBlocAppreciations(aDonnees, aParams) {
+		const H = [];
+		if (!!aDonnees.appreciations) {
+			aDonnees.appreciations.setTri([ObjetTri_1.ObjetTri.init("Genre")]);
+			aDonnees.appreciations.trier();
+			if (!!aDonnees.referents && aDonnees.referents.count()) {
+				H.push(_composeBlocAppreciationsReferents(aDonnees));
+			}
+			if (!!aDonnees.maitreDeStage && aDonnees.maitreDeStage.count()) {
+				H.push(_composeBlocAppreciationsMDS(aDonnees));
+			}
+			_ajouterControleurEditionAppreciations(aDonnees, aParams);
+		}
+		return H.join("");
+	},
+	composeFenetreCreerSuivi(aThis) {
+		const lSuivi = _creerNouveauSuivi();
+		const lFenetreSuiviStage = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_SuiviStage_1.ObjetFenetre_SuiviStage,
+			{
+				pere: aThis,
+				evenement: function (aNumeroBouton, aSuiviModifie, aListePJ) {
+					if (aNumeroBouton === Enumere_Action_1.EGenreAction.Valider) {
+						if (
+							aSuiviModifie.getEtat() === Enumere_Etat_1.EGenreEtat.Creation &&
+							aSuiviModifie
+						) {
+							aThis.donnees.suiviStage.addElement(aSuiviModifie);
+						}
+						if (!!aSuiviModifie) {
+							_requeteSaisieFicheStage.call(aThis, {
+								callbackParam: { suivi: aSuiviModifie },
+								listePJ: aListePJ,
+								stage: aThis.donnees,
+							});
+						}
+					}
+					lFenetreSuiviStage.fermer();
+				},
+				initialiser: function (aInstance) {
+					aInstance.setOptionsFenetre({
+						titre: ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreSuiviStage.CreerSuivi",
+						),
+					});
+					aInstance.setParametresFenetreSuivi({
+						libellePublication: ObjetTraduction_1.GTraductions.getValeur(
+							"FicheStage.listeSuivis.publierSuivi",
+						),
+						maxSizeDocumentJoint: (0, AccessApp_1.getApp)().droits.get(
+							ObjetDroitsPN_1.TypeDroits.tailleMaxDocJointEtablissement,
+						),
+					});
+				},
+			},
+		);
+		const lListePJEleves = new ObjetListeElements_1.ObjetListeElements();
+		if (!!lSuivi.listePJ) {
+			lListePJEleves.add(lSuivi.listePJ);
+		}
+		lFenetreSuiviStage.setDonnees({
+			suivi: lSuivi,
+			listeResponsables: aThis.donnees.listeResponsables,
+			respAdminCBFiltrage: aThis.donnees.respAdminCBFiltrage,
+			evenements: aThis.evenements,
+			lieux: aThis.lieux,
+			dateFinSaisieSuivi: aThis.dateFinSaisieSuivi,
+			listePJEleve: lListePJEleves,
+		});
+	},
 };
 function _composeBlocDetailsEntrepriseAccueil(aDonnees) {
 	const H = [];
 	const lEntreprise = aDonnees.entreprise;
 	if (lEntreprise) {
 		H.push(
-			`<section class="entreprise-accueil">\n              <h2 class="ie-titre-couleur">${GTraductions.getValeur("FicheStage.entrepriseAccueil")}</h2>\n                <div class="flex-wrapper">`,
+			`<section class="entreprise-accueil">\n              <h2 class="ie-titre-couleur">${ObjetTraduction_1.GTraductions.getValeur("FicheStage.entrepriseAccueil")}</h2>\n                <div class="flex-wrapper">`,
 		);
 		H.push(`<div class="sous-section">`);
 		H.push(
-			tag(
+			IE.jsx.str(
 				"div",
 				{ class: "conteneur-nom" },
-				tag("i", {
+				IE.jsx.str("i", {
 					class: !!lEntreprise.estSiegeSocial
 						? "icon_building"
 						: "icon_entreprise",
-					"aria-hidden": "true",
+					role: "presentation",
 				}),
-				tag(
+				IE.jsx.str(
 					"div",
 					{ class: "ie-titre" },
 					lEntreprise.getLibelle() +
 						(!!lEntreprise.estSiegeSocial
-							? ` (${GTraductions.getValeur("FicheStage.siegeSocial")})`
+							? ` (${ObjetTraduction_1.GTraductions.getValeur("FicheStage.siegeSocial")})`
 							: ""),
 				),
 				!!lEntreprise.nomCommercial
-					? tag("span", lEntreprise.nomCommercial)
+					? IE.jsx.str("span", null, lEntreprise.nomCommercial)
 					: "",
 			),
 		);
@@ -111,16 +383,27 @@ function _composeBlocDetailsEntrepriseAccueil(aDonnees) {
 				}
 			}
 			H.push(
-				tag(
+				IE.jsx.str(
 					"div",
 					{ class: "conteneur-adresse" },
-					tag(
+					IE.jsx.str(
 						"ul",
-						!!lEntreprise.adresse1 ? tag("li", lEntreprise.adresse1) : "",
-						!!lEntreprise.adresse2 ? tag("li", lEntreprise.adresse2) : "",
-						!!lEntreprise.adresse3 ? tag("li", lEntreprise.adresse3) : "",
-						!!lEntreprise.adresse4 ? tag("li", lEntreprise.adresse4) : "",
-						!!strCPVillePays.length ? tag("li", strCPVillePays.join(" ")) : "",
+						null,
+						!!lEntreprise.adresse1
+							? IE.jsx.str("li", null, lEntreprise.adresse1)
+							: "",
+						!!lEntreprise.adresse2
+							? IE.jsx.str("li", null, lEntreprise.adresse2)
+							: "",
+						!!lEntreprise.adresse3
+							? IE.jsx.str("li", null, lEntreprise.adresse3)
+							: "",
+						!!lEntreprise.adresse4
+							? IE.jsx.str("li", null, lEntreprise.adresse4)
+							: "",
+						!!strCPVillePays.length
+							? IE.jsx.str("li", null, strCPVillePays.join(" "))
+							: "",
 					),
 				),
 			);
@@ -136,27 +419,31 @@ function _composeBlocDetailsEntrepriseAccueil(aDonnees) {
 			H.push(`<div class="sous-section conteneur-info">`);
 			if (!!lEntreprise.mobile) {
 				H.push(
-					tag(
+					IE.jsx.str(
 						"div",
 						{
 							class: "lien-communication tel-mobile",
-							title: GTraductions.getValeur("FicheStage.TelPortable"),
+							title: ObjetTraduction_1.GTraductions.getValeur(
+								"FicheStage.TelPortable",
+							),
 						},
-						tag(
+						IE.jsx.str(
 							"a",
 							{
 								href:
 									"tel:" +
-									GChaine.formatTelephoneAvecIndicatif(
+									ObjetChaine_1.GChaine.formatTelephoneAvecIndicatif(
 										lEntreprise.indMobile,
 										lEntreprise.mobile,
 									),
 							},
-							GChaine.formatTelephone(lEntreprise.mobile),
-							tag(
+							ObjetChaine_1.GChaine.formatTelephone(lEntreprise.mobile),
+							IE.jsx.str(
 								"span",
 								{ class: "sr-only" },
-								GTraductions.getValeur("FicheStage.TelPortable"),
+								ObjetTraduction_1.GTraductions.getValeur(
+									"FicheStage.TelPortable",
+								),
 							),
 						),
 					),
@@ -164,27 +451,28 @@ function _composeBlocDetailsEntrepriseAccueil(aDonnees) {
 			}
 			if (!!lEntreprise.telFixe) {
 				H.push(
-					tag(
+					IE.jsx.str(
 						"div",
 						{
 							class: "lien-communication tel",
-							title: GTraductions.getValeur("FicheStage.TelFixe"),
+							title:
+								ObjetTraduction_1.GTraductions.getValeur("FicheStage.TelFixe"),
 						},
-						tag(
+						IE.jsx.str(
 							"a",
 							{
 								href:
 									"tel:" +
-									GChaine.formatTelephoneAvecIndicatif(
+									ObjetChaine_1.GChaine.formatTelephoneAvecIndicatif(
 										lEntreprise.indFix,
 										lEntreprise.telFixe,
 									),
 							},
-							GChaine.formatTelephone(lEntreprise.telFixe),
-							tag(
+							ObjetChaine_1.GChaine.formatTelephone(lEntreprise.telFixe),
+							IE.jsx.str(
 								"span",
 								{ class: "sr-only" },
-								GTraductions.getValeur("FicheStage.TelFixe"),
+								ObjetTraduction_1.GTraductions.getValeur("FicheStage.TelFixe"),
 							),
 						),
 					),
@@ -192,27 +480,27 @@ function _composeBlocDetailsEntrepriseAccueil(aDonnees) {
 			}
 			if (!!lEntreprise.fax) {
 				H.push(
-					tag(
+					IE.jsx.str(
 						"div",
 						{
 							class: "lien-communication",
-							title: GTraductions.getValeur("FicheStage.Fax"),
+							title: ObjetTraduction_1.GTraductions.getValeur("FicheStage.Fax"),
 						},
-						tag(
+						IE.jsx.str(
 							"a",
 							{
 								href:
 									"fax:" +
-									GChaine.formatTelephoneAvecIndicatif(
+									ObjetChaine_1.GChaine.formatTelephoneAvecIndicatif(
 										lEntreprise.indFax,
 										lEntreprise.fax,
 									),
 							},
-							GChaine.formatTelephone(lEntreprise.fax),
-							tag(
+							ObjetChaine_1.GChaine.formatTelephone(lEntreprise.fax),
+							IE.jsx.str(
 								"span",
 								{ class: "sr-only" },
-								GTraductions.getValeur("FicheStage.Fax"),
+								ObjetTraduction_1.GTraductions.getValeur("FicheStage.Fax"),
 							),
 						),
 					),
@@ -220,14 +508,14 @@ function _composeBlocDetailsEntrepriseAccueil(aDonnees) {
 			}
 			if (!!lEntreprise.site) {
 				H.push(
-					tag(
+					IE.jsx.str(
 						"div",
 						{ class: "lien-communication" },
-						tag(
+						IE.jsx.str(
 							"a",
 							{
-								href: GChaine.encoderUrl(
-									GChaine.verifierURLHttp(lEntreprise.site),
+								href: ObjetChaine_1.GChaine.encoderUrl(
+									ObjetChaine_1.GChaine.verifierURLHttp(lEntreprise.site),
 								),
 							},
 							lEntreprise.site,
@@ -237,10 +525,10 @@ function _composeBlocDetailsEntrepriseAccueil(aDonnees) {
 			}
 			if (!!lEntreprise.email) {
 				H.push(
-					tag(
+					IE.jsx.str(
 						"div",
 						{ class: "lien-communication" },
-						tag(
+						IE.jsx.str(
 							"a",
 							{ href: "mailto:" + lEntreprise.email, target: "_blank" },
 							lEntreprise.email,
@@ -254,12 +542,28 @@ function _composeBlocDetailsEntrepriseAccueil(aDonnees) {
 			H.push("<div>");
 			if (lEntreprise.responsable) {
 				H.push(
-					`<div class="sous-section conteneur-responsable">\n                <h3 class="ie-titre-petit">${GTraductions.getValeur("FicheStage.responsableEntreprise")} : </h3>\n                <span>${lEntreprise.responsable.getLibelle()}</span>\n              </div>`,
+					IE.jsx.str(
+						"div",
+						{ class: "sous-section conteneur-responsable" },
+						IE.jsx.str(
+							"h3",
+							{ class: "ie-titre-petit" },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"FicheStage.responsableEntreprise",
+							),
+							": ",
+						),
+						IE.jsx.str("span", null, lEntreprise.responsable.getLibelle()),
+					),
 				);
 			}
 			if (lEntreprise.commentairePublie) {
 				H.push(
-					tag("div", { class: "sous-section" }, lEntreprise.commentairePublie),
+					IE.jsx.str(
+						"div",
+						{ class: "sous-section" },
+						lEntreprise.commentairePublie,
+					),
 				);
 			}
 			H.push("</div>");
@@ -274,38 +578,51 @@ function _composeBlocDetailsMDS(aDonnees) {
 	const lListe = aDonnees.maitreDeStage;
 	const lLibelleTitre =
 		lListe.count() > 1
-			? GTraductions.getValeur("FicheStage.maitresDeStage")
-			: GTraductions.getValeur("FicheStage.maitreDeStage");
+			? ObjetTraduction_1.GTraductions.getValeur("FicheStage.maitresDeStage")
+			: ObjetTraduction_1.GTraductions.getValeur("FicheStage.maitreDeStage");
 	H.push(
 		`<section class="entreprise-maitres">\n            <h2 class="ie-titre-couleur">${lLibelleTitre}</h2>\n              <div class="flex-wrapper">`,
 	);
 	lListe.parcourir((aMDS) => {
-		H.push(`<div class="conteneur-maitre-stage">\n                <div class="sous-section conteneur-nom">\n                  <span class="nom-maitre">${aMDS.getLibelle()}</span>\n                  ${!!aMDS.fonction ? `<div class="fonction">${aMDS.fonction}</div>` : ""}
-                </div>`);
+		H.push(
+			'<div class="conteneur-maitre-stage">',
+			IE.jsx.str(
+				"div",
+				{ class: "sous-section conteneur-nom" },
+				IE.jsx.str("span", { class: "nom-maitre" }, aMDS.getLibelle()),
+				!!aMDS.fonction
+					? IE.jsx.str("div", { class: "fonction" }, aMDS.fonction)
+					: "",
+			),
+		);
 		H.push(`<div class="sous-section conteneur-info">`);
 		if (!!aMDS.telPortable) {
 			H.push(
-				tag(
+				IE.jsx.str(
 					"div",
 					{
 						class: "lien-communication tel-mobile",
-						title: GTraductions.getValeur("FicheStage.MDS.Portable"),
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"FicheStage.MDS.Portable",
+						),
 					},
-					tag(
+					IE.jsx.str(
 						"a",
 						{
 							href:
 								"tel:" +
-								GChaine.formatTelephoneAvecIndicatif(
+								ObjetChaine_1.GChaine.formatTelephoneAvecIndicatif(
 									aMDS.indPortable,
 									aMDS.telPortable,
 								),
 						},
-						GChaine.formatTelephone(aMDS.telPortable),
-						tag(
+						ObjetChaine_1.GChaine.formatTelephone(aMDS.telPortable),
+						IE.jsx.str(
 							"span",
 							{ class: "sr-only" },
-							GTraductions.getValeur("FicheStage.MDS.Portable"),
+							ObjetTraduction_1.GTraductions.getValeur(
+								"FicheStage.MDS.Portable",
+							),
 						),
 					),
 				),
@@ -313,27 +630,31 @@ function _composeBlocDetailsMDS(aDonnees) {
 		}
 		if (!!aMDS.telFixe) {
 			H.push(
-				tag(
+				IE.jsx.str(
 					"div",
 					{
 						class: "lien-communication tel",
-						title: GTraductions.getValeur("FicheStage.MDS.TelFixe"),
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"FicheStage.MDS.TelFixe",
+						),
 					},
-					tag(
+					IE.jsx.str(
 						"a",
 						{
 							href:
 								"tel:" +
-								GChaine.formatTelephoneAvecIndicatif(
+								ObjetChaine_1.GChaine.formatTelephoneAvecIndicatif(
 									aMDS.indFixe,
 									aMDS.telFixe,
 								),
 						},
-						GChaine.formatTelephone(aMDS.telFixe),
-						tag(
+						ObjetChaine_1.GChaine.formatTelephone(aMDS.telFixe),
+						IE.jsx.str(
 							"span",
 							{ class: "sr-only" },
-							GTraductions.getValeur("FicheStage.MDS.TelFixe"),
+							ObjetTraduction_1.GTraductions.getValeur(
+								"FicheStage.MDS.TelFixe",
+							),
 						),
 					),
 				),
@@ -341,20 +662,21 @@ function _composeBlocDetailsMDS(aDonnees) {
 		}
 		if (!!aMDS.fax) {
 			H.push(
-				tag(
+				IE.jsx.str(
 					"div",
 					{
 						class: "lien-communication",
-						title: GTraductions.getValeur("FicheStage.MDS.Fax"),
+						title:
+							ObjetTraduction_1.GTraductions.getValeur("FicheStage.MDS.Fax"),
 					},
-					tag(
+					IE.jsx.str(
 						"a",
-						{ href: "fax:" + GChaine.formatTelephone(aMDS.fax) },
-						GChaine.formatTelephone(aMDS.fax),
-						tag(
+						{ href: "fax:" + ObjetChaine_1.GChaine.formatTelephone(aMDS.fax) },
+						ObjetChaine_1.GChaine.formatTelephone(aMDS.fax),
+						IE.jsx.str(
 							"span",
 							{ class: "sr-only" },
-							GTraductions.getValeur("FicheStage.MDS.Fax"),
+							ObjetTraduction_1.GTraductions.getValeur("FicheStage.MDS.Fax"),
 						),
 					),
 				),
@@ -362,10 +684,10 @@ function _composeBlocDetailsMDS(aDonnees) {
 		}
 		if (!!aMDS.email) {
 			H.push(
-				tag(
+				IE.jsx.str(
 					"div",
 					{ class: "lien-communication" },
-					tag(
+					IE.jsx.str(
 						"a",
 						{ href: "mailto:" + aMDS.email, target: "_blank" },
 						aMDS.email,
@@ -379,24 +701,107 @@ function _composeBlocDetailsMDS(aDonnees) {
 	H.push("</section>");
 	return H.join("");
 }
-function _composeBlocDetailsEnseignants(aDonnees) {
+function _composeBlocDetailsReferents(aDonnees) {
 	const H = [];
-	if (aDonnees.professeur && aDonnees.professeur.count()) {
-		H.push('<section class="Bloc-details-enseignants">');
+	if (aDonnees.referents && aDonnees.referents.count()) {
 		H.push(
-			tag(
-				"h2",
-				{ class: "ie-titre-couleur" },
-				aDonnees.professeur.count() > 1
-					? GTraductions.getValeur("FicheStage.profsReferents")
-					: GTraductions.getValeur("FicheStage.profReferent"),
+			IE.jsx.str(
+				"section",
+				{ class: "Bloc-details-enseignants" },
+				IE.jsx.str(
+					"h2",
+					{ class: "ie-titre-couleur" },
+					aDonnees.referents.count() > 1
+						? ObjetTraduction_1.GTraductions.getValeur("FicheStage.referents")
+						: ObjetTraduction_1.GTraductions.getValeur("FicheStage.referent"),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "conteneur-enseignants" },
+					aDonnees.referents.getTableauLibelles().join(", "),
+				),
 			),
 		);
+	}
+	return H.join("");
+}
+function _composeBlocDetailsPresenceEtablissement(aDonnees) {
+	const H = [];
+	if (
+		aDonnees.attenduEnCours ||
+		aDonnees.prevuMidi ||
+		aDonnees.prevuSoir ||
+		aDonnees.hebergement !==
+			TypeHebergementStage_1.TypeHebergementStage.tHST_NonRenseigne
+	) {
+		H.push('<section class="Bloc-details-presenceetablissement">');
 		H.push(
-			'<div class="conteneur-enseignants">',
-			aDonnees.professeur.getTableauLibelles().join(", "),
-			"</div>",
+			IE.jsx.str(
+				"h2",
+				{ class: "ie-titre-couleur" },
+				ObjetTraduction_1.GTraductions.getValeur(
+					"FicheStage.PresenceDansLEtablissement",
+				),
+			),
 		);
+		if (aDonnees.attenduEnCours) {
+			H.push(
+				IE.jsx.str(
+					"div",
+					{ class: "ligne-info-presenceetablissement" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"FicheStage.EleveAttenduEnCours",
+					),
+				),
+			);
+		}
+		if (aDonnees.prevuMidi || aDonnees.prevuSoir) {
+			if (aDonnees.prevuMidi && aDonnees.prevuSoir) {
+				H.push(
+					IE.jsx.str(
+						"div",
+						{ class: "ligne-info-presenceetablissement" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"FicheStage.ElevePrevuAuxRepas",
+						),
+					),
+				);
+			} else if (aDonnees.prevuMidi) {
+				H.push(
+					IE.jsx.str(
+						"div",
+						{ class: "ligne-info-presenceetablissement" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"FicheStage.ElevePrevuMidi",
+						),
+					),
+				);
+			} else if (aDonnees.prevuSoir) {
+				H.push(
+					IE.jsx.str(
+						"div",
+						{ class: "ligne-info-presenceetablissement" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"FicheStage.ElevePrevuSoir",
+						),
+					),
+				);
+			}
+		}
+		if (
+			aDonnees.hebergement !==
+			TypeHebergementStage_1.TypeHebergementStage.tHST_NonRenseigne
+		) {
+			H.push(
+				IE.jsx.str(
+					"div",
+					{ class: "ligne-info-presenceetablissement" },
+					TypeHebergementStage_1.TypeHebergementStageUtil.getLibelle(
+						aDonnees.hebergement,
+					),
+				),
+			);
+		}
 		H.push("</section>");
 	}
 	return H.join("");
@@ -418,13 +823,17 @@ function _composeBlocDetailsHoraires(aDonnees) {
 			aDonnees.nbJours
 		) {
 			H.push(
-				tag(
+				IE.jsx.str(
 					"h2",
 					{ class: "ie-titre-couleur" },
-					GTraductions.getValeur("FicheStage.PresenceDansEntreprise") +
+					ObjetTraduction_1.GTraductions.getValeur(
+						"FicheStage.PresenceDansEntreprise",
+					) +
 						(aDonnees.nbJours
 							? " (" +
-								GTraductions.getValeur("FicheStage.dureeDetails") +
+								ObjetTraduction_1.GTraductions.getValeur(
+									"FicheStage.dureeDetails",
+								) +
 								" : " +
 								aDonnees.nbJours +
 								")"
@@ -435,81 +844,93 @@ function _composeBlocDetailsHoraires(aDonnees) {
 		H.push('<div class="flex-wrapper">');
 		if (!!aDonnees.dateDebut && !!aDonnees.dateFin) {
 			H.push(
-				'<div class="Bloc-entreprise-dates',
-				!IE.estMobile ? " conteneur-Espace" : "",
-				'">',
-			);
-			H.push(
-				tag(
-					"h3",
-					{ class: "ie-titre-petit" },
-					GTraductions.getValeur("FicheStage.stageDates"),
-				),
-			);
-			H.push(
-				tag(
+				IE.jsx.str(
 					"div",
-					{ class: "" },
-					GDate.formatDate(
-						aDonnees.dateDebut,
-						GTraductions.getValeur("Du") + " %JJ/%MM/%AAAA",
-					) +
-						GDate.formatDate(
-							aDonnees.dateFin,
-							" " + GTraductions.getValeur("Au") + " %JJ/%MM/%AAAA",
+					{
+						class: [
+							"Bloc-entreprise-dates",
+							!IE.estMobile ? "conteneur-Espace" : "",
+						],
+					},
+					IE.jsx.str(
+						"h3",
+						{ class: "ie-titre-petit" },
+						ObjetTraduction_1.GTraductions.getValeur("FicheStage.stageDates"),
+					),
+					IE.jsx.str(
+						"div",
+						null,
+						ObjetDate_1.GDate.formatDate(
+							aDonnees.dateDebut,
+							ObjetTraduction_1.GTraductions.getValeur("Du") + " %JJ/%MM/%AAAA",
 						) +
-						(!!aDonnees.nbSemaines ? " (" + aDonnees.nbSemaines + ")" : ""),
+							ObjetDate_1.GDate.formatDate(
+								aDonnees.dateFin,
+								" " +
+									ObjetTraduction_1.GTraductions.getValeur("Au") +
+									" %JJ/%MM/%AAAA",
+							),
+					),
 				),
 			);
-			H.push("</div>");
 		}
 		if (lAvecHoraire) {
 			H.push("<div>");
 			H.push('<div class="Bloc-entreprise-horaire">');
 			H.push(
-				tag(
+				IE.jsx.str(
 					"h3",
 					{ class: "ie-titre-petit" },
-					GTraductions.getValeur("FicheStage.stageHoraires"),
+					ObjetTraduction_1.GTraductions.getValeur("FicheStage.stageHoraires"),
 				),
 			);
 			lListeJours.parcourir((aJour) => {
 				if (aJour && aJour.horaires && aJour.horaires.count() > 0) {
 					H.push(
 						'<div class="flex-contain conteneur-journee">',
-						'<div class="Gras nom-journee" style="width:6rem;">',
-						aJour.getLibelle(),
-						"</div>",
+						IE.jsx.str(
+							"div",
+							{ class: "Gras nom-journee", style: "width:6.5rem;" },
+							aJour.getLibelle(),
+						),
 					);
 					H.push("<div>");
 					for (let i = 0, lNbr = aJour.horaires.count(); i < lNbr; i++) {
 						if (i > 0) {
-							H.push(tag("span", { class: "" }, " / "));
+							H.push(IE.jsx.str("span", null, " / "));
 						}
 						H.push(
-							tag("span", { class: "" }, aJour.horaires.get(i).getLibelle()),
+							IE.jsx.str("span", null, aJour.horaires.get(i).getLibelle()),
 						);
 					}
 					H.push("</div>");
 					H.push(
-						tag("div", { class: "Gras heure-journee" }, aJour.heuresJournee),
+						IE.jsx.str(
+							"div",
+							{ class: "Gras heure-journee" },
+							aJour.heuresJournee,
+						),
 					);
 					H.push("</div>");
 				}
 			});
 			H.push(
-				tag(
+				IE.jsx.str(
 					"div",
 					{ class: "flex-contain conteneur-total-hebdo" },
-					tag(
+					IE.jsx.str(
 						"div",
 						{ class: "Gras ie-titre-petit titre-total avecMarginTop" },
-						GTraductions.getValeur("FicheStage.totalHebdo"),
+						ObjetTraduction_1.GTraductions.getValeur("FicheStage.totalHebdo"),
 					),
-					tag(
+					IE.jsx.str(
 						"div",
 						{ class: "chips-total-stage" },
-						tag("ie-chips", { class: "tag-style" }, aDonnees.heuresHebdo),
+						IE.jsx.str(
+							"ie-chips",
+							{ class: "tag-style" },
+							aDonnees.heuresHebdo,
+						),
 					),
 				),
 			);
@@ -542,37 +963,21 @@ function _getIDDocJointDeType(aPJ) {
 	lID += "_" + aPJ.genreDocJoint.getNumero();
 	return lID;
 }
-function _genreEstDeType(aGenre, aType) {
-	let lMatch = "";
-	switch (aType) {
-		case undefined:
-			lMatch = "3";
-			break;
-		case 0:
-			lMatch = "2";
-			break;
-		default:
-			lMatch = "1";
-			break;
-	}
-	lMatch += `_${aType}_`;
-	return aGenre.startsWith(lMatch);
-}
 function _composeBlocDocumentsJoints(aDonnees, aParams) {
 	const H = [];
 	H.push('<section class="Bloc-details-documentsJoints">');
 	H.push(
-		tag(
+		IE.jsx.str(
 			"div",
 			{ class: "Gras ie-titre-petit" },
-			GTraductions.getValeur("FicheStage.documentsJoints"),
+			ObjetTraduction_1.GTraductions.getValeur("FicheStage.documentsJoints"),
 		),
 	);
 	H.push('<div class="m-bottom-l">');
 	const lGenresPJ = {};
 	let lAvecConventionDeStage = false;
 	aDonnees.listePJ.setTri([
-		ObjetTri.init(function (aPJ) {
+		ObjetTri_1.ObjetTri.init(function (aPJ) {
 			switch (aPJ.genreDocJoint.getGenre()) {
 				case undefined:
 					return 3;
@@ -582,7 +987,7 @@ function _composeBlocDocumentsJoints(aDonnees, aParams) {
 					return 1;
 			}
 		}),
-		ObjetTri.init(function (aPJ) {
+		ObjetTri_1.ObjetTri.init(function (aPJ) {
 			return aPJ.genreDocJoint.getGenre();
 		}),
 	]);
@@ -592,7 +997,8 @@ function _composeBlocDocumentsJoints(aDonnees, aParams) {
 		if (
 			!lAvecConventionDeStage &&
 			aPJ.genreDocJoint.getGenre() ===
-				TypeOrigineCreationLibelleDocJointEleve.OCLDJ_ConventionDeStage
+				TypeOrigineCreationLibelleDocJointEleve_1
+					.TypeOrigineCreationLibelleDocJointEleve.OCLDJ_ConventionDeStage
 		) {
 			lAvecConventionDeStage = true;
 		}
@@ -601,17 +1007,23 @@ function _composeBlocDocumentsJoints(aDonnees, aParams) {
 		}
 	});
 	if (
-		!lAvecConventionDeStage &&
-		aDonnees.convention &&
-		aDonnees.convention.document
+		aDonnees.listeDocumentsSignes &&
+		aDonnees.listeDocumentsSignes.count() > 0
 	) {
 		H.push('<div class="bloc-pj">');
-		H.push(`${aDonnees.convention.document.getLibelle()} : `);
-		H.push('<div class="m-left">');
+		aDonnees.listeDocumentsSignes.trier();
 		H.push(
-			_ajoutConventionDeStageSignee(aDonnees.convention.document, aParams),
+			`${ObjetTraduction_1.GTraductions.getValeur("FicheStage.documentsDeStageSigneElectroniquement")} : `,
 		);
-		H.push("</div>");
+		aDonnees.listeDocumentsSignes.parcourir((aDoc) => {
+			H.push(
+				IE.jsx.str(
+					"div",
+					{ class: "m-left" },
+					_ajoutDocumentDeStageSigne(aDoc.document, aParams),
+				),
+			);
+		});
 		H.push("</div>");
 	}
 	for (const lGenre in lGenresPJ) {
@@ -619,693 +1031,109 @@ function _composeBlocDocumentsJoints(aDonnees, aParams) {
 		H.push(
 			lGenresPJ[lGenre] !== ""
 				? `${lGenresPJ[lGenre]} : `
-				: `${GTraductions.getValeur("FicheStage.autreDocJoint")} : `,
+				: `${ObjetTraduction_1.GTraductions.getValeur("FicheStage.autreDocJoint")} : `,
 		);
 		H.push('<div class="m-left">');
-		if (
-			lAvecConventionDeStage &&
-			aDonnees.convention &&
-			aDonnees.convention.document &&
-			_genreEstDeType(
-				lGenre,
-				TypeOrigineCreationLibelleDocJointEleve.OCLDJ_ConventionDeStage,
-			)
-		) {
-			H.push(
-				_ajoutConventionDeStageSignee(aDonnees.convention.document, aParams),
-			);
-		}
 		aDonnees.listePJ.parcourir((aPJ) => {
 			const lID = _getIDDocJointDeType(aPJ);
 			if (lGenre === lID) {
 				H.push(
-					GChaine.composerUrlLienExterne({ documentJoint: aPJ, maxWidth: 250 }),
-				);
-			}
-		});
-		H.push("</div>");
-		H.push("</div>");
-	}
-	H.push("</div>");
-	H.push("</section>");
-	return H.join("");
-}
-function _ajoutConventionDeStageSignee(aDocument, aParams) {
-	if (!aDocument.documentArchive) {
-		const lControleur = aParams.controleur;
-		if (lControleur) {
-			if (!lControleur.ouvrirDocument) {
-				lControleur.ouvrirDocument = {
-					event: function () {
-						TUtilitairePartenaire.ouvrirPatience();
-						if (ObjetRequeteURLSignataire) {
-							const lObj = {
-								typeAction: TypeActionSignataire.voirDocument,
-								document: aDocument,
-							};
-							new ObjetRequeteURLSignataire(this)
-								.lancerRequete(lObj)
-								.then((aJSON) => {
-									if (aJSON.message) {
-										TUtilitairePartenaire.fermerPatience();
-										GApplication.getMessage().afficher({
-											type: EGenreBoiteMessage.Information,
-											titre: "",
-											message: aJSON.message,
-										});
-									} else if (aJSON.url) {
-										TUtilitairePartenaire.ouvrirUrl(aJSON.url);
-									} else {
-										TUtilitairePartenaire.fermerPatience();
-									}
-								});
-						}
-					},
-				};
-			}
-		}
-		return `<ie-chips class="m-all avec-event iconic icon_uniF1C1" ie-model="ouvrirDocument">${GTraductions.getValeur("FicheStage.conventionDeStageSignee")}</ie-chips>`;
-	} else {
-		const lDocument = new ObjetElement(
-			aDocument.documentArchive.getLibelle(),
-			aDocument.getNumero(),
-			aDocument.documentArchive.getGenre(),
-		);
-		return GChaine.composerUrlLienExterne({
-			documentJoint: lDocument,
-			maxWidth: 250,
-		});
-	}
-}
-UtilitaireFicheStage.composeBlocAnnexe = function (aDonnees, aParams) {
-	const H = [];
-	H.push(_composeBlocAnnexes(aDonnees, aParams));
-	if (aParams.parametres.avecEdition) {
-		_ajoutControleurEditionAnnexe(aDonnees, aParams);
-	}
-	return H.join("");
-};
-function _composeBlocAnnexes(aDonnees, aParams) {
-	const H = [];
-	H.push('<section class="Bloc-details-annexes">');
-	if (
-		aParams.parametres.avecEdition ||
-		aDonnees.sujet.getLibelle() ||
-		aDonnees.sujetDetaille
-	) {
-		H.push(
-			'<div class="m-bottom-xl border-bottom">',
-			'<div class="flex-contain justify-between flex-center">',
-			'<h2 class="ie-titre-couleur">',
-			GTraductions.getValeur("FicheStage.annexe.stage"),
-			"</h2>",
-			aParams.parametres.avecEdition
-				? '<ie-btnicon class="fix-bloc icon_pencil i-medium avecFond m-bottom" ie-model="modifierAnnexe(\'' +
-						TypeAnnexePedagogique.TAP_SujetDetaille +
-						'\')" title="' +
-						GTraductions.getValeur("Modifier") +
-						'"></ie-btnicon>'
-				: "",
-			"</div>",
-			'<div class="',
-			!IE.estMobile ? "flex-contain " : "",
-			'm-right-xxl">',
-			aDonnees.sujet.getLibelle()
-				? '<div class="m-bottom-xl m-right-l sous-section"><div class="Gras ie-titre-petit">' +
-						GTraductions.getValeur("FicheStage.annexe.sujet") +
-						"</div><div>" +
-						aDonnees.sujet.getLibelle() +
-						"</div></div>"
-				: "",
-			aDonnees.sujetDetaille
-				? '<div class="m-bottom-xl sous-section"><div class="Gras ie-titre-petit">' +
-						GTraductions.getValeur("FicheStage.annexe.sujetDetaille") +
-						"</div><div>" +
-						GChaine.replaceRCToHTML(aDonnees.sujetDetaille) +
-						"</div></div>"
-				: "",
-			"</div>",
-			"</div>",
-		);
-	}
-	if (
-		aParams.parametres.avecEdition ||
-		aDonnees.activitesDejaRealisees ||
-		aDonnees.competencesMobilisees
-	) {
-		H.push(
-			'<div class="m-bottom-xl border-bottom">',
-			'<div class="flex-contain justify-between flex-center">',
-			'<h2 class="ie-titre-couleur">',
-			GTraductions.getValeur("FicheStage.annexe.competencesEtActivites"),
-			"</h2>",
-			aParams.parametres.avecEdition
-				? '<ie-btnicon class="fix-bloc icon_pencil i-medium avecFond m-bottom" ie-model="modifierAnnexe(\'' +
-						TypeAnnexePedagogique.TAP_ActivitesDejaRealisees +
-						'\')" title="' +
-						GTraductions.getValeur("Modifier") +
-						'"></ie-btnicon>'
-				: "",
-			"</div>",
-			'<div class="',
-			!IE.estMobile ? "flex-contain " : "",
-			'm-right-xxl">',
-			aDonnees.activitesDejaRealisees
-				? '<div class="m-bottom-xl m-right-l sous-section"><div class="Gras ie-titre-petit">' +
-						GTraductions.getValeur("FicheStage.annexe.activitesDejaRealisees") +
-						"</div><div>" +
-						GChaine.replaceRCToHTML(aDonnees.activitesDejaRealisees) +
-						"</div></div>"
-				: "",
-			aDonnees.competencesMobilisees
-				? '<div class="m-bottom-xl sous-section"><div class="Gras ie-titre-petit">' +
-						GTraductions.getValeur("FicheStage.annexe.competencesMobilisees") +
-						"</div><div>" +
-						GChaine.replaceRCToHTML(aDonnees.competencesMobilisees) +
-						"</div></div>"
-				: "",
-			"</div>",
-			"</div>",
-		);
-	}
-	if (aParams.parametres.avecEdition || aDonnees.objectifs) {
-		H.push(
-			'<div class="m-bottom-xl border-bottom">',
-			'<div class="flex-contain justify-between flex-center">',
-			'<h2 class="ie-titre-couleur">',
-			GTraductions.getValeur("FicheStage.annexe.objectifsAssignes"),
-			"</h2>",
-			aParams.parametres.avecEdition
-				? '<ie-btnicon class="fix-bloc icon_pencil i-medium avecFond m-bottom" ie-model="modifierAnnexe(\'' +
-						TypeAnnexePedagogique.TAP_Objectifs +
-						'\')" title="' +
-						GTraductions.getValeur("Modifier") +
-						'"></ie-btnicon>'
-				: "",
-			"</div>",
-			aDonnees.objectifs
-				? '<div class="m-bottom-xl m-right-xxl">' +
-						GChaine.replaceRCToHTML(aDonnees.objectifs) +
-						"</div>"
-				: "",
-			"</div>",
-		);
-	}
-	if (
-		aParams.parametres.avecEdition ||
-		aDonnees.activitesPrevues ||
-		aDonnees.moyensMobilises
-	) {
-		H.push(
-			'<div class="m-bottom-xl border-bottom">',
-			'<div class="flex-contain justify-between flex-center">',
-			'<h2 class="ie-titre-couleur">',
-			GTraductions.getValeur("FicheStage.annexe.activitesPrevuesAuCoursStage"),
-			"</h2>",
-			aParams.parametres.avecEdition
-				? '<ie-btnicon class="fix-bloc icon_pencil i-medium avecFond m-bottom" ie-model="modifierAnnexe(\'' +
-						TypeAnnexePedagogique.TAP_ActivitesPrevues +
-						'\')" title="' +
-						GTraductions.getValeur("Modifier") +
-						'"></ie-btnicon>'
-				: "",
-			"</div>",
-			'<div class="',
-			!IE.estMobile ? "flex-contain " : "",
-			'm-right-xxl">',
-			aDonnees.activitesPrevues
-				? '<div class="m-bottom-xl m-right-l sous-section"><div class="Gras ie-titre-petit">' +
-						GTraductions.getValeur("FicheStage.annexe.activitesPrevues") +
-						"</div><div>" +
-						GChaine.replaceRCToHTML(aDonnees.activitesPrevues) +
-						"</div></div>"
-				: "",
-			aDonnees.moyensMobilises
-				? '<div class="m-bottom-xl sous-section"><div class="Gras ie-titre-petit">' +
-						GTraductions.getValeur("FicheStage.annexe.moyensMobilises") +
-						"</div><div>" +
-						GChaine.replaceRCToHTML(aDonnees.moyensMobilises) +
-						"</div></div>"
-				: "",
-			"</div>",
-			"</div>",
-		);
-	}
-	if (
-		aParams.parametres.avecEdition ||
-		aDonnees.competencesVisees ||
-		(aDonnees.listeCompetencesVisees && aDonnees.listeCompetencesVisees.length)
-	) {
-		H.push(
-			'<div class="m-bottom-xl border-bottom">',
-			'<div class="flex-contain justify-between flex-center">',
-			'<h2 class="ie-titre-couleur">',
-			GTraductions.getValeur("FicheStage.annexe.competencesVisees"),
-			"</h2>",
-			aParams.parametres.avecEdition
-				? '<ie-btnicon class="fix-bloc icon_pencil i-medium avecFond m-bottom" ie-model="modifierAnnexe(\'' +
-						TypeAnnexePedagogique.TAP_CompetencesVisees +
-						'\')" title="' +
-						GTraductions.getValeur("Modifier") +
-						'"></ie-btnicon>'
-				: "",
-			"</div>",
-			aDonnees.competencesVisees
-				? '<div class="m-bottom-xl m-right-xxl">' +
-						GChaine.replaceRCToHTML(aDonnees.competencesVisees) +
-						"</div>"
-				: "",
-			aDonnees.listeCompetencesVisees && aDonnees.listeCompetencesVisees.length
-				? getHtmlListeCompetencesVisees(aDonnees.listeCompetencesVisees)
-				: "",
-			"</div>",
-		);
-	}
-	if (
-		aDonnees.avecTravauxAuxMineurs &&
-		(aParams.parametres.avecEdition || aDonnees.travauxAuxMineurs)
-	) {
-		H.push(
-			'<div class="m-bottom-xl border-bottom">',
-			'<div class="flex-contain justify-between flex-center">',
-			'<h2 class="ie-titre-couleur">',
-			GTraductions.getValeur("FicheStage.annexe.travauxAuxMineurs"),
-			"</h2>",
-			aParams.parametres.avecEdition
-				? '<ie-btnicon class="fix-bloc icon_pencil i-medium avecFond m-bottom" ie-model="modifierAnnexe(\'' +
-						TypeAnnexePedagogique.TAP_TravauxAuxMineurs +
-						'\')" title="' +
-						GTraductions.getValeur("Modifier") +
-						'"></ie-btnicon>'
-				: "",
-			"</div>",
-			aDonnees.travauxAuxMineurs
-				? '<div class="m-bottom-xl m-right-xxl">' +
-						GChaine.replaceRCToHTML(aDonnees.travauxAuxMineurs) +
-						"</div>"
-				: "",
-			"</div>",
-		);
-	}
-	if (aParams.parametres.avecEdition || aDonnees.modalitesConcertation) {
-		H.push(
-			'<div class="m-bottom-xl border-bottom">',
-			'<div class="flex-contain justify-between flex-center">',
-			'<h2 class="ie-titre-couleur">',
-			GTraductions.getValeur("FicheStage.annexe.modalitesDEncadrement"),
-			"</h2>",
-			aParams.parametres.avecEdition
-				? '<ie-btnicon class="fix-bloc icon_pencil i-medium avecFond m-bottom" ie-model="modifierAnnexe(\'' +
-						TypeAnnexePedagogique.TAP_ModalitesDeConcertation +
-						'\')" title="' +
-						GTraductions.getValeur("Modifier") +
-						'"></ie-btnicon>'
-				: "",
-			"</div>",
-			aDonnees.modalitesConcertation
-				? '<div class="m-bottom-xl m-right-xxl">' +
-						GChaine.replaceRCToHTML(aDonnees.modalitesConcertation) +
-						"</div>"
-				: "",
-			"</div>",
-		);
-	}
-	if (
-		aParams.parametres.avecEdition ||
-		aDonnees.typeModalitesEvaluation.getGenre() !==
-			TypeModaliteDEvaluationMilieuProfessionnel.TMEMP_Aucune ||
-		aDonnees.modalitesEvaluation
-	) {
-		H.push(
-			"<div>",
-			'<div class="flex-contain justify-between flex-center">',
-			'<h2 class="ie-titre-couleur">',
-			GTraductions.getValeur("FicheStage.annexe.modalitesDeLaPeriodePro"),
-			"</h2>",
-			aParams.parametres.avecEdition
-				? '<ie-btnicon class="fix-bloc icon_pencil i-medium avecFond m-bottom" ie-model="modifierAnnexe(\'' +
-						TypeAnnexePedagogique.TAP_ModalitesDEvaluation +
-						'\')" title="' +
-						GTraductions.getValeur("Modifier") +
-						'"></ie-btnicon>'
-				: "",
-			"</div>",
-			'<div class="',
-			!IE.estMobile ? "flex-contain " : "",
-			'm-right-xxl">',
-			aDonnees.typeModalitesEvaluation.getGenre() !==
-				TypeModaliteDEvaluationMilieuProfessionnel.TMEMP_Aucune
-				? '<div class="m-bottom-xl m-right-l sous-section"><div class="Gras ie-titre-petit">' +
-						GTraductions.getValeur("FicheStage.annexe.typeDEvaluation") +
-						"</div><div>" +
-						aDonnees.typeModalitesEvaluation.getLibelle() +
-						"</div></div>"
-				: "",
-			aDonnees.modalitesEvaluation
-				? '<div class="m-bottom-xl sous-section"><div class="Gras ie-titre-petit">' +
-						GTraductions.getValeur("FicheStage.annexe.modalitesDEvaluation") +
-						"</div><div>" +
-						GChaine.replaceRCToHTML(aDonnees.modalitesEvaluation) +
-						"</div></div>"
-				: "",
-			"</div>",
-			"</div>",
-		);
-	}
-	H.push("</section>");
-	return H.join("");
-}
-function getHtmlListeCompetencesVisees(aListeCompetencesVisees) {
-	const H = [];
-	H.push('<div class="m-bottom-xl m-right-xxl">');
-	aListeCompetencesVisees.forEach((aCompetence) => {
-		H.push(
-			'<div class="m-bottom-xl">',
-			"<h3>",
-			aCompetence.compVisees,
-			"</h3>",
-			"<p>",
-			aCompetence.blocComp,
-			"<p>",
-			aCompetence.resultat
-				? '<p class="Italique">' +
-						GChaine.replaceRCToHTML(aCompetence.resultat) +
-						"<p>"
-				: "",
-			"</div>",
-		);
-	});
-	H.push("</div>");
-	return H.join("");
-}
-UtilitaireFicheStage.composeSurSuivi = function (aDonnee, aParams) {
-	const H = [];
-	const lSuivi = aDonnee;
-	const lAvecEdition =
-		aParams.parametres.avecEditionSuivisDeStage && !!lSuivi.editable;
-	H.push('<div class="Bloc-suivi">');
-	if (IE.estMobile) {
-		H.push(
-			tag(
-				"div",
-				{ class: "flex-contain conteneur-header" },
-				tag("ie-btnicon", {
-					class: "icon_retour_mobile",
-					"ie-model": "retourPrec",
-					title: GTraductions.getValeur(
-						"FicheStage.listeSuivis.RetourListeSuivi",
-					),
-				}),
-				tag(
-					"div",
-					{ class: "ie-titre titre-suivi" },
-					GTraductions.getValeur(
-						"FicheStage.listeSuivis.SuiviDuX",
-						GDate.formatDate(lSuivi.date, "%JJ/%MM/%AAAA"),
-					),
-				),
-			),
-		);
-	}
-	if (lAvecEdition) {
-		H.push(
-			tag("div", {
-				class: "flex-contain conteneur-icones",
-				"ie-identite": "menuCtxSuivi",
-			}),
-		);
-	}
-	H.push(
-		'<div class="conteneur-suivi',
-		!lAvecEdition ? " margin-espace-haut" : "",
-		'">',
-		tag(
-			"div",
-			{ class: "flex-contain conteneur-info-suivi" },
-			tag(
-				"time",
-				{
-					class: [
-						"m-right-l date-contain",
-						!!lSuivi.evenement.couleur ? "ie-line-color bottom" : "",
-					],
-					style: !!lSuivi.evenement.couleur
-						? `--color-line :${lSuivi.evenement.couleur};`
-						: "",
-					datetime: GDate.formatDate(lSuivi.date, "%MM-%JJ"),
-				},
-				GDate.formatDate(lSuivi.date, "%JJ %MMM"),
-			),
-			tag(
-				"div",
-				{ class: "conteneur-milieu" },
-				tag("div", { class: "ie-titre Gras" }, lSuivi.evenement.getLibelle()),
-				lSuivi.responsable
-					? tag(
-							"div",
-							{ class: "ie-titre-petit" },
-							lSuivi.responsable.getLibelle(),
-						)
-					: "",
-				aParams.parametres.avecEditionSuivisDeStage && lSuivi.publier
-					? tag(
-							"div",
-							tag("i", { class: "icon_info_sondage_publier" }),
-							tag(
-								"span",
-								{ class: "ie-titre-petit" },
-								GTraductions.getValeur(
-									"FicheStage.listeSuivis.etatPublication",
-								),
-							),
-						)
-					: "",
-			),
-		),
-	);
-	if (lSuivi.avecHeure || !!lSuivi.lieu) {
-		H.push(
-			tag(
-				"div",
-				{ class: "conteneur-heure-lieu" },
-				lSuivi.avecHeure
-					? tag(
-							"div",
-							{ class: "" },
-							tag(
-								"span",
-								{ class: "" },
-								GTraductions.getValeur("FicheStage.listeSuivis.Heure") + " : ",
-							),
-							tag(
-								"span",
-								{ class: "ie-titre-petit" },
-								GDate.formatDate(lSuivi.date, "%hh%sh%mm"),
-							),
-						)
-					: "",
-				!!lSuivi.lieu && lSuivi.lieu.getLibelle()
-					? tag(
-							"div",
-							{ class: "" },
-							tag(
-								"span",
-								{ class: "" },
-								GTraductions.getValeur("FicheStage.listeSuivis.Lieu") + " : ",
-							),
-							tag(
-								"span",
-								{ class: "ie-titre-petit" },
-								lSuivi.lieu.getLibelle(),
-							),
-						)
-					: "",
-			),
-		);
-	}
-	if (lSuivi.commentaire) {
-		H.push(
-			tag(
-				"div",
-				{ class: "conteneur-commentaire" },
-				GChaine.replaceRCToHTML(lSuivi.commentaire),
-			),
-		);
-	}
-	if (lAvecEdition) {
-		H.push('<div class="flex-contain conteneur-pj">');
-		H.push(
-			tag("ie-btnicon", {
-				class: "icon_piece_jointe bt-activable",
-				"ie-selecfile": true,
-				"ie-model": "ajoutPJSuivi",
-				title: GTraductions.getValeur("FicheStage.AjouterPiecesJointes"),
-			}),
-		);
-		if (!!lSuivi.listePJ && lSuivi.listePJ.count()) {
-			const lIEModelChips = _getIEModelChipsPJSuivi(lSuivi, aParams);
-			H.push('<div class="flex-contain f-wrap">');
-			for (let i = 0, lNbr = lSuivi.listePJ.count(); i < lNbr; i++) {
-				H.push(
-					tag(
-						"div",
-						{ class: "chips-pj" },
-						GChaine.composerUrlLienExterne({
-							documentJoint: lSuivi.listePJ.get(i),
-							maxWidth: 250,
-							ieModelChips: lIEModelChips,
-							argsIEModel: [lSuivi.listePJ.get(i).getNumero()],
-						}),
-					),
-				);
-			}
-			H.push("</div>");
-			H.push("</div>");
-		}
-	} else if (lSuivi.listePJ && lSuivi.listePJ.count()) {
-		H.push('<div class="flex-contain f-wrap conteneur-pj">');
-		for (let i = 0, lNbr = lSuivi.listePJ.count(); i < lNbr; i++) {
-			H.push(
-				tag(
-					"div",
-					{ class: "chips-pj" },
-					GChaine.composerUrlLienExterne({
-						documentJoint: lSuivi.listePJ.get(i),
+					ObjetChaine_1.GChaine.composerUrlLienExterne({
+						documentJoint: aPJ,
 						maxWidth: 250,
 					}),
-				),
-			);
-		}
-		H.push("</div>");
-	}
-	H.push("</div>");
-	H.push("</div>");
-	if (aParams.controleur) {
-		_ajoutControleurSurSuivi(lSuivi, aParams);
-	}
-	return H.join("");
-};
-UtilitaireFicheStage.composeBlocAppreciations = function (aDonnees, aParams) {
-	const H = [];
-	if (!!aDonnees.appreciations) {
-		aDonnees.appreciations.setTri([ObjetTri.init("Genre")]);
-		aDonnees.appreciations.trier();
-		if (!!aDonnees.professeur && aDonnees.professeur.count()) {
-			H.push(_composeBlocAppreciationsProfs(aDonnees));
-		}
-		if (!!aDonnees.maitreDeStage && aDonnees.maitreDeStage.count()) {
-			H.push(_composeBlocAppreciationsMDS(aDonnees));
-		}
-		_ajouterControleurEditionAppreciations(aDonnees, aParams);
-	}
-	return H.join("");
-};
-function _composeBlocAppreciationsProfs(aDonnees) {
-	const H = [];
-	const lListe = aDonnees.appreciations.getListeElements((aAppreciation) => {
-		return aAppreciation.getGenre() === EGenreRessource.Enseignant;
-	});
-	H.push('<section class="Bloc-appreciations">');
-	H.push(
-		tag(
-			"h2",
-			{ class: "ie-titre-couleur" },
-			GTraductions.getValeur("FicheStage.appreciations"),
-		),
-	);
-	H.push(
-		_construireAppreciations(
-			lListe,
-			lListe.count() > 1
-				? GTraductions.getValeur("FicheStage.profsReferents")
-				: GTraductions.getValeur("FicheStage.profReferent"),
-		),
-	);
-	H.push("</section>");
-	return H.join("");
-}
-function _composeBlocAppreciationsMDS(aDonnees) {
-	const H = [];
-	const lListe = aDonnees.appreciations.getListeElements((aAppreciation) => {
-		return aAppreciation.getGenre() === EGenreRessource.MaitreDeStage;
-	});
-	H.push('<section class="Bloc-appreciations">');
-	H.push(
-		_construireAppreciations(
-			lListe,
-			lListe.count() > 1
-				? GTraductions.getValeur("FicheStage.maitresDeStage")
-				: GTraductions.getValeur("FicheStage.maitreDeStage"),
-		),
-	);
-	H.push("</section>");
-	return H.join("");
-}
-function _construireAppreciations(aDonnees, aLibelle) {
-	const H = [];
-	if (!!aDonnees && aDonnees.count()) {
-		let lAvecEdition = false;
-		aDonnees.parcourir((aAppreciation) => {
-			if (aAppreciation.avecEditionAppreciation) {
-				lAvecEdition = true;
+				);
 			}
 		});
-		H.push('<div class="conteneur-appreciation">');
-		H.push(
-			tag(
-				"div",
-				{ class: "flex-contain Gras ie-titre-petit" },
-				aLibelle,
-				lAvecEdition
-					? tag("ie-btnicon", {
-							class: "icon_pencil i-medium avecFond",
-							"ie-model": "modifierAppreciation",
-							title: GTraductions.getValeur("Modifier"),
-						})
-					: "",
-			),
-		);
-		aDonnees.parcourir((aAppreciation) => {
-			H.push(tag("div", { class: "nom-auteur" }, aAppreciation.getLibelle()));
-			H.push(tag("div", { class: "m-bottom" }, aAppreciation.appreciation));
-		});
+		H.push("</div>");
 		H.push("</div>");
 	}
+	H.push("</div>");
+	H.push("</section>");
 	return H.join("");
 }
-function _ajoutControleurEditionDetails(aDonnees, aParams) {
-	const lControleur = aParams.controleur;
-	if (lControleur) {
-		if (!lControleur.ajoutPJ) {
-			lControleur.ajoutPJ = {
-				event: function () {
-					const lInstance = this.instance;
-					afficherFenetreAjoutFichiers.call(lInstance, (aListeFichiers) => {
-						aDonnees.listePJ = aListeFichiers;
-						_requeteSaisieFicheStage.call(lInstance, {
-							listePJ: aListeFichiers,
-							stage: aDonnees,
-						});
-					});
+function _ajoutDocumentDeStageSigne(aDocument, aParams) {
+	if (aDocument.documentArchive) {
+		if (!aDocument.documentArchive.fichierExiste) {
+			const lControleur = aParams.controleur;
+			if (lControleur) {
+				if (!lControleur.ouvrirDocument) {
+					lControleur.ouvrirDocument = {
+						event: function () {
+							UtilitairePartenaire_1.TUtilitairePartenaire.ouvrirPatience();
+							if (ObjetRequeteURLSignataire_1.ObjetRequeteURLSignataire) {
+								const lObj = {
+									typeAction:
+										ObjetRequeteURLSignataire_1.TypeActionSignataire
+											.voirDocument,
+									document: aDocument,
+								};
+								new ObjetRequeteURLSignataire_1.ObjetRequeteURLSignataire(this)
+									.lancerRequete(lObj)
+									.then((aJSON) => {
+										if (aJSON.message) {
+											UtilitairePartenaire_1.TUtilitairePartenaire.fermerPatience();
+											GApplication.getMessage().afficher({
+												type: Enumere_BoiteMessage_1.EGenreBoiteMessage
+													.Information,
+												titre: "",
+												message: aJSON.message,
+											});
+										} else if (aJSON.url) {
+											UtilitairePartenaire_1.TUtilitairePartenaire.ouvrirUrl(
+												aJSON.url,
+											);
+										} else {
+											UtilitairePartenaire_1.TUtilitairePartenaire.fermerPatience();
+										}
+									});
+							}
+						},
+					};
+				}
+			}
+			return IE.jsx.str(
+				"ie-chips",
+				{
+					class: "m-all avec-event iconic icon_uniF1C1",
+					"ie-model": "ouvrirDocument",
 				},
-			};
+				aDocument.documentArchive.getLibelle(),
+			);
+		} else {
+			const lDocument = new ObjetElement_1.ObjetElement(
+				aDocument.documentArchive.getLibelle(),
+				aDocument.getNumero(),
+				aDocument.documentArchive.getGenre(),
+			);
+			return ObjetChaine_1.GChaine.composerUrlLienExterne({
+				documentJoint: lDocument,
+				maxWidth: 250,
+			});
 		}
+	} else {
+		return "";
 	}
 }
-function _ajoutControleurEditionAnnexe(aDonnees, aParams) {
-	const lControleur = aParams.controleur;
-	if (lControleur) {
-		if (!lControleur.modifierAnnexe) {
-			lControleur.modifierAnnexe = {
-				event: function (aTypeAnnexePedagogique) {
-					const lInstance = this.instance;
-					const lFenetreAnnexePedagogique = ObjetFenetre.creerInstanceFenetre(
-						ObjetFenetre_AnnexePedagogiquePN,
+function jsxModeleBoutonModifierAnnexe(
+	aTypeAnnexePedagogique,
+	aDonnees,
+	aParams,
+) {
+	return {
+		event: () => {
+			if (aParams.parametres.avecEdition) {
+				const lInstance = aParams.controleur.instance;
+				const lFenetreAnnexePedagogique =
+					ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+						ObjetFenetre_AnnexePedagogiquePN_1.ObjetFenetre_AnnexePedagogiquePN,
 						{
 							pere: lInstance,
 							evenement: function (aGenreBouton, aDonneesFenetre) {
 								if (aGenreBouton === 1) {
-									aDonneesFenetre.setEtat(EGenreEtat.Modification);
+									aDonneesFenetre.setEtat(
+										Enumere_Etat_1.EGenreEtat.Modification,
+									);
 									lInstance.setEtatSaisie(true);
 									_requeteSaisieFicheStage.call(lInstance, {
 										listePJ: aDonnees.listePJ,
@@ -1316,21 +1144,619 @@ function _ajoutControleurEditionAnnexe(aDonnees, aParams) {
 							},
 						},
 					);
-					const lParams = { genre: aTypeAnnexePedagogique };
-					switch (aTypeAnnexePedagogique) {
-						case TypeAnnexePedagogique.TAP_SujetDetaille:
-							lParams.listeSujets = aParams.parametres.listeSujetsStage;
-							break;
-						case TypeAnnexePedagogique.TAP_ActivitesDejaRealisees:
-							lParams.genreSecondaire =
-								TypeAnnexePedagogique.TAP_CompetencesMobilisees;
-							break;
-						case TypeAnnexePedagogique.TAP_ActivitesPrevues:
-							lParams.genreSecondaire =
-								TypeAnnexePedagogique.TAP_MoyensMobilises;
-							break;
-					}
-					lFenetreAnnexePedagogique.setDonnees(aDonnees, lParams);
+				const lParams = { genre: aTypeAnnexePedagogique };
+				switch (aTypeAnnexePedagogique) {
+					case TypesAnnexePedagogique_1.TypeAnnexePedagogique.TAP_SujetDetaille:
+						lParams.listeSujets = aParams.parametres.listeSujetsStage;
+						break;
+					case TypesAnnexePedagogique_1.TypeAnnexePedagogique
+						.TAP_ActivitesDejaRealisees:
+						lParams.genreSecondaire =
+							TypesAnnexePedagogique_1.TypeAnnexePedagogique.TAP_CompetencesMobilisees;
+						break;
+					case TypesAnnexePedagogique_1.TypeAnnexePedagogique
+						.TAP_ActivitesPrevues:
+						lParams.genreSecondaire =
+							TypesAnnexePedagogique_1.TypeAnnexePedagogique.TAP_MoyensMobilises;
+						break;
+				}
+				lFenetreAnnexePedagogique.setDonnees(aDonnees, lParams);
+			}
+		},
+	};
+}
+function _composeBlocAnnexes(aDonnees, aParams) {
+	const H = [];
+	H.push('<section class="Bloc-details-annexes">');
+	if (
+		aParams.parametres.avecEdition ||
+		aDonnees.sujet.getLibelle() ||
+		aDonnees.sujetDetaille
+	) {
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "m-bottom-xl border-bottom" },
+				IE.jsx.str(
+					"div",
+					{ class: "flex-contain justify-between flex-center flex-gap-l" },
+					IE.jsx.str(
+						"h2",
+						{ class: "ie-titre-couleur-lowercase" },
+						ObjetTraduction_1.GTraductions.getValeur("FicheStage.annexe.stage"),
+					),
+					aParams.parametres.avecEdition
+						? IE.jsx.str("ie-btnicon", {
+								class: "fix-bloc icon_pencil i-medium avecFond m-bottom",
+								"ie-model": jsxModeleBoutonModifierAnnexe.bind(
+									null,
+									TypesAnnexePedagogique_1.TypeAnnexePedagogique
+										.TAP_SujetDetaille,
+									aDonnees,
+									aParams,
+								),
+								title: ObjetTraduction_1.GTraductions.getValeur("Modifier"),
+							})
+						: "",
+				),
+				IE.jsx.str(
+					"div",
+					{ class: [!IE.estMobile ? "flex-contain " : "", "m-right-xxl"] },
+					aDonnees.sujet.getLibelle()
+						? IE.jsx.str(
+								"div",
+								{ class: "m-bottom-xl m-right-l sous-section" },
+								IE.jsx.str(
+									"div",
+									{ class: "Gras ie-titre-petit" },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.annexe.sujet",
+									),
+								),
+								IE.jsx.str("div", null, aDonnees.sujet.getLibelle()),
+							)
+						: "",
+					aDonnees.sujetDetaille
+						? IE.jsx.str(
+								"div",
+								{ class: "m-bottom-xl sous-section" },
+								IE.jsx.str(
+									"div",
+									{ class: "Gras ie-titre-petit" },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.annexe.sujetDetaille",
+									),
+								),
+								IE.jsx.str(
+									"div",
+									null,
+									ObjetChaine_1.GChaine.replaceRCToHTML(aDonnees.sujetDetaille),
+								),
+							)
+						: "",
+				),
+			),
+		);
+	}
+	if (
+		aParams.parametres.avecEdition ||
+		aDonnees.activitesDejaRealisees ||
+		aDonnees.competencesMobilisees
+	) {
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "m-bottom-xl border-bottom" },
+				IE.jsx.str(
+					"div",
+					{ class: "flex-contain justify-between flex-center flex-gap-l" },
+					IE.jsx.str(
+						"h2",
+						{ class: "ie-titre-couleur-lowercase" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"FicheStage.annexe.competencesEtActivites",
+						),
+					),
+					aParams.parametres.avecEdition
+						? IE.jsx.str("ie-btnicon", {
+								class: "fix-bloc icon_pencil i-medium avecFond m-bottom",
+								"ie-model": jsxModeleBoutonModifierAnnexe.bind(
+									null,
+									TypesAnnexePedagogique_1.TypeAnnexePedagogique
+										.TAP_ActivitesDejaRealisees,
+									aDonnees,
+									aParams,
+								),
+								title: ObjetTraduction_1.GTraductions.getValeur("Modifier"),
+							})
+						: "",
+				),
+				IE.jsx.str(
+					"div",
+					{ class: [!IE.estMobile ? "flex-contain " : "", "m-right-xxl"] },
+					aDonnees.activitesDejaRealisees
+						? IE.jsx.str(
+								"div",
+								{ class: "m-bottom-xl m-right-l sous-section" },
+								IE.jsx.str(
+									"div",
+									{ class: "Gras ie-titre-petit" },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.annexe.activitesDejaRealisees",
+									),
+								),
+								IE.jsx.str(
+									"div",
+									null,
+									ObjetChaine_1.GChaine.replaceRCToHTML(
+										aDonnees.activitesDejaRealisees,
+									),
+								),
+							)
+						: "",
+					aDonnees.competencesMobilisees
+						? IE.jsx.str(
+								"div",
+								{ class: "m-bottom-xl sous-section" },
+								IE.jsx.str(
+									"div",
+									{ class: "Gras ie-titre-petit" },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.annexe.competencesMobilisees",
+									),
+								),
+								IE.jsx.str(
+									"div",
+									null,
+									ObjetChaine_1.GChaine.replaceRCToHTML(
+										aDonnees.competencesMobilisees,
+									),
+								),
+							)
+						: "",
+				),
+			),
+		);
+	}
+	if (aParams.parametres.avecEdition || aDonnees.objectifs) {
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "m-bottom-xl border-bottom" },
+				IE.jsx.str(
+					"div",
+					{ class: "flex-contain justify-between flex-center flex-gap-l" },
+					IE.jsx.str(
+						"h2",
+						{ class: "ie-titre-couleur-lowercase" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"FicheStage.annexe.objectifsAssignes",
+						),
+					),
+					aParams.parametres.avecEdition
+						? IE.jsx.str("ie-btnicon", {
+								class: "fix-bloc icon_pencil i-medium avecFond m-bottom",
+								"ie-model": jsxModeleBoutonModifierAnnexe.bind(
+									null,
+									TypesAnnexePedagogique_1.TypeAnnexePedagogique.TAP_Objectifs,
+									aDonnees,
+									aParams,
+								),
+								title: ObjetTraduction_1.GTraductions.getValeur("Modifier"),
+							})
+						: "",
+				),
+				aDonnees.objectifs
+					? IE.jsx.str(
+							"div",
+							{ class: "m-bottom-xl m-right-xxl" },
+							ObjetChaine_1.GChaine.replaceRCToHTML(aDonnees.objectifs),
+						)
+					: "",
+			),
+		);
+	}
+	if (
+		aParams.parametres.avecEdition ||
+		aDonnees.activitesPrevues ||
+		aDonnees.moyensMobilises
+	) {
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "m-bottom-xl border-bottom" },
+				IE.jsx.str(
+					"div",
+					{ class: "flex-contain justify-between flex-center flex-gap-l" },
+					IE.jsx.str(
+						"h2",
+						{ class: "ie-titre-couleur-lowercase" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"FicheStage.annexe.activitesPrevuesAuCoursStage",
+						),
+					),
+					aParams.parametres.avecEdition
+						? IE.jsx.str("ie-btnicon", {
+								class: "fix-bloc icon_pencil i-medium avecFond m-bottom",
+								"ie-model": jsxModeleBoutonModifierAnnexe.bind(
+									null,
+									TypesAnnexePedagogique_1.TypeAnnexePedagogique
+										.TAP_ActivitesPrevues,
+									aDonnees,
+									aParams,
+								),
+								title: ObjetTraduction_1.GTraductions.getValeur("Modifier"),
+							})
+						: "",
+				),
+				IE.jsx.str(
+					"div",
+					{ class: [!IE.estMobile ? "flex-contain " : "", "m-right-xxl"] },
+					aDonnees.activitesPrevues
+						? IE.jsx.str(
+								"div",
+								{ class: "m-bottom-xl m-right-l sous-section" },
+								IE.jsx.str(
+									"div",
+									{ class: "Gras ie-titre-petit" },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.annexe.activitesPrevues",
+									),
+								),
+								IE.jsx.str(
+									"div",
+									null,
+									ObjetChaine_1.GChaine.replaceRCToHTML(
+										aDonnees.activitesPrevues,
+									),
+								),
+							)
+						: "",
+					aDonnees.moyensMobilises
+						? IE.jsx.str(
+								"div",
+								{ class: "m-bottom-xl sous-section" },
+								IE.jsx.str(
+									"div",
+									{ class: "Gras ie-titre-petit" },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.annexe.moyensMobilises",
+									),
+								),
+								IE.jsx.str(
+									"div",
+									null,
+									ObjetChaine_1.GChaine.replaceRCToHTML(
+										aDonnees.moyensMobilises,
+									),
+								),
+							)
+						: "",
+				),
+			),
+		);
+	}
+	if (
+		aParams.parametres.avecEdition ||
+		aDonnees.competencesVisees ||
+		(aDonnees.listeCompetencesVisees && aDonnees.listeCompetencesVisees.length)
+	) {
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "m-bottom-xl border-bottom" },
+				IE.jsx.str(
+					"div",
+					{ class: "flex-contain justify-between flex-center flex-gap-l" },
+					IE.jsx.str(
+						"h2",
+						{ class: "ie-titre-couleur-lowercase" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"FicheStage.annexe.competencesVisees",
+						),
+					),
+					aParams.parametres.avecEdition
+						? IE.jsx.str("ie-btnicon", {
+								class: "fix-bloc icon_pencil i-medium avecFond m-bottom",
+								"ie-model": jsxModeleBoutonModifierAnnexe.bind(
+									null,
+									TypesAnnexePedagogique_1.TypeAnnexePedagogique
+										.TAP_CompetencesVisees,
+									aDonnees,
+									aParams,
+								),
+								title: ObjetTraduction_1.GTraductions.getValeur("Modifier"),
+							})
+						: "",
+				),
+				aDonnees.competencesVisees
+					? IE.jsx.str(
+							"div",
+							{ class: "m-bottom-xl m-right-xxl" },
+							ObjetChaine_1.GChaine.replaceRCToHTML(aDonnees.competencesVisees),
+						)
+					: "",
+				aDonnees.listeCompetencesVisees &&
+					aDonnees.listeCompetencesVisees.length
+					? getHtmlListeCompetencesVisees(aDonnees.listeCompetencesVisees)
+					: "",
+			),
+		);
+	}
+	if (
+		aDonnees.avecTravauxAuxMineurs &&
+		(aParams.parametres.avecEdition || aDonnees.travauxAuxMineurs)
+	) {
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "m-bottom-xl border-bottom" },
+				IE.jsx.str(
+					"div",
+					{ class: "flex-contain justify-between flex-center flex-gap-l" },
+					IE.jsx.str(
+						"h2",
+						{ class: "ie-titre-couleur-lowercase" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"FicheStage.annexe.travauxAuxMineurs",
+						),
+					),
+					aParams.parametres.avecEdition
+						? IE.jsx.str("ie-btnicon", {
+								class: "fix-bloc icon_pencil i-medium avecFond m-bottom",
+								"ie-model": jsxModeleBoutonModifierAnnexe.bind(
+									null,
+									TypesAnnexePedagogique_1.TypeAnnexePedagogique
+										.TAP_TravauxAuxMineurs,
+									aDonnees,
+									aParams,
+								),
+								title: ObjetTraduction_1.GTraductions.getValeur("Modifier"),
+							})
+						: "",
+				),
+				aDonnees.travauxAuxMineurs
+					? IE.jsx.str(
+							"div",
+							{ class: "m-bottom-xl m-right-xxl" },
+							ObjetChaine_1.GChaine.replaceRCToHTML(aDonnees.travauxAuxMineurs),
+						)
+					: "",
+			),
+		);
+	}
+	if (aParams.parametres.avecEdition || aDonnees.modalitesConcertation) {
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "m-bottom-xl border-bottom" },
+				IE.jsx.str(
+					"div",
+					{ class: "flex-contain justify-between flex-center flex-gap-l" },
+					IE.jsx.str(
+						"h2",
+						{ class: "ie-titre-couleur-lowercase" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"FicheStage.annexe.modalitesDEncadrement",
+						),
+					),
+					aParams.parametres.avecEdition
+						? IE.jsx.str("ie-btnicon", {
+								class: "fix-bloc icon_pencil i-medium avecFond m-bottom",
+								"ie-model": jsxModeleBoutonModifierAnnexe.bind(
+									null,
+									TypesAnnexePedagogique_1.TypeAnnexePedagogique
+										.TAP_ModalitesDeConcertation,
+									aDonnees,
+									aParams,
+								),
+								title: ObjetTraduction_1.GTraductions.getValeur("Modifier"),
+							})
+						: "",
+				),
+				aDonnees.modalitesConcertation
+					? IE.jsx.str(
+							"div",
+							{ class: "m-bottom-xl m-right-xxl" },
+							ObjetChaine_1.GChaine.replaceRCToHTML(
+								aDonnees.modalitesConcertation,
+							),
+						)
+					: "",
+			),
+		);
+	}
+	if (
+		aParams.parametres.avecEdition ||
+		aDonnees.typeModalitesEvaluation.getGenre() !==
+			TypesAnnexePedagogique_1.TypeModaliteDEvaluationMilieuProfessionnel
+				.TMEMP_Aucune ||
+		aDonnees.modalitesEvaluation
+	) {
+		H.push(
+			IE.jsx.str(
+				"div",
+				null,
+				IE.jsx.str(
+					"div",
+					{ class: "flex-contain justify-between flex-center flex-gap-l" },
+					IE.jsx.str(
+						"h2",
+						{ class: "ie-titre-couleur-lowercase" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"FicheStage.annexe.modalitesDeLaPeriodePro",
+						),
+					),
+					aParams.parametres.avecEdition
+						? IE.jsx.str("ie-btnicon", {
+								class: "fix-bloc icon_pencil i-medium avecFond m-bottom",
+								"ie-model": jsxModeleBoutonModifierAnnexe.bind(
+									null,
+									TypesAnnexePedagogique_1.TypeAnnexePedagogique
+										.TAP_ModalitesDEvaluation,
+									aDonnees,
+									aParams,
+								),
+								title: ObjetTraduction_1.GTraductions.getValeur("Modifier"),
+							})
+						: "",
+				),
+				IE.jsx.str(
+					"div",
+					{ class: [!IE.estMobile ? "flex-contain " : "", "m-right-xxl"] },
+					aDonnees.typeModalitesEvaluation.getGenre() !==
+						TypesAnnexePedagogique_1.TypeModaliteDEvaluationMilieuProfessionnel
+							.TMEMP_Aucune
+						? IE.jsx.str(
+								"div",
+								{ class: "m-bottom-xl m-right-l sous-section" },
+								IE.jsx.str(
+									"div",
+									{ class: "Gras ie-titre-petit" },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.annexe.typeDEvaluation",
+									),
+								),
+								IE.jsx.str(
+									"div",
+									null,
+									aDonnees.typeModalitesEvaluation.getLibelle(),
+								),
+							)
+						: "",
+					aDonnees.modalitesEvaluation
+						? IE.jsx.str(
+								"div",
+								{ class: "m-bottom-xl sous-section" },
+								IE.jsx.str(
+									"div",
+									{ class: "Gras ie-titre-petit" },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.annexe.modalitesDEvaluation",
+									),
+								),
+								IE.jsx.str(
+									"div",
+									null,
+									ObjetChaine_1.GChaine.replaceRCToHTML(
+										aDonnees.modalitesEvaluation,
+									),
+								),
+							)
+						: "",
+				),
+			),
+		);
+	}
+	H.push("</section>");
+	return H.join("");
+}
+function _composeBlocAppreciationsReferents(aDonnees) {
+	const H = [];
+	const lListe = aDonnees.appreciations.getListeElements((aAppreciation) =>
+		[
+			Enumere_Ressource_1.EGenreRessource.Enseignant,
+			Enumere_Ressource_1.EGenreRessource.Personnel,
+		].includes(aAppreciation.getGenre()),
+	);
+	H.push(
+		IE.jsx.str(
+			"section",
+			{ class: "Bloc-appreciations" },
+			IE.jsx.str(
+				"h2",
+				{ class: "ie-titre-couleur" },
+				ObjetTraduction_1.GTraductions.getValeur("FicheStage.appreciations"),
+			),
+			_construireAppreciations(
+				lListe,
+				lListe.count() > 1
+					? ObjetTraduction_1.GTraductions.getValeur("FicheStage.referents")
+					: ObjetTraduction_1.GTraductions.getValeur("FicheStage.referent"),
+			),
+		),
+	);
+	return H.join("");
+}
+function _composeBlocAppreciationsMDS(aDonnees) {
+	const H = [];
+	const lListe = aDonnees.appreciations.getListeElements((aAppreciation) => {
+		return (
+			aAppreciation.getGenre() ===
+			Enumere_Ressource_1.EGenreRessource.MaitreDeStage
+		);
+	});
+	H.push(
+		IE.jsx.str(
+			"section",
+			{ class: "Bloc-appreciations" },
+			_construireAppreciations(
+				lListe,
+				lListe.count() > 1
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"FicheStage.maitresDeStage",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"FicheStage.maitreDeStage",
+						),
+			),
+		),
+	);
+	return H.join("");
+}
+function _construireAppreciations(aDonnees, aLibelle) {
+	if (!!aDonnees && aDonnees.count()) {
+		let lAvecEdition = false;
+		aDonnees.parcourir((aAppreciation) => {
+			if (aAppreciation.avecEditionAppreciation) {
+				lAvecEdition = true;
+			}
+		});
+		return IE.jsx.str(
+			"div",
+			{ class: "conteneur-appreciation" },
+			IE.jsx.str(
+				"div",
+				{ class: "flex-contain Gras ie-titre-petit" },
+				aLibelle,
+				lAvecEdition
+					? IE.jsx.str("ie-btnicon", {
+							class: "icon_pencil i-medium avecFond",
+							"ie-model": "modifierAppreciation",
+							title: ObjetTraduction_1.GTraductions.getValeur("Modifier"),
+						})
+					: "",
+			),
+			aDonnees.getTableau((aAppreciation) => {
+				return IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
+						"div",
+						{ class: "nom-auteur" },
+						aAppreciation.getLibelle(),
+					),
+					IE.jsx.str("div", { class: "m-bottom" }, aAppreciation.appreciation),
+				);
+			}),
+		);
+	}
+	return "";
+}
+function _ajoutControleurEditionDetails(aDonnees, aParams) {
+	const lControleur = aParams.controleur;
+	if (lControleur) {
+		if (!lControleur.ajoutPJ) {
+			lControleur.ajoutPJ = {
+				event: function () {
+					const lInstance = lControleur.instance;
+					afficherFenetreAjoutFichiers.call(lInstance, (aListeFichiers) => {
+						aDonnees.listePJ = aListeFichiers;
+						_requeteSaisieFicheStage.call(lInstance, {
+							listePJ: aListeFichiers,
+							stage: aDonnees,
+						});
+					});
 				},
 			};
 		}
@@ -1346,18 +1772,18 @@ function _getIEModelChipsPJSuivi(aSuivi, aParams) {
 			const lPieceJointe = aSuivi.listePJ.getElementParNumero(aNumero);
 			const lStage = aParams.stage;
 			GApplication.getMessage().afficher({
-				type: EGenreBoiteMessage.Confirmation,
-				message: GTraductions.getValeur(
+				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+				message: ObjetTraduction_1.GTraductions.getValeur(
 					"selecteurPJ.msgConfirmPJ",
 					lPieceJointe.getLibelle(),
 				),
 				callback: function (aBouton) {
 					if (aBouton === 0) {
-						const lInstance = this.instance;
+						const lInstance = aParams.controleur.instance;
 						if (!!lPieceJointe) {
-							lPieceJointe.setEtat(EGenreEtat.Suppression);
-							aSuivi.setEtat(EGenreEtat.Modification);
-							const lListePJ = new ObjetListeElements();
+							lPieceJointe.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+							aSuivi.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+							const lListePJ = new ObjetListeElements_1.ObjetListeElements();
 							if (!!aSuivi.listePJ) {
 								lListePJ.add(aSuivi.listePJ);
 							}
@@ -1387,13 +1813,13 @@ function _ajoutControleurSurSuivi(aSuivi, aParams) {
 	if (lControleur) {
 		lControleur.menuCtxSuivi = () => {
 			return {
-				class: ObjetMenuCtxMixte,
+				class: ObjetMenuCtxMixte_1.ObjetMenuCtxMixte,
 				pere: aParams.controleur.instance,
 				init(aMenuCtxMixte) {
 					aMenuCtxMixte.setOptions({
 						callbackAddCommandes(aMenu) {
 							aMenu.add(
-								GTraductions.getValeur(
+								ObjetTraduction_1.GTraductions.getValeur(
 									"FicheStage.listeSuivis.MenuCtxSupprimerSuivi",
 								),
 								true,
@@ -1406,15 +1832,16 @@ function _ajoutControleurSurSuivi(aSuivi, aParams) {
 								},
 								{
 									icon: "icon_trash",
-									typeAffEnModeMixte: ETypeAffEnModeMixte.icon,
+									typeAffEnModeMixte:
+										Enumere_MenuCtxModeMixte_1.ETypeAffEnModeMixte.icon,
 								},
 							);
 							aMenu.add(
 								aSuivi.publier
-									? GTraductions.getValeur(
+									? ObjetTraduction_1.GTraductions.getValeur(
 											"FicheStage.listeSuivis.MenuCtxPasPublierSuivi",
 										)
-									: GTraductions.getValeur(
+									: ObjetTraduction_1.GTraductions.getValeur(
 											"FicheStage.listeSuivis.MenuCtxPublierSuivi",
 										),
 								true,
@@ -1429,11 +1856,12 @@ function _ajoutControleurSurSuivi(aSuivi, aParams) {
 									icon: !aSuivi.publier
 										? "icon_info_sondage_publier"
 										: "icon_info_sondage_non_publier",
-									typeAffEnModeMixte: ETypeAffEnModeMixte.icon,
+									typeAffEnModeMixte:
+										Enumere_MenuCtxModeMixte_1.ETypeAffEnModeMixte.icon,
 								},
 							);
 							aMenu.add(
-								GTraductions.getValeur(
+								ObjetTraduction_1.GTraductions.getValeur(
 									"FicheStage.listeSuivis.MenuCtxModifierSuivi",
 								),
 								true,
@@ -1448,7 +1876,8 @@ function _ajoutControleurSurSuivi(aSuivi, aParams) {
 								},
 								{
 									icon: "icon_pencil",
-									typeAffEnModeMixte: ETypeAffEnModeMixte.icon,
+									typeAffEnModeMixte:
+										Enumere_MenuCtxModeMixte_1.ETypeAffEnModeMixte.icon,
 								},
 							);
 						},
@@ -1457,28 +1886,30 @@ function _ajoutControleurSurSuivi(aSuivi, aParams) {
 			};
 		};
 		lControleur.ajoutPJSuivi = {
-			getOptionsSelecFile: function () {
-				return {
-					multiple: true,
-					maxFiles: 0,
-					maxSize: GApplication.droits.get(
-						TypeDroits.tailleMaxDocJointEtablissement,
-					),
-				};
-			},
-			addFiles: function (aParams) {
-				if (!!aSuivi) {
-					if (!aSuivi.listePJ) {
-						aSuivi.listePJ = new ObjetListeElements();
+			event: function () {
+				const lInstance = lControleur.instance;
+				afficherFenetreAjoutFichiers.call(lInstance, (aListeFichiers) => {
+					if (!!aSuivi) {
+						if (!aSuivi.listePJ) {
+							aSuivi.listePJ = new ObjetListeElements_1.ObjetListeElements();
+						}
+						aSuivi.listePJ.add(aListeFichiers);
+						aSuivi.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+						_requeteSaisieFicheStage.call(aParams.controleur.instance, {
+							callbackParam: { suivi: aSuivi },
+							listePJ: aListeFichiers,
+							stage: lStage,
+						});
 					}
-					aSuivi.listePJ.add(aParams.listeFichiers);
-					aSuivi.setEtat(EGenreEtat.Modification);
-					_requeteSaisieFicheStage.call(aParams.controleur.instance, {
-						callbackParam: { suivi: aSuivi },
-						listePJ: aParams.listeFichiers,
-						stage: lStage,
-					});
-				}
+				});
+			},
+			getLibelle() {
+				return ObjetTraduction_1.GTraductions.getValeur(
+					"FicheStage.AjouterPiecesJointes",
+				);
+			},
+			getIcone() {
+				return "icon_piece_jointe";
 			},
 		};
 	}
@@ -1490,8 +1921,8 @@ function _ajouterControleurEditionAppreciations(aDonnees, aParams) {
 			lControleur.modifierAppreciation = {
 				event: function () {
 					const lInstance = this.instance;
-					const lFenetre = ObjetFenetre.creerInstanceFenetre(
-						ObjetFenetre_AppreciationsStage,
+					const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+						ObjetFenetre_AppreciationsStage_1.ObjetFenetre_AppreciationsStage,
 						{
 							pere: lInstance,
 							evenement: function (aGenreBouton, aDonneesFenetre) {
@@ -1507,12 +1938,14 @@ function _ajouterControleurEditionAppreciations(aDonnees, aParams) {
 											lAppreciation.appreciation !== aAppreciation.appreciation
 										) {
 											lAppreciation.appreciation = aAppreciation.appreciation;
-											lAppreciation.setEtat(EGenreEtat.Modification);
+											lAppreciation.setEtat(
+												Enumere_Etat_1.EGenreEtat.Modification,
+											);
 											lAvecModif = true;
 										}
 									});
 									if (lAvecModif) {
-										aDonnees.setEtat(EGenreEtat.Modification);
+										aDonnees.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 										lInstance.setEtatSaisie(true);
 										_requeteSaisieFicheStage.call(lInstance, {
 											listePJ: aDonnees.listePJ,
@@ -1524,11 +1957,11 @@ function _ajouterControleurEditionAppreciations(aDonnees, aParams) {
 							},
 							initialiser: function (aInstance) {
 								const lBoutons = [
-									GTraductions.getValeur("Annuler"),
-									GTraductions.getValeur("Valider"),
+									ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+									ObjetTraduction_1.GTraductions.getValeur("Valider"),
 								];
 								aInstance.setOptionsFenetre({
-									titre: GTraductions.getValeur("Modifier"),
+									titre: ObjetTraduction_1.GTraductions.getValeur("Modifier"),
 									largeur: 500,
 									listeBoutons: lBoutons,
 								});
@@ -1543,86 +1976,60 @@ function _ajouterControleurEditionAppreciations(aDonnees, aParams) {
 }
 function afficherFenetreAjoutFichiers(aCallbackSurValidation) {
 	let lThis = this;
-	let lObjetFenetreAjoutMultiple = ObjetFenetre.creerInstanceFenetre(
-		ObjetFenetre_UploadFichiers,
-		{
-			pere: lThis,
-			evenement: function (aGenreBouton, aListeFichiers) {
-				if (aGenreBouton === EGenreAction.Valider) {
-					if (!!aCallbackSurValidation) {
-						aCallbackSurValidation.call(lThis, aListeFichiers);
+	let lObjetFenetreAjoutMultiple =
+		ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_UploadFichiers_1.ObjetFenetre_UploadFichiers,
+			{
+				pere: lThis,
+				evenement: function (aGenreBouton, aListeFichiers) {
+					if (aGenreBouton === Enumere_Action_1.EGenreAction.Valider) {
+						if (!!aCallbackSurValidation) {
+							aCallbackSurValidation.call(lThis, aListeFichiers);
+						}
 					}
-				}
-				lObjetFenetreAjoutMultiple.fermer();
+					lObjetFenetreAjoutMultiple.fermer();
+				},
 			},
+		);
+	lObjetFenetreAjoutMultiple.setDonnees(
+		Enumere_Ressource_1.EGenreRessource.DocumentJoint,
+		{
+			tailleMaxUploadFichier: (0, AccessApp_1.getApp)().droits.get(
+				ObjetDroitsPN_1.TypeDroits.tailleMaxDocJointEtablissement,
+			),
 		},
 	);
-	lObjetFenetreAjoutMultiple.setDonnees(EGenreRessource.DocumentJoint, {
-		tailleMaxUploadFichier: GApplication.droits.get(
-			TypeDroits.tailleMaxDocJointEtablissement,
-		),
-	});
 	lObjetFenetreAjoutMultiple.afficher();
 }
-UtilitaireFicheStage.composeFenetreCreerSuivi = function (aThis) {
-	const lSuivi = _creerNouveauSuivi();
-	const lFenetreSuiviStage = ObjetFenetre.creerInstanceFenetre(
-		ObjetFenetre_SuiviStage,
-		{
-			pere: aThis,
-			evenement: function (aNumeroBouton, aSuiviModifie, aListePJ) {
-				if (aNumeroBouton === EGenreAction.Valider) {
-					if (
-						aSuiviModifie.getEtat() === EGenreEtat.Creation &&
-						aSuiviModifie
-					) {
-						aThis.donnees.suiviStage.addElement(aSuiviModifie);
-					}
-					if (!!aSuiviModifie) {
-						_requeteSaisieFicheStage.call(aThis, {
-							callbackParam: { suivi: aSuiviModifie },
-							listePJ: aListePJ,
-							stage: aThis.donnees,
-						});
-					}
-				}
-				lFenetreSuiviStage.fermer();
-			},
-			initialiser: function (aInstance) {
-				aInstance.setOptionsFenetre({
-					titre: GTraductions.getValeur("FenetreSuiviStage.CreerSuivi"),
-				});
-				aInstance.setParametresFenetreSuivi({
-					libellePublication: GTraductions.getValeur(
-						"FicheStage.listeSuivis.hintPublication",
-					),
-					maxSizeDocumentJoint: GApplication.droits.get(
-						TypeDroits.tailleMaxDocJointEtablissement,
-					),
-				});
-			},
-		},
-	);
-	const lListePJEleves = new ObjetListeElements();
-	if (!!lSuivi.listePJ) {
-		lListePJEleves.add(lSuivi.listePJ);
-	}
-	lFenetreSuiviStage.setDonnees({
-		suivi: lSuivi,
-		listeResponsables: aThis.donnees.listeResponsables,
-		respAdminCBFiltrage: aThis.donnees.respAdminCBFiltrage,
-		evenements: aThis.evenements,
-		lieux: aThis.lieux,
-		dateFinSaisieSuivi: aThis.dateFinSaisieSuivi,
-		listePJEleve: lListePJEleves,
+function getHtmlListeCompetencesVisees(aListeCompetencesVisees) {
+	const H = [];
+	H.push('<div class="m-bottom-xl m-right-xxl">');
+	aListeCompetencesVisees.forEach((aCompetence) => {
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "m-bottom-xl" },
+				IE.jsx.str("h3", null, aCompetence.compVisees),
+				IE.jsx.str("p", null, aCompetence.blocComp),
+				aCompetence.resultat
+					? IE.jsx.str(
+							"p",
+							{ class: "Italique" },
+							ObjetChaine_1.GChaine.replaceRCToHTML(aCompetence.resultat),
+						)
+					: "",
+			),
+		);
 	});
-};
+	H.push("</div>");
+	return H.join("");
+}
 function _creerNouveauSuivi() {
-	const lNouveauSuivi = new ObjetElement();
-	lNouveauSuivi.date = GDate.getDateCourante();
+	const lNouveauSuivi = new ObjetElement_1.ObjetElement();
+	lNouveauSuivi.date = ObjetDate_1.GDate.getDateHeureCourante();
 	lNouveauSuivi.avecSaisiePossible = true;
 	lNouveauSuivi.responsable = GEtatUtilisateur.getUtilisateur();
-	lNouveauSuivi.setEtat(EGenreEtat.Creation);
+	lNouveauSuivi.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 	return lNouveauSuivi;
 }
 function _supprimerSuivi(aParams) {
@@ -1631,14 +2038,14 @@ function _supprimerSuivi(aParams) {
 		lStage = aParams.stage;
 	GApplication.getMessage()
 		.afficher({
-			type: EGenreBoiteMessage.Confirmation,
-			message: GTraductions.getValeur(
+			type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+			message: ObjetTraduction_1.GTraductions.getValeur(
 				"FicheStage.listeSuivis.MsgConfirmSuppSuivi",
 			),
 		})
 		.then((aGenreAction) => {
-			if (aGenreAction === EGenreAction.Valider) {
-				lSuivi.setEtat(EGenreEtat.Suppression);
+			if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
+				lSuivi.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 				_requeteSaisieFicheStage.call(lInstance, {
 					listePJ: lStage.listePJ,
 					stage: lStage,
@@ -1651,7 +2058,7 @@ function _publierSuivi(aParams) {
 		lInstance = aParams.instance,
 		lStage = aParams.stage;
 	lSuivi.publier = !lSuivi.publier;
-	lSuivi.setEtat(EGenreEtat.Modification);
+	lSuivi.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 	_requeteSaisieFicheStage.call(lInstance, {
 		callbackParam: { suivi: lSuivi },
 		listePJ: lStage.listePJ,
@@ -1662,12 +2069,12 @@ function _modifierSuivi(aParams) {
 	const lSuivi = aParams.suivi,
 		lInstance = aParams.instance,
 		lStage = aParams.stage;
-	const lFenetreSuiviStage = ObjetFenetre.creerInstanceFenetre(
-		ObjetFenetre_SuiviStage,
+	const lFenetreSuiviStage = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+		ObjetFenetre_SuiviStage_1.ObjetFenetre_SuiviStage,
 		{
 			pere: lInstance,
 			evenement: function (aNumeroBouton, aSuiviModifie) {
-				if (aNumeroBouton === EGenreAction.Valider) {
+				if (aNumeroBouton === Enumere_Action_1.EGenreAction.Valider) {
 					if (lSuivi) {
 						const lIndiceSuiviConcerne =
 							lStage.suiviStage.getIndiceParNumeroEtGenre(
@@ -1677,10 +2084,10 @@ function _modifierSuivi(aParams) {
 					}
 					if (!!aSuiviModifie) {
 						Object.assign(lSuivi, aSuiviModifie);
-						const lListePJ = new ObjetListeElements();
+						const lListePJ = new ObjetListeElements_1.ObjetListeElements();
 						if (!!lSuivi.listePJ) {
 							lSuivi.listePJ.parcourir((aPJ) => {
-								if (aPJ.getEtat() !== EGenreEtat.Suppression) {
+								if (aPJ.getEtat() !== Enumere_Etat_1.EGenreEtat.Suppression) {
 									lListePJ.add(aPJ);
 								}
 							});
@@ -1697,20 +2104,22 @@ function _modifierSuivi(aParams) {
 			},
 			initialiser: function (aInstance) {
 				aInstance.setOptionsFenetre({
-					titre: GTraductions.getValeur("FenetreSuiviStage.ModifierSuivi"),
+					titre: ObjetTraduction_1.GTraductions.getValeur(
+						"FenetreSuiviStage.ModifierSuivi",
+					),
 				});
 				aInstance.setParametresFenetreSuivi({
-					libellePublication: GTraductions.getValeur(
-						"FicheStage.listeSuivis.hintPublication",
+					libellePublication: ObjetTraduction_1.GTraductions.getValeur(
+						"FicheStage.listeSuivis.publierSuivi",
 					),
-					maxSizeDocumentJoint: GApplication.droits.get(
-						TypeDroits.tailleMaxDocJointEtablissement,
+					maxSizeDocumentJoint: (0, AccessApp_1.getApp)().droits.get(
+						ObjetDroitsPN_1.TypeDroits.tailleMaxDocJointEtablissement,
 					),
 				});
 			},
 		},
 	);
-	const lListePJ = new ObjetListeElements();
+	const lListePJ = new ObjetListeElements_1.ObjetListeElements();
 	if (!!lSuivi.listePJ) {
 		lListePJ.add(lSuivi.listePJ);
 	}
@@ -1720,17 +2129,18 @@ function _modifierSuivi(aParams) {
 		respAdminCBFiltrage: lStage.respAdminCBFiltrage,
 		evenements: aParams.evenements,
 		lieux: aParams.lieux,
-		dateFinSaisie: aParams.dateFinSaisieSuivi,
+		dateFinSaisieSuivi: lInstance.dateFinSaisieSuivi,
 		listePJEleve: lListePJ,
 	});
 }
 function _requeteSaisieFicheStage(aParams) {
-	new ObjetRequeteSaisieAppreciationFinDeStage(this)
+	new ObjetRequeteSaisieAppreciationFinDeStage_1.ObjetRequeteSaisieAppreciationFinDeStage(
+		this,
+	)
 		.addUpload({ listeFichiers: aParams.listePJ })
 		.lancerRequete({
 			numEleve: aParams.stage.numeroEleve,
 			stage: aParams.stage,
-			appreciations: aParams.stage.appreciations,
 			listePJ: aParams.listePJ,
 		})
 		.then(() => {
@@ -1740,4 +2150,3 @@ function _requeteSaisieFicheStage(aParams) {
 			this.actionSurValidation(aParams.callbackParam);
 		});
 }
-module.exports = { UtilitaireFicheStage };

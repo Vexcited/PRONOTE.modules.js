@@ -92,7 +92,7 @@ function _dupliquer(
 	return lObjetDuplique;
 }
 MethodesObjet.dupliquer = function (aObjet, aDuplicationParesseuse) {
-	return _dupliquer(aObjet, 0, aDuplicationParesseuse, [], []);
+	return _dupliquer(aObjet, 0, !!aDuplicationParesseuse, [], []);
 };
 MethodesObjet.isArray = function (object) {
 	return Array.isArray(object);
@@ -140,6 +140,7 @@ MethodesObjet.isBlob = function (object) {
 	return Object.prototype.toString.call(object) === "[object Blob]";
 };
 MethodesObjet.get = function (aObjet, aAccesseur) {
+	var _a;
 	let lObjet, i, lNomProp, lIndexProp;
 	if (!aObjet || !aAccesseur || !aAccesseur.length) {
 		return aObjet;
@@ -162,7 +163,10 @@ MethodesObjet.get = function (aObjet, aAccesseur) {
 			lNomProp.indexOf("[") > 0 &&
 			lNomProp.indexOf("]") === lNomProp.length - 1
 		) {
-			lIndexProp = lNomProp.match(/\[['"]?(.*)['"]?\]$/)[1];
+			lIndexProp =
+				(_a = lNomProp.match(/\[['"]?(.*)['"]?\]$/)) === null || _a === void 0
+					? void 0
+					: _a[1];
 			lNomProp = lNomProp.replace(/\[['"]?(.*)['"]?\]$/, "");
 		}
 		lObjet = lObjet[lNomProp];

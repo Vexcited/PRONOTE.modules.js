@@ -1,10 +1,8 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { TUtilitaireCompetences } = require("UtilitaireCompetences.js");
-class ObjetRequeteSuiviResultatsCompetences extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSuiviResultatsCompetences = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const UtilitaireCompetences_1 = require("UtilitaireCompetences");
+class ObjetRequeteSuiviResultatsCompetences extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aParams) {
 		this.JSON = $.extend(
 			{
@@ -20,36 +18,42 @@ class ObjetRequeteSuiviResultatsCompetences extends ObjetRequeteConsultation {
 	}
 	actionApresRequete() {
 		if (this.JSONReponse.listeCompetencesEchecs) {
-			_deserialiserListeElementsCompetences(
+			this._deserialiserListeElementsCompetences(
 				this.JSONReponse.listeCompetencesEchecs,
 			);
 		}
 		if (this.JSONReponse.listeCompetencesSucces) {
-			_deserialiserListeElementsCompetences(
+			this._deserialiserListeElementsCompetences(
 				this.JSONReponse.listeCompetencesSucces,
 			);
 		}
 		this.callbackReussite.appel(this.JSONReponse);
 	}
+	_deserialiserListeElementsCompetences(aListe) {
+		if (aListe) {
+			for (const lElemCompetence of aListe) {
+				if (lElemCompetence.listeNiveaux) {
+					lElemCompetence.listeNiveaux.parcourir((aNiveau) => {
+						Object.assign(
+							aNiveau,
+							this._getNiveauGlobalDeGenre(aNiveau.getGenre()),
+						);
+					});
+					lElemCompetence.listeNiveauxParNiveau =
+						UtilitaireCompetences_1.TUtilitaireCompetences.regroupeNiveauxDAcquisitions(
+							lElemCompetence.listeNiveaux,
+						);
+				}
+			}
+		}
+	}
+	_getNiveauGlobalDeGenre(aGenre) {
+		return GParametres.listeNiveauxDAcquisitions.getElementParGenre(aGenre);
+	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteSuiviResultatsCompetences =
+	ObjetRequeteSuiviResultatsCompetences;
+CollectionRequetes_1.Requetes.inscrire(
 	"SuiviResultatsCompetences",
 	ObjetRequeteSuiviResultatsCompetences,
 );
-function _deserialiserListeElementsCompetences(aListe) {
-	if (aListe) {
-		aListe.parcourir((D) => {
-			if (D.listeNiveaux) {
-				D.listeNiveaux.parcourir((aNiveau) => {
-					Object.assign(aNiveau, _getNiveauGlobalDeGenre(aNiveau.getGenre()));
-				});
-				D.listeNiveauxParNiveau =
-					TUtilitaireCompetences.regroupeNiveauxDAcquisitions(D.listeNiveaux);
-			}
-		});
-	}
-}
-function _getNiveauGlobalDeGenre(aGenre) {
-	return GParametres.listeNiveauxDAcquisitions.getElementParGenre(aGenre);
-}
-module.exports = { ObjetRequeteSuiviResultatsCompetences };

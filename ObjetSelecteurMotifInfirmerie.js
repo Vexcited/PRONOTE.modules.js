@@ -1,9 +1,8 @@
 exports.ObjetSelecteurMotifInfirmerie = void 0;
 const _ObjetSelecteur_1 = require("_ObjetSelecteur");
 const MethodesObjet_1 = require("MethodesObjet");
-const ObjetFenetre_SelectionRessource_1 = require("ObjetFenetre_SelectionRessource");
 const ObjetTraduction_1 = require("ObjetTraduction");
-const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetFenetre_SelectionMotifs_1 = require("ObjetFenetre_SelectionMotifs");
 class ObjetSelecteurMotifInfirmerie extends _ObjetSelecteur_1._ObjetSelecteur {
 	constructor(...aParams) {
 		super(...aParams);
@@ -14,14 +13,10 @@ class ObjetSelecteurMotifInfirmerie extends _ObjetSelecteur_1._ObjetSelecteur {
 			titreLibelle: ObjetTraduction_1.GTraductions.getValeur(
 				"RecapAbs.issuesInfirmerie",
 			),
+			tooltip: ObjetTraduction_1.GTraductions.getValeur(
+				"RecapAbs.selectionIssuesInfirmerie",
+			),
 		});
-	}
-	construireInstanceFenetreSelection() {
-		this.identFenetreSelection = this.addFenetre(
-			ObjetFenetre_SelectionRessource_1.ObjetFenetre_SelectionRessource,
-			this.evntFenetreSelection,
-			this.initFenetreSelection,
-		);
 	}
 	initFenetreSelection(aInstance) {
 		aInstance.setAutoriseEltAucun(true);
@@ -33,6 +28,17 @@ class ObjetSelecteurMotifInfirmerie extends _ObjetSelecteur_1._ObjetSelecteur {
 		});
 		aInstance.indexBtnValider = 1;
 	}
+	construireInstanceFenetreSelection() {
+		this.identFenetreSelection = this.addFenetre(
+			ObjetFenetre_SelectionMotifs_1.ObjetFenetre_SelectionMotifs,
+			this.evntFenetreSelection,
+			this.initFenetreSelection,
+		);
+	}
+	setDonnees(aParam) {
+		super.setDonnees(aParam);
+		this.genreRessource = aParam.genreRessource;
+	}
 	evntBtnSelection() {
 		this.getInstance(this.identFenetreSelection).setDonnees({
 			listeRessources: this.listeTotale,
@@ -40,7 +46,7 @@ class ObjetSelecteurMotifInfirmerie extends _ObjetSelecteur_1._ObjetSelecteur {
 				this.listeSelection,
 			),
 			titre: this._options.titreFenetre,
-			genreRessource: Enumere_Ressource_1.EGenreRessource.Infirmerie,
+			genreRessource: this.genreRessource,
 		});
 	}
 }

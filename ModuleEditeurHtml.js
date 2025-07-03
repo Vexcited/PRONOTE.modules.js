@@ -8,13 +8,16 @@ const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetStyle_1 = require("ObjetStyle");
 const Invocateur_1 = require("Invocateur");
 const UtilitaireTiny_1 = require("UtilitaireTiny");
+const AccessApp_1 = require("AccessApp");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const IEHtml_1 = require("IEHtml");
 class ModuleEditeurHtml extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
 		const lGuid = GUID_1.GUID.getId();
 		this.idContenuTiny = lGuid + "_tiny_";
 		this.idContenuTinyFenetre = lGuid + "_tiny_fenetre_";
-		this.avecEditeurRiche = GNavigateur.withContentEditable;
+		this.avecEditeurRiche = ObjetNavigateur_1.Navigateur.withContentEditable;
 		this.idBoutonFenetre = lGuid + "_btnEditeurHtml";
 		this.param = {
 			strLabel: "",
@@ -106,28 +109,29 @@ class ModuleEditeurHtml extends ObjetInterface_1.ObjetInterface {
 	}
 	construireStructureAffichage() {
 		const H = [];
-		H.push('<div class="flex-contain justify-between flex-center p-y">');
 		H.push(
-			'<div class="',
-			this.param.classLabel,
-			' " style="' +
-				ObjetStyle_1.GStyle.composeWidth(this.param.widthLabel) +
-				'">',
-			this.param.strLabel,
-			"</div>",
+			IE.jsx.str(
+				"div",
+				{ class: "flex-contain justify-between flex-center p-y" },
+				IE.jsx.str(
+					"div",
+					{
+						class: this.param.classLabel,
+						style: ObjetStyle_1.GStyle.composeWidth(this.param.widthLabel),
+					},
+					this.param.strLabel,
+				),
+				this.param.avecTinyEnFenetre &&
+					this._autoriseTiny() &&
+					!this.param.sideBySide &&
+					IE.jsx.str("ie-btnicon", {
+						"ie-model": "btn",
+						"ie-node": "nodebtn",
+						id: this.idBoutonFenetre,
+						class: "bt-activable icon_font",
+					}),
+			),
 		);
-		if (
-			this.param.avecTinyEnFenetre &&
-			this._autoriseTiny() &&
-			!this.param.sideBySide
-		) {
-			H.push(
-				'<ie-btnicon ie-model="btn" ie-node="nodebtn" id="',
-				this.idBoutonFenetre,
-				'" class="bt-activable icon_font"></ie-btnicon>',
-			);
-		}
-		H.push("</div>");
 		if (
 			this.param.avecTinyEnFenetre &&
 			this._autoriseTiny() &&
@@ -135,35 +139,63 @@ class ModuleEditeurHtml extends ObjetInterface_1.ObjetInterface {
 		) {
 			H.push('<div class="flex-contain">');
 			H.push(
-				'<div class="fix-bloc" style="padding: 0.1rem 0.3rem 0 0;"><ie-btnicon id="',
-				this.idBoutonFenetre,
-				'" ie-model="btn" ie-node="nodebtn" class="bt-activable icon_font"></ie-btnicon></div>',
+				IE.jsx.str(
+					"div",
+					{ class: "fix-bloc", style: "padding: 0.1rem 0.3rem 0 0;" },
+					IE.jsx.str("ie-btnicon", {
+						id: this.idBoutonFenetre,
+						"ie-model": "btn",
+						"ie-node": "nodebtn",
+						class: "bt-activable icon_font",
+					}),
+				),
 			);
 			H.push('<div style="flex: 1 0 auto">');
 		}
-		const lPlaceHolder = this.param.placeholder
-			? ' placeholder="' + this.param.placeholder + '"'
-			: "";
+		const lAttributs = {
+			placeholder: this.param.placeholder || null,
+			"aria-label": this.param.ariaLabel || null,
+		};
 		if (this._autoriseTiny()) {
 			H.push(
-				'<textarea id="' +
-					this.idContenuTiny +
-					'" class="round-style" style="width:100%;" disabled ',
-				lPlaceHolder,
-				"></textarea>",
+				IE.jsx.str(
+					"textarea",
+					Object.assign(
+						{
+							id: this.idContenuTiny,
+							class:
+								"is-tiny full-width " +
+								IEHtml_1.default.Styles.debugWAIInputIgnoreAssert,
+							disabled: true,
+						},
+						lAttributs,
+					),
+				),
 			);
 		} else {
 			H.push(
-				'<textarea id="' +
-					this.idContenuTiny +
-					'" ie-model="textarea" maxlength="1000" class="Texte10 round-style" style="width:100%;',
-				ObjetStyle_1.GStyle.composeHeight(this.param.heightEdition),
-				'"',
-				lPlaceHolder,
-				"></textarea>",
+				IE.jsx.str(
+					"textarea",
+					Object.assign(
+						{
+							id: this.idContenuTiny,
+							class: "is-tiny full-width",
+							"ie-model": "textarea",
+							maxlength: "1000",
+							style: ObjetStyle_1.GStyle.composeHeight(
+								this.param.heightEdition,
+							),
+						},
+						lAttributs,
+					),
+				),
 			);
 		}
-		if (this._autoriseTiny() && this.param.sideBySide) {
+		if (
+			this.param.avecTinyEnFenetre &&
+			this._autoriseTiny() &&
+			this.param.sideBySide
+		) {
 			H.push("</div>");
 			H.push("</div>");
 		}
@@ -222,12 +254,13 @@ class ModuleEditeurHtml extends ObjetInterface_1.ObjetInterface {
 				editeurEquation: this.param.editeurEquation,
 				editeurEquationMaxFileSize: this.param.editeurEquationMaxFileSize,
 				toolbar: false,
-				labelWAI:
-					this.param.labelWAI ||
+				ariaLabel:
+					this.param.ariaLabel ||
 					this.param.strLabel ||
 					ObjetTraduction_1.GTraductions.getValeur("Tiny.WAITitre"),
 				readonly:
-					this.param.gererModeExclusif && GApplication.getModeExclusif(),
+					this.param.gererModeExclusif &&
+					(0, AccessApp_1.getApp)().getModeExclusif(),
 				setup: function (ed) {
 					ed.on("blur", () => {
 						if (lThis.param.surExitChange && !ed._enCoursDestruction) {
@@ -273,11 +306,13 @@ class ModuleEditeurHtml extends ObjetInterface_1.ObjetInterface {
 			avecModificationAuDebut:
 				!ObjetChaine_1.GChaine.estChaineHTMLEgal(this._val, lDescriptif) &&
 				this.declenchementEventBtn,
-			labelWAI:
-				this.param.labelWAI ||
+			ariaLabel:
+				this.param.ariaLabel ||
 				this.param.strLabel ||
 				ObjetTraduction_1.GTraductions.getValeur("Tiny.WAITitre"),
-			readonly: this.param.gererModeExclusif && GApplication.getModeExclusif(),
+			readonly:
+				this.param.gererModeExclusif &&
+				(0, AccessApp_1.getApp)().getModeExclusif(),
 			callback: (aParams) => {
 				if (aParams.valider) {
 					if (this._autoriseTiny()) {

@@ -34,7 +34,7 @@ const TypeOrigineCreationEtiquetteMessage_1 = require("TypeOrigineCreationEtique
 const UtilitaireMessagerie_1 = require("UtilitaireMessagerie");
 const DonneesListe_SelectEtiquettes_1 = require("DonneesListe_SelectEtiquettes");
 const Type_ThemeBouton_1 = require("Type_ThemeBouton");
-const UtilitaireCarnetLiaison = require("UtilitaireCarnetLiaison");
+const UtilitaireCarnetLiaison_1 = require("UtilitaireCarnetLiaison");
 const TypeBoutonCreationMessagerie_1 = require("TypeBoutonCreationMessagerie");
 const ObjetFenetre_Message_1 = require("ObjetFenetre_Message");
 const TypeGenreDiscussion_1 = require("TypeGenreDiscussion");
@@ -45,6 +45,7 @@ const MoteurMessagerie_1 = require("MoteurMessagerie");
 const ObjetDestinatairesMessagerie_1 = require("ObjetDestinatairesMessagerie");
 const ToucheClavier_1 = require("ToucheClavier");
 const UtilitaireSyntheseVocale_1 = require("UtilitaireSyntheseVocale");
+const IEHtml_1 = require("IEHtml");
 class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
@@ -77,6 +78,8 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 			maxHeightDiscussion: null,
 			avecSousDiscussions: true,
 			discussionSelectionneeUniquementVisible: false,
+			forcerBandeau: false,
+			avecMenuActions: true,
 			estChat: false,
 			genreDiscussion: TypeGenreDiscussion_1.TypeGenreDiscussion.GD_Discussion,
 			activerBoutonsBrouillon: true,
@@ -102,10 +105,6 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 			this._notificationRequeteSaisieMessage,
 			this,
 		);
-		Invocateur_1.Invocateur.abonner("notification_creationDiscussion", () => {
-			this.__selectionneeDiscussionRecente = true;
-		});
-		Invocateur_1.Invocateur.evenement("affichage_messagerie", true);
 		this.moteurMessagerie =
 			new MoteurMessagerie_1.MoteurMessagerie().setOptions({
 				instance: this,
@@ -177,7 +176,7 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 				this.identListeEtiquette,
 			).IdPremierElement;
 		} else {
-			this.idPremierObjet = this.getInstance(this.identListe).getNom();
+			this.idPremierObjet = this.getNomInstance(this.identListe);
 		}
 		if (this._options.estChat) {
 			Invocateur_1.Invocateur.desabonner("traiter_notifications_chatVS", this);
@@ -187,6 +186,18 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 				this,
 			);
 		}
+	}
+	jsxModeleBoutonEnvoi(aGenreEnvoi) {
+		return {
+			event: () => {
+				this._evenementSurBoutonRepondre(aGenreEnvoi);
+			},
+			getDisabled: () => {
+				return this.applicationSco.droits.get(
+					ObjetDroitsPN_1.TypeDroits.estEnConsultation,
+				);
+			},
+		};
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
@@ -236,10 +247,14 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 				},
 			},
 			getHtmlBandeauDroite: function () {
+				if (!aInstance.message) {
+					return "";
+				}
 				return aInstance.moteurMessagerie.composeTitreBandeauDeMessageVisu(
 					aInstance.message,
 					{
 						avecMenuActions:
+							aInstance._options.avecMenuActions &&
 							aInstance.message.estUneDiscussion &&
 							!aInstance.applicationSco.droits.get(
 								ObjetDroitsPN_1.TypeDroits.communication.discussionInterdit,
@@ -252,13 +267,13 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 				return !!aInstance.message;
 			},
 			getHtmlMessageInfo: function () {
-				const lHtml = [];
+				const H = [];
 				if (
 					aInstance.message &&
 					aInstance.messagePourReponse &&
 					aInstance.messagePourReponse.messageInfo
 				) {
-					lHtml.push(
+					H.push(
 						IE.jsx.str(
 							"div",
 							{ class: "info" },
@@ -273,7 +288,7 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 					aInstance.messagePourReponse &&
 					aInstance.messagePourReponse.messageDestinataires
 				) {
-					lHtml.push(
+					H.push(
 						IE.jsx.str(
 							"div",
 							null,
@@ -289,7 +304,7 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 					aInstance.messagePourReponse.estCarnetLiaison &&
 					aInstance.etatUtilisateurSco.pourPrimaire()
 				) {
-					lHtml.push(
+					H.push(
 						IE.jsx.str(
 							"div",
 							{ class: "ie-titre-petit" },
@@ -301,7 +316,7 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 						),
 					);
 				}
-				return lHtml.join("");
+				return H.join("");
 			},
 			getNodeTextarea: function () {
 				$(this.node).on("keyup change", function () {
@@ -319,16 +334,6 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 						aInstance.brouillon.objet = aValue;
 						aInstance.brouillon.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 					},
-				},
-			},
-			btnEnvoi: {
-				event: function (aGenre) {
-					aInstance._evenementSurBoutonRepondre(aGenre);
-				},
-				getDisabled: function () {
-					return aInstance.applicationSco.droits.get(
-						ObjetDroitsPN_1.TypeDroits.estEnConsultation,
-					);
 				},
 			},
 			cbInclureParentEleve: {
@@ -352,19 +357,17 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 					!aInstance.param.message
 				) {
 					H.push(
-						"<ie-bouton",
-						ObjetHtml_1.GHtml.composeAttr(
-							"ie-model",
-							"btnEnvoi",
-							TypeHttpReponseMessage_1.TypeHttpReponseMessage.rm_Relance,
+						IE.jsx.str(
+							"ie-bouton",
+							{
+								"ie-model": aInstance.jsxModeleBoutonEnvoi.bind(
+									aInstance,
+									TypeHttpReponseMessage_1.TypeHttpReponseMessage.rm_Relance,
+								),
+								class: Type_ThemeBouton_1.TypeThemeBouton.primaire,
+							},
+							ObjetTraduction_1.GTraductions.getValeur("Messagerie.BtnEnvoyer"),
 						),
-						ObjetHtml_1.GHtml.composeAttr(
-							"class",
-							Type_ThemeBouton_1.TypeThemeBouton.primaire,
-						),
-						">",
-						ObjetTraduction_1.GTraductions.getValeur("Messagerie.BtnEnvoyer"),
-						"</ie-bouton>",
 					);
 				} else if (
 					aInstance.listeBoutonsReponse &&
@@ -407,10 +410,13 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 							);
 						}
 						H.push(
-							(0, tag_1.tag)(
+							IE.jsx.str(
 								"ie-bouton",
 								{
-									"ie-model": tag_1.tag.funcAttr("btnEnvoi", lGenre),
+									"ie-model": aInstance.jsxModeleBoutonEnvoi.bind(
+										aInstance,
+										lGenre,
+									),
 									class: Type_ThemeBouton_1.TypeThemeBouton.primaire,
 									"ie-ellipsis": true,
 								},
@@ -441,10 +447,27 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 					)
 				) {
 					result.push(
-						'<span ie-html="destinataires.nb" ie-hint="destinataires.hint" style="vertical-align: middle;"></span>',
-						'<div style="margin-left: 5px; display:inline-block;vertical-align: middle;" ie-display="destinataires.avecBtnAjouter">',
-						'<ie-btnicon ie-model="destinataires.btnAjouter" class="icon_plus_cercle"></ie-btnicon>',
-						"</div>",
+						IE.jsx.str(
+							IE.jsx.fragment,
+							null,
+							IE.jsx.str("span", {
+								"ie-html": "destinataires.nb",
+								"ie-hint": "destinataires.hint",
+								style: "vertical-align: middle;",
+							}),
+							IE.jsx.str(
+								"div",
+								{
+									style:
+										"margin-left: 5px; display:inline-block;vertical-align: middle;",
+									"ie-display": "destinataires.avecBtnAjouter",
+								},
+								IE.jsx.str("ie-btnicon", {
+									"ie-model": "destinataires.btnAjouter",
+									class: "icon_plus_cercle",
+								}),
+							),
+						),
 					);
 				}
 				return result.join("");
@@ -810,9 +833,6 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 		this.brouillon.contenu = lContenu;
 		this._actualiserContenuSaisie();
 	}
-	detruireInstances() {
-		Invocateur_1.Invocateur.evenement("affichage_messagerie", false);
-	}
 	setParametresGeneraux() {
 		this.GenreStructure =
 			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
@@ -854,15 +874,19 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 			'">',
 		);
 		H.push(
-			'<div class="ilm_cont_disc">',
-			'<div id="',
-			this.getNomInstance(this.identListe),
-			'" class="AlignementHaut listeMessagesDiscussion" ie-zonenavigation="zoneNavListeMess"></div>',
-			"</div>",
+			IE.jsx.str(
+				"div",
+				{ class: "ilm_cont_disc" },
+				IE.jsx.str("div", {
+					id: this.getNomInstance(this.identListe),
+					class: "AlignementHaut listeMessagesDiscussion",
+					"ie-zonenavigation": "zoneNavListeMess",
+				}),
+			),
 		);
 		H.push("</div>");
 		H.push(
-			(0, tag_1.tag)(
+			IE.jsx.str(
 				"div",
 				{ class: "ilm_droite", "ie-zonenavigation": true },
 				this._composeZoneReponse(),
@@ -1179,6 +1203,15 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 			});
 	}
 	_composerZoneSaisie() {
+		const lPlaceholderTextArea =
+			this.etatUtilisateurSco.GenreEspace ===
+			Enumere_Espace_1.EGenreEspace.PrimEleve
+				? ObjetTraduction_1.GTraductions.getValeur(
+						"Messagerie.PlaceholderMessageReponseEnseignant",
+					)
+				: ObjetTraduction_1.GTraductions.getValeur(
+						"Messagerie.PlaceholderMessage",
+					);
 		return IE.jsx.str(
 			IE.jsx.fragment,
 			null,
@@ -1197,18 +1230,16 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 							null,
 							IE.jsx.str("textarea", {
 								id: this.idReponse,
-								class: "round-style",
+								class: [
+									"",
+									this.avecEditeurRiche
+										? IEHtml_1.default.Styles.debugWAIInputIgnoreAssert
+										: "",
+								],
 								maxlength: this.avecEditeurRiche ? 0 : 10000,
 								"ie-node": this.avecEditeurRiche ? false : "getNodeTextarea",
-								placeholder:
-									this.etatUtilisateurSco.GenreEspace ===
-									Enumere_Espace_1.EGenreEspace.PrimEleve
-										? ObjetTraduction_1.GTraductions.getValeur(
-												"Messagerie.PlaceholderMessageReponseEnseignant",
-											)
-										: ObjetTraduction_1.GTraductions.getValeur(
-												"Messagerie.PlaceholderMessage",
-											),
+								placeholder: lPlaceholderTextArea,
+								"aria-label": lPlaceholderTextArea,
 								"ie-autoresize": !this.avecEditeurRiche,
 							}),
 						),
@@ -1223,7 +1254,7 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 							IE.jsx.str("ie-btnicon", {
 								"ie-model": "btnSignature",
 								"ie-display": "getDisplaySignature",
-								class: "icon_signature bt-activable",
+								class: "icon_signature bt-activable bt-large",
 								title: ObjetTraduction_1.GTraductions.getValeur(
 									"Messagerie.HintAjouterSignature",
 								),
@@ -1314,12 +1345,13 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 		const H = [];
 		H.push('<div class="ilm_zoneReponse">');
 		if (
-			this._options.avecListeDiscussions &&
-			!this._options.estChat &&
-			!this._options.enFenetre
+			(this._options.avecListeDiscussions &&
+				!this._options.estChat &&
+				!this._options.enFenetre) ||
+			this._options.forcerBandeau
 		) {
 			H.push(
-				(0, tag_1.tag)("div", {
+				IE.jsx.str("div", {
 					class: "messagerie-titre-bandeau-message",
 					"ie-html": "getHtmlBandeauDroite",
 					"ie-if": "avecMessageSelectionne",
@@ -1329,7 +1361,7 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 		}
 		if (this._options.estChat) {
 			H.push(
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"div",
 					{
 						"ie-if": "afficherMessageAlerteExercice",
@@ -1375,24 +1407,21 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 			);
 		}
 		H.push(
-			(0, tag_1.tag)(
+			IE.jsx.str(
 				"div",
 				{
 					id: this.idReponse + "_vide",
 					style: "display : none;",
 					class: "message-vide",
 				},
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"div",
 					{ class: "message" },
 					ObjetTraduction_1.GTraductions.getValeur(
 						"Messagerie.AucuneDiscussionSelectionnee",
 					),
 				),
-				(0, tag_1.tag)("div", {
-					class: ["Image_No_Data"],
-					"aria-hidden": "true",
-				}),
+				IE.jsx.str("div", { class: ["Image_No_Data"], "aria-hidden": "true" }),
 			),
 		);
 		H.push(
@@ -1455,7 +1484,7 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 			max_height: this._options.hauteurTiny || 75,
 			height: "",
 			plugins: ["autoresize"],
-			labelWAI: ObjetTraduction_1.GTraductions.getValeur(
+			ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
 				"Messagerie.labelWAIMessage",
 			),
 			toolbar: false,
@@ -1490,24 +1519,25 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 		const lListeBoutons = [];
 		if (!this._options.enFenetre) {
 			if (this._avecFiltreNonLues()) {
-				lListeBoutons.push({
-					html: (0, tag_1.tag)(
-						"ie-checkbox",
-						{ "ie-model": "cbNonLu", "ie-textleft": true },
-						ObjetTraduction_1.GTraductions.getValeur("Messagerie.NonLues"),
-					),
-					controleur: {
-						cbNonLu: {
-							getValue: function () {
-								return lInstance.applicationSco.parametresUtilisateur.get(
-									"Communication.DiscussionNonLues",
-								);
-							},
-							setValue: function (aValue) {
-								lInstance._evenementSurCBLue(aValue);
-							},
+				const lJSXModelCBNonLu = () => {
+					return {
+						getValue() {
+							return lInstance.applicationSco.parametresUtilisateur.get(
+								"Communication.DiscussionNonLues",
+							);
 						},
-					},
+						setValue(aValue) {
+							lInstance._evenementSurCBLue(aValue);
+						},
+					};
+				};
+				lListeBoutons.push({
+					getHtml: () =>
+						IE.jsx.str(
+							"ie-checkbox",
+							{ "ie-model": lJSXModelCBNonLu, "ie-textleft": true },
+							ObjetTraduction_1.GTraductions.getValeur("Messagerie.NonLues"),
+						),
 				});
 			}
 			if (this.moteurMessagerie.avecIconeAvertissementListeMessagerie()) {
@@ -1577,9 +1607,15 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 				: ObjetTraduction_1.GTraductions.getValeur(
 						"Messagerie.DiscussionsDesactivees",
 					),
-			labelWAI: ObjetTraduction_1.GTraductions.getValeur(
-				"Messagerie.Titre.MesDiscussions",
-			),
+			ariaLabel: () => {
+				let lLabel = ObjetTraduction_1.GTraductions.getValeur(
+					"Messagerie.Titre.MesDiscussions",
+				);
+				if (this.existeInstance(this.identListeEtiquette) && this.etiquette) {
+					lLabel += " - " + this.etiquette.getLibelle();
+				}
+				return lLabel;
+			},
 		});
 	}
 	_initSelecteurPJ(aInstance) {
@@ -1619,7 +1655,7 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 			lListe
 				.setOptionsListe({
 					skin: ObjetListe_1.ObjetListe.skin.flatDesign,
-					labelWAI: ObjetTraduction_1.GTraductions.getValeur(
+					ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
 						"Messagerie.MesDossiersDiscussions",
 					),
 				})
@@ -2132,7 +2168,7 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 		if (!lListeDestinataires) {
 			lListeDestinataires = this.listeDestinatairesCarnetLiaison;
 		}
-		UtilitaireCarnetLiaison.creerDiscussion(
+		UtilitaireCarnetLiaison_1.UtilitaireCarnetLiaison.creerDiscussion(
 			lListeDestinataires,
 			lGenreDestinataire,
 			lEleveConcerne,
@@ -2506,6 +2542,7 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 	}
 	_construireBrouillonNonEnvoye(aBrouillon) {
 		const H = [];
+		const lId = `${this.Nom}_inp_objet`;
 		H.push(
 			'<div id="',
 			this.getNomInstance(this.identDestinataire),
@@ -2514,18 +2551,29 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 		H.push('<div style="position:relative;" class="PetitEspaceBas">');
 		if (!aBrouillon.estMessageTransferant) {
 			H.push(
-				'<label style="position:absolute; top:5px;">',
-				ObjetTraduction_1.GTraductions.getValeur("Messagerie.ObjetMsg"),
-				"</label>",
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
+						"label",
+						{ for: lId, style: "position:absolute; top:5px;" },
+						ObjetTraduction_1.GTraductions.getValeur("Messagerie.ObjetMsg"),
+					),
+					IE.jsx.str(
+						"div",
+						{ style: "margin-left:40px;" },
+						IE.jsx.str("input", {
+							id: lId,
+							"ie-model": "brouillon.inputObjet",
+							maxlength:
+								UtilitaireMessagerie_1.UtilitaireMessagerie
+									.C_TailleObjetMessage,
+							type: "text",
+							style: "width:100%;",
+						}),
+					),
+				),
 			);
-			H.push('<div style="margin-left:40px;">');
-			H.push(
-				'<input ie-model="brouillon.inputObjet" maxlength="',
-				UtilitaireMessagerie_1.UtilitaireMessagerie.C_TailleObjetMessage,
-				'" type="text" class="round-style"',
-				' style="width:100%;" />',
-			);
-			H.push("</div>");
 		} else {
 			H.push(
 				"<label>",

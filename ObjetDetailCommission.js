@@ -16,10 +16,11 @@ const ObjetSelecteurPJ_1 = require("ObjetSelecteurPJ");
 const ObjetDroitsPN_1 = require("ObjetDroitsPN");
 const ObjetTri_1 = require("ObjetTri");
 const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
-const ObjetRequeteSaisieCommission = require("ObjetRequeteSaisieCommission");
+const ObjetRequeteSaisieCommission_1 = require("ObjetRequeteSaisieCommission");
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
 const Enumere_Action_1 = require("Enumere_Action");
 const TypeGenreIndividuAuteur_1 = require("TypeGenreIndividuAuteur");
+const AccessApp_1 = require("AccessApp");
 class ObjetDetailCommission extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
@@ -30,13 +31,6 @@ class ObjetDetailCommission extends ObjetIdentite_1.Identite {
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
-			getTitleMembre(aGenre) {
-				return aInstance.estContexteParent
-					? ""
-					: aInstance.commission.listeMembres
-							.getTableauLibelles(aGenre)
-							.join(", ");
-			},
 			getIdentListe() {
 				return {
 					class: ObjetListe_1.ObjetListe,
@@ -75,22 +69,20 @@ class ObjetDetailCommission extends ObjetIdentite_1.Identite {
 							aInstanceListe.setDonnees(
 								new DonneesListe_ReponsesEducatives(lListe, {
 									estContexteParent: aInstance.estContexteParent,
-									callbackCreerSuivi: (aParams) => {
+									callbackCreerSuivi: (aReponseEducative) => {
 										aInstance.afficherFenetreSuivi({
-											reponseEduc: aParams.reponseEduc,
+											reponseEduc: aReponseEducative,
 										});
 									},
-									callbackModifierSuivi: (aParams) => {
-										aInstance.afficherFenetreSuivi({ suivi: aParams.article });
+									callbackModifierSuivi: (aSuivi) => {
+										aInstance.afficherFenetreSuivi({ suivi: aSuivi });
 									},
-									callbackSuprimerSuivi: (aParams) => {
-										aParams.article.setEtat(
-											Enumere_Etat_1.EGenreEtat.Suppression,
-										);
-										new ObjetRequeteSaisieCommission(
+									callbackSuprimerSuivi: (aSuivi) => {
+										aSuivi.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+										new ObjetRequeteSaisieCommission_1.ObjetRequeteSaisieCommission(
 											aInstance,
 											aInstance.actionApresRequete,
-										).lancerRequete({ suivi: aParams.article });
+										).lancerRequete({ suivi: aSuivi });
 									},
 								}),
 							);
@@ -114,45 +106,207 @@ class ObjetDetailCommission extends ObjetIdentite_1.Identite {
 			},
 		});
 	}
+	jsxDisplayReponsesEducatives() {
+		return (
+			this.commission &&
+			this.commission.listeConvoques &&
+			this.commission.listeConvoques.count() > 0
+		);
+	}
+	jsxGetTitleMembreCommission(aGenreRessource) {
+		return this.estContexteParent
+			? ""
+			: this.commission.listeMembres
+					.getTableauLibelles(aGenreRessource)
+					.join(", ");
+	}
 	construireAffichage() {
 		if (!this.commission) {
-			return `<div class="Gras AlignementMilieu GrandEspaceHaut">${ObjetTraduction_1.GTraductions.getValeur("Commissions.selectionnezCommission")}</div>`;
+			return IE.jsx.str(
+				"div",
+				{ class: "Gras AlignementMilieu GrandEspaceHaut" },
+				ObjetTraduction_1.GTraductions.getValeur(
+					"Commissions.selectionnezCommission",
+				),
+			);
+		}
+		const lStrCirconstances = [];
+		if (this.commission.circonstance) {
+			lStrCirconstances.push(
+				IE.jsx.str(
+					"p",
+					{ class: "m-top-l" },
+					ObjetChaine_1.GChaine.replaceRCToHTML(this.commission.circonstance),
+				),
+			);
+		}
+		const lListePJCirconstances = [];
+		if (
+			this.commission.listePJCirconstances &&
+			this.commission.listePJCirconstances.count() > 0
+		) {
+			lListePJCirconstances.push(
+				IE.jsx.str(
+					"div",
+					{ class: "m-top-l" },
+					UtilitaireUrl_1.UtilitaireUrl.construireListeUrls(
+						this.commission.listePJCirconstances,
+					),
+				),
+			);
 		}
 		const H = [];
-		H.push(`<h4 class="ie-titre">${this.commission.nature.getLibelle()}</h4>`);
 		H.push(
-			`<p class="m-top ie-titre-petit theme_color_foncee">${ObjetTraduction_1.GTraductions.getValeur("Commissions.commissionDate", [ObjetDate_1.GDate.formatDate(this.commission.dateDebut, `%JJJ %JJ %MMM`), ObjetDate_1.GDate.formatDate(this.commission.dateDebut, `%hh%sh%mm`), ObjetDate_1.GDate.formatDate(this.commission.dateFin, `%hh%sh%mm`)])}${this.commission.lieu ? " " + ObjetTraduction_1.GTraductions.getValeur("Commissions.aLAdresse", [this.commission.lieu.getLibelle()]) : ""}</p>`,
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str("h2", null, this.commission.nature.getLibelle()),
+				IE.jsx.str(
+					"p",
+					{ class: "m-top ie-titre-petit theme_color_foncee" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"Commissions.commissionDate",
+						[
+							ObjetDate_1.GDate.formatDate(
+								this.commission.dateDebut,
+								`%JJJ %JJ %MMM`,
+							),
+							ObjetDate_1.GDate.formatDate(
+								this.commission.dateDebut,
+								`%hh%sh%mm`,
+							),
+							ObjetDate_1.GDate.formatDate(
+								this.commission.dateFin,
+								`%hh%sh%mm`,
+							),
+						],
+					),
+					this.commission.lieu
+						? " " +
+								ObjetTraduction_1.GTraductions.getValeur(
+									"Commissions.aLAdresse",
+									[this.commission.lieu.getLibelle()],
+								)
+						: "",
+				),
+				IE.jsx.str(
+					"p",
+					{ class: "m-top-l ie-titre-petit" },
+					ObjetTraduction_1.GTraductions.getValeur("Commissions.presideePar"),
+					" ",
+					this.commission.president.getLibelle(),
+				),
+				IE.jsx.str(
+					"h4",
+					{ class: "ie-titre m-top-l" },
+					ObjetTraduction_1.GTraductions.getValeur("Commissions.Informations"),
+				),
+				IE.jsx.str(
+					"article",
+					{ class: "flex-contain m-top-l" },
+					IE.jsx.str(
+						"div",
+						{ class: "ie-titre-petit", style: "white-space:nowrap;" },
+						ObjetTraduction_1.GTraductions.getValeur("Commissions.motifs"),
+						" :",
+					),
+					IE.jsx.str(
+						"div",
+						{ class: "m-left" },
+						IE.jsx.str(
+							"p",
+							{ class: "ie-titre-petit theme_color_foncee" },
+							this.commission.listeMotifs.getTableauLibelles().join(", "),
+						),
+						lStrCirconstances.join(""),
+						lListePJCirconstances.join(""),
+					),
+				),
+				IE.jsx.str(
+					"p",
+					{ class: "m-top-l" },
+					IE.jsx.str(
+						"span",
+						{ class: "ie-titre-petit" },
+						ObjetTraduction_1.GTraductions.getValeur("Commissions.membres"),
+						" : ",
+					),
+					IE.jsx.str(
+						"span",
+						{ class: "ie-titre-petit theme_color_foncee" },
+						IE.jsx.str(
+							"span",
+							{
+								"ie-title": this.jsxGetTitleMembreCommission.bind(
+									this,
+									Enumere_Ressource_1.EGenreRessource.Enseignant,
+								),
+							},
+							this.commission.nbrMembreProf,
+							" ",
+							ObjetTraduction_1.GTraductions.getValeur("Professeurs"),
+							" ",
+						),
+						"- ",
+						IE.jsx.str(
+							"span",
+							{
+								"ie-title": this.jsxGetTitleMembreCommission.bind(
+									this,
+									Enumere_Ressource_1.EGenreRessource.Personnel,
+								),
+							},
+							this.commission.nbrMembrePersonnel,
+							" ",
+							ObjetTraduction_1.GTraductions.getValeur("Personnels"),
+							" ",
+						),
+						"- ",
+						IE.jsx.str(
+							"span",
+							{
+								"ie-title": this.jsxGetTitleMembreCommission.bind(
+									this,
+									Enumere_Ressource_1.EGenreRessource.Responsable,
+								),
+							},
+							this.commission.nbrMembreParent,
+							" ",
+							ObjetTraduction_1.GTraductions.getValeur("Responsables"),
+							" ",
+						),
+						"- ",
+						IE.jsx.str(
+							"span",
+							{
+								"ie-title": this.jsxGetTitleMembreCommission.bind(
+									this,
+									Enumere_Ressource_1.EGenreRessource.Eleve,
+								),
+							},
+							this.commission.nbrMembreEleve,
+							" ",
+							ObjetTraduction_1.GTraductions.getValeur("Eleves"),
+						),
+					),
+				),
+				IE.jsx.str(
+					"h4",
+					{
+						"ie-display": this.jsxDisplayReponsesEducatives.bind(this),
+						class: "m-top-xxl ie-titre",
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"Commissions.ReponsesEducatives",
+					),
+				),
+				IE.jsx.str("div", {
+					"ie-display": this.jsxDisplayReponsesEducatives.bind(this),
+					"ie-identite": "getIdentListe",
+					class: "full-size m-top-l",
+				}),
+			),
 		);
-		H.push(
-			`<p class="m-top-l ie-titre-petit">${ObjetTraduction_1.GTraductions.getValeur("Commissions.presideePar")} ${this.commission.president.getLibelle()}</p>`,
-		);
-		H.push(
-			`<article class="flex-contain m-top-l">`,
-			`<div class="ie-titre-petit" style="white-space:nowrap;">${ObjetTraduction_1.GTraductions.getValeur("Commissions.motifs")} :</div>`,
-			`<div class="m-left">`,
-			`<p class="ie-titre-petit theme_color_foncee">${this.commission.listeMotifs.getTableauLibelles().join(", ")}</p>`,
-			this.commission.circonstance
-				? `<p class="m-top-l">${ObjetChaine_1.GChaine.replaceRCToHTML(this.commission.circonstance)}</p>`
-				: "",
-			this.commission.listePJ.count()
-				? `<p class="m-top-l">${UtilitaireUrl_1.UtilitaireUrl.construireListeUrls(this.commission.listePJ)}</p>`
-				: "",
-			`</div>`,
-			`</article>`,
-		);
-		H.push(
-			`<p class="m-top-l"><span class="ie-titre-petit">${ObjetTraduction_1.GTraductions.getValeur("Commissions.membres")} : </span>`,
-			`<span class="ie-titre-petit theme_color_foncee">`,
-			`<span ie-title="getTitleMembre(${Enumere_Ressource_1.EGenreRessource.Enseignant})">${this.commission.nbrMembreProf} ${ObjetTraduction_1.GTraductions.getValeur("Professeurs")}</span>`,
-			` - <span ie-title="getTitleMembre(${Enumere_Ressource_1.EGenreRessource.Personnel})">${this.commission.nbrMembrePersonnel} ${ObjetTraduction_1.GTraductions.getValeur("Personnels")}</span>`,
-			` - <span ie-title="getTitleMembre(${Enumere_Ressource_1.EGenreRessource.Responsable})">${this.commission.nbrMembreParent} ${ObjetTraduction_1.GTraductions.getValeur("Responsables")}</span>`,
-			` - <span ie-title="getTitleMembre(${Enumere_Ressource_1.EGenreRessource.Eleve})">${this.commission.nbrMembreEleve} ${ObjetTraduction_1.GTraductions.getValeur("Eleves")}</span>`,
-			`</span></p>`,
-		);
-		H.push(
-			`<h4 class="m-top-xxl ie-titre">${ObjetTraduction_1.GTraductions.getValeur("Commissions.reponsesEducatives")}</h4>`,
-		);
-		H.push(`<div ie-identite="getIdentListe" class="full-size m-top-l"></div>`);
 		return H.join("");
 	}
 	setDonnees(aCommission) {
@@ -174,7 +328,10 @@ class ObjetDetailCommission extends ObjetIdentite_1.Identite {
 								aSuivi.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 							}
 						}
-						new ObjetRequeteSaisieCommission(this, this.actionApresRequete)
+						new ObjetRequeteSaisieCommission_1.ObjetRequeteSaisieCommission(
+							this,
+							this.actionApresRequete,
+						)
 							.addUpload({ listeFichiers: aSuivi.listePJ })
 							.lancerRequete({ suivi: aSuivi });
 					},
@@ -196,61 +353,61 @@ class DonneesListe_ReponsesEducatives extends ObjetDonneesListeFlatDesign_1.Obje
 		this.callbackSuprimerSuivi = aParams.callbackSuprimerSuivi;
 		this.setOptions({ avecTri: false, avecEllipsis: false });
 	}
-	getControleur(aDonneesListe, aInstanceListe) {
-		return $.extend(true, super.getControleur(aDonneesListe, aInstanceListe), {
-			AjoutSuivi: {
-				event(aNumeroArticle) {
-					aDonneesListe.callbackCreerSuivi({
-						reponseEduc:
-							aDonneesListe.Donnees.getElementParNumero(aNumeroArticle),
-					});
-				},
-			},
-		});
+	estMonSuivi(aArticle) {
+		return (
+			aArticle &&
+			aArticle.auteur &&
+			aArticle.auteur.getNumero() ===
+				GEtatUtilisateur.getUtilisateur().getNumero()
+		);
 	}
-	avecSelection(aParams) {
-		return this.estSuiviEditable(aParams);
+	estSuiviReponseEducative(aArticle) {
+		return aArticle && !aArticle.estUnDeploiement;
 	}
 	avecEvenementSelectionClick(aParams) {
-		return this.estSuiviEditable(aParams);
+		return this.estSuiviEditable(aParams.article);
 	}
 	avecBoutonActionLigne(aParams) {
-		return this.estSuiviEditable(aParams);
+		return this.estSuiviEditable(aParams.article);
 	}
 	initialisationObjetContextuel(aParams) {
 		if (!aParams.menuContextuel) {
 			return;
 		}
-		aParams.menuContextuel.add(
-			ObjetTraduction_1.GTraductions.getValeur("Commissions.modifierLeSuivi"),
-			true,
-			() => {
-				this.callbackModifierSuivi(aParams);
-			},
-			{ icon: "icon_pencil" },
-		);
-		aParams.menuContextuel.add(
-			ObjetTraduction_1.GTraductions.getValeur("Commissions.supprimerLeSuivi"),
-			true,
-			() => {
-				GApplication.getMessage().afficher({
-					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
-					message: ObjetTraduction_1.GTraductions.getValeur(
-						"Commissions.confirmezSuppressionSuivi",
-					),
-					callback: (aAction) => {
-						if (aAction === Enumere_Action_1.EGenreAction.Valider) {
-							this.callbackSuprimerSuivi(aParams);
-						}
-					},
-				});
-			},
-			{ icon: "icon_trash" },
-		);
-		aParams.menuContextuel.setDonnees();
+		if (this.estSuiviReponseEducative(aParams.article)) {
+			aParams.menuContextuel.add(
+				ObjetTraduction_1.GTraductions.getValeur("Commissions.modifierLeSuivi"),
+				this.estMonSuivi(aParams.article),
+				() => {
+					this.callbackModifierSuivi(aParams.article);
+				},
+				{ icon: "icon_pencil" },
+			);
+			aParams.menuContextuel.add(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"Commissions.supprimerLeSuivi",
+				),
+				this.estMonSuivi(aParams.article),
+				() => {
+					GApplication.getMessage().afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+						message: ObjetTraduction_1.GTraductions.getValeur(
+							"Commissions.confirmezSuppressionSuivi",
+						),
+						callback: (aAction) => {
+							if (aAction === Enumere_Action_1.EGenreAction.Valider) {
+								this.callbackSuprimerSuivi(aParams.article);
+							}
+						},
+					});
+				},
+				{ icon: "icon_trash" },
+			);
+			aParams.menuContextuel.setDonnees();
+		}
 	}
 	getZoneGauche(aParams) {
-		if (!aParams.article.estUnDeploiement) {
+		if (this.estSuiviReponseEducative(aParams.article)) {
 			return IE.jsx.str(
 				"time",
 				{
@@ -269,7 +426,7 @@ class DonneesListe_ReponsesEducatives extends ObjetDonneesListeFlatDesign_1.Obje
 		return ObjetChaine_1.GChaine.replaceRCToHTML(aParams.article.getLibelle());
 	}
 	getInfosSuppZonePrincipale(aParams) {
-		if (!aParams.article.estUnDeploiement) {
+		if (this.estSuiviReponseEducative(aParams.article)) {
 			return aParams.article.auteur.getLibelle();
 		} else if (!this.estContexteParent) {
 			const lStrIndividus = aParams.article.listeSuiviPar
@@ -284,25 +441,43 @@ class DonneesListe_ReponsesEducatives extends ObjetDonneesListeFlatDesign_1.Obje
 	getZoneMessage(aParams) {
 		const H = [];
 		if (
-			aParams.article.estUnDeploiement &&
+			!this.estSuiviReponseEducative(aParams.article) &&
 			aParams.article.avecPublicationParent &&
 			!this.estContexteParent
 		) {
 			H.push(
-				`<div class="m-top">${ObjetTraduction_1.GTraductions.getValeur("Commissions.publieePourParents")}</div>`,
+				IE.jsx.str(
+					"div",
+					{ class: "m-top" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"Commissions.publieePourParents",
+					),
+				),
 			);
 		}
 		if (aParams.article.listePJ && aParams.article.listePJ.count()) {
 			H.push(
-				`<div class="m-top-l">${UtilitaireUrl_1.UtilitaireUrl.construireListeUrls(aParams.article.listePJ)}</div>`,
+				IE.jsx.str(
+					"div",
+					{ class: "m-top-l" },
+					UtilitaireUrl_1.UtilitaireUrl.construireListeUrls(
+						aParams.article.listePJ,
+					),
+				),
 			);
 		}
 		return H.join("");
 	}
 	getZoneComplementaire(aParams) {
-		if (!aParams.article.estUnDeploiement) {
+		if (this.estSuiviReponseEducative(aParams.article)) {
 			if (aParams.article.avecPublicationParent && !this.estContexteParent) {
-				return `<i class="icon_info_sondage_publier mix-icon_ok i-as-deco" title="${ObjetTraduction_1.GTraductions.getValeur("Commissions.publiePourParents")}"></i>`;
+				return IE.jsx.str("i", {
+					class: "icon_info_sondage_publier mix-icon_ok i-as-deco",
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"Commissions.publiePourParents",
+					),
+					role: "img",
+				});
 			}
 		} else if (
 			!this.estContexteParent &&
@@ -310,25 +485,35 @@ class DonneesListe_ReponsesEducatives extends ObjetDonneesListeFlatDesign_1.Obje
 				GEtatUtilisateur.getUtilisateur().getNumero(),
 			)
 		) {
-			return `<ie-btnicon class="bt-activable bt-big icon_plus_fin" ie-model="AjoutSuivi('${aParams.article.getNumero()}')" title="${ObjetTraduction_1.GTraductions.getValeur("Commissions.ajouterSuivi")}"></ie-btnicon>`;
+			const lJsxBtnAjoutSuivi = (aReponseEducative) => {
+				return {
+					event: () => {
+						this.callbackCreerSuivi(aReponseEducative);
+					},
+				};
+			};
+			return IE.jsx.str("ie-btnicon", {
+				class: "bt-activable bt-big icon_plus_fin",
+				"ie-model": lJsxBtnAjoutSuivi.bind(this, aParams.article),
+				title: ObjetTraduction_1.GTraductions.getValeur(
+					"Commissions.ajouterSuivi",
+				),
+			});
 		}
 		return "";
 	}
-	estSuiviEditable(aParams) {
+	estSuiviEditable(aArticle) {
 		return (
-			!aParams.article.estUnDeploiement &&
+			this.estSuiviReponseEducative(aArticle) &&
 			!this.estContexteParent &&
-			aParams.article.pere &&
-			aParams.article.pere.listeSuiviPar.getElementParNumero(
-				GEtatUtilisateur.getUtilisateur().getNumero(),
-			)
+			this.estMonSuivi(aArticle)
 		);
 	}
 }
 class ObjetFenetre_SuiviReponseEduc extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
-		this.applicationSco = GApplication;
+		this.applicationSco = (0, AccessApp_1.getApp)();
 		this.setOptionsFenetre({
 			largeur: 500,
 			hauteur: 400,
@@ -420,27 +605,6 @@ class ObjetFenetre_SuiviReponseEduc extends ObjetFenetre_1.ObjetFenetre {
 					aInstance.donnees.avecPublicationParent = aValue;
 				},
 			},
-			btnSupprimer: {
-				event() {
-					GApplication.getMessage().afficher({
-						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
-						message: ObjetTraduction_1.GTraductions.getValeur(
-							"Commissions.confirmezSuppressionSuivi",
-						),
-						callback: (aAction) => {
-							if (aAction === Enumere_Action_1.EGenreAction.Valider) {
-								aInstance.donnees.setEtat(
-									Enumere_Etat_1.EGenreEtat.Suppression,
-								);
-								aInstance.surValidation(1);
-							}
-						},
-					});
-				},
-			},
-			getBtnSuppr() {
-				return !aInstance.estEnCreation;
-			},
 		});
 	}
 	initDonnees() {
@@ -461,42 +625,112 @@ class ObjetFenetre_SuiviReponseEduc extends ObjetFenetre_1.ObjetFenetre {
 		}
 		const H = [];
 		H.push(
-			`<div class="field-contain label-up"><label>${ObjetTraduction_1.GTraductions.getValeur("Date")}</label><div ie-identite="getIdentiteDate"></div></div>`,
-		);
-		H.push(
-			`<div class="field-contain label-up p-top"><label id="${this.idLabelAuteur}">${ObjetTraduction_1.GTraductions.getValeur("Commissions.auteur")}</label><ie-btnselecteur ie-model="btnAuteur" aria-describedby="${this.idLabelAuteur}"></ie-btnselecteur></div>`,
-		);
-		H.push(
-			`<div class="field-contain p-top" style="height:16rem;"><ie-textareamax ie-model="txtSuivi" class="full-size" ie-compteurmax="10000" aria-label="${ObjetTraduction_1.GTraductions.getValeur("Commissions.redigerSuivi")}"></ie-textareamax></div>`,
-		);
-		H.push(
-			`<div class="field-contain p-top"><div class="pj-global-conteneur" ie-identite="getListePJ"></div></div>`,
-		);
-		H.push(
-			`<div class="field-contain p-top-l"><ie-checkbox ie-model="cbPublication">${ObjetTraduction_1.GTraductions.getValeur("Commissions.publierLeSuivi")}<i class="icon_info_sondage_publier mix-icon_ok i-as-deco m-left"></i></ie-checkbox></div>`,
-		);
-		return H.join("");
-	}
-	composeBas() {
-		const lHTML = [];
-		lHTML.push(
 			IE.jsx.str(
 				IE.jsx.fragment,
 				null,
 				IE.jsx.str(
 					"div",
-					{ class: "compose-bas", "ie-if": "getBtnSuppr" },
-					IE.jsx.str("ie-btnicon", {
-						"ie-model": "btnSupprimer",
-						title: ObjetTraduction_1.GTraductions.getValeur(
-							"Commissions.supprimerLeSuivi",
+					{ class: "field-contain label-up" },
+					IE.jsx.str(
+						"label",
+						null,
+						ObjetTraduction_1.GTraductions.getValeur("Date"),
+					),
+					IE.jsx.str("div", { "ie-identite": "getIdentiteDate" }),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "field-contain label-up p-top" },
+					IE.jsx.str(
+						"label",
+						{ id: this.idLabelAuteur },
+						ObjetTraduction_1.GTraductions.getValeur("Commissions.auteur"),
+					),
+					IE.jsx.str("ie-btnselecteur", {
+						"ie-model": "btnAuteur",
+						"aria-describedby": this.idLabelAuteur,
+					}),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "field-contain p-top", style: "height:16rem;" },
+					IE.jsx.str("ie-textareamax", {
+						"ie-model": "txtSuivi",
+						class: "full-size",
+						"ie-compteurmax": "10000",
+						"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+							"Commissions.redigerSuivi",
 						),
-						class: "icon_trash avecFond i-medium",
+					}),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "field-contain p-top" },
+					IE.jsx.str("div", {
+						class: "pj-global-conteneur",
+						"ie-identite": "getListePJ",
+					}),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "field-contain p-top-l" },
+					IE.jsx.str(
+						"ie-checkbox",
+						{ "ie-model": "cbPublication" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"Commissions.publierLeSuivi",
+						),
+					),
+					" ",
+					IE.jsx.str("i", {
+						class: "icon_info_sondage_publier mix-icon_ok i-as-deco m-left",
+						role: "presentation",
 					}),
 				),
 			),
 		);
-		return lHTML.join("");
+		return H.join("");
+	}
+	jsxIfAffichageBoutonSupprimer() {
+		return !this.estEnCreation;
+	}
+	jsxModeleBoutonSupprimerReponseSuivi() {
+		return {
+			event: () => {
+				GApplication.getMessage().afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+					message: ObjetTraduction_1.GTraductions.getValeur(
+						"Commissions.confirmezSuppressionSuivi",
+					),
+					callback: (aAction) => {
+						if (aAction === Enumere_Action_1.EGenreAction.Valider) {
+							this.donnees.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+							this.surValidation(1);
+						}
+					},
+				});
+			},
+		};
+	}
+	composeBas() {
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				"div",
+				{
+					class: "compose-bas",
+					"ie-if": this.jsxIfAffichageBoutonSupprimer.bind(this),
+				},
+				IE.jsx.str("ie-btnicon", {
+					"ie-model": this.jsxModeleBoutonSupprimerReponseSuivi.bind(this),
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"Commissions.supprimerLeSuivi",
+					),
+					class: "icon_trash avecFond i-medium",
+				}),
+			),
+		);
+		return H.join("");
 	}
 	setDonnees(aDonnees) {
 		this.donnees = new ObjetElement_1.ObjetElement("");

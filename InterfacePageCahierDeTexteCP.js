@@ -1,36 +1,37 @@
-const { GUID } = require("GUID.js");
-const { EStructureAffichage } = require("Enumere_StructureAffichage.js");
-const { ObjetCelluleDate } = require("ObjetCelluleDate.js");
-const { _InterfacePage } = require("_InterfacePage.js");
-const { ObjetTimeline } = require("ObjetTimeline.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { EModeAffichageTimeline } = require("Enumere_ModeAffichageTimeline.js");
-const {
-	DonneesListe_RessourceMatiere,
-} = require("DonneesListe_RessourceMatiere.js");
-const { GDate } = require("ObjetDate.js");
-class ObjetInterfacePageCahierDeTexteCP extends _InterfacePage {
-	constructor(...aParams) {
-		super(...aParams);
-		this.idZoneChxModeAff = GUID.getId();
-		this.classLabelDepuis = GUID.getClassCss();
+exports.ObjetInterfacePageCahierDeTexteCP = void 0;
+const GUID_1 = require("GUID");
+const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
+const ObjetCelluleDate_1 = require("ObjetCelluleDate");
+const _InterfacePage_1 = require("_InterfacePage");
+const ObjetTimeline_1 = require("ObjetTimeline");
+const ObjetListe_1 = require("ObjetListe");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const Enumere_ModeAffichageTimeline_1 = require("Enumere_ModeAffichageTimeline");
+const DonneesListe_RessourceMatiere_1 = require("DonneesListe_RessourceMatiere");
+const ObjetDate_1 = require("ObjetDate");
+const AccessApp_1 = require("AccessApp");
+class ObjetInterfacePageCahierDeTexteCP extends _InterfacePage_1._InterfacePage {
+	constructor() {
+		super(...arguments);
+		this.idZoneChxModeAff = GUID_1.GUID.getId();
+		this.classLabelDepuis = GUID_1.GUID.getClassCss();
 		this.filtreMatiere = null;
 		this.apresModificationTAF = false;
 	}
 	construireInstances() {
-		this.IdentTimeLine = this.add(ObjetTimeline);
+		this.IdentTimeLine = this.add(ObjetTimeline_1.ObjetTimeline);
 		this.identListeMatieres = this.add(
-			ObjetListe,
-			_evenementListeMatieres,
-			_initialiserListeMatieres,
+			ObjetListe_1.ObjetListe,
+			this._evenementListeMatieres,
+			this._initialiserListeMatieres,
 		);
 		this.identCelluleDate = this.add(
-			ObjetCelluleDate,
+			ObjetCelluleDate_1.ObjetCelluleDate,
 			this._eventCelluleDate,
-			_initCelluleDate,
+			this._initCelluleDate,
 		);
-		this.GenreStructure = EStructureAffichage.Autre;
+		this.GenreStructure =
+			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 	}
 	_initCelluleSemaine(aInstance) {
 		aInstance.setParametresObjetCelluleSemaine(1);
@@ -57,9 +58,9 @@ class ObjetInterfacePageCahierDeTexteCP extends _InterfacePage {
 			$("." + this.classLabelDepuis.escapeJQ()).hide();
 		}
 	}
-	setModeTimeline() {}
-	_evntCelluleSemaine() {}
-	_eventCelluleDate() {}
+	setModeTimeline(aModeTimeline) {}
+	_evntCelluleSemaine(aDomaine) {}
+	_eventCelluleDate(aDate) {}
 	gestionMatiere() {
 		this.listeMatieres = this.getListeMatieres();
 		if (
@@ -68,9 +69,10 @@ class ObjetInterfacePageCahierDeTexteCP extends _InterfacePage {
 			this.listeMatieres &&
 			this.listeMatieres.count() > 0
 		) {
-			const lDonneesListeMatiere = new DonneesListe_RessourceMatiere(
-				this.listeMatieres,
-			);
+			const lDonneesListeMatiere =
+				new DonneesListe_RessourceMatiere_1.DonneesListe_RessourceMatiere(
+					this.listeMatieres,
+				);
 			$("#" + this.getNomInstance(this.identListeMatieres).escapeJQ()).show();
 			let lIndice = 0;
 			if (this.filtreMatiere) {
@@ -84,12 +86,14 @@ class ObjetInterfacePageCahierDeTexteCP extends _InterfacePage {
 					this.filtreMatiere = null;
 				}
 				if (
-					this.modeTimeLine === EModeAffichageTimeline.classique ||
-					this.modeTimeLine === EModeAffichageTimeline.compact
+					this.modeTimeLine ===
+						Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.classique ||
+					this.modeTimeLine ===
+						Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.compact
 				) {
 					this.modeTimeLine = !!this.filtreMatiere
-						? EModeAffichageTimeline.compact
-						: EModeAffichageTimeline.classique;
+						? Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.compact
+						: Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.classique;
 				}
 			}
 			this.getInstance(this.identListeMatieres).setDonnees(
@@ -102,39 +106,48 @@ class ObjetInterfacePageCahierDeTexteCP extends _InterfacePage {
 			});
 		} else {
 			$("#" + this.getNomInstance(this.identListeMatieres).escapeJQ()).hide();
-			$(
-				"#" + this.getInstance(this.IdentCahierDeTexte).getNom().escapeJQ(),
-			).get(0).style.maxWidth = "100%";
+			$("#" + this.getNomInstance(this.IdentCahierDeTexte).escapeJQ()).get(
+				0,
+			).style.maxWidth = "100%";
 		}
 	}
-	getListeMatieres() {}
+	getListeMatieres() {
+		return;
+	}
 	actualiser() {}
 	estChronologique() {
 		return (
-			this.modeTimeLine === EModeAffichageTimeline.classique ||
-			this.modeTimeLine === EModeAffichageTimeline.compact
+			this.modeTimeLine ===
+				Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.classique ||
+			this.modeTimeLine ===
+				Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.compact
 		);
 	}
 	estHebdomadaire() {
-		return this.modeTimeLine === EModeAffichageTimeline.grille;
+		return (
+			this.modeTimeLine ===
+			Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.grille
+		);
 	}
-	formatDonnees() {}
+	formatDonnees(aParametres) {
+		return;
+	}
 	recupererDonnees() {}
 	construireStructureAffichageAutre() {
 		const H = [];
 		H.push('<div class="conteneur-CDT full-size">');
 		H.push(
 			'<div id="',
-			this.getInstance(this.identListeMatieres).getNom(),
+			this.getNomInstance(this.identListeMatieres),
 			'" class="fix-bloc conteneur-liste-filtre"></div>',
 		);
 		H.push(
 			'<div class="fluid-bloc conteneur-droite p-left conteneur-liste-CDT">',
 			'<div class="fluid-bloc" id="',
-			this.getInstance(this.IdentCahierDeTexte).getNom(),
+			this.getNomInstance(this.IdentCahierDeTexte),
 			'" style="max-width: 80rem;"></div>',
 			'<div id="',
-			this.getInstance(this.IdentTimeLine).getNom(),
+			this.getNomInstance(this.IdentTimeLine),
 			'" style="flex-basis: 100%;"></div>',
 			this.construireStructureListeADroite(),
 			"</div>",
@@ -152,7 +165,7 @@ class ObjetInterfacePageCahierDeTexteCP extends _InterfacePage {
 				let min = 365;
 				for (let j = 0, lNbr = aListe.count(); j < lNbr; j++) {
 					const lNombreJoursEntreDates = Math.abs(
-						GDate.getNbrJoursEntreDeuxDates(
+						ObjetDate_1.GDate.getNbrJoursEntreDeuxDates(
 							!!aListe.get(j).datePour
 								? aListe.get(j).datePour
 								: aListe.get(j).PourLe,
@@ -160,7 +173,7 @@ class ObjetInterfacePageCahierDeTexteCP extends _InterfacePage {
 						),
 					);
 					if (
-						!GDate.estAvantJourCourant(
+						!ObjetDate_1.GDate.estAvantJourCourant(
 							!!aListe.get(j).datePour
 								? aListe.get(j).datePour
 								: aListe.get(j).PourLe,
@@ -183,10 +196,13 @@ class ObjetInterfacePageCahierDeTexteCP extends _InterfacePage {
 					: null;
 			if (lDateLaPlusProche) {
 				const lElementJQ = $(
-					"#" + this.getInstance(this.IdentCahierDeTexte).getNom().escapeJQ(),
+					"#" + this.getNomInstance(this.IdentCahierDeTexte).escapeJQ(),
 				).find(
 					'div[data-idDate="' +
-						GDate.formatDate(lDateLaPlusProche, "%JJ%MM%AAAA").toString() +
+						ObjetDate_1.GDate.formatDate(
+							lDateLaPlusProche,
+							"%JJ%MM%AAAA",
+						).toString() +
 						'"]',
 				);
 				if (lElementJQ) {
@@ -201,37 +217,42 @@ class ObjetInterfacePageCahierDeTexteCP extends _InterfacePage {
 			this.apresModificationTAF = false;
 		}
 	}
-}
-function _initCelluleDate(aInstance) {
-	aInstance.setControleNavigation(true);
-	aInstance.setVisible(false);
-}
-function _initialiserListeMatieres(aInstance) {
-	const lColonnes = [
-		{ id: "ObjetInterfacePageCahierDeTexteCP_ListeMatiere", taille: "100%" },
-	];
-	aInstance.setOptionsListe({
-		colonnes: lColonnes,
-		skin: ObjetListe.skin.flatDesign,
-		hauteurZoneContenuListeMin: 100,
-		avecOmbreDroite: true,
-	});
-}
-function _evenementListeMatieres(aParametres) {
-	switch (aParametres.genreEvenement) {
-		case EGenreEvenementListe.Selection: {
-			if (aParametres.article.getGenre() === -1) {
-				this.filtreMatiere = null;
-				this.modeTimeLine = EModeAffichageTimeline.classique;
-			} else {
-				this.filtreMatiere = aParametres.article;
-				this.modeTimeLine = EModeAffichageTimeline.compact;
+	_initCelluleDate(aInstance) {
+		aInstance.setControleNavigation(true);
+		aInstance.setVisible(false);
+	}
+	_initialiserListeMatieres(aInstance) {
+		const lColonnes = [
+			{ id: "ObjetInterfacePageCahierDeTexteCP_ListeMatiere", taille: "100%" },
+		];
+		aInstance.setOptionsListe({
+			colonnes: lColonnes,
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+			hauteurZoneContenuListeMin: 100,
+			avecOmbreDroite: true,
+			ariaLabel: (0, AccessApp_1.getApp)()
+				.getEtatUtilisateur()
+				.getLibelleLongOnglet(),
+		});
+	}
+	_evenementListeMatieres(aParametres) {
+		switch (aParametres.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Selection: {
+				if (aParametres.article.getGenre() === -1) {
+					this.filtreMatiere = null;
+					this.modeTimeLine =
+						Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.classique;
+				} else {
+					this.filtreMatiere = aParametres.article;
+					this.modeTimeLine =
+						Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.compact;
+				}
+				const lListe = this.getInstance(this.identListeMatieres);
+				lListe.actualiser(true);
+				this.actualiser();
+				break;
 			}
-			const lListe = this.getInstance(this.identListeMatieres);
-			lListe.actualiser(true);
-			this.actualiser();
-			break;
 		}
 	}
 }
-module.exports = { ObjetInterfacePageCahierDeTexteCP };
+exports.ObjetInterfacePageCahierDeTexteCP = ObjetInterfacePageCahierDeTexteCP;

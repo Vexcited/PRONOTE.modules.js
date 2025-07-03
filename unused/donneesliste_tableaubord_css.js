@@ -1,0 +1,20 @@
+exports.StylesDonneesListe_TableauBord = void 0;
+exports.StylesDonneesListe_TableauBord = {
+	ulHint: "ul-hint",
+	fixBloc: "fix-bloc",
+	photoContain: "photo-contain",
+	tdbReponseOk: "tdb-reponse-ok",
+	tdbReponseNotok: "tdb-reponse-notok",
+	eleveWrapper: "eleve-wrapper",
+	contentWrapper: "content-wrapper",
+	libelle: "libelle",
+	iconesWrapper: "icones-wrapper",
+	ieBouton: "ieBouton",
+	smallBt: "small-bt",
+	themeBoutonNeutre: "themeBoutonNeutre",
+	bgWhite: "bg-white",
+	informationWrapper: "information-wrapper",
+	chb_appelfait: "chb_appelfait",
+	iecb: "iecb",
+	lever: "lever",
+};

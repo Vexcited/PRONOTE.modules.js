@@ -1,14 +1,12 @@
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GChaine } = require("ObjetChaine.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GImage } = require("ObjetImage.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class ObjetFenetre_URLKiosque extends ObjetFenetre {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetFenetre_URLKiosque = void 0;
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetImage_1 = require("ObjetImage");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class ObjetFenetre_URLKiosque extends ObjetFenetre_1.ObjetFenetre {
 	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
+		return $.extend(true, super.getControleur(aInstance), {
 			cbSelect: {
 				getValue: function (aIndice) {
 					return (
@@ -30,7 +28,7 @@ class ObjetFenetre_URLKiosque extends ObjetFenetre {
 			btnParametrage: {
 				event() {
 					aInstance.setOptionsFenetre({
-						titre: GTraductions.getValeur(
+						titre: ObjetTraduction_1.GTraductions.getValeur(
 							"CahierDeTexte.kiosque.fenetre.titreSelect",
 						),
 					});
@@ -38,7 +36,7 @@ class ObjetFenetre_URLKiosque extends ObjetFenetre {
 					aInstance.actualiser();
 				},
 				getTitle() {
-					return GTraductions.getValeur(
+					return ObjetTraduction_1.GTraductions.getValeur(
 						"CahierDeTexte.kiosque.fenetre.titreSelect",
 					);
 				},
@@ -53,7 +51,9 @@ class ObjetFenetre_URLKiosque extends ObjetFenetre {
 	setDonnees(aParam) {
 		this.avecParametrage = false;
 		this.listeRessources = aParam.listeRessources;
-		this.listeRessourcesEdit = MethodesObjet.dupliquer(this.listeRessources);
+		this.listeRessourcesEdit = MethodesObjet_1.MethodesObjet.dupliquer(
+			this.listeRessources,
+		);
 		if (!!aParam.avecParametrage) {
 			this.setAvecParametrage();
 		}
@@ -70,7 +70,11 @@ class ObjetFenetre_URLKiosque extends ObjetFenetre {
 				lMinWidth = Math.max(lMinWidth, 78);
 			} else {
 				const lWidth = Math.ceil(
-					GChaine.getLongueurChaineDansDiv(aElement.editeur, 10, false),
+					ObjetChaine_1.GChaine.getLongueurChaineDansDiv(
+						aElement.editeur,
+						10,
+						false,
+					),
 				);
 				lMinWidth = Math.max(lMinWidth, lWidth);
 			}
@@ -100,8 +104,7 @@ class ObjetFenetre_URLKiosque extends ObjetFenetre {
 					'<div style="padding:0px 5px 5px ',
 					!this.avecParametrage ? "5" : "0",
 					'px;">',
-					ObjetFenetre_URLKiosque.composeLienRessource.call(
-						this.Pere,
+					ObjetFenetre_URLKiosque.composeLienRessource(
 						lRessource,
 						i,
 						lMinWidth,
@@ -118,7 +121,7 @@ class ObjetFenetre_URLKiosque extends ObjetFenetre {
 	surValidation(aNumeroBouton) {
 		this.fermer();
 		if (this.optionsFenetre.callback) {
-			this.optionsFenetre.callback(aNumeroBouton);
+			this.optionsFenetre.callback(aNumeroBouton, null);
 		}
 		this.callback.appel(aNumeroBouton, this.listeRessourcesEdit);
 	}
@@ -139,7 +142,7 @@ class ObjetFenetre_URLKiosque extends ObjetFenetre {
 				(!!aAvecParametrage ? 13 : 0),
 			200,
 		);
-		const lMaxWidth = !!aLargeur ? "max-width: " + lWidth + "px;" : "";
+		const lMaxWidth = !!aLargeur ? lWidth : 0;
 		H.push(
 			'<div style="display: flex; align-items:center;">',
 			!!aAvecParametrage
@@ -153,18 +156,20 @@ class ObjetFenetre_URLKiosque extends ObjetFenetre {
 						'" ' +
 						(aRessource.avecLien
 							? ' ie-hint="' +
-								GTraductions.getValeur("CahierDeTexte.avecLien") +
+								ObjetTraduction_1.GTraductions.getValeur(
+									"CahierDeTexte.avecLien",
+								) +
 								'"'
 							: "") +
 						">" +
-						GImage.composeImage(aRessource.logo, aMinWidth) +
+						ObjetImage_1.GImage.composeImage(aRessource.logo, aMinWidth) +
 						"</div>"
 				: '<div class="NoWrap" style="margin-right: 5px;' +
 						lMinWidth +
 						'">' +
 						aRessource.editeur +
 						"</div>",
-			GChaine.composerUrlLienExterne({
+			ObjetChaine_1.GChaine.composerUrlLienExterne({
 				documentJoint: aRessource,
 				title: aRessource.description,
 				libelleEcran: aRessource.titre,
@@ -175,4 +180,4 @@ class ObjetFenetre_URLKiosque extends ObjetFenetre {
 		return H.join("");
 	}
 }
-module.exports = { ObjetFenetre_URLKiosque };
+exports.ObjetFenetre_URLKiosque = ObjetFenetre_URLKiosque;

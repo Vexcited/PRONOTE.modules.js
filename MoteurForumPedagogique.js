@@ -15,7 +15,6 @@ const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetFenetre_SelectionPublic_1 = require("ObjetFenetre_SelectionPublic");
 const UtilitaireFenetreSelectionPublic_1 = require("UtilitaireFenetreSelectionPublic");
 const Enumere_Ressource_1 = require("Enumere_Ressource");
-const tag_1 = require("tag");
 const Invocateur_1 = require("Invocateur");
 const Enumere_Espace_1 = require("Enumere_Espace");
 var TypeCommandeSujet;
@@ -475,7 +474,6 @@ class MoteurForumPedagogique {
 	async saisieCommandePost(aParams, aSujetSelection) {
 		const lParams = Object.assign({ type: null }, aParams);
 		let lMessageConfirmation = "";
-		let lControleur = null;
 		if (
 			lParams.type ===
 			TypesForumPedagogique_1.TypeForumPedaCommandeSaisie.fpcs_Post_Action
@@ -503,34 +501,37 @@ class MoteurForumPedagogique {
 				case TypesForumPedagogique_1.TypeActionPost.AP_ExclureAuteur: {
 					lParams.typeBlocage =
 						TypesForumPedagogique_1.TypeGenreActionSurPostForum.APF_Aucune;
-					lControleur = {
-						rb: {
-							getValue(aType) {
+					const lJsxRadioTypeBlocage = (aType) => {
+						return {
+							getValue: () => {
 								return lParams.typeBlocage === aType;
 							},
-							setValue(aType) {
+							setValue: (aValue) => {
 								lParams.typeBlocage = aType;
 							},
-						},
+							getName: () => {
+								return `MoteurForumPedagogique_TypeBlocage`;
+							},
+						};
 					};
 					lMessageConfirmation = [
 						ObjetTraduction_1.GTraductions.getValeur(
 							"ForumPeda.ConfirmationExclureEleve1",
 							[lParams.post.strAuteur],
 						),
-						(0, tag_1.tag)("br"),
+						"<br />",
 						ObjetTraduction_1.GTraductions.getValeur(
 							"ForumPeda.ConfirmationExclureEleve2",
 						),
-						(0, tag_1.tag)("br"),
-						(0, tag_1.tag)(
+						"<br />",
+						IE.jsx.str(
 							"div",
 							{ class: "p-top p-left large" },
-							(0, tag_1.tag)(
+							IE.jsx.str(
 								"ie-radio",
 								{
-									"ie-model": tag_1.tag.funcAttr(
-										"rb",
+									"ie-model": lJsxRadioTypeBlocage.bind(
+										this,
 										TypesForumPedagogique_1.TypeGenreActionSurPostForum
 											.APF_Aucune,
 									),
@@ -539,12 +540,12 @@ class MoteurForumPedagogique {
 									"ForumPeda.ConfirmationAucunPost",
 								),
 							),
-							(0, tag_1.tag)("br"),
-							(0, tag_1.tag)(
+							IE.jsx.str("br", null),
+							IE.jsx.str(
 								"ie-radio",
 								{
-									"ie-model": tag_1.tag.funcAttr(
-										"rb",
+									"ie-model": lJsxRadioTypeBlocage.bind(
+										this,
 										TypesForumPedagogique_1.TypeGenreActionSurPostForum
 											.APF_RefuserLePost,
 									),
@@ -553,12 +554,12 @@ class MoteurForumPedagogique {
 									"ForumPeda.ConfirmationCePost",
 								),
 							),
-							(0, tag_1.tag)("br"),
-							(0, tag_1.tag)(
+							IE.jsx.str("br", null),
+							IE.jsx.str(
 								"ie-radio",
 								{
-									"ie-model": tag_1.tag.funcAttr(
-										"rb",
+									"ie-model": lJsxRadioTypeBlocage.bind(
+										this,
 										TypesForumPedagogique_1.TypeGenreActionSurPostForum
 											.APF_RefuserTousLesPosts,
 									),
@@ -578,7 +579,6 @@ class MoteurForumPedagogique {
 				.afficher({
 					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
 					message: lMessageConfirmation,
-					controleur: lControleur,
 				});
 			if (lResult !== Enumere_Action_1.EGenreAction.Valider) {
 				return;
@@ -650,6 +650,11 @@ class MoteurForumPedagogique {
 			avecHoraires: false,
 			heureApres: new Date(0, 0, 0, 6, 0, 0, 0),
 			heureAvant: new Date(0, 0, 0, 22, 0, 0, 0),
+			roles: undefined,
+			listeMatieresDispo: undefined,
+			etatPub: undefined,
+			strAuteur: undefined,
+			nbMembres: undefined,
 		});
 	}
 	async _confirmDeverrouillerSuspensionSujet(aSujet) {

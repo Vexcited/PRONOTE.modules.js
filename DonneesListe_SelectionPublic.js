@@ -1,6 +1,7 @@
 exports.DonneesListe_SelectionPublic = void 0;
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
 class DonneesListe_SelectionPublic extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees) {
 		aDonnees.parcourir((D) => {
@@ -11,24 +12,37 @@ class DonneesListe_SelectionPublic extends ObjetDonneesListeFlatDesign_1.ObjetDo
 		super(aDonnees);
 		this.setOptions({
 			avecSelection: false,
-			avecSuppression: false,
-			avecEtatSaisie: false,
 			avecTri: false,
 			avecCB: true,
 			avecEvnt_CB: true,
 			avecCocheCBSurLigne: true,
 			avecEvnt_Deploiement: true,
 			avecEventDeploiementSurCellule: true,
-			avecEvnt_ApresEdition: true,
 			avecBoutonActionLigne: false,
 		});
 		this._cacheDoublonArticles = null;
 	}
 	avecSelection(aParams) {
+		var _a;
+		if (
+			(_a = this._options.listeRessourceDesactiver) === null || _a === void 0
+				? void 0
+				: _a.getElementParNumero(aParams.article.getNumero())
+		) {
+			return false;
+		}
 		return super.avecSelection(aParams) && !aParams.article.estUnDeploiement;
 	}
 	getDisabledCB(aParams) {
+		var _a;
 		let D = aParams.article;
+		if (
+			(_a = this._options.listeRessourceDesactiver) === null || _a === void 0
+				? void 0
+				: _a.getElementParNumero(aParams.article.getNumero())
+		) {
+			return true;
+		}
 		return (
 			D.avecReponse ||
 			D.nonModifiable ||
@@ -236,21 +250,6 @@ class DonneesListe_SelectionPublic extends ObjetDonneesListeFlatDesign_1.ObjetDo
 			}
 		});
 	}
-	avecDeploiement() {
-		return true;
-	}
-	surDeploiement(I, J, D) {
-		if (this._options.avecFiltreDelegues) {
-			return;
-		}
-		D.estDeploye = !D.estDeploye;
-	}
-	avecEvenementDeploiement() {
-		return !this._options.avecFiltreDelegues;
-	}
-	avecEventDeploiementSurCellule() {
-		return !this._options.avecFiltreDelegues;
-	}
 	getTitreZonePrincipale(aParams) {
 		var _a, _b;
 		let D = aParams.article;
@@ -268,8 +267,13 @@ class DonneesListe_SelectionPublic extends ObjetDonneesListeFlatDesign_1.ObjetDo
 			!D.estUnDeploiement &&
 			D.estElevesDetachesDuCours
 		) {
-			lIconDetaches =
-				'<i class="icon_eleve_detache EspaceGauche EspaceDroite"></i>';
+			lIconDetaches = IE.jsx.str("i", {
+				class: "icon_eleve_detache EspaceGauche EspaceDroite",
+				role: "img",
+				"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+					"Fenetre_SelectionPublic.EleveDetache",
+				),
+			});
 		}
 		let lLibelle =
 			(this._options &&
@@ -317,7 +321,7 @@ class DonneesListe_SelectionPublic extends ObjetDonneesListeFlatDesign_1.ObjetDo
 		}
 		return "";
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		if (this._options && this._options.getHintRessource) {
 			return this._options.getHintRessource(aParams.article);
 		}
@@ -383,14 +387,7 @@ class DonneesListe_SelectionPublic extends ObjetDonneesListeFlatDesign_1.ObjetDo
 		if (!this.options.funcFiltreVisible || !this.options.htmlFiltre) {
 			return "";
 		}
-		return this.options.htmlFiltre;
-	}
-	getControleurFiltres(aDonneesListe) {
-		const lOptions = aDonneesListe.options;
-		if (!lOptions.funcFiltreVisible && !lOptions.filtreControleur) {
-			return {};
-		}
-		return lOptions.filtreControleur;
+		return this.options.htmlFiltre();
 	}
 	estFiltresParDefaut() {
 		if (!this.options.funcFiltreVisible || !this.options.filtreParDefaut) {
@@ -417,12 +414,8 @@ class DonneesListe_SelectionPublic extends ObjetDonneesListeFlatDesign_1.ObjetDo
 		);
 		if (this._options.avecMonoSelectionSurResponsablesAvecRencontreSeparee) {
 			if (aElementPere.avecRencontresSepareesDesResponsables) {
-				if (
-					lEtat ===
-					ObjetDonneesListeFlatDesign_1.ObjetDonneesListe.EGenreCoche.Grise
-				) {
-					return ObjetDonneesListeFlatDesign_1.ObjetDonneesListe.EGenreCoche
-						.Verte;
+				if (lEtat === ObjetDonneesListe_1.ObjetDonneesListe.EGenreCoche.Grise) {
+					return ObjetDonneesListe_1.ObjetDonneesListe.EGenreCoche.Verte;
 				}
 			}
 		}

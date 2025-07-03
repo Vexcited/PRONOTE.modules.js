@@ -2,6 +2,7 @@ exports.InterfaceBandeauPiedCommune = void 0;
 const _InterfaceBandeauPied_1 = require("_InterfaceBandeauPied");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const UtilitaireRedirection_1 = require("UtilitaireRedirection");
+const Tooltip_1 = require("Tooltip");
 class InterfaceBandeauPiedCommune extends _InterfaceBandeauPied_1._ObjetAffichageBandeauPied {
 	constructor(...aParams) {
 		super(...aParams);
@@ -18,22 +19,6 @@ class InterfaceBandeauPiedCommune extends _InterfaceBandeauPied_1._ObjetAffichag
 			urlDeclarationAccessibilite: lGParametres.urlDeclarationAccessibilite,
 			accessibiliteNonConforme: lGParametres.accessibiliteNonConforme,
 		};
-	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			nodePageEtab: function () {
-				$(this.node).eventValidation(() => {
-					let lUrl = window.location.href.split("/");
-					lUrl.pop();
-					lUrl = lUrl.join("/") + "/";
-					window.open(
-						lUrl +
-							aInstance.options.pageEtablissement +
-							new UtilitaireRedirection_1.UtilitaireRedirection().getParametresUrl(),
-					);
-				});
-			},
-		});
 	}
 	construireAffichage() {
 		return this.composePage();
@@ -67,18 +52,38 @@ class InterfaceBandeauPiedCommune extends _InterfaceBandeauPied_1._ObjetAffichag
 	avecBoutonPageEtablissement() {
 		return !!this.options.pageEtablissement;
 	}
+	jsxNodePageEtab(aNode) {
+		$(aNode).eventValidation(() => {
+			let lUrl = window.location.href.split("/");
+			lUrl.pop();
+			lUrl = lUrl.join("/") + "/";
+			window.open(
+				lUrl +
+					this.options.pageEtablissement +
+					new UtilitaireRedirection_1.UtilitaireRedirection().getParametresUrl(),
+			);
+		});
+	}
 	composeBoutonPageEtablissement() {
-		const H = [];
-		H.push(
-			'<div tabindex="0" role="button" class="ibp-pill icon_ecole" aria-label="',
-			ObjetTraduction_1.GTraductions.getValeur("PiedPage.PageEtablissement"),
-			'" ie-node="nodePageEtab" ie-hint="',
-			ObjetTraduction_1.GTraductions.getValeur("PiedPage.PageEtablissement"),
-			'"><p class="help-text">',
-			ObjetTraduction_1.GTraductions.getValeur("PiedPage.PageEtablissement"),
-			"</p></a></div>",
+		return IE.jsx.str(
+			"div",
+			{
+				tabindex: "0",
+				role: "link",
+				class: "ibp-pill icon_ecole",
+				"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+					"PiedPage.PageEtablissement",
+				),
+				"ie-node": this.jsxNodePageEtab.bind(this),
+				"data-tooltip": Tooltip_1.Tooltip.Type.default,
+			},
+			IE.jsx.str(
+				"p",
+				{ class: "help-text" },
+				" ",
+				ObjetTraduction_1.GTraductions.getValeur("PiedPage.PageEtablissement"),
+			),
 		);
-		return H.join("");
 	}
 	espacesISO27001() {
 		return true;

@@ -1,6 +1,7 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { EGenreMediaUtil } = require("Enumere_Media.js");
-class DonneesListe_Media extends ObjetDonneesListe {
+exports.DonneesListe_Media = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const Enumere_Media_1 = require("Enumere_Media");
+class DonneesListe_Media extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aTypeMediasReception, aListeSuivis) {
 		super(aDonnees);
 		this.setEstReponse(aTypeMediasReception);
@@ -47,19 +48,30 @@ class DonneesListe_Media extends ObjetDonneesListe {
 	suppressionImpossible(D) {
 		return !D.supprimable || D._estUtilise;
 	}
+	getClassCelluleConteneur(aParams) {
+		const lClasses = [];
+		switch (aParams.idColonne) {
+			case DonneesListe_Media.colonnes.code:
+				lClasses.push("AlignementMilieu");
+				break;
+		}
+		return lClasses.join(" ");
+	}
 	getValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_Media.colonnes.code: {
 				let lCode;
-				const lClasseIcone = EGenreMediaUtil.getNomImage(
-					aParams.article.getGenre(),
-					this.estReponse,
-				);
+				const lClasseIcone =
+					Enumere_Media_1.EGenreMediaUtil.getClassesIconeMedia(
+						aParams.article.getGenre(),
+						this.estReponse,
+					);
 				if (!!lClasseIcone) {
-					lCode =
-						'<div class="' +
-						lClasseIcone +
-						'" style="margin-right:auto; margin-left:auto;"></div>';
+					lCode = IE.jsx.str("i", {
+						class: lClasseIcone,
+						"ie-tooltiplabel": aParams.article.getLibelle(),
+						role: "img",
+					});
 				} else {
 					lCode = aParams.article.code || "";
 				}
@@ -73,10 +85,10 @@ class DonneesListe_Media extends ObjetDonneesListe {
 	getTypeValeur(aParams) {
 		if (aParams.idColonne === DonneesListe_Media.colonnes.code) {
 			if (aParams.article && aParams.article.getGenre() > 0) {
-				return ObjetDonneesListe.ETypeCellule.Html;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 			}
 		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
 	surCreation(D, V) {
 		D.code = V[0];
@@ -105,8 +117,16 @@ class DonneesListe_Media extends ObjetDonneesListe {
 		return true;
 	}
 }
-DonneesListe_Media.colonnes = {
-	code: "DL_Media_code",
-	libelle: "DL_Media_libelle",
-};
-module.exports = { DonneesListe_Media };
+exports.DonneesListe_Media = DonneesListe_Media;
+(function (DonneesListe_Media) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["code"] = "DL_Media_code";
+		colonnes["libelle"] = "DL_Media_libelle";
+	})(
+		(colonnes =
+			DonneesListe_Media.colonnes || (DonneesListe_Media.colonnes = {})),
+	);
+})(
+	DonneesListe_Media || (exports.DonneesListe_Media = DonneesListe_Media = {}),
+);

@@ -1,24 +1,23 @@
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { GStyle } = require("ObjetStyle.js");
-const { tag } = require("tag.js");
-const { GChaine } = require("ObjetChaine.js");
-const { TUtilitaireRencontre } = require("UtilitaireRencontres.js");
-const { TypeVoeuRencontreUtil } = require("Enumere_VoeuRencontre.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-class DonneesListe_RencontresDesiderata extends ObjetDonneesListeFlatDesign {
+exports.DonneesListe_RencontresDesiderata = void 0;
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetStyle_1 = require("ObjetStyle");
+const ObjetChaine_1 = require("ObjetChaine");
+const UtilitaireRencontres_1 = require("UtilitaireRencontres");
+const Enumere_VoeuRencontre_1 = require("Enumere_VoeuRencontre");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const IEHtml_1 = require("IEHtml");
+class DonneesListe_RencontresDesiderata extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees, aParams) {
 		super(aDonnees);
 		this.avecEleve = aParams.avecEleve;
 		this.autorisations = aParams.autorisations;
 		this.callbackDuree = aParams.callbackDuree;
+		this.callbackEditionDesiderata = aParams.callbackEditionDesiderata;
 		this.avecSaisie = aParams.avecSaisie;
 		this.duree = { min: 3, max: 30 };
 		this.setOptions({
@@ -31,10 +30,10 @@ class DonneesListe_RencontresDesiderata extends ObjetDonneesListeFlatDesign {
 			flatDesignMinimal: true,
 		});
 		this.avecSaisieDuree = [
-			EGenreEspace.Professeur,
-			EGenreEspace.Mobile_Professeur,
-			EGenreEspace.Etablissement,
-			EGenreEspace.Mobile_Etablissement,
+			Enumere_Espace_1.EGenreEspace.Professeur,
+			Enumere_Espace_1.EGenreEspace.Mobile_Professeur,
+			Enumere_Espace_1.EGenreEspace.Etablissement,
+			Enumere_Espace_1.EGenreEspace.Mobile_Etablissement,
 		].includes(GEtatUtilisateur.GenreEspace);
 	}
 	_getNombreVoeuxSaisies(aGenreVoeux) {
@@ -51,10 +50,11 @@ class DonneesListe_RencontresDesiderata extends ObjetDonneesListeFlatDesign {
 	estUnVoeuSaisissable(aNumero, aGenreVoeux) {
 		const lElement = this.Donnees.getElementParNumero(aNumero);
 		const lNombreSaisie = this._getNombreVoeuxSaisies(aGenreVoeux);
-		const lLimiteVoeux = TUtilitaireRencontre.getLimiteNbSaisissable(
-			this.autorisations.listeVoeux,
-			aGenreVoeux,
-		);
+		const lLimiteVoeux =
+			UtilitaireRencontres_1.TUtilitaireRencontre.getLimiteNbSaisissable(
+				this.autorisations.listeVoeux,
+				aGenreVoeux,
+			);
 		let lSaisiePossible = false;
 		let lAvecMessage = false;
 		if (lElement) {
@@ -81,18 +81,22 @@ class DonneesListe_RencontresDesiderata extends ObjetDonneesListeFlatDesign {
 			? aArticle.responsables.getTableauLibelles().join(", ")
 			: "";
 	}
+	avecSeparateurLigneHautFlatdesign(aParams) {
+		return aParams.article.estUnDeploiement;
+	}
 	getZoneGauche(aParams) {
 		const lCouleurFond = aParams.article.couleurMatiere
-			? `style="${GStyle.composeCouleurFond(aParams.article.couleurMatiere)}"`
+			? `style="${ObjetStyle_1.GStyle.composeCouleurFond(aParams.article.couleurMatiere)}"`
 			: "";
 		return !this.avecSaisieDuree && !aParams.article.estUnDeploiement
 			? `<div class="trait-couleur" ${lCouleurFond}></div>`
 			: "";
 	}
 	getInfosSuppZonePrincipale(aParams) {
-		return [EGenreEspace.Parent, EGenreEspace.Mobile_Parent].includes(
-			GEtatUtilisateur.GenreEspace,
-		)
+		return [
+			Enumere_Espace_1.EGenreEspace.Parent,
+			Enumere_Espace_1.EGenreEspace.Mobile_Parent,
+		].includes(GEtatUtilisateur.GenreEspace)
 			? aParams.article.strMatiereFonction || "&nbsp;"
 			: this.getResponsables(aParams.article);
 	}
@@ -103,18 +107,23 @@ class DonneesListe_RencontresDesiderata extends ObjetDonneesListeFlatDesign {
 				? aParams.article.classe.getLibelle()
 				: aParams.article.getLibelle();
 		} else if (
-			[EGenreEspace.Parent, EGenreEspace.Mobile_Parent].includes(
-				GEtatUtilisateur.GenreEspace,
-			)
+			[
+				Enumere_Espace_1.EGenreEspace.Parent,
+				Enumere_Espace_1.EGenreEspace.Mobile_Parent,
+			].includes(GEtatUtilisateur.GenreEspace)
 		) {
 			const lLibelles = [];
 			aParams.article.listeInterlocuteursTriees.parcourir((aInterlocuteur) => {
 				let lLibelle = [aInterlocuteur.getLibelle()];
 				if (aInterlocuteur.estPP) {
-					lLibelle.push(`(${GTraductions.getValeur("ProfPrincipal")})`);
+					lLibelle.push(
+						`(${ObjetTraduction_1.GTraductions.getValeur("ProfPrincipal")})`,
+					);
 				}
 				if (aInterlocuteur.estTuteur) {
-					lLibelle.push(`(${GTraductions.getValeur("Tuteur")})`);
+					lLibelle.push(
+						`(${ObjetTraduction_1.GTraductions.getValeur("Tuteur")})`,
+					);
 				}
 				lLibelles.push(lLibelle.join(" "));
 			});
@@ -125,6 +134,64 @@ class DonneesListe_RencontresDesiderata extends ObjetDonneesListeFlatDesign {
 			lTitre = aParams.article.titre ? aParams.article.titre : "";
 		}
 		return lTitre;
+	}
+	jsxModeleRbDesiderata(aArticle, aVoeu) {
+		return {
+			getValue: () => {
+				return aArticle.validationvoeu && aArticle.voeu === aVoeu.getGenre();
+			},
+			setValue: (aValue) => {
+				const lVerif = this.estUnVoeuSaisissable(
+					aArticle.getNumero(),
+					aVoeu.getGenre(),
+				);
+				if (lVerif.saisiePossible) {
+					aArticle.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+					aArticle.validationvoeu = aArticle.validationvoeu
+						? aArticle.voeu !== aVoeu.getGenre()
+						: true;
+					aArticle.voeu = aVoeu.getGenre();
+					this.callbackEditionDesiderata(aArticle);
+				} else {
+					if (lVerif.avecMessage) {
+						const lLimite =
+							UtilitaireRencontres_1.TUtilitaireRencontre.getLimiteNbSaisissable(
+								this.autorisations.listeVoeux,
+								aVoeu.getGenre(),
+							);
+						GApplication.getMessage().afficher({
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+							titre: ObjetTraduction_1.GTraductions.getValeur(
+								"Rencontres.saisieImpossible",
+							),
+							message:
+								ObjetTraduction_1.GTraductions.getValeur(
+									lLimite === 1
+										? "Rencontres.desiderataAutorise"
+										: "Rencontres.desiderataAutorisesPluriel",
+									[lLimite],
+								) +
+								"<br>" +
+								ObjetTraduction_1.GTraductions.getValeur(
+									[
+										Enumere_Espace_1.EGenreEspace.Parent,
+										Enumere_Espace_1.EGenreEspace.Mobile_Parent,
+									].includes(GEtatUtilisateur.GenreEspace)
+										? "Rencontres.msgDesactiveResponsable"
+										: "Rencontres.msgDesactiveEnseignant",
+								),
+						});
+					}
+					IEHtml_1.default.refresh();
+				}
+			},
+			getName: () => {
+				return `RbDesiderata_${aArticle.getNumero()}`;
+			},
+			getDisabled: () => {
+				return !(this.autorisations.saisieDesiderata && this.avecSaisie);
+			},
+		};
 	}
 	getZoneMessage(aParams) {
 		if (aParams.article.estUnDeploiement || aParams.article.estUnEleve) {
@@ -138,28 +205,38 @@ class DonneesListe_RencontresDesiderata extends ObjetDonneesListeFlatDesign {
 		if (this.autorisations && this.autorisations.listeVoeux) {
 			this.autorisations.listeVoeux.parcourir((aVoeu) => {
 				H.push(
-					tag(
+					IE.jsx.str(
 						"div",
 						{ class: ["voeux"] },
-						tag(
+						IE.jsx.str(
 							"ie-radio",
 							{
-								"ie-model": tag.funcAttr("rbVoeux", [
-									aParams.article.getNumero(),
-									aVoeu.getGenre(),
-								]),
+								"ie-model": this.jsxModeleRbDesiderata.bind(
+									this,
+									aParams.article,
+									aVoeu,
+								),
 								class: [
 									"as-chips",
 									"m-right",
 									"m-bottom-l",
-									TypeVoeuRencontreUtil.getClass(aVoeu.getGenre()),
+									Enumere_VoeuRencontre_1.TypeVoeuRencontreUtil.getClass(
+										aVoeu.getGenre(),
+									),
 								],
-								name: `rbVoeux_${aParams.article.getNumero()}`,
 							},
-							TypeVoeuRencontreUtil.getLibelle(aVoeu.getGenre()),
+							Enumere_VoeuRencontre_1.TypeVoeuRencontreUtil.getLibelle(
+								aVoeu.getGenre(),
+							),
 						),
 						!!aVoeu.limiteNbSaisies
-							? `${tag("span", { class: "ie-titre-petit" }, GTraductions.getValeur("Rencontres.max", [aVoeu.limiteNbSaisies]))}`
+							? IE.jsx.str(
+									"span",
+									{ class: "ie-titre-petit" },
+									ObjetTraduction_1.GTraductions.getValeur("Rencontres.max", [
+										aVoeu.limiteNbSaisies,
+									]),
+								)
 							: "",
 					),
 				);
@@ -173,22 +250,36 @@ class DonneesListe_RencontresDesiderata extends ObjetDonneesListeFlatDesign {
 			const lDuree =
 				aParams.article.duree.toString() +
 				" " +
-				GTraductions.getValeur("Rencontres.abbrMin");
-			this.autorisations.saisieDuree;
-			return (
-				'<div class="flex-contain' +
-				(this.autorisations.saisieDuree
-					? ' AvecMain" tabindex="0" role="button" aria-haspopup="dialog" ie-node="' +
-						tag.funcAttr("btnModifierDuree", [aParams.article.getNumero()]) +
-						'"'
-					: '"') +
-				'><i role="img" class="icon_edt_permanence i-as-deco" title="' +
-				GTraductions.getValeur("Duree") +
-				'" aria-label="' +
-				GTraductions.getValeur("Duree") +
-				'"></i>' +
-				lDuree +
-				"</div>"
+				ObjetTraduction_1.GTraductions.getValeur("Rencontres.abbrMin");
+			let lAttr = {};
+			if (this.autorisations.saisieDuree) {
+				const lFuncEvenVal = () => {
+					this._ouvrirFenetreModifierDuree(aParams.article);
+				};
+				lAttr = {
+					tabindex: "0",
+					role: "button",
+					"aria-haspopup": "dialog",
+					"ie-eventvalidation": lFuncEvenVal,
+				};
+			}
+			return IE.jsx.str(
+				"div",
+				Object.assign(
+					{
+						class:
+							"flex-contain" +
+							(this.autorisations.saisieDuree ? " AvecMain" : ""),
+					},
+					lAttr,
+				),
+				IE.jsx.str("i", {
+					role: "img",
+					class: "icon_edt_permanence i-as-deco",
+					title: ObjetTraduction_1.GTraductions.getValeur("Duree"),
+					"aria-label": ObjetTraduction_1.GTraductions.getValeur("Duree"),
+				}),
+				lDuree,
 			);
 		}
 		return "";
@@ -197,40 +288,40 @@ class DonneesListe_RencontresDesiderata extends ObjetDonneesListeFlatDesign {
 		const lTris = [];
 		if (this.avecEleve) {
 			lTris.push(
-				ObjetTri.init((D) => {
+				ObjetTri_1.ObjetTri.init((D) => {
 					return D.classe ? D.classe.getLibelle() : "";
 				}),
 			);
 			lTris.push(
-				ObjetTri.init((D) => {
+				ObjetTri_1.ObjetTri.init((D) => {
 					return D.eleve ? D.eleve.getLibelle() : "";
 				}),
 			);
 			lTris.push(
-				ObjetTri.init((D) => {
+				ObjetTri_1.ObjetTri.init((D) => {
 					return D.strMatiereFonction || "";
 				}),
 			);
 			lTris.push(
-				ObjetTri.init((D) => {
+				ObjetTri_1.ObjetTri.init((D) => {
 					return D.strResponsables || "";
 				}),
 			);
 		} else {
 			lTris.push(
-				ObjetTri.init((D) => {
+				ObjetTri_1.ObjetTri.init((D) => {
 					return !!D.pere
-						? D.pere.getNumero() !== EGenreEspace.Professeur
-						: D.getNumero() !== EGenreEspace.Professeur;
+						? D.pere.getNumero() !== Enumere_Espace_1.EGenreEspace.Professeur
+						: D.getNumero() !== Enumere_Espace_1.EGenreEspace.Professeur;
 				}),
 			);
 			lTris.push(
-				ObjetTri.init((D) => {
+				ObjetTri_1.ObjetTri.init((D) => {
 					return !D.estUnDeploiement;
 				}),
 			);
 			lTris.push(
-				ObjetTri.init((D) => {
+				ObjetTri_1.ObjetTri.init((D) => {
 					if (
 						!!D.pere &&
 						!!D.listeInterlocuteursTriees &&
@@ -247,136 +338,64 @@ class DonneesListe_RencontresDesiderata extends ObjetDonneesListeFlatDesign {
 		}
 		return lTris;
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
-			rbVoeux: {
-				getValue(aNumero, aGenreVoeux) {
-					if (aNumero) {
-						const lElement = aInstance.Donnees.getElementParNumero(aNumero);
-						if (lElement) {
-							return lElement.validationvoeu && lElement.voeu === aGenreVoeux;
-						}
-					}
-					return false;
-				},
-				setValue(aNumero, aGenreVoeux) {
-					if (aNumero) {
-						const lElement = aInstance.Donnees.getElementParNumero(aNumero);
-						const lVerif = aInstance.estUnVoeuSaisissable(aNumero, aGenreVoeux);
-						if (lVerif.saisiePossible) {
-							lElement.setEtat(EGenreEtat.Modification);
-							lElement.validationvoeu = lElement.validationvoeu
-								? lElement.voeu !== aGenreVoeux
-								: true;
-							lElement.voeu = aGenreVoeux;
-							this.instance.callback.appel({
-								article: lElement,
-								genreEvenement: EGenreEvenementListe.ApresEdition,
-							});
-						} else {
-							if (lVerif.avecMessage) {
-								const lLimite = TUtilitaireRencontre.getLimiteNbSaisissable(
-									aInstance.autorisations.listeVoeux,
-									aGenreVoeux,
-								);
-								GApplication.getMessage().afficher({
-									type: EGenreBoiteMessage.Information,
-									titre: GTraductions.getValeur("Rencontres.saisieImpossible"),
-									message:
-										GTraductions.getValeur(
-											lLimite === 1
-												? "Rencontres.desiderataAutorise"
-												: "Rencontres.desiderataAutorisesPluriel",
-											[lLimite],
-										) +
-										"<br>" +
-										GTraductions.getValeur(
-											[
-												EGenreEspace.Parent,
-												EGenreEspace.Mobile_Parent,
-											].includes(GEtatUtilisateur.GenreEspace)
-												? "Rencontres.msgDesactiveResponsable"
-												: "Rencontres.msgDesactiveEnseignant",
-										),
-								});
-							}
-							this.controleur.$refresh();
-						}
+	_ouvrirFenetreModifierDuree(aRencontre) {
+		const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_1.ObjetFenetre,
+			{
+				pere: this,
+				evenement: function (aGenreBouton) {
+					if (aGenreBouton) {
+						aRencontre.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+						this.callbackDuree(aRencontre);
 					}
 				},
-				getDisabled() {
-					return !(
-						aInstance.autorisations.saisieDesiderata && aInstance.avecSaisie
-					);
+				initialiser: function (aInstance) {
+					aInstance.setOptionsFenetre({
+						titre: ObjetTraduction_1.GTraductions.getValeur("Duree"),
+						largeur: 300,
+						hauteur: 200,
+						listeBoutons: [
+							ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+							ObjetTraduction_1.GTraductions.getValeur("Valider"),
+						],
+					});
 				},
 			},
-			btnModifierDuree: function (aNumero) {
-				$(this.node).eventValidation(() => {
-					const lElement = aInstance.Donnees.getElementParNumero(aNumero);
-					if (lElement) {
-						_ouvrirFenetreModifierDuree.call(aInstance, lElement);
+		);
+		const lAncienneDuree = aRencontre.duree;
+		const lModel = () => {
+			return {
+				getValue() {
+					return aRencontre.duree;
+				},
+				setValue(aValue) {
+					const lDuree = ObjetChaine_1.GChaine.strToInteger(aValue || "0");
+					aRencontre.duree = lDuree;
+				},
+				exitChange: () => {
+					if (
+						aRencontre.duree < this.duree.min ||
+						aRencontre.duree > this.duree.max
+					) {
+						aRencontre.duree = lAncienneDuree;
+						GApplication.getMessage().afficher({
+							message: ObjetTraduction_1.GTraductions.getValeur(
+								"ErreurMinMaxEntier",
+								[this.duree.min, this.duree.max],
+							),
+						});
 					}
-				});
-			},
+				},
+			};
+		};
+		const lHtml = IE.jsx.str("input", {
+			type: "number",
+			"ie-model": lModel,
+			class: "EspaceInput",
+			style: "width:100%;",
+			title: ObjetTraduction_1.GTraductions.getValeur("Duree"),
 		});
+		lFenetre.afficher(lHtml);
 	}
 }
-function _ouvrirFenetreModifierDuree(aRencontre) {
-	const lFenetre = ObjetFenetre.creerInstanceFenetre(ObjetFenetre, {
-		pere: this,
-		evenement: function (aGenreBouton) {
-			if (aGenreBouton) {
-				aRencontre.setEtat(EGenreEtat.Modification);
-				this.callbackDuree(aRencontre);
-			}
-		},
-		initialiser: function (aInstance) {
-			aInstance.duree = this.duree;
-			aInstance.setOptionsFenetre({
-				titre: GTraductions.getValeur("Duree"),
-				largeur: 300,
-				hauteur: 200,
-				listeBoutons: [
-					GTraductions.getValeur("Annuler"),
-					GTraductions.getValeur("Valider"),
-				],
-			});
-		},
-	});
-	const lAncienneDuree = aRencontre.duree;
-	const lControleur = {
-		inputDuree: {
-			getValue() {
-				return aRencontre.duree;
-			},
-			setValue(aValue) {
-				const lDuree = GChaine.strToInteger(aValue || 0);
-				aRencontre.duree = lDuree;
-			},
-			exitChange: function () {
-				if (
-					aRencontre.duree < this.instance.duree.min ||
-					aRencontre.duree > this.instance.duree.max
-				) {
-					aRencontre.duree = lAncienneDuree;
-					GApplication.getMessage().afficher({
-						message: GTraductions.getValeur("ErreurMinMaxEntier", [
-							this.instance.duree.min,
-							this.instance.duree.max,
-						]),
-					});
-				}
-			},
-		},
-	};
-	$.extend(lFenetre.controleur, lControleur);
-	const lHtml = tag("input", {
-		type: "number",
-		"ie-model": "inputDuree",
-		class: "round-style EspaceInput",
-		style: "width:100%;",
-		title: GTraductions.getValeur("Duree"),
-	});
-	lFenetre.afficher(lHtml);
-}
-module.exports = DonneesListe_RencontresDesiderata;
+exports.DonneesListe_RencontresDesiderata = DonneesListe_RencontresDesiderata;

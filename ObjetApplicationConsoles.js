@@ -1,6 +1,6 @@
 exports.ObjetApplicationConsoles = void 0;
-require("NamespaceIE.js");
-require("DeclarationJQuery.js");
+require("NamespaceIE");
+require("DeclarationJQuery");
 require("IELog");
 require("ObjetNavigateur.js");
 const ObjetApplication_1 = require("ObjetApplication");
@@ -45,24 +45,14 @@ class ObjetApplicationConsoles extends ObjetApplication_1.ObjetApplication {
 			this.communicationSOAP.setNom(this.getNom() + ".getCommunication ()");
 		}
 	}
+	getCouleur() {
+		return global.GCouleur;
+	}
 	estPronotePrimaireServeur() {
 		return false;
 	}
 	estEDTServeur() {
 		return false;
-	}
-	getSkinBtnConsoles() {
-		if (GCouleur) {
-			return {
-				couleurFond: GCouleur.blanc,
-				couleurBordureSupGauche: GCouleur.fond,
-				couleurBordureInfDroit: GCouleur.fond,
-				texteGras: false,
-				couleurTexteInactif: GCouleur.bordure,
-			};
-		} else {
-			return {};
-		}
 	}
 	start(aParam) {
 		try {
@@ -103,7 +93,7 @@ class ObjetApplicationConsoles extends ObjetApplication_1.ObjetApplication {
 				this.descriptionWS.getWSAdministrationServeur(),
 			);
 			ThemesCouleurs_1.ThemesCouleurs.setTheme(this.getThemeCouleur());
-			GCouleur = new ObjetCouleurConsoles_1.ObjetCouleurConsoles();
+			global.GCouleur = new ObjetCouleurConsoles_1.ObjetCouleurConsoles();
 			this.setCommunicationSOAP(
 				new CommunicationSOAP_1.CommunicationSOAP(
 					this,

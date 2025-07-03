@@ -1,12 +1,13 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { TypeEtatSatisfactionUtil } = require("TypeEtatSatisfaction.js");
-class DonneesListe_ListeStagiaires extends ObjetDonneesListe {
+exports.DonneesListe_ListeStagiaires = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const TypeEtatSatisfaction_1 = require("TypeEtatSatisfaction");
+class DonneesListe_ListeStagiaires extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees) {
 		super(aDonnees);
 		this.setOptions({
 			avecSuppression: false,
-			avecEvnt_Edition: true,
 			avecEtatSaisie: false,
+			avecEdition: false,
 			avecTri: false,
 			avecDeploiement: true,
 		});
@@ -14,39 +15,40 @@ class DonneesListe_ListeStagiaires extends ObjetDonneesListe {
 	avecMenuContextuel() {
 		return false;
 	}
-	avecEdition(aParams) {
+	avecEvenementSelectionClick(aParams) {
 		return (
 			aParams.idColonne === DonneesListe_ListeStagiaires.colonnes.evaluation &&
 			!aParams.article.estTitre
 		);
+	}
+	getAriaHasPopup(aParams) {
+		if (this.avecEvenementSelectionClick(aParams)) {
+			return "dialog";
+		}
+		return false;
 	}
 	getColonneDeFusion(aParams) {
 		if (aParams.article.estTitre) {
 			return DonneesListe_ListeStagiaires.colonnes.stagiaire;
 		}
 	}
+	avecImageSurColonneDeploiement(aParams) {
+		return (
+			aParams.article.estTitre &&
+			aParams.article.estUnDeploiement &&
+			aParams.idColonne === DonneesListe_ListeStagiaires.colonnes.stagiaire
+		);
+	}
 	getTypeValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_ListeStagiaires.colonnes.evaluation:
-				return ObjetDonneesListe.ETypeCellule.Image;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Image;
 		}
-		return ObjetDonneesListe.ETypeCellule.Html;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 	}
 	getValeur(aParams) {
-		const lResult = [];
 		if (aParams.article.estTitre) {
-			if (aParams.article.estUnDeploiement) {
-				if (aParams.article.estDeploye) {
-					lResult.push(
-						'<div class="Image_DeploiementListe_Deploye" style="float:left;margin-top:2px;">&nbsp;</div>&nbsp;',
-					);
-				} else {
-					lResult.push(
-						'<div class="Image_DeploiementListe_NonDeploye" style="float:left;margin-top:2px;">&nbsp;</div>&nbsp;',
-					);
-				}
-			}
-			return lResult.join("") + aParams.article.libelleSousTitre;
+			return aParams.article.libelleSousTitre;
 		}
 		switch (aParams.idColonne) {
 			case DonneesListe_ListeStagiaires.colonnes.stagiaire:
@@ -60,7 +62,7 @@ class DonneesListe_ListeStagiaires extends ObjetDonneesListe {
 			case DonneesListe_ListeStagiaires.colonnes.referants:
 				return aParams.article.libelleReferant;
 			case DonneesListe_ListeStagiaires.colonnes.evaluation:
-				return TypeEtatSatisfactionUtil.getImageListe(
+				return TypeEtatSatisfaction_1.TypeEtatSatisfactionUtil.getImageListe(
 					aParams.article.typeSatisfaction,
 				);
 		}
@@ -91,10 +93,11 @@ class DonneesListe_ListeStagiaires extends ObjetDonneesListe {
 	}
 	getCouleurCellule(aParams) {
 		return aParams.article.estUnDeploiement
-			? ObjetDonneesListe.ECouleurCellule.Deploiement
-			: ObjetDonneesListe.ECouleurCellule.Blanc;
+			? ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Deploiement
+			: ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
 	}
 }
+exports.DonneesListe_ListeStagiaires = DonneesListe_ListeStagiaires;
 DonneesListe_ListeStagiaires.colonnes = {
 	stagiaire: "DL_Stagiaires_nom",
 	sujet: "DL_Stagiaires_sujet",
@@ -103,4 +106,3 @@ DonneesListe_ListeStagiaires.colonnes = {
 	referants: "DL_Stagiaires_referant",
 	evaluation: "DL_Stagiaires_eval",
 };
-module.exports = { DonneesListe_ListeStagiaires };

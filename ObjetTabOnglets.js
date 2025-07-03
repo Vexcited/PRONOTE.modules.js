@@ -4,7 +4,6 @@ const ObjetIdentite_1 = require("ObjetIdentite");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetWAI_1 = require("ObjetWAI");
 const ToucheClavier_1 = require("ToucheClavier");
-const tag_1 = require("tag");
 class ObjetTabOnglets extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
@@ -16,34 +15,6 @@ class ObjetTabOnglets extends ObjetIdentite_1.Identite {
 			afficherOngletUnique: !IE.estMobile,
 			avecSwipe: true,
 		};
-	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			getNodeOnglet(aIndice) {
-				$(this.node)
-					.on("keyup", (aEvent) => {
-						switch (aEvent.which) {
-							case ToucheClavier_1.ToucheClavier.FlecheGauche: {
-								aInstance._selectOngletSuivant(
-									aInstance.ongletSelectionne,
-									true,
-								);
-								break;
-							}
-							case ToucheClavier_1.ToucheClavier.FlecheDroite: {
-								aInstance._selectOngletSuivant(
-									aInstance.ongletSelectionne,
-									false,
-								);
-								break;
-							}
-						}
-					})
-					.eventValidation(() => {
-						aInstance.selectOnglet(aIndice);
-					});
-			},
-		});
 	}
 	setOptionsTabOnglets(aOptions) {
 		$.extend(this.optionsTabOnglets, aOptions);
@@ -79,18 +50,32 @@ class ObjetTabOnglets extends ObjetIdentite_1.Identite {
 		if (aIndiceOnglet >= 0) {
 			this.selectOnglet(aIndiceOnglet, !aAvecCallbackSelection);
 		}
-		if (this.optionsTabOnglets.avecSwipe && IE.estMobile && this.Pere) {
-			const lJPage = $(
-				`#${this.Pere.getNom().escapeJQ()}.objetInterfaceMobile_identPage`,
-			);
-			if (lJPage.length === 1) {
-				const lInstance = this;
+		this.addSwipe();
+	}
+	addSwipe() {
+		if (this.optionsTabOnglets.avecSwipe && IE.estMobile) {
+			const lJPage = this.optionsTabOnglets.idSwipe
+				? typeof this.optionsTabOnglets.idSwipe === "string"
+					? $(`#${this.optionsTabOnglets.idSwipe.escapeJQ()}`)
+					: $(this.optionsTabOnglets.idSwipe)
+				: this.Pere
+					? $(
+							`#${this.Pere.getNom().escapeJQ()}.objetInterfaceMobile_identPage`,
+						)
+					: undefined;
+			if (
+				(lJPage === null || lJPage === void 0 ? void 0 : lJPage.length) === 1
+			) {
 				lJPage.off("swipeleft.tabonglet swiperight.tabonglet").on({
-					"swiperight.tabonglet": function () {
-						lInstance._selectOngletSuivant(lInstance.ongletSelectionne, true);
+					"swiperight.tabonglet": () => {
+						if (this.optionsTabOnglets.avecSwipe) {
+							this._selectOngletSuivant(this.ongletSelectionne, true);
+						}
 					},
-					"swipeleft.tabonglet": function () {
-						lInstance._selectOngletSuivant(lInstance.ongletSelectionne, false);
+					"swipeleft.tabonglet": () => {
+						if (this.optionsTabOnglets.avecSwipe) {
+							this._selectOngletSuivant(this.ongletSelectionne, false);
+						}
 					},
 				});
 				$(`#${this.Nom.escapeJQ()}`).on("destroyed", () => {
@@ -100,6 +85,9 @@ class ObjetTabOnglets extends ObjetIdentite_1.Identite {
 		}
 	}
 	composePage(aIdWAI) {
+		if (!ObjetHtml_1.GHtml.elementExiste(this.Nom)) {
+			return "";
+		}
 		const lHtml = [];
 		lHtml.push(
 			'<div class="menu-tabs" id="',
@@ -166,6 +154,24 @@ class ObjetTabOnglets extends ObjetIdentite_1.Identite {
 		const lOnglet = this.listeOnglets.get(aIndice);
 		return this._estOngletVisible(lOnglet);
 	}
+	jsxGetNodeOnglet(aIndice, aNode) {
+		$(aNode)
+			.on("keyup", (aEvent) => {
+				switch (aEvent.which) {
+					case ToucheClavier_1.ToucheClavier.FlecheGauche: {
+						this._selectOngletSuivant(this.ongletSelectionne, true);
+						break;
+					}
+					case ToucheClavier_1.ToucheClavier.FlecheDroite: {
+						this._selectOngletSuivant(this.ongletSelectionne, false);
+						break;
+					}
+				}
+			})
+			.eventValidation(() => {
+				this.selectOnglet(aIndice);
+			});
+	}
 	_composeOnglets(aIdWAI) {
 		const lHtml = [];
 		let i = 0;
@@ -176,27 +182,31 @@ class ObjetTabOnglets extends ObjetIdentite_1.Identite {
 				const lLibelle = lElmOnglet.Libelle;
 				idCourant = this.getIdOnglet(i);
 				lHtml.push(
-					'<div id="div_',
-					idCourant,
-					'" class="tab-item" role="presentation">',
-					'<div id="tab_',
-					idCourant,
-					'" class="tab-content" role="presentation">',
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"div",
-						{
-							id: `nav_${idCourant}`,
-							role: "tab",
-							class: "libelle",
-							tabindex: "-1",
-							"ie-node": tag_1.tag.funcAttr("getNodeOnglet", i),
-							"aria-describedby": aIdWAI ? aIdWAI : false,
-							"aria-selected": "false",
-						},
-						lLibelle,
+						{ id: "div_" + idCourant, class: "tab-item", role: "presentation" },
+						IE.jsx.str(
+							"div",
+							{
+								id: "tab_" + idCourant,
+								class: "tab-content",
+								role: "presentation",
+							},
+							IE.jsx.str(
+								"div",
+								{
+									id: "nav_" + idCourant,
+									role: "tab",
+									class: "libelle",
+									tabindex: "-1",
+									"ie-node": this.jsxGetNodeOnglet.bind(this, i),
+									"aria-describedby": aIdWAI,
+									"aria-selected": "false",
+								},
+								lLibelle,
+							),
+						),
 					),
-					"</div>",
-					"</div>",
 				);
 			}
 		}

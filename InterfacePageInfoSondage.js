@@ -1,40 +1,40 @@
-const { EGenreEvntActu } = require("EGenreEvntActu.js");
-const {
-	InterfaceConsultInfoSondage,
-} = require("InterfaceConsultInfoSondage.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { TypeThemeBouton } = require("Type_ThemeBouton.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { ObjetMenuContextuel } = require("ObjetMenuContextuel.js");
-const { GPosition } = require("ObjetPosition.js");
-const { GUID } = require("GUID.js");
-const { DonneesListe_InfosSond } = require("DonneesListe_InfosSond.js");
-const {
-	DonneesListeTypesAccesInfoSond,
-} = require("DonneesListeTypesAccesInfoSond.js");
-const { GDate } = require("ObjetDate.js");
-const { EStructureAffichage } = require("Enumere_StructureAffichage.js");
-const { InterfacePageCP } = require("ObjetInterfacePageCP.js");
-const { EEvent } = require("Enumere_Event.js");
-const { tag } = require("tag.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetFenetre_Liste } = require("ObjetFenetre_Liste.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { SyntheseVocale } = require("UtilitaireSyntheseVocale.js");
-class InterfacePageInfoSondage extends InterfacePageCP {
+exports.InterfacePageInfoSondage = void 0;
+const EGenreEvntActu_1 = require("EGenreEvntActu");
+const InterfaceConsultInfoSondage_1 = require("InterfaceConsultInfoSondage");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Type_ThemeBouton_1 = require("Type_ThemeBouton");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const ObjetListe_1 = require("ObjetListe");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetMenuContextuel_1 = require("ObjetMenuContextuel");
+const ObjetPosition_1 = require("ObjetPosition");
+const GUID_1 = require("GUID");
+const DonneesListe_InfosSond_1 = require("DonneesListe_InfosSond");
+const DonneesListeTypesAccesInfoSond_1 = require("DonneesListeTypesAccesInfoSond");
+const ObjetDate_1 = require("ObjetDate");
+const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
+const ObjetInterfacePageCP_1 = require("ObjetInterfacePageCP");
+const Enumere_Event_1 = require("Enumere_Event");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_Liste_1 = require("ObjetFenetre_Liste");
+const MethodesObjet_1 = require("MethodesObjet");
+const UtilitaireSyntheseVocale_1 = require("UtilitaireSyntheseVocale");
+const AccessApp_1 = require("AccessApp");
+class InterfacePageInfoSondage extends ObjetInterfacePageCP_1.InterfacePageCP {
 	constructor(...aParams) {
 		super(...aParams);
-		this.ajouterEvenementGlobal(EEvent.SurPostResize, this._surPostResize);
 		this.genresAffichages = { reception: 0, saisie: 1, modeles: 2 };
+		this.ids = { msgAucun: GUID_1.GUID.getId() };
 		this.filtreModeItem = null;
 		this.genreAff = this.genresAffichages.reception;
 		this.uniquementNonLues = GEtatUtilisateur.getUniquementNonLues();
 		this.modeAuteur = false;
 		this.hauteurZoneCommandesDiffusion = IE.estMobile ? 0 : 80;
+		this.init();
+		this.ajouterEvenementGlobal(
+			Enumere_Event_1.EEvent.SurPostResize,
+			this._surPostResize,
+		);
 		this.setOptionsInfoSondage();
 		this.setOptionsEcrans({ nbNiveaux: 2, avecBascule: IE.estMobile });
 		this.contexte = $.extend(this.contexte, {
@@ -52,9 +52,9 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 		if (this.avecFiltreCategorie) {
 			this.categorie = GEtatUtilisateur.getCategorie();
 		}
-		this.ids = { msgAucun: GUID.getId() };
 		this.typeSelectionne = null;
 	}
+	init() {}
 	evntRetourEcranPrec() {
 		switch (this.getCtxEcran({ niveauEcran: this.contexte.niveauCourant })) {
 			case InterfacePageInfoSondage.genreEcran.visuBloc:
@@ -64,98 +64,33 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 				break;
 		}
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			btnRetourEcranPrec: {
-				event: function () {
-					this.evntRetourEcranPrec();
-				}.bind(aInstance),
-			},
-			comboFiltreCategories: {
-				init: function (aCombo) {
-					aCombo.setOptionsObjetSaisie({
-						longueur: 200,
-						hauteur: 16,
-						hauteurLigneDefault: 16,
-						labelWAICellule: GTraductions.getValeur("actualites.Categorie"),
-					});
-				},
-				getDonnees: function () {
-					if (
-						aInstance.listeCategories !== null &&
-						aInstance.listeCategories !== undefined
-					) {
-						return aInstance.listeCategories;
-					}
-				},
-				getIndiceSelection: function () {
-					const lIndice = GEtatUtilisateur.getCategorie()
-						? aInstance.listeCategories.getIndiceParElement(
-								GEtatUtilisateur.getCategorie(),
-							)
-						: 0;
-					return lIndice;
-				},
-				event: function (aParametres, aInstanceCombo) {
-					if (
-						aParametres.genreEvenement ===
-							EGenreEvenementObjetSaisie.selection &&
-						aParametres.element &&
-						aInstanceCombo.estUneInteractionUtilisateur()
-					) {
-						_evntSurCategorie.call(
-							aInstance,
-							aParametres.genreEvenement,
-							aParametres.element,
-						);
-					}
-				},
-			},
-			estVisibleCbUniquementNonLues: function () {
-				return aInstance.estGenreReception();
-			},
-			checkUniquementNonLues: {
-				getValue: function () {
-					return aInstance.uniquementNonLues;
-				},
-				setValue: function (aValeur) {
-					aInstance.uniquementNonLues = aValeur;
-					if (!aInstance.modeAuteur) {
-						GEtatUtilisateur.setUniquementNonLues(aInstance.uniquementNonLues);
-					}
-					aInstance._jetonReinitScrollListeInfosSond = true;
-					aInstance.afficherSelonFiltres();
-				},
-			},
-			selecteurTypesAccesInfosSond: {
-				event: aInstance.afficherFenetreListeTypesInfoSond.bind(aInstance),
-				getLibelle() {
-					let lLibelle = "";
-					if (aInstance.typeSelectionne) {
-						lLibelle = aInstance.typeSelectionne.getLibelle();
-					}
-					return lLibelle;
-				},
-				getIcone() {
-					let lIcone = "";
-					if (aInstance.typeSelectionne) {
-						lIcone = tag("i", { class: aInstance.typeSelectionne.icone });
-					}
-					return lIcone;
-				},
-			},
-		});
-	}
 	construireInstances() {
 		this.identVisuInfoSondage = this.add(
-			InterfaceConsultInfoSondage,
-			_evntVisuInfoSond.bind(this),
-			_initVisuInfoSond.bind(this),
+			InterfaceConsultInfoSondage_1.InterfaceConsultInfoSondage,
+			this._evntVisuInfoSond.bind(this),
+			this._initVisuInfoSond.bind(this),
 		);
-		this.identListeInfosSond = this.add(ObjetListe, this.evntSurListeInfoSond);
+		this.identListeInfosSond = this.add(
+			ObjetListe_1.ObjetListe,
+			this.evntSurListeInfoSond,
+			(aListe) => {
+				aListe.setOptionsListe({
+					ariaLabel: () => {
+						let lStr = GEtatUtilisateur.getLibelleLongOnglet();
+						if (
+							this.existeInstance(this.identListeTypesAccesInfosSond) &&
+							this.typeSelectionne
+						) {
+							lStr += ` ${ObjetTraduction_1.GTraductions.getValeur("infoSond.Categories")} - ${this.typeSelectionne.getLibelle()}`;
+						}
+						return lStr;
+					},
+				});
+			},
+		);
 		if (this.avecAuteur) {
 			this.identListeTypesAccesInfosSond = this.add(
-				ObjetListe,
+				ObjetListe_1.ObjetListe,
 				this.evntSurListeTypeAccesInfoSond,
 				this.initListeTypeAccesInfoSond,
 			);
@@ -166,12 +101,14 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 	}
 	initListeTypeAccesInfoSond(aInstance) {
 		aInstance.setOptionsListe({
-			labelWAI: GTraductions.getValeur("infoSond.Categories"),
+			ariaLabel: `${GEtatUtilisateur.getLibelleLongOnglet()} ${ObjetTraduction_1.GTraductions.getValeur("infoSond.Categories")}`,
 			avecLigneCreation: false,
 		});
 	}
 	declencherActionsAutoSurNavigation() {}
-	getGenreAffichageSelonTypeAcces() {}
+	getGenreAffichageSelonTypeAcces(aGenreTypeAcces) {
+		return;
+	}
 	estModeAffDiffusion(aModeAff) {
 		return aModeAff === this.genresAffichages.saisie;
 	}
@@ -235,7 +172,7 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 	}
 	evntSurListeTypeAccesInfoSond(aParametres) {
 		switch (aParametres.genreEvenement) {
-			case EGenreEvenementListe.Selection:
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Selection:
 				this._jetonReinitScrollListeInfosSond = true;
 				this.surSelectionTypeAccesInfoSond(aParametres.article);
 				break;
@@ -252,20 +189,24 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 	}
 	evntSurListeInfoSond(aParametres) {
 		switch (aParametres.genreEvenement) {
-			case EGenreEvenementListe.Selection:
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Selection:
 				this.surSelectionInfoSondage({ infoSondage: aParametres.article });
 				break;
-			case EGenreEvenementListe.Creation:
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Creation:
 				if (!IE.estMobile) {
-					const lPosBtn = GPosition.getClientRect(aParametres.nodeBouton);
-					ObjetMenuContextuel.afficher({
+					const lPosBtn = ObjetPosition_1.GPosition.getClientRect(
+						aParametres.nodeBouton,
+					);
+					ObjetMenuContextuel_1.ObjetMenuContextuel.afficher({
 						pere: this,
 						id: { x: lPosBtn.left, y: lPosBtn.bottom + 10 },
-						initCommandes: function (aMenu) {
+						initCommandes: (aMenu) => {
 							const lEstModeModele = this.estGenreModeles();
 							if (!lEstModeModele) {
 								aMenu.add(
-									GTraductions.getValeur("actualites.creerInfo"),
+									ObjetTraduction_1.GTraductions.getValeur(
+										"actualites.creerInfo",
+									),
 									true,
 									() => {
 										this.evntBtnCreerActuInfo();
@@ -273,7 +214,9 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 									{ icon: "icon_diffuser_information" },
 								);
 								aMenu.add(
-									GTraductions.getValeur("actualites.creerSondage"),
+									ObjetTraduction_1.GTraductions.getValeur(
+										"actualites.creerSondage",
+									),
 									true,
 									() => {
 										this.evntBtnCreerActuSondage();
@@ -283,7 +226,9 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 							} else {
 								if (this.avecModeles) {
 									aMenu.add(
-										GTraductions.getValeur("actualites.nouveauModele"),
+										ObjetTraduction_1.GTraductions.getValeur(
+											"actualites.nouveauModele",
+										),
 										true,
 										() => {
 											this.evntBtnCreerModele({
@@ -294,7 +239,7 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 									);
 									if (!IE.estMobile && this.estModeItemDeTypeSondage()) {
 										aMenu.add(
-											GTraductions.getValeur(
+											ObjetTraduction_1.GTraductions.getValeur(
 												"actualites.importerModeleSondage",
 											),
 											this.droitSaisie,
@@ -314,7 +259,9 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 				break;
 		}
 	}
-	instancierEditionInfoSond() {}
+	instancierEditionInfoSond() {
+		return;
+	}
 	estModeItemDeTypeInfo() {
 		return false;
 	}
@@ -322,7 +269,8 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 		return false;
 	}
 	setParametresGeneraux() {
-		this.GenreStructure = EStructureAffichage.Autre;
+		this.GenreStructure =
+			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 		this.avecBandeau = true;
 		this.IdentZoneAlClient = this.identPage;
 		this.AddSurZone = [];
@@ -342,7 +290,7 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 			H.push('<div class="nav multi">');
 			H.push(
 				'<div id="',
-				this.getInstance(this.identListeTypesAccesInfosSond).getNom(),
+				this.getNomInstance(this.identListeTypesAccesInfosSond),
 				'" style="height:100%;"></div>',
 			);
 			H.push("</div>");
@@ -372,7 +320,7 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 			this.optionsEcrans.avecBascule ? "ecran-visu" : "",
 			'" id="',
 			this.getInstance(this.identVisuInfoSondage).getNom(),
-			'" ></div>',
+			'"></div>',
 		);
 		H.push("</aside>");
 		H.push("</div>");
@@ -384,18 +332,89 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 		this.actualiserDonnees();
 	}
 	composeFiltreCategories() {
+		const lJSXcomboFiltreCategories = () => {
+			return {
+				init: (aCombo) => {
+					aCombo.setOptionsObjetSaisie({
+						longueur: 200,
+						hauteur: 16,
+						hauteurLigneDefault: 16,
+						labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+							"actualites.Categorie",
+						),
+					});
+				},
+				getDonnees: () => {
+					if (
+						this.listeCategories !== null &&
+						this.listeCategories !== undefined
+					) {
+						return this.listeCategories;
+					}
+				},
+				getIndiceSelection: () => {
+					const lIndice = GEtatUtilisateur.getCategorie()
+						? this.listeCategories.getIndiceParElement(
+								GEtatUtilisateur.getCategorie(),
+							)
+						: 0;
+					return lIndice;
+				},
+				event: (aParametres, aInstanceCombo) => {
+					if (
+						aParametres.genreEvenement ===
+							Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+								.selection &&
+						aParametres.element &&
+						aInstanceCombo.estUneInteractionUtilisateur()
+					) {
+						this._evntSurCategorie(
+							aParametres.genreEvenement,
+							aParametres.element,
+						);
+					}
+				},
+			};
+		};
 		return {
-			html: '<ie-combo ie-model="comboFiltreCategories" class="combo-classic"></ie-combo>',
-			controleur: this.controleur,
+			getHtml: () =>
+				IE.jsx.str("ie-combo", {
+					"ie-model": lJSXcomboFiltreCategories,
+					class: "combo-classic",
+				}),
 		};
 	}
 	composeCheckboxUniquementNonLues() {
+		const lJSXcheckUniquementNonLues = () => {
+			return {
+				getValue: () => {
+					return this.uniquementNonLues;
+				},
+				setValue: (aValeur) => {
+					this.uniquementNonLues = aValeur;
+					if (!this.modeAuteur) {
+						GEtatUtilisateur.setUniquementNonLues(this.uniquementNonLues);
+					}
+					this._jetonReinitScrollListeInfosSond = true;
+					this.afficherSelonFiltres();
+				},
+			};
+		};
+		const lJSXestVisibleCbUniquementNonLues = () => {
+			return this.estGenreReception();
+		};
 		return {
-			html:
-				'<ie-checkbox ie-textleft ie-display="estVisibleCbUniquementNonLues" ie-model="checkUniquementNonLues">' +
-				GTraductions.getValeur("actualites.UniquementNonLues") +
-				"</ie-checkbox>",
-			controleur: this.controleur,
+			getHtml: () =>
+				IE.jsx.str(
+					"ie-checkbox",
+					{
+						"ie-display": lJSXestVisibleCbUniquementNonLues,
+						"ie-model": lJSXcheckUniquementNonLues,
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"actualites.UniquementNonLues",
+					),
+				),
 		};
 	}
 	construireEcran(aEcran) {
@@ -418,15 +437,13 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 						const lHtmlBandeau = this.construireBandeauEcranVisuInfoSondage();
 						this.setHtmlStructureAffichageBandeau(lHtmlBandeau);
 					}
-					_initVisuInfoSond.call(
-						this,
-						this.getInstance(this.identVisuInfoSondage),
-					);
+					this._initVisuInfoSond(this.getInstance(this.identVisuInfoSondage));
 					this.getInstance(this.identVisuInfoSondage).setUtilitaires(
 						this.utilitaires,
 					);
+					const lActualite = this.getCtxSelection({ niveauEcran: 0 });
 					this.getInstance(this.identVisuInfoSondage).setDonnees({
-						actualite: this.getCtxSelection({ niveauEcran: 0 }),
+						actualite: lActualite,
 						avecMsgAucun: this.contexte.avecMsgAucun,
 					});
 					aResolve();
@@ -450,25 +467,48 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 		const H = [];
 		if (this.avecAuteur && this.optionsEcrans.avecBascule) {
 			H.push(
-				tag("ie-btnselecteur", {
-					"ie-model": "selecteurTypesAccesInfosSond",
-					"aria-label": GTraductions.getValeur("WAI.SelectionRubrique"),
+				IE.jsx.str("ie-btnselecteur", {
+					"ie-model": this.jsxSelecteurTypesAccesInfosSond.bind(this),
+					"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+						"WAI.SelectionRubrique",
+					),
 				}),
 			);
 		}
 		return H.join();
 	}
+	jsxSelecteurTypesAccesInfosSond() {
+		return {
+			event: this.afficherFenetreListeTypesInfoSond.bind(this),
+			getLibelle: () => {
+				let lLibelle = "";
+				if (this.typeSelectionne) {
+					lLibelle = this.typeSelectionne.getLibelle();
+				}
+				return lLibelle;
+			},
+			getIcone: () => {
+				var _a, _b;
+				return (_b =
+					(_a = this.typeSelectionne) === null || _a === void 0
+						? void 0
+						: _a.icone) !== null && _b !== void 0
+					? _b
+					: "";
+			},
+		};
+	}
 	construireBandeauEcranVisuInfoSondage() {
 		const lActu = this.getCtxSelection({ niveauEcran: 0 });
 		const H = [];
 		const lStr = lActu.estSondage
-			? GTraductions.getValeur(
+			? ObjetTraduction_1.GTraductions.getValeur(
 					"infoSond.sondageDu",
-					GDate.formatDate(lActu.dateDebut, "%JJ %MMM"),
+					ObjetDate_1.GDate.formatDate(lActu.dateDebut, "%JJ %MMM"),
 				)
-			: GTraductions.getValeur(
+			: ObjetTraduction_1.GTraductions.getValeur(
 					"infoSond.infoDu",
-					GDate.formatDate(lActu.dateDebut, "%JJ %MMM"),
+					ObjetDate_1.GDate.formatDate(lActu.dateDebut, "%JJ %MMM"),
 				);
 		H.push('<h3 class="titre">', lStr, "</h3>");
 		return this.construireBandeauEcran(H.join(""), { bgWhite: true });
@@ -567,10 +607,10 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 	}
 	revenirSurEcranPrecedent() {
 		if (IE.estMobile) {
-			SyntheseVocale.forcerArretLecture();
+			UtilitaireSyntheseVocale_1.SyntheseVocale.forcerArretLecture();
 		}
 		if (
-			this.getCtxEcran(this.contexte.niveauCourant) ===
+			this.getCtxEcran({ niveauEcran: this.contexte.niveauCourant }) ===
 			InterfacePageInfoSondage.genreEcran.visuBloc
 		) {
 			const lData = this.getCtxSelection({ niveauEcran: 0 });
@@ -579,13 +619,13 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 				IE.estMobile &&
 				!lData.lue &&
 				!lEstCtxDiffusion &&
-				!GApplication.getModeExclusif()
+				!(0, AccessApp_1.getApp)().getModeExclusif()
 			) {
 				lData.lue = !lData.lue;
 				lData.marqueLueSeulement = true;
 				this.evntSurValidationInfoSond(
 					lData,
-					EGenreEvntActu.SurValidationDirecte,
+					EGenreEvntActu_1.EGenreEvntActu.SurValidationDirecte,
 					{ avecRecupDonnees: true },
 				);
 				return;
@@ -598,6 +638,8 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 		this.forcerAR = aOptions.forcerAR;
 		this.avecSondageAnonyme = aOptions.avecSondageAnonyme;
 		this.droitSaisie = aOptions.droitSaisie;
+		this.droitSaisie = aOptions.droitSaisie;
+		this.droitSaisieModele = aOptions.droitSaisieModele;
 		this.droitPublicationPageEtablissement =
 			aOptions.droitPublicationPageEtablissement;
 		this.avecModeles = aOptions.avecModeles;
@@ -610,11 +652,13 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 			forcerAR: false,
 			avecSondageAnonyme: false,
 			droitSaisie: false,
+			droitSaisieModele: false,
 			avecModeles: false,
 		};
 		const lParam = {
 			avecAuteur: this.getAvecAuteur(),
 			droitSaisie: this.getAvecDroitSaisie(),
+			droitSaisieModele: this.getAvecDroitSaisieModele(),
 			droitPublicationPageEtablissement:
 				this.getDroitPublicationPageEtablissement(),
 			forcerAR: this.getForcerAR(),
@@ -640,48 +684,46 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 	getAvecModeles() {
 		return false;
 	}
-	initDataInfoSondSurEdition() {}
+	initDataInfoSondSurEdition(aParams) {
+		return null;
+	}
 	evntBtnCreerActuInfo() {
-		if (this.getInstance(this.identEditionInfoSond)) {
-			this.getInstance(this.identEditionInfoSond).setOptionsFenetre({
-				titre: GTraductions.getValeur("actualites.creerInfo"),
-			});
-			this.getInstance(this.identEditionInfoSond).setDonnees(
-				this.initDataInfoSondSurEdition({
-					estCreation: true,
-					estInfo: true,
-					avecRecupModele: this.avecModeles,
-				}),
-			);
-		}
+		this.getInstance(this.identEditionInfoSond).setOptionsFenetre({
+			titre: ObjetTraduction_1.GTraductions.getValeur("actualites.creerInfo"),
+		});
+		this.getInstance(this.identEditionInfoSond).setDonnees(
+			this.initDataInfoSondSurEdition({
+				estCreation: true,
+				estInfo: true,
+				avecRecupModele: this.getAvecRecupModele(),
+			}),
+		);
 	}
 	evntBtnCreerActuSondage() {
-		if (this.getInstance(this.identEditionInfoSond)) {
-			this.getInstance(this.identEditionInfoSond).setOptionsFenetre({
-				titre: GTraductions.getValeur("actualites.creerSondage"),
-			});
-			this.getInstance(this.identEditionInfoSond).setDonnees(
-				this.initDataInfoSondSurEdition({
-					estCreation: true,
-					estInfo: false,
-					avecRecupModele: this.avecModeles,
-				}),
-			);
-		}
+		this.getInstance(this.identEditionInfoSond).setOptionsFenetre({
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"actualites.creerSondage",
+			),
+		});
+		this.getInstance(this.identEditionInfoSond).setDonnees(
+			this.initDataInfoSondSurEdition({
+				estCreation: true,
+				estInfo: false,
+				avecRecupModele: this.getAvecRecupModele(),
+			}),
+		);
 	}
 	evntBtnCreerModele(aParam) {
-		if (this.getInstance(this.identEditionInfoSond)) {
-			this.getInstance(this.identEditionInfoSond).setOptionsFenetre({
-				titre: GTraductions.getValeur("actualites.creerModele"),
-			});
-			this.getInstance(this.identEditionInfoSond).setDonnees(
-				this.initDataInfoSondSurEdition({
-					estCreation: true,
-					estInfo: aParam.estInfo,
-					estModele: true,
-				}),
-			);
-		}
+		this.getInstance(this.identEditionInfoSond).setOptionsFenetre({
+			titre: ObjetTraduction_1.GTraductions.getValeur("actualites.creerModele"),
+		});
+		this.getInstance(this.identEditionInfoSond).setDonnees(
+			this.initDataInfoSondSurEdition({
+				estCreation: true,
+				estInfo: aParam.estInfo,
+				estModele: true,
+			}),
+		);
 	}
 	evntImportModele() {}
 	initFenetreEditionInfoSond(aInstance) {
@@ -691,12 +733,12 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 			hauteur: 660,
 			listeBoutons: [
 				{
-					libelle: GTraductions.getValeur("Annuler"),
-					theme: TypeThemeBouton.secondaire,
+					libelle: ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+					theme: Type_ThemeBouton_1.TypeThemeBouton.secondaire,
 				},
 				{
-					libelle: GTraductions.getValeur("Valider"),
-					theme: TypeThemeBouton.primaire,
+					libelle: ObjetTraduction_1.GTraductions.getValeur("Valider"),
+					theme: Type_ThemeBouton_1.TypeThemeBouton.primaire,
 				},
 			],
 		});
@@ -770,17 +812,19 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 	getOptionsInfoSond() {
 		return {};
 	}
-	getListeDonneesTypesInfoSond() {}
+	getListeDonneesTypesInfoSond() {
+		return;
+	}
 	afficherListeTypesInfoSond() {
 		if (!this.avecAuteur) {
 			return;
 		}
 		this.getInstance(this.identListeTypesAccesInfosSond).setOptionsListe({
-			skin: ObjetListe.skin.flatDesign,
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
 			avecOmbreDroite: true,
 		});
 		this.getInstance(this.identListeTypesAccesInfosSond).setDonnees(
-			new DonneesListeTypesAccesInfoSond(
+			new DonneesListeTypesAccesInfoSond_1.DonneesListeTypesAccesInfoSond(
 				this.getListeDonneesTypesInfoSond(),
 			).setOptions({
 				avecEvnt_Selection: true,
@@ -791,30 +835,37 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 		);
 	}
 	afficherFenetreListeTypesInfoSond() {
-		const lFenetre = ObjetFenetre.creerInstanceFenetre(ObjetFenetre_Liste, {
-			pere: this,
-			evenement(aNumeroBouton, aSelection) {
-				if (aNumeroBouton === 1) {
-					this._jetonReinitScrollListeInfosSond = true;
-					const lSelection =
-						this.getListeDonneesTypesInfoSond().get(aSelection);
-					this.surSelectionTypeAccesInfoSond(lSelection);
-				}
+		const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_Liste_1.ObjetFenetre_Liste,
+			{
+				pere: this,
+				evenement(aNumeroBouton, aSelection) {
+					if (aNumeroBouton === 1) {
+						this._jetonReinitScrollListeInfosSond = true;
+						const lSelection =
+							this.getListeDonneesTypesInfoSond().get(aSelection);
+						this.surSelectionTypeAccesInfoSond(lSelection);
+					}
+				},
+				initialiser(aFenetre) {
+					aFenetre.setOptionsFenetre({
+						titre: ObjetTraduction_1.GTraductions.getValeur(
+							"infoSond.Categories",
+						),
+					});
+					aFenetre.paramsListe = {
+						optionsListe: {
+							ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
+								"infoSond.Categories",
+							),
+							skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+						},
+					};
+				},
 			},
-			initialiser(aFenetre) {
-				aFenetre.setOptionsFenetre({
-					titre: GTraductions.getValeur("infoSond.Categories"),
-				});
-				aFenetre.paramsListe = {
-					optionsListe: {
-						labelWAI: GTraductions.getValeur("infoSond.Categories"),
-						skin: ObjetListe.skin.flatDesign,
-					},
-				};
-			},
-		});
+		);
 		lFenetre.setDonnees(
-			new DonneesListeTypesAccesInfoSond(
+			new DonneesListeTypesAccesInfoSond_1.DonneesListeTypesAccesInfoSond(
 				this.getListeDonneesTypesInfoSond(),
 			).setOptions({
 				avecEvnt_Selection: true,
@@ -831,23 +882,23 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 		if (this.avecFiltreCategorie) {
 			lFiltres.push(this.composeFiltreCategories());
 		}
-		lFiltres.push({ genre: ObjetListe.typeBouton.rechercher });
+		lFiltres.push({ genre: ObjetListe_1.ObjetListe.typeBouton.rechercher });
 		const lListe = this.getInstance(this.identListeInfosSond);
 		lListe.setOptionsListe({
-			skin: ObjetListe.skin.flatDesign,
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
 			avecOmbreDroite: true,
 			boutons: lFiltres,
 			messageContenuVide: this.composeMessage(
 				this.estGenreModeles()
-					? GTraductions.getValeur("infoSond.msgAucunModele")
-					: GTraductions.getValeur("infoSond.msgAucun"),
+					? ObjetTraduction_1.GTraductions.getValeur("infoSond.msgAucunModele")
+					: ObjetTraduction_1.GTraductions.getValeur("infoSond.msgAucun"),
 			),
 		});
 		const lOptions = this.getOptionsInfoSond();
 		const lConserverPositionScroll =
 			this._jetonReinitScrollListeInfosSond !== true;
 		lListe.setDonnees(
-			new DonneesListe_InfosSond(
+			new DonneesListe_InfosSond_1.DonneesListe_InfosSond(
 				aListeFiltree,
 				lOptions,
 				this.utilitaires,
@@ -856,7 +907,9 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 			{ conserverPositionScroll: lConserverPositionScroll },
 		);
 		if (
-			MethodesObjet.isNumber(this._jetonReinitScrollListeInfosSond) &&
+			MethodesObjet_1.MethodesObjet.isNumber(
+				this._jetonReinitScrollListeInfosSond,
+			) &&
 			this._jetonReinitScrollListeInfosSond > 0
 		) {
 			lListe.setPositionScrollV(this._jetonReinitScrollListeInfosSond);
@@ -872,6 +925,9 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 		this.afficherListeInfoSond(lListeFiltree);
 		this.initContexteSelection(lListeFiltree);
 	}
+	getAvecRecupModele() {
+		return this.avecModeles;
+	}
 	estGenreReception() {
 		return this.genreAff === this.genresAffichages.reception;
 	}
@@ -884,44 +940,82 @@ class InterfacePageInfoSondage extends InterfacePageCP {
 	_surPostResize() {
 		this.afficherSelonFiltres();
 	}
-}
-InterfacePageInfoSondage.genreEcran = {
-	listeBlocs: "listeBlocs",
-	visuBloc: "visuBloc",
-};
-function _evntSurCategorie(aGenreEvenement, aCategorie) {
-	if (aGenreEvenement === EGenreEvenementObjetSaisie.selection) {
-		this.categorie = aCategorie;
-		GEtatUtilisateur.setCategorie(this.categorie);
-		this._jetonReinitScrollListeInfosSond = true;
-		this.afficherSelonFiltres();
+	_evntSurCategorie(aGenreEvenement, aCategorie) {
+		if (
+			aGenreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
+			this.categorie = aCategorie;
+			GEtatUtilisateur.setCategorie(this.categorie);
+			this._jetonReinitScrollListeInfosSond = true;
+			this.afficherSelonFiltres();
+		}
 	}
-}
-function _initVisuInfoSond(aInstance) {
-	aInstance.setOptions(this.getOptionsInfoSond());
-}
-function _evntVisuInfoSond(aActu, aGenreEvnt, aParam) {
-	switch (aGenreEvnt) {
-		case EGenreEvntActu.SurMenuCtxActu:
-			this.evntSurValidationInfoSond(aActu, aGenreEvnt, aParam);
-			break;
-		case EGenreEvntActu.SurAnnulationSondage:
-			SyntheseVocale.forcerArretLecture();
-			this.selectionCouranteModeReception = null;
-			this.selectionCouranteModeDiffusion = null;
-			this.revenirSurEcranPrecedent();
-			this.actualiserDonnees();
-			break;
-		case EGenreEvntActu.SurAR:
-		case EGenreEvntActu.SurValidationSondage:
-			SyntheseVocale.forcerArretLecture();
-			this.evntSurValidationInfoSond(aActu, aGenreEvnt, aParam);
-			break;
-		case EGenreEvntActu.SurVoirResultats:
-			this.evntSurAfficherResultats(aActu);
-			break;
-		default:
-			break;
+	_initVisuInfoSond(aInstance) {
+		aInstance.setOptions(this.getOptionsInfoSond());
 	}
+	_evntVisuInfoSond(aActu, aGenreEvnt, aParam) {
+		switch (aGenreEvnt) {
+			case EGenreEvntActu_1.EGenreEvntActu.SurMenuCtxActu:
+				this.evntSurValidationInfoSond(aActu, aGenreEvnt, aParam);
+				break;
+			case EGenreEvntActu_1.EGenreEvntActu.SurAnnulationSondage:
+				UtilitaireSyntheseVocale_1.SyntheseVocale.forcerArretLecture();
+				this.selectionCouranteModeReception = null;
+				this.selectionCouranteModeDiffusion = null;
+				this.revenirSurEcranPrecedent();
+				this.actualiserDonnees();
+				break;
+			case EGenreEvntActu_1.EGenreEvntActu.SurAR:
+			case EGenreEvntActu_1.EGenreEvntActu.SurValidationSondage:
+				UtilitaireSyntheseVocale_1.SyntheseVocale.forcerArretLecture();
+				this.evntSurValidationInfoSond(aActu, aGenreEvnt, aParam);
+				break;
+			case EGenreEvntActu_1.EGenreEvntActu.SurVoirResultats:
+				this.evntSurAfficherResultats(aActu);
+				break;
+			default:
+				break;
+		}
+	}
+	evntSurValidationInfoSond(aActu, aGenreEvnt, aParam) {}
+	evntSurAfficherResultats(aActu) {}
+	getTypeInfoSondParDefaut() {
+		return null;
+	}
+	formatterDataSurBasculeModeAff(aGenreAff, aFiltre) {}
+	getListeFiltree() {
+		return null;
+	}
+	getAvecAuteur() {
+		return false;
+	}
+	getAvecDroitSaisie() {
+		return false;
+	}
+	getAvecDroitSaisieModele() {
+		return this.getAvecDroitSaisie();
+	}
+	getForcerAR() {
+		return false;
+	}
+	getAvecSondageAnonyme() {
+		return false;
+	}
+	setUtilitaires(aUtilitaires) {}
 }
-module.exports = { InterfacePageInfoSondage };
+exports.InterfacePageInfoSondage = InterfacePageInfoSondage;
+(function (InterfacePageInfoSondage) {
+	let genreEcran;
+	(function (genreEcran) {
+		genreEcran["listeBlocs"] = "listeBlocs";
+		genreEcran["visuBloc"] = "visuBloc";
+	})(
+		(genreEcran =
+			InterfacePageInfoSondage.genreEcran ||
+			(InterfacePageInfoSondage.genreEcran = {})),
+	);
+})(
+	InterfacePageInfoSondage ||
+		(exports.InterfacePageInfoSondage = InterfacePageInfoSondage = {}),
+);

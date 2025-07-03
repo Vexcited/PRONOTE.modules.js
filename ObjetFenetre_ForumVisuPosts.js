@@ -1,40 +1,48 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetForumVisuPosts } = require("ObjetForumVisuPosts.js");
-const { MoteurForumPedagogique } = require("MoteurForumPedagogique.js");
-const { EGenreOnglet } = require("Enumere_Onglet.js");
-class ObjetFenetre_ForumVisuPosts extends ObjetFenetre {
+exports.ObjetFenetre_ForumVisuPosts = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetForumVisuPosts_1 = require("ObjetForumVisuPosts");
+const MoteurForumPedagogique_1 = require("MoteurForumPedagogique");
+const Enumere_Onglet_1 = require("Enumere_Onglet");
+class ObjetFenetre_ForumVisuPosts extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
-		this.setOptionsFenetre({
-			titre:
-				GTraductions.getValeur("Onglet.Libelle")[EGenreOnglet.ForumPedagogique],
-			modale: false,
-			largeur: 600,
-			hauteur: Math.max(400, Math.round((GNavigateur.ecranH * 80) / 100)),
-			heightMax_mobile: true,
-			listeBoutons: [GTraductions.getValeur("Fermer")],
-		});
 		this.sujetCourant = null;
-		this.moteurForum = new MoteurForumPedagogique({
+		this.moteurForum = new MoteurForumPedagogique_1.MoteurForumPedagogique({
 			pere: this,
 			callbackActualisationSujets: () => {
-				return _actualiser.call(this);
+				return this._actualiser();
 			},
 			ouvrirEditionSujetPromise: null,
 		});
+		this.setOptionsFenetre({
+			titre:
+				ObjetTraduction_1.GTraductions.getValeur("Onglet.Libelle")[
+					Enumere_Onglet_1.EGenreOnglet.ForumPedagogique
+				],
+			modale: false,
+			largeur: 600,
+			hauteur: Math.max(400, Math.round((GNavigateur.ecranH * 80) / 100)),
+			listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
+		});
 	}
 	construireInstances() {
-		this.identAff = this.add(ObjetForumVisuPosts, null, (aVisuPost) => {
-			aVisuPost.setOptions({ visuModerateurPossible: false });
-			aVisuPost.init(this.moteurForum);
-		});
+		this.identAff = this.add(
+			ObjetForumVisuPosts_1.ObjetForumVisuPosts,
+			null,
+			(aVisuPost) => {
+				aVisuPost.setOptions({ visuModerateurPossible: false });
+				aVisuPost.init(this.moteurForum);
+			},
+		);
 	}
 	setDonnees(aNumeroSujet) {
 		super.afficher();
-		this.sujetCourant = new ObjetElement({ Numero: aNumeroSujet });
-		_actualiser.call(this);
+		this.sujetCourant = new ObjetElement_1.ObjetElement({
+			Numero: aNumeroSujet,
+		});
+		this._actualiser();
 	}
 	composeContenu() {
 		const T = [];
@@ -46,14 +54,15 @@ class ObjetFenetre_ForumVisuPosts extends ObjetFenetre {
 		return T.join("");
 	}
 	static afficher(aPere, aNumeroSujet) {
-		ObjetFenetre.creerInstanceFenetre(ObjetFenetre_ForumVisuPosts, {
-			pere: aPere,
-		}).setDonnees(aNumeroSujet);
+		ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_ForumVisuPosts,
+			{ pere: aPere },
+		).setDonnees(aNumeroSujet);
+	}
+	_actualiser() {
+		return this.getInstance(this.identAff).setSujet(
+			new ObjetElement_1.ObjetElement(this.sujetCourant),
+		);
 	}
 }
-function _actualiser() {
-	return this.getInstance(this.identAff).setSujet(
-		new ObjetElement(this.sujetCourant),
-	);
-}
-module.exports = { ObjetFenetre_ForumVisuPosts };
+exports.ObjetFenetre_ForumVisuPosts = ObjetFenetre_ForumVisuPosts;

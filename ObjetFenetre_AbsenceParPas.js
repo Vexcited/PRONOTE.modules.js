@@ -7,7 +7,6 @@ const ObjetScroll_2 = require("ObjetScroll");
 const ObjetScroll_3 = require("ObjetScroll");
 const TypeRaisonInterdictionModifAbsence_1 = require("TypeRaisonInterdictionModifAbsence");
 const ObjetTraduction_1 = require("ObjetTraduction");
-const jsx_1 = require("jsx");
 class ObjetFenetre_AbsenceParPas extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
@@ -23,13 +22,29 @@ class ObjetFenetre_AbsenceParPas extends ObjetFenetre_1.ObjetFenetre {
 			ObjetScroll_2.EGenreScroll.Horizontal,
 		);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			clickCellule(i) {
-				$(this.node).eventValidation(() => {
-					aInstance.clickCellule(i);
-				});
-			},
+	jsxNodeClicCellule(aNumCel, aNode) {
+		$(aNode).eventValidation(() => {
+			if (
+				this.param.absence.tabAbs[aNumCel] &&
+				this.param.absence.tabAbs[aNumCel].raison ===
+					TypeRaisonInterdictionModifAbsence_1
+						.TypeRaisonInterdictionModifAbsence.tRIMA_Aucune
+			) {
+				this.param.absence.tabAbs[aNumCel].N =
+					this.param.absence.tabAbs[aNumCel].N === "0" ? "1" : "0";
+				const lCellule = $(
+					"#" +
+						this.ScrollH.getIdZone(0).escapeJQ() +
+						" table td:eq(" +
+						aNumCel +
+						")",
+				);
+				lCellule.attr(
+					"aria-checked",
+					this.param.absence.tabAbs[aNumCel].N !== "0" ? "true" : "false",
+				);
+				lCellule.html(this.composeContenuCellule(aNumCel));
+			}
 		});
 	}
 	setDonnees(aParam) {
@@ -68,29 +83,6 @@ class ObjetFenetre_AbsenceParPas extends ObjetFenetre_1.ObjetFenetre {
 			),
 		);
 	}
-	clickCellule(aNumCel) {
-		if (
-			this.param.absence.tabAbs[aNumCel] &&
-			this.param.absence.tabAbs[aNumCel].raison ===
-				TypeRaisonInterdictionModifAbsence_1.TypeRaisonInterdictionModifAbsence
-					.tRIMA_Aucune
-		) {
-			this.param.absence.tabAbs[aNumCel].N =
-				this.param.absence.tabAbs[aNumCel].N === "0" ? "1" : "0";
-			const lCellule = $(
-				"#" +
-					this.ScrollH.getIdZone(0).escapeJQ() +
-					" table td:eq(" +
-					aNumCel +
-					")",
-			);
-			lCellule.attr(
-				"aria-checked",
-				this.param.absence.tabAbs[aNumCel].N !== "0" ? "true" : "false",
-			);
-			lCellule.html(this.composeContenuCellule(aNumCel));
-		}
-	}
 	surValidation(ANumeroBouton) {
 		if (ANumeroBouton === 1) {
 			this.callback.appel(ANumeroBouton, this.param);
@@ -105,7 +97,7 @@ class ObjetFenetre_AbsenceParPas extends ObjetFenetre_1.ObjetFenetre {
 			(this.hauteurCellule - 1) +
 			'px;">' +
 			(this.param.absence.tabAbs[aIndice].N !== "0"
-				? '<i class="icon_check_fin theme-color"></i>'
+				? '<i class="icon_check_fin theme-color" role="presenttion"></i>'
 				: "") +
 			"</div>"
 		);
@@ -127,7 +119,7 @@ class ObjetFenetre_AbsenceParPas extends ObjetFenetre_1.ObjetFenetre {
 						tabindex: "0",
 						style: "border:#000 1px solid;background-color:#fff;",
 						"aria-label": this.composeAriaLabel(i),
-						"ie-node": (0, jsx_1.jsxFuncAttr)("clickCellule", i),
+						"ie-node": this.jsxNodeClicCellule.bind(this, i),
 						role: "checkbox",
 						"aria-checked":
 							this.param.absence.tabAbs[i].N !== "0" ? "true" : "false",

@@ -1,17 +1,17 @@
-const { GChaine } = require("ObjetChaine.js");
-const { EGenreCommandeMenu } = require("Enumere_CommandeMenu.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const {
-	TypeGenreParcoursEducatifUtil,
-} = require("TypeGenreParcoursEducatif.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { TypeGenreAppreciation } = require("TypeGenreAppreciation.js");
-class DonneesListe_ParcoursPeda extends ObjetDonneesListe {
+exports.DonneesListe_ParcoursPeda = void 0;
+const ObjetChaine_1 = require("ObjetChaine");
+const Enumere_CommandeMenu_1 = require("Enumere_CommandeMenu");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const TypeGenreParcoursEducatif_1 = require("TypeGenreParcoursEducatif");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const TypeGenreAppreciation_1 = require("TypeGenreAppreciation");
+const AccessApp_1 = require("AccessApp");
+class DonneesListe_ParcoursPeda extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aParam) {
 		super(aParam.donnees);
 		this.param = aParam;
@@ -29,9 +29,12 @@ class DonneesListe_ParcoursPeda extends ObjetDonneesListe {
 		switch (aParams.idColonne) {
 			case DonneesListe_ParcoursPeda.colonnes.description:
 				return {
-					tailleMax: GParametres.getTailleMaxAppreciationParEnumere(
-						TypeGenreAppreciation.GA_Bulletin_Professeur,
-					),
+					tailleMax: (0, AccessApp_1.getApp)()
+						.getObjetParametres()
+						.getTailleMaxAppreciationParEnumere(
+							TypeGenreAppreciation_1.TypeGenreAppreciation
+								.GA_Bulletin_Professeur,
+						),
 				};
 		}
 		return null;
@@ -41,7 +44,7 @@ class DonneesListe_ParcoursPeda extends ObjetDonneesListe {
 			aParams.article.estCumulGenreParcours ||
 			aParams.article.estCumulEleve
 		) {
-			return ObjetDonneesListe.ECouleurCellule.Deploiement;
+			return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Deploiement;
 		}
 	}
 	avecDeploiement() {
@@ -75,7 +78,9 @@ class DonneesListe_ParcoursPeda extends ObjetDonneesListe {
 		return D.avecMessageSuppression;
 	}
 	getMessageSuppressionImpossible() {
-		return GTraductions.getValeur("ParcoursPeda.MsgSupprParcoursClasse");
+		return ObjetTraduction_1.GTraductions.getValeur(
+			"ParcoursPeda.MsgSupprParcoursClasse",
+		);
 	}
 	avecEdition(aParams) {
 		switch (aParams.idColonne) {
@@ -95,7 +100,7 @@ class DonneesListe_ParcoursPeda extends ObjetDonneesListe {
 			aParams.article.estCumulEleve
 		) {
 			return this.param.avecCompteurSurCumul && aParams.article.nbParcours > 0
-				? GChaine.format("%s (%d)", [
+				? ObjetChaine_1.GChaine.format("%s (%d)", [
 						aParams.article.getLibelle(),
 						aParams.article.nbParcours,
 					])
@@ -110,8 +115,10 @@ class DonneesListe_ParcoursPeda extends ObjetDonneesListe {
 				return aParams.article.SuiviPar
 					? this.param.avecTitres
 						? aParams.article.SuiviPar
-						: GChaine.format(
-								GTraductions.getValeur("ParcoursPeda.colonne.suiviParS"),
+						: ObjetChaine_1.GChaine.format(
+								ObjetTraduction_1.GTraductions.getValeur(
+									"ParcoursPeda.colonne.suiviParS",
+								),
 								[aParams.article.SuiviPar],
 							)
 					: "";
@@ -137,13 +144,15 @@ class DonneesListe_ParcoursPeda extends ObjetDonneesListe {
 		});
 		if (lIndice > -1) {
 			const lElt = this.Donnees.get(lIndice);
-			if (lElt.getEtat() === EGenreEtat.Suppression) {
-				lElt.setEtat(EGenreEtat.Aucun);
+			if (lElt.getEtat() === Enumere_Etat_1.EGenreEtat.Suppression) {
+				lElt.setEtat(Enumere_Etat_1.EGenreEtat.Aucun);
 			}
 			return lElt;
 		} else {
-			const lCumulGenreParcours = new ObjetElement(
-				TypeGenreParcoursEducatifUtil.getLibelle(lGenreParcours),
+			const lCumulGenreParcours = new ObjetElement_1.ObjetElement(
+				TypeGenreParcoursEducatif_1.TypeGenreParcoursEducatifUtil.getLibelle(
+					lGenreParcours,
+				),
 				0,
 				lGenreParcours,
 			);
@@ -170,12 +179,12 @@ class DonneesListe_ParcoursPeda extends ObjetDonneesListe {
 		});
 		if (lIndice > -1) {
 			const lElt = this.Donnees.get(lIndice);
-			if (lElt.getEtat() === EGenreEtat.Suppression) {
-				lElt.setEtat(EGenreEtat.Aucun);
+			if (lElt.getEtat() === Enumere_Etat_1.EGenreEtat.Suppression) {
+				lElt.setEtat(Enumere_Etat_1.EGenreEtat.Aucun);
 			}
 			return lElt;
 		} else {
-			const lCumul = new ObjetElement(
+			const lCumul = new ObjetElement_1.ObjetElement(
 				aElt.getLibelle(),
 				aElt.getNumero(),
 				aElt.getGenre(),
@@ -210,17 +219,19 @@ class DonneesListe_ParcoursPeda extends ObjetDonneesListe {
 	surCreation(D, V) {
 		if (!this.param.periodeCloture) {
 			const lRessources = this.param.ressources;
-			if (V.data) {
+			if ("data" in V && V.data) {
 				this.setGenreParcoursCourant(V.data.genre);
 			}
 			for (let i = 0, lNbr = lRessources.count(); i < lNbr; i++) {
 				const lRessource = lRessources.get(i);
 				let lCleTypeRessource = "";
 				let lCleHintRessource = "";
-				if (lRessource.Genre === EGenreRessource.Classe) {
+				if (lRessource.Genre === Enumere_Ressource_1.EGenreRessource.Classe) {
 					lCleTypeRessource = "ParcoursPeda.type.classe";
 					lCleHintRessource = "ParcoursPeda.type.hint_classe";
-				} else if (lRessource.Genre === EGenreRessource.Groupe) {
+				} else if (
+					lRessource.Genre === Enumere_Ressource_1.EGenreRessource.Groupe
+				) {
 					lCleTypeRessource = "ParcoursPeda.type.groupe";
 					lCleHintRessource = "ParcoursPeda.type.hint_groupe";
 				} else {
@@ -228,14 +239,14 @@ class DonneesListe_ParcoursPeda extends ObjetDonneesListe {
 					lCleHintRessource = "ParcoursPeda.type.hint_eleve";
 				}
 				const lNow = new Date();
-				const lDateBornee = GDate.getDateBornee(lNow);
+				const lDateBornee = ObjetDate_1.GDate.getDateBornee(lNow);
 				lDateBornee.setHours(
 					lNow.getHours(),
 					lNow.getMinutes(),
 					lNow.getSeconds(),
 					lNow.getMilliseconds(),
 				);
-				const lElement = new ObjetElement();
+				const lElement = new ObjetElement_1.ObjetElement();
 				lElement.Date = lDateBornee;
 				lElement.Descr =
 					V[
@@ -244,8 +255,10 @@ class DonneesListe_ParcoursPeda extends ObjetDonneesListe {
 						)
 					];
 				lElement.SuiviPar = this.libelleUtilisateur;
-				lElement.StrType = GTraductions.getValeur(lCleTypeRessource);
-				lElement.HintType = GTraductions.getValeur(lCleHintRessource);
+				lElement.StrType =
+					ObjetTraduction_1.GTraductions.getValeur(lCleTypeRessource);
+				lElement.HintType =
+					ObjetTraduction_1.GTraductions.getValeur(lCleHintRessource);
 				lElement.editable = true;
 				lElement.ressource = lRessource;
 				lElement.estCumulEleve = false;
@@ -273,7 +286,7 @@ class DonneesListe_ParcoursPeda extends ObjetDonneesListe {
 				lModifie = true;
 				break;
 			case DonneesListe_ParcoursPeda.colonnes.date:
-				if (GDate.estDateValide(V)) {
+				if (ObjetDate_1.GDate.estDateValide(V)) {
 					aParams.article.Date = V;
 					const lDate = new Date();
 					aParams.article.Date.setHours(
@@ -289,7 +302,7 @@ class DonneesListe_ParcoursPeda extends ObjetDonneesListe {
 				break;
 		}
 		if (lModifie) {
-			aParams.article.setEtat(EGenreEtat.Modification);
+			aParams.article.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 		}
 	}
 	getTypeValeur(aParams) {
@@ -297,26 +310,24 @@ class DonneesListe_ParcoursPeda extends ObjetDonneesListe {
 			aParams.article &&
 			(aParams.article.estCumulGenreParcours || aParams.article.estCumulEleve)
 		) {
-			return ObjetDonneesListe.ETypeCellule.Texte;
+			return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 		}
 		switch (aParams.idColonne) {
 			case DonneesListe_ParcoursPeda.colonnes.date:
-				return ObjetDonneesListe.ETypeCellule.DateCalendrier;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule
+					.DateCalendrier;
 			case DonneesListe_ParcoursPeda.colonnes.description:
-				return ObjetDonneesListe.ETypeCellule.ZoneTexte;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.ZoneTexte;
 			case DonneesListe_ParcoursPeda.colonnes.type:
-				return ObjetDonneesListe.ETypeCellule.Html;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
 	fusionCelluleAvecColonnePrecedente(aParams) {
 		const lId = aParams.idColonne;
 		return (
 			aParams.article.estUnDeploiement &&
-			![
-				DonneesListe_ParcoursPeda.colonnes.deploiement,
-				DonneesListe_ParcoursPeda.colonnes.date,
-			].includes(lId)
+			![DonneesListe_ParcoursPeda.colonnes.date].includes(lId)
 		);
 	}
 	getTri(aColonneDeTri, aGenreTri) {
@@ -328,7 +339,7 @@ class DonneesListe_ParcoursPeda extends ObjetDonneesListe {
 			if (this.avecCumulGenreParcours) {
 				if (this.avecCumulEleve) {
 					lTris.push(
-						ObjetTri.init((D) => {
+						ObjetTri_1.ObjetTri.init((D) => {
 							return D.estCumulGenreParcours
 								? D.getLibelle()
 								: D.estCumulEleve
@@ -338,7 +349,7 @@ class DonneesListe_ParcoursPeda extends ObjetDonneesListe {
 					);
 				} else {
 					lTris.push(
-						ObjetTri.init((D) => {
+						ObjetTri_1.ObjetTri.init((D) => {
 							return D.estCumulGenreParcours
 								? D.getLibelle()
 								: D.pere.getLibelle();
@@ -346,14 +357,14 @@ class DonneesListe_ParcoursPeda extends ObjetDonneesListe {
 					);
 				}
 				lTris.push(
-					ObjetTri.init((D) => {
+					ObjetTri_1.ObjetTri.init((D) => {
 						return !D.estCumulGenreParcours;
 					}),
 				);
 			}
 			if (this.avecCumulEleve) {
 				lTris.push(
-					ObjetTri.init((D) => {
+					ObjetTri_1.ObjetTri.init((D) => {
 						return D.estCumulEleve
 							? D.getLibelle()
 							: !D.estCumulGenreParcours
@@ -362,7 +373,7 @@ class DonneesListe_ParcoursPeda extends ObjetDonneesListe {
 					}),
 				);
 				lTris.push(
-					ObjetTri.init((D) => {
+					ObjetTri_1.ObjetTri.init((D) => {
 						return !D.estCumulEleve;
 					}),
 				);
@@ -372,13 +383,16 @@ class DonneesListe_ParcoursPeda extends ObjetDonneesListe {
 		const lGenreTri = aGenreTri;
 		switch (this.getId(lCol)) {
 			case DonneesListe_ParcoursPeda.colonnes.date:
-				lTris.push(ObjetTri.init("Date", lGenreTri));
+				lTris.push(ObjetTri_1.ObjetTri.init("Date", lGenreTri));
 				break;
 			case DonneesListe_ParcoursPeda.colonnes.description:
 			case DonneesListe_ParcoursPeda.colonnes.suiviPar:
 			case DonneesListe_ParcoursPeda.colonnes.type:
 				lTris.push(
-					ObjetTri.init(this.getValeurPourTri.bind(this, lCol), lGenreTri),
+					ObjetTri_1.ObjetTri.init(
+						this.getValeurPourTri.bind(this, lCol),
+						lGenreTri,
+					),
 				);
 				break;
 			default:
@@ -426,8 +440,10 @@ class DonneesListe_ParcoursPeda extends ObjetDonneesListe {
 				) {
 					const lGenre = this.param.filtres.genreParcours[i];
 					aParametres.menuContextuel.addCommande(
-						EGenreCommandeMenu.Creation,
-						TypeGenreParcoursEducatifUtil.getLibelle(lGenre),
+						Enumere_CommandeMenu_1.EGenreCommandeMenu.Creation,
+						TypeGenreParcoursEducatif_1.TypeGenreParcoursEducatifUtil.getLibelle(
+							lGenre,
+						),
 						true,
 						{ genre: lGenre },
 					);
@@ -435,26 +451,36 @@ class DonneesListe_ParcoursPeda extends ObjetDonneesListe {
 			}
 		} else {
 			aParametres.menuContextuel.addCommande(
-				EGenreCommandeMenu.Edition,
-				GTraductions.getValeur("liste.modifier"),
+				Enumere_CommandeMenu_1.EGenreCommandeMenu.Edition,
+				ObjetTraduction_1.GTraductions.getValeur("liste.modifier"),
 				!aParametres.nonEditable &&
 					(!aParametres.listeSelection ||
 						aParametres.listeSelection.count() <= 1) &&
 					this.avecEdition(aParametres),
 			);
 			aParametres.menuContextuel.addCommande(
-				EGenreCommandeMenu.Suppression,
-				GTraductions.getValeur("liste.supprimer"),
+				Enumere_CommandeMenu_1.EGenreCommandeMenu.Suppression,
+				ObjetTraduction_1.GTraductions.getValeur("liste.supprimer"),
 				!aParametres.nonEditable && this._avecSuppression(aParametres),
 			);
 		}
 		aParametres.menuContextuel.setDonnees(aParametres.id);
 	}
 }
-DonneesListe_ParcoursPeda.colonnes = {
-	date: "date",
-	description: "description",
-	suiviPar: "suiviPar",
-	type: "type",
-};
-module.exports = { DonneesListe_ParcoursPeda };
+exports.DonneesListe_ParcoursPeda = DonneesListe_ParcoursPeda;
+(function (DonneesListe_ParcoursPeda) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["date"] = "date";
+		colonnes["description"] = "description";
+		colonnes["suiviPar"] = "suiviPar";
+		colonnes["type"] = "type";
+	})(
+		(colonnes =
+			DonneesListe_ParcoursPeda.colonnes ||
+			(DonneesListe_ParcoursPeda.colonnes = {})),
+	);
+})(
+	DonneesListe_ParcoursPeda ||
+		(exports.DonneesListe_ParcoursPeda = DonneesListe_ParcoursPeda = {}),
+);

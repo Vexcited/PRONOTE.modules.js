@@ -2,15 +2,12 @@ exports.ObjetAffichageBandeauEntete = void 0;
 const Invocateur_1 = require("Invocateur");
 const MethodesObjet_1 = require("MethodesObjet");
 const _InterfaceBandeauEntete_1 = require("_InterfaceBandeauEntete");
-const ObjetNotification_1 = require("ObjetNotification");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const Enumere_Commande_1 = require("Enumere_Commande");
 const Enumere_Espace_1 = require("Enumere_Espace");
 const Enumere_Onglet_1 = require("Enumere_Onglet");
 const Enumere_Ressource_1 = require("Enumere_Ressource");
 const InterfaceCommande_1 = require("InterfaceCommande");
-const CollectionRequetes_1 = require("CollectionRequetes");
-const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
 const UtilitaireContactVieScolaire_Espace_1 = require("UtilitaireContactVieScolaire_Espace");
 const ObjetDroitsPN_1 = require("ObjetDroitsPN");
 const ObjetChaine_1 = require("ObjetChaine");
@@ -19,26 +16,25 @@ const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetFenetre_ConnexionCloudIndex_1 = require("ObjetFenetre_ConnexionCloudIndex");
 const ActionneurCentraleNotificationsSco_1 = require("ActionneurCentraleNotificationsSco");
 const ObjetDonneesCentraleNotifications_1 = require("ObjetDonneesCentraleNotifications");
-const ObjetMenuOngletPrimaire = require("ObjetMenuOngletPrimaire");
-const UtilitaireCarnetLiaison = require("UtilitaireCarnetLiaison");
+const MultiObjetMenuOngletPrimaire = require("ObjetMenuOngletPrimaire");
+const MultiUtilitaireCarnetLiaison = require("UtilitaireCarnetLiaison");
 const TypeStatutConnexion_1 = require("TypeStatutConnexion");
 const ObjetFicheEtablissement_1 = require("ObjetFicheEtablissement");
-const ObjetFenetre_FicheEleve = require("ObjetFenetre_FicheEleve");
+const ObjetFenetre_FicheEleve_1 = require("ObjetFenetre_FicheEleve");
 const ObjetFenetre_Message_1 = require("ObjetFenetre_Message");
 const UtilitaireMessagerie_1 = require("UtilitaireMessagerie");
 const ObjetFenetre_PlanSite_1 = require("ObjetFenetre_PlanSite");
 const ObjetFicheAppliMobile_1 = require("ObjetFicheAppliMobile");
 const ObjetWrapperCentraleNotifications_Espace_1 = require("ObjetWrapperCentraleNotifications_Espace");
-const ObjetSelecteurMembreEntete_Primaire = require("ObjetSelecteurMembreEntete_Primaire");
+const MultiObjetSelecteurMembreEntete_Primaire = require("ObjetSelecteurMembreEntete_Primaire");
 const ObjetWrapperAideContextuelle_Espace_1 = require("ObjetWrapperAideContextuelle_Espace");
 const UtilitaireHarcelement_1 = require("UtilitaireHarcelement");
 const ObjetFenetreHarcelement_1 = require("ObjetFenetreHarcelement");
 const ThemesCouleurs_1 = require("ThemesCouleurs");
 const UtilitaireContactReferents_1 = require("UtilitaireContactReferents");
-CollectionRequetes_1.Requetes.inscrire(
-	"GestionCloudIndex",
-	ObjetRequeteJSON_1.ObjetRequeteSaisie,
-);
+const ControleSaisieEvenement_1 = require("ControleSaisieEvenement");
+const jsx_1 = require("jsx");
+const GlossaireMessagerie_1 = require("GlossaireMessagerie");
 class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffichageBandeauEntete {
 	constructor(...aParams) {
 		super(...aParams);
@@ -56,10 +52,6 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 		Invocateur_1.Invocateur.abonner(
 			"apresRequeteNavigation",
 			() => {
-				ObjetHtml_1.GHtml.setHtml(
-					this.applicationProduit.idLigneBandeau,
-					this.composeBaseLigneBandeau(),
-				);
 				ObjetHtml_1.GHtml.setDisplay(
 					this.applicationProduit.idLigneBandeau,
 					!!this.getInstance(this.identMenuOngletsLudique),
@@ -133,6 +125,9 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 		return this.etatUtilisateur.avecPageAccueil();
 	}
 	avecAccesMobile() {
+		if (this.estAfficheDansENT()) {
+			return false;
+		}
 		return this.parametresPN.avecAccesMobile;
 	}
 	avecMenuRessource() {
@@ -153,7 +148,7 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 					"Commande.Accueil.Actif",
 				),
 				class: "bt-home icon_home",
-				role: "presentation",
+				"aria-hidden": "true",
 			}),
 			IE.jsx.str(
 				"span",
@@ -193,6 +188,9 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 			: "";
 	}
 	getUrlLogoEtablissement() {
+		if (this.estAfficheDansENT()) {
+			return undefined;
+		}
 		return !!this.etatUtilisateur.getEtablissement()
 			? this.etatUtilisateur.getEtablissement().urlLogo
 			: "";
@@ -246,10 +244,8 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 		}
 		return "";
 	}
-	_getParametresBandeauEspace() {
-		var _a, _b, _c, _d, _e;
-		let lParametres = { controleur: {} };
-		if (
+	avecMenuLudique() {
+		return (
 			(!this.applicationPN.getOptionsDebug() ||
 				this.applicationPN.getOptionsDebug().ongletsLudique) &&
 			[
@@ -257,18 +253,140 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 				Enumere_Espace_1.EGenreEspace.PrimParent,
 				Enumere_Espace_1.EGenreEspace.PrimAccompagnant,
 			].includes(this.etatUtilisateur.GenreEspace)
+		);
+	}
+	estAfficheDansENT() {
+		return this.parametresPN.estAfficheDansENT;
+	}
+	avecComboMembrePrimaire() {
+		return !!(MultiObjetSelecteurMembreEntete_Primaire === null ||
+		MultiObjetSelecteurMembreEntete_Primaire === void 0
+			? void 0
+			: MultiObjetSelecteurMembreEntete_Primaire.ObjetSelecteurMembreEntete_Primaire);
+	}
+	avecBtnMessageCarnet() {
+		return (
+			[Enumere_Espace_1.EGenreEspace.PrimParent].includes(
+				this.etatUtilisateur.GenreEspace,
+			) &&
+			this.applicationPN.droits.get(
+				ObjetDroitsPN_1.TypeDroits.communication.avecDiscussion,
+			) &&
+			this.etatUtilisateur.Identification.ListeRessources &&
+			this.etatUtilisateur.Identification.ListeRessources.count() > 0
+		);
+	}
+	avecBoutonMessageriePourEleve() {
+		return true;
+	}
+	avecBtnConversationsAcc() {
+		return this.applicationPN.droits.get(
+			ObjetDroitsPN_1.TypeDroits.communication.estDestinataireChat,
+		);
+	}
+	avecBoutonFicheEleve() {
+		return [Enumere_Espace_1.EGenreEspace.PrimAccompagnant].includes(
+			this.etatUtilisateur.GenreEspace,
+		);
+	}
+	avecBoutonCentraleNotif() {
+		return [
+			Enumere_Espace_1.EGenreEspace.PrimParent,
+			Enumere_Espace_1.EGenreEspace.PrimEleve,
+			Enumere_Espace_1.EGenreEspace.PrimAccompagnant,
+		].includes(this.etatUtilisateur.GenreEspace);
+	}
+	avecBoutonAide() {
+		return (
+			!!this.parametresPN.aideContextuelle &&
+			!!this.parametresPN.aideContextuelle.url_accueil &&
+			this.avecClassMenuOngletLudique()
+		);
+	}
+	getAvecLogoProduitCss() {
+		return true;
+	}
+	getIconesADroite() {
+		return true;
+	}
+	getLogoCollectiviteImage() {
+		var _a, _b, _c;
+		if (
+			(_c =
+				(_b =
+					(_a = this.parametresPN) === null || _a === void 0
+						? void 0
+						: _a.collectivite) === null || _b === void 0
+					? void 0
+					: _b.logo) === null || _c === void 0
+				? void 0
+				: _c.siteDesktop
 		) {
-			lParametres.iconesADroite = true;
-			if (
-				[
-					Enumere_Espace_1.EGenreEspace.PrimParent,
-					Enumere_Espace_1.EGenreEspace.PrimAccompagnant,
-				].includes(this.etatUtilisateur.GenreEspace)
-			) {
+			return ThemesCouleurs_1.ThemesCouleurs.getDarkMode() &&
+				this.parametresPN.collectivite.logo.siteDesktop.sombre
+				? this.parametresPN.collectivite.logo.siteDesktop.sombre
+				: this.parametresPN.collectivite.logo.siteDesktop.clair;
+		}
+		return undefined;
+	}
+	getLogoCollectiviteLien() {
+		var _a, _b;
+		if (
+			(_b =
+				(_a = this.parametresPN) === null || _a === void 0
+					? void 0
+					: _a.collectivite) === null || _b === void 0
+				? void 0
+				: _b.urlCollectivite
+		) {
+			return this.parametresPN.collectivite.urlCollectivite;
+		}
+		return undefined;
+	}
+	getAvecImageCollectivite() {
+		return undefined;
+	}
+	getNomUtilBandeauEspace() {
+		if (this.estAfficheDansENT()) {
+			return () => "";
+		}
+		return super.getNomUtilBandeauEspace();
+	}
+	getAvecFicheEtablissement() {
+		return super.getAvecFicheEtablissement();
+	}
+	getAvecLiensEvitement() {
+		return super.getAvecLiensEvitement();
+	}
+	avecDeconnexion() {
+		return !!this.getClickDeconnexionBandeauEspace();
+	}
+	getClickDeconnexionBandeauEspace() {
+		if (this.estAfficheDansENT()) {
+			return undefined;
+		}
+		return super.getClickDeconnexionBandeauEspace();
+	}
+	getObjetPhotoBandeauEspace() {
+		return super.getObjetPhotoBandeauEspace();
+	}
+	getLogoDepartementLien() {
+		return super.getLogoDepartementLien();
+	}
+	getLogoDepartementImage() {
+		return super.getLogoDepartementImage();
+	}
+	_getParametresBandeauEspace() {
+		let lParametres = { controleur: {} };
+		if (this.avecMenuLudique()) {
+			lParametres.iconesADroite = this.getIconesADroite();
+			lParametres.avecLogoProduitCss = this.getAvecLogoProduitCss();
+			if (this.avecComboMembrePrimaire()) {
 				Object.assign(lParametres, {
 					photo: null,
 					getObjetSelecteurMembre: {
-						class: ObjetSelecteurMembreEntete_Primaire,
+						class:
+							MultiObjetSelecteurMembreEntete_Primaire.ObjetSelecteurMembreEntete_Primaire,
 						pere: this,
 						init: (aInstance) => {
 							aInstance.setParametres({
@@ -283,11 +401,7 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 					},
 				});
 			}
-			if (
-				[Enumere_Espace_1.EGenreEspace.PrimAccompagnant].includes(
-					this.etatUtilisateur.GenreEspace,
-				)
-			) {
+			if (this.avecBoutonFicheEleve()) {
 				const lMembre = GEtatUtilisateur.getMembre();
 				if (
 					lMembre &&
@@ -302,9 +416,9 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 							'" ie-model="btnFicheEleve"></ie-btnicon>',
 					});
 					lParametres.controleur.btnFicheEleve = {
-						event: function (aEvent) {
+						event: (aEvent) => {
 							aEvent.stopPropagation();
-							ObjetFenetre_FicheEleve.ouvrir({
+							ObjetFenetre_FicheEleve_1.ObjetFenetre_FicheEleve.ouvrir({
 								instance: this,
 								avecRequeteDonnees: true,
 								donnees: { eleve: GEtatUtilisateur.getMembre() },
@@ -313,13 +427,7 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 					};
 				}
 			}
-			if (
-				[
-					Enumere_Espace_1.EGenreEspace.PrimParent,
-					Enumere_Espace_1.EGenreEspace.PrimEleve,
-					Enumere_Espace_1.EGenreEspace.PrimAccompagnant,
-				].includes(this.etatUtilisateur.GenreEspace)
-			) {
+			if (this.avecBoutonCentraleNotif()) {
 				Object.assign(lParametres, {
 					getObjetNotification: {
 						pere: this,
@@ -335,11 +443,7 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 					},
 				});
 			}
-			if (
-				!!this.parametresPN.aideContextuelle &&
-				!!this.parametresPN.aideContextuelle.url_accueil &&
-				this.avecClassMenuOngletLudique()
-			) {
+			if (this.avecBoutonAide()) {
 				const lThis = this;
 				Object.assign(lParametres, {
 					getObjetAide: {
@@ -355,25 +459,20 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 					},
 				});
 			}
-			if (
-				[Enumere_Espace_1.EGenreEspace.PrimParent].includes(
-					this.etatUtilisateur.GenreEspace,
-				) &&
-				this.applicationPN.droits.get(
-					ObjetDroitsPN_1.TypeDroits.communication.avecDiscussion,
-				) &&
-				this.etatUtilisateur.Identification.ListeRessources &&
-				this.etatUtilisateur.Identification.ListeRessources.count() > 0
-			) {
+			if (this.avecBtnMessageCarnet()) {
 				Object.assign(lParametres, {
 					htmlBoutonsAvantNotif:
 						'<button ie-node="btnMessageCarnet.getNode" class="ibe_grosBoutonRond ieBouton themeBoutonPrimaire" ie-title="btnMessageCarnet.getTitle" aria-haspopup="dialog">' +
-						'<i class="icon_carnet_liaison"></i></button>',
+						'<i class="icon_carnet_liaison icone-l" role="presentation"></i></button>',
 				});
 				lParametres.controleur.btnMessageCarnet = {
 					getNode: function () {
 						$(this.node).eventValidation(() => {
-							UtilitaireCarnetLiaison.creerDiscussionRaccourciParent();
+							var _a;
+							(_a = MultiUtilitaireCarnetLiaison.UtilitaireCarnetLiaison) ===
+								null || _a === void 0
+								? void 0
+								: _a.creerDiscussionRaccourciParent();
 						});
 					},
 					getTitle: function () {
@@ -386,7 +485,7 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 			}
 			const lLibelleRacc =
 				UtilitaireMessagerie_1.UtilitaireMessagerie.getLibelleRaccourciMessPrimEleve();
-			if (lLibelleRacc) {
+			if (lLibelleRacc && this.avecBoutonMessageriePourEleve()) {
 				Object.assign(lParametres, {
 					htmlBoutonsAvantNotif: IE.jsx.str(
 						"button",
@@ -396,7 +495,10 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 							title: lLibelleRacc,
 							"aria-haspopup": "dialog",
 						},
-						IE.jsx.str("i", { class: "icon_discussion_cours" }),
+						IE.jsx.str("i", {
+							class: "icon_discussion_cours",
+							role: "presentation",
+						}),
 					),
 				});
 				lParametres.controleur = {
@@ -409,11 +511,7 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 					},
 				};
 			}
-			if (
-				this.applicationPN.droits.get(
-					ObjetDroitsPN_1.TypeDroits.communication.estDestinataireChat,
-				)
-			) {
+			if (this.avecBtnConversationsAcc()) {
 				Object.assign(lParametres, {
 					htmlBoutons: [
 						'<div class="ibe_iconebtn ibe_actif" tabindex="0" role="button" ie-node="getNodeCreationAlertePPMS" ie-if="afficherCreationAlertePPMS" title="',
@@ -423,7 +521,7 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 							),
 						),
 						'">',
-						'<i class="icon_alerte_ppms colorFoncee"></i>',
+						'<i class="icon_alerte_ppms colorFoncee" role="presentation"></i>',
 						"</div>",
 						'<div class="ibe_iconebtn ibe_actif" tabindex="0" role="button" ie-node="getNodeConversInstant" ie-if="afficherConversInstant" title="',
 						ObjetChaine_1.GChaine.toTitle(
@@ -432,7 +530,7 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 							),
 						),
 						'">',
-						'<i class="icon_conversation_cours colorFoncee"></i>',
+						'<i class="icon_conversation_cours colorFoncee" role="presentation"></i>',
 						"</div>",
 						'<div class="ibe_iconebtn ibe_actif" tabindex="0" role="button" ie-node="getNodeAlertePPMSEnCours" ie-if="afficherAlertePPMSEnCours" title="',
 						ObjetChaine_1.GChaine.toTitle(
@@ -441,7 +539,7 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 							),
 						),
 						'">',
-						'<i class="icon_alert_ppms_notif colorFoncee"></i>',
+						'<i class="icon_alert_ppms_notif colorFoncee" role="presentation"></i>',
 						"</div>",
 					].join(""),
 				});
@@ -482,34 +580,9 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 					});
 			}
 		}
-		const lEstDarkMode = ThemesCouleurs_1.ThemesCouleurs.getDarkMode();
-		if (
-			(_c =
-				(_b =
-					(_a = this.parametresPN) === null || _a === void 0
-						? void 0
-						: _a.collectivite) === null || _b === void 0
-					? void 0
-					: _b.logo) === null || _c === void 0
-				? void 0
-				: _c.siteDesktop
-		) {
-			lParametres.logoCollectiviteImage =
-				lEstDarkMode && this.parametresPN.collectivite.logo.siteDesktop.sombre
-					? this.parametresPN.collectivite.logo.siteDesktop.sombre
-					: this.parametresPN.collectivite.logo.siteDesktop.clair;
-		}
-		if (
-			(_e =
-				(_d = this.parametresPN) === null || _d === void 0
-					? void 0
-					: _d.collectivite) === null || _e === void 0
-				? void 0
-				: _e.urlCollectivite
-		) {
-			lParametres.logoCollectiviteLien =
-				this.parametresPN.collectivite.urlCollectivite;
-		}
+		lParametres.logoCollectiviteImage = this.getLogoCollectiviteImage();
+		lParametres.logoCollectiviteLien = this.getLogoCollectiviteLien();
+		lParametres.avecImageCollectivite = this.getAvecImageCollectivite();
 		return Object.assign(super._getParametresBandeauEspace(), lParametres);
 	}
 	getControleur(aInstance) {
@@ -544,7 +617,7 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 					UtilitaireContactVieScolaire_Espace_1.UtilitaireContactVieScolaire_Espace.demarrerMessageInstantane();
 				},
 				getTitle() {
-					return `${ObjetTraduction_1.GTraductions.getValeur("Messagerie.EnvoiMessageInstantane")} - ${TypeStatutConnexion_1.TypeGenreStatutConnexionUtil.toLibelle(aInstance.applicationPN.donneesCentraleNotifications.statutConnexionCommunication)}`;
+					return `${ObjetTraduction_1.GTraductions.getValeur("Messagerie.EnvoiMessageInstantane")} - ${GlossaireMessagerie_1.TradGlossaireMessagerie.MessageInstantStatut_S.format(TypeStatutConnexion_1.TypeGenreStatutConnexionUtil.toLibelle(aInstance.applicationPN.donneesCentraleNotifications.statutConnexionCommunication))}`;
 				},
 			},
 			getClassIconeBtnmessageInstant() {
@@ -589,9 +662,17 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 		if (this.fenetreIdentiteMembre && this.fenetreIdentiteMembre.EnAffichage) {
 			this.getObjetEtatUtilisateur().fenetreIdentiteMembreEnAffichage = true;
 		}
-		super.evenementSurMenuMembres(aElement);
-		this.callbackSurMenuMembres();
-		this.apresEvenementSurMenuMembres();
+		(0, ControleSaisieEvenement_1.ControleSaisieEvenement)(() => {
+			this.setEtatSaisie(false);
+			this.getObjetEtatUtilisateur().setNumeroEleve(aElement.getNumero());
+			Invocateur_1.Invocateur.evenement("modification_Membre", aElement);
+			Invocateur_1.Invocateur.evenement(
+				"modification_Membre_FenetreKiosque",
+				aElement,
+			);
+			this.callbackSurMenuMembres();
+			this.apresEvenementSurMenuMembres();
+		});
 	}
 	callbackSurMenuMembres() {
 		this.callback.appel({
@@ -609,7 +690,9 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 			aParam.genreCmd === this.getCommande(this.genreCommande.cloudIndex) &&
 			this.etatUtilisateur.cloudIndexActif
 		) {
-			(0, CollectionRequetes_1.Requetes)("GestionCloudIndex", this)
+			new ObjetFenetre_ConnexionCloudIndex_1.ObjetRequeteSaisieGestionCloudIndex(
+				this,
+			)
 				.lancerRequete()
 				.then((aParams) => {
 					if (aParams.JSONRapportSaisie.avecCloudIndex !== undefined) {
@@ -773,17 +856,24 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 		return lLibelleParametres.join("");
 	}
 	composeAlertePPMS() {
-		const lHtml = [];
+		const H = [];
 		if (
 			this.applicationPN.droits.get(
 				ObjetDroitsPN_1.TypeDroits.communication.estDestinataireChat,
 			)
 		) {
-			lHtml.push(
-				'<span ie-if="afficherAlertePPMS"><ie-btnimage ie-model="btnAlertePPMS" class="icon_alert_ppms_notif btnImageIcon"></ie-btnimage></span>',
+			H.push(
+				IE.jsx.str(
+					"span",
+					{ "ie-if": "afficherAlertePPMS" },
+					IE.jsx.str("ie-btnimage", {
+						"ie-model": "btnAlertePPMS",
+						class: "icon_alert_ppms_notif btnImageIcon",
+					}),
+				),
 			);
 		}
-		return lHtml.join("");
+		return H.join("");
 	}
 	composeBoutonHarcelement() {
 		return UtilitaireHarcelement_1.UtilitaireHarcelement.avecBoutonHarcelement()
@@ -791,41 +881,51 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 			: "";
 	}
 	composeBtnCommunication(aID) {
-		return [
-			'<span ie-if="avecBoutonCommunication">',
-			'<ie-btnimage id="',
-			aID,
-			'" class="icon_envoyer btnImageIcon" ie-model="btnDroite(' +
-				this.getCommande(this.genreCommande.communication) +
-				')" title="',
-			ObjetTraduction_1.GTraductions.getValeur("Commande.Communication.Actif"),
-			'"></ie-btnimage>',
-			"</span>",
-		].join("");
+		return IE.jsx.str(
+			"span",
+			{ "ie-if": "avecBoutonCommunication" },
+			IE.jsx.str("ie-btnimage", {
+				id: aID,
+				class: "icon_envoyer btnImageIcon",
+				"ie-model": (0, jsx_1.jsxFuncAttr)("btnDroite", [
+					this.getCommande(this.genreCommande.communication),
+				]),
+				"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+					"Commande.Communication.Actif",
+				),
+				"aria-haspopup": "menu",
+			}),
+		);
 	}
 	composeCreationAlertePPMS() {
-		const lHtml = [];
+		const H = [];
 		if (
 			this.applicationPN.droits.get(
 				ObjetDroitsPN_1.TypeDroits.communication.estDestinataireChat,
 			)
 		) {
-			lHtml.push(
-				'<span ie-if="afficherBtnCreerAlertePPMS">',
-				'<ie-btnimage ie-model="btnCreerAlertePPMS" class="icon_alerte_ppms btnImageIcon"></ie-btnimage>',
-				"</span>",
+			H.push(
+				IE.jsx.str(
+					"span",
+					{ "ie-if": "afficherBtnCreerAlertePPMS" },
+					IE.jsx.str("ie-btnimage", {
+						"ie-model": "btnCreerAlertePPMS",
+						class: "icon_alerte_ppms btnImageIcon",
+						"aria-haspopup": "dialog",
+					}),
+				),
 			);
 		}
-		return lHtml.join("");
+		return H.join("");
 	}
 	composeConversation() {
-		const lHtml = [];
+		const H = [];
 		if (
 			this.applicationPN.droits.get(
 				ObjetDroitsPN_1.TypeDroits.communication.estDestinataireChat,
 			)
 		) {
-			lHtml.push(
+			H.push(
 				IE.jsx.str(
 					"span",
 					{ "ie-if": "afficherBtnMessageInstant", style: "position:relative" },
@@ -834,13 +934,17 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 						{
 							"ie-model": "btnMessageInstant",
 							class: "icon_conversation_cours btnImageIcon",
+							"aria-haspopup": "dialog",
 						},
-						IE.jsx.str("i", { "ie-class": "getClassIconeBtnmessageInstant" }),
+						IE.jsx.str("i", {
+							"ie-class": "getClassIconeBtnmessageInstant",
+							role: "presentation",
+						}),
 					),
 				),
 			);
 		}
-		return lHtml.join("");
+		return H.join("");
 	}
 	addCommandesMenuContextuelBandeau(aMenu) {
 		if (
@@ -863,7 +967,7 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 					});
 				},
 				{
-					image: '<i class="icon_uniF2BE icone-large"></i>',
+					image: '<i class="icon_uniF2BE icone-large" role="presentation"></i>',
 					imageFormate: true,
 				},
 			);
@@ -888,7 +992,7 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 					});
 				},
 				{
-					image: '<i class="icon_uniF2BE icone-large"></i>',
+					image: '<i class="icon_uniF2BE icone-large" role="presentation"></i>',
 					imageFormate: true,
 				},
 			);
@@ -913,7 +1017,7 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 					});
 				},
 				{
-					image: '<i class="icon_uniF2BE icone-large"></i>',
+					image: '<i class="icon_uniF2BE icone-large" role="presentation"></i>',
 					imageFormate: true,
 				},
 			);
@@ -938,7 +1042,8 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 					});
 				},
 				{
-					image: '<i class="icon_doc_telech icone-large"></i>',
+					image:
+						'<i class="icon_doc_telech icone-large" role="presentation"></i>',
 					imageFormate: true,
 				},
 			);
@@ -963,10 +1068,13 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 						genreOnglet: Enumere_Onglet_1.EGenreOnglet.ParametresUtilisateur,
 					});
 				},
-				{ image: '<i class="icon_cog icone-large"></i>', imageFormate: true },
+				{
+					image: '<i class="icon_cog icone-large" role="presentation"></i>',
+					imageFormate: true,
+				},
 			);
 		}
-		if (this.parametresPN.avecAccesMobile) {
+		if (this.avecAccesMobile()) {
 			aMenu.add(
 				ObjetTraduction_1.GTraductions.getValeur("Commande.QRCode.Actif"),
 				true,
@@ -974,21 +1082,26 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 					this._callbackAccesMobile();
 				},
 				{
-					image: '<i class="icon_qr_code icone-large"></i>',
+					image: '<i class="icon_qr_code icone-large" role="presentation"></i>',
 					imageFormate: true,
 				},
 			);
 		}
-		aMenu.add(
-			ObjetTraduction_1.GTraductions.getValeur("connexion.SeDeconnecter"),
-			true,
-			() => {
-				this._evenementBouton({
-					genreCommande: this.genreCommandePersonnel.deconnexion,
-				});
-			},
-			{ image: '<i class="icon_off icone-large"></i>', imageFormate: true },
-		);
+		if (this.avecDeconnexion()) {
+			aMenu.add(
+				ObjetTraduction_1.GTraductions.getValeur("connexion.SeDeconnecter"),
+				true,
+				() => {
+					this._evenementBouton({
+						genreCommande: this.genreCommandePersonnel.deconnexion,
+					});
+				},
+				{
+					image: '<i class="icon_off icone-large" role="presentation"></i>',
+					imageFormate: true,
+				},
+			);
+		}
 	}
 	getCallbackBandeauAccesMobile() {
 		if (this.avecAccesMobile()) {
@@ -1022,8 +1135,10 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 					event: () => {
 						this.ouvrirFicheMembre();
 					},
-					getTitle: function () {
-						return "";
+					getTitle: () => {
+						return ObjetTraduction_1.GTraductions.getValeur(
+							"FicheRenseignement",
+						);
 					},
 				};
 			}
@@ -1052,7 +1167,7 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 		}
 		this.fenetreIdentiteMembre =
 			ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
-				ObjetFenetre_FicheEleve,
+				ObjetFenetre_FicheEleve_1.ObjetFenetre_FicheEleve,
 				{
 					pere: this,
 					evenement: (aNumeroBouton) => {
@@ -1081,18 +1196,14 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 	}
 	avecClassMenuOngletLudique() {
 		return (
-			!!ObjetMenuOngletPrimaire &&
+			!!MultiObjetMenuOngletPrimaire &&
 			(!this.applicationPN.getOptionsDebug() ||
 				this.applicationPN.getOptionsDebug().ongletsLudique)
 		);
 	}
 	creerMenuOngletLudique() {
 		this.identMenuOngletsLudique = this.add(
-			ObjetMenuOngletPrimaire,
-			null,
-			(aInstance) => {
-				aInstance.setOptions();
-			},
+			MultiObjetMenuOngletPrimaire.ObjetMenuOngletPrimaire,
 		);
 	}
 	actionsSurPlanSite() {
@@ -1122,23 +1233,6 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 					.getEtatUtilisateur()
 					.listeOngletsOriginal.getElementParNumeroEtGenre(null, lInfos.onglet);
 				if (lOnglet) {
-					if (
-						this.applicationPN.parametresUtilisateur.get(
-							"utiliserNotification",
-						) &&
-						lInfos.onglet === Enumere_Onglet_1.EGenreOnglet.Messagerie &&
-						lOnglet.compteur < lInfos.nb
-					) {
-						ObjetNotification_1.Notification.afficher({
-							title: lOnglet.getLibelle(),
-							msg: lOnglet.getLibelle() + " : " + lInfos.nb,
-							onclick: GInterface.changementManuelOnglet.bind(
-								GInterface,
-								lOnglet.getGenre(),
-							),
-							icon: "icon_nouvelle_discussion",
-						});
-					}
 					lOnglet.compteur = lInfos.nb;
 					if (!lCompteurMisAJourSurOngletAffiche) {
 						lCompteurMisAJourSurOngletAffiche =

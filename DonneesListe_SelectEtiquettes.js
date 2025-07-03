@@ -4,7 +4,6 @@ const TypeOrigineCreationEtiquetteMessage_1 = require("TypeOrigineCreationEtique
 const ObjetDroitsPN_1 = require("ObjetDroitsPN");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const UtilitaireMessagerie_1 = require("UtilitaireMessagerie");
-const tag_1 = require("tag");
 const ObjetListe_1 = require("ObjetListe");
 class DonneesListe_SelectEtiquettes extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aListe, aParametres) {
@@ -28,9 +27,7 @@ class DonneesListe_SelectEtiquettes extends ObjetDonneesListeFlatDesign_1.ObjetD
 	}
 	getZoneGauche(aParams) {
 		if (aParams.article.estSansEtiquette) {
-			return (0, tag_1.tag)("div", {
-				class: "utilMess_etiquette sans-etiquette",
-			});
+			return IE.jsx.str("div", { class: "utilMess_etiquette sans-etiquette" });
 		}
 		if (
 			!aParams.article.categories &&
@@ -56,16 +53,11 @@ class DonneesListe_SelectEtiquettes extends ObjetDonneesListeFlatDesign_1.ObjetD
 	getTitreZonePrincipale(aParams) {
 		const lLibelle = aParams.article.getLibelle();
 		if (aParams.article.cumulEtiquettePerso) {
-			return (0, tag_1.tag)(
-				"div",
-				{
-					class: [
-						"fd-style-intertitre",
-						ObjetListe_1.ObjetListe.typeInterTitre.h5,
-					],
-				},
-				lLibelle,
-			);
+			const lClasses = [
+				"fd-style-intertitre",
+				ObjetListe_1.ObjetListe.typeInterTitre.h5,
+			];
+			return IE.jsx.str("div", { class: lClasses.join(" ") }, lLibelle);
 		}
 		return lLibelle;
 	}

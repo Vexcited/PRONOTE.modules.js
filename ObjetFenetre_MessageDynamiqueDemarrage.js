@@ -69,11 +69,11 @@ class ObjetFenetre_MessageDynamiqueDemarrage extends ObjetFenetre_1.ObjetFenetre
 		}
 	}
 	composeBas() {
-		return [
-			'<ie-checkbox ie-model="cbLu" ie-textright class="ob_mdd_cb">',
+		return IE.jsx.str(
+			"ie-checkbox",
+			{ "ie-model": "cbLu", class: "ob_mdd_cb" },
 			ObjetTraduction_1.GTraductions.getValeur("messagesDyn.marquerLu"),
-			"</ie-checkbox>",
-		].join("");
+		);
 	}
 }
 exports.ObjetFenetre_MessageDynamiqueDemarrage =

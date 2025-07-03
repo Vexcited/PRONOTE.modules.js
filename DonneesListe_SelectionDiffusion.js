@@ -1,11 +1,11 @@
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-class DonneesListe_SelectionDiffusion extends ObjetDonneesListeFlatDesign {
+exports.DonneesListe_SelectionDiffusion = void 0;
+const AccessApp_1 = require("AccessApp");
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+class DonneesListe_SelectionDiffusion extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees) {
 		super(aDonnees);
 		this.uniquementMesListes =
-			GApplication.parametresUtilisateur.get(
+			(0, AccessApp_1.getApp)().parametresUtilisateur.get(
 				"listeDiffusion.uniquementMesListes",
 			) || false;
 		this.setOptions({
@@ -28,4 +28,4 @@ class DonneesListe_SelectionDiffusion extends ObjetDonneesListeFlatDesign {
 		aParams.article.cmsActif = aValue;
 	}
 }
-module.exports = { DonneesListe_SelectionDiffusion };
+exports.DonneesListe_SelectionDiffusion = DonneesListe_SelectionDiffusion;

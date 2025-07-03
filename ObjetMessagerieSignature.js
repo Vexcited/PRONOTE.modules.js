@@ -16,7 +16,7 @@ class ObjetMessagerieSignature extends ObjetIdentite_1.Identite {
 					pere: aInstance,
 					init(aInstanceEditeur) {
 						aInstanceEditeur.setParametres({
-							labelWAI: ObjetTraduction_1.GTraductions.getValeur(
+							ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
 								"infosperso.labelWAIMessagerieSignature",
 							),
 							gererModeExclusif: true,
@@ -28,7 +28,7 @@ class ObjetMessagerieSignature extends ObjetIdentite_1.Identite {
 								? {
 										autoresize_bottom_margin: 0,
 										autoresize_on_init: true,
-										min_height: 30,
+										min_height: 150,
 										max_height: 0,
 										height: "",
 										plugins: ["autoresize"],

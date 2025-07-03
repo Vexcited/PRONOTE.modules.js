@@ -1,9 +1,10 @@
-const { EGenreCommandeMenu } = require("Enumere_CommandeMenu.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-class DonneesListe_RattachementCDT extends ObjetDonneesListe {
+exports.DonneesListe_RattachementCDT = void 0;
+const Enumere_CommandeMenu_1 = require("Enumere_CommandeMenu");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+class DonneesListe_RattachementCDT extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(
 		aDonnees,
 		aAvecDrag,
@@ -60,13 +61,16 @@ class DonneesListe_RattachementCDT extends ObjetDonneesListe {
 				return aParams.article.nbrTAF > 0;
 			case DonneesListe_RattachementCDT.colonnes.Date:
 				return aParams.article.date
-					? GDate.formatDate(aParams.article.date, "%JJ/%MM/%AA %xh%sh%mm")
-					: GDate.strSemaine(
+					? ObjetDate_1.GDate.formatDate(
+							aParams.article.date,
+							"%JJ/%MM/%AA %xh%sh%mm",
+						)
+					: ObjetDate_1.GDate.strSemaine(
 							aParams.article.semaine,
 							"%JJ/%MM",
 							"%JJ/%MM",
-							GTraductions.getValeur("Du") + " ",
-							" " + GTraductions.getValeur("Au") + " ",
+							ObjetTraduction_1.GTraductions.getValeur("Du") + " ",
+							" " + ObjetTraduction_1.GTraductions.getValeur("Au") + " ",
 						);
 		}
 		return "";
@@ -74,20 +78,25 @@ class DonneesListe_RattachementCDT extends ObjetDonneesListe {
 	getTypeValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_RattachementCDT.colonnes.NbrTAF:
-				return ObjetDonneesListe.ETypeCellule.Coche;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Coche;
 		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		if (
 			aParams.idColonne === DonneesListe_RattachementCDT.colonnes.Date &&
 			!aParams.article.date
 		) {
-			return GTraductions.getValeur("CahierDeTexte.Rattachement.CoursNonPlace");
+			return ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.Rattachement.CoursNonPlace",
+			);
 		}
 	}
 	getTri() {
-		return [ObjetTri.init("public"), ObjetTri.init("date")];
+		return [
+			ObjetTri_1.ObjetTri.init("public"),
+			ObjetTri_1.ObjetTri.init("date"),
+		];
 	}
 	initialisationObjetContextuel(aParametres) {
 		if (!aParametres.menuContextuel) {
@@ -95,12 +104,16 @@ class DonneesListe_RattachementCDT extends ObjetDonneesListe {
 		}
 		aParametres.menuContextuel.addCommande(
 			0,
-			GTraductions.getValeur("CahierDeTexte.Rattachement.Menu.Visualiser"),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.Rattachement.Menu.Visualiser",
+			),
 			true,
 		);
 		aParametres.menuContextuel.addCommande(
-			EGenreCommandeMenu.Suppression,
-			GTraductions.getValeur("CahierDeTexte.Rattachement.Menu.Supprimer"),
+			Enumere_CommandeMenu_1.EGenreCommandeMenu.Suppression,
+			ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.Rattachement.Menu.Supprimer",
+			),
 			true,
 		);
 		aParametres.menuContextuel.setDonnees();
@@ -108,12 +121,12 @@ class DonneesListe_RattachementCDT extends ObjetDonneesListe {
 	evenementMenuContextuel(aParametres) {
 		this.callbackMenuContextuel(aParametres.ligneMenu);
 	}
-	static colonnes = {
-		Classe: "DL_RattachementCDT_Classe",
-		Titre: "DL_RattachementCDT_Titre",
-		Categorie: "DL_RattachementCDT_Categorie",
-		NbrTAF: "DL_RattachementCDT_NbrTAF",
-		Date: "DL_RattachementCDT_Date",
-	};
 }
-module.exports = { DonneesListe_RattachementCDT };
+exports.DonneesListe_RattachementCDT = DonneesListe_RattachementCDT;
+DonneesListe_RattachementCDT.colonnes = {
+	Classe: "DL_RattachementCDT_Classe",
+	Titre: "DL_RattachementCDT_Titre",
+	Categorie: "DL_RattachementCDT_Categorie",
+	NbrTAF: "DL_RattachementCDT_NbrTAF",
+	Date: "DL_RattachementCDT_Date",
+};

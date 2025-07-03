@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieTAFFaitEleve extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieTAFFaitEleve = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieTAFFaitEleve extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParam) {
 		this.JSON.listeTAF = aParam.listeTAF.setSerialisateurJSON({
 			methodeSerialisation: _serialiserTAF,
@@ -11,8 +9,11 @@ class ObjetRequeteSaisieTAFFaitEleve extends ObjetRequeteSaisie {
 		return this.appelAsynchrone();
 	}
 }
-Requetes.inscrire("SaisieTAFFaitEleve", ObjetRequeteSaisieTAFFaitEleve);
+exports.ObjetRequeteSaisieTAFFaitEleve = ObjetRequeteSaisieTAFFaitEleve;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieTAFFaitEleve",
+	ObjetRequeteSaisieTAFFaitEleve,
+);
 function _serialiserTAF(aElement, aJSON) {
 	aJSON.TAFFait = aElement.TAFFait;
 }
-module.exports = { ObjetRequeteSaisieTAFFaitEleve };

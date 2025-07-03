@@ -1,45 +1,19 @@
-const { EGenreCommandeMenu } = require("Enumere_CommandeMenu.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { MoteurInfoSondage } = require("MoteurInfoSondage.js");
-function _getNouveauLibelleQuestion(aQuestion, aRang) {
-	return this.moteurInfoSond.getLibelleAffichageComposanteQuest({
-		composante: aQuestion,
-		rang: aRang,
-	});
-}
-function _modifierRangQuestion(aQuestion, aDecalage) {
-	const lOldRang = aQuestion.rang;
-	const lNewRang = lOldRang + aDecalage;
-	let lElmRangConflit;
-	let lNumero;
-	let lIndice = this.Donnees.getIndiceElementParFiltre((aElement) => {
-		return aElement.existe() && aElement.rang === lNewRang;
-	});
-	if (lIndice > -1) {
-		lElmRangConflit = this.Donnees.get(lIndice);
-		lElmRangConflit.rang = lOldRang;
-		lElmRangConflit.setEtat(EGenreEtat.Modification);
-	}
-	aQuestion.rang = lNewRang;
-	aQuestion.setEtat(EGenreEtat.Modification);
-	this.Donnees.trier();
-	lNumero = aQuestion.getNumero();
-	lIndice = this.Donnees.getIndiceElementParFiltre((aElement) => {
-		return aElement.existe() && aElement.getNumero() === lNumero;
-	});
-	this.reordonnerQuestions();
-	return lIndice;
-}
-class DonneesListe_ActualitesQuestion extends ObjetDonneesListe {
+exports.DonneesListe_ActualitesQuestion = void 0;
+const Enumere_CommandeMenu_1 = require("Enumere_CommandeMenu");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const MoteurInfoSondage_1 = require("MoteurInfoSondage");
+class DonneesListe_ActualitesQuestion extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aCallbackMenuContextuel, aUtilitaires, aOptions) {
 		super(aDonnees);
 		this.callbackMenuContextuel = aCallbackMenuContextuel;
 		this.creerIndexUnique("Libelle");
 		this.utilitaires = aUtilitaires;
-		this.moteurInfoSond = new MoteurInfoSondage(this.utilitaires);
+		this.moteurInfoSond = new MoteurInfoSondage_1.MoteurInfoSondage(
+			this.utilitaires,
+		);
 		this.setOptions(
 			$.extend(
 				{
@@ -75,9 +49,8 @@ class DonneesListe_ActualitesQuestion extends ObjetDonneesListe {
 			case DonneesListe_ActualitesQuestion.colonnes.libelle:
 				if (aParams.article.titre !== V) {
 					aParams.article.titre = V;
-					aParams.article.setEtat(EGenreEtat.Modification);
-					aParams.article.Libelle = _getNouveauLibelleQuestion.call(
-						this,
+					aParams.article.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+					aParams.article.Libelle = this._getNouveauLibelleQuestion(
 						aParams.article,
 						aParams.article.indice,
 					);
@@ -93,12 +66,12 @@ class DonneesListe_ActualitesQuestion extends ObjetDonneesListe {
 		}
 		aParametres.menuContextuel.addCommande(
 			DonneesListe_ActualitesQuestion.genreAction.monter,
-			GTraductions.getValeur("actualites.choix.monter"),
+			ObjetTraduction_1.GTraductions.getValeur("actualites.choix.monter"),
 			aParametres.article.rang > 1,
 		);
 		aParametres.menuContextuel.addCommande(
 			DonneesListe_ActualitesQuestion.genreAction.descendre,
-			GTraductions.getValeur("actualites.choix.descendre"),
+			ObjetTraduction_1.GTraductions.getValeur("actualites.choix.descendre"),
 			aParametres.article.rang < this.Donnees.getNbrElementsExistes(),
 		);
 		aParametres.menuContextuel.addSeparateur();
@@ -107,17 +80,17 @@ class DonneesListe_ActualitesQuestion extends ObjetDonneesListe {
 			this.utilitaires.genreReponse.estGenreSansReponse(
 				aParametres.article.genreReponse,
 			)
-				? GTraductions.getValeur("infoSond.Edit.dupliquerTxt")
-				: GTraductions.getValeur("infoSond.Edit.dupliquerQu");
+				? ObjetTraduction_1.GTraductions.getValeur("infoSond.Edit.dupliquerTxt")
+				: ObjetTraduction_1.GTraductions.getValeur("infoSond.Edit.dupliquerQu");
 		aParametres.menuContextuel.addCommande(
 			DonneesListe_ActualitesQuestion.genreAction.dupliquer,
 			lStrCommandeDupliquer,
 			true,
 		);
 		aParametres.menuContextuel.addCommande(
-			EGenreCommandeMenu.Suppression,
-			GTraductions.getValeur("liste.supprimer"),
-			this.avecSuppression(aParametres) && !aParametres.nonEditable,
+			Enumere_CommandeMenu_1.EGenreCommandeMenu.Suppression,
+			ObjetTraduction_1.GTraductions.getValeur("liste.supprimer"),
+			this.avecSuppression() && !aParametres.nonEditable,
 		);
 		aParametres.menuContextuel.setDonnees();
 	}
@@ -126,13 +99,13 @@ class DonneesListe_ActualitesQuestion extends ObjetDonneesListe {
 		switch (aParametres.numeroMenu) {
 			case DonneesListe_ActualitesQuestion.genreAction.monter:
 				if (aParametres.article.rang > 1) {
-					lIndice = _modifierRangQuestion.call(this, aParametres.article, -1);
+					lIndice = this._modifierRangQuestion(aParametres.article, -1);
 					this.callbackMenuContextuel(aParametres.numeroMenu, lIndice);
 				}
 				break;
 			case DonneesListe_ActualitesQuestion.genreAction.descendre:
 				if (aParametres.article.rang < this.Donnees.getNbrElementsExistes()) {
-					lIndice = _modifierRangQuestion.call(this, aParametres.article, 1);
+					lIndice = this._modifierRangQuestion(aParametres.article, 1);
 					this.callbackMenuContextuel(aParametres.numeroMenu, lIndice);
 				}
 				break;
@@ -159,36 +132,78 @@ class DonneesListe_ActualitesQuestion extends ObjetDonneesListe {
 				this.utilitaires.genreReponse.estGenreSansReponse(aElement.genreReponse)
 			) {
 				lRangT++;
-				aElement.setLibelle(
-					_getNouveauLibelleQuestion.call(this, aElement, lRangT),
-				);
+				aElement.setLibelle(this._getNouveauLibelleQuestion(aElement, lRangT));
 				aElement.indice = lRangT;
 			} else {
 				lRangQ++;
-				aElement.setLibelle(
-					_getNouveauLibelleQuestion.call(this, aElement, lRangQ),
-				);
+				aElement.setLibelle(this._getNouveauLibelleQuestion(aElement, lRangQ));
 				aElement.indice = lRangQ;
 			}
 		});
 	}
 	getTri(aColonneDeTri, aGenreTri) {
 		const lTris = [];
-		lTris.push(ObjetTri.init("rang", aGenreTri));
+		lTris.push(ObjetTri_1.ObjetTri.init("rang", aGenreTri));
 		return lTris;
 	}
 	surDeplacementElementSurLigne(aParamsLigneDestination, aParamsSource) {
-		_modifierRangQuestion.call(
-			this,
+		this._modifierRangQuestion(
 			aParamsSource.article,
 			aParamsLigneDestination.ligne - aParamsSource.ligne,
 		);
 	}
+	_getNouveauLibelleQuestion(aQuestion, aRang) {
+		return this.moteurInfoSond.getLibelleAffichageComposanteQuest({
+			composante: aQuestion,
+			rang: aRang,
+		});
+	}
+	_modifierRangQuestion(aQuestion, aDecalage) {
+		const lOldRang = aQuestion.rang;
+		const lNewRang = lOldRang + aDecalage;
+		let lElmRangConflit;
+		let lNumero;
+		let lIndice = this.Donnees.getIndiceElementParFiltre((aElement) => {
+			return aElement.existe() && aElement.rang === lNewRang;
+		});
+		if (lIndice > -1) {
+			lElmRangConflit = this.Donnees.get(lIndice);
+			lElmRangConflit.rang = lOldRang;
+			lElmRangConflit.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+		}
+		aQuestion.rang = lNewRang;
+		aQuestion.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+		this.Donnees.trier();
+		lNumero = aQuestion.getNumero();
+		lIndice = this.Donnees.getIndiceElementParFiltre((aElement) => {
+			return aElement.existe() && aElement.getNumero() === lNumero;
+		});
+		this.reordonnerQuestions();
+		return lIndice;
+	}
 }
-DonneesListe_ActualitesQuestion.colonnes = { libelle: "DLQuestions_libelle" };
-DonneesListe_ActualitesQuestion.genreAction = {
-	monter: 1,
-	descendre: 2,
-	dupliquer: 3,
-};
-module.exports = { DonneesListe_ActualitesQuestion };
+exports.DonneesListe_ActualitesQuestion = DonneesListe_ActualitesQuestion;
+(function (DonneesListe_ActualitesQuestion) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["libelle"] = "DLQuestions_libelle";
+	})(
+		(colonnes =
+			DonneesListe_ActualitesQuestion.colonnes ||
+			(DonneesListe_ActualitesQuestion.colonnes = {})),
+	);
+	let genreAction;
+	(function (genreAction) {
+		genreAction[(genreAction["monter"] = 1)] = "monter";
+		genreAction[(genreAction["descendre"] = 2)] = "descendre";
+		genreAction[(genreAction["dupliquer"] = 3)] = "dupliquer";
+	})(
+		(genreAction =
+			DonneesListe_ActualitesQuestion.genreAction ||
+			(DonneesListe_ActualitesQuestion.genreAction = {})),
+	);
+})(
+	DonneesListe_ActualitesQuestion ||
+		(exports.DonneesListe_ActualitesQuestion = DonneesListe_ActualitesQuestion =
+			{}),
+);

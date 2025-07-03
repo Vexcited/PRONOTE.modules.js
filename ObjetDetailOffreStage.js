@@ -3,7 +3,6 @@ const ObjetIdentite_1 = require("ObjetIdentite");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const UtilitaireStage_1 = require("UtilitaireStage");
 const ObjetChaine_1 = require("ObjetChaine");
-const tag_1 = require("tag");
 const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetFenetre_CalendrierStagePeriode_1 = require("ObjetFenetre_CalendrierStagePeriode");
 class ObjetDetailOffreStage extends ObjetIdentite_1.Identite {
@@ -66,30 +65,50 @@ class ObjetDetailOffreStage extends ObjetIdentite_1.Identite {
 		}
 		const H = [];
 		if (IE.estMobile) {
-			H.push('<div class="detailoffrestage">');
+			let lContenuDetailOffreStage;
 			if (this.genreOnglet === 0) {
-				H.push(
-					(0, tag_1.tag)(
+				lContenuDetailOffreStage = IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
 						"div",
 						{ class: "conteneur-detailEntreprise" },
 						this._composeContenuDetailEntreprise(),
 					),
 				);
 			} else {
-				H.push((0, tag_1.tag)("div", this._composeContenuDetailOffres()));
+				lContenuDetailOffreStage = IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str("div", null, this._composeContenuDetailOffres()),
+				);
 			}
-			H.push("</div>");
+			H.push(
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
+						"div",
+						{ class: "detailoffrestage" },
+						lContenuDetailOffreStage,
+					),
+				),
+			);
 		} else {
 			H.push(
-				(0, tag_1.tag)(
-					"div",
-					{ class: "detailoffrestage" },
-					(0, tag_1.tag)(
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
 						"div",
-						{ class: "conteneur-detailEntreprise" },
-						this._composeContenuDetailEntreprise(),
+						{ class: "detailoffrestage" },
+						IE.jsx.str(
+							"div",
+							{ class: "conteneur-detailEntreprise" },
+							this._composeContenuDetailEntreprise(),
+						),
+						IE.jsx.str("div", null, this._composeContenuDetailOffres()),
 					),
-					(0, tag_1.tag)("div", this._composeContenuDetailOffres()),
 				),
 			);
 		}
@@ -102,9 +121,9 @@ class ObjetDetailOffreStage extends ObjetIdentite_1.Identite {
 		const H = [];
 		if (!IE.estMobile) {
 			H.push(
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"h2",
-					{ class: "ie-titre-couleur", tabindex: 0 },
+					{ class: "ie-titre-couleur", tabindex: "0" },
 					ObjetTraduction_1.GTraductions.getValeur("OffreStage.details"),
 				),
 			);
@@ -114,52 +133,78 @@ class ObjetDetailOffreStage extends ObjetIdentite_1.Identite {
 			? this.entreprise.activite.getLibelle() || ""
 			: "";
 		const lAdresseComplete = [];
-		lAdresseComplete.push(
-			this.entreprise.adresse1
-				? (0, tag_1.tag)("div", { tabindex: 0 }, this.entreprise.adresse1)
-				: "",
-		);
-		lAdresseComplete.push(
-			this.entreprise.adresse2
-				? (0, tag_1.tag)("div", { tabindex: 0 }, this.entreprise.adresse2)
-				: "",
-		);
-		lAdresseComplete.push(
-			this.entreprise.adresse3
-				? (0, tag_1.tag)("div", { tabindex: 0 }, this.entreprise.adresse3)
-				: "",
-		);
-		lAdresseComplete.push(
-			this.entreprise.adresse4
-				? (0, tag_1.tag)("div", { tabindex: 0 }, this.entreprise.adresse4)
-				: "",
-		);
+		if (this.entreprise.adresse1) {
+			lAdresseComplete.push(
+				IE.jsx.str("div", { tabindex: "0" }, this.entreprise.adresse1),
+			);
+		}
+		if (this.entreprise.adresse2) {
+			lAdresseComplete.push(
+				IE.jsx.str("div", { tabindex: "0" }, this.entreprise.adresse2),
+			);
+		}
+		if (this.entreprise.adresse3) {
+			lAdresseComplete.push(
+				IE.jsx.str("div", { tabindex: "0" }, this.entreprise.adresse3),
+			);
+		}
+		if (this.entreprise.adresse4) {
+			lAdresseComplete.push(
+				IE.jsx.str("div", { tabindex: "0" }, this.entreprise.adresse4),
+			);
+		}
 		if (this.entreprise.codePostal || this.entreprise.ville) {
 			lAdresseComplete.push(
-				(0, tag_1.tag)(
-					"div",
-					{ tabindex: 0 },
-					(this.entreprise.codePostal ? this.entreprise.codePostal : "") +
-						" " +
-						(this.entreprise.ville ? this.entreprise.ville : ""),
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
+						"div",
+						{ tabindex: "0" },
+						this.entreprise.codePostal ? this.entreprise.codePostal : "",
+						" ",
+						this.entreprise.ville ? this.entreprise.ville : "",
+					),
 				),
 			);
 		}
+		const lSiret = [];
+		if (this.entreprise.siret) {
+			lSiret.push(
+				IE.jsx.str(
+					"div",
+					{ tabindex: "0" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"OffreStage.titre.NumeroSiret",
+					) +
+						" : " +
+						this.entreprise.siret,
+				),
+			);
+		}
+		const lNomCommercial = [];
+		if (this.entreprise.nomCommercial) {
+			lNomCommercial.push(
+				IE.jsx.str("div", null, this.entreprise.nomCommercial),
+			);
+		}
 		H.push(
-			(0, tag_1.tag)(
+			IE.jsx.str(
 				"div",
 				{ class: "header-detail" },
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"div",
-					{ class: "conteneur-nom p-top-l", tabindex: 0 },
-					(0, tag_1.tag)("i", {
+					{ class: "conteneur-nom p-top-l", tabindex: "0" },
+					IE.jsx.str("i", {
+						"aria-hidden": "true",
 						class: this.entreprise.estSiegeSocial
 							? "icon_building"
 							: "icon_entreprise",
 					}),
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"div",
-						(0, tag_1.tag)(
+						null,
+						IE.jsx.str(
 							"div",
 							{ class: "ie-titre" },
 							lNomEntreprise +
@@ -171,31 +216,19 @@ class ObjetDetailOffreStage extends ObjetIdentite_1.Identite {
 										")"
 									: ""),
 						),
-						!!this.entreprise.nomCommercial
-							? (0, tag_1.tag)("div", this.entreprise.nomCommercial)
-							: "",
+						lNomCommercial.join(""),
 					),
 				),
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"div",
 					{ class: "adresse-wrapper" },
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"div",
 						{ class: "conteneur-adresse" },
 						lAdresseComplete.join(""),
 					),
-					(0, tag_1.tag)("div", { tabindex: 0 }, lStrActivite),
-					!!this.entreprise.siret
-						? (0, tag_1.tag)(
-								"div",
-								{ tabindex: 0 },
-								ObjetTraduction_1.GTraductions.getValeur(
-									"OffreStage.titre.NumeroSiret",
-								) +
-									" : " +
-									this.entreprise.siret,
-							)
-						: "",
+					IE.jsx.str("div", { tabindex: "0" }, lStrActivite),
+					lSiret.join(""),
 				),
 			),
 		);
@@ -206,129 +239,142 @@ class ObjetDetailOffreStage extends ObjetIdentite_1.Identite {
 			!!this.entreprise.email ||
 			!!this.entreprise.siteInternet
 		) {
-			H.push(
-				(0, tag_1.tag)(
-					"div",
-					{ class: "conteneur-numeros" },
-					!!this.entreprise.numeroMobile
-						? (0, tag_1.tag)(
-								"div",
-								{
-									class: "lien-communication tel-mobile",
-									title: ObjetTraduction_1.GTraductions.getValeur(
-										"FicheStage.TelPortable",
-									),
-								},
-								(0, tag_1.tag)(
-									"a",
-									{
-										href:
-											"tel:" +
-											ObjetChaine_1.GChaine.formatTelephoneAvecIndicatif(
-												this.entreprise.indMobile,
-												this.entreprise.numeroMobile,
-											),
-									},
-									ObjetChaine_1.GChaine.formatTelephone(
+			const lNumeroMobile = [];
+			if (this.entreprise.numeroMobile) {
+				lNumeroMobile.push(
+					IE.jsx.str(
+						"div",
+						{
+							class: "lien-communication tel-mobile",
+							title: ObjetTraduction_1.GTraductions.getValeur(
+								"FicheStage.TelPortable",
+							),
+						},
+						IE.jsx.str(
+							"a",
+							{
+								href:
+									"tel:" +
+									ObjetChaine_1.GChaine.formatTelephoneAvecIndicatif(
+										this.entreprise.indMobile,
 										this.entreprise.numeroMobile,
 									),
-								),
-							)
-						: "",
-					!!this.entreprise.numeroFixe
-						? (0, tag_1.tag)(
-								"div",
-								{
-									class: "lien-communication tel",
-									title:
-										ObjetTraduction_1.GTraductions.getValeur(
-											"FicheStage.TelFixe",
-										),
-								},
-								(0, tag_1.tag)(
-									"a",
-									{
-										href:
-											"tel:" +
-											ObjetChaine_1.GChaine.formatTelephoneAvecIndicatif(
-												this.entreprise.indFixe,
-												this.entreprise.numeroFixe,
-											),
-									},
-									ObjetChaine_1.GChaine.formatTelephone(
+							},
+							ObjetChaine_1.GChaine.formatTelephone(
+								this.entreprise.numeroMobile,
+							),
+						),
+					),
+				);
+			}
+			const lNumeroFixe = [];
+			if (this.entreprise.numeroFixe) {
+				lNumeroFixe.push(
+					IE.jsx.str(
+						"div",
+						{
+							class: "lien-communication tel",
+							title:
+								ObjetTraduction_1.GTraductions.getValeur("FicheStage.TelFixe"),
+						},
+						IE.jsx.str(
+							"a",
+							{
+								href:
+									"tel:" +
+									ObjetChaine_1.GChaine.formatTelephoneAvecIndicatif(
+										this.entreprise.indFixe,
 										this.entreprise.numeroFixe,
 									),
-								),
-							)
-						: "",
-					!!this.entreprise.numeroFax
-						? (0, tag_1.tag)(
-								"div",
-								{
-									class: "lien-communication",
-									title:
-										ObjetTraduction_1.GTraductions.getValeur("FicheStage.Fax"),
-								},
-								(0, tag_1.tag)(
-									"a",
-									{
-										href:
-											"fax:" +
-											ObjetChaine_1.GChaine.formatTelephoneAvecIndicatif(
-												this.entreprise.indFax,
-												this.entreprise.numeroFax,
-											),
-									},
-									ObjetChaine_1.GChaine.formatTelephone(
+							},
+							ObjetChaine_1.GChaine.formatTelephone(this.entreprise.numeroFixe),
+						),
+					),
+				);
+			}
+			const lNumeroFax = [];
+			if (this.entreprise.numeroFax) {
+				lNumeroFax.push(
+					IE.jsx.str(
+						"div",
+						{
+							class: "lien-communication",
+							title: ObjetTraduction_1.GTraductions.getValeur("FicheStage.Fax"),
+						},
+						IE.jsx.str(
+							"a",
+							{
+								href:
+									"fax:" +
+									ObjetChaine_1.GChaine.formatTelephoneAvecIndicatif(
+										this.entreprise.indFax,
 										this.entreprise.numeroFax,
 									),
+							},
+							ObjetChaine_1.GChaine.formatTelephone(this.entreprise.numeroFax),
+						),
+					),
+				);
+			}
+			const lEmail = [];
+			if (this.entreprise.email) {
+				lEmail.push(
+					IE.jsx.str(
+						"div",
+						{ class: "lien-communication" },
+						IE.jsx.str(
+							"a",
+							{ href: "mailto:" + this.entreprise.email, target: "_blank" },
+							this.entreprise.email,
+						),
+					),
+				);
+			}
+			const lSiteInternet = [];
+			if (this.entreprise.siteInternet) {
+				lSiteInternet.push(
+					IE.jsx.str(
+						"div",
+						{ class: "lien-communication" },
+						IE.jsx.str(
+							"a",
+							{
+								href: ObjetChaine_1.GChaine.encoderUrl(
+									ObjetChaine_1.GChaine.verifierURLHttp(
+										this.entreprise.siteInternet,
+									),
 								),
-							)
-						: "",
-					!!this.entreprise.email
-						? (0, tag_1.tag)(
-								"div",
-								{ class: "lien-communication" },
-								(0, tag_1.tag)(
-									"a",
-									{ href: "mailto:" + this.entreprise.email, target: "_blank" },
-									this.entreprise.email,
-								),
-							)
-						: "",
-					!!this.entreprise.siteInternet
-						? (0, tag_1.tag)(
-								"div",
-								{ class: "lien-communication" },
-								(0, tag_1.tag)(
-									"a",
-									{
-										href: ObjetChaine_1.GChaine.encoderUrl(
-											ObjetChaine_1.GChaine.verifierURLHttp(
-												this.entreprise.siteInternet,
-											),
-										),
-									},
-									this.entreprise.siteInternet,
-								),
-							)
-						: "",
+							},
+							this.entreprise.siteInternet,
+						),
+					),
+				);
+			}
+			H.push(
+				IE.jsx.str(
+					"div",
+					{ class: "conteneur-numeros" },
+					lNumeroMobile.join(""),
+					lNumeroFixe.join(""),
+					lNumeroFax.join(""),
+					lEmail.join(""),
+					lSiteInternet.join(""),
 				),
 			);
 		}
 		if (!!this.entreprise.commentairePublie) {
 			H.push(
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"div",
 					{ class: "conteneur-bloc" },
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"div",
 						{ class: "Gras ie-titre-petit" },
 						ObjetTraduction_1.GTraductions.getValeur(
 							"OffreStage.commentairePublieFamille",
 						),
 					),
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"div",
 						{ class: "conteneur-texte" },
 						this.entreprise.commentairePublie,
@@ -338,17 +384,17 @@ class ObjetDetailOffreStage extends ObjetIdentite_1.Identite {
 		}
 		if (!!this.entreprise.commentaireInterne) {
 			H.push(
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"div",
 					{ class: "conteneur-bloc" },
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"div",
 						{ class: "Gras ie-titre-petit" },
 						ObjetTraduction_1.GTraductions.getValeur(
 							"OffreStage.commentaireInterne",
 						),
 					),
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"div",
 						{ class: "conteneur-texte" },
 						this.entreprise.commentaireInterne,
@@ -360,7 +406,7 @@ class ObjetDetailOffreStage extends ObjetIdentite_1.Identite {
 			H.push('<div class="conteneur-bloc">');
 			for (let i = 0, lNbr = this.entreprise.documents.count(); i < lNbr; i++) {
 				H.push(
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"div",
 						{ class: "chips-pj Inline" },
 						ObjetChaine_1.GChaine.composerUrlLienExterne({
@@ -382,23 +428,24 @@ class ObjetDetailOffreStage extends ObjetIdentite_1.Identite {
 		if (nbOffresStages) {
 			if (!IE.estMobile) {
 				H.push(
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"h2",
-						{ class: "ie-titre-couleur", tabindex: 0 },
+						{ class: "ie-titre-couleur", tabindex: "0" },
 						ObjetTraduction_1.GTraductions.getValeur(
 							"OffreStage.offres",
-						).ucfirst() +
-							" (" +
-							nbOffresStages +
-							")",
+						).ucfirst(),
+						" (",
+						nbOffresStages,
+						")",
 					),
 				);
 			}
 			for (let i = 0; i < nbOffresStages; i++) {
+				const lClassDiv = i > 0 ? "conteneur-detailsOffre" : "";
 				H.push(
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"div",
-						{ class: i > 0 ? "conteneur-detailsOffre" : "", tabindex: 0 },
+						{ class: lClassDiv, tabindex: "0" },
 						this._composeContenuDetailOffre(
 							this.entreprise.listeOffresStages.get(i),
 						),
@@ -409,62 +456,74 @@ class ObjetDetailOffreStage extends ObjetIdentite_1.Identite {
 		return H.join("");
 	}
 	_composeContenuDetailOffre(aOffreStage) {
+		var _a;
 		const H = [];
 		const lPourvue = aOffreStage.nbPourvus === aOffreStage.nbPropose;
+		const lClasseChips = ["tag-style"];
+		if (!lPourvue) {
+			lClasseChips.push("color-theme");
+		}
+		const lStrEstPourvu = lPourvue
+			? ObjetTraduction_1.GTraductions.getValeur("OffreStage.pourvue")
+			: ObjetTraduction_1.GTraductions.getValeur("OffreStage.nonPourvue");
 		H.push(
-			(0, tag_1.tag)(
+			IE.jsx.str(
 				"div",
 				{ class: "header-conteneur p-y" },
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"h2",
 					{
-						class: lPourvue ? "titre-pourvue" : "ie-titre-couleur",
-						tabindex: 0,
+						class: lPourvue ? "titre-pourvue" : "ie-titre-couleur no-border",
+						tabindex: "0",
 					},
 					aOffreStage.sujet.getLibelle(),
 				),
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"div",
-					(0, tag_1.tag)(
+					null,
+					IE.jsx.str(
 						"ie-chips",
-						{ class: "tag-style" + (!lPourvue ? " color-theme" : "") },
-						lPourvue
-							? ObjetTraduction_1.GTraductions.getValeur("OffreStage.pourvue")
-							: ObjetTraduction_1.GTraductions.getValeur(
-									"OffreStage.nonPourvue",
-								),
+						{ class: lClasseChips.join(" ") },
+						lStrEstPourvu,
 					),
 				),
 			),
 		);
+		let lStrDivSujetDetaille = "";
+		if (aOffreStage.sujetDetaille) {
+			lStrDivSujetDetaille = IE.jsx.str(
+				"div",
+				{ class: "conteneur-texte", tabindex: "0" },
+				aOffreStage.sujetDetaille,
+			);
+		}
 		H.push(
-			(0, tag_1.tag)(
+			IE.jsx.str(
 				"div",
 				{ class: "conteneur-bloc" },
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"h3",
-					{ class: "Gras ie-titre-petit", tabindex: 0 },
-					ObjetTraduction_1.GTraductions.getValeur("OffreStage.SujetDetaille") +
-						" :",
+					{ class: "Gras ie-titre-petit", tabindex: "0" },
+					ObjetTraduction_1.GTraductions.getValeur("OffreStage.SujetDetaille"),
+					" :",
 				),
-				!!aOffreStage.sujetDetaille
-					? (0, tag_1.tag)(
-							"div",
-							{ class: "conteneur-texte", tabindex: 0 },
-							aOffreStage.sujetDetaille,
-						)
-					: "",
+				lStrDivSujetDetaille,
 			),
 		);
 		if (this.options.avecPeriode) {
 			let lLibelle;
-			if (this.options.avecPeriodeUnique) {
+			if (
+				this.options.avecPeriodeUnique &&
+				((_a = aOffreStage.periodes) === null || _a === void 0
+					? void 0
+					: _a.count()) === 1
+			) {
 				lLibelle =
 					UtilitaireStage_1.UtilitaireStage.composeLibelleDatePeriodeEntreLe(
-						aOffreStage.periode,
+						aOffreStage.periodes.get(0),
 					);
 			} else if (!!aOffreStage.periodes && aOffreStage.periodes.count()) {
-				lLibelle = (0, tag_1.tag)(
+				lLibelle = IE.jsx.str(
 					"ie-bouton",
 					{
 						class: "small-bt themeBoutonSecondaire m-left",
@@ -473,48 +532,61 @@ class ObjetDetailOffreStage extends ObjetIdentite_1.Identite {
 					ObjetTraduction_1.GTraductions.getValeur("OffreStage.voirCalendrier"),
 				);
 			}
-			H.push(
-				(0, tag_1.tag)(
-					"div",
-					{ class: "conteneur-bloc" },
-					(0, tag_1.tag)(
-						"h3",
-						{ class: "Gras ie-titre-petit", tabindex: 0 },
+			const lStrLibelleDureeEtPeriode =
+				aOffreStage.duree +
+				" " +
+				(!!lLibelle
+					? lLibelle
+					: "(" +
 						ObjetTraduction_1.GTraductions.getValeur(
-							"OffreStage.dureeEtPeriode",
-						) + " :",
-					),
-					(0, tag_1.tag)(
+							"OffreStage.aucunePeriodeImposee",
+						) +
+						")");
+			H.push(
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
 						"div",
-						{ class: "conteneur-texte", tabindex: 0 },
-						aOffreStage.duree +
-							" " +
-							(!!lLibelle
-								? lLibelle
-								: "(" +
-									ObjetTraduction_1.GTraductions.getValeur(
-										"OffreStage.aucunePeriodeImposee",
-									) +
-									")"),
+						{ class: "conteneur-bloc" },
+						IE.jsx.str(
+							"h3",
+							{ class: "Gras ie-titre-petit", tabindex: "0" },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"OffreStage.dureeEtPeriode",
+							),
+							" :",
+						),
+						IE.jsx.str(
+							"div",
+							{ class: "conteneur-texte", tabindex: "0" },
+							lStrLibelleDureeEtPeriode,
+						),
 					),
 				),
 			);
 		}
 		if (aOffreStage.commentaire) {
 			H.push(
-				(0, tag_1.tag)(
-					"div",
-					{ class: "conteneur-bloc" },
-					(0, tag_1.tag)(
-						"h3",
-						{ class: "Gras ie-titre-petit", tabindex: 0 },
-						ObjetTraduction_1.GTraductions.getValeur("OffreStage.Commentaire") +
-							" :",
-					),
-					(0, tag_1.tag)(
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
 						"div",
-						{ class: "conteneur-texte", tabindex: 0 },
-						aOffreStage.commentaire,
+						{ class: "conteneur-bloc" },
+						IE.jsx.str(
+							"h3",
+							{ class: "Gras ie-titre-petit", tabindex: "0" },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"OffreStage.Commentaire",
+							),
+							" :",
+						),
+						IE.jsx.str(
+							"div",
+							{ class: "conteneur-texte", tabindex: "0" },
+							aOffreStage.commentaire,
+						),
 					),
 				),
 			);
@@ -527,13 +599,17 @@ class ObjetDetailOffreStage extends ObjetIdentite_1.Identite {
 			H.push('<div class="conteneur-bloc">');
 			for (let i = 0, lNbr = aOffreStage.piecesjointes.count(); i < lNbr; i++) {
 				H.push(
-					(0, tag_1.tag)(
-						"div",
-						{ class: "chips-pj Inline" },
-						ObjetChaine_1.GChaine.composerUrlLienExterne({
-							documentJoint: aOffreStage.piecesjointes.get(i),
-							maxWidth: 250,
-						}),
+					IE.jsx.str(
+						IE.jsx.fragment,
+						null,
+						IE.jsx.str(
+							"div",
+							{ class: "chips-pj Inline" },
+							ObjetChaine_1.GChaine.composerUrlLienExterne({
+								documentJoint: aOffreStage.piecesjointes.get(i),
+								maxWidth: 250,
+							}),
+						),
 					),
 				);
 			}

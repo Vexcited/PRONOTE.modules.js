@@ -1,59 +1,57 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const {
-	ObjetRequeteRencontrePlanning,
-} = require("ObjetRequeteRencontrePlanning.js");
-const {
-	ObjetRequeteSessionRencontres,
-} = require("ObjetRequeteSessionRencontres.js");
-const {
-	DonneesListe_RencontresPlanning,
-} = require("DonneesListe_RencontresPlanning.js");
-const { ObjetInvocateur, Invocateur } = require("Invocateur.js");
-const { Requetes } = require("CollectionRequetes.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { EGenreImpression } = require("Enumere_GenreImpression.js");
-const { EGenreSaisie } = require("Enumere_Saisie.js");
-const { EStructureAffichage } = require("Enumere_StructureAffichage.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetSaisie } = require("ObjetSaisie.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { GObjetWAI, EGenreAttribut } = require("ObjetWAI.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { EGenreOnglet } = require("Enumere_Onglet.js");
-const { InterfacePage } = require("InterfacePage.js");
-const { TUtilitaireRencontre } = require("UtilitaireRencontres.js");
-Requetes.inscrire("SaisieRencontreAEuLieu", ObjetRequeteSaisie);
-class InterfaceRencontrePlanning extends InterfacePage {
-	constructor(...aParams) {
-		super(...aParams);
+exports.InterfaceRencontrePlanning = void 0;
+const ObjetRequeteRencontrePlanning_1 = require("ObjetRequeteRencontrePlanning");
+const ObjetRequeteSessionRencontres_1 = require("ObjetRequeteSessionRencontres");
+const DonneesListe_RencontresPlanning_1 = require("DonneesListe_RencontresPlanning");
+const Invocateur_1 = require("Invocateur");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const Enumere_GenreImpression_1 = require("Enumere_GenreImpression");
+const Enumere_Saisie_1 = require("Enumere_Saisie");
+const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetSaisie_1 = require("ObjetSaisie");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetWAI_1 = require("ObjetWAI");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const Enumere_Onglet_1 = require("Enumere_Onglet");
+const InterfacePage_1 = require("InterfacePage");
+const UtilitaireRencontres_1 = require("UtilitaireRencontres");
+const AccessApp_1 = require("AccessApp");
+const ObjetRequeteSaisieRencontreAEuLieu_1 = require("ObjetRequeteSaisieRencontreAEuLieu");
+const TypeHttpGenerationPDFSco_1 = require("TypeHttpGenerationPDFSco");
+const TypeEtatCours_1 = require("TypeEtatCours");
+class InterfaceRencontrePlanning extends InterfacePage_1.InterfacePage {
+	constructor() {
+		super(...arguments);
+		this.etatUtilScoEspace = (0, AccessApp_1.getApp)().getEtatUtilisateur();
 		this.avecRencontreNonPlacee = false;
 		this.idMessage = this.Nom + "_Message";
 	}
 	construireInstances() {
-		this.genreOnglet = GEtatUtilisateur.getGenreOnglet();
+		this.genreOnglet = this.etatUtilScoEspace.getGenreOnglet();
 		this.idComboSession = this.add(
-			ObjetSaisie,
-			_evenementSurComboSessions.bind(this),
-			_initialiserComboSessions,
+			ObjetSaisie_1.ObjetSaisie,
+			this._evenementSurComboSessions.bind(this),
+			this._initialiserComboSessions,
 		);
 		this.identPage = this.add(
-			ObjetListe,
-			_evenementListe.bind(this),
-			_initialiserListe.bind(this),
+			ObjetListe_1.ObjetListe,
+			null,
+			this._initialiserListe.bind(this),
 		);
 	}
 	setParametresGeneraux() {
-		this.GenreStructure = EStructureAffichage.Autre;
+		this.GenreStructure =
+			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 		this.avecBandeau = true;
 		this.AddSurZone = [];
 		this.AddSurZone.push(this.idComboSession);
 		this.AddSurZone.push({
 			html:
 				'<ie-checkbox class="Gras" ie-model="checkAfficherNonPlanifiees" ie-display="avecCBAfficherNonPlanifiees">' +
-				GTraductions.getValeur("Rencontres.afficherNonPlanifiees") +
+				ObjetTraduction_1.GTraductions.getValeur(
+					"Rencontres.afficherNonPlanifiees",
+				) +
 				"</ie-checkbox>",
 		});
 	}
@@ -69,8 +67,8 @@ class InterfaceRencontrePlanning extends InterfacePage {
 			'<div id="' +
 				this.idMessage +
 				'" tabindex="0" "' +
-				GObjetWAI.composeAttribut({
-					genre: EGenreAttribut.labelledby,
+				ObjetWAI_1.GObjetWAI.composeAttribut({
+					genre: ObjetWAI_1.EGenreAttribut.labelledby,
 					valeur: this.idMessage,
 				}) +
 				'" class="interface_affV_client Gras EspaceHaut AlignementMilieu"></div>',
@@ -81,9 +79,11 @@ class InterfaceRencontrePlanning extends InterfacePage {
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
 			avecCBAfficherNonPlanifiees: function () {
-				return (
-					GEtatUtilisateur.GenreEspace !== EGenreEspace.Parent &&
-					aInstance.genreOnglet === EGenreOnglet.Rencontre_Planning_Liste &&
+				return !!(
+					aInstance.etatUtilScoEspace.GenreEspace !==
+						Enumere_Espace_1.EGenreEspace.Parent &&
+					aInstance.genreOnglet ===
+						Enumere_Onglet_1.EGenreOnglet.Rencontre_Planning_Liste &&
 					aInstance._session &&
 					aInstance._session.listeRencontres
 				);
@@ -94,17 +94,20 @@ class InterfaceRencontrePlanning extends InterfacePage {
 				},
 				setValue: function (aValeur) {
 					aInstance.avecRencontreNonPlacee = aValeur;
-					if (aInstance.genreOnglet === EGenreOnglet.Rencontre_Planning_Liste) {
+					if (
+						aInstance.genreOnglet ===
+						Enumere_Onglet_1.EGenreOnglet.Rencontre_Planning_Liste
+					) {
 						const lInstanceListe = aInstance.getInstance(aInstance.identPage);
 						lInstanceListe.getDonneesListe().setAvecRencontreNonPlacee(aValeur);
-						lInstanceListe.actualiser(true);
+						aInstance.actualiserListe(true);
 					}
 				},
 			},
 		});
 	}
 	recupererDonnees() {
-		new ObjetRequeteSessionRencontres(
+		new ObjetRequeteSessionRencontres_1.ObjetRequeteSessionRencontres(
 			this,
 			this.actionSurRecupererDonnees,
 		).lancerRequete();
@@ -112,34 +115,34 @@ class InterfaceRencontrePlanning extends InterfacePage {
 	actionSurRecupererDonnees(aParams) {
 		let lIndiceSession;
 		const lListeSessionsRencontre =
-			TUtilitaireRencontre.formaterListeSessionsRencontrePourCombo(
+			UtilitaireRencontres_1.TUtilitaireRencontre.formaterListeSessionsRencontrePourCombo(
 				aParams.listeSessions,
 			);
 		if (!lListeSessionsRencontre || lListeSessionsRencontre.count() === 0) {
 			this.getInstance(this.idComboSession).setVisible(false);
-			_afficherPage.bind(this)(
+			this._afficherPage(
 				false,
-				GTraductions.getValeur("Rencontres.aucuneSession"),
+				ObjetTraduction_1.GTraductions.getValeur("Rencontres.aucuneSession"),
 			);
 		} else {
 			lListeSessionsRencontre.setTri([
-				ObjetTri.init("date"),
-				ObjetTri.init("Libelle"),
+				ObjetTri_1.ObjetTri.init("date"),
+				ObjetTri_1.ObjetTri.init("Libelle"),
 			]);
 			lListeSessionsRencontre.trier();
 			this.getInstance(this.idComboSession).setVisible(true);
-			if (GEtatUtilisateur.jeton_notifRencontre) {
-				GEtatUtilisateur.getOnglet().sessionRencontre =
-					GEtatUtilisateur.jeton_notifRencontre;
-				delete GEtatUtilisateur.jeton_notifRencontre;
+			if (this.etatUtilScoEspace.jeton_notifRencontre) {
+				this.etatUtilScoEspace.getOnglet().sessionRencontre =
+					this.etatUtilScoEspace.jeton_notifRencontre;
+				delete this.etatUtilScoEspace.jeton_notifRencontre;
 			}
-			if (GEtatUtilisateur.getOnglet().sessionRencontre) {
+			if (this.etatUtilScoEspace.getOnglet().sessionRencontre) {
 				lIndiceSession = lListeSessionsRencontre.getIndiceParElement(
-					GEtatUtilisateur.getOnglet().sessionRencontre,
+					this.etatUtilScoEspace.getOnglet().sessionRencontre,
 				);
 			} else {
 				lIndiceSession =
-					TUtilitaireRencontre.chercherIndiceSessionProchaineSession(
+					UtilitaireRencontres_1.TUtilitaireRencontre.chercherIndiceSessionProchaineSession(
 						lListeSessionsRencontre,
 					);
 			}
@@ -147,116 +150,137 @@ class InterfaceRencontrePlanning extends InterfacePage {
 				lListeSessionsRencontre,
 				lIndiceSession,
 			);
-			_afficherPage.bind(this)(lIndiceSession !== undefined);
+			this._afficherPage(lIndiceSession !== undefined);
 		}
 	}
 	afficherPage() {
 		this.setEtatSaisie(false);
 		this.recupererDonnees();
 	}
-	getPageImpression(aProportion) {
-		const H = [];
-		if (this.getInstance(this.identPage)) {
-			H.push(this.getInstance(this.identPage).composeImpression(aProportion));
-		}
-		const lTitre = GTraductions.getValeur("Rencontres.planningDeLaSession", [
-			GEtatUtilisateur.getOnglet().sessionRencontre.getLibelle(),
-		]);
-		return { titre1: lTitre, contenu: H.join("") };
-	}
-}
-function _initialiserComboSessions(aInstance) {
-	aInstance.setOptionsObjetSaisie({
-		mode: EGenreSaisie.Combo,
-		longueur: 260,
-		avecBouton: true,
-		labelWAICellule: GTraductions.getValeur("WAI.SelectionSessionRencontre"),
-	});
-	aInstance.setControleNavigation(true);
-}
-function _afficherPage(aAfficher, aMessage) {
-	if (aAfficher) {
-		$("#" + this.getInstance(this.identPage).getNom().escapeJQ()).show();
-		$("#" + this.idMessage.escapeJQ()).hide();
-	} else {
-		aMessage = aMessage
-			? aMessage
-			: GTraductions.getValeur("Rencontres.selectionnerSession");
-		$("#" + this.getInstance(this.identPage).getNom().escapeJQ()).hide();
-		$("#" + this.idMessage.escapeJQ())
-			.html(aMessage)
-			.show();
-	}
-	this.surResizeInterface();
-}
-function _evenementSurComboSessions(aParams) {
-	switch (aParams.genreEvenement) {
-		case EGenreEvenementObjetSaisie.selection:
-			GEtatUtilisateur.getOnglet().sessionRencontre = aParams.element;
-			new ObjetRequeteRencontrePlanning(
-				this,
-				_surReponseRequeteRencontrePlanning,
-			).lancerRequete(aParams.element);
-			break;
-		default:
-			break;
-	}
-}
-function _initialiserListe(aInstance) {
-	aInstance.setOptionsListe({
-		colonnes: [{ taille: "100%" }],
-		skin: ObjetListe.skin.flatDesign,
-		messageContenuVide: GTraductions.getValeur("Rencontres.aucuneRencontre"),
-		avecOmbreDroite: false,
-		avecFondBlanc: true,
-	});
-}
-function _evenementListe(aRencontre) {
-	if (aRencontre) {
-		const lJSON = aRencontre.toJSONAll();
-		Requetes(
-			"SaisieRencontreAEuLieu",
-			this,
-			this.actionSurValidation,
-		).lancerRequete({ rencontre: lJSON });
-	}
-}
-function _surReponseRequeteRencontrePlanning(aJSONSession) {
-	this._session = aJSONSession;
-	if (
-		this._session &&
-		(this._session.messageNonPublie || this._session.Message)
-	) {
-		_afficherPage.bind(this)(
-			false,
-			this._session.messageNonPublie || this._session.Message,
-		);
-		Invocateur.evenement(
-			ObjetInvocateur.events.activationImpression,
-			EGenreImpression.Aucune,
-		);
-	} else {
-		_afficherPage.bind(this)(true);
-		const lDonneesListe = new DonneesListe_RencontresPlanning(
-			this._session.listeRencontres,
-			this.avecRencontreNonPlacee,
-			{ callbackVisio: _validerVisio.bind(this) },
-		);
-		this.getInstance(this.identPage).setDonnees(lDonneesListe, null, {
-			conserverPositionScroll: true,
+	_initialiserComboSessions(aInstance) {
+		aInstance.setOptionsObjetSaisie({
+			mode: Enumere_Saisie_1.EGenreSaisie.Combo,
+			longueur: 260,
+			avecBouton: true,
+			labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+				"WAI.SelectionSessionRencontre",
+			),
 		});
-		this.getInstance(this.identPage).actualiser();
+		aInstance.setControleNavigation(true);
+	}
+	_afficherPage(aAfficher, aMessage) {
+		if (aAfficher) {
+			$("#" + this.getInstance(this.identPage).getNom().escapeJQ()).show();
+			$("#" + this.idMessage.escapeJQ()).hide();
+		} else {
+			aMessage = aMessage
+				? aMessage
+				: ObjetTraduction_1.GTraductions.getValeur(
+						"Rencontres.selectionnerSession",
+					);
+			$("#" + this.getInstance(this.identPage).getNom().escapeJQ()).hide();
+			$("#" + this.idMessage.escapeJQ())
+				.html(aMessage)
+				.show();
+		}
+		this.surResizeInterface();
+	}
+	_evenementSurComboSessions(aParams) {
+		switch (aParams.genreEvenement) {
+			case Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection:
+				this.etatUtilScoEspace.getOnglet().sessionRencontre = aParams.element;
+				new ObjetRequeteRencontrePlanning_1.ObjetRequeteRencontrePlanning(
+					this,
+					this._surReponseRequeteRencontrePlanning,
+				).lancerRequete(aParams.element);
+				break;
+			default:
+				break;
+		}
+	}
+	_initialiserListe(aInstance) {
+		aInstance.setOptionsListe({
+			colonnes: [{ taille: "100%" }],
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+			messageContenuVide: ObjetTraduction_1.GTraductions.getValeur(
+				"Rencontres.aucuneRencontre",
+			),
+			avecOmbreDroite: false,
+		});
+	}
+	actualiserListe(aConserverSelection) {
+		this.getInstance(this.identPage).actualiser(aConserverSelection);
+		const lListeRencontresPlanifie =
+			this._session.listeRencontres.getListeElements(function (aElement) {
+				return (
+					aElement.etat === TypeEtatCours_1.TypeEtatCours.Impose ||
+					aElement.etat === TypeEtatCours_1.TypeEtatCours.Pose
+				);
+			});
+		if (
+			(lListeRencontresPlanifie === null || lListeRencontresPlanifie === void 0
+				? void 0
+				: lListeRencontresPlanifie.count()) > 0 ||
+			this.avecRencontreNonPlacee
+		) {
+			Invocateur_1.Invocateur.evenement(
+				Invocateur_1.ObjetInvocateur.events.activationImpression,
+				Enumere_GenreImpression_1.EGenreImpression.GenerationPDF,
+				this,
+				this.getParametresPDF.bind(this),
+			);
+		} else {
+			Invocateur_1.Invocateur.evenement(
+				Invocateur_1.ObjetInvocateur.events.activationImpression,
+				Enumere_GenreImpression_1.EGenreImpression.Aucune,
+			);
+		}
+	}
+	getParametresPDF() {
+		return {
+			genreGenerationPDF:
+				TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.RencontrePlanning,
+			avecRencontreNonPlacee: this.avecRencontreNonPlacee,
+			sessionRencontre: this.etatUtilScoEspace.getOnglet().sessionRencontre,
+		};
+	}
+	_surReponseRequeteRencontrePlanning(aJSONSession) {
+		this._session = aJSONSession;
+		if (
+			this._session &&
+			(this._session.messageNonPublie || this._session.Message)
+		) {
+			this._afficherPage(
+				false,
+				this._session.messageNonPublie || this._session.Message,
+			);
+			Invocateur_1.Invocateur.evenement(
+				Invocateur_1.ObjetInvocateur.events.activationImpression,
+				Enumere_GenreImpression_1.EGenreImpression.Aucune,
+			);
+		} else {
+			this._afficherPage(true);
+			const lDonneesListe =
+				new DonneesListe_RencontresPlanning_1.DonneesListe_RencontresPlanning(
+					this._session.listeRencontres,
+					this.avecRencontreNonPlacee,
+					{
+						callback: (aRencontre, aVisio) => {
+							new ObjetRequeteSaisieRencontreAEuLieu_1.ObjetRequeteSaisieRencontreAEuLieu(
+								this,
+								this.actionSurValidation,
+							).lancerRequete({
+								rencontre: aRencontre.toJSONAll(),
+								visio: aVisio ? aVisio.lienVisio.toJSONAll() : undefined,
+							});
+						},
+					},
+				);
+			this.getInstance(this.identPage).setDonnees(lDonneesListe, null, {
+				conserverPositionScroll: true,
+			});
+			this.actualiserListe();
+		}
 	}
 }
-function _validerVisio(aVisio, aRencontre) {
-	if (aVisio.lienVisio) {
-		const lJSONRencontre = aRencontre.toJSONAll();
-		const lJSONVisio = aVisio.lienVisio.toJSONAll();
-		Requetes(
-			"SaisieRencontreAEuLieu",
-			this,
-			this.actionSurValidation,
-		).lancerRequete({ rencontre: lJSONRencontre, visio: lJSONVisio });
-	}
-}
-module.exports = { InterfaceRencontrePlanning };
+exports.InterfaceRencontrePlanning = InterfaceRencontrePlanning;

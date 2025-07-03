@@ -1,25 +1,24 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetTri } = require("ObjetTri.js");
-class ObjetRequeteDernieresEvaluations extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
-	lancerRequete(aParametres) {
-		$.extend(this.JSON, aParametres);
-		return this.appelAsynchrone();
-	}
+exports.ObjetRequeteDernieresEvaluations = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetTri_1 = require("ObjetTri");
+class ObjetRequeteDernieresEvaluations extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	actionApresRequete() {
 		if (!!this.JSONReponse.listeEvaluations) {
 			this.JSONReponse.listeEvaluations.parcourir((D) => {
 				if (!!D.listeNiveauxDAcquisitions) {
-					D.listeNiveauxDAcquisitions.setTri([ObjetTri.init("ordre")]);
+					D.listeNiveauxDAcquisitions.setTri([
+						ObjetTri_1.ObjetTri.init("ordre"),
+					]);
 					D.listeNiveauxDAcquisitions.trier();
 				}
 			});
 		}
-		this.callbackReussite.appel(this.JSONReponse.listeEvaluations);
+		this.callbackReussite.appel(this.JSONReponse);
 	}
 }
-Requetes.inscrire("DernieresEvaluations", ObjetRequeteDernieresEvaluations);
-module.exports = { ObjetRequeteDernieresEvaluations };
+exports.ObjetRequeteDernieresEvaluations = ObjetRequeteDernieresEvaluations;
+CollectionRequetes_1.Requetes.inscrire(
+	"DernieresEvaluations",
+	ObjetRequeteDernieresEvaluations,
+);

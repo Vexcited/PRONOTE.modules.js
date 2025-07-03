@@ -20,15 +20,17 @@ const TypeGenreRenduTAF_1 = require("TypeGenreRenduTAF");
 const ObjetDate_1 = require("ObjetDate");
 const TypeOrigineCreationCategorieCahierDeTexte_1 = require("TypeOrigineCreationCategorieCahierDeTexte");
 const ObjetRequeteListeCDTProgressions_1 = require("ObjetRequeteListeCDTProgressions");
-const ObjetRequeteListeContenuTAFsEtContenus = require("ObjetRequeteListeContenuTAFsEtContenus");
+const ObjetRequeteListeContenuTAFsEtContenus_1 = require("ObjetRequeteListeContenuTAFsEtContenus");
 const Enumere_DocumentJoint_1 = require("Enumere_DocumentJoint");
 const ObjetFenetre_EditionUrl_1 = require("ObjetFenetre_EditionUrl");
 const ObjetFenetre_ActionContextuelle_1 = require("ObjetFenetre_ActionContextuelle");
 const UtilitaireQCM_1 = require("UtilitaireQCM");
-const ObjetFenetre_PieceJointe = require("ObjetFenetre_PieceJointe");
+const ObjetFenetre_PieceJointe_1 = require("ObjetFenetre_PieceJointe");
 const ObjetFenetre_SelectionQCM_1 = require("ObjetFenetre_SelectionQCM");
 const ObjetFenetre_ProgressionAffectationAuCours_1 = require("ObjetFenetre_ProgressionAffectationAuCours");
 const ObjetFenetre_Categorie_1 = require("ObjetFenetre_Categorie");
+const Enumere_Action_1 = require("Enumere_Action");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
 function UtilitaireSaisieCDT() {}
 UtilitaireSaisieCDT.initCahierDeTextes = function () {
 	const lCahierDeTextes = new ObjetElement_1.ObjetElement();
@@ -68,7 +70,7 @@ UtilitaireSaisieCDT.initContenu = function (aContenu) {
 	}
 	return aContenu;
 };
-UtilitaireSaisieCDT.initTAF = function (aTAF, aDate) {
+UtilitaireSaisieCDT.initTAF = function (aTAF, aDate, aListeTousEleves) {
 	if (aTAF) {
 		const lApp = GApplication;
 		Object.assign(aTAF, {
@@ -90,8 +92,79 @@ UtilitaireSaisieCDT.initTAF = function (aTAF, aDate) {
 				"Theme.libelleCB.taf",
 			),
 		});
+		aTAF = UtilitaireSaisieCDT.initListeElevesTAF(aTAF, aListeTousEleves);
 	}
 	return aTAF;
+};
+UtilitaireSaisieCDT.initListeElevesTAF = (aTAF, aListeTousEleves) => {
+	const lAffecterParDefautElevesDetaches =
+		GApplication.parametresUtilisateur.get(
+			"CDT.TAF.AffecterParDefautElevesDetaches",
+		);
+	const lListeTousEleves =
+		MethodesObjet_1.MethodesObjet.dupliquer(aListeTousEleves);
+	const lListeElevesDetachesEtEnCours =
+		UtilitaireSaisieCDT.getListeElevesDetachesEtEnCours(lListeTousEleves);
+	const lListe = lAffecterParDefautElevesDetaches
+		? lListeTousEleves
+		: lListeElevesDetachesEtEnCours.listeEnCours;
+	if (lAffecterParDefautElevesDetaches) {
+		aTAF.estPourTous =
+			lListeTousEleves.count() ===
+				lListeElevesDetachesEtEnCours.listeEnCours.count() &&
+			lListeTousEleves.getIndiceElementParFiltre(
+				(aElement) => aElement.estElevesDetachesDuCours,
+			) === -1;
+	}
+	lListe.parcourir((D) => {
+		D.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+		aTAF.listeEleves.addElement(D);
+	});
+	return aTAF;
+};
+UtilitaireSaisieCDT.autoriserCreationTAF = async (aDonneesAutorisation) => {
+	if (aDonneesAutorisation.ajoutNouveauTAFInterdit) {
+		return GApplication.getMessage()
+			.afficher({ message: aDonneesAutorisation.messageSurNouveauTAF })
+			.then(() => {
+				return false;
+			});
+	} else if (!!aDonneesAutorisation.messageSurNouveauTAF) {
+		const lMessageConfirmation = IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			IE.jsx.str("p", null, aDonneesAutorisation.messageSurNouveauTAF),
+			IE.jsx.str("br", null),
+			IE.jsx.str(
+				"p",
+				null,
+				ObjetTraduction_1.GTraductions.getValeur(
+					"CahierDeTexte.msgConfirmationAjoutTafPasse",
+				),
+			),
+		);
+		return GApplication.getMessage()
+			.afficher({
+				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+				message: lMessageConfirmation,
+			})
+			.then((aGenreAction) => {
+				return aGenreAction === Enumere_Action_1.EGenreAction.Valider;
+			});
+	}
+	return true;
+};
+UtilitaireSaisieCDT.getListeToutLesEleves = (aListeClassesEleves) => {
+	const lListeTousEleves = new ObjetListeElements_1.ObjetListeElements();
+	if (aListeClassesEleves) {
+		aListeClassesEleves.parcourir((aClasse) => {
+			if (!!aClasse.listeEleves) {
+				lListeTousEleves.add(aClasse.listeEleves);
+			}
+		});
+	}
+	lListeTousEleves.trier();
+	return lListeTousEleves;
 };
 UtilitaireSaisieCDT.createContenu = function () {
 	const lNewContenu = new ObjetElement_1.ObjetElement("");
@@ -339,7 +412,7 @@ UtilitaireSaisieCDT.ouvrirFenetrePJ = function (aParams) {
 	);
 	let lAvecSaisie = false;
 	const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
-		ObjetFenetre_PieceJointe,
+		ObjetFenetre_PieceJointe_1.ObjetFenetre_PieceJointe,
 		{
 			pere: lParams.instance,
 			evenement: function (aNumeroBouton, aParamsFenetre) {
@@ -547,6 +620,15 @@ UtilitaireSaisieCDT._creerTAFAvecQCM = function (aParams) {
 		});
 		UtilitaireQCM_1.UtilitaireQCM.verifierDateCorrection(lTAF.executionQCM);
 	}
+	if (
+		lTAF &&
+		(lParams === null || lParams === void 0 ? void 0 : lParams.listeTousEleves)
+	) {
+		UtilitaireSaisieCDT.initListeElevesTAF(
+			lTAF,
+			lParams === null || lParams === void 0 ? void 0 : lParams.listeTousEleves,
+		);
+	}
 	return lTAF;
 };
 UtilitaireSaisieCDT.creerTAFAvecQCM = function (aParams) {
@@ -593,21 +675,31 @@ UtilitaireSaisieCDT.choisirFichierCloud = function (aParams) {
 		).setDonnees({ service: lParams.numeroService });
 	});
 };
+UtilitaireSaisieCDT.getListeElevesDetachesEtEnCours = (aListeTousEleves) => {
+	const lResult = {
+		listeDetaches: new ObjetListeElements_1.ObjetListeElements(),
+		listeEnCours: new ObjetListeElements_1.ObjetListeElements(),
+	};
+	aListeTousEleves.parcourir((aElement) => {
+		if (aElement.estElevesDetachesDuCours) {
+			lResult.listeDetaches.addElement(aElement);
+		} else {
+			lResult.listeEnCours.addElement(aElement);
+		}
+	});
+	return lResult;
+};
 UtilitaireSaisieCDT.choisirElevesTAF = function (aParams) {
 	const lParams = Object.assign(
 		{ instance: null, element: null, listeTousEleves: null, callback: null },
 		aParams,
 	);
 	let lListeSelectionEleves = new ObjetListeElements_1.ObjetListeElements();
-	lParams.listeDetaches = new ObjetListeElements_1.ObjetListeElements();
-	lParams.listeEnCours = new ObjetListeElements_1.ObjetListeElements();
-	lParams.listeTousEleves.parcourir((aElement) => {
-		if (aElement.estElevesDetachesDuCours) {
-			lParams.listeDetaches.addElement(aElement);
-		} else {
-			lParams.listeEnCours.addElement(aElement);
-		}
-	});
+	const lListeEleves = UtilitaireSaisieCDT.getListeElevesDetachesEtEnCours(
+		lParams.listeTousEleves,
+	);
+	lParams.listeDetaches = lListeEleves.listeDetaches;
+	lParams.listeEnCours = lListeEleves.listeEnCours;
 	if (
 		!lParams.element.listeEleves ||
 		lParams.element.listeEleves.count() === 0
@@ -647,12 +739,11 @@ UtilitaireSaisieCDT.choisirElevesTAF = function (aParams) {
 								return aElement.estElevesDetachesDuCours;
 							}) === -1;
 					}
-					if (!lParams.element.estPourTous) {
-						aListe.parcourir((D) => {
-							D.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
-							lParams.element.listeEleves.addElement(D);
-						});
-					} else {
+					aListe.parcourir((D) => {
+						D.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+						lParams.element.listeEleves.addElement(D);
+					});
+					if (lParams.element.estPourTous) {
 						if (lEstPourTousInitial !== lParams.element.estPourTous) {
 							lParams.element.avecModificationPublic = true;
 						}
@@ -727,10 +818,6 @@ UtilitaireSaisieCDT.choisirElevesTAF = function (aParams) {
 		listeRessources: lParams.listeTousEleves,
 		listeRessourcesSelectionnees: lListeSelectionEleves,
 		genreRessource: Enumere_Ressource_1.EGenreRessource.Eleve,
-		titre:
-			Enumere_Ressource_1.EGenreRessourceUtil.getTitreFenetreSelectionRessource(
-				Enumere_Ressource_1.EGenreRessource.Eleve,
-			),
 	});
 };
 function _getContenuPrecedentPourAffectation(aListeCDTPrecdents) {
@@ -965,6 +1052,7 @@ UtilitaireSaisieCDT.affecterProgressionAuCdT = function (aParams) {
 		{
 			instance: null,
 			avecTAFVisible: true,
+			paramsAutorisationCreationTAF: null,
 			cours: null,
 			numeroSemaine: null,
 			cdt: null,
@@ -990,36 +1078,70 @@ UtilitaireSaisieCDT.affecterProgressionAuCdT = function (aParams) {
 		.then((aTabParams) => {
 			const lListeProgressions = aTabParams[0];
 			if (lListeProgressions && lListeProgressions.count() > 0) {
-				ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
-					ObjetFenetre_ProgressionAffectationAuCours_1.ObjetFenetre_ProgressionAffectationAuCours,
-					{
-						pere: lParams.instance,
-						evenement: function (aNumeroBouton, aListeElementsCDT) {
-							if (aNumeroBouton === 1) {
-								const lListeElementsCDT = aListeElementsCDT;
-								new ObjetRequeteListeContenuTAFsEtContenus(
-									lParams.instance,
-									_surReponseListeContenuTAFsEtContenus.bind(
-										null,
-										aParams,
-										lListeElementsCDT,
-									),
-								).lancerRequete(lListeElementsCDT);
-							}
+				const lFenetreProgressionAffecationAuCours =
+					ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+						ObjetFenetre_ProgressionAffectationAuCours_1.ObjetFenetre_ProgressionAffectationAuCours,
+						{
+							pere: lParams.instance,
+							evenement: async function (aNumeroBouton, aListeElementsCDT) {
+								if (aNumeroBouton === 1) {
+									const lListeElementsCDT = aListeElementsCDT;
+									let lConcerneAjoutTravailAFaire = false;
+									if (lListeElementsCDT) {
+										for (const lElementCDT of lListeElementsCDT) {
+											if (
+												lElementCDT &&
+												lElementCDT.getGenre() ===
+													Enumere_Ressource_1.EGenreRessource.TravailAFaire
+											) {
+												lConcerneAjoutTravailAFaire = true;
+												break;
+											}
+										}
+									}
+									let lContinueSaisie = false;
+									if (
+										!lConcerneAjoutTravailAFaire ||
+										!lParams.paramsAutorisationCreationTAF
+									) {
+										lContinueSaisie = true;
+									} else {
+										lContinueSaisie =
+											await UtilitaireSaisieCDT.autoriserCreationTAF({
+												ajoutNouveauTAFInterdit:
+													lParams.paramsAutorisationCreationTAF
+														.ajoutNouveauTAFInterdit,
+												messageSurNouveauTAF:
+													lParams.paramsAutorisationCreationTAF
+														.messageSurNouveauTAF,
+											});
+									}
+									if (lContinueSaisie) {
+										new ObjetRequeteListeContenuTAFsEtContenus_1.ObjetRequeteListeContenuTAFsEtContenus(
+											lParams.instance,
+											_surReponseListeContenuTAFsEtContenus.bind(
+												null,
+												aParams,
+												lListeElementsCDT,
+											),
+										).lancerRequete(lListeElementsCDT);
+									}
+								}
+							},
+							initialiser: function (aInstance) {
+								aInstance.setOptionsFenetre({
+									titre: "",
+									largeur: 500,
+									hauteur: 480,
+									listeBoutons: [
+										ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+										ObjetTraduction_1.GTraductions.getValeur("Valider"),
+									],
+								});
+							},
 						},
-						initialiser: function (aInstance) {
-							aInstance.setOptionsFenetre({
-								titre: "",
-								largeur: 500,
-								hauteur: 480,
-								listeBoutons: [
-									ObjetTraduction_1.GTraductions.getValeur("Annuler"),
-									ObjetTraduction_1.GTraductions.getValeur("Valider"),
-								],
-							});
-						},
-					},
-				).setDonnees({
+					);
+				lFenetreProgressionAffecationAuCours.setDonnees({
 					listeProgressions: lListeProgressions,
 					strPublics: lParams.strPublics,
 					strMatiere: lParams.strMatiere,
@@ -1058,7 +1180,7 @@ UtilitaireSaisieCDT.poursuivreProgression = function (aParams) {
 	if (lElement) {
 		const lListe = new ObjetListeElements_1.ObjetListeElements();
 		lListe.addElement(lElement);
-		new ObjetRequeteListeContenuTAFsEtContenus(
+		new ObjetRequeteListeContenuTAFsEtContenus_1.ObjetRequeteListeContenuTAFsEtContenus(
 			lParams.instance,
 			_surReponseListeContenuTAFsEtContenus.bind(this, aParams, null),
 		).lancerRequete(lListe);
@@ -1137,7 +1259,7 @@ UtilitaireSaisieCDT.ouvrirFenetreChoixAjoutPiecesJointes = function (
 				accept: "image/*",
 			},
 			selecFile: true,
-			class: "bg-util-marron-claire",
+			class: "bg-orange-claire",
 		});
 		lTabActions.push({
 			libelle: ObjetTraduction_1.GTraductions.getValeur(
@@ -1159,7 +1281,7 @@ UtilitaireSaisieCDT.ouvrirFenetreChoixAjoutPiecesJointes = function (
 				accept: "image/*",
 			},
 			selecFile: true,
-			class: "bg-util-marron-claire",
+			class: "bg-orange-claire",
 		});
 	}
 	if (lAvecSaisiePieceJointe) {
@@ -1173,7 +1295,7 @@ UtilitaireSaisieCDT.ouvrirFenetreChoixAjoutPiecesJointes = function (
 					aParametres.callbackChoixParmiFichiersExistants();
 				}
 			},
-			class: "bg-util-vert-claire",
+			class: "bg-green-claire",
 		});
 	}
 	if (lAvecSaisiePieceJointe && aParametres.callbackChoixParmiLiensExistants) {
@@ -1185,7 +1307,7 @@ UtilitaireSaisieCDT.ouvrirFenetreChoixAjoutPiecesJointes = function (
 			event() {
 				aParametres.callbackChoixParmiLiensExistants();
 			},
-			class: "bg-util-vert-claire",
+			class: "bg-green-claire",
 		});
 	}
 	if (aParametres.callbackAjoutQCM) {
@@ -1197,7 +1319,7 @@ UtilitaireSaisieCDT.ouvrirFenetreChoixAjoutPiecesJointes = function (
 			event() {
 				aParametres.callbackAjoutQCM();
 			},
-			class: "bg-util-vert-claire",
+			class: "bg-green-claire",
 		});
 	}
 	if (lAvecSaisiePieceJointe && aParametres.callbackUploadNouvellePJ) {
@@ -1222,7 +1344,7 @@ UtilitaireSaisieCDT.ouvrirFenetreChoixAjoutPiecesJointes = function (
 					aParametres.callbackUploadNouvellePJ(aParamsInput);
 				}
 			},
-			class: "bg-util-marron-claire",
+			class: "bg-orange-claire",
 		});
 	}
 	if (lAvecSaisiePieceJointe && aParametres.callbackChoixDepuisCloud) {
@@ -1234,8 +1356,17 @@ UtilitaireSaisieCDT.ouvrirFenetreChoixAjoutPiecesJointes = function (
 			event() {
 				aParametres.callbackChoixDepuisCloud();
 			},
-			class: "bg-util-marron-claire",
+			class: "bg-orange-claire",
 		});
+	}
+	if (lAvecSaisiePieceJointe && aParametres.callbackChoixDepuisCloudENEJ) {
+		const lActionENEJ =
+			ObjetFenetre_ActionContextuelle_1.ObjetFenetre_ActionContextuelle.getActionENEJ(
+				aParametres.callbackChoixDepuisCloudENEJ,
+			);
+		if (lActionENEJ) {
+			lTabActions.push(lActionENEJ);
+		}
 	}
 	if (lAvecSaisiePieceJointe && aParametres.callbackAjoutLienKiosque) {
 		lTabActions.push({
@@ -1246,7 +1377,7 @@ UtilitaireSaisieCDT.ouvrirFenetreChoixAjoutPiecesJointes = function (
 			event() {
 				aParametres.callbackAjoutLienKiosque();
 			},
-			class: "bg-util-marron-claire",
+			class: "bg-orange-claire",
 		});
 	}
 	if (lAvecSaisiePieceJointe && aParametres.callbackNouvelleURL) {
@@ -1280,7 +1411,7 @@ UtilitaireSaisieCDT.ouvrirFenetreChoixAjoutPiecesJointes = function (
 				});
 				lFenetreEditionSiteWeb.setDonnees({ libelle: "", url: "http://" });
 			},
-			class: "bg-util-bleu-claire",
+			class: "bg-blue-claire",
 		});
 	}
 	if (lTabActions.length > 0) {

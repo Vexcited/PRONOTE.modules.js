@@ -12,17 +12,18 @@ const ObjetListeElements_1 = require("ObjetListeElements");
 const Enumere_EvenementWidget_1 = require("Enumere_EvenementWidget");
 const ObjetWidget_1 = require("ObjetWidget");
 const ObjetTraduction_1 = require("ObjetTraduction");
+const AccessApp_1 = require("AccessApp");
 class WidgetIncidents extends ObjetWidget_1.Widget.ObjetWidget {
 	constructor(...aParams) {
 		super(...aParams);
-		this.applicationSco = GApplication;
+		this.applicationSco = (0, AccessApp_1.getApp)();
 	}
 	construire(aParams) {
 		var _a;
 		this.donnees = aParams.donnees;
 		this.creerObjetsIncidents();
 		const lWidget = {
-			html: this.composeWidgetIncident(),
+			getHtml: this.composeWidgetIncident.bind(this),
 			nbrElements:
 				(_a = this.donnees.listeIncidents) === null || _a === void 0
 					? void 0

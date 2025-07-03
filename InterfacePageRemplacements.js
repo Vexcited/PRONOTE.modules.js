@@ -1,27 +1,30 @@
-const { ObjetInvocateur, Invocateur } = require("Invocateur.js");
-const { EGenreImpression } = require("Enumere_GenreImpression.js");
-const { InterfacePage } = require("InterfacePage.js");
-const ObjetRequetePageRemplacements = require("ObjetRequetePageRemplacements.js");
-const { UtilitaireInitCalendrier } = require("UtilitaireInitCalendrier.js");
-const DonneesListe_PageRemplacements = require("DonneesListe_PageRemplacements.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { GHtml } = require("ObjetHtml.js");
-const { ObjetCelluleSemaine } = require("ObjetCelluleSemaine.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { GDate } = require("ObjetDate.js");
-class InterfacePageRemplacements extends InterfacePage {
+exports.InterfacePageRemplacements = void 0;
+const Invocateur_1 = require("Invocateur");
+const Enumere_GenreImpression_1 = require("Enumere_GenreImpression");
+const InterfacePage_1 = require("InterfacePage");
+const ObjetRequetePageRemplacements_1 = require("ObjetRequetePageRemplacements");
+const DonneesListe_PageRemplacements_1 = require("DonneesListe_PageRemplacements");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetCelluleSemaine_1 = require("ObjetCelluleSemaine");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetDate_1 = require("ObjetDate");
+const AccessApp_1 = require("AccessApp");
+class InterfacePageRemplacements extends InterfacePage_1.InterfacePage {
 	constructor(...aParams) {
 		super(...aParams);
+		const lApplicationSco = (0, AccessApp_1.getApp)();
+		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
 	}
 	construireInstances() {
 		this.identRemplacements = this.add(
-			ObjetListe,
+			ObjetListe_1.ObjetListe,
 			null,
 			this.initialiserTableauFlatDesign,
 		);
 		this.identCelluleSemaine = this.add(
-			ObjetCelluleSemaine,
+			ObjetCelluleSemaine_1.ObjetCelluleSemaine,
 			this._evntCelluleSemaine,
 			this._initCelluleSemaine,
 		);
@@ -33,35 +36,29 @@ class InterfacePageRemplacements extends InterfacePage {
 		this.IdentZoneAlClient = this.identRemplacements;
 		this.AddSurZone = [this.identCelluleSemaine];
 	}
-	initialiserCalendrier(AObjet) {
-		UtilitaireInitCalendrier.init(AObjet, "");
-		AObjet.setFrequences(GParametres.frequences, true);
-	}
 	recupererDonnees() {
 		this.getInstance(this.identCelluleSemaine).setDonnees(
-			GDate.getDateCourante(true),
+			ObjetDate_1.GDate.getDateCourante(true),
 		);
 	}
 	recupererDonneesCalendrier(aDureeNonAssuree, aDureeRemplacee, aListeCours) {
-		this.DureeNonAssuree = aDureeNonAssuree;
-		this.DureeRemplacee = aDureeRemplacee;
 		this.ListeCours = aListeCours;
 		this.afficherEnFlatDesign();
-		Invocateur.evenement(
-			ObjetInvocateur.events.activationImpression,
+		Invocateur_1.Invocateur.evenement(
+			Invocateur_1.ObjetInvocateur.events.activationImpression,
 			this.ListeCours.count()
-				? EGenreImpression.Aucune
-				: EGenreImpression.Aucune,
+				? Enumere_GenreImpression_1.EGenreImpression.Aucune
+				: Enumere_GenreImpression_1.EGenreImpression.Aucune,
 			this,
 		);
 	}
 	_evntCelluleSemaine(aDomaine) {
 		if (aDomaine) {
-			new ObjetRequetePageRemplacements(
+			new ObjetRequetePageRemplacements_1.ObjetRequetePageRemplacements(
 				this,
 				this.recupererDonneesCalendrier,
 			).lancerRequete(
-				GEtatUtilisateur.getGenreOnglet(),
+				this.etatUtilisateurSco.getGenreOnglet(),
 				aDomaine.getPremierePosition(),
 				aDomaine,
 			);
@@ -69,47 +66,44 @@ class InterfacePageRemplacements extends InterfacePage {
 	}
 	afficherEnFlatDesign() {
 		this.ListeCours.setTri([
-			ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.init((D) => {
 				return D.Date;
 			}),
-			ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.init((D) => {
 				return D.HeureDebut;
 			}),
 		]);
 		this.ListeCours.trier();
 		if (this.ListeCours.count()) {
 			this.getInstance(this.identRemplacements).setDonnees(
-				new DonneesListe_PageRemplacements(
-					{
-						ListeCours: this.ListeCours,
-						DureeNonAssuree: this.DureeNonAssuree,
-						DureeRemplacee: this.DureeRemplacee,
-					},
-					{ instance: this.getInstance(this.identRemplacements) },
+				new DonneesListe_PageRemplacements_1.DonneesListe_PageRemplacements(
+					this.ListeCours,
 				),
 			);
 		} else {
 			this.getInstance(this.identRemplacements).setDonnees(
-				new DonneesListe_PageRemplacements(
-					{
-						ListeCours: this.ListeCours,
-						DureeNonAssuree: this.DureeNonAssuree,
-						DureeRemplacee: this.DureeRemplacee,
-					},
-					{ instance: this.getInstance(this.identRemplacements) },
+				new DonneesListe_PageRemplacements_1.DonneesListe_PageRemplacements(
+					this.ListeCours,
 				),
 			);
 			const H = [];
 			H.push(
 				`<p class="semi-bold taille-m text-center p-y-xl m-bottom-l">`,
-				GTraductions.getValeur("PageRemplacement.Remplacement_AucunCours"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"PageRemplacement.Remplacement_AucunCours",
+				),
 				`</p>`,
 			);
-			GHtml.setHtml(this.getInstance(this.identRemplacements).Nom, H.join(""));
+			ObjetHtml_1.GHtml.setHtml(
+				this.getInstance(this.identRemplacements).getNom(),
+				H.join(""),
+			);
 		}
 	}
 	initialiserTableauFlatDesign(aInstance) {
-		aInstance.setOptionsListe({ skin: ObjetListe.skin.flatDesign });
+		aInstance.setOptionsListe({
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+		});
 	}
 }
-module.exports = InterfacePageRemplacements;
+exports.InterfacePageRemplacements = InterfacePageRemplacements;

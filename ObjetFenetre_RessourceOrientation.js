@@ -1,41 +1,65 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const {
-	DonneesListe_RessourceOrientation,
-} = require("DonneesListe_RessourceOrientation.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { EGenreEvnt } = require("UtilitaireOrientation.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetListe } = require("ObjetListe.js");
-class ObjetFenetre_RessourceOrientation extends ObjetFenetre {
+exports.ObjetFenetre_RessourceOrientation = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetRequetePageOrientations_1 = require("ObjetRequetePageOrientations");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const DonneesListe_RessourceOrientation_1 = require("DonneesListe_RessourceOrientation");
+const ObjetIdentite_1 = require("ObjetIdentite");
+const GlossaireOrientation_1 = require("GlossaireOrientation");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class ObjetFenetre_RessourceOrientation extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
-		this.listeRessources = new ObjetListeElements();
+		this.listeRessources = new ObjetListeElements_1.ObjetListeElements();
 		this.afficherSpecialiteAnneePrecedente = true;
-		this.setOptionsFenetre({ heightMax_mobile: true });
+		this.setOptionsFenetre({
+			largeur: 400,
+			hauteur: 80,
+			listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
+		});
 	}
 	construireInstances() {
-		this.identListe = this.add(ObjetListe, this.evenementSurListe);
-	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
-			cbFilrePremiere: {
-				getValue: function () {
-					return aInstance.afficherSpecialiteAnneePrecedente;
-				},
-				setValue: function (aData) {
-					aInstance.afficherSpecialiteAnneePrecedente = aData;
-					aInstance.actualiserListe();
-				},
-				getDisplay: function () {
-					return (
-						aInstance.genreRessource === EGenreEvnt.specialite &&
-						aInstance.estNiveauPremiere
-					);
+		this.identListe = ObjetIdentite_1.Identite.creerInstance(
+			ObjetListe_1.ObjetListe,
+			{
+				pere: this,
+				evenement: (aParametres) => {
+					switch (aParametres.genreEvenement) {
+						case Enumere_EvenementListe_1.EGenreEvenementListe.SelectionClick:
+							if (aParametres.article) {
+								if (
+									[
+										ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource
+											.lv1,
+										ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource
+											.lv2,
+										ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource
+											.lvAutre,
+									].includes(this.genreRessource)
+								) {
+									this.surValidationLangues(aParametres.article);
+								} else {
+									this.surValidationRessource(aParametres.article);
+								}
+							}
+							break;
+					}
 				},
 			},
-		});
+		);
+	}
+	jsxModelCheckboxFiltrePremiere() {
+		return {
+			getValue: () => {
+				return this.afficherSpecialiteAnneePrecedente;
+			},
+			setValue: (aValue) => {
+				this.afficherSpecialiteAnneePrecedente = aValue;
+				this.actualiserListe();
+			},
+		};
 	}
 	actualiserListe() {
 		const lParam = {
@@ -46,67 +70,35 @@ class ObjetFenetre_RessourceOrientation extends ObjetFenetre {
 			estMultiNiveau: this.estMultiNiveau,
 			afficherPicto: this.afficherPicto,
 		};
-		this.getInstance(this.identListe).setDonnees(
-			new DonneesListe_RessourceOrientation(lParam),
+		this.identListe.setDonnees(
+			new DonneesListe_RessourceOrientation_1.DonneesListe_RessourceOrientation(
+				lParam,
+			),
 		);
 		this.positionnerFenetre();
 	}
-	evenementSurListe(aParametres, aGenreEvenementListe, I, J) {
-		this.posRessource = J;
-		switch (aGenreEvenementListe) {
-			case EGenreEvenementListe.Selection:
-			case EGenreEvenementListe.SelectionDblClick:
-			case EGenreEvenementListe.Edition:
-				if (
-					[EGenreEvnt.lv1, EGenreEvnt.lv2, EGenreEvnt.lvautre].includes(
-						this.genreRessource,
-					)
-				) {
-					this.surValidationLangues(1);
-				} else {
-					this.surValidation(1);
-				}
+	surValidationRessource(aArticle) {
+		switch (this.genreRessource) {
+			case ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource
+				.orientation:
+				this.voeux.orientation = aArticle;
+				this.voeux.specialites = new ObjetListeElements_1.ObjetListeElements();
+				this.voeux.options = new ObjetListeElements_1.ObjetListeElements();
+				break;
+			case ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource
+				.specialite:
+				this.voeux.specialites.remove(this.index);
+				this.voeux.specialites.insererElement(aArticle, this.index);
+				break;
+			case ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource.option:
+				this.voeux.options.addElement(aArticle);
 				break;
 		}
-	}
-	surValidation(aNumeroBouton) {
-		if (aNumeroBouton === 1) {
-			const ressource = this.getRessourceSelectionnee();
-			switch (this.genreRessource) {
-				case EGenreEvnt.orientation:
-					this.element.donnees.orientation = ressource;
-					this.element.donnees.specialites = new ObjetListeElements();
-					this.element.donnees.options = new ObjetListeElements();
-					break;
-				case EGenreEvnt.specialite:
-					this.element.donnees.specialites.remove(this.index);
-					this.element.donnees.specialites.insererElement(
-						ressource,
-						this.index,
-					);
-					break;
-				case EGenreEvnt.option:
-					this.element.donnees.options.addElement(ressource);
-					break;
-			}
-			this.element.donnees.setEtat(EGenreEtat.Modification);
-			this.element.actualiser(true);
-		}
+		this.voeux.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 		this.fermer();
 	}
-	surValidationLangues(aNumeroBouton) {
-		if (aNumeroBouton === 1) {
-			const ressource = this.getRessourceSelectionnee();
-			if (this.genreRessource === EGenreEvnt.lvautre) {
-				if (this.element.LVAutres === undefined) {
-					this.element.LVAutres = new ObjetListeElements();
-				}
-				this.element.LVAutres.add(ressource);
-				this.setEtatSaisie(true);
-			} else {
-				this.callback.appel({ genre: this.genreRessource, element: ressource });
-			}
-		}
+	surValidationLangues(aArticle) {
+		this.callback.appel({ genre: this.genreRessource, element: aArticle });
 		this.fermer();
 	}
 	getRessourceSelectionnee() {
@@ -117,15 +109,32 @@ class ObjetFenetre_RessourceOrientation extends ObjetFenetre {
 	}
 	initialiserListe(aInstance) {
 		const lFiltre = [];
-		lFiltre.push({
-			html: `<ie-checkbox class="Espace" ie-model="cbFilrePremiere" ie-display="cbFilrePremiere.getDisplay" > ${GTraductions.getValeur("Orientation.Specialites.UniquementSpecialiteEleve")}</ie-checkbox>`,
-			controleur: this.controleur,
-		});
-		lFiltre.push({ genre: ObjetListe.typeBouton.rechercher });
+		if (
+			this.genreRessource ===
+				ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource
+					.specialite &&
+			this.estNiveauPremiere
+		) {
+			lFiltre.push({
+				getHtml: () =>
+					IE.jsx.str(
+						"ie-checkbox",
+						{
+							class: "Espace",
+							"ie-model": this.jsxModelCheckboxFiltrePremiere.bind(this),
+						},
+						" ",
+						GlossaireOrientation_1.TradGlossaireOrientation.Specialites
+							.UniquementSpecialiteEleve,
+					),
+			});
+		}
+		lFiltre.push({ genre: ObjetListe_1.ObjetListe.typeBouton.rechercher });
 		const lParam = {
-			skin: ObjetListe.skin.flatDesign,
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
 			colonnesTriables: false,
 			boutons: lFiltre,
+			ariaLabel: this.optionsFenetre.titre,
 		};
 		if (!IE.estMobile) {
 			$.extend(lParam, {
@@ -136,57 +145,76 @@ class ObjetFenetre_RessourceOrientation extends ObjetFenetre {
 		aInstance.setOptionsListe(lParam);
 	}
 	composeContenu() {
-		const T = [];
-		T.push(
-			'<div style="height: 100%" class="PetitEspace" id="',
-			this.getInstance(this.identListe).getNom(),
-			'"></div>',
-		);
-		return T.join("");
+		return IE.jsx.str("div", {
+			class: "PetitEspace full-height",
+			id: this.identListe.getNom(),
+		});
 	}
 	composeBas() {
-		const T = [];
 		if (this.afficherPicto) {
-			T.push(
-				'<div class="InterfacePageOrientation LegendeOrientation flex-contain cols" >',
-				'<div class="PetitEspace flex-contain">',
-				'<div class="IPO_Lettre IPO_LettreHorsEtablissement IPO_LegendeHorsEtablissement" style="align-items: center;">',
-				GTraductions.getValeur(
-					"Orientation.Ressources.LettreHorsEtablissement",
+			return IE.jsx.str(
+				"div",
+				{
+					class:
+						"InterfacePageOrientation LegendeOrientation flex-contain cols",
+				},
+				IE.jsx.str(
+					"div",
+					{ class: "PetitEspace flex-contain" },
+					IE.jsx.str(
+						"div",
+						{
+							class:
+								"IPO_Lettre IPO_LettreHorsEtablissement IPO_LegendeHorsEtablissement",
+							style: "align-items: center;",
+						},
+						GlossaireOrientation_1.TradGlossaireOrientation.Ressources
+							.LettreHorsEtablissement,
+					),
+					IE.jsx.str(
+						"div",
+						{ class: "PetitEspaceGauche Texte9" },
+						GlossaireOrientation_1.TradGlossaireOrientation.Ressources
+							.DispoHorsEtablissement,
+					),
 				),
-				"</div>",
-				'<div class="PetitEspaceGauche Texte9" >',
-				GTraductions.getValeur("Orientation.Ressources.DispoHorsEtablissement"),
-				"</div>",
-				"</div>",
-				'<div class="PetitEspace flex-contain">',
-				'<div class="IPO_Lettre IPO_LettreEtablissement" style="align-items: center;">',
-				GTraductions.getValeur("Orientation.Ressources.LettreEtablissement"),
-				"</div>",
-				'<div class="PetitEspaceGauche  Texte9">',
-				GTraductions.getValeur("Orientation.Ressources.DispoEtablissement"),
-				"</div>",
-				"</div>",
-				"</div>",
+				IE.jsx.str(
+					"div",
+					{ class: "PetitEspace flex-contain" },
+					IE.jsx.str(
+						"div",
+						{
+							class: "IPO_Lettre IPO_LettreEtablissement",
+							style: "align-items: center;",
+						},
+						GlossaireOrientation_1.TradGlossaireOrientation.Ressources
+							.LettreEtablissement,
+					),
+					IE.jsx.str(
+						"div",
+						{ class: "PetitEspaceGauche  Texte9" },
+						GlossaireOrientation_1.TradGlossaireOrientation.Ressources
+							.DispoEtablissement,
+					),
+				),
 			);
 		}
-		return T.join("");
 	}
 	setDonnees(aParam) {
 		this.afficher();
 		this.genreRessource = aParam.genre;
-		this.listeRessources = aParam.listeRessource;
-		this.element = aParam.element;
+		this.listeRessources = aParam.listeRessources;
+		this.voeux = aParam.voeux;
 		this.index = aParam.index;
 		this.estNiveauPremiere = aParam.estNiveauPremiere;
 		this.estMultiNiveau = aParam.estMultiNiveau;
 		this.afficherPicto = [
-			EGenreEvnt.orientation,
-			EGenreEvnt.specialite,
-			EGenreEvnt.option,
+			ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource.orientation,
+			ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource.specialite,
+			ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource.option,
 		].includes(this.genreRessource);
-		this.initialiserListe(this.getInstance(this.identListe));
+		this.initialiserListe(this.identListe);
 		this.actualiserListe();
 	}
 }
-module.exports = { ObjetFenetre_RessourceOrientation };
+exports.ObjetFenetre_RessourceOrientation = ObjetFenetre_RessourceOrientation;

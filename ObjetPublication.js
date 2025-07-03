@@ -73,7 +73,6 @@ class ObjetPublication extends ObjetIdentite_1.Identite {
 				{ style: "display:flex; align-items:center; gap:0.3rem;" },
 				IE.jsx.str("ie-checkbox", {
 					"ie-model": "cbPublication",
-					tabindex: "0",
 					"ie-texte": "getTextePublie",
 					"ie-icon": "icon_info_sondage_publier",
 					"ie-class": "getClass",

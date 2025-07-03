@@ -6,13 +6,15 @@ const InterfacePage_Mobile_1 = require("InterfacePage_Mobile");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetChaine_1 = require("ObjetChaine");
-const IEHtml = require("IEHtml");
+const IEHtml_1 = require("IEHtml");
 const UtilitaireDeconnexion_1 = require("UtilitaireDeconnexion");
 const ObjetWrapperCentraleNotifications_Mobile_1 = require("ObjetWrapperCentraleNotifications_Mobile");
 const ObjetWrapperAideContextuelle_Mobile_1 = require("ObjetWrapperAideContextuelle_Mobile");
-const tag_1 = require("tag");
 const Invocateur_1 = require("Invocateur");
 const UtilitaireSyntheseVocale_1 = require("UtilitaireSyntheseVocale");
+const ObjetCentraleNotifications_1 = require("ObjetCentraleNotifications");
+const TraductionsAppliMobile_1 = require("TraductionsAppliMobile");
+const AccessApp_1 = require("AccessApp");
 class _InterfacePagePageMenuOnglets extends InterfacePage_Mobile_1.InterfacePage_Mobile {
 	constructor(...aParams) {
 		super(...aParams);
@@ -51,22 +53,18 @@ class _InterfacePagePageMenuOnglets extends InterfacePage_Mobile_1.InterfacePage
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
 			nodeMembre: function () {
-				$(this.node).on("click", () => {
+				$(this.node).eventValidation(() => {
 					aInstance.interfaceMobileCP.fermerMenuOnglet();
 					Invocateur_1.Invocateur.evenement("ouvrir_selecteurMembre");
 				});
 			},
-			surClicOnglet: function (aGenreOnglet) {
-				UtilitaireSyntheseVocale_1.SyntheseVocale.forcerArretLecture();
-				aInstance.evenementListeOnglets(aGenreOnglet);
-			},
 			nodeClosePanel: function () {
-				$(this.node).on("click", () => {
+				$(this.node).eventValidation(() => {
 					aInstance.interfaceMobileCP.fermerMenuOnglet();
 				});
 			},
 			getNodeAccueil: function () {
-				$(this.node).on("click", () => {
+				$(this.node).eventValidation(() => {
 					UtilitaireSyntheseVocale_1.SyntheseVocale.forcerArretLecture();
 					aInstance.evenementListeOnglets(aInstance.getGenreOngletAccueil());
 				});
@@ -78,7 +76,7 @@ class _InterfacePagePageMenuOnglets extends InterfacePage_Mobile_1.InterfacePage
 				},
 				getHtmlBtnNotif: function () {
 					return aInstance.composeBadgeBtn(
-						GApplication.donneesCentraleNotifications.nbNotifs,
+						(0, AccessApp_1.getApp)().donneesCentraleNotifications.nbNotifs,
 					);
 				},
 			},
@@ -123,59 +121,83 @@ class _InterfacePagePageMenuOnglets extends InterfacePage_Mobile_1.InterfacePage
 				},
 			},
 			nodeSeDeconnecter: function () {
-				$(this.node).on("click", () => {
+				$(this.node).eventValidation(() => {
 					aInstance.seDeconnecter();
 				});
 			},
 			getNodeChangerProfil() {
-				$(this.node).on("click", () => {
+				$(this.node).eventValidation(() => {
 					window.messageData.push({ action: "changerProfil" });
 				});
 			},
 		});
 	}
+	getLibelleEtablissement() {
+		return undefined;
+	}
 	construireStructureAffichageAutre() {
 		const lHtml = [];
 		lHtml.push('<section class="global-menu-container ">');
+		const lNomEtav = this.getLibelleEtablissement();
 		lHtml.push(
-			'<header class="user-container">',
-			'<div class="user-container-profil">',
-			this.avecListeRessources
-				? (0, tag_1.tag)(
-						"ie-node",
-						{ "ie-node": "nodeMembre", class: "membre-combo" },
-						this._construireEnteteRessource(GEtatUtilisateur.getMembre()),
-					)
-				: this._construireEnteteRessource(GEtatUtilisateur.getMembre()),
-			"</div>",
-			'<span id="',
-			this.idDerniereConnexion,
-			'" class="user-container-derniere-connexion"></span>',
-			"</header>",
+			IE.jsx.str(
+				"header",
+				{ class: ["user-container", !!lNomEtav && "avec-nom-etab"] },
+				IE.jsx.str(
+					"div",
+					{ class: "user-container-profil" },
+					this.avecListeRessources
+						? IE.jsx.str(
+								"div",
+								{
+									"ie-node": "nodeMembre",
+									tabindex: "0",
+									class: "membre-combo",
+								},
+								this._construireEnteteRessource(GEtatUtilisateur.getMembre()),
+							)
+						: this._construireEnteteRessource(GEtatUtilisateur.getMembre()),
+				),
+				!!lNomEtav && IE.jsx.str("p", { class: "m-bottom-l" }, lNomEtav),
+				IE.jsx.str("span", {
+					id: this.idDerniereConnexion,
+					class: "user-container-derniere-connexion",
+				}),
+			),
 		);
 		lHtml.push(
 			'<div class="menu-container flex-contain cols justify-between">',
-			'<ul class="menu-liste collection collapsible" role="menubar">',
+			'<ul class="menu-liste collection collapsible" role="menu">',
 		);
 		lHtml.push(this.composeOngletMobileApp());
 		lHtml.push("</ul>");
 		if (this.avecLogoDepartement()) {
 			lHtml.push(
-				'<div class="ibe_image_dep"> ',
-				"<a ",
-				GParametres.logoDepartementLien
-					? 'href="' + GParametres.logoDepartementLien + '"'
-					: "",
-				' target="_blank" tabindex="-1" role="presentation">',
-				'<img src="',
-				GParametres.logoDepartementImage,
-				'" alt="',
-				ObjetTraduction_1.GTraductions.getValeur(
-					"BandeauEspace.LogoDepartement",
+				IE.jsx.str(
+					"div",
+					{ class: "ibe_image_dep" },
+					IE.jsx.str(
+						"a",
+						{
+							href: GParametres.logoDepartementLien
+								? GParametres.logoDepartementLien
+								: "",
+							target: "_blank",
+							title: GParametres.logoDepartementLien
+								? ObjetTraduction_1.GTraductions.getValeur(
+										"BandeauEspace.AccederSiteDepartement",
+									)
+								: false,
+						},
+						IE.jsx.str("img", {
+							src: GParametres.logoDepartementImage,
+							alt: ObjetTraduction_1.GTraductions.getValeur(
+								"BandeauEspace.LogoDepartement",
+							),
+							onerror: "$(this).parent().remove(",
+						}),
+					),
 				),
-				'" onerror="$(this).parent().remove();"/>',
-				"</a>",
-				"</div>",
 			);
 		}
 		lHtml.push("</div>");
@@ -192,7 +214,7 @@ class _InterfacePagePageMenuOnglets extends InterfacePage_Mobile_1.InterfacePage
 			"ul.menu-liste.collapsible",
 		);
 		$ulParent.find("li:not(.collection-static-item)").remove();
-		IEHtml.injectHTMLParams({
+		IEHtml_1.default.injectHTMLParams({
 			element: $ulParent.get(0),
 			insererAvantLeNode: $ulParent.find("li").get(0),
 			html: this.composeOnglets(),
@@ -203,53 +225,64 @@ class _InterfacePagePageMenuOnglets extends InterfacePage_Mobile_1.InterfacePage
 		return !!GParametres.logoDepartementImage;
 	}
 	composeOnglets() {
-		const lHtml = [];
+		const H = [];
 		this.traiterListeOnglets();
 		this.listeOngletsTraitee.parcourir((aEle) => {
 			if (aEle.Actif && aEle.Visible !== false) {
 				if (aEle.children && aEle.children.count() > 0) {
-					lHtml.push(
-						'<li class="is-collapse collapsible-item" role="menu" aria-label="',
-						aEle.getLibelle(),
-						'">',
+					H.push(
+						'<li class="is-collapse collapsible-item" role="presentation">',
 						"<span",
 						aEle.idNotif ? ' id="' + aEle.idNotif + '"' : "",
-						' class="as-header collapsible-header" role="button" aria-expanded="false" tabindex="0">',
+						' class="as-header collapsible-header" role="menuitem" aria-expanded="false" tabindex="0">',
 						aEle.getLibelle(),
 						"</span>",
-						'<div class="collapsible-body">',
-						'<ul class="collection sub-liste" tabindex="0">',
+						'<div role="presentation" class="collapsible-body">',
+						'<ul role="menu" class="collection sub-liste">',
 					);
 					aEle.children.parcourir((aChild) => {
-						lHtml.push(this.composeOnglet(aChild, 2));
+						H.push(this.composeOnglet(aChild, 2));
 					});
-					lHtml.push("</ul>", "</div>", "</li>");
+					H.push("</ul>", "</div>", "</li>");
 				} else {
 					aEle.getGenre() !== this.getGenreOngletAccueil()
-						? lHtml.push(this.composeOnglet(aEle, 1))
+						? H.push(this.composeOnglet(aEle, 1))
 						: "";
 				}
 			}
 		});
-		return lHtml.join("");
+		return H.join("");
+	}
+	jsxGetNodeOnglet(aGenreOnglet, aNode) {
+		$(aNode).eventValidation(() => {
+			UtilitaireSyntheseVocale_1.SyntheseVocale.forcerArretLecture();
+			this.evenementListeOnglets(aGenreOnglet);
+		});
 	}
 	composeOnglet(aEle, aNiveau) {
-		return [
-			"<li",
-			aEle.idNotif ? ' id="' + aEle.idNotif + '"' : "",
-			' class="collection-item with-action ',
-			aEle.imagePerso ? aEle.imagePerso + '"' : '"',
-			" ie-event=\"click->surClicOnglet('",
-			aEle.getGenre(),
-			"')\"",
-			' tabindex="0" role="menuitem" aria-level="',
-			aNiveau || 1,
-			'">',
-			"<span>",
-			aEle.getLibelle(),
-			"</span>",
-			"</li>",
-		].join("");
+		const lClasses = ["collection-item", "with-action"];
+		if (aEle.imagePerso) {
+			lClasses.push(aEle.imagePerso);
+		}
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"li",
+					{
+						id: aEle.idNotif || "",
+						class: lClasses.join(" "),
+						"ie-node": this.jsxGetNodeOnglet.bind(this, aEle.getGenre()),
+						tabindex: "0",
+						role: "menuitem",
+					},
+					IE.jsx.str("span", null, aEle.getLibelle()),
+				),
+			),
+		);
+		return H.join("");
 	}
 	focusTitre() {
 		$("#" + this.idTitre.escapeJQ()).focus();
@@ -291,6 +324,12 @@ class _InterfacePagePageMenuOnglets extends InterfacePage_Mobile_1.InterfacePage
 	getGenreOngletAccueil() {
 		return false;
 	}
+	avecBtnSeDeconnecter() {
+		return (
+			!(0, AccessApp_1.getApp)().estAppliMobile ||
+			(0, AccessApp_1.getApp)().infoAppliMobile.avecExitApp
+		);
+	}
 	seDeconnecter() {
 		if (GEtatUtilisateur.EtatSaisie) {
 			this.callback.appel(
@@ -305,7 +344,7 @@ class _InterfacePagePageMenuOnglets extends InterfacePage_Mobile_1.InterfacePage
 		}
 	}
 	actionSeDeconnecter() {
-		if (GApplication.estAppliMobile) {
+		if ((0, AccessApp_1.getApp)().estAppliMobile) {
 			UtilitaireDeconnexion_1.UtilitaireDeconnexion.deconnexion().then(() => {
 				this.seDeconnecterAppliMobile();
 			});
@@ -318,22 +357,24 @@ class _InterfacePagePageMenuOnglets extends InterfacePage_Mobile_1.InterfacePage
 		this.evenementListeOnglets(this.getGenreOngletAccueil());
 	}
 	seDeconnecterAppliMobile() {
-		if (GApplication.estAppliMobile) {
+		if ((0, AccessApp_1.getApp)().estAppliMobile) {
 			window.messageData.push({ action: "exitApp" });
 		}
 	}
 	composeOngletMobileApp() {
-		if (GApplication.estAppliMobile) {
+		if ((0, AccessApp_1.getApp)().estAppliMobile) {
 			return IE.jsx.str(
 				"li",
 				{
 					"ie-node": "getNodeChangerProfil",
+					role: "menuitem",
+					tabindex: "0",
 					class: "collection-item with-action collection-static-item",
 				},
 				IE.jsx.str(
 					"span",
 					null,
-					ObjetTraduction_1.GTraductions.getValeur("AppliMobile.ChangerCompte"),
+					TraductionsAppliMobile_1.TradAppliMobile.ChangerCompte,
 				),
 			);
 		}
@@ -345,9 +386,8 @@ class _InterfacePagePageMenuOnglets extends InterfacePage_Mobile_1.InterfacePage
 				'<ie-btnimage class="image_centrale_notification btnImageIcon badged-btn icon-title" ie-model="btnNotifications" ie-html="getHtmlBtnNotif" title="',
 				ObjetTraduction_1.GTraductions.getValeur("Mobile.Menu.Notifs"),
 				'" aria-label="',
-				ObjetTraduction_1.GTraductions.getValeur(
-					"CentraleNotifications.TitreNotifications",
-				),
+				ObjetCentraleNotifications_1.TradObjetCentraleNotifications
+					.TitreNotifications,
 				'"><span style="color:red;">Notif</span></ie-btnimage>',
 			].join("");
 		}
@@ -378,7 +418,9 @@ class _InterfacePagePageMenuOnglets extends InterfacePage_Mobile_1.InterfacePage
 	getActionneurCentraleNotification() {
 		return null;
 	}
-	composeBoutonMenuSupp() {}
+	composeBoutonMenuSupp() {
+		return "";
+	}
 	getInfosComboMembre(aMembre) {
 		return null;
 	}
@@ -405,10 +447,19 @@ class _InterfacePagePageMenuOnglets extends InterfacePage_Mobile_1.InterfacePage
 				),
 				IE.jsx.str(
 					"span",
-					{ class: lClass, id: this.idTitre, role: "heading", tabindex: "0" },
+					{
+						class: lClass,
+						id: this.idTitre,
+						tabindex: "0",
+						role: "heading",
+						"aria-level": "2",
+					},
 					lInfos.libelle,
 					this.avecListeRessources &&
-						IE.jsx.str("i", { class: "icon_angle_down p-left" }),
+						IE.jsx.str("i", {
+							"aria-hidden": "true",
+							class: "icon_angle_down p-left",
+						}),
 				),
 			),
 		);
@@ -419,7 +470,7 @@ class _InterfacePagePageMenuOnglets extends InterfacePage_Mobile_1.InterfacePage
 			'<div class="home-action-conteneur">',
 			IE.jsx.str(
 				"div",
-				{ class: "toggler-btn", "ie-node": "nodeClosePanel" },
+				{ class: "toggler-btn", "ie-node": "nodeClosePanel", tabindex: "0" },
 				IE.jsx.str("i", {
 					class: "icon_menu_burger",
 					role: "img",
@@ -435,10 +486,7 @@ class _InterfacePagePageMenuOnglets extends InterfacePage_Mobile_1.InterfacePage
 		H.push(this.composeBoutonMenuSupp());
 		H.push("</div>", '<div class="cta-mobile-conteneur">');
 		H.push("<hr />");
-		if (
-			!GApplication.estAppliMobile ||
-			GApplication.infoAppliMobile.avecExitApp
-		) {
+		if (this.avecBtnSeDeconnecter()) {
 			H.push(
 				'<ie-btnimage class="icon_off btnImageIcon badged-btn" ie-node="nodeSeDeconnecter" ie-hint="',
 				ObjetTraduction_1.GTraductions.getValeur("connexion.SeDeconnecter"),

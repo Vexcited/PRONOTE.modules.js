@@ -5,7 +5,6 @@ const ObjetWAI_1 = require("ObjetWAI");
 const ObjetHtml_1 = require("ObjetHtml");
 const ObjetDate_1 = require("ObjetDate");
 const UtilitaireVisiosSco_1 = require("UtilitaireVisiosSco");
-const tag_1 = require("tag");
 const ObjetChaine_1 = require("ObjetChaine");
 const ObjetFenetre_DetailAgenda_1 = require("ObjetFenetre_DetailAgenda");
 const ObjetWidget_1 = require("ObjetWidget");
@@ -13,10 +12,13 @@ class WidgetAgenda extends ObjetWidget_1.Widget.ObjetWidget {
 	construire(aParams) {
 		this.idEvent = "idEventWidget_";
 		this.donnees = aParams.donnees;
+		let lNbEvenements = this.donnees.listeEvenements
+			? this.donnees.listeEvenements.count()
+			: 0;
 		const lWidget = {
-			html: this._composeWidgetAgenda(),
-			nbrElements: this.donnees.listeEvenements.count(),
-			afficherMessage: this.donnees.listeEvenements.count() === 0,
+			getHtml: this._composeWidgetAgenda.bind(this),
+			nbrElements: lNbEvenements,
+			afficherMessage: lNbEvenements === 0,
 			fermerFiches: () => {
 				this.fenetreDetailAgenda.fermer();
 			},
@@ -24,6 +26,24 @@ class WidgetAgenda extends ObjetWidget_1.Widget.ObjetWidget {
 		$.extend(this.donnees, lWidget);
 		aParams.construireWidget(aParams.donnees);
 		this._creerObjetAgenda();
+	}
+	jsxNodeVisio(aEvenement, aAvecOuvertureFenetre, aNode) {
+		$(aNode).eventValidation((aEvent) => {
+			if (aEvenement && aEvenement.visio) {
+				aEvent.stopPropagation();
+				if (aAvecOuvertureFenetre) {
+					const lOptions = {
+						titre: ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreSaisieVisiosCours.URLAssocieeAuConseil",
+						),
+					};
+					UtilitaireVisiosSco_1.UtilitaireVisios.ouvrirFenetreConsultVisio(
+						aEvenement.visio,
+						lOptions,
+					);
+				}
+			}
+		});
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(this), {
@@ -38,37 +58,17 @@ class WidgetAgenda extends ObjetWidget_1.Widget.ObjetWidget {
 					});
 				});
 			},
-			getNodeVisio(aIndice, aAvecOuvertureFenetre) {
-				$(this.node).on("click", (aEvent) => {
-					const lElement = aInstance.donnees.listeEvenements.get(aIndice);
-					if (lElement && lElement.visio) {
-						aEvent.stopPropagation();
-						if (aAvecOuvertureFenetre) {
-							const lOptions = {
-								titre: ObjetTraduction_1.GTraductions.getValeur(
-									"FenetreSaisieVisiosCours.URLAssocieeAuConseil",
-								),
-							};
-							UtilitaireVisiosSco_1.UtilitaireVisios.ouvrirFenetreConsultVisio(
-								lElement.visio,
-								lOptions,
-							);
-						}
-					}
-				});
-			},
 		});
 	}
 	_composeEvenement(aEvenement, i) {
 		var _a;
-		const composeCercleEleve = (aEleve) =>
-			'<span class="circle" aria-label="' +
-			aEleve +
-			'" ie-hint="' +
-			aEleve +
-			'">' +
-			aEleve.substring(0, 1) +
-			"</span>";
+		const composeCercleEleve = (aEleve) => {
+			return IE.jsx.str(
+				"span",
+				{ class: "circle", "aria-label": aEleve, "ie-hint": aEleve },
+				aEleve.substring(0, 1),
+			);
+		};
 		const H = [];
 		H.push("<li>");
 		H.push(
@@ -97,32 +97,40 @@ class WidgetAgenda extends ObjetWidget_1.Widget.ObjetWidget {
 			ObjetHtml_1.GHtml.composeAttr("ie-node", "getNode", i),
 			">",
 		);
-		H.push('<div class="wrap">');
 		H.push(
-			'<div class="bloc-date-conteneur" aria-hidden="true">',
-			ObjetDate_1.GDate.formatDate(
-				aEvenement.DateDebut,
-				"<div>%JJ</div><div>%MMM</div>",
+			IE.jsx.str(
+				"div",
+				{ class: "wrap" },
+				IE.jsx.str(
+					"div",
+					{ class: "bloc-date-conteneur", "aria-hidden": "true" },
+					ObjetDate_1.GDate.formatDate(
+						aEvenement.DateDebut,
+						"<div>%JJ</div><div>%MMM</div>",
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "infos-agenda-conteneur" },
+					IE.jsx.str(
+						"h3",
+						{
+							title: ObjetTraduction_1.GTraductions.getValeur(
+								"accueil.agenda.hintLien",
+							),
+						},
+						aEvenement.getLibelle(),
+					),
+					IE.jsx.str(
+						"span",
+						null,
+						this.donnees.listeEvenements._getDateEvenement({
+							evenement: aEvenement,
+						}),
+					),
+				),
 			),
-			"</div>",
 		);
-		H.push('<div class="infos-agenda-conteneur">');
-		H.push(
-			'<h3 title="',
-			ObjetTraduction_1.GTraductions.getValeur("accueil.agenda.hintLien"),
-			'">',
-			aEvenement.getLibelle(),
-			"</h3>",
-		);
-		H.push(
-			"<span>" +
-				this.donnees.listeEvenements._getDateEvenement({
-					evenement: aEvenement,
-				}) +
-				"</span>",
-		);
-		H.push("</div>");
-		H.push("</div>");
 		if (aEvenement.listeEleves && aEvenement.listeEleves.length > 0) {
 			H.push('<div class="liste-enfants">');
 			aEvenement.listeEleves.forEach((aEleve) =>
@@ -134,29 +142,41 @@ class WidgetAgenda extends ObjetWidget_1.Widget.ObjetWidget {
 			H.push(composeCercleEleve(aEvenement.eleveConvoque.prenom));
 		}
 		if (aEvenement.visio && aEvenement.visio.url) {
+			const lLabel = aEvenement.visio.libelleLien || aEvenement.visio.url;
 			if (IE.estMobile) {
 				H.push(
-					(0, tag_1.tag)("i", {
+					IE.jsx.str("i", {
 						class: [
 							"btn-lien-visio",
 							UtilitaireVisiosSco_1.UtilitaireVisios.getNomIconePresenceVisios(),
 						],
-						"ie-node": tag_1.tag.funcAttr("getNodeVisio", [i, true]),
+						"ie-tooltipdescribe": () => {
+							return UtilitaireVisiosSco_1.UtilitaireVisios.getHintVisio(
+								aEvenement.visio,
+							);
+						},
+						"aria-label": lLabel,
+						"ie-node": this.jsxNodeVisio.bind(this, aEvenement, true),
+						tabindex: "0",
+						role: "button",
+						"aria-haspopup": "dialog",
 					}),
 				);
 			} else {
 				H.push(
-					(0, tag_1.tag)("a", {
+					IE.jsx.str("a", {
 						class: [
 							UtilitaireVisiosSco_1.UtilitaireVisios.getNomIconePresenceVisios(),
 						],
 						href: ObjetChaine_1.GChaine.verifierURLHttp(aEvenement.visio.url),
 						target: "_blank",
-						"ie-hint":
-							UtilitaireVisiosSco_1.UtilitaireVisios.getHintVisio(
+						"ie-tooltipdescribe": () => {
+							return UtilitaireVisiosSco_1.UtilitaireVisios.getHintVisio(
 								aEvenement.visio,
-							) || false,
-						"ie-node": tag_1.tag.funcAttr("getNodeVisio", [i, false]),
+							);
+						},
+						"aria-label": lLabel,
+						"ie-node": this.jsxNodeVisio.bind(this, aEvenement, false),
 					}),
 				);
 			}

@@ -2,7 +2,6 @@ exports.ObjetFenetre_MemoEleve = void 0;
 const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetDate_1 = require("ObjetDate");
-const tag_1 = require("tag");
 const Enumere_Etat_1 = require("Enumere_Etat");
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
 const Enumere_Action_1 = require("Enumere_Action");
@@ -12,10 +11,11 @@ const Enumere_Espace_1 = require("Enumere_Espace");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetRequeteSaisieMemoEleve_1 = require("ObjetRequeteSaisieMemoEleve");
 const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const AccessApp_1 = require("AccessApp");
 class ObjetFenetre_MemoEleve extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
-		this.applicationSco = GApplication;
+		this.applicationSco = (0, AccessApp_1.getApp)();
 		this.setOptionsFenetre({
 			largeur: 450,
 			listeBoutons: [
@@ -199,87 +199,73 @@ class ObjetFenetre_MemoEleve extends ObjetFenetre_1.ObjetFenetre {
 		this.fermer();
 	}
 	composeContenu() {
-		const T = [];
-		T.push(
-			(0, tag_1.tag)(
+		return IE.jsx.str(
+			"div",
+			{ class: "flex-contain cols" },
+			IE.jsx.str(
 				"div",
-				{ class: ["flex-contain", "cols"] },
-				(0, tag_1.tag)(
-					"div",
-					{ class: "field-contain" },
-					(0, tag_1.tag)(
-						"label",
-						{
-							class: [
-								"fix-bloc",
-								"ie-titre-petit",
-								"only-mobile",
-								"m-bottom-l",
-							],
-						},
-						ObjetTraduction_1.GTraductions.getValeur("FicheEleve.commentaire"),
-					),
-					IE.jsx.str("textarea", {
-						"ie-model": "inputLibelle",
-						class: ["round-style", "fluid-bloc", "m-bottom"],
-						style: "width:100%;",
-						placeholder: ObjetTraduction_1.GTraductions.getValeur(
-							"FicheEleve.redigezCommentaire",
-						),
-						title: ObjetTraduction_1.GTraductions.getValeur(
-							"FicheEleve.redigezCommentaire",
-						),
-					}),
+				{ class: "field-contain" },
+				IE.jsx.str(
+					"label",
+					{ class: "fix-bloc ie-titre-petit only-mobile m-bottom-l" },
+					ObjetTraduction_1.GTraductions.getValeur("FicheEleve.commentaire"),
 				),
-				(0, tag_1.tag)(
-					"div",
-					{ class: ["field-contain", "periode-contain", "m-bottom-l"] },
-					(0, tag_1.tag)(
-						"label",
-						{ class: ["fix-bloc", "m-right", "self-center"] },
-						ObjetTraduction_1.GTraductions.getValeur("Date") + " :",
+				IE.jsx.str("textarea", {
+					"ie-model": "inputLibelle",
+					class: "fluid-bloc m-bottom",
+					style: "width:100%;",
+					placeholder: ObjetTraduction_1.GTraductions.getValeur(
+						"FicheEleve.redigezCommentaire",
 					),
-					(0, tag_1.tag)("div", {
-						id: this.getInstance(this.identSelecteurDate).getNom(),
-						"ie-display": "getVisibleSelecDate",
-					}),
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"FicheEleve.redigezCommentaire",
+					),
+				}),
+			),
+			IE.jsx.str(
+				"div",
+				{ class: "field-contain periode-contain m-bottom-l" },
+				IE.jsx.str(
+					"label",
+					{ class: "fix-bloc m-right self-center" },
+					ObjetTraduction_1.GTraductions.getValeur("Date"),
+					" :",
 				),
-				(0, tag_1.tag)(
-					"div",
-					{ class: "field-contain shared-contain no-line" },
-					(0, tag_1.tag)(
-						"ie-checkbox",
-						{
-							"ie-textright": true,
-							"ie-model": tag_1.tag.funcAttr("cbPublie"),
-							"ie-if": "afficherCbPublie",
-						},
-						ObjetTraduction_1.GTraductions.getValeur(
-							"AbsenceVS.PartageEnseignant",
-						),
+				IE.jsx.str("div", {
+					id: this.getNomInstance(this.identSelecteurDate),
+					"ie-display": "getVisibleSelecDate",
+				}),
+			),
+			IE.jsx.str(
+				"div",
+				{ class: "field-contain shared-contain no-line" },
+				IE.jsx.str(
+					"ie-checkbox",
+					{ "ie-model": "cbPublie", "ie-if": "afficherCbPublie" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"AbsenceVS.PartageEnseignant",
 					),
-					(0, tag_1.tag)(
-						"ie-checkbox",
-						{
-							"ie-textright": true,
-							"ie-model": tag_1.tag.funcAttr("cbPublieVS"),
-							"ie-if": "afficherCbPublie",
-						},
-						ObjetTraduction_1.GTraductions.getValeur(
-							"AbsenceVS.PartagePersonnel",
-						),
+				),
+				IE.jsx.str(
+					"ie-checkbox",
+					{ "ie-model": "cbPublieVS", "ie-if": "afficherCbPublie" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"AbsenceVS.PartagePersonnel",
 					),
 				),
 			),
 		);
-		return T.join("");
 	}
 	composeBas() {
-		const lHTML = [];
-		lHTML.push(
-			`<div class="compose-bas">\n    <ie-btnicon ie-model="btnSupprimer" title="${ObjetTraduction_1.GTraductions.getValeur("Supprimer")}" class="icon_trash avecFond i-medium"></ie-btnicon>\n    </div>`,
+		return IE.jsx.str(
+			"div",
+			{ class: "compose-bas" },
+			IE.jsx.str("ie-btnicon", {
+				"ie-model": "btnSupprimer",
+				title: ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
+				class: "icon_trash avecFond i-medium",
+			}),
 		);
-		return lHTML.join("");
 	}
 }
 exports.ObjetFenetre_MemoEleve = ObjetFenetre_MemoEleve;

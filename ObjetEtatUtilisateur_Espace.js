@@ -66,44 +66,51 @@ class ObjetEtatUtilisateur_Espace extends ObjetEtatUtilisateur_1.ObjetEtatUtilis
 		].includes(GEtatUtilisateur.GenreEspace);
 	}
 	avecCommunication() {
-		if (
-			GEtatUtilisateur.GenreEspace ===
-				Enumere_Espace_1.EGenreEspace.Professeur &&
-			this.genreConnexion === Enumere_Connexion_1.EGenreConnexion.Allegee
-		) {
-			return false;
-		}
-		if (
-			GEtatUtilisateur.GenreEspace === Enumere_Espace_1.EGenreEspace.Entreprise
-		) {
-			return false;
-		}
-		if (GEtatUtilisateur.GenreEspace === Enumere_Espace_1.EGenreEspace.Eleve) {
-			return (
-				this.applicationSco.droits.get(
-					ObjetDroitsPN_1.TypeDroits.communication.avecDiscussion,
-				) &&
-				!this.applicationSco.droits.get(
-					ObjetDroitsPN_1.TypeDroits.communication.discussionInterdit,
-				)
-			);
-		}
+		let lEstEspaceAvecCommunication = false;
 		if (
 			[
+				Enumere_Espace_1.EGenreEspace.Professeur,
+				Enumere_Espace_1.EGenreEspace.Etablissement,
+				Enumere_Espace_1.EGenreEspace.Administrateur,
+				Enumere_Espace_1.EGenreEspace.Tuteur,
+				Enumere_Espace_1.EGenreEspace.Eleve,
 				Enumere_Espace_1.EGenreEspace.Parent,
 				Enumere_Espace_1.EGenreEspace.Accompagnant,
-			].includes(GEtatUtilisateur.GenreEspace)
+			].includes(this.GenreEspace)
 		) {
-			return this.applicationSco.droits.get(
-				ObjetDroitsPN_1.TypeDroits.communication.avecDiscussion,
-			);
+			lEstEspaceAvecCommunication = true;
 		}
-		return [
-			Enumere_Espace_1.EGenreEspace.Professeur,
-			Enumere_Espace_1.EGenreEspace.Etablissement,
-			Enumere_Espace_1.EGenreEspace.Administrateur,
-			Enumere_Espace_1.EGenreEspace.Tuteur,
-		].includes(GEtatUtilisateur.GenreEspace);
+		if (
+			this.GenreEspace === Enumere_Espace_1.EGenreEspace.Professeur &&
+			this.genreConnexion === Enumere_Connexion_1.EGenreConnexion.Allegee
+		) {
+			lEstEspaceAvecCommunication = false;
+		}
+		const lAvecDiscussion =
+			this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.communication.avecDiscussion,
+			) &&
+			!this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.communication.discussionInterdit,
+			);
+		const lAvecInfoSondage = this.applicationSco.droits.get(
+			ObjetDroitsPN_1.TypeDroits.actualite.avecSaisieActualite,
+		);
+		const lAvecDepotCasierIntervenant = this.applicationSco.droits.get(
+			ObjetDroitsPN_1.TypeDroits.casierNumerique
+				.avecSaisieDocumentsCasiersIntervenant,
+		);
+		const lAvecDepotCasierResponsable = this.applicationSco.droits.get(
+			ObjetDroitsPN_1.TypeDroits.casierNumerique
+				.avecSaisieDocumentsCasiersResponsable,
+		);
+		return (
+			lEstEspaceAvecCommunication &&
+			(lAvecDiscussion ||
+				lAvecInfoSondage ||
+				lAvecDepotCasierIntervenant ||
+				lAvecDepotCasierResponsable)
+		);
 	}
 	avecFenetreKiosque() {
 		return (
@@ -224,13 +231,6 @@ class ObjetEtatUtilisateur_Espace extends ObjetEtatUtilisateur_1.ObjetEtatUtilis
 	}
 	getNavigationCours() {
 		return this.Navigation.cours;
-	}
-	getAfficherFicheService() {
-		return this.Navigation.afficherFicheService;
-	}
-	inverserAfficherFicheService() {
-		this.Navigation.afficherFicheService =
-			!this.Navigation.afficherFicheService;
 	}
 	getTriDevoirs() {
 		return this.Navigation.triDevoirs;

@@ -1,40 +1,49 @@
-const { ObjetReleveDeNotes } = require("PageReleveDeNotes.js");
-const { ObjetRequetePageReleve } = require("ObjetRequetePageReleve.js");
-const { GHtml } = require("ObjetHtml.js");
-const { InterfacePage_Mobile } = require("InterfacePage_Mobile.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetSelection } = require("ObjetSelection.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreMessage } = require("Enumere_Message.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { ObjetMoteurReleveBulletin } = require("ObjetMoteurReleveBulletin.js");
-class ObjetAffichagePageReleveDeNotes extends InterfacePage_Mobile {
-	constructor(...aParams) {
-		super(...aParams);
-		this.listePeriodes = new ObjetListeElements();
-		this.periodeCourant = new ObjetElement();
+exports.InterfacePageReleveDeNotes = void 0;
+const PageReleveDeNotes_1 = require("PageReleveDeNotes");
+const ObjetRequetePageReleve_1 = require("ObjetRequetePageReleve");
+const ObjetHtml_1 = require("ObjetHtml");
+const InterfacePage_Mobile_1 = require("InterfacePage_Mobile");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetSelection_1 = require("ObjetSelection");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Message_1 = require("Enumere_Message");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetMoteurReleveBulletin_1 = require("ObjetMoteurReleveBulletin");
+const AccessApp_1 = require("AccessApp");
+class InterfacePageReleveDeNotes extends InterfacePage_Mobile_1.InterfacePage_Mobile {
+	constructor() {
+		super(...arguments);
+		this.appScoMobile = (0, AccessApp_1.getApp)();
+		this.etatUtilScoMobile = this.appScoMobile.getEtatUtilisateur();
+		this.listePeriodes = new ObjetListeElements_1.ObjetListeElements();
+		this.periodeCourant = new ObjetElement_1.ObjetElement();
 		this.indiceParDefaut = 0;
-		this.moteur = new ObjetMoteurReleveBulletin();
+		this.moteur = new ObjetMoteurReleveBulletin_1.ObjetMoteurReleveBulletin();
 		this.avecGestionAccuseReception =
-			[EGenreEspace.Mobile_Parent].includes(GEtatUtilisateur.GenreEspace) &&
-			GApplication.droits.get(TypeDroits.fonctionnalites.gestionARBulletins);
+			[Enumere_Espace_1.EGenreEspace.Mobile_Parent].includes(
+				this.etatUtilScoMobile.GenreEspace,
+			) &&
+			this.appScoMobile.droits.get(
+				ObjetDroitsPN_1.TypeDroits.fonctionnalites.gestionARBulletins,
+			);
+		this.aCopier = {};
 	}
 	construireInstances() {
 		this.identSelection = this.add(
-			ObjetSelection,
+			ObjetSelection_1.ObjetSelection,
 			this.evenementSelection,
 			_initSelecteur.bind(this),
 		);
-		this.identPage = this.add(ObjetReleveDeNotes);
+		this.identPage = this.add(PageReleveDeNotes_1.ObjetReleveDeNotes);
 		this.AddSurZone = [this.identSelection];
 		if (this.avecGestionAccuseReception) {
 			this.AddSurZone.push({ html: _getHtmlCBAccuseReception.call(this) });
 		}
 	}
 	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
+		return $.extend(true, super.getControleur(aInstance), {
 			visibiliteAR: function () {
 				const lResponsableAR = aInstance._getResponsableAccuseReception();
 				return aInstance.avecGestionAccuseReception && !!lResponsableAR;
@@ -71,16 +80,9 @@ class ObjetAffichagePageReleveDeNotes extends InterfacePage_Mobile {
 		}
 		return lReponsableAccuseReception;
 	}
-	detruireInstances() {}
-	evenementSwipe(event) {
-		if (event.type === "swiperight") {
-			this.getInstance(this.identSelection).surPrecedent();
-		} else {
-			this.getInstance(this.identSelection).surSuivant();
-		}
-	}
 	recupererDonnees() {
-		const lOngletInfosPeriodes = GEtatUtilisateur.getOngletInfosPeriodes();
+		const lOngletInfosPeriodes =
+			this.etatUtilScoMobile.getOngletInfosPeriodes();
 		let lNrPeriodeParDefaut;
 		if (
 			!(
@@ -88,20 +90,22 @@ class ObjetAffichagePageReleveDeNotes extends InterfacePage_Mobile {
 				lOngletInfosPeriodes.listePeriodes.count()
 			)
 		) {
-			const lGenreMessage = EGenreMessage.AucunRelevePourEleve;
+			const lGenreMessage =
+				Enumere_Message_1.EGenreMessage.AucunRelevePourEleve;
 			const lMessage =
 				typeof lGenreMessage === "number"
-					? GTraductions.getValeur("Message")[lGenreMessage]
+					? ObjetTraduction_1.GTraductions.getValeur("Message")[lGenreMessage]
 					: lGenreMessage;
-			GHtml.setHtml(this.Nom, this.composeAucuneDonnee(lMessage));
+			ObjetHtml_1.GHtml.setHtml(this.Nom, this.composeAucuneDonnee(lMessage));
 		} else {
 			this.listePeriodes = lOngletInfosPeriodes.listePeriodes;
-			if (GEtatUtilisateur.getPeriodePourReleve()) {
-				lNrPeriodeParDefaut = GEtatUtilisateur.getPeriodePourReleve();
+			if (this.etatUtilScoMobile.getPeriodePourReleve()) {
+				lNrPeriodeParDefaut = this.etatUtilScoMobile.getPeriodePourReleve();
 			} else {
 				lNrPeriodeParDefaut =
-					GEtatUtilisateur.getPage() && GEtatUtilisateur.getPage().periode
-						? GEtatUtilisateur.getPage().periode.getNumero()
+					this.etatUtilScoMobile.getPage() &&
+					this.etatUtilScoMobile.getPage().periode
+						? this.etatUtilScoMobile.getPage().periode.getNumero()
 						: lOngletInfosPeriodes.periodeParDefaut.getNumero();
 			}
 			this.indiceParDefaut =
@@ -114,49 +118,48 @@ class ObjetAffichagePageReleveDeNotes extends InterfacePage_Mobile {
 				this.listePeriodes,
 				this.indiceParDefaut,
 				this.getInstance(this.identPage).getNom(),
-				"",
 			);
 			$("#" + this.getInstance(this.identPage).getNom().escapeJQ()).css(
 				"min-height",
 				(parseInt($("#" + this.Nom.escapeJQ()).css("min-height")) -
 					$(
-						"#" + this.getInstance(this.identSelection).getNom().escapeJQ(),
+						"#" + this.getNomInstance(this.identSelection).escapeJQ(),
 					).height()) *
 					0.9 +
 					"px",
 			);
 		}
-		if (GEtatUtilisateur.getPeriodePourReleve()) {
-			GEtatUtilisateur.setPeriodePourReleve(null);
+		if (this.etatUtilScoMobile.getPeriodePourReleve()) {
+			this.etatUtilScoMobile.setPeriodePourReleve(null);
 		}
 	}
 	recupererDonneesReleve() {
-		new ObjetRequetePageReleve(
+		new ObjetRequetePageReleve_1.ObjetRequetePageReleve(
 			this,
 			this.actionSurRecupererReleve,
 		).lancerRequete({
-			numeroEleve: GEtatUtilisateur.getMembre().getNumero(),
+			numeroEleve: this.etatUtilScoMobile.getMembre().getNumero(),
 			genrePeriode: this.periodeCourant.getGenre(),
 			numeroPeriode: this.periodeCourant.getNumero(),
 		});
 	}
 	actionSurRecupererReleve(aParam) {
-		$.extend(this, aParam.aCopier);
+		$.extend(this.aCopier, aParam.aCopier);
 		this.donneesAbsences = aParam.absences;
 		this.listeAccusesReception = aParam.listeAccusesReception;
 		if (!!aParam.Message) {
 			this.getInstance(this.identPage).setMessage(aParam.Message);
-		} else if (!this.ExisteDevoir) {
+		} else if (!this.aCopier.ExisteDevoir) {
 			this.getInstance(this.identPage).setMessage(
-				GTraductions.getValeur("Message")[9],
+				ObjetTraduction_1.GTraductions.getValeur("Message")[9],
 			);
 		} else {
 			this.getInstance(this.identPage).setDonnees(
-				this.ListeElements,
-				this.MoyenneGenerale,
+				this.aCopier.ListeElements,
+				this.aCopier.MoyenneGenerale,
 				this.donneesAbsences,
-				this.PiedDePage,
-				this.Affichage,
+				this.aCopier.PiedDePage,
+				this.aCopier.Affichage,
 				this.positionPeriodeCourant,
 				this.listePeriodes.count() - 1,
 				this.periodeCourant,
@@ -171,12 +174,15 @@ class ObjetAffichagePageReleveDeNotes extends InterfacePage_Mobile {
 		this.recupererDonneesReleve();
 	}
 }
+exports.InterfacePageReleveDeNotes = InterfacePageReleveDeNotes;
 function _getHtmlCBAccuseReception() {
 	const lHtml = [];
 	lHtml.push(
 		'<div class="p-all">',
-		'<ie-checkbox ie-textright class="AlignementMilieuVertical" ie-model="cbAccuseReception" ie-display="visibiliteAR">',
-		GTraductions.getValeur("BulletinEtReleve.JAiPrisConnaissanceDuReleve"),
+		'<ie-checkbox class="AlignementMilieuVertical" ie-model="cbAccuseReception" ie-display="visibiliteAR">',
+		ObjetTraduction_1.GTraductions.getValeur(
+			"BulletinEtReleve.JAiPrisConnaissanceDuReleve",
+		),
 		"</ie-checkbox>",
 		"</div>",
 	);
@@ -184,7 +190,8 @@ function _getHtmlCBAccuseReception() {
 }
 function _initSelecteur(aInstance) {
 	aInstance.setParametres({
-		labelWAICellule: GTraductions.getValeur("WAI.ListeSelectionPeriode"),
+		labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+			"WAI.ListeSelectionPeriode",
+		),
 	});
 }
-module.exports = ObjetAffichagePageReleveDeNotes;

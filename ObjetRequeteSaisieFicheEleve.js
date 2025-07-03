@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieFicheEleve extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieFicheEleve = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieFicheEleve extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParam) {
 		if (aParam.listeProjets) {
 			aParam.listeProjets.setSerialisateurJSON({
@@ -35,11 +33,15 @@ class ObjetRequeteSaisieFicheEleve extends ObjetRequeteSaisie {
 		return this.appelAsynchrone();
 	}
 }
-Requetes.inscrire("SaisieFicheEleve", ObjetRequeteSaisieFicheEleve);
+exports.ObjetRequeteSaisieFicheEleve = ObjetRequeteSaisieFicheEleve;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieFicheEleve",
+	ObjetRequeteSaisieFicheEleve,
+);
 function serialiserProjets(aProjet, aJSON) {
 	$.extend(aJSON, aProjet.copieToJSON());
 	aProjet.listeHandicaps.setSerialisateurJSON({
-		methodeSerialisation: serialiserHandicaps.bind(this),
+		methodeSerialisation: serialiserHandicaps,
 	});
 	aJSON.listeHandicaps = aProjet.listeHandicaps;
 }

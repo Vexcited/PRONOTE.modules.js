@@ -1,7 +1,11 @@
+exports.GThemesPrimaire = void 0;
+const AccessApp_1 = require("AccessApp");
 class ObjetThemesPrimaire {
 	setTheme() {
 		const lThemeCourant = this.getTheme();
-		$("#" + GApplication.getIdConteneur().escapeJQ()).addClass(lThemeCourant);
+		$("#" + (0, AccessApp_1.getApp)().getIdConteneur().escapeJQ()).addClass(
+			lThemeCourant,
+		);
 	}
 	getTheme() {
 		const lGenreTheme = this.getGenreTheme();
@@ -26,5 +30,4 @@ class ObjetThemesPrimaire {
 		return T ? T[1] : "2";
 	}
 }
-const GThemesPrimaire = new ObjetThemesPrimaire();
-module.exports = { GThemesPrimaire };
+exports.GThemesPrimaire = new ObjetThemesPrimaire();

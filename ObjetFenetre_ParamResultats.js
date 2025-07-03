@@ -1,9 +1,12 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-class ObjetFenetre_ParamResultats extends ObjetFenetre {
+exports.ObjetFenetre_ParamResultats = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const AccessApp_1 = require("AccessApp");
+class ObjetFenetre_ParamResultats extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
+		const lApplicationSco = (0, AccessApp_1.getApp)();
 		this.avecMediane = false;
 		this.avecHaute = false;
 		this.avecBasse = false;
@@ -15,172 +18,175 @@ class ObjetFenetre_ParamResultats extends ObjetFenetre {
 		this.parametresBulletin = true;
 		this.masquerSansNotes = false;
 		this.avecCouleurMoyenne = false;
-		this.avecGestionNotation = GApplication.droits.get(
-			TypeDroits.fonctionnalites.gestionNotation,
+		this.avecGestionNotation = lApplicationSco.droits.get(
+			ObjetDroitsPN_1.TypeDroits.fonctionnalites.gestionNotation,
 		);
-	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			rbParamAffichage: {
-				getValue: function (aValeur) {
-					return aInstance.matieresEquivalence !== aValeur;
-				},
-				setValue: function (aValeur) {
-					aInstance.matieresEquivalence = !aValeur;
-					aInstance.parametresBulletin = !!aValeur;
-					if (aInstance.parametresBulletin) {
-						aInstance.uniquementSousServices = false;
-					}
-				},
-			},
-			rbChoixModification: {
-				getValue: function (aServices) {
-					return aInstance.uniquementSousServices === aServices;
-				},
-				setValue: function (aServices) {
-					aInstance.uniquementSousServices = aServices;
-				},
-				getDisabled: function () {
-					return aInstance.parametresBulletin;
-				},
-			},
-			checkGererMediane: {
-				getValue: function () {
-					return !!aInstance.avecMediane;
-				},
-				setValue: function (aData) {
-					aInstance.avecMediane = aData;
-					if (!aData) {
-						aInstance.avecMediane = false;
-					}
-				},
-			},
-			checkGererHaute: {
-				getValue: function () {
-					return !!aInstance.avecHaute;
-				},
-				setValue: function (aData) {
-					aInstance.avecHaute = aData;
-					if (!aData) {
-						aInstance.avecHaute = false;
-					}
-				},
-			},
-			checkGererBasse: {
-				getValue: function () {
-					return !!aInstance.avecBasse;
-				},
-				setValue: function (aData) {
-					aInstance.avecBasse = aData;
-					if (!aData) {
-						aInstance.avecBasse = false;
-					}
-				},
-			},
-			checkGererAbsences: {
-				getValue: function () {
-					return !!aInstance.avecAbsences;
-				},
-				setValue: function (aData) {
-					aInstance.avecAbsences = aData;
-					if (!aData) {
-						aInstance.avecAbsences = false;
-					}
-				},
-				getDisabled: function () {
-					return aInstance.uniquementSousServices;
-				},
-			},
-			checkGererCompetences: {
-				getValue: function () {
-					return !!aInstance.avecCompetences;
-				},
-				getDisabled: function () {
-					return (
-						aInstance.parametresBulletin || aInstance.uniquementSousServices
-					);
-				},
-				setValue: function (aData) {
-					aInstance.avecCompetences = aData;
-					if (!aData) {
-						aInstance.avecCompetences = false;
-					}
-				},
-			},
-			checkGererSousServices: {
-				getValue: function () {
-					return !!aInstance.avecSousServices;
-				},
-				setValue: function (aData) {
-					aInstance.avecSousServices = aData;
-					if (!aData) {
-						aInstance.avecSousServices = false;
-					}
-				},
-				getDisabled: function () {
-					return aInstance.uniquementSousServices;
-				},
-			},
-			checkMasquerSansNotes: {
-				getValue: function () {
-					return !!aInstance.masquerSansNotes;
-				},
-				setValue: function (aData) {
-					aInstance.masquerSansNotes = aData;
-					if (!aData) {
-						aInstance.masquerSansNotes = false;
-					}
-				},
-			},
-			checkAvecCouleurMoyenne: {
-				getValue: function () {
-					return !!aInstance.avecCouleurMoyenne;
-				},
-				setValue: function (aData) {
-					aInstance.avecCouleurMoyenne = aData;
-					if (!aData) {
-						aInstance.avecCouleurMoyenne = false;
-					}
-				},
-			},
-		});
 	}
 	setContexte(aAvecDonneesItalie) {
 		this.avecDonneesItalie = aAvecDonneesItalie;
 	}
+	jsxModelCheckboxGererNoteMediane() {
+		return {
+			getValue: () => {
+				return !!this.avecMediane;
+			},
+			setValue: (aValue) => {
+				this.avecMediane = aValue;
+				if (!aValue) {
+					this.avecMediane = false;
+				}
+			},
+		};
+	}
+	jsxModelCheckboxGererNoteHaute() {
+		return {
+			getValue: () => {
+				return !!this.avecHaute;
+			},
+			setValue: (aValue) => {
+				this.avecHaute = aValue;
+				if (!aValue) {
+					this.avecHaute = false;
+				}
+			},
+		};
+	}
+	jsxModelCheckboxGererNoteBasse() {
+		return {
+			getValue: () => {
+				return !!this.avecBasse;
+			},
+			setValue: (aValue) => {
+				this.avecBasse = aValue;
+				if (!aValue) {
+					this.avecBasse = false;
+				}
+			},
+		};
+	}
 	composeLignesTotal() {
 		const T = [];
-		T.push('<div class="GrandEspaceBas">');
-		T.push("<fieldset>");
 		T.push(
-			"<legend>" +
-				GTraductions.getValeur("resultatsClasses.options.separateurLignes") +
-				"</legend>",
+			IE.jsx.str(
+				"div",
+				{ class: "GrandEspaceBas" },
+				IE.jsx.str(
+					"fieldset",
+					null,
+					IE.jsx.str(
+						"legend",
+						null,
+						ObjetTraduction_1.GTraductions.getValeur(
+							"resultatsClasses.options.separateurLignes",
+						),
+					),
+					IE.jsx.str(
+						"div",
+						null,
+						IE.jsx.str(
+							"ie-checkbox",
+							{
+								class: "AlignementMilieuVertical",
+								style: "margin-right:.4rem; margin-bottom:.4rem;",
+								"ie-model": this.jsxModelCheckboxGererNoteMediane.bind(this),
+							},
+							ObjetTraduction_1.GTraductions.getValeur(
+								"resultatsClasses.options.noteMediane",
+							),
+						),
+					),
+					IE.jsx.str(
+						"div",
+						null,
+						IE.jsx.str(
+							"ie-checkbox",
+							{
+								class: "AlignementMilieuVertical",
+								style: "margin-right:.4rem; margin-bottom:.4rem;",
+								"ie-model": this.jsxModelCheckboxGererNoteHaute.bind(this),
+							},
+							ObjetTraduction_1.GTraductions.getValeur(
+								"resultatsClasses.options.noteHaute",
+							),
+						),
+					),
+					IE.jsx.str(
+						"div",
+						null,
+						IE.jsx.str(
+							"ie-checkbox",
+							{
+								class: "AlignementMilieuVertical",
+								style: "margin-right:.4rem; margin-bottom:.4rem;",
+								"ie-model": this.jsxModelCheckboxGererNoteBasse.bind(this),
+							},
+							ObjetTraduction_1.GTraductions.getValeur(
+								"resultatsClasses.options.noteBasse",
+							),
+						),
+					),
+				),
+			),
 		);
-		T.push(
-			"<div >",
-			'<ie-checkbox class="AlignementMilieuVertical" style="margin-right:.4rem; margin-bottom:.4rem;" ie-model="checkGererMediane">',
-			GTraductions.getValeur("resultatsClasses.options.noteMediane"),
-			"</ie-checkbox>",
-			"</div>",
-		);
-		T.push(
-			"<div>",
-			'<ie-checkbox class="AlignementMilieuVertical" style="margin-right:.4rem; margin-bottom:.4rem;" ie-model="checkGererHaute">',
-			GTraductions.getValeur("resultatsClasses.options.noteHaute"),
-			"</ie-checkbox>",
-			"</div>",
-		);
-		T.push(
-			"<div>",
-			'<ie-checkbox class="AlignementMilieuVertical" style="margin-right:.4rem; margin-bottom:.4rem;" ie-model="checkGererBasse">',
-			GTraductions.getValeur("resultatsClasses.options.noteBasse"),
-			"</ie-checkbox>",
-			"</div>",
-		);
-		T.push("</fieldset>");
-		T.push("</div>");
 		return T.join("");
+	}
+	jsxModelCheckboxMasquerServicesSansNote() {
+		return {
+			getValue: () => {
+				return !!this.masquerSansNotes;
+			},
+			setValue: (aValue) => {
+				this.masquerSansNotes = aValue;
+				if (!aValue) {
+					this.masquerSansNotes = false;
+				}
+			},
+		};
+	}
+	jsxModelCheckboxAfficherCouleurMoyenne() {
+		return {
+			getValue: () => {
+				return !!this.avecCouleurMoyenne;
+			},
+			setValue: (aValue) => {
+				this.avecCouleurMoyenne = aValue;
+				if (!aValue) {
+					this.avecCouleurMoyenne = false;
+				}
+			},
+		};
+	}
+	jsxModelCheckboxAvecSousServices() {
+		return {
+			getValue: () => {
+				return !!this.avecSousServices;
+			},
+			setValue: (aValue) => {
+				this.avecSousServices = aValue;
+				if (!aValue) {
+					this.avecSousServices = false;
+				}
+			},
+			getDisabled: () => {
+				return this.uniquementSousServices;
+			},
+		};
+	}
+	jsxModelCheckboxAvecAbsences() {
+		return {
+			getValue: () => {
+				return !!this.avecAbsences;
+			},
+			setValue: (aValue) => {
+				this.avecAbsences = aValue;
+				if (!aValue) {
+					this.avecAbsences = false;
+				}
+			},
+			getDisabled: () => {
+				return this.uniquementSousServices;
+			},
+		};
 	}
 	composeContenu() {
 		const T = [];
@@ -191,66 +197,108 @@ class ObjetFenetre_ParamResultats extends ObjetFenetre {
 		T.push("<fieldset>");
 		T.push(
 			"<legend>" +
-				GTraductions.getValeur("resultatsClasses.options.separateurServices") +
+				ObjetTraduction_1.GTraductions.getValeur(
+					"resultatsClasses.options.separateurServices",
+				) +
 				"</legend>",
 		);
 		T.push(
-			"<div>",
-			'<ie-checkbox class="AlignementMilieuVertical" style="margin-right:.4rem; margin-bottom:.4rem;" ie-model="checkGererSousServices">',
-			GTraductions.getValeur("resultatsClasses.options.sousServices"),
-			"</ie-checkbox>",
-			"</div>",
+			IE.jsx.str(
+				"div",
+				null,
+				IE.jsx.str(
+					"ie-checkbox",
+					{
+						class: "AlignementMilieuVertical",
+						style: "margin-right:.4rem; margin-bottom:.4rem;",
+						"ie-model": this.jsxModelCheckboxAvecSousServices.bind(this),
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"resultatsClasses.options.sousServices",
+					),
+				),
+			),
 		);
 		T.push(
-			"<div>",
-			'<ie-checkbox class="AlignementMilieuVertical" style="margin-right:.4rem; margin-bottom:.4rem;" ie-model="checkGererAbsences">',
-			this.avecDonneesItalie
-				? GTraductions.getValeur("resultatsClasses.options.absences")
-				: GTraductions.getValeur("resultatsClasses.options.afficherHManquees"),
-			"</ie-checkbox>",
-			"</div>",
+			IE.jsx.str(
+				"div",
+				null,
+				IE.jsx.str(
+					"ie-checkbox",
+					{
+						class: "AlignementMilieuVertical",
+						style: "margin-right:.4rem; margin-bottom:.4rem;",
+						"ie-model": this.jsxModelCheckboxAvecAbsences.bind(this),
+					},
+					this.avecDonneesItalie
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"resultatsClasses.options.absences",
+							)
+						: ObjetTraduction_1.GTraductions.getValeur(
+								"resultatsClasses.options.afficherHManquees",
+							),
+				),
+			),
 		);
 		T.push(
-			"<div>",
-			'<ie-checkbox class="AlignementMilieuVertical" style="margin-right:.4rem; margin-bottom:.4rem;" ie-model="checkMasquerSansNotes">',
-			GTraductions.getValeur("resultatsClasses.options.MasquerSansNotes"),
-			"</ie-checkbox>",
-			"</div>",
+			IE.jsx.str(
+				"div",
+				null,
+				IE.jsx.str(
+					"ie-checkbox",
+					{
+						class: "AlignementMilieuVertical",
+						style: "margin-right:.4rem; margin-bottom:.4rem;",
+						"ie-model": this.jsxModelCheckboxMasquerServicesSansNote.bind(this),
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"resultatsClasses.options.MasquerSansNotes",
+					),
+				),
+			),
 		);
 		if (this.avecGestionNotation) {
 			const lLibelleOptionCouleur = this.avecDonneesItalie
-				? GTraductions.getValeur(
+				? ObjetTraduction_1.GTraductions.getValeur(
 						"resultatsClasses.options.AfficherRougeInferieureTroisCinquieme",
 					)
-				: GTraductions.getValeur(
+				: ObjetTraduction_1.GTraductions.getValeur(
 						"resultatsClasses.options.AfficherRougeInferieurMoyenne",
 					);
 			T.push(
-				"<div>",
-				'<ie-checkbox class="AlignementMilieuVertical" style="margin-right:.4rem; margin-bottom:.4rem;" ie-model="checkAvecCouleurMoyenne">',
-				lLibelleOptionCouleur,
-				"</ie-checkbox>",
-				"</div>",
+				IE.jsx.str(
+					"div",
+					null,
+					IE.jsx.str(
+						"ie-checkbox",
+						{
+							class: "AlignementMilieuVertical",
+							style: "margin-right:.4rem; margin-bottom:.4rem;",
+							"ie-model":
+								this.jsxModelCheckboxAfficherCouleurMoyenne.bind(this),
+						},
+						lLibelleOptionCouleur,
+					),
+				),
 			);
 		}
 		T.push("</fieldset>");
 		T.push("</div>");
 		return T.join("");
 	}
-	setOptions(aReferentiel) {
-		this.avecDonneesItalie = aReferentiel.avecDonneesItalie;
-		this.avecMediane = aReferentiel.avecMediane;
-		this.avecHaute = aReferentiel.avecHaute;
-		this.avecBasse = aReferentiel.avecBasse;
-		this.avecAbsences = aReferentiel.avecAbsences;
-		this.avecCompetences = aReferentiel.avecCompetences;
-		this.avecSousServices = aReferentiel.avecSousServices;
-		this.uniquementSousServices = aReferentiel.uniquementSousServices;
-		this.matieresEquivalence = aReferentiel.matieresEquivalence;
-		this.parametresBulletin = aReferentiel.parametresBulletin;
-		this.masquerSansNotes = aReferentiel.masquerSansNotes;
-		this.avecCouleurMoyenne = aReferentiel.avecCouleurMoyenne;
-		GEtatUtilisateur.resultatsClasse_referentiel = aReferentiel;
+	setDonnees(aDonnees) {
+		this.avecDonneesItalie = aDonnees.avecDonneesItalie;
+		this.avecMediane = aDonnees.avecMediane;
+		this.avecHaute = aDonnees.avecHaute;
+		this.avecBasse = aDonnees.avecBasse;
+		this.avecAbsences = aDonnees.avecAbsences;
+		this.avecCompetences = aDonnees.avecCompetences;
+		this.avecSousServices = aDonnees.avecSousServices;
+		this.uniquementSousServices = aDonnees.uniquementSousServices;
+		this.matieresEquivalence = aDonnees.matieresEquivalence;
+		this.parametresBulletin = aDonnees.parametresBulletin;
+		this.masquerSansNotes = aDonnees.masquerSansNotes;
+		this.avecCouleurMoyenne = aDonnees.avecCouleurMoyenne;
 	}
 	surValidation(aNumeroBouton) {
 		this.fermer();
@@ -269,4 +317,4 @@ class ObjetFenetre_ParamResultats extends ObjetFenetre {
 		});
 	}
 }
-module.exports = { ObjetFenetre_ParamResultats };
+exports.ObjetFenetre_ParamResultats = ObjetFenetre_ParamResultats;

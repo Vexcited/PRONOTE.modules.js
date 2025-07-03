@@ -1,43 +1,53 @@
-const { PageParametresEnfants } = require("PageParametresEnfants.js");
-const { InterfacePage_Mobile } = require("InterfacePage_Mobile.js");
-const { EStructureAffichage } = require("Enumere_StructureAffichage.js");
-const { PageInformationsMedicales } = require("PageInformationsMedicales.js");
-const {
-	ObjetRequeteSaisieCompteEnfant,
-} = require("ObjetRequeteSaisieCompteEnfant.js");
-const {
-	InterfaceAutorisationSortie,
-} = require("InterfaceAutorisationSortie.js");
-class InterfacePageParametresEnfantsMobile extends InterfacePage_Mobile {
+exports.InterfacePageParametresEnfantsMobile = void 0;
+const PageParametresEnfants_1 = require("PageParametresEnfants");
+const InterfacePage_Mobile_1 = require("InterfacePage_Mobile");
+const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
+const PageInformationsMedicales_1 = require("PageInformationsMedicales");
+const ObjetRequeteSaisieCompteEnfant_1 = require("ObjetRequeteSaisieCompteEnfant");
+const InterfaceAutorisationSortie_1 = require("InterfaceAutorisationSortie");
+class InterfacePageParametresEnfantsMobile extends InterfacePage_Mobile_1.InterfacePage_Mobile {
 	constructor(...aParams) {
 		super(...aParams);
 	}
 	construireInstances() {
-		this.identPage = this.add(PageParametresEnfants);
+		this.identPage = this.add(PageParametresEnfants_1.PageParametresEnfants);
 		this.identInformationsMedicales = this.add(
-			PageInformationsMedicales,
+			PageInformationsMedicales_1.PageInformationsMedicales,
 			this._evenementInformationsMedicales,
 		);
 		this.identAutorisationSortie = this.add(
-			InterfaceAutorisationSortie,
-			_evenementAutorisationSortie,
+			InterfaceAutorisationSortie_1.InterfaceAutorisationSortie,
+			this._evenementAutorisationSortie,
 		);
 	}
+	getInstancePageInformationsMedicales() {
+		return this.getInstance(this.identInformationsMedicales);
+	}
+	getInstancePageAutorisationsSortie() {
+		return this.getInstance(this.identAutorisationSortie);
+	}
 	setParametresGeneraux() {
-		this.GenreStructure = EStructureAffichage.Autre;
+		this.GenreStructure =
+			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 	}
 	construireStructureAffichageAutre() {
 		const H = [];
-		H.push('<div class="ObjetCompte">');
 		H.push(
-			'<div class="compte-contain" id="',
-			this.getInstance(this.identPage).getNom(),
-			'"></div>',
+			IE.jsx.str(
+				"div",
+				{ class: "ObjetCompte" },
+				IE.jsx.str("div", {
+					class: "compte-contain",
+					id: this.getNomInstance(this.identPage),
+				}),
+			),
 		);
-		H.push("</div>");
 		return H.join("");
 	}
 	_evenementInformationsMedicales() {
+		this.valider();
+	}
+	_evenementAutorisationSortie() {
 		this.valider();
 	}
 	actionSurValidation() {
@@ -50,14 +60,12 @@ class InterfacePageParametresEnfantsMobile extends InterfacePage_Mobile {
 			this.getInstance(this.identPage).getStructurePourValidation(lStructure)
 		) {
 			this.setEtatSaisie(false);
-			new ObjetRequeteSaisieCompteEnfant(
+			new ObjetRequeteSaisieCompteEnfant_1.ObjetRequeteSaisieCompteEnfant(
 				this,
 				this.actionSurValidation,
 			).lancerRequete(lStructure);
 		}
 	}
 }
-function _evenementAutorisationSortie() {
-	this.valider();
-}
-module.exports = { InterfacePageParametresEnfantsMobile };
+exports.InterfacePageParametresEnfantsMobile =
+	InterfacePageParametresEnfantsMobile;

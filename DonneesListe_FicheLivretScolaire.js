@@ -1,12 +1,14 @@
-const { MethodesObjet } = require("MethodesObjet.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { ObjetMoteurReleveBulletin } = require("ObjetMoteurReleveBulletin.js");
-const { TUtilitaireCompetences } = require("UtilitaireCompetences.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-class DonneesListe_FicheLivretScolaire extends ObjetDonneesListe {
+exports.DonneesListe_FicheLivretScolaire = void 0;
+const MethodesObjet_1 = require("MethodesObjet");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetMoteurReleveBulletin_1 = require("ObjetMoteurReleveBulletin");
+const UtilitaireCompetences_1 = require("UtilitaireCompetences");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const AccessApp_1 = require("AccessApp");
+class DonneesListe_FicheLivretScolaire extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParam) {
 		aDonnees.donnees.parcourir((D) => {
 			if ((D.avecRegroupement || D.titreEnseignement) && !D.periode) {
@@ -15,6 +17,7 @@ class DonneesListe_FicheLivretScolaire extends ObjetDonneesListe {
 			}
 		});
 		super(aDonnees.donnees);
+		this.etatUtil = (0, AccessApp_1.getApp)().getEtatUtilisateur();
 		this.donneesClasse = aDonnees.donneesClasse;
 		this.parametres = Object.assign(
 			{
@@ -28,7 +31,6 @@ class DonneesListe_FicheLivretScolaire extends ObjetDonneesListe {
 			},
 			aParam,
 		);
-		this.celluleCourante;
 		this.parametres.instance.setOptionsListe({
 			colonnesCachees: this._getContexteColonnes(
 				this.parametres.affichage,
@@ -46,7 +48,7 @@ class DonneesListe_FicheLivretScolaire extends ObjetDonneesListe {
 			selectionParCellule: true,
 			avecSelectionSurNavigationClavier: true,
 		});
-		this.moteur = new ObjetMoteurReleveBulletin();
+		this.moteur = new ObjetMoteurReleveBulletin_1.ObjetMoteurReleveBulletin();
 	}
 	avecSelection(aParams) {
 		if (
@@ -65,24 +67,59 @@ class DonneesListe_FicheLivretScolaire extends ObjetDonneesListe {
 			this._avecEditionConserverAnciennesNotes(aParams)
 		);
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
+		const lAriaLabel = this.getAriaLabel(aParams);
+		if (lAriaLabel) {
+			return lAriaLabel;
+		}
 		switch (aParams.idColonne) {
 			case DonneesListe_FicheLivretScolaire.colonnes.anciennesNotes:
 				return aParams.article.conserveAnciennesNotes
-					? GTraductions.getValeur("ficheScolaire.HintCocheAnneePrecedente", [
-							aParams.article.hintAnciennesNotes,
-						])
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.HintCocheAnneePrecedente",
+							[aParams.article.hintAnciennesNotes],
+						)
 					: "";
-			default:
-				return;
 		}
+		return "";
+	}
+	getAriaHasPopup(aParams) {
+		if (this._avecEvaluationCompetenceLS(aParams.article, aParams)) {
+			return "dialog";
+		}
+		return false;
+	}
+	getAriaLabel(aParams) {
+		var _a, _b, _c, _d;
+		if (this._avecEvaluationCompetenceLS(aParams.article, aParams)) {
+			if (_estCelluleCompetence(aParams)) {
+				return (_b =
+					(_a = aParams.article.listeCompetences.get(
+						aParams.declarationColonne.rangColonne,
+					)) === null || _a === void 0
+						? void 0
+						: _a.evaluation) === null || _b === void 0
+					? void 0
+					: _b.getLibelle();
+			}
+			switch (aParams.idColonne) {
+				case DonneesListe_FicheLivretScolaire.colonnes.saisieEval:
+					return (_d =
+						(_c = aParams.article.itemLivretScolaire) === null || _c === void 0
+							? void 0
+							: _c.evaluation) === null || _d === void 0
+						? void 0
+						: _d.getLibelle();
+			}
+		}
+		return "";
 	}
 	_avecEditionConserverAnciennesNotes(aParams) {
 		return (
 			aParams.idColonne ===
 				DonneesListe_FicheLivretScolaire.colonnes.anciennesNotes &&
-			GEtatUtilisateur.getUtilisateur().getGenre() ===
-				EGenreRessource.Enseignant &&
+			this.etatUtil.getUtilisateur().getGenre() ===
+				Enumere_Ressource_1.EGenreRessource.Enseignant &&
 			this.parametres.eleveRedoublant &&
 			((!!aParams.article.services && aParams.article.services.count() > 0) ||
 				(!!aParams.article.service && aParams.article.service.existeNumero()))
@@ -103,7 +140,7 @@ class DonneesListe_FicheLivretScolaire extends ObjetDonneesListe {
 		this.celluleCourante = aParams.article;
 		return true;
 	}
-	_avecEvaluationCompetenceLS(aColonne, aArticle, aParams) {
+	_avecEvaluationCompetenceLS(aArticle, aParams) {
 		return (
 			((aParams.idColonne ===
 				DonneesListe_FicheLivretScolaire.colonnes.saisieEval &&
@@ -116,14 +153,10 @@ class DonneesListe_FicheLivretScolaire extends ObjetDonneesListe {
 		this.celluleCourante = aParams.article;
 		return (
 			(this._avecEditionAppreciation(aParams) &&
-				(GEtatUtilisateur.assistantSaisieActif ||
+				(this.etatUtil.assistantSaisieActif ||
 					(aParams.article.services &&
 						aParams.article.services.count() > 1))) ||
-			this._avecEvaluationCompetenceLS(
-				aParams.colonne,
-				aParams.article,
-				aParams,
-			)
+			this._avecEvaluationCompetenceLS(aParams.article, aParams)
 		);
 	}
 	autoriserChaineVideSurEdition() {
@@ -151,9 +184,9 @@ class DonneesListe_FicheLivretScolaire extends ObjetDonneesListe {
 	}
 	getTri() {
 		return [
-			ObjetTri.initRecursif("pere", [
-				ObjetTri.init("Genre"),
-				ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.initRecursif("pere", [
+				ObjetTri_1.ObjetTri.init("Genre"),
+				ObjetTri_1.ObjetTri.init((D) => {
 					return D.Libelle;
 				}),
 			]),
@@ -195,7 +228,9 @@ class DonneesListe_FicheLivretScolaire extends ObjetDonneesListe {
 						hint: lCompetence.hintNiveaux || "",
 						listeGenreNiveauxIgnores: [],
 					};
-					return TUtilitaireCompetences.composeJaugeParNiveaux(lOptionsJauge);
+					return UtilitaireCompetences_1.TUtilitaireCompetences.composeJaugeParNiveaux(
+						lOptionsJauge,
+					);
 				}
 			}
 			return "";
@@ -228,17 +263,17 @@ class DonneesListe_FicheLivretScolaire extends ObjetDonneesListe {
 					aParams.article.moyEleve !== null &&
 					aParams.article.moyEleve !== undefined
 				) {
-					T.push(aParams.article.moyEleve.note);
+					T.push(aParams.article.moyEleve.getNote());
 				}
 				return T.join("");
 			}
 			case DonneesListe_FicheLivretScolaire.colonnes.moyClasse:
 				return this.donneesClasse
 					? this.donneesClasse.get(aParams.ligne).moyClasse
-						? this.donneesClasse.get(aParams.ligne).moyClasse.note
+						? this.donneesClasse.get(aParams.ligne).moyClasse.getNote()
 						: ""
 					: aParams.article.moyClasse
-						? aParams.article.moyClasse.note
+						? aParams.article.moyClasse.getNote()
 						: "";
 			case DonneesListe_FicheLivretScolaire.colonnes.inf8:
 				return this.donneesClasse
@@ -277,7 +312,7 @@ class DonneesListe_FicheLivretScolaire extends ObjetDonneesListe {
 					return aParams.article.appreciation;
 				} else if (aParams.article.appreciationAnnuelle) {
 					if (!!aParams.article.appreciationAnnuelle.estRattache) {
-						return GTraductions.getValeur(
+						return ObjetTraduction_1.GTraductions.getValeur(
 							"ficheScolaire.messageServiceRattache",
 						);
 					} else {
@@ -306,13 +341,13 @@ class DonneesListe_FicheLivretScolaire extends ObjetDonneesListe {
 				DonneesListe_FicheLivretScolaire.colonnes.jaugeEval,
 			)
 		) {
-			return ObjetDonneesListe.ETypeCellule.Html;
+			return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 		}
 		switch (aParams.idColonne) {
 			case DonneesListe_FicheLivretScolaire.colonnes.regroupement:
 				return aParams.article.estUnDeploiement === true
-					? ObjetDonneesListe.ETypeCellule.CocheDeploiement
-					: ObjetDonneesListe.ETypeCellule.Html;
+					? ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.CocheDeploiement
+					: ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 			case DonneesListe_FicheLivretScolaire.colonnes.moyEleve:
 			case DonneesListe_FicheLivretScolaire.colonnes.periode:
 			case DonneesListe_FicheLivretScolaire.colonnes.rang:
@@ -320,18 +355,18 @@ class DonneesListe_FicheLivretScolaire extends ObjetDonneesListe {
 			case DonneesListe_FicheLivretScolaire.colonnes.de8a12:
 			case DonneesListe_FicheLivretScolaire.colonnes.sup12:
 			case DonneesListe_FicheLivretScolaire.colonnes.saisieEval:
-				return ObjetDonneesListe.ETypeCellule.Html;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 			case DonneesListe_FicheLivretScolaire.colonnes.discipline:
 			case DonneesListe_FicheLivretScolaire.colonnes.moyClasse:
 			case DonneesListe_FicheLivretScolaire.colonnes.evaluation:
-				return ObjetDonneesListe.ETypeCellule.Texte;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 			case DonneesListe_FicheLivretScolaire.colonnes.appreciation:
 			case DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle:
-				return ObjetDonneesListe.ETypeCellule.ZoneTexte;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.ZoneTexte;
 			case DonneesListe_FicheLivretScolaire.colonnes.anciennesNotes:
-				return ObjetDonneesListe.ETypeCellule.Coche;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Coche;
 			default:
-				return ObjetDonneesListe.ETypeCellule.Texte;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 		}
 	}
 	surEdition(aParams, aValeur) {
@@ -341,10 +376,12 @@ class DonneesListe_FicheLivretScolaire extends ObjetDonneesListe {
 			aParams.idColonne ===
 				DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle
 		) {
-			aParams.article.appreciationAnnuelle.setEtat(EGenreEtat.Modification);
+			aParams.article.appreciationAnnuelle.setEtat(
+				Enumere_Etat_1.EGenreEtat.Modification,
+			);
 			aParams.article.appreciation = aValeur;
 			aParams.article.appreciationAnnuelle.setLibelle(aValeur);
-			aParams.article.appreciationAnnuelle._validationSaisie = true;
+			aParams.article.appreciationAnnuelle.setValidationSaisie(true);
 		}
 		if (
 			aParams.idColonne ===
@@ -373,26 +410,30 @@ class DonneesListe_FicheLivretScolaire extends ObjetDonneesListe {
 		this.parametres.initMenuContextuel(aParametres);
 	}
 	evenementMenuContextuel(aParametres) {
-		const lSelection = aParametres.menuContextuel.ligne.data,
-			lEval = MethodesObjet.dupliquer(this.listeEval.get(lSelection)),
+		const lSelection = aParametres.ligneMenu.data,
+			lEval = MethodesObjet_1.MethodesObjet.dupliquer(
+				this.listeEval.get(lSelection),
+			),
 			lCelluleCourante = aParametres.article;
 		if (!lSelection) {
-			lEval.setEtat(EGenreEtat.Suppression);
+			lEval.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 		} else {
-			lEval.setEtat(EGenreEtat.Modification);
+			lEval.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 		}
 		if (_estCelluleCompetence(aParametres)) {
 			lCelluleCourante.listeCompetences.get(
 				aParametres.declarationColonne.rangColonne,
 			).evaluation = lEval;
-			lCelluleCourante.setEtat(EGenreEtat.FilsModification);
+			lCelluleCourante.setEtat(Enumere_Etat_1.EGenreEtat.FilsModification);
 			lCelluleCourante.listeCompetences
 				.get(aParametres.declarationColonne.rangColonne)
-				.setEtat(EGenreEtat.FilsModification);
+				.setEtat(Enumere_Etat_1.EGenreEtat.FilsModification);
 		} else {
 			lCelluleCourante.itemLivretScolaire.evaluation = lEval;
-			lCelluleCourante.setEtat(EGenreEtat.FilsModification);
-			lCelluleCourante.itemLivretScolaire.setEtat(EGenreEtat.FilsModification);
+			lCelluleCourante.setEtat(Enumere_Etat_1.EGenreEtat.FilsModification);
+			lCelluleCourante.itemLivretScolaire.setEtat(
+				Enumere_Etat_1.EGenreEtat.FilsModification,
+			);
 		}
 	}
 	getClass(aParams) {
@@ -437,7 +478,7 @@ class DonneesListe_FicheLivretScolaire extends ObjetDonneesListe {
 				!this.parametres.affichage.avecColonneAppreciationsAnnuelles) ||
 				aParams.idColonne ===
 					DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle) &&
-			GEtatUtilisateur.assistantSaisieActif &&
+			this.etatUtil.assistantSaisieActif &&
 			aParams.article.appreciationAnnuelle &&
 			aParams.article.appreciationAnnuelle.editable
 		) {
@@ -460,7 +501,7 @@ class DonneesListe_FicheLivretScolaire extends ObjetDonneesListe {
 				!this.parametres.affichage.avecColonneAppreciationsAnnuelles) ||
 				aParams.idColonne ===
 					DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle) &&
-			GEtatUtilisateur.assistantSaisieActif &&
+			this.etatUtil.assistantSaisieActif &&
 			aParams.article.appreciationAnnuelle &&
 			aParams.article.appreciationAnnuelle.editable
 		) {
@@ -469,7 +510,7 @@ class DonneesListe_FicheLivretScolaire extends ObjetDonneesListe {
 		if (_estCelluleCompetence(aParams)) {
 			T.push("Gras AlignementMilieu");
 		}
-		return T;
+		return T.join(" ");
 	}
 	alignVCenter(aParams) {
 		return (
@@ -479,23 +520,24 @@ class DonneesListe_FicheLivretScolaire extends ObjetDonneesListe {
 		);
 	}
 	getCouleurCellule(aParams) {
-		let lColor = ObjetDonneesListe.ECouleurCellule.Fixe;
+		let lColor = ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Fixe;
 		if (
 			aParams.idColonne !==
 				DonneesListe_FicheLivretScolaire.colonnes.discipline &&
 			aParams.idColonne !== DonneesListe_FicheLivretScolaire.colonnes.periode
 		) {
-			lColor = ObjetDonneesListe.ECouleurCellule.Gris;
+			lColor = ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Gris;
 		}
 		if (
 			aParams.idColonne ===
 				DonneesListe_FicheLivretScolaire.colonnes.moyEleve ||
 			aParams.idColonne === DonneesListe_FicheLivretScolaire.colonnes.moyClasse
 		) {
-			lColor = ObjetDonneesListe.ECouleurCellule.Total;
+			lColor = ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Total;
 		}
 		if (_estCelluleDeploiement(aParams)) {
-			lColor = ObjetDonneesListe.ECouleurCellule.Deploiement;
+			lColor =
+				ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Deploiement;
 			return lColor;
 		}
 		if (
@@ -503,8 +545,8 @@ class DonneesListe_FicheLivretScolaire extends ObjetDonneesListe {
 			DonneesListe_FicheLivretScolaire.colonnes.regroupement
 		) {
 			lColor = aParams.article.avecRegroupement
-				? ObjetDonneesListe.ECouleurCellule.Deploiement
-				: ObjetDonneesListe.ECouleurCellule.Fixe;
+				? ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Deploiement
+				: ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Fixe;
 		}
 		if (
 			(((aParams.idColonne ===
@@ -521,10 +563,10 @@ class DonneesListe_FicheLivretScolaire extends ObjetDonneesListe {
 				_estCelluleCompetence(aParams)) &&
 				aParams.article.livretEditable)
 		) {
-			lColor = ObjetDonneesListe.ECouleurCellule.Blanc;
+			lColor = ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
 		}
 		if (this._avecEditionConserverAnciennesNotes(aParams)) {
-			lColor = ObjetDonneesListe.ECouleurCellule.Blanc;
+			lColor = ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
 		}
 		return lColor;
 	}
@@ -717,23 +759,36 @@ class DonneesListe_FicheLivretScolaire extends ObjetDonneesListe {
 		);
 	}
 }
-DonneesListe_FicheLivretScolaire.colonnes = {
-	regroupement: "livretScolaire_regroupement",
-	discipline: "livretScolaire_discipline",
-	periode: "livretScolaire_periode",
-	anciennesNotes: "livretScolaire_anciennesNotes",
-	rang: "livretScolaire_rang",
-	moyEleve: "livretScolaire_moyEleve",
-	moyClasse: "livretScolaire_moyClasse",
-	inf8: "livretScolaire_inf8",
-	de8a12: "livretScolaire_de8a12",
-	sup12: "livretScolaire_sup12",
-	evaluation: "livretScolaire_evaluation",
-	saisieEval: "livretScolaire_saisieEval",
-	appreciation: "livretScolaire_appreciation",
-	apprAnnuelle: "livretScolaire_apprAnnuelle",
-	jaugeEval: "livretScolaire_jaugeEval",
-};
+exports.DonneesListe_FicheLivretScolaire = DonneesListe_FicheLivretScolaire;
+(function (DonneesListe_FicheLivretScolaire) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["regroupement"] = "livretScolaire_regroupement";
+		colonnes["discipline"] = "livretScolaire_discipline";
+		colonnes["periode"] = "livretScolaire_periode";
+		colonnes["anciennesNotes"] = "livretScolaire_anciennesNotes";
+		colonnes["rang"] = "livretScolaire_rang";
+		colonnes["moyEleve"] = "livretScolaire_moyEleve";
+		colonnes["moyClasse"] = "livretScolaire_moyClasse";
+		colonnes["inf8"] = "livretScolaire_inf8";
+		colonnes["de8a12"] = "livretScolaire_de8a12";
+		colonnes["sup12"] = "livretScolaire_sup12";
+		colonnes["evaluation"] = "livretScolaire_evaluation";
+		colonnes["saisieEval"] = "livretScolaire_saisieEval";
+		colonnes["appreciation"] = "livretScolaire_appreciation";
+		colonnes["apprAnnuelle"] = "livretScolaire_apprAnnuelle";
+		colonnes["jaugeEval"] = "livretScolaire_jaugeEval";
+	})(
+		(colonnes =
+			DonneesListe_FicheLivretScolaire.colonnes ||
+			(DonneesListe_FicheLivretScolaire.colonnes = {})),
+	);
+})(
+	DonneesListe_FicheLivretScolaire ||
+		(exports.DonneesListe_FicheLivretScolaire =
+			DonneesListe_FicheLivretScolaire =
+				{}),
+);
 function _estCelluleDeploiement(aParams) {
 	return (
 		(aParams.article.avecRegroupement || aParams.article.titreEnseignement) &&
@@ -747,4 +802,3 @@ function _estCelluleCompetence(aParams) {
 		return false;
 	}
 }
-module.exports = { DonneesListe_FicheLivretScolaire };

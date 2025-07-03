@@ -1,25 +1,20 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { GStyle } = require("ObjetStyle.js");
-const { GChaine } = require("ObjetChaine.js");
-const { GHtml } = require("ObjetHtml.js");
-const {
-	EGenreRessource,
-	EGenreRessourceUtil,
-} = require("Enumere_Ressource.js");
-const {
-	TypeRessourceAbsence,
-	TypeRessourceAbsenceUtil,
-} = require("TypeRessourceAbsence.js");
-const { ObjetMenuContextuel } = require("ObjetMenuContextuel.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { EGenreAction } = require("Enumere_Action.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { TypeNote } = require("TypeNote.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { EGenreMedia, EGenreMediaUtil } = require("Enumere_Media.js");
-const { GDate } = require("ObjetDate.js");
-class DonneesListe_SuiviJustificationsAbsRetards extends ObjetDonneesListe {
+exports.DonneesListe_SuiviJustificationsAbsRetards = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetStyle_1 = require("ObjetStyle");
+const ObjetChaine_1 = require("ObjetChaine");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const TypeRessourceAbsence_1 = require("TypeRessourceAbsence");
+const ObjetMenuContextuel_1 = require("ObjetMenuContextuel");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const Enumere_Action_1 = require("Enumere_Action");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const TypeNote_1 = require("TypeNote");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_Media_1 = require("Enumere_Media");
+const ObjetDate_1 = require("ObjetDate");
+const AccessApp_1 = require("AccessApp");
+class DonneesListe_SuiviJustificationsAbsRetards extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParametres) {
 		super(aDonnees);
 		this.callbackAjoutDocumentJoint = aParametres.callbackAjoutDocumentJoint;
@@ -33,74 +28,6 @@ class DonneesListe_SuiviJustificationsAbsRetards extends ObjetDonneesListe {
 			avecSuppression: false,
 			editionApresSelection: false,
 			avecEtatSaisie: false,
-		});
-	}
-	getControleur(aInstanceDonneesListe, aListe) {
-		return $.extend(true, super.getControleur(aInstanceDonneesListe, aListe), {
-			nodeDocsJointsParent: function (aligne) {
-				const lArticle = aInstanceDonneesListe.Donnees.get(aligne);
-				if (
-					!!lArticle &&
-					!!lArticle.listeDocJointsParent &&
-					lArticle.listeDocJointsParent.count() > 0
-				) {
-					const lDocumentJoint = lArticle.listeDocJointsParent.get(0);
-					$(this.node).on("click", () => {
-						ObjetMenuContextuel.afficher({
-							pere: aListe,
-							initCommandes: function (aMenu) {
-								aMenu.add(
-									GTraductions.getValeur(
-										"SuiviJustificationAbsRet.PieceJointeConsulter",
-									),
-									true,
-									() => {
-										_ouvrirDocumentJointParent(lDocumentJoint);
-									},
-								);
-								if (!!aInstanceDonneesListe.callbackRemplacerDocumentJoint) {
-									aMenu.addSelecFile(
-										GTraductions.getValeur(
-											"SuiviJustificationAbsRet.PieceJointeRemplacer",
-										),
-										{
-											getOptionsSelecFile: function () {
-												return aInstanceDonneesListe.getOptionsSelecFile();
-											},
-											addFiles: function (aParamsInput) {
-												aInstanceDonneesListe.callbackRemplacerDocumentJoint(
-													lArticle,
-													aParamsInput.eltFichier,
-												);
-											},
-										},
-									);
-								}
-								aMenu.add(
-									GTraductions.getValeur(
-										"SuiviJustificationAbsRet.PieceJointeSupprimer",
-									),
-									true,
-									() => {
-										if (
-											!!aInstanceDonneesListe.callbackSuppressionDocumentJoint
-										) {
-											_afficherConfirmationSuppressionDocJoint(
-												lDocumentJoint,
-												() => {
-													aInstanceDonneesListe.callbackSuppressionDocumentJoint(
-														lArticle,
-													);
-												},
-											);
-										}
-									},
-								);
-							},
-						});
-					});
-				}
-			},
 		});
 	}
 	avecMenuContextuel() {
@@ -128,6 +55,8 @@ class DonneesListe_SuiviJustificationsAbsRetards extends ObjetDonneesListe {
 			case DonneesListe_SuiviJustificationsAbsRetards.colonnes.genre:
 			case DonneesListe_SuiviJustificationsAbsRetards.colonnes.documentsParents:
 			case DonneesListe_SuiviJustificationsAbsRetards.colonnes
+				.documentsVieScolaire:
+			case DonneesListe_SuiviJustificationsAbsRetards.colonnes
 				.acceptationEtablissement:
 			case DonneesListe_SuiviJustificationsAbsRetards.colonnes
 				.estMotifRecevable:
@@ -139,22 +68,28 @@ class DonneesListe_SuiviJustificationsAbsRetards extends ObjetDonneesListe {
 	getCouleurCellule(aParams) {
 		if (
 			aParams.idColonne ===
-			DonneesListe_SuiviJustificationsAbsRetards.colonnes.documentsParents
+			DonneesListe_SuiviJustificationsAbsRetards.colonnes.documentsVieScolaire
 		) {
-			if (aParams.article.getGenre() === TypeRessourceAbsence.TR_Absence) {
-				return ObjetDonneesListe.ECouleurCellule.Blanc;
+			if (
+				aParams.article.getGenre() ===
+				TypeRessourceAbsence_1.TypeRessourceAbsence.TR_Absence
+			) {
+				return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
 			}
 		}
 	}
 	avecSelecFile(aParams) {
 		if (
 			aParams.idColonne ===
-			DonneesListe_SuiviJustificationsAbsRetards.colonnes.documentsParents
+			DonneesListe_SuiviJustificationsAbsRetards.colonnes.documentsVieScolaire
 		) {
-			if (aParams.article.getGenre() === TypeRessourceAbsence.TR_Absence) {
+			if (
+				aParams.article.getGenre() ===
+				TypeRessourceAbsence_1.TypeRessourceAbsence.TR_Absence
+			) {
 				let lDocJointActuel = null;
-				if (!!aParams.article.listeDocJointsParent) {
-					lDocJointActuel = aParams.article.listeDocJointsParent.get(0);
+				if (!!aParams.article.listeDocJointsVS) {
+					lDocJointActuel = aParams.article.listeDocJointsVS.get(0);
 				}
 				return lDocJointActuel === null;
 			}
@@ -163,8 +98,8 @@ class DonneesListe_SuiviJustificationsAbsRetards extends ObjetDonneesListe {
 	}
 	getOptionsSelecFile() {
 		return {
-			maxSize: GApplication.droits.get(
-				TypeDroits.tailleMaxDocJointEtablissement,
+			maxSize: (0, AccessApp_1.getApp)().droits.get(
+				ObjetDroitsPN_1.TypeDroits.tailleMaxDocJointEtablissement,
 			),
 		};
 	}
@@ -224,18 +159,85 @@ class DonneesListe_SuiviJustificationsAbsRetards extends ObjetDonneesListe {
 			afficherAvecVirgule: true,
 		};
 	}
+	jsxModelPJVieScolaire(aArticle) {
+		return {
+			event: () => {
+				const lDocumentJoint = aArticle.listeDocJointsVS.get(0);
+				ObjetMenuContextuel_1.ObjetMenuContextuel.afficher({
+					pere: this,
+					initCommandes: (aMenu) => {
+						aMenu.add(
+							ObjetTraduction_1.GTraductions.getValeur(
+								"SuiviJustificationAbsRet.PieceJointeConsulter",
+							),
+							true,
+							() => {
+								_ouvrirDocumentJoint(lDocumentJoint);
+							},
+						);
+						if (!!this.callbackRemplacerDocumentJoint) {
+							aMenu.addSelecFile(
+								ObjetTraduction_1.GTraductions.getValeur(
+									"SuiviJustificationAbsRet.PieceJointeRemplacer",
+								),
+								{
+									getOptionsSelecFile: () => {
+										return this.getOptionsSelecFile();
+									},
+									addFiles: (aParamsInput) => {
+										this.callbackRemplacerDocumentJoint(
+											aArticle,
+											aParamsInput.eltFichier,
+										);
+									},
+								},
+							);
+						}
+						aMenu.add(
+							ObjetTraduction_1.GTraductions.getValeur(
+								"SuiviJustificationAbsRet.PieceJointeSupprimer",
+							),
+							true,
+							() => {
+								if (!!this.callbackSuppressionDocumentJoint) {
+									_afficherConfirmationSuppressionDocJoint(
+										lDocumentJoint,
+										() => {
+											this.callbackSuppressionDocumentJoint(aArticle);
+										},
+									);
+								}
+							},
+						);
+					},
+				});
+			},
+		};
+	}
+	jsxModelPJParent(aArticle) {
+		return {
+			event: () => {
+				const lDocumentJointParent = aArticle.listeDocJointsParent.get(0);
+				if (lDocumentJointParent) {
+					_ouvrirDocumentJoint(lDocumentJointParent);
+				}
+			},
+		};
+	}
 	getValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_SuiviJustificationsAbsRetards.colonnes.genre: {
 				const lStrImageGenre = [];
 				lStrImageGenre.push(
-					'<i class="',
-					EGenreRessourceUtil.getNomImageAbsence(
-						TypeRessourceAbsenceUtil.toGenreRessource(
-							aParams.article.getGenre(),
+					IE.jsx.str("i", {
+						role: "img",
+						class: Enumere_Ressource_1.EGenreRessourceUtil.getNomImageAbsence(
+							TypeRessourceAbsence_1.TypeRessourceAbsenceUtil.toGenreRessource(
+								aParams.article.getGenre(),
+							),
 						),
-					),
-					'"></i>',
+						"aria-label": this.getTooltip(aParams),
+					}),
 				);
 				return lStrImageGenre.join("");
 			}
@@ -256,16 +258,15 @@ class DonneesListe_SuiviJustificationsAbsRetards extends ObjetDonneesListe {
 			case DonneesListe_SuiviJustificationsAbsRetards.colonnes
 				.documentsParents: {
 				const H = [];
-				const lListeDJ = aParams.article.listeDocJointsParent;
-				if (!!lListeDJ && lListeDJ.count() > 0) {
+				const lListeDJParent = aParams.article.listeDocJointsParent;
+				if (!!lListeDJParent && lListeDJParent.count() > 0) {
 					H.push(
-						'<span class="Image_Trombone AvecMain InlineBlock" ' +
-							GHtml.composeAttr(
-								"ie-node",
-								"nodeDocsJointsParent",
-								aParams.ligne,
-							) +
-							"></span>",
+						IE.jsx.str("ie-btnicon", {
+							class: "icon_piece_jointe InlineBlock",
+							"ie-model": this.jsxModelPJParent.bind(this, aParams.article),
+							"aria-haspopup": "true",
+							title: aParams.article.strDocJointsParent || "",
+						}),
 					);
 				}
 				return H.join("");
@@ -277,7 +278,7 @@ class DonneesListe_SuiviJustificationsAbsRetards extends ObjetDonneesListe {
 				.dateJustificationParents: {
 				let lStrDateJustification;
 				if (!!aParams.article.dateJustificationParents) {
-					lStrDateJustification = GDate.formatDate(
+					lStrDateJustification = ObjetDate_1.GDate.formatDate(
 						aParams.article.dateJustificationParents,
 						"%JJ/%MM/%AAAA",
 					);
@@ -301,19 +302,38 @@ class DonneesListe_SuiviJustificationsAbsRetards extends ObjetDonneesListe {
 				}
 				const lAcceptationEtab = [];
 				lAcceptationEtab.push(
-					'<span class="InlineBlock" style="',
-					lStyles.join(""),
-					'">',
-					GTraductions.getValeur(
-						"SuiviJustificationAbsRet.JustificationAcceptee",
+					IE.jsx.str(
+						"span",
+						{ class: "InlineBlock", style: lStyles.join("") },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"SuiviJustificationAbsRet.JustificationAcceptee",
+						),
 					),
-					"</span>",
 				);
 				return lAcceptationEtab.join("");
 			}
 			case DonneesListe_SuiviJustificationsAbsRetards.colonnes
 				.dureeAbsenceCours:
 				return aParams.article.strDureeAbsenceCours || "";
+			case DonneesListe_SuiviJustificationsAbsRetards.colonnes
+				.documentsVieScolaire: {
+				const H = [];
+				const lListeDJVieScolaire = aParams.article.listeDocJointsVS;
+				if (!!lListeDJVieScolaire && lListeDJVieScolaire.count() > 0) {
+					H.push(
+						IE.jsx.str("ie-btnicon", {
+							class: "icon_piece_jointe InlineBlock",
+							"ie-model": this.jsxModelPJVieScolaire.bind(
+								this,
+								aParams.article,
+							),
+							"aria-haspopup": "true",
+							title: aParams.article.strDocJointsVS || "",
+						}),
+					);
+				}
+				return H.join("");
+			}
 			case DonneesListe_SuiviJustificationsAbsRetards.colonnes.matieresAffectee:
 				return aParams.article.strMatieresAffectees || "";
 			case DonneesListe_SuiviJustificationsAbsRetards.colonnes.estOuvert:
@@ -322,52 +342,66 @@ class DonneesListe_SuiviJustificationsAbsRetards extends ObjetDonneesListe {
 				.demiJourneesBulletin: {
 				let lNoteDJBulletin = null;
 				if (!!aParams.article.strNbDemiJourneeBulletin && !aParams.surEdition) {
-					lNoteDJBulletin = new TypeNote(
+					lNoteDJBulletin = new TypeNote_1.TypeNote(
 						aParams.article.strNbDemiJourneeBulletin,
 					);
 				} else if (
 					!!aParams.article.nbDemiJourneeBulletin ||
 					aParams.article.nbDemiJourneeBulletin === 0
 				) {
-					lNoteDJBulletin = new TypeNote(aParams.article.nbDemiJourneeBulletin);
+					lNoteDJBulletin = new TypeNote_1.TypeNote(
+						aParams.article.nbDemiJourneeBulletin,
+					);
 				}
 				return lNoteDJBulletin;
 			}
 			case DonneesListe_SuiviJustificationsAbsRetards.colonnes
 				.estMotifRecevable:
 				return !!aParams.article.estMotifRecevable
-					? GTraductions.getValeur("SuiviJustificationAbsRet.Oui")
-					: GTraductions.getValeur("SuiviJustificationAbsRet.Non");
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"SuiviJustificationAbsRet.Oui",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"SuiviJustificationAbsRet.Non",
+						);
 			case DonneesListe_SuiviJustificationsAbsRetards.colonnes
 				.estRegleAdministrativement:
 				return !!aParams.article.estRA;
 			case DonneesListe_SuiviJustificationsAbsRetards.colonnes.suivi: {
 				const lHtmlSuivi = [];
 				if (!!aParams.article.suivi && !!aParams.article.suivi.nombre) {
+					lHtmlSuivi.push('<div class="flex-contain flex-center">');
 					const lObjSuivi = aParams.article.suivi;
-					lHtmlSuivi.push(
-						'<span class="AlignementMilieuVertical">',
-						lObjSuivi.nombre,
-						"</span>",
-					);
-					if (lObjSuivi.genreMedia === EGenreMedia.Utilisateur) {
-						if (!!lObjSuivi.code) {
-							lHtmlSuivi.push(
-								'<span class="MargeGauche AlignementMilieuVertical">',
-								lObjSuivi.code,
-								"</span>",
-							);
-						}
+					lHtmlSuivi.push(IE.jsx.str("span", null, lObjSuivi.nombre));
+					let lIcone = "";
+					if (lObjSuivi.dernierSuiviEstJustificationParent) {
+						lIcone = "icon_parents mix-icon_ok i-green";
+					} else if (lObjSuivi.dernierSuiviEstConvocation) {
+						lIcone = "icon_convocation mix-icon_vs i-red";
 					} else if (lObjSuivi.genreMedia > 0) {
-						lHtmlSuivi.push(
-							'<div class="MargeGauche AlignementHaut InlineBlock ',
-							EGenreMediaUtil.getNomImage(
-								lObjSuivi.genreMedia,
-								!lObjSuivi.estEnvoi,
-							),
-							'"></div>',
+						lIcone = Enumere_Media_1.EGenreMediaUtil.getClassesIconeMedia(
+							lObjSuivi.genreMedia,
+							!lObjSuivi.estEnvoi,
 						);
 					}
+					if (lIcone) {
+						lHtmlSuivi.push(
+							IE.jsx.str("i", {
+								class: "MargeGauche " + lIcone,
+								role: "presentation",
+							}),
+						);
+					} else if (
+						lObjSuivi.genreMedia ===
+						Enumere_Media_1.TypeOrigineCreationMedia.OCM_Utilisateur
+					) {
+						if (!!lObjSuivi.code) {
+							lHtmlSuivi.push(
+								IE.jsx.str("span", { class: "MargeGauche" }, lObjSuivi.code),
+							);
+						}
+					}
+					lHtmlSuivi.push("</div>");
 				}
 				return lHtmlSuivi.join("");
 			}
@@ -379,49 +413,56 @@ class DonneesListe_SuiviJustificationsAbsRetards extends ObjetDonneesListe {
 			case DonneesListe_SuiviJustificationsAbsRetards.colonnes.estOuvert:
 			case DonneesListe_SuiviJustificationsAbsRetards.colonnes
 				.estRegleAdministrativement:
-				return ObjetDonneesListe.ETypeCellule.Coche;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Coche;
 			case DonneesListe_SuiviJustificationsAbsRetards.colonnes.motif:
 			case DonneesListe_SuiviJustificationsAbsRetards.colonnes
 				.raisonDonneeParents:
 			case DonneesListe_SuiviJustificationsAbsRetards.colonnes
 				.acceptationEtablissement:
 			case DonneesListe_SuiviJustificationsAbsRetards.colonnes.suivi:
-				return ObjetDonneesListe.ETypeCellule.Html;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 			case DonneesListe_SuiviJustificationsAbsRetards.colonnes
 				.demiJourneesBulletin:
-				return ObjetDonneesListe.ETypeCellule.Note;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Note;
 		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_SuiviJustificationsAbsRetards.colonnes.genre: {
 				let lGenre = null;
-				if (aParams.article.getGenre() === TypeRessourceAbsence.TR_Absence) {
-					lGenre = TypeRessourceAbsenceUtil.getLibelle(
-						TypeRessourceAbsence.TR_Absence,
+				if (
+					aParams.article.getGenre() ===
+					TypeRessourceAbsence_1.TypeRessourceAbsence.TR_Absence
+				) {
+					lGenre = TypeRessourceAbsence_1.TypeRessourceAbsenceUtil.getLibelle(
+						TypeRessourceAbsence_1.TypeRessourceAbsence.TR_Absence,
 					);
 				} else if (
-					aParams.article.getGenre() === TypeRessourceAbsence.TR_Retard
+					aParams.article.getGenre() ===
+					TypeRessourceAbsence_1.TypeRessourceAbsence.TR_Retard
 				) {
-					lGenre = TypeRessourceAbsenceUtil.getLibelle(
-						TypeRessourceAbsence.TR_Retard,
+					lGenre = TypeRessourceAbsence_1.TypeRessourceAbsenceUtil.getLibelle(
+						TypeRessourceAbsence_1.TypeRessourceAbsence.TR_Retard,
 					);
 				}
 				return lGenre || "";
 			}
 			case DonneesListe_SuiviJustificationsAbsRetards.colonnes.documentsParents:
 				return aParams.article.strDocJointsParent || "";
+			case DonneesListe_SuiviJustificationsAbsRetards.colonnes
+				.documentsVieScolaire:
+				return aParams.article.strDocJointsVS || "";
 			case DonneesListe_SuiviJustificationsAbsRetards.colonnes.estOuvert:
 				return !!aParams.article.estOuvert
-					? GTraductions.getValeur(
+					? ObjetTraduction_1.GTraductions.getValeur(
 							"SuiviJustificationAbsRet.HintAbsenceOuverte",
 						)
 					: "";
 			case DonneesListe_SuiviJustificationsAbsRetards.colonnes
 				.estRegleAdministrativement:
 				return !!aParams.article.estRA
-					? GTraductions.getValeur(
+					? ObjetTraduction_1.GTraductions.getValeur(
 							"SuiviJustificationAbsRet.HintRegleAdministrativement",
 						)
 					: "";
@@ -455,16 +496,21 @@ class DonneesListe_SuiviJustificationsAbsRetards extends ObjetDonneesListe {
 	getTri(aColonneTri, aGenreTri) {
 		const lTris = [];
 		lTris.push(
-			ObjetTri.init(this.getValeurPourTri.bind(this, aColonneTri), aGenreTri),
+			ObjetTri_1.ObjetTri.init(
+				this.getValeurPourTri.bind(this, aColonneTri),
+				aGenreTri,
+			),
 		);
 		lTris.push(
-			ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.init((D) => {
 				return !!D.eleve ? D.eleve.getLibelle() : "";
 			}, aGenreTri),
 		);
 		return lTris;
 	}
 }
+exports.DonneesListe_SuiviJustificationsAbsRetards =
+	DonneesListe_SuiviJustificationsAbsRetards;
 DonneesListe_SuiviJustificationsAbsRetards.colonnes = {
 	genre: "DL_JustifAbsRet_genre",
 	eleve: "DL_JustifAbsRet_eleve",
@@ -480,6 +526,7 @@ DonneesListe_SuiviJustificationsAbsRetards.colonnes = {
 	justifieParParents: "DL_JustifAbsRet_justifieParParent",
 	acceptationEtablissement: "DL_JustifAbsRet_acceptationEtab",
 	dureeAbsenceCours: "DL_JustifAbsRet_dureeAbsCours",
+	documentsVieScolaire: "DL_JustifAbsRet_pjVieScolaire",
 	matieresAffectee: "DL_JustifAbsRet_matieres",
 	estOuvert: "DL_JustifAbsRet_estOuvert",
 	demiJourneesBulletin: "DL_JustifAbsRet_DJBulletin",
@@ -490,22 +537,22 @@ DonneesListe_SuiviJustificationsAbsRetards.colonnes = {
 function _afficherConfirmationSuppressionDocJoint(aDocJoint, aSuccessCallback) {
 	GApplication.getMessage()
 		.afficher({
-			type: EGenreBoiteMessage.Confirmation,
-			message: GChaine.format(
-				GTraductions.getValeur("selecteurPJ.msgConfirmPJ"),
+			type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+			message: ObjetChaine_1.GChaine.format(
+				ObjetTraduction_1.GTraductions.getValeur("selecteurPJ.msgConfirmPJ"),
 				[aDocJoint.getLibelle()],
 			),
 		})
 		.then((aGenreAction) => {
-			if (aGenreAction === EGenreAction.Valider) {
+			if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
 				aSuccessCallback();
 			}
 		});
 }
-function _ouvrirDocumentJointParent(aDocJoint) {
+function _ouvrirDocumentJoint(aDocJoint) {
 	window.open(
-		GChaine.creerUrlBruteLienExterne(aDocJoint, {
-			genreRessource: EGenreRessource.DocJointEleve,
+		ObjetChaine_1.GChaine.creerUrlBruteLienExterne(aDocJoint, {
+			genreRessource: Enumere_Ressource_1.EGenreRessource.DocJointEleve,
 		}),
 	);
 }
@@ -515,8 +562,12 @@ function _getHtmlMotif(aMotif, aAvecCouleur) {
 		if (aAvecCouleur) {
 			const lStylesCouleurMotif = [];
 			if (!!aMotif.couleur) {
-				lStylesCouleurMotif.push(GStyle.composeCouleurBordure("black"));
-				lStylesCouleurMotif.push(GStyle.composeCouleurFond(aMotif.couleur));
+				lStylesCouleurMotif.push(
+					ObjetStyle_1.GStyle.composeCouleurBordure("black"),
+				);
+				lStylesCouleurMotif.push(
+					ObjetStyle_1.GStyle.composeCouleurFond(aMotif.couleur),
+				);
 			}
 			H.push(
 				'<span class="InlineBlock AlignementMilieuVertical MargeDroit" style="width: 12px; height: 12px; ',
@@ -534,4 +585,3 @@ function _getHtmlMotif(aMotif, aAvecCouleur) {
 	}
 	return H.join("");
 }
-module.exports = { DonneesListe_SuiviJustificationsAbsRetards };

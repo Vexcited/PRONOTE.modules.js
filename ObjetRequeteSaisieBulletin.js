@@ -1,11 +1,9 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetSerialiser } = require("ObjetSerialiser.js");
-class ObjetRequeteSaisieBulletin extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieBulletin = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetSerialiser_1 = require("ObjetSerialiser");
+class ObjetRequeteSaisieBulletin extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParam) {
 		this.JSON = {
 			classe: aParam.classe,
@@ -18,7 +16,8 @@ class ObjetRequeteSaisieBulletin extends ObjetRequeteSaisie {
 			});
 			this.JSON.listeServices = aParam.listeDonnees;
 		}
-		const lListeAppreciationsPiedDeBulletin = new ObjetListeElements();
+		const lListeAppreciationsPiedDeBulletin =
+			new ObjetListeElements_1.ObjetListeElements();
 		if (!!aParam.listeGeneral) {
 			aParam.listeGeneral.parcourir((D) => {
 				lListeAppreciationsPiedDeBulletin.add(D.ListeAppreciations);
@@ -52,7 +51,8 @@ class ObjetRequeteSaisieBulletin extends ObjetRequeteSaisie {
 			aParam.parcoursEducatif.listeParcours.count() > 0
 		) {
 			aParam.parcoursEducatif.listeParcours.setSerialisateurJSON({
-				methodeSerialisation: new ObjetSerialiser().parcoursEducatif,
+				methodeSerialisation: new ObjetSerialiser_1.ObjetSerialiser()
+					.parcoursEducatif,
 			});
 			this.JSON.parcoursEducatif = {
 				listeParcours: aParam.parcoursEducatif.listeParcours,
@@ -78,12 +78,13 @@ class ObjetRequeteSaisieBulletin extends ObjetRequeteSaisie {
 		}
 		if (aParam.listeAttestations) {
 			aParam.listeAttestations.setSerialisateurJSON({
-				methodeSerialisation: new ObjetSerialiser().serialiseAttestation,
+				methodeSerialisation: new ObjetSerialiser_1.ObjetSerialiser()
+					.serialiseAttestation,
 			});
 			this.JSON.listeAttestations = aParam.listeAttestations;
 		}
 		if (!!aParam.listeTypesAppreciations) {
-			const lObjetSerialiser = new ObjetSerialiser();
+			const lObjetSerialiser = new ObjetSerialiser_1.ObjetSerialiser();
 			aParam.listeTypesAppreciations.setSerialisateurJSON({
 				ignorerEtatsElements: true,
 				methodeSerialisation:
@@ -115,7 +116,11 @@ class ObjetRequeteSaisieBulletin extends ObjetRequeteSaisie {
 		return this.appelAsynchrone();
 	}
 }
-Requetes.inscrire("SaisieBulletin", ObjetRequeteSaisieBulletin);
+exports.ObjetRequeteSaisieBulletin = ObjetRequeteSaisieBulletin;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieBulletin",
+	ObjetRequeteSaisieBulletin,
+);
 function _ajouterService(aElement, aJSON) {
 	aElement.ListeAppreciations.setSerialisateurJSON({
 		methodeSerialisation: _ajouterPeriode,
@@ -148,4 +153,3 @@ function _ajouterPeriode(aElement, aJSON) {
 		aJSON.periode = aElement.periode;
 	}
 }
-module.exports = ObjetRequeteSaisieBulletin;

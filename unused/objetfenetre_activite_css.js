@@ -1,0 +1,22 @@
+exports.StylesObjetFenetre_Activite = void 0;
+exports.StylesObjetFenetre_Activite = {
+	FenetreActivite: "FenetreActivite",
+	FAct_Zone: "FAct_Zone",
+	FAct_Documents: "FAct_Documents",
+	FAct_DocTitre: "FAct_DocTitre",
+	FAct_DocBouton: "FAct_DocBouton",
+	FAct_DocContent: "FAct_DocContent",
+	FAct_Classes: "FAct_Classes",
+	FAct_ClassesConteneur: "FAct_ClassesConteneur",
+	FAct_ClassesContenu: "FAct_ClassesContenu",
+	FAct_QCM: "FAct_QCM",
+	FAct_QCMBouton: "FAct_QCMBouton",
+	FAct_QCMTitre: "FAct_QCMTitre",
+	FAct_ModalitesInactif: "FAct_ModalitesInactif",
+	FAct_QCMConteneur: "FAct_QCMConteneur",
+	FAct_QCMContenu: "FAct_QCMContenu",
+	FAct_QCMInfo: "FAct_QCMInfo",
+	FAct_QCMLibelle: "FAct_QCMLibelle",
+	FAct_Inactif: "FAct_Inactif",
+	FAct_ClassesChip: "FAct_ClassesChip",
+};

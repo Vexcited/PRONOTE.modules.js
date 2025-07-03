@@ -1,54 +1,53 @@
-const {
-	ObjetRequetePageEquipePedagogique,
-} = require("ObjetRequetePageEquipePedagogique.js");
-const {
-	DonneesListe_EquipePedagogique,
-} = require("DonneesListe_EquipePedagogique.js");
-const { ObjetInvocateur, Invocateur } = require("Invocateur.js");
-const { EGenreImpression } = require("Enumere_GenreImpression.js");
-const { EStructureAffichage } = require("Enumere_StructureAffichage.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { InterfacePage } = require("InterfacePage.js");
-const { TypeHttpGenerationPDFSco } = require("TypeHttpGenerationPDFSco.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const {
-	ObjetAffichagePageAvecMenusDeroulants,
-} = require("InterfacePageAvecMenusDeroulants.js");
-const { UtilitaireHtml } = require("UtilitaireHtml.js");
-const { GUID } = require("GUID.js");
-const { ObjetTri } = require("ObjetTri.js");
-const {
-	UtilitaireFormaterListeParMatiereEtFonction,
-} = require("UtilitaireInterfacePageEquipePedagogique.js");
-const EGenreAffichage = { nom: "nom", matiere: "matiere" };
-class InterfacePageEquipePedagogique extends InterfacePage {
-	constructor(...aParams) {
-		super(...aParams);
+exports.InterfacePageEquipePedagogique = void 0;
+const ObjetRequetePageEquipePedagogique_1 = require("ObjetRequetePageEquipePedagogique");
+const DonneesListe_EquipePedagogique_1 = require("DonneesListe_EquipePedagogique");
+const Invocateur_1 = require("Invocateur");
+const Enumere_GenreImpression_1 = require("Enumere_GenreImpression");
+const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const InterfacePage_1 = require("InterfacePage");
+const TypeHttpGenerationPDFSco_1 = require("TypeHttpGenerationPDFSco");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const InterfacePageAvecMenusDeroulants_1 = require("InterfacePageAvecMenusDeroulants");
+const UtilitaireHtml_1 = require("UtilitaireHtml");
+const ObjetTri_1 = require("ObjetTri");
+const UtilitaireInterfacePageEquipePedagogique_1 = require("UtilitaireInterfacePageEquipePedagogique");
+const AccessApp_1 = require("AccessApp");
+var EGenreAffichage;
+(function (EGenreAffichage) {
+	EGenreAffichage["nom"] = "nom";
+	EGenreAffichage["matiere"] = "matiere";
+})(EGenreAffichage || (EGenreAffichage = {}));
+class InterfacePageEquipePedagogique extends InterfacePage_1.InterfacePage {
+	constructor() {
+		super(...arguments);
+		this.etatUtilEspac = (0, AccessApp_1.getApp)().getEtatUtilisateur();
 		this.idPrincipal = this.Nom + "_Principal";
-		this.listeProfesseurs = new ObjetListeElements();
-		this.idZoneChxModeAff = GUID.getId();
+		this.listeProfesseurs = new ObjetListeElements_1.ObjetListeElements();
+		this.idZoneChxModeAff = `${this.Nom}_idZoneChxModeAff`;
 	}
 	construireInstances() {
 		if (
-			[EGenreEspace.Professeur, EGenreEspace.Etablissement].includes(
-				GEtatUtilisateur.GenreEspace,
-			)
+			[
+				Enumere_Espace_1.EGenreEspace.Professeur,
+				Enumere_Espace_1.EGenreEspace.Etablissement,
+			].includes(this.etatUtilEspac.GenreEspace)
 		) {
 			this.identTripleCombo = this.add(
-				ObjetAffichagePageAvecMenusDeroulants,
-				_evenementSurDernierMenuDeroulant.bind(this),
-				_initialiserTripleCombo,
+				InterfacePageAvecMenusDeroulants_1.ObjetAffichagePageAvecMenusDeroulants,
+				this._evenementSurDernierMenuDeroulant.bind(this),
+				this._initialiserTripleCombo,
 			);
 		}
 		this.identListeEquipePedagogique = this.add(
-			ObjetListe,
+			ObjetListe_1.ObjetListe,
 			null,
-			_initialiserListeEquipePedagogique,
+			this._initialiserListeEquipePedagogique,
 		);
-		if (!!this.identTripleCombo) {
+		if (this.getInstance(this.identTripleCombo)) {
 			this.IdPremierElement = this.getInstance(
 				this.identTripleCombo,
 			).getPremierElement();
@@ -63,20 +62,23 @@ class InterfacePageEquipePedagogique extends InterfacePage {
 		if (this.getInstance(this.identTripleCombo)) {
 			this.AddSurZone = [this.identTripleCombo];
 		}
-		this.GenreStructure = EStructureAffichage.Autre;
+		this.GenreStructure =
+			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 		const lListeRadios = [];
 		lListeRadios.push({
-			libelle: GTraductions.getValeur("EquipePedagogique.liste.titre.nom"),
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
+				"EquipePedagogique.liste.titre.nom",
+			),
 			value: EGenreAffichage.nom,
 		});
 		lListeRadios.push({
-			libelle: GTraductions.getValeur(
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
 				"EquipePedagogique.liste.titre.matiereFonction",
 			),
 			value: EGenreAffichage.matiere,
 		});
 		this.AddSurZone.push({
-			html: UtilitaireHtml.composeGroupeRadiosBoutons({
+			html: UtilitaireHtml_1.UtilitaireHtml.composeGroupeRadiosBoutons({
 				id: this.idZoneChxModeAff,
 				listeRadios: lListeRadios,
 				selectedValue: this.modeAffichage,
@@ -88,112 +90,118 @@ class InterfacePageEquipePedagogique extends InterfacePage {
 	}
 	composePageEquipePedagogique() {
 		const H = [];
-		H.push(
-			'<div class="EspaceGauche" style="',
-			GNavigateur.isLayoutTactile ? "" : "height :100%;",
-			'">',
-		);
+		H.push('<div class="EspaceGauche" style="', "height :100%;", '">');
 		H.push(
 			'<div id="',
 			this.getInstance(this.identListeEquipePedagogique).getNom(),
-			'" class="p-top full-height"  style="max-width:130rem;"></div>',
+			'" class="p-top full-height" style="max-width:130rem;"></div>',
 		);
 		H.push("</div>");
 		return H.join("");
 	}
 	recupererDonnees() {
 		if (!this.getInstance(this.identTripleCombo)) {
-			lancerRequeteEquipePedagogique.call(this);
+			this.lancerRequeteEquipePedagogique();
 		}
 	}
 	actionSurRecupererDonnees(aListe) {
-		Invocateur.evenement(
-			ObjetInvocateur.events.activationImpression,
-			EGenreImpression.GenerationPDF,
+		Invocateur_1.Invocateur.evenement(
+			Invocateur_1.ObjetInvocateur.events.activationImpression,
+			Enumere_GenreImpression_1.EGenreImpression.GenerationPDF,
 			this,
-			_getParametresPDF,
+			this._getParametresPDF.bind(this),
 		);
 		$("#" + this.idZoneChxModeAff.escapeJQ() + " > input")
 			.off("change")
-			.on("change", _evenementChxModeAff.bind(this));
+			.on("change", this._evenementChxModeAff.bind(this));
 		this.listeProfesseurs = aListe;
 		this.listeParMatiere =
-			UtilitaireFormaterListeParMatiereEtFonction.formaterListeParMatiere(
+			UtilitaireInterfacePageEquipePedagogique_1.UtilitaireFormaterListeParMatiereEtFonction.formaterListeParMatiere(
 				this.listeProfesseurs,
 			);
 		this.listeProfesseurs.setTri([
-			ObjetTri.init((D) => {
-				return D.getGenre() !== EGenreRessource.Enseignant;
+			ObjetTri_1.ObjetTri.init((D) => {
+				return D.getGenre() !== Enumere_Ressource_1.EGenreRessource.Enseignant;
 			}),
-			ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.init((D) => {
 				return !!D.estEnleve;
 			}),
-			ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.init((D) => {
 				return D.getPosition();
 			}),
 		]);
 		this.listeProfesseurs.trier();
 		this.getInstance(this.identListeEquipePedagogique).setDonnees(
-			new DonneesListe_EquipePedagogique(this.listeProfesseurs, true),
+			new DonneesListe_EquipePedagogique_1.DonneesListe_EquipePedagogique(
+				this.listeProfesseurs,
+				true,
+			),
 		);
 	}
-}
-function _evenementChxModeAff(aObjet) {
-	const lModeAffichageSelectionne = $(aObjet.target).val();
-	let lListe;
-	let boolEstAffichageParNom;
-	switch (lModeAffichageSelectionne) {
-		case EGenreAffichage.nom:
-			lListe = this.listeProfesseurs;
-			boolEstAffichageParNom = true;
-			break;
-		case EGenreAffichage.matiere:
-			lListe = this.listeParMatiere;
-			boolEstAffichageParNom = false;
-			break;
-		default:
-			break;
+	_evenementChxModeAff(aObjet) {
+		const lModeAffichageSelectionne = $(aObjet.target).val();
+		let lListe;
+		let boolEstAffichageParNom;
+		switch (lModeAffichageSelectionne) {
+			case EGenreAffichage.nom:
+				lListe = this.listeProfesseurs;
+				boolEstAffichageParNom = true;
+				break;
+			case EGenreAffichage.matiere:
+				lListe = this.listeParMatiere;
+				boolEstAffichageParNom = false;
+				break;
+			default:
+				break;
+		}
+		this.getInstance(this.identListeEquipePedagogique).setDonnees(
+			new DonneesListe_EquipePedagogique_1.DonneesListe_EquipePedagogique(
+				lListe,
+				boolEstAffichageParNom,
+			),
+		);
+		this.modeAffichage = lModeAffichageSelectionne;
 	}
-	this.getInstance(this.identListeEquipePedagogique).setDonnees(
-		new DonneesListe_EquipePedagogique(lListe, boolEstAffichageParNom),
-	);
-	this.modeAffichage = lModeAffichageSelectionne;
-}
-function _initialiserTripleCombo(aInstance) {
-	aInstance.setParametres([EGenreRessource.Classe]);
-}
-function _evenementSurDernierMenuDeroulant() {
-	lancerRequeteEquipePedagogique.call(
-		this,
-		GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Classe),
-	);
-}
-function _initialiserListeEquipePedagogique(aInstance) {
-	aInstance.setOptionsListe({ skin: ObjetListe.skin.flatDesign });
-}
-function lancerRequeteEquipePedagogique(aClasse) {
-	Invocateur.evenement(
-		ObjetInvocateur.events.activationImpression,
-		EGenreImpression.Aucune,
-	);
-	let lParamsRequete;
-	if (aClasse) {
-		lParamsRequete = { classe: aClasse };
+	_initialiserTripleCombo(aInstance) {
+		aInstance.setParametres([Enumere_Ressource_1.EGenreRessource.Classe]);
 	}
-	new ObjetRequetePageEquipePedagogique(
-		this,
-		this.actionSurRecupererDonnees,
-	).lancerRequete(lParamsRequete);
-}
-function _getParametresPDF() {
-	const lParamsPDF = {
-		genreGenerationPDF: TypeHttpGenerationPDFSco.EquipePedagogique,
-	};
-	if (!GEtatUtilisateur.estEspacePourEleve()) {
-		lParamsPDF.classe = GEtatUtilisateur.Navigation.getRessource(
-			EGenreRessource.Classe,
+	_evenementSurDernierMenuDeroulant() {
+		this.lancerRequeteEquipePedagogique(
+			this.etatUtilEspac.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.Classe,
+			),
 		);
 	}
-	return lParamsPDF;
+	_initialiserListeEquipePedagogique(aInstance) {
+		aInstance.setOptionsListe({
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+		});
+	}
+	lancerRequeteEquipePedagogique(aClasse) {
+		Invocateur_1.Invocateur.evenement(
+			Invocateur_1.ObjetInvocateur.events.activationImpression,
+			Enumere_GenreImpression_1.EGenreImpression.Aucune,
+		);
+		let lParamsRequete;
+		if (aClasse) {
+			lParamsRequete = { classe: aClasse };
+		}
+		new ObjetRequetePageEquipePedagogique_1.ObjetRequetePageEquipePedagogique(
+			this,
+			this.actionSurRecupererDonnees,
+		).lancerRequete(lParamsRequete);
+	}
+	_getParametresPDF() {
+		const lParamsPDF = {
+			genreGenerationPDF:
+				TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.EquipePedagogique,
+		};
+		if (!this.etatUtilEspac.estEspacePourEleve()) {
+			lParamsPDF.classe = this.etatUtilEspac.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.Classe,
+			);
+		}
+		return lParamsPDF;
+	}
 }
-module.exports = InterfacePageEquipePedagogique;
+exports.InterfacePageEquipePedagogique = InterfacePageEquipePedagogique;

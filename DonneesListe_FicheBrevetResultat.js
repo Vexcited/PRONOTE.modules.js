@@ -1,5 +1,6 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-class DonneesListe_FicheBrevetResultat extends ObjetDonneesListe {
+exports.DonneesListe_FicheBrevetResultat = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+class DonneesListe_FicheBrevetResultat extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees) {
 		super(aDonnees);
 		this.setOptions({
@@ -27,9 +28,21 @@ class DonneesListe_FicheBrevetResultat extends ObjetDonneesListe {
 		return "";
 	}
 }
-DonneesListe_FicheBrevetResultat.colonnes = {
-	competences: "FicheBrevetEnseignCompl",
-	objectifs: "FicheBrevetEnseignComplObjectif",
-	points: "FicheBrevetEnseignComplPoint",
-};
-module.exports = { DonneesListe_FicheBrevetResultat };
+exports.DonneesListe_FicheBrevetResultat = DonneesListe_FicheBrevetResultat;
+(function (DonneesListe_FicheBrevetResultat) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["competences"] = "FicheBrevetEnseignCompl";
+		colonnes["objectifs"] = "FicheBrevetEnseignComplObjectif";
+		colonnes["points"] = "FicheBrevetEnseignComplPoint";
+	})(
+		(colonnes =
+			DonneesListe_FicheBrevetResultat.colonnes ||
+			(DonneesListe_FicheBrevetResultat.colonnes = {})),
+	);
+})(
+	DonneesListe_FicheBrevetResultat ||
+		(exports.DonneesListe_FicheBrevetResultat =
+			DonneesListe_FicheBrevetResultat =
+				{}),
+);

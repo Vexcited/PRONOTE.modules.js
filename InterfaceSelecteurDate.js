@@ -7,7 +7,6 @@ const ObjetInterface_1 = require("ObjetInterface");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetElement_1 = require("ObjetElement");
 const ObjetTraduction_1 = require("ObjetTraduction");
-const tag_1 = require("tag");
 const MoteurSelecteurDate_1 = require("MoteurSelecteurDate");
 const ToucheClavier_1 = require("ToucheClavier");
 class InterfaceSelecteurDate extends ObjetInterface_1.ObjetInterface {
@@ -150,24 +149,31 @@ class InterfaceSelecteurDate extends ObjetInterface_1.ObjetInterface {
 		if (this.dateCourante === null || this.dateCourante === undefined) {
 			return "";
 		}
-		const lAvecComboAnnee = this._avecComboAnnee();
-		const T = [];
-		T.push(
-			(0, tag_1.tag)(
-				"div",
-				{ class: ["combos-container"] },
-				(0, tag_1.tag)("ie-combo", {
-					"ie-model": "comboMois",
+		const lStrComboAnnee = [];
+		if (this._avecComboAnnee()) {
+			lStrComboAnnee.push(
+				IE.jsx.str("ie-combo", {
+					"ie-model": "comboAnnee",
 					class: "combo-selecteur",
 				}),
-				lAvecComboAnnee
-					? (0, tag_1.tag)("ie-combo", {
-							"ie-model": "comboAnnee",
-							class: "combo-selecteur",
-						})
-					: "",
+			);
+		}
+		const T = [];
+		T.push(
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"div",
+					{ class: "combos-container" },
+					IE.jsx.str("ie-combo", {
+						"ie-model": "comboMois",
+						class: "combo-selecteur",
+					}),
+					lStrComboAnnee.join(""),
+				),
+				IE.jsx.str("div", { id: this.idJours }),
 			),
-			(0, tag_1.tag)("div", { id: this.idJours }),
 		);
 		return T.join("");
 	}

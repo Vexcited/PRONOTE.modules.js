@@ -18,6 +18,7 @@ const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
 const ObjetHtml_1 = require("ObjetHtml");
 const ObjetFenetre_EditionUrl_1 = require("ObjetFenetre_EditionUrl");
 const Enumere_Action_1 = require("Enumere_Action");
+const AccessApp_1 = require("AccessApp");
 class DonneesListe_PieceJointeCP extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(
 		aDonnees,
@@ -50,7 +51,7 @@ class DonneesListe_PieceJointeCP extends ObjetDonneesListe_1.ObjetDonneesListe {
 			D.existeNumero()
 		);
 	}
-	getCouleurCellule() {
+	getCouleurCellule(aParams) {
 		return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
 	}
 	initArticle(D, V) {
@@ -196,13 +197,19 @@ class DonneesListe_PieceJointeCP extends ObjetDonneesListe_1.ObjetDonneesListe {
 								aParams.article,
 								{ genreRessource: this.genreRessourceDocJoint },
 							);
-							lValeur.push('<a href="', lURL, '" target="_blank">');
 							lValeur.push(
-								'<i class="icon_download_alt" style="',
-								IE.estMobile ? "font-size:1.6rem" : "font-size:1.8rem",
-								'"></i>',
+								IE.jsx.str(
+									"a",
+									{ href: lURL, target: "_blank" },
+									IE.jsx.str("i", {
+										class: "icon_download_alt",
+										style: { fontSize: IE.estMobile ? "1.6rem" : "1.8rem" },
+										title: ObjetTraduction_1.GTraductions.getValeur(
+											"selecteurPJ.Telecharger",
+										),
+									}),
+								),
 							);
-							lValeur.push("</a>");
 						}
 					} else {
 						if (!!aParams.article.descriptif) {
@@ -517,10 +524,12 @@ class ObjetFenetre_PieceJointeCP extends ObjetFenetre_1.ObjetFenetre {
 					this.callback.appel();
 				}
 			} else {
-				GApplication.getMessage().afficher({
-					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-					message: lControleAjoutDoc.msg,
-				});
+				(0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+						message: lControleAjoutDoc.msg,
+					});
 			}
 		}
 	}
@@ -625,7 +634,7 @@ class ObjetFenetre_PieceJointeCP extends ObjetFenetre_1.ObjetFenetre {
 				this.optionsFenetre.largeur,
 			);
 		}
-		const lOptionsFenetre = {
+		this.setOptionsFenetre({
 			listeBoutons: this.parametres.modeLien
 				? this.listeBoutonsModeLien
 				: this.listeBoutons,
@@ -635,8 +644,7 @@ class ObjetFenetre_PieceJointeCP extends ObjetFenetre_1.ObjetFenetre {
 					? ObjetTraduction_1.GTraductions.getValeur("selecteurPJ.siteInternet")
 					: ObjetTraduction_1.GTraductions.getValeur("selecteurPJ.nomDocument")
 				: "",
-		};
-		this.setOptionsFenetre(lOptionsFenetre);
+		});
 		this.afficher();
 		this.surFixerTaille();
 		ObjetHtml_1.GHtml.setDisplay(this.getNomInstanceListe(), !lEstModeFlat);
@@ -687,7 +695,6 @@ class ObjetFenetre_PieceJointeCP extends ObjetFenetre_1.ObjetFenetre {
 			this.parametres.avecInActifVisible,
 			this.parametres.modeLien,
 		).setOptions({
-			avecEtatSaisie: this.parametres.avecEtatSaisie,
 			optionsSelecFile: this.parametres.optionsSelecFile,
 			listeFichiers: this.ListeFichiers,
 			avecMultiSelection: this.parametres.modeLien,
@@ -783,7 +790,8 @@ class ObjetFenetre_PieceJointeCP extends ObjetFenetre_1.ObjetFenetre {
 		}
 	}
 	_supprimerSiteWeb(aParam) {
-		GApplication.getMessage()
+		(0, AccessApp_1.getApp)()
+			.getMessage()
 			.afficher({
 				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
 				message: ObjetTraduction_1.GTraductions.getValeur(
@@ -873,20 +881,25 @@ class ObjetFenetre_PieceJointeCP extends ObjetFenetre_1.ObjetFenetre {
 									}
 								}
 								if (lEstUnDoublon && lMsg !== "") {
-									GApplication.getMessage().afficher({
-										type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-										message: lMsg,
-									});
+									(0, AccessApp_1.getApp)()
+										.getMessage()
+										.afficher({
+											type: Enumere_BoiteMessage_1.EGenreBoiteMessage
+												.Information,
+											message: lMsg,
+										});
 								}
 								this.actualiserDonneesListe({
 									listePiecesJointes: this.ListePiecesJointes,
 								});
 							} else {
-								GApplication.getMessage().afficher({
-									type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-									message:
-										ObjetTraduction_1.GTraductions.getValeur("URLIncorrecte"),
-								});
+								(0, AccessApp_1.getApp)()
+									.getMessage()
+									.afficher({
+										type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+										message:
+											ObjetTraduction_1.GTraductions.getValeur("URLIncorrecte"),
+									});
 							}
 						}
 					},

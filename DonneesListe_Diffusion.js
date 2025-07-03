@@ -1,25 +1,19 @@
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { EGenreCommandeMenu } = require("Enumere_CommandeMenu.js");
-const { GChaine } = require("ObjetChaine.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-const { ETypeAffEnModeMixte } = require("Enumere_MenuCtxModeMixte.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { EGenreAction } = require("Enumere_Action.js");
-const { tag } = require("tag.js");
-class DonneesListe_Diffusion extends ObjetDonneesListeFlatDesign {
+exports.DonneesListe_Diffusion = void 0;
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const Enumere_CommandeMenu_1 = require("Enumere_CommandeMenu");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const Enumere_MenuCtxModeMixte_1 = require("Enumere_MenuCtxModeMixte");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_Action_1 = require("Enumere_Action");
+const AccessApp_1 = require("AccessApp");
+class DonneesListe_Diffusion extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aParams) {
 		super(aParams.donnees);
 		this.callbackMenuContextuel = aParams.evenementMenuContextuel;
 		this.uniquementMesListes = aParams.uniquementMesListes || false;
-		this.creerIndexUnique(["Libelle", "libelleAuteur"]);
-		this.setOptions({
-			avecEvnt_Selection: true,
-			avecEvnt_ApresSuppression: true,
-		});
+		this.setOptions({ avecEvnt_Selection: true });
 	}
 	setUniquementMesListes(aUniquementMesListes) {
 		this.uniquementMesListes = aUniquementMesListes;
@@ -37,35 +31,51 @@ class DonneesListe_Diffusion extends ObjetDonneesListeFlatDesign {
 		const H = [];
 		if (aParams.article && aParams.article.libelleAuteur) {
 			H.push(
-				tag("div", { class: ["diff_auteur"] }, aParams.article.libelleAuteur),
+				IE.jsx.str(
+					"div",
+					{ class: "diff_auteur" },
+					aParams.article.libelleAuteur,
+				),
 			);
 		}
 		return H.join("");
 	}
-	avecSuppression(aArticle) {
-		return this.options.avecSuppression && aArticle.estAuteur;
-	}
 	getZoneComplementaire(aParams) {
-		return tag("div", { class: ["icones-conteneur", "tiny"] }, () => {
-			if (aParams.article.estPublique) {
-				const lTexte = GTraductions.getValeur("listeDiffusion.hintpartage");
-				return tag("i", {
+		const lContenu = [];
+		if (aParams.article.estPublique) {
+			const lTexte = ObjetTraduction_1.GTraductions.getValeur(
+				"listeDiffusion.hintpartage",
+			);
+			lContenu.push(
+				IE.jsx.str("i", {
 					class: "icon_sondage_bibliotheque",
-					title: GChaine.toTitle(lTexte),
-					"aria-label": lTexte,
-				});
-			}
-		});
+					"ie-tooltiplabel": lTexte,
+					role: "img",
+				}),
+			);
+		}
+		return IE.jsx.str(
+			"div",
+			{ class: "icones-conteneur tiny" },
+			lContenu.join(""),
+		);
 	}
 	remplirMenuContextuel(aParametres) {
 		if (!aParametres.menuContextuel) {
 			return;
 		}
+		const lApp = (0, AccessApp_1.getApp)();
 		if (aParametres.article && aParametres.article.estAuteur) {
-			if (GApplication.droits.get(TypeDroits.listeDiffusion.avecPublication)) {
+			if (
+				lApp.droits.get(
+					ObjetDroitsPN_1.TypeDroits.listeDiffusion.avecPublication,
+				)
+			) {
 				const lTitre = aParametres.article.estPublique
-					? GTraductions.getValeur("listeDiffusion.nepaspartager")
-					: GTraductions.getValeur("listeDiffusion.partager");
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"listeDiffusion.nepaspartager",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur("listeDiffusion.partager");
 				const lAction = aParametres.article.estPublique
 					? DonneesListe_Diffusion.genreAction.departager
 					: DonneesListe_Diffusion.genreAction.partager;
@@ -78,20 +88,21 @@ class DonneesListe_Diffusion extends ObjetDonneesListeFlatDesign {
 					(aItemMenu) => {
 						if (aItemMenu && aItemMenu.data) {
 							aItemMenu.data.estPublique = !aItemMenu.data.estPublique;
-							aItemMenu.data.setEtat(EGenreEtat.Modification);
+							aItemMenu.data.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 							this.callbackMenuContextuel(aItemMenu);
 						}
 					},
 					{
 						icon: lIcon + " i-small",
 						Numero: lAction,
-						typeAffEnModeMixte: ETypeAffEnModeMixte.icon,
+						typeAffEnModeMixte:
+							Enumere_MenuCtxModeMixte_1.ETypeAffEnModeMixte.icon,
 						data: aParametres.article,
 					},
 				);
 			}
 			aParametres.menuContextuel.add(
-				GTraductions.getValeur("listeDiffusion.renommer"),
+				ObjetTraduction_1.GTraductions.getValeur("listeDiffusion.renommer"),
 				true,
 				(aItemMenu) => {
 					this.callbackMenuContextuel(aItemMenu);
@@ -99,25 +110,27 @@ class DonneesListe_Diffusion extends ObjetDonneesListeFlatDesign {
 				{
 					icon: "icon_pencil i-small",
 					Numero: DonneesListe_Diffusion.genreAction.renommer,
-					typeAffEnModeMixte: ETypeAffEnModeMixte.icon,
+					typeAffEnModeMixte:
+						Enumere_MenuCtxModeMixte_1.ETypeAffEnModeMixte.icon,
 					data: aParametres.article,
 				},
 			);
 		}
 		aParametres.menuContextuel.add(
-			GTraductions.getValeur("liste.supprimer"),
+			ObjetTraduction_1.GTraductions.getValeur("liste.supprimer"),
 			aParametres.article.estAuteur,
 			(aItemMenu) => {
 				if (aItemMenu && aItemMenu.data) {
-					const lMsgConfirmSuppression = GTraductions.getValeur(
-						"liste.suppressionSelection",
-					);
-					GApplication.getMessage().afficher({
-						type: EGenreBoiteMessage.Confirmation,
+					const lMsgConfirmSuppression =
+						ObjetTraduction_1.GTraductions.getValeur(
+							"liste.suppressionSelection",
+						);
+					lApp.getMessage().afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
 						message: lMsgConfirmSuppression,
 						callback: (aGenreAction) => {
-							if (aGenreAction === EGenreAction.Valider) {
-								aItemMenu.data.setEtat(EGenreEtat.Suppression);
+							if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
+								aItemMenu.data.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 								this.callbackMenuContextuel(aItemMenu);
 							}
 						},
@@ -126,16 +139,20 @@ class DonneesListe_Diffusion extends ObjetDonneesListeFlatDesign {
 			},
 			{
 				icon: "icon_trash",
-				Numero: EGenreCommandeMenu.Suppression,
-				typeAffEnModeMixte: ETypeAffEnModeMixte.icon,
+				Numero: Enumere_CommandeMenu_1.EGenreCommandeMenu.Suppression,
+				typeAffEnModeMixte: Enumere_MenuCtxModeMixte_1.ETypeAffEnModeMixte.icon,
 				data: aParametres.article,
 			},
 		);
 		aParametres.menuContextuel.addSeparateur();
 		if (!IE.estMobile) {
-			if (GApplication.droits.get(TypeDroits.actualite.avecSaisieActualite)) {
+			if (
+				lApp.droits.get(
+					ObjetDroitsPN_1.TypeDroits.actualite.avecSaisieActualite,
+				)
+			) {
 				aParametres.menuContextuel.add(
-					GTraductions.getValeur("actualites.creerInfo"),
+					ObjetTraduction_1.GTraductions.getValeur("actualites.creerInfo"),
 					true,
 					(aArticle) => {
 						if (aArticle) {
@@ -145,14 +162,19 @@ class DonneesListe_Diffusion extends ObjetDonneesListeFlatDesign {
 					{
 						icon: "icon_diffuser_information i-small",
 						Numero: DonneesListe_Diffusion.genreAction.diffuserInformation,
-						typeAffEnModeMixte: ETypeAffEnModeMixte.icon,
+						typeAffEnModeMixte:
+							Enumere_MenuCtxModeMixte_1.ETypeAffEnModeMixte.icon,
 						data: aParametres.article,
 					},
 				);
 			}
-			if (GApplication.droits.get(TypeDroits.communication.avecDiscussion)) {
+			if (
+				lApp.droits.get(ObjetDroitsPN_1.TypeDroits.communication.avecDiscussion)
+			) {
 				aParametres.menuContextuel.add(
-					GTraductions.getValeur("actualites.discussion.demarrer"),
+					ObjetTraduction_1.GTraductions.getValeur(
+						"actualites.discussion.demarrer",
+					),
 					true,
 					(aArticle) => {
 						if (aArticle) {
@@ -162,14 +184,19 @@ class DonneesListe_Diffusion extends ObjetDonneesListeFlatDesign {
 					{
 						icon: "icon_nouvelle_discussion i-small",
 						Numero: DonneesListe_Diffusion.genreAction.demarrerDiscussion,
-						typeAffEnModeMixte: ETypeAffEnModeMixte.icon,
+						typeAffEnModeMixte:
+							Enumere_MenuCtxModeMixte_1.ETypeAffEnModeMixte.icon,
 						data: aParametres.article,
 					},
 				);
 			}
-			if (GApplication.droits.get(TypeDroits.actualite.avecSaisieActualite)) {
+			if (
+				lApp.droits.get(
+					ObjetDroitsPN_1.TypeDroits.actualite.avecSaisieActualite,
+				)
+			) {
 				aParametres.menuContextuel.add(
-					GTraductions.getValeur("actualites.creerSondage"),
+					ObjetTraduction_1.GTraductions.getValeur("actualites.creerSondage"),
 					true,
 					(aArticle) => {
 						if (aArticle) {
@@ -179,7 +206,8 @@ class DonneesListe_Diffusion extends ObjetDonneesListeFlatDesign {
 					{
 						icon: "icon_diffuser_sondage i-small",
 						Numero: DonneesListe_Diffusion.genreAction.effectuerSondage,
-						typeAffEnModeMixte: ETypeAffEnModeMixte.icon,
+						typeAffEnModeMixte:
+							Enumere_MenuCtxModeMixte_1.ETypeAffEnModeMixte.icon,
 						data: aParametres.article,
 					},
 				);
@@ -190,13 +218,24 @@ class DonneesListe_Diffusion extends ObjetDonneesListeFlatDesign {
 		this.callbackMenuContextuel(aParametres.ligneMenu);
 	}
 }
-DonneesListe_Diffusion.genreAction = {
-	diffuserInformation: 1,
-	demarrerDiscussion: 2,
-	effectuerSondage: 3,
-	partager: 4,
-	departager: 5,
-	renommer: 6,
-	ajouterpublic: 7,
-};
-module.exports = { DonneesListe_Diffusion };
+exports.DonneesListe_Diffusion = DonneesListe_Diffusion;
+(function (DonneesListe_Diffusion) {
+	let genreAction;
+	(function (genreAction) {
+		genreAction[(genreAction["diffuserInformation"] = 1)] =
+			"diffuserInformation";
+		genreAction[(genreAction["demarrerDiscussion"] = 2)] = "demarrerDiscussion";
+		genreAction[(genreAction["effectuerSondage"] = 3)] = "effectuerSondage";
+		genreAction[(genreAction["partager"] = 4)] = "partager";
+		genreAction[(genreAction["departager"] = 5)] = "departager";
+		genreAction[(genreAction["renommer"] = 6)] = "renommer";
+		genreAction[(genreAction["ajouterpublic"] = 7)] = "ajouterpublic";
+	})(
+		(genreAction =
+			DonneesListe_Diffusion.genreAction ||
+			(DonneesListe_Diffusion.genreAction = {})),
+	);
+})(
+	DonneesListe_Diffusion ||
+		(exports.DonneesListe_Diffusion = DonneesListe_Diffusion = {}),
+);

@@ -1,19 +1,17 @@
 exports.DonneesListe_Messagerie = void 0;
 const ObjetDroitsPN_1 = require("ObjetDroitsPN");
 const ObjetChaine_1 = require("ObjetChaine");
-const Enumere_Etat_1 = require("Enumere_Etat");
 const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const UtilitaireMessagerie_1 = require("UtilitaireMessagerie");
 const TypeOrigineCreationEtiquetteMessage_1 = require("TypeOrigineCreationEtiquetteMessage");
 const jsx_1 = require("jsx");
+const AccessApp_1 = require("AccessApp");
 class DonneesListe_Messagerie extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees) {
 		super(aDonnees);
-		this.applicationSco = GApplication;
+		this.applicationSco = (0, AccessApp_1.getApp)();
 		this.setOptions({
-			avecEdition: false,
-			avecSuppression: false,
 			avecSelection: true,
 			avecEvnt_Selection: true,
 			avecEvnt_ModificationSelection: true,
@@ -31,24 +29,26 @@ class DonneesListe_Messagerie extends ObjetDonneesListeFlatDesign_1.ObjetDonnees
 			addCommandesMenuContextuel: null,
 		});
 	}
+	jsxModeleBoutonParticipants(aNumeroMessage, aPourParticipants) {
+		return {
+			event: () => {
+				UtilitaireMessagerie_1.UtilitaireMessagerie.afficherFenetreDestinatairesDeMessage(
+					aNumeroMessage,
+					aPourParticipants,
+				);
+			},
+		};
+	}
 	getControleur(aInstance, aInstanceListe) {
 		return $.extend(true, super.getControleur(aInstance, aInstanceListe), {
-			btnParticipants: {
-				event(aNumeroMessage, aPourParticipants) {
-					UtilitaireMessagerie_1.UtilitaireMessagerie.afficherFenetreDestinatairesDeMessage(
-						aNumeroMessage,
-						aPourParticipants,
-					);
-				},
-				hintPublic: function (aNumeroMessage, aPourParticipants) {
-					return UtilitaireMessagerie_1.UtilitaireMessagerie.getStrHintPublicMessagePromise(
-						aInstanceListe,
-						aNumeroMessage,
-						aPourParticipants,
-						false,
-						this.node,
-					);
-				},
+			hintBtnParticipantsPublic: function (aNumeroMessage, aPourParticipants) {
+				return UtilitaireMessagerie_1.UtilitaireMessagerie.getStrHintPublicMessagePromise(
+					aInstanceListe,
+					aNumeroMessage,
+					aPourParticipants,
+					false,
+					this.node,
+				);
 			},
 		});
 	}
@@ -89,9 +89,6 @@ class DonneesListe_Messagerie extends ObjetDonneesListeFlatDesign_1.ObjetDonnees
 		return lLibelle;
 	}
 	getZoneComplementaire(aParams) {
-		const H = [
-			IE.jsx.str("span", { class: "time" }, aParams.article.libelleDate),
-		];
 		const lHIcones = [];
 		if (
 			aParams.article.nbPublic > 1 &&
@@ -100,12 +97,13 @@ class DonneesListe_Messagerie extends ObjetDonneesListeFlatDesign_1.ObjetDonnees
 			lHIcones.push(
 				IE.jsx.str("ie-btnicon", {
 					class: "icon icon_intervenants",
-					"ie-model": (0, jsx_1.jsxFuncAttr)("btnParticipants", [
+					"ie-model": this.jsxModeleBoutonParticipants.bind(
+						this,
 						aParams.article.messagePourParticipants.getNumero(),
 						true,
-					]),
+					),
 					"ie-hint": !IE.estMobile
-						? (0, jsx_1.jsxFuncAttr)("btnParticipants.hintPublic", [
+						? (0, jsx_1.jsxFuncAttr)("hintBtnParticipantsPublic", [
 								aParams.article.messagePourParticipants.getNumero(),
 								true,
 							])
@@ -122,10 +120,7 @@ class DonneesListe_Messagerie extends ObjetDonneesListeFlatDesign_1.ObjetDonnees
 				IE.jsx.str("i", {
 					class: "icon icon_piece_jointe",
 					role: "img",
-					title: ObjetTraduction_1.GTraductions.getValeur(
-						"Messagerie.HintPJMessage",
-					),
-					"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+					"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
 						"Messagerie.HintPJMessage",
 					),
 				}),
@@ -136,15 +131,14 @@ class DonneesListe_Messagerie extends ObjetDonneesListeFlatDesign_1.ObjetDonnees
 				IE.jsx.str("i", {
 					class: "icon icon_discussion_repondu",
 					role: "img",
-					title: ObjetTraduction_1.GTraductions.getValeur(
-						"Messagerie.HintRepondu",
-					),
-					"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+					"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
 						"Messagerie.HintRepondu",
 					),
 				}),
 			);
 		}
+		const H = [];
+		H.push(IE.jsx.str("span", { class: "time" }, aParams.article.libelleDate));
 		if (lHIcones.length > 0) {
 			H.push(
 				IE.jsx.str(
@@ -283,25 +277,6 @@ class DonneesListe_Messagerie extends ObjetDonneesListeFlatDesign_1.ObjetDonnees
 			return false;
 		}
 		return true;
-	}
-	surSuppression(D) {
-		for (let I = 0; I < this.Donnees.count(); I++) {
-			const lMessage = this.Donnees.get(I);
-			if (
-				UtilitaireMessagerie_1.UtilitaireMessagerie.getIndicePere(
-					this.Donnees,
-					lMessage,
-				) === D.indice
-			) {
-				lMessage.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
-			}
-		}
-		D.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
-	}
-	getMessageSuppressionConfirmation() {
-		return ObjetTraduction_1.GTraductions.getValeur(
-			"Messagerie.ConfirmationSuppression",
-		);
 	}
 	initialisationObjetContextuel(aParametres) {
 		if (!aParametres.menuContextuel) {

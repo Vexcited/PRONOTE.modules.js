@@ -1,11 +1,11 @@
 exports.ObjetRequete = void 0;
-const Enumere_IdsRequeteAjax_1 = require("Enumere_IdsRequeteAjax");
 const XmlHttp_1 = require("XmlHttp");
 const TypeEtatRequeteAjax_1 = require("TypeEtatRequeteAjax");
+const TypesRequeteJSON_1 = require("TypesRequeteJSON");
 class ObjetRequete {
 	constructor(aParametres) {
 		this.Parametres = {
-			numeroSession: "0",
+			numeroSession: 0,
 			asynchrone: true,
 			post: true,
 			nomRequete: "",
@@ -14,7 +14,6 @@ class ObjetRequete {
 			nomDeFonction: "",
 			parametres: "",
 			jsonNonSecurise: null,
-			fichiers: null,
 			callBackReadyStateChange: null,
 			pereReponse: null,
 			evenementReponse: null,
@@ -93,20 +92,19 @@ class ObjetRequete {
 	}
 	_getData(aNumeroOrdreChiffre) {
 		const lJSON = {};
-		lJSON[Enumere_IdsRequeteAjax_1.EGenreIdsRequeteAjax.numeroSession] =
-			parseInt(this.Parametres.numeroSession, 10);
-		lJSON[Enumere_IdsRequeteAjax_1.EGenreIdsRequeteAjax.numeroOrdre] =
-			aNumeroOrdreChiffre;
-		lJSON[Enumere_IdsRequeteAjax_1.EGenreIdsRequeteAjax.nomFonction] =
+		lJSON[TypesRequeteJSON_1.ConstantesJSON.numeroSession] =
+			this.Parametres.numeroSession;
+		lJSON[TypesRequeteJSON_1.ConstantesJSON.numeroOrdre] = aNumeroOrdreChiffre;
+		lJSON[TypesRequeteJSON_1.ConstantesJSON.idRequete] =
 			this.Parametres.nomDeFonction;
-		lJSON[Enumere_IdsRequeteAjax_1.EGenreIdsRequeteAjax.donneesSecurisee] =
+		lJSON[TypesRequeteJSON_1.ConstantesJSON.donneesSecurisee] =
 			this.Parametres.parametres;
 		if (this.Parametres.jsonNonSecurise) {
-			lJSON[Enumere_IdsRequeteAjax_1.EGenreIdsRequeteAjax.donneesNonSecurisee] =
+			lJSON[TypesRequeteJSON_1.ConstantesJSON.donneesNonSecurisee] =
 				this.Parametres.jsonNonSecurise;
 		}
 		if (this.Parametres.echecReseau) {
-			lJSON[Enumere_IdsRequeteAjax_1.EGenreIdsRequeteAjax.echecReseau] = true;
+			lJSON[TypesRequeteJSON_1.ConstantesJSON.echecReseau] = true;
 		}
 		return JSON.stringify(lJSON);
 	}

@@ -1,14 +1,19 @@
-const { Identite } = require("ObjetIdentite.js");
-const { TUtilitaireBloc } = require("UtilitaireBloc.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { EGenreTitreBloc } = require("UtilitaireBloc.js");
-const { EGenreProfondeurBloc } = require("UtilitaireBloc.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetInterface } = require("ObjetInterface.js");
-const { EModeAffichageTimeline } = require("Enumere_ModeAffichageTimeline.js");
-const { GHtml } = require("ObjetHtml.js");
-class GestionnaireBlocDeBase extends Identite {
+exports.ObjetBloc =
+	exports.GestionnaireBloc =
+	exports.GestionnaireBlocDeBase =
+		void 0;
+const ObjetIdentite_1 = require("ObjetIdentite");
+const UtilitaireBloc_1 = require("UtilitaireBloc");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const UtilitaireBloc_2 = require("UtilitaireBloc");
+const UtilitaireBloc_3 = require("UtilitaireBloc");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetInterface_1 = require("ObjetInterface");
+const Enumere_ModeAffichageTimeline_1 = require("Enumere_ModeAffichageTimeline");
+const ObjetHtml_1 = require("ObjetHtml");
+const AccessApp_1 = require("AccessApp");
+class GestionnaireBlocDeBase extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
 		this._instances = [];
@@ -16,6 +21,7 @@ class GestionnaireBlocDeBase extends Identite {
 	}
 	setOptions(aOptions) {
 		$.extend(this._options, aOptions);
+		return this;
 	}
 	instancierObjetMetier(aDataBloc, aConstructeurObjMetier, aParamObjMetier) {
 		const lIndiceObjMetier = this._instances.length;
@@ -60,7 +66,9 @@ class GestionnaireBlocDeBase extends Identite {
 			'" tabindex="0" class="container-bloc"></div>'
 		);
 	}
-	composeBloc() {}
+	composeBloc(aDataBloc) {
+		return;
+	}
 	refresh() {
 		const lNbr = this._instances.length;
 		for (let i = 0; i < lNbr; i++) {
@@ -83,7 +91,7 @@ class GestionnaireBlocDeBase extends Identite {
 	reInitInstance(aIndice) {
 		const lInstance = this._instances[aIndice];
 		const lNomInstance = lInstance.getNom();
-		if (lInstance && !lInstance._estDetruite && lInstance.free) {
+		if (lInstance && !lInstance.isDestroyed() && lInstance.free) {
 			lInstance.free();
 		}
 		this._instances[aIndice] = null;
@@ -111,12 +119,16 @@ class GestionnaireBlocDeBase extends Identite {
 	}
 	rafraichirBloc(aDataBloc) {
 		const lEltBloc = this.composeBlocComplet(aDataBloc);
-		GHtml.setHtml(aDataBloc.idBloc, lEltBloc.html, {
+		ObjetHtml_1.GHtml.setHtml(aDataBloc.idBloc, lEltBloc.html, {
 			controleur: lEltBloc.controleur,
 		});
 		this.refreshInstance(aDataBloc.indiceInstanceMetier);
 	}
+	composeBlocComplet(aDataBloc) {
+		return null;
+	}
 }
+exports.GestionnaireBlocDeBase = GestionnaireBlocDeBase;
 class GestionnaireBloc extends GestionnaireBlocDeBase {
 	constructor(...aParams) {
 		super(...aParams);
@@ -128,11 +140,8 @@ class GestionnaireBloc extends GestionnaireBlocDeBase {
 	saisGererBloc(aDataBloc) {
 		return aDataBloc.genreBloc === this.GenreBloc;
 	}
-	getParamsBloc() {
+	getParamsBloc(aDataBloc) {
 		return {};
-	}
-	setConstructeurBloc(aConstructeurBloc) {
-		this.constructeurBloc = aConstructeurBloc;
 	}
 	setUtilitaires(aUtilitaires) {
 		this.utilitaires = aUtilitaires;
@@ -147,7 +156,7 @@ class GestionnaireBloc extends GestionnaireBlocDeBase {
 		);
 		lParamBloc.genreRessourceDocumentJoint = this.getRessourceDocumentJoint();
 		return {
-			html: TUtilitaireBloc.compose(lParamBloc),
+			html: UtilitaireBloc_1.TUtilitaireBloc.compose(lParamBloc),
 			controleur: lParamBloc.controleur,
 		};
 	}
@@ -157,7 +166,7 @@ class GestionnaireBloc extends GestionnaireBlocDeBase {
 	getRessourceAucune() {
 		return this.utilitaires.genreRessource.getRessourceAucune();
 	}
-	memoriserContexteAvantRedirection() {}
+	memoriserContexteAvantRedirection(aNumeroDataBloc) {}
 	redirection(aOnglet, aGenreRessource, aNumeroDataBloc, aEvent) {
 		this.memoriserContexteAvantRedirection(aNumeroDataBloc);
 		const lPage = { Onglet: aOnglet };
@@ -166,7 +175,7 @@ class GestionnaireBloc extends GestionnaireBlocDeBase {
 		}
 		GEtatUtilisateur.setPage(lPage);
 		if (GEtatUtilisateur.getGenreOnglet()) {
-			const lOnglet = new ObjetElement(
+			const lOnglet = new ObjetElement_1.ObjetElement(
 				"",
 				0,
 				GEtatUtilisateur.getGenreOnglet(),
@@ -179,7 +188,7 @@ class GestionnaireBloc extends GestionnaireBlocDeBase {
 		}
 		aEvent.stopPropagation();
 	}
-	getInfosPastille() {}
+	getInfosPastille(aParams) {}
 	getAvecPastille() {
 		return this._options.avecPastille;
 	}
@@ -190,7 +199,8 @@ class GestionnaireBloc extends GestionnaireBlocDeBase {
 		return this.dataPastille;
 	}
 }
-class ObjetBloc extends ObjetInterface {
+exports.GestionnaireBloc = GestionnaireBloc;
+class ObjetBloc extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
 		this.donneesRecues = false;
@@ -213,6 +223,7 @@ class ObjetBloc extends ObjetInterface {
 			},
 		});
 	}
+	eventPropagationTitre(aEvent) {}
 	memoriserContexteAvantRedirection() {}
 	getParamsBloc() {
 		return {
@@ -225,7 +236,6 @@ class ObjetBloc extends ObjetInterface {
 			infoTitre: this.getInfoTitre(),
 			widthColDroite: this.getWidthColDroite(),
 			widthBtnAction: this.getWidthBtnAction(),
-			eventParDefaut: this.getEventParDefaut(),
 			marqueurV: {
 				couleur: this.getCouleurMarqueur(),
 				avecMarqueur: this.getAvecMarqueurV(),
@@ -274,16 +284,25 @@ class ObjetBloc extends ObjetInterface {
 		};
 	}
 	getCouleurMarqueur() {
-		return GCouleur.themeNeutre.sombre;
+		return (0, AccessApp_1.getApp)().getCouleur().themeNeutre.sombre;
 	}
 	getAvecMarqueurV() {
-		return this._options.modeAffichage !== EModeAffichageTimeline.compact;
+		return (
+			this._options.modeAffichage !==
+			Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.compact
+		);
 	}
 	getAvecArrondis() {
-		return this._options.modeAffichage !== EModeAffichageTimeline.compact;
+		return (
+			this._options.modeAffichage !==
+			Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.compact
+		);
 	}
 	getAvecDateAffichee() {
-		return this._options.modeAffichage === EModeAffichageTimeline.liste;
+		return (
+			this._options.modeAffichage ===
+			Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.liste
+		);
 	}
 	getAvecMargeGauche() {
 		return !IE.estMobile;
@@ -295,22 +314,22 @@ class ObjetBloc extends ObjetInterface {
 		return 3;
 	}
 	getCouleurFondBloc() {
-		return GCouleur.blanc;
+		return "var(--color-background)";
 	}
 	getCouleurTexteBloc() {
-		return GCouleur.themeCouleur.foncee;
+		return "var(--color-text)";
 	}
 	getCouleurFondTitre() {
-		return "#ffffff";
+		return "var(--color-background)";
 	}
 	getCouleurFondContenu() {
-		return "#ffffff";
+		return "var(--color-background)";
 	}
 	getCouleurTexteTitre() {
-		return "black";
+		return "var(--color-text)";
 	}
 	getCouleurTexteContenu() {
-		return "black";
+		return "var(--color-text)";
 	}
 	avecVoile() {
 		return false;
@@ -322,7 +341,7 @@ class ObjetBloc extends ObjetInterface {
 		return false;
 	}
 	couleurBordure() {
-		return GCouleur.themeNeutre.claire;
+		return (0, AccessApp_1.getApp)().getCouleur().themeNeutre.claire;
 	}
 	estBlocFerme() {
 		return false;
@@ -331,20 +350,20 @@ class ObjetBloc extends ObjetInterface {
 		return false;
 	}
 	getProfondeurOmbre() {
-		return EGenreProfondeurBloc.petite;
+		return UtilitaireBloc_3.EGenreProfondeurBloc.petite;
 	}
 	getGenreTitre() {
-		return EGenreTitreBloc.texte;
+		return UtilitaireBloc_2.EGenreTitreBloc.texte;
 	}
 	getTitre(aTitre) {
-		if (this.getGenreTitre() === EGenreTitreBloc.texte) {
+		if (this.getGenreTitre() === UtilitaireBloc_2.EGenreTitreBloc.texte) {
 			let lResult = aTitre !== null && aTitre !== undefined ? aTitre : "";
 			if (lResult === "") {
-				lResult = GTraductions.getValeur("SansTitre");
+				lResult = ObjetTraduction_1.GTraductions.getValeur("SansTitre");
 			}
 			return lResult;
 		}
-		return new ObjetElement();
+		return new ObjetElement_1.ObjetElement();
 	}
 	avecTitreMaigre() {
 		return false;
@@ -368,7 +387,7 @@ class ObjetBloc extends ObjetInterface {
 		return false;
 	}
 	getListeDocuments() {
-		return new ObjetListeElements();
+		return new ObjetListeElements_1.ObjetListeElements();
 	}
 	getWidthColDroite(aValeur) {
 		if (
@@ -405,7 +424,7 @@ class ObjetBloc extends ObjetInterface {
 		return aValeur !== null && aValeur !== undefined ? aValeur : false;
 	}
 	libelleMenuContextuel() {
-		return GTraductions.getValeur("Editer");
+		return ObjetTraduction_1.GTraductions.getValeur("Editer");
 	}
 	avecMenuContextuelBtn3Pts() {
 		return false;
@@ -421,4 +440,4 @@ class ObjetBloc extends ObjetInterface {
 		return this.utilitaires.genreEspace.estEspaceParent(aGenreEspace);
 	}
 }
-module.exports = { GestionnaireBlocDeBase, GestionnaireBloc, ObjetBloc };
+exports.ObjetBloc = ObjetBloc;

@@ -1,15 +1,28 @@
-const { GChaine } = require("ObjetChaine.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const ObjetRequeteSaisieImportFichierProf = require("ObjetRequeteSaisieImportFichierProf.js");
-const { TypeGenreEchangeDonnees } = require("TypeGenreEchangeDonnees.js");
-class ObjetFenetre_ImportFichierProf extends ObjetFenetre {
+exports.ObjetFenetre_ImportFichierProf = void 0;
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetRequeteSaisieImportFichierProf_1 = require("ObjetRequeteSaisieImportFichierProf");
+const TypeGenreEchangeDonnees_1 = require("TypeGenreEchangeDonnees");
+const ObjetTraduction_2 = require("ObjetTraduction");
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const TradObjetFenetre_ImportFichierProf =
+	ObjetTraduction_2.TraductionsModule.getModule(
+		"ObjetFenetre_ImportFichierProf",
+		{
+			ChoisirLeFichier: "",
+			ReussiteImport: "",
+			TexteExplicatif: "",
+			TexteExplicatifModelesSond: "",
+		},
+	);
+class ObjetFenetre_ImportFichierProf extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.setOptionsFenetre({
 			largeur: 380,
 			titre: "",
-			listeBoutons: [GTraductions.getValeur("Annuler")],
+			listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Annuler")],
 			avecTailleSelonContenu: true,
 		});
 	}
@@ -24,29 +37,30 @@ class ObjetFenetre_ImportFichierProf extends ObjetFenetre {
 						avecTransformationFlux: false,
 					};
 				},
-				addFiles: function (aParametres) {
+				addFiles: (aParametres) => {
 					aInstance.fermer();
-					new ObjetRequeteSaisieImportFichierProf({})
+					new ObjetRequeteSaisieImportFichierProf_1.ObjetRequeteSaisieImportFichierProf(
+						{},
+					)
 						.addUpload({
 							listeFichiers: aParametres.listeFichiers,
 							maxChunkSize: 1 * 1024 * 1024,
 							annulerSurErreurUpload: true,
 						})
 						.lancerRequete({ genreFichier: aInstance.options.genreFichier })
-						.then(
-							function (aSucces) {
-								if (aSucces) {
-									return GApplication.getMessage().afficher({
-										message: GTraductions.getValeur(
-											"Fenetre_ImportFichierProf.ReussiteImport",
-										),
-										callback: function () {
-											this.callback.appel();
-										}.bind(this),
-									});
-								}
-							}.bind(aInstance),
-						);
+						.then((aReponse) => {
+							if (
+								aReponse.genreReponse ===
+								ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+							) {
+								return GApplication.getMessage().afficher({
+									message: TradObjetFenetre_ImportFichierProf.ReussiteImport,
+									callback: () => {
+										this.callback.appel();
+									},
+								});
+							}
+						});
 				},
 			},
 		});
@@ -56,43 +70,51 @@ class ObjetFenetre_ImportFichierProf extends ObjetFenetre {
 	}
 	composeBoutons() {
 		const H = [];
-		H.push(super.composeBoutons());
-		H.push('<div class="btn-conteneur" style="flex: none; padding-left: 0">');
 		H.push(
-			'<ie-bouton ie-model="btnUpload" class="themeBoutonPrimaire" ie-selecfile >',
-			GTraductions.getValeur("Fenetre_ImportFichierProf.ChoisirLeFichier"),
-			"</ie-bouton>",
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				super.composeBoutons(),
+				IE.jsx.str(
+					"div",
+					{ class: "btn-conteneur", style: "flex: none; padding-left: 0" },
+					IE.jsx.str(
+						"ie-bouton",
+						{
+							"ie-model": "btnUpload",
+							class: "themeBoutonPrimaire",
+							"ie-selecfile": true,
+						},
+						TradObjetFenetre_ImportFichierProf.ChoisirLeFichier,
+					),
+				),
+			),
 		);
-		H.push("</div>");
 		return H.join("");
 	}
 	composeContenu() {
-		let lMsg;
+		let lMsg = "";
 		switch (this.options.genreFichier) {
-			case TypeGenreEchangeDonnees.GED_PAS:
-				lMsg = GTraductions.getValeur(
-					"Fenetre_ImportFichierProf.TexteExplicatif",
-				);
+			case TypeGenreEchangeDonnees_1.TypeGenreEchangeDonnees.GED_PAS:
+				lMsg = TradObjetFenetre_ImportFichierProf.TexteExplicatif;
 				break;
-			case TypeGenreEchangeDonnees.GED_ModelesSondage:
-				lMsg = GTraductions.getValeur(
-					"Fenetre_ImportFichierProf.TexteExplicatifModelesSond",
-				);
+			case TypeGenreEchangeDonnees_1.TypeGenreEchangeDonnees.GED_ModelesSondage:
+				lMsg = TradObjetFenetre_ImportFichierProf.TexteExplicatifModelesSond;
 				break;
-			default:
-				lMsg = "";
 		}
 		const T = [];
 		T.push(
-			'<div class="Table Texte10">',
-			GChaine.replaceRCToHTML(lMsg),
-			"</div>",
+			IE.jsx.str(
+				"div",
+				{ class: "Table Texte10" },
+				ObjetChaine_1.GChaine.replaceRCToHTML(lMsg),
+			),
 		);
 		return T.join("");
 	}
-	surValidation(ANumeroBouton) {
+	surValidation(aNumeroBouton) {
 		this.fermer();
-		this.callback.appel(ANumeroBouton);
+		this.callback.appel(aNumeroBouton);
 	}
 }
-module.exports = ObjetFenetre_ImportFichierProf;
+exports.ObjetFenetre_ImportFichierProf = ObjetFenetre_ImportFichierProf;

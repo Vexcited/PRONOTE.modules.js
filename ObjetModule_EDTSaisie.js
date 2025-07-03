@@ -32,6 +32,7 @@ const UtilitaireVisiosSco_1 = require("UtilitaireVisiosSco");
 const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
 const ObjetFenetre_SelectionMatiere_1 = require("ObjetFenetre_SelectionMatiere");
 const ObjetFenetre_Memo_1 = require("ObjetFenetre_Memo");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
 class ObjetModule_EDTSaisie {
 	constructor(aOptions) {
 		this.applicationSco = GApplication;
@@ -811,7 +812,10 @@ class ObjetModule_EDTSaisie {
 	) {
 		const lThis = this;
 		let lCommande;
-		if (GNavigateur.isToucheMenuContextuel() || aForcerNavigationClavier) {
+		if (
+			ObjetNavigateur_1.Navigateur.isToucheMenuContextuel() ||
+			aForcerNavigationClavier
+		) {
 			const lPlace = aCours.Debut;
 			const lGrille = this.options.getObjetGrille();
 			const lPosition = lGrille.getPositionDePlace(lPlace);
@@ -819,7 +823,7 @@ class ObjetModule_EDTSaisie {
 				lGrille.getIdCellulePrefixe(),
 			);
 			if (lElementGrille) {
-				GNavigateur.positionnerMenuContextuelSurId(
+				ObjetNavigateur_1.Navigateur.positionnerMenuContextuelSurId(
 					lElementGrille,
 					(lPosition.x + 1) * lGrille.largeurCellule,
 					lPosition.y * lGrille.hauteurCellule,
@@ -1335,14 +1339,16 @@ class ObjetModule_EDTSaisie {
 			pere: this,
 			initCommandes: (aInstance) => {
 				aInstance.add(
-					GNavigateur.isTactile
+					ObjetNavigateur_1.Navigateur.isTactile
 						? ObjetTraduction_1.GTraductions.getValeur(
 								"SaisieCours.PlacerCours",
 							)
 						: ObjetTraduction_1.GTraductions.getValeur(
 								"SaisieCours.Gabarit.DblClickPlacerCours",
 							),
-					!!lRapport.action,
+					!!(lRapport === null || lRapport === void 0
+						? void 0
+						: lRapport.action),
 					() => {
 						this._callbackPoseGabarit(aParams);
 					},
@@ -2419,11 +2425,11 @@ class ObjetModule_EDTSaisie {
 				} else {
 					lPere = aMatiere;
 				}
-				const T = [
+				const H = [
 					'<div style="display:flex; align-items:center; height:20px; padding:1px 0;">',
 				];
 				if (aMatiere.couleur) {
-					T.push(
+					H.push(
 						'<div style="height:',
 						aMatiere.cumul > 1 ? "6px;" : "100%;",
 						"min-width:6px; margin-right: 3px; " +
@@ -2437,10 +2443,10 @@ class ObjetModule_EDTSaisie {
 						"</div>",
 					);
 				} else {
-					T.push(aMatiere.getLibelle());
+					H.push(aMatiere.getLibelle());
 				}
-				T.push("</div>");
-				aMatiere.Libelle = T.join("");
+				H.push("</div>");
+				aMatiere.Libelle = H.join("");
 			});
 			this._ouvrirFenetreSelectionRessource(
 				lParametres,

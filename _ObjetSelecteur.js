@@ -7,7 +7,7 @@ class _ObjetSelecteur extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
 		this._options = {
-			labelWAI: "",
+			tooltip: "",
 			titreFenetre: "",
 			titreLibelle: "",
 			avecSelectionObligatoire: false,
@@ -52,8 +52,8 @@ class _ObjetSelecteur extends ObjetInterface_1.ObjetInterface {
 			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 	}
 	construireStructureAffichageAutre() {
-		const T = [];
-		T.push(
+		const H = [];
+		H.push(
 			IE.jsx.str(
 				IE.jsx.fragment,
 				null,
@@ -63,7 +63,14 @@ class _ObjetSelecteur extends ObjetInterface_1.ObjetInterface {
 					IE.jsx.str(
 						"div",
 						{ class: "InlineBlock" },
-						IE.jsx.str("ie-bouton", { "ie-model": "btnSelecteur" }, "..."),
+						IE.jsx.str(
+							"ie-bouton",
+							{
+								"ie-tooltiplabel": this._options.tooltip,
+								"ie-model": "btnSelecteur",
+							},
+							"...",
+						),
 					),
 					IE.jsx.str("div", {
 						"ie-style": "getStyleLibelleNbSelections",
@@ -73,7 +80,7 @@ class _ObjetSelecteur extends ObjetInterface_1.ObjetInterface {
 				),
 			),
 		);
-		return T.join("");
+		return H.join("");
 	}
 	construitChaineLibelleNbSelections() {
 		const lNbRess = {

@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieListePunitions extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieListePunitions = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieListePunitions extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParam) {
 		aParam.punitions.setSerialisateurJSON({
 			methodeSerialisation: _serialiser_Punitions.bind(this),
@@ -11,11 +9,12 @@ class ObjetRequeteSaisieListePunitions extends ObjetRequeteSaisie {
 		this.JSON.punitions = aParam.punitions;
 		return this.appelAsynchrone();
 	}
-	actionApresRequete() {
-		this.callbackReussite.appel(this.JSONRapportSaisie);
-	}
 }
-Requetes.inscrire("SaisieListePunitions", ObjetRequeteSaisieListePunitions);
+exports.ObjetRequeteSaisieListePunitions = ObjetRequeteSaisieListePunitions;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieListePunitions",
+	ObjetRequeteSaisieListePunitions,
+);
 function _serialiser_Punitions(aPunition, aJSON) {
 	$.extend(aJSON, aPunition.copieToJSON());
 	aJSON.estLieIncident = aPunition.estLieIncident;
@@ -27,7 +26,7 @@ function _serialiser_Punitions(aPunition, aJSON) {
 	aJSON.nature = aPunition.nature;
 	aJSON.eleve = aPunition.eleve;
 	aPunition.motifs.setSerialisateurJSON({
-		methodeSerialisation: _serialiser_Motifs.bind(this),
+		methodeSerialisation: _serialiser_Motifs,
 		ignorerEtatsElements: true,
 	});
 	aJSON.motifs = aPunition.motifs;
@@ -44,15 +43,15 @@ function _serialiser_Punitions(aPunition, aJSON) {
 		aJSON.personnelDemandeur = aPunition.personnelDemandeur;
 	}
 	aPunition.programmations.setSerialisateurJSON({
-		methodeSerialisation: _serialiser_Programmation.bind(this),
+		methodeSerialisation: _serialiser_Programmation,
 	});
 	aJSON.programmations = aPunition.programmations;
 	aPunition.documentsTAF.setSerialisateurJSON({
-		methodeSerialisation: _serialiser_Documents.bind(this),
+		methodeSerialisation: _serialiser_Documents,
 	});
 	aJSON.documentsTAF = aPunition.documentsTAF;
 	aPunition.documents.setSerialisateurJSON({
-		methodeSerialisation: _serialiser_Documents.bind(this),
+		methodeSerialisation: _serialiser_Documents,
 	});
 	aJSON.documents = aPunition.documents;
 }
@@ -71,4 +70,3 @@ function _serialiser_Motifs(aMotif, aJSON) {
 function _serialiser_Documents(aDocument, aJSON) {
 	$.extend(aJSON, aDocument.copieToJSON());
 }
-module.exports = { ObjetRequeteSaisieListePunitions };

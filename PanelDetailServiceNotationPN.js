@@ -8,7 +8,7 @@ const ObjetElement_1 = require("ObjetElement");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const Enumere_Arrondi_1 = require("Enumere_Arrondi");
-const jsx_1 = require("jsx");
+const TypeArrondi_1 = require("TypeArrondi");
 class PanelDetailServiceNotationPN extends PanelDetailServiceNotation_1.PanelDetailServiceNotation {
 	constructor(...aParams) {
 		super(...aParams);
@@ -60,11 +60,11 @@ class PanelDetailServiceNotationPN extends PanelDetailServiceNotation_1.PanelDet
 			1,
 			ObjetStyle_1.EGenreBordure.gauche,
 		);
-		const T = [];
-		T.push('<div style="width:738px">');
-		T.push('<table class="full-width" role="presentation">');
-		T.push("<tr>");
-		T.push(
+		const H = [];
+		H.push('<div style="width:738px">');
+		H.push('<table class="full-width" role="presentation">');
+		H.push("<tr>");
+		H.push(
 			'<td class="Gras p-all" style="' +
 				LStyleBordure +
 				"width:" +
@@ -84,10 +84,10 @@ class PanelDetailServiceNotationPN extends PanelDetailServiceNotation_1.PanelDet
 				'"></span>' +
 				"</td>",
 		);
-		T.push('<td class="Gras p-left-l p-y">' + this.composeGeneral() + "</td>");
-		T.push("</tr>");
-		T.push("</table>");
-		T.push(
+		H.push('<td class="Gras p-left-l p-y">' + this.composeGeneral() + "</td>");
+		H.push("</tr>");
+		H.push("</table>");
+		H.push(
 			'<table class="full-width" style="' +
 				ObjetStyle_2.GStyle.composeCouleurBordure(
 					GCouleur.liste.bordure,
@@ -98,7 +98,7 @@ class PanelDetailServiceNotationPN extends PanelDetailServiceNotation_1.PanelDet
 				) +
 				'" role="presentation">',
 		);
-		T.push(
+		H.push(
 			'<tr style="' +
 				ObjetStyle_2.GStyle.composeCouleurBordure(
 					GCouleur.liste.bordure,
@@ -107,7 +107,7 @@ class PanelDetailServiceNotationPN extends PanelDetailServiceNotation_1.PanelDet
 				) +
 				'">',
 		);
-		T.push(
+		H.push(
 			'<td style="' +
 				LStyleBordure +
 				"width:" +
@@ -116,7 +116,7 @@ class PanelDetailServiceNotationPN extends PanelDetailServiceNotation_1.PanelDet
 				this.composeModeCalculMoyenne() +
 				"</td>",
 		);
-		T.push(
+		H.push(
 			'<td class="p-all" style="' +
 				LStyleBordure +
 				"width:" +
@@ -125,8 +125,8 @@ class PanelDetailServiceNotationPN extends PanelDetailServiceNotation_1.PanelDet
 				this.composeDevoirSupMoy() +
 				"</td>",
 		);
-		T.push(
-			'<td class="p-all"  style="' +
+		H.push(
+			'<td class="p-all" style="' +
 				LStyleBordure +
 				"width:" +
 				1 * this.Largeur +
@@ -134,24 +134,24 @@ class PanelDetailServiceNotationPN extends PanelDetailServiceNotation_1.PanelDet
 				this.composeCoefficient() +
 				"</td>",
 		);
-		T.push("</tr>");
-		T.push("<tr>");
-		T.push(
+		H.push("</tr>");
+		H.push("<tr>");
+		H.push(
 			'<td class="p-all" style="' +
 				LStyleBordure +
 				'">' +
 				this.composeBonusMalus() +
 				"</td>",
 		);
-		T.push(
+		H.push(
 			'<td class="AlignementHaut" style="' +
 				LStyleBordure +
 				'" rowspan="2">' +
 				this.composeArrondis() +
 				"</td>",
 		);
-		T.push("</tr>");
-		T.push(
+		H.push("</tr>");
+		H.push(
 			'<tr style="' +
 				ObjetStyle_2.GStyle.composeCouleurBordure(
 					GCouleur.liste.bordure,
@@ -160,24 +160,24 @@ class PanelDetailServiceNotationPN extends PanelDetailServiceNotation_1.PanelDet
 				) +
 				'">',
 		);
-		T.push(
+		H.push(
 			'<td style="' +
 				LStyleBordure +
 				'">' +
 				this.composeMoyenneBulletin() +
 				"</td>",
 		);
-		T.push(
+		H.push(
 			'<td style="' +
 				LStyleBordure +
 				'">' +
 				this.composePonderation() +
 				"</td>",
 		);
-		T.push("</tr>");
-		T.push("</table>");
-		T.push("</div>");
-		return T.join("");
+		H.push("</tr>");
+		H.push("</table>");
+		H.push("</div>");
+		return H.join("");
 	}
 	actualiserDroitAffichage() {
 		this.activerModeCalculMoyenne = this.Service.estUnService;
@@ -216,42 +216,43 @@ class PanelDetailServiceNotationPN extends PanelDetailServiceNotation_1.PanelDet
 		);
 	}
 	composeModeCalculMoyenne() {
-		const T = [];
-		T.push('<fieldset id="', this.idModeCalculMoyenne, '" class="p-all">');
-		T.push(
+		const H = [];
+		H.push('<fieldset id="', this.idModeCalculMoyenne, '" class="p-all">');
+		H.push(
 			'<legend class="semi-bold">',
 			ObjetTraduction_1.GTraductions.getValeur(
 				"FicheService.ModeCalculMoyenne",
 			),
 			"</legend>",
 		);
-		T.push(
+		H.push(
 			'<div class="p-left-l flex-contain cols flex-gap p-y-l">',
 			'<ie-radio ie-model="radioModeCalculMoyServicePere(',
-			PanelDetailServiceNotation_1.ModeCalculMoyenneServicePere
-				.MoyDesSousServices,
+			PanelDetailServiceNotation_1.PanelDetailServiceNotation
+				.ModeCalculMoyenneServicePere.MoyDesSousServices,
 			')">',
 			ObjetTraduction_1.GTraductions.getValeur(
 				"FicheService.ModeCalculMoyenneSousService",
 			),
 			"</ie-radio>",
 		);
-		T.push(
+		H.push(
 			'<ie-radio ie-model="radioModeCalculMoyServicePere(',
-			PanelDetailServiceNotation_1.ModeCalculMoyenneServicePere.MoyDesDevoirs,
+			PanelDetailServiceNotation_1.PanelDetailServiceNotation
+				.ModeCalculMoyenneServicePere.MoyDesDevoirs,
 			')">',
 			ObjetTraduction_1.GTraductions.getValeur(
 				"FicheService.ModeCalculMoyenneDevoir",
 			),
 			"</ie-radio>",
 		);
-		T.push("</div></fieldset>");
-		return T.join("");
+		H.push("</div></fieldset>");
+		return H.join("");
 	}
 	composeMoyenneBulletin() {
-		const T = [];
-		T.push('<fieldset id="', this.idMoyenneBulletin, '" class="p-all">');
-		T.push(
+		const H = [];
+		H.push('<fieldset id="', this.idMoyenneBulletin, '" class="p-all">');
+		H.push(
 			'<legend class="semi-bold">',
 			ObjetChaine_1.GChaine.insecable(
 				ObjetTraduction_1.GTraductions.getValeur(
@@ -260,31 +261,33 @@ class PanelDetailServiceNotationPN extends PanelDetailServiceNotation_1.PanelDet
 			),
 			"</legend>",
 		);
-		T.push(
+		H.push(
 			'<div class="p-left-l flex-contain cols flex-gap p-y-l">',
 			'<ie-radio ie-model="radioTypeMoyReferenceBulletin(',
-			PanelDetailServiceNotation_1.TypeMoyReferenceBulletin.ElevesDuGroupe,
+			PanelDetailServiceNotation_1.PanelDetailServiceNotation
+				.TypeMoyReferenceBulletin.ElevesDuGroupe,
 			')">',
 			ObjetTraduction_1.GTraductions.getValeur(
 				"FicheService.MoyenneBulletinGroupe",
 			),
 			"</ie-radio>",
 		);
-		T.push(
+		H.push(
 			'<ie-radio ie-model="radioTypeMoyReferenceBulletin(',
-			PanelDetailServiceNotation_1.TypeMoyReferenceBulletin.ElevesDeMemeClasse,
+			PanelDetailServiceNotation_1.PanelDetailServiceNotation
+				.TypeMoyReferenceBulletin.ElevesDeMemeClasse,
 			')">',
 			ObjetTraduction_1.GTraductions.getValeur(
 				"FicheService.MoyenneBulletinClasse",
 			),
 			"</ie-radio>",
 		);
-		T.push("</div></fieldset>");
-		return T.join("");
+		H.push("</div></fieldset>");
+		return H.join("");
 	}
 	composeGeneral() {
-		const lHTML = [];
-		lHTML.push(
+		const H = [];
+		H.push(
 			'<div class="full-width flex-contain flex-center flex-gap justify-between">',
 			'<div class="semi-bold p-left fluid-bloc" style="' +
 				ObjetStyle_2.GStyle.composeCouleurTexte(GCouleur.texte) +
@@ -306,7 +309,7 @@ class PanelDetailServiceNotationPN extends PanelDetailServiceNotation_1.PanelDet
 			"</div>",
 			"</div>",
 		);
-		return lHTML.join("");
+		return H.join("");
 	}
 	composeArrondis() {
 		const T = [];
@@ -347,8 +350,8 @@ class PanelDetailServiceNotationPN extends PanelDetailServiceNotation_1.PanelDet
 				"div",
 				{ id: lIdCombo },
 				IE.jsx.str("ie-combo", {
-					"ie-model": (0, jsx_1.jsxFuncAttr)(
-						"comboPrecisionArrondi",
+					"ie-model": this.jsxComboModelPrecisionArrondi.bind(
+						this,
 						aGenreRessourceArrondi,
 					),
 				}),
@@ -384,22 +387,22 @@ class PanelDetailServiceNotationPN extends PanelDetailServiceNotation_1.PanelDet
 		let lArrondi;
 		const lListeArrondis = new ObjetListeElements_1.ObjetListeElements();
 		lArrondi = new ObjetElement_1.ObjetElement(
-			ObjetTraduction_1.GTraductions.getValeur("Arrondi")[0],
+			TypeArrondi_1.TypeArrondi.getLibelleSelonPrecision(0.01),
 		);
 		lArrondi.precision = 0.01;
 		lListeArrondis.addElement(lArrondi);
 		lArrondi = new ObjetElement_1.ObjetElement(
-			ObjetTraduction_1.GTraductions.getValeur("Arrondi")[1],
+			TypeArrondi_1.TypeArrondi.getLibelleSelonPrecision(0.1),
 		);
 		lArrondi.precision = 0.1;
 		lListeArrondis.addElement(lArrondi);
 		lArrondi = new ObjetElement_1.ObjetElement(
-			ObjetTraduction_1.GTraductions.getValeur("Arrondi")[3],
+			TypeArrondi_1.TypeArrondi.getLibelleSelonPrecision(0.5),
 		);
 		lArrondi.precision = 0.5;
 		lListeArrondis.addElement(lArrondi);
 		lArrondi = new ObjetElement_1.ObjetElement(
-			ObjetTraduction_1.GTraductions.getValeur("Arrondi")[4],
+			TypeArrondi_1.TypeArrondi.getLibelleSelonPrecision(1.0),
 		);
 		lArrondi.precision = 1.0;
 		lListeArrondis.addElement(lArrondi);

@@ -1,13 +1,15 @@
-const { EGenreTriElement } = require("Enumere_TriElement.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { ObjectCouleurCellule } = require("_ObjetCouleur.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { EGenreAction } = require("Enumere_Action.js");
-class DonneesListe_ServicesProfesseur extends ObjetDonneesListe {
+exports.DonneesListe_ServicesProfesseur = void 0;
+const Enumere_TriElement_1 = require("Enumere_TriElement");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const _ObjetCouleur_1 = require("_ObjetCouleur");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_Action_1 = require("Enumere_Action");
+const AccessApp_1 = require("AccessApp");
+class DonneesListe_ServicesProfesseur extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParam) {
 		if (!!aDonnees) {
 			aDonnees.parcourir((D) => {
@@ -27,6 +29,7 @@ class DonneesListe_ServicesProfesseur extends ObjetDonneesListe {
 			});
 		}
 		super(aDonnees);
+		this.appSco = (0, AccessApp_1.getApp)();
 		this.avecCreerSousServices = aParam.avecCreerSousServices;
 		this.callbackCreerSousService = aParam.callbackCreerSousService;
 		this.callbackSupprimerSousService = aParam.callbackSupprimerSousService;
@@ -52,12 +55,17 @@ class DonneesListe_ServicesProfesseur extends ObjetDonneesListe {
 						!!aParams.article.coefficient &&
 						!!aParams.article.coefficientEstEditable &&
 						!aParams.article.estSansNote &&
-						!!GEtatUtilisateur.Navigation.getRessource(
-							EGenreRessource.Periode,
-						) &&
-						GEtatUtilisateur.Navigation.getRessource(
-							EGenreRessource.Periode,
-						).existeNumero()
+						!!this.appSco
+							.getEtatUtilisateur()
+							.Navigation.getRessource(
+								Enumere_Ressource_1.EGenreRessource.Periode,
+							) &&
+						this.appSco
+							.getEtatUtilisateur()
+							.Navigation.getRessource(
+								Enumere_Ressource_1.EGenreRessource.Periode,
+							)
+							.existeNumero()
 					);
 			}
 		}
@@ -162,15 +170,15 @@ class DonneesListe_ServicesProfesseur extends ObjetDonneesListe {
 		switch (aParams.idColonne) {
 			case DonneesListe_ServicesProfesseur.colonnes.matiere:
 				return aParams.article.pere
-					? ObjetDonneesListe.ECouleurCellule.Blanc
-					: new ObjectCouleurCellule(
+					? ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc
+					: new _ObjetCouleur_1.ObjectCouleurCellule(
 							GCouleur.themeCouleur.claire,
 							GCouleur.noir,
 							GCouleur.grisFonce,
 						);
 			case DonneesListe_ServicesProfesseur.colonnes.classe:
 			case DonneesListe_ServicesProfesseur.colonnes.professeur:
-				return new ObjectCouleurCellule(
+				return new _ObjetCouleur_1.ObjectCouleurCellule(
 					GCouleur.themeCouleur.claire,
 					GCouleur.noir,
 					GCouleur.grisFonce,
@@ -180,7 +188,7 @@ class DonneesListe_ServicesProfesseur extends ObjetDonneesListe {
 					!!aParams.article.liensProgrammesBO &&
 					aParams.article.liensProgrammesBO.count() > 0
 				) {
-					return ObjetDonneesListe.ECouleurCellule.Blanc;
+					return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
 				}
 		}
 	}
@@ -194,52 +202,52 @@ class DonneesListe_ServicesProfesseur extends ObjetDonneesListe {
 		const lThis = this;
 		switch (this.getId(aCol)) {
 			case DonneesListe_ServicesProfesseur.colonnes.matiere:
-				lTableau.push(ObjetTri.init("Libelle", aGenreTri));
+				lTableau.push(ObjetTri_1.ObjetTri.init("Libelle", aGenreTri));
 				break;
 			case DonneesListe_ServicesProfesseur.colonnes.professeur:
-				lTableau.push(ObjetTri.init(_triProf, lGenreTri));
+				lTableau.push(ObjetTri_1.ObjetTri.init(_triProf, lGenreTri));
 				break;
 			case DonneesListe_ServicesProfesseur.colonnes.nbDevoirs:
 				lTableau.push(
-					ObjetTri.init(
+					ObjetTri_1.ObjetTri.init(
 						(D) => {
 							return D.nbrDevoirsPeriode || -1;
 						},
-						lGenreTri === EGenreTriElement.Croissant
-							? EGenreTriElement.Decroissant
-							: EGenreTriElement.Croissant,
+						lGenreTri === Enumere_TriElement_1.EGenreTriElement.Croissant
+							? Enumere_TriElement_1.EGenreTriElement.Decroissant
+							: Enumere_TriElement_1.EGenreTriElement.Croissant,
 					),
 				);
 				lTableau.push(
-					ObjetTri.init(
+					ObjetTri_1.ObjetTri.init(
 						(D) => {
 							return D.nbrDevoirsTotal || -1;
 						},
-						lGenreTri === EGenreTriElement.Croissant
-							? EGenreTriElement.Decroissant
-							: EGenreTriElement.Croissant,
+						lGenreTri === Enumere_TriElement_1.EGenreTriElement.Croissant
+							? Enumere_TriElement_1.EGenreTriElement.Decroissant
+							: Enumere_TriElement_1.EGenreTriElement.Croissant,
 					),
 				);
 				break;
 			case DonneesListe_ServicesProfesseur.colonnes.nbEvaluations:
 				lTableau.push(
-					ObjetTri.init(
+					ObjetTri_1.ObjetTri.init(
 						(D) => {
 							return D.nbrEvaluationsPeriode || -1;
 						},
-						lGenreTri === EGenreTriElement.Croissant
-							? EGenreTriElement.Decroissant
-							: EGenreTriElement.Croissant,
+						lGenreTri === Enumere_TriElement_1.EGenreTriElement.Croissant
+							? Enumere_TriElement_1.EGenreTriElement.Decroissant
+							: Enumere_TriElement_1.EGenreTriElement.Croissant,
 					),
 				);
 				lTableau.push(
-					ObjetTri.init(
+					ObjetTri_1.ObjetTri.init(
 						(D) => {
 							return D.nbrEvaluationsTotal || -1;
 						},
-						lGenreTri === EGenreTriElement.Croissant
-							? EGenreTriElement.Decroissant
-							: EGenreTriElement.Croissant,
+						lGenreTri === Enumere_TriElement_1.EGenreTriElement.Croissant
+							? Enumere_TriElement_1.EGenreTriElement.Decroissant
+							: Enumere_TriElement_1.EGenreTriElement.Croissant,
 					),
 				);
 				break;
@@ -248,20 +256,22 @@ class DonneesListe_ServicesProfesseur extends ObjetDonneesListe {
 			case DonneesListe_ServicesProfesseur.colonnes.DNL:
 			case DonneesListe_ServicesProfesseur.colonnes.modeDEvaluation:
 				lTableau.push(
-					ObjetTri.init(
+					ObjetTri_1.ObjetTri.init(
 						(D) => {
-							const lParams = { idColonne: aCol, article: D };
+							const lParams = lThis.paramsListe.getParams(aCol, -1, {
+								article: D,
+							});
 							return lThis.getValeur(lParams);
 						},
-						lGenreTri === EGenreTriElement.Croissant
-							? EGenreTriElement.Decroissant
-							: EGenreTriElement.Croissant,
+						lGenreTri === Enumere_TriElement_1.EGenreTriElement.Croissant
+							? Enumere_TriElement_1.EGenreTriElement.Decroissant
+							: Enumere_TriElement_1.EGenreTriElement.Croissant,
 					),
 				);
 				break;
 			case DonneesListe_ServicesProfesseur.colonnes.coefficient:
 				lTableau.push(
-					ObjetTri.init(
+					ObjetTri_1.ObjetTri.init(
 						(D) => {
 							if (D.avecPlusieursCoefficients) {
 								return 1;
@@ -274,39 +284,45 @@ class DonneesListe_ServicesProfesseur extends ObjetDonneesListe {
 							}
 							return "";
 						},
-						lGenreTri === EGenreTriElement.Croissant
-							? EGenreTriElement.Decroissant
-							: EGenreTriElement.Croissant,
+						lGenreTri === Enumere_TriElement_1.EGenreTriElement.Croissant
+							? Enumere_TriElement_1.EGenreTriElement.Decroissant
+							: Enumere_TriElement_1.EGenreTriElement.Croissant,
 					),
 				);
 				break;
 			case DonneesListe_ServicesProfesseur.colonnes.classe:
 			case DonneesListe_ServicesProfesseur.colonnes.periodes:
 				lTableau.push(
-					ObjetTri.init((D) => {
-						const lParams = { idColonne: aCol, article: D };
+					ObjetTri_1.ObjetTri.init((D) => {
+						const lParams = lThis.paramsListe.getParams(aCol, -1, {
+							article: D,
+						});
 						return lThis.getValeur(lParams);
 					}, lGenreTri),
 				);
 				break;
 		}
-		return ObjetTri.initRecursif(
-			"pere",
-			lTableau.concat([
-				ObjetTri.init("Libelle"),
-				ObjetTri.init((D) => {
-					const lIdColonne = lThis.getNumeroColonneDId(
-						DonneesListe_ServicesProfesseur.colonnes.classe,
-					);
-					const lParams = { idColonne: lIdColonne, article: D };
-					return lThis.getValeur(lParams);
-				}),
-				ObjetTri.init(_triProf),
-				ObjetTri.init((D) => {
-					return D.getNumero();
-				}),
-			]),
-		);
+		return [
+			ObjetTri_1.ObjetTri.initRecursif(
+				"pere",
+				lTableau.concat([
+					ObjetTri_1.ObjetTri.init("Libelle"),
+					ObjetTri_1.ObjetTri.init((D) => {
+						const lIdColonne = lThis.getNumeroColonneDId(
+							DonneesListe_ServicesProfesseur.colonnes.classe,
+						);
+						const lParams = lThis.paramsListe.getParams(lIdColonne, -1, {
+							article: D,
+						});
+						return lThis.getValeur(lParams);
+					}),
+					ObjetTri_1.ObjetTri.init(_triProf),
+					ObjetTri_1.ObjetTri.init((D) => {
+						return D.getNumero();
+					}),
+				]),
+			),
+		];
 	}
 	avecContenuTronque(aParams) {
 		return (
@@ -324,11 +340,14 @@ class DonneesListe_ServicesProfesseur extends ObjetDonneesListe {
 				);
 				if (aParams.article.estEnCoEnseignement) {
 					lTableauMatiere.push(
-						'<i class="icon_co_enseignement" style="float:right; font-size: 1.4rem;" title="',
-						GTraductions.getValeur(
-							"servicesProfesseur.HintServiceCoEnseignement",
-						),
-						'"></i>',
+						IE.jsx.str("i", {
+							class: "icon_co_enseignement",
+							style: "float:right; font-size: 1.4rem;",
+							"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+								"servicesProfesseur.HintServiceCoEnseignement",
+							),
+							role: "img",
+						}),
 					);
 				}
 				return lTableauMatiere.join("");
@@ -359,8 +378,12 @@ class DonneesListe_ServicesProfesseur extends ObjetDonneesListe {
 					return "";
 				}
 				return !aParams.article.estSansNote
-					? GTraductions.getValeur("servicesProfesseur.Service_Avec_Notes")
-					: GTraductions.getValeur("servicesProfesseur.Service_Sans_Notes");
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"servicesProfesseur.Service_Avec_Notes",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"servicesProfesseur.Service_Sans_Notes",
+						);
 			case DonneesListe_ServicesProfesseur.colonnes.nbDevoirs: {
 				let lNbDevoirs = "";
 				if (aParams.article.nbrDevoirsTotal) {
@@ -415,11 +438,15 @@ class DonneesListe_ServicesProfesseur extends ObjetDonneesListe {
 					});
 				const nbPeriodesActives = lPeriodesActives.count();
 				if (nbPeriodesActives === 0) {
-					lPeriode = GTraductions.getValeur("servicesProfesseur.Aucune");
+					lPeriode = ObjetTraduction_1.GTraductions.getValeur(
+						"servicesProfesseur.Aucune",
+					);
 				} else if (
 					nbPeriodesActives === aParams.article.periodesActives.count()
 				) {
-					lPeriode = GTraductions.getValeur("servicesProfesseur.Toutes");
+					lPeriode = ObjetTraduction_1.GTraductions.getValeur(
+						"servicesProfesseur.Toutes",
+					);
 				} else {
 					lPeriode = lPeriodesActives.getTableauLibelles().join(", ");
 				}
@@ -429,7 +456,9 @@ class DonneesListe_ServicesProfesseur extends ObjetDonneesListe {
 				return !!aParams.article.liensProgrammesBO &&
 					aParams.article.liensProgrammesBO.count() > 0
 					? '<i class="icon_eye_open i-medium" role="img" aria-label="' +
-							GTraductions.getValeur("servicesProfesseur.VoirProgrammesBO") +
+							ObjetTraduction_1.GTraductions.getValeur(
+								"servicesProfesseur.VoirProgrammesBO",
+							) +
 							'"></i>'
 					: "";
 			case DonneesListe_ServicesProfesseur.colonnes.DNL:
@@ -441,16 +470,16 @@ class DonneesListe_ServicesProfesseur extends ObjetDonneesListe {
 		switch (aParams.idColonne) {
 			case DonneesListe_ServicesProfesseur.colonnes.facultatif:
 			case DonneesListe_ServicesProfesseur.colonnes.DNL:
-				return ObjetDonneesListe.ETypeCellule.Coche;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Coche;
 			case DonneesListe_ServicesProfesseur.colonnes.coefficient:
 				if (!!aParams.article && aParams.article.avecPlusieursCoefficients) {
-					return ObjetDonneesListe.ETypeCellule.Texte;
+					return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 				}
-				return ObjetDonneesListe.ETypeCellule.Note;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Note;
 			case DonneesListe_ServicesProfesseur.colonnes.matiere:
-				return ObjetDonneesListe.ETypeCellule.Html;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
 	avecMenuContextuel(aParams) {
 		return !aParams.surFondListe;
@@ -462,18 +491,22 @@ class DonneesListe_ServicesProfesseur extends ObjetDonneesListe {
 		if (!aParametres.article.pere && this.avecCreerSousServices) {
 			aParametres.menuContextuel.addCommande(
 				DonneesListe_ServicesProfesseur.genreAction.creer_sous_service,
-				GTraductions.getValeur("servicesProfesseur.CommandeCreerSousService"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"servicesProfesseur.CommandeCreerSousService",
+				),
 				true,
 			);
 		}
 		if (
 			!aParametres.article.pere &&
 			aParametres.article.avecCreationDevoirDNL &&
-			!GApplication.droits.get(TypeDroits.estEnConsultation)
+			!this.appSco.droits.get(ObjetDroitsPN_1.TypeDroits.estEnConsultation)
 		) {
 			aParametres.menuContextuel.addCommande(
 				DonneesListe_ServicesProfesseur.genreAction.creer_devoir_DNL,
-				GTraductions.getValeur("servicesProfesseur.CommandeCreerDevoirDNL"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"servicesProfesseur.CommandeCreerDevoirDNL",
+				),
 				true,
 			);
 		}
@@ -484,7 +517,7 @@ class DonneesListe_ServicesProfesseur extends ObjetDonneesListe {
 			const lSupprimerSsServicePossible = _estSupprimable(aParametres.article);
 			aParametres.menuContextuel.addCommande(
 				DonneesListe_ServicesProfesseur.genreAction.supprimer_sous_service,
-				GTraductions.getValeur(
+				ObjetTraduction_1.GTraductions.getValeur(
 					"servicesProfesseur.CommandeSupprimerSousService",
 				),
 				lSupprimerSsServicePossible,
@@ -503,16 +536,16 @@ class DonneesListe_ServicesProfesseur extends ObjetDonneesListe {
 			case DonneesListe_ServicesProfesseur.genreAction.creer_devoir_DNL: {
 				const lThis = this;
 				GApplication.getMessage().afficher({
-					type: EGenreBoiteMessage.Confirmation,
-					titre: GTraductions.getValeur(
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+					titre: ObjetTraduction_1.GTraductions.getValeur(
 						"servicesProfesseur.CreerDevoirDNL.TitreConf",
 					),
-					message: GTraductions.getValeur(
+					message: ObjetTraduction_1.GTraductions.getValeur(
 						"servicesProfesseur.CreerDevoirDNL.MessageConf",
 						aParametres.article.nomPeriodeDNL,
 					),
 					callback: function (aGenreAction) {
-						if (aGenreAction === EGenreAction.Valider) {
+						if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
 							lThis.callbackCreerDevoirDNL(aParametres.article);
 						}
 					},
@@ -523,25 +556,42 @@ class DonneesListe_ServicesProfesseur extends ObjetDonneesListe {
 		}
 	}
 }
-DonneesListe_ServicesProfesseur.colonnes = {
-	matiere: "servicesProfesseurMatiere",
-	classe: "servicesProfesseurClasse",
-	professeur: "servicesProfesseurProfesseur",
-	facultatif: "servicesProfesseurFacultatif",
-	modeDEvaluation: "servicesProfesseurModeDEvaluation",
-	nbDevoirs: "servicesProfesseurNbDevoirs",
-	nbEvaluations: "servicesProfesseurNbEvaluations",
-	volume: "servicesProfesseurVolume",
-	coefficient: "servicesProfesseurCoefficient",
-	periodes: "servicesProfesseurPeriodes",
-	programmesBO: "servicesProfesseurBO",
-	DNL: "servicesProfesseurDNL",
-};
-DonneesListe_ServicesProfesseur.genreAction = {
-	creer_sous_service: "creerSousService",
-	supprimer_sous_service: "supprimerSousService",
-	creer_devoir_DNL: "creerDevoirDNL",
-};
+exports.DonneesListe_ServicesProfesseur = DonneesListe_ServicesProfesseur;
+(function (DonneesListe_ServicesProfesseur) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["matiere"] = "servicesProfesseurMatiere";
+		colonnes["classe"] = "servicesProfesseurClasse";
+		colonnes["professeur"] = "servicesProfesseurProfesseur";
+		colonnes["facultatif"] = "servicesProfesseurFacultatif";
+		colonnes["modeDEvaluation"] = "servicesProfesseurModeDEvaluation";
+		colonnes["nbDevoirs"] = "servicesProfesseurNbDevoirs";
+		colonnes["nbEvaluations"] = "servicesProfesseurNbEvaluations";
+		colonnes["volume"] = "servicesProfesseurVolume";
+		colonnes["coefficient"] = "servicesProfesseurCoefficient";
+		colonnes["periodes"] = "servicesProfesseurPeriodes";
+		colonnes["programmesBO"] = "servicesProfesseurBO";
+		colonnes["DNL"] = "servicesProfesseurDNL";
+	})(
+		(colonnes =
+			DonneesListe_ServicesProfesseur.colonnes ||
+			(DonneesListe_ServicesProfesseur.colonnes = {})),
+	);
+	let genreAction;
+	(function (genreAction) {
+		genreAction["creer_sous_service"] = "creerSousService";
+		genreAction["supprimer_sous_service"] = "supprimerSousService";
+		genreAction["creer_devoir_DNL"] = "creerDevoirDNL";
+	})(
+		(genreAction =
+			DonneesListe_ServicesProfesseur.genreAction ||
+			(DonneesListe_ServicesProfesseur.genreAction = {})),
+	);
+})(
+	DonneesListe_ServicesProfesseur ||
+		(exports.DonneesListe_ServicesProfesseur = DonneesListe_ServicesProfesseur =
+			{}),
+);
 function _leSousServiceMAppartient(D) {
 	let result = false;
 	if (D.listeProfesseurs) {
@@ -581,4 +631,3 @@ function _estServiceRattacheApparaissantCommeSousService(D) {
 function _estSousServiceDUnServiceRattacheApparaissantCommeSousService(D) {
 	return D.estService === false && D.estServicePartie === true;
 }
-module.exports = { DonneesListe_ServicesProfesseur };

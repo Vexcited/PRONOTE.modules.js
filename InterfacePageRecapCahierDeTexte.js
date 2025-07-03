@@ -1,49 +1,49 @@
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { ObjetInvocateur, Invocateur } = require("Invocateur.js");
-const { GHtml } = require("ObjetHtml.js");
-const { EGenreImpression } = require("Enumere_GenreImpression.js");
-const { ObjetFenetreVisuEleveQCM } = require("ObjetFenetreVisuEleveQCM.js");
-const { ObjetCalendrier } = require("ObjetCalendrier.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetMenuContextuel } = require("ObjetMenuContextuel.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	EGenreAffichageCahierDeTextes,
-} = require("Enumere_AffichageCahierDeTextes.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const {
-	ObjetAffichagePageAvecMenusDeroulants,
-} = require("InterfacePageAvecMenusDeroulants.js");
-const { EGenreTriCDT } = require("EGenreTriCDT.js");
-const { UtilitaireInitCalendrier } = require("UtilitaireInitCalendrier.js");
-const {
-	ObjetRequetePageCahierDeTexte,
-} = require("ObjetRequetePageCahierDeTexte.js");
-const { InterfacePage } = require("InterfacePage.js");
-const { PageCahierDeTexte } = require("PageCahierDeTexte.js");
-const PageCahierDeTexte_Inspecteur = require("PageCahierDeTexte_Inspecteur.js");
-const {
-	ObjetFenetre_ChoixDossierCopieCDT,
-} = require("ObjetFenetre_ChoixDossierCopieCDT.js");
-class InterfacePageRecapCahierDeTexte extends InterfacePage {
-	constructor(...aParams) {
-		super(...aParams);
-		this.ModeAffichage = EGenreAffichageCahierDeTextes.ContenuDeCours;
-		this.TypeTri = EGenreTriCDT.ParDatePourLe;
+exports.InterfacePageRecapCahierDeTexte = void 0;
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const Invocateur_1 = require("Invocateur");
+const ObjetHtml_1 = require("ObjetHtml");
+const Enumere_GenreImpression_1 = require("Enumere_GenreImpression");
+const ObjetFenetreVisuEleveQCM_1 = require("ObjetFenetreVisuEleveQCM");
+const ObjetCalendrier_1 = require("ObjetCalendrier");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetMenuContextuel_1 = require("ObjetMenuContextuel");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_AffichageCahierDeTextes_1 = require("Enumere_AffichageCahierDeTextes");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const InterfacePageAvecMenusDeroulants_1 = require("InterfacePageAvecMenusDeroulants");
+const EGenreTriCDT_1 = require("EGenreTriCDT");
+const UtilitaireInitCalendrier_1 = require("UtilitaireInitCalendrier");
+const ObjetRequetePageCahierDeTexte_1 = require("ObjetRequetePageCahierDeTexte");
+const InterfacePage_1 = require("InterfacePage");
+const PageCahierDeTexte_1 = require("PageCahierDeTexte");
+const MultiPageCahierDeTexte_Inspecteur = require("PageCahierDeTexte_Inspecteur");
+const ObjetFenetre_ChoixDossierCopieCDT_1 = require("ObjetFenetre_ChoixDossierCopieCDT");
+const AccessApp_1 = require("AccessApp");
+class InterfacePageRecapCahierDeTexte extends InterfacePage_1.InterfacePage {
+	constructor() {
+		super(...arguments);
+		this.appScoEspace = (0, AccessApp_1.getApp)();
+		this.etatUtilScoEspace = this.appScoEspace.getEtatUtilisateur();
+		this.ModeAffichage =
+			Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes.ContenuDeCours;
+		this.TypeTri = EGenreTriCDT_1.EGenreTriCDT.ParDatePourLe;
 		this._donneesMenusDeroulantsRecues = false;
 		this.donnees = { libelleBandeau: "" };
 	}
 	construireInstances() {
 		super.construireInstances();
-		const lAcces = GEtatUtilisateur.getAcces();
+		const lAcces = this.etatUtilScoEspace.getAcces();
 		if (lAcces.autoriseSurDate) {
 			this.identTripleCombo = this.add(
-				ObjetAffichagePageAvecMenusDeroulants,
-				_evenementSurDernierMenuDeroulant,
+				InterfacePageAvecMenusDeroulants_1.ObjetAffichagePageAvecMenusDeroulants,
+				this._evenementSurDernierMenuDeroulant,
 				(aObjet) => {
 					aObjet.setParametres(
-						[EGenreRessource.Classe, EGenreRessource.Matiere],
+						[
+							Enumere_Ressource_1.EGenreRessource.Classe,
+							Enumere_Ressource_1.EGenreRessource.Matiere,
+						],
 						false,
 					);
 				},
@@ -59,45 +59,52 @@ class InterfacePageRecapCahierDeTexte extends InterfacePage {
 			).getPremierElement();
 		}
 		this.IdentCalendrier = this.add(
-			ObjetCalendrier,
+			ObjetCalendrier_1.ObjetCalendrier,
 			this.evenementSurCalendrier,
 			(aObjet) => {
-				UtilitaireInitCalendrier.init(aObjet, { avecMultiSelection: true });
+				UtilitaireInitCalendrier_1.UtilitaireInitCalendrier.init(aObjet, {
+					avecMultiSelection: true,
+				});
 			},
 		);
 		this.IdentCahierDeTexte = this.add(
-			GEtatUtilisateur.GenreEspace === EGenreEspace.Academie
-				? PageCahierDeTexte_Inspecteur
-				: PageCahierDeTexte,
-			_evenementSurCahierDeTexte,
+			this.etatUtilScoEspace.GenreEspace ===
+				Enumere_Espace_1.EGenreEspace.Academie
+				? MultiPageCahierDeTexte_Inspecteur === null ||
+					MultiPageCahierDeTexte_Inspecteur === void 0
+					? void 0
+					: MultiPageCahierDeTexte_Inspecteur.PageCahierDeTexte_Inspecteur
+				: PageCahierDeTexte_1.PageCahierDeTexte,
+			this._evenementSurCahierDeTexte,
 			(aObjet) => {
 				aObjet.setParametres(true, true);
 			},
 		);
-		this.identFenetreVisuQCM = this.addFenetre(ObjetFenetreVisuEleveQCM);
+		this.identFenetreVisuQCM = this.addFenetre(
+			ObjetFenetreVisuEleveQCM_1.ObjetFenetreVisuEleveQCM,
+		);
 		this.identFenetreChoixDossierCopieCDT = this.addFenetre(
-			ObjetFenetre_ChoixDossierCopieCDT,
+			ObjetFenetre_ChoixDossierCopieCDT_1.ObjetFenetre_ChoixDossierCopieCDT,
 		);
 	}
 	setParametresGeneraux() {
 		this.avecBandeau = true;
 		this.IdentZoneAlClient = this.IdentCahierDeTexte;
-		this.AvecCadre = GEtatUtilisateur.getAcces().autoriseSurDate;
+		this.AvecCadre = this.etatUtilScoEspace.getAcces().autoriseSurDate;
 		this.AddSurZone = [];
 		this.AddSurZone.push(this.identTripleCombo);
 		this.AddSurZone.push({
-			html: '<span class="Gras" ie-html="getLibelleBandeau"></span>',
-		});
-	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
-			getLibelleBandeau: function () {
-				return aInstance.donnees.libelleBandeau;
-			},
+			html: IE.jsx.str("span", {
+				class: "Gras",
+				"ie-html": () => this.donnees.libelleBandeau,
+			}),
 		});
 	}
 	evenementAfficherMessage(aGenreMessage) {
-		GHtml.setDisplay(this.getInstance(this.IdentCalendrier).getNom(), false);
+		ObjetHtml_1.GHtml.setDisplay(
+			this.getInstance(this.IdentCalendrier).getNom(),
+			false,
+		);
 		this._evenementAfficherMessage(aGenreMessage);
 	}
 	evenementSurCalendrier(
@@ -108,20 +115,20 @@ class InterfacePageRecapCahierDeTexte extends InterfacePage {
 		aIsToucheSelection,
 	) {
 		if (aIsToucheSelection) {
-			this.Instances[this.IdentCahierDeTexte].focusSurPremierElement();
+			this.getInstance(this.IdentCahierDeTexte).focusSurPremierElement();
 		} else {
-			GEtatUtilisateur.setDomaineSelectionne(aDomaine);
+			this.etatUtilScoEspace.setDomaineSelectionne(aDomaine);
 			this.actualiserPage();
 		}
 	}
 	actualiserPage() {
 		const lParamsRequete = {
-			domaine: GEtatUtilisateur.getDomaineSelectionne(),
-			ressource: GEtatUtilisateur.Navigation.getRessource(
-				EGenreRessource.Classe,
+			domaine: this.etatUtilScoEspace.getDomaineSelectionne(),
+			ressource: this.etatUtilScoEspace.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.Classe,
 			),
 		};
-		new ObjetRequetePageCahierDeTexte(
+		new ObjetRequetePageCahierDeTexte_1.ObjetRequetePageCahierDeTexte(
 			this,
 			this.actionSurEvenementSurCalendrier,
 		).lancerRequete(lParamsRequete);
@@ -132,7 +139,7 @@ class InterfacePageRecapCahierDeTexte extends InterfacePage {
 		this.listeDS = aParametres.listeDS;
 		if (this.getInstance(this.IdentCalendrier)) {
 			this.getInstance(this.IdentCalendrier).setFrequences(
-				GParametres.frequences,
+				this.appScoEspace.getObjetParametres().frequences,
 				true,
 			);
 		}
@@ -140,46 +147,54 @@ class InterfacePageRecapCahierDeTexte extends InterfacePage {
 			this.ListeTravailAFaire,
 			this.ListeCahierDeTextes,
 		);
-		const lTypeTri = !GEtatUtilisateur.Navigation.getNumeroRessource(
-			EGenreRessource.Matiere,
+		const lTypeTri = !this.etatUtilScoEspace.Navigation.getNumeroRessource(
+			Enumere_Ressource_1.EGenreRessource.Matiere,
 		)
-			? EGenreTriCDT.ParDatePourLe
-			: EGenreTriCDT.ParMatiere;
+			? EGenreTriCDT_1.EGenreTriCDT.ParDatePourLe
+			: EGenreTriCDT_1.EGenreTriCDT.ParMatiere;
 		this.actualiser(lTypeTri);
 	}
 	recupererDonnees() {
 		super.recupererDonnees();
-		GHtml.setDisplay(
+		ObjetHtml_1.GHtml.setDisplay(
 			this.getInstance(this.IdentCalendrier).getNom(),
 			this._donneesMenusDeroulantsRecues,
 		);
 		this._donneesMenusDeroulantsRecues = false;
-		const lAcces = GEtatUtilisateur.getAcces();
+		const lAcces = this.etatUtilScoEspace.getAcces();
 		if (!lAcces.autorise) {
-			GHtml.setHtml(
+			ObjetHtml_1.GHtml.setHtml(
 				this.getNomInstance(this.IdentZoneAlClient),
 				this.composeMessage(
-					GTraductions.getValeur("CahierDeTexte.CDTNonConsultable"),
+					ObjetTraduction_1.GTraductions.getValeur(
+						"CahierDeTexte.CDTNonConsultable",
+					),
 				),
 			);
 		} else if (!lAcces.autoriseSurDate) {
-			GHtml.setHtml(
+			ObjetHtml_1.GHtml.setHtml(
 				this.getNomInstance(this.IdentZoneAlClient),
 				this.composeMessage(
-					GTraductions.getValeur("CahierDeTexte.CDTconsultableDuAu", [
-						GDate.formatDate(lAcces.dateDebut, "%JJ/%MM/%AA"),
-						GDate.formatDate(lAcces.dateFin, "%JJ/%MM/%AA"),
-					]),
+					ObjetTraduction_1.GTraductions.getValeur(
+						"CahierDeTexte.CDTconsultableDuAu",
+						[
+							ObjetDate_1.GDate.formatDate(lAcces.dateDebut, "%JJ/%MM/%AA"),
+							ObjetDate_1.GDate.formatDate(lAcces.dateFin, "%JJ/%MM/%AA"),
+						],
+					),
 				),
 			);
 		} else if (lAcces.dateDebut && lAcces.dateFin) {
 			this.afficherBandeau(false);
 			this.donnees.libelleBandeau =
 				"(" +
-				GTraductions.getValeur("CahierDeTexte.consultableDuAu", [
-					GDate.formatDate(lAcces.dateDebut, "%JJ/%MM/%AA"),
-					GDate.formatDate(lAcces.dateFin, "%JJ/%MM/%AA"),
-				]) +
+				ObjetTraduction_1.GTraductions.getValeur(
+					"CahierDeTexte.consultableDuAu",
+					[
+						ObjetDate_1.GDate.formatDate(lAcces.dateDebut, "%JJ/%MM/%AA"),
+						ObjetDate_1.GDate.formatDate(lAcces.dateFin, "%JJ/%MM/%AA"),
+					],
+				) +
 				")";
 		}
 	}
@@ -187,26 +202,33 @@ class InterfacePageRecapCahierDeTexte extends InterfacePage {
 		if (aTypeTri !== null && aTypeTri !== undefined) {
 			this.TypeTri = aTypeTri;
 		}
-		if (!_ExistePourMatiere.call(this)) {
+		if (!this._existePourMatiere()) {
 			this.getInstance(this.IdentCahierDeTexte).afficher(
 				this.composeMessage(
 					[
-						GTraductions.getValeur("CahierDeTexte.AucunTAFSaisi"),
-						GTraductions.getValeur("CahierDeTexte.AucunContenuSaisi"),
+						ObjetTraduction_1.GTraductions.getValeur(
+							"CahierDeTexte.AucunTAFSaisi",
+						),
+						ObjetTraduction_1.GTraductions.getValeur(
+							"CahierDeTexte.AucunContenuSaisi",
+						),
 					][this.ModeAffichage],
 				),
 			);
-			GHtml.setTabIndex(this.getZoneId(this.IdentCahierDeTexte), "0");
-			Invocateur.evenement(
-				ObjetInvocateur.events.activationImpression,
-				EGenreImpression.Aucune,
+			ObjetHtml_1.GHtml.setTabIndex(this.getZoneId(this.IdentCahierDeTexte), 0);
+			Invocateur_1.Invocateur.evenement(
+				Invocateur_1.ObjetInvocateur.events.activationImpression,
+				Enumere_GenreImpression_1.EGenreImpression.Aucune,
 			);
 		} else {
-			GHtml.setTabIndex(this.getZoneId(this.IdentCahierDeTexte), "-1");
-			const lCallback = GApplication.droits.get(
-				TypeDroits.cahierDeTexte.avecSaisieCahierDeTexte,
+			ObjetHtml_1.GHtml.setTabIndex(
+				this.getZoneId(this.IdentCahierDeTexte),
+				-1,
+			);
+			const lCallback = this.appScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.cahierDeTexte.avecSaisieCahierDeTexte,
 			)
-				? _surContextMenuCDT.bind(this)
+				? this._surContextMenuCDT.bind(this)
 				: null;
 			this.getInstance(this.IdentCahierDeTexte).setOptionsCDT({
 				callbackContextMenuCDT: lCallback,
@@ -214,78 +236,78 @@ class InterfacePageRecapCahierDeTexte extends InterfacePage {
 			this.getInstance(this.IdentCahierDeTexte).actualiser(
 				this.ModeAffichage,
 				this.TypeTri,
-				GEtatUtilisateur.Navigation.getNumeroRessource(EGenreRessource.Matiere),
+				this.etatUtilScoEspace.Navigation.getNumeroRessource(
+					Enumere_Ressource_1.EGenreRessource.Matiere,
+				),
 			);
-			Invocateur.evenement(
-				ObjetInvocateur.events.activationImpression,
-				EGenreImpression.Normale,
+			Invocateur_1.Invocateur.evenement(
+				Invocateur_1.ObjetInvocateur.events.activationImpression,
+				Enumere_GenreImpression_1.EGenreImpression.Normale,
 				this,
 			);
 		}
 	}
-	getPageImpression() {
-		const lTitre = this.getInstance(this.IdentBandeau)
-			? this.getInstance(this.IdentBandeau).Libelle
-			: "";
-		return {
-			titre1: lTitre,
-			contenu: this.getInstance(this.IdentCahierDeTexte).composePage(true),
-		};
-	}
-}
-function _evenementSurDernierMenuDeroulant() {
-	this._donneesMenusDeroulantsRecues = true;
-	this.afficherBandeau(true);
-	GHtml.setDisplay(this.getInstance(this.IdentCalendrier).getNom(), true);
-	this.getInstance(this.IdentCalendrier).setDomaine(
-		GEtatUtilisateur.getDomaineSelectionne(),
-	);
-	this.surResizeInterface();
-}
-function _surContextMenuCDT(event, aCDT) {
-	const lthis = this;
-	ObjetMenuContextuel.afficher({
-		pere: this,
-		evenement: function () {
-			lthis
-				.getInstance(lthis.identFenetreChoixDossierCopieCDT)
-				.afficherChoixDossierCopieCDT(null, aCDT);
-		},
-		initCommandes: function (aInstance) {
-			aInstance.addCommande(
-				0,
-				GTraductions.getValeur("CahierDeTexte.AjouterElementsCDT"),
-			);
-		},
-	});
-}
-function _ExistePourMatiere() {
-	const lNumeroMatiere = GEtatUtilisateur.Navigation.getNumeroRessource(
-		EGenreRessource.Matiere,
-	);
-	const lListe = this.ListeCahierDeTextes;
-	for (let I = 0; lListe && I < lListe.count(); I++) {
-		if (!lNumeroMatiere || lNumeroMatiere === lListe.get(I).Matiere.Numero) {
-			return true;
-		}
-	}
-	return false;
-}
-function _evenementSurCahierDeTexte(aParam) {
-	if (
-		GEtatUtilisateur.GenreEspace === EGenreEspace.Academie &&
-		aParam &&
-		aParam.actualiser
-	) {
-		this.actualiserPage();
-		return;
-	}
-	if (aParam && aParam.executionQCM) {
-		this.getInstance(this.identFenetreVisuQCM).setParametres(
-			aParam.executionQCM.getNumero(),
+	_evenementSurDernierMenuDeroulant() {
+		this._donneesMenusDeroulantsRecues = true;
+		this.afficherBandeau(true);
+		ObjetHtml_1.GHtml.setDisplay(
+			this.getInstance(this.IdentCalendrier).getNom(),
 			true,
 		);
-		this.getInstance(this.identFenetreVisuQCM).setDonnees(aParam.executionQCM);
+		this.getInstance(this.IdentCalendrier).setDomaine(
+			this.etatUtilScoEspace.getDomaineSelectionne(),
+		);
+		this.surResizeInterface();
+	}
+	_surContextMenuCDT(event, aCDT) {
+		ObjetMenuContextuel_1.ObjetMenuContextuel.afficher({
+			pere: this,
+			evenement: () => {
+				this.getInstance(
+					this.identFenetreChoixDossierCopieCDT,
+				).afficherChoixDossierCopieCDT(null, aCDT);
+			},
+			initCommandes: function (aInstance) {
+				aInstance.addCommande(
+					0,
+					ObjetTraduction_1.GTraductions.getValeur(
+						"CahierDeTexte.AjouterElementsCDT",
+					),
+				);
+			},
+		});
+	}
+	_existePourMatiere() {
+		const lNumeroMatiere = this.etatUtilScoEspace.Navigation.getNumeroRessource(
+			Enumere_Ressource_1.EGenreRessource.Matiere,
+		);
+		const lListe = this.ListeCahierDeTextes;
+		for (let I = 0; lListe && I < lListe.count(); I++) {
+			if (!lNumeroMatiere || lNumeroMatiere === lListe.get(I).Matiere.Numero) {
+				return true;
+			}
+		}
+		return false;
+	}
+	_evenementSurCahierDeTexte(aParam) {
+		if (
+			this.etatUtilScoEspace.GenreEspace ===
+				Enumere_Espace_1.EGenreEspace.Academie &&
+			aParam &&
+			aParam.actualiser
+		) {
+			this.actualiserPage();
+			return;
+		}
+		if (aParam && aParam.executionQCM) {
+			this.getInstance(this.identFenetreVisuQCM).setParametres(
+				aParam.executionQCM.getNumero(),
+				true,
+			);
+			this.getInstance(this.identFenetreVisuQCM).setDonnees(
+				aParam.executionQCM,
+			);
+		}
 	}
 }
-module.exports = InterfacePageRecapCahierDeTexte;
+exports.InterfacePageRecapCahierDeTexte = InterfacePageRecapCahierDeTexte;

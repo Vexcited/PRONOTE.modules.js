@@ -1,27 +1,25 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { tag } = require("tag.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GStyle } = require("ObjetStyle.js");
-const {
-	ObjetFenetre_SelecteurCouleur,
-} = require("ObjetFenetre_SelecteurCouleur.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { ObjetIndexsUnique } = require("ObjetIndexsUnique.js");
-const { GUID } = require("GUID.js");
-class ObjetFenetre_EditionCategorie extends ObjetFenetre {
+exports.ObjetFenetre_EditionCategorie = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetStyle_1 = require("ObjetStyle");
+const ObjetFenetre_SelecteurCouleur_1 = require("ObjetFenetre_SelecteurCouleur");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const ObjetIndexsUnique_1 = require("ObjetIndexsUnique");
+const GUID_1 = require("GUID");
+class ObjetFenetre_EditionCategorie extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
+		this.enCreation = false;
+		this.listeCategoriesExistantes = null;
 		this.setOptionsFenetre({
 			largeur: 300,
 			hauteur: null,
 			avecTailleSelonContenu: true,
 		});
-		this.enCreation = false;
-		this.listeCategoriesExistantes = null;
-		this._indexsUnique = new ObjetIndexsUnique();
+		this._indexsUnique = new ObjetIndexsUnique_1.ObjetIndexsUnique();
 		this._indexsUnique.ajouterIndex(["Libelle"]);
 	}
 	setListeCategoriesExistantes(aListeCategories) {
@@ -50,7 +48,9 @@ class ObjetFenetre_EditionCategorie extends ObjetFenetre {
 					if (!!aInstance.categorie && !!aInstance.categorie.couleur) {
 						lHtmlCouleur = [
 							'<div class="square-color" style="',
-							GStyle.composeCouleurFond(aInstance.categorie.couleur),
+							ObjetStyle_1.GStyle.composeCouleurFond(
+								aInstance.categorie.couleur,
+							),
 							'">',
 							"</div>",
 						].join("");
@@ -68,45 +68,58 @@ class ObjetFenetre_EditionCategorie extends ObjetFenetre {
 		});
 	}
 	composeContenu() {
+		const lIdCouleur = GUID_1.GUID.getId();
 		const T = [];
-		const lIdCouleur = GUID.getId();
 		T.push(
-			'<div class="field-contain">',
-			'<label id="',
-			lIdCouleur,
-			'" class="ie-titre-petit">',
-			GTraductions.getValeur("FenetreCategorieEvaluation.couleur"),
-			"</label>",
-			'<ie-btnselecteur ie-model="getCouleur" ie-node="Couleur.nodeInputTexte" aria-labelledby="',
-			lIdCouleur,
-			'"></ie-btnselecteur>',
-			"</div>",
-		);
-		T.push(
-			tag(
-				"div",
-				{ class: "field-contain" },
-				tag(
-					"label",
-					{ class: "ie-titre-petit" },
-					GTraductions.getValeur("FenetreCategorieEvaluation.TitreLibelle"),
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"div",
+					{ class: "field-contain" },
+					IE.jsx.str(
+						"label",
+						{ id: lIdCouleur, class: "ie-titre-petit" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreCategorieEvaluation.couleur",
+						),
+					),
+					IE.jsx.str("ie-btnselecteur", {
+						"ie-model": "getCouleur",
+						"ie-node": "Couleur.nodeInputTexte",
+						"aria-labelledby": lIdCouleur,
+					}),
 				),
-				tag("input", {
-					type: "text",
-					"ie-model": "LibelleCategorie",
-					class: "round-style full-width",
-					title: GTraductions.getValeur("FenetreDevoir.LibelleCategorie"),
-					placeholder: GTraductions.getValeur("FenetreDevoir.LibelleCategorie"),
-				}),
+				IE.jsx.str(
+					"div",
+					{ class: "field-contain" },
+					IE.jsx.str(
+						"label",
+						{ class: "ie-titre-petit" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreCategorieEvaluation.TitreLibelle",
+						),
+					),
+					IE.jsx.str("input", {
+						type: "text",
+						"ie-model": "LibelleCategorie",
+						class: "full-width",
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreDevoir.LibelleCategorie",
+						),
+						placeholder: ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreDevoir.LibelleCategorie",
+						),
+					}),
+				),
 			),
 		);
-		T.push("</div>");
 		return T.join("");
 	}
 	setDonnees(aCategorie) {
 		this.categorie = aCategorie
-			? MethodesObjet.dupliquer(aCategorie)
-			: new ObjetElement();
+			? MethodesObjet_1.MethodesObjet.dupliquer(aCategorie)
+			: new ObjetElement_1.ObjetElement();
 		if (!aCategorie) {
 			this.enCreation = true;
 			this.categorie.couleur = "#FFFFFF";
@@ -130,23 +143,24 @@ class ObjetFenetre_EditionCategorie extends ObjetFenetre {
 				});
 			}
 			if (lTestLibelleExisteDeja) {
-				const lMessageDoublon = GTraductions.getValeur("liste.doublonNom", [
-					this.categorie.getLibelle(),
-				]);
+				const lMessageDoublon = ObjetTraduction_1.GTraductions.getValeur(
+					"liste.doublonNom",
+					[this.categorie.getLibelle()],
+				);
 				GApplication.getMessage().afficher({
-					type: EGenreBoiteMessage.Information,
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
 					message: lMessageDoublon,
 				});
 				return;
 			}
 			this.fermer();
 			if (this.enCreation) {
-				this.categorie.setEtat(EGenreEtat.Creation);
+				this.categorie.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 			} else if (
 				this.enModification &&
-				this.categorie.getEtat() !== EGenreEtat.Creation
+				this.categorie.getEtat() !== Enumere_Etat_1.EGenreEtat.Creation
 			) {
-				this.categorie.setEtat(EGenreEtat.Modification);
+				this.categorie.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 			}
 			this.callback.appel(this.categorie);
 		} else {
@@ -155,17 +169,20 @@ class ObjetFenetre_EditionCategorie extends ObjetFenetre {
 	}
 	surBoutonChoixCouleur() {
 		const lThis = this;
-		ObjetFenetre.creerInstanceFenetre(ObjetFenetre_SelecteurCouleur, {
-			pere: this,
-			evenement: function (aGenreBouton, aCouleur) {
-				if (aGenreBouton === 1) {
-					if (lThis.categorie.couleur !== aCouleur) {
-						lThis.categorie.couleur = aCouleur;
-						lThis.categorie.setEtat(EGenreEtat.Modification);
+		ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_SelecteurCouleur_1.ObjetFenetre_SelecteurCouleur,
+			{
+				pere: this,
+				evenement: function (aGenreBouton, aCouleur) {
+					if (aGenreBouton === 1) {
+						if (lThis.categorie.couleur !== aCouleur) {
+							lThis.categorie.couleur = aCouleur;
+							lThis.categorie.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+						}
 					}
-				}
+				},
 			},
-		}).setDonnees(lThis.categorie.couleur);
+		).setDonnees(lThis.categorie.couleur);
 	}
 }
-module.exports = { ObjetFenetre_EditionCategorie };
+exports.ObjetFenetre_EditionCategorie = ObjetFenetre_EditionCategorie;

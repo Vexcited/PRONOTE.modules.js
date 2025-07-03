@@ -62,6 +62,10 @@ class ObjetRequetePageVieScolaire extends ObjetRequeteJSON_1.ObjetRequeteConsult
 			totaux: lTotaux,
 			listeMatieres: lListeMatieres,
 			message: lMessage,
+			commentaireAbsenceObligatoire:
+				!!this.JSONReponse.commentaireAbsenceObligatoire,
+			commentaireRetardObligatoire:
+				!!this.JSONReponse.commentaireRetardObligatoire,
 		});
 	}
 	creerElementRecapitulatifAbsences(aObjet) {
@@ -206,6 +210,16 @@ class ObjetRequetePageVieScolaire extends ObjetRequeteJSON_1.ObjetRequeteConsult
 		}
 		if (this.autorisations.absenceInternat) {
 			lObjet = { genre: Enumere_Ressource_1.EGenreRessource.AbsenceInternat };
+			lObjet.position =
+				Enumere_Ressource_1.EGenreRessourceUtil.getPositionAbsence(
+					lObjet.genre,
+				);
+			lListeRecapitulatifs.addElement(
+				this.creerElementRecapitulatifAbsences(lObjet),
+			);
+		}
+		if (this.autorisations.retardInternat) {
+			lObjet = { genre: Enumere_Ressource_1.EGenreRessource.RetardInternat };
 			lObjet.position =
 				Enumere_Ressource_1.EGenreRessourceUtil.getPositionAbsence(
 					lObjet.genre,

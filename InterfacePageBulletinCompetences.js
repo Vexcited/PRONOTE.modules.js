@@ -1,131 +1,145 @@
-const ObjetBulletinCompetences = require("PageBulletinCompetences.js");
-const {
-	ObjetRequeteBulletinCompetences,
-} = require("ObjetRequeteBulletinCompetences.js");
-const { Identite } = require("ObjetIdentite.js");
-const { EStructureAffichage } = require("Enumere_StructureAffichage.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { InterfacePage_Mobile } = require("InterfacePage_Mobile.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetSelection } = require("ObjetSelection.js");
-const { ObjetTabOnglets } = require("ObjetTabOnglets.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	TypeGenreBulletinCompetence,
-} = require("TypeGenreBulletinCompetence.js");
-const UtilitaireCompetences_Mobile = require("UtilitaireCompetences_Mobile.js");
-const ObjetRequeteSaisieAccuseReceptionDocument = require("ObjetRequeteSaisieAccuseReceptionDocument.js");
-const { ObjetBoutonFlottant } = require("ObjetBoutonFlottant.js");
-const { GenerationPDF } = require("UtilitaireGenerationPDF.js");
-const { OptionsPDFSco } = require("OptionsPDFSco.js");
-const { TypeHttpGenerationPDFSco } = require("TypeHttpGenerationPDFSco.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const {
-	UtilitaireGestionCloudEtPDF,
-} = require("UtilitaireGestionCloudEtPDF.js");
-const { EGenreMessage } = require("Enumere_Message.js");
-const { GHtml } = require("ObjetHtml.js");
-class InterfacePageBulletinCompetences extends InterfacePage_Mobile {
+exports.InterfacePageBulletinCompetences = void 0;
+const PageBulletinCompetences_1 = require("PageBulletinCompetences");
+const ObjetRequeteBulletinCompetences_1 = require("ObjetRequeteBulletinCompetences");
+const ObjetIdentite_1 = require("ObjetIdentite");
+const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const InterfacePage_Mobile_1 = require("InterfacePage_Mobile");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetSelection_1 = require("ObjetSelection");
+const ObjetTabOnglets_1 = require("ObjetTabOnglets");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TypeGenreBulletinCompetence_1 = require("TypeGenreBulletinCompetence");
+const UtilitaireCompetences_Mobile_1 = require("UtilitaireCompetences_Mobile");
+const MultiObjetRequeteSaisieAccuseReceptionDocument = require("ObjetRequeteSaisieAccuseReceptionDocument");
+const ObjetBoutonFlottant_1 = require("ObjetBoutonFlottant");
+const UtilitaireGenerationPDF_1 = require("UtilitaireGenerationPDF");
+const OptionsPDFSco_1 = require("OptionsPDFSco");
+const TypeHttpGenerationPDFSco_1 = require("TypeHttpGenerationPDFSco");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const UtilitaireGestionCloudEtPDF_1 = require("UtilitaireGestionCloudEtPDF");
+const Enumere_Message_1 = require("Enumere_Message");
+const ObjetHtml_1 = require("ObjetHtml");
+const AccessApp_1 = require("AccessApp");
+class InterfacePageBulletinCompetences extends InterfacePage_Mobile_1.InterfacePage_Mobile {
 	constructor(...aParams) {
 		super(...aParams);
-		this.listePeriodes = new ObjetListeElements();
-		this.periodeCourant = new ObjetElement();
-		this.indiceParDefaut = 0;
+		this.applicationSco = (0, AccessApp_1.getApp)();
+		this.etatUtilisateurSco = this.applicationSco.getEtatUtilisateur();
+		this.periodeCourant = new ObjetElement_1.ObjetElement();
 		this.idWrapper = this.Nom + "_wrapper";
-		this.listeTabs = new ObjetListeElements();
-		this.GenreStructure = EStructureAffichage.Autre;
+		this.listeTabs = new ObjetListeElements_1.ObjetListeElements();
 		this.identBtnFlottant = null;
 		this.avecGestionAccuseReception =
-			[EGenreEspace.Mobile_PrimParent, EGenreEspace.Mobile_Parent].includes(
-				GEtatUtilisateur.GenreEspace,
-			) &&
-			(GEtatUtilisateur.pourPrimaire() ||
-				GApplication.droits.get(TypeDroits.fonctionnalites.gestionARBulletins));
+			[
+				Enumere_Espace_1.EGenreEspace.Mobile_PrimParent,
+				Enumere_Espace_1.EGenreEspace.Mobile_Parent,
+			].includes(GEtatUtilisateur.GenreEspace) &&
+			(this.etatUtilisateurSco.pourPrimaire() ||
+				this.applicationSco.droits.get(
+					ObjetDroitsPN_1.TypeDroits.fonctionnalites.gestionARBulletins,
+				));
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
-			getIdentiteBouton: function () {
-				return {
-					class: ObjetBoutonFlottant,
-					pere: this,
-					init: function (aBtn) {
-						aInstance.identBtnFlottant = aBtn;
-						const lListeBtn = [];
-						if (
-							GApplication.droits.get(
-								TypeDroits.autoriserImpressionBulletinReleveBrevet,
-							)
-						) {
-							lListeBtn.push({
-								primaire: true,
-								icone: "icon_pdf",
-								callback: aInstance.afficherModalitesGenerationPDF.bind(
-									this,
-									aInstance,
-									_genererPdf,
-								),
-							});
-						}
-						lListeBtn.push({
-							icone: "icon_diffuser_information",
-							callback: aInstance.surClicLegende.bind(this, true),
-						});
-						aBtn.setOptionsBouton({ listeBoutons: lListeBtn });
-					},
-				};
+	jsxIdentiteBoutonFlottant() {
+		return {
+			class: ObjetBoutonFlottant_1.ObjetBoutonFlottant,
+			pere: this,
+			init: (aInstanceBouton) => {
+				this.identBtnFlottant = aInstanceBouton;
+				const lListeBtn = [];
+				if (
+					this.applicationSco.droits.get(
+						ObjetDroitsPN_1.TypeDroits.autoriserImpressionBulletinReleveBrevet,
+					)
+				) {
+					lListeBtn.push({
+						primaire: true,
+						icone: "icon_uniF1C1",
+						ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
+							"GenerationPDF.TitreCommande",
+						),
+						callback: this.afficherModalitesGenerationPDF.bind(this),
+					});
+				}
+				lListeBtn.push({
+					icone: "icon_diffuser_information",
+					ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
+						"competences.Legende",
+					),
+					callback: this.surClicLegende.bind(this, true),
+				});
+				aInstanceBouton.setOptionsBouton({ listeBoutons: lListeBtn });
 			},
-		});
+		};
 	}
-	afficherModalitesGenerationPDF(aInstance) {
+	afficherModalitesGenerationPDF() {
 		let lParams = {
-			callbaskEvenement: aInstance.surEvenementFenetre.bind(aInstance),
-			modeGestion: UtilitaireGestionCloudEtPDF.modeGestion.PDFEtCloud,
+			callbaskEvenement: this.surEvenementFenetre.bind(this),
+			modeGestion:
+				UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF.modeGestion
+					.PDFEtCloud,
 			avecDepot: true,
 			avecTitreSelonOnglet: true,
 		};
-		UtilitaireGestionCloudEtPDF.creerFenetreGestion(lParams);
+		UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF.creerFenetreGestion(
+			lParams,
+		);
 	}
 	surEvenementFenetre(aLigne) {
 		const lService = GEtatUtilisateur.listeCloudDepotServeur.get(aLigne);
-		_genererPdf.call(this, !!lService ? lService.getGenre() : null);
+		this._genererPdf(!!lService ? lService.getGenre() : null);
 	}
 	construireInstances() {
 		this.identSelection = this.add(
-			ObjetSelection,
+			ObjetSelection_1.ObjetSelection,
 			this.surSelectionPeriode,
-			_initSelecteur.bind(this),
+			this._initSelecteur.bind(this),
 		);
 		if (this.avecGestionAccuseReception) {
 			this.identCbAccuseReception = this.add(
 				ObjetCheckBox,
-				_surEvenementAccuseReception.bind(this),
+				this._surEvenementAccuseReception.bind(this),
 			);
 		}
-		this.identTabs = this.add(ObjetTabOnglets, null, _initialiserObjetTabs);
-		this.identPageBilanParMatiere = this.add(ObjetBulletinCompetences);
-		const lObjElementParMatiere = new ObjetElement(
-			GTraductions.getValeur("competences.BilanParMatiere"),
+		this.identTabs = this.add(
+			ObjetTabOnglets_1.ObjetTabOnglets,
 			null,
-			TypeGenreBulletinCompetence.tGBC_ParMatiere,
+			this._initialiserObjetTabs,
 		);
-		lObjElementParMatiere.Actif = false;
-		lObjElementParMatiere.idDiv = this.getInstance(
-			this.identPageBilanParMatiere,
-		).getNom();
-		this.listeTabs.addElement(lObjElementParMatiere);
-		this.identPageBilanTransversal = this.add(ObjetBulletinCompetences);
-		const lObjElementBilanTransv = new ObjetElement(
-			GTraductions.getValeur("competences.BilanTransversal"),
-			null,
-			TypeGenreBulletinCompetence.tGBC_Transversal,
+		this.identPageBilanParMatiere = this.add(
+			PageBulletinCompetences_1.PageBulletinCompetences,
 		);
-		lObjElementBilanTransv.Actif = false;
-		lObjElementBilanTransv.idDiv = this.getInstance(
-			this.identPageBilanTransversal,
-		).getNom();
-		this.listeTabs.addElement(lObjElementBilanTransv);
+		this.identPageBilanTransversal = this.add(
+			PageBulletinCompetences_1.PageBulletinCompetences,
+		);
+		const lOngletInterfaceParMatiere = ObjetElement_1.ObjetElement.create({
+			Libelle: ObjetTraduction_1.GTraductions.getValeur(
+				"competences.BilanParMatiere",
+			),
+			Genre:
+				TypeGenreBulletinCompetence_1.TypeGenreBulletinCompetence
+					.tGBC_ParMatiere,
+			Actif: false,
+			idDiv: this.getNomInstance(this.identPageBilanParMatiere),
+		});
+		this.listeTabs.addElement(lOngletInterfaceParMatiere);
+		const lOngletInterfaceBilanTransv = ObjetElement_1.ObjetElement.create({
+			Libelle: ObjetTraduction_1.GTraductions.getValeur(
+				"competences.BilanTransversal",
+			),
+			Genre:
+				TypeGenreBulletinCompetence_1.TypeGenreBulletinCompetence
+					.tGBC_Transversal,
+			Actif: false,
+			idDiv: this.getNomInstance(this.identPageBilanTransversal),
+		});
+		this.listeTabs.addElement(lOngletInterfaceBilanTransv);
+	}
+	setParametresGeneraux() {
+		this.GenreStructure =
+			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 		this.AddSurZone = [];
 		this.AddSurZone.push(this.identSelection);
 		if (!!this.identCbAccuseReception) {
@@ -136,20 +150,23 @@ class InterfacePageBulletinCompetences extends InterfacePage_Mobile {
 	construireStructureAffichageAutre() {
 		const lHtml = [];
 		lHtml.push(
-			'<div id="',
-			this.idWrapper,
-			'">',
-			'<div id="',
-			this.getInstance(this.identPageBilanParMatiere).getNom(),
-			'"></div>',
-			'<div id="',
-			this.getInstance(this.identPageBilanTransversal).getNom(),
-			'"></div>',
-			"</div>",
+			IE.jsx.str(
+				"div",
+				{ id: this.idWrapper },
+				IE.jsx.str("div", {
+					id: this.getNomInstance(this.identPageBilanParMatiere),
+				}),
+				IE.jsx.str("div", {
+					id: this.getNomInstance(this.identPageBilanTransversal),
+				}),
+			),
 		);
 		if (!this.identBtnFlottant) {
 			$("#" + GInterface.idZonePrincipale).ieHtmlAppend(
-				'<div class="is-sticky" ie-identite="getIdentiteBouton" ></div>',
+				IE.jsx.str("div", {
+					class: "is-sticky",
+					"ie-identite": this.jsxIdentiteBoutonFlottant.bind(this),
+				}),
 				{ controleur: this.controleur, avecCommentaireConstructeur: false },
 			);
 			this.identBtnFlottant.setVisible(false);
@@ -157,41 +174,43 @@ class InterfacePageBulletinCompetences extends InterfacePage_Mobile {
 		return lHtml.join("");
 	}
 	surClicLegende(avecNiveauxPositionnements) {
-		UtilitaireCompetences_Mobile.openPopupDetailLegende(
+		UtilitaireCompetences_Mobile_1.UtilitaireCompetences_Mobile.openPopupDetailLegende(
 			avecNiveauxPositionnements,
 		);
 	}
 	recupererDonnees() {
-		const lOngletInfosPeriodes = GEtatUtilisateur.getOngletInfosPeriodes();
-		this.listePeriodes = lOngletInfosPeriodes.listePeriodes;
-		if (!(this.listePeriodes && this.listePeriodes.count())) {
+		const lOngletInfosPeriodes =
+			this.etatUtilisateurSco.getOngletInfosPeriodes();
+		const lListePeriodes = lOngletInfosPeriodes.listePeriodes;
+		if (!(lListePeriodes && lListePeriodes.count())) {
 			if (!!this.identCbAccuseReception) {
 				this.getInstance(this.identCbAccuseReception).setVisible(false);
 			}
-			const lGenreMessage = EGenreMessage.AucunBulletinDeCompetencesPourEleve;
+			const lGenreMessage =
+				Enumere_Message_1.EGenreMessage.AucunBulletinDeCompetencesPourEleve;
 			const lMessage =
 				typeof lGenreMessage === "number"
-					? GTraductions.getValeur("Message")[lGenreMessage]
+					? ObjetTraduction_1.GTraductions.getValeur("Message")[lGenreMessage]
 					: lGenreMessage;
 			const lHtml = [];
 			lHtml.push(this.composeAucuneDonnee(lMessage));
-			GHtml.setHtml(this.Nom, lHtml);
+			ObjetHtml_1.GHtml.setHtml(this.Nom, lHtml.join(""));
 		} else {
 			const lNrPeriodeParDefaut =
-				GEtatUtilisateur.getPage() && GEtatUtilisateur.getPage().periode
-					? GEtatUtilisateur.getPage().periode.getNumero()
+				this.etatUtilisateurSco.getPage() &&
+				this.etatUtilisateurSco.getPage().periode
+					? this.etatUtilisateurSco.getPage().periode.getNumero()
 					: lOngletInfosPeriodes.periodeParDefaut.getNumero();
-			this.indiceParDefaut =
-				this.listePeriodes.getIndiceParNumeroEtGenre(lNrPeriodeParDefaut);
-			if (!this.indiceParDefaut) {
-				this.indiceParDefaut = 0;
+			let lIndiceParDefaut =
+				lListePeriodes.getIndiceParNumeroEtGenre(lNrPeriodeParDefaut);
+			if (!lIndiceParDefaut) {
+				lIndiceParDefaut = 0;
 			}
-			this.periodeCourant = this.listePeriodes.get(this.indiceParDefaut);
+			this.periodeCourant = lListePeriodes.get(lIndiceParDefaut);
 			this.getInstance(this.identSelection).setDonnees(
-				this.listePeriodes,
-				this.indiceParDefaut,
+				lListePeriodes,
+				lIndiceParDefaut,
 				null,
-				"",
 			);
 		}
 	}
@@ -199,10 +218,12 @@ class InterfacePageBulletinCompetences extends InterfacePage_Mobile {
 		this.maquetteBulletin = aParams.maquette;
 		if (!this.maquetteBulletin) {
 			this.listeTabs.getElementParGenre(
-				TypeGenreBulletinCompetence.tGBC_ParMatiere,
+				TypeGenreBulletinCompetence_1.TypeGenreBulletinCompetence
+					.tGBC_ParMatiere,
 			).Actif = true;
 			this.listeTabs.getElementParGenre(
-				TypeGenreBulletinCompetence.tGBC_Transversal,
+				TypeGenreBulletinCompetence_1.TypeGenreBulletinCompetence
+					.tGBC_Transversal,
 			).Actif = false;
 			this.getInstance(this.identPageBilanParMatiere).setMessage(
 				aParams.Message,
@@ -217,29 +238,36 @@ class InterfacePageBulletinCompetences extends InterfacePage_Mobile {
 			);
 			if (
 				lBulletin &&
-				lBulletin.getGenre() === TypeGenreBulletinCompetence.tGBC_ParMatiere
+				lBulletin.getGenre() ===
+					TypeGenreBulletinCompetence_1.TypeGenreBulletinCompetence
+						.tGBC_ParMatiere
 			) {
 				this.getInstance(this.identPageBilanParMatiere).setDonnees(
 					aParams,
 					true,
 				);
 				this.listeTabs.getElementParGenre(
-					TypeGenreBulletinCompetence.tGBC_ParMatiere,
+					TypeGenreBulletinCompetence_1.TypeGenreBulletinCompetence
+						.tGBC_ParMatiere,
 				).Actif = true;
 			} else if (
 				lBulletin &&
-				lBulletin.getGenre() === TypeGenreBulletinCompetence.tGBC_Transversal
+				lBulletin.getGenre() ===
+					TypeGenreBulletinCompetence_1.TypeGenreBulletinCompetence
+						.tGBC_Transversal
 			) {
 				this.getInstance(this.identPageBilanTransversal).setDonnees(
 					aParams,
 					false,
 				);
 				this.listeTabs.getElementParGenre(
-					TypeGenreBulletinCompetence.tGBC_Transversal,
+					TypeGenreBulletinCompetence_1.TypeGenreBulletinCompetence
+						.tGBC_Transversal,
 				).Actif = true;
 				if (aIndiceBulletin === 0) {
 					this.listeTabs.getElementParGenre(
-						TypeGenreBulletinCompetence.tGBC_ParMatiere,
+						TypeGenreBulletinCompetence_1.TypeGenreBulletinCompetence
+							.tGBC_ParMatiere,
 					).Actif = false;
 				}
 			}
@@ -281,7 +309,7 @@ class InterfacePageBulletinCompetences extends InterfacePage_Mobile {
 		$wrapper.css("margin-bottom", $tailleLegende + "px");
 	}
 	lancerRequete(aIndiceBulletin) {
-		new ObjetRequeteBulletinCompetences(
+		new ObjetRequeteBulletinCompetences_1.ObjetRequeteBulletinCompetences(
 			this,
 			this.actionSurRecupererDonnees.bind(this, aIndiceBulletin),
 		).lancerRequete({
@@ -293,67 +321,78 @@ class InterfacePageBulletinCompetences extends InterfacePage_Mobile {
 				: undefined,
 		});
 	}
-	free(...aParams) {
-		super.free(...aParams);
+	free() {
+		super.free();
 		if (this.identBtnFlottant) {
 			$("#" + this.identBtnFlottant.getNom().escapeJQ()).remove();
 		}
 	}
 	surSelectionPeriode(aParam) {
 		this.periodeCourant = aParam.element;
-		GEtatUtilisateur.Navigation.setRessource(
-			EGenreRessource.Periode,
+		this.etatUtilisateurSco.Navigation.setRessource(
+			Enumere_Ressource_1.EGenreRessource.Periode,
 			aParam.element,
 		);
-		this.lancerRequete(TypeGenreBulletinCompetence.tGBC_ParMatiere);
+		this.lancerRequete(
+			TypeGenreBulletinCompetence_1.TypeGenreBulletinCompetence.tGBC_ParMatiere,
+		);
+	}
+	_genererPdf(aService) {
+		const lParametrageAffichage = {
+			genreGenerationPDF:
+				TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco
+					.BulletinDeCompetences,
+			periode: this.etatUtilisateurSco.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.Periode,
+			),
+			avecCodeCompetences: GEtatUtilisateur.estAvecCodeCompetences(),
+		};
+		UtilitaireGenerationPDF_1.GenerationPDF.genererPDF({
+			paramPDF: lParametrageAffichage,
+			optionsPDF: OptionsPDFSco_1.OptionsPDFSco.BulletinDeCompetences,
+			cloudCible: aService,
+		});
+	}
+	_surEvenementAccuseReception(aPrisConnaissance) {
+		new MultiObjetRequeteSaisieAccuseReceptionDocument.ObjetRequeteSaisieAccuseReceptionDocument(
+			this,
+		).lancerRequete({
+			aPrisConnaissance: aPrisConnaissance,
+			periode: this.etatUtilisateurSco.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.Periode,
+			),
+		});
+	}
+	_initialiserObjetTabs(aInstance) {
+		aInstance.setOptionsTabOnglets({ avecSwipe: false });
+	}
+	_initSelecteur(aInstance) {
+		aInstance.setParametres({
+			labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+				"WAI.ListeSelectionPeriode",
+			),
+		});
 	}
 }
-function _genererPdf(aService) {
-	const lParametrageAffichage = {
-		genreGenerationPDF: TypeHttpGenerationPDFSco.BulletinDeCompetences,
-		periode: GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Periode),
-		avecCodeCompetences: GEtatUtilisateur.estAvecCodeCompetences(),
-	};
-	GenerationPDF.genererPDF({
-		paramPDF: lParametrageAffichage,
-		optionsPDF: OptionsPDFSco.BulletinDeCompetences,
-		cloudCible: aService,
-	});
-}
-function _surEvenementAccuseReception(aPrisConnaissance) {
-	new ObjetRequeteSaisieAccuseReceptionDocument(this).lancerRequete({
-		aPrisConnaissance: aPrisConnaissance,
-		periode: GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Periode),
-	});
-}
-function _initialiserObjetTabs(aInstance) {
-	aInstance.setParametres({ avecSwipe: false });
-}
-function _initSelecteur(aInstance) {
-	aInstance.setParametres({
-		labelWAICellule: GTraductions.getValeur("WAI.ListeSelectionPeriode"),
-	});
-}
-class ObjetCheckBox extends Identite {
+exports.InterfacePageBulletinCompetences = InterfacePageBulletinCompetences;
+class ObjetCheckBox extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
 		this.estActif = false;
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			cbAccuseReception: {
-				getValue: function () {
-					return aInstance.estActif;
-				},
-				setValue: function (aValue) {
-					aInstance.estActif = aValue;
-					aInstance.callback.appel(aInstance.estActif);
-				},
-				getDisabled: function () {
-					return aInstance.estActif;
-				},
+	jsxModeleCheckboxJAiPrisConnaissance() {
+		return {
+			getValue: () => {
+				return this.estActif;
 			},
-		});
+			setValue: (aValue) => {
+				this.estActif = aValue;
+				this.callback.appel(this.estActif);
+			},
+			getDisabled: () => {
+				return this.estActif;
+			},
+		};
 	}
 	setDonnees(aEstActif) {
 		this.estActif = aEstActif;
@@ -361,15 +400,21 @@ class ObjetCheckBox extends Identite {
 	construireAffichage() {
 		const lHtml = [];
 		lHtml.push(
-			'<div style="padding: 0.5rem;">',
-			'<ie-checkbox ie-textright class="AlignementMilieuVertical" ie-model="cbAccuseReception">',
-			GTraductions.getValeur(
-				"BulletinEtReleve.JAiPrisConnaissanceDuBilanPeriodique",
+			IE.jsx.str(
+				"div",
+				{ style: "padding: 0.5rem;" },
+				IE.jsx.str(
+					"ie-checkbox",
+					{
+						class: "AlignementMilieuVertical",
+						"ie-model": this.jsxModeleCheckboxJAiPrisConnaissance.bind(this),
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"BulletinEtReleve.JAiPrisConnaissanceDuBilanPeriodique",
+					),
+				),
 			),
-			"</ie-checkbox>",
-			"</div>",
 		);
 		return lHtml.join("");
 	}
 }
-module.exports = InterfacePageBulletinCompetences;

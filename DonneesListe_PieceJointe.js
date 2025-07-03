@@ -1,11 +1,12 @@
-const { ObjetTri } = require("ObjetTri.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { DonneesListe_PieceJointeCP } = require("ObjetFenetre_PieceJointeCP.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { GChaine } = require("ObjetChaine.js");
-const { UtilitaireSelecFile } = require("UtilitaireSelecFile.js");
-class DonneesListe_PieceJointe extends DonneesListe_PieceJointeCP {
+exports.DonneesListe_PieceJointe = void 0;
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetFenetre_PieceJointeCP_1 = require("ObjetFenetre_PieceJointeCP");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetChaine_1 = require("ObjetChaine");
+const UtilitaireSelecFile_1 = require("UtilitaireSelecFile");
+class DonneesListe_PieceJointe extends ObjetFenetre_PieceJointeCP_1.DonneesListe_PieceJointeCP {
 	constructor(
 		aDonnees,
 		aAvecEtatSaisie,
@@ -22,10 +23,10 @@ class DonneesListe_PieceJointe extends DonneesListe_PieceJointeCP {
 			aMultiSelection,
 			aAvecGestionLibelleSurLiens,
 		);
-		this.setOptions({ avecEtatSaisie: aAvecEtatSaisie });
 		this.PourMemeMatiere = false;
 		this.PourMemeClasseEtGroupe = false;
 		this.erreurURL = "erreur_URLInexistante";
+		this.setOptions({ avecEtatSaisie: aAvecEtatSaisie });
 	}
 	setDonnees(
 		aAvecFiltre,
@@ -43,7 +44,7 @@ class DonneesListe_PieceJointe extends DonneesListe_PieceJointeCP {
 		this.DateCours = aDateCours;
 	}
 	getTri() {
-		return [ObjetTri.init("Libelle")];
+		return [ObjetTri_1.ObjetTri.init("Libelle")];
 	}
 	getVisible(D) {
 		const lEstDansDate =
@@ -64,13 +65,16 @@ class DonneesListe_PieceJointe extends DonneesListe_PieceJointeCP {
 	}
 	getCouleurCellule(aParams) {
 		return this.genreRessourceDocJoint !==
-			EGenreRessource.DocJointEtablissement && aParams.colonne === 3
-			? ObjetDonneesListe.ECouleurCellule.Fixe
-			: ObjetDonneesListe.ECouleurCellule.Blanc;
+			Enumere_Ressource_1.EGenreRessource.DocJointEtablissement &&
+			aParams.colonne === 3
+			? ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Fixe
+			: ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
 	}
 	surCreation(D, V) {
 		const lFile = V[-1];
-		if (UtilitaireSelecFile.estFichierCloudPartage(lFile)) {
+		if (
+			UtilitaireSelecFile_1.UtilitaireSelecFile.estFichierCloudPartage(lFile)
+		) {
 			return { estFichierCloud: true };
 		}
 		if (this.avecGestionLibelleSurLiens) {
@@ -86,17 +90,20 @@ class DonneesListe_PieceJointe extends DonneesListe_PieceJointeCP {
 		D.PourMemeClasseEtGroupe = true;
 	}
 	getMessageCreationImpossible(aErreur) {
-		if (aErreur && aErreur.estFichierCloud) {
+		if (aErreur && typeof aErreur !== "string" && aErreur.estFichierCloud) {
 			return "";
 		}
 		if (aErreur === this.erreurURL) {
-			return GTraductions.getValeur("URLIncorrecte");
+			return ObjetTraduction_1.GTraductions.getValeur("URLIncorrecte");
 		} else {
 			return super.getMessageCreationImpossible(aErreur);
 		}
 	}
 	avecEdition(aParams) {
-		if (this.genreRessourceDocJoint !== EGenreRessource.DocJointEtablissement) {
+		if (
+			this.genreRessourceDocJoint !==
+			Enumere_Ressource_1.EGenreRessource.DocJointEtablissement
+		) {
 			return (
 				(aParams.colonne < 2 || this.avecGestionLibelleSurLiens) &&
 				aParams.colonne !== 3
@@ -114,7 +121,7 @@ class DonneesListe_PieceJointe extends DonneesListe_PieceJointeCP {
 	}
 	surEdition(aParams, V) {
 		if (this.avecGestionLibelleSurLiens && aParams.colonne === 1) {
-			V = GChaine.verifierURLHttp(V);
+			V = ObjetChaine_1.GChaine.verifierURLHttp(V);
 			if (V.toLowerCase() === "http://" || V.toLowerCase() === "https://") {
 				return this.erreurURL;
 			}
@@ -123,7 +130,7 @@ class DonneesListe_PieceJointe extends DonneesListe_PieceJointeCP {
 	}
 	getMessageEditionImpossible(aParams, aErreur) {
 		if (aErreur === this.erreurURL) {
-			return GTraductions.getValeur("URLIncorrecte");
+			return ObjetTraduction_1.GTraductions.getValeur("URLIncorrecte");
 		} else {
 			return super.getMessageEditionImpossible(aParams, aErreur);
 		}
@@ -141,11 +148,14 @@ class DonneesListe_PieceJointe extends DonneesListe_PieceJointeCP {
 		if (!aPJ) {
 			return false;
 		}
-		if (aGenreRessource !== EGenreRessource.DocJointEtablissement) {
+		if (
+			aGenreRessource !==
+			Enumere_Ressource_1.EGenreRessource.DocJointEtablissement
+		) {
 			return true;
 		} else {
 			return aPJ.modifiable !== false;
 		}
 	}
 }
-module.exports = { DonneesListe_PieceJointe };
+exports.DonneesListe_PieceJointe = DonneesListe_PieceJointe;

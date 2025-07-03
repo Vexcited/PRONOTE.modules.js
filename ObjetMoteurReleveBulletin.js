@@ -1,95 +1,86 @@
-const { GTraductions } = require("ObjetTraduction.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { EGenreImpression } = require("Enumere_GenreImpression.js");
-const { TypeHttpGenerationPDFSco } = require("TypeHttpGenerationPDFSco.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GChaine } = require("ObjetChaine.js");
-const {
-	EGenreNiveauDAcquisitionUtil,
-} = require("Enumere_NiveauDAcquisition.js");
-const { TypeGenreAppreciation } = require("TypeGenreAppreciation.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { GHtml } = require("ObjetHtml.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { TypeReleveBulletin } = require("TypeReleveBulletin.js");
-const { ObjetMoteurPiedDeBulletin } = require("ObjetMoteurPiedDeBulletin.js");
-const { TypeFichierExterneHttpSco } = require("TypeFichierExterneHttpSco.js");
-const { EGenreDocumentJoint } = require("Enumere_DocumentJoint.js");
-const { GDate } = require("ObjetDate.js");
-const { Requetes } = require("CollectionRequetes.js");
-const {
-	ObjetRequeteSaisie,
-	EGenreReponseSaisie,
-} = require("ObjetRequeteJSON.js");
-const { ObjetMoteurGrilleSaisie } = require("ObjetMoteurGrilleSaisie.js");
-const { TUtilitaireCompetences } = require("UtilitaireCompetences.js");
-const {
-	DonneesListe_BarreNiveauxDAcquisitionsDePilier,
-} = require("DonneesListe_BarreNiveauxDAcquisitionsDePilier.js");
-const { TypeModeValidationAuto } = require("TypeModeValidationAuto.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { EGenreAction } = require("Enumere_Action.js");
-const { ObjetMenuContextuel } = require("ObjetMenuContextuel.js");
-const { EGenreEvolutionUtil } = require("Enumere_Evolution.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetFenetre_Liste } = require("ObjetFenetre_Liste.js");
-const { DonneesListe_Simple } = require("DonneesListe_Simple.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { tag } = require("tag.js");
-const { TypePositionnementUtil } = require("TypePositionnement.js");
-const ObjetRequeteSaisieAccuseReceptionDocument = require("ObjetRequeteSaisieAccuseReceptionDocument.js");
-Requetes.inscrire("SaisieAppreciation", ObjetRequeteSaisie);
-Requetes.inscrire("SaisieNoteLSU", ObjetRequeteSaisie);
-Requetes.inscrire("SaisieECTS", ObjetRequeteSaisie);
-Requetes.inscrire("SaisiePositionnement", ObjetRequeteSaisie);
-Requetes.inscrire("SaisieEvolution", ObjetRequeteSaisie);
-Requetes.inscrire("SaisieNotePropDelib", ObjetRequeteSaisie);
-Requetes.inscrire("SaisieEltsPgme", ObjetRequeteSaisie);
-Requetes.inscrire("SaisieAvisProfesseur", ObjetRequeteSaisie);
-Requetes.inscrire("SaisieAvisProfesseurParcoursup", ObjetRequeteSaisie);
-Requetes.inscrire("SaisieParamSynchroAppClasse", ObjetRequeteSaisie);
-Requetes.inscrire("SaisieMoyNR", ObjetRequeteSaisie);
+exports.ObjetMoteurReleveBulletin = void 0;
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const Enumere_GenreImpression_1 = require("Enumere_GenreImpression");
+const TypeHttpGenerationPDFSco_1 = require("TypeHttpGenerationPDFSco");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetChaine_1 = require("ObjetChaine");
+const Enumere_NiveauDAcquisition_1 = require("Enumere_NiveauDAcquisition");
+const TypeGenreAppreciation_1 = require("TypeGenreAppreciation");
+const ObjetElement_1 = require("ObjetElement");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const TypeReleveBulletin_1 = require("TypeReleveBulletin");
+const ObjetMoteurPiedDeBulletin_1 = require("ObjetMoteurPiedDeBulletin");
+const TypeFichierExterneHttpSco_1 = require("TypeFichierExterneHttpSco");
+const Enumere_DocumentJoint_1 = require("Enumere_DocumentJoint");
+const ObjetDate_1 = require("ObjetDate");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const ObjetMoteurGrilleSaisie_1 = require("ObjetMoteurGrilleSaisie");
+const UtilitaireCompetences_1 = require("UtilitaireCompetences");
+const DonneesListe_BarreNiveauxDAcquisitionsDePilier_1 = require("DonneesListe_BarreNiveauxDAcquisitionsDePilier");
+const TypeModeValidationAuto_1 = require("TypeModeValidationAuto");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_Action_1 = require("Enumere_Action");
+const ObjetMenuContextuel_1 = require("ObjetMenuContextuel");
+const Enumere_Evolution_1 = require("Enumere_Evolution");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_Liste_1 = require("ObjetFenetre_Liste");
+const DonneesListe_Simple_1 = require("DonneesListe_Simple");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const tag_1 = require("tag");
+const TypePositionnement_1 = require("TypePositionnement");
+const MultiObjetRequeteSaisieAccuseReceptionDocument = require("ObjetRequeteSaisieAccuseReceptionDocument");
+const AccessApp_1 = require("AccessApp");
 class ObjetMoteurReleveBulletin {
 	constructor() {
-		this.moteurPdB = new ObjetMoteurPiedDeBulletin();
-		this.moteurGrille = new ObjetMoteurGrilleSaisie();
+		this.moteurPdB =
+			new ObjetMoteurPiedDeBulletin_1.ObjetMoteurPiedDeBulletin();
+		this.moteurGrille = new ObjetMoteurGrilleSaisie_1.ObjetMoteurGrilleSaisie();
+		this.appSco = (0, AccessApp_1.getApp)();
 	}
 	getGenreImpression(aParam) {
 		if (
-			!GApplication.droits.get(
-				TypeDroits.autoriserImpressionBulletinReleveBrevet,
+			!this.appSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.autoriserImpressionBulletinReleveBrevet,
 			)
 		) {
-			return EGenreImpression.Aucune;
+			return Enumere_GenreImpression_1.EGenreImpression.Aucune;
 		}
 		if (aParam.estCtxApprGenerale === true) {
-			return EGenreImpression.GenerationPDF;
+			return Enumere_GenreImpression_1.EGenreImpression.GenerationPDF;
 		} else {
 			switch (aParam.typeReleveBulletin) {
-				case TypeReleveBulletin.ReleveDeNotes:
-				case TypeReleveBulletin.BulletinNotes:
-				case TypeReleveBulletin.AppreciationsBulletinProfesseur:
-				case TypeReleveBulletin.AppreciationsReleveProfesseur:
-				case TypeReleveBulletin.AvisProfesseur:
-					return EGenreImpression.GenerationPDF;
-				case TypeReleveBulletin.AvisParcoursup:
-					return EGenreImpression.Aucune;
+				case TypeReleveBulletin_1.TypeReleveBulletin.ReleveDeNotes:
+				case TypeReleveBulletin_1.TypeReleveBulletin.BulletinNotes:
+				case TypeReleveBulletin_1.TypeReleveBulletin
+					.AppreciationsBulletinProfesseur:
+				case TypeReleveBulletin_1.TypeReleveBulletin
+					.AppreciationsReleveProfesseur:
+				case TypeReleveBulletin_1.TypeReleveBulletin.AvisProfesseur:
+					return Enumere_GenreImpression_1.EGenreImpression.GenerationPDF;
+				case TypeReleveBulletin_1.TypeReleveBulletin.AvisParcoursup:
+					return Enumere_GenreImpression_1.EGenreImpression.Aucune;
 				default:
-					return EGenreImpression.Format;
+					return Enumere_GenreImpression_1.EGenreImpression.Format;
 			}
 		}
 	}
 	getGenreGenerationPdf(aParam) {
 		if (aParam.estCtxApprGenerale === true) {
-			return TypeHttpGenerationPDFSco.AppreciationsGenerales;
+			return TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco
+				.AppreciationsGenerales;
 		} else {
 			switch (aParam.typeReleveBulletin) {
-				case TypeReleveBulletin.BulletinNotes:
-					return TypeHttpGenerationPDFSco.Bulletin;
-				case TypeReleveBulletin.AppreciationsBulletinProfesseur:
-				case TypeReleveBulletin.AppreciationsReleveProfesseur:
-				case TypeReleveBulletin.AvisProfesseur:
-					return TypeHttpGenerationPDFSco.AppreciationsProf;
+				case TypeReleveBulletin_1.TypeReleveBulletin.BulletinNotes:
+					return TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.Bulletin;
+				case TypeReleveBulletin_1.TypeReleveBulletin
+					.AppreciationsBulletinProfesseur:
+				case TypeReleveBulletin_1.TypeReleveBulletin
+					.AppreciationsReleveProfesseur:
+				case TypeReleveBulletin_1.TypeReleveBulletin.AvisProfesseur:
+					return TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco
+						.AppreciationsProf;
 				default:
 			}
 		}
@@ -105,7 +96,7 @@ class ObjetMoteurReleveBulletin {
 			J,
 			I,
 			lNbr;
-		const lListe = new ObjetListeElements();
+		const lListe = new ObjetListeElements_1.ObjetListeElements();
 		let lNbrMaxTotDevoirs = 0;
 		for (I = 0, lNbr = aListeElements.count(); I < lNbr; I++) {
 			lService = aListeElements.get(I);
@@ -118,12 +109,14 @@ class ObjetMoteurReleveBulletin {
 			lService.regroupement =
 				lService.regroupement === 0 ? 0 : lService.SurMatiere.getNumero();
 			lService.avecAppreciationParSousService =
-				aParam.typeReleveBulletin === TypeReleveBulletin.ReleveDeNotes
+				aParam.typeReleveBulletin ===
+				TypeReleveBulletin_1.TypeReleveBulletin.ReleveDeNotes
 					? aParam.affichage.AvecAppreciationParSousService
 					: lService.AvecAppreciationParSousService;
 			if (
 				lService.nbSousServicesTotal > 0 ||
-				aParam.typeReleveBulletin === TypeReleveBulletin.BulletinNotes
+				aParam.typeReleveBulletin ===
+					TypeReleveBulletin_1.TypeReleveBulletin.BulletinNotes
 			) {
 				lCmpActifs = 0;
 				lIndicePremier = null;
@@ -147,7 +140,10 @@ class ObjetMoteurReleveBulletin {
 					lIndiceDernier = J;
 				}
 				lService.nbSousServicesActifs = lCmpActifs;
-				if (aParam.typeReleveBulletin === TypeReleveBulletin.BulletinNotes) {
+				if (
+					aParam.typeReleveBulletin ===
+					TypeReleveBulletin_1.TypeReleveBulletin.BulletinNotes
+				) {
 					lListe.addElement(lService);
 				}
 				for (J = 0; J < lService.nbSousServicesTotal; J++) {
@@ -188,7 +184,7 @@ class ObjetMoteurReleveBulletin {
 	}
 	getApprDeService(aParam) {
 		switch (aParam.typeReleveBulletin) {
-			case TypeReleveBulletin.ReleveDeNotes: {
+			case TypeReleveBulletin_1.TypeReleveBulletin.ReleveDeNotes: {
 				const lArticle = aParam.article;
 				const lService =
 					lArticle.estService || lArticle.avecAppreciationParSousService
@@ -205,7 +201,7 @@ class ObjetMoteurReleveBulletin {
 		return { service: aParam.article, appreciation: null };
 	}
 	_formatterDonneesPourRegroupements(aDonnees, aTableauSurMatieres, aParam) {
-		const lDonneesAcRegroup = new ObjetListeElements();
+		const lDonneesAcRegroup = new ObjetListeElements_1.ObjetListeElements();
 		lDonneesAcRegroup.nbrMaxTotDevoirs = aDonnees.nbrMaxTotDevoirs;
 		let lRegroup = null;
 		let lMatiereRegroup = null;
@@ -214,11 +210,12 @@ class ObjetMoteurReleveBulletin {
 				aService.estSurMatiere ||
 				(aService.estDebutRegroupement &&
 					(aService.estService ||
-						(aParam.typeReleveBulletin === TypeReleveBulletin.ReleveDeNotes &&
+						(aParam.typeReleveBulletin ===
+							TypeReleveBulletin_1.TypeReleveBulletin.ReleveDeNotes &&
 							aService.estPremier)))
 			) {
 				lMatiereRegroup = aService.SurMatiere;
-				lRegroup = new ObjetElement(
+				lRegroup = new ObjetElement_1.ObjetElement(
 					lMatiereRegroup.getLibelle(),
 					lMatiereRegroup.getNumero(),
 					lMatiereRegroup.getGenre(),
@@ -256,14 +253,31 @@ class ObjetMoteurReleveBulletin {
 				: 0;
 		for (let I = 0; I < N; I++) {
 			lLibelle = aParam.service.ListeProfesseurs.getLibelle(I);
-			if (GChaine.estChaineTropLongue(lLibelle, 10, false, aParam.largeur)) {
+			if (
+				ObjetChaine_1.GChaine.estChaineTropLongue(
+					lLibelle,
+					10,
+					false,
+					aParam.largeur,
+				)
+			) {
 				lEstChaineTropLongue = true;
 			}
 			lListeProfesseurs.push(lLibelle);
 		}
-		return N > aParam.nbMaxProfs || lEstChaineTropLongue
-			? lListeProfesseurs.join("\n")
-			: "";
+		let lResult = [];
+		if (N > aParam.nbMaxProfs || lEstChaineTropLongue) {
+			lResult.push(lListeProfesseurs.join("\n"));
+		}
+		if (!aParam.service.Actif) {
+			lResult.push(
+				"* : " +
+					ObjetTraduction_1.GTraductions.getValeur(
+						"BulletinEtReleve.LegendeNonImprimable",
+					),
+			);
+		}
+		return lResult.join("\n");
 	}
 	composeHtmlService(aParam) {
 		const H = [];
@@ -278,13 +292,26 @@ class ObjetMoteurReleveBulletin {
 				!lService.Matiere || lService.Matiere.getLibelle() === ""
 					? "&nbsp;"
 					: lService.Matiere.getLibelle();
-			H.push("<div ie-ellipsis>" + lLibelleMatiere + "</div>");
+			const lClasses = aParam.service.Actif ? [] : ["Italique"];
+			H.push(
+				IE.jsx.str(
+					"div",
+					{ "ie-ellipsis": true, class: lClasses },
+					lLibelleMatiere,
+					aParam.service.Actif || !lLibelleMatiere ? "" : " *",
+				),
+			);
 			if (lService.AvecLibelleEnseignantMatiereSurMemeLigne) {
 				const lLibelles = !!lService.ListeProfesseurs
 					? lService.ListeProfesseurs.getTableauLibelles().join(", ")
 					: "";
 				H.push(
-					'<div ie-ellipsis title="' + lLibelles + '">' + lLibelles + "</div>",
+					IE.jsx.str(
+						"div",
+						{ "ie-ellipsis": true, class: lClasses, title: lLibelles },
+						" ",
+						lLibelles,
+					),
 				);
 			} else {
 				const N =
@@ -300,106 +327,102 @@ class ObjetMoteurReleveBulletin {
 					const lProfesseur = !!lService.ListeProfesseurs
 						? lService.ListeProfesseurs.get(i)
 						: "";
-					H.push("<div ie-ellipsis>" + lProfesseur.getLibelle() + "</div>");
+					if (lProfesseur) {
+						H.push(
+							IE.jsx.str(
+								"div",
+								{ "ie-ellipsis": true, class: lClasses },
+								lProfesseur.getLibelle(),
+							),
+						);
+					}
 				}
 			}
 		}
 		H.push("</div>");
 		return H.join("");
 	}
-	composeHtmlServiceAccessible(aParam) {
-		const H = [];
-		const lService = aParam.service;
-		if (lService) {
-			const lLibelleMatiere =
-				!lService.Matiere || lService.Matiere.getLibelle() === ""
-					? "&nbsp;"
-					: "<strong>" + lService.Matiere.getLibelle() + "</strong>";
-			const lLibelles = !!lService.ListeProfesseurs
-				? lService.ListeProfesseurs.getTableauLibelles().join(", ")
-				: "";
-			H.push(lLibelleMatiere + (lLibelles !== "" ? " " + lLibelles : ""));
-		}
-		return H.join("");
-	}
 	composeHtmlEleve(aParam) {
 		const lHeight = aParam.hauteur ? "height:" + aParam.hauteur + "px;" : "";
-		return tag("div", { style: ["display:flex", lHeight] }, function () {
-			const H = [];
-			if (aParam.avecPhoto === true) {
-				H.push(
-					_composePhoto.call(this, {
-						eleve: aParam.eleve,
-						largeurPhoto: aParam.largeurPhoto,
-					}),
-				);
-			}
-			H.push(
-				tag(
-					"div",
-					{
-						class: [
-							"InlineBlock",
-							"AlignementHaut",
-							"EspaceGauche",
-							"EspaceHaut",
-						],
-					},
-					aParam.eleve.getLibelle(),
-				),
-			);
-			const lHintProjetAcc = !!aParam.strProjetAcc
-				? aParam.strProjetAcc.replace(/\n/g, "<br/>")
-				: "";
-			const lAvecPiecesJointes = !!aParam.avecDocsProjetAcc;
-			if (lHintProjetAcc.length > 0 || lAvecPiecesJointes) {
-				const lParam = {
-					style: ["margin-left:auto"],
-					"ie-hint": lHintProjetAcc,
-				};
-				const lClass = ["AlignementMilieuVertical", "InlineBlock"];
-				if (lAvecPiecesJointes) {
-					lClass.push("AvecMain");
-					$.extend(lParam, {
-						"ie-node": tag.funcAttr("surClicPiecesJointesProjAcc", [
-							aParam.eleve.getNumero(),
-						]),
-						tabindex: 0,
-						role: "button",
-						"aria-label": GTraductions.getValeur("FenetreDocumentsEleve.titre"),
-					});
-				}
-				let lEstPAmedical =
-					aParam.eleve.nbProjetsMedicaux !== null &&
-					aParam.eleve.nbProjetsMedicaux !== undefined &&
-					aParam.eleve.nbProjetsMedicaux > 0;
-				let lEstMultiPA =
-					aParam.eleve.nbProjet !== null &&
-					aParam.eleve.nbProjet !== undefined &&
-					aParam.eleve.nbProjet > 1;
-				H.push(
-					tag(
-						"div",
-						$.extend(lParam, { class: lClass }),
-						tag("i", {
-							class: [
-								"icon_projet_accompagnement",
-								lEstPAmedical
-									? "mix-icon_rond i-green"
-									: lEstMultiPA
-										? "mix-icon_plus"
-										: "",
-								"Texte12",
-							],
+		return (0, tag_1.tag)(
+			"div",
+			{ style: ["display:flex", lHeight] },
+			function () {
+				const H = [];
+				if (aParam.avecPhoto === true) {
+					H.push(
+						_composePhoto({
+							eleve: aParam.eleve,
+							largeurPhoto: aParam.largeurPhoto,
 						}),
+					);
+				}
+				H.push(
+					IE.jsx.str(
+						"div",
+						{ class: "InlineBlock AlignementHaut EspaceGauche EspaceHaut" },
+						aParam.eleve.getLibelle(),
 					),
 				);
-			}
-			return H.join("");
-		});
+				const lHintProjetAcc = !!aParam.strProjetAcc ? aParam.strProjetAcc : "";
+				const lAvecPiecesJointes = !!aParam.avecDocsProjetAcc;
+				if (lHintProjetAcc.length > 0 || lAvecPiecesJointes) {
+					const lClass = ["AlignementMilieuVertical", "InlineBlock"];
+					if (lAvecPiecesJointes) {
+						lClass.push("AvecMain");
+					}
+					const lAttrIcone = { role: "presentation" };
+					if (lAvecPiecesJointes) {
+						if (aParam.jsxNodeClicPJProjetAcc) {
+							$.extend(lAttrIcone, {
+								"ie-node": aParam.jsxNodeClicPJProjetAcc,
+							});
+						}
+						$.extend(lAttrIcone, {
+							tabindex: 0,
+							role: "button",
+							"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+								"FenetreDocumentsEleve.titre",
+							),
+							"aria-haspopup": "dialog",
+						});
+					} else if (lHintProjetAcc) {
+						Object.assign(lAttrIcone, {
+							role: "img",
+							"ie-tooltiplabel": lHintProjetAcc,
+						});
+					}
+					let lEstPAmedical =
+						aParam.eleve.nbProjetsMedicaux !== null &&
+						aParam.eleve.nbProjetsMedicaux !== undefined &&
+						aParam.eleve.nbProjetsMedicaux > 0;
+					let lEstMultiPA =
+						aParam.eleve.nbProjet !== null &&
+						aParam.eleve.nbProjet !== undefined &&
+						aParam.eleve.nbProjet > 1;
+					const lClassesIcon = ["icon_projet_accompagnement", "Texte12"];
+					if (lEstPAmedical) {
+						lClassesIcon.push("mix-icon_rond", "i-green");
+					} else if (lEstMultiPA) {
+						lClassesIcon.push("mix-icon_plus");
+					}
+					H.push(
+						IE.jsx.str(
+							"div",
+							{ style: "margin-left:auto;", class: lClass.join(" ") },
+							IE.jsx.str(
+								"i",
+								Object.assign({ class: lClassesIcon.join(" ") }, lAttrIcone),
+							),
+						),
+					);
+				}
+				return H.join("");
+			},
+		);
 	}
 	composeHtmlEvolution(aParam) {
-		return EGenreEvolutionUtil.getImage(
+		return Enumere_Evolution_1.EGenreEvolutionUtil.getImage(
 			aParam.genreEvol ? aParam.genreEvol : 0,
 		);
 	}
@@ -408,20 +431,7 @@ class ObjetMoteurReleveBulletin {
 		lHtml.push(
 			'<div class="flex-contain flex-center justify-center full-width">',
 		);
-		if (aParam.avecBtnImg === true) {
-			lHtml.push(
-				"<ie-btnimage ",
-				aParam.titleBtnImg !== null && aParam.titleBtnImg !== undefined
-					? 'title="' + aParam.titleBtnImg + '"'
-					: "",
-				' ie-model="',
-				aParam.modelBtnImg,
-				'"',
-				' class="',
-				aParam.classImg,
-				'" style="width: 18px;"></ie-btnimage>',
-			);
-		} else if (aParam.avecBtnIcon === true) {
+		if (aParam.avecBtnIcon === true) {
 			lHtml.push(
 				'<ie-btnicon ie-model="',
 				aParam.modelBtnImg,
@@ -434,7 +444,7 @@ class ObjetMoteurReleveBulletin {
 			}
 			lHtml.push("></ie-btnicon>");
 		} else if (aParam.avecIcon) {
-			lHtml.push('<i class="', aParam.classImg, '"></i>');
+			lHtml.push('<i class="', aParam.classImg, '" role="presentation"></i>');
 		}
 		lHtml.push(
 			"<div ",
@@ -455,18 +465,20 @@ class ObjetMoteurReleveBulletin {
 		const H = [];
 		if (aParam.modeChronologique) {
 			H.push(
-				TUtilitaireCompetences.composeJaugeChronologique({
-					listeNiveaux: aParam.listeNiveauxChronologiques,
-					hint: TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionChronologique(
-						aParam.listeNiveauxChronologiques,
-					),
-				}),
+				UtilitaireCompetences_1.TUtilitaireCompetences.composeJaugeChronologique(
+					{
+						listeNiveaux: aParam.listeNiveauxChronologiques,
+						hint: UtilitaireCompetences_1.TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionChronologique(
+							aParam.listeNiveauxChronologiques,
+						),
+					},
+				),
 			);
 		} else {
 			H.push(
-				TUtilitaireCompetences.composeJaugeParNiveaux({
+				UtilitaireCompetences_1.TUtilitaireCompetences.composeJaugeParNiveaux({
 					listeNiveaux: aParam.listeNiveaux,
-					hint: TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionParNiveauOuPastille(
+					hint: UtilitaireCompetences_1.TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionParNiveauOuPastille(
 						aParam.listeNiveaux,
 					),
 				}),
@@ -476,18 +488,19 @@ class ObjetMoteurReleveBulletin {
 	}
 	ouvrirFenetreDetailBarreNiveauxDAcquisition(aParam) {
 		const lInstance = aParam.instance;
-		GEtatUtilisateur.Navigation.fenetre_BarreNiveauxDAcquisitions_estAffiche =
-			TUtilitaireCompetences.existeBarreNiveauxDAcquisitionsDePiliers(
+		this.appSco.getEtatUtilisateur().Navigation.fenetre_BarreNiveauxDAcquisitions_estAffiche =
+			UtilitaireCompetences_1.TUtilitaireCompetences.existeBarreNiveauxDAcquisitionsDePiliers(
 				aParam.listePiliers,
 			);
 		if (
-			GEtatUtilisateur.Navigation.fenetre_BarreNiveauxDAcquisitions_estAffiche
+			this.appSco.getEtatUtilisateur().Navigation
+				.fenetre_BarreNiveauxDAcquisitions_estAffiche
 		) {
 			lInstance.setOptionsFenetre({
 				titre: getTitreFenetreBarreNiveauxDacquisitions(aParam),
 			});
 			lInstance.setDonnees(
-				new DonneesListe_BarreNiveauxDAcquisitionsDePilier(
+				new DonneesListe_BarreNiveauxDAcquisitionsDePilier_1.DonneesListe_BarreNiveauxDAcquisitionsDePilier(
 					aParam.listePiliers,
 					{ afficheJaugesChronologiques: aParam.modeChronologique },
 				),
@@ -527,7 +540,7 @@ class ObjetMoteurReleveBulletin {
 							note: null,
 							niveauDAcquisition: aParam.niveauAcqu,
 							genrePositionnement:
-								TypePositionnementUtil.getGenrePositionnementParDefaut(
+								TypePositionnement_1.TypePositionnementUtil.getGenrePositionnementParDefaut(
 									aParam.typePositionnementClasse,
 								),
 						}),
@@ -614,11 +627,8 @@ class ObjetMoteurReleveBulletin {
 	}
 	composeStrPeriodePrec(aParam) {
 		const H = [];
-		if (aParam !== null && aParam !== undefined) {
-			const lAvecMoy =
-				aParam.moyEleve !== null &&
-				aParam.moyEleve !== undefined &&
-				aParam.moyEleve !== "";
+		if (aParam) {
+			const lAvecMoy = !!aParam.moyEleve;
 			const lAvecNivAcq =
 				aParam.niveauAcqu !== null &&
 				aParam.niveauAcqu !== undefined &&
@@ -626,7 +636,11 @@ class ObjetMoteurReleveBulletin {
 			const lAvecMoyNR = aParam.estMoyNR === true;
 			if (lAvecMoy || lAvecNivAcq || lAvecMoyNR) {
 				if (lAvecMoyNR) {
-					H.push(GTraductions.getValeur("Notes.Colonne.TitreMoyNR"));
+					H.push(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"Notes.Colonne.TitreMoyNR",
+						),
+					);
 				}
 				if (lAvecMoy) {
 					H.push(aParam.moyEleve);
@@ -636,7 +650,7 @@ class ObjetMoteurReleveBulletin {
 						note: null,
 						niveauDAcquisition: aParam.niveauAcqu,
 						genrePositionnement:
-							TypePositionnementUtil.getGenrePositionnementParDefaut(
+							TypePositionnement_1.TypePositionnementUtil.getGenrePositionnementParDefaut(
 								aParam.typePositionnementClasse,
 							),
 					});
@@ -715,11 +729,14 @@ class ObjetMoteurReleveBulletin {
 				GParametres.listeNiveauxDAcquisitions.getElementParNumero(
 					aParam.niveauDAcquisition.getNumero(),
 				);
-			lValeur = EGenreNiveauDAcquisitionUtil.getImagePositionnement({
-				niveauDAcquisition: lNiveauDAcquisition,
-				genrePositionnement: aParam.genrePositionnement,
-				avecPrefixe: lAvecPrefixe,
-			});
+			lValeur =
+				Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImagePositionnement(
+					{
+						niveauDAcquisition: lNiveauDAcquisition,
+						genrePositionnement: aParam.genrePositionnement,
+						avecPrefixe: lAvecPrefixe,
+					},
+				);
 		} else {
 			lValeur = this.getStrNote(aParam.note);
 		}
@@ -731,7 +748,7 @@ class ObjetMoteurReleveBulletin {
 				'<div style="' +
 					lStyles.join("") +
 					'">' +
-					GChaine.avecEspaceSiVide(lValeur) +
+					ObjetChaine_1.GChaine.avecEspaceSiVide(lValeur) +
 					"</div>",
 			);
 		}
@@ -745,38 +762,55 @@ class ObjetMoteurReleveBulletin {
 				GParametres.listeNiveauxDAcquisitions.getElementParNumero(
 					aParam.niveauDAcquisition.getNumero(),
 				);
-			lValeur = EGenreNiveauDAcquisitionUtil.getImagePositionnement({
-				niveauDAcquisition: lNiveauDAcquisition,
-				genrePositionnement: aParam.genrePositionnement,
-				avecPrefixe: true,
-			});
+			lValeur =
+				Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImagePositionnement(
+					{
+						niveauDAcquisition: lNiveauDAcquisition,
+						genrePositionnement: aParam.genrePositionnement,
+						avecPrefixe: true,
+					},
+				);
 		} else {
 			lValeur = this.getStrNote(aParam.note);
 		}
 		if (aParam.estMoyNR === true) {
-			H.push(GTraductions.getValeur("Notes.Colonne.TitreMoyNR"));
+			H.push(
+				ObjetTraduction_1.GTraductions.getValeur("Notes.Colonne.TitreMoyNR"),
+			);
 		}
 		if (!(aParam.estMoyNR === true && aParam.avecMoyNRUniquement === true)) {
-			H.push(GChaine.avecEspaceSiVide(lValeur));
+			H.push(ObjetChaine_1.GChaine.avecEspaceSiVide(lValeur));
 		}
 		return H.join("");
 	}
 	composeContenuListeElementProgramme(aListe, aAvecDetail) {
+		var _a;
 		const T = [],
 			lNb = aListe.getNbrElementsExistes();
 		if (aListe && lNb) {
 			aListe.trier();
 			if (lNb <= 10 || aAvecDetail) {
-				T.push("<ul>");
-				aListe.parcourir((aElement) => {
-					if (aElement.existe()) {
-						T.push("<li>", aElement.getLibelle(), "</li>");
-					}
-				});
-				T.push("</ul>");
+				if (lNb === 1) {
+					T.push(
+						((_a = aListe.get(0)) === null || _a === void 0
+							? void 0
+							: _a.getLibelle()) || "",
+					);
+				} else {
+					T.push("<ul>");
+					aListe.parcourir((aElement) => {
+						if (aElement.existe()) {
+							T.push(IE.jsx.str("li", null, aElement.getLibelle()));
+						}
+					});
+					T.push("</ul>");
+				}
 			} else if (lNb > 2) {
 				T.push(
-					GTraductions.getValeur("BulletinEtReleve.ElementsProgramme", [lNb]),
+					ObjetTraduction_1.GTraductions.getValeur(
+						"BulletinEtReleve.ElementsProgramme",
+						[lNb],
+					),
 				);
 			}
 		}
@@ -813,30 +847,42 @@ class ObjetMoteurReleveBulletin {
 					this.moteurPdB.getTypeGenreAppreciationPdB(aParam);
 			} else {
 				switch (aParam.typeReleveBulletin) {
-					case TypeReleveBulletin.BulletinNotes:
-					case TypeReleveBulletin.BulletinCompetences:
+					case TypeReleveBulletin_1.TypeReleveBulletin.BulletinNotes:
+					case TypeReleveBulletin_1.TypeReleveBulletin.BulletinCompetences:
 						lTypeGenreAppreciation =
-							TypeGenreAppreciation.GA_Bulletin_Professeur;
+							TypeGenreAppreciation_1.TypeGenreAppreciation
+								.GA_Bulletin_Professeur;
 						break;
-					case TypeReleveBulletin.LivretScolaire:
+					case TypeReleveBulletin_1.TypeReleveBulletin.LivretScolaire:
 						lTypeGenreAppreciation =
-							TypeGenreAppreciation.GA_BilanAnnuel_Professeur;
+							TypeGenreAppreciation_1.TypeGenreAppreciation
+								.GA_BilanAnnuel_Professeur;
 						break;
-					case TypeReleveBulletin.AppreciationsBulletinProfesseur:
-						return TypeGenreAppreciation.GA_Bulletin_Professeur;
-					case TypeReleveBulletin.AppreciationsBulletinParEleve:
-						return TypeGenreAppreciation.GA_Bulletin_Professeur;
-					case TypeReleveBulletin.AppreciationsReleveProfesseur:
-					case TypeReleveBulletin.ReleveDeNotes:
-						lTypeGenreAppreciation = TypeGenreAppreciation.GA_Releve_Professeur;
+					case TypeReleveBulletin_1.TypeReleveBulletin
+						.AppreciationsBulletinProfesseur:
+						return TypeGenreAppreciation_1.TypeGenreAppreciation
+							.GA_Bulletin_Professeur;
+					case TypeReleveBulletin_1.TypeReleveBulletin
+						.AppreciationsBulletinParEleve:
+						return TypeGenreAppreciation_1.TypeGenreAppreciation
+							.GA_Bulletin_Professeur;
+					case TypeReleveBulletin_1.TypeReleveBulletin
+						.AppreciationsReleveProfesseur:
+					case TypeReleveBulletin_1.TypeReleveBulletin.ReleveDeNotes:
+						lTypeGenreAppreciation =
+							TypeGenreAppreciation_1.TypeGenreAppreciation
+								.GA_Releve_Professeur;
 						break;
-					case TypeReleveBulletin.AvisProfesseur:
-						return TypeGenreAppreciation.GA_Bulletin_Professeur;
-					case TypeReleveBulletin.AvisParcoursup:
-						return TypeGenreAppreciation.GA_Bulletin_Professeur;
+					case TypeReleveBulletin_1.TypeReleveBulletin.AvisProfesseur:
+						return TypeGenreAppreciation_1.TypeGenreAppreciation
+							.GA_Bulletin_Professeur;
+					case TypeReleveBulletin_1.TypeReleveBulletin.AvisParcoursup:
+						return TypeGenreAppreciation_1.TypeGenreAppreciation
+							.GA_Bulletin_Professeur;
 					default:
 						lTypeGenreAppreciation =
-							TypeGenreAppreciation.GA_Bulletin_Professeur;
+							TypeGenreAppreciation_1.TypeGenreAppreciation
+								.GA_Bulletin_Professeur;
 						break;
 				}
 			}
@@ -855,19 +901,21 @@ class ObjetMoteurReleveBulletin {
 			$.extend(aParam, { genreAppr: aParam.appreciation.Genre });
 		}
 		const lTypeGenreAppreciation = this.getTypeGenreAppreciation(aParam);
-		return GParametres.getTailleMaxAppreciationParEnumere(
-			lTypeGenreAppreciation,
-		);
+		return this.appSco
+			.getObjetParametres()
+			.getTailleMaxAppreciationParEnumere(lTypeGenreAppreciation);
 	}
 	initFenetreAvisReligion(aInstance) {
 		const lParamsListe = { tailles: ["100%"], editable: false };
 		aInstance.setOptionsFenetre({
-			titre: GTraductions.getValeur("AvisReligion.titreSelection"),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"AvisReligion.titreSelection",
+			),
 			largeur: 300,
 			hauteur: 350,
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 			modeActivationBtnValider:
 				aInstance.modeActivationBtnValider.toujoursActifs,
@@ -883,10 +931,14 @@ class ObjetMoteurReleveBulletin {
 			const lNoteAuDessusBareme = () => {
 				if (lDevoir.Note.getValeur() > lDevoir.Bareme.getValeur()) {
 					return (
-						'<i class="icon icon_star m-right"  aria-label="' +
-						GTraductions.getValeur("accueil.noteAuDessusBareme") +
+						'<i role="img" class="icon icon_star m-right" aria-label="' +
+						ObjetTraduction_1.GTraductions.getValeur(
+							"accueil.noteAuDessusBareme",
+						) +
 						'" title="' +
-						GTraductions.getValeur("accueil.noteAuDessusBareme") +
+						ObjetTraduction_1.GTraductions.getValeur(
+							"accueil.noteAuDessusBareme",
+						) +
 						'"></i>'
 					);
 				}
@@ -911,38 +963,40 @@ class ObjetMoteurReleveBulletin {
 		return H.join("");
 	}
 	composeHtmlLienNoteCalculMoyenne(aParam) {
-		const H = [];
 		const lNote = aParam.note;
 		const lAvecNote =
 			lNote &&
 			lNote.estUneNoteVide &&
 			!lNote.estUneNoteVide() &&
 			lNote.estUneValeur();
-		H.push(
-			'<span class="',
-			lAvecNote
-				? aParam.estUnDeploiement
-					? "LienMoyenneRegroupement"
-					: "LienMoyenne"
-				: "",
-			'" ',
-			lAvecNote
-				? GHtml.composeAttr("ie-node", "getNodeCalculMoy", [
-						aParam.ligne,
-						aParam.colonne,
-						aParam.idColonne,
-					])
-				: "",
-			">" + lNote.getNote() + "</span>",
-		);
-		return H.join("");
+		if (lAvecNote) {
+			return IE.jsx.str(
+				"span",
+				{
+					class: aParam.estUnDeploiement
+						? "LienMoyenneRegroupement"
+						: "LienMoyenne",
+					"ie-node": aParam.JSXFuncNode,
+					role: "button",
+					tabindex: "0",
+					"aria-haspopup": "dialog",
+					"aria-label": `${ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.TitreFenetreCalculMoyenne")} : ${lNote.getNote()}`,
+				},
+				lNote.getNote(),
+			);
+		}
+		return IE.jsx.str("span", null, lNote.getNote());
 	}
 	saisieParamSynchroAppClasse(aParam) {
-		return Requetes("SaisieParamSynchroAppClasse", this)
+		return new ObjetRequeteSaisieParamSynchroAppClasse(this)
 			.lancerRequete(aParam.paramRequete)
 			.then(
 				(aParams) => {
-					if (aParams && aParams.genreReponse === EGenreReponseSaisie.succes) {
+					if (
+						aParams &&
+						aParams.genreReponse ===
+							ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+					) {
 						if (
 							aParams.JSONRapportSaisie &&
 							aParams.JSONRapportSaisie.appreciationClasse &&
@@ -983,7 +1037,7 @@ class ObjetMoteurReleveBulletin {
 			aAppClasse.editable = lApprSaisie.editable;
 		}
 		aAppClasse.setLibelle(lApprSaisie.getLibelle());
-		aAppClasse.setEtat(EGenreEtat.Aucun);
+		aAppClasse.setEtat(Enumere_Etat_1.EGenreEtat.Aucun);
 		const lEstSynchro = lApprSaisie.estSynchronisee;
 		aAppClasse.estSynchronisee = lEstSynchro;
 		if (!lEstSynchro) {
@@ -992,11 +1046,15 @@ class ObjetMoteurReleveBulletin {
 	}
 	saisieAppreciation(aParam) {
 		const lListe = aParam.instanceListe;
-		return Requetes("SaisieAppreciation", this)
+		return new ObjetRequeteSaisieAppreciation(this)
 			.lancerRequete(aParam.paramRequete)
 			.then(
 				(aParams) => {
-					if (aParams && aParams.genreReponse === EGenreReponseSaisie.succes) {
+					if (
+						aParams &&
+						aParams.genreReponse ===
+							ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+					) {
 						if (
 							aParams.JSONRapportSaisie &&
 							aParams.JSONRapportSaisie.appreciation &&
@@ -1022,7 +1080,10 @@ class ObjetMoteurReleveBulletin {
 				},
 			)
 			.then((aParams) => {
-				if (aParams && aParams.genreReponse === EGenreReponseSaisie.succes) {
+				if (
+					aParams &&
+					aParams.genreReponse === ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+				) {
 					if (lListe !== null && lListe !== undefined) {
 						lListe.actualiser(true);
 						if (aParam.paramCellSuivante) {
@@ -1038,9 +1099,9 @@ class ObjetMoteurReleveBulletin {
 			});
 	}
 	saisieAR(aParam) {
-		new ObjetRequeteSaisieAccuseReceptionDocument(this).lancerRequete({
-			periode: aParam.periode,
-		});
+		new MultiObjetRequeteSaisieAccuseReceptionDocument.ObjetRequeteSaisieAccuseReceptionDocument(
+			this,
+		).lancerRequete({ periode: aParam.periode });
 	}
 	majAppreciationService(aParam) {
 		const lService = aParam.service;
@@ -1056,11 +1117,15 @@ class ObjetMoteurReleveBulletin {
 	}
 	saisieMoyPropDelib(aParam) {
 		const lListe = aParam.instanceListe;
-		return Requetes("SaisieNotePropDelib", this)
+		return new ObjetRequeteSaisieNotePropDelib(this)
 			.lancerRequete(aParam.paramRequete)
 			.then(
 				(aParams) => {
-					if (aParams && aParams.genreReponse === EGenreReponseSaisie.succes) {
+					if (
+						aParams &&
+						aParams.genreReponse ===
+							ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+					) {
 						if (
 							aParams.JSONRapportSaisie &&
 							aParams.JSONRapportSaisie.estProposee !== null &&
@@ -1110,7 +1175,10 @@ class ObjetMoteurReleveBulletin {
 				},
 			)
 			.then((aParams) => {
-				if (aParams && aParams.genreReponse === EGenreReponseSaisie.succes) {
+				if (
+					aParams &&
+					aParams.genreReponse === ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+				) {
 					lListe.actualiser(true);
 					this.moteurGrille.selectionCelluleSuivante({
 						instanceListe: lListe,
@@ -1123,11 +1191,15 @@ class ObjetMoteurReleveBulletin {
 	}
 	saisieEltsPgme(aParam) {
 		const lListe = aParam.instanceListe;
-		return Requetes("SaisieEltsPgme", this)
+		return new ObjetRequeteSaisieEltsPgme(this)
 			.lancerRequete(aParam.paramRequete)
 			.then(
 				(aParams) => {
-					if (aParams && aParams.genreReponse === EGenreReponseSaisie.succes) {
+					if (
+						aParams &&
+						aParams.genreReponse ===
+							ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+					) {
 						if (
 							aParams.JSONRapportSaisie &&
 							aParams.JSONRapportSaisie.service &&
@@ -1148,7 +1220,10 @@ class ObjetMoteurReleveBulletin {
 				},
 			)
 			.then((aParams) => {
-				if (aParams && aParams.genreReponse === EGenreReponseSaisie.succes) {
+				if (
+					aParams &&
+					aParams.genreReponse === ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+				) {
 					if (lListe !== null && lListe !== undefined) {
 						lListe.actualiser(true);
 						this.moteurGrille.selectionCelluleSuivante({
@@ -1163,11 +1238,15 @@ class ObjetMoteurReleveBulletin {
 	}
 	saisieNoteLSU(aParam) {
 		const lListe = aParam.instanceListe;
-		return Requetes("SaisieNoteLSU", this)
+		return new ObjetRequeteSaisieNoteLSU(this)
 			.lancerRequete(aParam.paramRequete)
 			.then(
 				(aParams) => {
-					if (aParams && aParams.genreReponse === EGenreReponseSaisie.succes) {
+					if (
+						aParams &&
+						aParams.genreReponse ===
+							ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+					) {
 						if (
 							aParams.JSONRapportSaisie &&
 							aParams.JSONRapportSaisie.posLSUNote &&
@@ -1189,7 +1268,10 @@ class ObjetMoteurReleveBulletin {
 				},
 			)
 			.then((aParams) => {
-				if (aParams && aParams.genreReponse === EGenreReponseSaisie.succes) {
+				if (
+					aParams &&
+					aParams.genreReponse === ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+				) {
 					lListe.actualiser(true);
 					this.moteurGrille.selectionCelluleSuivante({
 						instanceListe: lListe,
@@ -1202,11 +1284,15 @@ class ObjetMoteurReleveBulletin {
 	}
 	saisieAvisProfesseur(aParam) {
 		const lListe = aParam.instanceListe;
-		return Requetes("SaisieAvisProfesseur", this)
+		return new ObjetRequeteSaisieAvisProfesseur(this)
 			.lancerRequete(aParam.paramRequete)
 			.then(
 				(aParams) => {
-					if (aParams && aParams.genreReponse === EGenreReponseSaisie.succes) {
+					if (
+						aParams &&
+						aParams.genreReponse ===
+							ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+					) {
 						if (
 							aParams.JSONRapportSaisie &&
 							aParams.JSONRapportSaisie.appAvisProfesseur &&
@@ -1228,7 +1314,10 @@ class ObjetMoteurReleveBulletin {
 				},
 			)
 			.then((aParams) => {
-				if (aParams && aParams.genreReponse === EGenreReponseSaisie.succes) {
+				if (
+					aParams &&
+					aParams.genreReponse === ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+				) {
 					lListe.actualiser(true);
 					this.moteurGrille.selectionCelluleSuivante({
 						instanceListe: lListe,
@@ -1241,11 +1330,15 @@ class ObjetMoteurReleveBulletin {
 	}
 	saisieAvisProfesseurParcoursup(aParam) {
 		const lListe = aParam.instanceListe;
-		return Requetes("SaisieAvisProfesseurParcoursup", this)
+		return new ObjetRequeteSaisieAvisProfesseurParcoursup(this)
 			.lancerRequete(aParam.paramRequete)
 			.then(
 				(aParams) => {
-					if (aParams && aParams.genreReponse === EGenreReponseSaisie.succes) {
+					if (
+						aParams &&
+						aParams.genreReponse ===
+							ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+					) {
 						if (
 							aParams.JSONRapportSaisie &&
 							aParams.JSONRapportSaisie.appAvisProfParcoursup &&
@@ -1268,7 +1361,10 @@ class ObjetMoteurReleveBulletin {
 				},
 			)
 			.then((aParams) => {
-				if (aParams && aParams.genreReponse === EGenreReponseSaisie.succes) {
+				if (
+					aParams &&
+					aParams.genreReponse === ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+				) {
 					lListe.actualiser(true);
 					this.moteurGrille.selectionCelluleSuivante({
 						instanceListe: lListe,
@@ -1292,21 +1388,26 @@ class ObjetMoteurReleveBulletin {
 						AJSON.service = aEleve.service;
 					},
 				});
-			return Requetes("SaisieECTS", this)
+			return new ObjetRequeteSaisieECTS(this)
 				.lancerRequete(lParamRequete)
 				.then((aParams) => {
-					if (aParams && aParams.genreReponse === EGenreReponseSaisie.succes) {
+					if (
+						aParams &&
+						aParams.genreReponse ===
+							ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+					) {
 						aParam.clbckSucces();
 					}
 				});
 		} else {
-			return Requetes("SaisieECTS", this)
+			return new ObjetRequeteSaisieECTS(this)
 				.lancerRequete(aParam.paramRequete)
 				.then(
 					(aParams) => {
 						if (
 							aParams &&
-							aParams.genreReponse === EGenreReponseSaisie.succes
+							aParams.genreReponse ===
+								ObjetRequeteJSON_1.EGenreReponseSaisie.succes
 						) {
 							if (
 								aParams.JSONRapportSaisie &&
@@ -1330,7 +1431,11 @@ class ObjetMoteurReleveBulletin {
 					},
 				)
 				.then((aParams) => {
-					if (aParams && aParams.genreReponse === EGenreReponseSaisie.succes) {
+					if (
+						aParams &&
+						aParams.genreReponse ===
+							ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+					) {
 						lListe.actualiser(true);
 						this.moteurGrille.selectionCelluleSuivante({
 							instanceListe: lListe,
@@ -1348,47 +1453,50 @@ class ObjetMoteurReleveBulletin {
 			let lTitreFenetre = "";
 			if (
 				aParam.modeCalculAuto ===
-				TypeModeValidationAuto.tmva_PosAvecNoteSelonEvaluation
+				TypeModeValidationAuto_1.TypeModeValidationAuto
+					.tmva_PosAvecNoteSelonEvaluation
 			) {
-				lTitreFenetre = GTraductions.getValeur(
+				lTitreFenetre = ObjetTraduction_1.GTraductions.getValeur(
 					"competences.fenetreValidationAutoPositionnement.titreNoteLSUSelonEvaluations",
 				);
 			}
 			let lMessageFenetre = "";
 			if (
 				aParam.modeCalculAuto ===
-				TypeModeValidationAuto.tmva_PosSansNoteSelonDevoir
+				TypeModeValidationAuto_1.TypeModeValidationAuto
+					.tmva_PosSansNoteSelonDevoir
 			) {
 				lMessageFenetre = aParam.messageValidationAutoPositionnementSelonDevoir;
 			} else if (
 				aParam.modeCalculAuto ===
-				TypeModeValidationAuto.tmva_PosAvecNoteSelonEvaluation
+				TypeModeValidationAuto_1.TypeModeValidationAuto
+					.tmva_PosAvecNoteSelonEvaluation
 			) {
-				lMessageFenetre = GTraductions.getValeur(
+				lMessageFenetre = ObjetTraduction_1.GTraductions.getValeur(
 					"competences.fenetreValidationAutoPositionnement.messageNoteLSUSelonEvaluations",
 				);
 			}
 			let lMrFiche;
 			if (
 				aParam.modeCalculAuto ===
-				TypeModeValidationAuto.tmva_PosAvecNoteSelonEvaluation
+				TypeModeValidationAuto_1.TypeModeValidationAuto
+					.tmva_PosAvecNoteSelonEvaluation
 			) {
-				lMrFiche = GTraductions.getValeur(
+				lMrFiche = ObjetTraduction_1.GTraductions.getValeur(
 					"BulletinEtReleve.MFichePostionnementCalculeNoteLSU",
 				);
 			}
 			const lParamValidationAutoPositionnement = {
-				instance: aParam.instance,
 				listeEleves: lListeEleves,
 				modeValidationAuto: aParam.modeCalculAuto,
 				titre: lTitreFenetre,
 				message: lMessageFenetre,
 				mrFiche: lMrFiche,
 				callback: function () {
-					aParam.clbckCalculAuto.call(aParam.instance);
+					aParam.clbckCalculAuto();
 				},
 			};
-			TUtilitaireCompetences.surBoutonValidationAutoPositionnement(
+			UtilitaireCompetences_1.TUtilitaireCompetences.surBoutonValidationAutoPositionnement(
 				lParamValidationAutoPositionnement,
 			);
 		}
@@ -1398,19 +1506,31 @@ class ObjetMoteurReleveBulletin {
 			aParam.seuilECTS !== null &&
 			aParam.seuilECTS !== undefined &&
 			aParam.seuilECTS.getValeur() > 0
-				? GTraductions.getValeur("BulletinEtReleve.ECTSParSeuil")
-				: GTraductions.getValeur("BulletinEtReleve.ECTSParRatio");
-		GApplication.getMessage()
+				? ObjetTraduction_1.GTraductions.getValeur(
+						"BulletinEtReleve.ECTSParSeuil",
+					)
+				: ObjetTraduction_1.GTraductions.getValeur(
+						"BulletinEtReleve.ECTSParRatio",
+					);
+		this.appSco
+			.getMessage()
 			.afficher({
-				type: EGenreBoiteMessage.Confirmation,
-				titre: GTraductions.getValeur("BulletinEtReleve.affectationECTS"),
-				message: GChaine.format(
-					GTraductions.getValeur("BulletinEtReleve.msgAffectationECTS"),
-					[GChaine.doubleToStr(aParam.nbrECTSService), lModeCalculECTS],
+				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+				titre: ObjetTraduction_1.GTraductions.getValeur(
+					"BulletinEtReleve.affectationECTS",
+				),
+				message: ObjetChaine_1.GChaine.format(
+					ObjetTraduction_1.GTraductions.getValeur(
+						"BulletinEtReleve.msgAffectationECTS",
+					),
+					[
+						ObjetChaine_1.GChaine.doubleToStr(aParam.nbrECTSService),
+						lModeCalculECTS,
+					],
 				),
 			})
 			.then((aGenreAction) => {
-				if (aGenreAction === EGenreAction.Valider) {
+				if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
 					this.saisieECTS({
 						paramRequete: {
 							estCalculAuto: true,
@@ -1427,13 +1547,15 @@ class ObjetMoteurReleveBulletin {
 			});
 	}
 	remplirMenuContextuelPositionnement(aInstanceMenuContextuel, aParam) {
-		TUtilitaireCompetences.getListeNiveauxDAcquisitionsPourMenu({
-			genreChoixValidationCompetence: aParam.genreChoixValidationCompetence,
-			genrePositionnement: aParam.genrePositionnement,
-			avecSelecteurNiveauCalcule: aParam.avecSelecteurNiveauCalcule,
-			avecDispense: true,
-			avecLibelleRaccourci: !!aParam.avecLibelleRaccourci,
-		}).parcourir((aElement) => {
+		UtilitaireCompetences_1.TUtilitaireCompetences.getListeNiveauxDAcquisitionsPourMenu(
+			{
+				genreChoixValidationCompetence: aParam.genreChoixValidationCompetence,
+				genrePositionnement: aParam.genrePositionnement,
+				avecSelecteurNiveauCalcule: aParam.avecSelecteurNiveauCalcule,
+				avecDispense: true,
+				avecLibelleRaccourci: !!aParam.avecLibelleRaccourci,
+			},
+		).parcourir((aElement) => {
 			aInstanceMenuContextuel.add(
 				aElement.tableauLibelles || aElement.getLibelle(),
 				aElement.actif,
@@ -1450,7 +1572,7 @@ class ObjetMoteurReleveBulletin {
 	}
 	ouvrirMenuPositionnement(aParam) {
 		const lThis = this;
-		ObjetMenuContextuel.afficher({
+		ObjetMenuContextuel_1.ObjetMenuContextuel.afficher({
 			id: aParam.id,
 			pere: aParam.instance,
 			initCommandes(aInstance) {
@@ -1460,11 +1582,15 @@ class ObjetMoteurReleveBulletin {
 	}
 	saisiePositionnement(aParam) {
 		const lListe = aParam.instanceListe;
-		return Requetes("SaisiePositionnement", this)
+		return new ObjetRequeteSaisiePositionnement(this)
 			.lancerRequete(aParam.paramRequete)
 			.then(
 				(aParams) => {
-					if (aParams && aParams.genreReponse === EGenreReponseSaisie.succes) {
+					if (
+						aParams &&
+						aParams.genreReponse ===
+							ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+					) {
 						if (aParams.JSONRapportSaisie) {
 							const lParamClbck = {};
 							if (aParams.JSONRapportSaisie.service) {
@@ -1505,7 +1631,10 @@ class ObjetMoteurReleveBulletin {
 				},
 			)
 			.then((aParams) => {
-				if (aParams && aParams.genreReponse === EGenreReponseSaisie.succes) {
+				if (
+					aParams &&
+					aParams.genreReponse === ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+				) {
 					lListe.actualiser(true);
 					if (
 						aParam.paramCellSuivante !== null &&
@@ -1522,48 +1651,53 @@ class ObjetMoteurReleveBulletin {
 			});
 	}
 	ouvrirMenuEvolution(aParam) {
-		ObjetMenuContextuel.afficher({
+		ObjetMenuContextuel_1.ObjetMenuContextuel.afficher({
 			id: aParam.id,
 			pere: aParam.instance,
 			initCommandes: function (aInstance) {
-				EGenreEvolutionUtil.getListePourMenu().parcourir((aElement) => {
-					aInstance.add(
-						aElement.tableauLibelles || aElement.getLibelle(),
-						aElement.actif,
-						() => {
-							aParam.clbackMenuEvolution(aElement);
-						},
-						{
-							image: aElement.image,
-							imageFormate: true,
-							largeurImage: aElement.largeurImage,
-						},
-					);
-				});
+				Enumere_Evolution_1.EGenreEvolutionUtil.getListePourMenu().parcourir(
+					(aElement) => {
+						aInstance.add(
+							aElement.getLibelle(),
+							aElement.Actif,
+							() => {
+								aParam.clbackMenuEvolution(aElement);
+							},
+							{ image: aElement.image, imageFormate: true },
+						);
+					},
+				);
 			},
 		});
 	}
 	composeHtmlMoyNR() {
 		const H = [];
 		H.push(
-			tag(
+			IE.jsx.str(
 				"div",
 				{
 					class: "notation_pastille_moy_NR",
-					"ie-hint": GTraductions.getValeur("Notes.Colonne.HintMoyenneNR"),
+					"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+						"Notes.Colonne.HintMoyenneNR",
+					),
+					role: "img",
 				},
-				GTraductions.getValeur("Notes.Colonne.TitreMoyNR"),
+				ObjetTraduction_1.GTraductions.getValeur("Notes.Colonne.TitreMoyNR"),
 			),
 		);
 		return H.join("");
 	}
 	saisieMoyNR(aParam) {
 		const lListe = aParam.instanceListe;
-		return Requetes("SaisieMoyNR", this)
+		return new ObjetRequeteSaisieMoyNR(this)
 			.lancerRequete(aParam.paramRequete)
 			.then(
 				(aParams) => {
-					if (aParams && aParams.genreReponse === EGenreReponseSaisie.succes) {
+					if (
+						aParams &&
+						aParams.genreReponse ===
+							ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+					) {
 						if (aParams.JSONRapportSaisie && aParams.JSONRapportSaisie.eleve) {
 							const lParamClbck = {
 								numeroEleve: aParams.JSONRapportSaisie.eleve.getNumero(),
@@ -1588,7 +1722,10 @@ class ObjetMoteurReleveBulletin {
 				},
 			)
 			.then((aParams) => {
-				if (aParams && aParams.genreReponse === EGenreReponseSaisie.succes) {
+				if (
+					aParams &&
+					aParams.genreReponse === ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+				) {
 					lListe.actualiser(true);
 				} else {
 					aParam.clbckEchec(aParams.promiseMessage);
@@ -1597,11 +1734,15 @@ class ObjetMoteurReleveBulletin {
 	}
 	saisieEvolution(aParam) {
 		const lListe = aParam.instanceListe;
-		return Requetes("SaisieEvolution", this)
+		return new ObjetRequeteSaisieEvolution(this)
 			.lancerRequete(aParam.paramRequete)
 			.then(
 				(aParams) => {
-					if (aParams && aParams.genreReponse === EGenreReponseSaisie.succes) {
+					if (
+						aParams &&
+						aParams.genreReponse ===
+							ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+					) {
 						if (
 							aParams.JSONRapportSaisie &&
 							aParams.JSONRapportSaisie.service &&
@@ -1626,7 +1767,10 @@ class ObjetMoteurReleveBulletin {
 				},
 			)
 			.then((aParams) => {
-				if (aParams && aParams.genreReponse === EGenreReponseSaisie.succes) {
+				if (
+					aParams &&
+					aParams.genreReponse === ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+				) {
 					lListe.actualiser(true);
 					this.moteurGrille.selectionCelluleSuivante({
 						instanceListe: lListe,
@@ -1638,9 +1782,10 @@ class ObjetMoteurReleveBulletin {
 			});
 	}
 	surEditionAvisReligion(aContexte) {
-		const lDonneesListe = new DonneesListe_Simple(aContexte.listeAvis, {
-			avecTri: false,
-		}).setOptions({ avecEvnt_SelectionClick: true, avecEvnt_Selection: false });
+		const lDonneesListe = new DonneesListe_Simple_1.DonneesListe_Simple(
+			aContexte.listeAvis,
+			{ avecTri: false },
+		).setOptions({ avecEvnt_SelectionClick: true, avecEvnt_Selection: false });
 		lDonneesListe.getValeur = function (aParams) {
 			if (aParams.colonne === 0) {
 				return aParams.article.description !== null &&
@@ -1655,41 +1800,47 @@ class ObjetMoteurReleveBulletin {
 			}
 			return aParams.article.getLibelle();
 		};
-		ObjetFenetre.creerInstanceFenetre(ObjetFenetre_Liste, {
-			pere: this,
-			evenement: function (aContexte, aNumeroBouton, aIndiceSelection) {
-				switch (aNumeroBouton) {
-					case 1: {
-						const lEltSelection = aContexte.listeAvis.get(aIndiceSelection);
-						if (
-							lEltSelection &&
-							lEltSelection.getNumero() !== aContexte.avisReligion.getNumero()
-						) {
-							aContexte.surValiderEditionDonnee({
-								article: aContexte.article,
-								idColonne: aContexte.idColonne,
-								selection: lEltSelection,
-								ctxAvisReligion: true,
-								navigation: { suivante: { orientationVerticale: true } },
-							});
+		const lFenetreListe = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_Liste_1.ObjetFenetre_Liste,
+			{
+				pere: this,
+				evenement: (aNumeroBouton, aIndiceSelection) => {
+					switch (aNumeroBouton) {
+						case 1: {
+							const lEltSelection = aContexte.listeAvis.get(aIndiceSelection);
+							if (
+								lEltSelection &&
+								lEltSelection.getNumero() !== aContexte.avisReligion.getNumero()
+							) {
+								aContexte.surValiderEditionDonnee({
+									article: aContexte.article,
+									idColonne: aContexte.idColonne,
+									selection: lEltSelection,
+									ctxAvisReligion: true,
+									navigation: { suivante: { orientationVerticale: true } },
+								});
+							}
+							break;
 						}
-						break;
 					}
-				}
-			}.bind(this, aContexte),
-			initialiser: this.initFenetreAvisReligion,
-		}).setDonnees(lDonneesListe, true);
+				},
+				initialiser: this.initFenetreAvisReligion,
+			},
+		);
+		lFenetreListe.setDonnees(lDonneesListe, true);
 	}
 	strClassement(aClassement) {
 		if (aClassement !== null && aClassement !== undefined) {
 			if (aClassement.toString() === "1") {
-				return GTraductions.getValeur("BulletinEtReleve.classementEr", [
-					aClassement,
-				]);
+				return ObjetTraduction_1.GTraductions.getValeur(
+					"BulletinEtReleve.classementEr",
+					[aClassement],
+				);
 			} else {
-				return GTraductions.getValeur("BulletinEtReleve.classementEme", [
-					aClassement,
-				]);
+				return ObjetTraduction_1.GTraductions.getValeur(
+					"BulletinEtReleve.classementEme",
+					[aClassement],
+				);
 			}
 		}
 		return "";
@@ -1705,31 +1856,34 @@ class ObjetMoteurReleveBulletin {
 	composePieceJointeDevoir(aDevoir, aEstEval) {
 		let lDocumentJointSujet, lDocumentJointCorrige, lLienSujet, lLienCorrige;
 		if (!!aDevoir.libelleSujet) {
-			lDocumentJointSujet = new ObjetElement(
+			lDocumentJointSujet = new ObjetElement_1.ObjetElement(
 				aDevoir.libelleSujet,
 				aDevoir.getNumero(),
-				EGenreDocumentJoint.Fichier,
+				Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier,
 			);
-			lLienSujet = GChaine.composerUrlLienExterne({
+			lLienSujet = ObjetChaine_1.GChaine.composerUrlLienExterne({
 				documentJoint: lDocumentJointSujet,
 				genreRessource: aEstEval
-					? TypeFichierExterneHttpSco.EvaluationSujet
-					: TypeFichierExterneHttpSco.DevoirSujet,
-				libelleEcran: GTraductions.getValeur("AfficherSujet"),
+					? TypeFichierExterneHttpSco_1.TypeFichierExterneHttpSco
+							.EvaluationSujet
+					: TypeFichierExterneHttpSco_1.TypeFichierExterneHttpSco.DevoirSujet,
+				libelleEcran: ObjetTraduction_1.GTraductions.getValeur("AfficherSujet"),
 			});
 		}
 		if (!!aDevoir.libelleCorrige) {
-			lDocumentJointCorrige = new ObjetElement(
+			lDocumentJointCorrige = new ObjetElement_1.ObjetElement(
 				aDevoir.libelleCorrige,
 				aDevoir.getNumero(),
-				EGenreDocumentJoint.Fichier,
+				Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier,
 			);
-			lLienCorrige = GChaine.composerUrlLienExterne({
+			lLienCorrige = ObjetChaine_1.GChaine.composerUrlLienExterne({
 				documentJoint: lDocumentJointCorrige,
 				genreRessource: aEstEval
-					? TypeFichierExterneHttpSco.EvaluationCorrige
-					: TypeFichierExterneHttpSco.DevoirCorrige,
-				libelleEcran: GTraductions.getValeur("AfficherCorrige"),
+					? TypeFichierExterneHttpSco_1.TypeFichierExterneHttpSco
+							.EvaluationCorrige
+					: TypeFichierExterneHttpSco_1.TypeFichierExterneHttpSco.DevoirCorrige,
+				libelleEcran:
+					ObjetTraduction_1.GTraductions.getValeur("AfficherCorrige"),
 			});
 		}
 		let lBtnExecQCM;
@@ -1738,7 +1892,16 @@ class ObjetMoteurReleveBulletin {
 			!!aDevoir.executionQCM.fichierDispo &&
 			!!aDevoir.executionQCM.publierCorrige
 		) {
-			lBtnExecQCM = `<ie-bouton class="themeBoutonNeutre small-bt bg-white" ie-model="afficherCorrigerQCM ()">${GTraductions.getValeur("ExecutionQCM.presentationCorrige.VisualiserCorrige")}</ie-bouton>`;
+			lBtnExecQCM = IE.jsx.str(
+				"ie-bouton",
+				{
+					class: "themeBoutonNeutre small-bt bg-white",
+					"ie-model": "afficherCorrigerQCM()",
+				},
+				ObjetTraduction_1.GTraductions.getValeur(
+					"ExecutionQCM.presentationCorrige.VisualiserCorrige",
+				),
+			);
 		}
 		return {
 			sujet: lLienSujet,
@@ -1795,17 +1958,12 @@ class ObjetMoteurReleveBulletin {
 		}
 	}
 }
+exports.ObjetMoteurReleveBulletin = ObjetMoteurReleveBulletin;
 function _composePhoto(aParam) {
 	const H = [];
 	if (aParam.eleve) {
-		let lSrcPhoto = "";
-		if (aParam.eleve.avecPhoto !== false) {
-			lSrcPhoto = GChaine.creerUrlBruteLienExterne(aParam.eleve, {
-				libelle: "photo.jpg",
-			});
-		}
 		H.push(
-			tag(
+			(0, tag_1.tag)(
 				"div",
 				{
 					class: ["InlineBlock", "AlignementHaut"],
@@ -1817,10 +1975,14 @@ function _composePhoto(aParam) {
 						"min-width:" + aParam.largeurPhoto + "px",
 					],
 				},
-				tag("img", {
-					alt: true,
-					"ie-load-src": lSrcPhoto,
-					"ie-node": tag.funcAttr("nodePhoto", [aParam.eleve.getNumero()]),
+				(0, tag_1.tag)("img", {
+					alt: aParam.eleve.getLibelle(),
+					"data-libelle": aParam.eleve.getLibelle(),
+					"ie-load-src": aParam.eleve.avecPhoto
+						? ObjetChaine_1.GChaine.creerUrlBruteLienExterne(aParam.eleve, {
+								libelle: "photo.jpg",
+							})
+						: false,
 					class: ["img-portrait"],
 					style: [
 						"height: auto",
@@ -1829,7 +1991,6 @@ function _composePhoto(aParam) {
 						"max-width: 100%",
 					],
 					"ie-imgviewer": true,
-					"aria-hidden": "true",
 				}),
 			),
 		);
@@ -1842,13 +2003,18 @@ function getTitreFenetreBarreNiveauxDacquisitions(aParam) {
 	const lResult = [lEleve.getLibelle()];
 	if (lNombre > 0) {
 		lResult.push(
-			GTraductions.getValeur("Fenetre_BarreNiveauxDacquisitions.TitreFenetre", [
-				lNombre,
-			]),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"Fenetre_BarreNiveauxDacquisitions.TitreFenetre",
+				[lNombre],
+			),
 		);
 	}
 	lResult.push(
-		GEtatUtilisateur.Navigation.getLibelleRessource(EGenreRessource.Matiere),
+		(0, AccessApp_1.getApp)()
+			.getEtatUtilisateur()
+			.Navigation.getLibelleRessource(
+				Enumere_Ressource_1.EGenreRessource.Matiere,
+			),
 	);
 	return lResult.join(" - ");
 }
@@ -1865,7 +2031,7 @@ function _composeHtmlBareme(aParam) {
 		H.push(
 			'<div class="Texte9" style="margin-left:3px;"',
 			'title="',
-			GTraductions.getValeur("ReleveDeNotes.BaremeDevoir"),
+			ObjetTraduction_1.GTraductions.getValeur("ReleveDeNotes.BaremeDevoir"),
 			'"',
 			" >",
 		);
@@ -1882,40 +2048,50 @@ function _composeHtmlNote(aParam) {
 		lNote = "(" + lNote + ")";
 	}
 	if (aParam.avecCorrige && lDevoir.libelleCorrige) {
-		const lDocJoint = new ObjetElement(
+		const lDocJoint = new ObjetElement_1.ObjetElement(
 			lDevoir.libelleCorrige,
 			lDevoir.getNumero(),
-			EGenreDocumentJoint.Fichier,
+			Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier,
 		);
-		const lUrl = GChaine.creerUrlBruteLienExterne(lDocJoint, {
-			genreRessource: TypeFichierExterneHttpSco.DevoirCorrige,
+		const lUrl = ObjetChaine_1.GChaine.creerUrlBruteLienExterne(lDocJoint, {
+			genreRessource:
+				TypeFichierExterneHttpSco_1.TypeFichierExterneHttpSco.DevoirCorrige,
 		});
 		H.push(
-			'<a class="LienAccueil Gras" title="',
-			GTraductions.getValeur("AfficherCorrige"),
-			'" href="' + lUrl + '" target="_blank">',
+			IE.jsx.str(
+				"a",
+				{
+					class: "LienAccueil Gras",
+					"ie-tooltipdescribe":
+						ObjetTraduction_1.GTraductions.getValeur("AfficherCorrige"),
+					href: lUrl,
+					target: "_blank",
+				},
+				lNote,
+			),
 		);
-		H.push(lNote);
-		H.push("</a>");
 	} else if (
 		aParam.avecCorrige &&
 		lDevoir.executionQCM &&
 		lDevoir.executionQCM.publierCorrige
 	) {
 		H.push(
-			"<div ",
-			GHtml.composeAttr("ie-node", "getNodeCorrigeQCM", [
-				aParam.ligne,
-				aParam.indiceDevoir,
-			]),
-			' class="LienAccueil Gras" title="',
-			GTraductions.getValeur("AfficherCorrige"),
-			'">',
+			IE.jsx.str(
+				"div",
+				{
+					role: "button",
+					tabindex: "0",
+					"aria-haspopup": "dialog",
+					"ie-node": aParam.jsxFuncNodeCorrigeQCM,
+					class: "LienAccueil Gras",
+					"ie-tooltipdescribe":
+						ObjetTraduction_1.GTraductions.getValeur("AfficherCorrige"),
+				},
+				lNote,
+			),
 		);
-		H.push(lNote);
-		H.push("</div>");
 	} else {
-		H.push('<div class="Gras">' + lNote + "</div>");
+		H.push(IE.jsx.str("div", { class: "Gras" }, lNote));
 	}
 	return H.join("");
 }
@@ -1928,14 +2104,16 @@ function _composeHtmlCoeff(aParam) {
 		'<div class="Texte9"',
 		lAvecCoeff
 			? 'title="' +
-					GTraductions.getValeur("ReleveDeNotes.CoefficientDevoir") +
+					ObjetTraduction_1.GTraductions.getValeur(
+						"ReleveDeNotes.CoefficientDevoir",
+					) +
 					'"'
 			: "",
 		" >",
 	);
 	if (lAvecCoeff) {
 		H.push(
-			GTraductions.getValeur("ReleveDeNotes.AbreviationCoef"),
+			ObjetTraduction_1.GTraductions.getValeur("ReleveDeNotes.AbreviationCoef"),
 			"&nbsp;",
 			aParam.devoir.Coefficient.getNote(),
 		);
@@ -1950,9 +2128,57 @@ function _composeHtmlDate(aParam) {
 	const lDevoir = aParam.devoir;
 	H.push(
 		'<div class="Texte9">' +
-			GDate.formatDate(lDevoir.Date, "%JJ %MMM") +
+			ObjetDate_1.GDate.formatDate(lDevoir.Date, "%JJ %MMM") +
 			"</div>",
 	);
 	return H.join("");
 }
-module.exports = { ObjetMoteurReleveBulletin };
+class ObjetRequeteSaisieAppreciation extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieAppreciation",
+	ObjetRequeteSaisieAppreciation,
+);
+class ObjetRequeteSaisieNoteLSU extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieNoteLSU",
+	ObjetRequeteSaisieNoteLSU,
+);
+class ObjetRequeteSaisieECTS extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
+CollectionRequetes_1.Requetes.inscrire("SaisieECTS", ObjetRequeteSaisieECTS);
+class ObjetRequeteSaisiePositionnement extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisiePositionnement",
+	ObjetRequeteSaisiePositionnement,
+);
+class ObjetRequeteSaisieEvolution extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieEvolution",
+	ObjetRequeteSaisieEvolution,
+);
+class ObjetRequeteSaisieNotePropDelib extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieNotePropDelib",
+	ObjetRequeteSaisieNotePropDelib,
+);
+class ObjetRequeteSaisieEltsPgme extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieEltsPgme",
+	ObjetRequeteSaisieEltsPgme,
+);
+class ObjetRequeteSaisieAvisProfesseur extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieAvisProfesseur",
+	ObjetRequeteSaisieAvisProfesseur,
+);
+class ObjetRequeteSaisieAvisProfesseurParcoursup extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieAvisProfesseurParcoursup",
+	ObjetRequeteSaisieAvisProfesseurParcoursup,
+);
+class ObjetRequeteSaisieParamSynchroAppClasse extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieParamSynchroAppClasse",
+	ObjetRequeteSaisieParamSynchroAppClasse,
+);
+class ObjetRequeteSaisieMoyNR extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
+CollectionRequetes_1.Requetes.inscrire("SaisieMoyNR", ObjetRequeteSaisieMoyNR);

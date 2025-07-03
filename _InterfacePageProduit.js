@@ -2,6 +2,8 @@ exports._InterfacePageProduit = void 0;
 const ObjetInterface_1 = require("ObjetInterface");
 const ObjetHtml_1 = require("ObjetHtml");
 const GUID_1 = require("GUID");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const AccessApp_1 = require("AccessApp");
 class _InterfacePageProduit extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
@@ -95,7 +97,7 @@ class _InterfacePageProduit extends ObjetInterface_1.ObjetInterface {
 		this.basculerEcran(lEcranSrc, lEcranDest);
 	}
 	setHtmlStructureAffichageBandeau(aHtml) {
-		ObjetHtml_1.GHtml.setHtml(GApplication.idLigneBandeau, aHtml, {
+		ObjetHtml_1.GHtml.setHtml((0, AccessApp_1.getApp)().idLigneBandeau, aHtml, {
 			controleur: this.controleur,
 			instance: this,
 		});
@@ -109,7 +111,11 @@ class _InterfacePageProduit extends ObjetInterface_1.ObjetInterface {
 			'">',
 		);
 		H.push(
-			'<ie-btnimage ie-model="btnRetourEcranPrec" class="fleche-nav btnImageIcon icon_retour_mobile"></ie-btnimage>',
+			IE.jsx.str("ie-btnimage", {
+				"ie-model": this.jsxBtnRetourEcranPrec.bind(this),
+				class: "fleche-nav btnImageIcon icon_retour_mobile",
+				"aria-label": ObjetTraduction_1.GTraductions.getValeur("Precedent"),
+			}),
 		);
 		H.push(
 			"<div ",
@@ -122,6 +128,13 @@ class _InterfacePageProduit extends ObjetInterface_1.ObjetInterface {
 		);
 		H.push("</header>");
 		return H.join("");
+	}
+	jsxBtnRetourEcranPrec() {
+		return {
+			event: () => {
+				this.revenirSurEcranPrecedent();
+			},
+		};
 	}
 	_getInfosSurZone(aIndice) {
 		const lElement =
@@ -143,5 +156,17 @@ class _InterfacePageProduit extends ObjetInterface_1.ObjetInterface {
 	}
 	setBandeau(aHtml) {}
 	afficherBandeau(aAfficher) {}
+	composeAucuneDonnee(aHtml) {
+		return ObjetHtml_1.GHtml.composeFondAucuneDonnee(aHtml);
+	}
+	afficherMessage(aMessage) {
+		if (!this.existeInstance(this.IdentZoneAlClient)) {
+			return;
+		}
+		ObjetHtml_1.GHtml.setHtml(
+			this.getInstance(this.IdentZoneAlClient).getNom(),
+			this.composeAucuneDonnee(aMessage),
+		);
+	}
 }
 exports._InterfacePageProduit = _InterfacePageProduit;

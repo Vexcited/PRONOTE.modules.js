@@ -1,164 +1,117 @@
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { EGenreDomaineInformation } = require("Enumere_DomaineInformation.js");
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { EGenreBordure } = require("ObjetStyle.js");
-const { ObjetFenetre_ChargeTAF } = require("ObjetFenetre_ChargeTAF.js");
-const {
-	ObjetFenetre_RattachementCDT,
-} = require("ObjetFenetre_RattachementCDT.js");
-const {
-	ObjetRequeteSaisieRattachementCDT,
-} = require("ObjetRequeteSaisieRattachementCDT.js");
-const {
-	ObjetRequetePageSaisieCahierDeTextes_General,
-} = require("ObjetRequetePageSaisieCahierDeTextes_General.js");
-const {
-	ObjetRequeteListeCDTPourRattachement,
-} = require("ObjetRequeteListeCDTPourRattachement.js");
-const {
-	ObjetFenetre_DevoirSurTable,
-} = require("ObjetFenetre_DevoirSurTable.js");
-const { Callback } = require("Callback.js");
-const { GUID } = require("GUID.js");
-const { TinyInit } = require("TinyInit.js");
-const { ObjetInvocateur, Invocateur } = require("Invocateur.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GChaine } = require("ObjetChaine.js");
-const { GHtml } = require("ObjetHtml.js");
-const { GPosition } = require("ObjetPosition.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { GStyle } = require("ObjetStyle.js");
-const { ControleSaisieEvenement } = require("ControleSaisieEvenement.js");
-const { EGenreAction } = require("Enumere_Action.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { EGenreDocumentJoint } = require("Enumere_DocumentJoint.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreImpression } = require("Enumere_GenreImpression.js");
-const { EStructureAffichage } = require("Enumere_StructureAffichage.js");
-const { ObjetFenetreVisuEleveQCM } = require("ObjetFenetreVisuEleveQCM.js");
-const { ObjetCalendrier } = require("ObjetCalendrier.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetMenuContextuel } = require("ObjetMenuContextuel.js");
-const { ObjetCelluleDate } = require("ObjetCelluleDate.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const {
-	_InterfacePageSaisieCahierDeTextes,
-} = require("_InterfacePageSaisieCahierDeTextes.js");
-const {
-	DonneesListe_CDTsPrecedents,
-} = require("DonneesListe_CDTsPrecedents.js");
-const { EGenreElementCDT } = require("Enumere_ElementCDT.js");
-const { EGenreEvenementEDT } = require("Enumere_EvenementEDT.js");
-const { EGenreLienDS } = require("Enumere_LienDS.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { InterfaceListeTAFsCDT } = require("InterfaceListeTAFsCDT.js");
-const { ObjetFenetre_Categorie } = require("ObjetFenetre_Categorie.js");
-const {
-	ObjetFenetre_ElementsProgramme,
-} = require("ObjetFenetre_ElementsProgramme.js");
-const { ObjetFenetre_FichiersCloud } = require("ObjetFenetre_FichiersCloud.js");
-const {
-	ObjetFenetre_PanierRessourceKiosque,
-} = require("ObjetFenetre_PanierRessourceKiosque.js");
-const {
-	ObjetFenetre_ParametrageTAF,
-} = require("ObjetFenetre_ParametrageTAF.js");
-const ObjetFenetre_PieceJointe = require("ObjetFenetre_PieceJointe.js");
-const { ObjetFenetre_URLKiosque } = require("ObjetFenetre_URLKiosque.js");
-const { ObjetModule_EDTSaisie } = require("ObjetModule_EDTSaisie.js");
-const { ObjetRequeteFicheCDT } = require("ObjetRequeteFicheCDT.js");
-const {
-	ObjetRequetePageEmploiDuTemps,
-} = require("ObjetRequetePageEmploiDuTemps.js");
-const {
-	ObjetRequetePageSaisieCahierDeTextes,
-} = require("ObjetRequetePageSaisieCahierDeTextes.js");
-const {
-	ObjetRequeteSaisieCahierDeTextes,
-} = require("ObjetRequeteSaisieCahierDeTextes.js");
-const {
-	TypeOrigineCreationCategorieCahierDeTexte,
-	TypeOrigineCreationCategorieCahierDeTexteUtil,
-} = require("TypeOrigineCreationCategorieCahierDeTexte.js");
-const { UtilitaireInitCalendrier } = require("UtilitaireInitCalendrier.js");
-const {
-	UtilitaireLienCoursPrecedentSuivant,
-} = require("UtilitaireLienCoursPrecedentSuivant.js");
-const {
-	EGenreEvenementTAFCahierDeTextes,
-} = require("InterfaceListeTAFsCDT.js");
-const {
-	InterfaceContenuCahierDeTextes,
-} = require("InterfaceContenuCahierDeTextes.js");
-const {
-	EGenreEvenementContenuCahierDeTextes,
-} = require("EGenreEvenementContenuCahierDeTextes.js");
-const { EGenreFenetreDocumentJoint } = require("EGenreFenetreDocumentJoint.js");
-const { TypeOptionPublicationCDT } = require("TypeOptionPublicationCDT.js");
-const { UtilitaireSaisieCDT } = require("UtilitaireSaisieCDT.js");
-const { TUtilitaireCDT } = require("UtilitaireCDT.js");
-const { EGenreBtnActionBlocCDT } = require("GestionnaireBlocCDT.js");
-const { GestionnaireBlocCDT } = require("GestionnaireBlocCDT.js");
-const {
-	ObjetFenetre_ListeTAFFaits,
-	TypeBoutonFenetreTAFFaits,
-} = require("ObjetFenetre_ListeTAFFaits.js");
-const { UtilitaireBoutonBandeau } = require("UtilitaireBoutonBandeau.js");
-const {
-	UtilitaireGestionCloudEtPDF,
-} = require("UtilitaireGestionCloudEtPDF.js");
-const { UtilitaireSelecFile } = require("UtilitaireSelecFile.js");
-const { UtilitaireQCMPN } = require("UtilitaireQCMPN.js");
-const { tag } = require("tag.js");
-const { ObjetFenetre_PostIt } = require("ObjetFenetre_PostIt.js");
-const {
-	ObjetFenetre_ChoixDossierCopieCDT,
-} = require("ObjetFenetre_ChoixDossierCopieCDT.js");
-const { InterfaceGrilleEDT } = require("InterfaceGrilleEDT.js");
-Requetes.inscrire("SaisiePreferencesRessourcesKiosque", ObjetRequeteSaisie);
-const EGenreSelectionSemaine = { Sans: 0, Avec: 1, Forcer: 2 };
-const EGenreCommandeCdT = {
-	CopierCdT: 0,
-	CollerCdT: 1,
-	SupprimerCdT: 2,
-	AffecterProgressionAuCdT: 3,
-	RattacherCDT: 4,
-	AjouterContenuDansProgression: 5,
-	saisieDS: 6,
-	saisieEval: 7,
-};
+exports.InterfacePageSaisieCahierDeTextes = void 0;
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const Enumere_DomaineInformation_1 = require("Enumere_DomaineInformation");
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const ObjetStyle_1 = require("ObjetStyle");
+const ObjetFenetre_RattachementCDT_1 = require("ObjetFenetre_RattachementCDT");
+const ObjetRequeteSaisieRattachementCDT_1 = require("ObjetRequeteSaisieRattachementCDT");
+const ObjetRequetePageSaisieCahierDeTextes_General_1 = require("ObjetRequetePageSaisieCahierDeTextes_General");
+const ObjetRequeteListeCDTPourRattachement_1 = require("ObjetRequeteListeCDTPourRattachement");
+const ObjetFenetre_DevoirSurTable_1 = require("ObjetFenetre_DevoirSurTable");
+const GUID_1 = require("GUID");
+const TinyInit_1 = require("TinyInit");
+const Invocateur_1 = require("Invocateur");
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetPosition_1 = require("ObjetPosition");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ControleSaisieEvenement_1 = require("ControleSaisieEvenement");
+const Enumere_Action_1 = require("Enumere_Action");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_DocumentJoint_1 = require("Enumere_DocumentJoint");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_GenreImpression_1 = require("Enumere_GenreImpression");
+const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
+const ObjetFenetreVisuEleveQCM_1 = require("ObjetFenetreVisuEleveQCM");
+const ObjetCalendrier_1 = require("ObjetCalendrier");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetMenuContextuel_1 = require("ObjetMenuContextuel");
+const ObjetCelluleDate_1 = require("ObjetCelluleDate");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const _InterfacePageSaisieCahierDeTextes_1 = require("_InterfacePageSaisieCahierDeTextes");
+const DonneesListe_CDTsPrecedents_1 = require("DonneesListe_CDTsPrecedents");
+const Enumere_ElementCDT_1 = require("Enumere_ElementCDT");
+const Enumere_EvenementEDT_1 = require("Enumere_EvenementEDT");
+const Enumere_LienDS_1 = require("Enumere_LienDS");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const InterfaceListeTAFsCDT_1 = require("InterfaceListeTAFsCDT");
+const ObjetFenetre_Categorie_1 = require("ObjetFenetre_Categorie");
+const ObjetFenetre_ElementsProgramme_1 = require("ObjetFenetre_ElementsProgramme");
+const ObjetFenetre_FichiersCloud_1 = require("ObjetFenetre_FichiersCloud");
+const ObjetFenetre_PanierRessourceKiosque_1 = require("ObjetFenetre_PanierRessourceKiosque");
+const ObjetFenetre_PieceJointe_1 = require("ObjetFenetre_PieceJointe");
+const ObjetFenetre_URLKiosque_1 = require("ObjetFenetre_URLKiosque");
+const ObjetModule_EDTSaisie_1 = require("ObjetModule_EDTSaisie");
+const ObjetRequeteFicheCDT_1 = require("ObjetRequeteFicheCDT");
+const ObjetRequetePageEmploiDuTemps_1 = require("ObjetRequetePageEmploiDuTemps");
+const ObjetRequetePageSaisieCahierDeTextes_1 = require("ObjetRequetePageSaisieCahierDeTextes");
+const ObjetRequeteSaisieCahierDeTextes_1 = require("ObjetRequeteSaisieCahierDeTextes");
+const TypeOrigineCreationCategorieCahierDeTexte_1 = require("TypeOrigineCreationCategorieCahierDeTexte");
+const UtilitaireInitCalendrier_1 = require("UtilitaireInitCalendrier");
+const UtilitaireLienCoursPrecedentSuivant_1 = require("UtilitaireLienCoursPrecedentSuivant");
+const InterfaceContenuCahierDeTextes_1 = require("InterfaceContenuCahierDeTextes");
+const EGenreEvenementContenuCahierDeTextes_1 = require("EGenreEvenementContenuCahierDeTextes");
+const EGenreFenetreDocumentJoint_1 = require("EGenreFenetreDocumentJoint");
+const TypeOptionPublicationCDT_1 = require("TypeOptionPublicationCDT");
+const UtilitaireSaisieCDT_1 = require("UtilitaireSaisieCDT");
+const UtilitaireCDT_1 = require("UtilitaireCDT");
+const GestionnaireBlocCDT_1 = require("GestionnaireBlocCDT");
+const ObjetFenetre_ListeTAFFaits_1 = require("ObjetFenetre_ListeTAFFaits");
+const UtilitaireBoutonBandeau_1 = require("UtilitaireBoutonBandeau");
+const UtilitaireGestionCloudEtPDF_1 = require("UtilitaireGestionCloudEtPDF");
+const UtilitaireSelecFile_1 = require("UtilitaireSelecFile");
+const UtilitaireQCMPN_1 = require("UtilitaireQCMPN");
+const ObjetFenetre_PostIt_1 = require("ObjetFenetre_PostIt");
+const ObjetFenetre_ChoixDossierCopieCDT_1 = require("ObjetFenetre_ChoixDossierCopieCDT");
+const InterfaceGrilleEDT_1 = require("InterfaceGrilleEDT");
+class ObjetRequeteSaisiePreferencesRessourcesKiosque extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisiePreferencesRessourcesKiosque",
+	ObjetRequeteSaisiePreferencesRessourcesKiosque,
+);
+var EGenreSelectionSemaine;
+(function (EGenreSelectionSemaine) {
+	EGenreSelectionSemaine[(EGenreSelectionSemaine["Sans"] = 0)] = "Sans";
+	EGenreSelectionSemaine[(EGenreSelectionSemaine["Avec"] = 1)] = "Avec";
+	EGenreSelectionSemaine[(EGenreSelectionSemaine["Forcer"] = 2)] = "Forcer";
+})(EGenreSelectionSemaine || (EGenreSelectionSemaine = {}));
+var EGenreCommandeCdT;
+(function (EGenreCommandeCdT) {
+	EGenreCommandeCdT[(EGenreCommandeCdT["CopierCdT"] = 0)] = "CopierCdT";
+	EGenreCommandeCdT[(EGenreCommandeCdT["CollerCdT"] = 1)] = "CollerCdT";
+	EGenreCommandeCdT[(EGenreCommandeCdT["SupprimerCdT"] = 2)] = "SupprimerCdT";
+	EGenreCommandeCdT[(EGenreCommandeCdT["AffecterProgressionAuCdT"] = 3)] =
+		"AffecterProgressionAuCdT";
+	EGenreCommandeCdT[(EGenreCommandeCdT["RattacherCDT"] = 4)] = "RattacherCDT";
+	EGenreCommandeCdT[(EGenreCommandeCdT["AjouterContenuDansProgression"] = 5)] =
+		"AjouterContenuDansProgression";
+	EGenreCommandeCdT[(EGenreCommandeCdT["saisieDS"] = 6)] = "saisieDS";
+	EGenreCommandeCdT[(EGenreCommandeCdT["saisieEval"] = 7)] = "saisieEval";
+})(EGenreCommandeCdT || (EGenreCommandeCdT = {}));
 let uEstNoteProchaineSeanceVisible = false;
-class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierDeTextes {
+class InterfacePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierDeTextes_1._InterfacePageSaisieCahierDeTextes {
 	constructor(...aParams) {
 		super(...aParams);
-		this.Actif = false;
-		this.idBandeauGauche = GApplication.idBreadcrumbPerso;
-		this.idPremierObjet = this.idBandeauGauche;
+		this.objetParametres = this.applicationSco.getObjetParametres();
+		this.idBandeauGauche = this.applicationSco.idBreadcrumbPerso;
 		this.idBandeauDroite = this.Nom + "_BandeauDroite";
 		this.idPublieContenu = this.Nom + "_ImagePublieContenu";
 		this.idContenu = this.Nom + "_Contenu";
 		this.idNoteProcghaineSeance = this.Nom + "_NoteProchaineSeance";
 		this.idElementsProgramme = this.Nom + "_ElementsProgramme";
 		this.idKiosque = this.Nom + "_Kiosque";
-		this.idTravailAFaire = this.Nom + "_TAF";
 		this.idDescriptif = this.Nom + "_Descriptif";
-		this.classDivBlocTiny = GUID.getClassCss();
-		this.identContenus = [];
-		this.indiceContenus = [];
+		this.classDivBlocTiny = GUID_1.GUID.getClassCss();
 		this.avecQCM = true;
-		this.avecGestionNotation = GApplication.droits.get(
-			TypeDroits.fonctionnalites.gestionNotation,
+		this.avecGestionNotation = this.applicationSco.droits.get(
+			ObjetDroitsPN_1.TypeDroits.fonctionnalites.gestionNotation,
 		);
-		if (GEtatUtilisateur.getNavigationCours()) {
-			this.Cours = GEtatUtilisateur.getNavigationCours();
-			GEtatUtilisateur.setNavigationCours(null);
-		}
-		this._cacheJoursPresenceCours = {};
 		this.enAuthCloud = false;
 		this.paramsListeCDTPrec = {
 			deploye: false,
@@ -168,16 +121,27 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		};
 		this.listeCDTPleinEcran = false;
 		this.palierElementTravailleSelectionne = null;
-		this.moduleSaisieCours = new ObjetModule_EDTSaisie({ instance: this });
-		Invocateur.abonner(
-			ObjetInvocateur.events.etatSaisie,
+		this.moduleSaisieCours = new ObjetModule_EDTSaisie_1.ObjetModule_EDTSaisie({
+			instance: this,
+		});
+		this.Actif = false;
+		this.idPremierObjet = this.idBandeauGauche;
+		this.identContenus = [];
+		this.indiceContenus = [];
+		if (this.etatUtilisateur.getNavigationCours()) {
+			this.Cours = this.etatUtilisateur.getNavigationCours();
+			this.etatUtilisateur.setNavigationCours(null);
+		}
+		this._cacheJoursPresenceCours = {};
+		Invocateur_1.Invocateur.abonner(
+			Invocateur_1.ObjetInvocateur.events.etatSaisie,
 			this._changementEtatSaisie,
 			this,
 		);
 	}
 	construireInstances() {
 		this.IdentCalendrier = this.add(
-			ObjetCalendrier,
+			ObjetCalendrier_1.ObjetCalendrier,
 			this.evenementSurCalendrier,
 			this.initialiserCalendrier,
 		);
@@ -185,69 +149,92 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 			this.IdentCalendrier,
 		).getPremierElement();
 		this.identFenetreEditionCategorie = this.add(
-			ObjetFenetre_Categorie,
+			ObjetFenetre_Categorie_1.ObjetFenetre_Categorie,
 			this.evenementEditionCategorie,
 		);
 		this.IdentEditionPieceJointe = this.add(
-			ObjetFenetre_PieceJointe,
+			ObjetFenetre_PieceJointe_1.ObjetFenetre_PieceJointe,
 			this.evenementEditionDocumentJoint,
 		);
 		this.IdentGrille = this.add(
-			InterfaceGrilleEDT,
+			InterfaceGrilleEDT_1.InterfaceGrilleEDT,
 			this.evenementSurGrille,
 			this.initialiserGrille,
 		);
-		this.IdentFenetreChargeTAF = this.addFenetre(ObjetFenetre_ChargeTAF);
 		this.identFenetreChoixDossierCopieCDT = this.addFenetre(
-			ObjetFenetre_ChoixDossierCopieCDT,
+			ObjetFenetre_ChoixDossierCopieCDT_1.ObjetFenetre_ChoixDossierCopieCDT,
 		);
 		this.identFenetreRattachementCDT = this.addFenetre(
-			ObjetFenetre_RattachementCDT,
+			ObjetFenetre_RattachementCDT_1.ObjetFenetre_RattachementCDT,
 			this.evenementSurFenetreRattachementCDT,
 			this.initialiserFenetreRattachementCDT,
 		);
-		if (GEtatUtilisateur.listeCloud.count() > 0) {
+		if (this.etatUtilisateur.listeCloud.count() > 0) {
 			this.identFenetreFichiersCloud = this.addFenetre(
-				ObjetFenetre_FichiersCloud,
+				ObjetFenetre_FichiersCloud_1.ObjetFenetre_FichiersCloud,
 				this.eventFenetreFichiersCloud,
 			);
 		}
 		this.identFenetreElementsProgramme = this.addFenetre(
-			ObjetFenetre_ElementsProgramme,
-			_evenementSurFenetreElementsProgramme,
+			ObjetFenetre_ElementsProgramme_1.ObjetFenetre_ElementsProgramme,
+			this._evenementSurFenetreElementsProgramme,
 		);
 		this.IdentDatePublication = this.add(
-			ObjetCelluleDate,
+			ObjetCelluleDate_1.ObjetCelluleDate,
 			this.evenementSurDatePublication,
 			this.initialiserDatePublication,
 		);
 		this.identFenetreVisuQCM = this.addFenetre(
-			ObjetFenetreVisuEleveQCM,
+			ObjetFenetreVisuEleveQCM_1.ObjetFenetreVisuEleveQCM,
 			this.evenementSurVisuEleve,
 		);
 		this.identListeCDTPrec = this.add(
-			ObjetListe,
+			ObjetListe_1.ObjetListe,
 			null,
-			_initialiserListeCDTPrec.bind(this),
+			this._initialiserListeCDTPrec.bind(this),
 		);
 		this.identListeTAFs = this.add(
-			InterfaceListeTAFsCDT,
+			InterfaceListeTAFsCDT_1.InterfaceListeTAFsCDT,
 			this.evenementTAFDesCours,
 		);
-		this.utilLienBtns = new UtilitaireLienCoursPrecedentSuivant({
-			idRef: this.Nom,
-			callback: this.evenementSurBoutonRechercheCours.bind(this),
-			controleNavigation: true,
-			pere: this,
-		});
+		this.utilLienBtns =
+			new UtilitaireLienCoursPrecedentSuivant_1.UtilitaireLienCoursPrecedentSuivant(
+				{
+					idRef: this.Nom,
+					callback: this.evenementSurBoutonRechercheCours.bind(this),
+					controleNavigation: true,
+					pere: this,
+				},
+			);
 		this.identFenetreURLKiosque = this.addFenetre(
-			ObjetFenetre_URLKiosque,
+			ObjetFenetre_URLKiosque_1.ObjetFenetre_URLKiosque,
 			this.evntSurFenetreURLKiosque,
 			this.initFenetreURLKiosque,
 		);
 	}
 	setParametresGeneraux() {
-		this.GenreStructure = EStructureAffichage.Autre;
+		this.GenreStructure =
+			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
+	}
+	jsxModeleBoutonAfficherCahiersDeTexteDetaches() {
+		return {
+			event: async () => {
+				this.avecDrag = true;
+				const lReponse =
+					await new ObjetRequeteListeCDTPourRattachement_1.ObjetRequeteListeCDTPourRattachement(
+						this,
+					).lancerRequete();
+				this.actionSurRattachementCDT(lReponse.listeCDT);
+			},
+			getTitle: () => {
+				return ObjetTraduction_1.GTraductions.getValeur(
+					"CahierDeTexte.BoutonRattachementCDT",
+				);
+			},
+			getDisabled: () => {
+				return !this.etatUtilisateur.existeCDTsDetaches;
+			},
+		};
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
@@ -259,7 +246,7 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 							: false;
 						aInstance.paramsListeCDTPrec.deploye =
 							!aInstance.paramsListeCDTPrec.deploye && lAvecCDTs;
-						GHtml.setDisplay(
+						ObjetHtml_1.GHtml.setDisplay(
 							aInstance.getInstance(aInstance.identListeCDTPrec).getNom(),
 							aInstance.paramsListeCDTPrec.deploye,
 						);
@@ -282,7 +269,7 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 							1,
 							aInstance.paramsListeCDTPrec.nbAffiches - 1,
 						);
-						_actualiserListeCDTsPrecedents.call(aInstance);
+						aInstance._actualiserListeCDTsPrecedents();
 					},
 					getDisabled: function () {
 						return (
@@ -301,7 +288,7 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 								aInstance.paramsListeCDTPrec.nbAffiches + 1,
 							),
 						);
-						_actualiserListeCDTsPrecedents.call(aInstance);
+						aInstance._actualiserListeCDTsPrecedents();
 					},
 					getDisabled: function () {
 						return (
@@ -320,7 +307,9 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 					) {
 						return (
 							'<span style="' +
-							GStyle.composeCouleurTexte(GCouleur.nonEditable.texte) +
+							ObjetStyle_1.GStyle.composeCouleurTexte(
+								GCouleur.nonEditable.texte,
+							) +
 							'">' +
 							aInstance.paramsListeCDTPrec.nbAffiches +
 							"</span>"
@@ -332,7 +321,9 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 					return (
 						aInstance.paramsListeCDTPrec.nbAffiches +
 						" " +
-						GTraductions.getValeur("CahierDeTexte.ContenusPrecedents")
+						ObjetTraduction_1.GTraductions.getValeur(
+							"CahierDeTexte.ContenusPrecedents",
+						)
 					);
 				},
 				afficherTraitSeparation: function () {
@@ -344,7 +335,9 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 					aInstance.evenementSurAjoutContenu();
 				},
 				getTitle() {
-					return GTraductions.getValeur("CahierDeTexte.hintBoutonAjoutContenu");
+					return ObjetTraduction_1.GTraductions.getValeur(
+						"CahierDeTexte.hintBoutonAjoutContenu",
+					);
 				},
 				getDisabled() {
 					return (
@@ -372,46 +365,27 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 			},
 			btnAfficherCoursAnnules: {
 				event() {
-					GEtatUtilisateur.setAvecCoursAnnule(
-						!GEtatUtilisateur.getAvecCoursAnnule(),
+					aInstance.etatUtilisateur.setAvecCoursAnnule(
+						!aInstance.etatUtilisateur.getAvecCoursAnnule(),
 					);
-					_actualiserGrille.call(aInstance);
+					aInstance._actualiserGrille();
 				},
 				getSelection() {
-					return GEtatUtilisateur.getAvecCoursAnnule();
+					return aInstance.etatUtilisateur.getAvecCoursAnnule();
 				},
 				getTitle() {
-					return GEtatUtilisateur.getAvecCoursAnnule()
-						? GTraductions.getValeur("EDT.MasquerCoursAnnules")
-						: GTraductions.getValeur("EDT.AfficherCoursAnnules");
+					return aInstance.etatUtilisateur.getAvecCoursAnnule()
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"EDT.MasquerCoursAnnules",
+							)
+						: ObjetTraduction_1.GTraductions.getValeur(
+								"EDT.AfficherCoursAnnules",
+							);
 				},
 				getClassesMixIcon() {
-					return UtilitaireBoutonBandeau.getClassesMixIconAfficherCoursAnnules(
-						GEtatUtilisateur.getAvecCoursAnnule(),
+					return UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getClassesMixIconAfficherCoursAnnules(
+						aInstance.etatUtilisateur.getAvecCoursAnnule(),
 					);
-				},
-			},
-			btnAfficherCDTDetaches: {
-				event() {
-					aInstance.avecDrag = true;
-					new ObjetRequeteListeCDTPourRattachement(
-						aInstance,
-						aInstance.actionSurRattachementCDT,
-					).lancerRequete();
-				},
-				getTitle() {
-					return GTraductions.getValeur("CahierDeTexte.BoutonRattachementCDT");
-				},
-				getDisabled() {
-					return !GEtatUtilisateur.existeCDTsDetaches;
-				},
-			},
-			btnInfosDetails: {
-				event() {
-					aInstance
-						.getInstance(aInstance.IdentGrille)
-						.getInstanceGrille()
-						.ouvrirFenetreDetailsGrille();
 				},
 			},
 			btnParametrerRessourceKiosque: {
@@ -419,7 +393,7 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 					aInstance._surOuvertureURLKiosque(false);
 				},
 				getTitle() {
-					return GTraductions.getValeur(
+					return ObjetTraduction_1.GTraductions.getValeur(
 						"CahierDeTexte.kiosque.fenetre.titreSelect",
 					);
 				},
@@ -429,68 +403,17 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 					return !aInstance.ContenuPleinEcran;
 				},
 			},
-			btnParametrageTAF: {
-				instanceFenetreParametresTAF: null,
-				event() {
-					const lFenetreParametresTAF = ObjetFenetre.creerInstanceFenetre(
-						ObjetFenetre_ParametrageTAF,
-						{ pere: aInstance },
-					);
-					this.controleur.btnParametrageTAF.instanceFenetreParametresTAF =
-						lFenetreParametresTAF;
-					lFenetreParametresTAF.afficher();
-				},
-				getSelection() {
-					let lFenetreParametresTAF = null;
-					if (this.controleur.btnParametrageTAF) {
-						lFenetreParametresTAF =
-							this.controleur.btnParametrageTAF.instanceFenetreParametresTAF;
-					}
-					return lFenetreParametresTAF && lFenetreParametresTAF.estAffiche();
-				},
-				getTitle() {
-					return GTraductions.getValeur(
-						"CahierDeTexte.paramTaf.SaisieTAFsPreferences",
-					);
-				},
-			},
-			btnAfficherChargeTravail: {
-				event() {
-					aInstance
-						.getInstance(aInstance.IdentFenetreChargeTAF)
-						.setDonnees(aInstance.Cours, aInstance.listeClasses);
-				},
-				getSelection() {
-					return aInstance
-						.getInstance(aInstance.IdentFenetreChargeTAF)
-						.estAffiche();
-				},
-				getTitle() {
-					return GTraductions.getValeur("CahierDeTexte.ChargeTAFAFaire");
-				},
-				getDisplay() {
-					return aInstance.avecVoirChargeTravail;
-				},
-			},
 			btnAgrandirReduireZoneListeCDT: {
 				event() {
-					_evenementSurZoomListeCDT.call(
-						aInstance,
-						!aInstance.listeCDTPleinEcran,
-					);
-				},
-				getClassesIcon() {
-					return UtilitaireBoutonBandeau.getClassesIconZoomPlusMoins(
-						aInstance.listeCDTPleinEcran,
-					);
+					aInstance._evenementSurZoomListeCDT(!aInstance.listeCDTPleinEcran);
 				},
 				getTitle() {
 					if (aInstance.listeCDTPleinEcran) {
-						return GTraductions.getValeur(
+						return ObjetTraduction_1.GTraductions.getValeur(
 							"CahierDeTexte.hintBoutonPleinEcranReduire",
 						);
 					}
-					return GTraductions.getValeur(
+					return ObjetTraduction_1.GTraductions.getValeur(
 						"CahierDeTexte.hintBoutonPleinEcranAgrandir",
 					);
 				},
@@ -501,37 +424,12 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 				},
 				getTitle() {
 					if (aInstance.ContenuPleinEcran) {
-						return GTraductions.getValeur(
+						return ObjetTraduction_1.GTraductions.getValeur(
 							"CahierDeTexte.hintBoutonPleinEcranReduire",
 						);
 					}
-					return GTraductions.getValeur(
+					return ObjetTraduction_1.GTraductions.getValeur(
 						"CahierDeTexte.hintBoutonPleinEcranAgrandir",
-					);
-				},
-				getClassesIcon() {
-					return UtilitaireBoutonBandeau.getClassesIconZoomPlusMoins(
-						aInstance.ContenuPleinEcran,
-					);
-				},
-			},
-			btnAgrandirReduireZoneTAF: {
-				event() {
-					aInstance.evenementSurBoutonPleinEcranTAF();
-				},
-				getTitle() {
-					if (aInstance.TAFPleinEcran) {
-						return GTraductions.getValeur(
-							"CahierDeTexte.hintBoutonPleinEcranReduire",
-						);
-					}
-					return GTraductions.getValeur(
-						"CahierDeTexte.hintBoutonPleinEcranAgrandir",
-					);
-				},
-				getClassesIcon() {
-					return UtilitaireBoutonBandeau.getClassesIconZoomPlusMoins(
-						aInstance.TAFPleinEcran,
 					);
 				},
 			},
@@ -539,7 +437,7 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 				afficherTraitSeparation() {
 					return (
 						!aInstance.TAFPleinEcran &&
-						GApplication.parametresUtilisateur.get(
+						aInstance.applicationSco.parametresUtilisateur.get(
 							"CDT.Commentaire.ActiverSaisie",
 						)
 					);
@@ -548,17 +446,19 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 			mrFicheElementsProg: {
 				event: function () {
 					const lNode = this.node;
-					GApplication.getMessage().afficher({
-						message: GTraductions.getValeur(
+					aInstance.applicationSco.getMessage().afficher({
+						message: ObjetTraduction_1.GTraductions.getValeur(
 							"CahierDeTexte.AideSaisieElementsPgm",
 						),
 						callback: function () {
-							GHtml.setFocus(lNode);
+							ObjetHtml_1.GHtml.setFocus(lNode);
 						},
 					});
 				},
 				getTitle() {
-					return GTraductions.getValeur("CahierDeTexte.mrFicheInformation");
+					return ObjetTraduction_1.GTraductions.getValeur(
+						"CahierDeTexte.mrFicheInformation",
+					);
 				},
 			},
 			estVisibleCbPublierCDT: function () {
@@ -598,14 +498,16 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 					!aInstance._estPublieAuto()
 				) {
 					if (
-						GApplication.parametresUtilisateurBase.optionPublicationCDT ===
-						TypeOptionPublicationCDT.OPT_PublicationDebutCours
+						aInstance.applicationSco.parametresUtilisateurBase
+							.optionPublicationCDT ===
+						TypeOptionPublicationCDT_1.TypeOptionPublicationCDT
+							.OPT_PublicationDebutCours
 					) {
-						lTitlePublication = GTraductions.getValeur(
+						lTitlePublication = ObjetTraduction_1.GTraductions.getValeur(
 							"CahierDeTexte.hintPublie_Debut",
 						);
 					} else {
-						lTitlePublication = GTraductions.getValeur(
+						lTitlePublication = ObjetTraduction_1.GTraductions.getValeur(
 							"CahierDeTexte.hintPublie",
 						);
 					}
@@ -633,38 +535,20 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 						aInstance.CahierDeTextes.datePublication = aValeur
 							? aInstance.CahierDeTextes.datePublication
 								? aInstance.CahierDeTextes.datePublication
-								: GDate.getDateCourante()
+								: ObjetDate_1.GDate.getDateCourante()
 							: null;
 						lIdentDate.setDonnees(aInstance.CahierDeTextes.datePublication);
 						aInstance.setEtatSaisie(true);
 					}
 				},
 			},
-			getClassImagePublication: function () {
-				const lEstPublie =
-					!!aInstance.CahierDeTextes && !!aInstance.CahierDeTextes.publie;
-				const lAEtePublieAuto = aInstance._estPublieAuto();
-				return lEstPublie || lAEtePublieAuto
-					? "Image_Publie"
-					: "Image_NonPublie";
-			},
-			getAttrImagePublication() {
-				const lEstPublie =
-					!!aInstance.CahierDeTextes && !!aInstance.CahierDeTextes.publie;
-				const lAEtePublieAuto = aInstance._estPublieAuto();
-				const lTrad =
-					lEstPublie || lAEtePublieAuto
-						? GTraductions.getValeur("CahierDeTexte.WAI.CDTPublie")
-						: GTraductions.getValeur("CahierDeTexte.WAI.CDTNonPublie");
-				return { title: lTrad, "aria-label": lTrad };
-			},
 			avecSaisieCommentaire() {
-				return GApplication.parametresUtilisateur.get(
+				return aInstance.applicationSco.parametresUtilisateur.get(
 					"CDT.Commentaire.ActiverSaisie",
 				);
 			},
 			getHtmlNoteProchaineSeance() {
-				return `<header><h4 id="${aInstance.idNoteProcghaineSeance}">${GTraductions.getValeur("CahierDeTexte.postIt.seanceSuivante.titre")}</h4><ie-btnicon class="icon_fermeture_widget m-left-l" ie-model="displayNoteProchaineSeance(true)"></ie-btnicon></header><ie-textareamax aria-labelledby="${aInstance.idNoteProcghaineSeance}" ie-model="textNoteProchaineSeance" maxlength="${aInstance.CahierDeTextes && aInstance.CahierDeTextes.taillePostIt ? aInstance.CahierDeTextes.taillePostIt : 10000}" class="full-width"></ie-textareamax>`;
+				return `<header><h4 id="${aInstance.idNoteProcghaineSeance}">${ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.postIt.seanceSuivante.titre")}</h4><ie-btnicon class="icon_fermeture_widget m-left-l" ie-model="displayNoteProchaineSeance(true)"></ie-btnicon></header><ie-textareamax aria-labelledby="${aInstance.idNoteProcghaineSeance}" ie-model="textNoteProchaineSeance" maxlength="${aInstance.CahierDeTextes && aInstance.CahierDeTextes.taillePostIt ? aInstance.CahierDeTextes.taillePostIt : 10000}" class="full-width"></ie-textareamax>`;
 			},
 			displayNoteProchaineSeance: {
 				event() {
@@ -672,9 +556,9 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 				},
 				getTitle(aEstCroixFermer) {
 					if (aEstCroixFermer) {
-						return GTraductions.getValeur("Fermer");
+						return ObjetTraduction_1.GTraductions.getValeur("Fermer");
 					}
-					return GTraductions.getValeur(
+					return ObjetTraduction_1.GTraductions.getValeur(
 						"CahierDeTexte.postIt.seanceSuivante.hintBtn",
 					);
 				},
@@ -685,7 +569,7 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 			avecNoteProchaineSeance() {
 				return (
 					uEstNoteProchaineSeanceVisible &&
-					GApplication.parametresUtilisateur.get(
+					aInstance.applicationSco.parametresUtilisateur.get(
 						"CDT.Commentaire.ActiverSaisie",
 					)
 				);
@@ -707,57 +591,61 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 					if (!!aInstance.fenetreNotePourSeance) {
 						aInstance.fenetreNotePourSeance.fermer();
 					}
-					aInstance.fenetreNotePourSeance = ObjetFenetre.creerInstanceFenetre(
-						ObjetFenetre,
-						{
-							pere: aInstance,
-							initialiser: (aInstanceFenetre) => {
-								aInstanceFenetre.setOptionsFenetre({
-									largeur: 600,
-									hauteur: 400,
-									hauteurMaxContenu: 400,
-									modale: false,
-									titre: GTraductions.getValeur(
-										"CahierDeTexte.postIt.pourCetteSeance.titre",
-									),
-								});
+					aInstance.fenetreNotePourSeance =
+						ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+							ObjetFenetre_1.ObjetFenetre,
+							{
+								pere: aInstance,
+								initialiser: (aInstanceFenetre) => {
+									aInstanceFenetre.setOptionsFenetre({
+										largeur: 600,
+										hauteur: 400,
+										hauteurMaxContenu: 400,
+										modale: false,
+										titre: ObjetTraduction_1.GTraductions.getValeur(
+											"CahierDeTexte.postIt.pourCetteSeance.titre",
+										),
+									});
+								},
 							},
-						},
-					);
+						);
 					aInstance.fenetreNotePourSeance.afficher(
-						`<div class="conteneur-postIt ThemeCat-pense-bete full-weight p-all"><p class="AvecScrollVerticalAuto">${GChaine.replaceRCToHTML(aInstance.CoursPrecedent.noteProchaineSeance)}</p></div>`,
+						`<div class="conteneur-postIt full-weight p-all"><p class="AvecScrollVerticalAuto">${ObjetChaine_1.GChaine.replaceRCToHTML(aInstance.CoursPrecedent.noteProchaineSeance)}</p></div>`,
 					);
 				},
 				getTitle() {
-					return GChaine.enleverEntites(
-						`${GTraductions.getValeur("CahierDeTexte.postIt.pourCetteSeance.titre")} :\r\n${aInstance.CoursPrecedent.noteProchaineSeance}`,
+					return ObjetChaine_1.GChaine.enleverEntites(
+						`${ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.postIt.pourCetteSeance.titre")} :\r\n${aInstance.CoursPrecedent.noteProchaineSeance}`,
 					);
 				},
 			},
 			btnCommentairePrive: {
 				event() {
-					ObjetFenetre.creerInstanceFenetre(ObjetFenetre_PostIt, {
-						pere: aInstance,
-						initialiser: (aInstanceFenetre) => {
-							aInstanceFenetre.setOptionsFenetre({
-								titre: GTraductions.getValeur(
-									"CahierDeTexte.postIt.commentairePrive.titre",
-								),
-								largeur: 600,
-								hauteur: 400,
-							});
+					ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+						ObjetFenetre_PostIt_1.ObjetFenetre_PostIt,
+						{
+							pere: aInstance,
+							initialiser: (aInstanceFenetre) => {
+								aInstanceFenetre.setOptionsFenetre({
+									titre: ObjetTraduction_1.GTraductions.getValeur(
+										"CahierDeTexte.postIt.commentairePrive.titre",
+									),
+									largeur: 600,
+									hauteur: 400,
+								});
+							},
+							evenement: (aCommentairePrive) => {
+								aInstance.CahierDeTextes.commentairePrive = aCommentairePrive;
+								aInstance.setEtatSaisie(true);
+								aInstance.valider();
+							},
 						},
-						evenement: (aCommentairePrive) => {
-							aInstance.CahierDeTextes.commentairePrive = aCommentairePrive;
-							aInstance.setEtatSaisie(true);
-							aInstance.valider();
-						},
-					}).setDonnees({
+					).setDonnees({
 						texte: aInstance.CahierDeTextes.commentairePrive,
 						label:
-							GTraductions.getValeur("Commentaire") +
+							ObjetTraduction_1.GTraductions.getValeur("Commentaire") +
 							" (" +
-							GTraductions.getValeur(
+							ObjetTraduction_1.GTraductions.getValeur(
 								"CahierDeTexte.postIt.commentairePrive.infoTitre",
 							) +
 							")",
@@ -765,99 +653,141 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 					});
 				},
 				getTitle() {
-					return GTraductions.getValeur(
+					return ObjetTraduction_1.GTraductions.getValeur(
 						"CahierDeTexte.postIt.commentairePrive.hintBtn",
 					);
 				},
 			},
 		});
 	}
+	jsxModelBoutonInfosDetails() {
+		return {
+			event: () => {
+				this.getInstance(this.IdentGrille)
+					.getInstanceGrille()
+					.ouvrirFenetreDetailsGrille();
+			},
+		};
+	}
 	composeBandeauGauche() {
 		const T = [];
-		T.push('<div class="table-header">');
 		T.push(
-			'<h1 id="' +
-				this.idBandeauGauche +
-				'" class="titre-onglet" tabindex="0">' +
-				GTraductions.getValeur("CahierDeTexte.SaisieCahierDeTextes"),
-			"</h1>",
-		);
-		T.push(
-			'<div class="bta-contain">',
-			UtilitaireBoutonBandeau.getHtmlBtnAfficherCoursAnnules(
-				"btnAfficherCoursAnnules",
+			IE.jsx.str(
+				"div",
+				{ class: "table-header" },
+				IE.jsx.str(
+					"h1",
+					{ id: this.idBandeauGauche, class: "titre-onglet", tabindex: "0" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"CahierDeTexte.SaisieCahierDeTextes",
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "bta-contain" },
+					UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnAfficherCoursAnnulesControleur(
+						"btnAfficherCoursAnnules",
+					),
+					UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnAfficherCahiersDeTextesDetaches(
+						this.jsxModeleBoutonAfficherCahiersDeTexteDetaches.bind(this),
+					),
+					UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnInformationsGrille(
+						this.jsxModelBoutonInfosDetails.bind(this),
+					),
+				),
 			),
-			UtilitaireBoutonBandeau.getHtmlBtnAfficherCahiersDeTextesDetaches(
-				"btnAfficherCDTDetaches",
-			),
-			UtilitaireBoutonBandeau.getHtmlBtnInformationsGrille("btnInfosDetails"),
-			"</div>",
 		);
-		T.push("</div>");
 		return T.join("");
 	}
 	composeBandeauDroite() {
+		const lJsxImagePublication = () => {
+			const lEstPublie = !!this.CahierDeTextes && !!this.CahierDeTextes.publie;
+			const lAEtePublieAuto = this._estPublieAuto();
+			return lEstPublie || lAEtePublieAuto ? "Image_Publie" : "Image_NonPublie";
+		};
+		const lJsxAttributesImagePublication = () => {
+			const lEstPublie = !!this.CahierDeTextes && !!this.CahierDeTextes.publie;
+			const lAEtePublieAuto = this._estPublieAuto();
+			const lTrad =
+				lEstPublie || lAEtePublieAuto
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"CahierDeTexte.WAI.CDTPublie",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"CahierDeTexte.WAI.CDTNonPublie",
+						);
+			return { title: lTrad, "aria-label": lTrad };
+		};
 		const T = [];
-		T.push('<div class="table-header">');
 		T.push(
-			'      <div role="heading" aria-level="2" id="' +
-				this.idBandeauDroite +
-				'" class="titre" ie-ellipsis>' +
-				"</div>",
+			IE.jsx.str(
+				"div",
+				{ class: "table-header" },
+				IE.jsx.str("div", {
+					role: "heading",
+					"aria-level": "2",
+					id: this.idBandeauDroite,
+					class: "titre",
+					"ie-ellipsis": true,
+				}),
+				IE.jsx.str(
+					"div",
+					{ class: "bta-contain", "ie-display": "estVisibleCbPublierCDT" },
+					IE.jsx.str(
+						"ie-checkbox",
+						{ "ie-model": "checkPublierCDT", "ie-title": "getTitlePublierCDT" },
+						ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.publie"),
+					),
+					IE.jsx.str("div", {
+						"ie-display": "estVisibleDatePublication",
+						id: this.getInstance(this.IdentDatePublication).getNom(),
+					}),
+					IE.jsx.str("div", {
+						id: this.idPublieContenu,
+						"ie-class": lJsxImagePublication,
+						class: "hide",
+						style: "width:2.4rem",
+						role: "img",
+						"ie-attr": lJsxAttributesImagePublication,
+					}),
+				),
+			),
 		);
-		T.push(
-			'      <div class="bta-contain" ie-display="estVisibleCbPublierCDT" >',
-			'<ie-checkbox ie-model="checkPublierCDT" ie-title="getTitlePublierCDT" >',
-			GTraductions.getValeur("CahierDeTexte.publie"),
-			"</ie-checkbox>",
-			'<div ie-display="estVisibleDatePublication" id="',
-			this.getInstance(this.IdentDatePublication).getNom(),
-			'"></div>',
-			'<div id="',
-			this.idPublieContenu,
-			'" ie-class="getClassImagePublication" class="hide" style="width:2.4rem" role="img" ie-attr="getAttrImagePublication"></div>',
-			"</div>",
-		);
-		T.push("</div>");
 		return T.join("");
 	}
 	construireStructureAffichageAutre() {
 		const lWidth = "450px";
-		return tag(
+		return IE.jsx.str(
 			"div",
 			{ class: "full-height flex-contain cols p-all flex-gap" },
-			tag(
-				"div",
-				{
-					class: "fix-bloc Gras AlignementMilieu",
-					id: this.Nom + "_Page_Message",
-				},
-				"Semaine fériée",
-			),
-			tag("div", {
-				class: "fix-bloc",
-				id: this.getInstance(this.IdentCalendrier).getNom(),
+			IE.jsx.str("div", {
+				id: this.Nom + "_Page_Message",
+				class: "fix-bloc Gras AlignementMilieu",
 			}),
-			tag(
+			IE.jsx.str("div", {
+				id: this.getInstance(this.IdentCalendrier).getNom(),
+				class: "fix-bloc",
+			}),
+			IE.jsx.str(
 				"div",
 				{ id: this.Nom + "_Page", class: "fluid-bloc flex-contain" },
-				tag(
+				IE.jsx.str(
 					"div",
 					{
-						class: "fix-bloc flex-contain cols full-height",
 						id: this.Nom + "_ZoneGrille",
+						class: "fix-bloc flex-contain cols full-height",
 					},
-					tag("div", { class: "fix-bloc" }, this.composeBandeauGauche()),
-					tag(
+					IE.jsx.str("div", { class: "fix-bloc" }, this.composeBandeauGauche()),
+					IE.jsx.str(
 						"div",
 						{
-							class: "fluid-bloc p-top",
 							id: this.getInstance(this.IdentGrille).getNom(),
+							class: "fluid-bloc p-top",
 							style: `width:${parseInt(lWidth) + GNavigateur.getLargeurBarreDeScroll()}px`,
 						},
 						this.composeBandeauGauche(),
 					),
-					tag(
+					IE.jsx.str(
 						"div",
 						{
 							class:
@@ -867,7 +797,7 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 						this.utilLienBtns.construire(),
 					),
 				),
-				tag(
+				IE.jsx.str(
 					"div",
 					{
 						id: this.Nom + "_ZoneDeSaisie_Message",
@@ -876,37 +806,37 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 						style: "height:290px;",
 						tabindex: "0",
 					},
-					tag(
+					IE.jsx.str(
 						"span",
 						{ class: "Gras" },
-						GTraductions.getValeur(
+						ObjetTraduction_1.GTraductions.getValeur(
 							"CahierDeTexte.SelectionnerUnCoursPourSaisirCDT",
 						),
 					),
 				),
-				tag(
+				IE.jsx.str(
 					"div",
 					{
 						id: this.Nom + "_ZoneDeSaisie",
 						class: "fluid-bloc full-height p-left flex-contain cols",
-						style: `display: none; position:relative; top:0px;`,
+						style: "display: none; position:relative; top:0px",
 					},
-					tag("div", { class: "fix-bloc" }, this.composeBandeauDroite()),
-					tag(
+					IE.jsx.str("div", { class: "fix-bloc" }, this.composeBandeauDroite()),
+					IE.jsx.str(
 						"div",
 						{ id: this.Nom + "_P3_2", class: "fix-bloc flex-contain cols" },
-						_composeListeCDTsPrecedents.call(this),
+						this._composeListeCDTsPrecedents(),
 					),
-					tag(
+					IE.jsx.str(
 						"div",
 						{ id: this.Nom + "_P3_3", class: "fluid-bloc flex-contain cols" },
-						_composeLigneZoneContenu.call(this),
-						_composeLigneZoneElementsProgramme.call(this),
-						_composeLigneZoneTAF.call(this),
-						GApplication.parametresUtilisateur.get(
+						this._composeLigneZoneContenu(),
+						this._composeLigneZoneElementsProgramme(),
+						this._composeLigneZoneTAF(),
+						this.applicationSco.parametresUtilisateur.get(
 							"CDT.Commentaire.ActiverSaisie",
 						)
-							? _composeLigneZoneCommentairePrive.call(this)
+							? this._composeLigneZoneCommentairePrive()
 							: "",
 					),
 				),
@@ -914,12 +844,11 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		);
 	}
 	initialiserCalendrier(aInstance) {
-		UtilitaireInitCalendrier.init(aInstance);
+		UtilitaireInitCalendrier_1.UtilitaireInitCalendrier.init(aInstance);
 		aInstance.setControleNavigation(true);
 	}
 	initialiserGrille(aInstance) {
 		aInstance.setOptionsInterfaceGrilleEDT({
-			avecScrollV: true,
 			minHeight: 290,
 			optionsGrille: {
 				avecDrop: true,
@@ -934,13 +863,13 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 				},
 				callbackDropCellule: this.callbackDropCellule.bind(this),
 			},
-			evenementMouseDownPlace: function () {
+			evenementMouseDownPlace: () => {
 				this.Cours = null;
 				if (this.fenetreCDT) {
 					this.fenetreCDT.fermer();
 				}
 				this.setActif(false);
-			}.bind(this),
+			},
 		});
 		aInstance.setControleNavigation(true);
 	}
@@ -950,31 +879,36 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 			lData.article.getNumero(),
 		);
 		const lCours = this.listeCours.get(aIndiceCours);
-		const lHeure = GParametres.LibellesHeures.getLibelle(
-			lCours.Debut % GParametres.PlacesParJour,
+		const lHeure = this.objetParametres.LibellesHeures.getLibelle(
+			lCours.Debut % this.objetParametres.PlacesParJour,
 		);
-		const lMessage = GTraductions.getValeur(
+		const lMessage = ObjetTraduction_1.GTraductions.getValeur(
 			"CahierDeTexte.Rattachement.Confirmation",
-			[GDate.formatDate(lCours.DateDuCours, "%JJJJ %J %MMMM"), lHeure],
+			[
+				ObjetDate_1.GDate.formatDate(lCours.DateDuCours, "%JJJJ %J %MMMM"),
+				lHeure,
+			],
 		);
 		if (lCahierDeTextes && lCours) {
-			GApplication.getMessage().afficher({
-				type: EGenreBoiteMessage.Confirmation,
-				message: lMessage,
-				callback: this._apresConfirmationCallbackDropCellule.bind(
-					this,
-					lCahierDeTextes,
-					lCours,
-				),
-			});
+			this.applicationSco
+				.getMessage()
+				.afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+					message: lMessage,
+					callback: this._apresConfirmationCallbackDropCellule.bind(
+						this,
+						lCahierDeTextes,
+						lCours,
+					),
+				});
 		}
 	}
 	_apresConfirmationCallbackDropCellule(aCahierDeTextes, aCours, aGenreBouton) {
-		if (aGenreBouton === EGenreAction.Valider) {
+		if (aGenreBouton === Enumere_Action_1.EGenreAction.Valider) {
 			const lListeCDTaSupprimer = this.listeCDT.getListeElements((aElement) => {
 				return !aElement.existe();
 			});
-			new ObjetRequeteSaisieRattachementCDT(
+			new ObjetRequeteSaisieRattachementCDT_1.ObjetRequeteSaisieRattachementCDT(
 				this,
 				this._actionSurRequeteSaisieRattachementCDT,
 			).lancerRequete({
@@ -984,7 +918,7 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 				listeCDT: lListeCDTaSupprimer.count() > 0 ? lListeCDTaSupprimer : null,
 			});
 			if (
-				this.getInstance(this.identFenetreRattachementCDT) &&
+				this.existeInstance(this.identFenetreRattachementCDT) &&
 				this.getInstance(this.identFenetreRattachementCDT).estAffiche()
 			) {
 				this.getInstance(this.identFenetreRattachementCDT).fermer();
@@ -992,68 +926,33 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		}
 		this._verifierListeCDTAAffecter(this.listeCDT);
 	}
-	initialiserCombo(aInstance) {
-		aInstance.setParametres(true, true, null, null, null, null, 19);
-		aInstance.setOptionsObjetSaisie({
-			labelWAICellule: GTraductions.getValeur("CahierDeTexte.comboCategorie"),
-		});
-	}
 	initialiserFenetreRattachementCDT(aInstance) {
 		aInstance.setOptionsFenetre({
 			modale: false,
-			titre: GTraductions.getValeur("CahierDeTexte.FenetreRattachementCDT"),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.FenetreRattachementCDT",
+			),
 			largeur: 600,
 			hauteur: 400,
 			listeBoutons: [
-				GTraductions.getValeur("principal.annuler"),
-				GTraductions.getValeur("principal.affecter"),
+				ObjetTraduction_1.GTraductions.getValeur("principal.annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("principal.affecter"),
 			],
 		});
 	}
 	eventFenetreFichiersCloud(aParam) {
 		if (aParam.listeNouveauxDocs && aParam.listeNouveauxDocs.count() > 0) {
 			const lElementCourant =
-				this.genreElementSelectionne === EGenreElementCDT.TravailAFaire
+				this.genreElementSelectionne ===
+				Enumere_ElementCDT_1.EGenreElementCDT.TravailAFaire
 					? this.tafCourant
 					: this.contenuCourant;
 			lElementCourant.ListePieceJointe.add(aParam.listeNouveauxDocs);
 			lElementCourant.estVide = false;
 			this.ListeDocumentsJoints.add(aParam.listeNouveauxDocs);
 			this.actualiser(true);
-			lElementCourant.setEtat(EGenreEtat.Modification);
+			lElementCourant.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 			this.setEtatSaisie(true);
-		}
-	}
-	initialiserFenetreLienKiosque(aInstance) {
-		aInstance.setOptionsFenetre({
-			titre: GTraductions.getValeur("CahierDeTexte.lien.kiosque"),
-			largeur: 400,
-			hauteur: 150,
-			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Ajouter"),
-			],
-		});
-	}
-	evenementSurFenetreLienKiosque(aParam) {
-		if (aParam.dataLienKiosque) {
-			const lElementCourant =
-				this.genreElementSelectionne === EGenreElementCDT.TravailAFaire
-					? this.tafCourant
-					: this.contenuCourant;
-			const lLienKiosque = new ObjetElement(
-				aParam.titre,
-				null,
-				EGenreDocumentJoint.LienKiosque,
-			);
-			lLienKiosque.dataLienKiosque = aParam.dataLienKiosque;
-			lLienKiosque.setEtat(EGenreEtat.Creation);
-			this.ListeDocumentsJoints.addElement(lLienKiosque);
-			lElementCourant.ListePieceJointe.addElement(lLienKiosque);
-			lElementCourant.estVide = false;
-			lElementCourant.setEtat(EGenreEtat.Modification);
-			this.setEtatSaisie(true);
-			this.actualiser(true);
 		}
 	}
 	initialiserDatePublication(aInstance) {
@@ -1062,12 +961,12 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 			avecBoutonsPrecedentSuivant: false,
 		});
 		aInstance.setParametresFenetre(
-			GParametres.PremierLundi,
-			GParametres.PremiereDate,
-			GParametres.DerniereDate,
-			GParametres.JoursOuvres,
+			this.objetParametres.PremierLundi,
+			this.objetParametres.PremiereDate,
+			this.objetParametres.DerniereDate,
+			this.objetParametres.JoursOuvres,
 			null,
-			GParametres.JoursFeries,
+			this.objetParametres.JoursFeries,
 			null,
 		);
 	}
@@ -1077,33 +976,37 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 				? true
 				: aAvecRequeteGenerale;
 		const lCalendrier = this.getInstance(this.IdentCalendrier);
-		lCalendrier.setFrequences(GParametres.frequences);
+		lCalendrier.setFrequences(this.objetParametres.frequences);
 		lCalendrier.setDomaineInformation(
 			IE.Cycles.getDomaineFerie(),
-			EGenreDomaineInformation.Feriee,
+			Enumere_DomaineInformation_1.EGenreDomaineInformation.Feriee,
 		);
 		lCalendrier.setPeriodeDeConsultation(
-			GApplication.droits.get(TypeDroits.cours.domaineConsultationEDT),
+			this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.cours.domaineConsultationEDT,
+			),
 		);
 		if (this.moduleSaisieCours.afficherDomaineClotureCalendrier()) {
 			lCalendrier.setDomaineInformation(
-				GParametres.domaineVerrou,
-				EGenreDomaineInformation.Cloturee,
+				this.objetParametres.domaineVerrou,
+				Enumere_DomaineInformation_1.EGenreDomaineInformation.Cloturee,
 			);
 		}
-		Invocateur.evenement(
-			ObjetInvocateur.events.activationImpression,
-			EGenreImpression.Aucune,
+		Invocateur_1.Invocateur.evenement(
+			Invocateur_1.ObjetInvocateur.events.activationImpression,
+			Enumere_GenreImpression_1.EGenreImpression.Aucune,
 		);
 		if (aAvecRequeteGenerale) {
-			new ObjetRequetePageSaisieCahierDeTextes_General(
+			new ObjetRequetePageSaisieCahierDeTextes_General_1.ObjetRequetePageSaisieCahierDeTextes_General(
 				this,
 				this.actionSurRecupererDonnees,
 			).lancerRequete(
-				!GEtatUtilisateur.getDomainePresence(GEtatUtilisateur.getMembre()),
+				!this.etatUtilisateur.getDomainePresence(
+					this.etatUtilisateur.getMembre(),
+				),
 			);
 		} else {
-			new ObjetRequetePageEmploiDuTemps(
+			new ObjetRequetePageEmploiDuTemps_1.ObjetRequetePageEmploiDuTemps(
 				this,
 				this.actionSurCalendrier,
 			).lancerRequete({ numeroSemaine: this.NumeroSemaine });
@@ -1115,7 +1018,7 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 			numeroSemaine: this.NumeroSemaine,
 			avecJoursPresence: !this._cacheJoursPresenceCours[this.Cours.getNumero()],
 		};
-		new ObjetRequetePageSaisieCahierDeTextes(
+		new ObjetRequetePageSaisieCahierDeTextes_1.ObjetRequetePageSaisieCahierDeTextes(
 			this,
 			this.actionSurRecupererCahierDeTextes.bind(this, this.Cours),
 		).lancerRequete(lParam);
@@ -1128,7 +1031,10 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 				this.listeCategories.existeElementPourValidation() ||
 				this.ListeModeles.existeElementPourValidation();
 			const lInstance = this.getInstance(this.IdentEditionPieceJointe);
-			new ObjetRequeteSaisieCahierDeTextes(this, this.actionSurValidation)
+			new ObjetRequeteSaisieCahierDeTextes_1.ObjetRequeteSaisieCahierDeTextes(
+				this,
+				this.actionSurValidation,
+			)
 				.addUpload({
 					listeFichiers: lInstance.ListeFichiers,
 					listeDJCloud: this.ListeDocumentsJoints,
@@ -1166,7 +1072,8 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		aGenreDocJoint,
 		aDonneesSupplementaires,
 	) {
-		this.genreElementSelectionne = EGenreElementCDT.Contenu;
+		this.genreElementSelectionne =
+			Enumere_ElementCDT_1.EGenreElementCDT.Contenu;
 		this.contenuCourant = aElement;
 		if (
 			this.CahierDeTextes.listeContenus.getNbrElementsExistes() === 1 &&
@@ -1174,7 +1081,8 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 			!this.CahierDeTextes.listeContenus.getIndiceParElement(
 				this.contenuCourant,
 			) &&
-			this.CahierDeTextes.listeContenus.get(0).getEtat() === EGenreEtat.Creation
+			this.CahierDeTextes.listeContenus.get(0).getEtat() ===
+				Enumere_Etat_1.EGenreEtat.Creation
 		) {
 			const lContenu = this.contenuCourant;
 			this.contenuCourant = this.CahierDeTextes.listeContenus.get(0);
@@ -1191,47 +1099,60 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 					)
 				: this.CahierDeTextes.listeContenus.count() - 1;
 		switch (aGenreEvenement) {
-			case EGenreEvenementContenuCahierDeTextes.fenetreEditeurHTML:
+			case EGenreEvenementContenuCahierDeTextes_1
+				.EGenreEvenementContenuCahierDeTextes.fenetreEditeurHTML:
 				this.evenementSurBoutonHTML(this.contenuCourant.descriptif, null, {
 					filePickerOpener: this.evenementSurBoutonDocumentJoint.bind(
 						this,
-						EGenreDocumentJoint.Fichier,
+						Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier,
 					),
 					filePickerTypes: "image",
 				});
 				break;
-			case EGenreEvenementContenuCahierDeTextes.fenetreCategorie:
+			case EGenreEvenementContenuCahierDeTextes_1
+				.EGenreEvenementContenuCahierDeTextes.fenetreCategorie:
 				this.evenementSurBoutonCategorie();
 				break;
-			case EGenreEvenementContenuCahierDeTextes.editionTitre:
+			case EGenreEvenementContenuCahierDeTextes_1
+				.EGenreEvenementContenuCahierDeTextes.editionTitre:
 				this.setEtatSaisie(true);
 				break;
-			case EGenreEvenementContenuCahierDeTextes.editionCategorie:
+			case EGenreEvenementContenuCahierDeTextes_1
+				.EGenreEvenementContenuCahierDeTextes.editionCategorie:
 				this.setEtatSaisie(true);
 				break;
-			case EGenreEvenementContenuCahierDeTextes.editionParcoursEducatif:
+			case EGenreEvenementContenuCahierDeTextes_1
+				.EGenreEvenementContenuCahierDeTextes.editionParcoursEducatif:
 				this.setEtatSaisie(true);
 				break;
-			case EGenreEvenementContenuCahierDeTextes.ajouterDocumentJoint: {
+			case EGenreEvenementContenuCahierDeTextes_1
+				.EGenreEvenementContenuCahierDeTextes.ajouterDocumentJoint: {
 				let lListeFichiers;
-				if (aGenreDocJoint === EGenreDocumentJoint.Url) {
+				if (
+					aGenreDocJoint === Enumere_DocumentJoint_1.EGenreDocumentJoint.Url
+				) {
 					const lNouvelleUrl = aDonneesSupplementaires;
-					lListeFichiers = new ObjetListeElements().addElement(lNouvelleUrl);
+					lListeFichiers =
+						new ObjetListeElements_1.ObjetListeElements().addElement(
+							lNouvelleUrl,
+						);
 				} else {
 					const lElementFichierUploade = aDonneesSupplementaires;
 					lListeFichiers = lElementFichierUploade
 						? lElementFichierUploade.listeFichiers
 						: null;
 				}
-				_ajouterListeFichiers.call(this, lListeFichiers, aGenreDocJoint);
+				this._ajouterListeFichiers(lListeFichiers, aGenreDocJoint);
 				break;
 			}
-			case EGenreEvenementContenuCahierDeTextes.editionDocumentJoint: {
+			case EGenreEvenementContenuCahierDeTextes_1
+				.EGenreEvenementContenuCahierDeTextes.editionDocumentJoint: {
 				const lTypeServiceCloud = aDonneesSupplementaires;
 				this.evenementSurBoutonDocumentJoint(aGenreDocJoint, lTypeServiceCloud);
 				break;
 			}
-			case EGenreEvenementContenuCahierDeTextes.editionDescriptif:
+			case EGenreEvenementContenuCahierDeTextes_1
+				.EGenreEvenementContenuCahierDeTextes.editionDescriptif:
 				this.setEtatSaisie(true);
 				if (this.indiceElementSelectionne >= 0) {
 					this.getInstanceContenu().actualiserContenu(
@@ -1241,18 +1162,20 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 						this.CahierDeTextes.verrouille,
 						this.avecDocumentJoint,
 						this.ContenuPleinEcran,
-						_getOptionsContenuMenuMagique.call(this),
+						this._getOptionsContenuMenuMagique(),
 					);
 				}
 				break;
-			case EGenreEvenementContenuCahierDeTextes.supprimer:
+			case EGenreEvenementContenuCahierDeTextes_1
+				.EGenreEvenementContenuCahierDeTextes.supprimer:
 				this.supprimerContenuCourant();
 				break;
-			case EGenreEvenementContenuCahierDeTextes.ajoutQCM:
+			case EGenreEvenementContenuCahierDeTextes_1
+				.EGenreEvenementContenuCahierDeTextes.ajoutQCM:
 				if (!this.contenuCourant) {
 					return;
 				}
-				UtilitaireSaisieCDT.choisirQCM({
+				UtilitaireSaisieCDT_1.UtilitaireSaisieCDT.choisirQCM({
 					instance: this,
 					donneesSupplementaire: { contexteAppel: "contenu" },
 					element: this.contenuCourant,
@@ -1265,18 +1188,21 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 							this.CahierDeTextes.verrouille,
 							this.avecDocumentJoint,
 							this.ContenuPleinEcran,
-							_getOptionsContenuMenuMagique.call(this, this.contenuCourant),
+							this._getOptionsContenuMenuMagique(),
 						);
 					}
 				});
 				break;
-			case EGenreEvenementContenuCahierDeTextes.affecterProgressionAuCdT:
-				_affecterProgressionAuCdT.call(this, false);
+			case EGenreEvenementContenuCahierDeTextes_1
+				.EGenreEvenementContenuCahierDeTextes.affecterProgressionAuCdT:
+				this._affecterProgressionAuCdT(false);
 				break;
-			case EGenreEvenementContenuCahierDeTextes.poursuivreCoursPrecedent: {
-				const lNewContenu = UtilitaireSaisieCDT.getCopieContenuCoursPrecedent(
-					this.listeCDTsPrecedents,
-				);
+			case EGenreEvenementContenuCahierDeTextes_1
+				.EGenreEvenementContenuCahierDeTextes.poursuivreCoursPrecedent: {
+				const lNewContenu =
+					UtilitaireSaisieCDT_1.UtilitaireSaisieCDT.getCopieContenuCoursPrecedent(
+						this.listeCDTsPrecedents,
+					);
 				if (lNewContenu) {
 					const lIndice = this.CahierDeTextes.listeContenus.count() - 1;
 					const lElementVide = this.CahierDeTextes.listeContenus.get(lIndice);
@@ -1284,7 +1210,8 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 						this.CahierDeTextes.listeContenus.remove(lIndice);
 					}
 					this.CahierDeTextes.listeContenus.addElement(lNewContenu);
-					this.genreElementSelectionne = EGenreElementCDT.Contenu;
+					this.genreElementSelectionne =
+						Enumere_ElementCDT_1.EGenreElementCDT.Contenu;
 					this.contenuCourant = this.CahierDeTextes.listeContenus.get(
 						this.CahierDeTextes.listeContenus.count() - 1,
 					);
@@ -1301,8 +1228,9 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 				}
 				break;
 			}
-			case EGenreEvenementContenuCahierDeTextes.poursuivreProgression:
-				UtilitaireSaisieCDT.poursuivreProgression({
+			case EGenreEvenementContenuCahierDeTextes_1
+				.EGenreEvenementContenuCahierDeTextes.poursuivreProgression:
+				UtilitaireSaisieCDT_1.UtilitaireSaisieCDT.poursuivreProgression({
 					instance: this,
 					cdt: this.CahierDeTextes,
 					listeCDTsPrecedents: this.listeCDTsPrecedents,
@@ -1310,46 +1238,50 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 						(this.dateCoursSuivantTAF || this.DateTravailAFaire).getTime(),
 					),
 					listeCategories: this.listeCategories,
-					callbackAffectation: _callbackAffectationProgression.bind(this),
+					callbackAffectation: this._callbackAffectationProgression.bind(this),
 				});
 				break;
-			case EGenreEvenementContenuCahierDeTextes.saisieDS:
-			case EGenreEvenementContenuCahierDeTextes.saisieEval:
-				_commandeCreerDevoirOuEval(
-					this,
+			case EGenreEvenementContenuCahierDeTextes_1
+				.EGenreEvenementContenuCahierDeTextes.saisieDS:
+			case EGenreEvenementContenuCahierDeTextes_1
+				.EGenreEvenementContenuCahierDeTextes.saisieEval:
+				this._commandeCreerDevoirOuEval(
 					this.contenuCourant,
-					aGenreEvenement === EGenreEvenementContenuCahierDeTextes.saisieDS
-						? EGenreLienDS.tGL_Devoir
-						: EGenreLienDS.tGL_Evaluation,
+					aGenreEvenement ===
+						EGenreEvenementContenuCahierDeTextes_1
+							.EGenreEvenementContenuCahierDeTextes.saisieDS
+						? Enumere_LienDS_1.EGenreLienDS.tGL_Devoir
+						: Enumere_LienDS_1.EGenreLienDS.tGL_Evaluation,
 				);
 				break;
-			case EGenreEvenementContenuCahierDeTextes.suppressionDocument:
+			case EGenreEvenementContenuCahierDeTextes_1
+				.EGenreEvenementContenuCahierDeTextes.suppressionDocument:
 				this.setEtatSaisie(true);
-				aElement.setEtat(EGenreEtat.Modification);
+				aElement.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 				this.verifierEtatContenu();
 				this.getInstanceContenu().actualiserContenu(
 					this.CahierDeTextes.listeContenus.get(this.indiceElementSelectionne),
 					this.CahierDeTextes.verrouille,
 					this.avecDocumentJoint,
 					this.ContenuPleinEcran,
-					_getOptionsContenuMenuMagique.call(
-						this,
-						this.CahierDeTextes.listeContenus.get(
-							this.indiceElementSelectionne,
-						),
-					),
+					this._getOptionsContenuMenuMagique(),
 				);
 				break;
-			case EGenreEvenementContenuCahierDeTextes.ajouterLienKiosque: {
-				const lFenetre = ObjetFenetre.creerInstanceFenetre(
-					ObjetFenetre_PanierRessourceKiosque,
-					{ pere: this, evenement: _evenementSurFenetreRessourceKiosqueLiens },
+			case EGenreEvenementContenuCahierDeTextes_1
+				.EGenreEvenementContenuCahierDeTextes.ajouterLienKiosque: {
+				const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+					ObjetFenetre_PanierRessourceKiosque_1.ObjetFenetre_PanierRessourceKiosque,
+					{
+						pere: this,
+						evenement: this._evenementSurFenetreRessourceKiosqueLiens,
+					},
 				);
 				lFenetre.setOptions({ avecMultiSelection: true });
 				lFenetre.afficherFenetre();
 				break;
 			}
-			case EGenreEvenementContenuCahierDeTextes.editionTheme:
+			case EGenreEvenementContenuCahierDeTextes_1
+				.EGenreEvenementContenuCahierDeTextes.editionTheme:
 				this.setEtatSaisie(true);
 				break;
 		}
@@ -1364,34 +1296,42 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 			)
 		) {
 			if (this.contenuCourant) {
-				GApplication.getMessage().afficher({
-					type: EGenreBoiteMessage.Confirmation,
-					message: GTraductions.getValeur(
-						"CahierDeTexte.msgConfirmationSupprimerContenu",
-					),
-					callback: this.evenementSurSupprimerContenu.bind(this),
-				});
+				this.applicationSco
+					.getMessage()
+					.afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+						message: ObjetTraduction_1.GTraductions.getValeur(
+							"CahierDeTexte.msgConfirmationSupprimerContenu",
+						),
+						callback: this.evenementSurSupprimerContenu.bind(this),
+					});
 			}
 		}
 	}
 	evenementSurSupprimerContenu(aAccepte) {
-		if (this.contenuCourant && aAccepte === EGenreAction.Valider) {
+		if (
+			this.contenuCourant &&
+			aAccepte === Enumere_Action_1.EGenreAction.Valider
+		) {
 			this.contenuCourant.Libelle = "";
 			this.contenuCourant.descriptif = "";
-			this.contenuCourant.categorie = new ObjetElement("", 0);
-			this.contenuCourant.categorie.setEtat(EGenreEtat.Modification);
+			this.contenuCourant.categorie = new ObjetElement_1.ObjetElement("", 0);
+			this.contenuCourant.categorie.setEtat(
+				Enumere_Etat_1.EGenreEtat.Modification,
+			);
 			this.contenuCourant.estVide = true;
 			for (let i = 0; i < this.contenuCourant.ListePieceJointe.count(); i++) {
 				this.contenuCourant.ListePieceJointe.get(i).setEtat(
-					EGenreEtat.Suppression,
+					Enumere_Etat_1.EGenreEtat.Suppression,
 				);
 			}
-			this.contenuCourant.setEtat(EGenreEtat.Suppression);
+			this.contenuCourant.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 			this.setEtatSaisie(true);
 			if (this.CahierDeTextes.listeContenus.getNbrElementsExistes() === 0) {
 				this.CahierDeTextes.listeContenus.addElement(this._initContenu());
 			}
-			this.genreElementSelectionne = EGenreElementCDT.Contenu;
+			this.genreElementSelectionne =
+				Enumere_ElementCDT_1.EGenreElementCDT.Contenu;
 			this.contenuCourant = this.CahierDeTextes.listeContenus.get(
 				this.CahierDeTextes.listeContenus.count() - 1,
 			);
@@ -1407,64 +1347,95 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		}
 	}
 	evenementTAFDesCours(aGenreEvenement, aElement, aDonneesSupplementaires) {
-		this.genreElementSelectionne = EGenreElementCDT.TravailAFaire;
+		this.genreElementSelectionne =
+			Enumere_ElementCDT_1.EGenreElementCDT.TravailAFaire;
 		this.tafCourant = aElement;
 		this.indiceElementSelectionne = -1;
 		const lThis = this;
 		switch (aGenreEvenement) {
-			case EGenreEvenementTAFCahierDeTextes.fenetreEditeurHTML:
+			case InterfaceListeTAFsCDT_1.EGenreEvenementTAFCahierDeTextes
+				.fenetreEditeurHTML:
 				this.evenementSurBoutonHTML(this.tafCourant.descriptif);
 				break;
-			case EGenreEvenementTAFCahierDeTextes.ajouterDocumentJoint: {
+			case InterfaceListeTAFsCDT_1.EGenreEvenementTAFCahierDeTextes
+				.ajouterDocumentJoint: {
+				const lDonnees = aDonneesSupplementaires;
 				const lEstUneUrl =
-					aDonneesSupplementaires.getGenre &&
-					aDonneesSupplementaires.getGenre() === EGenreDocumentJoint.Url;
+					lDonnees.getGenre &&
+					lDonnees.getGenre() ===
+						Enumere_DocumentJoint_1.EGenreDocumentJoint.Url;
 				let lListeFichiers;
 				let lGenreDocument;
 				if (lEstUneUrl) {
-					const lNouvelleUrl = aDonneesSupplementaires;
-					lListeFichiers = new ObjetListeElements().addElement(lNouvelleUrl);
-					lGenreDocument = EGenreDocumentJoint.Url;
+					const lNouvelleUrl = lDonnees;
+					lListeFichiers =
+						new ObjetListeElements_1.ObjetListeElements().addElement(
+							lNouvelleUrl,
+						);
+					lGenreDocument = Enumere_DocumentJoint_1.EGenreDocumentJoint.Url;
 				} else {
-					const lElementFichierUploade = aDonneesSupplementaires;
+					const lElementFichierUploade = lDonnees;
 					lListeFichiers = lElementFichierUploade
 						? lElementFichierUploade.listeFichiers
 						: null;
-					lGenreDocument = EGenreDocumentJoint.Fichier;
+					lGenreDocument = Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier;
 				}
-				_ajouterListeFichiers.call(this, lListeFichiers, lGenreDocument);
+				this._ajouterListeFichiers(lListeFichiers, lGenreDocument);
 				break;
 			}
-			case EGenreEvenementTAFCahierDeTextes.editionDocumentJoint: {
+			case InterfaceListeTAFsCDT_1.EGenreEvenementTAFCahierDeTextes
+				.editionDocumentJoint: {
 				const lGenreFichier = aDonneesSupplementaires;
 				this.evenementSurBoutonDocumentJoint(lGenreFichier);
 				break;
 			}
-			case EGenreEvenementTAFCahierDeTextes.ajouterDocumentDepuisCloud: {
+			case InterfaceListeTAFsCDT_1.EGenreEvenementTAFCahierDeTextes
+				.ajouterDocumentDepuisCloud: {
 				let lParams = {
-					callbaskEvenement: function (aLigne) {
+					callbaskEvenement: (aLigne) => {
 						if (aLigne >= 0) {
-							const lService = GEtatUtilisateur.listeCloud.get(aLigne);
+							const lService = this.etatUtilisateur.listeCloud.get(aLigne);
 							lThis.evenementSurBoutonDocumentJoint(
-								EGenreDocumentJoint.Cloud,
+								Enumere_DocumentJoint_1.EGenreDocumentJoint.Cloud,
 								lService,
 							);
 						}
 					},
-					modeGestion: UtilitaireGestionCloudEtPDF.modeGestion.Cloud,
+					modeGestion:
+						UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF
+							.modeGestion.Cloud,
 				};
-				UtilitaireGestionCloudEtPDF.creerFenetreGestion(lParams);
+				UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF.creerFenetreGestion(
+					lParams,
+				);
 				break;
 			}
-			case EGenreEvenementTAFCahierDeTextes.ajouterLienKiosque: {
-				const lFenetre = ObjetFenetre.creerInstanceFenetre(
-					ObjetFenetre_PanierRessourceKiosque,
-					{ pere: this, evenement: _evenementSurFenetreRessourceKiosqueLiens },
+			case InterfaceListeTAFsCDT_1.EGenreEvenementTAFCahierDeTextes
+				.ouvrirCloudENEJ: {
+				const lService = this.etatUtilisateur.getCloudENEJ();
+				lThis.evenementSurBoutonDocumentJoint(
+					Enumere_DocumentJoint_1.EGenreDocumentJoint.Cloud,
+					lService,
+				);
+				break;
+			}
+			case InterfaceListeTAFsCDT_1.EGenreEvenementTAFCahierDeTextes
+				.ajouterLienKiosque: {
+				const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+					ObjetFenetre_PanierRessourceKiosque_1.ObjetFenetre_PanierRessourceKiosque,
+					{
+						pere: this,
+						evenement: this._evenementSurFenetreRessourceKiosqueLiens,
+					},
 				);
 				lFenetre.setOptions({ avecMultiSelection: true });
 				lFenetre.afficherFenetre();
 				break;
 			}
+			case InterfaceListeTAFsCDT_1.EGenreEvenementTAFCahierDeTextes
+				.clicBoutonZoom:
+				this.evenementSurBoutonPleinEcranTAF();
+				break;
 			default:
 				break;
 		}
@@ -1473,7 +1444,8 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		this.setFocusIdCourant();
 	}
 	getListeDocumentsJointsSelonContexte(aGenreElementSelectionne) {
-		return aGenreElementSelectionne === EGenreElementCDT.Contenu
+		return aGenreElementSelectionne ===
+			Enumere_ElementCDT_1.EGenreElementCDT.Contenu
 			? this.contenuCourant.ListePieceJointe
 			: this.tafCourant.ListePieceJointe;
 	}
@@ -1481,42 +1453,43 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		const lListeDocumentsJointsActive =
 			this.getListeDocumentsJointsSelonContexte(this.genreElementSelectionne);
 		const lGenreFentrePJ =
-			this.genreElementSelectionne === EGenreElementCDT.Contenu
-				? EGenreFenetreDocumentJoint.CahierDeTextes
-				: EGenreFenetreDocumentJoint.TravailAFaire;
-		if (AGenre !== EGenreDocumentJoint.Cloud) {
+			this.genreElementSelectionne ===
+			Enumere_ElementCDT_1.EGenreElementCDT.Contenu
+				? EGenreFenetreDocumentJoint_1.EGenreFenetreDocumentJoint.CahierDeTextes
+				: EGenreFenetreDocumentJoint_1.EGenreFenetreDocumentJoint.TravailAFaire;
+		if (AGenre !== Enumere_DocumentJoint_1.EGenreDocumentJoint.Cloud) {
 			this.getInstance(this.IdentEditionPieceJointe).afficherFenetrePJ({
 				listePJTot: this.ListeDocumentsJoints,
 				listePJContexte: lListeDocumentsJointsActive,
 				genreFenetrePJ: lGenreFentrePJ,
 				genrePJ: aInfoSelection
 					? aInfoSelection.meta.filetype === "image"
-						? EGenreDocumentJoint.Fichier
-						: EGenreDocumentJoint.Url
+						? Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier
+						: Enumere_DocumentJoint_1.EGenreDocumentJoint.Url
 					: AGenre,
-				genreRessourcePJ: EGenreRessource.DocumentJoint,
+				genreRessourcePJ: Enumere_Ressource_1.EGenreRessource.DocumentJoint,
 				avecFiltre: { date: true, classeMatiere: true },
 				listePeriodes: this.ListePeriodes,
 				dateCours: this.DateCoursDeb,
 				contenuCourant: this.contenuCourant,
 				tafCourant: this.tafCourant,
-				avecThemes: GApplication.parametresUtilisateur.get(
+				avecThemes: this.applicationSco.parametresUtilisateur.get(
 					"avecGestionDesThemes",
 				),
 				optionsSelecFile: {
 					multiple: !aInfoSelection,
-					maxSize: GApplication.droits.get(
-						TypeDroits.cahierDeTexte.tailleMaxPieceJointe,
+					maxSize: this.applicationSco.droits.get(
+						ObjetDroitsPN_1.TypeDroits.cahierDeTexte.tailleMaxPieceJointe,
 					),
 				},
 				modeLien: !!aInfoSelection,
 				surValiderAvantFermer: !!aInfoSelection
-					? function () {
+					? () => {
 							const lURL = this.getInstance(
 								this.IdentEditionPieceJointe,
 							).getLien();
 							if (this.instanceFenetreHTML) {
-								const lEditor = TinyInit.get(
+								const lEditor = TinyInit_1.TinyInit.get(
 									this.instanceFenetreHTML.idEditeurHTML,
 								);
 								if (lEditor) {
@@ -1527,7 +1500,7 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 								this.IdentEditionPieceJointe,
 							).getEltLien();
 							this.ajouterDocAuContexte(lEltPJDeListeTot, true);
-						}.bind(this)
+						}
 					: null,
 				validationAuto: !!aInfoSelection ? this.valider.bind(this) : null,
 			});
@@ -1539,7 +1512,7 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 	}
 	selectionnerCours(ACours, AGenreSelectionSemaine, aAvecEvenementSelection) {
 		if (ACours) {
-			GEtatUtilisateur.setNavigationCours(ACours);
+			this.etatUtilisateur.setNavigationCours(ACours);
 			this.Cours = ACours;
 			const LNumeroSemaine = this.Cours.NumeroSemaine;
 			if (
@@ -1581,24 +1554,29 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 	) {
 		if (AIsToucheSelection) {
 			this.setIdCourant(
-				this.Instances[this.IdentGrille].getInstanceGrille().IdPremierElement,
+				this.getInstance(this.IdentGrille).getInstanceGrille().IdPremierElement,
 			);
 			this.setFocusIdCourant();
 		} else {
-			this.setIdCourant(this.Instances[this.IdentCalendrier].IdPremierElement);
+			this.setIdCourant(
+				this.getInstance(this.IdentCalendrier).IdPremierElement,
+			);
 			this.setEtatIdCourant(false);
-			GEtatUtilisateur.setSemaineSelectionnee(
+			this.etatUtilisateur.setSemaineSelectionnee(
 				(this.NumeroSemaine = ANumeroSemaine),
 			);
-			if (AGenreDomaineInformation === EGenreDomaineInformation.Feriee) {
+			if (
+				AGenreDomaineInformation ===
+				Enumere_DomaineInformation_1.EGenreDomaineInformation.Feriee
+			) {
 				this.setActif(false);
-				GHtml.setDisplay(this.Nom + "_Page", false);
-				GHtml.setDisplay(this.Nom + "_Page_Message", true);
+				ObjetHtml_1.GHtml.setDisplay(this.Nom + "_Page", false);
+				ObjetHtml_1.GHtml.setDisplay(this.Nom + "_Page_Message", true);
 				this.setEtatIdCourant(true);
 			} else {
-				GHtml.setDisplay(this.Nom + "_Page_Message", false);
-				GHtml.setDisplay(this.Nom + "_Page", true);
-				new ObjetRequetePageEmploiDuTemps(
+				ObjetHtml_1.GHtml.setDisplay(this.Nom + "_Page_Message", false);
+				ObjetHtml_1.GHtml.setDisplay(this.Nom + "_Page", true);
+				new ObjetRequetePageEmploiDuTemps_1.ObjetRequetePageEmploiDuTemps(
 					this,
 					this.actionSurCalendrier,
 				).lancerRequete({ numeroSemaine: this.NumeroSemaine });
@@ -1618,7 +1596,7 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 			return;
 		}
 		let lActif = aDepuisModeLien ? true : aEltDocDeListeTot.getActif();
-		let lDocumentJoint = new ObjetElement(
+		let lDocumentJoint = new ObjetElement_1.ObjetElement(
 			aEltDocDeListeTot.getLibelle(),
 			aEltDocDeListeTot.getNumero(),
 			aEltDocDeListeTot.getGenre(),
@@ -1627,26 +1605,27 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		);
 		lDocumentJoint.url = aEltDocDeListeTot.url;
 		lDocumentJoint.estUnLienInterne = aDepuisModeLien;
-		lDocumentJoint.setEtat(EGenreEtat.Creation);
+		lDocumentJoint.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 		const lGenreDocJointEstDeContenu =
-			this.genreElementSelectionne === EGenreElementCDT.Contenu;
+			this.genreElementSelectionne ===
+			Enumere_ElementCDT_1.EGenreElementCDT.Contenu;
 		if (lGenreDocJointEstDeContenu) {
 			if (
 				this.contenuCourant.Numero === null ||
 				this.contenuCourant.Numero === undefined
 			) {
-				this.contenuCourant.setEtat(EGenreEtat.Creation);
+				this.contenuCourant.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 			} else {
-				this.contenuCourant.setEtat(EGenreEtat.Modification);
+				this.contenuCourant.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 			}
 		} else {
 			if (
 				this.tafCourant.Numero === null ||
 				this.tafCourant.Numero === undefined
 			) {
-				this.tafCourant.setEtat(EGenreEtat.Creation);
+				this.tafCourant.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 			} else {
-				this.tafCourant.setEtat(EGenreEtat.Modification);
+				this.tafCourant.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 			}
 		}
 		lListeDocJointsSelonContexte.addElement(lDocumentJoint);
@@ -1660,7 +1639,8 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		const lListeDocJointsSelonContexte =
 			this.getListeDocumentsJointsSelonContexte(this.genreElementSelectionne);
 		const lGenreDocJointEstDeContenu =
-			this.genreElementSelectionne === EGenreElementCDT.Contenu;
+			this.genreElementSelectionne ===
+			Enumere_ElementCDT_1.EGenreElementCDT.Contenu;
 		for (let I = 0; I < this.ListeDocumentsJoints.count(); I++) {
 			let lDocumentJoint = lListeDocJointsSelonContexte.getElementParNumero(
 				this.ListeDocumentsJoints.getNumero(I),
@@ -1670,24 +1650,26 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 				this.ListeDocumentsJoints.existe(I);
 			if (lDocumentJoint) {
 				if (!lActif) {
-					lDocumentJoint.setEtat(EGenreEtat.Suppression);
+					lDocumentJoint.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 					if (lGenreDocJointEstDeContenu) {
 						if (
 							this.contenuCourant.Numero === null ||
 							this.contenuCourant.Numero === undefined
 						) {
-							this.contenuCourant.setEtat(EGenreEtat.Creation);
+							this.contenuCourant.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 						} else {
-							this.contenuCourant.setEtat(EGenreEtat.Modification);
+							this.contenuCourant.setEtat(
+								Enumere_Etat_1.EGenreEtat.Modification,
+							);
 						}
 					} else {
 						if (
 							this.tafCourant.Numero === null ||
 							this.tafCourant.Numero === undefined
 						) {
-							this.tafCourant.setEtat(EGenreEtat.Creation);
+							this.tafCourant.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 						} else {
-							this.tafCourant.setEtat(EGenreEtat.Modification);
+							this.tafCourant.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 						}
 					}
 				}
@@ -1704,7 +1686,7 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 							this.ListeDocumentsJoints.getNumero(I),
 						);
 					if (lTempPJ) {
-						lTempPJ.setEtat(EGenreEtat.Suppression);
+						lTempPJ.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 						lMAJ = true;
 					}
 				}
@@ -1719,7 +1701,7 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 						this.ListeDocumentsJoints.getNumero(I),
 					);
 					if (lTempPJ) {
-						lTempPJ.setEtat(EGenreEtat.Suppression);
+						lTempPJ.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 						lMAJ = true;
 					}
 				}
@@ -1733,10 +1715,7 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 				this.CahierDeTextes.verrouille,
 				this.avecDocumentJoint,
 				this.ContenuPleinEcran,
-				_getOptionsContenuMenuMagique.call(
-					this,
-					this.CahierDeTextes.listeContenus.get(this.indiceElementSelectionne),
-				),
+				this._getOptionsContenuMenuMagique(),
 			);
 		} else {
 			this.actualiserTAF();
@@ -1769,7 +1748,7 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 				lListeCDTaSupprimer = this.listeCDT.getListeElements((aElement) => {
 					return !aElement.existe();
 				});
-				new ObjetRequeteSaisieRattachementCDT(
+				new ObjetRequeteSaisieRattachementCDT_1.ObjetRequeteSaisieRattachementCDT(
 					this,
 					this._actionSurRequeteSaisieRattachementCDT,
 				).lancerRequete({
@@ -1782,7 +1761,7 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 				break;
 			case 2:
 				this.paramFicheCDT = { pourCDT: true, cahierDeTextes: aCahierDeTextes };
-				new ObjetRequeteFicheCDT(
+				new ObjetRequeteFicheCDT_1.ObjetRequeteFicheCDT(
 					this,
 					this._actionSurRequeteFicheCDT.bind(this),
 				).lancerRequete(this.paramFicheCDT);
@@ -1792,7 +1771,7 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 					return !aElement.existe();
 				});
 				if (lListeCDTaSupprimer.count() > 0) {
-					new ObjetRequeteSaisieRattachementCDT(
+					new ObjetRequeteSaisieRattachementCDT_1.ObjetRequeteSaisieRattachementCDT(
 						this,
 						this._actionSurRequeteSaisieRattachementCDT,
 					).lancerRequete({
@@ -1808,24 +1787,24 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		this.recupererDonnees(false);
 	}
 	_actionSurRequeteFicheCDT(aGenreAffichageEDT, aCahierDeTextes) {
-		TUtilitaireCDT.afficheFenetreDetail(
+		UtilitaireCDT_1.TUtilitaireCDT.afficheFenetreDetail(
 			this,
 			{
 				cahiersDeTextes: aCahierDeTextes,
 				genreAffichage: aGenreAffichageEDT,
-				gestionnaire: GestionnaireBlocCDT,
+				gestionnaire: GestionnaireBlocCDT_1.GestionnaireBlocCDT,
 			},
 			{ evenementSurBlocCDT: this.evenementSurBlocCDT },
 		);
 	}
 	evenementSurBlocCDT(aObjet, aElement, aGenreEvnt, aParam) {
 		switch (aGenreEvnt) {
-			case EGenreBtnActionBlocCDT.executionQCM:
-			case EGenreBtnActionBlocCDT.voirQCM:
+			case GestionnaireBlocCDT_1.EGenreBtnActionBlocCDT.executionQCM:
+			case GestionnaireBlocCDT_1.EGenreBtnActionBlocCDT.voirQCM:
 				this.surExecutionQCMContenu(aParam.event, aElement);
 				break;
-			case EGenreBtnActionBlocCDT.detailTAF:
-				ObjetFenetre_ListeTAFFaits.ouvrir(
+			case GestionnaireBlocCDT_1.EGenreBtnActionBlocCDT.detailTAF:
+				ObjetFenetre_ListeTAFFaits_1.ObjetFenetre_ListeTAFFaits.ouvrir(
 					{ pere: this, evenement: this._evenementFenetreTAFARendre },
 					aElement,
 				);
@@ -1835,8 +1814,11 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		}
 	}
 	_evenementFenetreTAFARendre(aGenreBouton) {
-		if (aGenreBouton === TypeBoutonFenetreTAFFaits.Fermer) {
-			new ObjetRequeteFicheCDT(
+		if (
+			aGenreBouton ===
+			ObjetFenetre_ListeTAFFaits_1.TypeBoutonFenetreTAFFaits.Fermer
+		) {
+			new ObjetRequeteFicheCDT_1.ObjetRequeteFicheCDT(
 				this,
 				this._actionSurRequeteFicheCDT.bind(this),
 			).lancerRequete(this.paramFicheCDT);
@@ -1844,12 +1826,16 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 	}
 	initFenetreURLKiosque(aInstance) {
 		aInstance.setOptionsFenetre({
-			titre: GTraductions.getValeur("CahierDeTexte.kiosque.fenetre.titre"),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.kiosque.fenetre.titre",
+			),
 			largeur: 600,
 			hauteur: 150,
 			listeBoutons: [
-				GTraductions.getValeur("CahierDeTexte.kiosque.fenetre.boutonAnnuler"),
-				GTraductions.getValeur(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"CahierDeTexte.kiosque.fenetre.boutonAnnuler",
+				),
+				ObjetTraduction_1.GTraductions.getValeur(
 					"CahierDeTexte.kiosque.fenetre.boutonEnregistrer",
 				),
 			],
@@ -1861,70 +1847,76 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		} else {
 			aListeRessourcesEdit.setSerialisateurJSON({
 				ignorerEtatsElements: true,
-				methodeSerialisation: _serialisationDonnees.bind(this),
+				methodeSerialisation: this._serialisationDonnees.bind(this),
 			});
-			Requetes(
-				"SaisiePreferencesRessourcesKiosque",
-				this,
-				this.actionApresSaisie,
-			).lancerRequete({
-				listeRessources: aListeRessourcesEdit,
-				cours: this.Cours,
-				numeroSemaine: this.NumeroSemaine,
-			});
+			new ObjetRequeteSaisiePreferencesRessourcesKiosque(this)
+				.lancerRequete({
+					listeRessources: aListeRessourcesEdit,
+					cours: this.Cours,
+					numeroSemaine: this.NumeroSemaine,
+				})
+				.then((aReponse) => {
+					this.listeRessources = aReponse.JSONReponse.listeRessources;
+					this.setDonneesKiosque();
+				});
 		}
-	}
-	actionApresSaisie(aJSON) {
-		this.listeRessources = aJSON.JSONReponse.listeRessources;
-		this.setDonneesKiosque();
 	}
 	_estPublieAuto() {
 		return (
 			new Date() >
-			(GApplication.parametresUtilisateurBase.optionPublicationCDT ===
-			TypeOptionPublicationCDT.OPT_PublicationDebutCours
+			(this.applicationSco.parametresUtilisateurBase.optionPublicationCDT ===
+			TypeOptionPublicationCDT_1.TypeOptionPublicationCDT
+				.OPT_PublicationDebutCours
 				? this.DateCoursDeb
 				: this.DateCoursFin)
 		);
 	}
 	evenementSurGrille(aParam) {
-		const lParam = { genre: null, id: "", cours: null, date: 0, genreImage: 0 };
+		const lParam = {
+			genre: null,
+			id: "",
+			cours: null,
+			date: null,
+			genreImage: 0,
+		};
 		$.extend(lParam, aParam);
 		switch (lParam.genre) {
-			case EGenreEvenementEDT.SurImage: {
+			case Enumere_EvenementEDT_1.EGenreEvenementEDT.SurImage: {
 				if (aParam.genreImage === 2) {
 					this.paramFicheCDT = {
 						pourTAF: true,
 						cours: lParam.cours,
 						numeroSemaine: this.NumeroSemaine,
 					};
-					new ObjetRequeteFicheCDT(
+					new ObjetRequeteFicheCDT_1.ObjetRequeteFicheCDT(
 						this,
 						this._actionSurRequeteFicheCDT.bind(this),
 					).lancerRequete(this.paramFicheCDT);
 				}
 				break;
 			}
-			case EGenreEvenementEDT.SurMenuContextuel:
-			case EGenreEvenementEDT.SurCours:
-				GEtatUtilisateur.setNavigationCours(lParam.cours);
+			case Enumere_EvenementEDT_1.EGenreEvenementEDT.SurMenuContextuel:
+			case Enumere_EvenementEDT_1.EGenreEvenementEDT.SurCours:
+				this.etatUtilisateur.setNavigationCours(lParam.cours);
 				if (
-					lParam.genre === EGenreEvenementEDT.SurMenuContextuel &&
+					lParam.genre ===
+						Enumere_EvenementEDT_1.EGenreEvenementEDT.SurMenuContextuel &&
 					this.Cours &&
 					this.Cours.getNumero() === lParam.cours.getNumero()
 				) {
 					this.moduleSaisieCours
 						.remplirCoursInfoModifierMatiereCoursPromise(lParam.cours)
 						.then(() => {
-							const lMenuContextuel = ObjetMenuContextuel.afficher({
-								pere: this,
-								evenement: _evenementSurMenuContextuel,
-								initCommandes: _initialiserMenuContextuel.bind(
-									this,
-									lParam.cours,
-								),
-								id: lParam.id,
-							});
+							const lMenuContextuel =
+								ObjetMenuContextuel_1.ObjetMenuContextuel.afficher({
+									pere: this,
+									evenement: this._evenementSurMenuContextuel,
+									initCommandes: this._initialiserMenuContextuel.bind(
+										this,
+										lParam.cours,
+									),
+									id: lParam.id,
+								});
 							this.setIdCourant(lMenuContextuel.IdPremierElement);
 							this.setFocusIdCourant();
 						});
@@ -1943,23 +1935,16 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		if (!this.Cours.utilisable) {
 			this.setActif(
 				false,
-				GChaine.replaceRCToHTML(
-					GTraductions.getValeur(
+				ObjetChaine_1.GChaine.replaceRCToHTML(
+					ObjetTraduction_1.GTraductions.getValeur(
 						"CahierDeTexte.CoursNonUtilisableDansPNParCDT",
 					),
 				),
 			);
 			return;
 		} else {
-			this.recupererCahierDeTextes(ASurActionClavier);
+			this.recupererCahierDeTextes();
 		}
-	}
-	getPageImpression() {
-		return {
-			titre1: this.LibelleImpression1,
-			titre2: this.LibelleImpression2,
-			contenu: this.composeImpression(),
-		};
 	}
 	evenementSurAjoutContenu() {
 		if (
@@ -1967,7 +1952,8 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 			!this.CahierDeTextes.verrouille
 		) {
 			this.CahierDeTextes.listeContenus.addElement(this._initContenu());
-			this.genreElementSelectionne = EGenreElementCDT.Contenu;
+			this.genreElementSelectionne =
+				Enumere_ElementCDT_1.EGenreElementCDT.Contenu;
 			this.contenuCourant = this.CahierDeTextes.listeContenus.get(
 				this.CahierDeTextes.listeContenus.count() - 1,
 			);
@@ -1992,8 +1978,8 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		this.getInstance(this.identFenetreRattachementCDT).setBoutonLibelle(
 			0,
 			this.avecDrag
-				? GTraductions.getValeur("principal.fermer")
-				: GTraductions.getValeur("principal.annuler"),
+				? ObjetTraduction_1.GTraductions.getValeur("principal.fermer")
+				: ObjetTraduction_1.GTraductions.getValeur("principal.annuler"),
 		);
 		this.getInstance(this.identFenetreRattachementCDT).setDonnees(
 			aListeCDT,
@@ -2006,14 +1992,14 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 	}
 	_verifierListeCDTAAffecter(aListeCDT) {
 		if (aListeCDT.getNbrElementsExistes() === 0) {
-			GEtatUtilisateur.existeCDTsDetaches = false;
+			this.etatUtilisateur.existeCDTsDetaches = false;
 		}
 	}
 	surExecutionQCMContenu(aEvent, aExecutionQCM) {
 		if (aEvent) {
 			aEvent.stopImmediatePropagation();
 		}
-		UtilitaireQCMPN.executerQCM(
+		UtilitaireQCMPN_1.UtilitaireQCMPN.executerQCM(
 			this.getInstance(this.identFenetreVisuQCM),
 			aExecutionQCM,
 			true,
@@ -2022,15 +2008,21 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 	evenementSurVisuEleve() {}
 	evenementSurBoutonPleinEcranTAF() {
 		this.TAFPleinEcran = !this.TAFPleinEcran;
-		GHtml.setDisplay(this.Nom + "_ZoneGrille", !this.TAFPleinEcran);
-		GHtml.setDisplay(this.Nom + "_ZoneContenu", !this.TAFPleinEcran);
-		GHtml.setDisplay(
+		this.getInstance(this.identListeTAFs).setInterfaceEnPleinEcran(
+			this.TAFPleinEcran,
+		);
+		ObjetHtml_1.GHtml.setDisplay(this.Nom + "_ZoneGrille", !this.TAFPleinEcran);
+		ObjetHtml_1.GHtml.setDisplay(
+			this.Nom + "_ZoneContenu",
+			!this.TAFPleinEcran,
+		);
+		ObjetHtml_1.GHtml.setDisplay(
 			this.Nom + "_ZoneElementsProgramme",
 			!this.TAFPleinEcran && this.avecElementsProgramme,
 		);
-		GHtml.setDisplay(this.Nom + "_listePrec", !this.TAFPleinEcran);
-		GHtml.setDisplay(this.Nom + "_P5", !this.TAFPleinEcran);
-		GHtml.setDisplay(
+		ObjetHtml_1.GHtml.setDisplay(this.Nom + "_listePrec", !this.TAFPleinEcran);
+		ObjetHtml_1.GHtml.setDisplay(this.Nom + "_P5", !this.TAFPleinEcran);
+		ObjetHtml_1.GHtml.setDisplay(
 			this.getInstance(this.IdentCalendrier).getNom(),
 			!this.TAFPleinEcran,
 		);
@@ -2038,7 +2030,7 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		if (this.TAFPleinEcran) {
 			this.actualiser(false);
 		} else {
-			_restaurationEDTEnAttente.call(this);
+			this._restaurationEDTEnAttente();
 			this.actualiser(false);
 		}
 		GNavigateur.surResize();
@@ -2046,15 +2038,21 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 	}
 	evenementSurBoutonPleinEcranContenu() {
 		this.ContenuPleinEcran = !this.ContenuPleinEcran;
-		GHtml.setDisplay(this.Nom + "_ZoneGrille", !this.ContenuPleinEcran);
-		GHtml.setDisplay(this.Nom + "_P4", !this.ContenuPleinEcran);
-		GHtml.setDisplay(this.Nom + "_P5", !this.ContenuPleinEcran);
-		GHtml.setDisplay(this.Nom + "_listePrec", !this.ContenuPleinEcran);
-		GHtml.setDisplay(
+		ObjetHtml_1.GHtml.setDisplay(
+			this.Nom + "_ZoneGrille",
+			!this.ContenuPleinEcran,
+		);
+		ObjetHtml_1.GHtml.setDisplay(this.Nom + "_P4", !this.ContenuPleinEcran);
+		ObjetHtml_1.GHtml.setDisplay(this.Nom + "_P5", !this.ContenuPleinEcran);
+		ObjetHtml_1.GHtml.setDisplay(
+			this.Nom + "_listePrec",
+			!this.ContenuPleinEcran,
+		);
+		ObjetHtml_1.GHtml.setDisplay(
 			this.Nom + "_ZoneElementsProgramme",
 			!this.ContenuPleinEcran && this.avecElementsProgramme,
 		);
-		GHtml.setDisplay(
+		ObjetHtml_1.GHtml.setDisplay(
 			this.getInstance(this.IdentCalendrier).getNom(),
 			!this.ContenuPleinEcran,
 		);
@@ -2062,22 +2060,21 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		if (this.ContenuPleinEcran) {
 			this.actualiser(false);
 		} else {
-			_restaurationEDTEnAttente.call(this);
+			this._restaurationEDTEnAttente();
 			this.actualiser(false);
 		}
 		GNavigateur.surResize();
 		this.surResizeInterface();
 	}
 	_actualiserVisa() {
-		GHtml.setHtml(this.idContenu, this.getLibelleContenus(this.Cours));
-		GHtml.setHtml(
-			this.idTravailAFaire,
-			GTraductions.getValeur("CahierDeTexte.travailPersoAFaire"),
+		ObjetHtml_1.GHtml.setHtml(
+			this.idContenu,
+			this.getLibelleContenus(this.Cours),
 		);
 	}
 	_actualiserVisibilitePublication() {
 		const lVisible = this.CahierDeTextes.existeNumero();
-		GStyle.setVisible(this.idPublieContenu, lVisible);
+		ObjetStyle_1.GStyle.setVisible(this.idPublieContenu, lVisible);
 		this.$refreshSelf();
 	}
 	_changementEtatSaisie(AEtat) {
@@ -2086,9 +2083,9 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 				this.CahierDeTextes.Numero === null ||
 				this.CahierDeTextes.Numero === undefined
 			) {
-				this.CahierDeTextes.setEtat(EGenreEtat.Creation);
+				this.CahierDeTextes.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 			} else {
-				this.CahierDeTextes.setEtat(EGenreEtat.Modification);
+				this.CahierDeTextes.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 			}
 		} else {
 			this.indiceElementSelectionne = -1;
@@ -2098,13 +2095,16 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		}
 	}
 	setEtatSaisie(AEtat) {
-		Invocateur.evenement(ObjetInvocateur.events.etatSaisie, AEtat);
+		Invocateur_1.Invocateur.evenement(
+			Invocateur_1.ObjetInvocateur.events.etatSaisie,
+			AEtat,
+		);
 		if (AEtat) {
 			this._actualiserVisibilitePublication();
 		}
 	}
 	actionSurCalendrier(aParam) {
-		GEtatUtilisateur.existeCDTsDetaches = aParam.existeCDTsDetaches;
+		this.etatUtilisateur.existeCDTsDetaches = aParam.existeCDTsDetaches;
 		this.setEtatSaisie(false);
 		this.utilLienBtns.actualiser(false);
 		if (aParam.message !== null && aParam.message !== undefined) {
@@ -2117,12 +2117,13 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 					const lElementContenu = lElementCours.ListeContenus.get(J);
 					const lGenre = lElementContenu.getGenre();
 					if (
-						lGenre === EGenreRessource.Matiere ||
-						lGenre === EGenreRessource.Classe ||
-						lGenre === EGenreRessource.Groupe ||
-						lGenre === EGenreRessource.PartieDeClasse
+						lGenre === Enumere_Ressource_1.EGenreRessource.Matiere ||
+						lGenre === Enumere_Ressource_1.EGenreRessource.Classe ||
+						lGenre === Enumere_Ressource_1.EGenreRessource.Groupe ||
+						lGenre === Enumere_Ressource_1.EGenreRessource.PartieDeClasse
 					) {
-						lElementContenu.Visible = lGenre !== EGenreRessource.Matiere;
+						lElementContenu.Visible =
+							lGenre !== Enumere_Ressource_1.EGenreRessource.Matiere;
 					} else {
 						lElementContenu.Visible = false;
 					}
@@ -2131,79 +2132,93 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 			this.listeCours = aParam.listeCours;
 			if (!this.TAFPleinEcran) {
 				this.getInstance(this.IdentGrille).setDonnees({
-					numeroSemaine: GEtatUtilisateur.getSemaineSelectionnee(),
+					numeroSemaine: this.etatUtilisateur.getSemaineSelectionnee(),
 					listeCours: this.listeCours,
-					avecCoursAnnule: GEtatUtilisateur.getAvecCoursAnnule(),
+					avecCoursAnnule: this.etatUtilisateur.getAvecCoursAnnule(),
 				});
 			} else {
 				this.actualisationEDTAttente = true;
 			}
-			if (GEtatUtilisateur._coursASelectionner) {
+			if (this.etatUtilisateur._coursASelectionner) {
 				if (this.listeCours) {
 					this.Cours = this.listeCours.getElementParElement(
-						GEtatUtilisateur._coursASelectionner,
+						this.etatUtilisateur._coursASelectionner,
 					);
 				}
-				delete GEtatUtilisateur._coursASelectionner;
+				delete this.etatUtilisateur._coursASelectionner;
 			}
 			this.selectionnerCours(this.Cours, EGenreSelectionSemaine.Sans);
 		}
 	}
 	actionSurRecupererDonnees(aParam) {
 		this.avecDocumentJoint = [];
-		this.avecDocumentJoint[EGenreDocumentJoint.Fichier] =
-			aParam.PublierDocuments;
-		this.avecDocumentJoint[EGenreDocumentJoint.Url] = aParam.PublierUrl;
-		this.avecDocumentJoint[EGenreDocumentJoint.Cloud] = aParam.PublierCloud;
-		this.avecDocumentJoint[EGenreDocumentJoint.LienKiosque] =
-			aParam.PublierKiosque;
-		this.avecRessourcesGranulaire = GEtatUtilisateur.avecRessourcesGranulaire;
-		this.avecVoirChargeTravail = !!aParam.voirChargeTAF;
+		this.avecDocumentJoint[
+			Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier
+		] = aParam.PublierDocuments;
+		this.avecDocumentJoint[Enumere_DocumentJoint_1.EGenreDocumentJoint.Url] =
+			aParam.PublierUrl;
+		this.avecDocumentJoint[Enumere_DocumentJoint_1.EGenreDocumentJoint.Cloud] =
+			aParam.PublierCloud;
+		this.avecDocumentJoint[
+			Enumere_DocumentJoint_1.EGenreDocumentJoint.LienKiosque
+		] = aParam.PublierKiosque;
+		this.avecRessourcesGranulaire =
+			this.etatUtilisateur.avecRessourcesGranulaire;
+		this.getInstance(this.identListeTAFs).setAffichageBoutonChargeTravail(
+			!!aParam.voirChargeTAF,
+		);
 		this.actionSurRecupererCategories(aParam.ListeCategories);
 		this.ListePeriodes = aParam.ListePeriodes;
 		this.ListeModeles = aParam.ListeModeles;
-		this.ListeModeles.setTri([ObjetTri.init("Libelle")]);
+		this.ListeModeles.setTri([ObjetTri_1.ObjetTri.init("Libelle")]);
 		this.ListeModeles.trier();
 		if (aParam.Domaine) {
-			GEtatUtilisateur.setDomainePresence(
-				GEtatUtilisateur.getMembre(),
+			this.etatUtilisateur.setDomainePresence(
+				this.etatUtilisateur.getMembre(),
 				aParam.Domaine,
 			);
 		}
 		this.getInstance(this.IdentCalendrier).setDomaineInformation(
 			IE.Cycles.getDomaineFerie(),
-			EGenreDomaineInformation.Feriee,
+			Enumere_DomaineInformation_1.EGenreDomaineInformation.Feriee,
 		);
 		this.getInstance(this.IdentCalendrier).setDomaineInformation(
-			GEtatUtilisateur.getDomainePresence(GEtatUtilisateur.getMembre()),
-			EGenreDomaineInformation.AvecContenu,
+			this.etatUtilisateur.getDomainePresence(this.etatUtilisateur.getMembre()),
+			Enumere_DomaineInformation_1.EGenreDomaineInformation.AvecContenu,
 		);
 		this.getInstance(this.IdentCalendrier).setPeriodeDeConsultation(
-			GApplication.droits.get(TypeDroits.cours.domaineConsultationEDT),
+			this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.cours.domaineConsultationEDT,
+			),
 		);
 		this.getInstance(this.IdentCalendrier).setSelection(
-			GEtatUtilisateur.getSemaineSelectionnee(),
+			this.etatUtilisateur.getSemaineSelectionnee(),
 		);
 		this.surResizeInterface();
 	}
 	actionSurRecupererCategories(aListeCategories) {
 		this.listeCategories = aListeCategories;
-		const LElement = new ObjetElement("", 0);
+		const LElement = new ObjetElement_1.ObjetElement("", 0);
 		this.listeCategories.addElement(LElement);
 		this.listeCategories.trier();
 	}
 	actionSurRecupererCahierDeTextes(aCours, aParam) {
 		this.setActif(true);
 		this.listeRessources = aParam.listeRessources;
-		this.listeClasses = aParam.listeClasses;
+		this.getInstance(this.identListeTAFs).setDonneesChargeTravail(
+			aCours,
+			aParam.listeClasses,
+		);
 		this.DateCoursDeb = aParam.DateCoursDeb;
 		this.DateCoursFin = aParam.DateCoursFin;
 		this.DateTravailAFaire = aParam.DateTravailAFaire;
 		this.avecQCMDevoir = aParam.avecQCMDevoir;
-		this.servicesDevoir = aParam.servicesDevoir || new ObjetListeElements();
+		this.servicesDevoir =
+			aParam.servicesDevoir || new ObjetListeElements_1.ObjetListeElements();
 		this.avecQCMEvaluation = aParam.avecQCMEvaluation;
 		this.servicesEvaluation =
-			aParam.servicesEvaluation || new ObjetListeElements();
+			aParam.servicesEvaluation ||
+			new ObjetListeElements_1.ObjetListeElements();
 		this.listeClassesEleves = aParam.listeClassesEleves;
 		this.nombresDEleves = aParam.nombresDEleves;
 		this.CoursPrecedent = aParam.CoursPrecedent;
@@ -2230,15 +2245,18 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		this.setDonneesKiosque();
 		const lCahierDeTextes = aParam.CahierDeTextes;
 		if (!lCahierDeTextes.listeContenus) {
-			lCahierDeTextes.listeContenus = new ObjetListeElements();
+			lCahierDeTextes.listeContenus =
+				new ObjetListeElements_1.ObjetListeElements();
 		}
 		if (lCahierDeTextes.listeContenus.count() === 0) {
 			lCahierDeTextes.listeContenus.addElement(this._initContenu());
 		}
 		this.setDonneesCahierDeTextes(lCahierDeTextes);
+		this.ajoutNouveauTAFInterdit = aParam.ajoutNouveauTAFInterdit;
+		this.messageSurNouveauTAF = aParam.messageSurNouveauTAF;
 		this.setDonneesBandeauDroite(this.Cours, lCahierDeTextes);
 		this.avecElementsProgramme = aParam.avecElementsProgramme;
-		GHtml.setDisplay(
+		ObjetHtml_1.GHtml.setDisplay(
 			this.Nom + "_ZoneElementsProgramme",
 			!this.TAFPleinEcran &&
 				!this.ContenuPleinEcran &&
@@ -2270,8 +2288,8 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		if (AAvecResetCahierDeTextes) {
 			this.CoursPrecedent = null;
 			this.CoursSuivant = null;
-			this.ListeCahierDeTextes = new ObjetListeElements();
-			this.listeRessources = new ObjetListeElements();
+			this.ListeCahierDeTextes = new ObjetListeElements_1.ObjetListeElements();
+			this.listeRessources = new ObjetListeElements_1.ObjetListeElements();
 		}
 		this.setDonneesBandeauDroite(null);
 		this.setDonneesContenus(null);
@@ -2279,10 +2297,10 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		this.setDonneesCahierDeTextes(this._initCahierDeTextes());
 	}
 	_initCahierDeTextes() {
-		return UtilitaireSaisieCDT.initCahierDeTextes();
+		return UtilitaireSaisieCDT_1.UtilitaireSaisieCDT.initCahierDeTextes();
 	}
 	_initContenu() {
-		return UtilitaireSaisieCDT.createContenu();
+		return UtilitaireSaisieCDT_1.UtilitaireSaisieCDT.createContenu();
 	}
 	getLibelleCours(aCours, aCahierDeTexte) {
 		if (!aCours) {
@@ -2291,45 +2309,59 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		const lLibellePublics = this.getLibellePublicsDeCours(aCours);
 		const lMatiere = aCours.ListeContenus.getElementParNumeroEtGenre(
 			null,
-			EGenreRessource.Matiere,
+			Enumere_Ressource_1.EGenreRessource.Matiere,
 		);
 		let lChaine =
-			GDate.formatDate(aCours.DateDuCours, "%JJJJ %JJ %MMM %AAAA") +
+			ObjetDate_1.GDate.formatDate(aCours.DateDuCours, "%JJJJ %JJ %MMM %AAAA") +
 			(lLibellePublics ? " - " + lLibellePublics : "") +
 			(lMatiere ? " - " + lMatiere.getLibelle() : "");
 		if (aCahierDeTexte && aCahierDeTexte.verrouille) {
 			lChaine +=
 				" (" +
-				GTraductions.getValeur("CahierDeTexte.CDTViseEtVerrouille") +
+				ObjetTraduction_1.GTraductions.getValeur(
+					"CahierDeTexte.CDTViseEtVerrouille",
+				) +
 				")";
 		}
-		return GChaine.insecable(lChaine);
+		return ObjetChaine_1.GChaine.insecable(lChaine);
 	}
 	getLibelleContenus(aCours) {
 		if (!aCours) {
-			return GTraductions.getValeur("CahierDeTexte.contenus");
+			return ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.contenus");
 		}
-		const lChaine = GChaine.format(
-			GTraductions.getValeur("CahierDeTexte.contenusDu"),
-			[GDate.formatDate(aCours.DateDuCours, "%JJJJ %JJ %MMM %AAAA")],
+		const lChaine = ObjetChaine_1.GChaine.format(
+			ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.contenusDu"),
+			[
+				ObjetDate_1.GDate.formatDate(
+					aCours.DateDuCours,
+					"%JJJJ %JJ %MMM %AAAA",
+				),
+			],
 		);
-		return GChaine.insecable(lChaine);
+		return ObjetChaine_1.GChaine.insecable(lChaine);
 	}
 	getLibellePublicsDeCours(aCours) {
 		const lPublics = [];
 		if (aCours && aCours.ListeContenus) {
 			aCours.ListeContenus.parcourir((aElement) => {
-				if (aElement.getGenre() === EGenreRessource.Groupe) {
+				if (
+					aElement.getGenre() === Enumere_Ressource_1.EGenreRessource.Groupe
+				) {
 					lPublics.push(aElement.getLibelle());
 				}
 			});
 			aCours.ListeContenus.parcourir((aElement) => {
-				if (aElement.getGenre() === EGenreRessource.Classe) {
+				if (
+					aElement.getGenre() === Enumere_Ressource_1.EGenreRessource.Classe
+				) {
 					lPublics.push(aElement.getLibelle());
 				}
 			});
 			aCours.ListeContenus.parcourir((aElement) => {
-				if (aElement.getGenre() === EGenreRessource.PartieDeClasse) {
+				if (
+					aElement.getGenre() ===
+					Enumere_Ressource_1.EGenreRessource.PartieDeClasse
+				) {
 					lPublics.push(aElement.getLibelle());
 				}
 			});
@@ -2340,7 +2372,9 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		const lTitreBandeau = [];
 		lTitreBandeau.push(this.getLibelleCours(aCours, aCahierDeTexte));
 		if (
-			GApplication.parametresUtilisateur.get("CDT.Commentaire.ActiverSaisie") &&
+			this.applicationSco.parametresUtilisateur.get(
+				"CDT.Commentaire.ActiverSaisie",
+			) &&
 			this.CoursPrecedent &&
 			!!this.CoursPrecedent.noteProchaineSeance &&
 			this.CoursPrecedent.noteProchaineSeance !== ""
@@ -2349,21 +2383,21 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 				`<ie-btnicon ie-model="afficherNoteCoursPrecedent" class="icon_comment i-medium m-left-l"></ie-btnicon>`,
 			);
 		}
-		GHtml.setHtml(this.idBandeauDroite, lTitreBandeau.join(""), {
+		ObjetHtml_1.GHtml.setHtml(this.idBandeauDroite, lTitreBandeau.join(""), {
 			controleur: this.controleur,
 		});
 		if (aCours && aCours.DateDuCours) {
 			const lInstanceDate = this.getInstance(this.IdentDatePublication);
 			lInstanceDate.setParametresFenetre(
-				GParametres.PremierLundi,
-				GParametres.PremiereDate,
+				this.objetParametres.PremierLundi,
+				this.objetParametres.PremiereDate,
 				aCours.DateDuCours,
-				GParametres.JoursOuvres,
+				this.objetParametres.JoursOuvres,
 				null,
-				GParametres.JoursFeries,
+				this.objetParametres.JoursFeries,
 				null,
 			);
-			lInstanceDate.setDonnees();
+			lInstanceDate.setDonnees(undefined);
 			lInstanceDate.setActif(aCahierDeTexte.publie);
 			if (aCahierDeTexte.datePublication) {
 				lInstanceDate.setDonnees(aCahierDeTexte.datePublication);
@@ -2371,7 +2405,7 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		}
 	}
 	setDonneesContenus(aCours) {
-		GHtml.setHtml(this.idContenu, this.getLibelleContenus(aCours));
+		ObjetHtml_1.GHtml.setHtml(this.idContenu, this.getLibelleContenus(aCours));
 	}
 	setDonneesKiosque() {
 		const H = [];
@@ -2398,7 +2432,7 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 				);
 			}
 			H.push(
-				ObjetFenetre_URLKiosque.composeLienRessource.call(
+				ObjetFenetre_URLKiosque_1.ObjetFenetre_URLKiosque.composeLienRessource.call(
 					this,
 					this.listeRessources.get(lIndice),
 					lIndice,
@@ -2418,14 +2452,17 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 				"._surOuvertureURLKiosque (",
 				lListeRessourcesDeCours && lListeRessourcesDeCours.count() === 0,
 				')">',
-				GTraductions.getValeur("CahierDeTexte.xManuelsNumeriques", [
-					lListeRessourcesDeCours.count(),
-				]),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"CahierDeTexte.xManuelsNumeriques",
+					[lListeRessourcesDeCours.count()],
+				),
 				"</div>",
 			);
 		}
 		H.push("</div>");
-		GHtml.setHtml(this.idKiosque, H.join(""), { controleur: this.controleur });
+		ObjetHtml_1.GHtml.setHtml(this.idKiosque, H.join(""), {
+			controleur: this.controleur,
+		});
 	}
 	_surOuvertureURLKiosque(aAvecParametrage) {
 		const lParam = { listeRessources: this.listeRessources };
@@ -2448,13 +2485,13 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		if (!AActif) {
 			const lMessage = aMessage
 				? aMessage
-				: GTraductions.getValeur(
+				: ObjetTraduction_1.GTraductions.getValeur(
 						"CahierDeTexte.SelectionnerUnCoursPourSaisirCDT",
 					);
 			$("#" + lIdMessage.escapeJQ() + " :first").html(lMessage);
 		}
-		GHtml.setDisplay(lIdMessage, !AActif);
-		GHtml.setDisplay(this.Nom + "_ZoneDeSaisie", AActif);
+		ObjetHtml_1.GHtml.setDisplay(lIdMessage, !AActif);
+		ObjetHtml_1.GHtml.setDisplay(this.Nom + "_ZoneDeSaisie", AActif);
 		if (this.Actif !== AActif) {
 			this.reset(true);
 			this.utilLienBtns.actualiser(
@@ -2465,20 +2502,20 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		}
 		this.Actif = AActif;
 		if (this.Actif) {
-			GHtml.setDisplay(
+			ObjetHtml_1.GHtml.setDisplay(
 				this.getInstance(this.identListeCDTPrec).getNom(),
 				this.paramsListeCDTPrec.deploye,
 			);
 		}
-		Invocateur.evenement(
-			ObjetInvocateur.events.activationImpression,
-			EGenreImpression.Aucune,
+		Invocateur_1.Invocateur.evenement(
+			Invocateur_1.ObjetInvocateur.events.activationImpression,
+			Enumere_GenreImpression_1.EGenreImpression.Aucune,
 		);
 	}
 	actualiser(aReconstruire) {
-		Invocateur.evenement(
-			ObjetInvocateur.events.activationImpression,
-			EGenreImpression.Aucune,
+		Invocateur_1.Invocateur.evenement(
+			Invocateur_1.ObjetInvocateur.events.activationImpression,
+			Enumere_GenreImpression_1.EGenreImpression.Aucune,
 		);
 		if (this.CahierDeTextes) {
 			this._actualiserContenu(
@@ -2486,8 +2523,8 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 					? true
 					: aReconstruire,
 			);
-			_actualiserElementsProgramme.call(this);
-			_actualiserListeCDTsPrecedents.call(this);
+			this._actualiserElementsProgramme();
+			this._actualiserListeCDTsPrecedents();
 		}
 		this.surResizeInterface();
 		if (this.CahierDeTextes) {
@@ -2507,15 +2544,15 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 		};
 		if (this.CahierDeTextes.listeContenus.getNbrElementsExistes() === 1) {
 			const lHeightZoom =
-				GPosition.getHeight(this.Nom) -
+				ObjetPosition_1.GPosition.getHeight(this.Nom) -
 				200 -
-				(GApplication.parametresUtilisateur.get("avecGestionDesThemes")
+				(this.applicationSco.parametresUtilisateur.get("avecGestionDesThemes")
 					? 44
 					: 0);
 			const lHeightNormal =
-				GPosition.getHeight(this.Nom) / 2 -
+				ObjetPosition_1.GPosition.getHeight(this.Nom) / 2 -
 				200 -
-				(GApplication.parametresUtilisateur.get("avecGestionDesThemes")
+				(this.applicationSco.parametresUtilisateur.get("avecGestionDesThemes")
 					? 44
 					: 0);
 			$.extend(lParamsAffichage, {
@@ -2543,23 +2580,23 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 			}
 			this.identContenus = [];
 			if (this.CahierDeTextes) {
-				GHtml.setHtml(this.Nom + "_Contenus", "");
+				ObjetHtml_1.GHtml.setHtml(this.Nom + "_Contenus", "");
 				let lHR = false;
 				j = 0;
 				for (i = 0; i < this.CahierDeTextes.listeContenus.count(); i++) {
 					if (this.CahierDeTextes.listeContenus.get(i).existe()) {
 						this.identContenus[j] = this.add(
-							InterfaceContenuCahierDeTextes,
+							InterfaceContenuCahierDeTextes_1.InterfaceContenuCahierDeTextes,
 							this.evenementSurContenu,
 							null,
 						);
 						if (lHR) {
-							GHtml.addHtml(this.Nom + "_Contenus", "<hr>");
+							ObjetHtml_1.GHtml.addHtml(this.Nom + "_Contenus", "<hr>");
 						}
-						GHtml.addHtml(
+						ObjetHtml_1.GHtml.addHtml(
 							this.Nom + "_Contenus",
 							'<div id="' +
-								this.getInstance(this.identContenus[j]).getNom() +
+								this.getNomInstance(this.identContenus[j]) +
 								'"></div>',
 						);
 						this.getInstance(this.identContenus[j]).cahierDeTexteVerrouille =
@@ -2582,7 +2619,8 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 			for (i = 0; i < this.CahierDeTextes.listeContenus.count(); i++) {
 				if (this.CahierDeTextes.listeContenus.get(i).existe()) {
 					if (
-						this.genreElementSelectionne === EGenreElementCDT.Contenu &&
+						this.genreElementSelectionne ===
+							Enumere_ElementCDT_1.EGenreElementCDT.Contenu &&
 						this.indiceElementSelectionne === i
 					) {
 						lIndice = j;
@@ -2596,14 +2634,15 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 						this.CahierDeTextes.verrouille,
 						this.avecDocumentJoint,
 						this.ContenuPleinEcran,
-						_getOptionsContenuMenuMagique.call(this),
+						this._getOptionsContenuMenuMagique(),
 					);
 					j++;
 				}
 			}
 			if (
 				lIndice > -1 &&
-				this.genreElementSelectionne === EGenreElementCDT.Contenu
+				this.genreElementSelectionne ===
+					Enumere_ElementCDT_1.EGenreElementCDT.Contenu
 			) {
 				this.getInstance(this.identContenus[lIndice]).focusSurPremierObjet();
 			}
@@ -2634,6 +2673,8 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 				afficherFenetreHtml: function (aDescriptif, aCallbackValider) {
 					lThis.evenementSurBoutonHTML(aDescriptif, aCallbackValider);
 				},
+				ajoutNouveauTAFInterdit: this.ajoutNouveauTAFInterdit,
+				messageSurNouveauTAF: this.messageSurNouveauTAF,
 			});
 		} else {
 			this.actualiserTAF();
@@ -2644,27 +2685,31 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 			const lElementACouvrir = $(
 				"#" + (this.Nom + "_P3").escapeJQ() + " :first-child",
 			).get(0);
-			const ldivBloquant = GHtml.htmlToDOM(
+			const ldivBloquant = ObjetHtml_1.GHtml.htmlToDOM(
 				'<div class="' +
 					this.classDivBlocTiny +
 					'" ' +
 					'style="position:absolute; z-index:10;' +
 					"top:0;" +
 					"left:0;" +
-					GStyle.composeHeight(GPosition.getHeight(lElementACouvrir) + 2) +
-					GStyle.composeWidth(GPosition.getWidth(lElementACouvrir) + 2) +
-					GStyle.composeOpacite(0.01) +
-					GStyle.composeCouleurFond(GCouleur.blanc) +
+					ObjetStyle_1.GStyle.composeHeight(
+						ObjetPosition_1.GPosition.getHeight(lElementACouvrir) + 2,
+					) +
+					ObjetStyle_1.GStyle.composeWidth(
+						ObjetPosition_1.GPosition.getWidth(lElementACouvrir) + 2,
+					) +
+					ObjetStyle_1.GStyle.composeOpacite(0.01) +
+					ObjetStyle_1.GStyle.composeCouleurFond(GCouleur.blanc) +
 					'">&nbsp;</div>',
 			);
-			GHtml.insererElementDOM(lElementACouvrir, ldivBloquant, true);
+			ObjetHtml_1.GHtml.insererElementDOM(lElementACouvrir, ldivBloquant, true);
 		} else {
 			$("." + this.classDivBlocTiny).remove();
 		}
 	}
 	surResizeInterface() {
 		super.surResizeInterface();
-		_actualiserElementsProgramme.call(this);
+		this._actualiserElementsProgramme();
 	}
 	_estVerrouille() {
 		return this.CahierDeTextes ? this.CahierDeTextes.verrouille : true;
@@ -2675,760 +2720,918 @@ class ObjetAffichagePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierD
 	_getTAF(aIndice) {
 		return this.CahierDeTextes.ListeTravailAFaire.get(aIndice);
 	}
-}
-function _evenementSurFenetreElementsProgramme(aValider, aDonnees) {
-	this.CahierDeTextes.listeElementsProgrammeCDT =
-		aDonnees.listeElementsProgramme;
-	this.palierElementTravailleSelectionne = aDonnees.palierActif;
-	if (!!aDonnees.servicePourComptabilisationBulletin) {
-		this.CahierDeTextes.servicePourComptabilisationBulletin =
-			aDonnees.servicePourComptabilisationBulletin;
+	_evenementSurFenetreElementsProgramme(aValider, aDonnees) {
+		this.CahierDeTextes.listeElementsProgrammeCDT =
+			aDonnees.listeElementsProgramme;
+		this.palierElementTravailleSelectionne = aDonnees.palierActif;
+		if (!!aDonnees.servicePourComptabilisationBulletin) {
+			this.CahierDeTextes.servicePourComptabilisationBulletin =
+				aDonnees.servicePourComptabilisationBulletin;
+		}
+		if (aValider) {
+			this.setEtatSaisie(true);
+			this.CahierDeTextes.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+		}
+		this.surResizeInterface();
 	}
-	if (aValider) {
-		this.setEtatSaisie(true);
-		this.CahierDeTextes.setEtat(EGenreEtat.Modification);
+	_actualiserListeCDTsPrecedents() {
+		if (this.paramsListeCDTPrec.deploye) {
+			this.getInstance(this.identListeCDTPrec).setDonnees(
+				new DonneesListe_CDTsPrecedents_1.DonneesListe_CDTsPrecedents(
+					this.listeCDTsPrecedents,
+					this.paramsListeCDTPrec.nbAffiches,
+				),
+			);
+		}
 	}
-	this.surResizeInterface();
-}
-function _actualiserListeCDTsPrecedents() {
-	if (this.paramsListeCDTPrec.deploye) {
-		this.getInstance(this.identListeCDTPrec).setDonnees(
-			new DonneesListe_CDTsPrecedents(
-				this.listeCDTsPrecedents,
-				this.paramsListeCDTPrec.nbAffiches,
-			),
+	_evenementSurZoomListeCDT(aSurZoom) {
+		this.listeCDTPleinEcran = aSurZoom;
+		ObjetHtml_1.GHtml.setDisplay(
+			this.getInstance(this.IdentCalendrier).getNom(),
+			!this.listeCDTPleinEcran,
 		);
-	}
-}
-function _evenementSurZoomListeCDT(aSurZoom) {
-	this.listeCDTPleinEcran = aSurZoom;
-	GHtml.setDisplay(
-		this.getInstance(this.IdentCalendrier).getNom(),
-		!this.listeCDTPleinEcran,
-	);
-	GHtml.setDisplay(this.Nom + "_ZoneGrille", !this.listeCDTPleinEcran);
-	GHtml.setDisplay(this.Nom + "_P3_3", !this.listeCDTPleinEcran);
-	GHtml.setDisplay(this.Nom + "_P5", !this.listeCDTPleinEcran);
-	const lJContListePrec = $(`#${this.Nom.escapeJQ()}_P3_2`);
-	if (this.listeCDTPleinEcran) {
-		lJContListePrec.removeClass("fix-bloc").addClass("fluid-bloc");
-	} else {
-		lJContListePrec.removeClass("fluid-bloc").addClass("fix-bloc");
-	}
-	const lInstanceListe = this.getInstance(this.identListeCDTPrec);
-	if (this.listeCDTPleinEcran) {
-		GHtml.setDisplay(lInstanceListe.getNom(), true);
-		this.paramsListeCDTPrec.deploye = true;
-	} else {
-		GHtml.setDisplay(lInstanceListe.getNom(), this.paramsListeCDTPrec.deploye);
-		if (!GNavigateur.isLayoutTactile) {
-			GPosition.setHeight(
+		ObjetHtml_1.GHtml.setDisplay(
+			this.Nom + "_ZoneGrille",
+			!this.listeCDTPleinEcran,
+		);
+		ObjetHtml_1.GHtml.setDisplay(this.Nom + "_P3_3", !this.listeCDTPleinEcran);
+		ObjetHtml_1.GHtml.setDisplay(this.Nom + "_P5", !this.listeCDTPleinEcran);
+		const lJContListePrec = $(`#${this.Nom.escapeJQ()}_P3_2`);
+		if (this.listeCDTPleinEcran) {
+			lJContListePrec.removeClass("fix-bloc").addClass("fluid-bloc");
+		} else {
+			lJContListePrec.removeClass("fluid-bloc").addClass("fix-bloc");
+		}
+		const lInstanceListe = this.getInstance(this.identListeCDTPrec);
+		if (this.listeCDTPleinEcran) {
+			ObjetHtml_1.GHtml.setDisplay(lInstanceListe.getNom(), true);
+			this.paramsListeCDTPrec.deploye = true;
+		} else {
+			ObjetHtml_1.GHtml.setDisplay(
+				lInstanceListe.getNom(),
+				this.paramsListeCDTPrec.deploye,
+			);
+			ObjetPosition_1.GPosition.setHeight(
 				lInstanceListe.getNom(),
 				this.paramsListeCDTPrec.hauteurListe,
 			);
 		}
+		if (!this.listeCDTPleinEcran) {
+			this._restaurationEDTEnAttente();
+		}
+		this.actualiser(false);
+		GNavigateur.surResize();
+		this.surResizeInterface();
 	}
-	if (!this.listeCDTPleinEcran) {
-		_restaurationEDTEnAttente.call(this);
-	}
-	this.actualiser(false);
-	GNavigateur.surResize();
-	this.surResizeInterface();
-}
-function _composeListeCDTsPrecedents() {
-	const H = [];
-	H.push(
-		'<div id="',
-		this.Nom + '_listePrec" class="fluid-bloc flex-contain cols">',
-	);
-	H.push('<div class="fix-bloc p-y p-right-xl" style="overflow:hidden">');
-	H.push('<div class="NoWrap" style="float:left">');
-	H.push(
-		'<div class="InlineBlock AlignementMilieuVertical">',
-		'<ie-btnimage class="Image_DeploiementBandeau" ie-model="listeCDT.btnDeploy" ie-display="afficherDeploy" title="',
-		GTraductions.getValeur("liste.HintBoutonDeploiement"),
-		'" aria-labelledby="deploy" aria-controls="',
-		this.getInstance(this.identListeCDTPrec).getNom(),
-		'" aria-expanded="false"></ie-btnimage>',
-		"</div>",
-	);
-	H.push(
-		'<div class="InlineBlock EspaceGauche Gras AlignementMilieuVertical" id="deploy">',
-		GTraductions.getValeur("CahierDeTexte.ContenusPrecedents"),
-		"</div>",
-	);
-	H.push(
-		'<div class="InlineBlock EspaceGauche AlignementMilieuVertical">',
-		'<ie-btnimage class="Image_IconeMoins" ie-model="listeCDT.btnIconeMoins" style="width:18px;" aria-label="',
-		GTraductions.getValeur("CahierDeTexte.retirerContenuPrecedent"),
-		'" title="',
-		GTraductions.getValeur("CahierDeTexte.afficherMoinsContenuPrecedent"),
-		'"></ie-btnimage>',
-		"</div>",
-	);
-	H.push(
-		'<div class="InlineBlock EspaceGauche AlignementMilieuVertical Gras" ie-html="listeCDT.htmlElementsPrecedents"></div>',
-	);
-	H.push(
-		'<p class="sr-only" aria-live="polite" ie-html="listeCDT.htmlElementsPrecedentsWAI"></p>',
-	);
-	H.push(
-		'<div class="InlineBlock EspaceGauche AlignementMilieuVertical">',
-		'<ie-btnimage class="Image_IconePlus" ie-model="listeCDT.btnIconePlus" style="width:18px;" aria-label="',
-		GTraductions.getValeur("CahierDeTexte.ajouterContenuPrecedent"),
-		'" title="',
-		GTraductions.getValeur("CahierDeTexte.afficherPlusContenuPrecedent"),
-		'"></ie-btnimage>',
-		"</div>",
-	);
-	H.push("</div>");
-	H.push(
-		'<span style="float: right;">',
-		UtilitaireBoutonBandeau.getHtmlBtnZoomPlusMoins(
-			"btnAgrandirReduireZoneListeCDT",
-		),
-		"</span>",
-	);
-	H.push("</div>");
-	H.push(
-		'<div id="',
-		this.getInstance(this.identListeCDTPrec).getNom(),
-		'" class="PetitEspaceBas fluid-bloc"',
-		' style="',
-		GNavigateur.isLayoutTactile
-			? ""
-			: GStyle.composeHeight(this.paramsListeCDTPrec.hauteurListe),
-		'"></div>',
-	);
-	H.push(
-		'<div ie-if="listeCDT.afficherTraitSeparation" style="',
-		GStyle.composeCouleurBordure(GCouleur.bordure, 1, EGenreBordure.haut),
-		'" class="fix-bloc"></div>',
-	);
-	H.push("</div>");
-	return H.join("");
-}
-function _composeLigneZoneContenu() {
-	const H = [];
-	H.push(
-		'<div id="',
-		this.Nom,
-		'_ZoneContenu" style="flex: 1 1 52%; height:0;" class="flex-contain cols p-top">',
-		'<div class="fluid-bloc flex-contain cols p-bottom" style="height: 0;">',
-		'<div class="fix-bloc flex-contain flex-center justify-between flex-gap" style="min-height:22px;">',
-		'<ie-btnicon ie-model="btnAjouterContenu" class="fix-bloc icon_plus_fin bt-activable"></ie-btnicon>',
-		'<span id="',
-		this.idContenu,
-		'" class="fluid-bloc semi-bold Insecable" role="heading" aria-level="3">' +
-			GTraductions.getValeur("CahierDeTexte.contenus") +
+	_composeListeCDTsPrecedents() {
+		const lJsxClasseZoomListeCahiersDeTextes = () => {
+			return UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getClassesIconZoomPlusMoins(
+				this.listeCDTPleinEcran,
+			);
+		};
+		const H = [];
+		H.push(
+			'<div id="',
+			this.Nom + '_listePrec" class="fluid-bloc flex-contain cols">',
+		);
+		H.push('<div class="fix-bloc p-y p-right-xl" style="overflow:hidden">');
+		H.push('<div class="NoWrap" style="float:left">');
+		H.push(
+			'<div class="InlineBlock AlignementMilieuVertical">',
+			'<ie-btnimage class="Image_DeploiementBandeau" ie-model="listeCDT.btnDeploy" ie-display="afficherDeploy" title="',
+			ObjetTraduction_1.GTraductions.getValeur("liste.HintBoutonDeploiement"),
+			'" aria-labelledby="deploy" aria-controls="',
+			this.getInstance(this.identListeCDTPrec).getNom(),
+			'" aria-expanded="false"></ie-btnimage>',
+			"</div>",
+		);
+		H.push(
+			'<div class="InlineBlock EspaceGauche Gras AlignementMilieuVertical" id="deploy">',
+			ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.ContenusPrecedents",
+			),
+			"</div>",
+		);
+		H.push(
+			'<div class="InlineBlock EspaceGauche AlignementMilieuVertical">',
+			'<ie-btnimage class="Image_IconeMoins" ie-model="listeCDT.btnIconeMoins" style="width:18px;" aria-label="',
+			ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.retirerContenuPrecedent",
+			),
+			'" title="',
+			ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.afficherMoinsContenuPrecedent",
+			),
+			'"></ie-btnimage>',
+			"</div>",
+		);
+		H.push(
+			'<div class="InlineBlock EspaceGauche AlignementMilieuVertical Gras" ie-html="listeCDT.htmlElementsPrecedents"></div>',
+		);
+		H.push(
+			'<p class="sr-only" aria-live="polite" ie-html="listeCDT.htmlElementsPrecedentsWAI"></p>',
+		);
+		H.push(
+			'<div class="InlineBlock EspaceGauche AlignementMilieuVertical">',
+			'<ie-btnimage class="Image_IconePlus" ie-model="listeCDT.btnIconePlus" style="width:18px;" aria-label="',
+			ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.ajouterContenuPrecedent",
+			),
+			'" title="',
+			ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.afficherPlusContenuPrecedent",
+			),
+			'"></ie-btnimage>',
+			"</div>",
+		);
+		H.push("</div>");
+		H.push(
+			'<span style="float: right;">',
+			UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnZoomPlusMoins(
+				"btnAgrandirReduireZoneListeCDT",
+				lJsxClasseZoomListeCahiersDeTextes,
+			),
 			"</span>",
-		'<div class="fluid-bloc" id="',
-		this.idKiosque,
-		'"></div>',
-		'<ie-btnicon class="fix-bloc icon_comment_vide bt-activable m-right" ie-if="avecSaisieCommentaire" ie-model="displayNoteProchaineSeance(false)"></ie-btnicon>',
-		'<div class="fix-bloc p-right-xl">',
-		UtilitaireBoutonBandeau.getHtmlBtnZoomPlusMoins(
-			"btnAgrandirReduireZoneContenu",
-		),
-		"</div>",
-		"</div>",
-		'<div class="flex-contain AvecScrollVertical EspaceDroit full-height" style="overflow-x:hidden;">',
-		'<div id="',
-		this.Nom,
-		'_Contenus" class="fluid-bloc m-right"></div>',
-		`<div ie-if="avecNoteProchaineSeance" ie-html="getHtmlNoteProchaineSeance" class="conteneur-postIt ThemeCat-pense-bete"></div>`,
-		"</div>",
-		"</div>",
-		'<div ie-if="contenu.afficherTraitSeparation" class="fix-bloc m-top m-bottom-l" style="',
-		GStyle.composeCouleurBordure(GCouleur.bordure, 1, EGenreBordure.haut),
-		'"></div>',
-		"</div>",
-	);
-	return H.join("");
-}
-function _composeLigneZoneElementsProgramme() {
-	const H = [];
-	H.push(
-		'<div id="',
-		this.Nom,
-		'_ZoneElementsProgramme" style="display:none;" class="fix-bloc flex-contain cols">',
-	);
-	H.push(
-		'<div class="fix-bloc flex-contain flex-center justify-between flex-gap">',
-	);
-	H.push(
-		'<ie-btnicon ie-model="btnElementsProgramme" class="fix-bloc icon_pencil bt-activable" aria-label="',
-		GTraductions.getValeur("Fenetre_ElementsProgramme.Titre"),
-		'" title="',
-		GTraductions.getValeur("Fenetre_ElementsProgramme.Titre"),
-		'"></ie-btnicon>',
-	);
-	H.push(
-		'<span class="semi-bold fluid-bloc">',
-		GTraductions.getValeur("CahierDeTexte.ElementsProgramme"),
-		"</span>",
-	);
-	H.push(
-		'<div class="fix-bloc p-right-xl">',
-		UtilitaireBoutonBandeau.getHtmlBtnMonsieurFiche("mrFicheElementsProg"),
-		"</div>",
-	);
-	H.push("</div>");
-	H.push(
-		'<div id="',
-		this.idElementsProgramme,
-		'" class="m-left p-bottom-l p-x-xl">',
-		"</div>",
-	);
-	H.push(
-		'<div style="',
-		GStyle.composeCouleurBordure(GCouleur.bordure, 1, EGenreBordure.haut),
-		'"></div>',
-	);
-	H.push("</div>");
-	return H.join("");
-}
-function _composeLigneZoneTAF() {
-	const H = [];
-	H.push(
-		'<div id="' +
-			this.Nom +
-			'_P4" style="flex: 1 1 48%; height:0;" class="flex-contain cols p-top flex-gap">',
-		'<div class="fix-bloc full-width flex-contain flex-center justify-between">',
-		'<div id="',
-		this.idTravailAFaire,
-		'" class="fluid-bloc semi-bold Insecable" role="heading" aria-level="3">',
-		GTraductions.getValeur("CahierDeTexte.travailPersoAFaire"),
-		"</div>",
-		'<div class="flex-contain flex-center flex-gap-l p-y-l p-right-xl">',
-		UtilitaireBoutonBandeau.getHtmlBtnParametrer("btnParametrageTAF"),
-		'<span ie-display="btnAfficherChargeTravail.getDisplay">',
-		UtilitaireBoutonBandeau.getHtmlBtnChargeDeTravail(
-			"btnAfficherChargeTravail",
-		),
-		"</span>",
-		UtilitaireBoutonBandeau.getHtmlBtnZoomPlusMoins(
-			"btnAgrandirReduireZoneTAF",
-		),
-		"</div>",
-		"</div>",
-		'<div id="',
-		this.getInstance(this.identListeTAFs).getNom(),
-		'" class="fluid-bloc"></div>',
-		"</div>",
-		'<div ie-if="taf.afficherTraitSeparation" style="',
-		GStyle.composeCouleurBordure(GCouleur.bordure, 1, EGenreBordure.bas),
-		'" class="m-top-l"></div>',
-	);
-	return H.join("");
-}
-function _composeLigneZoneCommentairePrive() {
-	const H = [];
-	H.push(
-		'<div id="' +
-			this.Nom +
-			'_P5" class="flex-contain cols flex-gap p-top-l m-bottom-l">',
-		'<div class="fix-bloc flex-contain flex-center flex-gap">',
-		'<ie-btnicon ie-model="btnCommentairePrive" class="p-left-s icon_post_it_rempli bt-activable"></ie-btnicon>',
-		'<span class="Gras">',
-		GTraductions.getValeur("CahierDeTexte.postIt.commentairePrive.titre"),
-		"</span>",
-		"<span> (",
-		GTraductions.getValeur("CahierDeTexte.postIt.commentairePrive.infoTitre"),
-		")</span>",
-		"</div>",
-		"</div>",
-	);
-	return H.join("");
-}
-function _initialiserListeCDTPrec(aInstance) {
-	aInstance.setOptionsListe({
-		colonnes: [
-			{ id: DonneesListe_CDTsPrecedents.colonnes.deploiement, taille: 10 },
-			{ id: DonneesListe_CDTsPrecedents.colonnes.contenu, taille: "70%" },
-			{ id: DonneesListe_CDTsPrecedents.colonnes.taf, taille: "30%" },
-		],
-		colonnesSansBordureDroit: [
-			DonneesListe_CDTsPrecedents.colonnes.deploiement,
-		],
-	});
-}
-function _commandeCreerDevoirOuEval(aInstance, aContenu, aGenreLienDS) {
-	const lSaisieEnCours = GEtatUtilisateur.EtatSaisie;
-	aInstance._ouvertureAutoFenetreDS = function () {
-		aInstance.contenuCourant = aContenu;
-		_ouvrirFenetreDevoirSurTable.call(aInstance, aGenreLienDS);
-	};
-	ControleSaisieEvenement(() => {
-		if (lSaisieEnCours) {
-			aInstance.recupererCahierDeTextes(true);
-		} else {
-			_ouvrirFenetreDevoirSurTable.call(aInstance, aGenreLienDS);
-		}
-	});
-}
-function _evenementSurFenetreRessourceKiosqueLiens(aParams) {
-	if (
-		aParams.genreBouton === 1 &&
-		!!aParams.selection &&
-		aParams.selection.count() > 0
-	) {
-		for (let i = 0; i < aParams.selection.count(); i++) {
-			const lElement = aParams.selection.get(i);
-			if (!!lElement && !!lElement.ressource) {
-				const lElementCourant =
-					this.genreElementSelectionne === EGenreElementCDT.TravailAFaire
-						? this.tafCourant
-						: this.contenuCourant;
-				const lLienKiosque = new ObjetElement(
-					lElement.ressource.getLibelle(),
-					null,
-					EGenreDocumentJoint.LienKiosque,
-				);
-				lLienKiosque.ressource = lElement.ressource;
-				lLienKiosque.setEtat(EGenreEtat.Creation);
-				if (
-					!UtilitaireSaisieCDT.ressourceGranulaireKiosqueEstDejaPresentDanslesPJ(
-						lLienKiosque,
-						lElementCourant.ListePieceJointe,
-					)
-				) {
-					this.ListeDocumentsJoints.addElement(lLienKiosque);
-					lElementCourant.ListePieceJointe.addElement(lLienKiosque);
-					lElementCourant.estVide = false;
-					lElementCourant.setEtat(EGenreEtat.Modification);
-					this.setEtatSaisie(true);
-					this.actualiser(true);
-				}
-			}
-		}
-	}
-}
-function _ouvrirFenetreDevoirSurTable(aGenreLienDS, aParamsFenetreOrigine) {
-	this._ouvertureAutoFenetreDS = null;
-	const lInstanceFenetre = ObjetFenetre.creerInstanceFenetre(
-		ObjetFenetre_DevoirSurTable,
-		{ pere: this, evenement: _evenementSurFenetreDevoirSurTable.bind(this) },
-	);
-	lInstanceFenetre.setDonnees({
-		cours: this.Cours,
-		date: this.Cours.DateDuCours,
-		numeroCycle: this.NumeroSemaine,
-		contenu: this.contenuCourant,
-		genreLienDS: aGenreLienDS,
-		callbackSaisieSalle: _callbackSaisieSalle.bind(this, lInstanceFenetre),
-		paramsFenetreOrigine: aParamsFenetreOrigine,
-	});
-}
-function _rechercheElementContenu(aContenu) {
-	let lContenu =
-		this.CahierDeTextes.listeContenus.getElementParElement(aContenu);
-	if (!lContenu && aContenu && aContenu.estVide) {
-		this.CahierDeTextes.listeContenus.parcourir((D) => {
-			if (D.estVide) {
-				lContenu = D;
-				return false;
-			}
-		});
-	}
-	return lContenu;
-}
-function _callbackSaisieSalle(aInstanceFenetre, aCours, aParamFenetre) {
-	this.Cours = aCours;
-	const lThis = this;
-	this._ouvertureAutoFenetreDS = function () {
-		lThis.contenuCourant = _rechercheElementContenu.call(
-			lThis,
-			aInstanceFenetre.param.contenu,
 		);
-		aInstanceFenetre.fermer();
-		_ouvrirFenetreDevoirSurTable.call(
-			lThis,
-			aParamFenetre.genreLienDS,
-			aParamFenetre,
+		H.push("</div>");
+		H.push(
+			'<div id="',
+			this.getInstance(this.identListeCDTPrec).getNom(),
+			'" class="PetitEspaceBas fluid-bloc"',
+			' style="',
+			ObjetStyle_1.GStyle.composeHeight(this.paramsListeCDTPrec.hauteurListe),
+			'"></div>',
 		);
-	};
-	new ObjetRequetePageEmploiDuTemps(
-		this,
-		this.actionSurCalendrier,
-	).lancerRequete({ numeroSemaine: this.NumeroSemaine });
-}
-function _evenementSurFenetreDevoirSurTable(aValider, aParametres, aAvecLien) {
-	if (!aValider) {
-		return;
-	}
-	if (!this.contenuCourant || this.contenuCourant.estVide) {
-		let lCategorie = null;
-		this.listeCategories.parcourir((D) => {
-			if (aParametres.genreLienDS === D.genreLienDS) {
-				lCategorie = D;
-				return false;
-			}
-		});
-		const lNewContenu = new ObjetElement(aParametres.contenu.getLibelle());
-		lNewContenu.setEtat(EGenreEtat.Creation);
-		lNewContenu.descriptif = aParametres.contenu.descriptif;
-		lNewContenu.estVide = false;
-		lNewContenu.categorie = MethodesObjet.dupliquer(lCategorie);
-		lNewContenu.ListePieceJointe = new ObjetListeElements();
-		lNewContenu.genreLienDS = aParametres.genreLienDS;
-		if (aAvecLien) {
-			lNewContenu.infosDS = $.extend({}, aParametres);
-		}
-		const lIndice = this.CahierDeTextes.listeContenus.count() - 1;
-		const lElementVide = this.CahierDeTextes.listeContenus.get(lIndice);
-		if (lElementVide && lElementVide.existe() && lElementVide.estVide) {
-			this.CahierDeTextes.listeContenus.remove(lIndice);
-		}
-		this.CahierDeTextes.listeContenus.addElement(lNewContenu);
-		this.CahierDeTextes.publie = true;
-		this.CahierDeTextes.datePublication = GDate.getDateCourante();
-		this.genreElementSelectionne = EGenreElementCDT.Contenu;
-		this.contenuCourant = this.CahierDeTextes.listeContenus.get(
-			this.CahierDeTextes.listeContenus.count() - 1,
+		H.push(
+			'<div ie-if="listeCDT.afficherTraitSeparation" style="',
+			ObjetStyle_1.GStyle.composeCouleurBordure(
+				GCouleur.bordure,
+				1,
+				ObjetStyle_1.EGenreBordure.haut,
+			),
+			'" class="fix-bloc"></div>',
 		);
-		this.indiceElementSelectionne =
-			this.CahierDeTextes.listeContenus.getIndiceParElement(
-				this.contenuCourant,
-			) !== null
-				? this.CahierDeTextes.listeContenus.getIndiceParElement(
-						this.contenuCourant,
-					)
-				: this.CahierDeTextes.listeContenus.count() - 1;
-		if (
-			this.CahierDeTextes.Numero === null ||
-			this.CahierDeTextes.Numero === undefined
-		) {
-			this.CahierDeTextes.setEtat(EGenreEtat.Creation);
-			this.CahierDeTextes.publie = true;
-			this.CahierDeTextes.datePublication = GDate.getDateCourante();
-		} else {
-			this.CahierDeTextes.setEtat(EGenreEtat.Modification);
-		}
-		this.valider();
-	} else {
-		this.contenuCourant.setEtat(EGenreEtat.Modification);
-		this.contenuCourant.Libelle = aParametres.contenu.getLibelle();
-		this.contenuCourant.descriptif = aParametres.contenu.descriptif;
-		this.contenuCourant.genreLienDS = aParametres.genreLienDS;
-		if (aParametres.surModification_suppression) {
-			this.contenuCourant.suppressionLien = true;
-		} else if (aAvecLien) {
-			this.contenuCourant.infosDS = $.extend({}, aParametres);
-		}
-		this.CahierDeTextes.setEtat(EGenreEtat.Modification);
-		this.valider();
+		H.push("</div>");
+		return H.join("");
 	}
-}
-function _serialisationDonnees(aElement) {
-	if (aElement.estRessourceDeCours === false) {
-		return false;
-	}
-}
-function _collerCDT() {
-	UtilitaireSaisieCDT.collerCDT(
-		this.CahierDeTextes,
-		this.CahierDeTextesCopie,
-		this.avecElementsProgramme,
-		this.dateCoursSuivantTAF || this.DateTravailAFaire,
-	);
-	this.ListeCahierDeTextes.addElement(this.CahierDeTextes, 0);
-	this.actualiser(true);
-	this.setEtatSaisie(true);
-	this.setFocusIdCourant();
-}
-function _evenementSurMenuContextuel(ALigne) {
-	this.setIdCourant(
-		this.getInstance(this.IdentGrille).getNom() + "_Navigation",
-	);
-	if (GNavigateur.isToucheEchap()) {
-		this.setFocusIdCourant();
-	}
-	if (ALigne && !GNavigateur.isToucheEchap()) {
-		switch (ALigne.Numero) {
-			case EGenreCommandeCdT.CopierCdT:
-				this.CahierDeTextesCopie = this.CahierDeTextes;
-				this.setFocusIdCourant();
-				break;
-			case EGenreCommandeCdT.CollerCdT:
-				if (
-					this.CahierDeTextesCopie &&
-					this.CahierDeTextesCopie.getNumero() !==
-						this.CahierDeTextes.getNumero()
-				) {
-					if (this.Cours && this.Cours.utilisable && this.Cours.AvecCdT) {
-						GApplication.getMessage().afficher({
-							type: EGenreBoiteMessage.Confirmation,
-							message: GTraductions.getValeur(
-								"CahierDeTexte.ConfirmerCollerCahierSurExistant",
+	_composeLigneZoneContenu() {
+		const lJsxClasseZoomContenu = () => {
+			return UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getClassesIconZoomPlusMoins(
+				this.ContenuPleinEcran,
+			);
+		};
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				"div",
+				{
+					id: this.Nom + "_ZoneContenu",
+					style: "flex: 1 1 52%; height:0;",
+					class: "flex-contain cols p-top",
+				},
+				IE.jsx.str(
+					"div",
+					{
+						class: "fluid-bloc flex-contain cols p-bottom",
+						style: "height: 0;",
+					},
+					IE.jsx.str(
+						"div",
+						{
+							class:
+								"fix-bloc flex-contain flex-center justify-between flex-gap",
+							style: "min-height:22px;",
+						},
+						IE.jsx.str("ie-btnicon", {
+							"ie-model": "btnAjouterContenu",
+							class: "fix-bloc icon_plus_fin bt-activable",
+						}),
+						IE.jsx.str(
+							"span",
+							{
+								id: this.idContenu,
+								class: "fluid-bloc semi-bold Insecable",
+								role: "heading",
+								"aria-level": "3",
+							},
+							ObjetTraduction_1.GTraductions.getValeur(
+								"CahierDeTexte.contenus",
 							),
-							callback: function (aGenreAction) {
-								if (aGenreAction === EGenreAction.Valider) {
-									_collerCDT.call(this);
-								}
-							}.bind(this),
-						});
-					} else {
-						_collerCDT.call(this);
+						),
+						IE.jsx.str("div", { class: "fluid-bloc", id: this.idKiosque }),
+						IE.jsx.str("ie-btnicon", {
+							class: "fix-bloc icon_comment_vide bt-activable m-right",
+							"ie-if": "avecSaisieCommentaire",
+							"ie-model": "displayNoteProchaineSeance(false)",
+						}),
+						IE.jsx.str(
+							"div",
+							{ class: "fix-bloc p-right-xl" },
+							UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnZoomPlusMoins(
+								"btnAgrandirReduireZoneContenu",
+								lJsxClasseZoomContenu,
+							),
+						),
+					),
+					IE.jsx.str(
+						"div",
+						{
+							class: "flex-contain AvecScrollVertical EspaceDroit full-height",
+							style: "overflow-x:hidden;",
+						},
+						IE.jsx.str("div", {
+							id: this.Nom + "_Contenus",
+							class: "fluid-bloc m-right",
+						}),
+						IE.jsx.str("div", {
+							"ie-if": "avecNoteProchaineSeance",
+							"ie-html": "getHtmlNoteProchaineSeance",
+							class: "conteneur-postIt",
+						}),
+					),
+				),
+				IE.jsx.str("div", {
+					"ie-if": "contenu.afficherTraitSeparation",
+					class: "fix-bloc m-top m-bottom-l",
+					style:
+						"', GStyle.composeCouleurBordure(GCouleur.bordure, 1, EGenreBordure.haut), '",
+				}),
+			),
+		);
+		return H.join("");
+	}
+	_composeLigneZoneElementsProgramme() {
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				"div",
+				{
+					id: this.Nom + "_ZoneElementsProgramme",
+					style: "display:none;",
+					class: "fix-bloc flex-contain cols",
+				},
+				IE.jsx.str(
+					"div",
+					{
+						class: "fix-bloc flex-contain flex-center justify-between flex-gap",
+					},
+					IE.jsx.str("ie-btnicon", {
+						"ie-model": "btnElementsProgramme",
+						class: "fix-bloc icon_pencil bt-activable",
+						"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_ElementsProgramme.Titre",
+						),
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_ElementsProgramme.Titre",
+						),
+					}),
+					IE.jsx.str(
+						"span",
+						{ class: "semi-bold fluid-bloc" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"CahierDeTexte.ElementsProgramme",
+						),
+					),
+					IE.jsx.str(
+						"div",
+						{ class: "fix-bloc p-right-xl" },
+						UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnMonsieurFiche(
+							"mrFicheElementsProg",
+						),
+					),
+				),
+				IE.jsx.str("div", {
+					id: this.idElementsProgramme,
+					class: "m-left p-bottom-l p-x-xl",
+				}),
+				IE.jsx.str("div", {
+					style: ObjetStyle_1.GStyle.composeCouleurBordure(
+						GCouleur.bordure,
+						1,
+						ObjetStyle_1.EGenreBordure.haut,
+					),
+				}),
+			),
+		);
+		return H.join("");
+	}
+	_composeLigneZoneTAF() {
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"div",
+					{
+						id: this.Nom + "_P4",
+						style: "flex: 1 1 48%; height:0;",
+						class: "flex-contain cols p-top flex-gap",
+					},
+					IE.jsx.str("div", {
+						id: this.getInstance(this.identListeTAFs).getNom(),
+						class: "fluid-bloc",
+					}),
+				),
+				IE.jsx.str("div", {
+					"ie-if": "taf.afficherTraitSeparation",
+					style: ObjetStyle_1.GStyle.composeCouleurBordure(
+						GCouleur.bordure,
+						1,
+						ObjetStyle_1.EGenreBordure.bas,
+					),
+					class: "m-top-l",
+				}),
+			),
+		);
+		return H.join("");
+	}
+	_composeLigneZoneCommentairePrive() {
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				"div",
+				{
+					id: this.Nom + "_P5",
+					class: "flex-contain cols flex-gap p-top-l m-bottom-l",
+				},
+				IE.jsx.str(
+					"div",
+					{ class: "fix-bloc flex-contain flex-center flex-gap" },
+					IE.jsx.str("ie-btnicon", {
+						"ie-model": "btnCommentairePrive",
+						class: "p-left-s icon_post_it_rempli bt-activable",
+					}),
+					IE.jsx.str(
+						"span",
+						{ class: "Gras" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"CahierDeTexte.postIt.commentairePrive.titre",
+						),
+					),
+					IE.jsx.str(
+						"span",
+						null,
+						" (",
+						ObjetTraduction_1.GTraductions.getValeur(
+							"CahierDeTexte.postIt.commentairePrive.infoTitre",
+						),
+						")",
+					),
+				),
+			),
+		);
+		return H.join("");
+	}
+	_initialiserListeCDTPrec(aInstance) {
+		const lColonnes = [];
+		lColonnes.push({
+			id: DonneesListe_CDTsPrecedents_1.DonneesListe_CDTsPrecedents.colonnes
+				.deploiement,
+			taille: 10,
+		});
+		lColonnes.push({
+			id: DonneesListe_CDTsPrecedents_1.DonneesListe_CDTsPrecedents.colonnes
+				.contenu,
+			taille: "70%",
+		});
+		lColonnes.push({
+			id: DonneesListe_CDTsPrecedents_1.DonneesListe_CDTsPrecedents.colonnes
+				.taf,
+			taille: "30%",
+		});
+		aInstance.setOptionsListe({
+			colonnes: lColonnes,
+			colonnesSansBordureDroit: [
+				DonneesListe_CDTsPrecedents_1.DonneesListe_CDTsPrecedents.colonnes
+					.deploiement,
+			],
+		});
+	}
+	_commandeCreerDevoirOuEval(aContenu, aGenreLienDS) {
+		const lSaisieEnCours = this.etatUtilisateur.EtatSaisie;
+		this._ouvertureAutoFenetreDS = () => {
+			this.contenuCourant = aContenu;
+			this._ouvrirFenetreDevoirSurTable(aGenreLienDS);
+		};
+		(0, ControleSaisieEvenement_1.ControleSaisieEvenement)(() => {
+			if (lSaisieEnCours) {
+				this.recupererCahierDeTextes();
+			} else {
+				this._ouvrirFenetreDevoirSurTable(aGenreLienDS);
+			}
+		});
+	}
+	_evenementSurFenetreRessourceKiosqueLiens(aParams) {
+		if (
+			aParams.genreBouton === 1 &&
+			!!aParams.selection &&
+			aParams.selection.count() > 0
+		) {
+			for (let i = 0; i < aParams.selection.count(); i++) {
+				const lElement = aParams.selection.get(i);
+				if (!!lElement && !!lElement.ressource) {
+					const lElementCourant =
+						this.genreElementSelectionne ===
+						Enumere_ElementCDT_1.EGenreElementCDT.TravailAFaire
+							? this.tafCourant
+							: this.contenuCourant;
+					const lLienKiosque = new ObjetElement_1.ObjetElement(
+						lElement.ressource.getLibelle(),
+						null,
+						Enumere_DocumentJoint_1.EGenreDocumentJoint.LienKiosque,
+					);
+					lLienKiosque.ressource = lElement.ressource;
+					lLienKiosque.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
+					if (
+						!UtilitaireSaisieCDT_1.UtilitaireSaisieCDT.ressourceGranulaireKiosqueEstDejaPresentDanslesPJ(
+							lLienKiosque,
+							lElementCourant.ListePieceJointe,
+						)
+					) {
+						this.ListeDocumentsJoints.addElement(lLienKiosque);
+						lElementCourant.ListePieceJointe.addElement(lLienKiosque);
+						lElementCourant.estVide = false;
+						lElementCourant.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+						this.setEtatSaisie(true);
+						this.actualiser(true);
 					}
 				}
-				break;
-			case EGenreCommandeCdT.SupprimerCdT:
-				GApplication.getMessage().afficher({
-					type: EGenreBoiteMessage.Confirmation,
-					message: GTraductions.getValeur(
-						"CahierDeTexte.msgConfirmationSupprimerContenu",
-					),
-					callback: new Callback(this, function (aAccepte) {
-						if (aAccepte === EGenreAction.Valider) {
-							this.CahierDeTextes.setEtat(EGenreEtat.Suppression);
-							this.setEtatSaisie(true);
-							this.valider();
-						}
-					}),
-				});
-				break;
-			case EGenreCommandeCdT.AffecterProgressionAuCdT:
-				_affecterProgressionAuCdT.call(this, true);
-				break;
-			case EGenreCommandeCdT.RattacherCDT:
-				this.avecDrag = false;
-				new ObjetRequeteListeCDTPourRattachement(
-					this,
-					this.actionSurRattachementCDT,
-				).lancerRequete();
-				break;
-			case EGenreCommandeCdT.saisieDS:
-			case EGenreCommandeCdT.saisieEval:
-				this.contenuCourant = this.CahierDeTextes.listeContenus.get(0);
-				_commandeCreerDevoirOuEval(
-					this,
-					this.contenuCourant,
-					ALigne.Numero === EGenreCommandeCdT.saisieDS
-						? EGenreLienDS.tGL_Devoir
-						: EGenreLienDS.tGL_Evaluation,
-				);
-				break;
-			case EGenreCommandeCdT.AjouterContenuDansProgression:
-				this.getInstance(
-					this.identFenetreChoixDossierCopieCDT,
-				).afficherChoixDossierCopieCDT(this.Cours, this.CahierDeTextes);
-				break;
-		}
-	}
-}
-function _callbackAffectationProgression(aParams) {
-	aParams.listeNewContenus.parcourir((aContenu) => {
-		const lIndice = this.CahierDeTextes.listeContenus.count() - 1;
-		const lElementVide = this.CahierDeTextes.listeContenus.get(lIndice);
-		if (lElementVide && lElementVide.existe() && lElementVide.estVide) {
-			this.CahierDeTextes.listeContenus.remove(lIndice);
-		}
-		this.CahierDeTextes.listeContenus.addElement(aContenu);
-		this.contenuCourant = aParams.contenu;
-		this.genreElementSelectionne = EGenreElementCDT.Contenu;
-		this.indiceElementSelectionne =
-			this.CahierDeTextes.listeContenus.getIndiceParElement(
-				this.contenuCourant,
-			) !== null
-				? this.CahierDeTextes.listeContenus.getIndiceParElement(
-						this.contenuCourant,
-					)
-				: this.CahierDeTextes.listeContenus.count() - 1;
-	});
-	aParams.listeNewTAFs.parcourir((aTAF) => {
-		this.CahierDeTextes.ListeTravailAFaire.addElement(aTAF);
-	});
-	if (aParams.listeNewContenus.count() > 0) {
-		this._actualiserContenu(true);
-	}
-	if (aParams.listeNewTAFs.count() > 0) {
-		this._actualiserTAF(true);
-	}
-	this.setEtatSaisie(true);
-}
-function _affecterProgressionAuCdT(avecTAFVisible) {
-	const lPublics = this.Cours.ListeContenus.getListeElements((aContenu) => {
-		return [
-			EGenreRessource.Classe,
-			EGenreRessource.Groupe,
-			EGenreRessource.PartieDeClasse,
-		].includes(aContenu.getGenre());
-	});
-	const lMatiere = this.Cours.ListeContenus.getElementParNumeroEtGenre(
-		null,
-		EGenreRessource.Matiere,
-	);
-	UtilitaireSaisieCDT.affecterProgressionAuCdT({
-		instance: this,
-		avecTAFVisible: avecTAFVisible,
-		cours: this.Cours,
-		numeroSemaine: this.NumeroSemaine,
-		cdt: this.CahierDeTextes,
-		JoursPresenceCours: this.JoursPresenceCours,
-		dateTAFMin: this.DateCoursDeb,
-		dateTAF: new Date(
-			(this.dateCoursSuivantTAF || this.DateTravailAFaire).getTime(),
-		),
-		listeCategories: this.listeCategories,
-		strPublics: lPublics.getTableauLibelles().join(", "),
-		strMatiere: lMatiere ? lMatiere.getLibelle() : "",
-		callbackAffectation: _callbackAffectationProgression.bind(this),
-	});
-}
-function _initialiserMenuContextuel(aCours, aInstance) {
-	aInstance.addCommande(
-		EGenreCommandeCdT.CopierCdT,
-		GTraductions.getValeur("CahierDeTexte.CopierCDT"),
-		!!(aCours.utilisable && aCours.AvecCdT),
-	);
-	aInstance.addCommande(
-		EGenreCommandeCdT.CollerCdT,
-		GTraductions.getValeur("CahierDeTexte.CollerCDT"),
-		!(
-			!this.CahierDeTextesCopie ||
-			!aCours.utilisable ||
-			(this.CahierDeTextes && this.CahierDeTextes.verrouille)
-		),
-	);
-	aInstance.addCommande(
-		EGenreCommandeCdT.SupprimerCdT,
-		GTraductions.getValeur("CahierDeTexte.SupprimerCDT"),
-		!!(aCours.AvecCdT && !this.CahierDeTextes.verrouille && aCours.utilisable),
-	);
-	aInstance.addSeparateur();
-	aInstance.addCommande(
-		EGenreCommandeCdT.RattacherCDT,
-		GTraductions.getValeur("CahierDeTexte.RattacherAUnCDTSansCours"),
-		GEtatUtilisateur.existeCDTsDetaches,
-	);
-	aInstance.addSeparateur();
-	const lActiverSaisieDSOuEval = !!(
-		aCours.utilisable &&
-		!this.CahierDeTextes.verrouille &&
-		this.CahierDeTextes.listeContenus.get(0) &&
-		this.CahierDeTextes.listeContenus.get(0).estVide
-	);
-	if (this.avecGestionNotation) {
-		aInstance.addCommande(
-			EGenreCommandeCdT.saisieDS,
-			GTraductions.getValeur("CahierDeTexte.ProgrammerDS"),
-			lActiverSaisieDSOuEval,
-		).image = TypeOrigineCreationCategorieCahierDeTexteUtil.getImage(
-			TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Devoir,
-		);
-	}
-	aInstance.addCommande(
-		EGenreCommandeCdT.saisieEval,
-		GTraductions.getValeur("CahierDeTexte.ProgrammerEval"),
-		lActiverSaisieDSOuEval,
-	).image = TypeOrigineCreationCategorieCahierDeTexteUtil.getImage(
-		TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Evaluation,
-	);
-	aInstance.addSeparateur();
-	aInstance.addCommande(
-		EGenreCommandeCdT.AffecterProgressionAuCdT,
-		GTraductions.getValeur("CahierDeTexte.AffectationEltsProgressionAUnCahier"),
-		!!(aCours.utilisable && !this.CahierDeTextes.verrouille),
-	);
-	aInstance.addCommande(
-		EGenreCommandeCdT.AjouterContenuDansProgression,
-		GTraductions.getValeur("CahierDeTexte.AjouterElementsCDT"),
-		aCours.utilisable &&
-			this.CahierDeTextes &&
-			((this.CahierDeTextes.listeContenus &&
-				this.CahierDeTextes.listeContenus.getNbrElementsExistes() > 0 &&
-				!this.CahierDeTextes.listeContenus.aUnElementVide()) ||
-				(this.CahierDeTextes.ListeTravailAFaire &&
-					this.CahierDeTextes.ListeTravailAFaire.getNbrElementsExistes() > 0)),
-	);
-	aInstance.avecSeparateurSurSuivant();
-	this.moduleSaisieCours.initMenuContextuelModifMatiere(aInstance, aCours);
-	this.moduleSaisieCours.initMenuContextuelSupprimer(aInstance, aCours, true);
-}
-function _actualiserGrille() {
-	this.getInstance(this.IdentGrille).setDonnees({
-		numeroSemaine: GEtatUtilisateur.getSemaineSelectionnee(),
-		listeCours: this.listeCours,
-		avecCoursAnnule: GEtatUtilisateur.getAvecCoursAnnule(),
-	});
-	this.selectionnerCours(this.Cours, EGenreSelectionSemaine.Sans, false);
-	delete this.actualisationEDTAttente;
-}
-function _restaurationEDTEnAttente() {
-	if (this.actualisationEDTAttente) {
-		_actualiserGrille.call(this);
-	}
-}
-function _getOptionsContenuMenuMagique() {
-	return UtilitaireSaisieCDT.getOptionsContenuMenuMagique({
-		cdt: this.CahierDeTextes,
-		listeCDTsPrecedents: this.listeCDTsPrecedents,
-	});
-}
-function _actualiserElementsProgramme() {
-	const H = [];
-	if (
-		this.avecElementsProgramme &&
-		this.CahierDeTextes.listeElementsProgrammeCDT &&
-		this.CahierDeTextes.listeElementsProgrammeCDT.getNbrElementsExistes()
-	) {
-		this.CahierDeTextes.listeElementsProgrammeCDT.trier();
-		let lElement;
-		const lMaxHeight = Math.max(
-			40,
-			Math.floor(GPosition.getHeight(this.Nom + "_P3_2") / 4 - 20),
-		);
-		H.push('<div ie-scrollv style="max-height:', lMaxHeight, 'px;"><div>');
-		H.push("<ul>");
-		for (
-			let i = 0;
-			i < this.CahierDeTextes.listeElementsProgrammeCDT.count();
-			i++
-		) {
-			lElement = this.CahierDeTextes.listeElementsProgrammeCDT.get(i);
-			if (lElement.existe()) {
-				H.push("<li>", lElement.getLibelle(), "</li>");
 			}
 		}
-		H.push("</ul>");
-		H.push("</div></div>");
 	}
-	GHtml.setHtml(this.idElementsProgramme, H.join(""), {
-		controleur: this.controleur,
-	});
-}
-function _ajouterListeFichiers(aListeFichiers, aGenreDocJoint) {
-	if (aListeFichiers && aListeFichiers.count() > 0) {
-		const lPJsCloud =
-			UtilitaireSelecFile.extraireListeFichiersCloudsPartage(aListeFichiers);
-		if (aListeFichiers.count() > 0) {
-			const lListeDocJointsSelonContexte =
-				this.getListeDocumentsJointsSelonContexte(this.genreElementSelectionne);
-			this.getInstance(
-				this.IdentEditionPieceJointe,
-			).ajouterPiecesJointesAvecAppelCallback(
-				aListeFichiers,
-				aGenreDocJoint,
-				this.ListeDocumentsJoints,
-				lListeDocJointsSelonContexte,
-				true,
-			);
-		}
-		if (lPJsCloud.count() > 0) {
-			const lElementCourant =
-				this.genreElementSelectionne === EGenreElementCDT.TravailAFaire
-					? this.tafCourant
-					: this.contenuCourant;
-			lPJsCloud.parcourir((aFichier) => {
-				lElementCourant.ListePieceJointe.addElement(aFichier);
-				lElementCourant.estVide = false;
-				this.ListeDocumentsJoints.addElement(aFichier);
+	_ouvrirFenetreDevoirSurTable(aGenreLienDS, aParamsFenetreOrigine) {
+		this._ouvertureAutoFenetreDS = null;
+		const lInstanceFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_DevoirSurTable_1.ObjetFenetre_DevoirSurTable,
+			{
+				pere: this,
+				evenement: this._evenementSurFenetreDevoirSurTable.bind(this),
+			},
+		);
+		lInstanceFenetre.setDonnees({
+			cours: this.Cours,
+			date: this.Cours.DateDuCours,
+			numeroCycle: this.NumeroSemaine,
+			contenu: this.contenuCourant,
+			genreLienDS: aGenreLienDS,
+			callbackSaisieSalle: this._callbackSaisieSalle.bind(
+				this,
+				lInstanceFenetre,
+			),
+			paramsFenetreOrigine: aParamsFenetreOrigine,
+		});
+	}
+	_rechercheElementContenu(aContenu) {
+		let lContenu =
+			this.CahierDeTextes.listeContenus.getElementParElement(aContenu);
+		if (!lContenu && aContenu && aContenu.estVide) {
+			this.CahierDeTextes.listeContenus.parcourir((D) => {
+				if (D.estVide) {
+					lContenu = D;
+					return false;
+				}
 			});
-			lElementCourant.setEtat(EGenreEtat.Modification);
-			this.actualiser(true);
+		}
+		return lContenu;
+	}
+	_callbackSaisieSalle(aInstanceFenetre, aCours, aParamFenetre) {
+		this.Cours = aCours;
+		this._ouvertureAutoFenetreDS = () => {
+			this.contenuCourant = this._rechercheElementContenu(
+				aInstanceFenetre.param.contenu,
+			);
+			aInstanceFenetre.fermer();
+			this._ouvrirFenetreDevoirSurTable(
+				aParamFenetre.genreLienDS,
+				aParamFenetre,
+			);
+		};
+		new ObjetRequetePageEmploiDuTemps_1.ObjetRequetePageEmploiDuTemps(
+			this,
+			this.actionSurCalendrier,
+		).lancerRequete({ numeroSemaine: this.NumeroSemaine });
+	}
+	_evenementSurFenetreDevoirSurTable(aValider, aParametres, aAvecLien) {
+		if (!aValider) {
+			return;
+		}
+		if (!this.contenuCourant || this.contenuCourant.estVide) {
+			let lCategorie = null;
+			this.listeCategories.parcourir((D) => {
+				if (aParametres.genreLienDS === D.genreLienDS) {
+					lCategorie = D;
+					return false;
+				}
+			});
+			const lNewContenu = new ObjetElement_1.ObjetElement(
+				aParametres.contenu.getLibelle(),
+			);
+			lNewContenu.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
+			lNewContenu.descriptif = aParametres.contenu.descriptif;
+			lNewContenu.estVide = false;
+			lNewContenu.categorie =
+				MethodesObjet_1.MethodesObjet.dupliquer(lCategorie);
+			lNewContenu.ListePieceJointe =
+				new ObjetListeElements_1.ObjetListeElements();
+			lNewContenu.genreLienDS = aParametres.genreLienDS;
+			if (aAvecLien) {
+				lNewContenu.infosDS = $.extend({}, aParametres);
+			}
+			const lIndice = this.CahierDeTextes.listeContenus.count() - 1;
+			const lElementVide = this.CahierDeTextes.listeContenus.get(lIndice);
+			if (lElementVide && lElementVide.existe() && lElementVide.estVide) {
+				this.CahierDeTextes.listeContenus.remove(lIndice);
+			}
+			this.CahierDeTextes.listeContenus.addElement(lNewContenu);
+			this.CahierDeTextes.publie = true;
+			this.CahierDeTextes.datePublication = ObjetDate_1.GDate.getDateCourante();
+			this.genreElementSelectionne =
+				Enumere_ElementCDT_1.EGenreElementCDT.Contenu;
+			this.contenuCourant = this.CahierDeTextes.listeContenus.get(
+				this.CahierDeTextes.listeContenus.count() - 1,
+			);
+			this.indiceElementSelectionne =
+				this.CahierDeTextes.listeContenus.getIndiceParElement(
+					this.contenuCourant,
+				) !== null
+					? this.CahierDeTextes.listeContenus.getIndiceParElement(
+							this.contenuCourant,
+						)
+					: this.CahierDeTextes.listeContenus.count() - 1;
+			if (
+				this.CahierDeTextes.Numero === null ||
+				this.CahierDeTextes.Numero === undefined
+			) {
+				this.CahierDeTextes.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
+				this.CahierDeTextes.publie = true;
+				this.CahierDeTextes.datePublication =
+					ObjetDate_1.GDate.getDateCourante();
+			} else {
+				this.CahierDeTextes.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+			}
+			this.valider();
+		} else {
+			this.contenuCourant.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+			this.contenuCourant.Libelle = aParametres.contenu.getLibelle();
+			this.contenuCourant.descriptif = aParametres.contenu.descriptif;
+			this.contenuCourant.genreLienDS = aParametres.genreLienDS;
+			if (aParametres.surModification_suppression) {
+				this.contenuCourant.suppressionLien = true;
+			} else if (aAvecLien) {
+				this.contenuCourant.infosDS = $.extend({}, aParametres);
+			}
+			this.CahierDeTextes.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+			this.valider();
+		}
+	}
+	_serialisationDonnees(aElement) {
+		if (aElement.estRessourceDeCours === false) {
+			return false;
+		}
+	}
+	_collerCDT() {
+		UtilitaireSaisieCDT_1.UtilitaireSaisieCDT.collerCDT(
+			this.CahierDeTextes,
+			this.CahierDeTextesCopie,
+			this.avecElementsProgramme,
+			this.dateCoursSuivantTAF || this.DateTravailAFaire,
+		);
+		this.ListeCahierDeTextes.addElement(this.CahierDeTextes, 0);
+		this.actualiser(true);
+		this.setEtatSaisie(true);
+		this.setFocusIdCourant();
+	}
+	async _evenementSurMenuContextuel(ALigne) {
+		this.setIdCourant(
+			this.getInstance(this.IdentGrille).getNom() + "_Navigation",
+		);
+		if (GNavigateur.isToucheEchap()) {
+			this.setFocusIdCourant();
+		}
+		if (ALigne && !GNavigateur.isToucheEchap()) {
+			switch (ALigne.Numero) {
+				case EGenreCommandeCdT.CopierCdT:
+					this.CahierDeTextesCopie = this.CahierDeTextes;
+					this.setFocusIdCourant();
+					break;
+				case EGenreCommandeCdT.CollerCdT:
+					if (
+						this.CahierDeTextesCopie &&
+						this.CahierDeTextesCopie.getNumero() !==
+							this.CahierDeTextes.getNumero()
+					) {
+						if (this.Cours && this.Cours.utilisable && this.Cours.AvecCdT) {
+							this.applicationSco.getMessage().afficher({
+								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+								message: ObjetTraduction_1.GTraductions.getValeur(
+									"CahierDeTexte.ConfirmerCollerCahierSurExistant",
+								),
+								callback: (aGenreAction) => {
+									if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
+										this._collerCDT();
+									}
+								},
+							});
+						} else {
+							this._collerCDT();
+						}
+					}
+					break;
+				case EGenreCommandeCdT.SupprimerCdT: {
+					const lResult = await this.applicationSco
+						.getMessage()
+						.afficher({
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+							message: ObjetTraduction_1.GTraductions.getValeur(
+								"CahierDeTexte.msgConfirmationSupprimerContenu",
+							),
+						});
+					if (lResult === Enumere_Action_1.EGenreAction.Valider) {
+						this.CahierDeTextes.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+						this.setEtatSaisie(true);
+						this.valider();
+					}
+					break;
+				}
+				case EGenreCommandeCdT.AffecterProgressionAuCdT:
+					this._affecterProgressionAuCdT(true);
+					break;
+				case EGenreCommandeCdT.RattacherCDT: {
+					this.avecDrag = false;
+					const lReponse =
+						await new ObjetRequeteListeCDTPourRattachement_1.ObjetRequeteListeCDTPourRattachement(
+							this,
+						).lancerRequete();
+					this.actionSurRattachementCDT(lReponse.listeCDT);
+					break;
+				}
+				case EGenreCommandeCdT.saisieDS:
+				case EGenreCommandeCdT.saisieEval:
+					this.contenuCourant = this.CahierDeTextes.listeContenus.get(0);
+					this._commandeCreerDevoirOuEval(
+						this.contenuCourant,
+						ALigne.Numero === EGenreCommandeCdT.saisieDS
+							? Enumere_LienDS_1.EGenreLienDS.tGL_Devoir
+							: Enumere_LienDS_1.EGenreLienDS.tGL_Evaluation,
+					);
+					break;
+				case EGenreCommandeCdT.AjouterContenuDansProgression:
+					this.getInstance(
+						this.identFenetreChoixDossierCopieCDT,
+					).afficherChoixDossierCopieCDT(this.Cours, this.CahierDeTextes);
+					break;
+			}
+		}
+	}
+	_callbackAffectationProgression(aParams) {
+		aParams.listeNewContenus.parcourir((aContenu) => {
+			const lIndice = this.CahierDeTextes.listeContenus.count() - 1;
+			const lElementVide = this.CahierDeTextes.listeContenus.get(lIndice);
+			if (lElementVide && lElementVide.existe() && lElementVide.estVide) {
+				this.CahierDeTextes.listeContenus.remove(lIndice);
+			}
+			this.CahierDeTextes.listeContenus.addElement(aContenu);
+			this.contenuCourant = aParams.contenu;
+			this.genreElementSelectionne =
+				Enumere_ElementCDT_1.EGenreElementCDT.Contenu;
+			this.indiceElementSelectionne =
+				this.CahierDeTextes.listeContenus.getIndiceParElement(
+					this.contenuCourant,
+				) !== null
+					? this.CahierDeTextes.listeContenus.getIndiceParElement(
+							this.contenuCourant,
+						)
+					: this.CahierDeTextes.listeContenus.count() - 1;
+		});
+		aParams.listeNewTAFs.parcourir((aTAF) => {
+			this.CahierDeTextes.ListeTravailAFaire.addElement(aTAF);
+		});
+		if (aParams.listeNewContenus.count() > 0) {
+			this._actualiserContenu(true);
+		}
+		if (aParams.listeNewTAFs.count() > 0) {
+			this._actualiserTAF(true);
 		}
 		this.setEtatSaisie(true);
 	}
+	_affecterProgressionAuCdT(avecTAFVisible) {
+		const lPublics = this.Cours.ListeContenus.getListeElements((aContenu) => {
+			return [
+				Enumere_Ressource_1.EGenreRessource.Classe,
+				Enumere_Ressource_1.EGenreRessource.Groupe,
+				Enumere_Ressource_1.EGenreRessource.PartieDeClasse,
+			].includes(aContenu.getGenre());
+		});
+		const lMatiere = this.Cours.ListeContenus.getElementParNumeroEtGenre(
+			null,
+			Enumere_Ressource_1.EGenreRessource.Matiere,
+		);
+		UtilitaireSaisieCDT_1.UtilitaireSaisieCDT.affecterProgressionAuCdT({
+			instance: this,
+			avecTAFVisible: avecTAFVisible,
+			paramsAutorisationCreationTAF: {
+				ajoutNouveauTAFInterdit: this.ajoutNouveauTAFInterdit,
+				messageSurNouveauTAF: this.messageSurNouveauTAF,
+			},
+			cours: this.Cours,
+			numeroSemaine: this.NumeroSemaine,
+			cdt: this.CahierDeTextes,
+			JoursPresenceCours: this.JoursPresenceCours,
+			dateTAFMin: this.DateCoursDeb,
+			dateTAF: new Date(
+				(this.dateCoursSuivantTAF || this.DateTravailAFaire).getTime(),
+			),
+			listeCategories: this.listeCategories,
+			strPublics: lPublics.getTableauLibelles().join(", "),
+			strMatiere: lMatiere ? lMatiere.getLibelle() : "",
+			callbackAffectation: this._callbackAffectationProgression.bind(this),
+		});
+	}
+	_initialiserMenuContextuel(aCours, aInstance) {
+		aInstance.addCommande(
+			EGenreCommandeCdT.CopierCdT,
+			ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.CopierCDT"),
+			!!(aCours.utilisable && aCours.AvecCdT),
+		);
+		aInstance.addCommande(
+			EGenreCommandeCdT.CollerCdT,
+			ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.CollerCDT"),
+			!(
+				!this.CahierDeTextesCopie ||
+				!aCours.utilisable ||
+				(this.CahierDeTextes && this.CahierDeTextes.verrouille)
+			),
+		);
+		aInstance.addCommande(
+			EGenreCommandeCdT.SupprimerCdT,
+			ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.SupprimerCDT"),
+			!!(
+				aCours.AvecCdT &&
+				!this.CahierDeTextes.verrouille &&
+				aCours.utilisable
+			),
+		);
+		aInstance.addSeparateur();
+		aInstance.addCommande(
+			EGenreCommandeCdT.RattacherCDT,
+			ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.RattacherAUnCDTSansCours",
+			),
+			this.etatUtilisateur.existeCDTsDetaches,
+		);
+		aInstance.addSeparateur();
+		const lActiverSaisieDSOuEval = !!(
+			aCours.utilisable &&
+			!this.CahierDeTextes.verrouille &&
+			this.CahierDeTextes.listeContenus.get(0) &&
+			this.CahierDeTextes.listeContenus.get(0).estVide
+		);
+		if (this.avecGestionNotation) {
+			const lCommande = aInstance.addCommande(
+				EGenreCommandeCdT.saisieDS,
+				ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.ProgrammerDS"),
+				lActiverSaisieDSOuEval,
+			);
+			lCommande.icon = [
+				TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.getIcone(
+					TypeOrigineCreationCategorieCahierDeTexte_1
+						.TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Devoir,
+				),
+				"i-small",
+				"m-right-s",
+			].join(" ");
+			lCommande.libelleIcone = ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.iconeDS",
+			);
+		}
+		const lCommande = aInstance.addCommande(
+			EGenreCommandeCdT.saisieEval,
+			ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.ProgrammerEval"),
+			lActiverSaisieDSOuEval,
+		);
+		lCommande.icon = [
+			TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.getIcone(
+				TypeOrigineCreationCategorieCahierDeTexte_1
+					.TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Evaluation,
+			),
+			"i-small",
+			"m-right-s",
+		].join(" ");
+		lCommande.libelleIcone = ObjetTraduction_1.GTraductions.getValeur(
+			"CahierDeTexte.iconeEval",
+		);
+		aInstance.addSeparateur();
+		aInstance.addCommande(
+			EGenreCommandeCdT.AffecterProgressionAuCdT,
+			ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.AffectationEltsProgressionAUnCahier",
+			),
+			!!(aCours.utilisable && !this.CahierDeTextes.verrouille),
+		);
+		aInstance.addCommande(
+			EGenreCommandeCdT.AjouterContenuDansProgression,
+			ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.AjouterElementsCDT",
+			),
+			aCours.utilisable &&
+				this.CahierDeTextes &&
+				((this.CahierDeTextes.listeContenus &&
+					this.CahierDeTextes.listeContenus.getNbrElementsExistes() > 0 &&
+					!this.CahierDeTextes.listeContenus.aUnElementVide()) ||
+					(this.CahierDeTextes.ListeTravailAFaire &&
+						this.CahierDeTextes.ListeTravailAFaire.getNbrElementsExistes() >
+							0)),
+		);
+		aInstance.avecSeparateurSurSuivant();
+		this.moduleSaisieCours.initMenuContextuelModifMatiere(aInstance, aCours);
+		this.moduleSaisieCours.initMenuContextuelSupprimer(aInstance, aCours, true);
+	}
+	_actualiserGrille() {
+		this.getInstance(this.IdentGrille).setDonnees({
+			numeroSemaine: this.etatUtilisateur.getSemaineSelectionnee(),
+			listeCours: this.listeCours,
+			avecCoursAnnule: this.etatUtilisateur.getAvecCoursAnnule(),
+		});
+		this.selectionnerCours(this.Cours, EGenreSelectionSemaine.Sans, false);
+		delete this.actualisationEDTAttente;
+	}
+	_restaurationEDTEnAttente() {
+		if (this.actualisationEDTAttente) {
+			this._actualiserGrille();
+		}
+	}
+	_actualiserElementsProgramme() {
+		const H = [];
+		if (
+			this.avecElementsProgramme &&
+			this.CahierDeTextes.listeElementsProgrammeCDT &&
+			this.CahierDeTextes.listeElementsProgrammeCDT.getNbrElementsExistes()
+		) {
+			this.CahierDeTextes.listeElementsProgrammeCDT.trier();
+			let lElement;
+			const lMaxHeight = Math.max(
+				40,
+				Math.floor(
+					ObjetPosition_1.GPosition.getHeight(this.Nom + "_P3_2") / 4 - 20,
+				),
+			);
+			H.push('<div ie-scrollv style="max-height:', lMaxHeight, 'px;"><div>');
+			H.push("<ul>");
+			for (
+				let i = 0;
+				i < this.CahierDeTextes.listeElementsProgrammeCDT.count();
+				i++
+			) {
+				lElement = this.CahierDeTextes.listeElementsProgrammeCDT.get(i);
+				if (lElement.existe()) {
+					H.push("<li>", lElement.getLibelle(), "</li>");
+				}
+			}
+			H.push("</ul>");
+			H.push("</div></div>");
+		}
+		ObjetHtml_1.GHtml.setHtml(this.idElementsProgramme, H.join(""), {
+			controleur: this.controleur,
+		});
+	}
+	_ajouterListeFichiers(aListeFichiers, aGenreDocJoint) {
+		if (aListeFichiers && aListeFichiers.count() > 0) {
+			const lPJsCloud =
+				UtilitaireSelecFile_1.UtilitaireSelecFile.extraireListeFichiersCloudsPartage(
+					aListeFichiers,
+				);
+			if (aListeFichiers.count() > 0) {
+				const lListeDocJointsSelonContexte =
+					this.getListeDocumentsJointsSelonContexte(
+						this.genreElementSelectionne,
+					);
+				this.getInstance(
+					this.IdentEditionPieceJointe,
+				).ajouterPiecesJointesAvecAppelCallback(
+					aListeFichiers,
+					aGenreDocJoint,
+					this.ListeDocumentsJoints,
+					lListeDocJointsSelonContexte,
+					true,
+				);
+			}
+			if (lPJsCloud.count() > 0) {
+				const lElementCourant =
+					this.genreElementSelectionne ===
+					Enumere_ElementCDT_1.EGenreElementCDT.TravailAFaire
+						? this.tafCourant
+						: this.contenuCourant;
+				lPJsCloud.parcourir((aFichier) => {
+					lElementCourant.ListePieceJointe.addElement(aFichier);
+					lElementCourant.estVide = false;
+					this.ListeDocumentsJoints.addElement(aFichier);
+				});
+				lElementCourant.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+				this.actualiser(true);
+			}
+			this.setEtatSaisie(true);
+		}
+	}
 }
-module.exports = ObjetAffichagePageSaisieCahierDeTextes;
+exports.InterfacePageSaisieCahierDeTextes = InterfacePageSaisieCahierDeTextes;

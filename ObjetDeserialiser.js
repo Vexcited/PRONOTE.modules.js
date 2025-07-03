@@ -321,6 +321,7 @@ class ObjetDeserialiser {
 				Enumere_Espace_1.EGenreEspace.Tuteur,
 				Enumere_Espace_1.EGenreEspace.Mobile_Tuteur,
 				Enumere_Espace_1.EGenreEspace.Entreprise,
+				Enumere_Espace_1.EGenreEspace.Mobile_Entreprise,
 			].includes(GEtatUtilisateur.GenreEspace);
 			if (
 				lEspaceQCMConsult &&

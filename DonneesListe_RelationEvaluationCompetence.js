@@ -1,28 +1,29 @@
-const { GStyle } = require("ObjetStyle.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { TypeNote } = require("TypeNote.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { EGenreCommandeMenu } = require("Enumere_CommandeMenu.js");
-const {
-	EGenreNiveauDAcquisitionUtil,
-} = require("Enumere_NiveauDAcquisition.js");
-const { TUtilitaireCompetences } = require("UtilitaireCompetences.js");
-const {
-	TypeGenreValidationCompetence,
-} = require("TypeGenreValidationCompetence.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const {
-	ObjetFenetre_SaisieTypeNote,
-} = require("ObjetFenetre_SaisieTypeNote.js");
-const CommandeMenuContextuelRelationEvalCompetence = {
-	ChoisirCompetenceDansReferentiel: "0",
-	AppliquerOrdreGrille: "1",
-	DupliquerCompetence: "2",
-	ModifierCoefficient: "3",
-};
-class DonneesListe_RelationEvaluationCompetence extends ObjetDonneesListe {
+exports.DonneesListe_RelationEvaluationCompetence = void 0;
+const ObjetStyle_1 = require("ObjetStyle");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TypeNote_1 = require("TypeNote");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const Enumere_CommandeMenu_1 = require("Enumere_CommandeMenu");
+const Enumere_NiveauDAcquisition_1 = require("Enumere_NiveauDAcquisition");
+const UtilitaireCompetences_1 = require("UtilitaireCompetences");
+const TypeGenreValidationCompetence_1 = require("TypeGenreValidationCompetence");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_SaisieTypeNote_1 = require("ObjetFenetre_SaisieTypeNote");
+var CommandeMenuContextuelRelationEvalCompetence;
+(function (CommandeMenuContextuelRelationEvalCompetence) {
+	CommandeMenuContextuelRelationEvalCompetence[
+		"ChoisirCompetenceDansReferentiel"
+	] = "0";
+	CommandeMenuContextuelRelationEvalCompetence["AppliquerOrdreGrille"] = "1";
+	CommandeMenuContextuelRelationEvalCompetence["DupliquerCompetence"] = "2";
+	CommandeMenuContextuelRelationEvalCompetence["ModifierCoefficient"] = "3";
+})(
+	CommandeMenuContextuelRelationEvalCompetence ||
+		(CommandeMenuContextuelRelationEvalCompetence = {}),
+);
+class DonneesListe_RelationEvaluationCompetence extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aOptionsDonneesListe) {
 		super(aDonnees);
 		this.avecCreationNouvelleCompetence =
@@ -51,7 +52,7 @@ class DonneesListe_RelationEvaluationCompetence extends ObjetDonneesListe {
 		this.Donnees.parcourir((aElementListe) => {
 			if (
 				aElementListe !== aArticle &&
-				aElementListe.getEtat() !== EGenreEtat.Suppression &&
+				aElementListe.getEtat() !== Enumere_Etat_1.EGenreEtat.Suppression &&
 				aElementListe.getLibelle() === V
 			) {
 				lEstUnLibelleUnique = false;
@@ -88,11 +89,11 @@ class DonneesListe_RelationEvaluationCompetence extends ObjetDonneesListe {
 	getTypeValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_RelationEvaluationCompetence.colonnes.code:
-				return ObjetDonneesListe.ETypeCellule.Html;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 			case DonneesListe_RelationEvaluationCompetence.colonnes.coefficient:
-				return ObjetDonneesListe.ETypeCellule.Note;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Note;
 		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
 	getOptionsNote() {
 		return {
@@ -109,7 +110,7 @@ class DonneesListe_RelationEvaluationCompetence extends ObjetDonneesListe {
 			aParams.idColonne ===
 			DonneesListe_RelationEvaluationCompetence.colonnes.nivAcquiDefaut
 		) {
-			return ObjetDonneesListe.ECouleurCellule.Blanc;
+			return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
 		}
 	}
 	avecEvenementCreation() {
@@ -155,7 +156,7 @@ class DonneesListe_RelationEvaluationCompetence extends ObjetDonneesListe {
 					}
 					aParametres.menuContextuel.addCommande(
 						CommandeMenuContextuelRelationEvalCompetence.ChoisirCompetenceDansReferentiel,
-						GTraductions.getValeur(
+						ObjetTraduction_1.GTraductions.getValeur(
 							"evaluations.FenetreSaisieEvaluation.ChoisirCompetencesDansReferentiel",
 							[lLibelleServiceConcerne],
 						),
@@ -166,13 +167,13 @@ class DonneesListe_RelationEvaluationCompetence extends ObjetDonneesListe {
 					this.listeReferentielsUniques.count() > 1
 				) {
 					aParametres.menuContextuel.addSousMenu(
-						GTraductions.getValeur(
+						ObjetTraduction_1.GTraductions.getValeur(
 							"evaluations.FenetreSaisieEvaluation.SaisirNouvelleCompetence",
 						),
 						(aInstanceSousMenu) => {
 							for (const lRefUnique of this.listeReferentielsUniques) {
 								aInstanceSousMenu.addCommande(
-									EGenreCommandeMenu.Creation,
+									Enumere_CommandeMenu_1.EGenreCommandeMenu.Creation,
 									lRefUnique.palier.getLibelle(),
 									true,
 									{ refUniqueConcerne: lRefUnique },
@@ -185,8 +186,8 @@ class DonneesListe_RelationEvaluationCompetence extends ObjetDonneesListe {
 						this.listeReferentielsUniques &&
 						this.listeReferentielsUniques.get(0);
 					aParametres.menuContextuel.addCommande(
-						EGenreCommandeMenu.Creation,
-						GTraductions.getValeur(
+						Enumere_CommandeMenu_1.EGenreCommandeMenu.Creation,
+						ObjetTraduction_1.GTraductions.getValeur(
 							"evaluations.FenetreSaisieEvaluation.SaisirNouvelleCompetence",
 						),
 						true,
@@ -196,47 +197,57 @@ class DonneesListe_RelationEvaluationCompetence extends ObjetDonneesListe {
 			}
 		} else {
 			const lAuMoinsUnElementSelectionne =
-				!!aParametres.listeSelection &&
-				!!aParametres.listeSelection.count() > 0;
+				!!aParametres.listeSelection && aParametres.listeSelection.count() > 0;
 			const lEstUneMultiSelection =
 				!!aParametres.listeSelection && aParametres.listeSelection.count() > 1;
 			aParametres.menuContextuel.addCommande(
 				CommandeMenuContextuelRelationEvalCompetence.ModifierCoefficient,
-				GTraductions.getValeur("competences.ModifierCoefficient"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"competences.ModifierCoefficient",
+				),
 				lAuMoinsUnElementSelectionne,
 			);
 			const lThis = this;
-			TUtilitaireCompetences.initMenuContextuelNiveauAcquisition({
-				instance: this,
-				menuContextuel: aParametres.menuContextuel,
-				avecSousMenu: true,
-				genreChoixValidationCompetence:
-					TypeGenreValidationCompetence.tGVC_EvaluationEtItem,
-				evaluationsEditables: lAuMoinsUnElementSelectionne,
-				callbackNiveau: function (aNiveau) {
-					lThis.callbackModifierNiveauMaitriseDefaut(
-						aParametres.listeSelection,
-						aNiveau,
-						aParametres.liste,
-					);
+			UtilitaireCompetences_1.TUtilitaireCompetences.initMenuContextuelNiveauAcquisition(
+				{
+					instance: this,
+					menuContextuel: aParametres.menuContextuel,
+					avecSousMenu: true,
+					genreChoixValidationCompetence:
+						TypeGenreValidationCompetence_1.TypeGenreValidationCompetence
+							.tGVC_EvaluationEtItem,
+					evaluationsEditables: lAuMoinsUnElementSelectionne,
+					callbackNiveau: function (aNiveau) {
+						lThis.callbackModifierNiveauMaitriseDefaut(
+							aParametres.listeSelection,
+							aNiveau,
+							aParametres.liste,
+						);
+					},
 				},
-			});
+			);
 			if (!!this.callbackDupliquerCompetence) {
 				aParametres.menuContextuel.addCommande(
 					CommandeMenuContextuelRelationEvalCompetence.DupliquerCompetence,
-					GTraductions.getValeur("competences.DupliquerLaCompetence"),
+					ObjetTraduction_1.GTraductions.getValeur(
+						"competences.DupliquerLaCompetence",
+					),
 					!lEstUneMultiSelection && lAuMoinsUnElementSelectionne,
 				);
 			}
 			aParametres.menuContextuel.addCommande(
-				EGenreCommandeMenu.Suppression,
-				GTraductions.getValeur("competences.SupprimerLaCompetence"),
+				Enumere_CommandeMenu_1.EGenreCommandeMenu.Suppression,
+				ObjetTraduction_1.GTraductions.getValeur(
+					"competences.SupprimerLaCompetence",
+				),
 				!lEstUneMultiSelection && lAuMoinsUnElementSelectionne,
 			);
 			aParametres.menuContextuel.avecSeparateurSurSuivant();
 			aParametres.menuContextuel.addCommande(
 				CommandeMenuContextuelRelationEvalCompetence.AppliquerOrdreGrille,
-				GTraductions.getValeur("competences.AppliquerOrdreDeLaGrille"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"competences.AppliquerOrdreDeLaGrille",
+				),
 			);
 		}
 	}
@@ -269,28 +280,39 @@ class DonneesListe_RelationEvaluationCompetence extends ObjetDonneesListe {
 				if (!lValeurCoefficientCommune && lValeurCoefficientCommune !== 0) {
 					lValeurCoefficientCommune = 1;
 				}
-				let lTypeNoteCommune = new TypeNote(lValeurCoefficientCommune);
-				const lFenetreSaisieNote = ObjetFenetre.creerInstanceFenetre(
-					ObjetFenetre_SaisieTypeNote,
-					{
-						pere: this,
-						evenement: function (aNumeroBouton, aTypeNote) {
-							if (aNumeroBouton === 1) {
-								if (!aTypeNote.estUneNoteVide()) {
-									aParametres.listeSelection.parcourir((aArticle) => {
-										aArticle.coefficient = aTypeNote.getValeur();
-										aArticle.setEtat(EGenreEtat.Modification);
-									});
-									aParametres.instance.actualiser({ conserverSelection: true });
-								}
-							}
-						},
-					},
-					{ titre: GTraductions.getValeur("competences.ModifierCoefficient") },
+				let lTypeNoteCommune = new TypeNote_1.TypeNote(
+					lValeurCoefficientCommune,
 				);
+				const lFenetreSaisieNote =
+					ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+						ObjetFenetre_SaisieTypeNote_1.ObjetFenetre_SaisieTypeNote,
+						{
+							pere: this,
+							evenement: function (aNumeroBouton, aTypeNote) {
+								if (aNumeroBouton === 1) {
+									if (!aTypeNote.estUneNoteVide()) {
+										aParametres.listeSelection.parcourir((aArticle) => {
+											aArticle.coefficient = aTypeNote.getValeur();
+											aArticle.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+										});
+										aParametres.instance.actualiser({
+											conserverSelection: true,
+										});
+									}
+								}
+							},
+						},
+						{
+							titre: ObjetTraduction_1.GTraductions.getValeur(
+								"competences.ModifierCoefficient",
+							),
+						},
+					);
 				lFenetreSaisieNote.setOptionsInputNote(this.getOptionsNote());
 				lFenetreSaisieNote.setDonnees(lTypeNoteCommune, {
-					labelChamps: GTraductions.getValeur("competences.coefficient"),
+					labelChamps: ObjetTraduction_1.GTraductions.getValeur(
+						"competences.coefficient",
+					),
 				});
 				break;
 			}
@@ -309,7 +331,7 @@ class DonneesListe_RelationEvaluationCompetence extends ObjetDonneesListe {
 			const lEstUnLibelleUnique = this._estUnLibelleUnique(D, lLibelle);
 			if (lEstUnLibelleUnique) {
 				D.Numero = "0";
-				D.Genre = EGenreRessource.Competence;
+				D.Genre = Enumere_Ressource_1.EGenreRessource.Competence;
 				D.setLibelle(lLibelle);
 			} else {
 				return D;
@@ -330,7 +352,9 @@ class DonneesListe_RelationEvaluationCompetence extends ObjetDonneesListe {
 				}
 				if (!!lPilier) {
 					if (lPilier.estPersonnalise) {
-						lHtmlCode.push('<i class="icon_star Texte11"></i>');
+						lHtmlCode.push(
+							'<i role="presentation" class="icon_star Texte11"></i>',
+						);
 					} else {
 						if (!!lPilier.code) {
 							lHtmlCode.push(
@@ -342,9 +366,9 @@ class DonneesListe_RelationEvaluationCompetence extends ObjetDonneesListe {
 							const lCouleurPilier = lPilier.couleur || GCouleur.noir;
 							lHtmlCode.push(
 								'<div style="width: 10px; ',
-								GStyle.composeCouleurFond(lCouleurPilier),
+								ObjetStyle_1.GStyle.composeCouleurFond(lCouleurPilier),
 								" ",
-								GStyle.composeCouleurBordure(GCouleur.noir),
+								ObjetStyle_1.GStyle.composeCouleurBordure(GCouleur.noir),
 								'">&nbsp;</div>',
 							);
 						}
@@ -357,16 +381,16 @@ class DonneesListe_RelationEvaluationCompetence extends ObjetDonneesListe {
 			case DonneesListe_RelationEvaluationCompetence.colonnes.coefficient:
 				return aParams.article.coefficient !== undefined &&
 					aParams.article.coefficient !== null
-					? new TypeNote(aParams.article.coefficient)
+					? new TypeNote_1.TypeNote(aParams.article.coefficient)
 					: null;
 			case DonneesListe_RelationEvaluationCompetence.colonnes.nivAcquiDefaut:
 				if (!!aParams.article.niveauAcquiDefaut) {
 					if (lSurExportCSV) {
-						return EGenreNiveauDAcquisitionUtil.getAbbreviation(
+						return Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getAbbreviation(
 							aParams.article.niveauAcquiDefaut,
 						);
 					}
-					return EGenreNiveauDAcquisitionUtil.getImage(
+					return Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
 						aParams.article.niveauAcquiDefaut,
 					);
 				}
@@ -374,7 +398,7 @@ class DonneesListe_RelationEvaluationCompetence extends ObjetDonneesListe {
 		}
 		return "";
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_RelationEvaluationCompetence.colonnes.code: {
 				const lHintCode = [];
@@ -396,17 +420,19 @@ class DonneesListe_RelationEvaluationCompetence extends ObjetDonneesListe {
 	}
 	getMessageSuppressionConfirmation(D) {
 		return D.avecEvaluation
-			? GTraductions.getValeur("competences.message.ConfirmationSuppression")
-			: GTraductions.getValeur("liste.suppressionSelection");
+			? ObjetTraduction_1.GTraductions.getValeur(
+					"competences.message.ConfirmationSuppression",
+				)
+			: ObjetTraduction_1.GTraductions.getValeur("liste.suppressionSelection");
 	}
 	surSuppression(D) {
-		D.setEtat(EGenreEtat.Suppression);
+		D.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 		D.Position = null;
 		this.Donnees.trier();
 		this.Donnees.parcourir((aElement, aIndex) => {
 			if (aElement.existe() && aElement.Position !== aIndex + 1) {
 				aElement.Position = aIndex + 1;
-				aElement.setEtat(EGenreEtat.Modification);
+				aElement.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 			}
 		});
 	}
@@ -422,7 +448,7 @@ class DonneesListe_RelationEvaluationCompetence extends ObjetDonneesListe {
 		}
 		return false;
 	}
-	surEdition(aParams, V) {
+	async surEdition(aParams, V) {
 		switch (aParams.idColonne) {
 			case DonneesListe_RelationEvaluationCompetence.colonnes.intitule: {
 				const lEstUnLibelleUnique = this._estUnLibelleUnique(
@@ -465,21 +491,35 @@ class DonneesListe_RelationEvaluationCompetence extends ObjetDonneesListe {
 		const lPosition = lDestination.Position;
 		lDestination.Position = lSource.Position;
 		lSource.Position = lPosition;
-		lSource.setEtat(EGenreEtat.Modification);
-		lDestination.setEtat(EGenreEtat.Modification);
+		lSource.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+		lDestination.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 	}
 }
-DonneesListe_RelationEvaluationCompetence.colonnes = {
-	code: "DonneesListeREC_Code",
-	intitule: "DonneesListeREC_Intitule",
-	coefficient: "DonneesListeREC_Coefficient",
-	nivAcquiDefaut: "DonneesListeREC_NivAcquiDefaut",
-};
+exports.DonneesListe_RelationEvaluationCompetence =
+	DonneesListe_RelationEvaluationCompetence;
+(function (DonneesListe_RelationEvaluationCompetence) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["code"] = "DonneesListeREC_Code";
+		colonnes["intitule"] = "DonneesListeREC_Intitule";
+		colonnes["coefficient"] = "DonneesListeREC_Coefficient";
+		colonnes["nivAcquiDefaut"] = "DonneesListeREC_NivAcquiDefaut";
+	})(
+		(colonnes =
+			DonneesListe_RelationEvaluationCompetence.colonnes ||
+			(DonneesListe_RelationEvaluationCompetence.colonnes = {})),
+	);
+})(
+	DonneesListe_RelationEvaluationCompetence ||
+		(exports.DonneesListe_RelationEvaluationCompetence =
+			DonneesListe_RelationEvaluationCompetence =
+				{}),
+);
 function _estUneNouvelleCompetence(aArticle) {
 	return (
 		aArticle &&
 		aArticle.getNumero() === "0" &&
-		aArticle.getGenre() === EGenreRessource.Competence
+		aArticle.getGenre() === Enumere_Ressource_1.EGenreRessource.Competence
 	);
 }
 function _getIntituleArticle(aArticle) {
@@ -492,4 +532,3 @@ function _getIntituleArticle(aArticle) {
 	}
 	return result;
 }
-module.exports = { DonneesListe_RelationEvaluationCompetence };

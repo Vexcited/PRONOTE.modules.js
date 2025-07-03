@@ -1,0 +1,20 @@
+exports.StylesObjetCalendrier = void 0;
+exports.StylesObjetCalendrier = {
+	ObjetCalendrier: "ObjetCalendrier",
+	tableJours: "tableJours",
+	tableMois: "tableMois",
+	Calendrier_Jour_td: "Calendrier_Jour_td",
+	calendrierJour: "calendrier-jour",
+	quinzaine1: "quinzaine-1",
+	disabled: "disabled",
+	ferie: "ferie",
+	selected: "selected",
+	avecContenu: "avecContenu",
+	calendrierJourDomaine: "calendrier-jour-domaine",
+	cours: "cours",
+	coursPotentielPossible: "cours-potentiel-possible",
+	coursPere: "cours-pere",
+	coursPotentiel: "cours-potentiel",
+	Calendrier_Mois: "Calendrier_Mois",
+	Calendrier_Boutons: "Calendrier_Boutons",
+};

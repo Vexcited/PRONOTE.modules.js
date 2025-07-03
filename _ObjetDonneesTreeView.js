@@ -1,7 +1,20 @@
-exports.ObjetTreeNode = exports._ObjetDonneesTreeView = void 0;
+exports.ObjetTreeNode =
+	exports._ObjetDonneesTreeView =
+	exports.TradTreeview =
+		void 0;
 const MethodesTableau_1 = require("MethodesTableau");
 const ObjetStyle_1 = require("ObjetStyle");
 const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTraduction_2 = require("ObjetTraduction");
+const AccessApp_1 = require("AccessApp");
+const TradTreeview = ObjetTraduction_2.TraductionsModule.getModule("Treeview", {
+	interdit: "",
+	supprimer: "",
+	InclureDans: "",
+	InclureDansRacine: "",
+	Deplacer: "",
+});
+exports.TradTreeview = TradTreeview;
 class _ObjetDonneesTreeView {
 	constructor(aDonnees) {
 		this.donnees = aDonnees;
@@ -46,8 +59,12 @@ class _ObjetDonneesTreeView {
 			lHauteurLigneMin +
 			"px;" +
 			ObjetStyle_1.GStyle.composeCouleur(
-				aSelectionne ? GCouleur.selection.getFond() : GCouleur.blanc,
-				aSelectionne ? GCouleur.selection.getTexte() : GCouleur.noir,
+				aSelectionne
+					? (0, AccessApp_1.getApp)().getCouleur().selection.getFond()
+					: (0, AccessApp_1.getApp)().getCouleur().blanc,
+				aSelectionne
+					? (0, AccessApp_1.getApp)().getCouleur().selection.getTexte()
+					: (0, AccessApp_1.getApp)().getCouleur().noir,
 			)
 		);
 	}
@@ -173,23 +190,21 @@ class _ObjetDonneesTreeView {
 	getContenuDraggableInterdit(aNoedSource) {
 		return (
 			'<table><tr><td class="Image_Arbre_Drag_Interdit"></td><td class="PetitEspaceGauche">' +
-			ObjetTraduction_1.GTraductions.getValeur("treeview.interdit") +
+			TradTreeview.interdit +
 			"</td></tr></table>"
 		);
 	}
 	getContenuDraggableSuppression(aNoedSource) {
-		return ObjetTraduction_1.GTraductions.getValeur("treeview.supprimer");
+		return TradTreeview.supprimer;
 	}
 	getContenuDraggableInclusion(aNodeSource, aNodeDestination) {
 		const H = [];
 		H.push('<table><tr><td class="Image_Arbre_Drag_Inclusion"></td>');
 		H.push('<td class="PetitEspaceGauche">');
 		if (aNodeDestination) {
-			H.push(ObjetTraduction_1.GTraductions.getValeur("treeview.InclureDans"));
+			H.push(TradTreeview.InclureDans);
 		} else {
-			H.push(
-				ObjetTraduction_1.GTraductions.getValeur("treeview.InclureDansRacine"),
-			);
+			H.push(TradTreeview.InclureDansRacine);
 		}
 		H.push("</td></tr></table>");
 		return H.join("");
@@ -197,7 +212,7 @@ class _ObjetDonneesTreeView {
 	getContenuDraggableDeplacement(aNoedSource) {
 		return (
 			'<table><tr><td class="Image_Arbre_Drag_Deplacement"></td><td class="PetitEspaceGauche">' +
-			ObjetTraduction_1.GTraductions.getValeur("treeview.Deplacer") +
+			TradTreeview.Deplacer +
 			"</td></tr></table>"
 		);
 	}

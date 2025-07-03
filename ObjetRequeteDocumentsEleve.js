@@ -1,11 +1,9 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteDocumentsEleve extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
-	lancerRequete(aParams) {
-		this.JSON.eleve = aParams.eleve;
+exports.ObjetRequeteDocumentsEleve = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteDocumentsEleve extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
+	lancerRequete(aEleve) {
+		this.JSON = { eleve: aEleve };
 		return this.appelAsynchrone();
 	}
 	actionApresRequete() {
@@ -14,5 +12,8 @@ class ObjetRequeteDocumentsEleve extends ObjetRequeteConsultation {
 		});
 	}
 }
-Requetes.inscrire("DocumentsEleve", ObjetRequeteDocumentsEleve);
-module.exports = { ObjetRequeteDocumentsEleve };
+exports.ObjetRequeteDocumentsEleve = ObjetRequeteDocumentsEleve;
+CollectionRequetes_1.Requetes.inscrire(
+	"DocumentsEleve",
+	ObjetRequeteDocumentsEleve,
+);

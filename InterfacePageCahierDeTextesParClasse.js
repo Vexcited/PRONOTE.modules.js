@@ -1,20 +1,20 @@
-const {
-	_InterfacePageCahierDeTexte,
-} = require("_InterfacePageCahierDeTexte.js");
-const { ObjetTimeline } = require("ObjetTimeline.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const {
-	ObjetAffichagePageAvecMenusDeroulants,
-} = require("InterfacePageAvecMenusDeroulants.js");
-const { EEvent } = require("Enumere_Event.js");
-const { GUID } = require("GUID.js");
-const { InterfacePage } = require("InterfacePage.js");
-class InterfacePageCahierDeTextesParClasse extends _InterfacePageCahierDeTexte {
+exports.InterfacePageCahierDeTextesParClasse = void 0;
+const _InterfacePageCahierDeTexte_1 = require("_InterfacePageCahierDeTexte");
+const ObjetTimeline_1 = require("ObjetTimeline");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const InterfacePageAvecMenusDeroulants_1 = require("InterfacePageAvecMenusDeroulants");
+const Enumere_Event_1 = require("Enumere_Event");
+const GUID_1 = require("GUID");
+const InterfacePage_1 = require("InterfacePage");
+class InterfacePageCahierDeTextesParClasse extends _InterfacePageCahierDeTexte_1._InterfacePageCahierDeTexte {
 	constructor(...aParams) {
 		super(...aParams);
-		this.idComboFiltre = GUID.getId();
-		this.ajouterEvenementGlobal(EEvent.SurPostResize, this.surPostResize);
+		this.idComboFiltre = GUID_1.GUID.getId();
+		this.ajouterEvenementGlobal(
+			Enumere_Event_1.EEvent.SurPostResize,
+			this.surPostResize,
+		);
 	}
 	surPostResize() {
 		this.actualiser();
@@ -22,7 +22,7 @@ class InterfacePageCahierDeTextesParClasse extends _InterfacePageCahierDeTexte {
 	construireInstances() {
 		super.construireInstances();
 		this.identTripleCombo = this.add(
-			ObjetAffichagePageAvecMenusDeroulants,
+			InterfacePageAvecMenusDeroulants_1.ObjetAffichagePageAvecMenusDeroulants,
 			this.evenementSurDernierMenuDeroulant,
 			this.initialiserTripleCombo,
 		);
@@ -39,7 +39,7 @@ class InterfacePageCahierDeTextesParClasse extends _InterfacePageCahierDeTexte {
 	setParametresGeneraux() {
 		this.AddSurZone = [this.identTripleCombo];
 		this.AddSurZone.push({
-			html: ObjetTimeline.composeChoix(
+			html: ObjetTimeline_1.ObjetTimeline.composeChoix(
 				this.idZoneChxModeAff,
 				this.modeTimeLine,
 			),
@@ -50,7 +50,7 @@ class InterfacePageCahierDeTextesParClasse extends _InterfacePageCahierDeTexte {
 				'<div class="EspaceGauche ' +
 				this.classLabelDepuis +
 				'">' +
-				GTraductions.getValeur("Depuis") +
+				ObjetTraduction_1.GTraductions.getValeur("Depuis") +
 				"</div>",
 		});
 		this.AddSurZone.push(this.identCelluleDate);
@@ -85,7 +85,7 @@ class InterfacePageCahierDeTextesParClasse extends _InterfacePageCahierDeTexte {
 						longueur: 170,
 						hauteur: 16,
 						hauteurLigneDefault: 16,
-						labelWAICellule: GTraductions.getValeur(
+						labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
 							"CahierDeTexte.filtrerParThemes",
 						),
 					});
@@ -139,7 +139,7 @@ class InterfacePageCahierDeTextesParClasse extends _InterfacePageCahierDeTexte {
 		});
 	}
 	initialiserTripleCombo(aInstance) {
-		aInstance.setParametres([EGenreRessource.Classe]);
+		aInstance.setParametres([Enumere_Ressource_1.EGenreRessource.Classe]);
 	}
 	recupererDonnees() {
 		this.presetDates();
@@ -156,7 +156,11 @@ class InterfacePageCahierDeTextesParClasse extends _InterfacePageCahierDeTexte {
 		this.surResizeInterface();
 	}
 	evenementAfficherMessage(aGenreMessage) {
-		InterfacePage.prototype._evenementAfficherMessage.call(this, aGenreMessage);
+		InterfacePage_1.InterfacePage.prototype._evenementAfficherMessage.call(
+			this,
+			aGenreMessage,
+		);
 	}
 }
-module.exports = { InterfacePageCahierDeTextesParClasse };
+exports.InterfacePageCahierDeTextesParClasse =
+	InterfacePageCahierDeTextesParClasse;

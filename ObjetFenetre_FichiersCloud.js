@@ -18,16 +18,12 @@ const ObjetRequeteCloudAttente_1 = require("ObjetRequeteCloudAttente");
 const UtilitaireOAuth2_1 = require("UtilitaireOAuth2");
 const UtilitaireRequetesCloud_1 = require("UtilitaireRequetesCloud");
 const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
-const jsx_1 = require("jsx");
 class ObjetFenetre_FichiersCloud extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.setOptionsFenetre({
-			titre: ObjetTraduction_1.GTraductions.getValeur(
-				"FenetreCloud.TitreFichierCloud",
-			),
+			titre: DonneesListe_FichiersCloud_1.TradFichiersCloud.TitreFichierCloud,
 			hauteur: 700,
-			heightMax_mobile: true,
 			modale: true,
 			listeBoutons: [
 				{
@@ -68,9 +64,9 @@ class ObjetFenetre_FichiersCloud extends ObjetFenetre_1.ObjetFenetre {
 									this.idPartageDossierSelection,
 								);
 							},
-							title: ObjetTraduction_1.GTraductions.getValeur(
-								"FenetreCloud.ActualisationRepertoire",
-							),
+							title:
+								DonneesListe_FichiersCloud_1.TradFichiersCloud
+									.ActualisationRepertoire,
 						},
 						{ genre: ObjetListe_1.ObjetListe.typeBouton.rechercher },
 					],
@@ -90,14 +86,14 @@ class ObjetFenetre_FichiersCloud extends ObjetFenetre_1.ObjetFenetre {
 		this.param = aParam;
 		if (!aParam.inscriptionSeule) {
 			this.setOptionsFenetre({
-				titre: ObjetTraduction_1.GTraductions.getValeur(
-					"FenetreCloud.TitreFichierCloud",
-					[
-						this.listeCloud
-							.getElementParNumeroEtGenre(null, aParam.service)
-							.getLibelle(),
-					],
-				),
+				titre:
+					DonneesListe_FichiersCloud_1.TradFichiersCloud.TitreFichierCloud.format(
+						[
+							this.listeCloud
+								.getElementParNumeroEtGenre(null, aParam.service)
+								.getLibelle(),
+						],
+					),
 			});
 		}
 		this.idPartageDossierSelection = null;
@@ -107,6 +103,16 @@ class ObjetFenetre_FichiersCloud extends ObjetFenetre_1.ObjetFenetre {
 				this._surReponseCloudAttente(aParams);
 			});
 		this.$refreshSelf();
+	}
+	jsxModeleChipsFilAriane(aIdPartage, aEstDerniereChips) {
+		return {
+			event: () => {
+				this._actualiserDossierDIdPartage(aIdPartage);
+			},
+			getSelected: () => {
+				return aEstDerniereChips;
+			},
+		};
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
@@ -132,28 +138,26 @@ class ObjetFenetre_FichiersCloud extends ObjetFenetre_1.ObjetFenetre {
 						IE.jsx.str(
 							"ie-chips",
 							{
-								"ie-model": (0, jsx_1.jsxFuncAttr)("chipsFilAriane", [
+								"ie-model": aInstance.jsxModeleChipsFilAriane.bind(
+									aInstance,
 									aDossier.idPartage,
 									aIndex === lTab.length - 1,
-								]),
-								title: ObjetTraduction_1.GTraductions.getValeur(
-									"FenetreCloud.SelectionnerRepertoire_S",
-									[aDossier.getLibelle()],
 								),
+								title:
+									DonneesListe_FichiersCloud_1.TradFichiersCloud.SelectionnerRepertoire_S.format(
+										[aDossier.getLibelle()],
+									),
 							},
 							aDossier.getLibelle(),
 						),
 					);
 				});
-				return H.join(IE.jsx.str("i", { class: "icon_chevron_right" }));
-			},
-			chipsFilAriane: {
-				event(aIdPartage) {
-					aInstance._actualiserDossierDIdPartage(aIdPartage);
-				},
-				getSelected(aIdPartage, aDernierChips) {
-					return aDernierChips;
-				},
+				return H.join(
+					IE.jsx.str("i", {
+						class: "icon_chevron_right",
+						role: "presentation",
+					}),
+				);
 			},
 			btnUpload: {
 				getOptionsSelecFile() {
@@ -181,12 +185,10 @@ class ObjetFenetre_FichiersCloud extends ObjetFenetre_1.ObjetFenetre {
 				getLibelle(aBoutonRepeat) {
 					if (aBoutonRepeat.element.estValider) {
 						return aInstance.optionsFenetre.modeSelectionRepertoirePourUpload
-							? ObjetTraduction_1.GTraductions.getValeur(
-									"FenetreCloud.ChoisirRepertoire_FichierCloud",
-								)
-							: ObjetTraduction_1.GTraductions.getValeur(
-									"FenetreCloud.PartagerFichierCloud",
-								);
+							? DonneesListe_FichiersCloud_1.TradFichiersCloud
+									.ChoisirRepertoire_FichierCloud
+							: DonneesListe_FichiersCloud_1.TradFichiersCloud
+									.PartagerFichierCloud;
 					}
 					return aBoutonRepeat.element.libelle;
 				},
@@ -226,9 +228,9 @@ class ObjetFenetre_FichiersCloud extends ObjetFenetre_1.ObjetFenetre {
 						return GApplication.getMessage()
 							.afficher({
 								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
-								titre: ObjetTraduction_1.GTraductions.getValeur(
-									"FenetreCloud.TitreFenetreFormat",
-								),
+								titre:
+									DonneesListe_FichiersCloud_1.TradFichiersCloud
+										.TitreFenetreFormat,
 								message: this._composeMessage(lListePubPDF),
 								controleur: {
 									radioFormat: {
@@ -294,8 +296,8 @@ class ObjetFenetre_FichiersCloud extends ObjetFenetre_1.ObjetFenetre {
 			});
 	}
 	composeContenu() {
-		const T = [];
-		T.push(
+		const H = [];
+		H.push(
 			IE.jsx.str(
 				"div",
 				{ class: "bloc" },
@@ -321,9 +323,7 @@ class ObjetFenetre_FichiersCloud extends ObjetFenetre_1.ObjetFenetre {
 									"ie-selecfile": true,
 									"ie-class": "btnUpload.getClass",
 								},
-								ObjetTraduction_1.GTraductions.getValeur(
-									"FenetreCloud.Deposer_Cloud",
-								),
+								DonneesListe_FichiersCloud_1.TradFichiersCloud.Deposer_Cloud,
 							)
 						: IE.jsx.str(
 								"div",
@@ -335,19 +335,18 @@ class ObjetFenetre_FichiersCloud extends ObjetFenetre_1.ObjetFenetre {
 									role: "button",
 									tabindex: "0",
 								},
-								ObjetTraduction_1.GTraductions.getValeur(
-									"FenetreCloud.GlissezDeposer_Cloud",
-								),
+								DonneesListe_FichiersCloud_1.TradFichiersCloud
+									.GlissezDeposer_Cloud,
 							)
 					: "",
 			),
 		);
-		return T.join("");
+		return H.join("");
 	}
 	composeBas() {
-		const T = [];
+		const H = [];
 		if (!this.optionsFenetre.modeSelectionRepertoirePourUpload) {
-			T.push(
+			H.push(
 				"<div>",
 				UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnMonsieurFiche(
 					"btnMrFiche",
@@ -355,7 +354,7 @@ class ObjetFenetre_FichiersCloud extends ObjetFenetre_1.ObjetFenetre {
 				"</div>",
 			);
 		}
-		return T.join("");
+		return H.join("");
 	}
 	getSelection(aRacine) {
 		const lResult = new ObjetListeElements_1.ObjetListeElements();
@@ -558,9 +557,7 @@ class ObjetFenetre_FichiersCloud extends ObjetFenetre_1.ObjetFenetre {
 		const H = [];
 		H.push(
 			'<div class="Gras">',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"FenetreCloud.ExplicationFenetreFormat",
-			),
+			DonneesListe_FichiersCloud_1.TradFichiersCloud.ExplicationFenetreFormat,
 			"</div>",
 		);
 		H.push('<div class="EspaceHaut EspaceGauche">');
@@ -573,22 +570,20 @@ class ObjetFenetre_FichiersCloud extends ObjetFenetre_1.ObjetFenetre {
 					"'," +
 					TTypeElementCloud_1.TypeFormatPublication.FP_Natif,
 				')" class="EspaceHaut">',
-				ObjetTraduction_1.GTraductions.getValeur("FenetreCloud.FormatOrigine"),
+				DonneesListe_FichiersCloud_1.TradFichiersCloud.FormatOrigine,
 				"</ie-radio><ie-radio ie-model=\"radioFormat('" +
 					aEle.idPartage +
 					"'," +
 					TTypeElementCloud_1.TypeFormatPublication.FP_Pdf,
 				')" class="EspaceHaut">',
-				ObjetTraduction_1.GTraductions.getValeur("FenetreCloud.FormatPdf"),
+				DonneesListe_FichiersCloud_1.TradFichiersCloud.FormatPdf,
 				"</ie-radio></div>",
 			);
 		});
 		H.push("</div>");
 		H.push(
 			'<div class="GrandEspaceHaut">',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"FenetreCloud.ConfirmationFenetreFormat",
-			),
+			DonneesListe_FichiersCloud_1.TradFichiersCloud.ConfirmationFenetreFormat,
 			"</div>",
 		);
 		return H.join("");

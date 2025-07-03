@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieAbsencesGrille extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieAbsencesGrille = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieAbsencesGrille extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParams) {
 		this.JSON = $.extend(
 			{ eleve: null, domaine: null, genreAbsence: null },
@@ -18,5 +16,8 @@ class ObjetRequeteSaisieAbsencesGrille extends ObjetRequeteSaisie {
 		this.callbackReussite.appel(this.JSONReponse);
 	}
 }
-Requetes.inscrire("SaisieAbsencesGrille", ObjetRequeteSaisieAbsencesGrille);
-module.exports = { ObjetRequeteSaisieAbsencesGrille };
+exports.ObjetRequeteSaisieAbsencesGrille = ObjetRequeteSaisieAbsencesGrille;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieAbsencesGrille",
+	ObjetRequeteSaisieAbsencesGrille,
+);

@@ -1,18 +1,24 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const TypeSaisieTAFARendre = {
-	Rendu: 0,
-	CopieEleve: 1,
-	Verrou: 2,
-	CopieCorrigee: 3,
-	CommentaireCorrige: 4,
-	DateReportRendu: 5,
-	annulerProlongation: 6,
-};
-class ObjetRequeteSaisieTAFARendre extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieTAFARendre = exports.TypeSaisieTAFARendre = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+var TypeSaisieTAFARendre;
+(function (TypeSaisieTAFARendre) {
+	TypeSaisieTAFARendre[(TypeSaisieTAFARendre["Rendu"] = 0)] = "Rendu";
+	TypeSaisieTAFARendre[(TypeSaisieTAFARendre["CopieEleve"] = 1)] = "CopieEleve";
+	TypeSaisieTAFARendre[(TypeSaisieTAFARendre["Verrou"] = 2)] = "Verrou";
+	TypeSaisieTAFARendre[(TypeSaisieTAFARendre["CopieCorrigee"] = 3)] =
+		"CopieCorrigee";
+	TypeSaisieTAFARendre[(TypeSaisieTAFARendre["CommentaireCorrige"] = 4)] =
+		"CommentaireCorrige";
+	TypeSaisieTAFARendre[(TypeSaisieTAFARendre["DateReportRendu"] = 5)] =
+		"DateReportRendu";
+	TypeSaisieTAFARendre[(TypeSaisieTAFARendre["annulerProlongation"] = 6)] =
+		"annulerProlongation";
+})(
+	TypeSaisieTAFARendre ||
+		(exports.TypeSaisieTAFARendre = TypeSaisieTAFARendre = {}),
+);
+class ObjetRequeteSaisieTAFARendre extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aTypeSaisie, aDonnees) {
 		$.extend(this.JSON, aDonnees);
 		aDonnees.listeEleves.setSerialisateurJSON({
@@ -55,9 +61,9 @@ class ObjetRequeteSaisieTAFARendre extends ObjetRequeteSaisie {
 		});
 		return this.appelAsynchrone();
 	}
-	actionApresRequete() {
-		this.callbackReussite.appel(this.JSONReponse);
-	}
 }
-Requetes.inscrire("SaisieTAFARendre", ObjetRequeteSaisieTAFARendre);
-module.exports = { ObjetRequeteSaisieTAFARendre, TypeSaisieTAFARendre };
+exports.ObjetRequeteSaisieTAFARendre = ObjetRequeteSaisieTAFARendre;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieTAFARendre",
+	ObjetRequeteSaisieTAFARendre,
+);

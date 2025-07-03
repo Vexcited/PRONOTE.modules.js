@@ -1,32 +1,32 @@
 const IEHtml = require("IEHtml");
 const MethodesObjet_1 = require("MethodesObjet");
-const ObjetIdentite_1 = require("ObjetIdentite");
 IEHtml.addAttribut(
 	"ie-identite",
-	(aContexteCourant, aNodeName, aAttributValue, aOutils) => {
+	(aContexteCourant, aNodeName, aAttributValue, aOutils, aComp, aAttrName) => {
 		const lNode = aContexteCourant.node;
 		if (lNode.id) {
 			return true;
 		}
 		const lValue = aAttributValue || "";
-		if (!lValue || !aContexteCourant.controleur) {
+		if (!lValue) {
 			return true;
 		}
 		const lCallbackParams = aOutils.getAccesParametres(
 			lValue,
+			aAttrName,
 			aContexteCourant,
 		);
 		if (!lCallbackParams.estFonction) {
 			return true;
 		}
-		const lValueCallback = lCallbackParams.callback([]);
-		if (!lValueCallback || !lValueCallback.class || !lValueCallback.pere) {
+		const lValueCallback = lCallbackParams.callback([aContexteCourant.node]);
+		if (!lValueCallback || !lValueCallback.class) {
 			return true;
 		}
-		let lInstance = ObjetIdentite_1.Identite.creerInstance(
-			lValueCallback.class,
-			{ pere: lValueCallback.pere, evenement: lValueCallback.evenement },
-		);
+		let lInstance = new lValueCallback.class({
+			pere: lValueCallback.pere,
+			evenement: lValueCallback.evenement,
+		});
 		lNode.id = lInstance.getNom();
 		$(lNode).on("destroyed", () => {
 			if (MethodesObjet_1.MethodesObjet.isFunction(lValueCallback.destroy)) {
@@ -48,7 +48,7 @@ IEHtml.addAttribut(
 		});
 		aOutils.addCommentaireDebug(
 			aContexteCourant.node,
-			'ie-identite="' + lValue + '"',
+			`ie-identite="${lCallbackParams.nomCommentaire || lValue}"`,
 		);
 		return true;
 	},

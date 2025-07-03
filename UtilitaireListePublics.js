@@ -1,6 +1,7 @@
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const UtilitaireListePublics = {};
+exports.UtilitaireListePublics = UtilitaireListePublics;
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+function UtilitaireListePublics() {}
 UtilitaireListePublics.getLibelleSuppListePublics = (
 	aArticle,
 	aOptions = {},
@@ -19,33 +20,33 @@ UtilitaireListePublics.getLibelleSuppListePublics = (
 	const H = [];
 	if (aArticle) {
 		switch (aArticle.getGenre()) {
-			case EGenreRessource.Enseignant:
+			case Enumere_Ressource_1.EGenreRessource.Enseignant:
 				if (lOptions.avecProfPrincipal && aArticle.estPrincipal) {
 					H.push(
-						`<p><i class="icon_star m-right-s"></i>${GTraductions.getValeur("Messagerie.ProfPrincipal")}</p>`,
+						`<p><i role="presentation" class="icon_star m-right-s"></i>${ObjetTraduction_1.GTraductions.getValeur("Messagerie.ProfPrincipal")}</p>`,
 					);
 				}
 				if (lOptions.avecTuteur && aArticle.estTuteur) {
 					H.push(
-						`<p><i class="icon_star m-right-s"></i>${GTraductions.getValeur("Messagerie.Tuteur")}</p>`,
+						`<p><i role="presentation" class="icon_star m-right-s"></i>${ObjetTraduction_1.GTraductions.getValeur("Messagerie.Tuteur")}</p>`,
 					);
 				}
 				if (lOptions.avecListeRessource && aArticle.listeRessources) {
 					H.push(aArticle.listeRessources.getTableauLibelles().join("<br>"));
 				}
 				break;
-			case EGenreRessource.Personnel:
+			case Enumere_Ressource_1.EGenreRessource.Personnel:
 				if (lOptions.avecMonCpe && aArticle.estMonCpe) {
 					H.push(
-						`<p><i class="icon_star m-right-s"></i>${GTraductions.getValeur("Messagerie.monCPE")}</p>`,
+						`<p><i role="presentation" class="icon_star m-right-s"></i>${ObjetTraduction_1.GTraductions.getValeur("Messagerie.monCPE")}</p>`,
 					);
 				}
 				if (lOptions.avecFonction && aArticle.fonction) {
 					H.push(`<p>${aArticle.fonction.getLibelle()}</p>`);
 				}
 				break;
-			case EGenreRessource.Eleve:
-			case EGenreRessource.Responsable:
+			case Enumere_Ressource_1.EGenreRessource.Eleve:
+			case Enumere_Ressource_1.EGenreRessource.Responsable:
 				if (aArticle.classesNiv) {
 					H.push(
 						`<p>${aArticle.classesNiv.getTableauLibelles().join(", ")}</p>`,
@@ -55,4 +56,3 @@ UtilitaireListePublics.getLibelleSuppListePublics = (
 	}
 	return H.join("");
 };
-module.exports = { UtilitaireListePublics };

@@ -11,17 +11,18 @@ const Enumere_Espace_1 = require("Enumere_Espace");
 const Enumere_Onglet_1 = require("Enumere_Onglet");
 const Enumere_Connexion_1 = require("Enumere_Connexion");
 const ControleSaisieEvenement_1 = require("ControleSaisieEvenement");
-const ObjetFenetre_ImportFichierProf = require("ObjetFenetre_ImportFichierProf");
+const MultipleObjetFenetre_ImportFichierProf = require("ObjetFenetre_ImportFichierProf");
 const ObjetFenetre_1 = require("ObjetFenetre");
 const TypeGenreEchangeDonnees_1 = require("TypeGenreEchangeDonnees");
 const MethodesObjet_1 = require("MethodesObjet");
-const jsx_1 = require("jsx");
-const ObjetRequeteSaisieExportFichierProf = require("ObjetRequeteSaisieExportFichierProf.js");
+const ObjetRequeteSaisieExportFichierProf_js_1 = require("ObjetRequeteSaisieExportFichierProf.js");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const AccessApp_1 = require("AccessApp");
 class ObjetInterfaceCommande extends InterfaceCommandeCP_1.ObjetInterfaceCommandeCP {
-	constructor() {
-		super(...arguments);
-		this.idCommande = this.Nom + "_Commande";
-		this.etatUtilisateurPN = GApplication.getEtatUtilisateur();
+	constructor(...aParams) {
+		super(...aParams);
+		const lApplicationScoEspace = (0, AccessApp_1.getApp)();
+		this.etatUtilisateurPN = lApplicationScoEspace.getEtatUtilisateur();
 	}
 	construireInstances() {
 		Invocateur_1.Invocateur.abonner(
@@ -30,182 +31,207 @@ class ObjetInterfaceCommande extends InterfaceCommandeCP_1.ObjetInterfaceCommand
 			this,
 		);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			modeExclusif: {
-				afficher: function () {
-					return GApplication.getModeExclusif();
-				},
-				html: function () {
-					const H = [];
-					H.push(
-						'<div class="Texte12 Gras SansMain" style="background-color:#c15353;color:#ffffff;" title="',
-						ObjetChaine_1.GChaine.toTitle(
-							ObjetTraduction_1.GTraductions.getValeur(
-								"ModeExclusif.EntrerModeExclusif",
-							),
-						),
-						'">',
-						'<div class="PetitEspace">',
-						ObjetChaine_1.GChaine.insecable(
-							ObjetTraduction_1.GTraductions.getValeur(
-								"ModeExclusif.ConsultationTemporaire",
-							),
-						),
-						"</div>",
-						"</div>",
-					);
-					return H.join("");
-				},
+	jsxIfPresenceBouton(aGenreCommande) {
+		const lEstPrimaire = GApplication.estPrimaire;
+		switch (aGenreCommande) {
+			case Enumere_Commande_1.EGenreCommande.Validation:
+				return !lEstPrimaire || this._etatSaisieActif;
+			case Enumere_Commande_1.EGenreCommande.ImpressionHTML: {
+				const lDisabled =
+					!GEtatUtilisateur.impressionCourante ||
+					GEtatUtilisateur.impressionCourante.etat ===
+						Enumere_GenreImpression_1.EGenreImpression.GenerationPDF ||
+					GEtatUtilisateur.impressionCourante.etat ===
+						Enumere_GenreImpression_1.EGenreImpression.Aucune;
+				return this._estOngletImpressionHtml() && (!lDisabled || !lEstPrimaire);
+			}
+			case Enumere_Commande_1.EGenreCommande.Impression: {
+				const lDisabled =
+					!GEtatUtilisateur.impressionCourante ||
+					GEtatUtilisateur.impressionCourante.etat !==
+						Enumere_GenreImpression_1.EGenreImpression.GenerationPDF;
+				return (
+					!this._estOngletImpressionHtml() && (!lDisabled || !lEstPrimaire)
+				);
+			}
+		}
+		return false;
+	}
+	estBoutonCommandeDisabled(aGenreCommande) {
+		switch (aGenreCommande) {
+			case Enumere_Commande_1.EGenreCommande.Validation:
+				return !this._etatSaisieActif;
+			case Enumere_Commande_1.EGenreCommande.ImpressionHTML: {
+				const lDisabled =
+					!GEtatUtilisateur.impressionCourante ||
+					GEtatUtilisateur.impressionCourante.etat ===
+						Enumere_GenreImpression_1.EGenreImpression.GenerationPDF ||
+					GEtatUtilisateur.impressionCourante.etat ===
+						Enumere_GenreImpression_1.EGenreImpression.Aucune;
+				return lDisabled;
+			}
+			case Enumere_Commande_1.EGenreCommande.Impression: {
+				const lDisabled =
+					!GEtatUtilisateur.impressionCourante ||
+					GEtatUtilisateur.impressionCourante.etat !==
+						Enumere_GenreImpression_1.EGenreImpression.GenerationPDF;
+				return lDisabled;
+			}
+		}
+		return true;
+	}
+	jsxModeleBoutonCommande(aGenreCommande) {
+		return {
+			event: () => {
+				this.callback.appel({ genreCmd: aGenreCommande });
 			},
-			btnCommmande: {
-				event(aGenre) {
-					aInstance.callback.appel({ genreCmd: aGenre });
-				},
-				getDisabled(aGenre) {
-					switch (aGenre) {
-						case Enumere_Commande_1.EGenreCommande.Validation:
-							return !aInstance._etatSaisieActif;
-						case Enumere_Commande_1.EGenreCommande.ImpressionHTML: {
-							const lDisabled =
-								!GEtatUtilisateur.impressionCourante ||
-								GEtatUtilisateur.impressionCourante.etat ===
-									Enumere_GenreImpression_1.EGenreImpression.GenerationPDF ||
-								GEtatUtilisateur.impressionCourante.etat ===
-									Enumere_GenreImpression_1.EGenreImpression.Aucune;
-							return lDisabled;
-						}
-						case Enumere_Commande_1.EGenreCommande.Impression: {
-							const lDisabled =
-								!GEtatUtilisateur.impressionCourante ||
-								GEtatUtilisateur.impressionCourante.etat !==
-									Enumere_GenreImpression_1.EGenreImpression.GenerationPDF;
-							return lDisabled;
-						}
-					}
-					return true;
-				},
-				getTitle(aGenre, aNode, aData) {
-					switch (aGenre) {
-						case Enumere_Commande_1.EGenreCommande.Validation:
-							return !aData.$disabled
-								? ObjetTraduction_1.GTraductions.getValeur(
-										"Commande.Validation.Actif",
-									)
-								: ObjetTraduction_1.GTraductions.getValeur(
-										"Commande.Validation.Inactif",
-									);
-						case Enumere_Commande_1.EGenreCommande.ImpressionHTML:
-							return !aData.$disabled
-								? ObjetTraduction_1.GTraductions.getValeur(
-										"Commande.Impression.Actif",
-									)
-								: ObjetTraduction_1.GTraductions.getValeur(
-										"Commande.Impression.Inactif",
-									);
-						case Enumere_Commande_1.EGenreCommande.Impression:
-							return !aData.$disabled
-								? ObjetTraduction_1.GTraductions.getValeur("Commande.PDF.Actif")
-								: ObjetTraduction_1.GTraductions.getValeur(
-										"Commande.PDF.Inactif",
-									);
-					}
-					return "";
-				},
+			getDisabled: () => {
+				return this.estBoutonCommandeDisabled(aGenreCommande);
 			},
-			getIf(aGenre) {
-				const lEstPrimaire = GApplication.estPrimaire;
-				switch (aGenre) {
+			getTitle: () => {
+				switch (aGenreCommande) {
 					case Enumere_Commande_1.EGenreCommande.Validation:
-						return !lEstPrimaire || aInstance._etatSaisieActif;
-					case Enumere_Commande_1.EGenreCommande.ImpressionHTML: {
-						const lDisabled =
-							!GEtatUtilisateur.impressionCourante ||
-							GEtatUtilisateur.impressionCourante.etat ===
-								Enumere_GenreImpression_1.EGenreImpression.GenerationPDF ||
-							GEtatUtilisateur.impressionCourante.etat ===
-								Enumere_GenreImpression_1.EGenreImpression.Aucune;
-						return (
-							aInstance._estOngletImpressionHtml() &&
-							(!lDisabled || !lEstPrimaire)
-						);
-					}
-					case Enumere_Commande_1.EGenreCommande.Impression: {
-						const lDisabled =
-							!GEtatUtilisateur.impressionCourante ||
-							GEtatUtilisateur.impressionCourante.etat !==
-								Enumere_GenreImpression_1.EGenreImpression.GenerationPDF;
-						return (
-							!aInstance._estOngletImpressionHtml() &&
-							(!lDisabled || !lEstPrimaire)
-						);
+						return !this.estBoutonCommandeDisabled(aGenreCommande)
+							? ObjetTraduction_1.GTraductions.getValeur(
+									"Commande.Validation.Actif",
+								)
+							: ObjetTraduction_1.GTraductions.getValeur(
+									"Commande.Validation.Inactif",
+								);
+					case Enumere_Commande_1.EGenreCommande.ImpressionHTML:
+						return !this.estBoutonCommandeDisabled(aGenreCommande)
+							? ObjetTraduction_1.GTraductions.getValeur(
+									"Commande.Impression.Actif",
+								)
+							: ObjetTraduction_1.GTraductions.getValeur(
+									"Commande.Impression.Inactif",
+								);
+					case Enumere_Commande_1.EGenreCommande.Impression:
+						return !this.estBoutonCommandeDisabled(aGenreCommande)
+							? ObjetTraduction_1.GTraductions.getValeur("Commande.PDF.Actif")
+							: ObjetTraduction_1.GTraductions.getValeur(
+									"Commande.PDF.Inactif",
+								);
+				}
+				return "";
+			},
+		};
+	}
+	jsxIfAfficherBoutonImportExport() {
+		return [
+			Enumere_Onglet_1.EGenreOnglet.QCM_Saisie,
+			Enumere_Onglet_1.EGenreOnglet.QCM_Collaboratif,
+			Enumere_Onglet_1.EGenreOnglet.CahierDeTexte_Progression,
+			Enumere_Onglet_1.EGenreOnglet.Affectation_Progression,
+			Enumere_Onglet_1.EGenreOnglet.BibliothequeProgression,
+			Enumere_Onglet_1.EGenreOnglet.RessourcePedagogique,
+			Enumere_Onglet_1.EGenreOnglet.RessourcePedagogique_Partage,
+		].includes(this.etatUtilisateurPN.getGenreOnglet());
+	}
+	jsxModeleBoutonImport() {
+		return {
+			event: () => {
+				if (GApplication.getModeExclusif()) {
+					GApplication.getMessage().afficher({
+						titre: ObjetTraduction_1.GTraductions.getValeur(
+							"ModeExclusif.UsageExclusif",
+						),
+						message: ObjetTraduction_1.GTraductions.getValeur(
+							"ModeExclusif.SaisieImpossibleConsultation",
+						),
+					});
+				} else {
+					if (
+						MultipleObjetFenetre_ImportFichierProf &&
+						MultipleObjetFenetre_ImportFichierProf.ObjetFenetre_ImportFichierProf
+					) {
+						(0, ControleSaisieEvenement_1.ControleSaisieEvenement)(() => {
+							const lFenetreImportFichierProf =
+								ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+									MultipleObjetFenetre_ImportFichierProf.ObjetFenetre_ImportFichierProf,
+									{
+										pere: this,
+										initialiser: (aInstanceFenetre) => {
+											aInstanceFenetre.setOptionsFenetre({
+												titre: ObjetTraduction_1.GTraductions.getValeur(
+													"Commande.RecupererFichierDeRessources",
+												),
+											});
+											aInstanceFenetre.setOptions({
+												genreFichier:
+													TypeGenreEchangeDonnees_1.TypeGenreEchangeDonnees
+														.GED_PAS,
+											});
+										},
+									},
+								);
+							lFenetreImportFichierProf.setDonnees();
+						});
 					}
 				}
 			},
-			afficherBtnImportExport: function () {
-				return [
-					Enumere_Onglet_1.EGenreOnglet.QCM_Saisie,
-					Enumere_Onglet_1.EGenreOnglet.QCM_Collaboratif,
-					Enumere_Onglet_1.EGenreOnglet.CahierDeTexte_Progression,
-					Enumere_Onglet_1.EGenreOnglet.Affectation_Progression,
-					Enumere_Onglet_1.EGenreOnglet.BibliothequeProgression,
-					Enumere_Onglet_1.EGenreOnglet.RessourcePedagogique,
-					Enumere_Onglet_1.EGenreOnglet.RessourcePedagogique_Partage,
-				].includes(aInstance.etatUtilisateurPN.getGenreOnglet());
-			},
-			btnImport: {
-				event: function () {
-					if (GApplication.getModeExclusif()) {
-						GApplication.getMessage().afficher({
-							titre: ObjetTraduction_1.GTraductions.getValeur(
-								"ModeExclusif.UsageExclusif",
-							),
-							message: ObjetTraduction_1.GTraductions.getValeur(
-								"ModeExclusif.SaisieImpossibleConsultation",
-							),
-						});
-					} else {
-						(0, ControleSaisieEvenement_1.ControleSaisieEvenement)(() => {
-							ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
-								ObjetFenetre_ImportFichierProf,
-								{
-									pere: aInstance,
-									initialiser: (aInstance) => {
-										aInstance.setOptionsFenetre({
-											titre: ObjetTraduction_1.GTraductions.getValeur(
-												"Commande.RecupererFichierDeRessources",
-											),
-										});
-										aInstance.setOptions({
-											genreFichier:
-												TypeGenreEchangeDonnees_1.TypeGenreEchangeDonnees
-													.GED_PAS,
-										});
-									},
-								},
-							).setDonnees();
-						});
-					}
-				},
-			},
-			btnExport: {
-				event: function () {
+		};
+	}
+	jsxModeleBoutonExport() {
+		return {
+			event: () => {
+				if (
+					ObjetRequeteSaisieExportFichierProf_js_1.ObjetRequeteSaisieExportFichierProf
+				) {
 					(0, ControleSaisieEvenement_1.ControleSaisieEvenement)(() => {
-						if (ObjetRequeteSaisieExportFichierProf) {
-							new ObjetRequeteSaisieExportFichierProf({}, (aEchec, aUrl) => {
-								if (aEchec || !aUrl) {
-									return;
-								}
-								window.open(ObjetChaine_1.GChaine.encoderUrl(aUrl));
-							}).lancerRequete({
+						new ObjetRequeteSaisieExportFichierProf_js_1.ObjetRequeteSaisieExportFichierProf(
+							{},
+						)
+							.lancerRequete({
 								genreFichier:
 									TypeGenreEchangeDonnees_1.TypeGenreEchangeDonnees.GED_PAS,
+							})
+							.then((aReponse) => {
+								var _a;
+								if (
+									(_a = aReponse.JSONReponse) === null || _a === void 0
+										? void 0
+										: _a.url
+								) {
+									window.open(
+										ObjetChaine_1.GChaine.encoderUrl(aReponse.JSONReponse.url),
+									);
+								}
 							});
-						}
 					});
-				},
+				}
 			},
-		});
+		};
+	}
+	jsxDisplayModeExclusif() {
+		return GApplication.getModeExclusif();
+	}
+	jsxGetHtmlEstEnModeExclusif() {
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				"div",
+				{
+					class: "Texte12 Gras SansMain",
+					style: "background-color:#c15353;color:#ffffff;",
+					title: ObjetChaine_1.GChaine.toTitle(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"ModeExclusif.EntrerModeExclusif",
+						),
+					),
+				},
+				IE.jsx.str(
+					"div",
+					{ class: "PetitEspace" },
+					ObjetChaine_1.GChaine.insecable(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"ModeExclusif.ConsultationTemporaire",
+						),
+					),
+				),
+			),
+		);
+		return H.join("");
 	}
 	construireStructureAffichageAutre() {
 		const H = [];
@@ -215,69 +241,93 @@ class ObjetInterfaceCommande extends InterfaceCommandeCP_1.ObjetInterfaceCommand
 			!GApplication.getDemo() &&
 			this.etatUtilisateurPN.genreConnexion ===
 				Enumere_Connexion_1.EGenreConnexion.Normale &&
-			!GNavigateur.isIpad &&
-			!GNavigateur.isIphone
+			!ObjetNavigateur_1.Navigateur.isIpad &&
+			!ObjetNavigateur_1.Navigateur.isIphone
 		) {
 			H.push(
-				'<div ie-if="afficherBtnImportExport">',
-				'<ie-btnimage ie-model="btnImport" class="icon_download_alt btn-bandeau" title="',
-				ObjetChaine_1.GChaine.toTitle(
-					ObjetTraduction_1.GTraductions.getValeur(
-						"Commande.RecupererFichierDeRessources",
-					),
+				IE.jsx.str(
+					"div",
+					{ "ie-if": this.jsxIfAfficherBoutonImportExport.bind(this) },
+					IE.jsx.str("ie-btnimage", {
+						"ie-model": this.jsxModeleBoutonImport.bind(this),
+						class: "icon_download_alt btn-bandeau",
+						title: ObjetChaine_1.GChaine.toTitle(
+							ObjetTraduction_1.GTraductions.getValeur(
+								"Commande.RecupererFichierDeRessources",
+							),
+						),
+						"aria-haspopup": "dialog",
+					}),
 				),
-				'"></ie-btnimage>',
-				"</div>",
 			);
 			H.push(
-				'<div ie-if="afficherBtnImportExport" style="margin-right:10px;">',
-				'<ie-btnimage ie-model="btnExport" class="icon_upload_alt btn-bandeau" title="',
-				ObjetChaine_1.GChaine.toTitle(
-					ObjetTraduction_1.GTraductions.getValeur(
-						"Commande.CreerUnFichierDeRessources",
-					),
+				IE.jsx.str(
+					"div",
+					{
+						"ie-if": this.jsxIfAfficherBoutonImportExport.bind(this),
+						style: "margin-right:10px;",
+					},
+					IE.jsx.str("ie-btnimage", {
+						"ie-model": this.jsxModeleBoutonExport.bind(this),
+						class: "icon_upload_alt btn-bandeau",
+						title: ObjetChaine_1.GChaine.toTitle(
+							ObjetTraduction_1.GTraductions.getValeur(
+								"Commande.CreerUnFichierDeRessources",
+							),
+						),
+						"aria-haspopup": "dialog",
+					}),
 				),
-				'"></ie-btnimage>',
-				"</div>",
 			);
 		}
 		if (this.etatUtilisateurPN.getAvecSaisie()) {
 			H.push(
 				IE.jsx.str("ie-btnicon", {
 					class: "icon_disquette_pleine btn-bandeau",
-					"ie-model": (0, jsx_1.jsxFuncAttr)("btnCommmande", [
+					"ie-model": this.jsxModeleBoutonCommande.bind(
+						this,
 						Enumere_Commande_1.EGenreCommande.Validation,
-					]),
-					"ie-if": (0, jsx_1.jsxFuncAttr)("getIf", [
+					),
+					"ie-if": this.jsxIfPresenceBouton.bind(
+						this,
 						Enumere_Commande_1.EGenreCommande.Validation,
-					]),
+					),
 				}),
 			);
 		}
 		H.push(
 			IE.jsx.str("ie-btnicon", {
 				class: "icon_print btn-bandeau",
-				"ie-model": (0, jsx_1.jsxFuncAttr)("btnCommmande", [
+				"ie-model": this.jsxModeleBoutonCommande.bind(
+					this,
 					Enumere_Commande_1.EGenreCommande.ImpressionHTML,
-				]),
-				"ie-if": (0, jsx_1.jsxFuncAttr)("getIf", [
+				),
+				"ie-if": this.jsxIfPresenceBouton.bind(
+					this,
 					Enumere_Commande_1.EGenreCommande.ImpressionHTML,
-				]),
+				),
+				"aria-haspopup": "dialog",
 			}),
 		);
 		H.push(
 			IE.jsx.str("ie-btnicon", {
 				class: "icon_pdf btn-bandeau",
-				"ie-model": (0, jsx_1.jsxFuncAttr)("btnCommmande", [
+				"ie-model": this.jsxModeleBoutonCommande.bind(
+					this,
 					Enumere_Commande_1.EGenreCommande.Impression,
-				]),
-				"ie-if": (0, jsx_1.jsxFuncAttr)("getIf", [
+				),
+				"ie-if": this.jsxIfPresenceBouton.bind(
+					this,
 					Enumere_Commande_1.EGenreCommande.Impression,
-				]),
+				),
+				"aria-haspopup": "dialog",
 			}),
 		);
 		H.push(
-			'<div ie-display="modeExclusif.afficher" ie-html="modeExclusif.html"></div>',
+			IE.jsx.str("div", {
+				"ie-display": this.jsxDisplayModeExclusif.bind(this),
+				"ie-html": this.jsxGetHtmlEstEnModeExclusif.bind(this),
+			}),
 		);
 		return H.join("");
 	}
@@ -319,8 +369,8 @@ class ObjetInterfaceCommande extends InterfaceCommandeCP_1.ObjetInterfaceCommand
 		const lThis = event.data.aObjet;
 		const lIndex = event.data.index;
 		if (
-			GNavigateur.isToucheFlecheGauche() ||
-			GNavigateur.isToucheFlecheHaut()
+			ObjetNavigateur_1.Navigateur.isToucheFlecheGauche() ||
+			ObjetNavigateur_1.Navigateur.isToucheFlecheHaut()
 		) {
 			if (lIndex > 0) {
 				let lInstance = lThis.Instances[lThis.instancesActif[lIndex - 1]];
@@ -328,8 +378,8 @@ class ObjetInterfaceCommande extends InterfaceCommandeCP_1.ObjetInterfaceCommand
 				$("#" + lID.escapeJQ()).focus();
 			}
 		} else if (
-			GNavigateur.isToucheFlecheDroite() ||
-			GNavigateur.isToucheFlecheBas()
+			ObjetNavigateur_1.Navigateur.isToucheFlecheDroite() ||
+			ObjetNavigateur_1.Navigateur.isToucheFlecheBas()
 		) {
 			if (lIndex < lThis.instancesActif.length - 1) {
 				let lInstance = lThis.Instances[lThis.instancesActif[lIndex + 1]];
@@ -367,7 +417,6 @@ class ObjetInterfaceCommande extends InterfaceCommandeCP_1.ObjetInterfaceCommand
 			Enumere_Onglet_1.EGenreOnglet.SaisieNotes,
 			Enumere_Onglet_1.EGenreOnglet.Remplacements_Grille,
 			Enumere_Onglet_1.EGenreOnglet.Remplacements_Tableau,
-			Enumere_Onglet_1.EGenreOnglet.Rencontre_Planning_Liste,
 			Enumere_Onglet_1.EGenreOnglet.TrombinoscopeClasse,
 			Enumere_Onglet_1.EGenreOnglet.Trombinoscope_Professeur,
 			Enumere_Onglet_1.EGenreOnglet.Trombinoscope_Personnel,

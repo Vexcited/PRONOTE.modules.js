@@ -30,64 +30,97 @@ var TypeColListeAppreciationProfsParService;
 		(TypeColListeAppreciationProfsParService["tcapps_MoyenneAnnuelle"] = 8)
 	] = "tcapps_MoyenneAnnuelle";
 	TypeColListeAppreciationProfsParService[
-		(TypeColListeAppreciationProfsParService["tcapps_RangParcoursup"] = 9)
+		(TypeColListeAppreciationProfsParService[
+			"tcapps_NiveauAcquisitionParcoursup"
+		] = 9)
+	] = "tcapps_NiveauAcquisitionParcoursup";
+	TypeColListeAppreciationProfsParService[
+		(TypeColListeAppreciationProfsParService["tcapps_RangParcoursup"] = 10)
 	] = "tcapps_RangParcoursup";
 	TypeColListeAppreciationProfsParService[
-		(TypeColListeAppreciationProfsParService["tcapps_MoyenneParcoursup"] = 10)
+		(TypeColListeAppreciationProfsParService["tcapps_MoyenneParcoursup"] = 11)
 	] = "tcapps_MoyenneParcoursup";
 	TypeColListeAppreciationProfsParService[
 		(TypeColListeAppreciationProfsParService[
 			"tcapps_MoyenneNonRepresentative"
-		] = 11)
+		] = 12)
 	] = "tcapps_MoyenneNonRepresentative";
 	TypeColListeAppreciationProfsParService[
-		(TypeColListeAppreciationProfsParService["tcapps_NbEvals"] = 12)
+		(TypeColListeAppreciationProfsParService["tcapps_NbEvals"] = 13)
 	] = "tcapps_NbEvals";
 	TypeColListeAppreciationProfsParService[
-		(TypeColListeAppreciationProfsParService["tcapps_JaugeEvaluations"] = 13)
+		(TypeColListeAppreciationProfsParService["tcapps_JaugeEvaluations"] = 14)
 	] = "tcapps_JaugeEvaluations";
 	TypeColListeAppreciationProfsParService[
-		(TypeColListeAppreciationProfsParService["tcapps_NiveauAcquisition"] = 14)
+		(TypeColListeAppreciationProfsParService["tcapps_NiveauAcquisition"] = 15)
 	] = "tcapps_NiveauAcquisition";
 	TypeColListeAppreciationProfsParService[
-		(TypeColListeAppreciationProfsParService["tcapps_NoteLSU"] = 15)
+		(TypeColListeAppreciationProfsParService["tcapps_NoteLSU"] = 16)
 	] = "tcapps_NoteLSU";
 	TypeColListeAppreciationProfsParService[
-		(TypeColListeAppreciationProfsParService["tcapps_MoyProposee"] = 16)
+		(TypeColListeAppreciationProfsParService["tcapps_MoyProposee"] = 17)
 	] = "tcapps_MoyProposee";
 	TypeColListeAppreciationProfsParService[
 		(TypeColListeAppreciationProfsParService["tcapps_AvisReligionProposee"] =
-			17)
+			18)
 	] = "tcapps_AvisReligionProposee";
 	TypeColListeAppreciationProfsParService[
-		(TypeColListeAppreciationProfsParService["tcapps_MoyDeliberee"] = 18)
+		(TypeColListeAppreciationProfsParService["tcapps_MoyDeliberee"] = 19)
 	] = "tcapps_MoyDeliberee";
 	TypeColListeAppreciationProfsParService[
 		(TypeColListeAppreciationProfsParService["tcapps_AvisReligionDeliberee"] =
-			19)
+			20)
 	] = "tcapps_AvisReligionDeliberee";
 	TypeColListeAppreciationProfsParService[
-		(TypeColListeAppreciationProfsParService["tcapps_ECTSEleve"] = 20)
+		(TypeColListeAppreciationProfsParService["tcapps_ECTSEleve"] = 21)
 	] = "tcapps_ECTSEleve";
 	TypeColListeAppreciationProfsParService[
-		(TypeColListeAppreciationProfsParService["tcapps_AppreciationA"] = 21)
+		(TypeColListeAppreciationProfsParService["tcapps_AppreciationA"] = 22)
 	] = "tcapps_AppreciationA";
 	TypeColListeAppreciationProfsParService[
-		(TypeColListeAppreciationProfsParService["tcapps_AppreciationB"] = 22)
+		(TypeColListeAppreciationProfsParService["tcapps_AppreciationB"] = 23)
 	] = "tcapps_AppreciationB";
 	TypeColListeAppreciationProfsParService[
-		(TypeColListeAppreciationProfsParService["tcapps_AppreciationC"] = 23)
+		(TypeColListeAppreciationProfsParService["tcapps_AppreciationC"] = 24)
 	] = "tcapps_AppreciationC";
 	TypeColListeAppreciationProfsParService[
-		(TypeColListeAppreciationProfsParService["tcapps_AppreciationReleve"] = 24)
+		(TypeColListeAppreciationProfsParService["tcapps_AppreciationReleve"] = 25)
 	] = "tcapps_AppreciationReleve";
 	TypeColListeAppreciationProfsParService[
-		(TypeColListeAppreciationProfsParService["tcapps_AvisProfesseur"] = 25)
+		(TypeColListeAppreciationProfsParService["tcapps_AvisProfesseur"] = 26)
 	] = "tcapps_AvisProfesseur";
 	TypeColListeAppreciationProfsParService[
 		(TypeColListeAppreciationProfsParService[
+			"tcapps_RangParcoursupPrecedent1"
+		] = 27)
+	] = "tcapps_RangParcoursupPrecedent1";
+	TypeColListeAppreciationProfsParService[
+		(TypeColListeAppreciationProfsParService[
+			"tcapps_MoyParcoursupPrecedente1"
+		] = 28)
+	] = "tcapps_MoyParcoursupPrecedente1";
+	TypeColListeAppreciationProfsParService[
+		(TypeColListeAppreciationProfsParService["tcapps_AppreciationParcoursup1"] =
+			29)
+	] = "tcapps_AppreciationParcoursup1";
+	TypeColListeAppreciationProfsParService[
+		(TypeColListeAppreciationProfsParService[
+			"tcapps_RangParcoursupPrecedent2"
+		] = 30)
+	] = "tcapps_RangParcoursupPrecedent2";
+	TypeColListeAppreciationProfsParService[
+		(TypeColListeAppreciationProfsParService[
+			"tcapps_moyParcoursupPrecedente2"
+		] = 31)
+	] = "tcapps_moyParcoursupPrecedente2";
+	TypeColListeAppreciationProfsParService[
+		(TypeColListeAppreciationProfsParService["tcapps_AppreciationParcoursup2"] =
+			32)
+	] = "tcapps_AppreciationParcoursup2";
+	TypeColListeAppreciationProfsParService[
+		(TypeColListeAppreciationProfsParService[
 			"tcapps_AvisProfesseurParcoursup"
-		] = 26)
+		] = 33)
 	] = "tcapps_AvisProfesseurParcoursup";
 })(
 	TypeColListeAppreciationProfsParService ||

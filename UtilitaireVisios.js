@@ -1,15 +1,17 @@
-exports.UtilitaireVisios = void 0;
+exports.UtilitaireVisios = exports.ObjetRequeteSaisieVisio = void 0;
 const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetChaine_1 = require("ObjetChaine");
 const ObjetFenetre_SaisieVisiosCours_1 = require("ObjetFenetre_SaisieVisiosCours");
-const ObjetFenetre_SaisieVisiosCours_2 = require("ObjetFenetre_SaisieVisiosCours");
-const tag_1 = require("tag");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetElement_1 = require("ObjetElement");
 const Enumere_Etat_1 = require("Enumere_Etat");
 const CollectionRequetes_1 = require("CollectionRequetes");
 const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const AccessApp_1 = require("AccessApp");
+class ObjetRequeteSaisieVisio extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
+exports.ObjetRequeteSaisieVisio = ObjetRequeteSaisieVisio;
+CollectionRequetes_1.Requetes.inscrire("SaisieVisio", ObjetRequeteSaisieVisio);
 class UtilitaireVisios {
 	constructor() {}
 	getTailleMaxLibelle() {
@@ -49,9 +51,7 @@ class UtilitaireVisios {
 					H.push("<br/>");
 				}
 				H.push(
-					ObjetChaine_1.GChaine.replaceRCToHTML(
-						aElementVisios.commentaire,
-					).ajouterEntites(),
+					ObjetChaine_1.GChaine.replaceRCToHTML(aElementVisios.commentaire),
 				);
 			}
 		}
@@ -73,7 +73,8 @@ class UtilitaireVisios {
 				(aJSON) => {
 					const lJSON = aJSON;
 					if (!lJSON.estEnCours) {
-						GApplication.getMessage()
+						(0, AccessApp_1.getApp)()
+							.getMessage()
 							.afficher({ message: aJSON.message })
 							.then(() => {});
 					} else {
@@ -91,7 +92,8 @@ class UtilitaireVisios {
 				() => {},
 			);
 		} else {
-			GApplication.getMessage()
+			(0, AccessApp_1.getApp)()
+				.getMessage()
 				.afficher({
 					message: ObjetTraduction_1.GTraductions.getValeur("requete.erreur"),
 				})
@@ -115,17 +117,13 @@ class UtilitaireVisios {
 				evenement: function (aNumeroBouton) {
 					if (
 						aNumeroBouton ===
-						ObjetFenetre_SaisieVisiosCours_2.TypeBoutonFenetreSaisieVisiosCours
-							.Annuler
+						ObjetFenetre_SaisieVisiosCours_1.ObjetFenetre_SaisieVisiosCours
+							.TypeBouton.Annuler
 					) {
 						if (aVisio.getEtat() === Enumere_Etat_1.EGenreEtat.Creation) {
 							aVisio.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 						}
-					} else if (
-						aNumeroBouton !==
-						ObjetFenetre_SaisieVisiosCours_2.TypeBoutonFenetreSaisieVisiosCours
-							.Annuler
-					) {
+					} else {
 						if (!!aCallbackApresModification) {
 							aCallbackApresModification();
 						}
@@ -278,13 +276,11 @@ class UtilitaireVisios {
 				AJSON.commentaire = aElement.commentaire;
 			},
 		});
-		(0, CollectionRequetes_1.Requetes)("SaisieVisio", this)
-			.lancerRequete(lParamsSaisie)
-			.then(() => {
-				if (aCallbackApresModification) {
-					aCallbackApresModification.call(this);
-				}
-			});
+		new ObjetRequeteSaisieVisio(this).lancerRequete(lParamsSaisie).then(() => {
+			if (aCallbackApresModification) {
+				aCallbackApresModification.call(this);
+			}
+		});
 	}
 	callbackValidationProgramme(
 		aProgramme,
@@ -318,13 +314,11 @@ class UtilitaireVisios {
 			lParamsSaisie.elementParent.listeServices =
 				aProgramme.listeServices.toJSON();
 		}
-		(0, CollectionRequetes_1.Requetes)("SaisieVisio", this)
-			.lancerRequete(lParamsSaisie)
-			.then(() => {
-				if (aCallbackApresModification) {
-					aCallbackApresModification.call(this);
-				}
-			});
+		new ObjetRequeteSaisieVisio(this).lancerRequete(lParamsSaisie).then(() => {
+			if (aCallbackApresModification) {
+				aCallbackApresModification.call(this);
+			}
+		});
 	}
 	ouvrirFenetreConsultVisio(aElementVisio, aOptions) {
 		if (aElementVisio && aElementVisio.url) {
@@ -334,22 +328,27 @@ class UtilitaireVisios {
 			const lAvecLibelleLien = !!lLibelleLien && lLibelleLien.length > 0;
 			const lAvecCommentaire = !!lCommentaire && lCommentaire.length > 0;
 			if (lUrl !== "##BBB##" && (lAvecLibelleLien || lAvecCommentaire)) {
+				const lStrLien = lAvecLibelleLien
+					? lLibelleLien
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreSaisieVisiosCours.AccederAuCoursVirtuel",
+						);
 				const lMessage = [];
 				lMessage.push(
-					(0, tag_1.tag)(
-						"div",
-						{ class: "AlignementMilieu" },
-						(0, tag_1.tag)(
-							"ie-chips",
-							{
-								class: ["iconic", this.getNomIconePresenceVisios()],
-								href: ObjetChaine_1.GChaine.verifierURLHttp(lUrl),
-							},
-							lAvecLibelleLien
-								? lLibelleLien
-								: ObjetTraduction_1.GTraductions.getValeur(
-										"FenetreSaisieVisiosCours.AccederAuCoursVirtuel",
-									),
+					IE.jsx.str(
+						IE.jsx.fragment,
+						null,
+						IE.jsx.str(
+							"div",
+							{ class: "AlignementMilieu" },
+							IE.jsx.str(
+								"ie-chips",
+								{
+									class: "iconic " + this.getNomIconePresenceVisios(),
+									href: ObjetChaine_1.GChaine.verifierURLHttp(lUrl),
+								},
+								lStrLien,
+							),
 						),
 					),
 				);
@@ -391,7 +390,8 @@ class UtilitaireVisios {
 				if (aError && aError.sansMessage) {
 					return Promise.reject();
 				}
-				return GApplication.getMessage()
+				return (0, AccessApp_1.getApp)()
+					.getMessage()
 					.afficher({
 						message:
 							aError ||
@@ -412,7 +412,8 @@ class UtilitaireVisios {
 				if (aError && aError.sansMessage) {
 					return Promise.reject();
 				}
-				return GApplication.getMessage()
+				return (0, AccessApp_1.getApp)()
+					.getMessage()
 					.afficher({
 						message:
 							aError ||

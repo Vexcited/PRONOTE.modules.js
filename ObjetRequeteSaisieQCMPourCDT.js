@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieQCMPourCDT extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieQCMPourCDT = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieQCMPourCDT extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParametres) {
 		this.JSON = {
 			cours: null,
@@ -16,9 +14,9 @@ class ObjetRequeteSaisieQCMPourCDT extends ObjetRequeteSaisie {
 		$.extend(this.JSON, aParametres);
 		return this.appelAsynchrone();
 	}
-	actionApresRequete(aGenreReponse, aJSONRapport) {
-		this.callbackReussite.appel(aGenreReponse, aJSONRapport);
-	}
 }
-Requetes.inscrire("SaisieQCMPourCDT", ObjetRequeteSaisieQCMPourCDT);
-module.exports = { ObjetRequeteSaisieQCMPourCDT };
+exports.ObjetRequeteSaisieQCMPourCDT = ObjetRequeteSaisieQCMPourCDT;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieQCMPourCDT",
+	ObjetRequeteSaisieQCMPourCDT,
+);

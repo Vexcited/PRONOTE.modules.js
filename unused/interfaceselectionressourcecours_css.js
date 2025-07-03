@@ -1,0 +1,20 @@
+exports.StylesInterfaceSelectionRessourceCours = void 0;
+exports.StylesInterfaceSelectionRessourceCours = {
+	InterfaceSelectionRessourceCours: "InterfaceSelectionRessourceCours",
+	ConteneurRessources: "ConteneurRessources",
+	EnDiagnostic: "EnDiagnostic",
+	LigneRessource: "LigneRessource",
+	PastilleRessource: "PastilleRessource",
+	btnImage: "btnImage",
+	icon_remove: "icon_remove",
+	PastilleRessourceEditable: "PastilleRessourceEditable",
+	TextePastille: "TextePastille",
+	PastilleRessourceEditableInterdit: "PastilleRessourceEditableInterdit",
+	LigneTitreRessource: "LigneTitreRessource",
+	libelleTitreRessource: "libelleTitreRessource",
+	LigneTitreRessourceEdition: "LigneTitreRessourceEdition",
+	ConteneurDiagnostic: "ConteneurDiagnostic",
+	Image_Diagnostic_IndispoEtab: "Image_Diagnostic_IndispoEtab",
+	Image_Diagnostic_LienManuel: "Image_Diagnostic_LienManuel",
+	Image_Diagnostic_TOrange: "Image_Diagnostic_TOrange",
+};

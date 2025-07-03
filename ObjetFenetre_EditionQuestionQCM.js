@@ -24,6 +24,10 @@ const UtilitaireAudio_1 = require("UtilitaireAudio");
 const TypeNote_1 = require("TypeNote");
 const UtilitaireBoutonBandeau_1 = require("UtilitaireBoutonBandeau");
 const ObjetChaine_1 = require("ObjetChaine");
+const GUID_1 = require("GUID");
+const AccessApp_1 = require("AccessApp");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const ObjetStyle_1 = require("ObjetStyle");
 class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
@@ -50,13 +54,6 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 			avecAffichageBareme: true,
 			avecVerificationMatierePourEvaluations: false,
 		};
-	}
-	estUneQuestionEditeur() {
-		return (
-			!!this.eltQuestion &&
-			!!this.eltQuestion.editeur &&
-			this.eltQuestion.editeur.existeNumero()
-		);
 	}
 	setOptionsFenetreEditionQuestionQCM(aOptions) {
 		$.extend(this.optionsFenetreEditionQuestion, aOptions);
@@ -90,9 +87,6 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 						aInstance.eltQuestion.setLibelle(aValeur);
 						aInstance.setBoutonActif(1, true);
 					}
-				},
-				getDisabled() {
-					return aInstance.estUneQuestionEditeur();
 				},
 			},
 			inputBareme: {
@@ -208,9 +202,6 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 						aInstance.setBoutonActif(1, true);
 					}
 				},
-				getDisabled() {
-					return aInstance.estUneQuestionEditeur();
-				},
 			},
 			chipsAudioMp3Question: {
 				event() {
@@ -253,18 +244,15 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 				return lClasses.join(" ");
 			},
 			estVisibleBtnUploadFichierQuestion(aEstFichierSon, aEstBoutonAjout) {
-				if (!aInstance.estUneQuestionEditeur()) {
-					let lFichierEstPresent = false;
-					if (aEstFichierSon) {
-						lFichierEstPresent =
-							!!aInstance.eltQuestion && !!aInstance.eltQuestion.mp3;
-					} else {
-						lFichierEstPresent =
-							!!aInstance.eltQuestion && !!aInstance.eltQuestion.image;
-					}
-					return aEstBoutonAjout ? !lFichierEstPresent : lFichierEstPresent;
+				let lFichierEstPresent = false;
+				if (aEstFichierSon) {
+					lFichierEstPresent =
+						!!aInstance.eltQuestion && !!aInstance.eltQuestion.mp3;
+				} else {
+					lFichierEstPresent =
+						!!aInstance.eltQuestion && !!aInstance.eltQuestion.image;
 				}
-				return false;
+				return aEstBoutonAjout ? !lFichierEstPresent : lFichierEstPresent;
 			},
 			btnUploadFichierQuestion: {
 				getOptionsSelecFile(aEstUploadSon) {
@@ -347,8 +335,8 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 				const H = [];
 				if (aInstance.eltQuestion && aInstance.eltQuestion.image) {
 					H.push(
-						'<img src="data:image/png;base64,',
-						aInstance.eltQuestion.image,
+						'<img alt="" src="data:image/png;base64,',
+						ObjetChaine_1.GChaine.supprimerRC(aInstance.eltQuestion.image),
 						'"',
 						" onerror=\"$(this).parent().html(GTraductions.getValeur('ExecutionQCM.ImageNonSupportee'));\"",
 						' onload="',
@@ -358,11 +346,6 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 					);
 				}
 				return H.join("");
-			},
-			boutonModif: {
-				event() {
-					aInstance.evenementBoutonModif();
-				},
 			},
 			boutonApercu: {
 				event() {
@@ -381,9 +364,6 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 						aInstance._actualiserListe();
 						aInstance.setBoutonActif(1, true);
 					}
-				},
-				getDisabled() {
-					return aInstance.estUneQuestionEditeur();
 				},
 				estVisible() {
 					let lEstVisible = false;
@@ -441,17 +421,19 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 								aInstance.eltQuestion,
 							)
 						) {
-							GApplication.getMessage().afficher({
-								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
-								message: ObjetTraduction_1.GTraductions.getValeur(
-									"SaisieQCM.ConfirmationDestructionPourcentageReponse",
-								),
-								callback: function (aBouton) {
-									if (aBouton === Enumere_Action_1.EGenreAction.Valider) {
-										lFnExecuteChangementBooleen(true);
-									}
-								},
-							});
+							(0, AccessApp_1.getApp)()
+								.getMessage()
+								.afficher({
+									type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+									message: ObjetTraduction_1.GTraductions.getValeur(
+										"SaisieQCM.ConfirmationDestructionPourcentageReponse",
+									),
+									callback: function (aBouton) {
+										if (aBouton === Enumere_Action_1.EGenreAction.Valider) {
+											lFnExecuteChangementBooleen(true);
+										}
+									},
+								});
 						} else {
 							lFnExecuteChangementBooleen();
 						}
@@ -460,9 +442,14 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 			},
 			btnMrFicheReglesPointsAttribues: {
 				event() {
-					GApplication.getMessage().afficher({
-						idRessource: "SaisieQCM.MFichePointAttribueQCM",
-					});
+					(0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({ idRessource: "SaisieQCM.MFichePointAttribueQCM" });
+				},
+				getTitle() {
+					return ObjetTraduction_1.GTraductions.getTitreMFiche(
+						"SaisieQCM.MFichePointAttribueQCM",
+					);
 				},
 			},
 		});
@@ -498,13 +485,9 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 		H.push('<div id="', this.idZoneBoutonModif, '" class="InlineBlock"></div>');
 		return H.join("");
 	}
-	evenementBoutonModif() {
-		this.eltQuestion.editeur = new ObjetElement_1.ObjetElement();
-		this.majEtatEditeur();
-	}
 	evenementBoutonApercu() {
 		let lControle;
-		if (!GNavigateur.withContentEditable) {
+		if (!ObjetNavigateur_1.Navigateur.withContentEditable) {
 			this.eltQuestion.enonce = ObjetHtml_1.GHtml.getValue(this.idEditeurHTML);
 		} else {
 			this.eltQuestion.enonce = TinyInit_1.TinyInit.get(
@@ -515,75 +498,38 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 		if (lControle.ok) {
 			this.callback.appel(100, this.eltQuestion);
 		} else {
-			GApplication.getMessage().afficher({
-				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-				message: lControle.message,
-			});
+			(0, AccessApp_1.getApp)()
+				.getMessage()
+				.afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+					message: lControle.message,
+				});
 		}
 	}
 	majEtatEditeur() {
 		const lJqDivModif = $("#" + this.idZoneBoutonModif.escapeJQ());
 		const lJqInputUrl = $("#" + this.idLienExterne.escapeJQ());
-		if (this.estUneQuestionEditeur()) {
-			lJqDivModif.ieHtml(
-				'<div class="InlineBlock EspaceGauche EspaceDroit">' +
-					'<ie-bouton ie-model="boutonModif">' +
-					ObjetTraduction_1.GTraductions.getValeur(
-						"QCM_Divers.UpdateQuestion",
-					) +
-					"</ie-bouton>" +
-					'</div><div class="InlineBlock AlignementMilieuVertical">' +
-					ObjetTraduction_1.GTraductions.getValeur(
-						"ExecutionQCM.CopyRightEditeur2013",
-						[this.eltQuestion.editeur.getLibelle()],
-					) +
-					"</div>",
-				{ controleur: this.controleur },
-			);
-			this.getInstance(this.identListeReponseASaisir).setOptionsListe({
-				nonEditable: true,
-			});
-			this.getInstance(this.identListeReponseAChoisir).setOptionsListe({
-				nonEditable: true,
-			});
-			this.getInstance(this.identObjetReponsesAssociationQCM).setAvecEdition(
-				false,
-			);
-			lJqInputUrl.prop("disabled", true);
-			if (!GNavigateur.withContentEditable) {
-				$("#" + this.idEditeurHTML.escapeJQ()).prop("disabled", true);
-			} else {
-				$("#" + this.idEditeurHTML + "_toolbargroup")
-					.parent()
-					.parent()
-					.css("display", "none");
-				TinyInit_1.TinyInit.get(this.idEditeurHTML)
-					.getBody()
-					.setAttribute("contenteditable", "false");
-			}
+		lJqDivModif.html("");
+		this.getInstance(this.identListeReponseASaisir).setOptionsListe({
+			nonEditable: false,
+		});
+		this.getInstance(this.identListeReponseAChoisir).setOptionsListe({
+			nonEditable: false,
+		});
+		this.getInstance(this.identObjetReponsesAssociationQCM).setAvecEdition(
+			true,
+		);
+		lJqInputUrl.prop("disabled", false);
+		if (!ObjetNavigateur_1.Navigateur.withContentEditable) {
+			$("#" + this.idEditeurHTML.escapeJQ()).prop("disabled", false);
 		} else {
-			lJqDivModif.html("");
-			this.getInstance(this.identListeReponseASaisir).setOptionsListe({
-				nonEditable: false,
-			});
-			this.getInstance(this.identListeReponseAChoisir).setOptionsListe({
-				nonEditable: false,
-			});
-			this.getInstance(this.identObjetReponsesAssociationQCM).setAvecEdition(
-				true,
-			);
-			lJqInputUrl.prop("disabled", false);
-			if (!GNavigateur.withContentEditable) {
-				$("#" + this.idEditeurHTML.escapeJQ()).prop("disabled", false);
-			} else {
-				$("#" + this.idEditeurHTML + "_toolbargroup")
-					.parent()
-					.parent()
-					.css("display", "");
-				TinyInit_1.TinyInit.get(this.idEditeurHTML)
-					.getBody()
-					.setAttribute("contenteditable", "true");
-			}
+			$("#" + this.idEditeurHTML + "_toolbargroup")
+				.parent()
+				.parent()
+				.css("display", "");
+			TinyInit_1.TinyInit.get(this.idEditeurHTML)
+				.getBody()
+				.setAttribute("contenteditable", "true");
 		}
 		this.getInstance(this.identListeReponseASaisir).actualiser();
 		this.getInstance(this.identListeReponseAChoisir).actualiser();
@@ -617,7 +563,7 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 			{ aObjet: this },
 			this._evntSurTextArea,
 		);
-		if (GNavigateur.withContentEditable) {
+		if (ObjetNavigateur_1.Navigateur.withContentEditable) {
 			const lParametres = {
 				button:
 					this.eltQuestion.getGenre() ===
@@ -757,7 +703,7 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 				],
 				addParametresValidation: () => {
 					let lContent = "";
-					if (!GNavigateur.withContentEditable) {
+					if (!ObjetNavigateur_1.Navigateur.withContentEditable) {
 						lContent = ObjetHtml_1.GHtml.getValue(this.idEditeurHTMLReponse);
 					} else {
 						lContent = TinyInit_1.TinyInit.get(
@@ -769,7 +715,7 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 			},
 		);
 		const lHTML = [];
-		if (!GNavigateur.withContentEditable) {
+		if (!ObjetNavigateur_1.Navigateur.withContentEditable) {
 			lHTML.push(
 				'<textarea id="',
 				this.idEditeurHTMLReponse,
@@ -948,29 +894,50 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 			T.push(
 				'<div class="MargeBas flex-contain flex-center" style="gap:0.5rem;">',
 			);
+			const lIdIntitule = GUID_1.GUID.getId() + "_intitule";
 			T.push(
-				"<div>",
-				ObjetTraduction_1.GTraductions.getValeur("QCM_Divers.Intitule"),
-				"</div>",
-			);
-			T.push(
-				'<div style="flex-grow:1;">',
-				'<input type="text" ie-model="txtIntitule" class="round-style" style="width: 100%;" />',
-				"</div>",
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
+						"div",
+						{ id: lIdIntitule },
+						ObjetTraduction_1.GTraductions.getValeur("QCM_Divers.Intitule"),
+					),
+					IE.jsx.str(
+						"div",
+						{ style: "flex-grow:1;" },
+						IE.jsx.str("input", {
+							type: "text",
+							"ie-model": "txtIntitule",
+							style: "width: 100%;",
+							"aria-labelledby": lIdIntitule,
+						}),
+					),
+				),
 			);
 			const lWidthBaremeEtNiveau = 40;
 			if (lAvecAffichageBareme) {
+				const lIdBareme = GUID_1.GUID.getId() + "_bareme";
 				T.push(
-					"<div>",
-					ObjetTraduction_1.GTraductions.getValeur("QCM_Divers.Bareme"),
-					"</div>",
-				);
-				T.push(
-					'<div style="width:',
-					lWidthBaremeEtNiveau,
-					'px;">',
-					'<ie-inputnote ie-model="inputBareme" class="round-style" style="width: 100%;"></ie-inputnote>',
-					"</div>",
+					IE.jsx.str(
+						IE.jsx.fragment,
+						null,
+						IE.jsx.str(
+							"div",
+							{ id: lIdBareme },
+							ObjetTraduction_1.GTraductions.getValeur("QCM_Divers.Bareme"),
+						),
+						IE.jsx.str(
+							"div",
+							{ style: "width:" + lWidthBaremeEtNiveau + "px;" },
+							IE.jsx.str("ie-inputnote", {
+								"ie-model": "inputBareme",
+								style: "width: 100%;",
+								"aria-labelledby": lIdBareme,
+							}),
+						),
+					),
 				);
 			}
 			T.push("</div>");
@@ -1023,21 +990,23 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 		T.push(
 			'<fieldset class="',
 			ObjetClass_1.GClass.getZone(),
-			'" style="margin : 0;position:relative;border-color:' +
-				GCouleur.fenetre.texte +
+			'" style="position:relative;border-color:' +
+				(0, AccessApp_1.getApp)().getCouleur().fenetre.texte +
 				';">',
 			'<legend class="',
 			ObjetClass_1.GClass.getLegende(),
-			'" style="color:' + GCouleur.fenetre.texte + ';"> ',
+			'" style="color:' +
+				(0, AccessApp_1.getApp)().getCouleur().fenetre.texte +
+				';"> ',
 			ObjetTraduction_1.GTraductions.getValeur("QCM_Divers.Enonce"),
 			"</legend>",
 		);
-		if (!GNavigateur.withContentEditable) {
+		if (!ObjetNavigateur_1.Navigateur.withContentEditable) {
 			T.push(
 				'<textarea id="' +
 					this.idEditeurHTML +
-					'" maxlength="0" class="round-style" style="width:100%;height:50px;background-color:' +
-					GCouleur.blanc +
+					'" maxlength="0"  style="width:100%;height:50px;background-color:' +
+					(0, AccessApp_1.getApp)().getCouleur().blanc +
 					';">',
 				this.eltQuestion.enonce,
 				"</textarea>",
@@ -1046,55 +1015,111 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 			T.push(
 				'<div id="' +
 					this.idEditeurHTML +
-					'" class="Texte10" style="width:100%;height:50px;background-color:' +
-					GCouleur.blanc +
+					'" class="Texte10 full-width is-tiny" style="height:50px;background-color:' +
+					(0, AccessApp_1.getApp)().getCouleur().blanc +
 					';">',
 				this.eltQuestion.enonce,
 				"</div>",
 			);
 		}
 		T.push(
-			'<div id="' +
-				this.idZoneSon +
-				'" class="Espace" style="position:relative;overflow:hidden;">',
-		);
-		T.push(
-			"<div>",
-			'<ie-btnicon ie-class="getClassesIconeBtnUploadFichierQuestion(true)" ie-display="estVisibleBtnUploadFichierQuestion(true, true)" ie-selecfile ie-model="btnUploadFichierQuestion(true)"></ie-btnicon>',
-			'<ie-btnicon ie-class="getClassesIconeBtnUploadFichierQuestion(true)" ie-display="estVisibleBtnUploadFichierQuestion(true, false)" ie-model="btnSupprimerFichierQuestion(true)"></ie-btnicon>',
-			'<span class="m-left" ie-html="getHtmlChipsAudioFichierQuestion"></span>',
-			"</div>",
-		);
-		T.push("</div>");
-		T.push(
-			'<div id="' +
-				this.idZoneImage +
-				'" class="Espace" style="position:relative;">',
-		);
-		T.push(
-			"<div>",
-			'<ie-btnicon ie-class="getClassesIconeBtnUploadFichierQuestion(false)" ie-display="estVisibleBtnUploadFichierQuestion(false, true)" ie-selecfile ie-model="btnUploadFichierQuestion(false)"></ie-btnicon>',
-			'<ie-btnicon ie-class="getClassesIconeBtnUploadFichierQuestion(false)" ie-display="estVisibleBtnUploadFichierQuestion(false, false)" ie-model="btnSupprimerFichierQuestion(false)"></ie-btnicon>',
-			'<div class="m-left InlineBlock" style="max-width:12rem;" ie-html="getHtmlImageFichierQuestion"></div>',
-			"</div>",
-		);
-		T.push("</div>");
-		T.push(
-			'<div id="' +
-				this.idZoneLienExterne +
-				'" class="Espace" style="position:relative;overflow:hidden;">',
-			'<i class="icon_globe AlignementMilieuVertical" style="font-size: 1.6rem; color: var(--theme-foncee);"></i>',
-			'<input type="text" id="',
-			this.idLienExterne,
-			'" class="AlignementMilieuVertical AvecMain round-style m-left" value="',
-			this.eltQuestion.url,
-			'" style="width:95%;" onchange="',
-			this.Nom,
-			'.changeLienExterne(this.value)" />',
-			"</div>",
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"div",
+					{
+						id: this.idZoneSon,
+						class: "Espace",
+						style: "position:relative;overflow:hidden;",
+					},
+					IE.jsx.str(
+						"div",
+						{ class: "flex-contain" },
+						IE.jsx.str("ie-btnicon", {
+							"ie-class": "getClassesIconeBtnUploadFichierQuestion(true)",
+							"ie-display": "estVisibleBtnUploadFichierQuestion(true, true)",
+							"ie-selecfile": true,
+							"ie-model": "btnUploadFichierQuestion(true)",
+						}),
+						IE.jsx.str("ie-btnicon", {
+							"ie-class": "getClassesIconeBtnUploadFichierQuestion(true)",
+							"ie-display": "estVisibleBtnUploadFichierQuestion(true, false)",
+							"ie-model": "btnSupprimerFichierQuestion(true)",
+						}),
+						IE.jsx.str("div", {
+							class: "m-left",
+							"ie-html": "getHtmlChipsAudioFichierQuestion",
+						}),
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{
+						id: this.idZoneImage,
+						class: "Espace",
+						style: "position:relative;",
+					},
+					IE.jsx.str(
+						"div",
+						null,
+						IE.jsx.str("ie-btnicon", {
+							"ie-class": "getClassesIconeBtnUploadFichierQuestion(false)",
+							"ie-display": "estVisibleBtnUploadFichierQuestion(false, true)",
+							"ie-selecfile": true,
+							"ie-model": "btnUploadFichierQuestion(false)",
+						}),
+						IE.jsx.str("ie-btnicon", {
+							"ie-class": "getClassesIconeBtnUploadFichierQuestion(false)",
+							"ie-display": "estVisibleBtnUploadFichierQuestion(false, false)",
+							"ie-model": "btnSupprimerFichierQuestion(false)",
+						}),
+						IE.jsx.str("div", {
+							class: "m-left InlineBlock",
+							style: "max-width:12rem;",
+							"ie-html": "getHtmlImageFichierQuestion",
+						}),
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{
+						id: this.idZoneLienExterne,
+						class: "Espace",
+						style: "position:relative;overflow:hidden;",
+					},
+					IE.jsx.str("i", {
+						class: "icon_globe AlignementMilieuVertical",
+						style: "font-size: 1.6rem; color: var(--theme-foncee);",
+						role: "presentation",
+						"aria-hidden": "true",
+					}),
+					IE.jsx.str("input", {
+						type: "text",
+						id: this.idLienExterne,
+						class: "AlignementMilieuVertical AvecMain m-left",
+						"ie-model": this.jsxModelInputLienExterne.bind(this),
+						style: "width:95%;",
+						"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+							"SaisieQCM.SiteInternet",
+						),
+					}),
+				),
+			),
 		);
 		T.push("</fieldset>");
 		return T.join("");
+	}
+	jsxModelInputLienExterne() {
+		return {
+			getValue: () => {
+				return this.eltQuestion.url;
+			},
+			setValue: (aValue) => {
+				this.eltQuestion.url = aValue;
+				this.setBoutonActif(1, true);
+			},
+		};
 	}
 	composeReponses() {
 		const T = [];
@@ -1114,12 +1139,14 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 				T.push(
 					'<fieldset class="',
 					ObjetClass_1.GClass.getZone(),
-					'" style="margin : 0px 0px 0px 0px;position:relative;border-color:' +
-						GCouleur.fenetre.texte +
+					'" style="position:relative;border-color:' +
+						(0, AccessApp_1.getApp)().getCouleur().fenetre.texte +
 						';">',
 					'<legend class="',
 					ObjetClass_1.GClass.getLegende(),
-					'" style="color:' + GCouleur.fenetre.texte + ';"> ',
+					'" style="color:' +
+						(0, AccessApp_1.getApp)().getCouleur().fenetre.texte +
+						';"> ',
 					ObjetTraduction_1.GTraductions.getValeur(
 						"QCM_Divers.ReponsesProposees",
 					),
@@ -1132,9 +1159,15 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 			T.push('<div class="EspaceHaut EspaceBas10">', lInfoRep, "</div>");
 		}
 		T.push(
-			'<div ie-display="cbCaseSensitive.estVisible">',
-			'<ie-checkbox ie-model="cbCaseSensitive"></ie-checkbox>',
-			"</div>",
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"div",
+					{ "ie-display": "cbCaseSensitive.estVisible" },
+					IE.jsx.str("ie-checkbox", { "ie-model": "cbCaseSensitive" }),
+				),
+			),
 		);
 		switch (this.eltQuestion.getGenre()) {
 			case TypeGenreExerciceDeQuestionnaire_1.TypeGenreExerciceDeQuestionnaire
@@ -1142,49 +1175,72 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 			case TypeGenreExerciceDeQuestionnaire_1.TypeGenreExerciceDeQuestionnaire
 				.GEQ_MultiChoice:
 				T.push(
-					'<div class="flex-contain" style="gap: 0.5rem;">',
-					'<ie-checkbox class="AlignementMilieuVertical" ie-model="cbSaisieBonnesReponsesParPourcentage">',
-					ObjetTraduction_1.GTraductions.getValeur(
-						"SaisieQCM.SaisirPourcentagePourReponse",
+					IE.jsx.str(
+						IE.jsx.fragment,
+						null,
+						IE.jsx.str(
+							"div",
+							{ class: "flex-contain", style: "gap: 0.5rem;" },
+							IE.jsx.str(
+								"ie-checkbox",
+								{ "ie-model": "cbSaisieBonnesReponsesParPourcentage" },
+								ObjetTraduction_1.GTraductions.getValeur(
+									"SaisieQCM.SaisirPourcentagePourReponse",
+								),
+							),
+							IE.jsx.str(
+								"span",
+								null,
+								UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnMonsieurFiche(
+									"btnMrFicheReglesPointsAttribues",
+								),
+							),
+						),
+						IE.jsx.str("div", {
+							id: this.getInstance(this.identListeReponseAChoisir).getNom(),
+							style:
+								"width: 100%; height: " + this.hauteurListesReponses + "px;",
+						}),
 					),
-					"</ie-checkbox>",
-					'<span class="MargeGauche">',
-					UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnMonsieurFiche(
-						"btnMrFicheReglesPointsAttribues",
-					),
-					"</span>",
-					"</div>",
-				);
-				T.push(
-					'<div id="',
-					this.getNomInstance(this.identListeReponseAChoisir),
-					'" style="width: 100%; height: ',
-					this.hauteurListesReponses,
-					'px;"></div>',
 				);
 				break;
 			case TypeGenreExerciceDeQuestionnaire_1.TypeGenreExerciceDeQuestionnaire
 				.GEQ_NumericalAnswer:
 			case TypeGenreExerciceDeQuestionnaire_1.TypeGenreExerciceDeQuestionnaire
-				.GEQ_ShortAnswer:
+				.GEQ_ShortAnswer: {
+				const lId = GUID_1.GUID.getId();
 				T.push(
-					'<div id="',
-					this.getNomInstance(this.identListeReponseASaisir),
-					'" style="width: 100%; height: ',
-					this.hauteurListesReponses,
-					'px;"></div>',
-				);
-				T.push(
-					'<div class="MargeHaut flex-contain flex-center" style="gap:0.5rem;">',
-					"<span>",
-					ObjetTraduction_1.GTraductions.getValeur(
-						"QCM_Divers.CommentaireMauvaiseReponse",
+					IE.jsx.str(
+						IE.jsx.fragment,
+						null,
+						IE.jsx.str("div", {
+							id: this.getNomInstance(this.identListeReponseASaisir),
+							style: "width: 100%;height:" + this.hauteurListesReponses + "px;",
+						}),
+						IE.jsx.str(
+							"div",
+							{
+								class: "MargeHaut flex-contain flex-center",
+								style: "gap:0.5rem;",
+							},
+							IE.jsx.str(
+								"span",
+								{ id: lId },
+								ObjetTraduction_1.GTraductions.getValeur(
+									"QCM_Divers.CommentaireMauvaiseReponse",
+								),
+							),
+							IE.jsx.str("input", {
+								"aria-labelledby": lId,
+								type: "text",
+								"ie-model": "txtIncorrectFeedback",
+								class: "fluid-bloc",
+							}),
+						),
 					),
-					"</span>",
-					'<input type="text" ie-model="txtIncorrectFeedback" class="fluid-bloc round-style" />',
-					"</div>",
 				);
 				break;
+			}
 			case TypeGenreExerciceDeQuestionnaire_1.TypeGenreExerciceDeQuestionnaire
 				.GEQ_Matching:
 				T.push(
@@ -1224,7 +1280,9 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 					this.idSpellValue,
 					'" name="',
 					this.idSpellValue,
-					'" style="width:100%;margin-bottom:2px;" class="CelluleTexte Texte10 AvecMain" maxLength="30" size="30" /><br />',
+					'" style="width:100%;margin-bottom:2px;',
+					ObjetStyle_1.GStyle.composeWidth(210),
+					'" class="CelluleTexte Texte10 AvecMain" maxLength="30" /><br />',
 				);
 				T.push(
 					'<input type="text" id="',
@@ -1257,10 +1315,6 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 				break;
 		}
 		return T.join("");
-	}
-	changeLienExterne(aLien) {
-		this.eltQuestion.url = aLien;
-		this.setBoutonActif(1, true);
 	}
 	actualiserColonnesCacheesListeReponsesAChoisir() {
 		const lColonnesCachees = [];
@@ -1676,7 +1730,7 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 	surValidation(aNumeroBouton) {
 		let lControle;
 		if (aNumeroBouton > 0) {
-			if (!GNavigateur.withContentEditable) {
+			if (!ObjetNavigateur_1.Navigateur.withContentEditable) {
 				this.eltQuestion.enonce = ObjetHtml_1.GHtml.getValue(
 					this.idEditeurHTML,
 				);
@@ -1696,10 +1750,12 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 				aNumeroBouton > 0 ? this.eltQuestion : this.eltQuestionOrigine,
 			);
 		} else {
-			GApplication.getMessage().afficher({
-				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-				message: lControle.message,
-			});
+			(0, AccessApp_1.getApp)()
+				.getMessage()
+				.afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+					message: lControle.message,
+				});
 		}
 	}
 	initialiserListeReponseAChoisir(aInstance) {
@@ -1726,7 +1782,8 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 				return !!lThis.avecMiseEnFormeReponses;
 			},
 			setValue(aAvecMiseEnForme) {
-				GApplication.getMessage()
+				(0, AccessApp_1.getApp)()
+					.getMessage()
 					.afficher({
 						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
 						message: ObjetTraduction_1.GTraductions.getValeur(
@@ -1765,9 +1822,6 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 							lThis._actualiserListe();
 						}
 					});
-			},
-			getDisabled() {
-				return lThis.estUneQuestionEditeur();
 			},
 		};
 		const lColonnes = [];
@@ -1821,17 +1875,28 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 			id: DonneesListe_ReponseAChoisir_1.DonneesListe_ReponseAChoisir.colonnes
 				.responseProposee,
 			titre: {
-				libelleHtml:
-					'<div class="flex-contain flex-gap flex-wrap justify-center"><span class="AlignementMilieuVertical">' +
-					ObjetTraduction_1.GTraductions.getValeur(
-						"QCM_Divers.ReponsesProposees",
-					) +
-					"</span>" +
-					'<ie-checkbox class="AlignementMilieuVertical" ie-model="cbAvecMiseEnFormeReponses">' +
-					ObjetTraduction_1.GTraductions.getValeur(
-						"SaisieQCM.AvecMiseEnForme",
-					) +
-					"</ie-checkbox></div>",
+				libelleHtml: IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
+						"div",
+						{ class: "flex-contain flex-gap flex-center justify-center" },
+						IE.jsx.str(
+							"span",
+							null,
+							ObjetTraduction_1.GTraductions.getValeur(
+								"QCM_Divers.ReponsesProposees",
+							),
+						),
+						IE.jsx.str(
+							"ie-checkbox",
+							{ class: "m-left-l", "ie-model": "cbAvecMiseEnFormeReponses" },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"SaisieQCM.AvecMiseEnForme",
+							),
+						),
+					),
+				),
 			},
 			hint: ObjetTraduction_1.GTraductions.getValeur(
 				"SaisieQCM.HintReponsesProposees",
@@ -1842,9 +1907,22 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 			id: DonneesListe_ReponseAChoisir_1.DonneesListe_ReponseAChoisir.colonnes
 				.image,
 			titre: {
-				libelleHtml:
-					ObjetTraduction_1.GTraductions.getValeur("QCM_Divers.Image") +
-					'<span class="Image_QCM_ImagePourListe InlineBlock AlignementMilieuVertical MargeGauche"></span>',
+				libelleHtml: IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
+						"div",
+						{ class: "flex-contain flex-center justify-center" },
+						IE.jsx.str(
+							"span",
+							null,
+							ObjetTraduction_1.GTraductions.getValeur("QCM_Divers.Image"),
+						),
+						IE.jsx.str("span", {
+							class: "Image_QCM_ImagePourListe InlineBlock m-left-l",
+						}),
+					),
+				),
 			},
 			hint: ObjetTraduction_1.GTraductions.getValeur(
 				"SaisieQCM.HintMediaReponses",

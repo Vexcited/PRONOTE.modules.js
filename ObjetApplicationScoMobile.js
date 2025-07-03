@@ -8,7 +8,6 @@ const ObjetApplicationSco_1 = require("ObjetApplicationSco");
 require("Parametres.js");
 const ObjetEtatUtilisateur_Mobile_1 = require("ObjetEtatUtilisateur_Mobile");
 const InterfaceConnexion_Mobile_1 = require("InterfaceConnexion_Mobile");
-require("ObjetRequetePresence.js");
 const ObjetSmartAppBanner_1 = require("ObjetSmartAppBanner");
 const DeferLoadingScript_1 = require("DeferLoadingScript");
 const CommunicationProduit_1 = require("CommunicationProduit");
@@ -17,9 +16,7 @@ const Enumere_Espace_1 = require("Enumere_Espace");
 const UtilitaireDeconnexion_1 = require("UtilitaireDeconnexion");
 const ObjetRequeteSaisieTokenPush_1 = require("ObjetRequeteSaisieTokenPush");
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
-const ObjetTraduction_1 = require("ObjetTraduction");
 require("DeclarationTinyInitEspacesDefer.js");
-const TypeThemeCouleur_1 = require("TypeThemeCouleur");
 global.GInterface = null;
 class ObjetApplicationScoMobile extends ObjetApplicationSco_1.ObjetApplicationSco {
 	constructor() {
@@ -73,12 +70,10 @@ class ObjetApplicationScoMobile extends ObjetApplicationSco_1.ObjetApplicationSc
 			);
 		}
 		const lInterface = (GInterface =
-			new InterfaceConnexion_Mobile_1.InterfaceConnexion_Mobile(
-				"GInterface",
-				null,
-				null,
-				null,
-			));
+			new InterfaceConnexion_Mobile_1.InterfaceConnexion_Mobile({
+				nomComplet: "GInterface",
+				estRacine: true,
+			}));
 		lInterface.initialiser();
 		if (this.acces.estConnexionCAS() || this.acces.estConnexionCookie()) {
 			lInterface.traiterEvenementValidation(
@@ -121,7 +116,7 @@ class ObjetApplicationScoMobile extends ObjetApplicationSco_1.ObjetApplicationSc
 		});
 	}
 	construirePageFinSession(aParametres) {
-		this.utilitaireFinSession._construirePageFinSession.call(this, aParametres);
+		this.utilitaireFinSession._construirePageFinSession(aParametres);
 	}
 	postToken(aPlatform, aUuid, aToken, aSuppr) {
 		const lSuppr = aSuppr || false;
@@ -135,21 +130,11 @@ class ObjetApplicationScoMobile extends ObjetApplicationSco_1.ObjetApplicationSc
 		});
 	}
 	initApp(aParams) {
-		this.estAppliMobile = aParams.estAppliMobile;
+		super.initApp(aParams);
 		this.profilsApp = aParams.profils;
 		this.infoAppliMobile = { avecExitApp: aParams.avecExitApp };
 		if (this.smartAppBanner) {
 			$("#" + this.smartAppBanner.id.escapeJQ()).remove();
-		}
-		if (aParams.darkMode) {
-			const lModeSombreActive =
-				aParams.darkMode === "sombre" ||
-				(aParams.darkMode === "systeme" && aParams.darkModeSysteme === true);
-			this.getOptionsEspaceLocal().setChoixDarkMode(
-				lModeSombreActive
-					? TypeThemeCouleur_1.ChoixDarkMode.sombre
-					: TypeThemeCouleur_1.ChoixDarkMode.clair,
-			);
 		}
 		GInterface.traiterEvenementValidation(
 			aParams.login,
@@ -163,13 +148,19 @@ class ObjetApplicationScoMobile extends ObjetApplicationSco_1.ObjetApplicationSc
 			if (GInterface && GInterface.free) {
 				GInterface.free();
 			}
-			const { ObjetInterfaceMobile } = await Promise.resolve().then(() =>
+			const MultiObjetInterfaceMobile = await Promise.resolve().then(() =>
 				require("InterfaceMobile"),
 			);
-			GInterface = new ObjetInterfaceMobile("GInterface", null, null, null);
+			if (!MultiObjetInterfaceMobile) {
+				throw new Error(`Erreur await import('InterfaceMobile')`);
+			}
+			GInterface = new MultiObjetInterfaceMobile.ObjetInterfaceMobile({
+				nomComplet: "GInterface",
+				estRacine: true,
+			});
 			this.getInterfaceMobile().initialiser();
-			this.getInterfaceMobile().setDonnees();
-			this.getCommunication().activerPresence();
+			this.getInterfaceMobile().setDonnees(aParametres.listeRessource);
+			this.getCommunication().activerPolling();
 			if (this.avecGestionModeExclusif()) {
 				if (this.getModeExclusif()) {
 					this.entreeModeExclusif();
@@ -178,7 +169,8 @@ class ObjetApplicationScoMobile extends ObjetApplicationSco_1.ObjetApplicationSc
 			if (
 				!this.estAppliMobile &&
 				(this.acces.estConnexionCAS() || this.acces.estConnexionCookie()) &&
-				this.smartAppBanner
+				this.smartAppBanner &&
+				!this.getObjetParametres().estAfficheDansENT
 			) {
 				this.smartAppBanner.show();
 			}
@@ -201,9 +193,6 @@ class ObjetApplicationScoMobile extends ObjetApplicationSco_1.ObjetApplicationSc
 			this._afficherEspaceApresAuthentification(this._authentification);
 		}
 		if (global._finLoadingScriptAppliMobile) {
-			if (!global.GTraductions) {
-				global.GTraductions = ObjetTraduction_1.GTraductions;
-			}
 			global._finLoadingScriptAppliMobile();
 		}
 	}

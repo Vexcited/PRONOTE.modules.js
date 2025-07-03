@@ -206,6 +206,9 @@ class ObjetElement {
 		}
 		return this;
 	}
+	setValidationSaisie(aValue) {
+		this._validationSaisie = aValue;
+	}
 	afficher() {}
 	static getNumeroCreation() {
 		_numeroCreation += -1;

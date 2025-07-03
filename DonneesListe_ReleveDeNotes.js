@@ -1,19 +1,21 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { ObjetMoteurReleveBulletin } = require("ObjetMoteurReleveBulletin.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { ObjetMoteurGrilleSaisie } = require("ObjetMoteurGrilleSaisie.js");
-const { TypeReleveBulletin } = require("TypeReleveBulletin.js");
-const { ObjetMoteurAssistantSaisie } = require("ObjetMoteurAssistantSaisie.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { TypePositionnementUtil } = require("TypePositionnement.js");
-const { TUtilitaireDuree } = require("UtilitaireDuree.js");
-class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
+exports.DonneesListe_ReleveDeNotes = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetMoteurReleveBulletin_1 = require("ObjetMoteurReleveBulletin");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetMoteurGrilleSaisie_1 = require("ObjetMoteurGrilleSaisie");
+const TypeReleveBulletin_1 = require("TypeReleveBulletin");
+const ObjetMoteurAssistantSaisie_1 = require("ObjetMoteurAssistantSaisie");
+const ObjetListe_1 = require("ObjetListe");
+const TypePositionnement_1 = require("TypePositionnement");
+const UtilitaireDuree_1 = require("UtilitaireDuree");
+class DonneesListe_ReleveDeNotes extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParam) {
 		super(aDonnees);
-		this.moteur = new ObjetMoteurReleveBulletin();
-		this.moteurGrille = new ObjetMoteurGrilleSaisie();
-		this.moteurAssSaisie = new ObjetMoteurAssistantSaisie();
+		this.moteur = new ObjetMoteurReleveBulletin_1.ObjetMoteurReleveBulletin();
+		this.moteurGrille = new ObjetMoteurGrilleSaisie_1.ObjetMoteurGrilleSaisie();
+		this.moteurAssSaisie =
+			new ObjetMoteurAssistantSaisie_1.ObjetMoteurAssistantSaisie();
 		this.param = $.extend(
 			{
 				instanceListe: null,
@@ -27,66 +29,45 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 			aParam,
 		);
 		if (this.param.instanceListe !== null && this.param.affichage !== null) {
-			this.initOptions(this.param.instanceListe, this.param);
+			this.initOptions(this.param.instanceListe);
 		}
 		this.setOptions({
 			avecDeploiement: true,
 			avecTri: false,
 			avecSuppression: false,
-			avecEvenement: true,
 			avecEdition: false,
 			avecEvnt_KeyUpListe: false,
 			avecEvnt_ApresEdition: true,
 			avecEtatSaisie: false,
 		});
 	}
-	getControleur(aInstanceDonneesListe, aInstanceListe) {
-		return $.extend(
-			true,
-			super.getControleur(aInstanceDonneesListe, aInstanceListe),
-			{
-				getNodeCorrigeQCM: function (aIndLigne, aIndDevoir) {
-					$(this.node).on(
-						"click",
-						function () {
-							const lArticle = this.Donnees.get(aIndLigne);
-							const lDevoir = lArticle.ListeDevoirs.get(aIndDevoir);
-							this.param.clbckCorrigeQCM.call(this, lDevoir.executionQCM);
-						}.bind(aInstanceDonneesListe),
-					);
-				},
-				getNodeCalculMoy: function (aIndLigne, aIndCol, aIdCol) {
-					$(this.node).on(
-						"click",
-						function () {
-							const lArticle =
-								aIndLigne !== -1
-									? this.Donnees.get(aIndLigne)
-									: this.param.moyGenerale;
-							const lParamEvnt = {
-								service: lArticle.estUnDeploiement
-									? lArticle.surMatiere
-									: lArticle,
-								moyenneTrimestrielle:
-									aIdCol ===
-									DonneesListe_ReleveDeNotes.colonnes.moyenneAnnuelle,
-							};
-							if (_estColMoyPeriode.call(this, aIdCol)) {
-								const lParams = this.paramsListe.getParams(aIndCol, aIndLigne);
-								const lIndice = lParams.declarationColonne.indice;
-								$.extend(lParamEvnt, {
-									periode: this.param.affichage.listePeriodes.get(lIndice),
-								});
-							}
-							this.param.clbckCalculMoy.call(this, lParamEvnt);
-						}.bind(aInstanceDonneesListe),
-					);
-				},
-			},
-		);
+	jsxNodeCorrigeQCM(aDevoir, aNode) {
+		$(aNode).eventValidation(() => {
+			if (aDevoir) {
+				this.param.clbckCorrigeQCM.call(this, aDevoir.executionQCM);
+			}
+		});
+	}
+	jsxGetNodeCalculMoy(aParams, aEstTotal, aNode) {
+		$(aNode).eventValidation(() => {
+			const lArticle = !aEstTotal ? aParams.article : this.param.moyGenerale;
+			const lParamEvnt = {
+				service: lArticle.estUnDeploiement ? lArticle.surMatiere : lArticle,
+				moyenneTrimestrielle:
+					aParams.idColonne ===
+					DonneesListe_ReleveDeNotes.colonnes.moyenneAnnuelle,
+			};
+			if (this._estColMoyPeriode(aParams.idColonne)) {
+				const lIndice = aParams.declarationColonne.indice;
+				$.extend(lParamEvnt, {
+					periode: this.param.affichage.listePeriodes.get(lIndice),
+				});
+			}
+			this.param.clbckCalculMoy.call(this, lParamEvnt);
+		});
 	}
 	_getPeriode(aParams) {
-		if (_estColMoyPeriode.call(this, aParams.idColonne)) {
+		if (this._estColMoyPeriode(aParams.idColonne)) {
 			const lNumero = aParams.declarationColonne.numeroPeriode;
 			return aParams.article.ListeMoyennesPeriodes
 				? aParams.article.ListeMoyennesPeriodes.getElementParNumero(lNumero)
@@ -101,7 +82,7 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 	}
 	_getMoyNRPeriode(aParams) {
 		let lPeriode;
-		if (_estColMoyPeriode.call(this, aParams.idColonne)) {
+		if (this._estColMoyPeriode(aParams.idColonne)) {
 			const lNumero = aParams.declarationColonne.numeroPeriode;
 			lPeriode = aParams.article.ListeMoyennesPeriodes
 				? aParams.article.ListeMoyennesPeriodes.getElementParNumero(lNumero)
@@ -117,7 +98,7 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 		}
 	}
 	_getDevoir(aParams) {
-		if (_estColDevoir.call(this, aParams.idColonne)) {
+		if (this._estColDevoir(aParams.idColonne)) {
 			const lIndice = aParams.declarationColonne.indice;
 			return aParams.article.ListeDevoirs
 				? aParams.article.ListeDevoirs.get(lIndice)
@@ -128,100 +109,107 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 		switch (aParams.idColonne) {
 			case DonneesListe_ReleveDeNotes.colonnes.regroupement:
 				return aParams.article.estUnDeploiement === true
-					? ObjetDonneesListe.ETypeCellule.CocheDeploiement
-					: ObjetDonneesListe.ETypeCellule.Html;
+					? ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.CocheDeploiement
+					: ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 			case DonneesListe_ReleveDeNotes.colonnes.moyenneAnnuelle:
 			case DonneesListe_ReleveDeNotes.colonnes.nivMaitriseEleve:
 			case DonneesListe_ReleveDeNotes.colonnes.moyenneEleve:
-				return ObjetDonneesListe.ETypeCellule.Html;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 			case DonneesListe_ReleveDeNotes.colonnes.moyenneClasse:
 			case DonneesListe_ReleveDeNotes.colonnes.moyenneMediane:
 			case DonneesListe_ReleveDeNotes.colonnes.moyenneInf:
 			case DonneesListe_ReleveDeNotes.colonnes.moyenneSup: {
-				return ObjetDonneesListe.ETypeCellule.Note;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Note;
 			}
 			case DonneesListe_ReleveDeNotes.colonnes.appreciation:
-				return ObjetDonneesListe.ETypeCellule.ZoneTexte;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.ZoneTexte;
 			default: {
-				if (_estColMoyPeriode.call(this, aParams.idColonne)) {
-					return ObjetDonneesListe.ETypeCellule.Html;
+				if (this._estColMoyPeriode(aParams.idColonne)) {
+					return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 				}
 			}
 		}
 	}
 	getValeur(aParams) {
 		let lService;
-		const lMoy = _getMoyenne.call(
-			this,
-			aParams.ligne,
-			aParams.article,
-			aParams,
-		);
+		const lMoy = this._getMoyenne(aParams.ligne, aParams.article, aParams);
 		if (aParams.article && aParams.article.estUnDeploiement) {
+			let lSurMatiere = aParams.article.surMatiere;
 			switch (aParams.idColonne) {
 				case DonneesListe_ReleveDeNotes.colonnes.nivMaitriseEleve:
 					return this.moteur.composeHtmlNote({
 						note: null,
-						niveauDAcquisition: aParams.article.surMatiere.NiveauDAcquisition,
+						niveauDAcquisition: lSurMatiere.NiveauDAcquisition,
 						genrePositionnement:
-							TypePositionnementUtil.getGenrePositionnementParDefaut(
-								aParams.article.surMatiere.TypePositionnementClasse,
+							TypePositionnement_1.TypePositionnementUtil.getGenrePositionnementParDefaut(
+								lSurMatiere.TypePositionnementClasse,
 							),
 						avecPrefixe: false,
 					});
+				case DonneesListe_ReleveDeNotes.colonnes.pts:
+					return !!lSurMatiere.NombrePointsEleve &&
+						lSurMatiere.NombrePointsEleve.getValeur() > 0
+						? this.moteur.getStrNote(lSurMatiere.NombrePointsEleve)
+						: "";
 				case DonneesListe_ReleveDeNotes.colonnes.moyenneEleve:
-					return aParams.article.surMatiere.MoyenneEleve
+					return lSurMatiere.MoyenneEleve
 						? this.moteur.composeHtmlLienNoteCalculMoyenne({
-								note: aParams.article.surMatiere.MoyenneEleve,
-								ligne: aParams.ligne,
-								colonne: aParams.colonne,
-								idColonne: aParams.idColonne,
+								note: lSurMatiere.MoyenneEleve,
 								estUnDeploiement: true,
+								JSXFuncNode: this.jsxGetNodeCalculMoy.bind(
+									this,
+									aParams,
+									false,
+								),
 							})
 						: "";
 				case DonneesListe_ReleveDeNotes.colonnes.moyenneClasse:
-					return aParams.article.surMatiere.MoyenneClasse;
+					return lSurMatiere.MoyenneClasse;
 				case DonneesListe_ReleveDeNotes.colonnes.moyenneMediane:
-					return aParams.article.surMatiere.MoyenneMediane;
+					return lSurMatiere.MoyenneMediane;
 				case DonneesListe_ReleveDeNotes.colonnes.moyenneInf:
-					return aParams.article.surMatiere.MoyenneInf;
+					return lSurMatiere.MoyenneInf;
 				case DonneesListe_ReleveDeNotes.colonnes.moyenneSup:
-					return aParams.article.surMatiere.MoyenneSup;
+					return lSurMatiere.MoyenneSup;
 				case DonneesListe_ReleveDeNotes.colonnes.moyenneAnnuelle:
-					return aParams.article.surMatiere.MoyenneAnnuelle
+					return lSurMatiere.MoyenneAnnuelle
 						? this.moteur.composeHtmlLienNoteCalculMoyenne({
-								note: aParams.article.surMatiere.MoyenneAnnuelle,
-								ligne: aParams.ligne,
-								colonne: aParams.colonne,
-								idColonne: aParams.idColonne,
+								note: lSurMatiere.MoyenneAnnuelle,
 								estUnDeploiement: true,
+								JSXFuncNode: this.jsxGetNodeCalculMoy.bind(
+									this,
+									aParams,
+									false,
+								),
 							})
 						: "";
 				case DonneesListe_ReleveDeNotes.colonnes.service:
 					return aParams.article.getLibelle();
 				case DonneesListe_ReleveDeNotes.colonnes.volumeHoraire:
-					return aParams.article.surMatiere.volumeHoraire
-						? TUtilitaireDuree.dureeEnHeuresMinutes(
-								aParams.article.surMatiere.volumeHoraire,
+					return lSurMatiere.volumeHoraire
+						? UtilitaireDuree_1.TUtilitaireDuree.dureeEnHeuresMinutes(
+								lSurMatiere.volumeHoraire,
 							).toString("%xh%sh%om")
 						: "";
 				case DonneesListe_ReleveDeNotes.colonnes.coefficient:
-					return aParams.article.surMatiere.Coefficient || "";
+					return lSurMatiere.Coefficient || "";
 				case DonneesListe_ReleveDeNotes.colonnes.heureCoursManquees:
-					return aParams.article.surMatiere.heureCoursManquees
-						? TUtilitaireDuree.dureeEnHeuresMinutes(
-								aParams.article.surMatiere.heureCoursManquees,
+					return lSurMatiere.heureCoursManquees
+						? UtilitaireDuree_1.TUtilitaireDuree.dureeEnHeuresMinutes(
+								lSurMatiere.heureCoursManquees,
 							).toString("%xh%sh%om")
 						: "";
 				default:
-					if (_estColMoyPeriode.call(this, aParams.idColonne)) {
+					if (this._estColMoyPeriode(aParams.idColonne)) {
 						if (lMoy) {
 							return this.moteur.composeHtmlLienNoteCalculMoyenne({
 								note: lMoy,
-								ligne: aParams.ligne,
-								colonne: aParams.colonne,
-								idColonne: aParams.idColonne,
 								estUnDeploiement: true,
+								JSXFuncNode: this.jsxGetNodeCalculMoy.bind(
+									this,
+									aParams,
+									false,
+								),
 							});
 						}
 					}
@@ -259,9 +247,7 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 					T.push(
 						this.moteur.composeHtmlLienNoteCalculMoyenne({
 							note: lMoy,
-							ligne: aParams.ligne,
-							colonne: aParams.colonne,
-							idColonne: aParams.idColonne,
+							JSXFuncNode: this.jsxGetNodeCalculMoy.bind(this, aParams, false),
 						}),
 					);
 				}
@@ -272,11 +258,16 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 					note: null,
 					niveauDAcquisition: aParams.article.NiveauDAcquisition,
 					genrePositionnement:
-						TypePositionnementUtil.getGenrePositionnementParDefaut(
+						TypePositionnement_1.TypePositionnementUtil.getGenrePositionnementParDefaut(
 							aParams.article.TypePositionnementClasse,
 						),
 					avecPrefixe: false,
 				});
+			case DonneesListe_ReleveDeNotes.colonnes.pts:
+				return !!aParams.article.NombrePointsEleve &&
+					aParams.article.NombrePointsEleve.getValeur() > 0
+					? this.moteur.getStrNote(aParams.article.NombrePointsEleve)
+					: "";
 			case DonneesListe_ReleveDeNotes.colonnes.moyenneEleve: {
 				T = [];
 				if (aParams.article.estMoyNR === true) {
@@ -289,9 +280,7 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 					T.push(
 						this.moteur.composeHtmlLienNoteCalculMoyenne({
 							note: lMoy,
-							ligne: aParams.ligne,
-							colonne: aParams.colonne,
-							idColonne: aParams.idColonne,
+							JSXFuncNode: this.jsxGetNodeCalculMoy.bind(this, aParams, false),
 						}),
 					);
 				}
@@ -304,14 +293,15 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 				return lMoy;
 			case DonneesListe_ReleveDeNotes.colonnes.appreciation: {
 				const lAppr = this.moteur.getApprDeService({
-					typeReleveBulletin: TypeReleveBulletin.ReleveDeNotes,
+					typeReleveBulletin:
+						TypeReleveBulletin_1.TypeReleveBulletin.ReleveDeNotes,
 					article: aParams.article,
 				}).appreciation;
 				return lAppr !== null ? lAppr.getLibelle() : "";
 			}
 			case DonneesListe_ReleveDeNotes.colonnes.volumeHoraire:
 				return aParams.article.volumeHoraire
-					? TUtilitaireDuree.dureeEnHeuresMinutes(
+					? UtilitaireDuree_1.TUtilitaireDuree.dureeEnHeuresMinutes(
 							aParams.article.volumeHoraire,
 						).toString("%xh%sh%om")
 					: "";
@@ -319,12 +309,12 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 				return aParams.article.Coefficient || "";
 			case DonneesListe_ReleveDeNotes.colonnes.heureCoursManquees:
 				return aParams.article.heureCoursManquees
-					? TUtilitaireDuree.dureeEnHeuresMinutes(
+					? UtilitaireDuree_1.TUtilitaireDuree.dureeEnHeuresMinutes(
 							aParams.article.heureCoursManquees,
 						).toString("%xh%sh%om")
 					: "";
 			default: {
-				if (_estColMoyPeriode.call(this, aParams.idColonne)) {
+				if (this._estColMoyPeriode(aParams.idColonne)) {
 					T = [];
 					const lPeriode = lMoy;
 					const lEstMoyNRPeriode = this._getMoyNRPeriode(aParams);
@@ -335,31 +325,38 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 						T.push(
 							this.moteur.composeHtmlLienNoteCalculMoyenne({
 								note: lMoy,
-								ligne: aParams.ligne,
-								colonne: aParams.colonne,
-								idColonne: aParams.idColonne,
+								JSXFuncNode: this.jsxGetNodeCalculMoy.bind(
+									this,
+									aParams,
+									false,
+								),
 							}),
 						);
 					}
 					return T.join("");
-				} else if (_estColDevoir.call(this, aParams.idColonne)) {
+				} else if (this._estColDevoir(aParams.idColonne)) {
 					const lDevoir = this._getDevoir(aParams);
 					const lAvecLigneCoeff = this.param.affichage.avecDevoirsCoefficient
-						? _existeDevoirSansCoeffParDefaut.call(this, aParams)
+						? this._existeDevoirSansCoeffParDefaut(aParams)
 						: false;
 					return this.moteur.composeHtmlDevoir({
 						devoir: lDevoir,
 						avecCorrige: this.param.avecCorrige,
-						ligne: aParams.ligne,
-						indiceDevoir: aParams.declarationColonne.indice,
 						avecDevoirsDate: this.param.affichage.avecDevoirsDate,
 						avecDevoirsCoefficient:
 							this.param.affichage.avecDevoirsCoefficient && lAvecLigneCoeff,
+						jsxFuncNodeCorrigeQCM: this.jsxNodeCorrigeQCM.bind(this, lDevoir),
 					});
 				}
 			}
 		}
 		return "";
+	}
+	estCelluleWAIRowHeader(aParams) {
+		if (aParams.article.estUnDeploiement) {
+			return false;
+		}
+		return aParams.idColonne === DonneesListe_ReleveDeNotes.colonnes.service;
 	}
 	getVisible(D) {
 		return !D.estSurMatiere;
@@ -380,7 +377,7 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 						aParams.idColonne !== DonneesListe_ReleveDeNotes.colonnes.service ||
 						D.service.nbSousServicesActifs === 0)
 				) {
-					T.push("Gris");
+					T.push("color-neutre-foncee");
 				}
 			}
 		}
@@ -388,23 +385,23 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 	}
 	getClassCelluleConteneur(aParams) {
 		const T = [];
-		if (_estColAvecGras.call(this, aParams)) {
+		if (this._estColAvecGras(aParams)) {
 			T.push("Gras");
 		}
-		if (_estColAvecAlignementDroit.call(this, aParams)) {
+		if (this._estColAvecAlignementDroit(aParams)) {
 			T.push("AlignementDroit");
 		}
 		switch (aParams.idColonne) {
 			case DonneesListe_ReleveDeNotes.colonnes.appreciation: {
 				const lAvecCurseurInterdiction =
-					!this.param.estEnConsultation &&
-					!_estCellEditable.call(this, aParams);
+					!this.param.estEnConsultation && !this._estCellEditable(aParams);
 				if (lAvecCurseurInterdiction) {
 					T.push("AvecInterdiction");
 				} else {
 					if (
 						this.moteurAssSaisie.avecAssistantSaisieActif({
-							typeReleveBulletin: TypeReleveBulletin.ReleveDeNotes,
+							typeReleveBulletin:
+								TypeReleveBulletin_1.TypeReleveBulletin.ReleveDeNotes,
 						})
 					) {
 						T.push("Curseur_AssistantSaisieActif");
@@ -420,7 +417,7 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 	getStyle(aParams) {
 		let lCouleurFacultatif = null;
 		if (
-			_estColDevoir.call(this, aParams.idColonne) &&
+			this._estColDevoir(aParams.idColonne) &&
 			this.param.affichage.NombreMoyennesPeriodes > 0
 		) {
 			const lDevoir = this._getDevoir(aParams);
@@ -436,7 +433,7 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 		if (
 			aParams.idColonne === DonneesListe_ReleveDeNotes.colonnes.regroupement
 		) {
-			return !_estCelluleDeploiement(aParams);
+			return !this._estCelluleDeploiement(aParams);
 		}
 		if (aParams && aParams.article && aParams.article.estUnDeploiement) {
 			return false;
@@ -464,10 +461,12 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 		if (
 			aParams.idColonne === DonneesListe_ReleveDeNotes.colonnes.regroupement
 		) {
-			if (_estCelluleDeploiement(aParams.celluleLignePrecedente)) {
+			if (this._estCelluleDeploiement(aParams.celluleLignePrecedente)) {
 				return false;
 			}
-			return !aParams.article.estUnDeploiement && aParams.article.regroupement;
+			return (
+				!aParams.article.estUnDeploiement && !!aParams.article.regroupement
+			);
 		}
 		switch (aParams.idColonne) {
 			case DonneesListe_ReleveDeNotes.colonnes.service:
@@ -506,20 +505,23 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 		}
 		return this.options.hauteurMinCellule;
 	}
-	getHintHtmlForce(aParams) {
-		if (_estColDevoir.call(this, aParams.idColonne)) {
+	getTooltip(aParams) {
+		var _a, _b;
+		if (this._estColDevoir(aParams.idColonne)) {
 			const lDevoir = this._getDevoir(aParams);
 			if (lDevoir) {
-				return lDevoir.Hint;
+				return (_b =
+					(_a = lDevoir.Hint) === null || _a === void 0
+						? void 0
+						: _a.enleverEntites) === null || _b === void 0
+					? void 0
+					: _b.call(_a);
 			}
-		}
-	}
-	getHintForce(aParams) {
-		if (
-			_estDonneeEditable.call(this, aParams) &&
-			_estDonneeCloture.call(this, aParams)
+		} else if (
+			this._estDonneeEditable(aParams) &&
+			this._estDonneeCloture(aParams)
 		) {
-			return GTraductions.getValeur("PeriodeCloturee");
+			return ObjetTraduction_1.GTraductions.getValeur("PeriodeCloturee");
 		}
 	}
 	getCouleurCellule(aParams) {
@@ -528,18 +530,16 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 			(aParams.idColonne === DonneesListe_ReleveDeNotes.colonnes.regroupement &&
 				aParams.article.regroupement)
 		) {
-			return ObjetDonneesListe.ECouleurCellule.Deploiement;
+			return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Deploiement;
 		}
-		const I = aParams.colonne;
-		const D = aParams.article;
-		if (_estColFixe.call(this, aParams, I, D)) {
-			return ObjetDonneesListe.ECouleurCellule.Fixe;
+		if (this._estColFixe(aParams)) {
+			return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Fixe;
 		}
-		if (_estColCouleurTotal.call(this, aParams, I, D)) {
-			return ObjetDonneesListe.ECouleurCellule.Total;
+		if (this._estColCouleurTotal(aParams)) {
+			return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Total;
 		}
-		if (_estColDevoir.call(this, aParams.idColonne)) {
-			return ObjetDonneesListe.ECouleurCellule.Blanc;
+		if (this._estColDevoir(aParams.idColonne)) {
+			return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
 		}
 		return null;
 	}
@@ -570,24 +570,22 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 		}
 	}
 	avecEdition(aParams) {
-		return _estCellEditable.call(this, aParams);
+		return this._estCellEditable(aParams);
 	}
 	avecEvenementEdition(aParams) {
-		if (
-			!_estColEditable.call(this, aParams) ||
-			!_estDonneeEditable.call(this, aParams)
-		) {
+		if (!this._estColEditable(aParams) || !this._estDonneeEditable(aParams)) {
 			return false;
 		}
-		if (_estDonneeCloture.call(this, aParams)) {
+		if (this._estDonneeCloture(aParams)) {
 			return true;
 		}
 		switch (aParams.idColonne) {
 			case DonneesListe_ReleveDeNotes.colonnes.appreciation:
 				return (
-					_estCellEditable.call(this, aParams) &&
+					this._estCellEditable(aParams) &&
 					this.moteurAssSaisie.avecAssistantSaisieActif({
-						typeReleveBulletin: TypeReleveBulletin.ReleveDeNotes,
+						typeReleveBulletin:
+							TypeReleveBulletin_1.TypeReleveBulletin.ReleveDeNotes,
 					})
 				);
 		}
@@ -608,15 +606,16 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 		switch (aParams.idColonne) {
 			case DonneesListe_ReleveDeNotes.colonnes.appreciation: {
 				const lData = this.moteur.getApprDeService({
-					typeReleveBulletin: TypeReleveBulletin.ReleveDeNotes,
+					typeReleveBulletin:
+						TypeReleveBulletin_1.TypeReleveBulletin.ReleveDeNotes,
 					article: aParams.article,
 				});
 				const lService = lData.service;
 				const lAppr = lData.appreciation;
 				if (lAppr) {
 					lAppr.setLibelle(!!V ? V.trim() : "");
-					lAppr.setEtat(EGenreEtat.Modification);
-					lService.setEtat(EGenreEtat.Modification);
+					lAppr.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+					lService.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 				}
 				break;
 			}
@@ -628,16 +627,19 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 				case DonneesListe_ReleveDeNotes.colonnes.service:
 					return this.param.affichage.AvecSousService
 						? ""
-						: GTraductions.getValeur("MoyenneGenerale");
+						: ObjetTraduction_1.GTraductions.getValeur("MoyenneGenerale");
 				case DonneesListe_ReleveDeNotes.colonnes.sousService:
-					return GTraductions.getValeur("MoyenneGenerale");
+					return ObjetTraduction_1.GTraductions.getValeur("MoyenneGenerale");
 				case DonneesListe_ReleveDeNotes.colonnes.moyenneEleve:
 					return this.moteur.composeHtmlLienNoteCalculMoyenne({
 						note: this.param.moyGenerale.MoyenneEleve,
-						ligne: aParams.ligne,
-						colonne: aParams.colonne,
-						idColonne: aParams.idColonne,
+						JSXFuncNode: this.jsxGetNodeCalculMoy.bind(this, aParams, true),
 					});
+				case DonneesListe_ReleveDeNotes.colonnes.pts:
+					return !!this.param.moyGenerale.NombrePointsEleve &&
+						this.param.moyGenerale.NombrePointsEleve.getValeur() > 0
+						? this.moteur.getStrNote(this.param.moyGenerale.NombrePointsEleve)
+						: "";
 				case DonneesListe_ReleveDeNotes.colonnes.moyenneClasse:
 					return this.param.moyGenerale.MoyenneClasse;
 				case DonneesListe_ReleveDeNotes.colonnes.moyenneMediane:
@@ -649,12 +651,10 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 				case DonneesListe_ReleveDeNotes.colonnes.moyenneAnnuelle:
 					return this.moteur.composeHtmlLienNoteCalculMoyenne({
 						note: this.param.moyGenerale.MoyenneAnnuelle,
-						ligne: aParams.ligne,
-						colonne: aParams.colonne,
-						idColonne: aParams.idColonne,
+						JSXFuncNode: this.jsxGetNodeCalculMoy.bind(this, aParams, true),
 					});
 				default:
-					if (_estColMoyPeriode.call(this, aParams.idColonne)) {
+					if (this._estColMoyPeriode(aParams.idColonne)) {
 						const lNumero = aParams.declarationColonne.numeroPeriode;
 						const lMoy =
 							this.param.moyGenerale.ListeMoyennesPeriodes &&
@@ -666,9 +666,11 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 						return lMoy
 							? this.moteur.composeHtmlLienNoteCalculMoyenne({
 									note: lMoy,
-									ligne: aParams.ligne,
-									colonne: aParams.colonne,
-									idColonne: aParams.idColonne,
+									JSXFuncNode: this.jsxGetNodeCalculMoy.bind(
+										this,
+										aParams,
+										true,
+									),
 								})
 							: "";
 					}
@@ -685,15 +687,18 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 				case DonneesListe_ReleveDeNotes.colonnes.moyenneInf:
 				case DonneesListe_ReleveDeNotes.colonnes.moyenneSup:
 				case DonneesListe_ReleveDeNotes.colonnes.moyenneAnnuelle:
-					return ObjetDonneesListe.typeCelluleTotal.defaut;
+				case DonneesListe_ReleveDeNotes.colonnes.pts:
+				case DonneesListe_ReleveDeNotes.colonnes.nivMaitriseEleve:
+					return ObjetDonneesListe_1.ObjetDonneesListe.typeCelluleTotal.defaut;
 				default:
-					if (_estColMoyPeriode.call(this, aParams.idColonne)) {
-						return ObjetDonneesListe.typeCelluleTotal.defaut;
+					if (this._estColMoyPeriode(aParams.idColonne)) {
+						return ObjetDonneesListe_1.ObjetDonneesListe.typeCelluleTotal
+							.defaut;
 					}
-					return ObjetDonneesListe.typeCelluleTotal.fond;
+					return ObjetDonneesListe_1.ObjetDonneesListe.typeCelluleTotal.fond;
 			}
 		}
-		return ObjetDonneesListe.typeCelluleTotal.fond;
+		return ObjetDonneesListe_1.ObjetDonneesListe.typeCelluleTotal.fond;
 	}
 	getClassTotal(aParams) {
 		switch (aParams.idColonne) {
@@ -723,32 +728,131 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 			return 4;
 		}
 	}
-	initOptions(aInstance, aParam) {
+	initOptions(aInstance) {
 		aInstance.setOptionsListe({
-			colonnes: this.getColonnesOrdonneesSelonContexte(aParam),
+			colonnes: this.getColonnesOrdonneesSelonContexte(),
 			scrollHorizontal: true,
-			avecLigneTotal: aParam.affichage.AvecMoyenneGenerale,
+			avecLigneTotal: this.param.affichage.AvecMoyenneGenerale,
 			colonnesTriables: false,
 			hauteurAdapteContenu: true,
 			avecModeAccessible: true,
 			nonEditableSurModeExclusif: true,
 		});
 	}
-	getColonnesOrdonneesSelonContexte(aParam) {
+	getTitreColSectionEleve(aSurTitre, aCol, aNbColDansSection, aLibelleMoy) {
+		let lStr = "";
+		switch (aCol) {
+			case DonneesListe_ReleveDeNotes.colonnes.moyenneEleve:
+				lStr = aSurTitre
+					? aNbColDansSection > 1
+						? ObjetTraduction_1.GTraductions.getValeur("Eleve")
+						: aLibelleMoy
+					: aNbColDansSection > 1
+						? aLibelleMoy
+						: ObjetTraduction_1.GTraductions.getValeur("Eleve");
+				break;
+			case DonneesListe_ReleveDeNotes.colonnes.nivMaitriseEleve:
+				lStr = aSurTitre
+					? aNbColDansSection > 1
+						? ObjetTraduction_1.GTraductions.getValeur("Eleve")
+						: ""
+					: ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.Pos");
+				break;
+			case DonneesListe_ReleveDeNotes.colonnes.pts:
+				lStr = aSurTitre
+					? ObjetTraduction_1.GTraductions.getValeur("Eleve")
+					: ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.Pts");
+				break;
+		}
+		return aSurTitre
+			? { libelle: lStr, avecFusionColonne: true }
+			: { libelle: lStr };
+	}
+	ajouterColSectionEleve(
+		aColonnes,
+		aCondition,
+		aCol,
+		aNbColDansSectionEleve,
+		aSansSurTitreSiSeul,
+		aLibelleMoy,
+		aHint,
+	) {
+		if (aCondition) {
+			const lDimensions = DonneesListe_ReleveDeNotes.dimensions;
+			let lTitre = this.getTitreColSectionEleve(
+				false,
+				aCol,
+				aNbColDansSectionEleve,
+				aLibelleMoy,
+			);
+			let lSurTitre = this.getTitreColSectionEleve(
+				true,
+				aCol,
+				aNbColDansSectionEleve,
+				aLibelleMoy,
+			);
+			let lColSeule = aNbColDansSectionEleve === 1;
+			aColonnes.push({
+				id: aCol,
+				taille: lDimensions.largeurNote,
+				titre: aSansSurTitreSiSeul && lColSeule ? lTitre : [lSurTitre, lTitre],
+				hint: aHint,
+			});
+		}
+	}
+	ajouterColsSectionEleve(aColonnes, aLibelleMoy) {
+		const lAffichage = this.param.affichage;
+		let lNbColDansSectionEleve =
+			Number(lAffichage.AvecNombrePointsEleve) +
+			Number(lAffichage.AvecNivMaitriseEleve) +
+			Number(lAffichage.AvecMoyenneEleve);
+		if (lNbColDansSectionEleve > 0) {
+			this.ajouterColSectionEleve(
+				aColonnes,
+				lAffichage.AvecNombrePointsEleve,
+				DonneesListe_ReleveDeNotes.colonnes.pts,
+				lNbColDansSectionEleve,
+				false,
+				"",
+				ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.PtsHint"),
+			);
+			this.ajouterColSectionEleve(
+				aColonnes,
+				lAffichage.AvecNivMaitriseEleve,
+				DonneesListe_ReleveDeNotes.colonnes.nivMaitriseEleve,
+				lNbColDansSectionEleve,
+				true,
+				"",
+				ObjetTraduction_1.GTraductions.getValeur(
+					"BulletinEtReleve.HintPositionnement",
+				),
+			);
+			this.ajouterColSectionEleve(
+				aColonnes,
+				lAffichage.AvecMoyenneEleve,
+				DonneesListe_ReleveDeNotes.colonnes.moyenneEleve,
+				lNbColDansSectionEleve,
+				false,
+				aLibelleMoy,
+				"",
+			);
+		}
+	}
+	getColonnesOrdonneesSelonContexte() {
 		const lDimensions = DonneesListe_ReleveDeNotes.dimensions;
-		const lAffichage = aParam.affichage;
+		const lAffichage = this.param.affichage;
 		const lColonnes = [];
 		let lIdCol;
 		lColonnes.push({
 			id: DonneesListe_ReleveDeNotes.colonnes.regroupement,
 			taille: lDimensions.largeurRegroupement,
-			titre: GTraductions.getValeur("Matieres"),
+			titre: ObjetTraduction_1.GTraductions.getValeur("Matieres"),
 		});
 		lColonnes.push({
 			id: DonneesListe_ReleveDeNotes.colonnes.service,
 			taille: lDimensions.largeurService,
 			titre: {
-				libelle: GTraductions.getValeur("Matieres"),
+				libelle: ObjetTraduction_1.GTraductions.getValeur("Matieres"),
 				avecFusionColonne: true,
 			},
 		});
@@ -757,7 +861,7 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 				id: DonneesListe_ReleveDeNotes.colonnes.sousService,
 				taille: lDimensions.largeurSousService,
 				titre: {
-					libelle: GTraductions.getValeur("Matieres"),
+					libelle: ObjetTraduction_1.GTraductions.getValeur("Matieres"),
 					avecFusionColonne: true,
 				},
 			});
@@ -766,16 +870,24 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 			lColonnes.push({
 				id: DonneesListe_ReleveDeNotes.colonnes.volumeHoraire,
 				taille: lDimensions.largeurDevoir,
-				titre: GTraductions.getValeur("BulletinEtReleve.VolH"),
-				hint: GTraductions.getValeur("BulletinEtReleve.HintVolH"),
+				titre: ObjetTraduction_1.GTraductions.getValeur(
+					"BulletinEtReleve.VolH",
+				),
+				hint: ObjetTraduction_1.GTraductions.getValeur(
+					"BulletinEtReleve.HintVolH",
+				),
 			});
 		}
 		if (lAffichage.AvecCoefficient) {
 			lColonnes.push({
 				id: DonneesListe_ReleveDeNotes.colonnes.coefficient,
 				taille: lDimensions.largeurNote,
-				titre: GTraductions.getValeur("BulletinEtReleve.Coeff"),
-				hint: GTraductions.getValeur("BulletinEtReleve.HintCoeff"),
+				titre: ObjetTraduction_1.GTraductions.getValeur(
+					"BulletinEtReleve.Coeff",
+				),
+				hint: ObjetTraduction_1.GTraductions.getValeur(
+					"BulletinEtReleve.HintCoeff",
+				),
 			});
 		}
 		const lNbrMoy =
@@ -784,55 +896,26 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 			Number(lAffichage.AvecMoyenneAnnuelle) +
 			lAffichage.NombreMoyennesPeriodes +
 			2 * Number(lAffichage.AvecMoyenneInfSup);
-		const lLibelleMoy = _getLibelleMoyennes.call(this, {
+		const lLibelleMoy = this._getLibelleMoyennes({
 			nbrMoy: lNbrMoy,
 			affichage: lAffichage,
 		});
-		if (lAffichage.AvecNivMaitriseEleve && lAffichage.AvecMoyenneEleve) {
-			lColonnes.push({
-				id: DonneesListe_ReleveDeNotes.colonnes.nivMaitriseEleve,
-				taille: lDimensions.largeurNote,
-				titre: [
-					{ libelle: GTraductions.getValeur("Eleve"), avecFusionColonne: true },
-					{ libelle: GTraductions.getValeur("BulletinEtReleve.Pos") },
-				],
-			});
-			lColonnes.push({
-				id: DonneesListe_ReleveDeNotes.colonnes.moyenneEleve,
-				taille: lDimensions.largeurNote,
-				titre: [
-					{ libelle: GTraductions.getValeur("Eleve"), avecFusionColonne: true },
-					{ libelle: lLibelleMoy },
-				],
-			});
-		} else if (lAffichage.AvecMoyenneEleve) {
-			lColonnes.push({
-				id: DonneesListe_ReleveDeNotes.colonnes.moyenneEleve,
-				taille: lDimensions.largeurNote,
-				titre: [
-					{ libelle: lLibelleMoy, avecFusionColonne: true },
-					{ libelle: GTraductions.getValeur("Eleve") },
-				],
-			});
-		} else if (lAffichage.AvecNivMaitriseEleve) {
-			lColonnes.push({
-				id: DonneesListe_ReleveDeNotes.colonnes.nivMaitriseEleve,
-				taille: lDimensions.largeurNote,
-				titre: { libelle: GTraductions.getValeur("BulletinEtReleve.Pos") },
-			});
-		}
+		this.ajouterColsSectionEleve(lColonnes, lLibelleMoy);
 		if (lAffichage.AvecMoyenneAnnuelle) {
 			lColonnes.push({
 				id: DonneesListe_ReleveDeNotes.colonnes.moyenneAnnuelle,
 				taille: lDimensions.largeurNote,
 				titre: [
-					{ libelle: GTraductions.getValeur("Eleve"), avecFusionColonne: true },
-					{ libelle: GTraductions.getValeur("Annee") },
+					{
+						libelle: ObjetTraduction_1.GTraductions.getValeur("Eleve"),
+						avecFusionColonne: true,
+					},
+					{ libelle: ObjetTraduction_1.GTraductions.getValeur("Annee") },
 				],
 			});
 		}
 		for (let i = 0; i < lAffichage.NombreMoyennesPeriodes; i++) {
-			lIdCol = _getIdColMoyPeriode.call(this, i);
+			lIdCol = this._getIdColMoyPeriode(i);
 			const lPeriode = lAffichage.listePeriodes.get(i);
 			const lCouleurPeriode =
 				lAffichage.listeLibellesPeriodes.getElementParNumero(
@@ -849,7 +932,10 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 				indice: i,
 				taille: lDimensions.largeurNote,
 				titre: [
-					{ libelle: GTraductions.getValeur("Eleve"), avecFusionColonne: true },
+					{
+						libelle: ObjetTraduction_1.GTraductions.getValeur("Eleve"),
+						avecFusionColonne: true,
+					},
 					{
 						libelleHtml:
 							'<div class="titre-periode">' +
@@ -869,8 +955,8 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 					{ libelle: lLibelleMoy, avecFusionColonne: true },
 					{
 						libelle: lAffichage.AvecMoyenneAnnuelle
-							? GTraductions.getValeur("BulletinEtReleve.Moy")
-							: GTraductions.getValeur("Classe"),
+							? ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.Moy")
+							: ObjetTraduction_1.GTraductions.getValeur("Classe"),
 					},
 				],
 			});
@@ -899,7 +985,11 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 				taille: lDimensions.largeurNote,
 				titre: [
 					{ libelle: lLibelleMoy, avecFusionColonne: true },
-					{ libelle: GTraductions.getValeur("BulletinEtReleve.Mediane") },
+					{
+						libelle: ObjetTraduction_1.GTraductions.getValeur(
+							"BulletinEtReleve.Mediane",
+						),
+					},
 				],
 			});
 		}
@@ -907,20 +997,22 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 			lColonnes.push({
 				id: DonneesListe_ReleveDeNotes.colonnes.heureCoursManquees,
 				taille: lDimensions.largeurDevoir,
-				titre: GTraductions.getValeur("BulletinEtReleve.HeuresCoursManquees"),
-				hint: GTraductions.getValeur(
+				titre: ObjetTraduction_1.GTraductions.getValeur(
+					"BulletinEtReleve.HeuresCoursManquees",
+				),
+				hint: ObjetTraduction_1.GTraductions.getValeur(
 					"BulletinEtReleve.HintHeuresCoursManquees",
 				),
 			});
 		}
 		for (let i = 0; i < this.Donnees.nbrMaxTotDevoirs; i++) {
-			lIdCol = _getIdColDevoir.call(this, i);
+			lIdCol = this._getIdColDevoir(i);
 			lColonnes.push({
 				id: lIdCol,
 				indice: i,
 				taille: lDimensions.largeurDevoir,
 				titre: {
-					libelle: GTraductions.getValeur("Devoirs"),
+					libelle: ObjetTraduction_1.GTraductions.getValeur("Devoirs"),
 					avecFusionColonne: true,
 				},
 			});
@@ -928,202 +1020,224 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe {
 		if (lAffichage.NombreAppreciations) {
 			lColonnes.push({
 				id: DonneesListe_ReleveDeNotes.colonnes.appreciation,
-				taille: ObjetListe.initColonne(
+				taille: ObjetListe_1.ObjetListe.initColonne(
 					100,
 					lDimensions.largeurMinAppr,
 					lDimensions.largeurMaxAppr,
 				),
-				titre: { libelle: GTraductions.getValeur("Appreciation") },
+				titre: {
+					libelle: ObjetTraduction_1.GTraductions.getValeur("Appreciation"),
+				},
 			});
 		}
 		return lColonnes;
 	}
-}
-DonneesListe_ReleveDeNotes.colonnes = {
-	regroupement: "ReleveNotes_regroupement",
-	service: "ReleveNotes_service",
-	sousService: "ReleveNotes_sous_service",
-	moyenneEleve: "ReleveNotes_moyenne_eleve",
-	moyenneAnnuelle: "ReleveNotes_moyenne_annuelle",
-	moyennePeriode: "ReleveNotes_moyenne_periode",
-	moyenneClasse: "ReleveNotes_moyenne_classe",
-	moyenneMediane: "ReleveNotes_moyenne_mediane",
-	moyenneInf: "ReleveNotes_moyenne_inferieure",
-	moyenneSup: "ReleveNotes_moyenne_superieure",
-	devoir: "ReleveNotes_devoir",
-	appreciation: "ReleveNotes_appreciation",
-	nivMaitriseEleve: "ReleveNotes_nivMaitriseEleve",
-	coefficient: "ReleveNotes_coefficient",
-	volumeHoraire: "ReleveNotes_volumeHoraire",
-	heureCoursManquees: "ReleveNotes_heureCoursManquees",
-};
-DonneesListe_ReleveDeNotes.dimensions = {
-	largeurRegroupement: 4,
-	largeurService: 175,
-	largeurSousService: 100,
-	largeurNote: 50,
-	largeurDevoir: 72,
-	largeurMinAppr: 160,
-	largeurMaxAppr: 400,
-	hauteurTitre: 20,
-	hauteurService: 35,
-	nbMaxProfs: 3,
-};
-function _estColMoyPeriode(aIdCol) {
-	return this.moteurGrille.estColVariable(
-		aIdCol,
-		DonneesListe_ReleveDeNotes.colonnes.moyennePeriode,
-	);
-}
-function _getIdColMoyPeriode(aIndice) {
-	return this.moteurGrille.getIdColVariable(
-		aIndice,
-		DonneesListe_ReleveDeNotes.colonnes.moyennePeriode,
-	);
-}
-function _estColDevoir(aIdCol) {
-	return this.moteurGrille.estColVariable(
-		aIdCol,
-		DonneesListe_ReleveDeNotes.colonnes.devoir,
-	);
-}
-function _getIdColDevoir(aIndice) {
-	return this.moteurGrille.getIdColVariable(
-		aIndice,
-		DonneesListe_ReleveDeNotes.colonnes.devoir,
-	);
-}
-function _existeDevoirSansCoeffParDefaut(aParams) {
-	let lResult = false;
-	if (aParams.article.ListeDevoirs) {
-		aParams.article.ListeDevoirs.parcourir((aDevoir) => {
-			if (lResult !== true) {
-				lResult =
-					aDevoir.Coefficient && !aDevoir.Coefficient.estCoefficientParDefaut();
-			}
-		});
+	_estColMoyPeriode(aIdCol) {
+		return this.moteurGrille.estColVariable(
+			aIdCol,
+			DonneesListe_ReleveDeNotes.colonnes.moyennePeriode,
+		);
 	}
-	return lResult;
-}
-function _getMoyenne(I, D, aParams) {
-	switch (aParams.idColonne) {
-		case DonneesListe_ReleveDeNotes.colonnes.moyenneEleve:
-			return D.MoyenneEleve;
-		case DonneesListe_ReleveDeNotes.colonnes.moyenneClasse:
-			return D.MoyenneClasse;
-		case DonneesListe_ReleveDeNotes.colonnes.moyenneMediane:
-			return D.MoyenneMediane;
-		case DonneesListe_ReleveDeNotes.colonnes.moyenneAnnuelle:
-			return D.MoyenneAnnuelle;
-		case DonneesListe_ReleveDeNotes.colonnes.moyenneInf:
-			return D.MoyenneInf;
-		case DonneesListe_ReleveDeNotes.colonnes.moyenneSup:
-			return D.MoyenneSup;
-		default: {
-			if (_estColMoyPeriode.call(this, aParams.idColonne)) {
-				return this._getPeriode(aParams);
+	_getIdColMoyPeriode(aIndice) {
+		return this.moteurGrille.getIdColVariable(
+			aIndice,
+			DonneesListe_ReleveDeNotes.colonnes.moyennePeriode,
+		);
+	}
+	_estColDevoir(aIdCol) {
+		return this.moteurGrille.estColVariable(
+			aIdCol,
+			DonneesListe_ReleveDeNotes.colonnes.devoir,
+		);
+	}
+	_getIdColDevoir(aIndice) {
+		return this.moteurGrille.getIdColVariable(
+			aIndice,
+			DonneesListe_ReleveDeNotes.colonnes.devoir,
+		);
+	}
+	_existeDevoirSansCoeffParDefaut(aParams) {
+		let lResult = false;
+		if (aParams.article.ListeDevoirs) {
+			aParams.article.ListeDevoirs.parcourir((aDevoir) => {
+				if (lResult !== true) {
+					lResult =
+						aDevoir.Coefficient &&
+						!aDevoir.Coefficient.estCoefficientParDefaut();
+				}
+			});
+		}
+		return lResult;
+	}
+	_getMoyenne(I, D, aParams) {
+		switch (aParams.idColonne) {
+			case DonneesListe_ReleveDeNotes.colonnes.moyenneEleve:
+				return D.MoyenneEleve;
+			case DonneesListe_ReleveDeNotes.colonnes.moyenneClasse:
+				return D.MoyenneClasse;
+			case DonneesListe_ReleveDeNotes.colonnes.moyenneMediane:
+				return D.MoyenneMediane;
+			case DonneesListe_ReleveDeNotes.colonnes.moyenneAnnuelle:
+				return D.MoyenneAnnuelle;
+			case DonneesListe_ReleveDeNotes.colonnes.moyenneInf:
+				return D.MoyenneInf;
+			case DonneesListe_ReleveDeNotes.colonnes.moyenneSup:
+				return D.MoyenneSup;
+			default: {
+				if (this._estColMoyPeriode(aParams.idColonne)) {
+					return this._getPeriode(aParams);
+				}
 			}
 		}
+		return null;
 	}
-	return null;
-}
-function _estColAvecGras(aParams) {
-	return (
-		[
-			DonneesListe_ReleveDeNotes.colonnes.moyenneEleve,
-			DonneesListe_ReleveDeNotes.colonnes.moyenneClasse,
-			DonneesListe_ReleveDeNotes.colonnes.moyenneMediane,
-			DonneesListe_ReleveDeNotes.colonnes.moyenneAnnuelle,
-			DonneesListe_ReleveDeNotes.colonnes.moyenneInf,
-			DonneesListe_ReleveDeNotes.colonnes.moyenneSup,
-		].includes(aParams.idColonne) ||
-		_estColMoyPeriode.call(this, aParams.idColonne)
-	);
-}
-function _estColAvecAlignementDroit(aParams) {
-	return (
-		[
+	_estColAvecGras(aParams) {
+		return (
+			[
+				DonneesListe_ReleveDeNotes.colonnes.moyenneEleve,
+				DonneesListe_ReleveDeNotes.colonnes.moyenneClasse,
+				DonneesListe_ReleveDeNotes.colonnes.moyenneMediane,
+				DonneesListe_ReleveDeNotes.colonnes.moyenneAnnuelle,
+				DonneesListe_ReleveDeNotes.colonnes.moyenneInf,
+				DonneesListe_ReleveDeNotes.colonnes.moyenneSup,
+				DonneesListe_ReleveDeNotes.colonnes.pts,
+			].includes(aParams.idColonne) || this._estColMoyPeriode(aParams.idColonne)
+		);
+	}
+	_estColAvecAlignementDroit(aParams) {
+		return (
+			[
+				DonneesListe_ReleveDeNotes.colonnes.sousService,
+				DonneesListe_ReleveDeNotes.colonnes.moyenneEleve,
+				DonneesListe_ReleveDeNotes.colonnes.moyenneClasse,
+				DonneesListe_ReleveDeNotes.colonnes.moyenneMediane,
+				DonneesListe_ReleveDeNotes.colonnes.moyenneAnnuelle,
+				DonneesListe_ReleveDeNotes.colonnes.moyenneInf,
+				DonneesListe_ReleveDeNotes.colonnes.moyenneSup,
+				DonneesListe_ReleveDeNotes.colonnes.volumeHoraire,
+				DonneesListe_ReleveDeNotes.colonnes.coefficient,
+				DonneesListe_ReleveDeNotes.colonnes.heureCoursManquees,
+				DonneesListe_ReleveDeNotes.colonnes.pts,
+			].includes(aParams.idColonne) || this._estColMoyPeriode(aParams.idColonne)
+		);
+	}
+	_estCelluleDeploiement(aParams) {
+		return (
+			aParams.idColonne === DonneesListe_ReleveDeNotes.colonnes.regroupement &&
+			aParams.article.estUnDeploiement === true
+		);
+	}
+	_estColFixe(aParams) {
+		const lTabColFixe = [
+			DonneesListe_ReleveDeNotes.colonnes.service,
 			DonneesListe_ReleveDeNotes.colonnes.sousService,
+		];
+		return lTabColFixe.includes(aParams.idColonne);
+	}
+	_estColCouleurTotal(aParams) {
+		const lTabCol = [
+			DonneesListe_ReleveDeNotes.colonnes.pts,
+			DonneesListe_ReleveDeNotes.colonnes.nivMaitriseEleve,
 			DonneesListe_ReleveDeNotes.colonnes.moyenneEleve,
 			DonneesListe_ReleveDeNotes.colonnes.moyenneClasse,
 			DonneesListe_ReleveDeNotes.colonnes.moyenneMediane,
 			DonneesListe_ReleveDeNotes.colonnes.moyenneAnnuelle,
 			DonneesListe_ReleveDeNotes.colonnes.moyenneInf,
 			DonneesListe_ReleveDeNotes.colonnes.moyenneSup,
-			DonneesListe_ReleveDeNotes.colonnes.volumeHoraire,
-			DonneesListe_ReleveDeNotes.colonnes.coefficient,
-			DonneesListe_ReleveDeNotes.colonnes.heureCoursManquees,
-		].includes(aParams.idColonne) ||
-		_estColMoyPeriode.call(this, aParams.idColonne)
-	);
-}
-function _estCelluleDeploiement(aParams) {
-	return (
-		aParams.idColonne === DonneesListe_ReleveDeNotes.colonnes.regroupement &&
-		aParams.article.estUnDeploiement === true
-	);
-}
-function _estColFixe(aParams) {
-	const lTabColFixe = [
-		DonneesListe_ReleveDeNotes.colonnes.service,
-		DonneesListe_ReleveDeNotes.colonnes.sousService,
-	];
-	return lTabColFixe.includes(aParams.idColonne);
-}
-function _estColCouleurTotal(aParams) {
-	const lTabCol = [
-		DonneesListe_ReleveDeNotes.colonnes.nivMaitriseEleve,
-		DonneesListe_ReleveDeNotes.colonnes.moyenneEleve,
-		DonneesListe_ReleveDeNotes.colonnes.moyenneClasse,
-		DonneesListe_ReleveDeNotes.colonnes.moyenneMediane,
-		DonneesListe_ReleveDeNotes.colonnes.moyenneAnnuelle,
-		DonneesListe_ReleveDeNotes.colonnes.moyenneInf,
-		DonneesListe_ReleveDeNotes.colonnes.moyenneSup,
-	];
-	return (
-		lTabCol.includes(aParams.idColonne) ||
-		_estColMoyPeriode.call(this, aParams.idColonne)
-	);
-}
-function _estColEditable(aParams) {
-	const lTabColEditable = [DonneesListe_ReleveDeNotes.colonnes.appreciation];
-	if (lTabColEditable.includes(aParams.idColonne)) {
-		return true;
+		];
+		return (
+			lTabCol.includes(aParams.idColonne) ||
+			this._estColMoyPeriode(aParams.idColonne)
+		);
 	}
-	return false;
-}
-function _estDonneeEditable(aParams) {
-	if (!_estColEditable.call(this, aParams)) {
+	_estColEditable(aParams) {
+		const lTabColEditable = [DonneesListe_ReleveDeNotes.colonnes.appreciation];
+		if (lTabColEditable.includes(aParams.idColonne)) {
+			return true;
+		}
 		return false;
 	}
-	switch (aParams.idColonne) {
-		case DonneesListe_ReleveDeNotes.colonnes.appreciation:
-			return this.param.saisie && aParams.article.Editable;
-		default:
+	_estDonneeEditable(aParams) {
+		if (!this._estColEditable(aParams)) {
 			return false;
+		}
+		switch (aParams.idColonne) {
+			case DonneesListe_ReleveDeNotes.colonnes.appreciation:
+				return this.param.saisie && aParams.article.Editable;
+			default:
+				return false;
+		}
+	}
+	_estDonneeCloture(aParams) {
+		return aParams.article.Cloture;
+	}
+	_estCellEditable(aParams) {
+		const lEditable = this._estDonneeEditable(aParams);
+		const lCloture = this._estDonneeCloture(aParams);
+		const lServicePereAvecAppreciationParSousService =
+			aParams.article.estServicePereAvecSousService &&
+			aParams.article.avecAppreciationParSousService;
+		return (
+			lEditable && !lCloture && !lServicePereAvecAppreciationParSousService
+		);
+	}
+	_getLibelleMoyennes(aParam) {
+		let lLibelleMoyennes;
+		if (aParam.affichage.AvecMoyenneAnnuelle) {
+			lLibelleMoyennes = ObjetTraduction_1.GTraductions.getValeur("Classe");
+		} else {
+			lLibelleMoyennes =
+				aParam.nbrMoy === 1
+					? ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.Moy")
+					: ObjetTraduction_1.GTraductions.getValeur("Moyennes");
+		}
+		return lLibelleMoyennes;
 	}
 }
-function _estDonneeCloture(aParams) {
-	return aParams.article.Cloture;
-}
-function _estCellEditable(aParams) {
-	const lEditable = _estDonneeEditable.call(this, aParams);
-	const lCloture = _estDonneeCloture.call(this, aParams);
-	const lServicePereAvecAppreciationParSousService =
-		aParams.article.estServicePereAvecSousService &&
-		aParams.article.avecAppreciationParSousService;
-	return lEditable && !lCloture && !lServicePereAvecAppreciationParSousService;
-}
-function _getLibelleMoyennes(aParam) {
-	let lLibelleMoyennes;
-	if (aParam.affichage.AvecMoyenneAnnuelle) {
-		lLibelleMoyennes = GTraductions.getValeur("Classe");
-	} else {
-		lLibelleMoyennes =
-			aParam.nbrMoy === 1
-				? GTraductions.getValeur("BulletinEtReleve.Moy")
-				: GTraductions.getValeur("Moyennes");
-	}
-	return lLibelleMoyennes;
-}
-module.exports = { DonneesListe_ReleveDeNotes };
+exports.DonneesListe_ReleveDeNotes = DonneesListe_ReleveDeNotes;
+(function (DonneesListe_ReleveDeNotes) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["regroupement"] = "ReleveNotes_regroupement";
+		colonnes["service"] = "ReleveNotes_service";
+		colonnes["sousService"] = "ReleveNotes_sous_service";
+		colonnes["moyenneEleve"] = "ReleveNotes_moyenne_eleve";
+		colonnes["moyenneAnnuelle"] = "ReleveNotes_moyenne_annuelle";
+		colonnes["moyennePeriode"] = "ReleveNotes_moyenne_periode";
+		colonnes["moyenneClasse"] = "ReleveNotes_moyenne_classe";
+		colonnes["moyenneMediane"] = "ReleveNotes_moyenne_mediane";
+		colonnes["moyenneInf"] = "ReleveNotes_moyenne_inferieure";
+		colonnes["moyenneSup"] = "ReleveNotes_moyenne_superieure";
+		colonnes["devoir"] = "ReleveNotes_devoir";
+		colonnes["appreciation"] = "ReleveNotes_appreciation";
+		colonnes["nivMaitriseEleve"] = "ReleveNotes_nivMaitriseEleve";
+		colonnes["coefficient"] = "ReleveNotes_coefficient";
+		colonnes["volumeHoraire"] = "ReleveNotes_volumeHoraire";
+		colonnes["heureCoursManquees"] = "ReleveNotes_heureCoursManquees";
+		colonnes["pts"] = "ReleveNotes_pts";
+	})(
+		(colonnes =
+			DonneesListe_ReleveDeNotes.colonnes ||
+			(DonneesListe_ReleveDeNotes.colonnes = {})),
+	);
+	let dimensions;
+	(function (dimensions) {
+		dimensions[(dimensions["largeurRegroupement"] = 4)] = "largeurRegroupement";
+		dimensions[(dimensions["largeurService"] = 175)] = "largeurService";
+		dimensions[(dimensions["largeurSousService"] = 100)] = "largeurSousService";
+		dimensions[(dimensions["largeurNote"] = 50)] = "largeurNote";
+		dimensions[(dimensions["largeurDevoir"] = 72)] = "largeurDevoir";
+		dimensions[(dimensions["largeurMinAppr"] = 160)] = "largeurMinAppr";
+		dimensions[(dimensions["largeurMaxAppr"] = 400)] = "largeurMaxAppr";
+		dimensions[(dimensions["hauteurTitre"] = 20)] = "hauteurTitre";
+		dimensions[(dimensions["hauteurService"] = 35)] = "hauteurService";
+		dimensions[(dimensions["nbMaxProfs"] = 3)] = "nbMaxProfs";
+	})(
+		(dimensions =
+			DonneesListe_ReleveDeNotes.dimensions ||
+			(DonneesListe_ReleveDeNotes.dimensions = {})),
+	);
+})(
+	DonneesListe_ReleveDeNotes ||
+		(exports.DonneesListe_ReleveDeNotes = DonneesListe_ReleveDeNotes = {}),
+);

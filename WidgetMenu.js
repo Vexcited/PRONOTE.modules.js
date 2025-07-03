@@ -39,10 +39,13 @@ class WidgetMenu extends ObjetWidget_1.Widget.ObjetWidget {
 	construire(aParams) {
 		this.donnees = aParams.donnees;
 		this.creerObjetsMenu();
+		const lNbRepas = this.donnees.listeRepas
+			? this.donnees.listeRepas.count()
+			: 0;
 		const lWidget = {
-			html: this.composeWidgetMenu(),
+			getHtml: this.composeWidgetMenu.bind(this),
 			nbrElements: null,
-			afficherMessage: this.donnees.listeRepas.count() === 0,
+			afficherMessage: lNbRepas === 0,
 			listeElementsGraphiques: [{ id: this.dateMenu.getNom() }],
 		};
 		$.extend(true, this.donnees, lWidget);

@@ -1,6 +1,8 @@
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-class DonneesListe_EditionMotifs extends ObjetDonneesListe {
+exports.DonneesListe_EditionMotifs = void 0;
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const AccessApp_1 = require("AccessApp");
+class DonneesListe_EditionMotifs extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees) {
 		super(aDonnees);
 		this.creerIndexUnique("Libelle");
@@ -17,7 +19,9 @@ class DonneesListe_EditionMotifs extends ObjetDonneesListe {
 		D.Libelle = V[0];
 	}
 	avecEdition() {
-		return GApplication.droits.get(TypeDroits.dossierVS.saisieMotifsDossiersVS);
+		return (0, AccessApp_1.getApp)().droits.get(
+			ObjetDroitsPN_1.TypeDroits.dossierVS.saisieMotifsDossiersVS,
+		);
 	}
 	surEdition(aParams, V) {
 		aParams.article.setLibelle(V);
@@ -26,4 +30,4 @@ class DonneesListe_EditionMotifs extends ObjetDonneesListe {
 		return aParams.article.getLibelle();
 	}
 }
-module.exports = { DonneesListe_EditionMotifs };
+exports.DonneesListe_EditionMotifs = DonneesListe_EditionMotifs;

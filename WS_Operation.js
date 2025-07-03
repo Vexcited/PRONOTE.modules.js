@@ -89,17 +89,19 @@ class WS_Operation {
 		const lEnveloppe = lDocument.documentElement;
 		const lCorps = lDocument.createElement("env:Body");
 		lEnveloppe.appendChild(lCorps);
-		const lNoeudXml = lDocument.createElementNS(
-			this.espaceNommage,
-			this.paramInput.getNom(),
-		);
-		lCorps.appendChild(lNoeudXml);
-		this.paramInput.serialiser(
-			lDocument,
-			lNoeudXml,
-			aParametres,
-			this.espaceNommage,
-		);
+		if (this.paramInput) {
+			const lNoeudXml = lDocument.createElementNS(
+				this.espaceNommage,
+				this.paramInput.getNom(),
+			);
+			lCorps.appendChild(lNoeudXml);
+			this.paramInput.serialiser(
+				lDocument,
+				lNoeudXml,
+				aParametres,
+				this.espaceNommage,
+			);
+		}
 		return new XMLSerializer().serializeToString(lDocument);
 	}
 	lireEnveloppeSoap(aMessageSOAP) {
@@ -214,10 +216,13 @@ class WS_Operation {
 			}
 			throw lException;
 		} else {
-			if (lNomReponse !== this.paramOutput.getNom()) {
-				throw new Error("Élément inattendu " + lNomReponse);
+			if (this.paramOutput) {
+				if (lNomReponse !== this.paramOutput.getNom()) {
+					throw new Error("Élément inattendu " + lNomReponse);
+				}
+				return this.paramOutput.deserialiser(lDocument, lReponse);
 			}
-			return this.paramOutput.deserialiser(lDocument, lReponse);
+			return null;
 		}
 	}
 }

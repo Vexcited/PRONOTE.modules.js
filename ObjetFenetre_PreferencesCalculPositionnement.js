@@ -1,11 +1,10 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	TypeModeCalculPositionnementService,
-	TypeModeCalculPositionnementServiceUtil,
-} = require("TypeModeCalculPositionnementService.js");
-const { TypeNote } = require("TypeNote.js");
-class ObjetFenetre_PreferencesCalculPositionnement extends ObjetFenetre {
+exports.ObjetFenetre_PreferencesCalculPositionnement = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TypeModeCalculPositionnementService_1 = require("TypeModeCalculPositionnementService");
+const TypeNote_1 = require("TypeNote");
+const GUID_1 = require("GUID");
+class ObjetFenetre_PreferencesCalculPositionnement extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.estEnLectureSeule = false;
@@ -27,11 +26,11 @@ class ObjetFenetre_PreferencesCalculPositionnement extends ObjetFenetre {
 			},
 		};
 		this.setOptionsFenetre({
-			titre: GTraductions.getValeur(
+			titre: ObjetTraduction_1.GTraductions.getValeur(
 				"FenetrePreferencesCalculPositionnement.MesPreferencesCalculPos",
 			),
 			largeur: 500,
-			listeBoutons: [GTraductions.getValeur("Fermer")],
+			listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
 		});
 	}
 	getOptionsNoteNombre() {
@@ -53,7 +52,7 @@ class ObjetFenetre_PreferencesCalculPositionnement extends ObjetFenetre {
 		};
 	}
 	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
+		return $.extend(true, super.getControleur(aInstance), {
 			radioChoixDernieresEvals: {
 				getValue(aEstUtiliserNombre) {
 					return (
@@ -82,7 +81,7 @@ class ObjetFenetre_PreferencesCalculPositionnement extends ObjetFenetre {
 					if (!lValeur) {
 						lValeur = aInstance.valeursParDefaut.nombreDEvaluations;
 					}
-					return new TypeNote(lValeur);
+					return new TypeNote_1.TypeNote(lValeur);
 				},
 				setNote(aValue) {
 					if (!aValue.estUneNoteVide()) {
@@ -114,7 +113,7 @@ class ObjetFenetre_PreferencesCalculPositionnement extends ObjetFenetre {
 					if (!lValeur) {
 						lValeur = aInstance.valeursParDefaut.pourcentagesDEvaluation;
 					}
-					return new TypeNote(lValeur);
+					return new TypeNote_1.TypeNote(lValeur);
 				},
 				setNote(aValue) {
 					if (!aValue.estUneNoteVide()) {
@@ -165,7 +164,7 @@ class ObjetFenetre_PreferencesCalculPositionnement extends ObjetFenetre {
 					if (!lValeur) {
 						lValeur = aInstance.valeursParDefaut.nombreDEvaluations;
 					}
-					return new TypeNote(lValeur);
+					return new TypeNote_1.TypeNote(lValeur);
 				},
 				setNote(aValue) {
 					if (!aValue.estUneNoteVide()) {
@@ -194,7 +193,7 @@ class ObjetFenetre_PreferencesCalculPositionnement extends ObjetFenetre {
 					if (!lValeur) {
 						lValeur = aInstance.valeursParDefaut.pourcentagesDEvaluation;
 					}
-					return new TypeNote(lValeur);
+					return new TypeNote_1.TypeNote(lValeur);
 				},
 				setNote(aValue) {
 					if (!aValue.estUneNoteVide()) {
@@ -225,7 +224,7 @@ class ObjetFenetre_PreferencesCalculPositionnement extends ObjetFenetre {
 		const H = [];
 		H.push(
 			'<div class="NomSimulation">',
-			TypeModeCalculPositionnementServiceUtil.getNomSimulation(
+			TypeModeCalculPositionnementService_1.TypeModeCalculPositionnementServiceUtil.getNomSimulation(
 				aTypeModeSimulation,
 			),
 			"</div>",
@@ -234,10 +233,15 @@ class ObjetFenetre_PreferencesCalculPositionnement extends ObjetFenetre {
 		return H.join("");
 	}
 	getDetailSimu2() {
+		const lIDLabel = GUID_1.GUID.getId();
+		const lIDDescriptionDernieres = GUID_1.GUID.getId();
+		const lIDDescriptionDerniersPourcents = GUID_1.GUID.getId();
 		const H = [];
 		H.push(
-			"<div>",
-			GTraductions.getValeur(
+			'<div id="',
+			lIDLabel,
+			'">',
+			ObjetTraduction_1.GTraductions.getValeur(
 				"FenetrePreferencesCalculPositionnement.DescriptionMode2",
 			),
 			"</div>",
@@ -246,8 +250,14 @@ class ObjetFenetre_PreferencesCalculPositionnement extends ObjetFenetre {
 		H.push(
 			'<div class="LigneSaisieValeurCalcul">',
 			'<ie-radio ie-model="radioChoixDernieresEvals(true)">',
-			'<ie-inputnote ie-model="inputNbDernieresEvals" class="round-style m-right"></ie-inputnote>',
-			GTraductions.getValeur(
+			'<ie-inputnote ie-model="inputNbDernieresEvals" aria-labelledby="',
+			lIDLabel,
+			'" aria-describedby="',
+			lIDDescriptionDernieres,
+			'" class="m-right"></ie-inputnote><span id="',
+			lIDDescriptionDernieres,
+			'">',
+			ObjetTraduction_1.GTraductions.getValeur(
 				"FenetrePreferencesCalculPositionnement.Dernieres",
 			),
 			"</ie-radio>",
@@ -256,10 +266,17 @@ class ObjetFenetre_PreferencesCalculPositionnement extends ObjetFenetre {
 		H.push(
 			'<div class="LigneSaisieValeurCalcul">',
 			'<ie-radio ie-model="radioChoixDernieresEvals(false)">',
-			'<ie-inputnote ie-model="inputPercentDernieresEvals" class="round-style m-right"></ie-inputnote>',
-			GTraductions.getValeur(
+			'<ie-inputnote ie-model="inputPercentDernieresEvals" aria-labelledby="',
+			lIDLabel,
+			'" aria-describedby="',
+			lIDDescriptionDerniersPourcents,
+			'" class="m-right"></ie-inputnote><span id="',
+			lIDDescriptionDerniersPourcents,
+			'">',
+			ObjetTraduction_1.GTraductions.getValeur(
 				"FenetrePreferencesCalculPositionnement.DerniersPourcents",
 			),
+			"</span>",
 			"</ie-radio>",
 			"</div>",
 		);
@@ -267,10 +284,15 @@ class ObjetFenetre_PreferencesCalculPositionnement extends ObjetFenetre {
 		return H.join("");
 	}
 	getDetailSimu3() {
+		const lIDLabel = GUID_1.GUID.getId();
+		const lIDDescriptionMeilleures = GUID_1.GUID.getId();
+		const lIDDescriptionMeilleursPourcents = GUID_1.GUID.getId();
 		const H = [];
 		H.push(
-			"<div>",
-			GTraductions.getValeur(
+			'<div id="',
+			lIDLabel,
+			'">',
+			ObjetTraduction_1.GTraductions.getValeur(
 				"FenetrePreferencesCalculPositionnement.DescriptionMode3",
 			),
 			"</div>",
@@ -279,20 +301,34 @@ class ObjetFenetre_PreferencesCalculPositionnement extends ObjetFenetre {
 		H.push(
 			'<div class="LigneSaisieValeurCalcul">',
 			'<ie-radio ie-model="radioChoixMeilleuresEvals(true)">',
-			'<ie-inputnote ie-model="inputNbMeilleuresEvals" class="round-style m-right"></ie-inputnote>',
-			GTraductions.getValeur(
+			'<ie-inputnote ie-model="inputNbMeilleuresEvals" aria-labelledby="',
+			lIDLabel,
+			'" aria-describedby="',
+			lIDDescriptionMeilleures,
+			'" class="m-right"></ie-inputnote><span id="',
+			lIDDescriptionMeilleures,
+			'">',
+			ObjetTraduction_1.GTraductions.getValeur(
 				"FenetrePreferencesCalculPositionnement.Meilleures",
 			),
+			"</span>",
 			"</ie-radio>",
 			"</div>",
 		);
 		H.push(
 			'<div class="LigneSaisieValeurCalcul">',
 			'<ie-radio ie-model="radioChoixMeilleuresEvals(false)">',
-			'<ie-inputnote ie-model="inputPercentMeilleuresEvals" class="round-style m-right"></ie-inputnote>',
-			GTraductions.getValeur(
+			'<ie-inputnote ie-model="inputPercentMeilleuresEvals" aria-labelledby="',
+			lIDLabel,
+			'" aria-describedby="',
+			lIDDescriptionMeilleursPourcents,
+			'" class=m-right"></ie-inputnote><span id="',
+			lIDDescriptionMeilleursPourcents,
+			'">',
+			ObjetTraduction_1.GTraductions.getValeur(
 				"FenetrePreferencesCalculPositionnement.MeilleursPourcents",
 			),
+			"</span>",
 			"</ie-radio>",
 			"</div>",
 		);
@@ -302,13 +338,14 @@ class ObjetFenetre_PreferencesCalculPositionnement extends ObjetFenetre {
 	composeContenu() {
 		const T = [];
 		T.push("<ul>");
-		const lDetailSimu1 = GTraductions.getValeur(
+		const lDetailSimu1 = ObjetTraduction_1.GTraductions.getValeur(
 			"TypeModeCalculPositionnementService.explication.ModeCalculDefaut",
 		);
 		T.push(
 			"<li>",
 			this._composeSimulation(
-				TypeModeCalculPositionnementService.tMCPS_Defaut,
+				TypeModeCalculPositionnementService_1
+					.TypeModeCalculPositionnementService.tMCPS_Defaut,
 				lDetailSimu1,
 			),
 			"</li>",
@@ -317,7 +354,8 @@ class ObjetFenetre_PreferencesCalculPositionnement extends ObjetFenetre {
 		T.push(
 			"<li>",
 			this._composeSimulation(
-				TypeModeCalculPositionnementService.tMCPS_NDernieresEvals,
+				TypeModeCalculPositionnementService_1
+					.TypeModeCalculPositionnementService.tMCPS_NDernieresEvals,
 				lDetailSimu2,
 			),
 			"</li>",
@@ -326,18 +364,20 @@ class ObjetFenetre_PreferencesCalculPositionnement extends ObjetFenetre {
 		T.push(
 			"<li>",
 			this._composeSimulation(
-				TypeModeCalculPositionnementService.tMCPS_NMeilleursEvals,
+				TypeModeCalculPositionnementService_1
+					.TypeModeCalculPositionnementService.tMCPS_NMeilleursEvals,
 				lDetailSimu3,
 			),
 			"</li>",
 		);
-		const lDetailSimu4 = GTraductions.getValeur(
+		const lDetailSimu4 = ObjetTraduction_1.GTraductions.getValeur(
 			"TypeModeCalculPositionnementService.explication.ModeCalculPonderationAutoProgressive",
 		);
 		T.push(
 			"<li>",
 			this._composeSimulation(
-				TypeModeCalculPositionnementService.tMCPS_PonderationAutoProgressive,
+				TypeModeCalculPositionnementService_1
+					.TypeModeCalculPositionnementService.tMCPS_PonderationAutoProgressive,
 				lDetailSimu4,
 			),
 			"</li>",
@@ -354,9 +394,10 @@ class ObjetFenetre_PreferencesCalculPositionnement extends ObjetFenetre {
 	}
 	surValidation() {
 		this.fermer();
-		if (this.avecDonneesModifiees) {
+		if (this.avecDonneesModifiees && !this.estEnLectureSeule) {
 			this.callback.appel(this.donneesModeCalcul);
 		}
 	}
 }
-module.exports = { ObjetFenetre_PreferencesCalculPositionnement };
+exports.ObjetFenetre_PreferencesCalculPositionnement =
+	ObjetFenetre_PreferencesCalculPositionnement;

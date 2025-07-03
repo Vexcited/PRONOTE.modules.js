@@ -1,71 +1,44 @@
-const { GChaine } = require("ObjetChaine.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetIdentite_Mobile } = require("ObjetIdentite_Mobile.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	UtilitaireBulletinEtReleve_Mobile,
-} = require("UtilitaireBulletinEtReleve_Mobile.js");
-const { EGenreDirectionSlide } = require("EGenreDirectionSlide.js");
-const { EGenreDocumentJoint } = require("Enumere_DocumentJoint.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { TypeFichierExterneHttpSco } = require("TypeFichierExterneHttpSco.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { ObjetBoutonFlottant } = require("ObjetBoutonFlottant.js");
-const { TypeHttpGenerationPDFSco } = require("TypeHttpGenerationPDFSco.js");
-const { GenerationPDF } = require("UtilitaireGenerationPDF.js");
-const { OptionsPDFSco } = require("OptionsPDFSco.js");
-const { ObjetMoteurReleveBulletin } = require("ObjetMoteurReleveBulletin.js");
-const { TypePositionnementUtil } = require("TypePositionnement.js");
-const {
-	UtilitaireGestionCloudEtPDF,
-} = require("UtilitaireGestionCloudEtPDF.js");
-class ObjetReleveDeNotes extends ObjetIdentite_Mobile {
-	constructor(...aParams) {
-		super(...aParams);
-		this.tableauVisible = [];
+exports.ObjetReleveDeNotes = void 0;
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetIdentite_Mobile_1 = require("ObjetIdentite_Mobile");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const UtilitaireBulletinEtReleve_Mobile_1 = require("UtilitaireBulletinEtReleve_Mobile");
+const EGenreDirectionSlide_1 = require("EGenreDirectionSlide");
+const Enumere_DocumentJoint_1 = require("Enumere_DocumentJoint");
+const ObjetElement_1 = require("ObjetElement");
+const TypeFichierExterneHttpSco_1 = require("TypeFichierExterneHttpSco");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetBoutonFlottant_1 = require("ObjetBoutonFlottant");
+const TypeHttpGenerationPDFSco_1 = require("TypeHttpGenerationPDFSco");
+const UtilitaireGenerationPDF_1 = require("UtilitaireGenerationPDF");
+const OptionsPDFSco_1 = require("OptionsPDFSco");
+const ObjetMoteurReleveBulletin_1 = require("ObjetMoteurReleveBulletin");
+const TypePositionnement_1 = require("TypePositionnement");
+const UtilitaireGestionCloudEtPDF_1 = require("UtilitaireGestionCloudEtPDF");
+const AccessApp_1 = require("AccessApp");
+class ObjetReleveDeNotes extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
+	constructor() {
+		super(...arguments);
 		this.donneesRecues = false;
-		this.donneesRecues = false;
-		this.moteur = new ObjetMoteurReleveBulletin();
+		this.moteur = new ObjetMoteurReleveBulletin_1.ObjetMoteurReleveBulletin();
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
-			getIdentiteBouton: function () {
-				return {
-					class: ObjetBoutonFlottant,
-					pere: this,
-					init: function (aBtn) {
-						aInstance.identBtnFlottant = aBtn;
-						const lParam = {
-							listeBoutons: [
-								{
-									primaire: true,
-									icone: "icon_pdf",
-									callback: aInstance.afficherModalitesGenerationPDF.bind(
-										this,
-										aInstance,
-										_genererPdf,
-									),
-								},
-							],
-						};
-						aBtn.setOptionsBouton(lParam);
-					},
-				};
-			},
-		});
-	}
-	afficherModalitesGenerationPDF(aInstance) {
+	afficherModalitesGenerationPDF() {
 		let lParams = {
-			callbaskEvenement: aInstance.surEvenementFenetre.bind(aInstance),
-			modeGestion: UtilitaireGestionCloudEtPDF.modeGestion.PDFEtCloud,
+			callbaskEvenement: this.surEvenementFenetre.bind(this),
+			modeGestion:
+				UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF.modeGestion
+					.PDFEtCloud,
 			avecDepot: true,
 			avecTitreSelonOnglet: true,
 		};
-		UtilitaireGestionCloudEtPDF.creerFenetreGestion(lParams);
+		UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF.creerFenetreGestion(
+			lParams,
+		);
 	}
 	surEvenementFenetre(aLigne) {
 		const lService = GEtatUtilisateur.listeCloudDepotServeur.get(aLigne);
-		_genererPdf.call(this, !!lService ? lService.getGenre() : null);
+		this._genererPdf(!!lService ? lService.getGenre() : null);
 	}
 	construireAffichage() {
 		const lHtml = [];
@@ -81,19 +54,45 @@ class ObjetReleveDeNotes extends ObjetIdentite_Mobile {
 			lHtml.push("<div>");
 			lHtml.push(this.composeServices());
 			lHtml.push("</div>");
+			const lApp = (0, AccessApp_1.getApp)();
 			if (
-				GApplication.droits.get(
-					TypeDroits.autoriserImpressionBulletinReleveBrevet,
+				lApp.droits.get(
+					ObjetDroitsPN_1.TypeDroits.autoriserImpressionBulletinReleveBrevet,
 				) &&
 				!this.identBtnFlottant
 			) {
-				$("#" + GInterface.idZonePrincipale).ieHtmlAppend(
-					'<div class="is-sticky" ie-identite="getIdentiteBouton" ></div>',
-					{ controleur: this.controleur, avecCommentaireConstructeur: false },
+				$("#" + lApp.getInterfaceMobile().idZonePrincipale).ieHtmlAppend(
+					IE.jsx.str("div", {
+						class: "is-sticky",
+						"ie-identite": this.jsxgetIdentiteBouton.bind(this),
+					}),
+					{ avecCommentaireConstructeur: false },
 				);
 			}
 		}
 		return lHtml.join("");
+	}
+	jsxgetIdentiteBouton() {
+		return {
+			class: ObjetBoutonFlottant_1.ObjetBoutonFlottant,
+			pere: this,
+			init: (aBtn) => {
+				this.identBtnFlottant = aBtn;
+				const lParam = {
+					listeBoutons: [
+						{
+							primaire: true,
+							icone: "icon_uniF1C1",
+							ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
+								"GenerationPDF.TitreCommande",
+							),
+							callback: this.afficherModalitesGenerationPDF.bind(this),
+						},
+					],
+				};
+				aBtn.setOptionsBouton(lParam);
+			},
+		};
 	}
 	setMessage(aMessage) {
 		this.message = aMessage;
@@ -119,16 +118,16 @@ class ObjetReleveDeNotes extends ObjetIdentite_Mobile {
 		let lSensSlide;
 		this.donneesRecues = true;
 		if (this.precedentePosition === aPositionMax && aPositionPeriode === 0) {
-			lSensSlide = EGenreDirectionSlide.Droite;
+			lSensSlide = EGenreDirectionSlide_1.EGenreDirectionSlide.Droite;
 		} else if (this.precedentePosition === 0 && aPositionPeriode > 1) {
-			lSensSlide = EGenreDirectionSlide.Gauche;
+			lSensSlide = EGenreDirectionSlide_1.EGenreDirectionSlide.Gauche;
 		} else {
 			lSensSlide =
 				aPositionPeriode === this.precedentePosition
-					? EGenreDirectionSlide.Aucune
+					? EGenreDirectionSlide_1.EGenreDirectionSlide.Aucune
 					: aPositionPeriode < this.precedentePosition
-						? EGenreDirectionSlide.Gauche
-						: EGenreDirectionSlide.Droite;
+						? EGenreDirectionSlide_1.EGenreDirectionSlide.Gauche
+						: EGenreDirectionSlide_1.EGenreDirectionSlide.Droite;
 		}
 		this.precedentePosition = aPositionPeriode;
 		this.afficher(null, lSensSlide);
@@ -358,6 +357,10 @@ class ObjetReleveDeNotes extends ObjetIdentite_Mobile {
 			}
 		}
 		if (!!this.Affichage.AvecMoyenneGenerale) {
+			const lAvecMoyGenNbPts =
+				!!this.Affichage.AvecNombrePointsEleve &&
+				!!this.moyenneGenerale.NombrePointsEleve &&
+				this.moyenneGenerale.NombrePointsEleve.getNote() !== "";
 			const lAvecMoyGenEleve =
 				!!this.Affichage.AvecMoyenneEleve &&
 				!!this.moyenneGenerale.MoyenneEleve &&
@@ -376,96 +379,96 @@ class ObjetReleveDeNotes extends ObjetIdentite_Mobile {
 				this.moyenneGenerale.MoyenneInf.getNote() !== "" &&
 				!!this.moyenneGenerale.MoyenneSup &&
 				this.moyenneGenerale.MoyenneSup.getNote() !== "";
-			if (
-				(lAvecMoyGenEleve && (lAvecMoyGenClasse || lAvecMoyGenMediane)) ||
-				(lAvecMoyGenClasse && lAvecMoyGenMediane) ||
-				lAvecMoyGenInfSup
-			) {
+			let lTabCategoriesMoyGen = [];
+			if (lAvecMoyGenNbPts) {
+				lTabCategoriesMoyGen.push({
+					titre: ObjetTraduction_1.GTraductions.getValeur(
+						"BulletinEtReleve.Pts",
+					),
+					titreLong: ObjetTraduction_1.GTraductions.getValeur(
+						"BulletinEtReleve.PtsHint",
+					),
+					val: this.moyenneGenerale.NombrePointsEleve.getNote(),
+				});
+			}
+			if (lAvecMoyGenEleve) {
+				lTabCategoriesMoyGen.push({
+					titre: ObjetTraduction_1.GTraductions.getValeur(
+						"ReleveDeNotes.MoyEleve",
+					),
+					titreLong: ObjetTraduction_1.GTraductions.getValeur(
+						"BulletinEtReleve.MoyGenEleve",
+					),
+					val: this.moyenneGenerale.MoyenneEleve.getNote(),
+				});
+			}
+			if (lAvecMoyGenClasse) {
+				lTabCategoriesMoyGen.push({
+					titre: ObjetTraduction_1.GTraductions.getValeur(
+						"BulletinEtReleve.Classe",
+					),
+					titreLong: ObjetTraduction_1.GTraductions.getValeur(
+						"BulletinEtReleve.MoyGenClasse",
+					),
+					val: this.moyenneGenerale.MoyenneClasse.getNote(),
+				});
+			}
+			if (lAvecMoyGenMediane) {
+				lTabCategoriesMoyGen.push({
+					titre: ObjetTraduction_1.GTraductions.getValeur(
+						"BulletinEtReleve.Mediane",
+					),
+					titreLong: ObjetTraduction_1.GTraductions.getValeur(
+						"BulletinEtReleve.MoyGenMediane",
+					),
+					val: this.moyenneGenerale.MoyenneMediane.getNote(),
+				});
+			}
+			if (lAvecMoyGenInfSup) {
+				lTabCategoriesMoyGen.push({
+					titre: ObjetTraduction_1.GTraductions.getValeur(
+						"BulletinEtReleve.MoyInf",
+					),
+					val: this.moyenneGenerale.MoyenneInf.getNote(),
+				});
+				lTabCategoriesMoyGen.push({
+					titre: ObjetTraduction_1.GTraductions.getValeur(
+						"BulletinEtReleve.MoySup",
+					),
+					val: this.moyenneGenerale.MoyenneSup.getNote(),
+				});
+			}
+			if (lTabCategoriesMoyGen.length > 1) {
 				lHtml.push('<li class="collection-item raised">');
 				lHtml.push(
 					'<div class="Espace title">',
-					GTraductions.getValeur("BulletinEtReleve.MoyGen"),
+					ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.MoyGen"),
 					"</div>",
 				);
 				lHtml.push('<div class="Espace">');
-				if (lAvecMoyGenEleve) {
+				lTabCategoriesMoyGen.forEach((aCategorie) => {
 					lHtml.push(
-						UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-							GTraductions.getValeur("ReleveDeNotes.MoyEleve"),
-							this.moyenneGenerale.MoyenneEleve.getNote(),
+						UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+							aCategorie.titre,
+							aCategorie.val,
 						),
 					);
-				}
-				if (lAvecMoyGenClasse) {
-					lHtml.push(
-						UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-							GTraductions.getValeur("BulletinEtReleve.Classe"),
-							this.moyenneGenerale.MoyenneClasse.getNote(),
-						),
-					);
-				}
-				if (lAvecMoyGenMediane) {
-					lHtml.push(
-						UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-							GTraductions.getValeur("BulletinEtReleve.Mediane"),
-							this.moyenneGenerale.MoyenneMediane.getNote(),
-						),
-					);
-				}
-				if (lAvecMoyGenInfSup) {
-					lHtml.push(
-						UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-							GTraductions.getValeur("BulletinEtReleve.MoyInf"),
-							this.moyenneGenerale.MoyenneInf.getNote(),
-						),
-					);
-					lHtml.push(
-						UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-							GTraductions.getValeur("BulletinEtReleve.MoySup"),
-							this.moyenneGenerale.MoyenneSup.getNote(),
-						),
-					);
-				}
+				});
 				lHtml.push("</div>");
 				lHtml.push("</li>");
-			} else {
-				if (lAvecMoyGenEleve) {
-					lHtml.push('<li class="collection-item raised">');
-					lHtml.push(
-						'<div class="left title">',
-						GTraductions.getValeur("BulletinEtReleve.MoyGenEleve"),
-						"</div>",
-					);
-					lHtml.push('<div class="right title">');
-					lHtml.push(this.moyenneGenerale.MoyenneEleve.getNote());
-					lHtml.push("</div>");
-					lHtml.push('<div class="clear"></div>');
-					lHtml.push("</li>");
-				} else if (lAvecMoyGenClasse) {
-					lHtml.push('<li class="collection-item raised">');
-					lHtml.push(
-						'<div class="left title">',
-						GTraductions.getValeur("BulletinEtReleve.MoyGenClasse"),
-						"</div>",
-					);
-					lHtml.push('<div class="right title">');
-					lHtml.push(this.moyenneGenerale.MoyenneClasse.getNote());
-					lHtml.push("</div>");
-					lHtml.push('<div class="clear"></div>');
-					lHtml.push("</li>");
-				} else if (lAvecMoyGenMediane) {
-					lHtml.push('<li class="collection-item raised">');
-					lHtml.push(
-						'<div class="left title">',
-						GTraductions.getValeur("BulletinEtReleve.MoyGenMediane"),
-						"</div>",
-					);
-					lHtml.push('<div class="right title">');
-					lHtml.push(this.moyenneGenerale.MoyenneMediane.getNote());
-					lHtml.push("</div>");
-					lHtml.push('<div class="clear"></div>');
-					lHtml.push("</li>");
-				}
+			} else if (lTabCategoriesMoyGen.length === 1) {
+				let lCat = lTabCategoriesMoyGen[0];
+				lHtml.push('<li class="collection-item raised">');
+				lHtml.push(
+					'<div class="left title">',
+					lCat.titreLong ? lCat.titreLong : lCat.titre,
+					"</div>",
+				);
+				lHtml.push('<div class="right title">');
+				lHtml.push(lCat.val);
+				lHtml.push("</div>");
+				lHtml.push('<div class="clear"></div>');
+				lHtml.push("</li>");
 			}
 		}
 		lHtml.push("</ul>");
@@ -477,7 +480,7 @@ class ObjetReleveDeNotes extends ObjetIdentite_Mobile {
 			lHtml.push('<div class="card-content">');
 			lHtml.push('<div id="', this.Nom, '_vieScolaire" class="small">');
 			lHtml.push(
-				UtilitaireBulletinEtReleve_Mobile.composeVieScolaire(
+				UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composeVieScolaire(
 					this.donneesAbsences,
 				),
 			);
@@ -500,13 +503,9 @@ class ObjetReleveDeNotes extends ObjetIdentite_Mobile {
 				.ListeAppreciations.get(0)
 				.getLibelle();
 			lHtml.push(
-				UtilitaireBulletinEtReleve_Mobile.composeAppreciation({
-					intituleDAppreciation: lIntitule,
-					contenuDAppreciation: lContenu,
-					styleBlockIntitule: "color : #616161;",
-					styleBlockContenu:
-						"border:1px solid #616161; background-color: #F1F1F1;",
-				}),
+				UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composeAppreciation(
+					{ intituleDAppreciation: lIntitule, contenuDAppreciation: lContenu },
+				),
 			);
 			lHtml.push("</div>");
 		}
@@ -542,6 +541,23 @@ class ObjetReleveDeNotes extends ObjetIdentite_Mobile {
 		}
 		let lExisteDetaille = false;
 		if (
+			this.Affichage.AvecNombrePointsEleve &&
+			!!aService.NombrePointsEleve &&
+			aService.NombrePointsEleve.getValeur() > 0
+		) {
+			if (!lExisteDetaille) {
+				lHtml.push('<div class="Espace">');
+				lExisteDetaille = true;
+			}
+			lHtml.push(
+				UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+					ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.Pts"),
+					aService.NombrePointsEleve.getNote(),
+					lEstMultiLignes,
+				),
+			);
+		}
+		if (
 			this.Affichage.AvecNivMaitriseEleve &&
 			!!aService.NiveauDAcquisition &&
 			aService.NiveauDAcquisition.existeNumero()
@@ -552,7 +568,7 @@ class ObjetReleveDeNotes extends ObjetIdentite_Mobile {
 					note: null,
 					niveauDAcquisition: aService.NiveauDAcquisition,
 					genrePositionnement:
-						TypePositionnementUtil.getGenrePositionnementParDefaut(
+						TypePositionnement_1.TypePositionnementUtil.getGenrePositionnementParDefaut(
 							aService.TypePositionnementClasse,
 						),
 					avecPrefixe: false,
@@ -563,8 +579,8 @@ class ObjetReleveDeNotes extends ObjetIdentite_Mobile {
 				lExisteDetaille = true;
 			}
 			lHtml.push(
-				UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-					GTraductions.getValeur("BulletinEtReleve.Pos"),
+				UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+					ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.Pos"),
 					H.join(""),
 					lEstMultiLignes,
 				),
@@ -592,8 +608,8 @@ class ObjetReleveDeNotes extends ObjetIdentite_Mobile {
 				lExisteDetaille = true;
 			}
 			lHtml.push(
-				UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-					GTraductions.getValeur("ReleveDeNotes.MoyEleve"),
+				UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+					ObjetTraduction_1.GTraductions.getValeur("ReleveDeNotes.MoyEleve"),
 					H.join(""),
 					lEstMultiLignes,
 				),
@@ -609,8 +625,8 @@ class ObjetReleveDeNotes extends ObjetIdentite_Mobile {
 				lExisteDetaille = true;
 			}
 			lHtml.push(
-				UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-					GTraductions.getValeur("BulletinEtReleve.Classe"),
+				UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+					ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.Classe"),
 					aService.MoyenneClasse.getNote(),
 					lEstMultiLignes,
 				),
@@ -626,8 +642,8 @@ class ObjetReleveDeNotes extends ObjetIdentite_Mobile {
 				lExisteDetaille = true;
 			}
 			lHtml.push(
-				UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-					GTraductions.getValeur("BulletinEtReleve.Mediane"),
+				UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+					ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.Mediane"),
 					aService.MoyenneMediane.getNote(),
 					lEstMultiLignes,
 				),
@@ -640,8 +656,8 @@ class ObjetReleveDeNotes extends ObjetIdentite_Mobile {
 					lExisteDetaille = true;
 				}
 				lHtml.push(
-					UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-						GTraductions.getValeur("BulletinEtReleve.MoyInf"),
+					UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+						ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.MoyInf"),
 						aService.MoyenneInf.getNote(),
 						lEstMultiLignes,
 					),
@@ -653,8 +669,8 @@ class ObjetReleveDeNotes extends ObjetIdentite_Mobile {
 					lExisteDetaille = true;
 				}
 				lHtml.push(
-					UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
-						GTraductions.getValeur("BulletinEtReleve.MoySup"),
+					UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composePetitBlocDonnees(
+						ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.MoySup"),
 						aService.MoyenneSup.getNote(),
 						lEstMultiLignes,
 					),
@@ -672,13 +688,13 @@ class ObjetReleveDeNotes extends ObjetIdentite_Mobile {
 			aService.ListeAppreciations.getLibelle(0) !== ""
 		) {
 			lHtml.push(
-				UtilitaireBulletinEtReleve_Mobile.composeAppreciation({
-					intituleDAppreciation: GTraductions.getValeur("Appreciation"),
-					contenuDAppreciation: aService.ListeAppreciations.getLibelle(0),
-					styleBlockIntitule: "color : #616161;",
-					styleBlockContenu:
-						"border:1px solid #616161; background-color: #F1F1F1;",
-				}),
+				UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composeAppreciation(
+					{
+						intituleDAppreciation:
+							ObjetTraduction_1.GTraductions.getValeur("Appreciation"),
+						contenuDAppreciation: aService.ListeAppreciations.getLibelle(0),
+					},
+				),
 			);
 		}
 		if (
@@ -688,13 +704,13 @@ class ObjetReleveDeNotes extends ObjetIdentite_Mobile {
 			aService.ListeAppreciations.getLibelle(0) !== ""
 		) {
 			lHtml.push(
-				UtilitaireBulletinEtReleve_Mobile.composeAppreciation({
-					intituleDAppreciation: GTraductions.getValeur("Appreciation"),
-					contenuDAppreciation: aService.ListeAppreciations.getLibelle(0),
-					styleBlockIntitule: "color : #616161;",
-					styleBlockContenu:
-						"border:1px solid #616161; background-color: #F1F1F1;",
-				}),
+				UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composeAppreciation(
+					{
+						intituleDAppreciation:
+							ObjetTraduction_1.GTraductions.getValeur("Appreciation"),
+						contenuDAppreciation: aService.ListeAppreciations.getLibelle(0),
+					},
+				),
 			);
 		}
 		if (lHtml.length === 0) {
@@ -709,10 +725,10 @@ class ObjetReleveDeNotes extends ObjetIdentite_Mobile {
 			aDevoir.Bareme &&
 			aDevoir.Note.getValeur() > aDevoir.Bareme.getValeur();
 		const lStrEtoile = lNoteAuDessusBareme
-			? '<i class="icon icon_star m-right"  aria-label="' +
-				GTraductions.getValeur("accueil.noteAuDessusBareme") +
+			? '<i role="img" class="icon icon_star m-right" aria-label="' +
+				ObjetTraduction_1.GTraductions.getValeur("accueil.noteAuDessusBareme") +
 				'" title="' +
-				GTraductions.getValeur("accueil.noteAuDessusBareme") +
+				ObjetTraduction_1.GTraductions.getValeur("accueil.noteAuDessusBareme") +
 				'"></i>'
 			: "";
 		const lEstBaremeParDefaut =
@@ -724,7 +740,7 @@ class ObjetReleveDeNotes extends ObjetIdentite_Mobile {
 		lHtml.push(
 			aDevoir.Date
 				? '<span class="date">' +
-						GDate.formatDate(aDevoir.Date, "%JJ/%MM/%AA") +
+						ObjetDate_1.GDate.formatDate(aDevoir.Date, "%JJ/%MM/%AA") +
 						"</span>"
 				: "",
 		);
@@ -733,16 +749,17 @@ class ObjetReleveDeNotes extends ObjetIdentite_Mobile {
 			? "(" + aDevoir.Note.getNote() + ")"
 			: aDevoir.Note.getNote();
 		if (aDevoir.libelleCorrige) {
-			const lDocumentJoint = new ObjetElement(
+			const lDocumentJoint = new ObjetElement_1.ObjetElement(
 				aDevoir.libelleCorrige,
 				aDevoir.getNumero(),
-				EGenreDocumentJoint.Fichier,
+				Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier,
 			);
 			lHtml.push(
-				GChaine.composerUrlLienExterne({
+				ObjetChaine_1.GChaine.composerUrlLienExterne({
 					libelle: aDevoir.libelleCorrige,
 					libelleEcran: lNoteAffichee,
-					genreRessource: TypeFichierExterneHttpSco.DevoirCorrige,
+					genreRessource:
+						TypeFichierExterneHttpSco_1.TypeFichierExterneHttpSco.DevoirCorrige,
 					documentJoint: lDocumentJoint,
 				}),
 			);
@@ -835,35 +852,38 @@ class ObjetReleveDeNotes extends ObjetIdentite_Mobile {
 	_construireEngagements(aDonneesPiedDeBulletin) {
 		const H = [];
 		if (aDonneesPiedDeBulletin.listeEngagements) {
-			let lLibelle = GTraductions.getValeur("PiedDeBulletin.AucunEngagement");
+			let lLibelle = ObjetTraduction_1.GTraductions.getValeur(
+				"PiedDeBulletin.AucunEngagement",
+			);
 			if (aDonneesPiedDeBulletin.listeEngagements.count()) {
 				lLibelle = aDonneesPiedDeBulletin.listeEngagements
 					.getTableauLibelles()
 					.join(", ");
 			}
 			H.push(
-				`<div class="m-left m-top-xl"><p><span class="Gras"> ${GTraductions.getValeur("PiedDeBulletin.Engagements")}</span> : ${lLibelle}</p></div>`,
+				`<div class="m-left m-top-xl"><p><span class="Gras"> ${ObjetTraduction_1.GTraductions.getValeur("PiedDeBulletin.Engagements")}</span> : ${lLibelle}</p></div>`,
 			);
 		}
 		return H.join("");
 	}
-	free(...aParams) {
-		super.free(...aParams);
+	free() {
+		super.free();
 		if (this.identBtnFlottant) {
 			$("#" + this.identBtnFlottant.getNom().escapeJQ()).remove();
 		}
 	}
+	_genererPdf(aService) {
+		const lParametrageAffichage = {
+			genreGenerationPDF:
+				TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.ReleveDeNotes,
+			periode: this.periode,
+			avecCodeCompetences: GEtatUtilisateur.estAvecCodeCompetences(),
+		};
+		UtilitaireGenerationPDF_1.GenerationPDF.genererPDF({
+			paramPDF: lParametrageAffichage,
+			optionsPDF: OptionsPDFSco_1.OptionsPDFSco.ReleveDeNotes,
+			cloudCible: aService,
+		});
+	}
 }
-function _genererPdf(aService) {
-	const lParametrageAffichage = {
-		genreGenerationPDF: TypeHttpGenerationPDFSco.ReleveDeNotes,
-		periode: this.periode,
-		avecCodeCompetences: GEtatUtilisateur.estAvecCodeCompetences(),
-	};
-	GenerationPDF.genererPDF({
-		paramPDF: lParametrageAffichage,
-		optionsPDF: OptionsPDFSco.ReleveDeNotes,
-		cloudCible: aService,
-	});
-}
-module.exports = { ObjetReleveDeNotes };
+exports.ObjetReleveDeNotes = ObjetReleveDeNotes;

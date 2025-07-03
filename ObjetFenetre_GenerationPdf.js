@@ -19,6 +19,7 @@ const ObjetTraduction_1 = require("ObjetTraduction");
 const Type_ThemeBouton_1 = require("Type_ThemeBouton");
 const TypeGestionRenvoisImp_1 = require("TypeGestionRenvoisImp");
 const OptionsPDF_1 = require("OptionsPDF");
+const AccessApp_1 = require("AccessApp");
 class ObjetFenetre_GenerationPdf extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
@@ -42,7 +43,9 @@ class ObjetFenetre_GenerationPdf extends ObjetFenetre_1.ObjetFenetre {
 			'<div id="',
 			this.getNom() + "_zonepdf",
 			'" style="',
-			ObjetStyle_1.GStyle.composeCouleurTexte(GCouleur.noir),
+			ObjetStyle_1.GStyle.composeCouleurTexte(
+				(0, AccessApp_1.getApp)().getCouleur().noir,
+			),
 			'"></div>',
 		);
 		return T.join("");
@@ -52,10 +55,7 @@ class ObjetFenetre_GenerationPdf extends ObjetFenetre_1.ObjetFenetre {
 			return;
 		}
 		this._parametresAffichage = aParametres;
-		this.instance = this.creerInstanceFenetrePDF(
-			aParametres,
-			this.getNom() + "_zonepdf",
-		);
+		this.instance = this.creerInstanceFenetrePDF(aParametres);
 		if (!this.instance) {
 			return;
 		}
@@ -234,13 +234,14 @@ class ObjetParametrageGenerationPdf extends ObjetIdentite_1.Identite {
 				"fieldset",
 				{
 					class: "AlignementGauche",
-					style: `padding:0px 3px 3px 5px;${lMargin}${ObjetStyle_1.GStyle.composeCouleurBordure(GCouleur.fenetre.bordure)}`,
+					style: `padding:0px 3px 3px 5px;${lMargin}${ObjetStyle_1.GStyle.composeCouleurBordure((0, AccessApp_1.getApp)().getCouleur().fenetre.bordure)}`,
 				},
 				IE.jsx.str(
 					"legend",
 					{
 						class: "Texte10 Gras Insecable",
-						style: ", GStyle.composeCouleurTexte(GCouleur.fenetre.texte), ",
+						style:
+							", GStyle.composeCouleurTexte(getApp().getCouleur().fenetre.texte), ",
 					},
 					aTitre,
 				),
@@ -379,11 +380,6 @@ class ObjetParametrageGenerationPdf_EDT extends ObjetParametrageGenerationPdf {
 					aInstance._optionsPDF.inversionGrille =
 						!aInstance._optionsPDF.inversionGrille;
 				},
-				getTitle() {
-					return ObjetTraduction_1.GTraductions.getValeur(
-						"GenerationPDF.EDT.HintAxes",
-					);
-				},
 			},
 			htmlAxe(aHorizontale) {
 				const lDefinitionAxes =
@@ -396,10 +392,12 @@ class ObjetParametrageGenerationPdf_EDT extends ObjetParametrageGenerationPdf {
 						? lDefinitionAxes.h
 						: lDefinitionAxes.v;
 			},
-			surInversionAxe() {
-				aInstance._optionsPDF.inversionGrille =
-					!aInstance._optionsPDF.inversionGrille;
-				this.controleur.$refreshSelf();
+			nodeInversionAxe() {
+				$(this.node).eventValidation(() => {
+					aInstance._optionsPDF.inversionGrille =
+						!aInstance._optionsPDF.inversionGrille;
+					this.controleur.$refreshSelf();
+				});
 			},
 			rbCouleur: {
 				getValue(aGenreCouleurTexte) {
@@ -607,7 +605,9 @@ function _composeInversionAxes() {
 	);
 	T.push(
 		'<div class="InlineBlock EspaceGauche">',
-		'<ie-btnimage ie-model="btnInversionAxe" class="Image_IntervertirLigneDevant" style="width:10px"></ie-btnimage>',
+		'<ie-btnimage ie-model="btnInversionAxe" class="Image_IntervertirLigneDevant" title="',
+		ObjetTraduction_1.GTraductions.getValeur("GenerationPDF.EDT.HintAxes"),
+		'" style="width:10px"></ie-btnimage>',
 		"</div>",
 	);
 	T.push(
@@ -615,18 +615,22 @@ function _composeInversionAxes() {
 		'<div style="',
 		ObjetStyle_1.GStyle.composeHeight(lHeightLigne),
 		'">',
-		'<div ie-html="htmlAxe(true)" ie-event="click->surInversionAxe" class="AvecMain"',
+		'<div ie-html="htmlAxe(true)" ie-node="nodeInversionAxe" class="AvecMain"',
 		' style="padding:1px;',
-		ObjetStyle_1.GStyle.composeCouleurBordure(GCouleur.fenetre.bordure),
+		ObjetStyle_1.GStyle.composeCouleurBordure(
+			(0, AccessApp_1.getApp)().getCouleur().fenetre.bordure,
+		),
 		ObjetStyle_1.GStyle.composeWidth(lWidthLibelle),
 		'"></div>',
 		"</div>",
 		'<div style="',
 		ObjetStyle_1.GStyle.composeHeight(lHeightLigne),
 		'">',
-		'<div ie-html="htmlAxe(false)" ie-event="click->surInversionAxe" class="AvecMain"',
+		'<div ie-html="htmlAxe(false)" ie-node="nodeInversionAxe" class="AvecMain"',
 		' style="padding:1px;',
-		ObjetStyle_1.GStyle.composeCouleurBordure(GCouleur.fenetre.bordure),
+		ObjetStyle_1.GStyle.composeCouleurBordure(
+			(0, AccessApp_1.getApp)().getCouleur().fenetre.bordure,
+		),
 		ObjetStyle_1.GStyle.composeWidth(lWidthLibelle),
 		'"></div>',
 		"</div>",
@@ -634,7 +638,9 @@ function _composeInversionAxes() {
 	);
 	T.push(
 		'<div class="InlineBlock PetitEspaceGauche">',
-		'<ie-btnimage ie-model="btnInversionAxe" class="Image_IntervertirLigneDerriere" style="width:10px"></ie-btnimage>',
+		'<ie-btnimage ie-model="btnInversionAxe" class="Image_IntervertirLigneDerriere" title="',
+		ObjetTraduction_1.GTraductions.getValeur("GenerationPDF.EDT.HintAxes"),
+		'" style="width:10px"></ie-btnimage>',
 		"</div>",
 	);
 	T.push("</div>");

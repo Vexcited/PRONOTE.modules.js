@@ -1,11 +1,12 @@
-const { ObjetMoteurCDT } = require("ObjetMoteurCahierDeTextes.js");
-const { BlocCard } = require("BlocCard.js");
-const { UtilitaireQCM } = require("UtilitaireQCM.js");
-class ObjetBlocSaisieContenu extends BlocCard {
+exports.ObjetBlocSaisieContenu = void 0;
+const ObjetMoteurCahierDeTextes_1 = require("ObjetMoteurCahierDeTextes");
+const BlocCard_1 = require("BlocCard");
+const UtilitaireQCM_1 = require("UtilitaireQCM");
+class ObjetBlocSaisieContenu extends BlocCard_1.BlocCard {
 	constructor(...aParams) {
 		super(...aParams);
+		this.moteurCDT = new ObjetMoteurCahierDeTextes_1.ObjetMoteurCDT();
 		this.donneesRecues = false;
-		this.moteurCDT = new ObjetMoteurCDT();
 	}
 	construireAffichage() {
 		return this.afficher();
@@ -126,11 +127,11 @@ class ObjetBlocSaisieContenu extends BlocCard {
 					libelle:
 						aExecQCM.QCM.getLibelle() +
 						" " +
-						UtilitaireQCM.getStrResumeModalites(aExecQCM),
+						UtilitaireQCM_1.UtilitaireQCM.getStrResumeModalites(aExecQCM),
 				}),
 			);
 		});
 		return lHtml.join("");
 	}
 }
-module.exports = { ObjetBlocSaisieContenu };
+exports.ObjetBlocSaisieContenu = ObjetBlocSaisieContenu;

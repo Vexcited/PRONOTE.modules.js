@@ -1,0 +1,21 @@
+exports.StylesInterfaceInscriptions = void 0;
+exports.StylesInterfaceInscriptions = {
+	errormessage: "errormessage",
+	messageVide: "message-vide",
+	Image_No_Data: "Image_No_Data",
+	ifcInscriptionsEtab: "ifc-inscriptions-etab",
+	titreSession: "titre-session",
+	colListes: "col-listes",
+	pastilleEtape: "pastille-etape",
+	etapeOff: "etape-off",
+	sectionSession: "section-session",
+	sectionFormulaire: "section-formulaire",
+	resumeInscription: "resume-inscription",
+	annotationEtat: "annotation-etat",
+	contenuInscription: "contenu-inscription",
+	zoneFormulaire: "zone-formulaire",
+	listeDocument: "liste-document",
+	sectionEtape: "section-etape",
+	separateur: "separateur",
+	ifc_textarea: "ifc_textarea",
+};

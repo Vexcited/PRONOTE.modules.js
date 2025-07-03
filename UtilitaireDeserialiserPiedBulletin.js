@@ -1,5 +1,6 @@
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
+exports.UtilitaireDeserialiserPiedBulletin = void 0;
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
 class UtilitaireDeserialiserPiedBulletin {
 	creerAbsences(aJSON) {
 		return {
@@ -34,24 +35,25 @@ class UtilitaireDeserialiserPiedBulletin {
 		}
 		if (aJSON && !!aJSON.ObjetListeAppreciations) {
 			lResult.ListeAppreciations = {
-				general: new ObjetListeElements(),
-				conseilDeClasse: new ObjetListeElements(),
-				commentaires: new ObjetListeElements(),
-				cpe: new ObjetListeElements(),
-				appreciationAnnuelle: new ObjetListeElements(),
-				generalAnnuelle: new ObjetListeElements(),
-				periodes: new ObjetListeElements(),
+				general: new ObjetListeElements_1.ObjetListeElements(),
+				conseilDeClasse: new ObjetListeElements_1.ObjetListeElements(),
+				commentaires: new ObjetListeElements_1.ObjetListeElements(),
+				cpe: new ObjetListeElements_1.ObjetListeElements(),
+				appreciationAnnuelle: new ObjetListeElements_1.ObjetListeElements(),
+				generalAnnuelle: new ObjetListeElements_1.ObjetListeElements(),
+				periodes: new ObjetListeElements_1.ObjetListeElements(),
 			};
 			lResult.avecSaisieAG = aJSON.ObjetListeAppreciations.Editable;
 			lResult.periodeCloture = aJSON.ObjetListeAppreciations.Cloture;
 			if (!!aJSON.ObjetListeAppreciations.ListeAppreciations) {
 				aJSON.ObjetListeAppreciations.ListeAppreciations.parcourir((D) => {
-					const lElement = new ObjetElement();
+					const lElement = new ObjetElement_1.ObjetElement();
 					lElement.Intitule = D.Intitule;
 					lElement.Editable = aJSON.ObjetListeAppreciations.Editable;
 					lElement.Cloture = aJSON.ObjetListeAppreciations.Cloture;
 					lElement.Genre = D.getGenre();
-					lElement.ListeAppreciations = new ObjetListeElements();
+					lElement.ListeAppreciations =
+						new ObjetListeElements_1.ObjetListeElements();
 					lElement.ListeAppreciations.addElement(D);
 					if (lElement.Genre === 0) {
 						lResult.ListeAppreciations.general.addElement(lElement);
@@ -113,8 +115,9 @@ class UtilitaireDeserialiserPiedBulletin {
 		return lResult;
 	}
 }
+exports.UtilitaireDeserialiserPiedBulletin = UtilitaireDeserialiserPiedBulletin;
 function _formatListeAppreciationAnnuelle(aListePeriode, aGlobal) {
-	const lAppreciations = new ObjetListeElements();
+	const lAppreciations = new ObjetListeElements_1.ObjetListeElements();
 	const lGenreAppreciation = [];
 	aListePeriode.parcourir((periode) => {
 		const lListeAppreciation = aGlobal
@@ -133,7 +136,7 @@ function _formatListeAppreciationAnnuelle(aListePeriode, aGlobal) {
 					}
 				} else {
 					lGenreAppreciation.push(D.getGenre());
-					const lElement = new ObjetElement();
+					const lElement = new ObjetElement_1.ObjetElement();
 					lElement.Intitule = [D.Intitule];
 					lElement.Editable = D.Editable;
 					lElement.Cloture = D.cloture;
@@ -146,4 +149,3 @@ function _formatListeAppreciationAnnuelle(aListePeriode, aGlobal) {
 	});
 	return lAppreciations;
 }
-module.exports = { UtilitaireDeserialiserPiedBulletin };

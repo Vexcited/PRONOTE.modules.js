@@ -1,126 +1,148 @@
-const { GestionnaireBloc } = require("GestionnaireBloc.js");
-const { ObjetBloc } = require("GestionnaireBloc.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const {
-	TypeGenreReponseInternetActualite,
-} = require("TypeGenreReponseInternetActualite.js");
+exports.ObjetBlocPN =
+	exports.UtilitaireGenreReponse =
+	exports.UtilitaireGenreEspace =
+	exports.UtilitaireGenreRessource =
+	exports.GestionnaireBlocPN =
+		void 0;
+const GestionnaireBloc_1 = require("GestionnaireBloc");
+const GestionnaireBloc_2 = require("GestionnaireBloc");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const TypeGenreReponseInternetActualite_1 = require("TypeGenreReponseInternetActualite");
+const AccessApp_1 = require("AccessApp");
 class UtilitaireGenreRessource {
 	constructor() {}
 	getRessourceDocumentJoint() {
-		return EGenreRessource.DocumentJoint;
+		return Enumere_Ressource_1.EGenreRessource.DocumentJoint;
 	}
 	getRessourceAucune() {
-		return EGenreRessource.Aucune;
+		return Enumere_Ressource_1.EGenreRessource.Aucune;
 	}
 	getRessourceDocJointEtablissement() {
-		return EGenreRessource.DocJointEtablissement;
+		return Enumere_Ressource_1.EGenreRessource.DocJointEtablissement;
 	}
 	getRessourceEleve() {
-		return EGenreRessource.Eleve;
+		return Enumere_Ressource_1.EGenreRessource.Eleve;
 	}
 	getRessourceParent() {
-		return EGenreRessource.Responsable;
+		return Enumere_Ressource_1.EGenreRessource.Responsable;
 	}
 	getRessourceProf() {
-		return EGenreRessource.Enseignant;
+		return Enumere_Ressource_1.EGenreRessource.Enseignant;
 	}
 	getRessourcePersonnel() {
-		return EGenreRessource.Personnel;
+		return Enumere_Ressource_1.EGenreRessource.Personnel;
 	}
 	getRessourceEntreprise() {
-		return EGenreRessource.MaitreDeStage;
+		return Enumere_Ressource_1.EGenreRessource.MaitreDeStage;
 	}
 	getRessourceInspecteur() {
-		return EGenreRessource.InspecteurPedagogique;
+		return Enumere_Ressource_1.EGenreRessource.InspecteurPedagogique;
 	}
 	getRessourceClasse() {
-		return EGenreRessource.Classe;
+		return Enumere_Ressource_1.EGenreRessource.Classe;
 	}
 	getRessourceGroupe() {
-		return EGenreRessource.Groupe;
+		return Enumere_Ressource_1.EGenreRessource.Groupe;
 	}
 }
+exports.UtilitaireGenreRessource = UtilitaireGenreRessource;
 class UtilitaireGenreEspace {
 	constructor() {}
 	estEspaceParent(aGenreEspace) {
 		return [
-			EGenreEspace.Parent,
-			EGenreEspace.Mobile_Parent,
-			EGenreEspace.PrimParent,
-			EGenreEspace.Mobile_PrimParent,
+			Enumere_Espace_1.EGenreEspace.Parent,
+			Enumere_Espace_1.EGenreEspace.Mobile_Parent,
+			Enumere_Espace_1.EGenreEspace.PrimParent,
+			Enumere_Espace_1.EGenreEspace.Mobile_PrimParent,
 		].includes(aGenreEspace);
 	}
 	estEspaceEntreprise(aGenreEspace) {
-		return [EGenreEspace.Entreprise].includes(aGenreEspace);
+		return [
+			Enumere_Espace_1.EGenreEspace.Entreprise,
+			Enumere_Espace_1.EGenreEspace.Mobile_Entreprise,
+		].includes(aGenreEspace);
 	}
 	estPourPrimaire() {
-		return GEtatUtilisateur.pourPrimaire();
+		return (0, AccessApp_1.getApp)().getEtatUtilisateur().pourPrimaire();
 	}
 }
+exports.UtilitaireGenreEspace = UtilitaireGenreEspace;
 class UtilitaireGenreReponse {
 	constructor() {}
 	estGenreSansReponse(aGenreReponse) {
-		return [TypeGenreReponseInternetActualite.SansReponse].includes(
-			aGenreReponse,
-		);
+		return [
+			TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+				.SansReponse,
+		].includes(aGenreReponse);
 	}
 	estGenreChoixMultiple(aGenreReponse) {
-		return [TypeGenreReponseInternetActualite.ChoixMultiple].includes(
-			aGenreReponse,
-		);
+		return [
+			TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+				.ChoixMultiple,
+		].includes(aGenreReponse);
 	}
 	estGenreChoixUnique(aGenreReponse) {
-		return [TypeGenreReponseInternetActualite.ChoixUnique].includes(
-			aGenreReponse,
-		);
+		return [
+			TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+				.ChoixUnique,
+		].includes(aGenreReponse);
 	}
 	estGenreTextuelle(aGenreReponse) {
-		return [TypeGenreReponseInternetActualite.Textuelle].includes(
-			aGenreReponse,
-		);
+		return [
+			TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+				.Textuelle,
+		].includes(aGenreReponse);
 	}
 	estGenreAvecAR(aGenreReponse) {
-		return [TypeGenreReponseInternetActualite.AvecAR].includes(aGenreReponse);
+		return [
+			TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+				.AvecAR,
+		].includes(aGenreReponse);
 	}
 	estGenreSansAR(aGenreReponse) {
-		return [TypeGenreReponseInternetActualite.SansAR].includes(aGenreReponse);
+		return [
+			TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+				.SansAR,
+		].includes(aGenreReponse);
 	}
 	getGenreSansReponse() {
-		return TypeGenreReponseInternetActualite.SansReponse;
+		return TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+			.SansReponse;
 	}
 	getGenreChoixMultiple() {
-		return TypeGenreReponseInternetActualite.ChoixMultiple;
+		return TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+			.ChoixMultiple;
 	}
 	getGenreChoixUnique() {
-		return TypeGenreReponseInternetActualite.ChoixUnique;
+		return TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+			.ChoixUnique;
 	}
 	getGenreTextuelle() {
-		return TypeGenreReponseInternetActualite.Textuelle;
+		return TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+			.Textuelle;
 	}
 	getGenreAvecAR() {
-		return TypeGenreReponseInternetActualite.AvecAR;
+		return TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+			.AvecAR;
 	}
 	getGenreSansAR() {
-		return TypeGenreReponseInternetActualite.SansAR;
+		return TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+			.SansAR;
 	}
 }
-class GestionnaireBlocPN extends GestionnaireBloc {
+exports.UtilitaireGenreReponse = UtilitaireGenreReponse;
+class GestionnaireBlocPN extends GestionnaireBloc_1.GestionnaireBloc {
 	constructor(...aParams) {
 		super(...aParams);
 		this.setUtilitaires({ genreRessource: new UtilitaireGenreRessource() });
 	}
 }
-class ObjetBlocPN extends ObjetBloc {
+exports.GestionnaireBlocPN = GestionnaireBlocPN;
+class ObjetBlocPN extends GestionnaireBloc_2.ObjetBloc {
 	constructor(...aParams) {
 		super(...aParams);
 		this.setUtilitaires({ genreRessource: new UtilitaireGenreRessource() });
 	}
 }
-module.exports = {
-	GestionnaireBlocPN,
-	UtilitaireGenreRessource,
-	UtilitaireGenreEspace,
-	UtilitaireGenreReponse,
-	ObjetBlocPN,
-};
+exports.ObjetBlocPN = ObjetBlocPN;

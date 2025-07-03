@@ -1,93 +1,89 @@
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetCelluleDate } = require("ObjetCelluleDate.js");
-const { ObjetDisponibilite } = require("ObjetDisponibilite.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { TypeNote } = require("TypeNote.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetSaisie } = require("ObjetSaisie.js");
-const {
-	ObjetRequeteListeCompetencesQCM,
-} = require("ObjetRequeteListeCompetencesQCM.js");
-const {
-	ObjetFenetre_ParamExecutionQCM,
-} = require("ObjetFenetre_ParamExecutionQCM.js");
-const {
-	DonneesListe_EvaluationsQCM,
-} = require("DonneesListe_EvaluationsQCM.js");
-const { ObjetRequeteListeQCMCumuls } = require("ObjetRequeteListeQCMCumuls.js");
-const { ObjetFenetre_SelectionQCM } = require("ObjetFenetre_SelectionQCM.js");
-const { TypeModeCorrectionQCM } = require("TypeModeCorrectionQCM.js");
-const { UtilitaireBoutonBandeau } = require("UtilitaireBoutonBandeau.js");
-const { GDate } = require("ObjetDate.js");
-const {
-	ObjetFenetre_DetailsPIEleve,
-} = require("ObjetFenetre_DetailsPIEleve.js");
-const { UtilitaireQCM } = require("UtilitaireQCM.js");
-class ObjetFenetre_EvaluationQCM extends ObjetFenetre {
+exports.ObjetFenetre_EvaluationQCM = void 0;
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetCelluleDate_1 = require("ObjetCelluleDate");
+const ObjetDisponibilite_1 = require("ObjetDisponibilite");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const TypeNote_1 = require("TypeNote");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetSaisie_1 = require("ObjetSaisie");
+const ObjetRequeteListeCompetencesQCM_1 = require("ObjetRequeteListeCompetencesQCM");
+const ObjetFenetre_ParamExecutionQCM_1 = require("ObjetFenetre_ParamExecutionQCM");
+const DonneesListe_EvaluationsQCM_1 = require("DonneesListe_EvaluationsQCM");
+const ObjetRequeteListeQCMCumuls_1 = require("ObjetRequeteListeQCMCumuls");
+const ObjetFenetre_SelectionQCM_1 = require("ObjetFenetre_SelectionQCM");
+const TypeModeCorrectionQCM_1 = require("TypeModeCorrectionQCM");
+const UtilitaireBoutonBandeau_1 = require("UtilitaireBoutonBandeau");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetFenetre_DetailsPIEleve_1 = require("ObjetFenetre_DetailsPIEleve");
+const UtilitaireQCM_1 = require("UtilitaireQCM");
+const AccessApp_1 = require("AccessApp");
+class ObjetFenetre_EvaluationQCM extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
+		this.applicationSco = (0, AccessApp_1.getApp)();
+		this.etatUtilisateurSco = this.applicationSco.getEtatUtilisateur();
+		this.parametresSco = this.applicationSco.getObjetParametres();
 		this.setOptionsFenetre({
 			avecTailleSelonContenu: true,
 			largeur: 650,
 			hauteur: 500,
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 		});
 		this.donnees = {
 			evaluation: null,
-			listePeriodesService: new ObjetListeElements(),
+			listePeriodesService: new ObjetListeElements_1.ObjetListeElements(),
 			avecChoixQCM: false,
 			avecChoixService: false,
 			sansDoublon: true,
 			avecCreationDevoirPossible: false,
 		};
-		this.avecSelectionPeriodeSecondaire = !GEtatUtilisateur.pourPrimaire();
+		this.avecSelectionPeriodeSecondaire =
+			!this.etatUtilisateurSco.pourPrimaire();
 	}
 	construireInstances() {
 		this.identComboServices = this.add(
-			ObjetSaisie,
-			_surEvenementComboServices.bind(this),
-			_initialiserComboServices,
+			ObjetSaisie_1.ObjetSaisie,
+			this._surEvenementComboServices.bind(this),
+			this._initialiserComboServices,
 		);
 		this.identDisponibiliteQCM = this.add(
-			ObjetDisponibilite,
-			_surEvntSurDisponibiliteQCM.bind(this),
-			_initialiserDisponibiliteQCM,
+			ObjetDisponibilite_1.ObjetDisponibilite,
+			this._surEvntSurDisponibiliteQCM.bind(this),
+			this._initialiserDisponibiliteQCM,
 		);
 		this.identSelecteurDateEvaluation = this.add(
-			ObjetCelluleDate,
-			_surEvenementDateEvaluation.bind(this),
-			_initialiserSelecteurDate,
+			ObjetCelluleDate_1.ObjetCelluleDate,
+			this._surEvenementDateEvaluation.bind(this),
+			this._initialiserSelecteurDate,
 		);
 		this.identSelecteurDatePublication = this.add(
-			ObjetCelluleDate,
-			_surEvenementDatePublication.bind(this),
-			_initialiserSelecteurDate,
+			ObjetCelluleDate_1.ObjetCelluleDate,
+			this._surEvenementDatePublication.bind(this),
+			this._initialiserSelecteurDate,
 		);
 		this.identComboPeriode = this.add(
-			ObjetSaisie,
-			_surEvenementPeriodeEvaluation.bind(this),
-			_initialiserCombosPeriode,
+			ObjetSaisie_1.ObjetSaisie,
+			this._surEvenementPeriodeEvaluation.bind(this),
+			this._initialiserCombosPeriode,
 		);
 		this.identComboPeriodeSecondaire = this.add(
-			ObjetSaisie,
-			_surEvenementPeriodeSecondaireEvaluation.bind(this),
-			_initialiserCombosPeriode,
+			ObjetSaisie_1.ObjetSaisie,
+			this._surEvenementPeriodeSecondaireEvaluation.bind(this),
+			this._initialiserCombosPeriode,
 		);
 		this.identListeCompetencesQCM = this.add(
-			ObjetListe,
+			ObjetListe_1.ObjetListe,
 			null,
-			_initialiserListeCompetencesQCM,
+			this._initialiserListeCompetencesQCM,
 		);
 	}
 	getControleur(aInstance) {
@@ -102,18 +98,20 @@ class ObjetFenetre_EvaluationQCM extends ObjetFenetre {
 						lCleTradAssociationQCM =
 							"evaluations.FenetreEvaluationQCM.QCMAssocie";
 					}
-					return GTraductions.getValeur(lCleTradAssociationQCM);
+					return ObjetTraduction_1.GTraductions.getValeur(
+						lCleTradAssociationQCM,
+					);
 				},
 				btnAssocier: {
 					event: function () {
-						ouvrirFenetreAssociationQCM.call(aInstance);
+						aInstance.ouvrirFenetreAssociationQCM();
 					},
 					estVisible: function () {
 						return !!aInstance.donnees.avecChoixQCM;
 					},
 				},
 				libelleQCM: function () {
-					const lQCM = getQCM.call(aInstance);
+					const lQCM = aInstance.getQCM();
 					return !!lQCM ? lQCM.getLibelle() : "";
 				},
 				estChoixServiceVisible: function () {
@@ -121,11 +119,11 @@ class ObjetFenetre_EvaluationQCM extends ObjetFenetre {
 				},
 				btnOptionsExecution: {
 					event: function () {
-						ouvrirFenetreParametrageExecutionQCM.call(aInstance);
+						aInstance.ouvrirFenetreParametrageExecutionQCM();
 					},
 				},
 				reglagesVisible: function () {
-					const lExecutionQCM = getExecutionQCM.call(aInstance);
+					const lExecutionQCM = aInstance.getExecutionQCM();
 					return lExecutionQCM && !lExecutionQCM.estUnTAF;
 				},
 			},
@@ -135,29 +133,34 @@ class ObjetFenetre_EvaluationQCM extends ObjetFenetre {
 					const lEvaluation = aInstance.donnees.evaluation;
 					if (
 						!!lEvaluation &&
-						GParametres.avecAffichageDecalagePublicationEvalsAuxParents &&
-						!!GParametres.nbJDecalagePublicationAuxParents
+						aInstance.parametresSco
+							.avecAffichageDecalagePublicationEvalsAuxParents &&
+						!!aInstance.parametresSco.nbJDecalagePublicationAuxParents
 					) {
-						let lDatePublicationDecalee = GDate.formatDate(
-							GDate.getJourSuivant(
+						let lDatePublicationDecalee = ObjetDate_1.GDate.formatDate(
+							ObjetDate_1.GDate.getJourSuivant(
 								lEvaluation.datePublication,
-								GParametres.nbJDecalagePublicationAuxParents,
+								aInstance.parametresSco.nbJDecalagePublicationAuxParents,
 							),
 							" %JJ/%MM",
 						);
-						if (GParametres.nbJDecalagePublicationAuxParents === 1) {
-							lMessageDateDecaleeAuxParents = GTraductions.getValeur(
-								"evaluations.FenetreSaisieEvaluation.DecalageUnJourPublicationParentsSoitLe",
-								[lDatePublicationDecalee],
-							);
+						if (
+							aInstance.parametresSco.nbJDecalagePublicationAuxParents === 1
+						) {
+							lMessageDateDecaleeAuxParents =
+								ObjetTraduction_1.GTraductions.getValeur(
+									"evaluations.FenetreSaisieEvaluation.DecalageUnJourPublicationParentsSoitLe",
+									[lDatePublicationDecalee],
+								);
 						} else {
-							lMessageDateDecaleeAuxParents = GTraductions.getValeur(
-								"evaluations.FenetreSaisieEvaluation.DecalageXJoursPublicationParentsSoitLe",
-								[
-									GParametres.nbJDecalagePublicationAuxParents,
-									lDatePublicationDecalee,
-								],
-							);
+							lMessageDateDecaleeAuxParents =
+								ObjetTraduction_1.GTraductions.getValeur(
+									"evaluations.FenetreSaisieEvaluation.DecalageXJoursPublicationParentsSoitLe",
+									[
+										aInstance.parametresSco.nbJDecalagePublicationAuxParents,
+										lDatePublicationDecalee,
+									],
+								);
 						}
 					}
 					return lMessageDateDecaleeAuxParents;
@@ -178,8 +181,8 @@ class ObjetFenetre_EvaluationQCM extends ObjetFenetre {
 					getNote: function () {
 						const lEvaluation = aInstance.donnees.evaluation;
 						return !!lEvaluation
-							? new TypeNote(lEvaluation.coefficient)
-							: new TypeNote(1);
+							? new TypeNote_1.TypeNote(lEvaluation.coefficient)
+							: new TypeNote_1.TypeNote(1);
 					},
 					setNote: function (aNoteCoefficient) {
 						const lEvaluation = aInstance.donnees.evaluation;
@@ -193,7 +196,7 @@ class ObjetFenetre_EvaluationQCM extends ObjetFenetre {
 							sansNotePossible: false,
 							avecAnnotation: false,
 							min: 0,
-							max: _getValeurMaxCoefficientEvaluation.bind(aInstance),
+							max: aInstance._getValeurMaxCoefficientEvaluation(),
 							hintSurErreur: true,
 						};
 					},
@@ -205,23 +208,23 @@ class ObjetFenetre_EvaluationQCM extends ObjetFenetre {
 						});
 					},
 					getTitle() {
-						return GTraductions.getTitreMFiche(
+						return ObjetTraduction_1.GTraductions.getTitreMFiche(
 							"FenetreEvaluation.MFicheCoefficientSurEvaluation",
 						);
 					},
 				},
 				cbAvecCorrige: {
 					getValue: function () {
-						const lExecutionQCM = getExecutionQCM.call(aInstance);
+						const lExecutionQCM = aInstance.getExecutionQCM();
 						if (lExecutionQCM && lExecutionQCM.publierCorrige === undefined) {
 							lExecutionQCM.publierCorrige =
 								lExecutionQCM.modeDiffusionCorrige !==
-								TypeModeCorrectionQCM.FBQ_CorrigeSans;
+								TypeModeCorrectionQCM_1.TypeModeCorrectionQCM.FBQ_CorrigeSans;
 						}
 						return !!lExecutionQCM ? !!lExecutionQCM.publierCorrige : false;
 					},
 					setValue: function (aValue) {
-						const lExecutionQCM = getExecutionQCM.call(aInstance);
+						const lExecutionQCM = aInstance.getExecutionQCM();
 						if (!!lExecutionQCM) {
 							lExecutionQCM.publierCorrige = aValue;
 						}
@@ -241,18 +244,18 @@ class ObjetFenetre_EvaluationQCM extends ObjetFenetre {
 				},
 				cbSansCompetenceDoublon: {
 					getDisabled: function () {
-						return estExecutionQCMVerrouille.call(aInstance);
+						return aInstance.estExecutionQCMVerrouille();
 					},
 					getValue: function () {
 						return aInstance.donnees.sansDoublon;
 					},
 					setValue: function (aValue) {
 						aInstance.donnees.sansDoublon = aValue;
-						new ObjetRequeteListeCompetencesQCM(
+						new ObjetRequeteListeCompetencesQCM_1.ObjetRequeteListeCompetencesQCM(
 							aInstance,
-							_surRequeteListeCompetencesQCM.bind(aInstance, false),
+							aInstance._surRequeteListeCompetencesQCM.bind(aInstance, false),
 						).lancerRequete({
-							qcm: getQCM.call(aInstance),
+							qcm: aInstance.getQCM(),
 							service: aInstance.donnees.evaluation.service,
 							sansDoublon: aInstance.donnees.sansDoublon,
 						});
@@ -281,10 +284,10 @@ class ObjetFenetre_EvaluationQCM extends ObjetFenetre {
 	composeContenu() {
 		const T = [];
 		T.push('<div class="flex-contain cols">');
-		T.push(composeZoneQCM.call(this));
-		T.push(composeZoneDetailEvaluation.call(this));
-		if (!GEtatUtilisateur.pourPrimaire()) {
-			T.push(composeZoneOptionsEvaluation.call(this));
+		T.push(this.composeZoneQCM());
+		T.push(this.composeZoneDetailEvaluation());
+		if (!this.etatUtilisateurSco.pourPrimaire()) {
+			T.push(this.composeZoneOptionsEvaluation());
 		}
 		T.push("</div>");
 		return T.join("");
@@ -298,22 +301,22 @@ class ObjetFenetre_EvaluationQCM extends ObjetFenetre {
 			this.donnees.sansDoublon = !!this.donnees.evaluation.estSansDoublon;
 		}
 		if (!!this.donnees.evaluation) {
-			const lExecutionQCM = getExecutionQCM.call(this);
+			const lExecutionQCM = this.getExecutionQCM();
 			if (!!lExecutionQCM) {
-				_miseAJourObjetDisponibilite.call(this);
+				this._miseAJourObjetDisponibilite();
 			}
 			let lListeServices;
 			let lIndexServiceSelectionne;
 			if (this.donnees.avecChoixService) {
-				const lQCM = getQCM.call(this);
+				const lQCM = this.getQCM();
 				lListeServices = !!lQCM
 					? lQCM.listeServicesCompatiblesAvecCompetencesDuQCM
-					: new ObjetListeElements();
+					: new ObjetListeElements_1.ObjetListeElements();
 				lIndexServiceSelectionne = lListeServices.getIndiceParElement(
 					this.donnees.evaluation.service,
 				);
 			} else {
-				lListeServices = new ObjetListeElements();
+				lListeServices = new ObjetListeElements_1.ObjetListeElements();
 				lListeServices.addElement(this.donnees.evaluation.service);
 				lIndexServiceSelectionne = 0;
 			}
@@ -340,431 +343,537 @@ class ObjetFenetre_EvaluationQCM extends ObjetFenetre {
 		this.callback.appel(aGenreBouton, this.donnees.evaluation);
 		this.fermer();
 	}
-}
-function getQCM() {
-	return this.donnees.evaluation
-		? this.donnees.evaluation.executionQCM
-			? this.donnees.evaluation.executionQCM.QCM
-			: null
-		: null;
-}
-function getExecutionQCM() {
-	return this.donnees.evaluation ? this.donnees.evaluation.executionQCM : null;
-}
-function estExecutionQCMVerrouille() {
-	const lExecutionQCM = getExecutionQCM.call(this);
-	return !!lExecutionQCM && !!lExecutionQCM.estVerrouille;
-}
-function composeZoneQCM() {
-	const H = [];
-	H.push(
-		`<div class="field-contain">\n            <label ie-html="qcm.labelAssociation"></label>\n            <ie-bouton  class="has-dots" ie-model="qcm.btnAssocier" ie-display="qcm.btnAssocier.estVisible">...</ie-bouton>\n            <span ie-html="qcm.libelleQCM" class="m-left"></span>\n          </div>`,
-	);
-	H.push(
-		`<div class="field-contain" ie-display="qcm.estChoixServiceVisible">\n            <label> ${GTraductions.getValeur("evaluations.FenetreEvaluationQCM.QCMPourLeService")}</label>\n            <div id="${this.getInstance(this.identComboServices).getNom()}"></div>\n          </div>`,
-	);
-	H.push(
-		`<div class="field-contain" ie-display="qcm.reglagesVisible">\n            <label>${GTraductions.getValeur("evaluations.FenetreEvaluationQCM.ReponsesEleveEntre")}</label>\n            <ie-btnicon ie-model="qcm.btnOptionsExecution" class="icon_cog bt-activable"></ie-btnicon>\n          </div>`,
-	);
-	H.push(
-		`<div class="field-contain" ie-display="qcm.reglagesVisible">\n           <div id="${this.getInstance(this.identDisponibiliteQCM).getNom()}"></div>\n          </div>`,
-	);
-	return H.join("");
-}
-function composeZoneDetailEvaluation() {
-	const H = [];
-	const lWidthLabel = "6.5rem";
-	const lWidthCorrigeEtDansBilan = "9.3rem";
-	H.push(
-		`<div class="field-contain m-top-l">\n              <label style="width: 8.5rem;">${GTraductions.getValeur("FenetreDevoir.EvaluationDu")}</label>\n              <div id="${this.getInstance(this.identSelecteurDateEvaluation).getNom()}"></div>\n          </div>`,
-	);
-	H.push(`<div class="flex-contain flex-center">`);
-	H.push(
-		`<div class="field-contain m-right-l fix-bloc">\n              <label style="width: 8.5rem;">${GTraductions.getValeur("evaluations.colonne.publieeLe")}</label>\n              <div id="${this.getInstance(this.identSelecteurDatePublication).getNom()}"></div>\n            </div>`,
-	);
-	H.push(
-		`<div class="field-contain">\n                <p class="message" ie-html="getHtmlInfoPublicationDecaleeParents"></p>\n            </div>`,
-	);
-	H.push(`</div>`);
-	H.push(
-		'<div class="field-contain" style="margin-left: ',
-		lWidthCorrigeEtDansBilan,
-		';">',
-		'<ie-checkbox ie-model="detailEvaluation.cbAvecCorrige">',
-		GTraductions.getValeur("evaluations.avecLeCorrige"),
-		"</ie-checkbox>",
-		"</div>",
-	);
-	H.push(
-		'<div class="field-contain" style="margin-left: ',
-		lWidthCorrigeEtDansBilan,
-		';">',
-		'<ie-checkbox ie-model="detailEvaluation.cbPrendreEnCompteEvalDansBilan">',
-		GTraductions.getValeur(
-			"evaluations.FenetreSaisieEvaluation.PrendreEnCompteEvalDansBilan",
-		),
-		"</ie-checkbox>",
-		"</div>",
-	);
-	H.push(`<div class="flex-contain cols top-line">`);
-	H.push(
-		`  <div class="field-contain">\n              <div class="flex-contain flex-center m-right-l">\n                <label  style="min-width: ${lWidthLabel};">${GTraductions.getValeur("evaluations.colonne.periode1")} : </label>\n                <div id="${this.getInstance(this.identComboPeriode).getNom()}"></div>\n              </div>\n\n              <div class="flex-contain flex-center m-right-l">\n                <label>${GTraductions.getValeur("evaluations.colonne.periode2")} : </label>\n                <div id="${this.getInstance(this.identComboPeriodeSecondaire).getNom()}"></div>\n              </div>\n\n              <div class="flex-contain flex-center">\n                <label>${GTraductions.getValeur("FenetreDevoir.Coefficient")}</label>\n                <div class="input-iconised"><ie-inputnote ie-model="detailEvaluation.inputCoefficient" class="round-style m-right-l" style="width:5rem"></ie-inputnote>\n                 ${UtilitaireBoutonBandeau.getHtmlBtnMonsieurFiche("btnMrFicheCoeff")}\n              </div>\n              </div>\n            </div>`,
-	);
-	H.push(
-		`  <div class="field-contain">\n              <label style="min-width: ${lWidthLabel};">${GTraductions.getValeur("competences.intitule")}</label>\n              <input class="round-style full-width" type="text" ie-model="detailEvaluation.inputLibelle"/>\n            </div>`,
-	);
-	H.push(
-		`  <div class="field-contain m-top-l">\n              <div id="${this.getInstance(this.identListeCompetencesQCM).getNom()}" class="full-width "></div>\n            </div>`,
-	);
-	H.push(
-		`  <div class="field-contain m-top-l">\n                <ie-checkbox ie-model="detailEvaluation.cbSansCompetenceDoublon">${GTraductions.getValeur("evaluations.FenetreEvaluationQCM.NeComptabiliserQuUnNiveauPourCompetencesIdentiques")}</ie-checkbox>\n            </div>`,
-	);
-	H.push(`</div>`);
-	return H.join("");
-}
-function composeZoneOptionsEvaluation() {
-	const H = [];
-	if (GApplication.droits.get(TypeDroits.fonctionnalites.gestionNotation)) {
-		H.push(
-			`  <div class="field-contain m-top-l">\n                  <ie-checkbox ie-model="optionsEvaluation.avecCreationDevoir">${GTraductions.getValeur("evaluations.FenetreEvaluationQCM.GenererDevoirALEvaluation")}</ie-checkbox>\n              </div>`,
-		);
-	}
-	return H.join("");
-}
-function _getValeurMaxCoefficientEvaluation() {
-	let lMaxCoefficientEvaluation = 99;
-	if (!!this.donnees.evaluation && !!this.donnees.evaluation.listeCompetences) {
-		this.donnees.evaluation.listeCompetences.parcourir((D) => {
-			if (!!D.coefficient && D.coefficient > 1) {
-				lMaxCoefficientEvaluation = 1;
-				return false;
-			}
-		});
-	}
-	return lMaxCoefficientEvaluation;
-}
-function _getValeurMaxCoefficientCompetence() {
-	let lMaxCoefficientCompetence = 100;
-	if (
-		!!this.donnees.evaluation &&
-		this.donnees.evaluation.coefficient !== undefined &&
-			this.donnees.evaluation.coefficient !== null &&
-		this.donnees.evaluation.coefficient > 1
-	) {
-		lMaxCoefficientCompetence = 1;
-	}
-	return lMaxCoefficientCompetence;
-}
-function _initialiserComboServices(aInstance) {
-	aInstance.setOptionsObjetSaisie({ longueur: 200 });
-}
-function _surEvenementComboServices(aParams) {
-	if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
-		if (!!this.donnees.evaluation) {
-			this.donnees.evaluation.service = aParams.element;
-		}
-		_lancerRequeteListeCompetencesQCM.call(this, aParams.element);
-	}
-}
-function _lancerRequeteListeCompetencesQCM(aService) {
-	new ObjetRequeteListeCompetencesQCM(
-		this,
-		_surRequeteListeCompetencesQCM.bind(this, true),
-	).lancerRequete({
-		qcm: getQCM.call(this),
-		service: aService,
-		sansDoublon: this.donnees.sansDoublon,
-	});
-}
-function _surRequeteListeCompetencesQCM(aAvecActualisationPeriode, aJSON) {
-	if (aAvecActualisationPeriode) {
-		this.donnees.listePeriodesService = aJSON.listePeriodes;
-		if (
-			!this.donnees.evaluation.periode &&
-			!!aJSON.listePeriodes &&
-			aJSON.listePeriodes.count() > 0
-		) {
-			let lIndexPeriodeEvaluation =
-				aJSON.listePeriodes.getIndiceElementParFiltre((D) => {
-					return D.estParDefaut;
-				});
-			if (lIndexPeriodeEvaluation === -1) {
-				lIndexPeriodeEvaluation = 0;
-			}
-			this.donnees.evaluation.periode = aJSON.listePeriodes.get(
-				lIndexPeriodeEvaluation,
-			);
-		}
-		_actualiserComboPeriode.call(this);
-	}
-	this.donnees.avecCreationDevoirPossible =
-		aJSON.avecCreationDevoirPossible && !estExecutionQCMVerrouille.call(this);
-	if (!this.donnees.avecCreationDevoirPossible) {
-		this.donnees.evaluation.avecDevoir = false;
-	}
-	_actualiserListeCompetencesQCM.call(this, aJSON);
-}
-function _actualiserListeCompetencesQCM(aJSON) {
-	if (aJSON.listeCompetencesQCM) {
-		const lEvaluation = this.donnees.evaluation;
-		if (
-			!!lEvaluation.listeCompetences &&
-			lEvaluation.listeCompetences.count() > 0
-		) {
-			aJSON.listeCompetencesQCM.parcourir((aJSONCompetence) => {
-				const lCompetenceDEvaluation =
-					lEvaluation.listeCompetences.getElementParElement(aJSONCompetence);
-				if (!!lCompetenceDEvaluation) {
-					aJSONCompetence.coefficient = lCompetenceDEvaluation.coefficient;
-				}
-			});
-		}
-		lEvaluation.listeCompetences = aJSON.listeCompetencesQCM;
-		if (lEvaluation.getEtat() === EGenreEtat.Creation) {
-			lEvaluation.listeCompetences.parcourir((D) => {
-				D.setEtat(EGenreEtat.Creation);
-			});
-		}
-		const lDonneesListeCompetencesQCM = new DonneesListe_EvaluationsQCM(
-			lEvaluation.listeCompetences,
-			{
-				getValeurMaxCoefficientCompetence:
-					_getValeurMaxCoefficientCompetence.bind(this),
-			},
-		);
-		lDonneesListeCompetencesQCM.setOptions({
-			avecEdition: false,
-			avecSuppression: false,
-		});
-		this.getInstance(this.identListeCompetencesQCM).setDonnees(
-			lDonneesListeCompetencesQCM,
-		);
-	}
-}
-function ouvrirFenetreAssociationQCM() {
-	const lThis = this;
-	const lEvaluation = this.donnees.evaluation;
-	new ObjetRequeteListeQCMCumuls(this, (aListeQCM) => {
-		const lFenetreChoixQCMAvecCompetences = ObjetFenetre.creerInstanceFenetre(
-			ObjetFenetre_SelectionQCM,
-			{
-				pere: lThis,
-				evenement: function (aNumeroBouton, aQCM) {
-					if (aNumeroBouton === 1) {
-						UtilitaireQCM.surSelectionQCM(lEvaluation, aQCM, {
-							genreAucune: EGenreRessource.Aucune,
-							genreExecQCM: EGenreRessource.ExecutionQCM,
-						});
-						_lancerRequeteListeCompetencesQCM.call(lThis, lEvaluation.service);
-					}
-				},
-				initialiser: function (aInstance) {
-					UtilitaireQCM.initFenetreSelectionQCM(aInstance);
-					aInstance.setGenreRessources({
-						genreQCM: EGenreRessource.QCM,
-						genreNiveau: EGenreRessource.Niveau,
-						genreMatiere: EGenreRessource.Matiere,
-						genreAucun: EGenreRessource.Aucune,
-					});
-				},
-			},
-		);
-		lFenetreChoixQCMAvecCompetences.setDonnees(aListeQCM);
-	}).lancerRequete({ service: lEvaluation.service });
-}
-function ouvrirFenetreParametrageExecutionQCM() {
-	const lEvaluation = this.donnees.evaluation;
-	const lFenetreParametrageExecQCM = ObjetFenetre.creerInstanceFenetre(
-		ObjetFenetre_ParamExecutionQCM,
-		{
-			pere: this,
-			initialiser: function (aInstance) {
-				aInstance.setOptionsFenetre({
-					modale: true,
-					titre: GTraductions.getValeur("FenetreDevoir.ParametresExeQCMDevoir"),
-					largeur: 540,
-					hauteur: null,
-					listeBoutons: [
-						GTraductions.getValeur("Annuler"),
-						GTraductions.getValeur("Valider"),
-					],
-				});
-			},
-			evenement: function (aNumeroBouton, aExecutionQCM) {
-				if (aNumeroBouton === 1) {
-					lEvaluation.executionQCM = aExecutionQCM;
-				}
-			},
-		},
-	);
-	const lExecutionQCM = getExecutionQCM.call(this);
-	if (
-		lEvaluation.service &&
-		!!lExecutionQCM &&
-		lExecutionQCM.getEtat() === EGenreEtat.Creation
-	) {
-		lExecutionQCM.estLieAEvaluation = true;
-		lExecutionQCM.service = lEvaluation.service;
-	}
-	lFenetreParametrageExecQCM.setDonnees({
-		afficherModeQuestionnaire: false,
-		afficherRessentiEleve: true,
-		autoriserSansCorrige: true,
-		autoriserCorrigerALaDate: true,
-		executionQCM: lExecutionQCM,
-		avecConsigne: true,
-		avecPersonnalisationProjetAccompagnement: true,
-		avecModeCorrigeALaDate: true,
-		avecMultipleExecutions: true,
-		ObjetFenetre_DetailsPIEleve: ObjetFenetre_DetailsPIEleve,
-	});
-}
-function _initialiserDisponibiliteQCM(aInstance) {
-	aInstance.setOptionsAffichage({
-		afficherSurUneSeuleLigne: true,
-		chaines: [GTraductions.getValeur("Le"), GTraductions.getValeur("EtLe")],
-		avecHeureDebut: true,
-		avecHeureFin: true,
-	});
-}
-function _surEvntSurDisponibiliteQCM(aDonnees) {
-	const lExecutionQCM = getExecutionQCM.call(this);
-	$.extend(lExecutionQCM, aDonnees);
-	if (!!lExecutionQCM) {
-		lExecutionQCM.setEtat(EGenreEtat.Modification);
-		_miseAJourObjetDisponibilite.call(this);
-	}
-}
-function _miseAJourObjetDisponibilite() {
-	const lExecutionQCM = getExecutionQCM.call(this);
-	if (!!lExecutionQCM) {
-		this.getInstance(this.identDisponibiliteQCM).setDonnees({
-			dateDebutPublication: lExecutionQCM.dateDebutPublication,
-			dateFinPublication: lExecutionQCM.dateFinPublication,
-			actif: true,
-			actifFin: !lExecutionQCM.estUnTAF,
-		});
-	}
-}
-function _initialiserSelecteurDate(aInstance) {
-	aInstance.setOptionsObjetCelluleDate({ largeurComposant: 110 });
-}
-function _surEvenementDateEvaluation(aDate) {
-	if (!!this.donnees.evaluation) {
-		this.donnees.evaluation.dateValidation = aDate;
-		this.donnees.evaluation.datePublication = aDate;
-		this.getInstance(
-			this.identSelecteurDatePublication,
-		).setPremiereDateSaisissable(aDate);
-		this.getInstance(this.identSelecteurDatePublication).setDonnees(aDate);
-		const lExecutionQCM = getExecutionQCM.call(this);
-		if (lExecutionQCM.getEtat() === EGenreEtat.Creation) {
-			const lPremiereHeure = GDate.placeEnDateHeure(0);
-			const lDerniereHeure = GDate.placeEnDateHeure(
-				GParametres.PlacesParJour - 1,
-				true,
-			);
-			lExecutionQCM.dateDebutPublication = new Date(
-				aDate.setHours(lPremiereHeure.getHours(), lPremiereHeure.getMinutes()),
-			);
-			lExecutionQCM.dateFinPublication = new Date(
-				aDate.setHours(lDerniereHeure.getHours(), lDerniereHeure.getMinutes()),
-			);
-			UtilitaireQCM.verifierDateCorrection(lExecutionQCM);
-			_miseAJourObjetDisponibilite.call(this);
-		}
-	}
-}
-function _surEvenementDatePublication(aDate) {
-	if (!!this.donnees.evaluation) {
-		this.donnees.evaluation.datePublication = aDate;
-	}
-}
-function _initialiserCombosPeriode(aInstance) {
-	aInstance.setOptionsObjetSaisie({ longueur: 110 });
-}
-function _surEvenementPeriodeEvaluation(aParams) {
-	if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
-		this.donnees.evaluation.periode = aParams.element;
-		if (!this.avecSelectionPeriodeSecondaire) {
-			const lThis = this;
-			if (!lThis.donnees.evaluation.periode.genresPeriodesOfficielles) {
-				lThis.donnees.evaluation.periodeSecondaire = new ObjetElement("");
-			}
-			this.donnees.listePeriodesService.parcourir((aPeriode) => {
-				if (
-					lThis.donnees.evaluation.periode.genresPeriodesOfficielles &&
-					lThis.donnees.evaluation.periode.genresPeriodesOfficielles.contains(
-						aPeriode.genrePeriodeOfficielle,
-					)
-				) {
-					lThis.donnees.evaluation.periodeSecondaire = aPeriode;
-				}
-			});
-		}
-		_actualiserComboPeriodeSecondaire.call(this);
-	}
-}
-function _surEvenementPeriodeSecondaireEvaluation(aParams) {
-	if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
-		this.donnees.evaluation.periodeSecondaire = aParams.element;
-	}
-}
-function _actualiserComboPeriode() {
-	let lIndexPeriodeEvaluation = 0;
-	const lListePeriodesEvaluation = new ObjetListeElements();
-	if (!!this.donnees.listePeriodesService) {
-		lListePeriodesEvaluation.add(this.donnees.listePeriodesService);
-		if (!!this.donnees.evaluation.periode) {
-			const lNumeroPeriodeEvaluation =
-				this.donnees.evaluation.periode.getNumero();
-			lIndexPeriodeEvaluation =
-				lListePeriodesEvaluation.getIndiceElementParFiltre((D) => {
-					return D.getNumero() === lNumeroPeriodeEvaluation;
-				});
-		}
-	}
-	if (!lIndexPeriodeEvaluation || lIndexPeriodeEvaluation === -1) {
-		lIndexPeriodeEvaluation = 0;
-	}
-	this.getInstance(this.identComboPeriode).setDonnees(
-		lListePeriodesEvaluation,
-		lIndexPeriodeEvaluation,
-	);
-}
-function _actualiserComboPeriodeSecondaire() {
-	const lListePeriodesSecondaires = new ObjetListeElements();
-	lListePeriodesSecondaires.addElement(new ObjetElement(""));
-	if (!!this.donnees.listePeriodesService) {
-		const lPeriodeEvaluation = !!this.donnees.evaluation
-			? this.donnees.evaluation.periode
+	getQCM() {
+		return this.donnees.evaluation
+			? this.donnees.evaluation.executionQCM
+				? this.donnees.evaluation.executionQCM.QCM
+				: null
 			: null;
-		this.donnees.listePeriodesService.parcourir((D) => {
-			if (
-				!lPeriodeEvaluation ||
-				D.getNumero() !== lPeriodeEvaluation.getNumero()
-			) {
-				lListePeriodesSecondaires.addElement(D);
+	}
+	getExecutionQCM() {
+		return this.donnees.evaluation
+			? this.donnees.evaluation.executionQCM
+			: null;
+	}
+	estExecutionQCMVerrouille() {
+		const lExecutionQCM = this.getExecutionQCM();
+		return !!lExecutionQCM && !!lExecutionQCM.estVerrouille;
+	}
+	composeZoneQCM() {
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "field-contain" },
+				IE.jsx.str("label", { "ie-html": "qcm.labelAssociation" }),
+				IE.jsx.str(
+					"ie-bouton",
+					{
+						class: "has-dots",
+						"ie-model": "qcm.btnAssocier",
+						"ie-display": "qcm.btnAssocier.estVisible",
+						"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreDevoir.SelectionnerUnQCM",
+						),
+					},
+					"...",
+				),
+				IE.jsx.str("span", { "ie-html": "qcm.libelleQCM", class: "m-left" }),
+			),
+		);
+		H.push(
+			`<div class="field-contain" ie-display="qcm.estChoixServiceVisible">\n              <label> ${ObjetTraduction_1.GTraductions.getValeur("evaluations.FenetreEvaluationQCM.QCMPourLeService")}</label>\n              <div id="${this.getInstance(this.identComboServices).getNom()}"></div>\n            </div>`,
+		);
+		H.push(
+			`<div class="field-contain" ie-display="qcm.reglagesVisible">\n              <label>${ObjetTraduction_1.GTraductions.getValeur("evaluations.FenetreEvaluationQCM.ReponsesEleveEntre")}</label>\n              <ie-btnicon ie-model="qcm.btnOptionsExecution" class="icon_cog bt-activable"></ie-btnicon>\n            </div>`,
+		);
+		H.push(
+			`<div class="field-contain" ie-display="qcm.reglagesVisible">\n             <div id="${this.getInstance(this.identDisponibiliteQCM).getNom()}"></div>\n            </div>`,
+		);
+		return H.join("");
+	}
+	composeZoneDetailEvaluation() {
+		const H = [];
+		const lWidthLabel = "6.5rem";
+		const lWidthCorrigeEtDansBilan = "9.3rem";
+		H.push(
+			`<div class="field-contain m-top-l">\n                <label style="width: 8.5rem;">${ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.EvaluationDu")}</label>\n                <div id="${this.getInstance(this.identSelecteurDateEvaluation).getNom()}"></div>\n            </div>`,
+		);
+		H.push(`<div class="flex-contain flex-center">`);
+		H.push(
+			`<div class="field-contain m-right-l fix-bloc">\n                <label style="width: 8.5rem;">${ObjetTraduction_1.GTraductions.getValeur("evaluations.colonne.publieeLe")}</label>\n                <div id="${this.getInstance(this.identSelecteurDatePublication).getNom()}"></div>\n              </div>`,
+		);
+		H.push(
+			`<div class="field-contain">\n                  <p class="message" ie-html="getHtmlInfoPublicationDecaleeParents"></p>\n              </div>`,
+		);
+		H.push(`</div>`);
+		H.push(
+			'<div class="field-contain" style="margin-left: ',
+			lWidthCorrigeEtDansBilan,
+			';">',
+			'<ie-checkbox ie-model="detailEvaluation.cbAvecCorrige">',
+			ObjetTraduction_1.GTraductions.getValeur("evaluations.avecLeCorrige"),
+			"</ie-checkbox>",
+			"</div>",
+		);
+		H.push(
+			'<div class="field-contain" style="margin-left: ',
+			lWidthCorrigeEtDansBilan,
+			';">',
+			'<ie-checkbox ie-model="detailEvaluation.cbPrendreEnCompteEvalDansBilan">',
+			ObjetTraduction_1.GTraductions.getValeur(
+				"evaluations.FenetreSaisieEvaluation.PrendreEnCompteEvalDansBilan",
+			),
+			"</ie-checkbox>",
+			"</div>",
+		);
+		H.push(`<div class="flex-contain cols top-line">`);
+		H.push(
+			`  <div class="field-contain">\n                <div class="flex-contain flex-center m-right-l">\n                  <label  style="min-width: ${lWidthLabel};">${ObjetTraduction_1.GTraductions.getValeur("evaluations.colonne.periode1")} : </label>\n                  <div id="${this.getInstance(this.identComboPeriode).getNom()}"></div>\n                </div>\n\n                <div class="flex-contain flex-center m-right-l">\n                  <label>${ObjetTraduction_1.GTraductions.getValeur("evaluations.colonne.periode2")} : </label>\n                  <div id="${this.getInstance(this.identComboPeriodeSecondaire).getNom()}"></div>\n                </div>\n\n                <div class="flex-contain flex-center">\n                  <label>${ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.Coefficient")}</label>\n                  <div class="input-iconised"><ie-inputnote ie-model="detailEvaluation.inputCoefficient" class="m-right-l" style="width:5rem"></ie-inputnote>\n                   ${UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnMonsieurFiche("btnMrFicheCoeff")}\n                </div>\n                </div>\n              </div>`,
+		);
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "field-contain" },
+				IE.jsx.str(
+					"label",
+					{ style: "min-width: " + lWidthLabel + ";" },
+					ObjetTraduction_1.GTraductions.getValeur("competences.intitule"),
+				),
+				IE.jsx.str("input", {
+					class: "full-width",
+					type: "text",
+					"ie-model": "detailEvaluation.inputLibelle",
+				}),
+			),
+		);
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "field-contain m-top-l" },
+				IE.jsx.str("div", {
+					id: this.getInstance(this.identListeCompetencesQCM).getNom(),
+					class: "full-width ",
+				}),
+			),
+		);
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "field-contain m-top-l" },
+				IE.jsx.str(
+					"ie-checkbox",
+					{ "ie-model": "detailEvaluation.cbSansCompetenceDoublon" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"evaluations.FenetreEvaluationQCM.NeComptabiliserQuUnNiveauPourCompetencesIdentiques",
+					),
+				),
+			),
+		);
+		H.push(`</div>`);
+		return H.join("");
+	}
+	composeZoneOptionsEvaluation() {
+		const H = [];
+		if (
+			this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.fonctionnalites.gestionNotation,
+			)
+		) {
+			H.push(
+				IE.jsx.str(
+					"div",
+					{ class: "field-contain m-top-l" },
+					IE.jsx.str(
+						"ie-checkbox",
+						{ "ie-model": "optionsEvaluation.avecCreationDevoir" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"evaluations.FenetreEvaluationQCM.GenererDevoirALEvaluation",
+						),
+					),
+				),
+			);
+		}
+		return H.join("");
+	}
+	_getValeurMaxCoefficientEvaluation() {
+		let lMaxCoefficientEvaluation = 99;
+		if (
+			!!this.donnees.evaluation &&
+			!!this.donnees.evaluation.listeCompetences
+		) {
+			this.donnees.evaluation.listeCompetences.parcourir((D) => {
+				if (!!D.coefficient && D.coefficient > 1) {
+					lMaxCoefficientEvaluation = 1;
+					return false;
+				}
+			});
+		}
+		return lMaxCoefficientEvaluation;
+	}
+	_getValeurMaxCoefficientCompetence() {
+		let lMaxCoefficientCompetence = 100;
+		if (
+			!!this.donnees.evaluation &&
+			this.donnees.evaluation.coefficient !== undefined &&
+				this.donnees.evaluation.coefficient !== null &&
+			this.donnees.evaluation.coefficient > 1
+		) {
+			lMaxCoefficientCompetence = 1;
+		}
+		return lMaxCoefficientCompetence;
+	}
+	_initialiserComboServices(aInstance) {
+		aInstance.setOptionsObjetSaisie({ longueur: 200 });
+	}
+	_surEvenementComboServices(aParams) {
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
+			if (!!this.donnees.evaluation) {
+				this.donnees.evaluation.service = aParams.element;
 			}
+			this._lancerRequeteListeCompetencesQCM(aParams.element);
+		}
+	}
+	_lancerRequeteListeCompetencesQCM(aService) {
+		new ObjetRequeteListeCompetencesQCM_1.ObjetRequeteListeCompetencesQCM(
+			this,
+			this._surRequeteListeCompetencesQCM.bind(this, true),
+		).lancerRequete({
+			qcm: this.getQCM(),
+			service: aService,
+			sansDoublon: this.donnees.sansDoublon,
 		});
 	}
-	const lIndiceSelection =
-		!!lListePeriodesSecondaires &&
-		!!this.donnees.evaluation &&
-		!!this.donnees.evaluation.periodeSecondaire
-			? lListePeriodesSecondaires.getIndiceParNumeroEtGenre(
-					this.donnees.evaluation.periodeSecondaire.getNumero(),
-				)
-			: 0;
-	this.getInstance(this.identComboPeriodeSecondaire).setDonnees(
-		lListePeriodesSecondaires,
-		lIndiceSelection,
-	);
-	this.getInstance(this.identComboPeriodeSecondaire).setActif(
-		this.avecSelectionPeriodeSecondaire,
-	);
+	_surRequeteListeCompetencesQCM(aAvecActualisationPeriode, aJSON) {
+		if (aAvecActualisationPeriode) {
+			this.donnees.listePeriodesService = aJSON.listePeriodes;
+			if (
+				!this.donnees.evaluation.periode &&
+				!!aJSON.listePeriodes &&
+				aJSON.listePeriodes.count() > 0
+			) {
+				let lIndexPeriodeEvaluation =
+					aJSON.listePeriodes.getIndiceElementParFiltre((D) => {
+						return D.estParDefaut;
+					});
+				if (lIndexPeriodeEvaluation === -1) {
+					lIndexPeriodeEvaluation = 0;
+				}
+				this.donnees.evaluation.periode = aJSON.listePeriodes.get(
+					lIndexPeriodeEvaluation,
+				);
+			}
+			this._actualiserComboPeriode();
+		}
+		this.donnees.avecCreationDevoirPossible =
+			aJSON.avecCreationDevoirPossible && !this.estExecutionQCMVerrouille();
+		if (!this.donnees.avecCreationDevoirPossible) {
+			this.donnees.evaluation.avecDevoir = false;
+		}
+		this._actualiserListeCompetencesQCM(aJSON);
+	}
+	_actualiserListeCompetencesQCM(aJSON) {
+		if (aJSON.listeCompetencesQCM) {
+			const lEvaluation = this.donnees.evaluation;
+			if (
+				!!lEvaluation.listeCompetences &&
+				lEvaluation.listeCompetences.count() > 0
+			) {
+				aJSON.listeCompetencesQCM.parcourir((aJSONCompetence) => {
+					const lCompetenceDEvaluation =
+						lEvaluation.listeCompetences.getElementParElement(aJSONCompetence);
+					if (!!lCompetenceDEvaluation) {
+						aJSONCompetence.coefficient = lCompetenceDEvaluation.coefficient;
+					}
+				});
+			}
+			lEvaluation.listeCompetences = aJSON.listeCompetencesQCM;
+			if (lEvaluation.getEtat() === Enumere_Etat_1.EGenreEtat.Creation) {
+				lEvaluation.listeCompetences.parcourir((D) => {
+					D.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
+				});
+			}
+			const lDonneesListeCompetencesQCM =
+				new DonneesListe_EvaluationsQCM_1.DonneesListe_EvaluationsQCM(
+					lEvaluation.listeCompetences,
+					{
+						getValeurMaxCoefficientCompetence:
+							this._getValeurMaxCoefficientCompetence(),
+					},
+				);
+			lDonneesListeCompetencesQCM.setOptions({
+				avecEdition: false,
+				avecSuppression: false,
+			});
+			this.getInstance(this.identListeCompetencesQCM).setDonnees(
+				lDonneesListeCompetencesQCM,
+			);
+		}
+	}
+	ouvrirFenetreAssociationQCM() {
+		const lEvaluation = this.donnees.evaluation;
+		new ObjetRequeteListeQCMCumuls_1.ObjetRequeteListeQCMCumuls(
+			this,
+			(aListeQCM) => {
+				const lFenetreChoixQCMAvecCompetences =
+					ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+						ObjetFenetre_SelectionQCM_1.ObjetFenetre_SelectionQCM,
+						{
+							pere: this,
+							evenement: function (aNumeroBouton, aQCM) {
+								if (aNumeroBouton === 1) {
+									UtilitaireQCM_1.UtilitaireQCM.surSelectionQCM(
+										lEvaluation,
+										aQCM,
+										{
+											genreAucune: Enumere_Ressource_1.EGenreRessource.Aucune,
+											genreExecQCM:
+												Enumere_Ressource_1.EGenreRessource.ExecutionQCM,
+										},
+									);
+									this._lancerRequeteListeCompetencesQCM(lEvaluation.service);
+								}
+							},
+							initialiser: (aInstance) => {
+								UtilitaireQCM_1.UtilitaireQCM.initFenetreSelectionQCM(
+									aInstance,
+								);
+								aInstance.setGenreRessources({
+									genreQCM: Enumere_Ressource_1.EGenreRessource.QCM,
+									genreNiveau: Enumere_Ressource_1.EGenreRessource.Niveau,
+									genreMatiere: Enumere_Ressource_1.EGenreRessource.Matiere,
+									genreAucun: Enumere_Ressource_1.EGenreRessource.Aucune,
+								});
+							},
+						},
+					);
+				lFenetreChoixQCMAvecCompetences.setDonnees(aListeQCM);
+			},
+		).lancerRequete({ service: lEvaluation.service });
+	}
+	ouvrirFenetreParametrageExecutionQCM() {
+		const lEvaluation = this.donnees.evaluation;
+		const lFenetreParametrageExecQCM =
+			ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+				ObjetFenetre_ParamExecutionQCM_1.ObjetFenetre_ParamExecutionQCM,
+				{
+					pere: this,
+					initialiser: function (aInstance) {
+						aInstance.setOptionsFenetre({
+							modale: true,
+							titre: ObjetTraduction_1.GTraductions.getValeur(
+								"FenetreDevoir.ParametresExeQCMDevoir",
+							),
+							largeur: 540,
+							hauteur: null,
+							listeBoutons: [
+								ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+								ObjetTraduction_1.GTraductions.getValeur("Valider"),
+							],
+						});
+					},
+					evenement: function (aNumeroBouton, aExecutionQCM) {
+						if (aNumeroBouton === 1) {
+							lEvaluation.executionQCM = aExecutionQCM;
+						}
+					},
+				},
+			);
+		const lExecutionQCM = this.getExecutionQCM();
+		if (
+			lEvaluation.service &&
+			!!lExecutionQCM &&
+			lExecutionQCM.getEtat() === Enumere_Etat_1.EGenreEtat.Creation
+		) {
+			lExecutionQCM.estLieAEvaluation = true;
+			lExecutionQCM.service = lEvaluation.service;
+		}
+		lFenetreParametrageExecQCM.setDonnees({
+			afficherModeQuestionnaire: false,
+			afficherRessentiEleve: true,
+			autoriserSansCorrige: true,
+			autoriserCorrigerALaDate: true,
+			executionQCM: lExecutionQCM,
+			avecConsigne: true,
+			avecPersonnalisationProjetAccompagnement: true,
+			avecModeCorrigeALaDate: true,
+			avecMultipleExecutions: true,
+			ObjetFenetre_DetailsPIEleve:
+				ObjetFenetre_DetailsPIEleve_1.ObjetFenetre_DetailsPIEleve,
+		});
+	}
+	_initialiserDisponibiliteQCM(aInstance) {
+		aInstance.setOptionsAffichage({
+			afficherSurUneSeuleLigne: true,
+			chaines: [
+				ObjetTraduction_1.GTraductions.getValeur("Le"),
+				ObjetTraduction_1.GTraductions.getValeur("EtLe"),
+			],
+			avecHeureDebut: true,
+			avecHeureFin: true,
+		});
+	}
+	_surEvntSurDisponibiliteQCM(aDonnees) {
+		const lExecutionQCM = this.getExecutionQCM();
+		$.extend(lExecutionQCM, aDonnees);
+		if (!!lExecutionQCM) {
+			lExecutionQCM.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+			this._miseAJourObjetDisponibilite();
+		}
+	}
+	_miseAJourObjetDisponibilite() {
+		const lExecutionQCM = this.getExecutionQCM();
+		if (!!lExecutionQCM) {
+			this.getInstance(this.identDisponibiliteQCM).setDonnees({
+				dateDebutPublication: lExecutionQCM.dateDebutPublication,
+				dateFinPublication: lExecutionQCM.dateFinPublication,
+				actif: true,
+				actifFin: !lExecutionQCM.estUnTAF,
+			});
+		}
+	}
+	_initialiserSelecteurDate(aInstance) {
+		aInstance.setOptionsObjetCelluleDate({ largeurComposant: 110 });
+	}
+	_surEvenementDateEvaluation(aDate) {
+		if (!!this.donnees.evaluation) {
+			this.donnees.evaluation.dateValidation = aDate;
+			this.donnees.evaluation.datePublication = aDate;
+			this.getInstance(
+				this.identSelecteurDatePublication,
+			).setPremiereDateSaisissable(aDate);
+			this.getInstance(this.identSelecteurDatePublication).setDonnees(aDate);
+			const lExecutionQCM = this.getExecutionQCM();
+			if (lExecutionQCM.getEtat() === Enumere_Etat_1.EGenreEtat.Creation) {
+				const lPremiereHeure = ObjetDate_1.GDate.placeEnDateHeure(0);
+				const lDerniereHeure = ObjetDate_1.GDate.placeEnDateHeure(
+					GParametres.PlacesParJour - 1,
+					true,
+				);
+				lExecutionQCM.dateDebutPublication = new Date(
+					aDate.setHours(
+						lPremiereHeure.getHours(),
+						lPremiereHeure.getMinutes(),
+					),
+				);
+				lExecutionQCM.dateFinPublication = new Date(
+					aDate.setHours(
+						lDerniereHeure.getHours(),
+						lDerniereHeure.getMinutes(),
+					),
+				);
+				UtilitaireQCM_1.UtilitaireQCM.verifierDateCorrection(lExecutionQCM);
+				this._miseAJourObjetDisponibilite();
+			}
+		}
+	}
+	_surEvenementDatePublication(aDate) {
+		if (!!this.donnees.evaluation) {
+			this.donnees.evaluation.datePublication = aDate;
+		}
+	}
+	_initialiserCombosPeriode(aInstance) {
+		aInstance.setOptionsObjetSaisie({ longueur: 110 });
+	}
+	_surEvenementPeriodeEvaluation(aParams) {
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
+			this.donnees.evaluation.periode = aParams.element;
+			if (!this.avecSelectionPeriodeSecondaire) {
+				const lThis = this;
+				if (!lThis.donnees.evaluation.periode.genresPeriodesOfficielles) {
+					lThis.donnees.evaluation.periodeSecondaire =
+						new ObjetElement_1.ObjetElement("");
+				}
+				this.donnees.listePeriodesService.parcourir((aPeriode) => {
+					if (
+						lThis.donnees.evaluation.periode.genresPeriodesOfficielles &&
+						lThis.donnees.evaluation.periode.genresPeriodesOfficielles.contains(
+							aPeriode.genrePeriodeOfficielle,
+						)
+					) {
+						lThis.donnees.evaluation.periodeSecondaire = aPeriode;
+					}
+				});
+			}
+			this._actualiserComboPeriodeSecondaire();
+		}
+	}
+	_surEvenementPeriodeSecondaireEvaluation(aParams) {
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
+			this.donnees.evaluation.periodeSecondaire = aParams.element;
+		}
+	}
+	_actualiserComboPeriode() {
+		let lIndexPeriodeEvaluation = 0;
+		const lListePeriodesEvaluation =
+			new ObjetListeElements_1.ObjetListeElements();
+		if (!!this.donnees.listePeriodesService) {
+			lListePeriodesEvaluation.add(this.donnees.listePeriodesService);
+			if (!!this.donnees.evaluation.periode) {
+				const lNumeroPeriodeEvaluation =
+					this.donnees.evaluation.periode.getNumero();
+				lIndexPeriodeEvaluation =
+					lListePeriodesEvaluation.getIndiceElementParFiltre((D) => {
+						return D.getNumero() === lNumeroPeriodeEvaluation;
+					});
+			}
+		}
+		if (!lIndexPeriodeEvaluation || lIndexPeriodeEvaluation === -1) {
+			lIndexPeriodeEvaluation = 0;
+		}
+		this.getInstance(this.identComboPeriode).setDonnees(
+			lListePeriodesEvaluation,
+			lIndexPeriodeEvaluation,
+		);
+	}
+	_actualiserComboPeriodeSecondaire() {
+		const lListePeriodesSecondaires =
+			new ObjetListeElements_1.ObjetListeElements();
+		lListePeriodesSecondaires.addElement(new ObjetElement_1.ObjetElement(""));
+		if (!!this.donnees.listePeriodesService) {
+			const lPeriodeEvaluation = !!this.donnees.evaluation
+				? this.donnees.evaluation.periode
+				: null;
+			this.donnees.listePeriodesService.parcourir((D) => {
+				if (
+					!lPeriodeEvaluation ||
+					D.getNumero() !== lPeriodeEvaluation.getNumero()
+				) {
+					lListePeriodesSecondaires.addElement(D);
+				}
+			});
+		}
+		const lIndiceSelection =
+			!!lListePeriodesSecondaires &&
+			!!this.donnees.evaluation &&
+			!!this.donnees.evaluation.periodeSecondaire
+				? lListePeriodesSecondaires.getIndiceParNumeroEtGenre(
+						this.donnees.evaluation.periodeSecondaire.getNumero(),
+					)
+				: 0;
+		this.getInstance(this.identComboPeriodeSecondaire).setDonnees(
+			lListePeriodesSecondaires,
+			lIndiceSelection,
+		);
+		this.getInstance(this.identComboPeriodeSecondaire).setActif(
+			this.avecSelectionPeriodeSecondaire,
+		);
+	}
+	_initialiserListeCompetencesQCM(aInstance) {
+		aInstance.setOptionsListe(
+			DonneesListe_EvaluationsQCM_1.DonneesListe_EvaluationsQCM.getOptionsListe(
+				false,
+			),
+		);
+	}
 }
-function _initialiserListeCompetencesQCM(aInstance) {
-	aInstance.setOptionsListe(DonneesListe_EvaluationsQCM.getOptionsListe(false));
-}
-module.exports = { ObjetFenetre_EvaluationQCM };
+exports.ObjetFenetre_EvaluationQCM = ObjetFenetre_EvaluationQCM;

@@ -1,26 +1,22 @@
-const {
-	_InterfacePageCahierDeTexte,
-} = require("_InterfacePageCahierDeTexte.js");
-const {
-	EGenreAffichageCahierDeTextes,
-} = require("Enumere_AffichageCahierDeTextes.js");
-const { ObjetTimeline } = require("ObjetTimeline.js");
-const { GStyle } = require("ObjetStyle.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	TypeEtatExecutionQCMPourRepondant,
-} = require("TypeEtatExecutionQCMPourRepondant.js");
-const {
-	ObjetRequeteSaisieTAFFaitEleve,
-} = require("ObjetRequeteSaisieTAFFaitEleve.js");
-const { EEvent } = require("Enumere_Event.js");
-const { GUID } = require("GUID.js");
-class ObjetAffichagePageCahierDeTexte extends _InterfacePageCahierDeTexte {
+exports.ObjetAffichagePageCahierDeTexte = void 0;
+const _InterfacePageCahierDeTexte_1 = require("_InterfacePageCahierDeTexte");
+const Enumere_AffichageCahierDeTextes_1 = require("Enumere_AffichageCahierDeTextes");
+const ObjetTimeline_1 = require("ObjetTimeline");
+const ObjetStyle_1 = require("ObjetStyle");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TypeEtatExecutionQCMPourRepondant_1 = require("TypeEtatExecutionQCMPourRepondant");
+const ObjetRequeteSaisieTAFFaitEleve_1 = require("ObjetRequeteSaisieTAFFaitEleve");
+const Enumere_Event_1 = require("Enumere_Event");
+const GUID_1 = require("GUID");
+class ObjetAffichagePageCahierDeTexte extends _InterfacePageCahierDeTexte_1._InterfacePageCahierDeTexte {
 	constructor(...aParams) {
 		super(...aParams);
-		this.idComboFiltre = GUID.getId();
-		this.ajouterEvenementGlobal(EEvent.SurPostResize, this.surPostResize);
+		this.idComboFiltre = GUID_1.GUID.getId();
+		this.ajouterEvenementGlobal(
+			Enumere_Event_1.EEvent.SurPostResize,
+			this.surPostResize,
+		);
 	}
 	surPostResize() {
 		this.actualiser();
@@ -32,7 +28,7 @@ class ObjetAffichagePageCahierDeTexte extends _InterfacePageCahierDeTexte {
 	setParametresGeneraux() {
 		this.AddSurZone = [];
 		this.AddSurZone.push({
-			html: ObjetTimeline.composeChoix(
+			html: ObjetTimeline_1.ObjetTimeline.composeChoix(
 				this.idZoneChxModeAff,
 				this.modeTimeLine,
 			),
@@ -43,7 +39,7 @@ class ObjetAffichagePageCahierDeTexte extends _InterfacePageCahierDeTexte {
 				'<div class="EspaceGauche ' +
 				this.classLabelDepuis +
 				'">' +
-				GTraductions.getValeur("Depuis") +
+				ObjetTraduction_1.GTraductions.getValeur("Depuis") +
 				"</div>",
 		});
 		this.AddSurZone.push(this.identCelluleDate);
@@ -51,8 +47,10 @@ class ObjetAffichagePageCahierDeTexte extends _InterfacePageCahierDeTexte {
 			html: `<ie-combo data-id="${this.idComboFiltre}" ie-model="comboFiltreTheme"></ie-combo>`,
 		});
 		if (
-			this.ModeAffichage === EGenreAffichageCahierDeTextes.TravailAFaire &&
-			!GEtatUtilisateur.pourPrimaire()
+			this.ModeAffichage ===
+				Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+					.TravailAFaire &&
+			!this.etatUtilSco.pourPrimaire()
 		) {
 			this.AddSurZone.push({ html: _composeFiltresTAF() });
 		}
@@ -90,15 +88,19 @@ class ObjetAffichagePageCahierDeTexte extends _InterfacePageCahierDeTexte {
 					const lTAF =
 						aInstance.ListeTravailAFaire.getElementParNumero(aNumero);
 					return lTAF.TAFFait
-						? GTraductions.getValeur("accueil.hintTravailFait")
-						: GTraductions.getValeur("accueil.hintTravailAFaire");
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"accueil.hintTravailFait",
+							)
+						: ObjetTraduction_1.GTraductions.getValeur(
+								"accueil.hintTravailAFaire",
+							);
 				},
 				setValue: function (aNumero, aValue) {
 					const lTAF =
 						aInstance.ListeTravailAFaire.getElementParNumero(aNumero);
 					lTAF.TAFFait = aValue;
-					lTAF.setEtat(EGenreEtat.Modification);
-					new ObjetRequeteSaisieTAFFaitEleve(
+					lTAF.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+					new ObjetRequeteSaisieTAFFaitEleve_1.ObjetRequeteSaisieTAFFaitEleve(
 						aInstance,
 						aInstance._actionSurRequeteSaisieTAFFaitEleve.bind(aInstance),
 					).lancerRequete({ listeTAF: aInstance.ListeTravailAFaire });
@@ -120,7 +122,8 @@ class ObjetAffichagePageCahierDeTexte extends _InterfacePageCahierDeTexte {
 				if (lTAF.executionQCM && lTAF.executionQCM.etatCloture) {
 					lFait =
 						lTAF.executionQCM.etatCloture ===
-						TypeEtatExecutionQCMPourRepondant.EQR_Termine;
+						TypeEtatExecutionQCMPourRepondant_1
+							.TypeEtatExecutionQCMPourRepondant.EQR_Termine;
 				} else {
 					lFait = lTAF.TAFFait;
 				}
@@ -128,9 +131,12 @@ class ObjetAffichagePageCahierDeTexte extends _InterfacePageCahierDeTexte {
 				if (lFait) {
 					H.push(
 						'<div style="',
-						GStyle.composeCouleur(GCouleur.themeCouleur.foncee, GCouleur.blanc),
+						ObjetStyle_1.GStyle.composeCouleur(
+							GCouleur.themeCouleur.foncee,
+							GCouleur.blanc,
+						),
 						'padding-left: 10px; padding-right: 10px; float: right;">',
-						GTraductions.getValeur("accueil.hintTravailFait"),
+						ObjetTraduction_1.GTraductions.getValeur("accueil.hintTravailFait"),
 						"</div>",
 						"<br/>",
 					);
@@ -143,7 +149,7 @@ class ObjetAffichagePageCahierDeTexte extends _InterfacePageCahierDeTexte {
 						longueur: 170,
 						hauteur: 16,
 						hauteurLigneDefault: 16,
-						labelWAICellule: GTraductions.getValeur(
+						labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
 							"CahierDeTexte.filtrerParThemes",
 						),
 					});
@@ -198,16 +204,16 @@ class ObjetAffichagePageCahierDeTexte extends _InterfacePageCahierDeTexte {
 	}
 	_actionSurRequeteSaisieTAFFaitEleve() {}
 }
+exports.ObjetAffichagePageCahierDeTexte = ObjetAffichagePageCahierDeTexte;
 function _composeFiltresTAF() {
 	const H = [];
 	H.push(
 		'<ie-checkbox style="margin-right:1rem;" class="as-chips" ie-icon="icon_time" ie-model="cbFiltreTAF(false)">',
-		GTraductions.getValeur("TAFEtContenu.AFaire"),
+		ObjetTraduction_1.GTraductions.getValeur("TAFEtContenu.AFaire"),
 		"</ie-checkbox>",
 		'<ie-checkbox style="margin-right:1rem;" class="as-chips" ie-icon="icon_check_fin" ie-model="cbFiltreTAF(true)">',
-		GTraductions.getValeur("TAFEtContenu.Fait"),
+		ObjetTraduction_1.GTraductions.getValeur("TAFEtContenu.Fait"),
 		"</ie-checkbox>",
 	);
 	return H.join("");
 }
-module.exports = ObjetAffichagePageCahierDeTexte;

@@ -9,7 +9,6 @@ const TypeOrigineCreationCategorieCahierDeTexte_1 = require("TypeOrigineCreation
 const ObjetStyle_1 = require("ObjetStyle");
 const ObjetChaine_1 = require("ObjetChaine");
 const ObjetDate_1 = require("ObjetDate");
-const ObjetHtml_1 = require("ObjetHtml");
 const UtilitaireVisiosSco_1 = require("UtilitaireVisiosSco");
 function TUtilitaireGrilleImageCoursPN() {}
 function _afficherGenre(aGenre, aFiltreUniquement) {
@@ -19,14 +18,10 @@ function _afficherGenre(aGenre, aFiltreUniquement) {
 	return true;
 }
 function _gethtmlImagePublieSuperposee() {
-	return IE.jsx.str(
-		IE.jsx.fragment,
-		null,
-		IE.jsx.str("div", {
-			style: "position:absolute; top:0px; left:0px; pointer-events:none;",
-			class: "Image_PublieGrille",
-		}),
-	);
+	return IE.jsx.str("div", {
+		style: "position:absolute; top:0px; left:0px; pointer-events:none;",
+		class: "Image_PublieGrille",
+	});
 }
 function _imageCategorieCCDT(
 	aCours,
@@ -34,68 +29,82 @@ function _imageCategorieCCDT(
 	aOrigineCategorie,
 	aGenre,
 ) {
-	if (
-		!aCours ||
-		!aCours.cahierDeTextes ||
-		!aCours.cahierDeTextes.originesCategorie ||
-		!aCours.cahierDeTextes.originesCategorie.contains(aOrigineCategorie)
-	) {
+	var _a, _b;
+	const lOrigine =
+		(_b =
+			(_a =
+				aCours === null || aCours === void 0
+					? void 0
+					: aCours.cahierDeTextes) === null || _a === void 0
+				? void 0
+				: _a.originesCategorie) === null || _b === void 0
+			? void 0
+			: _b.getElementParGenre(aOrigineCategorie);
+	if (!lOrigine) {
 		return;
 	}
-	const lCssImage =
-		TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.getImage(
+	const lCssIcone =
+		TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.getIcone(
 			aOrigineCategorie,
 		);
-	let lTitle = "";
-	switch (aOrigineCategorie) {
-		case TypeOrigineCreationCategorieCahierDeTexte_1
-			.TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Devoir:
-			lTitle = ObjetTraduction_1.GTraductions.getValeur(
-				"CahierDeTexte.DevoirSurveille_Devoir",
-			);
-			break;
-		case TypeOrigineCreationCategorieCahierDeTexte_1
-			.TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Evaluation:
-			lTitle = ObjetTraduction_1.GTraductions.getValeur(
-				"CahierDeTexte.DevoirSurveille_Evaluation",
-			);
-			break;
-	}
-	if (!lCssImage) {
+	let lTitle = lOrigine.getLibelle();
+	if (!lCssIcone) {
 		return;
 	}
-	const lImage = new ObjetElement_1.ObjetElement(lCssImage, null, aGenre);
+	const lImage = new ObjetElement_1.ObjetElement(lCssIcone, null, aGenre);
 	lImage.width = 16;
-	lImage.hint = lTitle;
+	lImage.tooltip = lTitle;
+	const lClassIcone = [lCssIcone, "i-small"];
 	if (aCours.AvecCdTPublie) {
-		lImage.getHtmlSupp = _gethtmlImagePublieSuperposee;
+		lClassIcone.push("mix-icon_rond", "i-top", "i-small", "i-green");
 	}
+	lImage.html = IE.jsx.str(
+		"i",
+		{ class: lClassIcone, role: "presentation" },
+		lOrigine.libelleIcone || "",
+	);
 	aListeImagesCoin.addElement(lImage);
 	return true;
 }
 function _ajouterImagesCDT(aCours, aListeImages, aAvecEvenement) {
+	var _a;
 	let lImage;
 	let lAvecImageCategorie = false;
-	if (aCours.cahierDeTextes && aCours.cahierDeTextes.originesCategorie) {
-		[
-			TypeOrigineCreationCategorieCahierDeTexte_1
-				.TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Devoir,
-			TypeOrigineCreationCategorieCahierDeTexte_1
-				.TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Evaluation,
-			TypeOrigineCreationCategorieCahierDeTexte_1
-				.TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_EPI,
-			TypeOrigineCreationCategorieCahierDeTexte_1
-				.TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_AP,
-		].forEach((aGenreCategorie) => {
+	if (
+		aCours.cahierDeTextes &&
+		((_a = aCours.cahierDeTextes.originesCategorie) === null || _a === void 0
+			? void 0
+			: _a.count())
+	) {
+		aCours.cahierDeTextes.originesCategorie.parcourir((aCategorie) => {
 			if (
-				_imageCategorieCCDT(
-					aCours,
-					aListeImages[ObjetGrilleCours_1.ObjetGrilleCours.positionImage.basG],
-					aGenreCategorie,
-					aAvecEvenement ? 1 : null,
-				)
+				[
+					TypeOrigineCreationCategorieCahierDeTexte_1
+						.TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Devoir,
+					TypeOrigineCreationCategorieCahierDeTexte_1
+						.TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Evaluation,
+					TypeOrigineCreationCategorieCahierDeTexte_1
+						.TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_EPI,
+					TypeOrigineCreationCategorieCahierDeTexte_1
+						.TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_AP,
+					TypeOrigineCreationCategorieCahierDeTexte_1
+						.TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_CCF,
+					TypeOrigineCreationCategorieCahierDeTexte_1
+						.TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_EC,
+				].includes(aCategorie.getGenre())
 			) {
-				lAvecImageCategorie = true;
+				if (
+					_imageCategorieCCDT(
+						aCours,
+						aListeImages[
+							ObjetGrilleCours_1.ObjetGrilleCours.positionImage.basG
+						],
+						aCategorie.getGenre(),
+						aAvecEvenement ? 1 : null,
+					)
+				) {
+					lAvecImageCategorie = true;
+				}
 			}
 		});
 	}
@@ -110,7 +119,8 @@ function _ajouterImagesCDT(aCours, aListeImages, aAvecEvenement) {
 			);
 			lImage.btnImage = true;
 			lImage.width = 19;
-			lImage.hint = ObjetTraduction_1.GTraductions.getValeur("EDT.AfficherCDT");
+			lImage.tooltip =
+				ObjetTraduction_1.GTraductions.getValeur("EDT.AfficherCDT");
 			aListeImages[
 				ObjetGrilleCours_1.ObjetGrilleCours.positionImage.basG
 			].addElement(lImage);
@@ -130,7 +140,7 @@ function _ajouterImagesCDT(aCours, aListeImages, aAvecEvenement) {
 				}
 			} else {
 				lImage = new ObjetElement_1.ObjetElement("Image_CahierDeTexte");
-				lImage.hint = aCours.AvecCdTPublie
+				lImage.tooltip = aCours.AvecCdTPublie
 					? ObjetTraduction_1.GTraductions.getValeur("EDT.WAI.avecCDTpublie")
 					: ObjetTraduction_1.GTraductions.getValeur("EDT.WAI.avecCDT");
 			}
@@ -148,11 +158,7 @@ function _ajouterImagesCDT(aCours, aListeImages, aAvecEvenement) {
 		}
 	}
 }
-TUtilitaireGrilleImageCoursPN.getListeImagesCours = function (
-	aCours,
-	aIndice,
-	aFiltreUniquement,
-) {
+TUtilitaireGrilleImageCoursPN.getListeImagesCours = function (aCours, aParams) {
 	var _a;
 	if (!aCours) {
 		return;
@@ -167,27 +173,23 @@ TUtilitaireGrilleImageCoursPN.getListeImagesCours = function (
 		lListeImages[aCoin] = new ObjetListeElements_1.ObjetListeElements();
 	});
 	let lImage;
-	const lAvecToutesImages = !aFiltreUniquement || !aFiltreUniquement.indexOf;
+	const lAvecToutesImages =
+		!aParams.filtresImagesUniquement ||
+		!aParams.filtresImagesUniquement.indexOf;
 	const lCssIconeMemoClasse = "icon_post_it_rempli mix-icon_eleve size-inherit";
 	["memo", "memoPrive"].forEach((aPropMemo) => {
 		const lMemo = aCours[aPropMemo];
 		if (lMemo && lAvecToutesImages) {
-			const lMemoFormat = ObjetChaine_1.GChaine.replaceRCToHTML(
-				lMemo.ajouterEntites(),
-			);
-			const lHint = aCours.estSortiePedagogique
+			const lTooltip = aCours.estSortiePedagogique
 				? IE.jsx.str(
 						IE.jsx.fragment,
 						null,
 						ObjetTraduction_1.GTraductions.getValeur("EDT.MemoAbsence"),
 						" :",
 						IE.jsx.str("br", null),
-						lMemoFormat,
+						lMemo,
 					)
-				: lMemoFormat;
-			const lAriaLabel = aCours.estSortiePedagogique
-				? `${ObjetTraduction_1.GTraductions.getValeur("EDT.MemoAbsence")} : ${lMemoFormat}`
-				: `${aPropMemo === "memo" ? ObjetTraduction_1.GTraductions.getValeur("EDT.MemoPublic") : ObjetTraduction_1.GTraductions.getValeur("EDT.MemoAdministratif")} : ${lMemoFormat}`;
+				: `${aPropMemo === "memo" ? ObjetTraduction_1.GTraductions.getValeur("EDT.MemoPublic") : ObjetTraduction_1.GTraductions.getValeur("EDT.MemoAdministratif")} :<br/>${lMemo}`;
 			const lCss =
 				aCours.estSortiePedagogique && !aCours.tabMemosAcc
 					? lCssIconeMemoClasse
@@ -199,8 +201,7 @@ TUtilitaireGrilleImageCoursPN.getListeImagesCours = function (
 			].addElement(
 				ObjetElement_1.ObjetElement.create({
 					Libelle: "",
-					hint: lHint,
-					ariaLabel: lAriaLabel,
+					tooltip: lTooltip,
 					html: IE.jsx.str("i", {
 						class: lCss,
 						style: "font-size:1.6rem",
@@ -224,7 +225,7 @@ TUtilitaireGrilleImageCoursPN.getListeImagesCours = function (
 				ObjetGrilleCours_1.ObjetGrilleCours.positionImage.basG
 			].addElement(
 				ObjetElement_1.ObjetElement.create({
-					hint: IE.jsx.str(
+					tooltip: IE.jsx.str(
 						IE.jsx.fragment,
 						null,
 						ObjetTraduction_1.GTraductions.getValeur("EDT.MemoAbsenceClasse"),
@@ -232,7 +233,6 @@ TUtilitaireGrilleImageCoursPN.getListeImagesCours = function (
 						IE.jsx.str("br", null),
 						lMemoFormat,
 					),
-					ariaLabel: `${ObjetTraduction_1.GTraductions.getValeur("EDT.MemoAbsenceClasse")} : ${lMemoFormat}`,
 					html: IE.jsx.str("i", {
 						class: lCssIconeMemoClasse,
 						style: "font-size:1.6rem",
@@ -252,7 +252,7 @@ TUtilitaireGrilleImageCoursPN.getListeImagesCours = function (
 			null,
 			3,
 		);
-		lImage.hint =
+		lImage.tooltip =
 			UtilitaireVisiosSco_1.UtilitaireVisios.getHintListeVisiosCours(
 				aCours.listeVisios,
 			);
@@ -276,7 +276,7 @@ TUtilitaireGrilleImageCoursPN.getListeImagesCours = function (
 			style: "font-size:1.6rem",
 			role: "presentation",
 		});
-		lImage.hint = aCours.estGAEVMixte
+		lImage.tooltip = aCours.estGAEVMixte
 			? ObjetTraduction_1.GTraductions.getValeur("EDT.HintImageGAEVMixte")
 			: ObjetTraduction_1.GTraductions.getValeur("EDT.HintImageGAEV");
 		lListeImages[
@@ -285,7 +285,7 @@ TUtilitaireGrilleImageCoursPN.getListeImagesCours = function (
 	}
 	if (aCours.estCoEnseignement && lAvecToutesImages) {
 		lImage = new ObjetElement_1.ObjetElement("");
-		lImage.hint = ObjetTraduction_1.GTraductions.getValeur(
+		lImage.tooltip = ObjetTraduction_1.GTraductions.getValeur(
 			"EDT.HintImageCoEnseignement",
 		);
 		lImage.html = IE.jsx.str("i", {
@@ -318,7 +318,7 @@ TUtilitaireGrilleImageCoursPN.getListeImagesCours = function (
 				null,
 				2,
 			);
-			lImage.hint = ObjetTraduction_1.GTraductions.getValeur(
+			lImage.tooltip = ObjetTraduction_1.GTraductions.getValeur(
 				"CahierDeTexte.TravailPourCeCours",
 			);
 			lImage.btnImage = true;
@@ -357,21 +357,22 @@ TUtilitaireGrilleImageCoursPN.getListeImagesCours = function (
 		aCours.NomImageAppelFait &&
 		_afficherGenre(
 			TUtilitaireGrilleImageCoursPN.type.appelFait,
-			aFiltreUniquement,
+			aParams.filtresImagesUniquement,
 		)
 	) {
 		lImage = new ObjetElement_1.ObjetElement(aCours.NomImageAppelFait);
 		lImage.width = 16;
 		switch (aCours.NomImageAppelFait) {
 			case "AppelFait":
-				lImage.hint = ObjetTraduction_1.GTraductions.getValeur("EDT.AppelFait");
+				lImage.tooltip =
+					ObjetTraduction_1.GTraductions.getValeur("EDT.AppelFait");
 				break;
 			case "AppelNonFait":
-				lImage.hint =
+				lImage.tooltip =
 					ObjetTraduction_1.GTraductions.getValeur("EDT.AppelNonFait");
 				break;
 			case "AppelVerrouNonFait":
-				lImage.hint = ObjetTraduction_1.GTraductions.getValeur(
+				lImage.tooltip = ObjetTraduction_1.GTraductions.getValeur(
 					"EDT.AppelVerrouNonFait",
 				);
 				break;
@@ -415,7 +416,7 @@ TUtilitaireGrilleImageCoursPN.getListeImagesCours = function (
 			style: "font-size:0.9rem; color: #137FDB;",
 			role: "presentation",
 		});
-		lImage.hint = ObjetTraduction_1.GTraductions.getValeur(
+		lImage.tooltip = ObjetTraduction_1.GTraductions.getValeur(
 			"EDT.CoursVerrouille",
 		);
 		lListeImages[
@@ -431,41 +432,47 @@ TUtilitaireGrilleImageCoursPN.getListeImagesCours = function (
 		GEtatUtilisateur.getGenreOnglet() ===
 			Enumere_Onglet_1.EGenreOnglet.EmploiDuTemps_Annuel_Classe
 	) {
-		const lLargeurTexte = ObjetChaine_1.GChaine.getLongueurChaine(
-			"XXhXX",
-			9,
-			true,
-		);
-		lImage = new ObjetElement_1.ObjetElement("");
-		lImage.width = lLargeurTexte + 4 + 1;
-		lImage.html = [
-			'<div class="etiquetteDuree_cours Texte9" style="',
-			ObjetStyle_1.GStyle.composeCouleurBordure(aCours.CouleurFond),
-			'"',
-			ObjetHtml_1.GHtml.composeAttr("ie-class", "getClassImageCours", [
-				aIndice,
-			]),
-			">",
-			'<div style="',
-			ObjetStyle_1.GStyle.composeWidth(lLargeurTexte),
-			'">',
-			ObjetDate_1.GDate.formatDureeEnMillisecondes(
+		if (aParams.getJsxGetClasseEtiquetteDuree) {
+			const lLargeurTexte = ObjetChaine_1.GChaine.getLongueurChaine(
+				"XXhXX",
+				9,
+				true,
+			);
+			const lTexte = ObjetDate_1.GDate.formatDureeEnMillisecondes(
 				ObjetDate_1.GDate.nombrePlacesEnMillisecondes(
 					aCours.Fin - aCours.Debut + 1,
 				),
-			),
-			"</div>",
-			"</div>",
-		].join("");
-		lListeImages[
-			ObjetGrilleCours_1.ObjetGrilleCours.positionImage.hautD
-		].addElement(lImage);
+			);
+			lImage = ObjetElement_1.ObjetElement.create({
+				Libelle: "",
+				width: lLargeurTexte + 4 + 1,
+				html: IE.jsx.str(
+					"div",
+					{
+						class: "etiquetteDuree_cours Texte9",
+						style: ObjetStyle_1.GStyle.composeCouleurBordure(
+							aCours.CouleurFond,
+						),
+						"ie-class": aParams.getJsxGetClasseEtiquetteDuree(aCours),
+					},
+					IE.jsx.str(
+						"div",
+						{ style: ObjetStyle_1.GStyle.composeWidth(lLargeurTexte) },
+						lTexte,
+					),
+				),
+				tooltip: `${ObjetTraduction_1.GTraductions.getValeur("Duree")} : ${lTexte}`,
+			});
+			lListeImages[
+				ObjetGrilleCours_1.ObjetGrilleCours.positionImage.hautD
+			].addElement(lImage);
+		}
 	}
 	if (
 		aCours.dispenseEleve &&
 		_afficherGenre(
 			TUtilitaireGrilleImageCoursPN.type.dispense,
-			aFiltreUniquement,
+			aParams.filtresImagesUniquement,
 		)
 	) {
 		lImage = new ObjetElement_1.ObjetElement(
@@ -474,7 +481,7 @@ TUtilitaireGrilleImageCoursPN.getListeImagesCours = function (
 				: "Image_StickerDispense",
 		);
 		lImage.width = 68;
-		lImage.hint = aCours.dispenseEleve.getLibelle();
+		lImage.tooltip = aCours.dispenseEleve.getLibelle();
 		lListeImages[
 			ObjetGrilleCours_1.ObjetGrilleCours.positionImage.basD
 		].addElement(lImage);
@@ -483,7 +490,7 @@ TUtilitaireGrilleImageCoursPN.getListeImagesCours = function (
 		aCours.aucunEleve &&
 		_afficherGenre(
 			TUtilitaireGrilleImageCoursPN.type.aucunEleve,
-			aFiltreUniquement,
+			aParams.filtresImagesUniquement,
 		)
 	) {
 		lImage = ObjetElement_1.ObjetElement.create({
@@ -496,8 +503,7 @@ TUtilitaireGrilleImageCoursPN.getListeImagesCours = function (
 					ObjetTraduction_1.GTraductions.getValeur("EDT.AucunEleve"),
 				),
 			),
-			title: ObjetTraduction_1.GTraductions.getValeur("EDT.HintAucunEleve"),
-			ariaLabel: ObjetTraduction_1.GTraductions.getValeur("EDT.HintAucunEleve"),
+			tooltip: ObjetTraduction_1.GTraductions.getValeur("EDT.HintAucunEleve"),
 		});
 		lListeImages[
 			ObjetGrilleCours_1.ObjetGrilleCours.positionImage.basD
@@ -505,7 +511,7 @@ TUtilitaireGrilleImageCoursPN.getListeImagesCours = function (
 	}
 	if (aCours.estRetenue && aCours.imgRealise) {
 		lImage = new ObjetElement_1.ObjetElement("Image_" + aCours.imgRealise);
-		lImage.hint = aCours.hintRealise;
+		lImage.tooltip = aCours.hintRealise;
 		lListeImages[
 			ObjetGrilleCours_1.ObjetGrilleCours.positionImage.hautD
 		].addElement(lImage);

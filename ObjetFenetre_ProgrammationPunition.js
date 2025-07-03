@@ -1,12 +1,11 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { GChaine } = require("ObjetChaine.js");
-const { EGenreOnglet } = require("Enumere_Onglet.js");
-const {
-	ModeleDetailProgrammationPunition,
-} = require("DetailProgrammationPunition.tsxModele.js");
-const { tag } = require("tag.js");
-class ObjetFenetre_ProgrammationPunition extends ObjetFenetre {
+exports.ObjetFenetre_ProgrammationPunition = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetChaine_1 = require("ObjetChaine");
+const Enumere_Onglet_1 = require("Enumere_Onglet");
+const DetailProgrammationPunition_tsxModele_js_1 = require("DetailProgrammationPunition.tsxModele.js");
+const AccessApp_1 = require("AccessApp");
+class ObjetFenetre_ProgrammationPunition extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.setOptionsFenetre({
@@ -14,7 +13,7 @@ class ObjetFenetre_ProgrammationPunition extends ObjetFenetre {
 			largeurMin: 500,
 			avecScroll: true,
 			hauteurMaxContenu: 500,
-			callback: function (aNumeroBouton, aParams) {
+			callback: (aNumeroBouton, aParams) => {
 				if (aParams.bouton && aParams.bouton.navigation) {
 					aParams.bouton.navigation();
 				}
@@ -23,22 +22,30 @@ class ObjetFenetre_ProgrammationPunition extends ObjetFenetre {
 	}
 	setDonnees(aParametres) {
 		const lParametres = Object.assign({ titre: "", liste: null }, aParametres);
+		const lApp = (0, AccessApp_1.getApp)();
 		const lListeBoutons = [
-			{ libelle: GTraductions.getValeur("Fermer"), fermer: true },
+			{
+				libelle: ObjetTraduction_1.GTraductions.getValeur("Fermer"),
+				fermer: true,
+			},
 		];
 		const lOnglet = GEtatUtilisateur.listeOnglets.getElementParGenre(
-			EGenreOnglet.Saisie_Punitions,
+			Enumere_Onglet_1.EGenreOnglet.Saisie_Punitions,
 		);
 		if (lOnglet && lOnglet.Actif && lParametres.punition) {
 			lListeBoutons.push({
-				libelle: GTraductions.getValeur(
+				libelle: ObjetTraduction_1.GTraductions.getValeur(
 					"ObjetFenetre_ProgrammationPunition.VoirLeDetail",
 				),
 				navigation: function () {
-					GEtatUtilisateur.setNrPunitionSelectionnee(
-						lParametres.punition.getNumero(),
-					);
-					GInterface.changementManuelOnglet(EGenreOnglet.Saisie_Punitions);
+					lApp
+						.getEtatUtilisateur()
+						.setNrPunitionSelectionnee(lParametres.punition.getNumero());
+					lApp
+						.getInterfaceEspace()
+						.changementManuelOnglet(
+							Enumere_Onglet_1.EGenreOnglet.Saisie_Punitions,
+						);
 				},
 			});
 		}
@@ -51,7 +58,7 @@ class ObjetFenetre_ProgrammationPunition extends ObjetFenetre {
 			lParametres.liste.forEach((aProgrammation, aIndex) => {
 				if (lParametres.liste.length > 1 && aProgrammation.nom) {
 					H.push(
-						tag(
+						IE.jsx.str(
 							"div",
 							{
 								class: ["p-all m-all", aIndex >= 1 ? "m-top-l" : ""],
@@ -62,16 +69,20 @@ class ObjetFenetre_ProgrammationPunition extends ObjetFenetre {
 					);
 				}
 				H.push(
-					ModeleDetailProgrammationPunition.getHtml({
-						details: aProgrammation,
-						circonstances: GChaine.replaceRCToHTML(
-							aProgrammation.circonstances,
-						),
-						commentaire: aProgrammation.commentaire
-							? GChaine.replaceRCToHTML(aProgrammation.commentaire)
-							: "",
-						styleMaxTaille: "max-width : 600px;max-height : 200px;",
-					}),
+					DetailProgrammationPunition_tsxModele_js_1.ModeleDetailProgrammationPunition.getHtml(
+						{
+							details: aProgrammation,
+							circonstances: ObjetChaine_1.GChaine.replaceRCToHTML(
+								aProgrammation.circonstances,
+							),
+							commentaire: aProgrammation.commentaire
+								? ObjetChaine_1.GChaine.replaceRCToHTML(
+										aProgrammation.commentaire,
+									)
+								: "",
+							styleMaxTaille: "max-width : 600px;max-height : 200px;",
+						},
+					),
 				);
 			});
 		}
@@ -79,4 +90,4 @@ class ObjetFenetre_ProgrammationPunition extends ObjetFenetre {
 		return this;
 	}
 }
-module.exports = { ObjetFenetre_ProgrammationPunition };
+exports.ObjetFenetre_ProgrammationPunition = ObjetFenetre_ProgrammationPunition;

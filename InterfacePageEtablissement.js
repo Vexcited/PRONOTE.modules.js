@@ -1,26 +1,30 @@
-const { ObjetCalendrier } = require("ObjetCalendrier.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { InterfacePage } = require("InterfacePage.js");
-const { UtilitaireInitCalendrier } = require("UtilitaireInitCalendrier.js");
-class InterfacePageEtablissement extends InterfacePage {
-	constructor(...aParams) {
-		super(...aParams);
+exports.InterfacePageEtablissement = void 0;
+const ObjetCalendrier_1 = require("ObjetCalendrier");
+const ObjetListe_1 = require("ObjetListe");
+const InterfacePage_1 = require("InterfacePage");
+const UtilitaireInitCalendrier_1 = require("UtilitaireInitCalendrier");
+const AccessApp_1 = require("AccessApp");
+class InterfacePageEtablissement extends InterfacePage_1.InterfacePage {
+	constructor() {
+		super(...arguments);
+		this.appSco = (0, AccessApp_1.getApp)();
+		this.parametresSco = this.appSco.getObjetParametres();
 		this.selectionEvaluation = {};
 	}
 	construireInstances() {
 		this.identCalendrier = this.add(
-			ObjetCalendrier,
+			ObjetCalendrier_1.ObjetCalendrier,
 			this.evenementSurCalendrier,
 			this.initialiserCalendrier,
 		);
 		this.identListe = this.add(
-			ObjetListe,
+			ObjetListe_1.ObjetListe,
 			this.evenementSurListe,
 			this.initialiserListe,
 		);
 	}
 	initialiserCalendrier(aInstance) {
-		UtilitaireInitCalendrier.init(aInstance);
+		UtilitaireInitCalendrier_1.UtilitaireInitCalendrier.init(aInstance);
 		aInstance.setControleNavigation(true);
 	}
 	setParametresGeneraux() {
@@ -33,17 +37,17 @@ class InterfacePageEtablissement extends InterfacePage {
 	afficherPage() {
 		this.setEtatSaisie(false);
 		this.getInstance(this.identCalendrier).setSelection(
-			GEtatUtilisateur.getSemaineSelectionnee(),
+			this.appSco.getEtatUtilisateur().getSemaineSelectionnee(),
 		);
 	}
 	evenementSurCalendrier(aNumeroSemaine) {
-		GEtatUtilisateur.setSemaineSelectionnee(aNumeroSemaine);
+		this.appSco.getEtatUtilisateur().setSemaineSelectionnee(aNumeroSemaine);
 		const lDates = this.getInstance(this.identCalendrier).getDates();
 		const lNavigation = {};
 		lNavigation.dateDebut = lDates.dateDebut;
 		lNavigation.dateFin = lDates.dateFin;
-		GParametres.listeComboPeriodes.navigation = lNavigation;
+		this.parametresSco.listeComboPeriodes.navigation = lNavigation;
 		this.requetePage(lNavigation);
 	}
 }
-module.exports = { InterfacePageEtablissement };
+exports.InterfacePageEtablissement = InterfacePageEtablissement;

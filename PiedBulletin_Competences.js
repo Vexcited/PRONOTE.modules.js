@@ -1,18 +1,17 @@
-const { PageBilanFinDeCycle } = require("PageBilanFinDeCycle.js");
-const { ObjetInterface } = require("ObjetInterface.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const {
-	TypeModeAffichagePiedBulletin,
-} = require("TypeModeAffichagePiedBulletin.js");
-const {
-	TypeModuleFonctionnelPiedBulletin,
-	TypeModuleFonctionnelPiedBulletinUtil,
-} = require("TypeModuleFonctionnelPiedBulletin.js");
-class PiedBulletin_Competences extends ObjetInterface {
-	constructor(...aParams) {
-		super(...aParams);
+exports.PiedBulletin_Competences = void 0;
+const PageBilanFinDeCycle_1 = require("PageBilanFinDeCycle");
+const ObjetInterface_1 = require("ObjetInterface");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const TypeModeAffichagePiedBulletin_1 = require("TypeModeAffichagePiedBulletin");
+const TypeModuleFonctionnelPiedBulletin_1 = require("TypeModuleFonctionnelPiedBulletin");
+const AccessApp_1 = require("AccessApp");
+class PiedBulletin_Competences extends ObjetInterface_1.ObjetInterface {
+	constructor() {
+		super(...arguments);
 		this.params = {
-			modeAffichage: TypeModeAffichagePiedBulletin.MAPB_Onglets,
+			modeAffichage:
+				TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+					.MAPB_Onglets,
 			avecTitreModule: false,
 			periodeCloture: false,
 			droits: { avecSaisie: false },
@@ -20,9 +19,9 @@ class PiedBulletin_Competences extends ObjetInterface {
 	}
 	construireInstances() {
 		this.identBilanFinDeCycle = this.add(
-			PageBilanFinDeCycle,
-			_evenementInterfaceBilanFinDeCycle.bind(this),
-			_initInterfaceBilanFinDeCycle,
+			PageBilanFinDeCycle_1.PageBilanFinDeCycle,
+			this._evenementInterfaceBilanFinDeCycle.bind(this),
+			this._initInterfaceBilanFinDeCycle,
 		);
 	}
 	setParametresGeneraux() {
@@ -34,8 +33,9 @@ class PiedBulletin_Competences extends ObjetInterface {
 		const T = [];
 		T.push('<div class="EspaceBas EspaceHaut Gras">');
 		T.push(
-			TypeModuleFonctionnelPiedBulletinUtil.getLibelle(
-				TypeModuleFonctionnelPiedBulletin.MFPB_Competences,
+			TypeModuleFonctionnelPiedBulletin_1.TypeModuleFonctionnelPiedBulletinUtil.getLibelle(
+				TypeModuleFonctionnelPiedBulletin_1.TypeModuleFonctionnelPiedBulletin
+					.MFPB_Competences,
 			),
 		);
 		T.push("</div>");
@@ -49,15 +49,16 @@ class PiedBulletin_Competences extends ObjetInterface {
 		$.extend(true, this.params, aParam);
 	}
 	estAffiche() {
-		const lPeriode = GEtatUtilisateur.Navigation.getRessource(
-			EGenreRessource.Periode,
+		const lEtatUtil = (0, AccessApp_1.getApp)().getEtatUtilisateur();
+		const lPeriode = lEtatUtil.Navigation.getRessource(
+			Enumere_Ressource_1.EGenreRessource.Periode,
 		);
 		let lEstPeriodeValable = true;
 		if (lPeriode && lPeriode.getNumero() === 0) {
 			lEstPeriodeValable = false;
 		}
-		const lListeEleves = GEtatUtilisateur.Navigation.getRessources(
-			EGenreRessource.Eleve,
+		const lListeEleves = lEtatUtil.Navigation.getRessources(
+			Enumere_Ressource_1.EGenreRessource.Eleve,
 		);
 		let lPourClasse = false;
 		if (
@@ -76,8 +77,10 @@ class PiedBulletin_Competences extends ObjetInterface {
 	afficher(aParam) {
 		$.extend(true, this.params, aParam);
 		switch (aParam.modeAffichage) {
-			case TypeModeAffichagePiedBulletin.MAPB_Onglets:
-			case TypeModeAffichagePiedBulletin.MAPB_Lineaire:
+			case TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+				.MAPB_Onglets:
+			case TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+				.MAPB_Lineaire:
 				this.getInstance(this.identBilanFinDeCycle).setDonnees({
 					pourDecompte: false,
 					avecValidationAuto: false,
@@ -90,8 +93,10 @@ class PiedBulletin_Competences extends ObjetInterface {
 	getDonneesSaisie() {
 		if (
 			[
-				TypeModeAffichagePiedBulletin.MAPB_Onglets,
-				TypeModeAffichagePiedBulletin.MAPB_Lineaire,
+				TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+					.MAPB_Onglets,
+				TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+					.MAPB_Lineaire,
 			].includes(this.params.modeAffichage)
 		) {
 			return {
@@ -101,13 +106,11 @@ class PiedBulletin_Competences extends ObjetInterface {
 			};
 		}
 	}
+	_initInterfaceBilanFinDeCycle(aInstance) {
+		aInstance.setAvecEventResizeNavigateur(false);
+	}
+	_evenementInterfaceBilanFinDeCycle() {
+		this.afficher();
+	}
 }
-function _initInterfaceBilanFinDeCycle(aInstance) {
-	aInstance.avecEventResizeNavigateur = function () {
-		return false;
-	};
-}
-function _evenementInterfaceBilanFinDeCycle() {
-	this.afficher();
-}
-module.exports = { PiedBulletin_Competences };
+exports.PiedBulletin_Competences = PiedBulletin_Competences;

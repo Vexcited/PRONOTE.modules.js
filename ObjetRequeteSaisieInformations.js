@@ -1,10 +1,9 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { GCache } = require("Cache.js");
-class ObjetRequeteSaisieInformations extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieInformations = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const Cache_1 = require("Cache");
+const AccessApp_1 = require("AccessApp");
+class ObjetRequeteSaisieInformations extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aDonnees) {
 		$.extend(this.JSON, aDonnees);
 		if (!!aDonnees.dossierMedical) {
@@ -21,20 +20,24 @@ class ObjetRequeteSaisieInformations extends ObjetRequeteSaisie {
 					});
 			}
 		}
-		if (GCache && GCache.general) {
-			GCache.general._jetonViderCacheMessagerie = true;
+		if (Cache_1.GCache && Cache_1.GCache.general) {
+			Cache_1.GCache.general._jetonViderCacheMessagerie = true;
 		}
 		return this.appelAsynchrone();
 	}
 	actionApresRequete(aParams) {
 		if (this.JSONRapportSaisie && this.JSONRapportSaisie.messagerieSignature) {
-			GEtatUtilisateur.messagerieSignature =
+			(0, AccessApp_1.getApp)().getEtatUtilisateur().messagerieSignature =
 				this.JSONRapportSaisie.messagerieSignature;
 		}
-		super.actionApresRequete(...aParams);
+		super.actionApresRequete(aParams);
 	}
 }
-Requetes.inscrire("SaisieInformations", ObjetRequeteSaisieInformations);
+exports.ObjetRequeteSaisieInformations = ObjetRequeteSaisieInformations;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieInformations",
+	ObjetRequeteSaisieInformations,
+);
 function _serialisationFichier(aElement, aJSON) {
 	const lIdFichier =
 		aElement.idFichier !== undefined
@@ -46,4 +49,3 @@ function _serialisationFichier(aElement, aJSON) {
 		aJSON.idFichier = "" + lIdFichier;
 	}
 }
-module.exports = ObjetRequeteSaisieInformations;

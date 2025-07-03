@@ -1,89 +1,49 @@
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetFenetre_Devoir } = require("ObjetFenetre_Devoir.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { TypeEnsembleNombre } = require("TypeEnsembleNombre.js");
-const { TypeNote } = require("TypeNote.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const {
-	ObjetFenetre_PanierRessourceKiosque,
-} = require("ObjetFenetre_PanierRessourceKiosque.js");
-const { ObjetRequeteListeQCMCumuls } = require("ObjetRequeteListeQCMCumuls.js");
-const { TypeGenreApiKiosque } = require("TypeGenreApiKiosque.js");
-const { ObjetFenetre_Competences } = require("ObjetFenetre_Competences.js");
-const { GHtml } = require("ObjetHtml.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { EGenreAction } = require("Enumere_Action.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { TypeFichierExterneHttpSco } = require("TypeFichierExterneHttpSco.js");
-const {
-	ObjetRequeteListeCompetencesQCM,
-} = require("ObjetRequeteListeCompetencesQCM.js");
-const {
-	DonneesListe_EvaluationsQCM,
-} = require("DonneesListe_EvaluationsQCM.js");
-const {
-	ObjetFenetre_CategorieEvaluation,
-} = require("ObjetFenetre_CategorieEvaluation.js");
-const {
-	ObjetRequeteCategorieEvaluation,
-} = require("ObjetRequeteCategorieEvaluation.js");
-const {
-	ObjetCelluleMultiSelectionThemes,
-} = require("ObjetCelluleMultiSelectionThemes.js");
-const { GDate } = require("ObjetDate.js");
-const { UtilitaireQCM } = require("UtilitaireQCM.js");
-const {
-	UtilitaireGestionCloudEtPDF,
-} = require("UtilitaireGestionCloudEtPDF.js");
-const { ObjetFenetre_FichiersCloud } = require("ObjetFenetre_FichiersCloud.js");
-class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir {
+exports.ObjetFenetre_DevoirPN = void 0;
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const MethodesObjet_1 = require("MethodesObjet");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_Devoir_1 = require("ObjetFenetre_Devoir");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TypeEnsembleNombre_1 = require("TypeEnsembleNombre");
+const TypeNote_1 = require("TypeNote");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetFenetre_PanierRessourceKiosque_1 = require("ObjetFenetre_PanierRessourceKiosque");
+const ObjetRequeteListeQCMCumuls_1 = require("ObjetRequeteListeQCMCumuls");
+const TypeGenreApiKiosque_1 = require("TypeGenreApiKiosque");
+const ObjetFenetre_Competences_1 = require("ObjetFenetre_Competences");
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_Action_1 = require("Enumere_Action");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const TypeFichierExterneHttpSco_1 = require("TypeFichierExterneHttpSco");
+const ObjetRequeteListeCompetencesQCM_1 = require("ObjetRequeteListeCompetencesQCM");
+const DonneesListe_EvaluationsQCM_1 = require("DonneesListe_EvaluationsQCM");
+const ObjetFenetre_CategorieEvaluation_1 = require("ObjetFenetre_CategorieEvaluation");
+const ObjetRequeteCategorieEvaluation_1 = require("ObjetRequeteCategorieEvaluation");
+const ObjetCelluleMultiSelectionThemes_1 = require("ObjetCelluleMultiSelectionThemes");
+const ObjetDate_1 = require("ObjetDate");
+const UtilitaireQCM_1 = require("UtilitaireQCM");
+const UtilitaireGestionCloudEtPDF_1 = require("UtilitaireGestionCloudEtPDF");
+const ObjetFenetre_FichiersCloud_1 = require("ObjetFenetre_FichiersCloud");
+const AccessApp_1 = require("AccessApp");
+class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir_1.ObjetFenetre_Devoir {
 	constructor(...aParams) {
 		super(...aParams);
+		this.aaplictionSco = (0, AccessApp_1.getApp)();
+		this.objetParametres = this.aaplictionSco.getObjetParametres();
+		this.idCompetencesEvaluees = this.Nom + "_competencesEvaluees";
 		this.avecQCMCompetences = true;
 		this.avecCategorieEvaluation = true;
-		this.avecThemes = GApplication.parametresUtilisateur.get(
+		this.avecThemes = this.aaplictionSco.parametresUtilisateur.get(
 			"avecGestionDesThemes",
 		);
 		this.avecConsigneQCM = true;
 		this.avecPersonnalisationProjetAccompagnement = true;
 		this.avecModeCorrigeALaDate = true;
 		this.avecMultipleExecutions = true;
-		this.idCompetencesEvaluees = this.Nom + "_competencesEvaluees";
-	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			CBRemarque: {
-				getValue() {
-					return (
-						aInstance.devoir && aInstance.devoir.avecCommentaireSurNoteEleve
-					);
-				},
-				async setValue(aValue) {
-					if (aInstance.devoir) {
-						if (!aValue && _avecUnCommentaireSurNote(aInstance.devoir)) {
-							const lRes = await GApplication.getMessage().afficher({
-								type: EGenreBoiteMessage.Confirmation,
-								message: GTraductions.getValeur(
-									"Notes.confirmationSupressionCommentaireSurNote",
-								),
-							});
-							if (lRes === EGenreAction.Valider) {
-								aInstance.devoir.avecCommentaireSurNoteEleve =
-									!aInstance.devoir.avecCommentaireSurNoteEleve;
-							}
-							return;
-						}
-						aInstance.devoir.avecCommentaireSurNoteEleve =
-							!aInstance.devoir.avecCommentaireSurNoteEleve;
-					}
-				},
-			},
-		});
 	}
 	initialiserDevoir() {
 		this.regrouperPeriodes = false;
@@ -92,28 +52,32 @@ class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir {
 	}
 	initialiserListeCompetencesQCM(aInstance) {
 		aInstance.setOptionsListe(
-			DonneesListe_EvaluationsQCM.getOptionsListe(false),
+			DonneesListe_EvaluationsQCM_1.DonneesListe_EvaluationsQCM.getOptionsListe(
+				false,
+			),
 		);
 	}
 	evenementSurListeCompetencesQCM(aParametres) {
 		switch (aParametres.genreEvenement) {
-			case EGenreEvenementListe.ApresEdition:
+			case Enumere_EvenementListe_1.EGenreEvenementListe.ApresEdition:
 				if (!!this.devoir && !!this.devoir.executionQCM) {
-					this.devoir.executionQCM.setEtat(EGenreEtat.Modification);
+					this.devoir.executionQCM.setEtat(
+						Enumere_Etat_1.EGenreEtat.Modification,
+					);
 				}
 				break;
 		}
 	}
 	addInstanceThemes() {
 		this.identMultiSelectionTheme = this.add(
-			ObjetCelluleMultiSelectionThemes,
-			_evtCellMultiSelectionTheme.bind(this),
+			ObjetCelluleMultiSelectionThemes_1.ObjetCelluleMultiSelectionThemes,
+			this._evtCellMultiSelectionTheme.bind(this),
 		);
 	}
 	getTitrePublic() {
 		return this.devoir.service.classe.getNumero()
-			? GTraductions.getValeur("FenetreDevoir.Classe")
-			: GTraductions.getValeur("FenetreDevoir.Groupe");
+			? ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.Classe")
+			: ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.Groupe");
 	}
 	getLibellePublic() {
 		return this.devoir.service.classe.getNumero()
@@ -127,38 +91,40 @@ class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir {
 		let lMessageDateDecaleeAuxParents = "";
 		if (
 			this.devoir &&
-			GParametres.avecAffichageDecalagePublicationNotesAuxParents &&
-			!!GParametres.nbJDecalagePublicationAuxParents
+			this.objetParametres.avecAffichageDecalagePublicationNotesAuxParents &&
+			!!this.objetParametres.nbJDecalagePublicationAuxParents
 		) {
-			let lDatePublicationDecalee = GDate.formatDate(
-				GDate.getJourSuivant(
+			let lDatePublicationDecalee = ObjetDate_1.GDate.formatDate(
+				ObjetDate_1.GDate.getJourSuivant(
 					this.devoir.datePublication,
-					GParametres.nbJDecalagePublicationAuxParents,
+					this.objetParametres.nbJDecalagePublicationAuxParents,
 				),
 				" %JJ/%MM",
 			);
-			if (GParametres.nbJDecalagePublicationAuxParents === 1) {
-				lMessageDateDecaleeAuxParents = GTraductions.getValeur(
-					"FenetreDevoir.DecalageUnJourPublicationParentsSoitLe",
-					[lDatePublicationDecalee],
-				);
+			if (this.objetParametres.nbJDecalagePublicationAuxParents === 1) {
+				lMessageDateDecaleeAuxParents =
+					ObjetTraduction_1.GTraductions.getValeur(
+						"FenetreDevoir.DecalageUnJourPublicationParentsSoitLe",
+						[lDatePublicationDecalee],
+					);
 			} else {
-				lMessageDateDecaleeAuxParents = GTraductions.getValeur(
-					"FenetreDevoir.DecalageXJoursPublicationParentsSoitLe",
-					[
-						GParametres.nbJDecalagePublicationAuxParents,
-						lDatePublicationDecalee,
-					],
-				);
+				lMessageDateDecaleeAuxParents =
+					ObjetTraduction_1.GTraductions.getValeur(
+						"FenetreDevoir.DecalageXJoursPublicationParentsSoitLe",
+						[
+							this.objetParametres.nbJDecalagePublicationAuxParents,
+							lDatePublicationDecalee,
+						],
+					);
 			}
 		}
 		return lMessageDateDecaleeAuxParents;
 	}
 	getEGenreSujet() {
-		return TypeFichierExterneHttpSco.DevoirSujet;
+		return TypeFichierExterneHttpSco_1.TypeFichierExterneHttpSco.DevoirSujet;
 	}
 	getEGenreCorrige() {
-		return TypeFichierExterneHttpSco.DevoirCorrige;
+		return TypeFichierExterneHttpSco_1.TypeFichierExterneHttpSco.DevoirCorrige;
 	}
 	avecDepotCloud() {
 		return GEtatUtilisateur.listeCloud.count() > 0;
@@ -168,7 +134,7 @@ class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir {
 		const lParamsDonnees = Object.assign(
 			{
 				instance: lThis,
-				genre: TypeFichierExterneHttpSco.Aucun,
+				genre: TypeFichierExterneHttpSco_1.TypeFichierExterneHttpSco.Aucun,
 				listeElements: null,
 				callback: null,
 			},
@@ -181,68 +147,135 @@ class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir {
 					lThis.choisirFichierCloud(lParamsDonnees);
 				}
 			},
-			modeGestion: UtilitaireGestionCloudEtPDF.modeGestion.Cloud,
+			modeGestion:
+				UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF.modeGestion
+					.Cloud,
 		};
-		UtilitaireGestionCloudEtPDF.creerFenetreGestion(lParams);
+		UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF.creerFenetreGestion(
+			lParams,
+		);
 	}
-	choisirFichierCloud(aParams) {
+	ouvrirPJCloudENEJ(aParams) {
+		var _a;
+		const lParamsDonnees = Object.assign(
+			{
+				instance: this,
+				genre: TypeFichierExterneHttpSco_1.TypeFichierExterneHttpSco.Aucun,
+				listeElements: null,
+				callback: null,
+				service:
+					(_a = this.aaplictionSco.getEtatUtilisateur()) === null ||
+					_a === void 0
+						? void 0
+						: _a.getCloudENEJ(),
+			},
+			aParams,
+		);
+		this.choisirFichierCloud(lParamsDonnees);
+	}
+	async choisirFichierCloud(aParams) {
 		const lParams = Object.assign(
 			{
 				instance: null,
-				genre: TypeFichierExterneHttpSco.Aucun,
+				genre: TypeFichierExterneHttpSco_1.TypeFichierExterneHttpSco.Aucun,
 				listeElements: null,
 				callback: null,
 			},
 			aParams,
 		);
 		return new Promise((aResolve) => {
-			ObjetFenetre.creerInstanceFenetre(ObjetFenetre_FichiersCloud, {
-				pere: lParams.instance,
-				evenement: function (aParam) {
-					if (
-						aParam.listeNouveauxDocs &&
-						aParam.listeNouveauxDocs.count() === 1
-					) {
-						const lElement = aParam.listeNouveauxDocs.get(0);
-						lParams.listeElements.addElement(lElement, 0);
-						if (lParams.callback) {
-							lParams.callback.call(lParams.instance);
+			ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+				ObjetFenetre_FichiersCloud_1.ObjetFenetre_FichiersCloud,
+				{
+					pere: lParams.instance,
+					evenement: function (aParam) {
+						if (
+							aParam.listeNouveauxDocs &&
+							aParam.listeNouveauxDocs.count() === 1
+						) {
+							const lElement = aParam.listeNouveauxDocs.get(0);
+							lParams.listeElements.addElement(lElement, 0);
+							if (lParams.callback) {
+								lParams.callback.call(lParams.instance);
+							}
+							aResolve(true);
 						}
-						aResolve(true);
-					}
+					},
+					initialiser(aFenetre) {
+						aFenetre.setOptionsFenetre({
+							callbackApresFermer() {
+								aResolve();
+							},
+						});
+					},
 				},
-				initialiser(aFenetre) {
-					aFenetre.setOptionsFenetre({
-						callbackApresFermer() {
-							aResolve();
-						},
-					});
-				},
-			}).setDonnees({ service: lParams.service.Genre });
+			).setDonnees({ service: lParams.service.Genre });
 		});
 	}
 	getTailleMaxPieceJointe() {
-		return GApplication.droits.get(TypeDroits.tailleMaxDocJointEtablissement);
+		return this.aaplictionSco.droits.get(
+			ObjetDroitsPN_1.TypeDroits.tailleMaxDocJointEtablissement,
+		);
 	}
 	composeCompetencesEvaluees() {
 		const T = [];
 		T.push(
-			`<div class="flex-contain cols top-line m-top-xl" ie-display="competencesEvaluees.avecCompetencesClassique">`,
-		);
-		T.push(
-			`  <div class="field-contain">\n                <ie-checkbox id="${this.Nom}_cbEvaluationAssociee" ie-model="cbEvaluationAssociee"><span ie-html="labelEvaluationAssociee"></span></ie-checkbox>\n              </div>`,
-		);
-		T.push(
-			`  <div class="field-contain" ie-display="competencesEvaluees.estVisible">\n                <label>${GTraductions.getValeur("FenetreDevoir.CompetencesEvaluees")}</label>\n                <ie-bouton ie-model="competencesEvaluees.btnModifierCompetences">...</ie-bouton>\n              </div>\n              <div class="field-contain fixed-height" id="${this.idCompetencesEvaluees}"></div>\n            </div>`,
+			IE.jsx.str(
+				"div",
+				{
+					class: "flex-contain cols top-line m-top-xl",
+					"ie-display": "competencesEvaluees.avecCompetencesClassique",
+				},
+				IE.jsx.str(
+					"div",
+					{ class: "field-contain" },
+					IE.jsx.str(
+						"ie-checkbox",
+						{
+							id: this.Nom + "_cbEvaluationAssociee",
+							"ie-model": "cbEvaluationAssociee",
+						},
+						IE.jsx.str("span", { "ie-html": "labelEvaluationAssociee" }),
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{
+						class: "field-contain",
+						"ie-display": "competencesEvaluees.estVisible",
+					},
+					IE.jsx.str(
+						"label",
+						null,
+						ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreDevoir.CompetencesEvaluees",
+						),
+					),
+					IE.jsx.str(
+						"ie-bouton",
+						{
+							"ie-model": "competencesEvaluees.btnModifierCompetences",
+							"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+								"competences.choixCompetencesConnaissancesAEvaluer",
+							),
+						},
+						"...",
+					),
+				),
+				IE.jsx.str("div", {
+					class: "field-contain fixed-height",
+					id: this.idCompetencesEvaluees,
+				}),
+			),
 		);
 		T.push(
 			`<div class="flex-contain cols top-line" ie-display="competencesEvaluees.avecCompetencesDeQCM">`,
 		);
 		T.push(
-			`  <div class="field-contain">\n                <ie-checkbox ie-model="cbEvaluationDuQCM">${GTraductions.getValeur("FenetreDevoir.GenererCompetencesQCM")}</ie-checkbox>\n              </div>\n              <div class="field-contain" id="${this.getInstance(this.identListeCompetencesQCM).getNom()}"></div>`,
+			`  <div class="field-contain">\n                <ie-checkbox ie-model="cbEvaluationDuQCM">${ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.GenererCompetencesQCM")}</ie-checkbox>\n              </div>\n              <div class="field-contain" id="${this.getNomInstance(this.identListeCompetencesQCM)}"></div>`,
 		);
 		T.push(
-			`  <div class="field-contain">\n                <ie-checkbox ie-model="cbSansDoublon">${GTraductions.getValeur("FenetreDevoir.NeComptabiliserQuUnNiveauPourCompetencesIdentiques")}</ie-checkbox>\n              </div>`,
+			`  <div class="field-contain">\n                <ie-checkbox ie-model="cbSansDoublon">${ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.NeComptabiliserQuUnNiveauPourCompetencesIdentiques")}</ie-checkbox>\n              </div>`,
 		);
 		T.push(`</div>`);
 		return T.join("");
@@ -264,22 +297,22 @@ class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir {
 			});
 			T.push("</ul>");
 		}
-		GHtml.setHtml(this.idCompetencesEvaluees, T.join(""));
+		ObjetHtml_1.GHtml.setHtml(this.idCompetencesEvaluees, T.join(""));
 	}
 	initFenetreSelectionQCM(aInstance) {
-		UtilitaireQCM.initFenetreSelectionQCM(aInstance);
+		UtilitaireQCM_1.UtilitaireQCM.initFenetreSelectionQCM(aInstance);
 		aInstance.setGenreRessources({
-			genreQCM: EGenreRessource.QCM,
-			genreNiveau: EGenreRessource.Niveau,
-			genreMatiere: EGenreRessource.Matiere,
-			genreAucun: EGenreRessource.Aucune,
+			genreQCM: Enumere_Ressource_1.EGenreRessource.QCM,
+			genreNiveau: Enumere_Ressource_1.EGenreRessource.Niveau,
+			genreMatiere: Enumere_Ressource_1.EGenreRessource.Matiere,
+			genreAucun: Enumere_Ressource_1.EGenreRessource.Aucune,
 		});
 	}
 	evntSurSelectionQCM(aNumeroBouton, aEltQCM) {
 		if (this.avecQCM && aNumeroBouton > 0) {
-			UtilitaireQCM.surSelectionQCM(this.devoir, aEltQCM, {
-				genreAucune: EGenreRessource.Aucune,
-				genreExecQCM: EGenreRessource.ExecutionQCM,
+			UtilitaireQCM_1.UtilitaireQCM.surSelectionQCM(this.devoir, aEltQCM, {
+				genreAucune: Enumere_Ressource_1.EGenreRessource.Aucune,
+				genreExecQCM: Enumere_Ressource_1.EGenreRessource.ExecutionQCM,
 			});
 			const lExecution = this.devoir.executionQCM;
 			if (
@@ -288,15 +321,17 @@ class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir {
 				lExecution.QCM !== null &&
 				lExecution.QCM !== undefined
 			) {
-				this.devoir.bareme = new TypeNote(lExecution.QCM.nombreDePoints);
+				this.devoir.bareme = new TypeNote_1.TypeNote(
+					lExecution.QCM.nombreDePoints,
+				);
 			} else {
 				this.devoir.bareme = this.baremeService;
 			}
 			if (this.devoir.date !== null && this.devoir.date !== undefined) {
 				if (this.avecDetailPublicationQCM) {
-					const lPremiereHeure = GDate.placeEnDateHeure(0);
-					const lDerniereHeure = GDate.placeEnDateHeure(
-						GParametres.PlacesParJour - 1,
+					const lPremiereHeure = ObjetDate_1.GDate.placeEnDateHeure(0);
+					const lDerniereHeure = ObjetDate_1.GDate.placeEnDateHeure(
+						this.objetParametres.PlacesParJour - 1,
 						true,
 					);
 					$.extend(this.devoir.executionQCM, {
@@ -313,7 +348,9 @@ class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir {
 							),
 						),
 					});
-					UtilitaireQCM.verifierDateCorrection(this.devoir.executionQCM);
+					UtilitaireQCM_1.UtilitaireQCM.verifierDateCorrection(
+						this.devoir.executionQCM,
+					);
 				}
 			}
 			if (
@@ -334,9 +371,9 @@ class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir {
 		}
 	}
 	actualiserCompetencesDeServiceEtQcm(aExecutionQCM) {
-		new ObjetRequeteListeCompetencesQCM(
+		new ObjetRequeteListeCompetencesQCM_1.ObjetRequeteListeCompetencesQCM(
 			this,
-			_surRequeteListeCompetencesQCM.bind(this),
+			this._surRequeteListeCompetencesQCM.bind(this),
 		).lancerRequete({
 			executionQCM: aExecutionQCM,
 			qcm: aExecutionQCM.QCM,
@@ -389,14 +426,47 @@ class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir {
 		}
 	}
 	composeCommentaireSurNote() {
-		const H = [];
-		H.push(
-			`<ie-checkbox ie-model="CBRemarque">${GTraductions.getValeur("FenetreDevoir.activerCommentaireSurNotes")}</ie-checkbox>`,
+		const lModelCBRemarque = () => {
+			return {
+				getValue: () => {
+					return this.devoir && this.devoir.avecCommentaireSurNoteEleve;
+				},
+				setValue: async (aValue) => {
+					if (this.devoir) {
+						if (!aValue && this._avecUnCommentaireSurNote(this.devoir)) {
+							const lRes = await this.aaplictionSco
+								.getMessage()
+								.afficher({
+									type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+									message: ObjetTraduction_1.GTraductions.getValeur(
+										"Notes.confirmationSupressionCommentaireSurNote",
+									),
+								});
+							if (lRes === Enumere_Action_1.EGenreAction.Valider) {
+								this.devoir.avecCommentaireSurNoteEleve =
+									!this.devoir.avecCommentaireSurNoteEleve;
+							}
+							return;
+						}
+						this.devoir.avecCommentaireSurNoteEleve =
+							!this.devoir.avecCommentaireSurNoteEleve;
+					}
+				},
+			};
+		};
+		return IE.jsx.str(
+			"ie-checkbox",
+			{ "ie-model": lModelCBRemarque },
+			ObjetTraduction_1.GTraductions.getValeur(
+				"FenetreDevoir.activerCommentaireSurNotes",
+			),
 		);
-		return H.join("");
 	}
 	_estUnGroupe(aClasse) {
-		return aClasse && aClasse.getGenre() === EGenreRessource.Groupe;
+		return (
+			aClasse &&
+			aClasse.getGenre() === Enumere_Ressource_1.EGenreRessource.Groupe
+		);
 	}
 	leDevoirEstSurUnePeriodeClotureePourEvaluation(aDevoir) {
 		if (!!aDevoir && !!aDevoir.listeClasses) {
@@ -420,21 +490,21 @@ class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir {
 			!lEstCloturePourEvaluation &&
 			this.devoir.service.avecSaisieEvaluation
 		) {
-			const lFenetre = ObjetFenetre.creerInstanceFenetre(
-				ObjetFenetre_Competences,
+			const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+				ObjetFenetre_Competences_1.ObjetFenetre_Competences,
 				{
 					pere: this,
 					evenement: this._evenementSurFenetreCompetences,
 					initialiser: function (aInstance) {
 						aInstance.setOptionsFenetre({
-							titre: GTraductions.getValeur(
+							titre: ObjetTraduction_1.GTraductions.getValeur(
 								"competences.choixCompetencesConnaissancesAEvaluer",
 							),
 							largeur: 620,
 							hauteur: 420,
 							listeBoutons: [
-								GTraductions.getValeur("Annuler"),
-								GTraductions.getValeur("Valider"),
+								ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+								ObjetTraduction_1.GTraductions.getValeur("Valider"),
 							],
 						});
 					},
@@ -442,28 +512,34 @@ class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir {
 			);
 			lFenetre.setDonnees({
 				listeCompetences: this.devoir.evaluation
-					? MethodesObjet.dupliquer(this.devoir.evaluation.listeCompetences)
-					: new ObjetListeElements(),
+					? MethodesObjet_1.MethodesObjet.dupliquer(
+							this.devoir.evaluation.listeCompetences,
+						)
+					: new ObjetListeElements_1.ObjetListeElements(),
 				service: this.devoir.service,
-				classe: GEtatUtilisateur.Navigation.getRessource(
-					EGenreRessource.Classe,
-				),
+				classe: this.aaplictionSco
+					.getEtatUtilisateur()
+					.Navigation.getRessource(Enumere_Ressource_1.EGenreRessource.Classe),
 			});
 		} else {
 			if (lEstCloturePourEvaluation) {
-				GApplication.getMessage().afficher({
-					type: EGenreBoiteMessage.Information,
-					message: GTraductions.getValeur(
-						"FenetreDevoir.MsgModificationCompetencesImpossible",
-					),
-				});
+				this.aaplictionSco
+					.getMessage()
+					.afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+						message: ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreDevoir.MsgModificationCompetencesImpossible",
+						),
+					});
 			} else if (!this.devoir.service.avecSaisieEvaluation) {
-				GApplication.getMessage().afficher({
-					type: EGenreBoiteMessage.Information,
-					message: GTraductions.getValeur(
-						"FenetreDevoir.MsgModificationCompetencesImpossibleProfDifferent",
-					),
-				});
+				this.aaplictionSco
+					.getMessage()
+					.afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+						message: ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreDevoir.MsgModificationCompetencesImpossibleProfDifferent",
+						),
+					});
 			}
 		}
 	}
@@ -477,37 +553,41 @@ class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir {
 			const lEstCloturePourEvaluation =
 				this.leDevoirEstSurUnePeriodeClotureePourEvaluation(lDevoir);
 			if (!lEstCloturePourEvaluation) {
-				GApplication.getMessage().afficher({
-					type: EGenreBoiteMessage.Confirmation,
-					message: GTraductions.getValeur("FenetreDevoir.MsgConfirmSupprEval"),
+				this.aaplictionSco.getMessage().afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+					message: ObjetTraduction_1.GTraductions.getValeur(
+						"FenetreDevoir.MsgConfirmSupprEval",
+					),
 					callback: function (aGenreAction) {
-						if (aGenreAction === EGenreAction.Valider) {
+						if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
 							lDevoir.evaluation.listeCompetences.parcourir((D) => {
-								D.setEtat(EGenreEtat.Suppression);
+								D.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 							});
 						}
 					},
 				});
 			} else {
-				GApplication.getMessage().afficher({
-					type: EGenreBoiteMessage.Information,
-					message: GTraductions.getValeur(
-						"FenetreDevoir.MsgSuppressionEvalImpossible",
-					),
-				});
+				this.aaplictionSco
+					.getMessage()
+					.afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+						message: ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreDevoir.MsgSuppressionEvalImpossible",
+						),
+					});
 			}
 		}
 	}
 	_evenementSurFenetreCompetences(aGenreBouton, aListeCompetencesDEvaluation) {
 		if (aGenreBouton === 1) {
 			if (!this.devoir.evaluation) {
-				this.devoir.evaluation = new ObjetElement();
-				this.devoir.evaluation.setEtat(EGenreEtat.Creation);
+				this.devoir.evaluation = new ObjetElement_1.ObjetElement();
+				this.devoir.evaluation.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 			}
 			if (!!aListeCompetencesDEvaluation) {
 				let lPosition = 0;
 				aListeCompetencesDEvaluation.parcourir((D) => {
-					if (!!D && D.getEtat() !== EGenreEtat.Suppression) {
+					if (!!D && D.getEtat() !== Enumere_Etat_1.EGenreEtat.Suppression) {
 						D.Position = lPosition;
 						lPosition++;
 					}
@@ -518,12 +598,12 @@ class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir {
 		}
 	}
 	evenementSurBtnAssocierKiosque() {
-		const lFenetre = ObjetFenetre.creerInstanceFenetre(
-			ObjetFenetre_PanierRessourceKiosque,
+		const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_PanierRessourceKiosque_1.ObjetFenetre_PanierRessourceKiosque,
 			{ pere: this, evenement: this.evenementSurFenetreRessourceKiosque },
 		);
-		const lGenresApi = new TypeEnsembleNombre();
-		lGenresApi.add(TypeGenreApiKiosque.Api_EnvoiNote);
+		const lGenresApi = new TypeEnsembleNombre_1.TypeEnsembleNombre();
+		lGenresApi.add(TypeGenreApiKiosque_1.TypeGenreApiKiosque.Api_EnvoiNote);
 		lFenetre.afficherFenetre(lGenresApi);
 	}
 	evenementSurFenetreRessourceKiosque(aParams) {
@@ -533,17 +613,17 @@ class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir {
 			aParams.selection.count() === 1
 		) {
 			const lElement = aParams.selection.getPremierElement();
-			const lExecKiosque = new ObjetElement(
+			const lExecKiosque = new ObjetElement_1.ObjetElement(
 				"",
 				null,
-				EGenreRessource.ExecutionDevoirKiosque,
+				Enumere_Ressource_1.EGenreRessource.ExecutionDevoirKiosque,
 			);
 			lExecKiosque.ressource = lElement.ressource;
 			this.devoir.execKiosque = lExecKiosque;
-			this.devoir.execKiosque.setEtat(EGenreEtat.Creation);
-			const lPremiereHeure = GDate.placeEnDateHeure(0);
-			const lDerniereHeure = GDate.placeEnDateHeure(
-				GParametres.PlacesParJour - 1,
+			this.devoir.execKiosque.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
+			const lPremiereHeure = ObjetDate_1.GDate.placeEnDateHeure(0);
+			const lDerniereHeure = ObjetDate_1.GDate.placeEnDateHeure(
+				this.objetParametres.PlacesParJour - 1,
 				true,
 			);
 			$.extend(this.devoir.execKiosque, {
@@ -561,35 +641,31 @@ class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir {
 					),
 				),
 			});
-			this.devoir.setEtat(EGenreEtat.Modification);
+			this.devoir.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 			this.actualiser();
 		}
 	}
 	evenementSurBtnAssocierQCM() {
 		if (this.avecQCM && this.avecModifQCM) {
-			new ObjetRequeteListeQCMCumuls(
+			new ObjetRequeteListeQCMCumuls_1.ObjetRequeteListeQCMCumuls(
 				this,
 				this.actionSurListeQCMCumuls,
 			).lancerRequete();
 		}
 	}
 	actualiserCategorieEvaluation() {
-		const lParam = {
-			classe: this.devoir.service.classe,
-			service: this.devoir.service,
-		};
-		new ObjetRequeteCategorieEvaluation(
+		new ObjetRequeteCategorieEvaluation_1.ObjetRequeteCategorieEvaluation(
 			this,
-			_actionSurRequeteCategorie.bind(this),
-		).lancerRequete(lParam);
+			this._actionSurRequeteCategorie.bind(this),
+		).lancerRequete();
 	}
 	getTailleMaxCommentaire() {
-		return GParametres.tailleCommentaireDevoir;
+		return this.objetParametres.tailleCommentaireDevoir;
 	}
 	evenementSurBtnCategorie() {
-		const lFenetre = ObjetFenetre.creerInstanceFenetre(
-			ObjetFenetre_CategorieEvaluation,
-			{ pere: this, evenement: _evenementCategorie.bind(this) },
+		const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_CategorieEvaluation_1.ObjetFenetre_CategorieEvaluation,
+			{ pere: this, evenement: this._evenementCategorie.bind(this) },
 		);
 		lFenetre.setDonnees({
 			listeCategories: this.listeCategories,
@@ -598,72 +674,73 @@ class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir {
 			tailleMax: this.tailleMaxCategorie,
 		});
 	}
-}
-function _surRequeteListeCompetencesQCM(aJSON) {
-	if (!!this.devoir.executionQCM && !!aJSON.listeCompetencesQCM) {
-		this.devoir.executionQCM.listeCompetences = aJSON.listeCompetencesQCM;
-		const lThis = this;
-		this.$refreshSelf().then(() => {
-			const lDonneesListeCompetencesQCM = new DonneesListe_EvaluationsQCM(
-				lThis.devoir.executionQCM.listeCompetences,
-				{ getValeurMaxCoefficientCompetence: 100 },
-			);
-			lDonneesListeCompetencesQCM.setOptions({ avecSuppression: false });
-			lThis
-				.getInstance(lThis.identListeCompetencesQCM)
-				.setDonnees(lDonneesListeCompetencesQCM);
-			lThis.actualiser();
+	_surRequeteListeCompetencesQCM(aJSON) {
+		if (!!this.devoir.executionQCM && !!aJSON.listeCompetencesQCM) {
+			this.devoir.executionQCM.listeCompetences = aJSON.listeCompetencesQCM;
+			const lThis = this;
+			this.$refreshSelf().then(() => {
+				const lDonneesListeCompetencesQCM =
+					new DonneesListe_EvaluationsQCM_1.DonneesListe_EvaluationsQCM(
+						lThis.devoir.executionQCM.listeCompetences,
+						{ getValeurMaxCoefficientCompetence: 100 },
+					);
+				lDonneesListeCompetencesQCM.setOptions({ avecSuppression: false });
+				lThis
+					.getInstance(lThis.identListeCompetencesQCM)
+					.setDonnees(lDonneesListeCompetencesQCM);
+				lThis.actualiser();
+			});
+		} else {
+			this.actualiser();
+		}
+	}
+	_actionSurRequeteCategorie(aParam) {
+		this.listeCategories = aParam.listeCategories;
+		this.tailleMaxCategorie = aParam.tailleMax;
+		this.getInstance(this.idComboCategorie).setDonnees(this.listeCategories);
+		this.devoir.categorie =
+			!!this.devoir.categorie && this.devoir.categorie.existe()
+				? this.listeCategories.getElementParLibelle(
+						this.devoir.categorie.getLibelle(),
+					)
+				: undefined;
+		const lIndex =
+			!!this.listeCategories &&
+			this.listeCategories.count() > 0 &&
+			!!this.devoir.categorie
+				? this.listeCategories.getIndiceParLibelle(
+						this.devoir.categorie.getLibelle(),
+					)
+				: 0;
+		this.getInstance(this.idComboCategorie).initSelection(lIndex);
+	}
+	_evenementCategorie(aParams) {
+		if (
+			!!aParams.categorieSelectionnee &&
+			aParams.categorieSelectionnee.existe()
+		) {
+			this.devoir.categorie = aParams.categorieSelectionnee;
+		}
+		this.actualiserCategorieEvaluation();
+	}
+	_evtCellMultiSelectionTheme(aGenreBouton, aListeSelections) {
+		if (aGenreBouton === 1) {
+			this.devoir.ListeThemes = aListeSelections;
+			this.devoir.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+		}
+	}
+	_avecUnCommentaireSurNote(aDevoir) {
+		let lResult = false;
+		if (!aDevoir || !aDevoir.listeEleves) {
+			return lResult;
+		}
+		aDevoir.listeEleves.parcourir((aEleve) => {
+			if (aEleve.commentaire && aEleve.commentaire.length > 0) {
+				lResult = true;
+				return false;
+			}
 		});
-	} else {
-		this.actualiser();
-	}
-}
-function _actionSurRequeteCategorie(aParam) {
-	this.listeCategories = aParam.listeCategories;
-	this.tailleMaxCategorie = aParam.tailleMax;
-	this.getInstance(this.idComboCategorie).setDonnees(this.listeCategories);
-	this.devoir.categorie =
-		!!this.devoir.categorie && this.devoir.categorie.existe()
-			? this.listeCategories.getElementParLibelle(
-					this.devoir.categorie.getLibelle(),
-				)
-			: undefined;
-	const lIndex =
-		!!this.listeCategories &&
-		this.listeCategories.count() > 0 &&
-		!!this.devoir.categorie
-			? this.listeCategories.getIndiceParLibelle(
-					this.devoir.categorie.getLibelle(),
-				)
-			: 0;
-	this.getInstance(this.idComboCategorie).initSelection(lIndex);
-}
-function _evenementCategorie(aParams) {
-	if (
-		!!aParams.categorieSelectionnee &&
-		aParams.categorieSelectionnee.existe()
-	) {
-		this.devoir.categorie = aParams.categorieSelectionnee;
-	}
-	this.actualiserCategorieEvaluation();
-}
-function _evtCellMultiSelectionTheme(aGenreBouton, aListeSelections) {
-	if (aGenreBouton === 1) {
-		this.devoir.ListeThemes = aListeSelections;
-		this.devoir.setEtat(EGenreEtat.Modification);
-	}
-}
-function _avecUnCommentaireSurNote(aDevoir) {
-	let lResult = false;
-	if (!aDevoir || !aDevoir.listeEleves) {
 		return lResult;
 	}
-	aDevoir.listeEleves.parcourir((aEleve) => {
-		if (aEleve.commentaire && aEleve.commentaire.length > 0) {
-			lResult = true;
-			return false;
-		}
-	});
-	return lResult;
 }
-module.exports = { ObjetFenetre_DevoirPN };
+exports.ObjetFenetre_DevoirPN = ObjetFenetre_DevoirPN;

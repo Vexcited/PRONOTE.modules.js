@@ -7,6 +7,7 @@ const ClavierVirtuel_1 = require("ClavierVirtuel");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetHtml_1 = require("ObjetHtml");
 const MethodesObjet_1 = require("MethodesObjet");
+const AccessApp_1 = require("AccessApp");
 var EGenreToucheClavierNote;
 (function (EGenreToucheClavierNote) {
 	EGenreToucheClavierNote["annotation"] = "annotation";
@@ -96,7 +97,8 @@ class Clavier_SaisieNote extends ClavierVirtuel_1.Clavier {
 		if (lZoneVisu) {
 			if (this.avecBorderBottomZoneVisu()) {
 				lZoneVisu.style.border = "";
-				lZoneVisu.style.borderBottomColor = GCouleur.themeCouleur.foncee;
+				lZoneVisu.style.borderBottomColor = (0,
+				AccessApp_1.getApp)().getCouleur().themeCouleur.foncee;
 			} else {
 				lZoneVisu.style.border = "none";
 			}

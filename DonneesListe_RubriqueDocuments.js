@@ -1,35 +1,53 @@
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-const {
-	UtilitaireDocumentATelecharger,
-} = require("UtilitaireDocumentATelecharger.js");
-class DonneesListe_RubriqueDocuments extends ObjetDonneesListeFlatDesign {
-	constructor(aListe, aParams) {
+exports.DonneesListe_RubriqueDocuments = void 0;
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const MethodesObjet_1 = require("MethodesObjet");
+class DonneesListe_RubriqueDocuments extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
+	constructor(aListe) {
 		super(aListe);
-		this.parametres = Object.assign({}, aParams);
 		this.setOptions({
+			avecEllipsis: false,
 			avecTri: false,
 			avecDeselectionSurNonSelectionnable: false,
-			flatDesignMinimal: true,
+			flatDesignMinimal: !IE.estMobile,
 			avecBoutonActionLigne: false,
 			avecSelection: true,
 			avecEvnt_Selection: true,
+			avecIndentationSousInterTitre: false,
 		});
 	}
 	getTitreZonePrincipale(aParams) {
 		return aParams.article.getLibelle().ucfirst();
 	}
-	getZoneGauche(aParams) {
-		return UtilitaireDocumentATelecharger.getIconListeRubrique({
-			categorie: aParams.article,
-		});
+	getIconeGaucheContenuFormate(aParams) {
+		var _a, _b;
+		return (_b =
+			(_a = aParams.article) === null || _a === void 0 ? void 0 : _a.icon) !==
+			null && _b !== void 0
+			? _b
+			: "";
+	}
+	avecEvenementSelection(aParams) {
+		return (
+			super.avecEvenementSelection(aParams) && !aParams.article.estLigneOff
+		);
+	}
+	getClassCelluleConteneur(aParams) {
+		return this.estInterTitre(aParams.article) ? "margin-inter-titre" : "";
 	}
 	getZoneComplementaire(aParams) {
-		if (aParams.article.compteur >= 0) {
-			return `<div class="ie-texte">${aParams.article.compteur}</div>`;
-		}
-		return "";
+		return MethodesObjet_1.MethodesObjet.isNumber(aParams.article.compteur) &&
+			aParams.article.compteur > 0
+			? IE.jsx.str(
+					"p",
+					{
+						"ie-tooltiplabel": !!aParams.article.titleCompteur
+							? aParams.article.titleCompteur
+							: false,
+						class: "ie-texte",
+					},
+					aParams.article.compteur,
+				)
+			: "";
 	}
 }
-module.exports = { DonneesListe_RubriqueDocuments };
+exports.DonneesListe_RubriqueDocuments = DonneesListe_RubriqueDocuments;

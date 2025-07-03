@@ -1,14 +1,12 @@
-const { EGenreCommandeMenu } = require("Enumere_CommandeMenu.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { EGenreLienDS } = require("Enumere_LienDS.js");
-const {
-	TypeOrigineCreationCategorieCahierDeTexte,
-	TypeOrigineCreationCategorieCahierDeTexteUtil,
-} = require("TypeOrigineCreationCategorieCahierDeTexte.js");
-class DonneesListe_DevoirsSurTable extends ObjetDonneesListe {
+exports.DonneesListe_DevoirsSurTable = void 0;
+const Enumere_CommandeMenu_1 = require("Enumere_CommandeMenu");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_LienDS_1 = require("Enumere_LienDS");
+const TypeOrigineCreationCategorieCahierDeTexte_1 = require("TypeOrigineCreationCategorieCahierDeTexte");
+class DonneesListe_DevoirsSurTable extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParams) {
 		super(aDonnees);
 		this.params = aParams;
@@ -22,26 +20,26 @@ class DonneesListe_DevoirsSurTable extends ObjetDonneesListe {
 		return !!aParams.article.editable;
 	}
 	getMessageSuppressionConfirmation() {
-		return GTraductions.getValeur(
+		return ObjetTraduction_1.GTraductions.getValeur(
 			"ListeDevoirSurTable.ConfirmerSuppressionContenu",
 		);
 	}
 	getTypeValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_DevoirsSurTable.colonnes.info:
-				return ObjetDonneesListe.ETypeCellule.Html;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
 	getValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_DevoirsSurTable.colonnes.date:
 				return !!aParams.article.date
-					? GDate.formatDate(
+					? ObjetDate_1.GDate.formatDate(
 							aParams.article.date,
-							GTraductions.getValeur("Le") +
+							ObjetTraduction_1.GTraductions.getValeur("Le") +
 								" %JJ %MMMM %AAAA " +
-								GTraductions.getValeur("A") +
+								ObjetTraduction_1.GTraductions.getValeur("A") +
 								" %xh%sh%mm",
 						)
 					: "";
@@ -55,25 +53,26 @@ class DonneesListe_DevoirsSurTable extends ObjetDonneesListe {
 				return aParams.article.strSalle;
 			case DonneesListe_DevoirsSurTable.colonnes.info: {
 				const lTypeOrigineCDT =
-					aParams.article.getGenre() === EGenreLienDS.tGL_Devoir
-						? TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Devoir
-						: TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Evaluation;
+					aParams.article.getGenre() ===
+					Enumere_LienDS_1.EGenreLienDS.tGL_Devoir
+						? TypeOrigineCreationCategorieCahierDeTexte_1
+								.TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Devoir
+						: TypeOrigineCreationCategorieCahierDeTexte_1
+								.TypeOrigineCreationCategorieCahierDeTexte
+								.OCCCDT_Pre_Evaluation;
+				const lLibelleIcone = ObjetTraduction_1.GTraductions.getValeur(
+					aParams.article.getGenre() ===
+						Enumere_LienDS_1.EGenreLienDS.tGL_Devoir
+						? "CahierDeTexte.iconeDS"
+						: "CahierDeTexte.iconeEval",
+				);
 				const lImage =
-					TypeOrigineCreationCategorieCahierDeTexteUtil.getImage(
+					TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.getIcone(
 						lTypeOrigineCDT,
 					);
-				return (
-					'<div style="position:relative">' +
-					'<div class="' +
-					lImage +
-					'" style="position:absolute;top:-2px;"></div>' +
-					(aParams.article.strInfosLien
-						? '<div class="GrandEspaceGauche">' +
-							aParams.article.strInfosLien +
-							"</div>"
-						: "&nbsp;") +
-					"</div>"
-				);
+				return aParams.article.strInfosLien
+					? `<div><i class="${lImage}" role="presentation">${lLibelleIcone}</i>${aParams.article.strInfosLien}</div>`
+					: "&nbsp;";
 			}
 		}
 		return "";
@@ -84,12 +83,12 @@ class DonneesListe_DevoirsSurTable extends ObjetDonneesListe {
 		}
 		aParametres.menuContextuel.addCommande(
 			1,
-			GTraductions.getValeur("liste.modifier"),
+			ObjetTraduction_1.GTraductions.getValeur("liste.modifier"),
 			!!aParametres.article.editable && !aParametres.nonEditable,
 		);
 		aParametres.menuContextuel.addCommande(
-			EGenreCommandeMenu.Suppression,
-			GTraductions.getValeur("liste.supprimer"),
+			Enumere_CommandeMenu_1.EGenreCommandeMenu.Suppression,
+			ObjetTraduction_1.GTraductions.getValeur("liste.supprimer"),
 			this.avecSuppression(aParametres) && !aParametres.nonEditable,
 		);
 		aParametres.menuContextuel.setDonnees();
@@ -106,16 +105,26 @@ class DonneesListe_DevoirsSurTable extends ObjetDonneesListe {
 	}
 	getTri(aColonne, aGenreTri) {
 		const lTris = [];
-		lTris.push(ObjetTri.init("date", aGenreTri));
+		lTris.push(ObjetTri_1.ObjetTri.init("date", aGenreTri));
 		return lTris;
 	}
 }
-DonneesListe_DevoirsSurTable.colonnes = {
-	date: "DL_DevoirsSurT_date",
-	prof: "DL_DevoirsSurT_prof",
-	public: "DL_DevoirsSurT_public",
-	matiere: "DL_DevoirsSurT_matiere",
-	salle: "DL_DevoirsSurT_salle",
-	info: "DL_DevoirsSurT_info",
-};
-module.exports = { DonneesListe_DevoirsSurTable };
+exports.DonneesListe_DevoirsSurTable = DonneesListe_DevoirsSurTable;
+(function (DonneesListe_DevoirsSurTable) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["date"] = "DL_DevoirsSurT_date";
+		colonnes["prof"] = "DL_DevoirsSurT_prof";
+		colonnes["public"] = "DL_DevoirsSurT_public";
+		colonnes["matiere"] = "DL_DevoirsSurT_matiere";
+		colonnes["salle"] = "DL_DevoirsSurT_salle";
+		colonnes["info"] = "DL_DevoirsSurT_info";
+	})(
+		(colonnes =
+			DonneesListe_DevoirsSurTable.colonnes ||
+			(DonneesListe_DevoirsSurTable.colonnes = {})),
+	);
+})(
+	DonneesListe_DevoirsSurTable ||
+		(exports.DonneesListe_DevoirsSurTable = DonneesListe_DevoirsSurTable = {}),
+);

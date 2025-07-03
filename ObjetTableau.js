@@ -1,8 +1,9 @@
 exports.GTableau = void 0;
 const ObjetStyle_1 = require("ObjetStyle");
+const AccessApp_1 = require("AccessApp");
 exports.GTableau = {
 	_getCouleur() {
-		return GCouleur.liste;
+		return (0, AccessApp_1.getApp)().getCouleur().liste;
 	},
 	_styleCouleur(
 		aCouleur,
@@ -45,7 +46,7 @@ exports.GTableau = {
 	},
 	styleTableau(aPourImpression, aAvecCadre, aGenreBordure = 0) {
 		const lCouleurBordure = aPourImpression
-			? GCouleur.noir
+			? (0, AccessApp_1.getApp)().getCouleur().noir
 			: this._getCouleur().bordure;
 		if (aAvecCadre) {
 			if (aGenreBordure) {
@@ -124,9 +125,13 @@ exports.GTableau = {
 		);
 	},
 	styleTitreLeger(aPourImpression, aAvecBordureGauche) {
-		const lCouleurFond = GCouleur.blanc;
-		const lCouleurTexte = aPourImpression ? GCouleur.noir : GCouleur.texte;
-		const lCouleurBordure = aPourImpression ? GCouleur.texte : GCouleur.texte;
+		const lCouleurFond = (0, AccessApp_1.getApp)().getCouleur().blanc;
+		const lCouleurTexte = aPourImpression
+			? (0, AccessApp_1.getApp)().getCouleur().noir
+			: (0, AccessApp_1.getApp)().getCouleur().texte;
+		const lCouleurBordure = aPourImpression
+			? (0, AccessApp_1.getApp)().getCouleur().texte
+			: (0, AccessApp_1.getApp)().getCouleur().texte;
 		return (
 			ObjetStyle_1.GStyle.composeCouleurFond(lCouleurFond) +
 			" " +

@@ -1,70 +1,80 @@
-const { GHtml } = require("ObjetHtml.js");
-const { InterfacePage_Mobile } = require("InterfacePage_Mobile.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetSelection } = require("ObjetSelection.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { PageBulletinMobile } = require("PageBulletin.js");
-const { EGenreMessage } = require("Enumere_Message.js");
-const { ObjetRequetePageBulletins } = require("ObjetRequetePageBulletins.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const ObjetRequeteSaisieAccuseReceptionDocument = require("ObjetRequeteSaisieAccuseReceptionDocument.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { EGenreOnglet } = require("Enumere_Onglet.js");
-class InterfacePageBulletin extends InterfacePage_Mobile {
-	constructor(...aParams) {
-		super(...aParams);
+const ObjetHtml_1 = require("ObjetHtml");
+const InterfacePage_Mobile_1 = require("InterfacePage_Mobile");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetSelection_1 = require("ObjetSelection");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const PageBulletin_1 = require("PageBulletin");
+const Enumere_Message_1 = require("Enumere_Message");
+const ObjetRequetePageBulletins_1 = require("ObjetRequetePageBulletins");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const MultiObjetRequeteSaisieAccuseReceptionDocument = require("ObjetRequeteSaisieAccuseReceptionDocument");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const Enumere_Onglet_1 = require("Enumere_Onglet");
+const AccessApp_1 = require("AccessApp");
+class InterfacePageBulletin extends InterfacePage_Mobile_1.InterfacePage_Mobile {
+	constructor() {
+		super(...arguments);
+		this.appScoMobile = (0, AccessApp_1.getApp)();
+		this.etatUtilScoMobile = this.appScoMobile.getEtatUtilisateur();
 		this.estCtxBulletinClasse =
-			GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.ConseilDeClasse;
-		this.listePeriodes = new ObjetListeElements();
-		this.periodeCourant = new ObjetElement();
+			this.etatUtilScoMobile.getGenreOnglet() ===
+			Enumere_Onglet_1.EGenreOnglet.ConseilDeClasse;
+		this.listePeriodes = new ObjetListeElements_1.ObjetListeElements();
+		this.periodeCourant = new ObjetElement_1.ObjetElement();
 		this.indiceParDefaut = 0;
-		this.swipeActif = true;
 		this.avecGestionAccuseReception =
-			[EGenreEspace.Mobile_Parent].includes(GEtatUtilisateur.GenreEspace) &&
-			GApplication.droits.get(TypeDroits.fonctionnalites.gestionARBulletins);
+			[Enumere_Espace_1.EGenreEspace.Mobile_Parent].includes(
+				this.etatUtilScoMobile.GenreEspace,
+			) &&
+			this.appScoMobile.droits.get(
+				ObjetDroitsPN_1.TypeDroits.fonctionnalites.gestionARBulletins,
+			);
+		this.aCopier = {};
 	}
 	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
+		return $.extend(true, super.getControleur(aInstance), {
 			visibiliteAR: function () {
-				const lResponsableAR = this._getResponsableAccuseReception();
+				const lResponsableAR = aInstance._getResponsableAccuseReception();
 				return (
-					!this.avecMessage &&
-					this.avecGestionAccuseReception &&
-					!this.estCtxBulletinClasse &&
+					!aInstance.avecMessage &&
+					aInstance.avecGestionAccuseReception &&
+					!aInstance.estCtxBulletinClasse &&
 					!!lResponsableAR
 				);
-			}.bind(aInstance),
+			},
 			cbAccuseReception: {
 				getValue: function () {
-					const lResponsableAR = this._getResponsableAccuseReception();
+					const lResponsableAR = aInstance._getResponsableAccuseReception();
 					return !!lResponsableAR ? lResponsableAR.aPrisConnaissance : false;
-				}.bind(aInstance),
+				},
 				setValue: function (aValue) {
-					const lResponsableAR = this._getResponsableAccuseReception();
+					const lResponsableAR = aInstance._getResponsableAccuseReception();
 					if (!!lResponsableAR) {
 						lResponsableAR.aPrisConnaissance = aValue;
-						new ObjetRequeteSaisieAccuseReceptionDocument(this).lancerRequete({
-							periode: this.periodeCourant,
+						new MultiObjetRequeteSaisieAccuseReceptionDocument.ObjetRequeteSaisieAccuseReceptionDocument(
+							aInstance,
+						).lancerRequete({
+							periode: aInstance.periodeCourant,
 							aPrisConnaissance: aValue,
 						});
 					}
-				}.bind(aInstance),
+				},
 				getDisabled: function () {
-					const lResponsableAR = this._getResponsableAccuseReception();
+					const lResponsableAR = aInstance._getResponsableAccuseReception();
 					return !!lResponsableAR ? lResponsableAR.aPrisConnaissance : true;
-				}.bind(aInstance),
+				},
 			},
 		});
 	}
 	_getResponsableAccuseReception() {
 		let lReponsableAccuseReception = null;
 		if (
-			!!this.listeAccusesReception &&
-			this.listeAccusesReception.count() > 0
+			!!this.aCopier.listeAccusesReception &&
+			this.aCopier.listeAccusesReception.count() > 0
 		) {
 			lReponsableAccuseReception =
-				this.listeAccusesReception.getPremierElement();
+				this.aCopier.listeAccusesReception.getPremierElement();
 			if (!!lReponsableAccuseReception) {
 			}
 		}
@@ -72,53 +82,40 @@ class InterfacePageBulletin extends InterfacePage_Mobile {
 	}
 	construireInstances() {
 		this.identSelection = this.add(
-			ObjetSelection,
+			ObjetSelection_1.ObjetSelection,
 			this.evenementSelection,
 			_initSelecteur.bind(this),
 		);
-		this.identPage = this.add(PageBulletinMobile, null, function (aInstance) {
-			aInstance.setSwipeActif = function (aActif) {
-				this.swipeActif = aActif;
-			}.bind(this);
-		});
+		this.identPage = this.add(PageBulletin_1.PageBulletinMobile);
 		this.AddSurZone = [this.identSelection];
 		if (this.avecGestionAccuseReception) {
 			this.AddSurZone.push({ html: _getHtmlCBAccuseReception.call(this) });
 		}
 	}
-	detruireInstances() {}
-	evenementSwipe(event) {
-		if (this.swipeActif) {
-			if (event.type === "swiperight") {
-				this.getInstance(this.identSelection).surPrecedent();
-			} else {
-				this.getInstance(this.identSelection).surSuivant();
-			}
-		}
-	}
 	recupererDonnees() {
-		const lOngletInfosPeriodes = GEtatUtilisateur.getOngletInfosPeriodes();
+		const lOngletInfosPeriodes =
+			this.etatUtilScoMobile.getOngletInfosPeriodes();
 		let lNrPeriodeParDefaut;
 		if (lOngletInfosPeriodes.message) {
 			this.getInstance(this.identPage).setMessage(lOngletInfosPeriodes.message);
 		} else {
 			this.listePeriodes = lOngletInfosPeriodes.listePeriodes;
 			if (!(this.listePeriodes && this.listePeriodes.count())) {
-				const lGenreMessage = EGenreMessage.AucunBulletinPourEleve;
+				const lGenreMessage =
+					Enumere_Message_1.EGenreMessage.AucunBulletinPourEleve;
 				const lMessage =
 					typeof lGenreMessage === "number"
-						? GTraductions.getValeur("Message")[lGenreMessage]
+						? ObjetTraduction_1.GTraductions.getValeur("Message")[lGenreMessage]
 						: lGenreMessage;
-				const lHtml = [];
-				lHtml.push(this.composeAucuneDonnee(lMessage));
-				GHtml.setHtml(this.Nom, lHtml);
+				ObjetHtml_1.GHtml.setHtml(this.Nom, this.composeAucuneDonnee(lMessage));
 			} else {
-				if (GEtatUtilisateur.getPeriodePourBulletin()) {
-					lNrPeriodeParDefaut = GEtatUtilisateur.getPeriodePourBulletin();
+				if (this.etatUtilScoMobile.getPeriodePourBulletin()) {
+					lNrPeriodeParDefaut = this.etatUtilScoMobile.getPeriodePourBulletin();
 				} else {
 					lNrPeriodeParDefaut =
-						GEtatUtilisateur.getPage() && GEtatUtilisateur.getPage().periode
-							? GEtatUtilisateur.getPage().periode.getNumero()
+						this.etatUtilScoMobile.getPage() &&
+						this.etatUtilScoMobile.getPage().periode
+							? this.etatUtilScoMobile.getPage().periode.getNumero()
 							: lOngletInfosPeriodes.periodeParDefaut.getNumero();
 				}
 				this.indiceParDefaut =
@@ -131,7 +128,6 @@ class InterfacePageBulletin extends InterfacePage_Mobile {
 					this.listePeriodes,
 					this.indiceParDefaut,
 					this.getInstance(this.identPage).getNom(),
-					"",
 				);
 				$("#" + this.getInstance(this.identPage).getNom().escapeJQ()).css(
 					"min-height",
@@ -144,32 +140,33 @@ class InterfacePageBulletin extends InterfacePage_Mobile {
 				);
 			}
 		}
-		if (GEtatUtilisateur.getPeriodePourBulletin()) {
-			GEtatUtilisateur.setPeriodePourBulletin(null);
+		if (this.etatUtilScoMobile.getPeriodePourBulletin()) {
+			this.etatUtilScoMobile.setPeriodePourBulletin(null);
 		}
 	}
 	recupererDonneesBulletin() {
-		new ObjetRequetePageBulletins(
+		new ObjetRequetePageBulletins_1.ObjetRequetePageBulletins(
 			this,
 			this.actionSurRecupBulletin,
 		).lancerRequete({ periode: this.periodeCourant });
 	}
 	actionSurRecupBulletin(aParam) {
-		this.graph = "";
+		this.aCopier.graph = "";
 		this.avecMessage = !!aParam.Message;
 		if (this.avecMessage) {
 			this.getInstance(this.identPage).setMessage(aParam.Message);
 		} else {
+			Object.assign(this.aCopier, aParam.aCopier);
 			$.extend(this, aParam.aCopier);
 			this.getInstance(this.identPage).setDonnees(
-				this.ListeElements,
+				this.aCopier.ListeElements,
 				this.positionPeriodeCourant,
 				this.listePeriodes.count() - 1,
-				this.tableauSurMatieres,
-				this.MoyenneGenerale,
+				this.aCopier.tableauSurMatieres,
+				this.aCopier.MoyenneGenerale,
 				aParam.absences,
-				this.PiedDePage,
-				this.Affichage,
+				this.aCopier.PiedDePage,
+				this.aCopier.Affichage,
 				this.periodeCourant,
 			);
 		}
@@ -188,8 +185,10 @@ function _getHtmlCBAccuseReception() {
 	const lHtml = [];
 	lHtml.push(
 		'<div style="padding: 0.5rem;">',
-		'<ie-checkbox ie-textright class="AlignementMilieuVertical" ie-model="cbAccuseReception" ie-display="visibiliteAR">',
-		GTraductions.getValeur("BulletinEtReleve.JAiPrisConnaissanceDuBulletin"),
+		'<ie-checkbox class="AlignementMilieuVertical" ie-model="cbAccuseReception" ie-display="visibiliteAR">',
+		ObjetTraduction_1.GTraductions.getValeur(
+			"BulletinEtReleve.JAiPrisConnaissanceDuBulletin",
+		),
 		"</ie-checkbox>",
 		"</div>",
 	);
@@ -197,7 +196,9 @@ function _getHtmlCBAccuseReception() {
 }
 function _initSelecteur(aInstance) {
 	aInstance.setParametres({
-		labelWAICellule: GTraductions.getValeur("WAI.ListeSelectionPeriode"),
+		labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+			"WAI.ListeSelectionPeriode",
+		),
 	});
 }
 module.exports = InterfacePageBulletin;

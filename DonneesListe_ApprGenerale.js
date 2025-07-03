@@ -1,29 +1,28 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { ObjetMoteurReleveBulletin } = require("ObjetMoteurReleveBulletin.js");
-const { ObjetMoteurAssistantSaisie } = require("ObjetMoteurAssistantSaisie.js");
-const { ObjetMoteurPiedDeBulletin } = require("ObjetMoteurPiedDeBulletin.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const {
-	ObjetFenetre_DocumentsEleve,
-} = require("ObjetFenetre_DocumentsEleve.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ToucheClavier } = require("ToucheClavier.js");
-const { TypeReleveBulletin } = require("TypeReleveBulletin.js");
-const {
-	TypeColSaisieApprPiedDeBulletin,
-} = require("TypeColonneSaisieApprPiedDeBulletin.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { GObjetWAI, EGenreAttribut } = require("ObjetWAI.js");
-class DonneesListe_ApprGenerale extends ObjetDonneesListe {
+exports.DonneesListe_ApprGenerale = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetMoteurReleveBulletin_1 = require("ObjetMoteurReleveBulletin");
+const ObjetMoteurAssistantSaisie_1 = require("ObjetMoteurAssistantSaisie");
+const ObjetMoteurPiedDeBulletin_1 = require("ObjetMoteurPiedDeBulletin");
+const ObjetListe_1 = require("ObjetListe");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_DocumentsEleve_1 = require("ObjetFenetre_DocumentsEleve");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ToucheClavier_1 = require("ToucheClavier");
+const TypeReleveBulletin_1 = require("TypeReleveBulletin");
+const TypeColonneSaisieApprPiedDeBulletin_1 = require("TypeColonneSaisieApprPiedDeBulletin");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const AccessApp_1 = require("AccessApp");
+class DonneesListe_ApprGenerale extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParam) {
 		super(aDonnees);
-		this.moteur = new ObjetMoteurReleveBulletin();
-		this.moteurAssSaisie = new ObjetMoteurAssistantSaisie();
-		this.moteurPdB = new ObjetMoteurPiedDeBulletin();
+		const lApplicationSco = (0, AccessApp_1.getApp)();
+		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
+		this.moteur = new ObjetMoteurReleveBulletin_1.ObjetMoteurReleveBulletin();
+		this.moteurAssSaisie =
+			new ObjetMoteurAssistantSaisie_1.ObjetMoteurAssistantSaisie();
+		this.moteurPdB =
+			new ObjetMoteurPiedDeBulletin_1.ObjetMoteurPiedDeBulletin();
 		this.param = $.extend(
 			{
 				instanceListe: null,
@@ -34,6 +33,8 @@ class DonneesListe_ApprGenerale extends ObjetDonneesListe {
 				listePeriodesPrec: null,
 				callbackOuvrirAssSaisie: null,
 				avecMultiSelectionLignes: false,
+				periodePrecCourante: null,
+				clbckSelectionPeriode: null,
 			},
 			aParam,
 		);
@@ -52,7 +53,8 @@ class DonneesListe_ApprGenerale extends ObjetDonneesListe {
 		}
 		this.setOptions({
 			hauteurMinCellule: DonneesListe_ApprGenerale.dimensions.hauteurLigne,
-			hauteurMinContenuCellule: ObjetDonneesListe.hauteurMinCellule,
+			hauteurMinContenuCellule:
+				ObjetDonneesListe_1.ObjetDonneesListe.hauteurMinCellule,
 			avecDeploiement: false,
 			avecTri: false,
 			avecSuppression: false,
@@ -65,9 +67,9 @@ class DonneesListe_ApprGenerale extends ObjetDonneesListe {
 	}
 	avecSelection(aParams) {
 		if (
-			_estColEditable.call(this, {
-				idColonne: DonneesListe_ApprGenerale.colonnes.appreciationGenerale,
-			})
+			this._estColEditable(
+				DonneesListe_ApprGenerale.colonnes.appreciationGenerale,
+			)
 		) {
 			const lAppr = aParams.article.appreciationGle;
 			if (
@@ -80,60 +82,38 @@ class DonneesListe_ApprGenerale extends ObjetDonneesListe {
 		}
 		return true;
 	}
-	getControleur(aDonneesListe) {
-		return $.extend(true, super.getControleur(aDonneesListe), {
-			nodePhoto: function (aNoArticle) {
-				$(this.node).on("error", () => {
-					const lIndiceElement =
-						aDonneesListe.Donnees.getIndiceElementParFiltre(
-							((aLigne) => {
-								const lEleve = aLigne.eleve;
-								return lEleve.getNumero() === aNoArticle;
-							}).bind(),
+	jsxNodeClicPJProjetAcc(aArticle, aNode) {
+		if (aArticle) {
+			$(aNode).eventValidation((aEvent) => {
+				if (
+					aEvent.type === "keyup" &&
+					!(
+						aEvent.which === ToucheClavier_1.ToucheClavier.Espace ||
+						aEvent.which === ToucheClavier_1.ToucheClavier.RetourChariot
+					)
+				) {
+					return;
+				}
+				if (aArticle.eleve && !!aArticle.eleve.avecDocsProjetsAccompagnement) {
+					const lInstanceFenetre =
+						ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+							ObjetFenetre_DocumentsEleve_1.ObjetFenetre_DocumentsEleve,
+							{ pere: this },
 						);
-					const lElement = aDonneesListe.Donnees.get(lIndiceElement);
-					lElement.eleve.avecPhoto = false;
-				});
-			},
-			surClicPiecesJointesProjAcc: function (aNoEleve) {
-				$(this.node).on("click keyup", (aEvent) => {
-					if (
-						aEvent.type === "keyup" &&
-						!(
-							aEvent.which === ToucheClavier.Espace ||
-							aEvent.which === ToucheClavier.RetourChariot
-						)
-					) {
-						return;
-					}
-					const lIndiceElement =
-						aDonneesListe.Donnees.getIndiceElementParFiltre(
-							((aLigne) => {
-								const lEleve = aLigne.eleve;
-								return lEleve.getNumero() === aNoEleve;
-							}).bind(),
-						);
-					const lElement = aDonneesListe.Donnees.get(lIndiceElement);
-					if (
-						!!lElement &&
-						!!lElement.eleve &&
-						!!lElement.eleve.avecDocsProjetsAccompagnement
-					) {
-						const lInstanceFenetre = ObjetFenetre.creerInstanceFenetre(
-							ObjetFenetre_DocumentsEleve,
-							{ pere: aDonneesListe },
-						);
-						lInstanceFenetre.setDonnees(lElement.eleve);
-					}
-				});
-			},
+					lInstanceFenetre.setDonnees(aArticle.eleve);
+				}
+			});
+		}
+	}
+	getControleur(aDonneesListe, aListe) {
+		return $.extend(true, super.getControleur(aDonneesListe, aListe), {
 			comboPeriodePrec: {
 				init: function (aCombo) {
 					aCombo.setOptionsObjetSaisie({
 						longueur: 90,
 						hauteur: 16,
 						hauteurLigneDefault: 16,
-						labelWAICellule: GTraductions.getValeur(
+						labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
 							"WAI.ListeSelectionPeriode",
 						),
 					});
@@ -165,7 +145,8 @@ class DonneesListe_ApprGenerale extends ObjetDonneesListe {
 				event: function (aParametres) {
 					if (
 						aParametres.genreEvenement ===
-							EGenreEvenementObjetSaisie.selection &&
+							Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+								.selection &&
 						!!aParametres.element &&
 						aDonneesListe.param.periodePrecCourante.getNumero() !==
 							aParametres.element.getNumero()
@@ -185,41 +166,6 @@ class DonneesListe_ApprGenerale extends ObjetDonneesListe {
 					);
 				}
 			},
-			btnAssistantSaisieListe: {
-				event() {
-					const lSelections = this.instance.getListeElementsSelection();
-					if (!!lSelections && lSelections.count() > 0) {
-						GEtatUtilisateur.assistantSaisieActif = true;
-						aDonneesListe.param.callbackOuvrirAssSaisie();
-					}
-				},
-				getTitle() {
-					return GTraductions.getValeur(
-						"releve_evaluations.assistantSaisie.AffecterAppreciationAuxElevesSelectionnes",
-					);
-				},
-				getDisabled() {
-					let lResult = true;
-					const lSelections = this.instance.getListeElementsSelection();
-					if (!!lSelections && lSelections.count() > 0) {
-						for (const lLigneElement of lSelections) {
-							if (
-								lLigneElement.appreciationGle &&
-								lLigneElement.appreciationGle.editable
-							) {
-								lResult = false;
-								break;
-							}
-						}
-					}
-					return lResult;
-				},
-				getClass() {
-					return this.controleur.btnAssistantSaisieListe.getDisabled.call(this)
-						? ""
-						: "TitreListeSansTri";
-				},
-			},
 		});
 	}
 	getTypeValeur(aParams) {
@@ -227,14 +173,14 @@ class DonneesListe_ApprGenerale extends ObjetDonneesListe {
 			case DonneesListe_ApprGenerale.colonnes.dureeAbs:
 			case DonneesListe_ApprGenerale.colonnes.nbRetards:
 			case DonneesListe_ApprGenerale.colonnes.moyEleve:
-				return ObjetDonneesListe.ETypeCellule.Texte;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 			case DonneesListe_ApprGenerale.colonnes.evolution:
 			case DonneesListe_ApprGenerale.colonnes.eleve:
-				return ObjetDonneesListe.ETypeCellule.Html;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 			case DonneesListe_ApprGenerale.colonnes.appreciationGenerale:
-				return ObjetDonneesListe.ETypeCellule.ZoneTexte;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.ZoneTexte;
 			default:
-				return ObjetDonneesListe.ETypeCellule.Texte;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 		}
 	}
 	getValeur(aParams) {
@@ -249,6 +195,10 @@ class DonneesListe_ApprGenerale extends ObjetDonneesListe {
 						strProjetAcc: aParams.article.eleve.projetsAccompagnement,
 						avecDocsProjetAcc:
 							aParams.article.eleve.avecDocsProjetsAccompagnement,
+						jsxNodeClicPJProjetAcc: this.jsxNodeClicPJProjetAcc.bind(
+							this,
+							aParams.article,
+						),
 					});
 				} else {
 					const lAppr =
@@ -272,43 +222,40 @@ class DonneesListe_ApprGenerale extends ObjetDonneesListe {
 					? aParams.article.moyEleve
 					: "";
 			case DonneesListe_ApprGenerale.colonnes.evolution: {
-				let lData = _getDataPeriodePrecCourante.call(this, aParams);
+				const lData = this._getDataPeriodePrecCourante(aParams);
 				return this.moteur.composeHtmlEvolution({
 					genreEvol: lData !== null && !!lData.evolution ? lData.evolution : 0,
 				});
 			}
 			case DonneesListe_ApprGenerale.colonnes.periodePrec: {
-				let lData = _getDataPeriodePrecCourante.call(this, aParams);
+				const lData = this._getDataPeriodePrecCourante(aParams);
 				return this.moteur.composeHtmlPeriodePrec(lData);
 			}
-			default:
-				return "";
 		}
+		return "";
 	}
 	static getAppreciationDeColonne(aParams) {
-		const D = aParams.article;
 		switch (aParams.idColonne) {
 			case DonneesListe_ApprGenerale.colonnes.eleve:
 			case DonneesListe_ApprGenerale.colonnes.appreciationGenerale:
-				return D.appreciationGle;
+				return aParams.article.appreciationGle;
 			default:
 		}
 	}
 	getClassCelluleConteneur(aParams) {
 		const T = [];
-		if (_estColAvecGras.call(this, aParams)) {
+		if (this._estColAvecGras(aParams)) {
 			T.push("Gras");
 		}
-		if (_estCellEditable.call(this, aParams)) {
+		if (this._estCellEditable(aParams)) {
 			T.push(" AvecMain ");
 		}
-		if (_estColAvecAlignementDroit.call(this, aParams)) {
+		if (this._estColAvecAlignementDroit(aParams)) {
 			T.push("AlignementDroit");
-		} else if (_estColAvecAlignementMilieu(aParams)) {
+		} else if (this._estColAvecAlignementMilieu(aParams)) {
 			T.push("AlignementMilieu");
 		}
-		const lAvecCurseurInterdiction =
-			!this.param.estEnConsultation && !_estCellEditable.call(this, aParams);
+		const lAvecCurseurInterdiction = !this._estCellEditable(aParams);
 		switch (aParams.idColonne) {
 			case DonneesListe_ApprGenerale.colonnes.appreciationGenerale:
 				if (lAvecCurseurInterdiction) {
@@ -330,38 +277,41 @@ class DonneesListe_ApprGenerale extends ObjetDonneesListe {
 		return T.join(" ");
 	}
 	getCouleurCellule(aParams) {
-		if (_estColFixe.call(this, aParams)) {
-			return ObjetDonneesListe.ECouleurCellule.Fixe;
-		} else if (_estColCouleurTotal.call(this, aParams)) {
-			return ObjetDonneesListe.ECouleurCellule.Total;
-		} else if (_estDonneeEditable.call(this, aParams)) {
-			return ObjetDonneesListe.ECouleurCellule.Blanc;
+		if (this._estColFixe(aParams)) {
+			return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Fixe;
+		} else if (this._estColCouleurTotal(aParams)) {
+			return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Total;
+		} else if (this._estDonneeEditable(aParams)) {
+			return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
 		} else {
-			return ObjetDonneesListe.ECouleurCellule.Gris;
+			return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Gris;
 		}
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_ApprGenerale.colonnes.appreciationGenerale: {
 				const lAppr =
 					DonneesListe_ApprGenerale.getAppreciationDeColonne(aParams);
 				return lAppr !== null && lAppr !== undefined && lAppr.cloture === true
-					? GTraductions.getValeur("BulletinEtReleve.appreciationGleCloture")
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"BulletinEtReleve.appreciationGleCloture",
+						)
 					: null;
 			}
 		}
 	}
 	avecEdition(aParams) {
-		return _estCellEditable.call(this, aParams);
+		return this._estCellEditable(aParams);
 	}
 	avecEvenementEdition(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_ApprGenerale.colonnes.evolution:
-				return _estCellEditable.call(this, aParams);
+				return this._estCellEditable(aParams);
 			case DonneesListe_ApprGenerale.colonnes.appreciationGenerale:
 				return (
-					_estCellEditable.call(this, aParams) &&
-					((this.typeReleveBulletin !== TypeReleveBulletin.ReleveDeNotes &&
+					this._estCellEditable(aParams) &&
+					((this.param.typeReleveBulletin !==
+						TypeReleveBulletin_1.TypeReleveBulletin.ReleveDeNotes &&
 						this.moteurPdB.estMention({
 							appreciation: aParams.article.appreciationGle,
 						})) ||
@@ -392,7 +342,7 @@ class DonneesListe_ApprGenerale extends ObjetDonneesListe {
 				const lAppr =
 					DonneesListe_ApprGenerale.getAppreciationDeColonne(aParams);
 				lAppr.setLibelle(!!V ? V.trim() : "");
-				lAppr.setEtat(EGenreEtat.Modification);
+				lAppr.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 				break;
 			}
 		}
@@ -418,8 +368,8 @@ class DonneesListe_ApprGenerale extends ObjetDonneesListe {
 				const lIdCol = aCol.typeCol.toString();
 				lColonnes.push({
 					id: lIdCol,
-					taille: _getDimensionCol.call(this, lIdCol),
-					titre: _getTitreCol.call(this, { col: aCol }),
+					taille: this._getDimensionCol(lIdCol),
+					titre: this._getTitreCol(aCol),
 					hint:
 						aCol.hintCol !== null && aCol.hintCol !== undefined
 							? aCol.hintCol
@@ -429,16 +379,180 @@ class DonneesListe_ApprGenerale extends ObjetDonneesListe {
 		}
 		return lColonnes;
 	}
+	_getDataPeriodePrecCourante(aParams) {
+		return this.moteur.getDataPeriodePrecCourante({
+			listePeriodesPrec: aParams.article.listePeriodesPrec,
+			avecSelectionPeriodePrec: this.param.avecSelectionPeriodePrec,
+			periodePrecCourante: this.param.periodePrecCourante,
+		});
+	}
+	_getTitreCol(aColonne) {
+		const lIdCol = aColonne.typeCol.toString();
+		switch (lIdCol) {
+			case DonneesListe_ApprGenerale.colonnes.periodePrec:
+				if (this.param.avecSelectionPeriodePrec) {
+					return {
+						libelleHtml: this.moteur.composeHtmlTitreCol({
+							titreCol: this.param.periodePrecCourante
+								? this.param.periodePrecCourante.titreRappelPeriode
+								: aColonne.titreCol,
+							ieTexteCol: "getTitrePeriodePrec",
+							avecCombo: true,
+							modelCombo: "comboPeriodePrec",
+						}),
+						ignorerOverflowHidden: true,
+					};
+				} else {
+					return aColonne.titreCol;
+				}
+			case DonneesListe_ApprGenerale.colonnes.appreciationGenerale: {
+				return {
+					getLibelleHtml: () => {
+						const lEstDisabledBtnAssSaisie = () => {
+							let lResult = true;
+							const lSelections =
+								this.param.instanceListe.getListeElementsSelection();
+							if (!!lSelections && lSelections.count() > 0) {
+								for (const lLigneElement of lSelections) {
+									if (
+										lLigneElement.appreciationGle &&
+										lLigneElement.appreciationGle.editable
+									) {
+										lResult = false;
+										break;
+									}
+								}
+							}
+							return lResult;
+						};
+						const lJsxModelBoutonAssSaisie = () => {
+							return {
+								event: () => {
+									const lSelections =
+										this.param.instanceListe.getListeElementsSelection();
+									if (!!lSelections && lSelections.count() > 0) {
+										this.etatUtilisateurSco.assistantSaisieActif = true;
+										this.param.callbackOuvrirAssSaisie();
+									}
+								},
+								getDisabled: () => {
+									return lEstDisabledBtnAssSaisie();
+								},
+							};
+						};
+						const lJsxClassBoutonAssSaisie = () => {
+							return lEstDisabledBtnAssSaisie() ? "" : "TitreListeSansTri";
+						};
+						const lTitreColonneAppreciation = [];
+						lTitreColonneAppreciation.push(
+							IE.jsx.str(
+								"div",
+								{ class: "display-flex flex-center" },
+								IE.jsx.str("ie-btnicon", {
+									"ie-model": lJsxModelBoutonAssSaisie,
+									"ie-class": lJsxClassBoutonAssSaisie,
+									class: "icon_pencil fix-bloc m-right-l",
+									style: "font-size: 1.4rem;",
+									"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+										"releve_evaluations.assistantSaisie.AffecterAppreciationAuxElevesSelectionnes",
+									),
+								}),
+								IE.jsx.str("span", null, aColonne.titreCol),
+							),
+						);
+						return lTitreColonneAppreciation.join("");
+					},
+				};
+			}
+			default:
+				return aColonne.titreCol;
+		}
+	}
+	_estColEditable(aIdColonne) {
+		return this.moteur.estColEditable(this.param.listeColVisibles, aIdColonne);
+	}
+	_estColAvecGras(aParams) {
+		return [DonneesListe_ApprGenerale.colonnes.moyEleve].includes(
+			aParams.idColonne,
+		);
+	}
+	_estColAvecAlignementDroit(aParams) {
+		return [
+			DonneesListe_ApprGenerale.colonnes.moyEleve,
+			DonneesListe_ApprGenerale.colonnes.dureeAbs,
+			DonneesListe_ApprGenerale.colonnes.nbRetards,
+		].includes(aParams.idColonne);
+	}
+	_estColAvecAlignementMilieu(aParams) {
+		return [DonneesListe_ApprGenerale.colonnes.evolution].includes(
+			aParams.idColonne,
+		);
+	}
+	_estColFixe(aParams) {
+		const lTabColFixe = [DonneesListe_ApprGenerale.colonnes.eleve];
+		return lTabColFixe.includes(aParams.idColonne);
+	}
+	_estColCouleurTotal(aParams) {
+		const lTabColTotal = [DonneesListe_ApprGenerale.colonnes.moyEleve];
+		return lTabColTotal.includes(aParams.idColonne);
+	}
+	_estDonneeEditable(aParams) {
+		if (!this._estColEditable(aParams.idColonne)) {
+			return false;
+		}
+		const D = aParams.article;
+		switch (aParams.idColonne) {
+			case DonneesListe_ApprGenerale.colonnes.evolution:
+				return D.evolutionEditable !== null && D.evolutionEditable !== undefined
+					? D.evolutionEditable
+					: false;
+			case DonneesListe_ApprGenerale.colonnes.appreciationGenerale: {
+				const lAppr =
+					DonneesListe_ApprGenerale.getAppreciationDeColonne(aParams);
+				return lAppr !== null && lAppr !== undefined ? lAppr.editable : false;
+			}
+		}
+	}
+	_estCellEditable(aParams) {
+		return this._estDonneeEditable(aParams);
+	}
+	_getDimensionCol(aTypeCol) {
+		const lDimensions = DonneesListe_ApprGenerale.dimensions;
+		switch (aTypeCol) {
+			case DonneesListe_ApprGenerale.colonnes.eleve:
+				return lDimensions.largeurEleve;
+			case DonneesListe_ApprGenerale.colonnes.evolution:
+			case DonneesListe_ApprGenerale.colonnes.moyEleve:
+				return lDimensions.largeurNote;
+			case DonneesListe_ApprGenerale.colonnes.periodePrec:
+				return lDimensions.largeurRappelPeriodePrec;
+			case DonneesListe_ApprGenerale.colonnes.appreciationGenerale:
+				return ObjetListe_1.ObjetListe.initColonne(
+					100,
+					lDimensions.largeurMinAppr,
+					lDimensions.largeurMaxAppr,
+				);
+			default:
+				return 80;
+		}
+	}
 }
+exports.DonneesListe_ApprGenerale = DonneesListe_ApprGenerale;
 DonneesListe_ApprGenerale.colonnes = {
-	eleve: TypeColSaisieApprPiedDeBulletin.cEleve.toString(),
-	dureeAbs: TypeColSaisieApprPiedDeBulletin.cNbDJBulletin.toString(),
-	nbRetards: TypeColSaisieApprPiedDeBulletin.cNbRetard.toString(),
-	evolution: TypeColSaisieApprPiedDeBulletin.cEvolution.toString(),
-	periodePrec: TypeColSaisieApprPiedDeBulletin.cRappelPeriodePRec.toString(),
-	moyEleve: TypeColSaisieApprPiedDeBulletin.cMoyenne.toString(),
+	eleve:
+		TypeColonneSaisieApprPiedDeBulletin_1.TypeColSaisieApprPiedDeBulletin.cEleve.toString(),
+	dureeAbs:
+		TypeColonneSaisieApprPiedDeBulletin_1.TypeColSaisieApprPiedDeBulletin.cNbDJBulletin.toString(),
+	nbRetards:
+		TypeColonneSaisieApprPiedDeBulletin_1.TypeColSaisieApprPiedDeBulletin.cNbRetard.toString(),
+	evolution:
+		TypeColonneSaisieApprPiedDeBulletin_1.TypeColSaisieApprPiedDeBulletin.cEvolution.toString(),
+	periodePrec:
+		TypeColonneSaisieApprPiedDeBulletin_1.TypeColSaisieApprPiedDeBulletin.cRappelPeriodePRec.toString(),
+	moyEleve:
+		TypeColonneSaisieApprPiedDeBulletin_1.TypeColSaisieApprPiedDeBulletin.cMoyenne.toString(),
 	appreciationGenerale:
-		TypeColSaisieApprPiedDeBulletin.cAppreciation.toString(),
+		TypeColonneSaisieApprPiedDeBulletin_1.TypeColSaisieApprPiedDeBulletin.cAppreciation.toString(),
 };
 DonneesListe_ApprGenerale.dimensions = {
 	largeurEleve: 250,
@@ -450,127 +564,3 @@ DonneesListe_ApprGenerale.dimensions = {
 	largeurMinAppr: 160,
 	largeurMaxAppr: 400,
 };
-function _getDataPeriodePrecCourante(aParams) {
-	return this.moteur.getDataPeriodePrecCourante({
-		listePeriodesPrec: aParams.article.listePeriodesPrec,
-		avecSelectionPeriodePrec: this.param.avecSelectionPeriodePrec,
-		periodePrecCourante: this.param.periodePrecCourante,
-	});
-}
-function _getTitreCol(aParam) {
-	const lCol = aParam.col;
-	const lIdCol = lCol.typeCol.toString();
-	switch (lIdCol) {
-		case DonneesListe_ApprGenerale.colonnes.periodePrec:
-			if (this.param.avecSelectionPeriodePrec) {
-				return {
-					libelleHtml: this.moteur.composeHtmlTitreCol({
-						titreCol: this.param.periodePrecCourante
-							? this.param.periodePrecCourante.titreRappelPeriode
-							: lCol.titreCol,
-						ieTexteCol: "getTitrePeriodePrec",
-						avecCombo: true,
-						modelCombo: "comboPeriodePrec",
-					}),
-					ignorerOverflowHidden: true,
-				};
-			} else {
-				return lCol.titreCol;
-			}
-		case DonneesListe_ApprGenerale.colonnes.appreciationGenerale: {
-			const lAvecAssistantSaisiePossible = true;
-			const lTitreColonneAppreciation = [];
-			lTitreColonneAppreciation.push('<div class="display-flex flex-center">');
-			if (lAvecAssistantSaisiePossible) {
-				lTitreColonneAppreciation.push(
-					'<ie-btnicon ie-model="btnAssistantSaisieListe()" ie-class="getClass"',
-					' class="icon_pencil fix-bloc m-right-l"',
-					' style="font-size: 1.4rem;"',
-					GObjetWAI.composeAttribut({
-						genre: EGenreAttribut.label,
-						valeur: GTraductions.getValeur(
-							"releve_evaluations.assistantSaisie.AffecterAppreciationAuxElevesSelectionnes",
-						),
-					}),
-					"></ie-btnicon>",
-				);
-			}
-			lTitreColonneAppreciation.push("<span>", lCol.titreCol, "</span>");
-			lTitreColonneAppreciation.push("</div>");
-			return { libelleHtml: lTitreColonneAppreciation.join("") };
-		}
-		default:
-			return lCol.titreCol;
-	}
-}
-function _estColEditable(aParams) {
-	return this.moteur.estColEditable(
-		this.param.listeColVisibles,
-		aParams.idColonne,
-	);
-}
-function _estColAvecGras(aParams) {
-	return [DonneesListe_ApprGenerale.colonnes.moyEleve].includes(
-		aParams.idColonne,
-	);
-}
-function _estColAvecAlignementDroit(aParams) {
-	return [
-		DonneesListe_ApprGenerale.colonnes.moyEleve,
-		DonneesListe_ApprGenerale.colonnes.dureeAbs,
-		DonneesListe_ApprGenerale.colonnes.nbRetards,
-	].includes(aParams.idColonne);
-}
-function _estColAvecAlignementMilieu(aParams) {
-	return [DonneesListe_ApprGenerale.colonnes.evolution].includes(
-		aParams.idColonne,
-	);
-}
-function _estColFixe(aParams) {
-	const lTabColFixe = [DonneesListe_ApprGenerale.colonnes.eleve];
-	return lTabColFixe.includes(aParams.idColonne);
-}
-function _estColCouleurTotal(aParams) {
-	const lTabColTotal = [DonneesListe_ApprGenerale.colonnes.moyEleve];
-	return lTabColTotal.includes(aParams.idColonne);
-}
-function _estDonneeEditable(aParams) {
-	if (!_estColEditable.call(this, aParams)) {
-		return false;
-	}
-	const D = aParams.article;
-	switch (aParams.idColonne) {
-		case DonneesListe_ApprGenerale.colonnes.evolution:
-			return D.evolutionEditable !== null && D.evolutionEditable !== undefined
-				? D.evolutionEditable
-				: false;
-		case DonneesListe_ApprGenerale.colonnes.appreciationGenerale: {
-			const lAppr = DonneesListe_ApprGenerale.getAppreciationDeColonne(aParams);
-			return lAppr !== null && lAppr !== undefined ? lAppr.editable : false;
-		}
-	}
-}
-function _estCellEditable(aParams) {
-	return _estDonneeEditable.call(this, aParams);
-}
-function _getDimensionCol(aTypeCol) {
-	const lDimensions = DonneesListe_ApprGenerale.dimensions;
-	switch (aTypeCol) {
-		case DonneesListe_ApprGenerale.colonnes.eleve:
-			return lDimensions.largeurEleve;
-		case DonneesListe_ApprGenerale.colonnes.evolution:
-		case DonneesListe_ApprGenerale.colonnes.moyEleve:
-			return lDimensions.largeurNote;
-		case DonneesListe_ApprGenerale.colonnes.periodePrec:
-			return lDimensions.largeurRappelPeriodePrec;
-		case DonneesListe_ApprGenerale.colonnes.appreciationGenerale:
-			return ObjetListe.initColonne(
-				100,
-				lDimensions.largeurMinAppr,
-				lDimensions.largeurMaxAppr,
-			);
-		default:
-			return 80;
-	}
-}
-module.exports = DonneesListe_ApprGenerale;

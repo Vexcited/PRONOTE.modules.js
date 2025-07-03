@@ -8,6 +8,8 @@ const ObjetTraduction_1 = require("ObjetTraduction");
 const jsx_1 = require("jsx");
 const ObjetSupport_1 = require("ObjetSupport");
 const MethodesObjet_1 = require("MethodesObjet");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const DeferLoadingScript_1 = require("DeferLoadingScript");
 const uSingleton_IdViewer = `id-imgviewer-${GUID_1.GUID.getId()}`;
 let uSingleton_ViewerIsVisible = false;
 const uViewerSurZoom = {
@@ -15,7 +17,6 @@ const uViewerSurZoom = {
 	styleIdViewer: {},
 	styleIdArticle: {},
 	styleIdViewerImg: {},
-	meta: IE.estMobile ? $("meta[name=viewport]").get(0).content : "",
 };
 const uIdBtnZoomIn = "btnZoomIn" + GUID_1.GUID.getId();
 const uIdBtnZoomOut = "btnZoomOut" + GUID_1.GUID.getId();
@@ -32,20 +33,51 @@ let uFocusPrecedent = null;
 IEHtml.addAttribut(
 	"ie-imgviewer",
 	(aContexteCourant, aNodeName, aAttributValue, aOutils) => {
+		var _a, _b, _c, _d, _e, _f;
+		if (
+			((_b = (_a = aContexteCourant.node).hasAttribute) === null ||
+			_b === void 0
+				? void 0
+				: _b.call(_a, "src")) &&
+			((_d = (_c = aContexteCourant.node).getAttribute) === null ||
+			_d === void 0
+				? void 0
+				: _d.call(_c, "src")) ===
+				((_e = IEHtml.outils.getObject("img-portrait")) === null ||
+				_e === void 0
+					? void 0
+					: _e.srcPortrait)
+		) {
+			aOutils.addCommentaireDebug(
+				aContexteCourant.node,
+				`ie-imgviewer annulé sur portrait`,
+			);
+			return true;
+		}
+		if (aNodeName !== "img") {
+			return true;
+		}
+		if (
+			(_f = aOutils.getObject("ie-load-src")) === null || _f === void 0
+				? void 0
+				: _f.imgWithoutSrc(aContexteCourant.node)
+		) {
+			aOutils.addCommentaireDebug(
+				aContexteCourant.node,
+				`!! ie-imgviewer ignoré sans src !!`,
+			);
+			return true;
+		}
 		$(aContexteCourant.node).addClass("ie-imgviewer");
+		if (!aContexteCourant.node.hasAttribute("tabindex")) {
+			aContexteCourant.node.setAttribute("tabindex", "0");
+		}
 		$(aContexteCourant.node).eventValidation((aEvent) => {
-			if (aNodeName !== "img") {
-				return true;
-			}
 			if (!aContexteCourant.node.classList.contains("ie-imgviewer")) {
 				return;
 			}
 			uFocusPrecedent = document.activeElement;
-			if (!IE.estMobile) {
-				_ouvrirViewer(aContexteCourant.node, aEvent, true);
-			} else {
-				window.open(_getUrlImg(aContexteCourant.node));
-			}
+			_ouvrirViewer(aContexteCourant.node, aEvent, true);
 			if (ObjetSupport_1.Support.supportEventOnPopState) {
 				uState = MethodesObjet_1.MethodesObjet.dupliquer(window.history.state);
 				window.history.pushState({ popStateViewer: true }, "");
@@ -55,7 +87,15 @@ IEHtml.addAttribut(
 		return true;
 	},
 );
-function _ouvrirViewer(aNode, aEvent, aAvecAnimationOuverture) {
+IEHtml.outils.addObject("ie-imgviewer", { detachViewer: detachViewer });
+function detachViewer(aNode) {
+	if (aNode && aNode.classList && aNode.classList.contains("ie-imgviewer")) {
+		aNode.classList.remove("ie-imgviewer");
+		aNode.removeAttribute("tabindex");
+		$(aNode).off(".eventValidation");
+	}
+}
+async function _ouvrirViewer(aNode, aEvent, aAvecAnimationOuverture) {
 	var _a;
 	lWidthDefaut = 0;
 	lHeightDefaut = 0;
@@ -109,16 +149,6 @@ function _ouvrirViewer(aNode, aEvent, aAvecAnimationOuverture) {
 							Invocateur_1.Invocateur.desabonner([uIdNavDroite]);
 						}
 					},
-					"ie-doubletap": () => {
-						if (IE.estMobile) {
-							if (!uViewerSurZoom.estZoom) {
-								_surEntreeDansModeZoom();
-							} else {
-								_surSortieDuModeZoom();
-							}
-							this.controleur.$refreshSelf();
-						}
-					},
 				});
 				if (!IE.estMobile) {
 					$(this.node)
@@ -130,7 +160,7 @@ function _ouvrirViewer(aNode, aEvent, aAvecAnimationOuverture) {
 								} else {
 									_surSortieDuModeZoom();
 								}
-								this.controleur.$refreshSelf();
+								IEHtml.refresh();
 							},
 						});
 				}
@@ -149,17 +179,11 @@ function _ouvrirViewer(aNode, aEvent, aAvecAnimationOuverture) {
 						}
 					});
 				if (lIndicePrec >= 0) {
-					$(this.node).on("swiperight", () => {
-						const lScroll = $("#" + uSingleton_IdViewer).get(0);
-						if (lScroll.scrollLeft === 0) {
-							_ouvrirViewer(lJImgsNav.get(lIndicePrec));
-						}
-					});
 					if (uIdNavGauche) {
 						Invocateur_1.Invocateur.desabonner([uIdNavGauche]);
 					}
 					uIdNavGauche = Invocateur_1.Invocateur.abonner(
-						GNavigateur.getEventInvocateur("keyup"),
+						ObjetNavigateur_1.Navigateur.getEventInvocateur("keyup"),
 						(aEvent) => {
 							if (
 								!uViewerSurZoom.estZoom &&
@@ -174,22 +198,11 @@ function _ouvrirViewer(aNode, aEvent, aAvecAnimationOuverture) {
 					);
 				}
 				if (lIndiceSuiv >= 0) {
-					$(this.node).on("swipeleft", () => {
-						const lScroll = $("#" + uSingleton_IdViewer).get(0);
-						const lJImage = $("#" + uSingleton_IdViewer + " img");
-						const lWidth = lJImage.width();
-						if (
-							lScroll.scrollLeft >=
-							Math.round10(lWidth - GNavigateur.clientL, -1)
-						) {
-							_ouvrirViewer(lJImgsNav.get(lIndiceSuiv));
-						}
-					});
 					if (uIdNavDroite) {
 						Invocateur_1.Invocateur.desabonner([uIdNavDroite]);
 					}
 					uIdNavDroite = Invocateur_1.Invocateur.abonner(
-						GNavigateur.getEventInvocateur("keyup"),
+						ObjetNavigateur_1.Navigateur.getEventInvocateur("keyup"),
 						(aEvent) => {
 							if (
 								!uViewerSurZoom.estZoom &&
@@ -203,12 +216,6 @@ function _ouvrirViewer(aNode, aEvent, aAvecAnimationOuverture) {
 						},
 					);
 				}
-				$(this.node).on("swipedown", () => {
-					const lScroll = $("#" + uSingleton_IdViewer).get(0);
-					if (lScroll.scrollTop === 0) {
-						_fermerTransition();
-					}
-				});
 			},
 			nodeImg() {
 				$(this.node).on("load", function () {
@@ -218,14 +225,16 @@ function _ouvrirViewer(aNode, aEvent, aAvecAnimationOuverture) {
 					const lPourcentEcran = 0.9;
 					let lRatio = 0;
 					const lClientL =
-						GNavigateur.clientL -
+						ObjetNavigateur_1.Navigateur.clientL -
 						(lIndicePrec >= 0 || lIndiceSuiv >= 0 ? 35 * 2 : 0);
 					const lRatioImage = lNatHeight / lNatWidth;
-					const lRatioEcran = GNavigateur.clientH / lClientL;
+					const lRatioEcran = ObjetNavigateur_1.Navigateur.clientH / lClientL;
 					if (lRatioEcran > lRatioImage) {
 						lRatio = (lClientL * lPourcentEcran) / lNatWidth;
 					} else {
-						lRatio = (GNavigateur.clientH * lPourcentEcran) / lNatHeight;
+						lRatio =
+							(ObjetNavigateur_1.Navigateur.clientH * lPourcentEcran) /
+							lNatHeight;
 					}
 					lRatio = Math.min(lRatio, 2);
 					lHeightDefaut = lNatHeight * lRatio;
@@ -236,7 +245,7 @@ function _ouvrirViewer(aNode, aEvent, aAvecAnimationOuverture) {
 					}
 				});
 			},
-			avecBandeauViewer() {
+			avecBtnZoom() {
 				return !IE.estMobile;
 			},
 			btnFermer: {
@@ -307,6 +316,29 @@ function _ouvrirViewer(aNode, aEvent, aAvecAnimationOuverture) {
 			(_a = aNode.getAttribute("data-libelle")) !== null && _a !== void 0
 				? _a
 				: "";
+		const lHtmlImg = IE.jsx.str("img", {
+			src: lUrl,
+			class: ["AvecMenuContextuel", "loading"],
+			alt: ObjetTraduction_1.GTraductions.getValeur("Visionneuse.altImage"),
+			"aria-labelledby": uIdTitre,
+			"ie-node": "nodeImg",
+			"ie-draggable": !IE.estMobile ? "dragImg" : false,
+		});
+		const lHtmlConteneurImage = IE.estMobile
+			? IE.jsx.str(
+					"div",
+					{ class: "zoomist-container" },
+					IE.jsx.str(
+						"div",
+						{ class: "zoomist-wrapper" },
+						IE.jsx.str(
+							"div",
+							{ class: "conteneur-img zoomist-image" },
+							lHtmlImg,
+						),
+					),
+				)
+			: IE.jsx.str("div", { class: "conteneur-img" }, lHtmlImg);
 		IEHtml.injectHTMLParams({
 			element: IEZoneFenetre_1.ZoneFenetre.getElementZoneFenetre(),
 			html: IE.jsx.str(
@@ -333,16 +365,18 @@ function _ouvrirViewer(aNode, aEvent, aAvecAnimationOuverture) {
 				}),
 				IE.jsx.str(
 					"div",
-					{ class: "BandeauViewer", "ie-if": "avecBandeauViewer" },
+					{ class: "BandeauViewer" },
 					IE.jsx.str("ie-btnicon", {
 						id: uIdBtnZoomIn,
 						"ie-model": (0, jsx_1.jsxFuncAttr)("btnZoom", [true]),
+						"ie-if": "avecBtnZoom",
 						class: "icon_zoom_in btn-zoom-viewer zoom-in bt-activable bt-large",
 						title: ObjetTraduction_1.GTraductions.getValeur("Agrandir"),
 					}),
 					IE.jsx.str("ie-btnicon", {
 						id: uIdBtnZoomOut,
 						"ie-model": (0, jsx_1.jsxFuncAttr)("btnZoom", [false]),
+						"ie-if": "avecBtnZoom",
 						class:
 							"icon_zoom_out btn-zoom-viewer zoom-out bt-activable bt-large",
 						title: ObjetTraduction_1.GTraductions.getValeur("Reduire"),
@@ -383,20 +417,7 @@ function _ouvrirViewer(aNode, aEvent, aAvecAnimationOuverture) {
 						class: "icon_fermeture_widget btn-fermer bt-activable bt-large",
 					}),
 				),
-				IE.jsx.str(
-					"div",
-					{ class: "conteneur-img" },
-					IE.jsx.str("img", {
-						src: lUrl,
-						class: ["AvecMenuContextuel", "loading"],
-						alt: ObjetTraduction_1.GTraductions.getValeur(
-							"Visionneuse.altImage",
-						),
-						"aria-labelledby": uIdTitre,
-						"ie-node": "nodeImg",
-						"ie-draggable": !IE.estMobile ? "dragImg" : false,
-					}),
-				),
+				lHtmlConteneurImage,
 				IE.jsx.str("div", {
 					class: "sr-only",
 					tabindex: "0",
@@ -410,6 +431,15 @@ function _ouvrirViewer(aNode, aEvent, aAvecAnimationOuverture) {
 			const lElement = ObjetHtml_1.GHtml.getElement(uSingleton_IdViewer);
 			lElement.offsetWidth;
 			lElement.classList.add("active");
+		}
+		if (IE.estMobile) {
+			try {
+				await DeferLoadingScript_1.deferLoadingScript.loadAsync("zoomist");
+				const Zoomist = await Promise.resolve().then(() =>
+					require("zoomist.umd"),
+				);
+				new Zoomist(".zoomist-container", { maxScale: 8, minScale: 1 });
+			} catch (e) {}
 		}
 		if (!IE.estMobile) {
 			ObjetHtml_1.GHtml.setFocus(uIdTitre);
@@ -452,7 +482,7 @@ function _surEntreeDansModeZoom() {
 		margin: lStyle.margin,
 		cursor: lStyle.cursor,
 	};
-	const lRatioZoom = IE.estMobile ? 1.25 : 1.5;
+	const lRatioZoom = IE.estMobile ? 1.15 : 1.5;
 	const lWidthStart = lWidthDefaut * lRatioZoom;
 	const lHeightStart = lHeightDefaut * lRatioZoom;
 	$("#" + uSingleton_IdViewer).css({
@@ -472,12 +502,9 @@ function _surEntreeDansModeZoom() {
 		cursor: "grab",
 	});
 	$("#" + uSingleton_IdViewer).get(0).scrollLeft =
-		(lWidthStart - GNavigateur.clientL) / 2;
+		(lWidthStart - ObjetNavigateur_1.Navigateur.clientL) / 2;
 	$("#" + uSingleton_IdViewer).get(0).scrollTop =
-		(lHeightStart - GNavigateur.clientH) / 2;
-	if (IE.estMobile) {
-		$("meta[name=viewport]").get(0).content = "width=device-width";
-	}
+		(lHeightStart - ObjetNavigateur_1.Navigateur.clientH) / 2;
 	uViewerSurZoom.estZoom = true;
 }
 function _surSortieDuModeZoom() {
@@ -498,9 +525,6 @@ function _fermer() {
 		uSingleton_ViewerIsVisible = false;
 		uViewerSurZoom.estZoom = false;
 		$(`#${uSingleton_IdViewer}`).remove();
-	}
-	if (IE.estMobile) {
-		$("meta[name=viewport]").get(0).content = uViewerSurZoom.meta;
 	}
 	$(window).off("popstate.imgviewer");
 	if (uState) {
@@ -582,7 +606,7 @@ $(document).ready(() => {
 		}
 	});
 	$(window).on("scroll.imgviewer resize.imgviewer", () => {
-		if (!IE.estMobile || !uViewerSurZoom.estZoom) {
+		if (!IE.estMobile && !uViewerSurZoom.estZoom) {
 			_fermerTransition();
 		}
 	});

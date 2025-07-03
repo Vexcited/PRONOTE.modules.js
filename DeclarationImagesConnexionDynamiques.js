@@ -1,8 +1,11 @@
-const { MethodesObjet } = require("MethodesObjet.js");
-const GImageConnexion = require("ObjetImageConnexion.js");
-const imagesConnexion = require("imagesconnexion.js");
+const MethodesObjet_1 = require("MethodesObjet");
+const GImageConnexion = require("ObjetImageConnexion");
+const imagesConnexion = require("imagesconnexion");
 try {
-	if (MethodesObjet.isFunction(imagesConnexion)) {
-		imagesConnexion(GImageConnexion);
+	if (
+		imagesConnexion &&
+		MethodesObjet_1.MethodesObjet.isFunction(imagesConnexion.imagesConnexion)
+	) {
+		imagesConnexion.imagesConnexion(GImageConnexion);
 	}
 } catch (e) {}

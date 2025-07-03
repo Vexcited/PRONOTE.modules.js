@@ -1,4 +1,4 @@
-exports.TypeCallbackObjetGalerieCarrousel = exports.ObjetGalerieCarrousel =
+exports.ObjetGalerieCarrousel = exports.TypeCallbackObjetGalerieCarrousel =
 	void 0;
 const ObjetIdentite_1 = require("ObjetIdentite");
 const ObjetTraduction_1 = require("ObjetTraduction");
@@ -303,7 +303,7 @@ class ObjetGalerieCarrousel extends ObjetIdentite_1.Identite {
 	}
 	_docDeLaDiapoEstUnBlob(aDiapo) {
 		let lDoc = aDiapo.documentCasier;
-		return (
+		return !!(
 			lDoc &&
 			lDoc.getEtat() === Enumere_Etat_1.EGenreEtat.Creation &&
 			lDoc.fichier &&

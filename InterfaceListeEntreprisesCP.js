@@ -256,6 +256,7 @@ class InterfaceListeEntreprisesCP extends InterfacePage_Mobile_1.InterfacePage_M
 				return aElement.filtreAucun;
 			}) > -1;
 		this.listeEntreprises.parcourir((aEntreprise) => {
+			var _a;
 			const lFiltreActivite =
 				lArrActivites.length === 0 ||
 				(aEntreprise &&
@@ -324,21 +325,20 @@ class InterfaceListeEntreprisesCP extends InterfacePage_Mobile_1.InterfacePage_M
 				lFiltrePeriode = false;
 				for (let n = 0; n < lNbOffresStages; n++) {
 					const lOffre = aEntreprise.listeOffresStages.get(n);
-					if (lOffre) {
+					const lPeriode =
+						((_a = lOffre.periodes) === null || _a === void 0
+							? void 0
+							: _a.count()) === 1 && lOffre.periodes.get(0);
+					if (!lPeriode || (!lPeriode.dateDebut && !lPeriode.dateFin)) {
+						lFiltrePeriode = true;
+						break;
+					} else if (lPeriode.dateDebut && lPeriode.dateFin) {
 						if (
-							!lOffre.periode ||
-							(!lOffre.periode.dateDebut && !lOffre.periode.dateFin)
+							lPeriode.dateDebut <= this.filtre.periode.dateDebut &&
+							lPeriode.dateFin >= this.filtre.periode.dateFin
 						) {
 							lFiltrePeriode = true;
 							break;
-						} else if (lOffre.periode.dateDebut && lOffre.periode.dateFin) {
-							if (
-								lOffre.periode.dateDebut <= this.filtre.periode.dateDebut &&
-								lOffre.periode.dateFin >= this.filtre.periode.dateFin
-							) {
-								lFiltrePeriode = true;
-								break;
-							}
 						}
 					}
 				}

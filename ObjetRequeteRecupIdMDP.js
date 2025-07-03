@@ -3,6 +3,7 @@ const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
 const CollectionRequetes_1 = require("CollectionRequetes");
 const ObjetCryptage_1 = require("ObjetCryptage");
 const ObjetTraduction_1 = require("ObjetTraduction");
+const TypesRequeteJSON_1 = require("TypesRequeteJSON");
 class ObjetRequeteRecupIdMDP extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	constructor(...aParams) {
 		super(...aParams);
@@ -70,6 +71,6 @@ class ObjetRequeteRecupIdMDP extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 }
 exports.ObjetRequeteRecupIdMDP = ObjetRequeteRecupIdMDP;
 CollectionRequetes_1.Requetes.inscrire(
-	"RecupererInfosConnexion",
+	TypesRequeteJSON_1.ConstantesIdRequetesAjaxCP.recupererInfosConnexion,
 	ObjetRequeteRecupIdMDP,
 );

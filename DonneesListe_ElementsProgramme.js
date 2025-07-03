@@ -1,15 +1,18 @@
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { ObjectCouleurCellule } = require("_ObjetCouleur.js");
-const { GChaine } = require("ObjetChaine.js");
-const { GStyle } = require("ObjetStyle.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-class DonneesListe_ElementsProgramme extends ObjetDonneesListe {
+exports.DonneesListe_ElementsProgramme = void 0;
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const _ObjetCouleur_1 = require("_ObjetCouleur");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetStyle_1 = require("ObjetStyle");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const AccessApp_1 = require("AccessApp");
+class DonneesListe_ElementsProgramme extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParams) {
 		super(aDonnees);
+		this.appSco = (0, AccessApp_1.getApp)();
 		this.parametres = Object.assign(
 			{
 				periode: null,
@@ -44,8 +47,8 @@ class DonneesListe_ElementsProgramme extends ObjetDonneesListe {
 			];
 		D.Genre =
 			aLigne >= 0
-				? EGenreRessource.ElementProgramme
-				: EGenreRessource.ChapitreEltPgm;
+				? Enumere_Ressource_1.EGenreRessource.ElementProgramme
+				: Enumere_Ressource_1.EGenreRessource.ChapitreEltPgm;
 		if (aLigne >= 0) {
 			D.pere = this.Donnees.get(aLigne);
 			D.nbrSurPeriode = 0;
@@ -56,14 +59,16 @@ class DonneesListe_ElementsProgramme extends ObjetDonneesListe {
 		switch (aParams.idColonne) {
 			case DonneesListe_ElementsProgramme.genreColonne.partage:
 				if (
-					aParams.article.getGenre() === EGenreRessource.Competence ||
-					aParams.article.getGenre() === EGenreRessource.ElementPilier
+					aParams.article.getGenre() ===
+						Enumere_Ressource_1.EGenreRessource.Competence ||
+					aParams.article.getGenre() ===
+						Enumere_Ressource_1.EGenreRessource.ElementPilier
 				) {
 					return false;
 				}
 				return (
 					!!aParams.article.modifiable &&
-					!GApplication.droits.get(TypeDroits.estEnConsultation)
+					!this.appSco.droits.get(ObjetDroitsPN_1.TypeDroits.estEnConsultation)
 				);
 		}
 		return false;
@@ -82,8 +87,8 @@ class DonneesListe_ElementsProgramme extends ObjetDonneesListe {
 						}
 					});
 					if (lNbActifs + 1 > this.parametres.nbMaxElements) {
-						return GChaine.format(
-							GTraductions.getValeur(
+						return ObjetChaine_1.GChaine.format(
+							ObjetTraduction_1.GTraductions.getValeur(
 								"Fenetre_ElementsProgramme.NombreLimiteAtteint",
 							),
 							[this.parametres.nbMaxElements],
@@ -111,20 +116,22 @@ class DonneesListe_ElementsProgramme extends ObjetDonneesListe {
 		if (aErreur) {
 			return aErreur;
 		}
-		return GTraductions.getValeur("liste.editionImpossible");
+		return ObjetTraduction_1.GTraductions.getValeur("liste.editionImpossible");
 	}
 	avecEdition(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_ElementsProgramme.genreColonne.coche:
 				return (
-					aParams.article.getGenre() === EGenreRessource.ElementProgramme ||
-					aParams.article.getGenre() === EGenreRessource.Competence
+					aParams.article.getGenre() ===
+						Enumere_Ressource_1.EGenreRessource.ElementProgramme ||
+					aParams.article.getGenre() ===
+						Enumere_Ressource_1.EGenreRessource.Competence
 				);
 			case DonneesListe_ElementsProgramme.genreColonne.libelle:
 			case DonneesListe_ElementsProgramme.genreColonne.partage:
 				return (
 					!!aParams.article.modifiable &&
-					!GApplication.droits.get(TypeDroits.estEnConsultation)
+					!this.appSco.droits.get(ObjetDroitsPN_1.TypeDroits.estEnConsultation)
 				);
 			default:
 				return false;
@@ -138,7 +145,7 @@ class DonneesListe_ElementsProgramme extends ObjetDonneesListe {
 		);
 	}
 	getMessageEditionConfirmation() {
-		return GTraductions.getValeur(
+		return ObjetTraduction_1.GTraductions.getValeur(
 			"Fenetre_ElementsProgramme.modificationLibelleConfirmation",
 		);
 	}
@@ -148,7 +155,7 @@ class DonneesListe_ElementsProgramme extends ObjetDonneesListe {
 			aParams.article.utiliseCloture &&
 			aParams.idColonne === DonneesListe_ElementsProgramme.genreColonne.libelle
 		) {
-			return GTraductions.getValeur(
+			return ObjetTraduction_1.GTraductions.getValeur(
 				"Fenetre_ElementsProgramme.ModificationImpossibleBulletinCloture",
 			);
 		}
@@ -157,8 +164,10 @@ class DonneesListe_ElementsProgramme extends ObjetDonneesListe {
 	avecEvenementSelectionClick(aParams) {
 		if (
 			aParams.idColonne === DonneesListe_ElementsProgramme.genreColonne.coche &&
-			(aParams.article.getGenre() === EGenreRessource.ChapitreEltPgm ||
-				aParams.article.getGenre() === EGenreRessource.ElementPilier)
+			(aParams.article.getGenre() ===
+				Enumere_Ressource_1.EGenreRessource.ChapitreEltPgm ||
+				aParams.article.getGenre() ===
+					Enumere_Ressource_1.EGenreRessource.ElementPilier)
 		) {
 			return this.parametres.avecCreationPossible;
 		}
@@ -167,8 +176,10 @@ class DonneesListe_ElementsProgramme extends ObjetDonneesListe {
 	getValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_ElementsProgramme.genreColonne.coche:
-				return aParams.article.getGenre() === EGenreRessource.ChapitreEltPgm ||
-					aParams.article.getGenre() === EGenreRessource.ElementPilier
+				return aParams.article.getGenre() ===
+					Enumere_Ressource_1.EGenreRessource.ChapitreEltPgm ||
+					aParams.article.getGenre() ===
+						Enumere_Ressource_1.EGenreRessource.ElementPilier
 					? this.parametres.avecCreationPossible
 						? "Image_Ajout1Etat"
 						: ""
@@ -179,7 +190,8 @@ class DonneesListe_ElementsProgramme extends ObjetDonneesListe {
 				if (aParams.article.nbrSurAnnee === 0) {
 					return "";
 				}
-				return aParams.article.getGenre() === EGenreRessource.ElementProgramme
+				return aParams.article.getGenre() ===
+					Enumere_Ressource_1.EGenreRessource.ElementProgramme
 					? aParams.article.nbrSurPeriode + "/" + aParams.article.nbrSurAnnee
 					: "";
 			case DonneesListe_ElementsProgramme.genreColonne.proprietaire:
@@ -188,11 +200,17 @@ class DonneesListe_ElementsProgramme extends ObjetDonneesListe {
 				const lHtmlPartage = [];
 				if (
 					!!aParams.article.partage ||
-					aParams.article.getGenre() === EGenreRessource.Competence ||
-					aParams.article.getGenre() === EGenreRessource.ElementPilier
+					aParams.article.getGenre() ===
+						Enumere_Ressource_1.EGenreRessource.Competence ||
+					aParams.article.getGenre() ===
+						Enumere_Ressource_1.EGenreRessource.ElementPilier
 				) {
 					lHtmlPartage.push(
-						'<i class="icon_fiche_cours_partage" style="font-size:1.4rem;"></i>',
+						'<i role="img" class="icon_fiche_cours_partage" style="font-size:1.4rem;" aria-label="' +
+							ObjetTraduction_1.GTraductions.getValeur(
+								"Fenetre_ElementsProgramme.HintTitrePartage",
+							) +
+							'"></i>',
 					);
 				}
 				return lHtmlPartage.join("");
@@ -204,15 +222,17 @@ class DonneesListe_ElementsProgramme extends ObjetDonneesListe {
 	getTypeValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_ElementsProgramme.genreColonne.coche:
-				return aParams.article.getGenre() === EGenreRessource.ChapitreEltPgm
-					? ObjetDonneesListe.ETypeCellule.Image
-					: ObjetDonneesListe.ETypeCellule.Coche;
+				return aParams.article.getGenre() ===
+					Enumere_Ressource_1.EGenreRessource.ChapitreEltPgm
+					? ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Image
+					: ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Coche;
 			case DonneesListe_ElementsProgramme.genreColonne.deploiement:
-				return ObjetDonneesListe.ETypeCellule.CocheDeploiement;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule
+					.CocheDeploiement;
 			case DonneesListe_ElementsProgramme.genreColonne.partage:
-				return ObjetDonneesListe.ETypeCellule.Html;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 			default:
-				return ObjetDonneesListe.ETypeCellule.Texte;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 		}
 	}
 	suppressionImpossible(D, aListeSelections) {
@@ -223,14 +243,14 @@ class DonneesListe_ElementsProgramme extends ObjetDonneesListe {
 	}
 	getMessageSuppressionImpossible(D, aListeSelections) {
 		const lMessage =
-			GTraductions.getValeur(
+			ObjetTraduction_1.GTraductions.getValeur(
 				"Fenetre_ElementsProgramme.SuppressionImpossible",
 			) +
 			_getListeElementsPourMessage(_getListeNonSupprimables(aListeSelections));
 		return lMessage;
 	}
 	getListeSupprimables(aListeSelections) {
-		const lListe = new ObjetListeElements();
+		const lListe = new ObjetListeElements_1.ObjetListeElements();
 		aListeSelections.parcourir((aElement) => {
 			if (aElement.modifiable) {
 				lListe.addElement(aElement);
@@ -244,7 +264,7 @@ class DonneesListe_ElementsProgramme extends ObjetDonneesListe {
 		let lMessage = "";
 		if (lListeNonSupprimables.count() > 0) {
 			lMessage +=
-				GTraductions.getValeur(
+				ObjetTraduction_1.GTraductions.getValeur(
 					"Fenetre_ElementsProgramme.SuppressionImpossible",
 				) +
 				_getListeElementsPourMessage(lListeNonSupprimables) +
@@ -252,8 +272,12 @@ class DonneesListe_ElementsProgramme extends ObjetDonneesListe {
 		}
 		lMessage +=
 			lListeSupprimables.count() > 1
-				? GTraductions.getValeur("Fenetre_ElementsProgramme.ConfirmSupprElts")
-				: GTraductions.getValeur("Fenetre_ElementsProgramme.ConfirmSupprElt");
+				? ObjetTraduction_1.GTraductions.getValeur(
+						"Fenetre_ElementsProgramme.ConfirmSupprElts",
+					)
+				: ObjetTraduction_1.GTraductions.getValeur(
+						"Fenetre_ElementsProgramme.ConfirmSupprElt",
+					);
 		if (lListeNonSupprimables.count() > 0) {
 			lMessage += _getListeElementsPourMessage(lListeSupprimables);
 		}
@@ -268,27 +292,31 @@ class DonneesListe_ElementsProgramme extends ObjetDonneesListe {
 	getCouleurCellule(aParams) {
 		if (
 			aParams.article &&
-			(aParams.article.getGenre() === EGenreRessource.ChapitreEltPgm ||
-				aParams.article.getGenre() === EGenreRessource.ElementPilier)
+			(aParams.article.getGenre() ===
+				Enumere_Ressource_1.EGenreRessource.ChapitreEltPgm ||
+				aParams.article.getGenre() ===
+					Enumere_Ressource_1.EGenreRessource.ElementPilier)
 		) {
 			if (
 				aParams.article.modifiable &&
 				aParams.idColonne ===
 					DonneesListe_ElementsProgramme.genreColonne.partage
 			) {
-				return ObjetDonneesListe.ECouleurCellule.Blanc;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
 			}
-			return ObjetDonneesListe.ECouleurCellule.Deploiement;
+			return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Deploiement;
 		}
 		if (
 			aParams.article &&
 			aParams.article.modifiable &&
-			aParams.article.getGenre() !== EGenreRessource.ChapitreEltPgm &&
-			aParams.article.getGenre() !== EGenreRessource.ElementPilier &&
+			aParams.article.getGenre() !==
+				Enumere_Ressource_1.EGenreRessource.ChapitreEltPgm &&
+			aParams.article.getGenre() !==
+				Enumere_Ressource_1.EGenreRessource.ElementPilier &&
 			aParams.idColonne ===
 				DonneesListe_ElementsProgramme.genreColonne.deploiement
 		) {
-			return ObjetDonneesListe.ECouleurCellule.Blanc;
+			return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
 		}
 		if (
 			aParams.article &&
@@ -296,7 +324,7 @@ class DonneesListe_ElementsProgramme extends ObjetDonneesListe {
 			aParams.idColonne ===
 				DonneesListe_ElementsProgramme.genreColonne.proprietaire
 		) {
-			return new ObjectCouleurCellule(
+			return new _ObjetCouleur_1.ObjectCouleurCellule(
 				GCouleur.liste.nonEditable.fond,
 				GCouleur.themeNeutre.moyen2,
 				GCouleur.liste.nonEditable.bordure,
@@ -307,10 +335,11 @@ class DonneesListe_ElementsProgramme extends ObjetDonneesListe {
 		if (
 			aParams.article &&
 			aParams.article.modifiable &&
-			aParams.article.getGenre() === EGenreRessource.ChapitreEltPgm &&
+			aParams.article.getGenre() ===
+				Enumere_Ressource_1.EGenreRessource.ChapitreEltPgm &&
 			aParams.idColonne === DonneesListe_ElementsProgramme.genreColonne.libelle
 		) {
-			return GStyle.composeCouleurFond(GCouleur.blanc);
+			return ObjetStyle_1.GStyle.composeCouleurFond(GCouleur.blanc);
 		}
 		return "";
 	}
@@ -323,7 +352,8 @@ class DonneesListe_ElementsProgramme extends ObjetDonneesListe {
 			case DonneesListe_ElementsProgramme.genreColonne.deploiement:
 				if (
 					aParams.article &&
-					aParams.article.getGenre() === EGenreRessource.ChapitreEltPgm
+					aParams.article.getGenre() ===
+						Enumere_Ressource_1.EGenreRessource.ChapitreEltPgm
 				) {
 					lClasses.push("AvecMain");
 				}
@@ -342,8 +372,10 @@ class DonneesListe_ElementsProgramme extends ObjetDonneesListe {
 			case DonneesListe_ElementsProgramme.genreColonne.proprietaire:
 				if (
 					aParams.article &&
-					(aParams.article.getGenre() === EGenreRessource.ChapitreEltPgm ||
-						aParams.article.getGenre() === EGenreRessource.ElementPilier)
+					(aParams.article.getGenre() ===
+						Enumere_Ressource_1.EGenreRessource.ChapitreEltPgm ||
+						aParams.article.getGenre() ===
+							Enumere_Ressource_1.EGenreRessource.ElementPilier)
 				) {
 					return "Gras";
 				}
@@ -351,12 +383,15 @@ class DonneesListe_ElementsProgramme extends ObjetDonneesListe {
 		}
 		return "";
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_ElementsProgramme.genreColonne.nombre:
-				if (aParams.article.getGenre() === EGenreRessource.ElementProgramme) {
-					return GChaine.format(
-						GTraductions.getValeur(
+				if (
+					aParams.article.getGenre() ===
+					Enumere_Ressource_1.EGenreRessource.ElementProgramme
+				) {
+					return ObjetChaine_1.GChaine.format(
+						ObjetTraduction_1.GTraductions.getValeur(
 							"Fenetre_ElementsProgramme.HintLigneOccurence",
 						),
 						[
@@ -372,7 +407,7 @@ class DonneesListe_ElementsProgramme extends ObjetDonneesListe {
 					return (
 						aParams.article.getLibelle() +
 						"\n" +
-						GTraductions.getValeur(
+						ObjetTraduction_1.GTraductions.getValeur(
 							"Fenetre_ElementsProgramme.ElementUtilisesParDAutres",
 						)
 					);
@@ -380,7 +415,7 @@ class DonneesListe_ElementsProgramme extends ObjetDonneesListe {
 				return "";
 			case DonneesListe_ElementsProgramme.genreColonne.partage:
 				if (aParams.article.utiliseAutres) {
-					return GTraductions.getValeur(
+					return ObjetTraduction_1.GTraductions.getValeur(
 						"Fenetre_ElementsProgramme.ElementUtilisesParDAutres",
 					);
 				}
@@ -389,19 +424,31 @@ class DonneesListe_ElementsProgramme extends ObjetDonneesListe {
 		return "";
 	}
 	getVisible(D) {
-		return D.getEtat() !== EGenreEtat.Creation;
+		return D.getEtat() !== Enumere_Etat_1.EGenreEtat.Creation;
 	}
 }
-DonneesListe_ElementsProgramme.genreColonne = {
-	coche: "coche",
-	deploiement: "deploiement",
-	libelle: "libelle",
-	proprietaire: "proprietaire",
-	partage: "partage",
-	nombre: "nombre",
-};
+exports.DonneesListe_ElementsProgramme = DonneesListe_ElementsProgramme;
+(function (DonneesListe_ElementsProgramme) {
+	let genreColonne;
+	(function (genreColonne) {
+		genreColonne["coche"] = "coche";
+		genreColonne["deploiement"] = "deploiement";
+		genreColonne["libelle"] = "libelle";
+		genreColonne["proprietaire"] = "proprietaire";
+		genreColonne["partage"] = "partage";
+		genreColonne["nombre"] = "nombre";
+	})(
+		(genreColonne =
+			DonneesListe_ElementsProgramme.genreColonne ||
+			(DonneesListe_ElementsProgramme.genreColonne = {})),
+	);
+})(
+	DonneesListe_ElementsProgramme ||
+		(exports.DonneesListe_ElementsProgramme = DonneesListe_ElementsProgramme =
+			{}),
+);
 function _getListeNonSupprimables(aListeSelections) {
-	const lListe = new ObjetListeElements();
+	const lListe = new ObjetListeElements_1.ObjetListeElements();
 	aListeSelections.parcourir((aElement) => {
 		if (!aElement.modifiable) {
 			lListe.addElement(aElement);
@@ -416,4 +463,3 @@ function _getListeElementsPourMessage(aListe) {
 	});
 	return lMessage;
 }
-module.exports = DonneesListe_ElementsProgramme;

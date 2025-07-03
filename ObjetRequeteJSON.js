@@ -3,19 +3,13 @@ exports.ObjetRequeteConsultation =
 	exports.ObjetRequeteJSON =
 	exports.utils =
 	exports.EGenreReponseSaisie =
-	exports.c_constantesJSON =
 		void 0;
 require("Divers");
 const Callback_1 = require("Callback");
 const Invocateur_1 = require("Invocateur");
 const ObjetTraduction_1 = require("ObjetTraduction");
-var c_constantesJSON;
-(function (c_constantesJSON) {
-	c_constantesJSON["noeudJSON"] = "D";
-	c_constantesJSON["Signature"] = "Signature";
-	c_constantesJSON["SignatureAttente"] = "_SignatureAttente_";
-	c_constantesJSON["Donnees"] = "data";
-})(c_constantesJSON || (exports.c_constantesJSON = c_constantesJSON = {}));
+const AccessApp_1 = require("AccessApp");
+const TypesRequeteJSON_1 = require("TypesRequeteJSON");
 var EGenreReponseSaisie;
 (function (EGenreReponseSaisie) {
 	EGenreReponseSaisie["erreur"] = "reponseSaisie_erreur";
@@ -34,7 +28,7 @@ exports.utils = utils;
 Invocateur_1.Invocateur.abonner(
 	"deserialisation_notificationsPolling",
 	(aJSONRacine) => {
-		const lJSON = aJSONRacine[c_constantesJSON.Signature];
+		const lJSON = aJSONRacine[TypesRequeteJSON_1.ConstantesJSON.Signature];
 		if (lJSON) {
 			if (lJSON.ModeExclusif !== undefined) {
 				Invocateur_1.Invocateur.evenement(
@@ -53,7 +47,7 @@ Invocateur_1.Invocateur.abonner(
 );
 class ObjetRequeteJSON {
 	constructor(aPere, aEvenementSurReussite, aEvenementSurEchec) {
-		this.communication = GApplication.getCommunication();
+		this.communication = (0, AccessApp_1.getApp)().getCommunication();
 		this.setOptions(null);
 		const lSelf = this;
 		const lPere = aPere;
@@ -105,7 +99,9 @@ class ObjetRequeteJSON {
 		}
 		if (ObjetRequeteJSON.modules.initialiser) {
 			const lFunc = (aJSONSignature) => {
-				this._jsonRacineParametres[c_constantesJSON.Signature] = aJSONSignature;
+				this._jsonRacineParametres[
+					TypesRequeteJSON_1.ConstantesJSON.Signature
+				] = aJSONSignature;
 			};
 			ObjetRequeteJSON.modules.initialiser(lFunc);
 		}
@@ -143,11 +139,13 @@ class ObjetRequeteJSON {
 		if (aErreurCommunication) {
 			this.JSONReponse.erreurCommunication = aErreurCommunication;
 		}
-		if (this._jsonRacine[c_constantesJSON.Donnees]) {
-			this.JSONReponse = this._jsonRacine[c_constantesJSON.Donnees];
+		if (this._jsonRacine[TypesRequeteJSON_1.ConstantesJSON.Donnees]) {
+			this.JSONReponse =
+				this._jsonRacine[TypesRequeteJSON_1.ConstantesJSON.Donnees];
 		}
-		if (this._jsonRacine[c_constantesJSON.Signature]) {
-			this.JSONSignature = this._jsonRacine[c_constantesJSON.Signature];
+		if (this._jsonRacine[TypesRequeteJSON_1.ConstantesJSON.Signature]) {
+			this.JSONSignature =
+				this._jsonRacine[TypesRequeteJSON_1.ConstantesJSON.Signature];
 		}
 		this.traiterReponseRequete(aErreurCommunication);
 		this.apresReponseRequete();
@@ -157,19 +155,22 @@ class ObjetRequeteJSON {
 	serialiserJSON() {
 		if (this._jsonRacineParametres) {
 			if (this.JSON && !$.isEmptyObject(this.JSON)) {
-				this._jsonRacineParametres[c_constantesJSON.Donnees] = this.JSON;
+				this._jsonRacineParametres[TypesRequeteJSON_1.ConstantesJSON.Donnees] =
+					this.JSON;
 			}
 		}
 	}
 	async appelAsynchrone() {
 		if (
 			this.options.avecControleModeExclusif &&
-			GApplication.getModeExclusif()
+			(0, AccessApp_1.getApp)().getModeExclusif()
 		) {
-			const lPromiseMessage = GApplication.getMessage().afficher({
-				titre: this.options.titreEchecModeExclusif,
-				message: this.options.messageEchecModeExclusif,
-			});
+			const lPromiseMessage = (0, AccessApp_1.getApp)()
+				.getMessage()
+				.afficher({
+					titre: this.options.titreEchecModeExclusif,
+					message: this.options.messageEchecModeExclusif,
+				});
 			return Promise.reject({
 				modeExclusif: true,
 				promiseMessage: lPromiseMessage,
@@ -318,9 +319,9 @@ class ObjetRequeteSaisie extends ObjetRequeteJSON {
 			aTitre,
 		);
 		if (this.messageErreur && this.options.afficherMessageErreur) {
-			this.promiseMessage = GApplication.getMessage().afficher(
-				this.messageErreur,
-			);
+			this.promiseMessage = (0, AccessApp_1.getApp)()
+				.getMessage()
+				.afficher(this.messageErreur);
 		}
 	}
 	traiterReponseSaisie(aErreurCommunication) {
@@ -367,7 +368,7 @@ class ObjetRequeteSaisie extends ObjetRequeteJSON {
 		if (
 			!lMessagesErreurRapportSaisie &&
 			this.options.avecControleModeExclusif &&
-			GApplication.getModeExclusif()
+			(0, AccessApp_1.getApp)().getModeExclusif()
 		) {
 			lReponse = EGenreReponseSaisie.annulation;
 			this.messageErreur = {
@@ -375,9 +376,9 @@ class ObjetRequeteSaisie extends ObjetRequeteJSON {
 				message: this.options.messageEchecModeExclusif,
 			};
 			if (this.options.afficherMessageErreur) {
-				this.promiseMessage = GApplication.getMessage().afficher(
-					this.messageErreur,
-				);
+				this.promiseMessage = (0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher(this.messageErreur);
 			}
 		}
 		return lReponse;
@@ -402,7 +403,9 @@ class ObjetRequeteConsultation extends ObjetRequeteJSON {
 						? aMessage
 						: ObjetTraduction_1.GTraductions.getValeur("requete.erreur");
 				try {
-					return GApplication.getMessage().afficher({ message: lMessage });
+					return (0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({ message: lMessage });
 				} catch (e) {}
 			},
 		});

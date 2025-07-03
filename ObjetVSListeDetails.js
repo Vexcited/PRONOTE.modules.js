@@ -46,25 +46,27 @@ class ObjetVSListeDetails extends ObjetIdentite_1.Identite {
 							].includes(aInstance.objDonneesDuRecap.genre)
 						) {
 							lBoutons.push({
-								html: IE.jsx.str(
-									"ie-checkbox",
-									{ "ie-model": "cbAvecInteractionUtilisateur" },
-									ObjetTraduction_1.GTraductions.getValeur(
-										"AbsenceVS.UniquementLesEvtNecessiteAction",
-									),
-								),
-								controleur: {
-									cbAvecInteractionUtilisateur: {
-										getValue: function () {
-											return aInstance.cbAvecInteractionUtilisateur;
-										},
-										setValue: function (aValue) {
-											aInstance.cbAvecInteractionUtilisateur = aValue;
-											aInstanceListe.setDonnees(
-												aInstance._construireListeAbsences(),
-											);
-										},
-									},
+								getHtml: () => {
+									const lcbAvecInteractionUtilisateur = () => {
+										return {
+											getValue() {
+												return aInstance.cbAvecInteractionUtilisateur;
+											},
+											setValue(aValue) {
+												aInstance.cbAvecInteractionUtilisateur = aValue;
+												aInstanceListe.setDonnees(
+													aInstance._construireListeAbsences(),
+												);
+											},
+										};
+									};
+									return IE.jsx.str(
+										"ie-checkbox",
+										{ "ie-model": lcbAvecInteractionUtilisateur },
+										ObjetTraduction_1.GTraductions.getValeur(
+											"AbsenceVS.UniquementLesEvtNecessiteAction",
+										),
+									);
 								},
 							});
 						}
@@ -73,6 +75,10 @@ class ObjetVSListeDetails extends ObjetIdentite_1.Identite {
 							skin: ObjetListe_1.ObjetListe.skin.flatDesign,
 							forcerScrollV_mobile: true,
 							boutons: lBoutons,
+							ariaLabel: () => {
+								var _a, _b, _c, _d;
+								return `${((_b = (_a = aInstance.options) === null || _a === void 0 ? void 0 : _a.funcTitreListe) === null || _b === void 0 ? void 0 : _b.call(_a)) || ""} - ${((_d = (_c = aInstance.objDonneesDuRecap) === null || _c === void 0 ? void 0 : _c.recapitulatif) === null || _d === void 0 ? void 0 : _d.titreSection) || ""}`;
+							},
 						});
 						aInstance.identListe = aInstanceListe;
 					},
@@ -83,6 +89,7 @@ class ObjetVSListeDetails extends ObjetIdentite_1.Identite {
 							case Enumere_Ressource_1.EGenreRessource.AbsenceRepas:
 							case Enumere_Ressource_1.EGenreRessource.Dispense:
 							case Enumere_Ressource_1.EGenreRessource.Retard:
+							case Enumere_Ressource_1.EGenreRessource.RetardInternat:
 								aInstanceListe.setDonnees(aInstance._construireListeAbsences());
 								break;
 							case Enumere_Ressource_1.EGenreRessource.Commission: {
@@ -101,7 +108,6 @@ class ObjetVSListeDetails extends ObjetIdentite_1.Identite {
 					},
 					destroy() {
 						if (aInstance.identListe) {
-							aInstance.identListe.free();
 							aInstance.identListe = null;
 						}
 					},
@@ -178,31 +184,6 @@ class ObjetVSListeDetails extends ObjetIdentite_1.Identite {
 					return lElement && lElement.parentAAccuseDeReception;
 				},
 			},
-			hintPJ(aNumeroElement) {
-				const lElement =
-					aInstance.objDonneesDuRecap.donnees.getElementParNumero(
-						aNumeroElement,
-					);
-				const lResult = [];
-				for (let i = 0; i < lElement.documents.count(); i++) {
-					const lDocument = lElement.documents.get(i);
-					if (lDocument.existe()) {
-						lResult.push(lDocument.hint);
-					}
-				}
-				return lResult.join("<br />");
-			},
-			hintCommentaire(aNumeroElement) {
-				const lElement =
-					aInstance.objDonneesDuRecap.donnees.getElementParNumero(
-						aNumeroElement,
-					);
-				let lHint = "";
-				if (lElement && lElement.html && lElement.html.commentaire) {
-					lHint = lElement.html.commentaire.replace(/\n/g, "<br />");
-				}
-				return lHint;
-			},
 		});
 	}
 	construireAffichage() {
@@ -222,11 +203,7 @@ class ObjetVSListeDetails extends ObjetIdentite_1.Identite {
 					'<div ie-identite="getIdentListe" class="full-size ObjetVSListeDetails"></div>',
 				);
 			} else {
-				lHtml.push(
-					"<ul ",
-					ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_1.EGenreRole.List),
-					' class="liste-clickable ObjetVSListeDetails">',
-				);
+				lHtml.push('<ul class="liste-clickable ObjetVSListeDetails">');
 				if (
 					this.objDonneesDuRecap.genre ===
 					Enumere_Ressource_1.EGenreRessource.Aucune
@@ -488,6 +465,9 @@ class ObjetVSListeDetails extends ObjetIdentite_1.Identite {
 					case Enumere_Ressource_1.EGenreRessource.Retard:
 						lHtml.push(this._composeAbsences(lElement, aObjDonnees));
 						break;
+					case Enumere_Ressource_1.EGenreRessource.RetardInternat:
+						lHtml.push(this._composeAbsences(lElement, aObjDonnees));
+						break;
 					case Enumere_Ressource_1.EGenreRessource.Incident:
 						lHtml.push(this._composeIncident(lElement, aObjDonnees));
 						break;
@@ -575,7 +555,6 @@ class ObjetVSListeDetails extends ObjetIdentite_1.Identite {
 			' class="',
 			aInfos.class.join(" "),
 			'" ',
-			ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_1.EGenreRole.Listitem),
 			aInfos.aria
 				? ObjetWAI_1.GObjetWAI.composeAttribut({
 						genre: ObjetWAI_1.EGenreAttribut.label,
@@ -634,14 +613,6 @@ class ObjetVSListeDetails extends ObjetIdentite_1.Identite {
 				ObjetVSListeDetails.evenement.editionMotifParent,
 				aElement.getNumero(),
 			]),
-			ieHintPJ: ObjetHtml_1.GHtml.composeAttr("ie-hint", "hintPJ", [
-				aElement.getNumero(),
-			]),
-			ieHintCommentaire: ObjetHtml_1.GHtml.composeAttr(
-				"ie-hint",
-				"hintCommentaire",
-				[aElement.getNumero()],
-			),
 		});
 		return this._composeHtml(aElement.html);
 	}
@@ -656,7 +627,7 @@ class ObjetVSListeDetails extends ObjetIdentite_1.Identite {
 			].includes(this.objDonneesDuRecap.genre)
 		) {
 			this.objDonneesDuRecap.donnees.parcourir((aElement) => {
-				if (aElement.avecSaisie) {
+				if ("avecSaisie" in aElement && aElement.avecSaisie) {
 					lListe.add(aElement);
 				}
 			});
@@ -747,31 +718,6 @@ class DonneesListe_Absences extends ObjetDonneesListeFlatDesign_1.ObjetDonneesLi
 	}
 	getControleur(aInstance, aInstanceListe) {
 		return $.extend(true, super.getControleur(aInstance, aInstanceListe), {
-			hintPJ(aNumeroElement) {
-				const lElement = aInstance.Donnees.getElementParNumero(aNumeroElement);
-				const lResult = [];
-				for (let i = 0; i < lElement.documents.count(); i++) {
-					const lDocument = lElement.documents.get(i);
-					if (lDocument.existe()) {
-						lResult.push(lDocument.hint);
-					}
-				}
-				return lResult.join("<br />");
-			},
-			hintCommentaire(aNumeroElement) {
-				const lElement = aInstance.Donnees.getElementParNumero(aNumeroElement);
-				let lHint = "";
-				if (lElement) {
-					lHint = aInstance.utilitaireAbsence
-						.getCommentaireDAbsence(
-							lElement,
-							GEtatUtilisateur.getUtilisateur().getGenre() ===
-								Enumere_Ressource_1.EGenreRessource.Responsable,
-						)
-						.replace(/\n/g, "<br />");
-				}
-				return lHint;
-			},
 			editionEvenement: {
 				event(aEvenement, aNumeroElement) {
 					const lElement =
@@ -789,7 +735,7 @@ class DonneesListe_Absences extends ObjetDonneesListeFlatDesign_1.ObjetDonneesLi
 			"div",
 			{ class: "listeDetails Absence" },
 			IE.jsx.str("i", {
-				"aria-hidden": "true",
+				role: "presentation",
 				class:
 					"iconVSDetail " +
 					this.utilitaireAbsence.getIconAbsence(aParams.article),
@@ -815,7 +761,7 @@ class DonneesListe_Absences extends ObjetDonneesListeFlatDesign_1.ObjetDonneesLi
 		}
 		let lStrAffichee = "";
 		let lStrAuteur = "";
-		let lClassCss = ["p-top-l"];
+		let lClassCss = ["p-top-l", "alert-color"];
 		if (
 			aParams.article.getGenre() === Enumere_Ressource_1.EGenreRessource.Absence
 		) {
@@ -907,6 +853,29 @@ class DonneesListe_Absences extends ObjetDonneesListeFlatDesign_1.ObjetDonneesLi
 		}
 		return H.join("");
 	}
+	jsxTooltipCommentaire(aAbsence) {
+		let lHint = "";
+		if (aAbsence) {
+			lHint = this.utilitaireAbsence
+				.getCommentaireDAbsence(
+					aAbsence,
+					GEtatUtilisateur.getUtilisateur().getGenre() ===
+						Enumere_Ressource_1.EGenreRessource.Responsable,
+				)
+				.replace(/\n/g, "<br />");
+		}
+		return lHint;
+	}
+	jsxTooltipPJ(aAbsence) {
+		const lResult = [];
+		for (let i = 0; i < aAbsence.documents.count(); i++) {
+			const lDocument = aAbsence.documents.get(i);
+			if (lDocument.existe()) {
+				lResult.push(lDocument.hint);
+			}
+		}
+		return lResult.join("<br />");
+	}
 	getZoneComplementaire(aParams) {
 		if (
 			[
@@ -960,9 +929,11 @@ class DonneesListe_Absences extends ObjetDonneesListeFlatDesign_1.ObjetDonneesLi
 										{ class: "iconVSAbsence" },
 										IE.jsx.str("i", {
 											class: "icon_piece_jointe",
-											"ie-hint": (0, jsx_1.jsxFuncAttr)("hintPJ", [
-												aParams.article.getNumero(),
-											]),
+											role: "img",
+											"ie-tooltiplabel": this.jsxTooltipPJ.bind(
+												this,
+												aParams.article,
+											),
 										}),
 									),
 								lAvecCommentaire &&
@@ -971,9 +942,11 @@ class DonneesListe_Absences extends ObjetDonneesListeFlatDesign_1.ObjetDonneesLi
 										{ class: "iconVSAbsence" },
 										IE.jsx.str("i", {
 											class: "icon_nouvelle_conversation",
-											"ie-hint": (0, jsx_1.jsxFuncAttr)("hintCommentaire", [
-												aParams.article.getNumero(),
-											]),
+											role: "img",
+											"ie-tooltiplabel": this.jsxTooltipCommentaire.bind(
+												this,
+												aParams.article,
+											),
 										}),
 									),
 							),

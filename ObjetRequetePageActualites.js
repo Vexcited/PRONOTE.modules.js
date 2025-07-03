@@ -1,40 +1,33 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-class ObjetRequetePageActualites extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
-	lancerRequete(aParametres) {
-		$.extend(this.JSON, aParametres);
-		return this.appelAsynchrone();
-	}
+exports.ObjetRequetePageActualites = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+class ObjetRequetePageActualites extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	actionApresRequete() {
 		let lListeCategories = null;
 		if (this.JSONReponse.listeCategories) {
 			lListeCategories = this.JSONReponse.listeCategories;
-			const lCategorie = new ObjetElement(
-				GTraductions.getValeur("actualites.ToutesCategories"),
+			const lCategorie = new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur("actualites.ToutesCategories"),
 				0,
 			);
 			lCategorie.toutesLesCategories = true;
 			lListeCategories.addElement(lCategorie);
 			lListeCategories.setTri([
-				ObjetTri.init((D) => {
+				ObjetTri_1.ObjetTri.init((D) => {
 					return !D.toutesLesCategories;
 				}),
-				ObjetTri.init("Libelle"),
+				ObjetTri_1.ObjetTri.init("Libelle"),
 			]);
 			lListeCategories.trier();
 		}
-		const lTabModeAff = this.JSONReponse.listeModesAff;
-		this.callbackReussite.appel({
-			listeCategories: lListeCategories,
-			tabModeAff: lTabModeAff,
-		});
+		this.callbackReussite.appel(this.JSONReponse);
 	}
 }
-Requetes.inscrire("PageActualites", ObjetRequetePageActualites);
-module.exports = { ObjetRequetePageActualites };
+exports.ObjetRequetePageActualites = ObjetRequetePageActualites;
+CollectionRequetes_1.Requetes.inscrire(
+	"PageActualites",
+	ObjetRequetePageActualites,
+);

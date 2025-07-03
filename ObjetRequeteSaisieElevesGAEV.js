@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieElevesGAEV extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieElevesGAEV = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieElevesGAEV extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParametres) {
 		this.JSON = $.extend(
 			{
@@ -22,8 +20,11 @@ class ObjetRequeteSaisieElevesGAEV extends ObjetRequeteSaisie {
 				message: this.JSONRapportSaisie.erreur,
 			});
 		}
-		this.callbackReussite.appel(this.JSONRapportSaisie, aGenreReponse);
+		this.callbackReussite.appel(this.JSONRapportSaisie);
 	}
 }
-Requetes.inscrire("SaisieElevesGAEV", ObjetRequeteSaisieElevesGAEV);
-module.exports = ObjetRequeteSaisieElevesGAEV;
+exports.ObjetRequeteSaisieElevesGAEV = ObjetRequeteSaisieElevesGAEV;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieElevesGAEV",
+	ObjetRequeteSaisieElevesGAEV,
+);

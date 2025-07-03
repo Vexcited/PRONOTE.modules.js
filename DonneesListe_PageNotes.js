@@ -1,33 +1,70 @@
-const { MethodesObjet } = require("MethodesObjet.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { TypeNote } = require("TypeNote.js");
-const { MoteurNotesCP } = require("MoteurNotesCP.js");
-const { TypeFusionTitreListe } = require("TypeFusionTitreListe.js");
-const { GChaine } = require("ObjetChaine.js");
-const { GImage } = require("ObjetImage.js");
-const {
-	EGenreEvenementSaisieNotes,
-} = require("Enumere_EvenementSaisieNotes.js");
-const { GStyle } = require("ObjetStyle.js");
-const { EGenreEleveDansDevoir } = require("Enumere_EleveDansDevoir.js");
-const { TypeThemeBouton } = require("Type_ThemeBouton.js");
-const {
-	EGenreEvenementNotesEtAppreciations,
-} = require("Enumere_EvenementNotesEtAppreciations.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { ModeAffichageHeureAbsence } = require("TypeHeuresAbsences.js");
-const { TUtilitaireDuree } = require("UtilitaireDuree.js");
-const { EGenreCommandeMenu } = require("Enumere_CommandeMenu.js");
-class DonneesListe_PageNotes extends ObjetDonneesListe {
+exports.DonneesListe_PageNotes = void 0;
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetListe_1 = require("ObjetListe");
+const TypeNote_1 = require("TypeNote");
+const MoteurNotesCP_1 = require("MoteurNotesCP");
+const TypeFusionTitreListe_1 = require("TypeFusionTitreListe");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetImage_1 = require("ObjetImage");
+const Enumere_EvenementSaisieNotes_1 = require("Enumere_EvenementSaisieNotes");
+const ObjetStyle_1 = require("ObjetStyle");
+const Enumere_EleveDansDevoir_1 = require("Enumere_EleveDansDevoir");
+const Type_ThemeBouton_1 = require("Type_ThemeBouton");
+const Enumere_EvenementNotesEtAppreciations_1 = require("Enumere_EvenementNotesEtAppreciations");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const TypeHeuresAbsences_1 = require("TypeHeuresAbsences");
+const UtilitaireDuree_1 = require("UtilitaireDuree");
+const Enumere_CommandeMenu_1 = require("Enumere_CommandeMenu");
+const AccessApp_1 = require("AccessApp");
+const ObjetFenetre_MoyenneTableauResultats_1 = require("ObjetFenetre_MoyenneTableauResultats");
+class DonneesListe_PageNotes extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParam) {
 		super(aDonnees.listeEleves);
+		this.genreNote = {
+			devoir: 0,
+			devoirRattrapage: 1,
+			moyenneRattrapage: 2,
+			serviceRattrapage: 3,
+		};
+		this.genreRattrapage = {
+			GR_Meilleure: 0,
+			GR_Moyenne: 1,
+			GR_Rattrapage: 2,
+			GR_RattrapageService: 3,
+		};
+		this.genreMoyenne = {
+			GM_Moyenne: 0,
+			GM_MoyenneBrute: 1,
+			GM_MoyennePeriode: 2,
+			GM_MoyenneSousService: 3,
+			GM_MoyenneGenreNotation: 4,
+			GM_MoyenneAvRattrapageService: 5,
+		};
+		this.genreColonne = {
+			Eleve: -5,
+			Classe: -4,
+			Moyenne: -3,
+			MoyenneBrute: -2,
+			BonusMalus: -1,
+			MoyennePeriode: -100,
+			MoyennePeriodeBrute: -200,
+			MoyenneSousService: -300,
+			MoyenneSousServiceBrute: -400,
+			MoyenneGenreNotation: -500,
+			MoyenneGenreNotationBrute: -600,
+			Devoir: -700,
+			TDOption: -6,
+			Absences: -7,
+			MoyenneAvRattrapageService: -8,
+			MoyNR: -9,
+		};
 		this.moteurNotesCP = aParam.moteurNotesCP;
 		this.NbrEleves = aDonnees.listeEleves.count();
 		this.NbrDevoirs = aDonnees.listeDevoirs.count();
@@ -35,10 +72,10 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 		this.param = $.extend(
 			{
 				avecColonneClasse: false,
-				matiere: new ObjetElement(),
-				service: new ObjetElement(),
-				periode: new ObjetElement(),
-				listeClasses: new ObjetListeElements(),
+				matiere: new ObjetElement_1.ObjetElement(),
+				service: new ObjetElement_1.ObjetElement(),
+				periode: new ObjetElement_1.ObjetElement(),
+				listeClasses: new ObjetListeElements_1.ObjetListeElements(),
 				forcerMoyenneBruteDevoir: false,
 				forcerSansSousService: false,
 				avecNomMatiere: false,
@@ -95,47 +132,9 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 		this.idBtnCreerDevoir = "_BtnCreerDevoir";
 		this.affichageAnciensEleves = this.param.avecAffichageAnciens;
 		this.avecColonneTDOption = false;
-		this.genreNote = {
-			devoir: 0,
-			devoirRattrapage: 1,
-			moyenneRattrapage: 2,
-			serviceRattrapage: 3,
-		};
-		this.genreRattrapage = {
-			GR_Meilleure: 0,
-			GR_Moyenne: 1,
-			GR_Rattrapage: 2,
-			GR_RattrapageService: 3,
-		};
-		this.genreMoyenne = {
-			GM_Moyenne: 0,
-			GM_MoyenneBrute: 1,
-			GM_MoyennePeriode: 2,
-			GM_MoyenneSousService: 3,
-			GM_MoyenneGenreNotation: 4,
-			GM_MoyenneAvRattrapageService: 5,
-		};
-		this.genreColonne = {
-			Eleve: -5,
-			Classe: -4,
-			Moyenne: -3,
-			MoyenneBrute: -2,
-			BonusMalus: -1,
-			MoyennePeriode: -100,
-			MoyennePeriodeBrute: -200,
-			MoyenneSousService: -300,
-			MoyenneSousServiceBrute: -400,
-			MoyenneGenreNotation: -500,
-			MoyenneGenreNotationBrute: -600,
-			Devoir: -700,
-			TDOption: -6,
-			Absences: -7,
-			MoyenneAvRattrapageService: -8,
-			MoyNR: -9,
-		};
 		this.avecRattrapageService = false;
 		this.listeDevoirs.parcourir((aDevoir) => {
-			const lDevoirRattrapage = _getDevoirRattrapage(aDevoir);
+			const lDevoirRattrapage = this._getDevoirRattrapage(aDevoir);
 			const lServiceRattrapage =
 				lDevoirRattrapage &&
 				lDevoirRattrapage.genreRattrapage ===
@@ -180,7 +179,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 				baremeParDefaut: this.param.baremeParDefaut,
 			});
 		}
-		_calculerMoyennes.call(this);
+		this._calculerMoyennes();
 		this.param.instance.setOptionsListe({
 			colonnes: this._getContexteColonnes(
 				aDonnees.listeEleves,
@@ -189,7 +188,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 			colonnesCachees: this._getContexteColonnesCachees(),
 			colonnesTriables: this._getContexteColonnesTriables(),
 			hauteurAdapteContenu: Infinity,
-			scrollHorizontal: _getIdByCol({
+			scrollHorizontal: this._getIdByCol({
 				id: DonneesListe_PageNotes.colonnes.devoir,
 				indice: 0,
 			}),
@@ -201,7 +200,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 			avecSelectionLigneSurImpression: false,
 			boutons: [
 				{
-					genre: ObjetListe.typeBouton.exportCSV,
+					genre: ObjetListe_1.ObjetListe.typeBouton.exportCSV,
 					getNomFichier: function () {
 						return (
 							lThis.Service.getLibelle() || lThis.Service.matiere.getLibelle()
@@ -221,8 +220,8 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 			avecCelluleSuivanteSurFinEdition: true,
 		});
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
+	getControleur(aInstance, aListe) {
+		return $.extend(true, super.getControleur(aInstance, aListe), {
 			getEditionDevoir: function (I) {
 				$(this.node).eventValidation(() => {
 					aInstance.surEditionDevoir(I);
@@ -251,8 +250,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 					if (aInstance.Service.avecSousService > 0) {
 						let lFlag = false;
 						for (
-							let i = 0,
-								lNbr = aInstance.Service.listeServices.count() && !lFlag;
+							let i = 0, lNbr = aInstance.Service.listeServices.count();
 							i < lNbr;
 							i++
 						) {
@@ -264,6 +262,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 									lService.groupe.getNumero() !== 0)
 							) {
 								lFlag = true;
+								break;
 							}
 						}
 						lEstClasseXORGroupe = !lFlag;
@@ -290,7 +289,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 		});
 	}
 	avecEvenementSelectionClick(aParams) {
-		if (_estCellMethodeCalculMoyenne.call(this, aParams.article, aParams)) {
+		if (this._estCellMethodeCalculMoyenne(aParams.article, aParams)) {
 			switch (aParams.declarationColonne.genreColonne) {
 				case this.genreColonne.Moyenne:
 					this.surEvntMethodeCalculMoyenne(
@@ -341,7 +340,9 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 		} else if (aParams.idColonne === DonneesListe_PageNotes.colonnes.absences) {
 			const lEleve = this.Donnees.getElementParNumero(aParams.article.Numero);
 			const lParamEvnt = {
-				genreEvnt: EGenreEvenementSaisieNotes.ClicCelluleAbsences,
+				genreEvnt:
+					Enumere_EvenementSaisieNotes_1.EGenreEvenementSaisieNotes
+						.ClicCelluleAbsences,
 				eleve: lEleve,
 			};
 			if (this.param.avecColonneClasse) {
@@ -352,8 +353,30 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 		}
 		return false;
 	}
+	getAriaHasPopup(aParams) {
+		if (this.estCelluleAvecActionFenetreMoyenne(aParams)) {
+			return "dialog";
+		}
+		return false;
+	}
+	estCelluleAvecActionFenetreMoyenne(aParams) {
+		if (
+			this._estCellMethodeCalculMoyenne(aParams.article, aParams) &&
+			[
+				this.genreColonne.Moyenne,
+				this.genreColonne.MoyenneAvRattrapageService,
+				this.genreColonne.MoyenneBrute,
+				this.genreColonne.MoyennePeriode,
+				this.genreColonne.MoyenneSousService,
+				this.genreColonne.MoyenneGenreNotation,
+			].includes(aParams.declarationColonne.genreColonne)
+		) {
+			return true;
+		}
+		return false;
+	}
 	avecEdition(aParams) {
-		return _estCellEditable.call(this, aParams);
+		return this._estCellEditable(aParams);
 	}
 	avecEvenementEdition(aParams) {
 		switch (aParams.declarationColonne.genreColonne) {
@@ -370,7 +393,8 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 		if (lEleve) {
 			for (const x in lEleve.dansDevoir) {
 				if (
-					lEleve.dansDevoir[x] === EGenreEleveDansDevoir.Non &&
+					lEleve.dansDevoir[x] ===
+						Enumere_EleveDansDevoir_1.EGenreEleveDansDevoir.Non &&
 					lEleve.listeDevoirs &&
 					lEleve.listeDevoirs.getElementParNumero(x) &&
 					lEleve.listeDevoirs.getElementParNumero(x).note &&
@@ -389,7 +413,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 		}
 		aParametres.menuContextuel.addCommande(
 			1,
-			GTraductions.getValeur(
+			ObjetTraduction_1.GTraductions.getValeur(
 				"Notes.MenuContext.SupprimerLesNotesNonComptabilises",
 			),
 			true,
@@ -397,14 +421,17 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 		aParametres.menuContextuel.setDonnees();
 	}
 	getValeursMoy(aParam) {
-		let lNote, lNoteRattrapageService, lRattraperNote;
-		lNote = aParam.article.moyennes[MoteurNotesCP.genreMoyenne.Moyenne];
-		lNoteRattrapageService = this.moteurNotesCP.getNoteRattrapageServiceDEleve({
-			eleve: aParam.article,
-			listeDevoirs: this.listeDevoirs,
-			baremeParDefaut: this.param.baremeParDefaut,
-		});
-		lRattraperNote =
+		const lNote =
+			aParam.article.moyennes[
+				MoteurNotesCP_1.MoteurNotesCP.genreMoyenne.Moyenne
+			];
+		const lNoteRattrapageService =
+			this.moteurNotesCP.getNoteRattrapageServiceDEleve({
+				eleve: aParam.article,
+				listeDevoirs: this.listeDevoirs,
+				baremeParDefaut: this.param.baremeParDefaut,
+			});
+		const lRattraperNote =
 			!this.periodesPourCalculMoyennes() &&
 			!this.avecSousServices &&
 			!!lNoteRattrapageService &&
@@ -453,31 +480,33 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 			case this.genreColonne.MoyNR:
 				if (aParams.article.estMoyNR === true) {
 					return lSurExportCSV === true
-						? GTraductions.getValeur("Notes.Colonne.TitreMoyNR")
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"Notes.Colonne.TitreMoyNR",
+							)
 						: this.moteurNotesCP.composeHtmlMoyNR();
 				} else {
 					return "";
 				}
 			case this.genreColonne.MoyenneAvRattrapageService:
 				return aParams.article.moyennes[
-					MoteurNotesCP.genreMoyenne.MoyenneAvRattrapageService
+					MoteurNotesCP_1.MoteurNotesCP.genreMoyenne.MoyenneAvRattrapageService
 				];
 			case this.genreColonne.MoyenneBrute:
 				return aParams.article.moyennes[
-					MoteurNotesCP.genreMoyenne.MoyenneBrute
+					MoteurNotesCP_1.MoteurNotesCP.genreMoyenne.MoyenneBrute
 				];
 			case this.genreColonne.BonusMalus:
 				if (
 					!aParams.surEdition &&
-					_getBonusMalus.call(this, aParams.article).valeur === 0
+					this._getBonusMalus(aParams.article).getValeur() === 0
 				) {
 					return null;
 				}
-				return _getBonusMalus.call(this, aParams.article);
+				return this._getBonusMalus(aParams.article);
 			case this.genreColonne.MoyennePeriode:
 				lNote =
 					aParams.article.moyennes[
-						MoteurNotesCP.genreMoyenne.MoyennePeriode -
+						MoteurNotesCP_1.MoteurNotesCP.genreMoyenne.MoyennePeriode -
 							aParams.declarationColonne.rangColonne
 					];
 				if (
@@ -513,7 +542,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 			case this.genreColonne.MoyenneSousService:
 				lNote =
 					aParams.article.moyennes[
-						MoteurNotesCP.genreMoyenne.MoyenneSousService -
+						MoteurNotesCP_1.MoteurNotesCP.genreMoyenne.MoyenneSousService -
 							aParams.declarationColonne.rangColonne
 					];
 				lNoteEleveRattrapageService =
@@ -541,7 +570,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 				return lNote;
 			case this.genreColonne.MoyenneGenreNotation:
 				return aParams.article.moyennes[
-					MoteurNotesCP.genreMoyenne.MoyenneGenreNotation -
+					MoteurNotesCP_1.MoteurNotesCP.genreMoyenne.MoyenneGenreNotation -
 						aParams.declarationColonne.rangColonne
 				];
 			case this.genreColonne.Devoir:
@@ -550,15 +579,12 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 				return "";
 		}
 	}
-	getWAIIdColonnePourDescription(aParams) {
-		if (aParams.declarationColonne.genreColonne !== this.genreColonne.Eleve) {
-			return DonneesListe_PageNotes.colonnes.eleves;
-		}
-		return null;
+	estCelluleWAIRowHeader(aParams) {
+		return aParams.declarationColonne.genreColonne === this.genreColonne.Eleve;
 	}
 	getWAIInputEdition(aParams) {
-		if (_estColDevoir.call(this, aParams)) {
-			return GTraductions.getValeur("PageNotes.WAINoteDe_S", [
+		if (this._estColDevoir(aParams)) {
+			return ObjetTraduction_1.GTraductions.getValeur("PageNotes.WAINoteDe_S", [
 				aParams.article.getLibelle(),
 			]);
 		}
@@ -566,55 +592,138 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 	}
 	getTypeValeur(aParams) {
 		if (
-			_estColDevoir.call(this, aParams) ||
+			this._estColDevoir(aParams) ||
 			aParams.idColonne === DonneesListe_PageNotes.colonnes.bonusMalus
 		) {
-			return ObjetDonneesListe.ETypeCellule.Note;
+			return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Note;
 		}
-		return ObjetDonneesListe.ETypeCellule.Html;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 	}
-	getHintForce(aParams) {
-		if (_estColDevoir.call(this, aParams)) {
+	getTooltip(aParams) {
+		if (this._estColDevoir(aParams)) {
 			const lDevoir = this.listeDevoirs.get(
 				aParams.declarationColonne.rangColonne,
 			);
-			const lMessage = this.moteurNotesCP.getMsgNoteNonEditable({
+			const lEleve = aParams.article;
+			let lMessage = this.moteurNotesCP.getMsgNoteNonEditable({
 				devoir: lDevoir,
-				eleve: aParams.article,
+				eleve: lEleve,
 				eleveDevoir: lDevoir.listeEleves.getElementParNumero(
-					aParams.article.getNumero(),
+					lEleve.getNumero(),
 				),
 				devoirDansPeriode: this.devoirDansPeriode.bind(this),
 			});
+			const lEleveDevoir = this._getEleveDevoir(aParams);
+			const lDevoirRattrapage = this._getDevoirRattrapage(lDevoir);
+			const lEleveDevoirRattrapage =
+				lDevoirRattrapage &&
+				lDevoirRattrapage.objetListeEleves &&
+				lDevoirRattrapage.objetListeEleves[lEleve.getNumero()]
+					? lDevoirRattrapage.objetListeEleves[lEleve.getNumero()]
+					: null;
+			const lNoteRattrapage =
+				lEleveDevoirRattrapage && lEleveDevoirRattrapage.Note
+					? lEleveDevoirRattrapage.Note
+					: new TypeNote_1.TypeNote("");
+			const lDevoirRattrapageMoy =
+				lDevoirRattrapage &&
+				lDevoirRattrapage.genreRattrapage ===
+					this.getGenreRattrapage(this.genreRattrapage.GR_Moyenne);
+			const lMoyenneRattrapage = lDevoirRattrapageMoy
+				? this.moteurNotesCP.getMoyenneNotesRattrapage(
+						lEleveDevoir.Note,
+						lNoteRattrapage,
+						lDevoirRattrapage.noteSeuil,
+					)
+				: new TypeNote_1.TypeNote("");
+			const lNote = aParams.declarationColonne.estRattrapageDevoir
+				? aParams.declarationColonne.estRattrapageMoyenne
+					? lMoyenneRattrapage
+					: lNoteRattrapage
+				: lEleveDevoir.Note;
+			if (
+				this.moteurNotesCP.afficherCommeUnBonus({
+					note: lNote,
+					devoir: lDevoir,
+					service: this.Service,
+				})
+			) {
+				lMessage =
+					ObjetTraduction_1.GTraductions.getValeur(
+						"Notes.Message.NoteNonPriseEnCompte",
+					) + (lMessage ? "\n" + lMessage : "");
+			}
+			if (
+				this.estNotePonderee({
+					note: lEleveDevoir ? lEleveDevoir.Note : new TypeNote_1.TypeNote(""),
+					noteRattrapage: lNoteRattrapage,
+					devoirRattrapageMoy: lDevoirRattrapageMoy,
+					devoirRattrapage: lDevoirRattrapage,
+					declarationColonne: aParams.declarationColonne,
+				})
+			) {
+				lMessage =
+					ObjetTraduction_1.GTraductions.getValeur(
+						"Notes.Message.NotePonderee",
+					) + (lMessage ? "\n" + lMessage : "");
+			}
 			return lMessage;
 		}
 		if (aParams.idColonne === DonneesListe_PageNotes.colonnes.bonusMalus) {
-			if (_estDonneeCloture.call(this, aParams)) {
-				return GTraductions.getValeur("PeriodeCloturee");
+			if (this._estDonneeCloture(aParams)) {
+				return ObjetTraduction_1.GTraductions.getValeur("PeriodeCloturee");
 			} else {
 				const lPeriodeBonus = aParams.article.listePeriodes.getElementParNumero(
 					this.periode.getNumero(),
 				);
 				if (
-					_estBonusMalusConformeAbsences(
+					this._estBonusMalusConformeAbsences(
 						lPeriodeBonus.bonusMalus,
 						lPeriodeBonus.malusAbsences,
 					) &&
 					!this.param.pourImpression
 				) {
-					return GTraductions.getValeur("Notes.HintMalusAbsences");
+					return ObjetTraduction_1.GTraductions.getValeur(
+						"Notes.HintMalusAbsences",
+					);
 				}
 			}
 		}
 		if (aParams.idColonne === DonneesListe_PageNotes.colonnes.moyNR) {
-			if (_estDonneeCloture.call(this, aParams)) {
-				return GTraductions.getValeur("PeriodeCloturee");
+			if (this._estDonneeCloture(aParams)) {
+				return ObjetTraduction_1.GTraductions.getValeur("PeriodeCloturee");
 			} else {
 				if (aParams.article.estMoyNR) {
-					return GTraductions.getValeur("Notes.Colonne.HintMoyenneNR");
+					return ObjetTraduction_1.GTraductions.getValeur(
+						"Notes.Colonne.HintMoyenneNR",
+					);
 				}
 			}
 		}
+		let lMessage = "";
+		if (this.estCelluleAvecActionFenetreMoyenne(aParams)) {
+			lMessage =
+				ObjetFenetre_MoyenneTableauResultats_1
+					.TradObjetFenetre_MoyenneTableauResultats.OuvrirFenetre;
+		}
+		if (aParams.idColonne === DonneesListe_PageNotes.colonnes.moyenne) {
+			const lValeursMoy = this.getValeursMoy({ article: aParams.article });
+			let lNote = lValeursMoy.note;
+			const lNoteEleveRattrapageService = lValeursMoy.noteRattrapage;
+			if (lValeursMoy.rattraperNote) {
+				lNote = lNoteEleveRattrapageService;
+			}
+			if (
+				this.Service.facultatif === true &&
+				lNote.getValeur() <= this.param.baremeParDefaut.getValeur() / 2
+			) {
+				lMessage =
+					ObjetTraduction_1.GTraductions.getValeur(
+						"Notes.Message.MoyenneNonPriseEnCompte",
+					) + (lMessage ? "\n" + lMessage : "");
+			}
+		}
+		return lMessage;
 	}
 	getClass(aParams) {
 		const T = [];
@@ -633,7 +742,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 			this.param.avecColNR &&
 			aParams.article.estMoyNR
 		) {
-			T.push("Gris");
+			T.push("color-neutre-sombre");
 		}
 		if (aParams.idColonne === DonneesListe_PageNotes.colonnes.absences) {
 			const lDuree = this.getDureeAbsence(
@@ -644,17 +753,17 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 				T.push("AvecMain");
 			}
 		}
-		if (_estColDevoir.call(this, aParams)) {
-			const lEleveDevoir = _getEleveDevoir(aParams);
-			if (_estExecKiosque.call(this, lEleveDevoir)) {
+		if (this._estColDevoir(aParams)) {
+			const lEleveDevoir = this._getEleveDevoir(aParams);
+			if (this._estExecKiosque(lEleveDevoir)) {
 				T.push("LienAccueil", "AvecMain");
 			}
-			const lDevoir = _getDevoir(aParams);
-			const lDevoirRattrapage = _getDevoirRattrapage(lDevoir);
+			const lDevoir = this._getDevoir(aParams);
+			const lDevoirRattrapage = this._getDevoirRattrapage(lDevoir);
 			if (
 				lDevoirRattrapage &&
 				aParams.declarationColonne.estRattrapageDevoir &&
-				!_avecSasieRattrapage.call(this, {
+				!this._avecSaisieRattrapage({
 					eleve: aParams.article,
 					eleveDevoir: lEleveDevoir,
 					devoir: lDevoir,
@@ -669,10 +778,11 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 				T.push("note-rattrapage");
 			}
 			const lEleveDevoirRattrapage =
+				lDevoirRattrapage &&
 				lDevoirRattrapage.objetListeEleves &&
 				lDevoirRattrapage.objetListeEleves[aParams.article.getNumero()]
 					? lDevoirRattrapage.objetListeEleves[aParams.article.getNumero()]
-					: false;
+					: null;
 			const lDevoirRattrapageMoy =
 				lDevoirRattrapage &&
 				lDevoirRattrapage.genreRattrapage ===
@@ -680,105 +790,57 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 			const lNoteRattrapage =
 				lEleveDevoirRattrapage && lEleveDevoirRattrapage.Note
 					? lEleveDevoirRattrapage.Note
-					: new TypeNote("");
-			const lNote = lEleveDevoir ? lEleveDevoir.Note : new TypeNote("");
-			let lAfficherCommePlusBasseRattrap = false,
-				lAfficherCommePlusHauteRattrap = false;
-			let lAfficherCommePlusBasseMoyRattrap = false,
-				lAfficherCommePlusHauteMoyRattrap = false;
-			let lAfficherCommePlusHaute = _afficherCommePlusHaute.call(
-				this,
-				lNote,
-				this.Service,
-			);
-			if (lAfficherCommePlusHaute) {
-				if (
-					lDevoirRattrapage &&
-					!lDevoirRattrapageMoy &&
-					lNoteRattrapage.estUneValeur() &&
-					(lNote.getValeur() <= lNoteRattrapage.getValeur() ||
-						!lNote.estUneValeur())
-				) {
-					lAfficherCommePlusHauteRattrap = true;
-					lAfficherCommePlusHaute = false;
-				} else if (lDevoirRattrapage && lDevoirRattrapageMoy) {
-					lAfficherCommePlusHauteMoyRattrap = true;
-					lAfficherCommePlusHaute = false;
-				}
-			}
-			let lAfficherCommePlusBasse = _afficherCommePlusBasse.call(
-				this,
-				lNote,
-				this.Service,
-			);
-			if (lAfficherCommePlusBasse) {
-				if (
-					lDevoirRattrapage &&
-					!lDevoirRattrapageMoy &&
-					lNoteRattrapage.estUneValeur() &&
-					(lNote.getValeur() > lNoteRattrapage.getValeur() ||
-						!lNote.estUneValeur())
-				) {
-					lAfficherCommePlusBasseRattrap = true;
-					lAfficherCommePlusBasse = false;
-				} else if (lDevoirRattrapage && lDevoirRattrapageMoy) {
-					lAfficherCommePlusBasseMoyRattrap = true;
-					lAfficherCommePlusBasse = false;
-				}
-			}
+					: new TypeNote_1.TypeNote("");
+			const lNote = lEleveDevoir
+				? lEleveDevoir.Note
+				: new TypeNote_1.TypeNote("");
 			if (
-				aParams.declarationColonne.estRattrapageDevoir &&
-				aParams.declarationColonne.estRattrapageMoyenne
+				this.estNotePonderee({
+					note: lNote,
+					noteRattrapage: lNoteRattrapage,
+					devoirRattrapageMoy: lDevoirRattrapageMoy,
+					devoirRattrapage: lDevoirRattrapage,
+					declarationColonne: aParams.declarationColonne,
+				})
 			) {
-				if (
-					lAfficherCommePlusHauteMoyRattrap ||
-					lAfficherCommePlusBasseMoyRattrap
-				) {
-					T.push("Gras");
-				}
-			} else if (aParams.declarationColonne.estRattrapageDevoir) {
-				if (lAfficherCommePlusHauteRattrap || lAfficherCommePlusBasseRattrap) {
-					T.push("Gras");
-				}
-			} else {
-				if (lAfficherCommePlusHaute || lAfficherCommePlusBasse) {
-					T.push("Gras");
-				}
+				T.push("Gras");
 			}
 		}
 		return T.join(" ");
 	}
 	getClassCelluleConteneur(aParams) {
 		const T = [];
-		if (_estCellMethodeCalculMoyenne.call(this, aParams.article, aParams)) {
+		if (this._estCellMethodeCalculMoyenne(aParams.article, aParams)) {
 			T.push("Curseur_MethodeCalculMoyenneActif");
 		}
-		return T;
+		return T.join("");
 	}
 	getCouleurCellule(aParams, aCouleurCellule) {
 		const lPourImpression = this.param.pourImpression;
-		if (_estColDevoir.call(this, aParams)) {
+		if (this._estColDevoir(aParams)) {
 			const lEleve = aParams.article;
-			const lDevoir = _getDevoir(aParams);
-			const lEleveDevoir = _getEleveDevoir(aParams);
+			const lDevoir = this._getDevoir(aParams);
+			const lEleveDevoir = this._getEleveDevoir(aParams);
 			const lNote = lEleveDevoir.Note;
-			const lDevoirRattrapage = _getDevoirRattrapage(lDevoir);
+			const lDevoirRattrapage = this._getDevoirRattrapage(lDevoir);
 			const lEleveDevoirRattrapage =
+				lDevoirRattrapage &&
 				lDevoirRattrapage.objetListeEleves &&
 				lDevoirRattrapage.objetListeEleves[lEleve.getNumero()]
 					? lDevoirRattrapage.objetListeEleves[lEleve.getNumero()]
-					: false;
+					: null;
 			const lNoteRattrapage =
 				lEleveDevoirRattrapage && lEleveDevoirRattrapage.Note
 					? lEleveDevoirRattrapage.Note
-					: new TypeNote("");
+					: new TypeNote_1.TypeNote("");
 			const lDevoirRattrapageGenreRattrapage =
 				lDevoirRattrapage &&
 				lDevoirRattrapage.genreRattrapage ===
 					this.getGenreRattrapage(this.genreRattrapage.GR_Rattrapage);
 			const lDevoirRattrapageMoy =
+				lDevoirRattrapage &&
 				lDevoirRattrapage.genreRattrapage ===
-				this.getGenreRattrapage(this.genreRattrapage.GR_Moyenne);
+					this.getGenreRattrapage(this.genreRattrapage.GR_Moyenne);
 			const lServiceRattrapage =
 				lDevoirRattrapage &&
 				lDevoirRattrapage.genreRattrapage ===
@@ -803,7 +865,8 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 					service: this.Service,
 				})
 			) {
-				aCouleurCellule.texte = GCouleur.grisTresFonce;
+				aCouleurCellule.texte = (0,
+				AccessApp_1.getApp)().getCouleur().grisTresFonce;
 				return aCouleurCellule;
 			}
 			if (lDevoirRattrapageMoy) {
@@ -840,7 +903,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 				if (!aParams.declarationColonne.estRattrapageMoyenne) {
 					if (aParams.declarationColonne.estRattrapageDevoir) {
 						lCouleurNoteRattrapage = lRattrapageMoinsBon
-							? GCouleur.grisTresFonce
+							? (0, AccessApp_1.getApp)().getCouleur().grisTresFonce
 							: this.getCouleurDeNoteDeDevoir(
 									lNoteCourrante,
 									lDevoir,
@@ -848,7 +911,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 								);
 					} else {
 						lCouleurNoteRattrapage = lNoteMoinsBonne
-							? GCouleur.grisTresFonce
+							? (0, AccessApp_1.getApp)().getCouleur().grisTresFonce
 							: this.getCouleurDeNoteDeDevoir(
 									lNoteCourrante,
 									lDevoir,
@@ -890,10 +953,8 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 					this.genreColonne.MoyenneBrute &&
 				!!this.Service
 			) {
-				let lService = _getServiceOuSousServiceDeLaColonneMoyenne.call(
-					this,
-					lGenreColonne,
-				);
+				let lService =
+					this._getServiceOuSousServiceDeLaColonneMoyenne(lGenreColonne);
 				if (!lService) {
 					lService = this.Service;
 				}
@@ -914,7 +975,8 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 					this.Service.facultatif === true &&
 					lNoteMoy.getValeur() <= this.param.baremeParDefaut.getValeur() / 2
 				) {
-					aCouleurCellule.texte = GCouleur.grisTresFonce;
+					aCouleurCellule.texte = (0,
+					AccessApp_1.getApp)().getCouleur().grisTresFonce;
 				} else {
 					aCouleurCellule.texte = this.getCouleurDeNoteSousSeuil(
 						lNoteMoy,
@@ -1004,7 +1066,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 		}
 	}
 	getValeurPourTri(aColonne, aArticle) {
-		const lCol = _getColById(this.getId(aColonne));
+		const lCol = this._getColById(this.getId(aColonne));
 		switch (lCol.id) {
 			case DonneesListe_PageNotes.colonnes.eleves:
 				return aArticle.Position;
@@ -1020,21 +1082,25 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 				return lNote;
 			}
 			case DonneesListe_PageNotes.colonnes.moyenneBrute:
-				return aArticle.moyennes[MoteurNotesCP.genreMoyenne.MoyenneBrute];
+				return aArticle.moyennes[
+					MoteurNotesCP_1.MoteurNotesCP.genreMoyenne.MoyenneBrute
+				];
 			case DonneesListe_PageNotes.colonnes.moyenneSousService:
 				return aArticle.moyennes[
-					MoteurNotesCP.genreMoyenne.MoyenneSousService - lCol.indice
+					MoteurNotesCP_1.MoteurNotesCP.genreMoyenne.MoyenneSousService -
+						lCol.indice
 				];
 			case DonneesListe_PageNotes.colonnes.moyenneGenreNotation:
 				return aArticle.moyennes[
-					MoteurNotesCP.genreMoyenne.MoyenneGenreNotation - lCol.indice
+					MoteurNotesCP_1.MoteurNotesCP.genreMoyenne.MoyenneGenreNotation -
+						lCol.indice
 				];
 			case DonneesListe_PageNotes.colonnes.moyenneAvRattrapageService:
 				return aArticle.moyennes[
-					MoteurNotesCP.genreMoyenne.MoyenneAvRattrapageService
+					MoteurNotesCP_1.MoteurNotesCP.genreMoyenne.MoyenneAvRattrapageService
 				];
 			case DonneesListe_PageNotes.colonnes.bonusMalus:
-				return _getBonusMalus.call(this, aArticle).getValeur();
+				return this._getBonusMalus(aArticle).getValeur();
 			case DonneesListe_PageNotes.colonnes.moyNR:
 				return aArticle.estMoyNR;
 			default:
@@ -1045,13 +1111,13 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 		let lTris = [];
 		const lThis = this;
 		const lGenreTriInverse = aGenreTri === -1 ? 1 : -1;
-		if (MethodesObjet.isNumber(aColonneDeTri)) {
-			const lCol = _getColById(this.getId(aColonneDeTri));
+		if (MethodesObjet_1.MethodesObjet.isNumber(aColonneDeTri)) {
+			const lCol = this._getColById(this.getId(aColonneDeTri));
 			switch (lCol.id) {
 				case DonneesListe_PageNotes.colonnes.eleves:
 				case DonneesListe_PageNotes.colonnes.classe:
 					lTris.push(
-						ObjetTri.init(
+						ObjetTri_1.ObjetTri.init(
 							this.getValeurPourTri.bind(this, aColonneDeTri),
 							aGenreTri,
 						),
@@ -1059,30 +1125,42 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 					break;
 				case DonneesListe_PageNotes.colonnes.absences:
 					lTris.push(
-						ObjetTri.init((D) => {
+						ObjetTri_1.ObjetTri.init((D) => {
 							let lDuree;
 							switch (lThis.param.optionsAffichage.modeAffichageHeureAbsence) {
-								case ModeAffichageHeureAbsence.Total:
-									lDuree = TUtilitaireDuree.dureeEnMs(
+								case TypeHeuresAbsences_1.ModeAffichageHeureAbsence.Total:
+									lDuree = UtilitaireDuree_1.TUtilitaireDuree.dureeEnMs(
 										D.absences.injustif + D.absences.justif,
 									);
 									break;
-								case ModeAffichageHeureAbsence.TotalObligatoire:
-									lDuree = TUtilitaireDuree.dureeEnMs(
+								case TypeHeuresAbsences_1.ModeAffichageHeureAbsence
+									.TotalObligatoire:
+									lDuree = UtilitaireDuree_1.TUtilitaireDuree.dureeEnMs(
 										D.absences.injustifOblig + D.absences.justifOblig,
 									);
 									break;
-								case ModeAffichageHeureAbsence.Injustifiees:
-									lDuree = TUtilitaireDuree.dureeEnMs(D.absences.injustif);
+								case TypeHeuresAbsences_1.ModeAffichageHeureAbsence
+									.Injustifiees:
+									lDuree = UtilitaireDuree_1.TUtilitaireDuree.dureeEnMs(
+										D.absences.injustif,
+									);
 									break;
-								case ModeAffichageHeureAbsence.InjustifieesObligatoire:
-									lDuree = TUtilitaireDuree.dureeEnMs(D.absences.injustifOblig);
+								case TypeHeuresAbsences_1.ModeAffichageHeureAbsence
+									.InjustifieesObligatoire:
+									lDuree = UtilitaireDuree_1.TUtilitaireDuree.dureeEnMs(
+										D.absences.injustifOblig,
+									);
 									break;
-								case ModeAffichageHeureAbsence.Justifiees:
-									lDuree = TUtilitaireDuree.dureeEnMs(D.absences.justif);
+								case TypeHeuresAbsences_1.ModeAffichageHeureAbsence.Justifiees:
+									lDuree = UtilitaireDuree_1.TUtilitaireDuree.dureeEnMs(
+										D.absences.justif,
+									);
 									break;
-								case ModeAffichageHeureAbsence.JustifieesObligatoire:
-									lDuree = TUtilitaireDuree.dureeEnMs(D.absences.justifOblig);
+								case TypeHeuresAbsences_1.ModeAffichageHeureAbsence
+									.JustifieesObligatoire:
+									lDuree = UtilitaireDuree_1.TUtilitaireDuree.dureeEnMs(
+										D.absences.justifOblig,
+									);
 									break;
 							}
 							return lDuree;
@@ -1096,15 +1174,15 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 				case DonneesListe_PageNotes.colonnes.moyenneGenreNotation:
 				case DonneesListe_PageNotes.colonnes.moyenneAvRattrapageService:
 					lTris = lTris.concat(
-						TypeNote.getTrisDefaut(
-							this.getValeurPourTri.bind(this, aColonneDeTri),
+						TypeNote_1.TypeNote.getTrisDefaut(
+							(aArticle) => this.getValeurPourTri(aColonneDeTri, aArticle),
 							lGenreTriInverse,
 						),
 					);
 					break;
 				case DonneesListe_PageNotes.colonnes.bonusMalus:
 					lTris.push(
-						ObjetTri.init(
+						ObjetTri_1.ObjetTri.init(
 							this.getValeurPourTri.bind(this, aColonneDeTri),
 							lGenreTriInverse,
 						),
@@ -1112,7 +1190,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 					break;
 				case DonneesListe_PageNotes.colonnes.devoir:
 					lTris.push(
-						ObjetTri.init((D) => {
+						ObjetTri_1.ObjetTri.init((D) => {
 							const lEleve = D;
 							const lDevoir = lThis.listeDevoirs.get(lCol.indice);
 							const lEleveDansDevoir = lEleve.dansDevoir[lDevoir.getNumero()];
@@ -1122,10 +1200,16 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 							if (!lEleveDevoir || !lEleveDevoir.Note) {
 								return -1000;
 							}
-							if (lEleveDansDevoir === EGenreEleveDansDevoir.Non) {
+							if (
+								lEleveDansDevoir ===
+								Enumere_EleveDansDevoir_1.EGenreEleveDansDevoir.Non
+							) {
 								return -1000;
 							}
-							if (lEleveDansDevoir === EGenreEleveDansDevoir.Jamais) {
+							if (
+								lEleveDansDevoir ===
+								Enumere_EleveDansDevoir_1.EGenreEleveDansDevoir.Jamais
+							) {
 								return -1001;
 							}
 							if (!lThis.devoirDansPeriode(lDevoir, lEleve)) {
@@ -1135,7 +1219,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 						}, lGenreTriInverse),
 					);
 					lTris = lTris.concat(
-						TypeNote.getTrisDefaut((D) => {
+						TypeNote_1.TypeNote.getTrisDefaut((D) => {
 							return lThis.listeDevoirs
 								.get(lCol.indice)
 								.listeEleves.getElementParNumero(D.getNumero()).Note;
@@ -1144,7 +1228,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 					break;
 				case DonneesListe_PageNotes.colonnes.moyNR:
 					lTris.push(
-						ObjetTri.init(
+						ObjetTri_1.ObjetTri.init(
 							this.getValeurPourTri.bind(this, aColonneDeTri),
 							lGenreTriInverse,
 						),
@@ -1154,51 +1238,64 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 					break;
 			}
 		}
-		lTris.push(ObjetTri.init("Position"));
+		lTris.push(ObjetTri_1.ObjetTri.init("Position"));
 		return lTris;
 	}
 	getListeLignesTotal() {
-		const lListe = new ObjetListeElements().add(new ObjetElement("", 0));
+		const lListe = new ObjetListeElements_1.ObjetListeElements().add(
+			new ObjetElement_1.ObjetElement("", 0),
+		);
 		if (this.param.avecTotal) {
-			lListe.add(new ObjetElement("", 1));
+			lListe.add(new ObjetElement_1.ObjetElement("", 1));
 		}
 		return lListe;
 	}
 	actualiserMoyennes() {
-		_calculerMoyennes.call(this);
+		this._calculerMoyennes();
+	}
+	getTraductionMoyenneClasse() {
+		return "";
 	}
 	getContenuTotal(aParams) {
-		let lDevoir, lDevoirRattrapage;
+		let lDevoir;
+		let lDevoirRattrapage;
 		if (aParams.article.getNumero() === 0) {
 			switch (aParams.declarationColonne.genreColonne) {
 				case this.genreColonne.Eleve:
 					return this.getTraductionMoyenneClasse();
 				case this.genreColonne.Moyenne:
-					return this.moyGenerales[MoteurNotesCP.genreMoyenne.Moyenne];
+					return (
+						this.moyGenerales[
+							MoteurNotesCP_1.MoteurNotesCP.genreMoyenne.Moyenne
+						] + ""
+					);
 				case this.genreColonne.MoyenneAvRattrapageService:
 					return this.moyGenerales[
-						MoteurNotesCP.genreMoyenne.MoyenneAvRattrapageService
+						MoteurNotesCP_1.MoteurNotesCP.genreMoyenne
+							.MoyenneAvRattrapageService
 					];
 				case this.genreColonne.MoyenneBrute:
-					return this.moyGenerales[MoteurNotesCP.genreMoyenne.MoyenneBrute];
+					return this.moyGenerales[
+						MoteurNotesCP_1.MoteurNotesCP.genreMoyenne.MoyenneBrute
+					];
 				case this.genreColonne.MoyennePeriode:
 					return this.moyGenerales[
-						MoteurNotesCP.genreMoyenne.MoyennePeriode -
+						MoteurNotesCP_1.MoteurNotesCP.genreMoyenne.MoyennePeriode -
 							aParams.declarationColonne.rangColonne
 					];
 				case this.genreColonne.MoyenneSousService:
 					return this.moyGenerales[
-						MoteurNotesCP.genreMoyenne.MoyenneSousService -
+						MoteurNotesCP_1.MoteurNotesCP.genreMoyenne.MoyenneSousService -
 							aParams.declarationColonne.rangColonne
 					];
 				case this.genreColonne.MoyenneGenreNotation:
 					return this.moyGenerales[
-						MoteurNotesCP.genreMoyenne.MoyenneGenreNotation -
+						MoteurNotesCP_1.MoteurNotesCP.genreMoyenne.MoyenneGenreNotation -
 							aParams.declarationColonne.rangColonne
 					];
 				case this.genreColonne.Devoir:
-					lDevoir = _getDevoir(aParams);
-					lDevoirRattrapage = _getDevoirRattrapage(lDevoir);
+					lDevoir = this._getDevoir(aParams);
+					lDevoirRattrapage = this._getDevoirRattrapage(lDevoir);
 					return lDevoirRattrapage &&
 						aParams.declarationColonne.estRattrapageDevoir
 						? aParams.declarationColonne.estRattrapageMoyenne
@@ -1206,15 +1303,19 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 							: lDevoirRattrapage.Moyenne
 						: lDevoir.Moyenne;
 				case this.genreColonne.MoyNR:
-					return this.moyGenerales[MoteurNotesCP.genreMoyenne.MoyenneNR];
+					return (
+						(this.moyGenerales[
+							MoteurNotesCP_1.MoteurNotesCP.genreMoyenne.MoyenneNR
+						] || "") + ""
+					);
 				default:
 					return "";
 			}
 		}
 		if (aParams.article.getNumero() === 1) {
-			if (_estColDevoir.call(this, aParams)) {
-				lDevoir = _getDevoir(aParams);
-				lDevoirRattrapage = _getDevoirRattrapage(lDevoir);
+			if (this._estColDevoir(aParams)) {
+				lDevoir = this._getDevoir(aParams);
+				lDevoirRattrapage = this._getDevoirRattrapage(lDevoir);
 				if (
 					lDevoirRattrapage &&
 					aParams.declarationColonne.estRattrapageDevoir &&
@@ -1257,21 +1358,18 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 		T.push("AlignementDroit");
 		return T.join(" ");
 	}
-	getStyleTotal(aParam) {
-		if (aParam.article.getNumero() === 0) {
-			return aParam.idColonne === DonneesListe_PageNotes.colonnes.eleves
-				? GStyle.composeCouleurFond(GCouleur.fond) +
-						GStyle.composeCouleurTexte(GCouleur.noir)
-				: GStyle.composeCouleurFond(GCouleur.liste.total.fond) +
-						GStyle.composeCouleurTexte(GCouleur.liste.total.texte);
+	getTypeCelluleTotal(aParams) {
+		if (aParams.article.getNumero() === 0) {
+			return aParams.idColonne === DonneesListe_PageNotes.colonnes.eleves
+				? ObjetDonneesListe_1.ObjetDonneesListe.typeCelluleTotal.fond
+				: ObjetDonneesListe_1.ObjetDonneesListe.typeCelluleTotal.defaut;
 		}
-		if (aParam.article.getNumero() === 1) {
-			return aParam.idColonne === DonneesListe_PageNotes.colonnes.eleves
-				? GStyle.composeCouleurFond(GCouleur.fond) +
-						GStyle.composeCouleurTexte(GCouleur.noir)
-				: GStyle.composeCouleurFond(GCouleur.liste.moyenneAlternee2.fond) +
-						GStyle.composeCouleurTexte(GCouleur.noir);
+		if (aParams.article.getNumero() === 1) {
+			return aParams.idColonne === DonneesListe_PageNotes.colonnes.eleves
+				? ObjetDonneesListe_1.ObjetDonneesListe.typeCelluleTotal.fond
+				: ObjetDonneesListe_1.ObjetDonneesListe.typeCelluleTotal.alterne;
 		}
+		return ObjetDonneesListe_1.ObjetDonneesListe.typeCelluleTotal.defaut;
 	}
 	avecBordureTotalVisible(aParams) {
 		return aParams.idColonne !== DonneesListe_PageNotes.colonnes.eleves;
@@ -1309,27 +1407,34 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 	getDureeAbsence(aAbsences, aModeAffichage) {
 		let lDuree;
 		switch (aModeAffichage) {
-			case ModeAffichageHeureAbsence.Total:
-				lDuree = TUtilitaireDuree.dureeEnMs(
+			case TypeHeuresAbsences_1.ModeAffichageHeureAbsence.Total:
+				lDuree = UtilitaireDuree_1.TUtilitaireDuree.dureeEnMs(
 					aAbsences.injustif + aAbsences.justif,
 				);
 				break;
-			case ModeAffichageHeureAbsence.TotalObligatoire:
-				lDuree = TUtilitaireDuree.dureeEnMs(
+			case TypeHeuresAbsences_1.ModeAffichageHeureAbsence.TotalObligatoire:
+				lDuree = UtilitaireDuree_1.TUtilitaireDuree.dureeEnMs(
 					aAbsences.injustifOblig + aAbsences.justifOblig,
 				);
 				break;
-			case ModeAffichageHeureAbsence.Injustifiees:
-				lDuree = TUtilitaireDuree.dureeEnMs(aAbsences.injustif);
+			case TypeHeuresAbsences_1.ModeAffichageHeureAbsence.Injustifiees:
+				lDuree = UtilitaireDuree_1.TUtilitaireDuree.dureeEnMs(
+					aAbsences.injustif,
+				);
 				break;
-			case ModeAffichageHeureAbsence.InjustifieesObligatoire:
-				lDuree = TUtilitaireDuree.dureeEnMs(aAbsences.injustifOblig);
+			case TypeHeuresAbsences_1.ModeAffichageHeureAbsence
+				.InjustifieesObligatoire:
+				lDuree = UtilitaireDuree_1.TUtilitaireDuree.dureeEnMs(
+					aAbsences.injustifOblig,
+				);
 				break;
-			case ModeAffichageHeureAbsence.Justifiees:
-				lDuree = TUtilitaireDuree.dureeEnMs(aAbsences.justif);
+			case TypeHeuresAbsences_1.ModeAffichageHeureAbsence.Justifiees:
+				lDuree = UtilitaireDuree_1.TUtilitaireDuree.dureeEnMs(aAbsences.justif);
 				break;
-			case ModeAffichageHeureAbsence.JustifieesObligatoire:
-				lDuree = TUtilitaireDuree.dureeEnMs(aAbsences.justifOblig);
+			case TypeHeuresAbsences_1.ModeAffichageHeureAbsence.JustifieesObligatoire:
+				lDuree = UtilitaireDuree_1.TUtilitaireDuree.dureeEnMs(
+					aAbsences.justifOblig,
+				);
 				break;
 		}
 		return lDuree;
@@ -1337,23 +1442,28 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 	composeAbsences(aAbsences, aModeAffichage) {
 		let lDuree = this.getDureeAbsence(aAbsences, aModeAffichage);
 		return lDuree > 0
-			? GDate.formatDureeEnMillisecondes(lDuree, "%xh%sh%mm")
+			? ObjetDate_1.GDate.formatDureeEnMillisecondes(lDuree, "%xh%sh%mm")
 			: "";
 	}
 	composeNoteDevoir(aParam) {
 		const lSurExportCSV = aParam.surExportCSV;
-		const lEleveDevoir = _getEleveDevoir(aParam);
+		const lEleveDevoir = this._getEleveDevoir(aParam);
 		const lEleve = aParam.article;
-		const lDevoir = _getDevoir(aParam);
+		const lDevoir = this._getDevoir(aParam);
 		const lEleveDansDevoir = lEleve.dansDevoir[lDevoir.getNumero()];
 		const lNote = lEleveDevoir.Note;
 		if (!lEleveDevoir || !lNote) {
 			return lSurExportCSV ? "X" : null;
 		}
-		if (lEleveDansDevoir === EGenreEleveDansDevoir.Non) {
+		if (
+			lEleveDansDevoir === Enumere_EleveDansDevoir_1.EGenreEleveDansDevoir.Non
+		) {
 			return lSurExportCSV ? "X" : null;
 		}
-		if (lEleveDansDevoir === EGenreEleveDansDevoir.Jamais) {
+		if (
+			lEleveDansDevoir ===
+			Enumere_EleveDansDevoir_1.EGenreEleveDansDevoir.Jamais
+		) {
 			return lSurExportCSV ? "X" : null;
 		}
 		if (!this.devoirDansPeriode(lDevoir, lEleve)) {
@@ -1369,7 +1479,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 			!aParam.declarationColonne.estRattrapageDevoir
 		) {
 			return lNote;
-		} else if (_estExecKiosque(lEleveDevoir)) {
+		} else if (this._estExecKiosque(lEleveDevoir)) {
 			return lSurExportCSV || this.param.pourImpression
 				? lNote
 				: '<div ie-node="evntKiosque(' +
@@ -1380,14 +1490,14 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 						lNote +
 						"<div>";
 		} else {
-			const lDevoirRattrapage = _getDevoirRattrapage(lDevoir);
+			const lDevoirRattrapage = this._getDevoirRattrapage(lDevoir);
 			if (lDevoirRattrapage && aParam.declarationColonne.estRattrapageDevoir) {
 				const lEleveDevoirRattrapage =
 					lDevoirRattrapage.objetListeEleves &&
 					lDevoirRattrapage.objetListeEleves[lEleve.getNumero()]
 						? lDevoirRattrapage.objetListeEleves[lEleve.getNumero()]
 						: false;
-				const lAvecSaisieRattrapage = _avecSasieRattrapage.call(this, {
+				const lAvecSaisieRattrapage = this._avecSaisieRattrapage({
 					eleve: lEleve,
 					eleveDevoir: lEleveDevoir,
 					devoir: lDevoir,
@@ -1396,7 +1506,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 				const lNoteRattrapage =
 					lEleveDevoirRattrapage && lEleveDevoirRattrapage.Note
 						? lEleveDevoirRattrapage.Note
-						: new TypeNote("");
+						: new TypeNote_1.TypeNote("");
 				const lDevoirRattrapageMoy =
 					lDevoirRattrapage.genreRattrapage ===
 					this.getGenreRattrapage(this.genreRattrapage.GR_Moyenne);
@@ -1410,7 +1520,9 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 						lDevoirRattrapage.noteSeuil,
 					);
 				} else {
-					return lAvecSaisieRattrapage ? lNoteRattrapage : new TypeNote("");
+					return lAvecSaisieRattrapage
+						? lNoteRattrapage
+						: new TypeNote_1.TypeNote("");
 				}
 			} else {
 				return lNote;
@@ -1418,31 +1530,32 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 		}
 	}
 	getOptionsNote(aParams) {
-		if (_estColDevoir.call(this, aParams)) {
-			const lDevoir = _getDevoir(aParams);
+		if (this._estColDevoir(aParams)) {
+			const lDevoir = this._getDevoir(aParams);
 			const lEleve = aParams.article;
-			const lEleveDevoir = _getEleveDevoir(aParams);
-			const lDevoirRattrapage = _getDevoirRattrapage(lDevoir);
+			const lEleveDevoir = this._getEleveDevoir(aParams);
+			const lDevoirRattrapage = this._getDevoirRattrapage(lDevoir);
 			const lEleveDevoirRattrapage =
 				lDevoirRattrapage &&
 				lDevoirRattrapage.objetListeEleves &&
 				lDevoirRattrapage.objetListeEleves[lEleve.getNumero()]
 					? lDevoirRattrapage.objetListeEleves[lEleve.getNumero()]
-					: false;
+					: null;
 			const lNoteRattrapage =
 				lEleveDevoirRattrapage && lEleveDevoirRattrapage.Note
 					? lEleveDevoirRattrapage.Note
-					: new TypeNote("");
-			const lDevoirRattrapageMoy =
-				lDevoirRattrapage.genreRattrapage ===
-				this.getGenreRattrapage(this.genreRattrapage.GR_Moyenne);
+					: new TypeNote_1.TypeNote("");
+			const lDevoirRattrapageMoy = lDevoirRattrapage
+				? lDevoirRattrapage.genreRattrapage ===
+					this.getGenreRattrapage(this.genreRattrapage.GR_Moyenne)
+				: false;
 			const lMoyenneRattrapage = lDevoirRattrapageMoy
 				? this.moteurNotesCP.getMoyenneNotesRattrapage(
 						lEleveDevoir.Note,
 						lNoteRattrapage,
 						lDevoirRattrapage.noteSeuil,
 					)
-				: new TypeNote("");
+				: new TypeNote_1.TypeNote("");
 			const lNote = aParams.declarationColonne.estRattrapageDevoir
 				? aParams.declarationColonne.estRattrapageMoyenne
 					? lMoyenneRattrapage
@@ -1457,7 +1570,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 				avecTiret:
 					lDevoirRattrapage &&
 					aParams.declarationColonne.estRattrapageDevoir &&
-					!_avecSasieRattrapage.call(this, {
+					!this._avecSaisieRattrapage({
 						eleve: aParams.article,
 						eleveDevoir: lEleveDevoir,
 						devoir: lDevoir,
@@ -1485,13 +1598,12 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 			};
 		}
 		if (aParams.idColonne === DonneesListe_PageNotes.colonnes.bonusMalus) {
-			const lInvisible =
-				_getBonusMalus.call(this, aParams.article).valeur === 0;
+			const lInvisible = this._getBonusMalus(aParams.article).getValeur() === 0;
 			const lPeriodeBonus = aParams.article.listePeriodes.getElementParNumero(
 				this.periode.getNumero(),
 			);
 			return {
-				suffixe: _estBonusMalusConformeAbsences(
+				suffixe: this._estBonusMalusConformeAbsences(
 					lPeriodeBonus.bonusMalus,
 					lPeriodeBonus.malusAbsences,
 				)
@@ -1508,11 +1620,11 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 			};
 		}
 	}
-	composeEleveProjetAcc(D) {
+	composeEleveProjetAcc(D, a, b) {
 		return D.getLibelle();
 	}
 	getTitrePeriodes() {
-		return "";
+		return null;
 	}
 	getSuffixe(aEleveDevoir) {
 		return;
@@ -1520,35 +1632,39 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 	avecLigneTitreBouton() {
 		return this.avecCompetences;
 	}
-	getTitreBouton(aDevoir, aIndex, aStrIeNode) {
+	getTitreBouton(aDevoir, aIndex, aStrIeNode, aAriaLabel) {
 		return {
-			libelleHtml:
+			getLibelleHtml: () =>
 				"<div " +
-				aStrIeNode +
+				(aStrIeNode
+					? `${aStrIeNode} aria-label="${aAriaLabel}" data-tooltip`
+					: "") +
 				' class="devoir competences AvecMain TitreListeSansTri">' +
 				(aDevoir.evaluation
-					? '<ie-btnimage ie-model="boutonCompetences(' +
-						aIndex +
-						')" class="Image_SaisieCompetenceDevoir InlineBlock" style="width:16px;"></ie-btnimage>'
+					? IE.jsx.str("ie-btnimage", {
+							"ie-model": this.jsxModeleBoutonCompetences.bind(this, aIndex),
+							class: "Image_SaisieCompetenceDevoir InlineBlock",
+							style: "width:16px;",
+						})
 					: "&nbsp;") +
 				"</div>",
-			controleur: {
-				boutonCompetences: {
-					event: (I) => {
-						this.surCompetences(I);
-						return false;
-					},
-					getTitle: (I) => {
-						const H = [],
-							lDevoir = this.listeDevoirs.get(I);
-						if (lDevoir.evaluation && lDevoir.evaluation.listeCompetences) {
-							lDevoir.evaluation.listeCompetences.parcourir((aCompetence) => {
-								H.push(aCompetence.code + " : " + aCompetence.getLibelle());
-							});
-							return GChaine.enleverEntites(H.join("\n"));
-						}
-					},
-				},
+		};
+	}
+	jsxModeleBoutonCompetences(aIndex) {
+		return {
+			event: () => {
+				this.surCompetences(aIndex);
+				return false;
+			},
+			getTitle: () => {
+				const H = [],
+					lDevoir = this.listeDevoirs.get(aIndex);
+				if (lDevoir.evaluation && lDevoir.evaluation.listeCompetences) {
+					lDevoir.evaluation.listeCompetences.parcourir((aCompetence) => {
+						H.push(aCompetence.code + " : " + aCompetence.getLibelle());
+					});
+					return ObjetChaine_1.GChaine.enleverEntites(H.join("\n"));
+				}
 			},
 		};
 	}
@@ -1561,16 +1677,16 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 	avecUtilisationAnnotationFelicitation() {
 		return false;
 	}
-	createChaineAnnotationFelicitation() {
+	createChaineAnnotationFelicitation(aValeurBareme) {
 		return null;
 	}
 	estUneAnnotationAutorisee(aGenreAnnotation) {
-		return TypeNote.estAnnotationPermise(aGenreAnnotation);
+		return TypeNote_1.TypeNote.estAnnotationPermise(aGenreAnnotation);
 	}
 	estPeriodeActuelleToutes() {
 		return false;
 	}
-	getGenreRattrapage() {
+	getGenreRattrapage(aBidon) {
 		return "LesRattrapagesNExistePas";
 	}
 	genresPourCalculMoyennes() {
@@ -1582,25 +1698,33 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 			genreColonne: this.genreColonne.BonusMalus,
 			titre: [
 				{
-					libelle: GTraductions.getValeur("Notes.Colonne.BonusMalus"),
-					libelleHtml: GTraductions.getValeur("Notes.Colonne.Bonus"),
-					title: GTraductions.getValeur("Notes.Colonne.BonusMalus"),
+					libelle: ObjetTraduction_1.GTraductions.getValeur(
+						"Notes.Colonne.BonusMalus",
+					),
+					libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+						"Notes.Colonne.Bonus",
+					),
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"Notes.Colonne.BonusMalus",
+					),
 				},
 			],
 			taille: 60,
 		};
 	}
-	getCouleurDeNoteDeDevoir() {
+	getCouleurDeNoteDeDevoir(aNote, aDevoir, aPourImpression) {
 		return "inherit";
 	}
-	getCouleurDeNoteSousSeuil() {
+	getCouleurDeNoteSousSeuil(aNote, aNoteSeuil, aPourImpression) {
 		return "inherit";
 	}
-	getNoteMaxDevoir() {}
-	composeChaineElevePasDansDevoir() {
+	getNoteMaxDevoir(aDevoir) {
+		return null;
+	}
+	composeChaineElevePasDansDevoir(aEleveDevoir) {
 		return "X";
 	}
-	composeChaineElevePasDansDevoirRattrapage() {
+	composeChaineElevePasDansDevoirRattrapage(aEleveDevoir, aNoteSeuil) {
 		return "X";
 	}
 	setActif(aActif, aActifBoutonCreerDevoir) {
@@ -1615,20 +1739,26 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 	}
 	surCompetences(I) {
 		const lParamEvnt = {
-			genreEvnt: EGenreEvenementSaisieNotes.Competences,
+			genreEvnt:
+				Enumere_EvenementSaisieNotes_1.EGenreEvenementSaisieNotes.Competences,
 			devoir: this.listeDevoirs.get(I),
 		};
 		this.enEdition = false;
 		this.param.callbackEvnt(lParamEvnt);
 	}
 	surCreerDevoir() {
-		const lParamEvnt = { genreEvnt: EGenreEvenementSaisieNotes.CreationDevoir };
+		const lParamEvnt = {
+			genreEvnt:
+				Enumere_EvenementSaisieNotes_1.EGenreEvenementSaisieNotes
+					.CreationDevoir,
+		};
 		this.enEdition = false;
 		this.param.callbackEvnt(lParamEvnt);
 	}
 	surEditionDevoir(I) {
 		const lParamEvnt = {
-			genreEvnt: EGenreEvenementSaisieNotes.EditionDevoir,
+			genreEvnt:
+				Enumere_EvenementSaisieNotes_1.EGenreEvenementSaisieNotes.EditionDevoir,
 			devoir: this.listeDevoirs.get(I),
 		};
 		this.enEdition = false;
@@ -1637,7 +1767,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 	evenementMenuContextuel(aParametres) {
 		if (aParametres.numeroMenu === 1) {
 			const lParamEvnt = {
-				genreEvnt: EGenreCommandeMenu.Suppression,
+				genreEvnt: Enumere_CommandeMenu_1.EGenreCommandeMenu.Suppression,
 				eleve: aParametres.article,
 			};
 			this.enEdition = false;
@@ -1646,7 +1776,8 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 	}
 	surImporter(aParametres) {
 		const lParamEvnt = {
-			genreEvnt: EGenreEvenementSaisieNotes.Import,
+			genreEvnt:
+				Enumere_EvenementSaisieNotes_1.EGenreEvenementSaisieNotes.Import,
 			file: aParametres,
 		};
 		this.enEdition = false;
@@ -1664,7 +1795,9 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 				this.Service.listeGenreNotation.getElementParNumero(aNumero);
 		}
 		const lParamEvnt = {
-			genreEvnt: EGenreEvenementNotesEtAppreciations.MethodeCalculMoyenne,
+			genreEvnt:
+				Enumere_EvenementNotesEtAppreciations_1
+					.EGenreEvenementNotesEtAppreciations.MethodeCalculMoyenne,
 			eleve: lEleve,
 			estMoyenneNette: aGenreMoyenne !== this.genreMoyenne.GM_MoyenneBrute,
 			periode: this.titrePeriodes[aIndicePeriode],
@@ -1680,19 +1813,25 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 	surEvntKiosque(aEleve, aDevoir) {
 		const lEleveDevoir = aDevoir.objetListeEleves[aEleve.getNumero()];
 		if (!!lEleveDevoir && !!lEleveDevoir.execKiosque) {
-			window.open(GChaine.creerUrlBruteLienExterne(lEleveDevoir.execKiosque));
+			window.open(
+				ObjetChaine_1.GChaine.creerUrlBruteLienExterne(
+					lEleveDevoir.execKiosque,
+				),
+			);
 		}
 	}
 	surSelectionLigne(J, D) {
 		const lParamEvnt = {
-			genreEvnt: EGenreEvenementNotesEtAppreciations.SelectionLigne,
+			genreEvnt:
+				Enumere_EvenementNotesEtAppreciations_1
+					.EGenreEvenementNotesEtAppreciations.SelectionLigne,
 			eleve: D,
 		};
 		this.param.callbackEvnt(lParamEvnt);
 	}
 	surSelection(I, D) {
 		if (I !== -1) {
-			const lCol = _getColById(this.getId(I));
+			const lCol = this._getColById(this.getId(I));
 			if (lCol.id === DonneesListe_PageNotes.colonnes.devoir) {
 				const lDevoir = this.listeDevoirs.get(lCol.indice);
 				const lEleve = D;
@@ -1712,10 +1851,12 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 						devoirDansPeriode: this.devoirDansPeriode.bind(this),
 					});
 					if (lMessage) {
-						GApplication.getMessage().afficher({
-							type: EGenreBoiteMessage.Information,
-							message: lMessage,
-						});
+						(0, AccessApp_1.getApp)()
+							.getMessage()
+							.afficher({
+								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+								message: lMessage,
+							});
 					}
 				}
 			}
@@ -1753,7 +1894,14 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 		aNote,
 	) {
 		if (this.avecSaisieSuperieurAuBareme() && !!aDevoir) {
-			if (aNote.estUneNoteValide(new TypeNote(0), aDevoir.bareme, true, true)) {
+			if (
+				aNote.estUneNoteValide(
+					new TypeNote_1.TypeNote(0),
+					aDevoir.bareme,
+					true,
+					true,
+				)
+			) {
 				this.surDeselectionApresConfirmation(
 					ANumColonne,
 					aEstRattrapage,
@@ -1816,9 +1964,9 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 					? aDevoir.bareme.getValeur()
 					: null;
 			if (!!lBaremeDevoir) {
-				lNote.bareme = lBaremeDevoir;
+				lNote.setBareme(lBaremeDevoir);
 			}
-			lNote = new TypeNote(lNote.toStr());
+			lNote = new TypeNote_1.TypeNote(lNote.toStr());
 		}
 		this.setNote(aEleve, aDevoir, aGenreColonne, lNote, aEstRattrapage);
 		if (this.avecSousServices) {
@@ -1829,7 +1977,8 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 			) {
 				this.moteurNotesCP.rechercherNotePlusHauteEtPlusBasse({
 					listeEleves: this.Donnees,
-					listeElevesSelection: new ObjetListeElements().add(aEleve),
+					listeElevesSelection:
+						new ObjetListeElements_1.ObjetListeElements().add(aEleve),
 					service: this.Service,
 					numeroService: this.Service.listeServices.getNumero(I),
 					avecGenreNotation: this.avecGenreNotation,
@@ -1856,12 +2005,14 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 				baremeParDefaut: this.param.baremeParDefaut,
 			});
 		}
-		_calculerMoyennes.call(this, aNumLigne, ANumColonne);
+		this._calculerMoyennes(aNumLigne, ANumColonne);
 		if (this.Note && lNote.getNote() === this.Note.getNote()) {
 			return;
 		}
 		this.param.callbackEvnt({
-			genreEvnt: EGenreEvenementSaisieNotes.SurDeselection,
+			genreEvnt:
+				Enumere_EvenementSaisieNotes_1.EGenreEvenementSaisieNotes
+					.SurDeselection,
 			devoir: aDevoir,
 			eleve: aEleve,
 			note: ANumColonne >= 0 ? lNote : null,
@@ -1984,13 +2135,15 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 						lEleveDevoir.Note.getNote() !== aNote.getNote())
 				) {
 					lEleveDevoir.setEtat(
-						lEleveDevoir.Note ? EGenreEtat.Modification : EGenreEtat.Creation,
+						lEleveDevoir.Note
+							? Enumere_Etat_1.EGenreEtat.Modification
+							: Enumere_Etat_1.EGenreEtat.Creation,
 					);
 					lEleveDevoir.Note = aNote;
-					const lDevoirRattrapage = _getDevoirRattrapage(aDevoir);
+					const lDevoirRattrapage = this._getDevoirRattrapage(aDevoir);
 					if (
 						lDevoirRattrapage &&
-						!_avecSasieRattrapage.call(this, {
+						!this._avecSaisieRattrapage({
 							eleve: aEleve,
 							eleveDevoir: lEleveDevoir,
 							devoir: aDevoir,
@@ -2001,8 +2154,10 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 							let lEleveDevoirRattrapage =
 								lDevoirRattrapage.objetListeEleves[aEleve.getNumero()];
 							if (lEleveDevoirRattrapage && lEleveDevoirRattrapage.Note) {
-								lEleveDevoirRattrapage.Note = new TypeNote("");
-								lDevoirRattrapage.setEtat(EGenreEtat.Modification);
+								lEleveDevoirRattrapage.Note = new TypeNote_1.TypeNote("");
+								lDevoirRattrapage.setEtat(
+									Enumere_Etat_1.EGenreEtat.Modification,
+								);
 								this._ajouteDevoirRattrapagePourSaisie(
 									aDevoir,
 									lDevoirRattrapage,
@@ -2014,7 +2169,8 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 			} else {
 				const lDevoirRattrapage = aDevoir.devoirRattrapage;
 				if (!lDevoirRattrapage.listeEleves) {
-					lDevoirRattrapage.listeEleves = new ObjetListeElements();
+					lDevoirRattrapage.listeEleves =
+						new ObjetListeElements_1.ObjetListeElements();
 					lDevoirRattrapage.objetListeEleves = {};
 				}
 				let lEleveDevoirRattrap =
@@ -2024,7 +2180,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 						? lDevoirRattrapage.objetListeEleves[aEleve.getNumero()]
 						: false;
 				if (!lEleveDevoirRattrap) {
-					lEleveDevoirRattrap = new ObjetElement(
+					lEleveDevoirRattrap = new ObjetElement_1.ObjetElement(
 						aEleve.getLibelle(),
 						aEleve.getNumero(),
 					);
@@ -2038,12 +2194,12 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 				) {
 					lEleveDevoirRattrap.setEtat(
 						lEleveDevoirRattrap.Note
-							? EGenreEtat.Modification
-							: EGenreEtat.Creation,
+							? Enumere_Etat_1.EGenreEtat.Modification
+							: Enumere_Etat_1.EGenreEtat.Creation,
 					);
 					lEleveDevoirRattrap.Note = aNote;
 				}
-				lDevoirRattrapage.setEtat(EGenreEtat.Modification);
+				lDevoirRattrapage.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 				this._ajouteDevoirRattrapagePourSaisie(aDevoir, lDevoirRattrapage);
 			}
 		} else if (aGenreColonne === this.genreColonne.BonusMalus) {
@@ -2052,7 +2208,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 					.getElementParNumero(this.periode.getNumero())
 					.bonusMalus.getNote() !== aNote.getNote()
 			) {
-				aEleve.setEtat(EGenreEtat.Modification);
+				aEleve.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 				aEleve.listePeriodes.getElementParNumero(
 					this.periode.getNumero(),
 				).bonusMalus = aNote;
@@ -2062,7 +2218,8 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 	_ajouteDevoirRattrapagePourSaisie(aDevoir, aDevoirRattrapage) {
 		if (aDevoir && aDevoirRattrapage) {
 			if (!aDevoir.listeDevoirsRattrapage) {
-				aDevoir.listeDevoirsRattrapage = new ObjetListeElements();
+				aDevoir.listeDevoirsRattrapage =
+					new ObjetListeElements_1.ObjetListeElements();
 			}
 			const lIndiceDevoirDansListe =
 				aDevoir.listeDevoirsRattrapage.getIndiceParNumeroEtGenre(
@@ -2072,7 +2229,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 				aDevoir.listeDevoirsRattrapage.remove(lIndiceDevoirDansListe);
 			}
 			const lDevoirRattrapagePourListe =
-				MethodesObjet.dupliquer(aDevoirRattrapage);
+				MethodesObjet_1.MethodesObjet.dupliquer(aDevoirRattrapage);
 			aDevoir.listeDevoirsRattrapage.addElement(lDevoirRattrapagePourListe);
 		}
 	}
@@ -2080,7 +2237,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 		return false;
 	}
 	surVerificationNote(aNumLigne, aGenreColonne, aDevoir, aNote) {
-		let lValueNote = GChaine.ajouterEntites(aNote.chaine);
+		let lValueNote = ObjetChaine_1.GChaine.ajouterEntites(aNote.getChaine());
 		if (
 			this.avecUtilisationAnnotationFelicitation() &&
 			lValueNote.search(/^[0-9]*((,|\.)[0-9]+)?\+$/) === 0
@@ -2093,17 +2250,21 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 			lValueNote = this.createChaineAnnotationFelicitation(lBaremeNotation);
 		} else if (lValueNote.search(/^[0-9]*(,|\.)[0-9]+/) === 0) {
 			const lRegExp = new RegExp(
-				"^([0-9]*(,|\\.)[0-9]{" + TypeNote.decimalNotation + "}).*$",
+				"^([0-9]*(,|\\.)[0-9]{" + TypeNote_1.TypeNote.decimalNotation + "}).*$",
 			);
 			lValueNote = lValueNote.replace(lRegExp, "$1");
 		}
-		let lNote = new TypeNote(lValueNote);
+		let lNote = new TypeNote_1.TypeNote(lValueNote);
 		let lNoteMin, lNoteMax;
 		if (aGenreColonne === this.genreColonne.BonusMalus) {
-			lNoteMin = new TypeNote(-1 * this.param.baremeParDefaut.getValeur());
-			lNoteMax = new TypeNote(this.param.baremeParDefaut.getValeur());
+			lNoteMin = new TypeNote_1.TypeNote(
+				-1 * this.param.baremeParDefaut.getValeur(),
+			);
+			lNoteMax = new TypeNote_1.TypeNote(
+				this.param.baremeParDefaut.getValeur(),
+			);
 		} else {
-			lNoteMin = new TypeNote(0.0);
+			lNoteMin = new TypeNote_1.TypeNote(0.0);
 			lNoteMax = this.getNoteMaxDevoir(aDevoir);
 		}
 		if (
@@ -2113,12 +2274,12 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 				aGenreColonne !== this.genreColonne.BonusMalus,
 				true,
 			) &&
-				GChaine.ajouterEntites(lNote.chaine) !== "-") ||
+				ObjetChaine_1.GChaine.ajouterEntites(lNote.getChaine()) !== "-") ||
 			(lNote.estUneAnnotation() &&
 				!this.estUneAnnotationAutorisee(lNote.getGenre()))
 		) {
 			if (!this.Note.estUneNoteValide(lNoteMin, lNoteMax, true, true)) {
-				lNote = new TypeNote("");
+				lNote = new TypeNote_1.TypeNote("");
 			} else {
 				lNote = this.Note;
 			}
@@ -2138,16 +2299,16 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 					'<ie-bouton id="' +
 					this.idBtnCreerDevoir +
 					'" ie-model="boutonCreerDevoir" class="small-bt ' +
-					TypeThemeBouton.primaire +
+					Type_ThemeBouton_1.TypeThemeBouton.primaire +
 					'">' +
-					GTraductions.getValeur("Notes.CreerDevoir") +
+					ObjetTraduction_1.GTraductions.getValeur("Notes.CreerDevoir") +
 					"</ie-bouton></span>" +
 					(this.param.avecImport
 						? '<span class="GrandEspaceGauche"><ie-bouton ie-model="boutonImport" ie-selecfile ' +
 							'class="' +
-							TypeThemeBouton.primaire +
+							Type_ThemeBouton_1.TypeThemeBouton.primaire +
 							'">' +
-							GTraductions.getValeur("progression.importer") +
+							ObjetTraduction_1.GTraductions.getValeur("progression.importer") +
 							"</ie-bouton></span>"
 						: "") +
 					"</div>"
@@ -2164,8 +2325,12 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 			id: DonneesListe_PageNotes.colonnes.classe,
 			genreColonne: this.genreColonne.Classe,
 			titre: [
-				TypeFusionTitreListe.FusionGauche,
-				{ libelle: GTraductions.getValeur("Notes.Colonne.Promotion") },
+				TypeFusionTitreListe_1.TypeFusionTitreListe.FusionGauche,
+				{
+					libelle: ObjetTraduction_1.GTraductions.getValeur(
+						"Notes.Colonne.Promotion",
+					),
+				},
 			],
 			taille: 65,
 		});
@@ -2174,15 +2339,19 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 				id: DonneesListe_PageNotes.colonnes.TDOption,
 				genreColonne: this.genreColonne.TDOption,
 				titre: [
-					TypeFusionTitreListe.FusionGauche,
-					{ libelle: GTraductions.getValeur("Notes.Colonne.TDOption") },
+					TypeFusionTitreListe_1.TypeFusionTitreListe.FusionGauche,
+					{
+						libelle: ObjetTraduction_1.GTraductions.getValeur(
+							"Notes.Colonne.TDOption",
+						),
+					},
 				],
 				taille: 70,
 			});
 		}
 		if (
 			!!this.param.optionsAffichage &&
-			!!this.param.optionsAffichage.modeAffichageHeureAbsence > 0 &&
+			!!this.param.optionsAffichage.modeAffichageHeureAbsence &&
 			!this.avecPeriodes &&
 			this.periode.getNumero() !== 0
 		) {
@@ -2190,8 +2359,12 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 				id: DonneesListe_PageNotes.colonnes.absences,
 				genreColonne: this.genreColonne.Absences,
 				titre: [
-					TypeFusionTitreListe.FusionGauche,
-					{ libelle: GTraductions.getValeur("Notes.Colonne.Absences") },
+					TypeFusionTitreListe_1.TypeFusionTitreListe.FusionGauche,
+					{
+						libelle: ObjetTraduction_1.GTraductions.getValeur(
+							"Notes.Colonne.Absences",
+						),
+					},
 				],
 				taille: 60,
 			});
@@ -2200,11 +2373,17 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 			id: DonneesListe_PageNotes.colonnes.moyenne,
 			genreColonne: this.genreColonne.Moyenne,
 			titre: [
-				TypeFusionTitreListe.FusionGauche,
+				TypeFusionTitreListe_1.TypeFusionTitreListe.FusionGauche,
 				{
-					libelle: GTraductions.getValeur("Notes.Colonne.Moyenne"),
-					libelleHtml: GTraductions.getValeur("Notes.Colonne.Moyenne"),
-					title: GTraductions.getValeur("Notes.Colonne.TitreMoyenne"),
+					libelle: ObjetTraduction_1.GTraductions.getValeur(
+						"Notes.Colonne.Moyenne",
+					),
+					libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+						"Notes.Colonne.Moyenne",
+					),
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"Notes.Colonne.TitreMoyenne",
+					),
 				},
 			],
 			taille: 61,
@@ -2214,11 +2393,17 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 				id: DonneesListe_PageNotes.colonnes.moyNR,
 				genreColonne: this.genreColonne.MoyNR,
 				titre: [
-					TypeFusionTitreListe.FusionGauche,
+					TypeFusionTitreListe_1.TypeFusionTitreListe.FusionGauche,
 					{
-						libelle: GTraductions.getValeur("Notes.Colonne.TitreMoyNR"),
-						libelleHtml: GTraductions.getValeur("Notes.Colonne.TitreMoyNR"),
-						title: GTraductions.getValeur("Notes.Colonne.HintMoyNR"),
+						libelle: ObjetTraduction_1.GTraductions.getValeur(
+							"Notes.Colonne.TitreMoyNR",
+						),
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"Notes.Colonne.TitreMoyNR",
+						),
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"Notes.Colonne.HintMoyNR",
+						),
 					},
 				],
 				taille: 61,
@@ -2233,15 +2418,15 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 				id: DonneesListe_PageNotes.colonnes.moyenneAvRattrapageService,
 				genreColonne: this.genreColonne.MoyenneAvRattrapageService,
 				titre: [
-					TypeFusionTitreListe.FusionGauche,
+					TypeFusionTitreListe_1.TypeFusionTitreListe.FusionGauche,
 					{
-						libelle: GTraductions.getValeur(
+						libelle: ObjetTraduction_1.GTraductions.getValeur(
 							"Notes.Colonne.MoyAvRattrapageService",
 						),
-						libelleHtml: GTraductions.getValeur(
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
 							"Notes.Colonne.MoyAvRattrapageService",
 						),
-						title: GTraductions.getValeur(
+						title: ObjetTraduction_1.GTraductions.getValeur(
 							"Notes.Colonne.TitreMoyAvRattrapageService",
 						),
 					},
@@ -2253,11 +2438,17 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 			id: DonneesListe_PageNotes.colonnes.moyenneBrute,
 			genreColonne: this.genreColonne.MoyenneBrute,
 			titre: [
-				TypeFusionTitreListe.FusionGauche,
+				TypeFusionTitreListe_1.TypeFusionTitreListe.FusionGauche,
 				{
-					libelle: GTraductions.getValeur("Notes.Colonne.MoyenneBrute"),
-					libelleHtml: GTraductions.getValeur("Notes.Colonne.MoyenneBrute"),
-					title: GTraductions.getValeur("Notes.Colonne.TitreMoyenneBrute"),
+					libelle: ObjetTraduction_1.GTraductions.getValeur(
+						"Notes.Colonne.MoyenneBrute",
+					),
+					libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+						"Notes.Colonne.MoyenneBrute",
+					),
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"Notes.Colonne.TitreMoyenneBrute",
+					),
 				},
 			],
 			taille: 61,
@@ -2274,15 +2465,16 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 							? this.titrePeriodes[i].abbr
 							: this.titrePeriodes[i].getLibelle(),
 						libelleHtml:
-							'<div class="Maigre" ><div class="InlineBlock AlignementMilieuVertical" style="width: 6px; height: 12px;' +
-							GStyle.composeCouleurFond(
+							'<div class="Maigre"><div class="InlineBlock AlignementMilieuVertical" style="width: 6px; height: 12px;' +
+							ObjetStyle_1.GStyle.composeCouleurFond(
 								this.couleurPeriodes[i + 1]
 									? this.couleurPeriodes[i + 1]
-									: GCouleur.periodesClair
-										? GCouleur.periodesClair[i + 1]
-										: "transparent",
+									: "transparent",
 							) +
-							GStyle.composeCouleurBordure(GCouleur.blanc, 1) +
+							ObjetStyle_1.GStyle.composeCouleurBordure(
+								(0, AccessApp_1.getApp)().getCouleur().blanc,
+								1,
+							) +
 							'">&nbsp;</div><span class="EspaceGauche">' +
 							(this.titrePeriodes[i].abbr
 								? this.titrePeriodes[i].abbr
@@ -2324,10 +2516,14 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 					}
 					lTitres = [
 						{
-							libelle: GTraductions.getValeur("PageNotes.MoyenneAbr"),
+							libelle: ObjetTraduction_1.GTraductions.getValeur(
+								"PageNotes.MoyenneAbr",
+							),
 							libelleHtml:
 								'<div class="Maigre">' +
-								GTraductions.getValeur("PageNotes.MoyenneAbr") +
+								ObjetTraduction_1.GTraductions.getValeur(
+									"PageNotes.MoyenneAbr",
+								) +
 								"</div>",
 							couleurTexte: "black",
 						},
@@ -2391,8 +2587,11 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 								libelle: lGenre.getLibelle(),
 								libelleHtml:
 									'<div class="Maigre"><div class="InlineBlock AlignementMilieuVertical" style="width: 6px; height: 12px;' +
-									GStyle.composeCouleurFond(lGenre.couleur) +
-									GStyle.composeCouleurBordure(GCouleur.blanc, 1) +
+									ObjetStyle_1.GStyle.composeCouleurFond(lGenre.couleur) +
+									ObjetStyle_1.GStyle.composeCouleurBordure(
+										(0, AccessApp_1.getApp)().getCouleur().blanc,
+										1,
+									) +
 									'">&nbsp;</div>' +
 									'<span class="EspaceGauche">' +
 									lGenre.abbr +
@@ -2416,39 +2615,57 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 			let lDevoir = this.listeDevoirs.get(i);
 			let lSurEditionDevoir = aPourImpression
 				? ""
-				: 'ie-node="getEditionDevoir(' + i + ')" role="button" tabindex="0"';
+				: 'ie-node="getEditionDevoir(' +
+					i +
+					')" role="button" tabindex="0" aria-haspopup="dialog"';
 			const lCategorieDevoir = !!lDevoir.categorie
 				? lDevoir.categorie.getLibelle()
 				: "";
 			let lHint =
 				lDevoir.service.matiere.getLibelle() +
 				" \n" +
-				GDate.formatDate(lDevoir.date, "%JJ/%MM/%AAAA") +
+				ObjetDate_1.GDate.formatDate(lDevoir.date, "%JJ/%MM/%AAAA") +
 				(lDevoir.commentaire ? " - " + lDevoir.commentaire : "") +
 				"\n" +
 				lCategorieDevoir +
 				"\n" +
-				GTraductions.getValeur("FenetreDevoir.Bareme") +
+				ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.Bareme") +
 				" " +
 				lDevoir.bareme.toString() +
 				"\n" +
-				GTraductions.getValeur("FenetreDevoir.Coefficient") +
+				ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.Coefficient") +
 				" " +
 				lDevoir.coefficient.toString() +
 				(lDevoir.executionQCM && lDevoir.executionQCM.existeNumero()
-					? "\n" + GTraductions.getValeur("QCM_Divers.HintDevoirLieQCM")
+					? "\n" +
+						ObjetTraduction_1.GTraductions.getValeur(
+							"QCM_Divers.HintDevoirLieQCM",
+						)
 					: "") +
 				(lDevoir.execKiosque && lDevoir.execKiosque.existeNumero()
-					? "\n" + GTraductions.getValeur("QCM_Divers.HintDevoirLieKiosque")
+					? "\n" +
+						ObjetTraduction_1.GTraductions.getValeur(
+							"QCM_Divers.HintDevoirLieKiosque",
+						)
 					: "");
 			let lCouleurFacultatif = "transparent";
 			if (lDevoir.commeUnBonus) {
-				lCouleurFacultatif = GCouleur.devoir.commeUnBonus;
+				lCouleurFacultatif = (0, AccessApp_1.getApp)().getCouleur().devoir
+					.commeUnBonus;
+				lHint += `\n${ObjetTraduction_1.GTraductions.getValeur("Notes.Colonne.hintFacultativeBonus")}`;
 			} else if (lDevoir.commeUneNote) {
-				lCouleurFacultatif = GCouleur.devoir.commeUneNote;
+				lCouleurFacultatif = (0, AccessApp_1.getApp)().getCouleur().devoir
+					.commeUneNote;
+				lHint += `\n${ObjetTraduction_1.GTraductions.getValeur("Notes.Colonne.hintFacultativeNote")}`;
 			} else if (lDevoir.commeUnSeuil) {
-				lCouleurFacultatif = GCouleur.devoir.commeUnSeuil;
+				lCouleurFacultatif = (0, AccessApp_1.getApp)().getCouleur().devoir
+					.commeUnSeuil;
+				lHint += `\n${ObjetTraduction_1.GTraductions.getValeur("Notes.Colonne.hintFacultativeSeuil")}`;
 			}
+			const lTooltipBouton =
+				ObjetTraduction_1.GTraductions.getValeur("Notes.ModificationDevoir") +
+				" :\n" +
+				lHint;
 			let lListeProfesseurs = [];
 			if (lDevoir.service.listeProfesseurs) {
 				for (
@@ -2461,7 +2678,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 					);
 				}
 			}
-			let lDevoirRattrapage = _getDevoirRattrapage(lDevoir);
+			let lDevoirRattrapage = this._getDevoirRattrapage(lDevoir);
 			let lServiceRattrapage =
 				lDevoirRattrapage &&
 				lDevoirRattrapage.genreRattrapage ===
@@ -2472,7 +2689,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 					this.getGenreRattrapage(this.genreRattrapage.GR_Moyenne);
 			let lIconeDevoir =
 				lDevoir.executionQCM && lDevoir.executionQCM.existeNumero()
-					? '<i class="icon_qcm ThemeCat-pedagogie AlignementMilieuVertical"></i>'
+					? '<i role="presentation" class="icon_qcm ThemeCat-pedagogie AlignementMilieuVertical"></i>'
 					: lDevoir.execKiosque && lDevoir.execKiosque.existeNumero()
 						? '<div class="Image_Kiosque_ListeDevoir InlineBlock AlignementMilieuVertical"></div>'
 						: "";
@@ -2482,23 +2699,25 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 					';"></div>'
 				: "";
 			const lAcronymDS = lDevoir.estDevoirSurveille
-				? GTraductions.getValeur("DernieresNotes.DevoirSurveilleAbr")
+				? ObjetTraduction_1.GTraductions.getValeur(
+						"DernieresNotes.DevoirSurveilleAbr",
+					)
 				: "";
 			const lGetFormatAffichageDate = function (aDate) {
-				return GDate.dateEntreLesDates(
+				return ObjetDate_1.GDate.dateEntreLesDates(
 					aDate,
-					GDate.premiereDate,
-					GDate.derniereDate,
+					ObjetDate_1.GDate.premiereDate,
+					ObjetDate_1.GDate.derniereDate,
 				)
 					? "%JJ/%MM"
 					: "%JJ/%MM/%AAAA";
 			};
-			const lDateDevoir = GDate.formatDate(
+			const lDateDevoir = ObjetDate_1.GDate.formatDate(
 				lDevoir.date,
 				lGetFormatAffichageDate(lDevoir.date),
 			);
 			const lDateDevoirRattrapage = lDevoirRattrapage
-				? GDate.formatDate(
+				? ObjetDate_1.GDate.formatDate(
 						lDevoirRattrapage.date,
 						lGetFormatAffichageDate(lDevoirRattrapage.date),
 					)
@@ -2509,7 +2728,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 					libelleHtml:
 						"<div " +
 						(lSurEditionDevoir
-							? `${lSurEditionDevoir} aria-label="${lHint}"`
+							? `${lSurEditionDevoir} aria-label="${lTooltipBouton}" data-tooltip`
 							: "") +
 						' class="devoir nom-devoir ' +
 						(!aPourImpression ? "pas-impression " : "") +
@@ -2520,17 +2739,23 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 						lCouleurCategorie +
 						(!lServiceRattrapage ? lDateDevoir : "") +
 						(lDevoir.verrouille && !aPourImpression
-							? '<i class="icon_lock"></i>'
+							? IE.jsx.str("i", { class: "icon_lock", role: "presentation" })
 							: "") +
 						(lDevoirRattrapage
 							? ' <div class="InlineBlock AlignementMilieuVertical EspaceGauche EspaceDroit">' +
-								GImage.composeImage("Image_DevoirRefait", 16, aPourImpression) +
+								ObjetImage_1.GImage.composeImage(
+									"Image_DevoirRefait",
+									16,
+									aPourImpression,
+								) +
 								"</div> " +
 								lDateDevoirRattrapage
 							: "") +
 						(lDevoirRattrapageMoy
 							? ' <span class="InlineBlock AlignementMilieuVertical" style="text-align:right;width:58px;">' +
-								GTraductions.getValeur("PageNotes.MoyenneAbr") +
+								ObjetTraduction_1.GTraductions.getValeur(
+									"PageNotes.MoyenneAbr",
+								) +
 								"</span>"
 							: "") +
 						(lDevoir.estDevoirSurveille
@@ -2539,7 +2764,9 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 									? "position:absolute;top:0;right:0;margin-left: .5rem;"
 									: "") +
 								'" class="pseudo-icone-ds tiny" ie-hint="' +
-								GTraductions.getValeur("DernieresNotes.DevoirSurveille") +
+								ObjetTraduction_1.GTraductions.getValeur(
+									"DernieresNotes.DevoirSurveille",
+								) +
 								'" data-ico="' +
 								lAcronymDS +
 								'">' +
@@ -2550,14 +2777,18 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 				},
 			];
 			if (this.avecLigneTitreBouton() && !aPourImpression) {
-				lTitres.push(this.getTitreBouton(lDevoir, i, lSurEditionDevoir));
+				lTitres.push(
+					this.getTitreBouton(lDevoir, i, lSurEditionDevoir, lTooltipBouton),
+				);
 			}
 			if (lDevoir.service.getNumero() !== this.Service.getNumero()) {
 				lTitres.push({
 					libelle: lDevoir.service.matiere.getLibelle(),
 					libelleHtml:
 						"<div " +
-						lSurEditionDevoir +
+						(lSurEditionDevoir
+							? `${lSurEditionDevoir} aria-label="${lTooltipBouton}" data-tooltip`
+							: "") +
 						' class="devoir service ' +
 						(!aPourImpression ? "pas-impression " : "") +
 						'AvecMain TitreListeSansTri">' +
@@ -2583,9 +2814,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 					) {
 						lCouleurFond = this.couleurPeriodes
 							? this.couleurPeriodes[j + 1]
-							: GCouleur.periodesClair
-								? GCouleur.periodesClair[j + 1]
-								: "transparent";
+							: "transparent";
 					}
 				}
 				lTitres.push({
@@ -2596,9 +2825,11 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 							: ""),
 					libelleHtml:
 						'<div class="NoWrap Maigre" style="' +
-						GStyle.composeCouleur(
+						ObjetStyle_1.GStyle.composeCouleur(
 							lCouleurFond,
-							GCouleur.getCouleurCorrespondance(lCouleurFond),
+							(0, AccessApp_1.getApp)()
+								.getCouleur()
+								.getCouleurCorrespondance(lCouleurFond),
 						) +
 						(!aPourImpression
 							? "position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; padding-top: 5px;"
@@ -2608,9 +2839,9 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 						'<div class="InlineBlock AlignementMilieuVertical">' +
 						(lServiceRattrapage
 							? '<span ie-hint="' +
-								GTraductions.getValeur("Notes.Rattrapage") +
+								ObjetTraduction_1.GTraductions.getValeur("Notes.Rattrapage") +
 								'">' +
-								GTraductions.getValeur("Notes.Rattrapage") +
+								ObjetTraduction_1.GTraductions.getValeur("Notes.Rattrapage") +
 								"</span>"
 							: lDevoir.coefficient.getCoefficientEntier() +
 								(!lDevoir.bareme.egal(this.param.baremeParDefaut)
@@ -2631,9 +2862,11 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 							: ""),
 					libelleHtml:
 						'<div class="NoWrap Maigre" style="' +
-						GStyle.composeCouleur(
+						ObjetStyle_1.GStyle.composeCouleur(
 							lCouleurFond,
-							GCouleur.getCouleurCorrespondance(lCouleurFond),
+							(0, AccessApp_1.getApp)()
+								.getCouleur()
+								.getCouleurCorrespondance(lCouleurFond),
 						) +
 						(!aPourImpression
 							? "position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; padding-top: 5px;"
@@ -2643,9 +2876,9 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 						'<div class="InlineBlock AlignementMilieuVertical">' +
 						(lServiceRattrapage
 							? '<span ie-hint="' +
-								GTraductions.getValeur("Notes.Rattrapage") +
+								ObjetTraduction_1.GTraductions.getValeur("Notes.Rattrapage") +
 								'">' +
-								GTraductions.getValeur("Notes.Rattrapage") +
+								ObjetTraduction_1.GTraductions.getValeur("Notes.Rattrapage") +
 								"</span>"
 							: lDevoir.coefficient.getCoefficientEntier() +
 								(!lDevoir.bareme.egal(this.param.baremeParDefaut)
@@ -2656,7 +2889,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 			} else {
 				lTitres.push({
 					libelle: lServiceRattrapage
-						? GTraductions.getValeur("Notes.Rattrapage")
+						? ObjetTraduction_1.GTraductions.getValeur("Notes.Rattrapage")
 						: lDevoir.coefficient.getCoefficientEntier() +
 							(!lDevoir.bareme.egal(this.param.baremeParDefaut)
 								? "-" + lDevoir.bareme.getBaremeEntier()
@@ -2667,9 +2900,9 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 						'<div class="InlineBlock AlignementMilieuVertical">' +
 						(lServiceRattrapage
 							? '<span ie-hint="' +
-								GTraductions.getValeur("Notes.Rattrapage") +
+								ObjetTraduction_1.GTraductions.getValeur("Notes.Rattrapage") +
 								'">' +
-								GTraductions.getValeur("Notes.Rattrapage") +
+								ObjetTraduction_1.GTraductions.getValeur("Notes.Rattrapage") +
 								"</span>"
 							: lDevoir.coefficient.getCoefficientEntier() +
 								(!lDevoir.bareme.egal(this.param.baremeParDefaut)
@@ -2679,7 +2912,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 				});
 			}
 			const lTailleColDevoir = this.getTailleColonneDevoir();
-			let lIdColDevoir = _getIdByCol({
+			let lIdColDevoir = this._getIdByCol({
 				id: DonneesListe_PageNotes.colonnes.devoir,
 				indice: i,
 			});
@@ -2691,12 +2924,6 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 					titre: lTitres,
 					hint: lHint,
 					taille: lTailleColDevoir,
-					libelleWai:
-						GTraductions.getValeur("PageNotes.WAITitreDevoir_S", [
-							GDate.formatDate(lDevoir.date, "%JJJJ %J %MMMM"),
-						]) +
-						" " +
-						lHint,
 				});
 			}
 			if (lDevoirRattrapage) {
@@ -2708,9 +2935,9 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 					titre: lServiceRattrapage
 						? lTitres
 						: [
-								TypeFusionTitreListe.FusionGauche,
-								TypeFusionTitreListe.FusionGauche,
-								TypeFusionTitreListe.FusionGauche,
+								TypeFusionTitreListe_1.TypeFusionTitreListe.FusionGauche,
+								TypeFusionTitreListe_1.TypeFusionTitreListe.FusionGauche,
+								TypeFusionTitreListe_1.TypeFusionTitreListe.FusionGauche,
 							],
 					hint: lHint,
 					taille: lTailleColDevoir,
@@ -2723,9 +2950,9 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 						estRattrapageMoyenne: true,
 						rangColonne: i,
 						titre: [
-							TypeFusionTitreListe.FusionGauche,
-							TypeFusionTitreListe.FusionGauche,
-							TypeFusionTitreListe.FusionGauche,
+							TypeFusionTitreListe_1.TypeFusionTitreListe.FusionGauche,
+							TypeFusionTitreListe_1.TypeFusionTitreListe.FusionGauche,
+							TypeFusionTitreListe_1.TypeFusionTitreListe.FusionGauche,
 						],
 						hint: lHint,
 						taille: lTailleColDevoir,
@@ -2760,7 +2987,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 		];
 		if (
 			!!this.param.optionsAffichage &&
-			!!this.param.optionsAffichage.modeAffichageHeureAbsence > 0 &&
+			!!this.param.optionsAffichage.modeAffichageHeureAbsence &&
 			!this.avecPeriodes &&
 			this.periode.getNumero() !== 0
 		) {
@@ -2781,7 +3008,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 		if (this.avecPeriodes) {
 			for (let i = 0, lNbr = this.nbrPeriodesAffichage; i < lNbr; i++) {
 				lResult.push(
-					_getIdByCol({
+					this._getIdByCol({
 						id: DonneesListe_PageNotes.colonnes.moyennePeriode,
 						indice: i,
 					}),
@@ -2796,7 +3023,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 					i++
 				) {
 					lResult.push(
-						_getIdByCol({
+						this._getIdByCol({
 							id: DonneesListe_PageNotes.colonnes.moyenneSousService,
 							indice: i,
 						}),
@@ -2808,7 +3035,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 					this.Service.pere.listeGenreNotation;
 				for (let i = 0, lNbr = lListeGenreNotation.count(); i < lNbr; i++) {
 					lResult.push(
-						_getIdByCol({
+						this._getIdByCol({
 							id: DonneesListe_PageNotes.colonnes.moyenneGenreNotation,
 							indice: i,
 						}),
@@ -2818,7 +3045,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 		}
 		lResult.push(DonneesListe_PageNotes.colonnes.bonusMalus);
 		for (let i = 0, lNbr = this.listeDevoirs.count(); i < lNbr; i++) {
-			let lIdColDevoir = _getIdByCol({
+			let lIdColDevoir = this._getIdByCol({
 				id: DonneesListe_PageNotes.colonnes.devoir,
 				indice: i,
 			});
@@ -2826,221 +3053,244 @@ class DonneesListe_PageNotes extends ObjetDonneesListe {
 		}
 		return lResult;
 	}
-}
-DonneesListe_PageNotes.colonnes = {
-	eleves: "pageNotes_eleves",
-	classe: "pageNotes_classe",
-	TDOption: "pageNotes_TDOption",
-	absences: "pageNotes_absences",
-	moyenne: "pageNotes_moyenne",
-	moyenneAvRattrapageService: "pageNotes_moyenneAvRattrapageService",
-	moyenneBrute: "pageNotes_moyenneBrute",
-	moyennePeriode: "pageNotes_moyennePeriode",
-	moyenneSousService: "pageNotes_moyenneSousService",
-	moyenneGenreNotation: "pageNotes_moyenneGenreNotation",
-	bonusMalus: "pageNotes_bonusMalus",
-	devoir: "pageNotes_devoir",
-	moyNR: "pageNotes_moyNR",
-};
-function _estColDevoir(aParams) {
-	if (
-		aParams.declarationColonne.rangColonne !== undefined &&
-		aParams.declarationColonne.genreColonne === this.genreColonne.Devoir
-	) {
-		return true;
-	} else {
-		return false;
-	}
-}
-function _estCellEditable(aParams) {
-	const lEditable = _estDonneeEditable.call(this, aParams);
-	const lCloture = _estDonneeCloture.call(this, aParams);
-	return lEditable && !lCloture;
-}
-function _estDonneeCloture(aParams) {
-	const lPeriode = this.periode;
-	if (lPeriode && !lPeriode.getActif()) {
-		return true;
-	} else {
-		if (aParams.idColonne === DonneesListe_PageNotes.colonnes.moyNR) {
-			return aParams.article.estMoyNRCloture === true;
+	_estColDevoir(aParams) {
+		if (
+			aParams.declarationColonne.rangColonne !== undefined &&
+			aParams.declarationColonne.genreColonne === this.genreColonne.Devoir
+		) {
+			return true;
+		} else {
+			return false;
 		}
-		if (aParams.idColonne === DonneesListe_PageNotes.colonnes.bonusMalus) {
-			let lEstClasseEleveClotureSurPeriode = false;
-			if (this.param.avecColonneClasse && this.param.listeClasses) {
-				const lEleve = aParams.article;
-				if (lEleve && lEleve.classe) {
-					let lNumClasse = lEleve.classe.getNumero();
-					let lClasse = this.param.listeClasses.getElementParNumero(lNumClasse);
-					if (lClasse && lClasse.listePeriodes) {
-						const lPeriode = lClasse.listePeriodes.getElementParNumero(
-							this.periode.getNumero(),
-						);
-						if (lPeriode && !lPeriode.getActif()) {
-							lEstClasseEleveClotureSurPeriode = true;
+	}
+	_estCellEditable(aParams) {
+		const lEditable = this._estDonneeEditable(aParams);
+		const lCloture = this._estDonneeCloture(aParams);
+		return lEditable && !lCloture;
+	}
+	_estDonneeCloture(aParams) {
+		const lPeriode = this.periode;
+		if (lPeriode && !lPeriode.getActif()) {
+			return true;
+		} else {
+			if (aParams.idColonne === DonneesListe_PageNotes.colonnes.moyNR) {
+				return aParams.article.estMoyNRCloture === true;
+			}
+			if (aParams.idColonne === DonneesListe_PageNotes.colonnes.bonusMalus) {
+				let lEstClasseEleveClotureSurPeriode = false;
+				if (this.param.avecColonneClasse && this.param.listeClasses) {
+					const lEleve = aParams.article;
+					if (lEleve && lEleve.classe) {
+						let lNumClasse = lEleve.classe.getNumero();
+						let lClasse =
+							this.param.listeClasses.getElementParNumero(lNumClasse);
+						if (lClasse && lClasse.listePeriodes) {
+							const lPeriode = lClasse.listePeriodes.getElementParNumero(
+								this.periode.getNumero(),
+							);
+							if (lPeriode && !lPeriode.getActif()) {
+								lEstClasseEleveClotureSurPeriode = true;
+							}
 						}
 					}
 				}
+				return lEstClasseEleveClotureSurPeriode;
 			}
-			return lEstClasseEleveClotureSurPeriode;
+			return false;
+		}
+	}
+	_estDonneeEditable(aParams) {
+		const lEleve = aParams.article;
+		if (this._estColDevoir(aParams)) {
+			const lDevoir = this._getDevoir(aParams);
+			const lEleveDevoir = this._getEleveDevoir(aParams);
+			const lDevoirRattrapage = this._getDevoirRattrapage(lDevoir);
+			if (
+				lDevoirRattrapage &&
+				aParams.declarationColonne.estRattrapageDevoir &&
+				(!this._avecSaisieRattrapage({
+					eleve: aParams.article,
+					eleveDevoir: lEleveDevoir,
+					devoir: lDevoir,
+					devoirRattrapage: lDevoirRattrapage,
+				}) ||
+					aParams.declarationColonne.estRattrapageMoyenne)
+			) {
+				return false;
+			} else {
+				return this.moteurNotesCP.estNoteEditable({
+					actif: this.Service.getActif(),
+					devoir: this._getDevoir(aParams),
+					eleve: lEleve,
+					eleveDevoir: this._getEleveDevoir(aParams),
+					devoirDansPeriode: this.devoirDansPeriode.bind(this),
+				});
+			}
+		}
+		if (aParams.idColonne === DonneesListe_PageNotes.colonnes.bonusMalus) {
+			let lEstBonusEditable = this.Service.getActif();
+			if (
+				lEstBonusEditable &&
+				"estServiceEditablePourPeriode" in this.Service
+			) {
+				lEstBonusEditable = !!this.Service.estServiceEditablePourPeriode;
+			}
+			return lEstBonusEditable;
+		}
+		if (aParams.idColonne === DonneesListe_PageNotes.colonnes.moyNR) {
+			return lEleve.estMoyNREditable === true;
 		}
 		return false;
 	}
-}
-function _estDonneeEditable(aParams) {
-	const lEleve = aParams.article;
-	if (_estColDevoir.call(this, aParams)) {
-		const lDevoir = _getDevoir(aParams);
-		const lEleveDevoir = _getEleveDevoir(aParams);
-		const lDevoirRattrapage = _getDevoirRattrapage(lDevoir);
+	_avecSaisieRattrapage(aParams) {
+		const lNote =
+			aParams.eleveDevoir && aParams.eleveDevoir.Note
+				? aParams.eleveDevoir.Note
+				: new TypeNote_1.TypeNote("");
+		const lNoteMoyenne = aParams.eleve.moyennes[this.genreColonne.Moyenne];
+		const lServiceRattrapage =
+			aParams.devoirRattrapage &&
+			aParams.devoirRattrapage.genreRattrapage ===
+				this.getGenreRattrapage(this.genreRattrapage.GR_RattrapageService);
+		const lAvecSaisieRattrapage =
+			aParams.devoirRattrapage &&
+			(lServiceRattrapage
+				? !this.periodesPourCalculMoyennes() &&
+					!this.avecSousServices &&
+					!lNoteMoyenne.estUneNoteVide() &&
+					lNoteMoyenne.estUneValeur() &&
+					lNoteMoyenne.getValeur() <
+						aParams.devoir.devoirRattrapage.noteSeuil.getValeur()
+				: !lNote.estUneNoteVide() &&
+					(!lNote.estUneValeur() ||
+						lNote.getValeur() <
+							aParams.devoir.devoirRattrapage.noteSeuil.getValeur()));
+		return lAvecSaisieRattrapage;
+	}
+	_getDevoir(aParams) {
+		return this.listeDevoirs.get(aParams.declarationColonne.rangColonne);
+	}
+	_getDevoirRattrapage(aDevoir) {
+		return aDevoir.devoirRattrapage &&
+			aDevoir.devoirRattrapage.existeNumero() &&
+			aDevoir.devoirRattrapage.existe()
+			? aDevoir.devoirRattrapage
+			: null;
+	}
+	_getEleveDevoir(aParams) {
 		if (
-			lDevoirRattrapage &&
-			aParams.declarationColonne.estRattrapageDevoir &&
-			(!_avecSasieRattrapage.call(this, {
-				eleve: aParams.article,
-				eleveDevoir: lEleveDevoir,
-				devoir: lDevoir,
-				devoirRattrapage: lDevoirRattrapage,
-			}) ||
-				aParams.declarationColonne.estRattrapageMoyenne)
+			this._getDevoir(aParams).listeEleves.getElementParNumero(
+				aParams.article.Numero,
+			) !== undefined
 		) {
-			return false;
+			return this._getDevoir(aParams).listeEleves.getElementParNumero(
+				aParams.article.Numero,
+			);
 		} else {
-			return this.moteurNotesCP.estNoteEditable({
-				actif: this.Service.getActif(),
-				devoir: _getDevoir(aParams),
-				eleve: lEleve,
-				eleveDevoir: _getEleveDevoir(aParams),
-				devoirDansPeriode: this.devoirDansPeriode.bind(this),
-			});
+			const lEleve = aParams.article;
+			lEleve.Note = null;
+			return lEleve;
 		}
 	}
-	if (aParams.idColonne === DonneesListe_PageNotes.colonnes.bonusMalus) {
-		return this.Service.getActif();
-	}
-	if (aParams.idColonne === DonneesListe_PageNotes.colonnes.moyNR) {
-		return lEleve.estMoyNREditable === true;
-	}
-	return false;
-}
-function _avecSasieRattrapage(aParams) {
-	const lNote =
-		aParams.eleveDevoir && aParams.eleveDevoir.Note
-			? aParams.eleveDevoir.Note
-			: new TypeNote("");
-	const lNoteMoyenne = aParams.eleve.moyennes[this.genreColonne.Moyenne];
-	const lServiceRattrapage =
-		aParams.devoirRattrapage &&
-		aParams.devoirRattrapage.genreRattrapage ===
-			this.getGenreRattrapage(this.genreRattrapage.GR_RattrapageService);
-	const lAvecSaisieRattrapage =
-		aParams.devoirRattrapage &&
-		(lServiceRattrapage
-			? !this.periodesPourCalculMoyennes() &&
-				!this.avecSousServices &&
-				!lNoteMoyenne.estUneNoteVide() &&
-				lNoteMoyenne.estUneValeur() &&
-				lNoteMoyenne.getValeur() <
-					aParams.devoir.devoirRattrapage.noteSeuil.getValeur()
-			: !lNote.estUneNoteVide() &&
-				(!lNote.estUneValeur() ||
-					lNote.getValeur() <
-						aParams.devoir.devoirRattrapage.noteSeuil.getValeur()));
-	return lAvecSaisieRattrapage;
-}
-function _getDevoir(aParams) {
-	return aParams.instance.Donnees.listeDevoirs.get(
-		aParams.declarationColonne.rangColonne,
-	);
-}
-function _getDevoirRattrapage(aDevoir) {
-	return aDevoir.devoirRattrapage &&
-		aDevoir.devoirRattrapage.existeNumero() &&
-		aDevoir.devoirRattrapage.existe()
-		? aDevoir.devoirRattrapage
-		: false;
-}
-function _getEleveDevoir(aParams) {
-	if (
-		_getDevoir(aParams).listeEleves.getElementParNumero(
-			aParams.article.Numero,
-		) !== undefined
-	) {
-		return _getDevoir(aParams).listeEleves.getElementParNumero(
-			aParams.article.Numero,
+	_getBonusMalus(aParam) {
+		const lPeriodeBonus = aParam.listePeriodes.getElementParNumero(
+			this.periode.getNumero(),
 		);
-	} else {
-		const lEleve = aParams.article;
-		lEleve.Note = null;
-		return lEleve;
+		if (
+			this._estBonusMalusConformeAbsences(
+				lPeriodeBonus.bonusMalus,
+				lPeriodeBonus.malusAbsences,
+			) &&
+			!this.param.pourImpression
+		) {
+			return lPeriodeBonus.malusAbsences;
+		} else {
+			return lPeriodeBonus.bonusMalus;
+		}
 	}
-}
-function _getBonusMalus(aParam) {
-	const lPeriodeBonus = aParam.listePeriodes.getElementParNumero(
-		this.periode.getNumero(),
-	);
-	if (
-		_estBonusMalusConformeAbsences(
-			lPeriodeBonus.bonusMalus,
-			lPeriodeBonus.malusAbsences,
-		) &&
-		!this.param.pourImpression
-	) {
-		return lPeriodeBonus.malusAbsences;
-	} else {
-		return lPeriodeBonus.bonusMalus;
+	_estBonusMalusConformeAbsences(aBonusMalus, aMalusAbsences) {
+		return (
+			aBonusMalus &&
+			aMalusAbsences &&
+			aBonusMalus.getValeur() !== 0 &&
+			aBonusMalus.getValeur() === aMalusAbsences.getValeur()
+		);
 	}
-}
-function _estBonusMalusConformeAbsences(aBonusMalus, aMalusAbsences) {
-	return (
-		aBonusMalus &&
-		aMalusAbsences &&
-		aBonusMalus.getValeur() !== 0 &&
-		aBonusMalus.getValeur() === aMalusAbsences.getValeur()
-	);
-}
-function _estCellMethodeCalculMoyenne(D, aParam) {
-	let lNote, lNoteEleveRattrapageService, lValeursMoy;
-	switch (aParam.declarationColonne.genreColonne) {
-		case this.genreColonne.Moyenne:
-			lValeursMoy = this.getValeursMoy({ article: D });
-			lNote = lValeursMoy.note;
-			lNoteEleveRattrapageService = lValeursMoy.noteRattrapage;
-			if (lValeursMoy.rattraperNote) {
-				lNote = lNoteEleveRattrapageService;
-			}
-			return !isNaN(lNote.getValeur());
-		case this.genreColonne.MoyenneAvRattrapageService:
-			return !isNaN(
-				D.moyennes[
-					MoteurNotesCP.genreMoyenne.MoyenneAvRattrapageService
-				].getValeur(),
-			);
-		case this.genreColonne.MoyenneBrute:
-			return !isNaN(
-				D.moyennes[MoteurNotesCP.genreMoyenne.MoyenneBrute].getValeur(),
-			);
-		case this.genreColonne.MoyennePeriode:
-			lNote =
-				D.moyennes[
-					MoteurNotesCP.genreMoyenne.MoyennePeriode -
-						aParam.declarationColonne.rangColonne
-				];
-			if (
-				!this.Service.listeServices ||
-				(this.Service.listeServices && !this.Service.listeServices.count())
-			) {
+	_estCellMethodeCalculMoyenne(D, aParam) {
+		let lNote, lNoteEleveRattrapageService, lValeursMoy;
+		switch (aParam.declarationColonne.genreColonne) {
+			case this.genreColonne.Moyenne:
+				lValeursMoy = this.getValeursMoy({ article: D });
+				lNote = lValeursMoy.note;
+				lNoteEleveRattrapageService = lValeursMoy.noteRattrapage;
+				if (lValeursMoy.rattraperNote) {
+					lNote = lNoteEleveRattrapageService;
+				}
+				return !isNaN(lNote.getValeur());
+			case this.genreColonne.MoyenneAvRattrapageService:
+				return !isNaN(
+					D.moyennes[
+						MoteurNotesCP_1.MoteurNotesCP.genreMoyenne
+							.MoyenneAvRattrapageService
+					].getValeur(),
+				);
+			case this.genreColonne.MoyenneBrute:
+				return !isNaN(
+					D.moyennes[
+						MoteurNotesCP_1.MoteurNotesCP.genreMoyenne.MoyenneBrute
+					].getValeur(),
+				);
+			case this.genreColonne.MoyennePeriode:
+				lNote =
+					D.moyennes[
+						MoteurNotesCP_1.MoteurNotesCP.genreMoyenne.MoyennePeriode -
+							aParam.declarationColonne.rangColonne
+					];
+				if (
+					!this.Service.listeServices ||
+					(this.Service.listeServices && !this.Service.listeServices.count())
+				) {
+					lNoteEleveRattrapageService =
+						this.moteurNotesCP.getNoteRattrapageServiceDElevePeriode({
+							eleve: D,
+							listeDevoirs: this.listeDevoirs,
+							numeroPeriode:
+								this.titrePeriodes.length > 0
+									? this.titrePeriodes[
+											aParam.declarationColonne.rangColonne
+										].getNumero()
+									: this.periode.getNumero(),
+							indicePeriode: aParam.declarationColonne.rangColonne,
+							devoirDansPeriode: this.devoirDansPeriode.bind(this),
+							baremeParDefaut: this.param.baremeParDefaut,
+						});
+					if (
+						!!lNoteEleveRattrapageService &&
+						!lNoteEleveRattrapageService.estUneNoteVide() &&
+						(!lNoteEleveRattrapageService.estUneAnnotation() ||
+							(this.avecUtilisationAnnotationFelicitation() &&
+								lNoteEleveRattrapageService.getValeur() >
+									this.param.baremeParDefaut.getValeur()))
+					) {
+						lNote = lNoteEleveRattrapageService;
+					}
+				}
+				return !isNaN(lNote.getValeur());
+			case this.genreColonne.MoyenneSousService:
+				lNote =
+					D.moyennes[
+						MoteurNotesCP_1.MoteurNotesCP.genreMoyenne.MoyenneSousService -
+							aParam.declarationColonne.rangColonne
+					];
 				lNoteEleveRattrapageService =
-					this.moteurNotesCP.getNoteRattrapageServiceDElevePeriode({
+					this.moteurNotesCP.getNoteRattrapageServiceDEleveSousService({
 						eleve: D,
 						listeDevoirs: this.listeDevoirs,
-						numeroPeriode:
-							this.titrePeriodes.length > 0
-								? this.titrePeriodes[
-										aParam.declarationColonne.rangColonne
-									].getNumero()
-								: this.periode.getNumero(),
-						indicePeriode: aParam.declarationColonne.rangColonne,
+						numeroPeriode: this.periode.getNumero(),
+						numeroService: this.Service.listeServices
+							.get(aParam.declarationColonne.rangColonne)
+							.getNumero(),
+						indiceService: aParam.declarationColonne.rangColonne,
 						devoirDansPeriode: this.devoirDansPeriode.bind(this),
 						baremeParDefaut: this.param.baremeParDefaut,
 					});
@@ -3054,171 +3304,243 @@ function _estCellMethodeCalculMoyenne(D, aParam) {
 				) {
 					lNote = lNoteEleveRattrapageService;
 				}
-			}
-			return !isNaN(lNote.getValeur());
-		case this.genreColonne.MoyenneSousService:
-			lNote =
-				D.moyennes[
-					MoteurNotesCP.genreMoyenne.MoyenneSousService -
-						aParam.declarationColonne.rangColonne
-				];
-			lNoteEleveRattrapageService =
-				this.moteurNotesCP.getNoteRattrapageServiceDEleveSousService({
-					eleve: D,
-					listeDevoirs: this.listeDevoirs,
-					numeroPeriode: this.periode.getNumero(),
-					numeroService: this.Service.listeServices
-						.get(aParam.declarationColonne.rangColonne)
-						.getNumero(),
-					indiceService: aParam.declarationColonne.rangColonne,
-					devoirDansPeriode: this.devoirDansPeriode.bind(this),
-					baremeParDefaut: this.param.baremeParDefaut,
-				});
-			if (
-				!!lNoteEleveRattrapageService &&
-				!lNoteEleveRattrapageService.estUneNoteVide() &&
-				(!lNoteEleveRattrapageService.estUneAnnotation() ||
-					(this.avecUtilisationAnnotationFelicitation() &&
-						lNoteEleveRattrapageService.getValeur() >
-							this.param.baremeParDefaut.getValeur()))
-			) {
-				lNote = lNoteEleveRattrapageService;
-			}
-			return !isNaN(lNote.getValeur());
-		case this.genreColonne.MoyenneGenreNotation:
-			return !isNaN(
-				D.moyennes[
-					MoteurNotesCP.genreMoyenne.MoyenneGenreNotation -
-						aParam.declarationColonne.rangColonne
-				].getValeur(),
-			);
-		default:
-			return false;
-	}
-}
-function _getIdByCol(aCol) {
-	switch (aCol.id) {
-		case DonneesListe_PageNotes.colonnes.devoir:
-		case DonneesListe_PageNotes.colonnes.moyennePeriode:
-		case DonneesListe_PageNotes.colonnes.moyenneSousService:
-		case DonneesListe_PageNotes.colonnes.moyenneGenreNotation:
-			return aCol.id + "_" + aCol.indice;
-		default:
-			return aCol.id;
-	}
-}
-function _getColById(aId) {
-	const lCol = {},
-		lSplit = aId.split("_");
-	lCol.id = aId;
-	lCol.indice = null;
-	if (lSplit[1] === "devoir") {
-		lCol.id = DonneesListe_PageNotes.colonnes.devoir;
-		lCol.indice = lSplit[2];
-	}
-	if (lSplit[1] === "moyennePeriode") {
-		lCol.id = DonneesListe_PageNotes.colonnes.moyennePeriode;
-		lCol.indice = lSplit[2];
-	}
-	if (lSplit[1] === "moyenneSousService") {
-		lCol.id = DonneesListe_PageNotes.colonnes.moyenneSousService;
-		lCol.indice = lSplit[2];
-	}
-	if (lSplit[1] === "moyenneGenreNotation") {
-		lCol.id = DonneesListe_PageNotes.colonnes.moyenneGenreNotation;
-		lCol.indice = lSplit[2];
-	}
-	return lCol;
-}
-function _afficherCommePlusHaute(aNote, aService) {
-	return (
-		this.moteurNotesCP.getPonderationNotePlusHaute(aService) !== 1.0 &&
-		aNote.estPlusHaute
-	);
-}
-function _afficherCommePlusBasse(aNote, aService) {
-	return (
-		this.moteurNotesCP.getPonderationNotePlusBasse(aService) !== 1.0 &&
-		aNote.estPlusBasse
-	);
-}
-function _estExecKiosque(aEleveDevoir) {
-	return aEleveDevoir && aEleveDevoir.execKiosque
-		? aEleveDevoir.execKiosque
-		: false;
-}
-function _getServiceOuSousServiceDeLaColonneMoyenne(aIndiceColonne) {
-	let lServiceConcernee = null;
-	if (this.avecSousServices && !!this.Service && !!this.Service.listeServices) {
-		for (let K = 0; K < this.Service.listeServices.count(); K++) {
-			if (
-				aIndiceColonne === this.genreColonne.MoyenneSousService - K ||
-				aIndiceColonne === this.genreColonne.MoyenneSousServiceBrute - K
-			) {
-				lServiceConcernee = this.Service.listeServices.get(K);
-				break;
-			}
+				return !isNaN(lNote.getValeur());
+			case this.genreColonne.MoyenneGenreNotation:
+				return !isNaN(
+					D.moyennes[
+						MoteurNotesCP_1.MoteurNotesCP.genreMoyenne.MoyenneGenreNotation -
+							aParam.declarationColonne.rangColonne
+					].getValeur(),
+				);
+			default:
+				return false;
 		}
 	}
-	if (!lServiceConcernee) {
-		lServiceConcernee = this.Service;
+	_getIdByCol(aCol) {
+		switch (aCol.id) {
+			case DonneesListe_PageNotes.colonnes.devoir:
+			case DonneesListe_PageNotes.colonnes.moyennePeriode:
+			case DonneesListe_PageNotes.colonnes.moyenneSousService:
+			case DonneesListe_PageNotes.colonnes.moyenneGenreNotation:
+				return aCol.id + "_" + aCol.indice;
+			default:
+				return aCol.id;
+		}
 	}
-	return lServiceConcernee;
-}
-function _calculerMoyennes(ANumLigne, ANumColonne) {
-	const lAvecPeriode = this.periodesPourCalculMoyennes();
-	const lDebEleve =
-		ANumLigne === null || ANumLigne === undefined ? 0 : ANumLigne;
-	const lFinEleve =
-		ANumLigne === null || ANumLigne === undefined
-			? this.NbrEleves
-			: ANumLigne + 1;
-	const LDeb =
-		ANumColonne !== null && ANumColonne !== undefined
-			? ANumColonne < 0
-				? 0
-				: ANumColonne
-			: 0;
-	const LFin =
-		ANumColonne !== null && ANumColonne !== undefined
-			? ANumColonne < 0
-				? 0
-				: ANumColonne + 1
-			: this.NbrDevoirs;
-	const lListeElevesSelection = new ObjetListeElements();
-	for (let I = lDebEleve; I < lFinEleve; I++) {
-		lListeElevesSelection.addElement(this.Donnees.get(I));
+	_getColById(aId) {
+		const lCol = {},
+			lSplit = aId.split("_");
+		lCol.id = aId;
+		lCol.indice = null;
+		if (lSplit[1] === "devoir") {
+			lCol.id = DonneesListe_PageNotes.colonnes.devoir;
+			lCol.indice = parseInt(lSplit[2]);
+		}
+		if (lSplit[1] === "moyennePeriode") {
+			lCol.id = DonneesListe_PageNotes.colonnes.moyennePeriode;
+			lCol.indice = parseInt(lSplit[2]);
+		}
+		if (lSplit[1] === "moyenneSousService") {
+			lCol.id = DonneesListe_PageNotes.colonnes.moyenneSousService;
+			lCol.indice = parseInt(lSplit[2]);
+		}
+		if (lSplit[1] === "moyenneGenreNotation") {
+			lCol.id = DonneesListe_PageNotes.colonnes.moyenneGenreNotation;
+			lCol.indice = parseInt(lSplit[2]);
+		}
+		return lCol;
 	}
-	const lListeDevoirsSelection = new ObjetListeElements();
-	for (let J = LDeb; J < LFin; J++) {
-		lListeDevoirsSelection.addElement(this.listeDevoirs.get(J));
+	_afficherCommePlusHaute(aNote, aService) {
+		return (
+			this.moteurNotesCP.getPonderationNotePlusHaute(aService) !== 1.0 &&
+			aNote.estPlusHaute
+		);
 	}
-	this.moyGenerales = this.moteurNotesCP.calculerMoyennes(
-		$.extend(
-			{},
-			{
-				periode: this.periode,
-				infosPeriodes: {
-					avecPeriodes: lAvecPeriode,
-					nbPeriodes: this.nbrPeriodes,
-					titrePeriodes: this.titrePeriodes,
+	_afficherCommePlusBasse(aNote, aService) {
+		return (
+			this.moteurNotesCP.getPonderationNotePlusBasse(aService) !== 1.0 &&
+			aNote.estPlusBasse
+		);
+	}
+	estNotePonderee(aParams) {
+		let lAfficherCommePlusBasseRattrap = false,
+			lAfficherCommePlusHauteRattrap = false;
+		let lAfficherCommePlusBasseMoyRattrap = false,
+			lAfficherCommePlusHauteMoyRattrap = false;
+		let lAfficherCommePlusHaute = this._afficherCommePlusHaute(
+			aParams.note,
+			this.Service,
+		);
+		if (lAfficherCommePlusHaute) {
+			if (
+				aParams.devoirRattrapage &&
+				!aParams.devoirRattrapageMoy &&
+				aParams.noteRattrapage.estUneValeur() &&
+				(aParams.note.getValeur() <= aParams.noteRattrapage.getValeur() ||
+					!aParams.note.estUneValeur())
+			) {
+				lAfficherCommePlusHauteRattrap = true;
+				lAfficherCommePlusHaute = false;
+			} else if (aParams.devoirRattrapage && aParams.devoirRattrapageMoy) {
+				lAfficherCommePlusHauteMoyRattrap = true;
+				lAfficherCommePlusHaute = false;
+			}
+		}
+		let lAfficherCommePlusBasse = this._afficherCommePlusBasse(
+			aParams.note,
+			this.Service,
+		);
+		if (lAfficherCommePlusBasse) {
+			if (
+				aParams.devoirRattrapage &&
+				!aParams.devoirRattrapageMoy &&
+				aParams.noteRattrapage.estUneValeur() &&
+				(aParams.note.getValeur() > aParams.noteRattrapage.getValeur() ||
+					!aParams.note.estUneValeur())
+			) {
+				lAfficherCommePlusBasseRattrap = true;
+				lAfficherCommePlusBasse = false;
+			} else if (aParams.devoirRattrapage && aParams.devoirRattrapageMoy) {
+				lAfficherCommePlusBasseMoyRattrap = true;
+				lAfficherCommePlusBasse = false;
+			}
+		}
+		if (
+			aParams.declarationColonne.estRattrapageDevoir &&
+			aParams.declarationColonne.estRattrapageMoyenne
+		) {
+			if (
+				lAfficherCommePlusHauteMoyRattrap ||
+				lAfficherCommePlusBasseMoyRattrap
+			) {
+				return true;
+			}
+		} else if (aParams.declarationColonne.estRattrapageDevoir) {
+			if (lAfficherCommePlusHauteRattrap || lAfficherCommePlusBasseRattrap) {
+				return true;
+			}
+		} else {
+			if (lAfficherCommePlusHaute || lAfficherCommePlusBasse) {
+				return true;
+			}
+		}
+		return false;
+	}
+	_estExecKiosque(aEleveDevoir) {
+		return aEleveDevoir && aEleveDevoir.execKiosque
+			? aEleveDevoir.execKiosque
+			: false;
+	}
+	_getServiceOuSousServiceDeLaColonneMoyenne(aIndiceColonne) {
+		let lServiceConcernee = null;
+		if (
+			this.avecSousServices &&
+			!!this.Service &&
+			!!this.Service.listeServices
+		) {
+			for (let K = 0; K < this.Service.listeServices.count(); K++) {
+				if (
+					aIndiceColonne === this.genreColonne.MoyenneSousService - K ||
+					aIndiceColonne === this.genreColonne.MoyenneSousServiceBrute - K
+				) {
+					lServiceConcernee = this.Service.listeServices.get(K);
+					break;
+				}
+			}
+		}
+		if (!lServiceConcernee) {
+			lServiceConcernee = this.Service;
+		}
+		return lServiceConcernee;
+	}
+	_calculerMoyennes(ANumLigne, ANumColonne) {
+		const lAvecPeriode = this.periodesPourCalculMoyennes();
+		const lDebEleve =
+			ANumLigne === null || ANumLigne === undefined ? 0 : ANumLigne;
+		const lFinEleve =
+			ANumLigne === null || ANumLigne === undefined
+				? this.NbrEleves
+				: ANumLigne + 1;
+		const LDeb =
+			ANumColonne !== null && ANumColonne !== undefined
+				? ANumColonne < 0
+					? 0
+					: ANumColonne
+				: 0;
+		const LFin =
+			ANumColonne !== null && ANumColonne !== undefined
+				? ANumColonne < 0
+					? 0
+					: ANumColonne + 1
+				: this.NbrDevoirs;
+		const lListeElevesSelection = new ObjetListeElements_1.ObjetListeElements();
+		for (let I = lDebEleve; I < lFinEleve; I++) {
+			lListeElevesSelection.addElement(this.Donnees.get(I));
+		}
+		const lListeDevoirsSelection =
+			new ObjetListeElements_1.ObjetListeElements();
+		for (let J = LDeb; J < LFin; J++) {
+			lListeDevoirsSelection.addElement(this.listeDevoirs.get(J));
+		}
+		this.moyGenerales = this.moteurNotesCP.calculerMoyennes(
+			$.extend(
+				{},
+				{
+					periode: this.periode,
+					infosPeriodes: {
+						avecPeriodes: lAvecPeriode,
+						nbPeriodes: this.nbrPeriodes,
+						titrePeriodes: this.titrePeriodes,
+					},
+					listeClasses: this.param.listeClasses,
+					baremeParDefaut: this.param.baremeParDefaut,
+					forcerSansSousService: this.param.forcerSansSousService,
+					service: this.Service,
+					listeDevoirs: this.listeDevoirs,
+					devoirDansPeriode: this.devoirDansPeriode.bind(this),
+					listeEleves: this.Donnees,
+					affichageAnciensEleves: this.affichageAnciensEleves,
+					eleveDansDevoir: this.eleveDansDevoir.bind(this),
+					avecTotalMoyNR: this.param.avecColNR,
 				},
-				listeClasses: this.param.listeClasses,
-				baremeParDefaut: this.param.baremeParDefaut,
-				forcerSansSousService: this.param.forcerSansSousService,
-				service: this.Service,
-				listeDevoirs: this.listeDevoirs,
-				devoirDansPeriode: this.devoirDansPeriode.bind(this),
-				listeEleves: this.Donnees,
-				affichageAnciensEleves: this.affichageAnciensEleves,
-				eleveDansDevoir: this.eleveDansDevoir.bind(this),
-				avecTotalMoyNR: this.param.avecColNR,
-			},
-			{
-				listeElevesSelection: ANumLigne ? lListeElevesSelection : null,
-				listeDevoirsSelection: ANumColonne ? lListeDevoirsSelection : null,
-			},
-		),
-	);
+				{
+					listeElevesSelection: ANumLigne ? lListeElevesSelection : null,
+					listeDevoirsSelection: ANumColonne ? lListeDevoirsSelection : null,
+				},
+			),
+		);
+	}
+	devoirDansPeriode(aDevoir, aEleve, lNumPeriode) {
+		return false;
+	}
+	eleveDansDevoir(aEleve, aDevoir) {
+		return null;
+	}
 }
-module.exports = { DonneesListe_PageNotes };
+exports.DonneesListe_PageNotes = DonneesListe_PageNotes;
+(function (DonneesListe_PageNotes) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["eleves"] = "pageNotes_eleves";
+		colonnes["classe"] = "pageNotes_classe";
+		colonnes["TDOption"] = "pageNotes_TDOption";
+		colonnes["absences"] = "pageNotes_absences";
+		colonnes["moyenne"] = "pageNotes_moyenne";
+		colonnes["moyenneAvRattrapageService"] =
+			"pageNotes_moyenneAvRattrapageService";
+		colonnes["moyenneBrute"] = "pageNotes_moyenneBrute";
+		colonnes["moyennePeriode"] = "pageNotes_moyennePeriode";
+		colonnes["moyenneSousService"] = "pageNotes_moyenneSousService";
+		colonnes["moyenneGenreNotation"] = "pageNotes_moyenneGenreNotation";
+		colonnes["bonusMalus"] = "pageNotes_bonusMalus";
+		colonnes["devoir"] = "pageNotes_devoir";
+		colonnes["moyNR"] = "pageNotes_moyNR";
+	})(
+		(colonnes =
+			DonneesListe_PageNotes.colonnes ||
+			(DonneesListe_PageNotes.colonnes = {})),
+	);
+})(
+	DonneesListe_PageNotes ||
+		(exports.DonneesListe_PageNotes = DonneesListe_PageNotes = {}),
+);

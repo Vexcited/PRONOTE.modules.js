@@ -62,8 +62,12 @@ class ObjetWrapperAideContextuelle_Espace extends ObjetIdentite_1.Identite {
 					aInstance._eventBtn(this.node);
 				},
 				getTitle: function () {
-					return ObjetTraduction_1.GTraductions.getValeur(
-						"Commande.Aide.Actif",
+					return (
+						ObjetTraduction_1.GTraductions.getValeur("Commande.Aide.Actif") +
+						" - " +
+						ObjetAideContextuelle_1.ObjetAideContextuelle.getLibelleNbAides(
+							aInstance.nombre,
+						)
 					);
 				},
 			},
@@ -98,11 +102,21 @@ class ObjetWrapperAideContextuelle_Espace extends ObjetIdentite_1.Identite {
 		H.push('<div class="ObjetWrapperAideContextuelle_Espace">');
 		if (this.options.modeBtnEntete) {
 			H.push(
-				'<button ie-node="getNodeBtn" ie-title="btn.getTitle" aria-haspopup="true" class="bcne_btn_entete" ie-class="getClassBtnEntete"></button>',
+				IE.jsx.str("button", {
+					"ie-node": "getNodeBtn",
+					"ie-title": "btn.getTitle",
+					"aria-haspopup": "dialog",
+					class: "bcne_btn_entete",
+					"ie-class": "getClassBtnEntete",
+				}),
 			);
 		} else {
 			H.push(
-				'<ie-btnimage class="icon_base_connaissance btnImageIcon" ie-model="btn"></ie-btnimage>',
+				IE.jsx.str("ie-btnimage", {
+					class: "icon_base_connaissance btnImageIcon",
+					"ie-model": "btn",
+					"aria-haspopup": "dialog",
+				}),
 			);
 		}
 		H.push(
@@ -137,28 +151,25 @@ class ObjetWrapperAideContextuelle_Espace extends ObjetIdentite_1.Identite {
 		}
 		if (!this.instanceAide) {
 			const c_timer_ouverture = 500;
-			this.instanceAide = ObjetIdentite_1.Identite.creerInstance(
-				ObjetAideContextuelle_1.ObjetAideContextuelle,
-				{
-					pere: this,
-					evenement: () => {
-						$(".bcne_conteneur_aide").removeClass("bcne_open");
-						clearTimeout(this._timerFermeture);
-						GestionnaireModale_1.GestionnaireModale.abonnementPremierPlan(
-							false,
-							this.instanceAide.getNom(),
-						);
-						GestionnaireModale_1.GestionnaireModale.abonnementBlocageInterface(
-							false,
-							this.instanceAide.getNom(),
-						);
-						this._timerFermeture = setTimeout(() => {
-							this.instanceAide.free();
-							this.instanceAide = null;
-						}, c_timer_ouverture);
-					},
+			this.instanceAide = new ObjetAideContextuelle_1.ObjetAideContextuelle({
+				pere: this,
+				evenement: () => {
+					$(".bcne_conteneur_aide").removeClass("bcne_open");
+					clearTimeout(this._timerFermeture);
+					GestionnaireModale_1.GestionnaireModale.abonnementPremierPlan(
+						false,
+						this.instanceAide.getNom(),
+					);
+					GestionnaireModale_1.GestionnaireModale.abonnementBlocageInterface(
+						false,
+						this.instanceAide.getNom(),
+					);
+					this._timerFermeture = setTimeout(() => {
+						this.instanceAide.free();
+						this.instanceAide = null;
+					}, c_timer_ouverture);
 				},
-			);
+			});
 			ObjetHtml_1.GHtml.addHtml(
 				IEZoneFenetre_1.ZoneFenetre.getElementZoneFenetre(),
 				'<div style="z-index:1100;" class="bcne_conteneur_aide' +

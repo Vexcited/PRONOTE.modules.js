@@ -1,16 +1,17 @@
-const { ObjetElement } = require("ObjetElement.js");
-const { TypeChaineBrute } = require("TypeChaineBrute.js");
-const { TypeFichierBase64 } = require("TypeFichierBase64.js");
-const { TypeChaineHtml } = require("TypeChaineHtml.js");
-const {
-	TypeGenreElementAssociation,
-} = require("TypeGenreAssociationQuestionQCM.js");
+exports.Serialiser_QCM = void 0;
+const ObjetElement_1 = require("ObjetElement");
+const TypeChaineBrute_1 = require("TypeChaineBrute");
+const TypeFichierBase64_1 = require("TypeFichierBase64");
+const TypeChaineHtml_1 = require("TypeChaineHtml");
+const TypeGenreAssociationQuestionQCM_1 = require("TypeGenreAssociationQuestionQCM");
 class Serialiser_QCM {
 	constructor() {}
 	executionQCM(aElement, aJSON) {
 		aJSON.QCM = aElement.QCM.toJSON();
 		if (aElement.consigne !== undefined) {
-			aElement.consigne = new TypeChaineHtml(aElement.consigne);
+			aElement.consigne = new TypeChaineHtml_1.TypeChaineHtml(
+				aElement.consigne,
+			);
 			aJSON.consigne = aElement.consigne;
 		}
 		aJSON.dateDebutPublication = aElement.dateDebutPublication;
@@ -60,7 +61,9 @@ class Serialiser_QCM {
 	qcm(aElement, aJSON) {
 		let lResult = aElement.pourValidation();
 		if (aElement.consigne !== undefined) {
-			aElement.consigne = new TypeChaineHtml(aElement.consigne);
+			aElement.consigne = new TypeChaineHtml_1.TypeChaineHtml(
+				aElement.consigne,
+			);
 			aJSON.consigne = aElement.consigne;
 		}
 		aJSON.matiere = aElement.matiere;
@@ -116,16 +119,16 @@ class Serialiser_QCM {
 	}
 	questionQCM(aElement, aJSON) {
 		let lResult = aElement.pourValidation();
-		aJSON[ObjetElement.const_JSON.position.JSON] = aElement.getPosition();
+		aJSON[ObjetElement_1.ObjetElement.const_JSON.position.JSON] =
+			aElement.getPosition();
 		aJSON.nouvellePosition = aElement.nouvellePosition;
 		aJSON.estObligatoire = aElement.estObligatoire;
 		aJSON.niveauQuestion = aElement.niveauQuestion;
-		aJSON.enonce = new TypeChaineBrute(aElement.enonce);
+		aJSON.enonce = new TypeChaineBrute_1.TypeChaineBrute(aElement.enonce);
 		aJSON.note = aElement.note;
-		aJSON.editeur = aElement.editeur;
-		aJSON.image = new TypeFichierBase64(aElement.image);
+		aJSON.image = new TypeFichierBase64_1.TypeFichierBase64(aElement.image);
 		aJSON.mp3name = aElement.mp3name;
-		aJSON.mp3 = new TypeFichierBase64(aElement.mp3);
+		aJSON.mp3 = new TypeFichierBase64_1.TypeFichierBase64(aElement.mp3);
 		aJSON.url = aElement.url;
 		aJSON.casesensitive = aElement.casesensitive;
 		aJSON.incorrectFeedback = aElement.incorrectFeedback;
@@ -147,13 +150,15 @@ class Serialiser_QCM {
 		return lResult;
 	}
 }
+exports.Serialiser_QCM = Serialiser_QCM;
 function _serialiserCompetencesQuestion(aElement, aJSON) {
 	aJSON.tbMaitrise = aElement.tbMaitrise;
 	aJSON.coefficient = aElement.coefficient;
 	aJSON.palier = aElement.palier;
 }
 function _serialiserReponseQCM(aElement, aJSON) {
-	aJSON[ObjetElement.const_JSON.position.JSON] = aElement.getPosition();
+	aJSON[ObjetElement_1.ObjetElement.const_JSON.position.JSON] =
+		aElement.getPosition();
 	if (!!aElement.associationA && aElement.associationA.pourValidation()) {
 		aJSON.associationA = _serialiserElementAssociation(aElement.associationA);
 	}
@@ -164,24 +169,31 @@ function _serialiserReponseQCM(aElement, aJSON) {
 	aJSON.fractionReponse = aElement.fractionReponse;
 	aJSON.editionAvancee = aElement.editionAvancee;
 	if (aJSON.editionAvancee === true) {
-		aJSON.libelleHtml = new TypeChaineBrute(aElement.libelleHtml);
+		aJSON.libelleHtml = new TypeChaineBrute_1.TypeChaineBrute(
+			aElement.libelleHtml,
+		);
 	}
-	aJSON.image = new TypeFichierBase64(aElement.image);
+	aJSON.image = new TypeFichierBase64_1.TypeFichierBase64(aElement.image);
 }
 function _serialiserElementAssociation(aElement) {
 	const result = aElement.toJSON();
 	switch (aElement.getGenre()) {
-		case TypeGenreElementAssociation.GEA_Texte:
+		case TypeGenreAssociationQuestionQCM_1.TypeGenreElementAssociation
+			.GEA_Texte:
 			result.strTexte = aElement.strTexte;
 			break;
-		case TypeGenreElementAssociation.GEA_Image:
-			result.strImage = new TypeFichierBase64(aElement.strImage);
+		case TypeGenreAssociationQuestionQCM_1.TypeGenreElementAssociation
+			.GEA_Image:
+			result.strImage = new TypeFichierBase64_1.TypeFichierBase64(
+				aElement.strImage,
+			);
 			break;
-		case TypeGenreElementAssociation.GEA_Son:
+		case TypeGenreAssociationQuestionQCM_1.TypeGenreElementAssociation.GEA_Son:
 			result.strNomFichier = aElement.strNomFichier;
-			result.strSon = new TypeFichierBase64(aElement.strSon);
+			result.strSon = new TypeFichierBase64_1.TypeFichierBase64(
+				aElement.strSon,
+			);
 			break;
 	}
 	return result;
 }
-module.exports = { Serialiser_QCM };

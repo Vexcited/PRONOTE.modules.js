@@ -1,20 +1,10 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteGenererFichiersResultatsSondage extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
-	actionApresRequete() {
-		this.callbackReussite.appel({
-			messageErreur: this.messageErreur,
-			listeFichiersResultatsCrees: this.JSONRapportSaisie
-				? this.JSONRapportSaisie.listeFichiersResultats
-				: null,
-		});
-	}
-}
-Requetes.inscrire(
+exports.ObjetRequeteGenererFichiersResultatsSondage = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteGenererFichiersResultatsSondage extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
+exports.ObjetRequeteGenererFichiersResultatsSondage =
+	ObjetRequeteGenererFichiersResultatsSondage;
+CollectionRequetes_1.Requetes.inscrire(
 	"GenererFichiersResultatsSondage",
 	ObjetRequeteGenererFichiersResultatsSondage,
 );
-module.exports = { ObjetRequeteGenererFichiersResultatsSondage };

@@ -1,7 +1,5 @@
-const {
-	TypeArrierePlanAuthentification,
-} = require("TypeArrierePlanAuthentification.js");
-const { GDate } = require("ObjetDate.js");
+const TypeArrierePlanAuthentification_1 = require("TypeArrierePlanAuthentification");
+const ObjetDate_1 = require("ObjetDate");
 class ObjetImageConnexion {
 	constructor() {
 		this.definitionImages = [];
@@ -25,28 +23,44 @@ class ObjetImageConnexion {
 		let lResult = {};
 		try {
 			switch (aGenreImageConnexion) {
-				case TypeArrierePlanAuthentification.Photo:
+				case TypeArrierePlanAuthentification_1.TypeArrierePlanAuthentification
+					.Photo:
 					lResult =
-						this.definitionImages[TypeArrierePlanAuthentification.Photo][
+						this.definitionImages[
+							TypeArrierePlanAuthentification_1.TypeArrierePlanAuthentification
+								.Photo
+						][
 							lDate.getMonth() %
-								this.definitionImages[TypeArrierePlanAuthentification.Photo]
-									.length
+								this.definitionImages[
+									TypeArrierePlanAuthentification_1
+										.TypeArrierePlanAuthentification.Photo
+								].length
 						];
 					break;
-				case TypeArrierePlanAuthentification.Louvre:
+				case TypeArrierePlanAuthentification_1.TypeArrierePlanAuthentification
+					.Louvre:
 					if (
-						this.definitionImages[TypeArrierePlanAuthentification.Louvre]
-							.length === 12
+						this.definitionImages[
+							TypeArrierePlanAuthentification_1.TypeArrierePlanAuthentification
+								.Louvre
+						].length === 12
 					) {
 						lResult =
-							this.definitionImages[TypeArrierePlanAuthentification.Louvre][
+							this.definitionImages[
+								TypeArrierePlanAuthentification_1
+									.TypeArrierePlanAuthentification.Louvre
+							][
 								lDate.getMonth() %
-									this.definitionImages[TypeArrierePlanAuthentification.Louvre]
-										.length
+									this.definitionImages[
+										TypeArrierePlanAuthentification_1
+											.TypeArrierePlanAuthentification.Louvre
+									].length
 							];
 					} else if (
-						this.definitionImages[TypeArrierePlanAuthentification.Louvre]
-							.length === 53
+						this.definitionImages[
+							TypeArrierePlanAuthentification_1.TypeArrierePlanAuthentification
+								.Louvre
+						].length === 53
 					) {
 						const lDatePourSemaine = new Date(lDate.getTime());
 						lDatePourSemaine.setHours(0, 0, 0, 0);
@@ -65,20 +79,30 @@ class ObjetImageConnexion {
 									7,
 							);
 						lResult =
-							this.definitionImages[TypeArrierePlanAuthentification.Louvre][
+							this.definitionImages[
+								TypeArrierePlanAuthentification_1
+									.TypeArrierePlanAuthentification.Louvre
+							][
 								(lSemaine - 1) %
-									this.definitionImages[TypeArrierePlanAuthentification.Louvre]
-										.length
+									this.definitionImages[
+										TypeArrierePlanAuthentification_1
+											.TypeArrierePlanAuthentification.Louvre
+									].length
 							];
 					} else {
 						lResult =
-							this.definitionImages[TypeArrierePlanAuthentification.Louvre][
-								GDate.getNbrJoursEntreDeuxDates(
+							this.definitionImages[
+								TypeArrierePlanAuthentification_1
+									.TypeArrierePlanAuthentification.Louvre
+							][
+								ObjetDate_1.GDate.getNbrJoursEntreDeuxDates(
 									new Date(lDate.getFullYear(), 0, 1),
 									lDate,
 								) %
-									this.definitionImages[TypeArrierePlanAuthentification.Louvre]
-										.length
+									this.definitionImages[
+										TypeArrierePlanAuthentification_1
+											.TypeArrierePlanAuthentification.Louvre
+									].length
 							];
 					}
 					if (
@@ -97,23 +121,39 @@ class ObjetImageConnexion {
 						lResult.lienSuite = "";
 					}
 					break;
-				case TypeArrierePlanAuthentification.Arbre:
+				case TypeArrierePlanAuthentification_1.TypeArrierePlanAuthentification
+					.Arbre:
 					lDate.setFullYear(1900);
 					if (lDate < new Date(1900, 2, 20)) {
 						lResult =
-							this.definitionImages[TypeArrierePlanAuthentification.Arbre][0];
+							this.definitionImages[
+								TypeArrierePlanAuthentification_1
+									.TypeArrierePlanAuthentification.Arbre
+							][0];
 					} else if (lDate < new Date(1900, 5, 21)) {
 						lResult =
-							this.definitionImages[TypeArrierePlanAuthentification.Arbre][1];
+							this.definitionImages[
+								TypeArrierePlanAuthentification_1
+									.TypeArrierePlanAuthentification.Arbre
+							][1];
 					} else if (lDate < new Date(1900, 8, 23)) {
 						lResult =
-							this.definitionImages[TypeArrierePlanAuthentification.Arbre][2];
+							this.definitionImages[
+								TypeArrierePlanAuthentification_1
+									.TypeArrierePlanAuthentification.Arbre
+							][2];
 					} else if (lDate < new Date(1900, 11, 21)) {
 						lResult =
-							this.definitionImages[TypeArrierePlanAuthentification.Arbre][3];
+							this.definitionImages[
+								TypeArrierePlanAuthentification_1
+									.TypeArrierePlanAuthentification.Arbre
+							][3];
 					} else {
 						lResult =
-							this.definitionImages[TypeArrierePlanAuthentification.Arbre][0];
+							this.definitionImages[
+								TypeArrierePlanAuthentification_1
+									.TypeArrierePlanAuthentification.Arbre
+							][0];
 					}
 					break;
 				default:

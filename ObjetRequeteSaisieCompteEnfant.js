@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieCompteEnfant extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieCompteEnfant = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieCompteEnfant extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParams) {
 		$.extend(this.JSON, aParams);
 		if (!!aParams.informationsMedicales) {
@@ -27,8 +25,11 @@ class ObjetRequeteSaisieCompteEnfant extends ObjetRequeteSaisie {
 		return this.appelAsynchrone();
 	}
 }
-Requetes.inscrire("SaisieCompteEnfant", ObjetRequeteSaisieCompteEnfant);
+exports.ObjetRequeteSaisieCompteEnfant = ObjetRequeteSaisieCompteEnfant;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieCompteEnfant",
+	ObjetRequeteSaisieCompteEnfant,
+);
 function _ajouterActif(aElement, aJSON) {
 	aJSON.Actif = aElement.Actif;
 }
-module.exports = { ObjetRequeteSaisieCompteEnfant };

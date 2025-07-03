@@ -15,6 +15,7 @@ const MultipleWidgetBlog_FilActu = require("WidgetBlog_FilActu");
 const MultipleWidgetCarnetDeCorrespondance = require("WidgetCarnetDeCorrespondance");
 const MultipleWidgetCasier = require("WidgetCasier");
 const MultipleWidgetCDC = require("WidgetCDC");
+const MultipleWidgetInfosParcoursupLSL = require("WidgetInfosParcoursupLSL");
 const MultipleWidgetCDTNonSaisi = require("WidgetCDTNonSaisi");
 const MultipleWidgetCompetences = require("WidgetCompetences");
 const MultipleWidgetConnexionsEnCours = require("WidgetConnexionsEnCours");
@@ -58,6 +59,8 @@ const MultipleWidgetVieScolaire = require("WidgetVieScolaire");
 const MultipleWidgetEvenementRappel = require("WidgetEvenementRappel");
 const MultipleWidgetModificationEDT = require("WidgetModificationEDT");
 const MultipleWidgetRemplacementsEnseignants = require("WidgetRemplacementsEnseignants");
+const MultipleWidgetVoteElecMembreBureau = require("WidgetVoteElecMembreBureau");
+const MultipleWidgetVoteElecElecteur = require("WidgetVoteElecElecteur");
 const TypeAffichageRemplacements_1 = require("TypeAffichageRemplacements");
 const ObjetMoteurBlog_1 = require("ObjetMoteurBlog");
 const TypeEtatPublication_1 = require("TypeEtatPublication");
@@ -90,7 +93,7 @@ class ObjetMoteurAccueil {
 					Enumere_Widget_1.EGenreWidget.partenaireApplicam,
 					this.etatUtilisateurSco.pourPrimaire()
 						? null
-						: Enumere_Widget_1.EGenreWidget.blog_filActu,
+						: Enumere_Widget_1.EGenreWidget.blogFilActu,
 					GEtatUtilisateur.GenreEspace ===
 						Enumere_Espace_1.EGenreEspace.Etablissement ||
 					this.etatUtilisateurSco.pourPrimaire()
@@ -100,6 +103,12 @@ class ObjetMoteurAccueil {
 					Enumere_Espace_1.EGenreEspace.Etablissement
 						? null
 						: Enumere_Widget_1.EGenreWidget.elections,
+					this.etatUtilisateurSco.pourPrimaire()
+						? null
+						: Enumere_Widget_1.EGenreWidget.voteElecMembreBureau,
+					this.etatUtilisateurSco.pourPrimaire()
+						? null
+						: Enumere_Widget_1.EGenreWidget.voteElecElecteur,
 					GEtatUtilisateur.GenreEspace ===
 						Enumere_Espace_1.EGenreEspace.Etablissement ||
 					this.etatUtilisateurSco.pourPrimaire()
@@ -153,7 +162,7 @@ class ObjetMoteurAccueil {
 					Enumere_Widget_1.EGenreWidget.TAFEtActivites,
 					Enumere_Widget_1.EGenreWidget.QCM,
 					this.etatUtilisateurSco.pourPrimaire()
-						? Enumere_Widget_1.EGenreWidget.blog_filActu
+						? Enumere_Widget_1.EGenreWidget.blogFilActu
 						: null,
 					Enumere_Widget_1.EGenreWidget.travailAFaire,
 					Enumere_Widget_1.EGenreWidget.ressourcePedagogique,
@@ -178,7 +187,7 @@ class ObjetMoteurAccueil {
 						this.applicationSco.droits.get(
 							ObjetDroitsPN_1.TypeDroits.estDirecteur,
 						))
-						? Enumere_Widget_1.EGenreWidget.Intendance_Execute
+						? Enumere_Widget_1.EGenreWidget.IntendanceExecute
 						: null,
 					[
 						Enumere_Espace_1.EGenreEspace.PrimDirection,
@@ -204,7 +213,7 @@ class ObjetMoteurAccueil {
 						this.applicationSco.droits.get(
 							ObjetDroitsPN_1.TypeDroits.estDirecteur,
 						))
-						? Enumere_Widget_1.EGenreWidget.commande_Execute
+						? Enumere_Widget_1.EGenreWidget.commandeExecute
 						: null,
 				],
 			},
@@ -220,6 +229,7 @@ class ObjetMoteurAccueil {
 					Enumere_Widget_1.EGenreWidget.Planning,
 					Enumere_Widget_1.EGenreWidget.EDT,
 					Enumere_Widget_1.EGenreWidget.conseilDeClasse,
+					Enumere_Widget_1.EGenreWidget.InfosParcoursupLSL,
 					Enumere_Widget_1.EGenreWidget.ressources,
 				],
 			},
@@ -269,8 +279,8 @@ class ObjetMoteurAccueil {
 							ObjetDroitsPN_1.TypeDroits.estDirecteur,
 						))
 						? null
-						: Enumere_Widget_1.EGenreWidget.Intendance_Execute,
-					Enumere_Widget_1.EGenreWidget.tachesSecretariat_Execute,
+						: Enumere_Widget_1.EGenreWidget.IntendanceExecute,
+					Enumere_Widget_1.EGenreWidget.tachesSecretariatExecute,
 					Enumere_Widget_1.EGenreWidget.absRetardsJustifiesParents,
 					Enumere_Widget_1.EGenreWidget.RemplacementsEnseignants,
 					Enumere_Widget_1.EGenreWidget.coursNonAssures,
@@ -291,6 +301,12 @@ class ObjetMoteurAccueil {
 					Enumere_Widget_1.EGenreWidget.exclusions,
 					Enumere_Widget_1.EGenreWidget.donneesProfs,
 					Enumere_Widget_1.EGenreWidget.connexionsEnCours,
+					this.etatUtilisateurSco.pourPrimaire()
+						? Enumere_Widget_1.EGenreWidget.voteElecMembreBureau
+						: null,
+					this.etatUtilisateurSco.pourPrimaire()
+						? Enumere_Widget_1.EGenreWidget.voteElecElecteur
+						: null,
 					GEtatUtilisateur.GenreEspace ===
 						Enumere_Espace_1.EGenreEspace.Etablissement ||
 					this.etatUtilisateurSco.pourPrimaire()
@@ -340,7 +356,7 @@ class ObjetMoteurAccueil {
 							ObjetDroitsPN_1.TypeDroits.estDirecteur,
 						))
 						? null
-						: Enumere_Widget_1.EGenreWidget.commande_Execute,
+						: Enumere_Widget_1.EGenreWidget.commandeExecute,
 				],
 			},
 			aide: {
@@ -533,10 +549,10 @@ class ObjetMoteurAccueil {
 					jourSelectionne: this.dateParDefaut,
 					themeCategorie: "ThemeCat-viescolaire",
 				};
-			case Enumere_Widget_1.EGenreWidget.blog_filActu:
+			case Enumere_Widget_1.EGenreWidget.blogFilActu:
 				return {
 					nomDonnees: "blogFilActu",
-					genre: Enumere_Widget_1.EGenreWidget.blog_filActu,
+					genre: Enumere_Widget_1.EGenreWidget.blogFilActu,
 					classWidget: MultipleWidgetBlog_FilActu
 						? MultipleWidgetBlog_FilActu.WidgetBlog_FilActu
 						: null,
@@ -655,6 +671,30 @@ class ObjetMoteurAccueil {
 					isCollapsible: false,
 					themeCategorie: "ThemeCat-resultat",
 				};
+			case Enumere_Widget_1.EGenreWidget.InfosParcoursupLSL:
+				return {
+					nomDonnees: "infosParcoursupLSL",
+					genre: Enumere_Widget_1.EGenreWidget.InfosParcoursupLSL,
+					classWidget: MultipleWidgetInfosParcoursupLSL
+						? MultipleWidgetInfosParcoursupLSL.WidgetInfosParcoursupLSL
+						: null,
+					id: GUID_1.GUID.getId(),
+					page: null,
+					titre: ObjetTraduction_1.GTraductions.getValeur(
+						"accueil.infosParcoursupLSL.titre",
+					),
+					hint: "",
+					existeWidget: () => {
+						return (
+							!this.donnees ||
+							(this.donnees.infosParcoursupLSL &&
+								this.donnees.infosParcoursupLSL.listeServices &&
+								this.donnees.infosParcoursupLSL.listeServices.count() > 0)
+						);
+					},
+					isCollapsible: false,
+					themeCategorie: "ThemeCat-resultat",
+				};
 			case Enumere_Widget_1.EGenreWidget.CDTNonSaisi:
 				return {
 					nomDonnees: "CDTNonSaisi",
@@ -757,7 +797,8 @@ class ObjetMoteurAccueil {
 							!this.donnees || this.donnees.coursNonAssures.listeCoursNonAssures
 						);
 					},
-					isCollapsible: false,
+					isCollapsible: true,
+					nbrItemsVisible: 5,
 					themeCategorie: "ThemeCat-viescolaire",
 				};
 			case Enumere_Widget_1.EGenreWidget.discussions:
@@ -958,6 +999,54 @@ class ObjetMoteurAccueil {
 					isCollapsible: false,
 					themeCategorie: "ThemeCat-communication",
 				};
+			case Enumere_Widget_1.EGenreWidget.voteElecMembreBureau:
+				return {
+					nomDonnees: "voteElecMembreBureau",
+					genre: Enumere_Widget_1.EGenreWidget.voteElecMembreBureau,
+					classWidget: MultipleWidgetVoteElecMembreBureau
+						? MultipleWidgetVoteElecMembreBureau.WidgetVoteElecMembreBureau
+						: null,
+					id: GUID_1.GUID.getId(),
+					titre: MultipleWidgetVoteElecMembreBureau
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"WidgetVoteElecMembreBureau.titre",
+							)
+						: "",
+					existeWidget: () => {
+						return (
+							!!this.donnees &&
+							!!this.donnees.voteElecMembreBureau &&
+							this.donnees.voteElecMembreBureau.listeOperationsEP &&
+							this.donnees.voteElecMembreBureau.listeOperationsEP.count() > 0
+						);
+					},
+					isCollapsible: false,
+					themeCategorie: "ThemeCat-communication",
+				};
+			case Enumere_Widget_1.EGenreWidget.voteElecElecteur:
+				return {
+					nomDonnees: "voteElecElecteur",
+					genre: Enumere_Widget_1.EGenreWidget.voteElecElecteur,
+					classWidget: MultipleWidgetVoteElecElecteur
+						? MultipleWidgetVoteElecElecteur.WidgetVoteElecElecteur
+						: null,
+					id: GUID_1.GUID.getId(),
+					titre: MultipleWidgetVoteElecElecteur
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"WidgetVoteElecElecteur.titre",
+							)
+						: "",
+					existeWidget: () => {
+						return (
+							!!this.donnees &&
+							!!this.donnees.voteElecElecteur &&
+							this.donnees.voteElecElecteur.listeOperationsEP &&
+							this.donnees.voteElecElecteur.listeOperationsEP.count() > 0
+						);
+					},
+					isCollapsible: false,
+					themeCategorie: "ThemeCat-communication",
+				};
 			case Enumere_Widget_1.EGenreWidget.enseignementADistance:
 				return {
 					nomDonnees: "enseignementADistance",
@@ -1029,10 +1118,10 @@ class ObjetMoteurAccueil {
 					semaineSelectionnee: this.numeroSemaineParDefaut,
 					themeCategorie: "ThemeCat-viescolaire",
 				};
-			case Enumere_Widget_1.EGenreWidget.Intendance_Execute:
+			case Enumere_Widget_1.EGenreWidget.IntendanceExecute:
 				return {
 					nomDonnees: "intendanceExecute",
-					genre: Enumere_Widget_1.EGenreWidget.Intendance_Execute,
+					genre: Enumere_Widget_1.EGenreWidget.IntendanceExecute,
 					id: GUID_1.GUID.getId(),
 					classWidget: MultipleWidgetIntendance_Execute
 						? MultipleWidgetIntendance_Execute.WidgetIntendanceExecute
@@ -1089,10 +1178,10 @@ class ObjetMoteurAccueil {
 					},
 					themeCategorie: "ThemeCat-edt",
 				};
-			case Enumere_Widget_1.EGenreWidget.tachesSecretariat_Execute:
+			case Enumere_Widget_1.EGenreWidget.tachesSecretariatExecute:
 				return {
 					nomDonnees: "tachesSecretariatExecute",
-					genre: Enumere_Widget_1.EGenreWidget.tachesSecretariat_Execute,
+					genre: Enumere_Widget_1.EGenreWidget.tachesSecretariatExecute,
 					id: GUID_1.GUID.getId(),
 					classWidget: MultipleWidgetIntendance_Execute
 						? MultipleWidgetIntendance_Execute.WidgetIntendanceExecute
@@ -1557,6 +1646,7 @@ class ObjetMoteurAccueil {
 							window.location.search.search("redirect=1") > 0 &&
 							(this.applicationSco.acces.estConnexionCAS() ||
 								this.applicationSco.acces.estConnexionCookie()) &&
+							!this.parametresSco.estAfficheDansENT &&
 							GParametres.URLEspace &&
 							GEtatUtilisateur.premierChargement
 						);
@@ -1755,10 +1845,10 @@ class ObjetMoteurAccueil {
 					},
 					themeCategorie: "ThemeCat-pense-bete",
 				};
-			case Enumere_Widget_1.EGenreWidget.commande_Execute:
+			case Enumere_Widget_1.EGenreWidget.commandeExecute:
 				return {
 					nomDonnees: "commandeExecute",
-					genre: Enumere_Widget_1.EGenreWidget.commande_Execute,
+					genre: Enumere_Widget_1.EGenreWidget.commandeExecute,
 					id: GUID_1.GUID.getId(),
 					classWidget: MultipleWidgetIntendance_Execute
 						? MultipleWidgetIntendance_Execute.WidgetIntendanceExecute

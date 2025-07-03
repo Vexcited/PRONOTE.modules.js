@@ -1,13 +1,14 @@
-const { GDate } = require("ObjetDate.js");
-const { GChaine } = require("ObjetChaine.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { EGenreTriElement } = require("Enumere_TriElement.js");
-const { TypeGenreObservationVS } = require("TypeGenreObservationVS.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetFenetre_Date } = require("ObjetFenetre_Date.js");
-class DonneesListe_DefautCarnet extends ObjetDonneesListe {
+exports.DonneesListe_DefautCarnet = void 0;
+const ObjetDate_1 = require("ObjetDate");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_TriElement_1 = require("Enumere_TriElement");
+const TypeGenreObservationVS_1 = require("TypeGenreObservationVS");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_Date_1 = require("ObjetFenetre_Date");
+class DonneesListe_DefautCarnet extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParametres) {
 		super(aDonnees);
 		this.parametres = aParametres;
@@ -35,13 +36,13 @@ class DonneesListe_DefautCarnet extends ObjetDonneesListe {
 	avecEvenementCreation() {
 		return false;
 	}
-	avecEvenementSelection() {
+	avecEvenementSelection(aParams) {
 		return false;
 	}
-	avecEvenementSuppression() {
+	avecEvenementSuppression(aParams) {
 		return true;
 	}
-	avecEvenementApresEdition() {
+	avecEvenementApresEdition(aParams) {
 		return true;
 	}
 	avecEvenementEdition(aParams) {
@@ -57,9 +58,11 @@ class DonneesListe_DefautCarnet extends ObjetDonneesListe {
 	getValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_DefautCarnet.colonnes.date:
-				return GDate.formatDate(
+				return ObjetDate_1.GDate.formatDate(
 					aParams.article.date,
-					GTraductions.getValeur("Dates.LeDate", ["%JJ/%MM/%AAAA"]),
+					ObjetTraduction_1.GTraductions.getValeur("Dates.LeDate", [
+						"%JJ/%MM/%AAAA",
+					]),
 				);
 			case DonneesListe_DefautCarnet.colonnes.saisiePar:
 				return aParams.article.demandeur
@@ -67,13 +70,16 @@ class DonneesListe_DefautCarnet extends ObjetDonneesListe {
 					: "";
 			case DonneesListe_DefautCarnet.colonnes.commentaire:
 				return aParams.article.commentaire
-					? GChaine.replaceRCToHTML(aParams.article.commentaire)
+					? ObjetChaine_1.GChaine.replaceRCToHTML(aParams.article.commentaire)
 					: "";
 			case DonneesListe_DefautCarnet.colonnes.publie:
 				return aParams.article.estPubliee;
 			case DonneesListe_DefautCarnet.colonnes.vue:
 				return aParams.article.visuWeb !== false
-					? GDate.formatDate(aParams.article.visuWeb, "%JJ/%MM/%AAAA")
+					? ObjetDate_1.GDate.formatDate(
+							aParams.article.visuWeb,
+							"%JJ/%MM/%AAAA",
+						)
 					: "";
 			default:
 				return "";
@@ -91,18 +97,21 @@ class DonneesListe_DefautCarnet extends ObjetDonneesListe {
 			default:
 		}
 	}
-	getVisible(D) {
-		return D.Genre === TypeGenreObservationVS.OVS_DefautCarnet;
+	getVisible(aDonnee) {
+		return (
+			aDonnee.Genre ===
+			TypeGenreObservationVS_1.TypeGenreObservationVS.OVS_DefautCarnet
+		);
 	}
 	getTypeValeur(aParams) {
 		if (aParams.article) {
 			switch (aParams.idColonne) {
 				case DonneesListe_DefautCarnet.colonnes.publie:
-					return ObjetDonneesListe.ETypeCellule.Coche;
+					return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Coche;
 				case DonneesListe_DefautCarnet.colonnes.commentaire:
-					return ObjetDonneesListe.ETypeCellule.Html;
+					return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 				default:
-					return ObjetDonneesListe.ETypeCellule.Texte;
+					return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 			}
 		}
 	}
@@ -113,11 +122,11 @@ class DonneesListe_DefautCarnet extends ObjetDonneesListe {
 			lId = this.getId(aColonneDeTri);
 			switch (lId) {
 				case DonneesListe_DefautCarnet.colonnes.date:
-					lTris.push(ObjetTri.init("date", aGenreTri));
+					lTris.push(ObjetTri_1.ObjetTri.init("date", aGenreTri));
 					break;
 				default:
 					lTris.push(
-						ObjetTri.init(
+						ObjetTri_1.ObjetTri.init(
 							this.getValeurPourTri.bind(this, aColonneDeTri),
 							aGenreTri,
 						),
@@ -126,24 +135,31 @@ class DonneesListe_DefautCarnet extends ObjetDonneesListe {
 			}
 		}
 		if (lId !== DonneesListe_DefautCarnet.colonnes.date) {
-			lTris.push(ObjetTri.init("date", EGenreTriElement.Decroissant));
+			lTris.push(
+				ObjetTri_1.ObjetTri.init(
+					"date",
+					Enumere_TriElement_1.EGenreTriElement.Decroissant,
+				),
+			);
 		}
 		if (lId !== DonneesListe_DefautCarnet.colonnes.saisiePar) {
 			lTris.push(
-				ObjetTri.init((D) => {
+				ObjetTri_1.ObjetTri.init((D) => {
 					return D.demandeur ? D.demandeur.Libelle : "";
-				}, EGenreTriElement.Croissant),
+				}, Enumere_TriElement_1.EGenreTriElement.Croissant),
 			);
 		}
 		return lTris;
 	}
-	avecMenuContextuel() {
+	avecMenuContextuel(aParams) {
 		return true;
 	}
 	remplirMenuContextuel(aParametres) {
 		if (aParametres.ligne === -1) {
 			aParametres.menuContextuel.add(
-				GTraductions.getValeur("CarnetCorrespondance.CreerAujourdhui"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"CarnetCorrespondance.CreerAujourdhui",
+				),
 				true,
 				() => {
 					if (this.parametres.callbackMenuContextuel) {
@@ -152,40 +168,55 @@ class DonneesListe_DefautCarnet extends ObjetDonneesListe {
 				},
 			);
 			aParametres.menuContextuel.add(
-				GTraductions.getValeur("CarnetCorrespondance.CreerALaDate"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"CarnetCorrespondance.CreerALaDate",
+				),
 				true,
 				() => {
 					if (this.parametres.callbackMenuContextuel) {
-						_ouvrirFenetreDate.call(this, new Date());
+						this._ouvrirFenetreDate(new Date());
 					}
 				},
 			);
 		}
 		aParametres.menuContextuel.setDonnees(aParametres.id);
 	}
+	_ouvrirFenetreDate(aDate) {
+		ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_Date_1.ObjetFenetre_Date,
+			{
+				pere: this,
+				evenement: function (aNumeroBouton, aDate) {
+					if (aNumeroBouton === 1) {
+						this.parametres.callbackMenuContextuel(false, aDate);
+					}
+				},
+				initialiser: function (aInstance) {
+					aInstance.setParametres(
+						ObjetDate_1.GDate.PremierLundi,
+						ObjetDate_1.GDate.premiereDate,
+						ObjetDate_1.GDate.aujourdhui,
+					);
+				},
+			},
+		).setDonnees(aDate);
+	}
 }
-function _ouvrirFenetreDate(aDate) {
-	ObjetFenetre.creerInstanceFenetre(ObjetFenetre_Date, {
-		pere: this,
-		evenement: function (aNumeroBouton, aDate) {
-			if (aNumeroBouton === 1) {
-				this.parametres.callbackMenuContextuel(false, aDate);
-			}
-		},
-		initialiser: function (aInstance) {
-			aInstance.setParametres(
-				GDate.PremierLundi,
-				GDate.premiereDate,
-				GDate.aujourdhui,
-			);
-		},
-	}).setDonnees(aDate);
-}
-DonneesListe_DefautCarnet.colonnes = {
-	date: "date",
-	saisiePar: "saisiePar",
-	commentaire: "commentaire",
-	publie: "publie",
-	vue: "vue",
-};
-module.exports = { DonneesListe_DefautCarnet };
+exports.DonneesListe_DefautCarnet = DonneesListe_DefautCarnet;
+(function (DonneesListe_DefautCarnet) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["date"] = "date";
+		colonnes["saisiePar"] = "saisiePar";
+		colonnes["commentaire"] = "commentaire";
+		colonnes["publie"] = "publie";
+		colonnes["vue"] = "vue";
+	})(
+		(colonnes =
+			DonneesListe_DefautCarnet.colonnes ||
+			(DonneesListe_DefautCarnet.colonnes = {})),
+	);
+})(
+	DonneesListe_DefautCarnet ||
+		(exports.DonneesListe_DefautCarnet = DonneesListe_DefautCarnet = {}),
+);

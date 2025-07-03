@@ -4,67 +4,63 @@ const Enumere_Espace_1 = require("Enumere_Espace");
 const MultipleInterfacePageDossiers_Consultation = require("InterfacePageDossiers_Consultation");
 const MultipleInterfacePageDossiers_Saisie = require("InterfacePageDossiers_Saisie");
 const InterfaceCompte_1 = require("InterfaceCompte");
-const InterfaceRencontreDesiderata = require("InterfaceRencontreDesiderata");
+const MultiInterfaceRencontreDesiderata = require("InterfaceRencontreDesiderata");
 const MultiplePageSaisieOffresStagesPN = require("PageSaisieOffresStagesPN");
-const InterfaceSaisiePunitions = require("InterfaceSaisiePunitions");
+const MultiInterfaceSaisiePunitions = require("InterfaceSaisiePunitions");
 const MultipleInterfaceBilanFinDeCycle_Saisie = require("InterfaceBilanFinDeCycle_Saisie");
 const MultipleInterfaceBilanFinDeCycle_Consultation = require("InterfaceBilanFinDeCycle_Consultation");
-const InterfaceBulletinCompetences_Consultation = require("InterfaceBulletinCompetences_Consultation");
-const InterfaceBulletinCompetences_Saisie = require("InterfaceBulletinCompetences_Saisie");
-const InterfaceDernieresEvaluations = require("InterfaceDernieresEvaluations");
-const InterfaceDernieresNotes = require("InterfaceDernieresNotes");
-const InterfaceOrientationsProfesseur = require("InterfaceOrientationsProfesseur");
-const InterfaceOrientationsParent = require("InterfacePageOrientations");
-const InterfacePageVacances = require("InterfacePageVacances");
+const MultipleInterfaceBulletinCompetences_Consultation = require("InterfaceBulletinCompetences_Consultation");
+const MultipleInterfaceBulletinCompetences_Saisie = require("InterfaceBulletinCompetences_Saisie");
+const MultiInterfaceDernieresEvaluations = require("InterfaceDernieresEvaluations");
+const MultiInterfaceDernieresNotes = require("InterfaceDernieresNotes");
+const MultipleInterfacePageOrientation = require("InterfaceOrientation");
 const MultipleInterfaceRecapitulatifExportLSU = require("InterfaceRecapitulatifExportLSU");
-const InterfaceServicesProfesseur = require("InterfaceServicesProfesseur");
-const InterfaceTableauDeBord = require("InterfaceTableauDeBord");
-const InterfacePageRecapCahierDeTexte = require("InterfacePageRecapCahierDeTexte");
-const InterfacePageCahierDeTexte = require("InterfacePageCahierDeTexte");
-const InterfaceAccueilPrimaire = require("InterfaceAccueilPrimaire");
+const MultiInterfaceServicesProfesseur = require("InterfaceServicesProfesseur");
+const MultipleInterfaceTableauDeBord = require("InterfaceTableauDeBord");
+const MultiInterfacePageRecapCahierDeTexte = require("InterfacePageRecapCahierDeTexte");
+const MultiInterfacePageCahierDeTexte = require("InterfacePageCahierDeTexte");
+const MultiInterfaceAccueilPrimaire = require("InterfaceAccueilPrimaire");
 const InterfacePageAccueil_1 = require("InterfacePageAccueil");
 const MultipleInterfacePageInfoSondagePN = require("InterfacePageInfoSondagePN");
-const InterfaceReleveDeNotes_Saisie = require("InterfaceReleveDeNotes_Saisie");
-const InterfaceReleveDeNotes_Consultation = require("InterfaceReleveDeNotes_Consultation");
-const InterfacePageRemplacements = require("InterfacePageRemplacements");
+const MultipleInterfaceReleveDeNotes_Saisie = require("InterfaceReleveDeNotes_Saisie");
+const MultipleInterfaceReleveDeNotes_Consultation = require("InterfaceReleveDeNotes_Consultation");
+const MultipleInterfacePageRemplacements = require("InterfacePageRemplacements");
 const InterfacePageAgenda_1 = require("InterfacePageAgenda");
 const InterfacePageMenus = require("InterfacePageMenus");
-const InterfaceBulletinNotes_Saisie = require("InterfaceBulletinNotes_Saisie");
-const InterfaceBulletinNotes_Consultation = require("InterfaceBulletinNotes_Consultation");
-const InterfaceAppreciationsBulletinParEleve = require("InterfaceAppreciationsBulletinParEleve");
-const InterfaceEDTAnnuel = require("InterfaceEDTAnnuel");
+const MultiInterfaceBulletinNotes_Saisie = require("InterfaceBulletinNotes_Saisie");
+const MultiInterfaceBulletinNotes_Consultation = require("InterfaceBulletinNotes_Consultation");
+const MultiInterfaceAppreciationsBulletinParEleve = require("InterfaceAppreciationsBulletinParEleve");
+const MultiInterfaceEDTAnnuel = require("InterfaceEDTAnnuel");
 const InterfacePageEmploiDuTemps_1 = require("InterfacePageEmploiDuTemps");
 const MultipleInterfaceRecapitulatifVS_Espace = require("InterfaceRecapitulatifVS_Espace");
-const InterfacePageNotes = require("InterfacePageNotes");
-const InterfacePageSaisieCahierDeTextes = require("InterfacePageSaisieCahierDeTextes");
+const MultiInterfacePageNotes = require("InterfacePageNotes");
+const MultiInterfacePageSaisieCahierDeTextes = require("InterfacePageSaisieCahierDeTextes");
 const MultiInterfaceCDTPlanning = require("InterfaceCDTPlanning");
 const MultiInterfacePageCahierDeTexteProgression = require("InterfacePageCahierDeTexteProgression");
 const MultipleInterfacePageAffectationProgression = require("InterfacePageAffectationProgression");
 const InterfacePageProgrammesBO_1 = require("InterfacePageProgrammesBO");
-const InterfacePageSaisieAbsences = require("InterfacePageSaisieAbsences");
-const InterfaceFicheBrevet_Saisie = require("InterfaceFicheBrevet_Saisie");
-const InterfaceFicheBrevet_Consultation = require("InterfaceFicheBrevet_Consultation");
-const InterfacePageEquipePedagogique = require("InterfacePageEquipePedagogique");
+const MultiInterfacePageSaisieAbsences = require("InterfacePageSaisieAbsences");
+const MultiInterfaceFicheBrevet_Saisie = require("InterfaceFicheBrevet_Saisie");
+const MultiInterfaceFicheBrevet_Consultation = require("InterfaceFicheBrevet_Consultation");
+const MultiInterfacePageEquipePedagogique = require("InterfacePageEquipePedagogique");
 const MultipleInterfaceRecapAbsences = require("InterfaceRecapAbsences");
 const MultipleInterfaceRecapFeuilleAppel = require("InterfaceRecapFeuilleAppel");
 const MultipleInterfaceRecapPunitions = require("InterfaceRecapPunitions");
-const MultipleInterfacePageGraphiqueParClasse = require("InterfacePageGraphiqueParClasse");
-const MultipleInterfacePageGraphique = require("InterfacePageGraphique");
 const InterfaceFicheStage_1 = require("InterfaceFicheStage");
-const InterfacePageSuiviPluriannuel = require("InterfacePageSuiviPluriannuel");
-const InterfaceBilanParDomaine_Saisie = require("InterfaceBilanParDomaine_Saisie");
-const InterfaceBilanParDomaine_Consultation = require("InterfaceBilanParDomaine_Consultation");
+const MultiInterfacePageSuiviPluriannuel = require("InterfacePageSuiviPluriannuel");
+const MultipleInterfaceBilanParDomaine_Saisie = require("InterfaceBilanParDomaine_Saisie");
+const MultipleInterfaceBilanParDomaine_Consultation = require("InterfaceBilanParDomaine_Consultation");
 const MultipleInterfaceCompetencesNumeriques_Saisie = require("InterfaceCompetencesNumeriques_Saisie");
 const MultipleInterfaceCompetencesNumeriques_Consultation = require("InterfaceCompetencesNumeriques_Consultation");
-const InterfacePageListeEvaluations = require("InterfacePageListeEvaluations");
-const InterfaceSaisieApprBulletin = require("InterfaceSaisieApprBulletin");
-const InterfaceSaisieAvisProfesseur = require("InterfaceSaisieAvisProfesseur");
-const InterfaceSaisieAvisParcoursup = require("InterfaceSaisieAvisParcoursup");
-const _InterfaceSaisieApprGenerale = require("_InterfaceSaisieApprGenerale");
-const InterfaceSaisieApprReleve = require("InterfaceSaisieApprReleve");
-const InterfaceFicheLivretScolaire = require("InterfaceFicheLivretScolaire");
-const InterfacePageResultatsClasses = require("InterfacePageResultatsClasses");
-const InterfacePagePunitions = require("InterfacePagePunitions");
+const MultiInterfacePageListeEvaluations = require("InterfacePageListeEvaluations");
+const MultiInterfaceSaisieApprBulletin = require("InterfaceSaisieApprBulletin");
+const MultiInterfaceSaisieAvisProfesseur = require("InterfaceSaisieAvisProfesseur");
+const MultiInterfaceSaisieAvisParcoursup = require("InterfaceSaisieAvisParcoursup");
+const MultiInterfaceSaisieApprGenerale = require("_InterfaceSaisieApprGenerale");
+const MultiInterfaceSaisieApprReleve = require("InterfaceSaisieApprReleve");
+const MultiInterfaceFicheLivretScolaire = require("InterfaceFicheLivretScolaire");
+const MultiInterfacePageResultatsClasses = require("InterfacePageResultatsClasses");
+const MultiInterfacePagePunitions = require("InterfacePagePunitions");
 const MultipleInterfacePageDispenses = require("InterfacePageDispenses");
 const MultipleInterfacePageAbsencesEtRetards = require("InterfacePageAbsencesEtRetards");
 const MultipleInterfaceSuiviJustificationsAbsRetards = require("InterfaceSuiviJustificationsAbsRetards");
@@ -88,7 +84,6 @@ const MultipleInterfaceNiveauxDeMaitriseParMatiere_Saisie = require("InterfaceNi
 const MultipleInterfaceCasier = require("InterfaceCasier");
 const MultipleInterfaceListeRessources = require("InterfaceListeRessources");
 const MultipleInterfaceListeRessources_Eleves = require("InterfaceListeRessources_Eleves");
-const MultipleInterfaceListeDocumentsFournis = require("InterfaceListeDocumentsFournis");
 const InterfacePageListeMessagerie_1 = require("InterfacePageListeMessagerie");
 const MultipleInterfaceIncidents = require("InterfaceIncidents");
 const MultipleInterfaceListeStagiaires = require("InterfaceListeStagiaires");
@@ -101,8 +96,7 @@ const MultipleInterfaceRecapitulatifScolarite = require("InterfaceRecapitulatifS
 const MultipleInterfaceSuiviElevesTutores = require("InterfaceSuiviElevesTutores");
 const MultipleInterfaceIntendanceDemandesTravaux = require("InterfaceIntendanceDemandesTravaux");
 const MultipleInterfaceSaisieParcoursEducatif = require("InterfaceSaisieParcoursEducatif");
-const InterfaceSaisieDispenses_1 = require("InterfaceSaisieDispenses");
-const InterfaceListeDevoirs_1 = require("InterfaceListeDevoirs");
+const MultiInterfaceSaisieDispenses = require("InterfaceSaisieDispenses");
 const InterfaceEvaluationAccueilStage_1 = require("InterfaceEvaluationAccueilStage");
 const MultipleInterfaceCompetences_GrillesParDomaine = require("InterfaceCompetences_GrillesParDomaine");
 const MultipleInterfaceCompetences_GrillesParMatiere = require("InterfaceCompetences_GrillesParMatiere");
@@ -114,7 +108,6 @@ const MultipleInterfaceBulletinBIA = require("InterfaceBulletinBIA");
 const MultipleInterfaceCompteMesEnfants = require("InterfaceCompteMesEnfants");
 const MultipleInterfaceInscriptionsPeriscolaires = require("InterfaceInscriptionsPeriscolaires");
 const MultipleInterfaceCompteInfosEnfantPrim = require("InterfaceCompteInfosEnfantPrim");
-const MultipleInterfaceSaisieProgressions = require("InterfaceSaisieProgressions");
 const MultipleInterfacePyramideDesAges = require("InterfacePyramideDesAges");
 const InterfaceBlogFilActu_1 = require("InterfaceBlogFilActu");
 const MultipleInterfaceBlog_Mediatheque = require("InterfaceBlog_Mediatheque");
@@ -134,6 +127,7 @@ const MultipleInterfaceCommissions = require("InterfaceCommissions");
 const MultipleInterfaceRDV = require("InterfaceRDV");
 const MultipleInterfaceRemplacementsEnseignants = require("InterfaceRemplacementsEnseignants");
 const MultipleInterfaceSaisieAppelInternat = require("InterfaceSaisieAppelInternat");
+const MultipleInterfaceRechercheDeStage = require("InterfaceRechercheDeStage");
 function DeclarationOngletsEspace() {}
 DeclarationOngletsEspace.creerOnglet = function (
 	aGenreOnglet,
@@ -146,8 +140,12 @@ DeclarationOngletsEspace.creerOnglet = function (
 			GEtatUtilisateur.GenreEspace ===
 				Enumere_Espace_1.EGenreEspace.Etablissement ||
 			GEtatUtilisateur.GenreEspace === Enumere_Espace_1.EGenreEspace.Academie
-			? new InterfacePageRecapCahierDeTexte(aParamsConstructeur)
-			: new InterfacePageCahierDeTexte(aParamsConstructeur);
+			? new MultiInterfacePageRecapCahierDeTexte.InterfacePageRecapCahierDeTexte(
+					aParamsConstructeur,
+				)
+			: new MultiInterfacePageCahierDeTexte.ObjetAffichagePageCahierDeTexte(
+					aParamsConstructeur,
+				);
 	};
 	switch (aGenreOnglet) {
 		case Enumere_Onglet_1.EGenreOnglet.Accueil:
@@ -160,7 +158,9 @@ DeclarationOngletsEspace.creerOnglet = function (
 					GEtatUtilisateur.GenreEspace ===
 						Enumere_Espace_1.EGenreEspace.PrimAccompagnant)
 			) {
-				return new InterfaceAccueilPrimaire(aParamsConstructeur);
+				return new MultiInterfaceAccueilPrimaire.InterfaceAccueilPrimaire(
+					aParamsConstructeur,
+				);
 			}
 			return new InterfacePageAccueil_1.InterfacePageAccueil(
 				aParamsConstructeur,
@@ -171,15 +171,17 @@ DeclarationOngletsEspace.creerOnglet = function (
 			);
 		case Enumere_Onglet_1.EGenreOnglet.RDV:
 			return new MultipleInterfaceRDV.InterfaceRDV(aParamsConstructeur);
-		case Enumere_Onglet_1.EGenreOnglet.Vacances:
-			return new InterfacePageVacances(aParamsConstructeur);
 		case Enumere_Onglet_1.EGenreOnglet.Releve:
 			return GEtatUtilisateur.GenreEspace ===
 				Enumere_Espace_1.EGenreEspace.Professeur ||
 				GEtatUtilisateur.GenreEspace ===
 					Enumere_Espace_1.EGenreEspace.Etablissement
-				? new InterfaceReleveDeNotes_Saisie(aParamsConstructeur)
-				: new InterfaceReleveDeNotes_Consultation(aParamsConstructeur);
+				? new MultipleInterfaceReleveDeNotes_Saisie.InterfaceReleveDeNotes_Saisie(
+						aParamsConstructeur,
+					)
+				: new MultipleInterfaceReleveDeNotes_Consultation.InterfaceReleveDeNotes_Consultation(
+						aParamsConstructeur,
+					);
 		case Enumere_Onglet_1.EGenreOnglet.Dossiers:
 			if (
 				GEtatUtilisateur.GenreEspace ===
@@ -199,7 +201,9 @@ DeclarationOngletsEspace.creerOnglet = function (
 			return null;
 		case Enumere_Onglet_1.EGenreOnglet.Remplacements_Grille:
 		case Enumere_Onglet_1.EGenreOnglet.Remplacements_Tableau:
-			return new InterfacePageRemplacements(aParamsConstructeur);
+			return new MultipleInterfacePageRemplacements.InterfacePageRemplacements(
+				aParamsConstructeur,
+			);
 		case Enumere_Onglet_1.EGenreOnglet.Agenda:
 			return new InterfacePageAgenda_1.InterfacePageAgenda(aParamsConstructeur);
 		case Enumere_Onglet_1.EGenreOnglet.Menus:
@@ -211,24 +215,21 @@ DeclarationOngletsEspace.creerOnglet = function (
 				GEtatUtilisateur.GenreEspace ===
 					Enumere_Espace_1.EGenreEspace.Etablissement
 			) {
-				return new InterfaceBulletinNotes_Saisie(aParamsConstructeur);
+				return new MultiInterfaceBulletinNotes_Saisie.InterfaceBulletinNotes_Saisie(
+					aParamsConstructeur,
+				);
 			}
-			return new InterfaceBulletinNotes_Consultation(aParamsConstructeur);
+			return new MultiInterfaceBulletinNotes_Consultation.InterfaceBulletinNotes_Consultation(
+				aParamsConstructeur,
+			);
 		case Enumere_Onglet_1.EGenreOnglet.AppreciationsBulletinParEleve:
-			return new InterfaceAppreciationsBulletinParEleve(aParamsConstructeur);
+			return new MultiInterfaceAppreciationsBulletinParEleve.InterfaceAppreciationsBulletinParEleve(
+				aParamsConstructeur,
+			);
 		case Enumere_Onglet_1.EGenreOnglet.SaisieOrientation:
-			if (
-				GEtatUtilisateur.GenreEspace ===
-				Enumere_Espace_1.EGenreEspace.Professeur
-			) {
-				return new InterfaceOrientationsProfesseur(aParamsConstructeur);
-			}
-			if (
-				GEtatUtilisateur.GenreEspace === Enumere_Espace_1.EGenreEspace.Parent
-			) {
-				return new InterfaceOrientationsParent(aParamsConstructeur);
-			}
-			return null;
+			return new MultipleInterfacePageOrientation.InterfaceOrientation(
+				aParamsConstructeur,
+			);
 		case Enumere_Onglet_1.EGenreOnglet.EmploiDuTemps:
 		case Enumere_Onglet_1.EGenreOnglet.EmploiDuTempsEleve:
 		case Enumere_Onglet_1.EGenreOnglet.EmploiDuTempsClasse:
@@ -258,7 +259,9 @@ DeclarationOngletsEspace.creerOnglet = function (
 					Enumere_Espace_1.EGenreEspace.PrimDirection,
 				].includes(GEtatUtilisateur.GenreEspace)
 			) {
-				return new InterfaceEDTAnnuel(aParamsConstructeur);
+				return new MultiInterfaceEDTAnnuel.InterfaceEDTAnnuel(
+					aParamsConstructeur,
+				);
 			}
 			return new InterfacePageEmploiDuTemps_1.ObjetAffichagePageEmploiDuTemps(
 				aParamsConstructeur,
@@ -270,11 +273,15 @@ DeclarationOngletsEspace.creerOnglet = function (
 		case Enumere_Onglet_1.EGenreOnglet.InfosPerso:
 			return new InterfaceCompte_1.ObjetInterfaceCompte(aParamsConstructeur);
 		case Enumere_Onglet_1.EGenreOnglet.SaisieNotes:
-			return new InterfacePageNotes(aParamsConstructeur);
+			return new MultiInterfacePageNotes.InterfacePageNotes(
+				aParamsConstructeur,
+			);
 		case Enumere_Onglet_1.EGenreOnglet.SaisieCahierDeTextes:
 			switch (GEtatUtilisateur.GenreEspace) {
 				case Enumere_Espace_1.EGenreEspace.Professeur:
-					return new InterfacePageSaisieCahierDeTextes(aParamsConstructeur);
+					return new MultiInterfacePageSaisieCahierDeTextes.InterfacePageSaisieCahierDeTextes(
+						aParamsConstructeur,
+					);
 			}
 			return null;
 		case Enumere_Onglet_1.EGenreOnglet.CDT_Planning:
@@ -297,14 +304,22 @@ DeclarationOngletsEspace.creerOnglet = function (
 		case Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel:
 		case Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel_Professeur:
 		case Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_AppelEtSuiviProfesseur:
-			return new InterfacePageSaisieAbsences(aParamsConstructeur);
+			return new MultiInterfacePageSaisieAbsences.InterfacePageSaisieAbsences(
+				aParamsConstructeur,
+			);
 		case Enumere_Onglet_1.EGenreOnglet.FicheBrevet:
 			return GEtatUtilisateur.GenreEspace ===
 				Enumere_Espace_1.EGenreEspace.Professeur
-				? new InterfaceFicheBrevet_Saisie(aParamsConstructeur)
-				: new InterfaceFicheBrevet_Consultation(aParamsConstructeur);
+				? new MultiInterfaceFicheBrevet_Saisie.InterfaceFicheBrevet_Saisie(
+						aParamsConstructeur,
+					)
+				: new MultiInterfaceFicheBrevet_Consultation.InterfaceFicheBrevet_Consultation(
+						aParamsConstructeur,
+					);
 		case Enumere_Onglet_1.EGenreOnglet.EquipePedagogique:
-			return new InterfacePageEquipePedagogique(aParamsConstructeur);
+			return new MultiInterfacePageEquipePedagogique.InterfacePageEquipePedagogique(
+				aParamsConstructeur,
+			);
 		case Enumere_Onglet_1.EGenreOnglet.RecapAbsences:
 			return new MultipleInterfaceRecapAbsences.InterfaceRecapAbsences(
 				aParamsConstructeur,
@@ -317,24 +332,18 @@ DeclarationOngletsEspace.creerOnglet = function (
 			return new MultipleInterfaceRecapPunitions.InterfaceRecapPunitions(
 				aParamsConstructeur,
 			);
-		case Enumere_Onglet_1.EGenreOnglet.Graphique_Profil:
-		case Enumere_Onglet_1.EGenreOnglet.Graphique_Evolution:
-			return GEtatUtilisateur.GenreEspace ===
-				Enumere_Espace_1.EGenreEspace.Professeur
-				? new MultipleInterfacePageGraphiqueParClasse.InterfacePageGraphiqueParClasse(
-						aParamsConstructeur,
-					)
-				: new MultipleInterfacePageGraphique.InterfacePageGraphique(
-						aParamsConstructeur,
-					);
 		case Enumere_Onglet_1.EGenreOnglet.SaisieAppreciationDeFinDeStage:
 			return new InterfaceFicheStage_1.ObjetInterfaceFicheStage(
 				aParamsConstructeur,
 			);
 		case Enumere_Onglet_1.EGenreOnglet.ConseilDeClasse:
-			return new InterfaceBulletinNotes_Consultation(aParamsConstructeur);
+			return new MultiInterfaceBulletinNotes_Consultation.InterfaceBulletinNotes_Consultation(
+				aParamsConstructeur,
+			);
 		case Enumere_Onglet_1.EGenreOnglet.SuiviPluriannuel:
-			return new InterfacePageSuiviPluriannuel(aParamsConstructeur);
+			return new MultiInterfacePageSuiviPluriannuel.InterfacePageSuiviPluriannuel(
+				aParamsConstructeur,
+			);
 		case Enumere_Onglet_1.EGenreOnglet.BilanParDomaine:
 			if (
 				[
@@ -344,9 +353,13 @@ DeclarationOngletsEspace.creerOnglet = function (
 					Enumere_Espace_1.EGenreEspace.PrimDirection,
 				].includes(GEtatUtilisateur.GenreEspace)
 			) {
-				return new InterfaceBilanParDomaine_Saisie(aParamsConstructeur);
+				return new MultipleInterfaceBilanParDomaine_Saisie.InterfaceBilanParDomaine_Saisie(
+					aParamsConstructeur,
+				);
 			}
-			return new InterfaceBilanParDomaine_Consultation(aParamsConstructeur);
+			return new MultipleInterfaceBilanParDomaine_Consultation.InterfaceBilanParDomaine_Consultation(
+				aParamsConstructeur,
+			);
 		case Enumere_Onglet_1.EGenreOnglet.CompetencesNumeriques:
 			if (
 				[
@@ -366,27 +379,45 @@ DeclarationOngletsEspace.creerOnglet = function (
 		case Enumere_Onglet_1.EGenreOnglet.Evaluation:
 		case Enumere_Onglet_1.EGenreOnglet.ListeEvaluation:
 		case Enumere_Onglet_1.EGenreOnglet.ListeEvaluationHistorique:
-			return new InterfacePageListeEvaluations(aParamsConstructeur);
+			return new MultiInterfacePageListeEvaluations.InterfacePageListeEvaluations(
+				aParamsConstructeur,
+			);
 		case Enumere_Onglet_1.EGenreOnglet.SaisieAppreciationsBulletin:
-			return new InterfaceSaisieApprBulletin(aParamsConstructeur);
+			return new MultiInterfaceSaisieApprBulletin.InterfaceSaisieApprBulletin(
+				aParamsConstructeur,
+			);
 		case Enumere_Onglet_1.EGenreOnglet.SaisieAvisProfesseur:
-			return new InterfaceSaisieAvisProfesseur(aParamsConstructeur);
+			return new MultiInterfaceSaisieAvisProfesseur.InterfaceSaisieAvisProfesseur(
+				aParamsConstructeur,
+			);
 		case Enumere_Onglet_1.EGenreOnglet.SaisieAvisParcoursup:
-			return new InterfaceSaisieAvisParcoursup(aParamsConstructeur);
+			return new MultiInterfaceSaisieAvisParcoursup.InterfaceSaisieAvisParcoursup(
+				aParamsConstructeur,
+			);
 		case Enumere_Onglet_1.EGenreOnglet.SaisieAppreciationsGenerales_Competences:
 		case Enumere_Onglet_1.EGenreOnglet.SaisieAppreciationsGenerales:
 		case Enumere_Onglet_1.EGenreOnglet.SaisieApprGeneralesReleve:
-			return new _InterfaceSaisieApprGenerale(aParamsConstructeur);
+			return new MultiInterfaceSaisieApprGenerale.InterfaceSaisieApprGenerale(
+				aParamsConstructeur,
+			);
 		case Enumere_Onglet_1.EGenreOnglet.SaisieAppreciationsReleve:
-			return new InterfaceSaisieApprReleve(aParamsConstructeur);
+			return new MultiInterfaceSaisieApprReleve.InterfaceSaisieApprReleve(
+				aParamsConstructeur,
+			);
 		case Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Competences:
 		case Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche:
 		case Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Appreciations:
-			return new InterfaceFicheLivretScolaire(aParamsConstructeur);
+			return new MultiInterfaceFicheLivretScolaire.InterfaceFicheLivretScolaire(
+				aParamsConstructeur,
+			);
 		case Enumere_Onglet_1.EGenreOnglet.ResultatsClasses:
-			return new InterfacePageResultatsClasses(aParamsConstructeur);
+			return new MultiInterfacePageResultatsClasses.InterfacePageResultatsClasses(
+				aParamsConstructeur,
+			);
 		case Enumere_Onglet_1.EGenreOnglet.Punitions:
-			return new InterfacePagePunitions(aParamsConstructeur);
+			return new MultiInterfacePagePunitions.InterfacePagePunitions(
+				aParamsConstructeur,
+			);
 		case Enumere_Onglet_1.EGenreOnglet.Dispenses:
 			return new MultipleInterfacePageDispenses.InterfacePageDispenses(
 				aParamsConstructeur,
@@ -423,7 +454,6 @@ DeclarationOngletsEspace.creerOnglet = function (
 				aParamsConstructeur,
 			);
 		case Enumere_Onglet_1.EGenreOnglet.QCM_Bibliotheque:
-		case Enumere_Onglet_1.EGenreOnglet.QCM_BibliothequeNathan:
 			return new MultipleInterfacePageBibliothequeQCM.InterfacePageBibliothequeQCM(
 				aParamsConstructeur,
 			);
@@ -458,7 +488,9 @@ DeclarationOngletsEspace.creerOnglet = function (
 				aParamsConstructeur,
 			);
 		case Enumere_Onglet_1.EGenreOnglet.Rencontre_Desideratas:
-			return new InterfaceRencontreDesiderata(aParamsConstructeur);
+			return new MultiInterfaceRencontreDesiderata.InterfaceRencontreDesiderata(
+				aParamsConstructeur,
+			);
 		case Enumere_Onglet_1.EGenreOnglet.SaisieOffresStage:
 			return new MultiplePageSaisieOffresStagesPN.PageSaisieOffresStagesPN(
 				aParamsConstructeur,
@@ -506,9 +538,13 @@ DeclarationOngletsEspace.creerOnglet = function (
 					Enumere_Espace_1.EGenreEspace.PrimDirection,
 				].includes(GEtatUtilisateur.GenreEspace)
 			) {
-				return new InterfaceBulletinCompetences_Saisie(aParamsConstructeur);
+				return new MultipleInterfaceBulletinCompetences_Saisie.InterfaceBulletinCompetences_Saisie(
+					aParamsConstructeur,
+				);
 			}
-			return new InterfaceBulletinCompetences_Consultation(aParamsConstructeur);
+			return new MultipleInterfaceBulletinCompetences_Consultation.InterfaceBulletinCompetences_Consultation(
+				aParamsConstructeur,
+			);
 		case Enumere_Onglet_1.EGenreOnglet.BulletinCompetencesClasse:
 			return [
 				Enumere_Espace_1.EGenreEspace.Parent,
@@ -516,7 +552,9 @@ DeclarationOngletsEspace.creerOnglet = function (
 				Enumere_Espace_1.EGenreEspace.Accompagnant,
 				Enumere_Espace_1.EGenreEspace.Tuteur,
 			].includes(GEtatUtilisateur.GenreEspace)
-				? new InterfaceBulletinCompetences_Consultation(aParamsConstructeur)
+				? new MultipleInterfaceBulletinCompetences_Consultation.InterfaceBulletinCompetences_Consultation(
+						aParamsConstructeur,
+					)
 				: null;
 		case Enumere_Onglet_1.EGenreOnglet.NiveauxDeMaitriseParMatiere:
 			return [
@@ -546,10 +584,6 @@ DeclarationOngletsEspace.creerOnglet = function (
 			);
 		case Enumere_Onglet_1.EGenreOnglet.ListeEleves:
 			return new MultipleInterfaceListeRessources_Eleves.InterfaceListeRessources_Eleves(
-				aParamsConstructeur,
-			);
-		case Enumere_Onglet_1.EGenreOnglet.DocumentsParents:
-			return new MultipleInterfaceListeDocumentsFournis.InterfaceListeDocumentsFournis(
 				aParamsConstructeur,
 			);
 		case Enumere_Onglet_1.EGenreOnglet.Messagerie:
@@ -621,13 +655,11 @@ DeclarationOngletsEspace.creerOnglet = function (
 				aParamsConstructeur,
 			);
 		case Enumere_Onglet_1.EGenreOnglet.Saisie_Punitions:
-			return new InterfaceSaisiePunitions(aParamsConstructeur);
-		case Enumere_Onglet_1.EGenreOnglet.Saisie_Dispenses:
-			return new InterfaceSaisieDispenses_1.InterfaceSaisieDispenses(
+			return new MultiInterfaceSaisiePunitions.InterfaceSaisiePunitions(
 				aParamsConstructeur,
 			);
-		case Enumere_Onglet_1.EGenreOnglet.ListeDevoirs:
-			return new InterfaceListeDevoirs_1.InterfaceListeDevoirs(
+		case Enumere_Onglet_1.EGenreOnglet.Saisie_Dispenses:
+			return new MultiInterfaceSaisieDispenses.InterfaceSaisieDispenses(
 				aParamsConstructeur,
 			);
 		case Enumere_Onglet_1.EGenreOnglet.EvaluationAccueilStage:
@@ -635,7 +667,9 @@ DeclarationOngletsEspace.creerOnglet = function (
 				aParamsConstructeur,
 			);
 		case Enumere_Onglet_1.EGenreOnglet.ListeServices:
-			return new InterfaceServicesProfesseur(aParamsConstructeur);
+			return new MultiInterfaceServicesProfesseur.InterfaceServicesProfesseur(
+				aParamsConstructeur,
+			);
 		case Enumere_Onglet_1.EGenreOnglet.RecapitulatifExportLSU:
 			return new MultipleInterfaceRecapitulatifExportLSU.InterfaceRecapitulatifExportLSU(
 				aParamsConstructeur,
@@ -653,13 +687,17 @@ DeclarationOngletsEspace.creerOnglet = function (
 				aParamsConstructeur,
 			);
 		case Enumere_Onglet_1.EGenreOnglet.DernieresEvaluations:
-			return new InterfaceDernieresEvaluations(aParamsConstructeur);
+			return new MultiInterfaceDernieresEvaluations.InterfaceDernieresEvaluations(
+				aParamsConstructeur,
+			);
 		case Enumere_Onglet_1.EGenreOnglet.ReleveEvaluationsParService:
 			return new MultiplePageReleveEvaluationsParService.PageReleveEvaluationsParService(
 				aParamsConstructeur,
 			);
 		case Enumere_Onglet_1.EGenreOnglet.DernieresNotes:
-			return new InterfaceDernieresNotes(aParamsConstructeur);
+			return new MultiInterfaceDernieresNotes.InterfaceDernieresNotes(
+				aParamsConstructeur,
+			);
 		case Enumere_Onglet_1.EGenreOnglet.ReleveEvaluationsParClasse:
 			return new MultiplePageReleveEvaluationsParClasse.PageReleveEvaluationsParClasse(
 				aParamsConstructeur,
@@ -693,13 +731,11 @@ DeclarationOngletsEspace.creerOnglet = function (
 				aParamsConstructeur,
 			);
 		case Enumere_Onglet_1.EGenreOnglet.TableauDeBord:
-			return new InterfaceTableauDeBord(aParamsConstructeur);
-		case Enumere_Onglet_1.EGenreOnglet.InfosEnfant_Prim:
-			return new MultipleInterfaceCompteInfosEnfantPrim.InterfaceCompteInfosEnfantPrim(
+			return new MultipleInterfaceTableauDeBord.InterfaceTableauDeBord(
 				aParamsConstructeur,
 			);
-		case Enumere_Onglet_1.EGenreOnglet.SaisieProgressions:
-			return new MultipleInterfaceSaisieProgressions.InterfaceSaisieProgressions(
+		case Enumere_Onglet_1.EGenreOnglet.InfosEnfant_Prim:
+			return new MultipleInterfaceCompteInfosEnfantPrim.InterfaceCompteInfosEnfantPrim(
 				aParamsConstructeur,
 			);
 		case Enumere_Onglet_1.EGenreOnglet.PyramideDesAges_Histogramme:
@@ -788,6 +824,10 @@ DeclarationOngletsEspace.creerOnglet = function (
 			);
 		case Enumere_Onglet_1.EGenreOnglet.SaisieAppelInternat:
 			return new MultipleInterfaceSaisieAppelInternat.InterfaceSaisieAppelInternat(
+				aParamsConstructeur,
+			);
+		case Enumere_Onglet_1.EGenreOnglet.RechercheDeStage:
+			return new MultipleInterfaceRechercheDeStage.InterfaceRechercheDeStage(
 				aParamsConstructeur,
 			);
 		default:

@@ -65,6 +65,7 @@ class ObjetRequetePageBlogFilActus extends ObjetRequeteJSON_1.ObjetRequeteConsul
 			}
 		}
 		this.callbackReussite.appel({
+			message: this.JSONReponse.message,
 			listeBlogs: lListeBlogs,
 			listeCategories: lListeCategories,
 			tailleMaxCommentaireBillet: this.JSONReponse.tailleMaxCommentaireBillet,

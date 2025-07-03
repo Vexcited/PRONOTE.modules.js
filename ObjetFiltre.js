@@ -57,17 +57,13 @@ class ObjetFiltre extends ObjetIdentite_1.Identite {
 		if (this.avecBtnReinit) {
 			H.push(
 				IE.jsx.str(
-					IE.jsx.fragment,
-					null,
+					"article",
+					{ class: "filtre-footer" },
 					IE.jsx.str(
-						"article",
-						{ class: "filtre-footer" },
-						IE.jsx.str(
-							"ie-bouton",
-							{ "ie-model": "objetFiltreBtnReinitFiltres", class: "small-bt" },
-							ObjetTraduction_1.GTraductions.getValeur(
-								"liste.ReinitialiserFiltre",
-							),
+						"ie-bouton",
+						{ "ie-model": "objetFiltreBtnReinitFiltres", class: "small-bt" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"liste.ReinitialiserFiltre",
 						),
 					),
 				),
@@ -110,17 +106,13 @@ class ObjetFiltre extends ObjetIdentite_1.Identite {
 	}
 	_getHtmlBtnFiltre() {
 		return IE.jsx.str(
-			IE.jsx.fragment,
-			null,
-			IE.jsx.str(
-				"div",
-				{ class: "m-all-l text-end" },
-				IE.jsx.str("ie-btnicon", {
-					"ie-class": "objetFiltreBtnFiltre.getClass",
-					"ie-model": "objetFiltreBtnFiltre",
-					title: ObjetTraduction_1.GTraductions.getValeur("liste.Filtrer"),
-				}),
-			),
+			"div",
+			{ class: "m-all-l text-end" },
+			IE.jsx.str("ie-btnicon", {
+				"ie-class": "objetFiltreBtnFiltre.getClass",
+				"ie-model": "objetFiltreBtnFiltre",
+				title: ObjetTraduction_1.GTraductions.getValeur("liste.Filtrer"),
+			}),
 		);
 	}
 }

@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieCommission extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieCommission = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieCommission extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParam) {
 		if (aParam.suivi) {
 			this.JSON.suivi = aParam.suivi.toJSONAll();
@@ -13,12 +11,12 @@ class ObjetRequeteSaisieCommission extends ObjetRequeteSaisie {
 		}
 		return this.appelAsynchrone();
 	}
-	actionApresRequete() {
-		this.callbackReussite.appel(this.JSONRapportSaisie);
-	}
 }
+exports.ObjetRequeteSaisieCommission = ObjetRequeteSaisieCommission;
 function _serialiser_Document(aElement, aJSON) {
 	aJSON.idFichier = aElement.idFichier;
 }
-Requetes.inscrire("SaisieCommission", ObjetRequeteSaisieCommission);
-module.exports = ObjetRequeteSaisieCommission;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieCommission",
+	ObjetRequeteSaisieCommission,
+);

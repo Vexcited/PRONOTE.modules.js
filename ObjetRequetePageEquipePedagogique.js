@@ -1,72 +1,71 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-class ObjetRequetePageEquipePedagogique extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
-	lancerRequete(aParametres) {
-		$.extend(this.JSON, aParametres);
-		return this.appelAsynchrone();
-	}
+exports.ObjetRequetePageEquipePedagogique = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+class ObjetRequetePageEquipePedagogique extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	actionApresRequete() {
-		let lAvecEnseignant,
-			lAvecEnseignantEnleve,
-			lAvecPersonnel,
-			lCumulProf,
-			lCumulEnleve,
-			lCumulPersonnel;
+		let lAvecEnseignant, lAvecEnseignantEnleve, lAvecPersonnel;
 		const lListe = this.JSONReponse.liste;
-		lCumulProf = new ObjetElement(
-			GTraductions.getValeur("EquipePedagogique.professeursDEquipe"),
+		const lCumulProf = new ObjetElement_1.ObjetElement(
+			ObjetTraduction_1.GTraductions.getValeur(
+				"EquipePedagogique.professeursDEquipe",
+			),
 		);
-		lCumulProf.Genre = EGenreRessource.Enseignant;
+		lCumulProf.Genre = Enumere_Ressource_1.EGenreRessource.Enseignant;
 		lCumulProf.estUnDeploiement = true;
 		lCumulProf.estDeploye = true;
-		lCumulEnleve = new ObjetElement(
-			GTraductions.getValeur("EquipePedagogique.autresProfesseursDEquipe"),
+		const lCumulEnleve = new ObjetElement_1.ObjetElement(
+			ObjetTraduction_1.GTraductions.getValeur(
+				"EquipePedagogique.autresProfesseursDEquipe",
+			),
 		);
-		lCumulEnleve.Genre = EGenreRessource.Enseignant;
+		lCumulEnleve.Genre = Enumere_Ressource_1.EGenreRessource.Enseignant;
 		lCumulEnleve.estUnDeploiement = true;
 		lCumulEnleve.estDeploye = true;
 		lCumulEnleve.estEnleve = true;
-		lCumulPersonnel = new ObjetElement(
-			GTraductions.getValeur("EquipePedagogique.personnelsDEquipe"),
+		const lCumulPersonnel = new ObjetElement_1.ObjetElement(
+			ObjetTraduction_1.GTraductions.getValeur(
+				"EquipePedagogique.personnelsDEquipe",
+			),
 		);
-		lCumulPersonnel.Genre = EGenreRessource.Personnel;
+		lCumulPersonnel.Genre = Enumere_Ressource_1.EGenreRessource.Personnel;
 		lCumulPersonnel.estUnDeploiement = true;
 		lCumulPersonnel.estDeploye = true;
 		lListe.parcourir((aElement) => {
 			if (
-				aElement.getGenre() === EGenreRessource.Enseignant &&
+				aElement.getGenre() ===
+					Enumere_Ressource_1.EGenreRessource.Enseignant &&
 				!aElement.estEnleve
 			) {
 				lAvecEnseignant = true;
 				aElement.pere = lCumulProf;
 			}
 			if (
-				aElement.getGenre() === EGenreRessource.Enseignant &&
+				aElement.getGenre() ===
+					Enumere_Ressource_1.EGenreRessource.Enseignant &&
 				aElement.estEnleve
 			) {
 				lAvecEnseignantEnleve = true;
 				aElement.pere = lCumulEnleve;
 			}
-			if (aElement.getGenre() === EGenreRessource.Personnel) {
+			if (
+				aElement.getGenre() === Enumere_Ressource_1.EGenreRessource.Personnel
+			) {
 				lAvecPersonnel = true;
 				aElement.pere = lCumulPersonnel;
 			}
 			if (aElement.matieres) {
 				aElement.matieres.setTri([
-					ObjetTri.init((D) => {
+					ObjetTri_1.ObjetTri.init((D) => {
 						return D.estUneSousMatiere ? D.libelleMatiere : D.getLibelle();
 					}),
-					ObjetTri.init((D) => {
+					ObjetTri_1.ObjetTri.init((D) => {
 						return !!D.estUneSousMatiere;
 					}),
-					ObjetTri.init("Libelle"),
+					ObjetTri_1.ObjetTri.init("Libelle"),
 				]);
 				aElement.matieres.trier();
 			}
@@ -83,5 +82,8 @@ class ObjetRequetePageEquipePedagogique extends ObjetRequeteConsultation {
 		this.callbackReussite.appel(lListe);
 	}
 }
-Requetes.inscrire("PageEquipePedagogique", ObjetRequetePageEquipePedagogique);
-module.exports = { ObjetRequetePageEquipePedagogique };
+exports.ObjetRequetePageEquipePedagogique = ObjetRequetePageEquipePedagogique;
+CollectionRequetes_1.Requetes.inscrire(
+	"PageEquipePedagogique",
+	ObjetRequetePageEquipePedagogique,
+);

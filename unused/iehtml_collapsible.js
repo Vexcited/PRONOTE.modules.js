@@ -1,5 +1,5 @@
-const IEHtml = require("IEHtml.js");
-const { ToucheClavier } = require("ToucheClavier.js");
+const IEHtml = require("IEHtml");
+const ToucheClavier_1 = require("ToucheClavier");
 IEHtml.addClass("collapsible", (aContexteCourant) => {
 	_refresh(aContexteCourant);
 	const lObserver = new MutationObserver((aMutations) => {
@@ -60,9 +60,9 @@ function _refresh(aContexteCourant) {
 		"keydown.collapsible"(aEvent) {
 			if (
 				[
-					ToucheClavier.Espace,
-					ToucheClavier.RetourChariot,
-					ToucheClavier.Echap,
+					ToucheClavier_1.ToucheClavier.Espace,
+					ToucheClavier_1.ToucheClavier.RetourChariot,
+					ToucheClavier_1.ToucheClavier.Echap,
 				].includes(aEvent.which)
 			) {
 				lAction(aEvent);

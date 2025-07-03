@@ -15,13 +15,25 @@ class WidgetPartenaireARD extends ObjetWidget_1.Widget.ObjetWidget {
 	construire(aParams) {
 		this.donnees = aParams.donnees;
 		const lWidget = {
-			html: this.composeWidgetPartenaireArd(),
+			getHtml: this.composeWidgetPartenaireArd.bind(this),
 			nbrElements: null,
 			titre: ObjetTraduction_1.GTraductions.getValeur("accueil.ard.titre"),
 			avecActualisation: !!this.donnees.avecActualisation,
+			infosURLExterne: this.infosURLExterne.bind(this),
 		};
 		$.extend(true, this.donnees, lWidget);
 		aParams.construireWidget(this.donnees);
+	}
+	surLienExterne() {
+		this.surPartenaireArd();
+	}
+	infosURLExterne() {
+		if (this.donnees.SSO) {
+			return {
+				callbackLien: this.surLienExterne.bind(this),
+				titre: this.donnees.SSO && this.donnees.SSO.intituleLien,
+			};
+		}
 	}
 	composeWidgetPartenaireArd() {
 		var _a;

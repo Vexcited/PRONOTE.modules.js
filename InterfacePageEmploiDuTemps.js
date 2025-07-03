@@ -1,12 +1,10 @@
 exports.ObjetAffichagePageEmploiDuTemps = void 0;
 const ObjetIdentite_1 = require("ObjetIdentite");
 const ObjetDroitsPN_1 = require("ObjetDroitsPN");
-const CollectionRequetes_1 = require("CollectionRequetes");
 const Enumere_DomaineInformation_1 = require("Enumere_DomaineInformation");
 const ObjetStyle_1 = require("ObjetStyle");
 const ObjetFenetre_ICal_1 = require("ObjetFenetre_ICal");
 const ObjetRequeteFicheCours_1 = require("ObjetRequeteFicheCours");
-const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
 const Invocateur_1 = require("Invocateur");
 const ObjetChaine_1 = require("ObjetChaine");
 const ObjetHtml_1 = require("ObjetHtml");
@@ -43,7 +41,7 @@ const ObjetRequeteFicheCDT_1 = require("ObjetRequeteFicheCDT");
 const ObjetRequetePageEmploiDuTemps_1 = require("ObjetRequetePageEmploiDuTemps");
 const ObjetRequetePageEmploiDuTemps_DomainePresence_1 = require("ObjetRequetePageEmploiDuTemps_DomainePresence");
 const TypeHttpGenerationPDFSco_1 = require("TypeHttpGenerationPDFSco");
-const TUtilitaireAffectationElevesGroupe = require("UtilitaireAffectationElevesGroupe");
+const MultipleTUtilitaireAffectationElevesGroupe = require("UtilitaireAffectationElevesGroupe");
 const UtilitaireConvertisseurPositionGrille_1 = require("UtilitaireConvertisseurPositionGrille");
 const UtilitaireInitCalendrier_1 = require("UtilitaireInitCalendrier");
 const TypeGestionRenvoisImp_1 = require("TypeGestionRenvoisImp");
@@ -69,10 +67,9 @@ const ObjetFenetre_ProgrammationPunition_1 = require("ObjetFenetre_Programmation
 const MultipleObjetModule_EDTSaisie = require("ObjetModule_EDTSaisie");
 const ObjetVisuEleveQCM_1 = require("ObjetVisuEleveQCM");
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
-CollectionRequetes_1.Requetes.inscrire(
-	"donneesContenusCDT",
-	ObjetRequeteJSON_1.ObjetRequeteConsultation,
-);
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const ObjetRequeteDonneesContenusCDT_1 = require("ObjetRequeteDonneesContenusCDT");
+const GlossaireEDT_1 = require("GlossaireEDT");
 class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 	constructor(...aParams) {
 		super(...aParams);
@@ -242,16 +239,44 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 					estPlanningParRessource: lEstPlanningParRessource,
 				});
 		}
-		if (
-			[
-				Enumere_Espace_1.EGenreEspace.Professeur,
-				Enumere_Espace_1.EGenreEspace.PrimProfesseur,
-				Enumere_Espace_1.EGenreEspace.PrimDirection,
-			].includes(this.etatUtilisateurSco.GenreEspace)
-		) {
-			this.moduleAffectationElevesGroupe =
-				new TUtilitaireAffectationElevesGroupe(this);
+		if (MultipleTUtilitaireAffectationElevesGroupe) {
+			if (
+				[
+					Enumere_Espace_1.EGenreEspace.Professeur,
+					Enumere_Espace_1.EGenreEspace.PrimProfesseur,
+					Enumere_Espace_1.EGenreEspace.PrimDirection,
+				].includes(this.etatUtilisateurSco.GenreEspace)
+			) {
+				this.moduleAffectationElevesGroupe =
+					new MultipleTUtilitaireAffectationElevesGroupe.TUtilitaireAffectationElevesGroupe(
+						this,
+					);
+			}
 		}
+	}
+	jsxModeleBoutonAvecListeEleves() {
+		return {
+			event: () => {
+				this.etatUtilisateurSco.setAfficherListeElevesEDT(
+					!this.etatUtilisateurSco.getAfficherListeElevesEDT(),
+				);
+				ObjetStyle_2.GStyle.setDisplay(
+					this._getIdConteneurListeEleves(),
+					this.etatUtilisateurSco.getAfficherListeElevesEDT(),
+				);
+				this.getInstance(this.IdentGrille).getInstanceGrille().surPreResize();
+				this.getInstance(this.IdentCalendrier).surPostResize();
+				this._actualiserGrilleEtListe();
+			},
+			getTitle: () => {
+				return this.etatUtilisateurSco.getAfficherListeElevesEDT()
+					? ObjetTraduction_1.GTraductions.getValeur("EDT.MasquerListeEleves")
+					: ObjetTraduction_1.GTraductions.getValeur("EDT.AfficherListeEleves");
+			},
+			getSelection: () => {
+				return !!this.etatUtilisateurSco.getAfficherListeElevesEDT();
+			},
+		};
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
@@ -322,33 +347,6 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 					);
 				},
 			},
-			btnAvecListeEleves: {
-				event() {
-					aInstance.etatUtilisateurSco.setAfficherListeElevesEDT(
-						!aInstance.etatUtilisateurSco.getAfficherListeElevesEDT(),
-					);
-					ObjetStyle_2.GStyle.setDisplay(
-						aInstance._getIdConteneurListeEleves(),
-						aInstance.etatUtilisateurSco.getAfficherListeElevesEDT(),
-					);
-					aInstance
-						.getInstance(aInstance.IdentGrille)
-						.getInstanceGrille()
-						.surPreResize();
-					aInstance.getInstance(aInstance.IdentCalendrier).surPostResize();
-					aInstance._actualiserGrilleEtListe();
-				},
-				getSelection() {
-					return !!aInstance.etatUtilisateurSco.getAfficherListeElevesEDT();
-				},
-				getTitle() {
-					return aInstance.etatUtilisateurSco.getAfficherListeElevesEDT()
-						? ObjetTraduction_1.GTraductions.getValeur("EDT.MasquerListeEleves")
-						: ObjetTraduction_1.GTraductions.getValeur(
-								"EDT.AfficherListeEleves",
-							);
-				},
-			},
 			getDisplayBtnPartageICalSalles() {
 				return aInstance._getDisplayIcalSalles();
 			},
@@ -398,7 +396,10 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 					);
 				},
 				getSelection() {
-					return aInstance.getInstance(aInstance.IdentFenetreICal).estAffiche();
+					return (
+						aInstance.existeInstance(aInstance.IdentFenetreICal) &&
+						aInstance.getInstance(aInstance.IdentFenetreICal).estAffiche()
+					);
 				},
 				getTitle() {
 					return aInstance._getDisplayIcalSalles()
@@ -458,15 +459,16 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 			getDisplayBtnInfosGrille() {
 				return aInstance._avecRessourcesEtDomaine();
 			},
-			btnInfosGrille: {
-				event() {
-					aInstance
-						.getInstance(aInstance.IdentGrille)
-						.getInstanceGrille()
-						.ouvrirFenetreDetailsGrille();
-				},
-			},
 		});
+	}
+	jsxModeleBoutonInfosGrille() {
+		return {
+			event: () => {
+				this.getInstance(this.IdentGrille)
+					.getInstanceGrille()
+					.ouvrirFenetreDetailsGrille();
+			},
+		};
 	}
 	construireInstances() {
 		this.IdentCalendrier = this.add(
@@ -488,7 +490,7 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 			this.evenementSurCours,
 			this.initialiserGrille,
 		);
-		this.idPage = this.getInstance(this.IdentGrille).getNom();
+		this.idPage = this.getNomInstance(this.IdentGrille);
 		if (this.avecListeEleves) {
 			this.identListeEleves = this.add(
 				ObjetListe_1.ObjetListe,
@@ -619,7 +621,7 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 			this.etatUtilisateurSco.getAcces().autoriseSurDate
 		) {
 			this.AddSurZone.push({
-				html: UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnAfficherCoursAnnules(
+				html: UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnAfficherCoursAnnulesControleur(
 					"btnAvecCoursAnnules",
 				),
 				getDisplay: "getDisplayBtnAvecRessourcesEtDomaine",
@@ -628,7 +630,7 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 		if (this.avecListeEleves) {
 			this.AddSurZone.push({
 				html: UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnAvecListeEleves(
-					"btnAvecListeEleves",
+					this.jsxModeleBoutonAvecListeEleves.bind(this),
 				),
 				getDisplay: "getDisplayBtnAvecRessourcesEtDomaine",
 			});
@@ -666,7 +668,7 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 		}
 		this.AddSurZone.push({
 			html: UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnInformationsGrille(
-				"btnInfosGrille",
+				this.jsxModeleBoutonInfosGrille.bind(this),
 			),
 			getDisplay: "getDisplayBtnInfosGrille",
 		});
@@ -691,7 +693,7 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 		H.push(`<div class="ly-cols-2">`);
 		H.push(`  <div class="main-content cols">`);
 		H.push(
-			`    <div class="full-width" id="${this.getInstance(this.IdentCalendrier).getNom()}">${ObjetHtml_1.GHtml.composeBlanc()}</div>`,
+			`    <div class="full-width" id="${this.getNomInstance(this.IdentCalendrier)}">${ObjetHtml_1.GHtml.composeBlanc()}</div>`,
 		);
 		if (this.getInstance(this.identTabs)) {
 			H.push(
@@ -705,7 +707,7 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 			);
 			H.push(
 				'  <div class="m-right-l" id="',
-				this.getInstance(this.identTabs).getNom(),
+				this.getNomInstance(this.identTabs),
 				'" style="',
 				ObjetStyle_2.GStyle.composeCouleurBordure(
 					GCouleur.bordure,
@@ -718,7 +720,7 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 		}
 		H.push(
 			'    <div class="fluid-bloc full-height" id="' +
-				this.getInstance(this.IdentGrille).getNom() +
+				this.getNomInstance(this.IdentGrille) +
 				'">',
 			ObjetHtml_1.GHtml.composeBlanc(),
 			"</div>",
@@ -726,21 +728,21 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 		H.push(`  </div>`);
 		if (this.avecListeEleves) {
 			H.push(
-				'  <div id="',
-				this._getIdConteneurListeEleves(),
-				'" class="aside-content"',
-				!this.etatUtilisateurSco.getAfficherListeElevesEDT()
-					? ' style="display:none"'
-					: "",
-				">",
-				'<div id="',
-				this.getInstance(this.identListeEleves).getNom(),
-				'" style="width:240px;',
-				ObjetStyle_2.GStyle.composeHeightCalc(5),
-				'">',
-				"</div>",
+				IE.jsx.str(
+					"div",
+					{
+						id: this._getIdConteneurListeEleves(),
+						class: "aside-content",
+						style: !this.etatUtilisateurSco.getAfficherListeElevesEDT()
+							? "display:none;"
+							: "",
+					},
+					IE.jsx.str("div", {
+						id: this.getNomInstance(this.identListeEleves),
+						style: "width:240px;" + ObjetStyle_2.GStyle.composeHeightCalc(5),
+					}),
+				),
 			);
-			H.push("  </div>");
 		}
 		H.push(`</div>`);
 		H.push(`</div>`);
@@ -852,6 +854,25 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 			colonnesCachees: [
 				MultiDonneesListe_Eleves.DonneesListe_Eleves.colonnes.Classe,
 			],
+			ariaLabel: () => {
+				var _a, _b, _c;
+				let lStr = "";
+				if (
+					(_a = this.paramCours) === null || _a === void 0 ? void 0 : _a.cours
+				) {
+					lStr =
+						(_c =
+							(_b = this.getInstance(this.IdentGrille).getInstanceGrille()) ===
+								null || _b === void 0
+								? void 0
+								: _b.getModuleCours()) === null || _c === void 0
+							? void 0
+							: _c.getAriaLabelCours(this.paramCours.cours);
+				}
+				return lStr
+					? GlossaireEDT_1.TradGlossaireEDT.ListeElevesDe_S.format(lStr)
+					: GlossaireEDT_1.TradGlossaireEDT.ListeElevesSasnCours;
+			},
 		});
 	}
 	initialiserFenetreICal(aInstance) {
@@ -885,7 +906,7 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 	lancerAffichage() {
 		if (!this.ressources || this.ressources.count() === 0) {
 			ObjetHtml_1.GHtml.setDisplay(
-				this.getInstance(this.IdentCalendrier).getNom(),
+				this.getNomInstance(this.IdentCalendrier),
 				false,
 			);
 			if (this.getInstance(this.identTabs)) {
@@ -914,7 +935,7 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 		if (!!aMessage) {
 			this.message = aMessage;
 			ObjetHtml_1.GHtml.setDisplay(
-				this.getInstance(this.IdentCalendrier).getNom(),
+				this.getNomInstance(this.IdentCalendrier),
 				false,
 			);
 			this.afficherMessage(this.message);
@@ -1085,25 +1106,21 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 		this.donneesGrille.prefsGrille = aParam.prefsGrille;
 		this.donneesGrille.placesRessourcesLibres = aParam.placesRessourcesLibres;
 		this._actualiserTabOnglet();
-		if (this.etatUtilisateurSco.estModeAccessible()) {
-			this._afficherListeAccessible();
-		} else {
-			lInstanceGrille
-				.getInstanceGrille()
-				.setOptions({
-					recreations: aParam.recreations || this.parametresSco.recreations,
-				});
-			lInstanceGrille.setDonnees(this.donneesGrille, (aGrille) => {
-				if (this.etatUtilisateurSco._coursASelectionner) {
-					aGrille.selectionnerCours(
-						this.etatUtilisateurSco._coursASelectionner,
-						null,
-						true,
-					);
-					delete this.etatUtilisateurSco._coursASelectionner;
-				}
+		lInstanceGrille
+			.getInstanceGrille()
+			.setOptions({
+				recreations: aParam.recreations || this.parametresSco.recreations,
 			});
-		}
+		lInstanceGrille.setDonnees(this.donneesGrille, (aGrille) => {
+			if (this.etatUtilisateurSco._coursASelectionner) {
+				aGrille.selectionnerCours(
+					this.etatUtilisateurSco._coursASelectionner,
+					null,
+					true,
+				);
+				delete this.etatUtilisateurSco._coursASelectionner;
+			}
+		});
 		this.setEtatIdCourant(true);
 		if (this.getInstance(this.IdentCalendrier).estUneInteractionUtilisateur()) {
 			this.setFocusIdCourant();
@@ -1126,7 +1143,7 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 	evenementSurFenetreICal() {}
 	evenementSurDernierMenuDeroulant() {
 		ObjetHtml_1.GHtml.setDisplay(
-			this.getInstance(this.IdentCalendrier).getNom(),
+			this.getNomInstance(this.IdentCalendrier),
 			true,
 		);
 		if (
@@ -1216,7 +1233,8 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 					} else if (this.avecListeEleves) {
 						this._requeteFicheCours(lParam.cours, {
 							cours: lParam.cours,
-							forcerNavigationClavier: GNavigateur.isToucheMenuContextuel(),
+							forcerNavigationClavier:
+								ObjetNavigateur_1.Navigateur.isToucheMenuContextuel(),
 						});
 					}
 				}
@@ -1238,7 +1256,7 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 							true,
 							this.paramCours.cours.numeroSemaine,
 						),
-						callbackSaisie: function () {
+						callbackSaisie: () => {
 							this._requeteFiche(this.paramCours.cours, null);
 							this.setEtatSaisie(false);
 							if (this.moduleSaisie) {
@@ -1260,7 +1278,7 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 							this.paramCours.cours.numeroSemaine,
 						),
 						eleve: aParametres.article,
-						callbackSaisie: function () {
+						callbackSaisie: () => {
 							this._requeteFiche(this.paramCours.cours, null);
 							this.setEtatSaisie(false);
 							if (this.moduleSaisie) {
@@ -1367,8 +1385,7 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 				);
 				break;
 			case GestionnaireBlocCDT_1.EGenreBtnActionBlocCDT.voirContenu:
-				(0, CollectionRequetes_1.Requetes)(
-					"donneesContenusCDT",
+				new ObjetRequeteDonneesContenusCDT_1.ObjetRequeteDonneesContenusCDT(
 					this,
 					this._actionApresRequeteDonneesContenusCDT,
 				).lancerRequete({ cahierDeTextes: aElement.cahierDeTextes });
@@ -1425,15 +1442,15 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 	}
 	surResizeInterface() {
 		super.surResizeInterface();
-		if (this.avecListeEleves && !GNavigateur.isLayoutTactile) {
+		if (this.avecListeEleves) {
 			ObjetPosition_1.GPosition.setHeight(
-				this.getInstance(this.identListeEleves).getNom(),
+				this.getNomInstance(this.identListeEleves),
 				0,
 			);
 		}
-		if (this.avecListeEleves && !GNavigateur.isLayoutTactile) {
+		if (this.avecListeEleves) {
 			ObjetPosition_1.GPosition.setHeight(
-				this.getInstance(this.identListeEleves).getNom(),
+				this.getNomInstance(this.identListeEleves),
 				ObjetPosition_1.GPosition.getHeight(this.Nom) - 10,
 			);
 		}
@@ -1501,18 +1518,14 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 		if (this.moduleSaisie) {
 			this.moduleSaisie.sortieModeDiagnosticRestaurerOptions();
 		}
-		if (this.etatUtilisateurSco.estModeAccessible()) {
-			this._afficherListeAccessible();
-		} else {
-			const lGrilleEDT = this.getInstance(this.IdentGrille);
-			lGrilleEDT.setDonnees(this.donneesGrille);
-			if (this.paramCours && this.paramCours.cours) {
-				const lAvecSelection = lGrilleEDT
-					.getInstanceGrille()
-					.selectionnerCours(this.paramCours.cours, true, true);
-				if (!lAvecSelection) {
-					this._initParamCours();
-				}
+		const lGrilleEDT = this.getInstance(this.IdentGrille);
+		lGrilleEDT.setDonnees(this.donneesGrille);
+		if (this.paramCours && this.paramCours.cours) {
+			const lAvecSelection = lGrilleEDT
+				.getInstanceGrille()
+				.selectionnerCours(this.paramCours.cours, true, true);
+			if (!lAvecSelection) {
+				this._initParamCours();
 			}
 		}
 	}
@@ -1587,13 +1600,15 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 					? this.parametresSco.frequences[lDomaine.getPremierePosition(true)]
 							.libelle
 					: "";
-			lLibelle +=
-				" - " +
-				ObjetTraduction_1.GTraductions.getValeur("Semaine") +
-				" " +
-				(lEstSemaineFeriee
-					? ObjetTraduction_1.GTraductions.getValeur("Feriee").toLowerCase()
-					: lFrequence);
+			if (lFrequence) {
+				lLibelle +=
+					" - " +
+					ObjetTraduction_1.GTraductions.getValeur("Semaine") +
+					" " +
+					(lEstSemaineFeriee
+						? ObjetTraduction_1.GTraductions.getValeur("Feriee").toLowerCase()
+						: lFrequence);
+			}
 		}
 		const lAcces = this.etatUtilisateurSco.getAcces();
 		if (lAcces.autoriseSurDate && lAcces.dateDebut && lAcces.dateFin) {
@@ -1616,7 +1631,7 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 		);
 	}
 	_getIdConteneurListeEleves() {
-		return this.getInstance(this.identListeEleves).getNom() + "_conteneur";
+		return this.getNomInstance(this.identListeEleves) + "_conteneur";
 	}
 	_viderListeEleves() {
 		if (
@@ -1939,34 +1954,6 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 			this.etatUtilisateurSco.getGenreOnglet() ===
 				Enumere_Onglet_1.EGenreOnglet.EmploiDuTempsSalle;
 		return lAutorise;
-	}
-	_afficherListeAccessible() {
-		const lTitre = ObjetDate_1.GDate.strSemaine(
-			this.donneesGrille.numeroSemaine,
-			"%JJJJ %JJ %MMMM",
-			"%JJJJ %JJ %MMMM",
-			this.etatUtilisateurSco.getLibelleOnglet() +
-				" " +
-				ObjetTraduction_1.GTraductions.getValeur("Du") +
-				" ",
-			" " + ObjetTraduction_1.GTraductions.getValeur("Au") + " ",
-		);
-		const lObjet = this.getInstance(this.IdentGrille)
-			.getInstanceGrille()
-			.construireEDTListeAccessible(
-				{
-					listeCours: this.donneesGrille.listeCours,
-					avecCoursAnnule: this.etatUtilisateurSco.getAvecCoursAnnule(),
-					avecCoursAnnulesSuperposes:
-						!this.etatUtilisateurSco.estEspacePourEleve(),
-				},
-				lTitre,
-			);
-		ObjetHtml_1.GHtml.setHtml(
-			this.getNomInstance(this.IdentGrille),
-			lObjet.liste.construireAffichage(),
-		);
-		lObjet.liste.setDonnees(lObjet.racine);
 	}
 }
 exports.ObjetAffichagePageEmploiDuTemps = ObjetAffichagePageEmploiDuTemps;

@@ -5,6 +5,7 @@ const CollectionRequetes_1 = require("CollectionRequetes");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const Enumere_EvenementWidget_1 = require("Enumere_EvenementWidget");
 const ObjetWidget_1 = require("ObjetWidget");
+const AccessApp_1 = require("AccessApp");
 CollectionRequetes_1.Requetes.inscrire(
 	"SaisiePenseBete",
 	ObjetRequeteJSON_1.ObjetRequeteSaisie,
@@ -12,7 +13,7 @@ CollectionRequetes_1.Requetes.inscrire(
 class WidgetPenseBete extends ObjetWidget_1.Widget.ObjetWidget {
 	constructor(...aParams) {
 		super(...aParams);
-		this.applicationSco = GApplication;
+		this.applicationSco = (0, AccessApp_1.getApp)();
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
@@ -46,17 +47,21 @@ class WidgetPenseBete extends ObjetWidget_1.Widget.ObjetWidget {
 	}
 	construire(aParams) {
 		this.donnees = aParams.donnees;
-		Object.assign(this.donnees, {
-			html:
-				'<textarea aria-label="' +
-				ObjetTraduction_1.GTraductions.getValeur(
-					"accueil.penseBete.InscrivezNotes",
-				) +
-				'" ie-model="penseBete"></textarea>',
+		const lWidget = {
+			getHtml: this.composeWidgetPenseBete.bind(this),
 			nbrElements: null,
 			afficherMessage: false,
-		});
+		};
+		Object.assign(this.donnees, lWidget);
 		aParams.construireWidget(this.donnees);
+	}
+	composeWidgetPenseBete() {
+		return IE.jsx.str("textarea", {
+			"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+				"accueil.penseBete.InscrivezNotes",
+			),
+			"ie-model": "penseBete",
+		});
 	}
 }
 exports.WidgetPenseBete = WidgetPenseBete;

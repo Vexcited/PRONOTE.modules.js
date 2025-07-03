@@ -2,10 +2,11 @@ exports.InterfacePageEnt = void 0;
 const InterfaceParametrageDeleguerAuthentificationSCO_1 = require("InterfaceParametrageDeleguerAuthentificationSCO");
 const ObjetInterface_1 = require("ObjetInterface");
 const ObjetTraduction_1 = require("ObjetTraduction");
+const AccessApp_1 = require("AccessApp");
 class InterfacePageEnt extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
-		this.objetApplicationConsoles = GApplication;
+		this.objetApplicationConsoles = (0, AccessApp_1.getApp)();
 	}
 	construireInstances() {
 		var _a, _b;

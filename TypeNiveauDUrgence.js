@@ -20,12 +20,12 @@ const TypeNiveauDUrgenceUtil = {
 			TypeNiveauDUrgence,
 		)) {
 			const lValeurType = TypeNiveauDUrgence[lKey];
-			lListe.addElement(
-				new ObjetElement_1.ObjetElement(
-					TypeNiveauDUrgenceUtil.getLibelle(lValeurType),
-					0,
-					lValeurType,
-				),
+			lListe.add(
+				ObjetElement_1.ObjetElement.create({
+					Libelle: TypeNiveauDUrgenceUtil.getLibelle(lValeurType),
+					Numero: 0,
+					Genre: lValeurType,
+				}),
 			);
 		}
 		return lListe;

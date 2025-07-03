@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteValidationAutoCompetences extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteValidationAutoCompetences = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteValidationAutoCompetences extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParam) {
 		this.JSON = aParam;
 		if (this.JSON.listePiliers) {
@@ -19,8 +17,9 @@ class ObjetRequeteValidationAutoCompetences extends ObjetRequeteSaisie {
 		return this.appelAsynchrone();
 	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteValidationAutoCompetences =
+	ObjetRequeteValidationAutoCompetences;
+CollectionRequetes_1.Requetes.inscrire(
 	"ValidationAutoCompetences",
 	ObjetRequeteValidationAutoCompetences,
 );
-module.exports = { ObjetRequeteValidationAutoCompetences };

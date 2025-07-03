@@ -11,12 +11,25 @@ const ObjetElement_1 = require("ObjetElement");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetSaisie_1 = require("ObjetSaisie");
 const ObjetTraduction_1 = require("ObjetTraduction");
-const ObjetWAI_1 = require("ObjetWAI");
-require("IEHtml.Scroll.js");
+require("IEHtml.Scroll");
+const Type_ThemeBouton_1 = require("Type_ThemeBouton");
 class ObjetFenetre_Impression extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.IdImpression = this.Nom + "_Impression";
+		this.setOptionsFenetre({
+			titre: ObjetTraduction_1.GTraductions.getValeur("ApercuAvantImpression"),
+			largeur: Math.min(800, GNavigateur.ecranL - 20),
+			hauteur: Math.min(550, GNavigateur.ecranH - 20),
+			avecScroll: true,
+			listeBoutons: [
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				{
+					libelle: ObjetTraduction_1.GTraductions.getValeur("Imprimer"),
+					theme: Type_ThemeBouton_1.TypeThemeBouton.primaire,
+				},
+			],
+		});
 		Invocateur_1.Invocateur.abonner(
 			"LargeurZoneImpression",
 			this._getLargeurZoneImpression,
@@ -57,41 +70,39 @@ class ObjetFenetre_Impression extends ObjetFenetre_1.ObjetFenetre {
 		});
 	}
 	composeContenu() {
-		const lWidth = this.optionsFenetre.largeur - 14;
-		const T = [];
-		T.push(
-			'<div id="' + this.Nom + '_Format" class="NePasImprimer EspaceBas">',
+		const lWidth = "100%";
+		return IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			IE.jsx.str(
+				"div",
+				{ id: `${this.Nom}_Format`, class: "NePasImprimer EspaceBas" },
+				IE.jsx.str(
+					"span",
+					{ class: "EspaceHaut", style: "float: left;" },
+					ObjetChaine_1.GChaine.insecable(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"fenetreImpression.FormatDImpression",
+						) + " : ",
+					),
+				),
+				IE.jsx.str("div", {
+					class: "Inline",
+					id: this.getNomInstance(this.IdentFormat),
+				}),
+			),
+			IE.jsx.str(
+				"div",
+				{
+					"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+						"WAI.ZoneDImpression",
+					),
+					class: "Fenetre_Impression FondBlanc",
+					style: { width: lWidth },
+				},
+				IE.jsx.str("div", { id: this.IdImpression, style: { width: lWidth } }),
+			),
 		);
-		T.push(
-			'<span class="EspaceHaut" style="float: left;">' +
-				ObjetChaine_1.GChaine.insecable(
-					ObjetTraduction_1.GTraductions.getValeur(
-						"fenetreImpression.FormatDImpression",
-					) + " : ",
-				) +
-				"</span>",
-		);
-		T.push(
-			'<div class="Inline" id="' +
-				this.getNomInstance(this.IdentFormat) +
-				'"></div>',
-		);
-		T.push("</div>");
-		T.push(
-			"<div ",
-			ObjetWAI_1.GObjetWAI.composeAttribut({
-				genre: ObjetWAI_1.EGenreAttribut.label,
-				valeur: ObjetTraduction_1.GTraductions.getValeur("WAI.ZoneDImpression"),
-			}),
-			' class="Fenetre_Impression FondBlanc" style="width:' + lWidth + 'px;">',
-			'<div id="' +
-				this.IdImpression +
-				'" style="width:' +
-				lWidth +
-				'px;"></div>',
-			"</div>",
-		);
-		return T.join("");
 	}
 	composePage(AFormat) {
 		AFormat = MethodesObjet_1.MethodesObjet.isNumber(AFormat) ? AFormat : 100;
@@ -244,7 +255,7 @@ function _construirePageImpression(aParametres) {
 		lHTML.push(
 			'<tr><td style="height: 10px;" class="Texte12 Gras AlignementMilieu"><div style="font-size:',
 			lParams.proportion,
-			'%" >',
+			'%">',
 			lParams.titre1,
 			"<br>",
 			lParams.titre2 ? "" : "<br>",
@@ -255,7 +266,7 @@ function _construirePageImpression(aParametres) {
 		lHTML.push(
 			'<tr><td style="height: 10px;" class="Gras AlignementMilieu EspaceHaut"><div style="font-size:',
 			lParams.proportion,
-			'%" >',
+			'%">',
 			lParams.titre2,
 			"<br><br></font></td></tr>",
 		);

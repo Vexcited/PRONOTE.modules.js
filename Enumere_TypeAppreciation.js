@@ -1,4 +1,7 @@
 exports.ETypeAppreciationUtil = exports.ETypeAppreciation = void 0;
+const Enumere_AppreciationGenerale_1 = require("Enumere_AppreciationGenerale");
+const Enumere_Onglet_1 = require("Enumere_Onglet");
+const ObjetElement_1 = require("ObjetElement");
 var ETypeAppreciation;
 (function (ETypeAppreciation) {
 	ETypeAppreciation[(ETypeAppreciation["Appreciations"] = 0)] = "Appreciations";
@@ -13,8 +16,6 @@ var ETypeAppreciation;
 	ETypeAppreciation[(ETypeAppreciation["CPE"] = 9)] = "CPE";
 	ETypeAppreciation[(ETypeAppreciation["FG_Annuelle"] = 10)] = "FG_Annuelle";
 })(ETypeAppreciation || (exports.ETypeAppreciation = ETypeAppreciation = {}));
-const Enumere_AppreciationGenerale_1 = require("Enumere_AppreciationGenerale");
-const Enumere_Onglet_1 = require("Enumere_Onglet");
 const ETypeAppreciationUtil = {
 	getTypeAppreciation(aGenreOnglet, aAppreciation, aAppreciationGenerale) {
 		const lTabTypeAppreciation = [];
@@ -54,7 +55,10 @@ const ETypeAppreciationUtil = {
 			case Enumere_Onglet_1.EGenreOnglet.SaisieAppreciationsGenerales:
 			case Enumere_Onglet_1.EGenreOnglet
 				.SaisieAppreciationsGenerales_Competences:
-				switch (aAppreciation.getGenre()) {
+				switch (
+					aAppreciation instanceof ObjetElement_1.ObjetElement &&
+					aAppreciation.getGenre()
+				) {
 					case Enumere_AppreciationGenerale_1.EGenreAppreciationGenerale
 						.AG_Assiduite:
 						lTabTypeAppreciation.push(ETypeAppreciation.Assiduite);
@@ -85,7 +89,10 @@ const ETypeAppreciationUtil = {
 				}
 				break;
 			case Enumere_Onglet_1.EGenreOnglet.SaisieAppreciationsBulletin:
-				switch (aAppreciation.getGenre()) {
+				switch (
+					aAppreciation instanceof ObjetElement_1.ObjetElement &&
+					aAppreciation.getGenre()
+				) {
 					case 1:
 						lTabTypeAppreciation.push(ETypeAppreciation.Appreciations);
 						break;
@@ -99,7 +106,10 @@ const ETypeAppreciationUtil = {
 				break;
 			case Enumere_Onglet_1.EGenreOnglet.Bulletins:
 				if (aAppreciationGenerale) {
-					switch (aAppreciation.getGenre()) {
+					switch (
+						aAppreciation instanceof ObjetElement_1.ObjetElement &&
+						aAppreciation.getGenre()
+					) {
 						case Enumere_AppreciationGenerale_1.EGenreAppreciationGenerale
 							.AG_Assiduite:
 							lTabTypeAppreciation.push(ETypeAppreciation.Assiduite);
@@ -130,7 +140,10 @@ const ETypeAppreciationUtil = {
 							break;
 					}
 				} else {
-					switch (aAppreciation.getGenre()) {
+					switch (
+						aAppreciation instanceof ObjetElement_1.ObjetElement &&
+						aAppreciation.getGenre()
+					) {
 						case 1:
 							lTabTypeAppreciation.push(ETypeAppreciation.Appreciations);
 							break;
@@ -152,7 +165,10 @@ const ETypeAppreciationUtil = {
 			case Enumere_Onglet_1.EGenreOnglet.BulletinCompetences:
 			case Enumere_Onglet_1.EGenreOnglet.AppreciationsBulletinParEleve:
 				if (aAppreciationGenerale) {
-					switch (aAppreciation.getGenre()) {
+					switch (
+						aAppreciation instanceof ObjetElement_1.ObjetElement &&
+						aAppreciation.getGenre()
+					) {
 						case Enumere_AppreciationGenerale_1.EGenreAppreciationGenerale
 							.AG_Assiduite:
 							lTabTypeAppreciation.push(ETypeAppreciation.Assiduite);

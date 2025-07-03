@@ -14,7 +14,7 @@ class WidgetRessourcePedagogique extends ObjetWidget_1.Widget.ObjetWidget {
 	construire(aParams) {
 		this.donnees = aParams.donnees;
 		const lWidget = {
-			html: this.composeWidgetRessourcePedagogique(),
+			getHtml: this.composeWidgetRessourcePedagogique.bind(this),
 			nbrElements: this.donnees.listeRessources.count(),
 			afficherMessage: this.donnees.listeRessources.count() === 0,
 		};
@@ -92,7 +92,7 @@ class WidgetRessourcePedagogique extends ObjetWidget_1.Widget.ObjetWidget {
 				[ObjetDate_1.GDate.formatDate(aDocument.date, "%J %MMMM")],
 			) +
 			" ";
-		H.push(`<li tabindex="0" aria-label="${lAriaLabel}">\n    <div class="wrap">\n      ${lMatiere ? `<h3 class="ie-line-color static left" style="--color-line: ${lMatiere.couleur};">${lMatiere.getLibelle()}</h3>` : ``}
+		H.push(`<li tabindex="0" aria-label="${lAriaLabel}">\n    <div class="wrap">\n      ${lMatiere ? `<h3 class="ie-line-color static" style="--color-line: ${lMatiere.couleur};">${lMatiere.getLibelle()}</h3>` : ``}
       <div class="pj-date-contain">`);
 		if (
 			aDocument.getGenre() ===

@@ -11,25 +11,51 @@ exports.UtilitaireBoutonBandeau = {
 			"aria-haspopup": "dialog",
 		});
 	},
-	getHtmlBtnAssistantSaisie(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_pencil mix-icon_star i-top"></ie-btnicon>`;
+	getHtmlBtnAssistantSaisie(aModelBtnIcon) {
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aModelBtnIcon,
+			class: "bt-activable icon_pencil mix-icon_star i-top",
+		});
 	},
-	getHtmlBtnTriOrdreChronologique(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_ordre_chronologique"></ie-btnicon>`;
+	getHtmlBtnTriOrdreChronologique(aModelBtnIcon) {
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aModelBtnIcon,
+			class: "bt-activable icon_ordre_chronologique",
+		});
 	},
-	getHtmlBtnCompacterColonnes(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_table mix-icon_resize_horizontal i-top"></ie-btnicon>`;
+	getHtmlBtnCompacterColonnes(aModelBtnIcon) {
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aModelBtnIcon,
+			class: "bt-activable icon_table mix-icon_resize_horizontal i-top",
+		});
 	},
-	getHtmlBtnCompacterLignes(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_table mix-icon_resize_vertical i-top"></ie-btnicon>`;
+	getHtmlBtnCompacterLignes(aModelBtnIcon) {
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aModelBtnIcon,
+			class: "bt-activable icon_table mix-icon_resize_vertical i-top",
+		});
 	},
-	getHtmlBtnGrapheAraignee(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_graphe_araigne"></ie-btnicon>`;
+	getHtmlBtnGrapheAraignee(aModelBtnIcon) {
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aModelBtnIcon,
+			class: "bt-activable icon_graphe_araigne",
+			"aria-haspopup": "dialog",
+		});
 	},
-	getHtmlBtnAvecListeEleves(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_liste_etudiant"></ie-btnicon>`;
+	getHtmlBtnAvecListeEleves(aModelBtnIcon) {
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aModelBtnIcon,
+			class: "bt-activable icon_liste_etudiant",
+		});
 	},
-	getHtmlBtnAfficherCoursAnnules(aNomIEModel) {
+	getHtmlBtnAfficherCoursAnnules(aModelBtnIcon, aJSXModelClasse) {
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aModelBtnIcon,
+			class: "bt-activable icon_fiche_T i-small",
+			"ie-class": aJSXModelClasse,
+		});
+	},
+	getHtmlBtnAfficherCoursAnnulesControleur(aNomIEModel) {
 		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_fiche_T i-small" ie-class="${aNomIEModel}.getClassesMixIcon"></ie-btnicon>`;
 	},
 	getClassesMixIconAfficherCoursAnnules(aAvecCoursAnnules) {
@@ -41,14 +67,23 @@ exports.UtilitaireBoutonBandeau = {
 		}
 		return lClasses.join(" ");
 	},
-	getHtmlBtnAfficherCahiersDeTextesDetaches(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_Defaut_de_carnet"></ie-btnicon>`;
+	getHtmlBtnAfficherCahiersDeTextesDetaches(aModelBtnIcon) {
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aModelBtnIcon,
+			class: "bt-activable icon_Defaut_de_carnet",
+		});
 	},
-	getHtmlBtnAfficherMasquerZone(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_pushpin"></ie-btnicon>`;
+	getHtmlBtnAfficherMasquerZone(aModelBtnIcon) {
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aModelBtnIcon,
+			class: "bt-activable icon_pushpin",
+		});
 	},
-	getHtmlBtnMonsieurFiche(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_question"></ie-btnicon>`;
+	getHtmlBtnMonsieurFiche(aIEModel) {
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aIEModel,
+			class: "bt-activable icon_question",
+		});
 	},
 	getHtmlBtnSaisieHorizontalVertical(aNomIEModel) {
 		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_pencil i-small" ie-class="${aNomIEModel}.getClassesMixIcon"></ie-btnicon>`;
@@ -63,40 +98,74 @@ exports.UtilitaireBoutonBandeau = {
 		return lClasses.join(" ");
 	},
 	getHtmlBtnAfficherPhotoEleve(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_photo"></ie-btnicon>`;
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aNomIEModel,
+			class: "bt-activable icon_photo",
+			"aria-haspopup": "dialog",
+		});
 	},
 	getHtmlBtnAfficherFicheEleve(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_fiche_eleve"></ie-btnicon>`;
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aNomIEModel,
+			class: "bt-activable icon_fiche_eleve",
+			"aria-haspopup": "dialog",
+		});
 	},
 	getHtmlBtnAfficherEmploiDuTemps(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_fiche_T_triple"></ie-btnicon>`;
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aNomIEModel,
+			class: "bt-activable icon_fiche_T_triple",
+		});
 	},
 	getHtmlBtnChargeDeTravail(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_charge_travail"></ie-btnicon>`;
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aNomIEModel,
+			class: "bt-activable icon_charge_travail",
+			"aria-haspopup": "dialog",
+		});
 	},
 	getHtmlBtnICal(aNomIEModel) {
 		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_ical"></ie-btnicon>`;
 	},
 	getHtmlBtnMiseEnFormeTexte(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_font"></ie-btnicon>`;
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aNomIEModel,
+			class: "bt-activable icon_font",
+		});
 	},
 	getHtmlBtnCloud(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_cloud"></ie-btnicon>`;
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aNomIEModel,
+			class: "bt-activable icon_cloud",
+		});
 	},
 	getHtmlBtnSitesInternet(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_globe"></ie-btnicon>`;
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aNomIEModel,
+			class: "bt-activable icon_globe",
+		});
 	},
 	getHtmlBtnPiecesJointes(aNomIEModel, aId) {
-		return `<ie-btnicon ${!!aId ? `id="${aId}"` : ""} ie-model="${aNomIEModel}" class="bt-activable icon_piece_jointe"></ie-btnicon>`;
+		return `<ie-btnicon ${!!aId ? `id="${aId}"` : ""} ie-model="${aNomIEModel}" class="bt-activable icon_piece_jointe" aria-haspopup="dialog"></ie-btnicon>`;
 	},
 	getHtmlBtnQCM(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_qcm"></ie-btnicon>`;
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aNomIEModel,
+			class: "bt-activable icon_qcm",
+		});
 	},
 	getHtmlBtnKiosque(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_exercice_numerique"></ie-btnicon>`;
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aNomIEModel,
+			class: "bt-activable icon_exercice_numerique",
+		});
 	},
-	getHtmlBtnZoomPlusMoins(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable" ie-class="${aNomIEModel}.getClassesIcon"></ie-btnicon>`;
+	getHtmlBtnZoomPlusMoins(aNomIEModel, aJsxFuncClasseIcone) {
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aNomIEModel,
+			class: "bt-activable",
+			"ie-class": aJsxFuncClasseIcone,
+		});
 	},
 	getClassesIconZoomPlusMoins(aEtatAgrandi) {
 		const lClasses = [];
@@ -108,13 +177,22 @@ exports.UtilitaireBoutonBandeau = {
 		return lClasses.join(" ");
 	},
 	getHtmlBtnSupprimer(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_trash"></ie-btnicon>`;
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aNomIEModel,
+			class: "bt-activable icon_trash",
+		});
 	},
 	getHtmlBtnCrayonMagique(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_magic"></ie-btnicon>`;
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aNomIEModel,
+			class: "bt-activable icon_magic",
+		});
 	},
 	getHtmlBtnListesDiffusion(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_groupes_accompagnement_personnalise"></ie-btnicon>`;
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aNomIEModel,
+			class: "bt-activable icon_groupes_accompagnement_personnalise",
+		});
 	},
 	getHtmlBtnDiffuserInformation(aNomIEModel, aLabel) {
 		return IE.jsx.str("ie-btnicon", {
@@ -125,10 +203,16 @@ exports.UtilitaireBoutonBandeau = {
 		});
 	},
 	getHtmlBtnRecapitulatifAbsences(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_competence_absent"></ie-btnicon>`;
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aNomIEModel,
+			class: "bt-activable icon_competence_absent",
+		});
 	},
 	getHtmlBtnUniquementMesServices(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_autre_service"></ie-btnicon>`;
+		return IE.jsx.str("ie-btnicon", {
+			"ie-model": aNomIEModel,
+			class: "bt-activable icon_autre_service",
+		});
 	},
 	getHtmlBtnInformationsGrille(aNomIEModel) {
 		return IE.jsx.str("ie-btnicon", {

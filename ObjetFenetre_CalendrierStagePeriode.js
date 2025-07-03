@@ -17,14 +17,9 @@ class ObjetFenetre_CalendrierStagePeriode extends ObjetFenetre_1.ObjetFenetre {
 	}
 	composeContenu() {
 		return IE.jsx.str(
-			IE.jsx.fragment,
-			null,
-			IE.jsx.str(
-				"div",
-				{ class: "CalendrierPeriode" },
-				IE.jsx.str("div", { id: this.getNomInstance(this.identCalendrier) }),
-				"'",
-			),
+			"div",
+			{ class: "CalendrierPeriode" },
+			IE.jsx.str("div", { id: this.getNomInstance(this.identCalendrier) }),
 		);
 	}
 	setDonnees(aOffreStage) {

@@ -1,65 +1,42 @@
-const { InterfacePage } = require("InterfacePage.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { EStructureAffichage } = require("Enumere_StructureAffichage.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { EGenreTriElement } = require("Enumere_TriElement.js");
-const { EGenreAction } = require("Enumere_Action.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { ObjetListe } = require("ObjetListe.js");
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { GUID } = require("GUID.js");
-const { GDate } = require("ObjetDate.js");
-const { UtilitaireInscriptions } = require("UtilitaireInscriptions.js");
-const {
-	ObjetInscriptionsEtablissement,
-} = require("ObjetInscriptionsEtablissement.js");
-const {
-	ObjetRequeteParametresInscriptionEtablissement,
-} = require("ObjetRequeteParametresInscriptionEtablissement.js");
-const {
-	ObjetRequeteSaisieDemandeInscription,
-} = require("ObjetRequeteSaisieDemandeInscription.js");
-const {
-	ObjetRequeteDonneesInscriptionEtablissement,
-} = require("ObjetRequeteDonneesInscriptionEtablissement.js");
-const {
-	DonneesListe_SessionsInscription,
-} = require("DonneesListe_SessionsInscription.js");
-const {
-	DonneesListe_EtapeInscription,
-} = require("DonneesListe_EtapeInscription.js");
-const { tag } = require("tag.js");
-const {
-	TypeOrigineCreationEtatDemandeInscriptionUtil,
-} = require("TypeOrigineCreationEtatDemandeInscription.js");
-const { Toast, ETypeToast } = require("Toast.js");
-class InterfaceInscriptionsEtablissement extends InterfacePage {
+exports.InterfaceInscriptionsEtablissement = void 0;
+const InterfacePage_1 = require("InterfacePage");
+const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetElement_1 = require("ObjetElement");
+const Enumere_TriElement_1 = require("Enumere_TriElement");
+const Enumere_Action_1 = require("Enumere_Action");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const GUID_1 = require("GUID");
+const ObjetDate_1 = require("ObjetDate");
+const UtilitaireInscriptions_1 = require("UtilitaireInscriptions");
+const ObjetInscriptionsEtablissement_1 = require("ObjetInscriptionsEtablissement");
+const ObjetRequeteParametresInscriptionEtablissement_1 = require("ObjetRequeteParametresInscriptionEtablissement");
+const ObjetRequeteSaisieDemandeInscription_1 = require("ObjetRequeteSaisieDemandeInscription");
+const ObjetRequeteDonneesInscriptionEtablissement_1 = require("ObjetRequeteDonneesInscriptionEtablissement");
+const DonneesListe_SessionsInscription_1 = require("DonneesListe_SessionsInscription");
+const DonneesListe_EtapeInscription_1 = require("DonneesListe_EtapeInscription");
+const TypeOrigineCreationEtatDemandeInscription_1 = require("TypeOrigineCreationEtatDemandeInscription");
+const Toast_1 = require("Toast");
+class InterfaceInscriptionsEtablissement extends InterfacePage_1.InterfacePage {
 	constructor(...aParams) {
 		super(...aParams);
-		this.ids = { etape: GUID.getId() };
+		this.ids = { etape: GUID_1.GUID.getId() };
 		this.etatSaisie = false;
 	}
 	setParametresGeneraux() {
-		this.GenreStructure = EStructureAffichage.Autre;
+		this.GenreStructure =
+			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 		this.IdentZoneAlClient = this.identInscriptions;
 		this.avecBandeau = true;
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
-			avecSessionsInscriptions: function () {
-				return (
-					!aInstance.listeSessions ||
-					aInstance.listeSessions.count() > 0 ||
-					!!aInstance.saisieEnCours
-				);
-			},
-			getEnteteEtape: function () {
+			getEnteteEtape() {
 				const H = [];
 				if (aInstance.session) {
 					const lTableauFormation =
@@ -67,58 +44,88 @@ class InterfaceInscriptionsEtablissement extends InterfacePage {
 						aInstance.session.orientations.count() > 0
 							? aInstance.session.orientations.getTableauLibelles()
 							: [];
-					const lDescription =
+					const lDescription = [];
+					if (
 						aInstance.donnees &&
 						aInstance.donnees.resumeInscription &&
 						aInstance.donnees.resumeInscription.numeroDossier
-							? tag(
-									"div",
-									{ class: "flex-contain flex-center m-y-l" },
-									tag("i", {
-										class: [
-											TypeOrigineCreationEtatDemandeInscriptionUtil.getIcone(
-												aInstance.donnees.resumeInscription.etatDemande,
-											),
-											"m-right-l theme_color_moyen1",
-										],
-									}),
-									tag(
-										"span",
-										TypeOrigineCreationEtatDemandeInscriptionUtil.getLibelle(
+					) {
+						lDescription.push(
+							IE.jsx.str(
+								"div",
+								{ class: "flex-contain flex-center m-y-l" },
+								IE.jsx.str("i", {
+									class: [
+										TypeOrigineCreationEtatDemandeInscription_1.TypeOrigineCreationEtatDemandeInscriptionUtil.getIcone(
 											aInstance.donnees.resumeInscription.etatDemande,
 										),
+										"m-right-l theme_color_moyen1",
+									],
+									role: "img",
+									"aria-label":
+										TypeOrigineCreationEtatDemandeInscription_1.TypeOrigineCreationEtatDemandeInscriptionUtil.getLibelle(
+											aInstance.donnees.resumeInscription.etatDemande,
+										),
+								}),
+								IE.jsx.str(
+									"span",
+									null,
+									TypeOrigineCreationEtatDemandeInscription_1.TypeOrigineCreationEtatDemandeInscriptionUtil.getLibelle(
+										aInstance.donnees.resumeInscription.etatDemande,
 									),
-								) + aInstance.donnees.resumeInscription.nomElevePostulant
-								? tag(
-										"span",
-										GTraductions.getValeur("inscriptionsEtablissement.pour", [
-											aInstance.donnees.resumeInscription.nomElevePostulant,
-										]),
-									)
-								: ""
-							: tag(
-									"p",
-									{ class: "text-right m-top Gras text-util-rouge-moyen" },
-									GTraductions.getValeur(
-										"inscriptionsEtablissement.ouvertJusquau",
-										[
-											GDate.formatDate(
-												aInstance.session.dateFin,
-												"%JJ/%MM/%AAAA",
-											),
-										],
+								),
+							),
+						);
+						if (aInstance.donnees.resumeInscription.nomElevePostulant) {
+							lDescription.push(
+								IE.jsx.str(
+									"span",
+									null,
+									ObjetTraduction_1.GTraductions.getValeur(
+										"inscriptionsEtablissement.pour",
+										[aInstance.donnees.resumeInscription.nomElevePostulant],
 									),
-								);
+								),
+							);
+						}
+					} else {
+						const lStrDateJusquau = ObjetTraduction_1.GTraductions.getValeur(
+							"inscriptionsEtablissement.ouvertJusquau",
+							[
+								ObjetDate_1.GDate.formatDate(
+									aInstance.session.dateFin,
+									"%JJ/%MM/%AAAA",
+								),
+							],
+						);
+						lDescription.push(
+							IE.jsx.str(
+								"p",
+								{ class: "text-right m-top semi-bold color-red-moyen" },
+								lStrDateJusquau,
+							),
+						);
+					}
 					H.push(
-						tag("p", { class: "Gras" }, aInstance.session.getLibelle()),
-						tag(
-							"p",
-							{ class: "" },
-							GTraductions.getValeur("inscriptionsEtablissement.formations"),
-							" ",
-							lTableauFormation.join(", "),
+						IE.jsx.str(
+							IE.jsx.fragment,
+							null,
+							IE.jsx.str(
+								"p",
+								{ class: "Gras" },
+								aInstance.session.getLibelle(),
+							),
+							IE.jsx.str(
+								"p",
+								null,
+								ObjetTraduction_1.GTraductions.getValeur(
+									"inscriptionsEtablissement.formations",
+								),
+								" ",
+								lTableauFormation.join(", "),
+							),
+							lDescription.join(""),
 						),
-						lDescription,
 					);
 				}
 				return H.join("");
@@ -126,11 +133,11 @@ class InterfaceInscriptionsEtablissement extends InterfacePage {
 		});
 	}
 	recupererDonnees() {
-		new ObjetRequeteParametresInscriptionEtablissement(
+		new ObjetRequeteParametresInscriptionEtablissement_1.ObjetRequeteParametresInscriptionEtablissement(
 			this,
 			this.actionSurRecupererParams,
 		).lancerRequete({
-			responsable: new ObjetElement(
+			responsable: new ObjetElement_1.ObjetElement(
 				"",
 				GEtatUtilisateur.getUtilisateur().getNumero(),
 			),
@@ -151,123 +158,138 @@ class InterfaceInscriptionsEtablissement extends InterfacePage {
 			listeLV2: aDonnees.listeLV2,
 			sessionsInscriptions: aDonnees.listeSessionsInscriptions,
 		};
-		lObjListes.listeCivilites.setTri([ObjetTri.init("Libelle")]);
+		lObjListes.listeCivilites.setTri([ObjetTri_1.ObjetTri.init("Libelle")]);
 		lObjListes.listeCivilites.trier();
-		lObjListes.listeLienParente.setTri([ObjetTri.init("Libelle")]);
+		lObjListes.listeLienParente.setTri([ObjetTri_1.ObjetTri.init("Libelle")]);
 		lObjListes.listeLienParente.trier();
-		lObjListes.listeSituations.setTri([ObjetTri.init("Libelle")]);
+		lObjListes.listeSituations.setTri([ObjetTri_1.ObjetTri.init("Libelle")]);
 		lObjListes.listeSituations.trier();
-		lObjListes.listeEtablissements.setTri([ObjetTri.init("Libelle")]);
+		lObjListes.listeEtablissements.setTri([
+			ObjetTri_1.ObjetTri.init("Libelle"),
+		]);
 		lObjListes.listeEtablissements.trier();
-		lObjListes.listeProjetsAccompagnement.setTri([ObjetTri.init("Libelle")]);
+		lObjListes.listeProjetsAccompagnement.setTri([
+			ObjetTri_1.ObjetTri.init("Libelle"),
+		]);
 		lObjListes.listeProjetsAccompagnement.trier();
-		lObjListes.listeProfessions.setTri([ObjetTri.init("Libelle")]);
+		lObjListes.listeProfessions.setTri([ObjetTri_1.ObjetTri.init("Libelle")]);
 		lObjListes.listeProfessions.trier();
-		lObjListes.listeRegimes.setTri([ObjetTri.init("Libelle")]);
+		lObjListes.listeRegimes.setTri([ObjetTri_1.ObjetTri.init("Libelle")]);
 		lObjListes.listeRegimes.trier();
-		lObjListes.listeLV1.setTri([ObjetTri.init("Libelle")]);
+		lObjListes.listeLV1.setTri([ObjetTri_1.ObjetTri.init("Libelle")]);
 		lObjListes.listeLV1.trier();
-		lObjListes.listeLV2.setTri([ObjetTri.init("Libelle")]);
+		lObjListes.listeLV2.setTri([ObjetTri_1.ObjetTri.init("Libelle")]);
 		lObjListes.listeLV2.trier();
 		this.getInstance(this.identInscriptions).setListesSaisie(lObjListes);
 		this.listeSessionsInscriptions =
-			aDonnees.listeSessionsInscriptions || new ObjetListeElements();
+			aDonnees.listeSessionsInscriptions ||
+			new ObjetListeElements_1.ObjetListeElements();
 		this.listeHistoriqueInscriptions =
-			aDonnees.historiqueDemandes || new ObjetListeElements();
+			aDonnees.historiqueDemandes ||
+			new ObjetListeElements_1.ObjetListeElements();
 		if (this.listeHistoriqueInscriptions.count() > 0) {
 			this.listeHistoriqueInscriptions.parcourir((aElement) => {
 				aElement.estUneDemande = true;
 			});
-			this.listeHistoriqueInscriptions.trier(EGenreTriElement.Decroissant);
+			this.listeHistoriqueInscriptions.trier(
+				Enumere_TriElement_1.EGenreTriElement.Decroissant,
+			);
 			this.estEnCreation = false;
 		}
-		this.listeSessions = new ObjetListeElements();
+		const lListeSessions = new ObjetListeElements_1.ObjetListeElements();
 		if (this.listeHistoriqueInscriptions.count() > 0) {
-			const lInterTitre = new ObjetElement(
-				GTraductions.getValeur("inscriptionsEtablissement.mesDemandes"),
+			const lInterTitre = new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"inscriptionsEtablissement.mesDemandes",
+				),
 			);
-			lInterTitre.estInterTitre = ObjetDonneesListeFlatDesign.typeInterTitre.h5;
-			this.listeSessions.add(lInterTitre);
-			this.listeSessions.add(this.listeHistoriqueInscriptions);
+			lInterTitre.estInterTitre =
+				ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign.typeInterTitre.h5;
+			lListeSessions.add(lInterTitre);
+			lListeSessions.add(this.listeHistoriqueInscriptions);
 		}
 		const lListeSessionEnCours =
 			this.listeSessionsInscriptions.getListeElements((aSession) => {
 				return aSession.estEnCours;
 			});
 		if (lListeSessionEnCours.count() > 0) {
-			const lInterTitre = new ObjetElement(
-				GTraductions.getValeur("inscriptionsEtablissement.sessionEnCours"),
+			const lInterTitre = new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"inscriptionsEtablissement.sessionEnCours",
+				),
 			);
-			lInterTitre.estInterTitre = ObjetDonneesListeFlatDesign.typeInterTitre.h5;
-			this.listeSessions.add(lInterTitre);
-			this.listeSessions.add(lListeSessionEnCours);
+			lInterTitre.estInterTitre =
+				ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign.typeInterTitre.h5;
+			lListeSessions.add(lInterTitre);
+			lListeSessions.add(lListeSessionEnCours);
 		}
 		$("#" + this.ids.etape).hide();
 		let lMessage = "";
-		if (this.listeSessions.count() > 0) {
-			lMessage = GTraductions.getValeur(
+		if (lListeSessions.count() > 0) {
+			lMessage = ObjetTraduction_1.GTraductions.getValeur(
 				"inscriptionsEtablissement.selectionnerSession",
 			);
 			this.getInstance(this.identSessions).setDonnees(
-				new DonneesListe_SessionsInscription(this.listeSessions),
+				new DonneesListe_SessionsInscription_1.DonneesListe_SessionsInscription(
+					lListeSessions,
+				),
 			);
 		} else {
-			lMessage = GTraductions.getValeur(
+			lMessage = ObjetTraduction_1.GTraductions.getValeur(
 				"inscriptionsEtablissement.aucuneSession",
 			);
 		}
 		this.evenementAfficherMessage(this.composeAucuneDonnee(lMessage));
-		this.saisieEnCours = false;
 	}
 	construireInstances() {
 		this.identSessions = this.add(
-			ObjetListe,
-			_evenementSurSession.bind(this),
-			_initialiserSessions.bind(this),
+			ObjetListe_1.ObjetListe,
+			this._evenementSurSession.bind(this),
+			this._initialiserSessions,
 		);
 		this.identEtapes = this.add(
-			ObjetListe,
-			_evenementSurEtape.bind(this),
-			_initialiserEtapes.bind(this),
+			ObjetListe_1.ObjetListe,
+			this._evenementSurEtape.bind(this),
+			this._initialiserEtapes,
 		);
 		this.identInscriptions = this.add(
-			ObjetInscriptionsEtablissement,
-			_evenementInscription.bind(this),
+			ObjetInscriptionsEtablissement_1.ObjetInscriptionsEtablissement,
+			this._evenementInscription.bind(this),
 		);
 		this.idPage = this.getNomInstance(this.identInscriptions);
 	}
 	composeAucuneDonnee(aMessage) {
-		return tag(
+		return IE.jsx.str(
 			"div",
-			{ id: this.idMessage, class: "message-vide" },
-			tag("div", { class: "message" }, aMessage),
-			tag("div", { class: ["Image_No_Data"], "aria-hidden": "true" }),
+			{ class: "message-vide" },
+			IE.jsx.str("div", { class: "message" }, aMessage),
+			IE.jsx.str("div", { class: "Image_No_Data", "aria-hidden": "true" }),
 		);
 	}
 	construireStructureAffichageAutre() {
 		const H = [];
 		H.push(
-			tag(
+			IE.jsx.str(
 				"div",
 				{ class: ["ifc-inscriptions-etab", "flex-contain"] },
-				tag(
+				IE.jsx.str(
 					"section",
 					{ class: ["section-session"] },
-					tag("div", {
+					IE.jsx.str("div", {
 						id: this.getNomInstance(this.identSessions),
 						class: ["liste-session", "col-listes"],
 					}),
 				),
-				tag(
+				IE.jsx.str(
 					"section",
 					{ class: "section-etape", id: this.ids.etape },
-					tag("div", { class: "m-all-l", "ie-html": "getEnteteEtape" }),
-					tag("div", {
+					IE.jsx.str("div", { class: "m-all-l", "ie-html": "getEnteteEtape" }),
+					IE.jsx.str("div", {
 						id: this.getNomInstance(this.identEtapes),
 						class: ["liste-session", "col-listes"],
 					}),
 				),
-				tag("section", {
+				IE.jsx.str("section", {
 					id: this.getNomInstance(this.identInscriptions),
 					class: ["fluid-bloc", "section-formulaire"],
 				}),
@@ -275,19 +297,17 @@ class InterfaceInscriptionsEtablissement extends InterfacePage {
 		);
 		return H.join("");
 	}
-	getSession(aElement) {
+	recupererSession(aElement) {
 		this.estEnCreation = true;
 		this.session = aElement;
-		this.listeOrientations = aElement.orientations
-			? aElement.orientations.setTri([ObjetTri.init("Libelle")])
-			: new ObjetListeElements();
-		let lMessageValide = UtilitaireInscriptions.getMessageSessionValide(
-			this.session,
-			true,
-		);
+		let lMessageValide =
+			UtilitaireInscriptions_1.UtilitaireInscriptions.getMessageSessionValide(
+				this.session,
+				true,
+			);
 		if (!lMessageValide.estValide) {
 			let lMessage =
-				GTraductions.getValeur(
+				ObjetTraduction_1.GTraductions.getValeur(
 					"inscriptionsEtablissement.inscriptionImpossible",
 				) +
 				"<br>" +
@@ -298,44 +318,48 @@ class InterfaceInscriptionsEtablissement extends InterfacePage {
 			$("#" + this.ids.etape).show();
 			this.getInstance(this.identEtapes).setVisible(true);
 			this.inscriptionCourante = undefined;
-			new ObjetRequeteDonneesInscriptionEtablissement(
+			new ObjetRequeteDonneesInscriptionEtablissement_1.ObjetRequeteDonneesInscriptionEtablissement(
 				this,
 				this.actionSurRecupererDonnees.bind(this, false),
 			).lancerRequete({
-				responsable: new ObjetElement(
+				responsable: new ObjetElement_1.ObjetElement(
 					"",
 					GEtatUtilisateur.getUtilisateur().getNumero(),
 				),
 			});
 		}
 	}
-	getHistorique(aElement) {
+	recupererHistorique(aElement) {
 		this.estEnCreation = false;
 		this.inscriptionCourante = aElement;
 		delete this.etapeEnCours;
 		$("#" + this.ids.etape).show();
-		new ObjetRequeteDonneesInscriptionEtablissement(
+		new ObjetRequeteDonneesInscriptionEtablissement_1.ObjetRequeteDonneesInscriptionEtablissement(
 			this,
 			this.actionSurRecupererDonnees.bind(this, true),
 		).lancerRequete({
 			inscription: this.inscriptionCourante,
-			responsable: new ObjetElement(
+			responsable: new ObjetElement_1.ObjetElement(
 				"",
 				GEtatUtilisateur.getUtilisateur().getNumero(),
 			),
 		});
 	}
 	actionSurRecupererDonnees(aEstResume, aDonnees) {
-		this.donnees = {};
-		this.donnees.resumeInscription = aDonnees.resumeInscription;
-		this.sauvegardeRecherches = {};
-		let lParam = Object.assign({}, aDonnees);
-		this.donnees.fratrie = lParam.fratrie;
-		this.donnees.responsables = lParam.responsables;
+		this.donnees = {
+			resumeInscription: aDonnees.resumeInscription,
+			fratrie: aDonnees.fratrie,
+			responsables: aDonnees.responsables,
+			identite: null,
+			inscription: null,
+			scolarite: null,
+			scolariteActuelle: null,
+			session: null,
+		};
 		if (!!this.session) {
 			this.donnees.session = this.session;
 		} else {
-			this.donnees.session = this.donnees.resumeInscription;
+			this.donnees.session = aDonnees.resumeInscription;
 		}
 		this.donnees.identite = Object.assign(
 			{
@@ -346,46 +370,46 @@ class InterfaceInscriptionsEtablissement extends InterfacePage {
 				ville: "",
 				pays: "",
 			},
-			lParam.identite,
+			aDonnees.identite,
 		);
-		let lCommentaire = !!lParam.resumeInscription
-			? lParam.resumeInscription.commentaire
-			: "";
 		this.donnees.scolariteActuelle = Object.assign(
 			{
-				optionsChoisies: new ObjetListeElements(),
+				optionsChoisies: new ObjetListeElements_1.ObjetListeElements(),
 				redoublant: false,
-				etablissementActuel: new ObjetElement("", 0),
-				commentaire: lCommentaire,
+				etablissementActuel: new ObjetElement_1.ObjetElement("", 0),
+				commentaire: !!aDonnees.resumeInscription
+					? aDonnees.resumeInscription.commentaire
+					: "",
 			},
-			lParam.scolariteActuelle,
+			aDonnees.scolariteActuelle,
 		);
-		this.donnees.scolarite = !!lParam.scolarite ? lParam.scolarite : {};
-		this.sauvegardeRecherches = MethodesObjet.dupliquer(this.donnees);
+		this.donnees.scolarite = aDonnees.scolarite;
 		if (aEstResume) {
 			let lIndice = this.listeSessionsInscriptions.getIndiceParElement(
 				this.donnees.scolarite.session,
 			);
 			this.session = this.listeSessionsInscriptions.get(lIndice);
 		}
-		this.listeEtapes = UtilitaireInscriptions.getListeEtape(
-			this.donnees,
-			this.estEnCreation,
-		);
+		this.listeEtapes =
+			UtilitaireInscriptions_1.UtilitaireInscriptions.getListeEtapes(
+				this.donnees.session,
+				this.estEnCreation,
+			);
 		const lObj = {
 			donnees: this.donnees,
 			estResume: aEstResume,
 			session: this.session,
 			listeEtapes: this.listeEtapes,
+			inscriptionCourante: null,
 		};
 		if (aEstResume && !!this.inscriptionCourante) {
 			lObj.inscriptionCourante = this.inscriptionCourante;
 		}
 		$("#" + this.ids.etape).show();
 		this.getInstance(this.identEtapes).setDonnees(
-			new DonneesListe_EtapeInscription(this.listeEtapes, {
-				enCreation: this.estEnCreation,
-			}),
+			new DonneesListe_EtapeInscription_1.DonneesListe_EtapeInscription(
+				this.listeEtapes,
+			),
 		);
 		if (!aEstResume) {
 			this.etapeEnCours = this.listeEtapes.get(0);
@@ -393,220 +417,226 @@ class InterfaceInscriptionsEtablissement extends InterfacePage {
 		}
 		this.getInstance(this.identInscriptions).setDonnees(lObj);
 	}
-}
-function _evenementInscription(aParams) {
-	switch (aParams.genre) {
-		case ObjetInscriptionsEtablissement.genreEvenement.annuler:
-			this.getInstance(this.identInscriptions).vider();
-			this.recupererDonnees();
-			break;
-		case ObjetInscriptionsEtablissement.genreEvenement.modifier: {
-			this.listeEtapes.parcourir((aEtape) => aEtape.setActif(true));
-			this.getInstance(this.identEtapes).actualiser(true);
-			this.getInstance(this.identEtapes).selectionnerLigne({
-				ligne: 0,
-				avecEvenement: false,
-			});
-			this.etapeEnCours = this.listeEtapes.get(0);
-			this.getInstance(this.identInscriptions).setEtape(this.etapeEnCours);
-			break;
-		}
-		case ObjetInscriptionsEtablissement.genreEvenement.supprimer: {
-			const lData = {
-				supprimerDemande: true,
-				inscription: this.inscriptionCourante,
-			};
-			new ObjetRequeteSaisieDemandeInscription(this)
-				.lancerRequete(lData)
-				.then((aJSON) => {
-					if (aJSON.messageCorps) {
-						Toast.afficher({
-							msg: aJSON.messageCorps,
-							type: ETypeToast.erreur,
-						});
-					} else {
-						if (!!!aJSON.RapportSaisie) {
-							Toast.afficher({
-								msg: GTraductions.getValeur(
-									"inscriptionsEtablissement.demandeSupprimee",
-								),
-								type: ETypeToast.succes,
-							});
-						}
-					}
-					this.getInstance(this.identInscriptions).vider();
-					this.recupererDonnees();
+	_evenementInscription(aGenreEvenementCallback, aParams) {
+		switch (aGenreEvenementCallback) {
+			case ObjetInscriptionsEtablissement_1.ObjetInscriptionsEtablissement
+				.GenreEvenement.annuler:
+				this.getInstance(this.identInscriptions).vider();
+				this.recupererDonnees();
+				break;
+			case ObjetInscriptionsEtablissement_1.ObjetInscriptionsEtablissement
+				.GenreEvenement.modifier: {
+				this.listeEtapes.parcourir((aEtape) => aEtape.setActif(true));
+				this.getInstance(this.identEtapes).actualiser(true);
+				this.getInstance(this.identEtapes).selectionnerLigne({
+					ligne: 0,
+					avecEvenement: false,
 				});
-			break;
-		}
-		case ObjetInscriptionsEtablissement.genreEvenement.valider: {
-			this.saisieEnCours = true;
-			const lData = {
-				estEnCreation: this.estEnCreation,
-				responsables: aParams.donnees.responsables,
-				identite: Object.assign({ sexeEnfant: 0 }, aParams.donnees.identite),
-				scolariteActuelle: Object.assign(
-					{ redoublant: false },
-					aParams.donnees.scolariteActuelle,
-				),
-				documentsFournis: aParams.listeDocuments,
-				session: this.session,
-				inscription: this.inscriptionCourante,
-			};
-			new ObjetRequeteSaisieDemandeInscription(this)
-				.addUpload({ listeFichiers: aParams.listeDocuments })
-				.lancerRequete(lData)
-				.then((aJSON) => {
-					this.etapeEnCours = undefined;
-					if (aJSON.messageCorps) {
-						Toast.afficher({
-							type: ETypeToast.erreur,
-							msg: aJSON.messageCorps,
-						});
+				this.etapeEnCours = this.listeEtapes.get(0);
+				this.getInstance(this.identInscriptions).setEtape(this.etapeEnCours);
+				break;
+			}
+			case ObjetInscriptionsEtablissement_1.ObjetInscriptionsEtablissement
+				.GenreEvenement.supprimer: {
+				const lData = {
+					supprimerDemande: true,
+					inscription: this.inscriptionCourante,
+				};
+				new ObjetRequeteSaisieDemandeInscription_1.ObjetRequeteSaisieDemandeInscription(
+					this,
+				)
+					.lancerRequete(lData)
+					.then((aJSON) => {
+						if (aJSON.messageCorps) {
+							Toast_1.Toast.afficher({
+								msg: aJSON.messageCorps,
+								type: Toast_1.ETypeToast.erreur,
+							});
+						} else {
+							if (!!!aJSON.RapportSaisie) {
+								Toast_1.Toast.afficher({
+									msg: ObjetTraduction_1.GTraductions.getValeur(
+										"inscriptionsEtablissement.demandeSupprimee",
+									),
+									type: Toast_1.ETypeToast.succes,
+								});
+							}
+						}
 						this.getInstance(this.identInscriptions).vider();
 						this.recupererDonnees();
-					} else {
-						if (!!!aJSON.RapportSaisie && !aJSON._erreurSaisie_) {
-							Toast.afficher({
-								msg: this.estEnCreation
-									? GTraductions.getValeur(
-											"inscriptionsEtablissement.inscriptionEnvoyee",
-										)
-									: GTraductions.getValeur(
-											"inscriptionsEtablissement.inscriptionModifiee",
-										),
-								type: ETypeToast.succes,
+					});
+				break;
+			}
+			case ObjetInscriptionsEtablissement_1.ObjetInscriptionsEtablissement
+				.GenreEvenement.valider: {
+				const lData = {
+					estEnCreation: this.estEnCreation,
+					responsables: aParams.donnees.responsables,
+					identite: Object.assign({ sexeEnfant: 0 }, aParams.donnees.identite),
+					scolariteActuelle: Object.assign(
+						{ redoublant: false },
+						aParams.donnees.scolariteActuelle,
+					),
+					documentsFournis: aParams.listeDocuments,
+					session: this.session,
+					inscription: this.inscriptionCourante,
+				};
+				new ObjetRequeteSaisieDemandeInscription_1.ObjetRequeteSaisieDemandeInscription(
+					this,
+				)
+					.addUpload({ listeFichiers: aParams.listeDocuments })
+					.lancerRequete(lData)
+					.then((aJSON) => {
+						this.etapeEnCours = undefined;
+						if (aJSON.messageCorps) {
+							Toast_1.Toast.afficher({
+								type: Toast_1.ETypeToast.erreur,
+								msg: aJSON.messageCorps,
 							});
-							if (this.estEnCreation && !!aJSON.inscription) {
-								this.inscriptionCourante = aJSON.inscription;
-							}
+							this.getInstance(this.identInscriptions).vider();
 							this.recupererDonnees();
-							if (this.inscriptionCourante) {
-								_selectionnerSession.call(this, this.inscriptionCourante, true);
+						} else {
+							if (!!!aJSON.RapportSaisie && !aJSON._erreurSaisie_) {
+								Toast_1.Toast.afficher({
+									msg: this.estEnCreation
+										? ObjetTraduction_1.GTraductions.getValeur(
+												"inscriptionsEtablissement.inscriptionEnvoyee",
+											)
+										: ObjetTraduction_1.GTraductions.getValeur(
+												"inscriptionsEtablissement.inscriptionModifiee",
+											),
+									type: Toast_1.ETypeToast.succes,
+								});
+								if (this.estEnCreation && !!aJSON.inscription) {
+									this.inscriptionCourante = aJSON.inscription;
+								}
+								this.recupererDonnees();
+								if (this.inscriptionCourante) {
+									this._selectionnerSession(this.inscriptionCourante, true);
+								}
 							}
 						}
-					}
-				});
-			break;
-		}
-		case ObjetInscriptionsEtablissement.genreEvenement.precedent: {
-			const lIndice = this.etapeEnCours.getNumero() - 1;
-			if (lIndice < 0) {
-				return;
+					});
+				break;
 			}
-			const lEtape = this.listeEtapes.get(lIndice);
-			if (lEtape) {
-				this.getInstance(this.identEtapes).selectionnerLigne({
-					ligne: lIndice,
-					avecEvenement: true,
-				});
-			} else {
-			}
-			break;
-		}
-		case ObjetInscriptionsEtablissement.genreEvenement.suivant: {
-			const lIndice = this.etapeEnCours.getNumero() + 1;
-			if (lIndice >= this.listeEtapes.count()) {
-				return;
-			}
-			const lEtape = this.listeEtapes.get(lIndice);
-			if (lEtape) {
-				this.getInstance(this.identEtapes).selectionnerLigne({
-					ligne: lIndice,
-					avecEvenement: true,
-				});
-			} else {
-			}
-			break;
-		}
-		default:
-			break;
-	}
-}
-function _initialiserSessions(aInstance) {
-	aInstance.setOptionsListe({
-		skin: ObjetListe.skin.flatDesign,
-		flatDesignMinimal: true,
-		avecOmbreDroite: true,
-	});
-}
-function _evenementSurSession(aParametres) {
-	if (!aParametres.article.estInterTitre) {
-		switch (aParametres.genreEvenement) {
-			case EGenreEvenementListe.Selection: {
-				if (this.etapeEnCours && this.etapeEnCours.getPosition() > 0) {
-					GApplication.getMessage().afficher({
-						type: EGenreBoiteMessage.Confirmation,
-						message: GTraductions.getValeur(
-							"inscriptionsEtablissement.msgAvertissementConsigne",
-						),
-						callback: (aGenreAction) => {
-							if (aGenreAction === EGenreAction.Valider) {
-								_selectionnerSession.call(
-									this,
-									aParametres.article,
-									aParametres.article.estUneDemande,
-								);
-							}
-						},
+			case ObjetInscriptionsEtablissement_1.ObjetInscriptionsEtablissement
+				.GenreEvenement.precedent: {
+				const lIndice = this.etapeEnCours.getNumero() - 1;
+				if (lIndice < 0) {
+					return;
+				}
+				const lEtape = this.listeEtapes.get(lIndice);
+				if (lEtape) {
+					this.getInstance(this.identEtapes).selectionnerLigne({
+						ligne: lIndice,
+						avecEvenement: true,
 					});
 				} else {
-					_selectionnerSession.call(
-						this,
-						aParametres.article,
-						aParametres.article.estUneDemande,
-					);
 				}
 				break;
 			}
+			case ObjetInscriptionsEtablissement_1.ObjetInscriptionsEtablissement
+				.GenreEvenement.suivant: {
+				const lIndice = this.etapeEnCours.getNumero() + 1;
+				if (lIndice >= this.listeEtapes.count()) {
+					return;
+				}
+				const lEtape = this.listeEtapes.get(lIndice);
+				if (lEtape) {
+					this.getInstance(this.identEtapes).selectionnerLigne({
+						ligne: lIndice,
+						avecEvenement: true,
+					});
+				} else {
+				}
+				break;
+			}
+			default:
+				break;
 		}
 	}
-}
-function _selectionnerSession(aArticle, aEstUneDemande) {
-	if (aEstUneDemande) {
-		this.getHistorique(aArticle);
-	} else {
-		this.getSession(aArticle);
+	_initialiserSessions(aInstance) {
+		aInstance.setOptionsListe({
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+			avecOmbreDroite: true,
+		});
 	}
-}
-function _initialiserEtapes(aInstance) {
-	aInstance.setOptionsListe({
-		skin: ObjetListe.skin.flatDesign,
-		avecOmbreDroite: true,
-	});
-}
-function _evenementSurEtape(aParametres) {
-	if (this.etapeEnCours === undefined) {
-		return;
-	}
-	let lChangerEtape = false;
-	const lEtapeEnCours = this.etapeEnCours.getNumero();
-	const lEtapeSelectionnee = aParametres.article.getNumero();
-	const lInstanceFormulaire = this.getInstance(this.identInscriptions);
-	if (this.estEnCreation) {
-		if (lEtapeSelectionnee <= lEtapeEnCours) {
-			lChangerEtape = true;
-		} else if (
-			lEtapeSelectionnee === lEtapeEnCours + 1 &&
-			lInstanceFormulaire &&
-			lInstanceFormulaire.verifierChamps()
-		) {
-			lChangerEtape = true;
+	_evenementSurSession(aParametres) {
+		if (!aParametres.article.estInterTitre) {
+			switch (aParametres.genreEvenement) {
+				case Enumere_EvenementListe_1.EGenreEvenementListe.Selection: {
+					if (this.etapeEnCours && this.etapeEnCours.getPosition() > 0) {
+						GApplication.getMessage().afficher({
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+							message: ObjetTraduction_1.GTraductions.getValeur(
+								"inscriptionsEtablissement.msgAvertissementConsigne",
+							),
+							callback: (aGenreAction) => {
+								if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
+									this._selectionnerSession(
+										aParametres.article,
+										aParametres.article.estUneDemande,
+									);
+								}
+							},
+						});
+					} else {
+						this._selectionnerSession(
+							aParametres.article,
+							aParametres.article.estUneDemande,
+						);
+					}
+					break;
+				}
+			}
 		}
-	} else {
-		if (lInstanceFormulaire && lInstanceFormulaire.verifierChamps()) {
-			lChangerEtape = true;
+	}
+	_selectionnerSession(aArticle, aEstUneDemande) {
+		if (aEstUneDemande) {
+			this.recupererHistorique(aArticle);
+		} else {
+			this.recupererSession(aArticle);
 		}
 	}
-	if (lChangerEtape) {
-		this.etapeEnCours = aParametres.article;
-		this.etapeEnCours.setActif(true);
-		lInstanceFormulaire.setEtape(aParametres.article);
+	_initialiserEtapes(aInstance) {
+		aInstance.setOptionsListe({
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+			avecOmbreDroite: true,
+		});
 	}
-	this.getInstance(this.identEtapes).actualiser(true);
-	this.getInstance(this.identEtapes).selectionnerLigne({
-		ligne: this.etapeEnCours.getNumero(),
-		avecEvenement: false,
-	});
+	_evenementSurEtape(aParametres) {
+		if (this.etapeEnCours === undefined) {
+			return;
+		}
+		let lChangerEtape = false;
+		const lEtapeEnCours = this.etapeEnCours.getNumero();
+		const lEtapeSelectionnee = aParametres.article.getNumero();
+		const lInstanceFormulaire = this.getInstance(this.identInscriptions);
+		if (this.estEnCreation) {
+			if (lEtapeSelectionnee <= lEtapeEnCours) {
+				lChangerEtape = true;
+			} else if (
+				lEtapeSelectionnee === lEtapeEnCours + 1 &&
+				lInstanceFormulaire &&
+				lInstanceFormulaire.verifierChamps()
+			) {
+				lChangerEtape = true;
+			}
+		} else {
+			if (lInstanceFormulaire && lInstanceFormulaire.verifierChamps()) {
+				lChangerEtape = true;
+			}
+		}
+		if (lChangerEtape) {
+			this.etapeEnCours = aParametres.article;
+			this.etapeEnCours.setActif(true);
+			lInstanceFormulaire.setEtape(aParametres.article);
+		}
+		this.getInstance(this.identEtapes).actualiser(true);
+		this.getInstance(this.identEtapes).selectionnerLigne({
+			ligne: this.etapeEnCours.getNumero(),
+			avecEvenement: false,
+		});
+	}
 }
-module.exports = { InterfaceInscriptionsEtablissement };
+exports.InterfaceInscriptionsEtablissement = InterfaceInscriptionsEtablissement;

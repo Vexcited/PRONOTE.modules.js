@@ -31,11 +31,7 @@ class ObjetFichePopupConversation extends ObjetFiche_1.ObjetFiche {
 	}
 	composeContenu() {
 		const H = [];
-		H.push(
-			'<div id="',
-			this.getInstance(this.identAff).getNom(),
-			'" tabindex="0">',
-		);
+		H.push('<div id="', this.getNomInstance(this.identAff), '" tabindex="0">');
 		return H.join("");
 	}
 	surAfficher() {

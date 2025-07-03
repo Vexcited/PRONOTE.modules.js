@@ -2,6 +2,7 @@ exports.ObjetFenetre_MentionsLegales = void 0;
 const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetHtml_1 = require("ObjetHtml");
+const AccessApp_1 = require("AccessApp");
 class ObjetFenetre_MentionsLegales extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
@@ -92,12 +93,12 @@ class ObjetFenetre_MentionsLegales extends ObjetFenetre_1.ObjetFenetre {
 				null,
 				ObjetTraduction_1.GTraductions.getValeur(
 					"FenetreMentionsLegales.informationCookie",
-					[GApplication.nomProduit],
+					[(0, AccessApp_1.getApp)().nomProduit],
 				),
 				" ",
 				ObjetTraduction_1.GTraductions.getValeur(
 					"FenetreMentionsLegales.informationCookieSuite",
-					[GApplication.nomProduit],
+					[(0, AccessApp_1.getApp)().nomProduit],
 				),
 			),
 		);

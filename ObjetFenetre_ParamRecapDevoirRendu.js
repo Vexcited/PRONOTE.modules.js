@@ -11,56 +11,59 @@ class ObjetFenetre_ParamRecapDevoirRendu extends ObjetFenetre_1.ObjetFenetre {
 			qcm: true,
 		};
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			checkAfficherAucunRendu: {
-				getValue() {
-					return aInstance._optionsAffichage.aucunRendu;
-				},
-				setValue(aData) {
-					aInstance._optionsAffichage.aucunRendu = aData;
-				},
+	jsxModelCheckboxAfficherAucunRendu() {
+		return {
+			getValue: () => {
+				return this._optionsAffichage.aucunRendu;
 			},
-			checkAfficherAvecRendu: {
-				getValue() {
-					return aInstance._optionsAffichage.avecRendu;
-				},
-				setValue(aData) {
-					aInstance._optionsAffichage.avecRendu = aData;
-				},
+			setValue: (aValue) => {
+				this._optionsAffichage.aucunRendu = aValue;
 			},
-			checkAfficherAvecDepot: {
-				getValue() {
-					return aInstance._optionsAffichage.avecDepot;
-				},
-				setValue(aData) {
-					aInstance._optionsAffichage.avecDepot = aData;
-				},
+		};
+	}
+	jsxModelCheckboxAfficherAvecRendu() {
+		return {
+			getValue: () => {
+				return this._optionsAffichage.avecRendu;
 			},
-			checkAfficherQCM: {
-				getValue() {
-					return aInstance._optionsAffichage.qcm;
-				},
-				setValue(aData) {
-					aInstance._optionsAffichage.qcm = aData;
-				},
+			setValue: (aValue) => {
+				this._optionsAffichage.avecRendu = aValue;
 			},
-		});
+		};
+	}
+	jsxModelCheckboxAfficherAvecDepot() {
+		return {
+			getValue: () => {
+				return this._optionsAffichage.avecDepot;
+			},
+			setValue: (aValue) => {
+				this._optionsAffichage.avecDepot = aValue;
+			},
+		};
+	}
+	jsxModelCheckboxAfficherQCM() {
+		return {
+			getValue: () => {
+				return this._optionsAffichage.qcm;
+			},
+			setValue: (aValue) => {
+				this._optionsAffichage.qcm = aValue;
+			},
+		};
 	}
 	composeContenu() {
 		const T = [];
-		T.push('<div class="Espace">');
-		T.push(
-			'<div class="EspaceBas">',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"RecapDevoirRendu.fenetreOptions.libelleConsigne",
-			),
-			"</div>",
-		);
 		T.push(
 			IE.jsx.str(
-				IE.jsx.fragment,
-				null,
+				"div",
+				{ class: "Espace" },
+				IE.jsx.str(
+					"div",
+					{ class: "EspaceBas" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"RecapDevoirRendu.fenetreOptions.libelleConsigne",
+					),
+				),
 				IE.jsx.str(
 					"div",
 					{ class: "EspaceHaut" },
@@ -68,19 +71,13 @@ class ObjetFenetre_ParamRecapDevoirRendu extends ObjetFenetre_1.ObjetFenetre {
 						"ie-checkbox",
 						{
 							class: "AlignementMilieuVertical",
-							"ie-model": "checkAfficherQCM",
+							"ie-model": this.jsxModelCheckboxAfficherQCM.bind(this),
 						},
 						ObjetTraduction_1.GTraductions.getValeur(
 							"RecapDevoirRendu.fenetreOptions.avecQCM",
 						),
 					),
 				),
-			),
-		);
-		T.push(
-			IE.jsx.str(
-				IE.jsx.fragment,
-				null,
 				IE.jsx.str(
 					"div",
 					{ class: "EspaceHaut" },
@@ -88,19 +85,13 @@ class ObjetFenetre_ParamRecapDevoirRendu extends ObjetFenetre_1.ObjetFenetre {
 						"ie-checkbox",
 						{
 							class: "AlignementMilieuVertical",
-							"ie-model": "checkAfficherAvecDepot",
+							"ie-model": this.jsxModelCheckboxAfficherAvecDepot.bind(this),
 						},
 						ObjetTraduction_1.GTraductions.getValeur(
 							"RecapDevoirRendu.fenetreOptions.avecDepot",
 						),
 					),
 				),
-			),
-		);
-		T.push(
-			IE.jsx.str(
-				IE.jsx.fragment,
-				null,
 				IE.jsx.str(
 					"div",
 					{ class: "EspaceHaut" },
@@ -108,19 +99,13 @@ class ObjetFenetre_ParamRecapDevoirRendu extends ObjetFenetre_1.ObjetFenetre {
 						"ie-checkbox",
 						{
 							class: "AlignementMilieuVertical",
-							"ie-model": "checkAfficherAvecRendu",
+							"ie-model": this.jsxModelCheckboxAfficherAvecRendu.bind(this),
 						},
 						ObjetTraduction_1.GTraductions.getValeur(
 							"RecapDevoirRendu.fenetreOptions.avecRendu",
 						),
 					),
 				),
-			),
-		);
-		T.push(
-			IE.jsx.str(
-				IE.jsx.fragment,
-				null,
 				IE.jsx.str(
 					"div",
 					{ class: "EspaceHaut" },
@@ -128,7 +113,7 @@ class ObjetFenetre_ParamRecapDevoirRendu extends ObjetFenetre_1.ObjetFenetre {
 						"ie-checkbox",
 						{
 							class: "AlignementMilieuVertical",
-							"ie-model": "checkAfficherAucunRendu",
+							"ie-model": this.jsxModelCheckboxAfficherAucunRendu.bind(this),
 						},
 						ObjetTraduction_1.GTraductions.getValeur(
 							"RecapDevoirRendu.fenetreOptions.avecSansRendu",
@@ -137,7 +122,6 @@ class ObjetFenetre_ParamRecapDevoirRendu extends ObjetFenetre_1.ObjetFenetre {
 				),
 			),
 		);
-		T.push("</div>");
 		return T.join("");
 	}
 	setDonnees(aDonnees) {

@@ -1,10 +1,11 @@
-const { ObjetMoteurCDT } = require("ObjetMoteurCahierDeTextes.js");
-const { BlocCard } = require("BlocCard.js");
-class ObjetBlocSaisieTAF extends BlocCard {
+exports.ObjetBlocSaisieTAF = void 0;
+const ObjetMoteurCahierDeTextes_1 = require("ObjetMoteurCahierDeTextes");
+const BlocCard_1 = require("BlocCard");
+class ObjetBlocSaisieTAF extends BlocCard_1.BlocCard {
 	constructor(...aParams) {
 		super(...aParams);
+		this.moteurCDT = new ObjetMoteurCahierDeTextes_1.ObjetMoteurCDT();
 		this.donneesRecues = false;
-		this.moteurCDT = new ObjetMoteurCDT();
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
@@ -61,7 +62,7 @@ class ObjetBlocSaisieTAF extends BlocCard {
 			);
 			H.push(
 				this.composeHtmlInfoSecondaire({
-					icon: this.moteurCDT.iconPourLeDonneLeTAF(lTAF),
+					icon: this.moteurCDT.iconPourLeDonneLeTAF(),
 					libelleInfo:
 						aParam.avecPourLe === true
 							? this.moteurCDT.strPourLeTAF(lTAF, { avecTraduc: true })
@@ -109,7 +110,7 @@ class ObjetBlocSaisieTAF extends BlocCard {
 				});
 				lHtmlInfosCompl.push(
 					this.composeHtmlInfoSecondaire({
-						icon: this.moteurCDT.iconPublicTAF(lTAF),
+						icon: this.moteurCDT.iconPublicTAF(),
 						libelleInfo: this.moteurCDT.strPublicTAF(lTAF, {
 							listeTousEleves: lListeTousEleves,
 						}),
@@ -119,7 +120,7 @@ class ObjetBlocSaisieTAF extends BlocCard {
 			if (lAvecRendu) {
 				lHtmlInfosCompl.push(
 					this.composeHtmlInfoSecondaire({
-						icon: this.moteurCDT.iconModeRenduTAF(lTAF),
+						icon: this.moteurCDT.iconModeRenduTAF(),
 						libelleInfo: this.moteurCDT.strModeRenduTAF(lTAF, {
 							avecNbRendu: false,
 						}),
@@ -135,7 +136,7 @@ class ObjetBlocSaisieTAF extends BlocCard {
 				}
 				lHtmlInfosCompl.push(
 					this.composeHtmlInfoSecondaire({
-						icon: this.moteurCDT.iconSuiviRenduTAF(lTAF),
+						icon: this.moteurCDT.iconSuiviRenduTAF(),
 						libelleInfo: lStr,
 					}),
 				);
@@ -144,7 +145,7 @@ class ObjetBlocSaisieTAF extends BlocCard {
 			if (lAvecDuree) {
 				lHtmlInfosCompl.push(
 					this.composeHtmlInfoSecondaire({
-						icon: this.moteurCDT.iconDureeTAF(lTAF),
+						icon: this.moteurCDT.iconDureeTAF(),
 						libelleInfo: this.moteurCDT.strDureeTAF(lTAF),
 					}),
 				);
@@ -172,4 +173,4 @@ class ObjetBlocSaisieTAF extends BlocCard {
 		return H.join("");
 	}
 }
-module.exports = { ObjetBlocSaisieTAF };
+exports.ObjetBlocSaisieTAF = ObjetBlocSaisieTAF;

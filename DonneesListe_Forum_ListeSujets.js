@@ -1,7 +1,6 @@
 exports.DonneesListe_Forum_ListeSujets = void 0;
 const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
 const TypesForumPedagogique_1 = require("TypesForumPedagogique");
-const tag_1 = require("tag");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetTri_1 = require("ObjetTri");
 class DonneesListe_Forum_ListeSujets extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
@@ -13,8 +12,8 @@ class DonneesListe_Forum_ListeSujets extends ObjetDonneesListeFlatDesign_1.Objet
 			avecEvnt_ModificationSelection: true,
 		});
 	}
-	getControleurFiltres(aDonneesListe) {
-		const lOptionsCombo = {
+	getOptionsComboFiltre() {
+		return {
 			longueur: "100%",
 			getContenuCellule(aElement) {
 				return aElement.getLibelle();
@@ -23,104 +22,109 @@ class DonneesListe_Forum_ListeSujets extends ObjetDonneesListeFlatDesign_1.Objet
 				return aParams.element.getLibelle();
 			},
 		};
-		const lSetElement = (aParametres) => {
-			return aParametres.element &&
-				aParametres.element.getNumero() !==
-					aDonneesListe.filtres.c_ident_filtre_tous
-				? aParametres.element
-				: null;
-		};
+	}
+	getElementGeneriqueComboFiltre(aParametres) {
+		return aParametres.element &&
+			aParametres.element.getNumero() !== this.filtres.c_ident_filtre_tous
+			? aParametres.element
+			: null;
+	}
+	jsxComboModelFiltreMatieres() {
 		return {
-			comboMatiere: {
-				init(aCombo) {
-					aCombo.setDonneesObjetSaisie({
-						liste: aDonneesListe.filtres.listeMatieresDisponibles,
-						options: Object.assign(
-							{
-								libelleHaut:
-									ObjetTraduction_1.GTraductions.getValeur("Matiere"),
-							},
-							lOptionsCombo,
-						),
-					});
-				},
-				getIndiceSelection() {
-					let lIndice = 0;
-					if (aDonneesListe.filtres.matiereSelec) {
-						lIndice =
-							aDonneesListe.filtres.listeMatieresDisponibles.getIndiceParNumeroEtGenre(
-								aDonneesListe.filtres.matiereSelec.getNumero(),
-							) || 0;
-					}
-					return lIndice;
-				},
-				event(aParametres) {
-					if (aParametres.estSelectionManuelle) {
-						aDonneesListe.filtres.matiereSelec = lSetElement(aParametres);
-						aDonneesListe.paramsListe.actualiserListe();
-					}
-				},
+			init: (aCombo) => {
+				aCombo.setDonneesObjetSaisie({
+					liste: this.filtres.listeMatieresDisponibles,
+					options: Object.assign(
+						{
+							libelleHaut: ObjetTraduction_1.GTraductions.getValeur("Matiere"),
+						},
+						this.getOptionsComboFiltre(),
+					),
+				});
 			},
-			comboTheme: {
-				init(aCombo) {
-					aCombo.setDonneesObjetSaisie({
-						liste: aDonneesListe.filtres.listeThemesDisponibles,
-						options: Object.assign(
-							{
-								libelleHaut:
-									ObjetTraduction_1.GTraductions.getValeur("ForumPeda.Theme"),
-							},
-							lOptionsCombo,
-						),
-					});
-				},
-				getIndiceSelection() {
-					let lIndice = 0;
-					if (aDonneesListe.filtres.themeSelec) {
-						lIndice =
-							aDonneesListe.filtres.listeThemesDisponibles.getIndiceParNumeroEtGenre(
-								aDonneesListe.filtres.themeSelec.getNumero(),
-							) || 0;
-					}
-					return lIndice;
-				},
-				event(aParametres) {
-					if (aParametres.estSelectionManuelle) {
-						aDonneesListe.filtres.themeSelec = lSetElement(aParametres);
-						aDonneesListe.paramsListe.actualiserListe();
-					}
-				},
+			getIndiceSelection: () => {
+				let lIndice = 0;
+				if (this.filtres.matiereSelec) {
+					lIndice =
+						this.filtres.listeMatieresDisponibles.getIndiceParNumeroEtGenre(
+							this.filtres.matiereSelec.getNumero(),
+						) || 0;
+				}
+				return lIndice;
 			},
-			comboModeration: {
-				init(aCombo) {
-					aCombo.setDonneesObjetSaisie({
-						liste: aDonneesListe.filtres.listeModerationsDisponibles,
-						options: Object.assign(
-							{
-								libelleHaut: ObjetTraduction_1.GTraductions.getValeur(
-									"ForumPeda.TitreListeSujet",
-								),
-							},
-							lOptionsCombo,
-						),
-					});
-				},
-				getIndiceSelection() {
-					let lIndice = 0;
-					if (aDonneesListe.filtres.moderationSelec) {
-						lIndice =
-							aDonneesListe.filtres.listeModerationsDisponibles.getIndiceParNumeroEtGenre(
-								aDonneesListe.filtres.moderationSelec.getNumero(),
-							) || 0;
-					}
-					return lIndice;
-				},
-				event(aParametres) {
-					if (aParametres.estSelectionManuelle) {
-						aDonneesListe.filtres.moderationSelec = lSetElement(aParametres);
-						aDonneesListe.paramsListe.actualiserListe();
-					}
-				},
+			event: (aParams) => {
+				if (aParams.estSelectionManuelle) {
+					this.filtres.matiereSelec =
+						this.getElementGeneriqueComboFiltre(aParams);
+					this.paramsListe.actualiserListe();
+				}
+			},
+		};
+	}
+	jsxComboModelFiltreThemes() {
+		return {
+			init: (aCombo) => {
+				aCombo.setDonneesObjetSaisie({
+					liste: this.filtres.listeThemesDisponibles,
+					options: Object.assign(
+						{
+							libelleHaut:
+								ObjetTraduction_1.GTraductions.getValeur("ForumPeda.Theme"),
+						},
+						this.getOptionsComboFiltre(),
+					),
+				});
+			},
+			getIndiceSelection: () => {
+				let lIndice = 0;
+				if (this.filtres.themeSelec) {
+					lIndice =
+						this.filtres.listeThemesDisponibles.getIndiceParNumeroEtGenre(
+							this.filtres.themeSelec.getNumero(),
+						) || 0;
+				}
+				return lIndice;
+			},
+			event: (aParams) => {
+				if (aParams.estSelectionManuelle) {
+					this.filtres.themeSelec =
+						this.getElementGeneriqueComboFiltre(aParams);
+					this.paramsListe.actualiserListe();
+				}
+			},
+		};
+	}
+	jsxComboModelModeration() {
+		return {
+			init: (aCombo) => {
+				aCombo.setDonneesObjetSaisie({
+					liste: this.filtres.listeModerationsDisponibles,
+					options: Object.assign(
+						{
+							libelleHaut: ObjetTraduction_1.GTraductions.getValeur(
+								"ForumPeda.TitreListeSujet",
+							),
+						},
+						this.getOptionsComboFiltre(),
+					),
+				});
+			},
+			getIndiceSelection: () => {
+				let lIndice = 0;
+				if (this.filtres.moderationSelec) {
+					lIndice =
+						this.filtres.listeModerationsDisponibles.getIndiceParNumeroEtGenre(
+							this.filtres.moderationSelec.getNumero(),
+						) || 0;
+				}
+				return lIndice;
+			},
+			event: (aParams) => {
+				if (aParams.estSelectionManuelle) {
+					this.filtres.moderationSelec =
+						this.getElementGeneriqueComboFiltre(aParams);
+					this.paramsListe.actualiserListe();
+				}
 			},
 		};
 	}
@@ -131,11 +135,11 @@ class DonneesListe_Forum_ListeSujets extends ObjetDonneesListeFlatDesign_1.Objet
 			this.filtres.listeMatieresDisponibles.count() > 0
 		) {
 			H.push(
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"div",
 					{ class: "field-contain" },
-					(0, tag_1.tag)("ie-combo", {
-						"ie-model": "comboMatiere",
+					IE.jsx.str("ie-combo", {
+						"ie-model": this.jsxComboModelFiltreMatieres.bind(this),
 						class: "combo-mobile on-mobile full-width",
 					}),
 				),
@@ -146,11 +150,11 @@ class DonneesListe_Forum_ListeSujets extends ObjetDonneesListeFlatDesign_1.Objet
 			this.filtres.listeThemesDisponibles.count() > 0
 		) {
 			H.push(
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"div",
 					{ class: "field-contain" },
-					(0, tag_1.tag)("ie-combo", {
-						"ie-model": "comboTheme",
+					IE.jsx.str("ie-combo", {
+						"ie-model": this.jsxComboModelFiltreThemes.bind(this),
 						class: "combo-mobile on-mobile full-width",
 					}),
 				),
@@ -161,11 +165,11 @@ class DonneesListe_Forum_ListeSujets extends ObjetDonneesListeFlatDesign_1.Objet
 			this.filtres.listeModerationsDisponibles.count() > 0
 		) {
 			H.push(
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"div",
 					{ class: "field-contain" },
-					(0, tag_1.tag)("ie-combo", {
-						"ie-model": "comboModeration",
+					IE.jsx.str("ie-combo", {
+						"ie-model": this.jsxComboModelModeration.bind(this),
 						class: "combo-mobile on-mobile full-width",
 					}),
 				),
@@ -255,11 +259,13 @@ class DonneesListe_Forum_ListeSujets extends ObjetDonneesListeFlatDesign_1.Objet
 		return true;
 	}
 	getZoneGauche(aParams) {
-		return (0, tag_1.tag)("div", {
+		let lStyle = "";
+		if (aParams.article.matiere) {
+			lStyle = "--color-line: " + aParams.article.matiere.couleur + ";";
+		}
+		return IE.jsx.str("div", {
 			class: "couleur-matiere ie-line-color static only-color",
-			style: aParams.article.matiere
-				? `--color-line :${aParams.article.matiere.couleur};`
-				: false,
+			style: lStyle,
 		});
 	}
 	getTitreZonePrincipale(aParams) {
@@ -278,17 +284,19 @@ class DonneesListe_Forum_ListeSujets extends ObjetDonneesListeFlatDesign_1.Objet
 		}
 	}
 	getZoneComplementaire(aParams) {
-		const H = [];
 		const lHIcones = [];
 		if (aParams.article.nbNonLu > 0) {
 			lHIcones.push(
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"span",
 					{
 						class: "compteur-nlu",
-						title: ObjetTraduction_1.GTraductions.getValeur(
-							"ForumPeda.HintNouveauxPosts",
-						),
+						"ie-tooltiplabel":
+							aParams.article.nbNonLu +
+							" " +
+							ObjetTraduction_1.GTraductions.getValeur(
+								"ForumPeda.HintNouveauxPosts",
+							),
 					},
 					aParams.article.nbNonLu,
 				),
@@ -296,20 +304,23 @@ class DonneesListe_Forum_ListeSujets extends ObjetDonneesListeFlatDesign_1.Objet
 		}
 		if (aParams.article.nbAModerer > 0) {
 			lHIcones.push(
-				(0, tag_1.tag)("i", {
+				IE.jsx.str("i", {
 					class: "icon icon_warning_sign",
-					title: ObjetTraduction_1.GTraductions.getValeur("ForumPeda.AModerer"),
+					"ie-tooltiplabel":
+						ObjetTraduction_1.GTraductions.getValeur("ForumPeda.AModerer"),
+					role: "img",
 				}),
 			);
 		}
 		if (aParams.article.nbExclus > 0) {
 			lHIcones.push(
-				(0, tag_1.tag)("i", {
+				IE.jsx.str("i", {
 					class: "icon icon_user mix-icon_ne_pas_deranger",
-					title: ObjetTraduction_1.GTraductions.getValeur(
+					"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
 						"ForumPeda.HintBloque_D",
 						[aParams.article.nbExclus],
 					),
+					role: "img",
 				}),
 			);
 		}
@@ -317,11 +328,13 @@ class DonneesListe_Forum_ListeSujets extends ObjetDonneesListeFlatDesign_1.Objet
 			aParams.article.etatPub === TypesForumPedagogique_1.TypeEtatPub.EP_Ferme
 		) {
 			lHIcones.push(
-				(0, tag_1.tag)("i", {
+				IE.jsx.str("i", {
 					class: "icon icon_time",
-					title: this.options.moteurForum.getStrMessageParticipationFermee(
-						aParams.article,
-					),
+					"ie-tooltiplabel":
+						this.options.moteurForum.getStrMessageParticipationFermee(
+							aParams.article,
+						),
+					role: "img",
 				}),
 			);
 		}
@@ -329,17 +342,19 @@ class DonneesListe_Forum_ListeSujets extends ObjetDonneesListeFlatDesign_1.Objet
 			aParams.article.etatPub === TypesForumPedagogique_1.TypeEtatPub.EP_Verrou
 		) {
 			lHIcones.push(
-				(0, tag_1.tag)("i", {
+				IE.jsx.str("i", {
 					class: "icon icon_lock",
-					title: ObjetTraduction_1.GTraductions.getValeur(
+					"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
 						"ForumPeda.ForumVerrouille",
 					),
+					role: "img",
 				}),
 			);
 		}
+		const H = [];
 		if (lHIcones.length > 0) {
 			H.push(
-				(0, tag_1.tag)("div", { class: "icones-conteneur" }, lHIcones.join("")),
+				IE.jsx.str("div", { class: "icones-conteneur" }, lHIcones.join("")),
 			);
 		}
 		return H.join("");
@@ -351,8 +366,9 @@ class DonneesListe_Forum_ListeSujets extends ObjetDonneesListeFlatDesign_1.Objet
 			TypesForumPedagogique_1.TypeEtatPub.EP_Suspendu
 		) {
 			H.push(
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"p",
+					null,
 					ObjetTraduction_1.GTraductions.getValeur("ForumPeda.SujetSuspendu"),
 				),
 			);
@@ -362,25 +378,34 @@ class DonneesListe_Forum_ListeSujets extends ObjetDonneesListeFlatDesign_1.Objet
 				TypesForumPedagogique_1.TypeRoleIndividuSujet.RIS_Moderateur,
 			)
 		) {
+			let lStrModerationAvApPublication;
+			if (
+				aParams.article.genreModeration ===
+				TypesForumPedagogique_1.TypeGenreModerationForum.GMF_APriori
+			) {
+				lStrModerationAvApPublication =
+					ObjetTraduction_1.GTraductions.getValeur(
+						"ForumPeda.ModerationAvantPub",
+					);
+			} else {
+				lStrModerationAvApPublication =
+					ObjetTraduction_1.GTraductions.getValeur(
+						"ForumPeda.ModerationApresPub",
+					);
+			}
 			H.push(
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"p",
 					{ class: "color-theme-foncee" },
-					aParams.article.genreModeration ===
-						TypesForumPedagogique_1.TypeGenreModerationForum.GMF_APriori
-						? ObjetTraduction_1.GTraductions.getValeur(
-								"ForumPeda.ModerationAvantPub",
-							)
-						: ObjetTraduction_1.GTraductions.getValeur(
-								"ForumPeda.ModerationApresPub",
-							),
+					lStrModerationAvApPublication,
 				),
 			);
 		}
 		if (aParams.article.estExclu) {
 			H.push(
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"p",
+					null,
 					ObjetTraduction_1.GTraductions.getValeur(
 						"ForumPeda.ParticipationBloque",
 					),

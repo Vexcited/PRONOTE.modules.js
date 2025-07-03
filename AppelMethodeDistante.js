@@ -4,20 +4,23 @@ const WS_ParametreAppel_1 = require("WS_ParametreAppel");
 class AppelMethodeDistante {
 	constructor(aServices, aParam) {
 		const lService = aServices.getService(aParam.webService);
-		const lPort = lService.getPort(aParam.port);
-		this.operation = lPort.getOperation(aParam.methode);
-		this.exceptionsNonJournalisables =
-			this.operation.getExceptionsNonJournalisables();
+		const lPort = lService ? lService.getPort(aParam.port) : null;
+		this.operation = lPort ? lPort.getOperation(aParam.methode) : null;
+		this.exceptionsNonJournalisables = this.operation
+			? this.operation.getExceptionsNonJournalisables()
+			: false;
 		const lParametres = new TableauDElements_1.TableauDElements();
-		const lNomsParamIn = this.operation.getNomsParamIn();
-		for (
-			let lIndice = 0, lTaille = lNomsParamIn.length;
-			lIndice < lTaille;
-			lIndice++
-		) {
-			lParametres.ajouterElement(
-				new WS_ParametreAppel_1.NomEtValeur(lNomsParamIn[lIndice]),
-			);
+		if (this.operation) {
+			const lNomsParamIn = this.operation.getNomsParamIn();
+			for (
+				let lIndice = 0, lTaille = lNomsParamIn.length;
+				lIndice < lTaille;
+				lIndice++
+			) {
+				lParametres.ajouterElement(
+					new WS_ParametreAppel_1.NomEtValeur(lNomsParamIn[lIndice]),
+				);
+			}
 		}
 		this.parametres = lParametres;
 	}
@@ -28,19 +31,23 @@ class AppelMethodeDistante {
 		return this.exceptionsNonJournalisables;
 	}
 	getUrl() {
-		return this.operation.getUrlAcces();
+		return this.operation ? this.operation.getUrlAcces() : "";
 	}
 	getNomOperation() {
 		return this.operation ? this.operation.getNom() : "";
 	}
 	getEntetesHttp() {
-		return this.operation.getEntetesHttp();
+		return this.operation ? this.operation.getEntetesHttp() : null;
 	}
 	construireEnveloppeSoap() {
-		return this.operation.construireEnveloppeSoap(this.parametres);
+		return this.operation
+			? this.operation.construireEnveloppeSoap(this.parametres)
+			: "";
 	}
 	lireEnveloppeSoap(aMessageSOAP) {
-		return this.operation.lireEnveloppeSoap(aMessageSOAP);
+		return this.operation
+			? this.operation.lireEnveloppeSoap(aMessageSOAP)
+			: null;
 	}
 }
 exports.AppelMethodeDistante = AppelMethodeDistante;

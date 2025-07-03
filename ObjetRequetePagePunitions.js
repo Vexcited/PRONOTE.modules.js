@@ -1,13 +1,7 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequetePagePunitions extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
-	lancerRequete(aParam) {
-		$.extend(this.JSON, aParam);
-		return this.appelAsynchrone();
-	}
+exports.ObjetRequetePagePunitions = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequetePagePunitions extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	actionApresRequete() {
 		const lListePunitions = this.JSONReponse.listePunitions;
 		let lPere;
@@ -26,8 +20,11 @@ class ObjetRequetePagePunitions extends ObjetRequeteConsultation {
 				}
 			}
 		}
-		this.callbackReussite.appel(lListePunitions);
+		this.callbackReussite.appel(this.JSONReponse);
 	}
 }
-Requetes.inscrire("PagePunitions", ObjetRequetePagePunitions);
-module.exports = ObjetRequetePagePunitions;
+exports.ObjetRequetePagePunitions = ObjetRequetePagePunitions;
+CollectionRequetes_1.Requetes.inscrire(
+	"PagePunitions",
+	ObjetRequetePagePunitions,
+);

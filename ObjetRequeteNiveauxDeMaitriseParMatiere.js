@@ -1,9 +1,7 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteNiveauxDeMaitriseParMatiere extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteNiveauxDeMaitriseParMatiere = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteNiveauxDeMaitriseParMatiere extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aParam) {
 		this.JSON = {
 			classe: aParam.classe,
@@ -16,8 +14,9 @@ class ObjetRequeteNiveauxDeMaitriseParMatiere extends ObjetRequeteConsultation {
 		this.callbackReussite.appel(this.JSONReponse);
 	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteNiveauxDeMaitriseParMatiere =
+	ObjetRequeteNiveauxDeMaitriseParMatiere;
+CollectionRequetes_1.Requetes.inscrire(
 	"NiveauxDeMaitriseParMatiere",
 	ObjetRequeteNiveauxDeMaitriseParMatiere,
 );
-module.exports = ObjetRequeteNiveauxDeMaitriseParMatiere;

@@ -1,15 +1,10 @@
-const {
-	ObjetRequeteSaisie,
-	EGenreReponseSaisie,
-} = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { TypeGenreEchangeDonnees } = require("TypeGenreEchangeDonnees.js");
-class ObjetRequeteSaisieExportFichierProf extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieExportFichierProf = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TypeGenreEchangeDonnees_1 = require("TypeGenreEchangeDonnees");
+class ObjetRequeteSaisieExportFichierProf extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParam) {
 		$.extend(this.JSON, aParam);
 		if (
@@ -24,15 +19,16 @@ class ObjetRequeteSaisieExportFichierProf extends ObjetRequeteSaisie {
 		}
 		let lStrMsgDetail;
 		switch (aParam.genreFichier) {
-			case TypeGenreEchangeDonnees.GED_PAS:
-				lStrMsgDetail = GTraductions.getValeur(
+			case TypeGenreEchangeDonnees_1.TypeGenreEchangeDonnees.GED_PAS:
+				lStrMsgDetail = ObjetTraduction_1.GTraductions.getValeur(
 					"Commande.CreerUnFichierDeRessources",
 				);
 				break;
 			default:
 				lStrMsgDetail = "";
 		}
-		return this.appelAsynchrone({ messageDetail: lStrMsgDetail });
+		this.setOptions({ messageDetail: lStrMsgDetail });
+		return this.appelAsynchrone();
 	}
 	traiterReponseSaisieMessage(aMessagesErreurRapportSaisie) {
 		let lDetails = "";
@@ -40,21 +36,17 @@ class ObjetRequeteSaisieExportFichierProf extends ObjetRequeteSaisie {
 			lDetails = aMessagesErreurRapportSaisie.join("\n");
 		}
 		GApplication.getMessage().afficher({
-			type: EGenreBoiteMessage.Information,
+			type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
 			message:
-				GTraductions.getValeur("EchecSauvegarderUnFichierDeRessourcesPeda") +
-				(lDetails ? "\n\n" + lDetails : ""),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"EchecSauvegarderUnFichierDeRessourcesPeda",
+				) + (lDetails ? "\n\n" + lDetails : ""),
 		});
 	}
-	actionApresRequete(aGenreReponse) {
-		this.callbackReussite.appel(
-			aGenreReponse !== EGenreReponseSaisie.succes,
-			this.JSONReponse.url,
-		);
-	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteSaisieExportFichierProf =
+	ObjetRequeteSaisieExportFichierProf;
+CollectionRequetes_1.Requetes.inscrire(
 	"SaisieExportFichierProf",
 	ObjetRequeteSaisieExportFichierProf,
 );
-module.exports = ObjetRequeteSaisieExportFichierProf;

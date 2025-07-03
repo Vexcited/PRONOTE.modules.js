@@ -7,7 +7,10 @@ class WidgetAbsencesJustifieesParents extends ObjetWidget_1.Widget.ObjetWidget {
 		this.donnees = aParams.donnees;
 		const lListeJustifsARegler = this.donnees.listeJustificationsARegler;
 		const lWidget = {
-			html: this._composeWidgetAbsRetardsJustifies(lListeJustifsARegler),
+			getHtml: this._composeWidgetAbsRetardsJustifies.bind(
+				this,
+				lListeJustifsARegler,
+			),
 			afficherMessage:
 				!lListeJustifsARegler || lListeJustifsARegler.count() === 0,
 		};
@@ -62,9 +65,11 @@ class WidgetAbsencesJustifieesParents extends ObjetWidget_1.Widget.ObjetWidget {
 						},
 					);
 					lStrMotifPJ.push(
-						'<a href="',
-						lLienDocument,
-						'" class="icon_piece_jointe"></a>',
+						IE.jsx.str("a", {
+							href: lLienDocument,
+							class: "icon_piece_jointe",
+							"ie-tooltiplabel": lPremierDocJoint.getLibelle(),
+						}),
 					);
 				}
 				lStrMotifPJ.push("</div>");

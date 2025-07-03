@@ -1,209 +1,229 @@
-const { MethodesObjet } = require("MethodesObjet.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetSaisie } = require("ObjetSaisie.js");
-const { ObjetTabOnglets } = require("ObjetTabOnglets.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { DonneesListe_Competences } = require("DonneesListe_Competences.js");
-const {
-	EGenreRessource,
-	EGenreRessourceUtil,
-} = require("Enumere_Ressource.js");
-const { ObjetRequeteListePiliers } = require("ObjetRequeteListePiliers.js");
-const { TypeGenreReferentiel } = require("TypeReferentielGrilleCompetence.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { TypeCategorieCompetence } = require("TypeCategorieCompetence.js");
-class ObjetFenetre_Competences extends ObjetFenetre {
+exports.ObjetFenetre_Competences = void 0;
+const MethodesObjet_1 = require("MethodesObjet");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetSaisie_1 = require("ObjetSaisie");
+const ObjetTabOnglets_1 = require("ObjetTabOnglets");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const DonneesListe_Competences_1 = require("DonneesListe_Competences");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetRequeteListePiliers_1 = require("ObjetRequeteListePiliers");
+const TypeReferentielGrilleCompetence_1 = require("TypeReferentielGrilleCompetence");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const TypeCategorieCompetence_1 = require("TypeCategorieCompetence");
+const AccessApp_1 = require("AccessApp");
+class ObjetFenetre_Competences extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
-		this.avecChoixReferentiel = !GEtatUtilisateur.pourPrimaire();
-		this.avecAffichageChoixPilier = !GEtatUtilisateur.pourPrimaire();
+		const lApplicationSco = (0, AccessApp_1.getApp)();
+		this.etatUtilSco = lApplicationSco.getEtatUtilisateur();
+		this.avecChoixReferentiel = !this.etatUtilSco.pourPrimaire();
+		this.avecAffichageChoixPilier = !this.etatUtilSco.pourPrimaire();
+		this.filtreUniquementMesCompetences = false;
 	}
 	construireInstances() {
 		this.identOnglets = this.add(
-			ObjetTabOnglets,
+			ObjetTabOnglets_1.ObjetTabOnglets,
 			this._evenementSurOnglets,
 			this._initialiserOnglets,
 		);
 		this.identComboPalier = this.add(
-			ObjetSaisie,
+			ObjetSaisie_1.ObjetSaisie,
 			this.evenementSurComboPalier,
 			this.initialiserComboPalier,
 		);
 		this.identComboPilier = this.add(
-			ObjetSaisie,
+			ObjetSaisie_1.ObjetSaisie,
 			this.evenementSurComboPilier,
 			this.initialiserComboPilier,
 		);
 		this.identListe = this.add(
-			ObjetListe,
+			ObjetListe_1.ObjetListe,
 			this._evenementSurListe,
 			this.initialiserListe,
 		);
 	}
 	composeBas() {
-		const H = [];
-		H.push(
-			GTraductions.getValeur("competences.TotalElementsCompetencesEvalues"),
-			' : <span ie-html="nbElementsCompetencesCoches"></span>',
+		return IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			ObjetTraduction_1.GTraductions.getValeur(
+				"competences.TotalElementsCompetencesEvalues",
+			),
+			" : ",
+			IE.jsx.str("span", {
+				"ie-html": () => this.getNombreCompetencesCocheesDeTousLesPiliers(),
+			}),
 		);
-		return H.join("");
-	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
-			nbElementsCompetencesCoches: function () {
-				return getNombreCompetencesCocheesDeTousLesPiliers.call(aInstance);
-			},
-		});
 	}
 	_initialiserOnglets(aInstance) {
-		this.listeOnglets = new ObjetListeElements();
+		this.listeOnglets = new ObjetListeElements_1.ObjetListeElements();
 		let lOnglet;
-		lOnglet = new ObjetElement(
-			GTraductions.getValeur("competences.grilleParDomaine"),
+		lOnglet = new ObjetElement_1.ObjetElement(
+			ObjetTraduction_1.GTraductions.getValeur("competences.grilleParDomaine"),
 			null,
-			TypeGenreReferentiel.GR_PilierDeCompetence,
+			TypeReferentielGrilleCompetence_1.TypeGenreReferentiel
+				.GR_PilierDeCompetence,
 		);
 		lOnglet.pourCompetenceNumerique = false;
 		this.listeOnglets.addElement(lOnglet);
-		lOnglet = new ObjetElement(
-			GTraductions.getValeur("competences.grilleParMatiere"),
+		lOnglet = new ObjetElement_1.ObjetElement(
+			ObjetTraduction_1.GTraductions.getValeur("competences.grilleParMatiere"),
 			null,
-			TypeGenreReferentiel.GR_Metamatiere,
+			TypeReferentielGrilleCompetence_1.TypeGenreReferentiel.GR_Metamatiere,
 		);
 		lOnglet.pourCompetenceNumerique = false;
 		this.listeOnglets.addElement(lOnglet);
-		lOnglet = new ObjetElement(
-			GTraductions.getValeur("competences.competetencesNumeriques"),
+		lOnglet = new ObjetElement_1.ObjetElement(
+			ObjetTraduction_1.GTraductions.getValeur(
+				"competences.competetencesNumeriques",
+			),
 			null,
-			TypeGenreReferentiel.GR_PilierDeCompetence,
+			TypeReferentielGrilleCompetence_1.TypeGenreReferentiel
+				.GR_PilierDeCompetence,
 		);
 		lOnglet.pourCompetenceNumerique = true;
 		this.listeOnglets.addElement(lOnglet);
 		aInstance.setParametres(this.listeOnglets);
 	}
 	initialiserComboPalier(aInstance) {
-		const lThis = this;
-		aInstance.controleur.getLibellePalier = function (aNumeroPalier) {
-			let lPalierConcerne;
-			if (lThis.listePiliers) {
-				const lGenreReferentiel = lThis.genreReferentiel;
-				lThis.listePiliers.parcourir((aPilier) => {
-					if (
-						lGenreReferentiel === aPilier.getGenre() &&
-						!!aPilier.palier &&
-						aPilier.palier.getNumero() === aNumeroPalier
-					) {
-						lPalierConcerne = aPilier.palier;
-						return false;
-					}
-				});
-			}
-			return _getLibellePalier.call(lThis, lPalierConcerne);
-		};
 		aInstance.setOptionsObjetSaisie({
 			longueur: 100,
-			labelWAICellule: GTraductions.getValeur("WAI.listeSelectionPalier"),
+			labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+				"WAI.listeSelectionPalier",
+			),
 			celluleAvecTexteHtml: true,
-			getContenuCellule: function (aPalier) {
-				return _getLibellePalier.call(lThis, aPalier);
+			getContenuCellule: (aPalier) => {
+				return this._getLibellePalier(aPalier);
+			},
+			getContenuElement: (aElement) => {
+				return this._getLibellePalier(aElement.element);
 			},
 		});
 	}
 	initialiserComboPilier(aInstance) {
-		const lThis = this;
-		aInstance.controleur.getLibellePilier = function (
-			aNumeroPalier,
-			aNumeroPilier,
-		) {
-			let lPilierConcerne;
-			if (lThis.listePiliers) {
-				const lGenreReferentiel = lThis.genreReferentiel;
-				lThis.listePiliers.parcourir((aPilier) => {
-					if (
-						lGenreReferentiel === aPilier.getGenre() &&
-						!!aPilier.palier &&
-						aPilier.palier.getNumero() === aNumeroPalier &&
-						aPilier.getNumero() === aNumeroPilier
-					) {
-						lPilierConcerne = aPilier;
-						return false;
-					}
-				});
-			}
-			return _getLibellePilier.call(lThis, lPilierConcerne);
-		};
 		aInstance.setOptionsObjetSaisie({
 			longueur: 400,
-			labelWAICellule: GTraductions.getValeur("WAI.listeSelectionCompetence"),
+			labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+				"WAI.listeSelectionCompetence",
+			),
 			celluleAvecTexteHtml: true,
-			getContenuCellule: function (aPilier) {
-				return _getLibellePilier.call(lThis, aPilier);
+			getContenuCellule: (aPilier) => {
+				return this._getLibellePilier(aPilier);
+			},
+			getContenuElement: (aElement) => {
+				return this._getLibellePilier(aElement.element);
 			},
 		});
 	}
 	getListeColonnesCompetences(aElement) {
 		const lColonnes = [];
 		lColonnes.push({
-			id: DonneesListe_Competences.colonnes.coche,
+			id: DonneesListe_Competences_1.DonneesListe_Competences.colonnes.coche,
 			taille: 20,
 			titre: { estCoche: true },
 		});
 		if (this.avecColonneNombreRelations) {
 			lColonnes.push({
-				id: DonneesListe_Competences.colonnes.nombre,
+				id: DonneesListe_Competences_1.DonneesListe_Competences.colonnes.nombre,
 				taille: 30,
-				titre: GTraductions.getValeur("competences.nombre"),
-				hint: GTraductions.getValeur("competences.nombreHint"),
+				titre: ObjetTraduction_1.GTraductions.getValeur("competences.nombre"),
+				hint: ObjetTraduction_1.GTraductions.getValeur(
+					"competences.nombreHint",
+				),
 			});
 		}
 		lColonnes.push({
-			id: DonneesListe_Competences.colonnes.libelle,
+			id: DonneesListe_Competences_1.DonneesListe_Competences.colonnes.libelle,
 			taille: "100%",
-			titre: GTraductions.getValeur("competences.competencesConnaissances"),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"competences.competencesConnaissances",
+			),
 		});
-		if (this.genreReferentiel === TypeGenreReferentiel.GR_Metamatiere) {
+		if (
+			this.genreReferentiel ===
+			TypeReferentielGrilleCompetence_1.TypeGenreReferentiel.GR_Metamatiere
+		) {
 			lColonnes.push({
-				id: DonneesListe_Competences.colonnes.domaines,
+				id: DonneesListe_Competences_1.DonneesListe_Competences.colonnes
+					.domaines,
 				taille: 70,
-				titre: GTraductions.getValeur("competences.Domaines"),
+				titre: ObjetTraduction_1.GTraductions.getValeur("competences.Domaines"),
 			});
 		}
 		const lAvecNiveau =
 			aElement &&
 			(aElement.PilierLVE ||
-				aElement.categorie === TypeCategorieCompetence.CompetenceNumerique);
+				aElement.categorie ===
+					TypeCategorieCompetence_1.TypeCategorieCompetence
+						.CompetenceNumerique);
 		if (lAvecNiveau === true) {
 			lColonnes.push({
-				id: DonneesListe_Competences.colonnes.niveauLVE,
+				id: DonneesListe_Competences_1.DonneesListe_Competences.colonnes
+					.niveauLVE,
 				taille: 50,
 				titre:
-					aElement.categorie === TypeCategorieCompetence.CompetenceNumerique
-						? GTraductions.getValeur("competences.NivCN")
-						: GTraductions.getValeur("competences.NivLVE"),
+					aElement.categorie ===
+					TypeCategorieCompetence_1.TypeCategorieCompetence.CompetenceNumerique
+						? ObjetTraduction_1.GTraductions.getValeur("competences.NivCN")
+						: ObjetTraduction_1.GTraductions.getValeur("competences.NivLVE"),
 				hint:
-					aElement.categorie === TypeCategorieCompetence.CompetenceNumerique
-						? GTraductions.getValeur("competences.HintNiveauCN")
-						: GTraductions.getValeur("competences.HintNiveauLVE"),
+					aElement.categorie ===
+					TypeCategorieCompetence_1.TypeCategorieCompetence.CompetenceNumerique
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"competences.HintNiveauCN",
+							)
+						: ObjetTraduction_1.GTraductions.getValeur(
+								"competences.HintNiveauLVE",
+							),
 			});
 		}
 		return lColonnes;
 	}
 	initialiserListe(aInstance) {
+		const lBoutonsListe = [];
+		if (this.etatUtilSco.pourPrimaire()) {
+			const lJsxBoutonFiltreUniquementMesEval = () => {
+				return {
+					getValue: () => {
+						return this.filtreUniquementMesCompetences;
+					},
+					setValue: (aValue) => {
+						this.filtreUniquementMesCompetences = aValue;
+						const lListe = this.getInstance(this.identListe);
+						lListe
+							.getDonneesListe()
+							.setAfficherUniquementMesCompetences(
+								this.filtreUniquementMesCompetences,
+							);
+						lListe.actualiser({ conserverSelection: true });
+					},
+				};
+			};
+			lBoutonsListe.push({
+				getHtml: () =>
+					IE.jsx.str(
+						"ie-checkbox",
+						{ "ie-model": lJsxBoutonFiltreUniquementMesEval },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"competences.UniquementMesCompetences",
+						),
+					),
+			});
+		}
+		lBoutonsListe.push({ genre: ObjetListe_1.ObjetListe.typeBouton.deployer });
+		lBoutonsListe.push({
+			genre: ObjetListe_1.ObjetListe.typeBouton.rechercher,
+		});
 		aInstance.setOptionsListe({
 			colonnes: this.getListeColonnesCompetences(),
-			boutons: [
-				{ genre: ObjetListe.typeBouton.deployer },
-				{ genre: ObjetListe.typeBouton.rechercher },
-			],
+			boutons: lBoutonsListe,
 		});
 	}
 	composeContenu() {
@@ -233,31 +253,30 @@ class ObjetFenetre_Competences extends ObjetFenetre {
 		return T.join("");
 	}
 	estOngletVisible(aOnglet) {
-		let lResult = false;
-		const lThis = this,
-			lOnglet = aOnglet;
+		let lOngletEstVisible = false;
 		if (this.listePiliers) {
-			this.listePiliers.parcourir((aPilier) => {
-				if (!lResult) {
-					if (lOnglet.getGenre() === aPilier.getGenre()) {
-						if (
-							lThis.filtreCompetenceNumerique(
-								aPilier,
-								lOnglet.pourCompetenceNumerique,
-							)
-						) {
-							lResult = true;
-						}
+			for (const lPilier of this.listePiliers) {
+				if (aOnglet.getGenre() === lPilier.getGenre()) {
+					if (
+						this.filtreCompetenceNumerique(
+							lPilier,
+							aOnglet.pourCompetenceNumerique,
+						)
+					) {
+						lOngletEstVisible = true;
+						break;
 					}
 				}
-			});
+			}
 		}
-		return lResult;
+		return lOngletEstVisible;
 	}
 	filtreCompetenceNumerique(aPilier, aPourCompetenceNumerique) {
 		return aPourCompetenceNumerique
-			? aPilier.categorie === TypeCategorieCompetence.CompetenceNumerique
-			: aPilier.categorie !== TypeCategorieCompetence.CompetenceNumerique;
+			? aPilier.categorie ===
+					TypeCategorieCompetence_1.TypeCategorieCompetence.CompetenceNumerique
+			: aPilier.categorie !==
+					TypeCategorieCompetence_1.TypeCategorieCompetence.CompetenceNumerique;
 	}
 	setDonnees(aParametres) {
 		this.listeCompetencesDEvaluation = aParametres.listeCompetences;
@@ -288,7 +307,7 @@ class ObjetFenetre_Competences extends ObjetFenetre {
 				lQCM.niveau = aParametres.qcm.niveau.toJSON();
 			}
 		}
-		new ObjetRequeteListePiliers(
+		new ObjetRequeteListePiliers_1.ObjetRequeteListePiliers(
 			this,
 			this.surRequeteListePiliers,
 		).lancerRequete({
@@ -304,7 +323,7 @@ class ObjetFenetre_Competences extends ObjetFenetre {
 		this.metaMatiereSelected = aParams.MetaMatiereParDefaut;
 		if (!this.listePiliers || this.listePiliers.count() === 0) {
 			GApplication.getMessage().afficher({
-				type: EGenreBoiteMessage.Information,
+				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
 				message: aParams.message,
 			});
 			this.surValidation(0);
@@ -313,19 +332,22 @@ class ObjetFenetre_Competences extends ObjetFenetre {
 		this.afficher();
 		this.actualiserListeCompetencesDePilier();
 		let lIndiceOngletASelectionner = -1;
-		const lThis = this;
-		this.listeOnglets.parcourir((aOnglet, aIndiceOnglet) => {
-			const lOngletEstVisible = lThis.estOngletVisible(aOnglet);
-			aOnglet.setActif(lOngletEstVisible);
+		let lIndiceOngletBoucle = 0;
+		for (const lOnglet of this.listeOnglets) {
+			const lOngletEstVisible = this.estOngletVisible(lOnglet);
+			lOnglet.setActif(lOngletEstVisible);
 			if (lOngletEstVisible) {
 				if (
 					lIndiceOngletASelectionner === -1 ||
-					aOnglet.getGenre() === TypeGenreReferentiel.GR_Metamatiere
+					lOnglet.getGenre() ===
+						TypeReferentielGrilleCompetence_1.TypeGenreReferentiel
+							.GR_Metamatiere
 				) {
-					lIndiceOngletASelectionner = aIndiceOnglet;
+					lIndiceOngletASelectionner = lIndiceOngletBoucle;
 				}
 			}
-		});
+			lIndiceOngletBoucle++;
+		}
 		this.getInstance(this.identOnglets).setDonnees(
 			this.listeOnglets,
 			lIndiceOngletASelectionner,
@@ -338,7 +360,7 @@ class ObjetFenetre_Competences extends ObjetFenetre {
 			this.getInstance(this.identComboPilier).fermerListe();
 			this.genreReferentiel = aOnglet.getGenre();
 			const lThis = this,
-				lListePaliers = new ObjetListeElements(),
+				lListePaliers = new ObjetListeElements_1.ObjetListeElements(),
 				lGenreReferentiel = this.genreReferentiel;
 			if (this.listePiliers) {
 				this.listePiliers.parcourir((aPilier) => {
@@ -350,10 +372,6 @@ class ObjetFenetre_Competences extends ObjetFenetre {
 							)
 						) {
 							if (!lListePaliers.getElementParElement(aPilier.palier)) {
-								aPilier.palier.libelleHtml =
-									"<span ie-html=\"getLibellePalier('" +
-									aPilier.palier.getNumero() +
-									"')\"></span>";
 								lListePaliers.addElement(aPilier.palier);
 							}
 						}
@@ -371,10 +389,10 @@ class ObjetFenetre_Competences extends ObjetFenetre {
 			if (lIndicePalier === undefined || lIndicePalier === null) {
 				lIndicePalier = 0;
 			}
-			this.getInstance(this.identComboPalier).setDonnees(
-				lListePaliers,
-				lIndicePalier,
-			);
+			this.getInstance(this.identComboPalier).setDonneesObjetSaisie({
+				liste: lListePaliers,
+				selection: lIndicePalier,
+			});
 			this.getInstance(this.identComboPalier).setActif(
 				lListePaliers.count() > 1,
 			);
@@ -391,14 +409,14 @@ class ObjetFenetre_Competences extends ObjetFenetre {
 			}
 		}
 	}
-	surValidation(ANumeroBouton) {
+	surValidation(aNumeroBouton) {
 		this.fermer();
 		this.actualiserListeCompetencesDEvaluation();
-		this.callback.appel(ANumeroBouton, this.listeCompetencesDEvaluation);
+		this.callback.appel(aNumeroBouton, this.listeCompetencesDEvaluation);
 	}
 	_evenementSurListe(aParametres) {
 		switch (aParametres.genreEvenement) {
-			case EGenreEvenementListe.SelectionClick: {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.SelectionClick: {
 				const lListe = this.getInstance(this.identListe);
 				lListe
 					.getDonneesListe()
@@ -407,47 +425,42 @@ class ObjetFenetre_Competences extends ObjetFenetre {
 					});
 				break;
 			}
-			case EGenreEvenementListe.ApresEdition: {
-				const lLibellePalier = _getLibellePalier.call(
-					this,
-					this.palierSelected,
-				);
+			case Enumere_EvenementListe_1.EGenreEvenementListe.ApresEdition: {
+				const lLibellePalier = this._getLibellePalier(this.palierSelected);
 				this.getInstance(this.identComboPalier).setContenu(lLibellePalier);
 				const lElementSelectionne =
-					this.genreReferentiel === TypeGenreReferentiel.GR_Metamatiere
+					this.genreReferentiel ===
+					TypeReferentielGrilleCompetence_1.TypeGenreReferentiel.GR_Metamatiere
 						? this.metaMatiereSelected
 						: this.pilierDeCompetenceSelected;
-				const lLibellePilier = _getLibellePilier.call(
-					this,
-					lElementSelectionne,
-				);
+				const lLibellePilier = this._getLibellePilier(lElementSelectionne);
 				this.getInstance(this.identComboPilier).setContenu(lLibellePilier);
 				break;
 			}
 		}
 	}
 	evenementSurComboPalier(aParams) {
-		if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
 			this.palierSelected = aParams.element;
 			const lGenreReferentiel = this.genreReferentiel;
-			const lListePiliers = new ObjetListeElements();
+			const lListePiliers = new ObjetListeElements_1.ObjetListeElements();
 			this.listePiliers.parcourir((D) => {
 				if (lGenreReferentiel === D.getGenre()) {
 					if (D.palier.getNumero() === aParams.element.getNumero()) {
-						D.libelleHtml =
-							"<span ie-html=\"getLibellePilier('" +
-							aParams.element.getNumero() +
-							"', '" +
-							D.getNumero() +
-							"')\"></span>";
 						lListePiliers.addElement(D);
 					}
 				}
 			});
 			lListePiliers.trier();
-			this.getInstance(this.identComboPilier).setDonnees(lListePiliers);
+			this.getInstance(this.identComboPilier).setDonneesObjetSaisie({
+				liste: lListePiliers,
+			});
 			const lElementSelectionne =
-				lGenreReferentiel === TypeGenreReferentiel.GR_Metamatiere
+				lGenreReferentiel ===
+				TypeReferentielGrilleCompetence_1.TypeGenreReferentiel.GR_Metamatiere
 					? this.metaMatiereSelected
 					: this.pilierDeCompetenceSelected;
 			this.getInstance(this.identComboPilier).setSelectionParElement(
@@ -457,22 +470,24 @@ class ObjetFenetre_Competences extends ObjetFenetre {
 		}
 	}
 	evenementSurComboPilier(aParams) {
-		if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
 			if (
 				this.avecControleCompetenceLVE &&
 				aParams.element.PilierLVE === true &&
 				this.estUnServiceLVE === false
 			) {
-				const lThis = this;
 				GApplication.getMessage().afficher({
-					message: GTraductions.getValeur(
+					message: ObjetTraduction_1.GTraductions.getValeur(
 						"competences.SaisieImpossibleGrilleLVE",
 					),
-					callback: function () {
+					callback: () => {
 						aParams.element.listeCompetences.parcourir((D) => {
 							D.setActif(false);
 						});
-						lThis._evenementSurComboPilier(aParams.element);
+						this._evenementSurComboPilier(aParams.element);
 					},
 				});
 			} else {
@@ -481,24 +496,33 @@ class ObjetFenetre_Competences extends ObjetFenetre {
 		}
 	}
 	_evenementSurComboPilier(aElement) {
-		if (this.genreReferentiel === TypeGenreReferentiel.GR_Metamatiere) {
+		if (
+			this.genreReferentiel ===
+			TypeReferentielGrilleCompetence_1.TypeGenreReferentiel.GR_Metamatiere
+		) {
 			this.metaMatiereSelected = aElement;
 		} else {
 			this.pilierDeCompetenceSelected = aElement;
 		}
 		this.actualiserDeploiementsListeCompetencesDePilier(
-			new ObjetListeElements().add(aElement),
+			new ObjetListeElements_1.ObjetListeElements().add(aElement),
 		);
 		const lListe = this.getInstance(this.identListe);
 		lListe.setOptionsListe({
 			colonnes: this.getListeColonnesCompetences(aElement),
 		});
 		lListe.setDonnees(
-			new DonneesListe_Competences(aElement.listeCompetences, {
-				avecSousItems: aElement.AvecSousItems,
-				pourCompetenceNumerique:
-					aElement.categorie === TypeCategorieCompetence.CompetenceNumerique,
-			}),
+			new DonneesListe_Competences_1.DonneesListe_Competences(
+				aElement.listeCompetences,
+				{
+					avecSousItems: aElement.AvecSousItems,
+					pourCompetenceNumerique:
+						aElement.categorie ===
+						TypeCategorieCompetence_1.TypeCategorieCompetence
+							.CompetenceNumerique,
+					afficherUniquementMesCompetences: this.filtreUniquementMesCompetences,
+				},
+			),
 		);
 	}
 	actualiserDeploiementsListeCompetencesDePilier(aListePiliers) {
@@ -523,7 +547,9 @@ class ObjetFenetre_Competences extends ObjetFenetre {
 				lTableauPeres[D.getGenre()] = D;
 				D.pere =
 					lTableauPeres[
-						EGenreRessourceUtil.getGenrePereCompetence(D.getGenre())
+						Enumere_Ressource_1.EGenreRessourceUtil.getGenrePereCompetence(
+							D.getGenre(),
+						)
 					];
 				if (!!D.pere) {
 					D.pere.estUnDeploiement = true;
@@ -558,19 +584,22 @@ class ObjetFenetre_Competences extends ObjetFenetre {
 			for (let J = 0; J < lPilier.listeCompetences.count(); J++) {
 				const lCompetenceDePilier = lPilier.listeCompetences.get(J);
 				lCompetenceDePilier.palier = lPilier.palier;
-				if (lCompetenceDePilier.getGenre() === EGenreRessource.Competence) {
+				if (
+					lCompetenceDePilier.getGenre() ===
+					Enumere_Ressource_1.EGenreRessource.Competence
+				) {
 					lPere = lCompetenceDePilier;
 				}
 				switch (lCompetenceDePilier.getGenre()) {
-					case EGenreRessource.ElementPilier: {
+					case Enumere_Ressource_1.EGenreRessource.ElementPilier: {
 						lCompetenceDePilier.Actif = true;
 						break;
 					}
-					case EGenreRessource.Competence: {
+					case Enumere_Ressource_1.EGenreRessource.Competence: {
 						lCompetenceDePilier.Actif = true;
 						break;
 					}
-					case EGenreRessource.SousItem: {
+					case Enumere_Ressource_1.EGenreRessource.SousItem: {
 						lCompetenceDePilier.Actif = true;
 						lPere.Actif = true;
 						break;
@@ -646,12 +675,19 @@ class ObjetFenetre_Competences extends ObjetFenetre {
 								if (lNombreDElementsCompetenceACreer > 0) {
 									let elementCree;
 									for (let k = 0; k < lNombreDElementsCompetenceACreer; k++) {
-										elementCree = MethodesObjet.dupliquer(lCompetenceDePilier);
+										elementCree =
+											MethodesObjet_1.MethodesObjet.dupliquer(
+												lCompetenceDePilier,
+											);
 										elementCree.pilier = lPilier;
 										elementCree.coefficient = 1;
-										elementCree.relationESI = new ObjetElement("");
-										elementCree.relationESI.setEtat(EGenreEtat.Creation);
-										elementCree.setEtat(EGenreEtat.Creation);
+										elementCree.relationESI = new ObjetElement_1.ObjetElement(
+											"",
+										);
+										elementCree.relationESI.setEtat(
+											Enumere_Etat_1.EGenreEtat.Creation,
+										);
+										elementCree.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 										lThis.listeCompetencesDEvaluation.addElement(elementCree);
 									}
 								}
@@ -664,90 +700,87 @@ class ObjetFenetre_Competences extends ObjetFenetre {
 							);
 							if (lNombreDElementsCompetenceASupprimer > 0) {
 								lListeCompetenceDEvaluation.setTri([
-									ObjetTri.init("avecEvaluation"),
+									ObjetTri_1.ObjetTri.init("avecEvaluation"),
 								]);
 								lListeCompetenceDEvaluation.trier();
 								for (let i = 0; i < lNombreDElementsCompetenceASupprimer; i++) {
 									lListeCompetenceDEvaluation
 										.get(i)
-										.setEtat(EGenreEtat.Suppression);
+										.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 								}
 							}
 						}
 					} else {
 						lListeCompetenceDEvaluation.parcourir((D) => {
-							D.setEtat(EGenreEtat.Suppression);
+							D.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 						});
 					}
 				}
 			});
 		});
 	}
-}
-function _getLibellePalier(aPalierConcerne) {
-	const lLibelle = [];
-	if (!!aPalierConcerne) {
-		const lNbCompetencesCochees = getNombreCompetencesCocheesDUnPalier.call(
-			this,
-			aPalierConcerne,
-		);
-		lLibelle.push("<span");
-		if (lNbCompetencesCochees > 0) {
-			lLibelle.push(' style="font-weight: bold;"');
-		}
-		lLibelle.push(">", aPalierConcerne.getLibelle());
-		if (lNbCompetencesCochees > 0) {
-			lLibelle.push(" (", lNbCompetencesCochees, ")");
-		}
-		lLibelle.push("</span>");
-	}
-	return lLibelle.join("");
-}
-function _getLibellePilier(aPilierConcerne) {
-	const lLibelle = [];
-	if (!!aPilierConcerne) {
-		const lNbCompetencesCochees =
-			getNombreCompetencesCocheesDUnPilier(aPilierConcerne);
-		lLibelle.push("<span");
-		if (lNbCompetencesCochees > 0) {
-			lLibelle.push(' style="font-weight:bold;"');
-		}
-		lLibelle.push(">", aPilierConcerne.getLibelle());
-		if (lNbCompetencesCochees > 0) {
-			lLibelle.push(" (", lNbCompetencesCochees, ")");
-		}
-		lLibelle.push("</span>");
-	}
-	return lLibelle.join("");
-}
-const lGenreReferentiel = this.genreReferentiel;
-function getNombreCompetencesCocheesDUnPalier(aPalier) {
-	let lResult = 0;
-	this.listePiliers.parcourir((aPilier) => {
-		if (lGenreReferentiel === aPilier.getGenre()) {
-			if (aPilier.palier.getNumero() === aPalier.getNumero()) {
-				lResult += getNombreCompetencesCocheesDUnPilier(aPilier);
+	_getLibellePalier(aPalierConcerne) {
+		const lLibelle = [];
+		if (!!aPalierConcerne) {
+			const lNbCompetencesCochees =
+				this.getNombreCompetencesCocheesDUnPalier(aPalierConcerne);
+			lLibelle.push("<span");
+			if (lNbCompetencesCochees > 0) {
+				lLibelle.push(' style="font-weight: bold;"');
 			}
+			lLibelle.push(">", aPalierConcerne.getLibelle());
+			if (lNbCompetencesCochees > 0) {
+				lLibelle.push(" (", lNbCompetencesCochees, ")");
+			}
+			lLibelle.push("</span>");
 		}
-	});
-	return lResult;
-}
-function getNombreCompetencesCocheesDUnPilier(aPilier) {
-	let lResult = 0;
-	if (!!aPilier && aPilier.listeCompetences) {
-		aPilier.listeCompetences.parcourir((aCompetenceDePilier) => {
-			lResult += aCompetenceDePilier.nombreRelations || 0;
-		});
+		return lLibelle.join("");
 	}
-	return lResult;
-}
-function getNombreCompetencesCocheesDeTousLesPiliers() {
-	let lResult = 0;
-	if (this.listePiliers) {
+	_getLibellePilier(aPilierConcerne) {
+		const lLibelle = [];
+		if (!!aPilierConcerne) {
+			const lNbCompetencesCochees =
+				this.getNombreCompetencesCocheesDUnPilier(aPilierConcerne);
+			lLibelle.push("<span");
+			if (lNbCompetencesCochees > 0) {
+				lLibelle.push(' style="font-weight:bold;"');
+			}
+			lLibelle.push(">", aPilierConcerne.getLibelle());
+			if (lNbCompetencesCochees > 0) {
+				lLibelle.push(" (", lNbCompetencesCochees, ")");
+			}
+			lLibelle.push("</span>");
+		}
+		return lLibelle.join("");
+	}
+	getNombreCompetencesCocheesDUnPalier(aPalier) {
+		let lResult = 0;
 		this.listePiliers.parcourir((aPilier) => {
-			lResult += getNombreCompetencesCocheesDUnPilier(aPilier);
+			if (this.genreReferentiel === aPilier.getGenre()) {
+				if (aPilier.palier.getNumero() === aPalier.getNumero()) {
+					lResult += this.getNombreCompetencesCocheesDUnPilier(aPilier);
+				}
+			}
 		});
+		return lResult;
 	}
-	return lResult;
+	getNombreCompetencesCocheesDUnPilier(aPilier) {
+		let lResult = 0;
+		if (!!aPilier && aPilier.listeCompetences) {
+			aPilier.listeCompetences.parcourir((aCompetenceDePilier) => {
+				lResult += aCompetenceDePilier.nombreRelations || 0;
+			});
+		}
+		return lResult;
+	}
+	getNombreCompetencesCocheesDeTousLesPiliers() {
+		let lResult = 0;
+		if (this.listePiliers) {
+			this.listePiliers.parcourir((aPilier) => {
+				lResult += this.getNombreCompetencesCocheesDUnPilier(aPilier);
+			});
+		}
+		return lResult;
+	}
 }
-module.exports = { ObjetFenetre_Competences };
+exports.ObjetFenetre_Competences = ObjetFenetre_Competences;

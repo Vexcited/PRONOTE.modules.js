@@ -1,61 +1,64 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { InterfaceFicheEleve } = require("InterfaceFicheEleve.js");
-const { ObjetRequeteFicheEleve } = require("ObjetRequeteFicheEleve.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-class ObjetFenetre_FicheEleve extends ObjetFenetre {
-	constructor(...aParams) {
-		super(...aParams);
+exports.ObjetFenetre_FicheEleve = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const InterfaceFicheEleve_1 = require("InterfaceFicheEleve");
+const ObjetRequeteFicheEleve_1 = require("ObjetRequeteFicheEleve");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const AccessApp_1 = require("AccessApp");
+class ObjetFenetre_FicheEleve extends ObjetFenetre_1.ObjetFenetre {
+	constructor() {
+		super(...arguments);
+		this.applicationSco = (0, AccessApp_1.getApp)();
 	}
 	construireInstances() {
-		this.idFicheEleve = this.add(InterfaceFicheEleve);
+		this.idFicheEleve = this.add(InterfaceFicheEleve_1.InterfaceFicheEleve);
 	}
-	surFermer() {}
 	setDonnees(aOngletSelection, aBloquerFocus, aSansFocusPolling) {
 		this.setOptionsFenetre({ bloquerFocus: aBloquerFocus });
 		this.afficher();
 		this.getInstance(this.idFicheEleve).setOptions(this.listeOnglets);
 		this.getInstance(this.idFicheEleve).setDonnees({
 			onglet: aOngletSelection,
-			formatTitrePrimaire: GEtatUtilisateur.pourPrimaire(),
 			sansFocusPolling: aSansFocusPolling,
 		});
 	}
-	surValidation(ANumeroBouton) {
-		this.getInstance(this.idFicheEleve).surValidation(ANumeroBouton);
+	surValidation(aNumeroBouton) {
+		this.getInstance(this.idFicheEleve).surValidation(aNumeroBouton);
 	}
 	composeContenu() {
 		const T = [];
 		T.push(
-			'<div class="fiche-wrapper" style="height:100%" id="',
-			this.getInstance(this.idFicheEleve).getNom(),
-			'"></div>',
+			IE.jsx.str("div", {
+				class: "fiche-wrapper",
+				style: "height:100%",
+				id: this.getNomInstance(this.idFicheEleve),
+			}),
 		);
 		return T.join("");
 	}
-	setOngletParDefaut(aGenreOnglet) {
-		this.getInstance(this.idFicheEleve).setOngletParDefaut(aGenreOnglet);
+	composeBas() {
+		return this.getInstance(this.idFicheEleve).composeBoutonsCommunication();
 	}
 	setOngletActif(aGenreOnglet) {
 		this.getInstance(this.idFicheEleve).setOngletActif(aGenreOnglet);
 	}
-	setOngletsVisibles(aListeOnglets) {
-		this.listeOnglets = aListeOnglets;
+	setOngletsVisibles(aParams) {
+		this.listeOnglets = aParams;
 	}
 	recupererDonneesFicheEleve() {
 		const lParam = {
-			numeroEleve: this.donnees.eleve.getNumero(),
-			avecEleve: GApplication.droits.get(
-				TypeDroits.eleves.consulterIdentiteEleve,
+			Eleve: this.donnees.eleve,
+			AvecEleve: this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.eleves.consulterIdentiteEleve,
 			),
-			avecResponsables: GApplication.droits.get(
-				TypeDroits.eleves.consulterFichesResponsables,
+			AvecResponsables: this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.eleves.consulterFichesResponsables,
 			),
-			avecAutresContacts: GApplication.droits.get(
-				TypeDroits.eleves.consulterFichesResponsables,
+			AvecAutresContacts: this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.eleves.consulterFichesResponsables,
 			),
 		};
-		new ObjetRequeteFicheEleve(
+		new ObjetRequeteFicheEleve_1.ObjetRequeteFicheEleve(
 			this,
 			this.actionSurReponseRequeteFicheEleve,
 		).lancerRequete(lParam);
@@ -76,14 +79,14 @@ class ObjetFenetre_FicheEleve extends ObjetFenetre {
 			listeResponsables: aListeResponsables,
 		};
 		const lAutorisations = {
-			avecIdentiteEleve: GApplication.droits.get(
-				TypeDroits.eleves.consulterIdentiteEleve,
+			avecIdentiteEleve: this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.eleves.consulterIdentiteEleve,
 			),
-			avecFicheResponsables: GApplication.droits.get(
-				TypeDroits.eleves.consulterFichesResponsables,
+			avecFicheResponsables: this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.eleves.consulterFichesResponsables,
 			),
-			avecPhotoEleve: GApplication.droits.get(
-				TypeDroits.eleves.consulterPhotosEleves,
+			avecPhotoEleve: this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.eleves.consulterPhotosEleves,
 			),
 		};
 		Object.assign(this.donnees, lFicheEleve, lAutorisations);
@@ -91,29 +94,57 @@ class ObjetFenetre_FicheEleve extends ObjetFenetre {
 		this.afficherFicheEleve();
 	}
 	afficherFicheEleve() {
-		GEtatUtilisateur.Navigation.setRessource(
-			EGenreRessource.Eleve,
-			this.donnees.eleve,
-		);
+		this.applicationSco
+			.getEtatUtilisateur()
+			.Navigation.setRessource(
+				Enumere_Ressource_1.EGenreRessource.Eleve,
+				this.donnees.eleve,
+			);
 		this.getInstance(this.idFicheEleve).setOptions(this.listeOnglets);
-		const lParams = {
-			onglet: null,
-			formatTitrePrimaire: GEtatUtilisateur.pourPrimaire(),
-		};
+		const lParams = { onglet: null };
 		if (this.donnees.ongletSelection !== undefined) {
 			lParams.onglet = this.donnees.ongletSelection;
 		}
 		this.getInstance(this.idFicheEleve).setDonnees(lParams);
 	}
+	_getEleveSuivant(aSuivant) {
+		if (this.donnees.listeEleves) {
+			const lListeEleves = this.donnees.listeEleves;
+			let lIndiceElementActuel, lIndiceProchainElement, lProchainElement;
+			lIndiceElementActuel = lListeEleves.getIndiceParElement(
+				this.donnees.eleve,
+			);
+			if (aSuivant) {
+				lIndiceProchainElement =
+					lIndiceElementActuel + 1 < lListeEleves.count()
+						? lIndiceElementActuel + 1
+						: 0;
+			} else {
+				lIndiceProchainElement =
+					lIndiceElementActuel === 0
+						? lListeEleves.count() - 1
+						: lIndiceElementActuel - 1;
+			}
+			lProchainElement = lListeEleves.get(lIndiceProchainElement);
+			if (lProchainElement) {
+				this.donnees.eleve = lProchainElement;
+				this.afficherFicheEleve();
+			}
+		}
+	}
 	static ouvrir(aParametres) {
 		if (
 			IE.estMobile &&
-			!GApplication.droits.get(TypeDroits.eleves.consulterIdentiteEleve) &&
-			!GApplication.droits.get(TypeDroits.eleves.consulterFichesResponsables)
+			!(0, AccessApp_1.getApp)().droits.get(
+				ObjetDroitsPN_1.TypeDroits.eleves.consulterIdentiteEleve,
+			) &&
+			!(0, AccessApp_1.getApp)().droits.get(
+				ObjetDroitsPN_1.TypeDroits.eleves.consulterFichesResponsables,
+			)
 		) {
 			return;
 		}
-		const lInstanceFenetre = ObjetFenetre.creerInstanceFenetre(
+		const lInstanceFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
 			ObjetFenetre_FicheEleve,
 			{
 				pere: aParametres.instance,
@@ -122,8 +153,6 @@ class ObjetFenetre_FicheEleve extends ObjetFenetre {
 					if (!IE.estMobile) {
 						lOptions.largeur = 750;
 						lOptions.hauteur = 750;
-					} else {
-						lOptions.heightMax_mobile = true;
 					}
 					if (
 						aParametres.avecRequeteDonnees &&
@@ -131,7 +160,8 @@ class ObjetFenetre_FicheEleve extends ObjetFenetre {
 						!!aParametres.donnees.listeEleves
 					) {
 						lOptions.avecNavigation = true;
-						lOptions.callbackNavigation = _getEleveSuivant.bind(aInstance);
+						lOptions.callbackNavigation =
+							aInstance._getEleveSuivant.bind(aInstance);
 					}
 					aInstance.setOptionsFenetre(lOptions);
 				},
@@ -151,27 +181,4 @@ class ObjetFenetre_FicheEleve extends ObjetFenetre {
 		}
 	}
 }
-function _getEleveSuivant(aSuivant) {
-	if (this.donnees.listeEleves) {
-		const lListeEleves = this.donnees.listeEleves;
-		let lIndiceElementActuel, lIndiceProchainElement, lProchainElement;
-		lIndiceElementActuel = lListeEleves.getIndiceParElement(this.donnees.eleve);
-		if (aSuivant) {
-			lIndiceProchainElement =
-				lIndiceElementActuel + 1 < lListeEleves.count()
-					? lIndiceElementActuel + 1
-					: 0;
-		} else {
-			lIndiceProchainElement =
-				lIndiceElementActuel === 0
-					? lListeEleves.count() - 1
-					: lIndiceElementActuel - 1;
-		}
-		lProchainElement = lListeEleves.get(lIndiceProchainElement);
-		if (lProchainElement) {
-			this.donnees.eleve = lProchainElement;
-			this.afficherFicheEleve();
-		}
-	}
-}
-module.exports = ObjetFenetre_FicheEleve;
+exports.ObjetFenetre_FicheEleve = ObjetFenetre_FicheEleve;

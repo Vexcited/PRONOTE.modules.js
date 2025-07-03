@@ -6,8 +6,8 @@ class ObjetCouleurConsoles extends _ObjetCouleur_1._ObjetCouleur {
 		this.enService = {
 			fond: this.themeCouleur.sombre,
 			texte: this.blanc,
-			texteVert: "#00CC00",
-			texteRouge: "#FF0000",
+			texteVert: "var(--color-green-moyen)",
+			texteRouge: "var(--color-red-moyen)",
 		};
 		this.texte = this.themeNeutre.sombre;
 		this.bandeau = { fond: this.themeCouleur.foncee, texte: this.blanc };

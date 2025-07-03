@@ -1,7 +1,6 @@
 exports.DonneesListe_ListeEntreprises = void 0;
 const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
 const ObjetTraduction_1 = require("ObjetTraduction");
-const tag_1 = require("tag");
 const ObjetElement_1 = require("ObjetElement");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetDate_1 = require("ObjetDate");
@@ -10,13 +9,12 @@ const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetFenetre_FiltrePeriodeOffresStages_1 = require("ObjetFenetre_FiltrePeriodeOffresStages");
 const Enumere_Saisie_1 = require("Enumere_Saisie");
 const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const GUID_1 = require("GUID");
 class DonneesListe_ListeEntreprises extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees) {
 		super(aDonnees);
 		this.setOptions({
 			avecSelection: true,
-			avecEdition: false,
-			avecSuppression: false,
 			avecEvnt_Selection: true,
 			avecBoutonActionLigne: false,
 		});
@@ -35,42 +33,49 @@ class DonneesListe_ListeEntreprises extends ObjetDonneesListeFlatDesign_1.ObjetD
 		if (!aParams.article) {
 			return "";
 		}
-		const lStrEntreprise =
-			aParams.article.getLibelle() +
-			(!!aParams.article.nomCommercial
-				? ` ${(0, tag_1.tag)("span", { style: "font-weight:400;" }, "/ " + aParams.article.nomCommercial)}`
-				: "");
-		return lStrEntreprise;
+		const H = [];
+		H.push(aParams.article.getLibelle());
+		if (!!aParams.article.nomCommercial) {
+			H.push(
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
+						"span",
+						{ style: "font-weight:400;" },
+						" / ",
+						aParams.article.nomCommercial,
+					),
+				),
+			);
+		}
+		return H.join("");
 	}
 	getInfosSuppZonePrincipale(aParams) {
 		const lEntreprise = aParams.article;
 		const H = [];
 		if (!!lEntreprise) {
-			H.push(
-				!!lEntreprise.codePostal || !!lEntreprise.ville
-					? (0, tag_1.tag)(
-							"div",
-							(lEntreprise.codePostal || "") + " " + (lEntreprise.ville || ""),
-						)
-					: "",
-			);
-			H.push(
-				!!lEntreprise.activite
-					? (0, tag_1.tag)("div", lEntreprise.activite.getLibelle())
-					: "",
-			);
-			H.push(
-				!!lEntreprise.siret
-					? (0, tag_1.tag)(
-							"div",
-							ObjetTraduction_1.GTraductions.getValeur(
-								"OffreStage.titre.NumeroSiret",
-							) +
-								" : " +
-								lEntreprise.siret,
-						)
-					: "",
-			);
+			if (!!lEntreprise.codePostal || !!lEntreprise.ville) {
+				const lStrCPVille =
+					(lEntreprise.codePostal || "") + " " + (lEntreprise.ville || "");
+				H.push(IE.jsx.str("div", null, lStrCPVille));
+			}
+			if (!!lEntreprise.activite) {
+				H.push(IE.jsx.str("div", null, lEntreprise.activite.getLibelle()));
+			}
+			if (!!lEntreprise.siret) {
+				H.push(
+					IE.jsx.str(
+						"div",
+						null,
+						ObjetTraduction_1.GTraductions.getValeur(
+							"OffreStage.titre.NumeroSiret",
+						),
+						" : ",
+						lEntreprise.siret,
+					),
+				);
+			}
 		}
 		return H.join("");
 	}
@@ -83,28 +88,18 @@ class DonneesListe_ListeEntreprises extends ObjetDonneesListeFlatDesign_1.ObjetD
 					? lEntreprise.listeOffresStages.count()
 					: 0;
 				if (lNbOffres > 0) {
-					H.push(
-						(0, tag_1.tag)(
-							"div",
-							{ class: "offre-pourvu" },
-							lNbOffres +
-								` ${lNbOffres > 1 ? ObjetTraduction_1.GTraductions.getValeur("OffreStage.offres") : ObjetTraduction_1.GTraductions.getValeur("OffreStage.offre")}`,
-						),
-					);
+					const lStrOffres =
+						lNbOffres +
+						` ${lNbOffres > 1 ? ObjetTraduction_1.GTraductions.getValeur("OffreStage.offres") : ObjetTraduction_1.GTraductions.getValeur("OffreStage.offre")}`;
+					H.push(IE.jsx.str("div", { class: "offre-pourvu" }, lStrOffres));
 				}
 				if (lEntreprise.estPublie === false) {
-					H.push(
-						(0, tag_1.tag)(
-							"div",
-							IE.estMobile
-								? ObjetTraduction_1.GTraductions.getValeur(
-										"OffreStage.nonPubliee",
-									)
-								: ObjetTraduction_1.GTraductions.getValeur(
-										"OffreStage.nonPublieeSurEspaceParentsEleves",
-									),
-						),
-					);
+					const lStrEntrepriseNonPubliee = IE.estMobile
+						? ObjetTraduction_1.GTraductions.getValeur("OffreStage.nonPubliee")
+						: ObjetTraduction_1.GTraductions.getValeur(
+								"OffreStage.nonPublieeSurEspaceParentsEleves",
+							);
+					H.push(IE.jsx.str("div", null, lStrEntrepriseNonPubliee));
 				}
 			}
 		}
@@ -113,146 +108,224 @@ class DonneesListe_ListeEntreprises extends ObjetDonneesListeFlatDesign_1.ObjetD
 	getVisible(aArticle) {
 		return !aArticle || aArticle.visible;
 	}
-	getControleurFiltres(aInstance, aInstanceListe) {
-		const lOptions = aInstance.options;
-		return $.extend(
-			true,
-			super.getControleurFiltres(aInstance, aInstanceListe),
-			{
-				nbSemaines: {
-					getValue() {
-						return lOptions.filtre.nbrSemaines || "";
-					},
-					setValue(aValue) {
-						lOptions.filtre.nbrSemaines = parseInt(aValue);
-						if (
-							!MethodesObjet_1.MethodesObjet.isNumber(
-								lOptions.filtre.nbrSemaines,
-							)
-						) {
-							lOptions.filtre.nbrSemaines = 0;
-						}
-						aInstance._actualiserFiltres();
-					},
-				},
-				cbFiltreSeulementAvecOffres: {
-					getValue() {
-						return lOptions.filtre.seulementAvecOffres;
-					},
-					setValue(aValue) {
-						lOptions.filtre.seulementAvecOffres = aValue;
-						aInstance._actualiserFiltres();
-					},
-				},
-				selecPeriode: {
-					event() {
-						if (
-							lOptions.optionsInterface.avecPeriode &&
-							lOptions.optionsInterface.avecFiltrePeriode
-						) {
-							aInstance._evntOuvertureFenetrePeriode();
-						}
-					},
-					getLibelle() {
-						return lOptions.filtre.periode &&
-							lOptions.filtre.periode.getLibelle()
-							? lOptions.filtre.periode.getLibelle().ucfirst()
-							: " ";
-					},
-					getIcone() {
-						return (0, tag_1.tag)("i", { class: "icon_calendar_empty" });
-					},
-				},
-				sujet: {
-					getValue() {
-						return lOptions.filtre.sujet;
-					},
-					setValue(aValue) {
-						lOptions.filtre.sujet = aValue;
-						aInstance._actualiserFiltres();
-					},
-				},
-				afficherPeriode() {
-					return (
-						lOptions.optionsInterface.avecPeriode &&
-						lOptions.optionsInterface.avecFiltrePeriode
-					);
-				},
-				comboFiltreActivite: {
-					init(aCombo) {
-						aInstance.comboFiltreActivite = aCombo;
-						aCombo.setOptionsObjetSaisie({
-							mode: Enumere_Saisie_1.EGenreSaisie.Combo,
-							multiSelection: true,
-							longueur: 220,
-							libelleHaut: ObjetTraduction_1.GTraductions.getValeur(
-								"OffreStage.titre.Activite",
-							),
-							avecDesignMobile: true,
-							getInfosElementCB: function (aElement) {
-								const lEstCumul = aElement.getNumero() === -1;
-								return {
-									estCumul: lEstCumul,
-									estFilsCumul: function (aFils) {
-										return (
-											aElement.getGenre() === -1 &&
-											aElement.getGenre() !== aFils.getGenre()
-										);
-									},
-									setModifierSelection: function (aParametresModifie) {
-										if (
-											aParametresModifie.elementSourceSelectionne &&
-											aElement.getGenre() === -1 &&
-											aElement.getGenre() !==
-												aParametresModifie.elementSource.getGenre()
-										) {
-											return true;
-										}
-									},
-								};
-							},
-						});
-						aCombo.setDonnees(
-							lOptions.listeActivites,
-							lOptions.filtre.activite,
-						);
-						aCombo.setContenu(lOptions.filtre.activite);
-					},
-					event(aParametres) {
-						if (
-							Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
-								.selection === aParametres.genreEvenement &&
-							aParametres.listeSelections
-						) {
-							lOptions.filtre.activite = aParametres.listeSelections;
-							aInstance._actualiserFiltres();
-						}
-					},
-					destroy() {
-						aInstance.comboFiltreActivite = null;
-					},
-				},
+	jsxModeleRechercheSujet() {
+		return {
+			getValue: () => {
+				return this.options.filtre.sujet;
 			},
+			setValue: (aValue) => {
+				this.options.filtre.sujet = aValue;
+				this._actualiserFiltres();
+			},
+		};
+	}
+	jsxRechercheParNombreSemaines() {
+		return {
+			getValue: () => {
+				return this.options.filtre.nbrSemaines || "";
+			},
+			setValue: (aValue) => {
+				this.options.filtre.nbrSemaines = parseInt(aValue);
+				if (
+					!MethodesObjet_1.MethodesObjet.isNumber(
+						this.options.filtre.nbrSemaines,
+					)
+				) {
+					this.options.filtre.nbrSemaines = 0;
+				}
+				this._actualiserFiltres();
+			},
+		};
+	}
+	jsxModeleCheckboxRecherchesEntreprisesAvecOffresStages() {
+		return {
+			getValue: () => {
+				return this.options.filtre.seulementAvecOffres;
+			},
+			setValue: (aValue) => {
+				this.options.filtre.seulementAvecOffres = aValue;
+				this._actualiserFiltres();
+			},
+		};
+	}
+	jsxAvecAffichageRecherchePeriodes() {
+		return (
+			this.options.optionsInterface.avecPeriode &&
+			this.options.optionsInterface.avecFiltrePeriode
 		);
+	}
+	jsxModelBtnSelecteurRecherchePeriodes() {
+		return {
+			event: () => {
+				if (
+					this.options.optionsInterface.avecPeriode &&
+					this.options.optionsInterface.avecFiltrePeriode
+				) {
+					this._evntOuvertureFenetrePeriode();
+				}
+			},
+			getLibelle: () => {
+				return this.options.filtre.periode &&
+					this.options.filtre.periode.getLibelle()
+					? this.options.filtre.periode.getLibelle().ucfirst()
+					: " ";
+			},
+			getIcone: () => {
+				return "icon_calendar_empty";
+			},
+		};
+	}
+	jsxComboModelRechercheActivites() {
+		return {
+			init: (aCombo) => {
+				this.comboFiltreActivite = aCombo;
+				aCombo.setOptionsObjetSaisie({
+					mode: Enumere_Saisie_1.EGenreSaisie.Combo,
+					multiSelection: true,
+					longueur: 220,
+					libelleHaut: ObjetTraduction_1.GTraductions.getValeur(
+						"OffreStage.titre.Activite",
+					),
+					avecDesignMobile: true,
+					getInfosElementCB: function (aElement) {
+						const lEstCumul = aElement.getNumero() === -1;
+						return {
+							estCumul: lEstCumul,
+							estFilsCumul: function (aFils) {
+								return (
+									aElement.getGenre() === -1 &&
+									aElement.getGenre() !== aFils.getGenre()
+								);
+							},
+							setModifierSelection: function (aParametresModifie) {
+								if (
+									aParametresModifie.elementSourceSelectionne &&
+									aElement.getGenre() === -1 &&
+									aElement.getGenre() !==
+										aParametresModifie.elementSource.getGenre()
+								) {
+									return true;
+								}
+							},
+						};
+					},
+				});
+				aCombo.setDonnees(
+					this.options.listeActivites,
+					this.options.filtre.activite,
+				);
+				aCombo.setContenu(this.options.filtre.activite);
+			},
+			event: (aParams) => {
+				if (
+					Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+						.selection === aParams.genreEvenement &&
+					aParams.listeSelections
+				) {
+					this.options.filtre.activite = aParams.listeSelections;
+					this._actualiserFiltres();
+				}
+			},
+			destroy: () => {
+				this.comboFiltreActivite = null;
+			},
+		};
 	}
 	construireFiltres() {
 		if (!this.options.filtre) {
 			return "";
 		}
+		const lIdDuree = GUID_1.GUID.getId();
+		const lIdPeriode = GUID_1.GUID.getId();
 		const H = [];
-		H.push('<div class="filtre-conteneur-mobile">');
 		H.push(
-			`<div class="champs-filtre">\n              <input type="text" ie-model="sujet" class="round-style full-width sujet" placeholder="${ObjetTraduction_1.GTraductions.getValeur("OffreStage.titre.Sujet")}"/>\n            </div>\n\n            <div class="champs-filtre">\n              <ie-combo ie-model="comboFiltreActivite" class="combo-mobile flex-wrap full-width on-mobile"></ie-combo>\n            </div>`,
+			IE.jsx.str(
+				"div",
+				{ class: "filtre-conteneur-mobile" },
+				IE.jsx.str(
+					"div",
+					{ class: "champs-filtre" },
+					IE.jsx.str("input", {
+						type: "text",
+						"ie-model": this.jsxModeleRechercheSujet.bind(this),
+						class: "full-width sujet",
+						placeholder: ObjetTraduction_1.GTraductions.getValeur(
+							"OffreStage.titre.Sujet",
+						),
+						"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+							"OffreStage.titre.Sujet",
+						),
+					}),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "champs-filtre" },
+					IE.jsx.str("ie-combo", {
+						"ie-model": this.jsxComboModelRechercheActivites.bind(this),
+						class: "combo-mobile flex-wrap full-width on-mobile",
+					}),
+				),
+				IE.jsx.str(
+					"div",
+					{
+						"ie-if": this.jsxAvecAffichageRecherchePeriodes.bind(this),
+						class: "champs-filtre",
+					},
+					IE.jsx.str(
+						"label",
+						{ id: lIdPeriode },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"OffreStage.titre.Periode",
+						),
+					),
+					IE.jsx.str("ie-btnselecteur", {
+						"aria-labelledby": lIdPeriode,
+						"ie-model": this.jsxModelBtnSelecteurRecherchePeriodes.bind(this),
+						style: "background-color:transparent",
+					}),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "champs-filtre" },
+					IE.jsx.str(
+						"div",
+						{ class: "flex-contain flex-center duree-stage" },
+						IE.jsx.str(
+							"label",
+							{ for: lIdDuree },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"OffreStage.dureeMinimale",
+							),
+						),
+						IE.jsx.str("input", {
+							id: lIdDuree,
+							type: "text",
+							"ie-model": this.jsxRechercheParNombreSemaines.bind(this),
+							"ie-mask": "/[^0-9]/i",
+							style: { width: "4.3rem" },
+							maxlength: "2",
+							class: "semaine",
+						}),
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "fields-wrapper champs-filtre" },
+					IE.jsx.str(
+						"ie-checkbox",
+						{
+							"ie-model":
+								this.jsxModeleCheckboxRecherchesEntreprisesAvecOffresStages.bind(
+									this,
+								),
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"OffreStage.titre.FiltreSeulementAvecOffre",
+						),
+					),
+				),
+			),
 		);
-		H.push(
-			`<div ie-if="afficherPeriode" class="champs-filtre">\n    <label>${ObjetTraduction_1.GTraductions.getValeur("OffreStage.titre.Periode")}</label>\n    <ie-btnselecteur ie-model="selecPeriode" placeholder="" style="background-color:transparent"></ie-btnselecteur>\n</div>`,
-		);
-		H.push(
-			`<div class="champs-filtre">\n              <label class="flex-contain flex-center duree-stage">\n                ${ObjetTraduction_1.GTraductions.getValeur("OffreStage.dureeMinimale")}\n                <input type="text" ie-model="nbSemaines" ie-mask="/[^0-9]/i" size="2" maxlength="2" class="round-style semaine" />\n              </label>\n            </div>`,
-		);
-		H.push(`<div class="fields-wrapper champs-filtre">\n              <ie-checkbox ie-textleft ie-model="cbFiltreSeulementAvecOffres">${ObjetTraduction_1.GTraductions.getValeur("OffreStage.titre.FiltreSeulementAvecOffre")}
-            </div>`);
-		H.push("</div>");
 		return H.join("");
 	}
 	reinitFiltres() {

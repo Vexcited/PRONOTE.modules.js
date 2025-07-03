@@ -3,10 +3,11 @@ const JournalLog = require("Enumere_EvenementsJournalLogs");
 const Callback_1 = require("Callback");
 const Enumere_CategorieEvenement_1 = require("Enumere_CategorieEvenement");
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const AccessApp_1 = require("AccessApp");
 class GestionnaireEvenements {
 	constructor(aAvecJournal) {
 		this.avecJournal = aAvecJournal;
-		this.objetApplicationConsoles = GApplication;
+		this.objetApplicationConsoles = (0, AccessApp_1.getApp)();
 		this.messagesEvenements =
 			this.objetApplicationConsoles.msgEvnts.getMessagesUnite(
 				"GestionnaireEvenements.js",
@@ -22,18 +23,22 @@ class GestionnaireEvenements {
 	afficherMessage(aMessage, aCallback) {
 		try {
 			if (aCallback instanceof Callback_1.Callback) {
-				GApplication.getMessage().afficher({
-					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-					message: aMessage,
-					callback: () => {
-						aCallback.appel();
-					},
-				});
+				(0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+						message: aMessage,
+						callback: () => {
+							aCallback.appel();
+						},
+					});
 			} else {
-				GApplication.getMessage().afficher({
-					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-					message: aMessage,
-				});
+				(0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+						message: aMessage,
+					});
 			}
 		} catch (e) {
 			alert(aMessage);

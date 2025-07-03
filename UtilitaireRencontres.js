@@ -1,25 +1,26 @@
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { TypeEnsembleNombre } = require("TypeEnsembleNombre.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { TypeVoeuRencontreUtil } = require("Enumere_VoeuRencontre.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
+exports.TUtilitaireRencontre = TUtilitaireRencontre;
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TypeEnsembleNombre_1 = require("TypeEnsembleNombre");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_VoeuRencontre_1 = require("Enumere_VoeuRencontre");
+const ObjetFenetre_1 = require("ObjetFenetre");
 function TUtilitaireRencontre() {}
 TUtilitaireRencontre.chercherIndiceSessionProchaineSession = function (
 	aListeSessionsRencontre,
 ) {
-	const lDateCourante = GDate.getDateCourante();
-	let lDateLaPlusProche = GDate.derniereDate;
+	const lDateCourante = ObjetDate_1.GDate.getDateCourante();
+	let lDateLaPlusProche = ObjetDate_1.GDate.derniereDate;
 	let lIndiceTrouve = aListeSessionsRencontre.count() - 1;
 	for (let lIndice = 0; lIndice < aListeSessionsRencontre.count(); lIndice++) {
 		const lSession = aListeSessionsRencontre.get(lIndice);
 		if (
-			(GDate.estJourEgal(lSession.date, lDateCourante) ||
+			(ObjetDate_1.GDate.estJourEgal(lSession.date, lDateCourante) ||
 				lSession.date > lDateCourante) &&
 			lSession.date < lDateLaPlusProche
 		) {
@@ -33,24 +34,28 @@ TUtilitaireRencontre.formaterListeSessionsRencontrePourCombo = function (
 	aListeSessionsRencontre,
 	aPourMobile,
 ) {
-	const lResult = new ObjetListeElements();
+	const lResult = new ObjetListeElements_1.ObjetListeElements();
 	if (!!aListeSessionsRencontre) {
 		aListeSessionsRencontre.parcourir((D) => {
-			const lCopieSession = MethodesObjet.dupliquer(D);
+			const lCopieSession = MethodesObjet_1.MethodesObjet.dupliquer(D);
 			const lNouveauLibelle = [];
 			if (aPourMobile) {
 				lCopieSession.sousTitre = D.getLibelle();
 				lNouveauLibelle.push(
-					GDate.formatDate(
+					ObjetDate_1.GDate.formatDate(
 						D.date,
-						"[" + GTraductions.getValeur("Le").ucfirst() + " %JJJJ %JJ %MMMM]",
+						"[" +
+							ObjetTraduction_1.GTraductions.getValeur("Le").ucfirst() +
+							" %JJJJ %JJ %MMMM]",
 					),
 				);
 			} else {
 				lNouveauLibelle.push(
-					GDate.formatDate(
+					ObjetDate_1.GDate.formatDate(
 						D.date,
-						"[" + GTraductions.getValeur("Le").ucfirst() + " %JJJJ %JJ %MMMM]",
+						"[" +
+							ObjetTraduction_1.GTraductions.getValeur("Le").ucfirst() +
+							" %JJJJ %JJ %MMMM]",
 					),
 					" - ",
 					D.getLibelle(),
@@ -100,7 +105,7 @@ TUtilitaireRencontre.laRencontreEstUneRencontreDePersonnel = function (
 TUtilitaireRencontre.construitListeInterlocuteursTriees = function (
 	aRencontre,
 ) {
-	const lListeInterlocuteurs = new ObjetListeElements();
+	const lListeInterlocuteurs = new ObjetListeElements_1.ObjetListeElements();
 	if (this.laRencontreEstUneRencontreDePersonnel(aRencontre)) {
 		lListeInterlocuteurs.add(aRencontre.personnels);
 		lListeInterlocuteurs.add(aRencontre.professeurs);
@@ -215,7 +220,7 @@ TUtilitaireRencontre.getLimiteNbSaisissable = function (
 };
 TUtilitaireRencontre.getPlaceEnHeure = function (aPlace) {
 	const lDate = TUtilitaireRencontre.getPlaceEnDate(aPlace);
-	return GDate.formatDate(lDate, "%hh%sh%mm");
+	return ObjetDate_1.GDate.formatDate(lDate, "%hh%sh%mm");
 };
 TUtilitaireRencontre.getPlaceEnDate = function (aPlace) {
 	const lHeure = Math.floor(aPlace / 60);
@@ -243,16 +248,19 @@ TUtilitaireRencontre.calculePlacesDisponibilites = function (
 			aPlaceDebutSession,
 			aPas,
 		);
-	const lIndisponibilitesCompletes = new TypeEnsembleNombre();
+	const lIndisponibilitesCompletes =
+		new TypeEnsembleNombre_1.TypeEnsembleNombre();
 	lIndisponibilitesCompletes.add(aIndisponibilitesPersonnelles);
-	const placesDisponibilites = new ObjetListeElements();
+	const placesDisponibilites = new ObjetListeElements_1.ObjetListeElements();
 	let lDispoCourante = null;
 	let indexZone = 0;
 	for (let i = lPlaceDebutHeurePleine; i < aPlaceFinSession; i += aPas) {
 		if (i >= aPlaceDebutSession) {
 			if (!lIndisponibilitesCompletes.contains(indexZone)) {
 				if (lDispoCourante === null) {
-					lDispoCourante = new ObjetElement({ placeDebut: i });
+					lDispoCourante = ObjetElement_1.ObjetElement.create({
+						placeDebut: i,
+					});
 				}
 			} else {
 				if (lDispoCourante !== null) {
@@ -301,15 +309,25 @@ TUtilitaireRencontre.concernePlusieursGenreInterlocuteurs = function (
 		const lListeGenreInterlocuteurs = [];
 		aListeRencontres.parcourir((D) => {
 			if (!!D.professeurs && D.professeurs.count() > 0) {
-				if (lListeGenreInterlocuteurs.indexOf(EGenreEspace.Professeur) === -1) {
-					lListeGenreInterlocuteurs.push(EGenreEspace.Professeur);
+				if (
+					lListeGenreInterlocuteurs.indexOf(
+						Enumere_Espace_1.EGenreEspace.Professeur,
+					) === -1
+				) {
+					lListeGenreInterlocuteurs.push(
+						Enumere_Espace_1.EGenreEspace.Professeur,
+					);
 				}
 			}
 			if (!!D.personnels && D.personnels.count() > 0) {
 				if (
-					lListeGenreInterlocuteurs.indexOf(EGenreEspace.Etablissement) === -1
+					lListeGenreInterlocuteurs.indexOf(
+						Enumere_Espace_1.EGenreEspace.Etablissement,
+					) === -1
 				) {
-					lListeGenreInterlocuteurs.push(EGenreEspace.Etablissement);
+					lListeGenreInterlocuteurs.push(
+						Enumere_Espace_1.EGenreEspace.Etablissement,
+					);
 				}
 			}
 			if (lListeGenreInterlocuteurs.length > 1) {
@@ -323,7 +341,7 @@ TUtilitaireRencontre.concernePlusieursGenreInterlocuteurs = function (
 TUtilitaireRencontre.formaterListeRencontresAvecProfesseurs = function (
 	aListeRencontres,
 ) {
-	const result = new ObjetListeElements();
+	const result = new ObjetListeElements_1.ObjetListeElements();
 	const lAvecLignesCumul =
 		TUtilitaireRencontre.concernePlusieursGenreInterlocuteurs(aListeRencontres);
 	aListeRencontres.parcourir((D) => {
@@ -336,31 +354,32 @@ TUtilitaireRencontre.formaterListeRencontresAvecProfesseurs = function (
 				!TUtilitaireRencontre.laRencontreEstUneRencontreDePersonnel(D);
 			if (lAjoutSousDeploiementProfesseur) {
 				let lPereProfesseur = result.getElementParNumero(
-					EGenreEspace.Professeur,
+					Enumere_Espace_1.EGenreEspace.Professeur,
 				);
 				if (!lPereProfesseur) {
-					lPereProfesseur = new ObjetElement(
-						GTraductions.getValeur("Rencontres.professeurs"),
-						EGenreEspace.Professeur,
+					lPereProfesseur = new ObjetElement_1.ObjetElement(
+						ObjetTraduction_1.GTraductions.getValeur("Rencontres.professeurs"),
+						Enumere_Espace_1.EGenreEspace.Professeur,
 					);
 					lPereProfesseur.estUnDeploiement = true;
 					lPereProfesseur.estDeploye = true;
-					lPereProfesseur.Genre = EGenreRessource.Enseignant;
+					lPereProfesseur.Genre =
+						Enumere_Ressource_1.EGenreRessource.Enseignant;
 					result.addElement(lPereProfesseur);
 				}
 				D.pere = lPereProfesseur;
 			} else {
 				let lPerePersonnel = result.getElementParNumero(
-					EGenreEspace.Etablissement,
+					Enumere_Espace_1.EGenreEspace.Etablissement,
 				);
 				if (!lPerePersonnel) {
-					lPerePersonnel = new ObjetElement(
-						GTraductions.getValeur("Rencontres.personnels"),
-						EGenreEspace.Etablissement,
+					lPerePersonnel = new ObjetElement_1.ObjetElement(
+						ObjetTraduction_1.GTraductions.getValeur("Rencontres.personnels"),
+						Enumere_Espace_1.EGenreEspace.Etablissement,
 					);
 					lPerePersonnel.estUnDeploiement = true;
 					lPerePersonnel.estDeploye = true;
-					lPerePersonnel.Genre = EGenreRessource.Personnel;
+					lPerePersonnel.Genre = Enumere_Ressource_1.EGenreRessource.Personnel;
 					result.addElement(lPerePersonnel);
 				}
 				D.pere = lPerePersonnel;
@@ -368,15 +387,15 @@ TUtilitaireRencontre.formaterListeRencontresAvecProfesseurs = function (
 		}
 	});
 	result.setTri([
-		ObjetTri.init((D) => {
+		ObjetTri_1.ObjetTri.init((D) => {
 			return !!D.pere
-				? D.pere.getNumero() !== EGenreEspace.Professeur
-				: D.getNumero() !== EGenreEspace.Professeur;
+				? D.pere.getNumero() !== Enumere_Espace_1.EGenreEspace.Professeur
+				: D.getNumero() !== Enumere_Espace_1.EGenreEspace.Professeur;
 		}),
-		ObjetTri.init((D) => {
+		ObjetTri_1.ObjetTri.init((D) => {
 			return !D.estUnDeploiement;
 		}),
-		ObjetTri.init((D) => {
+		ObjetTri_1.ObjetTri.init((D) => {
 			if (
 				!!D.pere &&
 				!!D.listeInterlocuteursTriees &&
@@ -400,7 +419,7 @@ TUtilitaireRencontre.formaterListeRencontresAvecParents = function (
 			aRencontre.strMatiereFonction === aLibelleMatiere
 		);
 	}
-	const lListeDesiderata = new ObjetListeElements();
+	const lListeDesiderata = new ObjetListeElements_1.ObjetListeElements();
 	let lPere;
 	let lNrElevePrecedent;
 	let lEleve;
@@ -409,8 +428,8 @@ TUtilitaireRencontre.formaterListeRencontresAvecParents = function (
 	for (let i = 0; i < aListeDonnees.count(); i++) {
 		const lElement = aListeDonnees.get(i);
 		if (!lPere || lPere.classe.getNumero() !== lElement.classe.getNumero()) {
-			lPere = new ObjetElement("", null, 1);
-			lPere.classe = MethodesObjet.dupliquer(lElement.classe);
+			lPere = new ObjetElement_1.ObjetElement("", null, 1);
+			lPere.classe = MethodesObjet_1.MethodesObjet.dupliquer(lElement.classe);
 			lPere.titre = lPere.classe.getLibelle();
 			lPere.estUneClasse = true;
 			lPere.estUnDeploiement = true;
@@ -435,9 +454,11 @@ TUtilitaireRencontre.formaterListeRencontresAvecParents = function (
 				lNrEleve !== lNrElevePrecedent ||
 				lStrMatiereFonction !== lStrMatiereFonctionPrecedente
 			) {
-				lEleve = new ObjetElement("", null, 2);
-				lEleve.classe = MethodesObjet.dupliquer(lElement.classe);
-				lEleve.eleve = MethodesObjet.dupliquer(lElement.eleve);
+				lEleve = new ObjetElement_1.ObjetElement("", null, 2);
+				lEleve.classe = MethodesObjet_1.MethodesObjet.dupliquer(
+					lElement.classe,
+				);
+				lEleve.eleve = MethodesObjet_1.MethodesObjet.dupliquer(lElement.eleve);
 				lEleve.pere = lPere;
 				lEleve.titre =
 					lElement.eleve.getLibelle() +
@@ -471,26 +492,29 @@ TUtilitaireRencontre.ouvrirFenetreLegende = function (aListeVoeux) {
 	if (aListeVoeux) {
 		const H = ['<ul class="legende-rencontres">'];
 		aListeVoeux.parcourir((aVoeu) => {
-			const lLabel = TypeVoeuRencontreUtil.getLibelle(aVoeu.getGenre());
+			const lLabel = Enumere_VoeuRencontre_1.TypeVoeuRencontreUtil.getLibelle(
+				aVoeu.getGenre(),
+			);
 			H.push(
-				`<li>\n        <ie-radio tabindex="-1" aria-hidden="true" checked class="as-chips ${TypeVoeuRencontreUtil.getClass(aVoeu.getGenre())}">${lLabel}</ie-radio>\n        <p><span class="sr-only">${lLabel}&nbsp;</span>${aVoeu.legende}</p>`,
+				`<li>\n        <ie-radio tabindex="-1" aria-hidden="true" checked class="as-chips ${Enumere_VoeuRencontre_1.TypeVoeuRencontreUtil.getClass(aVoeu.getGenre())}">${lLabel}</ie-radio>\n        <p><span class="sr-only">${lLabel}&nbsp;</span>${aVoeu.legende}</p>`,
 			);
 		});
-		const lFenetre = ObjetFenetre.creerInstanceFenetre(ObjetFenetre, {
-			pere: this,
-			initialiser: function (aInstance) {
-				aInstance.duree = this.duree;
-				aInstance.setOptionsFenetre({
-					titre: GTraductions.getValeur("Legende"),
-					largeur: 525,
-					hauteur: 250,
-					listeBoutons: [GTraductions.getValeur("Fermer")],
-				});
+		const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_1.ObjetFenetre,
+			{
+				pere: this,
+				initialiser: function (aInstance) {
+					aInstance.setOptionsFenetre({
+						titre: ObjetTraduction_1.GTraductions.getValeur("Legende"),
+						largeur: 525,
+						hauteur: 250,
+						listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
+					});
+				},
 			},
-		});
+		);
 		lFenetre.afficher(H.join(""));
 	} else {
 	}
 	return;
 };
-module.exports = { TUtilitaireRencontre };

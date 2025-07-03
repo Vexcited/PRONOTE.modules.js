@@ -1,17 +1,20 @@
-const { ObjetElement } = require("ObjetElement.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GDate } = require("ObjetDate.js");
-const { TypeNote } = require("TypeNote.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreEleveDansDevoir } = require("Enumere_EleveDansDevoir.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { TypeFichierExterneHttpSco } = require("TypeFichierExterneHttpSco.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenrePeriodeDeNotation } = require("Enumere_PeriodeDeNotation.js");
-const { ObjetUtilitaireDevoir } = require("ObjetUtilitaireDevoir.js");
+exports.MoteurNotes = void 0;
+const ObjetElement_1 = require("ObjetElement");
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetDate_1 = require("ObjetDate");
+const TypeNote_1 = require("TypeNote");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_EleveDansDevoir_1 = require("Enumere_EleveDansDevoir");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const TypeFichierExterneHttpSco_1 = require("TypeFichierExterneHttpSco");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_PeriodeDeNotation_1 = require("Enumere_PeriodeDeNotation");
+const ObjetUtilitaireDevoir_1 = require("ObjetUtilitaireDevoir");
+const AccessApp_1 = require("AccessApp");
 class MoteurNotes {
 	constructor(aParam) {
+		this.estMoteurHP = false;
 		this.setContexte(aParam);
 		this.estMoteurPN = true;
 	}
@@ -39,8 +42,8 @@ class MoteurNotes {
 			}
 		}
 		return lDansClasse && lDansGroupe
-			? EGenreEleveDansDevoir.Oui
-			: EGenreEleveDansDevoir.Non;
+			? Enumere_EleveDansDevoir_1.EGenreEleveDansDevoir.Oui
+			: Enumere_EleveDansDevoir_1.EGenreEleveDansDevoir.Non;
 	}
 	devoirDansPeriode(aDevoir, aEleve, aNumeroPeriode) {
 		try {
@@ -78,9 +81,10 @@ class MoteurNotes {
 							if (
 								this.laPeriodeEstClotureePourNotation({
 									periode: aPeriode,
-									listeClasses: new ObjetListeElements().addElement(
-										lClasseDevoir,
-									),
+									listeClasses:
+										new ObjetListeElements_1.ObjetListeElements().addElement(
+											lClasseDevoir,
+										),
 								})
 							) {
 								aEleveDevoir.Actif = false;
@@ -123,7 +127,8 @@ class MoteurNotes {
 				if (
 					this.laPeriodeEstClotureePourNotation({
 						periode: aPeriode,
-						listeClasses: new ObjetListeElements().addElement(aClasse),
+						listeClasses:
+							new ObjetListeElements_1.ObjetListeElements().addElement(aClasse),
 					})
 				) {
 					lCloture = true;
@@ -137,17 +142,21 @@ class MoteurNotes {
 		return lCloture;
 	}
 	creerDevoirParDefaut(aParam) {
-		const lDevoir = new ObjetElement();
-		const lDateCourante = GDate.getDateCourante();
+		const lDevoir = new ObjetElement_1.ObjetElement();
+		const lDateCourante = ObjetDate_1.GDate.getDateCourante();
 		lDevoir.service = aParam.service;
 		lDevoir.estDevoirEditable = lDevoir.service.getActif();
-		lDevoir.matiere = MethodesObjet.dupliquer(aParam.matiere);
+		lDevoir.matiere = MethodesObjet_1.MethodesObjet.dupliquer(aParam.matiere);
 		lDevoir.date = lDateCourante;
-		lDevoir.coefficient = new TypeNote(1.0);
-		lDevoir.bareme = new TypeNote(aParam.baremeParDefaut.getValeur());
+		lDevoir.coefficient = new TypeNote_1.TypeNote(1.0);
+		lDevoir.bareme = new TypeNote_1.TypeNote(
+			aParam.baremeParDefaut.getValeur(),
+		);
 		lDevoir.commentaire = "";
 		lDevoir.datePublication =
-			ObjetUtilitaireDevoir.getDatePublicationDevoirParDefaut(lDevoir.date);
+			ObjetUtilitaireDevoir_1.ObjetUtilitaireDevoir.getDatePublicationDevoirParDefaut(
+				lDevoir.date,
+			);
 		lDevoir.listeClasses = creerDevoirParDefautListeClasses.call(this, {
 			listeClasses: aParam.listeClasses,
 			periode: aParam.periode,
@@ -161,18 +170,23 @@ class MoteurNotes {
 		lDevoir.ramenerSur20 = false;
 		lDevoir.listeSujet = "";
 		lDevoir.libelleCorrige = "";
-		lDevoir.listeSujets = new ObjetListeElements();
-		lDevoir.listeCorriges = new ObjetListeElements();
-		lDevoir.libelleCBTheme = GTraductions.getValeur("Theme.libelleCB.devoir");
+		lDevoir.listeSujets = new ObjetListeElements_1.ObjetListeElements();
+		lDevoir.listeCorriges = new ObjetListeElements_1.ObjetListeElements();
+		lDevoir.libelleCBTheme = ObjetTraduction_1.GTraductions.getValeur(
+			"Theme.libelleCB.devoir",
+		);
 		lDevoir.avecCommentaireSurNoteEleve = false;
-		lDevoir.setEtat(EGenreEtat.Creation);
+		lDevoir.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 		return lDevoir;
 	}
 	creerDevoirParDefautListeEleves(aParam) {
-		const lListeEleves = new ObjetListeElements();
+		const lListeEleves = new ObjetListeElements_1.ObjetListeElements();
 		aParam.listeEleves.parcourir((aEleve) => {
-			const lEleveDevoir = new ObjetElement("", aEleve.getNumero());
-			lEleveDevoir.Note = new TypeNote("");
+			const lEleveDevoir = new ObjetElement_1.ObjetElement(
+				"",
+				aEleve.getNumero(),
+			);
+			lEleveDevoir.Note = new TypeNote_1.TypeNote("");
 			lListeEleves.addElement(lEleveDevoir);
 		});
 		return lListeEleves;
@@ -230,25 +244,28 @@ class MoteurNotes {
 	}
 	getEleveDevoirParNumero(aParam) {
 		const lDevoir = this.getDevoirParNumero(aParam);
-		return lDevoir.listeEleves.getElementParNumero(aParam.numeroEleve);
+		return lDevoir
+			? lDevoir.listeEleves.getElementParNumero(aParam.numeroEleve)
+			: null;
 	}
 	getNoteEleveAuDevoirParNumero(aParam) {
 		const lEleveDevoir = this.getEleveDevoirParNumero(aParam);
-		return lEleveDevoir !== null && lEleveDevoir !== undefined
-			? lEleveDevoir.Note
-			: null;
+		return lEleveDevoir ? lEleveDevoir.Note : null;
 	}
 	getTailleMaxCommentaire() {
-		return GParametres.tailleCommentaireDevoir;
+		return (0, AccessApp_1.getApp)().getObjetParametres()
+			.tailleCommentaireDevoir;
 	}
 	getTailleMaxPieceJointe() {
-		return GApplication.droits.get(TypeDroits.tailleMaxDocJointEtablissement);
+		return (0, AccessApp_1.getApp)().droits.get(
+			ObjetDroitsPN_1.TypeDroits.tailleMaxDocJointEtablissement,
+		);
 	}
 	getEGenreSujet() {
-		return TypeFichierExterneHttpSco.DevoirSujet;
+		return TypeFichierExterneHttpSco_1.TypeFichierExterneHttpSco.DevoirSujet;
 	}
 	getEGenreCorrige() {
-		return TypeFichierExterneHttpSco.DevoirCorrige;
+		return TypeFichierExterneHttpSco_1.TypeFichierExterneHttpSco.DevoirCorrige;
 	}
 	synchroniserSujetEtCorrige(aParam) {
 		const lDevoir = aParam.devoir;
@@ -276,7 +293,7 @@ class MoteurNotes {
 		for (let i = 0, lNbr = lDevoir.listeEleves.count(); i < lNbr; i++) {
 			const lEleve = lDevoir.listeEleves.get(i);
 			if (lEleve.Note.getValeur() > lBareme) {
-				lEleve.Note = new TypeNote(lBareme);
+				lEleve.Note = new TypeNote_1.TypeNote(lBareme);
 				lEleve.setEtat(lDevoir.Modification);
 			}
 		}
@@ -304,46 +321,57 @@ class MoteurNotes {
 		);
 	}
 	getTitrePeriodes(aParam) {
+		const lObjetParam = (0, AccessApp_1.getApp)().getObjetParametres();
 		const lTitrePeriode = [];
 		if (aParam.avecTrimestre) {
 			lTitrePeriode.push(
-				new ObjetElement(
-					GTraductions.getValeur("PageNotes.MoyenneT1"),
-					GParametres.getPeriodeDeNotationParGenre(
-						EGenrePeriodeDeNotation.Trimestre1,
-					).getNumero(),
+				new ObjetElement_1.ObjetElement(
+					ObjetTraduction_1.GTraductions.getValeur("PageNotes.MoyenneT1"),
+					lObjetParam
+						.getPeriodeDeNotationParGenre(
+							Enumere_PeriodeDeNotation_1.EGenrePeriodeDeNotation.Trimestre1,
+						)
+						.getNumero(),
 					2,
 				),
-				new ObjetElement(
-					GTraductions.getValeur("PageNotes.MoyenneT2"),
-					GParametres.getPeriodeDeNotationParGenre(
-						EGenrePeriodeDeNotation.Trimestre2,
-					).getNumero(),
+				new ObjetElement_1.ObjetElement(
+					ObjetTraduction_1.GTraductions.getValeur("PageNotes.MoyenneT2"),
+					lObjetParam
+						.getPeriodeDeNotationParGenre(
+							Enumere_PeriodeDeNotation_1.EGenrePeriodeDeNotation.Trimestre2,
+						)
+						.getNumero(),
 					2,
 				),
-				new ObjetElement(
-					GTraductions.getValeur("PageNotes.MoyenneT3"),
-					GParametres.getPeriodeDeNotationParGenre(
-						EGenrePeriodeDeNotation.Trimestre3,
-					).getNumero(),
+				new ObjetElement_1.ObjetElement(
+					ObjetTraduction_1.GTraductions.getValeur("PageNotes.MoyenneT3"),
+					lObjetParam
+						.getPeriodeDeNotationParGenre(
+							Enumere_PeriodeDeNotation_1.EGenrePeriodeDeNotation.Trimestre3,
+						)
+						.getNumero(),
 					2,
 				),
 			);
 		}
 		if (aParam.avecSemestre) {
 			lTitrePeriode.push(
-				new ObjetElement(
-					GTraductions.getValeur("PageNotes.MoyenneS1"),
-					GParametres.getPeriodeDeNotationParGenre(
-						EGenrePeriodeDeNotation.Semestre1,
-					).getNumero(),
+				new ObjetElement_1.ObjetElement(
+					ObjetTraduction_1.GTraductions.getValeur("PageNotes.MoyenneS1"),
+					lObjetParam
+						.getPeriodeDeNotationParGenre(
+							Enumere_PeriodeDeNotation_1.EGenrePeriodeDeNotation.Semestre1,
+						)
+						.getNumero(),
 					2,
 				),
-				new ObjetElement(
-					GTraductions.getValeur("PageNotes.MoyenneS2"),
-					GParametres.getPeriodeDeNotationParGenre(
-						EGenrePeriodeDeNotation.Semestre2,
-					).getNumero(),
+				new ObjetElement_1.ObjetElement(
+					ObjetTraduction_1.GTraductions.getValeur("PageNotes.MoyenneS2"),
+					lObjetParam
+						.getPeriodeDeNotationParGenre(
+							Enumere_PeriodeDeNotation_1.EGenrePeriodeDeNotation.Semestre2,
+						)
+						.getNumero(),
 					2,
 				),
 			);
@@ -425,19 +453,25 @@ class MoteurNotes {
 	estPeriodeActuelleToutes() {
 		return false;
 	}
+	getGenreRattrapage(aGenreRattrapage) {
+		return "";
+	}
 }
+exports.MoteurNotes = MoteurNotes;
 function creerDevoirParDefautListeClasses(aParam) {
-	const llisteClasses = new ObjetListeElements();
+	const llisteClasses = new ObjetListeElements_1.ObjetListeElements();
 	aParam.listeClasses.parcourir((aClasse) => {
-		const lClasseDevoir = MethodesObjet.dupliquer(aClasse);
-		lClasseDevoir.service = MethodesObjet.dupliquer(aClasse.service);
+		const lClasseDevoir = MethodesObjet_1.MethodesObjet.dupliquer(aClasse);
+		lClasseDevoir.service = MethodesObjet_1.MethodesObjet.dupliquer(
+			aClasse.service,
+		);
 		let lPeriode = aClasse.listePeriodes.getElementParNumero(
 			aParam.periode.getNumero(),
 		);
 		if (!lPeriode) {
 			lPeriode = aClasse.periodeParDefaut;
 		}
-		const lPremierePeriodeDevoir = new ObjetElement(
+		const lPremierePeriodeDevoir = new ObjetElement_1.ObjetElement(
 			lPeriode.getLibelle(),
 			lPeriode.getNumero(),
 			null,
@@ -446,10 +480,10 @@ function creerDevoirParDefautListeClasses(aParam) {
 		);
 		lPremierePeriodeDevoir.estEvaluationCloturee =
 			lPeriode.estEvaluationCloturee;
-		lClasseDevoir.listePeriodes = new ObjetListeElements();
+		lClasseDevoir.listePeriodes = new ObjetListeElements_1.ObjetListeElements();
 		lClasseDevoir.listePeriodes.addElement(lPremierePeriodeDevoir);
 		lClasseDevoir.listePeriodes.addElement(
-			new ObjetElement("", 0, null, null, true),
+			new ObjetElement_1.ObjetElement("", 0, null, null, true),
 		);
 		llisteClasses.addElement(lClasseDevoir);
 	});
@@ -465,4 +499,3 @@ function _getContexteAffichage(aParams) {
 	}
 	return lData;
 }
-module.exports = { MoteurNotes };

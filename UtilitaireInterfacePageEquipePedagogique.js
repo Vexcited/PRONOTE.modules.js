@@ -1,17 +1,18 @@
-const { MethodesObjet } = require("MethodesObjet.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const UtilitaireFormaterListeParMatiereEtFonction = {
+exports.UtilitaireFormaterListeParMatiereEtFonction = void 0;
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+exports.UtilitaireFormaterListeParMatiereEtFonction = {
 	formaterListeParMatiere(aListeEquipePedagogique) {
-		let newListe = new ObjetListeElements();
-		const lListeEquipePedagogique = MethodesObjet.dupliquer(
+		let newListe = new ObjetListeElements_1.ObjetListeElements();
+		const lListeEquipePedagogique = MethodesObjet_1.MethodesObjet.dupliquer(
 			aListeEquipePedagogique,
 		);
 		newListe.addElement(lListeEquipePedagogique);
-		let parMatiere = new ObjetListeElements();
+		let parMatiere = new ObjetListeElements_1.ObjetListeElements();
 		newListe.addElement(parMatiere);
 		newListe.setLibelle(1, "parMatiere");
 		const lListeDeploiement = lListeEquipePedagogique.getListeElements(
@@ -22,11 +23,13 @@ const UtilitaireFormaterListeParMatiereEtFonction = {
 				parMatiere.addElement(aProf);
 			}
 			if (aProf.matieres) {
-				if (aProf.matieres.ListeElements.length === 0) {
-					let nouvelleMatiere = new ObjetElement(
-						GTraductions.getValeur("EquipePedagogique.sansMatiere"),
+				if (aProf.matieres.count() === 0) {
+					let nouvelleMatiere = new ObjetElement_1.ObjetElement(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"EquipePedagogique.sansMatiere",
+						),
 						"",
-						EGenreRessource.Enseignant,
+						Enumere_Ressource_1.EGenreRessource.Enseignant,
 					);
 					nouvelleMatiere.libelleTri = nouvelleMatiere.getLibelle();
 					if (aProf.estTuteur) {
@@ -40,7 +43,8 @@ const UtilitaireFormaterListeParMatiereEtFonction = {
 						nouvelleMatiere.pere = lListeDeploiement
 							.getListeElements(
 								(aElemDeploiement) =>
-									aElemDeploiement.getGenre() === EGenreRessource.Enseignant &&
+									aElemDeploiement.getGenre() ===
+										Enumere_Ressource_1.EGenreRessource.Enseignant &&
 									!aElemDeploiement.estEnleve,
 							)
 							.get(0);
@@ -50,20 +54,22 @@ const UtilitaireFormaterListeParMatiereEtFonction = {
 						nouvelleMatiere.pere = lListeDeploiement
 							.getListeElements(
 								(aElemDeploiement) =>
-									aElemDeploiement.getGenre() === EGenreRessource.Enseignant &&
+									aElemDeploiement.getGenre() ===
+										Enumere_Ressource_1.EGenreRessource.Enseignant &&
 									aElemDeploiement.estEnleve,
 							)
 							.get(0);
 					}
-					nouvelleMatiere.listeProfesseursParMatiere = new ObjetListeElements();
+					nouvelleMatiere.listeProfesseursParMatiere =
+						new ObjetListeElements_1.ObjetListeElements();
 					nouvelleMatiere.listeProfesseursParMatiere.addElement(aProf);
 				}
 				aProf.matieres.parcourir((aMatiere) => {
 					if (!aMatiere.estUneSousMatiere) {
-						let nouvelleMatiere = new ObjetElement(
+						let nouvelleMatiere = new ObjetElement_1.ObjetElement(
 							aMatiere.Libelle,
 							"",
-							EGenreRessource.Enseignant,
+							Enumere_Ressource_1.EGenreRessource.Enseignant,
 						);
 						parMatiere.addElement(nouvelleMatiere);
 						nouvelleMatiere.libelleTri = nouvelleMatiere.getLibelle();
@@ -78,7 +84,8 @@ const UtilitaireFormaterListeParMatiereEtFonction = {
 								.getListeElements(
 									(aElemDeploiement) =>
 										aElemDeploiement.getGenre() ===
-											EGenreRessource.Enseignant && !aElemDeploiement.estEnleve,
+											Enumere_Ressource_1.EGenreRessource.Enseignant &&
+										!aElemDeploiement.estEnleve,
 								)
 								.get(0);
 						}
@@ -88,7 +95,8 @@ const UtilitaireFormaterListeParMatiereEtFonction = {
 								.getListeElements(
 									(aElemDeploiement) =>
 										aElemDeploiement.getGenre() ===
-											EGenreRessource.Enseignant && aElemDeploiement.estEnleve,
+											Enumere_Ressource_1.EGenreRessource.Enseignant &&
+										aElemDeploiement.estEnleve,
 								)
 								.get(0);
 						}
@@ -96,7 +104,7 @@ const UtilitaireFormaterListeParMatiereEtFonction = {
 							nouvelleMatiere.volumeHoraire = aMatiere.volumeHoraire;
 						}
 						nouvelleMatiere.listeProfesseursParMatiere =
-							new ObjetListeElements();
+							new ObjetListeElements_1.ObjetListeElements();
 						nouvelleMatiere.listeProfesseursParMatiere.addElement(aProf);
 					} else if (
 						parMatiere.getElementParLibelle(aMatiere.Libelle) !== undefined
@@ -109,40 +117,48 @@ const UtilitaireFormaterListeParMatiereEtFonction = {
 					}
 				});
 			} else if (aProf.fonction) {
-				let nouvelleFonction = new ObjetElement(
+				let nouvelleFonction = new ObjetElement_1.ObjetElement(
 					aProf.fonction,
 					"",
-					EGenreRessource.Personnel,
+					Enumere_Ressource_1.EGenreRessource.Personnel,
 				);
 				parMatiere.addElement(nouvelleFonction);
 				nouvelleFonction.pere = lListeDeploiement
 					.getListeElements(
 						(aElemDeploiement) =>
-							aElemDeploiement.getGenre() === EGenreRessource.Personnel,
+							aElemDeploiement.getGenre() ===
+							Enumere_Ressource_1.EGenreRessource.Personnel,
 					)
 					.get(0);
 				nouvelleFonction.libelleTri = nouvelleFonction.getLibelle();
-				nouvelleFonction.listePersonnels = new ObjetListeElements();
+				nouvelleFonction.listePersonnels =
+					new ObjetListeElements_1.ObjetListeElements();
 				nouvelleFonction.listePersonnels.addElement(aProf);
 			}
 		});
 		parMatiere.setTri([
-			ObjetTri.init((D) => {
-				return D.getGenre() !== EGenreRessource.Enseignant;
+			ObjetTri_1.ObjetTri.init((D) => {
+				return D.getGenre() !== Enumere_Ressource_1.EGenreRessource.Enseignant;
 			}),
-			ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.init((D) => {
 				return !!D.estEnleve;
 			}),
-			ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.init((D) => {
 				if (
-					D.Libelle === GTraductions.getValeur("EquipePedagogique.sansMatiere")
+					D.Libelle ===
+					ObjetTraduction_1.GTraductions.getValeur(
+						"EquipePedagogique.sansMatiere",
+					)
 				) {
 					return D.libelleTri;
 				}
 			}),
-			ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.init((D) => {
 				if (
-					D.Libelle !== GTraductions.getValeur("EquipePedagogique.sansMatiere")
+					D.Libelle !==
+					ObjetTraduction_1.GTraductions.getValeur(
+						"EquipePedagogique.sansMatiere",
+					)
 				) {
 					return D.libelleTri;
 				}
@@ -152,4 +168,3 @@ const UtilitaireFormaterListeParMatiereEtFonction = {
 		return parMatiere;
 	},
 };
-module.exports = { UtilitaireFormaterListeParMatiereEtFonction };

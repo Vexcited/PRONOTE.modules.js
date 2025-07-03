@@ -32,6 +32,28 @@ const TypeExportabiliteLSU_1 = require("TypeExportabiliteLSU");
 const MultipleObjetRequeteGenerationExportLSU = require("ObjetRequeteGenerationExportLSU");
 const Type_ThemeBouton_1 = require("Type_ThemeBouton");
 const ObjetDate_1 = require("ObjetDate");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const ObjetTraduction_2 = require("ObjetTraduction");
+const TradInterfaceRecapitulatifExportLSU =
+	ObjetTraduction_2.TraductionsModule.getModule(
+		"InterfaceRecapitulatifExportLSU",
+		{
+			Afficher_uniquement_eleves_non_exportables: "",
+			VoirLivretEleve: "",
+			SaisieEnseignementsComplement: "",
+			SaisieObjectifs: "",
+			SaisieLangueRegionale: "",
+			SaisieNiveauLangueRegionale: "",
+			ExporterVersLSU: "",
+			DescriptifExportLSU: "",
+			InclureBilanFinDeCycle: "",
+			ClassesFinDeCycleSecondaire: "",
+			ClassesFinDeCyclePrimaire: "",
+			ExportDonneesDeLaPeriode: "",
+			PeriodeDefinieDuAu: "",
+			VerificationDatesSurONDE: "",
+		},
+	);
 class InterfaceRecapitulatifExportLSU extends InterfacePage_1.InterfacePage {
 	constructor(...aParams) {
 		super(...aParams);
@@ -48,14 +70,16 @@ class InterfaceRecapitulatifExportLSU extends InterfacePage_1.InterfacePage {
 			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 		this.AddSurZone = [this.identMenuDeroulants];
 		this.AddSurZone.push({
-			html:
-				'<ie-checkbox class="AlignementMilieuVertical" ie-model="cbUniquementNonExportables">' +
+			html: IE.jsx.str(
+				"ie-checkbox",
+				{
+					class: "AlignementMilieuVertical",
+					"ie-model": this.jsxModeleCheckboxUniquementNonExportables.bind(this),
+				},
 				ObjetChaine_1.GChaine.insecable(
-					ObjetTraduction_1.GTraductions.getValeur(
-						"RecapitulatifExportLSU.Afficher_uniquement_eleves_non_exportables",
-					),
-				) +
-				"</ie-checkbox>",
+					TradInterfaceRecapitulatifExportLSU.Afficher_uniquement_eleves_non_exportables,
+				),
+			),
 		});
 	}
 	construireInstances() {
@@ -70,129 +94,114 @@ class InterfaceRecapitulatifExportLSU extends InterfacePage_1.InterfacePage {
 		);
 		this.identFicheExport = this.add(ObjetFicheExportHtml);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			cbUniquementNonExportables: {
-				getValue() {
-					return aInstance.uniquementNonExportable;
-				},
-				setValue(aValue) {
-					aInstance.uniquementNonExportable = aValue;
-					const lInstanceListe = aInstance.getInstance(aInstance.identListe);
-					if (lInstanceListe) {
-						const lDonneesListe = lInstanceListe.getDonneesListe();
-						lDonneesListe.setParametres({ uniquementNonExportables: aValue });
-						aInstance.getInstance(aInstance.identListe).actualiser(true);
-					}
-				},
+	jsxModeleCheckboxUniquementNonExportables() {
+		return {
+			getValue: () => {
+				return this.uniquementNonExportable;
 			},
-			btnVoirLivretEleve: {
-				event: function () {
-					aInstance._evtSurBtnVoirLivretEleve();
-				},
-				getDisabled: function () {
-					const lInstanceListe = aInstance.getInstance(aInstance.identListe);
-					if (!!lInstanceListe && !!lInstanceListe.getElementSelection()) {
-						return false;
-					}
-					return true;
-				},
+			setValue: (aValue) => {
+				this.uniquementNonExportable = aValue;
+				const lInstanceListe = this.getInstance(this.identListe);
+				if (lInstanceListe) {
+					const lDonneesListe = lInstanceListe.getDonneesListe();
+					lDonneesListe.setParametres({ uniquementNonExportables: aValue });
+					lInstanceListe.actualiser(true);
+				}
 			},
-			btnExportLSU: {
-				event: function () {
-					aInstance._evtSurBtnExportLSU();
-				},
-				getDisabled: function () {
-					let lBoutonExportDisabled = true;
-					const lInstanceListe = aInstance.getInstance(aInstance.identListe);
-					if (lInstanceListe && lInstanceListe.getDonneesListe()) {
-						const lListeEleves = lInstanceListe.getListeArticles();
-						if (lListeEleves) {
-							lListeEleves.parcourir((aEleve) => {
-								if (
-									aEleve.exportable !==
-									TypeExportabiliteLSU_1.TypeExportabiliteLSU
-										.telsu_NonExportable
-								) {
-									lBoutonExportDisabled = false;
-									return false;
-								}
-							});
-						}
-					}
-					return lBoutonExportDisabled;
-				},
+		};
+	}
+	jsxModeleBoutonVoirLivretEleve() {
+		return {
+			event: () => {
+				this._evtSurBtnVoirLivretEleve();
 			},
-		});
+			getDisabled: () => {
+				const lInstanceListe = this.getInstance(this.identListe);
+				if (!!lInstanceListe && !!lInstanceListe.getElementSelection()) {
+					return false;
+				}
+				return true;
+			},
+		};
+	}
+	jsxModeleBoutonExportLSU() {
+		return {
+			event: () => {
+				this._evtSurBtnExportLSU();
+			},
+			getDisabled: () => {
+				let lBoutonExportDisabled = true;
+				const lInstanceListe = this.getInstance(this.identListe);
+				if (lInstanceListe && lInstanceListe.getDonneesListe()) {
+					const lListeEleves = lInstanceListe.getListeArticles();
+					if (lListeEleves) {
+						lListeEleves.parcourir((aEleve) => {
+							if (
+								aEleve.exportable !==
+								TypeExportabiliteLSU_1.TypeExportabiliteLSU.telsu_NonExportable
+							) {
+								lBoutonExportDisabled = false;
+								return false;
+							}
+						});
+					}
+				}
+				return lBoutonExportDisabled;
+			},
+		};
 	}
 	construireStructureAffichageAutre() {
 		const lHeightBandeauBouton = 70;
-		const T = [];
-		T.push(
+		const H = [];
+		H.push(
 			'<div class="Espace" style="',
-			GNavigateur.isLayoutTactile
-				? ""
-				: ObjetStyle_1.GStyle.composeHeightCalc(10),
+			ObjetStyle_1.GStyle.composeHeightCalc(10),
 			'">',
 			'<div style="',
 			ObjetStyle_1.GStyle.composeHeight(lHeightBandeauBouton),
 			'">',
 		);
-		const lVoirLivretEleve = ObjetTraduction_1.GTraductions.getValeur(
-			"RecapitulatifExportLSU.VoirLivretEleve",
-		);
-		T.push(
+		const lVoirLivretEleve =
+			TradInterfaceRecapitulatifExportLSU.VoirLivretEleve;
+		H.push(
 			IE.jsx.str(
-				IE.jsx.fragment,
-				null,
-				IE.jsx.str(
-					"ie-bouton",
-					{
-						class: "bouton-carre",
-						"ie-model": "btnVoirLivretEleve",
-						"ie-icon": "icon_eye_open",
-						"ie-iconsize": "2.4rem",
-						title: lVoirLivretEleve,
-					},
-					lVoirLivretEleve,
-				),
+				"ie-bouton",
+				{
+					class: "bouton-carre",
+					"ie-model": this.jsxModeleBoutonVoirLivretEleve.bind(this),
+					"ie-icon": "icon_eye_open",
+					"ie-iconsize": "2.4rem",
+					title: lVoirLivretEleve,
+				},
+				lVoirLivretEleve,
 			),
 		);
 		if (this.etatUtilisateurSco.pourPrimaire()) {
-			const lExporterVersLSU = ObjetTraduction_1.GTraductions.getValeur(
-				"RecapitulatifExportLSU.ExporterVersLSU",
-			);
-			T.push(
+			const lExporterVersLSU =
+				TradInterfaceRecapitulatifExportLSU.ExporterVersLSU;
+			H.push(
 				IE.jsx.str(
-					IE.jsx.fragment,
-					null,
-					IE.jsx.str(
-						"ie-bouton",
-						{
-							class: "MargeGauche bouton-carre",
-							"ie-model": "btnExportLSU",
-							"ie-icon": "icon_lsu",
-							"ie-iconsize": "2.4rem",
-							title: lExporterVersLSU,
-						},
-						lExporterVersLSU,
-					),
+					"ie-bouton",
+					{
+						class: "MargeGauche bouton-carre",
+						"ie-model": this.jsxModeleBoutonExportLSU.bind(this),
+						"ie-icon": "icon_lsu",
+						"ie-iconsize": "2.4rem",
+						title: lExporterVersLSU,
+					},
+					lExporterVersLSU,
 				),
 			);
 		}
-		T.push("</div>");
-		T.push(
-			IE.jsx.str(
-				IE.jsx.fragment,
-				null,
-				IE.jsx.str("div", {
-					id: this.getInstance(this.identListe).getNom(),
-					style: ObjetStyle_1.GStyle.composeHeightCalc(lHeightBandeauBouton),
-				}),
-			),
+		H.push("</div>");
+		H.push(
+			IE.jsx.str("div", {
+				id: this.getNomInstance(this.identListe),
+				style: ObjetStyle_1.GStyle.composeHeightCalc(lHeightBandeauBouton),
+			}),
 		);
-		T.push("</div>");
-		return T.join("");
+		H.push("</div>");
+		return H.join("");
 	}
 	afficherPage() {
 		const lClasse = this.etatUtilisateurSco.Navigation.getRessource(
@@ -292,8 +301,8 @@ class InterfaceRecapitulatifExportLSU extends InterfacePage_1.InterfacePage {
 	}
 	_afficherExportHtml(aParam) {
 		if (!!aParam && aParam.html) {
-			const lLargeurMax = Math.floor(GNavigateur.clientL / 2);
-			const lHauteurMax = GNavigateur.clientH - 200;
+			const lLargeurMax = Math.floor(ObjetNavigateur_1.Navigateur.clientL / 2);
+			const lHauteurMax = ObjetNavigateur_1.Navigateur.clientH - 200;
 			this.getInstance(this.identFicheExport).setDonnees({
 				html: aParam.html,
 				hauteurMax: lHauteurMax,
@@ -329,9 +338,7 @@ class InterfaceRecapitulatifExportLSU extends InterfacePage_1.InterfacePage {
 				initialiser: (aInstance) => {
 					const lTraductionTitreFenetre = [];
 					lTraductionTitreFenetre.push(
-						ObjetTraduction_1.GTraductions.getValeur(
-							"RecapitulatifExportLSU.ExporterVersLSU",
-						),
+						TradInterfaceRecapitulatifExportLSU.ExporterVersLSU,
 					);
 					lTraductionTitreFenetre.push(" - ");
 					lTraductionTitreFenetre.push(lClasse.getLibelle());
@@ -362,8 +369,7 @@ class InterfaceRecapitulatifExportLSU extends InterfacePage_1.InterfacePage {
 	}
 	_surExportLSU(aUrl) {
 		if (!!aUrl) {
-			const lUrl = ObjetChaine_1.GChaine.encoderUrl(aUrl);
-			window.open(lUrl);
+			window.open(aUrl);
 		}
 	}
 	_evtListe(aParametres) {
@@ -491,9 +497,7 @@ class InterfaceRecapitulatifExportLSU extends InterfacePage_1.InterfacePage {
 		const lListeElements =
 			TypeEnseignementComplement_1.TypeEnseignementComplementUtil.toListe();
 		this._ouvrirFenetreEditionListe(
-			ObjetTraduction_1.GTraductions.getValeur(
-				"RecapitulatifExportLSU.SaisieEnseignementsComplement",
-			),
+			TradInterfaceRecapitulatifExportLSU.SaisieEnseignementsComplement,
 			lListeElements,
 			lValeurActuelle,
 			(aIndexElementSelectionne, aFinalCallback) => {
@@ -543,9 +547,7 @@ class InterfaceRecapitulatifExportLSU extends InterfacePage_1.InterfacePage {
 				true,
 			);
 		this._ouvrirFenetreEditionListe(
-			ObjetTraduction_1.GTraductions.getValeur(
-				"RecapitulatifExportLSU.SaisieObjectifs",
-			),
+			TradInterfaceRecapitulatifExportLSU.SaisieObjectifs,
 			lListeElements,
 			lValeurActuelle,
 			(aIndexElementSelectionne, aFinalCallback) => {
@@ -580,9 +582,7 @@ class InterfaceRecapitulatifExportLSU extends InterfacePage_1.InterfacePage {
 		const lListeLanguesRegionales =
 			TypeOrigineCreationLangueRegionale_1.TypeOrigineCreationLangueRegionaleUtil.toListe();
 		this._ouvrirFenetreEditionListe(
-			ObjetTraduction_1.GTraductions.getValeur(
-				"RecapitulatifExportLSU.SaisieLangueRegionale",
-			),
+			TradInterfaceRecapitulatifExportLSU.SaisieLangueRegionale,
 			lListeLanguesRegionales,
 			lValeurActuelle,
 			(aIndexElementSelectionne, aFinalCallback) => {
@@ -634,9 +634,7 @@ class InterfaceRecapitulatifExportLSU extends InterfacePage_1.InterfacePage {
 				false,
 			);
 		this._ouvrirFenetreEditionListe(
-			ObjetTraduction_1.GTraductions.getValeur(
-				"RecapitulatifExportLSU.SaisieNiveauLangueRegionale",
-			),
+			TradInterfaceRecapitulatifExportLSU.SaisieNiveauLangueRegionale,
 			lListeElements,
 			lValeurActuelle,
 			(aIndexElementSelectionne, aFinalCallback) => {
@@ -884,8 +882,8 @@ class ObjetFicheExportHtml extends ObjetFiche_1.ObjetFiche {
 		this.setOptionsFenetre({ modale: true, avecTailleSelonContenu: true });
 	}
 	composeContenu() {
-		const T = [];
-		T.push(
+		const H = [];
+		H.push(
 			'<div style="height:',
 			this.donneesFicheExportHtml.hauteurMax,
 			"px;width:",
@@ -894,7 +892,7 @@ class ObjetFicheExportHtml extends ObjetFiche_1.ObjetFiche {
 			this.donneesFicheExportHtml.html,
 			"</div>",
 		);
-		return T.join("");
+		return H.join("");
 	}
 	setDonnees(aDonnees) {
 		this.donneesFicheExportHtml = aDonnees;
@@ -910,52 +908,48 @@ class ObjetFenetreParametrageExportLSU extends ObjetFenetre_1.ObjetFenetre {
 		this.estUneClasseFinDeCycle = false;
 		this.periodeConcernee = null;
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			cbInclureBilanFinDeCycle: {
-				getValue() {
-					return aInstance.inclureBilanFinDeCycle;
-				},
-				setValue(aValue) {
-					aInstance.inclureBilanFinDeCycle = aValue;
-				},
-				getDisabled() {
-					return !aInstance.estUneClasseFinDeCycle;
-				},
+	jsxModeleCheckboxInclureBilanFinDeCycle() {
+		return {
+			getValue: () => {
+				return this.inclureBilanFinDeCycle;
 			},
-			getStrChoixPeriode() {
-				const lLibellePeriode = !!aInstance.periodeConcernee
-					? aInstance.periodeConcernee.getLibelle()
-					: "";
-				const lHtmlPeriode =
-					'<span class="Gras">' + lLibellePeriode + "</span>";
-				return ObjetTraduction_1.GTraductions.getValeur(
-					"RecapitulatifExportLSU.ExportDonneesDeLaPeriode",
-					[lHtmlPeriode],
-				);
+			setValue: (aValue) => {
+				this.inclureBilanFinDeCycle = aValue;
 			},
-			getStrDatesPeriodeChoisie() {
-				const lBorneDatesPeriode = aInstance._getBornesPeriodeSelectionnee();
-				const lHtmlDateDebut =
-					'<span class="Gras">' +
-					ObjetDate_1.GDate.formatDate(
-						lBorneDatesPeriode.dateDebut,
-						"%JJ/%MM/%AAAA",
-					) +
-					"</span>";
-				const lHtmlDateFin =
-					'<span class="Gras">' +
-					ObjetDate_1.GDate.formatDate(
-						lBorneDatesPeriode.dateFin,
-						"%JJ/%MM/%AAAA",
-					) +
-					"</span>";
-				return ObjetTraduction_1.GTraductions.getValeur(
-					"RecapitulatifExportLSU.PeriodeDefinieDuAu",
-					[lHtmlDateDebut, lHtmlDateFin],
-				);
+			getDisabled: () => {
+				return !this.estUneClasseFinDeCycle;
 			},
-		});
+		};
+	}
+	jsxGetStrChoixPeriode() {
+		const lLibellePeriode = !!this.periodeConcernee
+			? this.periodeConcernee.getLibelle()
+			: "";
+		const lHtmlPeriode = '<span class="Gras">' + lLibellePeriode + "</span>";
+		return TradInterfaceRecapitulatifExportLSU.ExportDonneesDeLaPeriode.format(
+			lHtmlPeriode,
+		);
+	}
+	jsxGetStrDatesPeriodeChoisie() {
+		const lBorneDatesPeriode = this._getBornesPeriodeSelectionnee();
+		const lHtmlDateDebut =
+			'<span class="Gras">' +
+			ObjetDate_1.GDate.formatDate(
+				lBorneDatesPeriode.dateDebut,
+				"%JJ/%MM/%AAAA",
+			) +
+			"</span>";
+		const lHtmlDateFin =
+			'<span class="Gras">' +
+			ObjetDate_1.GDate.formatDate(
+				lBorneDatesPeriode.dateFin,
+				"%JJ/%MM/%AAAA",
+			) +
+			"</span>";
+		return TradInterfaceRecapitulatifExportLSU.PeriodeDefinieDuAu.format([
+			lHtmlDateDebut,
+			lHtmlDateFin,
+		]);
 	}
 	_getBornesPeriodeSelectionnee() {
 		let lDateDebut, lDateFin;
@@ -978,13 +972,11 @@ class ObjetFenetreParametrageExportLSU extends ObjetFenetre_1.ObjetFenetre {
 		const lEstPrimaire = true;
 		let lClassesFinDeCycle;
 		if (lEstPrimaire) {
-			lClassesFinDeCycle = ObjetTraduction_1.GTraductions.getValeur(
-				"RecapitulatifExportLSU.ClassesFinDeCyclePrimaire",
-			);
+			lClassesFinDeCycle =
+				TradInterfaceRecapitulatifExportLSU.ClassesFinDeCyclePrimaire;
 		} else {
-			lClassesFinDeCycle = ObjetTraduction_1.GTraductions.getValeur(
-				"RecapitulatifExportLSU.ClassesFinDeCycleSecondaire",
-			);
+			lClassesFinDeCycle =
+				TradInterfaceRecapitulatifExportLSU.ClassesFinDeCycleSecondaire;
 		}
 		const T = [];
 		T.push(
@@ -1002,21 +994,21 @@ class ObjetFenetreParametrageExportLSU extends ObjetFenetre_1.ObjetFenetre {
 								GCouleur.themeNeutre.claire,
 							),
 						},
-						ObjetTraduction_1.GTraductions.getValeur(
-							"RecapitulatifExportLSU.DescriptifExportLSU",
-						),
+						TradInterfaceRecapitulatifExportLSU.DescriptifExportLSU,
 					),
 					IE.jsx.str(
 						"div",
 						{ class: "EspaceHaut10" },
-						IE.jsx.str("div", { "ie-html": "getStrChoixPeriode" }),
-						IE.jsx.str("div", { "ie-html": "getStrDatesPeriodeChoisie" }),
+						IE.jsx.str("div", {
+							"ie-html": this.jsxGetStrChoixPeriode.bind(this),
+						}),
+						IE.jsx.str("div", {
+							"ie-html": this.jsxGetStrDatesPeriodeChoisie.bind(this),
+						}),
 						IE.jsx.str(
 							"div",
 							{ class: "EspaceHaut10" },
-							ObjetTraduction_1.GTraductions.getValeur(
-								"RecapitulatifExportLSU.VerificationDatesSurONDE",
-							),
+							TradInterfaceRecapitulatifExportLSU.VerificationDatesSurONDE,
 						),
 					),
 					IE.jsx.str(
@@ -1038,9 +1030,12 @@ class ObjetFenetreParametrageExportLSU extends ObjetFenetre_1.ObjetFenetre {
 							),
 							IE.jsx.str(
 								"ie-checkbox",
-								{ "ie-model": "cbInclureBilanFinDeCycle", class: "NoWrap" },
-								ObjetTraduction_1.GTraductions.getValeur(
-									"RecapitulatifExportLSU.InclureBilanFinDeCycle",
+								{
+									"ie-model":
+										this.jsxModeleCheckboxInclureBilanFinDeCycle.bind(this),
+									class: "NoWrap",
+								},
+								TradInterfaceRecapitulatifExportLSU.InclureBilanFinDeCycle.format(
 									[lClassesFinDeCycle],
 								),
 							),

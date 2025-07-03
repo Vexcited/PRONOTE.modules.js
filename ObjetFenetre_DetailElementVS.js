@@ -12,7 +12,7 @@ class ObjetFenetre_DetailElementVS extends _ObjetFenetre_DetailElementVS_1._Obje
 			aTypeEvenement !==
 			_ObjetDetailElementVS_1.TypeBoutonFenetreDetailElementVS.Annuler
 		) {
-			this.callback.appel(aTypeEvenement, {
+			this.callback.appel(1, {
 				element: aDonnees.element,
 				documents: aDonnees.documents,
 			});

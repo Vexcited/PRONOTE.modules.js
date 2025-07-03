@@ -271,8 +271,8 @@ const UtilitaireTraitementImage = {
 		} catch (_a) {
 			throw { erreurLib: true };
 		}
-		const lJsPDF = await Promise.resolve().then(() => require("jspdf.min.js"));
-		if (!lJsPDF) {
+		const lLibJsPDF = await Promise.resolve().then(() => require("jspdf.min"));
+		if (!lLibJsPDF) {
 			throw { erreurLib: true };
 		}
 		return Promise.resolve()
@@ -354,7 +354,7 @@ const UtilitaireTraitementImage = {
 			})
 			.then((aFilesDataUrl) => {
 				if (aFilesDataUrl && aFilesDataUrl.length > 0) {
-					const lPDF = new lJsPDF();
+					const lPDF = new lLibJsPDF.jsPDF();
 					const lPromisesErreursJsPDF = [];
 					aFilesDataUrl.forEach((aFile) => {
 						try {
@@ -401,18 +401,22 @@ const UtilitaireTraitementImage = {
 			.then((aFilesDataUrl) => {
 				if (aFilesDataUrl && aFilesDataUrl.length > 0) {
 					return new Promise((aResolve, aReject) => {
-						let lPDF = new lJsPDF();
+						let lPDF = new lLibJsPDF.jsPDF();
 						aFilesDataUrl.every((aFile, aIndex) => {
 							try {
 								const lImageProp = aFile.imageProp;
+								const lOrientation =
+									lImageProp.width >= lImageProp.height ? "l" : "p";
 								if (aIndex !== 0) {
-									lPDF.addPage([lImageProp.width, lImageProp.height]);
+									lPDF.addPage(
+										[lImageProp.width, lImageProp.height],
+										lOrientation,
+									);
 								} else {
-									lPDF = new lJsPDF({
+									lPDF = new lLibJsPDF.jsPDF({
 										format: [lImageProp.width, lImageProp.height],
 										unit: "px",
-										orientation:
-											lImageProp.width >= lImageProp.height ? "l" : "p",
+										orientation: lOrientation,
 										compress: true,
 									});
 								}
@@ -421,9 +425,9 @@ const UtilitaireTraitementImage = {
 									lImageProp.fileType,
 									0,
 									0,
-									lImageProp.width / lPDF.internal.scaleFactor,
-									lImageProp.height / lPDF.internal.scaleFactor,
-									NaN,
+									lImageProp.width,
+									lImageProp.height,
+									"",
 									"SLOW",
 								);
 								return true;
@@ -447,6 +451,14 @@ const UtilitaireTraitementImage = {
 	},
 	getTabMimePDFImage() {
 		return ["image/jpeg", "image/jpg", "image/png", "image/bmp", "image/gif"];
+	},
+	estEnBase64(aURL) {
+		var _a;
+		return (
+			((_a = aURL.match(/data:[a-zA-Z/]*;base64,/)) === null || _a === void 0
+				? void 0
+				: _a.length) > 0
+		);
 	},
 };
 exports.UtilitaireTraitementImage = UtilitaireTraitementImage;

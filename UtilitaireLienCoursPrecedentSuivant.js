@@ -1,10 +1,11 @@
-const { GUID } = require("GUID.js");
-const { GChaine } = require("ObjetChaine.js");
-const { GHtml } = require("ObjetHtml.js");
-const { GStyle } = require("ObjetStyle.js");
-const { ControleSaisieEvenement } = require("ControleSaisieEvenement.js");
-const { GDate } = require("ObjetDate.js");
-const { GTraductions } = require("ObjetTraduction.js");
+exports.UtilitaireLienCoursPrecedentSuivant = void 0;
+const GUID_1 = require("GUID");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetStyle_1 = require("ObjetStyle");
+const ControleSaisieEvenement_1 = require("ControleSaisieEvenement");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetTraduction_1 = require("ObjetTraduction");
 class UtilitaireLienCoursPrecedentSuivant {
 	constructor(aParametres) {
 		this.options = {
@@ -15,7 +16,7 @@ class UtilitaireLienCoursPrecedentSuivant {
 		};
 		$.extend(this.options, aParametres);
 		if (!this.options.idRef) {
-			this.options.idRef = GUID.getId();
+			this.options.idRef = GUID_1.GUID.getId();
 		}
 		this.ids = {
 			btnPrec: this.options.idRef + "_prec",
@@ -29,23 +30,23 @@ class UtilitaireLienCoursPrecedentSuivant {
 			'<span id="',
 			this.ids.btnPrec,
 			'" tabindex="0" class="Souligne fluid-bloc text-right" role="button">',
-			GTraductions.getValeur("CahierDeTexte.CoursPrecedent"),
+			ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.CoursPrecedent"),
 			"</span>",
 			'<span id="',
 			this.ids.btnSuiv,
 			'" tabindex="0" class="Souligne fluid-bloc" role="button">',
-			GTraductions.getValeur("CahierDeTexte.CoursSuivant"),
+			ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.CoursSuivant"),
 			"</span>",
 			"</div>",
 		);
 		return T.join("");
 	}
 	actualiser(aAvecCoursSelectionne, aCoursPrecedent, aCoursSuivant) {
-		GStyle.setCouleurTexte(
+		ObjetStyle_1.GStyle.setCouleurTexte(
 			this.ids.btnPrec,
 			aCoursPrecedent ? GCouleur.noir : GCouleur.grisClair,
 		);
-		GStyle.setCouleurTexte(
+		ObjetStyle_1.GStyle.setCouleurTexte(
 			this.ids.btnSuiv,
 			aCoursSuivant ? GCouleur.noir : GCouleur.grisClair,
 		);
@@ -72,7 +73,7 @@ class UtilitaireLienCoursPrecedentSuivant {
 							}
 						},
 					},
-					{ callback: _evenement.bind(this) },
+					{ callback: this._evenement.bind(this) },
 				)
 				.addClass(lClasses);
 		} else {
@@ -83,15 +84,19 @@ class UtilitaireLienCoursPrecedentSuivant {
 		let lTitle = "";
 		if (aAvecCoursSelectionne) {
 			if (aCoursPrecedent && aCoursPrecedent.date) {
-				lTitle = GChaine.format(
-					GTraductions.getValeur("CahierDeTexte.DernierCours"),
-					[GDate.formatDate(aCoursPrecedent.date, "%JJ/%MM/%AAAA")],
+				lTitle = ObjetChaine_1.GChaine.format(
+					ObjetTraduction_1.GTraductions.getValeur(
+						"CahierDeTexte.DernierCours",
+					),
+					[ObjetDate_1.GDate.formatDate(aCoursPrecedent.date, "%JJ/%MM/%AAAA")],
 				);
 			} else {
-				lTitle = GTraductions.getValeur("CahierDeTexte.PlusCoursPrecedent");
+				lTitle = ObjetTraduction_1.GTraductions.getValeur(
+					"CahierDeTexte.PlusCoursPrecedent",
+				);
 			}
 		}
-		GHtml.setTitle(this.ids.btnPrec, lTitle);
+		ObjetHtml_1.GHtml.setTitle(this.ids.btnPrec, lTitle);
 		$(`#${this.ids.btnPrec.escapeJQ()}`).attr("aria-label", lTitle || null);
 		if (aCoursSuivant) {
 			$("#" + this.ids.btnSuiv.escapeJQ())
@@ -107,7 +112,7 @@ class UtilitaireLienCoursPrecedentSuivant {
 							}
 						},
 					},
-					{ callback: _evenement.bind(this) },
+					{ callback: this._evenement.bind(this) },
 				)
 				.addClass(lClasses);
 		} else {
@@ -118,23 +123,28 @@ class UtilitaireLienCoursPrecedentSuivant {
 		lTitle = "";
 		if (aAvecCoursSelectionne) {
 			if (aCoursSuivant && aCoursSuivant.date) {
-				lTitle = GChaine.format(
-					GTraductions.getValeur("CahierDeTexte.ProchainCours"),
-					[GDate.formatDate(aCoursSuivant.date, "%JJ/%MM/%AAAA")],
+				lTitle = ObjetChaine_1.GChaine.format(
+					ObjetTraduction_1.GTraductions.getValeur(
+						"CahierDeTexte.ProchainCours",
+					),
+					[ObjetDate_1.GDate.formatDate(aCoursSuivant.date, "%JJ/%MM/%AAAA")],
 				);
 			} else {
-				lTitle = GTraductions.getValeur("CahierDeTexte.PlusCoursSuivant");
+				lTitle = ObjetTraduction_1.GTraductions.getValeur(
+					"CahierDeTexte.PlusCoursSuivant",
+				);
 			}
 		}
-		GHtml.setTitle(this.ids.btnSuiv, lTitle);
+		ObjetHtml_1.GHtml.setTitle(this.ids.btnSuiv, lTitle);
 		$(`#${this.ids.btnSuiv.escapeJQ()}`).attr("aria-label", lTitle || null);
 	}
+	_evenement(aPrecedent) {
+		(0, ControleSaisieEvenement_1.ControleSaisieEvenement)(() => {
+			if (this.options.callback) {
+				this.options.callback(aPrecedent);
+			}
+		}, !this.options.controleNavigation);
+	}
 }
-function _evenement(aPrecedent) {
-	ControleSaisieEvenement(() => {
-		if (this.options.callback) {
-			this.options.callback(aPrecedent);
-		}
-	}, !this.options.controleNavigation);
-}
-module.exports = { UtilitaireLienCoursPrecedentSuivant };
+exports.UtilitaireLienCoursPrecedentSuivant =
+	UtilitaireLienCoursPrecedentSuivant;

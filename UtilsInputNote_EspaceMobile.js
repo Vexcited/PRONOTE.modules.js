@@ -1,6 +1,6 @@
 exports.UtilsInputNoteGetMinMax = UtilsInputNoteGetMinMax;
 exports.UtilsInputNoteInitOptions = UtilsInputNoteInitOptions;
-const ObjetTraduction_1 = require("ObjetTraduction");
+const TypeNote_1 = require("TypeNote");
 const MethodesObjet_1 = require("MethodesObjet");
 function UtilsInputNoteGetMinMax(aMinMax) {
 	let lValeurMin;
@@ -24,7 +24,7 @@ function UtilsInputNoteInitOptions() {
 		textAlign: "right",
 		hintSurErreur: false,
 		titreMessageMinMax: "",
-		messageMinMax: ObjetTraduction_1.GTraductions.getValeur("InputNote.MinMax"),
+		messageMinMax: TypeNote_1.TradTypeNote.InputNote.MinMax,
 		maxLength: 15,
 		avecSigneMoins: false,
 		htmlContexte: "",

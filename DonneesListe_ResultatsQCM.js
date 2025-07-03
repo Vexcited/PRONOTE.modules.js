@@ -6,13 +6,13 @@ const ObjetTraduction_1 = require("ObjetTraduction");
 const TypeQualificatifReponse_1 = require("TypeQualificatifReponse");
 const UtilitaireQCM_1 = require("UtilitaireQCM");
 const UtilitaireDuree_1 = require("UtilitaireDuree");
-const ObjetStyle_1 = require("ObjetStyle");
 const ObjetDate_1 = require("ObjetDate");
 const TypeNote_1 = require("TypeNote");
 const Enumere_Etat_1 = require("Enumere_Etat");
 const ControleSaisieEvenement_1 = require("ControleSaisieEvenement");
 const TypeEtatExecutionQCMPourRepondant_1 = require("TypeEtatExecutionQCMPourRepondant");
 let TypeEvolutionResultats;
+const AccessApp_1 = require("AccessApp");
 var GenreLigneTotal;
 (function (GenreLigneTotal) {
 	GenreLigneTotal[(GenreLigneTotal["noteDuree"] = 0)] = "noteDuree";
@@ -26,7 +26,7 @@ var GenreLigneTotal;
 class DonneesListe_ResultatsQCM extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParametres) {
 		super(aDonnees.listeEleves);
-		this.application = GApplication;
+		this.application = (0, AccessApp_1.getApp)();
 		this.param = $.extend(
 			{
 				elementRacine: null,
@@ -194,7 +194,7 @@ class DonneesListe_ResultatsQCM extends ObjetDonneesListe_1.ObjetDonneesListe {
 			lHtml.push('<div style="display:flex;">');
 			if (this._avecPersonnalisation(aEleve.execution)) {
 				lHtml.push(
-					'<i class="icon_star" style="padding-left: 0.2rem; font-size: 1.2rem; flex: none;"></i>',
+					'<i role="presentation" class="icon_star" style="padding-left: 0.2rem; font-size: 1.2rem; flex: none;"></i>',
 				);
 			}
 			if (aEleve.execution && aEleve.execution.dureeSupplementaire > 0) {
@@ -759,7 +759,7 @@ class DonneesListe_ResultatsQCM extends ObjetDonneesListe_1.ObjetDonneesListe {
 					(lEstColonneNote1 && !aParams.article.copiePrecEstCopieVisible) ||
 					(!lEstColonneNote1 && aParams.article.copiePrecEstCopieVisible)
 				) {
-					lClasses.push("Gris");
+					lClasses.push("color-neutre-foncee");
 				}
 			}
 		} else if (this.estUneColonneDeQuestion(aParams)) {
@@ -809,7 +809,7 @@ class DonneesListe_ResultatsQCM extends ObjetDonneesListe_1.ObjetDonneesListe {
 		}
 		return lClasses.join(" ");
 	}
-	getStyleTotal(aParams) {
+	getTypeCelluleTotal(aParams) {
 		if (aParams.ligne === 0) {
 			switch (aParams.idColonne) {
 				case DonneesListe_ResultatsQCM.colonnes.tentatives:
@@ -817,12 +817,9 @@ class DonneesListe_ResultatsQCM extends ObjetDonneesListe_1.ObjetDonneesListe {
 				case DonneesListe_ResultatsQCM.colonnes.note2:
 				case DonneesListe_ResultatsQCM.colonnes.duree:
 				case DonneesListe_ResultatsQCM.colonnes.ressenti:
-					return (
-						ObjetStyle_1.GStyle.composeCouleurFond(GCouleur.liste.total.fond) +
-						ObjetStyle_1.GStyle.composeCouleurTexte(GCouleur.blanc)
-					);
+					return ObjetDonneesListe_1.ObjetDonneesListe.typeCelluleTotal.defaut;
 				default:
-					return "";
+					return ObjetDonneesListe_1.ObjetDonneesListe.typeCelluleTotal.fond;
 			}
 		}
 		switch (aParams.idColonne) {
@@ -833,12 +830,9 @@ class DonneesListe_ResultatsQCM extends ObjetDonneesListe_1.ObjetDonneesListe {
 			case DonneesListe_ResultatsQCM.colonnes.note2:
 			case DonneesListe_ResultatsQCM.colonnes.duree:
 			case DonneesListe_ResultatsQCM.colonnes.ressenti:
-				return "";
+				return ObjetDonneesListe_1.ObjetDonneesListe.typeCelluleTotal.fond;
 			default:
-				return (
-					ObjetStyle_1.GStyle.composeCouleurFond(GCouleur.liste.total.fond) +
-					ObjetStyle_1.GStyle.composeCouleurTexte(GCouleur.blanc)
-				);
+				return ObjetDonneesListe_1.ObjetDonneesListe.typeCelluleTotal.defaut;
 		}
 	}
 	getColonneDeFusionTotal(aParams) {
@@ -932,7 +926,7 @@ class DonneesListe_ResultatsQCM extends ObjetDonneesListe_1.ObjetDonneesListe {
 			}
 		}
 	}
-	getHintHtmlForce(aParams) {
+	getTooltip(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_ResultatsQCM.colonnes.eleve:
 			case DonneesListe_ResultatsQCM.colonnes.classe:

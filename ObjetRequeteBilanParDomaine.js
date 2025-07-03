@@ -1,10 +1,8 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-class ObjetRequeteBilanParDomaine extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteBilanParDomaine = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+class ObjetRequeteBilanParDomaine extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aParametres) {
 		const lParametres = Object.assign(
 			{
@@ -42,14 +40,15 @@ class ObjetRequeteBilanParDomaine extends ObjetRequeteConsultation {
 			let lPereEvaluation = null;
 			this.JSONReponse.listeCompetences.parcourir((D) => {
 				if (
-					D.getGenre() !== EGenreRessource.Evaluation &&
-					D.getGenre() !== EGenreRessource.EvaluationHistorique
+					D.getGenre() !== Enumere_Ressource_1.EGenreRessource.Evaluation &&
+					D.getGenre() !==
+						Enumere_Ressource_1.EGenreRessource.EvaluationHistorique
 				) {
 					lPereEvaluation = D;
 				}
 				D.pere =
 					lTableauPeres[
-						_getGenrePere(
+						this._getGenrePere(
 							D.getGenre(),
 							!!lPereEvaluation ? lPereEvaluation.getGenre() : null,
 						)
@@ -63,21 +62,24 @@ class ObjetRequeteBilanParDomaine extends ObjetRequeteConsultation {
 		}
 		this.callbackReussite.appel(this.JSONReponse);
 	}
-}
-Requetes.inscrire("BilanParDomaine", ObjetRequeteBilanParDomaine);
-function _getGenrePere(aGenre, aGenrePourEvaluation) {
-	switch (aGenre) {
-		case EGenreRessource.MetaMatiere:
-			return null;
-		case EGenreRessource.ElementPilier:
-			return EGenreRessource.MetaMatiere;
-		case EGenreRessource.Competence:
-			return EGenreRessource.ElementPilier;
-		case EGenreRessource.SousItem:
-			return EGenreRessource.Competence;
-		case EGenreRessource.Evaluation:
-		case EGenreRessource.EvaluationHistorique:
-			return aGenrePourEvaluation;
+	_getGenrePere(aGenre, aGenrePourEvaluation) {
+		switch (aGenre) {
+			case Enumere_Ressource_1.EGenreRessource.MetaMatiere:
+				return null;
+			case Enumere_Ressource_1.EGenreRessource.ElementPilier:
+				return Enumere_Ressource_1.EGenreRessource.MetaMatiere;
+			case Enumere_Ressource_1.EGenreRessource.Competence:
+				return Enumere_Ressource_1.EGenreRessource.ElementPilier;
+			case Enumere_Ressource_1.EGenreRessource.SousItem:
+				return Enumere_Ressource_1.EGenreRessource.Competence;
+			case Enumere_Ressource_1.EGenreRessource.Evaluation:
+			case Enumere_Ressource_1.EGenreRessource.EvaluationHistorique:
+				return aGenrePourEvaluation;
+		}
 	}
 }
-module.exports = { ObjetRequeteBilanParDomaine };
+exports.ObjetRequeteBilanParDomaine = ObjetRequeteBilanParDomaine;
+CollectionRequetes_1.Requetes.inscrire(
+	"BilanParDomaine",
+	ObjetRequeteBilanParDomaine,
+);

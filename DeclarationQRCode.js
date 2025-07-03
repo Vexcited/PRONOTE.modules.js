@@ -1,2 +1,2 @@
-require("DeclarationJQuery.js");
-require("kjua.min.js");
+require("DeclarationJQuery");
+require("kjua.min");

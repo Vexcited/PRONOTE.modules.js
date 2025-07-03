@@ -26,7 +26,10 @@ const TUtilitairePartenaire = {
 			this.windowURLPartenaire.close();
 		}
 	},
-	ouvrirUrl(aUrl) {
+	ouvrirUrl(aUrl, aForcerPatience) {
+		if (aForcerPatience) {
+			TUtilitairePartenaire.ouvrirPatience();
+		}
 		if (this.windowURLPartenaire) {
 			this.windowURLPartenaire.location.replace(aUrl);
 		} else {
@@ -37,25 +40,32 @@ const TUtilitairePartenaire = {
 		TUtilitairePartenaire.ouvrirPatience();
 		new ObjetRequeteSaisieURLPartenaireCDI_1.ObjetRequeteSaisieURLPartenaireCDI(
 			this,
-			this._actionSurLienPartenaire,
-		).lancerRequete(aLien);
+		)
+			.lancerRequete(aLien)
+			.then((aReponse) => {
+				this._actionSurLienPartenaire(aReponse.JSONRapportSaisie.urlSSO);
+			});
 	},
 	ouvrirURLPartenaire(aLien, aTypePartenaire) {
 		TUtilitairePartenaire.ouvrirPatience(aTypePartenaire);
-		new ObjetRequeteSaisieURLPartenaire_1.ObjetRequeteSaisieURLPartenaire(
-			this,
-			this._actionSurLienPartenaire,
-		).lancerRequete(aLien);
+		new ObjetRequeteSaisieURLPartenaire_1.ObjetRequeteSaisieURLPartenaire(this)
+			.lancerRequete(aLien)
+			.then((aReponse) => {
+				this._actionSurLienPartenaire(aReponse.JSONRapportSaisie.urlSSO);
+			});
 	},
 	ouvrirURLPartenaireRecherche(aObjetPartenaire, aTexteRecherche) {
 		TUtilitairePartenaire.ouvrirPatience();
 		new ObjetRequeteGenerationURLRecherchePartenaire_1.ObjetRequeteGenerationURLRecherchePartenaire(
 			this,
-			this._actionSurLienPartenaire,
-		).lancerRequete({
-			portailCDI: aObjetPartenaire,
-			recherche: aTexteRecherche,
-		});
+		)
+			.lancerRequete({
+				portailCDI: aObjetPartenaire,
+				recherche: aTexteRecherche,
+			})
+			.then((aReponse) => {
+				this._actionSurLienPartenaire(aReponse.urlRecherche);
+			});
 	},
 	_actionSurLienPartenaire(aUrlSSO) {
 		if (aUrlSSO) {

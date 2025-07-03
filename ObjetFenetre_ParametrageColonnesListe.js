@@ -196,7 +196,7 @@ class DonneesListe_ParametrageColonnesListe extends ObjetDonneesListe_1.ObjetDon
 	getCouleurCellule(aParams, aCouleurCellule) {
 		if (aParams.idColonne === colonnes.libelle) {
 			if (aParams.article.declaration.nonSupprimable) {
-				aCouleurCellule.texte = "red";
+				aCouleurCellule.texte = "var(--color-red-foncee)";
 			} else if (aParams.article.declaration.nonDeplacable) {
 				aCouleurCellule.texte = "gray";
 			}

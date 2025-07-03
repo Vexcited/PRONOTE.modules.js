@@ -22,46 +22,51 @@ class ObjetFenetre_SelectionNiveauProgression extends ObjetFenetre_1.ObjetFenetr
 			this._initialiserListe,
 		);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			cbFiltreUniquementEnseignes: {
-				getValue: function () {
-					return !!aInstance.filtreEnseignees;
-				},
-				setValue: function (aValue) {
-					aInstance.filtreEnseignees = !!aValue;
-					const lListe = aInstance.getInstance(aInstance.identListe);
-					lListe.setDonnees(
-						new DonneesListe_SelectionNiveauProgression(
-							aInstance.listeNiveaux,
-							aInstance.filtreEnseignees,
-						),
-					);
-				},
+	jsxModeleCheckboxFiltreUniquementEnseignes() {
+		return {
+			getValue: () => {
+				return !!this.filtreEnseignees;
 			},
-		});
+			setValue: (aValue) => {
+				this.filtreEnseignees = !!aValue;
+				const lListe = this.getInstance(this.identListe);
+				lListe.setDonnees(
+					new DonneesListe_SelectionNiveauProgression(
+						this.listeNiveaux,
+						this.filtreEnseignees,
+					),
+				);
+			},
+		};
 	}
 	composeContenu() {
-		const T = [];
-		T.push('<div class=" flex-contain cols full-size">');
+		const H = [];
+		H.push('<div class=" flex-contain cols full-size">');
 		if (this.avecChoixFiltrageEnseignees) {
-			T.push(
-				'<div class="fix-bloc">',
-				'<ie-checkbox ie-model="cbFiltreUniquementEnseignes" style="padding-bottom:0.5rem;">',
-				ObjetTraduction_1.GTraductions.getValeur(
-					"CreneauxLibres.UniquementMesClasses",
+			H.push(
+				IE.jsx.str(
+					"div",
+					{ class: "fix-bloc" },
+					IE.jsx.str(
+						"ie-checkbox",
+						{
+							"ie-model":
+								this.jsxModeleCheckboxFiltreUniquementEnseignes.bind(this),
+							style: "padding-bottom:0.5rem;",
+						},
+						ObjetTraduction_1.GTraductions.getValeur("UniquementMesClasses"),
+					),
 				),
-				"</ie-checkbox>",
-				"</div>",
 			);
 		}
-		T.push(
-			'<div class="fluid-bloc" id="',
-			this.getNomInstance(this.identListe),
-			'"></div>',
+		H.push(
+			IE.jsx.str("div", {
+				class: "fluid-bloc",
+				id: this.getNomInstance(this.identListe),
+			}),
 		);
-		T.push("</div>");
-		return T.join("");
+		H.push("</div>");
+		return H.join("");
 	}
 	setDonnees(aListeNiveaux, aAvecFiltrage, aAvecLigneAucune) {
 		this.avecChoixFiltrageEnseignees = aAvecFiltrage === true;
@@ -136,7 +141,6 @@ class DonneesListe_SelectionNiveauProgression extends ObjetDonneesListeFlatDesig
 		super(aDonnees);
 		this.filtreEnseignees = aFiltreEnseignees === true;
 		this.setOptions({
-			avecContenuTronque: false,
 			avecEvnt_Selection: true,
 			avecBoutonActionLigne: false,
 			flatDesignMinimal: true,

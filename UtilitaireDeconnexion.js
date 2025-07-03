@@ -7,9 +7,11 @@ const Enumere_Action_1 = require("Enumere_Action");
 const ControleSaisieEvenement_1 = require("ControleSaisieEvenement");
 const Enumere_MessageHtml_1 = require("Enumere_MessageHtml");
 const Enumere_MessageHtml_2 = require("Enumere_MessageHtml");
+const AccessApp_1 = require("AccessApp");
 exports.UtilitaireDeconnexion = {
 	async confirmationDeconnexion(aSansPageDeconnexion) {
-		return GApplication.getMessage()
+		return (0, AccessApp_1.getApp)()
+			.getMessage()
 			.afficher({
 				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
 				message: ObjetTraduction_1.GTraductions.getValeur(
@@ -37,7 +39,7 @@ exports.UtilitaireDeconnexion = {
 			GEtatUtilisateur.reset();
 		}
 		return exports.UtilitaireDeconnexion.requeteDeconnexion().then(() => {
-			const lApplicationProduit = GApplication;
+			const lApplicationProduit = (0, AccessApp_1.getApp)();
 			if (aSansPageDeconnexion) {
 				window.location.reload();
 			} else if (lApplicationProduit.urlLogout) {
@@ -60,7 +62,7 @@ exports.UtilitaireDeconnexion = {
 	},
 	async deconnexionEchecChargement() {
 		return exports.UtilitaireDeconnexion.requeteDeconnexion().then(() => {
-			GApplication.finSession({
+			(0, AccessApp_1.getApp)().finSession({
 				constructionPage: true,
 				statut: 0,
 				jsonErreur: {

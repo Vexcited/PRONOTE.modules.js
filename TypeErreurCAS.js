@@ -73,6 +73,8 @@ var TypeErreurCAS;
 		"eEduConnect_VecteurIdentiteIncorrect";
 	TypeErreurCAS[(TypeErreurCAS["eEduConnect_ErreurIndex"] = 36)] =
 		"eEduConnect_ErreurIndex";
+	TypeErreurCAS[(TypeErreurCAS["eCAS_ErreurFormatDateNaissance"] = 37)] =
+		"eCAS_ErreurFormatDateNaissance";
 })(TypeErreurCAS || (exports.TypeErreurCAS = TypeErreurCAS = {}));
 const TypeErreurCASUtil = {
 	estErreurEduConnect(aTypeErreur) {

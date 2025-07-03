@@ -1,6 +1,22 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { TUtilitaireCompetences } = require("UtilitaireCompetences.js");
-class DonneesListe_NiveauxDeMaitriseParMatiere extends ObjetDonneesListe {
+exports.DonneesListe_NiveauxDeMaitriseParMatiere = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const UtilitaireCompetences_1 = require("UtilitaireCompetences");
+var GenreLigneListeNiveauxDeMaitriseParMatiere;
+(function (GenreLigneListeNiveauxDeMaitriseParMatiere) {
+	GenreLigneListeNiveauxDeMaitriseParMatiere[
+		(GenreLigneListeNiveauxDeMaitriseParMatiere["pilier"] = 0)
+	] = "pilier";
+	GenreLigneListeNiveauxDeMaitriseParMatiere[
+		(GenreLigneListeNiveauxDeMaitriseParMatiere["service"] = 1)
+	] = "service";
+	GenreLigneListeNiveauxDeMaitriseParMatiere[
+		(GenreLigneListeNiveauxDeMaitriseParMatiere["domaine"] = 2)
+	] = "domaine";
+})(
+	GenreLigneListeNiveauxDeMaitriseParMatiere ||
+		(GenreLigneListeNiveauxDeMaitriseParMatiere = {}),
+);
+class DonneesListe_NiveauxDeMaitriseParMatiere extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aOptions) {
 		super(aDonnees);
 		this.parametres = aOptions;
@@ -28,8 +44,8 @@ class DonneesListe_NiveauxDeMaitriseParMatiere extends ObjetDonneesListe {
 			case DonneesListe_NiveauxDeMaitriseParMatiere.colonnes.etatDAcquisition: {
 				const lAvecPastille = !(
 					[
-						DonneesListe_NiveauxDeMaitriseParMatiere.genreLigne.pilier,
-						DonneesListe_NiveauxDeMaitriseParMatiere.genreLigne.service,
+						GenreLigneListeNiveauxDeMaitriseParMatiere.pilier,
+						GenreLigneListeNiveauxDeMaitriseParMatiere.service,
 					].includes(aParams.article.getGenre()) &&
 					!(
 						GParametres.afficherAbbreviationNiveauDAcquisition ||
@@ -41,31 +57,38 @@ class DonneesListe_NiveauxDeMaitriseParMatiere extends ObjetDonneesListe {
 					this.parametres.jaugeChronologique &&
 					aParams.article.listeNiveaux
 				) {
-					lJauge = TUtilitaireCompetences.composeJaugeChronologique({
-						listeNiveaux: aParams.article.listeNiveaux,
-						hint: TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionChronologique(
-							aParams.article.listeNiveaux,
-						),
-					});
+					lJauge =
+						UtilitaireCompetences_1.TUtilitaireCompetences.composeJaugeChronologique(
+							{
+								listeNiveaux: aParams.article.listeNiveaux,
+								hint: UtilitaireCompetences_1.TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionChronologique(
+									aParams.article.listeNiveaux,
+								),
+							},
+						);
 				} else {
 					const lParamsJauge = {
 						listeNiveaux: aParams.article.listeNiveauxParNiveau
 							? aParams.article.listeNiveauxParNiveau
-							: TUtilitaireCompetences.regroupeNiveauxDAcquisitions(
+							: UtilitaireCompetences_1.TUtilitaireCompetences.regroupeNiveauxDAcquisitions(
 									aParams.article.listeNiveaux,
 								),
 						hint: aParams.article.listeNiveauxParNiveau
 							? aParams.article.hintNiveaux
-							: TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionChronologique(
+							: UtilitaireCompetences_1.TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionChronologique(
 									aParams.article.listeNiveaux,
 								),
 					};
 					if (lAvecPastille) {
 						lJauge =
-							TUtilitaireCompetences.composeJaugeParPastilles(lParamsJauge);
+							UtilitaireCompetences_1.TUtilitaireCompetences.composeJaugeParPastilles(
+								lParamsJauge,
+							);
 					} else {
 						lJauge =
-							TUtilitaireCompetences.composeJaugeParNiveaux(lParamsJauge);
+							UtilitaireCompetences_1.TUtilitaireCompetences.composeJaugeParNiveaux(
+								lParamsJauge,
+							);
 					}
 				}
 				return lJauge;
@@ -75,11 +98,10 @@ class DonneesListe_NiveauxDeMaitriseParMatiere extends ObjetDonneesListe {
 	}
 	getTypeValeur(aParams) {
 		switch (aParams.idColonne) {
-			case DonneesListe_NiveauxDeMaitriseParMatiere.colonnes.items:
-			case DonneesListe_NiveauxDeMaitriseParMatiere.colonnes.niveau:
-				return ObjetDonneesListe.ETypeCellule.Html;
+			case DonneesListe_NiveauxDeMaitriseParMatiere.colonnes.etatDAcquisition:
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
 	getStyle(aParams) {
 		if (
@@ -87,11 +109,11 @@ class DonneesListe_NiveauxDeMaitriseParMatiere extends ObjetDonneesListe {
 			DonneesListe_NiveauxDeMaitriseParMatiere.colonnes.matieres
 		) {
 			switch (aParams.article.getGenre()) {
-				case DonneesListe_NiveauxDeMaitriseParMatiere.genreLigne.pilier:
+				case GenreLigneListeNiveauxDeMaitriseParMatiere.pilier:
 					return "";
-				case DonneesListe_NiveauxDeMaitriseParMatiere.genreLigne.service:
+				case GenreLigneListeNiveauxDeMaitriseParMatiere.service:
 					return "padding-left: 5px;";
-				case DonneesListe_NiveauxDeMaitriseParMatiere.genreLigne.domaine:
+				case GenreLigneListeNiveauxDeMaitriseParMatiere.domaine:
 					return "padding-left: 10px;";
 			}
 		}
@@ -102,33 +124,29 @@ class DonneesListe_NiveauxDeMaitriseParMatiere extends ObjetDonneesListe {
 			DonneesListe_NiveauxDeMaitriseParMatiere.colonnes.matieres
 		) {
 			switch (aParams.article.getGenre()) {
-				case DonneesListe_NiveauxDeMaitriseParMatiere.genreLigne.pilier:
+				case GenreLigneListeNiveauxDeMaitriseParMatiere.pilier:
 					return "Gras";
-				case DonneesListe_NiveauxDeMaitriseParMatiere.genreLigne.service:
+				case GenreLigneListeNiveauxDeMaitriseParMatiere.service:
 					return "Gras";
-				case DonneesListe_NiveauxDeMaitriseParMatiere.genreLigne.domaine:
+				case GenreLigneListeNiveauxDeMaitriseParMatiere.domaine:
 					return this.parametres.avecDetail ? "AvecMain" : "";
 			}
 		}
 	}
 	getCouleurCellule(aParams) {
 		switch (aParams.article.getGenre()) {
-			case DonneesListe_NiveauxDeMaitriseParMatiere.genreLigne.pilier:
+			case GenreLigneListeNiveauxDeMaitriseParMatiere.pilier:
 				return GCouleur.liste.cumul[0];
-			case DonneesListe_NiveauxDeMaitriseParMatiere.genreLigne.service:
+			case GenreLigneListeNiveauxDeMaitriseParMatiere.service:
 				return GCouleur.liste.cumul[1];
-			case DonneesListe_NiveauxDeMaitriseParMatiere.genreLigne.domaine:
+			case GenreLigneListeNiveauxDeMaitriseParMatiere.domaine:
 				return GCouleur.liste.colonneFixe;
 		}
 	}
 }
+exports.DonneesListe_NiveauxDeMaitriseParMatiere =
+	DonneesListe_NiveauxDeMaitriseParMatiere;
 DonneesListe_NiveauxDeMaitriseParMatiere.colonnes = {
 	matieres: "matieres",
 	etatDAcquisition: "etatDAcquisition",
 };
-DonneesListe_NiveauxDeMaitriseParMatiere.genreLigne = {
-	pilier: 0,
-	service: 1,
-	domaine: 2,
-};
-module.exports = { DonneesListe_NiveauxDeMaitriseParMatiere };

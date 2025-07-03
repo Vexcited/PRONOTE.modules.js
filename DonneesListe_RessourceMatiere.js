@@ -1,6 +1,5 @@
 exports.DonneesListe_RessourceMatiere = void 0;
 const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
-const tag_1 = require("tag");
 class DonneesListe_RessourceMatiere extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees) {
 		super(aDonnees);
@@ -14,9 +13,9 @@ class DonneesListe_RessourceMatiere extends ObjetDonneesListeFlatDesign_1.ObjetD
 	}
 	getZoneGauche(aParams) {
 		return aParams.article.getGenre() === this.options.genreToutesMatieres
-			? (0, tag_1.tag)("i", { class: "icon_th_large" })
-			: (0, tag_1.tag)("div", {
-					class: "couleur ie-line-color static only-color",
+			? IE.jsx.str("i", { class: "icon_th_large", role: "presentation" })
+			: IE.jsx.str("div", {
+					class: "ie-line-color static only-color",
 					style: aParams.article.couleurFond
 						? `--color-line:${aParams.article.couleurFond};`
 						: false,
@@ -29,25 +28,21 @@ class DonneesListe_RessourceMatiere extends ObjetDonneesListeFlatDesign_1.ObjetD
 				!isNaN(aParams.article.count) ||
 				!isNaN(aParams.article.nbElementsConcernes)
 			) {
+				const lStrCompteur = !isNaN(aParams.article.count)
+					? aParams.article.count
+					: !isNaN(aParams.article.nbElementsConcernes)
+						? aParams.article.nbElementsConcernes
+						: "";
 				H.push(
-					(0, tag_1.tag)(
-						"div",
-						{ class: "compteur" },
-						!isNaN(aParams.article.count)
-							? aParams.article.count
-							: !isNaN(aParams.article.nbElementsConcernes)
-								? aParams.article.nbElementsConcernes
-								: "",
+					IE.jsx.str(
+						IE.jsx.fragment,
+						null,
+						IE.jsx.str("div", { class: "compteur" }, lStrCompteur),
 					),
 				);
 			}
 		}
 		return H.join("");
-	}
-	getClassCelluleConteneur(aParams) {
-		return aParams.article.getGenre() !== this.options.genreToutesMatieres
-			? "matiere-spe"
-			: "";
 	}
 }
 exports.DonneesListe_RessourceMatiere = DonneesListe_RessourceMatiere;

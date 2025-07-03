@@ -1,39 +1,43 @@
-const { MethodesObjet } = require("MethodesObjet.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const DonneesListe_SuiviPluriAnnuel = require("DonneesListe_SuiviPluriAnnuel.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const {
-	ObjetAffichagePageAvecMenusDeroulants,
-} = require("InterfacePageAvecMenusDeroulants.js");
-const { InterfacePage } = require("InterfacePage.js");
-const ObjetRequetePageSuiviPluriannuel = require("ObjetRequetePageSuiviPluriannuel.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreBordure } = require("ObjetStyle.js");
-const { GStyle } = require("ObjetStyle.js");
-const { ObjetFicheGraphe } = require("ObjetFicheGraphe.js");
-const { ObjetFenetre_Liste } = require("ObjetFenetre_Liste.js");
-const DonneesListe_SelectAnnees = require("DonneesListe_SelectAnnees.js");
-const { TypeEnsembleNombre } = require("TypeEnsembleNombre.js");
-const { GChaine } = require("ObjetChaine.js");
-const { GenerationPDF } = require("UtilitaireGenerationPDF.js");
-const { TypeHttpGenerationPDFSco } = require("TypeHttpGenerationPDFSco.js");
-const { EGenreDocTelechargement } = require("Enumere_DocTelechargement.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetFenetre_BulletinBIA } = require("ObjetFenetre_BulletinBIA.js");
-const { ObjetElement } = require("ObjetElement.js");
-class ObjetAffichagePageSuiviPluriannuel extends InterfacePage {
-	constructor(...aParams) {
-		super(...aParams);
-		this.listeAnnees = new ObjetListeElements();
+exports.InterfacePageSuiviPluriannuel = void 0;
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const DonneesListe_SuiviPluriAnnuel_1 = require("DonneesListe_SuiviPluriAnnuel");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const InterfacePageAvecMenusDeroulants_1 = require("InterfacePageAvecMenusDeroulants");
+const InterfacePage_1 = require("InterfacePage");
+const ObjetRequetePageSuiviPluriannuel_1 = require("ObjetRequetePageSuiviPluriannuel");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetStyle_1 = require("ObjetStyle");
+const ObjetStyle_2 = require("ObjetStyle");
+const ObjetFicheGraphe_1 = require("ObjetFicheGraphe");
+const ObjetFenetre_Liste_1 = require("ObjetFenetre_Liste");
+const DonneesListe_SelectAnnees_1 = require("DonneesListe_SelectAnnees");
+const TypeEnsembleNombre_1 = require("TypeEnsembleNombre");
+const ObjetChaine_1 = require("ObjetChaine");
+const UtilitaireGenerationPDF_1 = require("UtilitaireGenerationPDF");
+const TypeHttpGenerationPDFSco_1 = require("TypeHttpGenerationPDFSco");
+const Enumere_DocTelechargement_1 = require("Enumere_DocTelechargement");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_BulletinBIA_1 = require("ObjetFenetre_BulletinBIA");
+const ObjetElement_1 = require("ObjetElement");
+const AccessApp_1 = require("AccessApp");
+class InterfacePageSuiviPluriannuel extends InterfacePage_1.InterfacePage {
+	constructor() {
+		super(...arguments);
+		this.etatUtilScoEspace = (0, AccessApp_1.getApp)().getEtatUtilisateur();
+		this.listeAnnees = new ObjetListeElements_1.ObjetListeElements();
 		this.avecMoyennes = true;
 	}
 	construireInstances() {
 		super.construireInstances();
-		if (GEtatUtilisateur.GenreEspace === EGenreEspace.Professeur) {
+		if (
+			this.etatUtilScoEspace.GenreEspace ===
+			Enumere_Espace_1.EGenreEspace.Professeur
+		) {
 			this.identTripleCombo = this.add(
-				ObjetAffichagePageAvecMenusDeroulants,
+				InterfacePageAvecMenusDeroulants_1.ObjetAffichagePageAvecMenusDeroulants,
 				this.evenementSurDernierMenuDeroulant,
 				initialiserTripleCombo,
 			);
@@ -47,10 +51,10 @@ class ObjetAffichagePageSuiviPluriannuel extends InterfacePage {
 				this.identTripleCombo,
 			).getPremierElement();
 		}
-		this.identPage = this.add(ObjetListe);
-		this.identFicheGraphe = this.add(ObjetFicheGraphe);
+		this.identPage = this.add(ObjetListe_1.ObjetListe);
+		this.identFicheGraphe = this.add(ObjetFicheGraphe_1.ObjetFicheGraphe);
 		this.identFenetreSelectAnnees = this.addFenetre(
-			ObjetFenetre_Liste,
+			ObjetFenetre_Liste_1.ObjetFenetre_Liste,
 			this.evenementFenetreSelectAnnees,
 			this.initialiserSelectAnnees,
 		);
@@ -69,29 +73,35 @@ class ObjetAffichagePageSuiviPluriannuel extends InterfacePage {
 		this.libelleEleve = aLigneEleve.getLibelle();
 		this.NumeroPeriode = aLignePeriode.getNumero();
 		this.GenrePeriode = aLignePeriode.getGenre();
-		new ObjetRequetePageSuiviPluriannuel(
+		new ObjetRequetePageSuiviPluriannuel_1.ObjetRequetePageSuiviPluriannuel(
 			this,
 			this.actionSurRecupererDonnees,
 		).lancerRequete(this.getNumeroEleve());
 	}
 	getNumeroEleve() {
-		return GEtatUtilisateur.GenreEspace === EGenreEspace.Professeur
+		return this.etatUtilScoEspace.GenreEspace ===
+			Enumere_Espace_1.EGenreEspace.Professeur
 			? this.NumeroEleve
-			: GEtatUtilisateur.getMembre().getNumero();
+			: this.etatUtilScoEspace.getMembre().getNumero();
 	}
 	getLibelleEleve() {
-		return GEtatUtilisateur.GenreEspace === EGenreEspace.Professeur
+		return this.etatUtilScoEspace.GenreEspace ===
+			Enumere_Espace_1.EGenreEspace.Professeur
 			? this.libelleEleve
-			: GEtatUtilisateur.getMembre().getLibelle();
+			: this.etatUtilScoEspace.getMembre().getLibelle();
 	}
 	getTitleBoutonGraphe() {
-		return GTraductions.getValeur("SuiviPluriannuel.titreGraphe", [
-			this.getLibelleEleve(),
-		]);
+		return ObjetTraduction_1.GTraductions.getValeur(
+			"SuiviPluriannuel.titreGraphe",
+			[this.getLibelleEleve()],
+		);
 	}
 	recupererDonnees() {
-		if (GEtatUtilisateur.GenreEspace !== EGenreEspace.Professeur) {
-			new ObjetRequetePageSuiviPluriannuel(
+		if (
+			this.etatUtilScoEspace.GenreEspace !==
+			Enumere_Espace_1.EGenreEspace.Professeur
+		) {
+			new ObjetRequetePageSuiviPluriannuel_1.ObjetRequetePageSuiviPluriannuel(
 				this,
 				this.actionSurRecupererDonnees,
 			).lancerRequete(this.getNumeroEleve());
@@ -104,40 +114,41 @@ class ObjetAffichagePageSuiviPluriannuel extends InterfacePage {
 			this.evenementAfficherMessage(aParam.message);
 		} else {
 			this.listeAnnees = aParam.listeAnnees;
-			_initialiserListe.call(
+			this._initialiserListe(
 				this.getInstance(this.identPage),
 				aParam.nombreDAnnees,
 				aParam.listeDonnees,
 				aParam.afficherMoyenneGenerale,
 			);
-			const lData = new DonneesListe_SuiviPluriAnnuel({
-				listeDonnees: aParam.listeDonnees,
-				listeTotal: aParam.listeTotal,
-				infosGrapheTotal: aParam.infosGrapheTotal,
-				avecMoyennesSaisies: aParam.avecMoyennesSaisies,
-			});
+			const lData =
+				new DonneesListe_SuiviPluriAnnuel_1.DonneesListe_SuiviPluriAnnuel({
+					listeDonnees: aParam.listeDonnees,
+					listeTotal: aParam.listeTotal,
+					infosGrapheTotal: aParam.infosGrapheTotal,
+					avecMoyennesSaisies: aParam.avecMoyennesSaisies,
+				});
 			this.getInstance(this.identPage).setDonnees(lData);
 			this.actualiserGrapheSuiviPluriAnnuel(aParam);
 		}
 	}
 	initialiserSelectAnnees(aInstance) {
-		const lColonnes = [];
-		lColonnes.push({
-			id: DonneesListe_SelectAnnees.colonnes.coche,
-			taille: 20,
-		});
-		lColonnes.push({
-			id: DonneesListe_SelectAnnees.colonnes.libelle,
-			taille: "100%",
-		});
-		const lParamsListe = { optionsListe: { colonnes: lColonnes } };
+		const lParamsListe = {
+			optionsListe: {
+				arialabel: ObjetTraduction_1.GTraductions.getValeur(
+					"SuiviPluriannuel.choixAnnees",
+				),
+				skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+			},
+		};
 		aInstance.setOptionsFenetre({
-			titre: GTraductions.getValeur("SuiviPluriannuel.choixAnnees"),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"SuiviPluriannuel.choixAnnees",
+			),
 			largeur: 250,
 			hauteur: 250,
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 			modeActivationBtnValider:
 				aInstance.modeActivationBtnValider.auMoinsUnEltSelectionne,
@@ -146,7 +157,9 @@ class ObjetAffichagePageSuiviPluriannuel extends InterfacePage {
 	}
 	ouvrirFenetreSelectionAnnees() {
 		this.getInstance(this.identFenetreSelectAnnees).setDonnees(
-			new DonneesListe_SelectAnnees(this.listeAnnees),
+			new DonneesListe_SelectAnnees_1.DonneesListe_SelectAnnees_Fd(
+				this.listeAnnees,
+			),
 			false,
 		);
 	}
@@ -159,10 +172,12 @@ class ObjetAffichagePageSuiviPluriannuel extends InterfacePage {
 		const lAnnees = this.listeAnnees.getListeElements((aElement) => {
 			return !!aElement.cmsActif;
 		});
-		const lAnneesGraphe = new TypeEnsembleNombre();
+		const lAnneesGraphe = new TypeEnsembleNombre_1.TypeEnsembleNombre();
 		lAnneesGraphe.add(lAnnees.getTableauNumeros());
-		this.copieAnnees = MethodesObjet.dupliquer(this.listeAnnees);
-		new ObjetRequetePageSuiviPluriannuel(
+		this.copieAnnees = MethodesObjet_1.MethodesObjet.dupliquer(
+			this.listeAnnees,
+		);
+		new ObjetRequetePageSuiviPluriannuel_1.ObjetRequetePageSuiviPluriannuel(
 			this,
 			this.actionSurRecupererGraphe,
 		).lancerRequete(this.getNumeroEleve(), {
@@ -177,180 +192,226 @@ class ObjetAffichagePageSuiviPluriannuel extends InterfacePage {
 		this.actualiserGrapheSuiviPluriAnnuel(aParam);
 	}
 	actualiserGrapheSuiviPluriAnnuel(aParam) {
-		const lInterface = this;
 		const lAnnees = this.listeAnnees.getListeElements((aElement) => {
 			return !!aElement.cmsActif;
 		});
 		const lGraphe = !!this.avecMoyennes
 			? aParam.grapheAvecMoyenne
 			: aParam.grapheSansMoyenne;
+		const lLabel = ObjetTraduction_1.GTraductions.getValeur(
+			"SuiviPluriannuel.labelAnneesGraphe",
+			[lAnnees.getNumero(0), lAnnees.get(lAnnees.count() - 1).strFin],
+		);
 		this.setGraphe(
 			{
 				image: [lGraphe],
-				titre: GTraductions.getValeur("SuiviPluriannuel.titreGraphe", [
-					this.getLibelleEleve(),
-				]),
+				titre: ObjetTraduction_1.GTraductions.getValeur(
+					"SuiviPluriannuel.titreGraphe",
+					[this.getLibelleEleve()],
+				),
 				message: aParam.grapheMessage,
 				alt: _construireAltGraph.call(this, aParam),
 			},
 			{
-				controleur: {
-					btnAnnees: {
-						event: function () {
-							lInterface.ouvrirFenetreSelectionAnnees();
-						},
-					},
-					cbMoyennes: {
-						getValue: function () {
-							return !!lInterface.avecMoyennes;
-						},
-						setValue: function (aValue) {
-							lInterface.avecMoyennes = aValue;
-							lInterface.actualiserGrapheSuiviPluriAnnuel(aParam);
-						},
-					},
-				},
 				filtres: [
 					{
-						html:
-							'<span class="EspaceDroit">' +
-							GChaine.insecable(
-								GTraductions.getValeur("SuiviPluriannuel.labelAnneesGraphe", [
-									lAnnees.getNumero(0),
-									lAnnees.get(lAnnees.count() - 1).strFin,
-								]),
-							) +
-							'</span><ie-bouton ie-model="btnAnnees" class="Texte9">...</ie-bouton>',
+						getHtml: () => {
+							const lbtnAnnees = () => {
+								return {
+									event: () => {
+										this.ouvrirFenetreSelectionAnnees();
+									},
+								};
+							};
+							return IE.jsx.str(
+								IE.jsx.fragment,
+								null,
+								IE.jsx.str(
+									"span",
+									{ class: "EspaceDroit" },
+									ObjetChaine_1.GChaine.insecable(lLabel),
+								),
+								IE.jsx.str(
+									"ie-bouton",
+									{
+										"ie-model": lbtnAnnees,
+										class: "Texte9",
+										"ie-tooltiplabel": lLabel,
+									},
+									"...",
+								),
+							);
+						},
 					},
 					{
-						html:
-							'<ie-checkbox ie-model="cbMoyennes" class="NoWrap">' +
-							GChaine.insecable(
-								GTraductions.getValeur("SuiviPluriannuel.avecMoyennes"),
-							) +
-							"</ie-checkbox>",
+						getHtml: () => {
+							const lcbMoyennes = () => {
+								return {
+									getValue: () => {
+										return !!this.avecMoyennes;
+									},
+									setValue: (aValue) => {
+										this.avecMoyennes = aValue;
+										this.actualiserGrapheSuiviPluriAnnuel(aParam);
+									},
+								};
+							};
+							return IE.jsx.str(
+								"ie-checkbox",
+								{ "ie-model": lcbMoyennes, class: "NoWrap" },
+								ObjetChaine_1.GChaine.insecable(
+									ObjetTraduction_1.GTraductions.getValeur(
+										"SuiviPluriannuel.avecMoyennes",
+									),
+								),
+							);
+						},
 					},
 				],
 			},
 		);
 		this.actualiserFicheGraphe();
 	}
-}
-function _getTitreAnnee(aListeDonnees, aIndice) {
-	const lHtml = [];
-	lHtml.push(
-		'<div class="flex-contain cols justify-center p-y-l" style="',
-		GStyle.composeCouleurBordure(GCouleur.bordure, 1, EGenreBordure.bas),
-		'">',
-	);
-	lHtml.push('  <div class="flex-contain flex-center justify-center">');
-	lHtml.push(
-		'    <div class="fix-bloc i-small m-right" style="',
-		GStyle.composeCouleurFond(aListeDonnees.get(0)["annee" + aIndice].couleur),
-		'"></div>',
-	);
-	lHtml.push(
-		'    <div class="regular">',
-		aListeDonnees.get(0)["annee" + aIndice].strAnnee,
-		"</div>",
-	);
-	lHtml.push("  </div>");
-	if (aListeDonnees.get(0)["annee" + aIndice].avecBulletins) {
-		lHtml.push(
-			'<div class="AvecMain m-top" ie-node="nodeAfficherBulletin(',
-			aIndice,
-			')">',
-		);
-		lHtml.push('  <div class="InlineBlock Image_BtnPDF"></div>');
-		lHtml.push(
-			'  <div class="InlineBlock AlignementHaut PetitEspaceHaut">',
-			GTraductions.getValeur("SuiviPluriannuel.bulletins"),
-			"</div>",
-		);
-		lHtml.push("</div>");
-	}
-	lHtml.push("</div>");
-	lHtml.push(
-		'<div class="PetitEspace">',
-		aListeDonnees.get(0)["annee" + aIndice].strClasses,
-		"</div>",
-	);
-	return lHtml.join("");
-}
-function _initialiserListe(aNombreAnnees, aListeDonnees, aAfficherMoyenne) {
-	const lColonnes = [];
-	lColonnes.push({
-		id: DonneesListe_SuiviPluriAnnuel.colonnes.matiere,
-		titre: GTraductions.getValeur("SuiviPluriannuel.matiere"),
-		taille: 200,
-	});
-	for (let i = 0; i < aNombreAnnees; i++) {
+	_initialiserListe(aListe, aNombreAnnees, aListeDonnees, aAfficherMoyenne) {
+		const lColonnes = [];
 		lColonnes.push({
-			id: DonneesListe_SuiviPluriAnnuel.colonnes.annee + i,
-			titre: {
-				libelleHtml: _getTitreAnnee.call(this, aListeDonnees, i),
-				controleur: {
-					nodeAfficherBulletin(aIndice) {
-						$(this.node).on("click", () => {
-							const lLargeur = 500;
-							const lInstance = ObjetFenetre.creerInstanceFenetre(
-								ObjetFenetre_BulletinBIA,
-								{ pere: this },
-								{
-									titre: GTraductions.getValeur("SuiviPluriannuel.bulletins"),
-									largeur: lLargeur,
-									hauteur: 450,
-								},
-							);
-							const lListeDocs = new ObjetListeElements();
-							aListeDonnees
-								.get(0)
-								["annee" + aIndice].listeBulletins.parcourir((aBulletin) => {
-									const lElement = new ObjetElement();
-									lElement.typeDocument = EGenreDocTelechargement.bulletinBIA;
-									lElement.bulletin = aBulletin;
-									lElement.annee = aBulletin.annee;
-									lElement.event = function () {
-										GenerationPDF.genererPDF({
-											paramPDF: {
-												genreGenerationPDF:
-													TypeHttpGenerationPDFSco.BulletinBIA,
-												nomFichier: aBulletin.nomFichier,
-												ident: aBulletin.ident,
-											},
-										});
-									};
-									lListeDocs.addElement(lElement);
-								});
-							lInstance.setDonnees({
-								listeDocs: lListeDocs,
-								avecNotes: true,
-								avecCompetences: true,
-								avecCertificat: false,
-							});
-							lInstance.afficher();
-						});
-					},
+			id: DonneesListe_SuiviPluriAnnuel_1.DonneesListe_SuiviPluriAnnuel.colonnes
+				.matiere,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"SuiviPluriannuel.matiere",
+			),
+			taille: 200,
+		});
+		for (let i = 0; i < aNombreAnnees; i++) {
+			lColonnes.push({
+				id:
+					DonneesListe_SuiviPluriAnnuel_1.DonneesListe_SuiviPluriAnnuel.colonnes
+						.annee + i,
+				titre: { getLibelleHtml: () => this._getTitreAnnee(aListeDonnees, i) },
+				taille: 100,
+			});
+		}
+		lColonnes.push({
+			id: DonneesListe_SuiviPluriAnnuel_1.DonneesListe_SuiviPluriAnnuel.colonnes
+				.graphe,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"SuiviPluriannuel.graphique",
+			),
+			taille: 50 + 20 * aNombreAnnees,
+		});
+		{
+			aListe.setOptionsListe({
+				colonnes: lColonnes,
+				hauteurAdapteContenu: true,
+				avecLigneTotal: aAfficherMoyenne,
+				ariaLabel: () => {
+					var _a, _b;
+					return `${this.etatUtilScoEspace.getLibelleLongOnglet()} ${this.existeInstance(this.identTripleCombo) ? ((_a = this.etatUtilScoEspace.Navigation.getRessource(Enumere_Ressource_1.EGenreRessource.Classe)) === null || _a === void 0 ? void 0 : _a.getLibelle()) || "" : ""} ${this.existeInstance(this.identTripleCombo) ? ((_b = this.etatUtilScoEspace.Navigation.getRessource(Enumere_Ressource_1.EGenreRessource.Eleve)) === null || _b === void 0 ? void 0 : _b.getLibelle()) || "" : ""}`.trim();
 				},
-			},
-			taille: 100,
-		});
+			});
+		}
 	}
-	lColonnes.push({
-		id: DonneesListe_SuiviPluriAnnuel.colonnes.graphe,
-		titre: GTraductions.getValeur("SuiviPluriannuel.graphique"),
-		taille: 50 + 20 * aNombreAnnees,
-	});
-	{
-		this.setOptionsListe({
-			colonnes: lColonnes,
-			hauteurAdapteContenu: true,
-			avecLigneTotal: aAfficherMoyenne,
+	jsxEventValidationAnnee(aAnnee) {
+		const lLargeur = 500;
+		const lInstance = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_BulletinBIA_1.ObjetFenetre_BulletinBIA,
+			{ pere: this },
+			{
+				titre: ObjetTraduction_1.GTraductions.getValeur(
+					"SuiviPluriannuel.bulletins",
+				),
+				largeur: lLargeur,
+				hauteur: 450,
+			},
+		);
+		const lListeDocs = new ObjetListeElements_1.ObjetListeElements();
+		aAnnee.listeBulletins.parcourir((aBulletin) => {
+			const lElement = new ObjetElement_1.ObjetElement();
+			lElement.typeDocument =
+				Enumere_DocTelechargement_1.EGenreDocTelechargement.bulletinBIA;
+			lElement.bulletin = aBulletin;
+			lElement.annee = aBulletin.annee;
+			lElement.event = function () {
+				UtilitaireGenerationPDF_1.GenerationPDF.genererPDF({
+					paramPDF: {
+						genreGenerationPDF:
+							TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.BulletinBIA,
+						nomFichier: aBulletin.nomFichier,
+						ident: aBulletin.ident,
+					},
+				});
+			};
+			lListeDocs.addElement(lElement);
 		});
+		lInstance.setDonnees({
+			listeDocs: lListeDocs,
+			avecNotes: true,
+			avecCompetences: true,
+			avecCertificat: false,
+		});
+		lInstance.afficher();
+	}
+	_getTitreAnnee(aListeDonnees, aIndice) {
+		const lDonnees = aListeDonnees.get(0)["annee" + aIndice];
+		const lHtml = [];
+		lHtml.push(
+			'<div class="flex-contain cols justify-center p-y-l" style="',
+			ObjetStyle_2.GStyle.composeCouleurBordure(
+				GCouleur.bordure,
+				1,
+				ObjetStyle_1.EGenreBordure.bas,
+			),
+			'">',
+		);
+		lHtml.push(
+			IE.jsx.str(
+				"div",
+				{ class: "flex-contain flex-center justify-center" },
+				IE.jsx.str("div", {
+					class: "fix-bloc i-small m-right",
+					style: ObjetStyle_2.GStyle.composeCouleurFond(lDonnees.couleur),
+				}),
+				IE.jsx.str("div", { class: "regular" }, lDonnees.strAnnee),
+			),
+		);
+		if (lDonnees.avecBulletins) {
+			lHtml.push(
+				IE.jsx.str(
+					"div",
+					{
+						class: "AvecMain m-top",
+						"ie-eventvalidation": this.jsxEventValidationAnnee.bind(
+							this,
+							lDonnees,
+						),
+						role: "button",
+						tabindex: "0",
+						"aria-haspopup": "dialog",
+					},
+					IE.jsx.str("div", { class: "InlineBlock Image_BtnPDF" }),
+					IE.jsx.str(
+						"div",
+						{ class: "InlineBlock AlignementHaut PetitEspaceHaut" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"SuiviPluriannuel.bulletins",
+						),
+					),
+				),
+			);
+		}
+		lHtml.push("</div>");
+		lHtml.push(
+			IE.jsx.str("div", { class: "PetitEspace" }, lDonnees.strClasses),
+		);
+		return lHtml.join("");
 	}
 }
+exports.InterfacePageSuiviPluriannuel = InterfacePageSuiviPluriannuel;
 function initialiserTripleCombo(aInstance) {
-	aInstance.setParametres([EGenreRessource.Classe, EGenreRessource.Eleve]);
+	aInstance.setParametres([
+		Enumere_Ressource_1.EGenreRessource.Classe,
+		Enumere_Ressource_1.EGenreRessource.Eleve,
+	]);
 }
 function _construireAltGraph(aParam) {
 	const H = [];
@@ -361,15 +422,17 @@ function _construireAltGraph(aParam) {
 				lAnnees.push(aAnnee.getLibelle());
 			});
 			H.push(
-				GTraductions.getValeur("SuiviPluriannuel.altGraph.annees", [
-					lAnnees.join(", "),
-				]),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"SuiviPluriannuel.altGraph.annees",
+					[lAnnees.join(", ")],
+				),
 			);
 		} else {
 			H.push(
-				GTraductions.getValeur("SuiviPluriannuel.altGraph.annee", [
-					aParam.listeAnnees.getPremierElement().getLibelle(),
-				]),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"SuiviPluriannuel.altGraph.annee",
+					[aParam.listeAnnees.getPremierElement().getLibelle()],
+				),
 			);
 		}
 		aParam.listeDonnees.parcourir((aService) => {
@@ -382,7 +445,9 @@ function _construireAltGraph(aParam) {
 						);
 					} else {
 						H.push(
-							GTraductions.getValeur("SuiviPluriannuel.altGraph.pasDeNote"),
+							ObjetTraduction_1.GTraductions.getValeur(
+								"SuiviPluriannuel.altGraph.pasDeNote",
+							),
 						);
 					}
 				});
@@ -399,4 +464,3 @@ function _getStrNote(aNote) {
 			: aNote + ""
 		: "";
 }
-module.exports = ObjetAffichagePageSuiviPluriannuel;

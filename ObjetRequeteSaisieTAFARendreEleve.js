@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieTAFARendreEleve extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieTAFARendreEleve = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieTAFARendreEleve extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aListeFichiers) {
 		if (aListeFichiers) {
 			this.JSON.listeFichiers = aListeFichiers.setSerialisateurJSON({
@@ -13,9 +11,12 @@ class ObjetRequeteSaisieTAFARendreEleve extends ObjetRequeteSaisie {
 		return this.appelAsynchrone();
 	}
 }
-Requetes.inscrire("SaisieTAFARendreEleve", ObjetRequeteSaisieTAFARendreEleve);
+exports.ObjetRequeteSaisieTAFARendreEleve = ObjetRequeteSaisieTAFARendreEleve;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieTAFARendreEleve",
+	ObjetRequeteSaisieTAFARendreEleve,
+);
 function _serialiserFichier(aElement, aJSON) {
 	aJSON.idFichier = aElement.idFichier;
 	aJSON.TAF = aElement.TAF;
 }
-module.exports = ObjetRequeteSaisieTAFARendreEleve;

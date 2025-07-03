@@ -17,7 +17,13 @@ const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetElement_1 = require("ObjetElement");
 const ObjetGalerieCarrousel_1 = require("ObjetGalerieCarrousel");
 const TypeGenreMiniature_1 = require("TypeGenreMiniature");
+const AccessApp_1 = require("AccessApp");
 class WidgetTAF extends ObjetWidget_1.Widget.ObjetWidget {
+	constructor(...aParams) {
+		super(...aParams);
+		const lApplicationSco = (0, AccessApp_1.getApp)();
+		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
+	}
 	creerObjetsTAF() {
 		this.utilitaireCDT =
 			new ObjetUtilitaireCahierDeTexte_1.ObjetUtilitaireCahierDeTexte(
@@ -136,22 +142,32 @@ class WidgetTAF extends ObjetWidget_1.Widget.ObjetWidget {
 			]);
 			this.donnees.listeTAF.trier();
 		}
+		const lWidget = {
+			getHtml: this.composeWidgetTAF.bind(this),
+			nbrElements: this.donnees.listeTAF ? this.donnees.listeTAF.count() : 0,
+			afficherMessage:
+				!this.donnees.listeTAF || this.donnees.listeTAF.count() === 0,
+		};
+		$.extend(true, this.donnees, lWidget);
+		aParams.construireWidget(this.donnees);
+	}
+	composeWidgetTAF() {
 		const H = [];
-		let lDate, lTaf, i;
-		const T = [];
+		let lDate, lTaf;
+		const lDicoPourLeTaf = [];
 		if (this.donnees.listeTAF && this.donnees.listeTAF.count() > 0) {
 			H.push('<div class="conteneur-liste-CDT">');
 			H.push('<ul class="liste-imbriquee">');
 			for (let I = 0; I < this.donnees.listeTAF.count(); I++) {
 				lTaf = this.donnees.listeTAF.get(I);
 				lTaf.indice = I;
-				if (!T[lTaf.pourLe]) {
-					T[lTaf.pourLe] = [];
+				if (!lDicoPourLeTaf[lTaf.pourLe]) {
+					lDicoPourLeTaf[lTaf.pourLe] = [];
 				}
-				T[lTaf.pourLe].push(lTaf);
+				lDicoPourLeTaf[lTaf.pourLe].push(lTaf);
 			}
 			if (this.donnees.listeTAF.count() > 0) {
-				for (lDate in T) {
+				for (lDate in lDicoPourLeTaf) {
 					const lDateConcernee = new Date(lDate);
 					H.push(
 						'<li aria-labelledby="' +
@@ -159,10 +175,9 @@ class WidgetTAF extends ObjetWidget_1.Widget.ObjetWidget {
 							'" tabindex="0">',
 					);
 					H.push(this.composeDate(lDateConcernee));
-					this.indiceLigne = 0;
 					H.push('<ul class="sub-liste cols">');
-					for (i in T[lDate]) {
-						lTaf = T[lDate][i];
+					for (const i in lDicoPourLeTaf[lDate]) {
+						lTaf = lDicoPourLeTaf[lDate][i];
 						H.push(this.composeTAF(lTaf.indice, lTaf, lDateConcernee));
 					}
 					H.push("</ul>");
@@ -172,14 +187,7 @@ class WidgetTAF extends ObjetWidget_1.Widget.ObjetWidget {
 			H.push("</ul>");
 			H.push("</div>");
 		}
-		const lWidget = {
-			html: H.join(""),
-			nbrElements: this.donnees.listeTAF ? this.donnees.listeTAF.count() : 0,
-			afficherMessage:
-				!this.donnees.listeTAF || this.donnees.listeTAF.count() === 0,
-		};
-		$.extend(true, this.donnees, lWidget);
-		aParams.construireWidget(this.donnees);
+		return H.join("");
 	}
 	getIdDate(aDate) {
 		const lIdDate = [this.donnees.id, "_date"];
@@ -249,7 +257,7 @@ class WidgetTAF extends ObjetWidget_1.Widget.ObjetWidget {
 			lTitleTafFait ? 'title="' + lTitleTafFait + '"' : "",
 			">",
 			'<div class="with-color" style="--couleur-matiere:',
-			aTaf.couleurFond,
+			aTaf.CouleurFond,
 			';margin-left:.8rem;">',
 			this.composeMatiere(aTaf),
 			"</div>",
@@ -280,7 +288,7 @@ class WidgetTAF extends ObjetWidget_1.Widget.ObjetWidget {
 			lEstFait ? "est-fait" : "",
 			'" id="' + this.Nom + "_" + i + '">',
 			lEstQCM
-				? '<i class="icon_qcm ThemeCat-pedagogie"></i>' +
+				? '<i role="presentation" class="icon_qcm ThemeCat-pedagogie"></i>' +
 						(lEstFait ? aTaf.descriptifCourt : aTaf.descriptif)
 				: aTaf.descriptif,
 			"</div>",
@@ -310,7 +318,7 @@ class WidgetTAF extends ObjetWidget_1.Widget.ObjetWidget {
 			if (GEtatUtilisateur.estEspaceEleve()) {
 				H.push(
 					'<div class="flex-contain conteneur-cb"><ie-checkbox class="cb-termine colored-label" ie-textleft ie-model="cbTAFFait(\'',
-					aTaf.getNumero(),
+					aTaf.getNumero().toString(),
 					"')\">",
 					ObjetTraduction_1.GTraductions.getValeur("TAFEtContenu.cbTermine"),
 					"</ie-checkbox></div>",
@@ -367,14 +375,14 @@ class WidgetTAF extends ObjetWidget_1.Widget.ObjetWidget {
 		return H.join("");
 	}
 	composePiecesJointes(aElement) {
-		const lHtml = [],
-			lListe = aElement.listeDocumentJoint;
-		lHtml.push('<div class="piece-jointe">');
+		const H = [];
+		const lListe = aElement.listeDocumentJoint;
+		H.push('<div class="piece-jointe">');
 		let lAvecImage = false;
 		for (let I = 0; I < lListe.count(); I++) {
 			const lPieceJointe = lListe.get(I);
 			if (!lPieceJointe.avecMiniaturePossible) {
-				lHtml.push(
+				H.push(
 					'<div class="chips-pj">',
 					ObjetChaine_1.GChaine.composerUrlLienExterne({
 						documentJoint: lPieceJointe,
@@ -386,15 +394,15 @@ class WidgetTAF extends ObjetWidget_1.Widget.ObjetWidget {
 				lAvecImage = true;
 			}
 		}
-		lHtml.push("</div>");
+		H.push("</div>");
 		if (lAvecImage) {
-			lHtml.push(
+			H.push(
 				"<div ie-identite=\"getCarrouselTAF('",
-				aElement.getNumero(),
+				aElement.getNumero().toString(),
 				"')\"></div>",
 			);
 		}
-		return lHtml.join("");
+		return H.join("");
 	}
 	_surQCMTAF(aNumeroTaf) {
 		const lTaf = this.donnees.listeTAF.getElementParNumero(aNumeroTaf);
@@ -407,7 +415,7 @@ class WidgetTAF extends ObjetWidget_1.Widget.ObjetWidget {
 	_surTAF(aNumeroTaf) {
 		const lTaf = this.donnees.listeTAF.getElementParNumero(aNumeroTaf);
 		let lPageDestination;
-		if (GEtatUtilisateur.estEspaceMobile()) {
+		if (this.etatUtilisateurSco.estEspaceMobile()) {
 			lPageDestination = {
 				genreOngletDest: Enumere_Onglet_1.EGenreOnglet.CDT_TAF,
 				taf: lTaf,

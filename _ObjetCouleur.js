@@ -54,9 +54,9 @@ class _ObjetCouleur {
 			texte: this.themeNeutre.foncee,
 			intermediaire: this.themeNeutre.claire,
 		};
-		this.rouge = "var(--color-red)";
-		this.rougeClair = "var(--color-light-red)";
-		this.vert = "var(--color-green)";
+		this.rouge = "var(--color-red-foncee)";
+		this.rougeClair = "var(--color-red-claire)";
+		this.vert = "var( --color-green-moyen)";
 		this.grisTresClair = this.fenetre.nonEditable;
 		this.grisClair = this.fenetre.intermediaire;
 		this.grisFonce = this.fenetre.cumul;

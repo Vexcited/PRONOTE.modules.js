@@ -8,8 +8,6 @@ class DonneesListe_SuiviStage extends ObjetDonneesListeFlatDesign_1.ObjetDonnees
 		this.parametres = aParametres;
 		this.setOptions({
 			avecSelection: true,
-			avecEdition: false,
-			avecSuppression: false,
 			avecEvnt_Selection: true,
 			avecBoutonActionLigne: false,
 		});
@@ -32,7 +30,7 @@ class DonneesListe_SuiviStage extends ObjetDonneesListeFlatDesign_1.ObjetDonnees
 					{
 						class: [
 							"date-contain",
-							lSuivi.evenement.couleur ? "ie-line-color bottom" : "",
+							lSuivi.evenement.couleur ? "ie-line-color" : "",
 						],
 						style: { "--color-line": lSuivi.evenement.couleur },
 						datetime: ObjetDate_1.GDate.formatDate(lSuivi.date, "%MM-%JJ"),
@@ -45,17 +43,13 @@ class DonneesListe_SuiviStage extends ObjetDonneesListeFlatDesign_1.ObjetDonnees
 	}
 	getTitreZonePrincipale(aParams) {
 		const lSuivi = aParams.article;
-		return IE.jsx.str(
-			"div",
-			{ class: "ie-titre Gras" },
-			lSuivi.evenement.getLibelle(),
-		);
+		return lSuivi.evenement.getLibelle();
 	}
 	getInfosSuppZonePrincipale(aParams) {
 		const lSuivi = aParams.article;
 		return IE.jsx.str(
 			"div",
-			{ class: "ie-titre-petit" },
+			null,
 			(!!lSuivi.strResponsable ? lSuivi.strResponsable : "") +
 				(!!lSuivi.responsable ? lSuivi.responsable.getLibelle() : "") +
 				_getStringStatut(lSuivi),
@@ -72,25 +66,44 @@ class DonneesListe_SuiviStage extends ObjetDonneesListeFlatDesign_1.ObjetDonnees
 	getZoneComplementaire(aParams) {
 		const H = [];
 		const lSuivi = aParams.article;
+		const lHeure = lSuivi.avecHeure
+			? [ObjetDate_1.GDate.formatDate(lSuivi.date, "%hh%sh%mm")]
+			: [];
+		if (lSuivi.avecHeureFin) {
+			lHeure.push(ObjetDate_1.GDate.formatDate(lSuivi.dateFin, "%hh%sh%mm"));
+		}
 		H.push(
 			lSuivi.avecHeure
-				? IE.jsx.str(
-						"div",
-						{ class: "conteneur-heure" },
-						ObjetDate_1.GDate.formatDate(lSuivi.date, "%hh%sh%mm"),
-					)
+				? IE.jsx.str("div", { class: "conteneur-heure" }, lHeure.join(" - "))
 				: "",
 			IE.jsx.str(
 				"div",
-				{ class: "flex-contain" },
+				{ class: "icones-conteneur" },
 				!!lSuivi.listePJ && lSuivi.listePJ.count()
-					? IE.jsx.str("i", { class: "icon_piece_jointe" })
+					? IE.jsx.str("i", {
+							role: "img",
+							class: ["icon", "icon_piece_jointe"],
+							title: ObjetTraduction_1.GTraductions.getValeur(
+								"FicheStage.listeSuivis.piecesJointes",
+							),
+						})
 					: "",
 				this.parametres.avecEditionSuivisDeStage && !!lSuivi.editable
 					? IE.jsx.str("i", {
-							class: lSuivi.publier
-								? "icon_info_sondage_publier"
-								: "icon_info_sondage_non_publier",
+							role: "img",
+							class: [
+								"icon",
+								lSuivi.publier
+									? "icon_info_sondage_publier"
+									: "icon_info_sondage_non_publier",
+							],
+							title: lSuivi.publier
+								? ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.listeSuivis.etatPublie",
+									)
+								: ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.listeSuivis.etatNonPublie",
+									),
 						})
 					: "",
 			),

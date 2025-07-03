@@ -25,13 +25,17 @@ const Enumere_Action_1 = require("Enumere_Action");
 const UtilitaireMenuContextuelNatif_1 = require("UtilitaireMenuContextuelNatif");
 const ObjetCouleur_1 = require("ObjetCouleur");
 const ObjetParametresCP_1 = require("ObjetParametresCP");
+const AccessApp_1 = require("AccessApp");
+const TypesRequeteJSON_1 = require("TypesRequeteJSON");
+class ObjetRequeteParametres extends ObjetRequeteJSON_1.ObjetRequeteConsultation {}
 CollectionRequetes_1.Requetes.inscrire(
-	"FonctionParametres",
-	ObjetRequeteJSON_1.ObjetRequeteConsultation,
+	TypesRequeteJSON_1.ConstantesIdRequetesAjaxCP.fonctionParametres,
+	ObjetRequeteParametres,
 );
+class ObjetRequeteSaisieErreurSSO extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
 CollectionRequetes_1.Requetes.inscrire(
 	"SaisieErreurSSO",
-	ObjetRequeteJSON_1.ObjetRequeteSaisie,
+	ObjetRequeteSaisieErreurSSO,
 );
 global.Start = function (aParametres) {
 	const lNumeroSession = aParametres.h;
@@ -40,9 +44,8 @@ global.Start = function (aParametres) {
 		Invocateur_1.ObjetInvocateur.events.initChiffrement,
 		aParametres,
 	);
-	const lApp = (GApplication = new ObjetApplicationPageGestionSSO(
-		lErreurGenerique,
-	));
+	const lApp = new ObjetApplicationPageGestionSSO(lErreurGenerique);
+	(0, AccessApp_1.setApp)(lApp);
 	global.GCouleur = new ObjetCouleur_1.ObjetCouleur(true);
 	if (!global.GParametres) {
 		global.GParametres = new ObjetParametresGestionSSO();
@@ -86,11 +89,10 @@ class ObjetApplicationPageGestionSSO extends ObjetApplicationProduit_1.ObjetAppl
 	}
 	evenementSurChargement() {
 		this.modifierURL();
-		(0, CollectionRequetes_1.Requetes)(
-			"FonctionParametres",
+		new ObjetRequeteParametres(
 			this,
 			this.actionSurRecupererDonnees,
-		).lancerRequete({});
+		).lancerRequete();
 	}
 	modifierURL() {
 		if (typeof history.pushState !== "undefined") {
@@ -179,7 +181,7 @@ class ObjetApplicationPageGestionSSO extends ObjetApplicationProduit_1.ObjetAppl
 				],
 				largeurFenetre: 450,
 				hauteurFenetre: 250,
-				labelWAI: ObjetTraduction_1.GTraductions.getValeur("sso.Disciplines"),
+				ariaLabel: ObjetTraduction_1.GTraductions.getValeur("sso.Disciplines"),
 			});
 			this.selectDisciplines.initialiser();
 			this.selectDisciplines.setDonnees(
@@ -257,84 +259,80 @@ class ObjetApplicationPageGestionSSO extends ObjetApplicationProduit_1.ObjetAppl
 		}
 	}
 	construireAffichage() {
-		const lHtml = [];
+		const H = [];
 		const lTitre =
 			this.erreurGenerique ||
 			this.donnees.codeErreur === 5 ||
 			this.donnees.codeErreur === 6
 				? ObjetTraduction_1.GTraductions.getValeur("sso.ConnexionImpossible")
 				: ObjetTraduction_1.GTraductions.getValeur("sso.Titre");
-		lHtml.push(
+		H.push(
 			'<div id="',
 			this.idWrapper,
 			'" style="position:absolute;width:100%;height:100%;overflow:hidden;">',
 		);
-		lHtml.push(
+		H.push(
 			'<div style="position:relative;width: 100%; height:35px; font-size:20px; box-shadow:0 2px 10px -6px #000000;z-index:101;" class="Texte18 FondBlanc">',
 		);
-		lHtml.push(
+		H.push(
 			'<div style="width:0;height:100%;" class="InlineBlock AlignementMilieuVertical"></div>',
 		);
-		lHtml.push(
+		H.push(
 			'<div style="width: 99.5%;" class="InlineBlock AlignementMilieu AlignementMilieuVertical">',
 			lTitre,
 			"</div>",
 		);
-		lHtml.push("</div>");
-		lHtml.push('<div id="', this.idConnect, '">');
+		H.push("</div>");
+		H.push('<div id="', this.idConnect, '">');
 		if (
 			this.donnees.codeErreur ===
 				TypeErreurCAS_1.TypeErreurCAS.eCAS_Plusieurs_IdCAS ||
 			this.donnees.codeErreur ===
 				TypeErreurCAS_1.TypeErreurCAS.eCAS_PersonnelVSEtDirection
 		) {
-			lHtml.push(this._composeLiens());
+			H.push(this._composeLiens());
 		} else if (
 			this.donnees.codeErreur ===
 			TypeErreurCAS_1.TypeErreurCAS.eCAS_AucunTrouve_URLEspace
 		) {
-			lHtml.push(this._composeLienRacine());
+			H.push(this._composeLienRacine());
 		} else if (
 			this.donnees.codeErreur ===
 			TypeErreurCAS_1.TypeErreurCAS.eCAS_AucunTrouve_AccesRefuse
 		) {
-			lHtml.push(this._composeAutreMessage());
+			H.push(this._composeAutreMessage());
 		} else if (
 			this.donnees.codeErreur ===
 				TypeErreurCAS_1.TypeErreurCAS.eCAS_samlValidate_Statut ||
 			this.donnees.codeErreur ===
 				TypeErreurCAS_1.TypeErreurCAS.eCAS_samlValidate_Message
 		) {
-			lHtml.push(this._composeErreurMessage());
+			H.push(this._composeErreurMessage());
 		} else if (this.erreurGenerique) {
 			if (
 				TypeErreurCAS_1.TypeErreurCASUtil.estErreurEduConnect(
 					this.donnees.codeErreur,
 				)
 			) {
-				lHtml.push(this._composeGenerique(true));
+				H.push(this._composeGenerique(true));
 			} else {
-				lHtml.push(this._composeGenerique());
+				H.push(this._composeGenerique());
 			}
 		} else if (
 			TypeErreurCAS_1.TypeErreurCASUtil.estErreurEduConnect(
 				this.donnees.codeErreur,
 			)
 		) {
-			lHtml.push(this._composeEduConnect());
+			H.push(this._composeEduConnect());
 		} else {
-			lHtml.push(this._composeInfo());
+			H.push(this._composeInfo());
 		}
-		lHtml.push("</div>");
-		lHtml.push("</div>");
-		return lHtml.join("");
+		H.push("</div>");
+		H.push("</div>");
+		return H.join("");
 	}
 	valider() {
-		(0, CollectionRequetes_1.Requetes)(
-			"SaisieErreurSSO",
-			this,
-			this.actionSurValidation,
-		)
+		new ObjetRequeteSaisieErreurSSO(this, this.actionSurValidation)
 			.setOptions({ avecControleModeExclusif: false })
 			.lancerRequete({ infos: this.donnees.toJSONAll() });
 	}
@@ -575,7 +573,7 @@ class ObjetApplicationPageGestionSSO extends ObjetApplicationProduit_1.ObjetAppl
 				},
 			},
 			ajoutEleves: function () {
-				const lHtml = [];
+				const H = [];
 				if (
 					lthis.donnees.informationsSupplementaires &&
 					lthis.donnees.informationsSupplementaires.eleves
@@ -585,10 +583,10 @@ class ObjetApplicationPageGestionSSO extends ObjetApplicationProduit_1.ObjetAppl
 						i < lthis.donnees.informationsSupplementaires.eleves.length;
 						i++
 					) {
-						lHtml.push(lthis._composeInfosEleve(i));
+						H.push(lthis._composeInfosEleve(i));
 					}
 				}
-				return lHtml.join("");
+				return H.join("");
 			},
 			nomEleve: {
 				getValue: function (aIndice) {
@@ -776,8 +774,8 @@ class ObjetApplicationPageGestionSSO extends ObjetApplicationProduit_1.ObjetAppl
 	}
 	_composeLiens() {
 		this.etatSaisie = true;
-		const lHtml = [];
-		lHtml.push(
+		const H = [];
+		H.push(
 			'<div class="taille-s" style="padding: 20px;">',
 			'<div class="taille-m GrandEspaceBas">',
 			ObjetTraduction_1.GTraductions.getValeur("sso.InfoLien1"),
@@ -786,10 +784,10 @@ class ObjetApplicationPageGestionSSO extends ObjetApplicationProduit_1.ObjetAppl
 			ObjetTraduction_1.GTraductions.getValeur("sso.InfoLien2"),
 			"</div>",
 		);
-		lHtml.push('<div style="padding: 10px;">');
+		H.push('<div style="padding: 10px;">');
 		for (let i = 0; i < this.donnees.liens.count(); i++) {
 			const lBouton = this.donnees.liens.get(i);
-			lHtml.push(
+			H.push(
 				'<a href="',
 				lBouton.url,
 				new UtilitaireRedirection_1.UtilitaireRedirection().getParametresUrl(),
@@ -804,14 +802,14 @@ class ObjetApplicationPageGestionSSO extends ObjetApplicationProduit_1.ObjetAppl
 				"</a>",
 			);
 		}
-		lHtml.push("</div>");
-		lHtml.push("</div>");
-		return lHtml.join("");
+		H.push("</div>");
+		H.push("</div>");
+		return H.join("");
 	}
 	_composeLienRacine() {
 		this.etatSaisie = true;
-		const lHtml = [];
-		lHtml.push(
+		const H = [];
+		H.push(
 			'<div class="taille-s" style="padding: 20px;">',
 			'<div class="taille-m GrandEspaceBas">',
 			ObjetTraduction_1.GTraductions.getValeur("sso.InfoLien1"),
@@ -820,21 +818,19 @@ class ObjetApplicationPageGestionSSO extends ObjetApplicationProduit_1.ObjetAppl
 			ObjetTraduction_1.GTraductions.getValeur("sso.InfoLien3"),
 			"</div>",
 		);
-		lHtml.push('<div style="padding: 10px;">');
-		lHtml.push(
+		H.push('<div style="padding: 10px;">');
+		H.push(
 			'<a href="./" ',
 			ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_1.EGenreRole.Button),
-			' target="_self" tabindex="0" accessKey="',
-			1,
-			'" ',
+			' target="_self" tabindex="0" accessKey="1" ',
 			'class="AvecMain taille-l" style="display:block;height:30px;line-height:30px;padding:7px 0;',
 			' cursor:pointer;" onkeyup="if (GNavigateur.isToucheEspace ()) this.click()">',
 			this._getURLRacine(),
 			"</a>",
 		);
-		lHtml.push("</div>");
-		lHtml.push("</div>");
-		return lHtml.join("");
+		H.push("</div>");
+		H.push("</div>");
+		return H.join("");
 	}
 	_getURLRacine() {
 		const lUrl = window.location.href.split("/");
@@ -843,57 +839,57 @@ class ObjetApplicationPageGestionSSO extends ObjetApplicationProduit_1.ObjetAppl
 	}
 	_composeErreurMessage() {
 		this.etatSaisie = true;
-		const lHtml = [];
-		lHtml.push('<div class="taille-s" style="padding: 20px;">');
-		lHtml.push(
+		const H = [];
+		H.push('<div class="taille-s" style="padding: 20px;">');
+		H.push(
 			'<div class="taille-m GrandEspaceBas">',
 			ObjetTraduction_1.GTraductions.getValeur("sso.InfoMessage"),
 			"</div>",
 		);
-		lHtml.push(
+		H.push(
 			'<div class="taille-m GrandEspaceBas">',
 			this.donnees.messageErreur,
 			"</div>",
 		);
-		lHtml.push(
+		H.push(
 			'<div class="taille-m EspaceBas">',
 			ObjetTraduction_1.GTraductions.getValeur("sso.FermezNavigateur"),
 			"</div>",
 		);
-		lHtml.push("</div>");
-		return lHtml.join("");
+		H.push("</div>");
+		return H.join("");
 	}
 	_composeGenerique(aEstEduConnect) {
 		this.etatSaisie = true;
-		const lHtml = [];
+		const H = [];
 		const lMessage = aEstEduConnect
 			? ObjetTraduction_1.GTraductions.getValeur(
 					"sso.erreurGeneriqueEduConnect",
 				)
 			: ObjetTraduction_1.GTraductions.getValeur("sso.erreurGenerique");
-		lHtml.push('<div class="taille-s" style="padding: 20px;">');
-		lHtml.push('<div class="taille-m GrandEspaceBas">', lMessage, "</div>");
-		lHtml.push(
+		H.push('<div class="taille-s" style="padding: 20px;">');
+		H.push('<div class="taille-m GrandEspaceBas">', lMessage, "</div>");
+		H.push(
 			'<div class="taille-m EspaceBas">',
 			ObjetTraduction_1.GTraductions.getValeur("sso.adminInforme"),
 			"</div>",
 		);
-		lHtml.push("</div>");
-		return lHtml.join("");
+		H.push("</div>");
+		return H.join("");
 	}
 	_composeAutreMessage() {
 		this.etatSaisie = true;
-		const lHtml = [];
-		lHtml.push('<div class="taille-s" style="padding: 20px;">');
+		const H = [];
+		H.push('<div class="taille-s" style="padding: 20px;">');
 		if (this.donnees.messageErreur) {
-			lHtml.push(
+			H.push(
 				'<div class="taille-m GrandEspaceBas">',
 				this.donnees.messageErreur,
 				"</div>",
 			);
 		}
-		lHtml.push("</div>");
-		return lHtml.join("");
+		H.push("</div>");
+		return H.join("");
 	}
 	_composeInfosEleve(aIndice) {
 		const lHtml = [];
@@ -1199,7 +1195,7 @@ class ObjetApplicationPageGestionSSO extends ObjetApplicationProduit_1.ObjetAppl
 			'"></div></div>',
 			'<div class="GrandEspaceGauche"><textarea id="',
 			this.idcommentaire,
-			'" rows="4" ie-model="commentaire" class="round-style" style="width:605px; min-height: 5.8rem; margin: 0px; ',
+			'" rows="4" ie-model="commentaire"  style="width:605px; min-height: 5.8rem; margin: 0px; ',
 			'" type="text" tabindex="0"></textarea></div>',
 			'<div class="GrandEspaceHaut GrandEspaceGauche EspaceBas Gras">',
 			ObjetTraduction_1.GTraductions.getValeur("sso.InfoContact"),

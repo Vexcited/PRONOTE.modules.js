@@ -12,7 +12,6 @@ class ObjetFenetre_DestMessageInstantane extends ObjetFenetre_1.ObjetFenetre {
 			),
 			modale: true,
 			largeur: 350,
-			heightMax_mobile: true,
 			fermerFenetreSurClicHorsFenetre: IE.estMobile,
 			listeBoutons: [
 				ObjetTraduction_1.GTraductions.getValeur("Fermer"),

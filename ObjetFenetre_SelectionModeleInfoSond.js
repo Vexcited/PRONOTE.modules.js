@@ -1,16 +1,15 @@
-const { ObjetFenetre_Liste } = require("ObjetFenetre_Liste.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetListe } = require("ObjetListe.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetTri } = require("ObjetTri.js");
-class ObjetFenetre_SelectionModeleInfoSond extends ObjetFenetre_Liste {
-	constructor(aParamsFenetre) {
-		super(aParamsFenetre);
-		this.options.filtres = {
+exports.ObjetFenetre_SelectionModeleInfoSond = void 0;
+const ObjetFenetre_Liste_1 = require("ObjetFenetre_Liste");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetListe_1 = require("ObjetListe");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetTri_1 = require("ObjetTri");
+class ObjetFenetre_SelectionModeleInfoSond extends ObjetFenetre_Liste_1.ObjetFenetre_Liste {
+	constructor(...aParams) {
+		super(...aParams);
+		this.options = {
 			uniquementMesModeles: false,
 			categorie: null,
 			listeBruteCategories: null,
@@ -18,15 +17,11 @@ class ObjetFenetre_SelectionModeleInfoSond extends ObjetFenetre_Liste {
 		};
 		this.setOptionsFenetre({
 			modale: true,
-			titre:
-				aParamsFenetre.options && aParamsFenetre.options.estCasSondage
-					? GTraductions.getValeur("actualites.modeles.ListeSondages")
-					: GTraductions.getValeur("actualites.modeles.ListeInfos"),
 			largeur: 600,
 			hauteur: 700,
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 			modeActivationBtnValider: this.modeActivationBtnValider.toujoursActifs,
 		});
@@ -34,101 +29,101 @@ class ObjetFenetre_SelectionModeleInfoSond extends ObjetFenetre_Liste {
 			optionsListe: {
 				colonnes: [{ taille: "100%" }],
 				boutons: [
-					{ genre: ObjetListe.typeBouton.deployer },
-					{ genre: ObjetListe.typeBouton.rechercher },
+					{ genre: ObjetListe_1.ObjetListe.typeBouton.deployer },
+					{ genre: ObjetListe_1.ObjetListe.typeBouton.rechercher },
 				],
-				skin: ObjetListe.skin.flatDesign,
+				skin: ObjetListe_1.ObjetListe.skin.flatDesign,
 			},
 		};
 	}
 	setOptions(aOptions) {
-		if (aOptions.filtres && aOptions.filtres.listeBruteCategories) {
-			let lListeCategoriesAvecToutes = MethodesObjet.dupliquer(
-				aOptions.filtres.listeBruteCategories,
+		if (aOptions.listeBruteCategories) {
+			let lListeCategoriesAvecToutes = MethodesObjet_1.MethodesObjet.dupliquer(
+				aOptions.listeBruteCategories,
 			);
-			const lCategorieToutes = new ObjetElement(
-				GTraductions.getValeur("actualites.ToutesCategories"),
+			const lCategorieToutes = new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur("actualites.ToutesCategories"),
 				0,
 			);
 			lCategorieToutes.toutesLesCategories = true;
 			lListeCategoriesAvecToutes.addElement(lCategorieToutes);
 			lListeCategoriesAvecToutes.setTri([
-				ObjetTri.init((D) => {
+				ObjetTri_1.ObjetTri.init((D) => {
 					return !D.toutesLesCategories;
 				}),
-				ObjetTri.init("Libelle"),
+				ObjetTri_1.ObjetTri.init("Libelle"),
 			]);
 			lListeCategoriesAvecToutes.trier();
-			$.extend(aOptions.filtres, {
-				listeCategories: lListeCategoriesAvecToutes,
-			});
+			$.extend(aOptions, { listeCategories: lListeCategoriesAvecToutes });
 		}
 		super.setOptions(aOptions);
 		return this;
 	}
-	getControleur() {
-		return $.extend(true, super.getControleur(this), {
-			filtres: {
-				checkUniquementMesModeles: {
-					getValue: function () {
-						return this.options.filtres.uniquementMesModeles;
-					}.bind(this),
-					setValue: function (aValue) {
-						const lValueCB = !!aValue;
-						this.options.filtres.uniquementMesModeles = lValueCB;
-						_filtrerListe.call(this);
-					}.bind(this),
-				},
-				labelUniquementMesModeles: function () {
-					return GTraductions.getValeur("actualites.uniquementMesModeles");
-				},
-				comboCategories: {
-					init: function (aCombo) {
-						aCombo.setOptionsObjetSaisie({
-							longueur: 200,
-							hauteur: 16,
-							hauteurLigneDefault: 16,
-							labelWAICellule: GTraductions.getValeur(
-								"WAI.ListeSelectionCategorie",
-							),
-						});
-					},
-					getDonnees: function () {
-						if (
-							this.options.filtres.listeCategories !== null &&
-							this.options.filtres.listeCategories !== undefined
-						) {
-							return this.options.filtres.listeCategories;
-						}
-					}.bind(this),
-					getIndiceSelection: function () {
-						return this.options.filtres.categorie !== null
-							? this.options.filtres.listeCategories.getIndiceParElement(
-									this.options.filtres.categorie,
-								)
-							: 0;
-					}.bind(this),
-					event: function (aParametres, aCombo) {
-						if (
-							aParametres.genreEvenement ===
-								EGenreEvenementObjetSaisie.selection &&
-							aParametres.element &&
-							aCombo.estUneInteractionUtilisateur()
-						) {
-							this.options.filtres.categorie = aParametres.element;
-							_filtrerListe.call(this);
-						}
-					}.bind(this),
-				},
+	jsxModelCheckboxUniquementmesModeles() {
+		return {
+			getValue: () => {
+				return this.options.uniquementMesModeles;
 			},
-		});
+			setValue: (aValue) => {
+				const lValueCB = !!aValue;
+				this.options.uniquementMesModeles = lValueCB;
+				this._filtrerListe();
+			},
+		};
+	}
+	jsxCombo() {
+		return {
+			init: (aCombo) => {
+				aCombo.setOptionsObjetSaisie({
+					longueur: 200,
+					hauteur: 16,
+					hauteurLigneDefault: 16,
+					labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+						"WAI.ListeSelectionCategorie",
+					),
+				});
+			},
+			getDonnees: (aListe) => {
+				if (
+					this.options.listeCategories !== null &&
+					this.options.listeCategories !== undefined
+				) {
+					return this.options.listeCategories;
+				}
+			},
+			getIndiceSelection: () => {
+				return this.options.categorie !== null
+					? this.options.listeCategories.getIndiceParElement(
+							this.options.categorie,
+						)
+					: 0;
+			},
+			event: (aParametres, aCombo) => {
+				if (
+					aParametres.genreEvenement ===
+						Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+							.selection &&
+					aParametres.element &&
+					aCombo.estUneInteractionUtilisateur()
+				) {
+					this.options.categorie = aParametres.element;
+					this._filtrerListe();
+				}
+			},
+		};
 	}
 	composeZoneFiltres() {
 		const T = [];
 		T.push(
-			'<ie-checkbox ie-model="filtres.checkUniquementMesModeles" ie-html="filtres.labelUniquementMesModeles"></ie-checkbox>',
+			IE.jsx.str(
+				"ie-checkbox",
+				{ "ie-model": this.jsxModelCheckboxUniquementmesModeles.bind(this) },
+				ObjetTraduction_1.GTraductions.getValeur(
+					"actualites.uniquementMesModeles",
+				),
+			),
 		);
-		T.push('<ie-combo ie-model="filtres.comboCategories"></ie-combo>');
+		T.push(IE.jsx.str("ie-combo", { "ie-model": this.jsxCombo.bind(this) }));
 		return T.join("");
 	}
 	composeContenu() {
@@ -147,29 +142,30 @@ class ObjetFenetre_SelectionModeleInfoSond extends ObjetFenetre_Liste {
 		T.push("</div>");
 		return T.join("");
 	}
+	_filtrerListe() {
+		const lDonnees = this.getInstance(this.identListe).getListeArticles();
+		const lUniquementLesMiens = this.options.uniquementMesModeles;
+		const lCategorie = this.options.categorie;
+		lDonnees.parcourir((aLigne) => {
+			const lEstVisibleSelonFiltreMiens =
+				lUniquementLesMiens !== true ||
+				(aLigne.estModele === true && aLigne.estAuteur === true) ||
+				(aLigne.estModele !== true &&
+					aLigne.pere &&
+					aLigne.pere.estAuteur === true);
+			const lEstVisibleSelonCategorie =
+				lCategorie === null ||
+				lCategorie === undefined ||
+				!lCategorie.existeNumero() ||
+				(aLigne.estModele === true &&
+					aLigne.categorie.getNumero() === lCategorie.getNumero()) ||
+				(aLigne.estModele !== true &&
+					aLigne.pere &&
+					aLigne.pere.categorie.getNumero() === lCategorie.getNumero());
+			aLigne.visible = lEstVisibleSelonFiltreMiens && lEstVisibleSelonCategorie;
+		});
+		this.actualiserListe();
+	}
 }
-function _filtrerListe() {
-	const lDonnees = this.getInstance(this.identListe).getListeArticles();
-	const lUniquementLesMiens = this.options.filtres.uniquementMesModeles;
-	const lCategorie = this.options.filtres.categorie;
-	lDonnees.parcourir((aLigne) => {
-		const lEstVisibleSelonFiltreMiens =
-			lUniquementLesMiens !== true ||
-			(aLigne.estModele === true && aLigne.estAuteur === true) ||
-			(aLigne.estModele !== true &&
-				aLigne.pere &&
-				aLigne.pere.estAuteur === true);
-		const lEstVisibleSelonCategorie =
-			lCategorie === null ||
-			lCategorie === undefined ||
-			!lCategorie.existeNumero() ||
-			(aLigne.estModele === true &&
-				aLigne.categorie.getNumero() === lCategorie.getNumero()) ||
-			(aLigne.estModele !== true &&
-				aLigne.pere &&
-				aLigne.pere.categorie.getNumero() === lCategorie.getNumero());
-		aLigne.visible = lEstVisibleSelonFiltreMiens && lEstVisibleSelonCategorie;
-	});
-	this.actualiserListe();
-}
-module.exports = { ObjetFenetre_SelectionModeleInfoSond };
+exports.ObjetFenetre_SelectionModeleInfoSond =
+	ObjetFenetre_SelectionModeleInfoSond;

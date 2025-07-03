@@ -1,44 +1,52 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GDate } = require("ObjetDate.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetCelluleDate } = require("ObjetCelluleDate.js");
-class ObjetFenetre_ChoixDatePublicationPunition extends ObjetFenetre {
+exports.ObjetFenetre_ChoixDatePublicationPunition = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetCelluleDate_1 = require("ObjetCelluleDate");
+var TypePublication;
+(function (TypePublication) {
+	TypePublication[(TypePublication["NonPubliee"] = 0)] = "NonPubliee";
+	TypePublication[(TypePublication["PublierImmediatement"] = 1)] =
+		"PublierImmediatement";
+	TypePublication[(TypePublication["PublierDemain"] = 2)] = "PublierDemain";
+	TypePublication[(TypePublication["PublierLe"] = 3)] = "PublierLe";
+})(TypePublication || (TypePublication = {}));
+class ObjetFenetre_ChoixDatePublicationPunition extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.setOptionsFenetre({
-			titre: GTraductions.getValeur("punition.fenetreDatePub.Titre"),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"punition.fenetreDatePub.Titre",
+			),
 			largeur: 300,
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 		});
 		this.datePublication = null;
-		this.TypePublication = {
-			NonPubliee: 0,
-			PublierImmediatement: 1,
-			PublierDemain: 2,
-			PublierLe: 3,
-		};
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
 			radioChoixDate: {
 				getValue(aTypePublication) {
 					switch (aTypePublication) {
-						case aInstance.TypePublication.NonPubliee:
+						case TypePublication.NonPubliee:
 							return aInstance.datePublication === null;
-						case aInstance.TypePublication.PublierImmediatement:
+						case TypePublication.PublierImmediatement:
 							return (
 								aInstance.datePublication &&
-								GDate.estAvantJour(
-									GDate.getJour(aInstance.datePublication),
-									GDate.getJour(GDate.demain),
+								ObjetDate_1.GDate.estAvantJour(
+									ObjetDate_1.GDate.getJour(aInstance.datePublication),
+									ObjetDate_1.GDate.getJour(ObjetDate_1.GDate.demain),
 								)
 							);
-						case aInstance.TypePublication.PublierDemain:
-							return GDate.estJourEgal(aInstance.datePublication, GDate.demain);
-						case aInstance.TypePublication.PublierLe:
+						case TypePublication.PublierDemain:
+							return ObjetDate_1.GDate.estJourEgal(
+								aInstance.datePublication,
+								ObjetDate_1.GDate.demain,
+							);
+						case TypePublication.PublierLe:
 							return aInstance.correspondAuChoixPublieLe(
 								aInstance.datePublication,
 							);
@@ -46,25 +54,28 @@ class ObjetFenetre_ChoixDatePublicationPunition extends ObjetFenetre {
 					return false;
 				},
 				setValue(aTypePublication) {
-					if (this.controleur._instanceSelecteurDate) {
-						this.controleur._instanceSelecteurDate.setActif(false);
-						this.controleur._instanceSelecteurDate.setDonnees(null);
+					if (aInstance._instanceSelecteurDate) {
+						aInstance._instanceSelecteurDate.setActif(false);
+						aInstance._instanceSelecteurDate.setDonnees(null);
 					}
 					switch (aTypePublication) {
-						case aInstance.TypePublication.NonPubliee:
+						case TypePublication.NonPubliee:
 							aInstance.datePublication = null;
 							break;
-						case aInstance.TypePublication.PublierImmediatement:
-							aInstance.datePublication = GDate.getDateCourante(false);
+						case TypePublication.PublierImmediatement:
+							aInstance.datePublication =
+								ObjetDate_1.GDate.getDateCourante(false);
 							break;
-						case aInstance.TypePublication.PublierDemain:
-							aInstance.datePublication = GDate.demain;
+						case TypePublication.PublierDemain:
+							aInstance.datePublication = ObjetDate_1.GDate.demain;
 							break;
-						case aInstance.TypePublication.PublierLe:
-							aInstance.datePublication = GDate.getJourSuivant(GDate.demain);
-							if (this.controleur._instanceSelecteurDate) {
-								this.controleur._instanceSelecteurDate.setActif(true);
-								this.controleur._instanceSelecteurDate.setDonnees(
+						case TypePublication.PublierLe:
+							aInstance.datePublication = ObjetDate_1.GDate.getJourSuivant(
+								ObjetDate_1.GDate.demain,
+							);
+							if (aInstance._instanceSelecteurDate) {
+								aInstance._instanceSelecteurDate.setActif(true);
+								aInstance._instanceSelecteurDate.setDonnees(
 									aInstance.datePublication,
 								);
 							}
@@ -72,14 +83,12 @@ class ObjetFenetre_ChoixDatePublicationPunition extends ObjetFenetre {
 					}
 				},
 			},
-			_instanceSelecteurDate: null,
 			identiteSelecteurDate() {
-				const lControleur = this.controleur;
 				return {
-					class: ObjetCelluleDate,
+					class: ObjetCelluleDate_1.ObjetCelluleDate,
 					pere: aInstance,
 					init(aCelluleDate) {
-						lControleur._instanceSelecteurDate = aCelluleDate;
+						aInstance._instanceSelecteurDate = aCelluleDate;
 						aCelluleDate.setActif(false);
 						aCelluleDate.setOptionsObjetCelluleDate({
 							formatDate: "%JJ/%MM/%AAAA",
@@ -93,7 +102,9 @@ class ObjetFenetre_ChoixDatePublicationPunition extends ObjetFenetre {
 		});
 	}
 	correspondAuChoixPublieLe(aDate) {
-		return aDate && GDate.estAvantJour(GDate.demain, aDate);
+		return (
+			aDate && ObjetDate_1.GDate.estAvantJour(ObjetDate_1.GDate.demain, aDate)
+		);
 	}
 	composeContenu() {
 		const lNameGroupRadio = "groupRadiosPubPunition";
@@ -106,10 +117,12 @@ class ObjetFenetre_ChoixDatePublicationPunition extends ObjetFenetre {
 			'">',
 			'<ie-radio name="',
 			lNameGroupRadio,
-			'" ie-textright="true" ie-model="radioChoixDate(',
-			this.TypePublication.NonPubliee,
+			'" ie-model="radioChoixDate(',
+			TypePublication.NonPubliee,
 			')">',
-			GTraductions.getValeur("punition.fenetreDatePub.NonPubliee"),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"punition.fenetreDatePub.NonPubliee",
+			),
 			"</ie-radio>",
 			"</div>",
 		);
@@ -119,10 +132,12 @@ class ObjetFenetre_ChoixDatePublicationPunition extends ObjetFenetre {
 			'">',
 			'<ie-radio name="',
 			lNameGroupRadio,
-			'" ie-textright="true" ie-model="radioChoixDate(',
-			this.TypePublication.PublierImmediatement,
+			'" ie-model="radioChoixDate(',
+			TypePublication.PublierImmediatement,
 			')">',
-			GTraductions.getValeur("punition.fenetreDatePub.PublierImmediatement"),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"punition.fenetreDatePub.PublierImmediatement",
+			),
 			"</ie-radio>",
 			"</div>",
 		);
@@ -132,10 +147,12 @@ class ObjetFenetre_ChoixDatePublicationPunition extends ObjetFenetre {
 			'">',
 			'<ie-radio name="',
 			lNameGroupRadio,
-			'" ie-textright="true" ie-model="radioChoixDate(',
-			this.TypePublication.PublierDemain,
+			'" ie-model="radioChoixDate(',
+			TypePublication.PublierDemain,
 			')">',
-			GTraductions.getValeur("punition.fenetreDatePub.PublierDemain"),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"punition.fenetreDatePub.PublierDemain",
+			),
 			"</ie-radio>",
 			"</div>",
 		);
@@ -143,10 +160,12 @@ class ObjetFenetre_ChoixDatePublicationPunition extends ObjetFenetre {
 			'<div class="flex-contain">',
 			'<ie-radio name="',
 			lNameGroupRadio,
-			'" ie-textright="true" ie-model="radioChoixDate(',
-			this.TypePublication.PublierLe,
+			'" ie-model="radioChoixDate(',
+			TypePublication.PublierLe,
 			')">',
-			GTraductions.getValeur("punition.fenetreDatePub.PublierLe"),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"punition.fenetreDatePub.PublierLe",
+			),
 			"</ie-radio>",
 			'<div class="m-left" ie-identite="identiteSelecteurDate"></div>',
 			"</div>",
@@ -156,10 +175,10 @@ class ObjetFenetre_ChoixDatePublicationPunition extends ObjetFenetre {
 	}
 	setDonnees(aDateSelectionnee) {
 		this.datePublication = aDateSelectionnee;
-		if (this.controleur._instanceSelecteurDate) {
-			this.controleur._instanceSelecteurDate.setDonnees(this.datePublication);
+		if (this._instanceSelecteurDate) {
+			this._instanceSelecteurDate.setDonnees(this.datePublication);
 			if (this.correspondAuChoixPublieLe(this.datePublication)) {
-				this.controleur._instanceSelecteurDate.setActif(!!this.datePublication);
+				this._instanceSelecteurDate.setActif(!!this.datePublication);
 			}
 		}
 		this.afficher();
@@ -171,4 +190,5 @@ class ObjetFenetre_ChoixDatePublicationPunition extends ObjetFenetre {
 		}
 	}
 }
-module.exports = { ObjetFenetre_ChoixDatePublicationPunition };
+exports.ObjetFenetre_ChoixDatePublicationPunition =
+	ObjetFenetre_ChoixDatePublicationPunition;

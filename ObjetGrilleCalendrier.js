@@ -1,46 +1,55 @@
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GChaine } = require("ObjetChaine.js");
-const { GHtml } = require("ObjetHtml.js");
-const { GPosition } = require("ObjetPosition.js");
-const { GStyle } = require("ObjetStyle.js");
-const { EGenreBordure } = require("ObjetStyle.js");
-const { EEvent } = require("Enumere_Event.js");
+exports.ObjetGrilleCalendrier = exports.EGenreGrilleCalendrier = void 0;
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetPosition_1 = require("ObjetPosition");
+const ObjetStyle_1 = require("ObjetStyle");
+const ObjetStyle_2 = require("ObjetStyle");
+const Enumere_Event_1 = require("Enumere_Event");
 require("IEHtml.Scroll.js");
-const { GDate } = require("ObjetDate.js");
-const { Identite } = require("ObjetIdentite.js");
-const { GTableau } = require("ObjetTableau.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { GObjetWAI, EGenreRole } = require("ObjetWAI.js");
-const { ToucheClavier } = require("ToucheClavier.js");
-const EGenreGrilleCalendrier = { Jour: 0, Midi: 1, Soir: 2, MidiEtSoir: 3 };
-class ObjetGrilleCalendrier extends Identite {
+const ObjetDate_1 = require("ObjetDate");
+const ObjetIdentite_1 = require("ObjetIdentite");
+const ObjetTableau_1 = require("ObjetTableau");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ToucheClavier_1 = require("ToucheClavier");
+var EGenreGrilleCalendrier;
+(function (EGenreGrilleCalendrier) {
+	EGenreGrilleCalendrier[(EGenreGrilleCalendrier["Jour"] = 0)] = "Jour";
+	EGenreGrilleCalendrier[(EGenreGrilleCalendrier["Midi"] = 1)] = "Midi";
+	EGenreGrilleCalendrier[(EGenreGrilleCalendrier["Soir"] = 2)] = "Soir";
+	EGenreGrilleCalendrier[(EGenreGrilleCalendrier["MidiEtSoir"] = 3)] =
+		"MidiEtSoir";
+})(
+	EGenreGrilleCalendrier ||
+		(exports.EGenreGrilleCalendrier = EGenreGrilleCalendrier = {}),
+);
+class ObjetGrilleCalendrier extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
 		this.idBarSelecteur = this.Nom + "_BarSelecteur";
 		this.idGrille = this.Nom + "_GrilleCalendrier";
-		this.IdPremierElement = this.idBarSelecteur;
 		this.nombreDeGenreAffichage = 2;
 		this.genrePartiJour = { midi: 0, soir: 1 };
 		this.cycles = IE.Cycles;
 		this.genreGrille = EGenreGrilleCalendrier.Jour;
-		this.ajouterEvenementGlobal(EEvent.SurPreResize, this.surPreResize);
-		this.ajouterEvenementGlobal(EEvent.SurPostResize, this.surPostResize);
-		this.elementCourant = null;
 		this.modeAffichage = ObjetGrilleCalendrier.genreAffichage.fermer;
-		this._initialiserOptions();
-		this.avecEvenement = MethodesObjet.isFunction(this.callback.evenement);
 		this.avecSelecteur = false;
 		this.avecTitreSemaine = false;
 		this.avecJourCourant = false;
-	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			getScroll: function (aApi) {
-				aApi.surRefresh = function () {
-					$(aApi.zone).css("margin-bottom", aApi.scrollsVisible.h ? "11px" : 0);
-				};
-			},
-		});
+		this.IdPremierElement = this.idBarSelecteur;
+		this.ajouterEvenementGlobal(
+			Enumere_Event_1.EEvent.SurPreResize,
+			this.surPreResize,
+		);
+		this.ajouterEvenementGlobal(
+			Enumere_Event_1.EEvent.SurPostResize,
+			this.surPostResize,
+		);
+		this.elementCourant = null;
+		this._initialiserOptions();
+		this.avecEvenement = MethodesObjet_1.MethodesObjet.isFunction(
+			this.callback.evenement,
+		);
 	}
 	_initialiserOptions() {
 		this._options = {
@@ -52,20 +61,17 @@ class ObjetGrilleCalendrier extends Identite {
 	getModeAffichage() {
 		return this.modeAffichage;
 	}
+	setModeAffichage(aModeAffichage) {
+		this.modeAffichage = aModeAffichage;
+	}
 	changeModeAffichage() {
 		this.modeAffichage = (this.modeAffichage + 1) % this.nombreDeGenreAffichage;
-	}
-	setGenreGrille(aGenreGrille) {
-		this.genreGrille = aGenreGrille;
-		if (this.genreGrille === EGenreGrilleCalendrier.MidiEtSoir) {
-			this.avecTitreSemaine = false;
-		}
 	}
 	surPreResize() {
 		if (!this.avecDonnees) {
 			return;
 		}
-		GHtml.setHtml(this.Nom, "&nbsp;");
+		ObjetHtml_1.GHtml.setHtml(this.Nom, "&nbsp;");
 	}
 	surPostResize() {
 		if (!this.avecDonnees) {
@@ -80,9 +86,6 @@ class ObjetGrilleCalendrier extends Identite {
 		}
 	}
 	setParametresGrilleCalendrier(aParams) {
-		this.premiereDate = aParams.premiereDate;
-		this.derniereDate = aParams.derniereDate;
-		this.joursOuvres = aParams.joursOuvres;
 		this.griseJoursAvant = !!aParams.griseJourAvant;
 		this.IdPremierElement = this.idGrille;
 		this.avecScrollSurCellules = false;
@@ -90,10 +93,9 @@ class ObjetGrilleCalendrier extends Identite {
 	}
 	setOptions(aOptions) {
 		$.extend(this._options, aOptions);
+		return this;
 	}
-	setJoursOuvres(aJoursOuvres) {
-		this.joursOuvres = aJoursOuvres;
-	}
+	setJoursOuvres(aJoursOuvres) {}
 	setDonnees(
 		aDateDebut,
 		aDateFin,
@@ -110,7 +112,9 @@ class ObjetGrilleCalendrier extends Identite {
 			1;
 		this.listeDonnees = aListeDonnees;
 		this._options.avecDeploiement = aAvecDeploiement;
-		Object.assign(this.controleur, aControleur);
+		if (aControleur) {
+			Object.assign(this.controleur, aControleur);
+		}
 		this.avecDonnees = true;
 		this.afficher();
 		$("#" + this.idGrille.escapeJQ())
@@ -128,7 +132,7 @@ class ObjetGrilleCalendrier extends Identite {
 			.find(".Tableau_Titre")
 			.on("keyup", { aObjet: this }, function (event) {
 				let lJQArrayTitres, lIndex;
-				if (event.which === ToucheClavier.FlecheDroite) {
+				if (event.which === ToucheClavier_1.ToucheClavier.FlecheDroite) {
 					lJQArrayTitres = $(this)
 						.parent()
 						.parent()
@@ -137,7 +141,7 @@ class ObjetGrilleCalendrier extends Identite {
 					if (lIndex < lJQArrayTitres.length) {
 						lJQArrayTitres.eq(lIndex + 1).focus();
 					}
-				} else if (event.which === ToucheClavier.FlecheGauche) {
+				} else if (event.which === ToucheClavier_1.ToucheClavier.FlecheGauche) {
 					lJQArrayTitres = $(this)
 						.parent()
 						.parent()
@@ -146,7 +150,7 @@ class ObjetGrilleCalendrier extends Identite {
 					if (lIndex > 0) {
 						lJQArrayTitres.eq(lIndex - 1).focus();
 					}
-				} else if (event.which === ToucheClavier.FlecheBas) {
+				} else if (event.which === ToucheClavier_1.ToucheClavier.FlecheBas) {
 					const lDate = event.data.aObjet.getDateID($(this).get(0).id);
 					const lGenrePartiJour =
 						event.data.aObjet.genreGrille === EGenreGrilleCalendrier.Soir
@@ -188,7 +192,7 @@ class ObjetGrilleCalendrier extends Identite {
 			.find(".ElementPourNavigation")
 			.on("keyup", { aObjet: this }, function (event) {
 				let lDate, lGenrePartiJour, lID, lJQTitre, lJQArrayTitres, lIndex, lJQ;
-				if (event.which === ToucheClavier.FlecheDroite) {
+				if (event.which === ToucheClavier_1.ToucheClavier.FlecheDroite) {
 					lDate = event.data.aObjet.getDateID($(this).get(0).id);
 					lGenrePartiJour =
 						event.data.aObjet.genreGrille === EGenreGrilleCalendrier.Soir
@@ -217,7 +221,7 @@ class ObjetGrilleCalendrier extends Identite {
 							);
 						}
 					}
-				} else if (event.which === ToucheClavier.FlecheGauche) {
+				} else if (event.which === ToucheClavier_1.ToucheClavier.FlecheGauche) {
 					lDate = event.data.aObjet.getDateID($(this).get(0).id);
 					lGenrePartiJour =
 						event.data.aObjet.genreGrille === EGenreGrilleCalendrier.Soir
@@ -247,22 +251,22 @@ class ObjetGrilleCalendrier extends Identite {
 						}
 					}
 				} else if (
-					event.which === ToucheClavier.FlecheBas &&
+					event.which === ToucheClavier_1.ToucheClavier.FlecheBas &&
 					$(this).nextAll(".ElementPourNavigation").length > 0
 				) {
 					lJQ = $(this).nextAll(".ElementPourNavigation:first");
 					lJQ.focus();
 					event.data.aObjet.evenementSurGrille(lJQ.get(0).id, null, true);
 				} else if (
-					event.which === ToucheClavier.FlecheHaut &&
+					event.which === ToucheClavier_1.ToucheClavier.FlecheHaut &&
 					$(this).prevAll(".ElementPourNavigation").length > 0
 				) {
 					lJQ = $(this).prevAll(".ElementPourNavigation:first");
 					lJQ.focus();
 					event.data.aObjet.evenementSurGrille(lJQ.get(0).id, null, true);
 				} else if (
-					event.which === ToucheClavier.RetourChariot ||
-					event.which === ToucheClavier.Espace
+					event.which === ToucheClavier_1.ToucheClavier.RetourChariot ||
+					event.which === ToucheClavier_1.ToucheClavier.Espace
 				) {
 					lID = $(this).get(0).id;
 					if (lID) {
@@ -281,7 +285,7 @@ class ObjetGrilleCalendrier extends Identite {
 	}
 	composePage(aPourImpression) {
 		const html = [];
-		this.hauteurGrille = GPosition.getHeight(this.Nom) - 7;
+		this.hauteurGrille = ObjetPosition_1.GPosition.getHeight(this.Nom) - 7;
 		if (this.avecDonnees) {
 			if (this.avecSelecteur) {
 				html.push(
@@ -296,7 +300,7 @@ class ObjetGrilleCalendrier extends Identite {
 			html.push(
 				'<div id="',
 				this.idGrille,
-				'" style="width:100%;height:',
+				'" class="full-width" style="height:',
 				this.hauteurGrille,
 				'px;overflow:auto; position:relative;">',
 				this.composeGrille(aPourImpression),
@@ -322,25 +326,21 @@ class ObjetGrilleCalendrier extends Identite {
 		const html = [];
 		let I;
 		html.push(
-			'<table class="Tableau Table" ',
-			GObjetWAI.composeRole(EGenreRole.Grid),
-			' style="' + GTableau.styleTableau(aPourImpression, true) + '">',
+			'<table class="table-cdw-contain" style="' +
+				ObjetTableau_1.GTableau.styleTableau(aPourImpression, true) +
+				'">',
 		);
 		if (this.avecTitreSemaine) {
 			html.push("<tr>");
 			html.push(
-				'<td class="Tableau_Titre Titre" ',
-				GObjetWAI.composeRole(EGenreRole.Gridcell),
-				' style="width:70px; height:20px; ',
-				GTableau.styleTitre(aPourImpression),
+				'<td class="Tableau_Titre Titre" style="width:70px; ',
+				ObjetTableau_1.GTableau.styleTitre(aPourImpression),
 				'">&nbsp;</td>',
 			);
 			for (let N = 0; N < this.cycles.nombreJoursOuvresParCycle(); N++) {
 				html.push(
-					'<td class="Tableau_Titre Titre" ',
-					GObjetWAI.composeRole(EGenreRole.Gridcell),
-					' style="',
-					GTableau.styleTitre(aPourImpression),
+					'<td class="Tableau_Titre Titre" style="',
+					ObjetTableau_1.GTableau.styleTitre(aPourImpression),
 					'">',
 					I,
 					"</td>",
@@ -350,8 +350,8 @@ class ObjetGrilleCalendrier extends Identite {
 		}
 		const lLargeurObjet =
 			(this.avecTitreSemaine
-				? GPosition.getWidth(this.Nom) - 78
-				: GPosition.getWidth(this.Nom) - 8) -
+				? ObjetPosition_1.GPosition.getWidth(this.Nom) - 78
+				: ObjetPosition_1.GPosition.getWidth(this.Nom) - 8) -
 			GNavigateur.getLargeurBarreDeScroll();
 		let lLargeurColonne =
 			Math.floor(lLargeurObjet / this.cycles.nombreJoursOuvresParCycle()) -
@@ -398,40 +398,44 @@ class ObjetGrilleCalendrier extends Identite {
 			html.push("<tr>");
 			if (this.avecTitreSemaine) {
 				html.push(
-					'<td id="',
+					'<th id="',
 					lID,
-					'_titre" class="Tableau_Titre Titre" ',
-					GObjetWAI.composeRole(EGenreRole.Gridcell),
-					' tabindex="-1" style="',
-					GTableau.styleTitre(aPourImpression),
+					'_titre" class="Tableau_Titre Titre" tabindex="-1" style="',
+					ObjetTableau_1.GTableau.styleTitre(aPourImpression),
 					'">',
-					GDate.formatDate(this.cycles.dateDebutCycle(lCycle), "%J %MMM"),
+					ObjetDate_1.GDate.formatDate(
+						this.cycles.dateDebutCycle(lCycle),
+						"%J %MMM",
+					),
 					"<br>-<br>",
-					GDate.formatDate(this.cycles.dateFinCycle(lCycle), "%J %MMM"),
-					"</td>",
+					ObjetDate_1.GDate.formatDate(
+						this.cycles.dateFinCycle(lCycle),
+						"%J %MMM",
+					),
+					"</th>",
 				);
 			} else {
 				for (let N = 0; N < this.cycles.nombreJoursOuvresParCycle(); N++) {
 					let lDate = this.cycles.jourCycleEnDate(N, lCycle);
 					let lStyleJour =
-						GDate.estJourCourant(lDate) && this.avecJourCourant
-							? GTableau.styleTitre(aPourImpression)
-							: GTableau.styleCellule(
+						ObjetDate_1.GDate.estJourCourant(lDate) && this.avecJourCourant
+							? ObjetTableau_1.GTableau.styleTitre(aPourImpression)
+							: ObjetTableau_1.GTableau.styleCellule(
 									aPourImpression,
 									true,
-									EGenreBordure.gauche +
-										EGenreBordure.haut +
-										EGenreBordure.droite,
+									ObjetStyle_2.EGenreBordure.gauche +
+										ObjetStyle_2.EGenreBordure.haut +
+										ObjetStyle_2.EGenreBordure.droite,
 								);
 					lStyleJour =
-						GDate.estAvantJourCourant(lDate) && this.griseJoursAvant
-							? GStyle.composeCouleur(
+						ObjetDate_1.GDate.estAvantJourCourant(lDate) && this.griseJoursAvant
+							? ObjetStyle_1.GStyle.composeCouleur(
 									aPourImpression ? GCouleur.blanc : GCouleur.nonEditable.fond,
 									GCouleur.liste.nonEditable.texte,
 									GCouleur.liste.editable.getBordure(aPourImpression),
 								)
 							: lStyleJour;
-					lClass = GDate.estJourCourant(lDate) ? " Gras" : "";
+					lClass = ObjetDate_1.GDate.estJourCourant(lDate) ? " semi-bold" : "";
 					let lID = this.getIdCellule(
 						lDate,
 						this.genreGrille !== EGenreGrilleCalendrier.Jour
@@ -439,49 +443,53 @@ class ObjetGrilleCalendrier extends Identite {
 							: null,
 						aPourImpression,
 					);
-					const lNrJour = GDate.formatDate(lDate, "%J ");
-					const lJour = GDate.formatDate(lDate, "%JJJJ");
+					const lNrJour = ObjetDate_1.GDate.formatDate(lDate, "%J ");
+					const lJour = ObjetDate_1.GDate.formatDate(lDate, "%JJJJ");
 					let lTitre =
-						'<div class="Espace' +
+						'<span class="font-size-19' +
 						lClass +
 						'">' +
-						'<span class="Texte16">' +
 						lNrJour +
 						"</span>" +
-						'<span class="Texte12">' +
+						'<span class="font-size-13 ' +
+						lClass +
+						'">' +
 						lJour.ucfirst() +
-						"</span>" +
-						"</div>";
+						"</span>";
 					if (this.genreGrille !== EGenreGrilleCalendrier.Jour) {
 						if (lGenrePartiJour === 0) {
 							lTitre +=
-								'<div class="EspaceBas">' +
-								GTraductions.getValeur("GrilleCalendrier.midi") +
+								'<div class="p-bottom">' +
+								ObjetTraduction_1.GTraductions.getValeur(
+									"GrilleCalendrier.midi",
+								) +
 								"</div>";
 						} else {
 							if (this.genreGrille === EGenreGrilleCalendrier.Soir) {
 								lTitre +=
-									'<div class="EspaceBas">' +
-									GTraductions.getValeur("GrilleCalendrier.soir") +
+									'<div class="p-bottom">' +
+									ObjetTraduction_1.GTraductions.getValeur(
+										"GrilleCalendrier.soir",
+									) +
 									"</div>";
 							} else {
 								lTitre =
-									'<div class="Espace">' +
-									GTraductions.getValeur("GrilleCalendrier.soir") +
+									'<div class="p-all">' +
+									ObjetTraduction_1.GTraductions.getValeur(
+										"GrilleCalendrier.soir",
+									) +
 									"</div>";
 							}
 						}
 					}
 					html.push(
-						'<td id="',
+						'<th id="',
 						lID,
-						'_titre" ',
-						GObjetWAI.composeRole(EGenreRole.Gridcell),
-						' tabindex="-1" style="padding: 0px 3px; height:21px;',
+						'_titre"  tabindex="-1" style="height:21px;',
 						lStyleJour,
 						'">',
 						lTitre,
-						"</td>",
+						"</th>",
 					);
 				}
 				html.push("</tr><tr>");
@@ -489,26 +497,30 @@ class ObjetGrilleCalendrier extends Identite {
 			for (let N = 0; N < this.cycles.nombreJoursOuvresParCycle(); N++) {
 				let lDate = this.cycles.jourCycleEnDate(N, lCycle);
 				const lStrDate = this.avecTitreSemaine
-					? GDate.formatDate(lDate, "%J")
-					: GDate.formatDate(lDate, "%JJJJ %JJ %MMMM");
+					? ObjetDate_1.GDate.formatDate(lDate, "%J")
+					: ObjetDate_1.GDate.formatDate(lDate, "%JJJJ %JJ %MMMM");
 				let lStyleJour =
-					GDate.estJourCourant(lDate) && this.avecJourCourant
-						? GTableau.styleTitre(aPourImpression)
-						: GTableau.styleCellule(
+					ObjetDate_1.GDate.estJourCourant(lDate) && this.avecJourCourant
+						? ObjetTableau_1.GTableau.styleTitre(aPourImpression)
+						: ObjetTableau_1.GTableau.styleCellule(
 								aPourImpression,
 								true,
-								EGenreBordure.gauche + EGenreBordure.bas + EGenreBordure.droite,
+								ObjetStyle_2.EGenreBordure.gauche +
+									ObjetStyle_2.EGenreBordure.bas +
+									ObjetStyle_2.EGenreBordure.droite,
 							);
 				lStyleJour =
-					GDate.estAvantJourCourant(lDate) && this.griseJoursAvant
-						? GStyle.composeCouleur(
+					ObjetDate_1.GDate.estAvantJourCourant(lDate) && this.griseJoursAvant
+						? ObjetStyle_1.GStyle.composeCouleur(
 								aPourImpression ? GCouleur.blanc : GCouleur.nonEditable.fond,
 								GCouleur.liste.nonEditable.texte,
 								GCouleur.liste.editable.getBordure(aPourImpression),
 							)
 						: lStyleJour;
 				lClass =
-					GDate.estJourCourant(lDate) && this.avecJourCourant ? " Gras" : "";
+					ObjetDate_1.GDate.estJourCourant(lDate) && this.avecJourCourant
+						? " semi-bold"
+						: "";
 				if (this.avecTitreSemaine) {
 					html.push(
 						'<td class="AlignementDroit AlignementHaut" style="width:',
@@ -543,7 +555,7 @@ class ObjetGrilleCalendrier extends Identite {
 					);
 				} else {
 					html.push(
-						'<td class="AlignementDroit AlignementHaut" style="width:',
+						'<td style="width:',
 						lLargeurColonne,
 						";",
 						lStyleJour,
@@ -584,13 +596,11 @@ class ObjetGrilleCalendrier extends Identite {
 		return html.join("");
 	}
 	composeDonnees(aPourImpression) {
-		let lHtml = "";
 		let lID = "";
 		let lLargeur = 0;
 		let lLargeurDiv = 0;
 		let lMaxElements = 0;
 		let lNbrElements = 0;
-		let lMarge = "";
 		let lContent = "";
 		const lStyle = "";
 		for (let I = 0; I < this.listeDonnees.count(); I++) {
@@ -604,59 +614,56 @@ class ObjetGrilleCalendrier extends Identite {
 			);
 			lNbrElements = this.nbrElementsParDate(lElement.Date);
 			const lMonID = lID + "/Matiere" + I;
-			lHtml = GHtml.getHtml(lID);
-			lMaxElements = Math.floor(GPosition.getHeight(lID) / 23);
+			lMaxElements = Math.floor(ObjetPosition_1.GPosition.getHeight(lID) / 23);
 			lLargeur =
-				GPosition.getWidth(lID) -
+				ObjetPosition_1.GPosition.getWidth(lID) -
 				10 -
 				16 -
 				6 -
 				2 -
 				(lNbrElements > lMaxElements ? 19 : 0);
-			const lLibelle = GChaine.getLongueurChaine(
+			const lLibelle = ObjetChaine_1.GChaine.getLongueurChaine(
 				lElement.Libelle,
 				10,
 				true,
 				lLargeur,
 			);
-			const lTitle =
-				lElement.Libelle === lLibelle ? "" : 'title="' + lElement.Libelle + '"';
-			lMarge = GStyle.composeMarge(
-				lHtml === "" ? 3 : 2,
-				1,
-				lElement.estUneSuite ? 0 : 3,
-				lElement.aUneSuite ? 0 : 3,
-			);
 			lLargeurDiv =
-				GPosition.getWidth(lID) -
+				ObjetPosition_1.GPosition.getWidth(lID) -
 				(lElement.estUneSuite ? 0 : 3) -
 				(lElement.aUneSuite ? 0 : 3);
 			lContent = lElement.html[this.modeAffichage];
-			const lEvenement = aPourImpression
-				? ""
-				: 'onclick="' +
-					this.Nom +
-					".evenementSurGrille(id," +
-					I +
-					');" role="button" aria-haspopup="dialog" tabindex="0" ';
-			let lHtml2 =
-				'<div ie-scrollh="getScroll" id="' +
-				lMonID +
-				'" ' +
-				lEvenement +
-				'class="ElementPourNavigation AlignementGauche' +
-				(this.avecEvenement ? " AvecMain" : "") +
-				(this.donneesAvecFondBlanc ? " FondBlanc" : "") +
-				'" style="' +
-				GStyle.composeWidth(lLargeurDiv) +
-				lMarge +
-				lStyle +
-				'" ' +
-				lTitle +
-				">";
-			lHtml2 += "<div>" + lContent + "</div>";
-			lHtml2 += "</div>";
-			GHtml.addHtml(lID, lHtml2, { controleur: this.controleur });
+			const lGetScroll = (aApi) => {
+				aApi.surRefresh = () => {
+					$(aApi.zone).css("margin-bottom", aApi.scrollsVisible.h ? "11px" : 0);
+				};
+			};
+			let lHtml2 = IE.jsx.str(
+				"div",
+				{
+					"ie-scrollh": lGetScroll,
+					"ie-node": aPourImpression
+						? false
+						: (aNode) => {
+								$(aNode).eventValidation(() => {
+									this.evenementSurGrille(aNode.id, I);
+								});
+							},
+					role: "button",
+					"aria-haspopup": "dialog",
+					tabindex: "0",
+					id: lMonID,
+					class: [
+						"ElementPourNavigation",
+						this.avecEvenement ? " AvecMain" : "",
+						this.donneesAvecFondBlanc ? " FondBlanc" : "",
+					],
+					style: ObjetStyle_1.GStyle.composeWidth(lLargeurDiv) + lStyle,
+					title: lElement.Libelle === lLibelle ? false : lElement.Libelle,
+				},
+				IE.jsx.str("div", { class: "flex-contain cols p-bottom" }, lContent),
+			);
+			ObjetHtml_1.GHtml.addHtml(lID, lHtml2, { controleur: this.controleur });
 			if (lElement.gestionnaireBloc) {
 				lElement.gestionnaireBloc.refresh();
 			}
@@ -667,7 +674,7 @@ class ObjetGrilleCalendrier extends Identite {
 		for (let I = 0; I < this.listeDonnees.count(); I++) {
 			const lElement = this.listeDonnees.get(I);
 			if (
-				GDate.estJourEgal(lElement.Date, aDate) &&
+				ObjetDate_1.GDate.estJourEgal(lElement.Date, aDate) &&
 				lElement.getNumero() === aMatiere.getNumero()
 			) {
 				lID = this.getIdCellule(
@@ -685,7 +692,7 @@ class ObjetGrilleCalendrier extends Identite {
 	nbrElementsParDate(aDate) {
 		let lCount = 0;
 		for (let I = 0; I < this.listeDonnees.count(); I++) {
-			if (GDate.estJourEgal(aDate, this.listeDonnees.get(I).Date)) {
+			if (ObjetDate_1.GDate.estJourEgal(aDate, this.listeDonnees.get(I).Date)) {
 				lCount++;
 			}
 		}
@@ -695,7 +702,7 @@ class ObjetGrilleCalendrier extends Identite {
 		return (
 			this.Nom +
 			"_sD" +
-			GDate.formatDate(aDate, "%JJ/%MM/%AA") +
+			ObjetDate_1.GDate.formatDate(aDate, "%JJ/%MM/%AA") +
 			"eD_" +
 			(aGenre === null || aGenre === undefined ? "" : aGenre) +
 			(aPourImpression ? "_imp" : "")
@@ -722,11 +729,11 @@ class ObjetGrilleCalendrier extends Identite {
 			const lDate = this.getDateID(aID);
 			const lCouleur =
 				!aActive || !this.avecCouleurSelection
-					? GDate.estAvantJourCourant(lDate) && this.griseJoursAvant
+					? ObjetDate_1.GDate.estAvantJourCourant(lDate) && this.griseJoursAvant
 						? GCouleur.liste.editable
 						: GCouleur.liste.editable
 					: GCouleur.selection;
-			GStyle.setCouleur(aID, lCouleur.fond, lCouleur.texte);
+			ObjetStyle_1.GStyle.setCouleur(aID, lCouleur.fond, lCouleur.texte);
 		}
 	}
 	resetElement() {
@@ -735,7 +742,7 @@ class ObjetGrilleCalendrier extends Identite {
 	}
 	getDateID(aID) {
 		const patt1 = /(?:_sD)([\d/]{8,10})(?=eD_)/i;
-		return GDate.getDateDeChaine(aID.match(patt1)[1]);
+		return ObjetDate_1.GDate.getDateDeChaine(aID.match(patt1)[1]);
 	}
 	getIndexID(aID) {
 		let lResult = -1;
@@ -750,5 +757,5 @@ class ObjetGrilleCalendrier extends Identite {
 		return lResult;
 	}
 }
+exports.ObjetGrilleCalendrier = ObjetGrilleCalendrier;
 ObjetGrilleCalendrier.genreAffichage = { fermer: 0, deployer: 1 };
-module.exports = { ObjetGrilleCalendrier, EGenreGrilleCalendrier };

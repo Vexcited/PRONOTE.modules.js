@@ -74,13 +74,12 @@ const TypeGenreRenduTAFUtil = {
 		return [0, 1, 2, 3, 4][aGenre];
 	},
 	toElement(aGenre) {
-		const lElement = new ObjetElement_1.ObjetElement(
-			TypeGenreRenduTAFUtil.getLibelle(aGenre),
-			0,
-			aGenre,
-		);
-		lElement.ordre = TypeGenreRenduTAFUtil.getOrdre(aGenre);
-		return lElement;
+		return ObjetElement_1.ObjetElement.create({
+			Libelle: TypeGenreRenduTAFUtil.getLibelle(aGenre),
+			Numero: 0,
+			Genre: aGenre,
+			ordre: TypeGenreRenduTAFUtil.getOrdre(aGenre),
+		});
 	},
 	fromElement(aElt) {
 		return aElt !== null && aElt !== undefined
@@ -144,7 +143,7 @@ const TypeGenreRenduTAFUtil = {
 			aGenre,
 		);
 	},
-	getLibelleConsultation(aGenre, aPourEleve) {
+	getLibelleConsultation(aGenre, aPourEleve = false) {
 		switch (aGenre) {
 			case TypeGenreRenduTAF.GRTAF_AucunRendu:
 				return "";
@@ -169,7 +168,7 @@ const TypeGenreRenduTAFUtil = {
 		}
 		return "";
 	},
-	getLibelleDeposer(aGenre, aPourEleve) {
+	getLibelleDeposer(aGenre, aPourEleve = false) {
 		switch (aGenre) {
 			case TypeGenreRenduTAF.GRTAF_AucunRendu:
 				return "";

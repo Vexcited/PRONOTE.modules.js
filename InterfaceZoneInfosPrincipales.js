@@ -1,9 +1,9 @@
 exports.InterfaceZoneInfosPrincipales = void 0;
 const ObjetInfoBase_1 = require("ObjetInfoBase");
 const AppelMethodeDistante_1 = require("AppelMethodeDistante");
-require("IEHtml.BoutonHebergement.js");
 const ObjetInterface_1 = require("ObjetInterface");
 const ObjetTraduction_1 = require("ObjetTraduction");
+const AccessApp_1 = require("AccessApp");
 var EEvenementBoutonPublication;
 (function (EEvenementBoutonPublication) {
 	EEvenementBoutonPublication[
@@ -16,68 +16,82 @@ var EEvenementBoutonPublication;
 class InterfaceZoneInfosPrincipales extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
-		this.objetApplicationConsoles = GApplication;
-		this.objetCouleurConsoles = GCouleur;
+		this.objetApplicationConsoles = (0, AccessApp_1.getApp)();
+		this.objetCouleurConsoles = this.objetApplicationConsoles.getCouleur();
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			getStyleEntete() {
-				const lActif =
-					aInstance.objetApplicationConsoles.etatServeurHttp.getEtatActif();
-				return {
-					"background-color": lActif
-						? aInstance.objetCouleurConsoles.enService.fond
-						: GCouleur.fond,
-					color: lActif
-						? aInstance.objetCouleurConsoles.enService.texte
-						: GCouleur.texte,
-				};
+	jsxGetStyleEntete() {
+		const lActif = this.objetApplicationConsoles.etatServeurHttp.getEtatActif();
+		return {
+			"background-color": lActif
+				? this.objetCouleurConsoles.enService.fond
+				: (0, AccessApp_1.getApp)().getCouleur().fond,
+			color: lActif
+				? this.objetCouleurConsoles.enService.texte
+				: (0, AccessApp_1.getApp)().getCouleur().texte,
+		};
+	}
+	jsxModelBoutonPublication() {
+		return {
+			event: () => {
+				this.evenementBoutonPublication(
+					this.objetApplicationConsoles.etatServeurHttp.getEtatActif()
+						? EEvenementBoutonPublication.ArretPublication
+						: EEvenementBoutonPublication.Publication,
+				);
 			},
-			btnPublication: {
-				event() {
-					aInstance.evenementBoutonPublication(
-						aInstance.objetApplicationConsoles.etatServeurHttp.getEtatActif()
-							? EEvenementBoutonPublication.ArretPublication
-							: EEvenementBoutonPublication.Publication,
-					);
-				},
-				getDisabled() {
-					return !aInstance.objetApplicationConsoles.etatServeurHttp.getConnecteAuServeur();
-				},
-				getCssImage() {
-					return aInstance.objetApplicationConsoles.etatServeurHttp.getEtatActif()
-						? "Image_Commande_ArreterServeur"
-						: aInstance.objetApplicationConsoles.etatServeurHttp.getConnecteAuServeur()
-							? "Image_Commande_DemarrerServeur"
-							: "Image_Commande_DemarrerServeur_Inactif";
-				},
-				getHtml() {
-					return aInstance._getLibelleBtnPublication();
-				},
+			getDisabled: () => {
+				return !this.objetApplicationConsoles.etatServeurHttp.getConnecteAuServeur();
 			},
-			getTitleBtnPublication() {
-				return aInstance._getLibelleBtnPublication();
+			getCssImage: () => {
+				return this.objetApplicationConsoles.etatServeurHttp.getEtatActif()
+					? "Icone_Commande_ArreterServeur"
+					: "Icone_Commande_DemarrerServeur";
 			},
-		});
+			getHtml: () => {
+				return this._getLibelleBtnPublication();
+			},
+		};
+	}
+	jsxGetTitleBoutonPublication() {
+		return this._getLibelleBtnPublication();
 	}
 	construireInstances() {
 		this.identZoneInfoBase = this.add(ObjetInfoBase_1.ObjetInfoBase);
 	}
 	construireStructureAffichage() {
+		const lZoneInfoBase = [];
+		if (this.identZoneInfoBase >= 0) {
+			lZoneInfoBase.push(
+				IE.jsx.str("td", {
+					class: "Table",
+					id: this.getInstance(this.identZoneInfoBase).getNom(),
+				}),
+			);
+		}
 		const H = [];
 		H.push(
-			'<table class="Table p-all" ie-style="getStyleEntete">',
-			"<tr>",
-			'<td class="EspaceDroit">',
-			'<ie-boutonhebergement ie-model="btnPublication" ie-title="getTitleBtnPublication" style="width:185px;"></ie-boutonhebergement>',
-			"</td>",
-			this.identZoneInfoBase >= 0
-				? '<td class="Table" id="' +
-						this.getInstance(this.identZoneInfoBase).getNom() +
-						'"></td>'
-				: "",
-			"</tr>",
-			"</table>",
+			IE.jsx.str(
+				"table",
+				{
+					role: "banner",
+					class: "Table p-all",
+					"ie-style": this.jsxGetStyleEntete.bind(this),
+				},
+				IE.jsx.str(
+					"tr",
+					null,
+					IE.jsx.str(
+						"td",
+						{ class: "EspaceDroit" },
+						IE.jsx.str("ie-boutonhebergement", {
+							"ie-model": this.jsxModelBoutonPublication.bind(this),
+							"ie-title": this.jsxGetTitleBoutonPublication.bind(this),
+							style: "width:185px;",
+						}),
+					),
+					lZoneInfoBase.join(""),
+				),
+			),
 		);
 		return H.join("");
 	}

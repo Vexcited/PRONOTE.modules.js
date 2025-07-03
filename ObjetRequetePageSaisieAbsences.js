@@ -1,22 +1,28 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { EGenreDemiJours } = require("Enumere_DemiJours.js");
-const {
-	TypeOptionPublicationDefautPassageInf,
-} = require("TypeOptionPublicationDefautPassageInf.js");
-class ObjetRequetePageSaisieAbsences extends ObjetRequeteConsultation {
+exports.ObjetRequetePageSaisieAbsences = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_DemiJours_1 = require("Enumere_DemiJours");
+const TypeOptionPublicationDefautPassageInf_1 = require("TypeOptionPublicationDefautPassageInf");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const AccessApp_1 = require("AccessApp");
+class ObjetRequetePageSaisieAbsences extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	constructor(...aParams) {
 		super(...aParams);
+		this.application = (0, AccessApp_1.getApp)();
+		this.parametres = this.application.getObjetParametres();
 	}
 	lancerRequete(aParametres) {
 		this.JSON = {
 			Professeur: aParametres.professeur,
-			Ressource: new ObjetElement("", aParametres.numeroRessource),
+			Ressource: new ObjetElement_1.ObjetElement(
+				"",
+				aParametres.numeroRessource,
+			),
 			Date: aParametres.date,
 		};
 		if (aParametres.dateDecompte) {
@@ -46,13 +52,14 @@ class ObjetRequetePageSaisieAbsences extends ObjetRequeteConsultation {
 		return this.appelAsynchrone();
 	}
 	actionApresRequete() {
-		const lListeEleves = new ObjetListeElements();
+		const lListeEleves = new ObjetListeElements_1.ObjetListeElements();
 		if (!this.JSONReponse.Message) {
-			const LItemAucun = new ObjetElement(
-				"&lt;" + GTraductions.getValeur("Aucun") + "&gt;",
-				0,
-			);
-			LItemAucun.Visible = false;
+			const LItemAucun = ObjetElement_1.ObjetElement.create({
+				Libelle:
+					"&lt;" + ObjetTraduction_1.GTraductions.getValeur("Aucun") + "&gt;",
+				Numero: 0,
+				Visible: false,
+			});
 			lListeEleves.addElement(LItemAucun);
 		}
 		const lPlaceGrilleDebut = this.JSONReponse.PlaceGrilleDebut;
@@ -62,69 +69,81 @@ class ObjetRequetePageSaisieAbsences extends ObjetRequeteConsultation {
 				if (!!aEleve.ListeAbsences) {
 					aEleve.ListeAbsences.parcourir((aAbsenceEleve) => {
 						if (!aAbsenceEleve.PlaceDebut) {
-							if (!!aAbsenceEleve.DateDebut) {
-								aAbsenceEleve.PlaceDebut = GDate.dateEnPlaceAnnuelle(
-									aAbsenceEleve.DateDebut,
-								);
+							if ("DateDebut" in aAbsenceEleve && !!aAbsenceEleve.DateDebut) {
+								aAbsenceEleve.PlaceDebut =
+									ObjetDate_1.GDate.dateEnPlaceAnnuelle(
+										aAbsenceEleve.DateDebut,
+									);
 							}
 						}
 						if (!aAbsenceEleve.PlaceFin) {
-							if (!!aAbsenceEleve.DateFin) {
-								aAbsenceEleve.PlaceFin = GDate.dateEnPlaceAnnuelle(
+							if ("DateFin" in aAbsenceEleve && !!aAbsenceEleve.DateFin) {
+								aAbsenceEleve.PlaceFin = ObjetDate_1.GDate.dateEnPlaceAnnuelle(
 									aAbsenceEleve.DateFin,
 									true,
 								);
 							}
 						}
 						if (!aAbsenceEleve.listeMotifs) {
-							aAbsenceEleve.listeMotifs = new ObjetListeElements();
+							aAbsenceEleve.listeMotifs =
+								new ObjetListeElements_1.ObjetListeElements();
 						}
 					});
 				}
 				if (!!aEleve.ListeDispenses) {
 					aEleve.ListeDispenses.parcourir((aDispenseEleve) => {
 						if (!aDispenseEleve.Professeur) {
-							aDispenseEleve.Professeur = new ObjetElement();
+							aDispenseEleve.Professeur = new ObjetElement_1.ObjetElement();
 						}
 					});
 				}
-				if (!aEleve.devoirARendre) {
-					aEleve.devoirARendre = new ObjetElement();
+				if (!("devoirARendre" in aEleve)) {
+					aEleve.devoirARendre = new ObjetElement_1.ObjetElement();
 				}
 				if (!aEleve.devoirARendre.demandeur) {
-					aEleve.devoirARendre.demandeur = new ObjetElement();
+					aEleve.devoirARendre.demandeur = new ObjetElement_1.ObjetElement();
 				}
 				if (!aEleve.devoirARendre.programmation) {
-					aEleve.devoirARendre.programmation = new ObjetElement();
+					aEleve.devoirARendre.programmation =
+						new ObjetElement_1.ObjetElement();
 				}
-				aEleve.ListeExclusionsTemporaires = new ObjetListeElements();
+				aEleve.ListeExclusionsTemporaires =
+					new ObjetListeElements_1.ObjetListeElements();
 				let LEltExclusionTemporaire = null;
-				if (!!aEleve.estExcluDefinitivement) {
-					LEltExclusionTemporaire = new ObjetElement();
+				if (
+					"estExcluDefinitivement" in aEleve &&
+					!!aEleve.estExcluDefinitivement
+				) {
+					LEltExclusionTemporaire = new ObjetElement_1.ObjetElement();
 					LEltExclusionTemporaire.PlaceDebut = lPlaceGrilleDebut;
 					LEltExclusionTemporaire.PlaceFin =
-						lPlaceGrilleDebut + GParametres.PlacesParJour;
+						lPlaceGrilleDebut + this.parametres.PlacesParJour;
 					aEleve.ListeExclusionsTemporaires.addElement(LEltExclusionTemporaire);
 				}
-				const lListeSanctions = aEleve.listeSanctions;
+				const lListeSanctions =
+					"listeSanctions" in aEleve ? aEleve.listeSanctions : undefined;
 				if (!!lListeSanctions && lListeSanctions.count() > 0) {
-					LEltExclusionTemporaire = new ObjetElement();
+					LEltExclusionTemporaire = new ObjetElement_1.ObjetElement();
 					if (lListeSanctions.count() === 2) {
 						LEltExclusionTemporaire.PlaceDebut = lPlaceGrilleDebut;
 						LEltExclusionTemporaire.PlaceFin =
-							lPlaceGrilleDebut + GParametres.PlacesParJour;
+							lPlaceGrilleDebut + this.parametres.PlacesParJour;
 					} else {
-						if (lListeSanctions.get(0).getGenre() === EGenreDemiJours.Matin) {
+						if (
+							lListeSanctions.get(0).getGenre() ===
+							Enumere_DemiJours_1.EGenreDemiJours.Matin
+						) {
 							LEltExclusionTemporaire.PlaceDebut = lPlaceGrilleDebut;
 							LEltExclusionTemporaire.PlaceFin =
-								lPlaceGrilleDebut + GParametres.PlaceDemiJournee - 1;
+								lPlaceGrilleDebut + this.parametres.PlaceDemiJournee - 1;
 						} else if (
-							lListeSanctions.get(0).getGenre() === EGenreDemiJours.ApresMidi
+							lListeSanctions.get(0).getGenre() ===
+							Enumere_DemiJours_1.EGenreDemiJours.ApresMidi
 						) {
 							LEltExclusionTemporaire.PlaceDebut =
-								lPlaceGrilleDebut + GParametres.PlaceDemiJournee;
+								lPlaceGrilleDebut + this.parametres.PlaceDemiJournee;
 							LEltExclusionTemporaire.PlaceFin =
-								lPlaceGrilleDebut + GParametres.PlacesParJour;
+								lPlaceGrilleDebut + this.parametres.PlacesParJour;
 						}
 					}
 					aEleve.ListeExclusionsTemporaires.addElement(LEltExclusionTemporaire);
@@ -133,24 +152,25 @@ class ObjetRequetePageSaisieAbsences extends ObjetRequeteConsultation {
 			lListeEleves.add(this.JSONReponse.ListeEleves);
 		}
 		lListeEleves.setTri([
-			ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.init((D) => {
 				return D.getNumero() !== 0;
 			}),
-			ObjetTri.init("Position"),
+			ObjetTri_1.ObjetTri.init("Position"),
 		]);
 		lListeEleves.trier();
 		const lListeElevesEnStage = this.JSONReponse.ListeElevesEnStage;
 		if (lListeElevesEnStage) {
 			lListeElevesEnStage.trier();
 		}
-		const lListeDates = new ObjetListeElements();
-		lListeDates.dateDecompte = new ObjetElement();
-		lListeDates.dateDecompte.Genre = this.JSONReponse.GenreDecompte;
-		lListeDates.dateDecompte.valeur = this.JSONReponse.DateDecompte;
+		const lListeDates = new ObjetListeElements_1.ObjetListeElements();
+		lListeDates.dateDecompte = ObjetElement_1.ObjetElement.create({
+			Genre: this.JSONReponse.GenreDecompte,
+			valeur: this.JSONReponse.DateDecompte,
+		});
 		lListeDates.add(this.JSONReponse.ListeDates);
 		if (this.JSONReponse.listeDemandesDispense) {
 			this.JSONReponse.listeDemandesDispense.setTri([
-				ObjetTri.init((D) => {
+				ObjetTri_1.ObjetTri.init((D) => {
 					if (D.eleve) {
 						return D.eleve.getLibelle();
 					}
@@ -175,11 +195,50 @@ class ObjetRequetePageSaisieAbsences extends ObjetRequeteConsultation {
 			message: this.JSONReponse.Message,
 			publierParDefautPassageInf:
 				this.JSONReponse.publierParDefautPassageInf ===
-				TypeOptionPublicationDefautPassageInf.OPDPI_Publie,
+				TypeOptionPublicationDefautPassageInf_1
+					.TypeOptionPublicationDefautPassageInf.OPDPI_Publie,
 			jsonReponse: this.JSONReponse,
 		};
 		this.callbackReussite.appel(lData);
 	}
 }
-Requetes.inscrire("PageSaisieAbsences", ObjetRequetePageSaisieAbsences);
-module.exports = { ObjetRequetePageSaisieAbsences };
+exports.ObjetRequetePageSaisieAbsences = ObjetRequetePageSaisieAbsences;
+(function (ObjetRequetePageSaisieAbsences) {
+	ObjetRequetePageSaisieAbsences.isObjetElementAbsence = (aElement) => {
+		return aElement.getGenre() === Enumere_Ressource_1.EGenreRessource.Absence;
+	};
+	ObjetRequetePageSaisieAbsences.isObjetElementRetard = (aElement) => {
+		return aElement.getGenre() === Enumere_Ressource_1.EGenreRessource.Retard;
+	};
+	ObjetRequetePageSaisieAbsences.isObjetElemenInfirmerie = (aElement) => {
+		return (
+			aElement.getGenre() === Enumere_Ressource_1.EGenreRessource.Infirmerie
+		);
+	};
+	ObjetRequetePageSaisieAbsences.isObjetElementExclusion = (aElement) => {
+		return (
+			aElement.getGenre() === Enumere_Ressource_1.EGenreRessource.Exclusion
+		);
+	};
+	ObjetRequetePageSaisieAbsences.isObjetElementObservationIndividuEleve = (
+		aElement,
+	) => {
+		return (
+			aElement.getGenre() ===
+			Enumere_Ressource_1.EGenreRessource.ObservationProfesseurEleve
+		);
+	};
+	ObjetRequetePageSaisieAbsences.isObjetElementRepasAPreparer = (aElement) => {
+		return (
+			aElement.getGenre() === Enumere_Ressource_1.EGenreRessource.RepasAPreparer
+		);
+	};
+})(
+	ObjetRequetePageSaisieAbsences ||
+		(exports.ObjetRequetePageSaisieAbsences = ObjetRequetePageSaisieAbsences =
+			{}),
+);
+CollectionRequetes_1.Requetes.inscrire(
+	"PageSaisieAbsences",
+	ObjetRequetePageSaisieAbsences,
+);

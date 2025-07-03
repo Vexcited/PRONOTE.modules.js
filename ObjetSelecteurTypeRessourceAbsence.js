@@ -8,6 +8,9 @@ class ObjetSelecteurTypeRessourceAbsence extends _ObjetSelecteur_1._ObjetSelecte
 		super(...aParams);
 		this.setOptions({
 			titreLibelle: ObjetTraduction_1.GTraductions.getValeur("TypeDeDonnees"),
+			tooltip: ObjetTraduction_1.GTraductions.getValeur(
+				"SelectionnerTypesDeDonnees",
+			),
 		});
 	}
 	construireInstanceFenetreSelection() {

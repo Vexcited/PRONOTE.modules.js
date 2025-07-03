@@ -6,6 +6,7 @@ const ObjetRequeteSecurisationCompte_1 = require("ObjetRequeteSecurisationCompte
 const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetSaisieCodePIN_1 = require("ObjetSaisieCodePIN");
 const ObjetChoixStrategieSecurisation_1 = require("ObjetChoixStrategieSecurisation");
+const TraductionsDoubleAuth_1 = require("TraductionsDoubleAuth");
 class ObjetParamChoixStrategieSecurisation extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
@@ -70,12 +71,8 @@ class ObjetParamChoixStrategieSecurisation extends ObjetIdentite_1.Identite {
 						aMode ===
 						ObjetSaisieCodePIN_1.ObjetSaisieCodePIN.ModeSaisieValiderPIN
 							.ControlePIN
-							? ObjetTraduction_1.GTraductions.getValeur(
-									"DoubleAuth.RenforcerSecuTitre",
-								)
-							: ObjetTraduction_1.GTraductions.getValeur(
-									"DoubleAuth.TitreFiche",
-								),
+							? TraductionsDoubleAuth_1.TradDoubleAuth.RenforcerSecuTitre
+							: TraductionsDoubleAuth_1.TradDoubleAuth.TitreFiche,
 					callbackPIN: function (aResult) {
 						aResolve(aResult);
 					},
@@ -176,7 +173,7 @@ class _ObjetFenetre_SaisieCodePIN extends ObjetFenetre_1.ObjetFenetre {
 		);
 	}
 	composeContenu() {
-		return IE.jsx.str("div", { id: this.getInstance(this.identPIN).getNom() });
+		return IE.jsx.str("div", { id: this.getNomInstance(this.identPIN) });
 	}
 	setDonnees(aOptions, aDonnees) {
 		this.afficher();

@@ -1,6 +1,5 @@
 exports.TUtilitaireCDT = TUtilitaireCDT;
 const ObjetIdentite_1 = require("ObjetIdentite");
-const ObjetStyle_1 = require("ObjetStyle");
 const ObjetDate_1 = require("ObjetDate");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetFenetre_1 = require("ObjetFenetre");
@@ -10,14 +9,14 @@ function TUtilitaireCDT() {}
 TUtilitaireCDT.strtMatiere = function (aMatiere, aListeGroupes, aPourFiche) {
 	const H = [];
 	H.push(
-		'<div class="InlineBlock" style="float: left; margin-right: 3px; width: 8px; height: 12px; ',
-		ObjetStyle_1.GStyle.composeCouleurFond(aMatiere.CouleurFond),
+		'<div class="color-matiere" aria-hidden="true" style="--couleur-matiere:',
+		aMatiere.CouleurFond,
 		'"></div>',
-		'<div class="InlineBlock',
+		'<div class="libelle-matiere',
 		aPourFiche ? " Move" : "",
 		'">',
-		'<span class="Gras">',
-		aMatiere.getLibelle() ? aMatiere.getLibelle() : "&nbsp;",
+		"<span>",
+		aMatiere.getLibelle() ? aMatiere.getLibelle() : "",
 		"</span>",
 		aListeGroupes
 			? " (" + aListeGroupes.getTableauLibelles().join(", ") + ")"

@@ -1,18 +1,14 @@
-const { _ObjetRequeteResultat } = require("_ObjetRequeteResultat.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetElement } = require("ObjetElement.js");
-const {
-	UtilitaireDeserialiserPiedBulletin,
-} = require("UtilitaireDeserialiserPiedBulletin.js");
-class ObjetRequetePageBulletins extends _ObjetRequeteResultat {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequetePageBulletins = void 0;
+const _ObjetRequeteResultat_1 = require("_ObjetRequeteResultat");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetElement_1 = require("ObjetElement");
+const UtilitaireDeserialiserPiedBulletin_1 = require("UtilitaireDeserialiserPiedBulletin");
+class ObjetRequetePageBulletins extends _ObjetRequeteResultat_1._ObjetRequeteResultat {
 	lancerRequete(aParam) {
 		const lParam = {
-			eleve: new ObjetElement(),
-			classe: new ObjetElement(),
-			periode: new ObjetElement(),
+			eleve: new ObjetElement_1.ObjetElement(),
+			classe: new ObjetElement_1.ObjetElement(),
+			periode: new ObjetElement_1.ObjetElement(),
 		};
 		$.extend(lParam, aParam);
 		this.JSON = {
@@ -63,12 +59,12 @@ class ObjetRequetePageBulletins extends _ObjetRequeteResultat {
 			lParam.aCopier.baremeParDefaut = this.JSONReponse.baremeParDefaut;
 			$.extend(
 				lParam.absences,
-				new UtilitaireDeserialiserPiedBulletin().creerAbsences(
+				new UtilitaireDeserialiserPiedBulletin_1.UtilitaireDeserialiserPiedBulletin().creerAbsences(
 					this.JSONReponse,
 				),
 			);
 			lParam.aCopier.PiedDePage =
-				new UtilitaireDeserialiserPiedBulletin().creerPiedDePage(
+				new UtilitaireDeserialiserPiedBulletin_1.UtilitaireDeserialiserPiedBulletin().creerPiedDePage(
 					this.JSONReponse,
 				);
 			lParam.aCopier.listeAccusesReception =
@@ -77,5 +73,8 @@ class ObjetRequetePageBulletins extends _ObjetRequeteResultat {
 		this.callbackReussite.appel(lParam);
 	}
 }
-Requetes.inscrire("PageBulletins", ObjetRequetePageBulletins);
-module.exports = { ObjetRequetePageBulletins };
+exports.ObjetRequetePageBulletins = ObjetRequetePageBulletins;
+CollectionRequetes_1.Requetes.inscrire(
+	"PageBulletins",
+	ObjetRequetePageBulletins,
+);

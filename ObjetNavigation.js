@@ -14,7 +14,6 @@ class ObjetNavigation {
 		this.avecCoursAnnule = true;
 		this.Niveau = -1;
 		this.NumeroMatiereCahierDeTextes = 0;
-		this.afficherFicheService = true;
 		this.triDevoirs = false;
 	}
 	setRessource(AGenreRessource, AParametre, ANumero, AGenre) {

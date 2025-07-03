@@ -1,12 +1,14 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { EGenreTriElement } = require("Enumere_TriElement.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { EGenreDocTelechargement } = require("Enumere_DocTelechargement.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-class ObjetRequeteDocumentsATelecharger extends ObjetRequeteConsultation {
+exports.ObjetRequeteDocumentsATelecharger = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const Enumere_TriElement_1 = require("Enumere_TriElement");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_DocTelechargement_1 = require("Enumere_DocTelechargement");
+const MethodesObjet_1 = require("MethodesObjet");
+const UtilitaireDocumentSignature_1 = require("UtilitaireDocumentSignature");
+class ObjetRequeteDocumentsATelecharger extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	constructor(...aParams) {
 		super(...aParams);
 	}
@@ -26,13 +28,15 @@ class ObjetRequeteDocumentsATelecharger extends ObjetRequeteConsultation {
 		return this.appelAsynchrone();
 	}
 	actionApresRequete() {
-		const lListe = new ObjetListeElements();
-		const lListeCategorie = new ObjetListeElements();
-		const Llistebulletin = new ObjetListeElements();
-		const lListeDocument = new ObjetListeElements();
-		const lListeDocumentAFournir = new ObjetListeElements();
+		const lListe = new ObjetListeElements_1.ObjetListeElements();
+		const lListeCategorie = new ObjetListeElements_1.ObjetListeElements();
+		const llistebulletin = new ObjetListeElements_1.ObjetListeElements();
+		const lListeDocument = new ObjetListeElements_1.ObjetListeElements();
+		const lListeDocumentsSignatureElecASigner =
+			new ObjetListeElements_1.ObjetListeElements();
+		const lListeDocumentAFournir =
+			new ObjetListeElements_1.ObjetListeElements();
 		let lDiplome;
-		let lElement;
 		if (
 			this.JSONReponse.listeDocuments &&
 			this.JSONReponse.listeDocuments.count() > 0
@@ -40,12 +44,12 @@ class ObjetRequeteDocumentsATelecharger extends ObjetRequeteConsultation {
 			this.JSONReponse.listeDocuments.parcourir((aDocument) => {
 				const lElement = Object.assign(aDocument, {
 					annee: GParametres.PremiereDate.getFullYear(),
-					typeDocument: EGenreDocTelechargement.documents,
+					typeDocument:
+						Enumere_DocTelechargement_1.EGenreDocTelechargement.documents,
 					document: aDocument,
 					estNonLu: true,
 					Genre: 0,
 				});
-				lListe.addElement(lElement);
 				lListeDocument.addElement(lElement);
 			});
 		}
@@ -56,12 +60,12 @@ class ObjetRequeteDocumentsATelecharger extends ObjetRequeteConsultation {
 			this.JSONReponse.listeDocumentsMembre.parcourir((aDocument) => {
 				const lElement = Object.assign(aDocument, {
 					annee: GParametres.PremiereDate.getFullYear(),
-					typeDocument: EGenreDocTelechargement.documentMembre,
+					typeDocument:
+						Enumere_DocTelechargement_1.EGenreDocTelechargement.documentMembre,
 					document: aDocument,
 					estNonLu: true,
 					Genre: 0,
 				});
-				lListe.addElement(lElement);
 				lListeDocument.addElement(lElement);
 			});
 		}
@@ -72,12 +76,12 @@ class ObjetRequeteDocumentsATelecharger extends ObjetRequeteConsultation {
 			this.JSONReponse.listeProjetsAcc.parcourir((aDocument) => {
 				const lElement = Object.assign(aDocument, {
 					annee: GParametres.PremiereDate.getFullYear(),
-					typeDocument: EGenreDocTelechargement.projetAcc,
+					typeDocument:
+						Enumere_DocTelechargement_1.EGenreDocTelechargement.projetAcc,
 					projet: aDocument,
 					estNonLu: true,
 					Genre: 0,
 				});
-				lListe.addElement(lElement);
 				lListeDocument.addElement(lElement);
 			});
 		}
@@ -86,13 +90,22 @@ class ObjetRequeteDocumentsATelecharger extends ObjetRequeteConsultation {
 			this.JSONReponse.listeBulletinsBIA.count() > 0
 		) {
 			this.JSONReponse.listeBulletinsBIA.parcourir((aBulletin) => {
-				lElement = new ObjetElement();
-				lElement.typeDocument = EGenreDocTelechargement.bulletinBIA;
-				lElement.bulletin = aBulletin;
-				lElement.annee = aBulletin.annee;
-				lElement.Genre = 0;
+				const lElement = ObjetElement_1.ObjetElement.create({
+					typeDocument:
+						Enumere_DocTelechargement_1.EGenreDocTelechargement.bulletinBIA,
+					bulletin: aBulletin,
+					annee: aBulletin.annee,
+					Genre: 0,
+					nomFichier: undefined,
+					ident: undefined,
+					debutPeriodeNotation: undefined,
+					libelle: undefined,
+					libelleAnnee: undefined,
+					libelleClasse: undefined,
+					libellePeriodeNotation: undefined,
+				});
 				lListe.addElement(lElement);
-				Llistebulletin.addElement(lElement);
+				llistebulletin.addElement(lElement);
 			});
 		}
 		if (
@@ -103,33 +116,55 @@ class ObjetRequeteDocumentsATelecharger extends ObjetRequeteConsultation {
 				const lElement = Object.assign(aBulletin, {
 					Genre: 0,
 					annee: GParametres.PremiereDate.getFullYear(),
-					typeDocument: EGenreDocTelechargement.bulletin,
+					typeDocument:
+						Enumere_DocTelechargement_1.EGenreDocTelechargement.bulletin,
 				});
-				lListe.addElement(lElement);
-				Llistebulletin.addElement(lElement);
+				llistebulletin.addElement(lElement);
 			});
 		}
 		if (
 			this.JSONReponse.listeCategories &&
 			this.JSONReponse.listeCategories.count() > 0
 		) {
-			this.JSONReponse.listeCategories.parcourir((aCategorie) =>
-				lListeCategorie.add(aCategorie),
-			);
+			this.JSONReponse.listeCategories.parcourir((aCategorie) => {
+				lListeCategorie.add(aCategorie);
+			});
 		}
 		if (
 			this.JSONReponse.listeDocumentsCasier &&
 			this.JSONReponse.listeDocumentsCasier.count() > 0
 		) {
 			this.JSONReponse.listeDocumentsCasier.parcourir((aDocument) => {
+				const lTypeDoc =
+					UtilitaireDocumentSignature_1.TUtilitaireDocumentSignature.isDocumentSignature(
+						aDocument,
+					)
+						? Enumere_DocTelechargement_1.EGenreDocTelechargement
+								.documentSigneFinalise
+						: Enumere_DocTelechargement_1.EGenreDocTelechargement
+								.documentCasier;
 				const lElement = Object.assign(aDocument, {
-					Genre: 0,
 					annee: GParametres.PremiereDate.getFullYear(),
-					typeDocument: EGenreDocTelechargement.documentCasier,
+					typeDocument: lTypeDoc,
 				});
-				lListe.addElement(lElement);
 				lListeDocument.addElement(lElement);
 			});
+		}
+		if (
+			this.JSONReponse.listeDocumentsSignatureElecASigner &&
+			this.JSONReponse.listeDocumentsSignatureElecASigner.count() > 0
+		) {
+			this.JSONReponse.listeDocumentsSignatureElecASigner.parcourir(
+				(aDocument) => {
+					const lElement = Object.assign(aDocument, {
+						annee: GParametres.PremiereDate.getFullYear(),
+						typeDocument:
+							Enumere_DocTelechargement_1.EGenreDocTelechargement
+								.documentsASigner,
+					});
+					lListeDocumentsSignatureElecASigner.addElement(lElement);
+				},
+			);
 		}
 		if (
 			this.JSONReponse.listeNaturesDocumentsAFournir &&
@@ -139,9 +174,10 @@ class ObjetRequeteDocumentsATelecharger extends ObjetRequeteConsultation {
 				const lElement = Object.assign(aDocument, {
 					Genre: 0,
 					annee: GParametres.PremiereDate.getFullYear(),
-					typeDocument: EGenreDocTelechargement.documentAFournir,
+					typeDocument:
+						Enumere_DocTelechargement_1.EGenreDocTelechargement
+							.documentAFournir,
 				});
-				lListe.addElement(lElement);
 				lListeDocumentAFournir.addElement(lElement);
 			});
 		}
@@ -153,39 +189,45 @@ class ObjetRequeteDocumentsATelecharger extends ObjetRequeteConsultation {
 				const lElement = Object.assign(aDocument, {
 					Genre: 0,
 					annee: GParametres.PremiereDate.getFullYear(),
-					typeDocument: EGenreDocTelechargement.bulletinDeCompetences,
+					typeDocument:
+						Enumere_DocTelechargement_1.EGenreDocTelechargement
+							.bulletinDeCompetences,
 				});
-				lListe.addElement(lElement);
-				Llistebulletin.addElement(lElement);
+				llistebulletin.addElement(lElement);
 			});
 		}
 		if (this.JSONReponse.diplome) {
 			lDiplome = Object.assign(
-				MethodesObjet.dupliquer(this.JSONReponse.diplome),
+				MethodesObjet_1.MethodesObjet.dupliquer(this.JSONReponse.diplome),
 				{
 					Genre: 0,
 					annee: GParametres.PremiereDate.getFullYear(),
-					typeDocument: EGenreDocTelechargement.diplome,
+					typeDocument:
+						Enumere_DocTelechargement_1.EGenreDocTelechargement.diplome,
 				},
 			);
 		}
 		const lTri = [
-			ObjetTri.init("annee", EGenreTriElement.Decroissant),
-			ObjetTri.init("debutPeriodeNotation"),
-			ObjetTri.init("libelleClasse"),
-			ObjetTri.init("Libelle"),
+			ObjetTri_1.ObjetTri.init(
+				"annee",
+				Enumere_TriElement_1.EGenreTriElement.Decroissant,
+			),
+			ObjetTri_1.ObjetTri.init("debutPeriodeNotation"),
+			ObjetTri_1.ObjetTri.init("libelleClasse"),
+			ObjetTri_1.ObjetTri.init("Libelle"),
 		];
 		lListe.setTri(lTri).trier();
 		lListeCategorie.setTri(lTri).trier();
 		lListeDocument.setTri(lTri).trier();
 		lListeDocumentAFournir.setTri(lTri).trier();
-		Llistebulletin.setTri(lTri).trier();
+		llistebulletin.setTri(lTri).trier();
 		const lOptions = {
 			liste: lListe,
 			listeCategories: lListeCategorie,
 			listeDocuments: lListeDocument,
+			listeDocumentsSignatureElecASigner: lListeDocumentsSignatureElecASigner,
 			listeDocumentsAFournir: lListeDocumentAFournir,
-			listebulletins: Llistebulletin,
+			listebulletins: llistebulletin,
 		};
 		if (lDiplome) {
 			lOptions.diplome = lDiplome;
@@ -193,5 +235,8 @@ class ObjetRequeteDocumentsATelecharger extends ObjetRequeteConsultation {
 		this.callbackReussite.appel(lOptions);
 	}
 }
-Requetes.inscrire("DocumentsATelecharger", ObjetRequeteDocumentsATelecharger);
-module.exports = { ObjetRequeteDocumentsATelecharger };
+exports.ObjetRequeteDocumentsATelecharger = ObjetRequeteDocumentsATelecharger;
+CollectionRequetes_1.Requetes.inscrire(
+	"DocumentsATelecharger",
+	ObjetRequeteDocumentsATelecharger,
+);

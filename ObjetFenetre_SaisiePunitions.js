@@ -1,32 +1,30 @@
-const { GChaine } = require("ObjetChaine.js");
-const { GHtml } = require("ObjetHtml.js");
-const { GStyle } = require("ObjetStyle.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { TUtilitaireDuree } = require("UtilitaireDuree.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetFenetre_Date } = require("ObjetFenetre_Date.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreDocumentJoint } = require("Enumere_DocumentJoint.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const {
-	ObjetCelluleMultiSelectionMotif,
-} = require("ObjetCelluleMultiSelectionMotif.js");
-const { ObjetMoteurPunitions } = require("ObjetMoteurPunitions.js");
-const { ObjetSaisiePN } = require("ObjetSaisiePN.js");
-const { ObjetSelecteurPJCP } = require("ObjetSelecteurPJCP.js");
-const { ObjetSelecteurPJ } = require("ObjetSelecteurPJ.js");
-const { TypeGenrePunition } = require("TypeGenrePunition.js");
-const { ObjetUtilitaireAbsence } = require("ObjetUtilitaireAbsence.js");
-class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
-	constructor(...aParams) {
-		super(...aParams);
+exports.ObjetFenetre_SaisiePunitions = void 0;
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetStyle_1 = require("ObjetStyle");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const UtilitaireDuree_1 = require("UtilitaireDuree");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_Date_1 = require("ObjetFenetre_Date");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_DocumentJoint_1 = require("Enumere_DocumentJoint");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetCelluleMultiSelectionMotif_1 = require("ObjetCelluleMultiSelectionMotif");
+const ObjetMoteurPunitions_1 = require("ObjetMoteurPunitions");
+const ObjetSaisiePN_1 = require("ObjetSaisiePN");
+const ObjetSelecteurPJCP_1 = require("ObjetSelecteurPJCP");
+const ObjetSelecteurPJ_1 = require("ObjetSelecteurPJ");
+const TypeGenrePunition_1 = require("TypeGenrePunition");
+const ObjetUtilitaireAbsence_1 = require("ObjetUtilitaireAbsence");
+const AccessApp_1 = require("AccessApp");
+class ObjetFenetre_SaisiePunitions extends ObjetFenetre_1.ObjetFenetre {
+	constructor() {
+		super(...arguments);
 		this.idContenuPage = this.Nom + "_contenuPage";
 		this.idContenuMessage = this.Nom + "_contenuMessage";
 		this.idLibelleDate = this.Nom + "_libelleDate";
@@ -34,50 +32,52 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 		this.idLabelMotif = this.Nom + "_labelMotif";
 		this.idTextareaDetail = this.Nom + "_textareaDetail";
 		this.idTextareaTAF = this.Nom + "_textareaTAF";
-		this.moteurPunitions = new ObjetMoteurPunitions(this);
+		this.moteurPunitions = new ObjetMoteurPunitions_1.ObjetMoteurPunitions(
+			this,
+		);
 	}
 	construireInstances() {
 		this.identComboType = this.add(
-			ObjetSaisiePN,
+			ObjetSaisiePN_1.ObjetSaisiePN,
 			this._evenementComboType,
-			_initialiserComboType,
+			this._initialiserComboType,
 		);
 		this.identComboAccomp = this.add(
-			ObjetSaisiePN,
+			ObjetSaisiePN_1.ObjetSaisiePN,
 			this._evenementComboAccomp,
-			_initialiserComboAccomp,
+			this._initialiserComboAccomp,
 		);
 		this.identComboDuree = this.add(
-			ObjetSaisiePN,
+			ObjetSaisiePN_1.ObjetSaisiePN,
 			this._evenementComboDuree,
-			_initialiserComboDuree,
+			this._initialiserComboDuree,
 		);
 		this.identComboDate = this.add(
-			ObjetSaisiePN,
+			ObjetSaisiePN_1.ObjetSaisiePN,
 			this._evenementComboDate,
-			_initialiserComboDate,
+			this._initialiserComboDate,
 		);
 		this.identFenetreCalendrier = this.addFenetre(
-			ObjetFenetre_Date,
+			ObjetFenetre_Date_1.ObjetFenetre_Date,
 			this._evenementFenetreCalendrier,
-			_initialiserFenetreCalendrier,
+			this._initialiserFenetreCalendrier,
 		);
 		this.identCMS_Motifs = this.add(
-			ObjetCelluleMultiSelectionMotif,
+			ObjetCelluleMultiSelectionMotif_1.ObjetCelluleMultiSelectionMotif,
 			this._evenementChoixMotifs,
 			(aInstance) => {
-				aInstance.setOptions({ labelledById: this.idLabelMotif });
+				aInstance.setOptions({ ariaLabelledBy: this.idLabelMotif });
 			},
 		);
 		this.identSelecteurPJ = this.add(
-			ObjetSelecteurPJ,
-			_evntSelecteurPJ.bind(this),
-			_initSelecteurPJ,
+			ObjetSelecteurPJ_1.ObjetSelecteurPJ,
+			this._evntSelecteurPJ.bind(this),
+			this._initSelecteurPJ,
 		);
 		this.identSelecteurPJTAF = this.add(
-			ObjetSelecteurPJ,
-			_evntSelecteurPJTAF.bind(this),
-			_initSelecteurPJ,
+			ObjetSelecteurPJ_1.ObjetSelecteurPJ,
+			this._evntSelecteurPJTAF.bind(this),
+			this._initSelecteurPJ,
 		);
 		this.IdPremierElement = this.getInstance(
 			this.identComboType,
@@ -94,7 +94,7 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 					const lPunition = aInstance.moteurPunitions.punition;
 					if (lPunition) {
 						lPunition.publierTafApresDebutRetenue = aValue;
-						lPunition.setEtat(EGenreEtat.Modification);
+						lPunition.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 					}
 				},
 				getDisplay() {
@@ -103,7 +103,7 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 						lPunition &&
 						lPunition.naturePunition &&
 						lPunition.naturePunition.getGenre() ===
-							TypeGenrePunition.GP_Retenues
+							TypeGenrePunition_1.TypeGenrePunition.GP_Retenues
 					);
 				},
 			},
@@ -120,11 +120,12 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 				listeBoutons: this.moteurPunitions.listeBoutons,
 			});
 			this._actualiserDureeDate();
-			GHtml.setDisplay(this.idContenuPage, true);
-			GHtml.setDisplay(this.idContenuMessage, false);
+			ObjetHtml_1.GHtml.setDisplay(this.idContenuPage, true);
+			ObjetHtml_1.GHtml.setDisplay(this.idContenuMessage, false);
 			this.getInstance(this.identComboType).setDonnees(
 				this.moteurPunitions.listeNature,
-				this.moteurPunitions.genreRessource === EGenreRessource.Punition &&
+				this.moteurPunitions.genreRessource ===
+					Enumere_Ressource_1.EGenreRessource.Punition &&
 					this.moteurPunitions.punition.naturePunition
 					? this.moteurPunitions.listeNature.getIndiceParNumeroEtGenre(
 							this.moteurPunitions.punition.naturePunition.getNumero(),
@@ -143,11 +144,11 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 			);
 			const lListePJ = this.moteurPunitions.punition.documents
 				? this.moteurPunitions.punition.documents
-				: new ObjetListeElements();
-			this.documents = new ObjetListeElements();
+				: new ObjetListeElements_1.ObjetListeElements();
+			this.documents = new ObjetListeElements_1.ObjetListeElements();
 			this.getInstance(this.identSelecteurPJ).setActif(true);
 			this.getInstance(this.identSelecteurPJ).setOptions({
-				genreRessourcePJ: EGenreRessource.DocJointEleve,
+				genreRessourcePJ: Enumere_Ressource_1.EGenreRessource.DocJointEleve,
 			});
 			this.getInstance(this.identSelecteurPJ).setDonnees({
 				listePJ: lListePJ,
@@ -156,10 +157,10 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 			});
 			const lListePJTAF = this.moteurPunitions.punition.documentsTAF
 				? this.moteurPunitions.punition.documentsTAF
-				: new ObjetListeElements();
+				: new ObjetListeElements_1.ObjetListeElements();
 			this.getInstance(this.identSelecteurPJTAF).setActif(true);
 			this.getInstance(this.identSelecteurPJTAF).setOptions({
-				genreRessourcePJ: EGenreRessource.DocJointEleve,
+				genreRessourcePJ: Enumere_Ressource_1.EGenreRessource.DocJointEleve,
 			});
 			this.getInstance(this.identSelecteurPJTAF).setDonnees({
 				listePJ: lListePJTAF,
@@ -171,12 +172,12 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 			);
 			$("#" + this.idTitreProgrammation.escapeJQ()).css("display", "none");
 		} else {
-			GHtml.setDisplay(this._idContenuPage, false);
-			GHtml.setDisplay(this.idContenuMessage, true);
+			ObjetHtml_1.GHtml.setDisplay(this.idContenuPage, false);
+			ObjetHtml_1.GHtml.setDisplay(this.idContenuMessage, true);
 		}
 	}
 	afficher() {
-		super.afficher();
+		return super.afficher();
 	}
 	_evenementComboType(aParams) {
 		const lPunition = this.moteurPunitions.punition;
@@ -184,10 +185,11 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 			return;
 		}
 		if (
-			aParams.genreEvenement === EGenreEvenementObjetSaisie.selection &&
+			aParams.genreEvenement ===
+				Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection &&
 			aParams.element
 		) {
-			lPunition.naturePunition = new ObjetElement(
+			lPunition.naturePunition = new ObjetElement_1.ObjetElement(
 				aParams.element.Libelle,
 				aParams.element.getNumero(),
 				aParams.element.getGenre(),
@@ -205,12 +207,19 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 		}
 	}
 	_evenementComboAccomp(aParams) {
-		if (this.moteurPunitions.genreRessource === EGenreRessource.Punition) {
+		if (
+			this.moteurPunitions.genreRessource ===
+			Enumere_Ressource_1.EGenreRessource.Punition
+		) {
 			return;
 		}
-		if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
 			if (!this.moteurPunitions.punition.Accompagnateur) {
-				this.moteurPunitions.punition.Accompagnateur = new ObjetElement();
+				this.moteurPunitions.punition.Accompagnateur =
+					new ObjetElement_1.ObjetElement();
 			}
 			this.moteurPunitions.punition.Accompagnateur.Numero =
 				aParams.element.getNumero();
@@ -222,7 +231,8 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 		}
 		const lInstanceCombo = this.getInstance(this.identComboDuree);
 		if (
-			aParams.genreEvenement === EGenreEvenementObjetSaisie.selection &&
+			aParams.genreEvenement ===
+				Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection &&
 			lInstanceCombo.estUneInteractionUtilisateur() &&
 			!this.moteurPunitions.estPunitionEnDevoir() &&
 			!!aParams.element
@@ -235,7 +245,8 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 			return;
 		}
 		switch (aParams.genreEvenement) {
-			case EGenreEvenementObjetSaisie.deploiement:
+			case Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+				.deploiement:
 				if (this.moteurPunitions.estPunitionEnDevoir()) {
 					const lDate =
 						this.moteurPunitions.punition.date ||
@@ -250,19 +261,21 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 	_evenementFenetreCalendrier(aGenreBouton, aDate) {
 		if (aGenreBouton === 1) {
 			let lDateCourant = aDate;
-			if (!GDate.estUnJourOuvre(lDateCourant)) {
+			if (!ObjetDate_1.GDate.estUnJourOuvre(lDateCourant)) {
 				const lStrDate = !!lDateCourant
-					? GDate.formatDate(lDateCourant, "%JJ/%MM/%AAAA")
+					? ObjetDate_1.GDate.formatDate(lDateCourant, "%JJ/%MM/%AAAA")
 					: "";
-				GApplication.getMessage().afficher({
-					message: GTraductions.getValeur(
-						"fenetreSaisiePunition.DatePasUnJoursOuvre",
-						[lStrDate],
-					),
-				});
+				(0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
+						message: ObjetTraduction_1.GTraductions.getValeur(
+							"fenetreSaisiePunition.DatePasUnJoursOuvre",
+							[lStrDate],
+						),
+					});
 				do {
-					lDateCourant = GDate.getJourSuivant(lDateCourant, -1);
-				} while (!GDate.estUnJourOuvre(lDateCourant));
+					lDateCourant = ObjetDate_1.GDate.getJourSuivant(lDateCourant, -1);
+				} while (!ObjetDate_1.GDate.estUnJourOuvre(lDateCourant));
 			}
 			this.moteurPunitions.punition.date = lDateCourant;
 			this.getInstance(this.identComboDate).setDonnees(
@@ -273,7 +286,7 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 	}
 	_evenementChoixMotifs(aNumeroBouton, aListeDonnees) {
 		if (aNumeroBouton === 1) {
-			miseAJourPunition.call(this, aListeDonnees);
+			this.miseAJourPunition(aListeDonnees);
 		} else {
 			this.getInstance(this.identCMS_Motifs).setDonnees(
 				this.moteurPunitions.punition.listeMotifs,
@@ -302,7 +315,9 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 			'<div class="p-bottom-l">',
 			'<ul><li class="NoWrap">',
 			'<span class="Gras">',
-			GTraductions.getValeur("fenetreSaisiePunition.circonstances"),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"fenetreSaisiePunition.circonstances",
+			),
 			"</span>",
 			"</li></ul>",
 			'<hr class="m-all-none" />',
@@ -313,7 +328,7 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 			'<label class="m-bottom" id="',
 			this.idLabelMotif,
 			'">',
-			GTraductions.getValeur("fenetreSaisiePunition.motif"),
+			ObjetTraduction_1.GTraductions.getValeur("fenetreSaisiePunition.motif"),
 			" : ",
 			"</label>",
 			'<div id="' +
@@ -321,20 +336,27 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 				'"></div>',
 			"</div>",
 		);
+		const lMaxLengthCirconstance = this.moteurPunitions.maxlengthCirconstance
+			? `maxlength="${this.moteurPunitions.maxlengthCirconstance}" ie-compteurmax="${this.moteurPunitions.maxlengthCirconstance}" `
+			: "";
 		T.push(
 			'<div class="field-contain label-up full-width">',
 			'<label for="',
 			this.idTextareaDetail,
 			'" class="m-bottom">',
-			GTraductions.getValeur("fenetreSaisiePunition.details"),
+			ObjetTraduction_1.GTraductions.getValeur("fenetreSaisiePunition.details"),
 			" : ",
 			"</label>",
-			'<textarea id="',
+			'<ie-textareamax id="',
 			this.idTextareaDetail,
-			'" ie-model="circonstance" class="round-style" style="' +
-				GStyle.composeWidth(lLargeur) +
-				GStyle.composeHeight(GChaine.getHauteurPolice(10) * 3 + 4) +
-				'" ></textarea>',
+			'" ie-model="circonstance" ' +
+				lMaxLengthCirconstance +
+				'  style="' +
+				ObjetStyle_1.GStyle.composeWidth(lLargeur) +
+				ObjetStyle_1.GStyle.composeHeight(
+					ObjetChaine_1.GChaine.getHauteurPolice(10) * 3 + 4,
+				) +
+				'" ></ie-textareamax>',
 			"</div>",
 		);
 		T.push(
@@ -348,7 +370,9 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 			'<div class="p-y-l">',
 			'<ul><li class="NoWrap">',
 			'<span class="Gras">',
-			GTraductions.getValeur("fenetreSaisiePunition.suiteDonnee"),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"fenetreSaisiePunition.suiteDonnee",
+			),
 			"</span>",
 			"</li></ul>",
 			'<hr class="m-all-none" />',
@@ -367,7 +391,7 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 			"</div>",
 			'<div class="flex-contain flex-center" ie-style="visibiliteChoixDuree">',
 			'<span class="m-right ie-titre-petit">',
-			GTraductions.getValeur("fenetreSaisiePunition.duree"),
+			ObjetTraduction_1.GTraductions.getValeur("fenetreSaisiePunition.duree"),
 			"</span>",
 			'<div id="' +
 				this.getInstance(this.identComboDuree).getNom() +
@@ -375,26 +399,33 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 			"</div>",
 			'<div class="flex-contain flex-center" ie-style="visibiliteChoixDate">',
 			'<span class="m-right ie-titre-petit">',
-			GTraductions.getValeur("fenetreSaisiePunition.aRendre"),
+			ObjetTraduction_1.GTraductions.getValeur("fenetreSaisiePunition.aRendre"),
 			"</span>",
 			'<div id="' + this.getInstance(this.identComboDate).getNom() + '"></div>',
 			"</div>",
 			"</div>",
 		);
+		const lMaxLengthTaf = this.moteurPunitions.maxlengthTaf
+			? `maxlength="${this.moteurPunitions.maxlengthTaf}" ie-compteurmax="${this.moteurPunitions.maxlengthTaf}" `
+			: "";
 		T.push(
 			'<div  class="field-contain label-up full-width">',
 			'<label for="',
 			this.idTextareaTAF,
 			'" class="m-bottom">',
-			GTraductions.getValeur("fenetreSaisiePunition.taf"),
+			ObjetTraduction_1.GTraductions.getValeur("fenetreSaisiePunition.taf"),
 			" : ",
 			"</label>",
-			'<textarea id="',
+			'<ie-textareamax id="',
 			this.idTextareaTAF,
-			'" ie-model="commentaire" class="round-style" style="' +
-				GStyle.composeWidth(lLargeur) +
-				GStyle.composeHeight(GChaine.getHauteurPolice(10) * 4 + 4) +
-				'"></textarea>',
+			'" ie-model="commentaire" ' +
+				lMaxLengthTaf +
+				'  style="' +
+				ObjetStyle_1.GStyle.composeWidth(lLargeur) +
+				ObjetStyle_1.GStyle.composeHeight(
+					ObjetChaine_1.GChaine.getHauteurPolice(10) * 4 + 4,
+				) +
+				'"></ie-textareamax>',
 			"</div>",
 		);
 		T.push(
@@ -406,7 +437,9 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 		);
 		T.push(
 			'<div><ie-checkbox class="m-top" ie-model="cbTafPublierDebutSeance" ie-display="cbTafPublierDebutSeance.getDisplay">',
-			GTraductions.getValeur("punition.publierUniquementDebutRetenue"),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"punition.publierUniquementDebutRetenue",
+			),
 			"</ie-checkbox>",
 		);
 		T.push(
@@ -415,7 +448,9 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 			'" class="p-bottom-l">',
 			'<ul><li class="NoWrap">',
 			'<span class="Gras">',
-			GTraductions.getValeur("fenetreSaisiePunition.aProgrammer"),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"fenetreSaisiePunition.aProgrammer",
+			),
 			"</span>",
 			"</li></ul>",
 			'<hr class="m-all-none" />',
@@ -429,16 +464,18 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 		T.push(
 			'<div class="flex-contain flex-gap-l">',
 			'<ie-checkbox ie-model="checkPublierPunition">',
-			GTraductions.getValeur("fenetreSaisiePunition.publierPunition"),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"fenetreSaisiePunition.publierPunition",
+			),
 			"</ie-checkbox>",
-			'<i role="img" role="presentation" ie-class="getClasseCssImagePublicationPunition" ie-hint="getHintImagePublicationPunition"></i>',
+			'<i role="img" ie-class="getClasseCssImagePublicationPunition" ie-title="getHintImagePublicationPunition"></i>',
 			"</div>",
 		);
 		T.push(
 			'<div class="p-top-l m-left-xl flex-contain flex-center">',
-			GTraductions.getValeur("Le_Maj"),
+			ObjetTraduction_1.GTraductions.getValeur("Le_Maj"),
 			'<div class="InlineBlock m-left" style="width: 10rem;">',
-			`<ie-btnselecteur ie-model="modelSelecteurDatePublication" aria-label="${GTraductions.getValeur("Le_Maj")}"></ie-btnselecteur>`,
+			`<ie-btnselecteur ie-model="modelSelecteurDatePublication" aria-label="${ObjetTraduction_1.GTraductions.getValeur("Le_Maj")}"></ie-btnselecteur>`,
 			"</div>",
 			"</div>",
 		);
@@ -475,7 +512,8 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 				0,
 			);
 		} else if (
-			this.moteurPunitions.genreRessource === EGenreRessource.Punition
+			this.moteurPunitions.genreRessource ===
+			Enumere_Ressource_1.EGenreRessource.Punition
 		) {
 			const lListeDuree = this.moteurPunitions.getListeDuree();
 			const lPunition = this.moteurPunitions.punition;
@@ -486,7 +524,7 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 				!!lPunition.naturePunition &&
 				!!lPunition.naturePunition.dureeParDefaut
 			) {
-				lDureeRecherchee = TUtilitaireDuree.dureeEnMin(
+				lDureeRecherchee = UtilitaireDuree_1.TUtilitaireDuree.dureeEnMin(
 					lPunition.naturePunition.dureeParDefaut,
 				);
 			}
@@ -505,123 +543,135 @@ class ObjetFenetre_SaisiePunitions extends ObjetFenetre {
 			);
 		}
 	}
-}
-function _initialiserComboType(aInstance) {
-	aInstance.setAvecTabulation(false);
-	aInstance.setOptionsObjetSaisie({
-		longueur: 230,
-		labelWAICellule: GTraductions.getValeur(
-			"fenetrePunition.Accessible_comboType",
-		),
-	});
-}
-function _initialiserComboAccomp(aInstance) {
-	aInstance.setAvecTabulation(false);
-	aInstance.setOptionsObjetSaisie({
-		longueur: 230,
-		celluleAvecTexteHtml: true,
-		labelWAICellule: GTraductions.getValeur(
-			"fenetrePunition.Accessible_comboAccomp",
-		),
-	});
-}
-function _initialiserComboDuree(aInstance) {
-	aInstance.setAvecTabulation(false);
-	aInstance.setOptionsObjetSaisie({
-		longueur: 75,
-		labelWAICellule: GTraductions.getValeur(
-			"fenetrePunition.Accessible_comboDuree",
-		),
-	});
-}
-function _initialiserComboDate(aInstance) {
-	aInstance.setAvecTabulation(false);
-	aInstance.setOptionsObjetSaisie({
-		longueur: 75,
-		forcerBoutonDeploiement: true,
-		labelWAICellule: GTraductions.getValeur(
-			"fenetrePunition.Accessible_comboDate",
-		),
-	});
-}
-function _initialiserFenetreCalendrier(aInstance) {
-	aInstance.setParametres(
-		GDate.PremierLundi,
-		this.date,
-		GDate.derniereDate,
-		GParametres.JoursOuvres,
-	);
-}
-function _initSelecteurPJ(aInstance) {
-	aInstance.setOptions({
-		genrePJ: EGenreDocumentJoint.Fichier,
-		genreRessourcePJ: EGenreRessource.DocJointEleve,
-		interdireDoublonsLibelle: false,
-		libelleSelecteur: GTraductions.getValeur("AjouterDesPiecesJointes"),
-		avecBoutonSupp: true,
-		avecCmdAjoutNouvelle: false,
-		avecMenuSuppressionPJ: false,
-		avecAjoutExistante: true,
-		ouvrirFenetreChoixTypesAjout: false,
-		maxFiles: 0,
-		maxSize: GApplication.droits.get(TypeDroits.tailleMaxDocJointEtablissement),
-	});
-}
-function _evntSelecteurPJ(aParam) {
-	switch (aParam.evnt) {
-		case ObjetSelecteurPJCP.genreEvnt.selectionPJ:
-			if (this.moteurPunitions.punition) {
-				this.listePJ.addElement(aParam.fichier);
-				this.moteurPunitions.punition.setEtat(EGenreEtat.Modification);
-				this.setEtatSaisie(true);
-			}
-			break;
-		case ObjetSelecteurPJCP.genreEvnt.suppressionPJ:
-			if (this.moteurPunitions.punition) {
-				this.moteurPunitions.punition.setEtat(EGenreEtat.Modification);
-				this.setEtatSaisie(true);
-			}
-			break;
-		default:
-			break;
+	_initialiserComboType(aInstance) {
+		aInstance.setAvecTabulation(false);
+		aInstance.setOptionsObjetSaisie({
+			longueur: 230,
+			labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+				"fenetrePunition.Accessible_comboType",
+			),
+		});
 	}
-}
-function _evntSelecteurPJTAF(aParam) {
-	switch (aParam.evnt) {
-		case ObjetSelecteurPJCP.genreEvnt.selectionPJ:
-			if (this.moteurPunitions.punition) {
-				this.listePJ.addElement(aParam.fichier);
-				this.moteurPunitions.punition.setEtat(EGenreEtat.Modification);
-				this.setEtatSaisie(true);
-			}
-			break;
-		case ObjetSelecteurPJCP.genreEvnt.suppressionPJ:
-			if (this.moteurPunitions.punition) {
-				this.moteurPunitions.punition.setEtat(EGenreEtat.Modification);
-				this.setEtatSaisie(true);
-			}
-			break;
-		default:
-			break;
+	_initialiserComboAccomp(aInstance) {
+		aInstance.setAvecTabulation(false);
+		aInstance.setOptionsObjetSaisie({
+			longueur: 230,
+			celluleAvecTexteHtml: true,
+			labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+				"fenetrePunition.Accessible_comboAccomp",
+			),
+		});
 	}
-}
-function miseAJourPunition(aListeDonnees) {
-	const lPunition = this.moteurPunitions.punition;
-	if (lPunition) {
-		lPunition.listeMotifs = aListeDonnees;
-		if (this.moteurPunitions.enCreation && !lPunition.datePublication) {
-			for (let I = 0; I < lPunition.listeMotifs.count(); I++) {
-				const lMotif = lPunition.listeMotifs.get(I);
-				if (lMotif.publication) {
-					this.moteurPunitions.setDatePublication(
-						ObjetUtilitaireAbsence.getDatePublicationPunitionParDefaut(
-							lPunition.naturePunition,
-						),
+	_initialiserComboDuree(aInstance) {
+		aInstance.setAvecTabulation(false);
+		aInstance.setOptionsObjetSaisie({
+			longueur: 75,
+			labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+				"fenetrePunition.Accessible_comboDuree",
+			),
+		});
+	}
+	_initialiserComboDate(aInstance) {
+		aInstance.setAvecTabulation(false);
+		aInstance.setOptionsObjetSaisie({
+			longueur: 75,
+			forcerBoutonDeploiement: true,
+			labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+				"fenetrePunition.Accessible_comboDate",
+			),
+		});
+	}
+	_initialiserFenetreCalendrier(aInstance) {
+		aInstance.setParametres(
+			ObjetDate_1.GDate.PremierLundi,
+			this.date,
+			ObjetDate_1.GDate.derniereDate,
+			GParametres.JoursOuvres,
+		);
+	}
+	_initSelecteurPJ(aInstance) {
+		aInstance.setOptions({
+			genrePJ: Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier,
+			genreRessourcePJ: Enumere_Ressource_1.EGenreRessource.DocJointEleve,
+			interdireDoublonsLibelle: false,
+			libelleSelecteur: ObjetTraduction_1.GTraductions.getValeur(
+				"AjouterDesPiecesJointes",
+			),
+			avecBoutonSupp: true,
+			avecCmdAjoutNouvelle: false,
+			avecMenuSuppressionPJ: false,
+			avecAjoutExistante: true,
+			ouvrirFenetreChoixTypesAjout: false,
+			maxFiles: 0,
+			maxSize: (0, AccessApp_1.getApp)().droits.get(
+				ObjetDroitsPN_1.TypeDroits.tailleMaxDocJointEtablissement,
+			),
+		});
+	}
+	_evntSelecteurPJ(aParam) {
+		switch (aParam.evnt) {
+			case ObjetSelecteurPJCP_1.ObjetSelecteurPJCP.genreEvnt.selectionPJ:
+				if (this.moteurPunitions.punition) {
+					this.listePJ.addElement(aParam.fichier);
+					this.moteurPunitions.punition.setEtat(
+						Enumere_Etat_1.EGenreEtat.Modification,
 					);
-					break;
+					this.setEtatSaisie(true);
+				}
+				break;
+			case ObjetSelecteurPJCP_1.ObjetSelecteurPJCP.genreEvnt.suppressionPJ:
+				if (this.moteurPunitions.punition) {
+					this.moteurPunitions.punition.setEtat(
+						Enumere_Etat_1.EGenreEtat.Modification,
+					);
+					this.setEtatSaisie(true);
+				}
+				break;
+			default:
+				break;
+		}
+	}
+	_evntSelecteurPJTAF(aParam) {
+		switch (aParam.evnt) {
+			case ObjetSelecteurPJCP_1.ObjetSelecteurPJCP.genreEvnt.selectionPJ:
+				if (this.moteurPunitions.punition) {
+					this.listePJ.addElement(aParam.fichier);
+					this.moteurPunitions.punition.setEtat(
+						Enumere_Etat_1.EGenreEtat.Modification,
+					);
+					this.setEtatSaisie(true);
+				}
+				break;
+			case ObjetSelecteurPJCP_1.ObjetSelecteurPJCP.genreEvnt.suppressionPJ:
+				if (this.moteurPunitions.punition) {
+					this.moteurPunitions.punition.setEtat(
+						Enumere_Etat_1.EGenreEtat.Modification,
+					);
+					this.setEtatSaisie(true);
+				}
+				break;
+			default:
+				break;
+		}
+	}
+	miseAJourPunition(aListeDonnees) {
+		const lPunition = this.moteurPunitions.punition;
+		if (lPunition) {
+			lPunition.listeMotifs = aListeDonnees;
+			if (this.moteurPunitions.enCreation && !lPunition.datePublication) {
+				for (let I = 0; I < lPunition.listeMotifs.count(); I++) {
+					const lMotif = lPunition.listeMotifs.get(I);
+					if (lMotif.publication) {
+						this.moteurPunitions.setDatePublication(
+							ObjetUtilitaireAbsence_1.ObjetUtilitaireAbsence.getDatePublicationPunitionParDefaut(
+								lPunition.naturePunition,
+							),
+						);
+						break;
+					}
 				}
 			}
 		}
 	}
 }
-module.exports = { ObjetFenetre_SaisiePunitions };
+exports.ObjetFenetre_SaisiePunitions = ObjetFenetre_SaisiePunitions;

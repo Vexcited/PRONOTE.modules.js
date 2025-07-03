@@ -1,20 +1,12 @@
-const { GStyle } = require("ObjetStyle.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	TypeOrigineCreationEtiquetteMessageUtil,
-} = require("TypeOrigineCreationEtiquetteMessage.js");
-class DonneesListe_CategoriesDiscussion extends ObjetDonneesListe {
-	constructor(aParametres, aOldListeAffichage) {
-		super();
-		this.parametres = Object.assign(
-			{ message: null, listeEtiquettes: null },
-			aParametres,
-		);
-		this.Donnees = _init.call(this, aOldListeAffichage);
+exports.DonneesListe_CategoriesDiscussion = void 0;
+const ObjetStyle_1 = require("ObjetStyle");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class DonneesListe_CategoriesDiscussion extends ObjetDonneesListe_1.ObjetDonneesListe {
+	constructor(aListeDonnees) {
+		super(aListeDonnees);
 		this.setOptions({
 			avecTri: false,
 			avecTrimSurEdition: true,
@@ -33,10 +25,12 @@ class DonneesListe_CategoriesDiscussion extends ObjetDonneesListe {
 			case DonneesListe_CategoriesDiscussion.colonnes.couleur:
 				return [
 					'<div style="',
-					GStyle.composeHeight(14),
-					GStyle.composeWidth(14),
-					GStyle.composeCouleurBordure("black"),
-					GStyle.composeCouleurFond(aParams.article.etiquette.couleur),
+					ObjetStyle_1.GStyle.composeHeight(14),
+					ObjetStyle_1.GStyle.composeWidth(14),
+					ObjetStyle_1.GStyle.composeCouleurBordure("black"),
+					ObjetStyle_1.GStyle.composeCouleurFond(
+						aParams.article.etiquette.couleur,
+					),
 					'">',
 					"</div>",
 				].join("");
@@ -50,12 +44,11 @@ class DonneesListe_CategoriesDiscussion extends ObjetDonneesListe {
 	getTypeValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_CategoriesDiscussion.colonnes.coche:
-				return ObjetDonneesListe.ETypeCellule.Coche;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Coche;
 			case DonneesListe_CategoriesDiscussion.colonnes.couleur:
-				return ObjetDonneesListe.ETypeCellule.Html;
-			default:
-				return ObjetDonneesListe.ETypeCellule.Texte;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 		}
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
 	avecEvenementEdition(aParams) {
 		return (
@@ -98,85 +91,23 @@ class DonneesListe_CategoriesDiscussion extends ObjetDonneesListe {
 			V[
 				this.getNumeroColonneDId(DonneesListe_CategoriesDiscussion.colonnes.nom)
 			];
-		aArticle.etiquette = new ObjetElement(aArticle.Libelle);
+		aArticle.etiquette = new ObjetElement_1.ObjetElement(aArticle.Libelle);
 	}
 	getMessageSuppressionConfirmation(aArticle) {
 		return aArticle.etiquette && aArticle.etiquette.utilise
-			? GTraductions.getValeur("Messagerie.categorie.CategorieEstUtilisee")
+			? ObjetTraduction_1.GTraductions.getValeur(
+					"Messagerie.categorie.CategorieEstUtilisee",
+				)
 			: "";
 	}
 	getVisible(aArticle) {
-		return aArticle.getEtat() !== EGenreEtat.Creation;
+		return aArticle.getEtat() !== Enumere_Etat_1.EGenreEtat.Creation;
 	}
 }
+exports.DonneesListe_CategoriesDiscussion = DonneesListe_CategoriesDiscussion;
 DonneesListe_CategoriesDiscussion.colonnes = {
-	coche: "coche",
-	couleur: "couleur",
-	nom: "nom",
-	abr: "abr",
+	coche: "DLCD_coche",
+	couleur: "DLCD_couleur",
+	nom: "DLCD_nom",
+	abr: "DLCD_abr",
 };
-function _init(aOldListeAffichage) {
-	const lListe = new ObjetListeElements();
-	this.parametres.listeEtiquettes.parcourir((aEtiquette) => {
-		if (
-			!TypeOrigineCreationEtiquetteMessageUtil.estEtiquettePerso(
-				aEtiquette.getGenre(),
-			)
-		) {
-			return true;
-		}
-		const lElement = new ObjetElement(
-			aEtiquette.getLibelle(),
-			aEtiquette.getNumero(),
-		);
-		lElement.estPerso = aEtiquette.estPerso;
-		lElement.etiquette = aEtiquette;
-		lListe.addElement(lElement);
-		lElement.coche = ObjetDonneesListe.EGenreCoche.Aucune;
-		let lInit = false;
-		if (this.parametres.listeMessages) {
-			this.parametres.listeMessages.parcourir((aMessage) => {
-				let lEtiquetteExiste = null;
-				if (aMessage && aMessage.listeEtiquettes) {
-					lEtiquetteExiste = aMessage.listeEtiquettes.getElementParNumero(
-						aEtiquette.getNumero(),
-					);
-				}
-				if (
-					!lEtiquetteExiste &&
-					lElement.coche === ObjetDonneesListe.EGenreCoche.Verte
-				) {
-					lElement.coche = ObjetDonneesListe.EGenreCoche.Grise;
-					return false;
-				}
-				if (
-					lEtiquetteExiste &&
-					lElement.coche === ObjetDonneesListe.EGenreCoche.Aucune
-				) {
-					lElement.coche = lInit
-						? ObjetDonneesListe.EGenreCoche.Grise
-						: ObjetDonneesListe.EGenreCoche.Verte;
-				}
-				if (lElement.coche === ObjetDonneesListe.EGenreCoche.Grise) {
-					return false;
-				}
-				lInit = true;
-			});
-		}
-		if (aOldListeAffichage) {
-			const lOldEtiquette = aOldListeAffichage.getElementParNumeroEtGenre(
-				lElement.getNumero(),
-			);
-			if (
-				lOldEtiquette &&
-				lOldEtiquette.getEtat() === EGenreEtat.Modification &&
-				lElement.coche !== lOldEtiquette.coche
-			) {
-				lElement.coche = lOldEtiquette.coche;
-				lElement.setEtat(EGenreEtat.Modification);
-			}
-		}
-	});
-	return lListe;
-}
-module.exports = DonneesListe_CategoriesDiscussion;

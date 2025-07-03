@@ -1,14 +1,11 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const {
-	TypeOrigineCreationCategorieDossier,
-} = require("TypeOrigineCreationCategorieDossier.js");
-const { GStyle } = require("ObjetStyle.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const {
-	ObjetFenetre_SelecteurCouleur,
-} = require("ObjetFenetre_SelecteurCouleur.js");
-class DonneesListe_EditionCategoriesDossiers extends ObjetDonneesListe {
+exports.DonneesListe_EditionCategoriesDossiers = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const TypeOrigineCreationCategorieDossier_1 = require("TypeOrigineCreationCategorieDossier");
+const ObjetStyle_1 = require("ObjetStyle");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_SelecteurCouleur_1 = require("ObjetFenetre_SelecteurCouleur");
+class DonneesListe_EditionCategoriesDossiers extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aCallback) {
 		super(aDonnees);
 		this.callbackSurSelection = aCallback;
@@ -18,7 +15,8 @@ class DonneesListe_EditionCategoriesDossiers extends ObjetDonneesListe {
 	avecSuppression(aParams) {
 		return (
 			aParams.article.Genre ===
-				TypeOrigineCreationCategorieDossier.OCCD_Utilisateur &&
+				TypeOrigineCreationCategorieDossier_1
+					.TypeOrigineCreationCategorieDossier.OCCD_Utilisateur &&
 			!aParams.article.estUtilise
 		);
 	}
@@ -28,13 +26,14 @@ class DonneesListe_EditionCategoriesDossiers extends ObjetDonneesListe {
 	surCreation(D, V) {
 		const H = [];
 		D.Libelle = V[0];
-		D.Genre = TypeOrigineCreationCategorieDossier.OCCD_Utilisateur;
+		D.Genre =
+			TypeOrigineCreationCategorieDossier_1.TypeOrigineCreationCategorieDossier.OCCD_Utilisateur;
 		D.couleur = "#000000";
 		H.push(
 			"<div>",
 			'<div class="InlineBlock AlignementMilieuVertical" style="width: 8px; height: 10px;',
-			GStyle.composeCouleurBordure("darkgray"),
-			GStyle.composeCouleurFond(D.couleur),
+			ObjetStyle_1.GStyle.composeCouleurBordure("darkgray"),
+			ObjetStyle_1.GStyle.composeCouleurFond(D.couleur),
 			'"></div>',
 			'<div class="PetitEspaceGauche InlineBlock AlignementMilieuVertical">',
 			D.getLibelle(),
@@ -46,44 +45,49 @@ class DonneesListe_EditionCategoriesDossiers extends ObjetDonneesListe {
 	avecEdition(aParams) {
 		return (
 			aParams.article.Genre ===
-				TypeOrigineCreationCategorieDossier.OCCD_Utilisateur &&
+				TypeOrigineCreationCategorieDossier_1
+					.TypeOrigineCreationCategorieDossier.OCCD_Utilisateur &&
 			aParams.colonne === 1
 		);
 	}
 	surEdition(aParams, V) {
 		aParams.article.setLibelle(V);
-		aParams.article.setEtat(EGenreEtat.Modification);
+		aParams.article.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 	}
 	surSuppression(aArticle) {
-		aArticle.setEtat(EGenreEtat.Suppression);
+		aArticle.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 		if (!!aArticle.listeMotif) {
 			aArticle.listeMotif.parcourir((aMotif) => {
-				aMotif.setEtat(EGenreEtat.Suppression);
+				aMotif.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 			});
 		}
 	}
 	surSelection(aColonne, D, aLigne) {
+		super.surSelection;
 		if (aColonne === 0) {
-			ObjetFenetre.creerInstanceFenetre(ObjetFenetre_SelecteurCouleur, {
-				pere: this,
-				evenement: function (aGenreBouton, aCouleur) {
-					if (aGenreBouton === 1) {
-						if (D.couleur !== aCouleur) {
-							D.couleur = aCouleur;
-							D.setEtat(EGenreEtat.Modification);
-							this.callbackSurSelection();
+			ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+				ObjetFenetre_SelecteurCouleur_1.ObjetFenetre_SelecteurCouleur,
+				{
+					pere: this,
+					evenement: function (aGenreBouton, aCouleur) {
+						if (aGenreBouton === 1) {
+							if (D.couleur !== aCouleur) {
+								D.couleur = aCouleur;
+								D.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+								this.callbackSurSelection();
+							}
 						}
-					}
+					},
 				},
-			}).setDonnees(D.couleur);
+			).setDonnees(D.couleur);
 		}
 		if (aLigne > 0) {
 			const H = [];
 			H.push(
 				"<div>",
 				'<div class="InlineBlock AlignementMilieuVertical" style="width: 8px; height: 10px;',
-				GStyle.composeCouleurBordure("darkgray"),
-				GStyle.composeCouleurFond(D.couleur),
+				ObjetStyle_1.GStyle.composeCouleurBordure("darkgray"),
+				ObjetStyle_1.GStyle.composeCouleurFond(D.couleur),
 				'"></div>',
 				'<div class="PetitEspaceGauche InlineBlock AlignementMilieuVertical">',
 				D.getLibelle(),
@@ -96,9 +100,9 @@ class DonneesListe_EditionCategoriesDossiers extends ObjetDonneesListe {
 	getTypeValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_EditionCategoriesDossiers.colonnes.couleur:
-				return ObjetDonneesListe.ETypeCellule.Html;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
 	getValeur(aParams) {
 		switch (aParams.idColonne) {
@@ -115,8 +119,21 @@ class DonneesListe_EditionCategoriesDossiers extends ObjetDonneesListe {
 		}
 	}
 }
-DonneesListe_EditionCategoriesDossiers.colonnes = {
-	couleur: "couleur",
-	libelle: "libelle",
-};
-module.exports = { DonneesListe_EditionCategoriesDossiers };
+exports.DonneesListe_EditionCategoriesDossiers =
+	DonneesListe_EditionCategoriesDossiers;
+(function (DonneesListe_EditionCategoriesDossiers) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["couleur"] = "couleur";
+		colonnes["libelle"] = "libelle";
+	})(
+		(colonnes =
+			DonneesListe_EditionCategoriesDossiers.colonnes ||
+			(DonneesListe_EditionCategoriesDossiers.colonnes = {})),
+	);
+})(
+	DonneesListe_EditionCategoriesDossiers ||
+		(exports.DonneesListe_EditionCategoriesDossiers =
+			DonneesListe_EditionCategoriesDossiers =
+				{}),
+);

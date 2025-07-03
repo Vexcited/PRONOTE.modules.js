@@ -12,8 +12,9 @@ const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetElement_1 = require("ObjetElement");
 const OptionsPDFSco_1 = require("OptionsPDFSco");
 const ObjetCelluleDate_1 = require("ObjetCelluleDate");
+const GUID_1 = require("GUID");
 class ObjetFenetre_GenerationPdfSco extends ObjetFenetre_GenerationPdf_1.ObjetFenetre_GenerationPdf {
-	creerInstanceFenetrePDF(aParametres, aId) {
+	creerInstanceFenetrePDF(aParametres) {
 		const lGenreGenerationPDF = aParametres
 			? aParametres.genreGenerationPDF
 			: TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.EDT;
@@ -154,7 +155,7 @@ class ObjetFenetre_GenerationPdfSco extends ObjetFenetre_GenerationPdf_1.ObjetFe
 			aParametres,
 			lEtatUtilisateur.parametresGenerationPDF[lGenreGenerationPDF],
 		);
-		lInstance.initialiser(aId);
+		lInstance.initialiser(this.getNom() + "_zonepdf");
 		return lInstance;
 	}
 }
@@ -512,7 +513,12 @@ class ObjetParametrageGenerationPdf_RecapitulatifMensuelAbsences extends ObjetFe
 		return $.extend(true, super.getControleur(aInstance), {
 			comboSelecteurMois: {
 				init: function (aInstanceCombo) {
-					aInstanceCombo.setOptionsObjetSaisie({ longueur: 120 });
+					aInstanceCombo.setOptionsObjetSaisie({
+						longueur: 120,
+						labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+							"WAI.ListeSelectionMois",
+						),
+					});
 				},
 				getDonnees: function (aDonnees) {
 					if (aDonnees) {
@@ -892,54 +898,76 @@ class ObjetParametrageGenerationPdf_Etiquettes extends ObjetFenetre_GenerationPd
 		return H.join("");
 	}
 	_composeBlocDisposition() {
+		const lIdNbEtiquettesParLigne = GUID_1.GUID.getId() + "_ligne";
+		const lIdNbEtiquettesParColonne = GUID_1.GUID.getId() + "_col";
 		const lStyleLibelles = "display: inline-block; width: 125px;";
 		const H = [];
 		H.push(
-			'<div class="EspaceHaut MargeBas">',
-			'<label style="',
-			lStyleLibelles,
-			'">',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"GenerationPDF.Etiquettes.NombreEtiquetteParLigne",
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"div",
+					{ class: "EspaceHaut MargeBas" },
+					IE.jsx.str(
+						"label",
+						{ id: lIdNbEtiquettesParLigne, style: lStyleLibelles },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"GenerationPDF.Etiquettes.NombreEtiquetteParLigne",
+						),
+					),
+					IE.jsx.str("ie-inputnote", {
+						"ie-model": "inputDisposition(true)",
+						"aria-labelledby": lIdNbEtiquettesParLigne,
+						style: "width:30px;",
+						class: "MargeGauche",
+					}),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "MargeBas" },
+					IE.jsx.str(
+						"label",
+						{ id: lIdNbEtiquettesParColonne, style: lStyleLibelles },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"GenerationPDF.Etiquettes.NombreEtiquetteParColonne",
+						),
+					),
+					IE.jsx.str("ie-inputnote", {
+						"ie-model": "inputDisposition(false)",
+						"aria-labelledby": lIdNbEtiquettesParColonne,
+						style: "width:30px;",
+						class: "MargeGauche",
+					}),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "MargeBas" },
+					IE.jsx.str(
+						"ie-checkbox",
+						{ "ie-model": "cbModeCavalier" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"GenerationPDF.Etiquettes.modeCavalier",
+						),
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "EspaceHaut GrandEspaceGauche" },
+					IE.jsx.str("span", { "ie-html": "displayTotalEtiquettes" }),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "EspaceHaut10 EspaceBas" },
+					IE.jsx.str(
+						"ie-checkbox",
+						{ "ie-model": "cbAvecReperes" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"GenerationPDF.Etiquettes.AvecReperes",
+						),
+					),
+				),
 			),
-			"</label>",
-			'<ie-inputnote ie-model="inputDisposition(true)" style="width:30px;" class="MargeGauche round-style"></ie-inputnote>',
-			"</div>",
-		);
-		H.push(
-			'<div class="MargeBas">',
-			'<label style="',
-			lStyleLibelles,
-			'">',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"GenerationPDF.Etiquettes.NombreEtiquetteParColonne",
-			),
-			"</label>",
-			'<ie-inputnote ie-model="inputDisposition(false)" style="width:30px;" class="MargeGauche round-style"></ie-inputnote>',
-			"</div>",
-		);
-		H.push(
-			'<div class="MargeBas">',
-			'<ie-checkbox ie-model="cbModeCavalier">' +
-				ObjetTraduction_1.GTraductions.getValeur(
-					"GenerationPDF.Etiquettes.modeCavalier",
-				) +
-				"</ie-checkbox>",
-			"</div>",
-		);
-		H.push(
-			'<div class="EspaceHaut GrandEspaceGauche">',
-			'<span ie-html="displayTotalEtiquettes"></span>',
-			"</div>",
-		);
-		H.push(
-			'<div class="EspaceHaut10 EspaceBas">',
-			'<ie-checkbox ie-model="cbAvecReperes">' +
-				ObjetTraduction_1.GTraductions.getValeur(
-					"GenerationPDF.Etiquettes.AvecReperes",
-				) +
-				"</ie-checkbox>",
-			"</div>",
 		);
 		return H.join("");
 	}
@@ -1117,7 +1145,7 @@ class ObjetParametrageGenerationPdf_RecapCahierJournal extends ObjetFenetre_Gene
 		this.selecDateDebut.setOptionsObjetCelluleDate({
 			formatDate: "%JJJ %JJ/%MM/%AAAA",
 			largeurComposant: 100,
-			labelWAI: ObjetTraduction_1.GTraductions.getValeur("Du"),
+			ariaLabel: ObjetTraduction_1.GTraductions.getValeur("Du"),
 		});
 		this.selecDateFin = ObjetIdentite_1.Identite.creerInstance(
 			ObjetCelluleDate_1.ObjetCelluleDate,
@@ -1141,7 +1169,7 @@ class ObjetParametrageGenerationPdf_RecapCahierJournal extends ObjetFenetre_Gene
 		this.selecDateFin.setOptionsObjetCelluleDate({
 			formatDate: "%JJJ %JJ/%MM/%AAAA",
 			largeurComposant: 100,
-			labelWAI: ObjetTraduction_1.GTraductions.getValeur("Au"),
+			ariaLabel: ObjetTraduction_1.GTraductions.getValeur("Au"),
 		});
 		this.setOptionsPdf({
 			dateDebut: null,
@@ -1385,9 +1413,11 @@ class ObjetParametrageGenerationPdf_RecapCahierJournal extends ObjetFenetre_Gene
 						? "border-radius:6px;"
 						: "border-radius:6px 0 0 6px;",
 					'"></div>',
-					"<div ie-ellipsis-fixe>",
-					aParams.element.getLibelle(),
-					"</div>",
+					IE.jsx.str(
+						"div",
+						{ "ie-ellipsis-fixe": true },
+						aParams.element.getLibelle(),
+					),
 				);
 				T.push("</div>");
 				return T.join("");

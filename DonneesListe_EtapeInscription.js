@@ -1,31 +1,32 @@
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-const { tag } = require("tag.js");
-class DonneesListe_EtapeInscription extends ObjetDonneesListeFlatDesign {
-	constructor(aDonnees, aOptions) {
+exports.DonneesListe_EtapeInscription = void 0;
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+class DonneesListe_EtapeInscription extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
+	constructor(aDonnees) {
 		super(aDonnees);
-		const lOptionsParDefaut = {
+		this.setOptions({
 			avecSelection: true,
 			avecBoutonActionLigne: false,
 			avecTri: false,
 			avecEvnt_Selection: true,
-		};
-		this.setOptions($.extend(lOptionsParDefaut, aOptions));
+		});
 	}
 	getTitreZonePrincipale(aParams) {
 		return aParams.article.getLibelle();
 	}
 	getZoneGauche(aParams) {
-		return aParams.article.Position > 0
-			? tag(
-					"span",
-					{
-						class: ["pastille-etape", aParams.article.Actif ? "" : "etape-off"],
-					},
-					aParams.article.Position,
-				)
-			: tag("span", { class: "m-x-l" }, "&nbsp;");
+		const H = [];
+		if (aParams.article.Position > 0) {
+			const lClasses = ["pastille-etape"];
+			if (!aParams.article.Actif) {
+				lClasses.push("etape-off");
+			}
+			H.push("<span class=", lClasses.join(" "), ">");
+			H.push(aParams.article.getPosition().toString());
+			H.push("</span>");
+		} else {
+			H.push('<span class="m-x-l">&nbsp;</span>');
+		}
+		return H.join("");
 	}
 	avecSelection(aParams) {
 		return aParams.article.Actif;
@@ -34,4 +35,4 @@ class DonneesListe_EtapeInscription extends ObjetDonneesListeFlatDesign {
 		return !aParams.article.Actif;
 	}
 }
-module.exports = { DonneesListe_EtapeInscription };
+exports.DonneesListe_EtapeInscription = DonneesListe_EtapeInscription;

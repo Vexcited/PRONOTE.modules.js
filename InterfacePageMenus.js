@@ -13,18 +13,20 @@ const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetFenetre_LegendeIconesMenu_1 = require("ObjetFenetre_LegendeIconesMenu");
 const ObjetMenuCantine_1 = require("ObjetMenuCantine");
 const ObjetTraduction_1 = require("ObjetTraduction");
+const AccessApp_1 = require("AccessApp");
 class InterfacePageMenus extends InterfacePage_1.InterfacePage {
 	constructor(...aParams) {
 		super(...aParams);
-		const lGParam = this.applicationSco.getObjetParametres();
+		this.applicationSco = (0, AccessApp_1.getApp)();
+		const lParametresSco = this.applicationSco.getObjetParametres();
 		this.cycles = new ObjetCycles_1.ObjetCycles().init({
-			premiereDate: lGParam.PremiereDate,
-			derniereDate: lGParam.DerniereDate,
-			dateDebutPremierCycle: lGParam.dateDebutPremierCycle,
-			joursOuvresParCycle: lGParam.joursDemiPension.count(),
-			premierJourSemaine: lGParam.premierJourSemaine,
-			joursOuvres: lGParam.joursDemiPension,
-			joursFeries: lGParam.ensembleJoursFeries,
+			premiereDate: lParametresSco.PremiereDate,
+			derniereDate: lParametresSco.DerniereDate,
+			dateDebutPremierCycle: lParametresSco.dateDebutPremierCycle,
+			joursOuvresParCycle: lParametresSco.joursDemiPension.count(),
+			premierJourSemaine: lParametresSco.premierJourSemaine,
+			joursOuvres: lParametresSco.joursDemiPension,
+			joursFeries: lParametresSco.ensembleJoursFeries,
 		});
 		this.avecDetailAllergenes = true;
 	}
@@ -73,7 +75,7 @@ class InterfacePageMenus extends InterfacePage_1.InterfacePage {
 		lCelluleSemaine.setParametresDateFinPersonnalise(GParametres.DerniereDate);
 		let lDate =
 			this.cycles.datePremierJourOuvreCycle(
-				GApplication.getEtatUtilisateur().getSemaineSelectionnee(),
+				this.applicationSco.getEtatUtilisateur().getSemaineSelectionnee(),
 			) || ObjetDate_1.GDate.aujourdhui;
 		if (GApplication.getDemo()) {
 			lDate = GApplication.getDateDemo();
@@ -123,7 +125,7 @@ class InterfacePageMenus extends InterfacePage_1.InterfacePage {
 	}
 	evenementCelluleSemaine(aDomaine) {
 		if (aDomaine) {
-			const lEtatUtilisateur = GApplication.getEtatUtilisateur();
+			const lEtatUtilisateur = this.applicationSco.getEtatUtilisateur();
 			lEtatUtilisateur.setDomaineSelectionne(aDomaine);
 			lEtatUtilisateur.setSemaineSelectionnee(aDomaine.getPremierePosition());
 			const lDate = this.cycles.dateDebutCycle(aDomaine.getPremierePosition());
@@ -146,8 +148,9 @@ class InterfacePageMenus extends InterfacePage_1.InterfacePage {
 					return {
 						genreGenerationPDF:
 							TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.MenuCantine,
-						numeroSemaine:
-							GApplication.getEtatUtilisateur().getSemaineSelectionnee(),
+						numeroSemaine: this.applicationSco
+							.getEtatUtilisateur()
+							.getSemaineSelectionnee(),
 					};
 				},
 			);
@@ -186,8 +189,9 @@ class InterfacePageMenus extends InterfacePage_1.InterfacePage {
 				aParams.AvecRepasMidi,
 				aParams.AvecRepasSoir,
 			);
-			const lDomaine =
-				GApplication.getEtatUtilisateur().getSemaineSelectionnee();
+			const lDomaine = this.applicationSco
+				.getEtatUtilisateur()
+				.getSemaineSelectionnee();
 			const lDateDebutDuCycleSelectionne =
 				this.cycles.datePremierJourOuvreCycle(lDomaine);
 			const lDateFinDuCycleSelectionne =

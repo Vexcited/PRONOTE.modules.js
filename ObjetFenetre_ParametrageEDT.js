@@ -146,21 +146,23 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 						? lDefinitionAxes.h
 						: lDefinitionAxes.v;
 			},
-			surInversionAxe: function (aTypePlanning) {
-				aInstance.applicationSco.parametresUtilisateur.set(
-					aInstance._accesseurAxeParam(aTypePlanning),
-					!aInstance.applicationSco.parametresUtilisateur.get(
+			nodeSurInversionAxe(aTypePlanning) {
+				$(this.node).eventValidation(() => {
+					aInstance.applicationSco.parametresUtilisateur.set(
 						aInstance._accesseurAxeParam(aTypePlanning),
-					),
-				);
-				aInstance.controleur.$refreshSelf();
-				aInstance.avecModif = true;
+						!aInstance.applicationSco.parametresUtilisateur.get(
+							aInstance._accesseurAxeParam(aTypePlanning),
+						),
+					);
+					aInstance.controleur.$refreshSelf();
+					aInstance.avecModif = true;
+				});
 			},
 			comboJours: {
 				init: function (aEstEDT, aInstanceCombo) {
 					aInstanceCombo.setOptionsObjetSaisie({
 						longueur: 30,
-						labelledById: `${aInstance.Nom}_lab_combojours`,
+						ariaLabelledBy: `${aInstance.Nom}_lab_combojours`,
 					});
 				},
 				getDonnees: function (aEstEDT, aDonnees) {
@@ -202,7 +204,7 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 				init: function (aInstanceCombo) {
 					aInstanceCombo.setOptionsObjetSaisie({
 						longueur: 30,
-						labelledById: `${aInstance.Nom}_lab_comboseq`,
+						ariaLabelledBy: `${aInstance.Nom}_lab_comboseq`,
 					});
 				},
 				getDonnees: function (aDonnees) {
@@ -571,7 +573,7 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 				init: function (aInstanceCombo) {
 					aInstanceCombo.setOptionsObjetSaisie({
 						longueur: 150,
-						labelledById: `${aInstance.getNom()}_lab_combogran`,
+						ariaLabelledBy: `${aInstance.getNom()}_lab_combogran`,
 					});
 				},
 				getDonnees: function (aDonnees) {
@@ -635,16 +637,16 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 		});
 	}
 	composeContenu() {
-		const T = [];
-		T.push('<div class="ObjetFenetre_ParametrageEDT">');
-		T.push(
+		const H = [];
+		H.push('<div class="ObjetFenetre_ParametrageEDT">');
+		H.push(
 			this._titreZone(
 				ObjetTraduction_1.GTraductions.getValeur(
 					"Fenetre_ParametrageEDT.PucePresentation",
 				),
 			),
 		);
-		T.push(
+		H.push(
 			'<div class="sousTitre EspaceHaut">',
 			"<div>",
 			ObjetTraduction_1.GTraductions.getValeur(
@@ -652,10 +654,10 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 			),
 			"</div>",
 		);
-		T.push('<div class="NoWrap">');
-		T.push('<div class="flex-contain flex-center p-top-s">');
-		T.push(`<div class="EspaceDroit" id="${this.Nom}_lab_combojours">`);
-		T.push(
+		H.push('<div class="NoWrap">');
+		H.push('<div class="flex-contain flex-center p-top-s">');
+		H.push(`<div class="EspaceDroit" id="${this.Nom}_lab_combojours">`);
+		H.push(
 			this.optionsFenetre.estEDT
 				? ObjetTraduction_1.GTraductions.getValeur(
 						"Fenetre_ParametrageEDT.Jours",
@@ -664,16 +666,16 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 						"Fenetre_ParametrageEDT.LabelNbJoursMax",
 					),
 		);
-		T.push("</div>");
-		T.push(
+		H.push("</div>");
+		H.push(
 			'<ie-combo ie-model="comboJours(',
 			!!this.optionsFenetre.estEDT,
 			')"></ie-combo>',
 		);
-		T.push("</div>");
-		T.push('<div class="flex-contain flex-center EspaceHaut">');
-		T.push(`<div class="EspaceDroit" id="${this.Nom}_lab_comboseq">`);
-		T.push(
+		H.push("</div>");
+		H.push('<div class="flex-contain flex-center EspaceHaut">');
+		H.push(`<div class="EspaceDroit" id="${this.Nom}_lab_comboseq">`);
+		H.push(
 			this.optionsFenetre.estEDT
 				? ObjetTraduction_1.GTraductions.getValeur(
 						"Fenetre_ParametrageEDT.NombreSequencesHoraires",
@@ -682,23 +684,23 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 						"Fenetre_ParametrageEDT.RessourcesOuSemaines",
 					) + " :",
 		);
-		T.push("</div>");
+		H.push("</div>");
 		if (this.optionsFenetre.estEDT) {
-			T.push('<ie-combo ie-model="comboSequences"></ie-combo>');
+			H.push('<ie-combo ie-model="comboSequences"></ie-combo>');
 		} else {
-			T.push(
+			H.push(
 				'<ie-radio ie-model="rbRessources(true)">',
 				ObjetTraduction_1.GTraductions.getValeur("toutes"),
 				"</ie-radio>",
 			);
-			T.push(
+			H.push(
 				'<ie-radio ie-model="rbRessources(false)" class="GrandEspaceGauche">',
 				ObjetTraduction_1.GTraductions.getValeur(
 					"Fenetre_ParametrageEDT.Personnalise",
 				),
 				"</ie-radio>",
 			);
-			T.push(
+			H.push(
 				'<div class="EspaceGauche">',
 				'<input ie-model="inputNbRessources" ie-mask="/[^0-9]/i" maxlength="2" style="',
 				ObjetStyle_2.GStyle.composeWidth(25),
@@ -706,7 +708,7 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 				'" />',
 				"</div>",
 			);
-			T.push(
+			H.push(
 				'<div class="EspaceGauche">',
 				ObjetTraduction_1.GTraductions.getValeur(
 					"Fenetre_ParametrageEDT.JourMaxNonApplicable",
@@ -714,10 +716,10 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 				"</div>",
 			);
 		}
-		T.push("</div>");
-		T.push("</div>");
-		T.push("</div>");
-		T.push(
+		H.push("</div>");
+		H.push("</div>");
+		H.push("</div>");
+		H.push(
 			'<div class="sousTitre EspaceHaut">',
 			"<div>",
 			ObjetTraduction_1.GTraductions.getValeur(
@@ -725,41 +727,41 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 			),
 			"</div>",
 		);
-		T.push('<div  class="NoWrap">');
-		T.push('<div class="InlineBlock">');
-		T.push(
+		H.push('<div  class="NoWrap">');
+		H.push('<div class="InlineBlock">');
+		H.push(
 			this._composeInversionAxe(
 				TypeHoraireGrillePlanning_1.TypeHoraireGrillePlanning.parJour,
 			),
 		);
-		T.push("</div>");
+		H.push("</div>");
 		if (!this.optionsFenetre.estEDT) {
-			T.push('<div class="InlineBlock" style="padding-left:10px;">');
-			T.push(
+			H.push('<div class="InlineBlock" style="padding-left:10px;">');
+			H.push(
 				this._composeInversionAxe(
 					TypeHoraireGrillePlanning_1.TypeHoraireGrillePlanning.ongletParJour,
 				),
 			);
-			T.push("</div>");
-			T.push(
+			H.push("</div>");
+			H.push(
 				'<div class="InlineBlock GrandEspaceDroit" style="padding-left:10px;">',
 			);
-			T.push(
+			H.push(
 				this._composeInversionAxe(
 					TypeHoraireGrillePlanning_1.TypeHoraireGrillePlanning.parSemaine,
 				),
 			);
-			T.push("</div>");
+			H.push("</div>");
 		}
-		T.push("</div>");
-		T.push("</div>");
+		H.push("</div>");
+		H.push("</div>");
 		if (this.optionsFenetre.avecStructure) {
-			T.push('<div ie-display="getDisplayStructure">');
-			T.push(this._composeStructure());
-			T.push("</div>");
+			H.push('<div ie-display="getDisplayStructure">');
+			H.push(this._composeStructure());
+			H.push("</div>");
 		}
-		T.push("</div>");
-		return T.join("");
+		H.push("</div>");
+		return H.join("");
 	}
 	surValidation() {
 		this.fermer();
@@ -976,17 +978,17 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 		);
 	}
 	_composeInversionAxe(aTypePlanning) {
-		const T = [],
-			lHeightTitre = 15,
-			lHeightLigne = 19,
-			lWidthLibelle = this.optionsFenetre.estEDT ? 80 : 150;
+		const H = [];
+		const lHeightTitre = 15;
+		const lHeightLigne = 19;
+		const lWidthLibelle = this.optionsFenetre.estEDT ? 80 : 150;
 		const lEcartHeightTitre = this.optionsFenetre.estEDT ? 0 : lHeightTitre;
-		T.push('<div class="NoWrap">');
+		H.push('<div class="NoWrap">');
 		if (
 			aTypePlanning ===
 			TypeHoraireGrillePlanning_1.TypeHoraireGrillePlanning.parJour
 		) {
-			T.push(
+			H.push(
 				'<div class="InlineBlock AlignementMilieuVertical" style="margin-top:',
 				lEcartHeightTitre,
 				'px;">',
@@ -1006,7 +1008,7 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 				"</div>",
 			);
 		}
-		T.push(
+		H.push(
 			'<div class="InlineBlock EspaceGauche AlignementMilieuVertical" style="margin-top:',
 			lEcartHeightTitre,
 			'px;">',
@@ -1019,11 +1021,11 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 			' class="Image_IntervertirLigneDevant" style="width:10px"></ie-btnimage>',
 			"</div>",
 		);
-		T.push(
+		H.push(
 			'<div class="InlineBlock PetitEspaceGauche AlignementMilieuVertical">',
 		);
 		if (!this.optionsFenetre.estEDT) {
-			T.push(
+			H.push(
 				'<div style="',
 				ObjetStyle_2.GStyle.composeHeight(lHeightTitre),
 				ObjetStyle_2.GStyle.composeWidth(lWidthLibelle),
@@ -1045,7 +1047,7 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 				"</div>",
 			);
 		}
-		T.push(
+		H.push(
 			'<div class="m-bottom-s" style="',
 			ObjetStyle_2.GStyle.composeHeight(lHeightLigne),
 			'">',
@@ -1055,8 +1057,8 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 				true,
 			]),
 			ObjetHtml_1.GHtml.composeAttr(
-				"ie-event",
-				"click->surInversionAxe",
+				"ie-node",
+				"nodeSurInversionAxe",
 				aTypePlanning,
 			),
 			' class="AvecMain AlignementMilieu p-all-s"',
@@ -1074,8 +1076,8 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 				false,
 			]),
 			ObjetHtml_1.GHtml.composeAttr(
-				"ie-event",
-				"click->surInversionAxe",
+				"ie-node",
+				"nodeSurInversionAxe",
 				aTypePlanning,
 			),
 			' class="AvecMain AlignementMilieu p-all-s"',
@@ -1086,7 +1088,7 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 			"</div>",
 			"</div>",
 		);
-		T.push(
+		H.push(
 			'<div class="InlineBlock PetitEspaceGauche AlignementMilieuVertical" style="margin-top:',
 			lEcartHeightTitre,
 			'px;">',
@@ -1099,21 +1101,21 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 			' class="Image_IntervertirLigneDerriere" style="width:10px"></ie-btnimage>',
 			"</div>",
 		);
-		T.push("</div>");
-		return T.join("");
+		H.push("</div>");
+		return H.join("");
 	}
 	_titreZone(aLibelle, aClass) {
-		const T = [];
-		T.push("<ul><li>");
-		T.push(
+		const H = [];
+		H.push("<ul><li>");
+		H.push(
 			'<div class="titreZone ',
 			aClass ? aClass : "",
 			'">',
 			aLibelle,
 			"</div>",
 		);
-		T.push("</li></ul>");
-		T.push(
+		H.push("</li></ul>");
+		H.push(
 			'<div style="',
 			ObjetStyle_2.GStyle.composeCouleurBordure(
 				GCouleur.fenetre.bordure,
@@ -1122,10 +1124,10 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 			),
 			'"></div>',
 		);
-		return T.join("");
+		return H.join("");
 	}
 	_composeStructure() {
-		const T = [];
+		const H = [];
 		const lTitre = [
 			'<div class="flexHoriz">',
 			'<div style="padding-right:10px;">',
@@ -1135,8 +1137,8 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 			"</div>",
 			'<ie-combo ie-model="comboRessStructure" ie-display="getDisplayCombo"></ie-combo>',
 		].join("");
-		T.push(this._titreZone(lTitre, "GrandEspaceHaut EspaceBas"));
-		T.push(
+		H.push(this._titreZone(lTitre, "GrandEspaceHaut EspaceBas"));
+		H.push(
 			'<div class="flexHoriz EspaceHaut EspaceBas" ie-display="getDisplayModeleGrille">',
 			'<div style="padding-right:5px;" class="Insecable">',
 			ObjetTraduction_1.GTraductions.getValeur(
@@ -1146,16 +1148,16 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 			'<ie-combo ie-model="comboRessStructureModele"></ie-combo>',
 			"</div>",
 		);
-		T.push('<div class="structure" ie-class="getClassStructureDetails">');
-		T.push(
+		H.push('<div class="structure" ie-class="getClassStructureDetails">');
+		H.push(
 			'<div class="structureMessage">',
 			ObjetTraduction_1.GTraductions.getValeur(
 				"Fenetre_ParametrageEDT.PrefsDependDesRessources",
 			),
 			"</div>",
 		);
-		T.push('<div  class="structureDetails">');
-		T.push(
+		H.push('<div  class="structureDetails">');
+		H.push(
 			'<div class="sousTitre">',
 			"<div>",
 			this.optionsFenetre.estEDT
@@ -1167,10 +1169,10 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 					),
 			"</div>",
 		);
-		T.push("<div>");
-		T.push('<div class="flexHoriz EspaceHaut">');
+		H.push("<div>");
+		H.push('<div class="flexHoriz EspaceHaut">');
 		IE.Cycles.indicesJoursOuvres().forEach((aJour, aIndice) => {
-			T.push(
+			H.push(
 				'<ie-checkbox ie-model="cbJour(' +
 					aIndice +
 					')" style="margin-right:8px;">',
@@ -1180,19 +1182,19 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 				"</ie-checkbox>",
 			);
 		});
-		T.push("</div>");
-		T.push('<div class="flexHoriz EspaceHaut">');
-		T.push(
+		H.push("</div>");
+		H.push('<div class="flexHoriz EspaceHaut">');
+		H.push(
 			ObjetTraduction_1.GTraductions.getValeur("Dates.DeHeureDebutAHeureFin", [
 				'<ie-combo ie-model="comboHeures(true)" style="padding-left: 5px; padding-right:8px;"></ie-combo>',
 				'<ie-combo ie-model="comboHeures(false)" style="padding-left: 5px;"></ie-combo>',
 			]).ucfirst(),
 		);
-		T.push("</div>");
-		T.push("</div>");
-		T.push("</div>");
+		H.push("</div>");
+		H.push("</div>");
+		H.push("</div>");
 		if (this.optionsFenetre.avecGranularite) {
-			T.push(
+			H.push(
 				'<div class="sousTitre">',
 				"<div>",
 				ObjetTraduction_1.GTraductions.getValeur(
@@ -1200,15 +1202,15 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 				),
 				"</div>",
 			);
-			T.push("<div>");
-			T.push(
+			H.push("<div>");
+			H.push(
 				ObjetTraduction_1.GTraductions.getValeur(
 					"Fenetre_ParametrageEDT.ExplicationPasHoraireAAfficher",
 					[ObjetDate_1.GDate.formatDureeEnPlaces(1, "%xh%sh%mm")],
 				),
 			);
-			T.push('<div class="flexHoriz EspaceHaut">');
-			T.push(
+			H.push('<div class="flexHoriz EspaceHaut">');
+			H.push(
 				IE.jsx.str(
 					"div",
 					{ id: `${this.Nom}_lab_combogran` },
@@ -1221,15 +1223,15 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 							),
 				),
 			);
-			T.push(
+			H.push(
 				'<div class="EspaceGauche"><ie-combo ie-model="comboGranularite"></ie-combo></div>',
 			);
-			T.push("</div>");
-			T.push("</div>");
+			H.push("</div>");
+			H.push("</div>");
 		}
-		T.push("</div>");
-		T.push("</div>");
-		return T.join("");
+		H.push("</div>");
+		H.push("</div>");
+		return H.join("");
 	}
 }
 exports.ObjetFenetre_ParametrageEDT = ObjetFenetre_ParametrageEDT;

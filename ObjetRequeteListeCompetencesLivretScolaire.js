@@ -1,25 +1,22 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-class ObjetRequeteListeCompetencesLivretScolaire extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
-	lancerRequete() {
-		return this.appelAsynchrone();
-	}
+exports.ObjetRequeteListeCompetencesLivretScolaire = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+class ObjetRequeteListeCompetencesLivretScolaire extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	actionApresRequete() {
 		const lResult = {};
 		if (this.JSONReponse.listeEvaluationsLS) {
-			lResult.listeEvaluationsLS = new ObjetListeElements();
+			lResult.listeEvaluationsLS =
+				new ObjetListeElements_1.ObjetListeElements();
 			this.recupererDonnees(
 				this.JSONReponse.listeEvaluationsLS,
 				lResult.listeEvaluationsLS,
 			);
 		}
 		if (this.JSONReponse.listeEvaluationsLSLV) {
-			lResult.listeEvaluationsLSLV = new ObjetListeElements();
+			lResult.listeEvaluationsLSLV =
+				new ObjetListeElements_1.ObjetListeElements();
 			this.recupererDonnees(
 				this.JSONReponse.listeEvaluationsLSLV,
 				lResult.listeEvaluationsLSLV,
@@ -37,7 +34,9 @@ class ObjetRequeteListeCompetencesLivretScolaire extends ObjetRequeteConsultatio
 		}
 	}
 	_ajouterItemEvaluation(aJSON, aParametre) {
-		const lElement = aJSON ? new ObjetElement().fromJSON(aJSON) : null;
+		const lElement = aJSON
+			? new ObjetElement_1.ObjetElement().fromJSON(aJSON)
+			: null;
 		lElement.abbreviation = aJSON.abbreviation ? aJSON.abbreviation : "";
 		if (lElement.getGenre() === undefined) {
 			lElement.Genre = -1;
@@ -45,8 +44,9 @@ class ObjetRequeteListeCompetencesLivretScolaire extends ObjetRequeteConsultatio
 		aParametre.addElement(lElement);
 	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteListeCompetencesLivretScolaire =
+	ObjetRequeteListeCompetencesLivretScolaire;
+CollectionRequetes_1.Requetes.inscrire(
 	"ListeCompetencesLivretScolaire",
 	ObjetRequeteListeCompetencesLivretScolaire,
 );
-module.exports = { ObjetRequeteListeCompetencesLivretScolaire };

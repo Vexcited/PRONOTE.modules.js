@@ -29,11 +29,11 @@ class ObjetAffichagePageParametres_Mobile extends InterfacePage_Mobile_1.Interfa
 		});
 	}
 	construireStructureAffichageAutre() {
-		const lHtml = [];
+		const H = [];
 		if (
 			UtilitaireChangementLangue_1.UtilitaireChangementLangue.avecChoixLangues()
 		) {
-			lHtml.push(
+			H.push(
 				'<div class="parametres conteneur-langues">',
 				'<div class="label">',
 				ObjetTraduction_1.GTraductions.getValeur("mobile.langue"),
@@ -47,7 +47,7 @@ class ObjetAffichagePageParametres_Mobile extends InterfacePage_Mobile_1.Interfa
 				"</div>",
 			);
 		}
-		lHtml.push(
+		H.push(
 			IE.jsx.str(
 				"div",
 				{ class: "parametres" },
@@ -66,7 +66,7 @@ class ObjetAffichagePageParametres_Mobile extends InterfacePage_Mobile_1.Interfa
 				ObjetDroitsPN_1.TypeDroits.avecDroitDeconnexionMessagerie,
 			)
 		) {
-			lHtml.push(
+			H.push(
 				IE.jsx.str(
 					"div",
 					{ class: "parametres conteneur-droits" },
@@ -81,7 +81,7 @@ class ObjetAffichagePageParametres_Mobile extends InterfacePage_Mobile_1.Interfa
 				),
 			);
 		}
-		return lHtml.join("");
+		return H.join("");
 	}
 }
 exports.ObjetAffichagePageParametres_Mobile =

@@ -7,11 +7,12 @@ const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
 const UtilitaireChangementLangueProduit_1 = require("UtilitaireChangementLangueProduit");
+const AccessApp_1 = require("AccessApp");
 exports.UtilitaireChangementLangue = Object.assign(
 	{
 		avecChoixLangues: function () {
 			return (
-				!GApplication.estAppliMobile &&
+				!(0, AccessApp_1.getApp)().estAppliMobile &&
 				GParametres.listeLangues &&
 				GParametres.listeLangues.count() > 1
 			);
@@ -54,31 +55,37 @@ exports.UtilitaireChangementLangue = Object.assign(
 		},
 		modifierLangue: function (aLangue) {
 			if (!LocalStorage_1.IELocalStorage.actif) {
-				GApplication.getMessage().afficher({
-					titre: ObjetTraduction_1.GTraductions.getValeur(
-						"ChangementLangue.ChangerLangueImpossible",
-					),
-					message: ObjetTraduction_1.GTraductions.getValeur(
-						"ChangementLangue.ChangerLangueImpossibleDetail",
-					),
-				});
+				(0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
+						titre: ObjetTraduction_1.GTraductions.getValeur(
+							"ChangementLangue.ChangerLangueImpossible",
+						),
+						message: ObjetTraduction_1.GTraductions.getValeur(
+							"ChangementLangue.ChangerLangueImpossibleDetail",
+						),
+					});
 				return;
 			}
 			if (!aLangue || !aLangue.langID) {
 				return;
 			}
 			(0, ControleSaisieEvenement_1.ControleSaisieEvenement)(() => {
-				GApplication.getMessage().afficher({
-					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
-					message: ObjetTraduction_1.GTraductions.getValeur(
-						"ChangementLangue.MessageConfirmationChangerLangue",
-					),
-					callback: function (aGenre) {
-						if (aGenre === Enumere_Action_1.EGenreAction.Valider) {
-							exports.UtilitaireChangementLangue.affecterLangue(aLangue.langID);
-						}
-					},
-				});
+				(0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+						message: ObjetTraduction_1.GTraductions.getValeur(
+							"ChangementLangue.MessageConfirmationChangerLangue",
+						),
+						callback: function (aGenre) {
+							if (aGenre === Enumere_Action_1.EGenreAction.Valider) {
+								exports.UtilitaireChangementLangue.affecterLangue(
+									aLangue.langID,
+								);
+							}
+						},
+					});
 			});
 		},
 		construire: function (aControleur, aOptions) {

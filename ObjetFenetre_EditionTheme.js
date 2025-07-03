@@ -1,147 +1,155 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { tag } = require("tag.js");
-const { GHtml } = require("ObjetHtml.js");
-const { GUID } = require("GUID.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { TypeThemeBouton } = require("Type_ThemeBouton.js");
-const { EGenreAction } = require("Enumere_Action.js");
-const {
-	ObjetFenetre_SelectionMatiere,
-} = require("ObjetFenetre_SelectionMatiere.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { ObjetIndexsUnique } = require("ObjetIndexsUnique.js");
-class ObjetFenetre_EditionTheme extends ObjetFenetre {
+exports.ObjetFenetre_EditionTheme = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetHtml_1 = require("ObjetHtml");
+const GUID_1 = require("GUID");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Type_ThemeBouton_1 = require("Type_ThemeBouton");
+const Enumere_Action_1 = require("Enumere_Action");
+const ObjetFenetre_SelectionMatiere_1 = require("ObjetFenetre_SelectionMatiere");
+const MethodesObjet_1 = require("MethodesObjet");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const ObjetIndexsUnique_1 = require("ObjetIndexsUnique");
+class ObjetFenetre_EditionTheme extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
+		this.enCreation = false;
 		this.setOptionsFenetre({
 			largeur: 300,
 			hauteur: null,
 			avecTailleSelonContenu: true,
 			avecComposeBasInFooter: true,
-			titre: GTraductions.getValeur("Theme.titre.editionTheme"),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"Theme.titre.editionTheme",
+			),
 			listeBoutons: [
-				GTraductions.getValeur("Fermer"),
+				ObjetTraduction_1.GTraductions.getValeur("Fermer"),
 				{
-					theme: TypeThemeBouton.primaire,
-					libelle: GTraductions.getValeur("Modifier"),
+					theme: Type_ThemeBouton_1.TypeThemeBouton.primaire,
+					libelle: ObjetTraduction_1.GTraductions.getValeur("Modifier"),
 				},
 			],
 		});
-		this.ids = { btnTrash: GUID.getId() };
-		this._indexsUnique = new ObjetIndexsUnique();
+		this.ids = { btnTrash: GUID_1.GUID.getId() };
+		this._indexsUnique = new ObjetIndexsUnique_1.ObjetIndexsUnique();
 		this._indexsUnique.ajouterIndex(["Libelle", "matiere.Numero"]);
-		this.enCreation = false;
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			btnTrash: {
-				event: function () {
-					GApplication.getMessage().afficher({
-						type: EGenreBoiteMessage.Confirmation,
-						message: aInstance.theme.estUtiliseParAuteur
-							? GTraductions.getValeur(
-									"Theme.msg.confSupprThemeUtiliseAuteur",
-									aInstance.theme.getLibelle(),
-								)
-							: GTraductions.getValeur("Theme.msg.confSupprTheme"),
-						callback: function (aGenreAction) {
-							if (aGenreAction === EGenreAction.Valider) {
-								aInstance.theme.setEtat(EGenreEtat.Suppression);
-								aInstance.theme.cmsActif = false;
-								aInstance.fermer();
-								aInstance.callback.appel(aInstance.theme);
-							}
-						},
-					});
-				},
-				hint: function () {
-					return GTraductions.getValeur("Supprimer");
-				},
+	jsxModeleBoutonSupprimer() {
+		return {
+			event: () => {
+				GApplication.getMessage().afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+					message: this.theme.estUtiliseParAuteur
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"Theme.msg.confSupprThemeUtiliseAuteur",
+								this.theme.getLibelle(),
+							)
+						: ObjetTraduction_1.GTraductions.getValeur(
+								"Theme.msg.confSupprTheme",
+							),
+					callback: (aGenreAction) => {
+						if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
+							this.theme.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+							this.theme.cmsActif = false;
+							this.fermer();
+							this.callback.appel(this.theme);
+						}
+					},
+				});
 			},
-			LibelleTheme: {
-				getValue: function () {
-					aInstance.setBoutonActif(
-						1,
-						!!(!!aInstance.theme && !!aInstance.theme.getLibelle()),
-					);
-					return aInstance.theme ? aInstance.theme.getLibelle() : "";
-				},
-				setValue: function (aValue) {
-					if (aInstance.theme) {
-						aValue = aValue.replaceAll("\n", "");
-						aInstance.theme.setLibelle(aValue);
-						aInstance.enModification = true;
-					}
-				},
+			getTitle: () => {
+				return ObjetTraduction_1.GTraductions.getValeur("Supprimer");
 			},
-			getMatiere: {
-				getLibelle: function () {
-					let lStrMatiere = "";
-					if (!!aInstance.theme && !!aInstance.theme.matiere) {
-						lStrMatiere = aInstance.theme.matiere.getLibelle();
-					}
-					return lStrMatiere || "";
-				},
+		};
+	}
+	jsxModelLibelleTheme() {
+		return {
+			getValue: () => {
+				this.setBoutonActif(1, !!(!!this.theme && !!this.theme.getLibelle()));
+				return this.theme ? this.theme.getLibelle() : "";
 			},
-			Matiere: {
-				getHtmlMatiere: function () {
-					let lStrMatiere = "";
-					if (!!aInstance.theme && !!aInstance.theme.matiere) {
-						lStrMatiere = aInstance.theme.matiere.getLibelle();
-					}
-					return lStrMatiere || "&nbsp;";
-				},
-				nodeInputTexte: function () {
-					$(this.node).eventValidation(() => {
-						aInstance.surBoutonChoixMatiere();
-					});
-				},
+			setValue: (aValue) => {
+				if (this.theme) {
+					aValue = aValue.replaceAll("\n", "");
+					this.theme.setLibelle(aValue);
+					this.enModification = true;
+				}
 			},
-		});
+		};
+	}
+	jsxModelBtnSelecteurMatiere() {
+		return {
+			event: () => {
+				this.surBoutonChoixMatiere();
+			},
+			getLibelle: () => {
+				let lStrMatiere = "";
+				if (this.theme && this.theme.matiere) {
+					lStrMatiere = this.theme.matiere.getLibelle();
+				}
+				return lStrMatiere || "";
+			},
+		};
 	}
 	composeContenu() {
 		const T = [];
-		const lIdMatiere = GUID.getId();
+		const lIdMatiere = GUID_1.GUID.getId();
+		const lIdLibelleTheme = GUID_1.GUID.getId();
 		T.push(
-			`<div class="flex-contain cols">\n    <div class="field-contain label-up">\n    <label id="${lIdMatiere}" class="ie-titre-petit">${GTraductions.getValeur("Theme.label.matiere")}</label>\n    <ie-btnselecteur ie-model="getMatiere" ie-node="Matiere.nodeInputTexte" aria-labelledby="${lIdMatiere}"></ie-btnselecteur>\n    </div>`,
-		);
-		T.push(
-			tag(
+			IE.jsx.str(
 				"div",
-				{ class: "field-contain label-up" },
-				tag(
-					"label",
-					{ class: "ie-titre-petit" },
-					GTraductions.getValeur("Theme.label.libelle"),
+				{ class: "flex-contain cols" },
+				IE.jsx.str(
+					"div",
+					{ class: "field-contain label-up" },
+					IE.jsx.str(
+						"label",
+						{ id: lIdMatiere, class: "ie-titre-petit" },
+						ObjetTraduction_1.GTraductions.getValeur("Theme.label.matiere"),
+					),
+					IE.jsx.str("ie-btnselecteur", {
+						"ie-model": this.jsxModelBtnSelecteurMatiere.bind(this),
+						"aria-labelledby": lIdMatiere,
+					}),
 				),
-				tag("ie-textareamax", {
-					"ie-autoresize": true,
-					type: "text",
-					"ie-model": "LibelleTheme",
-					class: "full-width round-style",
-					title: GTraductions.getValeur("Theme.label.redigerMatiere"),
-					maxlength: this.tailleLibelleTheme,
-					placeholder: GTraductions.getValeur("Theme.label.redigerMatiere"),
-				}),
+				IE.jsx.str(
+					"div",
+					{ class: "field-contain label-up" },
+					IE.jsx.str(
+						"label",
+						{ id: lIdLibelleTheme, class: "ie-titre-petit" },
+						ObjetTraduction_1.GTraductions.getValeur("Theme.label.libelle"),
+					),
+					IE.jsx.str("ie-textareamax", {
+						"aria-labelledby": lIdLibelleTheme,
+						"ie-autoresize": true,
+						"ie-model": this.jsxModelLibelleTheme.bind(this),
+						class: "full-width",
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"Theme.label.redigerMatiere",
+						),
+						maxlength: this.tailleLibelleTheme,
+						placeholder: ObjetTraduction_1.GTraductions.getValeur(
+							"Theme.label.redigerMatiere",
+						),
+					}),
+				),
 			),
 		);
-		T.push(`</div>`);
 		return T.join("");
 	}
 	setDonnees(aParams, aParametres) {
 		this.theme = aParams.article
-			? MethodesObjet.dupliquer(aParams.article)
-			: new ObjetElement();
+			? MethodesObjet_1.MethodesObjet.dupliquer(aParams.article)
+			: new ObjetElement_1.ObjetElement();
 		this.listeMatieres = aParametres.listeMatieres;
 		this.tailleLibelleTheme = aParametres.tailleLibelleTheme;
 		this.listeThemes = aParametres.listeThemes;
 		if (aParametres.enCreation) {
 			this.enCreation = true;
-			GHtml.setDisplay(this.ids.btnTrash, false);
+			ObjetHtml_1.GHtml.setDisplay(this.ids.btnTrash, false);
 			this.theme.matiere = aParametres.matiereContexte;
 		}
 		this.enModification = false;
@@ -149,11 +157,18 @@ class ObjetFenetre_EditionTheme extends ObjetFenetre {
 		this.positionnerFenetre();
 	}
 	composeBas() {
-		const lHTML = [];
-		lHTML.push(
-			`<div id="${this.ids.btnTrash}" class="compose-bas">\n                    <ie-btnicon ie-model="btnTrash" ie-hint="btnTrash.hint" class="icon_trash avecFond i-medium"></ie-btnicon>\n                </div>`,
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ id: this.ids.btnTrash, class: "compose-bas" },
+				IE.jsx.str("ie-btnicon", {
+					"ie-model": this.jsxModeleBoutonSupprimer.bind(this),
+					class: "icon_trash avecFond i-medium",
+				}),
+			),
 		);
-		return lHTML.join("");
+		return H.join("");
 	}
 	surValidation(aGenreBouton) {
 		if (aGenreBouton === 1) {
@@ -166,7 +181,7 @@ class ObjetFenetre_EditionTheme extends ObjetFenetre {
 							lElement.getNumero(),
 							lElement.getGenre(),
 						) &&
-						aElement.Etat !== EGenreEtat.Suppression
+						aElement.Etat !== Enumere_Etat_1.EGenreEtat.Suppression
 					) {
 						if (this._indexsUnique.estDoublon(lElement, aElement)) {
 							lTestLibelleExisteDeja = true;
@@ -176,12 +191,12 @@ class ObjetFenetre_EditionTheme extends ObjetFenetre {
 				});
 			}
 			if (lTestLibelleExisteDeja) {
-				const lMessageDoublon = GTraductions.getValeur("Theme.msg.doublon", [
-					this.theme.getLibelle(),
-					this.theme.matiere.getLibelle(),
-				]);
+				const lMessageDoublon = ObjetTraduction_1.GTraductions.getValeur(
+					"Theme.msg.doublon",
+					[this.theme.getLibelle(), this.theme.matiere.getLibelle()],
+				);
 				GApplication.getMessage().afficher({
-					type: EGenreBoiteMessage.Information,
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
 					message: lMessageDoublon,
 				});
 				return;
@@ -189,15 +204,15 @@ class ObjetFenetre_EditionTheme extends ObjetFenetre {
 			if (this.theme.estMixte) {
 				const lThis = this;
 				GApplication.getMessage().afficher({
-					type: EGenreBoiteMessage.Confirmation,
-					message: `<div>${GTraductions.getValeur("Theme.msg.modifThemeMixte")}</div><div class="EspaceHaut">${GTraductions.getValeur("Theme.msg.confModifTheme")}</div>`,
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+					message: `<div>${ObjetTraduction_1.GTraductions.getValeur("Theme.msg.modifThemeMixte")}</div><div class="EspaceHaut">${ObjetTraduction_1.GTraductions.getValeur("Theme.msg.confModifTheme")}</div>`,
 					callback: function (aGenreAction) {
-						if (aGenreAction === EGenreAction.Valider) {
+						if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
 							lThis.fermer();
 							if (lThis.enCreation) {
-								lThis.theme.setEtat(EGenreEtat.Creation);
+								lThis.theme.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 							} else if (lThis.enModification) {
-								lThis.theme.setEtat(EGenreEtat.Modification);
+								lThis.theme.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 							}
 							lThis.callback.appel(lThis.theme);
 						}
@@ -206,9 +221,9 @@ class ObjetFenetre_EditionTheme extends ObjetFenetre {
 			} else {
 				this.fermer();
 				if (this.enCreation) {
-					this.theme.setEtat(EGenreEtat.Creation);
+					this.theme.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 				} else if (this.enModification) {
-					this.theme.setEtat(EGenreEtat.Modification);
+					this.theme.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 				}
 				this.callback.appel(this.theme);
 			}
@@ -218,50 +233,53 @@ class ObjetFenetre_EditionTheme extends ObjetFenetre {
 	}
 	surBoutonChoixMatiere() {
 		const lThis = this;
-		const lFenetreChoixMatiere = ObjetFenetre.creerInstanceFenetre(
-			ObjetFenetre_SelectionMatiere,
-			{
-				pere: lThis,
-				evenement: function (
-					aNumeroBouton,
-					aIndiceSelection,
-					aNumeroSelection,
-				) {
-					if (aNumeroBouton === 1) {
-						const lMatiereSelectionnee =
-							this.listeMatieres.getElementParNumero(aNumeroSelection) ||
-							new ObjetElement();
-						lThis.theme.matiere = lMatiereSelectionnee;
-						lThis.enModification = true;
-					}
+		const lFenetreChoixMatiere =
+			ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+				ObjetFenetre_SelectionMatiere_1.ObjetFenetre_SelectionMatiere,
+				{
+					pere: lThis,
+					evenement: function (
+						aNumeroBouton,
+						aIndiceSelection,
+						aNumeroSelection,
+					) {
+						if (aNumeroBouton === 1) {
+							const lMatiereSelectionnee =
+								this.listeMatieres.getElementParNumero(aNumeroSelection) ||
+								new ObjetElement_1.ObjetElement();
+							lThis.theme.matiere = lMatiereSelectionnee;
+							lThis.enModification = true;
+						}
+					},
+					initialiser: function (aInstanceFenetre) {
+						aInstanceFenetre.setOptionsFenetre({
+							largeur: 300,
+							hauteur: 400,
+							listeBoutons: [
+								ObjetTraduction_1.GTraductions.getValeur("Fermer"),
+							],
+						});
+					},
 				},
-				initialiser: function (aInstanceFenetre) {
-					aInstanceFenetre.setOptionsFenetre({
-						titre: GTraductions.getValeur("Theme.titre.matiere"),
-						largeur: 300,
-						hauteur: 400,
-						listeBoutons: [GTraductions.getValeur("Fermer")],
-					});
-				},
-			},
-		);
+			);
 		const lInfosListMatieres = {
 			liste: this.listeMatieres,
 			avecChoixFiltrageEnseignees: ![
-				EGenreEspace.Etablissement,
-				EGenreEspace.Mobile_Etablissement,
+				Enumere_Espace_1.EGenreEspace.Etablissement,
+				Enumere_Espace_1.EGenreEspace.Mobile_Etablissement,
 			].includes(GEtatUtilisateur.GenreEspace),
 			avecSelectionAucune: false,
 		};
-		lFenetreChoixMatiere.libelleFiltreEnseignees = GTraductions.getValeur(
-			"SaisieQCM.UniquementMatieresEnseignees",
-		);
+		lFenetreChoixMatiere.libelleFiltreEnseignees =
+			ObjetTraduction_1.GTraductions.getValeur(
+				"SaisieQCM.UniquementMatieresEnseignees",
+			);
 		lFenetreChoixMatiere.setDonnees(
 			lInfosListMatieres.liste,
 			lInfosListMatieres.avecChoixFiltrageEnseignees,
 			lInfosListMatieres.avecSelectionAucune,
-			lInfosListMatieres.filtreEnseignees,
+			undefined,
 		);
 	}
 }
-module.exports = ObjetFenetre_EditionTheme;
+exports.ObjetFenetre_EditionTheme = ObjetFenetre_EditionTheme;

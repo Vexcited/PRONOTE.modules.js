@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieIncidentsVuParAdmin extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieIncidentsVuParAdmin = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieIncidentsVuParAdmin extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParam) {
 		if (aParam.incidents) {
 			aParam.incidents.setSerialisateurJSON({
@@ -16,8 +14,9 @@ class ObjetRequeteSaisieIncidentsVuParAdmin extends ObjetRequeteSaisie {
 		return this.appelAsynchrone();
 	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteSaisieIncidentsVuParAdmin =
+	ObjetRequeteSaisieIncidentsVuParAdmin;
+CollectionRequetes_1.Requetes.inscrire(
 	"SaisieIncidentsVuParAdmin",
 	ObjetRequeteSaisieIncidentsVuParAdmin,
 );
-module.exports = ObjetRequeteSaisieIncidentsVuParAdmin;

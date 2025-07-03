@@ -27,7 +27,13 @@ function creerIconEtoile(aArrayEtoiles, aColor) {
 		if (aArrayEtoiles[i]) {
 			lIcon = "icon_star";
 		}
-		lResult.push('<i class="material-icons ', lIcon, '"', lStyle, "></i>");
+		lResult.push(
+			'<i  role="presentation" class="material-icons ',
+			lIcon,
+			'"',
+			lStyle,
+			"></i>",
+		);
 	}
 	return lResult.join("");
 }

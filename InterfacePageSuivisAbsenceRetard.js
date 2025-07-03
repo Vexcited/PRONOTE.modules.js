@@ -1,52 +1,55 @@
-const { GHtml } = require("ObjetHtml.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { ObjetCelluleDate } = require("ObjetCelluleDate.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetSaisie } = require("ObjetSaisie.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { InterfacePage } = require("InterfacePage.js");
-const {
-	ObjetAffichagePageAvecMenusDeroulants,
-} = require("InterfacePageAvecMenusDeroulants.js");
-const {
-	InterfaceSuivisAbsenceRetard,
-} = require("InterfaceSuivisAbsenceRetard.js");
-const { TUtilitaireListePeriodes } = require("UtilitaireListePeriodes.js");
-class InterfacePageSuivisAbsenceRetard extends InterfacePage {
-	constructor(...aParams) {
-		super(...aParams);
-		this.listePeriodes = TUtilitaireListePeriodes.construireListePeriodes([
-			TUtilitaireListePeriodes.choix.aujourdhui,
-			TUtilitaireListePeriodes.choix.semainePrecedente,
-			TUtilitaireListePeriodes.choix.semaineCourante,
-			TUtilitaireListePeriodes.choix.moisCourant,
-			TUtilitaireListePeriodes.choix.annee,
-			TUtilitaireListePeriodes.choix.periodes,
-			TUtilitaireListePeriodes.choix.mois,
-		]);
+exports.InterfacePageSuivisAbsenceRetard = void 0;
+const ObjetHtml_1 = require("ObjetHtml");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const ObjetCelluleDate_1 = require("ObjetCelluleDate");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetSaisie_1 = require("ObjetSaisie");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const InterfacePage_1 = require("InterfacePage");
+const InterfacePageAvecMenusDeroulants_1 = require("InterfacePageAvecMenusDeroulants");
+const InterfaceSuivisAbsenceRetard_1 = require("InterfaceSuivisAbsenceRetard");
+const UtilitaireListePeriodes_1 = require("UtilitaireListePeriodes");
+class InterfacePageSuivisAbsenceRetard extends InterfacePage_1.InterfacePage {
+	constructor() {
+		super(...arguments);
+		this.listePeriodes =
+			UtilitaireListePeriodes_1.TUtilitaireListePeriodes.construireListePeriodes(
+				[
+					UtilitaireListePeriodes_1.TUtilitaireListePeriodes.choix.aujourdhui,
+					UtilitaireListePeriodes_1.TUtilitaireListePeriodes.choix
+						.semainePrecedente,
+					UtilitaireListePeriodes_1.TUtilitaireListePeriodes.choix
+						.semaineCourante,
+					UtilitaireListePeriodes_1.TUtilitaireListePeriodes.choix.moisCourant,
+					UtilitaireListePeriodes_1.TUtilitaireListePeriodes.choix.annee,
+					UtilitaireListePeriodes_1.TUtilitaireListePeriodes.choix.periodes,
+					UtilitaireListePeriodes_1.TUtilitaireListePeriodes.choix.mois,
+				],
+			);
+		this.parametresSco = this.applicationSco.getObjetParametres();
 	}
 	construireInstances() {
-		this.identPage = this.add(InterfaceSuivisAbsenceRetard);
+		this.identPage = this.add(
+			InterfaceSuivisAbsenceRetard_1.InterfaceSuivisAbsenceRetard,
+		);
 		this.identComboPeriode = this.add(
-			ObjetSaisie,
-			_evenementSurComboPeriode,
-			_initialiserComboPeriode,
+			ObjetSaisie_1.ObjetSaisie,
+			this._evenementSurComboPeriode,
+			this._initialiserComboPeriode,
 		);
 		this.identDate = this.add(
-			ObjetCelluleDate,
+			ObjetCelluleDate_1.ObjetCelluleDate,
 			this.evenementSurDate.bind(this, true),
 			this.initialiserDate,
 		);
 		this.identDate2 = this.add(
-			ObjetCelluleDate,
+			ObjetCelluleDate_1.ObjetCelluleDate,
 			this.evenementSurDate.bind(this, false),
 			this.initialiserDate,
 		);
 		this.identTripleCombo = this.add(
-			ObjetAffichagePageAvecMenusDeroulants,
+			InterfacePageAvecMenusDeroulants_1.ObjetAffichagePageAvecMenusDeroulants,
 			this.evenementSurDernierMenuDeroulant,
 			this.initialiserTripleCombo,
 		);
@@ -66,11 +69,11 @@ class InterfacePageSuivisAbsenceRetard extends InterfacePage {
 		this.AddSurZone = [
 			this.identTripleCombo,
 			{ separateur: true },
-			{ html: GTraductions.getValeur("Periode") },
+			{ html: ObjetTraduction_1.GTraductions.getValeur("Periode") },
 			this.identComboPeriode,
-			{ html: GTraductions.getValeur("Du") },
+			{ html: ObjetTraduction_1.GTraductions.getValeur("Du") },
 			this.identDate,
-			{ html: GTraductions.getValeur("Au") },
+			{ html: ObjetTraduction_1.GTraductions.getValeur("Au") },
 			this.identDate2,
 		];
 		this.addSurZoneFicheEleve();
@@ -86,26 +89,32 @@ class InterfacePageSuivisAbsenceRetard extends InterfacePage {
 		aInstance.setControleNavigation(true);
 	}
 	initialiserTripleCombo(aInstance) {
-		aInstance.setParametres([EGenreRessource.Classe, EGenreRessource.Eleve]);
+		aInstance.setParametres([
+			Enumere_Ressource_1.EGenreRessource.Classe,
+			Enumere_Ressource_1.EGenreRessource.Eleve,
+		]);
 		aInstance.setEvenementMenusDeroulants(this.surEvntMenusDeroulants);
 	}
 	afficherPage() {
 		if (!this.eleve) {
-			GHtml.setDisplay(this.getInstance(this.identListe).getNom(), false);
+			ObjetHtml_1.GHtml.setDisplay(this.getNomInstance(this.identListe), false);
 		} else {
-			const lNavigation = GParametres.listeComboPeriodes.navigation;
+			const lNavigation = this.parametresSco.listeComboPeriodes.navigation;
 			if (lNavigation && lNavigation.dateDebut && lNavigation.dateFin) {
 				this.getInstance(this.identDate).setDonnees(lNavigation.dateDebut);
 				this.getInstance(this.identDate2).setDonnees(lNavigation.dateFin);
-				_actualiserComboSelonDates.call(
-					this,
+				this._actualiserComboSelonDates(
 					lNavigation.dateDebut,
 					lNavigation.dateFin,
 				);
 			} else {
 				let lIndiceSemaineCourante = -1;
 				this.listePeriodes.parcourir((D, aIndice) => {
-					if (D.choix === TUtilitaireListePeriodes.choix.semaineCourante) {
+					if (
+						D.choix ===
+						UtilitaireListePeriodes_1.TUtilitaireListePeriodes.choix
+							.semaineCourante
+					) {
 						lIndiceSemaineCourante = aIndice;
 						return false;
 					}
@@ -117,21 +126,21 @@ class InterfacePageSuivisAbsenceRetard extends InterfacePage {
 		}
 		this.getInstance(this.identPage).setDonnees(
 			this.eleve,
-			GParametres.listeComboPeriodes.navigation.dateDebut,
-			GParametres.listeComboPeriodes.navigation.dateFin,
+			this.parametresSco.listeComboPeriodes.navigation.dateDebut,
+			this.parametresSco.listeComboPeriodes.navigation.dateFin,
 		);
 	}
 	evenementSurDernierMenuDeroulant() {
-		this.eleve = GEtatUtilisateur.Navigation.getRessource(
-			EGenreRessource.Eleve,
-		);
+		this.eleve = this.applicationSco
+			.getEtatUtilisateur()
+			.Navigation.getRessource(Enumere_Ressource_1.EGenreRessource.Eleve);
 		this.afficherBandeau(true);
 		this.surResizeInterface();
 		this.surSelectionEleve();
 		this.afficherPage();
 	}
 	evenementSurDate(aDateDebut, aDate) {
-		const lNavigation = GParametres.listeComboPeriodes.navigation || {
+		const lNavigation = this.parametresSco.listeComboPeriodes.navigation || {
 			dateDebut: this.getInstance(this.identDate).getDate(),
 			dateFin: this.getInstance(this.identDate2).getDate(),
 		};
@@ -148,16 +157,12 @@ class InterfacePageSuivisAbsenceRetard extends InterfacePage {
 			}
 			lNavigation.dateFin = aDate;
 		}
-		_actualiserComboSelonDates.call(
-			this,
-			lNavigation.dateDebut,
-			lNavigation.dateFin,
-		);
-		GParametres.listeComboPeriodes.navigation = lNavigation;
+		this._actualiserComboSelonDates(lNavigation.dateDebut, lNavigation.dateFin);
+		this.parametresSco.listeComboPeriodes.navigation = lNavigation;
 		this.getInstance(this.identPage).setDonnees(
 			this.eleve,
-			GParametres.listeComboPeriodes.navigation.dateDebut,
-			GParametres.listeComboPeriodes.navigation.dateFin,
+			this.parametresSco.listeComboPeriodes.navigation.dateDebut,
+			this.parametresSco.listeComboPeriodes.navigation.dateFin,
 		);
 	}
 	valider() {
@@ -165,50 +170,54 @@ class InterfacePageSuivisAbsenceRetard extends InterfacePage {
 			this.actionSurValidation.bind(this),
 		);
 	}
-}
-function _evenementSurComboPeriode(aParams) {
-	if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
-		const lNavigation = (GParametres.listeComboPeriodes.navigation = {
-			dateDebut: aParams.element.dates.debut,
-			dateFin: aParams.element.dates.fin,
-		});
-		this.getInstance(this.identDate).setDonnees(lNavigation.dateDebut);
-		this.getInstance(this.identDate2).setDonnees(lNavigation.dateFin);
-		if (this.getInstance(this.identComboPeriode).InteractionUtilisateur) {
-			this.getInstance(this.identPage).setDonnees(
-				this.eleve,
-				GParametres.listeComboPeriodes.navigation.dateDebut,
-				GParametres.listeComboPeriodes.navigation.dateFin,
-			);
-		}
-	}
-}
-function _initialiserComboPeriode(aInstance) {
-	aInstance.setOptionsObjetSaisie({
-		longueur: 150,
-		hauteur: 17,
-		classTexte: "Gras",
-	});
-	aInstance.setControleNavigation(true);
-	aInstance.setDonnees(this.listePeriodes);
-}
-function _actualiserComboSelonDates(aDateDebut, aDateFin) {
-	let lIndiceSemaineCourante = -1;
-	this.listePeriodes.parcourir((D, aIndice) => {
+	_evenementSurComboPeriode(aParams) {
 		if (
-			GDate.estJourEgal(D.dates.debut, aDateDebut) &&
-			GDate.estJourEgal(D.dates.fin, aDateFin)
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
 		) {
-			lIndiceSemaineCourante = aIndice;
-			return false;
+			const lNavigation = (this.parametresSco.listeComboPeriodes.navigation = {
+				dateDebut: aParams.element.dates.debut,
+				dateFin: aParams.element.dates.fin,
+			});
+			this.getInstance(this.identDate).setDonnees(lNavigation.dateDebut);
+			this.getInstance(this.identDate2).setDonnees(lNavigation.dateFin);
+			if (this.getInstance(this.identComboPeriode).InteractionUtilisateur) {
+				this.getInstance(this.identPage).setDonnees(
+					this.eleve,
+					this.parametresSco.listeComboPeriodes.navigation.dateDebut,
+					this.parametresSco.listeComboPeriodes.navigation.dateFin,
+				);
+			}
 		}
-	});
-	if (lIndiceSemaineCourante >= 0) {
-		this.getInstance(this.identComboPeriode).setSelection(
-			lIndiceSemaineCourante,
-		);
-	} else {
-		this.getInstance(this.identComboPeriode).setContenu("");
+	}
+	_initialiserComboPeriode(aInstance) {
+		aInstance.setOptionsObjetSaisie({
+			longueur: 150,
+			hauteur: 17,
+			classTexte: "Gras",
+			labelWAICellule: ObjetTraduction_1.GTraductions.getValeur("Periode"),
+		});
+		aInstance.setControleNavigation(true);
+		aInstance.setDonnees(this.listePeriodes);
+	}
+	_actualiserComboSelonDates(aDateDebut, aDateFin) {
+		let lIndiceSemaineCourante = -1;
+		this.listePeriodes.parcourir((D, aIndice) => {
+			if (
+				ObjetDate_1.GDate.estJourEgal(D.dates.debut, aDateDebut) &&
+				ObjetDate_1.GDate.estJourEgal(D.dates.fin, aDateFin)
+			) {
+				lIndiceSemaineCourante = aIndice;
+				return false;
+			}
+		});
+		if (lIndiceSemaineCourante >= 0) {
+			this.getInstance(this.identComboPeriode).setSelection(
+				lIndiceSemaineCourante,
+			);
+		} else {
+			this.getInstance(this.identComboPeriode).setContenu("");
+		}
 	}
 }
-module.exports = { InterfacePageSuivisAbsenceRetard };
+exports.InterfacePageSuivisAbsenceRetard = InterfacePageSuivisAbsenceRetard;

@@ -6,6 +6,7 @@ const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetListe_1 = require("ObjetListe");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const Enumere_Ressource_1 = require("Enumere_Ressource");
+const TypeFusionTitreListe_1 = require("TypeFusionTitreListe");
 class ObjetFenetre_DetailAbsences extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
@@ -243,6 +244,75 @@ class ObjetFenetre_DetailAbsences extends ObjetFenetre_1.ObjetFenetre {
 					],
 				});
 				break;
+			case Enumere_Ressource_1.EGenreRessource.MesureConservatoire:
+				this.getInstance(this.IdentListe).setOptionsListe({
+					colonnes: [
+						{
+							taille: 125,
+							titre: ObjetTraduction_1.GTraductions.getValeur("Date"),
+						},
+						{
+							taille: 0,
+							titre: TypeFusionTitreListe_1.TypeFusionTitreListe.FusionGauche,
+						},
+						{
+							taille: "100%",
+							titre: ObjetTraduction_1.GTraductions.getValeur(
+								"fenetrePunition.motif",
+							),
+						},
+						{
+							taille: 125,
+							titre: ObjetTraduction_1.GTraductions.getValeur(
+								"fenetrePunition.demandeur",
+							),
+						},
+					],
+				});
+				break;
+			case Enumere_Ressource_1.EGenreRessource.Commission:
+				this.getInstance(this.IdentListe).setOptionsListe({
+					colonnes: [
+						{
+							taille: 125,
+							titre: ObjetTraduction_1.GTraductions.getValeur("Date"),
+						},
+						{
+							taille: 0,
+							titre: TypeFusionTitreListe_1.TypeFusionTitreListe.FusionGauche,
+						},
+						{
+							taille: 125,
+							titre: ObjetTraduction_1.GTraductions.getValeur(
+								"Commissions.presideePar",
+							),
+						},
+						{
+							taille: 125,
+							titre: ObjetTraduction_1.GTraductions.getValeur(
+								"Commissions.naturesCommissions",
+							),
+						},
+						{
+							taille: 125,
+							titre:
+								ObjetTraduction_1.GTraductions.getValeur("Commissions.motifs"),
+						},
+						{
+							taille: 125,
+							titre: ObjetTraduction_1.GTraductions.getValeur(
+								"Commissions.circonstances",
+							),
+						},
+						{
+							taille: 125,
+							titre: ObjetTraduction_1.GTraductions.getValeur(
+								"Commissions.nbReponsesEducatives",
+							),
+						},
+					],
+				});
+				break;
 			default:
 				this.getInstance(this.IdentListe).setOptionsListe({
 					colonnes: [
@@ -302,50 +372,55 @@ class ObjetFenetre_DetailAbsences extends ObjetFenetre_1.ObjetFenetre {
 		if (lEstSurCours) {
 			let lCleTraduction;
 			let lEstAuPluriel = lNbAbs > 1;
-			if (aGenreRessource === Enumere_Ressource_1.EGenreRessource.Absence) {
-				lCleTraduction = lEstAuPluriel
-					? "Absence.CoursManques"
-					: "Absence.CoursManque";
-			} else if (
-				aGenreRessource === Enumere_Ressource_1.EGenreRessource.Retard
-			) {
-				lCleTraduction = lEstAuPluriel ? "Absence.Retards" : "Absence.Retard";
-			} else if (
-				aGenreRessource === Enumere_Ressource_1.EGenreRessource.Infirmerie
-			) {
-				lCleTraduction = lEstAuPluriel
-					? "Absence.Infirmeries"
-					: "Absence.Infirmerie";
-			} else if (
-				aGenreRessource === Enumere_Ressource_1.EGenreRessource.Punition
-			) {
-				lCleTraduction = lEstAuPluriel
-					? "Absence.Punitions"
-					: "Absence.Punition";
-			} else if (
-				aGenreRessource === Enumere_Ressource_1.EGenreRessource.Exclusion
-			) {
-				lCleTraduction = lEstAuPluriel
-					? "Absence.Exclusions"
-					: "Absence.Exclusion";
-			} else if (
-				aGenreRessource === Enumere_Ressource_1.EGenreRessource.Dispense
-			) {
-				lCleTraduction = lEstAuPluriel
-					? "Absence.DispensesCour"
-					: "Absence.DispenseCour";
-			} else if (
-				aGenreRessource === Enumere_Ressource_1.EGenreRessource.Observation
-			) {
-				lCleTraduction = lEstAuPluriel
-					? "Absence.Observations"
-					: "Absence.Observation";
-			} else if (
-				aGenreRessource === Enumere_Ressource_1.EGenreRessource.Sanction
-			) {
-				lCleTraduction = lEstAuPluriel
-					? "Absence.Sanctions"
-					: "Absence.Sanction";
+			switch (aGenreRessource) {
+				case Enumere_Ressource_1.EGenreRessource.Absence:
+					lCleTraduction = lEstAuPluriel
+						? "Absence.CoursManques"
+						: "Absence.CoursManque";
+					break;
+				case Enumere_Ressource_1.EGenreRessource.Retard:
+					lCleTraduction = lEstAuPluriel ? "Absence.Retards" : "Absence.Retard";
+					break;
+				case Enumere_Ressource_1.EGenreRessource.Infirmerie:
+					lCleTraduction = lEstAuPluriel
+						? "Absence.Infirmeries"
+						: "Absence.Infirmerie";
+					break;
+				case Enumere_Ressource_1.EGenreRessource.Punition:
+					lCleTraduction = lEstAuPluriel
+						? "Absence.Punitions"
+						: "Absence.Punition";
+					break;
+				case Enumere_Ressource_1.EGenreRessource.Exclusion:
+					lCleTraduction = lEstAuPluriel
+						? "Absence.Exclusions"
+						: "Absence.Exclusion";
+					break;
+				case Enumere_Ressource_1.EGenreRessource.Dispense:
+					lCleTraduction = lEstAuPluriel
+						? "Absence.DispensesCour"
+						: "Absence.DispenseCour";
+					break;
+				case Enumere_Ressource_1.EGenreRessource.Observation:
+					lCleTraduction = lEstAuPluriel
+						? "Absence.Observations"
+						: "Absence.Observation";
+					break;
+				case Enumere_Ressource_1.EGenreRessource.Sanction:
+					lCleTraduction = lEstAuPluriel
+						? "Absence.Sanctions"
+						: "Absence.Sanction";
+					break;
+				case Enumere_Ressource_1.EGenreRessource.Commission:
+					lCleTraduction = lEstAuPluriel
+						? "Absence.Commissions"
+						: "Absence.Commission";
+					break;
+				case Enumere_Ressource_1.EGenreRessource.MesureConservatoire:
+					lCleTraduction = lEstAuPluriel
+						? "Absence.MesuresConservatoires"
+						: "Absence.MesureConservatoire";
+					break;
 			}
 			if (lCleTraduction) {
 				lNbAbs +=
@@ -362,19 +437,19 @@ class ObjetFenetre_DetailAbsences extends ObjetFenetre_1.ObjetFenetre {
 		this.messageAucun = aMessage;
 	}
 	composeContenu() {
-		const T = [];
-		T.push(`<div class="flex-contain cols full-size flex-gap-s">`);
-		T.push(
+		const H = [];
+		H.push(`<div class="flex-contain cols full-size flex-gap-s">`);
+		H.push(
 			`<div class="fluid-bloc flex-contain cols" id="${this.Nom}_ContenuListe">\n    <div class="fluid-bloc full-width" id="${this.getNomInstance(this.IdentListe)}"></div>\n    </div>`,
 		);
-		T.push(
+		H.push(
 			`<div class="fluid-bloc flex-contain flex-center justify-center" id="${this.Nom}_ContenuMessage" tabindex="0">\n    <div class="semi-bold" id="${this.Nom}_Message"></div>\n    </div>`,
 		);
-		T.push(
+		H.push(
 			`<div class="p-y p-x-l m-right-l semi-bold" id="${this.Nom}_Total" style="color:${GCouleur.blanc};background-color:${GCouleur.fenetre.cumul};"></div>`,
 		);
-		T.push(`</div>`);
-		return T.join("");
+		H.push(`</div>`);
+		return H.join("");
 	}
 	evenementSurListe(aParametres) {
 		this.setBoutonActif(

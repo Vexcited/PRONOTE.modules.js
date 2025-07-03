@@ -3,6 +3,7 @@ exports.ObjetRequeteSecurisationComptePreference =
 const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
 const CollectionRequetes_1 = require("CollectionRequetes");
 const TypeSecurisationCompte_1 = require("TypeSecurisationCompte");
+const AccessApp_1 = require("AccessApp");
 class ObjetRequeteSecurisationCompteDoubleAuth extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aParams) {
 		this.JSON.action = aParams.action;
@@ -49,7 +50,7 @@ class ObjetRequeteSecurisationCompteDoubleAuth extends ObjetRequeteJSON_1.ObjetR
 	}
 	actionApresRequete() {
 		if (
-			GApplication.estAppliMobile &&
+			(0, AccessApp_1.getApp)().estAppliMobile &&
 			this.JSONReponse.jetonConnexionAppliMobile
 		) {
 			window.messageData.push({
@@ -120,7 +121,7 @@ class ObjetRequeteSecurisationComptePreference extends ObjetRequeteJSON_1.ObjetR
 	}
 	actionApresRequete() {
 		if (
-			GApplication.estAppliMobile &&
+			(0, AccessApp_1.getApp)().estAppliMobile &&
 			this.JSONReponse.jetonConnexionAppliMobile
 		) {
 			window.messageData.push({

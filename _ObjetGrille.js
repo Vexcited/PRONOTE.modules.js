@@ -17,6 +17,8 @@ const UtilitaireCouleur_1 = require("UtilitaireCouleur");
 const ObjetHint_1 = require("ObjetHint");
 const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const AccessApp_1 = require("AccessApp");
 let uCacheContextCanvas;
 const uCachePatternBySrc = {};
 class _ObjetGrille extends ObjetIdentite_1.Identite {
@@ -60,22 +62,16 @@ class _ObjetGrille extends ObjetIdentite_1.Identite {
 		};
 		this._initialiserOptions();
 		if (this.Nom) {
-			this.ScrollH = ObjetIdentite_1.Identite.creerInstance(
-				ObjetScroll_1.ObjetScroll,
-				{
-					pere: this,
-					evenement: this._evenementScrollH.bind(this),
-					genre: ObjetScroll_2.EGenreScroll.Horizontal,
-				},
-			);
-			this.ScrollV = ObjetIdentite_1.Identite.creerInstance(
-				ObjetScroll_1.ObjetScroll,
-				{
-					pere: this,
-					evenement: this._evenementScrollV.bind(this),
-					genre: ObjetScroll_2.EGenreScroll.Vertical,
-				},
-			);
+			this.ScrollH = new ObjetScroll_1.ObjetScroll({
+				pere: this,
+				evenement: this._evenementScrollH.bind(this),
+				genre: ObjetScroll_2.EGenreScroll.Horizontal,
+			});
+			this.ScrollV = new ObjetScroll_1.ObjetScroll({
+				pere: this,
+				evenement: this._evenementScrollV.bind(this),
+				genre: ObjetScroll_2.EGenreScroll.Vertical,
+			});
 			if (this.avecEventResizeNavigateur()) {
 				this.ajouterEvenementGlobal(
 					Enumere_Event_1.EEvent.SurPreResize,
@@ -149,12 +145,14 @@ class _ObjetGrille extends ObjetIdentite_1.Identite {
 			taillePiedTrancheInverse: 0,
 			avecPiedHoraire: false,
 			taillePiedHoraire: 0,
-			couleurFond: GCouleur.grille.fond,
-			couleurBordures: GCouleur.grille.bordure,
+			couleurFond: (0, AccessApp_1.getApp)().getCouleur().grille.fond,
+			couleurBordures: (0, AccessApp_1.getApp)().getCouleur().grille.bordure,
 			couleurBorduresSecondaires: null,
-			couleurLibellesLignes: GCouleur.grille.texte,
-			couleurLibellesColonnes: GCouleur.grille.texte,
-			couleurFondGouttiere: GCouleur.fond,
+			couleurLibellesLignes: (0, AccessApp_1.getApp)().getCouleur().grille
+				.texte,
+			couleurLibellesColonnes: (0, AccessApp_1.getApp)().getCouleur().grille
+				.texte,
+			couleurFondGouttiere: (0, AccessApp_1.getApp)().getCouleur().fond,
 			ieClassConteneurGrille: "",
 			titresHorairesParSequence: false,
 			callbackMouseDownCellule: null,
@@ -172,9 +170,6 @@ class _ObjetGrille extends ObjetIdentite_1.Identite {
 			margeHauteur: 2,
 			avecZoomCtrlWheel: false,
 			seuilZoomCtrlWheel: 30,
-			avecModeTactile: true,
-			avecScrollEnTactileV: !GNavigateur.isLayoutTactile,
-			avecScrollEnTactileH: !GNavigateur.isLayoutTactile,
 			getPourcentTailleTraitSeparateurCellule: function (aGenreSeparateur) {
 				let lPourcent = 100;
 				if (aGenreSeparateur === _ObjetGrille.separateurLigne.moyen) {
@@ -184,7 +179,9 @@ class _ObjetGrille extends ObjetIdentite_1.Identite {
 				}
 				return lPourcent;
 			},
-			surfaceMaxCanvas: GNavigateur.isTactile ? 1500 * 1500 : 20000 * 20000,
+			surfaceMaxCanvas: ObjetNavigateur_1.Navigateur.isTactile
+				? 1500 * 1500
+				: 20000 * 20000,
 		};
 	}
 	getIdCellulePrefixe() {
@@ -253,7 +250,7 @@ class _ObjetGrille extends ObjetIdentite_1.Identite {
 						aInstance._cache.canvasScaleY +
 						")";
 				}
-				if (!GNavigateur.isAndroid) {
+				if (!ObjetNavigateur_1.Navigateur.isAndroid) {
 					const lDpr = window.devicePixelRatio || 1;
 					if (lDpr >= 1.5) {
 						lNodeCanvas.width = aWidth * lDpr;
@@ -599,10 +596,6 @@ class _ObjetGrille extends ObjetIdentite_1.Identite {
 			EZoneScroll.PiedTranche,
 			EZoneScroll.PiedHoraireInverse,
 		];
-		this.ScrollV.avecScrollEnTactile =
-			this._options.avecScrollEnTactileV || !this._estModeTactile();
-		this.ScrollH.avecScrollEnTactile =
-			this._options.avecScrollEnTactileH || !this._estModeTactile();
 		this.ScrollV.setDonnees(
 			EZoneScroll.TitreLignes,
 			EZoneScroll.Grille,
@@ -752,9 +745,6 @@ class _ObjetGrille extends ObjetIdentite_1.Identite {
 		);
 	}
 	getHauteurMaxGrille() {
-		if (this._estModeTactile()) {
-			ObjetHtml_1.GHtml.setDisplay(this.idConteneurGrille, false);
-		}
 		const lHeight =
 			ObjetPosition_1.GPosition.getHeight(this.getNom()) -
 			this.getHauteurTitreColonnes() -
@@ -769,19 +759,13 @@ class _ObjetGrille extends ObjetIdentite_1.Identite {
 				? this._options.taillePiedHoraire
 				: 0) -
 			(this._cache.scrollHVisible
-				? GNavigateur.getLargeurBarreDeScroll()
+				? ObjetNavigateur_1.Navigateur.getLargeurBarreDeScroll()
 				: this._options.hauteurBasGrilleSansScroll) -
 			1 -
 			(this._options.margeHauteur || 0);
-		if (this._estModeTactile()) {
-			ObjetHtml_1.GHtml.setDisplay(this.idConteneurGrille, true);
-		}
 		return Math.max(lHeight, this.ScrollV.tailleMin);
 	}
 	getLargeurMaxGrille() {
-		if (this._estModeTactile()) {
-			ObjetHtml_1.GHtml.setDisplay(this.idConteneurGrille, false);
-		}
 		const lWidth =
 			ObjetPosition_1.GPosition.getWidth(this.getNom()) -
 			this.getLargeurTitreLignes() -
@@ -795,11 +779,8 @@ class _ObjetGrille extends ObjetIdentite_1.Identite {
 			this._options.taillePiedHoraire > 0
 				? this._options.taillePiedHoraire
 				: 0) -
-			GNavigateur.getLargeurBarreDeScroll() -
+			ObjetNavigateur_1.Navigateur.getLargeurBarreDeScroll() -
 			2;
-		if (this._estModeTactile()) {
-			ObjetHtml_1.GHtml.setDisplay(this.idConteneurGrille, true);
-		}
 		return lWidth;
 	}
 	resetValeurZoom() {
@@ -1868,9 +1849,6 @@ class _ObjetGrille extends ObjetIdentite_1.Identite {
 		this.ScrollV.scrollToElement(aNode);
 		this.ScrollH.scrollToElement(aNode);
 	}
-	_estModeTactile() {
-		return GNavigateur.isLayoutTactile && this._options.avecModeTactile;
-	}
 	_getTaillePasHoraire(aTaille) {
 		let lTaille = 0;
 		let lHoraire;
@@ -2170,7 +2148,7 @@ class _ObjetGrille extends ObjetIdentite_1.Identite {
 				H.push(
 					'<div id="',
 					this._cache.idTitreTranche + aNumeroTranche,
-					'" aria-hidden="true" class="InlineBlock WhiteSpaceNormal AlignementMilieuVertical AlignementMilieu" style="width:' +
+					'" class="InlineBlock WhiteSpaceNormal AlignementMilieuVertical AlignementMilieu" style="width:' +
 						this.largeurCellule +
 						'px; position:relative;">',
 					this._options.getLibelleTranche
@@ -2337,7 +2315,9 @@ class _ObjetGrille extends ObjetIdentite_1.Identite {
 					1;
 				const lStyleDeco =
 					"overflow:hidden;" +
-					ObjetStyle_1.GStyle.composeCouleurFond(GCouleur.themeNeutre.moyen1);
+					ObjetStyle_1.GStyle.composeCouleurFond(
+						(0, AccessApp_1.getApp)().getCouleur().themeNeutre.moyen1,
+					);
 				let lTailleDispoLibelle = lTaille;
 				if (this._options.grilleInverse) {
 					H.push(
@@ -2675,14 +2655,8 @@ class _ObjetGrille extends ObjetIdentite_1.Identite {
 	}
 	_composeCalques(aWidth, aHeight) {
 		const H = [];
-		const lWidthZone =
-			this._estModeTactile() && !this._options.avecScrollEnTactileH
-				? aWidth
-				: Math.min(aWidth, this._getTailleZone(false));
-		const lHeightZone =
-			this._estModeTactile() && !this._options.avecScrollEnTactileV
-				? aHeight
-				: Math.min(aHeight, this._getTailleZone(true));
+		const lWidthZone = Math.min(aWidth, this._getTailleZone(false));
+		const lHeightZone = Math.min(aHeight, this._getTailleZone(true));
 		this._cache.canvasPartiel = aWidth > lWidthZone || aHeight > lHeightZone;
 		this._cache.positionCanvasPartiel = {
 			left: 0,
@@ -2805,16 +2779,21 @@ class _ObjetGrille extends ObjetIdentite_1.Identite {
 		if (this.composeContenuPiedTranche) {
 			for (lITranche = 0; lITranche < lNbTranches; lITranche++) {
 				H.push(
-					'<div class="AlignementMilieu" style="',
-					lEstGrilleInverse
-						? ObjetStyle_1.GStyle.composeHeight(this.hauteurCellule)
-						: ObjetStyle_1.GStyle.composeWidth(this.largeurCellule),
-					'position:relative;">',
-					this.composeContenuPiedTranche({
-						numeroTranche: lITranche,
-						derniereTranche: lITranche === lNbTranches - 1,
-					}),
-					"</div>",
+					IE.jsx.str(
+						"div",
+						{
+							class: "AlignementMilieu",
+							style: {
+								height: lEstGrilleInverse ? this.hauteurCellule : null,
+								width: lEstGrilleInverse ? null : this.largeurCellule,
+								position: "relative",
+							},
+						},
+						this.composeContenuPiedTranche({
+							numeroTranche: lITranche,
+							derniereTranche: lITranche === lNbTranches - 1,
+						}),
+					),
 				);
 				const lGouttiere = this._options.tranches.getTailleGouttiere(lITranche);
 				if (lGouttiere) {
@@ -2910,7 +2889,7 @@ class _ObjetGrille extends ObjetIdentite_1.Identite {
 			'" class="piedScroll" style="',
 			ObjetStyle_1.GStyle.composeHeight(
 				this._cache.scrollHVisible
-					? GNavigateur.getLargeurBarreDeScroll()
+					? ObjetNavigateur_1.Navigateur.getLargeurBarreDeScroll()
 					: this._options.hauteurBasGrilleSansScroll,
 			),
 			'">',

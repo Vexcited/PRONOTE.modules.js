@@ -29,7 +29,7 @@ class WidgetPersonnelsAbsents extends ObjetWidget_1.Widget.ObjetWidget {
 		this.creerObjetsPersonnelsAbsents();
 		this.ComboPersonnelsAbsents.Selection = 0;
 		const lWidget = {
-			html: this.composeWidgetPersonnelsAbsents(),
+			getHtml: this.composeWidgetPersonnelsAbsents.bind(this),
 			nbrElements: null,
 			afficherMessage:
 				!this.donnees.listePersonnelsAbsents ||

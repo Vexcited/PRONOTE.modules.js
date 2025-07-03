@@ -1,20 +1,9 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteCreationDevoirDNL extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
-	lancerRequete(aParam) {
-		this.JSON = { service: aParam.service.toJSON() };
-		return this.appelAsynchrone();
-	}
-	actionApresRequete() {
-		this.callbackReussite.appel(this.JSONRapportSaisie);
-	}
-}
-Requetes.inscrire(
+exports.ObjetRequeteCreationDevoirDNL = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteCreationDevoirDNL extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
+exports.ObjetRequeteCreationDevoirDNL = ObjetRequeteCreationDevoirDNL;
+CollectionRequetes_1.Requetes.inscrire(
 	"CreationDevoirDNL",
 	ObjetRequeteCreationDevoirDNL,
-	ObjetRequeteSaisie,
 );
-module.exports = { ObjetRequeteCreationDevoirDNL };

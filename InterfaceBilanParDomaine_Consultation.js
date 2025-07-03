@@ -1,30 +1,29 @@
-const { GHtml } = require("ObjetHtml.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { _InterfaceBilanParDomaine } = require("_InterfaceBilanParDomaine.js");
-const { EGenreMessage } = require("Enumere_Message.js");
-const { ObjetSaisiePN } = require("ObjetSaisiePN.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-class InterfaceBilanParDomaine_Consultation extends _InterfaceBilanParDomaine {
+exports.InterfaceBilanParDomaine_Consultation = void 0;
+const ObjetHtml_1 = require("ObjetHtml");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const _InterfaceBilanParDomaine_1 = require("_InterfaceBilanParDomaine");
+const Enumere_Message_1 = require("Enumere_Message");
+const ObjetSaisiePN_1 = require("ObjetSaisiePN");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+class InterfaceBilanParDomaine_Consultation extends _InterfaceBilanParDomaine_1._InterfaceBilanParDomaine {
 	constructor(...aParams) {
 		super(...aParams);
 	}
 	construireInstances() {
 		super.construireInstances();
 		this.identComboPalier = this.add(
-			ObjetSaisiePN,
+			ObjetSaisiePN_1.ObjetSaisiePN,
 			this.evenementSurComboPalier,
-			_initialiserComboPalier,
+			this._initialiserComboPalier,
 		);
 		this.identComboPilier = this.add(
-			ObjetSaisiePN,
+			ObjetSaisiePN_1.ObjetSaisiePN,
 			this.evenementSurComboPilier,
-			_initialiserComboPilier,
+			this._initialiserComboPilier,
 		);
 		this.IdPremierElement = this.getInstance(
 			this.identComboPilier,
@@ -43,41 +42,68 @@ class InterfaceBilanParDomaine_Consultation extends _InterfaceBilanParDomaine {
 	}
 	recupererDonnees() {
 		const lListePaliers =
-			GEtatUtilisateur.getOngletListePaliers() || new ObjetListeElements();
+			this.etatUtilisateurSco.getOngletListePaliers() ||
+			new ObjetListeElements_1.ObjetListeElements();
 		if (lListePaliers.count() === 0) {
-			GHtml.setDisplay(this.getInstance(this.identComboPalier).getNom(), false);
-			GHtml.setDisplay(this.getInstance(this.identComboPilier).getNom(), false);
-			this.evenementAfficherMessage(EGenreMessage.AucunPilierPourEleve);
+			ObjetHtml_1.GHtml.setDisplay(
+				this.getNomInstance(this.identComboPalier),
+				false,
+			);
+			ObjetHtml_1.GHtml.setDisplay(
+				this.getNomInstance(this.identComboPilier),
+				false,
+			);
+			this.evenementAfficherMessage(
+				Enumere_Message_1.EGenreMessage.AucunPilierPourEleve,
+			);
 		} else {
 			this.getInstance(this.identComboPalier).setDonnees(lListePaliers, 0);
 		}
 	}
 	getListeEleves() {
-		const result = new ObjetListeElements();
-		result.addElement(GEtatUtilisateur.getMembre());
+		const result = new ObjetListeElements_1.ObjetListeElements();
+		result.addElement(this.etatUtilisateurSco.getMembre());
 		return result;
 	}
 	getServiceConcerne() {
-		const lPilierSelectionne = GEtatUtilisateur.Navigation.getRessource(
-			EGenreRessource.Pilier,
+		const lPilierSelectionne = this.etatUtilisateurSco.Navigation.getRessource(
+			Enumere_Ressource_1.EGenreRessource.Pilier,
 		);
 		return !!lPilierSelectionne ? lPilierSelectionne.Service : null;
 	}
+	_initialiserComboPalier(aInstance) {
+		aInstance.setOptionsObjetSaisie({
+			longueur: 100,
+			avecTriListeElements: true,
+			labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+				"WAI.listeSelectionPalier",
+			),
+		});
+	}
 	evenementSurComboPalier(aParams) {
-		if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
-			GEtatUtilisateur.Navigation.setRessource(
-				EGenreRessource.Palier,
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
+			this.etatUtilisateurSco.Navigation.setRessource(
+				Enumere_Ressource_1.EGenreRessource.Palier,
 				aParams.element,
 			);
-			GEtatUtilisateur.Navigation.setRessource(EGenreRessource.Pilier, null);
+			this.etatUtilisateurSco.Navigation.setRessource(
+				Enumere_Ressource_1.EGenreRessource.Pilier,
+				null,
+			);
 			let lAvecSocleCommun = false;
 			let lAvecPersonnalise = false;
 			let lPilier;
-			const lListePiliers = new ObjetListeElements();
+			const lListePiliers = new ObjetListeElements_1.ObjetListeElements();
 			const lListePiliersOnglet =
-				aParams.element.listePiliers || new ObjetListeElements();
+				aParams.element.listePiliers ||
+				new ObjetListeElements_1.ObjetListeElements();
 			if (lListePiliersOnglet.count() === 0) {
-				this.evenementAfficherMessage(EGenreMessage.AucunPilierPourEleve);
+				this.evenementAfficherMessage(
+					Enumere_Message_1.EGenreMessage.AucunPilierPourEleve,
+				);
 			} else {
 				for (let i = 0; i < lListePiliersOnglet.count(); i++) {
 					lPilier = lListePiliersOnglet.get(i);
@@ -92,15 +118,15 @@ class InterfaceBilanParDomaine_Consultation extends _InterfaceBilanParDomaine {
 				}
 				lListePiliers.add(lListePiliersOnglet);
 				if (lAvecSocleCommun && lAvecPersonnalise) {
-					lPilier = new ObjetElement(
-						GTraductions.getValeur("pilier.socleCommun"),
+					lPilier = new ObjetElement_1.ObjetElement(
+						ObjetTraduction_1.GTraductions.getValeur("pilier.socleCommun"),
 					);
 					lPilier.positionSocle = 0;
 					lPilier.Position = -1;
 					lPilier.AvecSelection = false;
 					lListePiliers.addElement(lPilier);
-					lPilier = new ObjetElement(
-						GTraductions.getValeur("pilier.personnalise"),
+					lPilier = new ObjetElement_1.ObjetElement(
+						ObjetTraduction_1.GTraductions.getValeur("pilier.personnalise"),
 					);
 					lPilier.positionSocle = 2;
 					lPilier.Position = -1;
@@ -108,10 +134,10 @@ class InterfaceBilanParDomaine_Consultation extends _InterfaceBilanParDomaine {
 					lListePiliers.addElement(lPilier);
 				}
 				lListePiliers.setTri([
-					ObjetTri.init((D) => {
+					ObjetTri_1.ObjetTri.init((D) => {
 						return D.positionSocle;
 					}),
-					ObjetTri.init((D) => {
+					ObjetTri_1.ObjetTri.init((D) => {
 						return D.getPosition();
 					}),
 				]);
@@ -124,33 +150,32 @@ class InterfaceBilanParDomaine_Consultation extends _InterfaceBilanParDomaine {
 			}
 		}
 	}
+	_initialiserComboPilier(aInstance) {
+		const lOptions = {
+			longueur: 450,
+			largeurListe: 450,
+			avecTriListeElements: true,
+			getClassElement: (aParams) => {
+				return aParams.element.Position === -1 ? "titre-liste" : "";
+			},
+			labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+				"WAI.listeSelectionCompetence",
+			),
+		};
+		aInstance.setOptionsObjetSaisie(lOptions);
+	}
 	evenementSurComboPilier(aParams) {
-		if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
-			GEtatUtilisateur.Navigation.setRessource(
-				EGenreRessource.Pilier,
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
+			this.etatUtilisateurSco.Navigation.setRessource(
+				Enumere_Ressource_1.EGenreRessource.Pilier,
 				aParams.element,
 			);
 			this.afficherPage();
 		}
 	}
 }
-function _initialiserComboPalier(aInstance) {
-	aInstance.setOptionsObjetSaisie({
-		longueur: 100,
-		avecTriListeElements: true,
-		labelWAICellule: GTraductions.getValeur("WAI.listeSelectionPalier"),
-	});
-}
-function _initialiserComboPilier(aInstance) {
-	const lOptions = {
-		longueur: 450,
-		largeurListe: 450,
-		avecTriListeElements: true,
-		getClassElement: function (aParams) {
-			return aParams.element.Position === -1 ? "titre-liste" : "";
-		},
-		labelWAICellule: GTraductions.getValeur("WAI.listeSelectionCompetence"),
-	};
-	aInstance.setOptionsObjetSaisie(lOptions);
-}
-module.exports = InterfaceBilanParDomaine_Consultation;
+exports.InterfaceBilanParDomaine_Consultation =
+	InterfaceBilanParDomaine_Consultation;

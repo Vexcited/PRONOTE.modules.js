@@ -2,12 +2,16 @@ const IEHtml = require("IEHtml");
 const c_id_attribut_resizeObserver = "ie-resize-observer";
 IEHtml.addAttribut(
 	c_id_attribut_resizeObserver,
-	(aContexteCourant, aNodeName, aAttributValue, aOutils) => {
+	(aContexteCourant, aNodeName, aAttributValue, aOutils, aComp, aAttrName) => {
 		const lValue = aAttributValue || "";
-		if (!lValue || !aContexteCourant.controleur) {
+		if (!lValue) {
 			return true;
 		}
-		const lInfos = aOutils.getAccesParametres(lValue, aContexteCourant);
+		const lInfos = aOutils.getAccesParametres(
+			lValue,
+			aAttrName,
+			aContexteCourant,
+		);
 		if (!lInfos.estFonction) {
 			return true;
 		}

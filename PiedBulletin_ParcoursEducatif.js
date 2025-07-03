@@ -1,36 +1,42 @@
-const { InterfaceParcoursPeda } = require("InterfaceParcoursPeda.js");
-const { ObjetInterface } = require("ObjetInterface.js");
-const { TypeGenreMaquetteBulletin } = require("TypeGenreMaquetteBulletin.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { TypeContexteBulletin } = require("TypeContexteBulletin.js");
-const {
-	TypeModeAffichagePiedBulletin,
-} = require("TypeModeAffichagePiedBulletin.js");
-const {
-	TypeModuleFonctionnelPiedBulletin,
-	TypeModuleFonctionnelPiedBulletinUtil,
-} = require("TypeModuleFonctionnelPiedBulletin.js");
-const { EGenreOnglet } = require("Enumere_Onglet.js");
-class PiedBulletin_ParcoursEducatif extends ObjetInterface {
-	constructor(...aParams) {
-		super(...aParams);
+exports.PiedBulletin_ParcoursEducatif = void 0;
+const InterfaceParcoursPeda_1 = require("InterfaceParcoursPeda");
+const ObjetInterface_1 = require("ObjetInterface");
+const TypeGenreMaquetteBulletin_1 = require("TypeGenreMaquetteBulletin");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const TypeContexteBulletin_1 = require("TypeContexteBulletin");
+const TypeModeAffichagePiedBulletin_1 = require("TypeModeAffichagePiedBulletin");
+const TypeModuleFonctionnelPiedBulletin_1 = require("TypeModuleFonctionnelPiedBulletin");
+const Enumere_Onglet_1 = require("Enumere_Onglet");
+const AccessApp_1 = require("AccessApp");
+class PiedBulletin_ParcoursEducatif extends ObjetInterface_1.ObjetInterface {
+	constructor() {
+		super(...arguments);
 		this.params = {
-			modeAffichage: TypeModeAffichagePiedBulletin.MAPB_Onglets,
+			modeAffichage:
+				TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+					.MAPB_Onglets,
 			avecContenuVide: false,
 			avecTitreModule: false,
 			periodeCloture: false,
 			droits: { avecSaisie: false },
 		};
+		this.etatUtilSco = (0, AccessApp_1.getApp)().getEtatUtilisateur();
 	}
 	construireInstances() {
 		this.identParcoursEducatif = this.add(
-			InterfaceParcoursPeda,
+			InterfaceParcoursPeda_1.InterfaceParcoursPeda,
 			null,
 			(aInstance) => {
-				aInstance.avecEventResizeNavigateur = function () {
-					return false;
-				};
+				aInstance.setAvecEventResizeNavigateur(false);
+				aInstance.setOptions({
+					ariaLabelListe: () => {
+						return TypeModuleFonctionnelPiedBulletin_1.TypeModuleFonctionnelPiedBulletinUtil.getLibelle(
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_ParcoursEducatif,
+						);
+					},
+				});
 			},
 		);
 	}
@@ -43,8 +49,9 @@ class PiedBulletin_ParcoursEducatif extends ObjetInterface {
 		const T = [];
 		T.push('<div class="EspaceBas EspaceHaut Gras">');
 		T.push(
-			TypeModuleFonctionnelPiedBulletinUtil.getLibelle(
-				TypeModuleFonctionnelPiedBulletin.MFPB_ParcoursEducatif,
+			TypeModuleFonctionnelPiedBulletin_1.TypeModuleFonctionnelPiedBulletinUtil.getLibelle(
+				TypeModuleFonctionnelPiedBulletin_1.TypeModuleFonctionnelPiedBulletin
+					.MFPB_ParcoursEducatif,
 			),
 		);
 		T.push("</div>");
@@ -58,8 +65,8 @@ class PiedBulletin_ParcoursEducatif extends ObjetInterface {
 		$.extend(true, this.params, aParam);
 	}
 	estAffiche() {
-		const lPeriode = GEtatUtilisateur.Navigation.getRessource(
-			EGenreRessource.Periode,
+		const lPeriode = this.etatUtilSco.Navigation.getRessource(
+			Enumere_Ressource_1.EGenreRessource.Periode,
 		);
 		let lEstPeriodeValable = true;
 		if (!lPeriode || !lPeriode.existeNumero()) {
@@ -89,43 +96,49 @@ class PiedBulletin_ParcoursEducatif extends ObjetInterface {
 	afficher(aParam) {
 		$.extend(true, this.params, aParam);
 		switch (aParam.modeAffichage) {
-			case TypeModeAffichagePiedBulletin.MAPB_Onglets:
-			case TypeModeAffichagePiedBulletin.MAPB_Lineaire:
+			case TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+				.MAPB_Onglets:
+			case TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+				.MAPB_Lineaire:
 				if (this.params.tabGenreParcours.length > 0) {
 					const lTabGenreParcours = this._getTabGenreParcours();
 					const lEstContexteProfs = [
-						EGenreEspace.Professeur,
-						EGenreEspace.PrimProfesseur,
-						EGenreEspace.Etablissement,
-						EGenreEspace.PrimDirection,
-					].includes(GEtatUtilisateur.GenreEspace);
+						Enumere_Espace_1.EGenreEspace.Professeur,
+						Enumere_Espace_1.EGenreEspace.PrimProfesseur,
+						Enumere_Espace_1.EGenreEspace.Etablissement,
+						Enumere_Espace_1.EGenreEspace.PrimDirection,
+					].includes(this.etatUtilSco.GenreEspace);
 					Promise.resolve()
 						.then(() => {
 							return this.getInstance(
 								this.identParcoursEducatif,
-							).recupererDonnees({
-								classeGroupe: GEtatUtilisateur.Navigation.getRessource(
-									EGenreRessource.Classe,
+							).recupererDonnees2({
+								classeGroupe: this.etatUtilSco.Navigation.getRessource(
+									Enumere_Ressource_1.EGenreRessource.Classe,
 								),
-								periode: GEtatUtilisateur.Navigation.getRessource(
-									EGenreRessource.Periode,
+								periode: this.etatUtilSco.Navigation.getRessource(
+									Enumere_Ressource_1.EGenreRessource.Periode,
 								),
 								listeEleves:
-									this.params.contexte === TypeContexteBulletin.CB_Eleve
-										? GEtatUtilisateur.Navigation.getRessources(
-												EGenreRessource.Eleve,
+									this.params.contexte ===
+									TypeContexteBulletin_1.TypeContexteBulletin.CB_Eleve
+										? this.etatUtilSco.Navigation.getRessources(
+												Enumere_Ressource_1.EGenreRessource.Eleve,
 											)
-										: GEtatUtilisateur.Navigation.getRessources(
-												EGenreRessource.Classe,
+										: this.etatUtilSco.Navigation.getRessources(
+												Enumere_Ressource_1.EGenreRessource.Classe,
 											),
 								pourClasseGroupeEntier:
-									this.params.contexte !== TypeContexteBulletin.CB_Eleve,
+									this.params.contexte !==
+									TypeContexteBulletin_1.TypeContexteBulletin.CB_Eleve,
 								genreMaquette: [
-									EGenreOnglet.Bulletins,
-									EGenreOnglet.ConseilDeClasse,
-								].includes(GEtatUtilisateur.getGenreOnglet())
-									? TypeGenreMaquetteBulletin.tGMB_Notes
-									: TypeGenreMaquetteBulletin.tGMB_Competences,
+									Enumere_Onglet_1.EGenreOnglet.Bulletins,
+									Enumere_Onglet_1.EGenreOnglet.ConseilDeClasse,
+								].includes(this.etatUtilSco.getGenreOnglet())
+									? TypeGenreMaquetteBulletin_1.TypeGenreMaquetteBulletin
+											.tGMB_Notes
+									: TypeGenreMaquetteBulletin_1.TypeGenreMaquetteBulletin
+											.tGMB_Competences,
 							});
 						})
 						.then(() => {
@@ -137,19 +150,22 @@ class PiedBulletin_ParcoursEducatif extends ObjetInterface {
 									genreParcours: lTabGenreParcours,
 								},
 								ressources:
-									this.params.contexte === TypeContexteBulletin.CB_Eleve
-										? GEtatUtilisateur.Navigation.getRessources(
-												EGenreRessource.Eleve,
+									this.params.contexte ===
+									TypeContexteBulletin_1.TypeContexteBulletin.CB_Eleve
+										? this.etatUtilSco.Navigation.getRessources(
+												Enumere_Ressource_1.EGenreRessource.Eleve,
 											)
-										: GEtatUtilisateur.Navigation.getRessources(
-												EGenreRessource.Classe,
+										: this.etatUtilSco.Navigation.getRessources(
+												Enumere_Ressource_1.EGenreRessource.Classe,
 											),
 								genreMaquette: [
-									EGenreOnglet.Bulletins,
-									EGenreOnglet.ConseilDeClasse,
-								].includes(GEtatUtilisateur.getGenreOnglet())
-									? TypeGenreMaquetteBulletin.tGMB_Notes
-									: TypeGenreMaquetteBulletin.tGMB_Competences,
+									Enumere_Onglet_1.EGenreOnglet.Bulletins,
+									Enumere_Onglet_1.EGenreOnglet.ConseilDeClasse,
+								].includes(this.etatUtilSco.getGenreOnglet())
+									? TypeGenreMaquetteBulletin_1.TypeGenreMaquetteBulletin
+											.tGMB_Notes
+									: TypeGenreMaquetteBulletin_1.TypeGenreMaquetteBulletin
+											.tGMB_Competences,
 								avecTitres: lEstContexteProfs,
 								avecCompteurSurCumul: lEstContexteProfs,
 							});
@@ -161,11 +177,13 @@ class PiedBulletin_ParcoursEducatif extends ObjetInterface {
 	getDonneesSaisie() {
 		if (
 			[
-				TypeModeAffichagePiedBulletin.MAPB_Onglets,
-				TypeModeAffichagePiedBulletin.MAPB_Lineaire,
+				TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+					.MAPB_Onglets,
+				TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+					.MAPB_Lineaire,
 			].includes(this.params.modeAffichage)
 		) {
-			return this.getInstance(this.identParcoursEducatif)._getDonneesSaisie();
+			return this.getInstance(this.identParcoursEducatif).getDonneesSaisie();
 		}
 	}
 	actualiserSurChangementTabOnglet() {
@@ -176,4 +194,4 @@ class PiedBulletin_ParcoursEducatif extends ObjetInterface {
 		}
 	}
 }
-module.exports = { PiedBulletin_ParcoursEducatif };
+exports.PiedBulletin_ParcoursEducatif = PiedBulletin_ParcoursEducatif;

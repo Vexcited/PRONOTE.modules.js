@@ -36,7 +36,6 @@ let Support = {
 	supportCanvas: false,
 	supportCanvasText: false,
 	supportBlob: false,
-	supportNotification: false,
 	speechRecognition: false,
 	speechSynthesis: false,
 	contentEditable: false,
@@ -322,10 +321,6 @@ function _testerSupports(aDoc) {
 		typeof aDoc.createElement("canvas").getContext("2d").fillText === "function"
 	);
 	Support.supportBlob = _supportBlob();
-	Support.supportNotification = _supportNotif();
-	Support.refreshNotification = function () {
-		Support.supportNotification = _supportNotif();
-	};
 	Support.speechRecognition =
 		window.SpeechRecognition || window.webkitSpeechRecognition || null;
 	Support.speechSynthesis = !!window.speechSynthesis;
@@ -358,38 +353,6 @@ function _supportBlob() {
 		return true;
 	}
 	return false;
-}
-function _supportNotif() {
-	let isSupported = false;
-	let windowAny = window;
-	try {
-		isSupported = !!(
-			windowAny.Notification ||
-			windowAny.webkitNotifications ||
-			navigator.mozNotification
-		);
-		if (isSupported) {
-			if (windowAny.Notification && windowAny.Notification.permissionLevel) {
-				isSupported = windowAny.Notification.permissionLevel();
-			} else if (
-				windowAny.webkitNotifications &&
-				windowAny.webkitNotifications.checkPermission
-			) {
-				if (windowAny.webkitNotifications.checkPermission() === 0) {
-					isSupported = Support.permissionNotification.granted;
-				} else if (windowAny.webkitNotifications.checkPermission() === 2) {
-					isSupported = Support.permissionNotification.denied;
-				} else {
-					isSupported = Support.permissionNotification.defaut;
-				}
-			} else if (navigator.mozNotification) {
-				isSupported = Support.permissionNotification.granted;
-			} else if (windowAny.Notification && windowAny.Notification.permission) {
-				isSupported = windowAny.Notification.permission;
-			}
-		}
-	} catch (e) {}
-	return !!isSupported;
 }
 function _testerSupportHtml() {
 	const lBody = document.getElementsByTagName("BODY")[0];

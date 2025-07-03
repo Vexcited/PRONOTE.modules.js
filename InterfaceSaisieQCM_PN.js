@@ -10,11 +10,11 @@ const Enumere_Ressource_1 = require("Enumere_Ressource");
 const TypeHttpGenerationPDFSco_1 = require("TypeHttpGenerationPDFSco");
 const Enumere_Onglet_1 = require("Enumere_Onglet");
 const ObjetListeElements_1 = require("ObjetListeElements");
-const CollectionRequetes_1 = require("CollectionRequetes");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetRequeteListeQCM_1 = require("ObjetRequeteListeQCM");
 const ObjetRequeteSaisieQCM_1 = require("ObjetRequeteSaisieQCM");
 const DonneesListe_FiltresQCM_1 = require("DonneesListe_FiltresQCM");
+const ObjetRequeteListeMatieresPourSaisieEDT_1 = require("ObjetRequeteListeMatieresPourSaisieEDT");
 class InterfaceSaisieQCM_PN extends InterfaceSaisieQCM_1.InterfaceSaisieQCM {
 	constructor(...aParams) {
 		super(...aParams);
@@ -65,9 +65,9 @@ class InterfaceSaisieQCM_PN extends InterfaceSaisieQCM_1.InterfaceSaisieQCM {
 		return !this.etatUtilisateurSco.pourPrimaire();
 	}
 	composeSectionMessage() {
-		const T = [];
+		const H = [];
 		if (this.etatUtilisateurSco.pourPrimaire()) {
-			T.push(
+			H.push(
 				'<div id="',
 				this.idMsgSelect,
 				'" class="ISQ_SectionMessage">',
@@ -77,7 +77,7 @@ class InterfaceSaisieQCM_PN extends InterfaceSaisieQCM_1.InterfaceSaisieQCM {
 				"</div>",
 			);
 		}
-		return T.join("");
+		return H.join("");
 	}
 	faireRequeteListeQCM(aNumeroEltASelectionner, aSurInit = false) {
 		if (this.etatUtilisateurSco.pourPrimaire() && aSurInit === true) {
@@ -236,9 +236,6 @@ class InterfaceSaisieQCM_PN extends InterfaceSaisieQCM_1.InterfaceSaisieQCM {
 			avecProprietaire: lEstModeCollaboratif,
 			estProprietaireEditable: false,
 			avecImportFichier: true,
-			avecImportNathan: this.applicationSco.droits.get(
-				ObjetDroitsPN_1.TypeDroits.fonctionnalites.gestionNathan,
-			),
 			avecCollaboratif: !this.etatUtilisateurSco.pourPrimaire(),
 			avecAssocTAF:
 				!lEstModeCollaboratif && !this.etatUtilisateurSco.pourPrimaire(),
@@ -275,7 +272,9 @@ class InterfaceSaisieQCM_PN extends InterfaceSaisieQCM_1.InterfaceSaisieQCM {
 				Invocateur_1.ObjetInvocateur.events.activationImpression,
 				Enumere_GenreImpression_1.EGenreImpression.Aucune,
 			);
-			(0, CollectionRequetes_1.Requetes)("ListeMatieresPourSaisieEDT", this)
+			new ObjetRequeteListeMatieresPourSaisieEDT_1.ObjetRequeteListeMatieresPourSaisieEDT(
+				this,
+			)
 				.lancerRequete({
 					ressource: this.classePrimSelectionne,
 					estEdtAnnuel: true,

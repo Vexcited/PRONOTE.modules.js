@@ -2,6 +2,7 @@ exports.MoteurDestinataires = void 0;
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const Toast_1 = require("Toast");
+const AccessApp_1 = require("AccessApp");
 class MoteurDestinataires {
 	constructor(aParam) {
 		this.utilitaires = { genreEspace: aParam.genreEspace };
@@ -37,10 +38,12 @@ class MoteurDestinataires {
 					type: Toast_1.ETypeToast.info,
 				});
 			} else {
-				GApplication.getMessage().afficher({
-					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-					message: lMessagePbDestinataires,
-				});
+				(0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+						message: lMessagePbDestinataires,
+					});
 			}
 			return false;
 		} else {

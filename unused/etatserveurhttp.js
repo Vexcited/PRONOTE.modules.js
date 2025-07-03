@@ -3,10 +3,11 @@ const Enumere_CategorieEvenement_1 = require("Enumere_CategorieEvenement");
 const Enumere_Statut_1 = require("Enumere_Statut");
 const Evenement_1 = require("Evenement");
 const WSPublicationServeurHttp_1 = require("WSPublicationServeurHttp");
+const AccessApp_1 = require("AccessApp");
 class EtatServeurHttp {
 	constructor() {
 		this.publication = new WSPublicationServeurHttp_1.TInfosPublicationHttp();
-		this.objetApplicationConsoles = GApplication;
+		this.objetApplicationConsoles = (0, AccessApp_1.getApp)();
 		this.messagesEvenements =
 			this.objetApplicationConsoles.msgEvnts.getMessagesUnite(
 				"EtatServeurHttp.js",
@@ -15,7 +16,7 @@ class EtatServeurHttp {
 	initialiserPublication(aDonnees) {
 		let lMessage;
 		try {
-			this.publication = aDonnees.getElement("return").valeur;
+			this.publication = aDonnees.getElement("return").getValeur();
 		} catch (e) {
 			lMessage = this.messagesEvenements.getMessageEchecBlocTry(e);
 			this.objetApplicationConsoles.gestionEvnts.traiter(
@@ -32,7 +33,7 @@ class EtatServeurHttp {
 	initialiserEtat(aDonnees) {
 		let lMessage;
 		try {
-			this.etat = aDonnees.getElement("return").valeur;
+			this.etat = aDonnees.getElement("return").getValeur();
 		} catch (e) {
 			lMessage = this.messagesEvenements.getMessageEchecBlocTry(e);
 			this.objetApplicationConsoles.gestionEvnts.traiter(

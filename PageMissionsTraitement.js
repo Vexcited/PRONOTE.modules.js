@@ -14,7 +14,6 @@ const Enumere_Etat_1 = require("Enumere_Etat");
 const MethodesObjet_1 = require("MethodesObjet");
 const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
 const Enumere_Onglet_js_1 = require("Enumere_Onglet.js");
-const tag_1 = require("tag");
 const ObjetFenetre_1 = require("ObjetFenetre");
 const Enumere_Ressource_1 = require("Enumere_Ressource");
 const ObjetFenetre_SelectionPublic_js_1 = require("ObjetFenetre_SelectionPublic.js");
@@ -56,6 +55,22 @@ class PageMissionsTraitement extends ObjetIdentite_1.Identite {
 			this.demandeCourante.dateRealisation = "";
 			this.identDateRealisation.setDonnees(null);
 		}
+	}
+	jsxModeleChipsNomPropriete(aExecutant) {
+		return {
+			eventBtn: () => {
+				if (this.moteur.avecDroitGestionTravaux()) {
+					this._evntSupprAttribution(aExecutant.getNumero());
+				}
+				return false;
+			},
+			getDisabled: () => {
+				return !this._estEditable(
+					TypeColonneTravauxIntendance_1.TypeColonneTravauxIntendance
+						.tcti_Executant,
+				);
+			},
+		};
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
@@ -121,23 +136,6 @@ class PageMissionsTraitement extends ObjetIdentite_1.Identite {
 					return aInstance._getHtmlAttributionApresSelection(
 						aInstance.demandeCourante.listeExecutants,
 					);
-				},
-				getDisabled: function () {
-					return !aInstance._estEditable(
-						TypeColonneTravauxIntendance_1.TypeColonneTravauxIntendance
-							.tcti_Executant,
-					);
-				},
-			},
-			chipsAttribution: {
-				event: function () {
-					return true;
-				},
-				eventBtn: function (aNumero) {
-					if (aInstance.droits.avecGestionTravaux) {
-						aInstance._evntSupprAttribution(aNumero);
-					}
-					return false;
 				},
 				getDisabled: function () {
 					return !aInstance._estEditable(
@@ -326,13 +324,11 @@ class PageMissionsTraitement extends ObjetIdentite_1.Identite {
 	setDonnees(aParam) {
 		this.param = MethodesObjet_1.MethodesObjet.dupliquer(aParam);
 		this.demandeCourante = aParam.demandeCourante;
-		this.droits = aParam.droits;
 		this.listeDestination =
 			TypeDestinationDemandeTravaux_1.TypeDestinationDemandeTravauxUtil.toListe(
 				GEtatUtilisateur.GenreEspace ===
 					Enumere_Espace_1.EGenreEspace.PrimMairie,
 			);
-		this.genreTravaux = aParam.genreTravaux;
 		this.dateRealisation = aParam.dateRealisation;
 		this.estEnCreation = aParam.estEnCreation;
 		this.enModification = aParam.enModification;
@@ -350,7 +346,7 @@ class PageMissionsTraitement extends ObjetIdentite_1.Identite {
 			this.estEnCreation = true;
 			this.enModification = false;
 		}
-		this.moteur = new ObjetMoteurTravaux_js_1.ObjetMoteurTravaux(this.param);
+		this.moteur = new ObjetMoteurTravaux_js_1.ObjetMoteurTravaux();
 		this.afficher(this.composeContenu());
 		this.identDateRealisation.initialiser();
 		this.identDateRealisation.setParametresFenetre(
@@ -433,19 +429,16 @@ class PageMissionsTraitement extends ObjetIdentite_1.Identite {
 		);
 		const lDuree = IE.jsx.str(
 			"div",
-			{ class: "field-contain label-up flex-gap-l p-bottom-l" },
+			{ class: "field-contain label-up" },
 			IE.jsx.str(
 				"label",
 				{ class: "active ie-titre-petit" },
 				ObjetTraduction_1.GTraductions.getValeur(
-					"TvxIntendance.colonne.dureeInterventionLong",
+					"TvxIntendance.colonne.dureeIntervention",
 				),
 			),
-			IE.jsx.str(
-				"div",
-				{ class: "flex-contain flex-center flex-gap-l", id: this.idZoneDuree },
-				this._getHtmlDuree(),
-			),
+			IE.jsx.str("div", { id: this.idZoneDuree }, this._getHtmlDuree()),
+			IE.jsx.str("div", null),
 		);
 		return IE.jsx.str(
 			IE.jsx.fragment,
@@ -476,25 +469,28 @@ class PageMissionsTraitement extends ObjetIdentite_1.Identite {
 						placeholder: ObjetTraduction_1.GTraductions.getValeur(
 							"TvxIntendance.TraitementAttributionCommentaire",
 						),
+						"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+							"TvxIntendance.TraitementAttributionCommentaire",
+						),
 					}),
 				),
 				IE.jsx.str(
 					"div",
-					{ class: "field-contain in-row" },
+					{ class: "field-contain label-up" },
 					IE.jsx.str(
 						"label",
-						{ class: ["ie-titre-petit"] },
+						{ class: ["ie-titre-petit m-bottom"] },
 						GEtatUtilisateur.getGenreOnglet() ===
 							Enumere_Onglet_js_1.EGenreOnglet.Intendance_SaisieCommandes
 							? ObjetTraduction_1.GTraductions.getValeur(
 									"TvxIntendance.fenetre.dateReception",
 								)
 							: ObjetTraduction_1.GTraductions.getValeur(
-									"TvxIntendance.colonne.realisationLe",
+									"TvxIntendance.colonne.realiseeLe",
 								),
 					),
 					IE.jsx.str("div", {
-						class: "flex-contain flex-center flex-gap",
+						class: "m-top flex-contain flex-center flex-gap",
 						id: this.identDateRealisation.getNom(),
 					}),
 				),
@@ -504,7 +500,7 @@ class PageMissionsTraitement extends ObjetIdentite_1.Identite {
 					{ class: "field-contain label-up" },
 					IE.jsx.str(
 						"label",
-						{ class: "ie-titre-petit" },
+						null,
 						GEtatUtilisateur.getGenreOnglet() ===
 							Enumere_Onglet_js_1.EGenreOnglet.Intendance_SaisieCommandes
 							? ObjetTraduction_1.GTraductions.getValeur(
@@ -518,6 +514,9 @@ class PageMissionsTraitement extends ObjetIdentite_1.Identite {
 						"ie-model": "inputRemarque",
 						class: "ie-autoresize m-bottom-xl",
 						placeholder: ObjetTraduction_1.GTraductions.getValeur(
+							"TvxIntendance.TraitementRealisationRemarque",
+						),
+						"aria-label": ObjetTraduction_1.GTraductions.getValeur(
 							"TvxIntendance.TraitementRealisationRemarque",
 						),
 					}),
@@ -605,21 +604,32 @@ class PageMissionsTraitement extends ObjetIdentite_1.Identite {
 			}
 			lListeSelection.parcourir((aExecutant) => {
 				if (aExecutant.existe()) {
-					if (this.droits.avecGestionTravaux) {
+					if (this.moteur.avecDroitGestionTravaux()) {
 						T.push(
-							(0, tag_1.tag)(
-								"ie-chips",
-								{
-									"ie-model": tag_1.tag.funcAttr("chipsAttribution", [
-										aExecutant.getNumero(),
-									]),
-									class: "m-all",
-								},
-								aExecutant.getLibelle(),
+							IE.jsx.str(
+								IE.jsx.fragment,
+								null,
+								IE.jsx.str(
+									"ie-chips",
+									{
+										"ie-model": this.jsxModeleChipsNomPropriete.bind(
+											this,
+											aExecutant,
+										),
+										class: "m-all",
+									},
+									aExecutant.getLibelle(),
+								),
 							),
 						);
 					} else {
-						T.push((0, tag_1.tag)("ie-chips", aExecutant.getLibelle()));
+						T.push(
+							IE.jsx.str(
+								IE.jsx.fragment,
+								null,
+								IE.jsx.str("ie-chips", null, aExecutant.getLibelle()),
+							),
+						);
 					}
 				}
 			});
@@ -684,45 +694,49 @@ class PageMissionsTraitement extends ObjetIdentite_1.Identite {
 			null,
 			IE.jsx.str(
 				"div",
-				{ class: "flex-inline-contain flex-center" },
+				{ class: "flex-contain flex-center" },
 				IE.jsx.str(
-					"label",
-					{ class: "marge", id: idDureeJour },
-					ObjetTraduction_1.GTraductions.getValeur("TvxIntendance.Jours"),
+					"div",
+					{ class: "flex-contain EspaceMobileIndex " },
+					IE.jsx.str(
+						"label",
+						{ class: "m-right-xl m-left-xl m-top-l", id: idDureeJour },
+						ObjetTraduction_1.GTraductions.getValeur("TvxIntendance.Jours"),
+					),
+					IE.jsx.str("ie-combo", {
+						"ie-model": "comboJours",
+						class: "combo-classic",
+						"aria-labelledby": idDureeJour,
+					}),
 				),
-				IE.jsx.str("ie-combo", {
-					"ie-model": "comboJours",
-					class: "combo-classic",
-					"aria-labelledby": idDureeJour,
-				}),
-			),
-			IE.jsx.str(
-				"div",
-				{ class: "flex-inline-contain flex-center" },
 				IE.jsx.str(
-					"label",
-					{ class: "marge", id: idDureeHeure },
-					ObjetTraduction_1.GTraductions.getValeur("TvxIntendance.Heures"),
+					"div",
+					{ class: "flex-contain EspaceMobileIndex " },
+					IE.jsx.str(
+						"label",
+						{ class: "m-right-xl m-left-xl m-top-l", id: idDureeHeure },
+						ObjetTraduction_1.GTraductions.getValeur("TvxIntendance.Heures"),
+					),
+					IE.jsx.str("ie-combo", {
+						"ie-model": "comboHeures",
+						class: "combo-classic",
+						"aria-labelledby": idDureeHeure,
+					}),
 				),
-				IE.jsx.str("ie-combo", {
-					"ie-model": "comboHeures",
-					class: "combo-classic",
-					"aria-labelledby": idDureeHeure,
-				}),
-			),
-			IE.jsx.str(
-				"div",
-				{ class: "flex-inline-contain flex-center" },
 				IE.jsx.str(
-					"label",
-					{ class: "marge", id: idDureeMinute },
-					ObjetTraduction_1.GTraductions.getValeur("TvxIntendance.Minutes"),
+					"div",
+					{ class: "flex-contain EspaceMobileIndex " },
+					IE.jsx.str(
+						"label",
+						{ class: "m-right-xl m-left-xl m-top-l", id: idDureeMinute },
+						ObjetTraduction_1.GTraductions.getValeur("TvxIntendance.Minutes"),
+					),
+					IE.jsx.str("ie-combo", {
+						"ie-model": "comboMinutes",
+						class: "combo-classic",
+						"aria-labelledby": idDureeMinute,
+					}),
 				),
-				IE.jsx.str("ie-combo", {
-					"ie-model": "comboMinutes",
-					class: "combo-classic",
-					"aria-labelledby": idDureeMinute,
-				}),
 			),
 		);
 	}

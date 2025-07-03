@@ -1,7 +1,7 @@
 exports.ObjetSelecteurPJ = void 0;
 const ObjetSelecteurPJCP_1 = require("ObjetSelecteurPJCP");
 const Enumere_Ressource_1 = require("Enumere_Ressource");
-const ObjetFenetre_PieceJointe = require("ObjetFenetre_PieceJointe");
+const ObjetFenetre_PieceJointe_1 = require("ObjetFenetre_PieceJointe");
 const UtilitaireGestionCloudEtPDF_1 = require("UtilitaireGestionCloudEtPDF");
 class ObjetSelecteurPJ extends ObjetSelecteurPJCP_1.ObjetSelecteurPJCP {
 	_initialiserOptions() {
@@ -13,9 +13,9 @@ class ObjetSelecteurPJ extends ObjetSelecteurPJCP_1.ObjetSelecteurPJCP {
 	}
 	construireInstances() {
 		super.construireInstances();
-		if (ObjetFenetre_PieceJointe) {
+		if (ObjetFenetre_PieceJointe_1.ObjetFenetre_PieceJointe) {
 			this.identEditionPJ = this.addFenetre(
-				ObjetFenetre_PieceJointe,
+				ObjetFenetre_PieceJointe_1.ObjetFenetre_PieceJointe,
 				this.evntEditionPJ,
 				this.initEditionPJ,
 			);
@@ -24,6 +24,16 @@ class ObjetSelecteurPJ extends ObjetSelecteurPJCP_1.ObjetSelecteurPJCP {
 	ouvrirFenetreChoixListeCloud(aCallbackParFichier, aCallbackFinal) {
 		UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF.ouvrirFenetreCloud(
 			{ instance: this },
+		).then((aListeDocuments) => {
+			aListeDocuments.parcourir((aElement) => {
+				aCallbackParFichier(aElement);
+			});
+			aCallbackFinal();
+		});
+	}
+	ouvrirFenetreCloudENEJ(aCallbackParFichier, aCallbackFinal) {
+		UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF.ouvrirFenetreChoixFichierCloud(
+			{ instance: this, service: GEtatUtilisateur.getCloudENEJ() },
 		).then((aListeDocuments) => {
 			aListeDocuments.parcourir((aElement) => {
 				aCallbackParFichier(aElement);

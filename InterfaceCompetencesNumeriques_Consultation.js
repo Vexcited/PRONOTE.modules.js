@@ -1,31 +1,25 @@
-const { GHtml } = require("ObjetHtml.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const {
-	_InterfaceCompetencesNumeriques,
-} = require("_InterfaceCompetencesNumeriques.js");
-const { EGenreMessage } = require("Enumere_Message.js");
-const {
-	ObjetRequeteCompetencesNumeriques,
-} = require("ObjetRequeteCompetencesNumeriques.js");
-const { ObjetSaisiePN } = require("ObjetSaisiePN.js");
-const { TypeHttpGenerationPDFSco } = require("TypeHttpGenerationPDFSco.js");
-const { ObjetInvocateur, Invocateur } = require("Invocateur.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { EGenreImpression } = require("Enumere_GenreImpression.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class InterfaceCompetencesNumeriques_Consultation extends _InterfaceCompetencesNumeriques {
+exports.InterfaceCompetencesNumeriques_Consultation = void 0;
+const ObjetHtml_1 = require("ObjetHtml");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const _InterfaceCompetencesNumeriques_1 = require("_InterfaceCompetencesNumeriques");
+const Enumere_Message_1 = require("Enumere_Message");
+const ObjetSaisiePN_1 = require("ObjetSaisiePN");
+const TypeHttpGenerationPDFSco_1 = require("TypeHttpGenerationPDFSco");
+const Invocateur_1 = require("Invocateur");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const Enumere_GenreImpression_1 = require("Enumere_GenreImpression");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class InterfaceCompetencesNumeriques_Consultation extends _InterfaceCompetencesNumeriques_1._InterfaceCompetencesNumeriques {
 	constructor(...aParams) {
 		super(...aParams);
 	}
 	construireInstances() {
 		super.construireInstances();
 		this.identComboPalier = this.add(
-			ObjetSaisiePN,
+			ObjetSaisiePN_1.ObjetSaisiePN,
 			this.evenementSurComboPalier,
-			_initialiserComboPalier,
+			this._initialiserComboPalier,
 		);
 		this.IdPremierElement = this.getInstance(
 			this.identComboPalier,
@@ -43,60 +37,66 @@ class InterfaceCompetencesNumeriques_Consultation extends _InterfaceCompetencesN
 	}
 	recupererDonnees() {
 		const lListePaliers =
-			GEtatUtilisateur.getOngletListePaliers() || new ObjetListeElements();
-		GHtml.setDisplay(
-			this.getInstance(this.identComboPalier).getNom(),
+			this.etatUtilisateurSco.getOngletListePaliers() ||
+			new ObjetListeElements_1.ObjetListeElements();
+		ObjetHtml_1.GHtml.setDisplay(
+			this.getNomInstance(this.identComboPalier),
 			lListePaliers.count() > 1,
 		);
 		if (lListePaliers.count() === 0) {
-			this.evenementAfficherMessage(EGenreMessage.AucunPilierPourEleve);
+			this.evenementAfficherMessage(
+				Enumere_Message_1.EGenreMessage.AucunPilierPourEleve,
+			);
 		} else {
 			this.getInstance(this.identComboPalier).setDonnees(lListePaliers, 0);
 		}
 	}
 	_actualiserCommandePDF() {
 		if (
-			GApplication.droits.get(
-				TypeDroits.autoriserImpressionBulletinReleveBrevet,
+			this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.autoriserImpressionBulletinReleveBrevet,
 			)
 		) {
-			Invocateur.evenement(
-				ObjetInvocateur.events.activationImpression,
-				EGenreImpression.GenerationPDF,
+			Invocateur_1.Invocateur.evenement(
+				Invocateur_1.ObjetInvocateur.events.activationImpression,
+				Enumere_GenreImpression_1.EGenreImpression.GenerationPDF,
 				this,
-				this._getParametresPDF.bind(this),
+				this.getParametresPDF.bind(this),
 			);
 		}
 	}
-	afficherPage() {
-		new ObjetRequeteCompetencesNumeriques(
-			this,
-			this._reponseRequeteCompetences,
-		).lancerRequete({
-			eleve: GEtatUtilisateur.getMembre(),
-			filtrerNiveauxSansEvaluation: this.filtrerNiveauxSansEvaluation,
-		});
-	}
-	_getParametresPDF() {
+	getParametresRequete() {
 		return {
-			genreGenerationPDF: TypeHttpGenerationPDFSco.LivretCompetenceNumerique,
-			parametres: this.parametres,
+			eleve: this.etatUtilisateurSco.getMembre(),
 			filtrerNiveauxSansEvaluation: this.filtrerNiveauxSansEvaluation,
-			avecCodeCompetences: GEtatUtilisateur.estAvecCodeCompetences(),
 		};
 	}
+	getParametresPDF() {
+		return {
+			genreGenerationPDF:
+				TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco
+					.LivretCompetenceNumerique,
+			filtrerNiveauxSansEvaluation: this.filtrerNiveauxSansEvaluation,
+			avecCodeCompetences: this.etatUtilisateurSco.estAvecCodeCompetences(),
+		};
+	}
+	_initialiserComboPalier(aInstance) {
+		aInstance.setOptionsObjetSaisie({
+			avecTriListeElements: true,
+			longueur: 150,
+			labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+				"WAI.listeSelectionPalier",
+			),
+		});
+	}
 	evenementSurComboPalier(aParams) {
-		if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
-			this.selection = { palier: aParams.element };
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
 			this.afficherPage();
 		}
 	}
 }
-function _initialiserComboPalier(aInstance) {
-	aInstance.setOptionsObjetSaisie({
-		avecTriListeElements: true,
-		longueur: 150,
-		labelWAICellule: GTraductions.getValeur("WAI.listeSelectionPalier"),
-	});
-}
-module.exports = { InterfaceCompetencesNumeriques_Consultation };
+exports.InterfaceCompetencesNumeriques_Consultation =
+	InterfaceCompetencesNumeriques_Consultation;

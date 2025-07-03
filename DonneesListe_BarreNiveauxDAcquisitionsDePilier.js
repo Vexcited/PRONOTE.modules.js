@@ -1,20 +1,14 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreNiveauDAcquisition } = require("Enumere_NiveauDAcquisition.js");
-const { TUtilitaireCompetences } = require("UtilitaireCompetences.js");
-class DonneesListe_BarreNiveauxDAcquisitionsDePilier extends ObjetDonneesListe {
+exports.DonneesListe_BarreNiveauxDAcquisitionsDePilier = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_NiveauDAcquisition_1 = require("Enumere_NiveauDAcquisition");
+const UtilitaireCompetences_1 = require("UtilitaireCompetences");
+class DonneesListe_BarreNiveauxDAcquisitionsDePilier extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParams) {
 		super(aDonnees);
-		this.parametres = Object.assign(
-			{ afficheJaugesChronologiques: false },
-			aParams,
-		);
+		this.parametres = aParams;
 		this.creerIndexUnique("Libelle");
-		this.setOptions({
-			avecCreation: false,
-			avecEdition: false,
-			avecSuppression: false,
-		});
+		this.setOptions({ avecEdition: false, avecSuppression: false });
 	}
 	getVisible(D) {
 		if (!this.parametres.afficheJaugesChronologiques) {
@@ -22,8 +16,10 @@ class DonneesListe_BarreNiveauxDAcquisitionsDePilier extends ObjetDonneesListe {
 			if (!!D.listeNiveaux) {
 				D.listeNiveaux.parcourir((aNiveau) => {
 					if (
-						aNiveau.getGenre() !== EGenreNiveauDAcquisition.Absent &&
-						aNiveau.getGenre() !== EGenreNiveauDAcquisition.NonEvalue
+						aNiveau.getGenre() !==
+							Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisition.Absent &&
+						aNiveau.getGenre() !==
+							Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisition.NonEvalue
 					) {
 						lResult = true;
 						return false;
@@ -37,40 +33,45 @@ class DonneesListe_BarreNiveauxDAcquisitionsDePilier extends ObjetDonneesListe {
 	getTypeValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_BarreNiveauxDAcquisitionsDePilier.colonnes.jauge:
-				return ObjetDonneesListe.ETypeCellule.Html;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
 	getValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_BarreNiveauxDAcquisitionsDePilier.colonnes.domaine:
 				return (
 					aParams.article.getLibelle() ||
-					GTraductions.getValeur(
+					ObjetTraduction_1.GTraductions.getValeur(
 						"Fenetre_BarreNiveauxDacquisitions.SansLienAvecLeDomaineDuSocle",
 					)
 				);
 			case DonneesListe_BarreNiveauxDAcquisitionsDePilier.colonnes.jauge:
 				if (this.parametres.afficheJaugesChronologiques) {
-					return TUtilitaireCompetences.composeJaugeChronologique({
-						listeNiveaux: aParams.article.listeNiveauxChronologiques,
-						hint: TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionChronologique(
-							aParams.article.listeNiveauxChronologiques,
-						),
-					});
+					return UtilitaireCompetences_1.TUtilitaireCompetences.composeJaugeChronologique(
+						{
+							listeNiveaux: aParams.article.listeNiveauxChronologiques,
+							hint: UtilitaireCompetences_1.TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionChronologique(
+								aParams.article.listeNiveauxChronologiques,
+							),
+						},
+					);
 				} else {
-					return TUtilitaireCompetences.composeJaugeParNiveaux({
-						listeNiveaux: aParams.article.listeNiveaux,
-						hint: TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionParNiveauOuPastille(
-							aParams.article.listeNiveaux,
-						),
-					});
+					return UtilitaireCompetences_1.TUtilitaireCompetences.composeJaugeParNiveaux(
+						{
+							listeNiveaux: aParams.article.listeNiveaux,
+							hint: UtilitaireCompetences_1.TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionParNiveauOuPastille(
+								aParams.article.listeNiveaux,
+							),
+						},
+					);
 				}
 		}
 	}
 }
+exports.DonneesListe_BarreNiveauxDAcquisitionsDePilier =
+	DonneesListe_BarreNiveauxDAcquisitionsDePilier;
 DonneesListe_BarreNiveauxDAcquisitionsDePilier.colonnes = {
 	domaine: "DLBarreNiv_domaine",
 	jauge: "DLBarreNiv_jauge",
 };
-module.exports = { DonneesListe_BarreNiveauxDAcquisitionsDePilier };

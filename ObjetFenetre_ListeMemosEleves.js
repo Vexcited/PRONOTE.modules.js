@@ -10,20 +10,29 @@ const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetRequeteSaisieMemoEleve_1 = require("ObjetRequeteSaisieMemoEleve");
 const ObjetRequeteListeMemosEleves_1 = require("ObjetRequeteListeMemosEleves");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetFenetre_EditionObservation_1 = require("ObjetFenetre_EditionObservation");
+const TypeGenreObservationVS_1 = require("TypeGenreObservationVS");
+const ObjetDate_1 = require("ObjetDate");
+const AccessApp_1 = require("AccessApp");
 class ObjetFenetre_ListeMemosEleves extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
-		this.applicationSco = GApplication;
+		this.parametresMemosEleves = {
+			estValorisation: false,
+			forcerConsultation: false,
+		};
+		this.applicationSco = (0, AccessApp_1.getApp)();
 		this.setOptionsFenetre({
 			titre: ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.memo"),
 			largeur: 450,
 			hauteur: 460,
 			listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
 		});
-		this.estValorisation = false;
 	}
-	setOptionsListeMemosEleve(aOptions) {
-		this.optionsListeMemosEleve = aOptions;
+	setParametresMemosEleves(aParametres) {
+		$.extend(this.parametresMemosEleves, aParametres);
+		return this;
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(this), {
@@ -62,14 +71,13 @@ class ObjetFenetre_ListeMemosEleves extends ObjetFenetre_1.ObjetFenetre {
 			this._actionSurRecupererDonnees.bind(this),
 		).lancerRequete({
 			eleve: this.eleve,
-			estValorisation: this.estValorisation,
+			estValorisation: this.parametresMemosEleves.estValorisation,
 		});
 	}
-	setDonnees(aEstValorisation, aEleve) {
-		this.estValorisation = !!aEstValorisation;
+	setDonnees(aEleve) {
 		this.existeEstExpire = false;
 		this.eleve = aEleve;
-		const lTitre = this.estValorisation
+		const lTitre = this.parametresMemosEleves.estValorisation
 			? ObjetTraduction_1.GTraductions.getValeur(
 					"AbsenceVS.titreFenetreValorisation",
 					[this.eleve.getLibelle()],
@@ -81,38 +89,50 @@ class ObjetFenetre_ListeMemosEleves extends ObjetFenetre_1.ObjetFenetre {
 		this.actualiser();
 	}
 	composeContenu() {
-		const T = [];
-		T.push(
+		const H = [];
+		H.push(
 			'<div id="' +
 				this.getNomInstance(this.identListeMemosEleves) +
 				'" style="width: 100%; height: 100%"></div>',
 		);
-		return T.join("");
+		return H.join("");
 	}
 	initialiserListeMemosEleves(aInstance) {
-		const lTitreCreation = this.estValorisation
+		const lTitreCreation = this.parametresMemosEleves.estValorisation
 			? ObjetTraduction_1.GTraductions.getValeur(
 					"AbsenceVS.CreerUnValorisation",
 				)
 			: ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.CreerUnMemo");
+		const lSaisie =
+			!this.parametresMemosEleves.forcerConsultation &&
+			(this.parametresMemosEleves.estValorisation
+				? this.applicationSco.droits.get(
+						ObjetDroitsPN_1.TypeDroits.absences.avecSaisieEncouragements,
+					)
+				: this.applicationSco.droits.get(
+						ObjetDroitsPN_1.TypeDroits.dossierVS.saisirMemos,
+					));
+		const lTitreAucun = this.parametresMemosEleves.estValorisation
+			? ObjetTraduction_1.GTraductions.getValeur(
+					"AbsenceVS.aucunEncouragementValorisation",
+				)
+			: ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.aucunMemo");
 		aInstance.setOptionsListe({
 			colonnes: [{ taille: "100%" }],
-			avecLigneCreation: this.applicationSco.droits.get(
-				ObjetDroitsPN_1.TypeDroits.dossierVS.saisirMemos,
-			),
+			avecLigneCreation: lSaisie,
 			titreCreation: lTitreCreation,
 			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
 			forcerOmbreScrollBottom: true,
 			nonEditableSurModeExclusif: true,
-			messageContenuVide: ObjetTraduction_1.GTraductions.getValeur(
-				"AbsenceVS.aucunMemo",
-			),
+			messageContenuVide: lTitreAucun,
 		});
-		aInstance.setOptions(this.optionsListeMemosEleve);
 	}
 	surValidation(aNumeroBouton) {
 		this.fermer();
-		this.callback.appel(aNumeroBouton, this.estValorisation);
+		this.callback.appel(
+			aNumeroBouton,
+			this.parametresMemosEleves.estValorisation,
+		);
 	}
 	_actionSurRecupererDonnees(aParam) {
 		this.listeMemosEleves = aParam.listeMemosEleves;
@@ -133,7 +153,7 @@ class ObjetFenetre_ListeMemosEleves extends ObjetFenetre_1.ObjetFenetre {
 		this._actualiserListe();
 	}
 	_actualiserListe() {
-		if (this.estValorisation) {
+		if (this.parametresMemosEleves.estValorisation) {
 			if (this.listeMemosEleves) {
 				this.eleve.avecValorisation = this.listeMemosEleves.count() > 0;
 				this.eleve.listeValorisations = this.listeMemosEleves;
@@ -151,17 +171,154 @@ class ObjetFenetre_ListeMemosEleves extends ObjetFenetre_1.ObjetFenetre {
 		this.getInstance(this.identListeMemosEleves).setDonnees(
 			new DonneesListe_MemosEleves_1.DonneesListe_MemosEleves(
 				this.listeMemosEleves,
-				{ estValorisation: this.estValorisation },
+				this.parametresMemosEleves,
 			),
 		);
 	}
 	_evenementListeMemo(aParametres) {
 		switch (aParametres.genreEvenement) {
 			case Enumere_EvenementListe_1.EGenreEvenementListe.Creation:
-				this._ouvrirFenetreMemo();
+				if (this.parametresMemosEleves.estValorisation) {
+					const lThis = this;
+					const lElement = ObjetElement_1.ObjetElement.create({
+						Libelle: "",
+						commentaire: "",
+						observation: new ObjetElement_1.ObjetElement(""),
+						estPubliee: true,
+						date: ObjetDate_1.GDate.getDateJour(null, true),
+						numeroObservation:
+							TypeGenreObservationVS_1.TypeGenreObservationVS.OVS_Encouragement,
+						dateVisu: undefined,
+					});
+					lElement.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
+					const lObjet = {
+						observation: lElement,
+						numeroObservation: 2,
+						genreEtat: Enumere_Etat_1.EGenreEtat.Creation,
+						typeObservation:
+							TypeGenreObservationVS_1.TypeGenreObservationVS.OVS_Encouragement,
+						publiable: true,
+						avecDate: false,
+						actif: true,
+						maxlengthCommentaire: 1000,
+					};
+					const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+						ObjetFenetre_EditionObservation_1.ObjetFenetre_EditionObservation,
+						{
+							pere: this,
+							evenement: (
+								aSaisie,
+								aGenreAbsence,
+								aGenreObservation,
+								aEstBtnValidation,
+							) => {
+								if (aSaisie) {
+									const lListeMemo =
+										new ObjetListeElements_1.ObjetListeElements();
+									lElement.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
+									lListeMemo.add(lElement);
+									new ObjetRequeteSaisieMemoEleve_1.ObjetRequeteSaisieMemoEleve(
+										lThis,
+									)
+										.lancerRequete({
+											eleve: lThis.eleve,
+											listeMemos: lListeMemo,
+											estValorisation:
+												lThis.parametresMemosEleves.estValorisation,
+										})
+										.then(() => {
+											if (
+												lThis.parametresMemosEleves.estValorisation &&
+												!!lThis.parametresMemosEleves.callback
+											) {
+												lThis.parametresMemosEleves.callback();
+											}
+											lThis.actualiser();
+										});
+								}
+							},
+							initialiser: function (aInstance) {
+								aInstance.setOptionsFenetre({ largeur: 480, hauteur: 240 });
+							},
+						},
+						{
+							fermerFenetreSurClicHorsFenetre: true,
+							avecCroixFermeture: false,
+						},
+					);
+					lFenetre.setDonnees(lObjet);
+					lFenetre.afficher();
+				} else {
+					this._ouvrirFenetreMemo();
+				}
 				break;
 			case Enumere_EvenementListe_1.EGenreEvenementListe.Edition:
-				this._ouvrirFenetreMemo(aParametres.article);
+				if (this.parametresMemosEleves.estValorisation) {
+					aParametres.article.commentaire = aParametres.article.getLibelle();
+					const lArticle = aParametres.article;
+					const lObjet = {
+						observation: lArticle,
+						numeroObservation: aParametres.article.typeObservation,
+						genreEtat: Enumere_Etat_1.EGenreEtat.Modification,
+						typeObservation: aParametres.article.typeObservation,
+						publiable: true,
+						avecDate: false,
+						actif:
+							this.parametresMemosEleves.forcerConsultation ||
+							lArticle.editable === false
+								? false
+								: aParametres.article.typeObservation.editable,
+						maxlengthCommentaire: 1000,
+					};
+					const lThis = this;
+					const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+						ObjetFenetre_EditionObservation_1.ObjetFenetre_EditionObservation,
+						{
+							pere: lThis,
+							evenement: (
+								aSaisie,
+								aGenreAbsence,
+								aGenreObservation,
+								aEstBtnValidation,
+							) => {
+								if (aSaisie) {
+									const lListeMemo =
+										new ObjetListeElements_1.ObjetListeElements();
+									lListeMemo.add(lArticle);
+									new ObjetRequeteSaisieMemoEleve_1.ObjetRequeteSaisieMemoEleve(
+										lThis,
+									)
+										.lancerRequete({
+											eleve: lThis.eleve,
+											listeMemos: lListeMemo,
+											estValorisation:
+												lThis.parametresMemosEleves.estValorisation,
+										})
+										.then(() => {
+											if (
+												lThis.parametresMemosEleves.estValorisation &&
+												!!lThis.parametresMemosEleves.callback
+											) {
+												lThis.parametresMemosEleves.callback();
+											}
+											lThis.actualiser();
+										});
+								}
+							},
+							initialiser: function (aInstance) {
+								aInstance.setOptionsFenetre({ largeur: 480, hauteur: 240 });
+							},
+						},
+						{
+							fermerFenetreSurClicHorsFenetre: true,
+							avecCroixFermeture: false,
+						},
+					);
+					lFenetre.setDonnees(lObjet);
+					lFenetre.afficher();
+				} else {
+					this._ouvrirFenetreMemo(aParametres.article);
+				}
 				break;
 			case Enumere_EvenementListe_1.EGenreEvenementListe.Suppression: {
 				const lListeMemo = new ObjetListeElements_1.ObjetListeElements();
@@ -170,7 +327,7 @@ class ObjetFenetre_ListeMemosEleves extends ObjetFenetre_1.ObjetFenetre {
 					.lancerRequete({
 						eleve: this.eleve,
 						listeMemos: lListeMemo,
-						estValorisation: this.estValorisation,
+						estValorisation: this.parametresMemosEleves.estValorisation,
 					})
 					.then(() => {
 						this.actualiser();
@@ -185,7 +342,7 @@ class ObjetFenetre_ListeMemosEleves extends ObjetFenetre_1.ObjetFenetre {
 			{
 				initialiser: function (aInstance) {
 					aInstance.setOptionsFenetre({
-						titre: this.estValorisation
+						titre: this.parametresMemosEleves.estValorisation
 							? ObjetTraduction_1.GTraductions.getValeur(
 									"AbsenceVS.titreValorisation",
 								)
@@ -203,7 +360,7 @@ class ObjetFenetre_ListeMemosEleves extends ObjetFenetre_1.ObjetFenetre {
 		lFenetreMemoEleve.setDonnees({
 			memo: aMemo,
 			eleve: this.eleve,
-			estValorisation: this.estValorisation,
+			estValorisation: this.parametresMemosEleves.estValorisation,
 		});
 	}
 }

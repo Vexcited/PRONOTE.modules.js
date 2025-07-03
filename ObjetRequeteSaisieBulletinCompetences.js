@@ -1,21 +1,27 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { ObjetSerialiser } = require("ObjetSerialiser.js");
-class ObjetRequeteSaisieBulletinCompetences extends ObjetRequeteSaisie {
+exports.ObjetRequeteSaisieBulletinCompetences = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetSerialiser_1 = require("ObjetSerialiser");
+const AccessApp_1 = require("AccessApp");
+class ObjetRequeteSaisieBulletinCompetences extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	constructor(...aParams) {
 		super(...aParams);
+		const lApplicationSco = (0, AccessApp_1.getApp)();
+		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
 	}
 	lancerRequete(aParam) {
-		const lEleveRessource = GEtatUtilisateur.Navigation.getRessource(
-			EGenreRessource.Eleve,
+		const lEleveRessource = this.etatUtilisateurSco.Navigation.getRessource(
+			Enumere_Ressource_1.EGenreRessource.Eleve,
 		);
 		$.extend(this.JSON, {
-			classe: GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Classe),
-			periode: GEtatUtilisateur.Navigation.getRessource(
-				EGenreRessource.Periode,
+			classe: this.etatUtilisateurSco.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.Classe,
+			),
+			periode: this.etatUtilisateurSco.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.Periode,
 			),
 			eleve: lEleveRessource,
 		});
@@ -31,11 +37,11 @@ class ObjetRequeteSaisieBulletinCompetences extends ObjetRequeteSaisie {
 		}
 		if (aParam.listeServices) {
 			aParam.listeServices.setSerialisateurJSON({
-				methodeSerialisation: _serialiseListeServices,
+				methodeSerialisation: this._serialiseListeServices.bind(this),
 			});
 			this.JSON.listeServices = aParam.listeServices;
 		}
-		const lApprPdB = new ObjetListeElements();
+		const lApprPdB = new ObjetListeElements_1.ObjetListeElements();
 		if (aParam.listeConseils) {
 			for (let i = 0, lNbr = aParam.listeConseils.count(); i < lNbr; i++) {
 				lApprPdB.add(aParam.listeConseils.get(i).ListeAppreciations);
@@ -53,7 +59,7 @@ class ObjetRequeteSaisieBulletinCompetences extends ObjetRequeteSaisie {
 		}
 		this.JSON.apprPiedBull = lApprPdB.toJSON();
 		if (aParam.parcoursEducatif && aParam.parcoursEducatif.listeParcours) {
-			const lSerialisateur = new ObjetSerialiser();
+			const lSerialisateur = new ObjetSerialiser_1.ObjetSerialiser();
 			aParam.parcoursEducatif.listeParcours.setSerialisateurJSON({
 				methodeSerialisation:
 					lSerialisateur.parcoursEducatif.bind(lSerialisateur),
@@ -75,70 +81,74 @@ class ObjetRequeteSaisieBulletinCompetences extends ObjetRequeteSaisie {
 		}
 		if (aParam.listeAttestations) {
 			aParam.listeAttestations.setSerialisateurJSON({
-				methodeSerialisation: new ObjetSerialiser().serialiseAttestation,
+				methodeSerialisation: new ObjetSerialiser_1.ObjetSerialiser()
+					.serialiseAttestation,
 			});
 			this.JSON.listeAttestations = aParam.listeAttestations;
 		}
 		if (!!aParam.listeAppreciationsAssistSaisie) {
 			aParam.listeAppreciationsAssistSaisie.setSerialisateurJSON({
 				ignorerEtatsElements: true,
-				methodeSerialisation: _serialiseTypeAppreciationAssistSaisie,
+				methodeSerialisation:
+					this._serialiseTypeAppreciationAssistSaisie.bind(this),
 			});
 			this.JSON.listeTypeAppreciations = aParam.listeAppreciationsAssistSaisie;
 		}
 		return this.appelAsynchrone();
 	}
+	_serialiseListeServices(aElement, aJSON) {
+		if (!!aElement.appreciationA) {
+			aJSON.appreciationA = aElement.appreciationA;
+		}
+		if (!!aElement.appreciationB) {
+			aJSON.appreciationB = aElement.appreciationB;
+		}
+		if (!!aElement.appreciationC) {
+			aJSON.appreciationC = aElement.appreciationC;
+		}
+		if (
+			!!aElement.posLSUNiveau &&
+			aElement.posLSUNiveau.getEtat() !== Enumere_Etat_1.EGenreEtat.Aucun
+		) {
+			aJSON.posLSUNiveau = aElement.posLSUNiveau.toJSON();
+		}
+		if (!!aElement.posLSUNote) {
+			aJSON.posLSUNote = aElement.posLSUNote;
+		}
+		if (!!aElement.listeEltProgramme) {
+			aJSON.listeEltProgramme = aElement.listeEltProgramme;
+		}
+		if (!!aElement.listeColonnesTransv) {
+			aElement.listeColonnesTransv.setSerialisateurJSON({
+				methodeSerialisation: this._serialiseColonnesTransv.bind(this),
+			});
+			aJSON.listeColonnesTransv = aElement.listeColonnesTransv;
+		}
+	}
+	_serialiseColonnesTransv(aElement, aJSON) {
+		aJSON.niveauAcquiEstCalcule = !aElement.niveauAcqui;
+		if (!!aElement.niveauAcqui) {
+			aJSON.niveauAcqui = aElement.niveauAcqui.toJSON();
+		}
+	}
+	_serialiseTypeAppreciationAssistSaisie(aTypeAppreciation, aJSON) {
+		if (!!aTypeAppreciation.listeCategories) {
+			aTypeAppreciation.listeCategories.setSerialisateurJSON({
+				methodeSerialisation:
+					this._serialiseCategorieAppreciationAssistSaisie.bind(this),
+			});
+			aJSON.listeCategories = aTypeAppreciation.listeCategories;
+		}
+	}
+	_serialiseCategorieAppreciationAssistSaisie(aCategorie, aJSON) {
+		if (!!aCategorie.listeAppreciations) {
+			aJSON.listeAppreciations = aCategorie.listeAppreciations;
+		}
+	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteSaisieBulletinCompetences =
+	ObjetRequeteSaisieBulletinCompetences;
+CollectionRequetes_1.Requetes.inscrire(
 	"SaisieBulletinCompetences",
 	ObjetRequeteSaisieBulletinCompetences,
 );
-function _serialiseListeServices(aElement, aJSON) {
-	if (!!aElement.appreciationA) {
-		aJSON.appreciationA = aElement.appreciationA;
-	}
-	if (!!aElement.appreciationB) {
-		aJSON.appreciationB = aElement.appreciationB;
-	}
-	if (!!aElement.appreciationC) {
-		aJSON.appreciationC = aElement.appreciationC;
-	}
-	if (
-		!!aElement.posLSUNiveau &&
-		aElement.posLSUNiveau.getEtat() !== EGenreEtat.Aucun
-	) {
-		aJSON.posLSUNiveau = aElement.posLSUNiveau.toJSON();
-	}
-	if (!!aElement.posLSUNote) {
-		aJSON.posLSUNote = aElement.posLSUNote;
-	}
-	if (!!aElement.listeEltProgramme) {
-		aJSON.listeEltProgramme = aElement.listeEltProgramme;
-	}
-	if (!!aElement.listeColonnesTransv) {
-		aElement.listeColonnesTransv.setSerialisateurJSON({
-			methodeSerialisation: _serialiseColonnesTransv,
-		});
-		aJSON.listeColonnesTransv = aElement.listeColonnesTransv;
-	}
-}
-function _serialiseColonnesTransv(aElement, aJSON) {
-	aJSON.niveauAcquiEstCalcule = !aElement.niveauAcqui;
-	if (!!aElement.niveauAcqui) {
-		aJSON.niveauAcqui = aElement.niveauAcqui.toJSON();
-	}
-}
-function _serialiseTypeAppreciationAssistSaisie(aTypeAppreciation, aJSON) {
-	if (!!aTypeAppreciation.listeCategories) {
-		aTypeAppreciation.listeCategories.setSerialisateurJSON({
-			methodeSerialisation: _serialiseCategorieAppreciationAssistSaisie,
-		});
-		aJSON.listeCategories = aTypeAppreciation.listeCategories;
-	}
-}
-function _serialiseCategorieAppreciationAssistSaisie(aCategorie, aJSON) {
-	if (!!aCategorie.listeAppreciations) {
-		aJSON.listeAppreciations = aCategorie.listeAppreciations;
-	}
-}
-module.exports = { ObjetRequeteSaisieBulletinCompetences };

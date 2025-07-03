@@ -10,14 +10,15 @@ const Enumere_Cryptage_1 = require("Enumere_Cryptage");
 const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetFenetre_MentionsLegales_1 = require("ObjetFenetre_MentionsLegales");
 const ObjetRequeteMentionsLegales_1 = require("ObjetRequeteMentionsLegales");
-require("ObjetRequeteIdentification");
-require("ObjetRequeteAuthentificationPN");
 const LocalStorage_1 = require("LocalStorage");
 const MethodesObjet_1 = require("MethodesObjet");
 const ModeleInterfaceConnexion = require("InterfaceConnexionMobile.tsxModele");
 const MultiObjetFenetreRecupIdMDP = require("ObjetFenetre_RecupIdMDP");
 const ObjetRequeteParametresUtilisateur_1 = require("ObjetRequeteParametresUtilisateur");
 const UtilitaireSecurisationCompte_1 = require("UtilitaireSecurisationCompte");
+const ObjetRequeteIdentification_1 = require("ObjetRequeteIdentification");
+const ObjetRequeteAuthentificationPN_1 = require("ObjetRequeteAuthentificationPN");
+const Enumere_ErreurAcces_1 = require("Enumere_ErreurAcces");
 const lCookieLocalStorage = "etatAffichageCookiesInfo";
 class InterfaceConnexion_Mobile extends _InterfaceConnexion_1._InterfaceConnexion {
 	constructor(...aParams) {
@@ -33,8 +34,12 @@ class InterfaceConnexion_Mobile extends _InterfaceConnexion_1._InterfaceConnexio
 			avecRecupIdMdp: this.parametresSco.avecRecuperationInfosConnexion,
 			parentAutoriseChangerMDP: this.parametresSco.parentAutoriseChangerMDP,
 			requetes: {
-				identification: "Identification",
-				authentification: "Authentification",
+				getRequeteIdent: (aPere) =>
+					new ObjetRequeteIdentification_1.ObjetRequeteIdentification(aPere),
+				getRequeteAuth: (aPere) =>
+					new ObjetRequeteAuthentificationPN_1.ObjetRequeteAuthentificationPN(
+						aPere,
+					),
 			},
 			utilitaireChangementLangue:
 				UtilitaireChangementLangue_1.UtilitaireChangementLangue,
@@ -183,10 +188,16 @@ class InterfaceConnexion_Mobile extends _InterfaceConnexion_1._InterfaceConnexio
 					? this.afficherCookieInfo()
 					: false,
 			},
+			jsx: {
+				jsxNodeOuvrirMentionsLegales:
+					this.jsxNodeOuvrirMentionsLegales.bind(this),
+				jsxNodeFermerBandeauCoookie:
+					this.jsxNodeFermerBandeauCoookie.bind(this),
+			},
 		};
-		const lHtml = [];
-		lHtml.push(ModeleInterfaceConnexion.getHtml(lParamHtml));
-		return lHtml.join("");
+		const H = [];
+		H.push(ModeleInterfaceConnexion.getHtml(lParamHtml));
+		return H.join("");
 	}
 	actionSurMentionsLegales(aParams) {
 		let lFenetreMentionsLegales =
@@ -201,43 +212,25 @@ class InterfaceConnexion_Mobile extends _InterfaceConnexion_1._InterfaceConnexio
 		});
 		lFenetreMentionsLegales.setDonnees(aParams);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			btnFermer: function () {
-				$(this.node).eventValidation(function () {
-					let lGenreEspace =
-						aInstance.etatUtilisateurSco !== undefined
-							? "_" + aInstance.etatUtilisateurSco.GenreEspace
-							: "";
-					LocalStorage_1.IELocalStorage.setItem(
-						lCookieLocalStorage + lGenreEspace,
-						"false",
-					);
-					$(this).parent().hide();
-				});
-			},
-			ouvrirMentionsLegales: function () {
-				$(this.node).eventValidation(() => {
-					let lRequete =
-						new ObjetRequeteMentionsLegales_1.ObjetRequeteMentionsLegales(
-							aInstance,
-							aInstance.actionSurMentionsLegales,
-						);
-					lRequete.lancerRequete();
-				});
-			},
-			getNodeLogoDepartement: function () {
-				$(this.node).on({
-					click: function () {
-						if (aInstance.parametresSco.logoDepartementLien) {
-							window.open(aInstance.parametresSco.logoDepartementLien);
-						}
-					},
-					error: function () {
-						$(this).parent().remove();
-					},
-				});
-			},
+	jsxNodeOuvrirMentionsLegales(aNode) {
+		$(aNode).eventValidation(() => {
+			new ObjetRequeteMentionsLegales_1.ObjetRequeteMentionsLegales(
+				this,
+				this.actionSurMentionsLegales,
+			).lancerRequete();
+		});
+	}
+	jsxNodeFermerBandeauCoookie(aNode) {
+		$(aNode).eventValidation(() => {
+			let lGenreEspace =
+				this.etatUtilisateurSco !== undefined
+					? "_" + this.etatUtilisateurSco.GenreEspace
+					: "";
+			LocalStorage_1.IELocalStorage.setItem(
+				lCookieLocalStorage + lGenreEspace,
+				"false",
+			);
+			$(aNode).parent().hide();
 		});
 	}
 	callbackInitSecurisationCompte() {
@@ -266,6 +259,7 @@ class InterfaceConnexion_Mobile extends _InterfaceConnexion_1._InterfaceConnexio
 	async _reussiteAuthentification(aParamsAuthentification) {
 		if (GApplication.estAppliMobile) {
 			this.mettreAJourInfoCollectiviteAppliMobile();
+			this.mettreAJourInfoAppliMobile();
 		}
 		const lReponse =
 			await new ObjetRequeteParametresUtilisateur_1.ObjetRequeteParametresUtilisateur(
@@ -298,17 +292,41 @@ class InterfaceConnexion_Mobile extends _InterfaceConnexion_1._InterfaceConnexio
 		if (this.moteurConnexion.modeValidationAppliMobile) {
 			window.loginState = { status: 1, message: lMessageErreur };
 		} else if (this.applicationSco.estAppliMobile) {
-			window.messageData.push({
-				action: "surNonAuth",
-				message: lMessageErreur,
-			});
+			if (
+				this.moteurConnexion.erreurCode ===
+				Enumere_ErreurAcces_1.EGenreErreurAcces.Identification
+			) {
+				window.messageData.push({
+					action: "surNonAuth",
+					message: lMessageErreur,
+				});
+			} else {
+				window.messageData.push({
+					action: "erreurAuth",
+					message: lMessageErreur,
+				});
+			}
 		}
 	}
-	passerEnModeValidationAppliMobile(aLogin, aUuid, aJeton, aCode) {
+	passerEnModeValidationAppliMobile(
+		aLogin,
+		aUuid,
+		aJeton,
+		aCode,
+		aJsonInfoDevice,
+	) {
+		var _a, _b;
 		this.moteurConnexion.modeValidationAppliMobile = true;
 		this.moteurConnexion.uuidAppliMobile = aUuid;
 		this.moteurConnexion.modeValidationAppliMobileJeton =
 			!!aLogin && !!aUuid && !!aJeton && !!aCode;
+		if (!!aJsonInfoDevice && aJsonInfoDevice.length > 0) {
+			const lInfo = JSON.parse(aJsonInfoDevice);
+			this.moteurConnexion.informationsAppareil = {
+				modele: (_a = lInfo.model) !== null && _a !== void 0 ? _a : "",
+				platforme: (_b = lInfo.platform) !== null && _b !== void 0 ? _b : "",
+			};
+		}
 		$("#" + this.id.checkSouvenir)
 			.closest("div.check-field")
 			.hide();
@@ -364,6 +382,19 @@ class InterfaceConnexion_Mobile extends _InterfaceConnexion_1._InterfaceConnexio
 				lCookieLocalStorage + lGenreEspace,
 			) === "true"
 		);
+	}
+	mettreAJourInfoAppliMobile() {
+		if (!GApplication.estAppliMobile || !window.messageData) {
+			return;
+		}
+		const lInfos = {
+			genreEspace: GEtatUtilisateur.getNumeroGenreEspace(),
+			version: this.parametresSco.tableauVersion,
+		};
+		window.messageData.push({
+			action: "infoApresAuthentificationReussite",
+			data: JSON.stringify(lInfos),
+		});
 	}
 	mettreAJourInfoCollectiviteAppliMobile() {
 		if (!GApplication.estAppliMobile || !window.messageData) {

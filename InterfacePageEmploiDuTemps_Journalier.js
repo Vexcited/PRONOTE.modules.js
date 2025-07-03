@@ -106,7 +106,7 @@ class ObjetAffichagePageEmploiDuTemps_Journalier extends ObjetInterfacePageCP_1.
 			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 	}
 	construireStructureAffichageAutre() {
-		const lHtml = [];
+		const H = [];
 		if (!this.identBtnFlottant) {
 			$("#" + GInterface.idZonePrincipale).ieHtmlAppend(
 				'<div class="is-sticky" ie-identite="getIdentiteBouton" ></div>',
@@ -114,14 +114,14 @@ class ObjetAffichagePageEmploiDuTemps_Journalier extends ObjetInterfacePageCP_1.
 			);
 		}
 		this.identBtnFlottant.setVisible(false);
-		lHtml.push(
+		H.push(
 			"<div>",
 			'<div class="edtJournalier" id="',
-			this.getInstance(this.identPageListe).getNom(),
+			this.getNomInstance(this.identPageListe),
 			'"></div>',
 			"</div>",
 		);
-		return lHtml.join("");
+		return H.join("");
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
@@ -135,7 +135,10 @@ class ObjetAffichagePageEmploiDuTemps_Journalier extends ObjetInterfacePageCP_1.
 							listeBoutons: [
 								{
 									primaire: true,
-									icone: "icon_pdf",
+									icone: "icon_uniF1C1",
+									ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
+										"GenerationPDF.TitreCommande",
+									),
 									callback:
 										aInstance.afficherModalitesGenerationPDF.bind(aInstance),
 								},
@@ -337,7 +340,7 @@ class ObjetAffichagePageEmploiDuTemps_Journalier extends ObjetInterfacePageCP_1.
 						const lMessage = aReponse.message || "";
 						if (lMessage !== "") {
 							ObjetHtml_1.GHtml.setDisplay(
-								this.getInstance(this.identSelecteurDate).getNom(),
+								this.getNomInstance(this.identSelecteurDate),
 								false,
 							);
 							this.afficherMessage(lMessage);
@@ -352,7 +355,7 @@ class ObjetAffichagePageEmploiDuTemps_Journalier extends ObjetInterfacePageCP_1.
 								estJoursValidesAnnuelsSelonPremiereDate: true,
 							});
 							ObjetHtml_1.GHtml.setDisplay(
-								this.getInstance(this.identSelecteurDate).getNom(),
+								this.getNomInstance(this.identSelecteurDate),
 								true,
 							);
 							this.getInstance(this.identSelecteurDate).setDonnees(

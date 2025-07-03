@@ -1,43 +1,42 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { Identite } = require("ObjetIdentite.js");
-const { GDate } = require("ObjetDate.js");
-const { tag } = require("tag.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { EGenreAction } = require("Enumere_Action.js");
-const { ObjetCelluleDate } = require("ObjetCelluleDate.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetElement } = require("ObjetElement.js");
-const {
-	ObjetRequeteSaisieFicheEleve,
-} = require("ObjetRequeteSaisieFicheEleve.js");
-const { GUID } = require("GUID.js");
-class ObjetFenetre_Attestation extends ObjetFenetre {
+exports.ObjetFenetre_Attestation = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetIdentite_1 = require("ObjetIdentite");
+const ObjetDate_1 = require("ObjetDate");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const MethodesObjet_1 = require("MethodesObjet");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_Action_1 = require("Enumere_Action");
+const ObjetCelluleDate_1 = require("ObjetCelluleDate");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetRequeteSaisieFicheEleve_1 = require("ObjetRequeteSaisieFicheEleve");
+const GUID_1 = require("GUID");
+class ObjetFenetre_Attestation extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
+		this.enModification = false;
+		this.zoneDateDelivree = GUID_1.GUID.getId();
 		this.setOptionsFenetre({
 			largeur: 400,
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 			avecComposeBasInFooter: true,
 		});
-		this.enModification = false;
-		this.zoneDateDelivree = GUID.getId();
 	}
 	construireInstances() {
-		this.selecDate = Identite.creerInstance(ObjetCelluleDate, {
-			pere: this,
-			evenement: (aDate) => {
-				this.attestation.date = aDate;
+		this.selecDate = ObjetIdentite_1.Identite.creerInstance(
+			ObjetCelluleDate_1.ObjetCelluleDate,
+			{
+				pere: this,
+				evenement: (aDate) => {
+					this.attestation.date = aDate;
+				},
 			},
-		});
+		);
 		this.selecDate.setOptionsObjetCelluleDate({
 			largeurComposant: 100,
 			formatDate: "%JJ/%MM/%AAAA",
@@ -49,7 +48,9 @@ class ObjetFenetre_Attestation extends ObjetFenetre {
 				init: function (aCombo) {
 					aCombo.setOptionsObjetSaisie({
 						estLargeurAuto: false,
-						placeHolder: GTraductions.getValeur("FicheEleve.aucunTypeDeProjet"),
+						placeHolder: ObjetTraduction_1.GTraductions.getValeur(
+							"FicheEleve.aucunTypeDeProjet",
+						),
 						getContenuElement: function (aParams) {
 							const T = [];
 							T.push(
@@ -58,7 +59,7 @@ class ObjetFenetre_Attestation extends ObjetFenetre {
 							return T.join("");
 						},
 						getClassElement: function (aParams) {
-							return aParams.element.getActif() ? "" : "Gris";
+							return aParams.element.getActif() ? "" : "color-neutre-foncee";
 						},
 						getEstElementNonSelectionnable: (aElement) => {
 							return !aInstance.enModification && !aElement.Actif;
@@ -84,7 +85,7 @@ class ObjetFenetre_Attestation extends ObjetFenetre {
 					let lIndice = aInstance.donnees.listeTypes.getIndiceParNumeroEtGenre(
 						aInstance.donnees.attestation.getNumero(),
 					);
-					if (lIndice < 0 || !MethodesObjet.isNumber(lIndice)) {
+					if (lIndice < 0 || !MethodesObjet_1.MethodesObjet.isNumber(lIndice)) {
 						lIndice = -1;
 					}
 					return lIndice;
@@ -93,14 +94,15 @@ class ObjetFenetre_Attestation extends ObjetFenetre {
 					if (
 						!aInstance.enModification &&
 						aParametres.genreEvenement ===
-							EGenreEvenementObjetSaisie.selection &&
+							Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+								.selection &&
 						aParametres.element
 					) {
 						aInstance.attestation = aParametres.element;
-						aInstance.attestation.date = GDate.aujourdhui;
+						aInstance.attestation.date = ObjetDate_1.GDate.aujourdhui;
 						aInstance.attestation.delivree = true;
-						aInstance.attestation.setEtat(EGenreEtat.Creation);
-						_toggleDate.call(aInstance);
+						aInstance.attestation.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
+						aInstance._toggleDate();
 					}
 				},
 			},
@@ -127,7 +129,7 @@ class ObjetFenetre_Attestation extends ObjetFenetre {
 					null,
 					null,
 				);
-				_toggleDate.call(aInstance);
+				aInstance._toggleDate();
 			},
 			btnSupprimer: {
 				event: function () {
@@ -139,22 +141,20 @@ class ObjetFenetre_Attestation extends ObjetFenetre {
 					) {
 						GApplication.getMessage()
 							.afficher({
-								type: EGenreBoiteMessage.Confirmation,
-								message: GTraductions.getValeur(
+								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+								message: ObjetTraduction_1.GTraductions.getValeur(
 									"Attestation.msgConfirmerSuppression",
 									[""],
 								),
 							})
-							.then(
-								((aGenreAction) => {
-									if (aGenreAction === EGenreAction.Valider) {
-										aInstance.donnees.attestation.setEtat(
-											EGenreEtat.Suppression,
-										);
-										aInstance.surValidation(1);
-									}
-								}).bind(aInstance),
-							);
+							.then((aGenreAction) => {
+								if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
+									aInstance.donnees.attestation.setEtat(
+										Enumere_Etat_1.EGenreEtat.Suppression,
+									);
+									aInstance.surValidation(1);
+								}
+							});
 					}
 				},
 				getDisabled: function () {
@@ -183,20 +183,20 @@ class ObjetFenetre_Attestation extends ObjetFenetre {
 		if (aDonnees.attestation) {
 			this.enModification = true;
 			this.attestation = aDonnees.attestation;
-			this.attestation.setEtat(EGenreEtat.Modification);
+			this.attestation.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 		} else {
-			this.attestation = new ObjetElement();
+			this.attestation = new ObjetElement_1.ObjetElement();
 			this.attestation.delivree = true;
-			this.attestation.date = GDate.aujourdhui;
+			this.attestation.date = ObjetDate_1.GDate.aujourdhui;
 		}
-		_toggleDate.call(this);
+		this._toggleDate();
 		this.afficher();
 	}
 	surValidation(aNumeroBouton) {
 		if (aNumeroBouton === 1) {
-			const lListeAttestation = new ObjetListeElements();
+			const lListeAttestation = new ObjetListeElements_1.ObjetListeElements();
 			lListeAttestation.add(this.attestation);
-			new ObjetRequeteSaisieFicheEleve(
+			new ObjetRequeteSaisieFicheEleve_1.ObjetRequeteSaisieFicheEleve(
 				this,
 				this.actionSurValidation,
 			).lancerRequete({
@@ -208,89 +208,96 @@ class ObjetFenetre_Attestation extends ObjetFenetre {
 		this.fermer();
 	}
 	composeContenu() {
-		const T = [];
-		const lIdType = GUID.getId();
-		const lIdLe = GUID.getId();
-		T.push(
-			tag(
+		const lIdType = GUID_1.GUID.getId();
+		const lIdLe = GUID_1.GUID.getId();
+		return IE.jsx.str(
+			"div",
+			{ class: ["flex-contain", "cols"] },
+			IE.jsx.str(
 				"div",
-				{ class: ["flex-contain", "cols"] },
-				tag(
-					"div",
-					{ class: "field-contain" },
-					tag(
-						"label",
-						{ id: lIdType, class: ["fix-bloc"] },
-						GTraductions.getValeur("Attestation.type"),
-						" : ",
-					),
-					tag(
-						"div",
-						{ class: "fluid-bloc" },
-						tag("ie-combo", {
-							"ie-model": "comboType",
-							"aria-labelledby": lIdType,
-							class: "full-width",
-						}),
-					),
+				{ class: "field-contain" },
+				IE.jsx.str(
+					"label",
+					{ id: lIdType, class: ["fix-bloc"] },
+					ObjetTraduction_1.GTraductions.getValeur("Attestation.type"),
+					" : ",
 				),
-				tag(
-					"fieldset",
-					{ class: "flex-contain m-top-l no-line" },
-					tag(
-						"legend",
-						{ class: "sr-only" },
-						GTraductions.getValeur("Attestation.etat"),
+				IE.jsx.str(
+					"div",
+					{ class: "fluid-bloc" },
+					IE.jsx.str("ie-combo", {
+						"ie-model": "comboType",
+						"aria-labelledby": lIdType,
+						class: "full-width",
+					}),
+				),
+			),
+			IE.jsx.str(
+				"div",
+				{
+					class: "flex-contain m-top-l no-line",
+					role: "group",
+					"aria-label": "GTraductions.getValeur('Attestation.etat')",
+				},
+				IE.jsx.str(
+					"label",
+					{ class: "m-right-l", "aria-hidden": "true" },
+					ObjetTraduction_1.GTraductions.getValeur("Attestation.etat"),
+					" : ",
+				),
+				IE.jsx.str(
+					"div",
+					null,
+					IE.jsx.str(
+						"ie-checkbox",
+						{ "ie-model": "cbDelivree" },
+						ObjetTraduction_1.GTraductions.getValeur("Attestation.delivree"),
 					),
-					tag(
-						"label",
-						{ class: "m-right-l", "aria-hidden": true },
-						GTraductions.getValeur("Attestation.etat"),
-						" : ",
-					),
-					tag(
+					IE.jsx.str(
 						"div",
-						tag(
-							"ie-checkbox",
-							{ "ie-model": "cbDelivree" },
-							GTraductions.getValeur("Attestation.delivree"),
+						{ id: this.zoneDateDelivree, class: ["flex-contain", "m-top-l"] },
+						IE.jsx.str(
+							"label",
+							{ id: lIdLe, class: ["fix-bloc", "m-right", "self-center"] },
+							ObjetTraduction_1.GTraductions.getValeur("Le") + " :",
 						),
-						tag(
-							"div",
-							{ id: this.zoneDateDelivree, class: ["flex-contain", "m-top-l"] },
-							tag(
-								"label",
-								{ id: lIdLe, class: ["fix-bloc", "m-right", "self-center"] },
-								GTraductions.getValeur("Le") + " :",
-							),
-							tag("div", {
-								class: ["text-left", "fix-bloc"],
-								id: this.selecDate.getNom(),
-								"ie-node": "getNodeSelecDate",
-								"aria-labelledby": lIdLe,
-							}),
-						),
+						IE.jsx.str("div", {
+							class: ["text-left", "fix-bloc"],
+							id: this.selecDate.getNom(),
+							"ie-node": "getNodeSelecDate",
+							"aria-labelledby": lIdLe,
+						}),
 					),
 				),
 			),
 		);
-		return T.join("");
 	}
 	composeBas() {
 		const lHTML = [];
 		lHTML.push(
-			`<div class="compose-bas">\n    <ie-btnicon ie-model="btnSupprimer" title="${GTraductions.getValeur("Supprimer")}" class="icon_trash avecFond i-medium"></ie-btnicon>\n    </div>`,
+			IE.jsx.str(
+				"div",
+				{ class: "compose-bas" },
+				IE.jsx.str("ie-btnicon", {
+					"ie-model": "btnSupprimer",
+					"ie-tooltiplabel":
+						ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
+					class: "icon_trash avecFond i-medium",
+				}),
+			),
 		);
 		return lHTML.join("");
 	}
-}
-function _toggleDate() {
-	if (this.selecDate && this.attestation) {
-		this.selecDate.setPremiereDateSaisissable(GParametres.PremiereDate, true);
-		this.selecDate.setDonnees(
-			this.attestation.date ? this.attestation.date : GDate.aujourdhui,
-		);
-		$("#" + this.zoneDateDelivree).toggle(this.attestation.delivree);
+	_toggleDate() {
+		if (this.selecDate && this.attestation) {
+			this.selecDate.setPremiereDateSaisissable(GParametres.PremiereDate, true);
+			this.selecDate.setDonnees(
+				this.attestation.date
+					? this.attestation.date
+					: ObjetDate_1.GDate.aujourdhui,
+			);
+			$("#" + this.zoneDateDelivree).toggle(this.attestation.delivree);
+		}
 	}
 }
-module.exports = { ObjetFenetre_Attestation };
+exports.ObjetFenetre_Attestation = ObjetFenetre_Attestation;

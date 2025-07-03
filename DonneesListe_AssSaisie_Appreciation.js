@@ -1,6 +1,7 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class DonneesListe_AssSaisie_Appreciation extends ObjetDonneesListe {
+exports.DonneesListe_AssSaisie_Appreciation = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class DonneesListe_AssSaisie_Appreciation extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aTailleMax, aAvecEtatSaisie) {
 		super(aDonnees);
 		this.tailleMax = aTailleMax || 0;
@@ -18,7 +19,7 @@ class DonneesListe_AssSaisie_Appreciation extends ObjetDonneesListe {
 		});
 	}
 	getCouleurCellule() {
-		return ObjetDonneesListe.ECouleurCellule.Blanc;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
 	}
 	avecMenuContextuel() {
 		return false;
@@ -34,10 +35,10 @@ class DonneesListe_AssSaisie_Appreciation extends ObjetDonneesListe {
 		return this.tailleMax;
 	}
 	getMessageTailleMaximaleSaisie() {
-		return GTraductions.getValeur("MessageTailleMaxAppr");
+		return ObjetTraduction_1.GTraductions.getValeur("MessageTailleMaxAppr");
 	}
 	getTypeValeur() {
-		return ObjetDonneesListe.ETypeCellule.ZoneTexte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.ZoneTexte;
 	}
 	surCreation(D, V) {
 		D.Libelle = V[0];
@@ -48,7 +49,9 @@ class DonneesListe_AssSaisie_Appreciation extends ObjetDonneesListe {
 		return !D.Supprimable;
 	}
 	getMessageSuppressionImpossible() {
-		return GTraductions.getValeur("Appreciations.MsgSuppressionApprecInterdit");
+		return ObjetTraduction_1.GTraductions.getValeur(
+			"Appreciations.MsgSuppressionApprecInterdit",
+		);
 	}
 	getValeur(aParams) {
 		switch (aParams.idColonne) {
@@ -71,7 +74,20 @@ class DonneesListe_AssSaisie_Appreciation extends ObjetDonneesListe {
 		}
 	}
 }
-DonneesListe_AssSaisie_Appreciation.colonnes = {
-	libelle: "DL_AssistSaisieApprec_libelle",
-};
-module.exports = { DonneesListe_AssSaisie_Appreciation };
+exports.DonneesListe_AssSaisie_Appreciation =
+	DonneesListe_AssSaisie_Appreciation;
+(function (DonneesListe_AssSaisie_Appreciation) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["libelle"] = "DL_AssistSaisieApprec_libelle";
+	})(
+		(colonnes =
+			DonneesListe_AssSaisie_Appreciation.colonnes ||
+			(DonneesListe_AssSaisie_Appreciation.colonnes = {})),
+	);
+})(
+	DonneesListe_AssSaisie_Appreciation ||
+		(exports.DonneesListe_AssSaisie_Appreciation =
+			DonneesListe_AssSaisie_Appreciation =
+				{}),
+);

@@ -1,6 +1,5 @@
 exports.ObjetFenetre_ActionContextuelle = void 0;
 const ObjetFenetre_1 = require("ObjetFenetre");
-const tag_1 = require("tag");
 const MethodesObjet_1 = require("MethodesObjet");
 const SelecFile_1 = require("SelecFile");
 const ObjetTraduction_1 = require("ObjetTraduction");
@@ -11,6 +10,7 @@ class ObjetFenetre_ActionContextuelle extends ObjetFenetre_1.ObjetFenetre {
 			modale: false,
 			largeur: 380,
 			hauteur: 200,
+			avecTailleSelonContenuMobile: true,
 			fermerFenetreSurClicHorsFenetre: true,
 			titre: ObjetTraduction_1.GTraductions.getValeur(
 				"fenetre_ActionContextuelle.titre",
@@ -47,6 +47,26 @@ class ObjetFenetre_ActionContextuelle extends ObjetFenetre_1.ObjetFenetre {
 					},
 				},
 			).setDonnees(aTabActions);
+		}
+	}
+	static getActionENEJ(aCallback) {
+		var _a;
+		if (GEtatUtilisateur.avecCloudENEJDisponible()) {
+			return {
+				libelle: ObjetTraduction_1.GTraductions.getValeur(
+					"fenetre_ActionContextuelle.parmiLesDocsENEJ",
+					[
+						(_a = GEtatUtilisateur.getCloudENEJ()) === null || _a === void 0
+							? void 0
+							: _a.getLibelle(),
+					],
+				),
+				icon: "icon_file_pleine",
+				event() {
+					aCallback();
+				},
+				class: "bg-enej",
+			};
 		}
 	}
 	getControleur(aInstance) {
@@ -89,20 +109,25 @@ class ObjetFenetre_ActionContextuelle extends ObjetFenetre_1.ObjetFenetre {
 		if (!!this.actions && this.actions.length) {
 			this.actions.forEach((aActions, i) => {
 				if (!!aActions.icon) {
+					const lClassesBtn = ["bt-activable", "bt-big", aActions.icon];
+					if (aActions.class) {
+						lClassesBtn.push(aActions.class);
+					}
+					let lLibelle = "";
+					if (aActions.libelle) {
+						lLibelle = IE.jsx.str("label", null, aActions.libelle);
+					}
 					H.push(
-						(0, tag_1.tag)(
+						IE.jsx.str(
 							"div",
 							{ class: "bta-contain" },
-							(0, tag_1.tag)("ie-btnicon", {
-								class:
-									"bt-activable bt-big " +
-									aActions.icon +
-									(!!aActions.class ? " " + aActions.class : ""),
+							IE.jsx.str("ie-btnicon", {
+								class: lClassesBtn.join(" "),
 								title: aActions.libelle || "",
 								"ie-model": "action(" + i + ")",
 								"ie-selecFile": !!aActions.selecFile,
 							}),
-							aActions.libelle ? (0, tag_1.tag)("label", aActions.libelle) : "",
+							lLibelle,
 						),
 					);
 				}

@@ -1,25 +1,44 @@
-const { TypeThemeBouton } = require("Type_ThemeBouton.js");
-const { EGenreDocumentJoint } = require("Enumere_DocumentJoint.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { GChaine } = require("ObjetChaine.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GUID } = require("GUID.js");
-const { GStyle } = require("ObjetStyle.js");
-const { GHtml } = require("ObjetHtml.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { GDate } = require("ObjetDate.js");
-const { UtilitaireUrl } = require("UtilitaireUrl.js");
-const { EModeAffichageTimeline } = require("Enumere_ModeAffichageTimeline.js");
-const { UtilitaireAudio } = require("UtilitaireAudio.js");
-const EGenreTitreBloc = { texte: 0, document: 1 };
-const EGenreProfondeurBloc = { petite: 0, moyenne: 1, grande: 2 };
-const EGenreBoutonBloc = {
-	bouton: 0,
-	texte: 1,
-	selecFile: 2,
-	chips: 3,
-	chipsAudio: 4,
-};
+exports.EGenreBoutonBloc =
+	exports.EGenreProfondeurBloc =
+	exports.EGenreTitreBloc =
+		void 0;
+exports.TUtilitaireBloc = TUtilitaireBloc;
+const Type_ThemeBouton_1 = require("Type_ThemeBouton");
+const Enumere_DocumentJoint_1 = require("Enumere_DocumentJoint");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const GUID_1 = require("GUID");
+const ObjetStyle_1 = require("ObjetStyle");
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetDate_1 = require("ObjetDate");
+const UtilitaireUrl_1 = require("UtilitaireUrl");
+const Enumere_ModeAffichageTimeline_1 = require("Enumere_ModeAffichageTimeline");
+const UtilitaireAudio_1 = require("UtilitaireAudio");
+const AccessApp_1 = require("AccessApp");
+var EGenreTitreBloc;
+(function (EGenreTitreBloc) {
+	EGenreTitreBloc[(EGenreTitreBloc["texte"] = 0)] = "texte";
+	EGenreTitreBloc[(EGenreTitreBloc["document"] = 1)] = "document";
+})(EGenreTitreBloc || (exports.EGenreTitreBloc = EGenreTitreBloc = {}));
+var EGenreProfondeurBloc;
+(function (EGenreProfondeurBloc) {
+	EGenreProfondeurBloc[(EGenreProfondeurBloc["petite"] = 0)] = "petite";
+	EGenreProfondeurBloc[(EGenreProfondeurBloc["moyenne"] = 1)] = "moyenne";
+	EGenreProfondeurBloc[(EGenreProfondeurBloc["grande"] = 2)] = "grande";
+})(
+	EGenreProfondeurBloc ||
+		(exports.EGenreProfondeurBloc = EGenreProfondeurBloc = {}),
+);
+var EGenreBoutonBloc;
+(function (EGenreBoutonBloc) {
+	EGenreBoutonBloc[(EGenreBoutonBloc["bouton"] = 0)] = "bouton";
+	EGenreBoutonBloc[(EGenreBoutonBloc["texte"] = 1)] = "texte";
+	EGenreBoutonBloc[(EGenreBoutonBloc["selecFile"] = 2)] = "selecFile";
+	EGenreBoutonBloc[(EGenreBoutonBloc["chips"] = 3)] = "chips";
+	EGenreBoutonBloc[(EGenreBoutonBloc["chipsAudio"] = 4)] = "chipsAudio";
+})(EGenreBoutonBloc || (exports.EGenreBoutonBloc = EGenreBoutonBloc = {}));
 function TUtilitaireBloc() {}
 TUtilitaireBloc.compose = function (aParams) {
 	const lDefault = {
@@ -40,26 +59,29 @@ TUtilitaireBloc.compose = function (aParams) {
 		marqueurV: {
 			avecMarqueur: true,
 			surTitreUniquement: true,
-			couleur: GCouleur.themeNeutre.sombre,
+			couleur: (0, AccessApp_1.getApp)().getCouleur().themeNeutre.sombre,
 			epaisseur: 4,
 		},
 		documents: {
 			genreRessource: aParams.genreRessourceDocumentJoint,
 			avecDocuments: false,
-			listeDocuments: new ObjetListeElements(),
+			listeDocuments: new ObjetListeElements_1.ObjetListeElements(),
 		},
 		ombre: { avecOmbre: true, profondeur: EGenreProfondeurBloc.petite },
-		bordure: { avecBordure: false, couleur: GCouleur.themeNeutre.claire },
+		bordure: {
+			avecBordure: false,
+			couleur: (0, AccessApp_1.getApp)().getCouleur().themeNeutre.claire,
+		},
 		avecArrondis: true,
 		avecVoile: false,
 		avecMargeGauche: true,
 		avecNoWrap: false,
 		couleursBloc: {
-			fondBloc: "#ffffff",
-			fondTitre: "#ffffff",
-			fondContenu: "#ffffff",
-			texteTitre: "black",
-			texteContenu: "black",
+			fondBloc: "var(--color-background)",
+			fondTitre: "var(--color-background)",
+			fondContenu: "var(--color-background)",
+			texteTitre: "var(--color-text)",
+			texteContenu: "var(--color-text)",
 		},
 		menuContextuel: { actif: false, avecBtn3Pts: false, param: {} },
 		boutonsActions: [],
@@ -94,15 +116,15 @@ TUtilitaireBloc.composeHtml = function (aParams) {
 	const lAvecVoile = aParams.param.avecVoile ? "opacity:0.5;" : "";
 	const lStyleBordure =
 		!aParams.param.ombre.avecOmbre && aParams.param.bordure.avecBordure
-			? GStyle.composeCouleurBordure(aParams.param.bordure.couleur)
+			? ObjetStyle_1.GStyle.composeCouleurBordure(aParams.param.bordure.couleur)
 			: "";
 	const lStyle = lEstListe ? "" : "position:relative;margin: 0px 5px 10px 5px;";
-	const lStyleFond = GStyle.composeCouleurFond(
+	const lStyleFond = ObjetStyle_1.GStyle.composeCouleurFond(
 		aParams.param.couleursBloc.fondBloc,
 	);
 	const lClassDivBloc = aParams.param.estListe ? "DivBlocListe " : "DivBloc ";
 	const lEventStopPropagation = aParams.param.eventPropagationTitre
-		? ' ie-node="eventPropagationTitre" role="button"'
+		? ' ie-node="eventPropagationTitre"'
 		: "";
 	H.push(
 		'<div style="',
@@ -125,7 +147,7 @@ TUtilitaireBloc.composeHtml = function (aParams) {
 			(aParams.param.estPlie ? "0" : "-1") +
 			'">',
 	);
-	const lIdTitre = GUID.getId();
+	const lIdTitre = GUID_1.GUID.getId();
 	const lAvecZoneAction =
 		aParams.param.menuContextuel.actif ||
 		aParams.param.boutonsActions.length > 0;
@@ -137,29 +159,33 @@ TUtilitaireBloc.composeHtml = function (aParams) {
 	let lDisplay = aParams.param.avecDateAffichee ? "" : "display:none;";
 	H.push('<div class="UtilitaireBloc_itemGauche" style="', lDisplay, '">');
 	const lDate = aParams.param.dateAffichee || new Date();
-	const lCouleurBloc = GDate.estAvantJourCourant(lDate)
-		? GCouleur.themeNeutre.legere2
-		: GCouleur.themeCouleur.claire;
-	const lCouleurTexte = GDate.estAvantJourCourant(lDate)
-		? GCouleur.themeNeutre.foncee
-		: GCouleur.themeCouleur.foncee;
+	const lCouleurBloc = ObjetDate_1.GDate.estAvantJourCourant(lDate)
+		? (0, AccessApp_1.getApp)().getCouleur().themeNeutre.legere2
+		: (0, AccessApp_1.getApp)().getCouleur().themeCouleur.claire;
+	const lCouleurTexte = ObjetDate_1.GDate.estAvantJourCourant(lDate)
+		? (0, AccessApp_1.getApp)().getCouleur().themeNeutre.foncee
+		: (0, AccessApp_1.getApp)().getCouleur().themeCouleur.foncee;
 	H.push(
 		'<div class="UtilitaireBloc_Date AlignementMilieu ie-ellipsis ',
 		lClass,
 		'" style="font-weight:bold;' +
 			(aParams.param.estSelectionne
 				? ""
-				: GStyle.composeCouleurFond(lCouleurBloc)) +
+				: ObjetStyle_1.GStyle.composeCouleurFond(lCouleurBloc)) +
 			'">',
 	);
 	H.push(
-		'  <span style="' + GStyle.composeCouleurTexte(lCouleurTexte) + '">',
-		GDate.formatDate(lDate, "%JJ"),
+		'  <span style="' +
+			ObjetStyle_1.GStyle.composeCouleurTexte(lCouleurTexte) +
+			'">',
+		ObjetDate_1.GDate.formatDate(lDate, "%JJ"),
 		"</span>",
 	);
 	H.push(
-		'  <span style="' + GStyle.composeCouleurTexte(lCouleurTexte) + '">',
-		GDate.formatDate(lDate, "%MMM"),
+		'  <span style="' +
+			ObjetStyle_1.GStyle.composeCouleurTexte(lCouleurTexte) +
+			'">',
+		ObjetDate_1.GDate.formatDate(lDate, "%MMM"),
 		"</span>",
 	);
 	H.push("</div>");
@@ -185,7 +211,7 @@ TUtilitaireBloc.composeHtml = function (aParams) {
 		'<div style="color : ',
 		aParams.param.couleursBloc.texteTitre,
 		"; ",
-		GStyle.composeWidthCalc(aParams.param.marqueurV.epaisseur),
+		ObjetStyle_1.GStyle.composeWidthCalc(aParams.param.marqueurV.epaisseur),
 		'">',
 		aParams.titre,
 		"</div></div>",
@@ -220,7 +246,8 @@ TUtilitaireBloc.composeHtml = function (aParams) {
 	const lDisplayActions = lAvecZoneAction ? "display:block" : "display:none";
 	if (aParams.param.sansContenu !== true) {
 		const lClassVertical =
-			aParams.param.modeAffichage === EModeAffichageTimeline.grille
+			aParams.param.modeAffichage ===
+			Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.grille
 				? "containerVertical"
 				: "";
 		H.push(
@@ -258,6 +285,7 @@ TUtilitaireBloc.composeHtml = function (aParams) {
 	H.push("</div>");
 	H.push("</div>");
 	H.push("</div>");
+	H.push("</div>");
 	return H.join("");
 };
 TUtilitaireBloc.composeCelluleMarqueur = function (
@@ -292,9 +320,9 @@ TUtilitaireBloc.composeBtnAction = function (aBouton, aNumeroArticle) {
 	if (aNumeroArticle !== undefined) {
 		lArrayAttr.push(aNumeroArticle);
 	}
-	const lIdBtnAction = GUID.getId();
+	const lIdBtnAction = GUID_1.GUID.getId();
 	const lClassesBouton = [];
-	lClassesBouton.push(TypeThemeBouton.secondaire);
+	lClassesBouton.push(Type_ThemeBouton_1.TypeThemeBouton.secondaire);
 	lClassesBouton.push("small-bt");
 	let lGenreAffichageBouton = aBouton.genreAffichage;
 	if (lGenreAffichageBouton === undefined) {
@@ -305,7 +333,7 @@ TUtilitaireBloc.composeBtnAction = function (aBouton, aNumeroArticle) {
 			'<ie-bouton id="',
 			lIdBtnAction,
 			'" ',
-			GHtml.composeAttr("ie-model", "btnAction", lArrayAttr),
+			ObjetHtml_1.GHtml.composeAttr("ie-model", "btnAction", lArrayAttr),
 			' class="',
 			lClassesBouton.join(" "),
 			'">',
@@ -317,7 +345,7 @@ TUtilitaireBloc.composeBtnAction = function (aBouton, aNumeroArticle) {
 			'<ie-bouton id="',
 			lIdBtnAction,
 			'" ',
-			GHtml.composeAttr("ie-model", "btnSelecFile", lArrayAttr),
+			ObjetHtml_1.GHtml.composeAttr("ie-model", "btnSelecFile", lArrayAttr),
 			' ie-selecfile class="',
 			lClassesBouton.join(" "),
 			'">',
@@ -335,7 +363,7 @@ TUtilitaireBloc.composeBtnAction = function (aBouton, aNumeroArticle) {
 	} else if (lGenreAffichageBouton === EGenreBoutonBloc.chips) {
 		H.push(
 			"<div><ie-chips ",
-			GHtml.composeAttr("ie-model", "chipsAction", lArrayAttr),
+			ObjetHtml_1.GHtml.composeAttr("ie-model", "chipsAction", lArrayAttr),
 			">",
 			aBouton.libelle,
 			"</ie-chips></div>",
@@ -343,13 +371,12 @@ TUtilitaireBloc.composeBtnAction = function (aBouton, aNumeroArticle) {
 	} else if (lGenreAffichageBouton === EGenreBoutonBloc.chipsAudio) {
 		H.push(
 			"<div>",
-			UtilitaireAudio.construitChipsAudio({
+			UtilitaireAudio_1.UtilitaireAudio.construitChipsAudio({
 				libelle: aBouton.libelle,
 				url: aBouton.url,
 				ieModel: "chipsAudio",
 				argsIEModel: aBouton.argsIEModel,
 				idAudio: aBouton.id,
-				estLien: true,
 			}),
 			"</div>",
 		);
@@ -359,20 +386,16 @@ TUtilitaireBloc.composeBtnAction = function (aBouton, aNumeroArticle) {
 TUtilitaireBloc.composeEspaceDocumentsTitre = function (aParam) {
 	const H = [];
 	const lElement = aParam.titre.document;
-	const lDocumentJoint = new ObjetElement(
+	const lDocumentJoint = new ObjetElement_1.ObjetElement(
 		lElement.getLibelle(),
 		lElement.getNumero(),
-		EGenreDocumentJoint.Fichier,
+		Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier,
 	);
-	const lLien = GChaine.composerUrlLienExterne({
+	const lLien = ObjetChaine_1.GChaine.composerUrlLienExterne({
 		documentJoint: lDocumentJoint,
 		genreRessource: lElement.getGenre(),
 	});
 	let lEvnt = "";
-	if (aParam.titre.avecEvnt === true) {
-		lEvnt =
-			'onclick="' + aParam.titre.pereEvnt.Nom + '.evntSurDocumentTitre()"';
-	}
 	H.push('<div class="InlineBlock" ', lEvnt, ">" + lLien + "</div>");
 	return H.join("");
 };
@@ -380,21 +403,25 @@ TUtilitaireBloc.composeEspaceDocuments = function (aParam) {
 	const H = [];
 	let lListeDocuments = "";
 	if (!!aParam.param.documents && !!aParam.param.documents.listeDocuments) {
-		lListeDocuments = UtilitaireUrl.construireListeUrls(
+		lListeDocuments = UtilitaireUrl_1.UtilitaireUrl.construireListeUrls(
 			aParam.param.documents.listeDocuments,
 			{ genreRessource: aParam.param.documents.genreRessource },
 		);
 	}
 	H.push(
 		'<div style="',
-		GStyle.composeCouleurFond(GCouleur.fond),
+		ObjetStyle_1.GStyle.composeCouleurFond(
+			(0, AccessApp_1.getApp)().getCouleur().fond,
+		),
 		'margin:.8rem .4rem .8rem 0;">',
 	);
 	H.push(
 		'<div style="',
-		GStyle.composeCouleurTexte(GCouleur.grisTresFonce),
+		ObjetStyle_1.GStyle.composeCouleurTexte(
+			(0, AccessApp_1.getApp)().getCouleur().grisTresFonce,
+		),
 		'">',
-		GTraductions.getValeur("Bloc.Documents"),
+		ObjetTraduction_1.GTraductions.getValeur("Bloc.Documents"),
 		"</div>",
 	);
 	H.push('<div style="word-break: break-all;">', lListeDocuments, " </div>");
@@ -404,10 +431,11 @@ TUtilitaireBloc.composeEspaceDocuments = function (aParam) {
 TUtilitaireBloc.composeZoneBoutonsAction = function (aParams) {
 	const lParamBtn = {
 		libelle:
-			aParams.param.menuContextuel.libelle || GTraductions.getValeur("Editer"),
+			aParams.param.menuContextuel.libelle ||
+			ObjetTraduction_1.GTraductions.getValeur("Editer"),
 	};
 	const H = [];
-	const lIdBtn = GUID.getId();
+	const lIdBtn = GUID_1.GUID.getId();
 	H.push('<div class="zone-boutons-action">');
 	if (aParams.param.menuContextuel.actif) {
 		if (IE.estMobile || aParams.param.menuContextuel.avecBtn3Pts) {
@@ -420,9 +448,11 @@ TUtilitaireBloc.composeZoneBoutonsAction = function (aParams) {
 				'" ie-model="btnMenuCtx" class="btnImageIcon icon_ellipsis_vertical" style="padding:1rem; ',
 				IE.estMobile ? "font-size:1.2rem;" : "font-size:2rem;",
 				" color: ",
-				GCouleur.themeCouleur.foncee,
+				(0, AccessApp_1.getApp)().getCouleur().themeCouleur.foncee,
 				"; visibility:",
 				lVisibility,
+				'" title="',
+				ObjetTraduction_1.GTraductions.getValeur("liste.BtnAction"),
 				'"></ie-btnimage>',
 			);
 		} else {
@@ -482,7 +512,7 @@ TUtilitaireBloc.composeContenu = function (aParams) {
 		H.push(
 			'<div style="color : ',
 			aParams.couleursBloc.texteContenu,
-			'; height:100%;" >',
+			'; height:100%;">',
 		);
 		H.push(aParams.htmlContenu);
 		H.push("</div>");
@@ -499,10 +529,4 @@ TUtilitaireBloc.composeMsgAucuneDonnee = function (aParams) {
 		"</div>",
 	);
 	return H.join("");
-};
-module.exports = {
-	TUtilitaireBloc,
-	EGenreTitreBloc,
-	EGenreProfondeurBloc,
-	EGenreBoutonBloc,
 };

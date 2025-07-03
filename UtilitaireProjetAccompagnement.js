@@ -1,5 +1,6 @@
-const { GChaine } = require("ObjetChaine.js");
-const { GTraductions } = require("ObjetTraduction.js");
+exports.UtilitaireProjetAccompagnement = void 0;
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetTraduction_1 = require("ObjetTraduction");
 const UtilitaireProjetAccompagnement = {
 	composeProjetAccompagnement(aProjetAccompagnement, aParams) {
 		const H = [];
@@ -13,19 +14,19 @@ const UtilitaireProjetAccompagnement = {
 				!!aProjetAccompagnement.dateFin
 			) {
 				lLibelleDate =
-					GTraductions.getValeur("Du") +
+					ObjetTraduction_1.GTraductions.getValeur("Du") +
 					" " +
 					aProjetAccompagnement.dateDebut +
 					" " +
-					GTraductions.getValeur("Au") +
+					ObjetTraduction_1.GTraductions.getValeur("Au") +
 					" " +
 					aProjetAccompagnement.dateFin;
 			} else {
 				lLibelleDate = !!aProjetAccompagnement.dateDebut
-					? GTraductions.getValeur("aPartirDu") +
+					? ObjetTraduction_1.GTraductions.getValeur("aPartirDu") +
 						" " +
 						aProjetAccompagnement.dateDebut
-					: GTraductions.getValeur("jusquAu") +
+					: ObjetTraduction_1.GTraductions.getValeur("jusquAu") +
 						" " +
 						aProjetAccompagnement.dateFin;
 			}
@@ -49,13 +50,13 @@ const UtilitaireProjetAccompagnement = {
 				})
 				.count();
 			H.push(
-				`<span class="m-top"><ie-bouton class="small-bt" ie-model="afficherFenetreDetailsPIEleve('${aProjetAccompagnement.getNumero()}')">${lNbrDetails} ${aProjetAccompagnement.estAvecActions ? GTraductions.getValeur("FicheEleve.actions").toLowerCase() : GTraductions.getValeur("FicheEleve.amenagements").toLowerCase()}</ie-bouton></span>`,
+				`<span class="m-top"><ie-bouton class="small-bt" ie-model="afficherFenetreDetailsPIEleve('${aProjetAccompagnement.getNumero()}')">${lNbrDetails} ${aProjetAccompagnement.estAvecActions ? ObjetTraduction_1.GTraductions.getValeur("FicheEleve.actions").toLowerCase() : ObjetTraduction_1.GTraductions.getValeur("FicheEleve.amenagements").toLowerCase()}</ie-bouton></span>`,
 			);
 		}
 		H.push(`</div>`);
 		if (aParams.avecEdition) {
 			H.push(
-				`<ie-btnicon class="icon icon_edit avecFond" role="button" title="${GTraductions.getValeur("Modifier")}" ie-model="btnEditProjetAccompagnement('${aProjetAccompagnement.getNumero()}')"></ie-btnicon>`,
+				`<ie-btnicon class="icon icon_edit avecFond" role="button" title="${ObjetTraduction_1.GTraductions.getValeur("Modifier")}" ie-model="btnEditProjetAccompagnement('${aProjetAccompagnement.getNumero()}')"></ie-btnicon>`,
 			);
 		}
 		H.push(`</div>`);
@@ -65,7 +66,7 @@ const UtilitaireProjetAccompagnement = {
 		) {
 			const lListeDocJoints = [];
 			aProjetAccompagnement.documents.parcourir((D) => {
-				const lLienDocJoint = GChaine.composerUrlLienExterne({
+				const lLienDocJoint = ObjetChaine_1.GChaine.composerUrlLienExterne({
 					documentJoint: D,
 				});
 				lListeDocJoints.push(lLienDocJoint);
@@ -76,14 +77,25 @@ const UtilitaireProjetAccompagnement = {
 			H.push(
 				'<div class="m-top">',
 				aProjetAccompagnement.consultableEquipePeda
-					? GTraductions.getValeur("PageCompte.ProjetConsultable")
-					: GTraductions.getValeur("PageCompte.ProjetNonConsultable"),
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"PageCompte.ProjetConsultable",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"PageCompte.ProjetNonConsultable",
+						),
 				"</div>",
 			);
 		}
 		return H.join("");
 	},
-	composeListeProjetsAccompagnement(aListeProjets, aParams = {}) {
+	composeListeProjetsAccompagnement(
+		aListeProjets,
+		aParams = {
+			avecEdition: false,
+			avecLibelleConsultationEquipePeda: false,
+			avecControlePublication: false,
+		},
+	) {
 		const lHtml = [];
 		if (!!aListeProjets && aListeProjets.count() > 0) {
 			const lParamsComposeProjAcc = {
@@ -107,9 +119,11 @@ const UtilitaireProjetAccompagnement = {
 				}
 			});
 		} else {
-			lHtml.push(GTraductions.getValeur("FicheEleve.aucunProjet"));
+			lHtml.push(
+				ObjetTraduction_1.GTraductions.getValeur("FicheEleve.aucunProjet"),
+			);
 		}
 		return lHtml.join("");
 	},
 };
-module.exports = { UtilitaireProjetAccompagnement };
+exports.UtilitaireProjetAccompagnement = UtilitaireProjetAccompagnement;

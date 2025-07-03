@@ -17,22 +17,21 @@ const Enumere_EvenementEDT_1 = require("Enumere_EvenementEDT");
 const ObjetCalculCoursMultiple_1 = require("ObjetCalculCoursMultiple");
 const ObjetGrilleCoursPN_1 = require("ObjetGrilleCoursPN");
 const UtilitaireConvertisseurPositionGrille_1 = require("UtilitaireConvertisseurPositionGrille");
-const ObjetListeArborescente_1 = require("ObjetListeArborescente");
 const IEHtml = require("IEHtml");
 const _ObjetGrille_1 = require("_ObjetGrille");
-const UtilitaireListeCoursAccessible_1 = require("UtilitaireListeCoursAccessible");
 const TypeGenreDisponibilite_1 = require("TypeGenreDisponibilite");
 const ObjetMenuContextuel_1 = require("ObjetMenuContextuel");
 const ObjetWAI_1 = require("ObjetWAI");
-const tag_1 = require("tag");
 const TypeGranulariteGrille_1 = require("TypeGranulariteGrille");
-const jsx_1 = require("jsx");
 const ToucheClavier_1 = require("ToucheClavier");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const AccessApp_1 = require("AccessApp");
+const GlossaireEDT_1 = require("GlossaireEDT");
 class ObjetGrille extends _ObjetGrille_1._ObjetGrille {
 	constructor(...aParams) {
 		super(...aParams);
 		this._parametresGrille = {};
-		this.applicationSco = GApplication;
+		this.applicationSco = (0, AccessApp_1.getApp)();
 		this.parametresSco = this.applicationSco.getObjetParametres();
 		this.couleur = this.applicationSco.getCouleur();
 		$.extend(this._cache, {
@@ -51,6 +50,12 @@ class ObjetGrille extends _ObjetGrille_1._ObjetGrille {
 	}
 	getParametrsGrille() {
 		return this._parametresGrille;
+	}
+	getModuleCours() {
+		return this.moduleCours;
+	}
+	recupererDonnees() {
+		super.recupererDonnees();
 	}
 	getDetailsGrille() {
 		const T = [];
@@ -377,107 +382,6 @@ class ObjetGrille extends _ObjetGrille_1._ObjetGrille {
 					lClass += " " + (aInstance._options.getClassGrille() || "");
 				}
 				return lClass;
-			},
-			getNodeCours: function (aIndiceCours) {
-				const lEventMap = {
-					mouseup: function (aEvent) {
-						if (!aInstance._options.avecSelectionCours) {
-							return;
-						}
-						if (aEvent.which === 3) {
-							return;
-						}
-						aInstance.selectionnerElementParIndice(aIndiceCours, true);
-						aInstance.$refresh();
-					},
-					keyup(aEvent) {
-						if (ToucheClavier_1.ToucheClavierUtil.estEventSelection(aEvent)) {
-							aInstance.selectionnerElementParIndice(aIndiceCours, true);
-							return;
-						}
-					},
-					focus() {
-						if (aInstance.NumeroElement !== aIndiceCours) {
-							aInstance.moduleCours.forcerVisibleCoursMS(aIndiceCours);
-						}
-					},
-					contextmenu: function () {
-						if (aInstance._options.avecSelectionCours) {
-							aInstance._surContextMenuCours(aIndiceCours);
-						}
-					},
-				};
-				const lCours = aInstance.ListeCours.get(aIndiceCours);
-				if (aInstance._options.avecMouseInOutCours) {
-					lEventMap["mouseenter mouseleave"] = function (aEvent) {
-						aInstance.callback.appel({
-							genre:
-								aEvent.type === "mouseenter"
-									? Enumere_EvenementEDT_1.EGenreEvenementEDT.SurMouseEnterCours
-									: Enumere_EvenementEDT_1.EGenreEvenementEDT
-											.SurMouseLeaveCours,
-							id: aInstance.moduleCours.getIdCours(aIndiceCours),
-							cours: lCours,
-							indiceCours: aIndiceCours,
-						});
-					};
-				}
-				$(this.node).on(lEventMap);
-			},
-			dropCours(aIndiceCours) {
-				let lBackupNumeroSelection = -1;
-				return {
-					accept: function (aParamsDrop) {
-						if (aInstance._options.callbackAcceptDraggable) {
-							return aInstance._options.callbackAcceptDraggable(aParamsDrop);
-						}
-						return false;
-					},
-					activate: function () {
-						lBackupNumeroSelection = aInstance.NumeroElement;
-					},
-					deactivate: function () {
-						if (lBackupNumeroSelection >= 0) {
-							aInstance.selectionnerElement(lBackupNumeroSelection, true);
-						}
-						lBackupNumeroSelection = -1;
-					},
-					drop: function (aParamsDrop) {
-						if (lBackupNumeroSelection >= 0) {
-							aInstance.deselectionnerElement();
-							aInstance.selectionnerElement(lBackupNumeroSelection, true);
-						}
-						aInstance._surDropGrilleCellule(aParamsDrop, aIndiceCours);
-					},
-					over: function () {
-						aInstance.deselectionnerElement();
-						aInstance.selectionnerElement(aIndiceCours, true);
-					},
-					out: function () {
-						if (aInstance.NumeroElement === aIndiceCours) {
-							aInstance.moduleCours.selectionnerCours(aIndiceCours, false);
-						}
-					},
-				};
-			},
-			nodeImageCours: function (aIndiceCours, aGenreImage) {
-				$(this.node).on("mouseup keyup", (aEvent) => {
-					if (
-						(aEvent.type === "mouseup" && aEvent.which === 1) ||
-						(aEvent.type === "keyup" &&
-							aEvent.which === ToucheClavier_1.ToucheClavier.Espace) ||
-						aEvent.which === ToucheClavier_1.ToucheClavier.RetourChariot
-					) {
-						aInstance._surEvenement(
-							aEvent,
-							Enumere_EvenementEDT_1.EGenreEvenementEDT.SurImage,
-							aIndiceCours,
-							null,
-							aGenreImage,
-							false,
-						);
-					}
-				});
 			},
 			getNodeContenu: function (aIndiceCours, aIndiceContenu) {
 				$(this.node).on("mouseup keyup", (aEvent) => {
@@ -939,6 +843,9 @@ class ObjetGrille extends _ObjetGrille_1._ObjetGrille {
 			}
 		}
 	}
+	getIdTitreTrancheDate(aNumeroTranche) {
+		return this._cache.IdDatePrefixe + aNumeroTranche;
+	}
 	composeTitresTranches(I, ALargeur, aFormatColonnes) {
 		let LDate = new Date();
 		let lDateFinColonne;
@@ -976,9 +883,8 @@ class ObjetGrille extends _ObjetGrille_1._ObjetGrille {
 		const T = [];
 		T.push(
 			'<table id="' +
-				this._cache.IdDatePrefixe +
-				I +
-				'" style="margin-left:auto; margin-right:auto;width:' +
+				this.getIdTitreTrancheDate(I) +
+				'" aria-hidden="true" style="margin-left:auto; margin-right:auto;width:' +
 				lLargeur +
 				"px;",
 			ObjetStyle_1.GStyle.composeCouleurTexte(
@@ -1362,7 +1268,7 @@ class ObjetGrille extends _ObjetGrille_1._ObjetGrille {
 		if (lInfosPlace.ferie || lInfosPlace.horsAnneScolaire) {
 			H.push(
 				this.construireLibelleInclineSurBlocHoraire({
-					libelle: ObjetTraduction_1.GTraductions.getValeur("EDT.Ferie"),
+					libelle: GlossaireEDT_1.TradGlossaireEDT.Ferie,
 					blocHoraire: aBlocHoraire,
 				}),
 			);
@@ -1386,7 +1292,7 @@ class ObjetGrille extends _ObjetGrille_1._ObjetGrille {
 			if (!lInfosPlace.ferie && !lInfosPlace.horsAnneScolaire) {
 				H.push(
 					this.construireLibelleInclineSurBlocHoraire({
-						libelle: ObjetTraduction_1.GTraductions.getValeur("EDT.Stage"),
+						libelle: GlossaireEDT_1.TradGlossaireEDT.Stage,
 						placeDebut: lPlaceDebutStage,
 						placeFin: lPlaceFinStage,
 						blocHoraire: aBlocHoraire,
@@ -1598,12 +1504,66 @@ class ObjetGrille extends _ObjetGrille_1._ObjetGrille {
 				}
 				return lClass.join(" ");
 			},
-			getContenuNodeCours: function (aCours, aIndiceCours) {
-				return (0, jsx_1.jsxFuncAttr)("getNodeCours", aIndiceCours);
+			jsxNodeCours: this.jsxNodeContenuCours.bind(this),
+			jsxNodeImageCours: (aIndiceCours, aGenreImage, aNode) => {
+				$(aNode).on("mouseup keyup", (aEvent) => {
+					if (
+						(aEvent.type === "mouseup" && aEvent.which === 1) ||
+						(aEvent.type === "keyup" &&
+							aEvent.which === ToucheClavier_1.ToucheClavier.Espace) ||
+						aEvent.which === ToucheClavier_1.ToucheClavier.RetourChariot
+					) {
+						this._surEvenement(
+							aEvent,
+							Enumere_EvenementEDT_1.EGenreEvenementEDT.SurImage,
+							aIndiceCours,
+							null,
+							aGenreImage,
+							false,
+						);
+					}
+				});
 			},
-			getDroppableCours: (aCours, aIndiceCours) => {
+			getJsxFuncDroppableCours: (aCours, aIndiceCours) => {
 				if (this._options.avecDrop && aCours && aCours.utilisable) {
-					return tag_1.tag.funcAttr("dropCours", aIndiceCours);
+					const lFunc = () => {
+						const lThis = this;
+						let lBackupNumeroSelection = -1;
+						return {
+							accept: function (aParamsDrop) {
+								if (lThis._options.callbackAcceptDraggable) {
+									return lThis._options.callbackAcceptDraggable(aParamsDrop);
+								}
+								return false;
+							},
+							activate: function () {
+								lBackupNumeroSelection = lThis.NumeroElement;
+							},
+							deactivate: function () {
+								if (lBackupNumeroSelection >= 0) {
+									lThis.selectionnerElement(lBackupNumeroSelection, true);
+								}
+								lBackupNumeroSelection = -1;
+							},
+							drop: function (aParamsDrop) {
+								if (lBackupNumeroSelection >= 0) {
+									lThis.deselectionnerElement();
+									lThis.selectionnerElement(lBackupNumeroSelection, true);
+								}
+								lThis._surDropGrilleCellule(aParamsDrop, aIndiceCours);
+							},
+							over: function () {
+								lThis.deselectionnerElement();
+								lThis.selectionnerElement(aIndiceCours, true);
+							},
+							out: function () {
+								if (lThis.NumeroElement === aIndiceCours) {
+									lThis.moduleCours.selectionnerCours(aIndiceCours, false);
+								}
+							},
+						};
+					};
+					return lFunc;
 				}
 				return false;
 			},
@@ -1703,7 +1663,7 @@ class ObjetGrille extends _ObjetGrille_1._ObjetGrille {
 			);
 			this.selectionnerElement(I, aSelectionNonManuelle);
 			if (AAvecEvenement) {
-				this._declencherEvenement();
+				this._declencherEvenement(aSelectionNonManuelle);
 			}
 			this.$refresh();
 		}, !this.ControleNavigation);
@@ -1758,7 +1718,7 @@ class ObjetGrille extends _ObjetGrille_1._ObjetGrille {
 	}
 	surMouseDownGrilleCellule(aPlace, aElement, aEvent) {
 		if (
-			GNavigateur.getBoutonSouris(aEvent.originalEvent) ===
+			ObjetNavigateur_1.Navigateur.getBoutonSouris(aEvent.originalEvent) ===
 			Enumere_BoutonSouris_1.EGenreBoutonSouris.Droite
 		) {
 			return;
@@ -1781,33 +1741,6 @@ class ObjetGrille extends _ObjetGrille_1._ObjetGrille {
 	}
 	getConvertisseurPosition() {
 		return this._options.convertisseurPosition;
-	}
-	construireEDTListeAccessible(aParams, aTitre) {
-		const lObjetListeArborescente =
-			new ObjetListeArborescente_1.ObjetListeArborescente(
-				this.Nom + "_Liste",
-				0,
-				this,
-				null,
-			);
-		const lRacine = lObjetListeArborescente.construireRacine();
-		lObjetListeArborescente.setParametres(false);
-		const lNoeudListeCours = lObjetListeArborescente.ajouterUnNoeudAuNoeud(
-			lRacine,
-			"",
-			aTitre,
-			"Gras",
-			true,
-			true,
-		);
-		UtilitaireListeCoursAccessible_1.UtilitaireListeCoursAccessible.remplir(
-			Object.assign(aParams, {
-				listeArborescente: lObjetListeArborescente,
-				nodeParent: lNoeudListeCours,
-				estEDTAnnuel: this._parametresGrille.estEDTAnnuel,
-			}),
-		);
-		return { liste: lObjetListeArborescente, racine: lRacine };
 	}
 	surPositionnerGabarit(aParamsGabarit) {
 		if (this._options.avecCouleurCoursSousGabarit) {
@@ -2111,9 +2044,6 @@ class ObjetGrille extends _ObjetGrille_1._ObjetGrille {
 				: this.couleur.grille.demiPensionInactive;
 		}
 		if (lAvecTraitDebut || lAvecTraitFin) {
-			if (GEtatUtilisateur.estAvecThemeAccessible()) {
-				lCouleurTrait = this.couleur.getCouleurAccessible(lCouleurTrait);
-			}
 			if (lAvecTraitDebut) {
 				this._cache.traitsHoraires.push({
 					place: lPlaceTraitDebut,
@@ -2238,6 +2168,7 @@ class ObjetGrille extends _ObjetGrille_1._ObjetGrille {
 			genre: Enumere_EvenementEDT_1.EGenreEvenementEDT.SurMenuContextuel,
 			id: this.moduleCours.getIdCours(aIndiceCours),
 			cours: lCours,
+			selectionNonManuelle: false,
 		};
 		if (lCours.coursMultiple) {
 			this.callback.appel(lParam);
@@ -2283,9 +2214,9 @@ class ObjetGrille extends _ObjetGrille_1._ObjetGrille {
 			return true;
 		}
 		if (
-			(GNavigateur.BoutonSouris ===
+			(ObjetNavigateur_1.Navigateur.BoutonSouris ===
 				Enumere_BoutonSouris_1.EGenreBoutonSouris.Droite ||
-				GNavigateur.isToucheMenuContextuel()) &&
+				ObjetNavigateur_1.Navigateur.isToucheMenuContextuel()) &&
 			this._options.avecMenuContextuel
 		) {
 			return true;
@@ -2300,7 +2231,7 @@ class ObjetGrille extends _ObjetGrille_1._ObjetGrille {
 		aGenreImage,
 		aAvecSelection,
 	) {
-		GNavigateur.stopperEvenement(aEvent.originalEvent);
+		ObjetNavigateur_1.Navigateur.stopperEvenement(aEvent.originalEvent);
 		const lCours = this.ListeCours.get(aIndiceCours);
 		const lContenu =
 			aIndiceContenu === null || aIndiceContenu === undefined
@@ -2315,15 +2246,16 @@ class ObjetGrille extends _ObjetGrille_1._ObjetGrille {
 			cours: lCours,
 			contenu: lContenu,
 			genreImage: aGenreImage,
+			selectionNonManuelle: false,
 		};
 		this.callback.appel(lParam);
 	}
-	_declencherEvenement() {
+	_declencherEvenement(aSelectionNonManuelle) {
 		if (this.NumeroElement > -1) {
 			const lCours = this.ListeCours.get(this.NumeroElement);
 			const lConvertisseur = this._options.convertisseurPosition;
 			const lParam = {
-				genre: GNavigateur.isToucheMenuContextuel()
+				genre: ObjetNavigateur_1.Navigateur.isToucheMenuContextuel()
 					? Enumere_EvenementEDT_1.EGenreEvenementEDT.SurMenuContextuel
 					: Enumere_EvenementEDT_1.EGenreEvenementEDT.SurCours,
 				id: this.moduleCours.getIdCours(this.NumeroElement),
@@ -2334,6 +2266,7 @@ class ObjetGrille extends _ObjetGrille_1._ObjetGrille {
 						lConvertisseur.getPlaceDebutCours(lCours, true) ||
 					lConvertisseur.getPlaceFinCours(lCours, false) !==
 						lConvertisseur.getPlaceFinCours(lCours, true),
+				selectionNonManuelle: aSelectionNonManuelle,
 			};
 			this.callback.appel(lParam);
 		}
@@ -2417,6 +2350,53 @@ class ObjetGrille extends _ObjetGrille_1._ObjetGrille {
 			});
 		}
 		return lResult;
+	}
+	jsxNodeContenuCours(aIndiceCours, aNode) {
+		const lThis = this;
+		const lEventMap = {
+			mouseup(aEvent) {
+				if (!lThis._options.avecSelectionCours) {
+					return;
+				}
+				if (aEvent.which === 3) {
+					return;
+				}
+				lThis.selectionnerElementParIndice(aIndiceCours, true);
+				lThis.$refresh();
+			},
+			keyup(aEvent) {
+				if (ToucheClavier_1.ToucheClavierUtil.estEventSelection(aEvent)) {
+					lThis.selectionnerElementParIndice(aIndiceCours, true);
+					return;
+				}
+			},
+			focus() {
+				if (lThis.NumeroElement !== aIndiceCours) {
+					lThis.moduleCours.forcerVisibleCoursMS(aIndiceCours);
+				}
+			},
+			contextmenu() {
+				if (lThis._options.avecSelectionCours) {
+					lThis._surContextMenuCours(aIndiceCours);
+				}
+			},
+		};
+		const lCours = this.ListeCours.get(aIndiceCours);
+		if (this._options.avecMouseInOutCours) {
+			lEventMap["mouseenter mouseleave"] = function (aEvent) {
+				lThis.callback.appel({
+					genre:
+						aEvent.type === "mouseenter"
+							? Enumere_EvenementEDT_1.EGenreEvenementEDT.SurMouseEnterCours
+							: Enumere_EvenementEDT_1.EGenreEvenementEDT.SurMouseLeaveCours,
+					id: lThis.moduleCours.getIdCours(aIndiceCours),
+					cours: lCours,
+					indiceCours: aIndiceCours,
+					selectionNonManuelle: false,
+				});
+			};
+		}
+		$(aNode).on(lEventMap);
 	}
 }
 exports.ObjetGrille = ObjetGrille;

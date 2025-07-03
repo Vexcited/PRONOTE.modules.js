@@ -1,12 +1,12 @@
-const { TypeReleveBulletin } = require("TypeReleveBulletin.js");
-const {
-	_InterfaceSaisieApprReleveBulletin,
-} = require("_InterfaceSaisieApprReleveBulletin.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class InterfaceSaisieAvisProfesseur extends _InterfaceSaisieApprReleveBulletin {
+exports.InterfaceSaisieAvisProfesseur = void 0;
+const TypeReleveBulletin_1 = require("TypeReleveBulletin");
+const _InterfaceSaisieApprReleveBulletin_1 = require("_InterfaceSaisieApprReleveBulletin");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class InterfaceSaisieAvisProfesseur extends _InterfaceSaisieApprReleveBulletin_1._InterfaceSaisieApprReleveBulletin {
 	constructor(...aParams) {
 		super(...aParams);
-		this.typeReleveBulletin = TypeReleveBulletin.AvisProfesseur;
+		this.typeReleveBulletin =
+			TypeReleveBulletin_1.TypeReleveBulletin.AvisProfesseur;
 	}
 	construireStructureAffichageAutre() {
 		const lConstruireInterfaceParent =
@@ -15,7 +15,9 @@ class InterfaceSaisieAvisProfesseur extends _InterfaceSaisieApprReleveBulletin {
 		H.push("<div>");
 		H.push(
 			'<div class="AlignementMilieu Gras Italique" style="line-height: 3rem;">',
-			GTraductions.getValeur("Appreciations.msgSaisieAvisConfidentiels"),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"Appreciations.msgSaisieAvisConfidentiels",
+			),
 			"</div>",
 		);
 		H.push(lConstruireInterfaceParent);
@@ -23,4 +25,4 @@ class InterfaceSaisieAvisProfesseur extends _InterfaceSaisieApprReleveBulletin {
 		return H.join("");
 	}
 }
-module.exports = InterfaceSaisieAvisProfesseur;
+exports.InterfaceSaisieAvisProfesseur = InterfaceSaisieAvisProfesseur;

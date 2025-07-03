@@ -4,8 +4,6 @@ const Enumere_Connexion_1 = require("Enumere_Connexion");
 const Enumere_Espace_1 = require("Enumere_Espace");
 const Enumere_Onglet_1 = require("Enumere_Onglet");
 const _InterfaceConnexion_1 = require("_InterfaceConnexion");
-require("ObjetRequeteAuthentificationPN.js");
-require("ObjetRequeteIdentification.js");
 const GImageConnexion = require("ObjetImageConnexion");
 const ObjetChaine_1 = require("ObjetChaine");
 const TypeArrierePlanAuthentification_1 = require("TypeArrierePlanAuthentification");
@@ -20,6 +18,9 @@ const ModeleInterfaceConnexion = require("InterfaceConnexion.tsxModele");
 const MultiObjetFenetreRecupIdMDP = require("ObjetFenetre_RecupIdMDP");
 const ObjetRequeteParametresUtilisateur_1 = require("ObjetRequeteParametresUtilisateur");
 const ThemesCouleurs_1 = require("ThemesCouleurs");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const ObjetRequeteIdentification_1 = require("ObjetRequeteIdentification");
+const ObjetRequeteAuthentificationPN_1 = require("ObjetRequeteAuthentificationPN");
 class InterfaceConnexionEspace extends _InterfaceConnexion_1._InterfaceConnexion {
 	constructor(...aParams) {
 		super(...aParams);
@@ -36,8 +37,12 @@ class InterfaceConnexionEspace extends _InterfaceConnexion_1._InterfaceConnexion
 				this.etatUtilisateurSco.GenreEspace,
 			),
 			requetes: {
-				identification: "Identification",
-				authentification: "Authentification",
+				getRequeteIdent: (aPere) =>
+					new ObjetRequeteIdentification_1.ObjetRequeteIdentification(aPere),
+				getRequeteAuth: (aPere) =>
+					new ObjetRequeteAuthentificationPN_1.ObjetRequeteAuthentificationPN(
+						aPere,
+					),
 			},
 			utilitaireChangementLangue:
 				UtilitaireChangementLangue_1.UtilitaireChangementLangue,
@@ -305,13 +310,13 @@ class InterfaceConnexionEspace extends _InterfaceConnexion_1._InterfaceConnexion
 				lImageEspace = "Icone_EspaceInscription";
 				break;
 			case Enumere_Espace_1.EGenreEspace.PrimProfesseur:
-				lImageEspace = "Icone_EspaceEnseignant";
+				lImageEspace = "Icone_EspacePrimEnseignant";
 				break;
 			case Enumere_Espace_1.EGenreEspace.PrimParent:
 				lImageEspace = "Icone_EspaceParent";
 				break;
 			case Enumere_Espace_1.EGenreEspace.PrimEleve:
-				lImageEspace = "Icone_EspaceEtudiant";
+				lImageEspace = "Icone_EspacePrimEtudiant";
 				break;
 			case Enumere_Espace_1.EGenreEspace.Accompagnant:
 				lImageEspace = "Icone_EspaceAccompagnant";
@@ -360,204 +365,190 @@ class InterfaceConnexionEspace extends _InterfaceConnexion_1._InterfaceConnexion
 				lCleMdpMessage = "connexion.motDePasseMessage";
 			}
 		}
-		const lParamHtml = {};
-		lParamHtml.id = this.id;
-		lParamHtml.couleur = {
-			grisClair: GCouleur.grisClair,
-			texte: GCouleur.texte,
-			themeNeutre: { sombre: GCouleur.themeNeutre.sombre },
-		};
-		lParamHtml.traductions = {
-			altImageDeFond: ObjetTraduction_1.GTraductions.getValeur(
-				"connexion.altImageDeFond",
-			),
-			texteBouton: ObjetTraduction_1.GTraductions.getValeur(
-				"connexion.seConnecter",
-			),
-			titreBouton: ObjetChaine_1.GChaine.toTitle(
-				ObjetTraduction_1.GTraductions.getValeur("connexion.seConnecterTitre"),
-			),
-			texteModeConnexion: this.options.avecChoixConnexion
-				? ObjetTraduction_1.GTraductions.getValeur("connexion.modeConnexion")
-				: "",
-			texteChampsObligatoires: ObjetTraduction_1.GTraductions.getValeur(
-				"connexion.champsObligatoires",
-			),
-			texteIdentifiant: ObjetTraduction_1.GTraductions.getValeur(
-				"connexion.identifiant",
-			),
-			ariaDescrModeConnexion: this.options.avecChoixConnexion
-				? ObjetTraduction_1.GTraductions.getValeur(
-						"connexion.modeConnexionTitre",
-					) +
-					" " +
+		const lParamHtml = {
+			instance: this,
+			id: this.id,
+			couleur: {
+				texte: GCouleur.texte,
+				themeNeutre: { sombre: GCouleur.themeNeutre.sombre },
+			},
+			traductions: {
+				altImageDeFond: ObjetTraduction_1.GTraductions.getValeur(
+					"connexion.altImageDeFond",
+				),
+				texteBouton: ObjetTraduction_1.GTraductions.getValeur(
+					"connexion.seConnecter",
+				),
+				titreBouton: ObjetChaine_1.GChaine.toTitle(
 					ObjetTraduction_1.GTraductions.getValeur(
-						"connexion.modeConnexionMessage",
-					)
-				: "",
-			ariaDescrIdentifiant: ObjetTraduction_1.GTraductions.getValeur(
-				"connexion.identifiantMessage",
-			),
-			texteTitleIdentifiant: ObjetChaine_1.GChaine.toTitle(
-				ObjetTraduction_1.GTraductions.getValeur(lCleIdentifiantTitre) +
-					(lCleIdentifiantMsg
-						? " " + ObjetTraduction_1.GTraductions.getValeur(lCleIdentifiantMsg)
-						: ""),
-			),
-			textePlaceholderIdentifiant: ObjetChaine_1.GChaine.toTitle(
-				ObjetTraduction_1.GTraductions.getValeur(lCleIdentifiant),
-			),
-			texteTitleMotdepasse: ObjetChaine_1.GChaine.toTitle(
-				ObjetTraduction_1.GTraductions.getValeur(lCleMdpTitre, [
-					this.parametresSco.getNomEspace(),
-				]) +
-					" " +
+						"connexion.seConnecterTitre",
+					),
+				),
+				texteModeConnexion: this.options.avecChoixConnexion
+					? ObjetTraduction_1.GTraductions.getValeur("connexion.modeConnexion")
+					: "",
+				texteChampsObligatoires: ObjetTraduction_1.GTraductions.getValeur(
+					"connexion.champsObligatoires",
+				),
+				texteIdentifiant: ObjetTraduction_1.GTraductions.getValeur(
+					"connexion.identifiant",
+				),
+				ariaDescrModeConnexion: this.options.avecChoixConnexion
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"connexion.modeConnexionTitre",
+						) +
+						" " +
+						ObjetTraduction_1.GTraductions.getValeur(
+							"connexion.modeConnexionMessage",
+						)
+					: "",
+				ariaDescrIdentifiant: ObjetTraduction_1.GTraductions.getValeur(
+					"connexion.identifiantMessage",
+				),
+				texteTitleIdentifiant: ObjetChaine_1.GChaine.toTitle(
+					ObjetTraduction_1.GTraductions.getValeur(lCleIdentifiantTitre) +
+						(lCleIdentifiantMsg
+							? " " +
+								ObjetTraduction_1.GTraductions.getValeur(lCleIdentifiantMsg)
+							: ""),
+				),
+				textePlaceholderIdentifiant: ObjetChaine_1.GChaine.toTitle(
+					ObjetTraduction_1.GTraductions.getValeur(lCleIdentifiant),
+				),
+				texteTitleMotdepasse: ObjetChaine_1.GChaine.toTitle(
+					ObjetTraduction_1.GTraductions.getValeur(lCleMdpTitre, [
+						this.parametresSco.getNomEspace(),
+					]) +
+						" " +
+						ObjetTraduction_1.GTraductions.getValeur(lCleMdpMessage, [
+							ObjetTraduction_1.GTraductions.getValeur("Onglet.Libelle")[
+								Enumere_Onglet_1.EGenreOnglet.InfosPerso
+							],
+						]),
+				),
+				textePlaceholderMotdepasse: ObjetChaine_1.GChaine.toTitle(
+					ObjetTraduction_1.GTraductions.getValeur(lCleMotDePasse),
+				),
+				texteMotdepasse: ObjetTraduction_1.GTraductions.getValeur(
+					"connexion.motDePasse",
+				),
+				ariaDescrMotdepasse: ObjetChaine_1.GChaine.toTitle(
 					ObjetTraduction_1.GTraductions.getValeur(lCleMdpMessage, [
 						ObjetTraduction_1.GTraductions.getValeur("Onglet.Libelle")[
 							Enumere_Onglet_1.EGenreOnglet.InfosPerso
 						],
 					]),
-			),
-			textePlaceholderMotdepasse: ObjetChaine_1.GChaine.toTitle(
-				ObjetTraduction_1.GTraductions.getValeur(lCleMotDePasse),
-			),
-			texteMotdepasse: ObjetTraduction_1.GTraductions.getValeur(
-				"connexion.motDePasse",
-			),
-			ariaDescrMotdepasse: ObjetChaine_1.GChaine.toTitle(
-				ObjetTraduction_1.GTraductions.getValeur(lCleMdpMessage, [
-					ObjetTraduction_1.GTraductions.getValeur("Onglet.Libelle")[
-						Enumere_Onglet_1.EGenreOnglet.InfosPerso
-					],
-				]),
-			),
-			texteRecupIdMdp: this.options.avecRecupIdMdp
-				? this.options.pourInscription
-					? ObjetTraduction_1.GTraductions.getValeur(
-							"connexion.RecuperationMDP.texteBis",
+				),
+				texteRecupIdMdp: this.options.avecRecupIdMdp
+					? this.options.pourInscription
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"connexion.RecuperationMDP.texteBis",
+							)
+						: ObjetTraduction_1.GTraductions.getValeur(
+								"connexion.RecuperationMDP.texte",
+							)
+					: "",
+				ariaDescrRecupIdMdp: this.options.avecRecupIdMdp
+					? ObjetChaine_1.GChaine.toTitle(
+							ObjetTraduction_1.GTraductions.getValeur(
+								"connexion.RecuperationMDP.titre",
+							),
 						)
-					: ObjetTraduction_1.GTraductions.getValeur(
-							"connexion.RecuperationMDP.texte",
-						)
-				: "",
-			ariaDescrRecupIdMdp: this.options.avecRecupIdMdp
-				? ObjetChaine_1.GChaine.toTitle(
-						ObjetTraduction_1.GTraductions.getValeur(
-							"connexion.RecuperationMDP.titre",
+					: "",
+				ariaDescrLienPartenaire: ObjetTraduction_1.GTraductions.getValeur(
+					"connexion.lienPartenaire",
+				),
+				modeConnexion1: ObjetTraduction_1.GTraductions.getValeur(
+					"connexion.modeConnexion1",
+				),
+				modeConnexion2: ObjetTraduction_1.GTraductions.getValeur(
+					"connexion.modeConnexion2",
+				),
+				inscriptions: {
+					titre: ObjetTraduction_1.GTraductions.getValeur("inscription.titre"),
+					boutonEspaceParent: {
+						titre: ObjetTraduction_1.GTraductions.getValeur(
+							"inscription.parent.titre",
 						),
-					)
-				: "",
-			ariaDescrLienPartenaire: ObjetTraduction_1.GTraductions.getValeur(
-				"connexion.lienPartenaire",
-			),
-			modeConnexion1: ObjetTraduction_1.GTraductions.getValeur(
-				"connexion.modeConnexion1",
-			),
-			modeConnexion2: ObjetTraduction_1.GTraductions.getValeur(
-				"connexion.modeConnexion2",
-			),
-			mentionsLegales:
-				ObjetTraduction_1.GTraductions.getValeur("mentionsLegales"),
-			louvre: {
-				lien: ObjetTraduction_1.GTraductions.getValeur("Louvre.Lien", [
-					"<b><em>" + lObjetImage.nomExpo + "</em></b>",
-				]),
-			},
-			inscriptions: {
-				titre: ObjetTraduction_1.GTraductions.getValeur("inscription.titre"),
-				boutonEspaceParent: {
-					titre: ObjetTraduction_1.GTraductions.getValeur(
-						"inscription.parent.titre",
-					),
-					info: ObjetTraduction_1.GTraductions.getValeur(
-						"inscription.parent.info",
-					),
+						info: ObjetTraduction_1.GTraductions.getValeur(
+							"inscription.parent.info",
+						),
+					},
+					boutonCreation: {
+						titre: ObjetTraduction_1.GTraductions.getValeur(
+							"inscription.creation.titre",
+						),
+						info: ObjetTraduction_1.GTraductions.getValeur(
+							"inscription.creation.info",
+						),
+					},
+					boutonEspaceInscription: {
+						titre: ObjetTraduction_1.GTraductions.getValeur(
+							"inscription.espace.titre",
+						),
+						info: ObjetTraduction_1.GTraductions.getValeur(
+							"inscription.espace.info",
+						),
+					},
 				},
-				boutonCreation: {
-					titre: ObjetTraduction_1.GTraductions.getValeur(
-						"inscription.creation.titre",
-					),
-					info: ObjetTraduction_1.GTraductions.getValeur(
-						"inscription.creation.info",
-					),
-				},
-				boutonEspaceInscription: {
-					titre: ObjetTraduction_1.GTraductions.getValeur(
-						"inscription.espace.titre",
-					),
-					info: ObjetTraduction_1.GTraductions.getValeur(
-						"inscription.espace.info",
-					),
-				},
+				AvertissementDemo: ObjetChaine_1.GChaine.replaceRCToHTML(
+					ObjetTraduction_1.GTraductions.getValeur("AvertissementDemo"),
+				),
 			},
-			AvertissementDemo: ObjetChaine_1.GChaine.replaceRCToHTML(
-				ObjetTraduction_1.GTraductions.getValeur("AvertissementDemo"),
-			),
-		};
-		lParamHtml.options = {
-			applicationNom: lObjetImage.applicationNom
-				? lObjetImage.applicationNom
-				: "",
-			sousTitre:
-				ObjetTraduction_1.GTraductions.getValeur("AnneeScolaire") +
-				" " +
-				this.parametresSco.anneeScolaire,
-			urlLien: this.parametresSco.urlSiteIndexEducation,
-			decalageLogin:
-				[
-					TypeArrierePlanAuthentification_1.TypeArrierePlanAuthentification
-						.Louvre,
-					TypeArrierePlanAuthentification_1.TypeArrierePlanAuthentification
-						.Arbre,
-				].indexOf(lGenreImageConnexion) > -1,
-			classImageEspace: lImageEspace,
-			srcFondImage: lObjetImage.srcImage,
-			urlImageSuite: lObjetImage.urlImageSuite,
-			widthImageSuite:
-				GNavigateur.clientL > lObjetImage.widthImageSuite
-					? lObjetImage.widthImageSuite
-					: "1230",
-			heightImageSuite: lObjetImage.heightImageSuite,
-			urlImageFond: lObjetImage.urlImageFond || this.options.urlImageConnexion,
-			classImageFond:
-				lObjetImage.classImageFond ||
-				(lObjetImage.urlImageFond ? "" : GImageConnexion.getClassFond()),
-			couleurFondBg: lObjetImage.couleurFond || "white",
-			couleurConnexion: lObjetImage.couleurConnexion || "white",
-			avecLien: lObjetImage.avecLien || false,
-			avecLienSuite: lObjetImage.avecLienSuite || false,
-			lien: lObjetImage.lien,
-			lienSuite: lObjetImage.lienSuite,
-			lienLogo: lObjetImage.lienLogo,
-			styleLogo: lObjetImage.styleLogo,
-			texteLien: lObjetImage.texteLien,
-			texteLienSuite: lObjetImage.texteLienSuite,
-			suiviLogo: lObjetImage.suiviLogo || lObjetImage.suiviLogo1,
-			suiviLien: lObjetImage.suiviLien,
-			suiviLienSuite: lObjetImage.suiviLienSuite || lObjetImage.suiviLogo2,
-			couleurLien: lObjetImage.couleurLien || "inherit",
-			bottomLien: lObjetImage.bottomLien || "0",
-			leftLien: lObjetImage.leftLien || "0",
-			tailleLien: lObjetImage.tailleLien || "100%",
-			nomEspace: this.parametresSco.getNomEspace(),
-			modeDemo: this.applicationSco.getDemo(),
-			avecRecupIdMdp: this.options.avecRecupIdMdp,
-			pourInscription: this.options.pourInscription,
-			infoWAIident: ObjetTraduction_1.GTraductions.getValeur(
-				"connexion.identifiant",
-			),
-			urlLogo: this.parametresSco.urlLogo,
-			dataImageFond: lObjetImage.dataImageFond,
-			avecFichierFond: lObjetImage.avecFichierFond,
-			sansFichierFond: !lObjetImage.avecFichierFond,
-			modeConnexion1: 0,
-			modeConnexion2: 1,
-			insriptions: {
-				classImageParent: "Icone_EspaceParent",
-				classImageCreation: "Icone_EspaceInscription",
-				classImageInscription: "Icone_EspaceInscription",
+			options: {
+				applicationNom: lObjetImage.applicationNom
+					? lObjetImage.applicationNom
+					: "",
+				decalageLogin:
+					[
+						TypeArrierePlanAuthentification_1.TypeArrierePlanAuthentification
+							.Louvre,
+						TypeArrierePlanAuthentification_1.TypeArrierePlanAuthentification
+							.Arbre,
+					].indexOf(lGenreImageConnexion) > -1,
+				classImageEspace: lImageEspace,
+				srcFondImage: lObjetImage.srcImage,
+				urlImageSuite: lObjetImage.urlImageSuite,
+				widthImageSuite:
+					ObjetNavigateur_1.Navigateur.clientL > lObjetImage.widthImageSuite
+						? lObjetImage.widthImageSuite
+						: "1230",
+				heightImageSuite: lObjetImage.heightImageSuite,
+				urlImageFond:
+					lObjetImage.urlImageFond || this.options.urlImageConnexion,
+				classImageFond:
+					lObjetImage.classImageFond ||
+					(lObjetImage.urlImageFond ? "" : GImageConnexion.getClassFond()),
+				couleurFondBg: lObjetImage.couleurFond || "white",
+				couleurConnexion: lObjetImage.couleurConnexion || "white",
+				avecLien: lObjetImage.avecLien || false,
+				avecLienSuite: lObjetImage.avecLienSuite || false,
+				lien: lObjetImage.lien,
+				lienSuite: lObjetImage.lienSuite,
+				lienLogo: lObjetImage.lienLogo,
+				styleLogo: lObjetImage.styleLogo,
+				texteLien: lObjetImage.texteLien,
+				texteLienSuite: lObjetImage.texteLienSuite,
+				suiviLogo: lObjetImage.suiviLogo || lObjetImage.suiviLogo1,
+				suiviLien: lObjetImage.suiviLien,
+				suiviLienSuite: lObjetImage.suiviLienSuite || lObjetImage.suiviLogo2,
+				couleurLien: lObjetImage.couleurLien || "inherit",
+				bottomLien: lObjetImage.bottomLien || "0",
+				leftLien: lObjetImage.leftLien || "0",
+				tailleLien: lObjetImage.tailleLien || "100%",
+				nomEspace: this.parametresSco.getNomEspace(),
+				modeDemo: this.applicationSco.getDemo(),
+				urlLogo: this.parametresSco.urlLogo,
+				dataImageFond: lObjetImage.dataImageFond,
+				avecFichierFond: lObjetImage.avecFichierFond,
+				sansFichierFond: !lObjetImage.avecFichierFond,
+				insriptions: {
+					classImageParent: "Icone_EspaceParent",
+					classImageCreation: "Icone_EspaceInscription",
+					classImageInscription: "Icone_EspaceInscription",
+				},
+				mentionsPagesPubliques: this.parametresSco.mentionsPagesPubliques,
 			},
-			mentionsPagesPubliques: this.parametresSco.mentionsPagesPubliques,
 		};
 		return lFctHtml(lParamHtml);
 	}
@@ -611,7 +602,6 @@ class InterfaceConnexionEspace extends _InterfaceConnexion_1._InterfaceConnexion
 		const lOnglet = this._getOngletDemarrage();
 		if (lOnglet !== null) {
 			this.etatUtilisateurSco.setGenreOnglet(lOnglet);
-		} else {
 		}
 		const lParametres = {
 			libelle: this.etatUtilisateurSco.Identification.ressource.getLibelle(),

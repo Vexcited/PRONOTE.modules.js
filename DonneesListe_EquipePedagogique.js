@@ -1,18 +1,54 @@
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class DonneesListe_EquipePedagogique extends ObjetDonneesListeFlatDesign {
+exports.DonneesListe_EquipePedagogique = void 0;
+const AccessApp_1 = require("AccessApp");
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetFenetre_Discussion_1 = require("ObjetFenetre_Discussion");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class DonneesListe_EquipePedagogique extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees, estAffichageNom) {
 		super(aDonnees);
+		this.applicationSco = (0, AccessApp_1.getApp)();
 		this.estAffichageNom = estAffichageNom;
-		this.setOptions({
-			avecSelection: false,
-			avecEdition: false,
-			avecSuppression: false,
-			avecEllipsis: false,
-			avecBoutonActionLigne: false,
-		});
+		this.setOptions({ avecSelection: false, avecEllipsis: false });
+	}
+	avecBoutonActionLigne() {
+		return (
+			!IE.estMobile &&
+			this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.communication.avecDiscussion,
+			) &&
+			!this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.communication.discussionInterdit,
+			)
+		);
+	}
+	initialisationObjetContextuel(aParametres) {
+		if (!aParametres.menuContextuel) {
+			return;
+		}
+		const lAvecAfficherDiscussion =
+			this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.communication.avecDiscussion,
+			) &&
+			!this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.communication.discussionInterdit,
+			);
+		if (lAvecAfficherDiscussion) {
+			aParametres.menuContextuel.add(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"fenetreCommunication.bouton.discussionsCommunes",
+				),
+				true,
+				ObjetFenetre_Discussion_1.ObjetFenetre_Discussion.afficherDiscussionsCommunes.bind(
+					this,
+					new ObjetListeElements_1.ObjetListeElements().add(
+						aParametres.article,
+					),
+				),
+			);
+		}
+		aParametres.menuContextuel.setDonnees();
 	}
 	getTitreZonePrincipale(aParams) {
 		let H = [];
@@ -23,7 +59,9 @@ class DonneesListe_EquipePedagogique extends ObjetDonneesListeFlatDesign {
 		} else if (
 			this.estAffichageNom === false &&
 			aParams.article.getLibelle() !==
-				GTraductions.getValeur("EquipePedagogique.sansMatiere")
+				ObjetTraduction_1.GTraductions.getValeur(
+					"EquipePedagogique.sansMatiere",
+				)
 		) {
 			if (aParams.article.volumeHoraire) {
 				H.push(
@@ -42,15 +80,17 @@ class DonneesListe_EquipePedagogique extends ObjetDonneesListeFlatDesign {
 		if (this.estAffichageNom === true) {
 			if (aParams.article.estProfesseurPrincipal) {
 				H.push(
-					`<div class="ie-sous-titre capitalize" ><i class="icon_star" aria-hidden="true"></i> `,
-					GTraductions.getValeur("EquipePedagogique.professeurPrincipal"),
+					`<div class="ie-sous-titre capitalize" ><i class="icon_star" role="presentation"></i> `,
+					ObjetTraduction_1.GTraductions.getValeur(
+						"EquipePedagogique.professeurPrincipal",
+					),
 					`</div>`,
 				);
 			}
 			if (aParams.article.estTuteur) {
 				H.push(
-					`<div class="ie-sous-titre capitalize" ><i class="icon_star" aria-hidden="true"></i> `,
-					GTraductions.getValeur("EquipePedagogique.tuteur"),
+					`<div class="ie-sous-titre capitalize" ><i class="icon_star" role="presentation"></i> `,
+					ObjetTraduction_1.GTraductions.getValeur("EquipePedagogique.tuteur"),
 					`</div>`,
 				);
 			}
@@ -94,15 +134,19 @@ class DonneesListe_EquipePedagogique extends ObjetDonneesListeFlatDesign {
 					);
 					if (aProf.estProfesseurPrincipal) {
 						H.push(
-							`<div class="ie-sous-titre capitalize"><i class="icon_star" aria-hidden="true"></i> `,
-							GTraductions.getValeur("EquipePedagogique.professeurPrincipal"),
+							`<div class="ie-sous-titre capitalize"><i class="icon_star" role="presentation"></i> `,
+							ObjetTraduction_1.GTraductions.getValeur(
+								"EquipePedagogique.professeurPrincipal",
+							),
 							`</div>`,
 						);
 					}
 					if (aProf.estTuteur) {
 						H.push(
-							`<div class="ie-sous-titre capitalize"><i class="icon_star" aria-hidden="true"></i> `,
-							GTraductions.getValeur("EquipePedagogique.tuteur"),
+							`<div class="ie-sous-titre capitalize"><i class="icon_star" role="presentation"></i> `,
+							ObjetTraduction_1.GTraductions.getValeur(
+								"EquipePedagogique.tuteur",
+							),
 							`</div>`,
 						);
 					}
@@ -145,7 +189,9 @@ class DonneesListe_EquipePedagogique extends ObjetDonneesListeFlatDesign {
 					H.push(`<div ie-ellipsis class="ie-titre">${aPP.Libelle}</div>`);
 					H.push(
 						`<div class="ie-sous-titre capitalize PetitEspaceBas"> `,
-						GTraductions.getValeur("EquipePedagogique.professeurPrincipal"),
+						ObjetTraduction_1.GTraductions.getValeur(
+							"EquipePedagogique.professeurPrincipal",
+						),
 						`</div>`,
 					);
 				});
@@ -153,7 +199,9 @@ class DonneesListe_EquipePedagogique extends ObjetDonneesListeFlatDesign {
 					H.push(`<div ie-ellipsis class="ie-titre">${aTuteur.Libelle}</div>`);
 					H.push(
 						`<div class="ie-sous-titre capitalize PetitEspaceBas"> `,
-						GTraductions.getValeur("EquipePedagogique.tuteur"),
+						ObjetTraduction_1.GTraductions.getValeur(
+							"EquipePedagogique.tuteur",
+						),
 						`</div>`,
 					);
 				});
@@ -183,7 +231,9 @@ class DonneesListe_EquipePedagogique extends ObjetDonneesListeFlatDesign {
 					);
 					H.push(
 						`<div class="ie-sous-titre capitalize PetitEspaceBas"> `,
-						GTraductions.getValeur("EquipePedagogique.professeurPrincipal"),
+						ObjetTraduction_1.GTraductions.getValeur(
+							"EquipePedagogique.professeurPrincipal",
+						),
 						`</div>`,
 					);
 				}
@@ -203,13 +253,15 @@ class DonneesListe_EquipePedagogique extends ObjetDonneesListeFlatDesign {
 					);
 					H.push(
 						`<div class="ie-sous-titre capitalize PetitEspaceBas"> `,
-						GTraductions.getValeur("EquipePedagogique.tuteur"),
+						ObjetTraduction_1.GTraductions.getValeur(
+							"EquipePedagogique.tuteur",
+						),
 						`</div>`,
 					);
 				}
 			}
-			return { html: H.join("") };
+			return { getHtml: () => H.join("") };
 		}
 	}
 }
-module.exports = { DonneesListe_EquipePedagogique };
+exports.DonneesListe_EquipePedagogique = DonneesListe_EquipePedagogique;

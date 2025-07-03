@@ -1,107 +1,114 @@
-const {
-	ObjetRequeteConsultation,
-	ObjetRequeteSaisie,
-} = require("ObjetRequeteJSON.js");
-const { Invocateur } = require("Invocateur.js");
-const { CommunicationProduit } = require("CommunicationProduit.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { TypeEnsembleNombre } = require("TypeEnsembleNombre.js");
-const DonneesListe_PanierRessourceKiosque = require("DonneesListe_PanierRessourceKiosque.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const ObjetFenetre_LienKiosque = require("ObjetFenetre_LienKiosque.js");
-const ObjetRequetePanierRessourceKiosque = require("ObjetRequetePanierRessourceKiosque.js");
-const { TypeGenreApiKiosque } = require("TypeGenreApiKiosque.js");
-Requetes.inscrire("SaisiePanierRessourceKiosque", ObjetRequeteSaisie);
-Requetes.inscrire(
-	"listeManuelsRessourcesGranulaires",
-	ObjetRequeteConsultation,
-);
-const cDureeTimerKiosque = 20000;
-class ObjetFenetre_PanierRessourceKiosque extends ObjetFenetre {
+exports.ObjetFenetre_PanierRessourceKiosque = void 0;
+const Invocateur_1 = require("Invocateur");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TypeEnsembleNombre_1 = require("TypeEnsembleNombre");
+const DonneesListe_PanierRessourceKiosque_1 = require("DonneesListe_PanierRessourceKiosque");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetFenetre_LienKiosque_1 = require("ObjetFenetre_LienKiosque");
+const ObjetRequetePanierRessourceKiosque_1 = require("ObjetRequetePanierRessourceKiosque");
+const TypeGenreApiKiosque_1 = require("TypeGenreApiKiosque");
+const ObjetRequeteSaisiePanierRessourceKiosque_1 = require("ObjetRequeteSaisiePanierRessourceKiosque");
+const AccessApp_1 = require("AccessApp");
+const ObjetRequeteListeManuelsRessourcesGranulaires_1 = require("ObjetRequeteListeManuelsRessourcesGranulaires");
+class ObjetFenetre_PanierRessourceKiosque extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.options = { avecMultiSelection: false };
 		this.setOptionsFenetre({
-			titre: GTraductions.getValeur("FenetrePanierKiosque.fenetreTitre"),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"FenetrePanierKiosque.fenetreTitre",
+			),
 			largeur: 532,
 			hauteur: 400,
 			listeBoutons: [
-				GTraductions.getValeur("Fermer"),
-				GTraductions.getValeur("FenetrePanierKiosque.bouton.ajouterLien"),
+				ObjetTraduction_1.GTraductions.getValeur("Fermer"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"FenetrePanierKiosque.bouton.ajouterLien",
+				),
 			],
 		});
 	}
 	setOptions(aOptions) {
 		$.extend(this.options, aOptions);
+		return this;
 	}
 	construireInstances() {
 		this.identListe = this.add(
-			ObjetListe,
+			ObjetListe_1.ObjetListe,
 			this.evenementSurListe,
 			this.initialiserListe,
 		);
 		this.getInstance(this.identListe).setOptionsListe({
-			labelWAI: GTraductions.getValeur("FenetrePanierKiosque.fenetreTitre"),
+			ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
+				"FenetrePanierKiosque.fenetreTitre",
+			),
 		});
-		Invocateur.abonner("notification_Kiosque", this._notificationKiosque, this);
+		Invocateur_1.Invocateur.abonner(
+			"notification_Kiosque",
+			this._notificationKiosque,
+			this,
+		);
 	}
 	detruireInstances() {
-		Invocateur.desabonner("notification_Kiosque", this);
-		GApplication.getCommunication().setDureeTimerPresence(
-			CommunicationProduit.cDureeTimerPresence,
-		);
+		Invocateur_1.Invocateur.desabonner("notification_Kiosque", this);
 	}
 	_notificationKiosque() {
 		this.actualiserDonneesKiosque();
-		GApplication.getCommunication().setDureeTimerPresence(
-			CommunicationProduit.cDureeTimerPresence,
-		);
 	}
 	afficherFenetre(aGenresApiKiosque) {
-		this.genresApiKiosque = aGenresApiKiosque || new TypeEnsembleNombre();
+		const lEtatUtil = (0, AccessApp_1.getApp)().getEtatUtilisateur();
+		this.genresApiKiosque =
+			aGenresApiKiosque || new TypeEnsembleNombre_1.TypeEnsembleNombre();
 		this.pouriDevoir =
-			this.genresApiKiosque.contains(TypeGenreApiKiosque.Api_EnvoiNote) &&
-			GEtatUtilisateur.activerKiosqueRenduTAF;
+			this.genresApiKiosque.contains(
+				TypeGenreApiKiosque_1.TypeGenreApiKiosque.Api_EnvoiNote,
+			) && lEtatUtil.activerKiosqueRenduTAF;
 		this.pourExerciceNum =
-			this.genresApiKiosque.contains(TypeGenreApiKiosque.Api_RenduPJTAF) &&
-			GEtatUtilisateur.activerKiosqueRenduTAF;
+			this.genresApiKiosque.contains(
+				TypeGenreApiKiosque_1.TypeGenreApiKiosque.Api_RenduPJTAF,
+			) && lEtatUtil.activerKiosqueRenduTAF;
 		const lColonnesCachees = [
-			DonneesListe_PanierRessourceKiosque.colonnes.coche,
-			DonneesListe_PanierRessourceKiosque.colonnes.api,
+			DonneesListe_PanierRessourceKiosque_1.DonneesListe_PanierRessourceKiosque
+				.colonnes.coche,
+			DonneesListe_PanierRessourceKiosque_1.DonneesListe_PanierRessourceKiosque
+				.colonnes.api,
 		];
 		if (this.pouriDevoir || this.pourExerciceNum) {
 			lColonnesCachees.push(
-				DonneesListe_PanierRessourceKiosque.colonnes.renduTAF,
+				DonneesListe_PanierRessourceKiosque_1
+					.DonneesListe_PanierRessourceKiosque.colonnes.renduTAF,
 			);
 			lColonnesCachees.push(
-				DonneesListe_PanierRessourceKiosque.colonnes.envoiNote,
+				DonneesListe_PanierRessourceKiosque_1
+					.DonneesListe_PanierRessourceKiosque.colonnes.envoiNote,
 			);
 		} else {
-			if (!GEtatUtilisateur.activerKiosqueRenduTAF) {
+			if (!lEtatUtil.activerKiosqueRenduTAF) {
 				lColonnesCachees.push(
-					DonneesListe_PanierRessourceKiosque.colonnes.renduTAF,
+					DonneesListe_PanierRessourceKiosque_1
+						.DonneesListe_PanierRessourceKiosque.colonnes.renduTAF,
 				);
 			}
-			if (!GEtatUtilisateur.activerKiosqueEnvoiNote) {
+			if (!lEtatUtil.activerKiosqueEnvoiNote) {
 				lColonnesCachees.push(
-					DonneesListe_PanierRessourceKiosque.colonnes.envoiNote,
+					DonneesListe_PanierRessourceKiosque_1
+						.DonneesListe_PanierRessourceKiosque.colonnes.envoiNote,
 				);
 			}
 		}
 		this.getInstance(this.identListe).setOptionsListe({
 			colonnesCachees: lColonnesCachees,
 		});
-		this.actualiserDonneesKiosque(true);
+		this.actualiserDonneesKiosque();
 	}
 	actualiserDonneesKiosque() {
-		new ObjetRequetePanierRessourceKiosque(
+		new ObjetRequetePanierRessourceKiosque_1.ObjetRequetePanierRessourceKiosque(
 			this,
 			this.apresRequeteDonnees,
 		).lancerRequete({ genresApi: this.genresApiKiosque });
@@ -133,7 +140,7 @@ class ObjetFenetre_PanierRessourceKiosque extends ObjetFenetre {
 		if (aMessage) {
 			const lThis = this;
 			GApplication.getMessage().afficher({
-				type: EGenreBoiteMessage.Information,
+				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
 				message: aMessage,
 				callback: function () {
 					lThis.callback.appel(0);
@@ -165,9 +172,12 @@ class ObjetFenetre_PanierRessourceKiosque extends ObjetFenetre {
 			T.push("<tr><td>");
 			T.push('<div style="padding: 5px;">');
 			T.push(
-				GTraductions.getValeur("FenetrePanierKiosque.info.iDevoir", [
-					'<span class="Image_Kiosque_ListeDevoir InlineBlock AlignementMilieuVertical"></span>',
-				]),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"FenetrePanierKiosque.info.iDevoir",
+					[
+						'<span class="Image_Kiosque_ListeDevoir InlineBlock AlignementMilieuVertical"></span>',
+					],
+				),
 				"*",
 			);
 			T.push("</div>");
@@ -177,9 +187,12 @@ class ObjetFenetre_PanierRessourceKiosque extends ObjetFenetre {
 			T.push("<tr><td>");
 			T.push('<div style="padding: 5px;">');
 			T.push(
-				GTraductions.getValeur("FenetrePanierKiosque.info.TAF", [
-					'<span class="Image_Kiosque_ListeCahierTexte InlineBlock AlignementMilieuVertical"></span>',
-				]),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"FenetrePanierKiosque.info.TAF",
+					[
+						'<span class="Image_Kiosque_ListeCahierTexte InlineBlock AlignementMilieuVertical"></span>',
+					],
+				),
 				"*",
 			);
 			T.push("</div>");
@@ -197,7 +210,9 @@ class ObjetFenetre_PanierRessourceKiosque extends ObjetFenetre {
 			T.push('<div style="padding: 5px;">');
 			T.push(
 				"* ",
-				GTraductions.getValeur("FenetrePanierKiosque.info.KiosqueDisponible"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"FenetrePanierKiosque.info.KiosqueDisponible",
+				),
 			);
 			T.push("</div>");
 			T.push("</td></tr>");
@@ -207,82 +222,103 @@ class ObjetFenetre_PanierRessourceKiosque extends ObjetFenetre {
 	}
 	initialiserListe(aInstance) {
 		const lColonnes = [];
+		const lEtatUtil = (0, AccessApp_1.getApp)().getEtatUtilisateur();
 		lColonnes.push({
-			id: DonneesListe_PanierRessourceKiosque.colonnes.coche,
+			id: DonneesListe_PanierRessourceKiosque_1
+				.DonneesListe_PanierRessourceKiosque.colonnes.coche,
 			taille: 18,
 		});
 		lColonnes.push({
-			id: DonneesListe_PanierRessourceKiosque.colonnes.titre,
+			id: DonneesListe_PanierRessourceKiosque_1
+				.DonneesListe_PanierRessourceKiosque.colonnes.titre,
 			taille: "100%",
-			titre: GTraductions.getValeur("FenetrePanierKiosque.colonne.titre"),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"FenetrePanierKiosque.colonne.titre",
+			),
 			sansBordureDroite: true,
 		});
 		lColonnes.push({
-			id: DonneesListe_PanierRessourceKiosque.colonnes.lien,
+			id: DonneesListe_PanierRessourceKiosque_1
+				.DonneesListe_PanierRessourceKiosque.colonnes.lien,
 			taille: 17,
 			titre: null,
 		});
 		lColonnes.push({
-			id: DonneesListe_PanierRessourceKiosque.colonnes.commentaire,
+			id: DonneesListe_PanierRessourceKiosque_1
+				.DonneesListe_PanierRessourceKiosque.colonnes.commentaire,
 			taille: 132,
 			titre: {
-				libelle: GTraductions.getValeur(
+				libelle: ObjetTraduction_1.GTraductions.getValeur(
 					"FenetrePanierKiosque.colonne.commentaire",
 				),
-				title: GTraductions.getValeur(
+				title: ObjetTraduction_1.GTraductions.getValeur(
 					"FenetrePanierKiosque.liste.HintCommentaire",
 				),
 			},
 		});
 		lColonnes.push({
-			id: DonneesListe_PanierRessourceKiosque.colonnes.dateAjout,
+			id: DonneesListe_PanierRessourceKiosque_1
+				.DonneesListe_PanierRessourceKiosque.colonnes.dateAjout,
 			taille: 80,
-			titre: GTraductions.getValeur("FenetrePanierKiosque.colonne.date"),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"FenetrePanierKiosque.colonne.date",
+			),
 		});
 		lColonnes.push({
-			id: DonneesListe_PanierRessourceKiosque.colonnes.api,
+			id: DonneesListe_PanierRessourceKiosque_1
+				.DonneesListe_PanierRessourceKiosque.colonnes.api,
 			taille: 40,
-			titre: GTraductions.getValeur("FenetrePanierKiosque.colonne.api"),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"FenetrePanierKiosque.colonne.api",
+			),
 		});
 		lColonnes.push({
-			id: DonneesListe_PanierRessourceKiosque.colonnes.renduTAF,
+			id: DonneesListe_PanierRessourceKiosque_1
+				.DonneesListe_PanierRessourceKiosque.colonnes.renduTAF,
 			taille: 20,
 			titre: {
 				classeCssImage: "Image_Kiosque_ListeCahierTexte",
-				title: GTraductions.getValeur(
+				title: ObjetTraduction_1.GTraductions.getValeur(
 					"FenetrePanierKiosque.liste.HintRenduPJTAF",
 				),
 			},
 		});
 		lColonnes.push({
-			id: DonneesListe_PanierRessourceKiosque.colonnes.envoiNote,
+			id: DonneesListe_PanierRessourceKiosque_1
+				.DonneesListe_PanierRessourceKiosque.colonnes.envoiNote,
 			taille: 20,
 			titre: {
 				classeCssImage: "Image_Kiosque_ListeDevoir",
-				title: GTraductions.getValeur(
+				title: ObjetTraduction_1.GTraductions.getValeur(
 					"FenetrePanierKiosque.liste.HintEnvoiNote",
 				),
 			},
 		});
 		const lColonnesCachees = [
-			DonneesListe_PanierRessourceKiosque.colonnes.coche,
-			DonneesListe_PanierRessourceKiosque.colonnes.api,
+			DonneesListe_PanierRessourceKiosque_1.DonneesListe_PanierRessourceKiosque
+				.colonnes.coche,
+			DonneesListe_PanierRessourceKiosque_1.DonneesListe_PanierRessourceKiosque
+				.colonnes.api,
 		];
-		if (!GEtatUtilisateur.activerKiosqueRenduTAF) {
+		if (!lEtatUtil.activerKiosqueRenduTAF) {
 			lColonnesCachees.push(
-				DonneesListe_PanierRessourceKiosque.colonnes.renduTAF,
+				DonneesListe_PanierRessourceKiosque_1
+					.DonneesListe_PanierRessourceKiosque.colonnes.renduTAF,
 			);
 		}
-		if (!GEtatUtilisateur.activerKiosqueEnvoiNote) {
+		if (!lEtatUtil.activerKiosqueEnvoiNote) {
 			lColonnesCachees.push(
-				DonneesListe_PanierRessourceKiosque.colonnes.envoiNote,
+				DonneesListe_PanierRessourceKiosque_1
+					.DonneesListe_PanierRessourceKiosque.colonnes.envoiNote,
 			);
 		}
 		aInstance.setOptionsListe({
 			colonnes: lColonnes,
 			colonnesCachees: lColonnesCachees,
 			avecLigneCreation: true,
-			titreCreation: GTraductions.getValeur("FenetrePanierKiosque.creerLien"),
+			titreCreation: ObjetTraduction_1.GTraductions.getValeur(
+				"FenetrePanierKiosque.creerLien",
+			),
 		});
 	}
 	surValidation(aNumeroBouton) {
@@ -296,57 +332,56 @@ class ObjetFenetre_PanierRessourceKiosque extends ObjetFenetre {
 	}
 	evenementSurListe(aParametres, aGenreEvenementListe) {
 		switch (aGenreEvenementListe) {
-			case EGenreEvenementListe.Selection:
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Selection:
 				this.listeSelectionnes = this.getInstance(
 					this.identListe,
 				).getListeElementsSelection();
 				this._mettreAJourBoutonAjouter();
 				break;
-			case EGenreEvenementListe.ApresEdition:
+			case Enumere_EvenementListe_1.EGenreEvenementListe.ApresEdition:
 				if (
 					aParametres.idColonne ===
-					DonneesListe_PanierRessourceKiosque.colonnes.coche
+					DonneesListe_PanierRessourceKiosque_1
+						.DonneesListe_PanierRessourceKiosque.colonnes.coche
 				) {
 					this.listeSelectionnes = this.liste.getListeElements((aElement) => {
 						return aElement.estSelectionne;
 					});
 					this._mettreAJourBoutonAjouter();
 				} else {
-					const lListeATraiter = new ObjetListeElements();
+					const lListeATraiter = new ObjetListeElements_1.ObjetListeElements();
 					if (
 						!!aParametres.article &&
 						!!aParametres.article.ressource &&
-						aParametres.article.ressource.getEtat() === EGenreEtat.Modification
+						aParametres.article.ressource.getEtat() ===
+							Enumere_Etat_1.EGenreEtat.Modification
 					) {
 						lListeATraiter.addElement(aParametres.article.ressource);
 						lListeATraiter.setSerialisateurJSON({
 							methodeSerialisation: _serialiserRessource.bind(this),
 						});
-						Requetes(
-							"SaisiePanierRessourceKiosque",
+						new ObjetRequeteSaisiePanierRessourceKiosque_1.ObjetRequeteSaisiePanierRessourceKiosque(
 							this,
 							this.apresRequeteSaisie,
 						).lancerRequete({ ressources: lListeATraiter });
 					}
 				}
 				break;
-			case EGenreEvenementListe.Creation:
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Creation:
 				this.ouvrirFenetreSelectionManuels();
-				return EGenreEvenementListe.Creation;
-			case EGenreEvenementListe.Suppression: {
-				const lListeASupprimer = new ObjetListeElements();
-				aParametres.listeSuppressions.parcourir(
-					function (aElement) {
-						if (
-							!!aElement.ressource &&
-							aElement.ressource.getGenre() ===
-								EGenreRessource.PanierRessourceKiosque
-						) {
-							aElement.ressource.setEtat(EGenreEtat.Suppression);
-							this.addElement(aElement.ressource);
-						}
-					}.bind(lListeASupprimer),
-				);
+				return Enumere_EvenementListe_1.EGenreEvenementListe.Creation;
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Suppression: {
+				const lListeASupprimer = new ObjetListeElements_1.ObjetListeElements();
+				aParametres.listeSuppressions.parcourir(function (aElement) {
+					if (
+						!!aElement.ressource &&
+						aElement.ressource.getGenre() ===
+							Enumere_Ressource_1.EGenreRessource.PanierRessourceKiosque
+					) {
+						aElement.ressource.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+						lListeASupprimer.addElement(aElement.ressource);
+					}
+				});
 				const lListe = this.listeRessourceKiosque.getListeElements(
 					(aElement) => {
 						return aElement.ressource.existe();
@@ -354,31 +389,33 @@ class ObjetFenetre_PanierRessourceKiosque extends ObjetFenetre {
 				);
 				IE.log.addLog("nombre ressources restantes : " + lListe.count());
 				this._ouvertureInvisible = false;
-				Requetes(
-					"SaisiePanierRessourceKiosque",
+				new ObjetRequeteSaisiePanierRessourceKiosque_1.ObjetRequeteSaisiePanierRessourceKiosque(
 					this,
 					this.apresRequeteSaisie,
 				).lancerRequete({ ressources: lListeASupprimer });
-				return EGenreEvenementListe.Suppression;
+				return Enumere_EvenementListe_1.EGenreEvenementListe.Suppression;
 			}
 		}
 	}
 	ouvrirFenetreSelectionManuels() {
 		const lThis = this;
-		Requetes("listeManuelsRessourcesGranulaires", this, function (aJSON) {
-			this.fenetreManuels = ObjetFenetre.creerInstanceFenetre(
-				ObjetFenetre_LienKiosque,
-				{
-					pere: lThis,
-					evenement: _eventFenetreLienKiosque.bind(lThis),
-					initialiser: _initFenetreLienKiosque,
-				},
-			);
-			this.fenetreManuels.setDonnees(
-				aJSON.listeRessources,
-				this.genresApiKiosque,
-			);
-		}).lancerRequete({ genresApi: this.genresApiKiosque });
+		new ObjetRequeteListeManuelsRessourcesGranulaires_1.ObjetRequeteListeManuelsRessourcesGranulaires(
+			this,
+			(aJSON) => {
+				this.fenetreManuels = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+					ObjetFenetre_LienKiosque_1.ObjetFenetre_LienKiosque,
+					{
+						pere: lThis,
+						evenement: lThis._eventFenetreLienKiosque.bind(lThis),
+						initialiser: _initFenetreLienKiosque,
+					},
+				);
+				this.fenetreManuels.setDonnees(
+					aJSON.listeRessources,
+					this.genresApiKiosque,
+				);
+			},
+		).lancerRequete({ genresApi: this.genresApiKiosque });
 	}
 	apresRequeteSaisie() {
 		this._actualisationDesDonnees = true;
@@ -389,11 +426,11 @@ class ObjetFenetre_PanierRessourceKiosque extends ObjetFenetre {
 			? this.listeSelectionnes.count() > 0
 			: this.listeSelectionnes.count() === 1;
 		if (this.options.avecMultiSelection) {
-			let lLibelle = GTraductions.getValeur(
+			let lLibelle = ObjetTraduction_1.GTraductions.getValeur(
 				"FenetrePanierKiosque.bouton.ajouterLien",
 			);
 			if (this.listeSelectionnes.count() > 1) {
-				lLibelle = GTraductions.getValeur(
+				lLibelle = ObjetTraduction_1.GTraductions.getValeur(
 					"FenetrePanierKiosque.bouton.ajouterLiens",
 					[this.listeSelectionnes.count()],
 				);
@@ -405,33 +442,39 @@ class ObjetFenetre_PanierRessourceKiosque extends ObjetFenetre {
 	_actualiserListe() {
 		this._listeSet = true;
 		this.getInstance(this.identListe).setDonnees(
-			new DonneesListe_PanierRessourceKiosque({
-				donnees: this.liste,
-				pere: this,
-				avecMultiSelection: this.options.avecMultiSelection,
-				callbackLien: _eventFenetreLienKiosque.bind(this, 0),
-			}),
+			new DonneesListe_PanierRessourceKiosque_1.DonneesListe_PanierRessourceKiosque(
+				{
+					donnees: this.liste,
+					pere: this,
+					avecMultiSelection: this.options.avecMultiSelection,
+					callbackLien: this._eventFenetreLienKiosque.bind(this, 0),
+				},
+			),
 		);
 	}
-}
-function _serialiserRessource(aElement, aJSON) {
-	aJSON.commentaire = aElement.commentaire;
-}
-function _eventFenetreLienKiosque(aBouton, aGenre) {
-	if (aGenre === EGenreRessource.RessourceNumeriqueKiosque) {
-		GApplication.getCommunication().setDureeTimerPresence(cDureeTimerKiosque);
-	} else {
-		if (this._ouvertureInvisible) {
-			this.fermer();
+	_eventFenetreLienKiosque(aBouton, aGenre) {
+		if (
+			aGenre === Enumere_Ressource_1.EGenreRessource.RessourceNumeriqueKiosque
+		) {
+		} else {
+			if (this._ouvertureInvisible) {
+				this.fermer();
+			}
 		}
 	}
 }
+exports.ObjetFenetre_PanierRessourceKiosque =
+	ObjetFenetre_PanierRessourceKiosque;
+function _serialiserRessource(aElement, aJSON) {
+	aJSON.commentaire = aElement.commentaire;
+}
 function _initFenetreLienKiosque(aInstance) {
 	aInstance.setOptionsFenetre({
-		titre: GTraductions.getValeur("FenetrePanierKiosque.fenetreTitre"),
+		titre: ObjetTraduction_1.GTraductions.getValeur(
+			"FenetrePanierKiosque.fenetreTitre",
+		),
 		largeur: 532,
 		hauteur: 220,
-		listeBoutons: [GTraductions.getValeur("Fermer")],
+		listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
 	});
 }
-module.exports = { ObjetFenetre_PanierRessourceKiosque };

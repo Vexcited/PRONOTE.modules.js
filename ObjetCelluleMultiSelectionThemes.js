@@ -12,7 +12,7 @@ class ObjetCelluleMultiSelectionThemes extends ObjetCelluleMultiSelection_1.Obje
 	constructor(...aParams) {
 		super(...aParams);
 		this.options.largeurBouton = IE.estMobile ? 150 : 400;
-		this.options.labelWAI = ObjetTraduction_1.GTraductions.getValeur("Themes");
+		this.options.ariaLabel = ObjetTraduction_1.GTraductions.getValeur("Themes");
 	}
 	setOptions(aOptions) {
 		super.setOptions(aOptions);

@@ -7,6 +7,7 @@ const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const Enumere_Ressource_1 = require("Enumere_Ressource");
 const DonneesListe_SelectionRessourceCours_1 = require("DonneesListe_SelectionRessourceCours");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
 class ObjetFenetre_SelectionRessourceCours extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
@@ -236,7 +237,10 @@ class ObjetFenetre_SelectionRessourceCours extends ObjetFenetre_1.ObjetFenetre {
 		this.getInstance(this.identListe).setOptionsListe({
 			colonnes: lColonnesListe,
 			hauteurAdapteContenu: true,
-			hauteurMaxAdapteContenu: Math.min(500, GNavigateur.ecranH - 160),
+			hauteurMaxAdapteContenu: Math.min(
+				500,
+				ObjetNavigateur_1.Navigateur.ecranH - 160,
+			),
 			AvecSuppression: !!this.optionsFenetre.avecEditionListe,
 			listeCreations: this.optionsFenetre.avecEditionListe ? 0 : null,
 			avecLigneCreation: !!this.optionsFenetre.avecEditionListe,
@@ -326,9 +330,7 @@ class ObjetFenetre_SelectionRessourceCours extends ObjetFenetre_1.ObjetFenetre {
 					: ObjetFenetre_SelectionRessourceCours.uniquementMaterielsReservable,
 			).setOptions({
 				optionsFenetre: this.optionsFenetre,
-				avecEvnt_ApresEdition: this.optionsFenetre.avecEditionListe,
 				avecEvnt_ApresCreation: this.optionsFenetre.avecEditionListe,
-				avecEvnt_ApresSuppression: this.optionsFenetre.avecEditionListe,
 				avecTri: this.optionsFenetre.avecTriDonneesListe,
 			}),
 		);

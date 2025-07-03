@@ -137,7 +137,7 @@ class ObjetFenetre_SaisieQCMResultat extends ObjetFenetre_1.ObjetFenetre {
 		}
 		this.afficher();
 	}
-	surValidation(aGenreBouton) {
+	surValidation(aNumeroBouton) {
 		let lParamSup = {};
 		if (
 			this.param.typeSaisieQCMResultat ===
@@ -157,8 +157,8 @@ class ObjetFenetre_SaisieQCMResultat extends ObjetFenetre_1.ObjetFenetre {
 				garderMeilleureNote: this.garderMeilleureNoteDevoirRedonne,
 			};
 		}
-		if (aGenreBouton === 1) {
-			this.callback.appel($.extend(this.param, lParamSup));
+		if (aNumeroBouton === 1) {
+			this.callback.appel(aNumeroBouton, $.extend(this.param, lParamSup));
 		}
 		this.fermer();
 	}

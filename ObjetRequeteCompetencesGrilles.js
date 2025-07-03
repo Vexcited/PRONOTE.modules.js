@@ -2,10 +2,11 @@ exports.ObjetRequeteCompetencesGrilles = void 0;
 const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
 const CollectionRequetes_1 = require("CollectionRequetes");
 const Enumere_Ressource_1 = require("Enumere_Ressource");
+const AccessApp_1 = require("AccessApp");
 class ObjetRequeteCompetencesGrilles extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	constructor(...aParam) {
 		super(...aParam);
-		const lApplicationSco = GApplication;
+		const lApplicationSco = (0, AccessApp_1.getApp)();
 		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
 	}
 	lancerRequete(aParam) {

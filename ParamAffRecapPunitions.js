@@ -1,6 +1,7 @@
 exports.ParamAffRecapPunitions = void 0;
 const ObjetDroitsPN_1 = require("ObjetDroitsPN");
 const ObjetSelecteurMotifPunition_1 = require("ObjetSelecteurMotifPunition");
+const GUID_1 = require("GUID");
 const ObjetChaine_1 = require("ObjetChaine");
 const ObjetStyle_1 = require("ObjetStyle");
 const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
@@ -26,6 +27,12 @@ var GenreParametreRecapPunition;
 		"cbFilles";
 	GenreParametreRecapPunition[(GenreParametreRecapPunition["cbGarcons"] = 7)] =
 		"cbGarcons";
+	GenreParametreRecapPunition[
+		(GenreParametreRecapPunition["cbMesureConservatoire"] = 8)
+	] = "cbMesureConservatoire";
+	GenreParametreRecapPunition[
+		(GenreParametreRecapPunition["cbCommission"] = 9)
+	] = "cbCommission";
 })(GenreParametreRecapPunition || (GenreParametreRecapPunition = {}));
 class ParamAffRecapPunitions extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
@@ -43,6 +50,9 @@ class ParamAffRecapPunitions extends ObjetInterface_1.ObjetInterface {
 			),
 			avecChoixInternat: this.applicationSco.droits.get(
 				ObjetDroitsPN_1.TypeDroits.fonctionnalites.gestionAbsencesInternat,
+			),
+			avecCommissions: this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.fonctionnalites.avecCommissions,
 			),
 		};
 	}
@@ -63,6 +73,11 @@ class ParamAffRecapPunitions extends ObjetInterface_1.ObjetInterface {
 								return lSelection.uniquementFilles;
 							case GenreParametreRecapPunition.cbGarcons:
 								return lSelection.uniquementGarcons;
+							case GenreParametreRecapPunition.cbMesureConservatoire:
+								return lSelection.avecMesuresConservatoires;
+							case GenreParametreRecapPunition.cbCommission:
+								return lSelection.avecCommissions;
+							default:
 						}
 					}
 					return false;
@@ -86,6 +101,13 @@ class ParamAffRecapPunitions extends ObjetInterface_1.ObjetInterface {
 							case GenreParametreRecapPunition.cbGarcons:
 								lSelection.uniquementGarcons = aValue;
 								break;
+							case GenreParametreRecapPunition.cbMesureConservatoire:
+								lSelection.avecMesuresConservatoires = aValue;
+								break;
+							case GenreParametreRecapPunition.cbCommission:
+								lSelection.avecCommissions = aValue;
+								break;
+							default:
 						}
 						switch (aGenre) {
 							case GenreParametreRecapPunition.cbUniquInfAge:
@@ -95,6 +117,8 @@ class ParamAffRecapPunitions extends ObjetInterface_1.ObjetInterface {
 								break;
 							case GenreParametreRecapPunition.cbGpePunitions:
 							case GenreParametreRecapPunition.cbGpeSanctions:
+							case GenreParametreRecapPunition.cbCommission:
+							case GenreParametreRecapPunition.cbMesureConservatoire:
 								aInstance.actualiserDonnees({ avecModifCBGpe: true });
 								break;
 						}
@@ -173,16 +197,22 @@ class ParamAffRecapPunitions extends ObjetInterface_1.ObjetInterface {
 			ObjetTraduction_1.GTraductions.getValeur("RecapAbs.criteres"),
 			"</legend>",
 		);
+		const lIdAge = GUID_1.GUID.getId();
 		H.push(
 			'<div class="EspaceBas EspaceGauche"><ie-checkbox ie-model="cbParametreAff(',
 			GenreParametreRecapPunition.cbUniquInfAge,
-			')" class="Espace NoWrap">',
+			')" class="Espace NoWrap"><span id="',
+			lIdAge,
+			'">',
 			ObjetTraduction_1.GTraductions.getValeur("RecapAbs.uniquJeunes"),
+			"</span>",
 		);
 		H.push(
 			'<input type="text" ie-model="inputModelTexte(',
 			GenreParametreRecapPunition.editBorneAge,
-			')" ie-mask="/[^0-9]/i" class="round-style MargeGauche" maxLength="3" style="',
+			')" ie-mask="/[^0-9]/i" class="MargeGauche" maxLength="3" aria-labelledby="',
+			lIdAge,
+			'" style="',
 			ObjetStyle_1.GStyle.composeWidth(30),
 			'"/>',
 		);
@@ -232,6 +262,28 @@ class ParamAffRecapPunitions extends ObjetInterface_1.ObjetInterface {
 				GenreParametreRecapPunition.cbGpeSanctions,
 				')" class="Espace NoWrap">',
 				ObjetTraduction_1.GTraductions.getValeur("RecapPunition.colSanction"),
+				"</ie-checkbox></div>",
+			);
+		}
+		H.push(
+			'<div class="Espace"><ie-checkbox ie-model="cbParametreAff(',
+			GenreParametreRecapPunition.cbMesureConservatoire,
+			')" class="Espace NoWrap">',
+			ObjetTraduction_1.GTraductions.getValeur(
+				"RecapPunition.mesuresConservatoires",
+			),
+			"</ie-checkbox></div>",
+		);
+		if (
+			this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.fonctionnalites.avecCommissions,
+			)
+		) {
+			H.push(
+				'<div class="Espace"><ie-checkbox ie-model="cbParametreAff(',
+				GenreParametreRecapPunition.cbCommission,
+				')" class="Espace NoWrap">',
+				ObjetTraduction_1.GTraductions.getValeur("RecapPunition.commissions"),
 				"</ie-checkbox></div>",
 			);
 		}

@@ -156,14 +156,14 @@ class ObjetFenetre_EDT_MS extends ObjetFenetre_1.ObjetFenetre {
 	}
 	composeContenu() {
 		return IE.jsx.str("div", {
-			id: this.getInstance(this.identGrille).getNom(),
+			id: this.getNomInstance(this.identGrille),
 			style: "position:relative;",
 		});
 	}
 	debutRetaillage() {
 		super.debutRetaillage();
 		ObjetPosition_1.GPosition.setHeight(
-			this.getInstance(this.identGrille).getNom(),
+			this.getNomInstance(this.identGrille),
 			0,
 		);
 		this.getInstance(this.identGrille).surPreResize();
@@ -173,9 +173,7 @@ class ObjetFenetre_EDT_MS extends ObjetFenetre_1.ObjetFenetre {
 		this._resizeGrille();
 	}
 	_resizeGrille() {
-		const lJGrille = $(
-			"#" + this.getInstance(this.identGrille).getNom().escapeJQ(),
-		);
+		const lJGrille = $("#" + this.getNomInstance(this.identGrille).escapeJQ());
 		lJGrille.height(lJGrille.parent().innerHeight());
 		this.getInstance(this.identGrille).surPostResize();
 	}

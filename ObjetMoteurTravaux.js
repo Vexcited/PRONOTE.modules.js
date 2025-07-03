@@ -1,29 +1,148 @@
-const {
-	TypeOrigineCreationAvanceeTravaux,
-} = require("TypeOrigineCreationAvanceeTravaux.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreOnglet } = require("Enumere_Onglet.js");
-const { ObjetElement } = require("ObjetElement.js");
-const {
-	TypeDestinationDemandeTravauxUtil,
-} = require("TypeDestinationDemandeTravaux.js");
-const { TypeGenreTravauxIntendance } = require("TypeGenreTravauxIntendance.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { GDate } = require("ObjetDate.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
+exports.ObjetMoteurTravaux = void 0;
+const TypeOrigineCreationAvanceeTravaux_1 = require("TypeOrigineCreationAvanceeTravaux");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Onglet_1 = require("Enumere_Onglet");
+const ObjetElement_1 = require("ObjetElement");
+const TypeDestinationDemandeTravaux_1 = require("TypeDestinationDemandeTravaux");
+const TypeGenreTravauxIntendance_1 = require("TypeGenreTravauxIntendance");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetDate_1 = require("ObjetDate");
+const AccessApp_1 = require("AccessApp");
 class ObjetMoteurTravaux {
-	constructor(aParam) {
-		this.param = aParam;
+	constructor() {
+		const lApplicationSco = (0, AccessApp_1.getApp)();
+		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
+		const lGenreOnglet = this.etatUtilisateurSco.getGenreOnglet();
+		let lGenreTravaux;
+		switch (lGenreOnglet) {
+			case Enumere_Onglet_1.EGenreOnglet.Intendance_SaisieDemandesTravaux:
+				lGenreTravaux =
+					TypeGenreTravauxIntendance_1.TypeGenreTravauxIntendance
+						.GTI_Maintenance;
+				break;
+			case Enumere_Onglet_1.EGenreOnglet.Intendance_SaisieSecretariat:
+				lGenreTravaux =
+					TypeGenreTravauxIntendance_1.TypeGenreTravauxIntendance
+						.GTI_Secretariat;
+				break;
+			case Enumere_Onglet_1.EGenreOnglet.Intendance_SaisieDemandesInformatique:
+				lGenreTravaux =
+					TypeGenreTravauxIntendance_1.TypeGenreTravauxIntendance
+						.GTI_Informatique;
+				break;
+			case Enumere_Onglet_1.EGenreOnglet.Intendance_SaisieCommandes:
+				lGenreTravaux =
+					TypeGenreTravauxIntendance_1.TypeGenreTravauxIntendance.GTI_Commande;
+				break;
+			default:
+				lGenreTravaux =
+					TypeGenreTravauxIntendance_1.TypeGenreTravauxIntendance.GTI_Commande;
+				break;
+		}
+		this.genreTravaux = lGenreTravaux;
+		let lAvecDemandeTravaux = false;
+		let lUniquementMesDemandesTravaux = false;
+		let lAvecExecutionTravaux = false;
+		let lAvecGestionTravaux = false;
+		let lAvecTransfert = false;
+		switch (lGenreTravaux) {
+			case TypeGenreTravauxIntendance_1.TypeGenreTravauxIntendance
+				.GTI_Maintenance:
+				lAvecDemandeTravaux = lApplicationSco.droits.get(
+					ObjetDroitsPN_1.TypeDroits.intendance.avecDemandeTravauxIntendance,
+				);
+				lUniquementMesDemandesTravaux = lApplicationSco.droits.get(
+					ObjetDroitsPN_1.TypeDroits.intendance.uniquementMesTravauxIntendance,
+				);
+				lAvecExecutionTravaux = lApplicationSco.droits.get(
+					ObjetDroitsPN_1.TypeDroits.intendance.avecExecutionTravauxIntendance,
+				);
+				lAvecGestionTravaux = lApplicationSco.droits.get(
+					ObjetDroitsPN_1.TypeDroits.intendance.avecGestionTravauxIntendance,
+				);
+				lAvecTransfert = [
+					Enumere_Espace_1.EGenreEspace.Administrateur,
+					Enumere_Espace_1.EGenreEspace.Mobile_Administrateur,
+					Enumere_Espace_1.EGenreEspace.PrimDirection,
+					Enumere_Espace_1.EGenreEspace.Mobile_PrimDirection,
+				].includes(GEtatUtilisateur.GenreEspace);
+				break;
+			case TypeGenreTravauxIntendance_1.TypeGenreTravauxIntendance
+				.GTI_Secretariat:
+				lAvecDemandeTravaux = lApplicationSco.droits.get(
+					ObjetDroitsPN_1.TypeDroits.intendance.avecDemandeTachesSecretariat,
+				);
+				lUniquementMesDemandesTravaux = lApplicationSco.droits.get(
+					ObjetDroitsPN_1.TypeDroits.intendance.uniquementMesTachesSecretariat,
+				);
+				lAvecExecutionTravaux = lApplicationSco.droits.get(
+					ObjetDroitsPN_1.TypeDroits.intendance.avecExecutionTachesSecretariat,
+				);
+				lAvecGestionTravaux = [
+					Enumere_Espace_1.EGenreEspace.Administrateur,
+					Enumere_Espace_1.EGenreEspace.Mobile_Administrateur,
+				].includes(GEtatUtilisateur.GenreEspace);
+				lAvecTransfert = false;
+				break;
+			case TypeGenreTravauxIntendance_1.TypeGenreTravauxIntendance
+				.GTI_Informatique:
+				lAvecDemandeTravaux = lApplicationSco.droits.get(
+					ObjetDroitsPN_1.TypeDroits.intendance.avecDemandeTachesInformatique,
+				);
+				lUniquementMesDemandesTravaux = lApplicationSco.droits.get(
+					ObjetDroitsPN_1.TypeDroits.intendance.uniquementMesTachesInformatique,
+				);
+				lAvecExecutionTravaux = lApplicationSco.droits.get(
+					ObjetDroitsPN_1.TypeDroits.intendance.avecExecutionTachesInformatique,
+				);
+				lAvecGestionTravaux = lApplicationSco.droits.get(
+					ObjetDroitsPN_1.TypeDroits.intendance.avecGestionTachesInformatique,
+				);
+				lAvecTransfert = [
+					Enumere_Espace_1.EGenreEspace.Administrateur,
+					Enumere_Espace_1.EGenreEspace.Mobile_Administrateur,
+					Enumere_Espace_1.EGenreEspace.PrimDirection,
+					Enumere_Espace_1.EGenreEspace.Mobile_PrimDirection,
+				].includes(GEtatUtilisateur.GenreEspace);
+				break;
+			case TypeGenreTravauxIntendance_1.TypeGenreTravauxIntendance.GTI_Commande:
+				lAvecDemandeTravaux = lApplicationSco.droits.get(
+					ObjetDroitsPN_1.TypeDroits.intendance.avecDemandeCommandes,
+				);
+				lUniquementMesDemandesTravaux = lApplicationSco.droits.get(
+					ObjetDroitsPN_1.TypeDroits.intendance.uniquementMesCommandes,
+				);
+				lAvecExecutionTravaux = lApplicationSco.droits.get(
+					ObjetDroitsPN_1.TypeDroits.intendance.avecExecutionCommandes,
+				);
+				lAvecGestionTravaux = lApplicationSco.droits.get(
+					ObjetDroitsPN_1.TypeDroits.intendance.avecGestionCommandes,
+				);
+				lAvecTransfert = false;
+				break;
+		}
+		const lDroits = {
+			avecDemandeTravaux: lAvecDemandeTravaux,
+			uniquementMesDemandesTravaux: lUniquementMesDemandesTravaux,
+			avecExecutionTravaux: lAvecExecutionTravaux,
+			avecGestionTravaux: lAvecGestionTravaux,
+			avecTransfert: lAvecTransfert,
+		};
+		this.param = { droits: lDroits };
+	}
+	getGenreTravaux() {
+		return this.genreTravaux;
 	}
 	estIdentificationEditable(aDemande) {
 		return (
 			this.avecDroitExecutant() &&
 			aDemande.etat.getGenre() ===
-				TypeOrigineCreationAvanceeTravaux.OCAT_EnAttente &&
+				TypeOrigineCreationAvanceeTravaux_1.TypeOrigineCreationAvanceeTravaux
+					.OCAT_EnAttente &&
 			this.estDemandeur(aDemande)
 		);
 	}
@@ -35,57 +154,47 @@ class ObjetMoteurTravaux {
 			aDemande.colonnesEditables && aDemande.colonnesEditables.includes(aChamps)
 		);
 	}
-	avecDroitDemandeur() {
+	avecDroitDemandeTravaux() {
 		return this.param.droits.avecDemandeTravaux;
+	}
+	avecDroitUniquementMesDemandesTravaux() {
+		return this.param.droits.uniquementMesDemandesTravaux;
 	}
 	avecDroitExecutant() {
 		return this.param.droits.avecExecutionTravaux;
 	}
-	estDemandeur(aDemande) {
-		return ObjetMoteurTravaux.estDemandeur(aDemande);
-	}
-	avecDroitGestion() {
+	avecDroitGestionTravaux() {
 		return this.param.droits.avecGestionTravaux;
 	}
+	avecDroitTransfert() {
+		return this.param.droits.avecTransfert;
+	}
 	estExecutant(aDemande) {
-		return ObjetMoteurTravaux.estExecutant(aDemande);
-	}
-	estRealisable(aDemande) {
-		return ObjetMoteurTravaux.estRealisable(aDemande);
-	}
-	estReceptionnable(aDemande) {
-		return (
-			aDemande.etat.getGenre() !==
-				TypeOrigineCreationAvanceeTravaux.OCAT_Realise &&
-			aDemande.etat.getGenre() !== TypeOrigineCreationAvanceeTravaux.OCAT_Refuse
-		);
-	}
-	static estExecutant(aDemande) {
 		if (
 			[
-				EGenreEspace.PrimProfesseur,
-				EGenreEspace.PrimDirection,
-				EGenreEspace.Mobile_PrimDirection,
-				EGenreEspace.Mobile_PrimProfesseur,
+				Enumere_Espace_1.EGenreEspace.PrimProfesseur,
+				Enumere_Espace_1.EGenreEspace.PrimDirection,
+				Enumere_Espace_1.EGenreEspace.Mobile_PrimDirection,
+				Enumere_Espace_1.EGenreEspace.Mobile_PrimProfesseur,
 			].includes(GEtatUtilisateur.GenreEspace)
 		) {
 			return !!aDemande.mAEteAttribue;
 		}
 		const lNumUserConnecte = GEtatUtilisateur.getUtilisateur().getNumero();
 		const lEstPersonnel = [
-			EGenreEspace.Etablissement,
-			EGenreEspace.Mobile_Etablissement,
-			EGenreEspace.Administrateur,
-			EGenreEspace.Mobile_Etablissement,
-			EGenreEspace.Mobile_Administrateur,
-			EGenreEspace.Professeur,
-			EGenreEspace.Mobile_Professeur,
-			EGenreEspace.PrimProfesseur,
-			EGenreEspace.PrimDirection,
-			EGenreEspace.Mobile_PrimDirection,
-			EGenreEspace.Mobile_PrimProfesseur,
-			EGenreEspace.PrimMairie,
-			EGenreEspace.Mobile_PrimMairie,
+			Enumere_Espace_1.EGenreEspace.Etablissement,
+			Enumere_Espace_1.EGenreEspace.Mobile_Etablissement,
+			Enumere_Espace_1.EGenreEspace.Administrateur,
+			Enumere_Espace_1.EGenreEspace.Mobile_Etablissement,
+			Enumere_Espace_1.EGenreEspace.Mobile_Administrateur,
+			Enumere_Espace_1.EGenreEspace.Professeur,
+			Enumere_Espace_1.EGenreEspace.Mobile_Professeur,
+			Enumere_Espace_1.EGenreEspace.PrimProfesseur,
+			Enumere_Espace_1.EGenreEspace.PrimDirection,
+			Enumere_Espace_1.EGenreEspace.Mobile_PrimDirection,
+			Enumere_Espace_1.EGenreEspace.Mobile_PrimProfesseur,
+			Enumere_Espace_1.EGenreEspace.PrimMairie,
+			Enumere_Espace_1.EGenreEspace.Mobile_PrimMairie,
 		].includes(GEtatUtilisateur.GenreEspace);
 		return (
 			lEstPersonnel &&
@@ -94,13 +203,14 @@ class ObjetMoteurTravaux {
 				undefined
 		);
 	}
-	static estRealisee(aDemande) {
+	estRealisee(aDemande) {
 		return (
 			aDemande.etat.getGenre() ===
-			TypeOrigineCreationAvanceeTravaux.OCAT_Realise
+			TypeOrigineCreationAvanceeTravaux_1.TypeOrigineCreationAvanceeTravaux
+				.OCAT_Realise
 		);
 	}
-	static estDemandeur(aDemande) {
+	estDemandeur(aDemande) {
 		const lNumUserConnecte = GEtatUtilisateur.getUtilisateur().getNumero();
 		if (aDemande.demandeur) {
 			return lNumUserConnecte === aDemande.demandeur.getNumero();
@@ -108,81 +218,87 @@ class ObjetMoteurTravaux {
 			return false;
 		}
 	}
-	static estRealisable(aDemande) {
+	estRealisable(aDemande) {
 		return (
 			this.estExecutant(aDemande) &&
 			aDemande.etat.getGenre() !==
-				TypeOrigineCreationAvanceeTravaux.OCAT_EnAttente &&
+				TypeOrigineCreationAvanceeTravaux_1.TypeOrigineCreationAvanceeTravaux
+					.OCAT_EnAttente &&
 			aDemande.etat.getGenre() !==
-				TypeOrigineCreationAvanceeTravaux.OCAT_Realise &&
-			aDemande.etat.getGenre() !== TypeOrigineCreationAvanceeTravaux.OCAT_Refuse
+				TypeOrigineCreationAvanceeTravaux_1.TypeOrigineCreationAvanceeTravaux
+					.OCAT_Realise &&
+			aDemande.etat.getGenre() !==
+				TypeOrigineCreationAvanceeTravaux_1.TypeOrigineCreationAvanceeTravaux
+					.OCAT_Refuse
 		);
 	}
-	static creerCumulEtat(
-		aListeAvecCumul,
-		aListeDemandes,
-		aPourPrimaire = false,
-	) {
+	creerCumulEtat(aListeAvecCumul, aListeDemandes, aPourPrimaire = false) {
 		const lLibelleCumuls = {
 			realisee: "",
 			aRealiser: "",
-			demandesEnvoyees: GTraductions.getValeur(
+			demandesEnvoyees: ObjetTraduction_1.GTraductions.getValeur(
 				"TvxIntendance.ComboDemandesEnvoyees",
 			),
-			autres: GTraductions.getValeur("TvxIntendance.ComboAutres"),
+			autres: ObjetTraduction_1.GTraductions.getValeur(
+				"TvxIntendance.ComboAutres",
+			),
 		};
 		const lAjouterCumul = (aListe) => {
 			aListe.addElement(
-				ObjetElement.create({
+				ObjetElement_1.ObjetElement.create({
 					Libelle: lLibelleCumuls.aRealiser,
 					libellePere: 0,
 				}),
 			);
 			aListe.addElement(
-				ObjetElement.create({
+				ObjetElement_1.ObjetElement.create({
 					Libelle: lLibelleCumuls.realisee,
 					libellePere: 1,
 				}),
 			);
 			aListe.addElement(
-				ObjetElement.create({
+				ObjetElement_1.ObjetElement.create({
 					Libelle: lLibelleCumuls.demandesEnvoyees,
 					libellePere: 2,
 				}),
 			);
 			aListe.addElement(
-				ObjetElement.create({ Libelle: lLibelleCumuls.autres, libellePere: 3 }),
+				ObjetElement_1.ObjetElement.create({
+					Libelle: lLibelleCumuls.autres,
+					libellePere: 3,
+				}),
 			);
 		};
 		switch (GEtatUtilisateur.getGenreOnglet()) {
-			case EGenreOnglet.Intendance_SaisieDemandesInformatique:
-			case EGenreOnglet.Intendance_SaisieDemandesTravaux:
-				lLibelleCumuls.realisee = GTraductions.getValeur(
+			case Enumere_Onglet_1.EGenreOnglet.Intendance_SaisieDemandesInformatique:
+			case Enumere_Onglet_1.EGenreOnglet.Intendance_SaisieDemandesTravaux:
+				lLibelleCumuls.realisee = ObjetTraduction_1.GTraductions.getValeur(
 					"TvxIntendance.ComboMissionsRealisees",
 				);
-				lLibelleCumuls.aRealiser = GTraductions.getValeur(
+				lLibelleCumuls.aRealiser = ObjetTraduction_1.GTraductions.getValeur(
 					"TvxIntendance.ComboMissionsARealiser",
 				);
 				break;
-			case EGenreOnglet.Intendance_SaisieSecretariat:
-				lLibelleCumuls.realisee = GTraductions.getValeur(
+			case Enumere_Onglet_1.EGenreOnglet.Intendance_SaisieSecretariat:
+				lLibelleCumuls.realisee = ObjetTraduction_1.GTraductions.getValeur(
 					"TvxIntendance.ComboTachesRealisees",
 				);
-				lLibelleCumuls.aRealiser = GTraductions.getValeur(
+				lLibelleCumuls.aRealiser = ObjetTraduction_1.GTraductions.getValeur(
 					"TvxIntendance.ComboTachesARealiser",
 				);
 				break;
-			case EGenreOnglet.Intendance_SaisieCommandes:
-				lLibelleCumuls.realisee = GTraductions.getValeur(
+			case Enumere_Onglet_1.EGenreOnglet.Intendance_SaisieCommandes:
+				lLibelleCumuls.realisee = ObjetTraduction_1.GTraductions.getValeur(
 					"TvxIntendance.ComboCommandesRealisees",
 				);
-				lLibelleCumuls.aRealiser = GTraductions.getValeur(
+				lLibelleCumuls.aRealiser = ObjetTraduction_1.GTraductions.getValeur(
 					"TvxIntendance.ComboCommandesARealiser",
 				);
 				break;
 		}
 		if (aPourPrimaire) {
-			const lListeDestination = TypeDestinationDemandeTravauxUtil.toListe();
+			const lListeDestination =
+				TypeDestinationDemandeTravaux_1.TypeDestinationDemandeTravauxUtil.toListe();
 			lListeDestination.parcourir((aCumulDestination) => {
 				aCumulDestination.estDestination = true;
 				aCumulDestination.destination = aCumulDestination.getGenre();
@@ -206,7 +322,7 @@ class ObjetMoteurTravaux {
 		});
 		const lListeDemandes = aListeDemandes;
 		lListeDemandes.parcourir((aLigne) => {
-			ObjetMoteurTravaux.affectationPereDemande(
+			this.affectationPereDemande(
 				aLigne,
 				aListeAvecCumul,
 				lLibelleCumuls,
@@ -215,7 +331,7 @@ class ObjetMoteurTravaux {
 		});
 		return aListeAvecCumul;
 	}
-	static affectationPereDemande(
+	affectationPereDemande(
 		aDemande,
 		aListeCumuls,
 		aLibelleCumuls,
@@ -234,143 +350,38 @@ class ObjetMoteurTravaux {
 			aDemande.pere.estUnDeploiement = true;
 			aListeCumuls.addElement(aDemande);
 		};
-		if (
-			ObjetMoteurTravaux.estExecutant(aDemande) &&
-			ObjetMoteurTravaux.estRealisee(aDemande)
-		) {
+		if (this.estExecutant(aDemande) && this.estRealisee(aDemande)) {
 			composePere(aLibelleCumuls.realisee);
-		} else if (ObjetMoteurTravaux.estRealisable(aDemande)) {
+		} else if (this.estRealisable(aDemande)) {
 			composePere(aLibelleCumuls.aRealiser);
-		} else if (ObjetMoteurTravaux.estDemandeur(aDemande)) {
+		} else if (this.estDemandeur(aDemande)) {
 			composePere(aLibelleCumuls.demandesEnvoyees);
 		} else {
 			aDemande.seulementConsult = true;
 			composePere(aLibelleCumuls.autres);
 		}
 	}
-	static getDroits(aGenre) {
-		let lResult;
-		switch (aGenre) {
-			case TypeGenreTravauxIntendance.GTI_Maintenance:
-				lResult = {
-					avecDemandeTravaux: GApplication.droits.get(
-						TypeDroits.intendance.avecDemandeTravauxIntendance,
-					),
-					uniquementMesDemandesTravaux: GApplication.droits.get(
-						TypeDroits.intendance.uniquementMesTravauxIntendance,
-					),
-					avecExecutionTravaux: GApplication.droits.get(
-						TypeDroits.intendance.avecExecutionTravauxIntendance,
-					),
-					avecGestionTravaux: GApplication.droits.get(
-						TypeDroits.intendance.avecGestionTravauxIntendance,
-					),
-					avecTransfert: [
-						EGenreEspace.Administrateur,
-						EGenreEspace.Mobile_Administrateur,
-						EGenreEspace.PrimDirection,
-						EGenreEspace.Mobile_PrimDirection,
-					].includes(GEtatUtilisateur.GenreEspace),
-				};
-				break;
-			case TypeGenreTravauxIntendance.GTI_Secretariat:
-				lResult = {
-					avecDemandeTravaux: GApplication.droits.get(
-						TypeDroits.intendance.avecDemandeTachesSecretariat,
-					),
-					uniquementMesDemandesTravaux: GApplication.droits.get(
-						TypeDroits.intendance.uniquementMesTachesSecretariat,
-					),
-					avecExecutionTravaux: GApplication.droits.get(
-						TypeDroits.intendance.avecExecutionTachesSecretariat,
-					),
-					avecGestionTravaux: [
-						EGenreEspace.Administrateur,
-						EGenreEspace.Mobile_Administrateur,
-					].includes(GEtatUtilisateur.GenreEspace),
-					avecTransfert: false,
-				};
-				break;
-			case TypeGenreTravauxIntendance.GTI_Informatique:
-				lResult = {
-					avecDemandeTravaux: GApplication.droits.get(
-						TypeDroits.intendance.avecDemandeTachesInformatique,
-					),
-					uniquementMesDemandesTravaux: GApplication.droits.get(
-						TypeDroits.intendance.uniquementMesTachesInformatique,
-					),
-					avecExecutionTravaux: GApplication.droits.get(
-						TypeDroits.intendance.avecExecutionTachesInformatique,
-					),
-					avecGestionTravaux: GApplication.droits.get(
-						TypeDroits.intendance.avecGestionTachesInformatique,
-					),
-					avecTransfert: [
-						EGenreEspace.Administrateur,
-						EGenreEspace.Mobile_Administrateur,
-						EGenreEspace.PrimDirection,
-						EGenreEspace.Mobile_PrimDirection,
-					].includes(GEtatUtilisateur.GenreEspace),
-				};
-				break;
-			case TypeGenreTravauxIntendance.GTI_Commande:
-				lResult = {
-					avecDemandeTravaux: GApplication.droits.get(
-						TypeDroits.intendance.avecDemandeCommandes,
-					),
-					uniquementMesDemandesTravaux: GApplication.droits.get(
-						TypeDroits.intendance.uniquementMesCommandes,
-					),
-					avecExecutionTravaux: GApplication.droits.get(
-						TypeDroits.intendance.avecExecutionCommandes,
-					),
-					avecGestionTravaux: GApplication.droits.get(
-						TypeDroits.intendance.avecGestionCommandes,
-					),
-					avecTransfert: false,
-				};
-				break;
-			default:
-				break;
-		}
-		return lResult;
-	}
-	static formaterListe(aListe) {
-		let lListeDonnees = new ObjetListeElements();
+	formaterListe(aListe) {
+		let lListeDonnees = new ObjetListeElements_1.ObjetListeElements();
 		if (aListe.count() > 0) {
-			lListeDonnees = ObjetMoteurTravaux.creerCumulEtat(
+			lListeDonnees = this.creerCumulEtat(
 				lListeDonnees,
 				aListe,
-				GEtatUtilisateur.pourPrimaire(),
+				this.etatUtilisateurSco.pourPrimaire(),
 			);
 		}
-		if (GEtatUtilisateur.pourPrimaire()) {
-			lListeDonnees.setTri(
-				ObjetTri.initRecursif("pere", [
-					ObjetTri.init("destination"),
-					ObjetTri.init("libellePere"),
-				]),
-			);
+		const lTrisRecursif = [];
+		if (this.etatUtilisateurSco.pourPrimaire()) {
+			lTrisRecursif.push(ObjetTri_1.ObjetTri.init("destination"));
+			lTrisRecursif.push(ObjetTri_1.ObjetTri.init("libellePere"));
 		} else {
-			lListeDonnees.setTri([
-				ObjetTri.initRecursif("pere", [ObjetTri.init("libellePere")]),
-			]);
+			lTrisRecursif.push(ObjetTri_1.ObjetTri.init("libellePere"));
 		}
+		lListeDonnees.setTri([
+			ObjetTri_1.ObjetTri.initRecursif("pere", lTrisRecursif),
+		]);
 		lListeDonnees.trier();
 		return lListeDonnees;
-	}
-	static getGenreTraveauxIntendance() {
-		switch (GEtatUtilisateur.getGenreOnglet()) {
-			case EGenreOnglet.Intendance_SaisieDemandesTravaux:
-				return TypeGenreTravauxIntendance.GTI_Maintenance;
-			case EGenreOnglet.Intendance_SaisieSecretariat:
-				return TypeGenreTravauxIntendance.GTI_Secretariat;
-			case EGenreOnglet.Intendance_SaisieDemandesInformatique:
-				return TypeGenreTravauxIntendance.GTI_Informatique;
-			case EGenreOnglet.Intendance_SaisieCommandes:
-				return TypeGenreTravauxIntendance.GTI_Commande;
-			default:
-		}
 	}
 	static getListeJours() {
 		return ObjetMoteurTravaux._getListeParTaille(32);
@@ -382,77 +393,85 @@ class ObjetMoteurTravaux {
 		return ObjetMoteurTravaux._getListeParTaille(60);
 	}
 	static _getListeParTaille(ataille) {
-		const lListe = new ObjetListeElements();
+		const lListe = new ObjetListeElements_1.ObjetListeElements();
 		Array.from({ length: ataille }, (v, i) => i.toString()).forEach((v) => {
-			lListe.add(new ObjetElement(v));
+			lListe.add(new ObjetElement_1.ObjetElement(v));
 		});
 		return lListe;
 	}
-	static getTitreFenetre(
-		aEtat,
-		aGenreTravauxIntendance,
-		aDateCreation = null,
-		aSeulementConsult = false,
-	) {
+	getTitreFenetre(aEtat, aDateCreation = null, aSeulementConsult = false) {
 		switch (aEtat) {
-			case EGenreEtat.Creation: {
-				const lDateCouranteFormat = GDate.formatDate(
-					GDate.getDateCourante(),
-					"%JJ/%MM/%AAAA",
-				);
-				switch (aGenreTravauxIntendance) {
-					case TypeGenreTravauxIntendance.GTI_Maintenance:
-						return GTraductions.getValeur(
-							"TvxIntendance.TitreCreationTravaux",
-							[lDateCouranteFormat],
-						);
-					case TypeGenreTravauxIntendance.GTI_Commande:
-						return GTraductions.getValeur(
-							"TvxIntendance.TitreCreationCommandes",
-							[lDateCouranteFormat],
-						);
-					case TypeGenreTravauxIntendance.GTI_Secretariat:
-					case TypeGenreTravauxIntendance.GTI_Informatique:
-						return GTraductions.getValeur("TvxIntendance.TitreCreationTaches", [
-							lDateCouranteFormat,
-						]);
+			case Enumere_Etat_1.EGenreEtat.Creation:
+				{
+					const lDateCouranteFormat = ObjetDate_1.GDate.formatDate(
+						ObjetDate_1.GDate.getDateCourante(),
+						"%JJ/%MM/%AAAA",
+					);
+					switch (this.genreTravaux) {
+						case TypeGenreTravauxIntendance_1.TypeGenreTravauxIntendance
+							.GTI_Maintenance:
+							return ObjetTraduction_1.GTraductions.getValeur(
+								"TvxIntendance.TitreCreationTravaux",
+								[lDateCouranteFormat],
+							);
+						case TypeGenreTravauxIntendance_1.TypeGenreTravauxIntendance
+							.GTI_Commande:
+							return ObjetTraduction_1.GTraductions.getValeur(
+								"TvxIntendance.TitreCreationCommandes",
+								[lDateCouranteFormat],
+							);
+						case TypeGenreTravauxIntendance_1.TypeGenreTravauxIntendance
+							.GTI_Secretariat:
+						case TypeGenreTravauxIntendance_1.TypeGenreTravauxIntendance
+							.GTI_Informatique:
+							return ObjetTraduction_1.GTraductions.getValeur(
+								"TvxIntendance.TitreCreationTaches",
+								[lDateCouranteFormat],
+							);
+					}
 				}
 				break;
-			}
-			case EGenreEtat.Modification: {
+			case Enumere_Etat_1.EGenreEtat.Modification: {
 				let lDateModificationFormat = "";
 				if (!!aDateCreation) {
-					lDateModificationFormat = GDate.formatDate(
+					lDateModificationFormat = ObjetDate_1.GDate.formatDate(
 						aDateCreation,
 						"%JJ/%MM/%AAAA",
 					);
 				}
-				switch (aGenreTravauxIntendance) {
-					case TypeGenreTravauxIntendance.GTI_Maintenance:
+				switch (this.genreTravaux) {
+					case TypeGenreTravauxIntendance_1.TypeGenreTravauxIntendance
+						.GTI_Maintenance:
 						return aSeulementConsult
-							? GTraductions.getValeur("TvxIntendance.TitreDemandeTravaux", [
-									lDateModificationFormat,
-								])
-							: GTraductions.getValeur(
+							? ObjetTraduction_1.GTraductions.getValeur(
+									"TvxIntendance.TitreDemandeTravaux",
+									[lDateModificationFormat],
+								)
+							: ObjetTraduction_1.GTraductions.getValeur(
 									"TvxIntendance.TitreModificationTravaux",
 									[lDateModificationFormat],
 								);
-					case TypeGenreTravauxIntendance.GTI_Commande:
+					case TypeGenreTravauxIntendance_1.TypeGenreTravauxIntendance
+						.GTI_Commande:
 						return aSeulementConsult
-							? GTraductions.getValeur("TvxIntendance.TitreDemandeCommande", [
-									lDateModificationFormat,
-								])
-							: GTraductions.getValeur(
+							? ObjetTraduction_1.GTraductions.getValeur(
+									"TvxIntendance.TitreDemandeCommande",
+									[lDateModificationFormat],
+								)
+							: ObjetTraduction_1.GTraductions.getValeur(
 									"TvxIntendance.TitreModificationCommande",
 									[lDateModificationFormat],
 								);
-					case TypeGenreTravauxIntendance.GTI_Secretariat:
-					case TypeGenreTravauxIntendance.GTI_Informatique:
+					case TypeGenreTravauxIntendance_1.TypeGenreTravauxIntendance
+						.GTI_Secretariat:
+					case TypeGenreTravauxIntendance_1.TypeGenreTravauxIntendance
+						.GTI_Informatique:
 						return aSeulementConsult
-							? GTraductions.getValeur("TvxIntendance.TitreDemandeTaches", [
-									lDateModificationFormat,
-								])
-							: GTraductions.getValeur(
+							? ObjetTraduction_1.GTraductions.getValeur(
+									"TvxIntendance.TitreDemandeTaches",
+									[lDateModificationFormat],
+								)
+							: ObjetTraduction_1.GTraductions.getValeur(
 									"TvxIntendance.TitreModificationTaches",
 									[lDateModificationFormat],
 								);
@@ -461,41 +480,21 @@ class ObjetMoteurTravaux {
 		}
 		return "";
 	}
-	static surTransfertMission(aArticle) {
-		aArticle.setEtat(EGenreEtat.Modification);
-		const lNouvelOnglet =
-			aArticle.getGenre() === TypeGenreTravauxIntendance.GTI_Maintenance
-				? EGenreOnglet.Intendance_SaisieDemandesTravaux
-				: EGenreOnglet.Intendance_SaisieDemandesInformatique;
-		this.listeDemandesTvx = new ObjetListeElements();
-		this.listeDemandesTvx.addElement(aArticle);
-		return lNouvelOnglet;
+	getOngletDestinationSelonGenreDemande(aGenreDemande) {
+		return aGenreDemande ===
+			TypeGenreTravauxIntendance_1.TypeGenreTravauxIntendance.GTI_Maintenance
+			? Enumere_Onglet_1.EGenreOnglet.Intendance_SaisieDemandesTravaux
+			: Enumere_Onglet_1.EGenreOnglet.Intendance_SaisieDemandesInformatique;
 	}
-	static getMessageSuppresion() {
-		return GApplication.getMessage().afficher({
-			type: EGenreBoiteMessage.Confirmation,
-			message:
-				GEtatUtilisateur.getGenreOnglet() ===
-				EGenreOnglet.Intendance_SaisieCommandes
-					? GTraductions.getValeur("TvxIntendance.Message.SupprimerCommande")
-					: GTraductions.getValeur("TvxIntendance.Message.SupprimerDemande"),
-		});
+	getMessageSuppression() {
+		return this.genreTravaux ===
+			TypeGenreTravauxIntendance_1.TypeGenreTravauxIntendance.GTI_Commande
+			? ObjetTraduction_1.GTraductions.getValeur(
+					"TvxIntendance.Message.SupprimerCommande",
+				)
+			: ObjetTraduction_1.GTraductions.getValeur(
+					"TvxIntendance.Message.SupprimerDemande",
+				);
 	}
 }
-ObjetMoteurTravaux.colonnes = {
-	dateCreation: "dateCreation",
-	description: "description",
-	lieu: "lieu",
-	demandeur: "demandeur",
-	listePJ: "listePJ",
-	etatAvancement: "etatAvancement",
-	commentaire: "commentaire",
-	nature: "nature",
-	executants: "executants",
-	dateRealisee: "dateRealisee",
-	remarque: "remarque",
-	echeance: "echeance",
-	niveauDUrgence: "niveauDUrgence",
-	dureeIntervention: "dureeIntervention",
-};
-module.exports = { ObjetMoteurTravaux };
+exports.ObjetMoteurTravaux = ObjetMoteurTravaux;

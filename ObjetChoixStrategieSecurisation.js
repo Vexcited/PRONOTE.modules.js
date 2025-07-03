@@ -1,9 +1,9 @@
 exports.ObjetChoixStrategieSecurisation = void 0;
 const ObjetIdentite_1 = require("ObjetIdentite");
-const ObjetTraduction_1 = require("ObjetTraduction");
 const TypeSecurisationCompte_1 = require("TypeSecurisationCompte");
 const TypeEnsembleNombre_1 = require("TypeEnsembleNombre");
 const jsx_1 = require("jsx");
+const TraductionsDoubleAuth_1 = require("TraductionsDoubleAuth");
 class ObjetChoixStrategieSecurisation extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
@@ -99,8 +99,11 @@ class ObjetChoixStrategieSecurisation extends ObjetIdentite_1.Identite {
 					);
 				},
 			},
-			getClassRegles(aGenre) {
-				return aInstance.donnees.mode !== aGenre ? "sr-only" : "";
+			getAttrRegles(aGenre) {
+				return {
+					class: aInstance.donnees.mode !== aGenre ? "sr-only" : null,
+					"aria-hidden": aInstance.donnees.mode !== aGenre ? "true" : null,
+				};
 			},
 		});
 	}
@@ -139,12 +142,8 @@ class ObjetChoixStrategieSecurisation extends ObjetIdentite_1.Identite {
 					null,
 					this.options.modeAffichage ===
 						ObjetChoixStrategieSecurisation.typeAffichage.prefUtilisateur
-						? ObjetTraduction_1.GTraductions.getValeur(
-								"DoubleAuth.LegendeStrategieCompte",
-							)
-						: ObjetTraduction_1.GTraductions.getValeur(
-								"DoubleAuth.LegendeStrategie",
-							),
+						? TraductionsDoubleAuth_1.TradDoubleAuth.LegendeStrategieCompte
+						: TraductionsDoubleAuth_1.TradDoubleAuth.LegendeStrategie,
 				),
 				IE.jsx.str("div", { class: "css_Choix" }, (H) => {
 					TypeSecurisationCompte_1.TypeModeGestionDoubleAuthentificationUtil.getOrdreModeDoubleAuth(
@@ -188,9 +187,8 @@ class ObjetChoixStrategieSecurisation extends ObjetIdentite_1.Identite {
 													IE.jsx.str(
 														"span",
 														null,
-														ObjetTraduction_1.GTraductions.getValeur(
-															"DoubleAuth.StrategieFort",
-														),
+														TraductionsDoubleAuth_1.TradDoubleAuth
+															.StrategieFort,
 													),
 												),
 											),
@@ -233,9 +231,8 @@ class ObjetChoixStrategieSecurisation extends ObjetIdentite_1.Identite {
 													IE.jsx.str(
 														"span",
 														null,
-														ObjetTraduction_1.GTraductions.getValeur(
-															"DoubleAuth.StrategieMoyen",
-														),
+														TraductionsDoubleAuth_1.TradDoubleAuth
+															.StrategieMoyen,
 													),
 												),
 											),
@@ -268,9 +265,7 @@ class ObjetChoixStrategieSecurisation extends ObjetIdentite_1.Identite {
 												IE.jsx.str(
 													"span",
 													{ class: "choix-int" },
-													ObjetTraduction_1.GTraductions.getValeur(
-														"DoubleAuth.StrategieAucun",
-													),
+													TraductionsDoubleAuth_1.TradDoubleAuth.StrategieAucun,
 												),
 											),
 										),
@@ -308,9 +303,7 @@ class ObjetChoixStrategieSecurisation extends ObjetIdentite_1.Identite {
 						IE.jsx.str(
 							"ie-bouton",
 							{ "ie-model": "btnPIN", "aria-haspopup": "dialog" },
-							ObjetTraduction_1.GTraductions.getValeur(
-								"DoubleAuth.RenforcerButtonModifier",
-							),
+							TraductionsDoubleAuth_1.TradDoubleAuth.RenforcerButtonModifier,
 						),
 					)
 				: "",
@@ -321,20 +314,18 @@ class ObjetChoixStrategieSecurisation extends ObjetIdentite_1.Identite {
 					target: "_blank",
 					class: "css_lienVideo iconic icon_question_sign",
 				},
-				ObjetTraduction_1.GTraductions.getValeur("DoubleAuth.EnSavoirPlus"),
+				TraductionsDoubleAuth_1.TradDoubleAuth.EnSavoirPlus,
 			),
 		);
 	}
 	construireRegles(aMode, aId) {
 		return IE.jsx.str(
 			"div",
-			{ id: aId, "ie-class": (0, jsx_1.jsxFuncAttr)("getClassRegles", aMode) },
+			{ id: aId, "ie-attr": (0, jsx_1.jsxFuncAttr)("getAttrRegles", aMode) },
 			IE.jsx.str(
 				"span",
 				null,
-				ObjetTraduction_1.GTraductions.getValeur(
-					"DoubleAuth.LegendeChoixStratTitre",
-				),
+				TraductionsDoubleAuth_1.TradDoubleAuth.LegendeChoixStratTitre,
 				" :",
 			),
 			IE.jsx.str(
@@ -351,9 +342,7 @@ class ObjetChoixStrategieSecurisation extends ObjetIdentite_1.Identite {
 								class: "icon_ok ico-green m-right",
 								role: "presentation",
 							}),
-							ObjetTraduction_1.GTraductions.getValeur(
-								"DoubleAuth.LegendeChoixStratPIN",
-							),
+							TraductionsDoubleAuth_1.TradDoubleAuth.LegendeChoixStratPIN,
 						),
 				IE.jsx.str(
 					"li",
@@ -362,9 +351,7 @@ class ObjetChoixStrategieSecurisation extends ObjetIdentite_1.Identite {
 						class: "icon_ok ico-green m-right",
 						role: "presentation",
 					}),
-					ObjetTraduction_1.GTraductions.getValeur(
-						"DoubleAuth.LegendeChoixStratNotif",
-					),
+					TraductionsDoubleAuth_1.TradDoubleAuth.LegendeChoixStratNotif,
 				),
 			),
 		);

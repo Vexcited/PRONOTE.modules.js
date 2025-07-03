@@ -8,7 +8,6 @@ class Cache extends _Cache_1._Cache {
 	_init() {
 		this.general = new _Cache_1._Cache();
 		this.ficheScolaire = new _Cache_1._Cache();
-		this.resultatsClasses = new _Cache_1._Cache();
 		this.dossierVS = new _Cache_1._Cache();
 		this.agenda = new _Cache_1._Cache();
 		this.livretScolaire = new _Cache_1._Cache();

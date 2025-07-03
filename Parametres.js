@@ -17,6 +17,7 @@ const TypeCollectivite_1 = require("TypeCollectivite");
 global.GParametres = null;
 class ObjetParametres extends ObjetParametresCP_1.ObjetParametresCP {
 	constructor(aJSON) {
+		var _a;
 		super();
 		this.application = GApplication;
 		this.application.initDateServeur(aJSON.DateServeurHttp);
@@ -46,6 +47,8 @@ class ObjetParametres extends ObjetParametresCP_1.ObjetParametresCP {
 		this.listeSessionsInscriptions = aJSON.listeSessionsInscriptions;
 		this.listePolices = aJSON.listePolices;
 		this.PageEtablissement = aJSON.PageEtablissement;
+		this.estAfficheDansENT =
+			(_a = aJSON.estAfficheDansENT) !== null && _a !== void 0 ? _a : false;
 		const lJGeneral = (this.general = aJSON.General);
 		this.version = lJGeneral.version;
 		this.versionPN = lJGeneral.versionPN;
@@ -65,6 +68,7 @@ class ObjetParametres extends ObjetParametresCP_1.ObjetParametresCP {
 		this.urlFAQEnregistrementDoubleAuth =
 			lJGeneral.urlFAQEnregistrementDoubleAuth;
 		this.urlTutoVideoSecurite = lJGeneral.urlTutoVideoSecurite;
+		this.urlTutoEnregistrerAppareils = lJGeneral.urlTutoEnregistrerAppareils;
 		this.urlCanope = lJGeneral.urlCanope;
 		this.urlDeclarationAccessibilite = lJGeneral.urlDeclarationAccessibilite;
 		this.accessibiliteNonConforme = lJGeneral.accessibiliteNonConforme;
@@ -223,6 +227,9 @@ class ObjetParametres extends ObjetParametresCP_1.ObjetParametresCP {
 				return lResult;
 			};
 		}
+		if (aJSON.tableauVersion) {
+			this.tableauVersion = aJSON.tableauVersion;
+		}
 	}
 	getLibelleHeure(aPlace) {
 		try {
@@ -266,10 +273,7 @@ class ObjetParametres extends ObjetParametresCP_1.ObjetParametresCP {
 				this.themeParDefaut = lThemeCollectivite;
 			}
 		}
-		ThemesCouleurs_1.ThemesCouleurs.setTheme(
-			this.themeParDefaut,
-			this.application.getEtatUtilisateur().estAvecThemeAccessible(),
-		);
+		ThemesCouleurs_1.ThemesCouleurs.setTheme(this.themeParDefaut);
 		global.GCouleur = new ObjetCouleur_1.ObjetCouleur(
 			![
 				Enumere_Espace_1.EGenreEspace.Parent,
@@ -407,6 +411,12 @@ class ObjetParametres extends ObjetParametresCP_1.ObjetParametresCP {
 			}
 		}
 		return lListePeriodes;
+	}
+	setDocumentTitle(aLibelleOnglet) {
+		const lLibelleOnglet = aLibelleOnglet ? aLibelleOnglet + " - " : "";
+		const lLibelleProduit =
+			this.nomProduit + (this.versionPN ? " " + this.versionPN : "");
+		document.title = `${lLibelleOnglet}${this.NomEspace} - ${lLibelleProduit} - ${this.NomEtablissementConnexion}`;
 	}
 }
 exports.ObjetParametres = ObjetParametres;

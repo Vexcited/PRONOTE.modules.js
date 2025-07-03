@@ -14,7 +14,7 @@ class WidgetCoursNonAssures extends ObjetWidget_1.Widget.ObjetWidget {
 		this.creerObjetsCoursNonAssures();
 		this.ProfCoursNonAssures.Selection = 0;
 		const lWidget = {
-			html: this.composeWidgetCoursNonAssures(),
+			getHtml: this.composeWidgetCoursNonAssures.bind(this),
 			afficherMessage: this.donnees.listeCoursNonAssures
 				? this.donnees.listeCoursNonAssures.count() === 0
 				: true,
@@ -64,15 +64,7 @@ class WidgetCoursNonAssures extends ObjetWidget_1.Widget.ObjetWidget {
 		}
 		const H = [];
 		H.push(
-			IE.jsx.str(
-				IE.jsx.fragment,
-				null,
-				IE.jsx.str(
-					"div",
-					{ id: this.idContenu },
-					this._composeCoursNonAssures(),
-				),
-			),
+			IE.jsx.str("div", { id: this.idContenu }, this._composeCoursNonAssures()),
 		);
 		return H.join("");
 	}
@@ -104,7 +96,7 @@ class WidgetCoursNonAssures extends ObjetWidget_1.Widget.ObjetWidget {
 						.get(this.ProfCoursNonAssures.Selection)
 						.getNumero() === lCoursNonAssure.professeur.getNumero()
 				) {
-					H.push('<li tabindex="0">');
+					H.push("<li>");
 					H.push(
 						'<div class="wrap">',
 						'<div class="bloc-date-conteneur">',

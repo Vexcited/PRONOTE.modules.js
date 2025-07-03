@@ -39,11 +39,11 @@ const TypeDecisionDemandeInscriptionUtil = {
 	getClass(aGenre) {
 		switch (aGenre) {
 			case TypeDecisionDemandeInscription.ddi_Acceptee:
-				return "icon_ok text-util-vert-moyen";
+				return "icon_ok color-green-moyen";
 			case TypeDecisionDemandeInscription.ddi_EnCours:
 				return "";
 			case TypeDecisionDemandeInscription.ddi_Refusee:
-				return "icon_remove text-util-rouge-moyen";
+				return "icon_remove color-red-moyen";
 			default:
 				break;
 		}

@@ -1,16 +1,9 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequetePageFicheBrevet extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
-	lancerRequete(aParam) {
-		$.extend(this.JSON, aParam);
-		return this.appelAsynchrone();
-	}
-	actionApresRequete() {
-		this.callbackReussite.appel(this.JSONReponse);
-	}
-}
-Requetes.inscrire("PageFicheBrevet", ObjetRequetePageFicheBrevet);
-module.exports = { ObjetRequetePageFicheBrevet };
+exports.ObjetRequetePageFicheBrevet = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequetePageFicheBrevet extends ObjetRequeteJSON_1.ObjetRequeteConsultation {}
+exports.ObjetRequetePageFicheBrevet = ObjetRequetePageFicheBrevet;
+CollectionRequetes_1.Requetes.inscrire(
+	"PageFicheBrevet",
+	ObjetRequetePageFicheBrevet,
+);

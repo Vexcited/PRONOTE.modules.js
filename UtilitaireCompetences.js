@@ -1,57 +1,47 @@
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GChaine } = require("ObjetChaine.js");
-const { GStyle } = require("ObjetStyle.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { ObjetHint } = require("ObjetHint.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { TypeNote } = require("TypeNote.js");
-const {
-	EGenreNiveauDAcquisition,
-	EGenreNiveauDAcquisitionUtil,
-} = require("Enumere_NiveauDAcquisition.js");
-const { EGenreTriElement } = require("Enumere_TriElement.js");
-const {
-	ObjetRequeteCalculAutoNotesSelonCompetences,
-} = require("ObjetRequeteCalculAutoNotesSelonCompetences.js");
-const {
-	TypeGenreValidationCompetence,
-} = require("TypeGenreValidationCompetence.js");
-const { TypeModeValidationAuto } = require("TypeModeValidationAuto.js");
-const { TypePositionnement } = require("TypePositionnement.js");
-const { TypeNiveauEquivalenceCEUtil } = require("TypeNiveauEquivalenceCE.js");
-const {
-	ObjetFenetre_ValidationAutoCompetence,
-	TypeEvenementValidationAutoCompetences,
-} = require("ObjetFenetre_ValidationAutoCompetence.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const {
-	ObjetFenetre_PreferencesCalculPositionnement,
-} = require("ObjetFenetre_PreferencesCalculPositionnement.js");
-const {
-	TypeEvenementValidationAutoPositionnement,
-	ObjetFenetre_CalculAutoPositionnement,
-} = require("ObjetFenetre_CalculAutoPositionnement.js");
-const { ObjetJSON } = require("ObjetJSON.js");
+exports.TUtilitaireCompetences = TUtilitaireCompetences;
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetStyle_1 = require("ObjetStyle");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const ObjetHint_1 = require("ObjetHint");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const TypeNote_1 = require("TypeNote");
+const Enumere_NiveauDAcquisition_1 = require("Enumere_NiveauDAcquisition");
+const Enumere_TriElement_1 = require("Enumere_TriElement");
+const ObjetRequeteCalculAutoNotesSelonCompetences_1 = require("ObjetRequeteCalculAutoNotesSelonCompetences");
+const TypeGenreValidationCompetence_1 = require("TypeGenreValidationCompetence");
+const TypeModeValidationAuto_1 = require("TypeModeValidationAuto");
+const TypePositionnement_1 = require("TypePositionnement");
+const TypeNiveauEquivalenceCE_1 = require("TypeNiveauEquivalenceCE");
+const ObjetFenetre_ValidationAutoCompetence_1 = require("ObjetFenetre_ValidationAutoCompetence");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_PreferencesCalculPositionnement_1 = require("ObjetFenetre_PreferencesCalculPositionnement");
+const ObjetFenetre_CalculAutoPositionnement_1 = require("ObjetFenetre_CalculAutoPositionnement");
+const ObjetJSON_1 = require("ObjetJSON");
+const AccessApp_1 = require("AccessApp");
 function TUtilitaireCompetences() {}
+TUtilitaireCompetences.ClasseIconeJaugeChronologique = "icon_time";
+TUtilitaireCompetences.ClasseIconeJaugeParNiveau = "icon_diagramme";
 TUtilitaireCompetences.construitInfoActiviteLangagiere = function (
 	aParams = {},
 ) {
 	const lAvecLibelle = aParams.avecLibelle || false;
 	const lAvecHint = !!aParams.avecHint;
-	const lStr = GTraductions.getValeur(
+	const lStr = ObjetTraduction_1.GTraductions.getValeur(
 		"competences.LegendeCompetenceLangagiere",
 	);
 	const H = [];
 	H.push(
 		'<i style="color: ',
-		GParametres.general.couleurActiviteLangagiere,
-		';" class="icon_star"',
+		(0, AccessApp_1.getApp)().getObjetParametres().general
+			.couleurActiviteLangagiere,
+		';" class="icon_star" role="presentation"',
 	);
 	if (lAvecHint) {
-		H.push(' title="', GChaine.toTitle(lStr), '"');
+		H.push(' title="', ObjetChaine_1.GChaine.toTitle(lStr), '"');
 	}
 	H.push("></i>");
 	if (lAvecLibelle) {
@@ -62,40 +52,51 @@ TUtilitaireCompetences.construitInfoActiviteLangagiere = function (
 TUtilitaireCompetences.getListeNiveauxDAcquisitionsPourMenu = function (
 	aParams,
 ) {
-	const lListeEvaluations = new ObjetListeElements();
+	const lListeEvaluations = new ObjetListeElements_1.ObjetListeElements();
+	const lObjetParametres = (0, AccessApp_1.getApp)().getObjetParametres();
 	const lPourPositionnement =
 		aParams.genrePositionnement !== undefined &&
 		aParams.genrePositionnement !== null;
-	for (let I = 0; I < GParametres.listeNiveauxDAcquisitions.count(); I++) {
-		let lEvaluation = MethodesObjet.dupliquer(
-			GParametres.listeNiveauxDAcquisitions.get(I),
+	for (let I = 0; I < lObjetParametres.listeNiveauxDAcquisitions.count(); I++) {
+		let lEvaluation = MethodesObjet_1.MethodesObjet.dupliquer(
+			lObjetParametres.listeNiveauxDAcquisitions.get(I),
 		);
-		lEvaluation.Position = EGenreNiveauDAcquisitionUtil.ordre().indexOf(
-			lEvaluation.getGenre(),
-		);
+		lEvaluation.Position =
+			Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.ordre().indexOf(
+				lEvaluation.getGenre(),
+			);
 		if (
 			lEvaluation.actifPour.contains(aParams.genreChoixValidationCompetence)
 		) {
 			if (
 				aParams.avecDispense ||
-				lEvaluation.getGenre() !== EGenreNiveauDAcquisition.Dispense
+				lEvaluation.getGenre() !==
+					Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisition.Dispense
 			) {
 				if (lPourPositionnement) {
 					lEvaluation.Libelle =
-						EGenreNiveauDAcquisitionUtil.getLibellePositionnement({
-							niveauDAcquisition: lEvaluation,
-							genrePositionnement: aParams.genrePositionnement,
-						});
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getLibellePositionnement(
+							{
+								niveauDAcquisition: lEvaluation,
+								genrePositionnement: aParams.genrePositionnement,
+							},
+						);
 					lEvaluation.image =
-						EGenreNiveauDAcquisitionUtil.getImagePositionnement({
-							niveauDAcquisition: lEvaluation,
-							genrePositionnement: aParams.genrePositionnement,
-						});
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImagePositionnement(
+							{
+								niveauDAcquisition: lEvaluation,
+								genrePositionnement: aParams.genrePositionnement,
+							},
+						);
 				} else {
 					lEvaluation.Libelle =
-						EGenreNiveauDAcquisitionUtil.getLibelle(lEvaluation);
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getLibelle(
+							lEvaluation,
+						);
 					lEvaluation.image =
-						EGenreNiveauDAcquisitionUtil.getImage(lEvaluation);
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+							lEvaluation,
+						);
 				}
 				let lRaccourci = "";
 				if (aParams.avecLibelleRaccourci && !!lEvaluation) {
@@ -121,8 +122,8 @@ TUtilitaireCompetences.getListeNiveauxDAcquisitionsPourMenu = function (
 	}
 	lListeEvaluations.trier();
 	if (aParams.avecSelecteurNiveauCalcule) {
-		const lSelecteurNivCalcule = new ObjetElement();
-		lSelecteurNivCalcule.Libelle = GTraductions.getValeur(
+		const lSelecteurNivCalcule = new ObjetElement_1.ObjetElement();
+		lSelecteurNivCalcule.Libelle = ObjetTraduction_1.GTraductions.getValeur(
 			"competences.niveauCalculeEvals",
 		);
 		lListeEvaluations.insererElement(lSelecteurNivCalcule, 0);
@@ -132,48 +133,56 @@ TUtilitaireCompetences.getListeNiveauxDAcquisitionsPourMenu = function (
 TUtilitaireCompetences.getListeNiveauxDAcquisitionsPourCombo = function (
 	aParams,
 ) {
-	const lListeEvaluations = new ObjetListeElements();
-	GParametres.listeNiveauxDAcquisitions.parcourir((aNiveauGlobal) => {
-		let lEvaluation = MethodesObjet.dupliquer(aNiveauGlobal);
-		lEvaluation.Position = EGenreNiveauDAcquisitionUtil.ordre().indexOf(
-			lEvaluation.getGenre(),
-		);
-		if (!lEvaluation.existeNumero() && aParams.sansLibelleAucun) {
-			lEvaluation.Position = 0;
-			lEvaluation.Libelle = "";
-		}
-		if (
-			lEvaluation.actifPour.contains(aParams.genreChoixValidationCompetence) &&
-			(!!aParams.avecDispense ||
-				lEvaluation.getGenre() !== EGenreNiveauDAcquisition.Dispense)
-		) {
-			if (lEvaluation.existeNumero()) {
-				lEvaluation.libelleHtml =
-					'<span style="margin: 0 3px; width:20px; text-align: center; display: inline-block;" >' +
-					EGenreNiveauDAcquisitionUtil.getImage(lEvaluation) +
-					"</span><span>" +
-					lEvaluation.getLibelle() +
-					"</span>";
+	const lListeEvaluations = new ObjetListeElements_1.ObjetListeElements();
+	(0, AccessApp_1.getApp)()
+		.getObjetParametres()
+		.listeNiveauxDAcquisitions.parcourir((aNiveauGlobal) => {
+			let lEvaluation = MethodesObjet_1.MethodesObjet.dupliquer(aNiveauGlobal);
+			lEvaluation.Position =
+				Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.ordre().indexOf(
+					lEvaluation.getGenre(),
+				);
+			if (!lEvaluation.existeNumero() && aParams.sansLibelleAucun) {
+				lEvaluation.Position = 0;
+				lEvaluation.Libelle = "";
 			}
-			lListeEvaluations.addElement(lEvaluation);
-		}
-	});
+			if (
+				lEvaluation.actifPour.contains(
+					aParams.genreChoixValidationCompetence,
+				) &&
+				(!!aParams.avecDispense ||
+					lEvaluation.getGenre() !==
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisition.Dispense)
+			) {
+				if (lEvaluation.existeNumero()) {
+					lEvaluation.libelleHtml =
+						'<span style="margin: 0 3px; width:20px; text-align: center; display: inline-block;" >' +
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+							lEvaluation,
+						) +
+						"</span><span>" +
+						lEvaluation.getLibelle() +
+						"</span>";
+				}
+				lListeEvaluations.addElement(lEvaluation);
+			}
+		});
 	lListeEvaluations.trier();
 	return lListeEvaluations;
 };
 TUtilitaireCompetences.getNombrePointsBrevet = function (aNiveauDAcquisition) {
-	const lNiveauDAcquisition =
-		GParametres.listeNiveauxDAcquisitions.getElementParElement(
-			aNiveauDAcquisition,
-		);
+	const lNiveauDAcquisition = (0, AccessApp_1.getApp)()
+		.getObjetParametres()
+		.listeNiveauxDAcquisitions.getElementParElement(aNiveauDAcquisition);
 	if (lNiveauDAcquisition) {
-		return EGenreNiveauDAcquisitionUtil.getNombrePointsBrevet(
+		return Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getNombrePointsBrevet(
 			lNiveauDAcquisition,
 		);
 	}
 	return 0;
 };
 TUtilitaireCompetences.composeJaugeChronologique = function (aParams) {
+	const lObjParam = (0, AccessApp_1.getApp)().getObjetParametres();
 	let result = "";
 	if (aParams.listeNiveaux) {
 		const H = [];
@@ -185,7 +194,7 @@ TUtilitaireCompetences.composeJaugeChronologique = function (aParams) {
 		if (lEstModeAccessible) {
 			lSeparateur = ", ";
 			aParams.listeNiveaux.parcourir((aNiveau) => {
-				lNiveau = GParametres.listeNiveauxDAcquisitions.getElementParGenre(
+				lNiveau = lObjParam.listeNiveauxDAcquisitions.getElementParGenre(
 					aNiveau.getGenre(),
 				);
 				if (lNiveau.abbreviation) {
@@ -196,10 +205,13 @@ TUtilitaireCompetences.composeJaugeChronologique = function (aParams) {
 			let lCouleur;
 			let lContenuPastille;
 			aParams.listeNiveaux.parcourir((aNiveau) => {
-				lNiveau = GParametres.listeNiveauxDAcquisitions.getElementParGenre(
+				lNiveau = lObjParam.listeNiveauxDAcquisitions.getElementParGenre(
 					aNiveau.getGenre(),
 				);
-				lCouleur = EGenreNiveauDAcquisitionUtil.getCouleur(lNiveau);
+				lCouleur =
+					Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getCouleur(
+						lNiveau,
+					);
 				lContenuPastille = "&nbsp;";
 				if (aParams.afficherValeurPourNonRempli && !lNiveau.existeNumero()) {
 					lContenuPastille =
@@ -228,14 +240,11 @@ TUtilitaireCompetences.composeJaugeChronologique = function (aParams) {
 		result = H.join(lSeparateur);
 	}
 	if (result.length > 0 && !!aParams.hint) {
-		result =
-			'<div title="' +
-			GChaine.toTitle(aParams.hint) +
-			'" aria-label="' +
-			GChaine.toTitle(aParams.hint) +
-			'">' +
-			result +
-			"</div>";
+		result = IE.jsx.str(
+			"div",
+			{ "ie-tooltiplabel": aParams.hint, style: { display: "inline-flex" } },
+			result,
+		);
 	}
 	return result;
 };
@@ -249,10 +258,10 @@ function _composeJaugeParNiveauxOuPastilles(aParams, aEstJaugeParPastilles) {
 		let lTotalNiveaux = 0;
 		const lInfosNiveauParNiveaux = [];
 		let lCouleur, lImage, lNombre, lNiveauParam;
-		const lListeGlobaleNiveaux = MethodesObjet.dupliquer(
-			GParametres.listeNiveauxDAcquisitions,
+		const lListeGlobaleNiveaux = MethodesObjet_1.MethodesObjet.dupliquer(
+			(0, AccessApp_1.getApp)().getObjetParametres().listeNiveauxDAcquisitions,
 		);
-		lListeGlobaleNiveaux.setTri([ObjetTri.init("positionJauge")]);
+		lListeGlobaleNiveaux.setTri([ObjetTri_1.ObjetTri.init("positionJauge")]);
 		lListeGlobaleNiveaux.trier();
 		const _acceptNiveau = function (aNiveau) {
 			let result = false;
@@ -265,10 +274,15 @@ function _composeJaugeParNiveauxOuPastilles(aParams, aEstJaugeParPastilles) {
 		};
 		lListeGlobaleNiveaux.parcourir((aNiveauGlobal) => {
 			if (_acceptNiveau(aNiveauGlobal)) {
-				lCouleur = EGenreNiveauDAcquisitionUtil.getCouleur(aNiveauGlobal);
-				lImage = EGenreNiveauDAcquisitionUtil.getImage(aNiveauGlobal, {
-					avecTitle: !aParams.hint,
-				});
+				lCouleur =
+					Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getCouleur(
+						aNiveauGlobal,
+					);
+				lImage =
+					Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+						aNiveauGlobal,
+						{ avecTitle: !aParams.hint },
+					);
 				lNombre = 0;
 				lNiveauParam = aParams.listeNiveaux.getElementParGenre(
 					aNiveauGlobal.getGenre(),
@@ -286,57 +300,61 @@ function _composeJaugeParNiveauxOuPastilles(aParams, aEstJaugeParPastilles) {
 		});
 		if (lTotalNiveaux > 0) {
 			H.push(
-				'<table class="full-width" aria-hidden="true"',
-				aParams.hint ? ` title="${GChaine.toTitle(aParams.hint)}" ` : "",
-				"><tr>",
+				IE.jsx.str(
+					"table",
+					{
+						class: "full-width",
+						"ie-tooltiplabel": aParams.hint,
+						role: aParams.hint ? "img" : "presentation",
+						"aria-hidden": aParams.hint ? false : "true",
+					},
+					IE.jsx.str("tr", null, (aTab) => {
+						let lInfoNiveau, lWidthCellule;
+						for (let i = 0; i < lInfosNiveauParNiveaux.length; i++) {
+							lInfoNiveau = lInfosNiveauParNiveaux[i];
+							if (lEstModeAccessible || aEstJaugeParPastilles) {
+								lWidthCellule = 100 / lInfosNiveauParNiveaux.length;
+								aTab.push(
+									'<td class="AlignementDroit EspaceDroit" style=width:',
+									lWidthCellule,
+									'%;">',
+								);
+								if (lInfoNiveau.nombre) {
+									aTab.push(
+										'<div class="InlineBlock" style="margin-right: 5px;">',
+										lInfoNiveau.nombre,
+										'</div><div class="InlineBlock">',
+										lInfoNiveau.image,
+										"</div></div>",
+									);
+								} else {
+									aTab.push("&nbsp;");
+								}
+								aTab.push("</td>");
+							} else {
+								if (lInfoNiveau.nombre > 0) {
+									lWidthCellule = (lInfoNiveau.nombre * 100) / lTotalNiveaux;
+									aTab.push(
+										'<td style="border:',
+										aParams.pourImpression
+											? "3px solid " + lInfoNiveau.couleur + ";"
+											: "1px solid black;",
+										"background-color:",
+										lInfoNiveau.couleur,
+										";",
+										"width:",
+										lWidthCellule,
+										'%;"',
+										">",
+										aParams.pourImpression ? "" : "&nbsp;",
+										"</td>",
+									);
+								}
+							}
+						}
+					}),
+				),
 			);
-			let lInfoNiveau, lWidthCellule;
-			for (let i = 0; i < lInfosNiveauParNiveaux.length; i++) {
-				lInfoNiveau = lInfosNiveauParNiveaux[i];
-				if (lEstModeAccessible || aEstJaugeParPastilles) {
-					lWidthCellule = 100 / lInfosNiveauParNiveaux.length;
-					H.push(
-						'<td class="AlignementDroit EspaceDroit" style=width:',
-						lWidthCellule,
-						'%;">',
-					);
-					if (lInfoNiveau.nombre) {
-						H.push(
-							'<div class="InlineBlock" style="margin-right: 5px;">',
-							lInfoNiveau.nombre,
-							'</div><div class="InlineBlock">',
-							lInfoNiveau.image,
-							"</div></div>",
-						);
-					} else {
-						H.push("&nbsp;");
-					}
-					H.push("</td>");
-				} else {
-					if (lInfoNiveau.nombre > 0) {
-						lWidthCellule = (lInfoNiveau.nombre * 100) / lTotalNiveaux;
-						H.push(
-							'<td style="border:',
-							aParams.pourImpression
-								? "3px solid " + lInfoNiveau.couleur + ";"
-								: "1px solid black;",
-							"background-color:",
-							lInfoNiveau.couleur,
-							";",
-							"width:",
-							lWidthCellule,
-							'%;"',
-							">",
-							aParams.pourImpression ? "" : "&nbsp;",
-							"</td>",
-						);
-					}
-				}
-			}
-			H.push("</tr></table>");
-			if (aParams.hint) {
-				H.push(`<p class="sr-only">${aParams.hint}</p>`);
-			}
 		}
 	}
 	return H.join(lSeparateur);
@@ -384,10 +402,13 @@ TUtilitaireCompetences.existeBarreNiveauxDAcquisitionsDeNiveaux = function (
 TUtilitaireCompetences.regroupeNiveauxDAcquisitions = function (
 	aListeNiveauxDAcquisition,
 ) {
-	const result = new ObjetListeElements();
+	const result = new ObjetListeElements_1.ObjetListeElements();
 	if (aListeNiveauxDAcquisition) {
 		aListeNiveauxDAcquisition.parcourir((aNiveau) => {
-			if (aNiveau.getGenre() >= EGenreNiveauDAcquisition.Expert) {
+			if (
+				aNiveau.getGenre() >=
+				Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisition.Expert
+			) {
 				const lValeurDuNiveau =
 					aNiveau.coeff !== undefined && aNiveau.coeff !== null
 						? aNiveau.coeff
@@ -397,7 +418,8 @@ TUtilitaireCompetences.regroupeNiveauxDAcquisitions = function (
 						aNiveau.getGenre(),
 					);
 					if (lNiveauDeListeRegroupee === undefined) {
-						lNiveauDeListeRegroupee = MethodesObjet.dupliquer(aNiveau);
+						lNiveauDeListeRegroupee =
+							MethodesObjet_1.MethodesObjet.dupliquer(aNiveau);
 						lNiveauDeListeRegroupee.nbr = lValeurDuNiveau;
 						result.addElement(lNiveauDeListeRegroupee);
 					} else {
@@ -413,10 +435,14 @@ TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionParNiveauOuPastille 
 	function (aListeNiveauxDAcquisitionRegroupes) {
 		const result = [];
 		if (aListeNiveauxDAcquisitionRegroupes) {
-			const lListeGlobalNiveauxDAcquisitions = MethodesObjet.dupliquer(
-				GParametres.listeNiveauxDAcquisitions,
-			);
-			lListeGlobalNiveauxDAcquisitions.setTri([ObjetTri.init("positionJauge")]);
+			const lListeGlobalNiveauxDAcquisitions =
+				MethodesObjet_1.MethodesObjet.dupliquer(
+					(0, AccessApp_1.getApp)().getObjetParametres()
+						.listeNiveauxDAcquisitions,
+				);
+			lListeGlobalNiveauxDAcquisitions.setTri([
+				ObjetTri_1.ObjetTri.init("positionJauge"),
+			]);
 			lListeGlobalNiveauxDAcquisitions.trier();
 			let niveau = null;
 			lListeGlobalNiveauxDAcquisitions.parcourir((D) => {
@@ -434,10 +460,14 @@ TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionChronologique =
 	function (aListeNiveauxDAcquisition, aAvecAffichageZero) {
 		const result = [];
 		if (aListeNiveauxDAcquisition) {
-			const lListeGlobalNiveauxDAcquisitions = MethodesObjet.dupliquer(
-				GParametres.listeNiveauxDAcquisitions,
-			);
-			lListeGlobalNiveauxDAcquisitions.setTri([ObjetTri.init("positionJauge")]);
+			const lListeGlobalNiveauxDAcquisitions =
+				MethodesObjet_1.MethodesObjet.dupliquer(
+					(0, AccessApp_1.getApp)().getObjetParametres()
+						.listeNiveauxDAcquisitions,
+				);
+			lListeGlobalNiveauxDAcquisitions.setTri([
+				ObjetTri_1.ObjetTri.init("positionJauge"),
+			]);
 			lListeGlobalNiveauxDAcquisitions.trier();
 			lListeGlobalNiveauxDAcquisitions.parcourir((D) => {
 				const lListe = aListeNiveauxDAcquisition.getListeElements((D2) => {
@@ -458,68 +488,82 @@ TUtilitaireCompetences.getMoyenneBarreNiveauDAcquisition = function (
 		lTypeNotePonderation = null;
 	if (aListeNiveauxDAcquisitionRegroupes) {
 		aListeNiveauxDAcquisitionRegroupes.parcourir((D) => {
-			lTypeNotePonderation = EGenreNiveauDAcquisitionUtil.getPonderation(D);
+			lTypeNotePonderation =
+				Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getPonderation(
+					D,
+				);
 			if (!!lTypeNotePonderation && lTypeNotePonderation.estUneValeur()) {
 				lTotalNotesSynthese += D.nbr * lTypeNotePonderation.getValeur();
 				lNbDEvaluationsNotees += D.nbr;
 			}
 		});
 	}
-	return new TypeNote(
+	return new TypeNote_1.TypeNote(
 		lNbDEvaluationsNotees > 0 ? lTotalNotesSynthese / lNbDEvaluationsNotees : 0,
 	);
 };
 TUtilitaireCompetences.surBoutonValidationAuto = function (aParams) {
 	if (GEtatUtilisateur.EtatSaisie) {
 		GApplication.getMessage().afficher({
-			type: EGenreBoiteMessage.Information,
-			titre: GTraductions.getValeur("interface.SaisieNonValidee"),
-			message: GTraductions.getValeur("interface.SaisieAValider"),
+			type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"interface.SaisieNonValidee",
+			),
+			message: ObjetTraduction_1.GTraductions.getValeur(
+				"interface.SaisieAValider",
+			),
 		});
 	} else {
 		const lInstancePage = aParams.instance;
-		const lFenetreValidationAutoCompetences = ObjetFenetre.creerInstanceFenetre(
-			ObjetFenetre_ValidationAutoCompetence,
-			{
-				pere: lInstancePage,
-				evenement(aTypeSaisie) {
-					if (aTypeSaisie === TypeEvenementValidationAutoCompetences.Saisie) {
-						if (lInstancePage && lInstancePage.afficherPage) {
-							lInstancePage.afficherPage();
-						}
-					} else if (
-						aTypeSaisie ===
-						TypeEvenementValidationAutoCompetences.AfficherPreferencesCalcul
-					) {
-						TUtilitaireCompetences.ouvrirFenetrePreferencesCalculPositionnement(
-							false,
-							{
-								callbackSurChangement: () => {
-									lFenetreValidationAutoCompetences.mettreAJourValeursDonneesCalcul();
+		const lFenetreValidationAutoCompetences =
+			ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+				ObjetFenetre_ValidationAutoCompetence_1.ObjetFenetre_ValidationAutoCompetence,
+				{
+					pere: lInstancePage,
+					evenement(aTypeSaisie) {
+						if (
+							aTypeSaisie ===
+							ObjetFenetre_ValidationAutoCompetence_1
+								.TypeEvenementValidationAutoCompetences.Saisie
+						) {
+							if (lInstancePage && lInstancePage.afficherPage) {
+								lInstancePage.afficherPage();
+							}
+						} else if (
+							aTypeSaisie ===
+							ObjetFenetre_ValidationAutoCompetence_1
+								.TypeEvenementValidationAutoCompetences
+								.AfficherPreferencesCalcul
+						) {
+							TUtilitaireCompetences.ouvrirFenetrePreferencesCalculPositionnement(
+								false,
+								{
+									callbackSurChangement: () => {
+										lFenetreValidationAutoCompetences.mettreAJourValeursDonneesCalcul();
+									},
 								},
-							},
-						);
-					}
+							);
+						}
+					},
+					initialiser(aInstance) {
+						aInstance.setOptions({
+							estCompetenceNumerique: !!aParams.estCompetenceNumerique,
+							estPourLaClasse: !!aParams.estPourLaClasse,
+							estValidationCECRLDomaine: !!aParams.estValidationCECRLDomaine,
+							estValidationCECRLLV: !!aParams.estValidationCECRLLV,
+							avecChoixCalcul: !!aParams.avecChoixCalcul,
+							mrFiche: aParams.mrFiche,
+						});
+						aInstance.setDonnees({
+							palier: aParams.palier,
+							listePiliers: aParams.listePiliers,
+							periode: aParams.periode,
+							service: aParams.service,
+							listeEleves: aParams.listeEleves,
+						});
+					},
 				},
-				initialiser(aInstance) {
-					aInstance.setOptions({
-						estCompetenceNumerique: !!aParams.estCompetenceNumerique,
-						estPourLaClasse: !!aParams.estPourLaClasse,
-						estValidationCECRLDomaine: !!aParams.estValidationCECRLDomaine,
-						estValidationCECRLLV: !!aParams.estValidationCECRLLV,
-						avecChoixCalcul: !!aParams.avecChoixCalcul,
-						mrFiche: aParams.mrFiche,
-					});
-					aInstance.setDonnees({
-						palier: aParams.palier,
-						listePiliers: aParams.listePiliers,
-						periode: aParams.periode,
-						service: aParams.service,
-						listeEleves: aParams.listeEleves,
-					});
-				},
-			},
-		);
+			);
 		lFenetreValidationAutoCompetences.afficher();
 	}
 };
@@ -528,9 +572,13 @@ TUtilitaireCompetences.surBoutonValidationAutoPositionnement = function (
 ) {
 	if (GEtatUtilisateur.EtatSaisie) {
 		GApplication.getMessage().afficher({
-			type: EGenreBoiteMessage.Information,
-			titre: GTraductions.getValeur("interface.SaisieNonValidee"),
-			message: GTraductions.getValeur("interface.SaisieAValider"),
+			type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"interface.SaisieNonValidee",
+			),
+			message: ObjetTraduction_1.GTraductions.getValeur(
+				"interface.SaisieAValider",
+			),
 		});
 	} else {
 		let lTitre;
@@ -539,67 +587,74 @@ TUtilitaireCompetences.surBoutonValidationAutoPositionnement = function (
 		} else {
 			if (
 				aParams.modeValidationAuto ===
-				TypeModeValidationAuto.tmva_PosAvecNoteSelonEvaluation
+				TypeModeValidationAuto_1.TypeModeValidationAuto
+					.tmva_PosAvecNoteSelonEvaluation
 			) {
-				lTitre = GTraductions.getValeur(
+				lTitre = ObjetTraduction_1.GTraductions.getValeur(
 					"competences.fenetreValidationAutoPositionnement.titrePositionnementNote",
 				);
 			} else {
-				lTitre = GTraductions.getValeur(
+				lTitre = ObjetTraduction_1.GTraductions.getValeur(
 					"competences.fenetreValidationAutoPositionnement.titre",
 				);
 			}
 		}
-		const lFenetreCalculAutoPositionnement = ObjetFenetre.creerInstanceFenetre(
-			ObjetFenetre_CalculAutoPositionnement,
-			{
-				pere: this,
-				evenement(aTypeSaisie) {
-					if (
-						aTypeSaisie === TypeEvenementValidationAutoPositionnement.Saisie
-					) {
-						const lCallbackReussite =
-							!!aParams.callback && MethodesObjet.isFunction(aParams.callback)
-								? aParams.callback
-								: aParams.instance.afficherPage;
-						if (lCallbackReussite) {
-							lCallbackReussite.call(aParams.instance);
-						}
-					} else if (
-						aTypeSaisie ===
-						TypeEvenementValidationAutoPositionnement.AfficherPreferencesCalcul
-					) {
-						TUtilitaireCompetences.ouvrirFenetrePreferencesCalculPositionnement(
-							true,
-							{
-								callbackSurChangement: () => {
-									lFenetreCalculAutoPositionnement.mettreAJourValeursDonneesCalcul();
+		const lFenetreCalculAutoPositionnement =
+			ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+				ObjetFenetre_CalculAutoPositionnement_1.ObjetFenetre_CalculAutoPositionnement,
+				{
+					pere: this,
+					evenement(aTypeSaisie) {
+						if (
+							aTypeSaisie ===
+							ObjetFenetre_CalculAutoPositionnement_1
+								.TypeEvenementValidationAutoPositionnement.Saisie
+						) {
+							const lCallbackReussite =
+								!!aParams.callback &&
+								MethodesObjet_1.MethodesObjet.isFunction(aParams.callback)
+									? aParams.callback
+									: aParams.instance.afficherPage;
+							if (lCallbackReussite) {
+								lCallbackReussite.call(aParams.instance);
+							}
+						} else if (
+							aTypeSaisie ===
+							ObjetFenetre_CalculAutoPositionnement_1
+								.TypeEvenementValidationAutoPositionnement
+								.AfficherPreferencesCalcul
+						) {
+							TUtilitaireCompetences.ouvrirFenetrePreferencesCalculPositionnement(
+								true,
+								{
+									callbackSurChangement: () => {
+										lFenetreCalculAutoPositionnement.mettreAJourValeursDonneesCalcul();
+									},
 								},
-							},
-						);
-					}
+							);
+						}
+					},
+					initialiser(aInstance) {
+						aInstance.setDonneesAffichage({
+							messageRestrictionsSurCalculAuto:
+								aParams.messageRestrictionsSurCalculAuto,
+							message: aParams.message,
+							avecChoixCalcul: aParams.avecChoixCalcul,
+							avecChoixPreferencesCalcul: aParams.avecChoixPreferencesCalcul,
+							mrFiche: aParams.mrFiche,
+						});
+						aInstance.setDonnees({
+							borneDateDebut: aParams.borneDateDebut,
+							borneDateFin: aParams.borneDateFin,
+							calculMultiServices: aParams.calculMultiServices,
+							modeCalculPositionnement: aParams.modeCalculPositionnement,
+							modeValidationAuto: aParams.modeValidationAuto,
+							listeEleves: aParams.listeEleves,
+						});
+						aInstance.setOptionsFenetre({ titre: lTitre });
+					},
 				},
-				initialiser(aInstance) {
-					aInstance.setDonneesAffichage({
-						messageRestrictionsSurCalculAuto:
-							aParams.messageRestrictionsSurCalculAuto,
-						message: aParams.message,
-						avecChoixCalcul: aParams.avecChoixCalcul,
-						avecChoixPreferencesCalcul: aParams.avecChoixPreferencesCalcul,
-						mrFiche: aParams.mrFiche,
-					});
-					aInstance.setDonnees({
-						borneDateDebut: aParams.borneDateDebut,
-						borneDateFin: aParams.borneDateFin,
-						calculMultiServices: aParams.calculMultiServices,
-						modeCalculPositionnement: aParams.modeCalculPositionnement,
-						modeValidationAuto: aParams.modeValidationAuto,
-						listeEleves: aParams.listeEleves,
-					});
-					aInstance.setOptionsFenetre({ titre: lTitre });
-				},
-			},
-		);
+			);
 		lFenetreCalculAutoPositionnement.afficher();
 	}
 };
@@ -607,6 +662,7 @@ TUtilitaireCompetences.ouvrirFenetrePreferencesCalculPositionnement = function (
 	aEstContexteParService,
 	aParams,
 ) {
+	const lApp = (0, AccessApp_1.getApp)();
 	let lPrefixeParametresUtilisateur;
 	if (aEstContexteParService) {
 		lPrefixeParametresUtilisateur = "CalculPositionnementEleveParService";
@@ -615,54 +671,54 @@ TUtilitaireCompetences.ouvrirFenetrePreferencesCalculPositionnement = function (
 	}
 	const lDonneesModeCalcul = {
 		dernieresEvaluations: {
-			utiliserNb: GApplication.parametresUtilisateur.get(
+			utiliserNb: lApp.parametresUtilisateur.get(
 				lPrefixeParametresUtilisateur + ".NDernieresEvaluations.utiliserNb",
 			),
-			nb: GApplication.parametresUtilisateur.get(
+			nb: lApp.parametresUtilisateur.get(
 				lPrefixeParametresUtilisateur + ".NDernieresEvaluations.nb",
 			),
-			pourcent: GApplication.parametresUtilisateur.get(
+			pourcent: lApp.parametresUtilisateur.get(
 				lPrefixeParametresUtilisateur + ".NDernieresEvaluations.pourcent",
 			),
 		},
 		meilleuresEvals: {
-			utiliserNb: GApplication.parametresUtilisateur.get(
+			utiliserNb: lApp.parametresUtilisateur.get(
 				lPrefixeParametresUtilisateur + ".NMeilleuresEvaluations.utiliserNb",
 			),
-			nb: GApplication.parametresUtilisateur.get(
+			nb: lApp.parametresUtilisateur.get(
 				lPrefixeParametresUtilisateur + ".NMeilleuresEvaluations.nb",
 			),
-			pourcent: GApplication.parametresUtilisateur.get(
+			pourcent: lApp.parametresUtilisateur.get(
 				lPrefixeParametresUtilisateur + ".NMeilleuresEvaluations.pourcent",
 			),
 		},
 	};
-	const lFenetre = ObjetFenetre.creerInstanceFenetre(
-		ObjetFenetre_PreferencesCalculPositionnement,
+	const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+		ObjetFenetre_PreferencesCalculPositionnement_1.ObjetFenetre_PreferencesCalculPositionnement,
 		{
 			pere: this,
 			evenement(aDonneesModeCalculModifiees) {
-				GApplication.parametresUtilisateur.set(
+				lApp.parametresUtilisateur.set(
 					lPrefixeParametresUtilisateur + ".NDernieresEvaluations.utiliserNb",
 					aDonneesModeCalculModifiees.dernieresEvaluations.utiliserNb,
 				);
-				GApplication.parametresUtilisateur.set(
+				lApp.parametresUtilisateur.set(
 					lPrefixeParametresUtilisateur + ".NDernieresEvaluations.nb",
 					aDonneesModeCalculModifiees.dernieresEvaluations.nb,
 				);
-				GApplication.parametresUtilisateur.set(
+				lApp.parametresUtilisateur.set(
 					lPrefixeParametresUtilisateur + ".NDernieresEvaluations.pourcent",
 					aDonneesModeCalculModifiees.dernieresEvaluations.pourcent,
 				);
-				GApplication.parametresUtilisateur.set(
+				lApp.parametresUtilisateur.set(
 					lPrefixeParametresUtilisateur + ".NMeilleuresEvaluations.utiliserNb",
 					aDonneesModeCalculModifiees.meilleuresEvals.utiliserNb,
 				);
-				GApplication.parametresUtilisateur.set(
+				lApp.parametresUtilisateur.set(
 					lPrefixeParametresUtilisateur + ".NMeilleuresEvaluations.nb",
 					aDonneesModeCalculModifiees.meilleuresEvals.nb,
 				);
-				GApplication.parametresUtilisateur.set(
+				lApp.parametresUtilisateur.set(
 					lPrefixeParametresUtilisateur + ".NMeilleuresEvaluations.pourcent",
 					aDonneesModeCalculModifiees.meilleuresEvals.pourcent,
 				);
@@ -679,56 +735,62 @@ TUtilitaireCompetences.ouvrirFenetrePreferencesCalculPositionnement = function (
 TUtilitaireCompetences.surBoutonCalculNotesDevoir = function (aParams) {
 	if (GEtatUtilisateur.EtatSaisie) {
 		GApplication.getMessage().afficher({
-			type: EGenreBoiteMessage.Information,
-			titre: GTraductions.getValeur("interface.SaisieNonValidee"),
-			message: GTraductions.getValeur("interface.SaisieAValider"),
+			type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"interface.SaisieNonValidee",
+			),
+			message: ObjetTraduction_1.GTraductions.getValeur(
+				"interface.SaisieAValider",
+			),
 		});
 	} else {
-		const lMrFiche = GTraductions.getValeur("evaluations.MFicheCalculNote");
-		const lJsonMrFiche = ObjetJSON.parse(lMrFiche);
-		const lMessageHTML = [];
-		lMessageHTML.push(
-			"<div>",
-			GTraductions.getValeur("evaluations.confirmationAffectationNotes"),
-			"</div>",
-			'<div class="EspaceHaut10 flex-contain flex-center">',
-			"<span>",
-			lJsonMrFiche.titre,
-			"</span>",
-			'<ie-btnicon class="MargeGauche icon_question bt-activable" ie-model="surAfficherMrFiche" title="',
-			lJsonMrFiche.titre,
-			'"></ie-btnicon>',
-			"</div>",
+		const lMrFiche = ObjetTraduction_1.GTraductions.getValeur(
+			"evaluations.MFicheCalculNote",
 		);
-		GApplication.getMessage().afficher({
-			type: EGenreBoiteMessage.Confirmation,
-			titre: aParams.titre,
-			message: lMessageHTML.join(""),
-			callback: this._surConfirmationCalculNotesDevoir.bind(this, aParams),
-			controleur: {
-				surAfficherMrFiche: {
-					event() {
-						ObjetHint.start(lJsonMrFiche.html, { sansDelai: true });
-					},
+		const lJsonMrFiche = ObjetJSON_1.ObjetJSON.parse(lMrFiche);
+		const lsurAfficherMrFiche = () => {
+			return {
+				event() {
+					ObjetHint_1.ObjetHint.start(lJsonMrFiche.html, { sansDelai: true });
 				},
-			},
-		});
-	}
-};
-TUtilitaireCompetences._surConfirmationCalculNotesDevoir = function (
-	aParams,
-	aGenreBouton,
-) {
-	if (aGenreBouton === 0) {
-		const lParamsSaisie = { evaluation: aParams.evaluation };
-		const lCallbackReussite =
-			!!aParams.callback && MethodesObjet.isFunction(aParams.callback)
-				? aParams.callback
-				: aParams.instance.afficherPage;
-		new ObjetRequeteCalculAutoNotesSelonCompetences(
-			aParams.instance,
-			lCallbackReussite,
-		).lancerRequete(lParamsSaisie);
+			};
+		};
+		const lMessageHTML = IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			IE.jsx.str(
+				"div",
+				null,
+				ObjetTraduction_1.GTraductions.getValeur(
+					"evaluations.confirmationAffectationNotes",
+				),
+			),
+			IE.jsx.str(
+				"div",
+				{ class: "EspaceHaut10 flex-contain flex-center" },
+				IE.jsx.str("span", null, lJsonMrFiche.titre),
+				IE.jsx.str("ie-btnicon", {
+					class: "MargeGauche icon_question bt-activable",
+					"ie-model": lsurAfficherMrFiche,
+					title: lJsonMrFiche.titre,
+				}),
+			),
+		);
+		GApplication.getMessage()
+			.afficher({
+				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+				titre: aParams.titre,
+				message: lMessageHTML,
+			})
+			.then((aGenre) => {
+				if (aGenre === 0) {
+					const lParamsSaisie = { evaluation: aParams.evaluation };
+					new ObjetRequeteCalculAutoNotesSelonCompetences_1.ObjetRequeteCalculAutoNotesSelonCompetences(
+						aParams.instance,
+						aParams.callback,
+					).lancerRequete(lParamsSaisie);
+				}
+			});
 	}
 };
 TUtilitaireCompetences.getNiveauAcqusitionDEventClavier = function (
@@ -746,15 +808,17 @@ TUtilitaireCompetences.getNiveauAcqusitionDEventClavier = function (
 		!!aEvent.key && !!aEvent.key.toLowerCase ? aEvent.key.toLowerCase() : "";
 	let lGenre = -1;
 	if (!!lEventKey) {
-		GParametres.listeNiveauxDAcquisitions.parcourir((D) => {
-			if (
-				(!aPourPositionnement && D.raccourci === lEventKey) ||
-				(aPourPositionnement && D.raccourciPositionnement === lEventKey)
-			) {
-				lGenre = D.getGenre();
-				return false;
-			}
-		});
+		(0, AccessApp_1.getApp)()
+			.getObjetParametres()
+			.listeNiveauxDAcquisitions.parcourir((D) => {
+				if (
+					(!aPourPositionnement && D.raccourci === lEventKey) ||
+					(aPourPositionnement && D.raccourciPositionnement === lEventKey)
+				) {
+					lGenre = D.getGenre();
+					return false;
+				}
+			});
 	}
 	if (lGenre >= 0) {
 		return aListeNiveaux.getElementParNumeroEtGenre(null, lGenre);
@@ -772,12 +836,18 @@ function _initMenuContextuelNiveauEquivalence(aPourCN, aParametres) {
 		aParametres,
 	);
 	lParametres.menuContextuel.setOptions({ largeurMin: 120 });
-	if (MethodesObjet.isFunction(lParametres.callbackNiveau)) {
+	if (MethodesObjet_1.MethodesObjet.isFunction(lParametres.callbackNiveau)) {
 		let lListe;
 		if (aPourCN) {
-			lListe = TypeNiveauEquivalenceCEUtil.getListeNiveauxEquivalenceCN(true);
+			lListe =
+				TypeNiveauEquivalenceCE_1.TypeNiveauEquivalenceCEUtil.getListeNiveauxEquivalenceCN(
+					true,
+				);
 		} else {
-			lListe = TypeNiveauEquivalenceCEUtil.getListeNiveauxEquivalenceLVE(true);
+			lListe =
+				TypeNiveauEquivalenceCE_1.TypeNiveauEquivalenceCEUtil.getListeNiveauxEquivalenceLVE(
+					true,
+				);
 		}
 		if (!!lListe) {
 			lListe.parcourir((aElement) => {
@@ -832,7 +902,7 @@ TUtilitaireCompetences.initMenuContextuelNiveauAcquisition = function (
 		largeurColonneGauche: 30,
 	});
 	let lListe = null;
-	if (MethodesObjet.isFunction(lParametres.callbackNiveau)) {
+	if (MethodesObjet_1.MethodesObjet.isFunction(lParametres.callbackNiveau)) {
 		lListe = TUtilitaireCompetences.getListeNiveauxDAcquisitionsPourMenu({
 			genreChoixValidationCompetence:
 				lParametres.genreChoixValidationCompetence,
@@ -843,64 +913,66 @@ TUtilitaireCompetences.initMenuContextuelNiveauAcquisition = function (
 		});
 		if (lParametres.avecSousMenu) {
 			lParametres.menuContextuel.addSousMenu(
-				GTraductions.getValeur("competences.ModifierNiveauAcquisition"),
-				((aInstanceSousMenu) => {
-					lListe.parcourir(
-						((aElement) => {
-							if (aElement.existe()) {
-								aInstanceSousMenu.add(
-									aElement.tableauLibelles || aElement.getLibelle(),
-									aElement.actif !== false && lParametres.evaluationsEditables,
-									() => {
-										lParametres.callbackNiveau.call(
-											lParametres.instance,
-											aElement,
-										);
-									},
-									{
-										image: aElement.image,
-										imageFormate: true,
-										largeurImage: aElement.largeurImage,
-									},
-								);
-							}
-						}).bind(lParametres.instance),
-					);
-				}).bind(lParametres.instance),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"competences.ModifierNiveauAcquisition",
+				),
+				(aInstanceSousMenu) => {
+					lListe.parcourir((aElement) => {
+						if (aElement.existe()) {
+							aInstanceSousMenu.add(
+								aElement.tableauLibelles || aElement.getLibelle(),
+								aElement.actif !== false && lParametres.evaluationsEditables,
+								() => {
+									lParametres.callbackNiveau.call(
+										lParametres.instance,
+										aElement,
+									);
+								},
+								{
+									image: aElement.image,
+									imageFormate: true,
+									largeurImage: aElement.largeurImage,
+								},
+							);
+						}
+					});
+				},
 			);
 		} else {
-			lListe.parcourir(
-				((aElement) => {
-					if (aElement.existe()) {
-						lParametres.menuContextuel.add(
-							aElement.tableauLibelles || aElement.getLibelle(),
-							aElement.actif !== false && lParametres.evaluationsEditables,
-							() => {
-								lParametres.callbackNiveau.call(lParametres.instance, aElement);
-							},
-							{
-								image: aElement.image,
-								imageFormate: true,
-								largeurImage: aElement.largeurImage,
-							},
-						);
-					}
-				}).bind(lParametres.instance),
-			);
+			lListe.parcourir((aElement) => {
+				if (aElement.existe()) {
+					lParametres.menuContextuel.add(
+						aElement.tableauLibelles || aElement.getLibelle(),
+						aElement.actif !== false && lParametres.evaluationsEditables,
+						() => {
+							lParametres.callbackNiveau.call(lParametres.instance, aElement);
+						},
+						{
+							image: aElement.image,
+							imageFormate: true,
+							largeurImage: aElement.largeurImage,
+						},
+					);
+				}
+			});
 		}
 	}
-	if (MethodesObjet.isFunction(lParametres.callbackCommentaire)) {
+	if (
+		MethodesObjet_1.MethodesObjet.isFunction(lParametres.callbackCommentaire)
+	) {
 		lParametres.menuContextuel.add(
-			GTraductions.getValeur("competences.AjouterCommentaire"),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"competences.AjouterCommentaire",
+			),
 			lParametres.estObservationEditable,
 			() => {
 				lParametres.callbackCommentaire.call(lParametres.instance);
 			},
 		);
 	}
-	if (MethodesObjet.isFunction(lParametres.callbackDate)) {
+	if (MethodesObjet_1.MethodesObjet.isFunction(lParametres.callbackDate)) {
 		lParametres.menuContextuel.add(
-			GTraductions.getValeur("competences.ModifierDate"),
+			ObjetTraduction_1.GTraductions.getValeur("competences.ModifierDate"),
 			lParametres.estDateEditable,
 			() => {
 				lParametres.callbackDate.call(lParametres.instance);
@@ -909,17 +981,19 @@ TUtilitaireCompetences.initMenuContextuelNiveauAcquisition = function (
 	}
 	if (
 		lParametres.avecSupprimerLesEvaluations &&
-		MethodesObjet.isFunction(lParametres.callbackNiveau)
+		MethodesObjet_1.MethodesObjet.isFunction(lParametres.callbackNiveau)
 	) {
 		const lNiveauSuppression = lListe
 			? lListe.getElementParNumeroEtGenre(
 					null,
-					EGenreNiveauDAcquisition.Utilisateur,
+					Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisition.Utilisateur,
 				)
 			: null;
 		if (!!lNiveauSuppression) {
 			lParametres.menuContextuel.add(
-				GTraductions.getValeur("competences.SupprimerEvaluations"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"competences.SupprimerEvaluations",
+				),
 				lNiveauSuppression.actif !== false && lParametres.evaluationsEditables,
 				() => {
 					lParametres.callbackNiveau.call(
@@ -932,31 +1006,35 @@ TUtilitaireCompetences.initMenuContextuelNiveauAcquisition = function (
 	}
 };
 TUtilitaireCompetences.getLibellePositionnement = function (aParams) {
-	aParams.niveauDAcquisition =
-		GParametres.listeNiveauxDAcquisitions.getElementParElement(
-			aParams.niveauDAcquisition,
-		);
+	aParams.niveauDAcquisition = (0, AccessApp_1.getApp)()
+		.getObjetParametres()
+		.listeNiveauxDAcquisitions.getElementParElement(aParams.niveauDAcquisition);
 	if (aParams.niveauDAcquisition) {
-		return EGenreNiveauDAcquisitionUtil.getLibellePositionnement(aParams);
+		return Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getLibellePositionnement(
+			aParams,
+		);
 	}
 };
 TUtilitaireCompetences.getImagePositionnement = function (aParams) {
-	aParams.niveauDAcquisition =
-		GParametres.listeNiveauxDAcquisitions.getElementParElement(
-			aParams.niveauDAcquisition,
-		);
+	aParams.niveauDAcquisition = (0, AccessApp_1.getApp)()
+		.getObjetParametres()
+		.listeNiveauxDAcquisitions.getElementParElement(aParams.niveauDAcquisition);
 	if (aParams.niveauDAcquisition) {
-		return EGenreNiveauDAcquisitionUtil.getImagePositionnement(aParams);
+		return Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImagePositionnement(
+			aParams,
+		);
 	}
 };
 TUtilitaireCompetences.composeLegende = function (aParams) {
 	const lParams = Object.assign(
 		{
 			avecTitreLegende: true,
-			titreLegende: GTraductions.getValeur("competences.Legende"),
+			titreLegende: ObjetTraduction_1.GTraductions.getValeur(
+				"competences.Legende",
+			),
 			avecListeCompetences: true,
 			avecListePositionnements: false,
-			genrePositionnement: TypePositionnement.POS_Echelle,
+			genrePositionnement: TypePositionnement_1.TypePositionnement.POS_Echelle,
 			affichageLigneSimple: false,
 		},
 		aParams,
@@ -969,34 +1047,42 @@ TUtilitaireCompetences.composeLegende = function (aParams) {
 			aParams.avecEspaceHaut === true ? ' class="EspaceHaut"' : "",
 			">",
 		);
-		GParametres.listeNiveauxDAcquisitions.parcourir((D) => {
-			if (
-				D.existeNumero() &&
-				D.actifPour.contains(aParams.typeGenreValidation)
-			) {
-				lLibelleNiveau = aParams.estPourPositionnement
-					? EGenreNiveauDAcquisitionUtil.getLibellePositionnement({
-							niveauDAcquisition: D,
-							genrePositionnement: lParams.genrePositionnement,
-						})
-					: D.getLibelle();
-				lImageNiveau = aParams.estPourPositionnement
-					? EGenreNiveauDAcquisitionUtil.getImagePositionnement({
-							niveauDAcquisition: D,
-							genrePositionnement: lParams.genrePositionnement,
-						})
-					: EGenreNiveauDAcquisitionUtil.getImage(D);
-				H.push(
-					'<div class="',
-					aParams.avecInline ? "InlineBlock " : "",
-					'm-bottom-l p-left-xl">',
-					lImageNiveau,
-					'<span class="m-left">',
-					lLibelleNiveau,
-					"</span></div>",
-				);
-			}
-		});
+		(0, AccessApp_1.getApp)()
+			.getObjetParametres()
+			.listeNiveauxDAcquisitions.parcourir((D) => {
+				if (
+					D.existeNumero() &&
+					D.actifPour.contains(aParams.typeGenreValidation)
+				) {
+					lLibelleNiveau = aParams.estPourPositionnement
+						? Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getLibellePositionnement(
+								{
+									niveauDAcquisition: D,
+									genrePositionnement: lParams.genrePositionnement,
+								},
+							)
+						: D.getLibelle();
+					lImageNiveau = aParams.estPourPositionnement
+						? Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImagePositionnement(
+								{
+									niveauDAcquisition: D,
+									genrePositionnement: lParams.genrePositionnement,
+								},
+							)
+						: Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+								D,
+							);
+					H.push(
+						'<div class="',
+						aParams.avecInline ? "InlineBlock " : "",
+						'm-bottom-l p-left-xl">',
+						lImageNiveau,
+						'<span class="m-left">',
+						lLibelleNiveau,
+						"</span></div>",
+					);
+				}
+			});
 		H.push("</div>");
 		return H.join("");
 	};
@@ -1006,8 +1092,8 @@ TUtilitaireCompetences.composeLegende = function (aParams) {
 		if (lParams.avecTitreLegende) {
 			result.push(
 				'<div class="Espace" style="',
-				GStyle.composeCouleurBordure(GCouleur.bordure),
-				GStyle.composeCouleurFond(GCouleur.fond),
+				ObjetStyle_1.GStyle.composeCouleurBordure(GCouleur.bordure),
+				ObjetStyle_1.GStyle.composeCouleurFond(GCouleur.fond),
 				'">',
 				'<div class="AlignementHaut Gras">',
 				lParams.titreLegende,
@@ -1017,69 +1103,87 @@ TUtilitaireCompetences.composeLegende = function (aParams) {
 		if (
 			lParams.avecListeCompetences &&
 			lParams.avecListePositionnements &&
-			(lParams.genrePositionnement === TypePositionnement.POS_Echelle ||
-				lParams.genrePositionnement === TypePositionnement.POS_Moyenne)
+			(lParams.genrePositionnement ===
+				TypePositionnement_1.TypePositionnement.POS_Echelle ||
+				lParams.genrePositionnement ===
+					TypePositionnement_1.TypePositionnement.POS_Moyenne)
 		) {
 			let lOnAfficheLesDeuxImages, lImageCompetence, lImagePositionnement;
 			result.push("<div>");
-			GParametres.listeNiveauxDAcquisitions.parcourir((D) => {
-				if (
-					D.existeNumero() &&
-					(D.actifPour.contains(
-						TypeGenreValidationCompetence.tGVC_EvaluationEtItem,
-					) ||
-						D.actifPour.contains(TypeGenreValidationCompetence.tGVC_Competence))
-				) {
-					lImageCompetence = EGenreNiveauDAcquisitionUtil.getImage(D);
-					lImagePositionnement =
-						EGenreNiveauDAcquisitionUtil.getImagePositionnement({
-							niveauDAcquisition: D,
-							genrePositionnement: lParams.genrePositionnement,
-						});
-					lOnAfficheLesDeuxImages =
-						D.actifPour.contains(
-							TypeGenreValidationCompetence.tGVC_EvaluationEtItem,
-						) &&
-						D.actifPour.contains(
-							TypeGenreValidationCompetence.tGVC_Competence,
-						) &&
-						D.getGenre() <= EGenreNiveauDAcquisition.NonAcquis;
-					if (lOnAfficheLesDeuxImages) {
-						result.push(
-							'<div class="InlineBlock PetitEspaceDroit AlignementMilieuVertical" style="padding-left: 15px;">',
-							lImageCompetence,
-							"</div>",
-						);
-						result.push(
-							'<div class="InlineBlock PetitEspaceDroit AlignementMilieuVertical">',
-							lImagePositionnement,
-							"</div>",
-						);
-					} else {
-						result.push(
-							'<div class="InlineBlock PetitEspaceDroit AlignementMilieuVertical" style="padding-left: 15px;">',
+			(0, AccessApp_1.getApp)()
+				.getObjetParametres()
+				.listeNiveauxDAcquisitions.parcourir((D) => {
+					if (
+						D.existeNumero() &&
+						(D.actifPour.contains(
+							TypeGenreValidationCompetence_1.TypeGenreValidationCompetence
+								.tGVC_EvaluationEtItem,
+						) ||
 							D.actifPour.contains(
-								TypeGenreValidationCompetence.tGVC_EvaluationEtItem,
-							)
-								? lImageCompetence
-								: lImagePositionnement,
-							"</div>",
+								TypeGenreValidationCompetence_1.TypeGenreValidationCompetence
+									.tGVC_Competence,
+							))
+					) {
+						lImageCompetence =
+							Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+								D,
+							);
+						lImagePositionnement =
+							Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImagePositionnement(
+								{
+									niveauDAcquisition: D,
+									genrePositionnement: lParams.genrePositionnement,
+								},
+							);
+						lOnAfficheLesDeuxImages =
+							D.actifPour.contains(
+								TypeGenreValidationCompetence_1.TypeGenreValidationCompetence
+									.tGVC_EvaluationEtItem,
+							) &&
+							D.actifPour.contains(
+								TypeGenreValidationCompetence_1.TypeGenreValidationCompetence
+									.tGVC_Competence,
+							) &&
+							D.getGenre() <=
+								Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisition.NonAcquis;
+						if (lOnAfficheLesDeuxImages) {
+							result.push(
+								'<div class="InlineBlock PetitEspaceDroit AlignementMilieuVertical" style="padding-left: 15px;">',
+								lImageCompetence,
+								"</div>",
+							);
+							result.push(
+								'<div class="InlineBlock PetitEspaceDroit AlignementMilieuVertical">',
+								lImagePositionnement,
+								"</div>",
+							);
+						} else {
+							result.push(
+								'<div class="InlineBlock PetitEspaceDroit AlignementMilieuVertical" style="padding-left: 15px;">',
+								D.actifPour.contains(
+									TypeGenreValidationCompetence_1.TypeGenreValidationCompetence
+										.tGVC_EvaluationEtItem,
+								)
+									? lImageCompetence
+									: lImagePositionnement,
+								"</div>",
+							);
+						}
+						result.push(
+							'<span class="AlignementMilieuVertical">',
+							D.getLibelle(),
+							"</span>",
 						);
 					}
-					result.push(
-						'<span class="AlignementMilieuVertical">',
-						D.getLibelle(),
-						"</span>",
-					);
-				}
-			});
+				});
 			result.push("</div>");
 		} else {
 			if (lParams.avecListeCompetences) {
 				result.push(
 					_composeLigneSimpleLegende({
 						typeGenreValidation:
-							TypeGenreValidationCompetence.tGVC_EvaluationEtItem,
+							TypeGenreValidationCompetence_1.TypeGenreValidationCompetence
+								.tGVC_EvaluationEtItem,
 						estPourPositionnement: false,
 						avecInline: lParams.affichageLigneSimple,
 					}),
@@ -1088,7 +1192,9 @@ TUtilitaireCompetences.composeLegende = function (aParams) {
 			if (lParams.avecListePositionnements) {
 				result.push(
 					_composeLigneSimpleLegende({
-						typeGenreValidation: TypeGenreValidationCompetence.tGVC_Competence,
+						typeGenreValidation:
+							TypeGenreValidationCompetence_1.TypeGenreValidationCompetence
+								.tGVC_Competence,
 						estPourPositionnement: true,
 						avecEspaceHaut: !!lParams.avecListeCompetences,
 						avecInline: lParams.affichageLigneSimple,
@@ -1118,7 +1224,7 @@ TUtilitaireCompetences.composeTitleEvaluation = function (aCompetence) {
 		}
 		if (!!aCompetence.coefficient || aCompetence.coefficient === 0) {
 			lTitleEvaluation.push(
-				GTraductions.getValeur("competences.coefficient"),
+				ObjetTraduction_1.GTraductions.getValeur("competences.coefficient"),
 				" <b>",
 				aCompetence.coefficient,
 				"</b>",
@@ -1140,24 +1246,31 @@ TUtilitaireCompetences.composeHintEvaluationEleve = function (aParams) {
 	}
 	if (aParams.estSaisieClotureePourEleve) {
 		lHintEvaluationEleve.push(
-			GTraductions.getValeur("competences.EvaluationClotureePourLaClasse"),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"competences.EvaluationClotureePourLaClasse",
+			),
 			'<i class="icon_lock m-left"></i><br/><br/>',
 		);
 	}
 	lHintEvaluationEleve.push(aParams.hintCompetence);
 	if (!!aParams.niveauDAcquisition) {
-		if (GParametres.listeNiveauxDAcquisitions) {
-			const lNiveauDAcquisition =
-				GParametres.listeNiveauxDAcquisitions.getElementParNumero(
+		if (
+			(0, AccessApp_1.getApp)().getObjetParametres().listeNiveauxDAcquisitions
+		) {
+			const lNiveauDAcquisition = (0, AccessApp_1.getApp)()
+				.getObjetParametres()
+				.listeNiveauxDAcquisitions.getElementParNumero(
 					aParams.niveauDAcquisition.getNumero(),
 				);
 			if (lNiveauDAcquisition) {
 				const lLibelleNivAcqui =
-					EGenreNiveauDAcquisitionUtil.getLibelle(lNiveauDAcquisition);
+					Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getLibelle(
+						lNiveauDAcquisition,
+					);
 				lHintEvaluationEleve.push("<br/><br/>");
 				lHintEvaluationEleve.push(
 					"<b><u>",
-					GTraductions.getValeur("competences.evaluation"),
+					ObjetTraduction_1.GTraductions.getValeur("competences.evaluation"),
 					"</u></b> : ",
 					lLibelleNivAcqui,
 				);
@@ -1167,16 +1280,19 @@ TUtilitaireCompetences.composeHintEvaluationEleve = function (aParams) {
 	if (!!aParams.observation) {
 		lHintEvaluationEleve.push("<br/>", aParams.observation);
 	}
-	return GChaine.toTitle(lHintEvaluationEleve.join(""));
+	return ObjetChaine_1.GChaine.toTitle(lHintEvaluationEleve.join(""));
 };
 TUtilitaireCompetences.afficherAideSaisieNiveauMaitrise = function (aParams) {
 	let lListeNiveauxRaccourcis;
-	const lListeGlobaleNiveaux = MethodesObjet.dupliquer(
-		GParametres.listeNiveauxDAcquisitions,
+	const lListeGlobaleNiveaux = MethodesObjet_1.MethodesObjet.dupliquer(
+		(0, AccessApp_1.getApp)().getObjetParametres().listeNiveauxDAcquisitions,
 	);
 	if (!!lListeGlobaleNiveaux && lListeGlobaleNiveaux.count() > 0) {
 		lListeGlobaleNiveaux.setTri([
-			ObjetTri.init("positionJauge", EGenreTriElement.Decroissant),
+			ObjetTri_1.ObjetTri.init(
+				"positionJauge",
+				Enumere_TriElement_1.EGenreTriElement.Decroissant,
+			),
 		]);
 		lListeGlobaleNiveaux.trier();
 		lListeNiveauxRaccourcis = [];
@@ -1189,16 +1305,17 @@ TUtilitaireCompetences.afficherAideSaisieNiveauMaitrise = function (aParams) {
 					!!D.raccourci && D.raccourci.toUpperCase
 						? D.raccourci.toUpperCase()
 						: "";
-				const lImage = EGenreNiveauDAcquisitionUtil.getImage(D);
+				const lImage =
+					Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(D);
 				lListeNiveauxRaccourcis.push(
 					'<div class="PetitEspaceBas">',
 					'<span class="InlineBlock AlignementMilieu" style="',
-					GStyle.composeWidth(30),
+					ObjetStyle_1.GStyle.composeWidth(30),
 					'">',
 					lRaccourci,
 					" : </span>",
 					'<span class="InlineBlock AlignementMilieu" style="',
-					GStyle.composeWidth(30),
+					ObjetStyle_1.GStyle.composeWidth(30),
 					'" aria-hidden="true">',
 					lImage || "",
 					"</span>",
@@ -1213,7 +1330,9 @@ TUtilitaireCompetences.afficherAideSaisieNiveauMaitrise = function (aParams) {
 	const lMessageHtml = [];
 	lMessageHtml.push(
 		"<p>",
-		GTraductions.getValeur("competences.MessageAideSaisieNivMaitrise"),
+		ObjetTraduction_1.GTraductions.getValeur(
+			"competences.MessageAideSaisieNivMaitrise",
+		),
 		"</p>",
 	);
 	if (!!lListeNiveauxRaccourcis) {
@@ -1225,8 +1344,10 @@ TUtilitaireCompetences.afficherAideSaisieNiveauMaitrise = function (aParams) {
 	}
 	GApplication.getMessage()
 		.afficher({
-			type: EGenreBoiteMessage.MrFiche,
-			titre: GTraductions.getValeur("competences.TitreAideSaisieNivMaitrise"),
+			type: Enumere_BoiteMessage_1.EGenreBoiteMessage.MrFiche,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"competences.TitreAideSaisieNivMaitrise",
+			),
 			width: 420,
 			message: lMessageHtml.join(""),
 		})
@@ -1237,28 +1358,33 @@ TUtilitaireCompetences.afficherAideSaisieNiveauMaitrise = function (aParams) {
 		});
 };
 TUtilitaireCompetences.getListeNiveauxAcquis = function () {
-	const lListeNiveauxAcquis = new ObjetListeElements();
-	GParametres.listeNiveauxDAcquisitions.parcourir((aNiveau) => {
-		if (TUtilitaireCompetences.estNiveauAcqui(aNiveau)) {
-			lListeNiveauxAcquis.add(aNiveau);
-		}
-	});
+	const lListeNiveauxAcquis = new ObjetListeElements_1.ObjetListeElements();
+	(0, AccessApp_1.getApp)()
+		.getObjetParametres()
+		.listeNiveauxDAcquisitions.parcourir((aNiveau) => {
+			if (TUtilitaireCompetences.estNiveauAcqui(aNiveau)) {
+				lListeNiveauxAcquis.add(aNiveau);
+			}
+		});
 	return lListeNiveauxAcquis;
 };
 TUtilitaireCompetences.getListeNiveauxNonAcquis = function () {
-	const lListeNiveauxAcquis = new ObjetListeElements();
-	GParametres.listeNiveauxDAcquisitions.parcourir((aNiveau) => {
-		if (TUtilitaireCompetences.estNiveauNonAcqui(aNiveau)) {
-			lListeNiveauxAcquis.add(aNiveau);
-		}
-	});
+	const lListeNiveauxAcquis = new ObjetListeElements_1.ObjetListeElements();
+	(0, AccessApp_1.getApp)()
+		.getObjetParametres()
+		.listeNiveauxDAcquisitions.parcourir((aNiveau) => {
+			if (TUtilitaireCompetences.estNiveauNonAcqui(aNiveau)) {
+				lListeNiveauxAcquis.add(aNiveau);
+			}
+		});
 	return lListeNiveauxAcquis;
 };
 TUtilitaireCompetences.estNiveauAcqui = function (aNiveauAcquisition) {
 	let lEstUnNiveauAcquis = false;
 	if (!!aNiveauAcquisition) {
-		const lNiveauGlobal =
-			GParametres.listeNiveauxDAcquisitions.getElementParGenre(
+		const lNiveauGlobal = (0, AccessApp_1.getApp)()
+			.getObjetParametres()
+			.listeNiveauxDAcquisitions.getElementParGenre(
 				aNiveauAcquisition.getGenre(),
 			);
 		lEstUnNiveauAcquis = !!lNiveauGlobal && !!lNiveauGlobal.estAcqui;
@@ -1268,8 +1394,9 @@ TUtilitaireCompetences.estNiveauAcqui = function (aNiveauAcquisition) {
 TUtilitaireCompetences.estNiveauNonAcqui = function (aNiveauAcquisition) {
 	let lEstUnNiveauAcquis = false;
 	if (!!aNiveauAcquisition) {
-		const lNiveauGlobal =
-			GParametres.listeNiveauxDAcquisitions.getElementParGenre(
+		const lNiveauGlobal = (0, AccessApp_1.getApp)()
+			.getObjetParametres()
+			.listeNiveauxDAcquisitions.getElementParGenre(
 				aNiveauAcquisition.getGenre(),
 			);
 		lEstUnNiveauAcquis = !!lNiveauGlobal && !!lNiveauGlobal.estNonAcqui;
@@ -1281,8 +1408,9 @@ TUtilitaireCompetences.estNotantPourTxReussiteEvaluation = function (
 ) {
 	let lEstUnNiveauAcquisNotant = false;
 	if (!!aNiveauAcquisition) {
-		const lNiveauGlobal =
-			GParametres.listeNiveauxDAcquisitions.getElementParGenre(
+		const lNiveauGlobal = (0, AccessApp_1.getApp)()
+			.getObjetParametres()
+			.listeNiveauxDAcquisitions.getElementParGenre(
 				aNiveauAcquisition.getGenre(),
 			);
 		lEstUnNiveauAcquisNotant =
@@ -1290,4 +1418,3 @@ TUtilitaireCompetences.estNotantPourTxReussiteEvaluation = function (
 	}
 	return lEstUnNiveauAcquisNotant;
 };
-module.exports = { TUtilitaireCompetences };

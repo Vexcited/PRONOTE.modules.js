@@ -229,6 +229,7 @@ class InterfaceRecapitulatifScolarite extends InterfacePage_1.InterfacePage {
 						avecMotifsAbsence: false,
 						avecMotifsAbsRepas: false,
 						avecMotifsAbsInternat: false,
+						avecMotifsRetardInternat: false,
 						avecMotifsRetard: false,
 						avecMotifsInfirmerie: false,
 						avecIssuesInfirmerie: false,

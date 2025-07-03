@@ -35,18 +35,26 @@ class _ObjetDetailElementVS extends ObjetIdentite_1.Identite {
 		this.optionsAffichage = {
 			avecBoutonsValidationDonnees: true,
 			afficherNew: false,
+			avecCommentaireObligatoire: false,
 		};
 	}
 	getTailleMaxDocJointEtablissement() {
 		return 1 * 1024 * 1024;
 	}
-	setDonnees(aElementVS) {
+	setDonnees(aElementVS, aOptionsAffichage) {
 		this.elementVS = aElementVS;
 		this.listeNouveauxDocuments.vider();
+		if (!!aOptionsAffichage) {
+			this.setOptionsAffichage(aOptionsAffichage);
+		}
 		this.afficher();
 	}
 	getListeNouveauxDocuments() {
 		return this.listeNouveauxDocuments;
+	}
+	setOptionsAffichage(aOptions) {
+		Object.assign(this.optionsAffichage, aOptions);
+		return this;
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
@@ -60,7 +68,7 @@ class _ObjetDetailElementVS extends ObjetIdentite_1.Identite {
 							placeHolder: ObjetTraduction_1.GTraductions.getValeur(
 								"AbsenceVS.aPreciser",
 							),
-							labelledById: aInstance.ids.labelMotif,
+							ariaLabelledBy: aInstance.ids.labelMotif,
 						});
 					} else {
 						aInstanceCombo.setOptionsObjetSaisie({
@@ -165,7 +173,7 @@ class _ObjetDetailElementVS extends ObjetIdentite_1.Identite {
 					);
 				},
 				getIcone() {
-					return IE.jsx.str("i", { class: "icon_piece_jointe" });
+					return "icon_piece_jointe";
 				},
 				getLibelle() {
 					return ObjetTraduction_1.GTraductions.getValeur(
@@ -293,11 +301,6 @@ class _ObjetDetailElementVS extends ObjetIdentite_1.Identite {
 						);
 					}
 				},
-				hint() {
-					return ObjetTraduction_1.GTraductions.getValeur(
-						"AbsenceVS.SupprimerDeclaration",
-					);
-				},
 				estVisible() {
 					return (
 						aInstance.elementVS &&
@@ -318,8 +321,17 @@ class _ObjetDetailElementVS extends ObjetIdentite_1.Identite {
 					aInstance.eventCallBackValider();
 				},
 				getDisabled: function () {
+					var _a, _b;
 					return (
 						!aInstance.elementVS ||
+						(aInstance.optionsAffichage.avecCommentaireObligatoire &&
+							((_b =
+								(_a = aInstance.elementVS.justification) === null ||
+								_a === void 0
+									? void 0
+									: _a.trim()) === null || _b === void 0
+								? void 0
+								: _b.length) === 0) ||
 						aInstance.elementVS.getEtat() === Enumere_Etat_1.EGenreEtat.Aucun ||
 						!(
 							(aInstance.elementVS.motifParent &&
@@ -438,7 +450,7 @@ class _ObjetDetailElementVS extends ObjetIdentite_1.Identite {
 			H.push("</div>");
 		}
 		H.push(
-			`<div class="p-top-l rounded separateur-haut"><label class="Gras" for="${this.idCommentaire}">${ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.commentaire")}</label>`,
+			`<div class="p-top-l rounded separateur-haut"><label class="Gras" for="${this.idCommentaire}">${this._getLibelleLabelCommentaire()}</label>`,
 			`<ie-textareamax ie-autoresize ie-model="txtCommentaire" maxlength="200" class="txt-comment fluid-bloc" placeholder="${ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.AjouterUnCommentaire")}" ${!IE.estMobile ? 'style="min-height:6rem;"' : ""} ie-class="getClassCommentaire" id="${this.idCommentaire}"></ie-textareamax>`,
 			"</div>",
 		);
@@ -452,7 +464,11 @@ class _ObjetDetailElementVS extends ObjetIdentite_1.Identite {
 		if (this.optionsAffichage.avecBoutonsValidationDonnees) {
 			H.push('<div class="flex-contain m-top-xl">');
 			H.push(
-				'<ie-btnicon ie-model="btnSupprimerElementVS" ie-hint="btnSupprimerElementVS.hint" ie-if="btnSupprimerElementVS.estVisible" class="icon_trash bt-activable bt-large ',
+				'<ie-btnicon ie-model="btnSupprimerElementVS" title="',
+				ObjetTraduction_1.GTraductions.getValeur(
+					"AbsenceVS.SupprimerDeclaration",
+				),
+				'" ie-if="btnSupprimerElementVS.estVisible" class="icon_trash bt-activable bt-large ',
 				Type_ThemeBouton_1.TypeThemeBouton.secondaire,
 				'"></ie-btnicon>',
 			);
@@ -500,7 +516,7 @@ class _ObjetDetailElementVS extends ObjetIdentite_1.Identite {
 		if (this.elementVS.html.avecDocuments) {
 			H.push(
 				'<div class="LigneDetailDocuments">',
-				'<i class="icon_piece_jointe"></i>',
+				'<i role="presentation" class="icon_piece_jointe"></i>',
 				'<div class="Inline">',
 				lDocs.join(""),
 				"</div>",
@@ -622,7 +638,7 @@ class _ObjetDetailElementVS extends ObjetIdentite_1.Identite {
 					IE.jsx.str("ie-btnselecteur", {
 						"ie-model": "btnUploadDocument",
 						"ie-selecfile": true,
-						title: ObjetTraduction_1.GTraductions.getValeur(
+						"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
 							"AbsenceVS.TelechargerUnJustifcatif",
 						),
 						class: "pj",
@@ -652,7 +668,7 @@ class _ObjetDetailElementVS extends ObjetIdentite_1.Identite {
 			IE.jsx.str(
 				"label",
 				{ for: this.ids.labelCommentaire, class: ["m-bottom"] },
-				ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.commentaire"),
+				this._getLibelleLabelCommentaire(),
 			),
 			IE.jsx.str("ie-textareamax", {
 				id: this.ids.labelCommentaire,
@@ -665,6 +681,13 @@ class _ObjetDetailElementVS extends ObjetIdentite_1.Identite {
 				),
 			}),
 		);
+	}
+	_getLibelleLabelCommentaire() {
+		return this.optionsAffichage.avecCommentaireObligatoire
+			? ObjetTraduction_1.GTraductions.getValeur(
+					"AbsenceVS.commentaireObligatoire",
+				)
+			: ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.commentaire");
 	}
 	_composeMessage() {
 		if (this.elementVS.infosMotif.message) {
@@ -684,7 +707,9 @@ class _ObjetDetailElementVS extends ObjetIdentite_1.Identite {
 				IE.jsx.str("ie-btnicon", {
 					class: ["icon_trash", "bt-activable", "bt-large"],
 					"ie-model": "btnSupprimerElementVS",
-					"ie-hint": "btnSupprimerElementVS.hint",
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"AbsenceVS.SupprimerDeclaration",
+					),
 					"ie-if": "btnSupprimerElementVS.estVisible",
 				}),
 				IE.jsx.str(

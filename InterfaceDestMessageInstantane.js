@@ -16,6 +16,7 @@ const CollectionRequetes_1 = require("CollectionRequetes");
 const ObjetConversationEnCours_1 = require("ObjetConversationEnCours");
 const ObjetHtml_1 = require("ObjetHtml");
 const GUID_1 = require("GUID");
+const AccessApp_1 = require("AccessApp");
 CollectionRequetes_1.Requetes.inscrire(
 	"SaisieStatutConnexion",
 	ObjetRequeteJSON_1.ObjetRequeteSaisie,
@@ -23,9 +24,9 @@ CollectionRequetes_1.Requetes.inscrire(
 class InterfaceDestMessageInstantane extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
-		this.applicationSco = GApplication;
 		this.params = {};
 		this.listeStatuts = new ObjetListeElements_1.ObjetListeElements();
+		this.applicationSco = (0, AccessApp_1.getApp)();
 		this.GenreStructure =
 			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 		this.idInputRecherche = GUID_1.GUID.getId();
@@ -203,7 +204,7 @@ class InterfaceDestMessageInstantane extends ObjetInterface_1.ObjetInterface {
 				messageContenuVide: ObjetTraduction_1.GTraductions.getValeur(
 					"Messagerie.AucunDestinataire",
 				),
-				labelWAI: ObjetTraduction_1.GTraductions.getValeur(
+				ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
 					"Messagerie.WAI_SelecDests_S",
 					[
 						ObjetTraduction_1.GTraductions.getValeur(
@@ -314,6 +315,9 @@ class InterfaceDestMessageInstantane extends ObjetInterface_1.ObjetInterface {
 						placeholder: ObjetTraduction_1.GTraductions.getValeur(
 							"Messagerie.RechercherProfPerso",
 						),
+						"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+							"Messagerie.RechercherProfPerso",
+						),
 					}),
 					IE.jsx.str("ie-btnimage", {
 						class: "icon_remove btnImageIcon",
@@ -322,7 +326,7 @@ class InterfaceDestMessageInstantane extends ObjetInterface_1.ObjetInterface {
 						title: ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
 					}),
 				),
-				IE.jsx.str("i", { class: "icon_search" }),
+				IE.jsx.str("i", { class: "icon_search", role: "presentation" }),
 			),
 			IE.jsx.str("div", {
 				class: "dest-contain",

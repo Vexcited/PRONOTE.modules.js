@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieSousServices extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieSousServices = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieSousServices extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParam) {
 		this.JSON = {
 			confirmation: aParam.confirmation,
@@ -25,12 +23,12 @@ class ObjetRequeteSaisieSousServices extends ObjetRequeteSaisie {
 		}
 		return this.appelAsynchrone();
 	}
-	actionApresRequete() {
-		this.callbackReussite.appel(this.JSONRapportSaisie, this.JSONReponse);
-	}
 }
-Requetes.inscrire("SaisieSousServices", ObjetRequeteSaisieSousServices);
+exports.ObjetRequeteSaisieSousServices = ObjetRequeteSaisieSousServices;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieSousServices",
+	ObjetRequeteSaisieSousServices,
+);
 function _serialiser_SousService(aElement, aJSON) {
 	aJSON.sousMatiere = aElement.sousMatiere;
 }
-module.exports = ObjetRequeteSaisieSousServices;

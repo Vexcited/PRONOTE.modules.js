@@ -1,8 +1,17 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { TypeThemeBouton } = require("Type_ThemeBouton.js");
-const EGenreActionConsentement = { Fermer: 0, Valider: 1 };
-class ObjetFenetre_Consentement extends ObjetFenetre {
+exports.ObjetFenetre_Consentement = exports.EGenreActionConsentement = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Type_ThemeBouton_1 = require("Type_ThemeBouton");
+var EGenreActionConsentement;
+(function (EGenreActionConsentement) {
+	EGenreActionConsentement[(EGenreActionConsentement["Fermer"] = 0)] = "Fermer";
+	EGenreActionConsentement[(EGenreActionConsentement["Valider"] = 1)] =
+		"Valider";
+})(
+	EGenreActionConsentement ||
+		(exports.EGenreActionConsentement = EGenreActionConsentement = {}),
+);
+class ObjetFenetre_Consentement extends ObjetFenetre_1.ObjetFenetre {
 	constructor(aDonnees) {
 		super(aDonnees);
 		this.setOptionsFenetre({
@@ -10,13 +19,15 @@ class ObjetFenetre_Consentement extends ObjetFenetre {
 			hauteur: 150,
 			listeBoutons: [
 				{
-					libelle: GTraductions.getValeur("accueil.applicam.valider"),
-					theme: TypeThemeBouton.primaire,
+					libelle: ObjetTraduction_1.GTraductions.getValeur(
+						"accueil.applicam.valider",
+					),
+					theme: Type_ThemeBouton_1.TypeThemeBouton.primaire,
 					action: EGenreActionConsentement.Valider,
 				},
 				{
-					libelle: GTraductions.getValeur("Fermer"),
-					theme: TypeThemeBouton.secondaire,
+					libelle: ObjetTraduction_1.GTraductions.getValeur("Fermer"),
+					theme: Type_ThemeBouton_1.TypeThemeBouton.secondaire,
 					action: EGenreActionConsentement.Fermer,
 				},
 			],
@@ -25,9 +36,10 @@ class ObjetFenetre_Consentement extends ObjetFenetre {
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
 			htmlTexteFenetre() {
-				return GTraductions.getValeur("accueil.applicam.texteFenetre", [
-					aInstance.libellePartenaire,
-				]);
+				return ObjetTraduction_1.GTraductions.getValeur(
+					"accueil.applicam.texteFenetre",
+					[aInstance.libellePartenaire],
+				);
 			},
 			htmlNomEleve() {
 				return aInstance.donneesTransmises
@@ -70,9 +82,10 @@ class ObjetFenetre_Consentement extends ObjetFenetre {
 		this.libellePartenaire = aLibellePartenaire;
 		this.donneesTransmises = aDonneesTransmise;
 		this.setOptionsFenetre({
-			titre: GTraductions.getValeur("accueil.applicam.titre", [
-				this.libellePartenaire,
-			]),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"accueil.applicam.titre",
+				[this.libellePartenaire],
+			),
 		});
 	}
 	composeContenu() {
@@ -81,7 +94,7 @@ class ObjetFenetre_Consentement extends ObjetFenetre {
 		T.push(this.composeDonneesTransmises());
 		T.push(
 			"<div>",
-			GTraductions.getValeur("accueil.applicam.sousTexte"),
+			ObjetTraduction_1.GTraductions.getValeur("accueil.applicam.sousTexte"),
 			"</div>",
 		);
 		return T.join("");
@@ -91,7 +104,9 @@ class ObjetFenetre_Consentement extends ObjetFenetre {
 		T.push('<div style="display:flex;">');
 		T.push(
 			'<div style="flex : 0 1 15rem;">',
-			GTraductions.getValeur("accueil.applicam.donneesTransmises.nom"),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"accueil.applicam.donneesTransmises.nom",
+			),
 			"</div>",
 		);
 		T.push('<div ie-html="htmlNomEleve"></div>');
@@ -99,7 +114,7 @@ class ObjetFenetre_Consentement extends ObjetFenetre {
 		T.push('<div style="display:flex;">');
 		T.push(
 			'<div style="flex : 0 1 15rem;">',
-			GTraductions.getValeur(
+			ObjetTraduction_1.GTraductions.getValeur(
 				"accueil.applicam.donneesTransmises.dateNaissance",
 			),
 			"</div>",
@@ -109,7 +124,9 @@ class ObjetFenetre_Consentement extends ObjetFenetre {
 		T.push('<div style="display:flex;">');
 		T.push(
 			'<div style="flex : 0 1 15rem;">',
-			GTraductions.getValeur("accueil.applicam.donneesTransmises.adresse"),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"accueil.applicam.donneesTransmises.adresse",
+			),
 			"</div>",
 		);
 		T.push('<div ie-html="htmlAdresse1"></div>');
@@ -117,7 +134,9 @@ class ObjetFenetre_Consentement extends ObjetFenetre {
 		T.push('<div style="display:flex;">');
 		T.push(
 			'<div style="flex : 0 1 15rem;">',
-			GTraductions.getValeur("accueil.applicam.donneesTransmises.codePostal"),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"accueil.applicam.donneesTransmises.codePostal",
+			),
 			"</div>",
 		);
 		T.push('<div ie-html="htmlCodePostal"></div>');
@@ -125,7 +144,9 @@ class ObjetFenetre_Consentement extends ObjetFenetre {
 		T.push('<div style="display:flex;">');
 		T.push(
 			'<div style="flex : 0 1 15rem;">',
-			GTraductions.getValeur("accueil.applicam.donneesTransmises.ville"),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"accueil.applicam.donneesTransmises.ville",
+			),
 			"</div>",
 		);
 		T.push('<div ie-html="htmlVille"></div>');
@@ -133,7 +154,9 @@ class ObjetFenetre_Consentement extends ObjetFenetre {
 		T.push('<div style="display:flex;">');
 		T.push(
 			'<div style="flex : 0 1 15rem;">',
-			GTraductions.getValeur("accueil.applicam.donneesTransmises.pays"),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"accueil.applicam.donneesTransmises.pays",
+			),
 			"</div>",
 		);
 		T.push('<div ie-html="htmlPays"></div>');
@@ -141,7 +164,9 @@ class ObjetFenetre_Consentement extends ObjetFenetre {
 		T.push('<div style="display:flex;">');
 		T.push(
 			'<div style="flex : 0 1 15rem;">',
-			GTraductions.getValeur("accueil.applicam.donneesTransmises.responsable"),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"accueil.applicam.donneesTransmises.responsable",
+			),
 			"</div>",
 		);
 		T.push('<div ie-html="htmlNomResp"></div>');
@@ -149,4 +174,4 @@ class ObjetFenetre_Consentement extends ObjetFenetre {
 		return T.join("");
 	}
 }
-module.exports = { ObjetFenetre_Consentement, EGenreActionConsentement };
+exports.ObjetFenetre_Consentement = ObjetFenetre_Consentement;

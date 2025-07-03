@@ -1,4 +1,4 @@
-exports.GenreModeAffichageTAFMobile = exports.ObjetCahierDeTexte_MobileCP =
+exports.ObjetCahierDeTexte_MobileCP = exports.GenreModeAffichageTAFMobile =
 	void 0;
 const InterfacePage_Mobile_1 = require("InterfacePage_Mobile");
 const ObjetTabOnglets_1 = require("ObjetTabOnglets");
@@ -67,7 +67,7 @@ class ObjetCahierDeTexte_MobileCP extends InterfacePage_Mobile_1.InterfacePage_M
 				{ class: "conteneur-entete" },
 				(0, tag_1.tag)("div", {
 					class: "conteneur-calendrier",
-					id: this.getInstance(this.identCalendrier).getNom(),
+					id: this.getNomInstance(this.identCalendrier),
 				}),
 				this.instanceFiltreMatieres
 					? (0, tag_1.tag)("div", {
@@ -112,7 +112,7 @@ class ObjetCahierDeTexte_MobileCP extends InterfacePage_Mobile_1.InterfacePage_M
 			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 	}
 	construireStructureAffichageAutre() {
-		return `<div id=${this.getInstance(this.identPage).getNom()}></div>`;
+		return IE.jsx.str("div", { id: this.getNomInstance(this.identPage) });
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {

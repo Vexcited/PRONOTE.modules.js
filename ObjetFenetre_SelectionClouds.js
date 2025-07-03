@@ -8,7 +8,6 @@ const Type_ThemeBouton_1 = require("Type_ThemeBouton");
 const UtilitaireOAuth2_1 = require("UtilitaireOAuth2");
 const GUID_1 = require("GUID");
 const ObjetHtml_1 = require("ObjetHtml");
-const jsx_1 = require("jsx");
 const TypeClientRest_1 = require("TypeClientRest");
 class ObjetFenetre_SelectionClouds extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
@@ -31,6 +30,7 @@ class ObjetFenetre_SelectionClouds extends ObjetFenetre_1.ObjetFenetre {
 			avecMessage: false,
 			iconMessage: "icon_post_it_rempli",
 			avecBtnTelecharger: false,
+			masquerENEJ: true,
 		};
 	}
 	construireInstances() {
@@ -82,11 +82,11 @@ class ObjetFenetre_SelectionClouds extends ObjetFenetre_1.ObjetFenetre {
 		Object.assign(this.optionsFenetreSelectionClouds, aOptions);
 	}
 	composeContenu() {
-		const T = [];
-		T.push('<div class="flex-contain cols full-size">');
-		T.push('<div id="', this.idConteneurBouton, '" style="display:none">');
-		T.push('<div  class="Espace flex-contain cols">');
-		T.push(
+		const H = [];
+		H.push('<div class="flex-contain cols full-size">');
+		H.push('<div id="', this.idConteneurBouton, '" style="display:none">');
+		H.push('<div  class="Espace flex-contain cols">');
+		H.push(
 			IE.jsx.str(
 				"div",
 				{
@@ -100,7 +100,9 @@ class ObjetFenetre_SelectionClouds extends ObjetFenetre_1.ObjetFenetre {
 						this.optionsFenetreSelectionClouds.iconMessage,
 						"i-small",
 						"m-right",
+						"theme_color_moyen1",
 					],
+					role: "presentation",
 					title: ObjetTraduction_1.GTraductions.getValeur(
 						"ListeClouds.hintMessage",
 					),
@@ -108,7 +110,7 @@ class ObjetFenetre_SelectionClouds extends ObjetFenetre_1.ObjetFenetre {
 				IE.jsx.str("div", null, this.message),
 			),
 		);
-		T.push(
+		H.push(
 			IE.jsx.str(
 				"ie-bouton",
 				{
@@ -119,18 +121,18 @@ class ObjetFenetre_SelectionClouds extends ObjetFenetre_1.ObjetFenetre {
 				ObjetTraduction_1.GTraductions.getValeur("ListeClouds.voirDocument"),
 			),
 		);
-		T.push(
+		H.push(
 			'<div data-usedAs="conteneurBoutonPDF" id="' +
 				this.idConteneurBoutonPDF +
 				'" class="flex-contain justify-between flex-gap-l">',
 		);
-		T.push(
+		H.push(
 			'<ie-bouton  ie-model="genererPDF" class="themeBoutonPrimaire fluid-bloc">' +
 				ObjetTraduction_1.GTraductions.getValeur("ListeClouds.voirPDF") +
 				"</ie-bouton>",
 		);
 		if (!IE.estMobile) {
-			T.push(
+			H.push(
 				IE.jsx.str("ie-btnicon", {
 					id: this.idBtnParams,
 					title: ObjetTraduction_1.GTraductions.getValeur(
@@ -141,30 +143,30 @@ class ObjetFenetre_SelectionClouds extends ObjetFenetre_1.ObjetFenetre {
 				}),
 			);
 		}
-		T.push("</div>");
-		T.push(
+		H.push("</div>");
+		H.push(
 			'<div class="GrandEspaceHaut EspaceBas" id="',
 			this.idTexteExplicatif,
 			'" style="display:none">',
 		);
-		T.push(
+		H.push(
 			"<span> ",
 			ObjetTraduction_1.GTraductions.getValeur(
 				"ListeClouds.texteExplicatifClouds",
 			),
 			"</span>",
 		);
-		T.push("</div>");
-		T.push("</div>");
-		T.push("</div>");
-		T.push(
+		H.push("</div>");
+		H.push("</div>");
+		H.push("</div>");
+		H.push(
 			'<div class="full-size" id="',
 			this.getNomInstance(this.identListe),
 			'">',
 		);
-		T.push("</div>");
-		T.push("</div>");
-		return T.join("");
+		H.push("</div>");
+		H.push("</div>");
+		return H.join("");
 	}
 	setDonnees(aParams) {
 		this.avecPDF =
@@ -224,6 +226,7 @@ class ObjetFenetre_SelectionClouds extends ObjetFenetre_1.ObjetFenetre {
 							menuContextuel: aParametres.menuContextuel,
 						});
 					},
+					masquerENEJ: this.optionsFenetreSelectionClouds.masquerENEJ,
 				}),
 			);
 		}
@@ -280,11 +283,7 @@ exports.ObjetFenetre_SelectionClouds = ObjetFenetre_SelectionClouds;
 class DonneesListe_SelectionCloud extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees) {
 		super(aDonnees);
-		this.setOptions({
-			avecContenuTronque: false,
-			avecEvnt_Selection: true,
-			flatDesignMinimal: true,
-		});
+		this.setOptions({ avecEvnt_Selection: true, flatDesignMinimal: true });
 	}
 	_estConnecte(aArticle) {
 		return !!aArticle && !!aArticle.idOAuth2;
@@ -292,48 +291,41 @@ class DonneesListe_SelectionCloud extends ObjetDonneesListeFlatDesign_1.ObjetDon
 	_estCertifie(aArticle) {
 		return aArticle.aveccertification;
 	}
-	getControleur(aInstanceDonneesListe, aInstanceListe) {
-		return $.extend(
-			true,
-			super.getControleur(aInstanceDonneesListe, aInstanceListe),
-			{
-				btnInfo: {
-					event(aGenre) {
-						const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
-							ObjetFenetre_1.ObjetFenetre,
-							{
-								pere: this,
-								initialiser(aInstanceFenetre) {
-									aInstanceFenetre.setOptionsFenetre({
-										avecTailleSelonContenu: true,
-										largeur: 350,
-										listeBoutons: [
-											ObjetTraduction_1.GTraductions.getValeur("Fermer"),
-										],
-										titre: ObjetTraduction_1.GTraductions.getValeur(
-											"ListeClouds.documentCertifies",
-										),
-									});
-								},
-							},
-						);
-						const lListeElement =
-							aInstanceListe && aInstanceListe.getListeArticles();
-						const lCloud =
-							lListeElement && lListeElement.getElementParGenre(aGenre);
-						lFenetre.afficher(
-							IE.jsx.str(
-								"div",
-								null,
-								lCloud && lCloud.detailscertification
-									? lCloud.detailscertification
-									: "",
-							),
-						);
+	jsxModeleBoutonInfo(aGenre) {
+		return {
+			event: () => {
+				const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+					ObjetFenetre_1.ObjetFenetre,
+					{
+						pere: this,
+						initialiser(aInstanceFenetre) {
+							aInstanceFenetre.setOptionsFenetre({
+								avecTailleSelonContenu: true,
+								largeur: 350,
+								listeBoutons: [
+									ObjetTraduction_1.GTraductions.getValeur("Fermer"),
+								],
+								titre: ObjetTraduction_1.GTraductions.getValeur(
+									"ListeClouds.documentCertifies",
+								),
+							});
+						},
 					},
-				},
+				);
+				const lListeElement = this.Donnees;
+				const lCloud =
+					lListeElement && lListeElement.getElementParGenre(aGenre);
+				lFenetre.afficher(
+					IE.jsx.str(
+						"div",
+						null,
+						lCloud && lCloud.detailscertification
+							? lCloud.detailscertification
+							: "",
+					),
+				);
 			},
-		);
+		};
 	}
 	getTitreZonePrincipale(aParams) {
 		return aParams.article.getLibelle();
@@ -357,22 +349,23 @@ class DonneesListe_SelectionCloud extends ObjetDonneesListeFlatDesign_1.ObjetDon
 				" ",
 				IE.jsx.str("i", {
 					class: ["icon_doc_certifie", "i-medium"],
-					"ie-hint": ObjetTraduction_1.GTraductions.getValeur(
+					"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
 						"ListeClouds.documentCertifies",
 					),
+					role: "img",
 				}),
 			);
 		}
-		const lhtml = lInfosSupp.join("");
-		return lhtml.length > 0 ? lhtml : "&nbsp;";
+		const H = lInfosSupp.join("");
+		return H.length > 0 ? H : "&nbsp;";
 	}
 	getZoneComplementaire(aParams) {
 		const lIcones = [];
 		if (this._estCertifie(aParams.article)) {
 			lIcones.push(
 				IE.jsx.str("ie-btnicon", {
-					"ie-model": (0, jsx_1.jsxFuncAttr)(
-						"btnInfo",
+					"ie-model": this.jsxModeleBoutonInfo.bind(
+						this,
 						aParams.article.getGenre(),
 					),
 					title: ObjetTraduction_1.GTraductions.getValeur(
@@ -400,28 +393,6 @@ class DonneesListe_SelectionCloud extends ObjetDonneesListeFlatDesign_1.ObjetDon
 		if (aParams.article.nomIcone) {
 			return `Image_Icone_${aParams.article.nomIcone}`;
 		}
-		switch (aParams.article.typeClientRest) {
-			case TypeClientRest_1.TypeClientRest.crSupprime01:
-				return "Image_Icone_LogoBox";
-			case TypeClientRest_1.TypeClientRest.crDropBox:
-				return "Image_Icone_LogoDropBox";
-			case TypeClientRest_1.TypeClientRest.crGoogleDrive:
-				return "Image_Icone_LogoGoogleDrive";
-			case TypeClientRest_1.TypeClientRest.crClientNextCloud:
-				return "Image_Icone_LogoGoogleDrive";
-			case TypeClientRest_1.TypeClientRest.crOneDrive:
-				return "Image_Icone_LogoOneDrive";
-			case TypeClientRest_1.TypeClientRest.crDigiposte:
-				return "Image_Icone_LogoDigiposte";
-			case TypeClientRest_1.TypeClientRest.crDigiposteCertifie:
-				return "Image_Icone_LogoDigiposte";
-			case TypeClientRest_1.TypeClientRest.crCloudIndex:
-				return "Image_Icone_LogoCloudPronote";
-			case TypeClientRest_1.TypeClientRest.crPentila:
-				return "Image_Icone_LogoPentila";
-			default:
-				return "";
-		}
 	}
 	initialisationObjetContextuel(aParametres) {
 		if (!aParametres.menuContextuel) {
@@ -429,5 +400,14 @@ class DonneesListe_SelectionCloud extends ObjetDonneesListeFlatDesign_1.ObjetDon
 		}
 		this.options.addCommandesMenuContextuel(aParametres);
 		aParametres.menuContextuel.setDonnees(aParametres.id);
+	}
+	getVisible(aDonnee) {
+		if (
+			this.options.masquerENEJ &&
+			aDonnee.typeClientRest === TypeClientRest_1.TypeClientRest.crENEJ
+		) {
+			return false;
+		}
+		return super.getVisible(aDonnee);
 	}
 }

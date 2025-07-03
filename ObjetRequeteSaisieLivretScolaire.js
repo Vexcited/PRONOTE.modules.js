@@ -1,25 +1,26 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreOnglet } = require("Enumere_Onglet.js");
-const { ObjetSerialiser } = require("ObjetSerialiser.js");
-class ObjetRequeteSaisieLivretScolaire extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieLivretScolaire = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_Onglet_1 = require("Enumere_Onglet");
+const ObjetSerialiser_1 = require("ObjetSerialiser");
+const TypeModeDAffichagePFMP_1 = require("TypeModeDAffichagePFMP");
+class ObjetRequeteSaisieLivretScolaire extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aDonnees) {
 		let lListe;
 		this.JSON.classe = aDonnees.classeSelectionne.toJSON();
 		switch (aDonnees.genre) {
-			case EGenreOnglet.LivretScolaire_Fiche:
+			case Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche:
 				if (aDonnees.eleve) {
 					this.JSON.eleve = aDonnees.eleve.toJSON();
 				}
 				lListe = aDonnees.eleve.listeLivret.getListeElements((aElement) => {
-					const lEnModification = aElement.getEtat() !== EGenreEtat.Aucun;
+					const lEnModification =
+						aElement.getEtat() !== Enumere_Etat_1.EGenreEtat.Aucun;
 					const lAppreciationModifie =
 						aElement.appreciationAnnuelle &&
-						aElement.appreciationAnnuelle.getEtat() !== EGenreEtat.Aucun;
+						aElement.appreciationAnnuelle.getEtat() !==
+							Enumere_Etat_1.EGenreEtat.Aucun;
 					const lAvecModifConserverAnciennesNotes =
 						aDonnees.eleve.estRedoublant &&
 						aElement.modifConserveAnciennesNotes === true;
@@ -30,16 +31,18 @@ class ObjetRequeteSaisieLivretScolaire extends ObjetRequeteSaisie {
 					);
 				});
 				break;
-			case EGenreOnglet.LivretScolaire_Appreciations:
-			case EGenreOnglet.LivretScolaire_Competences:
+			case Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Appreciations:
+			case Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Competences:
 				if (aDonnees.service) {
 					this.JSON.service = aDonnees.service.toJSON();
 				}
 				lListe = aDonnees.service.listeLivret.getListeElements((aElement) => {
-					const lEnModification = aElement.getEtat() !== EGenreEtat.Aucun;
+					const lEnModification =
+						aElement.getEtat() !== Enumere_Etat_1.EGenreEtat.Aucun;
 					const lAppreciationModifie =
 						aElement.appreciationAnnuelle &&
-						aElement.appreciationAnnuelle.getEtat() !== EGenreEtat.Aucun;
+						aElement.appreciationAnnuelle.getEtat() !==
+							Enumere_Etat_1.EGenreEtat.Aucun;
 					return lEnModification || lAppreciationModifie;
 				});
 				break;
@@ -124,9 +127,15 @@ class ObjetRequeteSaisieLivretScolaire extends ObjetRequeteSaisie {
 			lParametres.pfmp.infosLSEleve.pourValidation()
 		) {
 			this.JSON.infosPfmp = lParametres.pfmp.infosLSEleve.toJSON();
-			this.JSON.infosPfmp.nombreSemaines =
-				lParametres.pfmp.infosLSEleve.nombreSemaines;
-			this.JSON.infosPfmp.aLEtranger = lParametres.pfmp.infosLSEleve.aLEtranger;
+			if (
+				lParametres.pfmp.modeAff !==
+				TypeModeDAffichagePFMP_1.TypeModeDAffichagePFMP.tMAPFMP_CAP
+			) {
+				this.JSON.infosPfmp.nombreSemaines =
+					lParametres.pfmp.infosLSEleve.nombreSemaines;
+				this.JSON.infosPfmp.aLEtranger =
+					lParametres.pfmp.infosLSEleve.aLEtranger;
+			}
 			this.JSON.infosPfmp.appreciation =
 				lParametres.pfmp.infosLSEleve.appreciation;
 		}
@@ -146,7 +155,7 @@ class ObjetRequeteSaisieLivretScolaire extends ObjetRequeteSaisie {
 				lParametres.parcoursDifferencie.infosLivret.auteur;
 		}
 		if (!!aDonnees.listeTypesAppreciations) {
-			const lObjetSerialiser = new ObjetSerialiser();
+			const lObjetSerialiser = new ObjetSerialiser_1.ObjetSerialiser();
 			aDonnees.listeTypesAppreciations.setSerialisateurJSON({
 				ignorerEtatsElements: true,
 				methodeSerialisation:
@@ -159,14 +168,18 @@ class ObjetRequeteSaisieLivretScolaire extends ObjetRequeteSaisie {
 		return this.appelAsynchrone();
 	}
 }
-Requetes.inscrire("SaisieLivretScolaire", ObjetRequeteSaisieLivretScolaire);
+exports.ObjetRequeteSaisieLivretScolaire = ObjetRequeteSaisieLivretScolaire;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieLivretScolaire",
+	ObjetRequeteSaisieLivretScolaire,
+);
 function _serialisation(aElement, aJSON) {
 	if (aElement.service) {
 		aJSON.service = aElement.service.toJSON();
 	}
 	if (aElement.services && aElement.services.count() > 1) {
 		aElement.services.setSerialisateurJSON({
-			methodeSerialisation: _serialisationService.bind(this),
+			methodeSerialisation: _serialisationService,
 		});
 		aJSON.services = aElement.services;
 	}
@@ -184,11 +197,15 @@ function _serialisation(aElement, aJSON) {
 	}
 	if (aElement.itemLivretScolaire) {
 		if (
-			aElement.itemLivretScolaire.getEtat() !== EGenreEtat.Aucun ||
+			aElement.itemLivretScolaire.getEtat() !==
+				Enumere_Etat_1.EGenreEtat.Aucun ||
 			aElement.modifConserveAnciennesNotes
 		) {
 			aJSON.itemLivretScolaire = aElement.itemLivretScolaire.toJSON();
-			if (aElement.itemLivretScolaire.getEtat() !== EGenreEtat.Aucun) {
+			if (
+				aElement.itemLivretScolaire.getEtat() !==
+				Enumere_Etat_1.EGenreEtat.Aucun
+			) {
 				aJSON.itemLivretScolaire.evaluation =
 					aElement.itemLivretScolaire.evaluation.toJSON();
 			}
@@ -196,13 +213,13 @@ function _serialisation(aElement, aJSON) {
 	}
 	if (aElement.listeCompetences) {
 		aElement.listeCompetences.setSerialisateurJSON({
-			methodeSerialisation: _serialisationCompetence.bind(this),
+			methodeSerialisation: _serialisationCompetence,
 		});
 		aJSON.listeCompetences = aElement.listeCompetences;
 	}
 	if (
 		aElement.appreciationAnnuelle &&
-		aElement.appreciationAnnuelle.getEtat() !== EGenreEtat.Aucun
+		aElement.appreciationAnnuelle.getEtat() !== Enumere_Etat_1.EGenreEtat.Aucun
 	) {
 		aJSON.appreciationAnnuelle = aElement.appreciationAnnuelle.toJSON();
 	}
@@ -213,4 +230,3 @@ function _serialisationService(aElement, aJSON) {
 function _serialisationCompetence(aElement, aJSON) {
 	aJSON.evaluation = aElement.evaluation.toJSON();
 }
-module.exports = { ObjetRequeteSaisieLivretScolaire };

@@ -1,10 +1,8 @@
-const { GChaine } = require("ObjetChaine.js");
-const { ObjetVignette } = require("ObjetVignette.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-class ObjetDiapoCarrousel extends ObjetVignette {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetDiapoCarrousel = void 0;
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetVignette_1 = require("ObjetVignette");
+const Enumere_Etat_1 = require("Enumere_Etat");
+class ObjetDiapoCarrousel extends ObjetVignette_1.ObjetVignette {
 	construireAffichage() {
 		return this.afficher();
 	}
@@ -52,9 +50,9 @@ class ObjetDiapoCarrousel extends ObjetVignette {
 		const lData = {
 			data: aElement,
 			lien:
-				lDocCasier.getEtat() === EGenreEtat.Creation
+				lDocCasier.getEtat() === Enumere_Etat_1.EGenreEtat.Creation
 					? lDocCasier.urlBlob
-					: GChaine.creerUrlBruteLienExterne(lDocCasier, {
+					: ObjetChaine_1.GChaine.creerUrlBruteLienExterne(lDocCasier, {
 							genreRessource: lOptions.genreRessource,
 							miniature: lDocCasier.miniature,
 						}),
@@ -70,4 +68,4 @@ class ObjetDiapoCarrousel extends ObjetVignette {
 		this.setDonnees(lData);
 	}
 }
-module.exports = { ObjetDiapoCarrousel };
+exports.ObjetDiapoCarrousel = ObjetDiapoCarrousel;

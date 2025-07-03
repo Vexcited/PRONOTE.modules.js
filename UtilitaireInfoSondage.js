@@ -1,12 +1,13 @@
-const { GDate } = require("ObjetDate.js");
-const { GTraductions } = require("ObjetTraduction.js");
+exports.TUtilitaireInfoSondage = TUtilitaireInfoSondage;
+const ObjetDate_1 = require("ObjetDate");
+const ObjetTraduction_1 = require("ObjetTraduction");
 function TUtilitaireInfoSondage() {}
 TUtilitaireInfoSondage.getDate = function () {
 	return (
-		GTraductions.getValeur("Du") +
-		GDate.formatDate(this.dateDebut, " %JJ/%MM/%AAAA ") +
-		GTraductions.getValeur("Au") +
-		GDate.formatDate(this.dateFin, " %JJ/%MM/%AAAA")
+		ObjetTraduction_1.GTraductions.getValeur("Du") +
+		ObjetDate_1.GDate.formatDate(this.dateDebut, " %JJ/%MM/%AAAA ") +
+		ObjetTraduction_1.GTraductions.getValeur("Au") +
+		ObjetDate_1.GDate.formatDate(this.dateFin, " %JJ/%MM/%AAAA")
 	);
 };
 TUtilitaireInfoSondage.avecReponse = function () {
@@ -27,4 +28,3 @@ TUtilitaireInfoSondage.aToutRepondu = function () {
 	}
 	return lResult;
 };
-module.exports = { TUtilitaireInfoSondage };

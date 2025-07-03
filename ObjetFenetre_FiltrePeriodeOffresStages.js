@@ -1,7 +1,6 @@
 exports.ObjetFenetre_FiltrePeriodeOffresStages = void 0;
 const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetCelluleDate_1 = require("ObjetCelluleDate");
-const tag_1 = require("tag");
 const ObjetTraduction_1 = require("ObjetTraduction");
 class ObjetFenetre_FiltrePeriodeOffresStages extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
@@ -42,40 +41,48 @@ class ObjetFenetre_FiltrePeriodeOffresStages extends ObjetFenetre_1.ObjetFenetre
 	composeContenu() {
 		const T = [];
 		T.push(
-			(0, tag_1.tag)(
-				"div",
-				{ class: "flex-contain" },
-				(0, tag_1.tag)(
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
 					"div",
-					{ class: "Gras EspaceDroit MargeHaut" },
-					ObjetTraduction_1.GTraductions.getValeur("Du").ucfirst(),
+					{ class: "flex-contain" },
+					IE.jsx.str(
+						"div",
+						{ class: "Gras EspaceDroit MargeHaut" },
+						ObjetTraduction_1.GTraductions.getValeur("Du").ucfirst(),
+					),
+					IE.jsx.str("div", {
+						class: "EspaceDroit",
+						id: this.getInstance(this.identDateDebut).getNom(),
+					}),
+					IE.jsx.str(
+						"div",
+						{ class: "Gras EspaceDroit MargeHaut" },
+						ObjetTraduction_1.GTraductions.getValeur("Au").ucfirst(),
+					),
+					IE.jsx.str("div", {
+						class: "EspaceDroit",
+						id: this.getInstance(this.identDateFin).getNom(),
+					}),
 				),
-				(0, tag_1.tag)("div", {
-					class: "EspaceDroit",
-					id: this.getInstance(this.identDateDebut).getNom(),
-				}),
-				(0, tag_1.tag)(
-					"div",
-					{ class: "Gras EspaceDroit MargeHaut" },
-					ObjetTraduction_1.GTraductions.getValeur("Au").ucfirst(),
-				),
-				(0, tag_1.tag)("div", {
-					class: "EspaceDroit",
-					id: this.getInstance(this.identDateFin).getNom(),
-				}),
 			),
 		);
 		return T.join("");
 	}
 	composeBas() {
-		return (0, tag_1.tag)(
-			"div",
-			{ class: "compose-bas" },
-			(0, tag_1.tag)("ie-btnicon", {
-				"ie-model": "btnSupprimer",
-				title: ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
-				class: "icon_trash avecFond i-medium",
-			}),
+		return IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			IE.jsx.str(
+				"div",
+				{ class: "compose-bas" },
+				IE.jsx.str("ie-btnicon", {
+					"ie-model": "btnSupprimer",
+					title: ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
+					class: "icon_trash avecFond i-medium",
+				}),
+			),
 		);
 	}
 	setDonnees(aDonnees) {

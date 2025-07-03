@@ -20,7 +20,6 @@ const MethodesObjet_1 = require("MethodesObjet");
 const ObjetFenetre_SelectionPublic_PN_1 = require("ObjetFenetre_SelectionPublic_PN");
 const ObjetFenetre_SelectionPublic_1 = require("ObjetFenetre_SelectionPublic");
 const ObjetElement_1 = require("ObjetElement");
-const jsx_1 = require("jsx");
 const ObjetDate_1 = require("ObjetDate");
 const Enumere_Action_1 = require("Enumere_Action");
 const ObjetChaine_1 = require("ObjetChaine");
@@ -28,18 +27,28 @@ const UtilitaireListePublics_1 = require("UtilitaireListePublics");
 class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
+		this.setOptionsFenetre({
+			titre: this._getStrTitreFenetre(),
+			largeur: 700,
+			listeBoutons: [
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				{
+					libelle: ObjetTraduction_1.GTraductions.getValeur("Valider"),
+					estValider: true,
+				},
+			],
+		});
 		this.moteurRDV = new MoteurRDV_1.MoteurRDV();
 		this.utilitaires = {
 			genreEspace: new GestionnaireBlocPN_1.UtilitaireGenreEspace(),
 		};
 		this.moteurDestinataires =
-			new MoteurDestinatairesPN_1.MoteurDestinatairesPN(this.utilitaires);
+			new MoteurDestinatairesPN_1.MoteurDestinatairesPN();
 		this.ids = {
 			labelRespRdv: GUID_1.GUID.getId(),
 			inputObjet: GUID_1.GUID.getId(),
 			inputDescription: GUID_1.GUID.getId(),
 			inputDuree: GUID_1.GUID.getId(),
-			labelAjoutCreneau: GUID_1.GUID.getId(),
 			labelResponsables: GUID_1.GUID.getId(),
 			labelPublicCibleEleve: GUID_1.GUID.getId(),
 		};
@@ -114,7 +123,7 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 			},
 			ajoutCreneau: {
 				getIcone() {
-					return IE.jsx.str("i", { class: "icon_plus", "aria-hidden": "true" });
+					return "icon_plus";
 				},
 				getLibelle: function () {
 					return ObjetTraduction_1.GTraductions.getValeur(
@@ -180,78 +189,6 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 					return false;
 				},
 			},
-			respRDV: {
-				getIcone(aGenreRessource) {
-					let lIcon =
-						aGenreRessource === Enumere_Ressource_1.EGenreRessource.Enseignant
-							? "icon_enseignant_prof"
-							: "icon_user";
-					return IE.jsx.str("i", { class: lIcon, "aria-hidden": "true" });
-				},
-				getLibelle: function (aGenreRessource) {
-					if (aInstance.donnees) {
-						let lRDV = aInstance.donnees.rdv;
-						if (
-							lRDV &&
-							lRDV.session &&
-							lRDV.session.responsableRDV &&
-							lRDV.session.responsableRDV.getGenre() === aGenreRessource
-						) {
-							return lRDV.session.responsableRDV.getLibelle();
-						} else {
-							return aGenreRessource ===
-								Enumere_Ressource_1.EGenreRessource.Enseignant
-								? ObjetTraduction_1.GTraductions.getValeur(
-										"RDV.choisirProfesseur",
-									)
-								: ObjetTraduction_1.GTraductions.getValeur(
-										"RDV.choisirPersonnel",
-									);
-						}
-					}
-				},
-				event(aGenreRessource) {
-					let lListePublicDonnee =
-						new ObjetListeElements_1.ObjetListeElements();
-					if (
-						aInstance.donnees.rdv &&
-						aInstance.donnees.rdv.session &&
-						aInstance.donnees.rdv.session.responsableRDV
-					) {
-						lListePublicDonnee.add(
-							aInstance.donnees.rdv.session.responsableRDV,
-						);
-					}
-					aInstance.moteurDestinataires.ouvrirModaleSelectionPublic({
-						genreRessource: aGenreRessource,
-						listePublicDonnee: lListePublicDonnee,
-						avecCoche: false,
-						clbck: (aParam) => {
-							let lNbSelection = aParam.listePublicDonnee.count();
-							if (lNbSelection > 0 && lNbSelection !== 1) {
-								GApplication.getMessage().afficher({
-									type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-									message:
-										ObjetTraduction_1.GTraductions.getValeur(
-											"RDV.unSeulRespRDV",
-										),
-								});
-							} else {
-								aInstance.donnees.rdv.session.responsableRDV =
-									aParam.listePublicDonnee && lNbSelection > 0
-										? aParam.listePublicDonnee.get(0)
-										: null;
-							}
-						},
-						eleve: GEtatUtilisateur.getMembre(),
-						avecFiltreSelonAcceptRdv: aInstance.moteurRDV.estCtxDemandeDeRDV(),
-						avecDirEnseignant:
-							aGenreRessource ===
-								Enumere_Ressource_1.EGenreRessource.Personnel &&
-							aInstance.moteurRDV.estCtxForcerDirEnseignant(),
-					});
-				},
-			},
 			btnVoirDetailPublic: {
 				event: function () {
 					let lRDV = aInstance.donnees.rdv;
@@ -291,23 +228,34 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 			},
 			publicCibleListeFamillesEleves: {
 				getLibelle: function () {
-					const lHtml = [];
+					const H = [];
 					if (aInstance.donnees) {
 						let lRDV = aInstance.donnees.rdv;
 						let lNbFamillesParticipants =
 							aInstance.moteurRDV.getNbFamillesParticipantSessionSerie(lRDV);
 						if (lNbFamillesParticipants > 0) {
-							return ObjetTraduction_1.GTraductions.getValeur(
-								"RDV.xFamillesParticipants",
-								[lNbFamillesParticipants],
-							);
+							if (
+								lRDV.nbElevesConcernes !== null &&
+								lRDV.nbElevesConcernes !== undefined &&
+								lRDV.nbElevesConcernes < lNbFamillesParticipants
+							) {
+								return ObjetTraduction_1.GTraductions.getValeur(
+									"RDV.xFamillesParticipantsXRDV",
+									[lRDV.nbElevesConcernes, lNbFamillesParticipants],
+								);
+							} else {
+								return ObjetTraduction_1.GTraductions.getValeur(
+									"RDV.xFamillesParticipants",
+									[lNbFamillesParticipants],
+								);
+							}
 						} else {
 							return ObjetTraduction_1.GTraductions.getValeur(
 								"RDV.choisirParentsMultiFamilles",
 							);
 						}
 					}
-					return lHtml.join("");
+					return H.join("");
 				},
 				event() {
 					let lRDV = aInstance.donnees.rdv;
@@ -318,6 +266,10 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 						false,
 						(aListeRessourcesSelectionnees) => {
 							aInstance.donnees.rdv.tabFamillesParticipantRDV = [];
+							aInstance.donnees.rdv.nbElevesConcernes =
+								aListeRessourcesSelectionnees
+									? aListeRessourcesSelectionnees.count()
+									: 0;
 							aListeRessourcesSelectionnees.parcourir((aFamille) => {
 								if (aFamille.responsables && aFamille.eleveConcerne) {
 									let lEleve = aFamille.eleveConcerne;
@@ -351,11 +303,10 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 			},
 			publicCibleFamilleEleve: {
 				getIcone() {
-					let lIcon = "icon_user";
-					return IE.jsx.str("i", { class: lIcon, "aria-hidden": "true" });
+					return "icon_user";
 				},
 				getLibelle: function () {
-					const lHtml = [];
+					const H = [];
 					if (aInstance.donnees) {
 						let lRDV = aInstance.donnees.rdv;
 						if (lRDV && lRDV.listeParticipantRDV) {
@@ -375,7 +326,7 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 							}
 						}
 					}
-					return lHtml.join("");
+					return H.join("");
 				},
 				event() {
 					let lRDV = aInstance.donnees.rdv;
@@ -423,11 +374,10 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 			},
 			publicCibleListeEleves: {
 				getIcone() {
-					let lIcon = "icon_eleve";
-					return IE.jsx.str("i", { class: lIcon, "aria-hidden": "true" });
+					return "icon_eleve";
 				},
 				getLibelle: function () {
-					const lHtml = [];
+					const H = [];
 					if (aInstance.donnees) {
 						let lRDV = aInstance.donnees.rdv;
 						let lNbParticipants =
@@ -454,7 +404,7 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 							);
 						}
 					}
-					return lHtml.join("");
+					return H.join("");
 				},
 				event() {
 					aInstance.moteurDestinataires.ouvrirModaleSelectionPublic({
@@ -473,15 +423,13 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 			},
 			publicCibleEleve: {
 				getIcone() {
-					let lIcon =
-						aInstance.optionsRDV.natureRDV ===
+					return aInstance.optionsRDV.natureRDV ===
 						TypesRDV_2.TypeNatureRDV.tNRDV_CreneauImpose
-							? "icon_eleve"
-							: "icon_user";
-					return IE.jsx.str("i", { class: lIcon, "aria-hidden": "true" });
+						? "icon_eleve"
+						: "icon_user";
 				},
 				getLibelle: function () {
-					const lHtml = [];
+					const H = [];
 					if (aInstance.donnees) {
 						let lRDV = aInstance.donnees.rdv;
 						if (lRDV && lRDV.listeParticipantRDV) {
@@ -500,7 +448,7 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 							}
 						}
 					}
-					return lHtml.join("");
+					return H.join("");
 				},
 				event() {
 					aInstance.moteurDestinataires.ouvrirModaleSelectionPublic({
@@ -628,75 +576,6 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 							lRdv.etat !== TypesRDV_1.TypeEtatRDV.terdv_RDVDemande)
 					);
 				},
-			},
-			btnPJ: {
-				getOptionsSelecFile: (aPourSession) => {
-					return {
-						genrePJ: Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier,
-						genreRessourcePJ:
-							Enumere_Ressource_1.EGenreRessource.DocJointPriseDeRDV,
-						maxFiles: 0,
-						maxSize: GApplication.droits.get(
-							ObjetDroitsPN_1.TypeDroits.tailleMaxDocJointEtablissement,
-						),
-					};
-				},
-				addFiles: (aPourSession, aParamsAddFiles) => {
-					let lRdv = aPourSession
-						? aInstance.donnees.rdv.session
-						: aInstance.donnees.rdv;
-					if (lRdv.listePJ === null || lRdv.listePJ === undefined) {
-						lRdv.listePJ = new ObjetListeElements_1.ObjetListeElements();
-					}
-					let lFichier = aParamsAddFiles.eltFichier;
-					if (lFichier) {
-						lRdv.listePJ.addElement(lFichier);
-						lRdv.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
-						this.listePJs.addElement(lFichier);
-					}
-				},
-				getLibelle() {
-					return ObjetTraduction_1.GTraductions.getValeur("RDV.ajouterPJ");
-				},
-				getIcone() {
-					return IE.jsx.str("i", {
-						class: "icon_piece_jointe",
-						"aria-hidden": "true",
-					});
-				},
-				getDisabled: () => {
-					return false;
-				},
-			},
-			avecListePJ: (aPourSession) => {
-				let lRdv = aPourSession
-					? aInstance.donnees.rdv.session
-					: aInstance.donnees.rdv;
-				return lRdv.listePJ && lRdv.listePJ.count() > 0;
-			},
-			getHtmlPJ: (aPourSession) => {
-				var _a;
-				let lRdv = aPourSession
-					? aInstance.donnees.rdv.session
-					: aInstance.donnees.rdv;
-				if (
-					((_a = lRdv === null || lRdv === void 0 ? void 0 : lRdv.listePJ) ===
-						null || _a === void 0
-						? void 0
-						: _a.getNbrElementsExistes()) > 0
-				) {
-					return IE.jsx.str(
-						"div",
-						{ class: ["section"] },
-						UtilitaireUrl_1.UtilitaireUrl.construireListeUrls(lRdv.listePJ, {
-							IEModelChips: "chipsPJ",
-							argsIEModelChips: [aPourSession],
-							maxWidth: MoteurRDV_1.MoteurRDV.C_WidthMaxChipsPJ,
-						}),
-					);
-				} else {
-					return "";
-				}
 			},
 			chipsPJ: {
 				eventBtn: (aIndice, aPourSession) => {
@@ -892,7 +771,7 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 					placeholder: ObjetTraduction_1.GTraductions.getValeur(
 						"RDV.placeHolderSujet",
 					),
-					class: "round-style full-width",
+					class: "full-width",
 					required: true,
 				}),
 			),
@@ -927,6 +806,67 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 		}
 		return H.join("");
 	}
+	jsxModelBtnSelecteurPieceJointe(aPourSession) {
+		return {
+			getOptionsSelecFile: () => {
+				return {
+					genrePJ: Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier,
+					genreRessourcePJ:
+						Enumere_Ressource_1.EGenreRessource.DocJointPriseDeRDV,
+					maxFiles: 0,
+					maxSize: GApplication.droits.get(
+						ObjetDroitsPN_1.TypeDroits.tailleMaxDocJointEtablissement,
+					),
+				};
+			},
+			addFiles: (aParamsAddFiles) => {
+				let lRdv = aPourSession ? this.donnees.rdv.session : this.donnees.rdv;
+				if (lRdv.listePJ === null || lRdv.listePJ === undefined) {
+					lRdv.listePJ = new ObjetListeElements_1.ObjetListeElements();
+				}
+				let lFichier = aParamsAddFiles.eltFichier;
+				if (lFichier) {
+					lRdv.listePJ.addElement(lFichier);
+					lRdv.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+					this.listePJs.addElement(lFichier);
+				}
+			},
+			getLibelle: () => {
+				return ObjetTraduction_1.GTraductions.getValeur("RDV.ajouterPJ");
+			},
+			getIcone: () => {
+				return "icon_piece_jointe";
+			},
+			getDisabled: () => {
+				return false;
+			},
+		};
+	}
+	jsxIfAvecListePJ(aPourSession) {
+		const lRdv = aPourSession ? this.donnees.rdv.session : this.donnees.rdv;
+		return lRdv.listePJ && lRdv.listePJ.count() > 0;
+	}
+	jsxGetHtmlNomPropriete(aPourSession) {
+		var _a;
+		const lRdv = aPourSession ? this.donnees.rdv.session : this.donnees.rdv;
+		if (
+			((_a = lRdv === null || lRdv === void 0 ? void 0 : lRdv.listePJ) ===
+				null || _a === void 0
+				? void 0
+				: _a.getNbrElementsExistes()) > 0
+		) {
+			return IE.jsx.str(
+				"div",
+				{ class: ["section"] },
+				UtilitaireUrl_1.UtilitaireUrl.construireListeUrls(lRdv.listePJ, {
+					IEModelChips: "chipsPJ",
+					argsIEModelChips: [aPourSession],
+					maxWidth: MoteurRDV_1.MoteurRDV.C_WidthMaxChipsPJ,
+				}),
+			);
+		}
+		return "";
+	}
 	_composePJ(aPourSession) {
 		const H = [];
 		H.push(
@@ -936,14 +876,17 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 				IE.jsx.str("ie-btnselecteur", {
 					class: "pj",
 					"ie-selecfile": true,
-					"ie-model": (0, jsx_1.jsxFuncAttr)("btnPJ", aPourSession),
+					"ie-model": this.jsxModelBtnSelecteurPieceJointe.bind(
+						this,
+						aPourSession,
+					),
 					title: ObjetTraduction_1.GTraductions.getValeur("RDV.ajouterPJ"),
 					role: "button",
 				}),
 				IE.jsx.str("div", {
 					class: ["pj-liste-conteneur"],
-					"ie-if": (0, jsx_1.jsxFuncAttr)("avecListePJ", aPourSession),
-					"ie-html": (0, jsx_1.jsxFuncAttr)("getHtmlPJ", aPourSession),
+					"ie-if": this.jsxIfAvecListePJ.bind(this, aPourSession),
+					"ie-html": this.jsxGetHtmlNomPropriete.bind(this, aPourSession),
 				}),
 			),
 		);
@@ -965,10 +908,7 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 			{ class: "field-contain label-up" },
 			IE.jsx.str(
 				"label",
-				{
-					id: this.ids.labelAjoutCreneau,
-					class: "ie-titre-petit m-top-xl champ-requis",
-				},
+				{ class: "ie-titre-petit m-top-xl champ-requis" },
 				ObjetTraduction_1.GTraductions.getValeur("RDV.propositionCreneaux"),
 			),
 			IE.jsx.str(
@@ -981,8 +921,9 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 					: "",
 				IE.jsx.str("ie-btnselecteur", {
 					"ie-model": "ajoutCreneau",
-					"aria-labelledby": this.ids.labelAjoutCreneau,
-					"aria-required": "true",
+					"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+						"RDV.ajouterDesCreneaux",
+					),
 					class: "pj",
 					role: "button",
 				}),
@@ -1033,8 +974,8 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 				max: MoteurRDV_1.MoteurRDV.C_MaxDureeRDV.toString(),
 				min: MoteurRDV_1.MoteurRDV.C_MinDureeRDV.toString(),
 				"ie-model": "inputDuree",
-				class: "round-style real-size",
-				size: "3",
+				class: "real-size",
+				style: { width: "5.4rem" },
 				required: true,
 			}),
 		);
@@ -1137,6 +1078,23 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 	}
 	composeRDVEnSerie() {
 		const H = [];
+		const lJSXDescribe = () => {
+			let lRDV = this.donnees.rdv;
+			let lNbFamillesParticipants =
+				this.moteurRDV.getNbFamillesParticipantSessionSerie(lRDV);
+			if (
+				lNbFamillesParticipants > 0 &&
+				lRDV.nbElevesConcernes !== null &&
+					lRDV.nbElevesConcernes !== undefined &&
+				lRDV.nbElevesConcernes !== lNbFamillesParticipants
+			) {
+				return ObjetTraduction_1.GTraductions.getValeur(
+					"RDV.legendeParentSepares",
+				);
+			} else {
+				return "";
+			}
+		};
 		H.push(
 			IE.jsx.str(
 				"div",
@@ -1155,6 +1113,7 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 				),
 				IE.jsx.str("ie-btnselecteur", {
 					"ie-model": "publicCibleListeFamillesEleves",
+					"ie-tooltipdescribe": lJSXDescribe,
 					"aria-labelledby": this.ids.labelResponsables,
 					"aria-required": "true",
 				}),
@@ -1272,6 +1231,74 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 			IE.jsx.str("div", null, aStrEleveConcerne),
 		);
 	}
+	jsxModelBtnSelecteurResponsableRDV(aGenreRessource) {
+		return {
+			event: () => {
+				let lListePublicDonnee = new ObjetListeElements_1.ObjetListeElements();
+				if (
+					this.donnees.rdv &&
+					this.donnees.rdv.session &&
+					this.donnees.rdv.session.responsableRDV
+				) {
+					lListePublicDonnee.add(this.donnees.rdv.session.responsableRDV);
+				}
+				this.moteurDestinataires.ouvrirModaleSelectionPublic({
+					genreRessource: aGenreRessource,
+					listePublicDonnee: lListePublicDonnee,
+					avecCoche: false,
+					clbck: (aParam) => {
+						let lNbSelection = aParam.listePublicDonnee.count();
+						if (lNbSelection > 0 && lNbSelection !== 1) {
+							GApplication.getMessage().afficher({
+								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+								message:
+									ObjetTraduction_1.GTraductions.getValeur("RDV.unSeulRespRDV"),
+							});
+						} else {
+							this.donnees.rdv.session.responsableRDV =
+								aParam.listePublicDonnee && lNbSelection > 0
+									? aParam.listePublicDonnee.get(0)
+									: null;
+						}
+					},
+					eleve: GEtatUtilisateur.getMembre(),
+					avecFiltreSelonAcceptRdv: this.moteurRDV.estCtxDemandeDeRDV(),
+					avecDirEnseignant:
+						aGenreRessource === Enumere_Ressource_1.EGenreRessource.Personnel &&
+						this.moteurRDV.estCtxForcerDirEnseignant(),
+				});
+			},
+			getLibelle: () => {
+				if (this.donnees) {
+					let lRDV = this.donnees.rdv;
+					if (
+						lRDV &&
+						lRDV.session &&
+						lRDV.session.responsableRDV &&
+						lRDV.session.responsableRDV.getGenre() === aGenreRessource
+					) {
+						return lRDV.session.responsableRDV.getLibelle();
+					} else {
+						return aGenreRessource ===
+							Enumere_Ressource_1.EGenreRessource.Enseignant
+							? ObjetTraduction_1.GTraductions.getValeur(
+									"RDV.choisirProfesseur",
+								)
+							: ObjetTraduction_1.GTraductions.getValeur(
+									"RDV.choisirPersonnel",
+								);
+					}
+				}
+				return "";
+			},
+			getIcone: () => {
+				return aGenreRessource ===
+					Enumere_Ressource_1.EGenreRessource.Enseignant
+					? "icon_enseignant_prof"
+					: "icon_user";
+			},
+		};
+	}
 	composeEditRDVCtxNonResp() {
 		const H = [];
 		H.push(
@@ -1305,10 +1332,6 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 			),
 		);
 		let lStrRespRdv = "";
-		let lStrModelRespRdv = (0, jsx_1.jsxFuncAttr)(
-			"respRDV",
-			this.donnees.genreRessourceRespRdv,
-		);
 		switch (this.donnees.genreRessourceRespRdv) {
 			case Enumere_Ressource_1.EGenreRessource.Enseignant:
 				lStrRespRdv = ObjetTraduction_1.GTraductions.getValeur("Professeur");
@@ -1332,7 +1355,10 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 					lStrRespRdv,
 				),
 				IE.jsx.str("ie-btnselecteur", {
-					"ie-model": lStrModelRespRdv,
+					"ie-model": this.jsxModelBtnSelecteurResponsableRDV.bind(
+						this,
+						this.donnees.genreRessourceRespRdv,
+					),
 					"aria-labelledby": this.ids.labelRespRdv,
 					"aria-required": "true",
 				}),
@@ -1379,8 +1405,8 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 					max: MoteurRDV_1.MoteurRDV.C_MaxDureeRDV.toString(),
 					min: MoteurRDV_1.MoteurRDV.C_MinDureeRDV.toString(),
 					"ie-model": "inputDuree",
-					class: "round-style real-size",
-					size: "3",
+					class: "real-size",
+					style: { width: "5.4rem" },
 					required: true,
 				}),
 			),
@@ -1801,19 +1827,6 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 	setOptionsRDV(aOptions) {
 		this.optionsRDV = $.extend({}, aOptions);
 		this.setOptionsFenetre({ titre: this._getStrTitreFenetre() });
-	}
-	initFenetre() {
-		this.setOptionsFenetre({
-			titre: this._getStrTitreFenetre(),
-			largeur: 700,
-			listeBoutons: [
-				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
-				{
-					libelle: ObjetTraduction_1.GTraductions.getValeur("Valider"),
-					estValider: true,
-				},
-			],
-		});
 	}
 	_estCtxEditParNonResp() {
 		return (

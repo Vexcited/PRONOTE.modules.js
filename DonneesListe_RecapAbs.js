@@ -50,6 +50,8 @@ class DonneesListe_RecapAbs extends ObjetDonneesListe_1.ObjetDonneesListe {
 				return aParams.article.nbAbsRepas > 0;
 			case DonneesListe_RecapAbs.colonnes.nbAbsInternat:
 				return aParams.article.nbAbsInternat > 0;
+			case DonneesListe_RecapAbs.colonnes.nbRetardInternat:
+				return aParams.article.nbRetardInternat > 0;
 			case DonneesListe_RecapAbs.colonnes.nbRetards:
 				return aParams.article.nbRetards > 0;
 			case DonneesListe_RecapAbs.colonnes.nbInfirmerie:
@@ -91,6 +93,10 @@ class DonneesListe_RecapAbs extends ObjetDonneesListe_1.ObjetDonneesListe {
 			case DonneesListe_RecapAbs.colonnes.nbAbsInternat:
 				return aParams.article.nbAbsInternat > 0
 					? aParams.article.nbAbsInternat.toString()
+					: "-";
+			case DonneesListe_RecapAbs.colonnes.nbRetardInternat:
+				return aParams.article.nbRetardInternat > 0
+					? aParams.article.nbRetardInternat.toString()
 					: "-";
 			case DonneesListe_RecapAbs.colonnes.nbRetards:
 				return aParams.article.nbRetards > 0
@@ -141,6 +147,8 @@ class DonneesListe_RecapAbs extends ObjetDonneesListe_1.ObjetDonneesListe {
 					return this.ligneCumul.nbAbsRepas || "-";
 				case DonneesListe_RecapAbs.colonnes.nbAbsInternat:
 					return this.ligneCumul.nbAbsInternat || "-";
+				case DonneesListe_RecapAbs.colonnes.nbRetardInternat:
+					return this.ligneCumul.nbRetardInternat || "-";
 				case DonneesListe_RecapAbs.colonnes.nbRetards:
 					return this.ligneCumul.nbRetards || "-";
 				case DonneesListe_RecapAbs.colonnes.nbInfirmerie:
@@ -180,4 +188,5 @@ DonneesListe_RecapAbs.colonnes = {
 	nbRetards: "DL_RecapAbs_nbRet",
 	minutesRetard: "DL_RecapAbs_minutesRet",
 	nbInfirmerie: "DL_RecapAbs_nbInfirmerie",
+	nbRetardInternat: "DL_RecapAbs_nbRetardInternat",
 };

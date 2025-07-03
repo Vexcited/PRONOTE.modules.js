@@ -2,6 +2,7 @@ exports.Toast = exports.ETypeToast = void 0;
 const ObjetHtml_1 = require("ObjetHtml");
 const GUID_1 = require("GUID");
 const ObjetChaine_1 = require("ObjetChaine");
+const AccessApp_1 = require("AccessApp");
 var ETypeToast;
 (function (ETypeToast) {
 	ETypeToast["info"] = "info";
@@ -74,7 +75,7 @@ class Toast {
 			aParam,
 		);
 		Toast.fermer();
-		const lIdPere = GApplication.getIdConteneur();
+		const lIdPere = (0, AccessApp_1.getApp)().getIdConteneur();
 		const lConteneurPere = ObjetHtml_1.GHtml.getElement(lIdPere);
 		if (lConteneurPere) {
 			const lConteneurToast = document.createElement("div");
@@ -101,7 +102,7 @@ class Toast {
 		});
 	}
 	static fermer() {
-		const lIdPere = GApplication.getIdConteneur();
+		const lIdPere = (0, AccessApp_1.getApp)().getIdConteneur();
 		const lConteneurPere = ObjetHtml_1.GHtml.getElement(lIdPere);
 		if (lConteneurPere !== null && lConteneurPere !== undefined) {
 			const lConteneurToast = ObjetHtml_1.GHtml.getElement(uIdConteneurToast);

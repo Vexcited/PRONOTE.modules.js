@@ -1,20 +1,33 @@
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { ObjetFenetre_FichiersCloud } = require("ObjetFenetre_FichiersCloud.js");
-const { TypeClientRest } = require("TypeClientRest.js");
-Requetes.inscrire("GestionCloudIndex", ObjetRequeteSaisie);
-Requetes.inscrire("GestionCloudIndexAsync", ObjetRequeteSaisie);
-class ObjetFenetre_ConnexionCloudIndex extends ObjetFenetre {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetFenetre_ConnexionCloudIndex =
+	exports.ObjetRequeteSaisieGestionCloudIndexAsync =
+	exports.ObjetRequeteSaisieGestionCloudIndex =
+		void 0;
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const ObjetFenetre_FichiersCloud_1 = require("ObjetFenetre_FichiersCloud");
+const TypeClientRest_1 = require("TypeClientRest");
+class ObjetRequeteSaisieGestionCloudIndex extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
+exports.ObjetRequeteSaisieGestionCloudIndex =
+	ObjetRequeteSaisieGestionCloudIndex;
+CollectionRequetes_1.Requetes.inscrire(
+	"GestionCloudIndex",
+	ObjetRequeteSaisieGestionCloudIndex,
+);
+class ObjetRequeteSaisieGestionCloudIndexAsync extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
+exports.ObjetRequeteSaisieGestionCloudIndexAsync =
+	ObjetRequeteSaisieGestionCloudIndexAsync;
+CollectionRequetes_1.Requetes.inscrire(
+	"GestionCloudIndexAsync",
+	ObjetRequeteSaisieGestionCloudIndexAsync,
+);
+class ObjetFenetre_ConnexionCloudIndex extends ObjetFenetre_1.ObjetFenetre {
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
 			btnCreation: {
 				event: function () {
-					Requetes("GestionCloudIndexAsync", aInstance)
+					new ObjetRequeteSaisieGestionCloudIndexAsync(aInstance)
 						.lancerRequete()
 						.then((aParams) => {
 							if (aParams.JSONRapportSaisie.url) {
@@ -22,61 +35,63 @@ class ObjetFenetre_ConnexionCloudIndex extends ObjetFenetre {
 							}
 						});
 				},
-				getOptions: function () {
-					return { widthBoutonImage: 225 };
-				},
 			},
 			btnAssociation: {
 				event: function () {
 					aInstance
 						.getInstance(aInstance.identFenetreFichiersCloud)
 						.setDonnees({
-							service: TypeClientRest.crCloudIndex,
+							service: TypeClientRest_1.TypeClientRest.crCloudIndex,
 							inscriptionSeule: true,
-							callbackInscriptionSeule: function () {
-								this.fermer();
-							}.bind(aInstance),
+							callbackInscriptionSeule: () => {
+								aInstance.fermer();
+							},
 						});
-				},
-				getOptions: function () {
-					return { widthBoutonImage: 225 };
 				},
 			},
 		});
 	}
 	construireInstances() {
 		this.identFenetreFichiersCloud = this.addFenetre(
-			ObjetFenetre_FichiersCloud,
+			ObjetFenetre_FichiersCloud_1.ObjetFenetre_FichiersCloud,
 		);
 	}
 	composeContenu() {
 		const T = [];
 		T.push('<div style="min-width: 500px;">');
-		T.push("<p>" + GTraductions.getValeur("cloudIndex.explication") + "</p>");
+		T.push(
+			"<p>" +
+				ObjetTraduction_1.GTraductions.getValeur("cloudIndex.explication") +
+				"</p>",
+		);
 		T.push("<p>");
 		T.push(
 			'<span class="InlineBlock" style="width:235px;margin-right:1rem;">' +
-				GTraductions.getValeur("cloudIndex.pasEncoreCompte") +
+				ObjetTraduction_1.GTraductions.getValeur("cloudIndex.pasEncoreCompte") +
 				"</span>",
 		);
 		T.push(
 			'<ie-bouton ie-image="Image_CreationCompteCloudIndex" ie-model="btnCreation" title="' +
-				GTraductions.getValeur("cloudIndex.creationCompte") +
+				ObjetTraduction_1.GTraductions.getValeur("cloudIndex.creationCompte") +
 				'" class="AlignementMilieuVertical themeBoutonNeutre">' +
-				GTraductions.getValeur("cloudIndex.creationCompte") +
+				ObjetTraduction_1.GTraductions.getValeur("cloudIndex.creationCompte") +
 				"</ie-bouton>",
 		);
 		T.push("<br /><br />");
 		T.push(
 			'<span class="InlineBlock" style="width:235px;margin-right:1rem;">' +
-				GTraductions.getValeur("cloudIndex.dejaCompte") +
+				ObjetTraduction_1.GTraductions.getValeur("cloudIndex.dejaCompte") +
 				"</span>",
 		);
 		T.push(
 			'<ie-bouton ie-image="Image_AssociationCompteCloudIndex" ie-model="btnAssociation" title="' +
-				GTraductions.getValeur("cloudIndex.associationCompte") +
+				ObjetTraduction_1.GTraductions.getValeur(
+					"cloudIndex.associationCompte",
+				) +
 				'" class="AlignementMilieuVertical themeBoutonNeutre">' +
-				GTraductions.getValeur("cloudIndex.associationCompte") +
+				ObjetTraduction_1.GTraductions.getValeur(
+					"cloudIndex.associationCompte",
+				) +
 				"</ie-bouton>",
 		);
 		T.push("</p>");
@@ -84,4 +99,4 @@ class ObjetFenetre_ConnexionCloudIndex extends ObjetFenetre {
 		return T.join("");
 	}
 }
-module.exports = { ObjetFenetre_ConnexionCloudIndex };
+exports.ObjetFenetre_ConnexionCloudIndex = ObjetFenetre_ConnexionCloudIndex;

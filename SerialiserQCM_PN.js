@@ -1,8 +1,6 @@
-const { Serialiser_QCM } = require("Serialiser_QCM.js");
-class SerialiserQCM_PN extends Serialiser_QCM {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.SerialiserQCM_PN = void 0;
+const Serialiser_QCM_1 = require("Serialiser_QCM");
+class SerialiserQCM_PN extends Serialiser_QCM_1.Serialiser_QCM {
 	qcm(aElement, aJSON) {
 		const lPourValidationCP = super.qcm(aElement, aJSON);
 		if (!!aElement.listeContributeurs) {
@@ -19,4 +17,4 @@ class SerialiserQCM_PN extends Serialiser_QCM {
 		return lPourValidationCP || aElement.pourValidation();
 	}
 }
-module.exports = { SerialiserQCM_PN };
+exports.SerialiserQCM_PN = SerialiserQCM_PN;

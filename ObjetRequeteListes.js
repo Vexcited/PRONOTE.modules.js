@@ -17,50 +17,61 @@ const CollectionRequetes_1 = require("CollectionRequetes");
 const Enumere_Ressource_1 = require("Enumere_Ressource");
 class ObjetRequeteListes extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aDonneesRequete) {
-		const lEtatUtil = GApplication.getEtatUtilisateur();
-		const lEleve = lEtatUtil.Navigation.getRessource(
-			Enumere_Ressource_1.EGenreRessource.Eleve,
-		);
-		if (aDonneesRequete.avecPalier) {
-			this.JSON.palier = lEtatUtil.Navigation.getRessource(
-				Enumere_Ressource_1.EGenreRessource.Palier,
+		if (aDonneesRequete) {
+			const lEtatUtil = GApplication.getEtatUtilisateur();
+			const lEleve = lEtatUtil.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.Eleve,
 			);
-		}
-		if (aDonneesRequete.avecPilier) {
-			this.JSON.pilier = lEtatUtil.Navigation.getRessource(
-				Enumere_Ressource_1.EGenreRessource.Pilier,
-			);
-		}
-		if (aDonneesRequete.avecClasse) {
-			this.JSON.ressource = lEtatUtil.Navigation.getRessource(
-				Enumere_Ressource_1.EGenreRessource.Classe,
-			);
-		}
-		if (
-			aDonneesRequete.avecClasse &&
-			lEtatUtil.Navigation.getRessources(
-				Enumere_Ressource_1.EGenreRessource.Classe,
-			)
-		) {
-			this.JSON.listeRessources = lEtatUtil.Navigation.getRessources(
-				Enumere_Ressource_1.EGenreRessource.Classe,
-			).setSerialisateurJSON({ ignorerEtatsElements: true });
-		}
-		if (aDonneesRequete.avecPeriode) {
-			this.JSON.periode = lEtatUtil.Navigation.getRessource(
-				Enumere_Ressource_1.EGenreRessource.Periode,
-			);
-		}
-		if (aDonneesRequete.avecService) {
-			this.JSON.service = lEtatUtil.Navigation.getRessource(
-				Enumere_Ressource_1.EGenreRessource.Service,
-			);
-		}
-		if (aDonneesRequete.avecEleve && lEleve) {
-			this.JSON.eleve = lEleve;
-		}
-		if (aDonneesRequete.avecEleve && lEleve) {
-			this.JSON.classeDeLeleve = lEleve.classe;
+			if (aDonneesRequete.avecPalier) {
+				this.JSON.palier = lEtatUtil.Navigation.getRessource(
+					Enumere_Ressource_1.EGenreRessource.Palier,
+				);
+			}
+			if (aDonneesRequete.avecPilier) {
+				this.JSON.pilier = lEtatUtil.Navigation.getRessource(
+					Enumere_Ressource_1.EGenreRessource.Pilier,
+				);
+			}
+			if (aDonneesRequete.avecClasse) {
+				this.JSON.ressource = lEtatUtil.Navigation.getRessource(
+					Enumere_Ressource_1.EGenreRessource.Classe,
+				);
+			}
+			if (
+				aDonneesRequete.avecClasse &&
+				lEtatUtil.Navigation.getRessources(
+					Enumere_Ressource_1.EGenreRessource.Classe,
+				)
+			) {
+				this.JSON.listeRessources = lEtatUtil.Navigation.getRessources(
+					Enumere_Ressource_1.EGenreRessource.Classe,
+				).setSerialisateurJSON({ ignorerEtatsElements: true });
+			}
+			if (aDonneesRequete.avecPeriode) {
+				this.JSON.periode = lEtatUtil.Navigation.getRessource(
+					Enumere_Ressource_1.EGenreRessource.Periode,
+				);
+			}
+			if (aDonneesRequete.avecService) {
+				this.JSON.service = lEtatUtil.Navigation.getRessource(
+					Enumere_Ressource_1.EGenreRessource.Service,
+				);
+			}
+			if (aDonneesRequete.avecEleve && lEleve) {
+				this.JSON.eleve = lEleve;
+			}
+			if (aDonneesRequete.avecEleve && lEleve) {
+				this.JSON.classeDeLeleve = lEleve.classe;
+			}
+			if (aDonneesRequete.avecUniquementStagiaire) {
+				this.JSON.avecUniquementStagiaire = true;
+			}
+			if (aDonneesRequete.ressource) {
+				this.JSON.ressource = aDonneesRequete.ressource;
+			}
+			if (aDonneesRequete.listeRessources) {
+				this.JSON.listeRessources = aDonneesRequete.listeRessources;
+			}
 		}
 		return this.appelAsynchrone();
 	}

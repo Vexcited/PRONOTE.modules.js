@@ -4,12 +4,21 @@ const CollectionRequetes_1 = require("CollectionRequetes");
 class ObjetRequeteSaisieMemoEleve extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParametres) {
 		$.extend(this.JSON, aParametres);
+		const lEstValorisation = aParametres.estValorisation;
 		if (this.JSON.listeMemos) {
 			this.JSON.listeMemos.setSerialisateurJSON({
 				methodeSerialisation: function (aElement, aJSON) {
 					aJSON.date = aElement.date;
-					aJSON.publie = aElement.publie;
-					aJSON.publieVS = aElement.publieVS;
+					if (lEstValorisation) {
+						aJSON.commentaire = aElement.commentaire;
+						aJSON.estPubliee = aElement.estPubliee;
+						if (aElement.dateFinMiseEnEvidence) {
+							aJSON.dateFinMiseEnEvidence = aElement.dateFinMiseEnEvidence;
+						}
+					} else {
+						aJSON.publie = aElement.publie;
+						aJSON.publieVS = aElement.publieVS;
+					}
 				},
 			});
 		}

@@ -1,60 +1,42 @@
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-class ObjetFenetre_SelectionMotif extends ObjetFenetre {
+exports.ObjetFenetre_SelectionMotif = void 0;
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const MethodesObjet_1 = require("MethodesObjet");
+const AccessApp_1 = require("AccessApp");
+class ObjetFenetre_SelectionMotif extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
+		this.appSco = (0, AccessApp_1.getApp)();
 		this.aJustifier = false;
 		this.avecCoche = false;
-		this.droitFonctionnel = GApplication.droits.get(
-			TypeDroits.fonctionnalites.saisieEtendueAbsenceDepuisAppel,
+		this.droitFonctionnel = this.appSco.droits.get(
+			ObjetDroitsPN_1.TypeDroits.fonctionnalites
+				.saisieEtendueAbsenceDepuisAppel,
 		);
+		this.boutons = { annuler: 0, valider: 1 };
 		this.setOptionsFenetre({
 			largeur: 450,
 			hauteur: 600,
 			listeBoutons: this.droitFonctionnel
-				? [GTraductions.getValeur("Annuler"), GTraductions.getValeur("Valider")]
-				: [GTraductions.getValeur("Annuler")],
+				? [
+						ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+						ObjetTraduction_1.GTraductions.getValeur("Valider"),
+					]
+				: [ObjetTraduction_1.GTraductions.getValeur("Annuler")],
 		});
-		this.boutons = { annuler: 0, valider: 1 };
 	}
 	construireInstances() {
 		this.identListe = this.add(
-			ObjetListe,
-			_evenementSurListe.bind(this),
-			_initialiserListe,
+			ObjetListe_1.ObjetListe,
+			this._evenementSurListe.bind(this),
+			this._initialiserListe,
 		);
-	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
-			getDisplayCbJustifier: function () {
-				return (
-					aInstance.avecCoche &&
-					GApplication.droits.get(
-						TypeDroits.fonctionnalites.saisieEtendueAbsenceDepuisAppel,
-					)
-				);
-			},
-			cbJustifierMotifDAbsence: {
-				getValue: function () {
-					return !!aInstance.aJustifier;
-				},
-				setValue: function (aValeur) {
-					aInstance.aJustifier = aValeur;
-				},
-				getDisabled: function () {
-					return !aInstance.selection || !!aInstance.selection.recevable;
-				},
-			},
-		});
 	}
 	setDonnees(aListe, aAvecCB, aSelection) {
 		this.avecCoche = !!aAvecCB;
@@ -62,30 +44,58 @@ class ObjetFenetre_SelectionMotif extends ObjetFenetre {
 		this.surFixerTaille();
 		this.selection = null;
 		const lDonneesListe = new DonneesListe_SelectionMotif(
-			aListe || new ObjetListeElements(),
+			aListe || new ObjetListeElements_1.ObjetListeElements(),
 		);
 		this.getInstance(this.identListe).setDonnees(
 			lDonneesListe,
-			MethodesObjet.isNumeric(aSelection) ? aSelection : null,
+			MethodesObjet_1.MethodesObjet.isNumeric(aSelection) ? aSelection : null,
 		);
 	}
 	composeContenu() {
-		const T = [];
-		T.push('<div class="full-height flex-contain cols">');
-		T.push(
-			'<div id="' +
-				this.getNomInstance(this.identListe) +
-				'" class="fluid-bloc"></div>',
+		const lgetDisplayCbJustifier = () => {
+			return (
+				this.avecCoche &&
+				this.appSco.droits.get(
+					ObjetDroitsPN_1.TypeDroits.fonctionnalites
+						.saisieEtendueAbsenceDepuisAppel,
+				)
+			);
+		};
+		const lcbJustifierMotifDAbsence = () => {
+			return {
+				getValue: () => {
+					return !!this.aJustifier;
+				},
+				setValue: (aValeur) => {
+					this.aJustifier = aValeur;
+				},
+				getDisabled: () => {
+					return !this.selection || !!this.selection.recevable;
+				},
+			};
+		};
+		return IE.jsx.str(
+			"div",
+			{ class: "full-height flex-contain cols" },
+			IE.jsx.str("div", {
+				id: this.getNomInstance(this.identListe),
+				class: "fluid-bloc",
+			}),
+			IE.jsx.str(
+				"div",
+				{
+					class: "PetitEspaceGauche GrandEspaceHaut fix-bloc",
+					"ie-if": lgetDisplayCbJustifier,
+				},
+				IE.jsx.str(
+					"ie-checkbox",
+					{ "ie-model": lcbJustifierMotifDAbsence },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"AbsenceVS.SelectionnerEtJustifierMotifAbsence",
+					),
+				),
+			),
 		);
-		T.push(
-			'<div class="PetitEspaceGauche GrandEspaceHaut fix-bloc" ie-if="getDisplayCbJustifier">',
-			'<ie-checkbox ie-model="cbJustifierMotifDAbsence">',
-			GTraductions.getValeur("AbsenceVS.SelectionnerEtJustifierMotifAbsence"),
-			"</ie-checkbox>",
-			"</div>",
-		);
-		T.push("</div>");
-		return T.join("");
 	}
 	surValidation(aNumeroBouton) {
 		const lChecked = this.aJustifier;
@@ -97,38 +107,38 @@ class ObjetFenetre_SelectionMotif extends ObjetFenetre {
 			this.callback.appel(aNumeroBouton, this.selection, lChecked);
 		}
 	}
-}
-function _initialiserListe(aInstance) {
-	aInstance.setOptionsListe({
-		colonnes: [{ taille: "100%" }],
-		avecListeNeutre: true,
-		skin: ObjetListe.skin.flatDesign,
-		forcerOmbreScrollBottom: true,
-	});
-}
-function _evenementSurListe(aParametres) {
-	switch (aParametres.genreEvenement) {
-		case EGenreEvenementListe.Selection:
-			this.selection = aParametres.article;
-			this.aJustifier = !!aParametres.article.recevable;
-			this.$refreshSelf();
-			if (aParametres.surInteractionUtilisateur) {
-				if (!this.droitFonctionnel) {
-					this.surValidation(this.boutons.valider);
+	_initialiserListe(aInstance) {
+		aInstance.setOptionsListe({
+			colonnes: [{ taille: "100%" }],
+			avecListeNeutre: true,
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+			forcerOmbreScrollBottom: true,
+			ariaLabel: () =>
+				MethodesObjet_1.MethodesObjet.isFunction(this.optionsFenetre.titre)
+					? this.optionsFenetre.titre()
+					: this.optionsFenetre.titre || "",
+		});
+	}
+	_evenementSurListe(aParametres) {
+		switch (aParametres.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Selection:
+				this.selection = aParametres.article;
+				this.aJustifier = !!aParametres.article.recevable;
+				this.$refreshSelf();
+				if (aParametres.surInteractionUtilisateur) {
+					if (!this.droitFonctionnel) {
+						this.surValidation(this.boutons.valider);
+					}
 				}
-			}
-			break;
+				break;
+		}
 	}
 }
-class DonneesListe_SelectionMotif extends ObjetDonneesListeFlatDesign {
+exports.ObjetFenetre_SelectionMotif = ObjetFenetre_SelectionMotif;
+class DonneesListe_SelectionMotif extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees) {
 		super(aDonnees);
-		this.setOptions({
-			avecBoutonActionLigne: false,
-			avecEdition: false,
-			avecSuppression: false,
-			avecEvnt_Selection: true,
-		});
+		this.setOptions({ avecBoutonActionLigne: false, avecEvnt_Selection: true });
 	}
 	getZoneGauche(aParams) {
 		return aParams.article.couleur
@@ -149,13 +159,11 @@ class DonneesListe_SelectionMotif extends ObjetDonneesListeFlatDesign {
 	getTri() {
 		const lTris = [];
 		lTris.push(
-			ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.init((D) => {
 				return !D.nonConnu;
 			}),
 		);
-		lTris.push(ObjetTri.init("Libelle"));
+		lTris.push(ObjetTri_1.ObjetTri.init("Libelle"));
 		return lTris;
 	}
 }
-DonneesListe_SelectionMotif.colonnes = { libelle: "DLSelectMotif_libelle" };
-module.exports = { ObjetFenetre_SelectionMotif };

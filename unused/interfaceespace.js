@@ -7,7 +7,6 @@ require("DeclarationQRCode.js");
 const ObjetRequeteNavigation_1 = require("ObjetRequeteNavigation");
 require("UtilitaireQCM.js");
 const UtilitairePartenaire_1 = require("UtilitairePartenaire");
-require("PageNotes.js");
 const ObjetStyle_1 = require("ObjetStyle");
 const Invocateur_1 = require("Invocateur");
 const MethodesObjet_1 = require("MethodesObjet");
@@ -29,11 +28,10 @@ const Enumere_Onglet_1 = require("Enumere_Onglet");
 const UtilitaireContactVieScolaire_Espace_1 = require("UtilitaireContactVieScolaire_Espace");
 const ThemesPrimaire_1 = require("ThemesPrimaire");
 const InterfaceBandeauEntete_1 = require("InterfaceBandeauEntete");
-const InterfaceBandeauPied = require("InterfaceBandeauPied");
+const InterfaceBandeauPied_1 = require("InterfaceBandeauPied");
 const DeclarationOngletsEspace_1 = require("DeclarationOngletsEspace");
 const _ObjetInterfaceEspaceCP_1 = require("_ObjetInterfaceEspaceCP");
 const ObjetMenuContextuel_1 = require("ObjetMenuContextuel");
-const ObjetFenetre_Communication = require("ObjetFenetre_Communication");
 const ObjetDroitsPN_1 = require("ObjetDroitsPN");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const UtilitaireGestionCloudEtPDF_1 = require("UtilitaireGestionCloudEtPDF");
@@ -47,6 +45,14 @@ const ObjetRequeteAccesSecurisePageProfil_1 = require("ObjetRequeteAccesSecurise
 const OptionsPDFSco_1 = require("OptionsPDFSco");
 const UtilitaireSyntheseVocale_1 = require("UtilitaireSyntheseVocale");
 const Cache_1 = require("Cache");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const ObjetFenetre_Message_1 = require("ObjetFenetre_Message");
+const ObjetFenetre_EditionActualite_1 = require("ObjetFenetre_EditionActualite");
+const TypeGenreReponseInternetActualite_1 = require("TypeGenreReponseInternetActualite");
+const UtilitaireMessagerie_1 = require("UtilitaireMessagerie");
+const ObjetFenetre_DepotDocument_1 = require("ObjetFenetre_DepotDocument");
+const TypeCasier_1 = require("TypeCasier");
+const AccessApp_1 = require("AccessApp");
 class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspaceCP {
 	constructor(...aParams) {
 		super(...aParams);
@@ -56,7 +62,6 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 		if (ObjetSupport_1.Support.supportEventOnPopState) {
 			$(window).on("popstate", { instance: this }, this._surPopState);
 		}
-		this.temporaireAvecMenuContextuelSurBoutonCommunication = false;
 		this._creerTransformateurFlux();
 	}
 	construireInstances() {
@@ -65,13 +70,13 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 			this.evenementCommande,
 		);
 		this.IdentBandeauPied = this.add(
-			InterfaceBandeauPied,
+			InterfaceBandeauPied_1.ObjetAffichageBandeauPied,
 			this.evenementCommande,
 		);
 		this.IdentPage = this.add(InterfaceVide_1.InterfaceVide);
+		this.construireInstancesPDFEtImpression();
 	}
 	evenementSurMenuContextCloud() {
-		this.construireInstancesPDFEtImpression();
 		super.surEvenementSurImpression();
 	}
 	construireInstancesPDFEtImpression() {
@@ -138,10 +143,9 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 				"<div ",
 				ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_1.EGenreRole.Main),
 				' id="',
-				this.getInstance(this.IdentPage).getNom(),
+				this.getNomInstance(this.IdentPage),
 				'"',
-				' class="interface_affV_client',
-				!GNavigateur.isLayoutTactile ? " no-tactile" : "",
+				' class="interface_affV_client no-tactile',
 				this.etatUtilisateurSco.pourThemePrimaire() ? " prim-ludique" : "",
 				'">',
 				"</div>",
@@ -209,7 +213,7 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 				break;
 			}
 			case Enumere_Commande_1.EGenreCommande.Communication: {
-				this.evenementSurCommunication(false);
+				this.evenementSurCommunication();
 				break;
 			}
 			case Enumere_Commande_1.EGenreCommande.Tutoriel: {
@@ -231,7 +235,7 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 				break;
 		}
 	}
-	surEvenementSurImpression(aParams) {
+	async surEvenementSurImpression(aParams) {
 		let lModeGestion;
 		let lEstImpressionHtml = !!aParams && aParams.impressionHTML;
 		let lAvecParametresPDF = ![
@@ -274,7 +278,6 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 	}
 	surEvenementFenetre(aLigne, aService) {
 		const lInstance = this;
-		this.construireInstancesPDFEtImpression();
 		if (this.etatUtilisateurSco.EtatSaisie) {
 			this.applicationSco
 				.getMessage()
@@ -308,7 +311,7 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 	}
 	_surPopState(aEvent) {
 		const lInstance = aEvent.data.instance;
-		if (GNavigateur.getBloquerClavier()) {
+		if (ObjetNavigateur_1.Navigateur.getBloquerClavier()) {
 			lInstance._surForward = true;
 			window.history.forward();
 			return;
@@ -413,44 +416,8 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 	getEtatSaisie() {
 		return this.etatUtilisateurSco.EtatSaisie;
 	}
-	evenementSurCommunication(aAffichageDepuisDiscussion) {
-		if (ObjetFenetre_Communication) {
-			this.AffichageDepuisDiscussion = aAffichageDepuisDiscussion;
-			if (this.temporaireAvecMenuContextuelSurBoutonCommunication) {
-				this._ouvrirMenuContextuelSurBoutonCommunication();
-			} else {
-				ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
-					ObjetFenetre_Communication,
-					{
-						pere: this,
-						initialiser: function (aInstance) {
-							const lEstFenetreAllegee =
-								this.etatUtilisateurSco.GenreEspace ===
-								Enumere_Espace_1.EGenreEspace.Entreprise;
-							aInstance.setOptionsFenetre({
-								modale: true,
-								titre: ObjetTraduction_1.GTraductions.getValeur(
-									"fenetreCommunication.titre",
-								),
-								largeur: lEstFenetreAllegee
-									? 400
-									: aAffichageDepuisDiscussion
-										? 650
-										: 750,
-								hauteur: lEstFenetreAllegee ? 140 : 450,
-								listeBoutons: [
-									ObjetTraduction_1.GTraductions.getValeur("Fermer"),
-								],
-							});
-							aInstance.setModeAffichage(
-								aAffichageDepuisDiscussion,
-								lEstFenetreAllegee,
-							);
-						},
-					},
-				).afficher();
-			}
-		}
+	evenementSurCommunication() {
+		this._ouvrirMenuContextuelSurBoutonCommunication();
 	}
 	_ouvrirMenuContextuelSurBoutonCommunication() {
 		const lFncCreationItemMenuContextuel = (aInstanceMenu) => {
@@ -460,43 +427,10 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 				) &&
 				!this.applicationSco.droits.get(
 					ObjetDroitsPN_1.TypeDroits.communication.discussionInterdit,
-				) &&
-				[
-					Enumere_Espace_1.EGenreEspace.Professeur,
-					Enumere_Espace_1.EGenreEspace.PrimProfesseur,
-					Enumere_Espace_1.EGenreEspace.Etablissement,
-					Enumere_Espace_1.EGenreEspace.Administrateur,
-					Enumere_Espace_1.EGenreEspace.Eleve,
-					Enumere_Espace_1.EGenreEspace.Parent,
-					Enumere_Espace_1.EGenreEspace.PrimParent,
-					Enumere_Espace_1.EGenreEspace.Accompagnant,
-					Enumere_Espace_1.EGenreEspace.PrimAccompagnant,
-					Enumere_Espace_1.EGenreEspace.Tuteur,
-					Enumere_Espace_1.EGenreEspace.Mobile_Tuteur,
-					Enumere_Espace_1.EGenreEspace.PrimDirection,
-				].includes(this.etatUtilisateurSco.GenreEspace);
-			const lAvecInformations =
-				[
-					Enumere_Espace_1.EGenreEspace.Professeur,
-					Enumere_Espace_1.EGenreEspace.PrimProfesseur,
-					Enumere_Espace_1.EGenreEspace.Etablissement,
-					Enumere_Espace_1.EGenreEspace.Administrateur,
-					Enumere_Espace_1.EGenreEspace.PrimDirection,
-				].includes(this.etatUtilisateurSco.GenreEspace) &&
-				this.applicationSco.droits.get(
-					ObjetDroitsPN_1.TypeDroits.actualite.avecSaisieActualite,
 				);
-			const lAvecSondages =
-				[
-					Enumere_Espace_1.EGenreEspace.Professeur,
-					Enumere_Espace_1.EGenreEspace.PrimProfesseur,
-					Enumere_Espace_1.EGenreEspace.Etablissement,
-					Enumere_Espace_1.EGenreEspace.Administrateur,
-					Enumere_Espace_1.EGenreEspace.PrimDirection,
-				].includes(this.etatUtilisateurSco.GenreEspace) &&
-				this.applicationSco.droits.get(
-					ObjetDroitsPN_1.TypeDroits.actualite.avecSaisieActualite,
-				);
+			const lAvecInfoSondage = this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.actualite.avecSaisieActualite,
+			);
 			if (lAvecDiscussion) {
 				aInstanceMenu.add(
 					ObjetTraduction_1.GTraductions.getValeur(
@@ -504,111 +438,121 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 					),
 					true,
 					() => {
-						const lDonnees = {
-							Onglet: Enumere_Onglet_1.EGenreOnglet.Messagerie,
-							avecActionSaisie: true,
-						};
-						this.etatUtilisateurSco.setPage(lDonnees);
-						this.etatUtilisateurSco.Navigation.OptionsOnglet = lDonnees;
-						if (this.etatUtilisateurSco.getGenreOnglet()) {
-							let lGenreOnglet = this.etatUtilisateurSco.getGenreOnglet();
-							if (
-								this.etatUtilisateurSco.listeOngletsInvisibles.indexOf(
-									lGenreOnglet,
-								) === -1
-							) {
-								this.changementManuelOnglet(
-									this.etatUtilisateurSco.getGenreOnglet(),
-								);
-							}
-						}
+						ObjetFenetre_Message_1.ObjetFenetre_Message.creerFenetreDiscussion(
+							this,
+							{
+								genresRessources:
+									ObjetFenetre_Message_1.ObjetFenetre_Message.getRessourcesDefaut(),
+								avecListeDiffusion:
+									UtilitaireMessagerie_1.UtilitaireMessagerie.avecListeDiffusionSelonEspace(),
+							},
+							{ avecChoixDestinataires: true },
+						);
 					},
+					{ icon: "icon_nouvelle_discussion" },
 				);
 			}
-			if (lAvecInformations || lAvecSondages) {
+			if (lAvecInfoSondage) {
 				const lFnSurClicItemInfosSondages = (aEstInformations) => {
-					const lDonnees = {
-						Onglet: Enumere_Onglet_1.EGenreOnglet.Informations,
-						avecActionSaisie: true,
-						creerInformation: aEstInformations,
-					};
-					this.etatUtilisateurSco.setPage(lDonnees);
-					this.etatUtilisateurSco.Navigation.OptionsOnglet = lDonnees;
-					if (this.etatUtilisateurSco.getGenreOnglet()) {
-						let lGenreOnglet = this.etatUtilisateurSco.getGenreOnglet();
-						if (
-							this.etatUtilisateurSco.listeOngletsInvisibles.indexOf(
-								lGenreOnglet,
-							) === -1
-						) {
-							this.changementManuelOnglet(
-								this.etatUtilisateurSco.getGenreOnglet(),
-							);
-						}
-					}
-				};
-				if (lAvecInformations) {
-					aInstanceMenu.add(
-						ObjetTraduction_1.GTraductions.getValeur(
-							"fenetreCommunication.bouton.information",
-						),
-						true,
-						() => {
-							lFnSurClicItemInfosSondages(true);
-						},
-					);
-				}
-				if (lAvecSondages) {
-					aInstanceMenu.add(
-						ObjetTraduction_1.GTraductions.getValeur(
-							"fenetreCommunication.bouton.sondage",
-						),
-						true,
-						() => {
-							lFnSurClicItemInfosSondages(false);
-						},
-					);
-				}
-			}
-			aInstanceMenu.add(
-				ObjetTraduction_1.GTraductions.getValeur(
-					"fenetreCommunication.bouton.fenetreCommunication",
-				),
-				true,
-				() => {
-					const lFenetreComm = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
-						ObjetFenetre_Communication,
+					const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+						ObjetFenetre_EditionActualite_1.ObjetFenetre_EditionActualite,
 						{
 							pere: this,
 							initialiser: function (aInstance) {
-								const lEstFenetreAllegee =
-									this.etatUtilisateurSco.GenreEspace ===
-									Enumere_Espace_1.EGenreEspace.Entreprise;
 								aInstance.setOptionsFenetre({
-									modale: true,
-									titre: ObjetTraduction_1.GTraductions.getValeur(
-										"fenetreCommunication.titre",
-									),
-									largeur: lEstFenetreAllegee
-										? 400
-										: this.AffichageDepuisDiscussion
-											? 650
-											: 750,
-									hauteur: lEstFenetreAllegee ? 140 : 450,
+									titre: aEstInformations
+										? ObjetTraduction_1.GTraductions.getValeur(
+												"actualites.creerInfo",
+											)
+										: ObjetTraduction_1.GTraductions.getValeur(
+												"actualites.creerSondage",
+											),
+									largeur: 750,
+									hauteur: 700,
 									listeBoutons: [
-										ObjetTraduction_1.GTraductions.getValeur("Fermer"),
+										ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+										ObjetTraduction_1.GTraductions.getValeur("Valider"),
 									],
 								});
-								aInstance.setModeAffichage(
-									this.AffichageDepuisDiscussion,
-									lEstFenetreAllegee,
-								);
 							},
 						},
 					);
-					lFenetreComm.afficher();
-				},
-			);
+					lFenetre.setDonnees({
+						donnee: null,
+						creation: true,
+						genreReponse: aEstInformations
+							? TypeGenreReponseInternetActualite_1
+									.TypeGenreReponseInternetActualite.AvecAR
+							: TypeGenreReponseInternetActualite_1
+									.TypeGenreReponseInternetActualite.ChoixUnique,
+						forcerAR: this.applicationSco.droits.get(
+							ObjetDroitsPN_1.TypeDroits.fonctionnalites.forcerARInfos,
+						),
+					});
+				};
+				aInstanceMenu.add(
+					ObjetTraduction_1.GTraductions.getValeur(
+						"fenetreCommunication.bouton.information",
+					),
+					true,
+					() => {
+						lFnSurClicItemInfosSondages(true);
+					},
+					{ icon: "icon_diffuser_information" },
+				);
+				aInstanceMenu.add(
+					ObjetTraduction_1.GTraductions.getValeur(
+						"fenetreCommunication.bouton.sondage",
+					),
+					true,
+					() => {
+						lFnSurClicItemInfosSondages(false);
+					},
+					{ icon: "icon_diffuser_sondage" },
+				);
+			}
+			if (
+				ObjetFenetre_DepotDocument_1.ObjetFenetre_DepotDocument.avecDroitSaisieIntervenant()
+			) {
+				const lTypeConsultation =
+					TypeCasier_1.TypeConsultationDocumentCasier.CoDC_Depositaire;
+				const lInfosRubrique =
+					ObjetFenetre_DepotDocument_1.ObjetFenetre_DepotDocument.getRubriqueDepot(
+						lTypeConsultation,
+						true,
+					);
+				aInstanceMenu.add(
+					lInfosRubrique.libelle,
+					true,
+					() => {
+						ObjetFenetre_DepotDocument_1.ObjetFenetre_DepotDocument.ouvrirCreation(
+							lTypeConsultation,
+						);
+					},
+					{ icon: lInfosRubrique.icon },
+				);
+			}
+			if (
+				ObjetFenetre_DepotDocument_1.ObjetFenetre_DepotDocument.avecDroitSaisieResponsable()
+			) {
+				const lTypeConsultation =
+					TypeCasier_1.TypeConsultationDocumentCasier.CoDC_DepResponsable;
+				const lInfosRubrique =
+					ObjetFenetre_DepotDocument_1.ObjetFenetre_DepotDocument.getRubriqueDepot(
+						lTypeConsultation,
+						true,
+					);
+				aInstanceMenu.add(
+					lInfosRubrique.libelle,
+					true,
+					() => {
+						ObjetFenetre_DepotDocument_1.ObjetFenetre_DepotDocument.ouvrirCreation(
+							lTypeConsultation,
+						);
+					},
+					{ icon: lInfosRubrique.icon },
+				);
+			}
 		};
 		ObjetMenuContextuel_1.ObjetMenuContextuel.afficher({
 			pere: this,
@@ -633,8 +577,15 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 		) {
 			new ObjetRequeteAccesSecurisePageProfil_1.ObjetRequeteAccesSecurisePageProfil(
 				this,
-				this.actionSurRequetePageProfil,
-			).lancerRequete();
+			)
+				.lancerRequete()
+				.then((aReponse) => {
+					this.actionSurRequetePageProfil(
+						aReponse.titre,
+						aReponse.message,
+						aReponse.url,
+					);
+				});
 		}
 	}
 	actionSurRequetePageProfil(aTitre, aMessage, aUrl) {
@@ -797,11 +748,9 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 		let lService = !!aService ? aService.getGenre() : null;
 		lRessources.setSerialisateurJSON({ ignorerEtatsElements: true });
 		let lEtat = this.etatUtilisateurSco.impressionCourante.callback();
-		this.construireInstancesPDFEtImpression();
-		this.getInstance(this.identFenetreGenerationPdf).creerInstanceFenetrePDF(
-			lEtat,
-			this.getNom() + "_zonepdf",
-		);
+		const lFenetre = this.getInstance(this.identFenetreGenerationPdf);
+		lFenetre.creerInstanceFenetrePDF(lEtat);
+		lFenetre.free();
 		let lOptions = !!lEtat
 			? this.etatUtilisateurSco.parametresGenerationPDF[
 					lEtat.genreGenerationPDF
@@ -828,6 +777,9 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 		}
 		Invocateur_1.Invocateur.evenement(
 			Invocateur_1.ObjetInvocateur.events.fermerFenetres,
+		);
+		Invocateur_1.Invocateur.evenement(
+			Invocateur_1.ObjetInvocateur.events.nettoyerJSX,
 		);
 		Invocateur_1.Invocateur.evenement(
 			Invocateur_1.ObjetInvocateur.events.activationImpression,
@@ -922,14 +874,11 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 		const lLibelleOnglet = lOnglet
 			? ObjetChaine_1.GChaine.toTitle(
 					lOnglet.libelleLong || lOnglet.getLibelle(),
-				) + " - "
+				)
 			: "";
-		const lLibelleProduit =
-			(this.parametresSco.nomProduit
-				? this.parametresSco.nomProduit
-				: this.applicationSco.nomProduit) +
-			(this.parametresSco.versionPN ? " " + this.parametresSco.versionPN : "");
-		document.title = `${lLibelleOnglet}${this.parametresSco.NomEspace} - ${lLibelleProduit} - ${this.parametresSco.NomEtablissementConnexion}`;
+		(0, AccessApp_1.getApp)()
+			.getObjetParametres()
+			.setDocumentTitle(lLibelleOnglet);
 		this.surResizeInterface();
 		if (this.Instances[this.IdentPage]) {
 			this.Instances[this.IdentPage].initialiser();
@@ -957,6 +906,7 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 			this.setFocusPremierObjet();
 		}
 		this.etatUtilisateurSco.resetPage();
+		Invocateur_1.Invocateur.evenement("apresNavigationOngletDesktop");
 	}
 	_surValider() {
 		const lInstance = this.getInstance(this.IdentPage);

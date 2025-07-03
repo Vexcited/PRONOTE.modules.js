@@ -3,7 +3,6 @@ const GUID_1 = require("GUID");
 const ObjetHtml_1 = require("ObjetHtml");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetListeElements_1 = require("ObjetListeElements");
-const ObjetChaine_1 = require("ObjetChaine");
 const jsx_1 = require("jsx");
 const UtilitaireWidget = {
 	parametres: { avecFermer: false, avecToutVoir: false, avecCompteur: false },
@@ -44,32 +43,22 @@ const UtilitaireWidget = {
 			contenu: UtilitaireWidget.composeContenuWidget(aWidget),
 		});
 	},
-	composeTitreWidget(aWidget) {
-		const lExistePage =
+	existePageRedirection(aWidget) {
+		let lExiste =
 			(aWidget.page &&
 				(GEtatUtilisateur.existeGenreOnglet
 					? GEtatUtilisateur.existeGenreOnglet(aWidget.page.Onglet)
 					: true)) ||
-			aWidget.getPage;
+			!!aWidget.getPage;
+		return (
+			lExiste &&
+			(!aWidget.existePageRedirection || aWidget.existePageRedirection())
+		);
+	},
+	composeTitreWidget(aWidget) {
+		const lExistePage = UtilitaireWidget.existePageRedirection(aWidget);
 		const H = [];
 		if (aWidget.titre) {
-			const lAttrSupplementairesTitre = [];
-			if (!aWidget.hint && !aWidget.titreFixe) {
-				lAttrSupplementairesTitre.push("ie-ellipsis");
-			}
-			if (lExistePage) {
-				lAttrSupplementairesTitre.push(
-					'ie-node="boutons.surToutVoir(' + aWidget.genre + ')"',
-				);
-				lAttrSupplementairesTitre.push('class="clickable"');
-				lAttrSupplementairesTitre.push(
-					'aria-describedby="' +
-						aWidget.id +
-						UtilitaireWidget.suffixIdToutVoir +
-						'"',
-				);
-			}
-			lAttrSupplementairesTitre.push('id="' + aWidget.id + '_TitreText"');
 			const lTitre =
 				aWidget.titre +
 				(aWidget.nbrElements > 0 &&
@@ -78,24 +67,35 @@ const UtilitaireWidget = {
 					? " (" + aWidget.nbrElements + ")"
 					: "");
 			H.push(
-				'<h2 tabindex="0" ',
-				lAttrSupplementairesTitre.join(" "),
-				aWidget.hint
-					? ' aria-label="' +
-							ObjetChaine_1.GChaine.toTitle(lTitre + " - " + aWidget.hint) +
-							'"'
-					: "",
-				">",
-				"<span>",
-				lTitre,
-				"</span>",
-				"</h2>",
+				IE.jsx.str(
+					"h2",
+					{
+						class: lExistePage ? "clickable" : false,
+						"ie-ellipsis": !aWidget.hint && !aWidget.titreFixe,
+					},
+					IE.jsx.str(
+						"span",
+						{
+							id: aWidget.id + "_TitreText",
+							tabindex: "0",
+							"ie-node": lExistePage
+								? (0, jsx_1.jsxFuncAttr)("boutons.surToutVoir", aWidget.genre)
+								: false,
+							role: lExistePage ? "link" : false,
+							"ie-tooltipdescribe": lExistePage
+								? (aWidget.hint ? aWidget.hint + "\n" : "") +
+									ObjetTraduction_1.GTraductions.getValeur(
+										"accueil.hint.toutVoir",
+									)
+								: false,
+						},
+						lTitre,
+					),
+				),
 			);
 		} else {
 			H.push(
-				'<h2 tabindex="0"  class="wai_hidden" id="' +
-					aWidget.id +
-					'_TitreText">',
+				'<h2 class="sr-only" id="' + aWidget.id + '_TitreText">',
 				aWidget.hint ? aWidget.hint : "",
 				"</h2>",
 			);
@@ -110,16 +110,18 @@ const UtilitaireWidget = {
 						: ObjetTraduction_1.GTraductions.getValeur("accueil.hint.toutVoir"),
 				),
 			);
+		} else if (aWidget.infosURLExterne) {
+			const lInfos = aWidget.infosURLExterne();
+			if (lInfos) {
+				H.push(UtilitaireWidget.composeLienExterne(aWidget, lInfos));
+			}
 		}
 		if (aWidget && aWidget.avecActualisation) {
 			H.push(
 				IE.jsx.str("i", {
 					role: "button",
 					tabindex: "0",
-					"aria-label": ObjetTraduction_1.GTraductions.getValeur(
-						"accueil.hint.refresh",
-					),
-					title: ObjetTraduction_1.GTraductions.getValeur(
+					"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
 						"accueil.hint.refresh",
 					),
 					id: aWidget.id + UtilitaireWidget.suffixIdActualiser,
@@ -136,13 +138,10 @@ const UtilitaireWidget = {
 				IE.jsx.str("i", {
 					role: "button",
 					tabindex: "0",
-					"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+					"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
 						"accueil.hint.fermer",
 					),
 					class: "as-button bt-close icon icon_fermeture_widget",
-					title: ObjetTraduction_1.GTraductions.getValeur(
-						"accueil.hint.fermer",
-					),
 					"ie-node": (0, jsx_1.jsxFuncAttr)("boutons.surFermer", aWidget.genre),
 				}),
 			);
@@ -152,7 +151,9 @@ const UtilitaireWidget = {
 			aWidget.listeElementsGraphiques.length
 		) {
 			aWidget.listeElementsGraphiques.forEach((D) => {
-				!!D.htmlMrFiche ? H.push(D.htmlMrFiche) : "";
+				if (!!D.htmlMrFiche) {
+					H.push(D.htmlMrFiche);
+				}
 			});
 		}
 		H.push("</div>");
@@ -168,7 +169,7 @@ const UtilitaireWidget = {
 			H.push('<div class="filtre-conteneur">');
 			aWidget.listeElementsGraphiques.forEach((D) => {
 				if (!!D.id) {
-					H.push('<div id="' + D.id + '" ></div>');
+					H.push('<div id="' + D.id + '"></div>');
 				} else if (!!D.html) {
 					H.push(D.html);
 				}
@@ -186,7 +187,7 @@ const UtilitaireWidget = {
 		H.push(
 			aWidget.afficherMessage && aWidget.message
 				? UtilitaireWidget.composeMessageAucuneDonnee(aWidget)
-				: aWidget.html,
+				: aWidget.getHtml(),
 		);
 		H.push("</div>");
 		H.push(
@@ -211,13 +212,16 @@ const UtilitaireWidget = {
 				"hideActualiser",
 			);
 		}
-		ObjetHtml_1.GHtml.setHtml(
-			lWidget.id + UtilitaireWidget.suffixIdContenu,
-			lWidget.afficherMessage && lWidget.message
-				? UtilitaireWidget.composeMessageAucuneDonnee(lWidget)
-				: lWidget.html,
-			{ controleur: aInstanceWidget.controleur },
-		);
+		const lIdContenu = lWidget.id + UtilitaireWidget.suffixIdContenu;
+		if (ObjetHtml_1.GHtml.elementExiste(lIdContenu)) {
+			ObjetHtml_1.GHtml.setHtml(
+				lIdContenu,
+				lWidget.afficherMessage && lWidget.message
+					? UtilitaireWidget.composeMessageAucuneDonnee(lWidget)
+					: lWidget.getHtml(),
+				{ controleur: aInstanceWidget.controleur },
+			);
+		}
 		ObjetHtml_1.GHtml.setHtml(
 			lWidget.id + "_TitreText",
 			lWidget.titre +
@@ -230,7 +234,7 @@ const UtilitaireWidget = {
 	composeMessageAucuneDonnee(aWidget, aMessage) {
 		const H = [];
 		H.push(
-			'<div class="no-events" tabindex="0" aria-label="',
+			'<div class="no-events" aria-label="',
 			aWidget && aWidget.message ? aWidget.message : aMessage,
 			'"><p>',
 			aWidget && aWidget.message ? aWidget.message : aMessage,
@@ -239,15 +243,46 @@ const UtilitaireWidget = {
 		return H.join("");
 	},
 	composeToutVoir(aWidget, aTrad) {
-		return IE.jsx.str("i", {
-			id: aWidget.id + UtilitaireWidget.suffixIdToutVoir,
-			role: "button",
-			title: aTrad,
-			class: "as-button bt-widget icon icon_affichage_widget",
-			"ie-node": (0, jsx_1.jsxFuncAttr)("boutons.surToutVoir", aWidget.genre),
-			tabindex: "0",
-			"aria-label": aTrad,
-		});
+		return IE.jsx.str(
+			"ie-bouton",
+			{
+				id: aWidget.id + UtilitaireWidget.suffixIdToutVoir,
+				role: "link",
+				class: "small-bt themeBoutonNeutre bg-white",
+				"ie-icon": "icon_affichage_widget",
+				"ie-node": (0, jsx_1.jsxFuncAttr)("boutons.surToutVoir", aWidget.genre),
+				tabindex: "0",
+				"ie-tooltiplabel": aTrad,
+			},
+			ObjetTraduction_1.GTraductions.getValeur("accueil.toutVoir"),
+		);
+	},
+	composeLienExterne(aWidget, aInfos) {
+		const lTooltip = () => {
+			let lResult = "";
+			const lInfos = aWidget.infosURLExterne();
+			if (lInfos) {
+				lResult = lInfos.titre;
+			}
+			return lResult;
+		};
+		return IE.jsx.str(
+			"ie-bouton",
+			{
+				id: aWidget.id + UtilitaireWidget.suffixIdToutVoir,
+				role: "link",
+				class: "small-bt themeBoutonNeutre bg-white",
+				"ie-icon": "icon_external_link",
+				"ie-node": (0, jsx_1.jsxFuncAttr)(
+					"boutons.surLienExterne",
+					aWidget.genre,
+				),
+				tabindex: "0",
+				"ie-tooltiplabel": lTooltip,
+			},
+			aInfos.libelle ||
+				ObjetTraduction_1.GTraductions.getValeur("accueil.lienExterne"),
+		);
 	},
 	actualiserFooter(aWidget) {
 		const lJQFooter = $("#" + aWidget.id + UtilitaireWidget.suffixIdFooter);
@@ -262,14 +297,14 @@ const UtilitaireWidget = {
 			}
 			if (lNbElementsAffichables > 0) {
 				lJQFooter.show();
-				lJQFooter.html(
+				lJQFooter.ieHtml(
 					IE.jsx.str(
 						"a",
 						{
 							class: "btn-collapse",
 							tabindex: "0",
 							role: "button",
-							"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+							"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
 								"accueil.hintAfficherElements",
 							),
 						},

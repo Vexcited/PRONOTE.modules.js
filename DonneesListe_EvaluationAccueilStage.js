@@ -1,9 +1,7 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const {
-	TypeEtatSatisfaction,
-	TypeEtatSatisfactionUtil,
-} = require("TypeEtatSatisfaction.js");
-class DonneesListe_EvaluationAccueilStage extends ObjetDonneesListe {
+exports.DonneesListe_EvaluationAccueilStage = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const TypeEtatSatisfaction_1 = require("TypeEtatSatisfaction");
+class DonneesListe_EvaluationAccueilStage extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aEditable) {
 		super(aDonnees);
 		this.editable = aEditable;
@@ -36,82 +34,81 @@ class DonneesListe_EvaluationAccueilStage extends ObjetDonneesListe {
 	}
 	getClass(aParams) {
 		if (
-			aParams.idColonne ===
+			aParams.idColonne !==
 			DonneesListe_EvaluationAccueilStage.colonnes.intitule
 		) {
-			return "";
-		} else {
 			return "AlignementMilieu";
 		}
+		return "";
 	}
 	getValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_EvaluationAccueilStage.colonnes.intitule:
 				return aParams.article.getLibelle();
 			case DonneesListe_EvaluationAccueilStage.colonnes.tresInsatisfait:
-				return TypeEtatSatisfactionUtil.getIcon(
-					TypeEtatSatisfaction.Tes_TresInsatisfait,
+				return TypeEtatSatisfaction_1.TypeEtatSatisfactionUtil.getIcon(
+					TypeEtatSatisfaction_1.TypeEtatSatisfaction.Tes_TresInsatisfait,
 					{
 						class: "Texte14",
 						actif:
 							aParams.article.typeSatisfaction ===
-							TypeEtatSatisfaction.Tes_TresInsatisfait,
+							TypeEtatSatisfaction_1.TypeEtatSatisfaction.Tes_TresInsatisfait,
 						nonEditable: !this.editable,
 					},
 				);
 			case DonneesListe_EvaluationAccueilStage.colonnes.insatisfait:
-				return TypeEtatSatisfactionUtil.getIcon(
-					TypeEtatSatisfaction.Tes_Insatisfait,
+				return TypeEtatSatisfaction_1.TypeEtatSatisfactionUtil.getIcon(
+					TypeEtatSatisfaction_1.TypeEtatSatisfaction.Tes_Insatisfait,
 					{
 						class: "Texte14",
 						actif:
 							aParams.article.typeSatisfaction ===
-							TypeEtatSatisfaction.Tes_Insatisfait,
+							TypeEtatSatisfaction_1.TypeEtatSatisfaction.Tes_Insatisfait,
 						nonEditable: !this.editable,
 					},
 				);
 			case DonneesListe_EvaluationAccueilStage.colonnes.satisfait:
-				return TypeEtatSatisfactionUtil.getIcon(
-					TypeEtatSatisfaction.Tes_Satisfait,
+				return TypeEtatSatisfaction_1.TypeEtatSatisfactionUtil.getIcon(
+					TypeEtatSatisfaction_1.TypeEtatSatisfaction.Tes_Satisfait,
 					{
 						class: "Texte14",
 						actif:
 							aParams.article.typeSatisfaction ===
-							TypeEtatSatisfaction.Tes_Satisfait,
+							TypeEtatSatisfaction_1.TypeEtatSatisfaction.Tes_Satisfait,
 						nonEditable: !this.editable,
 					},
 				);
 			case DonneesListe_EvaluationAccueilStage.colonnes.tresSatisfait:
-				return TypeEtatSatisfactionUtil.getIcon(
-					TypeEtatSatisfaction.Tes_TresSatisfait,
+				return TypeEtatSatisfaction_1.TypeEtatSatisfactionUtil.getIcon(
+					TypeEtatSatisfaction_1.TypeEtatSatisfaction.Tes_TresSatisfait,
 					{
 						class: "Texte14",
 						actif:
 							aParams.article.typeSatisfaction ===
-							TypeEtatSatisfaction.Tes_TresSatisfait,
+							TypeEtatSatisfaction_1.TypeEtatSatisfaction.Tes_TresSatisfait,
 						nonEditable: !this.editable,
 					},
 				);
 		}
 		return "";
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_EvaluationAccueilStage.colonnes.tresInsatisfait:
-				return TypeEtatSatisfactionUtil.getLibelle(
-					TypeEtatSatisfaction.Tes_TresInsatisfait,
+				return TypeEtatSatisfaction_1.TypeEtatSatisfactionUtil.getLibelle(
+					TypeEtatSatisfaction_1.TypeEtatSatisfaction.Tes_TresInsatisfait,
 				);
 			case DonneesListe_EvaluationAccueilStage.colonnes.insatisfait:
-				return TypeEtatSatisfactionUtil.getLibelle(
-					TypeEtatSatisfaction.Tes_Insatisfait,
+				return TypeEtatSatisfaction_1.TypeEtatSatisfactionUtil.getLibelle(
+					TypeEtatSatisfaction_1.TypeEtatSatisfaction.Tes_Insatisfait,
 				);
 			case DonneesListe_EvaluationAccueilStage.colonnes.satisfait:
-				return TypeEtatSatisfactionUtil.getLibelle(
-					TypeEtatSatisfaction.Tes_Satisfait,
+				return TypeEtatSatisfaction_1.TypeEtatSatisfactionUtil.getLibelle(
+					TypeEtatSatisfaction_1.TypeEtatSatisfaction.Tes_Satisfait,
 				);
 			case DonneesListe_EvaluationAccueilStage.colonnes.tresSatisfait:
-				return TypeEtatSatisfactionUtil.getLibelle(
-					TypeEtatSatisfaction.Tes_TresSatisfait,
+				return TypeEtatSatisfaction_1.TypeEtatSatisfactionUtil.getLibelle(
+					TypeEtatSatisfaction_1.TypeEtatSatisfaction.Tes_TresSatisfait,
 				);
 		}
 		return "";
@@ -119,9 +116,9 @@ class DonneesListe_EvaluationAccueilStage extends ObjetDonneesListe {
 	getTypeValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_EvaluationAccueilStage.colonnes.intitule:
-				return ObjetDonneesListe.ETypeCellule.Texte;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 		}
-		return ObjetDonneesListe.ETypeCellule.Html;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 	}
 	static init(aInstance) {
 		const lColonnes = [];
@@ -156,6 +153,8 @@ class DonneesListe_EvaluationAccueilStage extends ObjetDonneesListe {
 		});
 	}
 }
+exports.DonneesListe_EvaluationAccueilStage =
+	DonneesListe_EvaluationAccueilStage;
 DonneesListe_EvaluationAccueilStage.colonnes = {
 	intitule: "listeEvaluationAccueilStageIntitule",
 	tresInsatisfait: "listeEvaluationAccueilStageTresInsatisfait",
@@ -163,4 +162,3 @@ DonneesListe_EvaluationAccueilStage.colonnes = {
 	satisfait: "listeEvaluationAccueilStageSatisfait",
 	tresSatisfait: "listeEvaluationAccueilStageTresSatisfait",
 };
-module.exports = { DonneesListe_EvaluationAccueilStage };

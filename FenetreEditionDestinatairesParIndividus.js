@@ -1,18 +1,19 @@
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GUID } = require("GUID.js");
-const { GHtml } = require("ObjetHtml.js");
-class FenetreEditionDestinatairesParIndividus extends ObjetFenetre {
-	constructor(...aParams) {
-		super(...aParams);
+exports.FenetreEditionDestinatairesParIndividus = void 0;
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const GUID_1 = require("GUID");
+const ObjetHtml_1 = require("ObjetHtml");
+class FenetreEditionDestinatairesParIndividus extends ObjetFenetre_1.ObjetFenetre {
+	constructor() {
+		super(...arguments);
 		this.id = {
-			nbEleves: GUID.getId(),
-			nbProfs: GUID.getId(),
-			nbResps: GUID.getId(),
-			nbPersonnels: GUID.getId(),
-			nbMdS: GUID.getId(),
-			nbInspecteurs: GUID.getId(),
+			nbEleves: GUID_1.GUID.getId(),
+			nbProfs: GUID_1.GUID.getId(),
+			nbResps: GUID_1.GUID.getId(),
+			nbPersonnels: GUID_1.GUID.getId(),
+			nbMdS: GUID_1.GUID.getId(),
+			nbInspecteurs: GUID_1.GUID.getId(),
 		};
 		this.options = {
 			avecGestionEleves: true,
@@ -36,10 +37,10 @@ class FenetreEditionDestinatairesParIndividus extends ObjetFenetre {
 										!aInstance.donnee.listePublicIndividu.getElementParElement(
 											aElement,
 										) &&
-										!_getDisabledParGenre.call(aInstance, aElement.getGenre())
+										!aInstance._getDisabledParGenre(aElement.getGenre())
 									) {
 										aInstance.donnee.listePublicIndividu.addElement(
-											MethodesObjet.dupliquer(aElement),
+											MethodesObjet_1.MethodesObjet.dupliquer(aElement),
 										);
 									}
 								});
@@ -51,51 +52,49 @@ class FenetreEditionDestinatairesParIndividus extends ObjetFenetre {
 				},
 			},
 			nodeSelectGenreDest: function (aGenreRessource) {
-				$(this.node).on(
-					"click",
-					function () {
-						this.utilitaires.moteurDestinataires
-							.getDonneesPublic({ genreRessource: aGenreRessource })
-							.then((aDonnees) => {
-								this.utilitaires.moteurDestinataires.openModaleSelectPublic({
-									titre:
-										this.utilitaires.moteurDestinataires.getTitreSelectRessource(
-											{ genreRessource: aGenreRessource },
-										),
-									listePublicDonnee: this.donnee.listePublicIndividu,
-									genreRessource: aGenreRessource,
-									listeRessources: aDonnees.listePublic,
-									listeServicesPeriscolaire: aDonnees.listeServicesPeriscolaire,
-									listeProjetsAcc: aDonnees.listeProjetsAcc,
-									listeFamilles: aDonnees.listeFamilles,
-									listeRessourcesSelectionnees:
-										this.donnee.listePublicIndividu.getListeElements((aElt) => {
+				$(this.node).on("click", () => {
+					aInstance.utilitaires.moteurDestinataires
+						.getDonneesPublic({ genreRessource: aGenreRessource })
+						.then((aDonnees) => {
+							aInstance.utilitaires.moteurDestinataires.openModaleSelectPublic({
+								titre:
+									aInstance.utilitaires.moteurDestinataires.getTitreSelectRessource(
+										{ genreRessource: aGenreRessource },
+									),
+								listePublicDonnee: aInstance.donnee.listePublicIndividu,
+								genreRessource: aGenreRessource,
+								listeRessources: aDonnees.listePublic,
+								listeServicesPeriscolaire: aDonnees.listeServicesPeriscolaire,
+								listeProjetsAcc: aDonnees.listeProjetsAcc,
+								listeFamilles: aDonnees.listeFamilles,
+								listeRessourcesSelectionnees:
+									aInstance.donnee.listePublicIndividu.getListeElements(
+										(aElt) => {
 											return aElt.getGenre() === aGenreRessource;
-										}),
-									listeNiveauxResponsabilite:
-										aDonnees.listeNiveauxResponsabilite,
-									clbck: (aParam) => {
-										this.donnee.avecModificationPublic =
-											aParam.avecModificationPublic;
-										this.donnee.listePublicIndividu = aParam.listePublicDonnee;
-										this.updateCompteurs();
-									},
-								});
+										},
+									),
+								listeNiveauxResponsabilite: aDonnees.listeNiveauxResponsabilite,
+								clbck: (aParam) => {
+									aInstance.donnee.avecModificationPublic =
+										aParam.avecModificationPublic;
+									aInstance.donnee.listePublicIndividu =
+										aParam.listePublicDonnee;
+									aInstance.updateCompteurs();
+								},
 							});
-					}.bind(aInstance),
-				);
+						});
+				});
 			},
 			getDestIcon: {
 				getIcone() {
-					return `<i class="icon_user"></i>`;
+					return `icon_user`;
 				},
 			},
 		});
 	}
-	construireInstances() {}
 	setDonnees(aParam) {
 		this.donneeOrigine = aParam.donnee;
-		this.donnee = MethodesObjet.dupliquer(this.donneeOrigine);
+		this.donnee = MethodesObjet_1.MethodesObjet.dupliquer(this.donneeOrigine);
 		this.afficher(this.composeContenu());
 		this.updateCompteurs();
 	}
@@ -104,21 +103,23 @@ class FenetreEditionDestinatairesParIndividus extends ObjetFenetre {
 	}
 	setOptions(aOptions) {
 		this.options = $.extend(this.options, aOptions);
+		return this;
 	}
 	composeContenu() {
 		const H = [];
-		const lTabInfosRessources = _getTabInfosRessources.call(this);
+		const lTabInfosRessources = this._getTabInfosRessources();
 		H.push('<div class="FenetreEditionDestinatairesParIndividus">');
 		H.push(
 			'<div class="m-all" ie-if="avecBtnListeDiffusion"><ie-bouton class="small-bt themeBoutonNeutre" ie-model="btnListeDiffusion">',
-			GTraductions.getValeur("listeDiffusion.btnListeDiffusion"),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"listeDiffusion.btnListeDiffusion",
+			),
 			"</ie-bouton></div>",
 		);
 		for (let i = 0, lNbr = lTabInfosRessources.length; i < lNbr; i++) {
 			const lInfosRessource = lTabInfosRessources[i];
 			H.push(
-				_construireHtmlSelectionDeRessource.call(
-					this,
+				this._construireHtmlSelectionDeRessource(
 					$.extend(lInfosRessource, { estDernier: i === lNbr - 1 }),
 				),
 			);
@@ -127,7 +128,7 @@ class FenetreEditionDestinatairesParIndividus extends ObjetFenetre {
 		return H.join("");
 	}
 	updateCompteurs() {
-		const lTabInfosRessources = _getTabInfosRessources.call(this);
+		const lTabInfosRessources = this._getTabInfosRessources();
 		for (let i = 0, lNbr = lTabInfosRessources.length; i < lNbr; i++) {
 			const lInfosRessource = lTabInfosRessources[i];
 			const lNb = this.donnee.listePublicIndividu
@@ -135,9 +136,9 @@ class FenetreEditionDestinatairesParIndividus extends ObjetFenetre {
 					return D.getGenre() === lInfosRessource.genreRessource;
 				})
 				.getNbrElementsExistes();
-			GHtml.setHtml(
+			ObjetHtml_1.GHtml.setHtml(
 				lInfosRessource.idCompteur,
-				_construireHtmlNb.call(this, lNb),
+				this._construireHtmlNb(lNb),
 			);
 		}
 	}
@@ -148,73 +149,88 @@ class FenetreEditionDestinatairesParIndividus extends ObjetFenetre {
 		});
 		this.fermer();
 	}
-}
-function _construireHtmlSelectionDeRessource(aParam) {
-	const H = [];
-	H.push(
-		`<div class="field-contain">\n  <ie-btnselecteur ie-model="getDestIcon" aria-label="${aParam.strRessource}" ie-node="nodeSelectGenreDest(${aParam.genreRessource})">${aParam.strRessource}<span class="strNumber" id="${aParam.idCompteur}"></span></ie-btnselecteur>\n  </div>`,
-	);
-	return H.join("");
-}
-function _construireHtmlNb(aNb) {
-	return " (" + aNb + ") ";
-}
-function _getTabInfosRessources() {
-	const lResult = [];
-	if (this.options.avecGestionEleves) {
-		lResult.push({
-			genreRessource: this.utilitaires.genreRessource.getRessourceEleve(),
-			strRessource: GTraductions.getValeur("destinataires.eleves"),
-			idCompteur: this.id.nbEleves,
-		});
+	_construireHtmlSelectionDeRessource(aParam) {
+		const H = [];
+		H.push(
+			`<div class="field-contain">\n    <ie-btnselecteur ie-model="getDestIcon" aria-label="${aParam.strRessource}" ie-node="nodeSelectGenreDest(${aParam.genreRessource})">${aParam.strRessource}<span class="strNumber" id="${aParam.idCompteur}"></span></ie-btnselecteur>\n    </div>`,
+		);
+		return H.join("");
 	}
-	lResult.push(
-		{
-			genreRessource: this.utilitaires.genreRessource.getRessourceParent(),
-			strRessource: GTraductions.getValeur("destinataires.responsables"),
-			idCompteur: this.id.nbResps,
-		},
-		{
-			genreRessource: this.utilitaires.genreRessource.getRessourceProf(),
-			strRessource: GTraductions.getValeur("destinataires.professeurs"),
-			idCompteur: this.id.nbProfs,
-		},
-	);
-	if (this.options.avecGestionPersonnels) {
-		lResult.push({
-			genreRessource: this.utilitaires.genreRessource.getRessourcePersonnel(),
-			strRessource: GTraductions.getValeur("destinataires.personnels"),
-			idCompteur: this.id.nbPersonnels,
-		});
+	_construireHtmlNb(aNb) {
+		return " (" + aNb + ") ";
 	}
-	if (this.options.avecGestionStages) {
-		lResult.push({
-			genreRessource: this.utilitaires.genreRessource.getRessourceEntreprise(),
-			strRessource: GTraductions.getValeur("destinataires.maitresDeStage"),
-			idCompteur: this.id.nbMdS,
-		});
+	_getTabInfosRessources() {
+		const lResult = [];
+		if (this.options.avecGestionEleves) {
+			lResult.push({
+				genreRessource: this.utilitaires.genreRessource.getRessourceEleve(),
+				strRessource: ObjetTraduction_1.GTraductions.getValeur(
+					"destinataires.eleves",
+				),
+				idCompteur: this.id.nbEleves,
+			});
+		}
+		lResult.push(
+			{
+				genreRessource: this.utilitaires.genreRessource.getRessourceParent(),
+				strRessource: ObjetTraduction_1.GTraductions.getValeur(
+					"destinataires.responsables",
+				),
+				idCompteur: this.id.nbResps,
+			},
+			{
+				genreRessource: this.utilitaires.genreRessource.getRessourceProf(),
+				strRessource: ObjetTraduction_1.GTraductions.getValeur(
+					"destinataires.professeurs",
+				),
+				idCompteur: this.id.nbProfs,
+			},
+		);
+		if (this.options.avecGestionPersonnels) {
+			lResult.push({
+				genreRessource: this.utilitaires.genreRessource.getRessourcePersonnel(),
+				strRessource: ObjetTraduction_1.GTraductions.getValeur(
+					"destinataires.personnels",
+				),
+				idCompteur: this.id.nbPersonnels,
+			});
+		}
+		if (this.options.avecGestionStages) {
+			lResult.push({
+				genreRessource:
+					this.utilitaires.genreRessource.getRessourceEntreprise(),
+				strRessource: ObjetTraduction_1.GTraductions.getValeur(
+					"destinataires.maitresDeStage",
+				),
+				idCompteur: this.id.nbMdS,
+			});
+		}
+		if (this.options.avecGestionIPR) {
+			lResult.push({
+				genreRessource:
+					this.utilitaires.genreRessource.getRessourceInspecteur(),
+				strRessource: ObjetTraduction_1.GTraductions.getValeur(
+					"destinataires.inspecteur",
+				),
+				idCompteur: this.id.nbInspecteurs,
+			});
+		}
+		return lResult;
 	}
-	if (this.options.avecGestionIPR) {
-		lResult.push({
-			genreRessource: this.utilitaires.genreRessource.getRessourceInspecteur(),
-			strRessource: GTraductions.getValeur("destinataires.inspecteur"),
-			idCompteur: this.id.nbInspecteurs,
-		});
+	_getDisabledParGenre(aGenre) {
+		switch (aGenre) {
+			case this.utilitaires.genreRessource.getRessourceEleve():
+				return !this.options.avecGestionEleves;
+			case this.utilitaires.genreRessource.getRessourcePersonnel():
+				return !this.options.avecGestionPersonnels;
+			case this.utilitaires.genreRessource.getRessourceEntreprise():
+				return !this.options.avecGestionStages;
+			case this.utilitaires.genreRessource.getRessourceInspecteur():
+				return !this.options.avecGestionIPR;
+			default:
+				return false;
+		}
 	}
-	return lResult;
 }
-function _getDisabledParGenre(aGenre) {
-	switch (aGenre) {
-		case this.utilitaires.genreRessource.getRessourceEleve():
-			return !this.options.avecGestionEleves;
-		case this.utilitaires.genreRessource.getRessourcePersonnel():
-			return !this.options.avecGestionPersonnels;
-		case this.utilitaires.genreRessource.getRessourceEntreprise():
-			return !this.options.avecGestionStages;
-		case this.utilitaires.genreRessource.getRessourceInspecteur():
-			return !this.options.avecGestionIPR;
-		default:
-			return false;
-	}
-}
-module.exports = { FenetreEditionDestinatairesParIndividus };
+exports.FenetreEditionDestinatairesParIndividus =
+	FenetreEditionDestinatairesParIndividus;

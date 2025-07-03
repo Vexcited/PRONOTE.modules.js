@@ -1,12 +1,12 @@
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { TypeGenreApiKiosque } = require("TypeGenreApiKiosque.js");
-const { GChaine } = require("ObjetChaine.js");
-const { GHtml } = require("ObjetHtml.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-class DonneesListe_PanierRessourceKiosque extends ObjetDonneesListe {
+exports.DonneesListe_PanierRessourceKiosque = void 0;
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const TypeGenreApiKiosque_1 = require("TypeGenreApiKiosque");
+const ObjetChaine_1 = require("ObjetChaine");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+class DonneesListe_PanierRessourceKiosque extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aParam) {
 		super(aParam.donnees);
 		this.pere = aParam.pere;
@@ -19,24 +19,6 @@ class DonneesListe_PanierRessourceKiosque extends ObjetDonneesListe {
 			avecDeploiement: true,
 			avecEventDeploiementSurCellule: false,
 			avecMultiSelection: !!aParam.avecMultiSelection,
-		});
-	}
-	getControleur(aDonneesListe, aListe) {
-		return $.extend(true, super.getControleur(aDonneesListe, aListe), {
-			nodeLien: function (aGenre) {
-				$(this.node).eventValidation(() => {
-					const lDonnee = aDonneesListe.Donnees.getElementParNumeroEtGenre(
-						null,
-						aGenre,
-					);
-					if (!!lDonnee && !!lDonnee.ressource && aDonneesListe.callbackLien) {
-						aDonneesListe.callbackLien(
-							lDonnee.ressource.getGenre() ||
-								EGenreRessource.RessourceNumeriqueKiosque,
-						);
-					}
-				});
-			},
 		});
 	}
 	avecEdition(aParams) {
@@ -85,9 +67,9 @@ class DonneesListe_PanierRessourceKiosque extends ObjetDonneesListe {
 	}
 	getTri() {
 		return [
-			ObjetTri.initRecursif("pere", [
-				ObjetTri.init("Genre"),
-				ObjetTri.init((aElement) => {
+			ObjetTri_1.ObjetTri.initRecursif("pere", [
+				ObjetTri_1.ObjetTri.init("Genre"),
+				ObjetTri_1.ObjetTri.init((aElement) => {
 					return aElement.Libelle;
 				}),
 			]),
@@ -117,8 +99,36 @@ class DonneesListe_PanierRessourceKiosque extends ObjetDonneesListe {
 			case DonneesListe_PanierRessourceKiosque.colonnes.titre:
 				if (!!aParams.article) {
 					if (!!aParams.article.estUnDeploiement) {
+						const lnodeLien = (aNode) => {
+							$(aNode).eventValidation(() => {
+								if (
+									!!aParams.article &&
+									!!aParams.article.ressource &&
+									this.callbackLien
+								) {
+									this.callbackLien(
+										aParams.article.ressource.getGenre() ||
+											Enumere_Ressource_1.EGenreRessource
+												.RessourceNumeriqueKiosque,
+									);
+								}
+							});
+						};
 						lResult.push(
-							`&nbsp;<span ${GHtml.composeAttr("ie-node", "nodeLien", [aParams.article.getGenre()])}>${GChaine.composerUrlLienExterne({ documentJoint: aParams.article.ressource, title: aParams.article.ressource.description, libelleEcran: aParams.article.ressource.titre })}</span>`,
+							IE.jsx.str(
+								IE.jsx.fragment,
+								null,
+								"\u00A0",
+								IE.jsx.str(
+									"span",
+									{ "ie-node": lnodeLien },
+									ObjetChaine_1.GChaine.composerUrlLienExterne({
+										documentJoint: aParams.article.ressource,
+										title: aParams.article.ressource.description,
+										libelleEcran: aParams.article.ressource.titre,
+									}),
+								),
+							),
 						);
 					} else {
 						lResult.push(
@@ -129,7 +139,7 @@ class DonneesListe_PanierRessourceKiosque extends ObjetDonneesListe {
 				return lResult.join("");
 			case DonneesListe_PanierRessourceKiosque.colonnes.lien:
 				return !!aParams.article.ressource
-					? GChaine.composerUrlLienExterne({
+					? ObjetChaine_1.GChaine.composerUrlLienExterne({
 							documentJoint: aParams.article.ressource,
 							title: aParams.article.ressource.description,
 							libelleEcran: "",
@@ -159,21 +169,21 @@ class DonneesListe_PanierRessourceKiosque extends ObjetDonneesListe {
 				) {
 					if (
 						aParams.article.ressource.apiSupport.contains(
-							TypeGenreApiKiosque.Api_AjoutPanier,
+							TypeGenreApiKiosque_1.TypeGenreApiKiosque.Api_AjoutPanier,
 						)
 					) {
 						lResult.push("P ");
 					}
 					if (
 						aParams.article.ressource.apiSupport.contains(
-							TypeGenreApiKiosque.Api_RenduPJTAF,
+							TypeGenreApiKiosque_1.TypeGenreApiKiosque.Api_RenduPJTAF,
 						)
 					) {
 						lResult.push("R ");
 					}
 					if (
 						aParams.article.ressource.apiSupport.contains(
-							TypeGenreApiKiosque.Api_EnvoiNote,
+							TypeGenreApiKiosque_1.TypeGenreApiKiosque.Api_EnvoiNote,
 						)
 					) {
 						lResult.push("N ");
@@ -185,7 +195,7 @@ class DonneesListe_PanierRessourceKiosque extends ObjetDonneesListe {
 					aParams.article.ressource &&
 					aParams.article.ressource.apiSupport
 					? aParams.article.ressource.apiSupport.contains(
-							TypeGenreApiKiosque.Api_EnvoiNote,
+							TypeGenreApiKiosque_1.TypeGenreApiKiosque.Api_EnvoiNote,
 						)
 					: false;
 			case DonneesListe_PanierRessourceKiosque.colonnes.renduTAF: {
@@ -193,7 +203,7 @@ class DonneesListe_PanierRessourceKiosque extends ObjetDonneesListe {
 					aParams.article.ressource &&
 					aParams.article.ressource.apiSupport
 					? aParams.article.ressource.apiSupport.contains(
-							TypeGenreApiKiosque.Api_RenduPJTAF,
+							TypeGenreApiKiosque_1.TypeGenreApiKiosque.Api_RenduPJTAF,
 						)
 					: false;
 			}
@@ -201,12 +211,12 @@ class DonneesListe_PanierRessourceKiosque extends ObjetDonneesListe {
 				return "";
 		}
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		if (
 			aParams.idColonne === DonneesListe_PanierRessourceKiosque.colonnes.lien &&
 			!!aParams.article.ressource
 		) {
-			return GTraductions.getValeur(
+			return ObjetTraduction_1.GTraductions.getValeur(
 				"FenetrePanierKiosque.liste.HintLienAcceder",
 			);
 		}
@@ -219,17 +229,17 @@ class DonneesListe_PanierRessourceKiosque extends ObjetDonneesListe {
 		switch (aParams.idColonne) {
 			case DonneesListe_PanierRessourceKiosque.colonnes.coche:
 				if (!aParams.article.estUnDeploiement) {
-					return ObjetDonneesListe.ETypeCellule.Coche;
+					return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Coche;
 				}
-				return ObjetDonneesListe.ETypeCellule.Texte;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 			case DonneesListe_PanierRessourceKiosque.colonnes.envoiNote:
 			case DonneesListe_PanierRessourceKiosque.colonnes.renduTAF:
-				return ObjetDonneesListe.ETypeCellule.Coche;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Coche;
 			case DonneesListe_PanierRessourceKiosque.colonnes.lien:
 			case DonneesListe_PanierRessourceKiosque.colonnes.titre:
-				return ObjetDonneesListe.ETypeCellule.Html;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 			default:
-				return ObjetDonneesListe.ETypeCellule.Texte;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 		}
 	}
 	surEdition(aParams, aValeur) {
@@ -257,30 +267,52 @@ class DonneesListe_PanierRessourceKiosque extends ObjetDonneesListe {
 					break;
 				case DonneesListe_PanierRessourceKiosque.colonnes.titre:
 					aParams.article.ressource.setLibelle(aValeur);
-					aParams.article.ressource.setEtat(EGenreEtat.Modification);
-					aParams.article.setEtat(EGenreEtat.FilsModification);
+					aParams.article.ressource.setEtat(
+						Enumere_Etat_1.EGenreEtat.Modification,
+					);
+					aParams.article.setEtat(Enumere_Etat_1.EGenreEtat.FilsModification);
 					break;
 				case DonneesListe_PanierRessourceKiosque.colonnes.commentaire:
 					aParams.article.ressource.commentaire = aValeur;
-					aParams.article.ressource.setEtat(EGenreEtat.Modification);
-					aParams.article.setEtat(EGenreEtat.FilsModification);
+					aParams.article.ressource.setEtat(
+						Enumere_Etat_1.EGenreEtat.Modification,
+					);
+					aParams.article.setEtat(Enumere_Etat_1.EGenreEtat.FilsModification);
 					break;
 			}
 		}
 	}
 }
-DonneesListe_PanierRessourceKiosque.colonnes = {
-	coche: "panierKiosque_Coche",
-	titre: "panierKiosque_Titre",
-	lien: "panierKiosque_Lien",
-	commentaire: "panierKiosque_Commentaire",
-	dateAjout: "panierKiosque_DateAjout",
-	api: "panierKiosque_API",
-	renduTAF: "panierKiosque_RenduTAF",
-	envoiNote: "panierKiosque_EnvoiNote",
-};
-DonneesListe_PanierRessourceKiosque.genreCommande = {
-	VisuEleve: 0,
-	CopierQCM: 1,
-};
-module.exports = DonneesListe_PanierRessourceKiosque;
+exports.DonneesListe_PanierRessourceKiosque =
+	DonneesListe_PanierRessourceKiosque;
+(function (DonneesListe_PanierRessourceKiosque) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["coche"] = "panierKiosque_Coche";
+		colonnes["titre"] = "panierKiosque_Titre";
+		colonnes["lien"] = "panierKiosque_Lien";
+		colonnes["commentaire"] = "panierKiosque_Commentaire";
+		colonnes["dateAjout"] = "panierKiosque_DateAjout";
+		colonnes["api"] = "panierKiosque_API";
+		colonnes["renduTAF"] = "panierKiosque_RenduTAF";
+		colonnes["envoiNote"] = "panierKiosque_EnvoiNote";
+	})(
+		(colonnes =
+			DonneesListe_PanierRessourceKiosque.colonnes ||
+			(DonneesListe_PanierRessourceKiosque.colonnes = {})),
+	);
+	let genreCommande;
+	(function (genreCommande) {
+		genreCommande[(genreCommande["VisuEleve"] = 0)] = "VisuEleve";
+		genreCommande[(genreCommande["CopierQCM"] = 1)] = "CopierQCM";
+	})(
+		(genreCommande =
+			DonneesListe_PanierRessourceKiosque.genreCommande ||
+			(DonneesListe_PanierRessourceKiosque.genreCommande = {})),
+	);
+})(
+	DonneesListe_PanierRessourceKiosque ||
+		(exports.DonneesListe_PanierRessourceKiosque =
+			DonneesListe_PanierRessourceKiosque =
+				{}),
+);

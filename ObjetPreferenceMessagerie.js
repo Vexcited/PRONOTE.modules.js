@@ -8,7 +8,6 @@ const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetElement_1 = require("ObjetElement");
 const ObjetDate_1 = require("ObjetDate");
 const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
-const jsx_1 = require("jsx");
 class ObjetRequetePreferenceMessagerie extends ObjetRequeteJSON_1.ObjetRequeteConsultation {}
 CollectionRequetes_1.Requetes.inscrire(
 	"PreferenceMessagerie",
@@ -35,140 +34,160 @@ class ObjetPreferenceMessagerie extends ObjetIdentite_1.Identite {
 			);
 		}
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			rbUniquementParentEleve: {
-				getValue: function (aUniquementParentEleve) {
-					return (
-						aInstance.donnees.uniquementParentEleve === aUniquementParentEleve
-					);
-				},
-				setValue: function (aUniquementParentEleve) {
-					aInstance.donnees.uniquementParentEleve = aUniquementParentEleve;
-					aInstance._saisie("uniquementParentEleve", aUniquementParentEleve);
-				},
-				getDisabled: aInstance._estConsult,
+	jsxModeleRadioUniquementParentEleve(aUniquementParentEleve) {
+		return {
+			getValue: () => {
+				return this.donnees.uniquementParentEleve === aUniquementParentEleve;
 			},
-			cbJoursNonOuvres: {
-				getValue: function () {
-					return aInstance.donnees.nonOuvres;
-				},
-				setValue: function (aValue) {
-					aInstance.donnees.nonOuvres = aValue;
-					aInstance._saisie("nonOuvres", aValue);
-				},
-				getDisabled: aInstance._estConsult,
+			setValue: (aValue) => {
+				this.donnees.uniquementParentEleve = aUniquementParentEleve;
+				this._saisie("uniquementParentEleve", aUniquementParentEleve);
 			},
-			cbJoursOuvres: {
-				getValue: function () {
-					return aInstance.donnees.ouvres;
-				},
-				setValue: function (aValue) {
-					aInstance.donnees.ouvres = aValue;
-					aInstance._saisie("ouvres", aValue);
-				},
-				getDisabled: aInstance._estConsult,
+			getDisabled: () => {
+				return this._estConsult();
 			},
-			cbJoursOuvresAvantApres: {
-				getValue: function (aCle) {
-					return aInstance.donnees[aCle];
-				},
-				setValue: function (aCle, aValue) {
-					aInstance.donnees[aCle] = aValue;
-					aInstance._saisie(aCle, aValue);
-				},
-				getDisabled: function () {
-					return !aInstance.donnees.ouvres || aInstance._estConsult();
-				},
+			getName: () => {
+				return `${this.Nom}_oUniquementParentEleve`;
 			},
-			comboOuvres: {
-				init: function (aHeureAvant, aInstanceCombo) {
-					aInstanceCombo.setOptionsObjetSaisie({
-						longueur: 40,
-						iconeGauche: "icon_time",
-						avecBouton: !IE.estMobile,
-						labelWAICellule: aHeureAvant
-							? ObjetTraduction_1.GTraductions.getValeur("PrefMess.Avant")
-							: ObjetTraduction_1.GTraductions.getValeur("PrefMess.Apres"),
-					});
-				},
-				getDonnees: function (aHeureAvant, aDonnees) {
-					if (!aDonnees) {
-						return aInstance.listeHeures;
+		};
+	}
+	jsxModeleCheckboxJoursNonOuvres() {
+		return {
+			getValue: () => {
+				return this.donnees.nonOuvres;
+			},
+			setValue: (aValue) => {
+				this.donnees.nonOuvres = aValue;
+				this._saisie("nonOuvres", aValue);
+			},
+			getDisabled: () => {
+				return this._estConsult();
+			},
+		};
+	}
+	jsxModeleCheckboxJoursOuvres() {
+		return {
+			getValue: () => {
+				return this.donnees.ouvres;
+			},
+			setValue: (aValue) => {
+				this.donnees.ouvres = aValue;
+				this._saisie("ouvres", aValue);
+			},
+			getDisabled: () => {
+				return this._estConsult();
+			},
+		};
+	}
+	jsxModeleCheckboxJoursOuvresAvantApres(aCle) {
+		return {
+			getValue: () => {
+				return this.donnees[aCle];
+			},
+			setValue: (aValue) => {
+				this.donnees[aCle] = aValue;
+				this._saisie(aCle, aValue);
+			},
+			getDisabled: () => {
+				return !this.donnees.ouvres || this._estConsult();
+			},
+		};
+	}
+	jsxComboModelOuvres(aHeureAvant) {
+		return {
+			init: (aCombo) => {
+				aCombo.setOptionsObjetSaisie({
+					longueur: 40,
+					iconeGauche: "icon_time",
+					avecBouton: !IE.estMobile,
+					labelWAICellule: aHeureAvant
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"PrefMess.SelectionHeureAvant",
+							)
+						: ObjetTraduction_1.GTraductions.getValeur(
+								"PrefMess.SelectionHeureApres",
+							),
+				});
+			},
+			getDonnees: (aListe) => {
+				if (!aListe) {
+					return this.listeHeures;
+				}
+			},
+			getIndiceSelection: () => {
+				const lHeure = aHeureAvant
+					? this.donnees.heureAvant
+					: this.donnees.heureApres;
+				return this.listeHeures.getIndiceParNumeroEtGenre(lHeure) || 0;
+			},
+			event: (aParams, aCombo) => {
+				if (
+					aParams.genreEvenement ===
+						Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+							.selection &&
+					aParams.element &&
+					aCombo.estUneInteractionUtilisateur()
+				) {
+					const lHeure = aParams.element.getNumero();
+					const lAccesseur = aHeureAvant ? "heureAvant" : "heureApres";
+					if (this.donnees[lAccesseur] !== lHeure) {
+						this.donnees[lAccesseur] = lHeure;
+						this._saisie(lAccesseur, lHeure);
 					}
-				},
-				getIndiceSelection: function (aHeureAvant) {
-					const lHeure = aHeureAvant
-						? aInstance.donnees.heureAvant
-						: aInstance.donnees.heureApres;
-					return aInstance.listeHeures.getIndiceParNumeroEtGenre(lHeure) || 0;
-				},
-				event: function (aHeureAvant, aParametres, aCombo) {
-					if (
-						aParametres.genreEvenement ===
-							Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
-								.selection &&
-						aParametres.element &&
-						aCombo.estUneInteractionUtilisateur()
-					) {
-						const lHeure = aParametres.element.getNumero();
-						const lAccesseur = aHeureAvant ? "heureAvant" : "heureApres";
-						if (aInstance.donnees[lAccesseur] !== lHeure) {
-							aInstance.donnees[lAccesseur] = lHeure;
-							aInstance._saisie(lAccesseur, lHeure);
-						}
-					}
-				},
-				getDisabled: function () {
-					return !aInstance.donnees.ouvres || aInstance._estConsult();
-				},
+				}
 			},
-			cbJours: {
-				getValue: function (aIndexJour) {
-					const lJour = aInstance.donnees.listeJours[aIndexJour];
-					return lJour.actif;
-				},
-				setValue: function (aIndexJour, aValue) {
-					const lJour = aInstance.donnees.listeJours[aIndexJour];
-					lJour.actif = aValue;
-					aInstance._saisie("jour", { jour: lJour.jour, actif: aValue });
-				},
-				getDisabled: function () {
-					return !aInstance.donnees.ouvres || aInstance._estConsult();
-				},
+			getDisabled: () => {
+				return !this.donnees.ouvres || this._estConsult();
 			},
-			cbActiverRetour: {
-				getValue: function () {
-					return aInstance.donnees.activerMessageAuto;
-				},
-				setValue: function (aValue) {
-					aInstance.donnees.activerMessageAuto = aValue;
-					aInstance._saisie(
-						"messageAuto",
-						aValue ? aInstance.donnees.messageAuto : "",
-					);
-				},
-				getDisabled: aInstance._estConsult,
+		};
+	}
+	jsxModeleCheckboxJours(aIndexJour) {
+		return {
+			getValue: () => {
+				const lJour = this.donnees.listeJours[aIndexJour];
+				return lJour.actif;
 			},
-			textarea: {
-				getValue: function () {
-					return aInstance.donnees.messageAuto;
-				},
-				setValue: function (aValue) {
-					aInstance.donnees.messageAuto = aValue;
-				},
-				exitChange: function () {
-					if (aInstance.donnees.activerMessageAuto) {
-						aInstance._saisie("messageAuto", aInstance.donnees.messageAuto);
-					}
-				},
-				getDisabled: function () {
-					return (
-						!aInstance.donnees.activerMessageAuto || aInstance._estConsult()
-					);
-				},
+			setValue: (aValue) => {
+				const lJour = this.donnees.listeJours[aIndexJour];
+				lJour.actif = aValue;
+				this._saisie("jour", { jour: lJour.jour, actif: aValue });
 			},
-		});
+			getDisabled: () => {
+				return !this.donnees.ouvres || this._estConsult();
+			},
+		};
+	}
+	jsxModeleSwitchActiverRetour() {
+		return {
+			getValue: () => {
+				return this.donnees.activerMessageAuto;
+			},
+			setValue: (aValue) => {
+				this.donnees.activerMessageAuto = aValue;
+				this._saisie("messageAuto", aValue ? this.donnees.messageAuto : "");
+			},
+			getDisabled: () => {
+				return this._estConsult();
+			},
+		};
+	}
+	jsxModeleTextarea() {
+		return {
+			getValue: () => {
+				return this.donnees.messageAuto;
+			},
+			setValue: (aValue) => {
+				this.donnees.messageAuto = aValue;
+			},
+			exitChange: () => {
+				if (this.donnees.activerMessageAuto) {
+					this._saisie("messageAuto", this.donnees.messageAuto);
+				}
+			},
+			getDisabled: () => {
+				return !this.donnees.activerMessageAuto || this._estConsult();
+			},
+		};
 	}
 	recupererDonnees() {
 		this._requeteDonnees();
@@ -204,8 +223,8 @@ class ObjetPreferenceMessagerie extends ObjetIdentite_1.Identite {
 							IE.jsx.str(
 								"ie-radio",
 								{
-									"ie-model": (0, jsx_1.jsxFuncAttr)(
-										"rbUniquementParentEleve",
+									"ie-model": this.jsxModeleRadioUniquementParentEleve.bind(
+										this,
 										false,
 									),
 								},
@@ -220,8 +239,8 @@ class ObjetPreferenceMessagerie extends ObjetIdentite_1.Identite {
 							IE.jsx.str(
 								"ie-radio",
 								{
-									"ie-model": (0, jsx_1.jsxFuncAttr)(
-										"rbUniquementParentEleve",
+									"ie-model": this.jsxModeleRadioUniquementParentEleve.bind(
+										this,
 										true,
 									),
 								},
@@ -240,7 +259,7 @@ class ObjetPreferenceMessagerie extends ObjetIdentite_1.Identite {
 						{ class: "choice-contain" },
 						IE.jsx.str(
 							"ie-checkbox",
-							{ "ie-model": "cbJoursNonOuvres" },
+							{ "ie-model": this.jsxModeleCheckboxJoursNonOuvres.bind(this) },
 							ObjetTraduction_1.GTraductions.getValeur(
 								"PrefMess.PendantNonOuvres",
 							),
@@ -251,47 +270,60 @@ class ObjetPreferenceMessagerie extends ObjetIdentite_1.Identite {
 						{ class: "choice-contain" },
 						IE.jsx.str(
 							"ie-checkbox",
-							{ "ie-model": "cbJoursOuvres" },
+							{ "ie-model": this.jsxModeleCheckboxJoursOuvres.bind(this) },
 							ObjetTraduction_1.GTraductions.getValeur(
 								"PrefMess.PendantOuvres",
 							),
 						),
 					),
-					IE.jsx.str("div", { class: "liste-choice" }, (aTabJours) => {
-						this.donnees.listeJours.forEach((aJour, aIndex) => {
-							aTabJours.push(
-								IE.jsx.str(
-									"ie-checkbox",
-									{
-										class: "as-chips",
-										"ie-model": (0, jsx_1.jsxFuncAttr)("cbJours", aIndex),
-									},
-									!IE.estMobile
-										? ObjetTraduction_1.GTraductions.getValeur("Jours")[
-												aJour.jour - 1
-											]
-										: ObjetTraduction_1.GTraductions.getValeur("JoursCourt")[
-												aJour.jour - 1
-											],
-								),
-							);
-						});
-					}),
+					IE.jsx.str(
+						"div",
+						{
+							class: "liste-choice",
+							role: "group",
+							"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+								"PrefMess.SelectionJourOuvres",
+							),
+						},
+						(aTabJours) => {
+							this.donnees.listeJours.forEach((aJour, aIndex) => {
+								aTabJours.push(
+									IE.jsx.str(
+										"ie-checkbox",
+										{
+											class: "as-chips",
+											"ie-model": this.jsxModeleCheckboxJours.bind(
+												this,
+												aIndex,
+											),
+										},
+										!IE.estMobile
+											? ObjetTraduction_1.GTraductions.getValeur("Jours")[
+													aJour.jour - 1
+												]
+											: ObjetTraduction_1.GTraductions.getValeur("JoursCourt")[
+													aJour.jour - 1
+												],
+									),
+								);
+							});
+						},
+					),
 					IE.jsx.str(
 						"div",
 						{ class: "choice-contain duree" },
 						IE.jsx.str(
 							"ie-checkbox",
 							{
-								"ie-model": (0, jsx_1.jsxFuncAttr)(
-									"cbJoursOuvresAvantApres",
+								"ie-model": this.jsxModeleCheckboxJoursOuvresAvantApres.bind(
+									this,
 									"plageAvant",
 								),
 							},
 							ObjetTraduction_1.GTraductions.getValeur("PrefMess.Avant"),
 						),
 						IE.jsx.str("ie-combo", {
-							"ie-model": (0, jsx_1.jsxFuncAttr)("comboOuvres", true),
+							"ie-model": this.jsxComboModelOuvres.bind(this, true),
 							class: "combo-mobile",
 						}),
 					),
@@ -301,15 +333,15 @@ class ObjetPreferenceMessagerie extends ObjetIdentite_1.Identite {
 						IE.jsx.str(
 							"ie-checkbox",
 							{
-								"ie-model": (0, jsx_1.jsxFuncAttr)(
-									"cbJoursOuvresAvantApres",
+								"ie-model": this.jsxModeleCheckboxJoursOuvresAvantApres.bind(
+									this,
 									"plageApres",
 								),
 							},
 							ObjetTraduction_1.GTraductions.getValeur("PrefMess.Apres"),
 						),
 						IE.jsx.str("ie-combo", {
-							"ie-model": (0, jsx_1.jsxFuncAttr)("comboOuvres", false),
+							"ie-model": this.jsxComboModelOuvres.bind(this, false),
 							class: "combo-mobile",
 						}),
 					),
@@ -322,14 +354,14 @@ class ObjetPreferenceMessagerie extends ObjetIdentite_1.Identite {
 						{ class: "choice-contain" },
 						IE.jsx.str(
 							"ie-switch",
-							{ "ie-model": "cbActiverRetour" },
+							{ "ie-model": this.jsxModeleSwitchActiverRetour.bind(this) },
 							ObjetTraduction_1.GTraductions.getValeur(
 								"PrefMess.ActiverMessageAutoCourt",
 							),
 						),
 					),
 					IE.jsx.str("ie-textareamax", {
-						"ie-model": "textarea",
+						"ie-model": this.jsxModeleTextarea.bind(this),
 						maxlength: "500",
 						"aria-label": ObjetTraduction_1.GTraductions.getValeur(
 							"PrefMess.ActiverMessageAutoCourt",

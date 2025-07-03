@@ -11,10 +11,12 @@ const DonneesListe_EvaluationsQCM_1 = require("DonneesListe_EvaluationsQCM");
 const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetFenetre_Competences_1 = require("ObjetFenetre_Competences");
 const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const AccessApp_1 = require("AccessApp");
 class ObjetFenetre_EditionQuestionQCM_PN extends ObjetFenetre_EditionQuestionQCM_1.ObjetFenetre_EditionQuestionQCM {
 	constructor(...aParams) {
 		super(...aParams);
-		const lApplicationSco = GApplication;
+		const lApplicationSco = (0, AccessApp_1.getApp)();
 		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
 		this.hauteurEditeurTexte = 360;
 		this.hauteurEditeur = 180;
@@ -86,7 +88,8 @@ class ObjetFenetre_EditionQuestionQCM_PN extends ObjetFenetre_EditionQuestionQCM
 				true,
 			);
 		$.extend(lOptions, {
-			hauteurMaxAdapteContenu: GNavigateur.ecranH < 940 ? 90 : 120,
+			hauteurMaxAdapteContenu:
+				ObjetNavigateur_1.Navigateur.ecranH < 940 ? 90 : 120,
 			hauteurCelluleTitreStandard: this.hauteurContenuDonneesListes,
 			hauteurZoneContenuListeMin: this.hauteurContenuDonneesListes,
 		});
@@ -126,23 +129,23 @@ class ObjetFenetre_EditionQuestionQCM_PN extends ObjetFenetre_EditionQuestionQCM
 		}
 	}
 	composeContenu() {
-		const T = [];
-		T.push(super.composeContenu());
+		const H = [];
+		H.push(super.composeContenu());
 		if (this.eltQuestion) {
 			if (this.optionsFenetreEditionQuestion.avecEvaluations) {
-				T.push(this.composeEvaluation());
+				H.push(this.composeEvaluation());
 			}
 		}
-		return T.join("");
+		return H.join("");
 	}
 	composeEvaluation() {
-		const T = [];
-		T.push(
+		const H = [];
+		H.push(
 			'<div class="Espace MargeHaut"><div id="' +
 				this.getNomInstance(this.identListeEvaluations) +
 				'" style="width: 100%;"></div>',
 		);
-		return T.join("");
+		return H.join("");
 	}
 	surValidation(aNumeroBouton) {
 		super.surValidation(aNumeroBouton);

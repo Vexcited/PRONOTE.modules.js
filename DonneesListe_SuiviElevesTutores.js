@@ -74,7 +74,10 @@ class DonneesListe_SuiviElevesTutores extends ObjetDonneesListe_1.ObjetDonneesLi
 				if (lMatiereEleve.nbServices > 0) {
 					lNoteDeMatiere = lMatiereEleve.note;
 				} else {
-					lNoteDeMatiere = '<i class="icon_warning_sign"></i>';
+					lNoteDeMatiere = IE.jsx.str("i", {
+						role: "presentation",
+						class: "icon_warning_sign",
+					});
 				}
 			}
 			return !!lNoteDeMatiere ? lNoteDeMatiere : "-";
@@ -123,7 +126,7 @@ class DonneesListe_SuiviElevesTutores extends ObjetDonneesListe_1.ObjetDonneesLi
 			}
 		}
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		if (this._estUneColonneMatiere(aParams.idColonne)) {
 			const lMatiereEleve = this._getMatiereEleveDeColonneId(aParams);
 			if (!!lMatiereEleve) {

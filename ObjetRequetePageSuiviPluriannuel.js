@@ -1,13 +1,11 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-class ObjetRequetePageSuiviPluriannuel extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequetePageSuiviPluriannuel = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+class ObjetRequetePageSuiviPluriannuel extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aNumeroEleve, aParam) {
-		this.JSON.eleve = new ObjetElement(null, aNumeroEleve);
+		this.JSON.eleve = new ObjetElement_1.ObjetElement(null, aNumeroEleve);
 		this.param = aParam;
 		if (this.param) {
 			this.JSON.avecMoyennes = this.param.avecMoyennes;
@@ -19,71 +17,32 @@ class ObjetRequetePageSuiviPluriannuel extends ObjetRequeteConsultation {
 		let lParam = { message: this.JSONReponse.message };
 		if (!lParam.message) {
 			const lAvecMoyennesSaisies = this.JSONReponse.avecMoyennesSaisies;
-			const lAnneesSelectionnees = new ObjetListeElements();
-			const lListe = new ObjetListeElements();
+			const lAnneesSelectionnees =
+				new ObjetListeElements_1.ObjetListeElements();
+			const lListe = new ObjetListeElements_1.ObjetListeElements();
 			const lListeMetas = this.JSONReponse.listeMetas;
 			const lListeAnnees = this.JSONReponse.listeAnnees;
 			const lListeDonnees = this.JSONReponse.listeDonnees;
-			const lListeTotal = new ObjetElement();
+			const lListeTotal = new ObjetElement_1.ObjetElement();
 			const lInfosGrapheTotal = [];
-			const lInstance = this;
 			lListeMetas.parcourir((aMeta) => {
-				const lLigne = new ObjetElement();
+				const lLigne = new ObjetElement_1.ObjetElement();
 				let lCompteur = 0;
 				const lInfosGraphe = [];
 				lLigne.matiere = aMeta.getLibelle();
-				lListeAnnees.parcourir(() => {
-					const lAnnee = new ObjetElement();
-					lAnnee.strAnnee = _getInfo.call(
-						lInstance,
-						lCompteur,
-						lListeDonnees,
-						"strAnnee",
-					);
-					lAnnee.nbMaxPeriode = _getInfo.call(
-						lInstance,
-						lCompteur,
-						lListeDonnees,
-						"nbMaxPeriode",
-					);
-					lAnnee.couleur = _getInfo.call(
-						lInstance,
-						lCompteur,
-						lListeDonnees,
-						"couleur",
-					);
-					lAnnee.bareme = _getInfo.call(
-						lInstance,
-						lCompteur,
-						lListeDonnees,
-						"bareme",
-					);
-					lAnnee.strClasses = _getInfo.call(
-						lInstance,
-						lCompteur,
-						lListeDonnees,
-						"strClasses",
-					);
-					lAnnee.avecBulletins = _getInfo.call(
-						lInstance,
-						lCompteur,
-						lListeDonnees,
-						"avecBulletins",
-					);
+				lListeAnnees.parcourir((aAnnee, aIndex) => {
+					const lDonneeAnnee = lListeDonnees.get(aIndex);
+					const lAnnee = new ObjetElement_1.ObjetElement();
+					lAnnee.strAnnee = lDonneeAnnee.strAnnee;
+					lAnnee.nbMaxPeriode = lDonneeAnnee.nbMaxPeriode;
+					lAnnee.couleur = lDonneeAnnee.couleur;
+					lAnnee.bareme = lDonneeAnnee.bareme;
+					lAnnee.strClasses = lDonneeAnnee.strClasses;
+					lAnnee.avecBulletins = lDonneeAnnee.avecBulletins;
 					if (lAnnee.avecBulletins) {
-						lAnnee.listeBulletins = _getInfo.call(
-							lInstance,
-							lCompteur,
-							lListeDonnees,
-							"listeBulletins",
-						);
+						lAnnee.listeBulletins = lDonneeAnnee.listeBulletins;
 					}
-					lAnnee.suivi = _getDonnees.call(
-						lInstance,
-						lCompteur,
-						aMeta.Numero,
-						lListeDonnees,
-					);
+					lAnnee.suivi = _getDonnees(lCompteur, aMeta.Numero, lListeDonnees);
 					lLigne["annee" + lCompteur] = lAnnee;
 					lInfosGraphe.push({
 						moyenne: lAnnee.suivi.moyenne,
@@ -91,60 +50,25 @@ class ObjetRequetePageSuiviPluriannuel extends ObjetRequeteConsultation {
 						couleur: lAnnee.couleur,
 					});
 					if (!lListeTotal["annee" + lCompteur]) {
-						const lTotal = new ObjetElement();
-						lTotal.moyenne = _getInfo.call(
-							lInstance,
-							lCompteur,
-							lListeDonnees,
-							"moyenne",
-						);
-						lTotal.moyenneClasse = _getInfo.call(
-							lInstance,
-							lCompteur,
-							lListeDonnees,
-							"moyenneClasse",
-						);
-						lTotal.strEsito = _getInfo.call(
-							lInstance,
-							lCompteur,
-							lListeDonnees,
-							"strEsito",
-						);
-						lTotal.strAssiduite = _getInfo.call(
-							lInstance,
-							lCompteur,
-							lListeDonnees,
-							"strAssiduite",
-						);
-						lTotal.hintAssiduite = _getInfo.call(
-							lInstance,
-							lCompteur,
-							lListeDonnees,
-							"hintAssiduite",
-						);
-						lTotal.credits = _getInfo.call(
-							lInstance,
-							lCompteur,
-							lListeDonnees,
-							"credits",
-						);
+						const lTotal = new ObjetElement_1.ObjetElement();
+						lTotal.moyenne = lDonneeAnnee.moyenne;
+						lTotal.moyenneClasse = lDonneeAnnee.moyenneClasse;
+						lTotal.strEsito = lDonneeAnnee.strEsito;
+						lTotal.strAssiduite = lDonneeAnnee.strAssiduite;
+						lTotal.hintAssiduite = lDonneeAnnee.hintAssiduite;
+						lTotal.credits = lDonneeAnnee.credits;
 						lListeTotal["annee" + lCompteur] = lTotal;
 						lInfosGrapheTotal.push({
 							moyenne: lTotal.moyenne,
 							bareme: lAnnee.bareme,
 							couleur: lAnnee.couleur,
 						});
-						const lAnneeSelectionnee = new ObjetElement(
+						const lAnneeSelectionnee = new ObjetElement_1.ObjetElement(
 							lAnnee.strAnnee,
-							_getInfo.call(lInstance, lCompteur, lListeDonnees, "identifiant"),
+							lDonneeAnnee.identifiant,
 						);
 						lAnneeSelectionnee.cmsActif = true;
-						lAnneeSelectionnee.strFin = _getInfo.call(
-							lInstance,
-							lCompteur,
-							lListeDonnees,
-							"strFinAnnee",
-						);
+						lAnneeSelectionnee.strFin = lDonneeAnnee.strFinAnnee;
 						lAnneesSelectionnees.addElement(lAnneeSelectionnee);
 					}
 					lCompteur++;
@@ -168,13 +92,14 @@ class ObjetRequetePageSuiviPluriannuel extends ObjetRequeteConsultation {
 		this.callbackReussite.appel(lParam);
 	}
 }
-Requetes.inscrire("PageSuiviPluriannuel", ObjetRequetePageSuiviPluriannuel);
-function _getInfo(aIdAnnee, aListe, aType) {
-	return aListe.get(aIdAnnee)[aType];
-}
+exports.ObjetRequetePageSuiviPluriannuel = ObjetRequetePageSuiviPluriannuel;
+CollectionRequetes_1.Requetes.inscrire(
+	"PageSuiviPluriannuel",
+	ObjetRequetePageSuiviPluriannuel,
+);
 function _getDonnees(aIdAnnee, aMeta, aListe) {
 	const lListeSuivis = aListe.get(aIdAnnee).listeSuivis;
-	let result = new ObjetElement();
+	let result = new ObjetElement_1.ObjetElement();
 	lListeSuivis.parcourir((aElement) => {
 		if (aElement.meta.Numero === aMeta) {
 			result = aElement;
@@ -182,4 +107,3 @@ function _getDonnees(aIdAnnee, aMeta, aListe) {
 	});
 	return result;
 }
-module.exports = ObjetRequetePageSuiviPluriannuel;

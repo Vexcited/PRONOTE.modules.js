@@ -1,140 +1,125 @@
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const {
-	ObjetFenetre_DetailAbsences,
-} = require("ObjetFenetre_DetailAbsences.js");
-const {
-	ObjetFenetre_ListePunitions,
-} = require("ObjetFenetre_ListePunitions.js");
-const {
-	ObjetFenetre_SaisiePunitions,
-} = require("ObjetFenetre_SaisiePunitions.js");
-const { ObjetFenetre_ChargeTAF } = require("ObjetFenetre_ChargeTAF.js");
-const {
-	ObjetAffichagePageSaisieAbsences_Journee,
-} = require("InterfacePageSaisieAbsences_Journee.js");
-const {
-	ObjetAffichagePageSaisieAbsences_Cours,
-} = require("InterfacePageSaisieAbsences_Cours.js");
-const { ObjetCelluleDate } = require("ObjetCelluleDate.js");
-const {
-	ObjetFenetre_ConfSaisieAbsenceCours,
-} = require("ObjetFenetre_ConfSaisieAbsenceCours.js");
-const {
-	ObjetFenetre_EditionObservation,
-} = require("ObjetFenetre_EditionObservation.js");
-const {
-	ObjetFenetre_ListeMemosEleves,
-} = require("ObjetFenetre_ListeMemosEleves.js");
-const {
-	ObjetFenetre_EditionAbsencesNonReglees,
-} = require("ObjetFenetre_EditionAbsencesNonReglees.js");
-const { ObjetFenetre_AbsenceParPas } = require("ObjetFenetre_AbsenceParPas.js");
-const {
-	ObjetFenetre_SelectionElevesSansCours,
-} = require("ObjetFenetre_SelectionElevesSansCours.js");
-const { TDecorateurAbsencesGrille } = require("UtilitaireAbsencesGrille.js");
-const {
-	ObjetRequetePageSaisieAbsences_General,
-} = require("ObjetRequetePageSaisieAbsences_General.js");
-const {
-	ObjetRequetePageSaisieAbsences,
-} = require("ObjetRequetePageSaisieAbsences.js");
-const { ObjetRequeteDetailAbsences } = require("ObjetRequeteDetailAbsences.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GChaine } = require("ObjetChaine.js");
-const { GHtml } = require("ObjetHtml.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { GStyle } = require("ObjetStyle.js");
-const { ControleSaisieEvenement } = require("ControleSaisieEvenement.js");
-const { EGenreAction } = require("Enumere_Action.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { EStructureAffichage } = require("Enumere_StructureAffichage.js");
-const { GDate } = require("ObjetDate.js");
-const {
-	ObjetFenetre_CalendrierAnnuel,
-} = require("ObjetFenetre_CalendrierAnnuel.js");
-const { ObjetFenetre_Date } = require("ObjetFenetre_Date.js");
-const { Identite } = require("ObjetIdentite.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetMenuContextuel } = require("ObjetMenuContextuel.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { GCache } = require("Cache.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { EGenreOnglet } = require("Enumere_Onglet.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { InterfacePage } = require("InterfacePage.js");
-const { ObjetFenetre_Infirmerie } = require("ObjetFenetre_Infirmerie.js");
-const {
-	ObjetFenetre_SelectionMotif,
-} = require("ObjetFenetre_SelectionMotif.js");
-const { ObjetGrille } = require("ObjetGrille.js");
-const { ObjetMoteurAbsences } = require("ObjetMoteurAbsences.js");
-const {
-	ObjetRequetePageEmploiDuTemps,
-} = require("ObjetRequetePageEmploiDuTemps.js");
-const { ObjetRequeteSaisieAbsences } = require("ObjetRequeteSaisieAbsences.js");
-const { ObjetSaisiePN } = require("ObjetSaisiePN.js");
-const { ObjetZoneTexte } = require("ObjetZoneTexte.js");
-const { TypeGenreObservationVS } = require("TypeGenreObservationVS.js");
-const {
-	TUtilitaireGrilleImageCoursPN,
-} = require("UtilitaireGrilleImageCoursPN.js");
-const {
-	EGenreEvenementSaisieAbsence,
-} = require("Enumere_EvenementSaisieAbsences.js");
-const { ObjetUtilitaireAbsence } = require("ObjetUtilitaireAbsence.js");
-const { EGenreBorne } = require("EGenreBorne.js");
-const { EGenreEvenementEDT } = require("Enumere_EvenementEDT.js");
-const {
-	TypeHttpMarqueurContenuCours,
-} = require("TypeHttpMarqueurContenuCours.js");
-const { UtilitaireBoutonBandeau } = require("UtilitaireBoutonBandeau.js");
-const GestionAPEleve = require("ObjetFenetre_GestionAPEleve.js");
-const { InterfaceGrilleEDT } = require("InterfaceGrilleEDT.js");
-const EGenreChoixPeriode = {
-	MoisEnCours: 0,
-	TrimestreEnCours: 1,
-	SemestreEnCours: 2,
-	AnneeScolaire: 3,
-	Personnalise: 4,
-};
-class ObjetAffichagePageSaisieAbsences extends InterfacePage {
+exports.InterfacePageSaisieAbsences = void 0;
+const AccessApp_1 = require("AccessApp");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const ObjetFenetre_DetailAbsences_1 = require("ObjetFenetre_DetailAbsences");
+const ObjetFenetre_ListePunitions_1 = require("ObjetFenetre_ListePunitions");
+const ObjetFenetre_SaisiePunitions_1 = require("ObjetFenetre_SaisiePunitions");
+const ObjetFenetre_ChargeTAF_1 = require("ObjetFenetre_ChargeTAF");
+const InterfacePageSaisieAbsences_Journee_1 = require("InterfacePageSaisieAbsences_Journee");
+const InterfacePageSaisieAbsences_Cours_1 = require("InterfacePageSaisieAbsences_Cours");
+const ObjetCelluleDate_1 = require("ObjetCelluleDate");
+const ObjetFenetre_ConfSaisieAbsenceCours_1 = require("ObjetFenetre_ConfSaisieAbsenceCours");
+const ObjetFenetre_EditionObservation_1 = require("ObjetFenetre_EditionObservation");
+const ObjetFenetre_ListeMemosEleves_1 = require("ObjetFenetre_ListeMemosEleves");
+const ObjetFenetre_EditionAbsencesNonReglees_1 = require("ObjetFenetre_EditionAbsencesNonReglees");
+const ObjetFenetre_AbsenceParPas_1 = require("ObjetFenetre_AbsenceParPas");
+const ObjetFenetre_SelectionElevesSansCours_1 = require("ObjetFenetre_SelectionElevesSansCours");
+const UtilitaireAbsencesGrille_1 = require("UtilitaireAbsencesGrille");
+const ObjetRequetePageSaisieAbsences_General_1 = require("ObjetRequetePageSaisieAbsences_General");
+const ObjetRequetePageSaisieAbsences_1 = require("ObjetRequetePageSaisieAbsences");
+const ObjetRequeteDetailAbsences_1 = require("ObjetRequeteDetailAbsences");
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetHtml_1 = require("ObjetHtml");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetStyle_1 = require("ObjetStyle");
+const ControleSaisieEvenement_1 = require("ControleSaisieEvenement");
+const Enumere_Action_1 = require("Enumere_Action");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetFenetre_CalendrierAnnuel_1 = require("ObjetFenetre_CalendrierAnnuel");
+const ObjetFenetre_Date_1 = require("ObjetFenetre_Date");
+const ObjetIdentite_1 = require("ObjetIdentite");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetMenuContextuel_1 = require("ObjetMenuContextuel");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const Cache_1 = require("Cache");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const Enumere_Onglet_1 = require("Enumere_Onglet");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const InterfacePage_1 = require("InterfacePage");
+const ObjetFenetre_Infirmerie_1 = require("ObjetFenetre_Infirmerie");
+const ObjetFenetre_SelectionMotif_1 = require("ObjetFenetre_SelectionMotif");
+const ObjetGrille_1 = require("ObjetGrille");
+const ObjetMoteurAbsences_1 = require("ObjetMoteurAbsences");
+const ObjetRequetePageEmploiDuTemps_1 = require("ObjetRequetePageEmploiDuTemps");
+const ObjetRequeteSaisieAbsences_1 = require("ObjetRequeteSaisieAbsences");
+const ObjetSaisiePN_1 = require("ObjetSaisiePN");
+const ObjetZoneTexte_1 = require("ObjetZoneTexte");
+const TypeGenreObservationVS_1 = require("TypeGenreObservationVS");
+const UtilitaireGrilleImageCoursPN_1 = require("UtilitaireGrilleImageCoursPN");
+const Enumere_EvenementSaisieAbsences_1 = require("Enumere_EvenementSaisieAbsences");
+const ObjetUtilitaireAbsence_1 = require("ObjetUtilitaireAbsence");
+const EGenreBorne_1 = require("EGenreBorne");
+const Enumere_EvenementEDT_1 = require("Enumere_EvenementEDT");
+const TypeHttpMarqueurContenuCours_1 = require("TypeHttpMarqueurContenuCours");
+const UtilitaireBoutonBandeau_1 = require("UtilitaireBoutonBandeau");
+const ObjetFenetre_GestionAPEleve_1 = require("ObjetFenetre_GestionAPEleve");
+const InterfaceGrilleEDT_1 = require("InterfaceGrilleEDT");
+const UtilitaireRenseignementsEleve_1 = require("UtilitaireRenseignementsEleve");
+const MultipleObjetModule_EDTSaisie = require("ObjetModule_EDTSaisie");
+class ObjetRequeteSaisieModifierPresenceEleveDansCours extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieModifierPresenceEleveDansCours",
+	ObjetRequeteSaisieModifierPresenceEleveDansCours,
+);
+var EGenreChoixPeriode;
+(function (EGenreChoixPeriode) {
+	EGenreChoixPeriode[(EGenreChoixPeriode["MoisEnCours"] = 0)] = "MoisEnCours";
+	EGenreChoixPeriode[(EGenreChoixPeriode["TrimestreEnCours"] = 1)] =
+		"TrimestreEnCours";
+	EGenreChoixPeriode[(EGenreChoixPeriode["SemestreEnCours"] = 2)] =
+		"SemestreEnCours";
+	EGenreChoixPeriode[(EGenreChoixPeriode["AnneeScolaire"] = 3)] =
+		"AnneeScolaire";
+	EGenreChoixPeriode[(EGenreChoixPeriode["Personnalise"] = 4)] = "Personnalise";
+})(EGenreChoixPeriode || (EGenreChoixPeriode = {}));
+class InterfacePageSaisieAbsences extends InterfacePage_1.InterfacePage {
 	constructor(...aParams) {
 		super(...aParams);
-		this.moteur = new ObjetMoteurAbsences();
+		this.appScoEspace = (0, AccessApp_1.getApp)();
+		this.etatUtilScoEspace = this.appScoEspace.getEtatUtilisateur();
+		this.moteur = new ObjetMoteurAbsences_1.ObjetMoteurAbsences();
 		this.largeurGrille = 166;
 		this.avecGrilleEleve = false;
 		this.grilleEleveEstInitialisee = false;
 		this.largeurGrilleEleve = 130;
-		this.avecAnciennesFeuilleDAppel = GApplication.droits.get(
-			TypeDroits.absences.avecAnciennesFeuilleDAppel,
+		this.avecAnciennesFeuilleDAppel = this.appScoEspace.droits.get(
+			ObjetDroitsPN_1.TypeDroits.absences.avecAnciennesFeuilleDAppel,
 		);
 		this.jourConsultUniquement = false;
 		this.appelDedieEnseignant = [
-			EGenreOnglet.SaisieAbsences_Appel_Professeur,
-			EGenreOnglet.SaisieAbsences_AppelEtSuiviProfesseur,
-		].includes(GEtatUtilisateur.getGenreOnglet());
+			Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel_Professeur,
+			Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_AppelEtSuiviProfesseur,
+		].includes(this.etatUtilScoEspace.getGenreOnglet());
 		this.estAppelEtSuivi = [
-			EGenreOnglet.SaisieAbsences_AppelEtSuivi,
-			EGenreOnglet.SaisieAbsences_AppelEtSuiviProfesseur,
-		].includes(GEtatUtilisateur.getGenreOnglet());
+			Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_AppelEtSuivi,
+			Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_AppelEtSuiviProfesseur,
+		].includes(this.etatUtilScoEspace.getGenreOnglet());
+		this.SelectionPlaceDebut = -1;
+		this.SelectionPlaceFin = -1;
+		this.DureeRetard = 5;
+		this.largeurCmbRessources = 138;
+		this.motif = 0;
+		this.estEDTDesPermanences = false;
+		this.idGrilleEleve = this.Nom + "_grilleEleve";
+		this.idDemandesDispence = this.Nom + "_demandesDispence";
 		if (!this.appelDedieEnseignant) {
-			this.enseignantCourant = MethodesObjet.dupliquer(
-				GEtatUtilisateur.getMembre(),
+			this.enseignantCourant = MethodesObjet_1.MethodesObjet.dupliquer(
+				this.etatUtilScoEspace.getMembre(),
 			);
 		} else {
-			this.listeEnseignants = GEtatUtilisateur.getListeProfesseurs();
+			this.listeEnseignants = this.etatUtilScoEspace.getListeProfesseurs();
 			if (
-				GEtatUtilisateur.getGenreOnglet() ===
-				EGenreOnglet.SaisieAbsences_AppelEtSuiviProfesseur
+				this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_AppelEtSuiviProfesseur
 			) {
 				this.listeEnseignants = this.listeEnseignants.getListeElements(
 					(aElement) => {
@@ -142,27 +127,18 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 					},
 				);
 			}
-			this.enseignantCourant = MethodesObjet.dupliquer(
+			this.enseignantCourant = MethodesObjet_1.MethodesObjet.dupliquer(
 				this.listeEnseignants.get(0),
 			);
 		}
-		this.SelectionPlaceDebut = -1;
-		this.SelectionPlaceFin = -1;
-		this.DureeRetard = 5;
-		this.largeurCmbRessources = 138;
-		this.motif = 0;
-		this.estEDTDesPermanences = false;
 		this.recapitulatifEleve = null;
 		this.setAutorisations();
-		this.idGrilleEleve = this.Nom + "_grilleEleve";
-		this.idDemandesDispence = this.Nom + "_demandesDispence";
 		this.donneesGrille = {
 			date: null,
 			listeCours: null,
 			avecCoursAnnule: false,
 		};
 		this.paramCours = {};
-		const MultipleObjetModule_EDTSaisie = require("ObjetModule_EDTSaisie.js");
 		if (
 			MultipleObjetModule_EDTSaisie &&
 			MultipleObjetModule_EDTSaisie.ObjetModule_EDTSaisie
@@ -171,212 +147,244 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				new MultipleObjetModule_EDTSaisie.ObjetModule_EDTSaisie({
 					instance: this,
 					contexteFeuilleAppel: true,
-					getInterfaceGrille: function () {
+					getInterfaceGrille: () => {
 						return this.getInstance(this.IdentGrille);
-					}.bind(this),
-					getObjetGrille: function () {
+					},
+					getObjetGrille: () => {
 						return this.getInstance(this.IdentGrille).getInstanceGrille();
-					}.bind(this),
-					autoriserCreationCours: function () {
+					},
+					autoriserCreationCours: () => {
 						return (
-							GApplication.droits.get(
-								TypeDroits.cours.creerCoursPermanenceFeuilleAppel,
+							this.appScoEspace.droits.get(
+								ObjetDroitsPN_1.TypeDroits.cours
+									.creerCoursPermanenceFeuilleAppel,
 							) &&
 							!this.estEDTDesPermanences &&
 							!this.appelDedieEnseignant
 						);
-					}.bind(this),
-					surCreationCours: function (aParamsGabarit) {
-						const lCours = new ObjetElement();
-						lCours.setEtat(EGenreEtat.Creation);
+					},
+					surCreationCours: (aParamsGabarit) => {
+						const lCours = new ObjetElement_1.ObjetElement();
+						lCours.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 						lCours.estCoursCDIFeuilleAppel = true;
 						lCours.place = aParamsGabarit.placeHebdo;
 						lCours.duree = aParamsGabarit.duree;
 						lCours.numeroSemaine = IE.Cycles.cycleDeLaDate(this.Date);
-						lCours.ListeContenus = new ObjetListeElements();
+						lCours.ListeContenus =
+							new ObjetListeElements_1.ObjetListeElements();
 						this.paramCours = { cours: lCours };
 						return lCours;
-					}.bind(this),
-					actionSurValidation: function () {
+					},
+					actionSurValidation: () => {
 						this.recupererEmploiDuTemps();
-					}.bind(this),
+					},
 				});
 		}
 	}
 	construireInstances() {
 		this.IdentComboRessource = this.add(
-			ObjetSaisiePN,
+			ObjetSaisiePN_1.ObjetSaisiePN,
 			this.evenementSurComboRessource,
 			this.initialiserComboRessource,
 		);
 		if (this.appelDedieEnseignant) {
 			this.IdentComboEnseignant = this.add(
-				ObjetSaisiePN,
+				ObjetSaisiePN_1.ObjetSaisiePN,
 				this.evenementSurComboEnseignant,
 				this.initialiserComboEnseignant,
 			);
 		}
 		this.IdentComboDates = this.add(
-			ObjetSaisiePN,
+			ObjetSaisiePN_1.ObjetSaisiePN,
 			this.evenementSurComboDates,
 			this.initialiserComboDates,
 		);
 		this.IdPremierElement = this.getInstance(
 			this.IdentComboDates,
 		).getPremierElement();
-		this.IdentDate = this.add(ObjetZoneTexte, null, this.initialiserDate);
+		this.IdentDate = this.add(
+			ObjetZoneTexte_1.ObjetZoneTexte,
+			null,
+			this.initialiserDate,
+		);
 		this.IdentSelectDate = this.add(
-			ObjetCelluleDate,
-			_evenementDateValidation.bind(this),
-			_initialiserCelluleDate,
+			ObjetCelluleDate_1.ObjetCelluleDate,
+			this._evenementDateValidation.bind(this),
+			this._initialiserCelluleDate,
 		);
 		this.IdentComboPlaceDeb = this.add(
-			ObjetSaisiePN,
+			ObjetSaisiePN_1.ObjetSaisiePN,
 			this.evenementSurComboPlaceDeb,
 			this.initialiserComboPlace,
 		);
 		this.IdentComboPlaceFin = this.add(
-			ObjetSaisiePN,
+			ObjetSaisiePN_1.ObjetSaisiePN,
 			this.evenementSurComboPlaceFin,
 			this.initialiserComboPlace,
 		);
 		this.IdentGrille = this.add(
-			InterfaceGrilleEDT,
+			InterfaceGrilleEDT_1.InterfaceGrilleEDT,
 			this.evenementSurCours,
 			this.initialiserGrilleProfesseur,
 		);
 		this.IdentFenetreAbsences = this.add(
-			ObjetFenetre_DetailAbsences,
+			ObjetFenetre_DetailAbsences_1.ObjetFenetre_DetailAbsences,
 			this.evenementSurFenetreAbsence,
 			this.initialiserFenetreAbsences,
 		);
 		this.identFenetreCalendrier = this.addFenetre(
-			ObjetFenetre_Date,
+			ObjetFenetre_Date_1.ObjetFenetre_Date,
 			this.evenementFenetreCalendrier,
 			this.initialiserFenetreCalendrier,
 		);
 		this.identMenuContextuel = this.add(
-			ObjetMenuContextuel,
+			ObjetMenuContextuel_1.ObjetMenuContextuel,
 			this._evenementSurMenuContextuel,
 			this._initialiserMenuContextuel,
 		);
 		if (
-			GApplication.droits.get(TypeDroits.absences.avecSaisiePunition) ||
-			GApplication.droits.get(TypeDroits.absences.avecSaisieExclusion)
+			this.appScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.absences.avecSaisiePunition,
+			) ||
+			this.appScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.absences.avecSaisieExclusion,
+			)
 		) {
-			if (GApplication.droits.get(TypeDroits.absences.avecSaisiePunition)) {
+			if (
+				this.appScoEspace.droits.get(
+					ObjetDroitsPN_1.TypeDroits.absences.avecSaisiePunition,
+				)
+			) {
 				this.identFenetreListePunitions = this.addFenetre(
-					ObjetFenetre_ListePunitions,
+					ObjetFenetre_ListePunitions_1.ObjetFenetre_ListePunitions,
 					this._evenementFenetreListePunitions,
 					this._initialiserFenetreListePunitions,
 				);
 			}
 			this.identFenetreSaisiePunitions = this.addFenetre(
-				ObjetFenetre_SaisiePunitions,
+				ObjetFenetre_SaisiePunitions_1.ObjetFenetre_SaisiePunitions,
 				this._evenementFenetreSaisiePunitions,
 				this._initialiserFenetreSaisiePunitions,
 			);
 		}
 		if (
-			GApplication.droits.get(
-				TypeDroits.fonctionnalites.appelSaisirMotifJustifDAbsence,
+			this.appScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.fonctionnalites
+					.appelSaisirMotifJustifDAbsence,
 			) ||
-			GApplication.droits.get(TypeDroits.absences.avecSaisieMotifRetard)
+			this.appScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.absences.avecSaisieMotifRetard,
+			)
 		) {
 			this.idFenetreListeMotifsAbsence = this.addFenetre(
-				ObjetFenetre_SelectionMotif,
+				ObjetFenetre_SelectionMotif_1.ObjetFenetre_SelectionMotif,
 			);
 			this.idFenetreEditionAbsencesNonRegles = this.addFenetre(
-				ObjetFenetre_EditionAbsencesNonReglees,
+				ObjetFenetre_EditionAbsencesNonReglees_1.ObjetFenetre_EditionAbsencesNonReglees,
 			);
 		}
 		if (
-			GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.SaisieAbsences_Appel ||
-			GEtatUtilisateur.getGenreOnglet() ===
-				EGenreOnglet.SaisieAbsences_Appel_Professeur
+			this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel ||
+			this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel_Professeur
 		) {
 			this.idSaisieAbsences = this.add(
-				ObjetAffichagePageSaisieAbsences_Journee,
+				InterfacePageSaisieAbsences_Journee_1.InterfacePageSaisieAbsences_Journee,
 				this.evenementSurSaisie,
 				this.initialiserSaisieAbsences,
 			);
 		} else {
 			this.idSaisieAbsences = this.add(
-				ObjetAffichagePageSaisieAbsences_Cours,
+				InterfacePageSaisieAbsences_Cours_1.InterfacePageSaisieAbsences_Cours,
 				this.evenementSurSaisie,
 				this.initialiserSaisieAbsences,
 			);
 			if (
-				GApplication.droits.get(TypeDroits.absences.avecSaisieObservation) &&
-				GEtatUtilisateur.getGenreOnglet() !==
-					EGenreOnglet.SaisieAbsences_AppelEtSuiviProfesseur
+				this.appScoEspace.droits.get(
+					ObjetDroitsPN_1.TypeDroits.absences.avecSaisieObservation,
+				) &&
+				this.etatUtilScoEspace.getGenreOnglet() !==
+					Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_AppelEtSuiviProfesseur
 			) {
 				this.idFenetreConf = this.addFenetre(
-					ObjetFenetre_ConfSaisieAbsenceCours,
+					ObjetFenetre_ConfSaisieAbsenceCours_1.ObjetFenetre_ConfSaisieAbsenceCours,
 					this.evenementConfig,
 				);
 			}
 			this.idDateDepuis = this.add(
-				ObjetSaisiePN,
+				ObjetSaisiePN_1.ObjetSaisiePN,
 				this.evenementSurDateDepuis,
 				this.initialiserDateDepuis,
 			);
 			this.idFenetreEdition = this.addFenetre(
-				ObjetFenetre_EditionObservation,
+				ObjetFenetre_EditionObservation_1.ObjetFenetre_EditionObservation,
 				this.evenementSurEdition,
 				this.initialiserEdition,
 			);
 			this.idFenetreCalCDC = this.addFenetre(
-				ObjetFenetre_CalendrierAnnuel,
+				ObjetFenetre_CalendrierAnnuel_1.ObjetFenetre_CalendrierAnnuel,
 				this._gestionFocusApresFenetreRecap,
 				this.initialiserFenetreCalCDC,
 			);
 			this.idFenetreListeMemosEleves = this.addFenetre(
-				ObjetFenetre_ListeMemosEleves,
+				ObjetFenetre_ListeMemosEleves_1.ObjetFenetre_ListeMemosEleves,
 				this.eventFenetreMemosEleves,
 				this.initFenetreMemosEleves,
 			);
 			this.idFenetreAbsenceParPas = this.addFenetre(
-				ObjetFenetre_AbsenceParPas,
+				ObjetFenetre_AbsenceParPas_1.ObjetFenetre_AbsenceParPas,
 				this.eventAbsenceParPas,
 				this.initAbsenceParPas,
 			);
 		}
 		this.idFenetreInfirmerie = this.addFenetre(
-			ObjetFenetre_Infirmerie,
+			ObjetFenetre_Infirmerie_1.ObjetFenetre_Infirmerie,
 			this.evenementEditionInfirmerie,
 			this.initialiserInfirmerie,
 		);
 		this.idFenetreSelectionElevesSansCours = this.addFenetre(
-			ObjetFenetre_SelectionElevesSansCours,
-			_evenementSurFenetre_SelectionElevesSansCours.bind(this),
+			ObjetFenetre_SelectionElevesSansCours_1.ObjetFenetre_SelectionElevesSansCours,
+			this._evenementSurFenetreSelectionElevesSansCours.bind(this),
 		);
-		this.IdentFenetreChargeTAF = this.addFenetre(ObjetFenetre_ChargeTAF);
+		this.IdentFenetreChargeTAF = this.addFenetre(
+			ObjetFenetre_ChargeTAF_1.ObjetFenetre_ChargeTAF,
+		);
 		this.construireFicheEleveEtFichePhoto();
 	}
 	estAvecBoutonAbsence() {
 		return (
-			GApplication.droits.get(TypeDroits.absences.avecSaisieAppel) &&
-			!GApplication.droits.get(TypeDroits.absences.avecSaisieAppelEtVS)
+			this.appScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.absences.avecSaisieAppel,
+			) &&
+			!this.appScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.absences.avecSaisieAppelEtVS,
+			)
 		);
 	}
 	estAvecBoutonConfigurationAutresRubriques() {
 		if (
-			GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.SaisieAbsences_Appel ||
-			GEtatUtilisateur.getGenreOnglet() ===
-				EGenreOnglet.SaisieAbsences_Appel_Professeur
+			this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel ||
+			this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel_Professeur
 		) {
 			return false;
 		}
 		return (
-			GApplication.droits.get(TypeDroits.absences.avecSaisieObservation) &&
-			GEtatUtilisateur.getGenreOnglet() !==
-				EGenreOnglet.SaisieAbsences_AppelEtSuiviProfesseur
+			this.appScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.absences.avecSaisieObservation,
+			) &&
+			this.etatUtilScoEspace.getGenreOnglet() !==
+				Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_AppelEtSuiviProfesseur
 		);
 	}
 	detruireInstances() {
-		if (GEtatUtilisateur.GenreEspace === EGenreEspace.Etablissement) {
-			GEtatUtilisateur.setListeClasses(0);
+		if (
+			this.etatUtilScoEspace.GenreEspace ===
+			Enumere_Espace_1.EGenreEspace.Etablissement
+		) {
+			this.etatUtilScoEspace.setListeClasses(0);
 		}
 	}
 	getControleur(aInstance) {
@@ -388,7 +396,7 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 						.setDonnees(aInstance.listeColonnes);
 				},
 				getTitle() {
-					return GTraductions.getValeur(
+					return ObjetTraduction_1.GTraductions.getValeur(
 						"AbsenceVS.Choix_RubriquesFacultatives",
 					);
 				},
@@ -396,21 +404,24 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 					return aInstance.getInstance(aInstance.idFenetreConf).estAffiche();
 				},
 				getDisabled() {
-					return !aInstance.estAppelEtSuivi;
+					return !aInstance.estAppelEtSuivi || !aInstance.listeColonnes;
 				},
 			},
 			btnRecapitulatifAbsences: {
 				event() {
 					aInstance.recapitulatifEleve = {};
-					aInstance.recapitulatifEleve.genreAbsence = EGenreRessource.Absence;
+					aInstance.recapitulatifEleve.genreAbsence =
+						Enumere_Ressource_1.EGenreRessource.Absence;
 					aInstance.recapitulatifEleve.numeroObservation = null;
 					aInstance.recupererAbsencesCours(
 						aInstance.paramCours.cours,
-						EGenreRessource.Absence,
+						Enumere_Ressource_1.EGenreRessource.Absence,
 					);
 				},
 				getTitle() {
-					return GTraductions.getValeur("AbsenceVS.RecapEleve");
+					return ObjetTraduction_1.GTraductions.getValeur(
+						"AbsenceVS.RecapEleve",
+					);
 				},
 				getSelection() {
 					return aInstance
@@ -423,62 +434,77 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			},
 			btnCoursAnnules: {
 				event() {
-					GEtatUtilisateur.setAvecCoursAnnule(
-						!GEtatUtilisateur.getAvecCoursAnnule(),
+					aInstance.etatUtilScoEspace.setAvecCoursAnnule(
+						!aInstance.etatUtilScoEspace.getAvecCoursAnnule(),
 					);
-					_actualisationVisibiliteCoursAnnule.call(aInstance);
+					aInstance._actualisationVisibiliteCoursAnnule();
 				},
 				getSelection() {
-					return GEtatUtilisateur.getAvecCoursAnnule();
+					return aInstance.etatUtilScoEspace.getAvecCoursAnnule();
 				},
 				getTitle() {
-					return GEtatUtilisateur.getAvecCoursAnnule()
-						? GTraductions.getValeur("EDT.MasquerCoursAnnules")
-						: GTraductions.getValeur("EDT.AfficherCoursAnnules");
+					return aInstance.etatUtilScoEspace.getAvecCoursAnnule()
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"EDT.MasquerCoursAnnules",
+							)
+						: ObjetTraduction_1.GTraductions.getValeur(
+								"EDT.AfficherCoursAnnules",
+							);
 				},
 				getClassesMixIcon() {
-					return UtilitaireBoutonBandeau.getClassesMixIconAfficherCoursAnnules(
-						GEtatUtilisateur.getAvecCoursAnnule(),
+					return UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getClassesMixIconAfficherCoursAnnules(
+						aInstance.etatUtilScoEspace.getAvecCoursAnnule(),
 					);
 				},
 			},
 			btnMrFiche: {
 				event() {
 					if (aInstance.estAppelEtSuivi) {
-						if (aInstance.GenreRessource === EGenreRessource.Cours) {
-							GApplication.getMessage().afficher({
-								idRessource: "AbsenceVS.MFicheFeuilleAppelVS",
-							});
+						if (
+							aInstance.GenreRessource ===
+							Enumere_Ressource_1.EGenreRessource.Cours
+						) {
+							aInstance.appScoEspace
+								.getMessage()
+								.afficher({ idRessource: "AbsenceVS.MFicheFeuilleAppelVS" });
 						} else {
-							GApplication.getMessage().afficher({
-								idRessource: "AbsenceVS.MFicheFeuilleAppelVSSansCours",
-							});
+							aInstance.appScoEspace
+								.getMessage()
+								.afficher({
+									idRessource: "AbsenceVS.MFicheFeuilleAppelVSSansCours",
+								});
 						}
 					} else {
-						GApplication.getMessage().afficher({
-							idRessource: "Absence.MFicheFeuilleAppel",
-						});
+						aInstance.appScoEspace
+							.getMessage()
+							.afficher({ idRessource: "Absence.MFicheFeuilleAppel" });
 					}
 				},
 				getTitle() {
 					const lHintMrFiche = aInstance.estAppelEtSuivi
-						? GTraductions.getTitreMFiche("AbsenceVS.MFicheFeuilleAppelVS")
-						: GTraductions.getTitreMFiche("Absence.MFicheFeuilleAppel");
+						? ObjetTraduction_1.GTraductions.getTitreMFiche(
+								"AbsenceVS.MFicheFeuilleAppelVS",
+							)
+						: ObjetTraduction_1.GTraductions.getTitreMFiche(
+								"Absence.MFicheFeuilleAppel",
+							);
 					return lHintMrFiche;
 				},
 			},
 			btnAfficherEDTEleve: {
 				event() {
 					aInstance.avecGrilleEleve = !aInstance.avecGrilleEleve;
-					_afficherEDTEleve.call(aInstance);
+					aInstance._afficherEDTEleve();
 				},
 				getSelection() {
 					return aInstance.avecGrilleEleve;
 				},
 				getTitle() {
 					return aInstance.avecGrilleEleve
-						? GTraductions.getValeur("AbsenceVS.MasquerEdTEleve")
-						: GTraductions.getValeur("AbsenceVS.EdTEleve");
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"AbsenceVS.MasquerEdTEleve",
+							)
+						: ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.EdTEleve");
 				},
 			},
 			btnAfficherChargeTravail: {
@@ -497,7 +523,9 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 						.estAffiche();
 				},
 				getTitle() {
-					return GTraductions.getValeur("CahierDeTexte.ChargeTAF");
+					return ObjetTraduction_1.GTraductions.getValeur(
+						"CahierDeTexte.ChargeTAF",
+					);
 				},
 				getDisabled() {
 					return (
@@ -536,8 +564,9 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			},
 			cbPermanence: {
 				afficherCBPermanence: function () {
-					return GApplication.droits.get(
-						TypeDroits.absences.avecSaisieAbsencesToutesPermanences,
+					return aInstance.appScoEspace.droits.get(
+						ObjetDroitsPN_1.TypeDroits.absences
+							.avecSaisieAbsencesToutesPermanences,
 					);
 				},
 				getValue: function () {
@@ -547,8 +576,8 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 					aInstance.estEDTDesPermanences = aValue;
 					aInstance.Eleve = null;
 					aInstance.paramCours = {};
-					_afficherMessageGrilleAbsence.call(aInstance, "");
-					_actualiserEDTEleve.call(aInstance);
+					aInstance._afficherMessageGrilleAbsence("");
+					aInstance._actualiserEDTEleve();
 					aInstance.recupererEmploiDuTemps();
 				},
 			},
@@ -569,100 +598,75 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				},
 				avec() {
 					return (
-						avecDemandesDispense.call(aInstance) &&
+						aInstance.avecDemandesDispense() &&
 						aInstance.nombreDemandesDispense > 0
 					);
 				},
 			},
+			avecCheckboxAppelTermine() {
+				return aInstance.avecCheckboxAppelTermine();
+			},
 		});
 	}
 	setAutorisations() {
-		this.ListeDates = GApplication.droits.get(
-			TypeDroits.absences.listeDatesSaisieAbsence,
+		this.ListeDates = this.appScoEspace.droits.get(
+			ObjetDroitsPN_1.TypeDroits.absences.listeDatesSaisieAbsence,
 		);
 	}
 	setParametresGeneraux() {
-		this.GenreStructure = EStructureAffichage.Autre;
+		this.GenreStructure =
+			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 	}
 	construireStructureAffichageAutre() {
 		this.setBandeau(this.composeBandeau());
 		const H = [],
-			avecCBEDTPermanence = _avecCBEDTPermanence();
+			avecCBEDTPermanence = this._avecCBEDTPermanence();
 		H.push('<div class="SansMain full-size" style="position:relative;">');
 		H.push(
 			'<div id="' +
 				this.Nom +
 				'_Page_Message" style="display:none;position:absolute;top:0;left:0;right:0;bottom:0;text-align:center;padding-top:50px;">Sélectionnez votre cours</div>',
 		);
-		if (GNavigateur.isLayoutTactile) {
-			H.push('<div class="NoWrap full-size">');
+		if (avecCBEDTPermanence) {
 			H.push(
-				'<div class="InlineBlock AlignementHaut full-height" style="',
-				GStyle.composeWidth(
-					this.largeurGrille + GNavigateur.getLargeurBarreDeScroll(),
+				'<ie-checkbox ie-if="afficherCBPermanence" ie-model="cbPermanence" style="position:absolute;top:4px;left:4px;">',
+				ObjetTraduction_1.GTraductions.getValeur(
+					"AbsenceVS.ToutesLesPermanences",
 				),
-				'">',
-			);
-			if (avecCBEDTPermanence) {
-				H.push(
-					'<ie-checkbox ie-if="afficherCBPermanence" ie-model="cbPermanence" class="EspaceGauche">',
-					GTraductions.getValeur("AbsenceVS.ToutesLesPermanences"),
-					"</ie-checkbox>",
-				);
-			}
-			H.push(
-				'<div style="height:0;" id="' +
-					this.Instances[this.IdentComboRessource].getNom() +
-					'"></div>',
-			);
-			H.push(
-				'<div class="full-height" id="' +
-					this.Instances[this.IdentGrille].getNom() +
-					'"></div>',
-			);
-			H.push('<div style="clear: both;"></div>');
-			H.push("</div>");
-			H.push('<div class="InlineBlock AlignementHaut">');
-		} else {
-			if (avecCBEDTPermanence) {
-				H.push(
-					'<ie-checkbox ie-if="afficherCBPermanence" ie-model="cbPermanence" style="position:absolute;top:4px;left:4px;">',
-					GTraductions.getValeur("AbsenceVS.ToutesLesPermanences"),
-					"</ie-checkbox>",
-				);
-			}
-			H.push(
-				'<div style="position:absolute;top:0;left:5px;width:' +
-					(this.largeurGrille + GNavigateur.getLargeurBarreDeScroll()) +
-					"px;height:" +
-					(avecCBEDTPermanence ? "25" : "0") +
-					'px;" id="' +
-					this.Instances[this.IdentComboRessource].getNom() +
-					'"></div>',
-			);
-			H.push(
-				'<div id="' +
-					this.Instances[this.IdentGrille].getNom() +
-					'" style="position:absolute;overflow:hidden;top:' +
-					(avecCBEDTPermanence ? "25" : "0") +
-					"px;left:0;width: " +
-					(this.largeurGrille + GNavigateur.getLargeurBarreDeScroll()) +
-					'px;bottom:0;"></div>',
-			);
-			H.push(
-				'<div style="position:absolute;overflow:hidden;top:0;left:' +
-					(this.largeurGrille + GNavigateur.getLargeurBarreDeScroll()) +
-					'px;right:0;bottom:0;">',
+				"</ie-checkbox>",
 			);
 		}
+		H.push(
+			'<div style="position:absolute;top:0;left:5px;width:' +
+				(this.largeurGrille + GNavigateur.getLargeurBarreDeScroll()) +
+				"px;height:" +
+				(avecCBEDTPermanence ? "25" : "0") +
+				'px;" id="' +
+				this.Instances[this.IdentComboRessource].getNom() +
+				'"></div>',
+		);
+		H.push(
+			'<div id="' +
+				this.Instances[this.IdentGrille].getNom() +
+				'" style="position:absolute;overflow:hidden;top:' +
+				(avecCBEDTPermanence ? "25" : "0") +
+				"px;left:0;width: " +
+				(this.largeurGrille + GNavigateur.getLargeurBarreDeScroll()) +
+				'px;bottom:0;"></div>',
+		);
+		H.push(
+			'<div style="position:absolute;overflow:hidden;top:0;left:' +
+				(this.largeurGrille + GNavigateur.getLargeurBarreDeScroll()) +
+				'px;right:0;bottom:0;">',
+		);
 		H.push(
 			'<div id="' + this.Instances[this.idSaisieAbsences].getNom() + '"></div>',
 		);
 		H.push(
-			`<div class="m-all radius-all-s" id="${this.Nom}_Appel_Termine" style="display:none;${GStyle.composeCouleurFond(GCouleur.liste.colonneFixe.getFond())}">`,
+			`<div class="m-all radius-all-s" id="${this.Nom}_Appel_Termine" style="display:none;${ObjetStyle_1.GStyle.composeCouleurFond(GCouleur.liste.colonneFixe.getFond())}">`,
 			`<div class="flex-contain cols p-all-l">`,
 			`<div class="flex-contain flex-gap-xl">`,
-			avecCheckboxAppelTermine() ? this.composeCBAppelTermine() : "",
+			this.composeCBAppelTermine(),
 			`<p id="${this.Nom}_Nb_Eleve_Present" class="flex-contain flex-center m-left-l"></p>`,
 			`<div class="flex-contain flex-center" ie-if="sortiepeda.if" ie-html="sortiepeda.html"></div>`,
 			`<div id="${this.idDemandesDispence}"></div>`,
@@ -671,61 +675,55 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			`</div>`,
 			`</div>`,
 		);
-		if (GNavigateur.isLayoutTactile) {
-			H.push(
-				'<div id="',
-				this.idGrilleEleve,
-				'" class="InlineBlock AlignementHaut" style="display:none; position:relative; height:100%; width: ' +
-					(this.largeurGrilleEleve + GNavigateur.getLargeurBarreDeScroll()) +
-					'px;"></div>',
-			);
-		} else {
-			H.push(
-				'<div id="',
-				this.idGrilleEleve,
-				'" style="display:none; position:absolute;overflow:hidden;top:0;right:0;width: ' +
-					(this.largeurGrilleEleve + GNavigateur.getLargeurBarreDeScroll()) +
-					'px;bottom:0;"></div>',
-			);
-		}
+		H.push(
+			'<div id="',
+			this.idGrilleEleve,
+			'" style="display:none; position:absolute;overflow:hidden;top:0;right:0;width: ' +
+				(this.largeurGrilleEleve + GNavigateur.getLargeurBarreDeScroll()) +
+				'px;bottom:0;"></div>',
+		);
 		H.push("</div>");
 		return H.join("");
 	}
 	composeCBAppelTermine() {
 		const H = [];
 		H.push(
-			'<div class="flex-contain flex-center">',
+			'<div class="flex-contain flex-center" ie-display="avecCheckboxAppelTermine">',
 			'<ie-checkbox ie-model="cbAppelTermine" style="',
-			GStyle.composeCouleurTexte(GCouleur.texte),
+			ObjetStyle_1.GStyle.composeCouleurTexte(GCouleur.texte),
 			'">',
-			GTraductions.getValeur("AbsenceVS.AppelFait"),
+			ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.AppelFait"),
 			"</ie-checkbox>",
 			"</div>",
 		);
 		return H.join("");
 	}
 	updateDemandesDispence() {
-		GHtml.setHtml(this.idDemandesDispence, this.composeHtmlDemandesDispence(), {
-			controleur: this.controleur,
-		});
+		ObjetHtml_1.GHtml.setHtml(
+			this.idDemandesDispence,
+			this.composeHtmlDemandesDispence(),
+			{ controleur: this.controleur },
+		);
 	}
 	composeHtmlDemandesDispence() {
 		const H = [];
 		if (
-			MethodesObjet.isNumeric(this.nombreDemandesDispense) &&
+			MethodesObjet_1.MethodesObjet.isNumeric(this.nombreDemandesDispense) &&
 			this.nombreDemandesDispense > 0
 		) {
 			const lTrad =
 				this.nombreDemandesDispense === 1
-					? GTraductions.getValeur("AbsenceVS.demandeDispense.1DemandeATraiter")
-					: GTraductions.getValeur(
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"AbsenceVS.demandeDispense.1DemandeATraiter",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
 							"AbsenceVS.demandeDispense.xDemandesATraiter",
 							[this.nombreDemandesDispense],
 						);
 			H.push(
 				'<div class="flex-contain flex-center flex-gap" ie-if="btnTraiterDemandesDispense.avec">',
-				`<p class="text-util-rouge-foncee">${lTrad}</p>`,
-				`<ie-bouton ie-model="btnTraiterDemandesDispense" class="themeBoutonPrimaire small-bt">${GTraductions.getValeur("AbsenceVS.traiter")}</ie-bouton>`,
+				`<p class="color-red-foncee">${lTrad}</p>`,
+				`<ie-bouton ie-model="btnTraiterDemandesDispense" class="themeBoutonPrimaire small-bt">${ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.traiter")}</ie-bouton>`,
 				"</div>",
 			);
 		}
@@ -762,7 +760,7 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			'    <div class="fluid-bloc flex-contain flex-center flex-gap-l p-x-l radius-all-s" id="' +
 				this.Nom +
 				'_Bandeau" style="display:none; ' +
-				GStyle.composeCouleur(GCouleur.cumul, GCouleur.texte) +
+				ObjetStyle_1.GStyle.composeCouleur(GCouleur.cumul, GCouleur.texte) +
 				'">',
 		);
 		H.push('        <div id="' + this.Nom + '_Bandeau_Message"></div>');
@@ -775,7 +773,7 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			'        <div id="' +
 				this.Nom +
 				'_Bandeau_MessageSuite">' +
-				GChaine.insecable("à") +
+				ObjetChaine_1.GChaine.insecable("à") +
 				"</div>",
 		);
 		H.push(
@@ -795,7 +793,7 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				);
 				H.push(
 					"<div>",
-					UtilitaireBoutonBandeau.getHtmlBtnParametrer(
+					UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnParametrer(
 						"btnConfigAutresRubriques",
 					),
 					"</div>",
@@ -805,41 +803,47 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 		H.push('<div class="flex-contain flex-center flex-gap-l">');
 		if (this.estAvecBoutonAbsence()) {
 			H.push(
-				UtilitaireBoutonBandeau.getHtmlBtnRecapitulatifAbsences(
+				UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnRecapitulatifAbsences(
 					"btnRecapitulatifAbsences",
 				),
 			);
 		}
 		H.push(
-			UtilitaireBoutonBandeau.getHtmlBtnAfficherCoursAnnules("btnCoursAnnules"),
+			UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnAfficherCoursAnnulesControleur(
+				"btnCoursAnnules",
+			),
 		);
 		H.push(
-			UtilitaireBoutonBandeau.getHtmlBtnAfficherEmploiDuTemps(
+			UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnAfficherEmploiDuTemps(
 				"btnAfficherEDTEleve",
 			),
 		);
 		H.push(
 			'<span ie-display="getDisplayBtnAfficherChargeTravail">',
-			UtilitaireBoutonBandeau.getHtmlBtnChargeDeTravail(
+			UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnChargeDeTravail(
 				"btnAfficherChargeTravail",
 			),
 			"</span>",
 		);
 		if (this.avecFicheEleve()) {
 			H.push(
-				UtilitaireBoutonBandeau.getHtmlBtnAfficherFicheEleve(
-					"btnAfficherFicheEleve",
+				UtilitaireRenseignementsEleve_1.UtilitaireFicheEleve.getHtmlBtnAfficherFicheEleve(
+					this,
 				),
 			);
 		}
 		if (this.avecPhotoEleve()) {
 			H.push(
-				UtilitaireBoutonBandeau.getHtmlBtnAfficherPhotoEleve(
-					"btnAfficherPhotoEleve",
+				UtilitaireRenseignementsEleve_1.UtilitairePhotoEleve.getHtmlBtnAfficherPhotoEleve(
+					this,
 				),
 			);
 		}
-		H.push(UtilitaireBoutonBandeau.getHtmlBtnMonsieurFiche("btnMrFiche"));
+		H.push(
+			UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnMonsieurFiche(
+				"btnMrFiche",
+			),
+		);
 		H.push("</div>");
 		H.push("</div>");
 		H.push("</div>");
@@ -848,24 +852,28 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 	initialiserSaisieAbsences(AInstance) {
 		AInstance.setDonnees({
 			avecSaisiePunition:
-				GEtatUtilisateur.getGenreOnglet() ===
-				EGenreOnglet.SaisieAbsences_Appel_Professeur
+				this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel_Professeur
 					? false
-					: GApplication.droits.get(TypeDroits.absences.avecSaisiePunition),
-			avecSaisieExclusion:
-				GEtatUtilisateur.getGenreOnglet() ===
-				EGenreOnglet.SaisieAbsences_Appel_Professeur
-					? true
-					: GApplication.droits.get(TypeDroits.absences.avecSaisieExclusion),
-			avecSaisiePassageInfirmerie:
-				GEtatUtilisateur.getGenreOnglet() ===
-				EGenreOnglet.SaisieAbsences_Appel_Professeur
-					? true
-					: GApplication.droits.get(
-							TypeDroits.absences.avecSaisiePassageInfirmerie,
+					: this.appScoEspace.droits.get(
+							ObjetDroitsPN_1.TypeDroits.absences.avecSaisiePunition,
 						),
-			avecSaisieRetard: GApplication.droits.get(
-				TypeDroits.absences.avecSaisieRetard,
+			avecSaisieExclusion:
+				this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel_Professeur
+					? true
+					: this.appScoEspace.droits.get(
+							ObjetDroitsPN_1.TypeDroits.absences.avecSaisieExclusion,
+						),
+			avecSaisiePassageInfirmerie:
+				this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel_Professeur
+					? true
+					: this.appScoEspace.droits.get(
+							ObjetDroitsPN_1.TypeDroits.absences.avecSaisiePassageInfirmerie,
+						),
+			avecSaisieRetard: this.appScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.absences.avecSaisieRetard,
 			),
 		});
 	}
@@ -873,26 +881,34 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 		aObjet.setVisible(false);
 		aObjet.setControleNavigation(true);
 		aObjet.setOptionsObjetSaisie({
-			labelWAICellule: GTraductions.getValeur("AbsenceVS.comboRessource"),
+			labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+				"AbsenceVS.comboRessource",
+			),
 			longueur: this.largeurCmbRessources,
 		});
 	}
 	initialiserComboEnseignant(aObjet) {
 		aObjet.setControleNavigation(true);
 		aObjet.setOptionsObjetSaisie({
-			labelWAICellule: GTraductions.getValeur("AbsenceVS.comboEnseignant"),
+			labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+				"AbsenceVS.comboEnseignant",
+			),
 			avecTriListeElements: true,
 			longueur: 175,
 		});
 	}
 	initialiserComboDates(AInstance) {
 		AInstance.setOptionsObjetSaisie({
-			texteEdit: "-&nbsp;" + GTraductions.getValeur("AbsenceVS.appelDu"),
+			texteEdit:
+				"-&nbsp;" +
+				ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.appelDu"),
 		});
 		AInstance.setVisible(false);
 		AInstance.setControleNavigation(true);
 		AInstance.setOptionsObjetSaisie({
-			labelWAICellule: GTraductions.getValeur("AbsenceVS.comboDates"),
+			labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+				"AbsenceVS.comboDates",
+			),
 			longueur: 120,
 			forcerBoutonDeploiement: true,
 		});
@@ -907,20 +923,20 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 	initialiserGrilleProfesseur(AInstance) {
 		AInstance.setOptionsInterfaceGrilleEDT({
 			optionsGrille: {
-				tailleMINPasHoraire: GNavigateur.isLayoutTactile ? 20 : undefined,
-				surLongTouchGrille: function (aParams) {
-					_deselectionCours.call(this);
+				tailleMINPasHoraire: undefined,
+				surLongTouchGrille: (aParams) => {
+					this._deselectionCours();
 					if (this.moduleSaisie) {
 						this.moduleSaisie.surLongTouchGrille(aParams);
 					}
-				}.bind(this),
+				},
 			},
-			evenementMouseDownPlace: function (aEstGrilleMS, aParams) {
-				_deselectionCours.call(this);
+			evenementMouseDownPlace: (aEstGrilleMS, aParams) => {
+				this._deselectionCours();
 				if (this.moduleSaisie) {
 					this.moduleSaisie.mouseDownPlaceGrille(aEstGrilleMS, aParams);
 				}
-			}.bind(this),
+			},
 		});
 		AInstance.setControleNavigation(true);
 	}
@@ -930,7 +946,9 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			titre: "",
 			largeur: 600,
 			hauteur: 350,
-			listeBoutons: [GTraductions.getValeur("principal.fermer")],
+			listeBoutons: [
+				ObjetTraduction_1.GTraductions.getValeur("principal.fermer"),
+			],
 		});
 	}
 	_initialiserFenetreListePunitions(aInstance) {
@@ -938,7 +956,9 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			titre: "",
 			largeur: 700,
 			hauteur: 256,
-			listeBoutons: [GTraductions.getValeur("principal.fermer")],
+			listeBoutons: [
+				ObjetTraduction_1.GTraductions.getValeur("principal.fermer"),
+			],
 		});
 	}
 	_initialiserFenetreSaisiePunitions(aInstance) {
@@ -947,77 +967,103 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			largeur: 500,
 			hauteur: 285,
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 		});
+		if (aInstance.moteurPunitions) {
+			aInstance.moteurPunitions.maxlengthCirconstance =
+				!!this.infoMaxlength &&
+				"circonstance" in this.infoMaxlength &&
+				this.infoMaxlength.circonstance > 0
+					? this.infoMaxlength.circonstance
+					: undefined;
+			aInstance.moteurPunitions.maxlengthTaf =
+				!!this.infoMaxlength &&
+				"taf" in this.infoMaxlength &&
+				this.infoMaxlength.taf > 0
+					? this.infoMaxlength.taf
+					: undefined;
+		}
 	}
 	initialiserFenetreCalendrier(aInstance) {
 		aInstance.setParametres(
-			GDate.PremierLundi,
-			GDate.premiereDate,
-			GParametres.DerniereDate,
-			GParametres.JoursOuvres,
+			ObjetDate_1.GDate.PremierLundi,
+			ObjetDate_1.GDate.premiereDate,
+			this.appScoEspace.getObjetParametres().DerniereDate,
+			this.appScoEspace.getObjetParametres().JoursOuvres,
 		);
 	}
 	initialiserInfirmerie(aInstance) {
 		aInstance.setOptionsFenetre({
-			titre: GTraductions.getValeur("AbsenceVS.Titre_FenetreInfirmerie"),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"AbsenceVS.Titre_FenetreInfirmerie",
+			),
 			largeur: 380,
 			hauteur: null,
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Supprimer"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 		});
 	}
 	_initialiserMenuContextuel(aInstance) {
 		aInstance.addCommande(
 			0,
-			GTraductions.getValeur("AbsenceVS.AjouterPunition"),
+			ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.AjouterPunition"),
 		);
 	}
 	initialiserDateDepuis(AInstance) {
 		AInstance.setOptionsObjetSaisie({
-			texteEdit: GTraductions.getValeur("AbsenceVS.DecompteDepuis"),
+			texteEdit: ObjetTraduction_1.GTraductions.getValeur(
+				"AbsenceVS.DecompteDepuis",
+			),
 		});
 		AInstance.setControleNavigation(true);
 		AInstance.enInitialisation = true;
 		AInstance.setOptionsObjetSaisie({
-			labelWAICellule: GTraductions.getValeur("AbsenceVS.comboDates"),
+			labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+				"AbsenceVS.comboDates",
+			),
 			longueur: 120,
 			forcerBoutonDeploiement: true,
 		});
 	}
 	initialiserEdition(aInstance) {
 		aInstance.setOptionsFenetre({
-			titre: GTraductions.getValeur("CarnetCorrespondance.ObservationsParents"),
-			largeur: 450,
-			hauteur: 230,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"CarnetCorrespondance.ObservationsParents",
+			),
+			largeur: 480,
+			hauteur: 240,
 		});
 	}
 	initialiserFenetreCalCDC(aInstance) {
 		aInstance.setOptionsFenetre({
 			modale: false,
-			titre: GTraductions.getValeur("CarnetCorrespondance.DefautCarnet"),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"CarnetCorrespondance.DefautCarnet",
+			),
 			largeur: 650,
 			hauteur: null,
-			listeBoutons: [GTraductions.getValeur("Fermer")],
+			listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
 		});
 	}
 	initFenetreMemosEleves(aInstance) {
 		aInstance.setOptionsFenetre({ donneesListe: { avecEtatSaisie: true } });
-		aInstance.setOptionsListeMemosEleve({ filtreMemoDate: true });
 	}
 	initAbsenceParPas(aInstance) {
 		aInstance.setOptionsFenetre({
-			titre: GTraductions.getValeur("AbsenceVS.dureeAbsence", [""]),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"AbsenceVS.dureeAbsence",
+				[""],
+			),
 			largeur: 400,
 			hauteur: 100,
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 		});
 	}
@@ -1036,7 +1082,7 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			) {
 				const lRes =
 					await this.moteur.afficherMessageConfirmationAppelTermineAvecDemandeDispense();
-				if (lRes !== EGenreAction.Valider) {
+				if (lRes !== Enumere_Action_1.EGenreAction.Valider) {
 					return;
 				}
 			}
@@ -1060,7 +1106,9 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 		if (!aCours) {
 			return;
 		}
-		this.evenementSurSaisie(EGenreEvenementSaisieAbsence.AppelFait);
+		this.evenementSurSaisie(
+			Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence.AppelFait,
+		);
 	}
 	evenementSurSaisie(aEvent, aObjet) {
 		if (aObjet && aObjet._gestionFocus_apresFenetreCelluleId) {
@@ -1073,13 +1121,17 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 		}
 		let lEleve, i;
 		switch (aEvent) {
-			case EGenreEvenementSaisieAbsence.SelectionEleve: {
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.SelectionEleve: {
 				if (
 					!this.Eleve ||
 					this.Eleve.getNumero() !== aObjet.eleve.getNumero()
 				) {
 					this.Eleve = aObjet.eleve;
-					if (this.getInstance(this.IdentFenetreAbsences).estAffiche()) {
+					if (
+						this.existeInstance(this.IdentFenetreAbsences) &&
+						this.getInstance(this.IdentFenetreAbsences).estAffiche()
+					) {
 						if (
 							this.recapitulatifEleve !== null &&
 							this.recapitulatifEleve !== undefined
@@ -1090,43 +1142,49 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 								this.recapitulatifEleve.numeroObservation,
 							);
 						} else {
-							this.recupererAbsencesCours(null, EGenreRessource.Absence);
+							this.recupererAbsencesCours(
+								null,
+								Enumere_Ressource_1.EGenreRessource.Absence,
+							);
 						}
 					}
-					GEtatUtilisateur.Navigation.setRessource(
-						EGenreRessource.Eleve,
+					this.etatUtilScoEspace.Navigation.setRessource(
+						Enumere_Ressource_1.EGenreRessource.Eleve,
 						aObjet.eleve,
 					);
 					this.surSelectionEleve();
-					_actualiserEDTEleve.call(this);
+					this._actualiserEDTEleve();
 					this.$refreshSelf();
 				}
 				break;
 			}
-			case EGenreEvenementSaisieAbsence.AppelFait: {
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.AppelFait: {
 				this.getInstance(this.IdentGrille)
 					.getInstanceGrille()
 					.moduleCours.actualiserCours();
 				break;
 			}
-			case EGenreEvenementSaisieAbsence.FermerFenetre: {
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.FermerFenetre: {
 				this.getInstance(this.IdentFenetreAbsences).fermer();
 				this.getInstance(this.identFenetreSaisiePunitions).fermer();
 				this.getInstance(this.identFenetreCalendrier).fermer();
 				this.getInstance(this.identFenetreFicheEleve).fermer();
 				this.getInstance(this.idFenetreInfirmerie).fermer();
-				if (this.getInstance(this.idFenetreConf)) {
+				if (this.existeInstance(this.idFenetreConf)) {
 					this.getInstance(this.idFenetreConf).fermer();
 				}
 				break;
 			}
-			case EGenreEvenementSaisieAbsence.ClicDroit: {
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.ClicDroit: {
 				if (!this.jourConsultUniquement) {
 					if (
-						GEtatUtilisateur.getGenreOnglet() ===
-							EGenreOnglet.SaisieAbsences_Appel ||
-						GEtatUtilisateur.getGenreOnglet() ===
-							EGenreOnglet.SaisieAbsences_Appel_Professeur
+						this.etatUtilScoEspace.getGenreOnglet() ===
+							Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel ||
+						this.etatUtilScoEspace.getGenreOnglet() ===
+							Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel_Professeur
 					) {
 						this.actualiserMenuContextuelJournee(aObjet);
 					} else {
@@ -1135,7 +1193,8 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				}
 				break;
 			}
-			case EGenreEvenementSaisieAbsence.PunitionListe: {
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.PunitionListe: {
 				if (this.ListeEleves && this.ListeEleves.count() > 0) {
 					this.getInstance(this.identFenetreListePunitions).setDonnees(
 						this.ListeEleves,
@@ -1144,29 +1203,40 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 						this.indiceDateSaisieAbsence,
 					).getLibelle();
 					const lStrEnseignant = this.enseignantCourant.getLibelle();
-					const lTitreFenetre = GChaine.format(
-						GTraductions.getValeur("AbsenceVS.titreFenetreListePunitions"),
+					const lTitreFenetre = ObjetChaine_1.GChaine.format(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"AbsenceVS.titreFenetreListePunitions",
+						),
 						[lStrDate, lStrEnseignant],
 					);
 					this.getInstance(this.identFenetreListePunitions).setOptionsFenetre({
 						titre: lTitreFenetre,
 					});
 				} else {
-					GApplication.getMessage().afficher({
-						type: EGenreBoiteMessage.Information,
-						message: GTraductions.getValeur("AbsenceVS.aucunePunitionClasse"),
-						callback: this._gestionFocusApresFenetreCellule.bind(this),
-					});
+					this.appScoEspace
+						.getMessage()
+						.afficher({
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+							message: ObjetTraduction_1.GTraductions.getValeur(
+								"AbsenceVS.aucunePunitionClasse",
+							),
+							callback: this._gestionFocusApresFenetreCellule.bind(this),
+						});
 				}
 				break;
 			}
-			case EGenreEvenementSaisieAbsence.PunitionSaisie: {
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.PunitionSaisie: {
 				if (!this.Eleve) {
-					GApplication.getMessage().afficher({
-						type: EGenreBoiteMessage.Information,
-						message: GTraductions.getValeur("AbsenceVS.SelectionElevePunition"),
-						callback: this._gestionFocusApresFenetreCellule.bind(this),
-					});
+					this.appScoEspace
+						.getMessage()
+						.afficher({
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+							message: ObjetTraduction_1.GTraductions.getValeur(
+								"AbsenceVS.SelectionElevePunition",
+							),
+							callback: this._gestionFocusApresFenetreCellule.bind(this),
+						});
 				} else {
 					this._ouvrirFenetreSaisiePunition(
 						aObjet && aObjet.numeroPunition
@@ -1174,18 +1244,21 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 									Math.ceil(aObjet.numeroPunition / 2) - 1,
 								)
 							: null,
-						aObjet ? aObjet.genreAbsence : EGenreRessource.Punition,
+						aObjet
+							? aObjet.genreAbsence
+							: Enumere_Ressource_1.EGenreRessource.Punition,
 					);
 				}
 				break;
 			}
-			case EGenreEvenementSaisieAbsence.PunitionSuppression: {
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.PunitionSuppression: {
 				let lPunition;
 				if (
-					GEtatUtilisateur.getGenreOnglet() ===
-						EGenreOnglet.SaisieAbsences_Appel ||
-					GEtatUtilisateur.getGenreOnglet() ===
-						EGenreOnglet.SaisieAbsences_Appel_Professeur
+					this.etatUtilScoEspace.getGenreOnglet() ===
+						Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel ||
+					this.etatUtilScoEspace.getGenreOnglet() ===
+						Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel_Professeur
 				) {
 					const lNumeroPunition = Math.ceil(aObjet.numeroPunition / 2) - 1;
 					lPunition = this.Eleve.listePunitions.get(lNumeroPunition);
@@ -1195,24 +1268,34 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				this._evenementApresConfirmationSuppressionPunition(
 					lPunition,
 					0,
-					EGenreRessource.Punition,
+					Enumere_Ressource_1.EGenreRessource.Punition,
 				);
 				break;
 			}
-			case EGenreEvenementSaisieAbsence.ActionSurAbsence: {
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.ActionSurAbsence: {
 				aObjet.genreAbsence = aObjet.typeAbsence;
 				aObjet.eleve = this.ListeEleves.getElementParNumero(aObjet.numeroEleve);
-				aObjet.fonctionSurOuvrirListeMotif = function (aParam) {
+				aObjet.fonctionSurOuvrirListeMotif = (aParam) => {
 					const lInstance = this.getInstance(this.idFenetreListeMotifsAbsence);
 					if (lInstance) {
-						if (aParam.genreAbsence === EGenreRessource.Absence) {
-							lInstance.Titre = GTraductions.getValeur(
-								"AbsenceVS.SelectionnerUnMotifAbsence",
-							);
-						} else if (aParam.genreAbsence === EGenreRessource.Retard) {
-							lInstance.Titre = GTraductions.getValeur(
-								"AbsenceVS.SelectionnerUnMotifRetard",
-							);
+						if (
+							aParam.genreAbsence ===
+							Enumere_Ressource_1.EGenreRessource.Absence
+						) {
+							lInstance.setOptionsFenetre({
+								titre: ObjetTraduction_1.GTraductions.getValeur(
+									"AbsenceVS.SelectionnerUnMotifAbsence",
+								),
+							});
+						} else if (
+							aParam.genreAbsence === Enumere_Ressource_1.EGenreRessource.Retard
+						) {
+							lInstance.setOptionsFenetre({
+								titre: ObjetTraduction_1.GTraductions.getValeur(
+									"AbsenceVS.SelectionnerUnMotifRetard",
+								),
+							});
 						}
 						lInstance.setOptionsFenetre({
 							callback: this._evenementFenetreListeMotifsAbsence.bind(
@@ -1226,21 +1309,27 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 							),
 							genreAbsence: aParam.genreAbsence,
 						});
-						if (aParam.genreAbsence === EGenreRessource.Absence) {
-							lInstance.setDonnees(GCache.listeMotifsAbsenceEleve, true);
+						if (
+							aParam.genreAbsence ===
+							Enumere_Ressource_1.EGenreRessource.Absence
+						) {
+							lInstance.setDonnees(
+								Cache_1.GCache.listeMotifsAbsenceEleve,
+								true,
+							);
 						} else {
-							lInstance.setDonnees(GCache.listeMotifsRetards, false);
+							lInstance.setDonnees(Cache_1.GCache.listeMotifsRetards, false);
 						}
 					}
-				}.bind(this);
-				aObjet.fonctionApresPasPossible = function (aParam) {
+				};
+				aObjet.fonctionApresPasPossible = (aParam) => {
 					this.afficherNbElevePresent();
 					this.getInstance(this.idSaisieAbsences).retourAbsence(
 						aParam.eleve.Numero,
 						aParam.genreAbsence,
 						aParam.typeObservation,
 					);
-				}.bind(this);
+				};
 				aObjet.fonctionApresModification = this._apresModificationAbsence.bind(
 					this,
 					aObjet.eleve,
@@ -1250,12 +1339,14 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				this.moteur.surEvenementSaisieAbsence(aObjet);
 				break;
 			}
-			case EGenreEvenementSaisieAbsence.DureeRetard: {
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.DureeRetard: {
 				this.DureeRetard = aObjet.dureeRetard;
 				this.moteur.setOptions({ dureeRetard: this.DureeRetard });
 				break;
 			}
-			case EGenreEvenementSaisieAbsence.RecupererAbsence: {
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.RecupererAbsence: {
 				if (aObjet.numeroEleve) {
 					lEleve = this.ListeEleves.getElementParNumero(aObjet.numeroEleve);
 					this.Eleve = lEleve;
@@ -1267,34 +1358,40 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 					aObjet.genreObservation,
 				);
 			}
-			case EGenreEvenementSaisieAbsence.RecapitulatifEleve: {
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.RecapitulatifEleve: {
 				lEleve = this.ListeEleves.getElementParNumero(aObjet.numeroEleve);
 				this.Eleve = lEleve;
-				GEtatUtilisateur.Navigation.setRessource(EGenreRessource.Eleve, lEleve);
+				this.etatUtilScoEspace.Navigation.setRessource(
+					Enumere_Ressource_1.EGenreRessource.Eleve,
+					lEleve,
+				);
 				delete aObjet.numeroEleve;
 				this.recapitulatifEleve = aObjet;
 				if (
-					this.getInstance(this.IdentFenetreAbsences) &&
+					this.existeInstance(this.IdentFenetreAbsences) &&
 					this.getInstance(this.IdentFenetreAbsences).estAffiche() &&
 					this.recapitulatifEleve.genreAbsence ===
-						EGenreRessource.Observation &&
+						Enumere_Ressource_1.EGenreRessource.Observation &&
 					this.listeColonnes.getElementParNumeroEtGenre(
 						this.recapitulatifEleve.numeroObservation,
 						this.recapitulatifEleve.genreAbsence,
-					).genreObservation === TypeGenreObservationVS.OVS_DefautCarnet
+					).genreObservation ===
+						TypeGenreObservationVS_1.TypeGenreObservationVS.OVS_DefautCarnet
 				) {
 					this.getInstance(this.IdentFenetreAbsences).fermer();
 				}
 				if (
-					this.getInstance(this.idFenetreCalCDC) &&
+					this.existeInstance(this.idFenetreCalCDC) &&
 					this.getInstance(this.idFenetreCalCDC).estAffiche() &&
 					!(
 						this.recapitulatifEleve.genreAbsence ===
-							EGenreRessource.Observation &&
+							Enumere_Ressource_1.EGenreRessource.Observation &&
 						this.listeColonnes.getElementParNumeroEtGenre(
 							this.recapitulatifEleve.numeroObservation,
 							this.recapitulatifEleve.genreAbsence,
-						).genreObservation === TypeGenreObservationVS.OVS_DefautCarnet
+						).genreObservation ===
+							TypeGenreObservationVS_1.TypeGenreObservationVS.OVS_DefautCarnet
 					)
 				) {
 					this.getInstance(this.idFenetreCalCDC).fermer();
@@ -1305,37 +1402,43 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 					aObjet.genreAbsence,
 					aObjet.numeroObservation,
 				);
-				_actualiserEDTEleve.call(this);
+				this._actualiserEDTEleve();
 				this.$refreshSelf();
 				break;
 			}
-			case EGenreEvenementSaisieAbsence.ChangerEtatDevoir: {
-				lEleve = this.ListeEleves.getElementParNumero(aObjet.numeroEleve);
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.ChangerEtatDevoir: {
+				const lEleve = this.ListeEleves.getElementParNumero(aObjet.numeroEleve);
 				if (lEleve.devoirARendre.programmation.Genre === 1) {
 					lEleve.devoirARendre.programmation.Genre = 2;
 				} else {
 					lEleve.devoirARendre.programmation.Genre = 1;
 				}
-				lEleve.devoirARendre.programmation.setEtat(EGenreEtat.Modification);
-				lEleve.devoirARendre.setEtat(EGenreEtat.Modification);
-				lEleve.setEtat(EGenreEtat.Modification);
+				lEleve.devoirARendre.programmation.setEtat(
+					Enumere_Etat_1.EGenreEtat.Modification,
+				);
+				lEleve.devoirARendre.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+				lEleve.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 				this.setEtatSaisie(true);
 				this.getInstance(this.idSaisieAbsences).retourChangementDevoir(
 					aObjet.numeroEleve,
 				);
 				break;
 			}
-			case EGenreEvenementSaisieAbsence.Infirmerie: {
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.Infirmerie: {
 				this.Eleve = this.ListeEleves.getElementParNumero(aObjet.numeroEleve);
 				this.Place = aObjet.place;
 				const LBorneMin = this.PlaceSaisieDebut;
 				const LBorneMax = this.PlaceSaisieFin;
 				const lAbsence = this.moteur.getAbsence(
 					this.Eleve,
-					EGenreRessource.Infirmerie,
+					Enumere_Ressource_1.EGenreRessource.Infirmerie,
 					this.Place,
 				);
-				const lListeAccompagnants = MethodesObjet.dupliquer(this.ListeEleves);
+				const lListeAccompagnants = MethodesObjet_1.MethodesObjet.dupliquer(
+					this.ListeEleves,
+				);
 				this.moteur._majListeElevesVisible();
 				this.getInstance(this.idFenetreInfirmerie).setDonnees(
 					lListeAccompagnants,
@@ -1343,22 +1446,33 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 						numeroEleve: this.Eleve.Numero,
 						placeDebut: aObjet.placeDebut,
 						placeFin: aObjet.placeFin,
-						borneMin: GDate.placeAnnuelleEnDate(LBorneMin),
-						borneMax: GDate.placeAnnuelleEnDate(LBorneMax, true),
+						borneMin: ObjetDate_1.GDate.placeAnnuelleEnDate(LBorneMin),
+						borneMax: ObjetDate_1.GDate.placeAnnuelleEnDate(LBorneMax, true),
 						absence: lAbsence,
 						publierParDefautPassageInf: this.publierParDefautPassageInf,
 						avecEditionPublication: false,
+						maxlengthCommentaire:
+							!!this.infoMaxlength &&
+							"commentairePassageInfirmerie" in this.infoMaxlength &&
+							this.infoMaxlength.commentairePassageInfirmerie > 0
+								? this.infoMaxlength.commentairePassageInfirmerie
+								: undefined,
+						avecCommentaireAutorise: this.avecCommentaireAutorise,
 					},
 				);
 				break;
 			}
-			case EGenreEvenementSaisieAbsence.DeplacementBorne: {
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.DeplacementBorne: {
 				const LGenreBorneDeplacee = aObjet.genreBorne;
 				const LPlace = aObjet.place;
-				const LEstUnCours = this.GenreRessource === EGenreRessource.Cours;
+				const LEstUnCours =
+					this.GenreRessource === Enumere_Ressource_1.EGenreRessource.Cours;
 				if (!LEstUnCours) {
-					if (LGenreBorneDeplacee === EGenreBorne.Superieure) {
-						const LPlaceSaisieFin = 1 + (LPlace % GParametres.PlacesParJour);
+					if (LGenreBorneDeplacee === EGenreBorne_1.EGenreBorne.Superieure) {
+						const LPlaceSaisieFin =
+							1 +
+							(LPlace % this.appScoEspace.getObjetParametres().PlacesParJour);
 						this.PlaceSaisieFin = LPlace;
 						this.getInstance(
 							this.IdentComboPlaceFin,
@@ -1368,7 +1482,8 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 							this.PlaceSaisieFin,
 						);
 					} else {
-						const LPlaceSaisieDebut = LPlace % GParametres.PlacesParJour;
+						const LPlaceSaisieDebut =
+							LPlace % this.appScoEspace.getObjetParametres().PlacesParJour;
 						this.PlaceSaisieDebut = LPlace;
 						this.getInstance(
 							this.IdentComboPlaceDeb,
@@ -1380,11 +1495,11 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 					}
 				} else {
 					this.PlaceSaisieDebut =
-						LGenreBorneDeplacee === EGenreBorne.Superieure
+						LGenreBorneDeplacee === EGenreBorne_1.EGenreBorne.Superieure
 							? this.PlaceSaisieDebut
 							: LPlace;
 					this.PlaceSaisieFin =
-						LGenreBorneDeplacee === EGenreBorne.Superieure
+						LGenreBorneDeplacee === EGenreBorne_1.EGenreBorne.Superieure
 							? LPlace
 							: this.PlaceSaisieFin;
 					this.getInstance(this.idSaisieAbsences).setPlacesSaisie(
@@ -1398,19 +1513,34 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				});
 				break;
 			}
-			case EGenreEvenementSaisieAbsence.OuvrirEditionObservation: {
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.OuvrirEditionObservation: {
 				let lColonneObservation;
+				let lMaxLength;
 				if (
 					!!aObjet.absence &&
-					aObjet.absence.getGenre() === EGenreRessource.Dispense
+					aObjet.absence.getGenre() ===
+						Enumere_Ressource_1.EGenreRessource.Dispense
 				) {
 					lColonneObservation = this.listeColonnes.getElementParGenre(
-						EGenreRessource.Dispense,
+						Enumere_Ressource_1.EGenreRessource.Dispense,
 					);
+					lMaxLength =
+						!!this.infoMaxlength &&
+						"commentaireDispense" in this.infoMaxlength &&
+						this.infoMaxlength.commentaireDispense > 0
+							? this.infoMaxlength.commentaireDispense
+							: undefined;
 				} else {
 					lColonneObservation = this.listeColonnes.getElementParNumero(
 						aObjet.genreObservation,
 					);
+					lMaxLength =
+						!!this.infoMaxlength &&
+						"commentaireObservation" in this.infoMaxlength &&
+						this.infoMaxlength.commentaireObservation > 0
+							? this.infoMaxlength.commentaireObservation
+							: undefined;
 				}
 				this.getInstance(this.idFenetreEdition).setDonnees({
 					observation: aObjet.absence,
@@ -1423,11 +1553,13 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 						? lColonneObservation.publiable
 						: false,
 					avecDate: false,
+					maxlengthCommentaire: lMaxLength,
 				});
 				this.getInstance(this.idFenetreEdition).afficher();
 				break;
 			}
-			case EGenreEvenementSaisieAbsence.RecupererInfo: {
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.RecupererInfo: {
 				if (aObjet.enseignantCourant) {
 					return this.enseignantCourant;
 				} else if (aObjet.cours) {
@@ -1435,83 +1567,84 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				}
 				break;
 			}
-			case EGenreEvenementSaisieAbsence.CalculInfoEleve: {
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.CalculInfoEleve: {
 				this.moteur.calculerInfosEleve(aObjet.eleve);
 				break;
 			}
-			case EGenreEvenementSaisieAbsence.MemosEleves: {
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.MemosEleves: {
 				this.Eleve = this.ListeEleves.getElementParNumero(aObjet.numeroEleve);
-				this.getInstance(this.idFenetreListeMemosEleves).setDonnees(
-					false,
-					this.Eleve,
-					!this.jourConsultUniquement,
-				);
+				this.getInstance(this.idFenetreListeMemosEleves)
+					.setParametresMemosEleves({ estValorisation: false })
+					.setDonnees(this.Eleve);
 				break;
 			}
-			case EGenreEvenementSaisieAbsence.ValorisationsEleve: {
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.ValorisationsEleve: {
 				this.Eleve = this.ListeEleves.getElementParNumero(aObjet.numeroEleve);
-				this.getInstance(this.idFenetreListeMemosEleves).setDonnees(
-					true,
-					this.Eleve,
-					!this.jourConsultUniquement,
-				);
+				this.getInstance(this.idFenetreListeMemosEleves)
+					.setParametresMemosEleves({
+						estValorisation: true,
+						forcerConsultation: true,
+					})
+					.setDonnees(this.Eleve);
 				break;
 			}
-			case EGenreEvenementSaisieAbsence.ContextMenuEleve: {
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.ContextMenuEleve: {
 				if (!this.jourConsultUniquement) {
 					lEleve = this.ListeEleves.getElementParNumero(aObjet.numeroEleve);
 					const lInstance = this.getInstance(this.identMenuContextuel);
 					lInstance.vider();
 					if (
-						GApplication.droits.get(TypeDroits.dossierVS.saisirMemos) &&
+						this.appScoEspace.droits.get(
+							ObjetDroitsPN_1.TypeDroits.dossierVS.saisirMemos,
+						) &&
 						!lEleve.avecMemo &&
 						!lEleve.sortiePeda
 					) {
 						lInstance.addCommande(
 							this.moteur.genreCommandeMenuContextVS.creerMemo,
-							GTraductions.getValeur("AbsenceVS.CreerUnMemo"),
+							ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.CreerUnMemo"),
 							true,
 						);
 					}
 					if (
-						GApplication.droits.get(TypeDroits.dossierVS.saisirMemos) &&
-						!lEleve.avecValorisation &&
-						!lEleve.sortiePeda
-					) {
-						lInstance.addCommande(
-							this.moteur.genreCommandeMenuContextVS.creerValorisation,
-							GTraductions.getValeur("AbsenceVS.CreerUnValorisation"),
-							true,
-						);
-					}
-					if (
-						GApplication.droits.get(
-							TypeDroits.eleves.avecAffectationElevesGroupesGAEV,
+						this.appScoEspace.droits.get(
+							ObjetDroitsPN_1.TypeDroits.eleves
+								.avecAffectationElevesGroupesGAEV,
 						)
 					) {
 						lInstance.addCommande(
 							this.moteur.genreCommandeMenuContextVS.gestionAPEleve,
-							GTraductions.getValeur("AbsenceVS.ModifierGpeAP"),
+							ObjetTraduction_1.GTraductions.getValeur(
+								"AbsenceVS.ModifierGpeAP",
+							),
 							true,
 						);
 					}
 					if (lEleve.eleveAjouteAuCours) {
 						lInstance.addCommande(
 							this.moteur.genreCommandeMenuContextVS.supprimerEleveDuCours,
-							GTraductions.getValeur("AbsenceVS.SuppressionEleve"),
+							ObjetTraduction_1.GTraductions.getValeur(
+								"AbsenceVS.SuppressionEleve",
+							),
 							true,
 						);
 					}
-					if (lInstance.ListeLignes.count() > 0) {
+					if (lInstance.getListeLignes().count() > 0) {
 						lInstance.afficher();
 					}
 				}
 				break;
 			}
-			case EGenreEvenementSaisieAbsence.AbsencesNonReglees:
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.AbsencesNonReglees:
 				if (
-					GApplication.droits.get(
-						TypeDroits.fonctionnalites.saisieEtendueAbsenceDepuisAppel,
+					this.appScoEspace.droits.get(
+						ObjetDroitsPN_1.TypeDroits.fonctionnalites
+							.saisieEtendueAbsenceDepuisAppel,
 					)
 				) {
 					let lTitre =
@@ -1520,17 +1653,19 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 						this.Eleve.listeAbsencesNonReglees.count() +
 						" " +
 						(this.Eleve.listeAbsencesNonReglees.count() > 1
-							? GTraductions.getValeur("Absence.Absences")
-							: GTraductions.getValeur("Absence.Absence")) +
+							? ObjetTraduction_1.GTraductions.getValeur("Absence.Absences")
+							: ObjetTraduction_1.GTraductions.getValeur("Absence.Absence")) +
 						" - ";
-					lTitre = GChaine.format(
-						GTraductions.getValeur("Absence.TitreListeEvnmts"),
+					lTitre = ObjetChaine_1.GChaine.format(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"Absence.TitreListeEvnmts",
+						),
 						[
 							lTitre,
-							GDate.formatDate(
+							ObjetDate_1.GDate.formatDate(
 								this.dateDecompte
 									? this.dateDecompte
-									: GParametres.PremiereDate,
+									: this.appScoEspace.getObjetParametres().PremiereDate,
 								"%JJ/%MM/%AAAA",
 							),
 						],
@@ -1543,11 +1678,13 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 					);
 				}
 				break;
-			case EGenreEvenementSaisieAbsence.OuvrirAbsenceParPas: {
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.OuvrirAbsenceParPas: {
 				this.getInstance(this.idFenetreAbsenceParPas).setOptionsFenetre({
-					titre: GTraductions.getValeur("AbsenceVS.dureeAbsence", [
-						this.Eleve.getLibelle(),
-					]),
+					titre: ObjetTraduction_1.GTraductions.getValeur(
+						"AbsenceVS.dureeAbsence",
+						[this.Eleve.getLibelle()],
+					),
 				});
 				if (aObjet.absence.tabAbs === undefined) {
 					aObjet.absence.tabAbs = [];
@@ -1562,31 +1699,38 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				});
 				break;
 			}
-			case EGenreEvenementSaisieAbsence.RecupererListeAbsences: {
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.RecupererListeAbsences: {
 				if (aObjet.numeroEleve) {
 					lEleve = this.ListeEleves.getElementParNumero(aObjet.numeroEleve);
 					this.Eleve = lEleve;
 				}
 				let lListe = "ListeAbsences";
-				if (aObjet.genreAbsence === EGenreRessource.Dispense) {
+				if (
+					aObjet.genreAbsence === Enumere_Ressource_1.EGenreRessource.Dispense
+				) {
 					lListe = "ListeDispenses";
 				}
 				if (
-					aObjet.genreAbsence === EGenreRessource.Observation &&
+					aObjet.genreAbsence ===
+						Enumere_Ressource_1.EGenreRessource.Observation &&
 					aObjet.genreObservation !== null &&
 					aObjet.genreObservation !== undefined
 				) {
-					aObjet.genreAbsence = EGenreRessource.ObservationProfesseurEleve;
+					aObjet.genreAbsence =
+						Enumere_Ressource_1.EGenreRessource.ObservationProfesseurEleve;
 				}
 				return this.Eleve[lListe].getListeElements((aEle) => {
 					return (
 						aEle.getGenre() === aObjet.genreAbsence &&
-						(aEle.getGenre() !== EGenreRessource.ObservationProfesseurEleve ||
+						(aEle.getGenre() !==
+							Enumere_Ressource_1.EGenreRessource.ObservationProfesseurEleve ||
 							aEle.observation.getGenre() === aObjet.genreObservation)
 					);
 				});
 			}
-			case EGenreEvenementSaisieAbsence.DemandesDispenseEleve: {
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.DemandesDispenseEleve: {
 				if (!aObjet.numeroEleve) {
 					return;
 				}
@@ -1611,8 +1755,14 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 		this.valider();
 	}
 	evenementSurComboRessource(aParams) {
-		if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
-			GHtml.setDisplay(this.Instances[this.IdentGrille].getNom(), false);
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
+			ObjetHtml_1.GHtml.setDisplay(
+				this.Instances[this.IdentGrille].getNom(),
+				false,
+			);
 			this.paramCours = {};
 			this.setActif(false);
 			this.SelectionRessource = aParams.indice;
@@ -1623,12 +1773,12 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			this.getInstance(this.IdentFenetreAbsences).fermer();
 			this.activerFichesEleve(false);
 			this.getInstance(this.idSaisieAbsences).setDeplacementBornes(
-				this.GenreRessource !== EGenreRessource.Cours,
+				this.GenreRessource !== Enumere_Ressource_1.EGenreRessource.Cours,
 			);
-			if (this.GenreRessource === EGenreRessource.Cours) {
+			if (this.GenreRessource === Enumere_Ressource_1.EGenreRessource.Cours) {
 				this.recupererEmploiDuTemps();
 				if (!this.avecDateDefaut) {
-					GEtatUtilisateur.setNavigationCours(null);
+					this.etatUtilScoEspace.setNavigationCours(null);
 				}
 				this.avecDateDefaut = false;
 			} else {
@@ -1644,11 +1794,11 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 	}
 	evenementSurComboDates(aParams) {
 		switch (aParams.genreEvenement) {
-			case EGenreEvenementObjetSaisie.selection:
+			case Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection:
 				this.setActif(false);
 				this.Date = aParams.element.Date;
 				this.moteur.setOptions({ Date: this.Date });
-				GEtatUtilisateur.setNavigationDate(aParams.element.Date);
+				this.etatUtilScoEspace.setNavigationDate(aParams.element.Date);
 				this.setEtatSaisie(false);
 				this.Eleve = null;
 				this.getInstance(this.IdentComboRessource).setDonnees(
@@ -1659,13 +1809,14 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 						: this.SelectionRessource,
 				);
 				break;
-			case EGenreEvenementObjetSaisie.deploiement:
+			case Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+				.deploiement:
 				if (this.appelDedieEnseignant) {
 					this.afficherFenetreCalendrier();
 					return false;
 				}
 				break;
-			case EGenreEvenementObjetSaisie.fermeture:
+			case Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.fermeture:
 				break;
 			default:
 				break;
@@ -1673,7 +1824,7 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 	}
 	evenementSurDateDepuis(aParams) {
 		switch (aParams.genreEvenement) {
-			case EGenreEvenementObjetSaisie.selection:
+			case Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection:
 				if (!aParams.element) {
 					break;
 				}
@@ -1693,7 +1844,8 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 					this.recupererAbsences();
 				}
 				break;
-			case EGenreEvenementObjetSaisie.deploiement:
+			case Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+				.deploiement:
 				break;
 			default:
 				break;
@@ -1702,8 +1854,11 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 	evenementSurEdition(aSaisie, aGenreAbsence, aGenreObservation) {
 		if (aSaisie) {
 			this.setEtatSaisie(true);
-			if (aGenreAbsence === EGenreRessource.ObservationProfesseurEleve) {
-				aGenreAbsence = EGenreRessource.Observation;
+			if (
+				aGenreAbsence ===
+				Enumere_Ressource_1.EGenreRessource.ObservationProfesseurEleve
+			) {
+				aGenreAbsence = Enumere_Ressource_1.EGenreRessource.Observation;
 			}
 			this.getInstance(this.idSaisieAbsences).retourAbsence(
 				this.Eleve.Numero,
@@ -1726,8 +1881,8 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				lAbsence.tabAbs = aParamAbsParPas.absence.tabAbs;
 				lAbsence.setEtat(
 					$.grep(lAbsence.tabAbs, _getAbsExisteParPas).length
-						? EGenreEtat.Modification
-						: EGenreEtat.Suppression,
+						? Enumere_Etat_1.EGenreEtat.Modification
+						: Enumere_Etat_1.EGenreEtat.Suppression,
 				);
 				lAbsence.partielle =
 					$.grep(lAbsence.tabAbs, _getAbsExisteParPas).length !== 0;
@@ -1736,25 +1891,27 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 					aParamAbsParPas.absence.getGenre(),
 				);
 				this.setEtatSaisie(true);
-				_actualiserEDTEleve.call(this);
+				this._actualiserEDTEleve();
 			}
 		}
 	}
 	evenementFenetreCalendrier(aGenreBouton, aDate) {
 		if (aGenreBouton === 1 && !this.fenetreCalendrierPourDecompte) {
 			let lDateCourant = aDate;
-			if (!GDate.estUnJourOuvre(lDateCourant)) {
-				GApplication.getMessage().afficher({
-					type: EGenreBoiteMessage.Information,
-					message:
-						GTraductions.getValeur("Le_Maj") +
-						" " +
-						GDate.formatDate(lDateCourant, "%JJ/%MM/%AAAA") +
-						" n'est pas un jour ouvré",
-				});
+			if (!ObjetDate_1.GDate.estUnJourOuvre(lDateCourant)) {
+				this.appScoEspace
+					.getMessage()
+					.afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+						message:
+							ObjetTraduction_1.GTraductions.getValeur("Le_Maj") +
+							" " +
+							ObjetDate_1.GDate.formatDate(lDateCourant, "%JJ/%MM/%AAAA") +
+							" n'est pas un jour ouvré",
+					});
 				do {
-					lDateCourant = GDate.getJourSuivant(lDateCourant, -1);
-				} while (!GDate.estUnJourOuvre(lDateCourant));
+					lDateCourant = ObjetDate_1.GDate.getJourSuivant(lDateCourant, -1);
+				} while (!ObjetDate_1.GDate.estUnJourOuvre(lDateCourant));
 			}
 			this.PlaceSaisieDebut = null;
 			this.PlaceSaisieFin = null;
@@ -1774,23 +1931,40 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 		}
 	}
 	evenementSurComboEnseignant(aParams) {
-		if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
-			GHtml.setDisplay(this.getInstance(this.IdentGrille).Nom, false);
-			this.enseignantCourant = MethodesObjet.dupliquer(aParams.element);
-			GEtatUtilisateur.setListeClasses(this.enseignantCourant.getNumero());
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
+			ObjetHtml_1.GHtml.setDisplay(
+				this.getInstance(this.IdentGrille).getNom(),
+				false,
+			);
+			this.enseignantCourant = MethodesObjet_1.MethodesObjet.dupliquer(
+				aParams.element,
+			);
+			this.etatUtilScoEspace.setListeClasses(
+				this.enseignantCourant.getNumero(),
+			);
 			this.recupererDonneesEnseignant();
 			this.SelectionRessource = this.enseignantCourant.existeNumero() ? 0 : 1;
 		}
 	}
 	evenementSurComboPlaceDeb(aParams) {
-		if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
 			this.SelectionPlaceDebut = aParams.indice;
 			if (
 				this.getInstance(this.IdentComboPlaceDeb).estUneInteractionUtilisateur()
 			) {
-				if (this.SelectionPlaceDebut >= GParametres.PlacesParJour) {
+				if (
+					this.SelectionPlaceDebut >=
+					this.appScoEspace.getObjetParametres().PlacesParJour
+				) {
 					this.getInstance(this.IdentComboPlaceDeb).setSelectionParIndice(
-						(this.SelectionPlaceDebut = GParametres.PlacesParJour - 1),
+						(this.SelectionPlaceDebut =
+							this.appScoEspace.getObjetParametres().PlacesParJour - 1),
 					);
 				}
 				if (this.SelectionPlaceDebut >= this.SelectionPlaceFin) {
@@ -1810,14 +1984,21 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 					this.PlaceSaisieDebut,
 					this.PlaceSaisieFin,
 				);
-				if (!GApplication.droits.get(TypeDroits.absences.avecSaisieCours)) {
+				if (
+					!this.appScoEspace.droits.get(
+						ObjetDroitsPN_1.TypeDroits.absences.avecSaisieCours,
+					)
+				) {
 					this.recupererAbsences();
 				}
 			}
 		}
 	}
 	evenementSurComboPlaceFin(aParams) {
-		if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
 			this.SelectionPlaceFin = aParams.indice;
 			if (
 				this.getInstance(this.IdentComboPlaceFin).estUneInteractionUtilisateur()
@@ -1844,7 +2025,11 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 					this.PlaceSaisieDebut,
 					this.PlaceSaisieFin,
 				);
-				if (!GApplication.droits.get(TypeDroits.absences.avecSaisieCours)) {
+				if (
+					!this.appScoEspace.droits.get(
+						ObjetDroitsPN_1.TypeDroits.absences.avecSaisieCours,
+					)
+				) {
 					this.recupererAbsences();
 				}
 			}
@@ -1860,28 +2045,30 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 		if (this.moduleSaisie) {
 			this.moduleSaisie.sortieModeDiagnostic();
 		}
-		GEtatUtilisateur.setNavigationCours(this.paramCours.cours);
+		this.etatUtilScoEspace.setNavigationCours(this.paramCours.cours);
 		this.moteur.setOptions({ Cours: this.paramCours.cours });
 		let lMessage;
 		if (this.paramCours.cours) {
 			lMessage = "";
 			if (this.paramCours.cours.estAnnule) {
-				lMessage = GTraductions.getValeur("AbsenceVS.AppelCoursAnnule");
+				lMessage = ObjetTraduction_1.GTraductions.getValeur(
+					"AbsenceVS.AppelCoursAnnule",
+				);
 			} else if (
 				!this.paramCours.cours.utilisable &&
 				!this.paramCours.cours.estSortiePedagogique
 			) {
-				lMessage = GTraductions.getValeur(
+				lMessage = ObjetTraduction_1.GTraductions.getValeur(
 					"AbsenceVS.AppelCoursNonUtilisable",
 				).replaceRCToHTML();
 			}
 			if (lMessage) {
-				_afficherMessageGrilleAbsence.call(this, lMessage);
+				this._afficherMessageGrilleAbsence(lMessage);
 			}
 		}
 		if (!lMessage && this.paramCours.cours) {
 			this.setSelectionRessource(
-				EGenreRessource.Cours,
+				Enumere_Ressource_1.EGenreRessource.Cours,
 				this.paramCours.cours.getNumero(),
 			);
 		}
@@ -1904,18 +2091,23 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			!this.paramCours.cours.estSortiePedagogique &&
 			this.moduleSaisie
 		) {
-			if (aParam.genre === EGenreEvenementEDT.SurMenuContextuel) {
+			if (
+				aParam.genre ===
+				Enumere_EvenementEDT_1.EGenreEvenementEDT.SurMenuContextuel
+			) {
 				this.moduleSaisie.afficherMenuContextuelDeCoursGrille(
 					this.paramCours.cours,
 				);
 				return;
 			}
 			if (
-				aParam.genre === EGenreEvenementEDT.SurCours &&
+				aParam.genre === Enumere_EvenementEDT_1.EGenreEvenementEDT.SurCours &&
 				this.moduleSaisie.autorisationEditionCoursAutoriseeSurContexte() &&
 				!this.paramCours.cours.coursOrigine &&
 				this.paramCours.cours.modifiable &&
-				GApplication.droits.get(TypeDroits.cours.deplacerCours)
+				this.appScoEspace.droits.get(
+					ObjetDroitsPN_1.TypeDroits.cours.deplacerCours,
+				)
 			) {
 				this.moduleSaisie.requeteEvaluation(this.paramCours.cours, null);
 				return;
@@ -1925,7 +2117,7 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			if (!lMessage) {
 				this.recupererAbsences();
 			} else {
-				_actualiserEDTEleve.call(this);
+				this._actualiserEDTEleve();
 				this.$refreshSelf();
 			}
 		}
@@ -1935,15 +2127,26 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 		aGenreEvenementListe,
 		aIndiceEleve,
 	) {
-		if (!GApplication.droits.get(TypeDroits.absences.avecSaisiePunition)) {
+		if (
+			!this.appScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.absences.avecSaisiePunition,
+			)
+		) {
 			return;
 		}
 		if (aNumeroBouton === -2) {
-			GApplication.getMessage().afficher({
-				type: EGenreBoiteMessage.Information,
-				message: GTraductions.getValeur("AbsenceVS.aucunePunitionClasse"),
-			});
-		} else if (aGenreEvenementListe === EGenreEvenementListe.Suppression) {
+			this.appScoEspace
+				.getMessage()
+				.afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+					message: ObjetTraduction_1.GTraductions.getValeur(
+						"AbsenceVS.aucunePunitionClasse",
+					),
+				});
+		} else if (
+			aGenreEvenementListe ===
+			Enumere_EvenementListe_1.EGenreEvenementListe.Suppression
+		) {
 			this.afficherNbElevePresent();
 			this.getInstance(this.idSaisieAbsences).actualiserPunitionsEleve(
 				this.ListeEleves.get(aIndiceEleve).Numero,
@@ -1958,7 +2161,7 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				this.Eleve.getNumero(),
 				aGenreRessource,
 			);
-			_actualiserEDTEleve.call(this);
+			this._actualiserEDTEleve();
 			this.setEtatSaisie(true);
 		}
 		this._gestionFocusApresFenetreCellule();
@@ -1969,7 +2172,7 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 		aGenreRessource,
 	) {
 		if (aNumeroBouton === 0) {
-			aPunition.setEtat(EGenreEtat.Suppression);
+			aPunition.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 			this.afficherNbElevePresent();
 			this.getInstance(this.idSaisieAbsences).actualiserPunitionsEleve(
 				this.Eleve.getNumero(),
@@ -1982,19 +2185,19 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 	_ouvrirFenetreSaisiePunition(aPunition, aGenreRessource) {
 		aGenreRessource =
 			aGenreRessource === null || aGenreRessource === undefined
-				? EGenreRessource.Punition
+				? Enumere_Ressource_1.EGenreRessource.Punition
 				: aGenreRessource;
 		this.moteur._majListeElevesVisible();
 		this.getInstance(this.identFenetreSaisiePunitions).setDonnees({
 			eleve: this.Eleve,
 			listePJ: this.listePJ,
 			listeEleves:
-				aGenreRessource === EGenreRessource.Punition
+				aGenreRessource === Enumere_Ressource_1.EGenreRessource.Punition
 					? null
-					: MethodesObjet.dupliquer(this.ListeEleves),
+					: MethodesObjet_1.MethodesObjet.dupliquer(this.ListeEleves),
 			punition: aPunition,
 			listeNature:
-				aGenreRessource === EGenreRessource.Punition
+				aGenreRessource === Enumere_Ressource_1.EGenreRessource.Punition
 					? this.listeNaturePunition
 					: this.listeNatureExclusion,
 			genreRessource: aGenreRessource,
@@ -2006,17 +2209,20 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 	}
 	_evenementSurMenuContextuel(aElement) {
 		if (
-			GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.SaisieAbsences_Appel ||
-			GEtatUtilisateur.getGenreOnglet() ===
-				EGenreOnglet.SaisieAbsences_Appel_Professeur
+			this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel ||
+			this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel_Professeur
 		) {
 			switch (aElement.getNumero()) {
 				case this.moteur.genreCommandeMenuContextVS.supprimerEleveDuCours:
-					_supprimerEleveDuCours.call(this);
+					this._supprimerEleveDuCours();
 					break;
 				default:
 					if (
-						!GApplication.droits.get(TypeDroits.absences.avecSaisiePunition)
+						!this.appScoEspace.droits.get(
+							ObjetDroitsPN_1.TypeDroits.absences.avecSaisiePunition,
+						)
 					) {
 						return;
 					}
@@ -2028,9 +2234,9 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 							this._ouvrirFenetreSaisiePunition(lPunition);
 						} else {
 							const lThis = this;
-							GApplication.getMessage().afficher({
-								type: EGenreBoiteMessage.Confirmation,
-								message: GTraductions.getValeur(
+							this.appScoEspace.getMessage().afficher({
+								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+								message: ObjetTraduction_1.GTraductions.getValeur(
 									"AbsenceVS.SupprimerPunitionConfirmation",
 								),
 								callback: function (aGenreAction) {
@@ -2051,13 +2257,14 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				case this.moteur.genreCommandeMenuContextVS.supprimer:
 					$(
 						"#" +
-							this.getInstance(this.idSaisieAbsences).Nom.escapeJQ() +
+							this.getInstance(this.idSaisieAbsences).getNom().escapeJQ() +
 							' .tableAbsenceCorps div[id*="_' +
 							this.Eleve.getNumero() +
 							"_" +
 							lData.genreAbsenceMenuContext +
 							"_abs" +
-							(lData.genreAbsenceMenuContext === EGenreRessource.Observation
+							(lData.genreAbsenceMenuContext ===
+							Enumere_Ressource_1.EGenreRessource.Observation
 								? "_" + lData.numeroObsMenuContext
 								: "") +
 							'"]',
@@ -2067,12 +2274,17 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 					break;
 				case this.moteur.genreCommandeMenuContextVS.modifier: {
 					let lAttribut = "ListeAbsences";
-					if (lData.genreAbsenceMenuContext === EGenreRessource.Punition) {
+					if (
+						lData.genreAbsenceMenuContext ===
+						Enumere_Ressource_1.EGenreRessource.Punition
+					) {
 						lAttribut = "listePunitions";
 					}
 					if (
-						lData.genreAbsenceMenuContext === EGenreRessource.Punition ||
-						lData.genreAbsenceMenuContext === EGenreRessource.Exclusion
+						lData.genreAbsenceMenuContext ===
+							Enumere_Ressource_1.EGenreRessource.Punition ||
+						lData.genreAbsenceMenuContext ===
+							Enumere_Ressource_1.EGenreRessource.Exclusion
 					) {
 						this._ouvrirFenetreSaisiePunition(
 							this.Eleve[lAttribut].getElementParNumeroEtGenre(
@@ -2083,18 +2295,26 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 							lData.genreAbsenceMenuContext,
 						);
 					} else if (
-						lData.genreAbsenceMenuContext === EGenreRessource.Infirmerie
+						lData.genreAbsenceMenuContext ===
+						Enumere_Ressource_1.EGenreRessource.Infirmerie
 					) {
-						this.evenementSurSaisie(EGenreEvenementSaisieAbsence.Infirmerie, {
-							numeroEleve: this.Eleve.getNumero(),
-							place: this.PlaceSaisieDebut,
-							placeDebut: this.PlaceSaisieDebut,
-							placeFin: this.PlaceSaisieFin,
-						});
+						this.evenementSurSaisie(
+							Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+								.Infirmerie,
+							{
+								numeroEleve: this.Eleve.getNumero(),
+								place: this.PlaceSaisieDebut,
+								placeDebut: this.PlaceSaisieDebut,
+								placeFin: this.PlaceSaisieFin,
+							},
+						);
 					} else if (
-						lData.genreAbsenceMenuContext === EGenreRessource.Retard ||
-						lData.genreAbsenceMenuContext === EGenreRessource.Dispense ||
-						lData.genreAbsenceMenuContext === EGenreRessource.Observation
+						lData.genreAbsenceMenuContext ===
+							Enumere_Ressource_1.EGenreRessource.Retard ||
+						lData.genreAbsenceMenuContext ===
+							Enumere_Ressource_1.EGenreRessource.Dispense ||
+						lData.genreAbsenceMenuContext ===
+							Enumere_Ressource_1.EGenreRessource.Observation
 					) {
 						this.getInstance(this.idSaisieAbsences).ouvrirZoneTexte(
 							this.Eleve.getNumero(),
@@ -2103,7 +2323,8 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 							lData.genreObservation,
 						);
 					} else if (
-						lData.genreAbsenceMenuContext === EGenreRessource.Absence
+						lData.genreAbsenceMenuContext ===
+						Enumere_Ressource_1.EGenreRessource.Absence
 					) {
 						this.getInstance(this.idSaisieAbsences).ouvrirFenetreAbsencesParPas(
 							this.Eleve.getNumero(),
@@ -2113,19 +2334,24 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 					break;
 				}
 				case this.moteur.genreCommandeMenuContextVS.modifierMotif:
-					if (lData.genreAbsenceMenuContext === EGenreRessource.Retard) {
+					if (
+						lData.genreAbsenceMenuContext ===
+						Enumere_Ressource_1.EGenreRessource.Retard
+					) {
 						if (
-							GApplication.droits.get(TypeDroits.absences.avecSaisieMotifRetard)
+							this.appScoEspace.droits.get(
+								ObjetDroitsPN_1.TypeDroits.absences.avecSaisieMotifRetard,
+							)
 						) {
 							const lInstance = this.getInstance(
 								this.idFenetreListeMotifsAbsence,
 							);
 							if (lInstance) {
-								lInstance.Titre = GTraductions.getValeur(
-									"AbsenceVS.SelectionnerUnMotifRetard",
-								);
 								lInstance.setOptionsFenetre({
-									callback: function (aNumeroBouton, aMotif) {
+									titre: ObjetTraduction_1.GTraductions.getValeur(
+										"AbsenceVS.SelectionnerUnMotifRetard",
+									),
+									callback: (aNumeroBouton, aMotif) => {
 										if (aNumeroBouton === 1) {
 											if (aMotif) {
 												const lRetard =
@@ -2134,19 +2360,20 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 														lData.genreAbsenceMenuContext,
 													);
 												if (lRetard && !lRetard.listeMotifs) {
-													lRetard.listeMotifs = new ObjetListeElements();
+													lRetard.listeMotifs =
+														new ObjetListeElements_1.ObjetListeElements();
 												}
 												if (lRetard && lRetard.listeMotifs) {
 													lRetard.listeMotifs.addElement(
-														MethodesObjet.dupliquer(aMotif),
+														MethodesObjet_1.MethodesObjet.dupliquer(aMotif),
 														0,
 													);
 												}
 												this.setEtatSaisie(true);
-												lRetard.setEtat(EGenreEtat.Modification);
+												lRetard.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 											}
 										}
-									}.bind(this),
+									},
 									genreAbsence: lData.genreAbsenceMenuContext,
 								});
 								const lRetard =
@@ -2161,33 +2388,37 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 									lRetard.listeMotifs.count() === 1
 								) {
 									lSelection =
-										GCache.listeMotifsRetards.getIndiceExisteParElement(
+										Cache_1.GCache.listeMotifsRetards.getIndiceExisteParElement(
 											lRetard.listeMotifs.get(0),
 										);
 								}
 								lInstance.setDonnees(
-									GCache.listeMotifsRetards,
+									Cache_1.GCache.listeMotifsRetards,
 									false,
 									lSelection,
 								);
 							}
 						}
 					}
-					if (lData.genreAbsenceMenuContext === EGenreRessource.Absence) {
+					if (
+						lData.genreAbsenceMenuContext ===
+						Enumere_Ressource_1.EGenreRessource.Absence
+					) {
 						if (
-							GApplication.droits.get(
-								TypeDroits.fonctionnalites.appelSaisirMotifJustifDAbsence,
+							this.appScoEspace.droits.get(
+								ObjetDroitsPN_1.TypeDroits.fonctionnalites
+									.appelSaisirMotifJustifDAbsence,
 							)
 						) {
 							const lInstance = this.getInstance(
 								this.idFenetreListeMotifsAbsence,
 							);
 							if (lInstance) {
-								lInstance.Titre = GTraductions.getValeur(
-									"AbsenceVS.SelectionnerUnMotifAbsence",
-								);
 								lInstance.setOptionsFenetre({
-									callback: function (aNumeroBouton, aMotif) {
+									titre: ObjetTraduction_1.GTraductions.getValeur(
+										"AbsenceVS.SelectionnerUnMotifAbsence",
+									),
+									callback: (aNumeroBouton, aMotif) => {
 										if (aNumeroBouton === 1) {
 											if (aMotif) {
 												const lAbsence =
@@ -2196,19 +2427,22 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 														lData.genreAbsenceMenuContext,
 													);
 												if (lAbsence && !lAbsence.listeMotifs) {
-													lAbsence.listeMotifs = new ObjetListeElements();
+													lAbsence.listeMotifs =
+														new ObjetListeElements_1.ObjetListeElements();
 												}
 												if (lAbsence && lAbsence.listeMotifs) {
 													lAbsence.listeMotifs.addElement(
-														MethodesObjet.dupliquer(aMotif),
+														MethodesObjet_1.MethodesObjet.dupliquer(aMotif),
 														0,
 													);
 												}
 												this.setEtatSaisie(true);
-												lAbsence.setEtat(EGenreEtat.Modification);
+												lAbsence.setEtat(
+													Enumere_Etat_1.EGenreEtat.Modification,
+												);
 											}
 										}
-									}.bind(this),
+									},
 									genreAbsence: lData.genreAbsenceMenuContext,
 								});
 								const lAbsence =
@@ -2223,12 +2457,12 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 									lAbsence.listeMotifs.count() === 1
 								) {
 									lSelection =
-										GCache.listeMotifsAbsenceEleve.getIndiceExisteParElement(
+										Cache_1.GCache.listeMotifsAbsenceEleve.getIndiceExisteParElement(
 											lAbsence.listeMotifs.get(0),
 										);
 								}
 								lInstance.setDonnees(
-									GCache.listeMotifsAbsenceEleve,
+									Cache_1.GCache.listeMotifsAbsenceEleve,
 									false,
 									lSelection,
 								);
@@ -2237,36 +2471,41 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 					}
 					break;
 				case this.moteur.genreCommandeMenuContextVS.creerMemo:
-					this.evenementSurSaisie(EGenreEvenementSaisieAbsence.MemosEleves, {
-						numeroEleve: this.Eleve.getNumero(),
-					});
+					this.evenementSurSaisie(
+						Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+							.MemosEleves,
+						{ numeroEleve: this.Eleve.getNumero() },
+					);
 					break;
 				case this.moteur.genreCommandeMenuContextVS.creerValorisation:
 					this.evenementSurSaisie(
-						EGenreEvenementSaisieAbsence.ValorisationsEleve,
+						Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+							.ValorisationsEleve,
 						{ numeroEleve: this.Eleve.getNumero() },
 					);
 					break;
 				case this.moteur.genreCommandeMenuContextVS.gestionAPEleve:
-					GestionAPEleve.ouvrirFenetrePromise(this, this.Eleve, this.Date).then(
-						(aResult) => {
-							if (aResult && aResult.avecSaisie) {
-								this.actionSurValidation();
-							}
-						},
-					);
+					ObjetFenetre_GestionAPEleve_1.GestionAPEleve.ouvrirFenetrePromise(
+						this,
+						this.Eleve,
+						this.Date,
+					).then((aResult) => {
+						if (aResult && aResult.avecSaisie) {
+							this.actionSurValidation();
+						}
+					});
 					break;
 				case this.moteur.genreCommandeMenuContextVS.supprimerEleveDuCours:
-					_supprimerEleveDuCours.call(this);
+					this._supprimerEleveDuCours();
 					break;
 				case this.moteur.genreCommandeMenuContextVS.publierObservation: {
 					this.setEtatSaisie(true);
 					const lObservation = aElement.data.observation;
-					lObservation.setEtat(EGenreEtat.Modification);
+					lObservation.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 					lObservation.estPubliee = !lObservation.estPubliee;
 					this.getInstance(this.idSaisieAbsences).retourAbsence(
 						this.Eleve.getNumero(),
-						EGenreRessource.Observation,
+						Enumere_Ressource_1.EGenreRessource.Observation,
 						lObservation.observation.getNumero(),
 					);
 					break;
@@ -2274,7 +2513,7 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				case this.moteur.genreCommandeMenuContextVS.publierPunition: {
 					this.setEtatSaisie(true);
 					const lAbsenceOuPunition = aElement.data.punitionExclusion;
-					lAbsenceOuPunition.setEtat(EGenreEtat.Modification);
+					lAbsenceOuPunition.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 					lAbsenceOuPunition.estPubliee = !lAbsenceOuPunition.estPubliee;
 					this.getInstance(this.idSaisieAbsences).retourAbsence(
 						this.Eleve.getNumero(),
@@ -2308,7 +2547,7 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			lAvecSupprimer = false;
 		}
 		if (
-			aObjet.genreAbsence === EGenreRessource.Observation &&
+			aObjet.genreAbsence === Enumere_Ressource_1.EGenreRessource.Observation &&
 			aObjet.observation &&
 			aObjet.observation.avecARObservation &&
 			aObjet.observation.dateVisu !== false &&
@@ -2322,8 +2561,8 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 		}
 		lInstance.vider();
 		const lLibelle = lQueConsultationObs
-			? GTraductions.getValeur("AbsenceVS.Consulter")
-			: GTraductions.getValeur("Modifier");
+			? ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.Consulter")
+			: ObjetTraduction_1.GTraductions.getValeur("Modifier");
 		lInstance.addCommande(
 			this.moteur.genreCommandeMenuContextVS.modifier,
 			lLibelle,
@@ -2331,32 +2570,39 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			lData,
 		);
 		if (
-			aObjet.genreAbsence === EGenreRessource.Retard &&
-			GApplication.droits.get(TypeDroits.absences.avecSaisieMotifRetard)
+			aObjet.genreAbsence === Enumere_Ressource_1.EGenreRessource.Retard &&
+			this.appScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.absences.avecSaisieMotifRetard,
+			)
 		) {
 			lInstance.addCommande(
 				this.moteur.genreCommandeMenuContextVS.modifierMotif,
-				GTraductions.getValeur("AbsenceVS.ModifierMotifRetard"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"AbsenceVS.ModifierMotifRetard",
+				),
 				lAvecModifier,
 				lData,
 			);
 		}
 		if (
-			aObjet.genreAbsence === EGenreRessource.Absence &&
-			GApplication.droits.get(
-				TypeDroits.fonctionnalites.appelSaisirMotifJustifDAbsence,
+			aObjet.genreAbsence === Enumere_Ressource_1.EGenreRessource.Absence &&
+			this.appScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.fonctionnalites
+					.appelSaisirMotifJustifDAbsence,
 			)
 		) {
 			lInstance.addCommande(
 				this.moteur.genreCommandeMenuContextVS.modifierMotif,
-				GTraductions.getValeur("AbsenceVS.ModifierMotifAbsence"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"AbsenceVS.ModifierMotifAbsence",
+				),
 				lAvecModifier,
 				lData,
 			);
 		}
 		lInstance.addCommande(
 			this.moteur.genreCommandeMenuContextVS.supprimer,
-			GTraductions.getValeur("Supprimer"),
+			ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
 			lAvecSupprimer,
 			lData,
 		);
@@ -2370,12 +2616,13 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				aObjet.dispense.documents.parcourir((aDoc) => {
 					if (aDoc.existe()) {
 						lInstance.add(
-							GTraductions.getValeur("dispenses.consult1Doc"),
+							ObjetTraduction_1.GTraductions.getValeur("dispenses.consult1Doc"),
 							true,
 							() => {
 								window.open(
-									GChaine.creerUrlBruteLienExterne(aDoc, {
-										genreRessource: EGenreRessource.DocJointEleve,
+									ObjetChaine_1.GChaine.creerUrlBruteLienExterne(aDoc, {
+										genreRessource:
+											Enumere_Ressource_1.EGenreRessource.DocJointEleve,
 									}),
 								);
 							},
@@ -2385,15 +2632,18 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			} else {
 				lInstance.addSousMenu(
 					aObjet.dispense.documents.getNbrElementsExistes() === 1
-						? GTraductions.getValeur("dispenses.consult1Doc")
-						: GTraductions.getValeur("dispenses.consultLesDocs"),
+						? ObjetTraduction_1.GTraductions.getValeur("dispenses.consult1Doc")
+						: ObjetTraduction_1.GTraductions.getValeur(
+								"dispenses.consultLesDocs",
+							),
 					(aInstance) => {
 						aObjet.dispense.documents.parcourir((aDoc) => {
 							if (aDoc.existe()) {
 								aInstance.add(aDoc.getLibelle(), true, () => {
 									window.open(
-										GChaine.creerUrlBruteLienExterne(aDoc, {
-											genreRessource: EGenreRessource.DocJointEleve,
+										ObjetChaine_1.GChaine.creerUrlBruteLienExterne(aDoc, {
+											genreRessource:
+												Enumere_Ressource_1.EGenreRessource.DocJointEleve,
 										}),
 									);
 								});
@@ -2404,7 +2654,7 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			}
 		}
 		if (
-			aObjet.genreAbsence === EGenreRessource.Observation &&
+			aObjet.genreAbsence === Enumere_Ressource_1.EGenreRessource.Observation &&
 			aObjet.observation
 		) {
 			lData.observation = aObjet.observation;
@@ -2415,13 +2665,17 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 					aObjet.observation.dateVisu === undefined;
 				const lTradPublier =
 					lColonne.genreObservation ===
-					TypeGenreObservationVS.OVS_ObservationParent
-						? GTraductions.getValeur("AbsenceVS.PublierParents")
-						: GTraductions.getValeur("AbsenceVS.PublierParentsEleves");
+					TypeGenreObservationVS_1.TypeGenreObservationVS.OVS_ObservationParent
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"AbsenceVS.PublierParents",
+							)
+						: ObjetTraduction_1.GTraductions.getValeur(
+								"AbsenceVS.PublierParentsEleves",
+							);
 				lInstance.addCommande(
 					this.moteur.genreCommandeMenuContextVS.publierObservation,
 					aObjet.observation.estPubliee
-						? GTraductions.getValeur("AbsenceVS.Depublier")
+						? ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.Depublier")
 						: lTradPublier,
 					lAvecModifierPublication,
 					lData,
@@ -2439,7 +2693,7 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 		) {
 			lInstance.addCommande(
 				0,
-				GTraductions.getValeur("AbsenceVS.AjouterPunition"),
+				ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.AjouterPunition"),
 			);
 			if (aObjet.surImage) {
 				for (let i = 0; i < this.Eleve.listePunitions.count(); i++) {
@@ -2452,13 +2706,15 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 						}
 						lInstance.addCommande(
 							1 + i * 2,
-							GTraductions.getValeur("AbsenceVS.ModifierPunition") +
-								lStrComplementMotifs,
+							ObjetTraduction_1.GTraductions.getValeur(
+								"AbsenceVS.ModifierPunition",
+							) + lStrComplementMotifs,
 						);
 						lInstance.addCommande(
 							2 + i * 2,
-							GTraductions.getValeur("AbsenceVS.SupprimerPunition") +
-								lStrComplementMotifs,
+							ObjetTraduction_1.GTraductions.getValeur(
+								"AbsenceVS.SupprimerPunition",
+							) + lStrComplementMotifs,
 						);
 					}
 				}
@@ -2467,11 +2723,11 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 		if (aObjet.eleve && aObjet.eleve.eleveAjouteAuCours) {
 			lInstance.addCommande(
 				this.moteur.genreCommandeMenuContextVS.supprimerEleveDuCours,
-				GTraductions.getValeur("AbsenceVS.SuppressionEleve"),
+				ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.SuppressionEleve"),
 				true,
 			);
 		}
-		if (lInstance.ListeLignes.count() > 0) {
+		if (lInstance.getListeLignes().count() > 0) {
 			lInstance.afficher();
 		}
 	}
@@ -2480,7 +2736,7 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			this.setEtatSaisie(true);
 			if (aNewAbs) {
 				this.ListeEleves.getElementParNumero(aNumeroEleve).setEtat(
-					EGenreEtat.Modification,
+					Enumere_Etat_1.EGenreEtat.Modification,
 				);
 				this.ListeEleves.getElementParNumero(
 					aNumeroEleve,
@@ -2488,9 +2744,9 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			}
 			this.getInstance(this.idSaisieAbsences).retourAbsence(
 				aNumeroEleve,
-				EGenreRessource.Infirmerie,
+				Enumere_Ressource_1.EGenreRessource.Infirmerie,
 			);
-			_actualiserEDTEleve.call(this);
+			this._actualiserEDTEleve();
 		}
 		this.afficherNbElevePresent();
 		this._gestionFocusApresFenetreCellule();
@@ -2504,13 +2760,16 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			placeDebut: this.PlaceSaisieDebut,
 			placeFin: this.PlaceSaisieFin,
 			professeur:
-				GEtatUtilisateur.getGenreOnglet() !==
-				EGenreOnglet.SaisieAbsences_Appel_Professeur
+				this.etatUtilScoEspace.getGenreOnglet() !==
+				Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel_Professeur
 					? this.enseignantCourant
 					: null,
 			listeFichiers: this.listePJ,
 		};
-		new ObjetRequeteSaisieAbsences(this, this.actionSurValidation)
+		new ObjetRequeteSaisieAbsences_1.ObjetRequeteSaisieAbsences(
+			this,
+			this.actionSurValidation,
+		)
 			.addUpload({ listeFichiers: this.listePJ })
 			.lancerRequete(lParametresSaisie);
 	}
@@ -2533,7 +2792,7 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 	recupererDonneesEnseignant() {
 		this.Eleve = null;
 		this.paramCours = {};
-		new ObjetRequetePageSaisieAbsences_General(
+		new ObjetRequetePageSaisieAbsences_General_1.ObjetRequetePageSaisieAbsences_General(
 			this,
 			this.actionSurRecupererDonnees,
 		).lancerRequete();
@@ -2542,10 +2801,11 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 		if (this.moduleSaisie) {
 			this.moduleSaisie.sortieModeDiagnostic();
 		}
-		this.objetRequete_PageEmploiDuTemps = new ObjetRequetePageEmploiDuTemps(
-			this,
-			this.actionSurRecupererEmploiDuTemps,
-		);
+		this.objetRequete_PageEmploiDuTemps =
+			new ObjetRequetePageEmploiDuTemps_1.ObjetRequetePageEmploiDuTemps(
+				this,
+				this.actionSurRecupererEmploiDuTemps,
+			);
 		this.objetRequete_PageEmploiDuTemps.lancerRequete({
 			ressource: this.enseignantCourant,
 			dateDebut: this.Date,
@@ -2557,7 +2817,7 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 		if (this.estAppelEtSuivi) {
 			this.getInstance(this.idDateDepuis).enInitialisation = true;
 		}
-		new ObjetRequetePageSaisieAbsences(
+		new ObjetRequetePageSaisieAbsences_1.ObjetRequetePageSaisieAbsences(
 			this,
 			this.actionSurRecupererAbsences.bind(this, aParam),
 		).lancerRequete({
@@ -2582,67 +2842,88 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			placeFin: this.PlaceSaisieFin,
 			dateDecompte: this.dateDecompte
 				? this.dateDecompte
-				: GParametres.PremiereDate,
+				: this.appScoEspace.getObjetParametres().PremiereDate,
 			cours: aCours,
 			genreAbsence: aGenreAbsence,
-			observation: new ObjetElement("", aNumeroObservation),
+			observation: new ObjetElement_1.ObjetElement("", aNumeroObservation),
 		};
-		const lDomaine = GApplication.droits.get(
-			TypeDroits.absences.domaineRecapitulatifAbsences,
+		const lDomaine = this.appScoEspace.droits.get(
+			ObjetDroitsPN_1.TypeDroits.absences.domaineRecapitulatifAbsences,
 		);
 		if (lDomaine && !lDomaine.estVide()) {
 			lParamsRequete.domaine = lDomaine;
 		} else {
-			lParamsRequete.dateDebut = GDate.placeAnnuelleEnDate(
+			lParamsRequete.dateDebut = ObjetDate_1.GDate.placeAnnuelleEnDate(
 				this.PlaceSaisieDebut,
 			);
-			lParamsRequete.dateFin = GDate.placeAnnuelleEnDate(this.PlaceSaisieFin);
+			lParamsRequete.dateFin = ObjetDate_1.GDate.placeAnnuelleEnDate(
+				this.PlaceSaisieFin,
+			);
 		}
-		new ObjetRequeteDetailAbsences(
+		new ObjetRequeteDetailAbsences_1.ObjetRequeteDetailAbsences(
 			this,
 			this.actionSurRecupererDetailAbsences,
 		).lancerRequete(lParamsRequete);
 	}
 	setListeDates(aDate) {
-		this.ListeDates = new ObjetListeElements();
-		const lElement = new ObjetElement();
+		this.ListeDates = new ObjetListeElements_1.ObjetListeElements();
+		const lElement = new ObjetElement_1.ObjetElement();
 		lElement.Date = aDate;
-		lElement.Libelle = GDate.formatDate(lElement.Date, "%JJ/%MM/%AAAA");
+		lElement.Libelle = ObjetDate_1.GDate.formatDate(
+			lElement.Date,
+			"%JJ/%MM/%AAAA",
+		);
 		this.ListeDates.addElement(lElement);
 	}
 	actionSurRecupererDonnees(aDonnees) {
 		this.ListeRessources =
 			this.appelDedieEnseignant ||
-			GApplication.droits.get(TypeDroits.absences.avecSaisieHorsCours) ||
-			!GApplication.droits.get(TypeDroits.absences.avecSaisieCours)
-				? GEtatUtilisateur.getListeClasses({
+			this.appScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.absences.avecSaisieHorsCours,
+			) ||
+			!this.appScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.absences.avecSaisieCours,
+			)
+				? this.etatUtilScoEspace.getListeClasses({
 						avecClasse: true,
 						avecGroupe: true,
 						uniquementClasseEnseignee: true,
 					})
-				: new ObjetListeElements();
+				: new ObjetListeElements_1.ObjetListeElements();
 		const lAvecClasse =
-			this.ListeRessources.getElementParGenre(EGenreRessource.Classe) !== null;
+			this.ListeRessources.getElementParGenre(
+				Enumere_Ressource_1.EGenreRessource.Classe,
+			) !== null;
 		const lAvecGroupe =
-			this.ListeRessources.getElementParGenre(EGenreRessource.Groupe) !== null;
+			this.ListeRessources.getElementParGenre(
+				Enumere_Ressource_1.EGenreRessource.Groupe,
+			) !== null;
 		if (
 			this.enseignantCourant.existeNumero() &&
-			GApplication.droits.get(TypeDroits.absences.avecSaisieCours)
+			this.appScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.absences.avecSaisieCours,
+			)
 		) {
 			this.ListeRessources.addElement(
-				new ObjetElement(
-					GTraductions.getValeur("accueil.emploiDuTemps"),
+				new ObjetElement_1.ObjetElement(
+					ObjetTraduction_1.GTraductions.getValeur("accueil.emploiDuTemps"),
 					0,
-					EGenreRessource.Cours,
+					Enumere_Ressource_1.EGenreRessource.Cours,
 				),
 			);
 		}
 		if (
-			GEtatUtilisateur.getGenreOnglet() ===
-				EGenreOnglet.SaisieAbsences_Appel_Professeur ||
-			!GApplication.droits.get(TypeDroits.absences.avecSaisieCours) ||
-			(!GApplication.droits.get(TypeDroits.absences.avecSaisieAppelEtVS) &&
-				GApplication.droits.get(TypeDroits.absences.avecSaisieHorsCours))
+			this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel_Professeur ||
+			!this.appScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.absences.avecSaisieCours,
+			) ||
+			(!this.appScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.absences.avecSaisieAppelEtVS,
+			) &&
+				this.appScoEspace.droits.get(
+					ObjetDroitsPN_1.TypeDroits.absences.avecSaisieHorsCours,
+				))
 		) {
 			$("#" + this.Instances[this.IdentComboRessource].getNom().escapeJQ()).css(
 				{ height: "25px" },
@@ -2651,30 +2932,21 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				top: "25px",
 			});
 			this.getInstance(this.IdentComboRessource).setVisible(true);
-			if (GNavigateur.isLayoutTactile) {
-				const lJComboRessource = $(
-					"#" + this.getInstance(this.IdentComboRessource).getNom().escapeJQ(),
-				);
-				$("#" + this.Instances[this.IdentGrille].getNom().escapeJQ()).css(
-					"height",
-					lJComboRessource.parent().height() - lJComboRessource.height() + "px",
-				);
-			}
 			if (lAvecClasse) {
 				this.ListeRessources.addElement(
-					new ObjetElement(
-						GTraductions.getValeur("Classe"),
+					new ObjetElement_1.ObjetElement(
+						ObjetTraduction_1.GTraductions.getValeur("Classe"),
 						0,
-						EGenreRessource.Classe,
+						Enumere_Ressource_1.EGenreRessource.Classe,
 					),
 				);
 			}
 			if (lAvecGroupe) {
 				this.ListeRessources.addElement(
-					new ObjetElement(
-						GTraductions.getValeur("Groupe"),
+					new ObjetElement_1.ObjetElement(
+						ObjetTraduction_1.GTraductions.getValeur("Groupe"),
 						0,
-						EGenreRessource.Groupe,
+						Enumere_Ressource_1.EGenreRessource.Groupe,
 					),
 				);
 			}
@@ -2685,24 +2957,30 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				? "PetitEspaceGauche"
 				: "Gras";
 			LElement.AvecSelection =
-				LElement.getGenre() === EGenreRessource.Cours ||
-				LElement.existeNumero() > 0;
+				LElement.getGenre() === Enumere_Ressource_1.EGenreRessource.Cours ||
+				LElement.existeNumero();
 		}
 		this.ListeRessources.setTri([
-			ObjetTri.init((D) => {
-				return D.getGenre() === EGenreRessource.Cours ? -1 : D.getGenre();
+			ObjetTri_1.ObjetTri.init((D) => {
+				return D.getGenre() === Enumere_Ressource_1.EGenreRessource.Cours
+					? -1
+					: D.getGenre();
 			}),
-			ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.init((D) => {
 				return D.existeNumero();
 			}),
-			ObjetTri.init("Libelle"),
+			ObjetTri_1.ObjetTri.init("Libelle"),
 		]);
 		this.ListeRessources.trier();
 		this.listeMotifs = aDonnees.listeMotifs;
 		this.motif = this.listeMotifs.get(0).Numero;
 		this.listeNaturePunition = aDonnees.listeNaturePunition;
 		this.listeNatureExclusion = aDonnees.listeNatureExclusion;
-		this.setDonneesBandeau(this.ListeDates, GParametres.LibellesHeures);
+		this.avecCommentaireAutorise = aDonnees.avecCommentaireAutorise;
+		this.setDonneesBandeau(
+			this.ListeDates,
+			this.appScoEspace.getObjetParametres().LibellesHeures,
+		);
 	}
 	actionSurRecupererEmploiDuTemps(aParam) {
 		for (let I = 0; I < aParam.listeCours.count(); I++) {
@@ -2712,14 +2990,15 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 					const lElementContenu = lElementCours.ListeContenus.get(J);
 					const lGenre = lElementContenu.getGenre();
 					if (
-						lGenre === EGenreRessource.Matiere ||
-						lGenre === EGenreRessource.Classe ||
-						lGenre === EGenreRessource.Groupe ||
-						lGenre === EGenreRessource.PartieDeClasse ||
-						lGenre === EGenreRessource.Salle ||
-						lGenre === EGenreRessource.Personnel ||
+						lGenre === Enumere_Ressource_1.EGenreRessource.Matiere ||
+						lGenre === Enumere_Ressource_1.EGenreRessource.Classe ||
+						lGenre === Enumere_Ressource_1.EGenreRessource.Groupe ||
+						lGenre === Enumere_Ressource_1.EGenreRessource.PartieDeClasse ||
+						lGenre === Enumere_Ressource_1.EGenreRessource.Salle ||
+						lGenre === Enumere_Ressource_1.EGenreRessource.Personnel ||
 						lElementContenu.marqueur ===
-							TypeHttpMarqueurContenuCours.hmcc_ReservePar
+							TypeHttpMarqueurContenuCours_1.TypeHttpMarqueurContenuCours
+								.hmcc_ReservePar
 					) {
 						lElementContenu.Visible = true;
 					} else {
@@ -2729,29 +3008,33 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			}
 		}
 		this.ListeCours = aParam.listeCours;
-		GHtml.setDisplay(this.getInstance(this.IdentGrille).Nom, true);
+		ObjetHtml_1.GHtml.setDisplay(
+			this.getInstance(this.IdentGrille).getNom(),
+			true,
+		);
 		if (this.moduleSaisie) {
 			this.moduleSaisie.sortieModeDiagnostic();
 		}
 		if (!this.grilleEleveEstInitialisee) {
 			this.grilleEleveEstInitialisee = true;
-			_afficherEDTEleve.call(this);
+			this._afficherEDTEleve();
 		}
 		Object.assign(this.donneesGrille, {
-			date: GDate.getDateDemiJour(this.Date),
+			date: ObjetDate_1.GDate.getDateDemiJour(this.Date),
 			listeCours: this.ListeCours,
-			avecCoursAnnule: GEtatUtilisateur.getAvecCoursAnnule(),
+			avecCoursAnnule: this.etatUtilScoEspace.getAvecCoursAnnule(),
 		});
 		this.getInstance(this.IdentGrille).setDonnees(this.donneesGrille);
 		const lCours =
-			GEtatUtilisateur._coursASelectionner ||
-			GEtatUtilisateur.getNavigationCours();
-		delete GEtatUtilisateur._coursASelectionner;
-		const lIndiceCours = new ObjetUtilitaireAbsence().getIndiceCoursParPlace(
-			this.ListeCours,
-			aParam.placeCourante,
-			false,
-		);
+			this.etatUtilScoEspace._coursASelectionner ||
+			this.etatUtilScoEspace.getNavigationCours();
+		delete this.etatUtilScoEspace._coursASelectionner;
+		const lIndiceCours =
+			new ObjetUtilitaireAbsence_1.ObjetUtilitaireAbsence().getIndiceCoursParPlace(
+				this.ListeCours,
+				aParam.placeCourante,
+				false,
+			);
 		let lAvecCoursSelectionne = false;
 		if (lCours !== null && lCours !== undefined) {
 			lAvecCoursSelectionne = this.getInstance(this.IdentGrille)
@@ -2763,13 +3046,13 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				.selectionnerElementParIndice(lIndiceCours, true);
 		}
 		if (!lAvecCoursSelectionne) {
-			_deselectionCours.call(this);
+			this._deselectionCours();
 		}
 	}
 	actionSurRecupererAbsences(aParam, aData) {
 		this.setEtatSaisie(false);
 		this.ListeEleves = aData.listeEleves;
-		this.listePJ = new ObjetListeElements();
+		this.listePJ = new ObjetListeElements_1.ObjetListeElements();
 		if (this.Eleve && this.Eleve.getNumero()) {
 			this.Eleve = this.ListeEleves.getElementParNumero(this.Eleve.getNumero());
 		}
@@ -2791,6 +3074,7 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 		this.elevesDetaches = aData.jsonReponse.elevesDetaches;
 		this.nombreDemandesDispense = aData.jsonReponse.nombreDemandesDispense;
 		this.listeDemandesDispense = aData.jsonReponse.listeDemandesDispense;
+		this.infoMaxlength = aData.jsonReponse.maxlength;
 		this.updateDemandesDispence();
 		this.moteur.setOptions({
 			placeSaisieDebut: this.PlaceSaisieDebut,
@@ -2803,23 +3087,31 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				jourConsultUniquement: this.jourConsultUniquement,
 				avecSaisieAbsence: this.appelDedieEnseignant
 					? true
-					: GApplication.droits.get(TypeDroits.absences.avecSaisieAbsence),
+					: this.appScoEspace.droits.get(
+							ObjetDroitsPN_1.TypeDroits.absences.avecSaisieAbsence,
+						),
 				avecSaisieRetard: this.appelDedieEnseignant
 					? true
-					: GApplication.droits.get(TypeDroits.absences.avecSaisieRetard),
+					: this.appScoEspace.droits.get(
+							ObjetDroitsPN_1.TypeDroits.absences.avecSaisieRetard,
+						),
 				avecSaisieDispense: this.appelDedieEnseignant
 					? true
-					: GApplication.droits.get(TypeDroits.dispenses.saisie),
+					: this.appScoEspace.droits.get(
+							ObjetDroitsPN_1.TypeDroits.dispenses.saisie,
+						),
 				suppressionAbsenceDeVS: this.avecSuppressionAutreAbsence,
 				suppressionRetardDeVS: this.avecModifRetardVS,
-				saisieAbsenceOuverte: GApplication.droits.get(
-					TypeDroits.absences.avecSaisieAbsenceOuverte,
+				saisieAbsenceOuverte: this.appScoEspace.droits.get(
+					ObjetDroitsPN_1.TypeDroits.absences.avecSaisieAbsenceOuverte,
 				),
 				saisieHorsCours:
-					GEtatUtilisateur.getGenreOnglet() ===
-					EGenreOnglet.SaisieAbsences_Appel_Professeur
+					this.etatUtilScoEspace.getGenreOnglet() ===
+					Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel_Professeur
 						? true
-						: GApplication.droits.get(TypeDroits.absences.avecSaisieHorsCours),
+						: this.appScoEspace.droits.get(
+								ObjetDroitsPN_1.TypeDroits.absences.avecSaisieHorsCours,
+							),
 			},
 		});
 		this.getInstance(this.idSaisieAbsences).setDonneesBandeauAbsences(
@@ -2827,16 +3119,16 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			this.listeMotifs,
 		);
 		this.setActif(!aData.message);
-		if (this.getInstance(this.IdentFenetreAbsences)) {
+		if (this.existeInstance(this.IdentFenetreAbsences)) {
 			this.getInstance(this.IdentFenetreAbsences).fermer();
 		}
-		if (this.getInstance(this.idFenetreCalCDC)) {
+		if (this.existeInstance(this.idFenetreCalCDC)) {
 			this.getInstance(this.idFenetreCalCDC).fermer();
 		}
-		if (this.getInstance(this.idFenetreInfirmerie)) {
+		if (this.existeInstance(this.idFenetreInfirmerie)) {
 			this.getInstance(this.idFenetreInfirmerie).fermer();
 		}
-		if (this.getInstance(this.identFenetreSaisiePunitions)) {
+		if (this.existeInstance(this.identFenetreSaisiePunitions)) {
 			this.getInstance(this.identFenetreSaisiePunitions).fermer();
 		}
 		if (this.estAppelEtSuivi) {
@@ -2848,11 +3140,11 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				this.genreDecompte,
 			);
 			this.getInstance(this.idDateDepuis).setContenu(
-				GDate.formatDate(this.dateDecompte, "%JJ/%MM/%AAAA"),
+				ObjetDate_1.GDate.formatDate(this.dateDecompte, "%JJ/%MM/%AAAA"),
 			);
 		}
 		if (aData.message) {
-			_afficherMessageGrilleAbsence.call(this, aData.message);
+			this._afficherMessageGrilleAbsence(aData.message);
 			return;
 		}
 		const lInstance = this;
@@ -2868,49 +3160,61 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			date: this.Date,
 			dateDecompte: this.dateDecompte,
 			autorisations: {
-				saisieAbsenceOuverte: GApplication.droits.get(
-					TypeDroits.absences.avecSaisieAbsenceOuverte,
+				saisieAbsenceOuverte: this.appScoEspace.droits.get(
+					ObjetDroitsPN_1.TypeDroits.absences.avecSaisieAbsenceOuverte,
 				),
 				saisieHorsCours:
-					GEtatUtilisateur.getGenreOnglet() ===
-					EGenreOnglet.SaisieAbsences_Appel_Professeur
+					this.etatUtilScoEspace.getGenreOnglet() ===
+					Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel_Professeur
 						? true
-						: GApplication.droits.get(TypeDroits.absences.avecSaisieHorsCours),
+						: this.appScoEspace.droits.get(
+								ObjetDroitsPN_1.TypeDroits.absences.avecSaisieHorsCours,
+							),
 				suppressionAutreAbsence: this.avecSuppressionAutreAbsence,
 				saisieGrille:
-					GEtatUtilisateur.getGenreOnglet() ===
-					EGenreOnglet.SaisieAbsences_Appel_Professeur
-						? GApplication.droits.get(
-								TypeDroits.absences.avecSaisieSurGrilleAppelProf,
+					this.etatUtilScoEspace.getGenreOnglet() ===
+					Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel_Professeur
+						? this.appScoEspace.droits.get(
+								ObjetDroitsPN_1.TypeDroits.absences
+									.avecSaisieSurGrilleAppelProf,
 							)
-						: GApplication.droits.get(TypeDroits.absences.avecSaisieSurGrille),
+						: this.appScoEspace.droits.get(
+								ObjetDroitsPN_1.TypeDroits.absences.avecSaisieSurGrille,
+							),
 				saisiePunition:
-					GEtatUtilisateur.getGenreOnglet() ===
-					EGenreOnglet.SaisieAbsences_Appel_Professeur
+					this.etatUtilScoEspace.getGenreOnglet() ===
+					Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel_Professeur
 						? false
-						: GApplication.droits.get(TypeDroits.absences.avecSaisiePunition),
+						: this.appScoEspace.droits.get(
+								ObjetDroitsPN_1.TypeDroits.absences.avecSaisiePunition,
+							),
 				suppressionAbsenceDeVS: this.avecSuppressionAutreAbsence,
 				suppressionRetardDeVS: this.avecModifRetardVS,
 				saisieAbsence: this.appelDedieEnseignant
 					? true
-					: GApplication.droits.get(TypeDroits.absences.avecSaisieAbsence),
+					: this.appScoEspace.droits.get(
+							ObjetDroitsPN_1.TypeDroits.absences.avecSaisieAbsence,
+						),
 				saisieRetard: this.appelDedieEnseignant
 					? true
-					: GApplication.droits.get(TypeDroits.absences.avecSaisieRetard),
-				saisieDefautCarnet: GApplication.droits.get(
-					TypeDroits.absences.avecSaisieDefautCarnet,
+					: this.appScoEspace.droits.get(
+							ObjetDroitsPN_1.TypeDroits.absences.avecSaisieRetard,
+						),
+				saisieDefautCarnet: this.appScoEspace.droits.get(
+					ObjetDroitsPN_1.TypeDroits.absences.avecSaisieDefautCarnet,
 				),
 				ajoutEleveAutorise: this.ajoutEleveAutorise,
 			},
 			cours: this.paramCours.cours,
-			estCours: this.GenreRessource === EGenreRessource.Cours,
+			estCours:
+				this.GenreRessource === Enumere_Ressource_1.EGenreRessource.Cours,
 			listeElevesStage: aData.listeElevesEnStage,
 			message: aData.message,
 			listeColonnes: this.listeColonnes,
 			callbackAjoutEleve: this.ajoutEleveAutorise
-				? function () {
-						if (GEtatUtilisateur.EtatSaisie) {
-							ControleSaisieEvenement(() => {
+				? () => {
+						if (this.etatUtilScoEspace.EtatSaisie) {
+							(0, ControleSaisieEvenement_1.ControleSaisieEvenement)(() => {
 								lInstance.afficherPage({
 									callbackFinAfficherPage: function () {
 										lInstance
@@ -2938,7 +3242,9 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 		this.afficherNbElevePresent();
 		$("#" + this.Nom.escapeJQ() + "_Appel_Termine").css(
 			"display",
-			GApplication.droits.get(TypeDroits.absences.avecSaisieCours) &&
+			this.appScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.absences.avecSaisieCours,
+			) &&
 				this.paramCours.cours &&
 				(this.ajoutEleveAutorise ||
 					this.ListeEleves.getListeElements((aEle) => {
@@ -2947,57 +3253,42 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				? ""
 				: "none",
 		);
-		if (!GNavigateur.isLayoutTactile) {
-			$("#" + this.Nom.escapeJQ() + "_Appel_Termine").width(
-				$(
-					"#" +
-						this.getInstance(this.idSaisieAbsences).Nom.escapeJQ() +
-						" table:first",
-				).width(),
-			);
-		}
-		if (GNavigateur.isLayoutTactile) {
-			$("#" + this.Nom.escapeJQ()).width(
-				$(
-					"#" +
-						this.getInstance(this.idSaisieAbsences).Nom.escapeJQ() +
-						" table:first",
-				).width() +
-					(this.largeurGrille + GNavigateur.getLargeurBarreDeScroll()) +
-					(this.avecGrilleEleve
-						? this.largeurGrilleEleve + GNavigateur.getLargeurBarreDeScroll()
-						: 0),
-			);
-		}
-		_actualiserEDTEleve.call(this);
+		$("#" + this.Nom.escapeJQ() + "_Appel_Termine").width(
+			$(
+				"#" +
+					this.getInstance(this.idSaisieAbsences).getNom().escapeJQ() +
+					" table:first",
+			).width(),
+		);
+		this._actualiserEDTEleve();
 		if (aParam && aParam.callbackFinAfficherPage) {
 			aParam.callbackFinAfficherPage();
 		}
 	}
 	getLibelleGenreAbsence(aGenreAbsence, aPluriel) {
 		switch (aGenreAbsence) {
-			case EGenreRessource.Absence:
-				return GTraductions.getValeur(
+			case Enumere_Ressource_1.EGenreRessource.Absence:
+				return ObjetTraduction_1.GTraductions.getValeur(
 					aPluriel ? "Absence.CoursManques" : "Absence.CoursManque",
 				);
-			case EGenreRessource.Retard:
-				return GTraductions.getValeur(
+			case Enumere_Ressource_1.EGenreRessource.Retard:
+				return ObjetTraduction_1.GTraductions.getValeur(
 					aPluriel ? "Absence.Retards" : "Absence.Retard",
 				);
-			case EGenreRessource.Exclusion:
-				return GTraductions.getValeur(
+			case Enumere_Ressource_1.EGenreRessource.Exclusion:
+				return ObjetTraduction_1.GTraductions.getValeur(
 					aPluriel ? "Absence.Exclusions" : "Absence.Exclusion",
 				);
-			case EGenreRessource.Infirmerie:
-				return GTraductions.getValeur(
+			case Enumere_Ressource_1.EGenreRessource.Infirmerie:
+				return ObjetTraduction_1.GTraductions.getValeur(
 					aPluriel ? "Absence.Infirmeries" : "Absence.Infirmerie",
 				);
-			case EGenreRessource.Punition:
-				return GTraductions.getValeur(
+			case Enumere_Ressource_1.EGenreRessource.Punition:
+				return ObjetTraduction_1.GTraductions.getValeur(
 					aPluriel ? "Absence.Punitions" : "Absence.Punition",
 				);
-			case EGenreRessource.Dispense:
-				return GTraductions.getValeur(
+			case Enumere_Ressource_1.EGenreRessource.Dispense:
+				return ObjetTraduction_1.GTraductions.getValeur(
 					aPluriel ? "Absence.DispensesCour" : "Absence.DispenseCour",
 				);
 			default:
@@ -3006,7 +3297,7 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 		return "";
 	}
 	getTitreFenetreAbsences(aGenreAbsence, aNumObs) {
-		let lTexte = GTraductions.getValeur("Absence.Absences");
+		let lTexte = ObjetTraduction_1.GTraductions.getValeur("Absence.Absences");
 		if (aGenreAbsence && !aNumObs) {
 			lTexte = this.getLibelleGenreAbsence(aGenreAbsence, true);
 		} else if (aNumObs) {
@@ -3018,57 +3309,84 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 		return (
 			this.Eleve.getLibelle() +
 			" - " +
-			GChaine.format(GTraductions.getValeur("Absence.TitreListeEvnmts"), [
-				lTexte,
-				GDate.formatDate(
-					this.dateDecompte ? this.dateDecompte : GParametres.PremiereDate,
-					"%JJ/%MM/%AAAA",
-				),
-			])
+			ObjetChaine_1.GChaine.format(
+				ObjetTraduction_1.GTraductions.getValeur("Absence.TitreListeEvnmts"),
+				[
+					lTexte,
+					ObjetDate_1.GDate.formatDate(
+						this.dateDecompte
+							? this.dateDecompte
+							: this.appScoEspace.getObjetParametres().PremiereDate,
+						"%JJ/%MM/%AAAA",
+					),
+				],
+			)
 		);
 	}
 	getMessageAucunFenetreAbsences(aGenreAbsence, aNumObs) {
-		let lTexte = GTraductions.getValeur("Absence.AucuneAbsence");
+		let lTexte = ObjetTraduction_1.GTraductions.getValeur(
+			"Absence.AucuneAbsence",
+		);
 		switch (aGenreAbsence) {
-			case EGenreRessource.Retard:
-				lTexte = GTraductions.getValeur("Absence.AucunRetard");
+			case Enumere_Ressource_1.EGenreRessource.Retard:
+				lTexte = ObjetTraduction_1.GTraductions.getValeur(
+					"Absence.AucunRetard",
+				);
 				break;
-			case EGenreRessource.Infirmerie:
-				lTexte = GTraductions.getValeur("Absence.AucuneInfirmerie");
+			case Enumere_Ressource_1.EGenreRessource.Infirmerie:
+				lTexte = ObjetTraduction_1.GTraductions.getValeur(
+					"Absence.AucuneInfirmerie",
+				);
 				break;
-			case EGenreRessource.Punition:
-				lTexte = GTraductions.getValeur("Absence.AucunePunition");
+			case Enumere_Ressource_1.EGenreRessource.Punition:
+				lTexte = ObjetTraduction_1.GTraductions.getValeur(
+					"Absence.AucunePunition",
+				);
 				break;
-			case EGenreRessource.Exclusion:
-				lTexte = GTraductions.getValeur("Absence.AucuneExclusion");
+			case Enumere_Ressource_1.EGenreRessource.Exclusion:
+				lTexte = ObjetTraduction_1.GTraductions.getValeur(
+					"Absence.AucuneExclusion",
+				);
 				break;
-			case EGenreRessource.Dispense:
-				lTexte = GTraductions.getValeur("Absence.AucuneDispense");
+			case Enumere_Ressource_1.EGenreRessource.Dispense:
+				lTexte = ObjetTraduction_1.GTraductions.getValeur(
+					"Absence.AucuneDispense",
+				);
 				break;
-			case EGenreRessource.Observation: {
+			case Enumere_Ressource_1.EGenreRessource.Observation: {
 				const lObservation = this.listeColonnes.getElementParNumeroEtGenre(
 					aNumObs,
 					aGenreAbsence,
 				);
 				switch (lObservation.genreObservation) {
-					case TypeGenreObservationVS.OVS_ObservationParent:
-						lTexte = GTraductions.getValeur("Absence.AucuneObservationParents");
+					case TypeGenreObservationVS_1.TypeGenreObservationVS
+						.OVS_ObservationParent:
+						lTexte = ObjetTraduction_1.GTraductions.getValeur(
+							"Absence.AucuneObservationParents",
+						);
 						break;
-					case TypeGenreObservationVS.OVS_Encouragement:
-						lTexte = GTraductions.getValeur("Absence.AucunEncouragement");
+					case TypeGenreObservationVS_1.TypeGenreObservationVS
+						.OVS_Encouragement:
+						lTexte = ObjetTraduction_1.GTraductions.getValeur(
+							"Absence.AucunEncouragement",
+						);
 						break;
-					case TypeGenreObservationVS.OVS_DefautCarnet:
-						lTexte = GTraductions.getValeur("Absence.AucunDefautDeCarnet");
+					case TypeGenreObservationVS_1.TypeGenreObservationVS.OVS_DefautCarnet:
+						lTexte = ObjetTraduction_1.GTraductions.getValeur(
+							"Absence.AucunDefautDeCarnet",
+						);
 						break;
-					case TypeGenreObservationVS.OVS_Autres:
-						return GChaine.format(
-							GTraductions.getValeur("Absence.AucuneObservationAutres"),
+					case TypeGenreObservationVS_1.TypeGenreObservationVS.OVS_Autres:
+						return ObjetChaine_1.GChaine.format(
+							ObjetTraduction_1.GTraductions.getValeur(
+								"Absence.AucuneObservationAutres",
+							),
 							[
 								lObservation.Libelle,
-								GDate.formatDate(
+								ObjetDate_1.GDate.formatDate(
 									this.dateDecompte
 										? this.dateDecompte
-										: GParametres.PremiereDate,
+										: this.appScoEspace.getObjetParametres().PremiereDate,
 									"%JJ/%MM/%AAAA",
 								),
 							],
@@ -3077,9 +3395,11 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				break;
 			}
 		}
-		return GChaine.format(lTexte, [
-			GDate.formatDate(
-				this.dateDecompte ? this.dateDecompte : GParametres.PremiereDate,
+		return ObjetChaine_1.GChaine.format(lTexte, [
+			ObjetDate_1.GDate.formatDate(
+				this.dateDecompte
+					? this.dateDecompte
+					: this.appScoEspace.getObjetParametres().PremiereDate,
 				"%JJ/%MM/%AAAA",
 			),
 		]);
@@ -3087,14 +3407,16 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 	actionSurRecupererDetailAbsences(aListeAbsences) {
 		if (
 			this.recapitulatifEleve &&
-			this.recapitulatifEleve.genreAbsence === EGenreRessource.Observation &&
+			this.recapitulatifEleve.genreAbsence ===
+				Enumere_Ressource_1.EGenreRessource.Observation &&
 			this.listeColonnes.getElementParNumeroEtGenre(
 				this.recapitulatifEleve.numeroObservation,
 				this.recapitulatifEleve.genreAbsence,
-			).genreObservation === TypeGenreObservationVS.OVS_DefautCarnet
+			).genreObservation ===
+				TypeGenreObservationVS_1.TypeGenreObservationVS.OVS_DefautCarnet
 		) {
 			if (
-				this.getInstance(this.IdentFenetreAbsences) &&
+				this.existeInstance(this.IdentFenetreAbsences) &&
 				this.getInstance(this.IdentFenetreAbsences).estAffiche()
 			) {
 				this.getInstance(this.IdentFenetreAbsences).fermer();
@@ -3106,7 +3428,9 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			);
 			for (let i = 0; i < lListeCDC.count(); i++) {
 				const lElement = lListeCDC.get(i);
-				lElement.date = GDate.placeAnnuelleEnDate(lElement.placeDebut);
+				lElement.date = ObjetDate_1.GDate.placeAnnuelleEnDate(
+					lElement.placeDebut,
+				);
 			}
 			this.getInstance(this.idFenetreCalCDC).afficherDefautCarnet(
 				{ premiereDate: this.dateDecompte, derniereDate: this.Date },
@@ -3136,7 +3460,8 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 					: null,
 				this.recapitulatifEleve !== null &&
 					this.recapitulatifEleve !== undefined &&
-					this.recapitulatifEleve.genreAbsence === EGenreRessource.Observation
+					this.recapitulatifEleve.genreAbsence ===
+						Enumere_Ressource_1.EGenreRessource.Observation
 					? this.listeColonnes.getElementParNumeroEtGenre(
 							this.recapitulatifEleve.numeroObservation,
 							this.recapitulatifEleve.genreAbsence,
@@ -3159,7 +3484,7 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				titre: lTitreFenetre,
 			});
 			if (
-				this.getInstance(this.idFenetreCalCDC) &&
+				this.existeInstance(this.idFenetreCalCDC) &&
 				this.getInstance(this.idFenetreCalCDC).estAffiche()
 			) {
 				this.getInstance(this.idFenetreCalCDC).fermer();
@@ -3176,22 +3501,24 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				placeFin: this.PlaceSaisieFin,
 				cours: aCours,
 				genreAbsence: aGenreAbsence,
-				observation: new ObjetElement("", aNumeroObservation),
+				observation: new ObjetElement_1.ObjetElement("", aNumeroObservation),
 			};
 			this.dateDecompte = aDate;
 			lParamsRequete.dateDecompte = this.dateDecompte;
-			const lDomaine = GApplication.droits.get(
-				TypeDroits.absences.domaineRecapitulatifAbsences,
+			const lDomaine = this.appScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.absences.domaineRecapitulatifAbsences,
 			);
 			if (lDomaine && !lDomaine.estVide()) {
 				lParamsRequete.domaine = lDomaine;
 			} else {
-				lParamsRequete.dateDebut = GDate.placeAnnuelleEnDate(
+				lParamsRequete.dateDebut = ObjetDate_1.GDate.placeAnnuelleEnDate(
 					this.PlaceSaisieDebut,
 				);
-				lParamsRequete.dateFin = GDate.placeAnnuelleEnDate(this.PlaceSaisieFin);
+				lParamsRequete.dateFin = ObjetDate_1.GDate.placeAnnuelleEnDate(
+					this.PlaceSaisieFin,
+				);
 			}
-			new ObjetRequeteDetailAbsences(
+			new ObjetRequeteDetailAbsences_1.ObjetRequeteDetailAbsences(
 				this,
 				this.actionSurRecupererDetailAbsences,
 			).lancerRequete(lParamsRequete);
@@ -3217,21 +3544,28 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				AGenreAbsence,
 				APlaceDebut,
 				APlaceFin,
-				AGenreAbsence === EGenreRessource.Retard ? this.DureeRetard : null,
+				AGenreAbsence === Enumere_Ressource_1.EGenreRessource.Retard
+					? this.DureeRetard
+					: null,
 				null,
 				aTypeObservation,
 				aListeMotifs,
 			);
-			LAbsence.listeMotifs = new ObjetListeElements();
+			LAbsence.listeMotifs = new ObjetListeElements_1.ObjetListeElements();
 			if (aMotif) {
-				LAbsence.listeMotifs.addElement(MethodesObjet.dupliquer(aMotif));
+				LAbsence.listeMotifs.addElement(
+					MethodesObjet_1.MethodesObjet.dupliquer(aMotif),
+				);
 			}
 		}
 		this._apresModificationAbsence(aEleve, AGenreAbsence, aTypeObservation);
 	}
 	_apresModificationAbsence(aEleve, AGenreAbsence, aTypeObservation) {
-		if (AGenreAbsence === EGenreRessource.ObservationProfesseurEleve) {
-			AGenreAbsence = EGenreRessource.Observation;
+		if (
+			AGenreAbsence ===
+			Enumere_Ressource_1.EGenreRessource.ObservationProfesseurEleve
+		) {
+			AGenreAbsence = Enumere_Ressource_1.EGenreRessource.Observation;
 		}
 		this.moteur.calculerInfosEleve(aEleve);
 		this.setEtatSaisie(true);
@@ -3241,7 +3575,7 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 			AGenreAbsence,
 			aTypeObservation,
 		);
-		_actualiserEDTEleve.call(this);
+		this._actualiserEDTEleve();
 	}
 	setActif(AActif) {
 		this.Actif = AActif;
@@ -3252,26 +3586,39 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 		this.actualiserAbsences();
 	}
 	actualiserBandeau() {
-		GHtml.setDisplay(this.Nom + "_Bandeau", this.Actif);
+		ObjetHtml_1.GHtml.setDisplay(this.Nom + "_Bandeau", this.Actif);
 		if (this.Actif) {
-			const LEstUnCours = this.GenreRessource === EGenreRessource.Cours;
+			const LEstUnCours =
+				this.GenreRessource === Enumere_Ressource_1.EGenreRessource.Cours;
 			let lMessage = "";
 			this.getInstance(this.IdentComboPlaceDeb).setVisible(!LEstUnCours);
 			this.getInstance(this.IdentComboPlaceFin).setVisible(!LEstUnCours);
-			GStyle.setVisible(this.Nom + "_Bandeau_MessageSuite", !LEstUnCours);
+			ObjetStyle_1.GStyle.setVisible(
+				this.Nom + "_Bandeau_MessageSuite",
+				!LEstUnCours,
+			);
 			const LPlaceSaisieDebut =
-				this.PlaceSaisieDebut % GParametres.PlacesParJour;
+				this.PlaceSaisieDebut %
+				this.appScoEspace.getObjetParametres().PlacesParJour;
 			const LPlaceSaisieFin =
-				1 + (this.PlaceSaisieFin % GParametres.PlacesParJour);
+				1 +
+				(this.PlaceSaisieFin %
+					this.appScoEspace.getObjetParametres().PlacesParJour);
 			if (LEstUnCours) {
 				lMessage =
-					GTraductions.getValeur("AbsenceVS.Traduction_PourLeCoursDe") +
+					ObjetTraduction_1.GTraductions.getValeur(
+						"AbsenceVS.Traduction_PourLeCoursDe",
+					) +
 					" " +
-					GParametres.LibellesHeures.getLibelle(LPlaceSaisieDebut) +
+					this.appScoEspace
+						.getObjetParametres()
+						.LibellesHeures.getLibelle(LPlaceSaisieDebut) +
 					" " +
-					GTraductions.getValeur("A") +
+					ObjetTraduction_1.GTraductions.getValeur("A") +
 					" " +
-					GParametres.LibellesHeures.getLibelle(LPlaceSaisieFin);
+					this.appScoEspace
+						.getObjetParametres()
+						.LibellesHeures.getLibelle(LPlaceSaisieFin);
 			} else {
 				this.getInstance(this.IdentComboPlaceDeb).setSelectionParNumeroEtGenre(
 					null,
@@ -3281,15 +3628,18 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 					null,
 					LPlaceSaisieFin,
 				);
-				lMessage = GTraductions.getValeur(
+				lMessage = ObjetTraduction_1.GTraductions.getValeur(
 					"AbsenceVS.Traduction_PourLeCreneauDe",
 				);
 			}
-			GHtml.setHtml(this.Nom + "_Bandeau_Message", GChaine.insecable(lMessage));
+			ObjetHtml_1.GHtml.setHtml(
+				this.Nom + "_Bandeau_Message",
+				ObjetChaine_1.GChaine.insecable(lMessage),
+			);
 		}
 	}
 	actualiserBandeauAbsences() {
-		GHtml.setDisplay(this.Nom + "_BandeauAbsences", this.Actif);
+		ObjetHtml_1.GHtml.setDisplay(this.Nom + "_BandeauAbsences", this.Actif);
 	}
 	actualiserAbsences() {
 		this.getInstance(this.idSaisieAbsences).setActif(this.Actif);
@@ -3300,7 +3650,7 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 	}
 	setDonneesBandeau(AListeDates, AListeHeures) {
 		this.indiceDateSaisieAbsence =
-			GEtatUtilisateur.getIndiceDateSaisieAbsence();
+			this.etatUtilScoEspace.getIndiceDateSaisieAbsence();
 		this.avecDateDefaut = false;
 		if (this.indiceDateSaisieAbsence === -1) {
 			this.indiceDateSaisieAbsence = 0;
@@ -3320,21 +3670,23 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				this.getInstance(this.IdentDate).setVisible(false);
 				this.getInstance(this.IdentComboDates).setVisible(false);
 				this.getInstance(this.IdentSelectDate).setVisible(true);
-				let lDate = GEtatUtilisateur.getNavigationDate()
-					? GEtatUtilisateur.getNavigationDate()
+				let lDate = this.etatUtilScoEspace.getNavigationDate()
+					? this.etatUtilScoEspace.getNavigationDate()
 					: !!AListeDates && AListeDates.count()
 						? AListeDates.get(0).Date
-						: GDate.getDateCourante(true);
-				lDate = GDate.getDateJour(lDate);
+						: ObjetDate_1.GDate.getDateCourante(true);
+				lDate = ObjetDate_1.GDate.getDateJour(lDate);
 				this.getInstance(this.IdentSelectDate).setActif(true);
-				this.getInstance(this.IdentSelectDate).setDonnees(lDate);
-				_evenementDateValidation.call(this, lDate);
+				this.getInstance(this.IdentSelectDate).setDonnees(lDate, true);
 			} else if (this.ListeDates.count()) {
 				this.getInstance(this.IdentComboDates).setVisible(false);
 				this.getInstance(this.IdentSelectDate).setVisible(false);
 				this.getInstance(this.IdentDate).setVisible(true);
 				this.getInstance(this.IdentDate).setDonnees(
-					GDate.formatDate(AListeDates.get(0).Date, "%JJ/%MM/%AAAA"),
+					ObjetDate_1.GDate.formatDate(
+						AListeDates.get(0).Date,
+						"%JJ/%MM/%AAAA",
+					),
 				);
 				this.actualiserDonneesCombos(AListeDates, AListeHeures);
 			} else {
@@ -3345,7 +3697,7 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 				}
 				this.afficher(
 					this.composeMessage(
-						GTraductions.getValeur(
+						ObjetTraduction_1.GTraductions.getValeur(
 							"Absence.FeuilleDAppel_SaisieImpossibleNonOuvre",
 						),
 					),
@@ -3374,26 +3726,40 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 						: "Image_AppelVerrouNonFait") +
 					' AlignementMilieuVertical" style="width:16px;height:16px;" title="' +
 					(lEstSortiePeda
-						? GTraductions.getValeur("AbsenceVS.VerrouAppelFaitSP")
-						: GTraductions.getValeur("AbsenceVS.HintVerrouille")) +
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"AbsenceVS.VerrouAppelFaitSP",
+							)
+						: ObjetTraduction_1.GTraductions.getValeur(
+								"AbsenceVS.HintVerrouille",
+							)) +
 					'"></div>',
 			);
 		}
 		H.push(
 			lObjNbEleve.nbElevesPresents > 1
-				? GChaine.format(
+				? ObjetChaine_1.GChaine.format(
 						lEstSortiePeda
-							? GTraductions.getValeur("AbsenceVS.ElevesPresentsSP")
-							: GTraductions.getValeur("AbsenceVS.ElevesPresents"),
+							? ObjetTraduction_1.GTraductions.getValeur(
+									"AbsenceVS.ElevesPresentsSP",
+								)
+							: ObjetTraduction_1.GTraductions.getValeur(
+									"AbsenceVS.ElevesPresents",
+								),
 						[lObjNbEleve.nbElevesPresents],
 					)
 				: lObjNbEleve.nbElevesPresents === 1
 					? lEstSortiePeda
-						? GTraductions.getValeur("AbsenceVS.ElevePresentSP")
-						: GTraductions.getValeur("AbsenceVS.ElevePresent")
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"AbsenceVS.ElevePresentSP",
+							)
+						: ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.ElevePresent")
 					: lEstSortiePeda
-						? GTraductions.getValeur("AbsenceVS.AucunElevePresentSP")
-						: GTraductions.getValeur("AbsenceVS.AucunElevePresent"),
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"AbsenceVS.AucunElevePresentSP",
+							)
+						: ObjetTraduction_1.GTraductions.getValeur(
+								"AbsenceVS.AucunElevePresent",
+							),
 		);
 		if (
 			this.listeElevesStage &&
@@ -3402,20 +3768,23 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 		) {
 			H.push(
 				'&nbsp;-&nbsp;<span title="',
-				GChaine.toTitle(this.listeElevesStage.getTableauLibelles().join("\n")),
+				ObjetChaine_1.GChaine.toTitle(
+					this.listeElevesStage.getTableauLibelles().join("\n"),
+				),
 				'">',
 				this.listeElevesStage.count() === 1
-					? GTraductions.getValeur("Absence.EleveEnStage")
-					: GChaine.format(GTraductions.getValeur("Absence.ElevesEnStage"), [
-							this.listeElevesStage.count(),
-						]),
+					? ObjetTraduction_1.GTraductions.getValeur("Absence.EleveEnStage")
+					: ObjetChaine_1.GChaine.format(
+							ObjetTraduction_1.GTraductions.getValeur("Absence.ElevesEnStage"),
+							[this.listeElevesStage.count()],
+						),
 				"</span>",
 			);
 		}
 		if (this.elevesDetaches && this.elevesDetaches.str) {
 			H.push(
 				'&nbsp;-&nbsp;<span title="',
-				GChaine.toTitle(this.elevesDetaches.hint),
+				ObjetChaine_1.GChaine.toTitle(this.elevesDetaches.hint),
 				'">' + this.elevesDetaches.str + "</span>",
 			);
 		}
@@ -3423,251 +3792,272 @@ class ObjetAffichagePageSaisieAbsences extends InterfacePage {
 	}
 	_gestionFocusApresFenetreRecap() {
 		if (this._gestionFocus_apresFenetreRecapId) {
-			GHtml.setFocus(this._gestionFocus_apresFenetreRecapId, true, true);
+			ObjetHtml_1.GHtml.setFocus(
+				this._gestionFocus_apresFenetreRecapId,
+				true,
+				true,
+			);
 		}
 		delete this._gestionFocus_apresFenetreRecapId;
 	}
 	_gestionFocusApresFenetreCellule() {
 		if (this._gestionFocus_apresFenetreCelluleId) {
-			GHtml.setFocus(this._gestionFocus_apresFenetreCelluleId, true, true);
+			ObjetHtml_1.GHtml.setFocus(
+				this._gestionFocus_apresFenetreCelluleId,
+				true,
+				true,
+			);
 		}
 		delete this._gestionFocus_apresFenetreCelluleId;
 	}
-}
-function _initialiserCelluleDate(aInstance) {
-	aInstance.setOptionsObjetCelluleDate({
-		largeurComposant: 100,
-		formatDate: "%JJJ %J %MMM",
-		derniereDate: GDate.getDateCourante(true),
-	});
-}
-function _evenementDateValidation(aDate) {
-	this.Date = aDate;
-	this.jourConsultUniquement =
-		this.ListeDates.getIndiceElementParFiltre((aElement) => {
-			return GDate.estJourEgal(aElement.Date, this.Date);
-		}) === -1;
-	this.moteur.setOptions({ Date: this.Date });
-	GEtatUtilisateur.setNavigationDate(aDate);
-	this.setEtatSaisie(false);
-	this.Eleve = null;
-	this.getInstance(this.IdentComboRessource).setDonnees(
-		this.ListeRessources,
-		this.SelectionRessource === null || this.SelectionRessource === undefined
-			? 0
-			: this.SelectionRessource,
-	);
-}
-function avecCheckboxAppelTermine() {
-	return (
-		GApplication.droits.get(TypeDroits.absences.avecSaisieAbsence) ||
-		GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.SaisieAbsences_Appel ||
-		GEtatUtilisateur.getGenreOnglet() ===
-			EGenreOnglet.SaisieAbsences_Appel_Professeur
-	);
-}
-function avecDemandesDispense() {
-	return (
-		this.appelDedieEnseignant ||
-		GApplication.droits.get(TypeDroits.dispenses.saisie)
-	);
-}
-function _avecCBEDTPermanence() {
-	return (
-		(GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.SaisieAbsences_Appel ||
-			GEtatUtilisateur.getGenreOnglet() ===
-				EGenreOnglet.SaisieAbsences_AppelEtSuivi) &&
-		GEtatUtilisateur.GenreEspace === EGenreEspace.Etablissement &&
-		GApplication.droits.get(TypeDroits.fonctionnalites.gestionPermanence)
-	);
-}
-function _actualiserGrilleEleve(aEleve) {
-	this.grilleEleve
-		.getDecorateurAbsences()
-		.setDonnees({
-			absencesGrille: aEleve && aEleve.grille ? aEleve.grille.absences : null,
-			listeAbsences: this.Eleve ? this.Eleve.ListeAbsences : null,
-			listeDispenses: this.Eleve ? this.Eleve.ListeDispenses : null,
-			cours: this.paramCours.cours,
+	_initialiserCelluleDate(aInstance) {
+		aInstance.setOptionsObjetCelluleDate({
+			largeurComposant: 100,
+			formatDate: "%JJJ %J %MMM",
+			derniereDate: ObjetDate_1.GDate.getDateCourante(true),
 		});
-	this.grilleEleve.setDonnees({
-		date: GDate.getDateDemiJour(this.Date),
-		listeCours:
-			aEleve && aEleve.grille
-				? aEleve.grille.listeCours
-				: new ObjetListeElements(),
-		avecCoursAnnule: GEtatUtilisateur.getAvecCoursAnnule(),
-	});
-}
-function _actualiserEDTEleve() {
-	if (!this.grilleEleve) {
-		return;
 	}
-	if (!this.Eleve) {
-		_actualiserGrilleEleve.call(this, null);
-	} else if (this.Eleve.grille && this.Eleve.grille.listeCours) {
-		_actualiserGrilleEleve.call(this, this.Eleve);
-	} else {
-		if (this._requeteEDTEnCours) {
+	_evenementDateValidation(aDate) {
+		this.Date = aDate;
+		this.jourConsultUniquement =
+			this.ListeDates.getIndiceElementParFiltre((aElement) => {
+				return ObjetDate_1.GDate.estJourEgal(aElement.Date, this.Date);
+			}) === -1;
+		this.moteur.setOptions({ Date: this.Date });
+		this.etatUtilScoEspace.setNavigationDate(aDate);
+		this.setEtatSaisie(false);
+		this.Eleve = null;
+		this.getInstance(this.IdentComboRessource).setDonnees(
+			this.ListeRessources,
+			this.SelectionRessource === null || this.SelectionRessource === undefined
+				? 0
+				: this.SelectionRessource,
+		);
+	}
+	avecCheckboxAppelTermine() {
+		const lAvecAjoutAutorise = this.ajoutEleveAutorise;
+		return (
+			this.appScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.absences.avecSaisieAbsence,
+			) ||
+			this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel ||
+			this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel_Professeur ||
+			lAvecAjoutAutorise
+		);
+	}
+	avecDemandesDispense() {
+		return (
+			this.appelDedieEnseignant ||
+			this.appScoEspace.droits.get(ObjetDroitsPN_1.TypeDroits.dispenses.saisie)
+		);
+	}
+	_avecCBEDTPermanence() {
+		return (
+			(this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_Appel ||
+				this.etatUtilScoEspace.getGenreOnglet() ===
+					Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_AppelEtSuivi) &&
+			this.etatUtilScoEspace.GenreEspace ===
+				Enumere_Espace_1.EGenreEspace.Etablissement &&
+			this.appScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.fonctionnalites.gestionPermanence,
+			)
+		);
+	}
+	_actualiserGrilleEleve(aEleve) {
+		this.grilleEleve
+			.getDecorateurAbsences()
+			.setDonnees({
+				absencesGrille: aEleve && aEleve.grille ? aEleve.grille.absences : null,
+				listeAbsences: this.Eleve ? this.Eleve.ListeAbsences : null,
+				listeDispenses: this.Eleve ? this.Eleve.ListeDispenses : null,
+				cours: this.paramCours.cours,
+			});
+		this.grilleEleve.setDonnees({
+			date: ObjetDate_1.GDate.getDateDemiJour(this.Date),
+			listeCours:
+				aEleve && aEleve.grille
+					? aEleve.grille.listeCours
+					: new ObjetListeElements_1.ObjetListeElements(),
+			avecCoursAnnule: this.etatUtilScoEspace.getAvecCoursAnnule(),
+		});
+	}
+	_actualiserEDTEleve() {
+		if (!this.grilleEleve) {
 			return;
 		}
-		const lThis = this;
-		this._requeteEDTEnCours = true;
-		new ObjetRequetePageEmploiDuTemps(this, (aParam) => {
-			delete lThis._requeteEDTEnCours;
-			lThis.Eleve.grille = {
-				listeCours: aParam.listeCours,
-				absences: aParam.absences,
-			};
-			_actualiserGrilleEleve.call(lThis, lThis.Eleve);
-		}).lancerRequete({
-			ressource: new ObjetElement(
-				"",
-				this.Eleve.getNumero(),
-				EGenreRessource.Eleve,
-			),
-			dateDebut: this.Date,
-			avecAbsencesEleve: true,
-			avecRetenuesEleve: true,
-			avecCoursSortiePeda: true,
-		});
+		if (!this.Eleve) {
+			this._actualiserGrilleEleve(null);
+		} else if (this.Eleve.grille && this.Eleve.grille.listeCours) {
+			this._actualiserGrilleEleve(this.Eleve);
+		} else {
+			if (this._requeteEDTEnCours) {
+				return;
+			}
+			const lThis = this;
+			this._requeteEDTEnCours = true;
+			new ObjetRequetePageEmploiDuTemps_1.ObjetRequetePageEmploiDuTemps(
+				this,
+				(aParam) => {
+					delete lThis._requeteEDTEnCours;
+					lThis.Eleve.grille = {
+						listeCours: aParam.listeCours,
+						absences: aParam.absences,
+					};
+					lThis._actualiserGrilleEleve(lThis.Eleve);
+				},
+			).lancerRequete({
+				ressource: new ObjetElement_1.ObjetElement(
+					"",
+					this.Eleve.getNumero(),
+					Enumere_Ressource_1.EGenreRessource.Eleve,
+				),
+				dateDebut: this.Date,
+				avecAbsencesEleve: true,
+				avecRetenuesEleve: true,
+				avecCoursSortiePeda: true,
+			});
+		}
 	}
-}
-function _afficherEDTEleve() {
-	if (this.grilleEleve) {
-		this.grilleEleve.free();
-	}
-	this.grilleEleve = null;
-	$("#" + this.idGrilleEleve.escapeJQ())
-		.ieHtml("")
-		.hide();
-	if (this.avecGrilleEleve) {
-		this.grilleEleve = Identite.creerInstance(ObjetGrille, { pere: this });
-		const T = [];
-		T.push(
-			'<div class="Espace AlignementMilieu" ie-html="getTitreGrilleEleve" ie-ellipsis>&nbsp;</div>',
-		);
-		T.push(
-			'<div id="' +
-				this.grilleEleve.Nom +
-				'" style="position:absolute;top:20px;left:0;right:0;bottom:0;"></div>',
-		);
+	_afficherEDTEleve() {
+		if (this.grilleEleve) {
+			this.grilleEleve.free();
+		}
+		this.grilleEleve = null;
 		$("#" + this.idGrilleEleve.escapeJQ())
-			.show()
-			.ieHtml(T.join(""), { controleur: this.controleur });
-		this.grilleEleve.recupererDonnees();
-		this.grilleEleve.setOptions({
-			tailleMINPasHoraire: GNavigateur.isLayoutTactile ? 20 : undefined,
-			avecSelectionCours: false,
-			decorateurAbsences: new TDecorateurAbsencesGrille().setOptions({
-				couleurAbsence: "#FFCC66",
-				couleurRetard: "#4020E1",
-			}),
-			avecSeparationDemiJAbsence: true,
-		});
-		this.grilleEleve.moduleCours.setParametres({
-			filtresImagesUniquement: [
-				TUtilitaireGrilleImageCoursPN.type.dispense,
-				TUtilitaireGrilleImageCoursPN.type.aucunEleve,
-			],
-			avecVoileCoursObligDispense: false,
-			modeGrilleAbsence: true,
-			couleurFondCours: "#E1E1E1",
-		});
-		_actualiserEDTEleve.call(this);
-	}
-	if (!GNavigateur.isLayoutTactile) {
+			.ieHtml("")
+			.hide();
+		if (this.avecGrilleEleve) {
+			this.grilleEleve = ObjetIdentite_1.Identite.creerInstance(
+				ObjetGrille_1.ObjetGrille,
+				{ pere: this },
+			);
+			const T = [];
+			T.push(
+				'<div class="Espace AlignementMilieu" ie-html="getTitreGrilleEleve" ie-ellipsis>&nbsp;</div>',
+			);
+			T.push(
+				'<div id="' +
+					this.grilleEleve.getNom() +
+					'" style="position:absolute;top:20px;left:0;right:0;bottom:0;"></div>',
+			);
+			$("#" + this.idGrilleEleve.escapeJQ())
+				.show()
+				.ieHtml(T.join(""), { controleur: this.controleur });
+			this.grilleEleve.recupererDonnees();
+			this.grilleEleve.setOptions({
+				tailleMINPasHoraire: undefined,
+				avecSelectionCours: false,
+				decorateurAbsences:
+					new UtilitaireAbsencesGrille_1.TDecorateurAbsencesGrille().setOptions(
+						{ couleurAbsence: "#FFCC66", couleurRetard: "#4020E1" },
+					),
+				avecSeparationDemiJAbsence: true,
+			});
+			this.grilleEleve.moduleCours.setParametres({
+				filtresImagesUniquement: [
+					UtilitaireGrilleImageCoursPN_1.TUtilitaireGrilleImageCoursPN.type
+						.dispense,
+					UtilitaireGrilleImageCoursPN_1.TUtilitaireGrilleImageCoursPN.type
+						.aucunEleve,
+				],
+				avecVoileCoursObligDispense: false,
+				modeGrilleAbsence: true,
+				couleurFondCours: "#E1E1E1",
+			});
+			this._actualiserEDTEleve();
+		}
 		const lRight = this.avecGrilleEleve
 			? this.largeurGrilleEleve + GNavigateur.getLargeurBarreDeScroll() + "px"
 			: 0;
 		$("#" + this.getInstance(this.idSaisieAbsences).getNom().escapeJQ())
 			.parent()
 			.css("right", lRight);
-	}
-	if (
-		this.ListeEleves &&
-		this.paramCours.cours &&
-		!this.paramCours.cours.estAnnule &&
-		this.paramCours.cours.utilisable
-	) {
-		this.getInstance(this.idSaisieAbsences).setDonneesAbsences();
-	}
-}
-function _afficherMessageGrilleAbsence(aMessage) {
-	this.getInstance(this.idSaisieAbsences).afficher(
-		this.getInstance(this.idSaisieAbsences).composeMessage(aMessage),
-	);
-	$("#" + this.Nom.escapeJQ() + "_Appel_Termine").css("display", "none");
-	this.getInstance(this.idSaisieAbsences).setEnAffichage(false);
-}
-function _supprimerEleveDuCours() {
-	const lSelf = this;
-	GApplication.getMessage().afficher({
-		type: EGenreBoiteMessage.Confirmation,
-		message: GChaine.format(
-			GTraductions.getValeur("AbsenceVS.ConfirmationSuppressionEleve"),
-			[lSelf.Eleve.getLibelle()],
-		),
-		callback: function (aGenreAction) {
-			if (aGenreAction === EGenreAction.Valider) {
-				lSelf.ListeEleves.getElementParNumero(lSelf.Eleve.getNumero()).setEtat(
-					EGenreEtat.Suppression,
-				);
-				lSelf.valider();
-			}
-		},
-	});
-}
-Requetes.inscrire("SaisieModifierPresenceEleveDansCours", ObjetRequeteSaisie);
-function _evenementSurFenetre_SelectionElevesSansCours(
-	aNumeroBouton,
-	aParametres,
-) {
-	if (aNumeroBouton === 1) {
-		Requetes(
-			"SaisieModifierPresenceEleveDansCours",
-			this,
-			this.actionSurValidation,
-		).lancerRequete(aParametres);
-	}
-}
-function _actualisationVisibiliteCoursAnnule() {
-	if (this.ListeCours) {
-		if (this.moduleSaisie) {
-			this.moduleSaisie.sortieModeDiagnostic();
+		if (
+			this.ListeEleves &&
+			this.paramCours.cours &&
+			!this.paramCours.cours.estAnnule &&
+			this.paramCours.cours.utilisable
+		) {
+			this.getInstance(this.idSaisieAbsences).setDonneesAbsences();
 		}
-		Object.assign(this.donneesGrille, {
-			avecCoursAnnule: GEtatUtilisateur.getAvecCoursAnnule(),
+	}
+	_afficherMessageGrilleAbsence(aMessage) {
+		this.getInstance(this.idSaisieAbsences).afficher(
+			this.getInstance(this.idSaisieAbsences).composeMessage(aMessage),
+		);
+		$("#" + this.Nom.escapeJQ() + "_Appel_Termine").css("display", "none");
+		this.getInstance(this.idSaisieAbsences).setEnAffichage();
+	}
+	_supprimerEleveDuCours() {
+		const lSelf = this;
+		this.appScoEspace.getMessage().afficher({
+			type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+			message: ObjetChaine_1.GChaine.format(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"AbsenceVS.ConfirmationSuppressionEleve",
+				),
+				[lSelf.Eleve.getLibelle()],
+			),
+			callback: function (aGenreAction) {
+				if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
+					lSelf.ListeEleves.getElementParNumero(
+						lSelf.Eleve.getNumero(),
+					).setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+					lSelf.valider();
+				}
+			},
 		});
-		this.getInstance(this.IdentGrille).setDonnees(this.donneesGrille);
 	}
-	const lCours = GEtatUtilisateur.getNavigationCours();
-	let lAvecCoursSelectionne = false;
-	if (this.ListeCours && lCours !== null && lCours !== undefined) {
-		lAvecCoursSelectionne = this.getInstance(this.IdentGrille)
-			.getInstanceGrille()
-			.selectionnerCours(lCours, false);
+	_evenementSurFenetreSelectionElevesSansCours(aNumeroBouton, aParametres) {
+		if (aNumeroBouton === 1) {
+			new ObjetRequeteSaisieModifierPresenceEleveDansCours(
+				this,
+				this.actionSurValidation,
+			).lancerRequete(aParametres);
+		}
 	}
-	if (lAvecCoursSelectionne) {
-		_actualiserEDTEleve.call(this);
-	} else if (
-		this.GenreRessource !== EGenreRessource.Classe &&
-		this.GenreRessource !== EGenreRessource.Groupe
-	) {
-		_deselectionCours.call(this);
+	_actualisationVisibiliteCoursAnnule() {
+		if (this.ListeCours) {
+			if (this.moduleSaisie) {
+				this.moduleSaisie.sortieModeDiagnostic();
+			}
+			Object.assign(this.donneesGrille, {
+				avecCoursAnnule: this.etatUtilScoEspace.getAvecCoursAnnule(),
+			});
+			this.getInstance(this.IdentGrille).setDonnees(this.donneesGrille);
+		}
+		const lCours = this.etatUtilScoEspace.getNavigationCours();
+		let lAvecCoursSelectionne = false;
+		if (this.ListeCours && lCours !== null && lCours !== undefined) {
+			lAvecCoursSelectionne = this.getInstance(this.IdentGrille)
+				.getInstanceGrille()
+				.selectionnerCours(lCours, false);
+		}
+		if (lAvecCoursSelectionne) {
+			this._actualiserEDTEleve();
+		} else if (
+			this.GenreRessource !== Enumere_Ressource_1.EGenreRessource.Classe &&
+			this.GenreRessource !== Enumere_Ressource_1.EGenreRessource.Groupe
+		) {
+			this._deselectionCours();
+		}
+	}
+	_deselectionCours() {
+		this.paramCours = {};
+		delete this.Eleve;
+		this.getInstance(this.idSaisieAbsences).setActif(true);
+		this._afficherMessageGrilleAbsence(
+			this.GenreRessource === Enumere_Ressource_1.EGenreRessource.Cours
+				? ObjetTraduction_1.GTraductions.getValeur(
+						"AbsenceVS.selectionnerCours",
+					)
+				: "",
+		);
+		this._actualiserEDTEleve();
+		this.activerFichesEleve(false);
 	}
 }
-function _deselectionCours() {
-	this.paramCours = {};
-	delete this.Eleve;
-	this.getInstance(this.idSaisieAbsences).setActif(true);
-	_afficherMessageGrilleAbsence.call(
-		this,
-		this.GenreRessource === EGenreRessource.Cours
-			? GTraductions.getValeur("AbsenceVS.selectionnerCours")
-			: "",
-	);
-	_actualiserEDTEleve.call(this);
-	this.activerFichesEleve(false);
-}
-module.exports = ObjetAffichagePageSaisieAbsences;
+exports.InterfacePageSaisieAbsences = InterfacePageSaisieAbsences;

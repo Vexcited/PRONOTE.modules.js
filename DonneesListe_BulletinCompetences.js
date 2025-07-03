@@ -1,20 +1,15 @@
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const {
-	EGenreNiveauDAcquisition,
-	EGenreNiveauDAcquisitionUtil,
-} = require("Enumere_NiveauDAcquisition.js");
-const {
-	TypeGenreElementBulletinCompetence,
-} = require("TypeGenreElementBulletinCompetence.js");
-const {
-	TypeJaugeEvaluationBulletinCompetence,
-} = require("TypeJaugeEvaluationBulletinCompetence.js");
-const { TypePositionnement } = require("TypePositionnement.js");
-const { TUtilitaireCompetences } = require("UtilitaireCompetences.js");
-const { EGenreAnnotation } = require("Enumere_Annotation.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
+exports.DonneesListe_BulletinCompetences = void 0;
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const Enumere_NiveauDAcquisition_1 = require("Enumere_NiveauDAcquisition");
+const TypeGenreElementBulletinCompetence_1 = require("TypeGenreElementBulletinCompetence");
+const TypeJaugeEvaluationBulletinCompetence_1 = require("TypeJaugeEvaluationBulletinCompetence");
+const TypePositionnement_1 = require("TypePositionnement");
+const UtilitaireCompetences_1 = require("UtilitaireCompetences");
+const Enumere_Annotation_1 = require("Enumere_Annotation");
+const AccessApp_1 = require("AccessApp");
+const GlossaireCompetences_1 = require("GlossaireCompetences");
+class DonneesListe_BulletinCompetences extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParams) {
 		let lAvecAuMoinsUnNiveauAbsent = false;
 		let lAvecAuMoinsUnNiveauDispense = false;
@@ -32,18 +27,23 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 				) {
 					D.listeNiveaux.parcourir((aNiveau) => {
 						if (
-							aNiveau.getGenre() === EGenreNiveauDAcquisition.Absent &&
+							aNiveau.getGenre() ===
+								Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisition.Absent &&
 							!!aNiveau.nbr
 						) {
 							lAvecAuMoinsUnNiveauAbsent = true;
 						}
 						if (
-							aNiveau.getGenre() === EGenreNiveauDAcquisition.Dispense &&
+							aNiveau.getGenre() ===
+								Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisition
+									.Dispense &&
 							!!aNiveau.nbr
 						) {
 							lAvecAuMoinsUnNiveauDispense = true;
 						} else if (
-							aNiveau.getGenre() === EGenreNiveauDAcquisition.NonEvalue &&
+							aNiveau.getGenre() ===
+								Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisition
+									.NonEvalue &&
 							!!aNiveau.nbr
 						) {
 							lAvecAuMoinsUnNiveauNonEvalue = true;
@@ -51,7 +51,9 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 					});
 				}
 				if (
-					D.getGenre() === TypeGenreElementBulletinCompetence.tEBPM_SurMatiere
+					D.getGenre() ===
+					TypeGenreElementBulletinCompetence_1
+						.TypeGenreElementBulletinCompetence.tEBPM_SurMatiere
 				) {
 					D.estUnDeploiement = true;
 					D.estDeploye = true;
@@ -59,12 +61,16 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 				} else {
 					if (
 						[
-							TypeGenreElementBulletinCompetence.tEBPM_EltPilier,
-							TypeGenreElementBulletinCompetence.tEBPM_Competence,
-							TypeGenreElementBulletinCompetence.tEBPM_SousItem,
+							TypeGenreElementBulletinCompetence_1
+								.TypeGenreElementBulletinCompetence.tEBPM_EltPilier,
+							TypeGenreElementBulletinCompetence_1
+								.TypeGenreElementBulletinCompetence.tEBPM_Competence,
+							TypeGenreElementBulletinCompetence_1
+								.TypeGenreElementBulletinCompetence.tEBPM_SousItem,
 						].includes(D.getGenre()) ||
 						(D.getGenre() ===
-							TypeGenreElementBulletinCompetence.tEBPM_Service &&
+							TypeGenreElementBulletinCompetence_1
+								.TypeGenreElementBulletinCompetence.tEBPM_Service &&
 							D.estDansRegroupement)
 					) {
 						D.pere = lRegroupement;
@@ -75,18 +81,22 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 			});
 		}
 		super(aDonnees);
+		const lApplicationSco = (0, AccessApp_1.getApp)();
+		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
 		this.avecAuMoinsUnNiveauAbsent = lAvecAuMoinsUnNiveauAbsent;
 		this.avecAuMoinsUnNiveauDispense = lAvecAuMoinsUnNiveauDispense;
 		this.avecAuMoinsUnNiveauNonEvalue = lAvecAuMoinsUnNiveauNonEvalue;
 		this.maquette = aParams.maquette;
 		this.typePositionnementSansNote =
-			aParams.typePositionnementSansNote || TypePositionnement.POS_Echelle;
+			aParams.typePositionnementSansNote ||
+			TypePositionnement_1.TypePositionnement.POS_Echelle;
 		this.estJaugeEvaluationsCliquable = aParams.estJaugeEvaluationsCliquable;
 		this.avecAssistantSaisie = aParams.avecAssistantSaisie || false;
 		this.tailleMaxAppreciation = aParams.tailleMaxAppr || 0;
 		this.avecAppreciationsSurRegroupement =
 			aParams.avecAppreciationsSurRegroupement;
 		this.donneesLigneTotal = aParams.donneesLigneTotal;
+		this.estJaugeCliquable = aParams.estJaugeCliquable;
 		this.setOptions({
 			editionApresSelection: false,
 			avecDeploiement: true,
@@ -97,7 +107,8 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 	_estJaugeChronologique() {
 		return (
 			this.maquette.genreJauge ===
-			TypeJaugeEvaluationBulletinCompetence.tJBC_Chronologique
+			TypeJaugeEvaluationBulletinCompetence_1
+				.TypeJaugeEvaluationBulletinCompetence.tJBC_Chronologique
 		);
 	}
 	static estUneColonneTransversale(aIdColonne) {
@@ -128,12 +139,13 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 				const lResult = [];
 				if (
 					aParams.article.getGenre() ===
-					TypeGenreElementBulletinCompetence.tEBPM_SurMatiere
+					TypeGenreElementBulletinCompetence_1
+						.TypeGenreElementBulletinCompetence.tEBPM_SurMatiere
 				) {
-					lResult.push("Gras");
+					lResult.push("semi-bold");
 				}
 				if (!aParams.article.imprimable) {
-					lResult.push("Gris");
+					lResult.push("color-neutre-sombre");
 				}
 				return lResult.join(" ");
 			}
@@ -151,18 +163,13 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 		return "";
 	}
 	getClassCelluleConteneur(aParams) {
-		if (_estCelluleDeploiement(aParams)) {
+		if (this._estCelluleDeploiement(aParams)) {
 			return "AvecMain";
 		}
 		switch (aParams.idColonne) {
 			case DonneesListe_BulletinCompetences.colonnes.jauge:
-				if (this.estJaugeEvaluationsCliquable) {
-					if (
-						!!aParams.article.relationsESI &&
-						aParams.article.relationsESI.length > 0
-					) {
-						return "AvecMain";
-					}
+				if (this.avecColJaugeCliquable(aParams)) {
+					return "AvecMain";
 				}
 				return "";
 			case DonneesListe_BulletinCompetences.colonnes.note:
@@ -171,10 +178,10 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 			case DonneesListe_BulletinCompetences.colonnes.appreciationB:
 			case DonneesListe_BulletinCompetences.colonnes.appreciationC: {
 				let lClasseAppreciation = "";
-				if (estAppreciationEditable(aParams.idColonne, aParams.article)) {
+				if (this.estAppreciationEditable(aParams.idColonne, aParams.article)) {
 					if (
 						this.avecAssistantSaisie &&
-						GEtatUtilisateur.assistantSaisieActif
+						this.etatUtilisateurSco.assistantSaisieActif
 					) {
 						lClasseAppreciation = "Curseur_AssistantSaisieActif";
 					} else {
@@ -186,38 +193,54 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 		}
 		return "";
 	}
+	avecColJaugeCliquable(aParams) {
+		return (
+			aParams.idColonne === DonneesListe_BulletinCompetences.colonnes.jauge &&
+			!!aParams.article.relationsESI &&
+			aParams.article.relationsESI.length > 0 &&
+			this.estJaugeCliquable()
+		);
+	}
+	getAriaHasPopup(aParams) {
+		if (this.avecColJaugeCliquable(aParams)) {
+			return "dialog";
+		}
+		return false;
+	}
 	avecContenuTronque(aParams) {
 		return (
 			aParams.idColonne === DonneesListe_BulletinCompetences.colonnes.competence
 		);
 	}
 	getTypeValeur(aParams) {
-		if (estUneColonneAppreciation(aParams.idColonne)) {
-			return ObjetDonneesListe.ETypeCellule.ZoneTexte;
+		if (this.estUneColonneAppreciation(aParams.idColonne)) {
+			return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.ZoneTexte;
 		} else {
 			switch (aParams.idColonne) {
 				case DonneesListe_BulletinCompetences.colonnes.regroupement:
 					return aParams.article.getGenre() ===
-						TypeGenreElementBulletinCompetence.tEBPM_SurMatiere
-						? ObjetDonneesListe.ETypeCellule.CocheDeploiement
-						: ObjetDonneesListe.ETypeCellule.Html;
+						TypeGenreElementBulletinCompetence_1
+							.TypeGenreElementBulletinCompetence.tEBPM_SurMatiere
+						? ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule
+								.CocheDeploiement
+						: ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 				case DonneesListe_BulletinCompetences.colonnes.service:
-					return ObjetDonneesListe.ETypeCellule.Html;
+					return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 				case DonneesListe_BulletinCompetences.colonnes.elementsProgramme:
-					return ObjetDonneesListe.ETypeCellule.Html;
+					return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 				case DonneesListe_BulletinCompetences.colonnes.niveauAcqComp:
 				case DonneesListe_BulletinCompetences.colonnes.posLSUP1:
 				case DonneesListe_BulletinCompetences.colonnes.posLSUP2:
 				case DonneesListe_BulletinCompetences.colonnes.posLSU:
-					return ObjetDonneesListe.ETypeCellule.Html;
+					return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 				case DonneesListe_BulletinCompetences.colonnes.note:
 				case DonneesListe_BulletinCompetences.colonnes.moyenneClasse:
 				case DonneesListe_BulletinCompetences.colonnes.moyenneInf:
 				case DonneesListe_BulletinCompetences.colonnes.moyenneSup:
-					return ObjetDonneesListe.ETypeCellule.Note;
+					return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Note;
 			}
 		}
-		return ObjetDonneesListe.ETypeCellule.Html;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 	}
 	avecDeploiementSurColonne(aParams) {
 		return (
@@ -233,24 +256,25 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 			aParams.idColonne ===
 			DonneesListe_BulletinCompetences.colonnes.regroupement
 		) {
-			return 0;
+			return 4;
 		}
 	}
 	getCouleurCellule(aParams) {
 		return aParams.article.getGenre() ===
-			TypeGenreElementBulletinCompetence.tEBPM_SurMatiere ||
+			TypeGenreElementBulletinCompetence_1.TypeGenreElementBulletinCompetence
+				.tEBPM_SurMatiere ||
 			(aParams.idColonne ===
 				DonneesListe_BulletinCompetences.colonnes.regroupement &&
 				aParams.article.estDansRegroupement)
-			? ObjetDonneesListe.ECouleurCellule.Deploiement
+			? ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Deploiement
 			: null;
 	}
 	avecBordureDroite(aParams) {
-		return !_estCelluleDeploiement(aParams);
+		return !this._estCelluleDeploiement(aParams);
 	}
 	avecBordureBas(aParams) {
 		return (
-			!_estCelluleDeploiement(aParams) ||
+			!this._estCelluleDeploiement(aParams) ||
 			!aParams.celluleLigneSuivante ||
 			!aParams.celluleLigneSuivante.article.pere
 		);
@@ -260,7 +284,8 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 			aParams.idColonne !==
 				DonneesListe_BulletinCompetences.colonnes.regroupement &&
 			aParams.article.getGenre() ===
-				TypeGenreElementBulletinCompetence.tEBPM_SurMatiere
+				TypeGenreElementBulletinCompetence_1.TypeGenreElementBulletinCompetence
+					.tEBPM_SurMatiere
 		) {
 			return DonneesListe_BulletinCompetences.colonnes.service;
 		}
@@ -268,7 +293,8 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 			aParams.idColonne ===
 				DonneesListe_BulletinCompetences.colonnes.regroupement &&
 			aParams.article.getGenre() !==
-				TypeGenreElementBulletinCompetence.tEBPM_SurMatiere &&
+				TypeGenreElementBulletinCompetence_1.TypeGenreElementBulletinCompetence
+					.tEBPM_SurMatiere &&
 			!aParams.article.estDansRegroupement
 		) {
 			return DonneesListe_BulletinCompetences.colonnes.service;
@@ -277,17 +303,21 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 	fusionCelluleAvecLignePrecedente(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_BulletinCompetences.colonnes.regroupement:
-				if (_estCelluleDeploiement(aParams.celluleLignePrecedente)) {
+				if (this._estCelluleDeploiement(aParams.celluleLignePrecedente)) {
 					return false;
 				}
 				return (
 					[
-						TypeGenreElementBulletinCompetence.tEBPM_EltPilier,
-						TypeGenreElementBulletinCompetence.tEBPM_Competence,
-						TypeGenreElementBulletinCompetence.tEBPM_SousItem,
+						TypeGenreElementBulletinCompetence_1
+							.TypeGenreElementBulletinCompetence.tEBPM_EltPilier,
+						TypeGenreElementBulletinCompetence_1
+							.TypeGenreElementBulletinCompetence.tEBPM_Competence,
+						TypeGenreElementBulletinCompetence_1
+							.TypeGenreElementBulletinCompetence.tEBPM_SousItem,
 					].includes(aParams.article.getGenre()) ||
 					(aParams.article.getGenre() ===
-						TypeGenreElementBulletinCompetence.tEBPM_Service &&
+						TypeGenreElementBulletinCompetence_1
+							.TypeGenreElementBulletinCompetence.tEBPM_Service &&
 						aParams.article.estDansRegroupement)
 				);
 			case DonneesListe_BulletinCompetences.colonnes.service:
@@ -305,7 +335,7 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 			case DonneesListe_BulletinCompetences.colonnes.appreciationC: {
 				let lAvecFusionLigne;
 				if (
-					estUneColonneAppreciation(aParams.idColonne) &&
+					this.estUneColonneAppreciation(aParams.idColonne) &&
 					this.avecAppreciationsSurRegroupement &&
 					aParams.article.estDansRegroupement
 				) {
@@ -316,9 +346,12 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 						!lCellulePrecedente.article.estUnDeploiement;
 				} else {
 					lAvecFusionLigne = [
-						TypeGenreElementBulletinCompetence.tEBPM_EltPilier,
-						TypeGenreElementBulletinCompetence.tEBPM_Competence,
-						TypeGenreElementBulletinCompetence.tEBPM_SousItem,
+						TypeGenreElementBulletinCompetence_1
+							.TypeGenreElementBulletinCompetence.tEBPM_EltPilier,
+						TypeGenreElementBulletinCompetence_1
+							.TypeGenreElementBulletinCompetence.tEBPM_Competence,
+						TypeGenreElementBulletinCompetence_1
+							.TypeGenreElementBulletinCompetence.tEBPM_SousItem,
 					].includes(aParams.article.getGenre());
 				}
 				return lAvecFusionLigne;
@@ -329,7 +362,8 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 	avecSelection(aParams) {
 		return (
 			aParams.article.getGenre() !==
-				TypeGenreElementBulletinCompetence.tEBPM_SurMatiere &&
+				TypeGenreElementBulletinCompetence_1.TypeGenreElementBulletinCompetence
+					.tEBPM_SurMatiere &&
 			(aParams.idColonne !==
 				DonneesListe_BulletinCompetences.colonnes.regroupement ||
 				!aParams.article.pere)
@@ -352,8 +386,8 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 			return lObjetElementColonneTransv
 				? lObjetElementColonneTransv.editable
 				: false;
-		} else if (estUneColonneAppreciation(aParams.idColonne)) {
-			return estAppreciationEditable(aParams.idColonne, aParams.article);
+		} else if (this.estUneColonneAppreciation(aParams.idColonne)) {
+			return this.estAppreciationEditable(aParams.idColonne, aParams.article);
 		}
 		switch (aParams.idColonne) {
 			case DonneesListe_BulletinCompetences.colonnes.niveauAcqComp:
@@ -386,8 +420,11 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 			case DonneesListe_BulletinCompetences.colonnes.appreciationB:
 			case DonneesListe_BulletinCompetences.colonnes.appreciationC: {
 				let lAvecEventEdition = false;
-				if (this.avecAssistantSaisie && GEtatUtilisateur.assistantSaisieActif) {
-					lAvecEventEdition = estAppreciationEditable(
+				if (
+					this.avecAssistantSaisie &&
+					this.etatUtilisateurSco.assistantSaisieActif
+				) {
+					lAvecEventEdition = this.estAppreciationEditable(
 						aParams.idColonne,
 						aParams.article,
 					);
@@ -397,20 +434,17 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 		}
 		return false;
 	}
-	avecEtatSaisie(aParamsCellule) {
+	avecEtatSaisie(aParams) {
 		return (
-			!estUneColonneAppreciation(aParamsCellule.idColonne) &&
-			!(
-				aParamsCellule.idColonne ===
-				DonneesListe_BulletinCompetences.colonnes.note
-			)
+			!this.estUneColonneAppreciation(aParams.idColonne) &&
+			!(aParams.idColonne === DonneesListe_BulletinCompetences.colonnes.note)
 		);
 	}
 	autoriserChaineVideSurEdition() {
 		return true;
 	}
 	getControleCaracteresInput(aParams) {
-		if (estUneColonneAppreciation(aParams.idColonne)) {
+		if (this.estUneColonneAppreciation(aParams.idColonne)) {
 			return { tailleMax: this.tailleMaxAppreciation };
 		}
 		return null;
@@ -423,17 +457,17 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 			min: 0,
 			max: 20,
 			listeAnnotations: [
-				EGenreAnnotation.absent,
-				EGenreAnnotation.dispense,
-				EGenreAnnotation.nonNote,
+				Enumere_Annotation_1.EGenreAnnotation.absent,
+				Enumere_Annotation_1.EGenreAnnotation.dispense,
+				Enumere_Annotation_1.EGenreAnnotation.nonNote,
 			],
 		};
 	}
 	surEdition(aParams, V) {
 		switch (aParams.idColonne) {
 			case DonneesListe_BulletinCompetences.colonnes.note:
-				aParams.article.posLSUNoteModif = aParams.valeur;
-				aParams.article.setEtat(EGenreEtat.Modification);
+				aParams.article.posLSUNote = aParams.valeur;
+				aParams.article.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 				break;
 			case DonneesListe_BulletinCompetences.colonnes.appreciationA:
 				aParams.article.appreciationA = V ? V.trim() : "";
@@ -469,7 +503,7 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 				if (lExisteUnNiveauAcqui && lAUnNiveauAcquiCalcule) {
 					if (lAUnNiveauAcquiSaisi) {
 						H.push(
-							EGenreNiveauDAcquisitionUtil.getImage(
+							Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
 								lObjetElementColonneTransv.niveauAcqui,
 								{ avecTitle: false },
 							),
@@ -479,7 +513,7 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 					}
 					H.push(
 						" (",
-						EGenreNiveauDAcquisitionUtil.getImage(
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
 							lObjetElementColonneTransv.niveauAcquiCalc,
 							{ avecTitle: false },
 						),
@@ -488,14 +522,14 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 				} else if (lAUnNiveauAcquiSaisi || lAUnNiveauAcquiCalcule) {
 					if (lAUnNiveauAcquiSaisi) {
 						H.push(
-							EGenreNiveauDAcquisitionUtil.getImage(
+							Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
 								lObjetElementColonneTransv.niveauAcqui,
 								{ avecTitle: false },
 							),
 						);
 					} else {
 						H.push(
-							EGenreNiveauDAcquisitionUtil.getImage(
+							Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
 								lObjetElementColonneTransv.niveauAcquiCalc,
 								{ avecTitle: false },
 							),
@@ -507,7 +541,12 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 		}
 		switch (aParams.idColonne) {
 			case DonneesListe_BulletinCompetences.colonnes.service:
-				return aParams.article.strServiceEtProf || "";
+				return (
+					(aParams.article.strServiceEtProf || "") +
+					(aParams.article.strServiceEtProf && !aParams.article.imprimable
+						? " *"
+						: "")
+				);
 			case DonneesListe_BulletinCompetences.colonnes.competence:
 				return aParams.article.strElmtCompetence || "";
 			case DonneesListe_BulletinCompetences.colonnes.elementsProgramme:
@@ -515,73 +554,91 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 			case DonneesListe_BulletinCompetences.colonnes.jauge: {
 				let lJauge = "";
 				if (this._estJaugeChronologique()) {
-					lJauge = TUtilitaireCompetences.composeJaugeChronologique({
-						listeNiveaux: aParams.article.listeNiveauxChronologique,
-						hint: aParams.article.hintNiveaux,
-					});
+					lJauge =
+						UtilitaireCompetences_1.TUtilitaireCompetences.composeJaugeChronologique(
+							{
+								listeNiveaux: aParams.article.listeNiveauxChronologique,
+								hint: this.getTooltipJauge(aParams),
+							},
+						);
 				} else {
 					const lOptionsJauge = {
 						listeNiveaux: aParams.article.listeNiveaux,
-						hint: aParams.article.hintNiveaux,
+						hint: this.getTooltipJauge(aParams),
+						listeGenreNiveauxIgnores: [],
 					};
-					lOptionsJauge.listeGenreNiveauxIgnores = [];
 					if (this.avecAuMoinsUnNiveauAbsent === false) {
 						lOptionsJauge.listeGenreNiveauxIgnores.push(
-							EGenreNiveauDAcquisition.Absent,
+							Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisition.Absent,
 						);
 					}
 					if (this.avecAuMoinsUnNiveauDispense === false) {
 						lOptionsJauge.listeGenreNiveauxIgnores.push(
-							EGenreNiveauDAcquisition.Dispense,
+							Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisition.Dispense,
 						);
 					}
 					if (this.avecAuMoinsUnNiveauNonEvalue === false) {
 						lOptionsJauge.listeGenreNiveauxIgnores.push(
-							EGenreNiveauDAcquisition.NonEvalue,
+							Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisition.NonEvalue,
 						);
 					}
 					if (
 						[
-							TypeGenreElementBulletinCompetence.tEBPM_EltPilier,
-							TypeGenreElementBulletinCompetence.tEBPM_Competence,
-							TypeGenreElementBulletinCompetence.tEBPM_SousItem,
+							TypeGenreElementBulletinCompetence_1
+								.TypeGenreElementBulletinCompetence.tEBPM_EltPilier,
+							TypeGenreElementBulletinCompetence_1
+								.TypeGenreElementBulletinCompetence.tEBPM_Competence,
+							TypeGenreElementBulletinCompetence_1
+								.TypeGenreElementBulletinCompetence.tEBPM_SousItem,
 						].includes(aParams.article.getGenre())
 					) {
 						lJauge =
-							TUtilitaireCompetences.composeJaugeParPastilles(lOptionsJauge);
+							UtilitaireCompetences_1.TUtilitaireCompetences.composeJaugeParPastilles(
+								lOptionsJauge,
+							);
 					} else {
 						lJauge =
-							TUtilitaireCompetences.composeJaugeParNiveaux(lOptionsJauge);
+							UtilitaireCompetences_1.TUtilitaireCompetences.composeJaugeParNiveaux(
+								lOptionsJauge,
+							);
 					}
 				}
 				return lJauge;
 			}
 			case DonneesListe_BulletinCompetences.colonnes.niveauAcqComp:
 				return aParams.article.niveauAcqComp
-					? EGenreNiveauDAcquisitionUtil.getImage(aParams.article.niveauAcqComp)
+					? Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+							aParams.article.niveauAcqComp,
+						)
 					: "";
 			case DonneesListe_BulletinCompetences.colonnes.pourcentage:
 				return aParams.article.pourcentage ? aParams.article.pourcentage : "";
 			case DonneesListe_BulletinCompetences.colonnes.posLSUP1:
 				return !!aParams.article.posLSUNiveauP1
-					? EGenreNiveauDAcquisitionUtil.getImagePositionnement({
-							niveauDAcquisition: aParams.article.posLSUNiveauP1,
-							genrePositionnement: this.typePositionnementSansNote,
-						})
+					? Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImagePositionnement(
+							{
+								niveauDAcquisition: aParams.article.posLSUNiveauP1,
+								genrePositionnement: this.typePositionnementSansNote,
+							},
+						)
 					: "";
 			case DonneesListe_BulletinCompetences.colonnes.posLSUP2:
 				return !!aParams.article.posLSUNiveauP2
-					? EGenreNiveauDAcquisitionUtil.getImagePositionnement({
-							niveauDAcquisition: aParams.article.posLSUNiveauP2,
-							genrePositionnement: this.typePositionnementSansNote,
-						})
+					? Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImagePositionnement(
+							{
+								niveauDAcquisition: aParams.article.posLSUNiveauP2,
+								genrePositionnement: this.typePositionnementSansNote,
+							},
+						)
 					: "";
 			case DonneesListe_BulletinCompetences.colonnes.posLSU:
 				return !!aParams.article.posLSUNiveau
-					? EGenreNiveauDAcquisitionUtil.getImagePositionnement({
-							niveauDAcquisition: aParams.article.posLSUNiveau,
-							genrePositionnement: this.typePositionnementSansNote,
-						})
+					? Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImagePositionnement(
+							{
+								niveauDAcquisition: aParams.article.posLSUNiveau,
+								genrePositionnement: this.typePositionnementSansNote,
+							},
+						)
 					: "";
 			case DonneesListe_BulletinCompetences.colonnes.note:
 				return aParams.article.posLSUNote;
@@ -600,10 +657,18 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 		}
 		return "";
 	}
+	getTooltipJauge(aParams) {
+		if (aParams.article.listeNiveauxChronologique) {
+			return aParams.article.listeNiveauxChronologique
+				.getTableauLibelles()
+				.join(", ");
+		}
+		return aParams.article.hintNiveaux;
+	}
 	getContenuTotal(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_BulletinCompetences.colonnes.service:
-				return GTraductions.getValeur("competences.MoyenneGenerale");
+				return GlossaireCompetences_1.TradGlossaireCompetences.MoyenneGenerale;
 			case DonneesListe_BulletinCompetences.colonnes.note:
 				return !!this.donneesLigneTotal
 					? this.donneesLigneTotal.moyEleve || ""
@@ -646,7 +711,7 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 		}
 		return null;
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		if (
 			DonneesListe_BulletinCompetences.estUneColonneTransversale(
 				aParams.idColonne,
@@ -659,9 +724,12 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 				);
 			if (!!lObjetElementColonneTransv) {
 				let lHint;
-				if (GEtatUtilisateur.estEspacePourEleve()) {
+				if (this.etatUtilisateurSco.estEspacePourEleve()) {
 					const lNiveau = lObjetElementColonneTransv.niveauAcqui;
-					lHint = EGenreNiveauDAcquisitionUtil.getLibelle(lNiveau);
+					lHint =
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getLibelle(
+							lNiveau,
+						);
 				} else {
 					lHint = lObjetElementColonneTransv.hint;
 				}
@@ -669,19 +737,80 @@ class DonneesListe_BulletinCompetences extends ObjetDonneesListe {
 			}
 		} else {
 			switch (aParams.idColonne) {
+				case DonneesListe_BulletinCompetences.colonnes.service: {
+					if (!aParams.article.imprimable) {
+						return `* : ${GlossaireCompetences_1.TradGlossaireCompetences.ServiceNonImprimable}`;
+					}
+					return "";
+				}
 				case DonneesListe_BulletinCompetences.colonnes.competence:
 					return aParams.article.strElmtCompetence || "";
+				case DonneesListe_BulletinCompetences.colonnes.jauge: {
+					let lStr = this.getTooltipJauge(aParams) || "";
+					if (this.avecColJaugeCliquable(aParams)) {
+						lStr +=
+							(lStr ? "<br/>" : "") +
+							GlossaireCompetences_1.TradGlossaireCompetences.OuvrirDetailEval;
+					}
+					return lStr;
+				}
+				case DonneesListe_BulletinCompetences.colonnes.niveauAcqComp:
+					return aParams.article.niveauAcqComp
+						? Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getLibelle(
+								aParams.article.niveauAcqComp,
+							)
+						: "";
+				case DonneesListe_BulletinCompetences.colonnes.posLSUP1:
+					return aParams.article.posLSUNiveauP1
+						? Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getLibelle(
+								aParams.article.posLSUNiveauP1,
+							)
+						: "";
+				case DonneesListe_BulletinCompetences.colonnes.posLSUP2:
+					return aParams.article.posLSUNiveauP2
+						? Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getLibelle(
+								aParams.article.posLSUNiveauP2,
+							)
+						: "";
+				case DonneesListe_BulletinCompetences.colonnes.posLSU:
+					return aParams.article.posLSUNiveau
+						? Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getLibelle(
+								aParams.article.posLSUNiveau,
+							)
+						: "";
+				case DonneesListe_BulletinCompetences.colonnes.elementsProgramme:
+					return aParams.article.hintEltProg || "";
 			}
 		}
 	}
-	getHintHtmlForce(aParams) {
-		switch (aParams.idColonne) {
-			case DonneesListe_BulletinCompetences.colonnes.elementsProgramme:
-				return aParams.article.hintEltProg || "";
-		}
-		return "";
+	_estCelluleDeploiement(aParams) {
+		return (
+			aParams.idColonne ===
+				DonneesListe_BulletinCompetences.colonnes.regroupement &&
+			aParams.article.getGenre() ===
+				TypeGenreElementBulletinCompetence_1.TypeGenreElementBulletinCompetence
+					.tEBPM_SurMatiere
+		);
+	}
+	estAppreciationEditable(aIdColonne, aArticle) {
+		return (
+			(aIdColonne === DonneesListe_BulletinCompetences.colonnes.appreciationA &&
+				aArticle.appAEditable) ||
+			(aIdColonne === DonneesListe_BulletinCompetences.colonnes.appreciationB &&
+				aArticle.appBEditable) ||
+			(aIdColonne === DonneesListe_BulletinCompetences.colonnes.appreciationC &&
+				aArticle.appCEditable)
+		);
+	}
+	estUneColonneAppreciation(aIdColonne) {
+		return [
+			DonneesListe_BulletinCompetences.colonnes.appreciationA,
+			DonneesListe_BulletinCompetences.colonnes.appreciationB,
+			DonneesListe_BulletinCompetences.colonnes.appreciationC,
+		].includes(aIdColonne);
 	}
 }
+exports.DonneesListe_BulletinCompetences = DonneesListe_BulletinCompetences;
 DonneesListe_BulletinCompetences.colonnes = {
 	regroupement: "regroupement",
 	service: "service",
@@ -702,29 +831,3 @@ DonneesListe_BulletinCompetences.colonnes = {
 	appreciationC: "appreciationC",
 	prefixe_col_transv: "transversal_",
 };
-function _estCelluleDeploiement(aParams) {
-	return (
-		aParams.idColonne ===
-			DonneesListe_BulletinCompetences.colonnes.regroupement &&
-		aParams.article.getGenre() ===
-			TypeGenreElementBulletinCompetence.tEBPM_SurMatiere
-	);
-}
-function estAppreciationEditable(aIdColonne, aArticle) {
-	return (
-		(aIdColonne === DonneesListe_BulletinCompetences.colonnes.appreciationA &&
-			aArticle.appAEditable) ||
-		(aIdColonne === DonneesListe_BulletinCompetences.colonnes.appreciationB &&
-			aArticle.appBEditable) ||
-		(aIdColonne === DonneesListe_BulletinCompetences.colonnes.appreciationC &&
-			aArticle.appCEditable)
-	);
-}
-function estUneColonneAppreciation(aIdColonne) {
-	return [
-		DonneesListe_BulletinCompetences.colonnes.appreciationA,
-		DonneesListe_BulletinCompetences.colonnes.appreciationB,
-		DonneesListe_BulletinCompetences.colonnes.appreciationC,
-	].includes(aIdColonne);
-}
-module.exports = { DonneesListe_BulletinCompetences };

@@ -7,6 +7,9 @@ const ObjetFenetre_MentionsLegales_1 = require("ObjetFenetre_MentionsLegales");
 const ObjetRequeteMentionsLegales_1 = require("ObjetRequeteMentionsLegales");
 const ObjetFenetre_PlanSite_1 = require("ObjetFenetre_PlanSite");
 const ObjetHtml_1 = require("ObjetHtml");
+const AccessApp_1 = require("AccessApp");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const IEHtml_1 = require("IEHtml");
 const lCleLocalStorage = "etatAffichageFooter";
 const lCookieLocalStorage = "etatAffichageCookiesInfo";
 class _ObjetAffichageBandeauPied extends ObjetIdentite_1.Identite {
@@ -65,18 +68,6 @@ class _ObjetAffichageBandeauPied extends ObjetIdentite_1.Identite {
 					aInstance.evenementBouton({ genreCmd: aGenre });
 				},
 			},
-			btnFermer: function () {
-				$(this.node).eventValidation(function () {
-					let lGenreEspace = aInstance.etatUtilisateur
-						? "_" + aInstance.etatUtilisateur.GenreEspace
-						: "";
-					LocalStorage_1.IELocalStorage.setItem(
-						lCookieLocalStorage + lGenreEspace,
-						String(false),
-					);
-					$(this).parent().hide();
-				});
-			},
 			btnMention: function () {
 				$(this.node).eventValidation(() => {
 					let lRequete =
@@ -87,39 +78,14 @@ class _ObjetAffichageBandeauPied extends ObjetIdentite_1.Identite {
 					lRequete.lancerRequete();
 				});
 			},
-			btnPlanSite: function () {
-				$(this.node).eventValidation(() => {
-					aInstance.actionSurPlanSite();
-				});
-			},
-			nodePied: function (aGenre) {
-				$(this.node).eventValidation(() => {
-					aInstance.evenementBouton({ genreCmd: aGenre });
-				});
-			},
-			showPied: function () {
-				$(this.node).eventValidation(() => {
-					if (aInstance.options.avecBoutonMasquer) {
-						aInstance.masquerFooter = !aInstance.masquerFooter;
-						LocalStorage_1.IELocalStorage.setItem(
-							lCleLocalStorage + "_" + aInstance.etatUtilisateur.GenreEspace,
-							String(aInstance.masquerFooter),
-						);
-						aInstance.showHideFooter.call(this.node, aInstance.masquerFooter);
-						this.controleur.$refreshSelf();
-					}
-				});
-			},
-			getAttrShowPied() {
-				return {
-					title: $(".footer-wrapper").hasClass("opened")
-						? ObjetTraduction_1.GTraductions.getValeur("PiedPage.btnMasquer")
-						: ObjetTraduction_1.GTraductions.getValeur("PiedPage.btnAfficher"),
-				};
-			},
 			getAttrFooter() {
 				return { "aria-expanded": $(".footer-wrapper").hasClass("opened") };
 			},
+		});
+	}
+	jsxNodePied(aGenre, aNode) {
+		$(aNode).eventValidation(() => {
+			this.evenementBouton({ genreCmd: aGenre });
 		});
 	}
 	avecTwitter() {
@@ -141,16 +107,46 @@ class _ObjetAffichageBandeauPied extends ObjetIdentite_1.Identite {
 		return false;
 	}
 	composeCookiesInfo() {
-		const H = [];
-		H.push(`<div class="cookies-disclaimer">`);
-		H.push(
-			`<p>${ObjetTraduction_1.GTraductions.getValeur("PiedPage.CookieInfo_Message_1")} ${ObjetTraduction_1.GTraductions.getValeur("PiedPage.CookieInfo_Message_2")} <span role="button" tabindex="0" class="as-link" ie-node="btnMention" aria-haspopup="dialog">${ObjetTraduction_1.GTraductions.getValeur("PiedPage.mentionsLegales")}.</span></p>`,
+		const lbtnFermer = () => {
+			return {
+				event: (aEvent, aNode) => {
+					let lGenreEspace = this.etatUtilisateur
+						? "_" + this.etatUtilisateur.GenreEspace
+						: "";
+					LocalStorage_1.IELocalStorage.setItem(
+						lCookieLocalStorage + lGenreEspace,
+						String(false),
+					);
+					$(aNode).parent().hide();
+				},
+			};
+		};
+		return IE.jsx.str(
+			"div",
+			{ class: "cookies-disclaimer" },
+			IE.jsx.str(
+				"p",
+				null,
+				`${ObjetTraduction_1.GTraductions.getValeur("PiedPage.CookieInfo_Message_1")} ${ObjetTraduction_1.GTraductions.getValeur("PiedPage.CookieInfo_Message_2")} `,
+				IE.jsx.str(
+					"span",
+					{
+						role: "button",
+						tabindex: "0",
+						class: "as-link",
+						"ie-node": "btnMention",
+						"aria-haspopup": "dialog",
+					},
+					ObjetTraduction_1.GTraductions.getValeur("PiedPage.mentionsLegales"),
+					".",
+				),
+			),
+			IE.jsx.str(
+				"ie-bouton",
+				{ "ie-model": lbtnFermer },
+				ObjetTraduction_1.GTraductions.getValeur("Fermer"),
+			),
 		);
-		H.push(
-			`<ie-bouton tabindex="0" aria-label="${ObjetTraduction_1.GTraductions.getValeur("Fermer")}" ie-hint="${ObjetTraduction_1.GTraductions.getValeur("Fermer")}" ie-node="btnFermer">${ObjetTraduction_1.GTraductions.getValeur("Fermer")}</ie-bouton>`,
-		);
-		H.push(`</div>`);
-		return H.join("");
 	}
 	evenementBouton(aParam, aGenreBouton) {
 		if (aGenreBouton !== 1) {
@@ -162,41 +158,41 @@ class _ObjetAffichageBandeauPied extends ObjetIdentite_1.Identite {
 			this.setOptions(aParam);
 		}
 		this.afficher(this.composePage());
+		if (this.masquerFooter) {
+			this.majTabIndexFocusables();
+		}
 	}
 	composePage() {
-		const lHtml = [];
+		const H = [];
 		this.masquerFooter = this.masquerBandeauPied();
-		if (this.afficherCookieInfo() && !GApplication.getDemo()) {
-			lHtml.push(this.composeCookiesInfo());
+		if (this.afficherCookieInfo() && !(0, AccessApp_1.getApp)().getDemo()) {
+			H.push(this.composeCookiesInfo());
 		}
-		lHtml.push(this._composeAffichage());
-		return lHtml.join("");
+		H.push(this._composeAffichage());
+		return H.join("");
 	}
-	showHideFooter(aMasquerPied) {
-		const lParentContainer = $(this).closest(".interface_affV");
+	showHideFooter(aNode, aMasquerPied) {
+		const lParentContainer = $(aNode).closest(".interface_affV");
 		const lFooterWrapper = lParentContainer.find(".footer-wrapper");
+		aNode.setAttribute("aria-expanded", aMasquerPied ? "false" : "true");
 		if (aMasquerPied) {
 			lFooterWrapper.toggleClass("opened closed");
 			lParentContainer.removeClass("with-footer").addClass("no-footer");
-			ObjetHtml_1.GHtml.getElementsFocusablesDElement(
-				lFooterWrapper.get(0),
-			).forEach((aNode, aIndex) => {
-				if (aIndex > 0) {
-					$(aNode).attr("tabindex", -1);
-				}
-			});
 		} else {
 			lFooterWrapper.toggleClass("closed opened");
 			lParentContainer.removeClass("no-footer").addClass("with-footer");
-			ObjetHtml_1.GHtml.getElementsFocusablesDElement(
-				lFooterWrapper.get(0),
-			).forEach((aNode, aIndex) => {
-				if (aIndex > 0) {
-					$(aNode).attr("tabindex", 0);
-				}
-			});
 		}
+		this.majTabIndexFocusables();
 		$(window).resize();
+	}
+	majTabIndexFocusables() {
+		ObjetHtml_1.GHtml.getElementsFocusablesDElement(
+			ObjetHtml_1.GHtml.getElement(this.Nom),
+		).forEach((aNode, aIndex) => {
+			if (aIndex > 0) {
+				$(aNode).attr("tabindex", this.masquerFooter ? -1 : 0);
+			}
+		});
 	}
 	masquerBandeauPied() {
 		return this.options.avecBoutonMasquer
@@ -231,21 +227,38 @@ class _ObjetAffichageBandeauPied extends ObjetIdentite_1.Identite {
 		H.push(
 			'<footer id="',
 			this.Nom,
-			'_footer" class="ObjetBandeauPied disable-dark-mode ' +
+			'_footer" class="ObjetBandeauPied disable-dark-mode focusVisibleContrasted ' +
 				(this.avecBoutonPersonnaliseProduit() ? " bpp-canope" : "") +
 				'"  ie-attr="getAttrFooter">',
 		);
 		if (this.options.avecBoutonMasquer) {
+			const lshowPied = (aNode) => {
+				$(aNode).eventValidation(() => {
+					if (this.options.avecBoutonMasquer) {
+						this.masquerFooter = !this.masquerFooter;
+						LocalStorage_1.IELocalStorage.setItem(
+							lCleLocalStorage + "_" + this.etatUtilisateur.GenreEspace,
+							String(this.masquerFooter),
+						);
+						this.showHideFooter(aNode, this.masquerFooter);
+						IEHtml_1.default.refresh();
+					}
+				});
+			};
+			const lTooltip = () => {
+				return $(".footer-wrapper").hasClass("opened")
+					? ObjetTraduction_1.GTraductions.getValeur("PiedPage.btnMasquer")
+					: ObjetTraduction_1.GTraductions.getValeur("PiedPage.btnAfficher");
+			};
 			H.push(
 				IE.jsx.str("div", {
 					tabindex: "0",
 					role: "button",
 					class: "footer-toggler icon_angle_down",
-					"ie-node": "showPied()",
-					"ie-attr": "getAttrShowPied",
-					title: ObjetTraduction_1.GTraductions.getValeur(
-						"PiedPage.btnMasquer",
-					),
+					"ie-node": lshowPied,
+					"ie-tooltiplabel": lTooltip,
+					"aria-controls": this.Nom,
+					"aria-expanded": this.masquerFooter ? "false" : "true",
 				}),
 			);
 		}
@@ -257,23 +270,40 @@ class _ObjetAffichageBandeauPied extends ObjetIdentite_1.Identite {
 				'">',
 		);
 		if (this.avecTwitter()) {
+			const lBtn = () => {
+				return {
+					event: () => {
+						this.evenementBouton({
+							genreCmd: this.getCommande(this.genreCommande.twitter),
+						});
+					},
+				};
+			};
 			H.push(
-				'<ie-btnimage ie-model="btnPied(' +
-					this.getCommande(this.genreCommande.twitter) +
-					')" class="icon_twitter btnImageIcon ibp-command" title="' +
-					ObjetTraduction_1.GTraductions.getValeur(
+				IE.jsx.str("ie-btnimage", {
+					role: "link",
+					"ie-model": lBtn,
+					class: "icon_twitter btnImageIcon ibp-command",
+					title: ObjetTraduction_1.GTraductions.getValeur(
 						"Commande.SuivrePronoteTwitter.Actif",
-					) +
-					'">' +
-					"</ie-btnimage>",
+					),
+				}),
 				"<hr />",
 			);
 		}
 		if (this.options.mention) {
 			H.push(
-				'<div role="button" tabindex="0" class="ibp-command legal-notice" ie-node="btnMention">',
-				ObjetTraduction_1.GTraductions.getValeur("PiedPage.mentionsLegales"),
-				"</div>",
+				IE.jsx.str(
+					"div",
+					{
+						role: "button",
+						tabindex: "0",
+						class: "ibp-command legal-notice",
+						"ie-node": "btnMention",
+						"aria-haspopup": "dialog",
+					},
+					ObjetTraduction_1.GTraductions.getValeur("PiedPage.mentionsLegales"),
+				),
 			);
 			H.push("<hr />");
 		}
@@ -299,10 +329,23 @@ class _ObjetAffichageBandeauPied extends ObjetIdentite_1.Identite {
 			);
 		}
 		if (this.avecPlanSite()) {
+			const lbtnPlanSite = (aNode) => {
+				$(aNode).eventValidation(() => {
+					this.actionSurPlanSite();
+				});
+			};
 			H.push(
-				'<div role="button" tabindex="0" class="ibp-command site-map" ie-node="btnPlanSite">',
-				ObjetTraduction_1.GTraductions.getValeur("PiedPage.planSite"),
-				"</div>",
+				IE.jsx.str(
+					"div",
+					{
+						role: "button",
+						tabindex: "0",
+						class: "ibp-command site-map",
+						"ie-node": lbtnPlanSite,
+						"aria-haspopup": "dialog",
+					},
+					ObjetTraduction_1.GTraductions.getValeur("PiedPage.planSite"),
+				),
 			);
 			if (lAvecLibelleHeberge) {
 				H.push("<hr />");
@@ -310,27 +353,45 @@ class _ObjetAffichageBandeauPied extends ObjetIdentite_1.Identite {
 		}
 		H.push("</div>");
 		if (lAvecLibelleHeberge) {
-			const lOnClic = GNavigateur.isIOS
-				? ""
-				: `onclick="window.open ('${this.options.urlInfosHebergement}');" onkeyup="if(GNavigateur.isToucheSelection())window.open ('${this.options.urlInfosHebergement}');"`;
+			const lGetNode = (aNode) => {
+				$(aNode).eventValidation(() => {
+					window.open(this.options.urlInfosHebergement);
+				});
+			};
 			H.push(
-				`<div role="link" tabindex="0" class="host-france-container ibp-command" ${lOnClic}>`,
-				this.espacesISO27001()
-					? '<span class="certif-27001">' +
-							ObjetTraduction_1.GTraductions.getValeur(
-								"PiedPage.certifISO27001",
-							) +
-							"</span>"
-					: "",
-				'<span class="host-text">',
-				ObjetTraduction_1.GTraductions.getValeur(
-					"PiedPage.hebergementDonneesFrance",
+				IE.jsx.str(
+					"div",
+					{
+						role: "link",
+						tabindex: "0",
+						class: "host-france-container ibp-command",
+						"ie-node": ObjetNavigateur_1.Navigateur.isIOS ? false : lGetNode,
+					},
+					this.espacesISO27001()
+						? '<span class="certif-27001">' +
+								ObjetTraduction_1.GTraductions.getValeur(
+									"PiedPage.certifISO27001",
+								) +
+								"</span>"
+						: "",
+					IE.jsx.str(
+						"span",
+						{ class: "host-text" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"PiedPage.hebergementDonneesFrance",
+						),
+					),
+					IE.jsx.str("hr", null),
+					IE.jsx.str("span", {
+						class: "logo-index-inverse",
+						"aria-hidden": "true",
+					}),
+					IE.jsx.str(
+						"div",
+						{ class: "flex-contain cols text-start" },
+						ObjetTraduction_1.GTraductions.getValeur("PiedPage.IndexEducation"),
+					),
 				),
-				"</span>",
-				"<hr />",
-				'<span class="logo-index-inverse" aria-hidden="true"></span>',
-				`<div class="flex-contain cols text-start">${ObjetTraduction_1.GTraductions.getValeur("PiedPage.IndexEducation")}</div>`,
-				"</div>",
 			);
 		}
 		H.push('<div class="knowledge-container">');

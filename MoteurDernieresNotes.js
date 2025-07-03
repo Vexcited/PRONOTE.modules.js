@@ -37,8 +37,8 @@ class MoteurDernieresNotes {
 			if (!IE.estMobile) {
 				H.push(
 					`<header class="infos-note flex-contain">`,
-					`<i class="header-icon ${aDevoir.estDS ? "icon_DS" : "icon_saisie_note"}"  ${aDevoir.estDS ? `aria-label="${ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.DevoirSurveille")}"` : `aria-hidden="true"`}></i>`,
-					`<div>`,
+					`<!-- <i class="header-icon ${aDevoir.estDS ? "icon_DS" : "icon_saisie_note"}" ${aDevoir.estDS ? `aria-label="${ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.DevoirSurveille")}"` : `aria-hidden="true"`}></i> -->`,
+					`<div class="m-top-l">`,
 					`<div class="ie-titre">${lStrService}</div>`,
 					aDevoir.commentaire && aParams.commentaireEnTitre
 						? `<div class="ie-titre">${aDevoir.commentaire}</div>`
@@ -78,7 +78,7 @@ class MoteurDernieresNotes {
 				) {
 					H.push(
 						`<article class="infos-note flex-contain">`,
-						`<i class="header-icon ${aDevoir.estDS ? "icon_DS" : "icon_saisie_note"}" ${aDevoir.estDS ? `aria-label="${ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.DevoirSurveille")}"` : `aria-hidden="true"`}></i>`,
+						`<!-- <i class="header-icon ${aDevoir.estDS ? "icon_DS" : "icon_saisie_note"}" ${aDevoir.estDS ? `aria-label="${ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.DevoirSurveille")}"` : `aria-hidden="true"`}></i> -->`,
 						`<div>`,
 						aDevoir.commentaire && aParams.commentaireEnTitre
 							? `<div class="ie-titre">${aDevoir.commentaire}</div>`
@@ -117,12 +117,19 @@ class MoteurDernieresNotes {
 				lAvecCommentaireSurNote
 					? IE.jsx.str(
 							"div",
-							{ class: [!IE.estMobile && "m-left-l", "m-top-xxl", "ie-titre"] },
-							IE.jsx.str("i", {
-								class: "icon icon_comment_vide m-right",
-								"aria-hidden": "true",
-							}),
-							IE.jsx.str("span", null, aDevoir.commentaireSurNote),
+							{ class: ["comment-note"] },
+							IE.jsx.str(
+								"div",
+								{ class: "ie-titre" },
+								ObjetTraduction_1.GTraductions.getValeur(
+									"DernieresNotes.Detail.CommentaireProf",
+								),
+							),
+							IE.jsx.str(
+								"div",
+								{ class: "commentaire" },
+								aDevoir.commentaireSurNote,
+							),
 						)
 					: "",
 				"</article>",
@@ -231,7 +238,7 @@ class MoteurDernieresNotes {
 			if (!IE.estMobile) {
 				H.push(
 					`<header class="infos-note flex-contain flex-center justify-between">`,
-					`<i class="header-icon icon_saisie_note" aria-hidden="true"></i>`,
+					`<!--<i class="header-icon icon_saisie_note" aria-hidden="true"></i>-->`,
 					`<div class="ie-titre fluid-bloc m-right-l">${lStrService}</div>`,
 					`<ie-bouton ie-model="btnCalculMoyenne('${aService.getNumero()}')" class="small-bt fix-bloc">${ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.Detail.DetailsMethodeCalcMoy")}</ie-bouton>`,
 					`</header>`,
@@ -347,7 +354,7 @@ class MoteurDernieresNotes {
 		if (!IE.estMobile) {
 			H.push(
 				`<header class="infos-note flex-contain">`,
-				`<i class="header-icon icon_saisie_evaluation" aria-hidden="true"></i>`,
+				`<!--<i class="header-icon icon_saisie_evaluation" aria-hidden="true"></i>-->`,
 				`<div>`,
 				`<div class="ie-titre">${aEvaluation.matiere.getLibelle()}</div>`,
 				aEvaluation.getLibelle() !== ""
@@ -377,7 +384,7 @@ class MoteurDernieresNotes {
 			) {
 				H.push(
 					`<article class="infos-note flex-contain">`,
-					`<i class="header-icon icon_saisie_evaluation" aria-hidden="true"></i>`,
+					`<!--<i class="header-icon icon_saisie_evaluation" aria-hidden="true"></i>-->`,
 					`<div>`,
 					aEvaluation.getLibelle() !== ""
 						? `<div class="ie-titre">${aEvaluation.getLibelle()}</div>`

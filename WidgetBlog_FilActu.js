@@ -7,10 +7,11 @@ const Enumere_Onglet_1 = require("Enumere_Onglet");
 const Enumere_Espace_1 = require("Enumere_Espace");
 const Enumere_EvenementWidget_1 = require("Enumere_EvenementWidget");
 const ObjetWidget_1 = require("ObjetWidget");
+const AccessApp_1 = require("AccessApp");
 class WidgetBlog_FilActu extends ObjetWidget_1.Widget.ObjetWidget {
 	constructor(...aParams) {
 		super(...aParams);
-		const lApplicationSco = GApplication;
+		const lApplicationSco = (0, AccessApp_1.getApp)();
 		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
 		this.moteur = new ObjetMoteurBlog_1.ObjetMoteurBlog();
 	}
@@ -32,7 +33,7 @@ class WidgetBlog_FilActu extends ObjetWidget_1.Widget.ObjetWidget {
 			lListeBillets.trier();
 		}
 		const lWidget = {
-			html: this.composeWidgetBlogFilActu(lListeBillets),
+			getHtml: this.composeWidgetBlogFilActu.bind(this, lListeBillets),
 			nbrElements: lNbElements,
 			liste: lListeBillets,
 			afficherMessage: lNbElements === 0,
@@ -40,41 +41,41 @@ class WidgetBlog_FilActu extends ObjetWidget_1.Widget.ObjetWidget {
 		$.extend(true, aParams.donnees, lWidget);
 		aParams.construireWidget(this.donnees);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			surClickBillet(aNumeroBillet) {
-				$(this.node).eventValidation(() => {
-					aInstance._surClickBillet(aNumeroBillet);
-				});
-			},
-		});
+	jsxNodeBilletBlog(aBilletBlog) {
+		return (aNode) => {
+			$(aNode).eventValidation(() => {
+				this._surClickBillet(aBilletBlog);
+			});
+		};
 	}
 	composeWidgetBlogFilActu(aListeBillets) {
 		const H = [];
 		if (aListeBillets && aListeBillets.count() > 0) {
 			H.push('<ul class="liste-clickable">');
 			for (const lBillet of aListeBillets) {
-				H.push("<li>");
 				H.push(
-					'<a class="wrapper-link" tabindex="0" ie-node="surClickBillet(\'',
-					lBillet.getNumero(),
-					"')\">",
+					IE.jsx.str(
+						"li",
+						null,
+						IE.jsx.str(
+							"a",
+							{
+								class: "wrapper-link",
+								tabindex: "0",
+								"ie-node": this.jsxNodeBilletBlog(lBillet),
+							},
+							this._composeLigneBillet(lBillet),
+						),
+					),
 				);
-				H.push(this._composeLigneBillet(lBillet));
-				H.push("</a>");
-				H.push("</li>");
 			}
 			H.push("</ul>");
 		}
 		return H.join("");
 	}
-	_surClickBillet(aNumeroBillet) {
-		let lBillet = null;
-		if (this.donnees.listeBillets) {
-			lBillet = this.donnees.listeBillets.getElementParNumero(aNumeroBillet);
-		}
-		if (lBillet) {
-			this.etatUtilisateurSco.setContexteBilletBlog(lBillet);
+	_surClickBillet(aBillet) {
+		if (aBillet) {
+			this.etatUtilisateurSco.setContexteBilletBlog(aBillet);
 			const lGenreOnglet = Enumere_Onglet_1.EGenreOnglet.Blog_FilActu;
 			let lPageDestination;
 			if (this.etatUtilisateurSco.estEspaceMobile()) {
@@ -93,25 +94,21 @@ class WidgetBlog_FilActu extends ObjetWidget_1.Widget.ObjetWidget {
 		const H = [];
 		H.push(
 			IE.jsx.str(
-				IE.jsx.fragment,
-				null,
+				"div",
+				{ class: "wrap" },
+				IE.jsx.str("h3", null, aBillet.getLibelle()),
 				IE.jsx.str(
 					"div",
-					{ class: "wrap" },
-					IE.jsx.str("h3", null, aBillet.getLibelle()),
+					{ class: "infos-conteneur" },
 					IE.jsx.str(
-						"div",
-						{ class: "infos-conteneur" },
-						IE.jsx.str(
-							"span",
-							null,
-							ObjetDate_1.GDate.formatDate(
-								aBillet.dateDerniereModification,
-								"%JJ/%MM/%AA",
-							),
-							" - ",
-							aBillet.auteur.getLibelle(),
+						"span",
+						null,
+						ObjetDate_1.GDate.formatDate(
+							aBillet.dateDerniereModification,
+							"%JJ/%MM/%AA",
 						),
+						" - ",
+						aBillet.auteur.getLibelle(),
 					),
 				),
 			),
@@ -128,16 +125,12 @@ class WidgetBlog_FilActu extends ObjetWidget_1.Widget.ObjetWidget {
 				}
 				H.push(
 					IE.jsx.str(
-						IE.jsx.fragment,
-						null,
+						"i",
+						{ class: "icon_comment with-label", role: "presentation" },
 						IE.jsx.str(
-							"i",
-							{ class: "icon_comment with-label" },
-							IE.jsx.str(
-								"span",
-								{ class: lClassesLabelNbCommentaire },
-								lNbComment,
-							),
+							"span",
+							{ class: lClassesLabelNbCommentaire },
+							lNbComment,
 						),
 					),
 				);
@@ -152,11 +145,10 @@ class WidgetBlog_FilActu extends ObjetWidget_1.Widget.ObjetWidget {
 				].includes(GEtatUtilisateur.GenreEspace)
 			) {
 				H.push(
-					IE.jsx.str(
-						IE.jsx.fragment,
-						null,
-						IE.jsx.str("i", { class: "icon_comment off with-label" }),
-					),
+					IE.jsx.str("i", {
+						class: "icon_comment off with-label",
+						role: "presentation",
+					}),
 				);
 			}
 		}

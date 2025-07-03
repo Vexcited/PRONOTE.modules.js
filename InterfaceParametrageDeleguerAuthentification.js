@@ -14,13 +14,17 @@ const ObjetDonneesListe_1 = require("ObjetDonneesListe");
 const ObjetFenetre_1 = require("ObjetFenetre");
 const DonneesListe_ListeDelegationAuthentification_1 = require("DonneesListe_ListeDelegationAuthentification");
 const GUID_1 = require("GUID");
+const AccessApp_1 = require("AccessApp");
 class InterfaceParametrageDeleguerAuthentification extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
-		this.objetApplicationConsoles = GApplication;
+		this.objetApplicationConsoles = (0, AccessApp_1.getApp)();
 		this.donneesRecues = false;
 		this.setOptions({ avecPaddingPage: true });
 		this.optionsAuthentification = { estServeurHttp: false };
+	}
+	getInstanceParametrageEduConnect() {
+		return null;
 	}
 	getEspacesDeTypeDelegation(aTypeDelegation) {
 		if (this.tabEspaces) {
@@ -130,6 +134,7 @@ class InterfaceParametrageDeleguerAuthentification extends ObjetInterface_1.Obje
 			this.evenementSurListeChoixDelegation,
 			this.initialiserListeChoixDelegation,
 		);
+		this.construireInstancesParametrages();
 	}
 	construireStructureAffichage() {
 		const H = [];
@@ -200,10 +205,14 @@ class InterfaceParametrageDeleguerAuthentification extends ObjetInterface_1.Obje
 		const H = [];
 		H.push(
 			'<fieldset class="Espace AlignementGauche Texte10" style="border:1px solid ',
-			GCouleur.intermediaire,
+			(0, AccessApp_1.getApp)().getCouleur().intermediaire,
 			';">',
 		);
-		H.push('<legend class="Gras Espace" style="color:', GCouleur.texte, ';">');
+		H.push(
+			'<legend class="Gras Espace" style="color:',
+			(0, AccessApp_1.getApp)().getCouleur().texte,
+			';">',
+		);
 		H.push(
 			"<label>",
 			ObjetTraduction_1.GTraductions.getValeur(
@@ -235,10 +244,14 @@ class InterfaceParametrageDeleguerAuthentification extends ObjetInterface_1.Obje
 		const H = [];
 		H.push(
 			'<fieldset class="Espace AlignementGauche Texte10" style="border:1px solid ',
-			GCouleur.intermediaire,
+			(0, AccessApp_1.getApp)().getCouleur().intermediaire,
 			';">',
 		);
-		H.push('<legend class="Gras Espace" style="color:', GCouleur.texte, ';">');
+		H.push(
+			'<legend class="Gras Espace" style="color:',
+			(0, AccessApp_1.getApp)().getCouleur().texte,
+			';">',
+		);
 		H.push(
 			"<label>",
 			ObjetTraduction_1.GTraductions.getValeur(
@@ -400,7 +413,7 @@ class InterfaceParametrageDeleguerAuthentification extends ObjetInterface_1.Obje
 			port: "PortGestionDelegationsAuthentification",
 			methode: "GetModesDeLogin",
 		}).then((aDonnees) => {
-			this.tabModesDeLogin = aDonnees.getElement("return").valeur;
+			this.tabModesDeLogin = aDonnees.getElement("return").getValeur();
 		});
 	}
 	soapGetAffectationsEspaces() {
@@ -409,7 +422,7 @@ class InterfaceParametrageDeleguerAuthentification extends ObjetInterface_1.Obje
 			port: "PortGestionDelegationsAuthentification",
 			methode: "GetEspaces",
 		}).then((aDonnees) => {
-			this.tabEspaces = aDonnees.getElement("return").valeur;
+			this.tabEspaces = aDonnees.getElement("return").getValeur();
 		});
 	}
 	soapGetParametresCAS(aIdParametres) {
@@ -421,7 +434,7 @@ class InterfaceParametrageDeleguerAuthentification extends ObjetInterface_1.Obje
 				aTabParametres.getElement("AIdParametres").setValeur(aIdParametres);
 			},
 		}).then((aDonnees) => {
-			return aDonnees.getElement("return").valeur;
+			return aDonnees.getElement("return").getValeur();
 		});
 	}
 	soapGetParametresWsFed(aIdParametres) {
@@ -433,7 +446,7 @@ class InterfaceParametrageDeleguerAuthentification extends ObjetInterface_1.Obje
 				aTabParametres.getElement("AIdParametres").setValeur(aIdParametres);
 			},
 		}).then((aDonnees) => {
-			return aDonnees.getElement("return").valeur;
+			return aDonnees.getElement("return").getValeur();
 		});
 	}
 	soapGetParametresEduConnect() {
@@ -442,7 +455,7 @@ class InterfaceParametrageDeleguerAuthentification extends ObjetInterface_1.Obje
 			port: "PortGestionEduConnect",
 			methode: "GetUrlDeServiceDeclaree",
 		}).then((aDonnees) => {
-			return aDonnees.getElement("return").valeur;
+			return aDonnees.getElement("return").getValeur();
 		});
 	}
 	soapGetParametresSaml(aIdParametres) {
@@ -454,7 +467,7 @@ class InterfaceParametrageDeleguerAuthentification extends ObjetInterface_1.Obje
 				aTabParametres.getElement("AIdParametres").setValeur(aIdParametres);
 			},
 		}).then((aDonnees) => {
-			return aDonnees.getElement("return").valeur;
+			return aDonnees.getElement("return").getValeur();
 		});
 	}
 	soapGetListeParametresDelegation() {
@@ -463,11 +476,48 @@ class InterfaceParametrageDeleguerAuthentification extends ObjetInterface_1.Obje
 			port: "PortGestionDelegationsAuthentification",
 			methode: "GetInfosListeParametresDelegation",
 		}).then((aDonnees) => {
-			this.listeParametresDelegation = aDonnees.getElement("return").valeur;
+			this.listeParametresDelegation = aDonnees
+				.getElement("return")
+				.getValeur();
 		});
 	}
 	initialiserListeChoixDelegation(aInstance) {
 		const lAvecEduConnect = !!this.objetApplicationConsoles.avecEduConnect;
+		const lFuncModelChoixDelegation = () => {
+			return {
+				getValue: () => {
+					return this.tousEspacesSontDeTypeDA(
+						WSGestionDelegationsAuthentification_1
+							.ETypeDelegationAuthentificationSvcW.DA_Cas,
+					);
+				},
+				setValue: (aValue) => {
+					if (aValue) {
+						this.setTypeDATousEspaces(
+							WSGestionDelegationsAuthentification_1
+								.ETypeDelegationAuthentificationSvcW.DA_Cas,
+						);
+					}
+				},
+				getDisabled: () => {
+					let lDisabled = false;
+					if (this.estServeurActif()) {
+						lDisabled = true;
+					}
+					if (!lDisabled) {
+						let lDonneesListe = aInstance.getDonneesListe();
+						lDisabled = !lDonneesListe || !lDonneesListe.estCasActif();
+					}
+					if (!lDisabled) {
+						lDisabled = this.tousEspacesSontDeTypeDA(
+							WSGestionDelegationsAuthentification_1
+								.ETypeDelegationAuthentificationSvcW.DA_Cas,
+						);
+					}
+					return lDisabled;
+				},
+			};
+		};
 		const lColonnes = [];
 		lColonnes.push({
 			id: DonneesListe_ChoixDelegationAuthentification.colonnes.espace,
@@ -489,75 +539,14 @@ class InterfaceParametrageDeleguerAuthentification extends ObjetInterface_1.Obje
 					avecFusionColonne: true,
 				},
 				{
-					libelleHtml:
-						'<ie-checkbox ie-model="setTousEspacesCAS">' +
-						ObjetTraduction_1.GTraductions.getValeur(
-							"pageParametresDeleguerLAuthentification.liste.CAS",
-						) +
-						"</ie-checkbox> ",
-					controleur: {
-						setTousEspacesCAS: {
-							getValue() {
-								let lInterface;
-								if (
-									this.instance &&
-									"Pere" in this.instance &&
-									this.instance.Pere &&
-									this.instance.Pere instanceof
-										InterfaceParametrageDeleguerAuthentification
-								) {
-									lInterface = this.instance.Pere;
-								}
-								return lInterface
-									? lInterface.tousEspacesSontDeTypeDA(
-											WSGestionDelegationsAuthentification_1
-												.ETypeDelegationAuthentificationSvcW.DA_Cas,
-										)
-									: false;
-							},
-							setValue(aValue) {
-								if (aValue) {
-									if (
-										this.instance &&
-										"Pere" in this.instance &&
-										this.instance.Pere
-									) {
-										let lInterface = this.instance.Pere;
-										lInterface.setTypeDATousEspaces(
-											WSGestionDelegationsAuthentification_1
-												.ETypeDelegationAuthentificationSvcW.DA_Cas,
-										);
-									}
-								}
-							},
-							getDisabled() {
-								let lDisabled = false;
-								if (this.instance) {
-									let lInterface;
-									if ("Pere" in this.instance && this.instance.Pere) {
-										lInterface = this.instance.Pere;
-									}
-									if (!lInterface || lInterface.estServeurActif()) {
-										lDisabled = true;
-									}
-									if (!lDisabled) {
-										let lDonneesListe;
-										if ("Donnees" in this.instance && this.instance.Donnees) {
-											lDonneesListe = this.instance.Donnees;
-										}
-										lDisabled = !lDonneesListe || !lDonneesListe.estCasActif();
-									}
-									if (!lDisabled) {
-										lDisabled = lInterface.tousEspacesSontDeTypeDA(
-											WSGestionDelegationsAuthentification_1
-												.ETypeDelegationAuthentificationSvcW.DA_Cas,
-										);
-									}
-								}
-								return lDisabled;
-							},
-						},
-					},
+					getLibelleHtml: () =>
+						IE.jsx.str(
+							"ie-checkbox",
+							{ "ie-model": lFuncModelChoixDelegation.bind(this) },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"pageParametresDeleguerLAuthentification.liste.CAS",
+							),
+						),
 				},
 			],
 		});
@@ -735,11 +724,13 @@ class InterfaceParametrageDeleguerAuthentification extends ObjetInterface_1.Obje
 	}
 	creationDelegation(aDelegation) {
 		if (this.estServeurActif()) {
-			return GApplication.getMessage().afficher({
-				message: ObjetTraduction_1.GTraductions.getValeur(
-					"pageParametresDeleguerLAuthentification.OperationImpossibleServeurActif",
-				),
-			});
+			return (0, AccessApp_1.getApp)()
+				.getMessage()
+				.afficher({
+					message: ObjetTraduction_1.GTraductions.getValeur(
+						"pageParametresDeleguerLAuthentification.OperationImpossibleServeurActif",
+					),
+				});
 		}
 		return Promise.resolve().then(() => {
 			const lInfosDelegation = {
@@ -754,7 +745,7 @@ class InterfaceParametrageDeleguerAuthentification extends ObjetInterface_1.Obje
 						port: "PortGestionCAS",
 						methode: "InitialiserParametresCASPourCreation",
 					}).then((aDonnees) => {
-						const lParametresCAS = aDonnees.getElement("return").valeur;
+						const lParametresCAS = aDonnees.getElement("return").getValeur();
 						return this.ouvrirFenetreParametrageCAS(
 							lParametresCAS,
 							lInfosDelegation,
@@ -768,7 +759,7 @@ class InterfaceParametrageDeleguerAuthentification extends ObjetInterface_1.Obje
 						port: "PortGestionWsFed",
 						methode: "InitialiserParametresWsFedPourCreation",
 					}).then((aDonnees) => {
-						const lParametresWsFed = aDonnees.getElement("return").valeur;
+						const lParametresWsFed = aDonnees.getElement("return").getValeur();
 						return this.ouvrirFenetreParametrageWsFed(
 							lParametresWsFed,
 							lInfosDelegation,
@@ -782,7 +773,7 @@ class InterfaceParametrageDeleguerAuthentification extends ObjetInterface_1.Obje
 						port: "PortGestionSaml",
 						methode: "InitialiserParametresSamlPourCreation",
 					}).then((aDonnees) => {
-						const lParametresSaml = aDonnees.getElement("return").valeur;
+						const lParametresSaml = aDonnees.getElement("return").getValeur();
 						return this.ouvrirFenetreParametrageSaml(
 							lParametresSaml,
 							lInfosDelegation,
@@ -831,11 +822,13 @@ class InterfaceParametrageDeleguerAuthentification extends ObjetInterface_1.Obje
 		switch (aParametres.genreEvenement) {
 			case Enumere_EvenementListe_1.EGenreEvenementListe.Suppression:
 				if (this.estServeurActif()) {
-					return GApplication.getMessage().afficher({
-						message: ObjetTraduction_1.GTraductions.getValeur(
-							"pageParametresDeleguerLAuthentification.OperationImpossibleServeurActif",
-						),
-					});
+					return (0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({
+							message: ObjetTraduction_1.GTraductions.getValeur(
+								"pageParametresDeleguerLAuthentification.OperationImpossibleServeurActif",
+							),
+						});
 				}
 				return AppelSOAP_1.AppelSOAP.lancerAppel({
 					instance: this,
@@ -876,7 +869,7 @@ class InterfaceParametrageDeleguerAuthentification extends ObjetInterface_1.Obje
 								aParametres.article.protocole ===
 									WSGestionDelegationsAuthentification_1
 										.ETypeDelegationAuthentificationSvcW.DA_Cas &&
-								!LInfosDeleg.getActif() &&
+								LInfosDeleg.getActif() &&
 								this.tousEspacesSontDeTypeDA(
 									WSGestionDelegationsAuthentification_1
 										.ETypeDelegationAuthentificationSvcW.DA_Aucune,
@@ -898,7 +891,7 @@ class InterfaceParametrageDeleguerAuthentification extends ObjetInterface_1.Obje
 		aInfosDelegation,
 		aSurCreation = false,
 	) {
-		const lInstanceCAS = this.getInstance(this.identZoneCAS);
+		const lInstanceCAS = this.getInstanceParametrageCAS();
 		if (!lInstanceCAS) {
 			return;
 		}
@@ -967,7 +960,7 @@ class InterfaceParametrageDeleguerAuthentification extends ObjetInterface_1.Obje
 		aInfosDelegation,
 		aSurCreation = false,
 	) {
-		const lInstanceEduConnect = this.getInstance(this.identZoneEduConnect);
+		const lInstanceEduConnect = this.getInstanceParametrageEduConnect();
 		if (!lInstanceEduConnect) {
 			return;
 		}
@@ -1032,7 +1025,7 @@ class InterfaceParametrageDeleguerAuthentification extends ObjetInterface_1.Obje
 		aInfosDelegation,
 		aSurCreation = false,
 	) {
-		const lInstanceWsFed = this.getInstance(this.identZoneWsFed);
+		const lInstanceWsFed = this.getInstanceParametrageWsFed();
 		if (!lInstanceWsFed) {
 			return;
 		}
@@ -1108,7 +1101,7 @@ class InterfaceParametrageDeleguerAuthentification extends ObjetInterface_1.Obje
 		aInfosDelegation,
 		aSurCreation = false,
 	) {
-		const lInstanceSaml = this.getInstance(this.identZoneSaml);
+		const lInstanceSaml = this.getInstanceParametrageWsSaml();
 		if (!lInstanceSaml) {
 			return;
 		}

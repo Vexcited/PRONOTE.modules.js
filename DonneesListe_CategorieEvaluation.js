@@ -1,16 +1,17 @@
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-const { GStyle } = require("ObjetStyle.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { EGenreAction } = require("Enumere_Action.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-class DonneesListe_CategorieEvaluation extends ObjetDonneesListeFlatDesign {
+exports.DonneesListe_CategorieEvaluation = void 0;
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const ObjetStyle_1 = require("ObjetStyle");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_Action_1 = require("Enumere_Action");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const AccessApp_1 = require("AccessApp");
+class DonneesListe_CategorieEvaluation extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aParams) {
 		super(aParams.listeCategories);
+		this.appSco = (0, AccessApp_1.getApp)();
 		this.avecFiltre = aParams.filtreMesCategories;
 		this.tailleMax = aParams.tailleMax;
 		this.estEditable = aParams.estEditable;
@@ -18,12 +19,9 @@ class DonneesListe_CategorieEvaluation extends ObjetDonneesListeFlatDesign {
 			avecEvnt_Creation: true,
 			avecEvnt_Selection: true,
 			avecEvnt_SelectionClick: true,
-			avecEvnt_Suppression: true,
-			avecInterruptionSuppression: true,
 			flatDesignMinimal: true,
 			avecCB: aParams.avecCB,
 		});
-		this.creerIndexUnique("Libelle");
 	}
 	getTitreZonePrincipale(aParams) {
 		return aParams.article.getLibelle();
@@ -34,7 +32,7 @@ class DonneesListe_CategorieEvaluation extends ObjetDonneesListeFlatDesign {
 	getZoneGauche(aParams) {
 		return aParams.article.couleur
 			? '<div style="' +
-					GStyle.composeCouleurFond(aParams.article.couleur) +
+					ObjetStyle_1.GStyle.composeCouleurFond(aParams.article.couleur) +
 					'height:2rem;padding:0.2rem;border-radius:0.4rem;"></div>'
 			: '<div style="margin-right:0.4rem"></div>';
 	}
@@ -49,7 +47,7 @@ class DonneesListe_CategorieEvaluation extends ObjetDonneesListeFlatDesign {
 			this.estEditable &&
 			!!aParams.article &&
 			aParams.article.estEditable &&
-			!GApplication.droits.get(TypeDroits.estEnConsultation)
+			!this.appSco.droits.get(ObjetDroitsPN_1.TypeDroits.estEnConsultation)
 		);
 	}
 	avecBoutonActionLigne(aParams) {
@@ -57,7 +55,7 @@ class DonneesListe_CategorieEvaluation extends ObjetDonneesListeFlatDesign {
 			this.estEditable &&
 			!!aParams.article &&
 			aParams.article.estEditable &&
-			!GApplication.droits.get(TypeDroits.estEnConsultation)
+			!this.appSco.droits.get(ObjetDroitsPN_1.TypeDroits.estEnConsultation)
 		);
 	}
 	initialisationObjetContextuel(aParametres) {
@@ -66,12 +64,13 @@ class DonneesListe_CategorieEvaluation extends ObjetDonneesListeFlatDesign {
 		}
 		if (this.estEditable) {
 			aParametres.menuContextuel.add(
-				GTraductions.getValeur("Modifier"),
+				ObjetTraduction_1.GTraductions.getValeur("Modifier"),
 				true,
-				function () {
-					this.callback.appel({
+				() => {
+					this.paramsListe.liste.callback.appel({
 						article: aParametres.article,
-						genreEvenement: EGenreEvenementListe.Edition,
+						genreEvenement:
+							Enumere_EvenementListe_1.EGenreEvenementListe.Edition,
 					});
 				},
 				{ icon: "icon_pencil" },
@@ -79,14 +78,16 @@ class DonneesListe_CategorieEvaluation extends ObjetDonneesListeFlatDesign {
 			if (this.options.avecCB) {
 				aParametres.menuContextuel.add(
 					!aParametres.article.coche
-						? GTraductions.getValeur("FenetreCategorieEvaluation.selectionner")
-						: GTraductions.getValeur(
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"FenetreCategorieEvaluation.selectionner",
+							)
+						: ObjetTraduction_1.GTraductions.getValeur(
 								"FenetreCategorieEvaluation.deselectionner",
 							),
 					true,
-					function () {
+					() => {
 						aParametres.article.coche = !aParametres.article.coche;
-						this.actualiser();
+						this.paramsListe.liste.actualiser();
 					},
 					{
 						icon: !aParametres.article.coche
@@ -96,22 +97,23 @@ class DonneesListe_CategorieEvaluation extends ObjetDonneesListeFlatDesign {
 				);
 			}
 			aParametres.menuContextuel.add(
-				GTraductions.getValeur("Supprimer"),
+				ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
 				true,
-				function () {
+				() => {
 					GApplication.getMessage().afficher({
-						type: EGenreBoiteMessage.Confirmation,
-						message: GTraductions.getValeur(
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+						message: ObjetTraduction_1.GTraductions.getValeur(
 							"FenetreCategorieEvaluation.confSupprCategorie",
 						),
-						callback: function (aGenreAction) {
-							if (aGenreAction === EGenreAction.Valider) {
-								this.callback.appel({
+						callback: (aGenreAction) => {
+							if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
+								this.paramsListe.liste.callback.appel({
 									article: aParametres.article,
-									genreEvenement: EGenreEvenementListe.Suppression,
+									genreEvenement:
+										Enumere_EvenementListe_1.EGenreEvenementListe.Suppression,
 								});
 							}
-						}.bind(this),
+						},
 					});
 				},
 				{ icon: "icon_trash" },
@@ -121,7 +123,9 @@ class DonneesListe_CategorieEvaluation extends ObjetDonneesListeFlatDesign {
 	}
 	getVisible(aArticle) {
 		const lVisible = this.avecFiltre ? aArticle.filtreMesCategories : true;
-		return aArticle.getEtat() !== EGenreEtat.Suppression && lVisible;
+		return (
+			aArticle.getEtat() !== Enumere_Etat_1.EGenreEtat.Suppression && lVisible
+		);
 	}
 }
-module.exports = { DonneesListe_CategorieEvaluation };
+exports.DonneesListe_CategorieEvaluation = DonneesListe_CategorieEvaluation;

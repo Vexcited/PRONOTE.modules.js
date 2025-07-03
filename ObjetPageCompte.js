@@ -20,9 +20,11 @@ const ObjetFicheAppliMobile_1 = require("ObjetFicheAppliMobile");
 const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetPreferenceAccessibilite_1 = require("ObjetPreferenceAccessibilite");
 const MultipleObjetFenetre_InstallPronote = require("ObjetFenetre_InstallPronote");
-const ObjetRequeteSaisieInformations = require("ObjetRequeteSaisieInformations");
+const ObjetRequeteSaisieInformations_1 = require("ObjetRequeteSaisieInformations");
 const UtilitaireSyntheseVocale_1 = require("UtilitaireSyntheseVocale");
 const MoteurParametresiCal_1 = require("MoteurParametresiCal");
+const InterfaceParamListeAppareilsMobile_1 = require("InterfaceParamListeAppareilsMobile");
+const TraductionsDoubleAuth_1 = require("TraductionsDoubleAuth");
 class ObjetPageCompte extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
@@ -36,15 +38,18 @@ class ObjetPageCompte extends ObjetIdentite_1.Identite {
 			largeurIndicatif: 45,
 			largeurTel: 115,
 			maskMDP: "*********",
-			avecInfosEntreprise:
-				this.etatUtilisateurSco.GenreEspace ===
+			avecInfosEntreprise: [
 				Enumere_Espace_1.EGenreEspace.Entreprise,
-			avecTelFixe:
-				this.etatUtilisateurSco.GenreEspace ===
+				Enumere_Espace_1.EGenreEspace.Mobile_Entreprise,
+			].includes(this.etatUtilisateurSco.GenreEspace),
+			avecTelFixe: [
 				Enumere_Espace_1.EGenreEspace.Entreprise,
-			avecTelFax:
-				this.etatUtilisateurSco.GenreEspace ===
+				Enumere_Espace_1.EGenreEspace.Mobile_Entreprise,
+			].includes(this.etatUtilisateurSco.GenreEspace),
+			avecTelFax: [
 				Enumere_Espace_1.EGenreEspace.Entreprise,
+				Enumere_Espace_1.EGenreEspace.Mobile_Entreprise,
+			].includes(this.etatUtilisateurSco.GenreEspace),
 			avecNumeroINE:
 				this.etatUtilisateurSco.GenreEspace ===
 				Enumere_Espace_1.EGenreEspace.Eleve,
@@ -61,55 +66,8 @@ class ObjetPageCompte extends ObjetIdentite_1.Identite {
 				Enumere_Espace_1.EGenreEspace.PrimAccompagnant,
 			].includes(this.etatUtilisateurSco.GenreEspace),
 		};
-		this.listeDelais = new ObjetListeElements_1.ObjetListeElements()
-			.addElement(
-				new ObjetElement_1.ObjetElement(
-					ObjetTraduction_1.GTraductions.getValeur(
-						"PreferencesNotifications.15min",
-					),
-					15,
-				),
-			)
-			.addElement(
-				new ObjetElement_1.ObjetElement(
-					ObjetTraduction_1.GTraductions.getValeur(
-						"PreferencesNotifications.30min",
-					),
-					30,
-				),
-			)
-			.addElement(
-				new ObjetElement_1.ObjetElement(
-					ObjetTraduction_1.GTraductions.getValeur(
-						"PreferencesNotifications.1h",
-					),
-					60,
-				),
-			)
-			.addElement(
-				new ObjetElement_1.ObjetElement(
-					ObjetTraduction_1.GTraductions.getValeur(
-						"PreferencesNotifications.4h",
-					),
-					240,
-				),
-			)
-			.addElement(
-				new ObjetElement_1.ObjetElement(
-					ObjetTraduction_1.GTraductions.getValeur(
-						"PreferencesNotifications.12h",
-					),
-					720,
-				),
-			)
-			.addElement(
-				new ObjetElement_1.ObjetElement(
-					ObjetTraduction_1.GTraductions.getValeur(
-						"PreferencesNotifications.24h",
-					),
-					1440,
-				),
-			);
+		this.listeDelais =
+			UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.getListeDelaiNotif();
 		this.donnees =
 			UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.getDonneesDefaut();
 		this.instanceSourcesConnexions = ObjetIdentite_1.Identite.creerInstance(
@@ -122,6 +80,10 @@ class ObjetPageCompte extends ObjetIdentite_1.Identite {
 					}
 				},
 			},
+		);
+		this.instanceAppareilsMobile = ObjetIdentite_1.Identite.creerInstance(
+			InterfaceParamListeAppareilsMobile_1.InterfaceParamListeAppareilsMobile,
+			{ pere: this, evenement: (aParam) => {} },
 		);
 		this.instanceChoixStratSecurisation =
 			ObjetIdentite_1.Identite.creerInstance(
@@ -200,21 +162,6 @@ class ObjetPageCompte extends ObjetIdentite_1.Identite {
 							setValue: function (aValue) {
 								aInstance.applicationSco.parametresUtilisateur.set(
 									"demarrerSurPageAccueil",
-									aValue,
-								);
-							},
-						},
-					},
-					notification: {
-						cbNotification: {
-							getValue: function () {
-								return aInstance.applicationSco.parametresUtilisateur.get(
-									"utiliserNotification",
-								);
-							},
-							setValue: function (aValue) {
-								aInstance.applicationSco.parametresUtilisateur.set(
-									"utiliserNotification",
 									aValue,
 								);
 							},
@@ -528,6 +475,7 @@ class ObjetPageCompte extends ObjetIdentite_1.Identite {
 		}
 	}
 	afficher(aFiltre) {
+		var _a;
 		this.filtreAffichage = aFiltre;
 		ObjetHtml_1.GHtml.setHtml(this.Nom, this._construirePage(), {
 			controleur: this.controleur,
@@ -560,6 +508,15 @@ class ObjetPageCompte extends ObjetIdentite_1.Identite {
 				this.donnees.securisation.listeSourcesConnexions,
 			);
 		}
+		if (
+			(_a = this.etatUtilisateurSco) === null || _a === void 0
+				? void 0
+				: _a.listeAppareilsMobile
+		) {
+			this.instanceAppareilsMobile.setDonnees(
+				this.etatUtilisateurSco.listeAppareilsMobile,
+			);
+		}
 	}
 	getStructurePourValidation(aStructure) {
 		return UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.getStructurePourValidation(
@@ -575,7 +532,7 @@ class ObjetPageCompte extends ObjetIdentite_1.Identite {
 				!!lStructure.signature && !!lStructure.signature.listeFichiers
 					? lStructure.signature.listeFichiers
 					: new ObjetListeElements_1.ObjetListeElements();
-			new ObjetRequeteSaisieInformations(
+			new ObjetRequeteSaisieInformations_1.ObjetRequeteSaisieInformations(
 				this,
 				this.Pere["recupererDonnees"].bind(this.Pere),
 			)
@@ -584,13 +541,17 @@ class ObjetPageCompte extends ObjetIdentite_1.Identite {
 		}
 	}
 	_construirePage() {
+		var _a, _b;
 		const H = [];
 		if (
 			this.filtreAffichage === null ||
 			this.filtreAffichage ===
 				Enumere_DonneesPersonnelles_2.TypeFiltreAffichage.securisation
 		) {
-			if (this.etatUtilisateurSco.derniereConnexion) {
+			if (
+				this.etatUtilisateurSco.derniereConnexion &&
+				!this.objetParametresSco.estAfficheDansENT
+			) {
 				H.push(
 					UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
 						ObjetTraduction_1.GTraductions.getValeur(
@@ -633,9 +594,7 @@ class ObjetPageCompte extends ObjetIdentite_1.Identite {
 			) {
 				H.push(
 					UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
-						ObjetTraduction_1.GTraductions.getValeur(
-							"DoubleAuth.SecuriteRenforcee",
-						),
+						TraductionsDoubleAuth_1.TradDoubleAuth.SecuriteRenforcee,
 						Enumere_DonneesPersonnelles_1.EGenreTypeContenu.sourcesConnexions,
 						{
 							idSourcesConnexions: this.instanceChoixStratSecurisation.getNom(),
@@ -650,16 +609,30 @@ class ObjetPageCompte extends ObjetIdentite_1.Identite {
 			) {
 				H.push(
 					UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
-						ObjetTraduction_1.GTraductions.getValeur(
-							"DoubleAuth.AppareilsIdentifies",
-						),
+						TraductionsDoubleAuth_1.TradDoubleAuth.AppareilsIdentifies,
 						Enumere_DonneesPersonnelles_1.EGenreTypeContenu.sourcesConnexions,
 						{ idSourcesConnexions: this.instanceSourcesConnexions.getNom() },
 					),
 				);
 			}
+			if (
+				((_b =
+					(_a = this.etatUtilisateurSco) === null || _a === void 0
+						? void 0
+						: _a.listeAppareilsMobile) === null || _b === void 0
+					? void 0
+					: _b.count()) > 0
+			) {
+				H.push(
+					UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
+						InterfaceParamListeAppareilsMobile_1.InterfaceParamListeAppareilsMobile.getTitre(),
+						Enumere_DonneesPersonnelles_1.EGenreTypeContenu
+							.listeAppareilsMobile,
+						{ idAppareilsMobile: this.instanceAppareilsMobile.getNom() },
+					),
+				);
+			}
 		}
-		let lParams;
 		if (
 			this.filtreAffichage === null ||
 			this.filtreAffichage ===
@@ -670,7 +643,7 @@ class ObjetPageCompte extends ObjetIdentite_1.Identite {
 					ObjetDroitsPN_1.TypeDroits.compte.avecInformationsPersonnelles,
 				)
 			) {
-				lParams = {
+				const lParams = {
 					civilite: this.donnees.Informations.civilite,
 					nom: this.donnees.Informations.nom,
 					prenom: this.donnees.Informations.prenoms,
@@ -788,7 +761,7 @@ class ObjetPageCompte extends ObjetIdentite_1.Identite {
 				) &&
 				this.donnees.Autorisations.afficherCommunicationParents
 			) {
-				lParams = {
+				const lParams = {
 					estDestinataireInfosGenerales:
 						this.donnees.Autorisations.estDestinataireInfosGenerales,
 					optionCommunicationActivationdiscussion:
@@ -838,23 +811,6 @@ class ObjetPageCompte extends ObjetIdentite_1.Identite {
 							notificationMailTravaux:
 								this.donnees.notifications.notificationMailTravaux,
 						},
-					),
-				);
-			}
-		}
-		if (
-			this.filtreAffichage === null ||
-			this.filtreAffichage ===
-				Enumere_DonneesPersonnelles_2.TypeFiltreAffichage.signature
-		) {
-			if (this.donnees.Signature && this.applicationSco.estPrimaire) {
-				H.push(
-					UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
-						ObjetTraduction_1.GTraductions.getValeur(
-							"infosperso.importerImageSignature",
-						),
-						Enumere_DonneesPersonnelles_1.EGenreTypeContenu.Signature,
-						{ signature: this.donnees.Signature },
 					),
 				);
 			}
@@ -938,18 +894,35 @@ class ObjetPageCompte extends ObjetIdentite_1.Identite {
 			);
 		}
 		if (
+			this.filtreAffichage === null ||
 			this.filtreAffichage ===
-				Enumere_DonneesPersonnelles_2.TypeFiltreAffichage.messagerieSignature &&
-			this.etatUtilisateurSco.messagerieSignature
+				Enumere_DonneesPersonnelles_2.TypeFiltreAffichage.signature
 		) {
-			H.push(
-				UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
-					ObjetTraduction_1.GTraductions.getValeur(
-						"infosperso.MessagerieSignature",
+			if (this.donnees.Signature && this.applicationSco.estPrimaire) {
+				H.push(
+					UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"infosperso.importerImageSignature",
+						),
+						Enumere_DonneesPersonnelles_1.EGenreTypeContenu.Signature,
+						{ signature: this.donnees.Signature },
 					),
-					Enumere_DonneesPersonnelles_1.EGenreTypeContenu.messagerieSignature,
-				),
-			);
+				);
+			}
+			if (
+				this.filtreAffichage ===
+					Enumere_DonneesPersonnelles_2.TypeFiltreAffichage.signature &&
+				this.etatUtilisateurSco.messagerieSignature
+			) {
+				H.push(
+					UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"infosperso.MessagerieSignature",
+						),
+						Enumere_DonneesPersonnelles_1.EGenreTypeContenu.messagerieSignature,
+					),
+				);
+			}
 		}
 		return H.join("");
 	}

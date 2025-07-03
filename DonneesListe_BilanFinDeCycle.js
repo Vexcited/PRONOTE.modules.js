@@ -26,33 +26,6 @@ class DonneesListe_BilanFinDeCycle extends ObjetDonneesListe_1.ObjetDonneesListe
 			DonneesListe_BilanFinDeCycle.colonnes.prefixeNiveauAcqui,
 		);
 	}
-	getControleur(aDonneesListe, aListe) {
-		return $.extend(true, super.getControleur(aDonneesListe, aListe), {
-			nodeJaugeNiveauxAcquisition: function (aNumeroPilier, aNumeroPeriode) {
-				const lPilierConcerne =
-					aDonneesListe.Donnees.getElementParNumero(aNumeroPilier);
-				let lObjetJaugeConcerne = null;
-				if (aDonneesListe.optionsBilanFinDeCycle.estMultiJauges) {
-					if (lPilierConcerne.listeJaugesDePeriode) {
-						lObjetJaugeConcerne =
-							lPilierConcerne.listeJaugesDePeriode.getElementParNumero(
-								aNumeroPeriode,
-							);
-					}
-				} else {
-					lObjetJaugeConcerne = lPilierConcerne.jaugeUnique;
-				}
-				$(this.node).on("click", () => {
-					if (!!aDonneesListe.optionsBilanFinDeCycle.callbackClicJauge) {
-						aDonneesListe.optionsBilanFinDeCycle.callbackClicJauge(
-							lPilierConcerne,
-							lObjetJaugeConcerne,
-						);
-					}
-				});
-			},
-		});
-	}
 	setOptionsBilanFinDeCycle(aOptions) {
 		Object.assign(this.optionsBilanFinDeCycle, aOptions);
 	}
@@ -87,6 +60,25 @@ class DonneesListe_BilanFinDeCycle extends ObjetDonneesListe_1.ObjetDonneesListe
 		}
 		return false;
 	}
+	jsxNodeJaugeNiveauxAcquisition(aArticle, aNumeroPeriode, aNode) {
+		let lObjetJaugeConcerne = null;
+		if (this.optionsBilanFinDeCycle.estMultiJauges) {
+			if (aArticle.listeJaugesDePeriode) {
+				lObjetJaugeConcerne =
+					aArticle.listeJaugesDePeriode.getElementParNumero(aNumeroPeriode);
+			}
+		} else {
+			lObjetJaugeConcerne = aArticle.jaugeUnique;
+		}
+		$(aNode).eventValidation(() => {
+			if (!!this.optionsBilanFinDeCycle.callbackClicJauge) {
+				this.optionsBilanFinDeCycle.callbackClicJauge(
+					aArticle,
+					lObjetJaugeConcerne,
+				);
+			}
+		});
+	}
 	_composeJauge(
 		aArticle,
 		aObjetJauge,
@@ -95,49 +87,59 @@ class DonneesListe_BilanFinDeCycle extends ObjetDonneesListe_1.ObjetDonneesListe
 	) {
 		const lAvecAffichageJaugeChrono =
 			this.optionsBilanFinDeCycle.affichageJaugeChronologique;
-		const H = [];
-		H.push("<div>");
-		if (aLibelle) {
-			H.push(
-				'<span class="InlineBlock AlignementMilieuVertical" style="width: 2rem;">',
-				aLibelle,
-				"</span>",
-			);
-		}
-		H.push(
-			"<div ie-node=\"nodeJaugeNiveauxAcquisition('",
-			aArticle.getNumero(),
-			"', '",
-			aObjetJauge.getNumero(),
-			'\')" class="InlineBlock AlignementMilieuVertical AvecMain" style="width: calc(100% - ',
-			aLibelle ? 2 : 0,
-			'rem);">',
-		);
+		let lStrJauge = "";
 		const lHintNiveauParNiveau = [];
 		if (aHintComplementaire) {
 			lHintNiveauParNiveau.push(aHintComplementaire, "\n");
 		}
 		lHintNiveauParNiveau.push(aObjetJauge.hintNiveaux);
 		if (lAvecAffichageJaugeChrono) {
-			H.push(
+			lStrJauge =
 				UtilitaireCompetences_1.TUtilitaireCompetences.composeJaugeChronologique(
 					{
 						listeNiveaux: aObjetJauge.listeNiveaux,
 						hint: lHintNiveauParNiveau.join(""),
 					},
-				),
-			);
+				);
 		} else {
-			H.push(
+			lStrJauge =
 				UtilitaireCompetences_1.TUtilitaireCompetences.composeJaugeParNiveaux({
 					listeNiveaux: aObjetJauge.listeNiveauxParNiveau,
 					hint: lHintNiveauParNiveau.join(""),
-				}),
-			);
+				});
 		}
-		H.push("</div>");
-		H.push("</div>");
-		return H.join("");
+		return IE.jsx.str(
+			"div",
+			null,
+			aLibelle
+				? IE.jsx.str(
+						"span",
+						{
+							class: "InlineBlock AlignementMilieuVertical",
+							style: "width: 2rem;",
+						},
+						aLibelle,
+					)
+				: "",
+			lStrJauge
+				? IE.jsx.str(
+						"div",
+						{
+							role: "button",
+							tabindex: "0",
+							"aria-haspopup": "dialog",
+							"ie-node": this.jsxNodeJaugeNiveauxAcquisition.bind(
+								this,
+								aArticle,
+								aObjetJauge.getNumero(),
+							),
+							class: "InlineBlock AlignementMilieuVertical AvecMain",
+							style: `width: calc(100% - ${aLibelle ? 2 : 0}rem)`,
+						},
+						lStrJauge,
+					)
+				: "",
+		);
 	}
 	getValeur(aParams) {
 		if (DonneesListe_BilanFinDeCycle.estUneColonneMaitrise(aParams.idColonne)) {
@@ -166,7 +168,7 @@ class DonneesListe_BilanFinDeCycle extends ObjetDonneesListe_1.ObjetDonneesListe
 				) {
 					lResult = this.optionsBilanFinDeCycle.avecCocheVerte
 						? true
-						: '<i class="icon_remove"></i>';
+						: '<i class="icon_remove" role="presentation"></i>';
 				} else {
 					lResult = this.optionsBilanFinDeCycle.avecCocheVerte ? false : "";
 				}
@@ -220,7 +222,7 @@ class DonneesListe_BilanFinDeCycle extends ObjetDonneesListe_1.ObjetDonneesListe
 			return "";
 		}
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_BilanFinDeCycle.colonnes.score: {
 				const lArticle = aParams.article;

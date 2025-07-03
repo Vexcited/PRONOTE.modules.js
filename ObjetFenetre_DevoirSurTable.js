@@ -25,6 +25,7 @@ const ObjetRequeteRessourcesSaisieCours_1 = require("ObjetRequeteRessourcesSaisi
 const ObjetRequeteSaisieCours_1 = require("ObjetRequeteSaisieCours");
 const MoteurNotesCP_1 = require("MoteurNotesCP");
 const MoteurNotes_1 = require("MoteurNotes");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
 class ObjetRequeteProgrammerDevoirEvaluationCDT extends ObjetRequeteJSON_1.ObjetRequeteConsultation {}
 CollectionRequetes_1.Requetes.inscrire(
 	"ProgrammerDevoirEvaluationCDT",
@@ -440,8 +441,10 @@ class ObjetFenetre_DevoirSurTable extends ObjetFenetre_1.ObjetFenetre {
 					return result;
 				},
 				getDisabled: aInstance._surSuppressionOuSansCreation.bind(aInstance),
-				surClickItem() {
-					aInstance._ouvrirFenetreCompetences();
+				node() {
+					$(this.node).eventValidation(() => {
+						aInstance._ouvrirFenetreCompetences();
+					});
 				},
 				getClass() {
 					return aInstance._surSuppressionOuSansCreation() ? "" : "AvecMain";
@@ -739,7 +742,7 @@ class ObjetFenetre_DevoirSurTable extends ObjetFenetre_1.ObjetFenetre {
 		$("#" + this.idContenuMsg.escapeJQ()).height(lHauteur);
 	}
 	_initTiny() {
-		if (GNavigateur.withContentEditable) {
+		if (ObjetNavigateur_1.Navigateur.withContentEditable) {
 			TinyInit_1.TinyInit.init({
 				id: this.idContenuMsg,
 				min_height: 200,
@@ -832,8 +835,6 @@ class ObjetFenetre_DevoirSurTable extends ObjetFenetre_1.ObjetFenetre {
 			IE.jsx.str("input", {
 				readonly: true,
 				"ie-model": "inputItem",
-				"ie-event": "click->surClickItem",
-				class: "round-style",
 				"ie-class": "getClass",
 				style: ObjetStyle_1.GStyle.composeWidth(this.param.largeurCombo + 27),
 				"aria-label": aLabel,
@@ -851,7 +852,6 @@ class ObjetFenetre_DevoirSurTable extends ObjetFenetre_1.ObjetFenetre {
 					"ie-model": "inputNotation",
 					"ie-mask": "/[^0-9,.]/i",
 					maxlength: "6",
-					class: "round-style",
 					style: ObjetStyle_1.GStyle.composeWidth(this.param.largeurInput),
 					"aria-label": ObjetTraduction_1.GTraductions.getValeur(
 						"Fenetre_DevoirSurTable.Bareme",
@@ -868,7 +868,6 @@ class ObjetFenetre_DevoirSurTable extends ObjetFenetre_1.ObjetFenetre {
 					"ie-model": "inputCoefficient",
 					"ie-mask": "/[^0-9,.]/i",
 					maxlength: "6",
-					class: "round-style",
 					style: ObjetStyle_1.GStyle.composeWidth(this.param.largeurInput),
 					"aria-label": ObjetTraduction_1.GTraductions.getValeur(
 						"Fenetre_DevoirSurTable.Coefficient",
@@ -999,7 +998,9 @@ class ObjetFenetre_DevoirSurTable extends ObjetFenetre_1.ObjetFenetre {
 				: this._composeLigneField(
 						ObjetTraduction_1.GTraductions.getValeur("competences.intitule") +
 							" :",
-						'<textarea ie-model="intituleEval" style="' +
+						'<textarea aria-label="' +
+							ObjetTraduction_1.GTraductions.getValeur("competences.intitule") +
+							'" ie-model="intituleEval" style="' +
 							ObjetStyle_1.GStyle.composeCouleurBordure(
 								GCouleur.themeNeutre.claire,
 							) +
@@ -1036,7 +1037,6 @@ class ObjetFenetre_DevoirSurTable extends ObjetFenetre_1.ObjetFenetre {
 				"ie-model": "inputTitreContenu",
 				id: lId,
 				maxlength: "255",
-				class: "round-style",
 				style: "width:100%; margin-bottom:3px;",
 			}),
 		);
@@ -1045,25 +1045,28 @@ class ObjetFenetre_DevoirSurTable extends ObjetFenetre_1.ObjetFenetre {
 	_composeZoneContenuMsg() {
 		const H = [];
 		H.push(
-			'<div class="PetitEspace">',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"Fenetre_DevoirSurTable.ConsignesRevisions",
+			IE.jsx.str(
+				"div",
+				{ class: "PetitEspace" },
+				ObjetTraduction_1.GTraductions.getValeur(
+					"Fenetre_DevoirSurTable.ConsignesRevisions",
+				),
 			),
-			"</div>",
 		);
 		H.push(
-			'<textarea id="' +
-				this.idContenuMsg +
-				'"' +
-				(!this._autoriseTiny() ? ' maxlength="1000"' : "") +
-				' class="Texte10" style="width:100%; border:1px solid black"></textarea>',
+			IE.jsx.str("textarea", {
+				id: this.idContenuMsg,
+				maxlength: !this._autoriseTiny() ? 1000 : false,
+				class: this._autoriseTiny() ? "d-wai-i" : false,
+				style: "width:100%; border:1px solid black",
+			}),
 		);
 		return H.join("");
 	}
 	_recupererDescriptif() {
 		let lContent = "";
 		if (this._autoriseTiny()) {
-			if (!GNavigateur.withContentEditable) {
+			if (!ObjetNavigateur_1.Navigateur.withContentEditable) {
 				lContent = ObjetHtml_1.GHtml.getValue(this.idContenuMsg);
 			} else {
 				const lEditor = TinyInit_1.TinyInit.get(this.idContenuMsg);

@@ -1,38 +1,47 @@
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GChaine } = require("ObjetChaine.js");
-const { GHtml } = require("ObjetHtml.js");
-const { GStyle } = require("ObjetStyle.js");
-const { EGenreAction } = require("Enumere_Action.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { EGenreDocumentJoint } = require("Enumere_DocumentJoint.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { ObjetCelluleDate } = require("ObjetCelluleDate.js");
-const { ObjetDisponibilite } = require("ObjetDisponibilite.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const {
-	ObjetFenetre_ParamExecutionQCM,
-} = require("ObjetFenetre_ParamExecutionQCM.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetSaisie } = require("ObjetSaisie.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { GObjetWAI, EGenreAttribut } = require("ObjetWAI.js");
-const { TypeNote } = require("TypeNote.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { TypeModeCorrectionQCM } = require("TypeModeCorrectionQCM.js");
-const { DonneesListe_DevoirPeriode } = require("DonneesListe_DevoirPeriode.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { GDate } = require("ObjetDate.js");
-const { UtilitaireQCM } = require("UtilitaireQCM.js");
-const { ObjetFenetre_SelectionQCM } = require("ObjetFenetre_SelectionQCM.js");
-const {
-	ObjetFenetre_ActionContextuelle,
-} = require("ObjetFenetre_ActionContextuelle.js");
-const TypeCallbackFenetreDevoir = { validation: 0, periode: 1, service: 2 };
-class ObjetFenetre_Devoir extends ObjetFenetre {
+exports.ObjetFenetre_Devoir = exports.TypeCallbackFenetreDevoir = void 0;
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetStyle_1 = require("ObjetStyle");
+const Enumere_Action_1 = require("Enumere_Action");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_DocumentJoint_1 = require("Enumere_DocumentJoint");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const ObjetCelluleDate_1 = require("ObjetCelluleDate");
+const ObjetDisponibilite_1 = require("ObjetDisponibilite");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_ParamExecutionQCM_1 = require("ObjetFenetre_ParamExecutionQCM");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetSaisie_1 = require("ObjetSaisie");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetWAI_1 = require("ObjetWAI");
+const TypeNote_1 = require("TypeNote");
+const ObjetListe_1 = require("ObjetListe");
+const TypeModeCorrectionQCM_1 = require("TypeModeCorrectionQCM");
+const DonneesListe_DevoirPeriode_1 = require("DonneesListe_DevoirPeriode");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetDate_1 = require("ObjetDate");
+const UtilitaireQCM_1 = require("UtilitaireQCM");
+const ObjetFenetre_SelectionQCM_1 = require("ObjetFenetre_SelectionQCM");
+const ObjetFenetre_ActionContextuelle_1 = require("ObjetFenetre_ActionContextuelle");
+const AccessApp_1 = require("AccessApp");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const ToucheClavier_1 = require("ToucheClavier");
+var TypeCallbackFenetreDevoir;
+(function (TypeCallbackFenetreDevoir) {
+	TypeCallbackFenetreDevoir[(TypeCallbackFenetreDevoir["validation"] = 0)] =
+		"validation";
+	TypeCallbackFenetreDevoir[(TypeCallbackFenetreDevoir["periode"] = 1)] =
+		"periode";
+	TypeCallbackFenetreDevoir[(TypeCallbackFenetreDevoir["service"] = 2)] =
+		"service";
+})(
+	TypeCallbackFenetreDevoir ||
+		(exports.TypeCallbackFenetreDevoir = TypeCallbackFenetreDevoir = {}),
+);
+class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.IdCoefficient = this.Nom + "_Coefficient";
@@ -56,12 +65,6 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 			Bareme: "FenetreDevoir.MFicheBaremeDifferentDe20",
 			Facultatif: "FenetreDevoir.MFicheDevoirFacultatif",
 		};
-		this.addIdentsSelectionService();
-		this.addIdentsKiosque();
-		this.addIdentsQCM();
-		this.addIdentsSujetCorrigeDevoir();
-		this.addIdentsGenreNotation();
-		this.addIdentsDevoirRattrapage();
 		this.GenreEdition = {
 			aucune: 0,
 			commentaire: 1,
@@ -79,30 +82,6 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 			creer: 4,
 		};
 		this.genreFacultatif = { commeBonus: 0, commeNote: 1, commeSeuil: 2 };
-		this.listeFacultatif = new ObjetListeElements();
-		this.listeFacultatif.addElement(
-			new ObjetElement(
-				GTraductions.getValeur("FenetreDevoir.CommeUnBonus"),
-				null,
-				this.genreFacultatif.commeBonus,
-			),
-		);
-		this.listeFacultatif.addElement(
-			new ObjetElement(
-				GTraductions.getValeur("FenetreDevoir.CommeUneNote"),
-				null,
-				this.genreFacultatif.commeNote,
-			),
-		);
-		if (this.avecGenreFacultatifCommeSeuil()) {
-			this.listeFacultatif.addElement(
-				new ObjetElement(
-					GTraductions.getValeur("FenetreDevoir.CommeUnSeuil"),
-					null,
-					this.genreFacultatif.commeSeuil,
-				),
-			);
-		}
 		this.genreEdition = this.GenreEdition.aucune;
 		this.avecQCM = true;
 		this.avecModifQCM = true;
@@ -121,12 +100,45 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 		this.avecThemes = false;
 		this.listeServices = null;
 		this.baremeAvecDecimales = false;
-		this.setOptionsFenetre({ avecTailleSelonContenu: true });
 		this.idBtnAssocierKiosque = this.Nom + "_btnAssocierKiosque";
 		this.idBtnAssocierQCM = this.Nom + "_btnAssocierQCM";
 		this.maxLengthCommentaire = 20;
+		this.addIdentsSelectionService();
+		this.addIdentsKiosque();
+		this.addIdentsQCM();
+		this.addIdentsSujetCorrigeDevoir();
+		this.addIdentsGenreNotation();
+		this.addIdentsDevoirRattrapage();
+		this.listeFacultatif = new ObjetListeElements_1.ObjetListeElements();
+		this.listeFacultatif.addElement(
+			new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.CommeUnBonus"),
+				null,
+				this.genreFacultatif.commeBonus,
+			),
+		);
+		this.listeFacultatif.addElement(
+			new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.CommeUneNote"),
+				null,
+				this.genreFacultatif.commeNote,
+			),
+		);
+		if (this.avecGenreFacultatifCommeSeuil()) {
+			this.listeFacultatif.addElement(
+				new ObjetElement_1.ObjetElement(
+					ObjetTraduction_1.GTraductions.getValeur(
+						"FenetreDevoir.CommeUnSeuil",
+					),
+					null,
+					this.genreFacultatif.commeSeuil,
+				),
+			);
+		}
+		this.setOptionsFenetre({ avecTailleSelonContenu: true });
 		this.initialiserDevoir();
 	}
+	initialiserDevoir() {}
 	setNrRattrapageDeService(aValeur) {
 		this.nrRattrapageDeService = aValeur;
 	}
@@ -165,10 +177,10 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 						const lTabActions = [];
 						lTabActions.push({
 							libelle: IE.estMobile
-								? GTraductions.getValeur(
+								? ObjetTraduction_1.GTraductions.getValeur(
 										"fenetre_ActionContextuelle.depuisMesDocuments",
 									)
-								: GTraductions.getValeur(
+								: ObjetTraduction_1.GTraductions.getValeur(
 										"fenetre_ActionContextuelle.depuisMonPoste",
 									),
 							icon: "icon_folder_open",
@@ -183,26 +195,39 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 									lThis.actualiserSujet();
 								}
 							},
-							class: "bg-util-marron-claire",
+							class: "bg-orange-claire",
 						});
-						const lParams = {
-							genre: lThis.getEGenreSujet(),
-							listeElements: lThis.devoir.listeSujets,
-							callback: lThis.actualiserSujet,
-						};
-						lTabActions.push({
-							libelle: GTraductions.getValeur(
-								"fenetre_ActionContextuelle.depuisMonCloud",
-							),
-							icon: "icon_cloud",
-							event: function () {
-								lThis.ouvrirPJCloud(lParams);
-							}.bind(this),
-							class: "bg-util-marron-claire",
-						});
-						ObjetFenetre_ActionContextuelle.ouvrir(lTabActions, {
-							pere: lThis,
-						});
+						const lAvecCloud = GEtatUtilisateur.listeCloud.count() > 0;
+						if (lAvecCloud) {
+							const lParams = {
+								genre: lThis.getEGenreSujet(),
+								listeElements: lThis.devoir.listeSujets,
+								callback: lThis.actualiserSujet,
+							};
+							lTabActions.push({
+								libelle: ObjetTraduction_1.GTraductions.getValeur(
+									"fenetre_ActionContextuelle.depuisMonCloud",
+								),
+								icon: "icon_cloud",
+								event: function () {
+									lThis.ouvrirPJCloud(lParams);
+								}.bind(this),
+								class: "bg-orange-claire",
+							});
+							if (GEtatUtilisateur.avecCloudENEJDisponible()) {
+								const lActionENEJ =
+									ObjetFenetre_ActionContextuelle_1.ObjetFenetre_ActionContextuelle.getActionENEJ(
+										() => lThis.ouvrirPJCloudENEJ(lParams),
+									);
+								if (lActionENEJ) {
+									lTabActions.push(lActionENEJ);
+								}
+							}
+						}
+						ObjetFenetre_ActionContextuelle_1.ObjetFenetre_ActionContextuelle.ouvrir(
+							lTabActions,
+							{ pere: lThis },
+						);
 						aEvent.stopImmediatePropagation();
 						aEvent.preventDefault();
 					}
@@ -255,10 +280,10 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 						const lTabActions = [];
 						lTabActions.push({
 							libelle: IE.estMobile
-								? GTraductions.getValeur(
+								? ObjetTraduction_1.GTraductions.getValeur(
 										"fenetre_ActionContextuelle.depuisMesDocuments",
 									)
-								: GTraductions.getValeur(
+								: ObjetTraduction_1.GTraductions.getValeur(
 										"fenetre_ActionContextuelle.depuisMonPoste",
 									),
 							icon: "icon_folder_open",
@@ -273,26 +298,39 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 									lThis.actualiserCorrige();
 								}
 							},
-							class: "bg-util-marron-claire",
+							class: "bg-orange-claire",
 						});
-						const lParams = {
-							genre: lThis.getEGenreCorrige(),
-							listeElements: lThis.devoir.listeCorriges,
-							callback: lThis.actualiserCorrige,
-						};
-						lTabActions.push({
-							libelle: GTraductions.getValeur(
-								"fenetre_ActionContextuelle.depuisMonCloud",
-							),
-							icon: "icon_cloud",
-							event: function () {
-								lThis.ouvrirPJCloud(lParams);
-							}.bind(this),
-							class: "bg-util-marron-claire",
-						});
-						ObjetFenetre_ActionContextuelle.ouvrir(lTabActions, {
-							pere: lThis,
-						});
+						const lAvecCloud = GEtatUtilisateur.listeCloud.count() > 0;
+						if (lAvecCloud) {
+							const lParams = {
+								genre: lThis.getEGenreCorrige(),
+								listeElements: lThis.devoir.listeCorriges,
+								callback: lThis.actualiserCorrige,
+							};
+							lTabActions.push({
+								libelle: ObjetTraduction_1.GTraductions.getValeur(
+									"fenetre_ActionContextuelle.depuisMonCloud",
+								),
+								icon: "icon_cloud",
+								event: function () {
+									lThis.ouvrirPJCloud(lParams);
+								}.bind(this),
+								class: "bg-orange-claire",
+							});
+							if (GEtatUtilisateur.avecCloudENEJDisponible()) {
+								const lActionENEJ =
+									ObjetFenetre_ActionContextuelle_1.ObjetFenetre_ActionContextuelle.getActionENEJ(
+										() => lThis.ouvrirPJCloudENEJ(lParams),
+									);
+								if (lActionENEJ) {
+									lTabActions.push(lActionENEJ);
+								}
+							}
+						}
+						ObjetFenetre_ActionContextuelle_1.ObjetFenetre_ActionContextuelle.ouvrir(
+							lTabActions,
+							{ pere: lThis },
+						);
 						aEvent.stopImmediatePropagation();
 						aEvent.preventDefault();
 					}
@@ -325,7 +363,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 						if (aInstance.devoir.executionQCM.publierCorrige === undefined) {
 							aInstance.devoir.executionQCM.publierCorrige =
 								aInstance.devoir.executionQCM.modeDiffusionCorrige !==
-								TypeModeCorrectionQCM.FBQ_CorrigeSans;
+								TypeModeCorrectionQCM_1.TypeModeCorrectionQCM.FBQ_CorrigeSans;
 						}
 						lEstCoche = !!aInstance.devoir.executionQCM.publierCorrige;
 					}
@@ -334,7 +372,9 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 				setValue: function (aValue) {
 					if (!!aInstance.devoir && !!aInstance.devoir.executionQCM) {
 						aInstance.devoir.executionQCM.publierCorrige = aValue;
-						aInstance.devoir.executionQCM.setEtat(EGenreEtat.Modification);
+						aInstance.devoir.executionQCM.setEtat(
+							Enumere_Etat_1.EGenreEtat.Modification,
+						);
 					}
 				},
 				getDisabled: function () {
@@ -364,7 +404,11 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 				setValue: function (aChecked) {
 					if (!!aInstance.devoir) {
 						if (aChecked) {
-							this.controleur.competencesEvaluees.btnModifierCompetences.event();
+							this.controleur.competencesEvaluees.btnModifierCompetences.event.call(
+								this,
+								null,
+								null,
+							);
 						} else {
 							aInstance.evenementSurSuppressionEvaluationAssociee();
 						}
@@ -373,9 +417,13 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 			},
 			labelEvaluationAssociee: function () {
 				return !!aInstance.devoir &&
-					aInstance.devoir.getEtat() === EGenreEtat.Creation
-					? GTraductions.getValeur("FenetreDevoir.CreerEvaluation")
-					: GTraductions.getValeur("FenetreDevoir.EvaluationAssociee");
+					aInstance.devoir.getEtat() === Enumere_Etat_1.EGenreEtat.Creation
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreDevoir.CreerEvaluation",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreDevoir.EvaluationAssociee",
+						);
 			},
 			cbEvaluationDuQCM: {
 				getValue: function () {
@@ -389,7 +437,9 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 				setValue: function (aChecked) {
 					if (!!aInstance.devoir && !!aInstance.devoir.executionQCM) {
 						aInstance.devoir.executionQCM.estLieAEvaluation = aChecked;
-						aInstance.devoir.executionQCM.setEtat(EGenreEtat.Modification);
+						aInstance.devoir.executionQCM.setEtat(
+							Enumere_Etat_1.EGenreEtat.Modification,
+						);
 					}
 				},
 			},
@@ -456,12 +506,14 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 			},
 			btnMrFiche: {
 				event: function (aTypeMrFiche) {
-					if (!GApplication.getMessage().EnAffichage) {
-						GApplication.getMessage().afficher({ idRessource: aTypeMrFiche });
+					if (!(0, AccessApp_1.getApp)().getMessage().EnAffichage) {
+						(0, AccessApp_1.getApp)()
+							.getMessage()
+							.afficher({ idRessource: aTypeMrFiche });
 					}
 				},
 				getTitle: function (aTypeMrFiche) {
-					return GTraductions.getTitreMFiche(aTypeMrFiche);
+					return ObjetTraduction_1.GTraductions.getTitreMFiche(aTypeMrFiche);
 				},
 			},
 			btnParametrerQCM: {
@@ -469,7 +521,9 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 					aInstance.ouvrirFenetreParametresQCM();
 				},
 				getTitle: function () {
-					return GTraductions.getValeur("FenetreDevoir.ParametresExeQCMDevoir");
+					return ObjetTraduction_1.GTraductions.getValeur(
+						"FenetreDevoir.ParametresExeQCMDevoir",
+					);
 				},
 			},
 			cbRamenerSur20: {
@@ -503,9 +557,10 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 					if (!!aInstance.baremeService) {
 						lStrBaremeDuService = aInstance.baremeService.getValeur();
 					}
-					return GTraductions.getValeur("FenetreDevoir.Ramenersur20", [
-						lStrBaremeDuService,
-					]);
+					return ObjetTraduction_1.GTraductions.getValeur(
+						"FenetreDevoir.Ramenersur20",
+						[lStrBaremeDuService],
+					);
 				},
 			},
 			cbFacultatif: {
@@ -558,11 +613,14 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 				let lCouleurFacultatif = "transparent";
 				if (!!aInstance.devoir) {
 					if (aInstance.devoir.commeUnBonus) {
-						lCouleurFacultatif = GCouleur.devoir.commeUnBonus;
+						lCouleurFacultatif = (0, AccessApp_1.getApp)().getCouleur().devoir
+							.commeUnBonus;
 					} else if (aInstance.devoir.commeUneNote) {
-						lCouleurFacultatif = GCouleur.devoir.commeUneNote;
+						lCouleurFacultatif = (0, AccessApp_1.getApp)().getCouleur().devoir
+							.commeUneNote;
 					} else if (aInstance.devoir.commeUnSeuil) {
-						lCouleurFacultatif = GCouleur.devoir.commeUnSeuil;
+						lCouleurFacultatif = (0, AccessApp_1.getApp)().getCouleur().devoir
+							.commeUnSeuil;
 					}
 				}
 				return { "background-color": lCouleurFacultatif };
@@ -590,21 +648,26 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 			},
 		});
 	}
-	ouvrirPJCloud() {}
+	ouvrirPJCloud(aParams) {}
+	ouvrirPJCloudENEJ(aParams) {}
 	construireInstances() {
 		this.identDateDevoir = this.add(
-			ObjetCelluleDate,
+			ObjetCelluleDate_1.ObjetCelluleDate,
 			this._evenementSurDateDevoir,
 			this.initialiserDateDevoir,
 		);
 		this.identDatePublication = this.add(
-			ObjetCelluleDate,
+			ObjetCelluleDate_1.ObjetCelluleDate,
 			this._evenementSurDatePublication,
 			this.initialiserDatePublication,
 		);
-		this.identPeriodes = this.add(ObjetListe, this._evenementSurPeriodes, null);
+		this.identPeriodes = this.add(
+			ObjetListe_1.ObjetListe,
+			this._evenementSurPeriodes,
+			null,
+		);
 		this.idComboFacultatif = this.add(
-			ObjetSaisie,
+			ObjetSaisie_1.ObjetSaisie,
 			this.eventComboFacultatif,
 			this.initComboFacultatif,
 		);
@@ -628,14 +691,14 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 		}
 		if (this.avecQCMCompetences) {
 			this.identListeCompetencesQCM = this.add(
-				ObjetListe,
+				ObjetListe_1.ObjetListe,
 				this.evenementSurListeCompetencesQCM,
 				this.initialiserListeCompetencesQCM,
 			);
 		}
 		if (this.avecCategorieEvaluation) {
 			this.idComboCategorie = this.add(
-				ObjetSaisie,
+				ObjetSaisie_1.ObjetSaisie,
 				this.eventComboCategorie,
 				this.initComboCategorie,
 			);
@@ -653,15 +716,14 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 	getHtmlInfoPublicationDecaleeParents() {
 		return "";
 	}
-	initialiserListeCompetencesQCM() {}
-	evenementSurListeCompetencesQCM() {}
+	initialiserListeCompetencesQCM(aInstance) {}
+	evenementSurListeCompetencesQCM(aParametres) {}
 	avecBorneSurDateSaisissable() {
 		return true;
 	}
 	initialiserDateDevoir(aInstance) {
 		aInstance.setOptionsObjetCelluleDate({
-			largeurBouton: 100,
-			labelledById: this.idLabelDateValidation,
+			ariaLabelledBy: this.idLabelDateValidation,
 		});
 		if (!this.avecBorneSurDateSaisissable()) {
 			aInstance.setOptionsObjetCelluleDate({
@@ -672,8 +734,8 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 	}
 	initialiserDatePublication(aInstance) {
 		aInstance.setOptionsObjetCelluleDate({
-			labelledById: this.idLabelDatePublication,
-			describedById: this.idInfoPublicationDecaleeParents,
+			ariaLabelledBy: this.idLabelDatePublication,
+			ariaDescribedBy: this.idInfoPublicationDecaleeParents,
 		});
 		if (!this.avecBorneSurDateSaisissable()) {
 			aInstance.setOptionsObjetCelluleDate({
@@ -685,7 +747,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 	initComboFacultatif(aInstance) {
 		aInstance.setOptionsObjetSaisie({
 			longueur: 150,
-			labelledById: this.idLabelComboFacultatif,
+			ariaLabelledBy: this.idLabelComboFacultatif,
 		});
 	}
 	initComboCategorie(aInstance) {
@@ -697,7 +759,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 			getContenuElement: function (aParams) {
 				return _composeLibelleCategorie(aParams.element);
 			},
-			labelledById: this.idLabelComboCategorie,
+			ariaLabelledBy: this.idLabelComboCategorie,
 		});
 	}
 	setDonnees(
@@ -709,7 +771,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 		aListeCategories,
 	) {
 		this.devoirOriginel = aDevoir;
-		this.devoir = MethodesObjet.dupliquer(aDevoir);
+		this.devoir = MethodesObjet_1.MethodesObjet.dupliquer(aDevoir);
 		this.avecDetailPublicationQCM =
 			aAvecDetailPublicationQCM !== null &&
 			aAvecDetailPublicationQCM !== undefined
@@ -719,8 +781,10 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 		let lTitre = "";
 		lTitre +=
 			(aEnCreation
-				? GTraductions.getValeur("Notes.CreerDevoir")
-				: GTraductions.getValeur("Notes.ModificationDevoir")) + " : ";
+				? ObjetTraduction_1.GTraductions.getValeur("Notes.CreerDevoir")
+				: ObjetTraduction_1.GTraductions.getValeur(
+						"Notes.ModificationDevoir",
+					)) + " : ";
 		if (this.avecSousMatiere && !this.devoir.service.estUnService) {
 			lTitre += this.devoir.service.matiere.getLibelle() + " (";
 		}
@@ -750,7 +814,8 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 		}
 		if (this.avecThemes) {
 			this.getInstance(this.identMultiSelectionTheme).setDonnees(
-				this.devoir.ListeThemes || new ObjetListeElements(),
+				this.devoir.ListeThemes ||
+					new ObjetListeElements_1.ObjetListeElements(),
 				this.avecSousMatiere && !this.devoir.service.estUnService
 					? this.devoir.service.pere.matiere
 					: this.devoir.service.matiere,
@@ -761,14 +826,14 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 		this.actualiser();
 		this.actualiserDevoirRattrapage();
 		this.afficher();
-		const lClasse = new ObjetListeElements();
+		const lClasse = new ObjetListeElements_1.ObjetListeElements();
 		for (let i = 0, lNbr = this.devoir.listeClasses.count(); i < lNbr; i++) {
 			if (!this._estUnGroupe(this.devoir.listeClasses.get(i))) {
 				lClasse.add(this.devoir.listeClasses.get(i));
 			}
 		}
 		this.getInstance(this.identPeriodes).setDonnees(
-			new DonneesListe_DevoirPeriode(lClasse, {
+			new DonneesListe_DevoirPeriode_1.DonneesListe_DevoirPeriode(lClasse, {
 				instance: this.getInstance(this.identPeriodes),
 				nbrColonnesPeriodes: this.getNbrColonnesPeriodes(),
 				regrouperPeriodes: this.regrouperPeriodes,
@@ -798,7 +863,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 			`<div class="flex-contain cols" style="width: ${this.largeurs.devoir}px;">`,
 		);
 		T.push(
-			`<div class="flex-contain m-bottom-l" ie-if="estVerrouillageVisible">\n            <ie-checkbox ie-model="cbDevoirVerrouille">${GTraductions.getValeur("FenetreDevoir.Verrouille")}</ie-checkbox>\n            <div class="locked-contain" ie-if="estDevoirVerrouille">\n                <i class="icon_lock locked"></i>\n            </div>\n          </div>`,
+			`<div class="flex-contain m-bottom-l" ie-if="estVerrouillageVisible">\n            <ie-checkbox ie-model="cbDevoirVerrouille">${ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.Verrouille")}</ie-checkbox>\n            <div class="locked-contain" ie-if="estDevoirVerrouille">\n                <i role="presentation" class="icon_lock locked"></i>\n            </div>\n          </div>`,
 		);
 		if (this.avecQCM) {
 			T.push(
@@ -816,11 +881,11 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 			);
 		}
 		T.push(
-			`<div class="field-contain as-grid" style="--width-bloc : 9.5rem;">\n              <label id="${this.idLabelDateValidation}">${GTraductions.getValeur("FenetreDevoir.DevoirDu")}</label>\n              <div id="${this.getInstance(this.identDateDevoir).getNom()}"></div>\n            </div>`,
+			`<div class="field-contain as-grid" style="--width-bloc : 9.5rem;">\n              <label id="${this.idLabelDateValidation}">${ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.DevoirDu")}</label>\n              <div id="${this.getNomInstance(this.identDateDevoir)}"></div>\n            </div>`,
 		);
 		T.push(`<div class="flex-contain flex-start">`);
 		T.push(
-			`  <div id="${this.idZoneDatePublication}" class="fix-bloc field-contain as-grid">\n                <label id="${this.idLabelDatePublication}">${GTraductions.getValeur("FenetreDevoir.NotePublieeLe")}: </label>\n                <div id="${this.getInstance(this.identDatePublication).getNom()}"></div>\n              </div>`,
+			`  <div id="${this.idZoneDatePublication}" class="fix-bloc field-contain as-grid">\n                <label id="${this.idLabelDatePublication}">${ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.NotePublieeLe")}: </label>\n                <div id="${this.getNomInstance(this.identDatePublication)}"></div>\n              </div>`,
 		);
 		T.push(
 			`  <div class="field-contain fluid-bloc">\n                <p class="message" id="${this.idInfoPublicationDecaleeParents}" ie-html="getHtmlInfoPublicationDecaleeParents"></p>\n              </div>`,
@@ -837,21 +902,24 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 		if (this.avecGenreNotation) {
 			T.push(this.composeGenreNotation());
 		}
-		T.push('<div class="field-contain">');
+		T.push('<div class="field-contain flex-gap-l">');
 		T.push(
 			this.composeLigneSaisie(
-				GTraductions.getValeur("FenetreDevoir.Bareme"),
+				ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.Bareme"),
 				this.IdBareme,
 				this.GenreEdition.bareme,
 				"Gras m-right-l",
 				null,
-				3 + (this.baremeAvecDecimales ? 1 + TypeNote.decimalNotation : 0),
+				3 +
+					(this.baremeAvecDecimales
+						? 1 + TypeNote_1.TypeNote.decimalNotation
+						: 0),
 				45,
 			),
 		);
 		T.push(
 			this.composeLigneSaisie(
-				GTraductions.getValeur("FenetreDevoir.Coefficient"),
+				ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.Coefficient"),
 				this.IdCoefficient,
 				this.GenreEdition.coefficient,
 				"Gras m-right-l",
@@ -868,12 +936,33 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 		);
 		T.push(
 			'<div class="field-contain m-bottom-xl">',
-			composeFacultatif.call(this),
+			this.composeFacultatif(),
 			"</div>",
 		);
 		if (this.avecCategorieEvaluation) {
 			T.push(
-				`<div class="field-contain">\n                <label id="${this.idLabelComboCategorie}">${GTraductions.getValeur("FenetreDevoir.Categorie")}</label>\n                <div id="${this.getInstance(this.idComboCategorie).getNom()}"></div>\n                <ie-bouton aria-labelledby="${this.idLabelComboCategorie}" class="m-left-l" ie-model="btnCategorie" ie-display="btnCategorie.estVisible">...</ie-bouton>\n              </div>`,
+				IE.jsx.str(
+					"div",
+					{ class: "field-contain" },
+					IE.jsx.str(
+						"label",
+						{ id: this.idLabelComboCategorie },
+						ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.Categorie"),
+					),
+					IE.jsx.str("div", { id: this.getNomInstance(this.idComboCategorie) }),
+					IE.jsx.str(
+						"ie-bouton",
+						{
+							"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+								"FenetreCategorieEvaluation.SelectionUneCategorie",
+							),
+							class: "m-left-l",
+							"ie-model": "btnCategorie",
+							"ie-display": "btnCategorie.estVisible",
+						},
+						"...",
+					),
+				),
 			);
 		}
 		if (
@@ -889,16 +978,46 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 			);
 		}
 		T.push(this.composeDevoirSurveille());
+		const lLabelCommentaire =
+			`${ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.RedigezVotreCommentaire")}, ${ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.VisibleParEleves")}`.toAttrValue();
+		const lGetNode = (aNode) => {
+			const lThis = this;
+			$(aNode).on({
+				focus() {
+					lThis.surFocus(this.id, lThis.GenreEdition.commentaire);
+				},
+				blur() {
+					lThis.surBlur(this.id);
+				},
+				keypress(aEvent) {
+					if (ToucheClavier_1.ToucheClavierUtil.estEventRetourChariot(aEvent)) {
+						lThis.surBlur(this.id);
+						lThis.surFocus(this.id, lThis.GenreEdition.commentaire);
+					}
+				},
+			});
+		};
 		T.push(
-			`<div class="field-contain">\n\n        <input id="${this.IdCommentaire}" class="round-style fluid-bloc full-width" maxlength="${this.getTailleMaxCommentaire()}" placeholder="${GTraductions.getValeur("FenetreDevoir.RedigezVotreCommentaire")}, ${GTraductions.getValeur("FenetreDevoir.VisibleParEleves")}" onfocus="${this.Nom}.surFocus (id, ${this.GenreEdition.commentaire})" onblur="${this.Nom}.surBlur (id)" onkeypress="if (GNavigateur.IsToucheRetourChariot ()) {${this.Nom}.surBlur (id);${this.Nom}.surFocus (id, ${this.GenreEdition.commentaire})}"></input>\n        </div>`,
+			IE.jsx.str(
+				"div",
+				{ class: "field-contain" },
+				IE.jsx.str("input", {
+					id: this.IdCommentaire,
+					class: "fluid-bloc full-width",
+					maxlength: this.getTailleMaxCommentaire(),
+					"aria-label": lLabelCommentaire,
+					placeholder: lLabelCommentaire,
+					"ie-node": lGetNode,
+				}),
+			),
 		);
 		if (this.avecThemes) {
 			T.push(
-				`<div class="field-contain flex-contain flex-center">\n                <label class="fix-bloc">${GTraductions.getValeur("Themes")} : </label>\n                <div class="constrained-bloc" id="${this.getInstance(this.identMultiSelectionTheme).getNom()}" ></div>\n              </div>`,
+				`<div class="field-contain flex-contain flex-center">\n                <label class="fix-bloc">${ObjetTraduction_1.GTraductions.getValeur("Themes")} : </label>\n                <div class="constrained-bloc" id="${this.getNomInstance(this.identMultiSelectionTheme)}"></div>\n              </div>`,
 			);
 		}
 		T.push(
-			`<div id="${this.idMessageDetailNotesNonPublie}" class="field-contain Italique">${GTraductions.getValeur("FenetreDevoir.DetailNotesNonPublie")}</div>`,
+			`<div id="${this.idMessageDetailNotesNonPublie}" class="field-contain Italique">${ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.DetailNotesNonPublie")}</div>`,
 		);
 		if (this.avecRattrapageService) {
 			T.push(
@@ -945,7 +1064,9 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 	getNbrColonnesPeriodes() {
 		return this.regrouperPeriodes ? 1 : 2;
 	}
-	_estUnGroupe() {}
+	_estUnGroupe(aClasse) {
+		return;
+	}
 	composeCommentaireSurNote() {
 		return "";
 	}
@@ -953,7 +1074,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 		const T = [];
 		T.push(
 			'<div class="field-contain p-top-l p-bottom-l" id="',
-			this.getInstance(this.identPeriodes).getNom(),
+			this.getNomInstance(this.identPeriodes),
 			'"></div>',
 		);
 		return T.join("");
@@ -969,6 +1090,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 		aTypeMonsieurFiche,
 		aMaxLength,
 		aInputWidth,
+		aAriaLabelSansTitre,
 	) {
 		const lMaxLength = aMaxLength ? aMaxLength : 40;
 		const T = [];
@@ -976,28 +1098,34 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 		if (ATitre) {
 			T.push('<label  for="', AId, '">', ATitre, "</label>");
 		}
+		const lGetNode = (aNode) => {
+			const lThis = this;
+			$(aNode).on({
+				focus() {
+					lThis.surFocus(this.id, aGenreEdition);
+				},
+				blur() {
+					lThis.surBlur(this.id);
+				},
+				keypress(aEvent) {
+					if (ToucheClavier_1.ToucheClavierUtil.estEventRetourChariot(aEvent)) {
+						lThis.surBlur(this.id);
+						lThis.surFocus(this.id, aGenreEdition);
+					}
+				},
+			});
+		};
 		T.push(
-			'<input type="text" maxlength="',
-			lMaxLength,
-			'" id="' +
-				AId +
-				'" class="round-style ' +
-				(aClass ? " " + aClass : "") +
-				'" onfocus="' +
-				this.Nom +
-				".surFocus (id, " +
-				aGenreEdition +
-				')" onblur="' +
-				this.Nom +
-				'.surBlur (id)" onkeypress="if (GNavigateur.isToucheRetourChariot ()) {' +
-				this.Nom +
-				".surBlur (id); " +
-				this.Nom +
-				".surFocus (id, " +
-				aGenreEdition +
-				')}" ' +
-				(aInputWidth ? ' style="width:' + aInputWidth + 'px;"' : "") +
-				" />",
+			IE.jsx.str("input", {
+				type: "text",
+				"ie-node": lGetNode,
+				maxlength: lMaxLength,
+				id: AId,
+				class: aClass ? " " + { aClass } : "",
+				style: { width: aInputWidth },
+				"aria-label":
+					aAriaLabelSansTitre && !ATitre ? aAriaLabelSansTitre : false,
+			}),
 		);
 		if (aTypeMonsieurFiche) {
 			T.push(
@@ -1009,7 +1137,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 	}
 	surFocus(aId, aGenreEdition) {
 		this.genreEdition = aGenreEdition;
-		GHtml.setSelectionEdit(aId);
+		ObjetHtml_1.GHtml.setSelectionEdit(aId);
 	}
 	surBlur(aId) {
 		this.genreEdition = this.GenreEdition.aucune;
@@ -1028,7 +1156,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 				this.devoir.coefficient = lNote;
 			}
 		}
-		let lThis;
+		let lThis = this;
 		if (AId === this.IdBareme) {
 			lNote = this.controlerNote(this.IdBareme, 1.0, this.getBaremeMaximal());
 			if (
@@ -1036,43 +1164,45 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 				lNote.getValeur() < this.devoir.bareme.getValeur() &&
 				!this.enCreation
 			) {
-				if (!GApplication.getMessage().EnAffichage) {
+				if (!(0, AccessApp_1.getApp)().getMessage().EnAffichage) {
 					lThis = this;
-					GApplication.getMessage().afficher({
-						type: EGenreBoiteMessage.Confirmation,
-						message:
-							GTraductions.getValeur(
-								"FenetreDevoir.AvertissementChangementDeBareme1",
-								[lNote.getValeur()],
-							) +
-							"<br />" +
-							(this.avecDevoirRattrapage &&
-							this.verifierExistenceDevoirRattrapage(this.devoir) &&
-							lNote.getValeur() <
-								this.devoir.devoirRattrapage.noteSeuil.getValeur()
-								? GTraductions.getValeur(
-										"FenetreDevoir.AvertissementChangementDeBareme2",
-									) + "<br />"
-								: "") +
-							"<br />" +
-							GTraductions.getValeur(
-								"FenetreDevoir.ConfirmerChangementDeBareme",
-							),
-						callback: function (aBouton) {
-							if (aBouton === 0) {
-								lThis.devoir.bareme = lNote;
-								if (
-									lThis.avecDevoirRattrapage &&
-									lThis.verifierExistenceDevoirRattrapage(lThis.devoir) &&
-									lNote.getValeur() <
-										lThis.devoir.devoirRattrapage.noteSeuil.getValeur()
-								) {
-									lThis.devoir.devoirRattrapage.noteSeuil = lNote;
+					(0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+							message:
+								ObjetTraduction_1.GTraductions.getValeur(
+									"FenetreDevoir.AvertissementChangementDeBareme1",
+									[lNote.getValeur()],
+								) +
+								"<br />" +
+								(this.avecDevoirRattrapage &&
+								this.verifierExistenceDevoirRattrapage(this.devoir) &&
+								lNote.getValeur() <
+									this.devoir.devoirRattrapage.noteSeuil.getValeur()
+									? ObjetTraduction_1.GTraductions.getValeur(
+											"FenetreDevoir.AvertissementChangementDeBareme2",
+										) + "<br />"
+									: "") +
+								"<br />" +
+								ObjetTraduction_1.GTraductions.getValeur(
+									"FenetreDevoir.ConfirmerChangementDeBareme",
+								),
+							callback: function (aBouton) {
+								if (aBouton === 0) {
+									lThis.devoir.bareme = lNote;
+									if (
+										lThis.avecDevoirRattrapage &&
+										lThis.verifierExistenceDevoirRattrapage(lThis.devoir) &&
+										lNote.getValeur() <
+											lThis.devoir.devoirRattrapage.noteSeuil.getValeur()
+									) {
+										lThis.devoir.devoirRattrapage.noteSeuil = lNote;
+									}
 								}
-							}
-							lThis.actualiser();
-						},
-					});
+								lThis.actualiser();
+							},
+						});
 				}
 				return;
 			} else if (
@@ -1081,27 +1211,29 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 				this.verifierExistenceDevoirRattrapage(this.devoir) &&
 				lNote.getValeur() < this.devoir.devoirRattrapage.noteSeuil.getValeur()
 			) {
-				if (!GApplication.getMessage().EnAffichage) {
+				if (!(0, AccessApp_1.getApp)().getMessage().EnAffichage) {
 					lThis = this;
-					GApplication.getMessage().afficher({
-						type: EGenreBoiteMessage.Confirmation,
-						message:
-							GTraductions.getValeur(
-								"FenetreDevoir.AvertissementChangementDeBareme2",
-							) +
-							"<br />" +
-							"<br />" +
-							GTraductions.getValeur(
-								"FenetreDevoir.ConfirmerChangementDeBareme",
-							),
-						callback: function (aBouton) {
-							if (aBouton === 0) {
-								lThis.devoir.bareme = lNote;
-								lThis.devoir.devoirRattrapage.noteSeuil = lNote;
-							}
-							lThis.actualiser();
-						},
-					});
+					(0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+							message:
+								ObjetTraduction_1.GTraductions.getValeur(
+									"FenetreDevoir.AvertissementChangementDeBareme2",
+								) +
+								"<br />" +
+								"<br />" +
+								ObjetTraduction_1.GTraductions.getValeur(
+									"FenetreDevoir.ConfirmerChangementDeBareme",
+								),
+							callback: function (aBouton) {
+								if (aBouton === 0) {
+									lThis.devoir.bareme = lNote;
+									lThis.devoir.devoirRattrapage.noteSeuil = lNote;
+								}
+								lThis.actualiser();
+							},
+						});
 				}
 				return;
 			} else if (lNote) {
@@ -1112,14 +1244,14 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 			this.mettreAJourRattrapageServiceSeuil();
 		}
 		if (AId === this.IdCommentaire) {
-			this.devoir.commentaire = GHtml.getValue(this.IdCommentaire);
+			this.devoir.commentaire = ObjetHtml_1.GHtml.getValue(this.IdCommentaire);
 		}
 		if (this.avecDevoirRattrapage) {
 			this.surEditionRattrapage(AId);
 		}
 		this.actualiser();
 	}
-	surEditionRattrapage() {}
+	surEditionRattrapage(aIdElementModifie) {}
 	mettreAJourRattrapageServiceSeuil() {}
 	_evenementSurDateDevoir(aDate) {
 		this.devoir.date = aDate;
@@ -1132,10 +1264,10 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 		this.evenementSurDatePublication(aDate);
 		this.actualiser();
 	}
-	evenementSurDatePublication() {}
+	evenementSurDatePublication(aDate) {}
 	_evenementSurPeriodes(aParamEvnt) {
 		switch (aParamEvnt.genreEvenement) {
-			case EGenreEvenementListe.Selection:
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Selection:
 				if (aParamEvnt.colonne > 0) {
 					if (this.regrouperPeriodes) {
 						this.surSelectionPeriode(aParamEvnt.ligne, -1, aParamEvnt.article);
@@ -1153,7 +1285,10 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 		}
 	}
 	eventComboFacultatif(aParams) {
-		if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
 			this.devoir.commeUneNote =
 				aParams.element.getGenre() === this.genreFacultatif.commeNote;
 			this.devoir.commeUnBonus =
@@ -1164,25 +1299,32 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 		}
 	}
 	eventComboCategorie(aParams) {
-		if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
 			this.devoir.categorie = aParams.element;
 			this.actualiser();
 		}
 	}
 	controlerNote(aId, aMin, aMax) {
-		const lNote = new TypeNote(GHtml.getValue(aId));
-		const lNoteMin = new TypeNote(aMin);
-		const lNoteMax = new TypeNote(aMax);
+		const lNote = new TypeNote_1.TypeNote(ObjetHtml_1.GHtml.getValue(aId));
+		const lNoteMin = new TypeNote_1.TypeNote(aMin);
+		const lNoteMax = new TypeNote_1.TypeNote(aMax);
 		const lEstValide = lNote.estUneNoteValide(lNoteMin, lNoteMax, false, false);
 		if (!lEstValide) {
-			if (!GApplication.getMessage().EnAffichage) {
-				GApplication.getMessage().afficher({
-					type: EGenreBoiteMessage.Information,
-					message: GChaine.format(
-						GTraductions.getValeur("FenetreDevoir.ValeurComprise"),
-						[lNoteMin, lNoteMax],
-					),
-				});
+			if (!(0, AccessApp_1.getApp)().getMessage().EnAffichage) {
+				(0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+						message: ObjetChaine_1.GChaine.format(
+							ObjetTraduction_1.GTraductions.getValeur(
+								"FenetreDevoir.ValeurComprise",
+							),
+							[lNoteMin + "", lNoteMax + ""],
+						),
+					});
 			}
 		}
 		return lEstValide ? lNote : null;
@@ -1190,20 +1332,23 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 	estUnRattrapageDeService() {
 		return false;
 	}
-	existeNotesEleveSurRattrapage() {
+	existeNotesEleveSurRattrapage(aSansVerifierNote) {
 		return false;
 	}
-	actualiserCompetencesDeServiceEtQcm() {}
+	actualiserCompetencesDeServiceEtQcm(aExecution) {}
 	actualiser() {
 		this.getInstance(this.identDateDevoir).setDonnees(this.devoir.date);
-		GHtml.setValue(this.IdCoefficient, this.devoir.coefficient.getNote());
+		ObjetHtml_1.GHtml.setValue(
+			this.IdCoefficient,
+			this.devoir.coefficient.getNote(),
+		);
 		let lBareme = this.devoir.bareme.getValeur();
 		if (this.baremeAvecDecimales) {
 			if (lBareme !== Math.floor(lBareme)) {
 				lBareme = this.devoir.bareme.getNote();
 			}
 		}
-		GHtml.setValue(this.IdBareme, lBareme);
+		ObjetHtml_1.GHtml.setValue(this.IdBareme, lBareme);
 		this.getInstance(this.idComboFacultatif).setActif(
 			this.devoir.commeUnBonus ||
 				this.devoir.commeUneNote ||
@@ -1221,7 +1366,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 				lIndiceComboFacultatif,
 			),
 		);
-		GHtml.setValue(this.IdCommentaire, this.devoir.commentaire);
+		ObjetHtml_1.GHtml.setValue(this.IdCommentaire, this.devoir.commentaire);
 		if (!this.enCreation) {
 			this.setBoutonActif(
 				this.genreBouton.supprimer,
@@ -1246,7 +1391,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 				leDevoirAUneEvaluationAvecPeriodeCloturee
 			),
 		);
-		GHtml.setDisabled(
+		ObjetHtml_1.GHtml.setDisabled(
 			this.IdCoefficient,
 			this.cloture ||
 				!this.Actif ||
@@ -1254,7 +1399,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 				!!this.devoir.coeffVerrouille ||
 				this.estUnRattrapageDeService(),
 		);
-		GHtml.setDisabled(
+		ObjetHtml_1.GHtml.setDisabled(
 			this.IdBareme,
 			this.cloture ||
 				!this.Actif ||
@@ -1269,7 +1414,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 				this.estUnRattrapageDeService()
 			),
 		);
-		GHtml.setDisabled(
+		ObjetHtml_1.GHtml.setDisabled(
 			this.IdCommentaire,
 			this.cloture ||
 				!this.Actif ||
@@ -1297,8 +1442,11 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 		) {
 			lAvecDetailNotesNonPublie = true;
 		}
-		GHtml.setDisplay(this.idZoneDatePublication, !lAvecDetailNotesNonPublie);
-		GHtml.setDisplay(
+		ObjetHtml_1.GHtml.setDisplay(
+			this.idZoneDatePublication,
+			!lAvecDetailNotesNonPublie,
+		);
+		ObjetHtml_1.GHtml.setDisplay(
 			this.idMessageDetailNotesNonPublie,
 			!!lAvecDetailNotesNonPublie,
 		);
@@ -1320,7 +1468,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 			for (let J = 0; J < lNbr2; J++) {
 				const lPeriode = lClasse.listePeriodes.get(J);
 				if (lPeriode) {
-					GHtml.setDisabled(
+					ObjetHtml_1.GHtml.setDisabled(
 						this.getIdPeriode(I, J),
 						(lPeriode.getNumero() && !lPeriode.getActif()) ||
 							this.devoir.verrouille,
@@ -1358,7 +1506,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 	surValidation(aGenreBouton) {
 		switch (aGenreBouton) {
 			case this.genreBouton.supprimer: {
-				if (!GApplication.getMessage().EnAffichage) {
+				if (!(0, AccessApp_1.getApp)().getMessage().EnAffichage) {
 					this.demanderConfirmationSuppression(aGenreBouton);
 				}
 				break;
@@ -1386,16 +1534,22 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 					}
 				}
 				if (!lAuMoinsUnePeriodeParClasse) {
-					if (!GApplication.getMessage().EnAffichage) {
+					if (!(0, AccessApp_1.getApp)().getMessage().EnAffichage) {
 						const lThis = this;
-						GApplication.getMessage().afficher({
-							type: EGenreBoiteMessage.Information,
-							titre: GTraductions.getValeur("FenetreDevoir.CreationImpossible"),
-							message: GTraductions.getValeur("FenetreDevoir.PasDeperiode"),
-							callback: function () {
-								lThis.validerAction(lThis.genreBouton.annuler);
-							},
-						});
+						(0, AccessApp_1.getApp)()
+							.getMessage()
+							.afficher({
+								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+								titre: ObjetTraduction_1.GTraductions.getValeur(
+									"FenetreDevoir.CreationImpossible",
+								),
+								message: ObjetTraduction_1.GTraductions.getValeur(
+									"FenetreDevoir.PasDeperiode",
+								),
+								callback: function () {
+									lThis.validerAction(lThis.genreBouton.annuler);
+								},
+							});
 					}
 				} else {
 					this.validerAction(aGenreBouton);
@@ -1406,16 +1560,20 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 	}
 	demanderConfirmationSuppression(aGenreBouton) {
 		const lThis = this;
-		GApplication.getMessage().afficher({
-			type: EGenreBoiteMessage.Confirmation,
-			message: GTraductions.getValeur("FenetreDevoir.ConfirmerSuppression"),
-			callback: function (aAccepte) {
-				lThis.surConfirmationSuppression(aAccepte, aGenreBouton);
-			},
-		});
+		(0, AccessApp_1.getApp)()
+			.getMessage()
+			.afficher({
+				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+				message: ObjetTraduction_1.GTraductions.getValeur(
+					"FenetreDevoir.ConfirmerSuppression",
+				),
+				callback: function (aAccepte) {
+					lThis.surConfirmationSuppression(aAccepte, aGenreBouton);
+				},
+			});
 	}
 	surConfirmationSuppression(aAccepte, aGenreBouton) {
-		if (aAccepte === EGenreAction.Valider) {
+		if (aAccepte === Enumere_Action_1.EGenreAction.Valider) {
 			this.validerAction(aGenreBouton);
 		}
 	}
@@ -1448,7 +1606,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 			const lPeriode =
 				J >= 0 ? lClasse.listePeriodes.get(J) : lClasse.listePeriodes;
 			if (
-				lPeriode instanceof ObjetListeElements ||
+				lPeriode instanceof ObjetListeElements_1.ObjetListeElements ||
 				!lPeriode.existeNumero() ||
 				lPeriode.Actif
 			) {
@@ -1476,9 +1634,9 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 			}
 			case lInstance.GenreEdition.coefficient: {
 				lAvecLettre = false;
-				lAvecVirgule = TypeNote.avecVirgule();
+				lAvecVirgule = TypeNote_1.TypeNote.avecVirgule();
 				lAvecMoins = false;
-				return GNavigateur.estCaractereNote(
+				return ObjetNavigateur_1.Navigateur.estCaractereNote(
 					lAvecLettre,
 					lAvecVirgule,
 					lAvecMoins,
@@ -1488,7 +1646,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 				lAvecLettre = false;
 				lAvecVirgule = !!lInstance.baremeAvecDecimales;
 				lAvecMoins = false;
-				return GNavigateur.estCaractereNote(
+				return ObjetNavigateur_1.Navigateur.estCaractereNote(
 					lAvecLettre,
 					lAvecVirgule,
 					lAvecMoins,
@@ -1504,8 +1662,8 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 		return "";
 	}
 	actualiserGenreNotation() {}
-	actualiserSelectionService() {}
-	verifierExistenceDevoirRattrapage() {
+	actualiserSelectionService(aListeServices) {}
+	verifierExistenceDevoirRattrapage(aDevoir) {
 		return false;
 	}
 	addIdentsDevoirRattrapage() {}
@@ -1543,18 +1701,26 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 		this.idCorrige = this.Nom + "_Corrige";
 	}
 	_supprimerSujet() {
-		this.devoir.listeSujets.get(0).setEtat(EGenreEtat.Suppression);
+		this.devoir.listeSujets
+			.get(0)
+			.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 		this.actualiserSujet();
 	}
 	_supprimerCorrige() {
-		this.devoir.listeCorriges.get(0).setEtat(EGenreEtat.Suppression);
+		this.devoir.listeCorriges
+			.get(0)
+			.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 		this.actualiserCorrige();
 	}
 	actualiserSujet() {
-		GHtml.setHtml(this.idSujet, this._composeSujet(), { instance: this });
+		ObjetHtml_1.GHtml.setHtml(this.idSujet, this._composeSujet(), {
+			instance: this,
+		});
 	}
 	actualiserCorrige() {
-		GHtml.setHtml(this.idCorrige, this._composeCorrige(), { instance: this });
+		ObjetHtml_1.GHtml.setHtml(this.idCorrige, this._composeCorrige(), {
+			instance: this,
+		});
 	}
 	avecDepotCloud() {
 		return false;
@@ -1562,7 +1728,9 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 	_composeSujet() {
 		const H = [];
 		if (this._autoriseSujetEtCorrigeDevoir()) {
-			const lLibelle = GTraductions.getValeur("FenetreDevoir.avecLeSujet");
+			const lLibelle = ObjetTraduction_1.GTraductions.getValeur(
+				"FenetreDevoir.avecLeSujet",
+			);
 			const lmodel = this.avecDepotCloud()
 				? 'ie-node="selectSujetDevoir"'
 				: 'ie-model="selecFileSujetDevoir"';
@@ -1574,8 +1742,8 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 			);
 			H.push(
 				'<ie-checkbox ie-model="cbSujet" ',
-				GObjetWAI.composeAttribut({
-					genre: EGenreAttribut.label,
+				ObjetWAI_1.GObjetWAI.composeAttribut({
+					genre: ObjetWAI_1.EGenreAttribut.label,
 					valeur: lLibelle,
 				}),
 				" >",
@@ -1588,10 +1756,11 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 				if (!!lSujet) {
 					H.push('<div class="chips-contain">');
 					H.push(
-						GChaine.composerUrlLienExterne({
+						ObjetChaine_1.GChaine.composerUrlLienExterne({
 							documentJoint: lSujet,
 							genreDocumentJoint:
-								lSujet.genreDocument || EGenreDocumentJoint.Fichier,
+								lSujet.genreDocument ||
+								Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier,
 							genreRessource: this.getEGenreSujet(),
 						}),
 					);
@@ -1611,7 +1780,9 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 		return H.join("");
 	}
 	_composeCorrigeDevoir() {
-		const lLibelle = GTraductions.getValeur("FenetreDevoir.avecLeCorrige");
+		const lLibelle = ObjetTraduction_1.GTraductions.getValeur(
+			"FenetreDevoir.avecLeCorrige",
+		);
 		const H = [];
 		const lmodel = this.avecDepotCloud()
 			? 'ie-node="selectCorrigeDevoir"'
@@ -1624,8 +1795,8 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 		);
 		H.push(
 			'<ie-checkbox ie-model="cbCorrigeDevoir"',
-			GObjetWAI.composeAttribut({
-				genre: EGenreAttribut.label,
+			ObjetWAI_1.GObjetWAI.composeAttribut({
+				genre: ObjetWAI_1.EGenreAttribut.label,
 				valeur: lLibelle,
 			}),
 			">",
@@ -1638,10 +1809,11 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 			if (!!lCorrige) {
 				H.push('<div class="chips-contain">');
 				H.push(
-					GChaine.composerUrlLienExterne({
+					ObjetChaine_1.GChaine.composerUrlLienExterne({
 						documentJoint: lCorrige,
 						genreDocumentJoint:
-							lCorrige.genreDocument || EGenreDocumentJoint.Fichier,
+							lCorrige.genreDocument ||
+							Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier,
 						genreRessource: this.getEGenreCorrige(),
 					}),
 				);
@@ -1653,35 +1825,45 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 	_composeAvecCorrigeQCM() {
 		const H = [];
 		H.push('<ie-checkbox ie-model="cbCorrigeQCM">');
-		H.push(GTraductions.getValeur("FenetreDevoir.AvecCorrigeQCM"));
+		H.push(
+			ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.AvecCorrigeQCM"),
+		);
 		H.push("</ie-checkbox>");
 		return H.join("");
 	}
 	surDemandeSuppressionSujet() {
 		const lThis = this;
-		GApplication.getMessage().afficher({
-			type: EGenreBoiteMessage.Confirmation,
-			titre: "",
-			message: GTraductions.getValeur("FenetreDevoir.MsgConfirmSupprSujet"),
-			callback: function (aGenreAction) {
-				if (aGenreAction === EGenreAction.Valider) {
-					lThis._supprimerSujet();
-				}
-			},
-		});
+		(0, AccessApp_1.getApp)()
+			.getMessage()
+			.afficher({
+				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+				titre: "",
+				message: ObjetTraduction_1.GTraductions.getValeur(
+					"FenetreDevoir.MsgConfirmSupprSujet",
+				),
+				callback: function (aGenreAction) {
+					if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
+						lThis._supprimerSujet();
+					}
+				},
+			});
 	}
 	surDemandeSuppressionCorrige() {
 		const lThis = this;
-		GApplication.getMessage().afficher({
-			type: EGenreBoiteMessage.Confirmation,
-			titre: "",
-			message: GTraductions.getValeur("FenetreDevoir.MsgConfirmSupprCorrige"),
-			callback: function (aGenreAction) {
-				if (aGenreAction === EGenreAction.Valider) {
-					lThis._supprimerCorrige();
-				}
-			},
-		});
+		(0, AccessApp_1.getApp)()
+			.getMessage()
+			.afficher({
+				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+				titre: "",
+				message: ObjetTraduction_1.GTraductions.getValeur(
+					"FenetreDevoir.MsgConfirmSupprCorrige",
+				),
+				callback: function (aGenreAction) {
+					if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
+						lThis._supprimerCorrige();
+					}
+				},
+			});
 	}
 	_autoriseSujetEtCorrigeDevoir() {
 		return !(
@@ -1724,32 +1906,33 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 	addInstancesQCM() {
 		if (this.avecModifQCM) {
 			this.identFenetreSelectionQCM = this.addFenetre(
-				ObjetFenetre_SelectionQCM,
+				ObjetFenetre_SelectionQCM_1.ObjetFenetre_SelectionQCM,
 				this.evntSurSelectionQCM,
 				this.initFenetreSelectionQCM,
 			);
 		}
 		this.identDisponibiliteQCM = this.add(
-			ObjetDisponibilite,
+			ObjetDisponibilite_1.ObjetDisponibilite,
 			this.evntSurDisponibiliteQCM,
 			this.initDisponibiliteQCM,
 		);
 		this.identFenetreParamQCM = this.addFenetre(
-			ObjetFenetre_ParamExecutionQCM,
+			ObjetFenetre_ParamExecutionQCM_1.ObjetFenetre_ParamExecutionQCM,
 			this.evntSurParamExecutionQCM,
 			this.initFenetreParamExecutionQCM,
 		);
 	}
+	initFenetreSelectionQCM(aInstance) {}
 	addInstancesKiosque() {
 		this.identDisponibiliteKiosque = this.add(
-			ObjetDisponibilite,
+			ObjetDisponibilite_1.ObjetDisponibilite,
 			this.evntSurDisponibiliteKiosque,
 			this.initDisponibiliteQCM,
 		);
 	}
 	addInstancesSelectionService() {
 		this.idSelectionService = this.add(
-			ObjetSaisie,
+			ObjetSaisie_1.ObjetSaisie,
 			this.eventSelectionService,
 			this.initSelectionService,
 		);
@@ -1768,14 +1951,18 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 				'"></label>',
 			);
 			T.push(
-				'<ie-bouton class="m-right-l" id="',
-				this.idBtnAssocierKiosque,
-				'" ie-model="btnAssocierKiosque" ',
-				GObjetWAI.composeAttribut({
-					genre: EGenreAttribut.label,
-					valeur: GTraductions.getValeur("FenetreDevoir.AssocierAUnKiosque"),
-				}),
-				">...</ie-bouton>",
+				IE.jsx.str(
+					"ie-bouton",
+					{
+						class: "m-right-l",
+						id: this.idBtnAssocierKiosque,
+						"ie-model": "btnAssocierKiosque",
+						"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreDevoir.AssocierAUnKiosque",
+						),
+					},
+					"...",
+				),
 			);
 			T.push("</div>");
 			T.push(
@@ -1794,10 +1981,12 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 		) {
 			T.push(
 				'<div class="m-bottom-l">',
-				GTraductions.getValeur("FenetreDevoir.ReponseEleveEntre"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"FenetreDevoir.ReponseEleveEntre",
+				),
 				" </div>",
 				'<div id="',
-				this.getInstance(this.identDisponibiliteKiosque).getNom(),
+				this.getNomInstance(this.identDisponibiliteKiosque),
 				'" class="flex-contain flex-center"></div>',
 			);
 		}
@@ -1811,26 +2000,40 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 			);
 			if (this.avecModifQCM) {
 				T.push(
-					`<ie-bouton class="has-dots" id="${this.idBtnAssocierQCM}" ie-model="btnAssocierQCM" ${GObjetWAI.composeAttribut({ genre: EGenreAttribut.label, valeur: GTraductions.getValeur("FenetreDevoir.AssocierAUnQCM") })}>\n                ...\n              </ie-bouton>`,
+					IE.jsx.str(
+						"ie-bouton",
+						{
+							class: "has-dots",
+							id: this.idBtnAssocierQCM,
+							"ie-model": "btnAssocierQCM",
+							"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+								"FenetreDevoir.AssocierAUnQCM",
+							),
+						},
+						"...",
+					),
 				);
 			}
 			T.push(`</div>`);
 			T.push(
-				`<div id="${this.identDetailQCM}" class="m-bottom-l">\n              <div class="field-contain">\n              <label>${GTraductions.getValeur("FenetreDevoir.ReponseEleveEntre")}</label>\n                <ie-btnicon ie-model="btnParametrerQCM" class="icon_cog bt-activable"></ie-btnicon>\n              </div>\n              <div id="${this.getInstance(this.identDisponibiliteQCM).getNom()}"></div>\n            </div>`,
+				`<div id="${this.identDetailQCM}" class="m-bottom-l">\n              <div class="field-contain">\n              <label>${ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.ReponseEleveEntre")}</label>\n                <ie-btnicon ie-model="btnParametrerQCM" class="icon_cog bt-activable"></ie-btnicon>\n              </div>\n              <div id="${this.getNomInstance(this.identDisponibiliteQCM)}"></div>\n            </div>`,
 			);
 		}
 		return T.join("");
 	}
 	composeSelectionService() {
 		return this.avecSelectionService &&
-			MethodesObjet.isNumeric(this.idSelectionService)
-			? `<div class="field-contain">\n        <label id="${this.idLabelSelectionService}">${GTraductions.getValeur("FenetreDevoir.Service")} </label>\n        <div id="${this.getInstance(this.idSelectionService).getNom()}"></div>\n    </div>`
+			MethodesObjet_1.MethodesObjet.isNumeric(this.idSelectionService)
+			? `<div class="field-contain">\n        <label id="${this.idLabelSelectionService}">${ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.Service")} </label>\n        <div id="${this.getNomInstance(this.idSelectionService)}"></div>\n    </div>`
 			: "";
 	}
 	initDisponibiliteQCM(aInstance) {
 		aInstance.setOptionsAffichage({
 			afficherSurUneSeuleLigne: true,
-			chaines: [GTraductions.getValeur("Le"), GTraductions.getValeur("EtLe")],
+			chaines: [
+				ObjetTraduction_1.GTraductions.getValeur("Le"),
+				ObjetTraduction_1.GTraductions.getValeur("EtLe"),
+			],
 			avecHeureDebut: true,
 			avecHeureFin: true,
 		});
@@ -1838,12 +2041,14 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 	initFenetreParamExecutionQCM(aInstance) {
 		aInstance.setOptionsFenetre({
 			modale: true,
-			titre: GTraductions.getValeur("FenetreDevoir.ParametresExeQCMDevoir"),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"FenetreDevoir.ParametresExeQCMDevoir",
+			),
 			largeur: 540,
 			hauteur: null,
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 		});
 	}
@@ -1852,15 +2057,15 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 			longueur: 225,
 			celluleAvecTexteHtml: true,
 			avecTriListeElements: true,
-			labelledById: this.idLabelSelectionService,
+			ariaLabelledBy: this.idLabelSelectionService,
 		});
 	}
-	evntSurSelectionQCM() {}
+	evntSurSelectionQCM(aNumeroBouton, aEltQCM) {}
 	ouvrirFenetreParametresQCM() {
 		if (
 			!!this.devoir.service &&
 			!!this.devoir.executionQCM &&
-			this.devoir.executionQCM.getEtat() === EGenreEtat.Creation
+			this.devoir.executionQCM.getEtat() === Enumere_Etat_1.EGenreEtat.Creation
 		) {
 			this.devoir.executionQCM.estLieADevoir = true;
 			this.devoir.executionQCM.service = this.devoir.service;
@@ -1883,37 +2088,40 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 	}
 	evntSurDisponibiliteKiosque(aDonnees) {
 		$.extend(this.devoir.execKiosque, aDonnees);
-		this.devoir.execKiosque.setEtat(EGenreEtat.Modification);
+		this.devoir.execKiosque.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 		this.getInstance(this.identDisponibiliteQCM).setDonnees({
 			dateDebutPublication: this.devoir.execKiosque.dateDebutPublication,
 			dateFinPublication: this.devoir.execKiosque.dateFinPublication,
-			afficherSurUneSeuleLigne: false,
 			actif: true,
 		});
 	}
 	evntSurDisponibiliteQCM(aDonnees) {
 		$.extend(this.devoir.executionQCM, aDonnees);
-		this.devoir.executionQCM.setEtat(EGenreEtat.Modification);
+		this.devoir.executionQCM.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 		if (this.avecDetailPublicationQCM) {
 			this.getInstance(this.identDisponibiliteQCM).setDonnees({
 				dateDebutPublication: this.devoir.executionQCM.dateDebutPublication,
 				dateFinPublication: this.devoir.executionQCM.dateFinPublication,
-				afficherSurUneSeuleLigne: false,
 				actif: true,
 				actifFin: !this.devoir.executionQCM.estUnTAF,
 			});
-			if (this.devoir.executionQCM.getEtat() === EGenreEtat.Creation) {
-				UtilitaireQCM.verifierDateCorrection(this.devoir.executionQCM);
+			if (
+				this.devoir.executionQCM.getEtat() ===
+				Enumere_Etat_1.EGenreEtat.Creation
+			) {
+				UtilitaireQCM_1.UtilitaireQCM.verifierDateCorrection(
+					this.devoir.executionQCM,
+				);
 			}
 		}
 	}
 	evenementSurDateDevoir(aDate) {
 		if (
 			this.devoir.executionQCM &&
-			this.devoir.executionQCM.getEtat() === EGenreEtat.Creation
+			this.devoir.executionQCM.getEtat() === Enumere_Etat_1.EGenreEtat.Creation
 		) {
-			const lPremiereHeure = GDate.placeEnDateHeure(0);
-			const lDerniereHeure = GDate.placeEnDateHeure(
+			const lPremiereHeure = ObjetDate_1.GDate.placeEnDateHeure(0);
+			const lDerniereHeure = ObjetDate_1.GDate.placeEnDateHeure(
 				GParametres.PlacesParJour - 1,
 				true,
 			);
@@ -1939,7 +2147,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 	evenementSurBtnCategorie() {}
 	actualiserCategorieEvaluation() {}
 	evenementSurSuppressionEvaluationAssociee() {}
-	leDevoirEstSurUnePeriodeClotureePourEvaluation() {
+	leDevoirEstSurUnePeriodeClotureePourEvaluation(aDevoir) {
 		return false;
 	}
 	actionSurListeQCMCumuls(aListeQCM, aMessage, aDonnees) {
@@ -1956,7 +2164,8 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 			return;
 		}
 		switch (aParams.genreEvenement) {
-			case EGenreEvenementObjetSaisie.selection: {
+			case Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+				.selection: {
 				const lParam = { service: aParams.element };
 				if (this.avecQCM && this.devoir.executionQCM) {
 					lParam.qcm = this.devoir.executionQCM.QCM;
@@ -1974,7 +2183,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 			this.devoir.executionQCM = aExecutionQCM;
 		}
 		if (aNumeroBouton > 0) {
-			this.devoir.executionQCM.setEtat(EGenreEtat.Modification);
+			this.devoir.executionQCM.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 			this.actualiserQCM();
 		}
 	}
@@ -1982,33 +2191,37 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 		if (this.devoir) {
 			if (
 				!!this.devoir.execKiosque &&
-				this.devoir.execKiosque.getEtat() !== EGenreEtat.Suppression
+				this.devoir.execKiosque.getEtat() !==
+					Enumere_Etat_1.EGenreEtat.Suppression
 			) {
-				GHtml.setDisabled(this.IdBareme, true);
-				GStyle.setDisplay(this.identZoneKiosque, true);
-				GStyle.setDisplay(this.identZoneKiosque_mirroir, true);
-				GHtml.setDisplay(this.idBtnAssocierKiosque, false);
-				const lLienRessource = GChaine.composerUrlLienExterne({
+				ObjetHtml_1.GHtml.setDisabled(this.IdBareme, true);
+				ObjetStyle_1.GStyle.setDisplay(this.identZoneKiosque, true);
+				ObjetStyle_1.GStyle.setDisplay(this.identZoneKiosque_mirroir, true);
+				ObjetHtml_1.GHtml.setDisplay(this.idBtnAssocierKiosque, false);
+				const lLienRessource = ObjetChaine_1.GChaine.composerUrlLienExterne({
 					documentJoint: this.devoir.execKiosque,
 					libelleEcran: this.devoir.execKiosque.ressource.getLibelle(),
 					title: this.devoir.execKiosque.ressource.description,
 				});
-				const lLienStat = GChaine.composerUrlLienExterne({
+				const lLienStat = ObjetChaine_1.GChaine.composerUrlLienExterne({
 					documentJoint: this.devoir,
-					libelleEcran: GTraductions.getValeur("FenetreDevoir.resultatKiosque"),
+					libelleEcran: ObjetTraduction_1.GTraductions.getValeur(
+						"FenetreDevoir.resultatKiosque",
+					),
 				});
-				GHtml.setHtml(
+				ObjetHtml_1.GHtml.setHtml(
 					this.identLibelleAssociationKiosque,
-					GTraductions.getValeur("FenetreDevoir.AssocieAUnKiosque") +
+					ObjetTraduction_1.GTraductions.getValeur(
+						"FenetreDevoir.AssocieAUnKiosque",
+					) +
 						" : " +
 						lLienRessource +
 						lLienStat,
 				);
-				GStyle.setDisplay(this.identDetailKiosque, true);
+				ObjetStyle_1.GStyle.setDisplay(this.identDetailKiosque, true);
 				this.getInstance(this.identDisponibiliteKiosque).setDonnees({
 					dateDebutPublication: this.devoir.execKiosque.dateDebutPublication,
 					dateFinPublication: this.devoir.execKiosque.dateFinPublication,
-					afficherSurUneSeuleLigne: false,
 					actif: this.Actif && !this.devoir.verrouille,
 				});
 			} else {
@@ -2017,21 +2230,24 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 					this.devoir.verrouille ||
 					this.leDevoirAAuMoinsUNeNote() === true
 				) {
-					GStyle.setDisplay(this.identZoneKiosque, false);
-					GStyle.setDisplay(this.identZoneKiosque_mirroir, false);
+					ObjetStyle_1.GStyle.setDisplay(this.identZoneKiosque, false);
+					ObjetStyle_1.GStyle.setDisplay(this.identZoneKiosque_mirroir, false);
 				} else {
-					GStyle.setDisplay(
+					ObjetStyle_1.GStyle.setDisplay(
 						this.identZoneKiosque,
 						!this.devoir.executionQCM ||
-							this.devoir.executionQCM.getEtat() === EGenreEtat.Suppression,
+							this.devoir.executionQCM.getEtat() ===
+								Enumere_Etat_1.EGenreEtat.Suppression,
 					);
-					GStyle.setDisplay(this.identZoneKiosque_mirroir, true);
-					GHtml.setHtml(
+					ObjetStyle_1.GStyle.setDisplay(this.identZoneKiosque_mirroir, true);
+					ObjetHtml_1.GHtml.setHtml(
 						this.identLibelleAssociationKiosque,
-						GTraductions.getValeur("FenetreDevoir.AssocierAUnKiosque"),
+						ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreDevoir.AssocierAUnKiosque",
+						),
 					);
-					GStyle.setDisplay(this.identDetailKiosque, false);
-					GHtml.setDisplay(this.idBtnAssocierKiosque, true);
+					ObjetStyle_1.GStyle.setDisplay(this.identDetailKiosque, false);
+					ObjetHtml_1.GHtml.setDisplay(this.idBtnAssocierKiosque, true);
 				}
 			}
 		}
@@ -2039,32 +2255,33 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 	actualiserQCM() {
 		if (this.avecQCM && this.devoir) {
 			if (this.devoir.executionQCM && this.devoir.executionQCM.existeNumero()) {
-				GHtml.setDisabled(this.IdBareme, true);
+				ObjetHtml_1.GHtml.setDisabled(this.IdBareme, true);
 				const lExecQCM = this.devoir.executionQCM;
-				GStyle.setDisplay(this.identZoneQCM, true);
+				ObjetStyle_1.GStyle.setDisplay(this.identZoneQCM, true);
 				if (this.avecModifQCM) {
-					GHtml.setDisplay(
+					ObjetHtml_1.GHtml.setDisplay(
 						this.idBtnAssocierQCM,
-						lExecQCM.getEtat() === EGenreEtat.Creation,
+						lExecQCM.getEtat() === Enumere_Etat_1.EGenreEtat.Creation,
 					);
 				}
-				GHtml.setHtml(
+				ObjetHtml_1.GHtml.setHtml(
 					this.identLibelleAssociationQCM,
-					GTraductions.getValeur("FenetreDevoir.AssocieAUnQCM") +
+					ObjetTraduction_1.GTraductions.getValeur(
+						"FenetreDevoir.AssocieAUnQCM",
+					) +
 						" : " +
 						lExecQCM.QCM.getLibelle(),
 				);
 				if (this.avecDetailPublicationQCM && !lExecQCM.estUnTAF) {
-					GStyle.setDisplay(this.identDetailQCM, true);
+					ObjetStyle_1.GStyle.setDisplay(this.identDetailQCM, true);
 					this.getInstance(this.identDisponibiliteQCM).setDonnees({
 						dateDebutPublication: lExecQCM.dateDebutPublication,
 						dateFinPublication: lExecQCM.dateFinPublication,
-						afficherSurUneSeuleLigne: false,
 						actif: this.Actif && !this.devoir.verrouille,
 						actifFin: !lExecQCM.estUnTAF,
 					});
 				} else {
-					GStyle.setDisplay(this.identDetailQCM, false);
+					ObjetStyle_1.GStyle.setDisplay(this.identDetailQCM, false);
 				}
 			} else {
 				if (
@@ -2072,33 +2289,44 @@ class ObjetFenetre_Devoir extends ObjetFenetre {
 					this.devoir.verrouille ||
 					this.leDevoirAAuMoinsUNeNote() === true
 				) {
-					GStyle.setDisplay(this.identZoneQCM, false);
+					ObjetStyle_1.GStyle.setDisplay(this.identZoneQCM, false);
 				} else {
-					GStyle.setDisplay(
+					ObjetStyle_1.GStyle.setDisplay(
 						this.identZoneQCM,
 						!this.devoir.execKiosque ||
-							this.devoir.execKiosque.getEtat() === EGenreEtat.Suppression,
+							this.devoir.execKiosque.getEtat() ===
+								Enumere_Etat_1.EGenreEtat.Suppression,
 					);
 					if (this.avecModifQCM) {
-						GHtml.setDisplay(this.idBtnAssocierQCM, true);
+						ObjetHtml_1.GHtml.setDisplay(this.idBtnAssocierQCM, true);
 					}
-					GHtml.setHtml(
+					ObjetHtml_1.GHtml.setHtml(
 						this.identLibelleAssociationQCM,
-						GTraductions.getValeur("FenetreDevoir.AssocierAUnQCM"),
+						ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreDevoir.AssocierAUnQCM",
+						),
 					);
-					GStyle.setDisplay(this.identDetailQCM, false);
+					ObjetStyle_1.GStyle.setDisplay(this.identDetailQCM, false);
 				}
 			}
 		}
 	}
+	composeFacultatif() {
+		const T = [];
+		T.push(
+			`<ie-checkbox ie-model="cbFacultatif"><span id="${this.idLabelComboFacultatif}">${ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.Facultatif")}</span></ie-checkbox>\n              <span ie-style="getStyleCarreFacultatif" class="carre-facultatif"></span>\n              <div id="${this.getNomInstance(this.idComboFacultatif)}"></div>\n              <ie-btnicon ie-model="btnMrFiche('${this.TypeMrFiche.Facultatif}')" class="m-left icon_question bt-activable"></ie-btnicon>`,
+		);
+		return T.join("");
+	}
 }
+exports.ObjetFenetre_Devoir = ObjetFenetre_Devoir;
 function _composeLibelleCategorie(aElement) {
 	const T = [];
 	T.push('<div ie-ellipsis class="cat-devoir-conteneur">');
 	if (aElement.couleur) {
 		T.push(
 			'<span class="categorie-devoir" style="',
-			GStyle.composeCouleurFond(aElement.couleur),
+			ObjetStyle_1.GStyle.composeCouleurFond(aElement.couleur),
 			'"></span>',
 		);
 	}
@@ -2110,11 +2338,3 @@ function _composeLibelleCategorie(aElement) {
 	T.push("</div>");
 	return T.join("");
 }
-function composeFacultatif() {
-	const T = [];
-	T.push(
-		`<ie-checkbox ie-model="cbFacultatif"><span id="${this.idLabelComboFacultatif}">${GTraductions.getValeur("FenetreDevoir.Facultatif")}</span></ie-checkbox>\n            <span ie-style="getStyleCarreFacultatif" class="carre-facultatif"></span>\n            <div id="${this.getInstance(this.idComboFacultatif).getNom()}"></div>\n            <ie-btnicon ie-model="btnMrFiche('${this.TypeMrFiche.Facultatif}')" class="m-left icon_question bt-activable"></ie-btnicon>`,
-	);
-	return T.join("");
-}
-module.exports = { ObjetFenetre_Devoir, TypeCallbackFenetreDevoir };

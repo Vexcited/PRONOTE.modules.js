@@ -1,27 +1,29 @@
-const { GDate } = require("ObjetDate.js");
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class DonneesListe_PageRemplacements extends ObjetDonneesListeFlatDesign {
+exports.DonneesListe_PageRemplacements = void 0;
+const ObjetDate_1 = require("ObjetDate");
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class DonneesListe_PageRemplacements extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees) {
-		super(aDonnees.ListeCours);
+		super(aDonnees);
 		this.setOptions({ avecSelection: false });
 	}
-	getZoneGauche(aDonnees) {
-		let H = [];
-		if (aDonnees.article.Date) {
-			let lDate = GDate.formatDate(aDonnees.article.Date, "%JJ %MMM");
+	getZoneGauche(aParams) {
+		const H = [];
+		if (aParams.article.Date) {
+			let lDate = ObjetDate_1.GDate.formatDate(
+				aParams.article.Date,
+				"%JJ %MMM",
+			);
 			H.push(
-				`<time class="date-contain ie-line-color bottom" style="--color-line :#2338BB;" datetime="${GDate.formatDate(aDonnees.article.Date, "%MM-%JJ")}">${lDate}</time>`,
+				`<time class="date-contain ie-line-color left" style="--color-line :#2338BB;" datetime="${ObjetDate_1.GDate.formatDate(aParams.article.Date, "%MM-%JJ")}">${lDate}</time>`,
 			);
 		}
 		return H.join("");
 	}
-	getTitreZonePrincipale(aDonnees) {
-		let H = [];
-		if (aDonnees.article.ListeProfesseurs) {
-			aDonnees.article.ListeProfesseurs.parcourir((aProf) => {
+	getTitreZonePrincipale(aParams) {
+		const H = [];
+		if (aParams.article.ListeProfesseurs) {
+			aParams.article.ListeProfesseurs.parcourir((aProf) => {
 				if (aProf.getLibelle()) {
 					H.push(
 						`<div ie-ellipsis class="ie-sous-titre capitalize">${aProf.getLibelle()}</div>`,
@@ -31,36 +33,36 @@ class DonneesListe_PageRemplacements extends ObjetDonneesListeFlatDesign {
 		}
 		return H.join("");
 	}
-	getInfosSuppZonePrincipale(aDonnees) {
-		let H = [];
-		if (aDonnees.article.Matiere !== 0) {
+	getInfosSuppZonePrincipale(aParams) {
+		const H = [];
+		if (aParams.article.Matiere) {
 			H.push(
-				`<div ie-ellipsis class="ie-sous-titre capitalize">${aDonnees.article.Matiere.getLibelle()}</div>`,
+				`<div ie-ellipsis class="ie-sous-titre capitalize">${aParams.article.Matiere.getLibelle()}</div>`,
 			);
 		}
-		if (aDonnees.article.ListeProfesseurs) {
-			aDonnees.article.ListeProfesseurs.parcourir((aProf) => {
-				if (aDonnees.article.HeureDebut && aDonnees.article.HeureFin) {
+		if (aParams.article.ListeProfesseurs) {
+			aParams.article.ListeProfesseurs.parcourir((aProf) => {
+				if (aParams.article.HeureDebut && aParams.article.HeureFin) {
 					H.push(
-						`<div class="ie-sous-titre ">${GTraductions.getValeur("Dates.DeHeureDebutAHeureFin", [aDonnees.article.HeureDebut, aDonnees.article.HeureFin])}</div>`,
+						`<div class="ie-sous-titre ">${ObjetTraduction_1.GTraductions.getValeur("Dates.DeHeureDebutAHeureFin", [aParams.article.HeureDebut, aParams.article.HeureFin])}</div>`,
 					);
 				}
 			});
 		}
 		return H.join("");
 	}
-	getZoneMessageLarge(aDonnees) {
-		let H = [];
-		if (aDonnees.article.ListeRemplacements.count() === 0) {
+	getZoneMessageLarge(aParams) {
+		const H = [];
+		if (aParams.article.ListeRemplacements.count() === 0) {
 			H.push(
-				`<div class="ie-titre ">${GTraductions.getValeur("PageRemplacement.Annule")}</div>`,
+				`<div class="ie-titre ">${ObjetTraduction_1.GTraductions.getValeur("PageRemplacement.Annule")}</div>`,
 			);
 		}
-		if (aDonnees.article.ListeRemplacements.count() !== 0) {
+		if (aParams.article.ListeRemplacements.count() !== 0) {
 			H.push(
-				`<div ie-ellipsis class="ie-titre m-bottom-l"> ${GTraductions.getValeur("PageRemplacement.RemplacePar")}</div>`,
+				`<div ie-ellipsis class="ie-titre m-bottom-l"> ${ObjetTraduction_1.GTraductions.getValeur("PageRemplacement.RemplacePar")}</div>`,
 			);
-			aDonnees.article.ListeRemplacements.parcourir((aRemp) => {
+			aParams.article.ListeRemplacements.parcourir((aRemp) => {
 				if (aRemp.ListeProfesseurs) {
 					aRemp.ListeProfesseurs.parcourir((aProf) => {
 						H.push(
@@ -75,7 +77,7 @@ class DonneesListe_PageRemplacements extends ObjetDonneesListeFlatDesign {
 				}
 				if (aRemp.HeureDebut && aRemp.HeureFin) {
 					H.push(
-						`<div class="ie-sous-titre ">${GTraductions.getValeur("Dates.DeHeureDebutAHeureFin", [aRemp.HeureDebut, aRemp.HeureFin])}</div>`,
+						`<div class="ie-sous-titre ">${ObjetTraduction_1.GTraductions.getValeur("Dates.DeHeureDebutAHeureFin", [aRemp.HeureDebut, aRemp.HeureFin])}</div>`,
 					);
 				}
 			});
@@ -83,4 +85,4 @@ class DonneesListe_PageRemplacements extends ObjetDonneesListeFlatDesign {
 		return H.join("");
 	}
 }
-module.exports = DonneesListe_PageRemplacements;
+exports.DonneesListe_PageRemplacements = DonneesListe_PageRemplacements;

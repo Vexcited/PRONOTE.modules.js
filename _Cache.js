@@ -1,4 +1,5 @@
 exports._Cache = void 0;
+const AccessApp_1 = require("AccessApp");
 class _Cache {
 	constructor() {
 		this._actif = true;
@@ -8,7 +9,7 @@ class _Cache {
 		this._actif = aActif;
 	}
 	getActif() {
-		const lApp = GApplication;
+		const lApp = (0, AccessApp_1.getApp)();
 		if (lApp.getOptionsDebug() && lApp.getOptionsDebug().desactiver_Cache) {
 			return false;
 		}
@@ -40,7 +41,7 @@ class _Cache {
 		this._donnees = tmpArray;
 	}
 	existeDonnee(aCle) {
-		const lApp = GApplication;
+		const lApp = (0, AccessApp_1.getApp)();
 		if (lApp.getOptionsDebug() && lApp.getOptionsDebug().desactiver_Cache) {
 			return false;
 		}

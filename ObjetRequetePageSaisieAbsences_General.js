@@ -1,59 +1,70 @@
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { GCache } = require("Cache.js");
-class ObjetRequetePageSaisieAbsences_General extends ObjetRequeteConsultation {
+exports.ObjetRequetePageSaisieAbsences_General = void 0;
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetTri_1 = require("ObjetTri");
+const Cache_1 = require("Cache");
+const AccessApp_1 = require("AccessApp");
+class ObjetRequetePageSaisieAbsences_General extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	constructor(...aParams) {
 		super(...aParams);
+		this.application = (0, AccessApp_1.getApp)();
 	}
 	lancerRequete() {
 		if (
-			GApplication.droits.get(
-				TypeDroits.fonctionnalites.appelSaisirMotifJustifDAbsence,
+			this.application.droits.get(
+				ObjetDroitsPN_1.TypeDroits.fonctionnalites
+					.appelSaisirMotifJustifDAbsence,
 			)
 		) {
-			if (!GCache.listeMotifsAbsenceEleve) {
+			if (!Cache_1.GCache.listeMotifsAbsenceEleve) {
 				this.JSON.avecListeMotifsAbsence = true;
 			}
 		}
-		if (GApplication.droits.get(TypeDroits.absences.avecSaisieMotifRetard)) {
-			if (!GCache.listeMotifsRetards) {
+		if (
+			this.application.droits.get(
+				ObjetDroitsPN_1.TypeDroits.absences.avecSaisieMotifRetard,
+			)
+		) {
+			if (!Cache_1.GCache.listeMotifsRetards) {
 				this.JSON.avecListeMotifsRetard = true;
 			}
 		}
-		if (!GCache.listeMotifsExclusion) {
+		if (!Cache_1.GCache.listeMotifsExclusion) {
 			this.JSON.avecListeMotifsExclusion = true;
 		}
 		return this.appelAsynchrone();
 	}
 	actionApresRequete() {
 		if (this.JSONReponse.listeMotifsAbsenceEleve) {
-			GCache.listeMotifsAbsenceEleve = this.JSONReponse.listeMotifsAbsenceEleve;
+			Cache_1.GCache.listeMotifsAbsenceEleve =
+				this.JSONReponse.listeMotifsAbsenceEleve;
 		}
 		if (this.JSONReponse.listeMotifsRetards) {
-			GCache.listeMotifsRetards = this.JSONReponse.listeMotifsRetards;
+			Cache_1.GCache.listeMotifsRetards = this.JSONReponse.listeMotifsRetards;
 		}
 		if (this.JSONReponse.listeMotifsExclusion) {
 			const lListeMotifs = this.JSONReponse.listeMotifsExclusion;
 			lListeMotifs.setTri([
-				ObjetTri.init((D) => {
+				ObjetTri_1.ObjetTri.init((D) => {
 					return !D.ssMotif;
 				}),
-				ObjetTri.init("Libelle"),
+				ObjetTri_1.ObjetTri.init("Libelle"),
 			]);
 			lListeMotifs.trier();
-			GCache.listeMotifsExclusion = lListeMotifs;
+			Cache_1.GCache.listeMotifsExclusion = lListeMotifs;
 		}
 		this.callbackReussite.appel({
-			listeMotifs: GCache.listeMotifsExclusion,
+			listeMotifs: Cache_1.GCache.listeMotifsExclusion,
 			listeNaturePunition: this.JSONReponse.listeNaturePunition,
 			listeNatureExclusion: this.JSONReponse.listeNatureExclusion,
+			avecCommentaireAutorise: this.JSONReponse.avecCommentaireAutorise,
 		});
 	}
 }
-Requetes.inscrire(
+exports.ObjetRequetePageSaisieAbsences_General =
+	ObjetRequetePageSaisieAbsences_General;
+CollectionRequetes_1.Requetes.inscrire(
 	"PageSaisieAbsences_General",
 	ObjetRequetePageSaisieAbsences_General,
 );
-module.exports = { ObjetRequetePageSaisieAbsences_General };

@@ -22,6 +22,74 @@ class ObjetFenetre_EditionBlog extends ObjetFenetre_1.ObjetFenetre {
 			],
 		});
 	}
+	jsxModelBtnSelecteurModerateurs(aGenreModerateurs) {
+		return {
+			event: () => {
+				if (this.donnees.blog) {
+					this.moteurBlog.ouvrirFenetreChoixModerateursBlog(
+						this.donnees.blog,
+						aGenreModerateurs,
+						() => {
+							this.donnees.blog.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+						},
+					);
+				}
+			},
+			getLibelle: () => {
+				const lListeModerateurs = this.moteurBlog.getModerateursDeGenre(
+					this.donnees.blog,
+					aGenreModerateurs,
+				);
+				return lListeModerateurs
+					? lListeModerateurs.getTableauLibelles().join(" ")
+					: "";
+			},
+		};
+	}
+	jsxModelBtnSelecteurRedacteurs(aGenreRedacteurs) {
+		return {
+			event: () => {
+				if (this.donnees.blog) {
+					this.moteurBlog.ouvrirFenetreChoixRedacteursBlog(
+						this.donnees.blog,
+						aGenreRedacteurs,
+						() => {
+							this.donnees.blog.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+						},
+					);
+				}
+			},
+			getLibelle: () => {
+				const lListeRedacteurs = this.moteurBlog.getRedacteursDeGenre(
+					this.donnees.blog,
+					aGenreRedacteurs,
+				);
+				return lListeRedacteurs
+					? lListeRedacteurs.getTableauLibelles().join(" ")
+					: "";
+			},
+		};
+	}
+	jsxModelBtnSelecteurPublic(aGenrePublic) {
+		return {
+			event: () => {
+				this.moteurBlog.ouvrirFenetreChoixPublicsBlog(
+					this.donnees.blog,
+					aGenrePublic,
+					() => {
+						this.donnees.blog.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+					},
+				);
+			},
+			getLibelle: () => {
+				const lListePublic = this.moteurBlog.getPublicsDeGenre(
+					this.donnees.blog,
+					aGenrePublic,
+				);
+				return lListePublic ? lListePublic.getTableauLibelles().join(" ") : "";
+			},
+		};
+	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
 			avecBtnSupprimerBlog() {
@@ -64,30 +132,6 @@ class ObjetFenetre_EditionBlog extends ObjetFenetre_1.ObjetFenetre {
 					}
 				},
 			},
-			btnSelecteurModerateurs: {
-				event(aGenreRessource) {
-					if (aInstance.donnees.blog) {
-						aInstance.moteurBlog.ouvrirFenetreChoixModerateursBlog(
-							aInstance.donnees.blog,
-							aGenreRessource,
-							() => {
-								aInstance.donnees.blog.setEtat(
-									Enumere_Etat_1.EGenreEtat.Modification,
-								);
-							},
-						);
-					}
-				},
-				getLibelle(aGenreRessource) {
-					const lListeModerateurs = aInstance.moteurBlog.getModerateursDeGenre(
-						aInstance.donnees.blog,
-						aGenreRessource,
-					);
-					return lListeModerateurs
-						? lListeModerateurs.getTableauLibelles().join(" ")
-						: "";
-				},
-			},
 			identiteDateFinRedaction() {
 				return {
 					class: ObjetCelluleDate_1.ObjetCelluleDate,
@@ -114,30 +158,6 @@ class ObjetFenetre_EditionBlog extends ObjetFenetre_1.ObjetFenetre {
 					},
 				};
 			},
-			btnSelecteurRedacteurs: {
-				event(aGenreRessource) {
-					if (aInstance.donnees.blog) {
-						aInstance.moteurBlog.ouvrirFenetreChoixRedacteursBlog(
-							aInstance.donnees.blog,
-							aGenreRessource,
-							() => {
-								aInstance.donnees.blog.setEtat(
-									Enumere_Etat_1.EGenreEtat.Modification,
-								);
-							},
-						);
-					}
-				},
-				getLibelle(aGenreRessource) {
-					const lListeRedacteurs = aInstance.moteurBlog.getRedacteursDeGenre(
-						aInstance.donnees.blog,
-						aGenreRessource,
-					);
-					return lListeRedacteurs
-						? lListeRedacteurs.getTableauLibelles().join(" ")
-						: "";
-				},
-			},
 			cbAutoriserCommentaires: {
 				getValue() {
 					var _a;
@@ -152,28 +172,6 @@ class ObjetFenetre_EditionBlog extends ObjetFenetre_1.ObjetFenetre {
 							Enumere_Etat_1.EGenreEtat.Modification,
 						);
 					}
-				},
-			},
-			btnSelecteurPublic: {
-				event(aGenreRessource) {
-					aInstance.moteurBlog.ouvrirFenetreChoixPublicsBlog(
-						aInstance.donnees.blog,
-						aGenreRessource,
-						() => {
-							aInstance.donnees.blog.setEtat(
-								Enumere_Etat_1.EGenreEtat.Modification,
-							);
-						},
-					);
-				},
-				getLibelle(aGenreRessource) {
-					const lListePublic = aInstance.moteurBlog.getPublicsDeGenre(
-						aInstance.donnees.blog,
-						aGenreRessource,
-					);
-					return lListePublic
-						? lListePublic.getTableauLibelles().join(" ")
-						: "";
 				},
 			},
 		});
@@ -233,54 +231,45 @@ class ObjetFenetre_EditionBlog extends ObjetFenetre_1.ObjetFenetre {
 	}
 	composeContenu() {
 		const T = [];
-		T.push("<div>");
-		T.push(
-			this.composeZoneElementsGraphique(
-				this.getTitreZoneObligatoire(
-					ObjetTraduction_1.GTraductions.getValeur(
-						"blog.fenetreEditionBlog.Descriptif",
-					),
-					true,
-				),
-				this.composeElementsDescriptif(),
-			),
-		);
-		T.push(
-			this.composeZoneElementsGraphique(
-				this.getTitreZoneObligatoire(
-					ObjetTraduction_1.GTraductions.getValeur(
-						"blog.fenetreEditionBlog.Moderateurs",
-					),
-					true,
-				),
-				this.composeElementsModerateurs(),
-			),
-		);
-		T.push(
-			this.composeZoneElementsGraphique(
-				this.getTitreZoneObligatoire(
-					ObjetTraduction_1.GTraductions.getValeur(
-						"blog.fenetreEditionBlog.Redacteurs",
-					),
-					true,
-				),
-				this.composeElementsRedacteurs(),
-			),
-		);
-		T.push(
-			this.composeZoneElementsGraphique(
-				this.getTitreZoneObligatoire(
-					ObjetTraduction_1.GTraductions.getValeur(
-						"blog.fenetreEditionBlog.Public",
-					),
-				),
-				this.composeElementsPublic(),
-			),
-		);
 		T.push(
 			IE.jsx.str(
-				IE.jsx.fragment,
+				"div",
 				null,
+				this.composeZoneElementsGraphique(
+					this.getTitreZoneObligatoire(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"blog.fenetreEditionBlog.Descriptif",
+						),
+						true,
+					),
+					this.composeElementsDescriptif(),
+				),
+				this.composeZoneElementsGraphique(
+					this.getTitreZoneObligatoire(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"blog.fenetreEditionBlog.Moderateurs",
+						),
+						true,
+					),
+					this.composeElementsModerateurs(),
+				),
+				this.composeZoneElementsGraphique(
+					this.getTitreZoneObligatoire(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"blog.fenetreEditionBlog.Redacteurs",
+						),
+						true,
+					),
+					this.composeElementsRedacteurs(),
+				),
+				this.composeZoneElementsGraphique(
+					this.getTitreZoneObligatoire(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"blog.fenetreEditionBlog.Public",
+						),
+					),
+					this.composeElementsPublic(),
+				),
 				IE.jsx.str(
 					"div",
 					{ class: "MarqueurChampsObligatoires" },
@@ -292,24 +281,19 @@ class ObjetFenetre_EditionBlog extends ObjetFenetre_1.ObjetFenetre {
 				),
 			),
 		);
-		T.push("</div>");
 		return T.join("");
 	}
 	composeBas() {
 		const H = [];
 		H.push(
 			IE.jsx.str(
-				IE.jsx.fragment,
-				null,
-				IE.jsx.str(
-					"div",
-					{ class: "compose-bas", "ie-if": "avecBtnSupprimerBlog" },
-					IE.jsx.str("ie-btnicon", {
-						"ie-model": "btnSupprimerBlog",
-						title: ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
-						class: "icon_trash avecFond i-medium",
-					}),
-				),
+				"div",
+				{ class: "compose-bas", "ie-if": "avecBtnSupprimerBlog" },
+				IE.jsx.str("ie-btnicon", {
+					"ie-model": "btnSupprimerBlog",
+					title: ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
+					class: "icon_trash avecFond i-medium",
+				}),
 			),
 		);
 		return H.join("");
@@ -340,29 +324,27 @@ class ObjetFenetre_EditionBlog extends ObjetFenetre_1.ObjetFenetre {
 		return H.join("");
 	}
 	composeElementsDescriptif() {
+		const lIdTitre = this.Nom + "_inp_titre";
 		const H = [];
 		H.push(
 			IE.jsx.str(
-				IE.jsx.fragment,
-				null,
+				"div",
+				{ class: "LabelChamp" },
+				IE.jsx.str(
+					"label",
+					{ for: lIdTitre },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"blog.fenetreEditionBlog.Titre",
+					),
+				),
 				IE.jsx.str(
 					"div",
-					{ class: "LabelChamp" },
-					IE.jsx.str(
-						"label",
-						null,
-						ObjetTraduction_1.GTraductions.getValeur(
-							"blog.fenetreEditionBlog.Titre",
-						),
-					),
-					IE.jsx.str(
-						"div",
-						null,
-						IE.jsx.str("input", {
-							"ie-model": "modelTitreBlog",
-							class: "round-style full-width",
-						}),
-					),
+					null,
+					IE.jsx.str("input", {
+						"ie-model": "modelTitreBlog",
+						class: "full-width",
+						id: lIdTitre,
+					}),
 				),
 			),
 		);
@@ -371,14 +353,6 @@ class ObjetFenetre_EditionBlog extends ObjetFenetre_1.ObjetFenetre {
 	composeElementsModerateurs() {
 		const lIdProfesseurs = "lblModProfs" + GUID_1.GUID.getId();
 		const lIdPersonnels = "lblModPersonnels" + GUID_1.GUID.getId();
-		const lIeModelBtnSelecteurModerateursProf =
-			"btnSelecteurModerateurs(" +
-			Enumere_Ressource_1.EGenreRessource.Enseignant +
-			")";
-		const lIeModelBtnSelecteurModerateursPersonnel =
-			"btnSelecteurModerateurs(" +
-			Enumere_Ressource_1.EGenreRessource.Personnel +
-			")";
 		const H = [];
 		H.push(
 			IE.jsx.str(
@@ -402,7 +376,10 @@ class ObjetFenetre_EditionBlog extends ObjetFenetre_1.ObjetFenetre {
 						),
 					),
 					IE.jsx.str("ie-btnselecteur", {
-						"ie-model": lIeModelBtnSelecteurModerateursProf,
+						"ie-model": this.jsxModelBtnSelecteurModerateurs.bind(
+							this,
+							Enumere_Ressource_1.EGenreRessource.Enseignant,
+						),
 						placeholder: ObjetTraduction_1.GTraductions.getValeur("Aucun"),
 						"aria-labelledby": lIdProfesseurs,
 					}),
@@ -418,7 +395,10 @@ class ObjetFenetre_EditionBlog extends ObjetFenetre_1.ObjetFenetre {
 						),
 					),
 					IE.jsx.str("ie-btnselecteur", {
-						"ie-model": lIeModelBtnSelecteurModerateursPersonnel,
+						"ie-model": this.jsxModelBtnSelecteurModerateurs.bind(
+							this,
+							Enumere_Ressource_1.EGenreRessource.Personnel,
+						),
 						placeholder: ObjetTraduction_1.GTraductions.getValeur("Aucun"),
 						"aria-labelledby": lIdPersonnels,
 					}),
@@ -431,18 +411,6 @@ class ObjetFenetre_EditionBlog extends ObjetFenetre_1.ObjetFenetre {
 		const lIdEleves = "lblRedEleves" + GUID_1.GUID.getId();
 		const lIdProfesseurs = "lblRedProfs" + GUID_1.GUID.getId();
 		const lIdPersonnels = "lblRedPersonnels" + GUID_1.GUID.getId();
-		const lIeModelBtnSelecteurRedacteursEleve =
-			"btnSelecteurRedacteurs(" +
-			Enumere_Ressource_1.EGenreRessource.Eleve +
-			")";
-		const lIeModelBtnSelecteurRedacteursProf =
-			"btnSelecteurRedacteurs(" +
-			Enumere_Ressource_1.EGenreRessource.Enseignant +
-			")";
-		const lIeModelBtnSelecteurRedacteursPersonnel =
-			"btnSelecteurRedacteurs(" +
-			Enumere_Ressource_1.EGenreRessource.Personnel +
-			")";
 		const H = [];
 		H.push(
 			IE.jsx.str(
@@ -471,7 +439,10 @@ class ObjetFenetre_EditionBlog extends ObjetFenetre_1.ObjetFenetre {
 						),
 					),
 					IE.jsx.str("ie-btnselecteur", {
-						"ie-model": lIeModelBtnSelecteurRedacteursEleve,
+						"ie-model": this.jsxModelBtnSelecteurRedacteurs.bind(
+							this,
+							Enumere_Ressource_1.EGenreRessource.Eleve,
+						),
 						placeholder: ObjetTraduction_1.GTraductions.getValeur("Aucun"),
 						"aria-labelledby": lIdEleves,
 					}),
@@ -487,7 +458,10 @@ class ObjetFenetre_EditionBlog extends ObjetFenetre_1.ObjetFenetre {
 						),
 					),
 					IE.jsx.str("ie-btnselecteur", {
-						"ie-model": lIeModelBtnSelecteurRedacteursProf,
+						"ie-model": this.jsxModelBtnSelecteurRedacteurs.bind(
+							this,
+							Enumere_Ressource_1.EGenreRessource.Enseignant,
+						),
 						placeholder: ObjetTraduction_1.GTraductions.getValeur("Aucun"),
 						"aria-labelledby": lIdProfesseurs,
 					}),
@@ -503,7 +477,10 @@ class ObjetFenetre_EditionBlog extends ObjetFenetre_1.ObjetFenetre {
 						),
 					),
 					IE.jsx.str("ie-btnselecteur", {
-						"ie-model": lIeModelBtnSelecteurRedacteursPersonnel,
+						"ie-model": this.jsxModelBtnSelecteurRedacteurs.bind(
+							this,
+							Enumere_Ressource_1.EGenreRessource.Personnel,
+						),
 						placeholder: ObjetTraduction_1.GTraductions.getValeur("Aucun"),
 						"aria-labelledby": lIdPersonnels,
 					}),
@@ -516,16 +493,6 @@ class ObjetFenetre_EditionBlog extends ObjetFenetre_1.ObjetFenetre {
 		const lIdEleves = "lblPubEleves" + GUID_1.GUID.getId();
 		const lIdProfesseurs = "lblPubProfs" + GUID_1.GUID.getId();
 		const lIdPersonnels = "lblPubPersonnels" + GUID_1.GUID.getId();
-		const lIeModelBtnSelecteurPublicsEleve =
-			"btnSelecteurPublic(" + Enumere_Ressource_1.EGenreRessource.Eleve + ")";
-		const lIeModelBtnSelecteurPublicsProf =
-			"btnSelecteurPublic(" +
-			Enumere_Ressource_1.EGenreRessource.Enseignant +
-			")";
-		const lIeModelBtnSelecteurPublicsPersonnel =
-			"btnSelecteurPublic(" +
-			Enumere_Ressource_1.EGenreRessource.Personnel +
-			")";
 		const H = [];
 		H.push(
 			IE.jsx.str(
@@ -560,7 +527,10 @@ class ObjetFenetre_EditionBlog extends ObjetFenetre_1.ObjetFenetre {
 						),
 					),
 					IE.jsx.str("ie-btnselecteur", {
-						"ie-model": lIeModelBtnSelecteurPublicsEleve,
+						"ie-model": this.jsxModelBtnSelecteurPublic.bind(
+							this,
+							Enumere_Ressource_1.EGenreRessource.Eleve,
+						),
 						placeholder: ObjetTraduction_1.GTraductions.getValeur("Aucun"),
 						"aria-labelledby": lIdEleves,
 					}),
@@ -576,7 +546,10 @@ class ObjetFenetre_EditionBlog extends ObjetFenetre_1.ObjetFenetre {
 						),
 					),
 					IE.jsx.str("ie-btnselecteur", {
-						"ie-model": lIeModelBtnSelecteurPublicsProf,
+						"ie-model": this.jsxModelBtnSelecteurPublic.bind(
+							this,
+							Enumere_Ressource_1.EGenreRessource.Enseignant,
+						),
 						placeholder: ObjetTraduction_1.GTraductions.getValeur("Aucun"),
 						"aria-labelledby": lIdProfesseurs,
 					}),
@@ -592,7 +565,10 @@ class ObjetFenetre_EditionBlog extends ObjetFenetre_1.ObjetFenetre {
 						),
 					),
 					IE.jsx.str("ie-btnselecteur", {
-						"ie-model": lIeModelBtnSelecteurPublicsPersonnel,
+						"ie-model": this.jsxModelBtnSelecteurPublic.bind(
+							this,
+							Enumere_Ressource_1.EGenreRessource.Personnel,
+						),
 						placeholder: ObjetTraduction_1.GTraductions.getValeur("Aucun"),
 						"aria-labelledby": lIdPersonnels,
 					}),

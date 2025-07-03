@@ -1,79 +1,44 @@
-const { GUID } = require("GUID.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	EGenreNiveauDAcquisitionUtil,
-} = require("Enumere_NiveauDAcquisition.js");
-const {
-	TypeGenreValidationCompetence,
-} = require("TypeGenreValidationCompetence.js");
-const { TypePositionnement } = require("TypePositionnement.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const UtilitaireCompetences_Mobile = { id: GUID.getId() };
-UtilitaireCompetences_Mobile.openPopupDetailLegende = function (
-	avecNiveauxPositionnements,
-) {
-	const lHtml = [];
-	let lNiveauDAcquisition, lLibelleNiveau, lImageNiveau;
-	const lNbrNiveauDAqcuisition = GParametres.listeNiveauxDAcquisitions.count();
-	if (!!lNbrNiveauDAqcuisition) {
-		lHtml.push('<div style="padding: 1rem;">');
-		lHtml.push(
-			"<div>",
-			GTraductions.getValeur("competences.niveauDeMaitrise"),
-			"</div>",
-		);
-		for (let i = 1; i < lNbrNiveauDAqcuisition; i++) {
-			if (
-				GParametres.listeNiveauxDAcquisitions.get(i).existeNumero() &&
-				GParametres.listeNiveauxDAcquisitions
-					.get(i)
-					.actifPour.contains(
-						TypeGenreValidationCompetence.tGVC_EvaluationEtItem,
-					)
-			) {
-				lNiveauDAcquisition = GParametres.listeNiveauxDAcquisitions.get(i);
-				lLibelleNiveau = lNiveauDAcquisition.getLibelle();
-				lImageNiveau =
-					EGenreNiveauDAcquisitionUtil.getImage(lNiveauDAcquisition);
-				lHtml.push(
-					'<div style="padding-left: 1rem; padding-top: 0.5rem;">',
-					'<span style="display: inline-block; width: 2rem; text-align: center;">',
-					lImageNiveau,
-					"</span>",
-					'<span style="padding-left:',
-					!!GParametres.afficherAbbreviationNiveauDAcquisition
-						? "2rem;"
-						: "1.2rem;",
-					'">',
-					lLibelleNiveau,
-					"</span>",
-					"</div>",
-				);
-			}
-		}
-		if (!!avecNiveauxPositionnements) {
+exports.UtilitaireCompetences_Mobile = void 0;
+const GUID_1 = require("GUID");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_NiveauDAcquisition_1 = require("Enumere_NiveauDAcquisition");
+const TypeGenreValidationCompetence_1 = require("TypeGenreValidationCompetence");
+const TypePositionnement_1 = require("TypePositionnement");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const AccessApp_1 = require("AccessApp");
+exports.UtilitaireCompetences_Mobile = {
+	id: GUID_1.GUID.getId(),
+	openPopupDetailLegende: function (avecNiveauxPositionnements) {
+		const lListeNiveaux = (0, AccessApp_1.getApp)().getObjetParametres()
+			.listeNiveauxDAcquisitions;
+		const lHtml = [];
+		let lNiveauDAcquisition, lLibelleNiveau, lImageNiveau;
+		const lNbrNiveauDAqcuisition = lListeNiveaux.count();
+		if (!!lNbrNiveauDAqcuisition) {
+			lHtml.push('<div style="padding: 1rem;">');
 			lHtml.push(
-				'<div style="padding-top : 2rem;">',
-				GTraductions.getValeur("competences.PositionnementLSU"),
+				"<div>",
+				ObjetTraduction_1.GTraductions.getValeur(
+					"competences.niveauDeMaitrise",
+				),
 				"</div>",
 			);
-			for (let j = 1; j < lNbrNiveauDAqcuisition; j++) {
-				lNiveauDAcquisition = GParametres.listeNiveauxDAcquisitions.get(j);
+			for (let i = 1; i < lNbrNiveauDAqcuisition; i++) {
 				if (
-					lNiveauDAcquisition.existeNumero() &&
-					lNiveauDAcquisition.actifPour.contains(
-						TypeGenreValidationCompetence.tGVC_Competence,
-					)
+					lListeNiveaux.get(i).existeNumero() &&
+					lListeNiveaux
+						.get(i)
+						.actifPour.contains(
+							TypeGenreValidationCompetence_1.TypeGenreValidationCompetence
+								.tGVC_EvaluationEtItem,
+						)
 				) {
-					lLibelleNiveau =
-						EGenreNiveauDAcquisitionUtil.getLibellePositionnement({
-							niveauDAcquisition: lNiveauDAcquisition,
-							genrePositionnement: TypePositionnement.POS_Echelle,
-						});
-					lImageNiveau = EGenreNiveauDAcquisitionUtil.getImagePositionnement({
-						niveauDAcquisition: lNiveauDAcquisition,
-						genrePositionnement: TypePositionnement.POS_Echelle,
-					});
+					lNiveauDAcquisition = lListeNiveaux.get(i);
+					lLibelleNiveau = lNiveauDAcquisition.getLibelle();
+					lImageNiveau =
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+							lNiveauDAcquisition,
+						);
 					lHtml.push(
 						'<div style="padding-left: 1rem; padding-top: 0.5rem;">',
 						'<span style="display: inline-block; width: 2rem; text-align: center;">',
@@ -90,16 +55,65 @@ UtilitaireCompetences_Mobile.openPopupDetailLegende = function (
 					);
 				}
 			}
+			if (!!avecNiveauxPositionnements) {
+				lHtml.push(
+					'<div style="padding-top : 2rem;">',
+					ObjetTraduction_1.GTraductions.getValeur(
+						"competences.PositionnementLSU",
+					),
+					"</div>",
+				);
+				for (let j = 1; j < lNbrNiveauDAqcuisition; j++) {
+					lNiveauDAcquisition = lListeNiveaux.get(j);
+					if (
+						lNiveauDAcquisition.existeNumero() &&
+						lNiveauDAcquisition.actifPour.contains(
+							TypeGenreValidationCompetence_1.TypeGenreValidationCompetence
+								.tGVC_Competence,
+						)
+					) {
+						lLibelleNiveau =
+							Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getLibellePositionnement(
+								{
+									niveauDAcquisition: lNiveauDAcquisition,
+									genrePositionnement:
+										TypePositionnement_1.TypePositionnement.POS_Echelle,
+								},
+							);
+						lImageNiveau =
+							Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImagePositionnement(
+								{
+									niveauDAcquisition: lNiveauDAcquisition,
+									genrePositionnement:
+										TypePositionnement_1.TypePositionnement.POS_Echelle,
+								},
+							);
+						lHtml.push(
+							'<div style="padding-left: 1rem; padding-top: 0.5rem;">',
+							'<span style="display: inline-block; width: 2rem; text-align: center;">',
+							lImageNiveau,
+							"</span>",
+							'<span style="padding-left:',
+							!!GParametres.afficherAbbreviationNiveauDAcquisition
+								? "2rem;"
+								: "1.2rem;",
+							'">',
+							lLibelleNiveau,
+							"</span>",
+							"</div>",
+						);
+					}
+				}
+			}
+			lHtml.push("</div>");
 		}
-		lHtml.push("</div>");
-	}
-	ObjetFenetre.creerInstanceFenetre(
-		ObjetFenetre,
-		{ pere: this },
-		{
-			titre: GTraductions.getValeur("competences.Legende"),
-			fermerFenetreSurClicHorsFenetre: true,
-		},
-	).afficher(lHtml.join(""));
+		ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_1.ObjetFenetre,
+			{ pere: this },
+			{
+				titre: ObjetTraduction_1.GTraductions.getValeur("competences.Legende"),
+				fermerFenetreSurClicHorsFenetre: true,
+			},
+		).afficher(lHtml.join(""));
+	},
 };
-module.exports = UtilitaireCompetences_Mobile;

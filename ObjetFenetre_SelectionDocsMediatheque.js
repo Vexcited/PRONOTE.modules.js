@@ -50,7 +50,7 @@ class ObjetFenetre_SelectionDocsMediatheque extends ObjetFenetre_1.ObjetFenetre 
 					null,
 					IE.jsx.str("div", {
 						style: "height:100%;",
-						id: this.getInstance(this.identInterfaceMediatheque).getNom(),
+						id: this.getNomInstance(this.identInterfaceMediatheque),
 					}),
 				),
 			),

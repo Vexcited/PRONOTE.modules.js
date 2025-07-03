@@ -1,54 +1,26 @@
-const { EGenreTriElement } = require("Enumere_TriElement.js");
-const { GDate } = require("ObjetDate.js");
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const {
-	EGenreNiveauDAcquisitionUtil,
-} = require("Enumere_NiveauDAcquisition.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { EGenreDocumentJoint } = require("Enumere_DocumentJoint.js");
-const { GChaine } = require("ObjetChaine.js");
-const { TypeFichierExterneHttpSco } = require("TypeFichierExterneHttpSco.js");
-const { tag } = require("tag.js");
-class DonneesListe_DernieresEvaluations extends ObjetDonneesListeFlatDesign {
+exports.DonneesListe_DernieresEvaluations = void 0;
+const Enumere_TriElement_1 = require("Enumere_TriElement");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_NiveauDAcquisition_1 = require("Enumere_NiveauDAcquisition");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetElement_1 = require("ObjetElement");
+const Enumere_DocumentJoint_1 = require("Enumere_DocumentJoint");
+const ObjetChaine_1 = require("ObjetChaine");
+const TypeFichierExterneHttpSco_1 = require("TypeFichierExterneHttpSco");
+const AccessApp_1 = require("AccessApp");
+class DonneesListe_DernieresEvaluations extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees, aParamsAffichage) {
 		super(aDonnees);
+		this.etatUtilSco = (0, AccessApp_1.getApp)().getEtatUtilisateur();
 		this.parametres = { avecCumulMatiere: false, callbackExecutionQCM: null };
 		this.setParametres(aParamsAffichage);
 		this.setOptions({ avecBoutonActionLigne: false, avecDeploiement: false });
 	}
 	setParametres(aParams) {
 		Object.assign(this.parametres, aParams);
-	}
-	getControleur(aDonneesListe, aListe) {
-		return $.extend(true, super.getControleur(aDonneesListe, aListe), {
-			afficherCorrigerQCM: {
-				event: function (aNumero, aGenre) {
-					if (
-						!!aDonneesListe.parametres &&
-						!!aDonneesListe.parametres.callbackExecutionQCM
-					) {
-						if (IE.estMobile) {
-							const lDevoir = aDonneesListe.Donnees.getElementParNumeroEtGenre(
-								aNumero,
-								aGenre,
-							);
-							if (lDevoir && lDevoir.executionQCM) {
-								aDonneesListe.parametres.callbackExecutionQCM(
-									lDevoir.executionQCM,
-								);
-							}
-						} else {
-							aDonneesListe.parametres.callbackExecutionQCM(aNumero, aGenre);
-						}
-					}
-				},
-			},
-		});
 	}
 	getVisible(D) {
 		return this.parametres.avecCumulMatiere || !_estUneMatiere(D);
@@ -67,7 +39,11 @@ class DonneesListe_DernieresEvaluations extends ObjetDonneesListeFlatDesign {
 		if (!!aParams.article) {
 			if (_estUneMatiere(aParams.article)) {
 				H.push(
-					tag("span", { class: "ie-titre-gros" }, aParams.article.getLibelle()),
+					IE.jsx.str(
+						"span",
+						{ class: "ie-titre-gros" },
+						aParams.article.getLibelle(),
+					),
 				);
 			} else {
 				if (
@@ -75,7 +51,9 @@ class DonneesListe_DernieresEvaluations extends ObjetDonneesListeFlatDesign {
 					!!aParams.article.matiere &&
 					aParams.article.matiere.getLibelle() !== ""
 				) {
-					H.push(tag("span", aParams.article.matiere.getLibelle()));
+					H.push(
+						IE.jsx.str("span", null, aParams.article.matiere.getLibelle()),
+					);
 				}
 			}
 		}
@@ -84,20 +62,29 @@ class DonneesListe_DernieresEvaluations extends ObjetDonneesListeFlatDesign {
 	getZoneGauche(aParams) {
 		const H = [];
 		if (!_estUneMatiere(aParams.article)) {
-			const lParams = {
-				class: ["date-contain"],
-				datetime: GDate.formatDate(aParams.article.date, "%MM-%JJ"),
-			};
+			const lClasses = ["date-contain"];
+			let lStyle = "";
 			if (!this.parametres.avecCumulMatiere) {
-				lParams.class.push("ie-line-color bottom");
-				lParams.style = `--color-line :${aParams.article.matiere.couleur};`;
+				lClasses.push("ie-line-color");
+				lStyle = `--color-line :${aParams.article.matiere.couleur};`;
 			}
 			H.push(
-				tag("time", lParams, GDate.formatDate(aParams.article.date, "%J %MMM")),
+				IE.jsx.str(
+					"time",
+					{
+						datetime: ObjetDate_1.GDate.formatDate(
+							aParams.article.date,
+							"%MM-%JJ",
+						),
+						class: lClasses.join(" "),
+						style: lStyle,
+					},
+					ObjetDate_1.GDate.formatDate(aParams.article.date, "%J %MMM"),
+				),
 			);
 		} else {
 			H.push(
-				tag("span", {
+				IE.jsx.str("span", {
 					class: "ie-line-color static only-color var-height",
 					style: `--color-line :${aParams.article.couleur};--var-height:2.2rem;`,
 				}),
@@ -109,20 +96,22 @@ class DonneesListe_DernieresEvaluations extends ObjetDonneesListeFlatDesign {
 		const H = [];
 		if (!_estUneMatiere(aParams.article)) {
 			if (
-				GEtatUtilisateur.pourPrimaire() &&
+				this.etatUtilSco.pourPrimaire() &&
 				aParams.article.coefficient === 0
 			) {
 				H.push(
-					tag(
+					IE.jsx.str(
 						"span",
 						{ class: "ie-sous-titre" },
-						"(" +
-							GTraductions.getValeur("evaluations.NonComptabiliseDansBilan") +
-							")",
+						"(",
+						ObjetTraduction_1.GTraductions.getValeur(
+							"evaluations.NonComptabiliseDansBilan",
+						),
+						")",
 					),
 				);
 			}
-			H.push(_composePieceJointeEval.call(this, aParams.article));
+			H.push(this._composePieceJointeEval(aParams.article));
 		}
 		return H.join("");
 	}
@@ -130,7 +119,7 @@ class DonneesListe_DernieresEvaluations extends ObjetDonneesListeFlatDesign {
 		const H = [];
 		if (!_estUneMatiere(aParams.article)) {
 			H.push(
-				tag(
+				IE.jsx.str(
 					"div",
 					{ class: "eval-devoir" },
 					_composeNiveauxAcquisition.call(this, aParams.article),
@@ -142,7 +131,8 @@ class DonneesListe_DernieresEvaluations extends ObjetDonneesListeFlatDesign {
 	getAriaLabelZoneCellule(aParams, aZone) {
 		if (
 			aZone ===
-			ObjetDonneesListeFlatDesign.ZoneCelluleFlatDesign.zoneComplementaire
+			ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign
+				.ZoneCelluleFlatDesign.zoneComplementaire
 		) {
 			if (!_estUneMatiere(aParams.article)) {
 				const H = [];
@@ -157,7 +147,9 @@ class DonneesListe_DernieresEvaluations extends ObjetDonneesListeFlatDesign {
 									aNiveauDAcquisition.getGenre(),
 								);
 							H.push(
-								EGenreNiveauDAcquisitionUtil.getLibelle(lNiveauDAcquisition),
+								Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getLibelle(
+									lNiveauDAcquisition,
+								),
 							);
 						},
 					);
@@ -177,35 +169,126 @@ class DonneesListe_DernieresEvaluations extends ObjetDonneesListeFlatDesign {
 		const lTris = [];
 		if (this.parametres.avecCumulMatiere) {
 			lTris.push(
-				ObjetTri.init((D) => {
+				ObjetTri_1.ObjetTri.init((D) => {
 					return _estUneMatiere(D) ? D.ordre || -1 : D.matiere.ordre || -1;
-				}, EGenreTriElement.Croissant),
+				}, Enumere_TriElement_1.EGenreTriElement.Croissant),
 			);
 			lTris.push(
-				ObjetTri.init((D) => {
+				ObjetTri_1.ObjetTri.init((D) => {
 					return _estUneMatiere(D) ? D.getLibelle() : D.matiere.getLibelle();
-				}, EGenreTriElement.Croissant),
+				}, Enumere_TriElement_1.EGenreTriElement.Croissant),
 			);
 			lTris.push(
-				ObjetTri.init((D) => {
+				ObjetTri_1.ObjetTri.init((D) => {
 					return _estUneMatiere(D)
 						? D.serviceConcerne.getNumero()
 						: D.matiere.serviceConcerne.getNumero();
 				}),
 			);
 			lTris.push(
-				ObjetTri.init((D) => {
+				ObjetTri_1.ObjetTri.init((D) => {
 					return !_estUneMatiere(D);
 				}),
 			);
 		}
-		lTris.push(ObjetTri.init("date", EGenreTriElement.Decroissant));
-		lTris.push(ObjetTri.init("matiere.Libelle"));
+		lTris.push(
+			ObjetTri_1.ObjetTri.init(
+				"date",
+				Enumere_TriElement_1.EGenreTriElement.Decroissant,
+			),
+		);
+		lTris.push(ObjetTri_1.ObjetTri.init("matiere.Libelle"));
 		return lTris;
 	}
+	_composePieceJointeEval(aEval) {
+		const H = [];
+		let lDocumentJointSujet, lDocumentJointCorrige, lLienSujet, lLienCorrige;
+		if (!!aEval.elmSujet) {
+			lDocumentJointSujet = aEval.elmSujet;
+		} else if (!!aEval.libelleSujet) {
+			lDocumentJointSujet = new ObjetElement_1.ObjetElement(
+				aEval.libelleSujet,
+				aEval.getNumero(),
+				Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier,
+			);
+		}
+		if (lDocumentJointSujet) {
+			lLienSujet = ObjetChaine_1.GChaine.composerUrlLienExterne({
+				documentJoint: lDocumentJointSujet,
+				genreRessource:
+					TypeFichierExterneHttpSco_1.TypeFichierExterneHttpSco.EvaluationSujet,
+				libelleEcran: ObjetTraduction_1.GTraductions.getValeur("AfficherSujet"),
+				class: "chips-design-liste",
+			});
+		}
+		if (!!aEval.elmCorrige) {
+			lDocumentJointCorrige = aEval.elmCorrige;
+		} else if (!!aEval.libelleCorrige) {
+			lDocumentJointCorrige = new ObjetElement_1.ObjetElement(
+				aEval.libelleCorrige,
+				aEval.getNumero(),
+				Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier,
+			);
+		}
+		if (lDocumentJointCorrige) {
+			lLienCorrige = ObjetChaine_1.GChaine.composerUrlLienExterne({
+				documentJoint: lDocumentJointCorrige,
+				genreRessource:
+					TypeFichierExterneHttpSco_1.TypeFichierExterneHttpSco
+						.EvaluationCorrige,
+				libelleEcran:
+					ObjetTraduction_1.GTraductions.getValeur("AfficherCorrige"),
+				class: "chips-design-liste",
+			});
+		}
+		if (lLienSujet || lLienCorrige) {
+			H.push(
+				`<div class="flex-contain flex-center flex-gap m-top m-bottom">${lLienSujet || ""} ${lLienCorrige || ""}</div>`,
+			);
+		}
+		if (
+			!!aEval.executionQCM &&
+			!!aEval.executionQCM.fichierDispo &&
+			!!aEval.executionQCM.publierCorrige &&
+			this.parametres.callbackExecutionQCM
+		) {
+			H.push(
+				IE.jsx.str(
+					"ie-bouton",
+					{
+						class: "themeBoutonNeutre small-bt bg-white",
+						"ie-model": this.jsxModelBouton.bind(this, aEval),
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"ExecutionQCM.presentationCorrige.VisualiserCorrige",
+					),
+				),
+			);
+		}
+		return H.join("");
+	}
+	jsxModelBouton(aEval) {
+		return {
+			event: () => {
+				if (!!this.parametres && !!this.parametres.callbackExecutionQCM) {
+					if (IE.estMobile) {
+						if (aEval && aEval.executionQCM) {
+							this.parametres.callbackExecutionQCM(aEval.executionQCM);
+						}
+					} else {
+						this.parametres.callbackExecutionQCM(
+							aEval.getNumero(),
+							aEval.getGenre(),
+						);
+					}
+				}
+			},
+		};
+	}
 }
+exports.DonneesListe_DernieresEvaluations = DonneesListe_DernieresEvaluations;
 function _estUneMatiere(D) {
-	return D.getGenre() === EGenreRessource.Matiere;
+	return D.getGenre() === Enumere_Ressource_1.EGenreRessource.Matiere;
 }
 function _composeNiveauxAcquisition(aEval) {
 	const H = [];
@@ -220,72 +303,15 @@ function _composeNiveauxAcquisition(aEval) {
 					aNiveauDAcquisition.getGenre(),
 				);
 			H.push(
-				tag("span", EGenreNiveauDAcquisitionUtil.getImage(lNiveauDAcquisition)),
+				IE.jsx.str(
+					"span",
+					null,
+					Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+						lNiveauDAcquisition,
+					),
+				),
 			);
 		});
 	}
 	return H.join("");
 }
-function _composePieceJointeEval(aEval) {
-	const H = [];
-	let lDocumentJointSujet, lDocumentJointCorrige, lLienSujet, lLienCorrige;
-	if (!!aEval.elmSujet) {
-		lDocumentJointSujet = aEval.elmSujet;
-	} else if (!!aEval.libelleSujet) {
-		lDocumentJointSujet = new ObjetElement(
-			aEval.libelleSujet,
-			aEval.getNumero(),
-			EGenreDocumentJoint.Fichier,
-		);
-	}
-	if (lDocumentJointSujet) {
-		lLienSujet = GChaine.composerUrlLienExterne({
-			documentJoint: lDocumentJointSujet,
-			genreRessource: TypeFichierExterneHttpSco.EvaluationSujet,
-			libelleEcran: GTraductions.getValeur("AfficherSujet"),
-			class: "chips-design-liste",
-		});
-	}
-	if (!!aEval.elmCorrige) {
-		lDocumentJointCorrige = aEval.elmCorrige;
-	} else if (!!aEval.libelleCorrige) {
-		lDocumentJointCorrige = new ObjetElement(
-			aEval.libelleCorrige,
-			aEval.getNumero(),
-			EGenreDocumentJoint.Fichier,
-		);
-	}
-	if (lDocumentJointCorrige) {
-		lLienCorrige = GChaine.composerUrlLienExterne({
-			documentJoint: lDocumentJointCorrige,
-			genreRessource: TypeFichierExterneHttpSco.EvaluationCorrige,
-			libelleEcran: GTraductions.getValeur("AfficherCorrige"),
-			class: "chips-design-liste",
-		});
-	}
-	if (lLienSujet || lLienCorrige) {
-		H.push(
-			`<div class="flex-contain flex-center flex-gap m-top m-bottom">${lLienSujet || ""} ${lLienCorrige || ""}</div>`,
-		);
-	}
-	if (
-		!!aEval.executionQCM &&
-		!!aEval.executionQCM.fichierDispo &&
-		!!aEval.executionQCM.publierCorrige &&
-		this.parametres.callbackExecutionQCM
-	) {
-		H.push(
-			'<ie-bouton class="themeBoutonNeutre small-bt bg-white" ie-model="afficherCorrigerQCM(\'',
-			aEval.getNumero(),
-			"', ",
-			aEval.getGenre(),
-			')">',
-			GTraductions.getValeur(
-				"ExecutionQCM.presentationCorrige.VisualiserCorrige",
-			),
-			"</ie-bouton>",
-		);
-	}
-	return H.join("");
-}
-module.exports = { DonneesListe_DernieresEvaluations };

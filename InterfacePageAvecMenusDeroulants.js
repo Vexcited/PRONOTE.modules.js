@@ -23,6 +23,7 @@ const TypeCategorieCompetence_1 = require("TypeCategorieCompetence");
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
 const ObjetIdentite_1 = require("ObjetIdentite");
 const ObjetRequeteListes_1 = require("ObjetRequeteListes");
+const TypeOptionsPublication_1 = require("TypeOptionsPublication");
 var EGenreClasse;
 (function (EGenreClasse) {
 	EGenreClasse[(EGenreClasse["principal"] = 0)] = "principal";
@@ -139,6 +140,13 @@ class ObjetAffichagePageAvecMenusDeroulants extends ObjetInterface_1.ObjetInterf
 			Enumere_Onglet_1.EGenreOnglet.SuiviResultatsCompetences,
 			Enumere_Onglet_1.EGenreOnglet.BilanCompetencesParMatiere,
 		].includes(this.etatUtilisateurSco.getGenreOnglet());
+		const lAvecUniquementStagiaire =
+			[Enumere_Onglet_1.EGenreOnglet.SaisieAppreciationDeFinDeStage].includes(
+				this.etatUtilisateurSco.getGenreOnglet(),
+			) &&
+			[Enumere_Espace_1.EGenreEspace.Etablissement].includes(
+				this.etatUtilisateurSco.GenreEspace,
+			);
 		this.donneesRequete = {
 			avecProfesseur: true,
 			avecPalier: true,
@@ -153,6 +161,7 @@ class ObjetAffichagePageAvecMenusDeroulants extends ObjetInterface_1.ObjetInterf
 				Enumere_Onglet_1.EGenreOnglet.BilanParDomaine,
 				Enumere_Onglet_1.EGenreOnglet.CompetencesNumeriques,
 			].includes(this.etatUtilisateurSco.getGenreOnglet()),
+			avecUniquementStagiaire: lAvecUniquementStagiaire,
 		};
 		this.construireInstancesDynamiques();
 		this.IdPremierElement = this.getInstance(
@@ -387,7 +396,7 @@ class ObjetAffichagePageAvecMenusDeroulants extends ObjetInterface_1.ObjetInterf
 	}
 	setVisible() {
 		ObjetStyle_1.GStyle.setVisible(
-			this.getInstance(this.getIdentCombo(this.TabGenreCombo[0])).getNom(),
+			this.getNomInstance(this.getIdentCombo(this.TabGenreCombo[0])),
 			false,
 		);
 	}
@@ -396,7 +405,7 @@ class ObjetAffichagePageAvecMenusDeroulants extends ObjetInterface_1.ObjetInterf
 		for (let I = 0; I < this.TabGenreCombo.length; I++) {
 			if (LMasquer) {
 				ObjetStyle_1.GStyle.setVisible(
-					this.getInstance(this.getIdentCombo(this.TabGenreCombo[I])).getNom(),
+					this.getNomInstance(this.getIdentCombo(this.TabGenreCombo[I])),
 					false,
 				);
 			}
@@ -408,7 +417,7 @@ class ObjetAffichagePageAvecMenusDeroulants extends ObjetInterface_1.ObjetInterf
 	afficherCombo(aGenreRessource, aDisplay) {
 		if (this.getIdentCombo(aGenreRessource) !== undefined) {
 			ObjetStyle_1.GStyle.setDisplay(
-				this.getInstance(this.getIdentCombo(aGenreRessource)).getNom(),
+				this.getNomInstance(this.getIdentCombo(aGenreRessource)),
 				aDisplay,
 			);
 		}
@@ -1074,20 +1083,36 @@ class ObjetAffichagePageAvecMenusDeroulants extends ObjetInterface_1.ObjetInterf
 		lListe.parcourir((aElement) => {
 			if (aElement.estGAEV) {
 				let lClasseIconeGAEV;
+				let lTitle = "";
 				if (aElement.estGAEVMixte) {
 					lClasseIconeGAEV = "icon_gaev_mixte";
+					lTitle = ObjetTraduction_1.GTraductions.getValeur(
+						"EDT.HintImageGAEVMixte",
+					);
 				} else {
 					lClasseIconeGAEV = "icon_groupes_accompagnement_personnalise";
+					lTitle = ObjetTraduction_1.GTraductions.getValeur(
+						"EDT.ElevesGAEVChangent",
+					);
 				}
-				aElement.libelleHtml =
-					'<div style="display:flex; align-items:center; justify-content:space-between;">' +
-					"<div>" +
-					aElement.Libelle +
-					"</div>" +
-					'<div><i class="' +
-					lClasseIconeGAEV +
-					'"></i></div>' +
-					"</div>";
+				aElement.libelleHtml = IE.jsx.str(
+					"div",
+					{
+						style:
+							"display:flex; align-items:center; justify-content:space-between;",
+					},
+					IE.jsx.str("div", null, aElement.Libelle),
+					IE.jsx.str(
+						"div",
+						null,
+						IE.jsx.str("i", {
+							class: lClasseIconeGAEV,
+							role: "img",
+							title: lTitle,
+							"aria-label": lTitle,
+						}),
+					),
+				);
 			}
 		});
 		if (this.avecMesServices) {
@@ -1187,7 +1212,6 @@ class ObjetAffichagePageAvecMenusDeroulants extends ObjetInterface_1.ObjetInterf
 			].includes(lOnglet),
 			uniquementClasseEnseignee:
 				[
-					Enumere_Onglet_1.EGenreOnglet.SaisieProgressions,
 					Enumere_Onglet_1.EGenreOnglet.SaisieCahierDeTextes,
 					Enumere_Onglet_1.EGenreOnglet.SaisieTravailAFaire,
 					Enumere_Onglet_1.EGenreOnglet.SaisieCahierJournal,
@@ -1227,6 +1251,31 @@ class ObjetAffichagePageAvecMenusDeroulants extends ObjetInterface_1.ObjetInterf
 		) {
 			lListeClasse.removeFilter((aClasseGroupe) => {
 				return !aClasseGroupe.estDeNiveauMaternelle;
+			});
+		}
+		if ([Enumere_Onglet_1.EGenreOnglet.SaisieTravailAFaire].includes(lOnglet)) {
+			lListeClasse.removeFilter((aClasseGroupe) => {
+				return (
+					!!aClasseGroupe.optionsPublication &&
+					!aClasseGroupe.optionsPublication.contains(
+						TypeOptionsPublication_1.TypeOptionsPublication.OP_CahierDeTexte,
+					)
+				);
+			});
+		}
+		if (
+			[
+				Enumere_Onglet_1.EGenreOnglet.Blog_FilActu,
+				Enumere_Onglet_1.EGenreOnglet.Blog_Mediatheque,
+			].includes(lOnglet)
+		) {
+			lListeClasse.removeFilter((aClasseGroupe) => {
+				return (
+					!!aClasseGroupe.optionsPublication &&
+					!aClasseGroupe.optionsPublication.contains(
+						TypeOptionsPublication_1.TypeOptionsPublication.OP_Blog,
+					)
+				);
 			});
 		}
 		const lListe = new ObjetListeElements_1.ObjetListeElements();
@@ -1310,13 +1359,12 @@ class ObjetAffichagePageAvecMenusDeroulants extends ObjetInterface_1.ObjetInterf
 			lClasseParDefaut = lPremierClasseParDefaut;
 		}
 		if (this.avecMesServices) {
-			const lMesServices = new ObjetElement_1.ObjetElement(
-				ObjetTraduction_1.GTraductions.getValeur("MesServices"),
-				-1,
-				Enumere_Ressource_1.EGenreRessource.Aucune,
-				null,
-			);
-			lMesServices.AvecSelection = true;
+			const lMesServices = ObjetElement_1.ObjetElement.create({
+				Libelle: ObjetTraduction_1.GTraductions.getValeur("MesServices"),
+				Numero: -1,
+				Genre: Enumere_Ressource_1.EGenreRessource.Aucune,
+				AvecSelection: true,
+			});
 			lListe.addElement(lMesServices);
 		}
 		let lElement;
@@ -1475,10 +1523,10 @@ class ObjetAffichagePageAvecMenusDeroulants extends ObjetInterface_1.ObjetInterf
 		function _ajouter(aListe, aElement, aAvecFiliere) {
 			const lTabClass = [];
 			if (aElement.getActif()) {
-				lTabClass.push("Gras");
+				lTabClass.push("semi-bold");
 			}
 			if (aAvecFiliere && aElement.horsLivret) {
-				lTabClass.push("TexteRouge");
+				lTabClass.push("color-red-moyen");
 			}
 			aElement.ClassAffichage = lTabClass.join(" ");
 			aListe.addElement(aElement);
@@ -1561,19 +1609,19 @@ class ObjetAffichagePageAvecMenusDeroulants extends ObjetInterface_1.ObjetInterf
 			aAvecGras,
 			aCouleur,
 		) {
-			const T = [];
-			T.push(
+			const H = [];
+			H.push(
 				'<div class="InlineBlock AlignementBas" ie-ellipsis style="overflow:hidden;',
 				ObjetStyle_1.GStyle.composeWidth(aLargeur),
 				aEstService ? "" : "padding-left:10px;",
 				'">',
 			);
-			T.push('<div class="flex-contain flex-center">');
+			H.push('<div class="flex-contain flex-center">');
 			const lBorder = !aEstService
 				? "border-radius:6px;"
 				: "border-radius:6px 0 0 6px;";
 			const lHeight = !aEstService ? 6 : 25;
-			T.push(
+			H.push(
 				'<div style="',
 				ObjetStyle_1.GStyle.composeHeight(lHeight),
 				"min-width:6px; margin:2px; margin-right: 3px; " +
@@ -1582,10 +1630,10 @@ class ObjetAffichagePageAvecMenusDeroulants extends ObjetInterface_1.ObjetInterf
 				'"></div>',
 			);
 			const lGras = aAvecGras ? "Gras" : "";
-			T.push('<div class="', lGras, '">', aLibelle, "</div>");
-			T.push("</div>");
-			T.push("</div>");
-			return T.join("");
+			H.push('<div class="', lGras, '">', aLibelle, "</div>");
+			H.push("</div>");
+			H.push("</div>");
+			return H.join("");
 		}
 		if (this.avecMesServices) {
 			const lClasseGroupeSelectionnee =
@@ -1616,12 +1664,12 @@ class ObjetAffichagePageAvecMenusDeroulants extends ObjetInterface_1.ObjetInterf
 			lService._libelleClasseGroupe = lLibelleClasseGroupe;
 			lService._estSurProfesseur = false;
 			lService._estServicePartie = lLibelleClasse && lLibelleGroupe;
-			const T = [];
-			T.push('<div class="flex-contain flex-between flex-center">');
+			const H = [];
+			H.push('<div class="flex-contain flex-between flex-center">');
 			const lCouleur = aElement.couleur;
 			if (aElement.estService) {
 				const lEstCumulNiveau1 = !(aElement.cumul > 1);
-				T.push(
+				H.push(
 					_dessinerColonne(
 						aElement.matiere.getLibelle(),
 						350,
@@ -1631,15 +1679,15 @@ class ObjetAffichagePageAvecMenusDeroulants extends ObjetInterface_1.ObjetInterf
 					),
 				);
 			} else {
-				T.push(
+				H.push(
 					_dessinerColonne(aElement.getLibelle(), 350, true, true, lCouleur),
 				);
 			}
 			if (lAvecServiceClasse) {
-				T.push("<div>", lLibelleClasseGroupe, "</div>");
+				H.push("<div>", lLibelleClasseGroupe, "</div>");
 			}
-			T.push("</div>");
-			lService.libelleHtml = T.join("");
+			H.push("</div>");
+			lService.libelleHtml = H.join("");
 		});
 		this._remplirCombo(lListe, Enumere_Ressource_1.EGenreRessource.Service);
 		if (
@@ -1654,8 +1702,8 @@ class ObjetAffichagePageAvecMenusDeroulants extends ObjetInterface_1.ObjetInterf
 	}
 	actionSurRequeteListeServices(aListeServices) {
 		function _dessinerColonne(aLibelle, aLargeur, aEstService) {
-			const T = [];
-			T.push(
+			const H = [];
+			H.push(
 				'<div class=" InlineBlock AlignementBas" ie-ellipsis style="overflow:hidden;',
 				ObjetStyle_1.GStyle.composeWidth(aLargeur - (aEstService ? 25 : 35)),
 				aEstService ? "" : "padding-left:10px;",
@@ -1663,7 +1711,7 @@ class ObjetAffichagePageAvecMenusDeroulants extends ObjetInterface_1.ObjetInterf
 				aLibelle,
 				"</div>",
 			);
-			return T.join("");
+			return H.join("");
 		}
 		const lListe = new ObjetListeElements_1.ObjetListeElements();
 		let lServicePere = null;
@@ -1703,9 +1751,9 @@ class ObjetAffichagePageAvecMenusDeroulants extends ObjetInterface_1.ObjetInterf
 			lService._libelleProfesseurs = LLibelleProfesseurs.join("<br>");
 			lService._estSurProfesseur = lEstSurProfesseur;
 			lService._estServicePartie = LLibelleClasse && LLibelleGroupe;
-			const T = [];
-			T.push('<div class="NoWrap">');
-			T.push(
+			const H = [];
+			H.push('<div class="NoWrap">');
+			H.push(
 				_dessinerColonne(
 					aElement.matiere.getLibelle(),
 					!lAvecServiceProfesseur && !lAvecServiceClasse ? 350 : 200,
@@ -1713,12 +1761,12 @@ class ObjetAffichagePageAvecMenusDeroulants extends ObjetInterface_1.ObjetInterf
 				),
 			);
 			if (lAvecServiceClasse) {
-				T.push(
+				H.push(
 					_dessinerColonne(LLibelleClasseGroupe, 200, lService.estUnService),
 				);
 			}
 			if (lAvecServiceProfesseur) {
-				T.push(
+				H.push(
 					_dessinerColonne(
 						lService._libelleProfesseurs,
 						150 - 6,
@@ -1726,8 +1774,8 @@ class ObjetAffichagePageAvecMenusDeroulants extends ObjetInterface_1.ObjetInterf
 					),
 				);
 			}
-			T.push("</div>");
-			lService.libelleHtml = T.join("");
+			H.push("</div>");
+			lService.libelleHtml = H.join("");
 		});
 		if (this.avecToutesLesLVE) {
 			const lServiceLVE = new ObjetElement_1.ObjetElement(
@@ -1935,19 +1983,19 @@ class ObjetAffichagePageAvecMenusDeroulants extends ObjetInterface_1.ObjetInterf
 			Enumere_Ressource_1.EGenreRessource.Personnel,
 		);
 	}
-	_callback(a, b, c, d, e, f, g, h) {
+	_callback(...aParams) {
 		setTimeout(
-			this._callBackTimeout.bind(this, a, b, c, d, e, f, g, h),
+			this._callBackTimeout.bind(this, ...aParams),
 			this.delaiFermetureCombo,
 		);
 	}
-	_callBackTimeout(a, b, c, d, e, f, g, h) {
+	_callBackTimeout(...aParams) {
 		if (
 			this.callback.pere &&
 			this.callback.pere instanceof ObjetIdentite_1.Identite &&
 			!this.callback.pere.isDestroyed()
 		) {
-			this.callback.appel(a, b, c, d, e, f, g, h);
+			this.callback.appel(...aParams);
 		}
 	}
 	_callbackSurMenusDeroulants(aParamCallback) {

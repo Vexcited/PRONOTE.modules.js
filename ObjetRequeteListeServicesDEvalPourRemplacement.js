@@ -1,19 +1,15 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteListeServicesDEvalPourRemplacement extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteListeServicesDEvalPourRemplacement = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteListeServicesDEvalPourRemplacement extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aEvaluation) {
 		this.JSON.Evaluation = aEvaluation;
 		return this.appelAsynchrone();
 	}
-	actionApresRequete() {
-		this.callbackReussite.appel(this.JSONReponse.listeServices);
-	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteListeServicesDEvalPourRemplacement =
+	ObjetRequeteListeServicesDEvalPourRemplacement;
+CollectionRequetes_1.Requetes.inscrire(
 	"ListeServicesDEvalPourRemplacement",
 	ObjetRequeteListeServicesDEvalPourRemplacement,
 );
-module.exports = { ObjetRequeteListeServicesDEvalPourRemplacement };

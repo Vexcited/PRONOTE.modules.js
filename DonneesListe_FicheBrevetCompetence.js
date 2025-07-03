@@ -1,10 +1,9 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	TypeGenreValidationCompetence,
-} = require("TypeGenreValidationCompetence.js");
-const { TUtilitaireCompetences } = require("UtilitaireCompetences.js");
-class DonneesListe_FicheBrevetCompetence extends ObjetDonneesListe {
+exports.DonneesListe_FicheBrevetCompetence = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TypeGenreValidationCompetence_1 = require("TypeGenreValidationCompetence");
+const UtilitaireCompetences_1 = require("UtilitaireCompetences");
+class DonneesListe_FicheBrevetCompetence extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aCompetences, aParam) {
 		super(aCompetences.listePiliers);
 		this.competences = aCompetences;
@@ -45,7 +44,9 @@ class DonneesListe_FicheBrevetCompetence extends ObjetDonneesListe {
 	getContenuTotal(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_FicheBrevetCompetence.colonnes.competences:
-				return GTraductions.getValeur("FicheBrevet.TotalDesPoints");
+				return ObjetTraduction_1.GTraductions.getValeur(
+					"FicheBrevet.TotalDesPoints",
+				);
 			case DonneesListe_FicheBrevetCompetence.colonnes.points:
 				return this.competences.totalPoints.getNoteEntier();
 			case DonneesListe_FicheBrevetCompetence.colonnes.bareme:
@@ -81,11 +82,15 @@ class DonneesListe_FicheBrevetCompetence extends ObjetDonneesListe {
 			largeurMin: 150,
 			largeurColonneGauche: 30,
 		});
-		const lListe = TUtilitaireCompetences.getListeNiveauxDAcquisitionsPourMenu({
-			genreChoixValidationCompetence:
-				TypeGenreValidationCompetence.tGVC_Competence,
-			avecDispense: aParametres.article.estPilierLVE,
-		});
+		const lListe =
+			UtilitaireCompetences_1.TUtilitaireCompetences.getListeNiveauxDAcquisitionsPourMenu(
+				{
+					genreChoixValidationCompetence:
+						TypeGenreValidationCompetence_1.TypeGenreValidationCompetence
+							.tGVC_Competence,
+					avecDispense: aParametres.article.estPilierLVE,
+				},
+			);
 		if (lListe) {
 			lListe.parcourir((aElement) => {
 				if (aElement.existe()) {
@@ -109,10 +114,22 @@ class DonneesListe_FicheBrevetCompetence extends ObjetDonneesListe {
 		}
 	}
 }
-DonneesListe_FicheBrevetCompetence.colonnes = {
-	competences: "FicheBrevetCompetence",
-	maitrise: "FicheBrevetCompetenceMaitrise",
-	points: "FicheBrevetCompetencePoints",
-	bareme: "FicheBrevetCompetenceBareme",
-};
-module.exports = { DonneesListe_FicheBrevetCompetence };
+exports.DonneesListe_FicheBrevetCompetence = DonneesListe_FicheBrevetCompetence;
+(function (DonneesListe_FicheBrevetCompetence) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["competences"] = "FicheBrevetCompetence";
+		colonnes["maitrise"] = "FicheBrevetCompetenceMaitrise";
+		colonnes["points"] = "FicheBrevetCompetencePoints";
+		colonnes["bareme"] = "FicheBrevetCompetenceBareme";
+	})(
+		(colonnes =
+			DonneesListe_FicheBrevetCompetence.colonnes ||
+			(DonneesListe_FicheBrevetCompetence.colonnes = {})),
+	);
+})(
+	DonneesListe_FicheBrevetCompetence ||
+		(exports.DonneesListe_FicheBrevetCompetence =
+			DonneesListe_FicheBrevetCompetence =
+				{}),
+);

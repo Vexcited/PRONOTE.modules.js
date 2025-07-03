@@ -1,5 +1,5 @@
+exports.ObjetSerialiser = void 0;
 class ObjetSerialiser {
-	constructor() {}
 	executionKiosque(aElement, aJSON) {
 		aJSON.ressource = aElement.ressource.toJSON();
 		aJSON.dateDebutPublication = aElement.dateDebutPublication;
@@ -37,4 +37,4 @@ class ObjetSerialiser {
 		}
 	}
 }
-module.exports = { ObjetSerialiser };
+exports.ObjetSerialiser = ObjetSerialiser;

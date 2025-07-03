@@ -1,112 +1,123 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { Identite } = require("ObjetIdentite.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { EGenreAction } = require("Enumere_Action.js");
-const { ObjetCelluleDate } = require("ObjetCelluleDate.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { GDate } = require("ObjetDate.js");
-const {
-	ObjetRequeteSaisieFicheEleve,
-} = require("ObjetRequeteSaisieFicheEleve.js");
-const { ObjetSelecteurPJ } = require("ObjetSelecteurPJ.js");
-const { EGenreDocumentJoint } = require("Enumere_DocumentJoint.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { UtilitaireUrl } = require("UtilitaireUrl.js");
-const { GHtml } = require("ObjetHtml.js");
-const { GUID } = require("GUID.js");
-const { ObjetCelluleBouton } = require("ObjetCelluleBouton.js");
-const { EGenreBoutonCellule } = require("ObjetCelluleBouton.js");
-const { EEvent } = require("Enumere_Event.js");
-const {
-	ObjetFenetre_TypeProjetAccompagnement,
-} = require("ObjetFenetre_TypeProjetAccompagnement.js");
-const {
-	ObjetFenetre_MotifProjetAccompagnement,
-} = require("ObjetFenetre_MotifProjetAccompagnement.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-class ObjetFenetre_ProjetAccompagnement extends ObjetFenetre {
+exports.ObjetFenetre_ProjetAccompagnement = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetIdentite_1 = require("ObjetIdentite");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_Action_1 = require("Enumere_Action");
+const ObjetCelluleDate_1 = require("ObjetCelluleDate");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetRequeteSaisieFicheEleve_1 = require("ObjetRequeteSaisieFicheEleve");
+const ObjetSelecteurPJ_1 = require("ObjetSelecteurPJ");
+const Enumere_DocumentJoint_1 = require("Enumere_DocumentJoint");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const UtilitaireUrl_1 = require("UtilitaireUrl");
+const ObjetHtml_1 = require("ObjetHtml");
+const GUID_1 = require("GUID");
+const ObjetCelluleBouton_1 = require("ObjetCelluleBouton");
+const ObjetCelluleBouton_2 = require("ObjetCelluleBouton");
+const Enumere_Event_1 = require("Enumere_Event");
+const ObjetFenetre_TypeProjetAccompagnement_1 = require("ObjetFenetre_TypeProjetAccompagnement");
+const ObjetFenetre_MotifProjetAccompagnement_1 = require("ObjetFenetre_MotifProjetAccompagnement");
+const MethodesObjet_1 = require("MethodesObjet");
+const AccessApp_1 = require("AccessApp");
+class ObjetFenetre_ProjetAccompagnement extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
+		this.applicationSco = (0, AccessApp_1.getApp)();
 		this.setOptionsFenetre({
 			largeur: 430,
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 			avecComposeBasInFooter: true,
 		});
 		this.enModification = false;
-		this.ids = { pieceJointe: GUID.getId(), docsJoints: GUID.getId() };
+		this.ids = {
+			pieceJointe: GUID_1.GUID.getId(),
+			docsJoints: GUID_1.GUID.getId(),
+		};
 	}
 	construireInstances() {
-		this.selecDateDebut = Identite.creerInstance(ObjetCelluleDate, {
-			pere: this,
-			evenement: (aDate, aGenreBouton) => {
-				if (aGenreBouton === 0) {
-					delete this.projetAccompagnement.debut;
-					this.projetAccompagnement.dateDebut = "";
-					this.selecDateDebut.initialiser();
-				} else {
-					this.projetAccompagnement.debut = aDate;
-					this.projetAccompagnement.dateDebut = GDate.formatDate(
-						aDate,
-						"%JJ/%MM/%AAAA",
-					);
-				}
-				_initialiserDate.call(this);
+		this.selecDateDebut = ObjetIdentite_1.Identite.creerInstance(
+			ObjetCelluleDate_1.ObjetCelluleDate,
+			{
+				pere: this,
+				evenement: (aDate, aGenreBouton) => {
+					if (aGenreBouton === 0) {
+						delete this.projetAccompagnement.debut;
+						this.projetAccompagnement.dateDebut = "";
+						this.selecDateDebut.initialiser();
+					} else {
+						this.projetAccompagnement.debut = aDate;
+						this.projetAccompagnement.dateDebut = ObjetDate_1.GDate.formatDate(
+							aDate,
+							"%JJ/%MM/%AAAA",
+						);
+					}
+					this._initialiserSelecteurDate();
+				},
 			},
-		});
+		);
 		this.selecDateDebut.setOptionsObjetCelluleDate({
 			largeurComposant: IE.estMobile ? 130 : 100,
 			formatDate: "%JJ/%MM/%AAAA",
-			placeHolder: GTraductions.getValeur("FicheEleve.DateDebut"),
-			labelWAI: GTraductions.getValeur("FicheEleve.DateDebut"),
+			placeHolder: ObjetTraduction_1.GTraductions.getValeur(
+				"FicheEleve.DateDebut",
+			),
+			ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
+				"FicheEleve.DateDebut",
+			),
 		});
-		this.selecDateFin = Identite.creerInstance(ObjetCelluleDate, {
-			pere: this,
-			evenement: (aDate, aGenreBouton) => {
-				if (aGenreBouton === 0) {
-					delete this.projetAccompagnement.fin;
-					this.projetAccompagnement.dateFin = "";
-					this.selecDateFin.initialiser();
-				} else {
-					this.projetAccompagnement.fin = aDate;
-					this.projetAccompagnement.dateFin = GDate.formatDate(
-						aDate,
-						"%JJ/%MM/%AAAA",
-					);
-				}
-				_initialiserDate.call(this);
+		this.selecDateFin = ObjetIdentite_1.Identite.creerInstance(
+			ObjetCelluleDate_1.ObjetCelluleDate,
+			{
+				pere: this,
+				evenement: (aDate, aGenreBouton) => {
+					if (aGenreBouton === 0) {
+						delete this.projetAccompagnement.fin;
+						this.projetAccompagnement.dateFin = "";
+						this.selecDateFin.initialiser();
+					} else {
+						this.projetAccompagnement.fin = aDate;
+						this.projetAccompagnement.dateFin = ObjetDate_1.GDate.formatDate(
+							aDate,
+							"%JJ/%MM/%AAAA",
+						);
+					}
+					this._initialiserSelecteurDate();
+				},
 			},
-		});
+		);
 		this.selecDateFin.setOptionsObjetCelluleDate({
 			largeurComposant: IE.estMobile ? 130 : 100,
 			formatDate: "%JJ/%MM/%AAAA",
-			placeHolder: GTraductions.getValeur("FicheEleve.DateFin"),
-			labelWAI: GTraductions.getValeur("FicheEleve.DateFin"),
+			placeHolder:
+				ObjetTraduction_1.GTraductions.getValeur("FicheEleve.DateFin"),
+			ariaLabel: ObjetTraduction_1.GTraductions.getValeur("FicheEleve.DateFin"),
 		});
 		this.identSelecteurPJ = this.add(
-			ObjetSelecteurPJ,
-			_evntSelecteurPJ.bind(this),
-			_initSelecteurPJ.bind(this),
+			ObjetSelecteurPJ_1.ObjetSelecteurPJ,
+			this._evntSelecteurPJ.bind(this),
+			this._initSelecteurPJ.bind(this),
 		);
 		this.identType = this.add(
-			ObjetCelluleBouton,
-			_evntType.bind(this),
-			_initType.bind(this),
+			ObjetCelluleBouton_1.ObjetCelluleBouton,
+			this._evntType.bind(this),
+			this._initType.bind(this),
 		);
 		this.identMotif = this.add(
-			ObjetCelluleBouton,
-			_evntMotif.bind(this),
-			_initMotif.bind(this),
+			ObjetCelluleBouton_1.ObjetCelluleBouton,
+			this._evntMotif.bind(this),
+			this._initMotif.bind(this),
 		);
 	}
 	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
+		return $.extend(true, super.getControleur(aInstance), {
 			inputCommentaire: {
 				getValue() {
 					return aInstance.projetAccompagnement
@@ -127,7 +138,7 @@ class ObjetFenetre_ProjetAccompagnement extends ObjetFenetre {
 					aInstance.projetAccompagnement.consultableEquipePeda = aValue;
 				},
 				getDisplay: function () {
-					return !GApplication.estPrimaire;
+					return !aInstance.applicationSco.estPrimaire;
 				},
 			},
 			getNodeSelecDate: function (aEstDateDebut) {
@@ -135,7 +146,7 @@ class ObjetFenetre_ProjetAccompagnement extends ObjetFenetre {
 					? aInstance.selecDateDebut
 					: aInstance.selecDateFin;
 				lInstanceDate.initialiser();
-				if (this.projetAccompagnement) {
+				if (aInstance.projetAccompagnement) {
 					lInstanceDate.setParametresFenetre(
 						GParametres.PremierLundi,
 						aEstDateDebut
@@ -166,18 +177,18 @@ class ObjetFenetre_ProjetAccompagnement extends ObjetFenetre {
 					) {
 						GApplication.getMessage()
 							.afficher({
-								type: EGenreBoiteMessage.Confirmation,
+								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
 								width: 370,
-								message: GTraductions.getValeur(
+								message: ObjetTraduction_1.GTraductions.getValeur(
 									"FicheEleve.msgConfirmerSuppression",
 									[""],
 								),
 							})
 							.then(
 								((aGenreAction) => {
-									if (aGenreAction === EGenreAction.Valider) {
+									if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
 										aInstance.projetAccompagnement.setEtat(
-											EGenreEtat.Suppression,
+											Enumere_Etat_1.EGenreEtat.Suppression,
 										);
 										aInstance.surValidation(1);
 									}
@@ -211,7 +222,7 @@ class ObjetFenetre_ProjetAccompagnement extends ObjetFenetre {
 					return true;
 				},
 				eventBtn: function (aIndex) {
-					_evntSupprPJ.call(aInstance, aIndex);
+					aInstance._evntSupprPJ(aIndex);
 				},
 			},
 		});
@@ -220,23 +231,23 @@ class ObjetFenetre_ProjetAccompagnement extends ObjetFenetre {
 		this.donnees = aDonnees;
 		if (aDonnees.projetAccompagnement) {
 			this.enModification = true;
-			this.projetAccompagnement = MethodesObjet.dupliquer(
+			this.projetAccompagnement = MethodesObjet_1.MethodesObjet.dupliquer(
 				aDonnees.projetAccompagnement,
 			);
-			_initialiserDate.call(this);
-			this.projetAccompagnement.setEtat(EGenreEtat.Modification);
+			this._initialiserSelecteurDate();
+			this.projetAccompagnement.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 		} else {
-			this.projetAccompagnement = new ObjetElement();
-			this.projetAccompagnement.setEtat(EGenreEtat.Creation);
+			this.projetAccompagnement = ObjetElement_1.ObjetElement.create();
+			this.projetAccompagnement.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 			this.projetAccompagnement.consultableEquipePeda = true;
 			this.projetAccompagnement.listeHandicaps = this.donnees.listeMotifs;
 		}
 		this.getInstance(this.identSelecteurPJ).setDonnees({
 			listePJ: this.projetAccompagnement.documents,
-			listeTotale: new ObjetListeElements(),
+			listeTotale: new ObjetListeElements_1.ObjetListeElements(),
 			idContextFocus: this.Nom,
 		});
-		_actualiserPJ.call(this);
+		this._actualiserPJ();
 		const lLibelleType =
 			this.projetAccompagnement && this.projetAccompagnement.projetIndividuel
 				? this.projetAccompagnement.projetIndividuel.getLibelle()
@@ -258,10 +269,14 @@ class ObjetFenetre_ProjetAccompagnement extends ObjetFenetre {
 	}
 	surValidation(aNumeroBouton) {
 		if (aNumeroBouton === 1) {
-			const lListeProjetAccompagnement = new ObjetListeElements();
+			const lListeProjetAccompagnement =
+				new ObjetListeElements_1.ObjetListeElements();
 			const lListeFichiers = this.projetAccompagnement.documents;
 			lListeProjetAccompagnement.add(this.projetAccompagnement);
-			new ObjetRequeteSaisieFicheEleve(this, this.actionSurValidation)
+			new ObjetRequeteSaisieFicheEleve_1.ObjetRequeteSaisieFicheEleve(
+				this,
+				this.actionSurValidation,
+			)
 				.addUpload({ listeFichiers: lListeFichiers })
 				.lancerRequete({
 					listeTypes: this.donnees.listeTypes,
@@ -277,197 +292,350 @@ class ObjetFenetre_ProjetAccompagnement extends ObjetFenetre {
 		this.fermer();
 	}
 	composeContenu() {
-		const T = [];
-		T.push(
-			`<div class="flex-contain cols">\n              <div class="field-contain">\n                <label class="fix-bloc " style="width: 4.5rem;">${GTraductions.getValeur("FicheEleve.type")} : </label>\n                <div class="on-mobile" id="${this.getNomInstance(this.identType)}"></div>\n              </div>\n              <div class="field-contain">\n                <label class="fix-bloc " style="width: 4.5rem;">${GTraductions.getValeur("FicheEleve.motifs")} : </label>\n                <div class="on-mobile" id="${this.getNomInstance(this.identMotif)}"></div>\n              </div>\n              <div class="field-contain">\n                <label class="fix-bloc  only-mobile m-bottom-l">${GTraductions.getValeur("FicheEleve.commentaire")} : </label>\n                <ie-textareamax ie-model="inputCommentaire" class="round-style txt-comment fluid-bloc full-width" maxlength="1000" ie-compteur="" placeholder="${GTraductions.getValeur("FicheEleve.redigezCommentaire")}"></ie-textareamax>\n              </div>\n              <div class="field-contain label-up p-bottom-l">\n                <div class="pj-global-conteneur no-line" id="${this.getNomInstance(this.identSelecteurPJ)}" title="${GTraductions.getValeur("FicheEleve.ajouterPJ")}"></div>\n                <div id="${this.ids.docsJoints}" class="pj-liste-conteneur m-top"></div>\n              </div>\n              <div class="field-contain periode-contain">\n                <div class="m-top m-right m-bottom">\n                  <label class="only-espace m-top-l ">${GTraductions.getValeur("FicheEleve.DateDebut")}</label>\n                  <div class="m-left-s" id="${this.selecDateDebut.getNom()}" ie-node="getNodeSelecDate(true)"></div>\n                </div>\n                <div class="m-all">\n                  <label class="only-espace m-top-l">${GTraductions.getValeur("FicheEleve.DateFin")}</label>\n                  <div id="${this.selecDateFin.getNom()}" ie-node="getNodeSelecDate(false)"></div>\n                </div>\n              </div>\n              <div class="public-team" ie-display="cbConsultableEquipePeda.getDisplay">\n              <span class="icon-contain only-mobile"><i class="icon_info_sondage_publier i-medium i-as-deco"></i></span>\n                <ie-checkbox ie-model="cbConsultableEquipePeda">${GTraductions.getValeur("FicheEleve.publieEquipePeda")}</ie-checkbox>\n            </div>\n          </div>`,
+		return IE.jsx.str(
+			"div",
+			{ class: "flex-contain cols" },
+			IE.jsx.str(
+				"div",
+				{ class: "field-contain" },
+				IE.jsx.str(
+					"label",
+					{
+						for: this.getNomInstance(this.identType),
+						class: "fix-bloc",
+						style: "width: 4.5rem;",
+					},
+					ObjetTraduction_1.GTraductions.getValeur("FicheEleve.type"),
+					" : ",
+				),
+				IE.jsx.str("div", {
+					class: "full-width",
+					id: this.getNomInstance(this.identType),
+				}),
+			),
+			IE.jsx.str(
+				"div",
+				{ class: "field-contain" },
+				IE.jsx.str(
+					"label",
+					{
+						for: this.getNomInstance(this.identMotif),
+						class: "fix-bloc ",
+						style: "width: 4.5rem;",
+					},
+					ObjetTraduction_1.GTraductions.getValeur("FicheEleve.motifs"),
+					" : ",
+				),
+				IE.jsx.str("div", { id: this.getNomInstance(this.identMotif) }),
+			),
+			IE.jsx.str(
+				"div",
+				{ class: "field-contain" },
+				IE.jsx.str(
+					"label",
+					{ class: "fix-bloc label-up m-bottom-l" },
+					ObjetTraduction_1.GTraductions.getValeur("FicheEleve.commentaire"),
+					" : ",
+				),
+				IE.jsx.str("ie-textareamax", {
+					"ie-model": "inputCommentaire",
+					class: "txt-comment fluid-bloc full-width",
+					maxlength: "1000",
+					placeholder: ObjetTraduction_1.GTraductions.getValeur(
+						"FicheEleve.redigezCommentaire",
+					),
+					"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+						"FicheEleve.redigezCommentaire",
+					),
+				}),
+			),
+			IE.jsx.str(
+				"div",
+				{ class: "field-contain label-up p-bottom-l" },
+				IE.jsx.str("div", {
+					class: "pj-global-conteneur no-line",
+					id: this.getNomInstance(this.identSelecteurPJ),
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"FicheEleve.ajouterPJ",
+					),
+				}),
+				IE.jsx.str("div", {
+					id: this.ids.docsJoints,
+					class: "pj-liste-conteneur m-top",
+				}),
+			),
+			IE.jsx.str(
+				"div",
+				{ class: "field-contain periode-contain" },
+				IE.jsx.str(
+					"div",
+					{ class: "m-top m-right m-bottom" },
+					IE.jsx.str(
+						"label",
+						{ class: "only-espace m-top-l " },
+						ObjetTraduction_1.GTraductions.getValeur("FicheEleve.DateDebut"),
+					),
+					IE.jsx.str("div", {
+						class: "m-left-s",
+						id: this.selecDateDebut.getNom(),
+						"ie-node": "getNodeSelecDate(true)",
+					}),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "m-all" },
+					IE.jsx.str(
+						"label",
+						{ class: "only-espace m-top-l" },
+						ObjetTraduction_1.GTraductions.getValeur("FicheEleve.DateFin"),
+					),
+					IE.jsx.str("div", {
+						id: this.selecDateFin.getNom(),
+						"ie-node": "getNodeSelecDate(false)",
+					}),
+				),
+			),
+			IE.jsx.str(
+				"div",
+				{
+					class: "public-team",
+					"ie-display": "cbConsultableEquipePeda.getDisplay",
+				},
+				IE.jsx.str("i", {
+					class: "icon_info_sondage_publier i-medium i-as-deco",
+					role: "presentation",
+				}),
+				IE.jsx.str(
+					"ie-checkbox",
+					{ "ie-model": "cbConsultableEquipePeda" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"FicheEleve.publieEquipePeda",
+					),
+				),
+			),
 		);
-		return T.join("");
 	}
 	composeBas() {
 		const lHTML = [];
 		lHTML.push(
-			`<div class="compose-bas">\n                    <ie-btnicon ie-model="btnSupprimer" title="${GTraductions.getValeur("Supprimer")}" class="icon_trash avecFond i-medium"></ie-btnicon>\n                </div>`,
+			IE.jsx.str(
+				"div",
+				{ class: "compose-bas" },
+				IE.jsx.str("ie-btnicon", {
+					"ie-model": "btnSupprimer",
+					title: ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
+					class: "icon_trash avecFond i-medium",
+				}),
+			),
 		);
 		return lHTML.join("");
 	}
-}
-function _initialiserDate() {
-	if (this.projetAccompagnement) {
-		if (this.selecDateDebut) {
-			this.selecDateDebut.setPremiereDateSaisissable(
-				GParametres.PremiereDate,
-				true,
-			);
-			this.selecDateDebut.setOptionsObjetCelluleDate({ avecAucuneDate: true });
-			if (this.projetAccompagnement.debut) {
-				this.selecDateDebut.setDonnees(this.projetAccompagnement.debut);
+	_initialiserSelecteurDate() {
+		if (this.projetAccompagnement) {
+			if (this.selecDateDebut) {
+				this.selecDateDebut.setPremiereDateSaisissable(
+					GParametres.PremiereDate,
+					true,
+				);
+				this.selecDateDebut.setOptionsObjetCelluleDate({
+					avecAucuneDate: true,
+				});
+				if (this.projetAccompagnement.debut) {
+					this.selecDateDebut.setDonnees(this.projetAccompagnement.debut);
+				}
+				this.selecDateDebut.setParametresFenetre(
+					GParametres.PremierLundi,
+					GParametres.PremiereDate,
+					this.projetAccompagnement.fin
+						? this.projetAccompagnement.fin
+						: GParametres.DerniereDate,
+					GParametres.JoursOuvres,
+					null,
+					null,
+					true,
+					null,
+				);
 			}
-			this.selecDateDebut.setParametresFenetre(
-				GParametres.PremierLundi,
-				GParametres.PremiereDate,
-				this.projetAccompagnement.fin
-					? this.projetAccompagnement.fin
-					: GParametres.DerniereDate,
-				GParametres.JoursOuvres,
-				null,
-				null,
-				true,
-				null,
+			if (this.selecDateFin) {
+				this.selecDateFin.setPremiereDateSaisissable(
+					this.projetAccompagnement.debut,
+					true,
+				);
+				this.selecDateFin.setOptionsObjetCelluleDate({ avecAucuneDate: true });
+				if (this.projetAccompagnement.fin) {
+					this.selecDateFin.setDonnees(this.projetAccompagnement.fin);
+				}
+				this.selecDateFin.setParametresFenetre(
+					GParametres.PremierLundi,
+					this.projetAccompagnement.debut
+						? this.projetAccompagnement.debut
+						: GParametres.PremiereDate,
+					GParametres.DerniereDate,
+					GParametres.JoursOuvres,
+					null,
+					null,
+					true,
+					null,
+				);
+			}
+		}
+	}
+	_initSelecteurPJ(aInstance) {
+		aInstance.setOptions({
+			genrePJ: Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier,
+			genreRessourcePJ:
+				Enumere_Ressource_1.EGenreRessource.DocJointEtablissement,
+			maxFiles: 0,
+			maxSize: this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.tailleMaxDocJointEtablissement,
+			),
+			idLibellePJ: this.ids.pieceJointe,
+			avecAjoutExistante: true,
+			avecEtatSaisie: false,
+			avecBoutonSupp: true,
+			ouvrirFenetreChoixTypesAjout: false,
+			libelleSelecteur: ObjetTraduction_1.GTraductions.getValeur(
+				"AjouterDesPiecesJointes",
+			),
+		});
+	}
+	_actualiserPJ() {
+		if (!this.projetAccompagnement.documents) {
+			this.projetAccompagnement.documents =
+				new ObjetListeElements_1.ObjetListeElements();
+		}
+		const lInstance = this.getInstance(this.identSelecteurPJ);
+		lInstance.setDonnees({
+			listePJ: this.projetAccompagnement.documents,
+			listeTotale: new ObjetListeElements_1.ObjetListeElements(),
+			idContextFocus: this.Nom,
+		});
+		if (this.projetAccompagnement.documents.count() > 0) {
+			ObjetHtml_1.GHtml.setHtml(
+				this.ids.docsJoints,
+				UtilitaireUrl_1.UtilitaireUrl.construireListeUrls(
+					this.projetAccompagnement.documents,
+					{ IEModelChips: "chipsPJ" },
+				),
+				{ controleur: this.controleur },
 			);
 		}
-		if (this.selecDateFin) {
-			this.selecDateFin.setPremiereDateSaisissable(
-				this.projetAccompagnement.debut,
-				true,
-			);
-			this.selecDateFin.setOptionsObjetCelluleDate({ avecAucuneDate: true });
-			if (this.projetAccompagnement.fin) {
-				this.selecDateFin.setDonnees(this.projetAccompagnement.fin);
-			}
-			this.selecDateFin.setParametresFenetre(
-				GParametres.PremierLundi,
-				this.projetAccompagnement.debut
-					? this.projetAccompagnement.debut
-					: GParametres.PremiereDate,
-				GParametres.DerniereDate,
-				GParametres.JoursOuvres,
-				null,
-				null,
-				true,
-				null,
-			);
+	}
+	_evntSelecteurPJ() {
+		this._actualiserPJ();
+	}
+	_evntSupprPJ(aIndex) {
+		if (!!this.projetAccompagnement && this.projetAccompagnement.documents) {
+			this.projetAccompagnement.documents
+				.get(aIndex)
+				.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+		}
+		this._actualiserPJ();
+	}
+	_initType(aInstance) {
+		aInstance.setOptionsObjetCelluleBouton({
+			estSaisissable: true,
+			avecZoneSaisie: false,
+			genreBouton: ObjetCelluleBouton_2.EGenreBoutonCellule.Points,
+			largeur: 180,
+			hauteur: 17,
+			placeHolder: ObjetTraduction_1.GTraductions.getValeur(
+				"FicheEleve.aucunTypeDeProjet",
+			),
+		});
+	}
+	_evntType(aGenreEvent) {
+		if (
+			(aGenreEvent === Enumere_Event_1.EEvent.SurKeyUp &&
+				GNavigateur.isToucheSelection()) ||
+			aGenreEvent === Enumere_Event_1.EEvent.SurMouseDown
+		) {
+			const lFenetreTypeProjAcc =
+				ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+					ObjetFenetre_TypeProjetAccompagnement_1.ObjetFenetre_TypeProjetAccompagnement,
+					{
+						pere: this,
+						evenement(aNumeroBouton, aTypeSelectionne, aListeType) {
+							if (aNumeroBouton === 1) {
+								if (aTypeSelectionne) {
+									this.projetAccompagnement.setLibelle(
+										aTypeSelectionne.getLibelle(),
+									);
+									this.projetAccompagnement.projetIndividuel = aTypeSelectionne;
+									this.getInstance(this.identType).setLibelle(
+										this.projetAccompagnement.projetIndividuel.getLibelle(),
+									);
+								}
+							}
+							this.donnees.listeTypes = aListeType;
+						},
+						initialiser(aInstance) {
+							aInstance.setOptionsFenetre({
+								titre: ObjetTraduction_1.GTraductions.getValeur(
+									"FicheEleve.typeDeProjet",
+								),
+							});
+						},
+					},
+				);
+			lFenetreTypeProjAcc.setDonnees(this.donnees.listeTypes, {
+				eleve: this.donnees.eleve,
+			});
+		}
+	}
+	_initMotif(aInstance) {
+		aInstance.setOptionsObjetCelluleBouton({
+			estSaisissable: true,
+			avecZoneSaisie: false,
+			genreBouton: ObjetCelluleBouton_2.EGenreBoutonCellule.Points,
+			largeur: 180,
+			hauteur: 17,
+			placeHolder: ObjetTraduction_1.GTraductions.getValeur(
+				"FicheEleve.aucunMotifProjet",
+			),
+		});
+	}
+	_evntMotif(aGenreEvent) {
+		if (
+			(aGenreEvent === Enumere_Event_1.EEvent.SurKeyUp &&
+				GNavigateur.isToucheSelection()) ||
+			aGenreEvent === Enumere_Event_1.EEvent.SurMouseDown
+		) {
+			const lFenetreMotifProjAcc =
+				ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+					ObjetFenetre_MotifProjetAccompagnement_1.ObjetFenetre_MotifProjetAccompagnement,
+					{
+						pere: this,
+						evenement(aNumeroBouton, aMotifSelectionnes) {
+							if (aNumeroBouton === 1) {
+								if (aMotifSelectionnes) {
+									this.projetAccompagnement.listeHandicaps = aMotifSelectionnes;
+									if (
+										this.projetAccompagnement &&
+										this.projetAccompagnement.listeHandicaps
+									) {
+										this.getInstance(this.identMotif).setLibelle(
+											this.projetAccompagnement.listeHandicaps
+												.getListeElements((aElement) => {
+													return aElement.selectionne;
+												})
+												.getTableauLibelles()
+												.join(", "),
+										);
+									}
+								}
+							}
+						},
+						initialiser(aInstance) {
+							aInstance.setOptionsFenetre({
+								titre:
+									ObjetTraduction_1.GTraductions.getValeur("FicheEleve.motifs"),
+							});
+						},
+					},
+				);
+			lFenetreMotifProjAcc.setDonnees(this.projetAccompagnement.listeHandicaps);
 		}
 	}
 }
-function _initSelecteurPJ(aInstance) {
-	aInstance.setOptions({
-		genrePJ: EGenreDocumentJoint.Fichier,
-		genreRessourcePJ: EGenreRessource.DocJointEtablissement,
-		maxFiles: 0,
-		maxSize: GApplication.droits.get(TypeDroits.tailleMaxDocJointEtablissement),
-		idLibellePJ: this.ids.pieceJointe,
-		avecAjoutExistante: true,
-		avecEtatSaisie: false,
-		avecBoutonSupp: true,
-		ouvrirFenetreChoixTypesAjout: false,
-		libelleSelecteur: GTraductions.getValeur("AjouterDesPiecesJointes"),
-	});
-}
-function _actualiserPJ() {
-	if (!this.projetAccompagnement.documents) {
-		this.projetAccompagnement.documents = new ObjetListeElements();
-	}
-	const lInstance = this.getInstance(this.identSelecteurPJ);
-	lInstance.setDonnees({
-		listePJ: this.projetAccompagnement.documents,
-		listeTotale: new ObjetListeElements(),
-		idContextFocus: this.Nom,
-	});
-	this.avecSaisie = true;
-	if (this.projetAccompagnement.documents.count() > 0) {
-		GHtml.setHtml(
-			this.ids.docsJoints,
-			UtilitaireUrl.construireListeUrls(this.projetAccompagnement.documents, {
-				IEModelChips: "chipsPJ",
-			}),
-			{ controleur: this.controleur },
-		);
-	}
-}
-function _evntSelecteurPJ() {
-	_actualiserPJ.call(this);
-}
-function _evntSupprPJ(aIndex) {
-	if (!!this.projetAccompagnement && this.projetAccompagnement.documents) {
-		this.projetAccompagnement.documents
-			.get(aIndex)
-			.setEtat(EGenreEtat.Suppression);
-	}
-	_actualiserPJ.call(this);
-}
-function _initType(aInstance) {
-	aInstance.setOptionsObjetCelluleBouton({
-		estSaisissable: true,
-		avecZoneSaisie: false,
-		genreBouton: EGenreBoutonCellule.Points,
-		largeur: 180,
-		hauteur: 17,
-		largeurBouton: 16,
-		placeHolder: GTraductions.getValeur("FicheEleve.aucunTypeDeProjet"),
-	});
-}
-function _evntType(aGenreEvent) {
-	if (
-		(aGenreEvent === EEvent.SurKeyUp && GNavigateur.isToucheSelection()) ||
-		aGenreEvent === EEvent.SurMouseDown
-	) {
-		ObjetFenetre.creerInstanceFenetre(ObjetFenetre_TypeProjetAccompagnement, {
-			pere: this,
-			evenement(aNumeroBouton, aTypeSelectionne, aListeType) {
-				if (aNumeroBouton === 1) {
-					if (aTypeSelectionne) {
-						this.projetAccompagnement.setLibelle(aTypeSelectionne.getLibelle());
-						this.projetAccompagnement.projetIndividuel = aTypeSelectionne;
-						this.getInstance(this.identType).setLibelle(
-							this.projetAccompagnement.projetIndividuel.getLibelle(),
-						);
-					}
-				}
-				this.donnees.listeTypes = aListeType;
-			},
-			initialiser(aInstance) {
-				aInstance.setOptionsFenetre({
-					titre: GTraductions.getValeur("FicheEleve.typeDeProjet"),
-				});
-			},
-		}).setDonnees(this.donnees.listeTypes, { eleve: this.donnees.eleve });
-	}
-}
-function _initMotif(aInstance) {
-	aInstance.setOptionsObjetCelluleBouton({
-		estSaisissable: true,
-		avecZoneSaisie: false,
-		genreBouton: EGenreBoutonCellule.Points,
-		largeur: 180,
-		hauteur: 17,
-		largeurBouton: 16,
-		placeHolder: GTraductions.getValeur("FicheEleve.aucunMotifProjet"),
-	});
-}
-function _evntMotif(aGenreEvent) {
-	if (
-		(aGenreEvent === EEvent.SurKeyUp && GNavigateur.isToucheSelection()) ||
-		aGenreEvent === EEvent.SurMouseDown
-	) {
-		ObjetFenetre.creerInstanceFenetre(ObjetFenetre_MotifProjetAccompagnement, {
-			pere: this,
-			evenement(aNumeroBouton, aMotifSelectionnes, aListeMotifs) {
-				if (aNumeroBouton === 1) {
-					if (aMotifSelectionnes) {
-						this.projetAccompagnement.listeHandicaps = aMotifSelectionnes;
-						if (
-							this.projetAccompagnement &&
-							this.projetAccompagnement.listeHandicaps
-						) {
-							this.getInstance(this.identMotif).setLibelle(
-								this.projetAccompagnement.listeHandicaps
-									.getListeElements((aElement) => {
-										return aElement.selectionne;
-									})
-									.getTableauLibelles()
-									.join(", "),
-							);
-						}
-					}
-					this.donnees.listeMotifs = aListeMotifs;
-				}
-			},
-			initialiser(aInstance) {
-				aInstance.setOptionsFenetre({
-					titre: GTraductions.getValeur("FicheEleve.motifs"),
-				});
-			},
-		}).setDonnees(this.projetAccompagnement.listeHandicaps);
-	}
-}
-module.exports = { ObjetFenetre_ProjetAccompagnement };
+exports.ObjetFenetre_ProjetAccompagnement = ObjetFenetre_ProjetAccompagnement;

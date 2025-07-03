@@ -1,31 +1,29 @@
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	DonneesListe_RessourcesPedagogiquesProfesseur,
-} = require("DonneesListe_RessourcesPedagogiquesProfesseur.js");
-class ObjetFenetre_SelectionImportRessourcePedagogique extends ObjetFenetre {
+exports.ObjetFenetre_SelectionImportRessourcePedagogique = void 0;
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const DonneesListe_RessourcesPedagogiquesProfesseur_1 = require("DonneesListe_RessourcesPedagogiquesProfesseur");
+class ObjetFenetre_SelectionImportRessourcePedagogique extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
+		this.parametres = {};
 		this.setOptionsFenetre({
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 			avecTailleSelonContenu: true,
 		});
-		this.parametres = {};
 	}
-	getControleur() {
-		return $.extend(true, super.getControleur(this), {
+	getControleur(aInstance) {
+		return $.extend(true, super.getControleur(aInstance), {
 			fenetreBtn: {
 				getDisabled: function (aBoutonRepeat) {
 					let lDisabled = false;
 					if (aBoutonRepeat.element.index === 1) {
-						lDisabled =
-							_getIdentsDocsSelectionne.call(this.instance).length === 0;
+						lDisabled = aInstance._getIdentsDocsSelectionne().length === 0;
 					}
 					return lDisabled;
 				},
@@ -33,7 +31,11 @@ class ObjetFenetre_SelectionImportRessourcePedagogique extends ObjetFenetre {
 		});
 	}
 	construireInstances() {
-		this.identListe = this.add(ObjetListe, null, _initialiserListe);
+		this.identListe = this.add(
+			ObjetListe_1.ObjetListe,
+			null,
+			_initialiserListe,
+		);
 	}
 	composeContenu() {
 		const T = [];
@@ -66,52 +68,60 @@ class ObjetFenetre_SelectionImportRessourcePedagogique extends ObjetFenetre {
 		);
 		this.positionnerFenetre();
 	}
-	fermer(aParam) {
+	fermer(aSurInteractionUtilisateur) {
 		clearTimeout(this.parametres.timeoutFermeture);
-		super.fermer(aParam);
+		return super.fermer(aSurInteractionUtilisateur);
 	}
 	surValidation(ANumeroBouton) {
 		this.fermer();
 		this.callback.appel(
 			ANumeroBouton === 1,
 			this.parametres,
-			ANumeroBouton === 1 ? _getIdentsDocsSelectionne.call(this) : [],
+			ANumeroBouton === 1 ? this._getIdentsDocsSelectionne() : [],
 		);
 	}
-}
-function _getIdentsDocsSelectionne() {
-	const lIdents = [];
-	if (this.parametres.liste) {
-		this.parametres.liste.parcourir((D) => {
-			if (D.selectionne && D.ressource) {
-				lIdents.push(D.ressource.getNumero());
-			}
-		});
+	_getIdentsDocsSelectionne() {
+		const lIdents = [];
+		if (this.parametres.liste) {
+			this.parametres.liste.parcourir((D) => {
+				if (D.selectionne && D.ressource) {
+					lIdents.push(D.ressource.getNumero());
+				}
+			});
+		}
+		return lIdents;
 	}
-	return lIdents;
 }
+exports.ObjetFenetre_SelectionImportRessourcePedagogique =
+	ObjetFenetre_SelectionImportRessourcePedagogique;
 function _initialiserListe(aInstance) {
 	aInstance.setOptionsListe({
 		colonnes: [
 			{
-				id: DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.coche,
+				id: DonneesListe_RessourcesPedagogiquesProfesseur_1
+					.DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.coche,
 				taille: 16,
 				titre: { estCoche: true },
 			},
 			{
-				id: DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.type,
+				id: DonneesListe_RessourcesPedagogiquesProfesseur_1
+					.DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.type,
 				taille: 21,
 				titre: "",
 			},
 			{
-				id: DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.libelle,
+				id: DonneesListe_RessourcesPedagogiquesProfesseur_1
+					.DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.libelle,
 				taille: 220,
-				titre: GTraductions.getValeur("RessourcePedagogique.colonne.document"),
+				titre: ObjetTraduction_1.GTraductions.getValeur(
+					"RessourcePedagogique.colonne.document",
+				),
 			},
 			{
-				id: DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.commentaire,
+				id: DonneesListe_RessourcesPedagogiquesProfesseur_1
+					.DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.commentaire,
 				taille: 180,
-				titre: GTraductions.getValeur(
+				titre: ObjetTraduction_1.GTraductions.getValeur(
 					"RessourcePedagogique.colonne.commentaire",
 				),
 			},
@@ -121,11 +131,12 @@ function _initialiserListe(aInstance) {
 	});
 	GEtatUtilisateur.setTriListe({
 		liste: aInstance,
-		tri: DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.libelle,
+		tri: DonneesListe_RessourcesPedagogiquesProfesseur_1
+			.DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.libelle,
 		identifiant: "fenetre_import",
 	});
 }
-class DonneesListe_SelectionImportRessourcesPedagogiques extends DonneesListe_RessourcesPedagogiquesProfesseur {
+class DonneesListe_SelectionImportRessourcesPedagogiques extends DonneesListe_RessourcesPedagogiquesProfesseur_1.DonneesListe_RessourcesPedagogiquesProfesseur {
 	constructor(aParam) {
 		const lParams = $.extend(
 			{
@@ -145,7 +156,8 @@ class DonneesListe_SelectionImportRessourcesPedagogiques extends DonneesListe_Re
 	}
 	avecEdition(aParams) {
 		switch (aParams.idColonne) {
-			case DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.coche:
+			case DonneesListe_RessourcesPedagogiquesProfesseur_1
+				.DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.coche:
 				return !!aParams.article.donnee && !!aParams.article.donnee.ressource;
 		}
 		return false;
@@ -158,9 +170,11 @@ class DonneesListe_SelectionImportRessourcesPedagogiques extends DonneesListe_Re
 	}
 	getValeur(aParams) {
 		switch (aParams.idColonne) {
-			case DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.coche:
+			case DonneesListe_RessourcesPedagogiquesProfesseur_1
+				.DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.coche:
 				return !!aParams.article.donnee && !!aParams.article.donnee.selectionne;
-			case DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.libelle:
+			case DonneesListe_RessourcesPedagogiquesProfesseur_1
+				.DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.libelle:
 				return aParams.article.donnee.ressource
 					? aParams.article.donnee.ressource.getLibelle()
 					: "";
@@ -169,25 +183,29 @@ class DonneesListe_SelectionImportRessourcesPedagogiques extends DonneesListe_Re
 	}
 	getTypeValeur(aParams) {
 		switch (aParams.idColonne) {
-			case DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.coche:
-				return ObjetDonneesListe.ETypeCellule.Coche;
+			case DonneesListe_RessourcesPedagogiquesProfesseur_1
+				.DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.coche:
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Coche;
 			default:
 				return super.getTypeValeur(aParams);
 		}
 	}
-	fusionCelluleAvecColonnePrecedente(aParams, I) {
+	fusionCelluleAvecColonnePrecedente(aParams) {
 		return (
 			aParams.article.estUnDeploiement &&
-			this.getId(I) !==
-				DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.coche &&
-			this.getId(I) !==
-				DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.type
+			aParams.idColonne !==
+				DonneesListe_RessourcesPedagogiquesProfesseur_1
+					.DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.coche &&
+			aParams.idColonne !==
+				DonneesListe_RessourcesPedagogiquesProfesseur_1
+					.DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.type
 		);
 	}
 	surEdition(aParams, V) {
-		aParams.article.donnee.setEtat(EGenreEtat.Modification);
+		aParams.article.donnee.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 		switch (aParams.idColonne) {
-			case DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.coche:
+			case DonneesListe_RessourcesPedagogiquesProfesseur_1
+				.DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.coche:
 				aParams.article.donnee.selectionne = !!V;
 				break;
 			default:
@@ -197,4 +215,3 @@ class DonneesListe_SelectionImportRessourcesPedagogiques extends DonneesListe_Re
 		return false;
 	}
 }
-module.exports = { ObjetFenetre_SelectionImportRessourcePedagogique };

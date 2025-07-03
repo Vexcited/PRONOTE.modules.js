@@ -4,6 +4,7 @@ const ObjetHtml_1 = require("ObjetHtml");
 const GestionnaireModale_1 = require("GestionnaireModale");
 const ToucheClavier_1 = require("ToucheClavier");
 const SelecFile_1 = require("SelecFile");
+const Tooltip_1 = require("Tooltip");
 let uInvocateurSelecFile = new Invocateur_1.ObjetInvocateur();
 IEHtml.addAttribut(
 	"ie-selecfile",
@@ -17,7 +18,7 @@ IEHtml.addAttribut(
 		let lDragEnCours = false;
 		let lDragHoverEnCours = false;
 		let lIdsAbon = null;
-		if (!lModele || !aContexteCourant.data.$modeleParsed) {
+		if (!lModele) {
 			return true;
 		}
 		const lJElement = $(aContexteCourant.node),
@@ -43,8 +44,8 @@ IEHtml.addAttribut(
 		const lOuvrirSelecteur = async function () {
 			const lResult = await SelecFile_1.SelecFile.select(lOptions);
 			if (lResult && lResult.files) {
-				lInfosAdd.callback([lResult]);
-				aContexteCourant.controleur.$refresh();
+				lInfosAdd.callback([lResult, aContexteCourant.node]);
+				IEHtml.refresh();
 			}
 		};
 		function _surDrag(aParams) {
@@ -107,7 +108,10 @@ IEHtml.addAttribut(
 					lDesactiverClick_openFileManuel = true;
 					return lOuvrirSelecteur;
 				};
-				const lResultOptions = lInfosOptions.callback([lFunc]);
+				const lResultOptions = lInfosOptions.callback([
+					lFunc,
+					aContexteCourant.node,
+				]);
 				if (lResultOptions) {
 					Object.assign(lOptions, lResultOptions);
 				}
@@ -154,14 +158,11 @@ IEHtml.addAttribut(
 			_listenerClickBubbling,
 			false,
 		);
-		if (!ObjetHtml_1.GHtml.getClosestInteractive(lJElement.get(0))) {
-			if (!lJElement.attr("role")) {
-				lJElement.attr("role", "button");
-			}
-			if (!lJElement.attr("tabindex")) {
-				lJElement.attr("tabindex", "0");
-			}
-		}
+		const lOldRole = lJElement.attr("role");
+		const lOldTabIndex = lJElement.attr("tabindex");
+		const lEstDansElementInteractif = !!ObjetHtml_1.GHtml.getClosestInteractive(
+			lJElement.get(0),
+		);
 		lJElement.on({
 			destroyed: function () {
 				if (lIdsAbon) {
@@ -246,8 +247,8 @@ IEHtml.addAttribut(
 							lFiles,
 						);
 						if (lResult && lResult.files) {
-							lInfosAdd.callback([lResult]);
-							aContexteCourant.controleur.$refresh();
+							lInfosAdd.callback([lResult, aContexteCourant.node]);
+							IEHtml.refresh();
 						}
 					}
 				}
@@ -258,10 +259,35 @@ IEHtml.addAttribut(
 			if (!aDisabled) {
 				_majOptions();
 			}
-			if (aDisabled && lTitleOrigine && lOptions.title) {
-				ObjetHtml_1.GHtml.setTitle(aContexteCourant.node, lTitleOrigine || "");
-			} else if (!aDisabled && lOptions.title) {
-				ObjetHtml_1.GHtml.setTitle(aContexteCourant.node, lOptions.title);
+			if (
+				!aDisabled &&
+				!lEstDansElementInteractif &&
+				lOptions.eventClick &&
+				!lOldRole
+			) {
+				lJElement.attr("role", "button");
+			} else {
+				lJElement.attr("role", lOldRole);
+			}
+			if (
+				!aDisabled &&
+				!lEstDansElementInteractif &&
+				lOptions.eventClick &&
+				!lOldTabIndex
+			) {
+				lJElement.attr("tabindex", "0");
+			} else {
+				lJElement.attr("tabindex", lOldTabIndex);
+			}
+			if (!aContexteCourant.node.hasAttribute(Tooltip_1.Tooltip.attrType)) {
+				if (aDisabled && lTitleOrigine && lOptions.title) {
+					ObjetHtml_1.GHtml.setTitle(
+						aContexteCourant.node,
+						lTitleOrigine || "",
+					);
+				} else if (!aDisabled && lOptions.title) {
+					ObjetHtml_1.GHtml.setTitle(aContexteCourant.node, lOptions.title);
+				}
 			}
 			if (lOptions.getClass) {
 				lJElement

@@ -1,4 +1,4 @@
-exports.GDate = exports.ObjetDate = void 0;
+exports.GDate = exports.ObjetDate = exports.TradDate = void 0;
 const MethodesObjet_1 = require("MethodesObjet");
 const ObjetElement_1 = require("ObjetElement");
 const ObjetListeElements_1 = require("ObjetListeElements");
@@ -8,6 +8,12 @@ const TypeDomaine_1 = require("TypeDomaine");
 const TypeFormatDureeEnChaine_1 = require("TypeFormatDureeEnChaine");
 const UtilitaireDuree_1 = require("UtilitaireDuree");
 const IEHtml = require("IEHtml");
+const ObjetTraduction_2 = require("ObjetTraduction");
+const TradDate = ObjetTraduction_2.TraductionsModule.getModule("Date", {
+	Mois: ["", "", "", "", "", "", "", "", "", "", "", ""],
+	MoisCourt: ["", "", "", "", "", "", "", "", "", "", "", ""],
+});
+exports.TradDate = TradDate;
 class ObjetDate {
 	constructor() {
 		this.DureeMillisecondes = 1;
@@ -293,10 +299,7 @@ class ObjetDate {
 		return LDate >= ADateDebut && LDate <= ADateFin;
 	}
 	strMoisCourt(AAnnee, AMois, AAvecAnnee) {
-		return (
-			ObjetTraduction_1.GTraductions.getValeur("MoisCourt")[AMois] +
-			(AAvecAnnee ? "&nbsp;" + AAnnee : "")
-		);
+		return TradDate.MoisCourt[AMois] + (AAvecAnnee ? "&nbsp;" + AAnnee : "");
 	}
 	nombreMoisSurPeriode(ADateDebut, ADateFin) {
 		return (
@@ -521,20 +524,9 @@ class ObjetDate {
 		);
 		AFormat = AFormat.replace("%JJ", (LDate < 10 ? "0" : "") + LDate);
 		AFormat = AFormat.replace("%J", LDate + "");
-		AFormat = AFormat.replace(
-			"%MMMM",
-			ObjetTraduction_1.GTraductions.getValeur("Mois")[LMonth - 1],
-		);
-		AFormat = AFormat.replace(
-			"%MMM",
-			ObjetTraduction_1.GTraductions.getValeur("MoisCourt")[LMonth - 1],
-		);
-		AFormat = AFormat.replace(
-			"%Mmm",
-			ObjetTraduction_1.GTraductions.getValeur("MoisCourt")[
-				LMonth - 1
-			].ucfirst(),
-		);
+		AFormat = AFormat.replace("%MMMM", TradDate.Mois[LMonth - 1]);
+		AFormat = AFormat.replace("%MMM", TradDate.MoisCourt[LMonth - 1]);
+		AFormat = AFormat.replace("%Mmm", TradDate.MoisCourt[LMonth - 1].ucfirst());
 		AFormat = AFormat.replace("%MM", (LMonth < 10 ? "0" : "") + LMonth);
 		AFormat = AFormat.replace("%AAAA", LYear + "");
 		AFormat = AFormat.replace(

@@ -9,19 +9,16 @@ class TableauDElements {
 		return this.elements[this.elements.length - 1];
 	}
 	getElement(aNomElement) {
-		const lNbElements = this.elements.length;
-		let Trouve = false;
-		let I = 0;
-		while (!Trouve && I < lNbElements) {
-			if (this.elements[I].getNom() === aNomElement) {
-				Trouve = true;
-				return this.elements[I];
+		let lElementTrouve = null;
+		if (this.elements) {
+			for (const lElem of this.elements) {
+				if (lElem && lElem.getNom() === aNomElement) {
+					lElementTrouve = lElem;
+					break;
+				}
 			}
-			I++;
 		}
-		if (!Trouve) {
-			return null;
-		}
+		return lElementTrouve;
 	}
 	getElementParPosition(I) {
 		return this.elements[I];

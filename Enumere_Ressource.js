@@ -69,103 +69,107 @@ var EGenreRessource;
 		"DisciplineLivretScolaire";
 	EGenreRessource[(EGenreRessource["QCM"] = 55)] = "QCM";
 	EGenreRessource[(EGenreRessource["ExecutionQCM"] = 56)] = "ExecutionQCM";
-	EGenreRessource[(EGenreRessource["QCMEditeur"] = 57)] = "QCMEditeur";
-	EGenreRessource[(EGenreRessource["PartieDeClasse"] = 58)] = "PartieDeClasse";
-	EGenreRessource[(EGenreRessource["DocJointEleve"] = 59)] = "DocJointEleve";
-	EGenreRessource[(EGenreRessource["Devoir"] = 60)] = "Devoir";
-	EGenreRessource[(EGenreRessource["InternetEnumere"] = 61)] =
+	EGenreRessource[(EGenreRessource["PartieDeClasse"] = 57)] = "PartieDeClasse";
+	EGenreRessource[(EGenreRessource["DocJointEleve"] = 58)] = "DocJointEleve";
+	EGenreRessource[(EGenreRessource["Devoir"] = 59)] = "Devoir";
+	EGenreRessource[(EGenreRessource["InternetEnumere"] = 60)] =
 		"InternetEnumere";
-	EGenreRessource[(EGenreRessource["AppreciationBulletinCompetence"] = 62)] =
+	EGenreRessource[(EGenreRessource["AppreciationBulletinCompetence"] = 61)] =
 		"AppreciationBulletinCompetence";
-	EGenreRessource[(EGenreRessource["Entreprise"] = 63)] = "Entreprise";
-	EGenreRessource[(EGenreRessource["DomaineProfessionnel"] = 64)] =
+	EGenreRessource[(EGenreRessource["Entreprise"] = 62)] = "Entreprise";
+	EGenreRessource[(EGenreRessource["DomaineProfessionnel"] = 63)] =
 		"DomaineProfessionnel";
-	EGenreRessource[(EGenreRessource["OffreDeStage"] = 65)] = "OffreDeStage";
-	EGenreRessource[(EGenreRessource["SujetDeStage"] = 66)] = "SujetDeStage";
-	EGenreRessource[(EGenreRessource["DocumentCasier"] = 67)] = "DocumentCasier";
-	EGenreRessource[(EGenreRessource["Message"] = 68)] = "Message";
-	EGenreRessource[(EGenreRessource["PossessionMessage"] = 69)] =
+	EGenreRessource[(EGenreRessource["OffreDeStage"] = 64)] = "OffreDeStage";
+	EGenreRessource[(EGenreRessource["SujetDeStage"] = 65)] = "SujetDeStage";
+	EGenreRessource[(EGenreRessource["DocumentCasier"] = 66)] = "DocumentCasier";
+	EGenreRessource[(EGenreRessource["Message"] = 67)] = "Message";
+	EGenreRessource[(EGenreRessource["PossessionMessage"] = 68)] =
 		"PossessionMessage";
 	EGenreRessource[
-		(EGenreRessource["RelationMessageDocJointEtablissement"] = 70)
+		(EGenreRessource["RelationMessageDocJointEtablissement"] = 69)
 	] = "RelationMessageDocJointEtablissement";
-	EGenreRessource[(EGenreRessource["Engagement"] = 71)] = "Engagement";
-	EGenreRessource[(EGenreRessource["MesureConservatoire"] = 72)] =
+	EGenreRessource[(EGenreRessource["Engagement"] = 70)] = "Engagement";
+	EGenreRessource[(EGenreRessource["MesureConservatoire"] = 71)] =
 		"MesureConservatoire";
-	EGenreRessource[(EGenreRessource["SousCategorieObjetDossier"] = 73)] =
+	EGenreRessource[(EGenreRessource["SousCategorieObjetDossier"] = 72)] =
 		"SousCategorieObjetDossier";
-	EGenreRessource[(EGenreRessource["Incident"] = 74)] = "Incident";
-	EGenreRessource[(EGenreRessource["ProtagonisteIncident"] = 75)] =
+	EGenreRessource[(EGenreRessource["Incident"] = 73)] = "Incident";
+	EGenreRessource[(EGenreRessource["ProtagonisteIncident"] = 74)] =
 		"ProtagonisteIncident";
-	EGenreRessource[(EGenreRessource["RelationIncidentFichierExterne"] = 76)] =
+	EGenreRessource[(EGenreRessource["RelationIncidentFichierExterne"] = 75)] =
 		"RelationIncidentFichierExterne";
-	EGenreRessource[(EGenreRessource["RegimeEleve"] = 77)] = "RegimeEleve";
-	EGenreRessource[(EGenreRessource["RepasAPreparer"] = 78)] = "RepasAPreparer";
-	EGenreRessource[(EGenreRessource["SessionDeStage"] = 79)] = "SessionDeStage";
-	EGenreRessource[(EGenreRessource["Materiel"] = 80)] = "Materiel";
-	EGenreRessource[(EGenreRessource["Bourse"] = 81)] = "Bourse";
-	EGenreRessource[(EGenreRessource["RelationTravailAFaireEleve"] = 82)] =
+	EGenreRessource[(EGenreRessource["RegimeEleve"] = 76)] = "RegimeEleve";
+	EGenreRessource[(EGenreRessource["RepasAPreparer"] = 77)] = "RepasAPreparer";
+	EGenreRessource[(EGenreRessource["SessionDeStage"] = 78)] = "SessionDeStage";
+	EGenreRessource[(EGenreRessource["Materiel"] = 79)] = "Materiel";
+	EGenreRessource[(EGenreRessource["Bourse"] = 80)] = "Bourse";
+	EGenreRessource[(EGenreRessource["RelationTravailAFaireEleve"] = 81)] =
 		"RelationTravailAFaireEleve";
-	EGenreRessource[(EGenreRessource["LieuDossier"] = 83)] = "LieuDossier";
-	EGenreRessource[(EGenreRessource["ElementProgramme"] = 84)] =
+	EGenreRessource[(EGenreRessource["LieuDossier"] = 82)] = "LieuDossier";
+	EGenreRessource[(EGenreRessource["ElementProgramme"] = 83)] =
 		"ElementProgramme";
-	EGenreRessource[(EGenreRessource["ChapitreEltPgm"] = 85)] = "ChapitreEltPgm";
-	EGenreRessource[(EGenreRessource["EltPgmTravailleCDT"] = 86)] =
+	EGenreRessource[(EGenreRessource["ChapitreEltPgm"] = 84)] = "ChapitreEltPgm";
+	EGenreRessource[(EGenreRessource["EltPgmTravailleCDT"] = 85)] =
 		"EltPgmTravailleCDT";
-	EGenreRessource[(EGenreRessource["Appreciation"] = 87)] = "Appreciation";
-	EGenreRessource[(EGenreRessource["ExecutionDevoirKiosque"] = 88)] =
+	EGenreRessource[(EGenreRessource["Appreciation"] = 86)] = "Appreciation";
+	EGenreRessource[(EGenreRessource["ExecutionDevoirKiosque"] = 87)] =
 		"ExecutionDevoirKiosque";
-	EGenreRessource[(EGenreRessource["PanierRessourceKiosque"] = 89)] =
+	EGenreRessource[(EGenreRessource["PanierRessourceKiosque"] = 88)] =
 		"PanierRessourceKiosque";
-	EGenreRessource[(EGenreRessource["RessourceNumeriqueKiosque"] = 90)] =
+	EGenreRessource[(EGenreRessource["RessourceNumeriqueKiosque"] = 89)] =
 		"RessourceNumeriqueKiosque";
-	EGenreRessource[(EGenreRessource["MetaMatiere"] = 91)] = "MetaMatiere";
-	EGenreRessource[(EGenreRessource["EvaluationSujet"] = 92)] =
+	EGenreRessource[(EGenreRessource["MetaMatiere"] = 90)] = "MetaMatiere";
+	EGenreRessource[(EGenreRessource["EvaluationSujet"] = 91)] =
 		"EvaluationSujet";
-	EGenreRessource[(EGenreRessource["EvaluationCorrige"] = 93)] =
+	EGenreRessource[(EGenreRessource["EvaluationCorrige"] = 92)] =
 		"EvaluationCorrige";
-	EGenreRessource[(EGenreRessource["LibelleCours"] = 94)] = "LibelleCours";
-	EGenreRessource[(EGenreRessource["Site"] = 95)] = "Site";
-	EGenreRessource[(EGenreRessource["QuestionQCM"] = 96)] = "QuestionQCM";
-	EGenreRessource[(EGenreRessource["RelationElevePilierDeCompetence"] = 97)] =
+	EGenreRessource[(EGenreRessource["LibelleCours"] = 93)] = "LibelleCours";
+	EGenreRessource[(EGenreRessource["Site"] = 94)] = "Site";
+	EGenreRessource[(EGenreRessource["QuestionQCM"] = 95)] = "QuestionQCM";
+	EGenreRessource[(EGenreRessource["RelationElevePilierDeCompetence"] = 96)] =
 		"RelationElevePilierDeCompetence";
-	EGenreRessource[(EGenreRessource["QuestionCopieQCM"] = 98)] =
+	EGenreRessource[(EGenreRessource["QuestionCopieQCM"] = 97)] =
 		"QuestionCopieQCM";
-	EGenreRessource[(EGenreRessource["Coordonnees"] = 99)] = "Coordonnees";
-	EGenreRessource[(EGenreRessource["ResponsablePostulant"] = 100)] =
+	EGenreRessource[(EGenreRessource["Coordonnees"] = 98)] = "Coordonnees";
+	EGenreRessource[(EGenreRessource["ResponsablePostulant"] = 99)] =
 		"ResponsablePostulant";
-	EGenreRessource[(EGenreRessource["ExecutionQCMEleve"] = 101)] =
+	EGenreRessource[(EGenreRessource["ExecutionQCMEleve"] = 100)] =
 		"ExecutionQCMEleve";
-	EGenreRessource[(EGenreRessource["DocJointInscription"] = 102)] =
+	EGenreRessource[(EGenreRessource["DocJointInscription"] = 101)] =
 		"DocJointInscription";
-	EGenreRessource[(EGenreRessource["CategorieDossier"] = 103)] =
+	EGenreRessource[(EGenreRessource["CategorieDossier"] = 102)] =
 		"CategorieDossier";
-	EGenreRessource[(EGenreRessource["MEFGEP"] = 104)] = "MEFGEP";
-	EGenreRessource[(EGenreRessource["AutreOrientation"] = 105)] =
+	EGenreRessource[(EGenreRessource["MEFGEP"] = 103)] = "MEFGEP";
+	EGenreRessource[(EGenreRessource["AutreOrientation"] = 104)] =
 		"AutreOrientation";
-	EGenreRessource[(EGenreRessource["Commission"] = 106)] = "Commission";
-	EGenreRessource[(EGenreRessource["ReponseEducative"] = 107)] =
+	EGenreRessource[(EGenreRessource["Commission"] = 105)] = "Commission";
+	EGenreRessource[(EGenreRessource["ReponseEducative"] = 106)] =
 		"ReponseEducative";
-	EGenreRessource[(EGenreRessource["SuiviReponseEducative"] = 108)] =
+	EGenreRessource[(EGenreRessource["SuiviReponseEducative"] = 107)] =
 		"SuiviReponseEducative";
-	EGenreRessource[(EGenreRessource["NatureDocumentEleve"] = 109)] =
+	EGenreRessource[(EGenreRessource["NatureDocumentEleve"] = 108)] =
 		"NatureDocumentEleve";
-	EGenreRessource[(EGenreRessource["RelationCommissionFichierExterne"] = 110)] =
+	EGenreRessource[(EGenreRessource["RelationCommissionFichierExterne"] = 109)] =
 		"RelationCommissionFichierExterne";
-	EGenreRessource[(EGenreRessource["Signataire"] = 111)] = "Signataire";
-	EGenreRessource[(EGenreRessource["DocumentSignature"] = 112)] =
+	EGenreRessource[(EGenreRessource["Signataire"] = 110)] = "Signataire";
+	EGenreRessource[(EGenreRessource["DocumentSignature"] = 111)] =
 		"DocumentSignature";
-	EGenreRessource[(EGenreRessource["PersonnelHistorique"] = 113)] =
+	EGenreRessource[(EGenreRessource["PersonnelHistorique"] = 112)] =
 		"PersonnelHistorique";
-	EGenreRessource[(EGenreRessource["EnseignantHistorique"] = 114)] =
+	EGenreRessource[(EGenreRessource["EnseignantHistorique"] = 113)] =
 		"EnseignantHistorique";
-	EGenreRessource[(EGenreRessource["DemandeDispense"] = 115)] =
+	EGenreRessource[(EGenreRessource["DemandeDispense"] = 114)] =
 		"DemandeDispense";
-	EGenreRessource[(EGenreRessource["DocJointPriseDeRDV"] = 116)] =
+	EGenreRessource[(EGenreRessource["DocJointPriseDeRDV"] = 115)] =
 		"DocJointPriseDeRDV";
-	EGenreRessource[(EGenreRessource["Mediatheque"] = 117)] = "Mediatheque";
-	EGenreRessource[(EGenreRessource["DossierMediatheque"] = 118)] =
+	EGenreRessource[(EGenreRessource["Mediatheque"] = 116)] = "Mediatheque";
+	EGenreRessource[(EGenreRessource["DossierMediatheque"] = 117)] =
 		"DossierMediatheque";
+	EGenreRessource[(EGenreRessource["Dortoir"] = 118)] = "Dortoir";
+	EGenreRessource[(EGenreRessource["Chambre"] = 119)] = "Chambre";
+	EGenreRessource[(EGenreRessource["DocJointAbsenceRessource"] = 120)] =
+		"DocJointAbsenceRessource";
+	EGenreRessource[(EGenreRessource["RetardInternat"] = 121)] = "RetardInternat";
 })(EGenreRessource || (exports.EGenreRessource = EGenreRessource = {}));
 const ObjetTraduction_1 = require("ObjetTraduction");
 const UtilitaireUrl_1 = require("UtilitaireUrl");
@@ -183,6 +187,7 @@ const EGenreRessourceUtil = {
 			case Enumere_Espace_1.EGenreEspace.Mobile_PrimEleve:
 				return aGenre === EGenreRessource.Eleve;
 			case Enumere_Espace_1.EGenreEspace.Entreprise:
+			case Enumere_Espace_1.EGenreEspace.Mobile_Entreprise:
 				return aGenre === EGenreRessource.MaitreDeStage;
 			case Enumere_Espace_1.EGenreEspace.Etablissement:
 				return aGenre === EGenreRessource.Personnel;
@@ -279,6 +284,8 @@ const EGenreRessourceUtil = {
 					return "Color_RecapVS_NonLue icon_retard";
 				}
 				return "Color_RecapVS_Lue icon_retard";
+			case EGenreRessource.RetardInternat:
+				return "Color_RecapVS_Lue icon_internat mix-icon_time";
 			case EGenreRessource.Infirmerie:
 				return "Color_RecapVS_Lue icon_f0fe";
 			case EGenreRessource.Incident:
@@ -432,40 +439,72 @@ const EGenreRessourceUtil = {
 		}
 		return lResult;
 	},
-	getTitreFenetreSelectionRessource(aGenre) {
+	getTitreFenetreSelectionRessource(aGenre, aSingulier = false) {
 		switch (aGenre) {
 			case EGenreRessource.Eleve:
-				return ObjetTraduction_1.GTraductions.getValeur(
-					"Fenetre_SelectionRessource.CocherEleves",
-				);
+				return aSingulier
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_SelectionRessource.SelectionnerEleve",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_SelectionRessource.SelectionnerEleves",
+						);
 			case EGenreRessource.Enseignant:
-				return ObjetTraduction_1.GTraductions.getValeur(
-					"Fenetre_SelectionRessource.CocherProfesseurs",
-				);
+				return aSingulier
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_SelectionRessource.SelectionnerProfesseur",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_SelectionRessource.SelectionnerProfesseurs",
+						);
 			case EGenreRessource.Responsable:
-				return ObjetTraduction_1.GTraductions.getValeur(
-					"Fenetre_SelectionRessource.CocherResponsables",
-				);
+				return aSingulier
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_SelectionRessource.SelectionnerResponsable",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_SelectionRessource.SelectionnerResponsables",
+						);
 			case EGenreRessource.Personnel:
-				return ObjetTraduction_1.GTraductions.getValeur(
-					"Fenetre_SelectionRessource.CocherPersonnel",
-				);
+				return aSingulier
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_SelectionRessource.SelectionnerPersonnel",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_SelectionRessource.SelectionnerPersonnels",
+						);
 			case EGenreRessource.MaitreDeStage:
-				return ObjetTraduction_1.GTraductions.getValeur(
-					"Fenetre_SelectionRessource.CocherMaitresDeStage",
-				);
+				return aSingulier
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_SelectionRessource.SelectionnerMaitreDeStage",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_SelectionRessource.SelectionnerMaitresDeStage",
+						);
 			case EGenreRessource.InspecteurPedagogique:
-				return ObjetTraduction_1.GTraductions.getValeur(
-					"Fenetre_SelectionRessource.CocherInspecteurs",
-				);
+				return aSingulier
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_SelectionRessource.SelectionnerInspecteur",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_SelectionRessource.SelectionnerInspecteurs",
+						);
 			case EGenreRessource.Periode:
-				return ObjetTraduction_1.GTraductions.getValeur(
-					"Fenetre_SelectionRessource.CocherPeriodes",
-				);
+				return aSingulier
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_SelectionRessource.SelectionnerPeriode",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_SelectionRessource.SelectionnerPeriodes",
+						);
 			case EGenreRessource.Classe:
-				return ObjetTraduction_1.GTraductions.getValeur(
-					"Fenetre_SelectionRessource.CocherClasses",
-				);
+				return aSingulier
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_SelectionRessource.SelectionnerClasse",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_SelectionRessource.SelectionnerClasses",
+						);
 		}
 		return "";
 	},

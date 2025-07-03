@@ -1,25 +1,21 @@
-const { MethodesObjet } = require("MethodesObjet.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreTriElement } = require("Enumere_TriElement.js");
-const { GChaine } = require("ObjetChaine.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const {
-	ObjetFenetre_DocumentsEleve,
-} = require("ObjetFenetre_DocumentsEleve.js");
-const { ObjetTri } = require("ObjetTri.js");
-const {
-	EGenreNiveauDAcquisition,
-	EGenreNiveauDAcquisitionUtil,
-} = require("Enumere_NiveauDAcquisition.js");
-const { TUtilitaireCompetences } = require("UtilitaireCompetences.js");
-const { EGenreAnnotation } = require("Enumere_Annotation.js");
-const { GHtml } = require("ObjetHtml.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreEvolutionUtil } = require("Enumere_Evolution.js");
-class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
+exports.DonneesListe_ReleveDEvaluations = void 0;
+const MethodesObjet_1 = require("MethodesObjet");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_TriElement_1 = require("Enumere_TriElement");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_NiveauDAcquisition_1 = require("Enumere_NiveauDAcquisition");
+const UtilitaireCompetences_1 = require("UtilitaireCompetences");
+const Enumere_Annotation_1 = require("Enumere_Annotation");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Evolution_1 = require("Enumere_Evolution");
+const AccessApp_1 = require("AccessApp");
+class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParams) {
 		super(aDonnees);
+		const lApplicationSco = (0, AccessApp_1.getApp)();
+		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
 		this.param = Object.assign(
 			{
 				tailleMaxAppreciation: 255,
@@ -29,6 +25,7 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 				affichageJaugeChronologique: false,
 				affichageProjetsAccompagnement: true,
 				callbackClicJauge: null,
+				callbackClicProjetsAccompagnement: null,
 			},
 			aParams,
 		);
@@ -40,34 +37,25 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 			avecSelectionSurNavigationClavier: true,
 		});
 	}
-	getControleur(aDonneesListe, aListe) {
-		return $.extend(true, super.getControleur(aDonneesListe, aListe), {
-			surClicPiecesJointesProjAcc(aNoEleve) {
-				const lEleve = aDonneesListe.Donnees.getElementParNumero(aNoEleve);
-				if (!!lEleve && !!lEleve.avecDocsProjetsAccompagnement) {
-					const lInstanceFenetre = ObjetFenetre.creerInstanceFenetre(
-						ObjetFenetre_DocumentsEleve,
-						{ pere: aListe },
-					);
-					lInstanceFenetre.setDonnees(lEleve);
+	jsxNodePiecesJointesProjetAccompagnement(aArticleEleve, aNode) {
+		if (aArticleEleve && aArticleEleve.avecDocsProjetsAccompagnement) {
+			$(aNode).eventValidation(() => {
+				if (this.param.callbackClicProjetsAccompagnement) {
+					this.param.callbackClicProjetsAccompagnement(aArticleEleve);
 				}
-			},
-			nodeJaugeColonneLSL(aNumeroEleve, aIdColonne) {
-				const lEleveConcerne =
-					aDonneesListe.Donnees.getElementParNumero(aNumeroEleve);
-				const lValeurColonneLSL = _getValeurColonneLSL(
-					aIdColonne,
-					lEleveConcerne,
-				);
-				$(this.node).on("click", () => {
-					if (!!aDonneesListe.param.callbackClicJauge) {
-						aDonneesListe.param.callbackClicJauge(
-							lEleveConcerne,
-							lValeurColonneLSL,
-						);
-					}
-				});
-			},
+			});
+		}
+	}
+	jsxNodeJaugeColonneLSL(aArticleEleve, aIdColonne, aNode) {
+		const lValeurColonneLSL =
+			DonneesListe_ReleveDEvaluations._getValeurColonneLSL(
+				aIdColonne,
+				aArticleEleve,
+			);
+		$(aNode).eventValidation(() => {
+			if (!!this.param.callbackClicJauge) {
+				this.param.callbackClicJauge(aArticleEleve, lValeurColonneLSL);
+			}
 		});
 	}
 	static estUneColonneDEvaluation(aColonneId) {
@@ -81,7 +69,7 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 	static getIndexDeColonneEvaluation(aColonneId) {
 		let lIndex = -1;
 		if (DonneesListe_ReleveDEvaluations.estUneColonneDEvaluation(aColonneId)) {
-			lIndex = _getIndexDeColonne(
+			lIndex = DonneesListe_ReleveDEvaluations._getIndexDeColonne(
 				aColonneId,
 				DonneesListe_ReleveDEvaluations.colonnes.prefixe_evaluation,
 			);
@@ -97,7 +85,7 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 		);
 	}
 	static getRangAppreciation(aColonneId) {
-		return _getIndexDeColonne(
+		return DonneesListe_ReleveDEvaluations._getIndexDeColonne(
 			aColonneId,
 			DonneesListe_ReleveDEvaluations.colonnes.prefixe_appreciations,
 		);
@@ -125,10 +113,10 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 		return lEditable;
 	}
 	static getValeurColonneLSL(aColonneId, D) {
-		return _getValeurColonneLSL(aColonneId, D);
+		return DonneesListe_ReleveDEvaluations._getValeurColonneLSL(aColonneId, D);
 	}
 	static estUneColonneLSLNiveau(aColonneId) {
-		return _estUneColonneLSLNiveau(aColonneId);
+		return DonneesListe_ReleveDEvaluations._estUneColonneLSLNiveau(aColonneId);
 	}
 	avecContenuTronque() {
 		return !this.param.affichageModeMultiLigne;
@@ -138,17 +126,17 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 			DonneesListe_ReleveDEvaluations.estUneColonneDEvaluation(
 				aParams.idColonne,
 			) ||
-			_estUneColonneSimulation(aParams.idColonne) ||
-			_estUneColonnePositionnementPrecedent(aParams.idColonne) ||
-			_estUneColonneLSL(aParams.idColonne)
+			this._estUneColonneSimulation(aParams.idColonne) ||
+			this._estUneColonnePositionnementPrecedent(aParams.idColonne) ||
+			this._estUneColonneLSL(aParams.idColonne)
 		) {
-			return ObjetDonneesListe.ETypeCellule.Html;
+			return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 		} else if (
 			DonneesListe_ReleveDEvaluations.estUneColonneDAppreciation(
 				aParams.idColonne,
 			)
 		) {
-			return ObjetDonneesListe.ETypeCellule.ZoneTexte;
+			return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.ZoneTexte;
 		}
 		switch (aParams.idColonne) {
 			case DonneesListe_ReleveDEvaluations.colonnes.eleve:
@@ -156,11 +144,11 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 			case DonneesListe_ReleveDEvaluations.colonnes.synthese:
 			case DonneesListe_ReleveDEvaluations.colonnes.niv_acqui_domaine:
 			case DonneesListe_ReleveDEvaluations.colonnes.pos_lsu_niveau:
-				return ObjetDonneesListe.ETypeCellule.Html;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 			case DonneesListe_ReleveDEvaluations.colonnes.pos_lsu_note:
-				return ObjetDonneesListe.ETypeCellule.Note;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Note;
 		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
 	getClass(aParams) {
 		switch (aParams.idColonne) {
@@ -176,9 +164,9 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 			DonneesListe_ReleveDEvaluations.estUneColonneDEvaluation(
 				aParams.idColonne,
 			) ||
-			_estUneColonneSimulation(aParams.idColonne) ||
-			_estUneColonnePositionnementPrecedent(aParams.idColonne) ||
-			_estUneColonneLSLNiveau(aParams.idColonne)
+			this._estUneColonneSimulation(aParams.idColonne) ||
+			this._estUneColonnePositionnementPrecedent(aParams.idColonne) ||
+			DonneesListe_ReleveDEvaluations._estUneColonneLSLNiveau(aParams.idColonne)
 		) {
 			return "AlignementMilieu";
 		}
@@ -197,7 +185,7 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 		) {
 			if (
 				this.param.avecAssistantSaisie &&
-				GEtatUtilisateur.assistantSaisieActif
+				this.etatUtilisateurSco.assistantSaisieActif
 			) {
 				lClasses.push("Curseur_AssistantSaisieActif");
 			} else {
@@ -222,9 +210,9 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 			min: 0,
 			max: lMaxNotation,
 			listeAnnotations: [
-				EGenreAnnotation.absent,
-				EGenreAnnotation.dispense,
-				EGenreAnnotation.nonNote,
+				Enumere_Annotation_1.EGenreAnnotation.absent,
+				Enumere_Annotation_1.EGenreAnnotation.dispense,
+				Enumere_Annotation_1.EGenreAnnotation.nonNote,
 			],
 		};
 	}
@@ -273,14 +261,15 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 				aParams.idColonne,
 			)
 		) {
-			const lNiveau = _getNiveauDAcquiDeColonneEvaluation.call(
-				this,
+			const lNiveau = this._getNiveauDAcquiDeColonneEvaluation(
 				aParams.idColonne,
 				aParams.article,
 			);
 			return lNiveau ? !!lNiveau.estEditable : false;
-		} else if (_estUneColonneLSLNiveau(aParams.idColonne)) {
-			const lNiveauLSL = _getNiveauDeColonneLSL(
+		} else if (
+			DonneesListe_ReleveDEvaluations._estUneColonneLSLNiveau(aParams.idColonne)
+		) {
+			const lNiveauLSL = this._getNiveauDeColonneLSL(
 				aParams.idColonne,
 				aParams.article,
 			);
@@ -295,14 +284,19 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 			)
 		) {
 			return this.avecEdition(aParams);
-		} else if (_estUneColonneLSLNiveau(aParams.idColonne)) {
+		} else if (
+			DonneesListe_ReleveDEvaluations._estUneColonneLSLNiveau(aParams.idColonne)
+		) {
 			return this.avecEdition(aParams);
 		} else if (
 			DonneesListe_ReleveDEvaluations.estUneColonneDAppreciation(
 				aParams.idColonne,
 			)
 		) {
-			return this.avecEdition(aParams) && GEtatUtilisateur.assistantSaisieActif;
+			return (
+				this.avecEdition(aParams) &&
+				this.etatUtilisateurSco.assistantSaisieActif
+			);
 		} else if (
 			aParams.idColonne ===
 			DonneesListe_ReleveDEvaluations.colonnes.pos_lsu_niveau
@@ -332,14 +326,14 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 				lObjetAppreciation.valeur !== aParams.valeur
 			) {
 				lObjetAppreciation.valeur = aParams.valeur;
-				lObjetAppreciation.setEtat(EGenreEtat.Modification);
-				aParams.article.setEtat(EGenreEtat.Modification);
+				lObjetAppreciation.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+				aParams.article.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 			}
 		}
 		switch (aParams.idColonne) {
 			case DonneesListe_ReleveDEvaluations.colonnes.pos_lsu_note:
 				aParams.article.posLSUNote = aParams.valeur;
-				aParams.article.setEtat(EGenreEtat.Modification);
+				aParams.article.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 				break;
 		}
 	}
@@ -350,7 +344,7 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 				if (lSurExportCSV) {
 					return aParams.article.getLibelle();
 				} else {
-					return _getValeurColonneEleve(
+					return this._getValeurColonneEleve(
 						aParams.article,
 						this.param.affichageProjetsAccompagnement,
 					);
@@ -358,29 +352,33 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 			case DonneesListe_ReleveDEvaluations.colonnes.synthese:
 				if (this.param.affichageJaugeChronologique) {
 					if (lSurExportCSV) {
-						return TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionParNiveauOuPastille(
+						return UtilitaireCompetences_1.TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionParNiveauOuPastille(
 							aParams.article.listeNiveauxSyntheseChrono,
 						);
 					} else {
-						return TUtilitaireCompetences.composeJaugeChronologique({
-							listeNiveaux: aParams.article.listeNiveauxSyntheseChrono,
-							hint: aParams.article.hintSyntheseChrono,
-						});
+						return UtilitaireCompetences_1.TUtilitaireCompetences.composeJaugeChronologique(
+							{
+								listeNiveaux: aParams.article.listeNiveauxSyntheseChrono,
+								hint: aParams.article.hintSyntheseChrono,
+							},
+						);
 					}
 				} else {
 					if (lSurExportCSV) {
-						return TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionParNiveauOuPastille(
+						return UtilitaireCompetences_1.TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionParNiveauOuPastille(
 							aParams.article.listeNiveauxSyntheseParNiveau,
 						);
 					} else {
-						return TUtilitaireCompetences.composeJaugeParNiveaux({
-							listeNiveaux: aParams.article.listeNiveauxSyntheseParNiveau,
-							hint: aParams.article.hintSyntheseParNiveau,
-						});
+						return UtilitaireCompetences_1.TUtilitaireCompetences.composeJaugeParNiveaux(
+							{
+								listeNiveaux: aParams.article.listeNiveauxSyntheseParNiveau,
+								hint: aParams.article.hintSyntheseParNiveau,
+							},
+						);
 					}
 				}
 			case DonneesListe_ReleveDEvaluations.colonnes.evolution:
-				return EGenreEvolutionUtil.getImage(
+				return Enumere_Evolution_1.EGenreEvolutionUtil.getImage(
 					!!aParams.article.evolution
 						? aParams.article.evolution.getGenre()
 						: 0,
@@ -390,15 +388,17 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 			case DonneesListe_ReleveDEvaluations.colonnes.pos_lsu_niveau:
 				if (!!aParams.article.posLSUNiveau) {
 					if (lSurExportCSV) {
-						return EGenreNiveauDAcquisitionUtil.getAbbreviation(
+						return Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getAbbreviation(
 							aParams.article.posLSUNiveau,
-							aParams.article.genrePositionnementSansNote,
 						);
 					} else {
-						return EGenreNiveauDAcquisitionUtil.getImagePositionnement({
-							niveauDAcquisition: aParams.article.posLSUNiveau,
-							genrePositionnement: aParams.article.genrePositionnementSansNote,
-						});
+						return Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImagePositionnement(
+							{
+								niveauDAcquisition: aParams.article.posLSUNiveau,
+								genrePositionnement:
+									aParams.article.genrePositionnementSansNote,
+							},
+						);
 					}
 				}
 				return "";
@@ -408,71 +408,79 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 				let lResultNivAcquiPilier = "";
 				const lNiveauAcquiPilier = aParams.article.nivAcquiPilier;
 				if (!!lNiveauAcquiPilier) {
-					lResultNivAcquiPilier += EGenreNiveauDAcquisitionUtil.getImage(
-						lNiveauAcquiPilier,
-						{ avecTitle: false },
-					);
+					lResultNivAcquiPilier +=
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+							lNiveauAcquiPilier,
+							{ avecTitle: false },
+						);
 					if (lNiveauAcquiPilier.observation) {
-						lResultNivAcquiPilier +=
-							'<i style="position:absolute; right:0px; bottom:0px;" class=" icon_info_sign"></i>';
+						lResultNivAcquiPilier += IE.jsx.str("i", {
+							style: "position:absolute; right:0px; bottom:0px;",
+							class: " icon_info_sign",
+							role: "presentation",
+						});
 					}
 				}
 				if (lSurExportCSV) {
-					return EGenreNiveauDAcquisitionUtil.getAbbreviation(
+					return Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getAbbreviation(
 						lNiveauAcquiPilier,
-						{ avecTitle: false },
 					);
 				} else {
 					return lResultNivAcquiPilier;
 				}
 			}
 		}
-		if (_estUneColonnePositionnementPrecedent(aParams.idColonne)) {
+		if (this._estUneColonnePositionnementPrecedent(aParams.idColonne)) {
 			let lResultPosPrecedent = "";
 			const lNiveauPosPrecedent =
-				_getNiveauDAcquiDeColonnePositionnementPrecedent(
+				this._getNiveauDAcquiDeColonnePositionnementPrecedent(
 					aParams.idColonne,
 					aParams.article,
 				);
 			if (!!lNiveauPosPrecedent) {
 				lResultPosPrecedent =
-					EGenreNiveauDAcquisitionUtil.getImagePositionnement({
-						niveauDAcquisition: lNiveauPosPrecedent,
-						genrePositionnement: aParams.article.genrePositionnementSansNote,
-					});
+					Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImagePositionnement(
+						{
+							niveauDAcquisition: lNiveauPosPrecedent,
+							genrePositionnement: aParams.article.genrePositionnementSansNote,
+						},
+					);
 			}
 			if (lSurExportCSV) {
-				return EGenreNiveauDAcquisitionUtil.getAbbreviation(
+				return Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getAbbreviation(
 					lNiveauPosPrecedent,
-					aParams.article.genrePositionnementSansNote,
 				);
 			} else {
 				return lResultPosPrecedent;
 			}
-		} else if (_estUneColonneSimulation(aParams.idColonne)) {
+		} else if (this._estUneColonneSimulation(aParams.idColonne)) {
 			let lResultSimulation = "-";
-			const lNiveauSimu = _getNiveauDAcquiDeColonneSimulation(
+			const lNiveauSimu = this._getNiveauDAcquiDeColonneSimulation(
 				aParams.idColonne,
 				aParams.article,
 			);
 			if (!!lNiveauSimu) {
 				const lAffichagePastillesPositionnement =
-					!!aParams.declarationColonne.affichagePastillesDePositionnenment;
+					aParams.declarationColonne.affichagePastillesDePositionnenment;
 				if (lAffichagePastillesPositionnement) {
 					lResultSimulation =
-						EGenreNiveauDAcquisitionUtil.getImagePositionnement({
-							niveauDAcquisition: lNiveauSimu,
-							genrePositionnement: aParams.article.genrePositionnementSansNote,
-						});
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImagePositionnement(
+							{
+								niveauDAcquisition: lNiveauSimu,
+								genrePositionnement:
+									aParams.article.genrePositionnementSansNote,
+							},
+						);
 				} else {
 					lResultSimulation =
-						EGenreNiveauDAcquisitionUtil.getImage(lNiveauSimu);
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+							lNiveauSimu,
+						);
 				}
 			}
 			if (lSurExportCSV) {
-				return EGenreNiveauDAcquisitionUtil.getAbbreviation(
+				return Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getAbbreviation(
 					lNiveauSimu,
-					aParams.article.genrePositionnementSansNote,
 				);
 			} else {
 				return lResultSimulation;
@@ -483,29 +491,34 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 			)
 		) {
 			let lResultNivAcqui = "";
-			const lNiveau = _getNiveauDAcquiDeColonneEvaluation.call(
-				this,
+			const lNiveau = this._getNiveauDAcquiDeColonneEvaluation(
 				aParams.idColonne,
 				aParams.article,
 			);
 			if (!!lNiveau) {
 				if (lSurExportCSV) {
-					lResultNivAcqui = EGenreNiveauDAcquisitionUtil.getAbbreviation(
-						lNiveau,
-						{ avecTitle: false },
-					);
+					lResultNivAcqui =
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getAbbreviation(
+							lNiveau,
+						);
 				} else if (lNiveau.estImpossible) {
 					lResultNivAcqui = lNiveau.libelleImpossible;
 				} else {
-					lResultNivAcqui += EGenreNiveauDAcquisitionUtil.getImage(lNiveau, {
-						avecTitle: false,
-					});
+					lResultNivAcqui +=
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+							lNiveau,
+							{ avecTitle: false },
+						);
 					if (
-						lNiveau.getGenre() >= EGenreNiveauDAcquisition.Expert &&
+						lNiveau.getGenre() >=
+							Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisition.Expert &&
 						lNiveau.observation
 					) {
-						lResultNivAcqui +=
-							'<i style="position:absolute; right:0px; bottom:0px;" class=" icon_comment"></i>';
+						lResultNivAcqui += IE.jsx.str("i", {
+							style: "position:absolute; right:0px; bottom:0px;",
+							class: " icon_comment",
+							role: "presentation",
+						});
 					}
 				}
 			}
@@ -515,8 +528,7 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 				aParams.idColonne,
 			)
 		) {
-			const lAppreciation = _getAppreciation.call(
-				this,
+			const lAppreciation = this._getAppreciation(
 				aParams.idColonne,
 				aParams.article,
 			);
@@ -528,31 +540,41 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 			} else {
 				return (lAppreciation || "").replace(/\n/g, " ");
 			}
-		} else if (_estUneColonneLSLJauge(aParams.idColonne)) {
-			const lValeurColonneLSL = _getValeurColonneLSL(
-				aParams.idColonne,
-				aParams.article,
-			);
+		} else if (
+			DonneesListe_ReleveDEvaluations._estUneColonneLSLJauge(aParams.idColonne)
+		) {
+			const lValeurColonneLSL =
+				DonneesListe_ReleveDEvaluations._getValeurColonneLSL(
+					aParams.idColonne,
+					aParams.article,
+				);
 			if (lValeurColonneLSL && lValeurColonneLSL.listeNiveauxDAcquisitions) {
 				const lHtmlJauges = [];
 				lHtmlJauges.push(
-					'<div class="AvecMain" ie-node="nodeJaugeColonneLSL(\'',
-					aParams.article.getNumero(),
-					"', '",
-					aParams.idColonne,
-					"')\">",
+					IE.jsx.str(
+						"div",
+						{
+							class: "AvecMain",
+							"ie-node": this.jsxNodeJaugeColonneLSL.bind(
+								this,
+								aParams.article,
+								aParams.idColonne,
+							),
+						},
+						UtilitaireCompetences_1.TUtilitaireCompetences.composeJaugeParNiveaux(
+							{
+								listeNiveaux: lValeurColonneLSL.listeNiveauxDAcquisitions,
+								hint: lValeurColonneLSL.hintNiveauxDAcquisitions,
+							},
+						),
+					),
 				);
-				lHtmlJauges.push(
-					TUtilitaireCompetences.composeJaugeParNiveaux({
-						listeNiveaux: lValeurColonneLSL.listeNiveauxDAcquisitions,
-						hint: lValeurColonneLSL.hintNiveauxDAcquisitions,
-					}),
-				);
-				lHtmlJauges.push("</div>");
 				return lHtmlJauges.join("");
 			}
-		} else if (_estUneColonneLSLNiveau(aParams.idColonne)) {
-			const lNiveauColonneLSL = _getNiveauDeColonneLSL(
+		} else if (
+			DonneesListe_ReleveDEvaluations._estUneColonneLSLNiveau(aParams.idColonne)
+		) {
+			const lNiveauColonneLSL = this._getNiveauDeColonneLSL(
 				aParams.idColonne,
 				aParams.article,
 			);
@@ -560,22 +582,22 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 				if (!!lNiveauColonneLSL.estImpossible) {
 					return lNiveauColonneLSL.libelleImpossible || "";
 				} else {
-					return EGenreNiveauDAcquisitionUtil.getImage(lNiveauColonneLSL, {
-						avecTitle: false,
-					});
+					return Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+						lNiveauColonneLSL,
+						{ avecTitle: false },
+					);
 				}
 			}
 		}
 		return "";
 	}
-	getHintHtmlForce(aParams) {
+	getTooltip(aParams) {
 		if (
 			DonneesListe_ReleveDEvaluations.estUneColonneDEvaluation(
 				aParams.idColonne,
 			)
 		) {
-			const lNiveauAcquisitionEleve = _getNiveauDAcquiDeColonneEvaluation.call(
-				this,
+			const lNiveauAcquisitionEleve = this._getNiveauDAcquiDeColonneEvaluation(
 				aParams.idColonne,
 				aParams.article,
 			);
@@ -586,7 +608,9 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 				if (
 					!!aParams.declarationColonne &&
 					!!aParams.declarationColonne.titre &&
-					MethodesObjet.isArray(aParams.declarationColonne.titre)
+					MethodesObjet_1.MethodesObjet.isArray(
+						aParams.declarationColonne.titre,
+					)
 				) {
 					const lArrayTitres = aParams.declarationColonne.titre;
 					if (lArrayTitres.length > 0) {
@@ -600,7 +624,8 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 				if (
 					!!lNiveauAcquisitionEleve &&
 					!!lNiveauAcquisitionEleve.observation &&
-					lNiveauAcquisitionEleve.getGenre() >= EGenreNiveauDAcquisition.Expert
+					lNiveauAcquisitionEleve.getGenre() >=
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisition.Expert
 				) {
 					lObservationEleve = lNiveauAcquisitionEleve.observation.replace(
 						/\n/g,
@@ -609,45 +634,32 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 					if (!!lNiveauAcquisitionEleve.observationPubliee) {
 						lObservationEleve +=
 							" (" +
-							GTraductions.getValeur("competences.PublieSurEspaceParent") +
+							ObjetTraduction_1.GTraductions.getValeur(
+								"competences.PublieSurEspaceParent",
+							) +
 							")";
 					}
 				}
-				return GChaine.toTitle(
-					TUtilitaireCompetences.composeHintEvaluationEleve({
-						libelleEleve: aParams.article.getLibelle(),
-						estSaisieClotureePourEleve:
-							!!lNiveauAcquisitionEleve.estSurPeriodeCloturee,
-						hintCompetence: lHintCompetenceColonne,
-						niveauDAcquisition: lNiveauAcquisitionEleve,
-						observation: lObservationEleve,
-					}),
+				return ObjetChaine_1.GChaine.toTitle(
+					UtilitaireCompetences_1.TUtilitaireCompetences.composeHintEvaluationEleve(
+						{
+							libelleEleve: aParams.article.getLibelle(),
+							estSaisieClotureePourEleve:
+								!!lNiveauAcquisitionEleve.estSurPeriodeCloturee,
+							hintCompetence: lHintCompetenceColonne,
+							niveauDAcquisition: lNiveauAcquisitionEleve,
+							observation: lObservationEleve,
+						},
+					),
 				);
 			}
-		} else if (
-			DonneesListe_ReleveDEvaluations.estUneColonneDAppreciation(
-				aParams.idColonne,
-			)
-		) {
-			return _getAppreciation.call(this, aParams.idColonne, aParams.article);
-		} else if (_estUneColonneLSLNiveau(aParams.idColonne)) {
-			const lNiveauColonneLSL = _getNiveauDeColonneLSL(
-				aParams.idColonne,
-				aParams.article,
-			);
-			if (lNiveauColonneLSL && lNiveauColonneLSL.estImpossible) {
-				return lNiveauColonneLSL.hintImpossible || "";
-			}
 		}
-		return "";
-	}
-	getHintForce(aParams) {
 		let lNiveau;
 		switch (aParams.idColonne) {
 			case DonneesListe_ReleveDEvaluations.colonnes.pos_lsu_note:
 				if (!!aParams.article.posLSUNote) {
 					if (aParams.article.posLSUNote.estUneValeur()) {
-						return aParams.article.posLSUNote.getValeur();
+						return aParams.article.posLSUNote.getValeur().toString();
 					} else {
 						return aParams.article.posLSUNote.getChaineAnnotationDeGenre(
 							aParams.article.posLSUNote.getGenre(),
@@ -661,7 +673,9 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 					let lHintNiveauAcquiDomaine = "";
 					if (lNiveau.existeNumero()) {
 						lHintNiveauAcquiDomaine =
-							EGenreNiveauDAcquisitionUtil.getLibelle(lNiveau);
+							Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getLibelle(
+								lNiveau,
+							);
 					}
 					if (lNiveau.observation) {
 						if (
@@ -683,62 +697,62 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 				aParams.idColonne,
 			)
 		) {
-			const lAppreciation = _getAppreciation.call(
-				this,
+			return this._getAppreciation(aParams.idColonne, aParams.article);
+		} else if (
+			DonneesListe_ReleveDEvaluations._estUneColonneLSLNiveau(aParams.idColonne)
+		) {
+			const lNiveauColonneLSL = this._getNiveauDeColonneLSL(
 				aParams.idColonne,
 				aParams.article,
 			);
-			if (
-				aParams.surEdition === true ||
-				this.param.affichageModeMultiLigne === true
-			) {
-				return lAppreciation;
-			} else {
-				return (lAppreciation || "").replace(/\n/g, " ");
+			if (lNiveauColonneLSL && lNiveauColonneLSL.estImpossible) {
+				return lNiveauColonneLSL.hintImpossible || "";
 			}
 		}
 		return "";
 	}
 	getTri(aColonneDeTri, aGenreTri) {
 		const lThis = this;
-		const lCacheOrdreNiveauDAcqui = _getCacheOrdreNiveauDAcquisition();
+		const lCacheOrdreNiveauDAcqui = this._getCacheOrdreNiveauDAcquisition();
 		const lColonneId = this.getId(aColonneDeTri);
 		const lTris = [];
-		if (_estUneColonnePositionnementPrecedent(lColonneId)) {
+		if (this._estUneColonnePositionnementPrecedent(lColonneId)) {
 			lTris.push(
-				ObjetTri.init((D) => {
-					const lNiveau = _getNiveauDAcquiDeColonnePositionnementPrecedent(
+				ObjetTri_1.ObjetTri.init((D) => {
+					const lNiveau = this._getNiveauDAcquiDeColonnePositionnementPrecedent(
 						lColonneId,
 						D,
 					);
-					return _triNivAcquisition(lCacheOrdreNiveauDAcqui, lNiveau);
+					return this._triNivAcquisition(lCacheOrdreNiveauDAcqui, lNiveau);
 				}, aGenreTri),
 			);
-		} else if (_estUneColonneSimulation(lColonneId)) {
+		} else if (this._estUneColonneSimulation(lColonneId)) {
 			lTris.push(
-				ObjetTri.init((D) => {
-					const lNiveau = _getNiveauDAcquiDeColonneSimulation(lColonneId, D);
-					return _triNivAcquisition(lCacheOrdreNiveauDAcqui, lNiveau);
+				ObjetTri_1.ObjetTri.init((D) => {
+					const lNiveau = this._getNiveauDAcquiDeColonneSimulation(
+						lColonneId,
+						D,
+					);
+					return this._triNivAcquisition(lCacheOrdreNiveauDAcqui, lNiveau);
 				}, aGenreTri),
 			);
 		} else if (
 			DonneesListe_ReleveDEvaluations.estUneColonneDEvaluation(lColonneId)
 		) {
 			lTris.push(
-				ObjetTri.init((D) => {
-					const lNiveau = _getNiveauDAcquiDeColonneEvaluation.call(
-						lThis,
+				ObjetTri_1.ObjetTri.init((D) => {
+					const lNiveau = this._getNiveauDAcquiDeColonneEvaluation(
 						lColonneId,
 						D,
 					);
-					return _triNivAcquisition(lCacheOrdreNiveauDAcqui, lNiveau);
+					return this._triNivAcquisition(lCacheOrdreNiveauDAcqui, lNiveau);
 				}, aGenreTri),
 			);
 		} else if (
 			DonneesListe_ReleveDEvaluations.estUneColonneDAppreciation(lColonneId)
 		) {
 			lTris.push(
-				ObjetTri.init(
+				ObjetTri_1.ObjetTri.init(
 					(D) => {
 						return !!DonneesListe_ReleveDEvaluations.getObjetAppreciation(
 							lColonneId,
@@ -747,13 +761,13 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 							? 1
 							: 0;
 					},
-					aGenreTri === EGenreTriElement.Croissant
-						? EGenreTriElement.Decroissant
-						: EGenreTriElement.Croissant,
+					aGenreTri === Enumere_TriElement_1.EGenreTriElement.Croissant
+						? Enumere_TriElement_1.EGenreTriElement.Decroissant
+						: Enumere_TriElement_1.EGenreTriElement.Croissant,
 				),
 			);
 			lTris.push(
-				ObjetTri.init(
+				ObjetTri_1.ObjetTri.init(
 					this.getValeurPourTri.bind(this, aColonneDeTri),
 					aGenreTri,
 				),
@@ -761,39 +775,39 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 		} else {
 			switch (lColonneId) {
 				case DonneesListe_ReleveDEvaluations.colonnes.eleve:
-					lTris.push(ObjetTri.init("Position", aGenreTri));
+					lTris.push(ObjetTri_1.ObjetTri.init("Position", aGenreTri));
 					break;
 				case DonneesListe_ReleveDEvaluations.colonnes.synthese:
 					lTris.push(
-						ObjetTri.init(
+						ObjetTri_1.ObjetTri.init(
 							(D) => {
 								return D.moyenneSynthese && D.moyenneSynthese.estUneValeur()
 									? D.moyenneSynthese.getValeur()
 									: 0;
 							},
-							aGenreTri === EGenreTriElement.Croissant
-								? EGenreTriElement.Decroissant
-								: EGenreTriElement.Croissant,
+							aGenreTri === Enumere_TriElement_1.EGenreTriElement.Croissant
+								? Enumere_TriElement_1.EGenreTriElement.Decroissant
+								: Enumere_TriElement_1.EGenreTriElement.Croissant,
 						),
 					);
 					break;
 				case DonneesListe_ReleveDEvaluations.colonnes.percent_acquisition:
 					lTris.push(
-						ObjetTri.init(
+						ObjetTri_1.ObjetTri.init(
 							(D) => {
 								const lValueCell = lThis.getValeurPourTri(aColonneDeTri, D);
 								return !!lValueCell ? parseFloat(lValueCell) || 0 : -1;
 							},
-							aGenreTri === EGenreTriElement.Croissant
-								? EGenreTriElement.Decroissant
-								: EGenreTriElement.Croissant,
+							aGenreTri === Enumere_TriElement_1.EGenreTriElement.Croissant
+								? Enumere_TriElement_1.EGenreTriElement.Decroissant
+								: Enumere_TriElement_1.EGenreTriElement.Croissant,
 						),
 					);
 					break;
 				case DonneesListe_ReleveDEvaluations.colonnes.pos_lsu_niveau:
 					lTris.push(
-						ObjetTri.init((D) => {
-							return _triNivAcquisition(
+						ObjetTri_1.ObjetTri.init((D) => {
+							return this._triNivAcquisition(
 								lCacheOrdreNiveauDAcqui,
 								D.posLSUNiveau,
 							);
@@ -802,7 +816,7 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 					break;
 				case DonneesListe_ReleveDEvaluations.colonnes.pos_lsu_note:
 					lTris.push(
-						ObjetTri.init((D) => {
+						ObjetTri_1.ObjetTri.init((D) => {
 							if (!!D.posLSUNote) {
 								if (D.posLSUNote.estUneValeur()) {
 									return D.posLSUNote.getValeur() * -1;
@@ -815,8 +829,8 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 					break;
 				case DonneesListe_ReleveDEvaluations.colonnes.niv_acqui_domaine:
 					lTris.push(
-						ObjetTri.init((D) => {
-							return _triNivAcquisition(
+						ObjetTri_1.ObjetTri.init((D) => {
+							return this._triNivAcquisition(
 								lCacheOrdreNiveauDAcqui,
 								D.nivAcquiPilier,
 							);
@@ -826,15 +840,208 @@ class DonneesListe_ReleveDEvaluations extends ObjetDonneesListe {
 			}
 		}
 		if (lColonneId !== DonneesListe_ReleveDEvaluations.colonnes.eleve) {
-			lTris.push(ObjetTri.init("Position", EGenreTriElement.Croissant));
+			lTris.push(
+				ObjetTri_1.ObjetTri.init(
+					"Position",
+					Enumere_TriElement_1.EGenreTriElement.Croissant,
+				),
+			);
 		}
 		return lTris;
 	}
 	remplirMenuContextuel(aParams) {
 		this.param.initMenuContextuel(aParams);
 	}
+	static _getSuffixeDeColonne(aColonneId, aPrefixeColonne) {
+		return aColonneId.substring(aPrefixeColonne.length, aColonneId.length);
+	}
+	static _getIndexDeColonne(aColonneId, aPrefixeColonne) {
+		let result = -1;
+		if (aColonneId) {
+			const lStrIndex = DonneesListe_ReleveDEvaluations._getSuffixeDeColonne(
+				aColonneId,
+				aPrefixeColonne,
+			);
+			if (!!lStrIndex) {
+				result = parseInt(lStrIndex, 10);
+			}
+		}
+		return result;
+	}
+	_estUneColonnePositionnementPrecedent(aColonneId) {
+		return (
+			aColonneId &&
+			aColonneId.indexOf(
+				DonneesListe_ReleveDEvaluations.colonnes.prefixe_posPrecedent,
+			) === 0
+		);
+	}
+	_getNiveauDAcquiDeColonnePositionnementPrecedent(aColonneId, D) {
+		let result = null;
+		if (!!D.posPrecedents) {
+			const lIndex = DonneesListe_ReleveDEvaluations._getIndexDeColonne(
+				aColonneId,
+				DonneesListe_ReleveDEvaluations.colonnes.prefixe_posPrecedent,
+			);
+			result = D.posPrecedents.get(lIndex);
+		}
+		return result;
+	}
+	_estUneColonneSimulation(aColonneId) {
+		return (
+			aColonneId &&
+			aColonneId.indexOf(
+				DonneesListe_ReleveDEvaluations.colonnes.prefixe_simulation,
+			) === 0
+		);
+	}
+	_getNiveauDAcquiDeColonneSimulation(aColonneId, D) {
+		let result = null;
+		if (!!D.simulations) {
+			const lIndex = DonneesListe_ReleveDEvaluations._getIndexDeColonne(
+				aColonneId,
+				DonneesListe_ReleveDEvaluations.colonnes.prefixe_simulation,
+			);
+			result = D.simulations.get(lIndex);
+		}
+		return result;
+	}
+	_getNiveauDAcquiDeColonneEvaluation(aColonneId, D) {
+		const lIndex =
+			DonneesListe_ReleveDEvaluations.getIndexDeColonneEvaluation(aColonneId);
+		return D.listeNiveauxDAcquisitions.get(lIndex);
+	}
+	_estUneColonneLSL(aColonneId) {
+		return (
+			DonneesListe_ReleveDEvaluations._estUneColonneLSLJauge(aColonneId) ||
+			DonneesListe_ReleveDEvaluations._estUneColonneLSLNiveau(aColonneId)
+		);
+	}
+	static _estUneColonneLSLJauge(aColonneId) {
+		return (
+			aColonneId &&
+			aColonneId.indexOf(
+				DonneesListe_ReleveDEvaluations.colonnes.prefixe_LSL_jauge,
+			) === 0
+		);
+	}
+	static _estUneColonneLSLNiveau(aColonneId) {
+		return (
+			aColonneId &&
+			aColonneId.indexOf(
+				DonneesListe_ReleveDEvaluations.colonnes.prefixe_LSL_niveau,
+			) === 0
+		);
+	}
+	static _getValeurColonneLSL(aColonneId, D) {
+		let lValeurColonneConcernee;
+		if (D.listeValeursColonnesLSL) {
+			let lPrefixeColonneId;
+			if (this._estUneColonneLSLJauge(aColonneId)) {
+				lPrefixeColonneId =
+					DonneesListe_ReleveDEvaluations.colonnes.prefixe_LSL_jauge;
+			} else if (this._estUneColonneLSLNiveau(aColonneId)) {
+				lPrefixeColonneId =
+					DonneesListe_ReleveDEvaluations.colonnes.prefixe_LSL_niveau;
+			}
+			if (lPrefixeColonneId) {
+				const lNumeroDeColonne =
+					DonneesListe_ReleveDEvaluations._getSuffixeDeColonne(
+						aColonneId,
+						lPrefixeColonneId,
+					);
+				D.listeValeursColonnesLSL.parcourir((aValeurColonneLSL) => {
+					if (aValeurColonneLSL.getNumero() === lNumeroDeColonne) {
+						lValeurColonneConcernee = aValeurColonneLSL;
+						return false;
+					}
+				});
+			}
+		}
+		return lValeurColonneConcernee;
+	}
+	_getNiveauDeColonneLSL(aColonneId, D) {
+		const lValeurColonneLSL =
+			DonneesListe_ReleveDEvaluations._getValeurColonneLSL(aColonneId, D);
+		return lValeurColonneLSL ? lValeurColonneLSL.niveau : null;
+	}
+	_getAppreciation(aColonneId, D) {
+		let lAppreciation = "";
+		const lObjAppreciation =
+			DonneesListe_ReleveDEvaluations.getObjetAppreciation(aColonneId, D);
+		if (!!lObjAppreciation && !!lObjAppreciation.valeur) {
+			lAppreciation = lObjAppreciation.valeur;
+		}
+		return lAppreciation;
+	}
+	_getValeurColonneEleve(aEleve, aAvecProjetsAccompagnement) {
+		const lHtmlEleve = [];
+		if (!!aEleve) {
+			const lHtmlProjAcc = [];
+			if (aAvecProjetsAccompagnement) {
+				const lHintProjetAcc = aEleve.projetsAccompagnement || "";
+				const lAvecPiecesJointes = !!aEleve.avecDocsProjetsAccompagnement;
+				if (lHintProjetAcc.length > 0 || lAvecPiecesJointes) {
+					const lClasses = ["AlignementMilieuVertical", "InlineBlock"];
+					if (lAvecPiecesJointes) {
+						lClasses.push("AvecMain");
+					}
+					lHtmlProjAcc.push(
+						IE.jsx.str(
+							"span",
+							{
+								"ie-tooltiplabel": lHintProjetAcc,
+								class: lClasses.join(" "),
+								style: "float: right;",
+								"ie-node": this.jsxNodePiecesJointesProjetAccompagnement.bind(
+									this,
+									aEleve,
+								),
+								tabindex: lAvecPiecesJointes ? 0 : null,
+							},
+							IE.jsx.str("i", {
+								class: "icon_projet_accompagnement Texte12",
+								role: "presentation",
+							}),
+						),
+					);
+				}
+			}
+			let lMargeReserveeProjetAcc = 0;
+			if (lHtmlProjAcc.length > 0) {
+				lMargeReserveeProjetAcc = 20;
+			}
+			lHtmlEleve.push(
+				'<span class="AlignementMilieuVertical InlineBlock" style="width: calc(100% - ',
+				lMargeReserveeProjetAcc,
+				'px);">',
+				aEleve.getLibelle(),
+				"</span>",
+			);
+			lHtmlEleve.push(lHtmlProjAcc.join(""));
+		}
+		return lHtmlEleve.join("");
+	}
+	_getCacheOrdreNiveauDAcquisition() {
+		const lOrdre =
+			Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.ordre();
+		const lHash = {};
+		lOrdre.forEach((aEnumere, aIndex) => {
+			lHash[aEnumere] = aIndex;
+		});
+		return lHash;
+	}
+	_triNivAcquisition(aCacheOrdreNiveauDAcqui, aNiveauAcqui) {
+		if (!!aNiveauAcqui && !aNiveauAcqui.estImpossible) {
+			const lGenre = aNiveauAcqui.getGenre();
+			return aCacheOrdreNiveauDAcqui[lGenre] === undefined
+				? Number.MAX_VALUE
+				: aCacheOrdreNiveauDAcqui[lGenre];
+		}
+		return Number.MAX_VALUE;
+	}
 }
-const lPrefixeLSL = "RDE_LSL_";
+exports.DonneesListe_ReleveDEvaluations = DonneesListe_ReleveDEvaluations;
 DonneesListe_ReleveDEvaluations.colonnes = {
 	eleve: "RDE_eleve",
 	synthese: "RDE_synthese",
@@ -847,187 +1054,6 @@ DonneesListe_ReleveDEvaluations.colonnes = {
 	niv_acqui_domaine: "RDE_niv_acqui_domaine",
 	prefixe_evaluation: "RDE_evaluation_",
 	prefixe_appreciations: "RDE_appreciations_",
-	prefixe_LSL_jauge: lPrefixeLSL + "jauge_",
-	prefixe_LSL_niveau: lPrefixeLSL + "niveau_",
+	prefixe_LSL_jauge: "RDE_LSL_jauge_",
+	prefixe_LSL_niveau: "RDE_LSL_niveau_",
 };
-function _getSuffixeDeColonne(aColonneId, aPrefixeColonne) {
-	return aColonneId.substring(aPrefixeColonne.length, aColonneId.length);
-}
-function _getIndexDeColonne(aColonneId, aPrefixeColonne) {
-	let result = -1;
-	if (aColonneId) {
-		const lStrIndex = _getSuffixeDeColonne(aColonneId, aPrefixeColonne);
-		if (!!lStrIndex) {
-			result = parseInt(lStrIndex, 10);
-		}
-	}
-	return result;
-}
-function _estUneColonnePositionnementPrecedent(aColonneId) {
-	return (
-		aColonneId &&
-		aColonneId.indexOf(
-			DonneesListe_ReleveDEvaluations.colonnes.prefixe_posPrecedent,
-		) === 0
-	);
-}
-function _getNiveauDAcquiDeColonnePositionnementPrecedent(aColonneId, D) {
-	let result = null;
-	if (!!D.posPrecedents) {
-		const lIndex = _getIndexDeColonne(
-			aColonneId,
-			DonneesListe_ReleveDEvaluations.colonnes.prefixe_posPrecedent,
-		);
-		result = D.posPrecedents.get(lIndex);
-	}
-	return result;
-}
-function _estUneColonneSimulation(aColonneId) {
-	return (
-		aColonneId &&
-		aColonneId.indexOf(
-			DonneesListe_ReleveDEvaluations.colonnes.prefixe_simulation,
-		) === 0
-	);
-}
-function _getNiveauDAcquiDeColonneSimulation(aColonneId, D) {
-	let result = null;
-	if (!!D.simulations) {
-		const lIndex = _getIndexDeColonne(
-			aColonneId,
-			DonneesListe_ReleveDEvaluations.colonnes.prefixe_simulation,
-		);
-		result = D.simulations.get(lIndex);
-	}
-	return result;
-}
-function _getNiveauDAcquiDeColonneEvaluation(aColonneId, D) {
-	const lIndex =
-		DonneesListe_ReleveDEvaluations.getIndexDeColonneEvaluation(aColonneId);
-	return D.listeNiveauxDAcquisitions.get(lIndex);
-}
-function _estUneColonneLSL(aColonneId) {
-	return (
-		_estUneColonneLSLJauge(aColonneId) || _estUneColonneLSLNiveau(aColonneId)
-	);
-}
-function _estUneColonneLSLJauge(aColonneId) {
-	return (
-		aColonneId &&
-		aColonneId.indexOf(
-			DonneesListe_ReleveDEvaluations.colonnes.prefixe_LSL_jauge,
-		) === 0
-	);
-}
-function _estUneColonneLSLNiveau(aColonneId) {
-	return (
-		aColonneId &&
-		aColonneId.indexOf(
-			DonneesListe_ReleveDEvaluations.colonnes.prefixe_LSL_niveau,
-		) === 0
-	);
-}
-function _getValeurColonneLSL(aColonneId, D) {
-	let lValeurColonneConcernee;
-	if (D.listeValeursColonnesLSL) {
-		let lPrefixeColonneId;
-		if (_estUneColonneLSLJauge(aColonneId)) {
-			lPrefixeColonneId =
-				DonneesListe_ReleveDEvaluations.colonnes.prefixe_LSL_jauge;
-		} else if (_estUneColonneLSLNiveau(aColonneId)) {
-			lPrefixeColonneId =
-				DonneesListe_ReleveDEvaluations.colonnes.prefixe_LSL_niveau;
-		}
-		if (lPrefixeColonneId) {
-			const lNumeroDeColonne = _getSuffixeDeColonne(
-				aColonneId,
-				lPrefixeColonneId,
-			);
-			D.listeValeursColonnesLSL.parcourir((aValeurColonneLSL) => {
-				if (aValeurColonneLSL.getNumero() === lNumeroDeColonne) {
-					lValeurColonneConcernee = aValeurColonneLSL;
-					return false;
-				}
-			});
-		}
-	}
-	return lValeurColonneConcernee;
-}
-function _getNiveauDeColonneLSL(aColonneId, D) {
-	const lValeurColonneLSL = _getValeurColonneLSL(aColonneId, D);
-	return lValeurColonneLSL ? lValeurColonneLSL.niveau : null;
-}
-function _getAppreciation(aColonneId, D) {
-	let lAppreciation = "";
-	const lObjAppreciation = DonneesListe_ReleveDEvaluations.getObjetAppreciation(
-		aColonneId,
-		D,
-	);
-	if (!!lObjAppreciation && !!lObjAppreciation.valeur) {
-		lAppreciation = lObjAppreciation.valeur;
-	}
-	return lAppreciation;
-}
-function _getValeurColonneEleve(aEleve, aAvecProjetsAccompagnement) {
-	const lHtmlEleve = [];
-	if (!!aEleve) {
-		const lHtmlProjAcc = [];
-		if (aAvecProjetsAccompagnement) {
-			const lHintProjetAcc = !!aEleve.projetsAccompagnement
-				? aEleve.projetsAccompagnement.replace(/\n/g, "<br/>")
-				: "";
-			const lAvecPiecesJointes = !!aEleve.avecDocsProjetsAccompagnement;
-			if (lHintProjetAcc.length > 0 || lAvecPiecesJointes) {
-				let lPropertyEventClic = "";
-				const lClasses = ["AlignementMilieuVertical", "InlineBlock"];
-				if (lAvecPiecesJointes) {
-					lClasses.push("AvecMain");
-					lPropertyEventClic =
-						" ie-event=\"click->surClicPiecesJointesProjAcc('" +
-						aEleve.getNumero() +
-						"')\"";
-				}
-				lHtmlProjAcc.push(
-					"<span ",
-					GHtml.composeAttr("ie-hint", "'" + lHintProjetAcc + "'"),
-					' class="',
-					lClasses.join(" "),
-					'"',
-					lPropertyEventClic,
-					' style="float: right;"><i class="icon_projet_accompagnement Texte12"></i></span>',
-				);
-			}
-		}
-		let lMargeReserveeProjetAcc = 0;
-		if (lHtmlProjAcc.length > 0) {
-			lMargeReserveeProjetAcc = 20;
-		}
-		lHtmlEleve.push(
-			'<span class="AlignementMilieuVertical InlineBlock" style="width: calc(100% - ',
-			lMargeReserveeProjetAcc,
-			'px);">',
-			aEleve.getLibelle(),
-			"</span>",
-		);
-		lHtmlEleve.push(lHtmlProjAcc.join(""));
-	}
-	return lHtmlEleve.join("");
-}
-function _getCacheOrdreNiveauDAcquisition() {
-	const lOrdre = EGenreNiveauDAcquisitionUtil.ordre(),
-		lHash = {};
-	lOrdre.forEach((aEnumere, aIndex) => {
-		lHash[aEnumere] = aIndex;
-	});
-	return lHash;
-}
-function _triNivAcquisition(aCacheOrdreNiveauDAcqui, aNiveauAcqui) {
-	if (!!aNiveauAcqui && !aNiveauAcqui.estImpossible) {
-		const lGenre = aNiveauAcqui.getGenre();
-		return aCacheOrdreNiveauDAcqui[lGenre] === undefined
-			? Number.MAX_VALUE
-			: aCacheOrdreNiveauDAcqui[lGenre];
-	}
-	return Number.MAX_VALUE;
-}
-module.exports = { DonneesListe_ReleveDEvaluations };

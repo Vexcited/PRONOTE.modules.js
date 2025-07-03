@@ -25,11 +25,12 @@ const DonneesListe_PersonnalisationPA_1 = require("DonneesListe_Personnalisation
 const DonneesListe_SelectionElevePersonnalisationPA_1 = require("DonneesListe_SelectionElevePersonnalisationPA");
 const ObjetListe_1 = require("ObjetListe");
 const UtilitaireQCM_1 = require("UtilitaireQCM");
-const tag_1 = require("tag");
 const GUID_1 = require("GUID");
+const AccessApp_1 = require("AccessApp");
+class ObjetRequeteListElevesDExecQCM extends ObjetRequeteJSON_1.ObjetRequeteConsultation {}
 CollectionRequetes_1.Requetes.inscrire(
 	"listElevesDExecQCM",
-	ObjetRequeteJSON_1.ObjetRequeteConsultation,
+	ObjetRequeteListElevesDExecQCM,
 );
 var TypeMelangeQuestions;
 (function (TypeMelangeQuestions) {
@@ -354,10 +355,13 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 											),
 										);
 									}
-									GApplication.getMessage().afficher({
-										type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-										message: lMsg.join("<br />"),
-									});
+									(0, AccessApp_1.getApp)()
+										.getMessage()
+										.afficher({
+											type: Enumere_BoiteMessage_1.EGenreBoiteMessage
+												.Information,
+											message: lMsg.join("<br />"),
+										});
 								} else {
 									aInstance.executionQCM.nombreQuestionsSoumises =
 										aInstance.getNombreQuestionsObligatoires() || 1;
@@ -382,7 +386,7 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 							labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
 								"FenetreParamExecutionQCM.NbQuestions",
 							),
-							labelledById: aInstance.ids.labelNbQuest,
+							ariaLabelledBy: aInstance.ids.labelNbQuest,
 						});
 					},
 					getDonnees() {
@@ -514,7 +518,7 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 							mode: Enumere_Saisie_1.EGenreSaisie.Combo,
 							longueur: 100,
 							avecBouton: true,
-							labelledById: aInstance.ids.labelTypeMelangeQuest,
+							ariaLabelledBy: aInstance.ids.labelTypeMelangeQuest,
 							labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
 								"FenetreParamExecutionQCM.TypeOrdreAleatoire",
 							),
@@ -691,9 +695,9 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 							sansNotePossible: false,
 							min: 1,
 							max: 120,
-							htmlContexte: (0, tag_1.tag)(
+							htmlContexte: IE.jsx.str(
 								"div",
-								{ class: ["Gras"] },
+								{ class: "Gras" },
 								ObjetTraduction_1.GTraductions.getValeur(
 									"FenetreParamExecutionQCM.Minutes",
 								),
@@ -762,7 +766,7 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 							labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
 								"FenetreParamExecutionQCM.nbExecutions",
 							),
-							labelledById: aInstance.ids.labelNbExec,
+							ariaLabelledBy: aInstance.ids.labelNbExec,
 						});
 						const lListe = new ObjetListeElements_1.ObjetListeElements();
 						for (let index = 2; index < 11; index++) {
@@ -1186,9 +1190,9 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 					event() {
 						const lElementControleur =
 							aInstance.getTraductionMrFicheReglesAssouplissement();
-						GApplication.getMessage().afficher({
-							idRessource: lElementControleur.idRessource,
-						});
+						(0, AccessApp_1.getApp)()
+							.getMessage()
+							.afficher({ idRessource: lElementControleur.idRessource });
 					},
 					getTitle: function () {
 						const lElementControleur =
@@ -1297,13 +1301,15 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 			});
 		}
 		if (lAuMoinsUnElevePerdSaPersonnalisationDeQuest) {
-			GApplication.getMessage().afficher({
-				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-				message: ObjetTraduction_1.GTraductions.getValeur(
-					"FenetreParamExecutionQCM.MessagePersonnalisationNonPriseEnCompte",
-				),
-				callback: aFonctionCallback,
-			});
+			(0, AccessApp_1.getApp)()
+				.getMessage()
+				.afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+					message: ObjetTraduction_1.GTraductions.getValeur(
+						"FenetreParamExecutionQCM.MessagePersonnalisationNonPriseEnCompte",
+					),
+					callback: aFonctionCallback,
+				});
 		} else {
 			aFonctionCallback();
 		}
@@ -1351,11 +1357,11 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 		};
 	}
 	_evntSurAjout() {
-		(0, CollectionRequetes_1.Requetes)(
-			"listElevesDExecQCM",
-			this,
-			this.actionApresListeEleves.bind(this),
-		).lancerRequete({ executionQCM: this.executionQCM.toJSONAll() });
+		new ObjetRequeteListElevesDExecQCM(this)
+			.lancerRequete({ executionQCM: this.executionQCM.toJSONAll() })
+			.then((aReponse) => {
+				this.actionApresListeEleves(aReponse);
+			});
 		return true;
 	}
 	estEnModeConsultation() {
@@ -1526,28 +1532,28 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 		const T = [];
 		if (aObj.modeForm) {
 			T.push(
-				(0, tag_1.tag)(
-					"div",
-					{ class: ["field-contain"] },
-					(0, tag_1.tag)(
-						"label",
-						{ class: ["active", "ie-titre-petit"] },
-						aObj.titre,
-					),
-					(0, tag_1.tag)(
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
 						"div",
-						{ class: ["flex-contain", "cols"] },
-						aObj.contenu,
+						{ class: "field-contain" },
+						IE.jsx.str("label", { class: "active ie-titre-petit" }, aObj.titre),
+						IE.jsx.str("div", { class: "flex-contain cols" }, aObj.contenu),
 					),
 				),
 			);
 		} else {
 			T.push(
-				(0, tag_1.tag)(
-					"div",
-					{ class: ["ZoneFieldset"] },
-					(0, tag_1.tag)("div", { class: ["TitreFieldset"] }, aObj.titre),
-					(0, tag_1.tag)("div", { class: ["ContenuFieldset"] }, aObj.contenu),
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
+						"div",
+						{ class: "ZoneFieldset" },
+						IE.jsx.str("div", { class: "TitreFieldset" }, aObj.titre),
+						IE.jsx.str("div", { class: "ContenuFieldset" }, aObj.contenu),
+					),
 				),
 			);
 		}
@@ -1557,10 +1563,14 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 		const T = [];
 		const lClass = aClass !== null && aClass !== undefined ? aClass : [];
 		T.push(
-			(0, tag_1.tag)(
-				"ie-checkbox",
-				{ "ie-model": aNomIEModel, class: lClass },
-				aLibelle,
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"ie-checkbox",
+					{ "ie-model": aNomIEModel, class: lClass },
+					aLibelle,
+				),
 			),
 		);
 		return T.join("");
@@ -1587,10 +1597,14 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 		const T = [];
 		const lClass = aClass !== null && aClass !== undefined ? aClass : [];
 		T.push(
-			(0, tag_1.tag)(
-				"ie-radio",
-				{ name: aNameGroupeRadios, "ie-model": aNomIEModel, class: lClass },
-				aLibelle,
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"ie-radio",
+					{ name: aNameGroupeRadios, "ie-model": aNomIEModel, class: lClass },
+					aLibelle,
+				),
 			),
 		);
 		return T.join("");
@@ -1607,29 +1621,29 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 		return T.join("");
 	}
 	composeContenuModeForm() {
+		const lContenuObjParamExecution = [];
+		if (this.estUneExecution || this.estPourExecution) {
+			if (this.afficherDatesPublication) {
+				lContenuObjParamExecution.push(this.composeDatesPublication(true));
+			}
+			lContenuObjParamExecution.push(this.composeVerrou());
+		}
+		if (this.avecConsigne) {
+			lContenuObjParamExecution.push(this.composeConsigne(true));
+		}
+		lContenuObjParamExecution.push(this.composeFieldDiffusionCorriges());
+		lContenuObjParamExecution.push(this.composeFieldPresentationQuestions());
+		lContenuObjParamExecution.push(this.composeFieldConditionsExecution());
+		if (this.afficherRessentiEleve) {
+			lContenuObjParamExecution.push(this.composeFieldRessentiEleve());
+		}
+		lContenuObjParamExecution.push(this.composeInfoOptionsReduites());
 		const T = [];
 		T.push(
-			(0, tag_1.tag)(
+			IE.jsx.str(
 				"div",
-				{ id: this.Nom, class: ["ObjetParamExecutionQCM"] },
-				(aTab) => {
-					if (this.estUneExecution || this.estPourExecution) {
-						if (this.afficherDatesPublication) {
-							aTab.push(this.composeDatesPublication(true));
-						}
-						aTab.push(this.composeVerrou());
-					}
-					if (this.avecConsigne) {
-						aTab.push(this.composeConsigne(true));
-					}
-					aTab.push(this.composeFieldDiffusionCorriges());
-					aTab.push(this.composeFieldPresentationQuestions());
-					aTab.push(this.composeFieldConditionsExecution());
-					if (this.afficherRessentiEleve) {
-						aTab.push(this.composeFieldRessentiEleve());
-					}
-					aTab.push(this.composeInfoOptionsReduites());
-				},
+				{ id: this.Nom, class: "ObjetParamExecutionQCM" },
+				lContenuObjParamExecution.join(""),
 			),
 		);
 		return T.join("");
@@ -1637,13 +1651,17 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 	composeInfoOptionsReduites() {
 		const T = [];
 		T.push(
-			(0, tag_1.tag)(
-				"div",
-				{ class: ["ie-titre-petit", "m-top-xl"] },
-				"* " +
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"div",
+					{ class: "ie-titre-petit m-top-xl" },
+					"* ",
 					ObjetTraduction_1.GTraductions.getValeur(
 						"FenetreParamExecutionQCM.msgOptionsReduites",
 					),
+				),
 			),
 		);
 		return T.join("");
@@ -1682,10 +1700,14 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 				);
 			}
 			T.push(
-				(0, tag_1.tag)(
-					"div",
-					{ class: ["BlocMessageVerrou"] },
-					lMsgVerrou.join("<br />"),
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
+						"div",
+						{ class: "BlocMessageVerrou" },
+						lMsgVerrou.join("<br />"),
+					),
 				),
 			);
 		}
@@ -1766,10 +1788,14 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 	}
 	composeDatesPublication(aAvecModeForm = false) {
 		let lClass = aAvecModeForm ? ["field-contain"] : [];
-		return (0, tag_1.tag)("div", {
-			id: this.getInstance(this.identDisponibiliteQCM).getNom(),
-			class: lClass,
-		});
+		return IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			IE.jsx.str("div", {
+				id: this.getNomInstance(this.identDisponibiliteQCM),
+				class: lClass,
+			}),
+		);
 	}
 	composeModeQuestionnaire() {
 		const T = [];
@@ -1834,7 +1860,7 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 			}
 			if (lOnAfficheOptionCartoucheInformatif) {
 				T.push(
-					'<div class"OptionParamExecution">',
+					'<div class="OptionParamExecution">',
 					this.composeIECheckbox(
 						"Resultats.cbAfficherResultatNiveauxMaitrise",
 						ObjetTraduction_1.GTraductions.getValeur(
@@ -1845,7 +1871,7 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 				);
 			}
 			T.push(
-				'<div class"OptionParamExecution">',
+				'<div class="OptionParamExecution">',
 				this.composeIECheckbox(
 					"Resultats.cbAfficherResultatNote",
 					ObjetTraduction_1.GTraductions.getValeur(
@@ -1865,11 +1891,15 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 	composeConsigne(aAvecModeForm = false) {
 		const T = [];
 		T.push(
-			(0, tag_1.tag)("div", {
-				class: ["ObjetParamExecutionQCM_Editeur"],
-				id: this.editeur.getNom(),
-				"ie-node": "Consigne.nodeEditeur",
-			}),
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str("div", {
+					class: "ObjetParamExecutionQCM_Editeur",
+					id: this.editeur.getNom(),
+					"ie-node": "Consigne.nodeEditeur",
+				}),
+			),
 		);
 		return this.composeFieldset({
 			titre: ObjetTraduction_1.GTraductions.getValeur("QCM_Divers.Consigne"),
@@ -1935,11 +1965,11 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 				}),
 			);
 			T.push(
-				(0, tag_1.tag)("div", {
+				IE.jsx.str("div", {
 					id: this.idateCorrige.getNom(),
 					"ie-if": "DiffusionCorrige.avecSelecteurDate",
 					"ie-node": "DiffusionCorrige.getNodeSelecDate",
-					class: ["self-end m-top-l"],
+					class: "self-end m-top-l",
 				}),
 			);
 		}
@@ -2056,7 +2086,7 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 		T.push(
 			'<span class="iecb-texte-disabled">',
 			ObjetTraduction_1.GTraductions.getValeur(
-				"FenetreParamExecutionQCM.QuestionsPrisesAuHasard",
+				"FenetreParamExecutionQCM.TQuestionsPrisesAuHasard",
 			),
 			"</span>",
 		);
@@ -2138,26 +2168,28 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 	composeFieldConditionsExecution() {
 		const T = [];
 		T.push(
-			(0, tag_1.tag)(
-				"ie-switch",
-				{ "ie-model": "ConditionsExecution.cbLimiterTempsReponse" },
-				ObjetTraduction_1.GTraductions.getValeur(
-					"FenetreParamExecutionQCM.LimiterTempsReponse",
-				),
-			),
-		);
-		T.push(
-			(0, tag_1.tag)(
-				"div",
-				{ class: ["flex-contain", "self-end", "m-top-xl", "taille-m"] },
-				(0, tag_1.tag)("ie-inputnote", {
-					"ie-model": "ConditionsExecution.inputDureeMax",
-				}),
-				(0, tag_1.tag)(
-					"span",
-					{ class: ["m-left-l"] },
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"ie-switch",
+					{ "ie-model": "ConditionsExecution.cbLimiterTempsReponse" },
 					ObjetTraduction_1.GTraductions.getValeur(
-						"FenetreParamExecutionQCM.Minutes",
+						"FenetreParamExecutionQCM.LimiterTempsReponse",
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "flex-contain self-end m-top-xl taille-m" },
+					IE.jsx.str("ie-inputnote", {
+						"ie-model": "ConditionsExecution.inputDureeMax",
+					}),
+					IE.jsx.str(
+						"span",
+						{ class: "m-left-l" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreParamExecutionQCM.Minutes",
+						),
 					),
 				),
 			),
@@ -2172,14 +2204,39 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 	}
 	composeConditionsExecution() {
 		const T = [];
+		const lIdMinutes = GUID_1.GUID.getId();
 		T.push(
-			'<div class="OptionParamExecution">',
-			this.composeIECheckbox(
-				"ConditionsExecution.cbLimiterTempsReponse",
-				`<span>${ObjetTraduction_1.GTraductions.getValeur("FenetreParamExecutionQCM.LimiterTempsQuestionnaire")}</span>\n                                                                        <ie-inputnote ie-model="ConditionsExecution.inputDureeMax" class="InputDureeMax round-style m-left"></ie-inputnote>\n                                                                        <span class="iecb-texte-disabled m-left">${ObjetTraduction_1.GTraductions.getValeur("FenetreParamExecutionQCM.Minutes")}</span>`,
+			IE.jsx.str(
+				"div",
+				{ class: "OptionParamExecution" },
+				IE.jsx.str(
+					"ie-checkbox",
+					{ "ie-model": "ConditionsExecution.cbLimiterTempsReponse" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"FenetreParamExecutionQCM.LimiterTempsReponse",
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "flex-contain self-end taille-m" },
+					IE.jsx.str("ie-inputnote", {
+						class: "InputDureeMax m-left",
+						"ie-model": "ConditionsExecution.inputDureeMax",
+						"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreParamExecutionQCM.LimiterTempsQuestionnaire",
+						),
+						"aria-describedby": lIdMinutes,
+					}),
+					IE.jsx.str(
+						"span",
+						{ id: lIdMinutes, class: "m-left-l m-top" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreParamExecutionQCM.Minutes",
+						),
+					),
+				),
 			),
 		);
-		T.push("</div>");
 		if (this.avecMultipleExecutions) {
 			T.push(
 				'<div class="OptionParamExecution">',
@@ -2191,14 +2248,19 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 				),
 			);
 			T.push(
-				'<ie-combo ie-model="ConditionsExecution.comboNbExecutions" class="NbQuestionsAEnlever"></ie-combo>',
+				IE.jsx.str("ie-combo", {
+					"ie-model": "ConditionsExecution.comboNbExecutions",
+					class: "NbQuestionsAEnlever",
+				}),
 			);
 			T.push(
-				'<span class="iecb-texte-disabled">',
-				ObjetTraduction_1.GTraductions.getValeur(
-					"FenetreParamExecutionQCM.NbMaxTentative2",
+				IE.jsx.str(
+					"span",
+					{ class: "iecb-texte-disabled" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"FenetreParamExecutionQCM.NbMaxTentative2",
+					),
 				),
-				"</span>",
 			);
 			T.push("</div>");
 		}
@@ -2225,102 +2287,129 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 	}
 	composePersonnalisationPAQCM() {
 		const T = [];
+		const lIdTempsSupp = GUID_1.GUID.getId();
 		T.push(
-			'<div class="OptionParamExecution">',
-			this.composeIECheckbox(
-				"PersonnalisationPA.QCM.cbTempsSupplementaire",
-				ObjetTraduction_1.GTraductions.getValeur(
-					"FenetreParamExecutionQCM.DonnerTempsSupplementaire",
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"div",
+					{ class: "OptionParamExecution" },
+					this.composeIECheckbox(
+						"PersonnalisationPA.QCM.cbTempsSupplementaire",
+						ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreParamExecutionQCM.DonnerTempsSupplementaire",
+						),
+					),
+					IE.jsx.str("ie-inputnote", {
+						"ie-model": "PersonnalisationPA.QCM.inputTempsSupplementaire",
+						"aria-labelledby": lIdTempsSupp,
+						style: "width:30px;",
+					}),
+					IE.jsx.str(
+						"span",
+						{ id: lIdTempsSupp, class: "iecb-texte-disabled" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreParamExecutionQCM.minutesTempsSupplementaire",
+						),
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "OptionParamExecution" },
+					this.composeIECheckbox(
+						"PersonnalisationPA.QCM.cbEnleverQuestions",
+						ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreParamExecutionQCM.EnleverQuestions",
+						),
+					),
+					IE.jsx.str("ie-combo", {
+						"ie-model": "PersonnalisationPA.QCM.comboNbQuestionsAEnlever",
+						class: "NbQuestionsAEnlever",
+					}),
+					IE.jsx.str(
+						"span",
+						{ class: "iecb-texte-disabled" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreParamExecutionQCM.nbQuestionsAleatoirement",
+						),
+					),
 				),
 			),
 		);
-		T.push(
-			'<ie-inputnote ie-model="PersonnalisationPA.QCM.inputTempsSupplementaire" style="width:30px;" class="round-style"></ie-inputnote>',
-		);
-		T.push(
-			'<span class="iecb-texte-disabled">',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"FenetreParamExecutionQCM.minutesTempsSupplementaire",
-			),
-			"</span>",
-		);
-		T.push("</div>");
-		T.push(
-			'<div class="OptionParamExecution">',
-			this.composeIECheckbox(
-				"PersonnalisationPA.QCM.cbEnleverQuestions",
-				ObjetTraduction_1.GTraductions.getValeur(
-					"FenetreParamExecutionQCM.EnleverQuestions",
-				),
-			),
-		);
-		T.push(
-			'<ie-combo ie-model="PersonnalisationPA.QCM.comboNbQuestionsAEnlever" class="NbQuestionsAEnlever"></ie-combo>',
-		);
-		T.push(
-			'<span class="iecb-texte-disabled">',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"FenetreParamExecutionQCM.nbQuestionsAleatoirement",
-			),
-			"</span>",
-		);
-		T.push("</div>");
 		return T.join("");
 	}
 	composePersonnalisationPAExecutionQCM() {
 		const T = [];
 		T.push(
-			(0, tag_1.tag)("ie-bouton", {
-				"ie-model": "PersonnalisationPA.ExecutionQCM.btnPersonnalisation",
-				"ie-icon": "icon_star",
-			}),
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str("ie-bouton", {
+					"ie-model": "PersonnalisationPA.ExecutionQCM.btnPersonnalisation",
+					"ie-icon": "icon_star",
+				}),
+			),
 		);
 		return T.join("");
 	}
 	composeAssouplissement() {
 		const T = [];
 		T.push(
-			'<div class="OptionParamExecution">',
-			this.composeIECheckbox(
-				"Assouplissement.cbPointsSelonPourcentage",
-				ObjetTraduction_1.GTraductions.getValeur(
-					"FenetreParamExecutionQCM.attribuerPointsSelonPourcentage",
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"div",
+					{ class: "OptionParamExecution" },
+					this.composeIECheckbox(
+						"Assouplissement.cbPointsSelonPourcentage",
+						ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreParamExecutionQCM.attribuerPointsSelonPourcentage",
+						),
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "OptionParamExecution" },
+					IE.jsx.str(
+						"span",
+						null,
+						ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreParamExecutionQCM.Assouplissement",
+						),
+					),
+					IE.jsx.str("ie-btnicon", {
+						"ie-model": "Assouplissement.mrFicheReglesAssouplissement",
+						class: "icon_question bt-activable",
+					}),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "ContenuAvecDecalage" },
+					IE.jsx.str(
+						"div",
+						{ class: "OptionParamExecution" },
+						this.composeIECheckbox(
+							"Assouplissement.cbAccepterIncomplet",
+							ObjetTraduction_1.GTraductions.getValeur(
+								"FenetreParamExecutionQCM.tolererIncomplet",
+							),
+						),
+					),
+					IE.jsx.str(
+						"div",
+						{ class: "OptionParamExecution" },
+						this.composeIECheckbox(
+							"Assouplissement.cbTolererFausses",
+							ObjetTraduction_1.GTraductions.getValeur(
+								"FenetreParamExecutionQCM.tolererFausses",
+							),
+						),
+					),
 				),
 			),
-			"</div>",
 		);
-		T.push(
-			'<div class="OptionParamExecution">',
-			"<span>",
-			ObjetTraduction_1.GTraductions.getValeur(
-				"FenetreParamExecutionQCM.Assouplissement",
-			),
-			"</span>",
-			'<ie-btnicon ie-model="Assouplissement.mrFicheReglesAssouplissement" class="icon_question bt-activable"></ie-btnicon>',
-			"</div>",
-		);
-		T.push('<div class="ContenuAvecDecalage">');
-		T.push(
-			'<div class="OptionParamExecution">',
-			this.composeIECheckbox(
-				"Assouplissement.cbAccepterIncomplet",
-				ObjetTraduction_1.GTraductions.getValeur(
-					"FenetreParamExecutionQCM.tolererIncomplet",
-				),
-			),
-			"</div>",
-		);
-		T.push(
-			'<div class="OptionParamExecution">',
-			this.composeIECheckbox(
-				"Assouplissement.cbTolererFausses",
-				ObjetTraduction_1.GTraductions.getValeur(
-					"FenetreParamExecutionQCM.tolererFausses",
-				),
-			),
-			"</div>",
-		);
-		T.push("</div>");
 		return this.composeFieldset({
 			titre: ObjetTraduction_1.GTraductions.getValeur(
 				"FenetreParamExecutionQCM.ReglesPourCorrection",
@@ -2480,8 +2569,8 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 							boutons: [],
 						},
 						avecLigneCreation: false,
-						callbckFiltre: function (aValeurFiltre, aInstance) {
-							aInstance.verifierVisibiliteEleves(
+						callbckFiltre: (aValeurFiltre, aInstance) => {
+							this.verifierVisibiliteEleves(
 								lListeElevesPourSelection,
 								aValeurFiltre,
 							);

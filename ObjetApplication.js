@@ -10,8 +10,8 @@ const DeferLoadingScript_1 = require("DeferLoadingScript");
 const ObjetMessageInformatif_1 = require("ObjetMessageInformatif");
 const IEZoneFenetre_1 = require("IEZoneFenetre");
 const ObjetMessage_1 = require("ObjetMessage");
-Promise.resolve().then(() => require("pep.min.js"));
-global.GApplication = null;
+require("pep.min");
+global.GCouleur = undefined;
 let uEstDebug = false;
 class ObjetApplication {
 	constructor() {
@@ -63,6 +63,9 @@ class ObjetApplication {
 	}
 	getModeExclusif() {
 		return false;
+	}
+	getCouleur() {
+		return global.GCouleur;
 	}
 }
 exports.ObjetApplication = ObjetApplication;

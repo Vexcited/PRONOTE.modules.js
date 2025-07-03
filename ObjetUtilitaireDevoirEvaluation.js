@@ -1,36 +1,40 @@
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GDate } = require("ObjetDate.js");
+exports.ObjetUtilitaireDevoirEvaluation = void 0;
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetDate_1 = require("ObjetDate");
 const ObjetUtilitaireDevoirEvaluation = {
 	getProchaineDateOuvreePourPublication(aDateDevoirOuEvaluation) {
+		const lParametresSco = GParametres;
 		let lDate = new Date(aDateDevoirOuEvaluation.getTime());
 		let lJourDecalage =
-			GParametres.nbJDecalageDatePublicationParDefautDevoirEval;
-		if (!MethodesObjet.isNumber(lJourDecalage)) {
+			lParametresSco.nbJDecalageDatePublicationParDefautDevoirEval;
+		if (!MethodesObjet_1.MethodesObjet.isNumber(lJourDecalage)) {
 			lJourDecalage = 1;
 		}
 		if (lJourDecalage !== 0) {
 			const lNbJoursAbsolu = Math.abs(lJourDecalage);
-			lDate = GDate.getJourSuivant(lDate, lNbJoursAbsolu);
+			lDate = ObjetDate_1.GDate.getJourSuivant(lDate, lNbJoursAbsolu);
 			const lPas = lJourDecalage < 0 ? -1 : 1;
 			while (
-				!GDate.estUnJourOuvre(lDate) ||
-				(_estUnJourFerie(lDate) && lDate < GDate.derniereDate)
+				!ObjetDate_1.GDate.estUnJourOuvre(lDate) ||
+				(_estUnJourFerie(lDate) && lDate < ObjetDate_1.GDate.derniereDate)
 			) {
-				lDate = GDate.getJourSuivant(lDate, lPas);
+				lDate = ObjetDate_1.GDate.getJourSuivant(lDate, lPas);
 			}
 		}
 		return lDate;
 	},
 };
+exports.ObjetUtilitaireDevoirEvaluation = ObjetUtilitaireDevoirEvaluation;
 function _estUnJourFerie(aDate) {
+	const lParametresSco = GParametres;
 	let lEstJourFerie = false;
-	if (GParametres.listeJoursFeries) {
-		for (const lPeriodeFeriee of GParametres.listeJoursFeries) {
+	if (lParametresSco.listeJoursFeries) {
+		for (const lPeriodeFeriee of lParametresSco.listeJoursFeries) {
 			if (
 				lPeriodeFeriee &&
 				lPeriodeFeriee.dateDebut &&
 				lPeriodeFeriee.dateFin &&
-				GDate.dateEntreLesDates(
+				ObjetDate_1.GDate.dateEntreLesDates(
 					aDate,
 					lPeriodeFeriee.dateDebut,
 					lPeriodeFeriee.dateFin,
@@ -43,4 +47,3 @@ function _estUnJourFerie(aDate) {
 	}
 	return lEstJourFerie;
 }
-module.exports = { ObjetUtilitaireDevoirEvaluation };

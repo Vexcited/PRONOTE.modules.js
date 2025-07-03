@@ -1,20 +1,18 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-class ObjetRequetePageAppreciationFinDeStage extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequetePageAppreciationFinDeStage = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+class ObjetRequetePageAppreciationFinDeStage extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	actionApresRequete() {
 		const lStage = this.JSONReponse.stage ? this.JSONReponse.stage : null;
 		if (!!lStage) {
-			lStage.appreciations = new ObjetListeElements();
+			lStage.appreciations = new ObjetListeElements_1.ObjetListeElements();
 			lStage.maitreDeStage.parcourir((aMaitreDeStage) => {
-				const lElmAppreciation = new ObjetElement(
+				const lElmAppreciation = new ObjetElement_1.ObjetElement(
 					aMaitreDeStage.Libelle,
 					aMaitreDeStage.Numero,
 					aMaitreDeStage.Genre,
@@ -25,8 +23,8 @@ class ObjetRequetePageAppreciationFinDeStage extends ObjetRequeteConsultation {
 				lStage.appreciations.addElement(lElmAppreciation);
 			});
 			if (lStage.listeResponsables) {
-				const lRespProf = new ObjetElement(
-					GTraductions.getValeur("Professeurs"),
+				const lRespProf = new ObjetElement_1.ObjetElement(
+					ObjetTraduction_1.GTraductions.getValeur("Professeurs"),
 					-1,
 					-1,
 					1,
@@ -34,8 +32,8 @@ class ObjetRequetePageAppreciationFinDeStage extends ObjetRequeteConsultation {
 				lRespProf.estProfFiltrable = true;
 				lRespProf.estUnDeploiement = true;
 				lRespProf.estDeploye = true;
-				const lRespPers = new ObjetElement(
-					GTraductions.getValeur("Personnels"),
+				const lRespPers = new ObjetElement_1.ObjetElement(
+					ObjetTraduction_1.GTraductions.getValeur("Personnels"),
 					-1,
 					-1,
 					3,
@@ -45,10 +43,14 @@ class ObjetRequetePageAppreciationFinDeStage extends ObjetRequeteConsultation {
 				lRespPers.estDeploye = true;
 				let lIndicePremierPersonnel = 0;
 				lStage.listeResponsables.parcourir((aResp, aIndice) => {
-					if (aResp.getGenre() === EGenreRessource.Enseignant) {
+					if (
+						aResp.getGenre() === Enumere_Ressource_1.EGenreRessource.Enseignant
+					) {
 						aResp.pere = lRespProf;
 						aResp.estProf = true;
-					} else if (aResp.getGenre() === EGenreRessource.Personnel) {
+					} else if (
+						aResp.getGenre() === Enumere_Ressource_1.EGenreRessource.Personnel
+					) {
 						aResp.pere = lRespPers;
 						aResp.estPersonnel = true;
 						if (lIndicePremierPersonnel === 0) {
@@ -64,46 +66,52 @@ class ObjetRequetePageAppreciationFinDeStage extends ObjetRequeteConsultation {
 				);
 				lStage.listeResponsables.insererElement(lRespProf, 0);
 				lStage.listeResponsables.insererElement(
-					new ObjetElement(GTraductions.getValeur("Aucun"), 0, -1, 0),
+					new ObjetElement_1.ObjetElement(
+						ObjetTraduction_1.GTraductions.getValeur("Aucun"),
+						0,
+						-1,
+						0,
+					),
 					0,
 				);
 				lStage.respAdminCBFiltrage = {
-					cbProfEquipePeda: GTraductions.getValeur(
+					cbProfEquipePeda: ObjetTraduction_1.GTraductions.getValeur(
 						"FicheStage.fenetreRespAdmin.cbProfEquipePeda",
 					),
-					cbPersConcernes: GTraductions.getValeur(
+					cbPersConcernes: ObjetTraduction_1.GTraductions.getValeur(
 						"FicheStage.fenetreRespAdmin.cbPersConcernes",
 					),
 				};
 			}
 			lStage.maitreDeStage.trier();
-			lStage.professeur.parcourir((aProfesseur) => {
-				const lElmAppreciation = new ObjetElement(
-					aProfesseur.Libelle,
-					aProfesseur.Numero,
-					aProfesseur.Genre,
+			lStage.referents.parcourir((aReferent) => {
+				const lElmAppreciation = new ObjetElement_1.ObjetElement(
+					aReferent.Libelle,
+					aReferent.Numero,
+					aReferent.Genre,
 				);
 				lElmAppreciation.avecEditionAppreciation =
-					aProfesseur.avecEditionAppreciation;
-				lElmAppreciation.appreciation = aProfesseur.appreciation;
+					aReferent.avecEditionAppreciation;
+				lElmAppreciation.appreciation = aReferent.appreciation;
 				lStage.appreciations.addElement(lElmAppreciation);
 			});
-			lStage.professeur.trier();
+			lStage.referents.trier();
 			lStage.suiviStage.setTri([
-				ObjetTri.init("date"),
-				ObjetTri.init("Libelle"),
-				ObjetTri.init("Numero"),
+				ObjetTri_1.ObjetTri.init("date"),
+				ObjetTri_1.ObjetTri.init("Libelle"),
+				ObjetTri_1.ObjetTri.init("Numero"),
 			]);
 			lStage.suiviStage.trier();
 		}
 		const lListePJEleve = this.JSONReponse.listeDJEleve
 			? this.JSONReponse.listeDJEleve
-			: new ObjetListeElements();
+			: new ObjetListeElements_1.ObjetListeElements();
 		this.callbackReussite.appel({ stage: lStage, listePJEleve: lListePJEleve });
 	}
 }
-Requetes.inscrire(
+exports.ObjetRequetePageAppreciationFinDeStage =
+	ObjetRequetePageAppreciationFinDeStage;
+CollectionRequetes_1.Requetes.inscrire(
 	"PageAppreciationFinDeStage",
 	ObjetRequetePageAppreciationFinDeStage,
 );
-module.exports = { ObjetRequetePageAppreciationFinDeStage };

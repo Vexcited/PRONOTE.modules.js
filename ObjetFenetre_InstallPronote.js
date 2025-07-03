@@ -9,9 +9,9 @@ class ObjetFenetre_InstallPronote extends ObjetFenetre_1.ObjetFenetre {
 		this.designationClient = aDesignationClient;
 	}
 	composeContenu() {
-		const T = [];
-		T.push('<ol class="Texte10">');
-		T.push(
+		const H = [];
+		H.push('<ol class="Texte10">');
+		H.push(
 			"<li>" +
 				'<a class="Texte10 Gras" href="' +
 				this.urlInstClient +
@@ -25,7 +25,7 @@ class ObjetFenetre_InstallPronote extends ObjetFenetre_1.ObjetFenetre {
 				"</li>",
 		);
 		if (this.urlParamClient) {
-			T.push(
+			H.push(
 				'<li class="EspaceHaut">' +
 					'<a class="Texte10 Gras" href="' +
 					this.urlParamClient +
@@ -38,7 +38,7 @@ class ObjetFenetre_InstallPronote extends ObjetFenetre_1.ObjetFenetre {
 					) +
 					"</li>",
 			);
-			T.push(
+			H.push(
 				'<li class="EspaceHaut">' +
 					ObjetChaine_1.GChaine.format(
 						ObjetTraduction_1.GTraductions.getValeur("InstallPronote.Cliquer"),
@@ -47,7 +47,7 @@ class ObjetFenetre_InstallPronote extends ObjetFenetre_1.ObjetFenetre {
 					"</li>",
 			);
 		} else {
-			T.push(
+			H.push(
 				'<li class="EspaceHaut">' +
 					ObjetChaine_1.GChaine.replaceRCToHTML(
 						ObjetTraduction_1.GTraductions.getValeur(
@@ -57,8 +57,8 @@ class ObjetFenetre_InstallPronote extends ObjetFenetre_1.ObjetFenetre {
 					"</li>",
 			);
 		}
-		T.push("</ol>");
-		return T.join("");
+		H.push("</ol>");
+		return H.join("");
 	}
 }
 exports.ObjetFenetre_InstallPronote = ObjetFenetre_InstallPronote;

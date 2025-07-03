@@ -1,22 +1,20 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetElement } = require("ObjetElement.js");
-class ObjetRequeteQCMPourCDT_InfosCours extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteQCMPourCDT_InfosCours = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetElement_1 = require("ObjetElement");
+class ObjetRequeteQCMPourCDT_InfosCours extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aParam) {
 		this.JSON = {
-			cours: new ObjetElement(),
+			cours: new ObjetElement_1.ObjetElement(),
 			numeroCycle: 0,
 			avecJoursPresence: true,
 		};
 		$.extend(this.JSON, aParam);
 		return this.appelAsynchrone();
 	}
-	actionApresRequete() {
-		this.callbackReussite.appel(this.JSONReponse);
-	}
 }
-Requetes.inscrire("QCMPourCDT_InfosCours", ObjetRequeteQCMPourCDT_InfosCours);
-module.exports = { ObjetRequeteQCMPourCDT_InfosCours };
+exports.ObjetRequeteQCMPourCDT_InfosCours = ObjetRequeteQCMPourCDT_InfosCours;
+CollectionRequetes_1.Requetes.inscrire(
+	"QCMPourCDT_InfosCours",
+	ObjetRequeteQCMPourCDT_InfosCours,
+);

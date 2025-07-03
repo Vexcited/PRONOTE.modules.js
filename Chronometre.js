@@ -1,6 +1,8 @@
 exports.Chronometre = void 0;
 class Chronometre {
 	constructor() {
+		this.dateChrono = 0;
+		this.valeur = 0;
 		this.reset();
 		this.actif = true;
 	}

@@ -4,6 +4,7 @@ const ObjetTraduction_1 = require("ObjetTraduction");
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
 const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
 const Enumere_Action_1 = require("Enumere_Action");
+const ObjetTri_1 = require("ObjetTri");
 class DonneesListe_Blogs extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees) {
 		super(aDonnees);
@@ -32,11 +33,11 @@ class DonneesListe_Blogs extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListe
 		return lAvecBtnActionLigne;
 	}
 	getTri(aColonneDeTri, aGenreTri) {
-		const lTris = [];
-		lTris.push((D) => {
-			return D.existeNumero();
-		});
-		return lTris;
+		return [
+			ObjetTri_1.ObjetTri.init((D) => {
+				return D.existeNumero();
+			}),
+		];
 	}
 	initialisationObjetContextuel(aParametres) {
 		if (!aParametres.menuContextuel || !aParametres.article) {

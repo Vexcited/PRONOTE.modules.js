@@ -5,6 +5,7 @@ const Enumere_Onglet_1 = require("Enumere_Onglet");
 const TypeHttpNotificationDonnes_1 = require("TypeHttpNotificationDonnes");
 const UtilitaireRequetesCloud_1 = require("UtilitaireRequetesCloud");
 const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const TypesRequeteJSON_1 = require("TypesRequeteJSON");
 ObjetRequeteJSON_1.ObjetRequeteJSON.declarerModules({
 	initialiser: function (aFuncInitSignature) {
 		if (global.GEtatUtilisateur && GEtatUtilisateur.Identification) {
@@ -38,7 +39,7 @@ ObjetRequeteJSON_1.ObjetRequeteJSON.declarerModules({
 	deserialiserPolling: function (aJSONSignature, aJSONRacine) {
 		Object.assign(
 			aJSONSignature,
-			aJSONRacine[ObjetRequeteJSON_1.c_constantesJSON.Donnees],
+			aJSONRacine[TypesRequeteJSON_1.ConstantesJSON.Donnees],
 		);
 		_deserialisationSignature(aJSONSignature);
 	},

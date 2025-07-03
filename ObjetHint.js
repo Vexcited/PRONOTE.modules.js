@@ -6,7 +6,8 @@ const MethodesTableau_1 = require("MethodesTableau");
 const ObjetHtml_1 = require("ObjetHtml");
 const ObjetPosition_1 = require("ObjetPosition");
 const ObjetSupport_1 = require("ObjetSupport");
-const tag_1 = require("tag");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const AccessApp_1 = require("AccessApp");
 let uTimeoutFondu = null;
 const uIdConteneur = GUID_1.GUID.getId();
 const uIdScroll = uIdConteneur + "_scroll";
@@ -33,7 +34,7 @@ const ObjetHint = {
 		sansDelaiFermetureSuppression: false,
 	},
 	getDisabled() {
-		return !global.GNavigateur;
+		return !ObjetNavigateur_1.Navigateur;
 	},
 	start(aContenu, aOptions) {
 		if (ObjetHint.getDisabled()) {
@@ -115,7 +116,8 @@ const ObjetHint = {
 			lContenu = aParam.contenu,
 			lInterrupt = aParam.interrupt,
 			lMargeDeplacementTouch = 50,
-			lIdentEventsTouch = GNavigateur.getEventInvocateur("pointermove");
+			lIdentEventsTouch =
+				ObjetNavigateur_1.Navigateur.getEventInvocateur("pointermove");
 		let lHint;
 		let lTimeoutTouch;
 		const lStop = function () {
@@ -412,7 +414,9 @@ function _afficher(aContenu, aHint) {
 					'<div id="' + uIdConteneur + '" class="ie-hint"></div>',
 				);
 				ObjetHtml_1.GHtml.insererElementDOM(
-					ObjetHtml_1.GHtml.getElement(GApplication.getIdConteneur()),
+					ObjetHtml_1.GHtml.getElement(
+						(0, AccessApp_1.getApp)().getIdConteneur(),
+					),
 					lConteneur,
 				);
 			}
@@ -424,7 +428,10 @@ function _afficher(aContenu, aHint) {
 				);
 			}
 			const lPosition = Object.assign(
-					{ y: GNavigateur.pointerY, x: GNavigateur.pointerX },
+					{
+						y: ObjetNavigateur_1.Navigateur.pointerY,
+						x: ObjetNavigateur_1.Navigateur.pointerX,
+					},
 					lPositionEvent,
 					aHint.position,
 				),
@@ -455,18 +462,19 @@ function _afficher(aContenu, aHint) {
 		});
 }
 function compose(aContenu, aHint) {
-	return (0, tag_1.tag)(
+	return IE.jsx.str(
 		"div",
 		{
 			id: uIdScroll,
 			tabindex: "-1",
 			class: "ie-hint-cont",
-			style: `max-height:${Math.min(aHint.maxHeight, GNavigateur.ecranL)}px; max-width:${Math.min(aHint.maxWidth, GNavigateur.ecranH)}px;`,
+			style: `max-height:${Math.min(aHint.maxHeight, ObjetNavigateur_1.Navigateur.ecranL)}px; max-width:${Math.min(aHint.maxWidth, ObjetNavigateur_1.Navigateur.ecranH)}px;`,
 		},
-		(0, tag_1.tag)("div", aContenu),
+		IE.jsx.str("div", null, aContenu),
 	);
 }
 function _avecTitleDansEventHint(aHint) {
+	var _a;
 	if (
 		!aHint ||
 		!aHint.event ||
@@ -478,14 +486,27 @@ function _avecTitleDansEventHint(aHint) {
 	}
 	let lResult = false;
 	const lDOMTarget = aHint.event.target;
-	if ($(lDOMTarget).prop("title").length > 0) {
+	if (
+		(_a =
+			lDOMTarget === null || lDOMTarget === void 0
+				? void 0
+				: lDOMTarget.hasAttribute) === null || _a === void 0
+			? void 0
+			: _a.call(lDOMTarget, "title")
+	) {
 		lResult = true;
 	}
 	if (!lResult) {
 		$(lDOMTarget)
 			.parentsUntil(aHint.elementDOM)
 			.each((aIndex, aElement) => {
-				if (!lResult && $(aElement).prop("title").length > 0) {
+				var _a;
+				if (
+					!lResult &&
+					((_a = aElement.hasAttribute) === null || _a === void 0
+						? void 0
+						: _a.call(aElement, "title"))
+				) {
 					lResult = true;
 				}
 			});

@@ -4,6 +4,7 @@ const ObjetHtml_1 = require("ObjetHtml");
 const ObjetIdentite_1 = require("ObjetIdentite");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetDonneesCentraleNotifications_1 = require("ObjetDonneesCentraleNotifications");
+const AccessApp_1 = require("AccessApp");
 var EGenreCommandeMobile;
 (function (EGenreCommandeMobile) {
 	EGenreCommandeMobile[(EGenreCommandeMobile["SeDeconnecter"] = 0)] =
@@ -69,36 +70,54 @@ class _ObjetEnteteMobile extends ObjetIdentite_1.Identite {
 		lDivPhoto.push("</div>");
 		lHTML.push(
 			"<nav>",
-			'<div class="nav-wrapper main-header">',
+			'<div class="nav-wrapper main-header disable-dark-mode">',
 			'<div class="header-gauche" ie-node="getNodeTitre">',
 			lDivPhoto.join(""),
 			"</div>",
 			'<div class="header-droit">',
-			'<div class="infos-container" tabindex="0" role="heading" id="',
-			this.idTitre,
-			'"></div>',
+			IE.jsx.str("div", {
+				class: "infos-container",
+				tabindex: "0",
+				role: "heading",
+				"aria-level": "1",
+				id: this.idTitre,
+			}),
 			'<ul class="btn-container disable-dark-mode">',
-			'<li id="' + this.idValider + '">',
-			'<a class="btn-menu icon_ok" role="button" onclick="' +
-				this.Nom +
-				".surClickBouton(" +
-				EGenreCommandeMobile.Valider +
-				')" aria-label="',
-			ObjetTraduction_1.GTraductions.getValeur("Commande.Validation.Actif"),
-			'"></a>',
-			"</li>",
+			IE.jsx.str(
+				"li",
+				{ id: this.idValider },
+				IE.jsx.str("a", {
+					class: "btn-menu icon_ok",
+					tabindex: "0",
+					role: "button",
+					"ie-node": this.surClickBouton.bind(
+						this,
+						EGenreCommandeMobile.Valider,
+					),
+					"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+						"Commande.Validation.Actif",
+					),
+				}),
+			),
 		);
 		if (GEtatUtilisateur.avecPageAccueil()) {
 			lHTML.push(
-				'<li id="' + this.idPageAccueil + '">',
-				'<a onclick="' +
-					this.Nom +
-					".surClickBouton(" +
-					EGenreCommandeMobile.Accueil +
-					')" class="btn-menu icon_home" aria-label="',
-				ObjetTraduction_1.GTraductions.getValeur("Commande.Accueil.Actif"),
-				'"></a>',
-				"</li>",
+				IE.jsx.str(
+					"li",
+					{ id: this.idPageAccueil },
+					IE.jsx.str("a", {
+						role: "button",
+						tabindex: "0",
+						"ie-node": this.surClickBouton.bind(
+							this,
+							EGenreCommandeMobile.Accueil,
+						),
+						class: "btn-menu icon_home",
+						"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+							"Commande.Accueil.Actif",
+						),
+					}),
+				),
 			);
 		}
 		if (!!this.idPanel) {
@@ -108,20 +127,25 @@ class _ObjetEnteteMobile extends ObjetIdentite_1.Identite {
 					: "";
 			const lNbNotifs = this._getNbNotifs();
 			lHTML.push(
-				'<li id="',
-				this.idMenuOnglets,
-				'">',
-				'<a class="btn-menu icon_menu_burger" id="' +
-					this.idLienMenuOnglets +
-					'" role="button" onclick="' +
-					this.Nom +
-					".surClickBouton(" +
-					EGenreCommandeMobile.MenuOnglets +
-					')" aria-label="',
-				!!libelleBtnMenuOnglets ? libelleBtnMenuOnglets : "",
-				'">',
-				lNbNotifs > 0 ? this._getHtmlNotifs(lNbNotifs) : "",
-				"</a></li>",
+				IE.jsx.str(
+					"li",
+					{ id: this.idMenuOnglets },
+					IE.jsx.str(
+						"a",
+						{
+							class: "btn-menu icon_menu_burger",
+							id: this.idLienMenuOnglets,
+							role: "button",
+							tabindex: "0",
+							"ie-node": this.surClickBouton.bind(
+								this,
+								EGenreCommandeMobile.MenuOnglets,
+							),
+							"aria-label": libelleBtnMenuOnglets || "",
+						},
+						lNbNotifs > 0 ? this._getHtmlNotifs(lNbNotifs) : "",
+					),
+				),
 			);
 		}
 		lHTML.push("</ul>", "</div>", "</div>", "</nav>");
@@ -154,20 +178,23 @@ class _ObjetEnteteMobile extends ObjetIdentite_1.Identite {
 			this.idPageAccueil,
 			aBoolean &&
 				GEtatUtilisateur.avecPageAccueil() &&
-				!GApplication.acces.estConnexionDirect(),
+				!(0, AccessApp_1.getApp)().acces.estConnexionDirect(),
 		);
 	}
-	surClickBouton(i) {
-		if (GApplication.getCommunication().requeteEnCours()) {
-			return;
-		}
-		this.callback.appel(i);
+	surClickBouton(i, aNode) {
+		$(aNode).eventValidation(() => {
+			if ((0, AccessApp_1.getApp)().getCommunication().requeteEnCours()) {
+				return;
+			}
+			this.callback.appel(i);
+		});
 	}
 	composeNotificationsApplicatives() {
 		return "";
 	}
 	_getNbNotifs() {
-		const lDonnees = GApplication.donneesCentraleNotifications.getDonnees();
+		const lDonnees = (0,
+		AccessApp_1.getApp)().donneesCentraleNotifications.getDonnees();
 		return lDonnees.nbNotifs + (lDonnees.nbConversationEnCours || 0);
 	}
 	_getHtmlNotifs(aNb) {
@@ -198,7 +225,7 @@ class _ObjetEnteteMobile extends ObjetIdentite_1.Identite {
 		});
 	}
 	getImageUtilisateurOuMembre() {
-		const lUtilisateurOuMembre = GParametres.avecMembre
+		const lUtilisateurOuMembre = this.estAvecMembre()
 			? GEtatUtilisateur.getMembre()
 			: GEtatUtilisateur.getUtilisateur();
 		let lBaliseImg = "";
@@ -222,6 +249,9 @@ class _ObjetEnteteMobile extends ObjetIdentite_1.Identite {
 				'"/>';
 		}
 		return lBaliseImg;
+	}
+	estAvecMembre() {
+		return GParametres.avecMembre;
 	}
 	getClassNoImg() {
 		return "no-img";

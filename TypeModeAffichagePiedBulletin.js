@@ -7,9 +7,6 @@ var TypeModeAffichagePiedBulletin;
 	TypeModeAffichagePiedBulletin[
 		(TypeModeAffichagePiedBulletin["MAPB_Lineaire"] = 1)
 	] = "MAPB_Lineaire";
-	TypeModeAffichagePiedBulletin[
-		(TypeModeAffichagePiedBulletin["MAPB_Accessible"] = 2)
-	] = "MAPB_Accessible";
 })(
 	TypeModeAffichagePiedBulletin ||
 		(exports.TypeModeAffichagePiedBulletin = TypeModeAffichagePiedBulletin =

@@ -7,7 +7,13 @@ const ObjetTri_1 = require("ObjetTri");
 const Enumere_Ressource_1 = require("Enumere_Ressource");
 const UtilitaireQCM_1 = require("UtilitaireQCM");
 const Enumere_EvenementWidget_1 = require("Enumere_EvenementWidget");
+const AccessApp_1 = require("AccessApp");
 class WidgetQCM extends ObjetWidget_1.Widget.ObjetWidget {
+	constructor(...aParams) {
+		super(...aParams);
+		const lApplicationSco = (0, AccessApp_1.getApp)();
+		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
+	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
 			modelBoutonExecQCM: {
@@ -19,6 +25,19 @@ class WidgetQCM extends ObjetWidget_1.Widget.ObjetWidget {
 	}
 	construire(aParams) {
 		this.donnees = aParams.donnees;
+		const lWidget = {
+			getHtml: this.composeWidgetQCM.bind(this),
+			nbrElements: this.donnees.listeExecutionsQCM
+				? this.donnees.listeExecutionsQCM.count()
+				: 0,
+			afficherMessage: this.donnees.listeExecutionsQCM
+				? this.donnees.listeExecutionsQCM.count() === 0
+				: true,
+		};
+		$.extend(true, this.donnees, lWidget);
+		aParams.construireWidget(this.donnees);
+	}
+	composeWidgetQCM() {
 		const H = [];
 		if (
 			this.donnees.listeExecutionsQCM &&
@@ -33,7 +52,7 @@ class WidgetQCM extends ObjetWidget_1.Widget.ObjetWidget {
 				const lExecution = this.donnees.listeExecutionsQCM.get(I);
 				let lStrInfosComplementaires;
 				if (
-					GEtatUtilisateur.pourPrimaire() &&
+					this.etatUtilisateurSco.pourPrimaire() &&
 					lExecution.coefficientEvaluation === 0
 				) {
 					lStrInfosComplementaires =
@@ -79,7 +98,7 @@ class WidgetQCM extends ObjetWidget_1.Widget.ObjetWidget {
 						).ucfirst(),
 						!!lStrInfosComplementaires ? " " + lStrInfosComplementaires : "",
 						"</div>",
-						'<div><i class="icon_qcm ThemeCat-pedagogie"></i>',
+						'<div><i role="presentation" class="icon_qcm ThemeCat-pedagogie"></i>',
 						lExecution.QCM.getLibelle(),
 						" (",
 						UtilitaireQCM_1.UtilitaireQCM.getStrResumeModalites(lExecution),
@@ -124,17 +143,7 @@ class WidgetQCM extends ObjetWidget_1.Widget.ObjetWidget {
 				H.push("</div>", "</div>", "</li>");
 			}
 		}
-		const lWidget = {
-			html: H.join(""),
-			nbrElements: this.donnees.listeExecutionsQCM
-				? this.donnees.listeExecutionsQCM.count()
-				: 0,
-			afficherMessage: this.donnees.listeExecutionsQCM
-				? this.donnees.listeExecutionsQCM.count() === 0
-				: true,
-		};
-		$.extend(true, this.donnees, lWidget);
-		aParams.construireWidget(this.donnees);
+		return H.join("");
 	}
 	composeExecutionKiosque(aExecutionKiosque) {
 		const H = [];

@@ -7,6 +7,8 @@ const TypeEtatUpload_1 = require("TypeEtatUpload");
 const TypeEtatRequeteAjax_1 = require("TypeEtatRequeteAjax");
 const MethodesObjet_1 = require("MethodesObjet");
 const UploadFileAjax_1 = require("UploadFileAjax");
+const AccessApp_1 = require("AccessApp");
+const TypesRequeteJSON_1 = require("TypesRequeteJSON");
 let uIdFichier = 0;
 class ObjetRequeteUploadFile {
 	constructor(aParametres) {
@@ -120,7 +122,7 @@ class ObjetRequeteUploadFile {
 			this.progression.json = null;
 			const lFormData = this.donnees.getFormData(aFichier) || {};
 			if (aMD5) {
-				lFormData.md5 = aMD5;
+				lFormData[TypesRequeteJSON_1.ConstantesUploadFile.md5] = aMD5;
 			}
 			return UploadFileAjax_1.UploadFileAjax.sendPromise({
 				url: this.donnees.getUrl(),
@@ -185,7 +187,7 @@ class ObjetRequeteUploadFile {
 					},
 				)
 				.finally(() => {
-					IEHtml.refresh();
+					IEHtml.refresh(true);
 					aResolve(aFichier);
 				});
 		});
@@ -198,7 +200,7 @@ class ObjetRequeteUploadFile {
 	}
 	_doneFile(aFichier) {
 		this.progression.funcAbortRequete = null;
-		IEHtml.refresh();
+		IEHtml.refresh(true);
 		let lErreurSession = null;
 		const lSurAnnulationUpload =
 			this.progression.error && this.progression.error.abort;
@@ -226,11 +228,13 @@ class ObjetRequeteUploadFile {
 			Promise.resolve()
 				.then(() => {
 					if (!lErreurSession) {
-						return GApplication.getMessage().afficher({
-							titre: this.progression.error.titre || "",
-							message:
-								this.progression.error.message || this.donnees.messageEchec,
-						});
+						return (0, AccessApp_1.getApp)()
+							.getMessage()
+							.afficher({
+								titre: this.progression.error.titre || "",
+								message:
+									this.progression.error.message || this.donnees.messageEchec,
+							});
 					}
 				})
 				.then(() => {
@@ -263,7 +267,7 @@ class ObjetRequeteUploadFile {
 		if (this.donnees.callback) {
 			this.donnees.callback(this.progression);
 		}
-		IEHtml.refresh();
+		IEHtml.refresh(true);
 	}
 	_sendNextFile() {
 		if (this.progression.listeFichiersEnAttente.count() > 0) {

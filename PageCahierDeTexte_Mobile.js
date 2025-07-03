@@ -1,48 +1,40 @@
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetIdentite_Mobile } = require("ObjetIdentite_Mobile.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { EGenreOnglet } = require("Enumere_Onglet.js");
-const {
-	ObjetRequeteSaisieTAFFaitEleve,
-} = require("ObjetRequeteSaisieTAFFaitEleve.js");
-const {
-	ObjetUtilitaireCahierDeTexte,
-} = require("ObjetUtilitaireCahierDeTexte.js");
-const { EGenreDirectionSlide } = require("EGenreDirectionSlide.js");
-const { UtilitaireTAFEleves } = require("UtilitaireTAFEleves.js");
-const { UtilitaireContenuDeCours } = require("UtilitaireContenuDeCours.js");
-const { EGenreBtnActionBlocTAF } = require("GestionnaireBlocTAF.js");
-const {
-	EGenreRessourcePedagogique,
-} = require("Enumere_RessourcePedagogique.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const {
-	EGenreTypeRessourcesPedagogiques,
-} = require("Enumere_TypeRessourcesPedagogiques.js");
-const {
-	ObjetFenetre_ForumVisuPosts,
-} = require("ObjetFenetre_ForumVisuPosts.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { ObjetGalerieCarrousel } = require("ObjetGalerieCarrousel.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { TypeGenreMiniature } = require("TypeGenreMiniature.js");
-class PageCahierDeTexte_Mobile extends ObjetIdentite_Mobile {
-	constructor(...aParams) {
-		super(...aParams);
+exports.PageCahierDeTexte_Mobile = void 0;
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetIdentite_Mobile_1 = require("ObjetIdentite_Mobile");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_Onglet_1 = require("Enumere_Onglet");
+const ObjetRequeteSaisieTAFFaitEleve_1 = require("ObjetRequeteSaisieTAFFaitEleve");
+const ObjetUtilitaireCahierDeTexte_1 = require("ObjetUtilitaireCahierDeTexte");
+const EGenreDirectionSlide_1 = require("EGenreDirectionSlide");
+const UtilitaireTAFEleves_1 = require("UtilitaireTAFEleves");
+const UtilitaireContenuDeCours_1 = require("UtilitaireContenuDeCours");
+const GestionnaireBlocTAF_1 = require("GestionnaireBlocTAF");
+const Enumere_RessourcePedagogique_1 = require("Enumere_RessourcePedagogique");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const Enumere_TypeRessourcesPedagogiques_1 = require("Enumere_TypeRessourcesPedagogiques");
+const MethodesObjet_1 = require("MethodesObjet");
+const AccessApp_1 = require("AccessApp");
+class PageCahierDeTexte_Mobile extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
+	constructor() {
+		super(...arguments);
+		this.appScoMobile = (0, AccessApp_1.getApp)();
+		this.etatUtilScoMobile = this.appScoMobile.getEtatUtilisateur();
 		this.cycleCourant = null;
-		this.utilitaireCDT = new ObjetUtilitaireCahierDeTexte(
-			this.Nom + ".utilitaireCDT",
-			this,
-			this.surUtilitaireCDT,
-		);
-		this.utilitaireTAFEleves = new UtilitaireTAFEleves();
-		this.utilitaireContenuDeCours = new UtilitaireContenuDeCours();
+		this.utilitaireCDT =
+			new ObjetUtilitaireCahierDeTexte_1.ObjetUtilitaireCahierDeTexte(
+				this.Nom + ".utilitaireCDT",
+				this,
+				this.surUtilitaireCDT,
+			);
+		this.utilitaireTAFEleves = new UtilitaireTAFEleves_1.UtilitaireTAFEleves();
+		this.utilitaireContenuDeCours =
+			new UtilitaireContenuDeCours_1.UtilitaireContenuDeCours();
 		this.idTaf = this.Nom + "_Taf_";
 	}
 	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
+		return $.extend(true, super.getControleur(aInstance), {
 			appelQCM: {
 				event: function (aNumero) {
 					aInstance.appelQCM(aNumero);
@@ -51,11 +43,6 @@ class PageCahierDeTexte_Mobile extends ObjetIdentite_Mobile {
 			appelQCMRessource: {
 				event: function (aNumero) {
 					aInstance.appelQCMRessource(aNumero);
-				},
-			},
-			appelForumRessource: {
-				event(aNumero) {
-					ObjetFenetre_ForumVisuPosts.afficher(aInstance, aNumero);
 				},
 			},
 			evenementTafFait: {
@@ -78,80 +65,6 @@ class PageCahierDeTexte_Mobile extends ObjetIdentite_Mobile {
 					aInstance.appelTAF(aNumero);
 				},
 			},
-			getCarrouselTAF(aNumeroTAF) {
-				return {
-					class: ObjetGalerieCarrousel,
-					pere: aInstance,
-					init: (aCarrousel) => {
-						aCarrousel.setOptions({
-							dimensionPhoto: 200,
-							nbMaxDiaposEnZoneVisible: 10,
-							justifieAGauche: true,
-							sansBlocLibelle: true,
-							altImage: GTraductions.getValeur("CahierDeTexte.altImage.TAF"),
-						});
-						aCarrousel.initialiser();
-					},
-					start: (aCarrousel) => {
-						let lTAF =
-							aInstance.ListeTravailAFaire.getElementParNumero(aNumeroTAF);
-						const lListeDiapos = new ObjetListeElements();
-						if (lTAF && lTAF.ListePieceJointe) {
-							lTAF.ListePieceJointe.parcourir((aPJ) => {
-								if (aPJ.avecMiniaturePossible) {
-									let lDiapo = new ObjetElement();
-									lDiapo.setLibelle(aPJ.getLibelle());
-									aPJ.miniature = TypeGenreMiniature.GM_400;
-									lDiapo.documentCasier = aPJ;
-									lListeDiapos.add(lDiapo);
-								}
-							});
-						}
-						aCarrousel.setDonnees({ listeDiapos: lListeDiapos });
-					},
-				};
-			},
-			getCarrouselCDC(aNumeroContenu) {
-				return {
-					class: ObjetGalerieCarrousel,
-					pere: aInstance,
-					init: (aCarrousel) => {
-						aCarrousel.setOptions({
-							dimensionPhoto: 200,
-							nbMaxDiaposEnZoneVisible: 10,
-							justifieAGauche: true,
-							sansBlocLibelle: true,
-							altImage: GTraductions.getValeur("CahierDeTexte.altImage.CDC"),
-						});
-						aCarrousel.initialiser();
-					},
-					start: (aCarrousel) => {
-						let lContenu;
-						aInstance.ListeCahierDeTextes.parcourir((aElement) => {
-							if (!!aElement.listeContenus) {
-								aElement.listeContenus.parcourir((aCDC) => {
-									if (aCDC.getNumero() === aNumeroContenu) {
-										lContenu = aCDC;
-									}
-								});
-							}
-						});
-						const lListeDiapos = new ObjetListeElements();
-						if (lContenu && lContenu.ListePieceJointe) {
-							lContenu.ListePieceJointe.parcourir((aPJ) => {
-								if (aPJ.avecMiniaturePossible) {
-									let lDiapo = new ObjetElement();
-									lDiapo.setLibelle(aPJ.getLibelle());
-									aPJ.miniature = TypeGenreMiniature.GM_400;
-									lDiapo.documentCasier = aPJ;
-									lListeDiapos.add(lDiapo);
-								}
-							});
-						}
-						aCarrousel.setDonnees({ listeDiapos: lListeDiapos });
-					},
-				};
-			},
 		});
 	}
 	setDonnees(
@@ -167,33 +80,34 @@ class PageCahierDeTexte_Mobile extends ObjetIdentite_Mobile {
 		this.ListeTAFComplet = aListeTAFComplet;
 		const lSensSwipe =
 			!this.cycleCourant || aCycleCourant === this.cycleCourant
-				? EGenreDirectionSlide.Aucune
+				? EGenreDirectionSlide_1.EGenreDirectionSlide.Aucune
 				: aCycleCourant < this.cycleCourant
-					? EGenreDirectionSlide.Droite
-					: EGenreDirectionSlide.Gauche;
+					? EGenreDirectionSlide_1.EGenreDirectionSlide.Droite
+					: EGenreDirectionSlide_1.EGenreDirectionSlide.Gauche;
 		this.cycleCourant = aCycleCourant;
 		this.avecFiltrage = aAvecFiltrage;
 		this.filtreMatiere = aFiltreMatiere;
 		this.estListeRessource = aEstListeRessource;
-		if (this.genreOnglet === EGenreOnglet.CDT_TAF) {
+		if (this.genreOnglet === Enumere_Onglet_1.EGenreOnglet.CDT_TAF) {
 			this.ListeTravailAFaire = aListe;
 			this.actualiserTravailAFaire(this.ListeTravailAFaire);
 		} else {
 			this.ListeCahierDeTextes = aListe;
 			if (!this.estListeRessource) {
-				this.actualiserContenuDeCours(this.ListeCahierDeTextes);
+				this.actualiserContenuDeCours();
 			}
 		}
 		this.afficher(null, lSensSwipe);
-		return this.avecDonnees;
 	}
 	actualiserContenuDeCours() {
 		if (this.ListeCahierDeTextes) {
 			if (!this.estListeRessource) {
-				this.ListeCahierDeTextes.setTri([ObjetTri.init("Date")]).trier();
+				this.ListeCahierDeTextes.setTri([
+					ObjetTri_1.ObjetTri.init("Date"),
+				]).trier();
 			} else {
 				this.ListeCahierDeTextes.setTri([
-					ObjetTri.init("matiere.Libelle"),
+					ObjetTri_1.ObjetTri.init("matiere.Libelle"),
 				]).trier();
 			}
 		}
@@ -202,16 +116,16 @@ class PageCahierDeTexte_Mobile extends ObjetIdentite_Mobile {
 		if (aListeTravailAFaire) {
 			aListeTravailAFaire
 				.setTri([
-					ObjetTri.init("PourLe"),
-					ObjetTri.init("Matiere.Libelle"),
-					ObjetTri.init("DonneLe"),
-					ObjetTri.init("Genre"),
+					ObjetTri_1.ObjetTri.init("PourLe"),
+					ObjetTri_1.ObjetTri.init("Matiere.Libelle"),
+					ObjetTri_1.ObjetTri.init("DonneLe"),
+					ObjetTri_1.ObjetTri.init("Genre"),
 				])
 				.trier();
 		}
 	}
 	construireAffichage() {
-		return this.genreOnglet === EGenreOnglet.CDT_TAF
+		return this.genreOnglet === Enumere_Onglet_1.EGenreOnglet.CDT_TAF
 			? this.composePageTravailAFaire(this.ListeTravailAFaire)
 			: this.estListeRessource
 				? this.composePageRessource(this.ListeCahierDeTextes)
@@ -244,7 +158,9 @@ class PageCahierDeTexte_Mobile extends ObjetIdentite_Mobile {
 		} else {
 			lHtml.push(
 				this.composeAucuneDonnee(
-					GTraductions.getValeur("CahierDeTexte.AucunContenu"),
+					ObjetTraduction_1.GTraductions.getValeur(
+						"CahierDeTexte.AucunContenu",
+					),
 				),
 			);
 		}
@@ -270,7 +186,7 @@ class PageCahierDeTexte_Mobile extends ObjetIdentite_Mobile {
 					for (let i = 0; i < aListeCahierDeTextes.count(); i++) {
 						const lElement = aListeCahierDeTextes.get(i);
 						if (lElement.matiere.getLibelle() === lMatiere) {
-							lCouleur = GEtatUtilisateur.pourPrimaire()
+							lCouleur = this.etatUtilScoMobile.pourPrimaire()
 								? lElement.matiere.couleur
 								: lElement.matiere.CouleurFond;
 							break;
@@ -296,10 +212,12 @@ class PageCahierDeTexte_Mobile extends ObjetIdentite_Mobile {
 						lRessourcesPedagogiquesParMatiere[lMatiere],
 						this.filtreMatiere,
 					);
-				for (const lKey of MethodesObjet.enumKeys(
-					EGenreTypeRessourcesPedagogiques,
+				for (const lKey of MethodesObjet_1.MethodesObjet.enumKeys(
+					Enumere_TypeRessourcesPedagogiques_1.EGenreTypeRessourcesPedagogiques,
 				)) {
-					const lType = EGenreTypeRessourcesPedagogiques[lKey];
+					const lType =
+						Enumere_TypeRessourcesPedagogiques_1
+							.EGenreTypeRessourcesPedagogiques[lKey];
 					lHtml.push(
 						this.composeRessourcesPeda(
 							lRessourcesPedagogiquesParType[lType],
@@ -313,7 +231,9 @@ class PageCahierDeTexte_Mobile extends ObjetIdentite_Mobile {
 		} else {
 			lHtml.push(
 				this.composeAucuneDonnee(
-					GTraductions.getValeur("CahierDeTexte.AucuneRessource"),
+					ObjetTraduction_1.GTraductions.getValeur(
+						"CahierDeTexte.AucuneRessource",
+					),
 				),
 			);
 		}
@@ -326,7 +246,9 @@ class PageCahierDeTexte_Mobile extends ObjetIdentite_Mobile {
 		}
 		const lHtml = [];
 		lHtml.push('<div class="conteneur-liste-CDT">');
-		GEtatUtilisateur.setNavigationDate(GDate.getDateCourante());
+		this.etatUtilScoMobile.setNavigationDate(
+			ObjetDate_1.GDate.getDateCourante(),
+		);
 		if (!!aListeTravailAFaire.count()) {
 			lHtml.push(
 				this.utilitaireTAFEleves.composePageTravailAFaire(
@@ -339,7 +261,9 @@ class PageCahierDeTexte_Mobile extends ObjetIdentite_Mobile {
 		} else {
 			lHtml.push(
 				this.composeAucuneDonnee(
-					GTraductions.getValeur("CahierDeTexte.AucunTAFSelonCriteres"),
+					ObjetTraduction_1.GTraductions.getValeur(
+						"CahierDeTexte.AucunTAFSelonCriteres",
+					),
 				),
 			);
 		}
@@ -349,7 +273,8 @@ class PageCahierDeTexte_Mobile extends ObjetIdentite_Mobile {
 	composeRessourcesPeda(aListeRessPeda, aType) {
 		const lHtml = [];
 		switch (aType) {
-			case EGenreTypeRessourcesPedagogiques.SujetOuCorrige:
+			case Enumere_TypeRessourcesPedagogiques_1.EGenreTypeRessourcesPedagogiques
+				.SujetOuCorrige:
 				lHtml.push(
 					this.utilitaireContenuDeCours.composeRPSujetOuCorrige(
 						aListeRessPeda,
@@ -357,21 +282,23 @@ class PageCahierDeTexte_Mobile extends ObjetIdentite_Mobile {
 					),
 				);
 				break;
-			case EGenreTypeRessourcesPedagogiques.TravailRendu:
+			case Enumere_TypeRessourcesPedagogiques_1.EGenreTypeRessourcesPedagogiques
+				.TravailRendu:
 				lHtml.push(
 					this.utilitaireContenuDeCours.composeRPTravailRendu(
 						aListeRessPeda,
 						true,
-						this.controleur,
 					),
 				);
 				break;
-			case EGenreTypeRessourcesPedagogiques.QCM:
+			case Enumere_TypeRessourcesPedagogiques_1.EGenreTypeRessourcesPedagogiques
+				.QCM:
 				lHtml.push(
 					this.utilitaireContenuDeCours.composeRPQCM(aListeRessPeda, true),
 				);
 				break;
-			case EGenreTypeRessourcesPedagogiques.RessourcesGranulaires:
+			case Enumere_TypeRessourcesPedagogiques_1.EGenreTypeRessourcesPedagogiques
+				.RessourcesGranulaires:
 				lHtml.push(
 					this.utilitaireContenuDeCours.composeRPRessourcesGranulaires(
 						aListeRessPeda,
@@ -379,7 +306,8 @@ class PageCahierDeTexte_Mobile extends ObjetIdentite_Mobile {
 					),
 				);
 				break;
-			case EGenreTypeRessourcesPedagogiques.ForumPedagogique:
+			case Enumere_TypeRessourcesPedagogiques_1.EGenreTypeRessourcesPedagogiques
+				.ForumPedagogique:
 				lHtml.push(
 					this.utilitaireContenuDeCours.composeRPForumPedagogique(
 						aListeRessPeda,
@@ -387,7 +315,8 @@ class PageCahierDeTexte_Mobile extends ObjetIdentite_Mobile {
 					),
 				);
 				break;
-			case EGenreTypeRessourcesPedagogiques.Autre:
+			case Enumere_TypeRessourcesPedagogiques_1.EGenreTypeRessourcesPedagogiques
+				.Autre:
 				lHtml.push(
 					this.utilitaireContenuDeCours.composeRPAutre(aListeRessPeda, true),
 				);
@@ -409,7 +338,7 @@ class PageCahierDeTexte_Mobile extends ObjetIdentite_Mobile {
 	}
 	appelQCM(aNumeroQCM) {
 		this.callback.appel({
-			GenreBtnAction: EGenreBtnActionBlocTAF.executionQCM,
+			GenreBtnAction: GestionnaireBlocTAF_1.EGenreBtnActionBlocTAF.executionQCM,
 			executionQCM: aNumeroQCM,
 		});
 	}
@@ -419,7 +348,7 @@ class PageCahierDeTexte_Mobile extends ObjetIdentite_Mobile {
 	appelCours(aNumero) {
 		const lTAF = this.ListeTravailAFaire.getElementParNumero(aNumero);
 		this.callback.appel({
-			GenreBtnAction: EGenreBtnActionBlocTAF.voirContenu,
+			GenreBtnAction: GestionnaireBlocTAF_1.EGenreBtnActionBlocTAF.voirContenu,
 			taf: lTAF,
 		});
 	}
@@ -440,12 +369,15 @@ class PageCahierDeTexte_Mobile extends ObjetIdentite_Mobile {
 		} else {
 			lElement.TAFFait = true;
 		}
-		lElement.setEtat(EGenreEtat.Modification);
-		new ObjetRequeteSaisieTAFFaitEleve(this)
+		lElement.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+		new ObjetRequeteSaisieTAFFaitEleve_1.ObjetRequeteSaisieTAFFaitEleve(this)
 			.lancerRequete({ listeTAF: this.ListeTravailAFaire })
-			.then(this.surEvenementTafFait(lElement));
+			.then(() => {
+				this.surEvenementTafFait(lElement);
+			});
 	}
 }
+exports.PageCahierDeTexte_Mobile = PageCahierDeTexte_Mobile;
 function _regrouperRessourcesPedagogiquesParType(
 	aListeRessources,
 	aMatiereFiltrante,
@@ -460,23 +392,47 @@ function _regrouperRessourcesPedagogiquesParType(
 			) {
 				let lTypeListe;
 				if (
-					D.getGenre() === EGenreRessourcePedagogique.sujet ||
-					D.getGenre() === EGenreRessourcePedagogique.corrige
+					D.getGenre() ===
+						Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique.sujet ||
+					D.getGenre() ===
+						Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique.corrige
 				) {
-					lTypeListe = EGenreTypeRessourcesPedagogiques.SujetOuCorrige;
-				} else if (D.getGenre() === EGenreRessourcePedagogique.travailRendu) {
-					lTypeListe = EGenreTypeRessourcesPedagogiques.TravailRendu;
-				} else if (D.getGenre() === EGenreRessourcePedagogique.QCM) {
-					lTypeListe = EGenreTypeRessourcesPedagogiques.QCM;
+					lTypeListe =
+						Enumere_TypeRessourcesPedagogiques_1
+							.EGenreTypeRessourcesPedagogiques.SujetOuCorrige;
+				} else if (
+					D.getGenre() ===
+					Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique.travailRendu
+				) {
+					lTypeListe =
+						Enumere_TypeRessourcesPedagogiques_1
+							.EGenreTypeRessourcesPedagogiques.TravailRendu;
+				} else if (
+					D.getGenre() ===
+					Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique.QCM
+				) {
+					lTypeListe =
+						Enumere_TypeRessourcesPedagogiques_1
+							.EGenreTypeRessourcesPedagogiques.QCM;
 				} else if (D.estForumPeda) {
-					lTypeListe = EGenreTypeRessourcesPedagogiques.ForumPedagogique;
-				} else if (D.getGenre() === EGenreRessourcePedagogique.kiosque) {
-					lTypeListe = EGenreTypeRessourcesPedagogiques.RessourcesGranulaires;
+					lTypeListe =
+						Enumere_TypeRessourcesPedagogiques_1
+							.EGenreTypeRessourcesPedagogiques.ForumPedagogique;
+				} else if (
+					D.getGenre() ===
+					Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique.kiosque
+				) {
+					lTypeListe =
+						Enumere_TypeRessourcesPedagogiques_1
+							.EGenreTypeRessourcesPedagogiques.RessourcesGranulaires;
 				} else {
-					lTypeListe = EGenreTypeRessourcesPedagogiques.Autre;
+					lTypeListe =
+						Enumere_TypeRessourcesPedagogiques_1
+							.EGenreTypeRessourcesPedagogiques.Autre;
 				}
 				if (!lRessourcesPedagogiquesParType[lTypeListe]) {
-					lRessourcesPedagogiquesParType[lTypeListe] = new ObjetListeElements();
+					lRessourcesPedagogiquesParType[lTypeListe] =
+						new ObjetListeElements_1.ObjetListeElements();
 				}
 				lRessourcesPedagogiquesParType[lTypeListe].addElement(D);
 			}
@@ -496,11 +452,10 @@ function _regrouperRessourcesPedagogiquesParMatiere(aListeRessources) {
 			}
 			if (!lRessourcesPedagogiquesParMatiere[lMatiereListe]) {
 				lRessourcesPedagogiquesParMatiere[lMatiereListe] =
-					new ObjetListeElements();
+					new ObjetListeElements_1.ObjetListeElements();
 			}
 			lRessourcesPedagogiquesParMatiere[lMatiereListe].addElement(D);
 		});
 	}
 	return lRessourcesPedagogiquesParMatiere;
 }
-module.exports = { PageCahierDeTexte_Mobile };

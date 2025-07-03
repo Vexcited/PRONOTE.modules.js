@@ -1,12 +1,11 @@
-const { GChaine } = require("ObjetChaine.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	EGenreNiveauDAcquisitionUtil,
-} = require("Enumere_NiveauDAcquisition.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { TUtilitaireCompetences } = require("UtilitaireCompetences.js");
-class DonneesListe_CompetencesNumeriques extends ObjetDonneesListe {
+exports.DonneesListe_CompetencesNumeriques = void 0;
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_NiveauDAcquisition_1 = require("Enumere_NiveauDAcquisition");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const UtilitaireCompetences_1 = require("UtilitaireCompetences");
+class DonneesListe_CompetencesNumeriques extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParametres) {
 		super(aDonnees);
 		this.parametres = Object.assign(
@@ -30,22 +29,28 @@ class DonneesListe_CompetencesNumeriques extends ObjetDonneesListe {
 					aParams.article.getLibelle() +
 					(!!aParams.article.libelleCorrige
 						? " - ( " +
-							GChaine.composerUrlLienExterne({
+							ObjetChaine_1.GChaine.composerUrlLienExterne({
 								documentJoint: aParams.article,
 								libelle: aParams.article.libelleCorrige,
 								libelleEcran: aParams.article.libelleCorrige,
-								title: GTraductions.getValeur("AfficherCorrige"),
+								title:
+									ObjetTraduction_1.GTraductions.getValeur("AfficherCorrige"),
 							}) +
 							" )"
 						: "")
 				);
 			case DonneesListe_CompetencesNumeriques.colonnes.evaluations:
-				return TUtilitaireCompetences.composeJaugeParNiveaux({
-					listeNiveaux: aParams.article.resultats,
-					hint: aParams.article.hintResultats,
-				});
+				return UtilitaireCompetences_1.TUtilitaireCompetences.composeJaugeParNiveaux(
+					{
+						listeNiveaux: aParams.article.resultats,
+						hint: aParams.article.hintResultats,
+					},
+				);
 			case DonneesListe_CompetencesNumeriques.colonnes.niveau:
-				if (aParams.article.getGenre() === EGenreRessource.ElementPilier) {
+				if (
+					aParams.article.getGenre() ===
+					Enumere_Ressource_1.EGenreRessource.ElementPilier
+				) {
 					return aParams.article.niveauDEquivalenceCE
 						? aParams.article.niveauDEquivalenceCE.getLibelle()
 						: "";
@@ -56,13 +61,14 @@ class DonneesListe_CompetencesNumeriques extends ObjetDonneesListe {
 							aParams.article.niveauDAcquisition.getNumero(),
 						);
 					lHtml.push(
-						EGenreNiveauDAcquisitionUtil.getImage(lNiveauDAcquisition, {
-							avecTitle: false,
-						}),
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+							lNiveauDAcquisition,
+							{ avecTitle: false },
+						),
 					);
 					if (!!aParams.article.observation) {
 						lHtml.push(
-							'<i style="position:absolute; right:0px; bottom:0px;" class=" icon_comment"></i>',
+							'<i style="position:absolute; right:0px; bottom:0px;" class=" icon_comment" role="presentation"></i>',
 						);
 					}
 				}
@@ -70,25 +76,29 @@ class DonneesListe_CompetencesNumeriques extends ObjetDonneesListe {
 		}
 		return "";
 	}
-	getHintHtmlForce(aParams) {
+	getTooltip(aParams) {
 		const lHintNiveau = [];
 		switch (aParams.idColonne) {
-			case DonneesListe_CompetencesNumeriques.colonnes.items:
-				return aParams.article.libelleLong ? aParams.article.libelleLong : "";
 			case DonneesListe_CompetencesNumeriques.colonnes.niveau:
-				if (aParams.article.getGenre() === EGenreRessource.ElementPilier) {
+				if (
+					aParams.article.getGenre() ===
+					Enumere_Ressource_1.EGenreRessource.ElementPilier
+				) {
 					lHintNiveau.push(
 						aParams.article.niveauDEquivalenceCE
 							? aParams.article.niveauDEquivalenceCE.getLibelle()
 							: "",
 					);
 				} else {
-					const lLibelleNiveauAcqui = EGenreNiveauDAcquisitionUtil.getLibelle(
-						aParams.article.niveauDAcquisition,
-					);
+					const lLibelleNiveauAcqui =
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getLibelle(
+							aParams.article.niveauDAcquisition,
+						);
 					if (
-						aParams.article.getGenre() === EGenreRessource.Evaluation ||
-						aParams.article.getGenre() === EGenreRessource.EvaluationHistorique
+						aParams.article.getGenre() ===
+							Enumere_Ressource_1.EGenreRessource.Evaluation ||
+						aParams.article.getGenre() ===
+							Enumere_Ressource_1.EGenreRessource.EvaluationHistorique
 					) {
 						if (!!aParams.article.hint) {
 							lHintNiveau.push(aParams.article.hint);
@@ -96,7 +106,9 @@ class DonneesListe_CompetencesNumeriques extends ObjetDonneesListe {
 						}
 						lHintNiveau.push(
 							"<b><u>",
-							GTraductions.getValeur("competences.evaluation"),
+							ObjetTraduction_1.GTraductions.getValeur(
+								"competences.evaluation",
+							),
 							"</u></b> : ",
 							lLibelleNiveauAcqui,
 						);
@@ -106,7 +118,9 @@ class DonneesListe_CompetencesNumeriques extends ObjetDonneesListe {
 							if (!!aParams.article.observationPubliee) {
 								lHintNiveau.push(
 									" (",
-									GTraductions.getValeur("competences.PublieSurEspaceParent"),
+									ObjetTraduction_1.GTraductions.getValeur(
+										"competences.PublieSurEspaceParent",
+									),
 									")",
 								);
 							}
@@ -123,9 +137,9 @@ class DonneesListe_CompetencesNumeriques extends ObjetDonneesListe {
 			case DonneesListe_CompetencesNumeriques.colonnes.items:
 			case DonneesListe_CompetencesNumeriques.colonnes.niveau:
 			case DonneesListe_CompetencesNumeriques.colonnes.evaluations:
-				return ObjetDonneesListe.ETypeCellule.Html;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
 	avecEdition(aParams) {
 		switch (aParams.idColonne) {
@@ -148,8 +162,10 @@ class DonneesListe_CompetencesNumeriques extends ObjetDonneesListe {
 			aParams.idColonne === DonneesListe_CompetencesNumeriques.colonnes.items
 		) {
 			if (
-				aParams.article.getGenre() === EGenreRessource.Pilier ||
-				aParams.article.getGenre() === EGenreRessource.ElementPilier
+				aParams.article.getGenre() ===
+					Enumere_Ressource_1.EGenreRessource.Pilier ||
+				aParams.article.getGenre() ===
+					Enumere_Ressource_1.EGenreRessource.ElementPilier
 			) {
 				lClass.push("Gras");
 			}
@@ -160,7 +176,10 @@ class DonneesListe_CompetencesNumeriques extends ObjetDonneesListe {
 		if (
 			aParams.idColonne === DonneesListe_CompetencesNumeriques.colonnes.items
 		) {
-			if (aParams.article.getGenre() === EGenreRessource.EvaluationHistorique) {
+			if (
+				aParams.article.getGenre() ===
+				Enumere_Ressource_1.EGenreRessource.EvaluationHistorique
+			) {
 				lClass.push("Italique");
 			}
 		}
@@ -179,19 +198,19 @@ class DonneesListe_CompetencesNumeriques extends ObjetDonneesListe {
 	}
 	getCouleurCellule(aParams) {
 		if (this.avecEdition(aParams)) {
-			return ObjetDonneesListe.ECouleurCellule.Blanc;
+			return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
 		}
 		if (!!aParams.article) {
 			switch (aParams.article.getGenre()) {
-				case EGenreRessource.Pilier:
+				case Enumere_Ressource_1.EGenreRessource.Pilier:
 					return GCouleur.liste.cumul[0];
-				case EGenreRessource.ElementPilier:
+				case Enumere_Ressource_1.EGenreRessource.ElementPilier:
 					return GCouleur.liste.cumul[1];
-				case EGenreRessource.Competence:
-				case EGenreRessource.SousItem:
+				case Enumere_Ressource_1.EGenreRessource.Competence:
+				case Enumere_Ressource_1.EGenreRessource.SousItem:
 					return GCouleur.liste.cumul[2];
-				case EGenreRessource.Evaluation:
-				case EGenreRessource.EvaluationHistorique:
+				case Enumere_Ressource_1.EGenreRessource.Evaluation:
+				case Enumere_Ressource_1.EGenreRessource.EvaluationHistorique:
 					return GCouleur.liste.cumul[3];
 			}
 		}
@@ -212,9 +231,9 @@ class DonneesListe_CompetencesNumeriques extends ObjetDonneesListe {
 		this.parametres.callbackInitMenuContextuel(aParametres);
 	}
 }
+exports.DonneesListe_CompetencesNumeriques = DonneesListe_CompetencesNumeriques;
 DonneesListe_CompetencesNumeriques.colonnes = {
 	items: "DCR_items",
 	evaluations: "DCR_evaluations",
 	niveau: "DCR_niveau",
 };
-module.exports = { DonneesListe_CompetencesNumeriques };

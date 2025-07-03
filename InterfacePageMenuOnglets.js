@@ -13,17 +13,16 @@ const ObjetDonneesCentraleNotifications_1 = require("ObjetDonneesCentraleNotific
 const ObjetFicheEtablissement_1 = require("ObjetFicheEtablissement");
 const ObjetDate_1 = require("ObjetDate");
 const ObjetDiscussion_Mobile_1 = require("ObjetDiscussion_Mobile");
-const tag_1 = require("tag");
 const TypeStatutConnexion_1 = require("TypeStatutConnexion");
 const ObjetFenetre_1 = require("ObjetFenetre");
-const ObjetFenetre_FicheEleve = require("ObjetFenetre_FicheEleve");
+const ObjetFenetre_FicheEleve_1 = require("ObjetFenetre_FicheEleve");
 const Enumere_Ressource_1 = require("Enumere_Ressource");
 const UtilitaireMessagerie_1 = require("UtilitaireMessagerie");
 const ObjetFenetre_Message_1 = require("ObjetFenetre_Message");
 const UtilitaireHarcelement_1 = require("UtilitaireHarcelement");
 const ObjetFenetreHarcelement_1 = require("ObjetFenetreHarcelement");
 const TypeCollectivite_1 = require("TypeCollectivite");
-const ObjetFenetre_SelecteurMembre_1 = require("ObjetFenetre_SelecteurMembre");
+const ObjetFenetre_SelecteurMembrePN_1 = require("ObjetFenetre_SelecteurMembrePN");
 const UtilitaireContactReferents_1 = require("UtilitaireContactReferents");
 class ObjetAffichagePageMenuOnglets extends _InterfacePageMenuOnglets_1._InterfacePagePageMenuOnglets {
 	constructor(...aParams) {
@@ -71,7 +70,7 @@ class ObjetAffichagePageMenuOnglets extends _InterfacePageMenuOnglets_1._Interfa
 			"ouvrir_selecteurMembre",
 			() => {
 				if (GParametres.avecMembre) {
-					ObjetFenetre_SelecteurMembre_1.ObjetFenetre_SelecteurMembre.ouvrir();
+					ObjetFenetre_SelecteurMembrePN_1.ObjetFenetre_SelecteurMembrePN.ouvrir();
 				}
 			},
 			this,
@@ -127,16 +126,19 @@ class ObjetAffichagePageMenuOnglets extends _InterfacePageMenuOnglets_1._Interfa
 						aInstance.applicationScoMobile.donneesCentraleNotifications
 							.nbConversationEnCours === 0
 					) {
-						lHtml += (0, tag_1.tag)("i", {
-							class: [
-								"as-tag",
-								"TypeGenreStatutConnexion-double-icone",
-								TypeStatutConnexion_1.TypeGenreStatutConnexionUtil.getClassIcon(
-									aInstance.applicationScoMobile.donneesCentraleNotifications
-										.statutConnexionCommunication,
-								),
-							],
-						});
+						lHtml += IE.jsx.str(
+							IE.jsx.fragment,
+							null,
+							IE.jsx.str("i", {
+								role: "presentation",
+								class:
+									"as-tag TypeGenreStatutConnexion-double-icone " +
+									TypeStatutConnexion_1.TypeGenreStatutConnexionUtil.getClassIcon(
+										aInstance.applicationScoMobile.donneesCentraleNotifications
+											.statutConnexionCommunication,
+									),
+							}),
+						);
 					}
 					return lHtml;
 				},
@@ -186,18 +188,12 @@ class ObjetAffichagePageMenuOnglets extends _InterfacePageMenuOnglets_1._Interfa
 			},
 			btnFicheEleve: {
 				event() {
-					ObjetFenetre_FicheEleve.ouvrir({
+					ObjetFenetre_FicheEleve_1.ObjetFenetre_FicheEleve.ouvrir({
 						instance: aInstance,
 						avecRequeteDonnees: true,
 						donnees: { eleve: aInstance.etatutilisateurScoMobile.getMembre() },
 					});
 				},
-			},
-			nodeFicheEtablissement: function () {
-				$(this.node).on("click", () => {
-					aInstance.interfaceMobileCP.fermerMenuOnglet();
-					Invocateur_1.Invocateur.evenement("ouvrir_ficheEtab");
-				});
 			},
 			afficherSeparateur: function () {
 				return (
@@ -209,15 +205,6 @@ class ObjetAffichagePageMenuOnglets extends _InterfacePageMenuOnglets_1._Interfa
 					) ||
 					aInstance.avecBoutonHarcelement
 				);
-			},
-			btnStopHarcelement: {
-				event() {
-					const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
-						ObjetFenetreHarcelement_1.ObjetFenetreHarcelement,
-						{ pere: aInstance },
-					);
-					lFenetre.setDonnees();
-				},
 			},
 		});
 	}
@@ -244,17 +231,29 @@ class ObjetAffichagePageMenuOnglets extends _InterfacePageMenuOnglets_1._Interfa
 		}
 	}
 	avecLogoDepartement() {
-		var _a, _b;
-		const lAvecCollectivite =
-			((_b =
-				(_a = this.applicationScoMobile.getObjetParametres()) === null ||
-				_a === void 0
-					? void 0
-					: _a.collectivite) === null || _b === void 0
+		var _a;
+		const lObjetParametres = this.applicationScoMobile.getObjetParametres();
+		if (
+			lObjetParametres === null || lObjetParametres === void 0
 				? void 0
-				: _b.genreCollectivite) !==
+				: lObjetParametres.estAfficheDansENT
+		) {
+			return false;
+		}
+		const lAvecCollectivite =
+			((_a =
+				lObjetParametres === null || lObjetParametres === void 0
+					? void 0
+					: lObjetParametres.collectivite) === null || _a === void 0
+				? void 0
+				: _a.genreCollectivite) !==
 			TypeCollectivite_1.TypeCollectivite.TCL_Aucune;
 		return Boolean(!lAvecCollectivite && GParametres.logoDepartementImage);
+	}
+	getLibelleEtablissement() {
+		return !!this.etatutilisateurScoMobile.getEtablissement()
+			? this.etatutilisateurScoMobile.getEtablissement().getLibelle()
+			: "";
 	}
 	actionSurRecupererDonnees() {
 		this.listeOnglets = new ObjetListeElements_1.ObjetListeElements();
@@ -395,18 +394,22 @@ class ObjetAffichagePageMenuOnglets extends _InterfacePageMenuOnglets_1._Interfa
 		};
 	}
 	actualiserTitre() {
-		if (this.etatutilisateurScoMobile.derniereConnexion) {
+		if (
+			this.etatutilisateurScoMobile.derniereConnexion &&
+			!this.applicationScoMobile.getObjetParametres().estAfficheDansENT
+		) {
 			const lDerniereConnexion = ObjetTraduction_1.GTraductions.getValeur(
 				"accueil.PrecedenteConnection",
 				[
-					ObjetDate_1.GDate.formatDate(
-						this.etatutilisateurScoMobile.derniereConnexion,
-						"%JJJ %JJ %MMM",
-					),
+					':<span class="date-connexion">' +
+						ObjetDate_1.GDate.formatDate(
+							this.etatutilisateurScoMobile.derniereConnexion,
+							"%JJJ %JJ %MMM",
+						),
 					ObjetDate_1.GDate.formatDate(
 						this.etatutilisateurScoMobile.derniereConnexion,
 						"%hh%sh%mm",
-					),
+					) + "</span>",
 				],
 			);
 			ObjetHtml_1.GHtml.setHtml(this.idDerniereConnexion, lDerniereConnexion);
@@ -454,6 +457,15 @@ class ObjetAffichagePageMenuOnglets extends _InterfacePageMenuOnglets_1._Interfa
 	changementRessource() {
 		this.evenementListeOnglets(false);
 	}
+	avecBtnSeDeconnecter() {
+		if (
+			this.applicationScoMobile.getObjetParametres().estAfficheDansENT &&
+			!this.applicationScoMobile.estAppliMobile
+		) {
+			return false;
+		}
+		return super.avecBtnSeDeconnecter();
+	}
 	composeBoutonMenuSupp() {
 		const H = [];
 		let lAvecSep = false;
@@ -469,9 +481,16 @@ class ObjetAffichagePageMenuOnglets extends _InterfacePageMenuOnglets_1._Interfa
 			)
 		) {
 			H.push(
-				'<ie-btnimage class="icon_alerte_ppms btnImageIcon badged-btn icon-title" title="',
-				ObjetTraduction_1.GTraductions.getValeur("Mobile.Menu.Alertes"),
-				'" ie-model="btnAlertesPPMSEnCours" ie-html="getHtml" ie-if="afficher"></ie-btnimage>',
+				IE.jsx.str("ie-btnimage", {
+					class: "icon_alerte_ppms btnImageIcon badged-btn icon-title",
+					"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+						"Mobile.Menu.Alertes",
+					),
+					"ie-model": "btnAlertesPPMSEnCours",
+					"ie-html": "getHtml",
+					"ie-if": "afficher",
+					"aria-haspopup": "dialog",
+				}),
 			);
 		}
 		if (
@@ -486,9 +505,14 @@ class ObjetAffichagePageMenuOnglets extends _InterfacePageMenuOnglets_1._Interfa
 				lMembre.getGenre() === Enumere_Ressource_1.EGenreRessource.Eleve
 			) {
 				H.push(
-					'<ie-btnimage class="icon_fiche_eleve btnImageIcon badged-btn icon-title" title="',
-					ObjetTraduction_1.GTraductions.getValeur("Mobile.Menu.FicheEleve"),
-					'" ie-model="btnFicheEleve"></ie-btnimage>',
+					IE.jsx.str("ie-btnimage", {
+						class: "icon_fiche_eleve btnImageIcon badged-btn icon-title",
+						"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+							"Mobile.Menu.FicheEleve",
+						),
+						"ie-model": "btnFicheEleve",
+						"aria-haspopup": "dialog",
+					}),
 				);
 				lSetSep();
 			}
@@ -508,18 +532,27 @@ class ObjetAffichagePageMenuOnglets extends _InterfacePageMenuOnglets_1._Interfa
 				lAvecSep = true;
 			}
 			H.push(
-				'<ie-btnimage class="icon_conversation_cours btnImageIcon badged-btn icon-title" title="',
-				ObjetTraduction_1.GTraductions.getValeur("Mobile.Menu.Chatter"),
-				'" ie-model="btnMessageInstant" ie-if="afficher" ie-html="getHtmlBtnMessageInstant"></ie-btnimage>',
+				IE.jsx.str("ie-btnimage", {
+					class: "icon_conversation_cours btnImageIcon badged-btn icon-title",
+					"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+						"Mobile.Menu.Chatter",
+					),
+					"ie-model": "btnMessageInstant",
+					"ie-if": "afficher",
+					"ie-html": "getHtmlBtnMessageInstant",
+					"aria-haspopup": "dialog",
+				}),
 			);
 			H.push(
-				'<ie-btnimage class="icon_alerte_ppms btnImageIcon badged-btn icon-title" ie-model="btnAlertesPPMSCreation" title="',
-				ObjetTraduction_1.GTraductions.getValeur("Mobile.Menu.Alerter"),
-				'" ie-if="afficher" aria-label="',
-				ObjetTraduction_1.GTraductions.getValeur(
-					"Messagerie.AlerteEnseignantsPersonnels",
-				),
-				'"></ie-btnimage>',
+				IE.jsx.str("ie-btnimage", {
+					class: "icon_alerte_ppms btnImageIcon badged-btn icon-title",
+					"ie-model": "btnAlertesPPMSCreation",
+					"ie-if": "afficher",
+					"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+						"Messagerie.AlerteEnseignantsPersonnels",
+					),
+					"aria-haspopup": "dialog",
+				}),
 			);
 		}
 		if (
@@ -530,9 +563,14 @@ class ObjetAffichagePageMenuOnglets extends _InterfacePageMenuOnglets_1._Interfa
 		) {
 			lSetSep();
 			H.push(
-				'<ie-btnimage class="icon_absences_prevue btnImageIcon badged-btn icon-title" title="',
-				ObjetTraduction_1.GTraductions.getValeur("Mobile.Menu.Absence"),
-				'" ie-model="ajouterAbsence"></ie-btnimage>',
+				IE.jsx.str("ie-btnimage", {
+					class: "icon_absences_prevue btnImageIcon badged-btn icon-title",
+					"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+						"Mobile.Menu.Absence",
+					),
+					"ie-model": "ajouterAbsence",
+					"aria-haspopup": "dialog",
+				}),
 			);
 		}
 		if (
@@ -546,11 +584,23 @@ class ObjetAffichagePageMenuOnglets extends _InterfacePageMenuOnglets_1._Interfa
 		) {
 			lSetSep();
 			H.push(
-				'<ie-btnimage class="icon_carnet_liaison i-large btnImageIcon badged-btn" title="',
-				ObjetTraduction_1.GTraductions.getValeur("Mobile.Menu.Carnet"),
-				'" ie-model="btnMessageCarnet"></ie-btnimage><span aria-hidden="true" class="titre-btn">',
-				ObjetTraduction_1.GTraductions.getValeur("Mobile.Menu.Carnet"),
-				"</span>",
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str("ie-btnimage", {
+						class: "icon_carnet_liaison i-large btnImageIcon badged-btn",
+						"ie-tooltiplabel":
+							ObjetTraduction_1.GTraductions.getValeur("Mobile.Menu.Carnet"),
+						"ie-model": "btnMessageCarnet",
+						"aria-haspopup": "dialog",
+					}),
+					IE.jsx.str(
+						"span",
+						{ "aria-hidden": "true", class: "titre-btn" },
+						" ",
+						ObjetTraduction_1.GTraductions.getValeur("Mobile.Menu.Carnet"),
+					),
+				),
 			);
 		}
 		const lLibelleRaccourci =
@@ -558,11 +608,22 @@ class ObjetAffichagePageMenuOnglets extends _InterfacePageMenuOnglets_1._Interfa
 		if (lLibelleRaccourci) {
 			lSetSep();
 			H.push(
-				'<ie-btnimage class="icon_discussion_cours i-large btnImageIcon badged-btn" title="',
-				lLibelleRaccourci.toAttrValue(),
-				'" ie-model="btnMessagePrimEleve" aria-haspopup="dialog"></ie-btnimage><span aria-hidden="true" class="titre-btn">',
-				lLibelleRaccourci,
-				"</span>",
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str("ie-btnimage", {
+						class: "icon_discussion_cours i-large btnImageIcon badged-btn",
+						"ie-tooltiplabel": lLibelleRaccourci,
+						"ie-model": "btnMessagePrimEleve",
+						"aria-haspopup": "dialog",
+					}),
+					IE.jsx.str(
+						"span",
+						{ "aria-hidden": "true", class: "titre-btn" },
+						" ",
+						lLibelleRaccourci,
+					),
+				),
 			);
 		}
 		if (
@@ -572,32 +633,62 @@ class ObjetAffichagePageMenuOnglets extends _InterfacePageMenuOnglets_1._Interfa
 		) {
 			lSetSep();
 			H.push(
-				'<ie-btnimage class="icon_mairie btnImageIcon badged-btn icon-title" title="',
-				ObjetTraduction_1.GTraductions.getValeur("Mobile.Menu.Mairie"),
-				'" ie-model="btnMessageMairie"></ie-btnimage>',
+				IE.jsx.str("ie-btnimage", {
+					class: "icon_mairie btnImageIcon badged-btn icon-title",
+					"ie-tooltiplabel":
+						ObjetTraduction_1.GTraductions.getValeur("Mobile.Menu.Mairie"),
+					"ie-model": "btnMessageMairie",
+					"aria-haspopup": "dialog",
+				}),
 			);
 		}
 		lAvecSep = false;
 		if (this.etatutilisateurScoMobile.avecFicheEtablissement()) {
 			lSetSep();
 			H.push(
-				'<ie-btnimage class="icon_uniF2C3 btnImageIcon badged-btn icon-title" ie-node="nodeFicheEtablissement" title="',
-				ObjetTraduction_1.GTraductions.getValeur("Mobile.Menu.Contact"),
-				'" aria-label="',
-				ObjetTraduction_1.GTraductions.getValeur(
-					"FicheEtablissement.ContacterEtablissement",
-				),
-				'"></ie-btnimage>',
+				IE.jsx.str("ie-btnimage", {
+					class: "icon_uniF2C3 btnImageIcon badged-btn icon-title",
+					"ie-model": this.jsxModeleFicheEtablissement.bind(this),
+					"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+						"FicheEtablissement.ContacterEtablissement",
+					),
+					"aria-haspopup": "dialog",
+				}),
 			);
 		}
 		if (this.avecBoutonHarcelement) {
 			lAvecSep = false;
 			lSetSep();
 			H.push(
-				`<ie-btnimage class="icon_stop_harcelement btnImageIcon badged-btn icon-title" ie-model="btnStopHarcelement" title="${ObjetTraduction_1.GTraductions.getValeur("Mobile.Menu.Harcelement")}" aria-label="${ObjetTraduction_1.GTraductions.getValeur("Mobile.Menu.Harcelement")}" ></ie-btnimage>`,
+				IE.jsx.str("ie-btnimage", {
+					class: "icon_stop_harcelement btnImageIcon badged-btn icon-title",
+					"ie-model": this.jsxModeleBoutonStopHarcelement.bind(this),
+					"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+						"Mobile.Menu.Harcelement",
+					),
+					"aria-haspopup": "dialog",
+				}),
 			);
 		}
 		return H.join("");
+	}
+	jsxModeleBoutonStopHarcelement() {
+		return {
+			event: () => {
+				ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+					ObjetFenetreHarcelement_1.ObjetFenetreHarcelement,
+					{ pere: this },
+				).setDonnees();
+			},
+		};
+	}
+	jsxModeleFicheEtablissement() {
+		return {
+			event: () => {
+				this.interfaceMobileCP.fermerMenuOnglet();
+				Invocateur_1.Invocateur.evenement("ouvrir_ficheEtab");
+			},
+		};
 	}
 	getActionneurCentraleNotification() {
 		return new ActionneurCentraleNotificationsSco_1.ActionneurCentraleNotificationsSco(

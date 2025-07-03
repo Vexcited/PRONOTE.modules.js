@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieRencontreDesiderata extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieRencontreDesiderata = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieRencontreDesiderata extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParams) {
 		this.JSON = {
 			session: aParams.session,
@@ -17,7 +15,9 @@ class ObjetRequeteSaisieRencontreDesiderata extends ObjetRequeteSaisie {
 		return this.appelAsynchrone();
 	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteSaisieRencontreDesiderata =
+	ObjetRequeteSaisieRencontreDesiderata;
+CollectionRequetes_1.Requetes.inscrire(
 	"SaisieRencontreDesiderata",
 	ObjetRequeteSaisieRencontreDesiderata,
 );
@@ -26,4 +26,3 @@ function _serialiserRencontre(aElement, aJSON) {
 	aJSON.voeu = aElement.voeu;
 	aJSON.validationvoeu = aElement.validationvoeu;
 }
-module.exports = ObjetRequeteSaisieRencontreDesiderata;

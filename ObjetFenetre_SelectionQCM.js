@@ -5,6 +5,7 @@ const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
 const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetListe_1 = require("ObjetListe");
 const ObjetTraduction_1 = require("ObjetTraduction");
+const AccessApp_1 = require("AccessApp");
 class ObjetFenetre_SelectionQCM extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
@@ -19,13 +20,15 @@ class ObjetFenetre_SelectionQCM extends ObjetFenetre_1.ObjetFenetre {
 	setDonnees(aListeQCM, aMessage, aDonnees) {
 		if (aMessage) {
 			const lThis = this;
-			GApplication.getMessage().afficher({
-				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-				message: aMessage,
-				callback: function () {
-					lThis.callback.appel(0);
-				},
-			});
+			(0, AccessApp_1.getApp)()
+				.getMessage()
+				.afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+					message: aMessage,
+					callback: function () {
+						lThis.callback.appel(0);
+					},
+				});
 		} else {
 			this.donnees = { avecNiveaux: true };
 			$.extend(this.donnees, aDonnees);
@@ -81,7 +84,7 @@ class ObjetFenetre_SelectionQCM extends ObjetFenetre_1.ObjetFenetre {
 	_initialiserListeQCM(aInstance) {
 		aInstance.setOptionsListe({
 			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
-			labelWAI: ObjetTraduction_1.GTraductions.getValeur(
+			ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
 				"FenetreDevoir.ListeQCMTitre",
 			),
 		});

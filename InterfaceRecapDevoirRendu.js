@@ -142,7 +142,7 @@ class InterfaceRecapDevoirRendu extends InterfacePage_1.InterfacePage {
 	}
 	evenementAfficherMessage(aGenreMessage) {
 		ObjetHtml_1.GHtml.setDisplay(
-			this.getInstance(this.identCalendrier).getNom(),
+			this.getNomInstance(this.identCalendrier),
 			false,
 		);
 		this._evenementAfficherMessage(aGenreMessage);
@@ -424,7 +424,7 @@ class DonneesListe_RecapDevoirRendu extends ObjetDonneesListe_1.ObjetDonneesList
 					return (
 						"<div ie-node=\"surQCM('" +
 						aParams.article.QCM.getNumero() +
-						'\')"><i class="icon_qcm ThemeCat-pedagogie AlignementMilieuVertical"></i></div>'
+						'\')"><i role="presentation" class="icon_qcm ThemeCat-pedagogie AlignementMilieuVertical"></i></div>'
 					);
 				} else if (aParams.article.documentDepose) {
 					const lFichier = new ObjetElement_1.ObjetElement(
@@ -450,7 +450,7 @@ class DonneesListe_RecapDevoirRendu extends ObjetDonneesListe_1.ObjetDonneesList
 				return "";
 		}
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_RecapDevoirRendu.colonnes.fait:
 				if (aParams.article.estFait) {

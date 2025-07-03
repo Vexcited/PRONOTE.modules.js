@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieIncidents extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieIncidents = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieIncidents extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParam) {
 		aParam.incidents.setSerialisateurJSON({
 			methodeSerialisation: _serialiser_Incidents.bind(this),
@@ -16,11 +14,12 @@ class ObjetRequeteSaisieIncidents extends ObjetRequeteSaisie {
 		}
 		return this.appelAsynchrone();
 	}
-	actionApresRequete() {
-		this.callbackReussite.appel(this.JSONRapportSaisie);
-	}
 }
-Requetes.inscrire("SaisieIncidents", ObjetRequeteSaisieIncidents);
+exports.ObjetRequeteSaisieIncidents = ObjetRequeteSaisieIncidents;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieIncidents",
+	ObjetRequeteSaisieIncidents,
+);
 function _serialiserFichier(aElement, aJSON) {
 	aJSON.idFichier = aElement.idFichier;
 	aJSON.TAF = aElement.TAF;
@@ -31,11 +30,11 @@ function _serialiser_Incidents(aIncident, aJSON) {
 		aJSON.gravite = 1;
 	}
 	aIncident.protagonistes.setSerialisateurJSON({
-		methodeSerialisation: _serialiser_Protagonistes.bind(this),
+		methodeSerialisation: _serialiser_Protagonistes,
 	});
 	aJSON.protagonistes = aIncident.protagonistes;
 	aIncident.listeMotifs.setSerialisateurJSON({
-		methodeSerialisation: _serialiser_Motifs.bind(this),
+		methodeSerialisation: _serialiser_Motifs,
 		ignorerEtatsElements: true,
 	});
 	aJSON.listeMotifs = aIncident.listeMotifs;
@@ -44,7 +43,7 @@ function _serialiser_Incidents(aIncident, aJSON) {
 	});
 	aJSON.actionsEnvisagees = aIncident.actionsEnvisagees;
 	aIncident.documents.setSerialisateurJSON({
-		methodeSerialisation: _serialiser_Documents.bind(this),
+		methodeSerialisation: _serialiser_Documents,
 	});
 	aJSON.documents = aIncident.documents;
 }
@@ -55,7 +54,7 @@ function _serialiser_Protagonistes(aRelProtagoniste, aJSON) {
 		$.extend(aJSON.mesure, aRelProtagoniste.mesure.copieToJSON());
 		if (aRelProtagoniste.mesure.documentsTAF) {
 			aRelProtagoniste.mesure.documentsTAF.setSerialisateurJSON({
-				methodeSerialisation: _serialiser_Documents.bind(this),
+				methodeSerialisation: _serialiser_Documents,
 			});
 			aJSON.mesure.documentsTAF = aRelProtagoniste.mesure.documentsTAF;
 		}
@@ -81,4 +80,3 @@ function _serialiser_Motifs(aMotif, aJSON) {
 function _serialiser_Documents(aDocument, aJSON) {
 	$.extend(aJSON, aDocument.copieToJSON());
 }
-module.exports = { ObjetRequeteSaisieIncidents };

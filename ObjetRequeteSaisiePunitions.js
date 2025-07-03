@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisiePunitions extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisiePunitions = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisiePunitions extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aListePunitions) {
 		this.JSON = {};
 		if (!!aListePunitions) {
@@ -15,7 +13,11 @@ class ObjetRequeteSaisiePunitions extends ObjetRequeteSaisie {
 		return this.appelAsynchrone();
 	}
 }
-Requetes.inscrire("SaisiePunitions", ObjetRequeteSaisiePunitions);
+exports.ObjetRequeteSaisiePunitions = ObjetRequeteSaisiePunitions;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisiePunitions",
+	ObjetRequeteSaisiePunitions,
+);
 function _serialisePunition(aElement, AJSON) {
 	if (!!aElement.programmation) {
 		AJSON.punition = aElement.punition.toJSON();
@@ -23,4 +25,3 @@ function _serialisePunition(aElement, AJSON) {
 		AJSON.programmation.dateRealisation = aElement.dateRealisation;
 	}
 }
-module.exports = ObjetRequeteSaisiePunitions;

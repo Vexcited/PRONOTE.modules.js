@@ -9,7 +9,6 @@ class DonneesListe_FiltreCompte extends ObjetDonneesListeFlatDesign_1.ObjetDonne
 			avecEvnt_SelectionClick: true,
 			avecTri: false,
 			avecEllipsis: false,
-			avecContenuTronque: false,
 			avecBoutonActionLigne: false,
 		});
 		this.donneesComplementaires = aDonneesComplementaires;
@@ -53,10 +52,6 @@ class DonneesListe_FiltreCompte extends ObjetDonneesListeFlatDesign_1.ObjetDonne
 				break;
 			case Enumere_DonneesPersonnelles_1.TypeFiltreAffichage.generalites:
 				lIcon = "icon_wrench";
-				break;
-			case Enumere_DonneesPersonnelles_1.TypeFiltreAffichage
-				.messagerieSignature:
-				lIcon = "icon_signature";
 				break;
 			default:
 				lIcon = "icon_user";

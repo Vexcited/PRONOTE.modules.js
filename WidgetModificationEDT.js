@@ -15,7 +15,7 @@ class WidgetModificationEDT extends ObjetWidget_1.Widget.ObjetWidget {
 			? this.donnees.listeModificationsEDT.count()
 			: 0;
 		const lWidget = {
-			html: this.composeWidget(),
+			getHtml: this.composeWidget.bind(this),
 			nbrElements: lNbElementsModificationsEDT,
 			afficherMessage: lNbElementsModificationsEDT === 0,
 			listeElementsGraphiques: [
@@ -137,9 +137,9 @@ class WidgetModificationEDT extends ObjetWidget_1.Widget.ObjetWidget {
 		return H.join("");
 	}
 	_composeLigneModificationEDT(aModificationEDT) {
-		let lStyleColor = "color: blue;";
+		let lStyleColor = "color: var(--color-blue-moyen);";
 		if (aModificationEDT.estAnnulationCours) {
-			lStyleColor = "color: red;";
+			lStyleColor = "color: var(--color-red-moyen);";
 		}
 		const lIENode =
 			"nodeModificationEDT('" + aModificationEDT.cours.getNumero() + "')";

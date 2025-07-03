@@ -5,7 +5,7 @@ class WidgetAide extends ObjetWidget_1.Widget.ObjetWidget {
 	construire(aParams) {
 		this.donnees = aParams.donnees;
 		const lWidget = {
-			html: this.composeWidgetAide(),
+			getHtml: this.composeWidgetAide.bind(this),
 			nbrElements: null,
 			afficherMessage: false,
 		};

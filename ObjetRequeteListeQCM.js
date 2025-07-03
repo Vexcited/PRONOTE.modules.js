@@ -1,42 +1,44 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { ObjetDeserialiser } = require("ObjetDeserialiser.js");
-class ObjetRequeteListeQCM extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
-	lancerRequete() {
-		return this.appelAsynchrone();
-	}
+exports.ObjetRequeteListeQCM = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetDeserialiser_1 = require("ObjetDeserialiser");
+class ObjetRequeteListeQCM extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	actionApresRequete() {
-		const lUtilitaireDeserialisation = new ObjetDeserialiser();
-		const lListeQCM = new ObjetListeElements().fromJSON(
+		const lUtilitaireDeserialisation =
+			new ObjetDeserialiser_1.ObjetDeserialiser();
+		const lListeQCM = new ObjetListeElements_1.ObjetListeElements().fromJSON(
 			this.JSONReponse.listeQCM,
 			lUtilitaireDeserialisation._ajouterQCM.bind(lUtilitaireDeserialisation),
 		);
 		const lListeCategories = this.JSONReponse.listeCategories;
-		const lListeServices = new ObjetListeElements().fromJSON(
-			this.JSONReponse.listeServices,
-			_ajouterServices,
-		);
-		const lListeClasses = new ObjetListeElements().fromJSON(
-			this.JSONReponse.listeClasses,
-			_ajouterClasses,
-		);
-		const lListeProfs = new ObjetListeElements().fromJSON(
+		const lListeServices =
+			new ObjetListeElements_1.ObjetListeElements().fromJSON(
+				this.JSONReponse.listeServices,
+				_ajouterServices,
+			);
+		const lListeClasses =
+			new ObjetListeElements_1.ObjetListeElements().fromJSON(
+				this.JSONReponse.listeClasses,
+				_ajouterClasses,
+			);
+		const lListeProfs = new ObjetListeElements_1.ObjetListeElements().fromJSON(
 			this.JSONReponse.listeProfs,
 		);
 		const lAvecServicesEvaluation = !!this.JSONReponse.avecServicesEvaluation;
 		lListeQCM.parcourir((aElement) => {
-			if (aElement.getGenre() === EGenreRessource.ExecutionQCM) {
+			if (
+				aElement.getGenre() === Enumere_Ressource_1.EGenreRessource.ExecutionQCM
+			) {
 				aElement.QCM = lListeQCM.getElementParNumero(aElement.QCM.getNumero());
 			}
-			if (aElement.getGenre() === EGenreRessource.ExecutionQCM) {
+			if (
+				aElement.getGenre() === Enumere_Ressource_1.EGenreRessource.ExecutionQCM
+			) {
 				aElement.estUnDeploiement = false;
 				aElement.estDeploye = true;
 				aElement.pere = aElement.QCM;
@@ -59,13 +61,15 @@ class ObjetRequeteListeQCM extends ObjetRequeteConsultation {
 					})
 					.count();
 				if (!!lListeCategories && !!aElement.categories) {
-					const lNouvelleListe = new ObjetListeElements();
+					const lNouvelleListe = new ObjetListeElements_1.ObjetListeElements();
 					aElement.categories.parcourir((aCategorieQCM) => {
 						const lCategorieDeListeGlobale =
 							lListeCategories.getElementParNumero(aCategorieQCM.getNumero());
 						if (!!lCategorieDeListeGlobale) {
 							lNouvelleListe.add(
-								MethodesObjet.dupliquer(lCategorieDeListeGlobale),
+								MethodesObjet_1.MethodesObjet.dupliquer(
+									lCategorieDeListeGlobale,
+								),
 							);
 						}
 					});
@@ -82,7 +86,8 @@ class ObjetRequeteListeQCM extends ObjetRequeteConsultation {
 		});
 	}
 }
-Requetes.inscrire("listeQCM", ObjetRequeteListeQCM);
+exports.ObjetRequeteListeQCM = ObjetRequeteListeQCM;
+CollectionRequetes_1.Requetes.inscrire("listeQCM", ObjetRequeteListeQCM);
 function _ajouterServices(aJSON, aElement) {
 	aElement.copieJSON(aJSON);
 	const lListeProprietes = [
@@ -94,54 +99,62 @@ function _ajouterServices(aJSON, aElement) {
 	];
 	for (const x in lListeProprietes) {
 		if (aJSON[lListeProprietes[x]]) {
-			aElement[lListeProprietes[x]] = new ObjetElement().fromJSON(
-				aJSON[lListeProprietes[x]],
-			);
+			aElement[lListeProprietes[x]] =
+				new ObjetElement_1.ObjetElement().fromJSON(aJSON[lListeProprietes[x]]);
 			aElement[lListeProprietes[x]].copieJSON(aJSON[lListeProprietes[x]]);
 			if (aElement[lListeProprietes[x]].matiere) {
-				aElement[lListeProprietes[x]].matiere = new ObjetElement().fromJSON(
-					aJSON[lListeProprietes[x]].matiere,
-				);
+				aElement[lListeProprietes[x]].matiere =
+					new ObjetElement_1.ObjetElement().fromJSON(
+						aJSON[lListeProprietes[x]].matiere,
+					);
 			}
 			if (aElement[lListeProprietes[x]].listePeriodes) {
 				aElement[lListeProprietes[x]].listePeriodes =
-					new ObjetListeElements().fromJSON(
+					new ObjetListeElements_1.ObjetListeElements().fromJSON(
 						aJSON[lListeProprietes[x]].listePeriodes,
 					);
 			}
 		}
 	}
-	aElement.listePeriodes = new ObjetListeElements().fromJSON(
-		aJSON.listePeriodes,
-	);
-	aElement.groupe.listeClasses = new ObjetListeElements().fromJSON(
-		aJSON.groupe.listeClasses,
-		_ajouterClasses,
-	);
+	aElement.listePeriodes =
+		new ObjetListeElements_1.ObjetListeElements().fromJSON(aJSON.listePeriodes);
+	aElement.groupe.listeClasses =
+		new ObjetListeElements_1.ObjetListeElements().fromJSON(
+			aJSON.groupe.listeClasses,
+			_ajouterClasses,
+		);
 	if (aJSON.classe.service) {
-		aElement.classe.service = new ObjetElement().fromJSON(aJSON.classe.service);
+		aElement.classe.service = new ObjetElement_1.ObjetElement().fromJSON(
+			aJSON.classe.service,
+		);
 	}
 }
 function _ajouterClasses(aJSON, aElement) {
 	aElement.copieJSON(aJSON);
 	if (aJSON.service) {
-		aElement.service = new ObjetElement().fromJSON(aJSON.service);
+		aElement.service = new ObjetElement_1.ObjetElement().fromJSON(
+			aJSON.service,
+		);
 	}
 	if (aJSON.periodeParDefaut) {
-		aElement.periodeParDefaut = new ObjetElement().fromJSON(
+		aElement.periodeParDefaut = new ObjetElement_1.ObjetElement().fromJSON(
 			aJSON.periodeParDefaut,
 		);
 	}
 	if (aJSON.listePeriodes) {
-		aElement.listePeriodes = new ObjetListeElements().fromJSON(
-			aJSON.listePeriodes,
-			(aJSON, aElement) => {
-				aElement.Actif = aJSON.actif;
-			},
-		);
+		aElement.listePeriodes =
+			new ObjetListeElements_1.ObjetListeElements().fromJSON(
+				aJSON.listePeriodes,
+				(aJSON, aElement) => {
+					aElement.Actif = aJSON.actif;
+				},
+			);
 		aElement.listePeriodes.addElement(
-			new ObjetElement(GTraductions.getValeur("Aucune"), 0, 0),
+			new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur("Aucune"),
+				0,
+				0,
+			),
 		);
 	}
 }
-module.exports = { ObjetRequeteListeQCM };

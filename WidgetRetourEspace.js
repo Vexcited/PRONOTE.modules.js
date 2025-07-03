@@ -5,7 +5,7 @@ const UtilitaireRedirection_1 = require("UtilitaireRedirection");
 class WidgetRetourEspace extends ObjetWidget_1.Widget.ObjetWidget {
 	construire(aParams) {
 		this.donnees = aParams.donnees;
-		const lWidget = { html: this.composeWidgetRetourEspace() };
+		const lWidget = { getHtml: this.composeWidgetRetourEspace.bind(this) };
 		$.extend(true, this.donnees, lWidget);
 		aParams.construireWidget(this.donnees);
 	}

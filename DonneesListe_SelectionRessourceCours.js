@@ -11,7 +11,6 @@ class DonneesListe_SelectionRessourceCours extends ObjetDonneesListe_1.ObjetDonn
 		this.setOptions({
 			avecDeploiement: true,
 			avecImageSurColonneDeploiement: true,
-			avecEtatSaisie: false,
 		});
 		this.creerIndexUnique("Libelle");
 	}
@@ -191,7 +190,7 @@ class DonneesListe_SelectionRessourceCours extends ObjetDonneesListe_1.ObjetDonn
 		}
 		return "";
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_SelectionRessourceCours.colonnes.nom:
 				return this._estSalleNonReservable(aParams.article)

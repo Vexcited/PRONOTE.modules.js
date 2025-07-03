@@ -1,12 +1,10 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { TypeNote } = require("TypeNote.js");
-class _ObjetRequeteResultat extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports._ObjetRequeteResultat = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTri_1 = require("ObjetTri");
+const TypeNote_1 = require("TypeNote");
+class _ObjetRequeteResultat extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	creerListeServices(aJSON) {
 		function getCoefficient(T) {
 			let R = 0;
@@ -18,7 +16,7 @@ class _ObjetRequeteResultat extends ObjetRequeteConsultation {
 					}
 				}
 			}
-			return new TypeNote(R);
+			return new TypeNote_1.TypeNote(R);
 		}
 		function getMoyenne(T, aNom, aArrondi) {
 			let R = 0,
@@ -44,9 +42,10 @@ class _ObjetRequeteResultat extends ObjetRequeteConsultation {
 					});
 				}
 			}
-			const lNote = N > 0 ? new TypeNote(R / N) : new TypeNote("");
+			const lNote =
+				N > 0 ? new TypeNote_1.TypeNote(R / N) : new TypeNote_1.TypeNote("");
 			return aArrondi
-				? new TypeNote(aArrondi.arrondir(lNote.getValeur()))
+				? new TypeNote_1.TypeNote(aArrondi.arrondir(lNote.getValeur()))
 				: lNote;
 		}
 		function getNombreDevoirs(T) {
@@ -69,7 +68,7 @@ class _ObjetRequeteResultat extends ObjetRequeteConsultation {
 					R += T[I].NombrePointsEleve.getValeur();
 				}
 			}
-			return new TypeNote(R > 0 ? R : "");
+			return new TypeNote_1.TypeNote(R > 0 ? R : "");
 		}
 		function calculerEstDebutRegroupement(
 			aListeElements,
@@ -102,13 +101,12 @@ class _ObjetRequeteResultat extends ObjetRequeteConsultation {
 		this.ExisteService = false;
 		this.NbrMaxServices = 0;
 		this.NbrMaxDevoirs = 0;
-		this.tableauSurMatieres = [];
+		this.tableauSurMatieres = {};
 		this.tableauDebutRegroupement = [];
-		const lThis = this;
 		this.ListeElements = aJSON.ListeServices;
 		if (!!this.ListeElements) {
 			this.ListeElements.parcourir((aService) => {
-				_composeDonneesService.call(lThis, aJSON, aService);
+				this._composeDonneesService(aJSON, aService);
 			});
 			_trierListeServices(this.ListeElements);
 		}
@@ -116,16 +114,15 @@ class _ObjetRequeteResultat extends ObjetRequeteConsultation {
 		if (!!this.listeSurMatieres) {
 			this.listeSurMatieres.parcourir((aMatiere) => {
 				const lNumeroSurMatiere = aMatiere.getNumero();
-				if (lThis.tableauSurMatieres[lNumeroSurMatiere]) {
-					lThis.tableauSurMatieres[lNumeroSurMatiere].Arrondi =
-						aMatiere.Arrondi;
-					lThis.tableauSurMatieres[lNumeroSurMatiere].MoyenneClasse =
+				if (this.tableauSurMatieres[lNumeroSurMatiere]) {
+					this.tableauSurMatieres[lNumeroSurMatiere].Arrondi = aMatiere.Arrondi;
+					this.tableauSurMatieres[lNumeroSurMatiere].MoyenneClasse =
 						aMatiere.MoyenneClasse;
-					lThis.tableauSurMatieres[lNumeroSurMatiere].MoyenneInf =
+					this.tableauSurMatieres[lNumeroSurMatiere].MoyenneInf =
 						aMatiere.MoyenneInf;
-					lThis.tableauSurMatieres[lNumeroSurMatiere].MoyenneSup =
+					this.tableauSurMatieres[lNumeroSurMatiere].MoyenneSup =
 						aMatiere.MoyenneSup;
-					lThis.tableauSurMatieres[lNumeroSurMatiere].MoyenneMediane =
+					this.tableauSurMatieres[lNumeroSurMatiere].MoyenneMediane =
 						aMatiere.MoyenneMediane;
 				}
 			});
@@ -162,25 +159,107 @@ class _ObjetRequeteResultat extends ObjetRequeteConsultation {
 		const lNouvelleListeMoyennePeriodes = [];
 		const lGeneral = this.JSONReponse.General;
 		if (!!lGeneral) {
-			if (!!lGeneral.ListeMoyennesPeriodes) {
+			if (
+				!!lGeneral.ListeMoyennesPeriodes &&
+				Array.isArray(lGeneral.ListeMoyennesPeriodes)
+			) {
 				lGeneral.ListeMoyennesPeriodes.forEach((aMoyennePeriode) => {
-					lNouvelleListeMoyennePeriodes.push(new TypeNote(aMoyennePeriode));
+					lNouvelleListeMoyennePeriodes.push(
+						new TypeNote_1.TypeNote(aMoyennePeriode),
+					);
 				});
 			}
 			lGeneral.ListeMoyennesPeriodes = lNouvelleListeMoyennePeriodes;
 		}
 	}
+	_composeDonneesService(aJSON, aService, aEstSousService) {
+		this.ExisteService = true;
+		if (!aService.ListeNiveauDAcquisitionPeriodes) {
+			aService.ListeNiveauDAcquisitionPeriodes =
+				new ObjetListeElements_1.ObjetListeElements();
+		}
+		if (!aService.SurMatiere) {
+			aService.SurMatiere = new ObjetElement_1.ObjetElement("", 0);
+		}
+		const lNouvelleListeMoyennePeriodes = [];
+		if (!!aService.ListeMoyennesPeriodes) {
+			aService.ListeMoyennesPeriodes.forEach((aMoyennePeriode) => {
+				lNouvelleListeMoyennePeriodes.push(
+					new TypeNote_1.TypeNote(aMoyennePeriode),
+				);
+			});
+		}
+		aService.ListeMoyennesPeriodes = lNouvelleListeMoyennePeriodes;
+		if (!!aService.SurMatiere && aService.SurMatiere.existeNumero()) {
+			const lCleSurMatiere =
+				aService.SurMatiere.getNumero() + "_" + aService.OrdreRegroupement;
+			if (
+				this.tableauDebutRegroupement[lCleSurMatiere] === null ||
+				this.tableauDebutRegroupement[lCleSurMatiere] === undefined ||
+				aService.OrdreDansRegroupement <
+					this.tableauDebutRegroupement[lCleSurMatiere]
+			) {
+				this.tableauDebutRegroupement[lCleSurMatiere] =
+					aService.OrdreDansRegroupement;
+			}
+			if (aService.AvecMoyenneRegroupement && !aEstSousService) {
+				const lNumeroSurMatiere = aService.SurMatiere.getNumero();
+				if (
+					this.tableauSurMatieres[lNumeroSurMatiere] === null ||
+					this.tableauSurMatieres[lNumeroSurMatiere] === undefined
+				) {
+					this.tableauSurMatieres[lNumeroSurMatiere] = {};
+					this.tableauSurMatieres[lNumeroSurMatiere].tableauServices = [];
+				}
+				this.tableauSurMatieres[lNumeroSurMatiere].tableauServices.push(
+					aService,
+				);
+			}
+		}
+		if (!!aService.ListeElements && aService.ListeElements.count() > 0) {
+			aJSON.ParametresAffichages.AvecSousService = true;
+			aService.ListeElements.parcourir((aSousService) => {
+				this._composeDonneesService(aJSON, aSousService, true);
+			});
+			_trierListeServices(aService.ListeElements);
+		} else {
+			this.NbrMaxServices++;
+		}
+		if (!!aService.ListeDevoirs && aService.ListeDevoirs.count() > 0) {
+			this.ExisteDevoir = true;
+			aService.ListeDevoirs.parcourir((aDevoir) => {
+				if (!!aDevoir.ExcecutionQCM) {
+					aDevoir.executionQCM = aDevoir.ExcecutionQCM;
+				}
+				if (!!aDevoir.ExecKiosque) {
+					aDevoir.execKiosque = aDevoir.ExecKiosque;
+				}
+			});
+			aService.ListeDevoirs.setTri([
+				ObjetTri_1.ObjetTri.init("Date"),
+				ObjetTri_1.ObjetTri.init("Position"),
+			]);
+			aService.ListeDevoirs.trier();
+			if (!aService.ListeElements || aService.ListeElements.count() === 0) {
+				this.NbrMaxDevoirs = Math.max(
+					this.NbrMaxDevoirs,
+					aService.ListeDevoirs.count(),
+				);
+			}
+		}
+	}
 }
+exports._ObjetRequeteResultat = _ObjetRequeteResultat;
 function _trierListeServices(aListe) {
 	if (!aListe) {
 		return;
 	}
 	aListe
 		.setTri([
-			ObjetTri.init("OrdreRegroupement"),
-			ObjetTri.init("OrdreDansRegroupement"),
-			ObjetTri.init("Matiere.Libelle"),
-			ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.init("OrdreRegroupement"),
+			ObjetTri_1.ObjetTri.init("OrdreDansRegroupement"),
+			ObjetTri_1.ObjetTri.init("Matiere.Libelle"),
+			ObjetTri_1.ObjetTri.init((D) => {
 				return D.ListeProfesseurs && D.ListeProfesseurs.count()
 					? D.ListeProfesseurs.getLibelle(0)
 					: "";
@@ -188,76 +267,3 @@ function _trierListeServices(aListe) {
 		])
 		.trier();
 }
-function _composeDonneesService(aJSON, aService, aEstSousService) {
-	this.ExisteService = true;
-	if (!aService.ListeNiveauDAcquisitionPeriodes) {
-		aService.ListeNiveauDAcquisitionPeriodes = new ObjetListeElements();
-	}
-	if (!aService.SurMatiere) {
-		aService.SurMatiere = new ObjetElement("", 0);
-	}
-	const lNouvelleListeMoyennePeriodes = [];
-	if (!!aService.ListeMoyennesPeriodes) {
-		aService.ListeMoyennesPeriodes.forEach((aMoyennePeriode) => {
-			lNouvelleListeMoyennePeriodes.push(new TypeNote(aMoyennePeriode));
-		});
-	}
-	aService.ListeMoyennesPeriodes = lNouvelleListeMoyennePeriodes;
-	if (!!aService.SurMatiere && aService.SurMatiere.existeNumero()) {
-		const lCleSurMatiere =
-			aService.SurMatiere.getNumero() + "_" + aService.OrdreRegroupement;
-		if (
-			this.tableauDebutRegroupement[lCleSurMatiere] === null ||
-			this.tableauDebutRegroupement[lCleSurMatiere] === undefined ||
-			aService.OrdreDansRegroupement <
-				this.tableauDebutRegroupement[lCleSurMatiere]
-		) {
-			this.tableauDebutRegroupement[lCleSurMatiere] =
-				aService.OrdreDansRegroupement;
-		}
-		if (aService.AvecMoyenneRegroupement && !aEstSousService) {
-			const lNumeroSurMatiere = aService.SurMatiere.getNumero();
-			if (
-				this.tableauSurMatieres[lNumeroSurMatiere] === null ||
-				this.tableauSurMatieres[lNumeroSurMatiere] === undefined
-			) {
-				this.tableauSurMatieres[lNumeroSurMatiere] = {};
-				this.tableauSurMatieres[lNumeroSurMatiere].tableauServices = [];
-			}
-			this.tableauSurMatieres[lNumeroSurMatiere].tableauServices.push(aService);
-		}
-	}
-	if (!!aService.ListeElements && aService.ListeElements.count() > 0) {
-		aJSON.ParametresAffichages.AvecSousService = true;
-		const lThis = this;
-		aService.ListeElements.parcourir((aSousService) => {
-			_composeDonneesService.call(lThis, aJSON, aSousService, true);
-		});
-		_trierListeServices(aService.ListeElements);
-	} else {
-		this.NbrMaxServices++;
-	}
-	if (!!aService.ListeDevoirs && aService.ListeDevoirs.count() > 0) {
-		this.ExisteDevoir = true;
-		aService.ListeDevoirs.parcourir((aDevoir) => {
-			if (!!aDevoir.ExcecutionQCM) {
-				aDevoir.executionQCM = aDevoir.ExcecutionQCM;
-			}
-			if (!!aDevoir.ExecKiosque) {
-				aDevoir.execKiosque = aDevoir.ExecKiosque;
-			}
-		});
-		aService.ListeDevoirs.setTri([
-			ObjetTri.init("Date", true),
-			ObjetTri.init("Position"),
-		]);
-		aService.ListeDevoirs.trier();
-		if (!aService.ListeElements || aService.ListeElements.count() === 0) {
-			this.NbrMaxDevoirs = Math.max(
-				this.NbrMaxDevoirs,
-				aService.ListeDevoirs.count(),
-			);
-		}
-	}
-}
-module.exports = { _ObjetRequeteResultat };

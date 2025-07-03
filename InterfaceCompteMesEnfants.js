@@ -1,75 +1,60 @@
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const {
-	ObjetRequeteSaisieCompteEnfant,
-} = require("ObjetRequeteSaisieCompteEnfant.js");
-const {
-	ObjetFenetre_ModificationIdentifiantMDP,
-} = require("ObjetFenetre_ModificationIdentifiantMDP.js");
-const {
-	InterfaceAutorisationSortie,
-} = require("InterfaceAutorisationSortie.js");
-const { GHtml } = require("ObjetHtml.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { InterfacePage } = require("InterfacePage.js");
-const { ObjetRequetePageMesEnfants } = require("ObjetRequetePageMesEnfants.js");
-const { PageInformationsMedicales } = require("PageInformationsMedicales.js");
-const {
-	UtilitairePageDonneesPersonnelles,
-} = require("UtilitairePageDonneesPersonnelles.js");
-const { EGenreTypeContenu } = require("Enumere_DonneesPersonnelles.js");
-const { EStructureAffichage } = require("Enumere_StructureAffichage.js");
-const { GUID } = require("GUID.js");
-const {
-	ObjetFenetre_DetailsPIEleve,
-} = require("ObjetFenetre_DetailsPIEleve.js");
-const {
-	ObjetRequeteSaisieMotDePasseEleve,
-} = require("ObjetRequeteSaisieMotDePasseEleve.js");
-class InterfaceCompteMesEnfants extends InterfacePage {
+exports.InterfaceCompteMesEnfants = void 0;
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetRequeteSaisieCompteEnfant_1 = require("ObjetRequeteSaisieCompteEnfant");
+const ObjetFenetre_ModificationIdentifiantMDP_1 = require("ObjetFenetre_ModificationIdentifiantMDP");
+const InterfaceAutorisationSortie_1 = require("InterfaceAutorisationSortie");
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const InterfacePage_1 = require("InterfacePage");
+const ObjetRequetePageMesEnfants_1 = require("ObjetRequetePageMesEnfants");
+const PageInformationsMedicales_1 = require("PageInformationsMedicales");
+const UtilitairePageDonneesPersonnelles_1 = require("UtilitairePageDonneesPersonnelles");
+const Enumere_DonneesPersonnelles_1 = require("Enumere_DonneesPersonnelles");
+const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
+const GUID_1 = require("GUID");
+const ObjetFenetre_DetailsPIEleve_1 = require("ObjetFenetre_DetailsPIEleve");
+const ObjetRequeteSaisieMotDePasseEleve_1 = require("ObjetRequeteSaisieMotDePasseEleve");
+class InterfaceCompteMesEnfants extends InterfacePage_1.InterfacePage {
 	constructor(...aParams) {
 		super(...aParams);
-		this.donnees = {
-			mangeALaCantine: false,
-			informationsCompte: null,
-			numeroINE: "",
-			autorisationSortie: null,
-			infosMedicales: null,
-			restrictionsAlimentaires: null,
-		};
 		this.parametres = {
 			largeurIdentifiantCompteEnfant: 120,
 			maskMDP: "*********",
 		};
-		this.ids = {
-			divConteneur: GUID.getId(),
-			mdpEnfant: "mdp_enfant",
-			cbDroitImage: "CB_DroitImage",
-		};
+		this.ids = { divConteneur: GUID_1.GUID.getId(), mdpEnfant: "mdp_enfant" };
 		this.idPage = this.ids.divConteneur;
 	}
 	construireInstances() {
 		this.identInformationsMedicales = this.add(
-			PageInformationsMedicales,
-			_evenementInformationsMedicales,
+			PageInformationsMedicales_1.PageInformationsMedicales,
+			this._evenementInformationsMedicales.bind(this),
 		);
 		this.identAutorisationSortie = this.add(
-			InterfaceAutorisationSortie,
-			_evenementAutorisationSortie,
+			InterfaceAutorisationSortie_1.InterfaceAutorisationSortie,
+			this._evenementAutorisationSortie.bind(this),
 		);
 	}
 	setParametresGeneraux() {
 		this.avecBandeau = true;
-		this.GenreStructure = EStructureAffichage.Autre;
+		this.GenreStructure =
+			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 	}
 	construireStructureAffichageAutre() {
 		const H = [];
 		H.push(
-			'<div class="ObjetCompte details-contain" style="height: 100%;flex:1 1 auto; overflow:auto;">',
-			'<div id="',
-			this.ids.divConteneur,
-			'" class="compte-contain" style="max-width: 88rem;"></div>',
-			"</div>",
+			IE.jsx.str(
+				"div",
+				{
+					class: "ObjetCompte details-contain",
+					style: "height: 100%;flex:1 1 auto; overflow:auto;",
+				},
+				IE.jsx.str("div", {
+					id: this.ids.divConteneur,
+					class: "compte-contain",
+					style: "max-width: 88rem;",
+				}),
+			),
 		);
 		return H.join("");
 	}
@@ -80,7 +65,7 @@ class InterfaceCompteMesEnfants extends InterfacePage {
 					if (aInstance.donnees && aInstance.donnees.listeProjets) {
 						const lProjet =
 							aInstance.donnees.listeProjets.getElementParNumero(aNumero);
-						_ouvrirFenetreDetailsPIEleve.call(aInstance, lProjet);
+						aInstance._ouvrirFenetreDetailsPIEleve(lProjet);
 					}
 				},
 			},
@@ -88,27 +73,29 @@ class InterfaceCompteMesEnfants extends InterfacePage {
 		return $.extend(
 			true,
 			lControleur,
-			UtilitairePageDonneesPersonnelles.getControleur(aInstance),
+			UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.getControleur(
+				aInstance,
+			),
 		);
 	}
 	surReponseRecupererDonnees(aJSON) {
-		Object.assign(this.donnees, aJSON);
+		this.donnees = aJSON;
 		this.setEtatSaisie(false);
 		if (!!aJSON.message) {
 			this.afficherMessage(aJSON.message);
 		} else {
-			GHtml.setHtml(this.ids.divConteneur, _construirePage.call(this), {
+			ObjetHtml_1.GHtml.setHtml(this.ids.divConteneur, this._construirePage(), {
 				controleur: this.controleur,
 			});
 			if (!!this.donnees.informationsCompte) {
 				const lThis = this;
 				$("#" + this.ids.mdpEnfant.escapeJQ()).on({
 					mouseup: function () {
-						_surModifierMdpEnfant.call(lThis);
+						lThis._surModifierMdpEnfant();
 					},
 					keyup: function () {
 						if (GNavigateur.isToucheSelection()) {
-							_surModifierMdpEnfant.call(lThis);
+							lThis._surModifierMdpEnfant();
 						}
 					},
 					mouseenter: function () {
@@ -136,7 +123,7 @@ class InterfaceCompteMesEnfants extends InterfacePage {
 		}
 	}
 	recupererDonnees() {
-		new ObjetRequetePageMesEnfants(
+		new ObjetRequetePageMesEnfants_1.ObjetRequetePageMesEnfants(
 			this,
 			this.surReponseRecupererDonnees,
 		).lancerRequete();
@@ -154,7 +141,7 @@ class InterfaceCompteMesEnfants extends InterfacePage {
 		const lRestrictionsAlimentaires = this.getInstance(
 			this.identInformationsMedicales,
 		).getAlimentationModifie();
-		new ObjetRequeteSaisieCompteEnfant(
+		new ObjetRequeteSaisieCompteEnfant_1.ObjetRequeteSaisieCompteEnfant(
 			this,
 			this.actionSurValidation,
 		).lancerRequete({
@@ -165,97 +152,118 @@ class InterfaceCompteMesEnfants extends InterfacePage {
 			autorisationImage: !this.donnees.droitImage.autoriser,
 		});
 	}
-}
-function _evenementInformationsMedicales() {
-	this.valider();
-}
-function _evenementAutorisationSortie() {
-	this.valider();
-}
-function _construirePage() {
-	const lParams = { listeProjets: this.donnees.listeProjets };
-	const lAvecSaisieMdpEnfant =
-		GApplication.droits.get(TypeDroits.compte.avecSaisieMotDePasseEleve) &&
-		this.donnees.informationsCompte;
-	if (lAvecSaisieMdpEnfant) {
-		lParams.largeurIdentifiantCompteEnfant =
-			this.parametres.largeurIdentifiantCompteEnfant;
-		lParams.identifiant = this.donnees.informationsCompte.Identifiant;
-		lParams.informationsCompteMotDePasse = this.donnees
-			.informationsCompteMotDePasseEnClair
-			? this.donnees.informationsCompteMotDePasse
-			: this.parametres.maskMDP;
+	_evenementInformationsMedicales() {
+		this.valider();
 	}
-	const H = [];
-	if (lAvecSaisieMdpEnfant) {
+	_evenementAutorisationSortie() {
+		this.valider();
+	}
+	_construirePage() {
+		const lParams = {
+			listeProjets: this.donnees.listeProjets,
+			largeurIdentifiantCompteEnfant: null,
+			identifiant: null,
+			informationsCompteMotDePasse: null,
+		};
+		const lAvecSaisieMdpEnfant =
+			this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.compte.avecSaisieMotDePasseEleve,
+			) && !!this.donnees.informationsCompte;
+		if (lAvecSaisieMdpEnfant) {
+			lParams.largeurIdentifiantCompteEnfant =
+				this.parametres.largeurIdentifiantCompteEnfant;
+			lParams.identifiant = this.donnees.informationsCompte.Identifiant;
+			lParams.informationsCompteMotDePasse = this.donnees.informationsCompte
+				.MotDePasseEnClair
+				? this.donnees.informationsCompte.MotDePasse
+				: this.parametres.maskMDP;
+		}
+		const H = [];
+		if (lAvecSaisieMdpEnfant) {
+			H.push(
+				UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
+					ObjetTraduction_1.GTraductions.getValeur("PageCompte.CompteEnfant"),
+					Enumere_DonneesPersonnelles_1.EGenreTypeContenu.InfosCompteEnfant,
+					lParams,
+				),
+			);
+		}
 		H.push(
-			UtilitairePageDonneesPersonnelles.construireZoneGenerique(
-				GTraductions.getValeur("PageCompte.CompteEnfant"),
-				EGenreTypeContenu.InfosCompteEnfant,
-				lParams,
+			'<div class="bord-bas" id="',
+			this.getNomInstance(this.identInformationsMedicales),
+			'"></div>',
+		);
+		if (!!this.donnees.listeProjets && this.donnees.listeProjets.count() > 0) {
+			H.push(
+				UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
+					ObjetTraduction_1.GTraductions.getValeur(
+						"PageCompte.ProjetsAccompagnement",
+					),
+					Enumere_DonneesPersonnelles_1.EGenreTypeContenu.ProjetsAccompagnement,
+					lParams,
+				),
+			);
+		}
+		if (!!this.donnees.autorisationSortie) {
+			H.push(
+				UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
+					ObjetTraduction_1.GTraductions.getValeur("AutorisationSortie.titre"),
+					Enumere_DonneesPersonnelles_1.EGenreTypeContenu.AutorisationSortie,
+					{
+						identiteAutorisations: this.getInstance(
+							this.identAutorisationSortie,
+						).getNom(),
+					},
+				),
+			);
+		}
+		if (!!this.donnees.droitImage) {
+			H.push(
+				UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
+					ObjetTraduction_1.GTraductions.getValeur(
+						"ParametresUtilisateur.DroitALImage",
+					),
+					Enumere_DonneesPersonnelles_1.EGenreTypeContenu.DroitImage,
+					{ avecImage: !this.donnees.droitImage.autoriser },
+				),
+			);
+		}
+		H.push(
+			UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
+				ObjetTraduction_1.GTraductions.getValeur("PageCompte.NumeroINE"),
+				Enumere_DonneesPersonnelles_1.EGenreTypeContenu.INE,
+				{ numeroINE: this.donnees.numeroINE },
 			),
 		);
+		return H.join("");
 	}
-	H.push(
-		'<div class="bord-bas" id="',
-		this.getNomInstance(this.identInformationsMedicales),
-		'"></div>',
-	);
-	if (!!this.donnees.listeProjets && this.donnees.listeProjets.count() > 0) {
-		H.push(
-			UtilitairePageDonneesPersonnelles.construireZoneGenerique(
-				GTraductions.getValeur("PageCompte.ProjetsAccompagnement"),
-				EGenreTypeContenu.ProjetsAccompagnement,
-				lParams,
-			),
-		);
-	}
-	if (!!this.donnees.autorisationSortie) {
-		H.push(
-			UtilitairePageDonneesPersonnelles.construireZoneGenerique(
-				GTraductions.getValeur("AutorisationSortie.titre"),
-				EGenreTypeContenu.AutorisationSortie,
+	_surModifierMdpEnfant() {
+		const lFenetreModifIdentifiantMDP =
+			ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+				ObjetFenetre_ModificationIdentifiantMDP_1.ObjetFenetre_ModificationIdentifiantMDP,
 				{
-					identiteAutorisations: this.getInstance(
-						this.identAutorisationSortie,
-					).getNom(),
+					pere: this,
+					initialiser: (aInstance) => {
+						aInstance.changementMDP = true;
+						aInstance.changementMDPEleve = true;
+						aInstance.setOptionsFenetre({
+							optionsMDP: {
+								classRequeteSaisie:
+									ObjetRequeteSaisieMotDePasseEleve_1.ObjetRequeteSaisieMotDePasseEleve,
+							},
+						});
+					},
 				},
-			),
+			);
+		lFenetreModifIdentifiantMDP.setDonnees(
+			GEtatUtilisateur.reglesSaisieMotDePasse,
 		);
 	}
-	if (!!this.donnees.droitImage) {
-		H.push(
-			UtilitairePageDonneesPersonnelles.construireZoneGenerique(
-				GTraductions.getValeur("ParametresUtilisateur.DroitALImage"),
-				EGenreTypeContenu.DroitImage,
-				{ avecImage: !this.donnees.droitImage.autoriser },
-			),
-		);
+	_ouvrirFenetreDetailsPIEleve(aProjet) {
+		ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_DetailsPIEleve_1.ObjetFenetre_DetailsPIEleve,
+			{ pere: this },
+		).setDonnees({ eleve: GEtatUtilisateur.getMembre(), projet: aProjet });
 	}
-	H.push(
-		UtilitairePageDonneesPersonnelles.construireZoneGenerique(
-			GTraductions.getValeur("PageCompte.NumeroINE"),
-			EGenreTypeContenu.INE,
-			{ numeroINE: this.donnees.numeroINE },
-		),
-	);
-	return H.join("");
 }
-function _surModifierMdpEnfant() {
-	ObjetFenetre.creerInstanceFenetre(ObjetFenetre_ModificationIdentifiantMDP, {
-		pere: this,
-		initialiser: function (aInstance) {
-			aInstance.changementMDP = true;
-			aInstance.changementMDPEleve = true;
-			aInstance.setOptionsFenetre({
-				optionsMDP: { classRequeteSaisie: ObjetRequeteSaisieMotDePasseEleve },
-			});
-		},
-	}).setDonnees(GEtatUtilisateur.reglesSaisieMotDePasse);
-}
-function _ouvrirFenetreDetailsPIEleve(aProjet) {
-	ObjetFenetre.creerInstanceFenetre(ObjetFenetre_DetailsPIEleve, {
-		pere: this,
-	}).setDonnees({ eleve: GEtatUtilisateur.getMembre(), projet: aProjet });
-}
-module.exports = { InterfaceCompteMesEnfants };
+exports.InterfaceCompteMesEnfants = InterfaceCompteMesEnfants;

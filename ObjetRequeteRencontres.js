@@ -1,16 +1,14 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteRencontres extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteRencontres = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteRencontres extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aSessionRencontre) {
 		this.JSON.sessionRencontre = aSessionRencontre;
 		return this.appelAsynchrone();
 	}
-	actionApresRequete() {
-		this.callbackReussite.appel(this.JSONReponse);
-	}
 }
-Requetes.inscrire("RencontresParentsProfs", ObjetRequeteRencontres);
-module.exports = ObjetRequeteRencontres;
+exports.ObjetRequeteRencontres = ObjetRequeteRencontres;
+CollectionRequetes_1.Requetes.inscrire(
+	"RencontresParentsProfs",
+	ObjetRequeteRencontres,
+);

@@ -1,45 +1,38 @@
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { DonneesListe_EditionMotifs } = require("DonneesListe_EditionMotifs.js");
-const {
-	DonneesListe_EditionCategoriesDossiers,
-} = require("DonneesListe_EditionCategoriesDossiers.js");
-const { GUID } = require("GUID.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GHtml } = require("ObjetHtml.js");
-const { GStyle } = require("ObjetStyle.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { EGenreDocumentJoint } = require("Enumere_DocumentJoint.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { ObjetCelluleDate } = require("ObjetCelluleDate.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetFenetre_Liste } = require("ObjetFenetre_Liste.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { GObjetWAI, EGenreAttribut } = require("ObjetWAI.js");
-const { GCache } = require("Cache.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const {
-	ObjetCelluleMultiSelectionMotif,
-} = require("ObjetCelluleMultiSelectionMotif.js");
-const { ObjetSaisiePN } = require("ObjetSaisiePN.js");
-const {
-	DonneesListe_SelectionMotifs,
-} = require("DonneesListe_SelectionMotifs.js");
-const {
-	TypeOrigineCreationCategorieDossier,
-} = require("TypeOrigineCreationCategorieDossier.js");
-const { UtilitaireUrl } = require("UtilitaireUrl.js");
-const { TypeFichierExterneHttpSco } = require("TypeFichierExterneHttpSco.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { EGenreAction } = require("Enumere_Action.js");
-const { ObjetElement } = require("ObjetElement.js");
-class ObjetFenetre_DossierVieScolaire extends ObjetFenetre {
+exports.ObjetFenetre_DossierVieScolaire = void 0;
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const DonneesListe_EditionMotifs_1 = require("DonneesListe_EditionMotifs");
+const DonneesListe_EditionCategoriesDossiers_1 = require("DonneesListe_EditionCategoriesDossiers");
+const GUID_1 = require("GUID");
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetStyle_1 = require("ObjetStyle");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_DocumentJoint_1 = require("Enumere_DocumentJoint");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const ObjetCelluleDate_1 = require("ObjetCelluleDate");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_Liste_1 = require("ObjetFenetre_Liste");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Cache_1 = require("Cache");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetCelluleMultiSelectionMotif_1 = require("ObjetCelluleMultiSelectionMotif");
+const ObjetSaisiePN_1 = require("ObjetSaisiePN");
+const DonneesListe_SelectionMotifs_1 = require("DonneesListe_SelectionMotifs");
+const TypeOrigineCreationCategorieDossier_1 = require("TypeOrigineCreationCategorieDossier");
+const UtilitaireUrl_1 = require("UtilitaireUrl");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_Action_1 = require("Enumere_Action");
+const ObjetElement_1 = require("ObjetElement");
+const GlossaireDossierVieScolaire_1 = require("GlossaireDossierVieScolaire");
+const AccessApp_1 = require("AccessApp");
+class ObjetFenetre_DossierVieScolaire extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
+		this.applicationSco = (0, AccessApp_1.getApp)();
+		this.parametresSco = this.applicationSco.getObjetParametres();
 		this.ids = {
 			conteneurPrincipal: "ObjetFenetre_DossierVieScolaire",
 			zoneProprietesGenerales: "ZoneProprietesGenerales",
@@ -50,64 +43,63 @@ class ObjetFenetre_DossierVieScolaire extends ObjetFenetre {
 			conteneurBoutonEditerMotif: "ConteneurBoutonEditerMotif",
 			conteneurBoutonEditerCategorie: "ConteneurBoutonEditerCategorie",
 			textareaCommentaire: "textareaCommentaire",
+			contexte: this.Nom + "_ContexteDossierVieScolaire",
+			victime: this.Nom + "_victime",
+			restriction: GUID_1.GUID.getId() + "_restriction",
+			listeDocuments: this.Nom + "_ListeDocuments",
 		};
-		this.idContexte = this.Nom + "_ContexteDossierVieScolaire";
-		this.idVictime = this.Nom + "_victime";
-		this.idRestriction = GUID.getId() + "_restriction";
-		this.idTrombone = this.Nom + "_Trombone";
-		this.idListeDocuments = this.Nom + "_ListeDocuments";
 	}
 	construireInstances() {
 		this.identDate = this.add(
-			ObjetCelluleDate,
-			surEvenementSelecteurDate.bind(this),
-			_initialiserSelecteurDate,
+			ObjetCelluleDate_1.ObjetCelluleDate,
+			this.surEvenementSelecteurDate.bind(this),
+			this._initialiserSelecteurDate,
 		);
 		this.identCategorie = this.add(
-			ObjetSaisiePN,
-			surEvenementComboCategories.bind(this),
-			_initialiserComboCategories,
+			ObjetSaisiePN_1.ObjetSaisiePN,
+			this.surEvenementComboCategories.bind(this),
+			this._initialiserComboCategories,
 		);
 		this.identCMS_Motifs = this.add(
-			ObjetCelluleMultiSelectionMotif,
-			surEvenementSelecteurMultipleMotifs.bind(this),
-			_initialiserSelecteurMultipleMotifs,
+			ObjetCelluleMultiSelectionMotif_1.ObjetCelluleMultiSelectionMotif,
+			this.surEvenementSelecteurMultipleMotifs.bind(this),
+			this._initialiserSelecteurMultipleMotifs,
 		);
 		this.identMotif = this.add(
-			ObjetSaisiePN,
-			surEvenementComboMotif.bind(this),
-			_initialiserComboMotif,
+			ObjetSaisiePN_1.ObjetSaisiePN,
+			this.surEvenementComboMotif.bind(this),
+			this._initialiserComboMotif,
 		);
 		this.identRespAdm = this.add(
-			ObjetSaisiePN,
-			surEvenementComboRespAdm.bind(this),
-			_initialiserCombosContexte.bind(
+			ObjetSaisiePN_1.ObjetSaisiePN,
+			this.surEvenementComboRespAdm.bind(this),
+			this._initialiserCombosContexte.bind(
 				this,
-				GTraductions.getValeur("dossierVieScolaire.fenetre.respAdmin"),
+				GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire.RespAdmin,
 			),
 		);
 		this.identLieu = this.add(
-			ObjetSaisiePN,
-			surEvenementComboLieu.bind(this),
-			_initialiserCombosContexte.bind(
+			ObjetSaisiePN_1.ObjetSaisiePN,
+			this.surEvenementComboLieu.bind(this),
+			this._initialiserCombosContexte.bind(
 				this,
-				GTraductions.getValeur("dossierVieScolaire.fenetre.lieu"),
+				GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire.Lieu,
 			),
 		);
 		this.identVictime = this.add(
-			ObjetSaisiePN,
-			surEvenementComboVictime.bind(this),
-			_initialiserCombosContexte.bind(
+			ObjetSaisiePN_1.ObjetSaisiePN,
+			this.surEvenementComboVictime.bind(this),
+			this._initialiserCombosContexte.bind(
 				this,
-				GTraductions.getValeur("dossierVieScolaire.fenetre.victime"),
+				GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire.Victime,
 			),
 		);
 		this.identTemoin = this.add(
-			ObjetSaisiePN,
-			surEvenementComboTemoin.bind(this),
-			_initialiserCombosContexte.bind(
+			ObjetSaisiePN_1.ObjetSaisiePN,
+			this.surEvenementComboTemoin.bind(this),
+			this._initialiserCombosContexte.bind(
 				this,
-				GTraductions.getValeur("dossierVieScolaire.fenetre.temoin"),
+				GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire.Temoin,
 			),
 		);
 	}
@@ -116,31 +108,30 @@ class ObjetFenetre_DossierVieScolaire extends ObjetFenetre {
 			btnUpload: {
 				getOptionsSelecFile: function () {
 					return {
-						genrePJ: EGenreDocumentJoint.Fichier,
-						genreRessourcePJ: EGenreRessource.DocJointEleve,
+						genrePJ: Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier,
+						genreRessourcePJ: Enumere_Ressource_1.EGenreRessource.DocJointEleve,
 						interdireDoublonsLibelle: false,
 						maxFiles: 0,
-						maxSize: GApplication.droits.get(
-							TypeDroits.tailleMaxDocJointEtablissement,
+						maxSize: aInstance.applicationSco.droits.get(
+							ObjetDroitsPN_1.TypeDroits.tailleMaxDocJointEtablissement,
 						),
 					};
 				},
 				addFiles: function (aElt) {
 					aInstance.listePJEleve.addElement(aElt.eltFichier);
 					aInstance.dossier.listePJ.addElement(aElt.eltFichier);
-					_redessinerDocumentsFournis.call(
-						aInstance,
-						aInstance.dossier.listePJ,
-					);
+					aInstance._redessinerDocumentsFournis(aInstance.dossier.listePJ);
 				},
 				getDisabled: function () {
 					return false;
 				},
 				getLibelle() {
-					return GTraductions.getValeur("AjouterDesPiecesJointes");
+					return ObjetTraduction_1.GTraductions.getValeur(
+						"AjouterDesPiecesJointes",
+					);
 				},
 				getIcone() {
-					return '<i class="icon_piece_jointe"></i>';
+					return "icon_piece_jointe";
 				},
 			},
 			chipsDocJoint: {
@@ -151,18 +142,18 @@ class ObjetFenetre_DossierVieScolaire extends ObjetFenetre {
 					if (lElement) {
 						const message =
 							"<div ie-ellipsis-fixe>" +
-							GTraductions.getValeur("selecteurPJ.msgConfirmPJ", [
-								lElement.getLibelle(),
-							]) +
+							ObjetTraduction_1.GTraductions.getValeur(
+								"selecteurPJ.msgConfirmPJ",
+								[lElement.getLibelle()],
+							) +
 							"</div>";
 						GApplication.getMessage().afficher({
-							type: EGenreBoiteMessage.Confirmation,
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
 							message: message,
 							callback: function (aAccepte) {
-								if (aAccepte === EGenreAction.Valider) {
-									lElement.setEtat(EGenreEtat.Suppression);
-									_redessinerDocumentsFournis.call(
-										aInstance,
+								if (aAccepte === Enumere_Action_1.EGenreAction.Valider) {
+									lElement.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+									aInstance._redessinerDocumentsFournis(
 										aInstance.dossier.listePJ,
 									);
 								}
@@ -171,40 +162,38 @@ class ObjetFenetre_DossierVieScolaire extends ObjetFenetre {
 					}
 				},
 			},
-			avecBoutonEditerCategorie() {
-				return aInstance.autorisations
-					? aInstance.autorisations.creerMotif
-					: false;
-			},
-			btnEditionCategorie: {
-				event() {
-					surEvenementBoutonEditerCategorie.call(aInstance);
-				},
-				getDisabled() {
-					return (
-						!aInstance.autorisations || !aInstance.autorisations.creerMotif
-					);
-				},
-			},
-			avecBoutonEditerMotif() {
-				return aInstance.autorisations
-					? aInstance.autorisations.creerMotif
-					: false;
-			},
-			btnEditionMotif: {
-				event() {
-					surEvenementBoutonEditerMotif.call(aInstance);
-				},
-				getDisabled() {
-					return (
-						!aInstance.autorisations || !aInstance.autorisations.creerMotif
-					);
-				},
-			},
 		});
 	}
+	jsxDisplayBoutonEditerCategorie() {
+		return this.autorisations ? this.autorisations.creerMotif : false;
+	}
+	jsxModeleBoutonEditerCategorie() {
+		return {
+			event: () => {
+				this.surEvenementBoutonEditerCategorie();
+			},
+			getDisabled: () => {
+				return !this.autorisations || !this.autorisations.creerMotif;
+			},
+		};
+	}
+	jsxDisplayBoutonEditerMotif() {
+		return this.autorisations ? this.autorisations.creerMotif : false;
+	}
+	jsxModeleBoutonEditerMotif() {
+		return {
+			event: () => {
+				this.surEvenementBoutonEditerMotif();
+			},
+			getDisabled: () => {
+				return !this.autorisations || !this.autorisations.creerMotif;
+			},
+		};
+	}
 	setCommentaire() {
-		this.dossier.commentaire = GHtml.getValue(this.ids.textareaCommentaire);
+		this.dossier.commentaire = ObjetHtml_1.GHtml.getValue(
+			this.ids.textareaCommentaire,
+		);
 	}
 	resetDonneesAffichage() {
 		this.getInstance(this.identCategorie).reset();
@@ -213,57 +202,61 @@ class ObjetFenetre_DossierVieScolaire extends ObjetFenetre {
 		this.getInstance(this.identLieu).reset();
 		this.getInstance(this.identVictime).reset();
 		this.getInstance(this.identTemoin).reset();
-		GHtml.setValue(this.ids.textareaCommentaire, "");
-		GHtml.setValue(this.idRestriction, "");
+		ObjetHtml_1.GHtml.setValue(this.ids.textareaCommentaire, "");
+		ObjetHtml_1.GHtml.setValue(this.ids.restriction, "");
 	}
 	setDonnees(aParam) {
 		this.resetDonneesAffichage();
-		this.listePJEleve = MethodesObjet.dupliquer(aParam.listePJEleve);
-		this.dossier = MethodesObjet.dupliquer(aParam.dossier);
+		this.listePJEleve = MethodesObjet_1.MethodesObjet.dupliquer(
+			aParam.listePJEleve,
+		);
+		this.dossier = MethodesObjet_1.MethodesObjet.dupliquer(aParam.dossier);
 		this.donneesSaisie = aParam.donneesSaisieDossier;
 		if (
 			this.dossier &&
 			this.dossier.respAdmin &&
 			[
-				EGenreRessource.PersonnelHistorique,
-				EGenreRessource.EnseignantHistorique,
+				Enumere_Ressource_1.EGenreRessource.PersonnelHistorique,
+				Enumere_Ressource_1.EGenreRessource.EnseignantHistorique,
 			].includes(this.dossier.respAdmin.getGenre())
 		) {
 			const lTraduction =
 				this.dossier.respAdmin.getGenre() ===
-				EGenreRessource.PersonnelHistorique
-					? GTraductions.getValeur("PersonnelsHistorique")
-					: GTraductions.getValeur("ProfesseursHistorique");
-			const lElement = new ObjetElement(
-				lTraduction,
-				0,
-				this.dossier.respAdmin.getGenre(),
-			);
-			lElement.estCumul = true;
-			lElement.AvecSelection = false;
-			lElement.Position = 0;
-			lElement.ClassAffichage = "Gras";
-			const lFils = new ObjetElement(this.dossier.respAdmin);
-			lFils.pere = lElement;
-			lFils.Position = 1;
-			lFils.ClassAffichage = "p-left";
+				Enumere_Ressource_1.EGenreRessource.PersonnelHistorique
+					? ObjetTraduction_1.GTraductions.getValeur("PersonnelsHistorique")
+					: ObjetTraduction_1.GTraductions.getValeur("ProfesseursHistorique");
+			const lElement = ObjetElement_1.ObjetElement.create({
+				Libelle: lTraduction,
+				Numero: 0,
+				Genre: this.dossier.respAdmin.getGenre(),
+				estCumul: true,
+				AvecSelection: false,
+				Position: 0,
+				ClassAffichage: "Gras",
+			});
+			const lFils = ObjetElement_1.ObjetElement.create({
+				Libelle: this.dossier.respAdmin.getLibelle(),
+				pere: lElement,
+				Position: 1,
+				ClassAffichage: "p-left",
+			});
 			this.donneesSaisie.listeRespAdmin.add(lElement);
 			this.donneesSaisie.listeRespAdmin.add(lFils);
 		}
 		this.donneesSaisie.listeRespAdmin.setTri([
-			ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.init((D) => {
 				switch (D.getGenre()) {
-					case EGenreRessource.Aucune:
+					case Enumere_Ressource_1.EGenreRessource.Aucune:
 						return 0;
-					case EGenreRessource.Personnel:
+					case Enumere_Ressource_1.EGenreRessource.Personnel:
 						return 1;
-					case EGenreRessource.Enseignant:
+					case Enumere_Ressource_1.EGenreRessource.Enseignant:
 						return 2;
 					default:
 						return 3;
 				}
 			}),
-			ObjetTri.init("Position"),
+			ObjetTri_1.ObjetTri.init("Position"),
 		]);
 		this.donneesSaisie.listeRespAdmin.trier();
 		this.autorisations = aParam.autorisations;
@@ -271,15 +264,15 @@ class ObjetFenetre_DossierVieScolaire extends ObjetFenetre {
 		this.restriction = aParam.restriction;
 		const lPeriode = aParam.periode;
 		if (!!this.restriction && !!this.restriction.estRestreint) {
-			GHtml.setHtml(
-				this.idRestriction,
-				_composeRestriction.call(this, this.restriction),
+			ObjetHtml_1.GHtml.setHtml(
+				this.ids.restriction,
+				this._composeRestriction(this.restriction),
 			);
 		}
 		let i = 0;
 		if (aParam.donneesSaisieDossier) {
 			aParam.donneesSaisieDossier.listeCategories.setTri([
-				ObjetTri.init("Libelle"),
+				ObjetTri_1.ObjetTri.init("Libelle"),
 			]);
 			aParam.donneesSaisieDossier.listeCategories.trier();
 			this.getInstance(this.identCategorie).setDonnees(
@@ -295,7 +288,7 @@ class ObjetFenetre_DossierVieScolaire extends ObjetFenetre {
 		}
 		if (!aParam.dossier) {
 			this.getInstance(this.identDate).setDonnees(
-				GParametres.getDateDansPeriodeDeNotation(
+				this.parametresSco.getDateDansPeriodeDeNotation(
 					null,
 					!!lPeriode ? lPeriode.getNumero() : 0,
 				),
@@ -304,7 +297,8 @@ class ObjetFenetre_DossierVieScolaire extends ObjetFenetre {
 			this.getInstance(this.identDate).setDonnees(aParam.dossier.date);
 			if (
 				aParam.dossier.getGenre() ===
-				TypeOrigineCreationCategorieDossier.OCCD_Utilisateur
+				TypeOrigineCreationCategorieDossier_1
+					.TypeOrigineCreationCategorieDossier.OCCD_Utilisateur
 			) {
 				i = this.donneesSaisie.listeCategories.getIndiceParLibelle(
 					aParam.dossier.getLibelle(),
@@ -316,7 +310,7 @@ class ObjetFenetre_DossierVieScolaire extends ObjetFenetre {
 				);
 			}
 			this.getInstance(this.identCategorie).setSelection(i);
-			_redessinerDocumentsFournis.call(this, this.dossier.listePJ);
+			this._redessinerDocumentsFournis(this.dossier.listePJ);
 		}
 		if (aParam.dossier.listeMotifs.count() > 0) {
 			i = this.elementCategorieCourant.listeMotifs.getIndiceParNumeroEtGenre(
@@ -324,7 +318,7 @@ class ObjetFenetre_DossierVieScolaire extends ObjetFenetre {
 			);
 			this.getInstance(this.identMotif).setSelection(i);
 		}
-		if (this.dossier && estAvecMotifsMultiples(this.dossier.getGenre())) {
+		if (this.dossier && this.estAvecMotifsMultiples(this.dossier.getGenre())) {
 			this.getInstance(this.identCMS_Motifs).setDonnees(
 				aParam.dossier.listeMotifs,
 			);
@@ -343,8 +337,8 @@ class ObjetFenetre_DossierVieScolaire extends ObjetFenetre {
 	}
 	setDonneesAffichage(aDonnees) {
 		let i, j, k, l, m;
-		this.dossier.listeMotifs = new ObjetListeElements();
-		if (estAvecMotifsMultiples(this.dossier.getGenre())) {
+		this.dossier.listeMotifs = new ObjetListeElements_1.ObjetListeElements();
+		if (this.estAvecMotifsMultiples(this.dossier.getGenre())) {
 			this.getInstance(this.identCMS_Motifs).setDonnees(
 				this.dossier.listeMotifs,
 			);
@@ -386,173 +380,230 @@ class ObjetFenetre_DossierVieScolaire extends ObjetFenetre {
 			this.donneesSaisie.listeActeurs,
 			m,
 		);
-		GHtml.setValue(this.ids.textareaCommentaire, this.dossier.commentaire);
+		ObjetHtml_1.GHtml.setValue(
+			this.ids.textareaCommentaire,
+			this.dossier.commentaire,
+		);
 		if (!this.dossier.existeNumero()) {
-			this.dossier.setEtat(EGenreEtat.Creation);
+			this.dossier.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 		} else {
-			this.dossier.setEtat(EGenreEtat.Modification);
+			this.dossier.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 		}
 	}
 	composeContenu() {
 		const H = [];
-		H.push('<div id="', this.ids.conteneurPrincipal, '">');
-		H.push('<div id="', this.ids.zoneProprietesGenerales, '">');
 		H.push(
-			"<div>",
-			'<div class="m-bottom">',
-			GTraductions.getValeur("dossierVieScolaire.fenetre.date"),
-			"</div>",
-			'<div id="',
-			this.getNomInstance(this.identDate),
-			'"></div>',
-			"</div>",
-		);
-		H.push(
-			"<div>",
-			'<div class="m-bottom">',
-			GTraductions.getValeur("dossierVieScolaire.fenetre.categorie"),
-			"</div>",
-			'<div id="',
-			this.ids.conteneurCategorieUnique,
-			'">',
-			'<div id="',
-			this.getNomInstance(this.identCategorie),
-			'"></div>',
-			'<div id="',
-			this.ids.conteneurBoutonEditerCategorie,
-			'" ie-display="avecBoutonEditerCategorie"><ie-bouton ie-model="btnEditionCategorie" title="',
-			GTraductions.getValeur("dossierVieScolaire.fenetre.infoEditionCategorie"),
-			'">...</ie-bouton></div>',
-			"</div>",
-			"</div>",
-		);
-		H.push(
-			"<div>",
-			'<div class="m-bottom">',
-			GTraductions.getValeur("dossierVieScolaire.fenetre.motif"),
-			"</div>",
-			'<div id="',
-			this.ids.conteneurMotifUnique,
-			'">',
-			'<div id="',
-			this.getNomInstance(this.identMotif),
-			'"></div>',
-			'<div id="',
-			this.ids.conteneurBoutonEditerMotif,
-			'" ie-display="avecBoutonEditerMotif"><ie-bouton ie-model="btnEditionMotif" title="',
-			GTraductions.getValeur("dossierVieScolaire.fenetre.infoEditionMotif"),
-			'">...</ie-bouton></div>',
-			"</div>",
-			'<div id="',
-			this.ids.conteneurMotifsMultiples,
-			'">',
-			'<div id="',
-			this.getInstance(this.identCMS_Motifs).getNom(),
-			'"></div>',
-			"</div>",
-			"</div>",
-		);
-		H.push(
-			"<div>",
-			'<div class="m-bottom">',
-			GTraductions.getValeur("dossierVieScolaire.fenetre.respAdmin"),
-			"</div>",
-			'<div id="',
-			this.getNomInstance(this.identRespAdm),
-			'"></div>',
-			"</div>",
-		);
-		H.push("<div>", '<div id="', this.idRestriction, '"></div>', "</div>");
-		H.push("</div>");
-		H.push('<div class="flex-contain" id="', this.ids.zoneContexte, '">');
-		H.push(
-			'<div id="',
-			this.idContexte,
-			'">',
-			this.composeContexte(),
-			"</div>",
-		);
-		H.push(
-			"<div>",
-			'  <label class="ie-titre-petit m-bottom">',
-			GTraductions.getValeur("dossierVieScolaire.fenetre.commentaires"),
-			"</label>",
-			'  <textarea class="round-style" id="',
-			this.ids.textareaCommentaire,
-			'"',
-			' onkeyup="',
-			this.Nom,
-			'.setCommentaire ()" ',
-			GObjetWAI.composeAttribut({
-				genre: EGenreAttribut.label,
-				valeur: GTraductions.getValeur(
-					"dossierVieScolaire.fenetre.commentaires",
+			IE.jsx.str(
+				"div",
+				{ id: this.ids.conteneurPrincipal },
+				IE.jsx.str(
+					"div",
+					{ id: this.ids.zoneProprietesGenerales },
+					IE.jsx.str(
+						"div",
+						null,
+						IE.jsx.str(
+							"div",
+							{ class: "m-bottom" },
+							GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire
+								.Date,
+						),
+						IE.jsx.str("div", { id: this.getNomInstance(this.identDate) }),
+					),
+					IE.jsx.str(
+						"div",
+						null,
+						IE.jsx.str(
+							"div",
+							{ class: "m-bottom" },
+							GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire
+								.Categorie,
+						),
+						IE.jsx.str(
+							"div",
+							{ id: this.ids.conteneurCategorieUnique },
+							IE.jsx.str("div", {
+								id: this.getNomInstance(this.identCategorie),
+							}),
+							IE.jsx.str(
+								"div",
+								{
+									id: this.ids.conteneurBoutonEditerCategorie,
+									"ie-display": this.jsxDisplayBoutonEditerCategorie.bind(this),
+								},
+								IE.jsx.str(
+									"ie-bouton",
+									{
+										"ie-model": this.jsxModeleBoutonEditerCategorie.bind(this),
+										"ie-tooltiplabel":
+											GlossaireDossierVieScolaire_1
+												.TradGlossaireDossierVieScolaire.InfoEditionCategorie,
+									},
+									"...",
+								),
+							),
+						),
+					),
+					IE.jsx.str(
+						"div",
+						null,
+						IE.jsx.str(
+							"div",
+							{ class: "m-bottom" },
+							GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire
+								.Motif,
+						),
+						IE.jsx.str(
+							"div",
+							{ id: this.ids.conteneurMotifUnique },
+							IE.jsx.str("div", { id: this.getNomInstance(this.identMotif) }),
+							IE.jsx.str(
+								"div",
+								{
+									id: this.ids.conteneurBoutonEditerMotif,
+									"ie-display": this.jsxDisplayBoutonEditerMotif.bind(this),
+								},
+								IE.jsx.str(
+									"ie-bouton",
+									{
+										"ie-model": this.jsxModeleBoutonEditerMotif.bind(this),
+										"ie-tooltiplabel":
+											GlossaireDossierVieScolaire_1
+												.TradGlossaireDossierVieScolaire.InfoEditionMotif,
+									},
+									"...",
+								),
+							),
+						),
+						IE.jsx.str(
+							"div",
+							{ id: this.ids.conteneurMotifsMultiples },
+							IE.jsx.str("div", {
+								id: this.getNomInstance(this.identCMS_Motifs),
+							}),
+						),
+					),
+					IE.jsx.str(
+						"div",
+						null,
+						IE.jsx.str(
+							"div",
+							{ class: "m-bottom" },
+							GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire
+								.RespAdmin,
+						),
+						IE.jsx.str("div", { id: this.getNomInstance(this.identRespAdm) }),
+					),
+					IE.jsx.str(
+						"div",
+						null,
+						IE.jsx.str("div", { id: this.ids.restriction }),
+					),
 				),
-			}),
-			">",
-			"   </textarea>",
-			"</div>",
+				IE.jsx.str(
+					"div",
+					{ class: "flex-contain", id: this.ids.zoneContexte },
+					IE.jsx.str("div", { id: this.ids.contexte }, this.composeContexte()),
+					IE.jsx.str(
+						"div",
+						null,
+						IE.jsx.str(
+							"label",
+							{ class: "ie-titre-petit m-bottom" },
+							GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire
+								.Commentaires,
+						),
+						IE.jsx.str("textarea", {
+							id: this.ids.textareaCommentaire,
+							onkeyup: this.Nom + ".setCommentaire ()",
+							"aria-label":
+								GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire
+									.Commentaires,
+						}),
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "pj-global-conteneur m-y-l" },
+					IE.jsx.str("ie-btnselecteur", {
+						"ie-model": "btnUpload",
+						"ie-selecfile": true,
+						class: "pj",
+						role: "button",
+					}),
+					IE.jsx.str("div", {
+						class: "pj-liste-conteneur",
+						id: this.ids.listeDocuments,
+					}),
+				),
+			),
 		);
-		H.push("</div>");
-		H.push('<div class="pj-global-conteneur m-y-l">');
-		H.push(
-			'  <ie-btnselecteur ie-model="btnUpload" ie-selecfile class="pj" role="button"></ie-btnselecteur>',
-		);
-		H.push(
-			'  <div class="pj-liste-conteneur" id="',
-			this.idListeDocuments,
-			'"></div>',
-		);
-		H.push("</div>");
-		H.push("</div>");
 		return H.join("");
 	}
 	composeContexte() {
 		const lHtml = [];
 		lHtml.push(
-			'<label class="ie-titre-petit m-bottom">',
-			GTraductions.getValeur("dossierVieScolaire.fenetre.contexte"),
-			"</label>",
-			'<div class="flex-contain m-bottom-s">',
-			'<div class="fix-bloc" style="',
-			GStyle.composeWidth(84),
-			'">',
-			GTraductions.getValeur("dossierVieScolaire.fenetre.lieu"),
-			"</div>",
-			'<div class="fluid-bloc" id="',
-			this.getNomInstance(this.identLieu),
-			'"></div>',
-			"</div>",
-			'<div class="flex-contain p-top m-bottom-s" id="',
-			this.idVictime,
-			'">',
-			'<div class="fix-bloc" style="',
-			GStyle.composeWidth(84),
-			'">',
-			GTraductions.getValeur("dossierVieScolaire.fenetre.victime"),
-			"</div>",
-			'<div id="',
-			this.getNomInstance(this.identVictime),
-			'" class="fluid-bloc full-width"></div>',
-			"</div>",
-			'<div class="flex-contain p-top">',
-			'<div class="fix-bloc" style="',
-			GStyle.composeWidth(84),
-			'">',
-			GTraductions.getValeur("dossierVieScolaire.fenetre.temoin"),
-			"</div>",
-			'<div id="',
-			this.getNomInstance(this.identTemoin),
-			'" class="fluid-bloc full-width"></div>',
-			"</div>",
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"label",
+					{ class: "ie-titre-petit m-bottom" },
+					GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire
+						.Contexte,
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "flex-contain m-bottom-s" },
+					IE.jsx.str(
+						"div",
+						{ class: "fix-bloc", style: ObjetStyle_1.GStyle.composeWidth(84) },
+						GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire.Lieu,
+					),
+					IE.jsx.str("div", {
+						class: "fluid-bloc",
+						id: this.getNomInstance(this.identLieu),
+					}),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "flex-contain p-top m-bottom-s", id: this.ids.victime },
+					IE.jsx.str(
+						"div",
+						{ class: "fix-bloc", style: ObjetStyle_1.GStyle.composeWidth(84) },
+						GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire
+							.Victime,
+					),
+					IE.jsx.str("div", {
+						id: this.getNomInstance(this.identVictime),
+						class: "fluid-bloc full-width",
+					}),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "flex-contain p-top" },
+					IE.jsx.str(
+						"div",
+						{ class: "fix-bloc", style: ObjetStyle_1.GStyle.composeWidth(84) },
+						GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire
+							.Temoin,
+					),
+					IE.jsx.str("div", {
+						id: this.getNomInstance(this.identTemoin),
+						class: "fluid-bloc full-width",
+					}),
+				),
+			),
 		);
 		return lHtml.join("");
 	}
 	surValidation(aNumeroBouton) {
 		if (aNumeroBouton === 1 && this.dossier.listeMotifs.count() === 0) {
 			GApplication.getMessage().afficher({
-				type: EGenreBoiteMessage.Information,
-				message: GTraductions.getValeur("dossierVS.msgMotifDossierObligatoire"),
+				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+				message:
+					GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire
+						.MsgMotifDossierObligatoire,
 			});
 		} else {
 			this.fermer();
@@ -569,369 +620,428 @@ class ObjetFenetre_DossierVieScolaire extends ObjetFenetre {
 			);
 		}
 	}
-}
-function _redessinerDocumentsFournis(aListe) {
-	let lIdent = this.idListeDocuments;
-	GHtml.setHtml(
-		lIdent,
-		UtilitaireUrl.construireListeUrls(aListe, {
-			separateur: " ",
-			IEModelChips: "chipsDocJoint",
-			genreRessource: TypeFichierExterneHttpSco.DocJointEleve,
-			argsIEModelChips: [],
-			maxWidth: 300,
-		}),
-		{ controleur: this.controleur },
-	);
-}
-function estAvecMotifsMultiples(aTypeCategorie) {
-	return (
-		[
-			TypeOrigineCreationCategorieDossier.OCCD_Comportement,
-			TypeOrigineCreationCategorieDossier.OCCD_Victime,
-		].indexOf(aTypeCategorie) !== -1
-	);
-}
-function _initialiserSelecteurDate(aInstance) {
-	aInstance.setOptionsObjetCelluleDate({
-		labelWAICellule: GTraductions.getValeur("dossierVieScolaire.fenetre.date"),
-	});
-}
-function surEvenementSelecteurDate(aDate) {
-	if (!GDate.estJourEgal(this.dossier.date, aDate)) {
-		this.dossier.date = aDate;
-		this.dossier.setEtat(EGenreEtat.Modification);
-	}
-}
-function _initialiserComboCategories(aInstance) {
-	aInstance.setOptionsObjetSaisie({
-		longueur: 160,
-		labelWAICellule: GTraductions.getValeur(
-			"dossierVieScolaire.fenetre.categorie",
-		),
-	});
-}
-function surEvenementComboCategories(aParams) {
-	if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
-		this.dossier.Genre = aParams.element.Genre;
-		this.dossier.Libelle = aParams.element.Libelle;
-		this.dossier.couleur = aParams.element.couleur;
-		let i;
-		if (
-			aParams.element.getGenre() ===
-			TypeOrigineCreationCategorieDossier.OCCD_Utilisateur
-		) {
-			i = this.donneesSaisie.listeCategories.getIndiceParLibelle(
-				aParams.element.getLibelle(),
-			);
-		} else {
-			i = this.donneesSaisie.listeCategories.getIndiceParNumeroEtGenre(
-				null,
-				aParams.element.Genre,
-			);
-		}
-		this.elementCategorieCourant = this.donneesSaisie.listeCategories.get(i);
-		if (this.getInstance(this.identCategorie).InteractionUtilisateur) {
-			this.elementCategorieCourant.estUtilise = true;
-		}
-		if (
-			aParams.element.getGenre() ===
-				TypeOrigineCreationCategorieDossier.OCCD_Utilisateur &&
-			!this.elementCategorieCourant.listeMotifs
-		) {
-			this.elementCategorieCourant.listeMotifs = new ObjetListeElements();
-		}
-		const lEstAvecMotifsMultiples = estAvecMotifsMultiples(
-			aParams.element.getGenre(),
+	_redessinerDocumentsFournis(aListe) {
+		let lIdent = this.ids.listeDocuments;
+		ObjetHtml_1.GHtml.setHtml(
+			lIdent,
+			UtilitaireUrl_1.UtilitaireUrl.construireListeUrls(aListe, {
+				separateur: " ",
+				IEModelChips: "chipsDocJoint",
+				genreRessource: Enumere_Ressource_1.EGenreRessource.DocJointEleve,
+				argsIEModelChips: [],
+				maxWidth: 300,
+			}),
+			{ controleur: this.controleur },
 		);
-		GHtml.setDisplay(this.ids.conteneurMotifUnique, !lEstAvecMotifsMultiples);
-		GHtml.setDisplay(this.ids.conteneurCategorieUnique, true);
-		GHtml.setDisplay(
-			this.ids.conteneurMotifsMultiples,
-			lEstAvecMotifsMultiples,
+	}
+	estAvecMotifsMultiples(aTypeCategorie) {
+		return (
+			[
+				TypeOrigineCreationCategorieDossier_1
+					.TypeOrigineCreationCategorieDossier.OCCD_Comportement,
+				TypeOrigineCreationCategorieDossier_1
+					.TypeOrigineCreationCategorieDossier.OCCD_Victime,
+			].indexOf(aTypeCategorie) !== -1
 		);
-		switch (aParams.element.getGenre()) {
-			case TypeOrigineCreationCategorieDossier.OCCD_Sante:
-			case TypeOrigineCreationCategorieDossier.OCCD_Victime:
-				GHtml.setDisplay(this.idContexte, true);
-				GHtml.setDisplay(this.idVictime, false);
-				this.setDonneesAffichage(this.elementCategorieCourant);
-				break;
-			case TypeOrigineCreationCategorieDossier.OCCD_Social:
-				GHtml.setDisplay(this.idContexte, false);
-				GHtml.setDisplay(this.idVictime, false);
-				this.setDonneesAffichage(this.elementCategorieCourant);
-				break;
-			case TypeOrigineCreationCategorieDossier.OCCD_Comportement:
-			case TypeOrigineCreationCategorieDossier.OCCD_Utilisateur:
-				GHtml.setDisplay(this.idContexte, true);
-				GHtml.setDisplay(this.idVictime, true);
-				this.setDonneesAffichage(this.elementCategorieCourant);
-				break;
-			case TypeOrigineCreationCategorieDossier.OCCD_Divers:
-				GHtml.setDisplay(this.idContexte, true);
-				GHtml.setDisplay(this.idVictime, true);
-				this.setDonneesAffichage(this.elementCategorieCourant);
-				break;
-			case TypeOrigineCreationCategorieDossier.OCCD_Orientation:
-				GHtml.setDisplay(this.idContexte, false);
-				GHtml.setDisplay(this.idVictime, false);
-				this.setDonneesAffichage(this.elementCategorieCourant);
-				break;
-			default:
-				break;
+	}
+	_initialiserSelecteurDate(aInstance) {
+		aInstance.setOptionsObjetCelluleDate({
+			ariaLabel:
+				GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire.Date,
+		});
+	}
+	surEvenementSelecteurDate(aDate) {
+		if (!ObjetDate_1.GDate.estJourEgal(this.dossier.date, aDate)) {
+			this.dossier.date = aDate;
+			this.dossier.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 		}
 	}
-}
-function _initialiserSelecteurMultipleMotifs(aInstance) {
-	const lAvecCreationMotifs = GApplication.droits.get(
-		TypeDroits.dossierVS.saisieMotifsDossiersVS,
-	);
-	aInstance.setOptions({
-		largeurBouton: 180,
-		gestionnaireMotifs: {
-			paramListe: {
-				avecCreation: lAvecCreationMotifs,
-				avecEdition: lAvecCreationMotifs,
-				avecSuppression: lAvecCreationMotifs,
-			},
-			avecLigneCreation: !!lAvecCreationMotifs,
-			creations: lAvecCreationMotifs
-				? [
-						DonneesListe_SelectionMotifs.colonnes.motif,
-						DonneesListe_SelectionMotifs.colonnes.incident,
-					]
-				: null,
-			droits: { avecCreationMotifs: lAvecCreationMotifs },
-		},
-	});
-}
-function surEvenementSelecteurMultipleMotifs(
-	aNumeroBouton,
-	aListeDonnees,
-	aListeTot,
-) {
-	if (aNumeroBouton === 1) {
-		this.dossier.listeMotifs = aListeDonnees;
-		if (aListeTot !== null) {
-			this.elementCategorieCourant.listeMotifs = aListeTot;
-			this.elementCategorieCourant.setEtat(EGenreEtat.Modification);
-			GCache.dossierVS.setDonnee(this.numeroEleve, this.donneesSaisie);
-		}
+	_initialiserComboCategories(aInstance) {
+		aInstance.setOptionsObjetSaisie({
+			longueur: 160,
+			labelWAICellule:
+				GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire.Categorie,
+		});
 	}
-}
-function _initialiserComboMotif(aInstance) {
-	aInstance.setOptionsObjetSaisie({
-		longueur: 160,
-		labelWAICellule: GTraductions.getValeur("dossierVieScolaire.fenetre.motif"),
-	});
-}
-function surEvenementComboMotif(aParams) {
-	if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
-		this.dossier.listeMotifs = new ObjetListeElements();
-		this.dossier.listeMotifs.addElement(aParams.element);
-		this.dossier.setEtat(EGenreEtat.Modification);
-	}
-}
-function _initialiserCombosContexte(aLabelWAIZone, aInstance) {
-	aInstance.setOptionsObjetSaisie({
-		longueur: 160,
-		labelWAICellule: aLabelWAIZone,
-	});
-}
-function surEvenementComboRespAdm(aParams) {
-	if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
-		if (aParams.element.getGenre() === EGenreRessource.Aucune) {
-			this.dossier.respAdmin = new ObjetElement(
-				"",
-				aParams.element.getNumero(),
+	surEvenementComboCategories(aParams) {
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
+			this.dossier.Genre = aParams.element.Genre;
+			this.dossier.Libelle = aParams.element.Libelle;
+			this.dossier.couleur = aParams.element.couleur;
+			let i;
+			if (
+				aParams.element.getGenre() ===
+				TypeOrigineCreationCategorieDossier_1
+					.TypeOrigineCreationCategorieDossier.OCCD_Utilisateur
+			) {
+				i = this.donneesSaisie.listeCategories.getIndiceParLibelle(
+					aParams.element.getLibelle(),
+				);
+			} else {
+				i = this.donneesSaisie.listeCategories.getIndiceParNumeroEtGenre(
+					null,
+					aParams.element.Genre,
+				);
+			}
+			this.elementCategorieCourant = this.donneesSaisie.listeCategories.get(i);
+			if (this.getInstance(this.identCategorie).InteractionUtilisateur) {
+				this.elementCategorieCourant.estUtilise = true;
+			}
+			if (
+				aParams.element.getGenre() ===
+					TypeOrigineCreationCategorieDossier_1
+						.TypeOrigineCreationCategorieDossier.OCCD_Utilisateur &&
+				!this.elementCategorieCourant.listeMotifs
+			) {
+				this.elementCategorieCourant.listeMotifs =
+					new ObjetListeElements_1.ObjetListeElements();
+			}
+			const lEstAvecMotifsMultiples = this.estAvecMotifsMultiples(
 				aParams.element.getGenre(),
 			);
-		} else {
-			this.dossier.respAdmin = aParams.element;
+			ObjetHtml_1.GHtml.setDisplay(
+				this.ids.conteneurMotifUnique,
+				!lEstAvecMotifsMultiples,
+			);
+			ObjetHtml_1.GHtml.setDisplay(this.ids.conteneurCategorieUnique, true);
+			ObjetHtml_1.GHtml.setDisplay(
+				this.ids.conteneurMotifsMultiples,
+				lEstAvecMotifsMultiples,
+			);
+			switch (aParams.element.getGenre()) {
+				case TypeOrigineCreationCategorieDossier_1
+					.TypeOrigineCreationCategorieDossier.OCCD_Sante:
+				case TypeOrigineCreationCategorieDossier_1
+					.TypeOrigineCreationCategorieDossier.OCCD_Victime:
+					ObjetHtml_1.GHtml.setDisplay(this.ids.contexte, true);
+					ObjetHtml_1.GHtml.setDisplay(this.ids.victime, false);
+					this.setDonneesAffichage(this.elementCategorieCourant);
+					break;
+				case TypeOrigineCreationCategorieDossier_1
+					.TypeOrigineCreationCategorieDossier.OCCD_Social:
+					ObjetHtml_1.GHtml.setDisplay(this.ids.contexte, false);
+					ObjetHtml_1.GHtml.setDisplay(this.ids.victime, false);
+					this.setDonneesAffichage(this.elementCategorieCourant);
+					break;
+				case TypeOrigineCreationCategorieDossier_1
+					.TypeOrigineCreationCategorieDossier.OCCD_Comportement:
+				case TypeOrigineCreationCategorieDossier_1
+					.TypeOrigineCreationCategorieDossier.OCCD_Utilisateur:
+					ObjetHtml_1.GHtml.setDisplay(this.ids.contexte, true);
+					ObjetHtml_1.GHtml.setDisplay(this.ids.victime, true);
+					this.setDonneesAffichage(this.elementCategorieCourant);
+					break;
+				case TypeOrigineCreationCategorieDossier_1
+					.TypeOrigineCreationCategorieDossier.OCCD_Divers:
+					ObjetHtml_1.GHtml.setDisplay(this.ids.contexte, true);
+					ObjetHtml_1.GHtml.setDisplay(this.ids.victime, true);
+					this.setDonneesAffichage(this.elementCategorieCourant);
+					break;
+				case TypeOrigineCreationCategorieDossier_1
+					.TypeOrigineCreationCategorieDossier.OCCD_Orientation:
+					ObjetHtml_1.GHtml.setDisplay(this.ids.contexte, false);
+					ObjetHtml_1.GHtml.setDisplay(this.ids.victime, false);
+					this.setDonneesAffichage(this.elementCategorieCourant);
+					break;
+				default:
+					break;
+			}
 		}
-		this.dossier.setEtat(EGenreEtat.Modification);
 	}
-}
-function surEvenementComboLieu(aParams) {
-	if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
-		this.dossier.lieu = aParams.element;
-		this.dossier.setEtat(EGenreEtat.Modification);
-	}
-}
-function surEvenementComboVictime(aParams) {
-	if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
-		this.dossier.victime = aParams.element;
-		this.dossier.setEtat(EGenreEtat.Modification);
-	}
-}
-function surEvenementComboTemoin(aParams) {
-	if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
-		this.dossier.temoin = aParams.element;
-		this.dossier.setEtat(EGenreEtat.Modification);
-	}
-}
-function surEvenementBoutonEditerMotif() {
-	if (this.autorisations.creerMotif) {
-		const lFenetreMotif = ObjetFenetre.creerInstanceFenetre(
-			ObjetFenetre_Liste,
-			{
-				pere: this,
-				evenement: function (aGenreBouton, aSelection, aAvecChangementListe) {
-					if (aGenreBouton === 1) {
-						if (
-							aAvecChangementListe ||
-							this.elementCategorieCourant.listeMotifs.existeElementPourValidation()
-						) {
-							GCache.dossierVS.setDonnee(this.numeroEleve, this.donneesSaisie);
-							this.elementCategorieCourant.setEtat(EGenreEtat.Modification);
-							this.getInstance(this.identMotif).setDonnees(
-								this.elementCategorieCourant.listeMotifs,
-							);
-						}
-						if (aSelection !== null && aSelection !== undefined) {
-							this.getInstance(this.identMotif).setSelectionParIndice(
-								aSelection,
-							);
-						}
-					}
+	_initialiserSelecteurMultipleMotifs(aInstance) {
+		const lAvecCreationMotifs = this.applicationSco.droits.get(
+			ObjetDroitsPN_1.TypeDroits.dossierVS.saisieMotifsDossiersVS,
+		);
+		aInstance.setOptions({
+			largeurBouton: 180,
+			gestionnaireMotifs: {
+				paramListe: {
+					avecCreation: lAvecCreationMotifs,
+					avecEdition: lAvecCreationMotifs,
+					avecSuppression: lAvecCreationMotifs,
 				},
-				initialiser: function (aInstance) {
-					aInstance.setOptionsFenetre({
-						modale: true,
-						titre: GTraductions.getValeur(
-							"dossierVieScolaire.fenetre.infoEditionMotif",
-						),
-						largeur: 300,
-						hauteur: 400,
-						listeBoutons: [
-							GTraductions.getValeur("Annuler"),
-							GTraductions.getValeur("Valider"),
-						],
-					});
-					aInstance.paramsListe = {
-						titres: [
-							GTraductions.getValeur("dossierVieScolaire.fenetre.motif"),
-						],
-						tailles: ["100%"],
-						creations: 0,
-						avecLigneCreation: true,
-						editable: true,
-					};
-				},
+				avecLigneCreation: !!lAvecCreationMotifs,
+				creations: lAvecCreationMotifs
+					? [
+							DonneesListe_SelectionMotifs_1.DonneesListe_SelectionMotifs
+								.colonnes.motif,
+							DonneesListe_SelectionMotifs_1.DonneesListe_SelectionMotifs
+								.colonnes.incident,
+						]
+					: null,
+				droits: { avecCreationMotifs: lAvecCreationMotifs },
 			},
-		);
-		lFenetreMotif.setDonnees(
-			new DonneesListe_EditionMotifs(this.elementCategorieCourant.listeMotifs),
-		);
+		});
 	}
-}
-function surEvenementBoutonEditerCategorie() {
-	if (this.autorisations.creerMotif) {
-		const lFenetreMotif = ObjetFenetre.creerInstanceFenetre(
-			ObjetFenetre_Liste,
-			{
-				pere: this,
-				evenement: function (aGenreBouton, aSelection, aAvecChangementListe) {
-					if (aGenreBouton === 1) {
-						if (
-							aAvecChangementListe ||
-							this.donneesSaisie.listeCategories.existeElementPourValidation()
-						) {
-							GCache.dossierVS.setDonnee(this.numeroEleve, this.donneesSaisie);
+	surEvenementSelecteurMultipleMotifs(aNumeroBouton, aListeDonnees, aListeTot) {
+		if (aNumeroBouton === 1) {
+			this.dossier.listeMotifs = aListeDonnees;
+			if (aListeTot !== null) {
+				this.elementCategorieCourant.listeMotifs = aListeTot;
+				this.elementCategorieCourant.setEtat(
+					Enumere_Etat_1.EGenreEtat.Modification,
+				);
+				Cache_1.GCache.dossierVS.setDonnee(
+					this.numeroEleve.toString(),
+					this.donneesSaisie,
+				);
+			}
+		}
+	}
+	_initialiserComboMotif(aInstance) {
+		aInstance.setOptionsObjetSaisie({
+			longueur: 160,
+			labelWAICellule:
+				GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire.Motif,
+		});
+	}
+	surEvenementComboMotif(aParams) {
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
+			this.dossier.listeMotifs = new ObjetListeElements_1.ObjetListeElements();
+			this.dossier.listeMotifs.addElement(aParams.element);
+			this.dossier.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+		}
+	}
+	_initialiserCombosContexte(aLabelWAIZone, aInstance) {
+		aInstance.setOptionsObjetSaisie({
+			longueur: 160,
+			labelWAICellule: aLabelWAIZone,
+		});
+	}
+	surEvenementComboRespAdm(aParams) {
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
+			if (
+				aParams.element.getGenre() ===
+				Enumere_Ressource_1.EGenreRessource.Aucune
+			) {
+				this.dossier.respAdmin = new ObjetElement_1.ObjetElement(
+					"",
+					aParams.element.getNumero(),
+					aParams.element.getGenre(),
+				);
+			} else {
+				this.dossier.respAdmin = aParams.element;
+			}
+			this.dossier.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+		}
+	}
+	surEvenementComboLieu(aParams) {
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
+			this.dossier.lieu = aParams.element;
+			this.dossier.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+		}
+	}
+	surEvenementComboVictime(aParams) {
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
+			this.dossier.victime = aParams.element;
+			this.dossier.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+		}
+	}
+	surEvenementComboTemoin(aParams) {
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
+			this.dossier.temoin = aParams.element;
+			this.dossier.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+		}
+	}
+	surEvenementBoutonEditerMotif() {
+		if (this.autorisations.creerMotif) {
+			const lFenetreMotif = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+				ObjetFenetre_Liste_1.ObjetFenetre_Liste,
+				{
+					pere: this,
+					evenement: function (aGenreBouton, aSelection, aAvecChangementListe) {
+						if (aGenreBouton === 1) {
 							if (
-								this.elementCategorieCourant.Genre ===
-								TypeOrigineCreationCategorieDossier.OCCD_Utilisateur
+								aAvecChangementListe ||
+								this.elementCategorieCourant.listeMotifs.existeElementPourValidation()
 							) {
-								this.elementCategorieCourant.setEtat(EGenreEtat.Modification);
+								Cache_1.GCache.dossierVS.setDonnee(
+									this.numeroEleve.toString(),
+									this.donneesSaisie,
+								);
+								this.elementCategorieCourant.setEtat(
+									Enumere_Etat_1.EGenreEtat.Modification,
+								);
+								this.getInstance(this.identMotif).setDonnees(
+									this.elementCategorieCourant.listeMotifs,
+								);
 							}
-							this.getInstance(this.identCategorie).setDonnees(
-								this.donneesSaisie.listeCategories,
-							);
-						}
-						if (aSelection !== null && aSelection !== undefined) {
-							let lSelection =
-								this.donneesSaisie.listeCategories.getIndiceParNumeroEtGenre(
-									this.elementCategorieCourant.getNumero(),
-								);
-							if (
-								lSelection >= 0 &&
-								this.elementCategorieCourant.getEtat() !==
-									EGenreEtat.Suppression &&
-								aSelection === -1
-							) {
-								this.getInstance(this.identCategorie).setSelectionParIndice(
-									lSelection,
-								);
-							} else {
-								this.getInstance(this.identCategorie).setSelectionParIndice(
-									aSelection >= 0 ? aSelection : 0,
+							if (aSelection !== null && aSelection !== undefined) {
+								this.getInstance(this.identMotif).setSelectionParIndice(
+									aSelection,
 								);
 							}
 						}
-					}
-				},
-				initialiser: function (aInstance) {
-					aInstance.setOptionsFenetre({
-						modale: true,
-						titre: GTraductions.getValeur(
-							"dossierVieScolaire.fenetre.infoEditionCategorie",
-						),
-						largeur: 300,
-						hauteur: 400,
-						listeBoutons: [
-							GTraductions.getValeur("Annuler"),
-							GTraductions.getValeur("Valider"),
-						],
-					});
-					const lColonnes = [];
-					lColonnes.push({
-						id: DonneesListe_EditionCategoriesDossiers.colonnes.couleur,
-						taille: 30,
-						titre: "",
-					});
-					lColonnes.push({
-						id: DonneesListe_EditionCategoriesDossiers.colonnes.libelle,
-						taille: "100%",
-						titre: GTraductions.getValeur(
-							"dossierVieScolaire.fenetre.categorie",
-						),
-					});
-					aInstance.paramsListe = {
-						optionsListe: {
-							colonnes: lColonnes,
-							listeCreations: 0,
+					},
+					initialiser: function (aInstance) {
+						aInstance.setOptionsFenetre({
+							modale: true,
+							titre:
+								GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire
+									.InfoEditionMotif,
+							largeur: 300,
+							hauteur: 400,
+							listeBoutons: [
+								ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+								ObjetTraduction_1.GTraductions.getValeur("Valider"),
+							],
+						});
+						aInstance.paramsListe = {
+							titres: [
+								GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire
+									.Motif,
+							],
+							tailles: ["100%"],
+							creations: 0,
 							avecLigneCreation: true,
 							editable: true,
-						},
-					};
+						};
+					},
 				},
-			},
-		);
-		lFenetreMotif.setDonnees(
-			new DonneesListe_EditionCategoriesDossiers(
-				this.donneesSaisie.listeCategories,
-				() => {
-					lFenetreMotif.actualiserListe(true);
+			);
+			lFenetreMotif.setDonnees(
+				new DonneesListe_EditionMotifs_1.DonneesListe_EditionMotifs(
+					this.elementCategorieCourant.listeMotifs,
+				),
+			);
+		}
+	}
+	surEvenementBoutonEditerCategorie() {
+		if (this.autorisations.creerMotif) {
+			const lFenetreMotif = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+				ObjetFenetre_Liste_1.ObjetFenetre_Liste,
+				{
+					pere: this,
+					evenement: function (aGenreBouton, aSelection, aAvecChangementListe) {
+						if (aGenreBouton === 1) {
+							if (
+								aAvecChangementListe ||
+								this.donneesSaisie.listeCategories.existeElementPourValidation()
+							) {
+								Cache_1.GCache.dossierVS.setDonnee(
+									this.numeroEleve.toString(),
+									this.donneesSaisie,
+								);
+								if (
+									this.elementCategorieCourant.Genre ===
+									TypeOrigineCreationCategorieDossier_1
+										.TypeOrigineCreationCategorieDossier.OCCD_Utilisateur
+								) {
+									this.elementCategorieCourant.setEtat(
+										Enumere_Etat_1.EGenreEtat.Modification,
+									);
+								}
+								this.getInstance(this.identCategorie).setDonnees(
+									this.donneesSaisie.listeCategories,
+								);
+							}
+							if (aSelection !== null && aSelection !== undefined) {
+								let lSelection =
+									this.donneesSaisie.listeCategories.getIndiceParNumeroEtGenre(
+										this.elementCategorieCourant.getNumero(),
+									);
+								if (
+									lSelection >= 0 &&
+									this.elementCategorieCourant.getEtat() !==
+										Enumere_Etat_1.EGenreEtat.Suppression &&
+									aSelection === -1
+								) {
+									this.getInstance(this.identCategorie).setSelectionParIndice(
+										lSelection,
+									);
+								} else {
+									this.getInstance(this.identCategorie).setSelectionParIndice(
+										aSelection >= 0 ? aSelection : 0,
+									);
+								}
+							}
+						}
+					},
+					initialiser: function (aInstance) {
+						aInstance.setOptionsFenetre({
+							modale: true,
+							titre:
+								GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire
+									.InfoEditionCategorie,
+							largeur: 300,
+							hauteur: 400,
+							listeBoutons: [
+								ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+								ObjetTraduction_1.GTraductions.getValeur("Valider"),
+							],
+						});
+						const lColonnes = [];
+						lColonnes.push({
+							id: DonneesListe_EditionCategoriesDossiers_1
+								.DonneesListe_EditionCategoriesDossiers.colonnes.couleur,
+							taille: 30,
+							titre: "",
+						});
+						lColonnes.push({
+							id: DonneesListe_EditionCategoriesDossiers_1
+								.DonneesListe_EditionCategoriesDossiers.colonnes.libelle,
+							taille: "100%",
+							titre:
+								GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire
+									.Categorie,
+						});
+						aInstance.paramsListe = {
+							optionsListe: {
+								colonnes: lColonnes,
+								listeCreations: 0,
+								avecLigneCreation: true,
+							},
+						};
+					},
 				},
+			);
+			lFenetreMotif.setDonnees(
+				new DonneesListe_EditionCategoriesDossiers_1.DonneesListe_EditionCategoriesDossiers(
+					this.donneesSaisie.listeCategories,
+					() => {
+						lFenetreMotif.actualiserListe(true);
+					},
+				),
+			);
+		}
+	}
+	_composeRestriction(aRestriction) {
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "NoWrap", title: aRestriction.hintRestriction },
+				IE.jsx.str("div", {
+					class: "Image_AccesRestreint InlineBlock AlignementMilieuVertical",
+				}),
+				IE.jsx.str(
+					"div",
+					{ class: "InlineBlock AlignementMilieuVertical EspaceGauche" },
+					GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire.XPersonnesOntAccesDossier.format(
+						aRestriction.nbRestreint,
+					),
+				),
 			),
 		);
+		return H.join("");
 	}
 }
-function _composeRestriction(aRestriction) {
-	const H = [];
-	H.push('<div class="NoWrap" title="', aRestriction.hintRestriction, '">');
-	H.push(
-		'<div class="Image_AccesRestreint InlineBlock AlignementMilieuVertical"></div>',
-	);
-	H.push(
-		'<div class="InlineBlock AlignementMilieuVertical EspaceGauche" >',
-		GTraductions.getValeur("dossierVS.nbPersonnesAcces", [
-			aRestriction.nbRestreint,
-		]),
-		"</div>",
-	);
-	H.push("</div>");
-	return H.join("");
-}
-module.exports = { ObjetFenetre_DossierVieScolaire };
+exports.ObjetFenetre_DossierVieScolaire = ObjetFenetre_DossierVieScolaire;

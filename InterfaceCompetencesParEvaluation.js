@@ -1,234 +1,216 @@
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetFenetre_SaisieMessage } = require("ObjetFenetre_SaisieMessage.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	DonneesListe_Competences_ElevesEvaluation,
-} = require("DonneesListe_Competences_ElevesEvaluation.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { InterfacePage } = require("InterfacePage.js");
-const {
-	ObjetRequetePageCompetencesParEvaluation,
-} = require("ObjetRequetePageCompetencesParEvaluation.js");
-const { ObjetUtilitaireEvaluation } = require("ObjetUtilitaireEvaluation.js");
-const {
-	TypeGenreValidationCompetence,
-} = require("TypeGenreValidationCompetence.js");
-const { TUtilitaireCompetences } = require("UtilitaireCompetences.js");
-const { TypeModeInfosADE } = require("TypeModeAssociationDevoirEvaluation.js");
-const { EStructureAffichage } = require("Enumere_StructureAffichage.js");
-const {
-	TypeAffichageTitreColonneCompetence,
-} = require("ObjetFenetre_ParamListeEvaluations.js");
-const { UtilitaireQCM } = require("UtilitaireQCM.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const EGenreEvenementCompetencesParEvaluation = {
-	recupererDonnees: 0,
-	editerCompetence: 1,
-	selectionEleve: 2,
-	editionNote: 3,
-	editionCommentaireSurNote: 4,
-};
-class InterfaceCompetencesParEvaluation extends InterfacePage {
+exports.InterfaceCompetencesParEvaluation =
+	exports.EGenreEvenementCompetencesParEvaluation = void 0;
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_SaisieMessage_1 = require("ObjetFenetre_SaisieMessage");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const DonneesListe_Competences_ElevesEvaluation_1 = require("DonneesListe_Competences_ElevesEvaluation");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const InterfacePage_1 = require("InterfacePage");
+const ObjetRequetePageCompetencesParEvaluation_1 = require("ObjetRequetePageCompetencesParEvaluation");
+const ObjetUtilitaireEvaluation_1 = require("ObjetUtilitaireEvaluation");
+const TypeGenreValidationCompetence_1 = require("TypeGenreValidationCompetence");
+const UtilitaireCompetences_1 = require("UtilitaireCompetences");
+const TypeModeAssociationDevoirEvaluation_1 = require("TypeModeAssociationDevoirEvaluation");
+const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
+const ObjetFenetre_ParamListeEvaluations_1 = require("ObjetFenetre_ParamListeEvaluations");
+const UtilitaireQCM_1 = require("UtilitaireQCM");
+const MethodesObjet_1 = require("MethodesObjet");
+const AccessApp_1 = require("AccessApp");
+var EGenreEvenementCompetencesParEvaluation;
+(function (EGenreEvenementCompetencesParEvaluation) {
+	EGenreEvenementCompetencesParEvaluation[
+		(EGenreEvenementCompetencesParEvaluation["recupererDonnees"] = 0)
+	] = "recupererDonnees";
+	EGenreEvenementCompetencesParEvaluation[
+		(EGenreEvenementCompetencesParEvaluation["editerCompetence"] = 1)
+	] = "editerCompetence";
+	EGenreEvenementCompetencesParEvaluation[
+		(EGenreEvenementCompetencesParEvaluation["selectionEleve"] = 2)
+	] = "selectionEleve";
+	EGenreEvenementCompetencesParEvaluation[
+		(EGenreEvenementCompetencesParEvaluation["editionNote"] = 3)
+	] = "editionNote";
+	EGenreEvenementCompetencesParEvaluation[
+		(EGenreEvenementCompetencesParEvaluation["editionCommentaireSurNote"] = 4)
+	] = "editionCommentaireSurNote";
+})(
+	EGenreEvenementCompetencesParEvaluation ||
+		(exports.EGenreEvenementCompetencesParEvaluation =
+			EGenreEvenementCompetencesParEvaluation =
+				{}),
+);
+class InterfaceCompetencesParEvaluation extends InterfacePage_1.InterfacePage {
 	constructor(...aParams) {
 		super(...aParams);
+		this.appSco = (0, AccessApp_1.getApp)();
+		this.etatUtilSco = this.appSco.getEtatUtilisateur();
 		this.droitSaisieNotes = false;
-		this.parametres = {};
 		this.afficherCommentaireSurNote = false;
-		if (GEtatUtilisateur.optionsAffCompetenceParEval === undefined) {
-			GEtatUtilisateur.optionsAffCompetenceParEval = {
+		this.parametres = {};
+		if (
+			InterfaceCompetencesParEvaluation.optionsAffCompetenceParEval ===
+			undefined
+		) {
+			InterfaceCompetencesParEvaluation.optionsAffCompetenceParEval = {
 				avecOptionAfficherProjetsAcc: true,
 				afficherProjetsAccompagnement: false,
 				afficherPourcentageReussite: false,
 				typeAffichageTitreColonneCompetence:
-					TypeAffichageTitreColonneCompetence.AffichageLibelle,
+					ObjetFenetre_ParamListeEvaluations_1
+						.TypeAffichageTitreColonneCompetence.AffichageLibelle,
 			};
 		}
 	}
 	construireInstances() {
 		this.identListeElevesEvaluation = this.add(
-			ObjetListe,
+			ObjetListe_1.ObjetListe,
 			this._evenementSurListeElevesEvaluation,
 		);
 	}
 	setParametresGeneraux() {
 		this.IdentZoneAlClient = this.identListeElevesEvaluation;
-		this.GenreStructure = EStructureAffichage.Autre;
+		this.GenreStructure =
+			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 	}
 	setAfficherCommentaireSurNote(aValeur) {
 		this.afficherCommentaireSurNote = aValeur;
 	}
+	avecAffichageCommentaireSurNote() {
+		return this.afficherCommentaireSurNote;
+	}
 	setOptionsAffichageListe(aOptionsAffichage) {
 		Object.assign(
-			GEtatUtilisateur.optionsAffCompetenceParEval,
+			InterfaceCompetencesParEvaluation.optionsAffCompetenceParEval,
 			aOptionsAffichage,
 		);
 	}
 	getOptionsAffichageListe() {
-		return GEtatUtilisateur.optionsAffCompetenceParEval;
+		return InterfaceCompetencesParEvaluation.optionsAffCompetenceParEval;
 	}
 	_initListeElevesEvaluation(aEvaluation, aListeCompetences) {
 		const lThis = this;
 		const lListe = this.getInstance(this.identListeElevesEvaluation);
 		const lColonnes = [];
 		lColonnes.push({
-			id: DonneesListe_Competences_ElevesEvaluation.colonnes.eleve,
+			id: DonneesListe_Competences_ElevesEvaluation_1
+				.DonneesListe_Competences_ElevesEvaluation.colonnes.eleve,
 			taille: 150,
 			titre:
 				aEvaluation.listeEleves.count() +
 				" " +
-				GTraductions.getValeur("competences.eleve")[
+				ObjetTraduction_1.GTraductions.getValeur("competences.eleve")[
 					aEvaluation.listeEleves.count() ? 1 : 0
 				],
 		});
 		if (this.estPourGroupe) {
 			lColonnes.push({
-				id: DonneesListe_Competences_ElevesEvaluation.colonnes.classe,
+				id: DonneesListe_Competences_ElevesEvaluation_1
+					.DonneesListe_Competences_ElevesEvaluation.colonnes.classe,
 				taille: 65,
-				titre: GTraductions.getValeur("Classe"),
+				titre: ObjetTraduction_1.GTraductions.getValeur("Classe"),
 			});
 		}
 		if (
 			!!aEvaluation.devoir &&
 			(!!aEvaluation.executionQCM ||
 				[
-					TypeModeInfosADE.tMIADE_Creation,
-					TypeModeInfosADE.tMIADE_Modification,
+					TypeModeAssociationDevoirEvaluation_1.TypeModeInfosADE
+						.tMIADE_Creation,
+					TypeModeAssociationDevoirEvaluation_1.TypeModeInfosADE
+						.tMIADE_Modification,
 				].includes(aEvaluation.devoir.modeAssociation))
 		) {
-			lListe.controleur.btnCalculNoteAuto = {
-				event() {
-					TUtilitaireCompetences.surBoutonCalculNotesDevoir({
-						instance: lThis,
-						evaluation: aEvaluation,
-						callback: function () {
-							aEvaluation.enCache = false;
-							lThis.setDonnees({
+			const lgetDisabled = () => {
+				return (
+					!this.droitSaisieNotes ||
+					!aEvaluation.avecSaisie ||
+					(!!aEvaluation.devoir && aEvaluation.devoir.estVerrouille)
+				);
+			};
+			const lbtnCalculNoteAuto = () => {
+				return {
+					event: () => {
+						UtilitaireCompetences_1.TUtilitaireCompetences.surBoutonCalculNotesDevoir(
+							{
+								instance: this,
 								evaluation: aEvaluation,
-								droitSaisieNotes: lThis.droitSaisieNotes,
-								classe: GEtatUtilisateur.Navigation.getRessource(
-									EGenreRessource.Classe,
-								),
-							});
-						},
-					});
-				},
-				getDisplayBouton() {
-					return !aEvaluation.executionQCM;
-				},
-				getTitle() {
-					return GTraductions.getValeur("evaluations.calculAutoNotes");
-				},
-				getDisabled() {
-					return (
-						!lThis.droitSaisieNotes ||
-						!aEvaluation.avecSaisie ||
-						(!!aEvaluation.devoir && aEvaluation.devoir.estVerrouille)
-					);
-				},
-				getClasseBouton() {
-					return this.controleur.btnCalculNoteAuto.getDisabled.call(this)
-						? ""
-						: "TitreListeSansTri";
-				},
+								callback: () => {
+									aEvaluation.enCache = false;
+									this.setDonnees({
+										evaluation: aEvaluation,
+										droitSaisieNotes: lThis.droitSaisieNotes,
+										classe: this.etatUtilSco.Navigation.getRessource(
+											Enumere_Ressource_1.EGenreRessource.Classe,
+										),
+									});
+								},
+							},
+						);
+					},
+					getTitle() {
+						return ObjetTraduction_1.GTraductions.getValeur(
+							"evaluations.calculAutoNotes",
+						);
+					},
+					getDisabled: lgetDisabled,
+				};
 			};
-			lListe.controleur.hintColonneNote = function () {
-				return aEvaluation.devoir.hintDevoir || "";
+			const lgetClasseBouton = () => {
+				return lgetDisabled()
+					? ""
+					: ObjetListe_1.ObjetListe.StyleElementInteractifTitreSansTri;
 			};
-			const lTitreColonneNotes = [];
-			lTitreColonneNotes.push(
-				`<div class="flex-contain flex-center justify-center">`,
-			);
-			lTitreColonneNotes.push(
-				`<ie-btnicon ie-display="btnCalculNoteAuto.getDisplayBouton" ie-model="btnCalculNoteAuto" ie-class="btnCalculNoteAuto.getClasseBouton" class="icon_sigma color-neutre m-right"></ie-btnicon>`,
-			);
-			lTitreColonneNotes.push(
-				`<span ie-hint="hintColonneNote">${GTraductions.getValeur("evaluations.notes")}</span>`,
-			);
-			lTitreColonneNotes.push(`</div>`);
 			lColonnes.push({
-				id: DonneesListe_Competences_ElevesEvaluation.colonnes.notes,
+				id: DonneesListe_Competences_ElevesEvaluation_1
+					.DonneesListe_Competences_ElevesEvaluation.colonnes.notes,
 				taille: 70,
-				titre: { libelleHtml: lTitreColonneNotes.join("") },
+				titre: {
+					getLibelleHtml: () => {
+						return IE.jsx.str(
+							"div",
+							{ class: "flex-contain flex-center justify-center" },
+							IE.jsx.str("ie-btnicon", {
+								"ie-display": () => !aEvaluation.executionQCM,
+								"ie-model": lbtnCalculNoteAuto,
+								"ie-class": lgetClasseBouton,
+								class: "icon_sigma color-neutre m-right",
+							}),
+							IE.jsx.str(
+								"span",
+								{ "ie-hint": () => aEvaluation.devoir.hintDevoir || "" },
+								ObjetTraduction_1.GTraductions.getValeur("evaluations.notes"),
+							),
+						);
+					},
+				},
 			});
 			if (this.afficherCommentaireSurNote) {
 				lColonnes.push(
-					getColonne.call(
-						this,
-						DonneesListe_Competences_ElevesEvaluation.colonnes
+					this.getColonne(
+						DonneesListe_Competences_ElevesEvaluation_1
+							.DonneesListe_Competences_ElevesEvaluation.colonnes
 							.commentaireSurNote,
 					).colonne,
 				);
 			}
 		}
 		const lTypeAffichageColonneCompetence =
-			GEtatUtilisateur.optionsAffCompetenceParEval
+			InterfaceCompetencesParEvaluation.optionsAffCompetenceParEval
 				.typeAffichageTitreColonneCompetence;
 		const lAvecPourcentageReussite =
-			GEtatUtilisateur.optionsAffCompetenceParEval.afficherPourcentageReussite;
-		lListe.controleur.getPourcentageReussiteCompetence = function (
-			aIndexColonneCompetence,
-		) {
-			const lValeurPourcentage = this.instance
-				.getDonneesListe()
-				.getPourcentageReussite(aIndexColonneCompetence);
-			if (lValeurPourcentage === null || lValeurPourcentage === undefined) {
-				return "-";
-			}
-			return lValeurPourcentage + " %";
-		};
-		lListe.controleur.getHintColonneCompetence = function (
-			aIndexColonneCompetence,
-		) {
-			const lCompetence = aListeCompetences.get(aIndexColonneCompetence);
-			const lPourcentageReussite = this.instance
-				.getDonneesListe()
-				.getPourcentageReussite(aIndexColonneCompetence);
-			const lHint = [];
-			lHint.push(TUtilitaireCompetences.composeTitleEvaluation(lCompetence));
-			if (lPourcentageReussite !== null && lPourcentageReussite !== undefined) {
-				lHint.push("<br/><br/>");
-				lHint.push(
-					"<b>",
-					GTraductions.getValeur("competences.PourcentageDeReussite"),
-					"</b> ",
-					lPourcentageReussite,
-					" %",
-				);
-			}
-			if (
-				!!lCompetence.informationQCM &&
-				!!lCompetence.informationQCM.listeQuestions &&
-				lCompetence.informationQCM.listeQuestions.count() > 0
-			) {
-				const lTypeNumerotationQCM =
-					lCompetence.informationQCM.typeNumerotation;
-				lHint.push("<br/><br/>");
-				lCompetence.informationQCM.listeQuestions.parcourir((aQuestionQCM) => {
-					const lHtmlQuestion = UtilitaireQCM.composeHintDeQuestionQCM(
-						lThis,
-						aQuestionQCM.getPosition(),
-						aQuestionQCM,
-						{
-							avecAffichageInfosCompetences: false,
-							avecAffichageBareme: !GEtatUtilisateur.pourPrimaire(),
-							typeNumerotationQCM: lTypeNumerotationQCM,
-						},
-					);
-					lHint.push(lHtmlQuestion);
-				});
-			}
-			return lHint.join("");
-		};
+			InterfaceCompetencesParEvaluation.optionsAffCompetenceParEval
+				.afficherPourcentageReussite;
 		let lIdPremiereColonne = null;
 		aListeCompetences.parcourir((aCompetence, aIndex) => {
 			let lLibelleCompetence;
 			if (
 				lTypeAffichageColonneCompetence ===
-				TypeAffichageTitreColonneCompetence.AffichageLibelle
+				ObjetFenetre_ParamListeEvaluations_1.TypeAffichageTitreColonneCompetence
+					.AffichageLibelle
 			) {
 				lLibelleCompetence = aCompetence.getLibelle();
 			} else {
@@ -237,28 +219,100 @@ class InterfaceCompetencesParEvaluation extends InterfacePage {
 						? aCompetence.pilier.code + " - "
 						: "") + (aCompetence.code || "");
 			}
-			const lLibelleColonneCompetence = [];
-			lLibelleColonneCompetence.push(
-				'<div class="ie-ellipsis" ie-hint="getHintColonneCompetence(' +
-					aIndex +
-					')">',
-			);
-			lLibelleColonneCompetence.push(lLibelleCompetence);
-			if (lAvecPourcentageReussite) {
-				lLibelleColonneCompetence.push(
-					'<br/><span ie-html="getPourcentageReussiteCompetence(' +
-						aIndex +
-						')"></span>',
+			const lgetHintColonneCompetence = () => {
+				const lCompetence = aListeCompetences.get(aIndex);
+				const lPourcentageReussite = lListe
+					.getDonneesListe()
+					.getPourcentageReussite(aIndex);
+				const lHint = [];
+				lHint.push(
+					UtilitaireCompetences_1.TUtilitaireCompetences.composeTitleEvaluation(
+						lCompetence,
+					),
 				);
-			}
-			lLibelleColonneCompetence.push("</div>");
+				if (
+					lPourcentageReussite !== null &&
+					lPourcentageReussite !== undefined
+				) {
+					lHint.push("<br/><br/>");
+					lHint.push(
+						"<b>",
+						ObjetTraduction_1.GTraductions.getValeur(
+							"competences.PourcentageDeReussite",
+						),
+						"</b> ",
+						lPourcentageReussite,
+						" %",
+					);
+				}
+				if (
+					!!lCompetence.informationQCM &&
+					!!lCompetence.informationQCM.listeQuestions &&
+					lCompetence.informationQCM.listeQuestions.count() > 0
+				) {
+					const lTypeNumerotationQCM =
+						lCompetence.informationQCM.typeNumerotation;
+					lHint.push("<br/><br/>");
+					lCompetence.informationQCM.listeQuestions.parcourir(
+						(aQuestionQCM) => {
+							const lHtmlQuestion =
+								UtilitaireQCM_1.UtilitaireQCM.composeHintDeQuestionQCM(
+									lThis,
+									aQuestionQCM.getPosition(),
+									aQuestionQCM,
+									{
+										avecAffichageInfosCompetences: false,
+										avecAffichageBareme: !this.etatUtilSco.pourPrimaire(),
+										typeNumerotationQCM: lTypeNumerotationQCM,
+									},
+								);
+							lHint.push(lHtmlQuestion);
+						},
+					);
+				}
+				return lHint.join("");
+			};
 			const lIdColonne =
-				DonneesListe_Competences_ElevesEvaluation.colonnes.prefixe_competence +
-				aIndex;
+				DonneesListe_Competences_ElevesEvaluation_1
+					.DonneesListe_Competences_ElevesEvaluation.colonnes
+					.prefixe_competence + aIndex;
 			lColonnes.push({
 				id: lIdColonne,
 				taille: 70,
-				titre: { libelleHtml: lLibelleColonneCompetence.join("") },
+				titre: {
+					getLibelleHtml: () => {
+						return IE.jsx.str(
+							"div",
+							{ class: "ie-ellipsis", "ie-hint": lgetHintColonneCompetence },
+							lLibelleCompetence,
+							() => {
+								if (lAvecPourcentageReussite) {
+									const lgetPourcentageReussiteCompetence = () => {
+										const lValeurPourcentage = lListe
+											.getDonneesListe()
+											.getPourcentageReussite(aIndex);
+										if (
+											lValeurPourcentage === null ||
+											lValeurPourcentage === undefined
+										) {
+											return "-";
+										}
+										return lValeurPourcentage + " %";
+									};
+									return IE.jsx.str(
+										IE.jsx.fragment,
+										null,
+										IE.jsx.str("br", null),
+										IE.jsx.str("span", {
+											"ie-html": lgetPourcentageReussiteCompetence,
+										}),
+									);
+								}
+								return "";
+							},
+						);
+					},
+				},
 			});
 			if (!lIdPremiereColonne) {
 				lIdPremiereColonne = lIdColonne;
@@ -279,15 +333,16 @@ class InterfaceCompetencesParEvaluation extends InterfacePage {
 				? GNavigateur.ecranH - 300
 				: null,
 		});
-		GEtatUtilisateur.setTriListe({
+		this.etatUtilSco.setTriListe({
 			liste: lListe,
-			tri: DonneesListe_Competences_ElevesEvaluation.colonnes.eleve,
+			tri: DonneesListe_Competences_ElevesEvaluation_1
+				.DonneesListe_Competences_ElevesEvaluation.colonnes.eleve,
 			identifiant: "elevesEvaluation",
 		});
 		const lParamsDonneesListe = {
 			eleves: aEvaluation.listeEleves,
 			competences: aListeCompetences,
-			initMenuContextuel: _initMenuContextuelListe.bind(this),
+			initMenuContextuel: this._initMenuContextuelListe.bind(this),
 			avecSaisie: aEvaluation.avecSaisie,
 			dateEvaluation: aEvaluation.dateValidation,
 			genreEvaluation: aEvaluation.getGenre(),
@@ -320,11 +375,13 @@ class InterfaceCompetencesParEvaluation extends InterfacePage {
 			}
 		}
 		const lOptionsAffichage = Object.assign(
-			MethodesObjet.dupliquer(GEtatUtilisateur.optionsAffCompetenceParEval),
+			MethodesObjet_1.MethodesObjet.dupliquer(
+				InterfaceCompetencesParEvaluation.optionsAffCompetenceParEval,
+			),
 			{ afficherCommentaireSurNote: this.afficherCommentaireSurNote },
 		);
 		lListe.setDonnees(
-			new DonneesListe_Competences_ElevesEvaluation(
+			new DonneesListe_Competences_ElevesEvaluation_1.DonneesListe_Competences_ElevesEvaluation(
 				lParamsDonneesListe,
 				lOptionsAffichage,
 			),
@@ -346,14 +403,15 @@ class InterfaceCompetencesParEvaluation extends InterfacePage {
 		this.droitSaisieNotes = aParams.droitSaisieNotes;
 		this.estPourGroupe =
 			aParams && aParams.classe
-				? aParams.classe.getGenre() === EGenreRessource.Groupe
+				? aParams.classe.getGenre() ===
+					Enumere_Ressource_1.EGenreRessource.Groupe
 				: false;
 		const lEvaluation = !!aParams.devoir
 			? aParams.devoir.evaluation
 			: aParams.evaluation;
 		if (!!lEvaluation) {
 			if (!lEvaluation.enCache) {
-				new ObjetRequetePageCompetencesParEvaluation(
+				new ObjetRequetePageCompetencesParEvaluation_1.ObjetRequetePageCompetencesParEvaluation(
 					this,
 					this.actualisationListeElevesCompetences,
 				).lancerRequete(aParams);
@@ -367,7 +425,7 @@ class InterfaceCompetencesParEvaluation extends InterfacePage {
 	}
 	_evenementSurListeElevesEvaluation(aParametres) {
 		switch (aParametres.genreEvenement) {
-			case EGenreEvenementListe.Selection: {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Selection: {
 				let lNouvelleRessource = null;
 				const lListeCellulesSelectionnees =
 					aParametres.instance.getTableauCellulesSelection();
@@ -398,8 +456,8 @@ class InterfaceCompetencesParEvaluation extends InterfacePage {
 						}
 					}
 				}
-				const lRessourceActuelle = GEtatUtilisateur.Navigation.getRessource(
-					EGenreRessource.Eleve,
+				const lRessourceActuelle = this.etatUtilSco.Navigation.getRessource(
+					Enumere_Ressource_1.EGenreRessource.Eleve,
 				);
 				if (!!lRessourceActuelle || !!lNouvelleRessource) {
 					if (
@@ -407,8 +465,8 @@ class InterfaceCompetencesParEvaluation extends InterfacePage {
 						(!!lRessourceActuelle && !lNouvelleRessource) ||
 						lRessourceActuelle.getNumero() !== lNouvelleRessource.getNumero()
 					) {
-						GEtatUtilisateur.Navigation.setRessource(
-							EGenreRessource.Eleve,
+						this.etatUtilSco.Navigation.setRessource(
+							Enumere_Ressource_1.EGenreRessource.Eleve,
 							lNouvelleRessource,
 						);
 						this.callback.appel(
@@ -418,10 +476,10 @@ class InterfaceCompetencesParEvaluation extends InterfacePage {
 				}
 				break;
 			}
-			case EGenreEvenementListe.Edition:
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Edition:
 				aParametres.ouvrirMenuContextuel();
 				break;
-			case EGenreEvenementListe.ApresEdition: {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.ApresEdition: {
 				const lParams = {
 					devoir: this.devoir,
 					eleve: aParametres.article.eleve,
@@ -429,28 +487,30 @@ class InterfaceCompetencesParEvaluation extends InterfacePage {
 						aParametres.article.eleve.note || aParametres.article.eleve.Note,
 				};
 				switch (aParametres.idColonne) {
-					case DonneesListe_Competences_ElevesEvaluation.colonnes
+					case DonneesListe_Competences_ElevesEvaluation_1
+						.DonneesListe_Competences_ElevesEvaluation.colonnes
 						.commentaireSurNote:
 						this.callback.appel(
 							EGenreEvenementCompetencesParEvaluation.editionCommentaireSurNote,
 							lParams,
 						);
 						break;
-					case DonneesListe_Competences_ElevesEvaluation.colonnes.notes:
+					case DonneesListe_Competences_ElevesEvaluation_1
+						.DonneesListe_Competences_ElevesEvaluation.colonnes.notes:
 						this.callback.appel(
 							EGenreEvenementCompetencesParEvaluation.editionNote,
 							lParams,
 						);
 						break;
 				}
-				_selectionnerCelluleSuivante(
+				this._selectionnerCelluleSuivante(
 					this.getInstance(this.identListeElevesEvaluation),
 					true,
 				);
 				break;
 			}
-			case EGenreEvenementListe.KeyPressListe:
-				return _surKeyUpListe.call(this, aParametres.event);
+			case Enumere_EvenementListe_1.EGenreEvenementListe.KeyPressListe:
+				return this._surKeyUpListe(aParametres.event);
 		}
 	}
 	afficherListeElevesSansCompetences(aParams) {
@@ -458,47 +518,36 @@ class InterfaceCompetencesParEvaluation extends InterfacePage {
 		const lListe = this.getInstance(this.identListeElevesEvaluation);
 		const lColonnes = [];
 		const lParams = { devoir: lDevoir };
-		const lColonneEleve = getColonne.call(
-			this,
-			DonneesListe_Competences_ElevesEvaluation.colonnes.eleve,
+		const lColonneEleve = this.getColonne(
+			DonneesListe_Competences_ElevesEvaluation_1
+				.DonneesListe_Competences_ElevesEvaluation.colonnes.eleve,
 			lParams,
 		);
 		lColonnes.push(lColonneEleve.colonne);
-		if (lColonneEleve.controleur) {
-			Object.assign(lListe.controleur, lColonneEleve.controleur);
-		}
 		if (this.estPourGroupe) {
-			const lColonneClasse = getColonne.call(
-				this,
-				DonneesListe_Competences_ElevesEvaluation.colonnes.classe,
+			const lColonneClasse = this.getColonne(
+				DonneesListe_Competences_ElevesEvaluation_1
+					.DonneesListe_Competences_ElevesEvaluation.colonnes.classe,
 				lParams,
 			);
 			lColonnes.push(lColonneClasse.colonne);
-			if (lColonneClasse.controleur) {
-				Object.assign(lListe.controleur, lColonneClasse.controleur);
-			}
 		}
 		if (lDevoir) {
-			const lColonneNotes = getColonne.call(
-				this,
-				DonneesListe_Competences_ElevesEvaluation.colonnes.notes,
+			const lColonneNotes = this.getColonne(
+				DonneesListe_Competences_ElevesEvaluation_1
+					.DonneesListe_Competences_ElevesEvaluation.colonnes.notes,
 				lParams,
 			);
 			lColonnes.push(lColonneNotes.colonne);
-			if (lColonneNotes.controleur) {
-				Object.assign(lListe.controleur, lColonneNotes.controleur);
-			}
 		}
 		if (this.afficherCommentaireSurNote) {
-			const lColonneCommentaire = getColonne.call(
-				this,
-				DonneesListe_Competences_ElevesEvaluation.colonnes.commentaireSurNote,
+			const lColonneCommentaire = this.getColonne(
+				DonneesListe_Competences_ElevesEvaluation_1
+					.DonneesListe_Competences_ElevesEvaluation.colonnes
+					.commentaireSurNote,
 				lParams,
 			);
 			lColonnes.push(lColonneCommentaire.colonne);
-			if (lColonneCommentaire.controleur) {
-				Object.assign(lListe.controleur, lColonneCommentaire.controleur);
-			}
 		}
 		lListe.setOptionsListe({
 			colonnes: lColonnes,
@@ -510,14 +559,15 @@ class InterfaceCompetencesParEvaluation extends InterfacePage {
 				? GNavigateur.ecranH - 300
 				: null,
 		});
-		GEtatUtilisateur.setTriListe({
+		this.etatUtilSco.setTriListe({
 			liste: lListe,
-			tri: DonneesListe_Competences_ElevesEvaluation.colonnes.eleve,
+			tri: DonneesListe_Competences_ElevesEvaluation_1
+				.DonneesListe_Competences_ElevesEvaluation.colonnes.eleve,
 			identifiant: "elevesEvaluation",
 		});
 		const lParamsDonneesListe = {
 			eleves: lDevoir.listeEleves,
-			competences: new ObjetListeElements(),
+			competences: new ObjetListeElements_1.ObjetListeElements(),
 			initMenuContextuel: () => {},
 		};
 		lParamsDonneesListe.droitSaisieNotes = this.droitSaisieNotes;
@@ -544,9 +594,9 @@ class InterfaceCompetencesParEvaluation extends InterfacePage {
 			});
 		}
 		lListe.setDonnees(
-			new DonneesListe_Competences_ElevesEvaluation(lParamsDonneesListe, {
-				afficherCommentaireSurNote: this.afficherCommentaireSurNote,
-			}),
+			new DonneesListe_Competences_ElevesEvaluation_1.DonneesListe_Competences_ElevesEvaluation(
+				lParamsDonneesListe,
+			),
 		);
 		this.callback.appel(
 			EGenreEvenementCompetencesParEvaluation.recupererDonnees,
@@ -556,11 +606,10 @@ class InterfaceCompetencesParEvaluation extends InterfacePage {
 		if (!aEvaluation) {
 			return;
 		}
-		ObjetUtilitaireEvaluation.calculerAvecEvaluation(
+		ObjetUtilitaireEvaluation_1.ObjetUtilitaireEvaluation.calculerAvecEvaluation(
 			aEvaluation,
-			aEvaluation.listePiliers,
 		);
-		const lListeCompetences = new ObjetListeElements();
+		const lListeCompetences = new ObjetListeElements_1.ObjetListeElements();
 		for (let i = 0; i < aEvaluation.listeCompetences.count(); i++) {
 			if (aEvaluation.listeCompetences.get(i).existe()) {
 				lListeCompetences.addElement(aEvaluation.listeCompetences.get(i));
@@ -575,376 +624,414 @@ class InterfaceCompetencesParEvaluation extends InterfacePage {
 		if (this.getInstance(this.identListeElevesEvaluation)) {
 			this.getInstance(this.identListeElevesEvaluation).effacer(
 				'<div class="Gras AlignementMilieu GrandEspaceHaut">' +
-					GTraductions.getValeur("competences.SelectionnezEvaluation") +
+					ObjetTraduction_1.GTraductions.getValeur(
+						"competences.SelectionnezEvaluation",
+					) +
 					"</div>",
 			);
 		}
 	}
-}
-function getColonne(aId, aParams = {}) {
-	const lResult = { controleur: null, colonne: null };
-	switch (aId) {
-		case DonneesListe_Competences_ElevesEvaluation.colonnes.eleve: {
-			let lTitre = "";
-			if (aParams.evaluation) {
-				lTitre =
-					aParams.evaluation.listeEleves.count() +
-					" " +
-					GTraductions.getValeur("competences.eleve")[
-						aParams.evaluation.listeEleves.count() ? 1 : 0
-					];
-			} else if (aParams.devoir) {
-				lTitre =
-					aParams.devoir.listeEleves &&
-					aParams.devoir.listeEleves.count() +
+	getColonne(aId, aParams = {}) {
+		const lResult = { colonne: null };
+		switch (aId) {
+			case DonneesListe_Competences_ElevesEvaluation_1
+				.DonneesListe_Competences_ElevesEvaluation.colonnes.eleve: {
+				let lTitre = "";
+				if (aParams.evaluation) {
+					lTitre =
+						aParams.evaluation.listeEleves.count() +
 						" " +
-						GTraductions.getValeur("competences.eleve")[
-							aParams.devoir.listeEleves.count() ? 1 : 0
+						ObjetTraduction_1.GTraductions.getValeur("competences.eleve")[
+							aParams.evaluation.listeEleves.count() ? 1 : 0
 						];
+				} else if (aParams.devoir) {
+					lTitre =
+						aParams.devoir.listeEleves &&
+						aParams.devoir.listeEleves.count() +
+							" " +
+							ObjetTraduction_1.GTraductions.getValeur("competences.eleve")[
+								aParams.devoir.listeEleves.count() ? 1 : 0
+							];
+				}
+				lResult.colonne = { id: aId, taille: 150, titre: lTitre };
+				break;
 			}
-			lResult.colonne = { id: aId, taille: 150, titre: lTitre };
-			break;
-		}
-		case DonneesListe_Competences_ElevesEvaluation.colonnes.classe:
-			lResult.colonne = {
-				id: aId,
-				taille: 65,
-				titre: GTraductions.getValeur("Classe"),
-			};
-			break;
-		case DonneesListe_Competences_ElevesEvaluation.colonnes.notes: {
-			let lTitre = [];
-			const lThis = this;
-			if (aParams.evaluation) {
-				lTitre.push(`<div class="flex-contain flex-center justify-center">`);
-				lTitre.push(
-					`<ie-btnicon ie-display="btnCalculNoteAuto.getDisplayBouton" ie-model="btnCalculNoteAuto" ie-class="btnCalculNoteAuto.getClasseBouton" class="icon_sigma color-neutre m-right"></ie-btnicon>`,
-				);
-				lTitre.push(
-					`<span ie-hint="hintColonneNote">${GTraductions.getValeur("evaluations.notes")}</span>`,
-				);
-				lTitre.push(`</div>`);
-			} else if (aParams.devoir) {
-				lTitre.push(
-					`<span ie-hint="hintColonneNote">${GTraductions.getValeur("evaluations.notes")}</span>`,
-				);
-			}
-			lResult.colonne = {
-				id: aId,
-				taille: 70,
-				titre: { libelleHtml: lTitre.join("") },
-			};
-			lResult.controleur = {};
-			lResult.controleur.btnCalculNoteAuto = {
-				event() {
-					TUtilitaireCompetences.surBoutonCalculNotesDevoir({
-						instance: lThis,
-						evaluation: aParams.evaluation,
-						callback: function () {
-							aParams.evaluation.enCache = false;
-							lThis.setDonnees({
-								evaluation: aParams.evaluation,
-								droitSaisieNotes: lThis.droitSaisieNotes,
-								classe: GEtatUtilisateur.Navigation.getRessource(
-									EGenreRessource.Classe,
-								),
-							});
-						},
-					});
-				},
-				getDisplayBouton() {
-					return true;
-				},
-				getTitle() {
-					return GTraductions.getValeur("evaluations.calculAutoNotes");
-				},
-				getDisabled() {
-					if (aParams.evaluation) {
+			case DonneesListe_Competences_ElevesEvaluation_1
+				.DonneesListe_Competences_ElevesEvaluation.colonnes.classe:
+				lResult.colonne = {
+					id: aId,
+					taille: 65,
+					titre: ObjetTraduction_1.GTraductions.getValeur("Classe"),
+				};
+				break;
+			case DonneesListe_Competences_ElevesEvaluation_1
+				.DonneesListe_Competences_ElevesEvaluation.colonnes.notes: {
+				const lGetHtml = () => {
+					const lhintColonneNote = () => {
 						return (
-							!lThis.droitSaisieNotes ||
-							!aParams.evaluation.avecSaisie ||
-							(!!aParams.evaluation.devoir &&
-								aParams.evaluation.devoir.estVerrouille)
+							(aParams.evaluation
+								? aParams.evaluation.devoir.hintDevoir
+								: aParams.devoir.hintDevoir) || ""
+						);
+					};
+					if (aParams.evaluation) {
+						const lgetDisabled = () => {
+							if (aParams.evaluation) {
+								return (
+									!this.droitSaisieNotes ||
+									!aParams.evaluation.avecSaisie ||
+									(!!aParams.evaluation.devoir &&
+										aParams.evaluation.devoir.estVerrouille)
+								);
+							}
+							if (aParams.devoir) {
+								return !this.droitSaisieNotes || aParams.devoir.estVerrouille;
+							}
+							return true;
+						};
+						const lbtnCalculNoteAuto = () => {
+							return {
+								event: () => {
+									UtilitaireCompetences_1.TUtilitaireCompetences.surBoutonCalculNotesDevoir(
+										{
+											instance: this,
+											evaluation: aParams.evaluation,
+											callback: () => {
+												aParams.evaluation.enCache = false;
+												this.setDonnees({
+													evaluation: aParams.evaluation,
+													droitSaisieNotes: this.droitSaisieNotes,
+													classe: this.etatUtilSco.Navigation.getRessource(
+														Enumere_Ressource_1.EGenreRessource.Classe,
+													),
+												});
+											},
+										},
+									);
+								},
+								getTitle() {
+									return ObjetTraduction_1.GTraductions.getValeur(
+										"evaluations.calculAutoNotes",
+									);
+								},
+								getDisabled: lgetDisabled,
+							};
+						};
+						const lgetDisplayBouton = () => {
+							return !aParams.evaluation.executionQCM;
+						};
+						const getClasseBouton = () => {
+							return lgetDisabled()
+								? ""
+								: ObjetListe_1.ObjetListe.StyleElementInteractifTitreSansTri;
+						};
+						return IE.jsx.str(
+							"div",
+							{ class: "flex-contain flex-center justify-center" },
+							IE.jsx.str("ie-btnicon", {
+								"ie-display": lgetDisplayBouton,
+								"ie-model": lbtnCalculNoteAuto,
+								"ie-class": getClasseBouton,
+								class: "icon_sigma color-neutre m-right",
+							}),
+							IE.jsx.str(
+								"span",
+								{ "ie-hint": lhintColonneNote },
+								ObjetTraduction_1.GTraductions.getValeur("evaluations.notes"),
+							),
+						);
+					} else if (aParams.devoir) {
+						return IE.jsx.str(
+							"span",
+							{ "ie-hint": lhintColonneNote },
+							ObjetTraduction_1.GTraductions.getValeur("evaluations.notes"),
 						);
 					}
-					if (aParams.devoir) {
-						return !lThis.droitSaisieNotes || aParams.devoir.estVerrouille;
-					}
-					return true;
-				},
-				getClasseBouton() {
-					return this.controleur.btnCalculNoteAuto.getDisabled.call(this)
-						? ""
-						: "TitreListeSansTri";
-				},
-			};
-			lResult.controleur.hintColonneNote = function () {
-				return (
-					(aParams.evaluation
-						? aParams.evaluation.devoir.hintDevoir
-						: aParams.devoir.hintDevoir) || ""
-				);
-			};
-			break;
+				};
+				lResult.colonne = {
+					id: aId,
+					taille: 70,
+					titre: { getLibelleHtml: lGetHtml },
+				};
+				break;
+			}
+			case DonneesListe_Competences_ElevesEvaluation_1
+				.DonneesListe_Competences_ElevesEvaluation.colonnes.commentaireSurNote:
+				lResult.colonne = {
+					id: DonneesListe_Competences_ElevesEvaluation_1
+						.DonneesListe_Competences_ElevesEvaluation.colonnes
+						.commentaireSurNote,
+					taille: 200,
+					titre: {
+						libelle:
+							ObjetTraduction_1.GTraductions.getValeur("Notes.remarques"),
+					},
+				};
+				break;
 		}
-		case DonneesListe_Competences_ElevesEvaluation.colonnes.commentaireSurNote:
-			lResult.colonne = {
-				id: DonneesListe_Competences_ElevesEvaluation.colonnes
-					.commentaireSurNote,
-				taille: 200,
-				titre: { libelle: GTraductions.getValeur("Notes.remarques") },
-			};
-			break;
+		return lResult;
 	}
-	return lResult;
-}
-function _initMenuContextuelListe(aParametres) {
-	const lSelections = this.getInstance(
-		this.identListeElevesEvaluation,
-	).getTableauCellulesSelection();
-	let lEvalEditable = false;
-	let lObservationEditable = false;
-	if (!lSelections || lSelections.length === 0) {
-		return;
+	_initMenuContextuelListe(aParametres) {
+		const lSelections = this.getInstance(
+			this.identListeElevesEvaluation,
+		).getTableauCellulesSelection();
+		let lEvalEditable = false;
+		let lObservationEditable = false;
+		if (!lSelections || lSelections.length === 0) {
+			return;
+		}
+		if (!aParametres.nonEditable) {
+			lSelections.forEach((aSelection) => {
+				if (
+					DonneesListe_Competences_ElevesEvaluation_1.DonneesListe_Competences_ElevesEvaluation.estUneColonneCompetence(
+						aSelection.idColonne,
+					)
+				) {
+					const lColonne =
+						aSelection.article.colonnesCompetences[aSelection.idColonne];
+					if (lColonne.editable) {
+						lEvalEditable = true;
+						if (
+							lColonne.competence &&
+							lColonne.competence.niveauDAcquisition.getNumero()
+						) {
+							lObservationEditable = true;
+						}
+					}
+				}
+			});
+		}
+		UtilitaireCompetences_1.TUtilitaireCompetences.initMenuContextuelNiveauAcquisition(
+			{
+				instance: this,
+				menuContextuel: aParametres.menuContextuel,
+				avecLibelleRaccourci: true,
+				genreChoixValidationCompetence:
+					TypeGenreValidationCompetence_1.TypeGenreValidationCompetence
+						.tGVC_EvaluationEtItem,
+				evaluationsEditables: lEvalEditable,
+				estObservationEditable: lObservationEditable,
+				callbackNiveau: this._modifierNiveauDeSelectionCourante.bind(
+					this,
+					true,
+				),
+				callbackCommentaire: this._editionCommentaireAcquisitions.bind(
+					this,
+					lSelections,
+				),
+			},
+		);
 	}
-	if (!aParametres.nonEditable) {
+	_surKeyUpListe(aEvent) {
+		const lListe = this.getInstance(this.identListeElevesEvaluation),
+			lSelections = lListe.getTableauCellulesSelection();
+		let lSelectionsContientUneColonneCompetence = false;
 		lSelections.forEach((aSelection) => {
 			if (
-				DonneesListe_Competences_ElevesEvaluation.estUneColonneCompetence(
+				DonneesListe_Competences_ElevesEvaluation_1.DonneesListe_Competences_ElevesEvaluation.estUneColonneCompetence(
 					aSelection.idColonne,
 				)
 			) {
-				const lColonne =
-					aSelection.article.colonnesCompetences[aSelection.idColonne];
-				if (lColonne.editable) {
-					lEvalEditable = true;
-					if (
-						lColonne.competence &&
-						lColonne.competence.niveauDAcquisition.getNumero()
-					) {
-						lObservationEditable = true;
-					}
+				lSelectionsContientUneColonneCompetence = true;
+				return false;
+			}
+		});
+		if (lSelectionsContientUneColonneCompetence) {
+			let lNiveaux;
+			if (this.appSco.getObjetParametres().listeNiveauxDAcquisitions) {
+				lNiveaux = this.appSco
+					.getObjetParametres()
+					.listeNiveauxDAcquisitions.getListeElements((aEle) => {
+						return aEle.actifPour.contains(
+							TypeGenreValidationCompetence_1.TypeGenreValidationCompetence
+								.tGVC_EvaluationEtItem,
+						);
+					});
+			}
+			if (!!lNiveaux) {
+				const lNiveau =
+					UtilitaireCompetences_1.TUtilitaireCompetences.getNiveauAcqusitionDEventClavier(
+						aEvent,
+						lNiveaux,
+					);
+				if (lNiveau) {
+					this._modifierNiveauDeSelectionCourante(false, lNiveau);
+					return true;
+				}
+			}
+		}
+	}
+	_editionCommentaireAcquisitions(aSelections) {
+		let lCommentaireCommun = null;
+		let lEstPublieeCommun = null;
+		let lCommentaireEstIdentique = true;
+		let lPublicationEstIdentique = true;
+		aSelections.every((aSelection) => {
+			const lColonnesCompetences =
+				aSelection.article.colonnesCompetences[aSelection.idColonne];
+			const lCompetence =
+				lColonnesCompetences && lColonnesCompetences.competence;
+			if (lCompetence) {
+				if (lCommentaireCommun === null) {
+					lCommentaireCommun = lCompetence.observation || "";
+				} else if (
+					lCommentaireEstIdentique &&
+					lCommentaireCommun !== lCompetence.observation
+				) {
+					lCommentaireCommun = null;
+					lCommentaireEstIdentique = false;
+				}
+				if (lEstPublieeCommun === null) {
+					lEstPublieeCommun = !!lCompetence.observationPubliee;
+				} else if (
+					lPublicationEstIdentique &&
+					lEstPublieeCommun !== lCompetence.observationPubliee
+				) {
+					lEstPublieeCommun = null;
+					lPublicationEstIdentique = false;
+				}
+				if (!lCommentaireEstIdentique && !lPublicationEstIdentique) {
+					return false;
+				}
+			}
+			return true;
+		});
+		const lFenetreEditionObservation =
+			ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+				ObjetFenetre_SaisieMessage_1.ObjetFenetre_SaisieMessage,
+				{
+					pere: this,
+					evenement: function (aNumeroBouton, aDonnees) {
+						if (aNumeroBouton === 1) {
+							const lObservationSaisie = aDonnees.message;
+							const lEstPublieeSaisie = aDonnees.estPublie;
+							if (
+								lObservationSaisie !== undefined ||
+								lEstPublieeSaisie !== undefined
+							) {
+								this._editionSelectionsCellulesListe(
+									aSelections,
+									(aCompetence, aSelection) => {
+										if (
+											aSelection.article.colonnesCompetences[
+												aSelection.idColonne
+											].editable &&
+											aCompetence
+										) {
+											let lCompetenceModifiee = false;
+											if (
+												lObservationSaisie !== undefined &&
+												aCompetence.observation !== lObservationSaisie
+											) {
+												aCompetence.observation = lObservationSaisie;
+												lCompetenceModifiee = true;
+											}
+											if (
+												lEstPublieeSaisie !== undefined &&
+												aCompetence.observationPubliee !== lEstPublieeSaisie
+											) {
+												aCompetence.observationPubliee = lEstPublieeSaisie;
+												lCompetenceModifiee = true;
+											}
+											if (!!lCompetenceModifiee) {
+												return true;
+											}
+										}
+									},
+								);
+							}
+						}
+					},
+					initialiser: function (aInstance) {
+						aInstance.setOptionsFenetre({
+							titre: ObjetTraduction_1.GTraductions.getValeur(
+								"competences.AjouterCommentaire",
+							),
+						});
+						aInstance.setParametresFenetreSaisieMessage({
+							maxLengthSaisie: 1000,
+							avecControlePublication: true,
+						});
+					},
+				},
+			);
+		lFenetreEditionObservation.setDonnees(
+			lCommentaireCommun,
+			lEstPublieeCommun,
+		);
+	}
+	_editionSelectionsCellulesListe(aSelections, aMethodeEdition) {
+		if (!aSelections || aSelections.length === 0) {
+			return;
+		}
+		let lAvecModif = false;
+		aSelections.forEach((aSelection) => {
+			if (
+				DonneesListe_Competences_ElevesEvaluation_1.DonneesListe_Competences_ElevesEvaluation.estUneColonneCompetence(
+					aSelection.idColonne,
+				)
+			) {
+				const lCompetenceEleve =
+					aSelection.article.colonnesCompetences[aSelection.idColonne]
+						.competence;
+				if (aMethodeEdition.call(this, lCompetenceEleve, aSelection)) {
+					lCompetenceEleve.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+					aSelection.article.eleve.setEtat(
+						Enumere_Etat_1.EGenreEtat.Modification,
+					);
+					lAvecModif = true;
 				}
 			}
 		});
+		if (lAvecModif) {
+			this.callback.appel(
+				EGenreEvenementCompetencesParEvaluation.editerCompetence,
+			);
+			this.getInstance(this.identListeElevesEvaluation).actualiser(true);
+		}
 	}
-	TUtilitaireCompetences.initMenuContextuelNiveauAcquisition({
-		instance: this,
-		menuContextuel: aParametres.menuContextuel,
-		avecLibelleRaccourci: true,
-		genreChoixValidationCompetence:
-			TypeGenreValidationCompetence.tGVC_EvaluationEtItem,
-		evaluationsEditables: lEvalEditable,
-		estObservationEditable: lObservationEditable,
-		callbackNiveau: _modifierNiveauDeSelectionCourante.bind(this, true),
-		callbackCommentaire: _editionCommentaireAcquisitions.bind(
-			this,
+	_modifierNiveauDeSelectionCourante(aAvecReouvertureMenuContextuel, aNiveau) {
+		if (!aNiveau) {
+			return;
+		}
+		const lListe = this.getInstance(this.identListeElevesEvaluation),
+			lSelections = lListe.getTableauCellulesSelection();
+		if (lSelections.length === 0) {
+			return;
+		}
+		this._editionSelectionsCellulesListe(
 			lSelections,
-		),
-	});
-}
-function _surKeyUpListe(aEvent) {
-	const lListe = this.getInstance(this.identListeElevesEvaluation),
-		lSelections = lListe.getTableauCellulesSelection();
-	let lSelectionsContientUneColonneCompetence = false;
-	lSelections.forEach((aSelection) => {
-		if (
-			DonneesListe_Competences_ElevesEvaluation.estUneColonneCompetence(
-				aSelection.idColonne,
-			)
-		) {
-			lSelectionsContientUneColonneCompetence = true;
-			return false;
-		}
-	});
-	if (lSelectionsContientUneColonneCompetence) {
-		let lNiveaux;
-		if (GParametres.listeNiveauxDAcquisitions) {
-			lNiveaux = GParametres.listeNiveauxDAcquisitions.getListeElements(
-				(aEle) => {
-					return aEle.actifPour.contains(
-						TypeGenreValidationCompetence.tGVC_EvaluationEtItem,
-					);
-				},
-			);
-		}
-		if (!!lNiveaux) {
-			const lNiveau = TUtilitaireCompetences.getNiveauAcqusitionDEventClavier(
-				aEvent,
-				lNiveaux,
-			);
-			if (lNiveau) {
-				_modifierNiveauDeSelectionCourante.call(this, false, lNiveau);
-				return true;
-			}
-		}
-	}
-}
-function _editionCommentaireAcquisitions(aSelections) {
-	let lCommentaireCommun = null;
-	let lEstPublieeCommun = null;
-	let lCommentaireEstIdentique = true;
-	let lPublicationEstIdentique = true;
-	aSelections.every((aSelection) => {
-		const lColonnesCompetences =
-			aSelection.article.colonnesCompetences[aSelection.idColonne];
-		const lCompetence = lColonnesCompetences && lColonnesCompetences.competence;
-		if (lCompetence) {
-			if (lCommentaireCommun === null) {
-				lCommentaireCommun = lCompetence.observation || "";
-			} else if (
-				lCommentaireEstIdentique &&
-				lCommentaireCommun !== lCompetence.observation
-			) {
-				lCommentaireCommun = null;
-				lCommentaireEstIdentique = false;
-			}
-			if (lEstPublieeCommun === null) {
-				lEstPublieeCommun = !!lCompetence.observationPubliee;
-			} else if (
-				lPublicationEstIdentique &&
-				lEstPublieeCommun !== lCompetence.observationPubliee
-			) {
-				lEstPublieeCommun = null;
-				lPublicationEstIdentique = false;
-			}
-			if (!lCommentaireEstIdentique && !lPublicationEstIdentique) {
-				return false;
-			}
-		}
-		return true;
-	});
-	const lFenetreEditionObservation = ObjetFenetre.creerInstanceFenetre(
-		ObjetFenetre_SaisieMessage,
-		{
-			pere: this,
-			evenement: function (aNumeroBouton, aDonnees) {
-				if (aNumeroBouton === 1) {
-					const lObservationSaisie = aDonnees.message;
-					const lEstPublieeSaisie = aDonnees.estPublie;
-					if (
-						lObservationSaisie !== undefined ||
-						lEstPublieeSaisie !== undefined
-					) {
-						_editionSelectionsCellulesListe.call(
-							this,
-							aSelections,
-							(aCompetence, aSelection) => {
-								if (
-									aSelection.article.colonnesCompetences[aSelection.idColonne]
-										.editable &&
-									aCompetence
-								) {
-									let lCompetenceModifiee = false;
-									if (
-										lObservationSaisie !== undefined &&
-										aCompetence.observation !== lObservationSaisie
-									) {
-										aCompetence.observation = lObservationSaisie;
-										lCompetenceModifiee = true;
-									}
-									if (
-										lEstPublieeSaisie !== undefined &&
-										aCompetence.observationPubliee !== lEstPublieeSaisie
-									) {
-										aCompetence.observationPubliee = lEstPublieeSaisie;
-										lCompetenceModifiee = true;
-									}
-									if (!!lCompetenceModifiee) {
-										return true;
-									}
-								}
-							},
-						);
-					}
+			(aCompetence, aSelection) => {
+				if (
+					aSelection.article.colonnesCompetences[aSelection.idColonne]
+						.editable &&
+					aCompetence &&
+					aNiveau &&
+					aCompetence.getNumero() !== aNiveau.getNumero()
+				) {
+					aCompetence.niveauDAcquisition = aNiveau;
+					return true;
 				}
 			},
-			initialiser: function (aInstance) {
-				aInstance.setOptionsFenetre({
-					titre: GTraductions.getValeur("competences.AjouterCommentaire"),
-				});
-				aInstance.setParametresFenetreSaisieMessage({
-					maxLengthSaisie: 1000,
-					avecControlePublication: true,
-				});
-			},
-		},
-	);
-	lFenetreEditionObservation.setDonnees(lCommentaireCommun, lEstPublieeCommun);
-}
-function _editionSelectionsCellulesListe(aSelections, aMethodeEdition) {
-	if (!aSelections || aSelections.length === 0) {
-		return;
-	}
-	let lAvecModif = false;
-	aSelections.forEach((aSelection) => {
-		if (
-			DonneesListe_Competences_ElevesEvaluation.estUneColonneCompetence(
-				aSelection.idColonne,
-			)
-		) {
-			const lCompetenceEleve =
-				aSelection.article.colonnesCompetences[aSelection.idColonne].competence;
-			if (aMethodeEdition.call(this, lCompetenceEleve, aSelection)) {
-				lCompetenceEleve.setEtat(EGenreEtat.Modification);
-				aSelection.article.eleve.setEtat(EGenreEtat.Modification);
-				lAvecModif = true;
-			}
-		}
-	});
-	if (lAvecModif) {
-		this.callback.appel(
-			EGenreEvenementCompetencesParEvaluation.editerCompetence,
 		);
-		this.getInstance(this.identListeElevesEvaluation).actualiser(true);
+		if (lSelections.length === 1) {
+			this._selectionnerCelluleSuivante(lListe, aAvecReouvertureMenuContextuel);
+		}
+	}
+	_selectionnerCelluleSuivante(aListe, aAvecEntreeEnEdition) {
+		aListe.selectionnerCelluleSuivante({
+			entrerEdition: function (aParams) {
+				return (
+					aAvecEntreeEnEdition ||
+					(aParams &&
+						aParams.idColonne ===
+							DonneesListe_Competences_ElevesEvaluation_1
+								.DonneesListe_Competences_ElevesEvaluation.colonnes.notes)
+				);
+			},
+			orientationVerticale:
+				this.etatUtilSco.competences_modeSaisieClavierVertical,
+		});
 	}
 }
-function _modifierNiveauDeSelectionCourante(
-	aAvecReouvertureMenuContextuel,
-	aNiveau,
-) {
-	if (!aNiveau) {
-		return;
-	}
-	const lListe = this.getInstance(this.identListeElevesEvaluation),
-		lSelections = lListe.getTableauCellulesSelection();
-	if (lSelections.length === 0) {
-		return;
-	}
-	_editionSelectionsCellulesListe.call(
-		this,
-		lSelections,
-		(aCompetence, aSelection) => {
-			if (
-				aSelection.article.colonnesCompetences[aSelection.idColonne].editable &&
-				aCompetence &&
-				aNiveau &&
-				aCompetence.getNumero() !== aNiveau.getNumero()
-			) {
-				aCompetence.niveauDAcquisition = aNiveau;
-				return true;
-			}
-		},
-	);
-	if (lSelections.length === 1) {
-		_selectionnerCelluleSuivante(lListe, aAvecReouvertureMenuContextuel);
-	}
-}
-function _selectionnerCelluleSuivante(aListe, aAvecEntreeEnEdition) {
-	aListe.selectionnerCelluleSuivante({
-		entrerEdition: function (aParams) {
-			return (
-				aAvecEntreeEnEdition ||
-				(aParams &&
-					aParams.idColonne ===
-						DonneesListe_Competences_ElevesEvaluation.colonnes.notes)
-			);
-		},
-		orientationVerticale:
-			GEtatUtilisateur.competences_modeSaisieClavierVertical,
-	});
-}
-module.exports = {
-	InterfaceCompetencesParEvaluation,
-	EGenreEvenementCompetencesParEvaluation,
-};
+exports.InterfaceCompetencesParEvaluation = InterfaceCompetencesParEvaluation;

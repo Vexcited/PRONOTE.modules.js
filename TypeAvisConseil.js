@@ -32,6 +32,52 @@ const TypeAvisConseilUtil = {
 			"TypeAvisConseil.Libelle.type_" + aTypeAvis,
 		);
 	},
+	getIcone(aTypeAvis) {
+		let lIcone = "";
+		switch (aTypeAvis) {
+			case TypeAvisConseil.taco_TresFavorable:
+				lIcone = "icon_double_check";
+				break;
+			case TypeAvisConseil.taco_Favorable:
+				lIcone = "icon_check_fin";
+				break;
+			case TypeAvisConseil.taco_Reserve:
+				lIcone = "icon_circle_blank";
+				break;
+			case TypeAvisConseil.taco_Defavorable:
+				lIcone = "icon_fermeture_widget";
+				break;
+			case TypeAvisConseil.taco_Aucun:
+				lIcone = "";
+				break;
+			default:
+				break;
+		}
+		return lIcone;
+	},
+	getCouleurIcone(aTypeAvis) {
+		let lIcone = "";
+		switch (aTypeAvis) {
+			case TypeAvisConseil.taco_TresFavorable:
+				lIcone = "var( --color-green-foncee)";
+				break;
+			case TypeAvisConseil.taco_Favorable:
+				lIcone = "var( --color-green-moyen)";
+				break;
+			case TypeAvisConseil.taco_Reserve:
+				lIcone = "var( --color-orange-moyen)";
+				break;
+			case TypeAvisConseil.taco_Defavorable:
+				lIcone = "var( --color-red-moyen)";
+				break;
+			case TypeAvisConseil.taco_Aucun:
+				lIcone = "";
+				break;
+			default:
+				break;
+		}
+		return lIcone;
+	},
 	getAbbreviation(aTypeAvis) {
 		return ObjetTraduction_1.GTraductions.getValeur(
 			"TypeAvisConseil.Abbreviation.type_" + aTypeAvis,

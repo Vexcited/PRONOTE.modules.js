@@ -220,8 +220,9 @@ const UtilitaireCouleur = {
 		lRGB.g = (lRGB.g || 0) / 255;
 		lRGB.b = (lRGB.b || 0) / 255;
 		let transformed = {};
-		for (let x in lRGB) {
-			if (lRGB[x] <= 0.03928) {
+		let x;
+		for (x in lRGB) {
+			if (lRGB[x] <= 0.04045) {
 				transformed[x] = lRGB[x] / 12.92;
 			} else {
 				transformed[x] = Math.pow((lRGB[x] + 0.055) / 1.055, 2.4);

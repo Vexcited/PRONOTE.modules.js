@@ -1,31 +1,30 @@
-const { MethodesObjet } = require("MethodesObjet.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { UtilitaireQCM } = require("UtilitaireQCM.js");
-const {
-	ObjetUtilitaireDevoirEvaluation,
-} = require("ObjetUtilitaireDevoirEvaluation.js");
+exports.ObjetUtilitaireEvaluation = void 0;
+const MethodesObjet_1 = require("MethodesObjet");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const UtilitaireQCM_1 = require("UtilitaireQCM");
+const ObjetUtilitaireDevoirEvaluation_1 = require("ObjetUtilitaireDevoirEvaluation");
 class ObjetUtilitaireEvaluation {
 	constructor() {}
 	static getDatePublicationEvaluationParDefaut(aDateEvaluation) {
-		return GDate.getDateBornee(
-			ObjetUtilitaireDevoirEvaluation.getProchaineDateOuvreePourPublication(
+		return ObjetDate_1.GDate.getDateBornee(
+			ObjetUtilitaireDevoirEvaluation_1.ObjetUtilitaireDevoirEvaluation.getProchaineDateOuvreePourPublication(
 				aDateEvaluation,
 			),
 		);
 	}
 	static creerNouvelleEvaluationQCM(aQCM, aService, aPeriodeParDefaut) {
-		const lEvaluationVide = new ObjetElement(aQCM.getLibelle());
-		lEvaluationVide.setEtat(EGenreEtat.Creation);
-		UtilitaireQCM.surSelectionQCM(lEvaluationVide, aQCM, {
-			genreAucune: EGenreRessource.Aucune,
-			genreExecQCM: EGenreRessource.ExecutionQCM,
+		const lEvaluationVide = new ObjetElement_1.ObjetElement(aQCM.getLibelle());
+		lEvaluationVide.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
+		UtilitaireQCM_1.UtilitaireQCM.surSelectionQCM(lEvaluationVide, aQCM, {
+			genreAucune: Enumere_Ressource_1.EGenreRessource.Aucune,
+			genreExecQCM: Enumere_Ressource_1.EGenreRessource.ExecutionQCM,
 		});
 		lEvaluationVide.service = aService;
-		lEvaluationVide.dateValidation = GDate.getDateCourante();
+		lEvaluationVide.dateValidation = ObjetDate_1.GDate.getDateCourante();
 		lEvaluationVide.datePublication =
 			ObjetUtilitaireEvaluation.getDatePublicationEvaluationParDefaut(
 				lEvaluationVide.dateValidation,
@@ -35,8 +34,8 @@ class ObjetUtilitaireEvaluation {
 		lEvaluationVide.coefficient = 1;
 		lEvaluationVide.priseEnCompteDansBilan = true;
 		lEvaluationVide.avecDevoir = false;
-		const lPremiereHeure = GDate.placeEnDateHeure(0);
-		const lDerniereHeure = GDate.placeEnDateHeure(
+		const lPremiereHeure = ObjetDate_1.GDate.placeEnDateHeure(0);
+		const lDerniereHeure = ObjetDate_1.GDate.placeEnDateHeure(
 			GParametres.PlacesParJour - 1,
 			true,
 		);
@@ -52,14 +51,20 @@ class ObjetUtilitaireEvaluation {
 				lDerniereHeure.getMinutes(),
 			),
 		);
-		UtilitaireQCM.verifierDateCorrection(lEvaluationVide.executionQCM);
+		UtilitaireQCM_1.UtilitaireQCM.verifierDateCorrection(
+			lEvaluationVide.executionQCM,
+		);
 		return lEvaluationVide;
 	}
 	static initEvaluation(aEvaluation, aListeEleves) {
 		function _initCompetence(aCompetence, aEleve) {
-			aCompetence.setEtat(EGenreEtat.Aucun);
-			if (MethodesObjet.isUndefined(aCompetence.niveauDAcquisition)) {
-				aCompetence.niveauDAcquisition = new ObjetElement();
+			aCompetence.setEtat(Enumere_Etat_1.EGenreEtat.Aucun);
+			if (
+				MethodesObjet_1.MethodesObjet.isUndefined(
+					aCompetence.niveauDAcquisition,
+				)
+			) {
+				aCompetence.niveauDAcquisition = new ObjetElement_1.ObjetElement();
 				aCompetence.observation = "";
 			}
 			let lTrouve = false;
@@ -93,14 +98,17 @@ class ObjetUtilitaireEvaluation {
 				lCompetenceEstEditableSelonNiveauClasseEleve;
 		}
 		function _estDansLaClasse(aListeEleves, aEleve, aDate) {
-			if (aEvaluation.getGenre() === EGenreRessource.EvaluationHistorique) {
+			if (
+				aEvaluation.getGenre() ===
+				Enumere_Ressource_1.EGenreRessource.EvaluationHistorique
+			) {
 				return true;
 			}
 			if (aListeEleves) {
 				const lEleve = aListeEleves.getElementParElement(aEleve);
 				for (let J = 0; J < lEleve.dateDebut.length; J++) {
 					if (
-						GDate.dateEntreLesDates(
+						ObjetDate_1.GDate.dateEntreLesDates(
 							aDate,
 							lEleve.dateDebut[J],
 							lEleve.dateFin[J],
@@ -114,7 +122,7 @@ class ObjetUtilitaireEvaluation {
 		}
 		aEvaluation.enCache = true;
 		if (!aEvaluation.listeEleves) {
-			aEvaluation.listeEleves = new ObjetListeElements();
+			aEvaluation.listeEleves = new ObjetListeElements_1.ObjetListeElements();
 			const lPeriodeCache = _recherchePeriodeDansCache(
 				aEvaluation.periode.getNumero(),
 			);
@@ -128,7 +136,9 @@ class ObjetUtilitaireEvaluation {
 							lPeriodeCache.dateFin,
 						)
 					) {
-						aEvaluation.listeEleves.addElement(MethodesObjet.dupliquer(aEleve));
+						aEvaluation.listeEleves.addElement(
+							MethodesObjet_1.MethodesObjet.dupliquer(aEleve),
+						);
 					}
 				});
 			}
@@ -141,24 +151,28 @@ class ObjetUtilitaireEvaluation {
 				aEvaluation.dateValidation,
 			);
 			lEleve.Actif =
-				aEvaluation.getGenre() !== EGenreRessource.EvaluationHistorique &&
+				aEvaluation.getGenre() !==
+					Enumere_Ressource_1.EGenreRessource.EvaluationHistorique &&
 				!lEleve.estSortiDeLaClasse;
 			if (!lEleve.listeCompetences) {
-				lEleve.listeCompetences = new ObjetListeElements();
+				lEleve.listeCompetences = new ObjetListeElements_1.ObjetListeElements();
 				for (
 					let j = 0, lNb2 = aEvaluation.listeCompetences.count();
 					j < lNb2;
 					j++
 				) {
 					lEleve.listeCompetences.addElement(
-						MethodesObjet.dupliquer(aEvaluation.listeCompetences.get(j), true),
+						MethodesObjet_1.MethodesObjet.dupliquer(
+							aEvaluation.listeCompetences.get(j),
+							true,
+						),
 					);
 				}
 				for (let j = 0, lNb2 = lEleve.listeCompetences.count(); j < lNb2; j++) {
 					_initCompetence(lEleve.listeCompetences.get(j), lEleve);
 				}
 			} else {
-				const lListeCompetences = new ObjetListeElements();
+				const lListeCompetences = new ObjetListeElements_1.ObjetListeElements();
 				for (let j = 0; j < aEvaluation.listeCompetences.count(); j++) {
 					let lCompetence = aEvaluation.listeCompetences.get(j);
 					if (lCompetence.existe()) {
@@ -167,7 +181,8 @@ class ObjetUtilitaireEvaluation {
 							lCompetence,
 						);
 						if (!lElementDEleve) {
-							lElementDEleve = MethodesObjet.dupliquer(lCompetence);
+							lElementDEleve =
+								MethodesObjet_1.MethodesObjet.dupliquer(lCompetence);
 							_initCompetence(lElementDEleve, lEleve);
 						}
 						lListeCompetences.addElement(lElementDEleve);
@@ -257,12 +272,14 @@ class ObjetUtilitaireEvaluation {
 		return lEstSurPeriodeCloturee;
 	}
 }
+exports.ObjetUtilitaireEvaluation = ObjetUtilitaireEvaluation;
 function _recherchePeriodeDansCache(aNumeroPeriode) {
-	if (!GParametres.listeComboPeriodes) {
+	const lParametresSco = GParametres;
+	if (!lParametresSco.listeComboPeriodes) {
 		return null;
 	}
 	let lResult = null;
-	GParametres.listeComboPeriodes.parcourir((aPeriode) => {
+	lParametresSco.listeComboPeriodes.parcourir((aPeriode) => {
 		if (
 			aPeriode.periodeNotation &&
 			aPeriode.periodeNotation.getNumero() === aNumeroPeriode
@@ -284,4 +301,3 @@ function _elevePresentEntreLesDates(aEleve, aDateDebut, aDateFin) {
 	}
 	return false;
 }
-module.exports = { ObjetUtilitaireEvaluation };

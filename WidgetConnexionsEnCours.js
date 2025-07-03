@@ -21,7 +21,7 @@ class WidgetConnexionsEnCours extends ObjetWidget_1.Widget.ObjetWidget {
 					aParams.JSONRapportSaisie.connexionsEnCours,
 				);
 				const lWidget = {
-					html: this.composeWidgetConnexionsEnCours(),
+					getHtml: this.composeWidgetConnexionsEnCours.bind(this),
 					nbrElements: 0,
 					afficherMessage: this.donnees.listeConnexions.count() === 0,
 				};
@@ -109,33 +109,29 @@ class WidgetConnexionsEnCours extends ObjetWidget_1.Widget.ObjetWidget {
 					: "";
 				H.push(
 					IE.jsx.str(
-						IE.jsx.fragment,
+						"tr",
 						null,
 						IE.jsx.str(
-							"tr",
-							null,
+							"th",
+							{ scope: "row" },
+							IE.jsx.str("span", null, lLigne.getLibelle()),
 							IE.jsx.str(
-								"th",
-								{ scope: "row" },
-								IE.jsx.str("span", null, lLigne.getLibelle()),
-								IE.jsx.str(
-									"div",
-									{ class: "nbr-licence" },
-									lLigne.nbLicenceDispo,
-								),
+								"div",
+								{ class: "nbr-licence" },
+								lLigne.nbLicenceDispo,
 							),
-							IE.jsx.str(
-								"td",
-								{ tabindex: "0" },
-								IE.jsx.str("span", null, lLigne.nbLeger),
-							),
-							IE.jsx.str(
-								"td",
-								{ tabindex: "0" },
-								IE.jsx.str("span", null, lLigne.nbLourdPN),
-							),
-							lLigneEDT,
 						),
+						IE.jsx.str(
+							"td",
+							{ tabindex: "0" },
+							IE.jsx.str("span", null, lLigne.nbLeger),
+						),
+						IE.jsx.str(
+							"td",
+							{ tabindex: "0" },
+							IE.jsx.str("span", null, lLigne.nbLourdPN),
+						),
+						lLigneEDT,
 					),
 				);
 			}

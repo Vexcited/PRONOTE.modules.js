@@ -6,12 +6,13 @@ const IEZoneFenetre_1 = require("IEZoneFenetre");
 const ObjetHtml_1 = require("ObjetHtml");
 const ObjetDonneesCentraleNotifications_1 = require("ObjetDonneesCentraleNotifications");
 const GestionnaireModale_1 = require("GestionnaireModale");
+const AccessApp_1 = require("AccessApp");
 class ObjetWrapperCentraleNotifications_Espace extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
 		this.idConteneur = this.Nom + "_conteneurNotifs";
-		this.donneesCentraleNotifications =
-			GApplication.donneesCentraleNotifications;
+		this.donneesCentraleNotifications = (0,
+		AccessApp_1.getApp)().donneesCentraleNotifications;
 		this.options = { modeBtnEntete: false, actionneur: null };
 		Invocateur_1.Invocateur.abonner(
 			ObjetDonneesCentraleNotifications_1.ObjetDonneesCentraleNotifications
@@ -103,6 +104,7 @@ class ObjetWrapperCentraleNotifications_Espace extends ObjetIdentite_1.Identite 
 				: IE.jsx.str("ie-btnimage", {
 						class: "image_centrale_notification btnImageIcon",
 						"ie-model": "btn",
+						"aria-haspopup": "dialog",
 					}),
 			IE.jsx.str("div", {
 				"ie-html": "compteur.getHtml",
@@ -125,9 +127,8 @@ class ObjetWrapperCentraleNotifications_Espace extends ObjetIdentite_1.Identite 
 		lBoutonNotif.addClass("bcne_btn_entete_vide");
 		if (!this.instanceNotif) {
 			const c_timer_ouverture = 500;
-			this.instanceNotif = ObjetIdentite_1.Identite.creerInstance(
-				ObjetCentraleNotifications_1.ObjetCentraleNotifications,
-				{
+			this.instanceNotif =
+				new ObjetCentraleNotifications_1.ObjetCentraleNotifications({
 					pere: this,
 					evenement: () => {
 						$(".bcne_conteneur_notif").removeClass("bcne_open");
@@ -145,8 +146,7 @@ class ObjetWrapperCentraleNotifications_Espace extends ObjetIdentite_1.Identite 
 							this.instanceNotif = null;
 						}, c_timer_ouverture);
 					},
-				},
-			);
+				});
 			ObjetHtml_1.GHtml.addHtml(
 				IEZoneFenetre_1.ZoneFenetre.getElementZoneFenetre(),
 				'<div style="z-index:1100;" class="bcne_conteneur_notif' +

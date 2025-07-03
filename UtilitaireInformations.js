@@ -1,23 +1,20 @@
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GChaine } = require("ObjetChaine.js");
-const { GStyle } = require("ObjetStyle.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreTriElement } = require("Enumere_TriElement.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { GObjetWAI, EGenreAttribut } = require("ObjetWAI.js");
-const { TypeDomaine } = require("TypeDomaine.js");
-const { TypeEnsembleNombre } = require("TypeEnsembleNombre.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const {
-	TypeGenreReponseInternetActualite,
-} = require("TypeGenreReponseInternetActualite.js");
-const { TUtilitaireListePeriodes } = require("UtilitaireListePeriodes.js");
+exports.TUtilitaireInformations = TUtilitaireInformations;
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetChaine_1 = require("ObjetChaine");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_TriElement_1 = require("Enumere_TriElement");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const TypeEnsembleNombre_1 = require("TypeEnsembleNombre");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const TypeGenreReponseInternetActualite_1 = require("TypeGenreReponseInternetActualite");
+const UtilitaireListePeriodes_1 = require("UtilitaireListePeriodes");
+const AccessApp_1 = require("AccessApp");
 function TUtilitaireInformations() {}
 TUtilitaireInformations.creerActualiteDiffusionDesResultatsSondage = function (
 	aSondage,
@@ -40,7 +37,7 @@ TUtilitaireInformations.creerActualiteDiffusionDesResultatsSondage = function (
 		categorie: lCategorieParDefaut,
 	});
 	lNouvelleActualite.setLibelle(
-		GTraductions.getValeur(
+		ObjetTraduction_1.GTraductions.getValeur(
 			"actualites.Edition.TitreDiffusionResultatsDuSondage",
 			[aSondage.getLibelle() || ""],
 		),
@@ -48,9 +45,9 @@ TUtilitaireInformations.creerActualiteDiffusionDesResultatsSondage = function (
 	lNouvelleActualite.publie = true;
 	lNouvelleActualite.estUneDiffusionDeResultatsSondage = true;
 	const lStrTypeSondage = aSondage.reponseAnonyme
-		? GTraductions.getValeur("actualites.Anonyme")
-		: GTraductions.getValeur("actualites.Nominatif");
-	const lMessageNouvelleInformation = GTraductions.getValeur(
+		? ObjetTraduction_1.GTraductions.getValeur("actualites.Anonyme")
+		: ObjetTraduction_1.GTraductions.getValeur("actualites.Nominatif");
+	const lMessageNouvelleInformation = ObjetTraduction_1.GTraductions.getValeur(
 		"actualites.Edition.MessageDiffusionResultatsDuSondage",
 		[lStrTypeSondage.toLowerCase(), aSondage.getLibelle() || ""],
 	);
@@ -58,7 +55,8 @@ TUtilitaireInformations.creerActualiteDiffusionDesResultatsSondage = function (
 		lNouvelleActualite.listeQuestions.getPremierElement();
 	lPremiereQuestion.texte = lMessageNouvelleInformation;
 	if (!lPremiereQuestion.listePiecesJointes) {
-		lPremiereQuestion.listePiecesJointes = new ObjetListeElements();
+		lPremiereQuestion.listePiecesJointes =
+			new ObjetListeElements_1.ObjetListeElements();
 	}
 	aListePiecesJointesResultats.parcourir((D) => {
 		lPremiereQuestion.listePiecesJointes.addElement(D);
@@ -68,7 +66,7 @@ TUtilitaireInformations.creerActualiteDiffusionDesResultatsSondage = function (
 TUtilitaireInformations.getListePiecesJointesDActualite = function (
 	aActualite,
 ) {
-	const lListePiecesJointes = new ObjetListeElements();
+	const lListePiecesJointes = new ObjetListeElements_1.ObjetListeElements();
 	if (!!aActualite && !!aActualite.listeQuestions) {
 		aActualite.listeQuestions.parcourir((aQuestion) => {
 			if (!!aQuestion && !!aQuestion.listePiecesJointes) {
@@ -84,19 +82,19 @@ function _calculeDateFinSondage(aDate) {
 	let i = 0;
 	let lDate = new Date(aDate.getTime());
 	do {
-		lDate = GDate.getJourSuivant(lDate);
+		lDate = ObjetDate_1.GDate.getJourSuivant(lDate);
 		if (
 			!GParametres.JoursFeries.getValeur(
-				GDate.getNbrJoursEntreDeuxDates(
+				ObjetDate_1.GDate.getNbrJoursEntreDeuxDates(
 					IE.Cycles.dateDebutPremierCycle(),
 					aDate,
 				) + 1,
 			) &&
-			GDate.estUnJourOuvre(lDate)
+			ObjetDate_1.GDate.estUnJourOuvre(lDate)
 		) {
 			i++;
 		}
-	} while (i < 15 && lDate < GDate.derniereDate);
+	} while (i < 15 && lDate < ObjetDate_1.GDate.derniereDate);
 	return lDate;
 }
 TUtilitaireInformations.appliquerModeleSurExistant = function (aParam) {
@@ -133,34 +131,43 @@ TUtilitaireInformations.appliquerModeleSurExistant = function (aParam) {
 };
 TUtilitaireInformations.initialiserNouveauItem = function (aParam) {
 	const lInformation = aParam.actualite
-		? new ObjetElement(
-				GTraductions.getValeur("actualites.Edition.CopieDe", [
+		? new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur("actualites.Edition.CopieDe", [
 					aParam.actualite.getLibelle(),
 				]),
 			)
-		: new ObjetElement("");
+		: new ObjetElement_1.ObjetElement("");
 	let lGenreReponse = aParam.genreReponse
 		? aParam.genreReponse
-		: TypeGenreReponseInternetActualite.AvecAR;
-	const lForcerAR = GApplication.droits.get(
-		TypeDroits.fonctionnalites.forcerARInfos,
+		: TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+				.AvecAR;
+	const lForcerAR = (0, AccessApp_1.getApp)().droits.get(
+		ObjetDroitsPN_1.TypeDroits.fonctionnalites.forcerARInfos,
 	);
 	if (
-		lGenreReponse === TypeGenreReponseInternetActualite.SansAR &&
+		lGenreReponse ===
+			TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+				.SansAR &&
 		lForcerAR === true
 	) {
-		lGenreReponse = TypeGenreReponseInternetActualite.AvecAR;
+		lGenreReponse =
+			TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+				.AvecAR;
 	}
 	lInformation.categorie = !aParam.categorie
 		? !aParam.actualite
-			? GEtatUtilisateur.listeCategories.get(this.indiceCategorieParDefaut)
+			? (0, AccessApp_1.getApp)()
+					.getEtatUtilisateur()
+					.listeCategories.get(aParam.indiceCategorieParDefaut)
 			: aParam.actualite.categorie
 		: aParam.categorie;
 	lInformation.auteur = GEtatUtilisateur.getUtilisateur().getLibelle();
 	lInformation.reponseAnonyme = false;
 	lInformation.estInformation = [
-		TypeGenreReponseInternetActualite.AvecAR,
-		TypeGenreReponseInternetActualite.SansAR,
+		TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+			.AvecAR,
+		TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+			.SansAR,
 	].includes(lGenreReponse);
 	lInformation.estSondage = !lInformation.estInformation;
 	lInformation.date = "";
@@ -169,9 +176,9 @@ TUtilitaireInformations.initialiserNouveauItem = function (aParam) {
 			? aParam.publie
 			: !aParam.actualite;
 	lInformation.estModele = aParam.estModele === true;
-	const lDateDebut = GDate.getDateCourante();
+	const lDateDebut = ObjetDate_1.GDate.getDateCourante();
 	const lDateFin = lInformation.estInformation
-		? GDate.derniereDate
+		? ObjetDate_1.GDate.derniereDate
 		: _calculeDateFinSondage(lDateDebut);
 	lInformation.dateDebut =
 		aParam.actualite && aParam.actualite.dateDebut
@@ -181,7 +188,7 @@ TUtilitaireInformations.initialiserNouveauItem = function (aParam) {
 	lInformation.avecReponse = TUtilitaireInformations.avecReponse;
 	lInformation.aToutRepondu = TUtilitaireInformations.aToutRepondu;
 	lInformation.lue = false;
-	lInformation.public = new ObjetElement("");
+	lInformation.public = new ObjetElement_1.ObjetElement("");
 	lInformation.genrePublic = -1;
 	lInformation.visible = true;
 	if (aParam.actualite && aParam.actualite.listeQuestions) {
@@ -190,7 +197,7 @@ TUtilitaireInformations.initialiserNouveauItem = function (aParam) {
 			aParam.actualite.listeQuestions,
 		);
 	} else {
-		lInformation.listeQuestions = new ObjetListeElements();
+		lInformation.listeQuestions = new ObjetListeElements_1.ObjetListeElements();
 		lInformation.listeQuestions.addElement(
 			TUtilitaireInformations.creerQuestionOuTexteSondage({
 				genreReponse: lGenreReponse,
@@ -203,30 +210,39 @@ TUtilitaireInformations.initialiserNouveauItem = function (aParam) {
 		: 0;
 	lInformation.nomDestinataire = aParam.actualite
 		? aParam.actualite.nomDestinataire
-		: GTraductions.getValeur("actualites.Aucun");
+		: ObjetTraduction_1.GTraductions.getValeur("actualites.Aucun");
 	lInformation.detailPublic = aParam.actualite
 		? aParam.actualite.detailPublic
-		: GTraductions.getValeur("actualites.AucunDestinataire");
+		: ObjetTraduction_1.GTraductions.getValeur("actualites.AucunDestinataire");
 	lInformation.avecModificationPublic = !!(
 		aParam.actualite || aParam.listePublic
 	);
 	lInformation.avecElevesRattaches = false;
 	lInformation.genresPublicEntite = aParam.actualite
-		? MethodesObjet.dupliquer(aParam.actualite.genresPublicEntite)
-		: new TypeEnsembleNombre();
+		? MethodesObjet_1.MethodesObjet.dupliquer(
+				aParam.actualite.genresPublicEntite,
+			)
+		: new TypeEnsembleNombre_1.TypeEnsembleNombre();
 	lInformation.listePublicEntite = aParam.actualite
-		? MethodesObjet.dupliquer(aParam.actualite.listePublicEntite)
-		: new ObjetListeElements();
+		? MethodesObjet_1.MethodesObjet.dupliquer(
+				aParam.actualite.listePublicEntite,
+			)
+		: new ObjetListeElements_1.ObjetListeElements();
 	if (aParam.listePublic && aParam.genresPublic) {
-		lInformation.listePublicEntite = new ObjetListeElements();
-		lInformation.listePublicIndividu = new ObjetListeElements();
-		if (aParam.genresPublic.length > 0) {
+		lInformation.listePublicEntite =
+			new ObjetListeElements_1.ObjetListeElements();
+		lInformation.listePublicIndividu =
+			new ObjetListeElements_1.ObjetListeElements();
+		if (
+			aParam.genresPublic.length > 0 &&
+			aParam.genresRessourceAffDestinataire
+		) {
 			if (
-				this.getGenresRessourceAffDestinataire().includes(
-					EGenreRessource.Classe,
+				aParam.genresRessourceAffDestinataire.includes(
+					Enumere_Ressource_1.EGenreRessource.Classe,
 				) ||
-				this.getGenresRessourceAffDestinataire().includes(
-					EGenreRessource.Groupe,
+				aParam.genresRessourceAffDestinataire.includes(
+					Enumere_Ressource_1.EGenreRessource.Groupe,
 				)
 			) {
 				lInformation.listePublicEntite = aParam.listePublic;
@@ -236,11 +252,15 @@ TUtilitaireInformations.initialiserNouveauItem = function (aParam) {
 		}
 	} else {
 		lInformation.listePublicEntite = aParam.actualite
-			? MethodesObjet.dupliquer(aParam.actualite.listePublicEntite)
-			: new ObjetListeElements();
+			? MethodesObjet_1.MethodesObjet.dupliquer(
+					aParam.actualite.listePublicEntite,
+				)
+			: new ObjetListeElements_1.ObjetListeElements();
 		lInformation.listePublicIndividu = aParam.actualite
-			? MethodesObjet.dupliquer(aParam.actualite.listePublicIndividu)
-			: new ObjetListeElements();
+			? MethodesObjet_1.MethodesObjet.dupliquer(
+					aParam.actualite.listePublicIndividu,
+				)
+			: new ObjetListeElements_1.ObjetListeElements();
 	}
 	lInformation.getDate = TUtilitaireInformations.getDate.bind(lInformation);
 	return lInformation;
@@ -250,53 +270,69 @@ TUtilitaireInformations.creerQuestionOuTexteSondage = function (aParams) {
 	const lRang = lParams.rang ? lParams.rang : 1;
 	const lGenreReponse =
 		!lParams.genreReponse ||
-		(lParams.genreReponse === TypeGenreReponseInternetActualite.SansAR &&
-			GApplication.droits.get(TypeDroits.fonctionnalites.forcerARInfos))
-			? TypeGenreReponseInternetActualite.AvecAR
+		(lParams.genreReponse ===
+			TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+				.SansAR &&
+			(0, AccessApp_1.getApp)().droits.get(
+				ObjetDroitsPN_1.TypeDroits.fonctionnalites.forcerARInfos,
+			))
+			? TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+					.AvecAR
 			: lParams.genreReponse;
 	const lRangElement = lParams.rangElement ? lParams.rangElement : lRang;
 	let lLibelle;
 	if (
 		!!aParams.genreReponse &&
-		aParams.genreReponse === TypeGenreReponseInternetActualite.SansReponse
+		aParams.genreReponse ===
+			TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+				.SansReponse
 	) {
-		lLibelle = GTraductions.getValeur("actualites.Edition.TexteN", [
-			lRangElement,
-		]);
+		lLibelle = ObjetTraduction_1.GTraductions.getValeur(
+			"actualites.Edition.TexteN",
+			[lRangElement],
+		);
 	} else {
-		lLibelle = GTraductions.getValeur("actualites.Edition.QuestionN", [
-			lRangElement,
-		]);
+		lLibelle = ObjetTraduction_1.GTraductions.getValeur(
+			"actualites.Edition.QuestionN",
+			[lRangElement],
+		);
 	}
-	const lResult = new ObjetElement(lLibelle);
+	const lResult = new ObjetElement_1.ObjetElement(lLibelle);
 	lResult.rang = lRang;
 	lResult.indice = lRangElement;
 	lResult.genreReponse = lGenreReponse;
 	lResult.texte = "";
 	lResult.titre = "";
 	lResult.tailleReponse = 200;
-	lResult.listePiecesJointes = new ObjetListeElements();
-	lResult.listeChoix = new ObjetListeElements();
-	lResult.reponse = new ObjetElement();
-	if (lGenreReponse === TypeGenreReponseInternetActualite.Textuelle) {
+	lResult.listePiecesJointes = new ObjetListeElements_1.ObjetListeElements();
+	lResult.listeChoix = new ObjetListeElements_1.ObjetListeElements();
+	lResult.reponse = new ObjetElement_1.ObjetElement();
+	if (
+		lGenreReponse ===
+		TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+			.Textuelle
+	) {
 		lResult.reponse.valeurReponse = "";
 	} else if (
 		[
-			TypeGenreReponseInternetActualite.ChoixMultiple,
-			TypeGenreReponseInternetActualite.ChoixUnique,
+			TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+				.ChoixMultiple,
+			TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+				.ChoixUnique,
 		].includes(lGenreReponse)
 	) {
-		lResult.reponse.valeurReponse = new TypeDomaine();
+		lResult.reponse.valeurReponse =
+			new TypeEnsembleNombre_1.TypeEnsembleNombre();
 	}
 	lResult.reponse.avecReponse = false;
 	return lResult;
 };
 TUtilitaireInformations.getDate = function () {
 	return (
-		GTraductions.getValeur("Du") +
-		GDate.formatDate(this.dateDebut, " %JJ/%MM/%AAAA ") +
-		GTraductions.getValeur("Au") +
-		GDate.formatDate(this.dateFin, " %JJ/%MM/%AAAA")
+		ObjetTraduction_1.GTraductions.getValeur("Du") +
+		ObjetDate_1.GDate.formatDate(this.dateDebut, " %JJ/%MM/%AAAA ") +
+		ObjetTraduction_1.GTraductions.getValeur("Au") +
+		ObjetDate_1.GDate.formatDate(this.dateFin, " %JJ/%MM/%AAAA")
 	);
 };
 TUtilitaireInformations.avecReponse = function () {
@@ -305,7 +341,9 @@ TUtilitaireInformations.avecReponse = function () {
 		const lQuestion = this.listeQuestions.get(i);
 		lResult =
 			lQuestion.reponse.avecReponse ||
-			lQuestion.genreReponse === TypeGenreReponseInternetActualite.SansAR;
+			lQuestion.genreReponse ===
+				TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+					.SansAR;
 	}
 	return lResult;
 };
@@ -316,18 +354,20 @@ TUtilitaireInformations.aToutRepondu = function () {
 		lResult =
 			lQuestion.reponse.avecReponse ||
 			[
-				TypeGenreReponseInternetActualite.SansAR,
-				TypeGenreReponseInternetActualite.SansReponse,
+				TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+					.SansAR,
+				TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+					.SansReponse,
 			].includes(lQuestion.genreReponse);
 	}
 	return lResult;
 };
 function _copierQuestions(aListeQuestions) {
-	const lResult = new ObjetListeElements();
+	const lResult = new ObjetListeElements_1.ObjetListeElements();
 	for (let i = 0; i < aListeQuestions.count(); i++) {
 		if (aListeQuestions.existe(i)) {
 			const lElement = _copieQuestion(aListeQuestions.get(i));
-			lElement.setEtat(EGenreEtat.Creation);
+			lElement.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 			lResult.addElement(lElement);
 		}
 	}
@@ -351,23 +391,23 @@ function _copieQuestion(aQuestion) {
 	return lNouvelleQuestion;
 }
 function _copierDocuments(aListeDocuments) {
-	const lResult = MethodesObjet.dupliquer(aListeDocuments);
+	const lResult = MethodesObjet_1.MethodesObjet.dupliquer(aListeDocuments);
 	for (let i = 0; i < lResult.count(); i++) {
 		if (lResult.existe(i)) {
 			const lElement = lResult.get(i);
-			lElement.setEtat(EGenreEtat.Creation);
+			lElement.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 		}
 	}
 	return lResult;
 }
 function _copierChoixReponses(aListeChoix) {
-	const lResult = new ObjetListeElements();
+	const lResult = new ObjetListeElements_1.ObjetListeElements();
 	for (let i = 0; i < aListeChoix.count(); i++) {
 		if (aListeChoix.existe(i)) {
 			const lElement = aListeChoix.get(i);
-			const lChoix = new ObjetElement(lElement.getLibelle());
+			const lChoix = new ObjetElement_1.ObjetElement(lElement.getLibelle());
 			lChoix.rang = lElement.rang;
-			lChoix.setEtat(EGenreEtat.Creation);
+			lChoix.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 			if (
 				lElement.estReponseLibre !== null &&
 				lElement.estReponseLibre !== undefined
@@ -380,240 +420,56 @@ function _copierChoixReponses(aListeChoix) {
 	return lResult;
 }
 TUtilitaireInformations.getIDReponse = function (aParams) {
-	return aParams.instance.Nom + "_reponse_" + aParams.indice;
-};
-TUtilitaireInformations.composeReponse = function (aParams) {
-	const H = [];
-	if (aParams.avecLibelleQuestion) {
-		H.push(
-			'<div class="Actu_Question" style="padding: 2px 0px;">',
-			aParams.question.genreReponse !==
-				TypeGenreReponseInternetActualite.SansReponse
-				? aParams.question.getLibelle()
-				: "",
-			"</div>",
-		);
-	}
-	const lIdReponse = TUtilitaireInformations.getIDReponse(aParams);
-	if (
-		aParams.question.genreReponse ===
-			TypeGenreReponseInternetActualite.ChoixMultiple &&
-		aParams.question.avecMaximum
-	) {
-		H.push(
-			'<div style="padding: 2px 0px 1px 0px;">',
-			GTraductions.getValeur("actualites.Edition.NbrMaxChoix", [
-				aParams.question.nombreReponsesMax,
-			]),
-			"</div>",
-		);
-	}
-	H.push(
-		'<div id="titre_',
-		lIdReponse,
-		'" class="AvecSelectionTexte" style="padding: 2px 0px 1px 0px;">',
-		aParams.question.texte,
-		"</div>",
-	);
-	H.push('<div id="', lIdReponse, '" class="PetitEspaceBas">');
-	let lSurKeyUp = "";
-	let lSurSaisie = "";
-	switch (aParams.question.genreReponse) {
-		case TypeGenreReponseInternetActualite.AvecAR:
-			lSurKeyUp =
-				aParams.instance.Nom + ".surKeyUpReponse (" + aParams.indice + ");";
-			lSurSaisie =
-				aParams.instance.Nom + ".surSaisieReponse(" + aParams.indice + ");";
-			H.push('<div class="Actu_AR">');
-			if (aParams.question.reponse.estRepondant === false) {
-				H.push(
-					GTraductions.getValeur("actualites.XAPrisConnaissanceLeX", [
-						aParams.question.reponse.strRepondant,
-						GDate.formatDate(
-							aParams.question.reponse.reponduLe,
-							"%JJ/%MM/%AAAA",
-						),
-					]),
-				);
-			} else {
-				H.push(
-					'<ie-checkbox tabindex="-1" id="',
-					lIdReponse,
-					'_0" class="',
-					this._classActualiteSaisieDirect,
-					'" ',
-					GObjetWAI.composeAttribut({
-						genre: EGenreAttribut.label,
-						valeur: GTraductions.getValeur("accueil.prisConnaissance"),
-					}),
-					'onclick="',
-					lSurSaisie,
-					'"',
-					'onkeyup=" ',
-					lSurKeyUp,
-					'"',
-					aParams.question.reponse.avecReponse
-						? ' checked="checked" disabled'
-						: aParams.estAffEditionActualite
-							? " disabled"
-							: "",
-					'><label class="EspaceGauche" for="',
-					lIdReponse,
-					'">',
-					GTraductions.getValeur("accueil.prisConnaissance"),
-					"</label></ie-checkbox>",
-				);
-			}
-			H.push("</div>");
-			break;
-		case TypeGenreReponseInternetActualite.Textuelle:
-			lSurSaisie =
-				aParams.instance.Nom +
-				".surSaisieReponse (" +
-				aParams.indice +
-				",value);";
-			H.push(
-				'<div style="padding:1px 1px;"><textarea maxlength="0" tabindex="-1" id="',
-				lIdReponse,
-				'_0" class="Texte10" style="width: 100%; overflow : hidden; ',
-				GStyle.composeCouleurBordure(GCouleur.grisClair),
-				'" rows="3" ',
-				GObjetWAI.composeAttribut({
-					genre: EGenreAttribut.label,
-					valeur: GTraductions.getValeur("accueil.saisirReponse"),
-				}),
-				'onkeyup="',
-				lSurSaisie,
-				'" maxlength="' + aParams.question.tailleReponse + '" placeholder="',
-				GTraductions.getValeur("actualites.SaisirReponse"),
-				'"',
-				aParams.estAffEditionActualite ? " disabled" : "",
-				">",
-				aParams.question.reponse.valeurReponse,
-				"</textarea></div>",
-			);
-			break;
-		case TypeGenreReponseInternetActualite.ChoixUnique:
-		case TypeGenreReponseInternetActualite.ChoixMultiple: {
-			const lNombreCoche =
-				aParams.question &&
-				aParams.question.reponse &&
-				aParams.question.reponse.valeurReponse
-					? aParams.question.reponse.valeurReponse.getNbrValeurs()
-					: 0;
-			for (let I = 0; I < aParams.question.listeChoix.count(); I++) {
-				const lNr = I + 1;
-				const lValeurReponse =
-					aParams.question.reponse && aParams.question.reponse.valeurReponse
-						? aParams.question.reponse.valeurReponse.getValeur(lNr)
-						: undefined;
-				let lDisabled = false;
-				if (
-					aParams.question.genreReponse ===
-						TypeGenreReponseInternetActualite.ChoixMultiple &&
-					aParams.question.avecMaximum &&
-					lNombreCoche >= aParams.question.nombreReponsesMax
-				) {
-					lDisabled = !lValeurReponse;
-				}
-				const ieInput =
-					aParams.question.genreReponse ===
-					TypeGenreReponseInternetActualite.ChoixMultiple
-						? "ie-checkbox"
-						: "ie-radio";
-				lSurSaisie =
-					aParams.instance.Nom +
-					".surSaisieReponse (" +
-					aParams.indice +
-					", value, checked);";
-				H.push(
-					'<div class="Actu_InfoCoche NoWrap" ><',
-					ieInput,
-					' class="InlineBlock AlignementMilieuVertical" id="',
-					lIdReponse,
-					"_",
-					I,
-					'" name="coches_',
-					lIdReponse,
-					'" ',
-					GObjetWAI.composeAttribut({
-						genre: EGenreAttribut.label,
-						valeur: aParams.question.listeChoix.getLibelle(I),
-					}),
-					'onclick="',
-					lSurSaisie,
-					'" value="',
-					lNr,
-					'"' +
-						(lValeurReponse ? ' checked="checked"' : "") +
-						(aParams.estAffEditionActualite || lDisabled ? " disabled" : "") +
-						" ></",
-					ieInput,
-					'><label class="EspaceGauche InlineBlock AlignementMilieuVertical" for="',
-					lIdReponse,
-					"_",
-					I,
-					'">' + aParams.question.listeChoix.getLibelle(I) + "</label></div>",
-				);
-			}
-			break;
-		}
-		default:
-			break;
-	}
-	H.push("</div>");
-	if (
-		aParams.question.listePiecesJointes &&
-		aParams.question.listePiecesJointes.count() > 0
-	) {
-		H.push(
-			'<div class="PetitEspace">',
-			TUtilitaireInformations.composeDocuments(
-				aParams.question.listePiecesJointes,
-			),
-			"</div>",
-		);
-	}
-	return H.join("");
+	return aParams.instance.getNom() + "_reponse_" + aParams.indice;
 };
 TUtilitaireInformations.composeDocuments = function (aListeDocumentsJoints) {
 	const lHtml = [];
 	for (let I = 0; I < aListeDocumentsJoints.count(); I++) {
 		const lDocumentJoint = aListeDocumentsJoints.get(I);
 		lHtml.push(
-			GChaine.composerUrlLienExterne({
+			ObjetChaine_1.GChaine.composerUrlLienExterne({
 				documentJoint: lDocumentJoint,
-				genreRessource: EGenreRessource.DocJointEtablissement,
+				genreRessource:
+					Enumere_Ressource_1.EGenreRessource.DocJointEtablissement,
 			}),
 		);
 	}
 	return lHtml.join("<br/>");
 };
 TUtilitaireInformations.initListePeriodes = function () {
-	return TUtilitaireListePeriodes.construireListePeriodes([
-		TUtilitaireListePeriodes.choix.aujourdhui,
-		TUtilitaireListePeriodes.choix.semaineCourante,
-		TUtilitaireListePeriodes.choix.moisCourant,
-		TUtilitaireListePeriodes.choix.annee,
-		TUtilitaireListePeriodes.choix.periodes,
-		TUtilitaireListePeriodes.choix.mois,
-	]);
+	return UtilitaireListePeriodes_1.TUtilitaireListePeriodes.construireListePeriodes(
+		[
+			UtilitaireListePeriodes_1.TUtilitaireListePeriodes.choix.aujourdhui,
+			UtilitaireListePeriodes_1.TUtilitaireListePeriodes.choix.semaineCourante,
+			UtilitaireListePeriodes_1.TUtilitaireListePeriodes.choix.moisCourant,
+			UtilitaireListePeriodes_1.TUtilitaireListePeriodes.choix.annee,
+			UtilitaireListePeriodes_1.TUtilitaireListePeriodes.choix.periodes,
+			UtilitaireListePeriodes_1.TUtilitaireListePeriodes.choix.mois,
+		],
+	);
 };
 TUtilitaireInformations.avecCumul = function (aListe) {
 	if (
 		[
-			EGenreEspace.Parent,
-			EGenreEspace.Mobile_Parent,
-			EGenreEspace.Entreprise,
+			Enumere_Espace_1.EGenreEspace.Parent,
+			Enumere_Espace_1.EGenreEspace.Mobile_Parent,
+			Enumere_Espace_1.EGenreEspace.Entreprise,
+			Enumere_Espace_1.EGenreEspace.Mobile_Entreprise,
 		].includes(GEtatUtilisateur.GenreEspace)
 	) {
-		if (GEtatUtilisateur.Identification.ListeRessources.count() > 1) {
+		if (
+			(0, AccessApp_1.getApp)()
+				.getEtatUtilisateur()
+				.Identification.ListeRessources.count() > 1
+		) {
 			return true;
 		} else {
-			const lGenre =
-				GEtatUtilisateur.GenreEspace === EGenreEspace.Entreprise
-					? EGenreRessource.MaitreDeStage
-					: EGenreRessource.Responsable;
+			const lGenre = [
+				Enumere_Espace_1.EGenreEspace.Entreprise,
+				Enumere_Espace_1.EGenreEspace.Mobile_Entreprise,
+			].includes(GEtatUtilisateur.GenreEspace)
+				? Enumere_Ressource_1.EGenreRessource.MaitreDeStage
+				: Enumere_Ressource_1.EGenreRessource.Responsable;
 			return (
 				aListe.getIndiceElementParFiltre((aElement) => {
 					return (
@@ -631,17 +487,20 @@ TUtilitaireInformations.avecCumul = function (aListe) {
 TUtilitaireInformations.avecInfoPublic = function (aActualite) {
 	if (
 		[
-			EGenreEspace.Parent,
-			EGenreEspace.Mobile_Parent,
-			EGenreEspace.Entreprise,
-			EGenreEspace.PrimParent,
-			EGenreEspace.Mobile_PrimParent,
+			Enumere_Espace_1.EGenreEspace.Parent,
+			Enumere_Espace_1.EGenreEspace.Mobile_Parent,
+			Enumere_Espace_1.EGenreEspace.Entreprise,
+			Enumere_Espace_1.EGenreEspace.Mobile_Entreprise,
+			Enumere_Espace_1.EGenreEspace.PrimParent,
+			Enumere_Espace_1.EGenreEspace.Mobile_PrimParent,
 		].includes(GEtatUtilisateur.GenreEspace)
 	) {
-		const lGenre =
-			GEtatUtilisateur.GenreEspace === EGenreEspace.Entreprise
-				? EGenreRessource.MaitreDeStage
-				: EGenreRessource.Responsable;
+		const lGenre = [
+			Enumere_Espace_1.EGenreEspace.Entreprise,
+			Enumere_Espace_1.EGenreEspace.Mobile_Entreprise,
+		].includes(GEtatUtilisateur.GenreEspace)
+			? Enumere_Ressource_1.EGenreRessource.MaitreDeStage
+			: Enumere_Ressource_1.EGenreRessource.Responsable;
 		const lEstActuDUtilisateur =
 			aActualite.public.getNumero() ===
 				GEtatUtilisateur.getUtilisateur().getNumero() &&
@@ -660,23 +519,30 @@ TUtilitaireInformations.formaterListePourCumul = function (aListe) {
 				lElement.public.getGenre(),
 			);
 			if (!lCumulPere) {
-				const lGenre =
-					GEtatUtilisateur.GenreEspace === EGenreEspace.Entreprise
-						? EGenreRessource.MaitreDeStage
-						: EGenreRessource.Responsable;
+				const lGenre = [
+					Enumere_Espace_1.EGenreEspace.Entreprise,
+					Enumere_Espace_1.EGenreEspace.Mobile_Entreprise,
+				].includes(GEtatUtilisateur.GenreEspace)
+					? Enumere_Ressource_1.EGenreRessource.MaitreDeStage
+					: Enumere_Ressource_1.EGenreRessource.Responsable;
 				const lATitreIndividuel =
 					lElement.public.getNumero() ===
 						GEtatUtilisateur.getUtilisateur().getNumero() &&
 					lElement.public.getGenre() === lGenre;
 				const lLibelle = lATitreIndividuel
-					? GTraductions.getValeur("actualites.ATitreIndividuel")
-					: GTraductions.getValeur("actualites.AProposDe", [
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"actualites.ATitreIndividuel",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur("actualites.AProposDe", [
 							lElement.public.prenom &&
-							GEtatUtilisateur.GenreEspace !== EGenreEspace.Entreprise
+							![
+								Enumere_Espace_1.EGenreEspace.Entreprise,
+								Enumere_Espace_1.EGenreEspace.Mobile_Entreprise,
+							].includes(GEtatUtilisateur.GenreEspace)
 								? lElement.public.prenom
 								: lElement.public.getLibelle(),
 						]);
-				lCumulPere = new ObjetElement(
+				lCumulPere = new ObjetElement_1.ObjetElement(
 					lLibelle,
 					lElement.public.getNumero(),
 					lElement.public.getGenre(),
@@ -689,22 +555,21 @@ TUtilitaireInformations.formaterListePourCumul = function (aListe) {
 			lElement.pere = lCumulPere;
 		}
 	}
-	aListe.setTri(
-		ObjetTri.initRecursif("pere", [
-			ObjetTri.init("aTitreIndividuel"),
-			ObjetTri.init((D) => {
+	aListe.setTri([
+		ObjetTri_1.ObjetTri.initRecursif("pere", [
+			ObjetTri_1.ObjetTri.init("aTitreIndividuel"),
+			ObjetTri_1.ObjetTri.init((D) => {
 				return D.estUnDeploiement ? D.getLibelle() : D.pere.getLibelle();
 			}),
-			ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.init((D) => {
 				return D.dateDebut;
-			}, EGenreTriElement.Decroissant),
-			ObjetTri.init((D) => {
+			}, Enumere_TriElement_1.EGenreTriElement.Decroissant),
+			ObjetTri_1.ObjetTri.init((D) => {
 				return D.dateFin;
 			}),
-			ObjetTri.init("Libelle"),
-			ObjetTri.init("Numero"),
+			ObjetTri_1.ObjetTri.init("Libelle"),
+			ObjetTri_1.ObjetTri.init("Numero"),
 		]),
-	);
+	]);
 	aListe.trier();
 };
-module.exports = { TUtilitaireInformations };

@@ -1,21 +1,18 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const {
-	TypeGenreReponseInternetActualite,
-} = require("TypeGenreReponseInternetActualite.js");
-const { TypeModeAff } = require("TypeEtatPublication.js");
-class ObjetRequeteSaisieAccueil extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieAccueil = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const TypeGenreReponseInternetActualite_1 = require("TypeGenreReponseInternetActualite");
+const TypeEtatPublication_1 = require("TypeEtatPublication");
+class ObjetRequeteSaisieAccueil extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aDonnees) {
 		if (
 			aDonnees.actualites &&
-			aDonnees.actualites.listeModesAff[TypeModeAff.MA_Reception]
-				.listeActualites
+			aDonnees.actualites.listeModesAff[
+				TypeEtatPublication_1.TypeModeAff.MA_Reception
+			].listeActualites
 		) {
 			const lListeActualites = aDonnees.actualites.listeModesAff[
-				TypeModeAff.MA_Reception
+				TypeEtatPublication_1.TypeModeAff.MA_Reception
 			].listeActualites.getListeElements((aElement) => {
 				return !aElement.estUnDeploiement;
 			});
@@ -41,13 +38,17 @@ class ObjetRequeteSaisieAccueil extends ObjetRequeteSaisie {
 		return this.appelAsynchrone();
 	}
 }
-Requetes.inscrire("SaisieAccueil", ObjetRequeteSaisieAccueil);
+exports.ObjetRequeteSaisieAccueil = ObjetRequeteSaisieAccueil;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieAccueil",
+	ObjetRequeteSaisieAccueil,
+);
 function _serialiserActualite(aActualite, aJSON) {
 	aJSON.genrePublic = aActualite.genrePublic;
 	aJSON.public = aActualite.public;
 	aJSON.lue = aActualite.lue;
 	aActualite.listeQuestions.setSerialisateurJSON({
-		methodeSerialisation: _serialiserListeQuestions.bind(this),
+		methodeSerialisation: _serialiserListeQuestions,
 	});
 	aJSON.listeQuestions = aActualite.listeQuestions;
 }
@@ -55,7 +56,9 @@ function _serialiserListeQuestions(aQuestion, aJSON) {
 	aJSON.reponse = aQuestion.reponse.toJSONAll();
 	aJSON.genreReponse = aQuestion.genreReponse;
 	if (
-		aQuestion.genreReponse > TypeGenreReponseInternetActualite.AvecAR &&
+		aQuestion.genreReponse >
+			TypeGenreReponseInternetActualite_1.TypeGenreReponseInternetActualite
+				.AvecAR &&
 		aQuestion.reponse.avecReponse
 	) {
 		aJSON.reponse.valeurReponse = aQuestion.reponse.valeurReponse;
@@ -67,7 +70,7 @@ function _serialiserAbsences(aAbsence, aJSON) {
 	aJSON.justification = aAbsence.justification;
 	if (!!aAbsence.documents) {
 		aAbsence.documents.setSerialisateurJSON({
-			methodeSerialisation: _surValidation_Fichier.bind(this),
+			methodeSerialisation: _surValidation_Fichier,
 		});
 		aJSON.documents = aAbsence.documents;
 	}
@@ -86,4 +89,3 @@ function _surValidation_Fichier(aElement, aJSON) {
 	}
 	aJSON.url = aElement.url;
 }
-module.exports = ObjetRequeteSaisieAccueil;

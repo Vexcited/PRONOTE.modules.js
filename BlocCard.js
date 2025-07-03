@@ -1,12 +1,18 @@
-const { Identite } = require("ObjetIdentite.js");
-const { GUID } = require("GUID.js");
-const { GHtml } = require("ObjetHtml.js");
-const { UtilitaireUrl } = require("UtilitaireUrl.js");
-const EGenreEvntBlocCard = { edition: "edition" };
-class BlocCard extends Identite {
-	constructor(...aParams) {
-		super(...aParams);
-		this.ids = { card: GUID.getId() };
+exports.BlocCard = exports.EGenreEvntBlocCard = void 0;
+const ObjetIdentite_1 = require("ObjetIdentite");
+const GUID_1 = require("GUID");
+const ObjetHtml_1 = require("ObjetHtml");
+const UtilitaireUrl_1 = require("UtilitaireUrl");
+var EGenreEvntBlocCard;
+(function (EGenreEvntBlocCard) {
+	EGenreEvntBlocCard["edition"] = "edition";
+})(
+	EGenreEvntBlocCard || (exports.EGenreEvntBlocCard = EGenreEvntBlocCard = {}),
+);
+class BlocCard extends ObjetIdentite_1.Identite {
+	constructor() {
+		super(...arguments);
+		this.ids = { card: GUID_1.GUID.getId() };
 		this.default = { avecEtendre: false };
 		this.donneesRecues = false;
 	}
@@ -54,7 +60,7 @@ class BlocCard extends Identite {
 				'<article id="',
 				this.ids.card,
 				'" ',
-				GHtml.composeAttr("ie-node", "getNodeCard"),
+				ObjetHtml_1.GHtml.composeAttr("ie-node", "getNodeCard"),
 				' class=" ',
 				"BlocCard ",
 				lEditable ? "Editable" : "",
@@ -67,7 +73,9 @@ class BlocCard extends Identite {
 				"</div>",
 			);
 			if (this.param.avecEtendre && this.donnees.htmlInfoSecondaire !== "") {
-				H.push('<i class="icon_chevron_down IconDeployer"></i>');
+				H.push(
+					'<i class="icon_chevron_down IconDeployer" role="presentation"></i>',
+				);
 			}
 			H.push("</section>");
 			H.push('<section class="Secondary">');
@@ -82,7 +90,7 @@ class BlocCard extends Identite {
 		H.push('<article class="BlocCard" tabindex="0">');
 		H.push('<section class="MsgInfo">');
 		H.push(
-			'<i class="MainText IconInfo icon_diffuser_info" style="padding-right:0.5em;"></i>',
+			'<i role="presentation" class="MainText IconInfo icon_diffuser_info" style="padding-right:0.5em;"></i>',
 		);
 		H.push('<div class="MsgLibelle">', aMsg, "</div>");
 		H.push("</section>");
@@ -115,7 +123,11 @@ class BlocCard extends Identite {
 		const H = [];
 		H.push('<div class="SecondaryText-container">');
 		if (aParam.icon) {
-			H.push('<i class="SecondaryText ', aParam.icon, '"></i>');
+			H.push(
+				'<i role="presentation" class="SecondaryText ',
+				aParam.icon,
+				'"></i>',
+			);
 		} else if (aParam.htmlIconInfo) {
 			H.push(
 				'<div class="SecondaryText iconic">',
@@ -130,9 +142,9 @@ class BlocCard extends Identite {
 	composeHtmlPJ(aListePJ) {
 		const lHtmlPJ = [];
 		if (!!aListePJ) {
-			lHtmlPJ.push(UtilitaireUrl.construireListeUrls(aListePJ));
+			lHtmlPJ.push(UtilitaireUrl_1.UtilitaireUrl.construireListeUrls(aListePJ));
 		}
 		return lHtmlPJ.join("");
 	}
 }
-module.exports = { BlocCard, EGenreEvntBlocCard };
+exports.BlocCard = BlocCard;

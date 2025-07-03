@@ -1,18 +1,16 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieMotDePasseEleve extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieMotDePasseEleve = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const AccessApp_1 = require("AccessApp");
+class ObjetRequeteSaisieMotDePasseEleve extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParams) {
 		this.JSON = {
-			motDePasse: GApplication.getCommunication().getChaineChiffreeAES(
-				aParams.nouveauMDP,
-			),
+			motDePasse: (0, AccessApp_1.getApp)()
+				.getCommunication()
+				.getChaineChiffreeAES(aParams.nouveauMDP),
 		};
 		return this.appelAsynchrone();
 	}
-	traiterReponseSaisieMessageErreur() {}
 	actionApresRequete() {
 		this.callbackReussite.appel({
 			avecErreur: this.reponseEnErreur(),
@@ -20,5 +18,8 @@ class ObjetRequeteSaisieMotDePasseEleve extends ObjetRequeteSaisie {
 		});
 	}
 }
-Requetes.inscrire("SaisieMotDePasseEleve", ObjetRequeteSaisieMotDePasseEleve);
-module.exports = { ObjetRequeteSaisieMotDePasseEleve };
+exports.ObjetRequeteSaisieMotDePasseEleve = ObjetRequeteSaisieMotDePasseEleve;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieMotDePasseEleve",
+	ObjetRequeteSaisieMotDePasseEleve,
+);

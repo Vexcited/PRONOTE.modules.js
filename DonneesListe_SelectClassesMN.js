@@ -1,7 +1,6 @@
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-class DonneesListe_SelectClassesMN extends ObjetDonneesListeFlatDesign {
+exports.DonneesListe_SelectClassesMN = void 0;
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+class DonneesListe_SelectClassesMN extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees) {
 		super(aDonnees);
 		this.setOptions({
@@ -11,7 +10,6 @@ class DonneesListe_SelectClassesMN extends ObjetDonneesListeFlatDesign {
 			avecDeploiement: true,
 			avecEventDeploiementSurCellule: false,
 			avecTri: false,
-			avecMenuContextuel: false,
 			avecBoutonActionLigne: false,
 		});
 	}
@@ -43,4 +41,4 @@ class DonneesListe_SelectClassesMN extends ObjetDonneesListeFlatDesign {
 		}
 	}
 }
-module.exports = DonneesListe_SelectClassesMN;
+exports.DonneesListe_SelectClassesMN = DonneesListe_SelectClassesMN;

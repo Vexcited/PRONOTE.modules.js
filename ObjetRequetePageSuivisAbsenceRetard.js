@@ -1,20 +1,19 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { _Cache } = require("_Cache.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { GCache } = require("Cache.js");
-class ObjetRequetePageSuivisAbsenceRetard extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequetePageSuivisAbsenceRetard = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const _Cache_1 = require("_Cache");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Cache_1 = require("Cache");
+class ObjetRequetePageSuivisAbsenceRetard extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aEleve, aDateDebut, aDateFin, aElementSuivi) {
 		this._eleve = aEleve;
-		if (!GCache.suivisAbsenceRetard) {
-			GCache.suivisAbsenceRetard = {};
+		if (!Cache_1.GCache.suivisAbsenceRetard) {
+			Cache_1.GCache.suivisAbsenceRetard = {};
 		}
-		if (!GCache.suivisAbsenceRetard.listeInterlocuteurs) {
-			GCache.suivisAbsenceRetard.listeInterlocuteurs = new _Cache();
+		if (!Cache_1.GCache.suivisAbsenceRetard.listeInterlocuteurs) {
+			Cache_1.GCache.suivisAbsenceRetard.listeInterlocuteurs =
+				new _Cache_1._Cache();
 		}
 		this.JSON.eleve = aEleve;
 		this.JSON.dateDebut = aDateDebut;
@@ -22,20 +21,20 @@ class ObjetRequetePageSuivisAbsenceRetard extends ObjetRequeteConsultation {
 		if (aElementSuivi) {
 			this.JSON.elementSuivi = aElementSuivi;
 		}
-		if (!GCache.suivisAbsenceRetard.listePersonnel) {
+		if (!Cache_1.GCache.suivisAbsenceRetard.listePersonnel) {
 			this.JSON.avecListePersonnel = true;
 		}
 		if (
-			!GCache.suivisAbsenceRetard.listeInterlocuteurs.existeDonnee(
-				GCache.suivisAbsenceRetard.listeInterlocuteurs.getCle([aEleve]),
+			!Cache_1.GCache.suivisAbsenceRetard.listeInterlocuteurs.existeDonnee(
+				Cache_1.GCache.suivisAbsenceRetard.listeInterlocuteurs.getCle([aEleve]),
 			)
 		) {
 			this.JSON.avecListeInterlocuteurs = true;
 		}
-		if (!GCache.suivisAbsenceRetard.listeMotifsAbsenceEleve) {
+		if (!Cache_1.GCache.suivisAbsenceRetard.listeMotifsAbsenceEleve) {
 			this.JSON.AvecMotifsAbsenceEleve = true;
 		}
-		if (!GCache.suivisAbsenceRetard.listeMotifsRetard) {
+		if (!Cache_1.GCache.suivisAbsenceRetard.listeMotifsRetard) {
 			this.JSON.AvecMotifsRetard = true;
 		}
 		return this.appelAsynchrone();
@@ -43,51 +42,61 @@ class ObjetRequetePageSuivisAbsenceRetard extends ObjetRequeteConsultation {
 	actionApresRequete() {
 		if (this.JSONReponse.ListePersonnel) {
 			this.JSONReponse.ListePersonnel.insererElement(
-				new ObjetElement(GTraductions.getValeur("Aucun"), 0),
+				new ObjetElement_1.ObjetElement(
+					ObjetTraduction_1.GTraductions.getValeur("Aucun"),
+					0,
+				),
 				0,
 			);
-			GCache.suivisAbsenceRetard.listePersonnel =
+			Cache_1.GCache.suivisAbsenceRetard.listePersonnel =
 				this.JSONReponse.ListePersonnel;
 		}
 		if (this.JSONReponse.listeInterlocuteurs) {
 			const lListeInterlocuteurs = this.JSONReponse.listeInterlocuteurs;
 			lListeInterlocuteurs.insererElement(
-				new ObjetElement(GTraductions.getValeur("Autre"), 0),
+				new ObjetElement_1.ObjetElement(
+					ObjetTraduction_1.GTraductions.getValeur("Autre"),
+					0,
+				),
 				0,
 			);
-			GCache.suivisAbsenceRetard.listeInterlocuteurs.setDonnee(
-				GCache.suivisAbsenceRetard.listeInterlocuteurs.getCle([this._eleve]),
+			Cache_1.GCache.suivisAbsenceRetard.listeInterlocuteurs.setDonnee(
+				Cache_1.GCache.suivisAbsenceRetard.listeInterlocuteurs.getCle([
+					this._eleve,
+				]),
 				lListeInterlocuteurs,
 			);
 		}
 		if (this.JSONReponse.listeMotifsAbsenceEleve) {
-			GCache.suivisAbsenceRetard.listeMotifsAbsenceEleve =
+			Cache_1.GCache.suivisAbsenceRetard.listeMotifsAbsenceEleve =
 				this.JSONReponse.listeMotifsAbsenceEleve;
 		}
 		if (this.JSONReponse.listeMotifsRetard) {
-			GCache.suivisAbsenceRetard.listeMotifsRetard =
+			Cache_1.GCache.suivisAbsenceRetard.listeMotifsRetard =
 				this.JSONReponse.listeMotifsRetard;
 		}
 		const lListeSuivis = this.JSONReponse.listeSuivis;
 		_listeSuivisAbsenceRetard(lListeSuivis, this.JSONReponse.ListeMedias);
 		this.callbackReussite.appel(
 			lListeSuivis,
-			GCache.suivisAbsenceRetard.listePersonnel,
+			Cache_1.GCache.suivisAbsenceRetard.listePersonnel,
 			this.JSONReponse.message
 				? null
-				: GCache.suivisAbsenceRetard.listeInterlocuteurs.getDonnee(
-						GCache.suivisAbsenceRetard.listeInterlocuteurs.getCle([
+				: Cache_1.GCache.suivisAbsenceRetard.listeInterlocuteurs.getDonnee(
+						Cache_1.GCache.suivisAbsenceRetard.listeInterlocuteurs.getCle([
 							this._eleve,
 						]),
 					),
 			this.JSONReponse.ListeMedias,
-			GCache.suivisAbsenceRetard.listeMotifsAbsenceEleve,
-			GCache.suivisAbsenceRetard.listeMotifsRetard,
+			Cache_1.GCache.suivisAbsenceRetard.listeMotifsAbsenceEleve,
+			Cache_1.GCache.suivisAbsenceRetard.listeMotifsRetard,
 			this.JSONReponse.message,
 		);
 	}
 }
-Requetes.inscrire(
+exports.ObjetRequetePageSuivisAbsenceRetard =
+	ObjetRequetePageSuivisAbsenceRetard;
+CollectionRequetes_1.Requetes.inscrire(
 	"PageSuivisAbsenceRetard",
 	ObjetRequetePageSuivisAbsenceRetard,
 );
@@ -119,12 +128,12 @@ function _listeSuivisAbsenceRetard(aListe, aListeMedias) {
 			}
 			if (aElement.motif) {
 				let lTrouve =
-					GCache.suivisAbsenceRetard.listeMotifsAbsenceEleve.getElementParElement(
+					Cache_1.GCache.suivisAbsenceRetard.listeMotifsAbsenceEleve.getElementParElement(
 						aElement.motif,
 					);
 				if (!lTrouve) {
 					lTrouve =
-						GCache.suivisAbsenceRetard.listeMotifsRetard.getElementParElement(
+						Cache_1.GCache.suivisAbsenceRetard.listeMotifsRetard.getElementParElement(
 							aElement.motif,
 						);
 				}
@@ -135,4 +144,3 @@ function _listeSuivisAbsenceRetard(aListe, aListeMedias) {
 		});
 	}
 }
-module.exports = ObjetRequetePageSuivisAbsenceRetard;

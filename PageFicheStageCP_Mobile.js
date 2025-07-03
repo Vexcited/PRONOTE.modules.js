@@ -12,6 +12,7 @@ class PageFicheStageCP_Mobile extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobil
 			avecEditionDocumentsJoints: false,
 			avecEditionSuivisDeStage: false,
 			avecCommentaire: false,
+			avecCommentaireEditable: false,
 		};
 	}
 	setParametres(aParametres) {

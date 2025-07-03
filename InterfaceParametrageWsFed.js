@@ -1,7 +1,6 @@
 exports.InterfaceParametrageWsFed = void 0;
 require("IEHtml.MrFiche.js");
 const AppelSOAP_1 = require("AppelSOAP");
-const ObjetHtml_1 = require("ObjetHtml");
 const ObjetStyle_1 = require("ObjetStyle");
 const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetInterface_1 = require("ObjetInterface");
@@ -9,10 +8,11 @@ const ObjetTraduction_1 = require("ObjetTraduction");
 const WSGestionWsFed_1 = require("WSGestionWsFed");
 const WSGestionWsFed_2 = require("WSGestionWsFed");
 const ObjetFenetre_ParametrageWsFed_1 = require("ObjetFenetre_ParametrageWsFed");
+const AccessApp_1 = require("AccessApp");
 class InterfaceParametrageWsFed extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
-		this.objetApplicationConsoles = GApplication;
+		this.objetApplicationConsoles = (0, AccessApp_1.getApp)();
 		this.messagesEvenements =
 			this.objetApplicationConsoles.msgEvnts.getMessagesUnite(
 				"InterfaceParametrageWsFed.js",
@@ -57,157 +57,163 @@ class InterfaceParametrageWsFed extends ObjetInterface_1.ObjetInterface {
 		super.free();
 		clearTimeout(this.timeoutEtatEnCours);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			inputNomDelegation: {
-				getValue() {
-					return aInstance.infosDelegation.nom;
-				},
-				setValue(aValue) {
-					aInstance.infosDelegation.nom = aValue;
-				},
-				getDisabled() {
-					return aInstance.avecParametresInactifs();
-				},
+	jsxModelInputNomDelegation() {
+		return {
+			getValue: () => {
+				return this.infosDelegation.nom;
 			},
-			btnParametres: {
-				event() {
-					const lFenetreParametrageWsFed =
-						ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
-							ObjetFenetre_ParametrageWsFed_1.ObjetFenetre_ParametrageWsFed,
-							{
-								pere: aInstance,
-								evenement: aInstance.evenementSurFenetreParametrage,
-								initialiser(aInstanceFenetre) {
-									aInstanceFenetre.setOptionsFenetresParametrageWSFed({
-										largeurLibelle:
-											aInstance.optionsWsFed.largeurLibelleFenetre,
-										groupesUtilisateur:
-											aInstance.optionsWsFed.groupesUtilisateur,
-									});
-								},
+			setValue: (aValue) => {
+				this.infosDelegation.nom = aValue;
+			},
+			getDisabled: () => {
+				return this.avecParametresInactifs();
+			},
+		};
+	}
+	jsxModelBoutonParametres() {
+		return {
+			event: () => {
+				const lFenetreParametrageWsFed =
+					ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+						ObjetFenetre_ParametrageWsFed_1.ObjetFenetre_ParametrageWsFed,
+						{
+							pere: this,
+							evenement: (aNumeroBouton, aParametres) => {
+								this.evenementSurFenetreParametrage(aParametres);
 							},
-						);
-					lFenetreParametrageWsFed.setDonnees(aInstance.parametresWsFed);
-				},
-				getDisabled() {
-					return (
-						aInstance.estEnService() ||
-						!aInstance.parametresWsFed.urlMetadataServeur ||
-						aInstance.statutContactServeurSvcW !==
-							WSGestionWsFed_1.ETypeStatutContactServeurSvcW.Scs_Contacte
+							initialiser(aInstanceFenetre) {
+								aInstanceFenetre.setOptionsFenetresParametrageWSFed({
+									largeurLibelle: this.optionsWsFed.largeurLibelleFenetre,
+									groupesUtilisateur: this.optionsWsFed.groupesUtilisateur,
+								});
+							},
+						},
 					);
-				},
+				lFenetreParametrageWsFed.setDonnees(this.parametresWsFed);
 			},
-			getStyleTexte() {
-				return {
-					color: aInstance.avecParametresInactifs()
-						? GCouleur.nonEditable.texte
-						: "black",
-				};
-			},
-			inputURL: {
-				getValue() {
-					return aInstance.parametresWsFed.urlMetadataServeur;
-				},
-				setValue(aValue) {
-					aInstance.parametresWsFed.urlMetadataServeur = aValue;
-				},
-				exitChange(aValue) {
-					aInstance.parametresWsFed.urlMetadataServeur = aValue;
-					if (aInstance.parametresWsFed.urlMetadataServeur !== "") {
-						aInstance.fenetre.setBoutonActif(1, false);
-						return aInstance.soapVerifierAdresseMetadata(0);
-					}
-				},
-				getDisabled() {
-					return (
-						aInstance.avecParametresInactifs() ||
-						aInstance.optionsWsFed.bloquerSaisieUrl
-					);
-				},
-			},
-			getEtatLogin() {
-				return aInstance.getEtatLogin();
-			},
-			getUrlPubliqueMetaData() {
-				return aInstance.urlFederationMetataClient || "";
-			},
-			cbAcces: {
-				getValue(aNomProp) {
-					return aInstance.parametresWsFed[aNomProp];
-				},
-				setValue(aNomProp, aNomMethode, aValue) {
-					aInstance.parametresWsFed[aNomProp] = aValue;
-				},
-				getDisabled() {
-					return aInstance.avecParametresInactifs();
-				},
-			},
-			lienAcces(aNomPropUrl, aNomPropCB) {
-				if (!aInstance.parametresWsFed[aNomPropUrl]) {
-					return "";
-				}
-				const lAvecClic =
-					aInstance.parametresWsFed[aNomPropCB] &&
-					aInstance.avecParametresInactifs() &&
-					aInstance.estEnService();
-				return !lAvecClic
-					? '<span class="EspaceGauche Texte10 AvecSelectionTexte Gras">' +
-							aInstance.parametresWsFed[aNomPropUrl] +
-							"</span>"
-					: '<a href="' +
-							aInstance.parametresWsFed[aNomPropUrl] +
-							'" class="EspaceGauche Texte10 AvecSelectionTexte LienConsole" target="_blank">' +
-							aInstance.parametresWsFed[aNomPropUrl] +
-							"</a>";
-			},
-			getHtmlURLPublique() {
-				return aInstance.parametresWsFed.urlPublique;
-			},
-			getDownloadConfig() {
-				if (!aInstance.avecParametresInactifs()) {
-					return ObjetTraduction_1.GTraductions.getValeur(
-						"wsfed.TelechargerMetadata",
-					);
-				}
+			getDisabled: () => {
 				return (
-					'<a href="download/configurationWsFed.xml" target="_blank">' +
-					ObjetTraduction_1.GTraductions.getValeur(
-						"wsfed.TelechargerMetadata",
-					) +
-					"</a>"
+					this.estEnService() ||
+					!this.parametresWsFed.urlMetadataServeur ||
+					this.statutContactServeurSvcW !==
+						WSGestionWsFed_1.ETypeStatutContactServeurSvcW.Scs_Contacte
 				);
 			},
-			cbAuthControleur: {
-				getValue() {
-					return aInstance.parametresWsFed.accesDirectAuxEspaces;
-				},
-				setValue(aValue) {
-					aInstance.parametresWsFed.accesDirectAuxEspaces = aValue;
-				},
-				getDisabled() {
-					return aInstance.avecParametresInactifs();
-				},
+		};
+	}
+	jsxModelInputURL() {
+		return {
+			getValue: () => {
+				return this.parametresWsFed.urlMetadataServeur;
 			},
-			rbAuthControleur: {
-				getValue(aEstToutLeTemp) {
-					return (
-						aInstance.parametresWsFed.accesDirectToutLeTemps === aEstToutLeTemp
-					);
-				},
-				setValue(aValue) {
-					aInstance.parametresWsFed.accesDirectToutLeTemps = aValue;
-					aInstance.parametresWsFed.accesDirectPasDeReponse = !aValue;
-				},
-				getDisabled() {
-					return (
-						!aInstance.parametresWsFed.accesDirectAuxEspaces ||
-						aInstance.avecParametresInactifs()
-					);
-				},
+			setValue: (aValue) => {
+				this.parametresWsFed.urlMetadataServeur = aValue;
 			},
-		});
+			exitChange: (aValue) => {
+				this.parametresWsFed.urlMetadataServeur = aValue;
+				if (this.parametresWsFed.urlMetadataServeur !== "") {
+					this.fenetre.setBoutonActif(1, false);
+					return this.soapVerifierAdresseMetadata(0);
+				}
+			},
+			getDisabled: () => {
+				return (
+					this.avecParametresInactifs() || this.optionsWsFed.bloquerSaisieUrl
+				);
+			},
+		};
+	}
+	jsxGetEtatLogin() {
+		return this.getEtatLogin();
+	}
+	jsxGetUrlPubliqueMetadata() {
+		return this.urlFederationMetataClient || "";
+	}
+	jsxCheckboxAcces(aNomPropriete) {
+		return {
+			getValue: () => {
+				return this.parametresWsFed[aNomPropriete];
+			},
+			setValue: (aValue) => {
+				this.parametresWsFed[aNomPropriete] = aValue;
+			},
+			getDisabled: () => {
+				return this.avecParametresInactifs();
+			},
+		};
+	}
+	jsxGetLienAcces(aNomPropUrl, aNomPropCB) {
+		if (!this.parametresWsFed[aNomPropUrl]) {
+			return "";
+		}
+		const lAvecClic =
+			this.parametresWsFed[aNomPropCB] &&
+			this.avecParametresInactifs() &&
+			this.estEnService();
+		return !lAvecClic
+			? '<span class="EspaceGauche Texte10 AvecSelectionTexte Gras">' +
+					this.parametresWsFed[aNomPropUrl] +
+					"</span>"
+			: '<a href="' +
+					this.parametresWsFed[aNomPropUrl] +
+					'" class="EspaceGauche Texte10 AvecSelectionTexte LienConsole" target="_blank">' +
+					this.parametresWsFed[aNomPropUrl] +
+					"</a>";
+	}
+	jsxGetHtmlURLPublique() {
+		return this.parametresWsFed.urlPublique;
+	}
+	jsxGetDownloadConfig() {
+		if (!this.avecParametresInactifs()) {
+			return ObjetTraduction_1.GTraductions.getValeur(
+				"wsfed.TelechargerMetadata",
+			);
+		}
+		return (
+			'<a href="download/configurationWsFed.xml" target="_blank">' +
+			ObjetTraduction_1.GTraductions.getValeur("wsfed.TelechargerMetadata") +
+			"</a>"
+		);
+	}
+	jsxCheckboxAvecAccesDirect() {
+		return {
+			getValue: () => {
+				return this.parametresWsFed.accesDirectAuxEspaces;
+			},
+			setValue: (aValue) => {
+				this.parametresWsFed.accesDirectAuxEspaces = aValue;
+			},
+			getDisabled: () => {
+				return this.avecParametresInactifs();
+			},
+		};
+	}
+	jsxRadioTypeAccesDirect(aEstToutLeTemp) {
+		return {
+			getValue: () => {
+				return this.parametresWsFed.accesDirectToutLeTemps === aEstToutLeTemp;
+			},
+			setValue: (aValue) => {
+				this.parametresWsFed.accesDirectToutLeTemps = aValue;
+				this.parametresWsFed.accesDirectPasDeReponse = !aValue;
+			},
+			getName: () => {
+				return `${this.Nom}_TypeAccesDirect`;
+			},
+			getDisabled: () => {
+				return (
+					!this.parametresWsFed.accesDirectAuxEspaces ||
+					this.avecParametresInactifs()
+				);
+			},
+		};
+	}
+	jsxGetStyleEntete() {
+		return {
+			color: this.avecParametresInactifs()
+				? (0, AccessApp_1.getApp)().getCouleur().nonEditable.texte
+				: "black",
+		};
 	}
 	construireStructureAffichage() {
 		const H = [];
@@ -299,159 +305,272 @@ class InterfaceParametrageWsFed extends ObjetInterface_1.ObjetInterface {
 		return H.join("");
 	}
 	composePage() {
+		const lZoneURLPointNet = [];
+		if (this.optionsWsFed.avecURLPointNet) {
+			lZoneURLPointNet.push(
+				IE.jsx.str(
+					"div",
+					{ style: "padding-top:10px;" },
+					IE.jsx.str(
+						"div",
+						null,
+						ObjetTraduction_1.GTraductions.getValeur("wsfed.UrlPublique"),
+					),
+					IE.jsx.str("div", {
+						class: "EspaceGauche PetitEspaceHaut Gras AvecSelectionTexte",
+						"ie-html": this.jsxGetUrlPubliqueMetadata.bind(this),
+					}),
+				),
+			);
+		}
+		const lZoneAccesDirectEspaces = [];
+		if (this.optionsWsFed.avecAccesDirectEspaces) {
+			lZoneAccesDirectEspaces.push(
+				IE.jsx.str(
+					"div",
+					{ style: "padding-top:10px;" },
+					IE.jsx.str(
+						"div",
+						null,
+						IE.jsx.str(
+							"ie-checkbox",
+							{
+								"ie-model": this.jsxCheckboxAcces.bind(
+									this,
+									"accesDirectAuxEspaces",
+								),
+							},
+							ObjetTraduction_1.GTraductions.getValeur("wsfed.LoginDirect"),
+						),
+					),
+					IE.jsx.str("div", {
+						"ie-html": this.jsxGetLienAcces.bind(
+							this,
+							"urlAccesDirect",
+							"accesDirectAuxEspaces",
+						),
+					}),
+				),
+			);
+		}
+		const lZoneAccesInvite = [];
+		if (this.optionsWsFed.avecAccesInvite) {
+			lZoneAccesInvite.push(
+				IE.jsx.str(
+					"div",
+					{ style: "padding-top:10px;" },
+					IE.jsx.str(
+						"div",
+						null,
+						IE.jsx.str(
+							"ie-checkbox",
+							{
+								"ie-model": this.jsxCheckboxAcces.bind(
+									this,
+									"accesInviteSansWsFed",
+								),
+							},
+							ObjetTraduction_1.GTraductions.getValeur("wsfed.EspaceInvite"),
+						),
+					),
+					IE.jsx.str("div", {
+						"ie-html": this.jsxGetLienAcces.bind(
+							this,
+							"urlAccesInviteSansWsFed",
+							"accesInviteSansWsFed",
+						),
+					}),
+				),
+			);
+		}
+		const lZoneUrlPubliqueServeur = [];
+		if (this.optionsWsFed.avecUrlPubliqueServeur) {
+			lZoneUrlPubliqueServeur.push(
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
+						"div",
+						{ style: "padding-top:10px; display:flex; align-items:center;" },
+						IE.jsx.str(
+							"div",
+							null,
+							ObjetTraduction_1.GTraductions.getValeur(
+								"wsfed.WsFed_UrlPublique",
+							),
+						),
+					),
+					IE.jsx.str("div", {
+						style: "padding-top:5px; padding-left:10px;",
+						class: "Gras AvecSelectionTexte",
+						"ie-html": this.jsxGetHtmlURLPublique.bind(this),
+					}),
+				),
+			);
+		}
+		const lZoneDownloadConfig = [];
+		if (this.optionsWsFed.avecDownloadConfig) {
+			lZoneDownloadConfig.push(
+				IE.jsx.str(
+					"div",
+					{ style: "padding-top:10px; display:flex; align-items:center;" },
+					IE.jsx.str("div", {
+						"ie-html": this.jsxGetDownloadConfig.bind(this),
+					}),
+					IE.jsx.str("div", {
+						"ie-mrfiche": "wsfed.MFicheTelechargerMetadataWsFed",
+						class: "PetitEspaceGauche",
+					}),
+				),
+			);
+		}
+		const lZoneAuthentificationServeur = [];
+		if (this.optionsWsFed.avecAuthentificationServeur) {
+			lZoneAuthentificationServeur.push(
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
+						"div",
+						{ style: "padding-top:10px;" },
+						IE.jsx.str(
+							"div",
+							{ style: "display:flex; align-items:center;" },
+							IE.jsx.str(
+								"ie-checkbox",
+								{ "ie-model": this.jsxCheckboxAvecAccesDirect.bind(this) },
+								ObjetTraduction_1.GTraductions.getValeur(
+									"wsfed.LoginDirectWsFed",
+								),
+							),
+							IE.jsx.str("div", {
+								"ie-mrfiche": "wsfed.MFicheAuthentificationWsFed",
+								class: "PetitEspaceGauche",
+							}),
+						),
+					),
+					IE.jsx.str(
+						"div",
+						{ style: "padding-top:5px; padding-left:15px;" },
+						IE.jsx.str(
+							"div",
+							null,
+							IE.jsx.str(
+								"ie-radio",
+								{ "ie-model": this.jsxRadioTypeAccesDirect.bind(this, true) },
+								ObjetTraduction_1.GTraductions.getValeur(
+									"wsfed.DirectToutLeTemps",
+								),
+							),
+						),
+						IE.jsx.str(
+							"div",
+							null,
+							IE.jsx.str(
+								"ie-radio",
+								{ "ie-model": this.jsxRadioTypeAccesDirect.bind(this, false) },
+								ObjetTraduction_1.GTraductions.getValeur(
+									"wsfed.DirectPasDeReponse",
+								),
+							),
+						),
+					),
+				),
+			);
+		}
 		const H = [];
 		H.push(
-			'<div style="display:flex; align-items: center;">',
-			'<div style="flex: 1 1 auto;">',
-			'<span style="padding-left:0.5rem;">',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"pageParametresDeleguerLAuthentification.NomDeLaDelegation",
-			) + " :",
-			"</span>",
-			'<input ie-model="inputNomDelegation" style="width:450px;" />',
-			"</div>",
-			'<ie-bouton ie-model="btnParametres" style="min-width:300px;" class="small-bt">',
-			ObjetTraduction_1.GTraductions.getValeur("wsfed.Parametres"),
-			"</ie-bouton>",
-			"</div>",
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"div",
+					{ style: "display:flex; align-items: center;" },
+					IE.jsx.str(
+						"div",
+						{ style: "flex: 1 1 auto;" },
+						IE.jsx.str(
+							"span",
+							{ style: "padding-left:0.5rem;" },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"pageParametresDeleguerLAuthentification.NomDeLaDelegation",
+							),
+							" :",
+						),
+						IE.jsx.str("input", {
+							"ie-model": this.jsxModelInputNomDelegation.bind(this),
+							"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+								"pageParametresDeleguerLAuthentification.NomDeLaDelegation",
+							),
+							style: "width:450px;",
+						}),
+					),
+					IE.jsx.str(
+						"ie-bouton",
+						{
+							"ie-model": this.jsxModelBoutonParametres.bind(this),
+							style: "min-width:300px;",
+							class: "small-bt",
+						},
+						ObjetTraduction_1.GTraductions.getValeur("wsfed.Parametres"),
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "Espace" },
+					IE.jsx.str(
+						"div",
+						{
+							"ie-style": this.jsxGetStyleEntete.bind(this),
+							class: "AvecSelectionTexte",
+						},
+						IE.jsx.str(
+							"div",
+							{ style: "display:flex; align-items:center;" },
+							IE.jsx.str(
+								"div",
+								null,
+								ObjetTraduction_1.GTraductions.getValeur(
+									"wsfed.UrlServeurWsFed",
+								),
+							),
+							this.optionsWsFed.avecMrFicheURLServeur
+								? '<div ie-mrfiche="wsfed.MFicheUrlServeurWsFed" class="PetitEspaceGauche"></div>'
+								: "",
+						),
+						IE.jsx.str(
+							"div",
+							{ style: "padding-top:5px; padding-left:10px;" },
+							IE.jsx.str("input", {
+								type: "text",
+								"ie-model": this.jsxModelInputURL.bind(this),
+								"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+									"wsfed.UrlServeurWsFed",
+								),
+								"ie-selecttextfocus": true,
+								"ie-trim": true,
+								class: "Gras",
+								style:
+									"width:100%; height:20px;" +
+									ObjetStyle_1.GStyle.composeCouleurBordure(
+										(0, AccessApp_1.getApp)().getCouleur().noir,
+									),
+							}),
+						),
+						IE.jsx.str("div", {
+							class: "PetitEspaceHaut",
+							"ie-html": this.jsxGetEtatLogin.bind(this),
+						}),
+						lZoneURLPointNet.join(""),
+						lZoneAccesDirectEspaces.join(""),
+						lZoneAccesInvite.join(""),
+						lZoneUrlPubliqueServeur.join(""),
+						lZoneDownloadConfig.join(""),
+						lZoneAuthentificationServeur.join(""),
+					),
+				),
+			),
 		);
-		H.push('<div class="Espace">');
-		H.push('<div ie-style="getStyleTexte" class="AvecSelectionTexte">');
-		H.push(
-			'<div style="display:flex; align-items:center;">',
-			"<div>",
-			ObjetTraduction_1.GTraductions.getValeur("wsfed.UrlServeurWsFed"),
-			"</div>",
-			this.optionsWsFed.avecMrFicheURLServeur
-				? '<div ie-mrfiche="wsfed.MFicheUrlServeurWsFed" class="PetitEspaceGauche"></div>'
-				: "",
-			"</div>",
-		);
-		H.push(
-			'<div style="padding-top:5px; padding-left:10px;">',
-			'<input type="text" ie-model="inputURL" ie-selecttextfocus ie-trim class="Gras" style="width:100%; height:20px;',
-			ObjetStyle_1.GStyle.composeCouleurBordure(GCouleur.noir),
-			'" />',
-			"</div>",
-		);
-		H.push('<div class="PetitEspaceHaut" ie-html="getEtatLogin"></div>');
-		if (this.optionsWsFed.avecURLPointNet) {
-			H.push('<div style="padding-top:10px;">');
-			H.push(
-				"<div>",
-				ObjetTraduction_1.GTraductions.getValeur("wsfed.UrlPublique"),
-				"</div>",
-			);
-			H.push(
-				'<div class="EspaceGauche PetitEspaceHaut Gras AvecSelectionTexte" ie-html="getUrlPubliqueMetaData"></div>',
-			);
-			H.push("</div>");
-		}
-		if (this.optionsWsFed.avecAccesDirectEspaces) {
-			H.push('<div style="padding-top:10px;">');
-			H.push(
-				"<div>",
-				"<ie-checkbox ",
-				ObjetHtml_1.GHtml.composeAttr("ie-model", "cbAcces", [
-					"accesDirectAuxEspaces",
-					"SetAccesDirectAuxEspacesWsFed",
-				]),
-				">",
-				ObjetTraduction_1.GTraductions.getValeur("wsfed.LoginDirect"),
-				"</ie-checkbox>",
-				"</div>",
-			);
-			H.push(
-				"<div ",
-				ObjetHtml_1.GHtml.composeAttr("ie-html", "lienAcces", [
-					"urlAccesDirect",
-					"accesDirectAuxEspaces",
-				]),
-				'"></div>',
-			);
-			H.push("</div>");
-		}
-		if (this.optionsWsFed.avecAccesInvite) {
-			H.push('<div style="padding-top:10px;">');
-			H.push(
-				"<div>",
-				"<ie-checkbox ",
-				ObjetHtml_1.GHtml.composeAttr("ie-model", "cbAcces", [
-					"accesInviteSansCAS",
-					"SetAccesInviteSansWsFed",
-				]),
-				">",
-				ObjetTraduction_1.GTraductions.getValeur("wsfed.EspaceInvite"),
-				"</ie-checkbox>",
-				"</div>",
-			);
-			H.push(
-				"<div ",
-				ObjetHtml_1.GHtml.composeAttr("ie-html", "lienAcces", [
-					"urlAccesInviteSansCAS",
-					"accesInviteSansCAS",
-				]),
-				'"></div>',
-			);
-			H.push("</div>");
-		}
-		if (this.optionsWsFed.avecUrlPubliqueServeur) {
-			H.push(
-				'<div style="padding-top:10px; display:flex; align-items:center;">',
-				"<div>",
-				ObjetTraduction_1.GTraductions.getValeur("wsfed.WsFed_UrlPublique"),
-				"</div>",
-				"</div>",
-			);
-			H.push(
-				'<div style="padding-top:5px; padding-left:10px;" class="Gras AvecSelectionTexte" ie-html="getHtmlURLPublique">',
-				"</div>",
-			);
-		}
-		if (this.optionsWsFed.avecDownloadConfig) {
-			H.push(
-				'<div style="padding-top:10px; display:flex; align-items:center;">',
-				'<div ie-html="getDownloadConfig"></div>',
-				'<div ie-mrfiche="wsfed.MFicheTelechargerMetadataWsFed" class="PetitEspaceGauche"></div>',
-				"</div>",
-			);
-		}
-		if (this.optionsWsFed.avecAuthentificationServeur) {
-			H.push('<div style="padding-top:10px;">');
-			H.push(
-				'<div style="display:flex; align-items:center;">',
-				"<ie-checkbox ",
-				ObjetHtml_1.GHtml.composeAttr("ie-model", "cbAuthControleur"),
-				">",
-				ObjetTraduction_1.GTraductions.getValeur("wsfed.LoginDirectWsFed"),
-				"</ie-checkbox>",
-				'<div ie-mrfiche="wsfed.MFicheAuthentificationWsFed" class="PetitEspaceGauche"></div>',
-				"</div>",
-			);
-			H.push("</div>");
-			H.push('<div style="padding-top:5px; padding-left:15px;">');
-			H.push(
-				"<div>",
-				"<ie-radio ",
-				ObjetHtml_1.GHtml.composeAttr("ie-model", "rbAuthControleur", [true]),
-				">",
-				ObjetTraduction_1.GTraductions.getValeur("wsfed.DirectToutLeTemps"),
-				"</ie-radio>",
-				"</div>",
-			);
-			H.push(
-				"<div>",
-				"<ie-radio ",
-				ObjetHtml_1.GHtml.composeAttr("ie-model", "rbAuthControleur", [false]),
-				">",
-				ObjetTraduction_1.GTraductions.getValeur("wsfed.DirectPasDeReponse"),
-				"</ie-radio>",
-				"</div>",
-			);
-			H.push("</div>");
-		}
-		H.push("</div>");
-		H.push("</div>");
 		return H.join("");
 	}
 	soapVerifierAdresseMetadata(aCompteur) {
@@ -471,8 +590,9 @@ class InterfaceParametrageWsFed extends ObjetInterface_1.ObjetInterface {
 			},
 		})
 			.then((aDonnees) => {
-				const lResultatInterrogationMetadata =
-					aDonnees.getElement("return").valeur;
+				const lResultatInterrogationMetadata = aDonnees
+					.getElement("return")
+					.getValeur();
 				this.statutContactServeurSvcW =
 					lResultatInterrogationMetadata.statutContactServeur;
 				const lParametresWsFedVerifie =
@@ -512,7 +632,9 @@ class InterfaceParametrageWsFed extends ObjetInterface_1.ObjetInterface {
 					.setValeur(this.infosDelegation.idParametres);
 			},
 		}).then((aDonnees) => {
-			this.urlFederationMetataClient = aDonnees.getElement("return").valeur;
+			this.urlFederationMetataClient = aDonnees
+				.getElement("return")
+				.getValeur();
 			this.donneesRecues = true;
 			this.statutContactServeurSvcW =
 				this.parametresWsFed.urlMetadataServeur !== ""

@@ -1,63 +1,47 @@
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { GUID } = require("GUID.js");
-const { GChaine } = require("ObjetChaine.js");
-const { GHtml } = require("ObjetHtml.js");
-const { GStyle } = require("ObjetStyle.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EEvent } = require("Enumere_Event.js");
-const { EStructureAffichage } = require("Enumere_StructureAffichage.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetHint } = require("ObjetHint.js");
-const { ObjetInterface } = require("ObjetInterface.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetScroll } = require("ObjetScroll.js");
-const { EGenreScroll } = require("ObjetScroll.js");
-const { EGenreScrollEvenement } = require("ObjetScroll.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { GObjetWAI } = require("ObjetWAI.js");
-const { EGenreRole } = require("ObjetWAI.js");
-const { EGenreAttribut } = require("ObjetWAI.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const {
-	ObjetFenetre_DetailsPIEleve,
-} = require("ObjetFenetre_DetailsPIEleve.js");
-const { TTypePreparerRepas } = require("TTypePreparerRepas.js");
-const { TypeGenreIndividuAuteur } = require("TypeGenreIndividuAuteur.js");
-const { TypeGenreObservationVS } = require("TypeGenreObservationVS.js");
-const { TypeGenreRepasEleve } = require("TypeGenreRepasEleve.js");
-const {
-	EGenreEvenementSaisieAbsence,
-} = require("Enumere_EvenementSaisieAbsences.js");
-const { TypeIconeFeuilleDAppel } = require("TypeIconeFeuilleDAppel.js");
-const { MethodesObjet } = require("MethodesObjet.js");
+exports.InterfacePageSaisieAbsences_Cours = void 0;
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const GUID_1 = require("GUID");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetStyle_1 = require("ObjetStyle");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_Event_1 = require("Enumere_Event");
+const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetHint_1 = require("ObjetHint");
+const ObjetInterface_1 = require("ObjetInterface");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetScroll_1 = require("ObjetScroll");
+const ObjetScroll_2 = require("ObjetScroll");
+const ObjetScroll_3 = require("ObjetScroll");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetWAI_1 = require("ObjetWAI");
+const ObjetWAI_2 = require("ObjetWAI");
+const ObjetWAI_3 = require("ObjetWAI");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetFenetre_DetailsPIEleve_1 = require("ObjetFenetre_DetailsPIEleve");
+const TTypePreparerRepas_1 = require("TTypePreparerRepas");
+const TypeGenreIndividuAuteur_1 = require("TypeGenreIndividuAuteur");
+const TypeGenreObservationVS_1 = require("TypeGenreObservationVS");
+const TypeGenreRepasEleve_1 = require("TypeGenreRepasEleve");
+const Enumere_EvenementSaisieAbsences_1 = require("Enumere_EvenementSaisieAbsences");
+const TypeIconeFeuilleDAppel_1 = require("TypeIconeFeuilleDAppel");
+const MethodesObjet_1 = require("MethodesObjet");
+const AccessApp_1 = require("AccessApp");
+const ObjetRequetePageSaisieAbsences_1 = require("ObjetRequetePageSaisieAbsences");
 const lRegexNumEleveNumColAbs = new RegExp(
-	`_${ObjetElement.regexCaptureNumero}_([0-9]+)(?=_abs)`,
+	`_${ObjetElement_1.ObjetElement.regexCaptureNumero}_([0-9]+)(?=_abs)`,
 );
 const lRegexNumEleveLib = new RegExp(
-	`_${ObjetElement.regexCaptureNumero}(?=_lib$)`,
+	`_${ObjetElement_1.ObjetElement.regexCaptureNumero}(?=_lib$)`,
 );
-class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
+class InterfacePageSaisieAbsences_Cours extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
-		this.listeEleves = new ObjetListeElements();
-		this.listeColonnes = new ObjetListeElements();
-		this.options = { avecSaisieExclusion: false };
-		this.ScrollV = new ObjetScroll(
-			this.Nom + ".ScrollV",
-			null,
-			this,
-			this.getScrollTop,
-			EGenreScroll.Vertical,
-		);
-		this.ScrollH = new ObjetScroll(
-			this.Nom + ".ScrollH",
-			null,
-			this,
-			this.getScrollLeft,
-			EGenreScroll.Horizontal,
-		);
+		this.appScoEspace = (0, AccessApp_1.getApp)();
+		this.etatUtilScoEspace = this.appScoEspace.getEtatUtilisateur();
 		this.largeurColonneEleve = 230;
 		this.largeurColonneClasse = 50;
 		this.hauteurLigne = 24;
@@ -70,16 +54,42 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 		this.commentaireHeight = 150;
 		this.numeroEleveSelectionne = null;
 		this.enAffichage = false;
-		this.classAbsencesConvoc = GUID.getClassCss();
-		this.classAbsencesProjetsAccompagnement = GUID.getClassCss();
-		this.ajouterEvenementGlobal(EEvent.SurPreResize, this.surPreResize);
-		this.ajouterEvenementGlobal(EEvent.SurPostResize, this.surPostResize);
+		this.classAbsencesConvoc = GUID_1.GUID.getClassCss();
+		this.classAbsencesProjetsAccompagnement = GUID_1.GUID.getClassCss();
+		this.listeEleves = new ObjetListeElements_1.ObjetListeElements();
+		this.listeColonnes = new ObjetListeElements_1.ObjetListeElements();
+		this.options = { avecSaisieExclusion: false };
+		this.ScrollV = new ObjetScroll_1.ObjetScroll(
+			this.Nom + ".ScrollV",
+			null,
+			this,
+			this.getScrollTop,
+			ObjetScroll_2.EGenreScroll.Vertical,
+		);
+		this.ScrollH = new ObjetScroll_1.ObjetScroll(
+			this.Nom + ".ScrollH",
+			null,
+			this,
+			this.getScrollLeft,
+			ObjetScroll_2.EGenreScroll.Horizontal,
+		);
+		this.ajouterEvenementGlobal(
+			Enumere_Event_1.EEvent.SurPreResize,
+			this.surPreResize,
+		);
+		this.ajouterEvenementGlobal(
+			Enumere_Event_1.EEvent.SurPostResize,
+			this.surPostResize,
+		);
 	}
 	construireInstances() {
-		this.identFenetreDocs = this.addFenetre(ObjetFenetre_DetailsPIEleve);
+		this.identFenetreDocs = this.addFenetre(
+			ObjetFenetre_DetailsPIEleve_1.ObjetFenetre_DetailsPIEleve,
+		);
 	}
 	setParametresGeneraux() {
-		this.GenreStructure = EStructureAffichage.Autre;
+		this.GenreStructure =
+			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 	}
 	composeMessage(aMessage) {
 		const H = [];
@@ -99,20 +109,23 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 			if (this.listeElevesEnStage && this.listeElevesEnStage.count() > 0) {
 				H.push(
 					this.composeMessage(
-						GTraductions.getValeur("Absence.TousLesElevesEnStage"),
+						ObjetTraduction_1.GTraductions.getValeur(
+							"Absence.TousLesElevesEnStage",
+						),
 					),
 				);
 			} else {
 				H.push(
 					this.composeMessage(
-						this.message || GTraductions.getValeur("Absence.AucunEleve"),
+						this.message ||
+							ObjetTraduction_1.GTraductions.getValeur("Absence.AucunEleve"),
 					),
 				);
 			}
 		} else {
 			H.push(
 				"<table ",
-				GObjetWAI.composeRole(EGenreRole.Grid),
+				ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_2.EGenreRole.Grid),
 				' class="tableAbsenceGlobal">',
 			);
 			H.push("<tr>");
@@ -123,8 +136,8 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 				"<div>",
 				this.nbElevesVisibles + " ",
 				this.nbElevesVisibles > 1
-					? GTraductions.getValeur("resultatsClasses.eleves")
-					: GTraductions.getValeur("resultatsClasses.eleve"),
+					? ObjetTraduction_1.GTraductions.getValeur("resultatsClasses.eleves")
+					: ObjetTraduction_1.GTraductions.getValeur("resultatsClasses.eleve"),
 				"</div>",
 				"</td>",
 			);
@@ -132,14 +145,14 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 				H.push(
 					'<td class="tableAbsenceTitreClasses">',
 					"<div>",
-					GTraductions.getValeur("Classe"),
+					ObjetTraduction_1.GTraductions.getValeur("Classe"),
 					"</div>",
 					"</td>",
 				);
 			}
 			H.push(
 				"<td  ",
-				GObjetWAI.composeRole(EGenreRole.Presentation),
+				ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_2.EGenreRole.Presentation),
 				">",
 				'<div id="' +
 					this.ScrollV.getIdZone(2) +
@@ -148,7 +161,11 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 				'.ScrollV.actualiser(2)">' + this.composeTitres() + "</div>",
 				"</td>",
 			);
-			H.push("<td  ", GObjetWAI.composeRole(EGenreRole.Presentation), "></td>");
+			H.push(
+				"<td  ",
+				ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_2.EGenreRole.Presentation),
+				"></td>",
+			);
 			H.push("</tr>");
 			if (this.ajoutEleveAutorise) {
 				H.push('<tr class="trAbsenceAjoutEleve">');
@@ -159,18 +176,18 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 					'<div class="NoWrap AvecMain" style="margin-right:1px;',
 					this.nbElevesVisibles > 0 ? "" : "border-bottom-width:1px;",
 					'" ie-event="click->surEventAjoutEleve">',
-					'<i class="icon_plus_cercle liste-creation"></i>',
+					'<i class="icon_plus_cercle liste-creation" role="presentation"></i>',
 					'<div class="Italique PetitEspaceGauche InlineBlock AlignementMilieuVertical" style="',
-					GStyle.composeCouleurTexte(GCouleur.texteListeCreation),
+					ObjetStyle_1.GStyle.composeCouleurTexte(GCouleur.texteListeCreation),
 					'">',
-					GTraductions.getValeur("AbsenceVS.ajouterUnEleve"),
+					ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.ajouterUnEleve"),
 					"</div>",
 					"</div>",
 					"</td>",
 				);
 				H.push(
 					"<td  ",
-					GObjetWAI.composeRole(EGenreRole.Presentation),
+					ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_2.EGenreRole.Presentation),
 					"></td>",
 				);
 				H.push("</tr>");
@@ -178,7 +195,7 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 			H.push("<tr >");
 			H.push(
 				"<td  ",
-				GObjetWAI.composeRole(EGenreRole.Presentation),
+				ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_2.EGenreRole.Presentation),
 				'><div id="' +
 					this.ScrollV.getIdZone(0) +
 					'" style="overflow:hidden;height:1px;" onscroll="',
@@ -192,7 +209,7 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 			if (this.avecColonneClasse) {
 				H.push(
 					"<td  ",
-					GObjetWAI.composeRole(EGenreRole.Presentation),
+					ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_2.EGenreRole.Presentation),
 					">",
 					'<div id="' +
 						this.ScrollV.getIdZone(4) +
@@ -206,11 +223,11 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 					'<div class="ligneBas"></div>',
 					"</div>",
 				);
-				H.push(_composeListeClasses.call(this), "</div></td>");
+				H.push(this._composeListeClasses(), "</div></td>");
 			}
 			H.push(
 				"<td   ",
-				GObjetWAI.composeRole(EGenreRole.Presentation),
+				ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_2.EGenreRole.Presentation),
 				'><div id="' +
 					this.ScrollV.getIdZone(1) +
 					'" style="height:1px;overflow:hidden;" onscroll="',
@@ -287,20 +304,22 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 			this.avecColonneClasse = false;
 			for (let i = 0; i < this.listeEleves.count(); i++) {
 				lEleve = this.listeEleves.get(i);
-				if (lEleve.getEtat() !== EGenreEtat.Suppression) {
+				if (lEleve.getEtat() !== Enumere_Etat_1.EGenreEtat.Suppression) {
 					for (let j = 0; j < this.listeColonnes.count(); j++) {
 						lColonne = this.listeColonnes.get(j);
 						if (i === 0 && lColonne.Actif) {
 							this.nbColonnesActives++;
 						}
 						if (
-							(lColonne.Genre !== EGenreRessource.Punition &&
+							(lColonne.Genre !==
+								Enumere_Ressource_1.EGenreRessource.Punition &&
 								this.moteur.aUneAbsence(
 									lEleve.Numero,
 									lColonne.Genre,
 									lColonne.Numero,
 								) >= 0) ||
-							(lColonne.Genre === EGenreRessource.Punition &&
+							(lColonne.Genre ===
+								Enumere_Ressource_1.EGenreRessource.Punition &&
 								this.moteur.aUnePunition(lEleve.Numero) >= 0)
 						) {
 							lEleve.listeColonnes.getElementParNumeroEtGenre(
@@ -323,7 +342,7 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 		this.nbElevesVisibles =
 			this.listeEleves
 				.getListeElements((D) => {
-					return D.getEtat() !== EGenreEtat.Suppression;
+					return D.getEtat() !== Enumere_Etat_1.EGenreEtat.Suppression;
 				})
 				.count() - 1;
 		$("#" + this.Nom.escapeJQ()).ieHtml(
@@ -332,7 +351,7 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 		);
 		for (let i = 0; i < this.listeEleves.count() - 1; i++) {
 			lEleve = this.listeEleves.get(i);
-			if (lEleve.getEtat() !== EGenreEtat.Suppression) {
+			if (lEleve.getEtat() !== Enumere_Etat_1.EGenreEtat.Suppression) {
 				for (let j = 0; j < this.listeColonnes.count(); j++) {
 					lColonne = this.listeColonnes.get(j);
 					let lClassSup = "";
@@ -342,16 +361,16 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 					let lContenu = this.moteur.getAffichageGenre(
 						lEleve.Numero,
 						lColonne.Genre,
-						lColonne.Genre === EGenreRessource.Observation
+						lColonne.Genre === Enumere_Ressource_1.EGenreRessource.Observation
 							? lColonne.Numero
 							: null,
-						lColonne.Genre === EGenreRessource.Observation
+						lColonne.Genre === Enumere_Ressource_1.EGenreRessource.Observation
 							? lColonne.genreObservation
 							: null,
 					);
 					if (
 						lContenu !== "" &&
-						lColonne.Genre === EGenreRessource.Absence &&
+						lColonne.Genre === Enumere_Ressource_1.EGenreRessource.Absence &&
 						!lEleve.estDetache
 					) {
 						lClassSup =
@@ -359,7 +378,8 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 								this.moteur.aUneAbsence(
 									lEleve.Numero,
 									lColonne.Genre,
-									lColonne.Genre === EGenreRessource.Observation
+									lColonne.Genre ===
+										Enumere_Ressource_1.EGenreRessource.Observation
 										? lColonne.Numero
 										: null,
 								),
@@ -369,13 +389,13 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 					} else if (
 						lContenu === "" &&
 						lEleve.hintDispense &&
-						lColonne.Genre === EGenreRessource.Absence
+						lColonne.Genre === Enumere_Ressource_1.EGenreRessource.Absence
 					) {
 						lContenu =
 							'<span class="InlineBlock Texte10" title="' +
 							lEleve.hintDispense +
 							'">' +
-							GTraductions.getValeur("Absence.DispenseAbbr") +
+							ObjetTraduction_1.GTraductions.getValeur("Absence.DispenseAbbr") +
 							"</span>";
 					}
 					$(
@@ -386,7 +406,8 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 							"_" +
 							lColonne.Genre +
 							"_abs" +
-							(lColonne.Genre === EGenreRessource.Observation
+							(lColonne.Genre ===
+							Enumere_Ressource_1.EGenreRessource.Observation
 								? "_" + lColonne.Numero
 								: "") +
 							'"]',
@@ -462,12 +483,6 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 			)
 			.on(
 				"click",
-				"td > div > i.tableAbsenceEleveValorisation",
-				{ aObjet: this },
-				this.clicValorisation,
-			)
-			.on(
-				"click",
 				"td > div > i." + this.classAbsencesConvoc,
 				{ aObjet: this },
 				this.clicAbsencesNonReglees,
@@ -521,14 +536,18 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 				.parent("div")
 				.parent("td")
 				.attr("id")
-				.match(new RegExp(`_${ObjetElement.regexCaptureNumero}_lib$`))[1],
+				.match(
+					new RegExp(`_${ObjetElement_1.ObjetElement.regexCaptureNumero}_lib$`),
+				)[1],
 			lEleve = event.data.aObjet.listeEleves.getElementParNumero(lNumEleve);
 		event.data.aObjet.callback.appel(
-			EGenreEvenementSaisieAbsence.SelectionEleve,
+			Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.SelectionEleve,
 			{ eleve: lEleve },
 		);
 		event.data.aObjet.callback.appel(
-			EGenreEvenementSaisieAbsence.AbsencesNonReglees,
+			Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.AbsencesNonReglees,
 			{ eleve: lEleve },
 		);
 	}
@@ -537,7 +556,9 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 			.parent("div")
 			.parent("td")
 			.attr("id")
-			.match(new RegExp(`_${ObjetElement.regexCaptureNumero}_lib$`))[1];
+			.match(
+				new RegExp(`_${ObjetElement_1.ObjetElement.regexCaptureNumero}_lib$`),
+			)[1];
 		event.data.aObjet.ouvrirDocumentsEleve(lNumEleve);
 	}
 	ouvrirDocumentsEleve(aNumeroEleve) {
@@ -553,13 +574,14 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 	}
 	selectionEleve(event) {
 		const lNumEleve = this.id.match(
-			new RegExp(`_${ObjetElement.regexCaptureNumero}_lib$`),
+			new RegExp(`_${ObjetElement_1.ObjetElement.regexCaptureNumero}_lib$`),
 		)[1];
 		const lEleve = event.data.aObjet.listeEleves.getElementParNumero(lNumEleve);
 		event.data.aObjet.placerCadreSelectionEleve(this);
 		event.data.aObjet.numeroEleveSelectionne = lNumEleve;
 		event.data.aObjet.callback.appel(
-			EGenreEvenementSaisieAbsence.SelectionEleve,
+			Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.SelectionEleve,
 			{ eleve: lEleve },
 		);
 	}
@@ -582,7 +604,7 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 	}
 	clicRecap(event) {
 		const lRegExp = new RegExp(
-			`_${ObjetElement.regexCaptureNumero}_([0-9]+)(?=_recap)`,
+			`_${ObjetElement_1.ObjetElement.regexCaptureNumero}_([0-9]+)(?=_recap)`,
 		);
 		const lNumEleve = $(this)
 			.children("div:first-child")
@@ -591,15 +613,19 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 		const lGenreCol = parseInt(
 			$(this).children("div:first-child").attr("id").match(lRegExp)[2],
 		);
-		this._gestionFocus_apresFenetreRecapId = $(this)
+		event.data.aObjet._gestionFocus_apresFenetreRecapId = $(this)
 			.children("div:first-child")
 			.attr("id");
 		let lNumObs = null;
-		if (lGenreCol === EGenreRessource.Observation) {
+		if (lGenreCol === Enumere_Ressource_1.EGenreRessource.Observation) {
 			lNumObs = $(this)
 				.children("div:first-child")
 				.attr("id")
-				.match(new RegExp(`recap_${ObjetElement.regexCaptureNumero}$`))[1];
+				.match(
+					new RegExp(
+						`recap_${ObjetElement_1.ObjetElement.regexCaptureNumero}$`,
+					),
+				)[1];
 		}
 		event.data.aObjet.placerCadreSelectionEleve(
 			$(
@@ -612,20 +638,21 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 		);
 		if ($(this).hasClass("tableAbsenceAvecRecap")) {
 			event.data.aObjet.callback.appel(
-				EGenreEvenementSaisieAbsence.RecapitulatifEleve,
+				Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+					.RecapitulatifEleve,
 				{
 					numeroEleve: lNumEleve,
 					genreAbsence: lGenreCol,
 					numeroObservation: lNumObs,
 					_gestionFocus_apresFenetreRecapId:
-						this._gestionFocus_apresFenetreRecapId,
+						event.data.aObjet._gestionFocus_apresFenetreRecapId,
 				},
 			);
 		}
 	}
 	clicDroitRecap(event) {
 		const lRegExp = new RegExp(
-			`_${ObjetElement.regexCaptureNumero}_([0-9]+)(?=_recap)`,
+			`_${ObjetElement_1.ObjetElement.regexCaptureNumero}_([0-9]+)(?=_recap)`,
 		);
 		const lNumEleve = $(this)
 			.children("div:first-child")
@@ -663,10 +690,10 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 		);
 	}
 	fermerHint() {
-		ObjetHint.stop();
+		ObjetHint_1.ObjetHint.stop();
 	}
 	survolCellule(event) {
-		const lStrRegExp = `_${ObjetElement.regexCaptureNumero}_([0-9]+)`;
+		const lStrRegExp = `_${ObjetElement_1.ObjetElement.regexCaptureNumero}_([0-9]+)`;
 		const lNumEleve = $(this)
 			.children("div:first-child")
 			.attr("id")
@@ -693,11 +720,15 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 				if (lNbRecap > 1) {
 					aData.push(lNbRecap);
 				}
-				if (lGenreCol === EGenreRessource.Observation) {
+				if (lGenreCol === Enumere_Ressource_1.EGenreRessource.Observation) {
 					lNumObs = $(this)
 						.children("div:first-child")
 						.attr("id")
-						.match(new RegExp(`recap_${ObjetElement.regexCaptureNumero}$`))[1];
+						.match(
+							new RegExp(
+								`recap_${ObjetElement_1.ObjetElement.regexCaptureNumero}$`,
+							),
+						)[1];
 					aData.push(
 						$(
 							'table.tableAbsenceTitre div[id*="col_' +
@@ -711,7 +742,8 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 				if (
 					!lNumObs ||
 					event.data.aObjet.listeColonnes.getElementParNumero(lNumObs)
-						.genreObservation !== TypeGenreObservationVS.OVS_DefautCarnet
+						.genreObservation !==
+						TypeGenreObservationVS_1.TypeGenreObservationVS.OVS_DefautCarnet
 				) {
 					aData.push(
 						event.data.aObjet.cours &&
@@ -722,28 +754,37 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 					);
 				}
 				aData.push(
-					GDate.formatDate(event.data.aObjet.dateDecompte, "%JJ/%MM/%AAAA"),
+					ObjetDate_1.GDate.formatDate(
+						event.data.aObjet.dateDecompte,
+						"%JJ/%MM/%AAAA",
+					),
 				);
 				const lEstSortiePeda = event.data.aObjet.cours.estSortiePedagogique;
 				if (
 					!lNumObs ||
 					event.data.aObjet.listeColonnes.getElementParNumero(lNumObs)
-						.genreObservation !== TypeGenreObservationVS.OVS_DefautCarnet
+						.genreObservation !==
+						TypeGenreObservationVS_1.TypeGenreObservationVS.OVS_DefautCarnet
 				) {
 					const lCleTraduction = _construitCleTraduction(
 						lGenreCol,
 						lNbRecap > 1,
 					);
 					if (lEstSortiePeda) {
-						lTexte = GTraductions.getValeur("Absence.CoursManques");
+						lTexte = ObjetTraduction_1.GTraductions.getValeur(
+							"Absence.CoursManques",
+						);
 					} else if (lCleTraduction) {
-						lTexte += GTraductions.getValeur(lCleTraduction, aData);
+						lTexte += ObjetTraduction_1.GTraductions.getValeur(
+							lCleTraduction,
+							aData,
+						);
 					}
 				} else {
 					if (lNbRecap === 1) {
 						aData.unshift("1");
 					}
-					lTexte += GTraductions.getValeur(
+					lTexte += ObjetTraduction_1.GTraductions.getValeur(
 						"Absence.DefautDeCarnetCours",
 						aData,
 					);
@@ -758,27 +799,29 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 					.match(new RegExp(`${lStrRegExp}(?=_abs)`))[2],
 			);
 			lNumObs = null;
-			if (lGenreCol === EGenreRessource.Observation) {
+			if (lGenreCol === Enumere_Ressource_1.EGenreRessource.Observation) {
 				lNumObs = $(this)
 					.children("div:first-child")
 					.attr("id")
-					.match(new RegExp(`abs_${ObjetElement.regexCaptureNumero}`))[1];
+					.match(
+						new RegExp(`abs_${ObjetElement_1.ObjetElement.regexCaptureNumero}`),
+					)[1];
 			}
 			lEleve = event.data.aObjet.listeEleves.getElementParNumero(lNumEleve);
 			if (lEleve.estExclu) {
 				lTexte = lEleve.messageExclu;
 			} else if (
 				![
-					EGenreRessource.RepasAPreparer,
-					EGenreRessource.Absence,
-					EGenreRessource.Retard,
+					Enumere_Ressource_1.EGenreRessource.RepasAPreparer,
+					Enumere_Ressource_1.EGenreRessource.Absence,
+					Enumere_Ressource_1.EGenreRessource.Retard,
 				].includes(lGenreCol) &&
 				$(this).children("div").html() === ""
 			) {
 				return false;
 			} else {
 				switch (lGenreCol) {
-					case EGenreRessource.Observation: {
+					case Enumere_Ressource_1.EGenreRessource.Observation: {
 						lNumAbs = event.data.aObjet.moteur.aUneAbsence(
 							lNumEleve,
 							lGenreCol,
@@ -794,13 +837,15 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 							event.data.aObjet.listeColonnes.getElementParNumero(lNumObs);
 						if (
 							lColonne.genreObservation !==
-							TypeGenreObservationVS.OVS_DefautCarnet
+							TypeGenreObservationVS_1.TypeGenreObservationVS.OVS_DefautCarnet
 						) {
 							if (
 								lAbsence.Professeur.Genre !==
-									GEtatUtilisateur.Identification.getMembre().Genre ||
+									event.data.aObjet.etatUtilScoEspace.Identification.getMembre()
+										.Genre ||
 								lAbsence.Professeur.Numero !==
-									GEtatUtilisateur.Identification.getMembre().Numero
+									event.data.aObjet.etatUtilScoEspace.Identification.getMembre()
+										.Numero
 							) {
 								lTexte +=
 									(lTexte !== "" ? "<br />" : "") + lAbsence.Professeur.Libelle;
@@ -810,17 +855,19 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 								lTexte += "<br />";
 							}
 							if (
-								lAbsence.Professeur.Genre === EGenreRessource.Enseignant &&
+								lAbsence.Professeur.Genre ===
+									Enumere_Ressource_1.EGenreRessource.Enseignant &&
 								lAbsence.Professeur.Libelle
 							) {
-								lTexte += GTraductions.getValeur(
+								lTexte += ObjetTraduction_1.GTraductions.getValeur(
 									"AbsenceVS.EvtSaisiParProfesseur",
 									[lColonne.getLibelle(), lAbsence.Professeur.Libelle],
 								);
 							} else if (
-								lAbsence.Professeur.Genre !== EGenreRessource.Enseignant
+								lAbsence.Professeur.Genre !==
+								Enumere_Ressource_1.EGenreRessource.Enseignant
 							) {
-								lTexte += GTraductions.getValeur(
+								lTexte += ObjetTraduction_1.GTraductions.getValeur(
 									"AbsenceVS.EvtSaisiParVieScolaire",
 									[lColonne.getLibelle()],
 								);
@@ -831,7 +878,7 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 						}
 						break;
 					}
-					case EGenreRessource.Dispense: {
+					case Enumere_Ressource_1.EGenreRessource.Dispense: {
 						const lIndiceDemandeDispense =
 							event.data.aObjet.moteur.aUneDemandeDeDispense(lNumEleve);
 						const lDemandeDispense = lEleve.listeDemandesDispense.get(
@@ -839,7 +886,9 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 						);
 						if (lDemandeDispense) {
 							if (lDemandeDispense.hint) {
-								lTexte = GChaine.replaceRCToHTML(lDemandeDispense.hint);
+								lTexte = ObjetChaine_1.GChaine.replaceRCToHTML(
+									lDemandeDispense.hint,
+								);
 								break;
 							} else {
 								return false;
@@ -858,24 +907,30 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 						lTexte += event.data.aObjet.formatTradAbs(lAbsence, lGenreCol);
 						if (!lAbsence.estEnseignementALaMaison) {
 							lTexte +=
-								GEtatUtilisateur.GenreEspace === EGenreEspace.Professeur &&
+								event.data.aObjet.etatUtilScoEspace.GenreEspace ===
+									Enumere_Espace_1.EGenreEspace.Professeur &&
 								lAbsence.estSurCours
 									? lAbsence.Professeur.existeNumero()
 										? lAbsence.Professeur.Numero ===
-											GEtatUtilisateur.Identification.getMembre().Numero
+											event.data.aObjet.etatUtilScoEspace.Identification.getMembre()
+												.Numero
 											? ""
 											: "<br />" + lAbsence.Professeur.Libelle
 										: "<br />" +
-											GTraductions.getValeur("AbsenceVS.DispenseSaisieParVS")
+											ObjetTraduction_1.GTraductions.getValeur(
+												"AbsenceVS.DispenseSaisieParVS",
+											)
 									: !lAbsence.estSurCours
 										? "<br />" +
-											GTraductions.getValeur("AbsenceVS.DispenseLongue")
+											ObjetTraduction_1.GTraductions.getValeur(
+												"AbsenceVS.DispenseLongue",
+											)
 										: "";
 						}
 						if (lAbsence.presenceOblig && !lAbsence.estEnseignementALaMaison) {
 							lTexte +=
 								"<br />" +
-								GTraductions.getValeur(
+								ObjetTraduction_1.GTraductions.getValeur(
 									"Absence.DispensePresenceEnCoursObligatoire",
 								);
 						}
@@ -887,13 +942,15 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 						}
 						break;
 					}
-					case EGenreRessource.Absence:
+					case Enumere_Ressource_1.EGenreRessource.Absence:
 						if (
 							event.data.aObjet.cours &&
 							event.data.aObjet.cours.estAppelVerrouille
 						) {
 							lTexte +=
-								GTraductions.getValeur("AbsenceVS.HintVerrouille") + "<br />";
+								ObjetTraduction_1.GTraductions.getValeur(
+									"AbsenceVS.HintVerrouille",
+								) + "<br />";
 						}
 						lNumAbs = event.data.aObjet.moteur.aUneAbsence(
 							lNumEleve,
@@ -906,14 +963,19 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 							if (!lAbs.EstOuverte) {
 								lTexte += event.data.aObjet.formatTradAbs(lAbs, lGenreCol);
 							} else {
-								lTexte += GTraductions.getValeur("Absence.AbsenceOuverte", [
-									GDate.formatDate(
-										GDate.placeAnnuelleEnDate(lAbs.PlaceDebut),
-										"%JJ/%MM/%AAAA %hh" +
-											GTraductions.getValeur("Absence.TimeSep") +
-											"%mm",
-									),
-								]);
+								lTexte += ObjetTraduction_1.GTraductions.getValeur(
+									"Absence.AbsenceOuverte",
+									[
+										ObjetDate_1.GDate.formatDate(
+											ObjetDate_1.GDate.placeAnnuelleEnDate(lAbs.PlaceDebut),
+											"%JJ/%MM/%AAAA %hh" +
+												ObjetTraduction_1.GTraductions.getValeur(
+													"Absence.TimeSep",
+												) +
+												"%mm",
+										),
+									],
+								);
 							}
 							if (lAbs.listeMotifs.count() > 0) {
 								lMotif = lAbs.listeMotifs.get(0);
@@ -924,28 +986,37 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 							lTexte +=
 								"<br />" +
 								(lAbs.reglee
-									? GTraductions.getValeur("AbsenceVS.RegleeAdmin")
-									: GTraductions.getValeur("AbsenceVS.NonRegleeAdmin"));
+									? ObjetTraduction_1.GTraductions.getValeur(
+											"AbsenceVS.RegleeAdmin",
+										)
+									: ObjetTraduction_1.GTraductions.getValeur(
+											"AbsenceVS.NonRegleeAdmin",
+										));
 							lTexte +=
-								GEtatUtilisateur.GenreEspace === EGenreEspace.Professeur
+								event.data.aObjet.etatUtilScoEspace.GenreEspace ===
+								Enumere_Espace_1.EGenreEspace.Professeur
 									? lAbs.Professeur.existeNumero()
 										? lAbs.Professeur.Numero ===
-											GEtatUtilisateur.Identification.getMembre().Numero
+											event.data.aObjet.etatUtilScoEspace.Identification.getMembre()
+												.Numero
 											? ""
 											: "<br />" +
-												GTraductions.getValeur(
+												ObjetTraduction_1.GTraductions.getValeur(
 													lAbs.Professeur.getGenre() ===
-														TypeGenreIndividuAuteur.GIA_Professeur
+														TypeGenreIndividuAuteur_1.TypeGenreIndividuAuteur
+															.GIA_Professeur
 														? "AbsenceVS.AbsenceSaisieParProf"
 														: "AbsenceVS.AbsenceSaisieParPers",
 													[lAbs.Professeur.Libelle],
 												)
 										: "<br />" +
-											GTraductions.getValeur("AbsenceVS.AbsenceSaisieParVS")
+											ObjetTraduction_1.GTraductions.getValeur(
+												"AbsenceVS.AbsenceSaisieParVS",
+											)
 									: "";
 						}
 						break;
-					case EGenreRessource.Infirmerie:
+					case Enumere_Ressource_1.EGenreRessource.Infirmerie:
 						lNumAbs = event.data.aObjet.moteur.aUneAbsence(
 							lNumEleve,
 							lGenreCol,
@@ -953,27 +1024,40 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 						lAbs = event.data.aObjet.listeEleves
 							.getElementParNumero(lNumEleve)
 							.ListeAbsences.get(lNumAbs);
-						lTexte += GTraductions.getValeur("Absence.PsgInfirmerie", [
-							GDate.formatDate(
-								lAbs.DateDebut,
-								"%hh" + GTraductions.getValeur("Absence.TimeSep") + "%mm",
-							),
-							GDate.formatDate(
-								lAbs.DateFin,
-								"%hh" + GTraductions.getValeur("Absence.TimeSep") + "%mm",
-							),
-						]);
+						lTexte += ObjetTraduction_1.GTraductions.getValeur(
+							"Absence.PsgInfirmerie",
+							[
+								ObjetDate_1.GDate.formatDate(
+									lAbs.DateDebut,
+									"%hh" +
+										ObjetTraduction_1.GTraductions.getValeur(
+											"Absence.TimeSep",
+										) +
+										"%mm",
+								),
+								ObjetDate_1.GDate.formatDate(
+									lAbs.DateFin,
+									"%hh" +
+										ObjetTraduction_1.GTraductions.getValeur(
+											"Absence.TimeSep",
+										) +
+										"%mm",
+								),
+							],
+						);
 						if (!!lAbs.Accompagnateur && lAbs.Accompagnateur.existeNumero()) {
 							lTexte +=
 								"<br />" +
-								GTraductions.getValeur("AbsenceVS.AccompagnePar") +
+								ObjetTraduction_1.GTraductions.getValeur(
+									"AbsenceVS.AccompagnePar",
+								) +
 								" " +
 								event.data.aObjet.listeEleves
 									.getElementParNumero(lAbs.Accompagnateur.getNumero())
 									.getLibelle();
 						}
 						break;
-					case EGenreRessource.Punition:
+					case Enumere_Ressource_1.EGenreRessource.Punition:
 						lNumAbs = event.data.aObjet.moteur.aUnePunition(lNumEleve);
 						lAbs = event.data.aObjet.listeEleves
 							.getElementParNumero(lNumEleve)
@@ -982,22 +1066,32 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 							(lAbs.naturePunition ? lAbs.naturePunition.Libelle : "") +
 							(lAbs.duree && lAbs.duree > 0
 								? " - " +
-									GDate.formatDate(
+									ObjetDate_1.GDate.formatDate(
 										new Date(0, 0, 0, 0, lAbs.duree),
-										"%hh" + GTraductions.getValeur("Absence.TimeSep") + "%mm",
+										"%hh" +
+											ObjetTraduction_1.GTraductions.getValeur(
+												"Absence.TimeSep",
+											) +
+											"%mm",
 									)
 								: "");
 						lTexte += lAbs.dateProgrammation
 							? "<br />" +
-								GTraductions.getValeur("Absence.PunitionProgrammeeLe", [
-									GDate.formatDate(lAbs.dateProgrammation, "%JJ/%MM/%AAAA"),
-								])
+								ObjetTraduction_1.GTraductions.getValeur(
+									"Absence.PunitionProgrammeeLe",
+									[
+										ObjetDate_1.GDate.formatDate(
+											lAbs.dateProgrammation,
+											"%JJ/%MM/%AAAA",
+										),
+									],
+								)
 							: "";
 						lTexte += lAbs.listeMotifs.count()
 							? "<br />" + lAbs.listeMotifs.getTableauLibelles().join("<br />")
 							: "";
 						break;
-					case EGenreRessource.Exclusion:
+					case Enumere_Ressource_1.EGenreRessource.Exclusion:
 						lNumAbs = event.data.aObjet.moteur.aUneAbsence(
 							lNumEleve,
 							lGenreCol,
@@ -1007,24 +1101,30 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 							.ListeAbsences.get(lNumAbs);
 						lTexte += lAbs.listeMotifs.count()
 							? lAbs.listeMotifs.getTableauLibelles().join("<br />")
-							: GTraductions.getValeur("AbsenceVS.MotifNonPrecise");
+							: ObjetTraduction_1.GTraductions.getValeur(
+									"AbsenceVS.MotifNonPrecise",
+								);
 						if (!!lAbs.Accompagnateur && lAbs.Accompagnateur.existeNumero()) {
 							lTexte +=
 								"<br />" +
-								GTraductions.getValeur("AbsenceVS.AccompagnePar") +
+								ObjetTraduction_1.GTraductions.getValeur(
+									"AbsenceVS.AccompagnePar",
+								) +
 								" " +
 								event.data.aObjet.listeEleves
 									.getElementParNumero(lAbs.Accompagnateur.getNumero())
 									.getLibelle();
 						}
 						break;
-					case EGenreRessource.Retard:
+					case Enumere_Ressource_1.EGenreRessource.Retard:
 						if (
 							event.data.aObjet.cours &&
 							event.data.aObjet.cours.estAppelVerrouille
 						) {
 							lTexte +=
-								GTraductions.getValeur("AbsenceVS.HintVerrouille") + "<br />";
+								ObjetTraduction_1.GTraductions.getValeur(
+									"AbsenceVS.HintVerrouille",
+								) + "<br />";
 						}
 						lNumAbs = event.data.aObjet.moteur.aUneAbsence(
 							lNumEleve,
@@ -1034,22 +1134,27 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 							lAbs = event.data.aObjet.listeEleves
 								.getElementParNumero(lNumEleve)
 								.ListeAbsences.get(lNumAbs);
-							lTexte += GTraductions.getValeur("Absence.RetardDe", [
-								$(this).text().replace("'", ""),
-							]);
+							lTexte += ObjetTraduction_1.GTraductions.getValeur(
+								"Absence.RetardDe",
+								[$(this).text().replace("'", "")],
+							);
 							lTexte +=
-								GEtatUtilisateur.GenreEspace === EGenreEspace.Professeur
+								event.data.aObjet.etatUtilScoEspace.GenreEspace ===
+								Enumere_Espace_1.EGenreEspace.Professeur
 									? lAbs.Professeur.existeNumero()
 										? lAbs.Professeur.Numero ===
-											GEtatUtilisateur.Identification.getMembre().Numero
+											event.data.aObjet.etatUtilScoEspace.Identification.getMembre()
+												.Numero
 											? ""
 											: "<br />" + lAbs.Professeur.Libelle
 										: "<br />" +
-											GTraductions.getValeur("AbsenceVS.RetardSaisiParVS")
+											ObjetTraduction_1.GTraductions.getValeur(
+												"AbsenceVS.RetardSaisiParVS",
+											)
 									: "";
 							if (
-								GApplication.droits.get(
-									TypeDroits.absences.avecSaisieMotifRetard,
+								event.data.aObjet.appScoEspace.droits.get(
+									ObjetDroitsPN_1.TypeDroits.absences.avecSaisieMotifRetard,
 								) &&
 								lAbs.listeMotifs.count() > 0
 							) {
@@ -1060,7 +1165,7 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 							}
 						}
 						break;
-					case EGenreRessource.RepasAPreparer:
+					case Enumere_Ressource_1.EGenreRessource.RepasAPreparer:
 						lNumAbs = event.data.aObjet.moteur.aUneAbsence(
 							lNumEleve,
 							lGenreCol,
@@ -1068,8 +1173,10 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 						lAbs = event.data.aObjet.listeEleves
 							.getElementParNumero(lNumEleve)
 							.ListeAbsences.get(lNumAbs);
-						if (lAbs.type === TTypePreparerRepas.prNonDP) {
-							lTexte += GTraductions.getValeur("AbsenceVS.HintEleveNonDP");
+						if (lAbs.type === TTypePreparerRepas_1.TTypePreparerRepas.prNonDP) {
+							lTexte += ObjetTraduction_1.GTraductions.getValeur(
+								"AbsenceVS.HintEleveNonDP",
+							);
 						}
 						break;
 					default:
@@ -1077,7 +1184,7 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 				}
 			}
 		}
-		ObjetHint.start(lTexte);
+		ObjetHint_1.ObjetHint.start(lTexte);
 		if (GNavigateur.isTactile) {
 			setTimeout(event.data.aObjet.fermerHint.bind(event.data.aObjet), 4000);
 		}
@@ -1111,13 +1218,13 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 				.match(lRegexNumEleveNumColAbs)[2],
 		);
 		const lDispense =
-			lGenreCol === EGenreRessource.Dispense
+			lGenreCol === Enumere_Ressource_1.EGenreRessource.Dispense
 				? event.data.aObjet.moteur.getDispense(lNumEleve, true)
 				: null;
 		const lCelluleInactive = $(this).hasClass(
 			"tableAbsenceCorpsCelluleInactive",
 		);
-		const lDemandeDispense = EGenreRessource.Dispense
+		const lDemandeDispense = Enumere_Ressource_1.EGenreRessource.Dispense
 			? event.data.aObjet.moteur.getDemandeDeDispense(lNumEleve)
 			: false;
 		if (!!lDispense) {
@@ -1135,10 +1242,10 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 				(!lDispense || !lDispense.publierPJFeuilleDAppel) &&
 				!$(this).hasClass("tableAbsenceCorpsCelluleAvecMenu")) ||
 			($(this).hasClass("tableAbsenceCorpsCelluleInactiveVieSco") &&
-				((lGenreCol === EGenreRessource.Retard &&
+				((lGenreCol === Enumere_Ressource_1.EGenreRessource.Retard &&
 					!event.data.aObjet.options.suppressionRetardDeVS) ||
 					!event.data.aObjet.options.suppressionAbsenceDeVS)) ||
-			lGenreCol === EGenreRessource.RepasAPreparer ||
+			lGenreCol === Enumere_Ressource_1.EGenreRessource.RepasAPreparer ||
 			lDemandeDispense
 		) {
 			return false;
@@ -1147,11 +1254,13 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 			let lObservation = null,
 				lPunitionExclusion = null,
 				lElementObservation = null;
-			if (lGenreCol === EGenreRessource.Observation) {
+			if (lGenreCol === Enumere_Ressource_1.EGenreRessource.Observation) {
 				lObservation = $(this)
 					.children("div:first-child")
 					.attr("id")
-					.match(new RegExp(`abs_${ObjetElement.regexCaptureNumero}`))[1];
+					.match(
+						new RegExp(`abs_${ObjetElement_1.ObjetElement.regexCaptureNumero}`),
+					)[1];
 				const lNumeroAbsence = event.data.aObjet.moteur.aUneAbsence(
 					lNumEleve,
 					lGenreCol,
@@ -1163,14 +1272,14 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 						.ListeAbsences.get(lNumeroAbsence);
 				}
 			} else if (
-				lGenreCol === EGenreRessource.Punition ||
-				lGenreCol === EGenreRessource.Exclusion
+				lGenreCol === Enumere_Ressource_1.EGenreRessource.Punition ||
+				lGenreCol === Enumere_Ressource_1.EGenreRessource.Exclusion
 			) {
 				const lNumeroPunition = event.data.aObjet.moteur.aUneAbsence(
 					lNumEleve,
 					lGenreCol,
 				);
-				if (lGenreCol === EGenreRessource.Punition) {
+				if (lGenreCol === Enumere_Ressource_1.EGenreRessource.Punition) {
 					lPunitionExclusion = event.data.aObjet.listeEleves
 						.getElementParNumero(lNumEleve)
 						.listePunitions.get(lNumeroPunition);
@@ -1185,13 +1294,17 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 				$(this).children("div:first-child").width() / 2,
 				0,
 			);
-			event.data.aObjet.callback.appel(EGenreEvenementSaisieAbsence.ClicDroit, {
-				genreAbsence: lGenreCol,
-				numeroObservation: lObservation,
-				observation: lElementObservation,
-				punitionExclusion: lPunitionExclusion,
-				dispense: lDispense,
-			});
+			event.data.aObjet.callback.appel(
+				Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+					.ClicDroit,
+				{
+					genreAbsence: lGenreCol,
+					numeroObservation: lObservation,
+					observation: lElementObservation,
+					punitionExclusion: lPunitionExclusion,
+					dispense: lDispense,
+				},
+			);
 		}
 		return false;
 	}
@@ -1220,7 +1333,7 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 			$(this).data("title", false);
 			return false;
 		}
-		ObjetHint.start($(this).data("title"));
+		ObjetHint_1.ObjetHint.start($(this).data("title"));
 		return false;
 	}
 	clicDevoirARendre(event) {
@@ -1231,7 +1344,8 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 				.attr("id")
 				.match(lRegexNumEleveLib)[1];
 			event.data.aObjet.callback.appel(
-				EGenreEvenementSaisieAbsence.ChangerEtatDevoir,
+				Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+					.ChangerEtatDevoir,
 				{ numeroEleve: lNumEleve },
 			);
 		}
@@ -1242,9 +1356,11 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 			.parent("td")
 			.attr("id")
 			.match(lRegexNumEleveLib)[1];
-		event.data.aObjet.callback.appel(EGenreEvenementSaisieAbsence.MemosEleves, {
-			numeroEleve: lNumEleve,
-		});
+		event.data.aObjet.callback.appel(
+			Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.MemosEleves,
+			{ numeroEleve: lNumEleve },
+		);
 	}
 	clicValorisation(event) {
 		const lNumEleve = $(this)
@@ -1253,7 +1369,8 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 			.attr("id")
 			.match(lRegexNumEleveLib)[1];
 		event.data.aObjet.callback.appel(
-			EGenreEvenementSaisieAbsence.ValorisationsEleve,
+			Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.ValorisationsEleve,
 			{ numeroEleve: lNumEleve },
 		);
 	}
@@ -1271,7 +1388,8 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 				'_lib"]',
 		).click();
 		event.data.aObjet.callback.appel(
-			EGenreEvenementSaisieAbsence.ContextMenuEleve,
+			Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.ContextMenuEleve,
 			{ numeroEleve: lNumEleve },
 		);
 	}
@@ -1316,13 +1434,15 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 				'"]',
 		);
 		if (!lColonne) {
-			lEleve.listeColonnes.addElement(new ObjetElement("", aNumObs, aGenreAbs));
+			lEleve.listeColonnes.addElement(
+				new ObjetElement_1.ObjetElement("", aNumObs, aGenreAbs),
+			);
 			lColonne = lEleve.listeColonnes.getElementParNumeroEtGenre(
 				aNumObs,
 				aGenreAbs,
 			);
 			lColonne.nombre = 0;
-			if (aGenreAbs === EGenreRessource.Observation) {
+			if (aGenreAbs === Enumere_Ressource_1.EGenreRessource.Observation) {
 				lColonne.genreObservation = lJqCellAbs
 					.attr("id")
 					.match(/_([0-9a-z]+)$/)[1];
@@ -1333,7 +1453,7 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 				aNumEleve,
 				aGenreAbs,
 				aNumObs,
-				lColonne.Genre === EGenreRessource.Observation
+				lColonne.Genre === Enumere_Ressource_1.EGenreRessource.Observation
 					? lColonne.genreObservation
 					: null,
 			),
@@ -1345,7 +1465,7 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 		lJqCellAbs.attr("aria-checked", lChecked);
 		this.setCellulesInactives(aNumEleve);
 		if (
-			aGenreAbs === EGenreRessource.Retard &&
+			aGenreAbs === Enumere_Ressource_1.EGenreRessource.Retard &&
 			this.moteur.avecSaisieMotif(aGenreAbs) &&
 			this.moteur.aUneAbsence(aNumEleve, aGenreAbs, aNumObs) >= 0
 		) {
@@ -1382,16 +1502,17 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 		if (lJqContainer.children("input, textarea").length > 0) {
 			return false;
 		}
-		let lJqZoneTexte = "";
+		let lJqZoneTexte;
 		const lAbsence = this.callback.appel(
-			EGenreEvenementSaisieAbsence.RecupererAbsence,
+			Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.RecupererAbsence,
 			{
 				genreAbsence: aGenreAbs,
 				genreObservation: aNumObs,
 				place: this.placeSaisieDebut,
 			},
 		);
-		if (aGenreAbs === EGenreRessource.Retard) {
+		if (aGenreAbs === Enumere_Ressource_1.EGenreRessource.Retard) {
 			lJqZoneTexte = $('<input type="text" />');
 			lJqZoneTexte
 				.val(lAbsence.Duree)
@@ -1403,11 +1524,12 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 					height: lJqContainer.height(),
 				});
 		} else if (
-			aGenreAbs === EGenreRessource.Observation ||
-			aGenreAbs === EGenreRessource.Dispense
+			aGenreAbs === Enumere_Ressource_1.EGenreRessource.Observation ||
+			aGenreAbs === Enumere_Ressource_1.EGenreRessource.Dispense
 		) {
 			this.callback.appel(
-				EGenreEvenementSaisieAbsence.OuvrirEditionObservation,
+				Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+					.OuvrirEditionObservation,
 				{
 					absence: lAbsence,
 					genreObservation: aNumObs,
@@ -1446,15 +1568,19 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 	ouvrirFenetreAbsencesParPas(aNumEleve, aGenreAbs) {
 		const lAbsence = this.moteur.aUneAbsence(aNumEleve, aGenreAbs);
 		if (lAbsence > -1) {
-			this.callback.appel(EGenreEvenementSaisieAbsence.OuvrirAbsenceParPas, {
-				absence: this.listeEleves
-					.getElementParNumero(aNumEleve)
-					.ListeAbsences.get(lAbsence),
-			});
+			this.callback.appel(
+				Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+					.OuvrirAbsenceParPas,
+				{
+					absence: this.listeEleves
+						.getElementParNumero(aNumEleve)
+						.ListeAbsences.get(lAbsence),
+				},
+			);
 		}
 		return false;
 	}
-	keydownZoneTexte() {
+	keydownZoneTexte(event) {
 		const lGenreCol = parseInt(
 			$(this)
 				.parent()
@@ -1462,7 +1588,7 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 				.attr("id")
 				.match(lRegexNumEleveNumColAbs)[2],
 		);
-		if (lGenreCol === EGenreRessource.Retard) {
+		if (lGenreCol === Enumere_Ressource_1.EGenreRessource.Retard) {
 			$(this)
 				.delay(1)
 				.queue(function () {
@@ -1495,20 +1621,23 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 				.match(lRegexNumEleveNumColAbs)[2],
 		);
 		let lNumObs = null;
-		if (lGenreCol === EGenreRessource.Observation) {
+		if (lGenreCol === Enumere_Ressource_1.EGenreRessource.Observation) {
 			lNumObs = $(this)
 				.parent()
 				.children("div:first-child")
 				.attr("id")
 				.match(
-					new RegExp(`abs_${ObjetElement.regexCaptureNumero}_([0-9]+)$`),
+					new RegExp(
+						`abs_${ObjetElement_1.ObjetElement.regexCaptureNumero}_([0-9]+)$`,
+					),
 				)[1];
 		}
 		if ($(this).val().trim() === "") {
 			event.data.aObjet.callback.appel(
-				EGenreEvenementSaisieAbsence.ActionSurAbsence,
+				Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+					.ActionSurAbsence,
 				{
-					typeSaisie: EGenreEtat.Suppression,
+					typeSaisie: Enumere_Etat_1.EGenreEtat.Suppression,
 					typeAbsence: lGenreCol,
 					typeObservation: lNumObs,
 					numeroEleve: event.data.aObjet.numeroEleveSelectionne,
@@ -1518,14 +1647,20 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 			);
 		} else {
 			const lAbsence = event.data.aObjet.callback.appel(
-				EGenreEvenementSaisieAbsence.RecupererAbsence,
+				Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+					.RecupererAbsence,
 				{
 					genreAbsence: lGenreCol,
 					genreObservation: lNumObs,
 					place: event.data.aObjet.placeSaisieDebut,
 				},
 			);
-			if (lGenreCol === EGenreRessource.Retard) {
+			if (
+				lGenreCol === Enumere_Ressource_1.EGenreRessource.Retard &&
+				ObjetRequetePageSaisieAbsences_1.ObjetRequetePageSaisieAbsences.isObjetElementRetard(
+					lAbsence,
+				)
+			) {
 				const lDuree = parseInt(
 					$(this)
 						.val()
@@ -1535,15 +1670,18 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 				if (lAbsence.Duree !== lDuree && lDuree <= 240) {
 					lAbsence.Duree = lDuree;
 					$(this).val(lDuree > 0 ? lDuree : "");
-					lAbsence.setEtat(EGenreEtat.Modification);
+					lAbsence.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 					event.data.aObjet.setEtatSaisie(true);
 				}
 			} else if (
-				lGenreCol === EGenreRessource.Observation &&
+				lGenreCol === Enumere_Ressource_1.EGenreRessource.Observation &&
+				ObjetRequetePageSaisieAbsences_1.ObjetRequetePageSaisieAbsences.isObjetElementObservationIndividuEleve(
+					lAbsence,
+				) &&
 				lAbsence.commentaire !== $(this).val()
 			) {
 				lAbsence.commentaire = $(this).val().trim();
-				lAbsence.setEtat(EGenreEtat.Modification);
+				lAbsence.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 				event.data.aObjet.setEtatSaisie(true);
 			}
 		}
@@ -1551,7 +1689,7 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 		event.data.aObjet.retourAbsence(lNumEleve, lGenreCol, lNumObs);
 		$(this).remove();
 		if (event.data.aObjet._gestionFocus_apresFenetreCelluleId) {
-			GHtml.setFocus(
+			ObjetHtml_1.GHtml.setFocus(
 				event.data.aObjet._gestionFocus_apresFenetreCelluleId,
 				true,
 				true,
@@ -1572,12 +1710,16 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 		const H = [];
 		H.push(
 			"<table  ",
-			GObjetWAI.composeRole(EGenreRole.Presentation),
+			ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_2.EGenreRole.Presentation),
 			' class="tableAbsenceTitre" id="',
 			this.ScrollV.getIdContenu(2),
 			'">',
 		);
-		H.push("<tr ", GObjetWAI.composeRole(EGenreRole.Row), ">");
+		H.push(
+			"<tr ",
+			ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_2.EGenreRole.Row),
+			">",
+		);
 		for (let i = 0; i < this.listeColonnes.count(); i++) {
 			const lColonne = this.listeColonnes.get(i);
 			if (!lColonne.Actif) {
@@ -1587,25 +1729,29 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 				this.Nom +
 				"_col_" +
 				lColonne.Genre +
-				(lColonne.Genre === EGenreRessource.Observation
+				(lColonne.Genre === Enumere_Ressource_1.EGenreRessource.Observation
 					? "_" + lColonne.Numero
 					: "");
 			let lStyleWidthColonne = null;
-			if (lColonne.Genre === EGenreRessource.Observation) {
+			if (lColonne.Genre === Enumere_Ressource_1.EGenreRessource.Observation) {
 				if (
 					lColonne.genreObservation ===
-						TypeGenreObservationVS.OVS_ObservationParent ||
-					lColonne.genreObservation === TypeGenreObservationVS.OVS_Encouragement
+						TypeGenreObservationVS_1.TypeGenreObservationVS
+							.OVS_ObservationParent ||
+					lColonne.genreObservation ===
+						TypeGenreObservationVS_1.TypeGenreObservationVS.OVS_Encouragement
 				) {
 					lStyleWidthColonne =
 						this.largeurColonneObsParent + this.largeurColonne + 1 + "px";
 				}
-			} else if (lColonne.Genre === EGenreRessource.RepasAPreparer) {
+			} else if (
+				lColonne.Genre === Enumere_Ressource_1.EGenreRessource.RepasAPreparer
+			) {
 				lStyleWidthColonne = this.largeurColonne + "px";
 			}
 			H.push(
-				`<th ${GObjetWAI.composeRole(EGenreRole.Presentation)}>`,
-				`<div ${GObjetWAI.composeRole(EGenreRole.Columnheader)} title="${this.getTitleColonne(lColonne)}" id="${lIdColonne}" ${lStyleWidthColonne ? `style="width:${lStyleWidthColonne};"` : ""}>`,
+				`<th ${ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_2.EGenreRole.Presentation)}>`,
+				`<div ${ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_2.EGenreRole.Columnheader)} title="${this.getTitleColonne(lColonne)}" id="${lIdColonne}" ${lStyleWidthColonne ? `style="width:${lStyleWidthColonne};"` : ""}>`,
 				`<span>${lColonne.Libelle}</span>`,
 				`<i role="presentation" class="${this.getImageColonne(lColonne)}"></i>`,
 				"</div>",
@@ -1618,18 +1764,18 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 	}
 	getImageColonne(aColonne) {
 		switch (aColonne.Genre) {
-			case EGenreRessource.Infirmerie:
+			case Enumere_Ressource_1.EGenreRessource.Infirmerie:
 				return "icon_info_sondage_publier mix-icon_question i-blue i-small";
-			case EGenreRessource.Punition:
-			case EGenreRessource.Exclusion:
-				return GApplication.droits.get(
-					TypeDroits.punition.avecPublicationPunitions,
+			case Enumere_Ressource_1.EGenreRessource.Punition:
+			case Enumere_Ressource_1.EGenreRessource.Exclusion:
+				return this.appScoEspace.droits.get(
+					ObjetDroitsPN_1.TypeDroits.punition.avecPublicationPunitions,
 				)
 					? "icon_info_sondage_publier mix-icon_question i-blue i-small"
 					: "icon_info_sondage_publier mix-icon_remove i-red i-small";
-			case EGenreRessource.RepasAPreparer:
+			case Enumere_Ressource_1.EGenreRessource.RepasAPreparer:
 				return "icon_info_sondage_publier mix-icon_remove i-red i-small";
-			case EGenreRessource.Observation:
+			case Enumere_Ressource_1.EGenreRessource.Observation:
 				return aColonne.publiable
 					? "icon_info_sondage_publier mix-icon_question i-blue i-small"
 					: "icon_info_sondage_publier mix-icon_remove i-red i-small";
@@ -1639,56 +1785,75 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 	}
 	getTitleColonne(aColonne) {
 		switch (aColonne.Genre) {
-			case EGenreRessource.Infirmerie:
-				return GTraductions.getValeur(
+			case Enumere_Ressource_1.EGenreRessource.Infirmerie:
+				return ObjetTraduction_1.GTraductions.getValeur(
 					"AbsenceVS.Hint.PublieParentsElevesParInfirmerie",
 				);
-			case EGenreRessource.Observation:
+			case Enumere_Ressource_1.EGenreRessource.Observation:
 				if (!aColonne.publiable) {
-					return GTraductions.getValeur("AbsenceVS.Hint.NonPublie");
+					return ObjetTraduction_1.GTraductions.getValeur(
+						"AbsenceVS.Hint.NonPublie",
+					);
 				}
 				switch (aColonne.genreObservation) {
-					case TypeGenreObservationVS.OVS_ObservationParent:
-					case TypeGenreObservationVS.OVS_Encouragement:
-					case TypeGenreObservationVS.OVS_DefautCarnet:
-					case TypeGenreObservationVS.OVS_Autres:
-						return GTraductions.getValeur(
+					case TypeGenreObservationVS_1.TypeGenreObservationVS
+						.OVS_ObservationParent:
+					case TypeGenreObservationVS_1.TypeGenreObservationVS
+						.OVS_Encouragement:
+					case TypeGenreObservationVS_1.TypeGenreObservationVS.OVS_DefautCarnet:
+					case TypeGenreObservationVS_1.TypeGenreObservationVS.OVS_Autres:
+						return ObjetTraduction_1.GTraductions.getValeur(
 							"AbsenceVS.Hint.PublieParentsElevesParProfesseur",
 						);
 				}
 				return "";
-			case EGenreRessource.Exclusion:
-			case EGenreRessource.Punition:
-				return GApplication.droits.get(
-					TypeDroits.punition.avecPublicationPunitions,
+			case Enumere_Ressource_1.EGenreRessource.Exclusion:
+			case Enumere_Ressource_1.EGenreRessource.Punition:
+				return this.appScoEspace.droits.get(
+					ObjetDroitsPN_1.TypeDroits.punition.avecPublicationPunitions,
 				)
-					? GTraductions.getValeur("AbsenceVS.Hint.PublieParentsParProfesseur")
-					: GTraductions.getValeur("AbsenceVS.Hint.NonPublie");
-			case EGenreRessource.RepasAPreparer:
-				if (this.genreRepas === TypeGenreRepasEleve.RepasMidi) {
-					return GTraductions.getValeur(
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"AbsenceVS.Hint.PublieParentsParProfesseur",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"AbsenceVS.Hint.NonPublie",
+						);
+			case Enumere_Ressource_1.EGenreRessource.RepasAPreparer:
+				if (
+					this.genreRepas ===
+					TypeGenreRepasEleve_1.TypeGenreRepasEleve.RepasMidi
+				) {
+					return ObjetTraduction_1.GTraductions.getValeur(
 						"AbsenceVS.InscrireDesinscrireRepasMidi",
 					);
 				} else {
 					return (
-						GTraductions.getValeur("AbsenceVS.InscrireDesinscrireRepasSoir") +
+						ObjetTraduction_1.GTraductions.getValeur(
+							"AbsenceVS.InscrireDesinscrireRepasSoir",
+						) +
 						" " +
 						"(" +
-						GTraductions.getValeur("AbsenceVS.Hint.NonPublie") +
+						ObjetTraduction_1.GTraductions.getValeur(
+							"AbsenceVS.Hint.NonPublie",
+						) +
 						")"
 					);
 				}
 		}
-		return GTraductions.getValeur("AbsenceVS.Hint.PublieParentsEleves");
+		return ObjetTraduction_1.GTraductions.getValeur(
+			"AbsenceVS.Hint.PublieParentsEleves",
+		);
 	}
 	composeListeEleves() {
 		const H = [];
 		this.enseignantCourant = this.callback.appel(
-			EGenreEvenementSaisieAbsence.RecupererInfo,
+			Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.RecupererInfo,
 			{ enseignantCourant: true },
 		);
 		this.cours = this.callback.appel(
-			EGenreEvenementSaisieAbsence.RecupererInfo,
+			Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.RecupererInfo,
 			{ cours: true },
 		);
 		H.push(
@@ -1697,7 +1862,10 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 			'">',
 		);
 		for (let i = 0; i < this.listeEleves.count() - 1; i++) {
-			if (this.listeEleves.get(i).getEtat() !== EGenreEtat.Suppression) {
+			if (
+				this.listeEleves.get(i).getEtat() !==
+				Enumere_Etat_1.EGenreEtat.Suppression
+			) {
 				let lEleve = this.listeEleves.get(i);
 				let lClassEleve = "",
 					lTitleEleve = "";
@@ -1710,8 +1878,10 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 				}
 				if (!lEleve.estAttendu) {
 					lClassEleve = "tableAbsenceEleveEstAttendu";
-					lTitleEleve = GChaine.format(
-						GTraductions.getValeur("AbsenceVS.AutoriseSortirEtab"),
+					lTitleEleve = ObjetChaine_1.GChaine.format(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"AbsenceVS.AutoriseSortirEtab",
+						),
 						[lLibelleEleve],
 					);
 				}
@@ -1726,12 +1896,14 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 					lTitleEleve =
 						(lTitleEleve ? lTitleEleve + "\n" : "") + lEleve.strStatut;
 				}
-				H.push(`<tr ${GObjetWAI.composeRole(EGenreRole.Row)}>`);
 				H.push(
-					`<td ${GObjetWAI.composeRole(EGenreRole.Rowheader)} id="${this.Nom}_${lEleve.Numero}_lib" tabindex="${i === 0 ? 0 : -1}" onkeyup="${this.Nom}.surKeyUp(id,${i},-1,1);" ${lClassEleve ? `class="${lClassEleve}"` : ""}>`,
+					`<tr ${ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_2.EGenreRole.Row)}>`,
 				);
 				H.push(
-					`<div class="as-th-wrapper moteurAbsences" style="${GStyle.composeWidth(this.largeurColonneEleve - 10)}">`,
+					`<td ${ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_2.EGenreRole.Rowheader)} id="${this.Nom}_${lEleve.Numero}_lib" tabindex="${i === 0 ? 0 : -1}" onkeyup="${this.Nom}.surKeyUp(id,${i},-1,1);" ${lClassEleve ? `class="${lClassEleve}"` : ""}>`,
+				);
+				H.push(
+					`<div class="as-th-wrapper moteurAbsences" style="${ObjetStyle_1.GStyle.composeWidth(this.largeurColonneEleve - 10)}">`,
 				);
 				H.push(
 					`<span class="libelle ${lEleve.estSorti ? ` Barre ` : ""}  ${lEleve.eleveAjouteAuCours ? ` Italique` : ""}" ie-ellipsis title="${lTitleEleve}">${lLibelleEleve} ${lEleve.sortiePeda ? `*` : ""}</span>`,
@@ -1741,7 +1913,10 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 				lListeIcones.parcourir((aElement) => {
 					if (aElement.actif) {
 						let lMaClass = aElement.class;
-						if (aElement.getGenre() === TypeIconeFeuilleDAppel.devoir) {
+						if (
+							aElement.getGenre() ===
+							TypeIconeFeuilleDAppel_1.TypeIconeFeuilleDAppel.devoir
+						) {
 							lMaClass += " tableAbsenceEleveDevARendre";
 							if (
 								lEleve.devoirARendre.demandeur.getNumero() === 0 ||
@@ -1754,12 +1929,14 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 							}
 						} else if (
 							aElement.getGenre() ===
-							TypeIconeFeuilleDAppel.absenceConvocationAuto
+							TypeIconeFeuilleDAppel_1.TypeIconeFeuilleDAppel
+								.absenceConvocationAuto
 						) {
 							if (
 								aElement.avecEvenement &&
-								GApplication.droits.get(
-									TypeDroits.fonctionnalites.saisieEtendueAbsenceDepuisAppel,
+								this.appScoEspace.droits.get(
+									ObjetDroitsPN_1.TypeDroits.fonctionnalites
+										.saisieEtendueAbsenceDepuisAppel,
 								)
 							) {
 								lMaClass += ` AvecMain ${this.classAbsencesConvoc}`;
@@ -1768,24 +1945,33 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 							}
 						} else if (
 							aElement.getGenre() ===
-							TypeIconeFeuilleDAppel.projetAccompagnement
+							TypeIconeFeuilleDAppel_1.TypeIconeFeuilleDAppel
+								.projetAccompagnement
 						) {
 							if (aElement.avecEvenement) {
 								lMaClass += ` AvecMain ${this.classAbsencesProjetsAccompagnement}`;
 							} else {
 								lMaClass += " SansMain";
 							}
-						} else if (aElement.getGenre() === TypeIconeFeuilleDAppel.memo) {
+						} else if (
+							aElement.getGenre() ===
+							TypeIconeFeuilleDAppel_1.TypeIconeFeuilleDAppel.memo
+						) {
 							lMaClass += " tableAbsenceEleveMemo";
 						} else if (
-							aElement.getGenre() === TypeIconeFeuilleDAppel.valorisation
+							aElement.getGenre() ===
+							TypeIconeFeuilleDAppel_1.TypeIconeFeuilleDAppel.valorisation
 						) {
 							lMaClass += " tableAbsenceEleveValorisation";
 						} else {
 							lMaClass += " SansMain";
 						}
 						H.push(
-							`<i role="img" class="icon-feuilledappel ${lMaClass}" title="${aElement.getLibelle()}" aria-label="${aElement.getLibelle()}"></i>`,
+							IE.jsx.str("i", {
+								role: "img",
+								class: "icon-feuilledappel " + lMaClass,
+								"ie-tooltiplabel": aElement.getLibelle(),
+							}),
 						);
 					}
 				});
@@ -1799,13 +1985,16 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 		const H = [];
 		H.push(
 			"<table ",
-			GObjetWAI.composeRole(EGenreRole.Presentation),
+			ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_2.EGenreRole.Presentation),
 			' class="tableAbsenceCorps" id="',
 			this.ScrollV.getIdContenu(1),
 			'">',
 		);
 		for (let i = 0; i < this.listeEleves.count() - 1; i++) {
-			if (this.listeEleves.get(i).getEtat() !== EGenreEtat.Suppression) {
+			if (
+				this.listeEleves.get(i).getEtat() !==
+				Enumere_Etat_1.EGenreEtat.Suppression
+			) {
 				const lEleve = this.listeEleves.get(i);
 				H.push("<tr>");
 				for (let j = 0; j < this.listeColonnes.count(); j++) {
@@ -1816,36 +2005,48 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 					const lContenuRecap = this.getNombreGenre(
 						lEleve.Numero,
 						lColonne.Genre,
-						lColonne.Genre === EGenreRessource.Observation
+						lColonne.Genre === Enumere_Ressource_1.EGenreRessource.Observation
 							? lColonne.Numero
 							: null,
 					);
 					const lPourParents =
-						lColonne.Genre !== EGenreRessource.Observation ||
-						(lColonne.Genre === EGenreRessource.Observation &&
+						lColonne.Genre !==
+							Enumere_Ressource_1.EGenreRessource.Observation ||
+						(lColonne.Genre ===
+							Enumere_Ressource_1.EGenreRessource.Observation &&
 							(lColonne.genreObservation ===
-								TypeGenreObservationVS.OVS_ObservationParent ||
+								TypeGenreObservationVS_1.TypeGenreObservationVS
+									.OVS_ObservationParent ||
 								lColonne.genreObservation ===
-									TypeGenreObservationVS.OVS_Encouragement));
+									TypeGenreObservationVS_1.TypeGenreObservationVS
+										.OVS_Encouragement));
 					const lCocheAbs =
-						this.moteur.aUneAbsence(lEleve.Numero, EGenreRessource.Absence) >= 0
+						this.moteur.aUneAbsence(
+							lEleve.Numero,
+							Enumere_Ressource_1.EGenreRessource.Absence,
+						) >= 0
 							? "true"
 							: "false";
 					let lTitle;
-					if (lColonne.Genre === EGenreRessource.Absence && lEleve.estDetache) {
-						lTitle = GChaine.toTitle(lEleve.hintDetache);
+					if (
+						lColonne.Genre === Enumere_Ressource_1.EGenreRessource.Absence &&
+						lEleve.estDetache
+					) {
+						lTitle = ObjetChaine_1.GChaine.toTitle(lEleve.hintDetache);
 					}
 					H.push(
 						'<td  class="tableAbsenceCorpsCellule">',
 						"<div ",
-						GObjetWAI.composeAttribut({
-							genre: EGenreAttribut.live,
+						ObjetWAI_1.GObjetWAI.composeAttribut({
+							genre: ObjetWAI_3.EGenreAttribut.live,
 							valeur: "assertive",
 						}),
 						" ",
-						lColonne.Genre === EGenreRessource.Retard
-							? GObjetWAI.composeRole(EGenreRole.Textbox)
-							: GObjetWAI.composeRole(EGenreRole.Checkbox),
+						lColonne.Genre === Enumere_Ressource_1.EGenreRessource.Retard
+							? ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_2.EGenreRole.Textbox)
+							: ObjetWAI_1.GObjetWAI.composeRole(
+									ObjetWAI_2.EGenreRole.Checkbox,
+								),
 						' id="',
 						this.moteur.composeIdCell(
 							this.Nom,
@@ -1856,27 +2057,32 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 						),
 						'"',
 						' class="',
-						lColonne.Genre !== EGenreRessource.Retard &&
+						lColonne.Genre !== Enumere_Ressource_1.EGenreRessource.Retard &&
 							lColonne.genreObservation !==
-								TypeGenreObservationVS.OVS_ObservationParent &&
+								TypeGenreObservationVS_1.TypeGenreObservationVS
+									.OVS_ObservationParent &&
 							lColonne.genreObservation !==
-								TypeGenreObservationVS.OVS_Encouragement
+								TypeGenreObservationVS_1.TypeGenreObservationVS
+									.OVS_Encouragement
 							? "tableAbsenceCorpsCelluleCoche"
-							: lColonne.Genre === EGenreRessource.Retard
+							: lColonne.Genre === Enumere_Ressource_1.EGenreRessource.Retard
 								? "tableAbsenceCorpsCelluleRetard"
 								: "tableAbsenceCorpsCelluleTexte",
 						'"',
-						lColonne.Genre === EGenreRessource.Observation &&
+						lColonne.Genre ===
+							Enumere_Ressource_1.EGenreRessource.Observation &&
 							(lColonne.genreObservation ===
-								TypeGenreObservationVS.OVS_ObservationParent ||
+								TypeGenreObservationVS_1.TypeGenreObservationVS
+									.OVS_ObservationParent ||
 								lColonne.genreObservation ===
-									TypeGenreObservationVS.OVS_Encouragement)
+									TypeGenreObservationVS_1.TypeGenreObservationVS
+										.OVS_Encouragement)
 							? ' style="width:' + this.largeurColonneObsParent + 'px;"'
 							: "",
 						' tabindex="-1" ',
 						!!lTitle ? `title="${lTitle}"` : "",
-						GObjetWAI.composeAttribut({
-							genre: EGenreAttribut.label,
+						ObjetWAI_1.GObjetWAI.composeAttribut({
+							genre: ObjetWAI_3.EGenreAttribut.label,
 							valeur:
 								lColonne.Libelle +
 								" " +
@@ -1885,8 +2091,8 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 								(lPourParents ? this.getTitleColonne(lColonne) : ""),
 						}),
 						" ",
-						GObjetWAI.composeAttribut({
-							genre: EGenreAttribut.checked,
+						ObjetWAI_1.GObjetWAI.composeAttribut({
+							genre: ObjetWAI_3.EGenreAttribut.checked,
 							valeur: lCocheAbs,
 						}),
 						' onkeyup="',
@@ -1897,34 +2103,43 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 						j,
 						",",
 						lColonne.genreObservation !==
-							TypeGenreObservationVS.OVS_ObservationParent &&
+							TypeGenreObservationVS_1.TypeGenreObservationVS
+								.OVS_ObservationParent &&
 							lColonne.genreObservation !==
-								TypeGenreObservationVS.OVS_Encouragement
+								TypeGenreObservationVS_1.TypeGenreObservationVS
+									.OVS_Encouragement
 							? 2
 							: 0,
 						');"',
 						"></div>",
 						"</td>",
 					);
-					if (lColonne.Genre !== EGenreRessource.RepasAPreparer) {
+					if (
+						lColonne.Genre !==
+						Enumere_Ressource_1.EGenreRessource.RepasAPreparer
+					) {
 						H.push(
 							'<td  class="tableAbsenceRecap',
-							GApplication.droits.get(
-								TypeDroits.absences.avecAccesAuxEvenementsAutresCours,
+							this.appScoEspace.droits.get(
+								ObjetDroitsPN_1.TypeDroits.absences
+									.avecAccesAuxEvenementsAutresCours,
 							) || lContenuRecap !== ""
 								? " tableAbsenceAvecRecap"
 								: "",
 							lEleve.aDesObservationsNonLues &&
-								lColonne.Genre === EGenreRessource.Observation &&
+								lColonne.Genre ===
+									Enumere_Ressource_1.EGenreRessource.Observation &&
 								(lColonne.genreObservation ===
-									TypeGenreObservationVS.OVS_ObservationParent ||
+									TypeGenreObservationVS_1.TypeGenreObservationVS
+										.OVS_ObservationParent ||
 									lColonne.genreObservation ===
-										TypeGenreObservationVS.OVS_Encouragement)
+										TypeGenreObservationVS_1.TypeGenreObservationVS
+											.OVS_Encouragement)
 								? " tableAbsenceObsNonLue"
 								: "",
 							'">',
 							"<div ",
-							GObjetWAI.composeRole(EGenreRole.Button),
+							ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_2.EGenreRole.Button),
 							' id="',
 							this.Nom,
 							"_cel_",
@@ -1932,7 +2147,7 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 							"_",
 							lColonne.Genre,
 							"_recap",
-							lColonne.Genre === EGenreRessource.Observation
+							lColonne.Genre === Enumere_Ressource_1.EGenreRessource.Observation
 								? "_" + lColonne.Numero
 								: "",
 							'" tabindex="-1"',
@@ -1943,10 +2158,12 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 							",",
 							j,
 							',1);" ',
-							GObjetWAI.composeAttribut({
-								genre: EGenreAttribut.label,
+							ObjetWAI_1.GObjetWAI.composeAttribut({
+								genre: ObjetWAI_3.EGenreAttribut.label,
 								valeur:
-									GTraductions.getValeur("AbsenceVS.Recapitulatif") +
+									ObjetTraduction_1.GTraductions.getValeur(
+										"AbsenceVS.Recapitulatif",
+									) +
 									" " +
 									lColonne.Libelle +
 									" " +
@@ -1984,7 +2201,7 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 						"_" +
 						lColonne.Genre +
 						"_abs" +
-						(lColonne.Genre === EGenreRessource.Observation
+						(lColonne.Genre === Enumere_Ressource_1.EGenreRessource.Observation
 							? "_" + lColonne.Numero + "_" + lColonne.genreObservation
 							: "");
 				} else if (aGenre === 1) {
@@ -1995,7 +2212,7 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 						"_" +
 						lColonne.Genre +
 						"_recap" +
-						(lColonne.Genre === EGenreRessource.Observation
+						(lColonne.Genre === Enumere_Ressource_1.EGenreRessource.Observation
 							? "_" + lColonne.Numero
 							: "");
 				}
@@ -2040,7 +2257,8 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 							"_" +
 							lColonne.Genre +
 							"_abs" +
-							(lColonne.Genre === EGenreRessource.Observation
+							(lColonne.Genre ===
+							Enumere_Ressource_1.EGenreRessource.Observation
 								? "_" + lColonne.Numero + "_" + lColonne.genreObservation
 								: "");
 					} else {
@@ -2051,7 +2269,8 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 							"_" +
 							lColonne.Genre +
 							"_recap" +
-							(lColonne.Genre === EGenreRessource.Observation
+							(lColonne.Genre ===
+							Enumere_Ressource_1.EGenreRessource.Observation
 								? "_" + lColonne.Numero
 								: "");
 					}
@@ -2075,7 +2294,8 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 							"_" +
 							lColonne.Genre +
 							"_abs" +
-							(lColonne.Genre === EGenreRessource.Observation
+							(lColonne.Genre ===
+							Enumere_Ressource_1.EGenreRessource.Observation
 								? "_" + lColonne.Numero + "_" + lColonne.genreObservation
 								: "");
 					} else {
@@ -2086,7 +2306,8 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 							"_" +
 							lColonne.Genre +
 							"_recap" +
-							(lColonne.Genre === EGenreRessource.Observation
+							(lColonne.Genre ===
+							Enumere_Ressource_1.EGenreRessource.Observation
 								? "_" + lColonne.Numero
 								: "");
 					}
@@ -2107,7 +2328,7 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 						"_" +
 						lColonne.Genre +
 						"_abs" +
-						(lColonne.Genre === EGenreRessource.Observation
+						(lColonne.Genre === Enumere_Ressource_1.EGenreRessource.Observation
 							? "_" + lColonne.Numero + "_" + lColonne.genreObservation
 							: "");
 					this._gestionFocus_apresFenetreCelluleId = lId;
@@ -2119,7 +2340,7 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 						"_" +
 						lColonne.Genre +
 						"_recap" +
-						(lColonne.Genre === EGenreRessource.Observation
+						(lColonne.Genre === Enumere_Ressource_1.EGenreRessource.Observation
 							? "_" + lColonne.Numero
 							: "");
 					this._gestionFocus_apresFenetreRecapId = lId;
@@ -2154,7 +2375,7 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 		for (const x in lTabInactif) {
 			const lObjX = lTabInactif[x];
 			let lGenreColonne, lNumeroColonne;
-			if (MethodesObjet.isNumeric(lObjX)) {
+			if (MethodesObjet_1.MethodesObjet.isNumber(lObjX)) {
 				lGenreColonne = lObjX;
 			} else {
 				lGenreColonne = lObjX.genre || lObjX;
@@ -2171,9 +2392,17 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 						'_abs"]',
 				)
 					.not(
-						'div[id$="_' + TypeGenreObservationVS.OVS_ObservationParent + '"]',
+						'div[id$="_' +
+							TypeGenreObservationVS_1.TypeGenreObservationVS
+								.OVS_ObservationParent +
+							'"]',
 					)
-					.not('div[id$="_' + TypeGenreObservationVS.OVS_Encouragement + '"]')
+					.not(
+						'div[id$="_' +
+							TypeGenreObservationVS_1.TypeGenreObservationVS
+								.OVS_Encouragement +
+							'"]',
+					)
 					.parent()
 					.addClass("tableAbsenceCorpsCelluleInactive");
 			} else {
@@ -2201,7 +2430,7 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 					' table.tableAbsenceCorps div[id*="_' +
 					aNumEleve +
 					"_" +
-					EGenreRessource.Absence +
+					Enumere_Ressource_1.EGenreRessource.Absence +
 					'_abs"]',
 			)
 				.parent()
@@ -2212,7 +2441,7 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 					' table.tableAbsenceCorps div[id*="_' +
 					aNumEleve +
 					"_" +
-					EGenreRessource.Retard +
+					Enumere_Ressource_1.EGenreRessource.Retard +
 					'_abs"]',
 			)
 				.parent()
@@ -2225,10 +2454,14 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 					' table.tableAbsenceCorps div[id*="_' +
 					aNumEleve +
 					"_" +
-					EGenreRessource.Observation +
+					Enumere_Ressource_1.EGenreRessource.Observation +
 					'_abs"]',
 			)
-				.filter('div[id$="_' + TypeGenreObservationVS.OVS_DefautCarnet + '"]')
+				.filter(
+					'div[id$="_' +
+						TypeGenreObservationVS_1.TypeGenreObservationVS.OVS_DefautCarnet +
+						'"]',
+				)
 				.parent()
 				.addClass("tableAbsenceCorpsCelluleInactive");
 		}
@@ -2241,23 +2474,24 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 	}
 	getNombreGenre(aNumEleve, aGenreAbs, aNumAbs) {
 		function _getEtatDifferentDeCreation(aElement) {
-			return aElement.getEtat() !== EGenreEtat.Creation;
+			return aElement.getEtat() !== Enumere_Etat_1.EGenreEtat.Creation;
 		}
 		function _getListeObsDifferentDeCreation(aElement) {
 			return (
 				aElement.existe() &&
-				aElement.Genre === EGenreRessource.ObservationProfesseurEleve &&
+				aElement.Genre ===
+					Enumere_Ressource_1.EGenreRessource.ObservationProfesseurEleve &&
 				aElement.observation.Numero === aNumAbs &&
-				aElement.getEtat() !== EGenreEtat.Creation
+				aElement.getEtat() !== Enumere_Etat_1.EGenreEtat.Creation
 			);
 		}
 		function _getNombreDeListe(aParam) {
-			let lNombre = MethodesObjet.isNan(aParam.absence.nombre)
+			let lNombre = MethodesObjet_1.MethodesObjet.isNan(aParam.absence.nombre)
 				? 0
 				: aParam.absence.nombre;
 			if (
 				lNombre > 0 &&
-				aParam.absence.Genre === EGenreRessource.Dispense &&
+				aParam.absence.Genre === Enumere_Ressource_1.EGenreRessource.Dispense &&
 				aParam.eleve.estEnseignementALaMaison
 			) {
 				lNombre--;
@@ -2273,15 +2507,15 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 		for (let i = 0; i < lEleve.listeColonnes.count(); i++) {
 			const lAbsence = lEleve.listeColonnes.get(i);
 			if (
-				(aGenreAbs === EGenreRessource.Observation &&
+				(aGenreAbs === Enumere_Ressource_1.EGenreRessource.Observation &&
 					lAbsence.Numero === aNumAbs) ||
-				(aGenreAbs !== EGenreRessource.Observation &&
+				(aGenreAbs !== Enumere_Ressource_1.EGenreRessource.Observation &&
 					lAbsence.Genre === aGenreAbs)
 			) {
 				if (
-					aGenreAbs !== EGenreRessource.Observation &&
-					aGenreAbs !== EGenreRessource.Punition &&
-					aGenreAbs !== EGenreRessource.Dispense
+					aGenreAbs !== Enumere_Ressource_1.EGenreRessource.Observation &&
+					aGenreAbs !== Enumere_Ressource_1.EGenreRessource.Punition &&
+					aGenreAbs !== Enumere_Ressource_1.EGenreRessource.Dispense
 				) {
 					lNbAbs = _getNombreDeListe({
 						liste: lEleve.ListeAbsences,
@@ -2290,14 +2524,16 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 						filtre: _getEtatDifferentDeCreation,
 						genreRecherche: aGenreAbs,
 					});
-				} else if (aGenreAbs === EGenreRessource.Punition) {
+				} else if (aGenreAbs === Enumere_Ressource_1.EGenreRessource.Punition) {
 					lNbAbs = _getNombreDeListe({
 						liste: lEleve.listePunitions,
 						absence: lAbsence,
 						eleve: lEleve,
 						filtre: _getEtatDifferentDeCreation,
 					});
-				} else if (aGenreAbs === EGenreRessource.Observation) {
+				} else if (
+					aGenreAbs === Enumere_Ressource_1.EGenreRessource.Observation
+				) {
 					lNbAbs = _getNombreDeListe({
 						liste: lEleve.ListeAbsences,
 						absence: lAbsence,
@@ -2305,7 +2541,7 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 						filtre: _getListeObsDifferentDeCreation,
 						tousLesElements: true,
 					});
-				} else if (aGenreAbs === EGenreRessource.Dispense) {
+				} else if (aGenreAbs === Enumere_Ressource_1.EGenreRessource.Dispense) {
 					lNbAbs = _getNombreDeListe({
 						liste: lEleve.ListeDispenses,
 						absence: lAbsence,
@@ -2318,10 +2554,10 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 		return lNbAbs !== 0 ? lNbAbs : "";
 	}
 	getScrollTop(AGenre, AScrollTop) {
-		if (AGenre === EGenreScrollEvenement.TailleContenu) {
+		if (AGenre === ObjetScroll_3.EGenreScrollEvenement.TailleContenu) {
 			return null;
 		}
-		if (AGenre === EGenreScrollEvenement.TailleZone) {
+		if (AGenre === ObjetScroll_3.EGenreScrollEvenement.TailleZone) {
 			const lTailleZoneMax =
 				$("#" + this.Nom.escapeJQ())
 					.parent()
@@ -2330,11 +2566,11 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 					.height() -
 				41 -
 				27 -
-				($("#" + this.ScrollH.Nom.escapeJQ()).height() || 0) -
+				($("#" + this.ScrollH.getNom().escapeJQ()).height() || 0) -
 				(this.ajoutEleveAutorise ? 22 : 0);
 			return lTailleZoneMax - (lTailleZoneMax % this.hauteurLigne) + 1;
 		}
-		if (AGenre === EGenreScrollEvenement.Deplacement) {
+		if (AGenre === ObjetScroll_3.EGenreScrollEvenement.Deplacement) {
 			return (
 				this.hauteurLigne *
 				Math.min(
@@ -2345,10 +2581,10 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 		}
 	}
 	getScrollLeft(AGenre, AScrollLeft) {
-		if (AGenre === EGenreScrollEvenement.TailleContenu) {
+		if (AGenre === ObjetScroll_3.EGenreScrollEvenement.TailleContenu) {
 			return null;
 		}
-		if (AGenre === EGenreScrollEvenement.TailleZone) {
+		if (AGenre === ObjetScroll_3.EGenreScrollEvenement.TailleZone) {
 			const lTailleZoneMax =
 				$("#" + this.Nom.escapeJQ()).width() -
 				this.largeurColonneEleve -
@@ -2360,11 +2596,14 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 				const lColonne = this.listeColonnes.get(i);
 				if (lColonne.Actif !== false) {
 					if (
-						lColonne.Genre === EGenreRessource.Observation &&
+						lColonne.Genre ===
+							Enumere_Ressource_1.EGenreRessource.Observation &&
 						(lColonne.genreObservation ===
-							TypeGenreObservationVS.OVS_ObservationParent ||
+							TypeGenreObservationVS_1.TypeGenreObservationVS
+								.OVS_ObservationParent ||
 							lColonne.genreObservation ===
-								TypeGenreObservationVS.OVS_Encouragement)
+								TypeGenreObservationVS_1.TypeGenreObservationVS
+									.OVS_Encouragement)
 					) {
 						if (
 							lTailleZoneMax >=
@@ -2380,7 +2619,10 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 							lAvecColonneNonVisible = true;
 							break;
 						}
-					} else if (lColonne.Genre === EGenreRessource.RepasAPreparer) {
+					} else if (
+						lColonne.Genre ===
+						Enumere_Ressource_1.EGenreRessource.RepasAPreparer
+					) {
 						if (
 							lTailleZoneMax >=
 							lTailleColonnesVisibles + (this.largeurColonne + 1)
@@ -2405,13 +2647,13 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 			}
 			return lTailleColonnesVisibles + (lAvecColonneNonVisible ? 0 : 1);
 		}
-		if (AGenre === EGenreScrollEvenement.Deplacement) {
+		if (AGenre === ObjetScroll_3.EGenreScrollEvenement.Deplacement) {
 			return AScrollLeft - (AScrollLeft % (this.largeurColonne + 1));
 		}
 	}
 	surPreResize() {
 		if (this.enAffichage) {
-			GHtml.setHtml(this.Nom, "&nbsp;");
+			ObjetHtml_1.GHtml.setHtml(this.Nom, "&nbsp;");
 		}
 	}
 	surPostResize() {
@@ -2422,95 +2664,103 @@ class ObjetAffichagePageSaisieAbsences_Cours extends ObjetInterface {
 	formatTradAbs(aAbs, aGenre) {
 		return this.moteur.formatTradAbs(aAbs, aGenre);
 	}
-}
-function _composeListeClasses() {
-	let H = [];
-	H.push(
-		'<table class="Texte10 tableAbsenceEleve AlignementDroit" id="',
-		this.ScrollV.getIdContenu(4),
-		'">',
-	);
-	for (let i = 0; i < this.listeEleves.count() - 1; i++) {
-		if (this.listeEleves.get(i).getEtat() !== EGenreEtat.Suppression) {
-			const lEleve = this.listeEleves.get(i);
-			H.push("<tr ", GObjetWAI.composeRole(EGenreRole.Row), ">");
-			H.push(
-				"<td ",
-				GObjetWAI.composeRole(EGenreRole.Rowheader),
-				' id="',
-				this.Nom,
-				"_classe_",
-				lEleve.Numero,
-				'_lib" tabindex="',
-				i === 0 ? 0 : -1,
-				'" ',
-				' onkeyup="',
-				this.Nom,
-				".surKeyUp(id,",
-				i,
-				',-1,1);"',
-				' style="border-left-width:0px;padding-left:3px;">',
-				'<div style="',
-				GStyle.composeWidth(this.largeurColonneClasse - 7),
-				'">',
-				'<div class="tableAbsenceEleveLibelle" ie-ellipsis>' +
-					lEleve.strClasse +
+	_composeListeClasses() {
+		let H = [];
+		H.push(
+			'<table class="Texte10 tableAbsenceEleve AlignementDroit" id="',
+			this.ScrollV.getIdContenu(4),
+			'">',
+		);
+		for (let i = 0; i < this.listeEleves.count() - 1; i++) {
+			if (
+				this.listeEleves.get(i).getEtat() !==
+				Enumere_Etat_1.EGenreEtat.Suppression
+			) {
+				const lEleve = this.listeEleves.get(i);
+				H.push(
+					"<tr ",
+					ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_2.EGenreRole.Row),
+					">",
+				);
+				H.push(
+					"<td ",
+					ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_2.EGenreRole.Rowheader),
+					' id="',
+					this.Nom,
+					"_classe_",
+					lEleve.Numero,
+					'_lib" tabindex="',
+					i === 0 ? 0 : -1,
+					'" ',
+					' onkeyup="',
+					this.Nom,
+					".surKeyUp(id,",
+					i,
+					',-1,1);"',
+					' style="border-left-width:0px;padding-left:3px;">',
+					'<div style="',
+					ObjetStyle_1.GStyle.composeWidth(this.largeurColonneClasse - 7),
+					'">',
+					'<div class="tableAbsenceEleveLibelle" ie-ellipsis>' +
+						lEleve.strClasse +
+						"</div>",
 					"</div>",
-				"</div>",
-				"</td>",
-			);
-			H.push("</tr>");
+					"</td>",
+				);
+				H.push("</tr>");
+			}
 		}
+		H.push("</table>");
+		return H.join("");
 	}
-	H.push("</table>");
-	return H.join("");
 }
+exports.InterfacePageSaisieAbsences_Cours = InterfacePageSaisieAbsences_Cours;
 function _construitCleTraduction(aGenreColonne, aAuPluriel) {
 	let lCleTraduction;
 	switch (aGenreColonne) {
-		case EGenreRessource.Absence:
+		case Enumere_Ressource_1.EGenreRessource.Absence:
 			if (aAuPluriel) {
 				lCleTraduction = "Absence.CoursManquesCours";
 			} else {
 				lCleTraduction = "Absence.CoursManqueCours";
 			}
 			break;
-		case EGenreRessource.Retard:
+		case Enumere_Ressource_1.EGenreRessource.Retard:
 			if (aAuPluriel) {
 				lCleTraduction = "Absence.RetardsCours";
 			} else {
 				lCleTraduction = "Absence.RetardCours";
 			}
 			break;
-		case EGenreRessource.Exclusion:
+		case Enumere_Ressource_1.EGenreRessource.Exclusion:
 			if (aAuPluriel) {
 				lCleTraduction = "Absence.ExclusionsCours";
 			} else {
 				lCleTraduction = "Absence.ExclusionCours";
 			}
 			break;
-		case EGenreRessource.Infirmerie:
+		case Enumere_Ressource_1.EGenreRessource.Infirmerie:
 			if (aAuPluriel) {
 				lCleTraduction = "Absence.InfirmeriesCours";
 			} else {
 				lCleTraduction = "Absence.InfirmerieCours";
 			}
 			break;
-		case EGenreRessource.Punition:
+		case Enumere_Ressource_1.EGenreRessource.Punition:
 			if (aAuPluriel) {
 				lCleTraduction = "Absence.PunitionsCours";
 			} else {
 				lCleTraduction = "Absence.PunitionCours";
 			}
 			break;
-		case EGenreRessource.Observation:
+		case Enumere_Ressource_1.EGenreRessource.Observation:
 			if (aAuPluriel) {
 				lCleTraduction = "Absence.ObservationsCours";
 			} else {
 				lCleTraduction = "Absence.ObservationCours";
 			}
 			break;
-		case EGenreRessource.Dispense:
+		case Enumere_Ressource_1.EGenreRessource.Dispense:
 			if (aAuPluriel) {
 				lCleTraduction = "Absence.DispensesCours";
 			} else {
@@ -2522,4 +2772,3 @@ function _construitCleTraduction(aGenreColonne, aAuPluriel) {
 	}
 	return lCleTraduction;
 }
-module.exports = { ObjetAffichagePageSaisieAbsences_Cours };

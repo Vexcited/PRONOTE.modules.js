@@ -1,34 +1,28 @@
-const {
-	ObjetRequeteSaisie,
-	EGenreReponseSaisie,
-} = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { TypeGenreEchangeDonnees } = require("TypeGenreEchangeDonnees.js");
-class ObjetRequeteSaisieImportFichierProf extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieImportFichierProf = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TypeGenreEchangeDonnees_1 = require("TypeGenreEchangeDonnees");
+class ObjetRequeteSaisieImportFichierProf extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParam) {
 		$.extend(this.JSON, aParam);
 		let lStrMsgDetail;
 		switch (aParam.genreFichier) {
-			case TypeGenreEchangeDonnees.GED_PAS:
-				lStrMsgDetail = GTraductions.getValeur(
+			case TypeGenreEchangeDonnees_1.TypeGenreEchangeDonnees.GED_PAS:
+				lStrMsgDetail = ObjetTraduction_1.GTraductions.getValeur(
 					"Commande.RecupererFichierDeRessources",
 				);
 				break;
 			default:
 				lStrMsgDetail = "";
 		}
-		return this.appelAsynchrone({ messageDetail: lStrMsgDetail });
-	}
-	actionApresRequete(aGenreMessage) {
-		this.callbackReussite.appel(aGenreMessage === EGenreReponseSaisie.succes);
+		this.setOptions({ messageDetail: lStrMsgDetail });
+		return this.appelAsynchrone();
 	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteSaisieImportFichierProf =
+	ObjetRequeteSaisieImportFichierProf;
+CollectionRequetes_1.Requetes.inscrire(
 	"SaisieImportFichierProf",
 	ObjetRequeteSaisieImportFichierProf,
 );
-module.exports = ObjetRequeteSaisieImportFichierProf;

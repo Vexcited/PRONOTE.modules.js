@@ -11,7 +11,7 @@ const ObjetTri_1 = require("ObjetTri");
 const ObjetHtml_1 = require("ObjetHtml");
 const Type_ThemeBouton_1 = require("Type_ThemeBouton");
 const DonneesListe_SelectionPublic_1 = require("DonneesListe_SelectionPublic");
-const tag_1 = require("tag");
+const ComparateurChaines_1 = require("ComparateurChaines");
 var TypeGenreCumulSelectionPublic;
 (function (TypeGenreCumulSelectionPublic) {
 	TypeGenreCumulSelectionPublic[(TypeGenreCumulSelectionPublic["sans"] = 0)] =
@@ -79,7 +79,6 @@ class ObjetFenetre_SelectionPublic extends ObjetFenetre_SelectionRessource_1.Obj
 				},
 			],
 			listeBoutonsInactifs: [],
-			heightMax_mobile: true,
 			masquerListeSiVide: true,
 		});
 		this.setSelectionObligatoire(true);
@@ -172,44 +171,42 @@ class ObjetFenetre_SelectionPublic extends ObjetFenetre_SelectionRessource_1.Obj
 		});
 	}
 	composeContenu() {
-		return (0, tag_1.tag)(
-			"div",
-			{ class: "flex-contain cols full-height" },
-			(T) => {
-				T.push(
-					'<div class="m-top-l fix-bloc" id="',
-					this.idConteneurFiltre,
-					'" style="display:none"></div>',
-				);
-				T.push(
-					(0, tag_1.tag)(
-						"div",
-						{ class: "fix-bloc" },
-						(0, tag_1.tag)("ie-combo", {
-							"ie-model": "comboCumul",
-							class: [
-								"PetitEspaceBas",
-								IE.estMobile ? "" : "GrandEspaceGauche",
-							],
-							style: "display:none",
-						}),
-					),
-				);
-				T.push(
-					'<div id="' +
-						this.getNomInstance(this.identListe) +
-						'" class="fluid-bloc"></div>',
-				);
-				T.push(
-					'<div style="display:none" class="Espace" id="',
-					this.idMessage,
-					'">',
+		const lClasseCombo = ["PetitEspaceBas"];
+		if (!IE.estMobile) {
+			lClasseCombo.push("GrandEspaceGauche");
+		}
+		return IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			IE.jsx.str(
+				"div",
+				{ class: "flex-contain cols full-height" },
+				IE.jsx.str("div", {
+					class: "m-top-l fix-bloc",
+					id: this.idConteneurFiltre,
+					style: "display:none",
+				}),
+				IE.jsx.str(
+					"div",
+					{ class: "fix-bloc" },
+					IE.jsx.str("ie-combo", {
+						"ie-model": "comboCumul",
+						class: lClasseCombo.join(" "),
+						style: "display:none",
+					}),
+				),
+				IE.jsx.str("div", {
+					id: this.getNomInstance(this.identListe),
+					class: "fluid-bloc",
+				}),
+				IE.jsx.str(
+					"div",
+					{ style: "display:none", class: "Espace", id: this.idMessage },
 					ObjetTraduction_1.GTraductions.getValeur(
 						"Fenetre_SelectionPublic.AucunDestinataire",
 					),
-					"</div>",
-				);
-			},
+				),
+			),
 		);
 	}
 	setDonnees(aParam) {
@@ -495,6 +492,10 @@ class ObjetFenetre_SelectionPublic extends ObjetFenetre_SelectionRessource_1.Obj
 		let lOptions = {
 			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
 			avecCBToutCocher: !!this._options.avecCocheRessources,
+			ariaLabel: () =>
+				(MethodesObjet_1.MethodesObjet.isFunction(this.optionsFenetre.titre)
+					? this.optionsFenetre.titre()
+					: this.optionsFenetre.titre) || "",
 		};
 		if (this._options.optionsListe) {
 			$.extend(lOptions, this._options.optionsListe);
@@ -504,7 +505,7 @@ class ObjetFenetre_SelectionPublic extends ObjetFenetre_SelectionRessource_1.Obj
 	_actualiserListe() {
 		this.setBoutonActif(
 			this.indexBtnValider,
-			!this.selectionObligatoire || this._nbRessourcesCochees() > 0,
+			!this.estSelectionObligatoire() || this._nbRessourcesCochees() > 0,
 		);
 		const lDonneesListe =
 			new DonneesListe_SelectionPublic_1.DonneesListe_SelectionPublic(
@@ -516,6 +517,9 @@ class ObjetFenetre_SelectionPublic extends ObjetFenetre_SelectionRessource_1.Obj
 		lDonneesListe._options = this._options;
 		lDonneesListe._options.avecIconElevesDetaches =
 			this._options.avecElevesDetaches;
+		if (this._options.listeRessourceDesactiver) {
+			lDonneesListe._options.listeRessourceDesactiver;
+		}
 		if (this._options.optionsDonneesListe) {
 			lDonneesListe.setOptions(this._options.optionsDonneesListe);
 		}
@@ -793,12 +797,22 @@ class ObjetFenetre_SelectionPublic extends ObjetFenetre_SelectionRessource_1.Obj
 					lAvecGroupe = true;
 					lRessource.pere = lCumulGroupe;
 				} else {
-					let lNiveau = lListeCumul.get(
-						lListeCumul.getIndiceParLibelle(lRessource.ini),
-					);
+					let lNiveau = null;
+					lListeCumul.parcourir((aRessource) => {
+						if (
+							lRessource.ini &&
+							ComparateurChaines_1.ComparateurChaines.egal(
+								lRessource.ini,
+								aRessource.getLibelle(),
+							)
+						) {
+							lNiveau = aRessource;
+							return false;
+						}
+					});
 					if (!lNiveau) {
 						lNiveau = new ObjetElement_1.ObjetElement(
-							lRessource.ini,
+							lRessource.ini.toUpperCase(),
 							ObjetElement_1.ObjetElement.getNumeroCreation(),
 							0,
 						);

@@ -243,7 +243,7 @@ class ObjetChampFormulaire extends ObjetIdentite_1.Identite {
 						this.param.valeur,
 						'" ',
 						lMaxLength,
-						' class="round-style ',
+						' class="',
 						lClass,
 						'" style="',
 						lStyle,
@@ -264,7 +264,7 @@ class ObjetChampFormulaire extends ObjetIdentite_1.Identite {
 					);
 					break;
 			}
-			H.push('<div style="height:10px;" id="', this.zoneMsg, '" >&nbsp;</div>');
+			H.push('<div style="height:10px;" id="', this.zoneMsg, '">&nbsp;</div>');
 			H.push("</div>");
 		}
 		return H.join("");
@@ -321,7 +321,7 @@ class ObjetChampFormulaire extends ObjetIdentite_1.Identite {
 		H.push("</div>");
 		H.push(
 			'<div class="InlineBlock AlignementMilieuVertical">',
-			'<input ie-model="ind" class="round-style"',
+			'<input ie-model="ind" ',
 			" ie-indicatiftel ",
 			' style="',
 			ObjetStyle_1.GStyle.composeWidth(lLargeurIndicatif),
@@ -330,14 +330,13 @@ class ObjetChampFormulaire extends ObjetIdentite_1.Identite {
 			' title="',
 			lTitle,
 			'"',
-			' tabindex="0"',
 			` aria-label="${ObjetTraduction_1.GTraductions.getValeur("InfosEnfantPrim.autresContacts.indicatif")} ${lLabel}"`,
 			"/>",
 			"</div>",
 		);
 		H.push(
 			'<div class="InlineBlock AlignementMilieuVertical PetitEspaceGauche">',
-			'<input ie-model="tel" class="round-style"',
+			'<input ie-model="tel" ',
 			" ie-telephone  ",
 			' aria-required="true"',
 			' style="',
@@ -346,7 +345,6 @@ class ObjetChampFormulaire extends ObjetIdentite_1.Identite {
 			' type="text"',
 			lTitle ? ' placeholder="' + lTitle + '"' : "",
 			lTitle ? ' title="' + lTitle + '"' : "",
-			' tabindex="0"',
 			' aria-label="',
 			lLabel,
 			'"',

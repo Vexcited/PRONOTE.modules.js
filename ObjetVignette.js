@@ -1,30 +1,31 @@
-const { Identite } = require("ObjetIdentite.js");
-const { GUID } = require("GUID.js");
-const { GHtml } = require("ObjetHtml.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { EGenreAction } = require("Enumere_Action.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { GChaine } = require("ObjetChaine.js");
-const { EGenreDocumentJoint } = require("Enumere_DocumentJoint.js");
-const {
-	EFormatDocJoint,
-	EFormatDocJointUtil,
-} = require("Enumere_FormatDocJoint.js");
-const ETypeEtatVignette = {
-	survol: "survol",
-	selectionne: "selectionne",
-	nonSelectionne: "nonSelectionne",
-};
-const ETypeEvntVignette = {
-	suppression: "suppression",
-	editionLegende: "editionLegende",
-	selectionVignette: "selectionVignette",
-};
-class ObjetVignette extends Identite {
-	constructor(...aParams) {
-		super(...aParams);
-		this.ids = { vignette: GUID.getId() };
+exports.ObjetVignette = exports.ETypeEvntVignette = void 0;
+const ObjetIdentite_1 = require("ObjetIdentite");
+const GUID_1 = require("GUID");
+const ObjetHtml_1 = require("ObjetHtml");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_Action_1 = require("Enumere_Action");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetChaine_1 = require("ObjetChaine");
+const Enumere_DocumentJoint_1 = require("Enumere_DocumentJoint");
+const Enumere_FormatDocJoint_1 = require("Enumere_FormatDocJoint");
+const AccessApp_1 = require("AccessApp");
+var ETypeEtatVignette;
+(function (ETypeEtatVignette) {
+	ETypeEtatVignette["survol"] = "survol";
+	ETypeEtatVignette["selectionne"] = "selectionne";
+	ETypeEtatVignette["nonSelectionne"] = "nonSelectionne";
+})(ETypeEtatVignette || (ETypeEtatVignette = {}));
+var ETypeEvntVignette;
+(function (ETypeEvntVignette) {
+	ETypeEvntVignette["suppression"] = "suppression";
+	ETypeEvntVignette["editionLegende"] = "editionLegende";
+	ETypeEvntVignette["selectionVignette"] = "selectionVignette";
+})(ETypeEvntVignette || (exports.ETypeEvntVignette = ETypeEvntVignette = {}));
+class ObjetVignette extends ObjetIdentite_1.Identite {
+	constructor() {
+		super(...arguments);
+		this.ids = { vignette: GUID_1.GUID.getId() };
 		this.default = {
 			largeur: 150,
 			hauteur: 150,
@@ -50,13 +51,13 @@ class ObjetVignette extends Identite {
 				if (aInstance.param.avecSurvol === true) {
 					const lMap = {
 						mouseover: function () {
-							this.estSurvole = true;
-							_actualiserSelonEtat.call(this);
+							aInstance.estSurvole = true;
+							aInstance._actualiserSelonEtat();
 						}.bind(aInstance),
 						mouseout: function () {
-							this.estSurvole = false;
-							_actualiserSelonEtat.call(this);
-						}.bind(aInstance),
+							aInstance.estSurvole = false;
+							aInstance._actualiserSelonEtat();
+						},
 					};
 					$(this.node).on(lMap);
 				}
@@ -70,7 +71,7 @@ class ObjetVignette extends Identite {
 						const lData = aInstance.donnees.data;
 						lData.estSelectionne = aValue;
 						aInstance.estSelectionne = aValue;
-						_actualiserSelonEtat.call(aInstance);
+						aInstance._actualiserSelonEtat();
 						aInstance.callback.appel({
 							evnt: ETypeEvntVignette.selectionVignette,
 							data: lData,
@@ -84,19 +85,24 @@ class ObjetVignette extends Identite {
 			},
 			btnSuppr: {
 				event(aEvent) {
-					const lMsg = GTraductions.getValeur("MsgConfirmSupprDe", [
-						aInstance.donnees.data.libelle ||
-							(aInstance.donnees.data.documentCasier
-								? aInstance.donnees.data.documentCasier.getLibelle()
-								: ""),
-					]);
-					GApplication.getMessage().afficher({
-						type: EGenreBoiteMessage.Confirmation,
-						message: lMsg,
-						callback: function (aAccepte) {
-							aInstance.evntSuppr(aAccepte);
-						},
-					});
+					const lMsg = ObjetTraduction_1.GTraductions.getValeur(
+						"MsgConfirmSupprDe",
+						[
+							aInstance.donnees.data.libelle ||
+								(aInstance.donnees.data.documentCasier
+									? aInstance.donnees.data.documentCasier.getLibelle()
+									: ""),
+						],
+					);
+					(0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+							message: lMsg,
+							callback: function (aAccepte) {
+								aInstance.evntSuppr(aAccepte);
+							},
+						});
 					aEvent.stopPropagation();
 				},
 			},
@@ -112,8 +118,8 @@ class ObjetVignette extends Identite {
 			getNodePhoto: function () {
 				const lMap = {
 					click: function () {
-						_ouvrirLien.call(this);
-					}.bind(aInstance),
+						aInstance._ouvrirLien();
+					},
 					error: function () {
 						$(this)
 							.parent()
@@ -124,8 +130,8 @@ class ObjetVignette extends Identite {
 							.parent()
 							.on({
 								click: function () {
-									_ouvrirLien.call(this);
-								}.bind(aInstance),
+									aInstance._ouvrirLien();
+								},
 							});
 						$(this).remove();
 					},
@@ -135,8 +141,8 @@ class ObjetVignette extends Identite {
 			getNodeDoc: function () {
 				const lMap = {
 					click: function () {
-						_ouvrirLien.call(this);
-					}.bind(aInstance),
+						aInstance._ouvrirLien();
+					},
 				};
 				$(this.node).on(lMap);
 			},
@@ -174,7 +180,7 @@ class ObjetVignette extends Identite {
 				' nonSelectionne" id="',
 				this.ids.vignette,
 				'" ',
-				GHtml.composeAttr("ie-node", "getNodeVignette"),
+				ObjetHtml_1.GHtml.composeAttr("ie-node", "getNodeVignette"),
 				' style="',
 				lWidth,
 				'">',
@@ -184,47 +190,51 @@ class ObjetVignette extends Identite {
 				if (this.donnees.estImg === true) {
 					const lLibelleImgViewer = this.donnees.data.libelle;
 					H.push(
-						'<img ie-load-src="',
-						this.donnees.lien,
-						'" ',
-						this.param.avecImgViewer
-							? " ie-imgviewer "
-							: 'ie-node="getNodePhoto" ',
-						this.param.avecImgViewer
-							? 'data-libelle="' + GChaine.toAttrValue(lLibelleImgViewer) + '"'
-							: "",
-						' alt="',
-						GChaine.toAttrValue(this.param.altImage || lLibelleImgViewer),
-						'" tabindex="0"/>',
+						IE.jsx.str("img", {
+							"ie-load-src": this.donnees.lien,
+							"ie-imgviewer": this.param.avecImgViewer || false,
+							"ie-node": this.param.avecImgViewer ? false : "getNodePhoto",
+							"data-libelle": this.param.avecImgViewer
+								? lLibelleImgViewer
+								: false,
+							alt: lLibelleImgViewer || this.param.altImage,
+							tabindex: "0",
+						}),
 					);
 				} else {
 					let lIcon = "";
-					const lGenreFichier = EFormatDocJointUtil.getGenreDeFichier(
-						GChaine.extraireExtensionFichier(
-							this.donnees.data.documentCasier.getLibelle(),
-						),
-					);
-					if (lGenreFichier !== EFormatDocJoint.Inconnu) {
-						lIcon = EFormatDocJointUtil.getClassIconDeGenre(lGenreFichier);
+					const lGenreFichier =
+						Enumere_FormatDocJoint_1.EFormatDocJointUtil.getGenreDeFichier(
+							ObjetChaine_1.GChaine.extraireExtensionFichier(
+								this.donnees.data.documentCasier.getLibelle(),
+							),
+						);
+					if (
+						lGenreFichier !== Enumere_FormatDocJoint_1.EFormatDocJoint.Inconnu
+					) {
+						lIcon =
+							Enumere_FormatDocJoint_1.EFormatDocJointUtil.getClassIconDeGenre(
+								lGenreFichier,
+							);
 					} else {
 						if (
 							this.donnees.data.documentCasier.getGenre() ===
-							EGenreDocumentJoint.Cloud
+							Enumere_DocumentJoint_1.EGenreDocumentJoint.Cloud
 						) {
 							lIcon = "icon_cloud";
 						} else if (
 							this.donnees.data.documentCasier.getGenre() ===
-							EGenreDocumentJoint.Url
+							Enumere_DocumentJoint_1.EGenreDocumentJoint.Url
 						) {
 							lIcon = "icon_globe";
 						} else if (
 							this.donnees.data.documentCasier.getGenre() ===
-							EGenreDocumentJoint.LienKiosque
+							Enumere_DocumentJoint_1.EGenreDocumentJoint.LienKiosque
 						) {
 							lIcon = "icon_external_link";
 						} else if (
 							this.donnees.data.documentCasier.getGenre() ===
-							EGenreDocumentJoint.LienVisio
+							Enumere_DocumentJoint_1.EGenreDocumentJoint.LienVisio
 						) {
 							lIcon = "icon_cours_virtuel";
 						} else {
@@ -233,20 +243,26 @@ class ObjetVignette extends Identite {
 					}
 					const lTaillePoliceIcone = this.param.taillePoliceIcone;
 					H.push(
-						'<div class="docs-wrapper" ie-node="getNodeDoc">',
-						'<i class="',
-						lIcon,
-						'" style="font-size:',
-						lTaillePoliceIcone,
-						'px;"></i>',
-						this.param.avecSelection
-							? '<div class="libelle m-top-l ellipsis-multilignes" title="' +
-									this.donnees.data.libelle +
-									'">' +
-									this.donnees.data.libelle +
-									"</div>"
-							: "",
-						"</div>",
+						IE.jsx.str(
+							"div",
+							{ class: "docs-wrapper", "ie-node": "getNodeDoc" },
+							IE.jsx.str("i", {
+								class: lIcon,
+								style: { "font-size": lTaillePoliceIcone },
+								role: "presentation",
+							}),
+							this.param.avecSelection
+								? IE.jsx.str(
+										"div",
+										{
+											class: "libelle m-top-l ellipsis-multilignes",
+											title: this.donnees.data.libelle,
+										},
+										" ",
+										this.donnees.data.libelle,
+									)
+								: "",
+						),
 					);
 				}
 				if (this.param.avecEtiquette && this.donnees.strEtiquette) {
@@ -281,12 +297,12 @@ class ObjetVignette extends Identite {
 					H.push('<div class="m-top-xl" style="width:100%">');
 					H.push(
 						'<div class="ie-titre-petit">',
-						GTraductions.getValeur("blog.billet.titre"),
+						ObjetTraduction_1.GTraductions.getValeur("blog.billet.titre"),
 						"</div>",
 					);
 					H.push(
-						'<input type="text" class="round-style" ie-model="legendeVignette" style="width:100%" placeholder="',
-						GTraductions.getValeur("blog.billet.rediger"),
+						'<input type="text"  ie-model="legendeVignette" style="width:100%" placeholder="',
+						ObjetTraduction_1.GTraductions.getValeur("blog.billet.rediger"),
 						'"/>',
 					);
 					H.push("</div>");
@@ -306,43 +322,43 @@ class ObjetVignette extends Identite {
 		return H.join("");
 	}
 	evntSuppr(aAccepte) {
-		if (aAccepte !== EGenreAction.Valider) {
+		if (aAccepte !== Enumere_Action_1.EGenreAction.Valider) {
 			return;
 		}
 		const lData = this.donnees.data;
-		lData.setEtat(EGenreEtat.Suppression);
+		lData.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 		this.callback.appel({
 			evnt: ETypeEvntVignette.suppression,
 			data: lData,
 			vignette: this.donnees,
 		});
 	}
-}
-function _getEtatCourant() {
-	return this.param.avecSurvol && this.estSurvole === true
-		? ETypeEtatVignette.survol
-		: this.param.avecSelection && this.estSelectionne
-			? ETypeEtatVignette.selectionne
-			: ETypeEtatVignette.nonSelectionne;
-}
-function getClassEtat() {
-	const lEtat = _getEtatCourant.call(this);
-	switch (lEtat) {
-		case ETypeEtatVignette.survol:
-			return "survol";
-		case ETypeEtatVignette.selectionne:
-			return "selectionne";
-		case ETypeEtatVignette.nonSelectionne:
-			return "nonSelectionne";
+	_getEtatCourant() {
+		return this.param.avecSurvol && this.estSurvole === true
+			? ETypeEtatVignette.survol
+			: this.param.avecSelection && this.estSelectionne
+				? ETypeEtatVignette.selectionne
+				: ETypeEtatVignette.nonSelectionne;
+	}
+	getClassEtat() {
+		const lEtat = this._getEtatCourant();
+		switch (lEtat) {
+			case ETypeEtatVignette.survol:
+				return "survol";
+			case ETypeEtatVignette.selectionne:
+				return "selectionne";
+			case ETypeEtatVignette.nonSelectionne:
+				return "nonSelectionne";
+		}
+	}
+	_actualiserSelonEtat() {
+		const lClassEtat = this.getClassEtat();
+		$("#" + this.ids.vignette.escapeJQ())
+			.removeClass("nonSelectionne survol selectionne")
+			.addClass(lClassEtat);
+	}
+	_ouvrirLien() {
+		window.open(this.donnees.lien);
 	}
 }
-function _actualiserSelonEtat() {
-	const lClassEtat = getClassEtat.call(this);
-	$("#" + this.ids.vignette.escapeJQ())
-		.removeClass("nonSelectionne survol selectionne")
-		.addClass(lClassEtat);
-}
-function _ouvrirLien() {
-	window.open(this.donnees.lien);
-}
-module.exports = { ObjetVignette, ETypeEvntVignette };
+exports.ObjetVignette = ObjetVignette;

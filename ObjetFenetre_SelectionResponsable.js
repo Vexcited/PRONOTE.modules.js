@@ -1,28 +1,25 @@
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class ObjetFenetre_SelectionResponsable extends ObjetFenetre {
+exports.ObjetFenetre_SelectionResponsable = void 0;
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class ObjetFenetre_SelectionResponsable extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
-		this.respAdminCBFiltrage = aParams.respAdminCBFiltrage;
 		(this.filtreCBProfEquipePeda = false), (this.filtreCBPersConcernes = false);
 		this.setOptionsFenetre({
 			largeur: 400,
 			hauteur: 700,
-			heightMax_mobile: true,
-			listeBoutons: [GTraductions.getValeur("Annuler")],
+			listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Annuler")],
 		});
 		this.donnees = { listeResponsables: null };
 	}
 	construireInstances() {
 		this.identListeResponsables = this.add(
-			ObjetListe,
-			_surEvenementSurListe.bind(this),
-			_initialiserListe,
+			ObjetListe_1.ObjetListe,
+			this._surEvenementSurListe.bind(this),
+			this._initialiserListe,
 		);
 	}
 	getControleur(aInstance) {
@@ -33,7 +30,7 @@ class ObjetFenetre_SelectionResponsable extends ObjetFenetre {
 				},
 				setValue(aData) {
 					aInstance.filtreCBProfEquipePeda = aData;
-					_actualiserListe.call(aInstance);
+					aInstance._actualiserListe();
 				},
 			},
 			cbFiltrePersConcernes: {
@@ -42,7 +39,7 @@ class ObjetFenetre_SelectionResponsable extends ObjetFenetre {
 				},
 				setValue(aData) {
 					aInstance.filtreCBPersConcernes = aData;
-					_actualiserListe.call(aInstance);
+					aInstance._actualiserListe();
 				},
 			},
 		});
@@ -50,7 +47,7 @@ class ObjetFenetre_SelectionResponsable extends ObjetFenetre {
 	setDonnees(aListeResponsables) {
 		this.afficher();
 		this.donnees.listeResponsables = aListeResponsables;
-		_actualiserListe.call(this);
+		this._actualiserListe();
 	}
 	getNumeroResponsable() {
 		let lNumero = null;
@@ -66,12 +63,12 @@ class ObjetFenetre_SelectionResponsable extends ObjetFenetre {
 		lHtml.push('<div class="flex-contain cols" style="height:100%">');
 		if (this.respAdminCBFiltrage) {
 			lHtml.push(
-				'<ie-checkbox class="Espace" ie-model="cbFiltreProfEquipePeda" >',
+				'<ie-checkbox class="Espace" ie-model="cbFiltreProfEquipePeda">',
 				this.respAdminCBFiltrage.cbProfEquipePeda,
 				"</ie-checkbox>",
 			);
 			lHtml.push(
-				'<ie-checkbox class="Espace" ie-model="cbFiltrePersConcernes" >',
+				'<ie-checkbox class="Espace" ie-model="cbFiltrePersConcernes">',
 				this.respAdminCBFiltrage.cbPersConcernes,
 				"</ie-checkbox>",
 			);
@@ -84,35 +81,37 @@ class ObjetFenetre_SelectionResponsable extends ObjetFenetre {
 		lHtml.push("</div>");
 		return lHtml.join("");
 	}
-}
-function _initialiserListe(aInstance) {
-	aInstance.setOptionsListe({
-		skin: ObjetListe.skin.flatDesign,
-		boutons: [{ genre: ObjetListe.typeBouton.rechercher }],
-	});
-}
-function _surEvenementSurListe(aParametres) {
-	switch (aParametres.genreEvenement) {
-		case EGenreEvenementListe.SelectionClick:
-		case EGenreEvenementListe.Selection:
-			if (!aParametres.article.estUnDeploiement) {
-				this.callback.appel({ responsableSelection: aParametres.article });
-				this.fermer();
-			}
-			break;
+	_initialiserListe(aInstance) {
+		aInstance.setOptionsListe({
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+			boutons: [{ genre: ObjetListe_1.ObjetListe.typeBouton.rechercher }],
+			ariaLabel: this.optionsFenetre.titre,
+		});
+	}
+	_surEvenementSurListe(aParametres) {
+		switch (aParametres.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.SelectionClick:
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Selection:
+				if (!aParametres.article.estUnDeploiement) {
+					this.callback.appel({ responsableSelection: aParametres.article });
+					this.fermer();
+				}
+				break;
+		}
+	}
+	_actualiserListe() {
+		if (this.donnees && this.donnees.listeResponsables) {
+			this.getInstance(this.identListeResponsables).setDonnees(
+				new DonneesListe_ResponsableListe(this.donnees.listeResponsables, {
+					filtreCBProfEquipePeda: this.filtreCBProfEquipePeda,
+					filtreCBPersConcernes: this.filtreCBPersConcernes,
+				}),
+			);
+		}
 	}
 }
-function _actualiserListe() {
-	if (this.donnees && this.donnees.listeResponsables) {
-		this.getInstance(this.identListeResponsables).setDonnees(
-			new DonneesListe_ResponsableListe(this.donnees.listeResponsables, {
-				filtreCBProfEquipePeda: this.filtreCBProfEquipePeda,
-				filtreCBPersConcernes: this.filtreCBPersConcernes,
-			}),
-		);
-	}
-}
-class DonneesListe_ResponsableListe extends ObjetDonneesListeFlatDesign {
+exports.ObjetFenetre_SelectionResponsable = ObjetFenetre_SelectionResponsable;
+class DonneesListe_ResponsableListe extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees, aParams) {
 		super(aDonnees);
 		this.filtreCBProfEquipePeda = aParams.filtreCBProfEquipePeda;
@@ -140,4 +139,3 @@ class DonneesListe_ResponsableListe extends ObjetDonneesListeFlatDesign {
 		return aParams.article.getLibelle();
 	}
 }
-module.exports = { ObjetFenetre_SelectionResponsable };

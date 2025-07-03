@@ -1,10 +1,8 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-class ObjetRequeteDonneesInscriptionEtablissement extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteDonneesInscriptionEtablissement = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetListeElements_1 = require("ObjetListeElements");
+class ObjetRequeteDonneesInscriptionEtablissement extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aParametres) {
 		const lParametres = $.extend({}, aParametres);
 		$.extend(this.JSON, lParametres);
@@ -12,9 +10,9 @@ class ObjetRequeteDonneesInscriptionEtablissement extends ObjetRequeteConsultati
 	}
 	actionApresRequete() {
 		const lParam = {
+			responsables: this.JSONReponse.responsables,
 			inscription: this.JSONReponse.inscription,
 			resumeInscription: this.JSONReponse.resumeInscription,
-			responsables: this.JSONReponse.responsables,
 			fratrie: this.JSONReponse.fratrie,
 			identite: this.JSONReponse.identite,
 			scolarite: this.JSONReponse.scolarite,
@@ -43,10 +41,10 @@ class ObjetRequeteDonneesInscriptionEtablissement extends ObjetRequeteConsultati
 			this.JSONReponse.scolariteActuelle.options
 		) {
 			lParam.scolariteActuelle.optionsChoisies = {
-				obligatoires: new ObjetListeElements(),
-				facultatives: new ObjetListeElements(),
-				lv1: new ObjetListeElements(),
-				lv2: new ObjetListeElements(),
+				obligatoires: new ObjetListeElements_1.ObjetListeElements(),
+				facultatives: new ObjetListeElements_1.ObjetListeElements(),
+				lv1: new ObjetListeElements_1.ObjetListeElements(),
+				lv2: new ObjetListeElements_1.ObjetListeElements(),
 			};
 			this.JSONReponse.scolariteActuelle.options.parcourir((aOption) => {
 				if (aOption.rangOption === 1) {
@@ -63,8 +61,9 @@ class ObjetRequeteDonneesInscriptionEtablissement extends ObjetRequeteConsultati
 		this.callbackReussite.appel(lParam);
 	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteDonneesInscriptionEtablissement =
+	ObjetRequeteDonneesInscriptionEtablissement;
+CollectionRequetes_1.Requetes.inscrire(
 	"DonneesInscriptionEtablissement",
 	ObjetRequeteDonneesInscriptionEtablissement,
 );
-module.exports = { ObjetRequeteDonneesInscriptionEtablissement };

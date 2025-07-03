@@ -19,14 +19,10 @@ class ObjetFenetre_BaremeQCM extends ObjetFenetre_1.ObjetFenetre {
 	composeContenu() {
 		const H = [];
 		H.push(
-			IE.jsx.str(
-				IE.jsx.fragment,
-				null,
-				IE.jsx.str("div", {
-					style: "height:100%;",
-					id: this.getInstance(this.identListeBareme).getNom(),
-				}),
-			),
+			IE.jsx.str("div", {
+				style: "height:100%;",
+				id: this.getInstance(this.identListeBareme).getNom(),
+			}),
 		);
 		return H.join("");
 	}

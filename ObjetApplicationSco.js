@@ -5,7 +5,6 @@ const Parametres_1 = require("Parametres");
 const DeferLoadingScript_1 = require("DeferLoadingScript");
 const Invocateur_1 = require("Invocateur");
 const MethodesObjet_1 = require("MethodesObjet");
-const CommunicationProduit_1 = require("CommunicationProduit");
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
 const ObjetCycles_1 = require("ObjetCycles");
 const ObjetDate_1 = require("ObjetDate");
@@ -19,17 +18,17 @@ const UtilitaireMAJServeur_1 = require("UtilitaireMAJServeur");
 const ObjetDonneesCentraleNotificationsSco_1 = require("ObjetDonneesCentraleNotificationsSco");
 const UtilitaireDeconnexion_1 = require("UtilitaireDeconnexion");
 const ObjetParametresUtilisateur_1 = require("ObjetParametresUtilisateur");
+const AccessApp_1 = require("AccessApp");
 require("DeclarationObjetRequetePN.js");
-const uGestionPresence = {
-	modeExclusif: false,
-	compteurAffichageMessagerie: 0,
-};
 class ObjetApplicationSco extends ObjetApplicationProduit_1.ObjetApplicationProduit {
 	constructor() {
 		super();
 		this.nomProduit = "PRONOTE";
 		this.donneesCentraleNotifications =
 			new ObjetDonneesCentraleNotificationsSco_1.ObjetDonneesCentraleNotificationsSco();
+		if (this.chargeEniFrame) {
+			window.parent.postMessage("OK", "*");
+		}
 	}
 	getEtatUtilisateur() {
 		return GEtatUtilisateur;
@@ -80,9 +79,9 @@ class ObjetApplicationSco extends ObjetApplicationProduit_1.ObjetApplicationProd
 		DeferLoadingScript_1.deferLoadingScript.setOptions({
 			done() {},
 			fail(aNom) {
-				GApplication.getCommunication().sendLogClient(
-					`erreur chargement script defer : ${aNom}`,
-				);
+				(0, AccessApp_1.getApp)()
+					.getCommunication()
+					.sendLogClient(`erreur chargement script defer : ${aNom}`);
 				UtilitaireDeconnexion_1.UtilitaireDeconnexion.deconnexionEchecChargement();
 			},
 			messageChargement: ObjetTraduction_1.GTraductions.getValeur(
@@ -91,10 +90,6 @@ class ObjetApplicationSco extends ObjetApplicationProduit_1.ObjetApplicationProd
 		});
 		this.initialisation(lParametres);
 		this.lancerRequeteParametres(lParametres);
-		Invocateur_1.Invocateur.abonner(
-			"affichage_messagerie",
-			this._surNotificationAffichageMessagerie.bind(this),
-		);
 		UtilitaireMAJServeur_1.UtilitaireMAJServeur.initialiser({
 			afficherMessageDelaiLong: !this.getEtatUtilisateur().estEspacePourEleve(),
 			afficherMessageImminentEleve:
@@ -110,11 +105,6 @@ class ObjetApplicationSco extends ObjetApplicationProduit_1.ObjetApplicationProd
 			if (this.optionsEspaceLocal.getAvecCodeCompetences) {
 				this.getEtatUtilisateur().setAvecCodeCompetences(
 					this.optionsEspaceLocal.getAvecCodeCompetences(),
-				);
-			}
-			if (this.optionsEspaceLocal.getAvecThemeAccessible) {
-				this.getEtatUtilisateur().setAvecThemeAccessible(
-					this.optionsEspaceLocal.getAvecThemeAccessible(),
 				);
 			}
 		}
@@ -137,7 +127,7 @@ class ObjetApplicationSco extends ObjetApplicationProduit_1.ObjetApplicationProd
 	}
 	initialisationApresParametres(aParametres) {
 		function _surUnload() {
-			this.getCommunication().desactiverPresence();
+			this.getCommunication().desactiverPolling();
 		}
 		Invocateur_1.Invocateur.abonner(
 			Invocateur_1.ObjetInvocateur.events.surRechargementPage,
@@ -193,7 +183,6 @@ class ObjetApplicationSco extends ObjetApplicationProduit_1.ObjetApplicationProd
 				TypeModeGrillesEDT_1.TypeModeGrillesEDT.TMG_CycleHebdomadaire,
 			joursFeries: lGParametres.ensembleJoursFeries,
 		});
-		this.actualiserTitle();
 	}
 	initAuthentification(aParam) {
 		this.parametresUtilisateurBase = aParam.parametresUtilisateurBase;
@@ -250,8 +239,6 @@ class ObjetApplicationSco extends ObjetApplicationProduit_1.ObjetApplicationProd
 			message: lMessageModeExclusif,
 			delaiFermeture: true,
 		});
-		uGestionPresence.modeExclusif = true;
-		this._modificationTimerPresence();
 	}
 	sortieModeExclusif() {
 		if (!this.avecGestionModeExclusif()) {
@@ -279,11 +266,9 @@ class ObjetApplicationSco extends ObjetApplicationProduit_1.ObjetApplicationProd
 			message: lMessageModeExclusif,
 			delaiFermeture: true,
 		});
-		uGestionPresence.modeExclusif = false;
-		this._modificationTimerPresence();
 	}
 	finSession(aParametres) {
-		this.getCommunication().desactiverPresence();
+		this.getCommunication().desactiverPolling();
 		this.destructionInterface();
 		super.finSession(aParametres);
 		global.GInterface = null;
@@ -305,31 +290,6 @@ class ObjetApplicationSco extends ObjetApplicationProduit_1.ObjetApplicationProd
 			T.push("</header>");
 		}
 		return T.join("");
-	}
-	actualiserTitle() {
-		const lGParametres = GParametres;
-		const lLibelleProduit =
-			(lGParametres.nomProduit ? lGParametres.nomProduit : this.nomProduit) +
-			(lGParametres.versionPN ? " " + lGParametres.versionPN : "");
-		document.title = `${lGParametres.NomEspace} - ${lLibelleProduit} - ${lGParametres.NomEtablissementConnexion}`;
-	}
-	_modificationTimerPresence() {
-		let lTimer =
-			CommunicationProduit_1.CommunicationProduit.cDureeTimerPresence;
-		if (uGestionPresence.modeExclusif) {
-			lTimer = 1000 * 30;
-		} else if (uGestionPresence.compteurAffichageMessagerie > 0) {
-			lTimer = 1000 * 30;
-		}
-		this.getCommunication().setDureeTimerPresence(lTimer);
-	}
-	_surNotificationAffichageMessagerie(aEntreeSurAffichage) {
-		uGestionPresence.compteurAffichageMessagerie = Math.max(
-			uGestionPresence.compteurAffichageMessagerie +
-				(aEntreeSurAffichage ? 1 : -1),
-			0,
-		);
-		this._modificationTimerPresence();
 	}
 }
 exports.ObjetApplicationSco = ObjetApplicationSco;

@@ -1,9 +1,8 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { TUtilitaireCompetences } = require("UtilitaireCompetences.js");
-const {
-	EGenreNiveauDAcquisitionUtil,
-} = require("Enumere_NiveauDAcquisition.js");
-class DonneesListe_BilanCompetencesParMatiere extends ObjetDonneesListe {
+exports.DonneesListe_BilanCompetencesParMatiere = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const UtilitaireCompetences_1 = require("UtilitaireCompetences");
+const Enumere_NiveauDAcquisition_1 = require("Enumere_NiveauDAcquisition");
+class DonneesListe_BilanCompetencesParMatiere extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees) {
 		super(aDonnees);
 		this.setOptions({
@@ -110,19 +109,23 @@ class DonneesListe_BilanCompetencesParMatiere extends ObjetDonneesListe {
 	composeHtmlJauge(aListeNiveaux, aListeNiveauxParNiveau) {
 		let lJauge = "";
 		if (this.optionsAffichage.afficheJaugeChronologique) {
-			lJauge = TUtilitaireCompetences.composeJaugeChronologique({
-				listeNiveaux: aListeNiveaux,
-				hint: TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionChronologique(
-					aListeNiveaux,
-				),
-			});
+			lJauge =
+				UtilitaireCompetences_1.TUtilitaireCompetences.composeJaugeChronologique(
+					{
+						listeNiveaux: aListeNiveaux,
+						hint: UtilitaireCompetences_1.TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionChronologique(
+							aListeNiveaux,
+						),
+					},
+				);
 		} else {
-			lJauge = TUtilitaireCompetences.composeJaugeParNiveaux({
-				listeNiveaux: aListeNiveauxParNiveau,
-				hint: TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionParNiveauOuPastille(
-					aListeNiveauxParNiveau,
-				),
-			});
+			lJauge =
+				UtilitaireCompetences_1.TUtilitaireCompetences.composeJaugeParNiveaux({
+					listeNiveaux: aListeNiveauxParNiveau,
+					hint: UtilitaireCompetences_1.TUtilitaireCompetences.getDefaultHintBarreNiveauDAcquisitionParNiveauOuPastille(
+						aListeNiveauxParNiveau,
+					),
+				});
 		}
 		return lJauge;
 	}
@@ -147,7 +150,7 @@ class DonneesListe_BilanCompetencesParMatiere extends ObjetDonneesListe {
 					aParams.declarationColonne.serviceConcerne.getNumero(),
 				);
 			if (lElementServiceConcerne && lElementServiceConcerne.niveauAcqui) {
-				return EGenreNiveauDAcquisitionUtil.getImage(
+				return Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
 					lElementServiceConcerne.niveauAcqui,
 				);
 			}
@@ -171,7 +174,8 @@ class DonneesListe_BilanCompetencesParMatiere extends ObjetDonneesListe {
 			let lCouleurCellule =
 				GCouleur.liste.cumul[aParams.article.niveauDeploiement];
 			if (this.estUneCelluleNiveauDeServiceEditable(aParams)) {
-				lCouleurCellule = ObjetDonneesListe.ECouleurCellule.Blanc;
+				lCouleurCellule =
+					ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
 			}
 			return lCouleurCellule;
 		}
@@ -198,10 +202,11 @@ class DonneesListe_BilanCompetencesParMatiere extends ObjetDonneesListe {
 		return lClasses.join(" ");
 	}
 }
+exports.DonneesListe_BilanCompetencesParMatiere =
+	DonneesListe_BilanCompetencesParMatiere;
 DonneesListe_BilanCompetencesParMatiere.colonnes = {
 	libelle: "DLBCPM_Libelle",
 	jauge: "DLBCPM_Jauge",
 	prefixe_jauge_service: "DLBCPM_Jauge_Serv_",
 	prefixe_niveau_service: "DLBCPM_Niveau_Serv_",
 };
-module.exports = DonneesListe_BilanCompetencesParMatiere;

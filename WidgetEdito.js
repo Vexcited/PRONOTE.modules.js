@@ -4,7 +4,7 @@ const ObjetWidget_1 = require("ObjetWidget");
 class WidgetEdito extends ObjetWidget_1.Widget.ObjetWidget {
 	construire(aParams) {
 		this.donnees = aParams.donnees;
-		const lWidget = { html: this.composeWidgetEdito() };
+		const lWidget = { getHtml: this.composeWidgetEdito.bind(this) };
 		$.extend(true, aParams.donnees, lWidget);
 		aParams.construireWidget(this.donnees);
 	}
@@ -12,13 +12,9 @@ class WidgetEdito extends ObjetWidget_1.Widget.ObjetWidget {
 		const H = [];
 		H.push(
 			IE.jsx.str(
-				IE.jsx.fragment,
+				"div",
 				null,
-				IE.jsx.str(
-					"div",
-					null,
-					ObjetChaine_1.GChaine.replaceRCToHTML(this.donnees.contenu),
-				),
+				ObjetChaine_1.GChaine.replaceRCToHTML(this.donnees.contenu),
 			),
 		);
 		return H.join("");

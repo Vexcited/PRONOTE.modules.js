@@ -12,6 +12,7 @@ const ObjetTri_1 = require("ObjetTri");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const UtilitaireTraitementImage_1 = require("UtilitaireTraitementImage");
 const UtilitaireSelecFile_1 = require("UtilitaireSelecFile");
+const AccessApp_1 = require("AccessApp");
 class SelecFile {
 	static async select(aOptions) {
 		return await new ObjetSelecFile(aOptions).select();
@@ -39,7 +40,7 @@ class SelecFile {
 				UtilitaireTraitementImage_1.UtilitaireTraitementImage.getTabMimePDFImage().join(
 					", ",
 				),
-			capture: "",
+			capture: false,
 		};
 	}
 }
@@ -136,9 +137,9 @@ class ObjetSelecFile {
 			}
 			if (this.avecTransformationFlux()) {
 				try {
-					await GApplication.getObject(
-						"transformationFlux",
-					).transformationFluxPromise(lParams.listeFichiers, this.options);
+					await (0, AccessApp_1.getApp)()
+						.getObject("transformationFlux")
+						.transformationFluxPromise(lParams.listeFichiers, this.options);
 				} catch (aError) {}
 				lParams.listeFichiers =
 					UtilitaireSelecFile_1.UtilitaireSelecFile.controleTailleFichiers(
@@ -148,21 +149,23 @@ class ObjetSelecFile {
 					);
 			}
 			if (lMessagesErreur.length > 0) {
-				await GApplication.getMessage().afficher({
-					message: lMessagesErreur.join("<br>"),
-				});
+				await (0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({ message: lMessagesErreur.join("<br>") });
 			}
 			if (lParams.listeFichiers.count() > 0) {
 				lParams.eltFichier = lParams.listeFichiers.get(0);
-				IEHtml.refresh(true);
+				IEHtml.refresh();
 				return lParams;
 			}
 		} catch (e) {
-			await GApplication.getMessage().afficher({
-				message: ObjetTraduction_1.GTraductions.getValeur(
-					"inputFile.EchecAjoutFichier",
-				),
-			});
+			await (0, AccessApp_1.getApp)()
+				.getMessage()
+				.afficher({
+					message: ObjetTraduction_1.GTraductions.getValeur(
+						"inputFile.EchecAjoutFichier",
+					),
+				});
 			return null;
 		}
 	}
@@ -314,8 +317,10 @@ class ObjetSelecFile {
 		}
 	}
 	avecTransformationFlux() {
-		if (this.options.avecTransformationFlux && global.GApplication) {
-			const lTransformationFlux = GApplication.getObject("transformationFlux");
+		if (this.options.avecTransformationFlux && (0, AccessApp_1.getApp)()) {
+			const lTransformationFlux = (0, AccessApp_1.getApp)().getObject(
+				"transformationFlux",
+			);
 			return (
 				!!lTransformationFlux &&
 				lTransformationFlux.getActif() &&

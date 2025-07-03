@@ -1,19 +1,29 @@
-exports.SyntheseVocale = void 0;
+exports.SyntheseVocale = exports.SyntheseVocaleNS = void 0;
+const AccessApp_1 = require("AccessApp");
 const ObjetElement_1 = require("ObjetElement");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetPosition_1 = require("ObjetPosition");
-const tag_1 = require("tag");
 const UtilitaireChangementLangueProduit_1 = require("UtilitaireChangementLangueProduit");
+var SyntheseVocaleNS;
+(function (SyntheseVocaleNS) {
+	let TypeVoix;
+	(function (TypeVoix) {
+		TypeVoix[(TypeVoix["compatible"] = 1)] = "compatible";
+		TypeVoix[(TypeVoix["memeLangue"] = 2)] = "memeLangue";
+		TypeVoix[(TypeVoix["tous"] = 3)] = "tous";
+	})(
+		(TypeVoix = SyntheseVocaleNS.TypeVoix || (SyntheseVocaleNS.TypeVoix = {})),
+	);
+})(SyntheseVocaleNS || (exports.SyntheseVocaleNS = SyntheseVocaleNS = {}));
 class UtilitaireSyntheseVocale {
 	constructor() {
-		this.applicationProduit = GApplication;
 		this.supportee = !!window.speechSynthesis;
 		this.active = false;
 		this.avecSurlignage = false;
 		this.estInitialise = false;
-		this.listeVoixCompatible = [];
-		this.listeVoixLangue = [];
+		this.existeVoixCompatible = false;
 		this.listeVoix = [];
+		this.listeElementVoix = new ObjetListeElements_1.ObjetListeElements();
 	}
 	getActif() {
 		this.initialiser();
@@ -27,7 +37,7 @@ class UtilitaireSyntheseVocale {
 		var _a;
 		if (!this.supportee) {
 			if (
-				(_a = this.applicationProduit) === null || _a === void 0
+				(_a = (0, AccessApp_1.getApp)()) === null || _a === void 0
 					? void 0
 					: _a.estAppliMobile
 			) {
@@ -42,29 +52,29 @@ class UtilitaireSyntheseVocale {
 			};
 		}
 	}
-	getListeVoix() {
+	getListeVoix(aOptions) {
 		this.initialiser();
-		const lResult = new ObjetListeElements_1.ObjetListeElements();
-		let lElement;
-		if (this.listeVoixCompatible.length > 0) {
-			this.listeVoixCompatible.forEach((aElement, aIndex) => {
-				lElement = ObjetElement_1.ObjetElement.create({
-					Libelle: aElement.name,
-					Genre: aIndex,
-					voix: aElement,
-				});
-				lResult.addElement(lElement);
-			});
-		} else if (this.listeVoixLangue.length > 0) {
-			this.listeVoixLangue.forEach((aElement, aIndex) => {
-				lElement = ObjetElement_1.ObjetElement.create({
-					Libelle: aElement.name,
-					Genre: aIndex,
-					voix: aElement,
-				});
-				lResult.addElement(lElement);
-			});
+		const lOptions = {
+			avecRemoteVoix: false,
+			typeVoix: SyntheseVocaleNS.TypeVoix.compatible,
+		};
+		if (aOptions) {
+			$.extend(lOptions, aOptions);
 		}
+		const lResult = this.listeElementVoix.getListeElements((aElement) => {
+			const lEstUtilisable =
+				aElement.voix.localService || lOptions.avecRemoteVoix;
+			if (!lEstUtilisable) {
+				return false;
+			}
+			return (
+				aElement.type === SyntheseVocaleNS.TypeVoix.compatible ||
+				lOptions.typeVoix === SyntheseVocaleNS.TypeVoix.tous ||
+				(aElement.type === SyntheseVocaleNS.TypeVoix.memeLangue &&
+					(lOptions.typeVoix === SyntheseVocaleNS.TypeVoix.memeLangue ||
+						!this.existeVoixCompatible))
+			);
+		});
 		return lResult;
 	}
 	getVoix() {
@@ -78,7 +88,7 @@ class UtilitaireSyntheseVocale {
 				(_d =
 					(_c =
 						(_b =
-							(_a = this.applicationProduit) === null || _a === void 0
+							(_a = (0, AccessApp_1.getApp)()) === null || _a === void 0
 								? void 0
 								: _a.getOptionsEspaceLocal) === null || _b === void 0
 							? void 0
@@ -91,48 +101,55 @@ class UtilitaireSyntheseVocale {
 				: false;
 	}
 	initVoix() {
-		var _a, _b, _c;
+		var _a, _b;
 		let lResult;
 		let lAvecDefault = false;
+		const lAppl = (0, AccessApp_1.getApp)();
 		if (
-			((_a = this.applicationProduit) === null || _a === void 0
+			(lAppl === null || lAppl === void 0
 				? void 0
-				: _a.getOptionsEspaceLocal) &&
-			this.applicationProduit.getOptionsEspaceLocal()
+				: lAppl.getOptionsEspaceLocal) &&
+			lAppl.getOptionsEspaceLocal()
 		) {
-			this.active = this.applicationProduit
-				.getOptionsEspaceLocal()
-				.getSyntheseVocaleActif();
-			this.avecSurlignage = this.applicationProduit
+			this.active = lAppl.getOptionsEspaceLocal().getSyntheseVocaleActif();
+			this.avecSurlignage = lAppl
 				.getOptionsEspaceLocal()
 				.getSyntheseVocaleAvecSurlignage();
 			this.uriCookie =
-				this.applicationProduit
-					.getOptionsEspaceLocal()
-					.getVoixSyntheseVocale() || "";
-		} else {
-			this.active = true;
+				lAppl.getOptionsEspaceLocal().getVoixSyntheseVocale() || "";
 		}
 		this.listeVoix = speechSynthesis.getVoices();
+		const lListeVoixCompatible = [];
+		const lListeVoixLangue = [];
 		if (this.estInitialise) {
-			this.listeVoixCompatible = [];
-			this.listeVoixLangue = [];
+			this.existeVoixCompatible = false;
+			this.listeElementVoix = new ObjetListeElements_1.ObjetListeElements();
 		}
 		this.estInitialise = true;
+		let lPosCompatible = 1;
+		let lPosLangue = 501;
+		let lPosAutre = 1001;
 		for (let i = 0; i < this.listeVoix.length; i++) {
 			const lVoix = this.listeVoix[i];
+			const lElement = ObjetElement_1.ObjetElement.create({
+				Libelle: lVoix.name,
+				Genre: i,
+				type: SyntheseVocaleNS.TypeVoix.tous,
+				voix: lVoix,
+			});
 			if (this.uriCookie !== "" && lVoix.voiceURI === this.uriCookie) {
+				lElement.setActif(true);
 				lResult = lVoix;
 				lAvecDefault = true;
 			}
 			const lLangID =
+				((_a = global.GParametres) === null || _a === void 0
+					? void 0
+					: _a.langID) || 1036;
+			const lLangue =
 				((_b = global.GParametres) === null || _b === void 0
 					? void 0
-					: _b.langID) || 1036;
-			const lLangue =
-				((_c = global.GParametres) === null || _c === void 0
-					? void 0
-					: _c.langue) || "fr";
+					: _b.langue) || "fr";
 			const lEstVoixCompatible =
 				lVoix.lang ===
 				UtilitaireChangementLangueProduit_1.UtilitaireChangementLangueProduit.getCodeLangueIetf(
@@ -144,17 +161,29 @@ class UtilitaireSyntheseVocale {
 					lResult = lVoix;
 					lAvecDefault = true;
 				}
-				this.listeVoixCompatible.push(lVoix);
-				this.listeVoixLangue.push(lVoix);
+				lElement.type = SyntheseVocaleNS.TypeVoix.compatible;
+				lElement.Position = lPosCompatible;
+				lPosCompatible++;
+				this.existeVoixCompatible = true;
+				lListeVoixCompatible.push(lVoix);
+				lListeVoixLangue.push(lVoix);
 			} else if (lEstLangueCompatible) {
-				this.listeVoixLangue.push(lVoix);
+				lElement.type = SyntheseVocaleNS.TypeVoix.memeLangue;
+				lElement.Position = lPosLangue;
+				lPosLangue++;
+				lListeVoixLangue.push(lVoix);
+			} else {
+				lElement.Position = lPosAutre;
+				lPosAutre++;
 			}
+			this.listeElementVoix.add(lElement);
 		}
+		this.listeElementVoix.trier();
 		if (!lAvecDefault) {
-			if (this.listeVoixCompatible.length > 0) {
-				lResult = this.listeVoixCompatible[0];
-			} else if (this.listeVoixLangue.length > 0) {
-				lResult = this.listeVoixLangue[0];
+			if (lListeVoixCompatible.length > 0) {
+				lResult = lListeVoixCompatible[0];
+			} else if (lListeVoixLangue.length > 0) {
+				lResult = lListeVoixLangue[0];
 			}
 		}
 		if ((!this.voix || !this.listeVoix.includes(lResult)) && lResult) {
@@ -166,48 +195,54 @@ class UtilitaireSyntheseVocale {
 		this.saisieVoix(aVoix);
 	}
 	saisieVoix(aVoix) {
-		var _a;
 		this.voix = aVoix;
 		if (this.voix && this.uriCookie !== this.voix.voiceURI) {
+			const lAppl = (0, AccessApp_1.getApp)();
 			this.uriCookie = this.voix.voiceURI;
 			if (
-				((_a = this.applicationProduit) === null || _a === void 0
+				(lAppl === null || lAppl === void 0
 					? void 0
-					: _a.getOptionsEspaceLocal) &&
-				this.applicationProduit.getOptionsEspaceLocal()
+					: lAppl.getOptionsEspaceLocal) &&
+				lAppl.getOptionsEspaceLocal()
 			) {
-				this.applicationProduit
-					.getOptionsEspaceLocal()
-					.setVoixSyntheseVocale(this.uriCookie);
+				lAppl.getOptionsEspaceLocal().setVoixSyntheseVocale(this.uriCookie);
 			}
 		}
 	}
-	saisieActive(aActif) {
-		var _a;
+	debugActive(aActif) {
+		const lApp = (0, AccessApp_1.getApp)();
+		if (lApp.getOptionsDebug() && lApp.getOptionsDebug().forcerSyntheseVocale) {
+			if (!this.active && aActif) {
+				this.initialiser();
+			}
+		}
 		this.active = aActif;
+	}
+	saisieActive(aActif, aForcerInitialisation) {
+		if (aForcerInitialisation) {
+			this.initialiser();
+		}
+		this.active = aActif;
+		const lAppl = (0, AccessApp_1.getApp)();
 		if (
-			((_a = this.applicationProduit) === null || _a === void 0
+			(lAppl === null || lAppl === void 0
 				? void 0
-				: _a.getOptionsEspaceLocal) &&
-			this.applicationProduit.getOptionsEspaceLocal()
+				: lAppl.getOptionsEspaceLocal) &&
+			lAppl.getOptionsEspaceLocal()
 		) {
-			this.applicationProduit
-				.getOptionsEspaceLocal()
-				.setSyntheseVocaleActif(aActif);
+			lAppl.getOptionsEspaceLocal().setSyntheseVocaleActif(aActif);
 		}
 	}
 	saisieAvecSurlignage(aValeur) {
-		var _a;
 		this.avecSurlignage = aValeur;
+		const lAppl = (0, AccessApp_1.getApp)();
 		if (
-			((_a = this.applicationProduit) === null || _a === void 0
+			(lAppl === null || lAppl === void 0
 				? void 0
-				: _a.getOptionsEspaceLocal) &&
-			this.applicationProduit.getOptionsEspaceLocal()
+				: lAppl.getOptionsEspaceLocal) &&
+			lAppl.getOptionsEspaceLocal()
 		) {
-			this.applicationProduit
-				.getOptionsEspaceLocal()
-				.setSyntheseVocaleAvecSurlignage(aValeur);
+			lAppl.getOptionsEspaceLocal().setSyntheseVocaleAvecSurlignage(aValeur);
 		}
 	}
 	speak(aNode, aNodeBouton, aResult) {
@@ -223,7 +258,7 @@ class UtilitaireSyntheseVocale {
 		const lText = aResult.text;
 		if (!this.supportee) {
 			if (window.messageData) {
-				this.applicationProduit.callbackSyntheseVocale = () => {
+				(0, AccessApp_1.getApp)().callbackSyntheseVocale = () => {
 					this.reset(aNodeBouton);
 				};
 				const lEstBtnPlay = aNodeBouton.hasClass("icon_play_sign");
@@ -373,7 +408,7 @@ class UtilitaireSyntheseVocale {
 		var _a, _b, _c;
 		if (!this.supportee) {
 			if (
-				(_a = this.applicationProduit) === null || _a === void 0
+				(_a = (0, AccessApp_1.getApp)()) === null || _a === void 0
 					? void 0
 					: _a.estAppliMobile
 			) {
@@ -418,10 +453,14 @@ class UtilitaireSyntheseVocale {
 				$(aNode)
 					.addClass("surlignage-conteneur")
 					.append(
-						(0, tag_1.tag)("div", {
-							class: "surlignage-recherche-texte",
-							style: `top:${lRect.y - lRectCellule.y}px; left:${lRect.x - lRectCellule.x}px; width:${lRect.width}px; height:${lRect.height}px;"`,
-						}),
+						IE.jsx.str(
+							IE.jsx.fragment,
+							null,
+							IE.jsx.str("div", {
+								class: "surlignage-recherche-texte",
+								style: `top:${lRect.y - lRectCellule.y}px; left:${lRect.x - lRectCellule.x}px; width:${lRect.width}px; height:${lRect.height}px;"`,
+							}),
+						),
 					);
 			}
 		}

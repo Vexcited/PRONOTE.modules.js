@@ -11,10 +11,11 @@ const ObjetElement_1 = require("ObjetElement");
 const TypeFichierExterneHttpSco_1 = require("TypeFichierExterneHttpSco");
 const Enumere_EvenementWidget_1 = require("Enumere_EvenementWidget");
 const ObjetWidget_1 = require("ObjetWidget");
+const AccessApp_1 = require("AccessApp");
 class WidgetCompetences extends ObjetWidget_1.Widget.ObjetWidget {
 	constructor(...aParams) {
 		super(...aParams);
-		const lApplicationSco = GApplication;
+		const lApplicationSco = (0, AccessApp_1.getApp)();
 		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
 	}
 	construire(aParams) {
@@ -27,15 +28,8 @@ class WidgetCompetences extends ObjetWidget_1.Widget.ObjetWidget {
 			ObjetTri_1.ObjetTri.init("matiere.Libelle"),
 		]);
 		this.donnees.listeEvaluations.trier();
-		const H = [];
-		H.push('<ul class="liste-clickable">');
-		for (let i = 0; i < this.donnees.listeEvaluations.count(); i++) {
-			const lEvaluation = this.donnees.listeEvaluations.get(i);
-			H.push(this.composeEvaluation(lEvaluation, i));
-		}
-		H.push("</ul>");
 		const lWidget = {
-			html: H.join(""),
+			getHtml: this.composeWidgetCompetences.bind(this),
 			nbrElements: this.donnees.listeEvaluations.count(),
 			afficherMessage: this.donnees.listeEvaluations.count() === 0,
 			getPage: () => {
@@ -52,6 +46,16 @@ class WidgetCompetences extends ObjetWidget_1.Widget.ObjetWidget {
 		};
 		$.extend(true, this.donnees, lWidget);
 		aParams.construireWidget(this.donnees);
+	}
+	composeWidgetCompetences() {
+		const H = [];
+		H.push('<ul class="liste-clickable">');
+		for (let i = 0; i < this.donnees.listeEvaluations.count(); i++) {
+			const lEvaluation = this.donnees.listeEvaluations.get(i);
+			H.push(this.composeEvaluation(lEvaluation, i));
+		}
+		H.push("</ul>");
+		return H.join("");
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(this), {
@@ -217,14 +221,13 @@ class WidgetCompetences extends ObjetWidget_1.Widget.ObjetWidget {
 		}
 	}
 	setEvaluationWidgetSelectionne(aEval) {
-		const lGEtatUtilisateur = GEtatUtilisateur;
-		if (!lGEtatUtilisateur.infosSupp) {
-			lGEtatUtilisateur.infosSupp = {};
+		if (!this.etatUtilisateurSco.infosSupp) {
+			this.etatUtilisateurSco.infosSupp = {};
 		}
-		if (!lGEtatUtilisateur.infosSupp.DernieresEvaluationsMobile) {
-			lGEtatUtilisateur.infosSupp.DernieresEvaluationsMobile = {};
+		if (!this.etatUtilisateurSco.infosSupp.DernieresEvaluationsMobile) {
+			this.etatUtilisateurSco.infosSupp.DernieresEvaluationsMobile = {};
 		}
-		lGEtatUtilisateur.infosSupp.DernieresEvaluationsMobile.evaluationWidgetSelectionne =
+		this.etatUtilisateurSco.infosSupp.DernieresEvaluationsMobile.evaluationWidgetSelectionne =
 			aEval;
 	}
 }

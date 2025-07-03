@@ -235,26 +235,22 @@ class DonneesListe_ListeDelegationAuthentification extends ObjetDonneesListe_1.O
 				}
 				if (aParams.article.val) {
 					return IE.jsx.str(
-						IE.jsx.fragment,
-						null,
+						"div",
+						{ style: "display:flex; align-items: center;" },
 						IE.jsx.str(
 							"div",
-							{ style: "display:flex; align-items: center;" },
-							IE.jsx.str(
-								"div",
-								{ style: "flex: 1 1 auto;", "ie-ellipsis": true },
-								aParams.article.getLibelle(),
-							),
-							IE.jsx.str("ie-btnimage", {
-								"ie-model": (0, jsx_1.jsxFuncAttr)(
-									"btnParam",
-									aParams.article.val.idParametres,
-								),
-								title: lTitle,
-								class: "icon_cog btnImageIcon",
-								style: "flex: none; margin-left: 0.3rem; font-size: 1.5rem;",
-							}),
+							{ style: "flex: 1 1 auto;", "ie-ellipsis": true },
+							aParams.article.getLibelle(),
 						),
+						IE.jsx.str("ie-btnimage", {
+							"ie-model": (0, jsx_1.jsxFuncAttr)(
+								"btnParam",
+								aParams.article.val.idParametres,
+							),
+							title: lTitle,
+							class: "icon_cog btnImageIcon",
+							style: "flex: none; margin-left: 0.3rem; font-size: 1.5rem;",
+						}),
 					);
 				}
 				return aParams.article.getLibelle();

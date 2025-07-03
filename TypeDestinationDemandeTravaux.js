@@ -19,7 +19,7 @@ const ObjetElement_1 = require("ObjetElement");
 const MethodesObjet_1 = require("MethodesObjet");
 const lTypePourMairie = [TypeDestinationDemandeTravaux.DDT_Collectivite];
 const TypeDestinationDemandeTravauxUtil = {
-	toListe(aPourMairie) {
+	toListe(aPourMairie = false) {
 		const lListe = new ObjetListeElements_1.ObjetListeElements();
 		for (const lKey of MethodesObjet_1.MethodesObjet.enumKeys(
 			TypeDestinationDemandeTravaux,

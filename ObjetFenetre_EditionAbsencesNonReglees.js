@@ -34,7 +34,6 @@ class ObjetFenetre_EditionAbsencesNonReglees extends ObjetFenetre_1.ObjetFenetre
 		if (this.avecEdition) {
 			this.identFenetreMotif = this.addFenetre(
 				ObjetFenetre_SelectionMotif_1.ObjetFenetre_SelectionMotif,
-				this._evenementFenetreSelectionMotif.bind(this),
 			);
 		}
 	}

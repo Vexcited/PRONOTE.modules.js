@@ -1,25 +1,28 @@
-const { InterfacePage_Mobile } = require("InterfacePage_Mobile.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { ObjetListe } = require("ObjetListe.js");
-const ObjetRequetePageRemplacements = require("ObjetRequetePageRemplacements.js");
-const { UtilitaireInitCalendrier } = require("UtilitaireInitCalendrier.js");
-const DonneesListe_PageRemplacements = require("DonneesListe_PageRemplacements.js");
-const { GHtml } = require("ObjetHtml.js");
-const { ObjetCelluleDate } = require("ObjetCelluleDate.js");
-const { GDate } = require("ObjetDate.js");
-class InterfacePageRemplacements_Mobile extends InterfacePage_Mobile {
+exports.InterfacePageRemplacements_Mobile = void 0;
+const InterfacePage_Mobile_1 = require("InterfacePage_Mobile");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetRequetePageRemplacements_1 = require("ObjetRequetePageRemplacements");
+const DonneesListe_PageRemplacements_1 = require("DonneesListe_PageRemplacements");
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetCelluleDate_1 = require("ObjetCelluleDate");
+const ObjetDate_1 = require("ObjetDate");
+const AccessApp_1 = require("AccessApp");
+class InterfacePageRemplacements_Mobile extends InterfacePage_Mobile_1.InterfacePage_Mobile {
 	constructor(...aParams) {
 		super(...aParams);
+		const lApplicationSco = (0, AccessApp_1.getApp)();
+		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
 	}
 	construireInstances() {
 		this.IdentRemplacements = this.add(
-			ObjetListe,
+			ObjetListe_1.ObjetListe,
 			null,
 			this.initialiserTableauFlatDesign,
 		);
 		this.identDate = this.add(
-			ObjetCelluleDate,
+			ObjetCelluleDate_1.ObjetCelluleDate,
 			this._evntCelluleSemaine,
 			this.iniDate,
 		);
@@ -34,79 +37,70 @@ class InterfacePageRemplacements_Mobile extends InterfacePage_Mobile {
 		this.IdentZoneAlClient = this.IdentRemplacements;
 		this.AddSurZone = [this.identDate];
 	}
-	initialiserCalendrier(AObjet) {
-		UtilitaireInitCalendrier.init(AObjet, "");
-		AObjet.setFrequences(GParametres.frequences, true);
-	}
 	recupererDonnees() {
 		this.getInstance(this.identDate).setDonnees(
-			GDate.getDateCourante(true),
+			ObjetDate_1.GDate.getDateCourante(true),
 			true,
 		);
 	}
 	recupererDonneesCalendrier(aDureeNonAssuree, aDureeRemplacee, aListeCours) {
-		this.DureeNonAssuree = aDureeNonAssuree;
-		this.DureeRemplacee = aDureeRemplacee;
 		this.ListeCours = aListeCours;
 		this.afficherEnFlatDesign();
 	}
 	_evntCelluleSemaine(aDomaine) {
-		let numeroSemaine = GDate.getSemaine(aDomaine);
+		let numeroSemaine = ObjetDate_1.GDate.getSemaine(aDomaine);
 		if (aDomaine) {
-			new ObjetRequetePageRemplacements(
+			new ObjetRequetePageRemplacements_1.ObjetRequetePageRemplacements(
 				this,
 				this.recupererDonneesCalendrier,
-			).lancerRequete(GEtatUtilisateur.getGenreOnglet(), numeroSemaine);
+			).lancerRequete(this.etatUtilisateurSco.getGenreOnglet(), numeroSemaine);
 		} else {
-			new ObjetRequetePageRemplacements(
+			new ObjetRequetePageRemplacements_1.ObjetRequetePageRemplacements(
 				this,
 				this.recupererDonneesCalendrier,
-			).lancerRequete(GEtatUtilisateur.getGenreOnglet(), numeroSemaine);
+			).lancerRequete(this.etatUtilisateurSco.getGenreOnglet(), numeroSemaine);
 		}
 	}
 	afficherEnFlatDesign() {
 		this.ListeCours.setTri([
-			ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.init((D) => {
 				return D.Date;
 			}),
-			ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.init((D) => {
 				return D.HeureDebut;
 			}),
 		]);
 		this.ListeCours.trier();
 		if (this.ListeCours.count()) {
 			this.getInstance(this.IdentRemplacements).setDonnees(
-				new DonneesListe_PageRemplacements(
-					{
-						ListeCours: this.ListeCours,
-						DureeNonAssuree: this.DureeNonAssuree,
-						DureeRemplacee: this.DureeRemplacee,
-					},
-					{ instance: this.getInstance(this.IdentRemplacements) },
+				new DonneesListe_PageRemplacements_1.DonneesListe_PageRemplacements(
+					this.ListeCours,
 				),
 			);
 		} else {
 			this.getInstance(this.IdentRemplacements).setDonnees(
-				new DonneesListe_PageRemplacements(
-					{
-						ListeCours: this.ListeCours,
-						DureeNonAssuree: this.DureeNonAssuree,
-						DureeRemplacee: this.DureeRemplacee,
-					},
-					{ instance: this.getInstance(this.IdentRemplacements) },
+				new DonneesListe_PageRemplacements_1.DonneesListe_PageRemplacements(
+					this.ListeCours,
 				),
 			);
 			const H = [];
 			H.push(
 				`<div class="semi-bold taille-m m-all-xxl p-y-xl">`,
-				GTraductions.getValeur("PageRemplacement.Remplacement_AucunCours"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"PageRemplacement.Remplacement_AucunCours",
+				),
 				`</div>`,
 			);
-			GHtml.setHtml(this.getInstance(this.IdentRemplacements).Nom, H.join(""));
+			ObjetHtml_1.GHtml.setHtml(
+				this.getInstance(this.IdentRemplacements).getNom(),
+				H.join(""),
+			);
 		}
 	}
 	initialiserTableauFlatDesign(aInstance) {
-		aInstance.setOptionsListe({ skin: ObjetListe.skin.flatDesign });
+		aInstance.setOptionsListe({
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+		});
 	}
 }
-module.exports = InterfacePageRemplacements_Mobile;
+exports.InterfacePageRemplacements_Mobile = InterfacePageRemplacements_Mobile;

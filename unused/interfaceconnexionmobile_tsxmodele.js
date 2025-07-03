@@ -121,11 +121,10 @@ const getHtml = (aParams) => {
 							IE.jsx.str(
 								"ie-checkbox",
 								{
-									"ie-textleft": true,
 									class: "colored-label",
 									id: aParams.id.checkSouvenir,
 									"ie-model": "stockageMDP",
-									title: aParams.traductions.seSouvenirInfo,
+									"ie-tooltipdescribe": aParams.traductions.seSouvenirInfo,
 								},
 								aParams.traductions.seSouvenirLabel,
 							),
@@ -195,7 +194,7 @@ const getHtml = (aParams) => {
 								role: "button",
 								tabindex: "0",
 								class: "as-link m-left",
-								"ie-node": "ouvrirMentionsLegales",
+								"ie-node": aParams.jsx.jsxNodeOuvrirMentionsLegales,
 								"aria-haspopup": "dialog",
 							},
 							aParams.traductions.mentionsLegales,
@@ -208,7 +207,7 @@ const getHtml = (aParams) => {
 							tabindex: "0",
 							"aria-label": aParams.traductions.fermer,
 							"ie-hint": aParams.traductions.fermer,
-							"ie-node": "btnFermer",
+							"ie-node": aParams.jsx.jsxNodeFermerBandeauCoookie,
 						},
 						aParams.traductions.fermer,
 					),
@@ -226,7 +225,10 @@ const getHtml = (aParams) => {
 				aParams.options.publierMentions &&
 					IE.jsx.str(
 						"div",
-						{ class: "AvecMain", "ie-node": "ouvrirMentionsLegales" },
+						{
+							class: "AvecMain",
+							"ie-node": aParams.jsx.jsxNodeOuvrirMentionsLegales,
+						},
 						aParams.traductions.mentionsLegales,
 					),
 				IE.jsx.str(

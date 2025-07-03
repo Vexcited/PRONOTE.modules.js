@@ -19,7 +19,6 @@ class ObjetFicheEtablissement extends ObjetFiche_1.ObjetFiche {
 		this.optionsFicheEtab = this.getOptionsParDefaut();
 		this.setOptionsFenetre({
 			fermerFenetreSurClicHorsFenetre: true,
-			heightMax_mobile: true,
 			titre: ObjetTraduction_1.GTraductions.getValeur(
 				"FicheEtablissement.ContacterEtablissement",
 			),
@@ -163,6 +162,7 @@ class ObjetFicheEtablissement extends ObjetFiche_1.ObjetFiche {
 			Enumere_Espace_1.EGenreEspace.Accompagnant,
 			Enumere_Espace_1.EGenreEspace.Mobile_Accompagnant,
 			Enumere_Espace_1.EGenreEspace.Entreprise,
+			Enumere_Espace_1.EGenreEspace.Mobile_Entreprise,
 			Enumere_Espace_1.EGenreEspace.PrimParent,
 			Enumere_Espace_1.EGenreEspace.Mobile_PrimParent,
 			Enumere_Espace_1.EGenreEspace.PrimAccompagnant,

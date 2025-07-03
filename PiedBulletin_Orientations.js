@@ -1,25 +1,39 @@
-const { ObjetInterface } = require("ObjetInterface.js");
-const { GHtml } = require("ObjetHtml.js");
-const { GStyle } = require("ObjetStyle.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { TypeContexteBulletin } = require("TypeContexteBulletin.js");
-const {
-	TypeModeAffichagePiedBulletin,
-} = require("TypeModeAffichagePiedBulletin.js");
-const { TypeRubriqueOrientation } = require("TypeRubriqueOrientation.js");
-const { TypeAvisConseil, TypeAvisConseilUtil } = require("TypeAvisConseil.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-class PiedBulletin_Orientations extends ObjetInterface {
-	constructor(...aParams) {
-		super(...aParams);
+exports.PiedBulletin_Orientations = void 0;
+const ObjetInterface_1 = require("ObjetInterface");
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetStyle_1 = require("ObjetStyle");
+const TypeContexteBulletin_1 = require("TypeContexteBulletin");
+const TypeModeAffichagePiedBulletin_1 = require("TypeModeAffichagePiedBulletin");
+const TypeRubriqueOrientation_1 = require("TypeRubriqueOrientation");
+const TypeAvisConseil_1 = require("TypeAvisConseil");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const TypeModuleFonctionnelPiedBulletin_1 = require("TypeModuleFonctionnelPiedBulletin");
+const GlossaireOrientation_1 = require("GlossaireOrientation");
+class PiedBulletin_Orientations extends ObjetInterface_1.ObjetInterface {
+	constructor() {
+		super(...arguments);
 		this.params = {
-			modeAffichage: TypeModeAffichagePiedBulletin.MAPB_Onglets,
+			modeAffichage:
+				TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+					.MAPB_Onglets,
 			avecContenuVide: false,
 		};
 	}
 	construireInstances() {
-		this.identListeOrientationClasse = this.add(ObjetListe);
+		this.identListeOrientationClasse = this.add(
+			ObjetListe_1.ObjetListe,
+			null,
+			(aListe) => {
+				aListe.setOptionsListe({
+					ariaLabel:
+						TypeModuleFonctionnelPiedBulletin_1.TypeModuleFonctionnelPiedBulletinUtil.getLibelle(
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
+						),
+				});
+			},
+		);
 	}
 	setDonnees(aParam) {
 		$.extend(true, this.params, aParam);
@@ -28,7 +42,8 @@ class PiedBulletin_Orientations extends ObjetInterface {
 		$.extend(true, this.params, aParam);
 	}
 	estAffiche() {
-		return this.params.contexte === TypeContexteBulletin.CB_Eleve
+		return this.params.contexte ===
+			TypeContexteBulletin_1.TypeContexteBulletin.CB_Eleve
 			? _estAfficheEnContexteEleve(this.params.objetOrientation)
 			: _estAfficheEnContexteClasse(this.params.objetOrientation);
 	}
@@ -39,24 +54,30 @@ class PiedBulletin_Orientations extends ObjetInterface {
 				T.push("<div>");
 				if (
 					aRubrique.getGenre() ===
-						TypeRubriqueOrientation.RO_IntentionFamille ||
-					aRubrique.getGenre() === TypeRubriqueOrientation.RO_VoeuDefinitif
+						TypeRubriqueOrientation_1.TypeRubriqueOrientation
+							.RO_IntentionFamille ||
+					aRubrique.getGenre() ===
+						TypeRubriqueOrientation_1.TypeRubriqueOrientation.RO_VoeuDefinitif
 				) {
 					let lTitreBloc;
 					if (
-						aRubrique.getGenre() === TypeRubriqueOrientation.RO_IntentionFamille
+						aRubrique.getGenre() ===
+						TypeRubriqueOrientation_1.TypeRubriqueOrientation
+							.RO_IntentionFamille
 					) {
-						lTitreBloc = GTraductions.getValeur(
-							"Orientation.Ressources.IntentionsEtAvisProvisoire",
-						);
+						lTitreBloc =
+							GlossaireOrientation_1.TradGlossaireOrientation.Ressources
+								.IntentionsEtAvisProvisoire;
 					} else {
-						lTitreBloc = GTraductions.getValeur(
-							"Orientation.Ressources.ChoixEtPropositions",
-						);
+						lTitreBloc =
+							GlossaireOrientation_1.TradGlossaireOrientation.Ressources
+								.ChoixEtPropositions;
 					}
 					T.push(
 						'<div class="PetitEspaceHaut PetitEspaceBas Gras" style="',
-						GStyle.composeCouleurTexte(GCouleur.themeCouleur.foncee),
+						ObjetStyle_1.GStyle.composeCouleurTexte(
+							GCouleur.themeCouleur.foncee,
+						),
 						'">',
 						lTitreBloc,
 						"</div>",
@@ -88,10 +109,13 @@ class PiedBulletin_Orientations extends ObjetInterface {
 	afficher(aParam) {
 		$.extend(true, this.params, aParam);
 		switch (aParam.modeAffichage) {
-			case TypeModeAffichagePiedBulletin.MAPB_Onglets:
-			case TypeModeAffichagePiedBulletin.MAPB_Lineaire: {
+			case TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+				.MAPB_Onglets:
+			case TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+				.MAPB_Lineaire: {
 				const lEstContexteEleve =
-					this.params.contexte === TypeContexteBulletin.CB_Eleve;
+					this.params.contexte ===
+					TypeContexteBulletin_1.TypeContexteBulletin.CB_Eleve;
 				if (!lEstContexteEleve) {
 					_actualiserListeOrientationsClasse(
 						this.getInstance(this.identListeOrientationClasse),
@@ -101,7 +125,7 @@ class PiedBulletin_Orientations extends ObjetInterface {
 				const lStr = lEstContexteEleve
 					? this._construireBlocOrientationEleve(this.params.objetOrientation)
 					: this._construireOrientationsClasse(this.params.objetOrientation);
-				GHtml.setHtml(this.Nom, lStr);
+				ObjetHtml_1.GHtml.setHtml(this.Nom, lStr);
 				if (!lEstContexteEleve) {
 					this.getInstance(this.identListeOrientationClasse).setDonnees(
 						new DonneesListe_OrientationsClasse(
@@ -113,8 +137,8 @@ class PiedBulletin_Orientations extends ObjetInterface {
 			}
 		}
 	}
-	getListeArborescente() {}
 }
+exports.PiedBulletin_Orientations = PiedBulletin_Orientations;
 function _estAfficheEnContexteEleve(aObjetOrientation) {
 	let lContientAuMoinsUnVoeu = false;
 	if (!!aObjetOrientation && !!aObjetOrientation.listeRubriques) {
@@ -162,9 +186,8 @@ function construitRubriqueAvecListeVoeux(aRubrique) {
 				if (!!aVoeu.avecStagePasserelleFamille) {
 					lHtmlRubrique.push(
 						" (",
-						GTraductions.getValeur(
-							"Orientation.Ressources.DemandeStagePasserelle",
-						),
+						GlossaireOrientation_1.TradGlossaireOrientation.Ressources
+							.DemandeStagePasserelle,
 						")",
 					);
 				}
@@ -172,13 +195,17 @@ function construitRubriqueAvecListeVoeux(aRubrique) {
 				if (!!aVoeu.reponseCC || !!aVoeu.motivation) {
 					lHtmlRubrique.push("<div>");
 					if (!!aVoeu.reponseCC) {
-						let lAvisLibelle = TypeAvisConseilUtil.getLibelle(aVoeu.reponseCC);
+						let lAvisLibelle = TypeAvisConseil_1.TypeAvisConseilUtil.getLibelle(
+							aVoeu.reponseCC,
+						);
 						if (
-							aRubrique.getGenre() === TypeRubriqueOrientation.RO_VoeuDefinitif
+							aRubrique.getGenre() ===
+							TypeRubriqueOrientation_1.TypeRubriqueOrientation.RO_VoeuDefinitif
 						) {
-							lAvisLibelle = TypeAvisConseilUtil.getLibelleOuiNon(
-								aVoeu.reponseCC,
-							);
+							lAvisLibelle =
+								TypeAvisConseil_1.TypeAvisConseilUtil.getLibelleOuiNon(
+									aVoeu.reponseCC,
+								);
 						}
 						lHtmlRubrique.push(
 							'<span class="Bloc_TypeAvisConseil TypeAvis_',
@@ -194,9 +221,8 @@ function construitRubriqueAvecListeVoeux(aRubrique) {
 					if (aVoeu.avecStagePasserelleConseil) {
 						lHtmlRubrique.push(
 							" (",
-							GTraductions.getValeur(
-								"Orientation.Ressources.StagePasserellePropose",
-							),
+							GlossaireOrientation_1.TradGlossaireOrientation.Ressources
+								.StagePasserellePropose,
 							")",
 						);
 					}
@@ -223,7 +249,8 @@ function construitRubriqueAutre(aRubrique) {
 		if (!!lPremierVoeu.avecStagePasserelleConseil) {
 			lHtmlRubrique.push(
 				" - ",
-				GTraductions.getValeur("Orientation.Ressources.StagePasserellePropose"),
+				GlossaireOrientation_1.TradGlossaireOrientation.Ressources
+					.StagePasserellePropose,
 			);
 		}
 	}
@@ -246,26 +273,32 @@ function _actualiserListeOrientationsClasse(aInstanceListe, aObjetOrientation) {
 	});
 	const lEstModeOuiNon =
 		!!lRubriqueConcernee &&
-		lRubriqueConcernee.getGenre() === TypeRubriqueOrientation.RO_VoeuDefinitif;
-	const lTypesAvisNonConcernes = [TypeAvisConseil.taco_Aucun];
+		lRubriqueConcernee.getGenre() ===
+			TypeRubriqueOrientation_1.TypeRubriqueOrientation.RO_VoeuDefinitif;
+	const lTypesAvisNonConcernes = [TypeAvisConseil_1.TypeAvisConseil.taco_Aucun];
 	if (lEstModeOuiNon) {
-		lTypesAvisNonConcernes.push(TypeAvisConseil.taco_Favorable);
-		lTypesAvisNonConcernes.push(TypeAvisConseil.taco_Reserve);
+		lTypesAvisNonConcernes.push(
+			TypeAvisConseil_1.TypeAvisConseil.taco_Favorable,
+		);
+		lTypesAvisNonConcernes.push(TypeAvisConseil_1.TypeAvisConseil.taco_Reserve);
 	}
-	const lArrayTypeAvis = TypeAvisConseilUtil.toListe();
+	const lArrayTypeAvis = TypeAvisConseil_1.TypeAvisConseilUtil.toListe();
 	for (let i = 0; i < lArrayTypeAvis.length; i++) {
 		if (lTypesAvisNonConcernes.indexOf(lArrayTypeAvis[i]) === -1) {
 			let lLibelleColonne = "";
 			let lHintColonne;
 			if (lEstModeOuiNon) {
-				lLibelleColonne = TypeAvisConseilUtil.getLibelleOuiNon(
-					lArrayTypeAvis[i],
-				);
+				lLibelleColonne =
+					TypeAvisConseil_1.TypeAvisConseilUtil.getLibelleOuiNon(
+						lArrayTypeAvis[i],
+					);
 			} else {
-				lLibelleColonne = TypeAvisConseilUtil.getAbbreviation(
+				lLibelleColonne = TypeAvisConseil_1.TypeAvisConseilUtil.getAbbreviation(
 					lArrayTypeAvis[i],
 				);
-				lHintColonne = TypeAvisConseilUtil.getLibelle(lArrayTypeAvis[i]);
+				lHintColonne = TypeAvisConseil_1.TypeAvisConseilUtil.getLibelle(
+					lArrayTypeAvis[i],
+				);
 			}
 			lColonnes.push({
 				id:
@@ -284,7 +317,7 @@ function _actualiserListeOrientationsClasse(aInstanceListe, aObjetOrientation) {
 		hauteurMaxAdapteContenu: 160,
 	});
 }
-class DonneesListe_OrientationsClasse extends ObjetDonneesListe {
+class DonneesListe_OrientationsClasse extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees) {
 		super(aDonnees);
 		this.setOptions({ avecEdition: false, avecSuppression: false });
@@ -320,10 +353,17 @@ class DonneesListe_OrientationsClasse extends ObjetDonneesListe {
 		return lValeur;
 	}
 }
-DonneesListe_OrientationsClasse.colonnes = {
-	orientation: "OC_orientation",
-	prefixe_typeAvis: "OC_typeAvis_",
-};
+(function (DonneesListe_OrientationsClasse) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["orientation"] = "OC_orientation";
+		colonnes["prefixe_typeAvis"] = "OC_typeAvis_";
+	})(
+		(colonnes =
+			DonneesListe_OrientationsClasse.colonnes ||
+			(DonneesListe_OrientationsClasse.colonnes = {})),
+	);
+})(DonneesListe_OrientationsClasse || (DonneesListe_OrientationsClasse = {}));
 function estUneColonneTypeAvis(aIdColonne) {
 	return (
 		!!aIdColonne &&
@@ -332,4 +372,3 @@ function estUneColonneTypeAvis(aIdColonne) {
 		) === 0
 	);
 }
-module.exports = { PiedBulletin_Orientations };

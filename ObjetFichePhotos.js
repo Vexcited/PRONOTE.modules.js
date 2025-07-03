@@ -1,3 +1,4 @@
+exports.ObjetFichePhotos = void 0;
 const ObjetHtml_1 = require("ObjetHtml");
 const ObjetStyle_1 = require("ObjetStyle");
 const ObjetFiche_Espace_1 = require("ObjetFiche_Espace");
@@ -28,15 +29,6 @@ class ObjetFichePhotos extends ObjetFiche_Espace_1.ObjetFiche_Espace {
 		this.altImage = aAltImage || "";
 		this.afficherFiche({ id: aId, positionSurSouris: true });
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			btnCroixFermeture: {
-				event() {
-					aInstance.fermer();
-				},
-			},
-		});
-	}
 	surAfficher() {
 		if (super.surAfficher) {
 			super.surAfficher();
@@ -44,14 +36,13 @@ class ObjetFichePhotos extends ObjetFiche_Espace_1.ObjetFiche_Espace {
 		if (this.url) {
 			const lHtml = IE.jsx.str("img", {
 				alt: this.altImage || false,
+				"data-libelle": this.altImage || false,
 				style: "width: " + this.largeurPhoto + "px;",
 				"ie-load-src": this.url,
 				class: "img-portrait",
 				"ie-imgviewer": true,
 			});
-			ObjetHtml_1.GHtml.setHtml(this.idImage, lHtml, {
-				controleur: this.controleur,
-			});
+			ObjetHtml_1.GHtml.setHtml(this.idImage, lHtml);
 		}
 		if (this.commentaire) {
 			ObjetStyle_1.GStyle.setDisplay(this.idCommentaire, true);
@@ -63,30 +54,60 @@ class ObjetFichePhotos extends ObjetFiche_Espace_1.ObjetFiche_Espace {
 	composeContenu() {
 		const lHtml = [];
 		lHtml.push(
-			'<table class="Table" >',
-			'<tr><td class="Espace">',
-			'<div id="',
-			this.idImage,
-			'" style="width:',
-			this.largeurPhoto,
-			"px; height: ",
-			this.hauteurPhoto,
-			'px; overflow: hidden;">',
-			'<img class="img-portrait" style="width: ' +
-				this.largeurPhoto +
-				'px;" aria-hidden="true" />',
-			"</div>",
-			"</td></tr>",
-			"<tr><td>",
-			'<div id="',
-			this.idCommentaire,
-			'" ie-ellipsis class="FondBlanc Espace" style="position: absolute; overflow-y: auto; white-space: normal; right: 0; left: 0; top: ',
-			this.hauteurPhoto + 20,
-			'px;"></div>',
-			"</td></tr>",
-			"</table>",
+			IE.jsx.str(
+				"table",
+				{ class: "Table", role: "presentation" },
+				IE.jsx.str(
+					"tr",
+					null,
+					IE.jsx.str(
+						"td",
+						{ class: "Espace" },
+						IE.jsx.str(
+							"div",
+							{
+								id: this.idImage,
+								style: {
+									width: this.largeurPhoto,
+									height: this.hauteurPhoto,
+									overflow: "hidden",
+								},
+							},
+							IE.jsx.str("img", {
+								class: "img-portrait",
+								style: { width: this.largeurPhoto },
+								"aria-hidden": "true",
+							}),
+						),
+					),
+				),
+				IE.jsx.str(
+					"tr",
+					null,
+					IE.jsx.str(
+						"td",
+						null,
+						IE.jsx.str("div", {
+							id: this.idCommentaire,
+							"ie-ellipsis": true,
+							class: "FondBlanc Espace",
+							style: {
+								position: "absolute",
+								"overflow-y": "auto",
+								"white-space": "normal",
+								right: 0,
+								left: 0,
+								top: this.hauteurPhoto + 20,
+							},
+						}),
+					),
+				),
+			),
 		);
 		return lHtml.join("");
 	}
+	eventSurCroixFermeture() {
+		this.fermer();
+	}
 }
-module.exports = ObjetFichePhotos;
+exports.ObjetFichePhotos = ObjetFichePhotos;

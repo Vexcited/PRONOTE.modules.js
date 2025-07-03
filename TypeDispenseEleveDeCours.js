@@ -112,16 +112,16 @@ const TypeDispenseEleveDeCoursUtil = {
 		return "";
 	},
 	construirePictos(aPictos) {
-		const lHtml = [];
+		const H = [];
 		for (const lKey of MethodesObjet_1.MethodesObjet.enumKeys(
 			TypeDispenseEleveDeCours,
 		)) {
 			const lType = TypeDispenseEleveDeCours[lKey];
 			if (aPictos && aPictos.contains(lType)) {
-				lHtml.push(this.getPicto(lType));
+				H.push(this.getPicto(lType));
 			}
 		}
-		return `<div class="typedispenseelevedecours">${lHtml.join("")}</div>`;
+		return `<div class="typedispenseelevedecours">${H.join("")}</div>`;
 	},
 };
 exports.TypeDispenseEleveDeCoursUtil = TypeDispenseEleveDeCoursUtil;

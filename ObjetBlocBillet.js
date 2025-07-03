@@ -1,36 +1,38 @@
-const { ObjetMoteurBlog, EGenreEvntBillet } = require("ObjetMoteurBlog.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { TypeEtatCommentaireBillet } = require("TypeEtatCommentaireBillet.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { ObjetMenuContextuel } = require("ObjetMenuContextuel.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const {
-	ObjetFenetre_EditionCommentairesBlog,
-} = require("ObjetFenetre_EditionCommentairesBlog.js");
-const {
-	ObjetFenetre_ListeRedacteursBillet,
-} = require("ObjetFenetre_ListeRedacteursBillet.js");
-const { ObjetGalerieCarrousel } = require("ObjetGalerieCarrousel.js");
-const { Identite } = require("ObjetIdentite.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { GChaine } = require("ObjetChaine.js");
-class ObjetBlocBillet extends Identite {
-	constructor(...aParams) {
-		super(...aParams);
-		this.moteur = new ObjetMoteurBlog();
+exports.ObjetBlocBillet = void 0;
+const ObjetMoteurBlog_1 = require("ObjetMoteurBlog");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const TypeEtatCommentaireBillet_1 = require("TypeEtatCommentaireBillet");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetMenuContextuel_1 = require("ObjetMenuContextuel");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_EditionCommentairesBlog_1 = require("ObjetFenetre_EditionCommentairesBlog");
+const ObjetFenetre_ListeRedacteursBillet_1 = require("ObjetFenetre_ListeRedacteursBillet");
+const ObjetGalerieCarrousel_1 = require("ObjetGalerieCarrousel");
+const ObjetIdentite_1 = require("ObjetIdentite");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetChaine_1 = require("ObjetChaine");
+const AccessApp_1 = require("AccessApp");
+class ObjetBlocBillet extends ObjetIdentite_1.Identite {
+	constructor() {
+		super(...arguments);
+		this.appSco = (0, AccessApp_1.getApp)();
+		this.moteur = new ObjetMoteurBlog_1.ObjetMoteurBlog();
 		this._saisieCommentaireEnCours = false;
-		this.identGalerie = Identite.creerInstance(ObjetGalerieCarrousel, {
-			pere: this,
-		});
+		this.identGalerie = ObjetIdentite_1.Identite.creerInstance(
+			ObjetGalerieCarrousel_1.ObjetGalerieCarrousel,
+			{ pere: this },
+		);
 	}
 	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
+		return $.extend(true, super.getControleur(aInstance), {
 			btnCommenterBillet: {
 				event() {
-					_afficherFenetreCommentaires.call(aInstance, {
-						titre: GTraductions.getValeur("blog.ajouterCommentaire"),
+					aInstance._afficherFenetreCommentaires({
+						titre: ObjetTraduction_1.GTraductions.getValeur(
+							"blog.ajouterCommentaire",
+						),
 					});
 				},
 				getDisabled() {
@@ -57,7 +59,7 @@ class ObjetBlocBillet extends Identite {
 							aInstance.donnee,
 						)
 					) {
-						return GTraductions.getValeur(
+						return ObjetTraduction_1.GTraductions.getValeur(
 							"blog.SaisieCommentaireEnFinDeSaisie",
 						);
 					}
@@ -67,7 +69,7 @@ class ObjetBlocBillet extends Identite {
 			btnVoirCommentaires: {
 				event() {
 					const lTitre = aInstance.getTitreCommentaires(aInstance.donnee);
-					_afficherFenetreCommentaires.call(aInstance, { titre: lTitre });
+					aInstance._afficherFenetreCommentaires({ titre: lTitre });
 				},
 				getDisabled() {
 					return false;
@@ -82,7 +84,7 @@ class ObjetBlocBillet extends Identite {
 			},
 			btnVoirRedacteurs: {
 				event() {
-					_afficherFenetreRedacteurs.call(aInstance);
+					aInstance._afficherFenetreRedacteurs();
 				},
 				getDisabled() {
 					return false;
@@ -98,7 +100,7 @@ class ObjetBlocBillet extends Identite {
 				event() {
 					aInstance.callback.appel(
 						aInstance.donnee,
-						EGenreEvntBillet.SurEdition,
+						ObjetMoteurBlog_1.EGenreEvntBillet.SurEdition,
 					);
 				},
 			},
@@ -106,41 +108,45 @@ class ObjetBlocBillet extends Identite {
 				event() {
 					aInstance.callback.appel(
 						aInstance.donnee,
-						EGenreEvntBillet.SurModifPublication,
+						ObjetMoteurBlog_1.EGenreEvntBillet.SurModifPublication,
 					);
 				},
 			},
 			btnActionsBillet: {
 				event() {
 					const lBillet = aInstance.donnee;
-					ObjetMenuContextuel.afficher({
+					ObjetMenuContextuel_1.ObjetMenuContextuel.afficher({
 						pere: aInstance,
 						initCommandes: function (aMenu) {
 							if (aInstance.moteur.estBilletEditable(lBillet)) {
 								if (lBillet.estPublie) {
 									aMenu.add(
-										GTraductions.getValeur("blog.EditerBillet"),
+										ObjetTraduction_1.GTraductions.getValeur(
+											"blog.EditerBillet",
+										),
 										true,
 										() => {
 											aInstance.callback.appel(
 												lBillet,
-												EGenreEvntBillet.SurEdition,
+												ObjetMoteurBlog_1.EGenreEvntBillet.SurEdition,
 											);
 										},
 									);
 									aMenu.add(
-										GTraductions.getValeur("blog.Depublier"),
+										ObjetTraduction_1.GTraductions.getValeur("blog.Depublier"),
 										true,
 										() => {
 											aInstance.callback.appel(
 												lBillet,
-												EGenreEvntBillet.SurModifPublication,
+												ObjetMoteurBlog_1.EGenreEvntBillet.SurModifPublication,
 											);
 										},
 									);
 								}
 								aMenu.add(
-									GTraductions.getValeur("blog.SupprimerBillet"),
+									ObjetTraduction_1.GTraductions.getValeur(
+										"blog.SupprimerBillet",
+									),
 									true,
 									() => {
 										aInstance.moteur.afficherMessageConfirmationSuppressionBillet(
@@ -148,7 +154,7 @@ class ObjetBlocBillet extends Identite {
 											() => {
 												aInstance.callback.appel(
 													lBillet,
-													EGenreEvntBillet.surSuppression,
+													ObjetMoteurBlog_1.EGenreEvntBillet.surSuppression,
 												);
 											},
 										);
@@ -158,13 +164,13 @@ class ObjetBlocBillet extends Identite {
 							if (aInstance.moteur.estBilletCommentable(lBillet)) {
 								aMenu.addSeparateur();
 								aMenu.add(
-									GTraductions.getValeur("blog.VoirLesCommentaires"),
+									ObjetTraduction_1.GTraductions.getValeur(
+										"blog.VoirLesCommentaires",
+									),
 									true,
 									() => {
 										const lTitre = aInstance.getTitreCommentaires(lBillet);
-										_afficherFenetreCommentaires.call(aInstance, {
-											titre: lTitre,
-										});
+										aInstance._afficherFenetreCommentaires({ titre: lTitre });
 									},
 								);
 								const lCommenterEstPossible =
@@ -172,11 +178,13 @@ class ObjetBlocBillet extends Identite {
 										lBillet,
 									);
 								aMenu.add(
-									GTraductions.getValeur("blog.commenter"),
+									ObjetTraduction_1.GTraductions.getValeur("blog.commenter"),
 									lCommenterEstPossible,
 									() => {
-										_afficherFenetreCommentaires.call(aInstance, {
-											titre: GTraductions.getValeur("blog.ajouterCommentaire"),
+										aInstance._afficherFenetreCommentaires({
+											titre: ObjetTraduction_1.GTraductions.getValeur(
+												"blog.ajouterCommentaire",
+											),
 										});
 									},
 								);
@@ -198,14 +206,18 @@ class ObjetBlocBillet extends Identite {
 						aInstance.moteur.afficherMessageConfirmationSuppressionCommentaire(
 							lCommentaire,
 							() => {
-								aInstance.donnee.setEtat(EGenreEtat.Modification);
+								aInstance.donnee.setEtat(
+									Enumere_Etat_1.EGenreEtat.Modification,
+								);
 								aInstance.editerCommentaire(aInstance.donnee);
 							},
 						);
 					}
 				},
 				getDisabled() {
-					return GApplication.droits.get(TypeDroits.estEnConsultation);
+					return aInstance.appSco.droits.get(
+						ObjetDroitsPN_1.TypeDroits.estEnConsultation,
+					);
 				},
 			},
 			btnAcceptCommentaire: {
@@ -219,7 +231,7 @@ class ObjetBlocBillet extends Identite {
 					}
 					if (lCommentaire) {
 						aInstance.moteur.accepterCommentaire(lCommentaire, () => {
-							aInstance.donnee.setEtat(EGenreEtat.Modification);
+							aInstance.donnee.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 							aInstance.editerCommentaire(aInstance.donnee);
 						});
 					}
@@ -234,8 +246,11 @@ class ObjetBlocBillet extends Identite {
 						if (lCommentaire) {
 							lEstDisabled =
 								lCommentaire.etatCommentaire ===
-									TypeEtatCommentaireBillet.ECB_Publie ||
-								GApplication.droits.get(TypeDroits.estEnConsultation);
+									TypeEtatCommentaireBillet_1.TypeEtatCommentaireBillet
+										.ECB_Publie ||
+								aInstance.appSco.droits.get(
+									ObjetDroitsPN_1.TypeDroits.estEnConsultation,
+								);
 						}
 					}
 					return lEstDisabled;
@@ -252,7 +267,7 @@ class ObjetBlocBillet extends Identite {
 					}
 					if (lCommentaire) {
 						aInstance.moteur.refuserCommentaire(lCommentaire, () => {
-							aInstance.donnee.setEtat(EGenreEtat.Modification);
+							aInstance.donnee.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 							aInstance.editerCommentaire(aInstance.donnee);
 						});
 					}
@@ -267,8 +282,11 @@ class ObjetBlocBillet extends Identite {
 						if (lCommentaire) {
 							lEstDisabled =
 								lCommentaire.etatCommentaire ===
-									TypeEtatCommentaireBillet.ECB_Refuse ||
-								GApplication.droits.get(TypeDroits.estEnConsultation);
+									TypeEtatCommentaireBillet_1.TypeEtatCommentaireBillet
+										.ECB_Refuse ||
+								aInstance.appSco.droits.get(
+									ObjetDroitsPN_1.TypeDroits.estEnConsultation,
+								);
 						}
 					}
 					return lEstDisabled;
@@ -278,10 +296,10 @@ class ObjetBlocBillet extends Identite {
 	}
 	editerCommentaire(aBillet, aEditionIssueDeFenetre = false) {
 		this.donnee = aBillet;
-		this.donnee.setEtat(EGenreEtat.Modification);
+		this.donnee.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 		this.callback.appel(
 			this.donnee,
-			EGenreEvntBillet.SurEditionCommentaire,
+			ObjetMoteurBlog_1.EGenreEvntBillet.SurEditionCommentaire,
 			aEditionIssueDeFenetre,
 		);
 	}
@@ -300,15 +318,15 @@ class ObjetBlocBillet extends Identite {
 			nbMaxDiaposEnZoneVisible: 4,
 			avecSuppression: false,
 			avecEditionLegende: false,
-			altImage: GTraductions.getValeur("blog.altImage"),
+			altImage: ObjetTraduction_1.GTraductions.getValeur("blog.altImage"),
 		});
 		const lListeDocs = this.donnee.listeDocuments;
-		const lListeImages = new ObjetListeElements();
+		const lListeImages = new ObjetListeElements_1.ObjetListeElements();
 		if (!!lListeDocs && lListeDocs.getNbrElementsExistes()) {
 			lListeDocs.parcourir((aDoc) => {
 				if (aDoc.existe()) {
 					if (
-						GChaine.estFichierImageAvecMiniaturePossible(
+						ObjetChaine_1.GChaine.estFichierImageAvecMiniaturePossible(
 							aDoc.documentCasier.getLibelle(),
 						)
 					) {
@@ -320,7 +338,7 @@ class ObjetBlocBillet extends Identite {
 		this.identGalerie.initialiser();
 		this.identGalerie.setDonnees({
 			listeDiapos: lListeImages,
-			ressourceDocJoint: EGenreRessource.DocumentJoint,
+			ressourceDocJoint: Enumere_Ressource_1.EGenreRessource.DocumentJoint,
 		});
 	}
 	setParametres(aElement, aOptions) {
@@ -334,84 +352,91 @@ class ObjetBlocBillet extends Identite {
 	setOptions(aOptions) {
 		this.options.tailleMaxCommentaires = aOptions.tailleMaxCommentaires;
 		this.options.avecAffichageNomBlog = aOptions.avecAffichageNomBlog;
+		return this;
 	}
 	ouvrirFenetreCommentairesDeBillet(aBillet) {
 		this.donnee = aBillet;
-		_afficherFenetreCommentaires.call(this);
+		this._afficherFenetreCommentaires();
 	}
 	getTitreCommentaires(aBillet) {
 		let lNbCommentaires = 0;
 		if (aBillet && aBillet.listeCommentaires) {
 			lNbCommentaires = aBillet.listeCommentaires.count();
 		}
-		return GTraductions.getValeur(
+		return ObjetTraduction_1.GTraductions.getValeur(
 			lNbCommentaires > 1 ? "blog.commentaireN" : "blog.commentaire1",
 			[lNbCommentaires],
 		);
 	}
-}
-function _afficherFenetreRedacteurs() {
-	let lNbRedacteurs = 1;
-	if (this.donnee && this.donnee.listeCoRedacteurs) {
-		lNbRedacteurs += this.donnee.listeCoRedacteurs.count();
+	_afficherFenetreRedacteurs() {
+		let lNbRedacteurs = 1;
+		if (this.donnee && this.donnee.listeCoRedacteurs) {
+			lNbRedacteurs += this.donnee.listeCoRedacteurs.count();
+		}
+		const lFenetreListeRedacteurs =
+			ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+				ObjetFenetre_ListeRedacteursBillet_1.ObjetFenetre_ListeRedacteursBillet,
+				{
+					pere: this,
+					evenement: null,
+					initialiser: function (aInstance) {
+						aInstance.setOptionsFenetre({
+							titre: ObjetTraduction_1.GTraductions.getValeur(
+								"blog.tousLesRedacteursN",
+								[lNbRedacteurs],
+							),
+							largeur: 350,
+							hauteur: 500,
+							avecScroll: true,
+						});
+					},
+				},
+			);
+		lFenetreListeRedacteurs.setDonnees(this.donnee);
 	}
-	const lFenetreListeRedacteurs = ObjetFenetre.creerInstanceFenetre(
-		ObjetFenetre_ListeRedacteursBillet,
-		{
-			pere: this,
-			evenement: null,
-			initialiser: function (aInstance) {
-				aInstance.setOptionsFenetre({
-					titre: GTraductions.getValeur("blog.tousLesRedacteursN", [
-						lNbRedacteurs,
-					]),
-					largeur: 350,
-					hauteur: 500,
-					avecScroll: true,
-				});
-			},
-		},
-	);
-	lFenetreListeRedacteurs.setDonnees(this.donnee);
-}
-function _afficherFenetreCommentaires(aParam = {}) {
-	const lTitreFenetre = aParam.titre || this.getTitreCommentaires(this.donnee);
-	const lFenetreEditionCommentaires = ObjetFenetre.creerInstanceFenetre(
-		ObjetFenetre_EditionCommentairesBlog,
-		{
-			pere: this,
-			evenement: (aNumeroBouton, aDonneesFenetre) => {
-				if (aNumeroBouton === 1 && aDonneesFenetre) {
-					this.editerCommentaire(
-						aDonneesFenetre.billet,
-						aDonneesFenetre.avecReouvertureFenetreApresSaisie,
-					);
-				}
-			},
-			initialiser: (aInstance) => {
-				aInstance.setOptionsFenetre({
-					titre: lTitreFenetre,
-					largeur: 500,
-					hauteurMaxContenu: 600,
-					avecScroll: true,
-					listeBoutons: [],
-					callbackFermer: function () {
-						if (this._saisieCommentaireEnCours !== true) {
-							this.donnee.listeCommentaires.removeFilter((aElt) => {
-								return aElt.getEtat() === EGenreEtat.Creation;
-							});
+	_afficherFenetreCommentaires(aParam = {}) {
+		const lTitreFenetre =
+			aParam.titre || this.getTitreCommentaires(this.donnee);
+		const lFenetreEditionCommentaires =
+			ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+				ObjetFenetre_EditionCommentairesBlog_1.ObjetFenetre_EditionCommentairesBlog,
+				{
+					pere: this,
+					evenement: (aNumeroBouton, aDonneesFenetre) => {
+						if (aNumeroBouton === 1 && aDonneesFenetre) {
+							this.editerCommentaire(
+								aDonneesFenetre.billet,
+								aDonneesFenetre.avecReouvertureFenetreApresSaisie,
+							);
 						}
-						this._saisieCommentaireEnCours = false;
-					}.bind(this),
-					bloquerFocus: true,
-					avecComposeBasInFooter: true,
-				});
-				aInstance.setParametres({
-					tailleMaxCommentaires: this.options.tailleMaxCommentaires,
-				});
-			},
-		},
-	);
-	lFenetreEditionCommentaires.setDonnees(this.donnee);
+					},
+					initialiser: (aInstance) => {
+						aInstance.setOptionsFenetre({
+							titre: lTitreFenetre,
+							largeur: 500,
+							hauteurMaxContenu: 600,
+							avecScroll: true,
+							listeBoutons: [],
+							callbackFermer: () => {
+								if (this._saisieCommentaireEnCours !== true) {
+									this.donnee.listeCommentaires.removeFilter((aElt) => {
+										return (
+											aElt.getEtat() === Enumere_Etat_1.EGenreEtat.Creation
+										);
+									});
+								}
+								this._saisieCommentaireEnCours = false;
+							},
+							bloquerFocus: true,
+							avecComposeBasInFooter: true,
+						});
+						aInstance.setParametres({
+							tailleMaxCommentaires: this.options.tailleMaxCommentaires,
+						});
+					},
+				},
+			);
+		lFenetreEditionCommentaires.setDonnees(this.donnee);
+	}
 }
-module.exports = { ObjetBlocBillet };
+exports.ObjetBlocBillet = ObjetBlocBillet;

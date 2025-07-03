@@ -13,17 +13,12 @@ var TypeFiltreAffichage;
 	TypeFiltreAffichage["notification"] = "notification";
 	TypeFiltreAffichage["droitImage"] = "droitImage";
 	TypeFiltreAffichage["signature"] = "signature";
-	TypeFiltreAffichage["autorisationSortie"] = "autorisationSortie";
-	TypeFiltreAffichage["documentsAFournir"] = "documentsAFournir";
-	TypeFiltreAffichage["autresContacts"] = "autresContacts";
 	TypeFiltreAffichage["profilPrimEnfant"] = "profilPrimEnfant";
-	TypeFiltreAffichage["parametres"] = "parametres";
 	TypeFiltreAffichage["style"] = "style";
 	TypeFiltreAffichage["deconnexion"] = "deconnexion";
 	TypeFiltreAffichage["cahierDeTexte"] = "cahierDeTexte";
 	TypeFiltreAffichage["generalites"] = "generalites";
 	TypeFiltreAffichage["interTitre"] = "interTitre";
-	TypeFiltreAffichage["messagerieSignature"] = "messagerieSignature";
 	TypeFiltreAffichage["iCal"] = "calendrierICal";
 })(
 	TypeFiltreAffichage ||
@@ -38,7 +33,6 @@ var EGenreTypeContenu;
 		"DerniereConnexion";
 	EGenreTypeContenu[(EGenreTypeContenu["MotDePasse"] = 4)] = "MotDePasse";
 	EGenreTypeContenu[(EGenreTypeContenu["Identifiant"] = 5)] = "Identifiant";
-	EGenreTypeContenu[(EGenreTypeContenu["Informations"] = 6)] = "Informations";
 	EGenreTypeContenu[(EGenreTypeContenu["InfosCompteEnfant"] = 7)] =
 		"InfosCompteEnfant";
 	EGenreTypeContenu[(EGenreTypeContenu["INE"] = 8)] = "INE";
@@ -51,20 +45,8 @@ var EGenreTypeContenu;
 	EGenreTypeContenu[(EGenreTypeContenu["__RestrictionsAlimentaires"] = 12)] =
 		"__RestrictionsAlimentaires";
 	EGenreTypeContenu[(EGenreTypeContenu["Coordonnees"] = 13)] = "Coordonnees";
-	EGenreTypeContenu[(EGenreTypeContenu["PreferencesContact"] = 14)] =
-		"PreferencesContact";
-	EGenreTypeContenu[(EGenreTypeContenu["AutorisationsSupplementaires"] = 15)] =
-		"AutorisationsSupplementaires";
-	EGenreTypeContenu[(EGenreTypeContenu["AutorisationsMessages"] = 17)] =
-		"AutorisationsMessages";
-	EGenreTypeContenu[(EGenreTypeContenu["DepotDocuments"] = 18)] =
-		"DepotDocuments";
 	EGenreTypeContenu[(EGenreTypeContenu["CommunicationParents"] = 19)] =
 		"CommunicationParents";
-	EGenreTypeContenu[(EGenreTypeContenu["ContenuCommunicationParents"] = 20)] =
-		"ContenuCommunicationParents";
-	EGenreTypeContenu[(EGenreTypeContenu["Medecin"] = 21)] = "Medecin";
-	EGenreTypeContenu[(EGenreTypeContenu["Allergies"] = 22)] = "Allergies";
 	EGenreTypeContenu["sourcesConnexions"] = "sourcesConnexions";
 	EGenreTypeContenu["Signature"] = "signature";
 	EGenreTypeContenu["Accessibilite"] = "Accessibilite";
@@ -74,6 +56,7 @@ var EGenreTypeContenu;
 	EGenreTypeContenu["Generalites"] = "Generalites";
 	EGenreTypeContenu["messagerieSignature"] = "messagerieSignature";
 	EGenreTypeContenu["iCal"] = "CalendrierICal";
+	EGenreTypeContenu["listeAppareilsMobile"] = "listeAppareilsMobile";
 })(EGenreTypeContenu || (exports.EGenreTypeContenu = EGenreTypeContenu = {}));
 var EGenreTelephone;
 (function (EGenreTelephone) {
@@ -96,24 +79,7 @@ var EListeIds;
 	EListeIds["cbMsgEleve"] = "cbMsgEleve";
 	EListeIds["cbMsgProfsPerso"] = "cbMsgProfsPerso";
 	EListeIds["cbMsgContactVS"] = "cbMsgContactVS";
-	EListeIds["cbNotifs"] = "cbNotif";
-	EListeIds["comboDelai"] = "comboNotif";
-	EListeIds["cbNotifsTravaux"] = "cbNotifTravaux";
-	EListeIds["comboDelaiTravaux"] = "comboNotifTravaux";
-	EListeIds["cbDroitImage"] = "cbDroitImage";
-	EListeIds["cbExposerDossierMedical"] = "cbExposerDosierMedical";
-	EListeIds["cbAutoriserHospitalisation"] = "cbAutoriserHospitalisation";
-	EListeIds["cbAutoriserAllergies"] = "cbAutoriserAllergies";
-	EListeIds["cbDestinataireBulletin"] = "cbDestinataireBulletin";
-	EListeIds["cbDestinataireInfosEleve"] = "cbDestinataireInfosEleve";
-	EListeIds["cbDestinataireInfosProf"] = "cbDestinataireInfosProf";
-	EListeIds["cbDestinataireInfosGen"] = "cbDestinataireInfosGen";
 	EListeIds["mdpEnfant"] = "mdp_enfant";
-	EListeIds["sideNav"] = "_idSideNav";
-	EListeIds["sideInterlocuteurs"] = "_idSideNavInterlocuteurs";
-	EListeIds["sidePreferences"] = "_idSideNavPreferences";
-	EListeIds["sideInformations"] = "_idSideNavInformations";
-	EListeIds["sideCommunicationParents"] = "idsideCommunicationParents";
 	EListeIds["autoriserSignature"] = "idAutoriserSignature";
 	EListeIds["bntAjouterSignature"] = "idBtnAjoutSignature";
 	EListeIds["cbAcceptDemandeRdv"] = "cbAcceptDemandeRdv";

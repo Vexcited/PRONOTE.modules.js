@@ -21,18 +21,25 @@ try {
 }
 IEHtml.addAttribut(
 	c_id_attribut_nodeVisibility,
-	(aContexteCourant, aNodeName, aAttributValue, aOutils) => {
+	(aContexteCourant, aNodeName, aAttributValue, aOutils, aComp, aAttrName) => {
 		const lValue = aAttributValue || "";
-		if (!lValue || !aContexteCourant.controleur) {
+		if (!lValue) {
 			return true;
 		}
-		const lInfos = aOutils.getAccesParametres(lValue, aContexteCourant);
+		const lInfos = aOutils.getAccesParametres(
+			lValue,
+			aAttrName,
+			aContexteCourant,
+		);
 		if (!lInfos.estFonction) {
 			return true;
 		}
 		aOutils.surInjectionHtml(aContexteCourant, (...aParams) => {
 			const lCallback = (aVisible) => {
-				if (lInfos.callback([aVisible, ...aParams]) === false) {
+				if (
+					lInfos.callback([aVisible, aContexteCourant.node, ...aParams]) ===
+					false
+				) {
 					$(aContexteCourant.node).data(c_id_attribut_nodeVisibility, null);
 					uObserver_ie_node_visibility.unobserve(aContexteCourant.node);
 				}

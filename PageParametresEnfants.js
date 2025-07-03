@@ -1,82 +1,87 @@
-const { ObjetIdentite_Mobile } = require("ObjetIdentite_Mobile.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	UtilitairePageDonneesPersonnelles,
-} = require("UtilitairePageDonneesPersonnelles.js");
-const { EGenreTypeContenu } = require("Enumere_DonneesPersonnelles.js");
-const { GHtml } = require("ObjetHtml.js");
-const { EListeIds } = require("Enumere_DonneesPersonnelles.js");
-const { ObjetRequetePageMesEnfants } = require("ObjetRequetePageMesEnfants.js");
-const {
-	ObjetFenetre_ModificationIdentifiantMDP,
-} = require("ObjetFenetre_ModificationIdentifiantMDP.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const {
-	ObjetFenetre_DetailsPIEleve,
-} = require("ObjetFenetre_DetailsPIEleve.js");
-const {
-	ObjetRequeteSaisieMotDePasseEleve,
-} = require("ObjetRequeteSaisieMotDePasseEleve.js");
-class PageParametresEnfants extends ObjetIdentite_Mobile {
+exports.PageParametresEnfants = void 0;
+const ObjetIdentite_Mobile_1 = require("ObjetIdentite_Mobile");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const UtilitairePageDonneesPersonnelles_1 = require("UtilitairePageDonneesPersonnelles");
+const Enumere_DonneesPersonnelles_1 = require("Enumere_DonneesPersonnelles");
+const ObjetHtml_1 = require("ObjetHtml");
+const Enumere_DonneesPersonnelles_2 = require("Enumere_DonneesPersonnelles");
+const ObjetRequetePageMesEnfants_1 = require("ObjetRequetePageMesEnfants");
+const ObjetFenetre_ModificationIdentifiantMDP_1 = require("ObjetFenetre_ModificationIdentifiantMDP");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetFenetre_DetailsPIEleve_1 = require("ObjetFenetre_DetailsPIEleve");
+const ObjetRequeteSaisieMotDePasseEleve_1 = require("ObjetRequeteSaisieMotDePasseEleve");
+const AccessApp_1 = require("AccessApp");
+class PageParametresEnfants extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 	constructor(...aParams) {
 		super(...aParams);
+		this.applicationSco = (0, AccessApp_1.getApp)();
 		this.parametres = { maskMDP: "*********" };
 	}
 	construirePage() {
 		const lParams = { listeProjets: this.donnees.listeProjets };
 		const lHtml = [];
-		if (GApplication.droits.get(TypeDroits.compte.avecSaisieMotDePasseEleve)) {
+		if (
+			this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.compte.avecSaisieMotDePasseEleve,
+			)
+		) {
 			lHtml.push(
-				UtilitairePageDonneesPersonnelles.construireZoneGenerique(
-					GTraductions.getValeur("PageCompte.Identifiant"),
-					EGenreTypeContenu.Identifiant,
+				UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
+					ObjetTraduction_1.GTraductions.getValeur("PageCompte.Identifiant"),
+					Enumere_DonneesPersonnelles_1.EGenreTypeContenu.Identifiant,
 					{ chaine: this.donnees.informationsCompte.Identifiant },
 				),
 			);
 			lHtml.push(
-				UtilitairePageDonneesPersonnelles.construireZoneGenerique(
-					GTraductions.getValeur("PageCompte.MotDePasse"),
-					EGenreTypeContenu.MotDePasse,
+				UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
+					ObjetTraduction_1.GTraductions.getValeur("PageCompte.MotDePasse"),
+					Enumere_DonneesPersonnelles_1.EGenreTypeContenu.MotDePasse,
 					{ maskMdp: this.parametres.maskMDP },
 				),
 			);
 		}
 		lHtml.push(
 			'<div class="border-bottom" id="',
-			this.getInstancePageInformationsMedicales().getNom(),
+			this.Pere.getInstancePageInformationsMedicales().getNom(),
 			'"></div>',
 		);
 		if (!!this.donnees.listeProjets && this.donnees.listeProjets.count() > 0) {
 			lHtml.push(
-				UtilitairePageDonneesPersonnelles.construireZoneGenerique(
-					GTraductions.getValeur("PageCompte.ProjetsAccompagnement"),
-					EGenreTypeContenu.ProjetsAccompagnement,
+				UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
+					ObjetTraduction_1.GTraductions.getValeur(
+						"PageCompte.ProjetsAccompagnement",
+					),
+					Enumere_DonneesPersonnelles_1.EGenreTypeContenu.ProjetsAccompagnement,
 					lParams,
 				),
 			);
 		}
 		lHtml.push(
-			UtilitairePageDonneesPersonnelles.construireZoneGenerique(
-				GTraductions.getValeur("PageCompte.autorisationsSortie"),
-				EGenreTypeContenu.AutorisationSortie,
+			UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"PageCompte.autorisationsSortie",
+				),
+				Enumere_DonneesPersonnelles_1.EGenreTypeContenu.AutorisationSortie,
 				{
 					identiteAutorisations:
-						this.getInstancePageAutorisationsSortie().getNom(),
+						this.Pere.getInstancePageAutorisationsSortie().getNom(),
 				},
 			),
 		);
 		lHtml.push(
-			UtilitairePageDonneesPersonnelles.construireZoneGenerique(
-				GTraductions.getValeur("ParametresUtilisateur.DroitALImage"),
-				EGenreTypeContenu.DroitImage,
+			UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"ParametresUtilisateur.DroitALImage",
+				),
+				Enumere_DonneesPersonnelles_1.EGenreTypeContenu.DroitImage,
 				{},
 			),
 		);
 		lHtml.push(
-			UtilitairePageDonneesPersonnelles.construireZoneGenerique(
-				GTraductions.getValeur("PageCompte.NumeroINE"),
-				EGenreTypeContenu.INE,
+			UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
+				ObjetTraduction_1.GTraductions.getValeur("PageCompte.NumeroINE"),
+				Enumere_DonneesPersonnelles_1.EGenreTypeContenu.INE,
 				{ numeroINE: this.donnees.numeroINE },
 			),
 		);
@@ -89,7 +94,7 @@ class PageParametresEnfants extends ObjetIdentite_Mobile {
 					if (aInstance.donnees && aInstance.donnees.listeProjets) {
 						const lProjet =
 							aInstance.donnees.listeProjets.getElementParNumero(aNumero);
-						_ouvrirFenetreDetailsPIEleve.call(aInstance, lProjet);
+						aInstance._ouvrirFenetreDetailsPIEleve(lProjet);
 					}
 				},
 			},
@@ -97,88 +102,97 @@ class PageParametresEnfants extends ObjetIdentite_Mobile {
 		return $.extend(
 			true,
 			lControleur,
-			UtilitairePageDonneesPersonnelles.getControleur(aInstance),
+			UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.getControleur(
+				aInstance,
+			),
 		);
 	}
-	getInstancePageInformationsMedicales() {
-		return this.Pere.getInstance(this.Pere.identInformationsMedicales);
-	}
-	getInstancePageAutorisationsSortie() {
-		return this.Pere.getInstance(this.Pere.identAutorisationSortie);
-	}
 	recupererDonnees() {
-		new ObjetRequetePageMesEnfants(
+		new ObjetRequetePageMesEnfants_1.ObjetRequetePageMesEnfants(
 			this,
-			_surReponseRequetePageInfosPerso,
+			this._surReponseRequetePageInfosPerso.bind(this),
 		).lancerRequete();
+	}
+	_surReponseRequetePageInfosPerso(aDonnees) {
+		this.donnees = aDonnees;
+		if (!!aDonnees.message) {
+			ObjetHtml_1.GHtml.setHtml(
+				this.Nom,
+				this.composeAucuneDonnee(aDonnees.message),
+			);
+		} else {
+			ObjetHtml_1.GHtml.setHtml(this.Nom, this.construirePage(), {
+				controleur: this.controleur,
+			});
+			$("#" + Enumere_DonneesPersonnelles_2.EListeIds.mdp.escapeJQ()).on({
+				mouseup: () => {
+					this.afficherFenetreModificationIdentifiantMDP();
+				},
+				keyup: () => {
+					if (GNavigateur.isToucheSelection()) {
+						this.afficherFenetreModificationIdentifiantMDP();
+					}
+				},
+			});
+			const lParams = {
+				infosMedicales: this.donnees.infosMedicales,
+				restrictionsAlimentaires: this.donnees.restrictionsAlimentaires,
+				mangeALaCantine: this.donnees.mangeALaCantine,
+				allergies: this.donnees.allergies,
+				allergiesModifiables: this.donnees.allergiesModifiables,
+				regimesAlimentairesModifiables:
+					this.donnees.regimesAlimentairesModifiables,
+			};
+			this.Pere.getInstancePageInformationsMedicales().setDonnees(lParams);
+			this.Pere.getInstancePageAutorisationsSortie().setDonnees(
+				this.donnees.autorisationSortie,
+			);
+		}
 	}
 	getStructurePourValidation(aStructure) {
 		aStructure.informationsMedicales =
-			this.getInstancePageInformationsMedicales().donnees.infosMedicales;
+			this.Pere.getInstancePageInformationsMedicales().getDossierMedicalModifie();
 		aStructure.allergies =
-			this.getInstancePageInformationsMedicales().donnees.allergies;
+			this.Pere.getInstancePageInformationsMedicales().getAllergiesModifie();
 		aStructure.restrictionsAlimentaires =
-			this.getInstancePageInformationsMedicales().donnees.listeRestrictionsAlimentaires;
+			this.Pere.getInstancePageInformationsMedicales().getAlimentationModifie();
 		aStructure.autorisationSortie =
-			this.getInstancePageAutorisationsSortie().getAutorisationSortieModifiee();
+			this.Pere.getInstancePageAutorisationsSortie().getAutorisationSortieModifiee();
 		if (this.donnees.droitImage) {
 			aStructure.autorisationImage = !this.donnees.droitImage.autoriser;
 		}
 		return true;
 	}
-}
-function _afficherPopUp() {
-	const lFenetreModificationMdp = ObjetFenetre.creerInstanceFenetre(
-		ObjetFenetre_ModificationIdentifiantMDP,
-		{
-			pere: this,
-			initialiser: function (aInstance) {
-				aInstance.changementMDP = true;
-				aInstance.changementMDPEleve = true;
-				aInstance.setOptionsFenetre({
-					optionsMDP: { classRequeteSaisie: ObjetRequeteSaisieMotDePasseEleve },
-				});
-			},
-		},
-	);
-	lFenetreModificationMdp.setDonnees(GEtatUtilisateur.reglesSaisieMotDePasse);
-}
-function _surReponseRequetePageInfosPerso(aDonnees) {
-	this.donnees = aDonnees;
-	if (!!aDonnees.message) {
-		GHtml.setHtml(this.Nom, this.composeAucuneDonnee(aDonnees.message));
-	} else {
-		GHtml.setHtml(this.Nom, this.construirePage(), {
-			controleur: this.controleur,
+	afficherFenetreModificationIdentifiantMDP() {
+		const lFenetreModificationMdp =
+			ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+				ObjetFenetre_ModificationIdentifiantMDP_1.ObjetFenetre_ModificationIdentifiantMDP,
+				{
+					pere: this,
+					initialiser: function (aInstance) {
+						aInstance.changementMDP = true;
+						aInstance.changementMDPEleve = true;
+						aInstance.setOptionsFenetre({
+							optionsMDP: {
+								classRequeteSaisie:
+									ObjetRequeteSaisieMotDePasseEleve_1.ObjetRequeteSaisieMotDePasseEleve,
+							},
+						});
+					},
+				},
+			);
+		lFenetreModificationMdp.setDonnees(GEtatUtilisateur.reglesSaisieMotDePasse);
+	}
+	_ouvrirFenetreDetailsPIEleve(aProjet) {
+		const lFenetreDetailsPIEleve =
+			ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+				ObjetFenetre_DetailsPIEleve_1.ObjetFenetre_DetailsPIEleve,
+				{ pere: this },
+			);
+		lFenetreDetailsPIEleve.setDonnees({
+			eleve: GEtatUtilisateur.getMembre(),
+			projet: aProjet,
 		});
-		$("#" + EListeIds.mdp.escapeJQ()).on({
-			mouseup: function () {
-				_afficherPopUp.call(this);
-			},
-			keyup: function () {
-				if (GNavigateur.isToucheSelection()) {
-					_afficherPopUp.call(this);
-				}
-			},
-		});
-		const lParams = {
-			infosMedicales: this.donnees.infosMedicales,
-			restrictionsAlimentaires: this.donnees.restrictionsAlimentaires,
-			mangeALaCantine: this.donnees.mangeALaCantine,
-			allergies: this.donnees.allergies,
-			allergiesModifiables: this.donnees.allergiesModifiables,
-			regimesAlimentairesModifiables:
-				this.donnees.regimesAlimentairesModifiables,
-		};
-		this.getInstancePageInformationsMedicales().setDonnees(lParams);
-		this.getInstancePageAutorisationsSortie().setDonnees(
-			this.donnees.autorisationSortie,
-		);
 	}
 }
-function _ouvrirFenetreDetailsPIEleve(aProjet) {
-	ObjetFenetre.creerInstanceFenetre(ObjetFenetre_DetailsPIEleve, {
-		pere: this,
-	}).setDonnees({ eleve: GEtatUtilisateur.getMembre(), projet: aProjet });
-}
-module.exports = { PageParametresEnfants };
+exports.PageParametresEnfants = PageParametresEnfants;

@@ -18,34 +18,11 @@ class ObjetFenetre_SelectionMatiere extends ObjetFenetre_1.ObjetFenetre {
 			largeur: 300,
 			hauteur: 400,
 			listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
+			titre: TradObjetFenetre_SelectionMatiere.SelectionnerMatiere,
 		});
 	}
 	construireInstances() {
 		this.identListe = this.add(ObjetListe_1.ObjetListe, this.evntSurListe);
-	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			cbFiltreUniquementEnseignees: {
-				getValue: function () {
-					return !!aInstance.filtreEnseignees;
-				},
-				setValue: function (aValeur) {
-					aInstance.filtreEnseignees = aValeur;
-					aInstance
-						.getInstance(aInstance.identListe)
-						.setDonnees(
-							new DonneesListe_SelectionMatiere_1.DonneesListe_SelectionMatiere(
-								aInstance.listeMatieres,
-								aInstance.filtreEnseignees,
-							),
-						);
-					aInstance.indiceSelection = -1;
-				},
-				getLibelle: function () {
-					return aInstance.libelleFiltreEnseignees || "";
-				},
-			},
-		});
 	}
 	composeContenu() {
 		const T = [];
@@ -78,7 +55,7 @@ class ObjetFenetre_SelectionMatiere extends ObjetFenetre_1.ObjetFenetre {
 		this.listeMatieres.add(aListeMatieres);
 		if (this.avecLigneAucune) {
 			const lElement = new ObjetElement_1.ObjetElement(
-				ObjetTraduction_1.GTraductions.getValeur("fenetre.Aucune"),
+				GlossaireCP_1.TradGlossaireCP.Aucune,
 				0,
 				null,
 				0,
@@ -98,8 +75,31 @@ class ObjetFenetre_SelectionMatiere extends ObjetFenetre_1.ObjetFenetre {
 		this.indiceSelection = null;
 		const lFiltre = [];
 		if (this.avecChoixFiltrageEnseignees) {
+			const lJSXcbFiltreUniquementEnseignees = () => {
+				return {
+					getValue: () => {
+						return !!this.filtreEnseignees;
+					},
+					setValue: (aValeur) => {
+						this.filtreEnseignees = aValeur;
+						this.getInstance(this.identListe).setDonnees(
+							new DonneesListe_SelectionMatiere_1.DonneesListe_SelectionMatiere(
+								this.listeMatieres,
+								this.filtreEnseignees,
+							),
+						);
+						this.indiceSelection = -1;
+					},
+					getLibelle: () => {
+						return this.libelleFiltreEnseignees || "";
+					},
+				};
+			};
 			lFiltre.push({
-				html: '<ie-checkbox ie-model="cbFiltreUniquementEnseignees"></ie-checkbox>',
+				getHtml: () =>
+					IE.jsx.str("ie-checkbox", {
+						"ie-model": lJSXcbFiltreUniquementEnseignees,
+					}),
 				controleur: this.controleur,
 			});
 		}
@@ -137,3 +137,10 @@ class ObjetFenetre_SelectionMatiere extends ObjetFenetre_1.ObjetFenetre {
 	}
 }
 exports.ObjetFenetre_SelectionMatiere = ObjetFenetre_SelectionMatiere;
+const ObjetTraduction_2 = require("ObjetTraduction");
+const GlossaireCP_1 = require("GlossaireCP");
+const TradObjetFenetre_SelectionMatiere =
+	ObjetTraduction_2.TraductionsModule.getModule(
+		"ObjetFenetre_SelectionMatiere",
+		{ SelectionnerMatiere: "" },
+	);

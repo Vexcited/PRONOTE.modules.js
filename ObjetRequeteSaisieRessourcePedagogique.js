@@ -1,13 +1,8 @@
-const {
-	ObjetRequeteSaisie,
-	EGenreReponseSaisie,
-} = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class ObjetRequeteSaisieRessourcePedagogique extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieRessourcePedagogique = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class ObjetRequeteSaisieRessourcePedagogique extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParams) {
 		$.extend(this.JSON, aParams);
 		if (this.JSON.depot) {
@@ -37,30 +32,30 @@ class ObjetRequeteSaisieRessourcePedagogique extends ObjetRequeteSaisie {
 		}
 		return this.appelAsynchrone();
 	}
-	traiterReponseSaisieMessage(aMessagesErreurRapportSaisie) {
+	traiterReponseSaisieMessage(aMessagesErreurRapportSaisie, aReponse, aTitre) {
 		if (this.JSONReponse.import) {
 			let lDetails = "";
 			if (aMessagesErreurRapportSaisie && aMessagesErreurRapportSaisie.join) {
 				lDetails = aMessagesErreurRapportSaisie.join("\n");
 			}
 			GApplication.getMessage().afficher({
-				titre: GTraductions.getValeur("RessourcePedagogique.LectureImpossible"),
+				titre: ObjetTraduction_1.GTraductions.getValeur(
+					"RessourcePedagogique.LectureImpossible",
+				),
 				message: lDetails,
 			});
 		} else {
-			return super.traiterReponseSaisieMessage(aMessagesErreurRapportSaisie);
+			return super.traiterReponseSaisieMessage(
+				aMessagesErreurRapportSaisie,
+				aReponse,
+				aTitre,
+			);
 		}
 	}
-	actionApresRequete(aGenreReponse, aJSONRapport) {
-		this.callbackReussite.appel(
-			aGenreReponse === EGenreReponseSaisie.succes,
-			aJSONRapport,
-			this.JSONReponse,
-		);
-	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteSaisieRessourcePedagogique =
+	ObjetRequeteSaisieRessourcePedagogique;
+CollectionRequetes_1.Requetes.inscrire(
 	"SaisieRessourcePedagogique",
 	ObjetRequeteSaisieRessourcePedagogique,
 );
-module.exports = { ObjetRequeteSaisieRessourcePedagogique };

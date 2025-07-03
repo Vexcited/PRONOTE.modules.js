@@ -1,31 +1,32 @@
-const { GHtml } = require("ObjetHtml.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class ObjetFenetre_ListePunitions extends ObjetFenetre {
+exports.ObjetFenetre_ListePunitions = void 0;
+const ObjetHtml_1 = require("ObjetHtml");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class ObjetFenetre_ListePunitions extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 	}
 	construireInstances() {
 		this.IdentListe = this.add(
-			ObjetListe,
+			ObjetListe_1.ObjetListe,
 			this.evenementSurListe,
-			_initialiserListe,
+			this._initialiserListe,
 		);
 	}
 	setDonnees(aListeEleves) {
 		this.listeEleves = aListeEleves;
-		this.listePunitions = new ObjetListeElements();
+		this.listePunitions = new ObjetListeElements_1.ObjetListeElements();
 		this.construireListePunitionsDesEleves(this.listeEleves);
 		if (this.listePunitions.count() > 0) {
 			this.afficher();
-			GHtml.setDisplay(this.Nom + "_ContenuListe", true);
+			ObjetHtml_1.GHtml.setDisplay(this.Nom + "_ContenuListe", true);
 			this.getInstance(this.IdentListe).setDonnees(
 				new DonneesListe_ListePunitions(this.listePunitions),
 			);
@@ -38,21 +39,21 @@ class ObjetFenetre_ListePunitions extends ObjetFenetre {
 		if (!!aListeEleves) {
 			for (let i = 0; i < aListeEleves.count(); i++) {
 				const lEleve = aListeEleves.get(i);
-				if (lEleve.listePunitions) {
+				if ("listePunitions" in lEleve && lEleve.listePunitions) {
 					for (let j = 0; j < lEleve.listePunitions.count(); j++) {
 						const lPunition = lEleve.listePunitions.get(j);
 						if (lPunition.existe()) {
-							const lElement = new ObjetElement(
-								lEleve.getLibelle(),
-								lEleve.getNumero(),
-							);
-							lElement.indiceEleve = i;
-							lElement.indicePunition = j;
-							lElement.type = lPunition.naturePunition;
-							lElement.listeMotifs = lPunition.listeMotifs;
-							lElement.duree = lPunition.duree;
-							lElement.programmeeLe = lPunition.programmeeLe;
-							lElement.realiseeLe = lPunition.realiseeLe;
+							const lElement = ObjetElement_1.ObjetElement.create({
+								Libelle: lEleve.getLibelle(),
+								Numero: lEleve.getNumero(),
+								indiceEleve: i,
+								indicePunition: j,
+								type: lPunition.naturePunition,
+								listeMotifs: lPunition.listeMotifs,
+								duree: lPunition.duree,
+								programmeeLe: lPunition.programmeeLe,
+								realiseeLe: lPunition.realiseeLe,
+							});
 							this.listePunitions.addElement(lElement);
 						}
 					}
@@ -74,18 +75,18 @@ class ObjetFenetre_ListePunitions extends ObjetFenetre {
 	}
 	evenementSurListe(aParametres) {
 		switch (aParametres.genreEvenement) {
-			case EGenreEvenementListe.Suppression: {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Suppression: {
 				const lArticleSupprime = aParametres.article;
 				if (!!lArticleSupprime) {
 					const lEleve = this.listeEleves.get(lArticleSupprime.indiceEleve);
-					lEleve.setEtat(EGenreEtat.Modification);
+					lEleve.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 					const lPunitionSupprimee = lEleve.listePunitions.get(
 						lArticleSupprime.indicePunition,
 					);
-					lPunitionSupprimee.setEtat(EGenreEtat.Suppression);
+					lPunitionSupprimee.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 					this.callback.appel(
 						0,
-						EGenreEvenementListe.Suppression,
+						Enumere_EvenementListe_1.EGenreEvenementListe.Suppression,
 						lArticleSupprime.indiceEleve,
 					);
 				}
@@ -93,52 +94,57 @@ class ObjetFenetre_ListePunitions extends ObjetFenetre {
 			}
 		}
 	}
+	_initialiserListe(aInstance) {
+		const lColonnes = [];
+		lColonnes.push({
+			id: DonneesListe_ListePunitions.Colonnes.libelle,
+			titre: ObjetTraduction_1.GTraductions.getValeur("Absence.ListeEleves"),
+			taille: 175,
+		});
+		lColonnes.push({
+			id: DonneesListe_ListePunitions.Colonnes.type,
+			titre: ObjetTraduction_1.GTraductions.getValeur("Absence.ListeType"),
+			taille: 150,
+		});
+		lColonnes.push({
+			id: DonneesListe_ListePunitions.Colonnes.motifs,
+			titre: ObjetTraduction_1.GTraductions.getValeur("Absence.ListeMotif"),
+			taille: "100%",
+		});
+		lColonnes.push({
+			id: DonneesListe_ListePunitions.Colonnes.dateProgrammation,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"Absence.ListeDateProgrammation",
+			),
+			taille: 100,
+		});
+		lColonnes.push({
+			id: DonneesListe_ListePunitions.Colonnes.dateRealisation,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"Absence.ListeDateRealisation",
+			),
+			taille: 100,
+		});
+		aInstance.setOptionsListe({ colonnes: lColonnes });
+	}
 }
-function _initialiserListe(aInstance) {
-	const lColonnes = [];
-	lColonnes.push({
-		id: DonneesListe_ListePunitions.colonnes.libelle,
-		titre: GTraductions.getValeur("Absence.ListeEleves"),
-		taille: 175,
-	});
-	lColonnes.push({
-		id: DonneesListe_ListePunitions.colonnes.type,
-		titre: GTraductions.getValeur("Absence.ListeType"),
-		taille: 150,
-	});
-	lColonnes.push({
-		id: DonneesListe_ListePunitions.colonnes.motifs,
-		titre: GTraductions.getValeur("Absence.ListeMotif"),
-		taille: "100%",
-	});
-	lColonnes.push({
-		id: DonneesListe_ListePunitions.colonnes.dateProgrammation,
-		titre: GTraductions.getValeur("Absence.ListeDateProgrammation"),
-		taille: 100,
-	});
-	lColonnes.push({
-		id: DonneesListe_ListePunitions.colonnes.dateRealisation,
-		titre: GTraductions.getValeur("Absence.ListeDateRealisation"),
-		taille: 100,
-	});
-	aInstance.setOptionsListe({ colonnes: lColonnes });
-}
-class DonneesListe_ListePunitions extends ObjetDonneesListe {
+exports.ObjetFenetre_ListePunitions = ObjetFenetre_ListePunitions;
+class DonneesListe_ListePunitions extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees) {
 		super(aDonnees);
 		this.setOptions({ avecEdition: false, avecEvnt_Suppression: true });
 	}
 	getValeur(aParams) {
 		switch (aParams.idColonne) {
-			case DonneesListe_ListePunitions.colonnes.libelle:
+			case DonneesListe_ListePunitions.Colonnes.libelle:
 				return aParams.article.getLibelle();
-			case DonneesListe_ListePunitions.colonnes.type: {
+			case DonneesListe_ListePunitions.Colonnes.type: {
 				const lType = [];
 				if (!!aParams.article.type) {
 					lType.push(aParams.article.type.getLibelle());
 					if (!!aParams.article.duree) {
 						lType.push(
-							GDate.formatDureeEnMillisecondes(
+							ObjetDate_1.GDate.formatDureeEnMillisecondes(
 								aParams.article.duree * 60 * 1000,
 								" - " + "%xh%sh%mm",
 							),
@@ -147,24 +153,30 @@ class DonneesListe_ListePunitions extends ObjetDonneesListe {
 				}
 				return lType.join("");
 			}
-			case DonneesListe_ListePunitions.colonnes.motifs:
+			case DonneesListe_ListePunitions.Colonnes.motifs:
 				return aParams.article.listeMotifs.getTableauLibelles().join("<br>");
-			case DonneesListe_ListePunitions.colonnes.dateProgrammation:
+			case DonneesListe_ListePunitions.Colonnes.dateProgrammation:
 				return aParams.article.programmeeLe || "";
-			case DonneesListe_ListePunitions.colonnes.dateRealisation:
+			case DonneesListe_ListePunitions.Colonnes.dateRealisation:
 				return aParams.article.realiseeLe || "";
 		}
 		return "";
 	}
 	getCouleurCellule() {
-		return ObjetDonneesListe.ECouleurCellule.Blanc;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
 	}
 }
-DonneesListe_ListePunitions.colonnes = {
-	libelle: "DLPunitions_libelle",
-	type: "DLPunitions_type",
-	motifs: "DLPunitions_motifs",
-	dateProgrammation: "DLPunitions_dateProg",
-	dateRealisation: "DLPunitions_dateRea",
-};
-module.exports = { ObjetFenetre_ListePunitions };
+(function (DonneesListe_ListePunitions) {
+	let Colonnes;
+	(function (Colonnes) {
+		Colonnes["libelle"] = "DLPunitions_libelle";
+		Colonnes["type"] = "DLPunitions_type";
+		Colonnes["motifs"] = "DLPunitions_motifs";
+		Colonnes["dateProgrammation"] = "DLPunitions_dateProg";
+		Colonnes["dateRealisation"] = "DLPunitions_dateRea";
+	})(
+		(Colonnes =
+			DonneesListe_ListePunitions.Colonnes ||
+			(DonneesListe_ListePunitions.Colonnes = {})),
+	);
+})(DonneesListe_ListePunitions || (DonneesListe_ListePunitions = {}));

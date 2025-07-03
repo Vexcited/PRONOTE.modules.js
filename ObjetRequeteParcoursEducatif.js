@@ -1,9 +1,7 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteParcoursEducatif extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteParcoursEducatif = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteParcoursEducatif extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aParametres) {
 		$.extend(this.JSON, aParametres);
 		if (this.JSON.listeEleves) {
@@ -13,9 +11,9 @@ class ObjetRequeteParcoursEducatif extends ObjetRequeteConsultation {
 		}
 		return this.appelAsynchrone();
 	}
-	actionApresRequete() {
-		this.callbackReussite.appel(this.JSONReponse);
-	}
 }
-Requetes.inscrire("ParcoursEducatif", ObjetRequeteParcoursEducatif);
-module.exports = ObjetRequeteParcoursEducatif;
+exports.ObjetRequeteParcoursEducatif = ObjetRequeteParcoursEducatif;
+CollectionRequetes_1.Requetes.inscrire(
+	"ParcoursEducatif",
+	ObjetRequeteParcoursEducatif,
+);

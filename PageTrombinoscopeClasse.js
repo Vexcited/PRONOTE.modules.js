@@ -188,8 +188,8 @@ class PageTrombinoscopeClasse extends InterfacePage_1.InterfacePage {
 		super.surResizeInterface();
 	}
 	_composeZoneBandeau() {
-		const T = [];
-		T.push(
+		const H = [];
+		H.push(
 			'<div class="NoWrap">',
 			'<ie-radio class="GrandEspaceGauche EspaceDroit Maigre" ie-model="rbFiltre(false)">',
 			ObjetTraduction_1.GTraductions.getValeur("Trombinoscope.OrdreAlpha"),
@@ -202,7 +202,7 @@ class PageTrombinoscopeClasse extends InterfacePage_1.InterfacePage {
 			"</ie-radio>",
 			"</div>",
 		);
-		return T.join("");
+		return H.join("");
 	}
 	requeteTrombinoscope() {
 		let lParams;

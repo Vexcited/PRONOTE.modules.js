@@ -14,6 +14,7 @@ class ObjetRequeteSaisieVieScolaire extends ObjetRequeteJSON_1.ObjetRequeteSaisi
 			});
 		}
 		this.JSON.listeAbsences = aParams.listeAbsences;
+		this.JSON.estControle = aParams.estControle;
 		return this.appelAsynchrone();
 	}
 	actionApresRequete(aGenreReponse) {

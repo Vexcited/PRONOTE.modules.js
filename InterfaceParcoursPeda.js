@@ -1,26 +1,27 @@
-const { GHtml } = require("ObjetHtml.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { ObjetInterface } = require("ObjetInterface.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { TypeGenreMaquetteBulletin } = require("TypeGenreMaquetteBulletin.js");
-const {
-	TypeGenreParcoursEducatif,
-	TypeGenreParcoursEducatifUtil,
-} = require("TypeGenreParcoursEducatif.js");
-const { DonneesListe_ParcoursPeda } = require("DonneesListe_ParcoursPeda.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const ObjetRequeteParcoursEducatif = require("ObjetRequeteParcoursEducatif.js");
-const ObjetRequeteSaisieParcoursEducatifs = require("ObjetRequeteSaisieParcoursEducatifs.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-class InterfaceParcoursPeda extends ObjetInterface {
+exports.InterfaceParcoursPeda = void 0;
+const ObjetHtml_1 = require("ObjetHtml");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetInterface_1 = require("ObjetInterface");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TypeGenreMaquetteBulletin_1 = require("TypeGenreMaquetteBulletin");
+const TypeGenreParcoursEducatif_1 = require("TypeGenreParcoursEducatif");
+const DonneesListe_ParcoursPeda_1 = require("DonneesListe_ParcoursPeda");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const MultiObjetRequeteParcoursEducatif = require("ObjetRequeteParcoursEducatif");
+const MultiObjetRequeteSaisieParcoursEducatifs = require("ObjetRequeteSaisieParcoursEducatifs");
+const MethodesObjet_1 = require("MethodesObjet");
+const AccessApp_1 = require("AccessApp");
+class InterfaceParcoursPeda extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
+		this.listeFormatee = new ObjetListeElements_1.ObjetListeElements();
+		this._avecEventResizeNavigateur = true;
 		this.params = {
 			periodeCloture: false,
 			droits: { avecSaisie: false },
@@ -29,17 +30,25 @@ class InterfaceParcoursPeda extends ObjetInterface {
 				avecCumulParGenreParcours: false,
 				genreParcours: null,
 			},
-			genreMaquette: TypeGenreMaquetteBulletin.tGMB_Notes,
+			genreMaquette:
+				TypeGenreMaquetteBulletin_1.TypeGenreMaquetteBulletin.tGMB_Notes,
 			avecTitres: true,
 			avecCompteurSurCumul: false,
 		};
-		this.listeFormatee = new ObjetListeElements();
+	}
+	setAvecEventResizeNavigateur(aVal) {
+		this._avecEventResizeNavigateur = aVal;
+	}
+	avecEventResizeNavigateur() {
+		return this._avecEventResizeNavigateur
+			? super.avecEventResizeNavigateur()
+			: false;
 	}
 	construireInstances() {
 		this.identListe = this.add(
-			ObjetListe,
-			_evenementSurListe.bind(this),
-			_initialiserListe.bind(this),
+			ObjetListe_1.ObjetListe,
+			this._evenementSurListe.bind(this),
+			this._initialiserListe.bind(this),
 		);
 	}
 	setParametresGeneraux() {
@@ -47,10 +56,15 @@ class InterfaceParcoursPeda extends ObjetInterface {
 		this.avecBandeau = false;
 		this.AvecCadre = false;
 	}
-	recupererDonnees(aParam) {
+	recupererDonnees() {
+		this.recupererDonnees2();
+	}
+	recupererDonnees2(aParam) {
 		if (aParam) {
 			this.contexte = aParam;
-			return new ObjetRequeteParcoursEducatif(this)
+			return new MultiObjetRequeteParcoursEducatif.ObjetRequeteParcoursEducatif(
+				this,
+			)
 				.lancerRequete({
 					classeGroupe: aParam.classeGroupe,
 					periode: aParam.periode,
@@ -76,25 +90,28 @@ class InterfaceParcoursPeda extends ObjetInterface {
 			this.params.droits.avecSaisie === false &&
 			this.listeParcours.count() === 0
 		) {
-			GHtml.setHtml(
+			ObjetHtml_1.GHtml.setHtml(
 				this.Nom,
 				this.composeMessage(
-					GTraductions.getValeur("ParcoursPeda.MsgAucunParcours"),
+					ObjetTraduction_1.GTraductions.getValeur(
+						"ParcoursPeda.MsgAucunParcours",
+					),
 				),
 			);
 		} else {
 			this.initialiser(true);
 			this._formaterDonneesSelonOptions(this.listeParcours, aParam.filtres);
-			this.donneesListe = new DonneesListe_ParcoursPeda({
-				donnees: this.listeFormatee,
-				libelleUtilisateur: this.libelleUtilisateur,
-				ressources: aParam.ressources,
-				filtres: aParam.filtres,
-				droits: aParam.droits,
-				periodeCloture: this.periodeCloture,
-				avecTitres: aParam.avecTitres,
-				avecCompteurSurCumul: aParam.avecCompteurSurCumul,
-			});
+			this.donneesListe =
+				new DonneesListe_ParcoursPeda_1.DonneesListe_ParcoursPeda({
+					donnees: this.listeFormatee,
+					libelleUtilisateur: this.libelleUtilisateur,
+					ressources: aParam.ressources,
+					filtres: aParam.filtres,
+					droits: aParam.droits,
+					periodeCloture: this.periodeCloture,
+					avecTitres: aParam.avecTitres,
+					avecCompteurSurCumul: aParam.avecCompteurSurCumul,
+				});
 			this._actualiserListe();
 		}
 	}
@@ -105,12 +122,12 @@ class InterfaceParcoursPeda extends ObjetInterface {
 		H.push("</div>");
 		return H.join("");
 	}
-	_getDonneesSaisie() {
+	getDonneesSaisie() {
 		return {
 			listeParcours: this.listeFormatee,
-			periode: GEtatUtilisateur.Navigation.getRessource(
-				EGenreRessource.Periode,
-			),
+			periode: (0, AccessApp_1.getApp)()
+				.getEtatUtilisateur()
+				.Navigation.getRessource(Enumere_Ressource_1.EGenreRessource.Periode),
 			genreMaquette: this.params.genreMaquette,
 		};
 	}
@@ -122,22 +139,26 @@ class InterfaceParcoursPeda extends ObjetInterface {
 	}
 	_formaterDonneesSelonOptions(aListeDonnees, aOptions) {
 		const lCumulsDeploye = true;
-		this.listeFormatee = new ObjetListeElements();
+		this.listeFormatee = new ObjetListeElements_1.ObjetListeElements();
 		let lListeCumulsGenreParcours;
 		let lTabListeCumulsEleves;
 		let lListeCumulsEleves;
 		if (aOptions.avecCumulParGenreParcours) {
-			lListeCumulsGenreParcours = new ObjetListeElements();
+			lListeCumulsGenreParcours = new ObjetListeElements_1.ObjetListeElements();
 		}
 		if (aOptions.avecCumulParEleves) {
 			if (aOptions.avecCumulParGenreParcours) {
 				lTabListeCumulsEleves = [];
-				for (const lKey of MethodesObjet.enumKeys(TypeGenreParcoursEducatif)) {
-					const lGenre = TypeGenreParcoursEducatif[lKey];
-					lTabListeCumulsEleves[lGenre] = new ObjetListeElements();
+				for (const lKey of MethodesObjet_1.MethodesObjet.enumKeys(
+					TypeGenreParcoursEducatif_1.TypeGenreParcoursEducatif,
+				)) {
+					const lGenre =
+						TypeGenreParcoursEducatif_1.TypeGenreParcoursEducatif[lKey];
+					lTabListeCumulsEleves[lGenre] =
+						new ObjetListeElements_1.ObjetListeElements();
 				}
 			} else {
-				lListeCumulsEleves = new ObjetListeElements();
+				lListeCumulsEleves = new ObjetListeElements_1.ObjetListeElements();
 			}
 		}
 		const lNbr = aListeDonnees.count();
@@ -158,8 +179,10 @@ class InterfaceParcoursPeda extends ObjetInterface {
 						),
 					);
 					if (!lCumulGenreParcours) {
-						lCumulGenreParcours = new ObjetElement(
-							TypeGenreParcoursEducatifUtil.getLibelle(lGenreParcours),
+						lCumulGenreParcours = new ObjetElement_1.ObjetElement(
+							TypeGenreParcoursEducatif_1.TypeGenreParcoursEducatifUtil.getLibelle(
+								lGenreParcours,
+							),
 							lGenreParcours,
 							lGenreParcours,
 						);
@@ -190,7 +213,7 @@ class InterfaceParcoursPeda extends ObjetInterface {
 						),
 					);
 					if (!lCumul) {
-						lCumul = new ObjetElement(
+						lCumul = new ObjetElement_1.ObjetElement(
 							lEleve.getLibelle(),
 							lEleve.getNumero(),
 							lEleve.getGenre(),
@@ -218,135 +241,155 @@ class InterfaceParcoursPeda extends ObjetInterface {
 			this.getInstance(this.identListe).actualiser(true);
 		}
 	}
-}
-function _initialiserListe(aInstance) {
-	const lColonnes = [
-		{
-			id: DonneesListe_ParcoursPeda.colonnes.date,
-			taille: 60,
-			titre: this.params.avecTitres
-				? GTraductions.getValeur("ParcoursPeda.colonne.date")
-				: null,
-		},
-		{
-			id: DonneesListe_ParcoursPeda.colonnes.description,
-			taille: 400,
-			titre: this.params.avecTitres
-				? GTraductions.getValeur("ParcoursPeda.colonne.description")
-				: null,
-		},
-		{
-			id: DonneesListe_ParcoursPeda.colonnes.type,
-			taille: 100,
-			titre: this.params.avecTitres
-				? GTraductions.getValeur("ParcoursPeda.colonne.type")
-				: null,
-			hint: this.params.avecTitres
-				? GTraductions.getValeur("ParcoursPeda.colonne.hint_type")
-				: null,
-		},
-		{
-			id: DonneesListe_ParcoursPeda.colonnes.suiviPar,
-			taille: 160,
-			titre: this.params.avecTitres
-				? GTraductions.getValeur("ParcoursPeda.colonne.suiviPar")
-				: null,
-		},
-	];
-	aInstance.setOptionsListe({
-		colonnes: lColonnes,
-		listeCreations: this.params.droits.avecSaisie
-			? [DonneesListe_ParcoursPeda.colonnes.description]
-			: null,
-		avecLigneCreation: !!this.params.droits.avecSaisie,
-		titreCreation: GTraductions.getValeur("ParcoursPeda.TitreCreation"),
-		hauteurAdapteContenu: ![
-			EGenreEspace.Professeur,
-			EGenreEspace.Etablissement,
-			EGenreEspace.PrimProfesseur,
-			EGenreEspace.PrimDirection,
-		].includes(GEtatUtilisateur.GenreEspace),
-		hauteurMaxAdapteContenu: 200,
-	});
-	GEtatUtilisateur.setTriListe({
-		liste: aInstance,
-		tri: [DonneesListe_ParcoursPeda.colonnes.date],
-	});
-}
-function majEltCumulSurSuppression(aEltCumul, aTabNumeroAIgnorer) {
-	let lCumulEstPere = false;
-	this.listeFormatee.parcourir((D) => {
-		if (
-			D &&
-			D.pere &&
-			D.pere.getNumero() === aEltCumul.getNumero() &&
-			(!aEltCumul.pere ||
-				(D.pere.pere &&
-					aEltCumul.pere.getNumero() === D.pere.pere.getNumero())) &&
-			D.existe() &&
-			(aTabNumeroAIgnorer.length === 0 ||
-				!aTabNumeroAIgnorer.includes(D.getNumero()))
-		) {
-			lCumulEstPere = true;
-			return false;
-		}
-	});
-	if (lCumulEstPere === true) {
-		aEltCumul.nbParcours--;
-		if (aEltCumul.pere) {
-			aEltCumul.pere.nbParcours--;
-		}
-	} else {
-		aEltCumul.setEtat(EGenreEtat.Suppression);
-		if (aEltCumul.pere) {
-			majEltCumulSurSuppression.bind(this)(aEltCumul.pere, []);
-		}
-	}
-}
-function _evenementSurListe(aParametres, aGenreEvenement, I, J) {
-	switch (aGenreEvenement) {
-		case EGenreEvenementListe.Suppression:
-			if (
-				this.params.filtres.avecCumulParEleves ||
-				this.params.filtres.avecCumulParGenreParcours
-			) {
-				const lElt = this.listeFormatee.get(J);
-				if (lElt && lElt.pere) {
-					majEltCumulSurSuppression.bind(this)(lElt.pere, [lElt.getNumero()]);
-				}
-			}
-			break;
-		case EGenreEvenementListe.Creation:
-			GApplication.getMessage().afficher({
-				type: EGenreBoiteMessage.Information,
-				titre: GTraductions.getValeur("SaisieImpossible"),
-				message: GTraductions.getValeur("PeriodeCloturee"),
-			});
-			return EGenreEvenementListe.Creation;
-		case EGenreEvenementListe.ApresEdition:
-		case EGenreEvenementListe.ApresCreation:
-		case EGenreEvenementListe.ApresSuppression:
-			_validerModification.call(this);
-			break;
-	}
-}
-function _validerModification() {
-	Promise.resolve()
-		.then(() => {
-			return new ObjetRequeteSaisieParcoursEducatifs(this).lancerRequete(
-				this._getDonneesSaisie(),
-			);
-		})
-		.then(
-			() => {
-				return this.recupererDonnees(this.contexte);
+	_initialiserListe(aInstance) {
+		const lColonnes = [
+			{
+				id: DonneesListe_ParcoursPeda_1.DonneesListe_ParcoursPeda.colonnes.date,
+				taille: 60,
+				titre: this.params.avecTitres
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"ParcoursPeda.colonne.date",
+						)
+					: null,
 			},
-			(aParams) => {
-				return aParams;
+			{
+				id: DonneesListe_ParcoursPeda_1.DonneesListe_ParcoursPeda.colonnes
+					.description,
+				taille: 400,
+				titre: this.params.avecTitres
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"ParcoursPeda.colonne.description",
+						)
+					: null,
 			},
-		)
-		.then(() => {
-			this.setDonnees(this.params);
+			{
+				id: DonneesListe_ParcoursPeda_1.DonneesListe_ParcoursPeda.colonnes.type,
+				taille: 100,
+				titre: this.params.avecTitres
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"ParcoursPeda.colonne.type",
+						)
+					: null,
+				hint: this.params.avecTitres
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"ParcoursPeda.colonne.hint_type",
+						)
+					: null,
+			},
+			{
+				id: DonneesListe_ParcoursPeda_1.DonneesListe_ParcoursPeda.colonnes
+					.suiviPar,
+				taille: 160,
+				titre: this.params.avecTitres
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"ParcoursPeda.colonne.suiviPar",
+						)
+					: null,
+			},
+		];
+		aInstance.setOptionsListe({
+			colonnes: lColonnes,
+			listeCreations: this.params.droits.avecSaisie
+				? [
+						DonneesListe_ParcoursPeda_1.DonneesListe_ParcoursPeda.colonnes
+							.description,
+					]
+				: null,
+			avecLigneCreation: !!this.params.droits.avecSaisie,
+			titreCreation: ObjetTraduction_1.GTraductions.getValeur(
+				"ParcoursPeda.TitreCreation",
+			),
+			hauteurAdapteContenu: ![
+				Enumere_Espace_1.EGenreEspace.Professeur,
+				Enumere_Espace_1.EGenreEspace.Etablissement,
+				Enumere_Espace_1.EGenreEspace.PrimProfesseur,
+				Enumere_Espace_1.EGenreEspace.PrimDirection,
+			].includes(GEtatUtilisateur.GenreEspace),
+			hauteurMaxAdapteContenu: 200,
+			ariaLabel: this.options.ariaLabelListe || undefined,
 		});
+		GEtatUtilisateur.setTriListe({
+			liste: aInstance,
+			tri: [
+				DonneesListe_ParcoursPeda_1.DonneesListe_ParcoursPeda.colonnes.date,
+			],
+		});
+	}
+	majEltCumulSurSuppression(aEltCumul, aTabNumeroAIgnorer) {
+		let lCumulEstPere = false;
+		this.listeFormatee.parcourir((D) => {
+			if (
+				D &&
+				D.pere &&
+				D.pere.getNumero() === aEltCumul.getNumero() &&
+				(!aEltCumul.pere ||
+					(D.pere.pere &&
+						aEltCumul.pere.getNumero() === D.pere.pere.getNumero())) &&
+				D.existe() &&
+				(aTabNumeroAIgnorer.length === 0 ||
+					!aTabNumeroAIgnorer.includes(D.getNumero()))
+			) {
+				lCumulEstPere = true;
+				return false;
+			}
+		});
+		if (lCumulEstPere) {
+			aEltCumul.nbParcours--;
+			if (aEltCumul.pere) {
+				aEltCumul.pere.nbParcours--;
+			}
+		} else {
+			aEltCumul.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+			if (aEltCumul.pere) {
+				this.majEltCumulSurSuppression(aEltCumul.pere, []);
+			}
+		}
+	}
+	_evenementSurListe(aParametres) {
+		switch (aParametres.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Suppression:
+				if (
+					this.params.filtres.avecCumulParEleves ||
+					this.params.filtres.avecCumulParGenreParcours
+				) {
+					const lElt = this.listeFormatee.get(aParametres.ligne);
+					if (lElt && lElt.pere) {
+						this.majEltCumulSurSuppression(lElt.pere, [lElt.getNumero()]);
+					}
+				}
+				break;
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Creation:
+				GApplication.getMessage().afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+					titre: ObjetTraduction_1.GTraductions.getValeur("SaisieImpossible"),
+					message: ObjetTraduction_1.GTraductions.getValeur("PeriodeCloturee"),
+				});
+				return Enumere_EvenementListe_1.EGenreEvenementListe.Creation;
+			case Enumere_EvenementListe_1.EGenreEvenementListe.ApresEdition:
+			case Enumere_EvenementListe_1.EGenreEvenementListe.ApresCreation:
+			case Enumere_EvenementListe_1.EGenreEvenementListe.ApresSuppression:
+				this._validerModification();
+				break;
+		}
+	}
+	_validerModification() {
+		Promise.resolve()
+			.then(() => {
+				return new MultiObjetRequeteSaisieParcoursEducatifs.ObjetRequeteSaisieParcoursEducatifs(
+					this,
+				).lancerRequete(this.getDonneesSaisie());
+			})
+			.then(
+				() => {
+					return this.recupererDonnees2(this.contexte);
+				},
+				(aParams) => {
+					return aParams;
+				},
+			)
+			.then(() => {
+				this.setDonnees(this.params);
+			});
+	}
 }
-module.exports = { InterfaceParcoursPeda };
+exports.InterfaceParcoursPeda = InterfaceParcoursPeda;

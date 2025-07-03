@@ -1,8 +1,8 @@
 const IEHtml = require("IEHtml");
 const ObjetHtml_1 = require("ObjetHtml");
-const ObjetWAI_1 = require("ObjetWAI");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ToucheClavier_1 = require("ToucheClavier");
+const Tooltip_1 = require("Tooltip");
 IEHtml.addBalise("ie-chips", (aContexteCourant, aOutils) => {
 	const lModele = aOutils.getModel(aContexteCourant);
 	const lInnerHtml = aContexteCourant.node.innerHTML;
@@ -22,7 +22,7 @@ IEHtml.addBalise("ie-chips", (aContexteCourant, aOutils) => {
 	const lElementChips = ObjetHtml_1.GHtml.htmlToDOM(
 		lHref
 			? IE.jsx.str("a", { href: lHref, target: "_blank" }, lHtmlInterneChips)
-			: IE.jsx.str("div", { tabindex: "0" }, lHtmlInterneChips),
+			: IE.jsx.str("div", null, lHtmlInterneChips),
 	);
 	const lJChips = $(lElementChips);
 	let lJBtnSuppr = null;
@@ -37,7 +37,8 @@ IEHtml.addBalise("ie-chips", (aContexteCourant, aOutils) => {
 	let lFuncGetLabelBtnSuppr = null;
 	let lLabelBtnSuppr_bak = "";
 	const lRefresh = aContexteCourant.contexte.refresh;
-	if (lModele && aContexteCourant.data.$modeleParsed) {
+	aOutils.copyAttributs(aContexteCourant.node, lElementChips);
+	if (lModele) {
 		lInfosEvent = aOutils.getAccesParametresModel("event", aContexteCourant);
 		lInfosEventBtn = aOutils.getAccesParametresModel(
 			"eventBtn",
@@ -74,49 +75,31 @@ IEHtml.addBalise("ie-chips", (aContexteCourant, aOutils) => {
 		let lGetterDisabled;
 		if (lInfosGetDisabled.estFonction) {
 			lGetterDisabled = function () {
-				return !!lInfosGetDisabled.callback([]);
+				return !!lInfosGetDisabled.callback([lElementChips]);
 			};
 			lOptions.disabled = lGetterDisabled();
 		}
 		const lSetDisabled = function () {
 			var _a;
 			if (lOptions.disabled) {
-				lJRoleButton.attr(
-					ObjetWAI_1.GObjetWAI.getAttribut(ObjetWAI_1.EGenreAttribut.disabled),
-					"true",
-				);
+				lJRoleButton.attr("aria-disabled", "true");
 				lJBtnSuppr === null || lJBtnSuppr === void 0
 					? void 0
-					: lJBtnSuppr.attr(
-							ObjetWAI_1.GObjetWAI.getAttribut(
-								ObjetWAI_1.EGenreAttribut.disabled,
-							),
-							"true",
-						);
+					: lJBtnSuppr.attr("aria-disabled", "true");
 				lJChips.addClass("disabled");
 			} else {
-				lJRoleButton
-					.get(0)
-					.removeAttribute(
-						ObjetWAI_1.GObjetWAI.getAttribut(
-							ObjetWAI_1.EGenreAttribut.disabled,
-						),
-					);
+				lJRoleButton.get(0).removeAttribute("aria-disabled");
 				(_a =
 					lJBtnSuppr === null || lJBtnSuppr === void 0
 						? void 0
 						: lJBtnSuppr.get(0)) === null || _a === void 0
 					? void 0
-					: _a.removeAttribute(
-							ObjetWAI_1.GObjetWAI.getAttribut(
-								ObjetWAI_1.EGenreAttribut.disabled,
-							),
-						);
+					: _a.removeAttribute("aria-disabled");
 				lJChips.removeClass("disabled");
 			}
 		};
 		if (lInfosGetSelected.estFonction) {
-			lOptions.selected = !!lInfosGetSelected.callback([]);
+			lOptions.selected = !!lInfosGetSelected.callback([lElementChips]);
 			lOptions.selected
 				? lJChips.addClass("pressed")
 				: lJChips.removeClass("pressed");
@@ -133,7 +116,7 @@ IEHtml.addBalise("ie-chips", (aContexteCourant, aOutils) => {
 						}
 					}
 					if (lInfosGetSelected.estFonction) {
-						const lEstSelected = !!lInfosGetSelected.callback([]);
+						const lEstSelected = !!lInfosGetSelected.callback([lElementChips]);
 						if (lEstSelected !== lOptions.selected) {
 							lOptions.selected = lEstSelected;
 							lOptions.selected
@@ -158,6 +141,7 @@ IEHtml.addBalise("ie-chips", (aContexteCourant, aOutils) => {
 					role: "button",
 					tabindex: "0",
 					"aria-label": lLabelBtnSuppr_bak,
+					"data-tooltip": Tooltip_1.Tooltip.Type.default,
 				}),
 			);
 			lJBtnSuppr = lJChips.find(">i");
@@ -166,16 +150,19 @@ IEHtml.addBalise("ie-chips", (aContexteCourant, aOutils) => {
 			lSetDisabled();
 		}
 	}
-	aOutils.copyAttributs(aContexteCourant.node, lElementChips);
 	if (!lHref && lInfosEvent && lInfosEvent.estFonction) {
-		lJChips.get(0).removeAttribute("tabindex");
 		lJRoleButton.get(0).setAttribute("role", "button");
 		lJRoleButton.get(0).setAttribute("tabindex", "0");
 	}
 	let lClass = "ie-chips" + (lHref ? " AvecMenuContextuel" : "");
 	if ((lInfosEvent && lInfosEvent.estFonction) || lHref) {
 		lJChips.eventValidation((aEvent) => {
-			if (aEvent.originalEvent && "__eventBtn__" in aEvent.originalEvent) {
+			var _a;
+			if (
+				(_a = aEvent.originalEvent) === null || _a === void 0
+					? void 0
+					: _a.__eventBtn__
+			) {
 				return;
 			}
 			if (lOptions.disabled) {
@@ -185,7 +172,7 @@ IEHtml.addBalise("ie-chips", (aContexteCourant, aOutils) => {
 				return;
 			}
 			if (lInfosEvent && lInfosEvent.estFonction) {
-				const lResult = lInfosEvent.callback([aEvent]);
+				const lResult = lInfosEvent.callback([aEvent, lElementChips]);
 				lRefresh();
 				return lResult;
 			}
@@ -200,7 +187,7 @@ IEHtml.addBalise("ie-chips", (aContexteCourant, aOutils) => {
 			if (aEvent.originalEvent) {
 				aEvent.originalEvent.__eventBtn__ = true;
 			}
-			let lResult = lInfosEventBtn.callback([aEvent]);
+			let lResult = lInfosEventBtn.callback([aEvent, lElementChips]);
 			lRefresh();
 			if (lHref) {
 				lResult = false;
@@ -215,7 +202,7 @@ IEHtml.addBalise("ie-chips", (aContexteCourant, aOutils) => {
 				ToucheClavier_1.ToucheClavierUtil.estEventSupprimer(aEvent) ||
 				aEvent.which === ToucheClavier_1.ToucheClavier.Backspace
 			) {
-				const lResult = lInfosEventBtn.callback([aEvent]);
+				const lResult = lInfosEventBtn.callback([aEvent, lElementChips]);
 				lRefresh();
 				return lResult;
 			}
@@ -225,7 +212,7 @@ IEHtml.addBalise("ie-chips", (aContexteCourant, aOutils) => {
 	const lRacine = lElementChips;
 	aOutils.replaceNode(aContexteCourant.node, lRacine);
 	aContexteCourant.node = lRacine;
-	if (lModele && aContexteCourant.data.$modeleParsed) {
+	if (lModele) {
 		aOutils.surNodeEtNodeAfter(aContexteCourant);
 	}
 	aContexteCourant.nodeTransfertContenuDynamique = lJText.get(0);

@@ -13,6 +13,9 @@ class ObjetSelecteurMotifAbsence extends _ObjetSelecteur_1._ObjetSelecteur {
 			titreLibelle: ObjetTraduction_1.GTraductions.getValeur(
 				"RecapAbs.motifsAbsence",
 			),
+			tooltip: ObjetTraduction_1.GTraductions.getValeur(
+				"RecapAbs.selectionMotifsAbsence",
+			),
 		});
 	}
 	construireInstanceFenetreSelection() {

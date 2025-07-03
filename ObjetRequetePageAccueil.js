@@ -1,17 +1,16 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { EGenreTriElement } = require("Enumere_TriElement.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { ObjetDeserialiser } = require("ObjetDeserialiser.js");
-const { EGenreWidget } = require("Enumere_Widget.js");
-const { UtilitaireContactReferents } = require("UtilitaireContactReferents.js");
-class ObjetRequetePageAccueil extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequetePageAccueil = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const Enumere_TriElement_1 = require("Enumere_TriElement");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetDeserialiser_1 = require("ObjetDeserialiser");
+const Enumere_Widget_1 = require("Enumere_Widget");
+const UtilitaireContactReferents_1 = require("UtilitaireContactReferents");
+const AccessApp_1 = require("AccessApp");
+class ObjetRequetePageAccueil extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aDonnees) {
 		this.JSON = $.extend({ avecConseilDeClasse: true }, aDonnees);
 		return this.appelAsynchrone();
@@ -20,20 +19,23 @@ class ObjetRequetePageAccueil extends ObjetRequeteConsultation {
 		let lUtilitaireDeserialisation;
 		let lVieScolaire;
 		if (
-			this._recupererDonneesWidget(EGenreWidget.vieScolaire) &&
+			this._recupererDonneesWidget(Enumere_Widget_1.EGenreWidget.vieScolaire) &&
 			this.JSONReponse.vieScolaire
 		) {
-			const lListeAbsences = new ObjetDeserialiser().listeEvenementsVS(
-				this.JSONReponse.vieScolaire.listeAbsences,
-				true,
-			);
+			const lListeAbsences =
+				new ObjetDeserialiser_1.ObjetDeserialiser().listeEvenementsVS(
+					this.JSONReponse.vieScolaire.listeAbsences,
+					true,
+				);
 			lListeAbsences.libelle = this.JSONReponse.vieScolaire.L;
 			lVieScolaire = {
 				listeAbsences:
 					this.JSONReponse.vieScolaire.listeAbsences.getListeElements(
 						(aElement) => {
 							return (
-								![EGenreRessource.Incident].includes(aElement.getGenre()) ||
+								![Enumere_Ressource_1.EGenreRessource.Incident].includes(
+									aElement.getGenre(),
+								) ||
 								!aElement.mesure ||
 								!aElement.mesure.publication ||
 								!lListeAbsences.getElementParNumero(aElement.mesure.getNumero())
@@ -41,16 +43,20 @@ class ObjetRequetePageAccueil extends ObjetRequeteConsultation {
 						},
 					),
 				avecContactReferentsVieScolaire:
-					UtilitaireContactReferents.avecAffichageContactReferentsVieScolaire(
+					UtilitaireContactReferents_1.UtilitaireContactReferents.avecAffichageContactReferentsVieScolaire(
 						GEtatUtilisateur.GenreEspace,
 					),
+				commentaireRetardObligatoire:
+					this.JSONReponse.vieScolaire.commentaireRetardObligatoire,
+				commentaireAbsenceObligatoire:
+					this.JSONReponse.vieScolaire.commentaireAbsenceObligatoire,
 			};
 		}
 		let lQCM;
-		if (this._recupererDonneesWidget(EGenreWidget.QCM)) {
-			lUtilitaireDeserialisation = new ObjetDeserialiser();
+		if (this._recupererDonneesWidget(Enumere_Widget_1.EGenreWidget.QCM)) {
+			lUtilitaireDeserialisation = new ObjetDeserialiser_1.ObjetDeserialiser();
 			const lListeExecutionsQCM = this.JSONReponse.QCM
-				? new ObjetListeElements().fromJSON(
+				? new ObjetListeElements_1.ObjetListeElements().fromJSON(
 						this.JSONReponse.QCM.listeExecutionsQCM,
 						lUtilitaireDeserialisation._ajouterQCM.bind(
 							lUtilitaireDeserialisation,
@@ -58,7 +64,7 @@ class ObjetRequetePageAccueil extends ObjetRequeteConsultation {
 					)
 				: null;
 			const lListeExecutionKiosque = this.JSONReponse.QCM
-				? new ObjetListeElements().fromJSON(
+				? new ObjetListeElements_1.ObjetListeElements().fromJSON(
 						this.JSONReponse.QCM.listeDevoirs,
 						this._ajouterDevoir.bind(this),
 					)
@@ -68,7 +74,8 @@ class ObjetRequetePageAccueil extends ObjetRequeteConsultation {
 				if (!!lListeExecutionsQCM) {
 					lListeWidgetQCMKiosque = lListeExecutionsQCM;
 				} else {
-					lListeWidgetQCMKiosque = new ObjetListeElements();
+					lListeWidgetQCMKiosque =
+						new ObjetListeElements_1.ObjetListeElements();
 				}
 				if (!!lListeExecutionKiosque) {
 					lListeWidgetQCMKiosque.add(lListeExecutionKiosque);
@@ -78,11 +85,13 @@ class ObjetRequetePageAccueil extends ObjetRequeteConsultation {
 		}
 		let lEDT;
 		if (
-			this._recupererDonneesWidget(EGenreWidget.EDT) &&
+			this._recupererDonneesWidget(Enumere_Widget_1.EGenreWidget.EDT) &&
 			this.JSONReponse.ListeCours
 		) {
 			lEDT = {
-				listeCours: new ObjetDeserialiser().listeCours(this.JSONReponse),
+				listeCours: new ObjetDeserialiser_1.ObjetDeserialiser().listeCours(
+					this.JSONReponse,
+				),
 				avecCoursAnnule: this.JSONReponse.AvecCoursAnnule,
 				listeAbsRessources: this.JSONReponse.listeAbsRessources || null,
 				joursStage: this.JSONReponse.joursStage || null,
@@ -100,7 +109,7 @@ class ObjetRequetePageAccueil extends ObjetRequeteConsultation {
 		}
 		let lPlanning;
 		if (
-			this._recupererDonneesWidget(EGenreWidget.Planning) &&
+			this._recupererDonneesWidget(Enumere_Widget_1.EGenreWidget.Planning) &&
 			this.JSONReponse.planning
 		) {
 			lPlanning = {
@@ -109,34 +118,39 @@ class ObjetRequetePageAccueil extends ObjetRequeteConsultation {
 			};
 		}
 		if (
-			this._recupererDonneesWidget(EGenreWidget.agenda) &&
+			this._recupererDonneesWidget(Enumere_Widget_1.EGenreWidget.agenda) &&
 			this.JSONReponse.agenda
 		) {
 			this.JSONReponse.agenda.listeEvenements =
-				new ObjetDeserialiser().getListeEvenements(
+				new ObjetDeserialiser_1.ObjetDeserialiser().getListeEvenements(
 					this.JSONReponse.agenda.listeEvenements,
 					true,
 				);
 		}
 		if (
-			this._recupererDonneesWidget(EGenreWidget.Notes) &&
+			this._recupererDonneesWidget(undefined) &&
 			!!this.JSONReponse.notes &&
 			!!this.JSONReponse.notes.listeDevoirs
 		) {
 			this.JSONReponse.notes.listeDevoirs.setTri([
-				ObjetTri.init("date", EGenreTriElement.Decroissant),
+				ObjetTri_1.ObjetTri.init(
+					"date",
+					Enumere_TriElement_1.EGenreTriElement.Decroissant,
+				),
 			]);
 			this.JSONReponse.notes.listeDevoirs.trier();
 		}
 		if (
-			this._recupererDonneesWidget(EGenreWidget.ressourcePedagogique) &&
+			this._recupererDonneesWidget(
+				Enumere_Widget_1.EGenreWidget.ressourcePedagogique,
+			) &&
 			this.JSONReponse.ressourcePedagogique
 		) {
-			lUtilitaireDeserialisation = new ObjetDeserialiser();
+			lUtilitaireDeserialisation = new ObjetDeserialiser_1.ObjetDeserialiser();
 			this.JSONReponse.ressourcePedagogique.listeRessources.parcourir(
 				(aEle) => {
 					if (aEle && aEle.ressource && aEle.ressource.QCM) {
-						const lTempEle = new ObjetElement();
+						const lTempEle = new ObjetElement_1.ObjetElement();
 						lUtilitaireDeserialisation._ajouterQCM(aEle.ressource, lTempEle);
 						aEle.ressource = lTempEle;
 					}
@@ -144,26 +158,28 @@ class ObjetRequetePageAccueil extends ObjetRequeteConsultation {
 			);
 		}
 		if (
-			this._recupererDonneesWidget(EGenreWidget.travailAFaire) &&
+			this._recupererDonneesWidget(
+				Enumere_Widget_1.EGenreWidget.travailAFaire,
+			) &&
 			this.JSONReponse.travailAFaire
 		) {
-			lUtilitaireDeserialisation = new ObjetDeserialiser();
+			lUtilitaireDeserialisation = new ObjetDeserialiser_1.ObjetDeserialiser();
 			this.JSONReponse.travailAFaire.listeTAF.parcourir((aEle) => {
 				if (aEle && aEle.executionQCM) {
-					const lTempEle = new ObjetElement();
+					const lTempEle = new ObjetElement_1.ObjetElement();
 					lUtilitaireDeserialisation._ajouterQCM(aEle.executionQCM, lTempEle);
 					aEle.executionQCM = lTempEle;
 				}
 			});
 		}
 		if (
-			this._recupererDonneesWidget(EGenreWidget.activite) &&
+			this._recupererDonneesWidget(Enumere_Widget_1.EGenreWidget.activite) &&
 			this.JSONReponse.activite
 		) {
-			lUtilitaireDeserialisation = new ObjetDeserialiser();
+			lUtilitaireDeserialisation = new ObjetDeserialiser_1.ObjetDeserialiser();
 			this.JSONReponse.activite.listeActivite.parcourir((aEle) => {
 				if (aEle && aEle.executionQCM) {
-					const lTempEle = new ObjetElement();
+					const lTempEle = new ObjetElement_1.ObjetElement();
 					lUtilitaireDeserialisation._ajouterQCM(aEle.executionQCM, lTempEle);
 					aEle.executionQCM = lTempEle;
 				}
@@ -183,13 +199,16 @@ class ObjetRequetePageAccueil extends ObjetRequeteConsultation {
 				EDT: lEDT,
 				planning: lPlanning,
 				travailAFaire: this.JSONReponse.travailAFaire,
-				travailAFairePrimaire: GEtatUtilisateur.pourPrimaire()
+				travailAFairePrimaire: (0, AccessApp_1.getApp)()
+					.getEtatUtilisateur()
+					.pourPrimaire()
 					? this.JSONReponse.travailAFaire
 					: undefined,
 				casier: this.JSONReponse.casier,
 				appelNonFait: this.JSONReponse.appelNonFait,
 				CDTNonSaisi: this.JSONReponse.CDTNonSaisi,
 				conseilDeClasse: this.JSONReponse.conseilDeClasse,
+				infosParcoursupLSL: this.JSONReponse.infosParcoursupLSL,
 				ressources: this.JSONReponse.ressources,
 				kiosque: this.JSONReponse.kiosque,
 				ressourcePedagogique: this.JSONReponse.ressourcePedagogique,
@@ -215,6 +234,8 @@ class ObjetRequetePageAccueil extends ObjetRequeteConsultation {
 				donneesProfs: this.JSONReponse.donneesProfs,
 				connexionsEnCours: this.JSONReponse.connexionsEnCours,
 				elections: this.JSONReponse.elections,
+				voteElecMembreBureau: this.JSONReponse.voteElecMembreBureau,
+				voteElecElecteur: this.JSONReponse.voteElecElecteur,
 				activite: this.JSONReponse.activite,
 				enseignementADistance: this.JSONReponse.enseignementADistance,
 				suiviAbsRetardsARegler: this.JSONReponse.suiviAbsRetardsARegler,
@@ -243,5 +264,5 @@ class ObjetRequetePageAccueil extends ObjetRequeteConsultation {
 		return true;
 	}
 }
-Requetes.inscrire("PageAccueil", ObjetRequetePageAccueil);
-module.exports = { ObjetRequetePageAccueil };
+exports.ObjetRequetePageAccueil = ObjetRequetePageAccueil;
+CollectionRequetes_1.Requetes.inscrire("PageAccueil", ObjetRequetePageAccueil);

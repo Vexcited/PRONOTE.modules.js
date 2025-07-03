@@ -24,6 +24,11 @@ var EGenreDocTelechargement;
 	] = "bulletinDeCompetences";
 	EGenreDocTelechargement[(EGenreDocTelechargement["diplome"] = 11)] =
 		"diplome";
+	EGenreDocTelechargement[(EGenreDocTelechargement["documentsASigner"] = 12)] =
+		"documentsASigner";
+	EGenreDocTelechargement[
+		(EGenreDocTelechargement["documentSigneFinalise"] = 13)
+	] = "documentSigneFinalise";
 })(
 	EGenreDocTelechargement ||
 		(exports.EGenreDocTelechargement = EGenreDocTelechargement = {}),

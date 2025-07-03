@@ -1,59 +1,68 @@
-const { EStructureAffichage } = require("Enumere_StructureAffichage.js");
-const { InterfacePage_Mobile } = require("InterfacePage_Mobile.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetSelection } = require("ObjetSelection.js");
-const { ObjetTabOnglets } = require("ObjetTabOnglets.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	ObjetRequeteDernieresEvaluations,
-} = require("ObjetRequeteDernieresEvaluations.js");
-const UtilitaireCompetences_Mobile = require("UtilitaireCompetences_Mobile.js");
-const { ObjetBoutonFlottant } = require("ObjetBoutonFlottant.js");
-const { MoteurDernieresNotes } = require("MoteurDernieresNotes.js");
-const { ObjetMoteurReleveBulletin } = require("ObjetMoteurReleveBulletin.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { GHtml } = require("ObjetHtml.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetFenetre_DetailsNote } = require("ObjetFenetre_DetailsNote.js");
-const {
-	DonneesListe_DernieresEvaluations,
-} = require("DonneesListe_DernieresEvaluations.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const TypeOngletDernieresEvaluations = { ParDate: 0, ParMatiere: 1 };
-class InterfacePageDernieresEvaluations_Mobile extends InterfacePage_Mobile {
+exports.InterfacePageDernieresEvaluations_Mobile = void 0;
+const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
+const InterfacePage_Mobile_1 = require("InterfacePage_Mobile");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetSelection_1 = require("ObjetSelection");
+const ObjetTabOnglets_1 = require("ObjetTabOnglets");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetRequeteDernieresEvaluations_1 = require("ObjetRequeteDernieresEvaluations");
+const UtilitaireCompetences_Mobile_1 = require("UtilitaireCompetences_Mobile");
+const ObjetBoutonFlottant_1 = require("ObjetBoutonFlottant");
+const MoteurDernieresNotes_1 = require("MoteurDernieresNotes");
+const ObjetMoteurReleveBulletin_1 = require("ObjetMoteurReleveBulletin");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetHtml_1 = require("ObjetHtml");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_DetailsNote_1 = require("ObjetFenetre_DetailsNote");
+const DonneesListe_DernieresEvaluations_1 = require("DonneesListe_DernieresEvaluations");
+const MethodesObjet_1 = require("MethodesObjet");
+const AccessApp_1 = require("AccessApp");
+var TypeOngletDernieresEvaluations;
+(function (TypeOngletDernieresEvaluations) {
+	TypeOngletDernieresEvaluations[
+		(TypeOngletDernieresEvaluations["ParDate"] = 0)
+	] = "ParDate";
+	TypeOngletDernieresEvaluations[
+		(TypeOngletDernieresEvaluations["ParMatiere"] = 1)
+	] = "ParMatiere";
+})(TypeOngletDernieresEvaluations || (TypeOngletDernieresEvaluations = {}));
+class InterfacePageDernieresEvaluations_Mobile extends InterfacePage_Mobile_1.InterfacePage_Mobile {
 	constructor(...aParams) {
 		super(...aParams);
-		if (!GEtatUtilisateur.infosSupp) {
-			GEtatUtilisateur.infosSupp = {};
+		this.appScoMobile = (0, AccessApp_1.getApp)();
+		this.etatUtilSco = this.appScoMobile.getEtatUtilisateur();
+		this.idWrapper = this.Nom + "_wrapper";
+		this.moteur = new MoteurDernieresNotes_1.MoteurDernieresNotes();
+		this.moteurBulletin =
+			new ObjetMoteurReleveBulletin_1.ObjetMoteurReleveBulletin();
+		if (!this.etatUtilSco.infosSupp) {
+			this.etatUtilSco.infosSupp = {};
 		}
-		if (!GEtatUtilisateur.infosSupp.DernieresEvaluationsMobile) {
-			GEtatUtilisateur.infosSupp.DernieresEvaluationsMobile = {};
+		if (!this.etatUtilSco.infosSupp.DernieresEvaluationsMobile) {
+			this.etatUtilSco.infosSupp.DernieresEvaluationsMobile = {};
 		}
 		if (
-			!MethodesObjet.isNumeric(
-				GEtatUtilisateur.infosSupp.DernieresEvaluationsMobile
+			!MethodesObjet_1.MethodesObjet.isNumeric(
+				this.etatUtilSco.infosSupp.DernieresEvaluationsMobile
 					.genreOngletSelectionne,
 			)
 		) {
-			GEtatUtilisateur.infosSupp.DernieresEvaluationsMobile.genreOngletSelectionne =
+			this.etatUtilSco.infosSupp.DernieresEvaluationsMobile.genreOngletSelectionne =
 				TypeOngletDernieresEvaluations.ParDate;
 		}
-		this.listePeriodes = new ObjetListeElements();
-		this.periodeCourant = new ObjetElement();
+		this.listePeriodes = new ObjetListeElements_1.ObjetListeElements();
+		this.periodeCourant = new ObjetElement_1.ObjetElement();
 		this.indiceParDefaut = 0;
-		this.listeTabs = new ObjetListeElements();
-		this.idWrapper = this.Nom + "_wrapper";
+		this.listeTabs = new ObjetListeElements_1.ObjetListeElements();
 		this.ongletAffiche = this.getGenreOngletSelectionne();
-		this.moteur = new MoteurDernieresNotes();
-		this.moteurBulletin = new ObjetMoteurReleveBulletin();
 	}
 	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
+		return $.extend(true, super.getControleur(aInstance), {
 			getIdentiteBouton: function () {
 				return {
-					class: ObjetBoutonFlottant,
+					class: ObjetBoutonFlottant_1.ObjetBoutonFlottant,
 					pere: this,
 					init: function (aBtn) {
 						aInstance.btnFlottant = aBtn;
@@ -63,6 +72,8 @@ class InterfacePageDernieresEvaluations_Mobile extends InterfacePage_Mobile {
 									primaire: true,
 									icone: "icon_legende",
 									callback: aInstance.surClicLegende.bind(this, false),
+									ariaLabel:
+										ObjetTraduction_1.GTraductions.getValeur("Legende"),
 								},
 							],
 						};
@@ -77,30 +88,34 @@ class InterfacePageDernieresEvaluations_Mobile extends InterfacePage_Mobile {
 	}
 	setParametresGeneraux() {
 		super.setParametresGeneraux();
-		this.GenreStructure = EStructureAffichage.Autre;
+		this.GenreStructure =
+			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 	}
 	construireInstances() {
 		this.idListeEval = this.add(
-			ObjetListe,
-			_evenementListeEval.bind(this),
-			_initialiserListeEval.bind(this),
+			ObjetListe_1.ObjetListe,
+			this._evenementListeEval.bind(this),
+			this._initialiserListeEval.bind(this),
 		);
 		this.identSelection = this.add(
-			ObjetSelection,
+			ObjetSelection_1.ObjetSelection,
 			this.surSelectionPeriode,
-			_initSelecteur.bind(this),
+			this._initSelecteur.bind(this),
 		);
-		this.identTabs = this.add(ObjetTabOnglets, _eventSurTabs.bind(this));
-		const lElementParDate = new ObjetElement(
-			GTraductions.getValeur("Date"),
+		this.identTabs = this.add(
+			ObjetTabOnglets_1.ObjetTabOnglets,
+			this._eventSurTabs.bind(this),
+		);
+		const lElementParDate = new ObjetElement_1.ObjetElement(
+			ObjetTraduction_1.GTraductions.getValeur("Date"),
 			null,
 			TypeOngletDernieresEvaluations.ParDate,
 			null,
 			false,
 		);
 		this.listeTabs.addElement(lElementParDate);
-		const lElementParMatiere = new ObjetElement(
-			GTraductions.getValeur("Matiere"),
+		const lElementParMatiere = new ObjetElement_1.ObjetElement(
+			ObjetTraduction_1.GTraductions.getValeur("Matiere"),
 			null,
 			TypeOngletDernieresEvaluations.ParMatiere,
 			null,
@@ -115,7 +130,9 @@ class InterfacePageDernieresEvaluations_Mobile extends InterfacePage_Mobile {
 			`<section class="ListeDernieresNotes" id="${this.getInstance(this.idListeEval).getNom()}"></section>`,
 		);
 		if (!this.btnFlottant) {
-			$("#" + GInterface.idZonePrincipale).ieHtmlAppend(
+			$(
+				"#" + this.appScoMobile.getInterfaceMobile().idZonePrincipale,
+			).ieHtmlAppend(
 				'<div class="is-sticky" ie-identite="getIdentiteBouton" ></div>',
 				{ controleur: this.controleur, avecCommentaireConstructeur: false },
 			);
@@ -123,29 +140,29 @@ class InterfacePageDernieresEvaluations_Mobile extends InterfacePage_Mobile {
 		return lHtml.join("");
 	}
 	getGenreOngletSelectionne() {
-		return GEtatUtilisateur.infosSupp.DernieresEvaluationsMobile
+		return this.etatUtilSco.infosSupp.DernieresEvaluationsMobile
 			.genreOngletSelectionne;
 	}
 	sauverGenreOngletSelectionne(aGenreOnglet) {
-		GEtatUtilisateur.infosSupp.DernieresEvaluationsMobile.genreOngletSelectionne =
+		this.etatUtilSco.infosSupp.DernieresEvaluationsMobile.genreOngletSelectionne =
 			aGenreOnglet;
 	}
 	getEvaluationWidgetSelectionne() {
-		return GEtatUtilisateur.infosSupp.DernieresEvaluationsMobile
+		return this.etatUtilSco.infosSupp.DernieresEvaluationsMobile
 			.evaluationWidgetSelectionne;
 	}
 	surClicLegende(avecNiveauxPositionnements) {
-		UtilitaireCompetences_Mobile.openPopupDetailLegende(
+		UtilitaireCompetences_Mobile_1.UtilitaireCompetences_Mobile.openPopupDetailLegende(
 			avecNiveauxPositionnements,
 		);
 	}
 	recupererDonnees() {
-		const lOngletInfosPeriodes = GEtatUtilisateur.getOngletInfosPeriodes();
+		const lOngletInfosPeriodes = this.etatUtilSco.getOngletInfosPeriodes();
 		this.listePeriodes = lOngletInfosPeriodes.listePeriodes;
 		if (this.listePeriodes && this.listePeriodes.count()) {
 			const lNrPeriodeParDefaut =
-				GEtatUtilisateur.getPage() && GEtatUtilisateur.getPage().periode
-					? GEtatUtilisateur.getPage().periode.getNumero()
+				this.etatUtilSco.getPage() && this.etatUtilSco.getPage().periode
+					? this.etatUtilSco.getPage().periode.getNumero()
 					: lOngletInfosPeriodes.periodeParDefaut.getNumero();
 			this.indiceParDefaut =
 				this.listePeriodes.getIndiceParNumeroEtGenre(lNrPeriodeParDefaut);
@@ -159,17 +176,25 @@ class InterfacePageDernieresEvaluations_Mobile extends InterfacePage_Mobile {
 			);
 		}
 	}
-	actionSurRecuperer(aListeEvaluations) {
-		this.donnees = aListeEvaluations;
+	actionSurRecuperer(aReponse) {
+		var _a;
+		this.donnees = aReponse.listeEvaluations;
 		this.listeTabs.getElementParGenre(
 			TypeOngletDernieresEvaluations.ParDate,
 		).Actif = true;
 		this.listeTabs.getElementParGenre(
 			TypeOngletDernieresEvaluations.ParMatiere,
 		).Actif = true;
-		if (!!aListeEvaluations && !!aListeEvaluations.count()) {
-			this.listeEvaluations = new ObjetListeElements();
-			aListeEvaluations.parcourir((aEval) => {
+		if (
+			(_a =
+				aReponse === null || aReponse === void 0
+					? void 0
+					: aReponse.listeEvaluations) === null || _a === void 0
+				? void 0
+				: _a.count()
+		) {
+			this.listeEvaluations = new ObjetListeElements_1.ObjetListeElements();
+			aReponse.listeEvaluations.parcourir((aEval) => {
 				const aNumeroServiceRecherche =
 					aEval.matiere.serviceConcerne.getNumero();
 				const lMatieresDeLaListeDEvals = this.listeEvaluations.getListeElements(
@@ -210,11 +235,14 @@ class InterfacePageDernieresEvaluations_Mobile extends InterfacePage_Mobile {
 			);
 			this.getInstance(this.identTabs).setVisible(true);
 		} else {
-			_afficherMessage.call(
-				this,
-				GTraductions.getValeur("evaluations.AucuneEvaluationSurPeriode"),
+			this._afficherMessage(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"evaluations.AucuneEvaluationSurPeriode",
+				),
 			);
-			this.getInstance(this.identTabs).setDonnees(new ObjetListeElements());
+			this.getInstance(this.identTabs).setDonnees(
+				new ObjetListeElements_1.ObjetListeElements(),
+			);
 			this.getInstance(this.identTabs).setVisible(false);
 		}
 		const $wrapper = $("#" + this.idWrapper.escapeJQ());
@@ -226,7 +254,7 @@ class InterfacePageDernieresEvaluations_Mobile extends InterfacePage_Mobile {
 		$wrapper.css("margin-bottom", $tailleLegende + "px");
 	}
 	recupererDernieresEvaluations() {
-		new ObjetRequeteDernieresEvaluations(
+		new ObjetRequeteDernieresEvaluations_1.ObjetRequeteDernieresEvaluations(
 			this,
 			this.actionSurRecuperer,
 		).lancerRequete({ periode: this.periodeCourant });
@@ -234,7 +262,7 @@ class InterfacePageDernieresEvaluations_Mobile extends InterfacePage_Mobile {
 	evntCorrigeQCM(aExecutionQCM) {
 		if (aExecutionQCM) {
 			this.callback.appel({
-				genreOnglet: GEtatUtilisateur.genreOnglet,
+				genreOnglet: this.etatUtilSco.genreOnglet,
 				executionQCM: aExecutionQCM,
 			});
 		}
@@ -246,120 +274,128 @@ class InterfacePageDernieresEvaluations_Mobile extends InterfacePage_Mobile {
 		);
 		this.recupererDernieresEvaluations();
 	}
-	free(...aParams) {
-		super.free(...aParams);
+	free() {
+		super.free();
 		if (this.btnFlottant) {
 			$("#" + this.btnFlottant.getNom().escapeJQ()).remove();
 		}
 	}
-}
-function _afficherMessage(aMessage) {
-	GHtml.setHtml(
-		this.getInstance(this.idListeEval).getNom(),
-		this.composeAucuneDonnee(aMessage),
-	);
-}
-function _initSelecteur(aInstance) {
-	aInstance.setParametres({
-		labelWAICellule: GTraductions.getValeur("WAI.ListeSelectionPeriode"),
-	});
-}
-function _initialiserListeEval(aInstance) {
-	const lOptionsListe = { skin: ObjetListe.skin.flatDesign };
-	aInstance.setOptionsListe(lOptionsListe);
-}
-function _evenementListeEval(aParametres) {
-	switch (aParametres.genreEvenement) {
-		case EGenreEvenementListe.SelectionClick: {
-			_surClickListe.call(this, aParametres);
-			break;
-		}
-		case EGenreEvenementListe.Selection: {
-			if (!aParametres.surInteractionUtilisateur) {
-				_surClickListe.call(this, aParametres);
-			}
-			break;
-		}
-	}
-}
-function _surClickListe(aParametres) {
-	const lSelection = aParametres.article;
-	ObjetFenetre.creerInstanceFenetre(ObjetFenetre_DetailsNote, {
-		pere: this,
-		evenement: (aNumerobouton, aParams) => {
-			if (aParams && aParams.executionQCM) {
-				this.evntCorrigeQCM(aParams.executionQCM);
-			}
-		},
-		initialiser: function (aInstance) {
-			aInstance.setOptionsFenetre({
-				titre: GTraductions.getValeur("evaluations.DetailsEvaluation"),
-				largeur: 600,
-				hauteur: 300,
-				heightMax_mobile: true,
-				listeBoutons: [GTraductions.getValeur("principal.fermer")],
-				modale: false,
-			});
-		},
-	}).setDonnees(lSelection, this.donnees, {
-		estUneEvaluation: true,
-		getPiecesJointes: this.moteurBulletin.composePieceJointeDevoir.bind(this),
-		callBackSurClicPrecedentSuivant: _surClickProchainElement.bind(this),
-	});
-}
-function _eventSurTabs(aParams) {
-	if (!!aParams) {
-		this.ongletAffiche = aParams.getGenre();
-		this.sauverGenreOngletSelectionne(this.ongletAffiche);
-		const lListeEvaluations = this.getInstance(this.idListeEval);
-		const lDonneesListe = new DonneesListe_DernieresEvaluations(
-			this.listeEvaluations,
-			{
-				avecCumulMatiere:
-					this.ongletAffiche === TypeOngletDernieresEvaluations.ParMatiere,
-				callbackExecutionQCM: this.evntCorrigeQCM.bind(this),
-			},
+	_afficherMessage(aMessage) {
+		ObjetHtml_1.GHtml.setHtml(
+			this.getInstance(this.idListeEval).getNom(),
+			this.composeAucuneDonnee(aMessage),
 		);
-		lListeEvaluations.setDonnees(lDonneesListe);
-		const lEvaluationWidgetSelectionne = this.getEvaluationWidgetSelectionne();
-		if (
-			!!lEvaluationWidgetSelectionne &&
-			lEvaluationWidgetSelectionne.existeNumero()
-		) {
-			const lIndice = this.listeEvaluations.getIndiceElementParFiltre(
-				(aEval) =>
-					aEval.getNumero() === lEvaluationWidgetSelectionne.getNumero(),
-			);
-			if (lIndice !== -1) {
-				lListeEvaluations.selectionnerLigne({
-					ligne: lIndice,
-					avecScroll: true,
-					avecEvenement: true,
-				});
+	}
+	_initSelecteur(aInstance) {
+		aInstance.setParametres({
+			labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+				"WAI.ListeSelectionPeriode",
+			),
+		});
+	}
+	_initialiserListeEval(aInstance) {
+		const lOptionsListe = { skin: ObjetListe_1.ObjetListe.skin.flatDesign };
+		aInstance.setOptionsListe(lOptionsListe);
+	}
+	_evenementListeEval(aParametres) {
+		switch (aParametres.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.SelectionClick: {
+				this._surClickListe(aParametres);
+				break;
 			}
-			GEtatUtilisateur.infosSupp.DernieresEvaluationsMobile.evaluationWidgetSelectionne =
-				null;
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Selection: {
+				if (!aParametres.surInteractionUtilisateur) {
+					this._surClickListe(aParametres);
+				}
+				break;
+			}
 		}
 	}
-}
-function _surClickProchainElement(
-	aNumeroElement,
-	aGenreElement,
-	aRechercheSuivant,
-) {
-	let lIndiceElementActuel, lIndiceProchainElement;
-	lIndiceElementActuel = this.donnees.getIndiceParNumeroEtGenre(aNumeroElement);
-	if (!!aRechercheSuivant) {
-		lIndiceProchainElement =
-			lIndiceElementActuel + 1 < this.donnees.count()
-				? lIndiceElementActuel + 1
-				: 0;
-	} else {
-		lIndiceProchainElement =
-			lIndiceElementActuel === 0
-				? this.donnees.count() - 1
-				: lIndiceElementActuel - 1;
+	_surClickListe(aParametres) {
+		const lSelection = aParametres.article;
+		ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_DetailsNote_1.ObjetFenetre_DetailsNote,
+			{
+				pere: this,
+				evenement: (aNumerobouton, aParams) => {
+					if (aParams && aParams.executionQCM) {
+						this.evntCorrigeQCM(aParams.executionQCM);
+					}
+				},
+				initialiser: function (aInstance) {
+					aInstance.setOptionsFenetre({
+						titre: ObjetTraduction_1.GTraductions.getValeur(
+							"evaluations.DetailsEvaluation",
+						),
+						largeur: 600,
+						hauteur: 300,
+						listeBoutons: [
+							ObjetTraduction_1.GTraductions.getValeur("principal.fermer"),
+						],
+						modale: false,
+					});
+				},
+			},
+		).setDonnees(lSelection, this.donnees, {
+			estUneEvaluation: true,
+			getPiecesJointes: this.moteurBulletin.composePieceJointeDevoir.bind(this),
+			callBackSurClicPrecedentSuivant: this._surClickProchainElement.bind(this),
+		});
 	}
-	return this.donnees.get(lIndiceProchainElement);
+	_eventSurTabs(aParams) {
+		if (!!aParams) {
+			this.ongletAffiche = aParams.getGenre();
+			this.sauverGenreOngletSelectionne(this.ongletAffiche);
+			const lListeEvaluations = this.getInstance(this.idListeEval);
+			const lDonneesListe =
+				new DonneesListe_DernieresEvaluations_1.DonneesListe_DernieresEvaluations(
+					this.listeEvaluations,
+					{
+						avecCumulMatiere:
+							this.ongletAffiche === TypeOngletDernieresEvaluations.ParMatiere,
+						callbackExecutionQCM: this.evntCorrigeQCM.bind(this),
+					},
+				);
+			lListeEvaluations.setDonnees(lDonneesListe);
+			const lEvaluationWidgetSelectionne =
+				this.getEvaluationWidgetSelectionne();
+			if (
+				!!lEvaluationWidgetSelectionne &&
+				lEvaluationWidgetSelectionne.existeNumero()
+			) {
+				const lIndice = this.listeEvaluations.getIndiceElementParFiltre(
+					(aEval) =>
+						aEval.getNumero() === lEvaluationWidgetSelectionne.getNumero(),
+				);
+				if (lIndice !== -1) {
+					lListeEvaluations.selectionnerLigne({
+						ligne: lIndice,
+						avecScroll: true,
+						avecEvenement: true,
+					});
+				}
+				this.etatUtilSco.infosSupp.DernieresEvaluationsMobile.evaluationWidgetSelectionne =
+					null;
+			}
+		}
+	}
+	_surClickProchainElement(aNumeroElement, aGenreElement, aRechercheSuivant) {
+		let lIndiceElementActuel, lIndiceProchainElement;
+		lIndiceElementActuel =
+			this.donnees.getIndiceParNumeroEtGenre(aNumeroElement);
+		if (!!aRechercheSuivant) {
+			lIndiceProchainElement =
+				lIndiceElementActuel + 1 < this.donnees.count()
+					? lIndiceElementActuel + 1
+					: 0;
+		} else {
+			lIndiceProchainElement =
+				lIndiceElementActuel === 0
+					? this.donnees.count() - 1
+					: lIndiceElementActuel - 1;
+		}
+		return this.donnees.get(lIndiceProchainElement);
+	}
 }
-module.exports = InterfacePageDernieresEvaluations_Mobile;
+exports.InterfacePageDernieresEvaluations_Mobile =
+	InterfacePageDernieresEvaluations_Mobile;

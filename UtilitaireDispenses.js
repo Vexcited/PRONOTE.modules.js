@@ -1,20 +1,23 @@
-const { DonneesListe_Dispenses } = require("DonneesListe_Dispenses.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { MethodesObjet } = require("MethodesObjet.js");
+exports.TUtilitaireDispenses = void 0;
+const AccessApp_1 = require("AccessApp");
+const DonneesListe_Dispenses_1 = require("DonneesListe_Dispenses");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const MethodesObjet_1 = require("MethodesObjet");
 class TUtilitaireDispenses {
 	constructor() {}
-	static serialisationDonnees(aElement, aJSON, aIndice) {
-		_serialisation.call(this, aElement, aJSON, aIndice);
+	static serialisationDonnees(aElement, aJSON) {
+		_serialisation(aElement, aJSON);
 	}
 	static saisieDocument(
+		aInstance,
 		aDonnees,
 		aConfirmation,
 		aConfirmation_continue,
 		aListeFichiersUpload,
 	) {
-		_saisieDocument.call(
-			this,
+		_saisieDocument(
+			aInstance,
 			aDonnees,
 			aConfirmation,
 			aConfirmation_continue,
@@ -22,6 +25,7 @@ class TUtilitaireDispenses {
 		);
 	}
 }
+exports.TUtilitaireDispenses = TUtilitaireDispenses;
 function _serialisation(aElement, aJSON) {
 	aJSON.eleve = aElement.eleve;
 	aJSON.classe = aElement.classe;
@@ -34,7 +38,7 @@ function _serialisation(aElement, aJSON) {
 	aJSON.presenceOblig = aElement.presenceOblig;
 	aJSON.publierPJFeuilleDAppel = aElement.publierPJFeuilleDAppel;
 	aElement.documents.setSerialisateurJSON({
-		methodeSerialisation: _serialisationDoc.bind(this),
+		methodeSerialisation: _serialisationDoc,
 	});
 	aJSON.documents = aElement.documents;
 }
@@ -43,6 +47,7 @@ function _serialisationDoc(aElement, aJSON) {
 	aJSON.nomOriginal = aElement.nomOriginal;
 }
 function _saisieDocument(
+	aInstance,
 	aDonnees,
 	aConfirmation,
 	aConfirmation_continue,
@@ -51,7 +56,9 @@ function _saisieDocument(
 	const lParametres = $.extend(
 		{
 			genreSaisie: null,
-			eleve: GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Eleve),
+			eleve: (0, AccessApp_1.getApp)()
+				.getEtatUtilisateur()
+				.Navigation.getRessource(Enumere_Ressource_1.EGenreRessource.Eleve),
 		},
 		aDonnees,
 	);
@@ -59,38 +66,39 @@ function _saisieDocument(
 		lParametres.confirmation = aConfirmation;
 	}
 	lParametres.confirmation_continue = aConfirmation_continue;
-	this.listeFichiersUpload = aListeFichiersUpload;
+	aInstance.listeFichiersUpload = aListeFichiersUpload;
 	let lDoc;
 	switch (lParametres.genreSaisie) {
-		case DonneesListe_Dispenses.genreAction.AjouterDocument: {
-			const lIdx = this.listeFichiersUpload.getIndiceElementParFiltre(
+		case DonneesListe_Dispenses_1.DonneesListe_Dispenses.genreAction
+			.AjouterDocument: {
+			const lIdx = aInstance.listeFichiersUpload.getIndiceElementParFiltre(
 				(aElement) => {
 					return aElement.idFichier === lParametres.idFichier;
 				},
 			);
-			lDoc = this.listeFichiersUpload.get(lIdx);
+			lDoc = aInstance.listeFichiersUpload.get(lIdx);
 			lParametres.article.documents.addElement(lDoc);
-			lParametres.article.setEtat(EGenreEtat.Modification);
-			this.setEtatSaisie(true);
+			lParametres.article.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+			aInstance.setEtatSaisie(true);
 			break;
 		}
-		case DonneesListe_Dispenses.genreAction.SupprimerDocument:
+		case DonneesListe_Dispenses_1.DonneesListe_Dispenses.genreAction
+			.SupprimerDocument:
 			if (!!lParametres.document) {
 				lDoc = lParametres.article.documents.getElementParNumero(
 					lParametres.document.getNumero(),
 				);
 				if (!!lDoc) {
-					lDoc.setEtat(EGenreEtat.Suppression);
-					lParametres.article.setEtat(EGenreEtat.Modification);
-					this.setEtatSaisie(true);
+					lDoc.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+					lParametres.article.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+					aInstance.setEtatSaisie(true);
 				}
 			}
 			break;
 		default:
 			break;
 	}
-	if (this.actionApresSaisieDocument) {
-		this.actionApresSaisieDocument();
+	if (aInstance.actionApresSaisieDocument) {
+		aInstance.actionApresSaisieDocument();
 	}
 }
-module.exports = { TUtilitaireDispenses };

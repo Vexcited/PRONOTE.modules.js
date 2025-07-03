@@ -1,7 +1,9 @@
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { ObjetPageCompte } = require("ObjetPageCompte.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class ObjetPageCompte_Parent extends ObjetPageCompte {
+exports.ObjetPageCompte_Parent = void 0;
+const AccessApp_1 = require("AccessApp");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetPageCompte_1 = require("ObjetPageCompte");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class ObjetPageCompte_Parent extends ObjetPageCompte_1.ObjetPageCompte {
 	constructor(...aParams) {
 		super(...aParams);
 		this.listeEleves = null;
@@ -11,17 +13,17 @@ class ObjetPageCompte_Parent extends ObjetPageCompte {
 			hauteurTitre: 40,
 			hauteurEleve: 60,
 		});
-	}
-	construireAutorisationsSupp() {
-		const lHtml = [];
-		if (this.donnees.Autorisations.listeEleves.count() > 0) {
-			lHtml.push(
-				'<div class="Gras EspaceHaut" style="clear:both;">',
-				GTraductions.getValeur("infosperso.titreRecevoir"),
-				"</div>",
-			);
-		}
-		return lHtml.join("");
+		this.construireAutorisationsSupp = () => {
+			const lHtml = [];
+			if (this.donnees.Autorisations.listeEleves.count() > 0) {
+				lHtml.push(
+					'<div class="Gras EspaceHaut" style="clear:both;">',
+					ObjetTraduction_1.GTraductions.getValeur("infosperso.titreRecevoir"),
+					"</div>",
+				);
+			}
+			return lHtml.join("");
+		};
 	}
 	getStructurePourValidation(aStructure) {
 		const lResult = super.getStructurePourValidation(aStructure);
@@ -29,8 +31,8 @@ class ObjetPageCompte_Parent extends ObjetPageCompte {
 			return lResult;
 		}
 		if (
-			GApplication.droits.get(
-				TypeDroits.compte.avecSaisieInfosPersoAutorisations,
+			(0, AccessApp_1.getApp)().droits.get(
+				ObjetDroitsPN_1.TypeDroits.compte.avecSaisieInfosPersoAutorisations,
 			)
 		) {
 			if (this.donnees.Autorisations.estDestinataireInfosGenerales !== null) {
@@ -51,4 +53,4 @@ class ObjetPageCompte_Parent extends ObjetPageCompte {
 		return true;
 	}
 }
-module.exports = ObjetPageCompte_Parent;
+exports.ObjetPageCompte_Parent = ObjetPageCompte_Parent;

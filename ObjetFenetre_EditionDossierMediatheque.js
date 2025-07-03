@@ -12,41 +12,35 @@ class ObjetFenetre_EditionDossierMediatheque extends ObjetFenetre_1.ObjetFenetre
 			avecTailleSelonContenu: true,
 		});
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			txtLibelleDossier: {
-				getValue() {
-					return aInstance.dossierMediatheque
-						? aInstance.dossierMediatheque.getLibelle()
-						: "";
-				},
-				setValue(aValue) {
-					if (aInstance.dossierMediatheque) {
-						aInstance.dossierMediatheque.setLibelle(aValue);
-						aInstance.dossierMediatheque.setEtat(
-							Enumere_Etat_1.EGenreEtat.Modification,
-						);
-					}
-				},
+	jsxModeleDossierMediatheque() {
+		return {
+			getValue: () => {
+				return this.dossierMediatheque
+					? this.dossierMediatheque.getLibelle()
+					: "";
 			},
-		});
+			setValue: (aValue) => {
+				if (this.dossierMediatheque) {
+					this.dossierMediatheque.setLibelle(aValue);
+					this.dossierMediatheque.setEtat(
+						Enumere_Etat_1.EGenreEtat.Modification,
+					);
+				}
+			},
+		};
 	}
 	composeContenu() {
-		const T = [];
-		T.push(
-			IE.jsx.str(
-				IE.jsx.fragment,
-				null,
-				IE.jsx.str("input", {
-					type: "text",
-					"ie-model": "txtLibelleDossier",
-					class: "round-style EspaceInput full-width",
-					title: ObjetTraduction_1.GTraductions.getValeur("Libelle"),
-					placeholder: ObjetTraduction_1.GTraductions.getValeur("Libelle"),
-				}),
-			),
+		const H = [];
+		H.push(
+			IE.jsx.str("input", {
+				type: "text",
+				"ie-model": this.jsxModeleDossierMediatheque.bind(this),
+				class: "EspaceInput full-width",
+				title: ObjetTraduction_1.GTraductions.getValeur("Libelle"),
+				placeholder: ObjetTraduction_1.GTraductions.getValeur("Libelle"),
+			}),
 		);
-		return T.join("");
+		return H.join("");
 	}
 	setDonnees(aDossierMediatheque) {
 		this.dossierMediatheque =

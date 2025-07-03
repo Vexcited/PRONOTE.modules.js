@@ -1,13 +1,12 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { EGenreTriElement } = require("Enumere_TriElement.js");
-class ObjetRequeteSaisieEvaluations extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieEvaluations = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const MethodesObjet_1 = require("MethodesObjet");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_TriElement_1 = require("Enumere_TriElement");
+const AccessApp_1 = require("AccessApp");
+class ObjetRequeteSaisieEvaluations extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(
 		aService,
 		aRessource,
@@ -17,7 +16,10 @@ class ObjetRequeteSaisieEvaluations extends ObjetRequeteSaisie {
 		this.JSON = { service: aService, ressource: aRessource };
 		if (!!aListeEvaluations) {
 			aListeEvaluations.setTri([
-				ObjetTri.init("dupliquerDepuis", EGenreTriElement.Croissant),
+				ObjetTri_1.ObjetTri.init(
+					"dupliquerDepuis",
+					Enumere_TriElement_1.EGenreTriElement.Croissant,
+				),
 			]);
 			aListeEvaluations.trier();
 			aListeEvaluations.setSerialisateurJSON({
@@ -39,13 +41,14 @@ class ObjetRequeteSaisieEvaluations extends ObjetRequeteSaisie {
 		}
 		return this.appelAsynchrone();
 	}
-	actionApresRequete() {
-		this.callbackReussite.appel(this.JSONRapportSaisie);
-	}
 }
-Requetes.inscrire("SaisieEvaluations", ObjetRequeteSaisieEvaluations);
+exports.ObjetRequeteSaisieEvaluations = ObjetRequeteSaisieEvaluations;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieEvaluations",
+	ObjetRequeteSaisieEvaluations,
+);
 function _serialiseEvaluation(aService, aRessource, aEvaluation, AJSON) {
-	if (GEtatUtilisateur.pourPrimaire()) {
+	if ((0, AccessApp_1.getApp)().getEtatUtilisateur().pourPrimaire()) {
 		AJSON.Service = !!aEvaluation.service ? aEvaluation.service : aService;
 	} else {
 		AJSON.Service = !!aService ? aService : aEvaluation.service;
@@ -59,7 +62,7 @@ function _serialiseEvaluation(aService, aRessource, aEvaluation, AJSON) {
 		});
 	}
 	if (!!aEvaluation.dupliquerDepuis) {
-		const lEvaluationModele = new ObjetElement(
+		const lEvaluationModele = new ObjetElement_1.ObjetElement(
 			"",
 			aEvaluation.dupliquerDepuis.getNumero(),
 			aEvaluation.dupliquerDepuis.getGenre(),
@@ -163,10 +166,9 @@ function _serialiseCompetenceDEleve(aCompetence, aJSON) {
 	if (
 		!!aCompetence.niveauDAcquisition &&
 		aCompetence.niveauDAcquisition.existeNumero() &&
-		MethodesObjet.isString(aCompetence.observation)
+		MethodesObjet_1.MethodesObjet.isString(aCompetence.observation)
 	) {
 		aJSON.observation = aCompetence.observation;
 		aJSON.observationPubliee = !!aCompetence.observationPubliee;
 	}
 }
-module.exports = { ObjetRequeteSaisieEvaluations };

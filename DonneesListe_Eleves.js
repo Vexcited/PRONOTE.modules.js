@@ -3,7 +3,6 @@ const Enumere_CommandeMenu_1 = require("Enumere_CommandeMenu");
 const ObjetDonneesListe_1 = require("ObjetDonneesListe");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetChaine_1 = require("ObjetChaine");
-const tag_1 = require("tag");
 const TypeDispenseEleveDeCours_1 = require("TypeDispenseEleveDeCours");
 class DonneesListe_Eleves extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aEditionSurGroupeGAEV, aAvecPhotos) {
@@ -36,65 +35,51 @@ class DonneesListe_Eleves extends ObjetDonneesListe_1.ObjetDonneesListe {
 	getTypeValeur() {
 		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 	}
-	getControleur(aDonneesListe, aListe) {
-		return $.extend(true, super.getControleur(this, aListe), {
-			nodePhoto: function (aNoArticle) {
-				$(this.node).on("error", () => {
-					const lElement =
-						aDonneesListe.Donnees.getElementParNumero(aNoArticle);
-					lElement.avecPhoto = false;
-				});
-			},
-		});
-	}
 	getValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_Eleves.colonnes.Eleve: {
-				const lHtml = [];
-				lHtml.push('<div style="display: flex; flex-wrap:nowrap;">');
+				const H = [];
+				H.push('<div style="display: flex; flex-wrap:nowrap;">');
 				if (this.optionsAffichage.avecPhotos) {
-					lHtml.push(
-						'<div  style="height: 100%; width:39px; flex:none;">',
-						(0, tag_1.tag)("img", {
-							"ie-load-src": aParams.article.existePhoto
-								? ObjetChaine_1.GChaine.composeUrlImgPhotoIndividu(
-										aParams.article,
-									)
-								: false,
-							"ie-node": tag_1.tag.funcAttr(
-								"nodePhoto",
-								aParams.article.getNumero(),
-							),
-							class: "img-portrait",
-							"ie-imgviewer": true,
-							style:
-								"height: 50px; width: auto; max-height: 100%; max-width: 100%;",
-							"aria-hidden": "true",
-						}),
-						"</div>",
+					H.push(
+						IE.jsx.str(
+							"div",
+							{ style: "height: 100%; width:39px; flex:none;" },
+							IE.jsx.str("img", {
+								"ie-load-src": ObjetChaine_1.GChaine.composeUrlImgPhotoIndividu(
+									aParams.article,
+								),
+								class: "img-portrait",
+								"ie-imgviewer": true,
+								style:
+									"height: 50px; width: auto; max-height: 100%; max-width: 100%;",
+								alt: aParams.article.getLibelle(),
+								"data-libelle": aParams.article.getLibelle(),
+							}),
+						),
 					);
 				}
-				lHtml.push(
+				H.push(
 					'<div style="flex:1 1 auto; display:flex; flex-wrap:nowrap; justify-content:space-between; padding-top:0.4rem">',
 				);
-				lHtml.push(
+				H.push(
 					'<div class="PetitEspaceGauche" >',
 					aParams.article.getLibelle(),
 					"</div>",
 				);
-				lHtml.push("</div>");
+				H.push("</div>");
 				if (
 					!!aParams.article.dispensesEleveDeCours &&
 					aParams.article.dispensesEleveDeCours.count() > 0
 				) {
-					lHtml.push(
+					H.push(
 						TypeDispenseEleveDeCours_1.TypeDispenseEleveDeCoursUtil.construirePictos(
 							aParams.article.dispensesEleveDeCours,
 						),
 					);
 				}
-				lHtml.push("</div>");
-				return lHtml.join("");
+				H.push("</div>");
+				return H.join("");
 			}
 			case DonneesListe_Eleves.colonnes.Classe:
 				return !!aParams.article.classe
@@ -103,7 +88,7 @@ class DonneesListe_Eleves extends ObjetDonneesListe_1.ObjetDonneesListe {
 		}
 		return "";
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_Eleves.colonnes.Eleve: {
 				return aParams.article.hint

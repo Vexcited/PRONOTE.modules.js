@@ -1,23 +1,28 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Type3Etats } = require("Type3Etats.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieOrientations extends ObjetRequeteSaisie {
+exports.ObjetRequeteSaisieOrientations = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const Type3Etats_1 = require("Type3Etats");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieOrientations extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParams) {
-		if (!!aParams.listeOrientations) {
-			aParams.listeOrientations.setSerialisateurJSON({
+		if (!!aParams.listeVoeux) {
+			aParams.listeVoeux.setSerialisateurJSON({
 				methodeSerialisation: this._serialisation.bind(this),
 			});
-			this.JSON = { Voeux: aParams.listeOrientations };
+			this.JSON = { Voeux: aParams.listeVoeux };
 		}
 		if (!!aParams.donneesAR) {
 			this.JSON.donneesAR = aParams.donneesAR.toJSON();
-			if (aParams.donneesAR.estAccuse !== Type3Etats.TE_Inconnu) {
+			if (aParams.donneesAR.estAccuse !== Type3Etats_1.Type3Etats.TE_Inconnu) {
 				this.JSON.donneesAR.estAccuse =
-					aParams.donneesAR.estAccuse === Type3Etats.TE_Oui;
+					aParams.donneesAR.estAccuse === Type3Etats_1.Type3Etats.TE_Oui;
 			}
-			if (aParams.donneesAR.reponseStagePasserelle !== Type3Etats.TE_Inconnu) {
+			if (
+				aParams.donneesAR.reponseStagePasserelle !==
+				Type3Etats_1.Type3Etats.TE_Inconnu
+			) {
 				this.JSON.donneesAR.reponseStagePasserelle =
-					aParams.donneesAR.reponseStagePasserelle === Type3Etats.TE_Oui;
+					aParams.donneesAR.reponseStagePasserelle ===
+					Type3Etats_1.Type3Etats.TE_Oui;
 			}
 			if (!!aParams.donneesAR.decisionRetenue) {
 				this.JSON.donneesAR.decisionRetenue = aParams.donneesAR.decisionRetenue;
@@ -60,5 +65,8 @@ class ObjetRequeteSaisieOrientations extends ObjetRequeteSaisie {
 		}
 	}
 }
-Requetes.inscrire("SaisieOrientations", ObjetRequeteSaisieOrientations);
-module.exports = { ObjetRequeteSaisieOrientations };
+exports.ObjetRequeteSaisieOrientations = ObjetRequeteSaisieOrientations;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieOrientations",
+	ObjetRequeteSaisieOrientations,
+);

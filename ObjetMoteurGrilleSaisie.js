@@ -1,3 +1,4 @@
+exports.ObjetMoteurGrilleSaisie = void 0;
 class ObjetMoteurGrilleSaisie {
 	constructor() {}
 	selectionCelluleSuivante(aParam) {
@@ -25,4 +26,4 @@ class ObjetMoteurGrilleSaisie {
 		return 0;
 	}
 }
-module.exports = { ObjetMoteurGrilleSaisie };
+exports.ObjetMoteurGrilleSaisie = ObjetMoteurGrilleSaisie;

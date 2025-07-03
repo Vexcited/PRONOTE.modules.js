@@ -2,6 +2,7 @@ exports.ParamAffRecapAbsences = void 0;
 const ObjetDroitsPN_1 = require("ObjetDroitsPN");
 const ObjetSelecteurMotifAbsence_1 = require("ObjetSelecteurMotifAbsence");
 const ObjetSelecteurMotifInfirmerie_1 = require("ObjetSelecteurMotifInfirmerie");
+const ObjetSelecteurCreneauxAppel_1 = require("ObjetSelecteurCreneauxAppel");
 const GUID_1 = require("GUID");
 const ObjetChaine_1 = require("ObjetChaine");
 const ObjetHtml_1 = require("ObjetHtml");
@@ -66,6 +67,15 @@ var GenreParametreRecapAbsences;
 	GenreParametreRecapAbsences[
 		(GenreParametreRecapAbsences["cbUniquRetardInjust"] = 16)
 	] = "cbUniquRetardInjust";
+	GenreParametreRecapAbsences[
+		(GenreParametreRecapAbsences["cbGpeRetardInternat"] = 17)
+	] = "cbGpeRetardInternat";
+	GenreParametreRecapAbsences[
+		(GenreParametreRecapAbsences["cbUniquRetardInternatSup"] = 18)
+	] = "cbUniquRetardInternatSup";
+	GenreParametreRecapAbsences[
+		(GenreParametreRecapAbsences["editNbRetardInternatSup"] = 19)
+	] = "editNbRetardInternatSup";
 })(GenreParametreRecapAbsences || (GenreParametreRecapAbsences = {}));
 class ParamAffRecapAbsences extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
@@ -116,12 +126,16 @@ class ParamAffRecapAbsences extends ObjetInterface_1.ObjetInterface {
 								return lSelection.avecGpeAbsInternat;
 							case GenreParametreRecapAbsences.cbGpeRetard:
 								return lSelection.avecGpeRetard;
+							case GenreParametreRecapAbsences.cbGpeRetardInternat:
+								return lSelection.avecGpeRetardInternat;
 							case GenreParametreRecapAbsences.cbUniquRetardSup:
 								return lSelection.uniquementRetardSup;
 							case GenreParametreRecapAbsences.cbUniquRetardInjust:
 								return lSelection.uniquementRetardInjustifie;
 							case GenreParametreRecapAbsences.cbGpeInfirmerie:
 								return lSelection.avecGpeInfirmerie;
+							case GenreParametreRecapAbsences.cbUniquRetardInternatSup:
+								return lSelection.uniquementRetardInternatSup;
 						}
 					}
 					return "";
@@ -157,8 +171,14 @@ class ParamAffRecapAbsences extends ObjetInterface_1.ObjetInterface {
 							case GenreParametreRecapAbsences.cbGpeRetard:
 								lSelection.avecGpeRetard = aValue;
 								break;
+							case GenreParametreRecapAbsences.cbGpeRetardInternat:
+								lSelection.avecGpeRetardInternat = aValue;
+								break;
 							case GenreParametreRecapAbsences.cbUniquRetardSup:
 								lSelection.uniquementRetardSup = aValue;
+								break;
+							case GenreParametreRecapAbsences.cbUniquRetardInternatSup:
+								lSelection.uniquementRetardInternatSup = aValue;
 								break;
 							case GenreParametreRecapAbsences.cbUniquRetardInjust:
 								lSelection.uniquementRetardInjustifie = aValue;
@@ -174,6 +194,7 @@ class ParamAffRecapAbsences extends ObjetInterface_1.ObjetInterface {
 							case GenreParametreRecapAbsences.cbUniquTotAbsSup:
 							case GenreParametreRecapAbsences.cbUniquAbsInjust:
 							case GenreParametreRecapAbsences.cbUniquRetardSup:
+							case GenreParametreRecapAbsences.cbUniquRetardInternatSup:
 							case GenreParametreRecapAbsences.cbUniquRetardInjust:
 								aInstance.actualiserDonnees({});
 								break;
@@ -181,6 +202,7 @@ class ParamAffRecapAbsences extends ObjetInterface_1.ObjetInterface {
 							case GenreParametreRecapAbsences.cbGpeAbsRepas:
 							case GenreParametreRecapAbsences.cbGpeAbsInternat:
 							case GenreParametreRecapAbsences.cbGpeRetard:
+							case GenreParametreRecapAbsences.cbGpeRetardInternat:
 							case GenreParametreRecapAbsences.cbGpeInfirmerie:
 								aInstance.evntSurCBGpe(aGenre);
 								aInstance.actualiserDonnees({ avecModifCBGpe: true });
@@ -196,6 +218,7 @@ class ParamAffRecapAbsences extends ObjetInterface_1.ObjetInterface {
 							case GenreParametreRecapAbsences.cbGpeAbsRepas:
 							case GenreParametreRecapAbsences.cbGpeAbsInternat:
 							case GenreParametreRecapAbsences.cbGpeRetard:
+							case GenreParametreRecapAbsences.cbGpeRetardInternat:
 							case GenreParametreRecapAbsences.cbGpeInfirmerie:
 								return false;
 							case GenreParametreRecapAbsences.cbUniquAbsSup:
@@ -216,6 +239,8 @@ class ParamAffRecapAbsences extends ObjetInterface_1.ObjetInterface {
 								return !lSelection.avecGpeAbsences;
 							case GenreParametreRecapAbsences.cbUniquRetardSup:
 								return !lSelection.avecGpeRetard;
+							case GenreParametreRecapAbsences.cbUniquRetardInternatSup:
+								return !lSelection.avecGpeRetardInternat;
 							case GenreParametreRecapAbsences.cbUniquRetardInjust:
 								return !lSelection.avecGpeRetard;
 							case GenreParametreRecapAbsences.cbUniquNonRA:
@@ -240,6 +265,8 @@ class ParamAffRecapAbsences extends ObjetInterface_1.ObjetInterface {
 								return lSelection.nbDJ_totalAbsSup || 0;
 							case GenreParametreRecapAbsences.editBorneRetardSup:
 								return lSelection.borneDureeRetard || 0;
+							case GenreParametreRecapAbsences.editNbRetardInternatSup:
+								return lSelection.borneNbRetardInternat || 0;
 						}
 					}
 					return "";
@@ -264,6 +291,10 @@ class ParamAffRecapAbsences extends ObjetInterface_1.ObjetInterface {
 								break;
 							case GenreParametreRecapAbsences.editBorneRetardSup:
 								lSelection.borneDureeRetard =
+									ObjetChaine_1.GChaine.strToInteger(aValue || "0");
+								break;
+							case GenreParametreRecapAbsences.editNbRetardInternatSup:
+								lSelection.borneNbRetardInternat =
 									ObjetChaine_1.GChaine.strToInteger(aValue || "0");
 								break;
 						}
@@ -293,6 +324,11 @@ class ParamAffRecapAbsences extends ObjetInterface_1.ObjetInterface {
 								return (
 									!lSelection.avecGpeRetard || !lSelection.uniquementRetardSup
 								);
+							case GenreParametreRecapAbsences.editNbRetardInternatSup:
+								return (
+									!lSelection.avecGpeRetardInternat ||
+									!lSelection.uniquementRetardInternatSup
+								);
 							case GenreParametreRecapAbsences.editBorneAge:
 								return !lSelection.uniquementPlusJeunesQue;
 						}
@@ -305,6 +341,7 @@ class ParamAffRecapAbsences extends ObjetInterface_1.ObjetInterface {
 						case GenreParametreRecapAbsences.editBorneDJAbsSup:
 						case GenreParametreRecapAbsences.editBorneDJTotAbsSup:
 						case GenreParametreRecapAbsences.editBorneRetardSup:
+						case GenreParametreRecapAbsences.editNbRetardInternatSup:
 							aInstance.actualiserDonnees({});
 							break;
 					}
@@ -326,10 +363,21 @@ class ParamAffRecapAbsences extends ObjetInterface_1.ObjetInterface {
 			case Enumere_Ressource_1.EGenreRessource.Retard:
 				this.selection.motifsRetard = aParam.listeSelection;
 				break;
+			case Enumere_Ressource_1.EGenreRessource.RetardInternat:
+				this.selection.motifsRetardInternat = aParam.listeSelection;
+				break;
 			case Enumere_Ressource_1.EGenreRessource.Infirmerie:
 				this.selection.issuesInfirmerie = aParam.listeSelection;
 				break;
 		}
+		this.actualiserDonnees({});
+	}
+	_evntSelecteurCreneauxAppel(aParam) {
+		this.selection.creneauxAppelAbsInternat = aParam.listeSelection;
+		this.actualiserDonnees({});
+	}
+	_evntSelecteurCreneauxAppelRetardInternat(aParam) {
+		this.selection.creneauxAppelRetardInternat = aParam.listeSelection;
 		this.actualiserDonnees({});
 	}
 	construireInstances() {
@@ -345,7 +393,19 @@ class ParamAffRecapAbsences extends ObjetInterface_1.ObjetInterface {
 			ObjetSelecteurMotifAbsence_1.ObjetSelecteurMotifAbsence,
 			this._evntSelecteurMotif,
 		);
+		this.identSelecteurCreneauxAppel = this.add(
+			ObjetSelecteurCreneauxAppel_1.ObjetSelecteurCreneauxAppel,
+			this._evntSelecteurCreneauxAppel,
+		);
+		this.identSelecteurCreneauxAppelRetardInternat = this.add(
+			ObjetSelecteurCreneauxAppel_1.ObjetSelecteurCreneauxAppel,
+			this._evntSelecteurCreneauxAppelRetardInternat,
+		);
 		this.identSelecteurMotifsRetard = this.add(
+			ObjetSelecteurMotifAbsence_1.ObjetSelecteurMotifAbsence,
+			this._evntSelecteurMotif,
+		);
+		this.identSelecteurMotifsRetardInternat = this.add(
 			ObjetSelecteurMotifAbsence_1.ObjetSelecteurMotifAbsence,
 			this._evntSelecteurMotif,
 		);
@@ -427,11 +487,22 @@ class ParamAffRecapAbsences extends ObjetInterface_1.ObjetInterface {
 				this.getInstance(this.identSelecteurMotifsAbsInternat).setActif(
 					this.selection.avecGpeAbsInternat,
 				);
+				this.getInstance(this.identSelecteurCreneauxAppel).setActif(
+					this.selection.avecGpeAbsInternat,
+				);
 				break;
 			case GenreParametreRecapAbsences.cbGpeRetard:
 				this.getInstance(this.identSelecteurMotifsRetard).setActif(
 					this.selection.avecGpeRetard,
 				);
+				break;
+			case GenreParametreRecapAbsences.cbGpeRetardInternat:
+				this.getInstance(this.identSelecteurMotifsRetardInternat).setActif(
+					this.selection.avecGpeRetardInternat,
+				);
+				this.getInstance(
+					this.identSelecteurCreneauxAppelRetardInternat,
+				).setActif(this.selection.avecGpeAbsInternat);
 				break;
 			case GenreParametreRecapAbsences.cbGpeInfirmerie:
 				this.getInstance(this.identSelecteurMotifsInfirmerie).setActif(
@@ -463,16 +534,25 @@ class ParamAffRecapAbsences extends ObjetInterface_1.ObjetInterface {
 			ObjetTraduction_1.GTraductions.getValeur("RecapAbs.uniquNonRA"),
 			"</ie-checkbox></div>",
 		);
+		const lIdAge = GUID_1.GUID.getId();
 		H.push(
 			'<div><ie-checkbox ie-model="cbParametreAff(',
 			GenreParametreRecapAbsences.cbUniquInfAge,
 			')" class="Espace NoWrap">',
+		);
+		H.push(
+			'<span id="',
+			lIdAge,
+			'">',
 			ObjetTraduction_1.GTraductions.getValeur("RecapAbs.uniquJeunes"),
+			"</span>",
 		);
 		H.push(
 			'<input type="text" ie-model="inputModelTexte(',
 			GenreParametreRecapAbsences.editBorneAge,
-			')" ie-mask="/[^0-9]/i" class="round-style MargeGauche" maxLength="3" style="',
+			')" ie-mask="/[^0-9]/i" class="MargeGauche" maxLength="3" aria-labelledby="',
+			lIdAge,
+			'" style="',
 			ObjetStyle_1.GStyle.composeWidth(30),
 			'"/>',
 		);
@@ -500,31 +580,43 @@ class ParamAffRecapAbsences extends ObjetInterface_1.ObjetInterface {
 			this.getNomInstance(this.identSelecteurMotifsAbs),
 			'"></div>',
 		);
+		const lIdSup = GUID_1.GUID.getId();
 		H.push(
 			'<div class="EspaceBas"><ie-checkbox ie-model="cbParametreAff(',
 			GenreParametreRecapAbsences.cbUniquAbsSup,
-			')" class="Espace NoWrap">',
+			')" class="Espace NoWrap"><span id="',
+			lIdSup,
+			'">',
 			ObjetTraduction_1.GTraductions.getValeur("RecapAbs.uniquAbsSup"),
+			"</span>",
 		);
 		H.push(
 			'<input type="text" ie-model="inputModelTexte(',
 			GenreParametreRecapAbsences.editBorneDJAbsSup,
-			')" ie-mask="/[^0-9]/i" class="round-style MargeGauche" maxLength="3" style="',
+			')" ie-mask="/[^0-9]/i" class="MargeGauche" maxLength="3" aria-labelledby="',
+			lIdSup,
+			'" style="',
 			ObjetStyle_1.GStyle.composeWidth(30),
 			'"/>',
 		);
 		H.push('<span class="MargeGauche" id="', this.idDemi, '"></span>');
 		H.push("</ie-checkbox></div>");
+		const lIdDureeSup = GUID_1.GUID.getId();
 		H.push(
 			'<div class="EspaceBas"><ie-checkbox ie-model="cbParametreAff(',
 			GenreParametreRecapAbsences.cbUniquTotAbsSup,
-			')" class="Espace NoWrap">',
+			')" class="Espace NoWrap"><span id="',
+			lIdDureeSup,
+			'">',
 			ObjetTraduction_1.GTraductions.getValeur("RecapAbs.uniquAbsTotSup"),
+			"</span>",
 		);
 		H.push(
 			'<input type="text" ie-model="inputModelTexte(',
 			GenreParametreRecapAbsences.editBorneDJTotAbsSup,
-			')" ie-mask="/[^0-9]/i" class="round-style MargeGauche" maxLength="3" style="',
+			')" ie-mask="/[^0-9]/i" class="MargeGauche" maxLength="3" aria-labelledby="',
+			lIdDureeSup,
+			'" style="',
 			ObjetStyle_1.GStyle.composeWidth(30),
 			'"/>',
 		);
@@ -580,6 +672,11 @@ class ParamAffRecapAbsences extends ObjetInterface_1.ObjetInterface {
 				this.getNomInstance(this.identSelecteurMotifsAbsInternat),
 				'"></div>',
 			);
+			H.push(
+				'<div class="EspaceBas" id="',
+				this.getNomInstance(this.identSelecteurCreneauxAppel),
+				'"></div>',
+			);
 			H.push("</fieldset>");
 		}
 		H.push(
@@ -601,16 +698,22 @@ class ParamAffRecapAbsences extends ObjetInterface_1.ObjetInterface {
 			this.getNomInstance(this.identSelecteurMotifsRetard),
 			'"></div>',
 		);
+		const lIdRetardDureeSup = GUID_1.GUID.getId();
 		H.push(
 			'<div class="EspaceBas"><ie-checkbox ie-model="cbParametreAff(',
 			GenreParametreRecapAbsences.cbUniquRetardSup,
-			')" class="Espace NoWrap">',
+			')" class="Espace NoWrap"><span id="',
+			lIdRetardDureeSup,
+			'">',
 			ObjetTraduction_1.GTraductions.getValeur("RecapAbs.uniquRetardSup"),
+			"</span>",
 		);
 		H.push(
 			'<input type="text" ie-model="inputModelTexte(',
 			GenreParametreRecapAbsences.editBorneRetardSup,
-			')" ie-mask="/[^0-9]/i" class="round-style MargeGauche" maxLength="3" style="',
+			')" ie-mask="/[^0-9]/i" class="MargeGauche" maxLength="3" aria-labelledby="',
+			lIdRetardDureeSup,
+			'" style="',
 			ObjetStyle_1.GStyle.composeWidth(30),
 			'"/>',
 		);
@@ -623,6 +726,55 @@ class ParamAffRecapAbsences extends ObjetInterface_1.ObjetInterface {
 			"</ie-checkbox></div>",
 		);
 		H.push("</fieldset>");
+		if (this.droits.avecChoixInternat) {
+			const lIdRetardInternatNbSup = GUID_1.GUID.getId();
+			H.push(
+				'<fieldset class="Bordure" style="margin:0px 0px 10px 0px; padding:10px;">',
+			);
+			H.push(
+				'<legend class="',
+				ObjetClass_1.GClass.getLegende(),
+				'">',
+				'<ie-checkbox ie-model="cbParametreAff(',
+				GenreParametreRecapAbsences.cbGpeRetardInternat,
+				')" class="Espace">',
+				ObjetTraduction_1.GTraductions.getValeur("RecapAbs.retardsInternat"),
+				"</ie-checkbox>",
+				"</legend>",
+			);
+			H.push(
+				'<div class="EspaceBas" id="',
+				this.getNomInstance(this.identSelecteurMotifsRetardInternat),
+				'"></div>',
+			);
+			H.push(
+				'<div class="EspaceBas" id="',
+				this.getNomInstance(this.identSelecteurCreneauxAppelRetardInternat),
+				'"></div>',
+			);
+			H.push(
+				'<div class="EspaceBas"><ie-checkbox ie-model="cbParametreAff(',
+				GenreParametreRecapAbsences.cbUniquRetardInternatSup,
+				')" class="Espace NoWrap"><span id="',
+				lIdRetardInternatNbSup,
+				'">',
+				ObjetTraduction_1.GTraductions.getValeur(
+					"RecapAbs.uniquNbRetardInternatSupA",
+				),
+				"</span>",
+			);
+			H.push(
+				'<input type="text" ie-model="inputModelTexte(',
+				GenreParametreRecapAbsences.editNbRetardInternatSup,
+				')" ie-mask="/[^0-9]/i" class="MargeGauche" maxLength="3" aria-labelledby="',
+				lIdRetardInternatNbSup,
+				'" style="',
+				ObjetStyle_1.GStyle.composeWidth(30),
+				'"/>',
+			);
+			H.push("</ie-checkbox></div>");
+			H.push("</fieldset>");
+		}
 		if (this.droits.avecChoixInfirmerie) {
 			H.push(
 				'<fieldset class="Bordure" style="margin:0px 0px 10px 0px; padding:10px;">',
@@ -674,6 +826,29 @@ class ParamAffRecapAbsences extends ObjetInterface_1.ObjetInterface {
 				listeSelection: aParam.motifsAbsInternat,
 				listeTotale: aParam.motifsAbsInternat,
 				genreRessource: Enumere_Ressource_1.EGenreRessource.AbsenceInternat,
+			});
+			this.getInstance(this.identSelecteurCreneauxAppel).setDonnees({
+				listeSelection: aParam.creneauxAppelAbsInternat,
+				listeTotale: aParam.creneauxAppelAbsInternat,
+			});
+			this.getInstance(this.identSelecteurMotifsRetardInternat).setOptions({
+				titreFenetre: ObjetTraduction_1.GTraductions.getValeur(
+					"RecapAbs.selectionMotifsRetard",
+				),
+				titreLibelle: ObjetTraduction_1.GTraductions.getValeur(
+					"RecapAbs.motifsRetard",
+				),
+			});
+			this.getInstance(this.identSelecteurMotifsRetardInternat).setDonnees({
+				listeSelection: aParam.motifsRetardInternat,
+				listeTotale: aParam.motifsRetardInternat,
+				genreRessource: Enumere_Ressource_1.EGenreRessource.RetardInternat,
+			});
+			this.getInstance(
+				this.identSelecteurCreneauxAppelRetardInternat,
+			).setDonnees({
+				listeSelection: aParam.creneauxAppelAbsInternat,
+				listeTotale: aParam.creneauxAppelAbsInternat,
 			});
 		}
 		this.getInstance(this.identSelecteurMotifsRetard).setOptions({

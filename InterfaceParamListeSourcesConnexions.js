@@ -12,6 +12,8 @@ const ObjetListe_1 = require("ObjetListe");
 const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
 const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
 const ObjetParamChoixStrategieSecurisation_1 = require("ObjetParamChoixStrategieSecurisation");
+const TraductionsDoubleAuth_1 = require("TraductionsDoubleAuth");
+const AccessApp_1 = require("AccessApp");
 class InterfaceParamListeSourcesConnexions extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
@@ -42,9 +44,9 @@ class InterfaceParamListeSourcesConnexions extends ObjetInterface_1.ObjetInterfa
 		aInstance.setOptionsListe({
 			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
 			hauteurAdapteContenu: Infinity,
-			messageContenuVide: ObjetTraduction_1.GTraductions.getValeur(
-				"DoubleAuth.AucunAppareilEnregistre",
-			),
+			messageContenuVide:
+				TraductionsDoubleAuth_1.TradDoubleAuth.AucunAppareilEnregistre,
+			ariaLabel: TraductionsDoubleAuth_1.TradDoubleAuth.AppareilsIdentifies,
 		});
 	}
 	evenementListeSources(aParametres) {
@@ -54,29 +56,31 @@ class InterfaceParamListeSourcesConnexions extends ObjetInterface_1.ObjetInterfa
 				break;
 			case Enumere_EvenementListe_1.EGenreEvenementListe.Suppression: {
 				const lThis = this;
-				GApplication.getMessage().afficher({
-					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
-					message: ObjetTraduction_1.GTraductions.getValeur(
-						"DoubleAuth.PrefConfirmerSupprimer",
-					),
-					callback(aNumeroBouton) {
-						if (aNumeroBouton === Enumere_Action_1.EGenreAction.Valider) {
-							new ObjetRequeteSecurisationCompte_1.ObjetRequeteSecurisationComptePreference(
-								lThis,
-							)
-								.lancerRequete({
-									action:
-										TypeSecurisationCompte_1.TypeCommandeSecurisationCompteHttp
-											.csch_SupprimerSourceConnexionConnue,
-									identifiantSysteme: aParametres.article.identifiantSysteme,
-									genreSource: aParametres.article.getGenre(),
-								})
-								.then(() => {
-									lThis.callback.appel({ actualiser: true });
-								});
-						}
-					},
-				});
+				(0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+						message:
+							TraductionsDoubleAuth_1.TradDoubleAuth.PrefConfirmerSupprimer,
+						callback(aNumeroBouton) {
+							if (aNumeroBouton === Enumere_Action_1.EGenreAction.Valider) {
+								new ObjetRequeteSecurisationCompte_1.ObjetRequeteSecurisationComptePreference(
+									lThis,
+								)
+									.lancerRequete({
+										action:
+											TypeSecurisationCompte_1
+												.TypeCommandeSecurisationCompteHttp
+												.csch_SupprimerSourceConnexionConnue,
+										identifiantSysteme: aParametres.article.identifiantSysteme,
+										genreSource: aParametres.article.getGenre(),
+									})
+									.then(() => {
+										lThis.callback.appel({ actualiser: true });
+									});
+							}
+						},
+					});
 				break;
 			}
 		}
@@ -139,26 +143,22 @@ class InterfaceParamListeSourcesConnexions extends ObjetInterface_1.ObjetInterfa
 		const H = [];
 		H.push(
 			"<div>",
-			`<div id="${this.getInstance(this.identListeSources).getNom()}"></div>`,
+			`<div id="${this.getNomInstance(this.identListeSources)}"></div>`,
 			"</div>",
 		);
 		H.push(
 			"<p>",
-			ObjetTraduction_1.GTraductions.getValeur(
-				"DoubleAuth.PrefChoisirDEnregistrer",
-			),
+			TraductionsDoubleAuth_1.TradDoubleAuth.PrefChoisirDEnregistrer,
 			"</p>",
 		);
 		H.push(
 			"<p>",
-			ObjetTraduction_1.GTraductions.getValeur("DoubleAuth.PersonnesConfiance"),
+			TraductionsDoubleAuth_1.TradDoubleAuth.PersonnesConfiance,
 			"</p>",
 		);
 		H.push(
 			"<p>",
-			ObjetTraduction_1.GTraductions.getValeur(
-				"DoubleAuth.PrefPensezASupprimer",
-			),
+			TraductionsDoubleAuth_1.TradDoubleAuth.PrefPensezASupprimer,
 			"</p>",
 		);
 		return H.join("");
@@ -184,7 +184,7 @@ class DonneesListe_SourcesConnexion extends ObjetDonneesListeFlatDesign_1.ObjetD
 			return;
 		}
 		aParametres.menuContextuel.add(
-			ObjetTraduction_1.GTraductions.getValeur("DoubleAuth.Details"),
+			TraductionsDoubleAuth_1.TradDoubleAuth.Details,
 			true,
 			function () {
 				this.callback.appel({
@@ -215,65 +215,57 @@ class ObjetFenetre_DetailsAppareil extends ObjetFenetre_1.ObjetFenetre {
 		this.idInputSource = `${this.Nom}_inpSource`;
 		this.donnees = { sourceConnexion: null, avecChangement: false };
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			txtNomSourceConnexion: {
-				getValue() {
-					return aInstance.donnees.sourceConnexion
-						? aInstance.donnees.sourceConnexion.getLibelle() || ""
-						: "";
-				},
-				setValue(aValue) {
-					if (aInstance.donnees.sourceConnexion) {
-						aInstance.donnees.sourceConnexion.setLibelle(aValue);
-						aInstance.donnees.avecChangement = true;
-					}
-				},
-			},
-			getLibelleSysteme() {
-				return aInstance.donnees.sourceConnexion
-					? aInstance.donnees.sourceConnexion.libelleSysteme
+	jsxModeleLibelleSourceConnexion() {
+		return {
+			getValue: () => {
+				return this.donnees.sourceConnexion
+					? this.donnees.sourceConnexion.getLibelle() || ""
 					: "";
 			},
-			getStrDateDerniereConnexion() {
-				let lStrDate = "";
-				if (
-					aInstance.donnees.sourceConnexion &&
-					aInstance.donnees.sourceConnexion.dateDerniereConnexion
-				) {
-					lStrDate = ObjetDate_1.GDate.formatDate(
-						aInstance.donnees.sourceConnexion.dateDerniereConnexion,
-						" %JJ %MMMM %AAAA %hh%sh%mmm%ss",
-					);
+			setValue: (aValue) => {
+				if (this.donnees.sourceConnexion) {
+					this.donnees.sourceConnexion.setLibelle(aValue);
+					this.donnees.avecChangement = true;
 				}
-				return lStrDate;
 			},
-			getStrGenreConnexion() {
-				let lStrGenre = "";
-				if (aInstance.donnees.sourceConnexion) {
-					switch (aInstance.donnees.sourceConnexion.getGenre()) {
-						case TypeSecurisationCompte_1.TypeGenreSourceConnexion
-							.GSC_ClientLourd:
-							lStrGenre =
-								ObjetTraduction_1.GTraductions.getValeur("DoubleAuth.Client");
-							break;
-						case TypeSecurisationCompte_1.TypeGenreSourceConnexion
-							.GSC_ApplicationMobile:
-							lStrGenre =
-								ObjetTraduction_1.GTraductions.getValeur("DoubleAuth.Mobile");
-							break;
-						case TypeSecurisationCompte_1.TypeGenreSourceConnexion
-							.GSC_Navigateur:
-							lStrGenre = ObjetTraduction_1.GTraductions.getValeur(
-								"DoubleAuth.Navigateur",
-							);
-							break;
-						default:
-					}
-				}
-				return lStrGenre;
-			},
-		});
+		};
+	}
+	getLibelleSysteme() {
+		return this.donnees.sourceConnexion
+			? this.donnees.sourceConnexion.libelleSysteme
+			: "";
+	}
+	getStrDateDerniereConnexion() {
+		let lStrDate = "";
+		if (
+			this.donnees.sourceConnexion &&
+			this.donnees.sourceConnexion.dateDerniereConnexion
+		) {
+			lStrDate = ObjetDate_1.GDate.formatDate(
+				this.donnees.sourceConnexion.dateDerniereConnexion,
+				" %JJ %MMMM %AAAA %hh%sh%mmm%ss",
+			);
+		}
+		return lStrDate;
+	}
+	getStrGenreConnexion() {
+		let lStrGenre = "";
+		if (this.donnees.sourceConnexion) {
+			switch (this.donnees.sourceConnexion.getGenre()) {
+				case TypeSecurisationCompte_1.TypeGenreSourceConnexion.GSC_ClientLourd:
+					lStrGenre = TraductionsDoubleAuth_1.TradDoubleAuth.Client;
+					break;
+				case TypeSecurisationCompte_1.TypeGenreSourceConnexion
+					.GSC_ApplicationMobile:
+					lStrGenre = TraductionsDoubleAuth_1.TradDoubleAuth.Mobile;
+					break;
+				case TypeSecurisationCompte_1.TypeGenreSourceConnexion.GSC_Navigateur:
+					lStrGenre = TraductionsDoubleAuth_1.TradDoubleAuth.Navigateur;
+					break;
+				default:
+			}
+		}
+		return lStrGenre;
 	}
 	composeContenu() {
 		return IE.jsx.str(
@@ -285,16 +277,13 @@ class ObjetFenetre_DetailsAppareil extends ObjetFenetre_1.ObjetFenetre {
 				IE.jsx.str(
 					"label",
 					{ for: this.idInputSource },
-					ObjetTraduction_1.GTraductions.getValeur(
-						"DoubleAuth.PrefListeLibelle",
-					),
+					TraductionsDoubleAuth_1.TradDoubleAuth.PrefListeLibelle,
 					" : ",
 				),
 				IE.jsx.str("input", {
 					type: "text",
 					id: this.idInputSource,
-					"ie-model": "txtNomSourceConnexion",
-					class: "round-style",
+					"ie-model": this.jsxModeleLibelleSourceConnexion.bind(this),
 				}),
 			),
 			IE.jsx.str(
@@ -303,12 +292,13 @@ class ObjetFenetre_DetailsAppareil extends ObjetFenetre_1.ObjetFenetre {
 				IE.jsx.str(
 					"label",
 					null,
-					ObjetTraduction_1.GTraductions.getValeur(
-						"DoubleAuth.PrefListeAppareil",
-					),
+					TraductionsDoubleAuth_1.TradDoubleAuth.PrefListeAppareil,
 					" : ",
 				),
-				IE.jsx.str("div", { "ie-html": "getLibelleSysteme" }),
+				IE.jsx.str("div", {
+					class: "libelle",
+					"ie-html": this.getLibelleSysteme.bind(this),
+				}),
 			),
 			IE.jsx.str(
 				"li",
@@ -316,10 +306,13 @@ class ObjetFenetre_DetailsAppareil extends ObjetFenetre_1.ObjetFenetre {
 				IE.jsx.str(
 					"label",
 					null,
-					ObjetTraduction_1.GTraductions.getValeur("DoubleAuth.PrefListeDate"),
+					TraductionsDoubleAuth_1.TradDoubleAuth.PrefListeDate,
 					" : ",
 				),
-				IE.jsx.str("div", { "ie-html": "getStrDateDerniereConnexion" }),
+				IE.jsx.str("div", {
+					class: "libelle",
+					"ie-html": this.getStrDateDerniereConnexion.bind(this),
+				}),
 			),
 			IE.jsx.str(
 				"li",
@@ -327,10 +320,13 @@ class ObjetFenetre_DetailsAppareil extends ObjetFenetre_1.ObjetFenetre {
 				IE.jsx.str(
 					"label",
 					null,
-					ObjetTraduction_1.GTraductions.getValeur("DoubleAuth.PrefListeIcone"),
+					TraductionsDoubleAuth_1.TradDoubleAuth.PrefListeIcone,
 					" : ",
 				),
-				IE.jsx.str("div", { "ie-html": "getStrGenreConnexion" }),
+				IE.jsx.str("div", {
+					class: "libelle",
+					"ie-html": this.getStrGenreConnexion.bind(this),
+				}),
 			),
 		);
 	}

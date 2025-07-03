@@ -17,6 +17,10 @@ var EGenreElementDossier;
 	EGenreElementDossier[(EGenreElementDossier["PassageInfirmerie"] = 9)] =
 		"PassageInfirmerie";
 	EGenreElementDossier[(EGenreElementDossier["Incident"] = 10)] = "Incident";
+	EGenreElementDossier[(EGenreElementDossier["Valorisation"] = 100)] =
+		"Valorisation";
+	EGenreElementDossier[(EGenreElementDossier["Commission"] = 101)] =
+		"Commission";
 })(
 	EGenreElementDossier ||
 		(exports.EGenreElementDossier = EGenreElementDossier = {}),
@@ -63,10 +67,11 @@ const EGenreElementDossierUtil = {
 				return "icon_f0fe";
 			case EGenreElementDossier.Incident:
 				return "icon_bolt";
+			case EGenreElementDossier.Valorisation:
+				return "icon_valorisation";
+			case EGenreElementDossier.Commission:
+				return "icon_group";
 			default:
-				if (aGenreElementDossier === 100) {
-					return "icon_valorisation";
-				}
 				break;
 		}
 		return "";

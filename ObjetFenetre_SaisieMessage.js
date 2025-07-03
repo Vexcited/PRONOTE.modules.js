@@ -2,7 +2,9 @@ exports.ObjetFenetre_SaisieMessage = void 0;
 const ObjetHtml_1 = require("ObjetHtml");
 const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetTraduction_1 = require("ObjetTraduction");
-require("IEHtml.TextareaMax.js");
+const GUID_1 = require("GUID");
+require("IEHtml.TextareaMax");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
 class ObjetFenetre_SaisieMessage extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
@@ -45,7 +47,7 @@ class ObjetFenetre_SaisieMessage extends ObjetFenetre_1.ObjetFenetre {
 						aInstance.donnees.messageEstModifie = true;
 						if (
 							aInstance.paramsFenetreSaisieMessage.validationSurRetourChariot &&
-							GNavigateur.isToucheRetourChariot()
+							ObjetNavigateur_1.Navigateur.isToucheRetourChariot()
 						) {
 							aInstance.surValidation(1);
 						}
@@ -71,45 +73,73 @@ class ObjetFenetre_SaisieMessage extends ObjetFenetre_1.ObjetFenetre {
 		});
 	}
 	composeContenu() {
-		const lAttrMax =
-			this.paramsFenetreSaisieMessage.maxLengthSaisie > 0
-				? 'maxlength="' + this.paramsFenetreSaisieMessage.maxLengthSaisie + '"'
-				: "";
+		const lAttrMax = {
+			maxlength:
+				this.paramsFenetreSaisieMessage.maxLengthSaisie > 0
+					? this.paramsFenetreSaisieMessage.maxLengthSaisie
+					: null,
+		};
 		const T = [];
 		T.push('<div class="flex-contain cols flex-gap full-size">');
+		const lIdTitreMessage = GUID_1.GUID.getId();
 		if (this.paramsFenetreSaisieMessage.titreMessage) {
 			T.push(
-				'<h4 class="regular">',
-				this.paramsFenetreSaisieMessage.titreMessage,
-				"</h4>",
+				IE.jsx.str(
+					"h4",
+					{ class: "regular", id: lIdTitreMessage },
+					this.paramsFenetreSaisieMessage.titreMessage,
+				),
 			);
 		}
 		T.push('<div class="fluid-bloc full-size">');
 		if (!this.paramsFenetreSaisieMessage.afficherZoneTexte) {
 			T.push(
-				'<input ie-model="modelChampTexte" type="text" ',
-				lAttrMax,
-				' id="',
-				this.idValeur,
-				'" class="Fenetre_Bordure Texte10 full-size m-all-none" />',
+				IE.jsx.str(
+					"input",
+					Object.assign(
+						{
+							"ie-model": "modelChampTexte",
+							"aria-labelledby": [
+								this.IdTitre,
+								this.paramsFenetreSaisieMessage.titreMessage && lIdTitreMessage,
+								this.idValeur,
+							].join(" "),
+							type: "text",
+						},
+						lAttrMax,
+						{ id: this.idValeur, class: "full-width" },
+					),
+				),
 			);
 		} else {
 			T.push(
-				'<ie-textareamax class="full-size" ie-model="modelChampTexte" ',
-				lAttrMax,
-				' id="',
-				this.idValeur,
-				'"></ie-textareamax>',
+				IE.jsx.str(
+					"ie-textareamax",
+					Object.assign(
+						{
+							class: "full-size",
+							"aria-labelledby": [
+								this.IdTitre,
+								this.paramsFenetreSaisieMessage.titreMessage && lIdTitreMessage,
+							].join(" "),
+							"ie-model": "modelChampTexte",
+						},
+						lAttrMax,
+						{ id: this.idValeur },
+					),
+				),
 			);
 		}
 		T.push("</div>");
 		if (this.paramsFenetreSaisieMessage.avecControlePublication) {
 			T.push(
-				'<ie-checkbox ie-model="cbControlePublication">',
-				ObjetTraduction_1.GTraductions.getValeur(
-					"competences.PublierSurEspaceParent",
+				IE.jsx.str(
+					"ie-checkbox",
+					{ "ie-model": "cbControlePublication" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"competences.PublierSurEspaceParent",
+					),
 				),
-				"</ie-checkbox>",
 			);
 		}
 		T.push("</div>");

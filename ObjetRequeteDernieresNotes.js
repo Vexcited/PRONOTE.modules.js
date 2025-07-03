@@ -1,11 +1,9 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { EGenreTriElement } = require("Enumere_TriElement.js");
-const { ObjetTri } = require("ObjetTri.js");
-class ObjetRequeteDernieresNotes extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteDernieresNotes = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const Enumere_TriElement_1 = require("Enumere_TriElement");
+const ObjetTri_1 = require("ObjetTri");
+class ObjetRequeteDernieresNotes extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aParams) {
 		this.JSON.Periode = aParams.periode;
 		return this.appelAsynchrone();
@@ -13,7 +11,10 @@ class ObjetRequeteDernieresNotes extends ObjetRequeteConsultation {
 	actionApresRequete() {
 		if (!!this.JSONReponse.listeDevoirs) {
 			this.JSONReponse.listeDevoirs.setTri([
-				ObjetTri.init("date", EGenreTriElement.Decroissant),
+				ObjetTri_1.ObjetTri.init(
+					"date",
+					Enumere_TriElement_1.EGenreTriElement.Decroissant,
+				),
 			]);
 			this.JSONReponse.listeDevoirs.trier();
 			if (!!this.JSONReponse.listeServices) {
@@ -46,5 +47,8 @@ class ObjetRequeteDernieresNotes extends ObjetRequeteConsultation {
 		this.callbackReussite.appel(lJSONResult);
 	}
 }
-Requetes.inscrire("DernieresNotes", ObjetRequeteDernieresNotes);
-module.exports = { ObjetRequeteDernieresNotes };
+exports.ObjetRequeteDernieresNotes = ObjetRequeteDernieresNotes;
+CollectionRequetes_1.Requetes.inscrire(
+	"DernieresNotes",
+	ObjetRequeteDernieresNotes,
+);

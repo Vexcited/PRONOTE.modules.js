@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieRencontreIndisponibilites extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieRencontreIndisponibilites = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieRencontreIndisponibilites extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParam) {
 		const lParametres = { session: null, indisponibilites: null };
 		$.extend(lParametres, aParam);
@@ -14,8 +12,9 @@ class ObjetRequeteSaisieRencontreIndisponibilites extends ObjetRequeteSaisie {
 		return this.appelAsynchrone();
 	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteSaisieRencontreIndisponibilites =
+	ObjetRequeteSaisieRencontreIndisponibilites;
+CollectionRequetes_1.Requetes.inscrire(
 	"SaisieRencontreIndisponibilites",
 	ObjetRequeteSaisieRencontreIndisponibilites,
 );
-module.exports = ObjetRequeteSaisieRencontreIndisponibilites;

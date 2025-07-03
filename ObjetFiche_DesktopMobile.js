@@ -14,18 +14,13 @@ class ObjetFiche_DesktopMobile extends ObjetFenetre_1.ObjetFenetre {
 			avecAbonnementBlocage: true,
 			avecAbonnementPremierPlan: true,
 			htmlContenu: "",
-			labelledBy: "",
 		});
 	}
 	compose() {
 		return IE.jsx.str(
-			IE.jsx.fragment,
-			null,
-			IE.jsx.str(
-				"div",
-				{ tabindex: "-1", id: this.idContenu },
-				this.optionsFenetre.htmlContenu || this.composeContenu(),
-			),
+			"div",
+			{ tabindex: "-1", id: this.idContenu },
+			this.optionsFenetre.htmlContenu || this.composeContenu(),
 		);
 	}
 	surPreAffichage() {}
@@ -37,7 +32,7 @@ class ObjetFiche_DesktopMobile extends ObjetFenetre_1.ObjetFenetre {
 	actualiser(...aParams) {
 		return this.afficher();
 	}
-	afficher() {
+	afficher(AIdCours, aLeft, aTop) {
 		return super.afficher(this.compose());
 	}
 	afficherFiche(aParams) {

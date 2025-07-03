@@ -1,25 +1,13 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetElement } = require("ObjetElement.js");
-class ObjetRequetePageAppreciationsGenerales extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequetePageAppreciationsGenerales = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequetePageAppreciationsGenerales extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aParam) {
-		const lParam = {
-			classe: new ObjetElement(),
-			periode: new ObjetElement(),
-			appreciation: new ObjetElement(),
-			callbackWAI: null,
-		};
-		$.extend(lParam, aParam);
-		this.estUneRubrique = lParam.appreciation.estUneRubrique;
-		this.callbackWAI = lParam.callbackWAI;
 		this.JSON = {
-			classe: lParam.classe,
-			periode: lParam.periode,
-			appreciation: lParam.appreciation,
-			estUneRubrique: lParam.appreciation.estUneRubrique,
+			classe: aParam.classe,
+			periode: aParam.periode,
+			appreciation: aParam.appreciation,
+			estUneRubrique: aParam.estUneRubrique,
 		};
 		return this.appelAsynchrone();
 	}
@@ -27,8 +15,9 @@ class ObjetRequetePageAppreciationsGenerales extends ObjetRequeteConsultation {
 		this.callbackReussite.appel(this.JSONReponse);
 	}
 }
-Requetes.inscrire(
+exports.ObjetRequetePageAppreciationsGenerales =
+	ObjetRequetePageAppreciationsGenerales;
+CollectionRequetes_1.Requetes.inscrire(
 	"PageAppreciationsGenerales",
 	ObjetRequetePageAppreciationsGenerales,
 );
-module.exports = ObjetRequetePageAppreciationsGenerales;

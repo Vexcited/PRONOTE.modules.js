@@ -15,14 +15,15 @@ const ObjetAffichagePageAvecMenusDeroulants =
 		? void 0
 		: MultipleObjetAffichagePageAvecMenusDeroulants.ObjetAffichagePageAvecMenusDeroulants;
 const ObjetSaisiePN_1 = require("ObjetSaisiePN");
-const ObjetFenetre_FicheEleve = require("ObjetFenetre_FicheEleve");
+const MultiObjetFenetre_FicheEleve = require("ObjetFenetre_FicheEleve");
 const UtilitaireBoutonBandeau_1 = require("UtilitaireBoutonBandeau");
 const UtilitaireRenseignementsEleve_1 = require("UtilitaireRenseignementsEleve");
+const AccessApp_1 = require("AccessApp");
 class InterfacePage extends _InterfacePage_1._InterfacePage {
 	constructor(...aParams) {
 		super(...aParams);
 		this.estBoutonsFicheEleveActif = false;
-		this.applicationSco = GApplication;
+		this.applicationSco = (0, AccessApp_1.getApp)();
 	}
 	getPrioriteAffichageBandeauLargeur() {
 		return [ObjetAffichagePageAvecMenusDeroulants];
@@ -63,22 +64,38 @@ class InterfacePage extends _InterfacePage_1._InterfacePage {
 	}
 	construireFicheEleveEtFichePhoto() {
 		if (this.avecFicheEleve()) {
-			UtilitaireRenseignementsEleve_1.UtilitaireFicheEleve.construireInstances(
-				this,
-			);
-			UtilitaireRenseignementsEleve_1.UtilitairePhotoEleve.construireInstances(
-				this,
-			);
+			if (MultiObjetFenetre_FicheEleve) {
+				this.identFenetreFicheEleve = this.add(
+					MultiObjetFenetre_FicheEleve.ObjetFenetre_FicheEleve,
+					null,
+					UtilitaireRenseignementsEleve_1.UtilitaireFicheEleve.initFicheEleve,
+				);
+			}
+			if (
+				UtilitaireRenseignementsEleve_1.UtilitairePhotoEleve.getClassFichePhotoEeve()
+			) {
+				this.identFichePhoto = this.add(
+					UtilitaireRenseignementsEleve_1.UtilitairePhotoEleve.getClassFichePhotoEeve(),
+				);
+			}
 		}
 	}
 	addSurZoneFicheEleve() {
 		if (this.avecFicheEleve()) {
-			UtilitaireRenseignementsEleve_1.UtilitaireFicheEleve.addSurZone(this);
+			this.AddSurZone.push({
+				html: UtilitaireRenseignementsEleve_1.UtilitaireFicheEleve.getHtmlBtnAfficherFicheEleve(
+					this,
+				),
+			});
 		}
 	}
 	addSurZonePhotoEleve() {
 		if (this.avecPhotoEleve()) {
-			UtilitaireRenseignementsEleve_1.UtilitairePhotoEleve.addSurZone(this);
+			this.AddSurZone.push({
+				html: UtilitaireRenseignementsEleve_1.UtilitairePhotoEleve.getHtmlBtnAfficherPhotoEleve(
+					this,
+				),
+			});
 		}
 	}
 	estUnOngletAvecFicheEleve(aOnglet) {
@@ -118,7 +135,10 @@ class InterfacePage extends _InterfacePage_1._InterfacePage {
 	}
 	avecFicheEleve() {
 		return (
-			ObjetFenetre_FicheEleve &&
+			(MultiObjetFenetre_FicheEleve === null ||
+			MultiObjetFenetre_FicheEleve === void 0
+				? void 0
+				: MultiObjetFenetre_FicheEleve.ObjetFenetre_FicheEleve) &&
 			this.estUnOngletAvecFicheEleve(
 				this.applicationSco.getEtatUtilisateur().getGenreOnglet(),
 			) &&
@@ -153,59 +173,49 @@ class InterfacePage extends _InterfacePage_1._InterfacePage {
 			);
 		}
 	}
+	jsxModeleBoutonGrapheAraignee() {
+		return {
+			event: () => {
+				if (this.getInstance(this.identFicheGraphe)) {
+					if (this._graphe.image[0]) {
+						this.getInstance(this.identFicheGraphe).setDonnees(
+							this._graphe,
+							this._paramGraphe,
+						);
+					} else {
+						GApplication.getMessage().afficher({
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+							titre: null,
+							message: this._graphe.message,
+							callback: null,
+							avecDecalageFocusBouton: true,
+						});
+					}
+				}
+			},
+			getSelection: () => {
+				return (
+					this.getInstance(this.identFicheGraphe) &&
+					this.getInstance(this.identFicheGraphe).estAffiche()
+				);
+			},
+			getTitle: () => {
+				return this.getTitleBoutonGraphe();
+			},
+			getDisabled: () => {
+				return !this._graphe;
+			},
+		};
+	}
 	getHtmlBoutonBandeauGraphe() {
 		return UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnGrapheAraignee(
-			"btnGrapheAraignee",
+			this.jsxModeleBoutonGrapheAraignee.bind(this),
 		);
 	}
 	getTitleBoutonGraphe() {
 		return ObjetTraduction_1.GTraductions.getValeur(
 			"competences.GrapheAraignee",
 		);
-	}
-	getControleur(aInstance) {
-		const lControleur = $.extend(true, super.getControleur(aInstance), {
-			btnGrapheAraignee: {
-				event() {
-					if (aInstance.getInstance(aInstance.identFicheGraphe)) {
-						if (aInstance._graphe.image[0]) {
-							aInstance
-								.getInstance(aInstance.identFicheGraphe)
-								.setDonnees(aInstance._graphe, aInstance._paramGraphe);
-						} else {
-							GApplication.getMessage().afficher({
-								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-								titre: null,
-								message: aInstance._graphe.message,
-								callback: null,
-								avecDecalageFocusBouton: true,
-							});
-						}
-					}
-				},
-				getSelection() {
-					return (
-						aInstance.getInstance(aInstance.identFicheGraphe) &&
-						aInstance.getInstance(aInstance.identFicheGraphe).estAffiche()
-					);
-				},
-				getTitle() {
-					return aInstance.getTitleBoutonGraphe();
-				},
-				getDisabled() {
-					return !aInstance._graphe;
-				},
-			},
-		});
-		UtilitaireRenseignementsEleve_1.UtilitaireFicheEleve.ajoutControleur(
-			aInstance,
-			lControleur,
-		);
-		UtilitaireRenseignementsEleve_1.UtilitairePhotoEleve.ajoutControleur(
-			aInstance,
-			lControleur,
-		);
-		return lControleur;
 	}
 	initialiserFenetreFicheEleve(aInstance) {
 		aInstance.setOptionsFenetre({
@@ -245,21 +255,13 @@ class InterfacePage extends _InterfacePage_1._InterfacePage {
 		this.activerFichesEleve(true);
 		if (this.estFenetreFicheEleveAffiche()) {
 			const lFenetre = this.getInstance(this.identFenetreFicheEleve);
-			if (this.applicationSco.getEtatUtilisateur().estModeAccessible()) {
-				lFenetre.fermer();
-			} else {
-				lFenetre.setDonnees(null, true, aSansFocusPolling);
-			}
+			lFenetre.setDonnees(null, true, aSansFocusPolling);
 		}
 		if (this.estFenetrePhotoEleveAffiche()) {
-			if (this.applicationSco.getEtatUtilisateur().estModeAccessible()) {
-				this.getInstance(this.identFichePhoto).fermer();
-			} else {
-				UtilitaireRenseignementsEleve_1.UtilitairePhotoEleve._afficherPhotoEleve.call(
-					this,
-					true,
-				);
-			}
+			UtilitaireRenseignementsEleve_1.UtilitairePhotoEleve.afficherPhotoEleve(
+				this,
+				true,
+			);
 		}
 	}
 	activerFichesEleve(aActiver) {

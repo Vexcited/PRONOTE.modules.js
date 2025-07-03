@@ -117,8 +117,6 @@ var EGenreOnglet;
 	EGenreOnglet[(EGenreOnglet["CreneauxLibres"] = 93)] = "CreneauxLibres";
 	EGenreOnglet[(EGenreOnglet["General_Rencontre_Planning"] = 94)] =
 		"General_Rencontre_Planning";
-	EGenreOnglet[(EGenreOnglet["QCM_BibliothequeNathan"] = 96)] =
-		"QCM_BibliothequeNathan";
 	EGenreOnglet[(EGenreOnglet["EmploiDuTempsProfesseur"] = 97)] =
 		"EmploiDuTempsProfesseur";
 	EGenreOnglet[(EGenreOnglet["SaisieOffresStage"] = 98)] = "SaisieOffresStage";
@@ -255,7 +253,6 @@ var EGenreOnglet;
 		"General_Competences_NouveauSocleCommun";
 	EGenreOnglet[(EGenreOnglet["Saisie_Punitions"] = 192)] = "Saisie_Punitions";
 	EGenreOnglet[(EGenreOnglet["Saisie_Dispenses"] = 193)] = "Saisie_Dispenses";
-	EGenreOnglet[(EGenreOnglet["ListeDevoirs"] = 194)] = "ListeDevoirs";
 	EGenreOnglet[(EGenreOnglet["EvaluationAccueilStage"] = 195)] =
 		"EvaluationAccueilStage";
 	EGenreOnglet[(EGenreOnglet["ListeServices"] = 196)] = "ListeServices";
@@ -332,8 +329,6 @@ var EGenreOnglet;
 		"General_BilanParDomaine";
 	EGenreOnglet[(EGenreOnglet["General_CahierJournal"] = 238)] =
 		"General_CahierJournal";
-	EGenreOnglet[(EGenreOnglet["SaisieProgressions"] = 239)] =
-		"SaisieProgressions";
 	EGenreOnglet[(EGenreOnglet["General_PyramideDesAges"] = 240)] =
 		"General_PyramideDesAges";
 	EGenreOnglet[(EGenreOnglet["PyramideDesAges_Histogramme"] = 241)] =
@@ -414,4 +409,5 @@ var EGenreOnglet;
 		"SaisieAppelInternat";
 	EGenreOnglet[(EGenreOnglet["General_RemplacementsEnseignants"] = 287)] =
 		"General_RemplacementsEnseignants";
+	EGenreOnglet[(EGenreOnglet["RechercheDeStage"] = 288)] = "RechercheDeStage";
 })(EGenreOnglet || (exports.EGenreOnglet = EGenreOnglet = {}));

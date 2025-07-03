@@ -30,29 +30,6 @@ class InterfaceMediatheque extends ObjetInterface_1.ObjetInterface {
 			avecZoneDropNouveauxFichiers() {
 				return aInstance.optionsMediatheque.avecEdition;
 			},
-			getRessourceDraggable(aNumeroDoc) {
-				const lDoc = aInstance.listeDocuments.getElementParNumero(aNumeroDoc);
-				const lMaxWidthLibelle = 200;
-				const lMaxHeightLibelle = 25;
-				return {
-					start(aParams) {
-						const lApercuDraggable = [];
-						lApercuDraggable.push(
-							'<div ie-ellipsis style="max-width:' +
-								lMaxWidthLibelle +
-								"px; max-height:" +
-								lMaxHeightLibelle +
-								'px;">' +
-								lDoc.libelle +
-								"</div>",
-						);
-						Object.assign(aParams.data, {
-							libelle: lApercuDraggable.join(""),
-							documentMediatheque: lDoc,
-						});
-					},
-				};
-			},
 			selecFile: {
 				getOptionsSelecFile() {
 					return {
@@ -152,7 +129,7 @@ class InterfaceMediatheque extends ObjetInterface_1.ObjetInterface {
 						IE.jsx.str(
 							IE.jsx.fragment,
 							null,
-							IE.jsx.str("i", { class: lClasseIcon }),
+							IE.jsx.str("i", { class: lClasseIcon, role: "presentation" }),
 							IE.jsx.str(
 								"span",
 								{ class: "m-left-l" },
@@ -198,6 +175,8 @@ class InterfaceMediatheque extends ObjetInterface_1.ObjetInterface {
 								{
 									primaire: true,
 									icone: "icon_plus_fin",
+									ariaLabel:
+										ObjetTraduction_1.GTraductions.getValeur("liste.nouveau"),
 									callback: aInstance.surClicNouveau.bind(aInstance),
 								},
 							],
@@ -275,32 +254,47 @@ class InterfaceMediatheque extends ObjetInterface_1.ObjetInterface {
 		return H.join("");
 	}
 	composeVignettePJ(aPJ) {
-		const H = [];
 		const lBloc = this.gestionnaireBlocsVignettes.composeBloc(aPJ);
-		H.push(
-			'<div class="pj-vignette"',
+		let lFuncDraggable =
 			this.optionsMediatheque.avecDragDrop === true
-				? ObjetHtml_1.GHtml.composeAttr(
-						"ie-draggable-fantome",
-						"getRessourceDraggable",
-						[aPJ.getNumero()],
-					)
-				: "",
-			">",
+				? () => {
+						const lMaxWidthLibelle = 200;
+						const lMaxHeightLibelle = 25;
+						return {
+							start(aParams) {
+								const lApercuDraggable = [];
+								lApercuDraggable.push(
+									'<div ie-ellipsis style="max-width:' +
+										lMaxWidthLibelle +
+										"px; max-height:" +
+										lMaxHeightLibelle +
+										'px;">' +
+										aPJ.libelle +
+										"</div>",
+								);
+								Object.assign(aParams.data, {
+									libelle: lApercuDraggable.join(""),
+									documentMediatheque: aPJ,
+								});
+							},
+						};
+					}
+				: null;
+		return IE.jsx.str(
+			"div",
+			{ class: "pj-vignette", "ie-draggable-fantome": lFuncDraggable },
+			lBloc.html,
+			IE.jsx.str(
+				"div",
+				{ class: "cartouche_information_vignette" },
+				aPJ.libelle || "",
+			),
 		);
-		H.push(lBloc.html);
-		H.push(
-			'<div class="cartouche_information_vignette">',
-			aPJ.libelle || "",
-			"</div>",
-		);
-		H.push("</div>");
-		return { html: H.join(""), controleur: lBloc.controleur };
 	}
 	composePiecesJointes(aListeDocuments) {
 		const H = [];
 		aListeDocuments.parcourir((D) => {
-			H.push(this.composeVignettePJ(D).html);
+			H.push(this.composeVignettePJ(D));
 		});
 		return H.join("");
 	}

@@ -1,19 +1,21 @@
-const { GChaine } = require("ObjetChaine.js");
-const { EGenreCommandeMenu } = require("Enumere_CommandeMenu.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreTriElement } = require("Enumere_TriElement.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { TypeNote } = require("TypeNote.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { TUtilitaireCompetences } = require("UtilitaireCompetences.js");
-const { ObjetUtilitaireEvaluation } = require("ObjetUtilitaireEvaluation.js");
-const { TypeModeInfosADE } = require("TypeModeAssociationDevoirEvaluation.js");
-class DonneesListe_Evaluations extends ObjetDonneesListe {
+exports.DonneesListe_Evaluations = void 0;
+const ObjetChaine_1 = require("ObjetChaine");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_TriElement_1 = require("Enumere_TriElement");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const TypeNote_1 = require("TypeNote");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const UtilitaireCompetences_1 = require("UtilitaireCompetences");
+const ObjetUtilitaireEvaluation_1 = require("ObjetUtilitaireEvaluation");
+const TypeModeAssociationDevoirEvaluation_1 = require("TypeModeAssociationDevoirEvaluation");
+const AccessApp_1 = require("AccessApp");
+class DonneesListe_Evaluations extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParams) {
 		super(aDonnees);
+		this.etatUtil = (0, AccessApp_1.getApp)().getEtatUtilisateur();
 		this.parametres = Object.assign(
 			{
 				estOngletHistorique: false,
@@ -40,95 +42,95 @@ class DonneesListe_Evaluations extends ObjetDonneesListe {
 		switch (this.getId(aColonneDeTri)) {
 			case DonneesListe_Evaluations.colonne.periode:
 				lTableau.push(
-					ObjetTri.init((D) => {
+					ObjetTri_1.ObjetTri.init((D) => {
 						return D.periode ? D.periode.getLibelle() : "";
 					}, aGenreTri),
 				);
 				break;
 			case DonneesListe_Evaluations.colonne.periodeSecondaire:
 				lTableau.push(
-					ObjetTri.init((D) => {
+					ObjetTri_1.ObjetTri.init((D) => {
 						return D.periode ? D.periodeSecondaire.getLibelle() : "";
 					}, aGenreTri),
 				);
 				break;
 			case DonneesListe_Evaluations.colonne.devoir:
 				lTableau.push(
-					ObjetTri.init(
+					ObjetTri_1.ObjetTri.init(
 						(D) => {
 							return !!D.devoir;
 						},
-						aGenreTri === EGenreTriElement.Croissant
-							? EGenreTriElement.Decroissant
-							: EGenreTriElement.Croissant,
+						aGenreTri === Enumere_TriElement_1.EGenreTriElement.Croissant
+							? Enumere_TriElement_1.EGenreTriElement.Decroissant
+							: Enumere_TriElement_1.EGenreTriElement.Croissant,
 					),
 				);
 				break;
 			case DonneesListe_Evaluations.colonne.QCM:
 				lTableau.push(
-					ObjetTri.init(
+					ObjetTri_1.ObjetTri.init(
 						(D) => {
 							return !!D.executionQCM;
 						},
-						aGenreTri === EGenreTriElement.Croissant
-							? EGenreTriElement.Decroissant
-							: EGenreTriElement.Croissant,
+						aGenreTri === Enumere_TriElement_1.EGenreTriElement.Croissant
+							? Enumere_TriElement_1.EGenreTriElement.Decroissant
+							: Enumere_TriElement_1.EGenreTriElement.Croissant,
 					),
 				);
 				break;
 			case DonneesListe_Evaluations.colonne.sujet:
 				lTableau.push(
-					ObjetTri.init(
+					ObjetTri_1.ObjetTri.init(
 						(D) => {
 							return !!D.libelleSujet;
 						},
-						aGenreTri === EGenreTriElement.Croissant
-							? EGenreTriElement.Decroissant
-							: EGenreTriElement.Croissant,
+						aGenreTri === Enumere_TriElement_1.EGenreTriElement.Croissant
+							? Enumere_TriElement_1.EGenreTriElement.Decroissant
+							: Enumere_TriElement_1.EGenreTriElement.Croissant,
 					),
 				);
 				break;
 			case DonneesListe_Evaluations.colonne.corrige:
 				lTableau.push(
-					ObjetTri.init(
+					ObjetTri_1.ObjetTri.init(
 						(D) => {
 							return !!D.libelleCorrige;
 						},
-						aGenreTri === EGenreTriElement.Croissant
-							? EGenreTriElement.Decroissant
-							: EGenreTriElement.Croissant,
+						aGenreTri === Enumere_TriElement_1.EGenreTriElement.Croissant
+							? Enumere_TriElement_1.EGenreTriElement.Decroissant
+							: Enumere_TriElement_1.EGenreTriElement.Croissant,
 					),
 				);
 				break;
 			case DonneesListe_Evaluations.colonne.resultats:
 				lTableau.push(
-					ObjetTri.init(
+					ObjetTri_1.ObjetTri.init(
 						(D) => {
 							return D.moyenneResultats && D.moyenneResultats.estUneValeur()
 								? D.moyenneResultats.getValeur()
 								: 0;
 						},
-						aGenreTri === EGenreTriElement.Croissant
-							? EGenreTriElement.Decroissant
-							: EGenreTriElement.Croissant,
+						aGenreTri === Enumere_TriElement_1.EGenreTriElement.Croissant
+							? Enumere_TriElement_1.EGenreTriElement.Decroissant
+							: Enumere_TriElement_1.EGenreTriElement.Croissant,
 					),
 				);
 				break;
 			case DonneesListe_Evaluations.colonne.nbSaisi:
 				lTableau.push(
-					ObjetTri.init(
+					ObjetTri_1.ObjetTri.init(
 						(D) => {
 							return D.nbSaisiCompetences;
 						},
-						aGenreTri === EGenreTriElement.Croissant
-							? EGenreTriElement.Decroissant
-							: EGenreTriElement.Croissant,
+						aGenreTri === Enumere_TriElement_1.EGenreTriElement.Croissant
+							? Enumere_TriElement_1.EGenreTriElement.Decroissant
+							: Enumere_TriElement_1.EGenreTriElement.Croissant,
 					),
 				);
 				break;
 			default:
 				lTableau.push(
-					ObjetTri.init(
+					ObjetTri_1.ObjetTri.init(
 						this.getValeurPourTri.bind(this, aColonneDeTri),
 						aGenreTri,
 					),
@@ -136,7 +138,7 @@ class DonneesListe_Evaluations extends ObjetDonneesListe {
 				break;
 		}
 		lTableau.push(
-			ObjetTri.init(
+			ObjetTri_1.ObjetTri.init(
 				this.getValeurPourTri.bind(
 					this,
 					this.getNumeroColonneDId(DonneesListe_Evaluations.colonne.intitule),
@@ -144,7 +146,7 @@ class DonneesListe_Evaluations extends ObjetDonneesListe {
 			),
 		);
 		lTableau.push(
-			ObjetTri.init(
+			ObjetTri_1.ObjetTri.init(
 				this.getValeurPourTri.bind(
 					this,
 					this.getNumeroColonneDId(DonneesListe_Evaluations.colonne.date),
@@ -152,7 +154,7 @@ class DonneesListe_Evaluations extends ObjetDonneesListe {
 			),
 		);
 		lTableau.push(
-			ObjetTri.init(
+			ObjetTri_1.ObjetTri.init(
 				this.getValeurPourTri.bind(
 					this,
 					this.getNumeroColonneDId(DonneesListe_Evaluations.colonne.classe),
@@ -160,7 +162,7 @@ class DonneesListe_Evaluations extends ObjetDonneesListe {
 			),
 		);
 		lTableau.push(
-			ObjetTri.init(
+			ObjetTri_1.ObjetTri.init(
 				this.getValeurPourTri.bind(
 					this,
 					this.getNumeroColonneDId(DonneesListe_Evaluations.colonne.infos),
@@ -168,7 +170,7 @@ class DonneesListe_Evaluations extends ObjetDonneesListe {
 			),
 		);
 		lTableau.push(
-			ObjetTri.init(
+			ObjetTri_1.ObjetTri.init(
 				this.getValeurPourTri.bind(
 					this,
 					this.getNumeroColonneDId(DonneesListe_Evaluations.colonne.nbSaisi),
@@ -176,7 +178,7 @@ class DonneesListe_Evaluations extends ObjetDonneesListe {
 			),
 		);
 		lTableau.push(
-			ObjetTri.init((A) => {
+			ObjetTri_1.ObjetTri.init((A) => {
 				return A.getNumero();
 			}),
 		);
@@ -193,7 +195,7 @@ class DonneesListe_Evaluations extends ObjetDonneesListe {
 				case DonneesListe_Evaluations.colonne.coefficient:
 					if (!V.estUneNoteVide()) {
 						aParams.article.coefficient = V.getValeur();
-						aParams.article.setEtat(EGenreEtat.Modification);
+						aParams.article.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 					}
 					break;
 			}
@@ -218,7 +220,7 @@ class DonneesListe_Evaluations extends ObjetDonneesListe {
 			result =
 				!!aParams.article &&
 				aParams.article.avecSaisie &&
-				!ObjetUtilitaireEvaluation.estSurPeriodeClotureePourSaisieCompetences(
+				!ObjetUtilitaireEvaluation_1.ObjetUtilitaireEvaluation.estSurPeriodeClotureePourSaisieCompetences(
 					aParams.article,
 				) &&
 				![
@@ -235,10 +237,10 @@ class DonneesListe_Evaluations extends ObjetDonneesListe {
 				aParams.idColonne === DonneesListe_Evaluations.colonne.infos
 			) {
 				result = [
-					EGenreEspace.Professeur,
-					EGenreEspace.PrimProfesseur,
-					EGenreEspace.PrimDirection,
-				].includes(GEtatUtilisateur.GenreEspace);
+					Enumere_Espace_1.EGenreEspace.Professeur,
+					Enumere_Espace_1.EGenreEspace.PrimProfesseur,
+					Enumere_Espace_1.EGenreEspace.PrimDirection,
+				].includes(this.etatUtil.GenreEspace);
 			}
 		}
 		return result;
@@ -247,7 +249,7 @@ class DonneesListe_Evaluations extends ObjetDonneesListe {
 		return (
 			!!aParams.article &&
 			aParams.article.avecSaisie &&
-			!ObjetUtilitaireEvaluation.estSurPeriodeClotureePourSaisieCompetences(
+			!ObjetUtilitaireEvaluation_1.ObjetUtilitaireEvaluation.estSurPeriodeClotureePourSaisieCompetences(
 				aParams.article,
 			) &&
 			!this.parametres.estOngletHistorique
@@ -268,7 +270,7 @@ class DonneesListe_Evaluations extends ObjetDonneesListe {
 			result =
 				!!aParams.article &&
 				aParams.article.avecSaisie &&
-				!ObjetUtilitaireEvaluation.estSurPeriodeClotureePourSaisieCompetences(
+				!ObjetUtilitaireEvaluation_1.ObjetUtilitaireEvaluation.estSurPeriodeClotureePourSaisieCompetences(
 					aParams.article,
 				);
 		}
@@ -288,7 +290,10 @@ class DonneesListe_Evaluations extends ObjetDonneesListe {
 	}
 	getVisible(D) {
 		if (this.parametres.estOngletHistorique) {
-			if (D.getGenre() !== EGenreRessource.EvaluationHistorique) {
+			if (
+				D.getGenre() !==
+				Enumere_Ressource_1.EGenreRessource.EvaluationHistorique
+			) {
 				return false;
 			}
 			return (
@@ -301,7 +306,9 @@ class DonneesListe_Evaluations extends ObjetDonneesListe {
 		}
 		const lPeriodeNotation = !!this.parametres.periode
 			? this.parametres.periode.periodeNotation
-			: GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Periode);
+			: this.etatUtil.Navigation.getRessource(
+					Enumere_Ressource_1.EGenreRessource.Periode,
+				);
 		if (!!lPeriodeNotation) {
 			if (
 				!DonneesListe_Evaluations.estDansMaPeriodeNotation(lPeriodeNotation, D)
@@ -340,8 +347,10 @@ class DonneesListe_Evaluations extends ObjetDonneesListe {
 				return !!aParams.article.devoir &&
 					(!!aParams.article.executionQCM ||
 						[
-							TypeModeInfosADE.tMIADE_Creation,
-							TypeModeInfosADE.tMIADE_Modification,
+							TypeModeAssociationDevoirEvaluation_1.TypeModeInfosADE
+								.tMIADE_Creation,
+							TypeModeAssociationDevoirEvaluation_1.TypeModeInfosADE
+								.tMIADE_Modification,
 						].includes(aParams.article.devoir.modeAssociation))
 					? aParams.article.devoir.estVerrouille ||
 						aParams.article.devoir.estCloture
@@ -387,7 +396,7 @@ class DonneesListe_Evaluations extends ObjetDonneesListe {
 			case DonneesListe_Evaluations.colonne.coefficient:
 				return aParams.article.coefficient !== undefined &&
 					aParams.article.coefficient !== null
-					? new TypeNote(aParams.article.coefficient)
+					? new TypeNote_1.TypeNote(aParams.article.coefficient)
 					: null;
 			case DonneesListe_Evaluations.colonne.descriptif:
 				return aParams.article.descriptif;
@@ -404,10 +413,12 @@ class DonneesListe_Evaluations extends ObjetDonneesListe {
 							'" style="margin:0 auto;"></div>'
 					: "";
 			case DonneesListe_Evaluations.colonne.resultats:
-				return TUtilitaireCompetences.composeJaugeParNiveaux({
-					listeNiveaux: aParams.article.resultats,
-					hint: aParams.article.hintResultats,
-				});
+				return UtilitaireCompetences_1.TUtilitaireCompetences.composeJaugeParNiveaux(
+					{
+						listeNiveaux: aParams.article.resultats,
+						hint: aParams.article.hintResultats,
+					},
+				);
 			case DonneesListe_Evaluations.colonne.nbSaisi:
 				return (
 					aParams.article.nbSaisiCompetences +
@@ -419,14 +430,16 @@ class DonneesListe_Evaluations extends ObjetDonneesListe {
 		}
 		return "";
 	}
-	getHintHtmlForce(aParams) {
+	getTooltip(aParams) {
 		if (aParams.idColonne === DonneesListe_Evaluations.colonne.nombre) {
 			return aParams.article.nombreHint
-				? GChaine.replaceRCToHTML(aParams.article.nombreHint)
+				? ObjetChaine_1.GChaine.replaceRCToHTML(aParams.article.nombreHint)
 				: "";
 		} else if (aParams.idColonne === DonneesListe_Evaluations.colonne.devoir) {
 			return !!aParams.article.devoir
-				? GChaine.ajouterEntites(aParams.article.devoir.hintDevoir || "")
+				? ObjetChaine_1.GChaine.ajouterEntites(
+						aParams.article.devoir.hintDevoir || "",
+					)
 				: "";
 		}
 	}
@@ -440,28 +453,29 @@ class DonneesListe_Evaluations extends ObjetDonneesListe {
 		switch (aParams.idColonne) {
 			case DonneesListe_Evaluations.colonne.nombre:
 			case DonneesListe_Evaluations.colonne.themes:
-				return ObjetDonneesListe.ETypeCellule.Texte;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 			case DonneesListe_Evaluations.colonne.devoir:
 			case DonneesListe_Evaluations.colonne.QCM:
 			case DonneesListe_Evaluations.colonne.estDansBilan:
-				return ObjetDonneesListe.ETypeCellule.Coche;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Coche;
 			case DonneesListe_Evaluations.colonne.date:
-				return ObjetDonneesListe.ETypeCellule.DateCalendrier;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule
+					.DateCalendrier;
 			case DonneesListe_Evaluations.colonne.intitule:
 			case DonneesListe_Evaluations.colonne.descriptif:
-				return ObjetDonneesListe.ETypeCellule.ZoneTexte;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.ZoneTexte;
 			case DonneesListe_Evaluations.colonne.periode:
 			case DonneesListe_Evaluations.colonne.periodeSecondaire:
 			case DonneesListe_Evaluations.colonne.resultats:
 			case DonneesListe_Evaluations.colonne.sujet:
 			case DonneesListe_Evaluations.colonne.corrige:
-				return ObjetDonneesListe.ETypeCellule.Html;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 			case DonneesListe_Evaluations.colonne.publie:
-				return ObjetDonneesListe.ETypeCellule.Date;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Date;
 			case DonneesListe_Evaluations.colonne.coefficient:
-				return ObjetDonneesListe.ETypeCellule.Note;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Note;
 			default:
-				return ObjetDonneesListe.ETypeCellule.Texte;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 		}
 	}
 	getClass(aParams) {
@@ -475,8 +489,10 @@ class DonneesListe_Evaluations extends ObjetDonneesListe {
 	}
 	getMessageSuppressionConfirmation(D) {
 		return D.avecEvaluation
-			? GTraductions.getValeur("competences.message.ConfirmationSuppression")
-			: GTraductions.getValeur("liste.suppressionSelection");
+			? ObjetTraduction_1.GTraductions.getValeur(
+					"competences.message.ConfirmationSuppression",
+				)
+			: ObjetTraduction_1.GTraductions.getValeur("liste.suppressionSelection");
 	}
 	avecMenuContextuel(aParametres) {
 		const lAvecCreer = this.parametres.avecMenuContextuelCreer;
@@ -495,26 +511,26 @@ class DonneesListe_Evaluations extends ObjetDonneesListe {
 		if (this.parametres.avecMenuContextuelCreer) {
 			aParametres.menuContextuel.addCommande(
 				DonneesListe_Evaluations.commandeMenuContextuel.creer,
-				GTraductions.getValeur("liste.creer"),
+				ObjetTraduction_1.GTraductions.getValeur("liste.creer"),
 			);
 		}
 		const lAvecModifier =
 			this.avecEdition(aParametres) && !aParametres.nonEditable;
 		aParametres.menuContextuel.addCommande(
 			DonneesListe_Evaluations.commandeMenuContextuel.modifier,
-			GTraductions.getValeur("liste.modifier"),
+			ObjetTraduction_1.GTraductions.getValeur("liste.modifier"),
 			lAvecModifier,
 		);
 		if (!!this.parametres.avecMenuContextuelDupliquer) {
-			let lLibelleCommandeDupliquer = GTraductions.getValeur(
+			let lLibelleCommandeDupliquer = ObjetTraduction_1.GTraductions.getValeur(
 				"competences.Dupliquer",
 			);
 			if (this.parametres.estOngletHistorique) {
-				lLibelleCommandeDupliquer = GTraductions.getValeur(
+				lLibelleCommandeDupliquer = ObjetTraduction_1.GTraductions.getValeur(
 					"evaluations.DupliquerSurLAnneeEnCours",
 				);
-			} else if (GEtatUtilisateur.pourPrimaire()) {
-				lLibelleCommandeDupliquer = GTraductions.getValeur(
+			} else if (this.etatUtil.pourPrimaire()) {
+				lLibelleCommandeDupliquer = ObjetTraduction_1.GTraductions.getValeur(
 					"competences.DupliquerSurMaClasse",
 				);
 			}
@@ -528,7 +544,7 @@ class DonneesListe_Evaluations extends ObjetDonneesListe {
 			this.avecSuppression(aParametres) && !aParametres.nonEditable;
 		aParametres.menuContextuel.addCommande(
 			DonneesListe_Evaluations.commandeMenuContextuel.supprimer,
-			GTraductions.getValeur("liste.supprimer"),
+			ObjetTraduction_1.GTraductions.getValeur("liste.supprimer"),
 			lAvecSupprimer,
 		);
 	}
@@ -563,37 +579,52 @@ class DonneesListe_Evaluations extends ObjetDonneesListe {
 		};
 	}
 }
+exports.DonneesListe_Evaluations = DonneesListe_Evaluations;
 DonneesListe_Evaluations.estDansMaPeriodeNotation = (aPeriode, aElement) => {
 	return [
 		aElement.periode.getNumero(),
 		aElement.periodeSecondaire.getNumero(),
 	].includes(aPeriode.getNumero());
 };
-DonneesListe_Evaluations.colonne = {
-	intitule: "col_Intitule",
-	palier: "col_Palier",
-	themes: "col_Themes",
-	nombre: "col_Nombre",
-	devoir: "col_Devoir",
-	QCM: "col_QCM",
-	date: "col_Date",
-	classe: "col_Classe",
-	infos: "col_Infos",
-	periode: "col_Periode",
-	periodeSecondaire: "col_PeriodeSecondaire",
-	publie: "col_Publie",
-	descriptif: "col_Descriptif",
-	sujet: "col_Sujet",
-	corrige: "col_corrige",
-	coefficient: "col_coefficient",
-	resultats: "col_resultats",
-	nbSaisi: "col_nbSaisi",
-	estDansBilan: "col_estDansBilan",
-};
-DonneesListe_Evaluations.commandeMenuContextuel = {
-	creer: EGenreCommandeMenu.Creation,
-	modifier: EGenreCommandeMenu.Edition,
-	dupliquer: "cmd_MenuContextuel_Dupliquer",
-	supprimer: EGenreCommandeMenu.Suppression,
-};
-module.exports = { DonneesListe_Evaluations };
+(function (DonneesListe_Evaluations) {
+	let colonne;
+	(function (colonne) {
+		colonne["intitule"] = "col_Intitule";
+		colonne["palier"] = "col_Palier";
+		colonne["themes"] = "col_Themes";
+		colonne["nombre"] = "col_Nombre";
+		colonne["devoir"] = "col_Devoir";
+		colonne["QCM"] = "col_QCM";
+		colonne["date"] = "col_Date";
+		colonne["classe"] = "col_Classe";
+		colonne["infos"] = "col_Infos";
+		colonne["periode"] = "col_Periode";
+		colonne["periodeSecondaire"] = "col_PeriodeSecondaire";
+		colonne["publie"] = "col_Publie";
+		colonne["descriptif"] = "col_Descriptif";
+		colonne["sujet"] = "col_Sujet";
+		colonne["corrige"] = "col_corrige";
+		colonne["coefficient"] = "col_coefficient";
+		colonne["resultats"] = "col_resultats";
+		colonne["nbSaisi"] = "col_nbSaisi";
+		colonne["estDansBilan"] = "col_estDansBilan";
+	})(
+		(colonne =
+			DonneesListe_Evaluations.colonne ||
+			(DonneesListe_Evaluations.colonne = {})),
+	);
+	let commandeMenuContextuel;
+	(function (commandeMenuContextuel) {
+		commandeMenuContextuel["creer"] = "cmdMenu_creation";
+		commandeMenuContextuel["modifier"] = "cmdMenu_edition";
+		commandeMenuContextuel["dupliquer"] = "cmd_MenuContextuel_Dupliquer";
+		commandeMenuContextuel["supprimer"] = "cmdMenu_suppression";
+	})(
+		(commandeMenuContextuel =
+			DonneesListe_Evaluations.commandeMenuContextuel ||
+			(DonneesListe_Evaluations.commandeMenuContextuel = {})),
+	);
+})(
+	DonneesListe_Evaluations ||
+		(exports.DonneesListe_Evaluations = DonneesListe_Evaluations = {}),
+);

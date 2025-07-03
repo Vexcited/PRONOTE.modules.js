@@ -1,22 +1,19 @@
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-const { GDate } = require("ObjetDate.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const {
-	EGenreRessource,
-	EGenreRessourceUtil,
-} = require("Enumere_Ressource.js");
-const { GChaine } = require("ObjetChaine.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { tag } = require("tag.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const ObjetFenetre_FicheEleve = require("ObjetFenetre_FicheEleve.js");
-const { TTypePreparerRepas } = require("TTypePreparerRepas.js");
-const { TypeIconeFeuilleDAppel } = require("TypeIconeFeuilleDAppel.js");
-class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
+exports.DonneesListe_FeuilleDAppel_Mobile = void 0;
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const ObjetDate_1 = require("ObjetDate");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const tag_1 = require("tag");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_FicheEleve_1 = require("ObjetFenetre_FicheEleve");
+const TTypePreparerRepas_1 = require("TTypePreparerRepas");
+const TypeIconeFeuilleDAppel_1 = require("TypeIconeFeuilleDAppel");
+const AccessApp_1 = require("AccessApp");
+class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aMoteur, aParams) {
 		const lParams = Object.assign(
 			{ avecDeploiement: false, avecEllipsis: false },
@@ -26,10 +23,13 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 			return aElement.existeNumero();
 		});
 		super(lDonnees);
+		this.applicationScoMobile = (0, AccessApp_1.getApp)();
 		this.moteur = aMoteur;
 		this.maxMinutes =
 			this.moteur && this.moteur.Cours && this.moteur.Cours.duree
-				? GDate.nombrePlacesEnMillisecondes(this.moteur.Cours.duree) /
+				? ObjetDate_1.GDate.nombrePlacesEnMillisecondes(
+						this.moteur.Cours.duree,
+					) /
 					(1000 * 60)
 				: 120;
 		this.enseignant = aParams.enseignant;
@@ -45,13 +45,8 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 			avecEllipsis: lParams.avecEllipsis,
 		});
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
-			nodePhotoEleve: function () {
-				$(this.node).on("error", function () {
-					$(this).attr("src", "FichiersRessource/PortraitSilhouette.png");
-				});
-			},
+	getControleur(aInstance, aListe) {
+		return $.extend(true, super.getControleur(aInstance, aListe), {
 			checkAbsence: {
 				getValue: function (aNumero, aGenre) {
 					const lEleve =
@@ -62,10 +57,7 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 					);
 					return !!lAbsence;
 				},
-				setValue: function (aNumero, aGenre, aValue, aObjet) {
-					if (!!aObjet && !!aObjet.event) {
-						aObjet.event.stopImmediatePropagation();
-					}
+				setValue: function (aNumero, aGenre) {
 					const lEleve =
 						aInstance.moteur.listeEleves.getElementParNumero(aNumero);
 					const lAbsence = aInstance.getAbsenceSurEnsemblePlaces(
@@ -79,17 +71,18 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 						typeAbsence: aGenre,
 						typeObservation: null,
 						typeSaisie: !!lAbsence
-							? EGenreEtat.Suppression
-							: EGenreEtat.Creation,
+							? Enumere_Etat_1.EGenreEtat.Suppression
+							: Enumere_Etat_1.EGenreEtat.Creation,
 						eleve: lEleve,
 						absence: !!lAbsence ? lAbsence : undefined,
 						genreAbsence: aGenre,
-						avecSaisieDuree: aGenre === EGenreRessource.Retard,
+						avecSaisieDuree:
+							aGenre === Enumere_Ressource_1.EGenreRessource.Retard,
 						maxDuree: aInstance.maxMinutes,
 					};
 					if (aInstance.callback) {
 						aInstance.callback(
-							DonneesListe_FeuilleDAppel_Mobile.genreAction.saisieAbsence,
+							DonneesListe_FeuilleDAppel_Mobile.GenreAction.saisieAbsence,
 							lObjet,
 						);
 					}
@@ -104,7 +97,7 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 						aGenre,
 					);
 					const lLibelle = lColonne.getLibelle();
-					return `${lLibelle}${aInstance.moteur.estUnSaisieVS(lAbsence) ? ' <i class="icon_vs"></i>' : ""}${!!lAbsence && (aGenre === EGenreRessource.Retard) ? ` ${lAbsence.Duree.toString()}'` : ""}`;
+					return `${lLibelle}${aInstance.moteur.estUnSaisieVS(lAbsence) ? ' <i class="icon_vs" role="presentation"></i>' : ""}${!!lAbsence && (aGenre === Enumere_Ressource_1.EGenreRessource.Retard) ? ` ${lAbsence.Duree.toString()}'` : ""}`;
 				},
 				getDisabled: function (aNumero, aGenre) {
 					return !aInstance.moteur.genreAbsenceDEleveEstEditable(
@@ -113,11 +106,6 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 					);
 				},
 				node: function (aNumero, aGenre) {
-					$(this.node).eventValidation((aEvent) => {
-						if (aEvent) {
-							aEvent.stopImmediatePropagation();
-						}
-					});
 					const lEleve =
 						aInstance.moteur.listeEleves.getElementParNumero(aNumero);
 					const lAbsence = aInstance.getAbsenceSurEnsemblePlaces(
@@ -125,8 +113,11 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 						aGenre,
 					);
 					const lClass =
-						aGenre === EGenreRessource.Absence ? "avec-absence" : "avec-retard";
-					const lVS = aInstance.moteur.estUnSaisieVS(lAbsence) ? "VS" : "";
+						aGenre === Enumere_Ressource_1.EGenreRessource.Absence
+							? "avec-absence"
+							: "avec-retard";
+					const lVS =
+						lAbsence && aInstance.moteur.estUnSaisieVS(lAbsence) ? "VS" : "";
 					const lNode = $(this.node).parent();
 					if (!!lAbsence) {
 						lNode.addClass(lClass);
@@ -140,10 +131,7 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 				},
 			},
 			chipsAbsence: {
-				event: function (aNumero, aGenre, aEvent) {
-					if (aEvent) {
-						aEvent.stopImmediatePropagation();
-					}
+				event: function (aNumero, aGenre) {
 					const lEleve =
 						aInstance.moteur.listeEleves.getElementParNumero(aNumero);
 					const lAbsence = aInstance.moteur.getAbsence(
@@ -158,15 +146,15 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 						typeAbsence: aGenre,
 						typeObservation: null,
 						typeSaisie: !!lAbsence
-							? EGenreEtat.Suppression
-							: EGenreEtat.Creation,
+							? Enumere_Etat_1.EGenreEtat.Suppression
+							: Enumere_Etat_1.EGenreEtat.Creation,
 						eleve: lEleve,
 						absence: !!lAbsence ? lAbsence : undefined,
 						genreAbsence: aGenre,
 					};
 					if (aInstance.callback) {
 						aInstance.callback(
-							DonneesListe_FeuilleDAppel_Mobile.genreAction.saisieAbsence,
+							DonneesListe_FeuilleDAppel_Mobile.GenreAction.saisieAbsence,
 							lObjet,
 						);
 					}
@@ -181,7 +169,7 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 						aGenre,
 						aInstance.moteur.placeSaisieDebut,
 					);
-					return `${lColonne.getLibelle()}${aInstance.moteur.estUnSaisieVS(lAbsence) ? ' <i class="icon_vs"></i>' : ""}${!!lAbsence && (aGenre === EGenreRessource.Retard) ? `${lAbsence.Duree.toString()}'` : ""}`;
+					return `${lColonne.getLibelle()}${aInstance.moteur.estUnSaisieVS(lAbsence) ? ' <i class="icon_vs" role="presentation"></i>' : ""}${!!lAbsence && (aGenre === Enumere_Ressource_1.EGenreRessource.Retard) ? `${lAbsence.Duree.toString()}'` : ""}`;
 				},
 				getDisabled: function (aNumero, aGenre) {
 					return !aInstance.moteur.genreAbsenceDEleveEstEditable(
@@ -198,7 +186,9 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 						aInstance.moteur.placeSaisieDebut,
 					);
 					const lClass =
-						aGenre === EGenreRessource.Absence ? "avec-absence" : "avec-retard";
+						aGenre === Enumere_Ressource_1.EGenreRessource.Absence
+							? "avec-absence"
+							: "avec-retard";
 					const lVS = aInstance.moteur.estUnSaisieVS(lAbsence) ? "VS" : "";
 					if (!!lAbsence) {
 						$(this.node).addClass(lClass);
@@ -217,7 +207,7 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 						aInstance.moteur.listeEleves.getElementParNumero(aNumero);
 					const lRetard = aInstance.moteur.getAbsence(
 						lEleve,
-						EGenreRessource.Retard,
+						Enumere_Ressource_1.EGenreRessource.Retard,
 						aInstance.moteur.placeSaisieDebut,
 					);
 					if (!!lRetard && lRetard.strDuree === undefined) {
@@ -225,15 +215,12 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 					}
 					return !!lRetard ? lRetard.strDuree : "";
 				},
-				setValue: function (aNumero, aValue, aObjet) {
-					if (!!aObjet && !!aObjet.event) {
-						aObjet.event.stopImmediatePropagation();
-					}
+				setValue: function (aNumero, aValue) {
 					const lEleve =
 						aInstance.moteur.listeEleves.getElementParNumero(aNumero);
 					const lRetard = aInstance.moteur.getAbsence(
 						lEleve,
-						EGenreRessource.Retard,
+						Enumere_Ressource_1.EGenreRessource.Retard,
 						aInstance.moteur.placeSaisieDebut,
 					);
 					lRetard.strDuree = aValue;
@@ -243,7 +230,7 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 						aInstance.moteur.listeEleves.getElementParNumero(aNumero);
 					const lRetard = aInstance.moteur.getAbsence(
 						lEleve,
-						EGenreRessource.Retard,
+						Enumere_Ressource_1.EGenreRessource.Retard,
 						aInstance.moteur.placeSaisieDebut,
 					);
 					if (!!lRetard) {
@@ -251,8 +238,8 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 							let lMinutes = parseInt(aValue);
 							if (lMinutes < 1 || lMinutes > aInstance.maxMinutes) {
 								GApplication.getMessage().afficher({
-									type: EGenreBoiteMessage.Information,
-									message: GTraductions.getValeur(
+									type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+									message: ObjetTraduction_1.GTraductions.getValeur(
 										"FenetreDevoir.ValeurComprise",
 										[1, aInstance.maxMinutes],
 									),
@@ -278,7 +265,7 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 				getDisabled: function (aNumero) {
 					return !aInstance.moteur.genreAbsenceDEleveEstEditable(
 						aNumero,
-						EGenreRessource.Retard,
+						Enumere_Ressource_1.EGenreRessource.Retard,
 					);
 				},
 				visible: function (aNumero) {
@@ -286,7 +273,7 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 						aInstance.moteur.listeEleves.getElementParNumero(aNumero);
 					const lRetard = aInstance.moteur.getAbsence(
 						lEleve,
-						EGenreRessource.Retard,
+						Enumere_Ressource_1.EGenreRessource.Retard,
 						aInstance.moteur.placeSaisieDebut,
 					);
 					return !!lRetard;
@@ -294,15 +281,12 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 			},
 			btnAutres: {
 				event: function (aNumero, aEvent) {
-					if (aEvent) {
-						aEvent.stopImmediatePropagation();
-					}
 					const lEleve =
 						aInstance.moteur.listeEleves.getElementParNumero(aNumero);
 					if (aInstance.callback && !!lEleve) {
 						const lObjet = { eleve: lEleve, moteur: aInstance.moteur };
 						aInstance.callback(
-							DonneesListe_FeuilleDAppel_Mobile.genreAction.saisieAutres,
+							DonneesListe_FeuilleDAppel_Mobile.GenreAction.saisieAutres,
 							lObjet,
 						);
 					}
@@ -331,11 +315,7 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 					aGenre,
 					aNumeroObservation,
 					aGenreObservation,
-					aEvent,
 				) {
-					if (aEvent) {
-						aEvent.stopImmediatePropagation();
-					}
 					const lEleve =
 						aInstance.moteur.listeEleves.getElementParNumero(aNumero);
 					if (aInstance.callback && !!lEleve) {
@@ -347,7 +327,7 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 							genreObservation: aGenreObservation,
 						};
 						aInstance.callback(
-							DonneesListe_FeuilleDAppel_Mobile.genreAction.editionAutres,
+							DonneesListe_FeuilleDAppel_Mobile.GenreAction.editionAutres,
 							lObjet,
 						);
 					}
@@ -360,7 +340,7 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 						lEleve.estSorti ||
 						lEleve.sortiePeda ||
 						aInstance.moteur.autorisations.jourConsultUniquement ||
-						aGenre === EGenreRessource.RepasAPreparer
+						aGenre === Enumere_Ressource_1.EGenreRessource.RepasAPreparer
 					);
 				},
 			},
@@ -368,16 +348,13 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 				return aInstance.construirePastillesAutresAbsences(aNumero);
 			},
 			getNodeIconEleve: function (aNumero) {
-				$(this.node).eventValidation(function (aEvent) {
-					if (aEvent) {
-						aEvent.stopImmediatePropagation();
-					}
+				$(this.node).eventValidation(function () {
 					const lEleve =
 						aInstance.moteur.listeEleves.getElementParNumero(aNumero);
 					if (!!lEleve) {
 						const lListeIcones =
 							aInstance.moteur.getListeIconesElevePourFeuilleDAppel(lEleve);
-						const lHtml = tag(
+						const lHtml = (0, tag_1.tag)(
 							"ul",
 							{ class: ["fa_zone_details_icones"] },
 							(aContenu) => {
@@ -386,26 +363,27 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 										let lLibelle = aElement.getLibelle();
 										if (
 											aElement.getGenre() ===
-											TypeIconeFeuilleDAppel.absentCoursPrecedentDuProf
+											TypeIconeFeuilleDAppel_1.TypeIconeFeuilleDAppel
+												.absentCoursPrecedentDuProf
 										) {
 											lLibelle = lEleve.hintAbsentAuDernierCours;
 										}
 										aContenu.push(
-											tag(
+											(0, tag_1.tag)(
 												"li",
 												{ class: ["fa_ligne_info_ico"] },
-												tag(
+												(0, tag_1.tag)(
 													"div",
 													{ class: ["fa_info_icone"] },
-													tag("i", {
+													(0, tag_1.tag)("i", {
 														class: aElement.class,
 														"aria-hidden": "true",
 													}),
 												),
-												tag(
+												(0, tag_1.tag)(
 													"span",
 													{ class: ["fa_info_libelle"] },
-													GChaine.replaceRCToHTML(lLibelle),
+													ObjetChaine_1.GChaine.replaceRCToHTML(lLibelle),
 												),
 											),
 										);
@@ -413,25 +391,28 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 								});
 							},
 						);
-						const lFenetre = ObjetFenetre.creerInstanceFenetre(ObjetFenetre, {
-							pere: this,
-							initialiser: function (aInstance) {
-								aInstance.setOptionsFenetre({
-									titre: `<i class="icon_legende fa_titre_legende_icones" aria-hidden="true"></i>${GTraductions.getValeur("Legende")}`,
-									listeBoutons: [GTraductions.getValeur("Fermer")],
-									avecScroll: true,
-								});
+						const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+							ObjetFenetre_1.ObjetFenetre,
+							{
+								pere: this,
+								initialiser: function (aInstance) {
+									aInstance.setOptionsFenetre({
+										titre: `${ObjetTraduction_1.GTraductions.getValeur("Legende")}`,
+										listeBoutons: [
+											ObjetTraduction_1.GTraductions.getValeur("Fermer"),
+										],
+										avecScroll: true,
+									});
+								},
 							},
-						});
+							{ avecTailleSelonContenuMobile: true },
+						);
 						lFenetre.afficher(lHtml);
 					}
 				});
 			},
 			getNodeLibelleEleve: function (aNumero) {
-				$(this.node).eventValidation(function (aEvent) {
-					if (aEvent) {
-						aEvent.stopImmediatePropagation();
-					}
+				$(this.node).eventValidation(() => {
 					const lEleve =
 						aInstance.moteur.listeEleves.getElementParNumero(aNumero);
 					const lTitleEleve = [];
@@ -443,8 +424,10 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 					}
 					if (!lEleve.estAttendu) {
 						lTitleEleve.push(
-							GChaine.format(
-								GTraductions.getValeur("AbsenceVS.AutoriseSortirEtab"),
+							ObjetChaine_1.GChaine.format(
+								ObjetTraduction_1.GTraductions.getValeur(
+									"AbsenceVS.AutoriseSortirEtab",
+								),
 								[lLibelleEleve],
 							),
 						);
@@ -459,7 +442,7 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 						lTitleEleve.push(lEleve.strStatut);
 					}
 					if (!!lEleve) {
-						ObjetFenetre_FicheEleve.ouvrir({
+						ObjetFenetre_FicheEleve_1.ObjetFenetre_FicheEleve.ouvrir({
 							instance: this,
 							avecRequeteDonnees: true,
 							donnees: {
@@ -490,7 +473,7 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 				const lDispense = aInstance.moteur.getDispense(aNumero, false);
 				const lDemandeDispense = aInstance.moteur.getDemandeDeDispense(aNumero);
 				const lHtml = [];
-				const lLibelleDispense = GTraductions.getValeur(
+				const lLibelleDispense = ObjetTraduction_1.GTraductions.getValeur(
 					"Absence.DispenseCour",
 				).ucfirst();
 				if (!!lDispense && lDispense.existe()) {
@@ -506,21 +489,21 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 							lDemandeDispense.strNomPrenomRefusant
 						) {
 							lHtml.push(
-								GTraductions.getValeur(
+								ObjetTraduction_1.GTraductions.getValeur(
 									"AbsenceVS.demandeDispense.demandeDispenseRefuseePar",
 									[lDemandeDispense.strNomPrenomRefusant],
 								),
 							);
 						} else {
 							lHtml.push(
-								GTraductions.getValeur(
+								ObjetTraduction_1.GTraductions.getValeur(
 									"AbsenceVS.demandeDispense.dispenseRefusee",
 								),
 							);
 						}
 					} else {
 						lHtml.push(
-							GTraductions.getValeur(
+							ObjetTraduction_1.GTraductions.getValeur(
 								"AbsenceVS.demandeDispense.demandeDeDispenseATraiter",
 							),
 						);
@@ -533,21 +516,21 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 	actualiserRetard(aRetard, aMinutes, aEleve) {
 		aRetard.Duree = aMinutes;
 		aRetard.strDuree = aRetard.Duree.toString();
-		aRetard.setEtat(EGenreEtat.Modification);
+		aRetard.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 		const lObjet = {
 			numeroEleve: aEleve.getNumero(),
 			placeDebut: this.moteur.placeSaisieDebut,
 			placeFin: this.moteur.placeSaisieFin,
-			typeAbsence: EGenreRessource.Retard,
+			typeAbsence: Enumere_Ressource_1.EGenreRessource.Retard,
 			typeObservation: null,
-			typeSaisie: EGenreEtat.Modification,
+			typeSaisie: Enumere_Etat_1.EGenreEtat.Modification,
 			eleve: aEleve,
 			absence: aRetard,
-			genreAbsence: EGenreRessource.Retard,
+			genreAbsence: Enumere_Ressource_1.EGenreRessource.Retard,
 		};
 		if (this.callback) {
 			this.callback(
-				DonneesListe_FeuilleDAppel_Mobile.genreAction.saisieAbsence,
+				DonneesListe_FeuilleDAppel_Mobile.GenreAction.saisieAbsence,
 				lObjet,
 			);
 		}
@@ -560,7 +543,7 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 			this.moteur.placeSaisieDebut,
 		);
 		const lAvecSaisie =
-			(aGenre === EGenreRessource.Absence
+			(aGenre === Enumere_Ressource_1.EGenreRessource.Absence
 				? this.moteur.autorisations.avecSaisieAbsence
 				: this.moteur.autorisations.avecSaisieRetard) ||
 			this.moteur.autorisations.suppressionAbsenceDeVS;
@@ -577,9 +560,9 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 			const lColonne = this.moteur.listeColonnes.get(i);
 			if (
 				![
-					EGenreRessource.RepasAPreparer,
-					EGenreRessource.Absence,
-					EGenreRessource.Retard,
+					Enumere_Ressource_1.EGenreRessource.RepasAPreparer,
+					Enumere_Ressource_1.EGenreRessource.Absence,
+					Enumere_Ressource_1.EGenreRessource.Retard,
 				].includes(lColonne.getGenre()) &&
 				this.moteur.aUneAbsence(
 					aNumero,
@@ -589,7 +572,10 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 				) > -1
 			) {
 				lNbrsContenu++;
-			} else if (lColonne.getGenre() === EGenreRessource.RepasAPreparer) {
+			} else if (
+				lColonne.getGenre() ===
+				Enumere_Ressource_1.EGenreRessource.RepasAPreparer
+			) {
 				const lAbsence = this.moteur.aUneAbsence(aNumero, lColonne.getGenre());
 				const lElementAbsence =
 					lAbsence > -1
@@ -597,7 +583,9 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 								.getElementParNumero(aNumero)
 								.ListeAbsences.get(lAbsence)
 						: false;
-				if (lElementAbsence.type === TTypePreparerRepas.prOui) {
+				if (
+					lElementAbsence.type === TTypePreparerRepas_1.TTypePreparerRepas.prOui
+				) {
 					lNbrsContenu++;
 				}
 			}
@@ -630,11 +618,12 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 		return lAbsence;
 	}
 	composePastilleDeColonne(aColonne, aNumeroEleve) {
-		const lIcon = EGenreRessourceUtil.getIconAbsence(aColonne.getGenre(), {
-			genreObservation: aColonne.genreObservation,
-		});
+		const lIcon = Enumere_Ressource_1.EGenreRessourceUtil.getIconAbsence(
+			aColonne.getGenre(),
+			{ genreObservation: aColonne.genreObservation },
+		);
 		const lClass = [lIcon, "avecFond"];
-		if (aColonne.getGenre() === EGenreRessource.Dispense) {
+		if (aColonne.getGenre() === Enumere_Ressource_1.EGenreRessource.Dispense) {
 			const lEleve = this.moteur.listeEleves.getElementParNumero(aNumeroEleve);
 			const lAbsence = this.moteur.getAbsence(
 				lEleve,
@@ -648,17 +637,22 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 			) {
 				lClass.push("iconside-icon_piece_jointe");
 			}
-		} else if (aColonne.getGenre() === EGenreRessource.RepasAPreparer) {
+		} else if (
+			aColonne.getGenre() === Enumere_Ressource_1.EGenreRessource.RepasAPreparer
+		) {
 			const lEleve = this.moteur.listeEleves.getElementParNumero(aNumeroEleve);
 			const lAbsence = this.moteur.getAbsence(lEleve, aColonne.getGenre());
-			if (!!lAbsence && lAbsence.type === TTypePreparerRepas.prNon) {
+			if (
+				!!lAbsence &&
+				lAbsence.type === TTypePreparerRepas_1.TTypePreparerRepas.prNon
+			) {
 				lClass.push("mix-icon_remove");
 			}
 		}
-		return tag(
+		return (0, tag_1.tag)(
 			"ie-btnicon",
 			{
-				"ie-model": tag.funcAttr("btnAbsenceAutre", [
+				"ie-model": tag_1.tag.funcAttr("btnAbsenceAutre", [
 					aNumeroEleve,
 					aColonne.getGenre(),
 					aColonne.getNumero(),
@@ -681,9 +675,9 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 				const lColonne = lListe.get(i);
 				if (
 					![
-						EGenreRessource.RepasAPreparer,
-						EGenreRessource.Absence,
-						EGenreRessource.Retard,
+						Enumere_Ressource_1.EGenreRessource.RepasAPreparer,
+						Enumere_Ressource_1.EGenreRessource.Absence,
+						Enumere_Ressource_1.EGenreRessource.Retard,
 					].includes(lColonne.getGenre()) &&
 					this.moteur.aUneAbsence(
 						aNumero,
@@ -699,7 +693,10 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 					if (lNbrsContenu >= 3) {
 						break;
 					}
-				} else if (lColonne.getGenre() === EGenreRessource.RepasAPreparer) {
+				} else if (
+					lColonne.getGenre() ===
+					Enumere_Ressource_1.EGenreRessource.RepasAPreparer
+				) {
 					const lAbsence = this.moteur.aUneAbsence(
 						aNumero,
 						lColonne.getGenre(),
@@ -710,7 +707,10 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 									.getElementParNumero(aNumero)
 									.ListeAbsences.get(lAbsence)
 							: false;
-					if (lElementAbsence.type === TTypePreparerRepas.prOui) {
+					if (
+						lElementAbsence.type ===
+						TTypePreparerRepas_1.TTypePreparerRepas.prOui
+					) {
 						lNbrsContenu++;
 						if (lNbrsContenu < 3 || lNombreMax === 3) {
 							lHtml.push(this.composePastilleDeColonne(lColonne, aNumero));
@@ -723,11 +723,12 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 			}
 			if (lNombreMax > 3) {
 				lHtml.push(
-					tag(
+					(0, tag_1.tag)(
 						"ie-btnicon",
 						{
-							"ie-model": tag.funcAttr("btnAutres", [aNumero]),
-							"aria-label": GTraductions.getValeur("Absence.Autres"),
+							"ie-model": tag_1.tag.funcAttr("btnAutres", [aNumero]),
+							"aria-label":
+								ObjetTraduction_1.GTraductions.getValeur("Absence.Autres"),
 							class: "avecFond fa_btn_plus",
 							onclick: "event.stopPropagation();",
 						},
@@ -743,7 +744,7 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 	}
 	getTitreZonePrincipale(aParams) {
 		return aParams.article
-			? tag("div", { class: "fa_zone_eleve" }, (aContenu) => {
+			? (0, tag_1.tag)("div", { class: "fa_zone_eleve" }, (aContenu) => {
 					const lClass = ["libelle"];
 					if (aParams.article.estSorti) {
 						lClass.push("Barre");
@@ -754,46 +755,52 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 					const lHtml = [];
 					lHtml.push('<div class="fa_libelle_eleve">');
 					lHtml.push(
-						tag(
+						(0, tag_1.tag)(
 							"span",
 							{ class: lClass },
 							`${aParams.article.getLibelle()}${this.avecInfoClasse ? ` (${aParams.article.strClasse})` : ""}`,
 						),
 					);
 					lHtml.push(
-						tag("div", {
-							"ie-class": tag.funcAttr("getClassInfoSuppl", [
+						(0, tag_1.tag)("div", {
+							"ie-class": tag_1.tag.funcAttr("getClassInfoSuppl", [
 								aParams.article.getNumero(),
 							]),
-							"ie-texte": tag.funcAttr("getHtmlInfoSuppl", [
+							"ie-texte": tag_1.tag.funcAttr("getHtmlInfoSuppl", [
 								aParams.article.getNumero(),
 							]),
 						}),
 					);
 					if (aParams.article.estDetache) {
 						lHtml.push(
-							tag(
+							(0, tag_1.tag)(
 								"div",
 								{ class: ["fa_eleve_detache"] },
-								GChaine.replaceRCToHTML(aParams.article.hintDetache, " "),
+								ObjetChaine_1.GChaine.replaceRCToHTML(
+									aParams.article.hintDetache,
+									" ",
+								),
 							),
 						);
 					} else {
 						if (aParams.article.complementInfo) {
 							lHtml.push(
-								tag(
+								(0, tag_1.tag)(
 									"div",
 									{ class: ["fa_eleve_exclu"] },
-									GChaine.replaceRCToHTML(aParams.article.complementInfo, " "),
+									ObjetChaine_1.GChaine.replaceRCToHTML(
+										aParams.article.complementInfo,
+										" ",
+									),
 								),
 							);
 						} else {
 							if (aParams.article.sortiePeda) {
 								lHtml.push(
-									tag(
+									(0, tag_1.tag)(
 										"div",
 										{ class: ["fa_eleve_sortiePeda"] },
-										GChaine.replaceRCToHTML(
+										ObjetChaine_1.GChaine.replaceRCToHTML(
 											aParams.article.hintSortiePeda,
 											" ",
 										),
@@ -802,21 +809,26 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 							}
 							if (!aParams.article.estAttendu) {
 								lHtml.push(
-									tag(
+									(0, tag_1.tag)(
 										"div",
 										{ class: ["fa_eleve_strStatut"] },
-										GChaine.format(
-											GTraductions.getValeur("AbsenceVS.AutoriseSortirEtab"),
+										ObjetChaine_1.GChaine.format(
+											ObjetTraduction_1.GTraductions.getValeur(
+												"AbsenceVS.AutoriseSortirEtab",
+											),
 											[aParams.article.getLibelle()],
 										),
 									),
 								);
 							} else if (aParams.article.strStatut) {
 								lHtml.push(
-									tag(
+									(0, tag_1.tag)(
 										"div",
 										{ class: ["fa_eleve_strStatut"] },
-										GChaine.replaceRCToHTML(aParams.article.strStatut, " "),
+										ObjetChaine_1.GChaine.replaceRCToHTML(
+											aParams.article.strStatut,
+											" ",
+										),
 									),
 								);
 							}
@@ -835,31 +847,41 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 	composePhoto(aEleve) {
 		let lAvecPhoto =
 			!!aEleve &&
-			GApplication.droits.get(TypeDroits.eleves.consulterPhotosEleves);
-		return tag("img", {
-			src: lAvecPhoto ? false : "FichiersRessource/PortraitSilhouette.png",
+			this.applicationScoMobile.droits.get(
+				ObjetDroitsPN_1.TypeDroits.eleves.consulterPhotosEleves,
+			);
+		const lLibelle = (aEleve && aEleve.getLibelle()) || "";
+		return (0, tag_1.tag)("img", {
 			"ie-load-src": lAvecPhoto
-				? GChaine.creerUrlBruteLienExterne(aEleve, { libelle: "photo.jpg" })
+				? ObjetChaine_1.GChaine.creerUrlBruteLienExterne(aEleve, {
+						libelle: "photo.jpg",
+					})
 				: false,
-			"ie-node": tag.funcAttr("nodePhotoEleve", aEleve.getNumero()),
-			class: `PetitEspaceGauche PetitEspaceDroit${aEleve.estDetache ? ` fa_voile` : ""}`,
+			class: `PetitEspaceGauche PetitEspaceDroit img-portrait${aEleve.estDetache ? ` fa_voile` : ""}`,
 			style: "width: 3rem;height: 3rem;",
+			alt: lLibelle,
+			"ie-imgviewer": true,
+			"data-libelle": lLibelle,
 		});
 	}
 	composeDetailsIconesEleve(aEleve) {
 		const lListeIcones =
 			this.moteur.getListeIconesElevePourFeuilleDAppel(aEleve);
-		return tag(
+		return (0, tag_1.tag)(
 			"div",
 			{
 				class: `fa_zone_icones moteurAbsences${aEleve.estDetache ? ` fa_voile` : ""}`,
-				"ie-node": tag.funcAttr("getNodeIconEleve", [aEleve.getNumero()]),
+				tabindex: "0",
+				role: "button",
+				"aria-haspopup": "dialog",
+				"aria-label": ObjetTraduction_1.GTraductions.getValeur("Legende"),
+				"ie-node": tag_1.tag.funcAttr("getNodeIconEleve", [aEleve.getNumero()]),
 			},
 			(aContenu) => {
 				lListeIcones.parcourir((aElement) => {
 					if (aElement.actif) {
 						aContenu.push(
-							tag("i", {
+							(0, tag_1.tag)("i", {
 								class: aElement.class,
 								title: aElement.getLibelle(),
 								"aria-label": aElement.getLibelle(),
@@ -877,42 +899,42 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 		if (!!aParams.article && aParams.article.estDetache) {
 			return "";
 		} else {
-			return tag(
+			return (0, tag_1.tag)(
 				"div",
 				{ class: "fa_zone_saisie" },
-				tag(
+				(0, tag_1.tag)(
 					"div",
-					{ class: "fa_zone_absences", onclick: "event.stopPropagation();" },
-					tag("ie-checkbox", {
-						"ie-model": tag.funcAttr("checkAbsence", [
+					{ class: "fa_zone_absences" },
+					(0, tag_1.tag)("ie-checkbox", {
+						"ie-model": tag_1.tag.funcAttr("checkAbsence", [
 							aParams.article.getNumero(),
-							EGenreRessource.Absence,
+							Enumere_Ressource_1.EGenreRessource.Absence,
 						]),
 						"ie-icon": "none",
 						class: "as-chips fa-chb-absence",
 					}),
-					tag("ie-checkbox", {
-						"ie-model": tag.funcAttr("checkAbsence", [
+					(0, tag_1.tag)("ie-checkbox", {
+						"ie-model": tag_1.tag.funcAttr("checkAbsence", [
 							aParams.article.getNumero(),
-							EGenreRessource.Retard,
+							Enumere_Ressource_1.EGenreRessource.Retard,
 						]),
 						"ie-icon": "none",
 						class: "as-chips fa-chb-absence",
 					}),
-					tag("ie-bouton", {
+					(0, tag_1.tag)("ie-bouton", {
 						"ie-icon": "icon_plus_fin",
-						"ie-model": tag.funcAttr("btnAutres", [
+						"ie-model": tag_1.tag.funcAttr("btnAutres", [
 							aParams.article.getNumero(),
 						]),
-						"ie-display": tag.funcAttr("btnAutres.visible", [
+						"ie-display": tag_1.tag.funcAttr("btnAutres.visible", [
 							aParams.article.getNumero(),
 						]),
 						class: "small-bt themeBoutonNeutre fa_btn_autres",
 					}),
 				),
-				tag("div", {
+				(0, tag_1.tag)("div", {
 					class: "fa-zone-autres",
-					"ie-html": tag.funcAttr("getHtmlAutres", [
+					"ie-html": tag_1.tag.funcAttr("getHtmlAutres", [
 						aParams.article.getNumero(),
 					]),
 				}),
@@ -923,9 +945,21 @@ class DonneesListe_FeuilleDAppel_Mobile extends ObjetDonneesListeFlatDesign {
 		return [{ taille: "100%" }];
 	}
 }
-DonneesListe_FeuilleDAppel_Mobile.genreAction = {
-	saisieAbsence: 0,
-	saisieAutres: 1,
-	editionAutres: 2,
-};
-module.exports = { DonneesListe_FeuilleDAppel_Mobile };
+exports.DonneesListe_FeuilleDAppel_Mobile = DonneesListe_FeuilleDAppel_Mobile;
+(function (DonneesListe_FeuilleDAppel_Mobile) {
+	let GenreAction;
+	(function (GenreAction) {
+		GenreAction[(GenreAction["saisieAbsence"] = 0)] = "saisieAbsence";
+		GenreAction[(GenreAction["saisieAutres"] = 1)] = "saisieAutres";
+		GenreAction[(GenreAction["editionAutres"] = 2)] = "editionAutres";
+	})(
+		(GenreAction =
+			DonneesListe_FeuilleDAppel_Mobile.GenreAction ||
+			(DonneesListe_FeuilleDAppel_Mobile.GenreAction = {})),
+	);
+})(
+	DonneesListe_FeuilleDAppel_Mobile ||
+		(exports.DonneesListe_FeuilleDAppel_Mobile =
+			DonneesListe_FeuilleDAppel_Mobile =
+				{}),
+);

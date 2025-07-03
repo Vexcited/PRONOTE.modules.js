@@ -6,6 +6,7 @@ const DeferLoadingScript_1 = require("DeferLoadingScript");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetChaine_1 = require("ObjetChaine");
 const ThemesCouleurs_1 = require("ThemesCouleurs");
+const AccessApp_1 = require("AccessApp");
 class ObjetTinyInit {
 	constructor() {
 		this.optionsInitTiny = {
@@ -201,12 +202,12 @@ class ObjetTinyInit {
 			};
 		}
 		await lGlobaleTinymce.init(lParam);
-		if (lParam.labelWAI) {
+		if (lParam.ariaLabel) {
 			$(`#${lParam.id.escapeJQ()}`)
 				.siblings(".tox-tinymce")
 				.find("iframe.tox-edit-area__iframe")
-				.attr("title", lParam.labelWAI)
-				.attr("aria-label", lParam.labelWAI);
+				.attr("title", lParam.ariaLabel)
+				.attr("aria-label", lParam.ariaLabel);
 		}
 		return lGlobaleTinymce.get(lParam.id);
 	}
@@ -233,7 +234,7 @@ class ObjetTinyInit {
 			mobile: { toolbar_mode: "sliding" },
 			clientLourd: false,
 			editeurEquation: false,
-			labelWAI: ObjetTraduction_1.GTraductions.getValeur("Tiny.WAITitre"),
+			ariaLabel: ObjetTraduction_1.GTraductions.getValeur("Tiny.WAITitre"),
 			plugins: this.getPlugins(aParam),
 			branding: false,
 			elementpath: false,
@@ -247,12 +248,9 @@ class ObjetTinyInit {
 			resize: false,
 			statusbar: false,
 			toolbar: this.getToolbar(aParam),
-			contextmenu:
-				!aParam.clientLourd || aParam.toolbar === false
-					? ""
-					: "spellchecker | cut copy paste | link",
+			contextmenu: false,
 			content_style:
-				"html {height:100%} body {min-height:calc(100% - 10px);} .mce-content-body {margin:5px;}" +
+				`html {\n  height:100%;\n  ${lDarkMode ? `` : `background-color: white;\n  color: black;`}\n}\nbody {min-height:calc(100% - 10px);}\n.mce-content-body {\n  margin:0px;\n  padding: 5px !important;\n}` +
 				".mce-content-body[data-mce-placeholder]::before {" +
 				`color: ${lDarkMode ? "#f6f6f6" : "#6b6e77"} !important;` +
 				"opacity: 0.9;" +
@@ -260,6 +258,7 @@ class ObjetTinyInit {
 				"font-weight: 500;" +
 				"content: attr(data-mce-placeholder);" +
 				"position: absolute;" +
+				"left:5px !important;" +
 				`font-size:${IE.estMobile ? 14 : 13}px;` +
 				"}",
 			force_hex_style_colors: true,
@@ -585,7 +584,7 @@ class ObjetTinyInit {
 			aLangueIndex ||
 			((_c =
 				(_b =
-					(_a = global.GApplication) === null || _a === void 0
+					(_a = (0, AccessApp_1.getApp)()) === null || _a === void 0
 						? void 0
 						: _a.getObjetParametres) === null || _b === void 0
 					? void 0

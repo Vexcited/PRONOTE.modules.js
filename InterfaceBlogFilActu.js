@@ -39,11 +39,12 @@ const ObjetCelluleDate_1 = require("ObjetCelluleDate");
 const ObjetDate_1 = require("ObjetDate");
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
 const OptionsPDFSco_1 = require("OptionsPDFSco");
+const AccessApp_1 = require("AccessApp");
 class InterfaceBlogFilActu extends ObjetInterfacePageCP_1.InterfacePageCP {
 	constructor(...aParams) {
 		super(...aParams);
-		const lApplicationSco = GApplication;
-		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
+		this.applicationSco = (0, AccessApp_1.getApp)();
+		this.etatUtilisateurSco = this.applicationSco.getEtatUtilisateur();
 		this.moteur = new ObjetMoteurBlog_2.ObjetMoteurBlog();
 		this.ids = {
 			listeBillets: GUID_1.GUID.getId(),
@@ -205,7 +206,7 @@ class InterfaceBlogFilActu extends ObjetInterfacePageCP_1.InterfacePageCP {
 								designMobile: true,
 								premiereDate: ObjetDate_1.GDate.premiereDate,
 								derniereDate: ObjetDate_1.GDate.derniereDate,
-								labelledById: aEstDateDebut
+								ariaLabelledBy: aEstDateDebut
 									? this.ids.filtreLabelDateDebut
 									: this.ids.filtreLabelDateFin,
 							});
@@ -274,6 +275,9 @@ class InterfaceBlogFilActu extends ObjetInterfacePageCP_1.InterfacePageCP {
 						const lBtnGenerationPDF = {
 							primaire: true,
 							icone: "icon_pdf",
+							ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
+								"GenerationPDF.TitreCommande",
+							),
 							callback: () => {
 								let lParams = {
 									callbaskEvenement:
@@ -293,6 +297,8 @@ class InterfaceBlogFilActu extends ObjetInterfacePageCP_1.InterfacePageCP {
 						const lBtnCreation = {
 							primaire: true,
 							icone: "icon_plus_fin",
+							ariaLabel:
+								ObjetTraduction_1.GTraductions.getValeur("blog.NouveauBlog"),
 							avecPresenceBoutonDynamique:
 								aInstance.avecBoutonFlottantCreation.bind(aInstance),
 							callback: () => {
@@ -307,7 +313,10 @@ class InterfaceBlogFilActu extends ObjetInterfacePageCP_1.InterfacePageCP {
 			estBtnFlottantVisible() {
 				const lAvecBoutonCreation = aInstance.avecBoutonFlottantCreation();
 				const lAvecBoutonPDF = true;
-				return lAvecBoutonCreation || lAvecBoutonPDF;
+				return (
+					!aInstance.messageNonPublication &&
+					(lAvecBoutonCreation || lAvecBoutonPDF)
+				);
 			},
 		});
 	}
@@ -464,7 +473,7 @@ class InterfaceBlogFilActu extends ObjetInterfacePageCP_1.InterfacePageCP {
 					IE.jsx.fragment,
 					null,
 					IE.jsx.str("div", {
-						id: this.getInstance(this.identListeBlogs).getNom(),
+						id: this.getNomInstance(this.identListeBlogs),
 						class: "ObjetListeBlogs",
 					}),
 				),
@@ -485,11 +494,7 @@ class InterfaceBlogFilActu extends ObjetInterfacePageCP_1.InterfacePageCP {
 				),
 			);
 		}
-		H.push(
-			'<div id="',
-			this.getInstance(this.identFiltre).getNom(),
-			'"></div>',
-		);
+		H.push('<div id="', this.getNomInstance(this.identFiltre), '"></div>');
 		H.push(
 			'<div class="page-billet-actu" id="',
 			this.ids.listeBillets,
@@ -561,7 +566,7 @@ class InterfaceBlogFilActu extends ObjetInterfacePageCP_1.InterfacePageCP {
 					});
 					aFenetre.paramsListe = {
 						optionsListe: {
-							labelWAI:
+							ariaLabel:
 								ObjetTraduction_1.GTraductions.getValeur("blog.ChoixDuBlog"),
 							skin: ObjetListe_1.ObjetListe.skin.flatDesign,
 						},
@@ -923,113 +928,125 @@ class InterfaceBlogFilActu extends ObjetInterfacePageCP_1.InterfacePageCP {
 			await new ObjetRequetePageBlogFilActus_1.ObjetRequetePageBlogFilActus(
 				this,
 			).lancerRequete();
-		Invocateur_1.Invocateur.evenement(
-			Invocateur_1.ObjetInvocateur.events.activationImpression,
-			Enumere_GenreImpression_1.EGenreImpression.GenerationPDF,
-			this,
-			this._getParametresPDF.bind(this),
-		);
-		this.getInstance(this.identFiltre).setDonnees(this.composeFiltres(), {
-			controleur: this.controleur,
-			reinitFiltres: () => {
-				this.donneesFiltre.dontJeSuisAuteur = false;
-				this.donneesFiltre.dontJeSuisModerateur = false;
-				this.donneesFiltre.uniquementAvecCommentairesAModerer = false;
-				this.donneesFiltre.categorie = null;
-				this.donneesFiltre.dateDebut = ObjetDate_1.GDate.premiereDate;
-				this.donneesFiltre.dateFin = ObjetDate_1.GDate.derniereDate;
-				this.selecteurFiltreDateDebut.setDonnees(this.donneesFiltre.dateDebut);
-				this.selecteurFiltreDateFin.setDonnees(this.donneesFiltre.dateFin);
-				this.afficherSelonFiltres();
-			},
-			estFiltresParDefaut: () => {
-				return (
-					!this.donneesFiltre.dontJeSuisAuteur &&
-					!this.donneesFiltre.dontJeSuisModerateur &&
-					!this.donneesFiltre.uniquementAvecCommentairesAModerer &&
-					(!this.donneesFiltre.categorie ||
-						this.donneesFiltre.categorie.getNumero() === -1) &&
-					ObjetDate_1.GDate.estJourEgal(
+		this.messageNonPublication = lDonnees.message;
+		if (lDonnees.message) {
+			if (IE.estMobile) {
+				ObjetHtml_1.GHtml.setHtml(this.applicationSco.idLigneBandeau, "");
+			}
+			this._afficherMessage(lDonnees.message);
+		} else {
+			Invocateur_1.Invocateur.evenement(
+				Invocateur_1.ObjetInvocateur.events.activationImpression,
+				Enumere_GenreImpression_1.EGenreImpression.GenerationPDF,
+				this,
+				this._getParametresPDF.bind(this),
+			);
+			this.getInstance(this.identFiltre).setDonnees(this.composeFiltres(), {
+				controleur: this.controleur,
+				reinitFiltres: () => {
+					this.donneesFiltre.dontJeSuisAuteur = false;
+					this.donneesFiltre.dontJeSuisModerateur = false;
+					this.donneesFiltre.uniquementAvecCommentairesAModerer = false;
+					this.donneesFiltre.categorie = null;
+					this.donneesFiltre.dateDebut = ObjetDate_1.GDate.premiereDate;
+					this.donneesFiltre.dateFin = ObjetDate_1.GDate.derniereDate;
+					this.selecteurFiltreDateDebut.setDonnees(
 						this.donneesFiltre.dateDebut,
-						ObjetDate_1.GDate.premiereDate,
-					) &&
-					ObjetDate_1.GDate.estJourEgal(
-						this.donneesFiltre.dateFin,
-						ObjetDate_1.GDate.derniereDate,
-					)
-				);
-			},
-		});
-		if (!IE.estMobile) {
-			this.getInstance(this.identFiltre).setHtmlBoutonFiltre(
-				this.ids.btnFiltre,
-			);
-		}
-		this.droits.avecCreationBlog = lDonnees.avecDroitCreationBlog;
-		this.getInstance(this.identListeBlogs).setOptionsListe({
-			avecLigneCreation: this.avecDroitCreationBlog(),
-		});
-		this.listeBlogs = lDonnees.listeBlogs;
-		const lListeBlogsDeListe = this.getListeBlogsAvecElementTous();
-		let lIndiceBlogSelectionne = 0;
-		if (this.blogSelectionne) {
-			lIndiceBlogSelectionne = lListeBlogsDeListe.getIndiceParElement(
-				this.blogSelectionne,
-			);
-		}
-		lIndiceBlogSelectionne = Math.max(0, lIndiceBlogSelectionne);
-		this.getInstance(this.identListeBlogs).setDonnees(
-			new DonneesListe_Blogs_1.DonneesListe_Blogs(lListeBlogsDeListe),
-			lIndiceBlogSelectionne,
-		);
-		this.listeCategories = lDonnees.listeCategories;
-		this.gestionnaireBillets.setOptions({
-			tailleMaxCommentaires: lDonnees.tailleMaxCommentaireBillet,
-			avecAffichageNomBlog: true,
-		});
-		this.donneesFiltre.listeCategories.vider();
-		if (this.listeCategories) {
-			this.donneesFiltre.listeCategories.add(
-				MethodesObjet_1.MethodesObjet.dupliquer(this.listeCategories),
-			);
-			const lToutesLesCategories = ObjetElement_1.ObjetElement.create({
-				Libelle: ObjetTraduction_1.GTraductions.getValeur(
-					"blog.ToutesCategories",
-				),
-				Numero: -1,
+					);
+					this.selecteurFiltreDateFin.setDonnees(this.donneesFiltre.dateFin);
+					this.afficherSelonFiltres();
+				},
+				estFiltresParDefaut: () => {
+					return (
+						!this.donneesFiltre.dontJeSuisAuteur &&
+						!this.donneesFiltre.dontJeSuisModerateur &&
+						!this.donneesFiltre.uniquementAvecCommentairesAModerer &&
+						(!this.donneesFiltre.categorie ||
+							this.donneesFiltre.categorie.getNumero() === -1) &&
+						ObjetDate_1.GDate.estJourEgal(
+							this.donneesFiltre.dateDebut,
+							ObjetDate_1.GDate.premiereDate,
+						) &&
+						ObjetDate_1.GDate.estJourEgal(
+							this.donneesFiltre.dateFin,
+							ObjetDate_1.GDate.derniereDate,
+						)
+					);
+				},
 			});
-			this.donneesFiltre.listeCategories.insererElement(
-				lToutesLesCategories,
-				0,
+			if (!IE.estMobile) {
+				this.getInstance(this.identFiltre).setHtmlBoutonFiltre(
+					this.ids.btnFiltre,
+				);
+			}
+			this.droits.avecCreationBlog = lDonnees.avecDroitCreationBlog;
+			this.getInstance(this.identListeBlogs).setOptionsListe({
+				avecLigneCreation: this.avecDroitCreationBlog(),
+			});
+			this.listeBlogs = lDonnees.listeBlogs;
+			const lListeBlogsDeListe = this.getListeBlogsAvecElementTous();
+			let lIndiceBlogSelectionne = 0;
+			if (this.blogSelectionne) {
+				lIndiceBlogSelectionne = lListeBlogsDeListe.getIndiceParElement(
+					this.blogSelectionne,
+				);
+			}
+			lIndiceBlogSelectionne = Math.max(0, lIndiceBlogSelectionne);
+			this.getInstance(this.identListeBlogs).setDonnees(
+				new DonneesListe_Blogs_1.DonneesListe_Blogs(lListeBlogsDeListe),
+				lIndiceBlogSelectionne,
 			);
-		}
-		this.afficherSelonFiltres();
-		const lContexteSauve = this.etatUtilisateurSco.getContexteBilletBlog();
-		const lSelection = lContexteSauve ? lContexteSauve.billet : null;
-		if (lSelection) {
-			let lBilletRetrouve = null;
-			for (const lBlog of this.listeBlogs) {
-				if (lBlog && lBlog.listeBillets) {
-					for (const lBillet of lBlog.listeBillets) {
-						if (lBillet.getNumero() === lSelection.getNumero()) {
-							lBilletRetrouve = lBillet;
-							break;
+			this.listeCategories = lDonnees.listeCategories;
+			this.gestionnaireBillets.setOptions({
+				tailleMaxCommentaires: lDonnees.tailleMaxCommentaireBillet,
+				avecAffichageNomBlog: true,
+			});
+			this.donneesFiltre.listeCategories.vider();
+			if (this.listeCategories) {
+				this.donneesFiltre.listeCategories.add(
+					MethodesObjet_1.MethodesObjet.dupliquer(this.listeCategories),
+				);
+				const lToutesLesCategories = ObjetElement_1.ObjetElement.create({
+					Libelle: ObjetTraduction_1.GTraductions.getValeur(
+						"blog.ToutesCategories",
+					),
+					Numero: -1,
+					couleur: undefined,
+					estEditable: undefined,
+				});
+				this.donneesFiltre.listeCategories.insererElement(
+					lToutesLesCategories,
+					0,
+				);
+			}
+			this.afficherSelonFiltres();
+			const lContexteSauve = this.etatUtilisateurSco.getContexteBilletBlog();
+			const lSelection = lContexteSauve ? lContexteSauve.billet : null;
+			if (lSelection) {
+				let lBilletRetrouve = null;
+				for (const lBlog of this.listeBlogs) {
+					if (lBlog && lBlog.listeBillets) {
+						for (const lBillet of lBlog.listeBillets) {
+							if (lBillet.getNumero() === lSelection.getNumero()) {
+								lBilletRetrouve = lBillet;
+								break;
+							}
 						}
+					}
+					if (lBilletRetrouve) {
+						break;
 					}
 				}
 				if (lBilletRetrouve) {
-					break;
+					this.scrollerSurBillet(lBilletRetrouve);
+					if (lContexteSauve && lContexteSauve.fenetreCommentairesOuverte) {
+						this.gestionnaireBillets.ouvrirFenetreCommentairesDeBillet(
+							lBilletRetrouve,
+						);
+					}
 				}
+				this.sauverContexteBilletBlog(null);
 			}
-			if (lBilletRetrouve) {
-				this.scrollerSurBillet(lBilletRetrouve);
-				if (lContexteSauve && lContexteSauve.fenetreCommentairesOuverte) {
-					this.gestionnaireBillets.ouvrirFenetreCommentairesDeBillet(
-						lBilletRetrouve,
-					);
-				}
-			}
-			this.sauverContexteBilletBlog(null);
 		}
 	}
 	_getParametresPDF() {
@@ -1102,14 +1119,14 @@ class InterfaceBlogFilActu extends ObjetInterfacePageCP_1.InterfacePageCP {
 		);
 	}
 	_afficherPage(aListeFiltree) {
-		const lHtml = [];
+		const H = [];
 		if (aListeFiltree) {
 			aListeFiltree.parcourir((aBillet) => {
 				const lBloc = this.gestionnaireBillets.composeBloc(aBillet);
-				lHtml.push(lBloc.html);
+				H.push(lBloc.html);
 			});
 		}
-		ObjetHtml_1.GHtml.setHtml(this.ids.listeBillets, lHtml.join(""), {
+		ObjetHtml_1.GHtml.setHtml(this.ids.listeBillets, H.join(""), {
 			controleur: this.controleur,
 		});
 		this.gestionnaireBillets.refresh();

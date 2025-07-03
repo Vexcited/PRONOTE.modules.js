@@ -8,6 +8,8 @@ const ObjetRequeteSecurisationCompte_1 = require("ObjetRequeteSecurisationCompte
 const jsx_1 = require("jsx");
 const ObjetFenetre_1 = require("ObjetFenetre");
 const ToucheClavier_1 = require("ToucheClavier");
+const TraductionsDoubleAuth_1 = require("TraductionsDoubleAuth");
+const AccessApp_1 = require("AccessApp");
 var TypeEtape;
 (function (TypeEtape) {
 	TypeEtape["val"] = "val";
@@ -106,12 +108,14 @@ class ObjetSaisieCodePIN extends ObjetIdentite_1.Identite {
 					if (!lJSONReponse.ok) {
 						return;
 					}
-					await GApplication.getMessage().afficher({
-						message: ObjetTraduction_1.GTraductions.getValeur(
-							"DoubleAuth.EMailReinitialisationPIN_S",
-							[aInstance.options.emailOcculte],
-						),
-					});
+					await (0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({
+							message:
+								TraductionsDoubleAuth_1.TradDoubleAuth.EMailReinitialisationPIN_S.format(
+									[aInstance.options.emailOcculte],
+								),
+						});
 					const lResultFenetre =
 						await ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
 							ObjetFenetre_ReinitPIN,
@@ -169,13 +173,10 @@ class ObjetSaisieCodePIN extends ObjetIdentite_1.Identite {
 				if (aInstance.codePin.saisiePinVerifie) {
 					switch (aInstance.options.modePIN) {
 						case ObjetSaisieCodePIN.ModeSaisieValiderPIN.ReInitPIN:
-							return ObjetTraduction_1.GTraductions.getValeur(
-								"DoubleAuth.WAI_CodeReinitValide",
-							);
+							return TraductionsDoubleAuth_1.TradDoubleAuth
+								.WAI_CodeReinitValide;
 						case ObjetSaisieCodePIN.ModeSaisieValiderPIN.ControlerModifierPIN:
-							return ObjetTraduction_1.GTraductions.getValeur(
-								"DoubleAuth.WAI_MonCodeValide",
-							);
+							return TraductionsDoubleAuth_1.TradDoubleAuth.WAI_MonCodeValide;
 						default:
 					}
 				}
@@ -243,24 +244,17 @@ class ObjetSaisieCodePIN extends ObjetIdentite_1.Identite {
 		if (this.codePin.saisiePinVerifie) {
 			return [
 				IE.jsx.str("i", { class: "icon_ok", role: "presentation" }),
-				ObjetTraduction_1.GTraductions.getValeur(
-					"DoubleAuth.ValiderCodeValide",
-				),
+				TraductionsDoubleAuth_1.TradDoubleAuth.ValiderCodeValide,
 			].join("");
 		}
 		if (this.codePin.nbEchecVerifie > 0) {
 			const H = [];
 			if (this.codePin.nbEchecVerifie >= SecurisationCompte.C_MaxPinRetry) {
-				H.push(
-					ObjetTraduction_1.GTraductions.getValeur(
-						"DoubleAuth.ValiderCodePinInvalide",
-					),
-				);
+				H.push(TraductionsDoubleAuth_1.TradDoubleAuth.ValiderCodePinInvalide);
 			} else {
 				H.push(
 					IE.jsx.str("i", { class: "icon_remove", role: "presentation" }),
-					ObjetTraduction_1.GTraductions.getValeur(
-						"DoubleAuth.NouvelAppareilTentatives",
+					TraductionsDoubleAuth_1.TradDoubleAuth.NouvelAppareilTentatives.format(
 						[SecurisationCompte.C_MaxPinRetry - this.codePin.nbEchecVerifie],
 					),
 				);
@@ -288,12 +282,14 @@ class ObjetSaisieCodePIN extends ObjetIdentite_1.Identite {
 					this.getNbPIN(TypeEtape.val) === 0 &&
 					this.codePin.val.length < SecurisationCompte.C_MinPinLength
 				) {
-					await GApplication.getMessage().afficher({
-						message: ObjetTraduction_1.GTraductions.getValeur(
-							"DoubleAuth.PinInsuffisant",
-							[SecurisationCompte.C_MinPinLength],
-						),
-					});
+					await (0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({
+							message:
+								TraductionsDoubleAuth_1.TradDoubleAuth.PinInsuffisant.format([
+									SecurisationCompte.C_MinPinLength,
+								]),
+						});
 					return;
 				}
 				this.codePin.etapeConfirmation = TypeEtape.confirm;
@@ -303,11 +299,11 @@ class ObjetSaisieCodePIN extends ObjetIdentite_1.Identite {
 			if (this.codePin.etapeConfirmation === TypeEtape.confirm) {
 				if (this.codePin.val !== this.codePin.confirm) {
 					this.codePin.confirm = "";
-					await GApplication.getMessage().afficher({
-						message: ObjetTraduction_1.GTraductions.getValeur(
-							"DoubleAuth.PinNonConfirme",
-						),
-					});
+					await (0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({
+							message: TraductionsDoubleAuth_1.TradDoubleAuth.PinNonConfirme,
+						});
 					return;
 				}
 				this.codePin.etapeConfirmation = TypeEtape.finValidation;
@@ -324,11 +320,11 @@ class ObjetSaisieCodePIN extends ObjetIdentite_1.Identite {
 					? this.codePin.valControlePIN
 					: this.codePin.val;
 			if (aAppelValiderExterne && !lValPIN) {
-				await GApplication.getMessage().afficher({
-					message: ObjetTraduction_1.GTraductions.getValeur(
-						"DoubleAuth.InfoSaisiePIN",
-					),
-				});
+				await (0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
+						message: TraductionsDoubleAuth_1.TradDoubleAuth.InfoSaisiePIN,
+					});
 				return;
 			}
 			const lReponseJSON = await new this.options.classeRequete(
@@ -361,22 +357,21 @@ class ObjetSaisieCodePIN extends ObjetIdentite_1.Identite {
 				this.codePin.nbEchecVerifie += 1;
 				const lAvecDeco =
 					this.codePin.nbEchecVerifie >= SecurisationCompte.C_MaxPinRetry;
-				await GApplication.getMessage().afficher({
-					message:
-						ObjetTraduction_1.GTraductions.getValeur(
-							"DoubleAuth.ValiderCodePinInvalide",
-						) +
-						(lAvecDeco
-							? ""
-							: "<br>" +
-								ObjetTraduction_1.GTraductions.getValeur(
-									"DoubleAuth.NouvelAppareilTentatives",
-									[
-										SecurisationCompte.C_MaxPinRetry -
-											this.codePin.nbEchecVerifie,
-									],
-								)),
-				});
+				await (0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
+						message:
+							TraductionsDoubleAuth_1.TradDoubleAuth.ValiderCodePinInvalide +
+							(lAvecDeco
+								? ""
+								: "<br>" +
+									TraductionsDoubleAuth_1.TradDoubleAuth.NouvelAppareilTentatives.format(
+										[
+											SecurisationCompte.C_MaxPinRetry -
+												this.codePin.nbEchecVerifie,
+										],
+									)),
+					});
 				await this.focusSurClavierVisible();
 				if (lAvecDeco) {
 					return UtilitaireDeconnexion_1.UtilitaireDeconnexion.deconnexion();
@@ -441,24 +436,18 @@ class ObjetSaisieCodePIN extends ObjetIdentite_1.Identite {
 			case ObjetSaisieCodePIN.ModeSaisieValiderPIN.ControlerModifierPIN: {
 				lTitre =
 					this.options.estAffCompte || lControlerModifierPIN
-						? ObjetTraduction_1.GTraductions.getValeur(
-								"DoubleAuth.NouvelAppareilRenseignerPIN",
-							)
-						: ObjetTraduction_1.GTraductions.getValeur(
-								"DoubleAuth.ValiderInfoPIN",
-							);
+						? TraductionsDoubleAuth_1.TradDoubleAuth.NouvelAppareilRenseignerPIN
+						: TraductionsDoubleAuth_1.TradDoubleAuth.ValiderInfoPIN;
 				break;
 			}
 			case ObjetSaisieCodePIN.ModeSaisieValiderPIN.ReInitPIN:
-				lTitre = ObjetTraduction_1.GTraductions.getValeur(
-					"DoubleAuth.ProcedureReInitialisationCodePIN_S",
-					this.options.emailOcculte,
-				);
+				lTitre =
+					TraductionsDoubleAuth_1.TradDoubleAuth.ProcedureReInitialisationCodePIN_S.format(
+						this.options.emailOcculte,
+					);
 				break;
 			case ObjetSaisieCodePIN.ModeSaisieValiderPIN.DefinirPIN:
-				lTitre = ObjetTraduction_1.GTraductions.getValeur(
-					"DoubleAuth.MessageCreationCodePIN",
-				);
+				lTitre = TraductionsDoubleAuth_1.TradDoubleAuth.MessageCreationCodePIN;
 				break;
 			default:
 		}
@@ -467,14 +456,12 @@ class ObjetSaisieCodePIN extends ObjetIdentite_1.Identite {
 			this.getlabelCodePINDEtape(TypeEtape.val) +
 			" : " +
 			(lNbPIN_val === 0
-				? ObjetTraduction_1.GTraductions.getValeur(
-						"DoubleAuth.WAI_SaisiePINEtValider_D",
+				? TraductionsDoubleAuth_1.TradDoubleAuth.WAI_SaisiePINEtValider_D.format(
 						[SecurisationCompte.C_MinPinLength],
 					)
-				: ObjetTraduction_1.GTraductions.getValeur(
-						"DoubleAuth.WAI_SaisiePIN_D",
-						[lNbPIN_val],
-					));
+				: TraductionsDoubleAuth_1.TradDoubleAuth.WAI_SaisiePIN_D.format([
+						lNbPIN_val,
+					]));
 		return IE.jsx.str(
 			"div",
 			{ class: "ObjetSaisieCodePIN" },
@@ -489,17 +476,14 @@ class ObjetSaisieCodePIN extends ObjetIdentite_1.Identite {
 				() => {
 					if (lReinitPIN || lControlerModifierPIN) {
 						const lAriaLabel = lReinitPIN
-							? ObjetTraduction_1.GTraductions.getValeur(
-									"DoubleAuth.WAI_ProcedureReInitialisationCodePIN_DS",
+							? TraductionsDoubleAuth_1.TradDoubleAuth.WAI_ProcedureReInitialisationCodePIN_DS.format(
 									[C_ReinitPINLength, this.options.emailOcculte],
 								)
 							: lNbPIN_val === 0
-								? ObjetTraduction_1.GTraductions.getValeur(
-										"DoubleAuth.WAI_ControleCodePINCourant",
-									)
-								: ObjetTraduction_1.GTraductions.getValeur(
-										"DoubleAuth.WAI_ControleCodePINCourantFixe",
-									);
+								? TraductionsDoubleAuth_1.TradDoubleAuth
+										.WAI_ControleCodePINCourant
+								: TraductionsDoubleAuth_1.TradDoubleAuth
+										.WAI_ControleCodePINCourantFixe;
 						return IE.jsx.str(
 							"div",
 							{ class: "scp-etape", role: "group", "aria-label": lAriaLabel },
@@ -538,12 +522,9 @@ class ObjetSaisieCodePIN extends ObjetIdentite_1.Identite {
 								role: "group",
 								"aria-label":
 									this.getNbPIN(TypeEtape.confirm) === 0
-										? ObjetTraduction_1.GTraductions.getValeur(
-												"DoubleAuth.WAI_ConfirmPINEtValider",
-											)
-										: ObjetTraduction_1.GTraductions.getValeur(
-												"DoubleAuth.WAI_ConfirmPIN",
-											),
+										? TraductionsDoubleAuth_1.TradDoubleAuth
+												.WAI_ConfirmPINEtValider
+										: TraductionsDoubleAuth_1.TradDoubleAuth.WAI_ConfirmPIN,
 							},
 							this.construireVisuCode(TypeEtape.confirm),
 							this.construireClavier(TypeEtape.confirm),
@@ -555,9 +536,7 @@ class ObjetSaisieCodePIN extends ObjetIdentite_1.Identite {
 					return IE.jsx.str(
 						"p",
 						null,
-						ObjetTraduction_1.GTraductions.getValeur(
-							"DoubleAuth.NouvelAppareilOubliPIN",
-						),
+						TraductionsDoubleAuth_1.TradDoubleAuth.NouvelAppareilOubliPIN,
 					);
 				}
 			},
@@ -575,7 +554,7 @@ class ObjetSaisieCodePIN extends ObjetIdentite_1.Identite {
 							class: "scp-link-pied iconic icon_question_sign",
 							href: GParametres.urlFAQEnregistrementDoubleAuth,
 						},
-						ObjetTraduction_1.GTraductions.getValeur("DoubleAuth.LienFAQPIN"),
+						TraductionsDoubleAuth_1.TradDoubleAuth.LienFAQPIN,
 					);
 				}
 			},
@@ -598,29 +577,21 @@ class ObjetSaisieCodePIN extends ObjetIdentite_1.Identite {
 				switch (this.options.modePIN) {
 					case ObjetSaisieCodePIN.ModeSaisieValiderPIN.ReInitPIN:
 					case ObjetSaisieCodePIN.ModeSaisieValiderPIN.ControlerModifierPIN:
-						return ObjetTraduction_1.GTraductions.getValeur(
-							"DoubleAuth.NouveauCodePIN",
-						);
+						return TraductionsDoubleAuth_1.TradDoubleAuth.NouveauCodePIN;
 					case ObjetSaisieCodePIN.ModeSaisieValiderPIN.DefinirPIN:
-						return ObjetTraduction_1.GTraductions.getValeur(
-							"DoubleAuth.PremierPIN",
-						);
+						return TraductionsDoubleAuth_1.TradDoubleAuth.PremierPIN;
 					default:
-						return ObjetTraduction_1.GTraductions.getValeur(
-							"DoubleAuth.MonCodePIN",
-						);
+						return TraductionsDoubleAuth_1.TradDoubleAuth.MonCodePIN;
 				}
 			}
 			case TypeEtape.confirm: {
-				return ObjetTraduction_1.GTraductions.getValeur(
-					"DoubleAuth.ConfirmPIN",
-				);
+				return TraductionsDoubleAuth_1.TradDoubleAuth.ConfirmPIN;
 			}
 			case TypeEtape.controlePINOuReinit: {
 				return this.options.modePIN ===
 					ObjetSaisieCodePIN.ModeSaisieValiderPIN.ReInitPIN
-					? ObjetTraduction_1.GTraductions.getValeur("DoubleAuth.CodeRecuPIN")
-					: ObjetTraduction_1.GTraductions.getValeur("DoubleAuth.MonCodePIN");
+					? TraductionsDoubleAuth_1.TradDoubleAuth.CodeRecuPIN
+					: TraductionsDoubleAuth_1.TradDoubleAuth.MonCodePIN;
 			}
 		}
 		return "";
@@ -690,16 +661,13 @@ class ObjetSaisieCodePIN extends ObjetIdentite_1.Identite {
 								{
 									class: "themeBoutonNeutre",
 									"ie-model": (0, jsx_1.jsxFuncAttr)("btnClear", aEtape),
-									title:
-										ObjetTraduction_1.GTraductions.getValeur(
-											"DoubleAuth.Effacer",
-										),
-									"aria-label":
-										ObjetTraduction_1.GTraductions.getValeur(
-											"DoubleAuth.Effacer",
-										),
+									title: TraductionsDoubleAuth_1.TradDoubleAuth.Effacer,
+									"aria-label": TraductionsDoubleAuth_1.TradDoubleAuth.Effacer,
 								},
-								IE.jsx.str("i", { class: "icon_delete_clavier_mobile" }),
+								IE.jsx.str("i", {
+									class: "icon_delete_clavier_mobile",
+									role: "presentation",
+								}),
 							),
 						),
 						lNbPIN === 0
@@ -733,14 +701,12 @@ class ObjetSaisieCodePIN extends ObjetIdentite_1.Identite {
 								{
 									class: "themeBoutonNeutre small-bt",
 									"ie-model": "btnPINOubli",
-									title: ObjetTraduction_1.GTraductions.getValeur(
-										"DoubleAuth.HintReinitialiserMonCodePIN",
-									),
+									title:
+										TraductionsDoubleAuth_1.TradDoubleAuth
+											.HintReinitialiserMonCodePIN,
 									"aria-haspopup": "dialog",
 								},
-								ObjetTraduction_1.GTraductions.getValeur(
-									"DoubleAuth.ReinitialiserMonCodePIN",
-								),
+								TraductionsDoubleAuth_1.TradDoubleAuth.ReinitialiserMonCodePIN,
 							),
 						),
 					);
@@ -770,9 +736,8 @@ class ObjetFenetre_ReinitPIN extends ObjetFenetre_1.ObjetFenetre {
 		super(...aParams);
 		this.resultReinitPIN = {};
 		this.setOptionsFenetre({
-			titre: ObjetTraduction_1.GTraductions.getValeur(
-				"DoubleAuth.TitreReInitialisationCodePIN",
-			),
+			titre:
+				TraductionsDoubleAuth_1.TradDoubleAuth.TitreReInitialisationCodePIN,
 			listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Annuler")],
 			addParametresValidation: () => {
 				return { resultReinitPIN: this.resultReinitPIN };
@@ -791,7 +756,7 @@ class ObjetFenetre_ReinitPIN extends ObjetFenetre_1.ObjetFenetre {
 		});
 	}
 	composeContenu() {
-		return IE.jsx.str("div", { id: this.getInstance(this.identPIN).getNom() });
+		return IE.jsx.str("div", { id: this.getNomInstance(this.identPIN) });
 	}
 	afficher(aEmailOcculte) {
 		this.getInstance(this.identPIN)

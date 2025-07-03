@@ -1,13 +1,11 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { EGenreTriElement } = require("Enumere_TriElement.js");
-const { ObjetDeserialiser } = require("ObjetDeserialiser.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-class ObjetRequetePageCahierDeTexte extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequetePageCahierDeTexte = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_TriElement_1 = require("Enumere_TriElement");
+const ObjetDeserialiser_1 = require("ObjetDeserialiser");
+const ObjetListeElements_1 = require("ObjetListeElements");
+class ObjetRequetePageCahierDeTexte extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aParametres) {
 		this.JSON = {
 			date: aParametres.date,
@@ -20,19 +18,21 @@ class ObjetRequetePageCahierDeTexte extends ObjetRequeteConsultation {
 		return this.appelAsynchrone();
 	}
 	actionApresRequete() {
-		const lObjetDeserialiser = new ObjetDeserialiser();
+		const lObjetDeserialiser = new ObjetDeserialiser_1.ObjetDeserialiser();
 		const lListeTravauxAFaire =
-			this.JSONReponse.ListeTravauxAFaire || new ObjetListeElements();
+			this.JSONReponse.ListeTravauxAFaire ||
+			new ObjetListeElements_1.ObjetListeElements();
 		lListeTravauxAFaire.parcourir((aTaf) => {
 			lObjetDeserialiser.deserialiserTAF(aTaf);
 		});
 		lListeTravauxAFaire.setTri([
-			ObjetTri.init("DonneLe"),
-			ObjetTri.init("Genre"),
+			ObjetTri_1.ObjetTri.init("DonneLe"),
+			ObjetTri_1.ObjetTri.init("Genre"),
 		]);
 		lListeTravauxAFaire.trier();
 		const lListeCahiersDeTextes =
-			this.JSONReponse.ListeCahierDeTextes || new ObjetListeElements();
+			this.JSONReponse.ListeCahierDeTextes ||
+			new ObjetListeElements_1.ObjetListeElements();
 		lListeCahiersDeTextes.parcourir((aCahierDeTexte) => {
 			lObjetDeserialiser.deserialiserCahierDeTexte(aCahierDeTexte);
 		});
@@ -45,8 +45,11 @@ class ObjetRequetePageCahierDeTexte extends ObjetRequeteConsultation {
 			lListeRessourcesPedagogiques =
 				this.JSONReponse.ListeRessourcesPedagogiques.listeRessources;
 			lListeRessourcesPedagogiques.setTri([
-				ObjetTri.init("date", EGenreTriElement.Decroissant),
-				ObjetTri.init("Libelle"),
+				ObjetTri_1.ObjetTri.init(
+					"date",
+					Enumere_TriElement_1.EGenreTriElement.Decroissant,
+				),
+				ObjetTri_1.ObjetTri.init("Libelle"),
 			]);
 			lListeRessourcesPedagogiques.trier();
 			const lListeMatieresRessourcesPeda =
@@ -77,7 +80,7 @@ class ObjetRequetePageCahierDeTexte extends ObjetRequeteConsultation {
 		) {
 			lListeRessourcesNumeriques =
 				this.JSONReponse.ListeRessourcesNumeriques.listeRessources;
-			lListeRessourcesNumeriques.setTri([ObjetTri.init("titre")]);
+			lListeRessourcesNumeriques.setTri([ObjetTri_1.ObjetTri.init("titre")]);
 			lListeRessourcesNumeriques.trier();
 		}
 		this.callbackReussite.appel({
@@ -90,5 +93,8 @@ class ObjetRequetePageCahierDeTexte extends ObjetRequeteConsultation {
 		});
 	}
 }
-Requetes.inscrire("PageCahierDeTexte", ObjetRequetePageCahierDeTexte);
-module.exports = { ObjetRequetePageCahierDeTexte };
+exports.ObjetRequetePageCahierDeTexte = ObjetRequetePageCahierDeTexte;
+CollectionRequetes_1.Requetes.inscrire(
+	"PageCahierDeTexte",
+	ObjetRequetePageCahierDeTexte,
+);

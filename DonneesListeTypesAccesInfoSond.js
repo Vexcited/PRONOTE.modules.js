@@ -1,10 +1,6 @@
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-class DonneesListeTypesAccesInfoSond extends ObjetDonneesListeFlatDesign {
-	constructor(aDonnees) {
-		super(aDonnees);
-	}
+exports.DonneesListeTypesAccesInfoSond = void 0;
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+class DonneesListeTypesAccesInfoSond extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	getIconeGaucheContenuFormate(aParams) {
 		return aParams.article.icone;
 	}
@@ -28,4 +24,4 @@ class DonneesListeTypesAccesInfoSond extends ObjetDonneesListeFlatDesign {
 		);
 	}
 }
-module.exports = { DonneesListeTypesAccesInfoSond };
+exports.DonneesListeTypesAccesInfoSond = DonneesListeTypesAccesInfoSond;

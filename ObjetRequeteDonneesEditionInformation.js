@@ -1,29 +1,29 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { GCache } = require("Cache.js");
-class ObjetRequeteDonneesEditionInformation extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteDonneesEditionInformation = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetTri_1 = require("ObjetTri");
+const Cache_1 = require("Cache");
+class ObjetRequeteDonneesEditionInformation extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aParam) {
 		this.JSON = {};
 		this.init = aParam.init || false;
 		this.JSON.init = this.init;
 		if (this.init) {
 			this.JSON.avecCategories =
-				!GCache || !GCache.general.existeDonnee("listeCategories");
+				!Cache_1.GCache ||
+				!Cache_1.GCache.general.existeDonnee("listeCategories");
 			this.JSON.avecListeIndividusPossiblesPartage =
-				!GCache ||
-				!GCache.general.existeDonnee("listeIndividusPossiblesPartage");
+				!Cache_1.GCache ||
+				!Cache_1.GCache.general.existeDonnee("listeIndividusPossiblesPartage");
 			this.JSON.tailleMaxTitre =
-				!GCache || !GCache.general.existeDonnee("tailleMaxTitre");
+				!Cache_1.GCache ||
+				!Cache_1.GCache.general.existeDonnee("tailleMaxTitre");
 		}
 		this.avecPublic = aParam.avecPublic || false;
 		this.JSON.avecPublic = this.avecPublic;
 		if (aParam.avecPublic) {
 			aParam.listePublic.setSerialisateurJSON({
-				methodeSerialisation: _serialiser_Public.bind(this),
+				methodeSerialisation: this._serialiserPublic.bind(this),
 				ignorerEtatsElements: true,
 			});
 			this.JSON.listePublic = aParam.listePublic;
@@ -48,82 +48,96 @@ class ObjetRequeteDonneesEditionInformation extends ObjetRequeteConsultation {
 	actionApresRequete() {
 		const lResult = {};
 		if (this.init) {
-			_actionInitApresRequete.bind(this)(lResult);
+			this._actionInitApresRequete(lResult);
 		}
 		if (this.avecPublic || this.avecCours) {
-			_actionPublicApresRequete.bind(this)(lResult);
+			this._actionPublicApresRequete(lResult);
 		}
 		if (this.pourPunition) {
-			_actionPunitionApresRequete.call(this, lResult);
+			this._actionPunitionApresRequete(lResult);
 		}
 		this.callbackReussite.appel(lResult);
 	}
+	_serialiserPublic(aIndividu, aJSON) {
+		aJSON.N = aIndividu.getNumero();
+		aJSON.G = aIndividu.getGenre();
+		aJSON.E = undefined;
+		aJSON.L = undefined;
+	}
+	_actionInitApresRequete(aResult) {
+		let lListeCategories;
+		if (
+			Cache_1.GCache &&
+			Cache_1.GCache.general.existeDonnee("listeCategories")
+		) {
+			lListeCategories = Cache_1.GCache.general.getDonnee("listeCategories");
+		} else {
+			lListeCategories = this.JSONReponse.listeCategories;
+			lListeCategories.setTri([
+				ObjetTri_1.ObjetTri.init("Genre"),
+				ObjetTri_1.ObjetTri.init("Libelle"),
+			]);
+			lListeCategories.trier();
+			if (Cache_1.GCache) {
+				Cache_1.GCache.general.setDonnee("listeCategories", lListeCategories);
+			}
+		}
+		aResult.listeCategories = lListeCategories;
+		let lListeIndividusPossibles;
+		if (
+			Cache_1.GCache &&
+			Cache_1.GCache.general.existeDonnee("listeIndividusPossiblesPartage")
+		) {
+			lListeIndividusPossibles = Cache_1.GCache.general.getDonnee(
+				"listeIndividusPossiblesPartage",
+			);
+		} else {
+			lListeIndividusPossibles =
+				this.JSONReponse.listeIndividusPossiblesPartage;
+			if (Cache_1.GCache) {
+				Cache_1.GCache.general.setDonnee(
+					"listeIndividusPossiblesPartage",
+					lListeIndividusPossibles,
+				);
+			}
+		}
+		aResult.listeIndividusPossiblesPartage = lListeIndividusPossibles;
+		let lTailleMaxTitre;
+		if (
+			Cache_1.GCache &&
+			Cache_1.GCache.general.existeDonnee("tailleMaxTitre")
+		) {
+			lTailleMaxTitre = Cache_1.GCache.general.getDonnee("tailleMaxTitre");
+		} else {
+			lTailleMaxTitre = this.JSONReponse.tailleMaxTitre;
+			if (Cache_1.GCache) {
+				Cache_1.GCache.general.setDonnee("tailleMaxTitre", lTailleMaxTitre);
+			}
+		}
+		aResult.tailleMaxTitre = lTailleMaxTitre;
+	}
+	_actionPublicApresRequete(aResult) {
+		aResult.nombreResponsablesPreferentiel =
+			this.JSONReponse.nombreResponsablesPreferentiel;
+		aResult.nombreResponsablesSecondaires =
+			this.JSONReponse.nombreResponsablesSecondaires;
+		aResult.nombreProfsPrincipaux = this.JSONReponse.nombreProfsPrincipaux;
+		aResult.nombreTuteurs = this.JSONReponse.nombreTuteurs;
+		if (this.avecCours) {
+			aResult.listeEleves = this.JSONReponse.listeEleves;
+			aResult.equipe = this.JSONReponse.equipe;
+		}
+	}
+	_actionPunitionApresRequete(aResult) {
+		aResult.titre = this.JSONReponse.titre;
+		aResult.texte = this.JSONReponse.texte;
+		aResult.categorie = this.JSONReponse.categorie;
+		aResult.listePublic = this.JSONReponse.equipe;
+	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteDonneesEditionInformation =
+	ObjetRequeteDonneesEditionInformation;
+CollectionRequetes_1.Requetes.inscrire(
 	"DonneesEditionInformation",
 	ObjetRequeteDonneesEditionInformation,
 );
-function _serialiser_Public(aIndividu, aJSON) {
-	aJSON.N = aIndividu.getNumero();
-	aJSON.G = aIndividu.getGenre();
-	aJSON.E = undefined;
-	aJSON.L = undefined;
-}
-function _actionInitApresRequete(aResult) {
-	let lListeCategories;
-	if (GCache && GCache.general.existeDonnee("listeCategories")) {
-		lListeCategories = GCache.general.getDonnee("listeCategories");
-	} else {
-		lListeCategories = this.JSONReponse.listeCategories;
-		lListeCategories.setTri([ObjetTri.init("Genre"), ObjetTri.init("Libelle")]);
-		lListeCategories.trier();
-		if (GCache) {
-			GCache.general.setDonnee("listeCategories", lListeCategories);
-		}
-	}
-	aResult.listeCategories = lListeCategories;
-	let lListeIndividusPossibles;
-	if (GCache && GCache.general.existeDonnee("listeIndividusPossiblesPartage")) {
-		lListeIndividusPossibles = GCache.general.getDonnee(
-			"listeIndividusPossiblesPartage",
-		);
-	} else {
-		lListeIndividusPossibles = this.JSONReponse.listeIndividusPossiblesPartage;
-		if (GCache) {
-			GCache.general.setDonnee(
-				"listeIndividusPossiblesPartage",
-				lListeIndividusPossibles,
-			);
-		}
-	}
-	aResult.listeIndividusPossiblesPartage = lListeIndividusPossibles;
-	let lTailleMaxTitre;
-	if (GCache && GCache.general.existeDonnee("tailleMaxTitre")) {
-		lTailleMaxTitre = GCache.general.getDonnee("tailleMaxTitre");
-	} else {
-		lTailleMaxTitre = this.JSONReponse.tailleMaxTitre;
-		if (GCache) {
-			GCache.general.setDonnee("tailleMaxTitre", lTailleMaxTitre);
-		}
-	}
-	aResult.tailleMaxTitre = lTailleMaxTitre;
-}
-function _actionPublicApresRequete(aResult) {
-	aResult.nombreResponsablesPreferentiel =
-		this.JSONReponse.nombreResponsablesPreferentiel;
-	aResult.nombreResponsablesSecondaires =
-		this.JSONReponse.nombreResponsablesSecondaires;
-	aResult.nombreProfsPrincipaux = this.JSONReponse.nombreProfsPrincipaux;
-	aResult.nombreTuteurs = this.JSONReponse.nombreTuteurs;
-	if (this.avecCours) {
-		aResult.listeEleves = this.JSONReponse.listeEleves;
-		aResult.equipe = this.JSONReponse.equipe;
-	}
-}
-function _actionPunitionApresRequete(aResult) {
-	aResult.titre = this.JSONReponse.titre;
-	aResult.texte = this.JSONReponse.texte;
-	aResult.categorie = this.JSONReponse.categorie;
-	aResult.listePublic = this.JSONReponse.equipe;
-}
-module.exports = { ObjetRequeteDonneesEditionInformation };

@@ -2,7 +2,7 @@ exports.ObjetFenetre_Liste = void 0;
 const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
 const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetListe_1 = require("ObjetListe");
-const ObjetIdentite_1 = require("ObjetIdentite");
+const IEHtml_1 = require("IEHtml");
 class ObjetFenetre_Liste extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
@@ -15,7 +15,6 @@ class ObjetFenetre_Liste extends ObjetFenetre_1.ObjetFenetre {
 		this.valeurFiltre = false;
 		this.fermerSurValidation = true;
 		this.setOptionsFenetre({
-			heightMax_mobile: true,
 			modeActivationBtnValider: this.modeActivationBtnValider.surModification,
 			avecVerificationLigneSelectionne: false,
 		});
@@ -94,6 +93,7 @@ class ObjetFenetre_Liste extends ObjetFenetre_1.ObjetFenetre {
 		});
 	}
 	initialiserListe(aInstance) {
+		var _a, _b;
 		const lOptions = {
 			listeCreations:
 				this.paramsListe.creations !== null
@@ -140,6 +140,17 @@ class ObjetFenetre_Liste extends ObjetFenetre_1.ObjetFenetre {
 		if (this.paramsListe.optionsListe) {
 			aInstance.setOptionsListe(this.paramsListe.optionsListe);
 		}
+		aInstance.setOptionsListe({
+			ariaLabel:
+				(_b =
+					(_a = this.paramsListe.optionsListe) === null || _a === void 0
+						? void 0
+						: _a.ariaLabel) !== null && _b !== void 0
+					? _b
+					: () => {
+							return this.optionsFenetre.titre;
+						},
+		});
 	}
 	setDonnees(
 		aObjetDonneesListe,
@@ -277,13 +288,7 @@ class ObjetFenetre_Liste extends ObjetFenetre_1.ObjetFenetre {
 			);
 		}
 		this.callback.appel(aNumeroBouton, lMaSelection, this.changementListe);
-		if (
-			this.Pere &&
-			this.Pere instanceof ObjetIdentite_1.Identite &&
-			this.Pere.$refreshSelf
-		) {
-			this.Pere.$refreshSelf();
-		}
+		IEHtml_1.default.refresh();
 	}
 	_evenementSurCB(aValue) {
 		this.valeurFiltre = !!aValue;
@@ -296,6 +301,9 @@ class ObjetFenetre_Liste extends ObjetFenetre_1.ObjetFenetre {
 	}
 	setListeElementsSelection(aListeElements) {
 		this.getInstance(this.identListe).setListeElementsSelection(aListeElements);
+	}
+	getListe() {
+		return this.getInstance(this.identListe);
 	}
 }
 exports.ObjetFenetre_Liste = ObjetFenetre_Liste;

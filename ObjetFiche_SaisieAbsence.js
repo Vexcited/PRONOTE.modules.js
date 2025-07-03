@@ -1,26 +1,26 @@
-const { ObjetFiche } = require("ObjetFiche.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetVS_SaisieAbsencePN } = require("ObjetVS_SaisieAbsencePN.js");
-class ObjetFiche_SaisieAbsence extends ObjetFiche {
+exports.ObjetFiche_SaisieAbsence = void 0;
+const ObjetFiche_1 = require("ObjetFiche");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetVS_SaisieAbsencePN_1 = require("ObjetVS_SaisieAbsencePN");
+const AccessApp_1 = require("AccessApp");
+class ObjetFiche_SaisieAbsence extends ObjetFiche_1.ObjetFiche {
 	constructor(...aParams) {
 		super(...aParams);
-		this.largeurMax = 500;
-		this.hauteurMax = 1250;
-		this.idScroll = this.Nom + "_scroll";
-		this.objetDetailVS = new ObjetVS_SaisieAbsencePN(
+		this.objetDetailVS = new ObjetVS_SaisieAbsencePN_1.ObjetVS_SaisieAbsencePN(
 			this.Nom + ".objetDetailVS",
 			null,
 			this,
 			this.evntDetailVS,
 		);
 		this.objetDetailVS.setOptions({
-			avecValidation: false,
 			callbackRetour: () => {
 				this.fermer();
 			},
 		});
 		this.setOptionsFenetre({
-			titre: GTraductions.getValeur("AbsenceVS.PrevenirAbsenceParent"),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"AbsenceVS.PrevenirAbsenceParent",
+			),
 			largeur: 350,
 			hauteur: null,
 			avecTailleSelonContenu: true,
@@ -30,9 +30,6 @@ class ObjetFiche_SaisieAbsence extends ObjetFiche {
 	}
 	evntDetailVS(aGenre, aParams) {
 		this.callback.appel(aGenre, aParams);
-	}
-	setOptions(aOptions) {
-		$.extend(this.options, aOptions);
 	}
 	setDonnees(aAbsence) {
 		this.element = aAbsence;
@@ -44,7 +41,8 @@ class ObjetFiche_SaisieAbsence extends ObjetFiche {
 		this.objetDetailVS.setDonnees(this.element, {
 			id: this.objetDetailVS.getNom(),
 			estConteneur: true,
-			listeMotifsAbsences: GEtatUtilisateur.listeMotifsAbsences,
+			listeMotifsAbsences: (0, AccessApp_1.getApp)().getEtatUtilisateur()
+				.listeMotifsAbsences,
 		});
 	}
 	composeContenu() {
@@ -62,4 +60,4 @@ class ObjetFiche_SaisieAbsence extends ObjetFiche {
 		this.objetDetailVS.initialiser();
 	}
 }
-module.exports = { ObjetFiche_SaisieAbsence };
+exports.ObjetFiche_SaisieAbsence = ObjetFiche_SaisieAbsence;

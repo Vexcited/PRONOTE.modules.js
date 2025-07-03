@@ -18,6 +18,7 @@ const Enumere_EvenementWidget_1 = require("Enumere_EvenementWidget");
 const ObjetWidget_1 = require("ObjetWidget");
 class WidgetElections extends ObjetWidget_1.Widget.ObjetWidget {
 	construire(aParams) {
+		var _a, _b;
 		this.donnees = aParams.donnees;
 		if (
 			this.donnees.listeElections &&
@@ -28,241 +29,228 @@ class WidgetElections extends ObjetWidget_1.Widget.ObjetWidget {
 				ObjetTri_1.ObjetTri.init("dateFin"),
 			]);
 			this.donnees.listeElections.trier();
-			const lWidget = {
-				html: this.composeWidgetElections(),
-				nbrElements: this.donnees.listeElections.count(),
-				afficherMessage: this.donnees.listeElections.count() === 0,
-			};
-			$.extend(true, this.donnees, lWidget);
 		}
+		const lWidget = {
+			getHtml: this.composeWidgetElections.bind(this),
+			nbrElements:
+				(_a = this.donnees.listeElections) === null || _a === void 0
+					? void 0
+					: _a.count(),
+			afficherMessage:
+				((_b = this.donnees.listeElections) === null || _b === void 0
+					? void 0
+					: _b.count()) === 0,
+		};
+		$.extend(true, this.donnees, lWidget);
 		aParams.construireWidget(this.donnees);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			rdChoixCandidat: {
-				getValue(aIndiceElection, aIndiceCandidat) {
-					if (!aInstance.donnees) {
-						return false;
-					}
-					const lElection =
-						aInstance.donnees.listeElections.get(aIndiceElection);
-					const lCandidat = lElection.candidats.get(aIndiceCandidat);
-					if (!lElection.vote || lElection.vote.count() === 0) {
-						return false;
-					} else {
-						return !!lElection.vote.getElementParNumero(lCandidat.getNumero());
-					}
-				},
-				setValue(aIndiceElection, aIndiceCandidat, aValue) {
-					if (!aInstance.donnees) {
-						return false;
-					}
-					const lElection =
-						aInstance.donnees.listeElections.get(aIndiceElection);
-					const lCandidat = lElection.candidats.get(aIndiceCandidat);
-					if (aValue) {
-						lElection.vote = new ObjetListeElements_1.ObjetListeElements();
-						lElection.vote.addElement(lCandidat);
-					}
-				},
+	jsxModeleRadioChoixCandidatUnique(aElection, aCandidat, aName) {
+		return {
+			getValue: () => {
+				if (
+					aElection &&
+					aCandidat &&
+					aElection.vote &&
+					aElection.vote.count() > 0
+				) {
+					return !!aElection.vote.getElementParNumero(aCandidat.getNumero());
+				}
+				return false;
 			},
-			cbChoixCandidat: {
-				getValue(aIndiceElection, aIndiceCandidat) {
-					if (!aInstance.donnees) {
-						return false;
+			setValue: (aValue) => {
+				if (aElection && aCandidat && aValue) {
+					aElection.vote = new ObjetListeElements_1.ObjetListeElements();
+					aElection.vote.addElement(aCandidat);
+				}
+			},
+			getName: () => {
+				return `${this.Nom}_${aName}`;
+			},
+		};
+	}
+	jsxModeleCheckboxChoixCandidatsMultiple(aElection, aCandidat) {
+		return {
+			getValue: () => {
+				if (
+					aElection &&
+					aCandidat &&
+					aElection.vote &&
+					aElection.vote.count() > 0
+				) {
+					return !!aElection.vote.getElementParNumero(aCandidat.getNumero());
+				}
+				return false;
+			},
+			setValue: (aValue) => {
+				if (aElection && aCandidat) {
+					if (!aElection.vote) {
+						aElection.vote = new ObjetListeElements_1.ObjetListeElements();
 					}
-					const lElection =
-						aInstance.donnees.listeElections.get(aIndiceElection);
-					const lCandidat = lElection.candidats.get(aIndiceCandidat);
-					if (!lElection.vote || lElection.vote.count() === 0) {
-						return false;
-					} else {
-						return !!lElection.vote.getElementParNumero(lCandidat.getNumero());
-					}
-				},
-				setValue(aIndiceElection, aIndiceCandidat, aValue) {
-					if (!aInstance.donnees) {
-						return false;
-					}
-					const lElection =
-						aInstance.donnees.listeElections.get(aIndiceElection);
-					const lCandidat = lElection.candidats.get(aIndiceCandidat);
-					if (!lElection.vote) {
-						lElection.vote = new ObjetListeElements_1.ObjetListeElements();
-					}
-					const lNumero = lCandidat.getNumero();
-					const lIndice = lElection.vote.getIndiceElementParFiltre(
+					const lNumero = aCandidat.getNumero();
+					const lIndice = aElection.vote.getIndiceElementParFiltre(
 						(aElement) => {
 							return aElement.getNumero() === lNumero;
 						},
 					);
 					if (aValue) {
 						if (lIndice === -1) {
-							lElection.vote.addElement(lCandidat);
+							aElection.vote.addElement(aCandidat);
 						}
 					} else {
 						if (lIndice !== -1) {
-							lElection.vote.remove(lIndice);
+							aElection.vote.remove(lIndice);
 						}
 					}
-				},
-				getDisabled(aIndiceElection, aIndiceCandidat) {
-					if (!aInstance.donnees || !aInstance.donnees.listeElections) {
-						return false;
-					}
-					const lElection =
-						aInstance.donnees.listeElections.get(aIndiceElection);
-					if (!lElection || !lElection.vote) {
-						return false;
-					} else {
-						const lCandidat = lElection.candidats.get(aIndiceCandidat);
-						const lNumero = lCandidat.getNumero();
-						const lCandidatEstSelectionne =
-							lElection.vote.getIndiceElementParFiltre((aElement) => {
-								return aElement.getNumero() === lNumero;
-							}) > -1;
-						return (
-							lElection.vote.count() >= lElection.nbMaxChoix &&
-							!lCandidatEstSelectionne
-						);
-					}
-				},
+				}
 			},
-			btnAfficherConstitutionListe(aIndiceElection, aIndiceCandidat) {
-				$(this.node).on({
-					click: function () {
-						if (aInstance.donnees && aInstance.donnees.listeElections) {
-							const lElection =
-								aInstance.donnees.listeElections.get(aIndiceElection);
-							const lListeCandidate = lElection.candidats.get(aIndiceCandidat);
-							if (
-								lListeCandidate &&
-								lListeCandidate.membres &&
-								lListeCandidate.membres.count() > 0
-							) {
-								lListeCandidate.membres.trier();
-								const lHtml = [];
-								lHtml.push(
-									"<div>",
-									ObjetTraduction_1.GTraductions.getValeur(
-										"accueil.elections.constitutionDeLaListe",
-										[lListeCandidate.getLibelle()],
-									),
-									"</div>",
-								);
-								lHtml.push('<div class="Espace">');
-								lHtml.push("<ul>");
-								lListeCandidate.membres.parcourir((aMembreDeListeCandidate) => {
-									lHtml.push("<li>");
-									lHtml.push(aMembreDeListeCandidate.getLibelle());
-									if (!!aMembreDeListeCandidate.statut) {
-										lHtml.push(
-											' - <span class="Gras">',
-											aMembreDeListeCandidate.statut,
-											"</span>",
-										);
-									}
-									lHtml.push("</li>");
-								});
-								lHtml.push("</ul>");
-								lHtml.push("</div>");
-								GApplication.getMessage().afficher({
-									type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-									titre: ObjetTraduction_1.GTraductions.getValeur(
-										"accueil.elections.candidatsConstitutifsDesListes",
-									),
-									message: lHtml.join(""),
-								});
-							}
-						}
-						return false;
-					},
-				});
+			getDisabled: () => {
+				if (aElection && aElection.vote && aCandidat) {
+					const lCandidatEstSelectionne =
+						aElection.vote.getIndiceElementParFiltre((aElement) => {
+							return aElement.getNumero() === aCandidat.getNumero();
+						}) > -1;
+					return (
+						aElection.vote.count() >= aElection.nbMaxChoix &&
+						!lCandidatEstSelectionne
+					);
+				}
+				return true;
 			},
-			btnVote: {
-				event(aIndiceElection) {
-					if (aInstance.donnees && aInstance.donnees.listeElections) {
-						const lElection =
-							aInstance.donnees.listeElections.get(aIndiceElection);
-						if (
-							lElection.nbMaxChoix === 1 &&
-							(!lElection.vote || lElection.vote.count() === 0)
-						) {
-							GApplication.getMessage().afficher({
-								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-								message: ObjetTraduction_1.GTraductions.getValeur(
-									"accueil.elections.aucunChoixEffectue",
-								),
-							});
-						} else {
-							const lElectionPourVote = ObjetElement_1.ObjetElement.create({
-								Libelle: lElection.getLibelle(),
-								Numero: lElection.getNumero(),
-								Genre: lElection.getGenre(),
-							});
-							if (!lElection.vote && lElection.nbMaxChoix > 1) {
-								lElection.vote = new ObjetListeElements_1.ObjetListeElements();
-							}
-							lElectionPourVote.vote = MethodesObjet_1.MethodesObjet.dupliquer(
-								lElection.vote,
+		};
+	}
+	jsxNodeAfficherConstitutionListe(aElection, aListeCandidate) {
+		return (aNode) => {
+			$(aNode).eventValidation(() => {
+				if (
+					aElection &&
+					aListeCandidate &&
+					aListeCandidate.membres &&
+					aListeCandidate.membres.count() > 0
+				) {
+					aListeCandidate.membres.trier();
+					const H = [];
+					H.push(
+						IE.jsx.str(
+							"div",
+							null,
+							ObjetTraduction_1.GTraductions.getValeur(
+								"accueil.elections.constitutionDeLaListe",
+								[aListeCandidate.getLibelle()],
+							),
+						),
+					);
+					H.push('<div class="Espace">');
+					H.push("<ul>");
+					aListeCandidate.membres.parcourir((aMembreDeListeCandidate) => {
+						H.push("<li>");
+						H.push(aMembreDeListeCandidate.getLibelle());
+						if (!!aMembreDeListeCandidate.statut) {
+							H.push(
+								' - <span class="Gras">',
+								aMembreDeListeCandidate.statut,
+								"</span>",
 							);
-							const lHtml = [];
-							lHtml.push(
-								"<div>",
+						}
+						H.push("</li>");
+					});
+					H.push("</ul>");
+					H.push("</div>");
+					GApplication.getMessage().afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+						titre: ObjetTraduction_1.GTraductions.getValeur(
+							"accueil.elections.candidatsConstitutifsDesListes",
+						),
+						message: H.join(""),
+					});
+				}
+			});
+		};
+	}
+	jsxModeleBoutonVote(aElection) {
+		return {
+			event: () => {
+				if (aElection) {
+					if (
+						aElection.nbMaxChoix === 1 &&
+						(!aElection.vote || aElection.vote.count() === 0)
+					) {
+						GApplication.getMessage().afficher({
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+							message: ObjetTraduction_1.GTraductions.getValeur(
+								"accueil.elections.aucunChoixEffectue",
+							),
+						});
+					} else {
+						const lElectionPourVote = ObjetElement_1.ObjetElement.create({
+							Libelle: aElection.getLibelle(),
+							Numero: aElection.getNumero(),
+							Genre: aElection.getGenre(),
+							vote: undefined,
+						});
+						if (!aElection.vote && aElection.nbMaxChoix > 1) {
+							aElection.vote = new ObjetListeElements_1.ObjetListeElements();
+						}
+						lElectionPourVote.vote = MethodesObjet_1.MethodesObjet.dupliquer(
+							aElection.vote,
+						);
+						const H = [];
+						H.push(
+							IE.jsx.str(
+								"div",
+								null,
 								ObjetTraduction_1.GTraductions.getValeur(
 									"accueil.elections.confirmationVote",
-									[lElection.getLibelle()],
+									[aElection.getLibelle()],
 								),
-								"</div>",
+							),
+						);
+						H.push('<div class="Espace">');
+						H.push("<ul>");
+						if (aElection.vote.count() === 0 && aElection.nbMaxChoix > 1) {
+							H.push(
+								"<li>",
+								ObjetTraduction_1.GTraductions.getValeur(
+									"accueil.elections.neSePrononcePas",
+								),
+								"</li>",
 							);
-							lHtml.push('<div class="Espace">');
-							lHtml.push("<ul>");
-							if (lElection.vote.count() === 0 && lElection.nbMaxChoix > 1) {
-								lHtml.push(
-									"<li>",
-									ObjetTraduction_1.GTraductions.getValeur(
-										"accueil.elections.neSePrononcePas",
-									),
-									"</li>",
-								);
-							}
-							for (let i = 0; i < lElection.vote.count(); i++) {
-								lHtml.push("<li>", lElection.vote.getLibelle(i), "</li>");
-							}
-							lHtml.push("</ul>");
-							lHtml.push("</div>");
-							GApplication.getMessage().afficher({
-								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
-								message: lHtml.join(""),
-								listeBoutons: [
-									{
-										libelle: ObjetTraduction_1.GTraductions.getValeur("Oui"),
-										theme: Type_ThemeBouton_1.TypeThemeBouton.primaire,
-										genreAction: Enumere_Action_1.EGenreAction.Valider,
-									},
-									{
-										libelle: ObjetTraduction_1.GTraductions.getValeur("Non"),
-										theme: Type_ThemeBouton_1.TypeThemeBouton.secondaire,
-										genreAction: Enumere_Action_1.EGenreAction.NePasValider,
-									},
-								],
-								callback: (aAccepte) => {
-									if (aAccepte === Enumere_Action_1.EGenreAction.Valider) {
-										new ObjetRequeteSaisieElectionVotant_1.ObjetRequeteSaisieElectionVotant(
-											aInstance,
-											aInstance.actionApresSaisieVotant.bind(
-												aInstance,
-												lElectionPourVote.getLibelle(),
-											),
-										).lancerRequete({ election: lElectionPourVote });
-									}
-								},
-							});
 						}
+						for (let i = 0; i < aElection.vote.count(); i++) {
+							H.push("<li>", aElection.vote.getLibelle(i), "</li>");
+						}
+						H.push("</ul>");
+						H.push("</div>");
+						GApplication.getMessage().afficher({
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+							message: H.join(""),
+							listeBoutons: [
+								{
+									libelle: ObjetTraduction_1.GTraductions.getValeur("Oui"),
+									theme: Type_ThemeBouton_1.TypeThemeBouton.primaire,
+									genreAction: Enumere_Action_1.EGenreAction.Valider,
+								},
+								{
+									libelle: ObjetTraduction_1.GTraductions.getValeur("Non"),
+									theme: Type_ThemeBouton_1.TypeThemeBouton.secondaire,
+									genreAction: Enumere_Action_1.EGenreAction.NePasValider,
+								},
+							],
+							callback: (aAccepte) => {
+								if (aAccepte === Enumere_Action_1.EGenreAction.Valider) {
+									new ObjetRequeteSaisieElectionVotant_1.ObjetRequeteSaisieElectionVotant(
+										this,
+										this.actionApresSaisieVotant.bind(
+											this,
+											lElectionPourVote.getLibelle(),
+										),
+									).lancerRequete({ election: lElectionPourVote });
+								}
+							},
+						});
 					}
-				},
+				}
 			},
-		});
+		};
 	}
 	composeWidgetElections() {
 		const H = [];
@@ -270,16 +258,15 @@ class WidgetElections extends ObjetWidget_1.Widget.ObjetWidget {
 			!!this.donnees.listeElections &&
 			this.donnees.listeElections.count() > 0
 		) {
-			for (let I = 0; I < this.donnees.listeElections.count(); I++) {
-				const lElement = this.donnees.listeElections.get(I);
-				H.push(this.composeElection(lElement, I));
+			for (const lElection of this.donnees.listeElections) {
+				H.push(this.composeElection(lElection));
 			}
 		}
 		return H.join("");
 	}
-	composeElection(aElection, aIndiceElection) {
+	composeElection(aElection) {
 		const H = [];
-		const lID = this.donnees.id + "_div_" + aIndiceElection;
+		const lID = this.donnees.id + "_div_" + aElection.getNumero();
 		const lTitre =
 			aElection.getLibelle() ||
 			ObjetTraduction_1.GTraductions.getValeur("accueil.elections.sansTitre");
@@ -287,34 +274,34 @@ class WidgetElections extends ObjetWidget_1.Widget.ObjetWidget {
 		const lFormat = "%JJ %MMMM %AAAA";
 		if (aElection.ouvert) {
 			H.push(
-				'<legend class="vote-header">',
-				"<h3>",
-				lTitre,
-				"</h3>",
-				"<p>",
-				ObjetTraduction_1.GTraductions.getValeur(
-					"accueil.elections.voteOuvertDuAu",
-					[
-						ObjetDate_1.GDate.formatDate(aElection.dateDebut, lFormat),
-						ObjetDate_1.GDate.formatDate(aElection.dateFin, lFormat),
-					],
-				),
-				"</p>",
-			);
-			if (aElection.description) {
-				H.push(aElection.description);
-			}
-			if (aElection.nbMaxChoix > 1) {
-				H.push(
-					'<p class="nombre-choix">',
-					ObjetTraduction_1.GTraductions.getValeur(
-						"accueil.elections.nbMaxChoix",
-						["<span>" + aElection.nbMaxChoix + "</span>"],
+				IE.jsx.str(
+					"legend",
+					{ class: "vote-header" },
+					IE.jsx.str("h3", null, lTitre),
+					IE.jsx.str(
+						"p",
+						null,
+						ObjetTraduction_1.GTraductions.getValeur(
+							"accueil.elections.voteOuvertDuAu",
+							[
+								ObjetDate_1.GDate.formatDate(aElection.dateDebut, lFormat),
+								ObjetDate_1.GDate.formatDate(aElection.dateFin, lFormat),
+							],
+						),
 					),
-					"</p>",
-				);
-			}
-			H.push("</legend>");
+					aElection.description ? aElection.description : "",
+					aElection.nbMaxChoix > 1
+						? IE.jsx.str(
+								"p",
+								{ class: "nombre-choix" },
+								ObjetTraduction_1.GTraductions.getValeur(
+									"accueil.elections.nbMaxChoix",
+									[IE.jsx.str("span", null, aElection.nbMaxChoix)],
+								),
+							)
+						: "",
+				),
+			);
 			if (aElection.documents && aElection.documents.count() > 0) {
 				H.push('<div class="vote-files">');
 				aElection.documents.parcourir((aDocument) => {
@@ -335,64 +322,81 @@ class WidgetElections extends ObjetWidget_1.Widget.ObjetWidget {
 						},
 					);
 					H.push(
-						'<a href="',
-						lLienDocument,
-						'" class="icon ' + lTypefile + '">',
-						aDocument.getLibelle(),
-						"</a>",
+						IE.jsx.str(
+							"a",
+							{ href: lLienDocument, class: "icon " + lTypefile },
+							aDocument.getLibelle(),
+						),
 					);
 				});
 				H.push("</div>");
 			}
-			H.push(this.composeListeCandidats(aElection, aIndiceElection));
+			H.push(this.composeListeCandidats(aElection));
 			H.push(
-				'<div class="vote-footer">',
-				'<ie-bouton  ie-model="btnVote(',
-				aIndiceElection,
-				')">',
-				ObjetTraduction_1.GTraductions.getValeur("accueil.elections.voter"),
-				"</ie-bouton>",
-				"</div>",
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
+						"div",
+						{ class: "vote-footer" },
+						IE.jsx.str(
+							"ie-bouton",
+							{ "ie-model": this.jsxModeleBoutonVote.bind(this, aElection) },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"accueil.elections.voter",
+							),
+						),
+					),
+				),
 			);
 		} else {
 			H.push(
-				'<legend class="vote-header">',
-				"<h3>",
-				ObjetTraduction_1.GTraductions.getValeur(
-					"accueil.elections.prochainementOuverture",
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
+						"legend",
+						{ class: "vote-header" },
+						IE.jsx.str(
+							"h3",
+							null,
+							ObjetTraduction_1.GTraductions.getValeur(
+								"accueil.elections.prochainementOuverture",
+							),
+							" : ",
+							IE.jsx.str("br", null),
+							" ",
+							lTitre,
+						),
+						IE.jsx.str(
+							"p",
+							null,
+							ObjetTraduction_1.GTraductions.getValeur(
+								"accueil.elections.leVoteSeraOuvertDuAu",
+								[
+									ObjetDate_1.GDate.formatDate(aElection.dateDebut, lFormat),
+									ObjetDate_1.GDate.formatDate(aElection.dateFin, lFormat),
+								],
+							),
+						),
+					),
 				),
-				" : <br />",
-				lTitre,
-				"</h3>",
-				"<p>",
-				ObjetTraduction_1.GTraductions.getValeur(
-					"accueil.elections.leVoteSeraOuvertDuAu",
-					[
-						ObjetDate_1.GDate.formatDate(aElection.dateDebut, lFormat),
-						ObjetDate_1.GDate.formatDate(aElection.dateFin, lFormat),
-					],
-				),
-				"</p>",
-				"</legend>",
 			);
 		}
 		H.push("</fieldset>");
 		return H.join("");
 	}
-	composeListeCandidats(aElection, aIndiceElection) {
+	composeListeCandidats(aElection) {
 		const H = [];
 		if (!!aElection.candidats && aElection.candidats.count() > 0) {
 			H.push('<ul class="liste-clickable one-line">');
-			aElection.candidats.parcourir((aCandidat, aIndiceCandidat) => {
+			aElection.candidats.parcourir((aCandidat) => {
 				H.push(
-					"<li>",
-					this._composeCandidat(
-						aCandidat,
-						aIndiceElection,
-						aIndiceCandidat,
-						aElection.nbMaxChoix > 1,
+					IE.jsx.str(
+						IE.jsx.fragment,
+						null,
+						IE.jsx.str("li", null, this._composeCandidat(aElection, aCandidat)),
 					),
-					"</li>",
 				);
 			});
 			H.push("</ul>");
@@ -425,83 +429,86 @@ class WidgetElections extends ObjetWidget_1.Widget.ObjetWidget {
 			});
 		}
 	}
-	_composeCandidat(
-		aCandidat,
-		aIndiceElection,
-		aIndiceCandidat,
-		aAvecChoixMultiple,
-	) {
+	_composeCandidat(aElection, aCandidat) {
 		let lChoixCandidat;
-		if (!aAvecChoixMultiple) {
-			lChoixCandidat = this._composeRadioCandidat(
-				aCandidat,
-				aIndiceElection,
-				aIndiceCandidat,
-			);
+		const lAvecChoixMultiples = aElection.nbMaxChoix > 1;
+		if (!lAvecChoixMultiples) {
+			lChoixCandidat = this._composeRadioCandidat(aElection, aCandidat);
 		} else {
-			lChoixCandidat = this._composeCBCandidat(
-				aCandidat,
-				aIndiceElection,
-				aIndiceCandidat,
-			);
+			lChoixCandidat = this._composeCBCandidat(aElection, aCandidat);
 		}
 		return lChoixCandidat;
 	}
-	_composeCBCandidat(aCandidat, aIndiceElection, aIndiceCandidat) {
+	_composeCBCandidat(aElection, aCandidat) {
 		const H = [];
 		H.push(
-			'<ie-checkbox ie-textleft ie-model="cbChoixCandidat(',
-			aIndiceElection,
-			", ",
-			aIndiceCandidat,
-			')">',
-			'<span class="libelle">',
-			aCandidat.getLibelle(),
-			"</span>",
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"ie-checkbox",
+					{
+						"ie-textleft": true,
+						"ie-model": this.jsxModeleCheckboxChoixCandidatsMultiple.bind(
+							this,
+							aElection,
+							aCandidat,
+						),
+					},
+					IE.jsx.str("span", { class: "libelle" }, aCandidat.getLibelle()),
+					aCandidat.getGenre() ===
+						TypeGenreCandidatElection_1.TypeGenreCandidatElection.GCE_Liste
+						? IE.jsx.str("i", {
+								class: "icon icon_info_sign",
+								"ie-node": this.jsxNodeAfficherConstitutionListe(
+									aElection,
+									aCandidat,
+								),
+								tabindex: "0",
+								role: "button",
+								"aria-haspopup": "dialog",
+							})
+						: "",
+				),
+			),
 		);
-		if (
-			aCandidat.getGenre() ===
-			TypeGenreCandidatElection_1.TypeGenreCandidatElection.GCE_Liste
-		) {
-			H.push(
-				'<i class="icon icon_info_sign" ie-node="btnAfficherConstitutionListe(',
-				aIndiceElection,
-				", ",
-				aIndiceCandidat,
-				')"></i>',
-			);
-		}
-		H.push("</ie-checkbox>");
 		return H.join("");
 	}
-	_composeRadioCandidat(aCandidat, aIndiceElection, aIndiceCandidat) {
-		const lNameGroupeRadio = "election_" + aIndiceElection;
+	_composeRadioCandidat(aElection, aCandidat) {
+		const lNameGroupeRadio = "election_" + aElection.getNumero();
 		const H = [];
 		H.push(
-			'<ie-radio ie-textleft ie-model="rdChoixCandidat(',
-			aIndiceElection,
-			", ",
-			aIndiceCandidat,
-			')" name="',
-			lNameGroupeRadio,
-			'">',
-			'<span class="libelle">',
-			aCandidat.getLibelle(),
-			"</span>",
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"ie-radio",
+					{
+						"ie-textleft": true,
+						"ie-model": this.jsxModeleRadioChoixCandidatUnique.bind(
+							this,
+							aElection,
+							aCandidat,
+							lNameGroupeRadio,
+						),
+					},
+					IE.jsx.str("span", { class: "libelle" }, aCandidat.getLibelle()),
+					aCandidat.getGenre() ===
+						TypeGenreCandidatElection_1.TypeGenreCandidatElection.GCE_Liste
+						? IE.jsx.str("i", {
+								class: "icon icon_info_sign",
+								"ie-node": this.jsxNodeAfficherConstitutionListe(
+									aElection,
+									aCandidat,
+								),
+								tabindex: "0",
+								role: "button",
+								"aria-haspopup": "dialog",
+							})
+						: "",
+				),
+			),
 		);
-		if (
-			aCandidat.getGenre() ===
-			TypeGenreCandidatElection_1.TypeGenreCandidatElection.GCE_Liste
-		) {
-			H.push(
-				'<i class="icon icon_info_sign" ie-node="btnAfficherConstitutionListe(',
-				aIndiceElection,
-				", ",
-				aIndiceCandidat,
-				')" ></i>',
-			);
-		}
-		H.push("</ie-checkbox>");
 		return H.join("");
 	}
 }

@@ -1,12 +1,9 @@
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-class DonneesListeSondagesBiblio extends ObjetDonneesListeFlatDesign {
+exports.DonneesListeSondagesBiblio = void 0;
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+class DonneesListeSondagesBiblio extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees) {
 		super(aDonnees);
 		this.setOptions({
-			avecEdition: false,
-			avecSuppression: false,
 			avecEvnt_Selection: true,
 			avecRechercheSelectionMiroir: true,
 			avecTri: false,
@@ -34,4 +31,4 @@ class DonneesListeSondagesBiblio extends ObjetDonneesListeFlatDesign {
 		return D.visible !== false;
 	}
 }
-module.exports = { DonneesListeSondagesBiblio };
+exports.DonneesListeSondagesBiblio = DonneesListeSondagesBiblio;

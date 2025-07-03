@@ -9,6 +9,9 @@ class ObjetSelecteurRegimeEleve extends _ObjetSelecteur_1._ObjetSelecteur {
 		this.setOptions({
 			titreLibelle:
 				ObjetTraduction_1.GTraductions.getValeur("RecapAbs.regimes"),
+			tooltip: ObjetTraduction_1.GTraductions.getValeur(
+				"RecapAbs.titreFenetreRegimes",
+			),
 		});
 	}
 	construireInstanceFenetreSelection() {
@@ -18,10 +21,12 @@ class ObjetSelecteurRegimeEleve extends _ObjetSelecteur_1._ObjetSelecteur {
 		);
 	}
 	evntBtnSelection() {
-		this.getInstance(this.identFenetreSelection).setDonnees(
-			this.listeTotale,
-			MethodesObjet_1.MethodesObjet.dupliquer(this.listeSelection),
-		);
+		this.getInstance(this.identFenetreSelection).setDonnees({
+			listeRessources: this.listeTotale,
+			listeRessourcesSelectionnees: MethodesObjet_1.MethodesObjet.dupliquer(
+				this.listeSelection,
+			),
+		});
 	}
 }
 exports.ObjetSelecteurRegimeEleve = ObjetSelecteurRegimeEleve;

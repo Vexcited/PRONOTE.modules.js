@@ -8,6 +8,7 @@ const UtilitaireSaisieCDT_1 = require("UtilitaireSaisieCDT");
 const UtilitaireTiny_1 = require("UtilitaireTiny");
 const ObjetChaine_1 = require("ObjetChaine");
 const ObjetTraduction_1 = require("ObjetTraduction");
+const AccessApp_1 = require("AccessApp");
 class ObjetRequeteSaisieRechercheKiosque extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
 CollectionRequetes_1.Requetes.inscrire(
 	"SaisieRechercheKiosque",
@@ -20,6 +21,7 @@ class _InterfacePageSaisieCahierDeTextes extends InterfacePage_1.InterfacePage {
 		this.TAFPleinEcran = false;
 		this.ContenuPleinEcran = false;
 		this.instanceFenetreHTML = null;
+		this.applicationSco = (0, AccessApp_1.getApp)();
 		this.etatUtilisateur = this.applicationSco.getEtatUtilisateur();
 	}
 	evenementEditionCategorie(ANumeroBouton) {
@@ -61,7 +63,7 @@ class _InterfacePageSaisieCahierDeTextes extends InterfacePage_1.InterfacePage {
 				instance: this,
 				descriptif: aDescriptif,
 				readonly: this._estVerrouille(),
-				labelWAI: ObjetTraduction_1.GTraductions.getValeur(
+				ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
 					"CahierDeTexte.labelWAISaisieContenu",
 				),
 				callback: (aParams) => {
@@ -135,7 +137,7 @@ class _InterfacePageSaisieCahierDeTextes extends InterfacePage_1.InterfacePage {
 	_getContenu(aIndice) {
 		return null;
 	}
-	_getTAF() {
+	_getTAF(aIndice) {
 		return null;
 	}
 	_getOptionsContenuMenuMagique() {

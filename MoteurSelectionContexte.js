@@ -1,155 +1,160 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { ObjetRequeteListeServices } = require("ObjetRequeteListeServices.js");
-const { EGenreMessage } = require("Enumere_Message.js");
-const { GDate } = require("ObjetDate.js");
-const { EGenreTriElement } = require("Enumere_TriElement.js");
-const { GImage } = require("ObjetImage.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { EGenreOnglet } = require("Enumere_Onglet.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-Requetes.inscrire("listeClassesGroupes", ObjetRequeteConsultation);
-Requetes.inscrire("ListePeriodes", ObjetRequeteConsultation);
-Requetes.inscrire("ListeEleves", ObjetRequeteConsultation);
+exports.MoteurSelectionContexte = void 0;
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetRequeteListeServices_1 = require("ObjetRequeteListeServices");
+const Enumere_Message_1 = require("Enumere_Message");
+const ObjetDate_1 = require("ObjetDate");
+const Enumere_TriElement_1 = require("Enumere_TriElement");
+const ObjetImage_1 = require("ObjetImage");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const Enumere_Onglet_1 = require("Enumere_Onglet");
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetRequeteListes_1 = require("ObjetRequeteListes");
+const AccessApp_1 = require("AccessApp");
 class MoteurSelectionContexte {
 	constructor() {
+		this.etatUtil = (0, AccessApp_1.getApp)().getEtatUtilisateur();
 		this.selection = { classe: null };
 	}
-	getListeClasses(aParam) {
+	async getListeClasses(aParam) {
 		if (
 			[
-				EGenreEspace.Mobile_Etablissement,
-				EGenreEspace.Mobile_Administrateur,
-			].includes(GEtatUtilisateur.GenreEspace)
+				Enumere_Espace_1.EGenreEspace.Mobile_Etablissement,
+				Enumere_Espace_1.EGenreEspace.Mobile_Administrateur,
+			].includes(this.etatUtil.GenreEspace)
 		) {
-			_actionSurGetListeClasses.call(this, aParam);
+			this._actionSurGetListeClasses(aParam);
 		} else {
-			Requetes("listeClassesGroupes", this, (aJSON) => {
-				_actionSurGetListeClasses.call(this, aParam, aJSON);
-			}).lancerRequete();
+			const lResult =
+				await new ObjetRequeteListes_1.ObjetRequeteListes_ListeClassesGroupes(
+					this,
+				).lancerRequete();
+			this._actionSurGetListeClasses(aParam, lResult);
 		}
 	}
-	getListePeriodes(aParam) {
-		Requetes("ListePeriodes", this, (aXML) => {
-			const lListePeriodes = _actionSurGetListePeriodes.call(this, aXML);
-			if (!!lListePeriodes) {
-				const lParamClbck = { listeElts: lListePeriodes };
-				aParam.clbck.call(aParam.pere, lParamClbck);
-			}
-		}).lancerRequete({ ressource: aParam.classe });
+	async getListePeriodes(aParam) {
+		const lJSON =
+			await new ObjetRequeteListes_1.ObjetRequeteListes_ListePeriodes(
+				this,
+			).lancerRequete({ ressource: aParam.classe });
+		const lListePeriodes = lJSON.listePeriodes;
+		if (!!lListePeriodes) {
+			const lParamClbck = { listeElts: lListePeriodes };
+			aParam.clbck.call(aParam.pere, lParamClbck);
+		}
 	}
-	getListeServices(aParam) {
-		new ObjetRequeteListeServices(this, (aXML) => {
-			const lListeServices = _actionSurGetListeServices.call(this, aXML);
-			if (!!lListeServices) {
-				const lDefault = _getServiceParDefaut.call(this, lListeServices, {
-					classe: aParam.classe,
-				});
-				const lIndiceDefault = lListeServices.getIndiceParElement(lDefault);
-				const lParamClbck = {
-					listeElts: lListeServices,
-					indiceEltParDefaut: lIndiceDefault,
-				};
-				aParam.clbck.call(aParam.pere, lParamClbck);
-			}
-		}).lancerRequete(aParam.utilisateur, aParam.classe, aParam.periode);
+	async getListeServices(aParam) {
+		const lResult =
+			await new ObjetRequeteListeServices_1.ObjetRequeteListeServices(
+				this,
+			).lancerRequete(aParam.utilisateur, aParam.classe, aParam.periode);
+		const lListeServices = this._actionSurGetListeServices(lResult);
+		if (!!lListeServices) {
+			const lDefault = this._getServiceParDefaut(lListeServices, {
+				classe: aParam.classe,
+			});
+			const lIndiceDefault = lListeServices.getIndiceParElement(lDefault);
+			const lParamClbck = {
+				listeElts: lListeServices,
+				indiceEltParDefaut: lIndiceDefault,
+			};
+			aParam.clbck.call(aParam.pere, lParamClbck);
+		}
 	}
-	getListeEleves(aParam) {
-		GEtatUtilisateur.Navigation.setRessource(
-			EGenreRessource.Classe,
+	async getListeEleves(aParam) {
+		this.etatUtil.Navigation.setRessource(
+			Enumere_Ressource_1.EGenreRessource.Classe,
 			aParam.classe,
 		);
-		Requetes("ListeEleves", this, (aJSON) => {
-			const lListeEleves = _actionSurRequeteListeEleves.call(
+		const lReponse =
+			await new ObjetRequeteListes_1.ObjetRequeteListes_ListeEleves(
 				this,
-				aParam,
-				aJSON,
-			);
-			if (!!lListeEleves) {
-				const lParamClbck = { listeElts: lListeEleves };
-				aParam.clbck.call(aParam.pere, lParamClbck);
-			}
-		}).lancerRequete({
-			ressource: aParam.classe,
-			listeRessources: GEtatUtilisateur.Navigation.getRessources(
-				EGenreRessource.Classe,
-			).setSerialisateurJSON({ ignorerEtatsElements: true }),
-		});
+			).lancerRequete({
+				ressource: aParam.classe,
+				listeRessources: this.etatUtil.Navigation.getRessources(
+					Enumere_Ressource_1.EGenreRessource.Classe,
+				).setSerialisateurJSON({ ignorerEtatsElements: true }),
+				avecUniquementStagiaire: !!aParam.avecUniquementStagiaire,
+			});
+		const lListeEleves = this._actionSurRequeteListeEleves(lReponse);
+		if (!!lListeEleves) {
+			const lParamClbck = { listeElts: lListeEleves };
+			aParam.clbck.call(aParam.pere, lParamClbck);
+		}
 	}
 	getLibelleMenu(aParam) {
 		switch (aParam.genreRessource) {
-			case EGenreRessource.Classe:
+			case Enumere_Ressource_1.EGenreRessource.Classe:
 				return aParam.avecGroupe === true
-					? GTraductions.getValeur("competences.ClasseGroupe")
-					: GTraductions.getValeur("Classe");
-			case EGenreRessource.Matiere:
-				return GTraductions.getValeur("Matiere");
-			case EGenreRessource.Periode:
-				return GTraductions.getValeur("Periode");
-			case EGenreRessource.Pilier:
-				return GTraductions.getValeur("Competence");
-			case EGenreRessource.Service:
-				return GTraductions.getValeur("Service");
-			case EGenreRessource.Eleve:
-				return GTraductions.getValeur("Eleve");
-			case EGenreRessource.Competence:
-				return GTraductions.getValeur("Competence");
-			case EGenreRessource.Appreciation:
-				return GTraductions.getValeur("Appreciation");
-			case EGenreRessource.DisciplineLivretScolaire:
-				return GTraductions.getValeur("Discipline");
-			case EGenreRessource.Palier:
-				return GTraductions.getValeur("competences.palier");
-			case EGenreRessource.Salle:
-				return GTraductions.getValeur("Salle");
-			case EGenreRessource.Enseignant:
-				return GTraductions.getValeur("Professeur");
-			case EGenreRessource.Personnel:
-				return GTraductions.getValeur("Personnel");
-			case EGenreRessource.Materiel:
-				return GTraductions.getValeur("Materiel");
+					? ObjetTraduction_1.GTraductions.getValeur("competences.ClasseGroupe")
+					: ObjetTraduction_1.GTraductions.getValeur("Classe");
+			case Enumere_Ressource_1.EGenreRessource.Matiere:
+				return ObjetTraduction_1.GTraductions.getValeur("Matiere");
+			case Enumere_Ressource_1.EGenreRessource.Periode:
+				return ObjetTraduction_1.GTraductions.getValeur("Periode");
+			case Enumere_Ressource_1.EGenreRessource.Pilier:
+				return ObjetTraduction_1.GTraductions.getValeur("Competence");
+			case Enumere_Ressource_1.EGenreRessource.Service:
+				return ObjetTraduction_1.GTraductions.getValeur("Service");
+			case Enumere_Ressource_1.EGenreRessource.Eleve:
+				return ObjetTraduction_1.GTraductions.getValeur("Eleve");
+			case Enumere_Ressource_1.EGenreRessource.Competence:
+				return ObjetTraduction_1.GTraductions.getValeur("Competence");
+			case Enumere_Ressource_1.EGenreRessource.Appreciation:
+				return ObjetTraduction_1.GTraductions.getValeur("Appreciation");
+			case Enumere_Ressource_1.EGenreRessource.DisciplineLivretScolaire:
+				return ObjetTraduction_1.GTraductions.getValeur("Discipline");
+			case Enumere_Ressource_1.EGenreRessource.Palier:
+				return ObjetTraduction_1.GTraductions.getValeur("competences.palier");
+			case Enumere_Ressource_1.EGenreRessource.Salle:
+				return ObjetTraduction_1.GTraductions.getValeur("Salle");
+			case Enumere_Ressource_1.EGenreRessource.Enseignant:
+				return ObjetTraduction_1.GTraductions.getValeur("Professeur");
+			case Enumere_Ressource_1.EGenreRessource.Personnel:
+				return ObjetTraduction_1.GTraductions.getValeur("Personnel");
+			case Enumere_Ressource_1.EGenreRessource.Materiel:
+				return ObjetTraduction_1.GTraductions.getValeur("Materiel");
 			default:
 				return null;
 		}
 	}
 	getGenreMessageAucunElement(aGenreRessource) {
 		switch (aGenreRessource) {
-			case EGenreRessource.Classe:
-				return EGenreMessage.AucuneClasseDisponible;
-			case EGenreRessource.Matiere:
-				return EGenreMessage.AucunMatiere;
-			case EGenreRessource.Periode:
-				return EGenreMessage.AucunePeriodes;
-			case EGenreRessource.Pilier:
+			case Enumere_Ressource_1.EGenreRessource.Classe:
+				return Enumere_Message_1.EGenreMessage.AucuneClasseDisponible;
+			case Enumere_Ressource_1.EGenreRessource.Matiere:
+				return Enumere_Message_1.EGenreMessage.AucunMatiere;
+			case Enumere_Ressource_1.EGenreRessource.Periode:
+				return Enumere_Message_1.EGenreMessage.AucunePeriodes;
+			case Enumere_Ressource_1.EGenreRessource.Pilier:
 				return null;
-			case EGenreRessource.Service:
-				return EGenreMessage.AucunService;
-			case EGenreRessource.Eleve: {
-				const lRessource = GEtatUtilisateur.Navigation.getRessource(
-					EGenreRessource.Classe,
+			case Enumere_Ressource_1.EGenreRessource.Service:
+				return Enumere_Message_1.EGenreMessage.AucunService;
+			case Enumere_Ressource_1.EGenreRessource.Eleve: {
+				const lRessource = this.etatUtil.Navigation.getRessource(
+					Enumere_Ressource_1.EGenreRessource.Classe,
 				);
-				return lRessource && lRessource.getGenre() === EGenreRessource.Groupe
-					? EGenreMessage.AucunElevePourGroupe
-					: EGenreMessage.AucunElevePourClasse;
+				return lRessource &&
+					lRessource.getGenre() === Enumere_Ressource_1.EGenreRessource.Groupe
+					? Enumere_Message_1.EGenreMessage.AucunElevePourGroupe
+					: Enumere_Message_1.EGenreMessage.AucunElevePourClasse;
 			}
-			case EGenreRessource.Appreciation:
-				return EGenreMessage.AucunAppreciation;
-			case EGenreRessource.DisciplineLivretScolaire:
-				return EGenreMessage.AucuneDiciplineLivret;
-			case EGenreRessource.Palier:
-				return EGenreMessage.AucunPalier;
-			case EGenreRessource.Salle:
-				return EGenreMessage.AucuneSalleDisponible;
-			case EGenreRessource.Enseignant:
-			case EGenreRessource.Personnel:
+			case Enumere_Ressource_1.EGenreRessource.Appreciation:
+				return Enumere_Message_1.EGenreMessage.AucunAppreciation;
+			case Enumere_Ressource_1.EGenreRessource.DisciplineLivretScolaire:
+				return Enumere_Message_1.EGenreMessage.AucuneDiciplineLivret;
+			case Enumere_Ressource_1.EGenreRessource.Palier:
+				return Enumere_Message_1.EGenreMessage.AucunPalier;
+			case Enumere_Ressource_1.EGenreRessource.Salle:
+				return Enumere_Message_1.EGenreMessage.AucuneSalleDisponible;
+			case Enumere_Ressource_1.EGenreRessource.Enseignant:
+			case Enumere_Ressource_1.EGenreRessource.Personnel:
 				return null;
-			case EGenreRessource.Materiel:
-				return EGenreMessage.AucunMaterielDisponible;
+			case Enumere_Ressource_1.EGenreRessource.Materiel:
+				return Enumere_Message_1.EGenreMessage.AucunMaterielDisponible;
 			default:
 				return null;
 		}
@@ -164,7 +169,9 @@ class MoteurSelectionContexte {
 				aParam.genreRessource,
 			);
 			const lMsg = lGenreMessageAucunElement
-				? GTraductions.getValeur("Message")[lGenreMessageAucunElement]
+				? ObjetTraduction_1.GTraductions.getValeur("Message")[
+						lGenreMessageAucunElement
+					]
 				: "";
 			aParam.clbck.call(aParam.pere, lMsg);
 			const lLibelle = this.getLibelleMenu({
@@ -180,15 +187,18 @@ class MoteurSelectionContexte {
 		const lGenreTri =
 			aParam.genreTri !== undefined && aParam.genreTri !== null
 				? aParam.genreTri
-				: EGenreTriElement.Decroissant;
+				: Enumere_TriElement_1.EGenreTriElement.Decroissant;
 		if (lListeCours.count() > 0) {
 			for (let i = 0, lNbr = lListeCours.count(); i < lNbr; i++) {
 				const lElementCours = lListeCours.get(i);
-				const lDateDebut = GDate.placeAnnuelleEnDate(
+				const lDateDebut = ObjetDate_1.GDate.placeAnnuelleEnDate(
 					lElementCours.Debut,
 					false,
 				);
-				const lDateFin = GDate.placeAnnuelleEnDate(lElementCours.Fin, true);
+				const lDateFin = ObjetDate_1.GDate.placeAnnuelleEnDate(
+					lElementCours.Fin,
+					true,
+				);
 				lElementCours.dateDebut = new Date(
 					lElementCours.DateDuCours.getFullYear(),
 					lElementCours.DateDuCours.getMonth(),
@@ -208,22 +218,28 @@ class MoteurSelectionContexte {
 					lDateFin.getMilliseconds(),
 				);
 				lElementCours.Libelle =
-					GDate.formatDate(lElementCours.DateDuCours, `[%JJJ %J %MMM]`) +
-					" " +
-					GDate.formatDate(
-						lDateDebut,
-						GTraductions.getValeur("De") + " %hh:%mm",
+					ObjetDate_1.GDate.formatDate(
+						lElementCours.DateDuCours,
+						`[%JJJ %J %MMM]`,
 					) +
 					" " +
-					GDate.formatDate(lDateFin, GTraductions.getValeur("A") + " %hh:%mm");
+					ObjetDate_1.GDate.formatDate(
+						lDateDebut,
+						ObjetTraduction_1.GTraductions.getValeur("De") + " %hh:%mm",
+					) +
+					" " +
+					ObjetDate_1.GDate.formatDate(
+						lDateFin,
+						ObjetTraduction_1.GTraductions.getValeur("A") + " %hh:%mm",
+					);
 				const lPublics = [];
 				for (let J = 0; J < lElementCours.ListeContenus.count(); J++) {
 					const lElementContenu = lElementCours.ListeContenus.get(J);
 					const lGenre = lElementContenu.getGenre();
 					switch (lGenre) {
-						case EGenreRessource.Classe:
-						case EGenreRessource.PartieDeClasse:
-						case EGenreRessource.Groupe:
+						case Enumere_Ressource_1.EGenreRessource.Classe:
+						case Enumere_Ressource_1.EGenreRessource.PartieDeClasse:
+						case Enumere_Ressource_1.EGenreRessource.Groupe:
 							lPublics.push(lElementContenu.getLibelle());
 							break;
 					}
@@ -232,7 +248,10 @@ class MoteurSelectionContexte {
 				lElementCours.sousTitre =
 					(lElementCours.classe ? lElementCours.classe : "") +
 					(lElementCours.estSortiePedagogique
-						? " - " + GTraductions.getValeur("EDT.AbsRess.SortiePedagogique")
+						? " - " +
+							ObjetTraduction_1.GTraductions.getValeur(
+								"EDT.AbsRess.SortiePedagogique",
+							)
 						: "") +
 					(lElementCours.matiere && lElementCours.matiere.getLibelle()
 						? " - " + lElementCours.matiere.getLibelle()
@@ -240,7 +259,7 @@ class MoteurSelectionContexte {
 					(lElementCours.NomImageAppelFait
 						? " " +
 							'<div class="InlineBlock AlignementMilieuVertical">' +
-							GImage.composeImage(
+							ObjetImage_1.GImage.composeImage(
 								"Image_" + lElementCours.NomImageAppelFait,
 								16,
 							) +
@@ -248,226 +267,236 @@ class MoteurSelectionContexte {
 						: "");
 			}
 			lListeCours.setTri([
-				ObjetTri.init("DateDuCours", lGenreTri),
-				ObjetTri.init("Debut", lGenreTri),
+				ObjetTri_1.ObjetTri.init("DateDuCours", lGenreTri),
+				ObjetTri_1.ObjetTri.init("Debut", lGenreTri),
 			]);
 			lListeCours.trier();
 			return lListeCours;
 		}
 	}
-}
-function _actionSurGetListeClasses(aParam, aJSON) {
-	const lListeClasse = [
-		EGenreEspace.Mobile_Etablissement,
-		EGenreEspace.Mobile_Administrateur,
-	].includes(GEtatUtilisateur.GenreEspace)
-		? GEtatUtilisateur.getListeClasses({
-				avecClasse: true,
-				avecGroupe: true,
-				uniquementClasseEnseignee: true,
-			})
-		: aJSON.listeClassesGroupes;
-	const lAvecMesServices =
-		[EGenreEspace.Mobile_Professeur].includes(GEtatUtilisateur.GenreEspace) &&
-		[EGenreOnglet.SaisieNotes].includes(GEtatUtilisateur.getGenreOnglet());
-	const lListe = new ObjetListeElements();
-	let lGenre;
-	let lAvecClasse = false;
-	let lAvecGroupe = false;
-	for (let I = 0; I < lListeClasse.count(); I++) {
-		lGenre = lListeClasse.getGenre(I);
-		if (lGenre === EGenreRessource.Classe) {
-			lAvecClasse = true;
+	_actionSurGetListeClasses(aParam, aJSON) {
+		const lAvecUniquementStagiaire =
+			[Enumere_Onglet_1.EGenreOnglet.SaisieAppreciationDeFinDeStage].includes(
+				this.etatUtil.getGenreOnglet(),
+			) &&
+			[Enumere_Espace_1.EGenreEspace.Mobile_Etablissement].includes(
+				this.etatUtil.GenreEspace,
+			);
+		const lListeClasse = [
+			Enumere_Espace_1.EGenreEspace.Mobile_Etablissement,
+			Enumere_Espace_1.EGenreEspace.Mobile_Administrateur,
+		].includes(this.etatUtil.GenreEspace)
+			? this.etatUtil.getListeClasses({
+					avecClasse: true,
+					avecGroupe: true,
+					uniquementClasseEnseignee: true,
+					uniquementClasseStagiaire: lAvecUniquementStagiaire,
+				})
+			: aJSON.listeClassesGroupes;
+		const lAvecMesServices =
+			[Enumere_Espace_1.EGenreEspace.Mobile_Professeur].includes(
+				this.etatUtil.GenreEspace,
+			) &&
+			[Enumere_Onglet_1.EGenreOnglet.SaisieNotes].includes(
+				this.etatUtil.getGenreOnglet(),
+			);
+		const lListe = new ObjetListeElements_1.ObjetListeElements();
+		let lGenre;
+		let lAvecClasse = false;
+		let lAvecGroupe = false;
+		for (let I = 0; I < lListeClasse.count(); I++) {
+			lGenre = lListeClasse.getGenre(I);
+			if (lGenre === Enumere_Ressource_1.EGenreRessource.Classe) {
+				lAvecClasse = true;
+			}
+			if (lGenre === Enumere_Ressource_1.EGenreRessource.Groupe) {
+				lAvecGroupe = true;
+			}
 		}
-		if (lGenre === EGenreRessource.Groupe) {
-			lAvecGroupe = true;
+		lListe.add(lListeClasse);
+		if (lAvecMesServices) {
+			const lMesServices = new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur("MesServices"),
+				-1,
+				Enumere_Ressource_1.EGenreRessource.Aucune,
+				null,
+			);
+			lMesServices.AvecSelection = true;
+			lListe.addElement(lMesServices);
 		}
+		if (lAvecClasse && lAvecGroupe) {
+			let lElement = new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur("Classe"),
+				-1,
+				Enumere_Ressource_1.EGenreRessource.Classe,
+				null,
+			);
+			lElement.AvecSelection = false;
+			lListe.addElement(lElement);
+			lElement = new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur("Groupe"),
+				-1,
+				Enumere_Ressource_1.EGenreRessource.Groupe,
+				null,
+			);
+			lElement.AvecSelection = false;
+			lListe.addElement(lElement);
+		}
+		lListe.setTri([
+			ObjetTri_1.ObjetTri.init((D) => {
+				return D.getGenre() !== Enumere_Ressource_1.EGenreRessource.Aucune;
+			}),
+			ObjetTri_1.ObjetTri.init((D) => {
+				return D.getNumero() !== 0;
+			}),
+			ObjetTri_1.ObjetTri.init((D) => {
+				return D.getGenre() !== Enumere_Ressource_1.EGenreRessource.Classe;
+			}),
+			ObjetTri_1.ObjetTri.init((D) => {
+				return D.getNumero() !== -1;
+			}),
+			ObjetTri_1.ObjetTri.init("Libelle"),
+		]);
+		lListe.trier();
+		if (!!lListe) {
+			const lDefault = this._getClasseParDefaut(lListe);
+			const lIndiceDefault = lListe.getIndiceParElement(lDefault);
+			const lParamClbck = {
+				listeElts: lListe,
+				indiceEltParDefaut: lIndiceDefault,
+			};
+			aParam.clbck.call(aParam.pere, lParamClbck);
+		}
+		return lListe;
 	}
-	lListe.add(lListeClasse);
-	if (lAvecMesServices) {
-		const lMesServices = new ObjetElement(
-			GTraductions.getValeur("MesServices"),
-			-1,
-			EGenreRessource.Aucune,
-			null,
-		);
-		lMesServices.AvecSelection = true;
-		lListe.addElement(lMesServices);
-	}
-	if (lAvecClasse && lAvecGroupe) {
-		let lElement = new ObjetElement(
-			GTraductions.getValeur("Classe"),
-			-1,
-			EGenreRessource.Classe,
-			null,
-		);
-		lElement.AvecSelection = false;
-		lListe.addElement(lElement);
-		lElement = new ObjetElement(
-			GTraductions.getValeur("Groupe"),
-			-1,
-			EGenreRessource.Groupe,
-			null,
-		);
-		lElement.AvecSelection = false;
-		lListe.addElement(lElement);
-	}
-	lListe.setTri([
-		ObjetTri.init((D) => {
-			return D.getGenre() !== EGenreRessource.Aucune;
-		}),
-		ObjetTri.init((D) => {
-			return D.getNumero() !== 0;
-		}),
-		ObjetTri.init((D) => {
-			return D.getGenre() !== EGenreRessource.Classe;
-		}),
-		ObjetTri.init((D) => {
-			return D.getNumero() !== -1;
-		}),
-		ObjetTri.init("Libelle"),
-	]);
-	lListe.trier();
-	if (!!lListe) {
-		const lDefault = _getClasseParDefaut.call(this, lListe);
-		const lIndiceDefault = lListe.getIndiceParElement(lDefault);
-		const lParamClbck = {
-			listeElts: lListe,
-			indiceEltParDefaut: lIndiceDefault,
-		};
-		aParam.clbck.call(aParam.pere, lParamClbck);
-	}
-	return lListe;
-}
-function _getClasseParDefaut(aListeClasses) {
-	let lClasse = null;
-	if (this.selection.classe !== null && this.selection.classe !== undefined) {
-		lClasse = aListeClasses.getElementParNumero(
-			this.selection.classe.getNumero(),
-		);
-	}
-	if (lClasse !== null && lClasse !== undefined) {
+	_getClasseParDefaut(aListeClasses) {
+		let lClasse = null;
+		if (this.selection.classe !== null && this.selection.classe !== undefined) {
+			lClasse = aListeClasses.getElementParNumero(
+				this.selection.classe.getNumero(),
+			);
+		}
+		if (lClasse !== null && lClasse !== undefined) {
+			return lClasse;
+		}
+		aListeClasses.parcourir((aElement) => {
+			if (aElement.getNumero() !== 0 && aElement.getNumero() !== -1) {
+				lClasse = aElement;
+				return false;
+			}
+		});
 		return lClasse;
 	}
-	aListeClasses.parcourir((aElement) => {
-		if (aElement.getNumero() !== 0 && aElement.getNumero() !== -1) {
-			lClasse = aElement;
-			return false;
-		}
-	});
-	return lClasse;
-}
-function _actionSurGetListePeriodes(aXml) {
-	return aXml.listePeriodes;
-}
-function _getServiceParDefaut(aListeServices, aParam) {
-	let lServiceParDefaut = null;
-	const lRessource = aParam.classe;
-	aListeServices.parcourir((aElement) => {
-		if (aElement._estSurProfesseur) {
-			if (!lServiceParDefaut || aElement.estUnService) {
-				if (
-					!lServiceParDefaut ||
-					!(
-						lRessource.getGenre() === EGenreRessource.Classe &&
-						aElement._estServicePartie
-					)
-				) {
-					lServiceParDefaut = aElement;
+	_getServiceParDefaut(aListeServices, aParam) {
+		let lServiceParDefaut = null;
+		const lRessource = aParam.classe;
+		aListeServices.parcourir((aElement) => {
+			if (aElement._estSurProfesseur) {
+				if (!lServiceParDefaut || aElement.estUnService) {
+					if (
+						!lServiceParDefaut ||
+						!(
+							lRessource.getGenre() ===
+								Enumere_Ressource_1.EGenreRessource.Classe &&
+							aElement._estServicePartie
+						)
+					) {
+						lServiceParDefaut = aElement;
+					}
 				}
 			}
-		}
-	});
-	return lServiceParDefaut;
-}
-function _actionSurGetListeServices(aListeServices) {
-	const lListe = aListeServices;
-	let lServicePere = null;
-	lListe.parcourir((aElement) => {
-		const lLibelleClasse = aElement.classe.getLibelle();
-		const lLibelleGroupe = aElement.groupe.getLibelle();
-		const lLibelleClasseGroupe =
-			lLibelleClasse +
-			(lLibelleClasse && lLibelleGroupe ? " > " : "") +
-			lLibelleGroupe;
-		let lLibelleProfesseurs = [];
-		let lEstSurProfesseur = false;
-		for (
-			let I = 0;
-			aElement.listeProfesseurs && I < aElement.listeProfesseurs.count();
-			I++
-		) {
-			lLibelleProfesseurs.push(aElement.listeProfesseurs.getLibelle(I));
-			if (
-				aElement.listeProfesseurs.getNumero(I) ===
-				GEtatUtilisateur.getUtilisateur().getNumero()
-			) {
-				lEstSurProfesseur = true;
-			}
-		}
-		lLibelleProfesseurs = lLibelleProfesseurs.join("<br>");
-		aElement._libelleClasseGroupe = lLibelleClasseGroupe;
-		aElement._libelleProfesseurs = lLibelleProfesseurs;
-		aElement._estSurProfesseur = lEstSurProfesseur;
-		if (aElement.estUnService) {
-			lServicePere = aElement;
-		} else {
-			aElement.pere = lServicePere;
-			aElement.setLibelle("&nbsp;&nbsp;&nbsp;&nbsp;" + aElement.getLibelle());
-		}
-		const T = [];
-		T.push(lLibelleClasseGroupe, " - ", lLibelleProfesseurs);
-		aElement.sousTitre = T.join("");
-	});
-	lListe.setTri([
-		ObjetTri.initRecursif("pere", [
-			ObjetTri.init((D) => {
-				return D.matiere && D.matiere.getNumero() ? 1 : 0;
-			}),
-			ObjetTri.init((D) => {
-				return D.matiere ? D.matiere.getLibelle() : "";
-			}),
-			ObjetTri.init((D) => {
-				return D._libelleClasseGroupe;
-			}),
-			ObjetTri.init((D) => {
-				return D._libelleProfesseurs;
-			}),
-			ObjetTri.init((D) => {
-				return !D.estUnService;
-			}),
-			ObjetTri.init((D) => {
-				return D.getNumero();
-			}),
-		]),
-	]);
-	lListe.trier();
-	return lListe;
-}
-function _actionSurRequeteListeEleves(aXml, aJSON) {
-	const lListeEleves = new ObjetListeElements();
-	if (this.avecDeLaClasse) {
-		const lDonneeDeLaClasse = new ObjetElement(
-			this.estUneClasse
-				? "< " + GTraductions.getValeur("DeLaClasse") + " >"
-				: "< " + GTraductions.getValeur("DuGroupe") + " >",
-			0,
-			null,
-			-1,
-		);
-		lListeEleves.addElement(lDonneeDeLaClasse);
+		});
+		return lServiceParDefaut;
 	}
-	aJSON.listeEleves.parcourir((D) => {
-		const lEleve = MethodesObjet.dupliquer(D);
-		lListeEleves.addElement(lEleve);
-	});
-	lListeEleves.setTri([
-		ObjetTri.init((D) => {
-			return D.getNumero() !== 0;
-		}),
-		ObjetTri.init("Position"),
-	]);
-	lListeEleves.trier();
-	return lListeEleves;
+	_actionSurGetListeServices(aListeServices) {
+		const lListe = aListeServices;
+		let lServicePere = null;
+		lListe.parcourir((aElement) => {
+			const lLibelleClasse = aElement.classe.getLibelle();
+			const lLibelleGroupe = aElement.groupe.getLibelle();
+			const lLibelleClasseGroupe =
+				lLibelleClasse +
+				(lLibelleClasse && lLibelleGroupe ? " > " : "") +
+				lLibelleGroupe;
+			let lTabLibelleProfesseurs = [];
+			let lEstSurProfesseur = false;
+			for (
+				let I = 0;
+				aElement.listeProfesseurs && I < aElement.listeProfesseurs.count();
+				I++
+			) {
+				lTabLibelleProfesseurs.push(aElement.listeProfesseurs.getLibelle(I));
+				if (
+					aElement.listeProfesseurs.getNumero(I) ===
+					this.etatUtil.getUtilisateur().getNumero()
+				) {
+					lEstSurProfesseur = true;
+				}
+			}
+			const lLibelleProfesseurs = lTabLibelleProfesseurs.join("<br>");
+			aElement._libelleClasseGroupe = lLibelleClasseGroupe;
+			aElement._libelleProfesseurs = lLibelleProfesseurs;
+			aElement._estSurProfesseur = lEstSurProfesseur;
+			if (aElement.estUnService) {
+				lServicePere = aElement;
+			} else {
+				aElement.pere = lServicePere;
+				aElement.setLibelle("&nbsp;&nbsp;&nbsp;&nbsp;" + aElement.getLibelle());
+			}
+			const T = [];
+			T.push(lLibelleClasseGroupe, " - ", lLibelleProfesseurs);
+			aElement.sousTitre = T.join("");
+		});
+		lListe.setTri([
+			ObjetTri_1.ObjetTri.initRecursif("pere", [
+				ObjetTri_1.ObjetTri.init((D) => {
+					return D.matiere && D.matiere.getNumero() ? 1 : 0;
+				}),
+				ObjetTri_1.ObjetTri.init((D) => {
+					return D.matiere ? D.matiere.getLibelle() : "";
+				}),
+				ObjetTri_1.ObjetTri.init((D) => {
+					return D._libelleClasseGroupe;
+				}),
+				ObjetTri_1.ObjetTri.init((D) => {
+					return D._libelleProfesseurs;
+				}),
+				ObjetTri_1.ObjetTri.init((D) => {
+					return !D.estUnService;
+				}),
+				ObjetTri_1.ObjetTri.init((D) => {
+					return D.getNumero();
+				}),
+			]),
+		]);
+		lListe.trier();
+		return lListe;
+	}
+	_actionSurRequeteListeEleves(aJSON) {
+		const lListeEleves = new ObjetListeElements_1.ObjetListeElements();
+		if (this.avecDeLaClasse) {
+			const lDonneeDeLaClasse = new ObjetElement_1.ObjetElement(
+				this.estUneClasse
+					? "< " + ObjetTraduction_1.GTraductions.getValeur("DeLaClasse") + " >"
+					: "< " + ObjetTraduction_1.GTraductions.getValeur("DuGroupe") + " >",
+				0,
+				null,
+				-1,
+			);
+			lListeEleves.addElement(lDonneeDeLaClasse);
+		}
+		aJSON.listeEleves.parcourir((D) => {
+			const lEleve = MethodesObjet_1.MethodesObjet.dupliquer(D);
+			lListeEleves.addElement(lEleve);
+		});
+		lListeEleves.setTri([
+			ObjetTri_1.ObjetTri.init((D) => {
+				return D.getNumero() !== 0;
+			}),
+			ObjetTri_1.ObjetTri.init("Position"),
+		]);
+		lListeEleves.trier();
+		return lListeEleves;
+	}
 }
-module.exports = { MoteurSelectionContexte };
+exports.MoteurSelectionContexte = MoteurSelectionContexte;

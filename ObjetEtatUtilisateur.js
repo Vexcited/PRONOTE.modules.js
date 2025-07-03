@@ -14,7 +14,7 @@ const Enumere_Onglet_1 = require("Enumere_Onglet");
 const ObjetDroitsPN_1 = require("ObjetDroitsPN");
 const Enumere_Connexion_1 = require("Enumere_Connexion");
 const ObjetDate_1 = require("ObjetDate");
-const ThemesCouleurs_1 = require("ThemesCouleurs");
+const TypeSecurisationCompte_1 = require("TypeSecurisationCompte");
 class ObjetEtatUtilisateur extends ObjetEtatUtilisateurCP_1.ObjetEtatUtilisateurCP {
 	constructor(aGenreEspace) {
 		super();
@@ -39,6 +39,7 @@ class ObjetEtatUtilisateur extends ObjetEtatUtilisateurCP_1.ObjetEtatUtilisateur
 		super.listeOnglets = aValeur;
 	}
 	initAuthentification(aParam) {
+		var _a, _b;
 		this.avecRessourcesGranulaire = aParam.avecRessourcesGranulaire;
 		this.avecRessourcesRenduTAF = aParam.avecRessourcesRenduTAF;
 		this.avecRessourcesEnvoiNote = aParam.avecRessourcesEnvoiNote;
@@ -57,6 +58,22 @@ class ObjetEtatUtilisateur extends ObjetEtatUtilisateurCP_1.ObjetEtatUtilisateur
 		this.modeSecurisationParDefaut = aParam.modeSecurisationParDefaut;
 		if (aParam.messagerieSignature) {
 			this.messagerieSignature = aParam.messagerieSignature;
+		}
+		if (
+			((_b =
+				(_a =
+					aParam === null || aParam === void 0
+						? void 0
+						: aParam.listeAppareilsMobile_VisibleDebug) === null ||
+				_a === void 0
+					? void 0
+					: _a.listeConnexionMobile) === null || _b === void 0
+				? void 0
+				: _b.length) > 0
+		) {
+			this.setListeAppareilsMobile(
+				aParam.listeAppareilsMobile_VisibleDebug.listeConnexionMobile,
+			);
 		}
 		this.deserialiserOnglets(aParam);
 		this.deserialiserRessources(aParam);
@@ -466,6 +483,16 @@ class ObjetEtatUtilisateur extends ObjetEtatUtilisateurCP_1.ObjetEtatUtilisateur
 		}
 		return lOngletSelectionne;
 	}
+	getLibelleLongOnglet() {
+		const lOnglet = this.getOngletSelectionne();
+		return (
+			(lOnglet === null || lOnglet === void 0 ? void 0 : lOnglet.libelleLong) ||
+			(lOnglet === null || lOnglet === void 0
+				? void 0
+				: lOnglet.getLibelle()) ||
+			""
+		);
+	}
 	estOngletAutorise(aGenreOnglet) {
 		let lOK = false;
 		this.listeOnglets.parcourir((aOnglet) => {
@@ -486,14 +513,6 @@ class ObjetEtatUtilisateur extends ObjetEtatUtilisateurCP_1.ObjetEtatUtilisateur
 				.getOptionsEspaceLocal()
 				.setAvecCodeCompetences(aActif);
 		}
-	}
-	setAvecThemeAccessible(aActif) {
-		if (this.applicationSco.getOptionsEspaceLocal()) {
-			this.applicationSco
-				.getOptionsEspaceLocal()
-				.setAvecThemeAccessible(aActif);
-		}
-		ThemesCouleurs_1.ThemesCouleurs.setModeAccessible(aActif);
 	}
 	getDerniereDate() {
 		if (this.derniereDate === null || this.derniereDate === undefined) {
@@ -527,6 +546,7 @@ class ObjetEtatUtilisateur extends ObjetEtatUtilisateurCP_1.ObjetEtatUtilisateur
 				Enumere_Espace_1.EGenreEspace.Tuteur,
 				Enumere_Espace_1.EGenreEspace.Mobile_Tuteur,
 				Enumere_Espace_1.EGenreEspace.Entreprise,
+				Enumere_Espace_1.EGenreEspace.Mobile_Entreprise,
 				Enumere_Espace_1.EGenreEspace.Academie,
 			].includes(this.GenreEspace)
 		) {
@@ -613,6 +633,7 @@ class ObjetEtatUtilisateur extends ObjetEtatUtilisateurCP_1.ObjetEtatUtilisateur
 			Enumere_Espace_1.EGenreEspace.Eleve,
 			Enumere_Espace_1.EGenreEspace.Mobile_Eleve,
 			Enumere_Espace_1.EGenreEspace.Entreprise,
+			Enumere_Espace_1.EGenreEspace.Mobile_Entreprise,
 			Enumere_Espace_1.EGenreEspace.PrimParent,
 			Enumere_Espace_1.EGenreEspace.Mobile_PrimParent,
 			Enumere_Espace_1.EGenreEspace.PrimEleve,
@@ -800,6 +821,12 @@ class ObjetEtatUtilisateur extends ObjetEtatUtilisateurCP_1.ObjetEtatUtilisateur
 				if (aParams.sansClasseDeRegroupement && lClasse.dansRegroupement) {
 					lRecupererClasse = false;
 				}
+				if (aParams.uniquementClasseStagiaire) {
+					lRecupererClasse =
+						lClasse.getGenre() === Enumere_Ressource_1.EGenreRessource.Classe
+							? lClasse.estClasseDeMonStagiaire
+							: lClasse.estGroupeDeMonStagiaire;
+				}
 				if (lRecupererClasse) {
 					let lClasseExistant = lListeClasses.getElementParElement(lClasse);
 					if (!lClasseExistant) {
@@ -878,6 +905,24 @@ class ObjetEtatUtilisateur extends ObjetEtatUtilisateurCP_1.ObjetEtatUtilisateur
 		this.Navigation.contexteRemplacementsEnseignant =
 			contexteRemplacementsEnseignant;
 	}
+	estOngletAccessible(aGenreOnglet) {
+		let lEstOngletAccessible = false;
+		if (this.listeOnglets) {
+			const lEstOngletPresent =
+				!!this.listeOnglets.getElementParGenre(aGenreOnglet);
+			if (lEstOngletPresent) {
+				lEstOngletAccessible = true;
+				if (this.listeOngletsInvisibles) {
+					let lEstInvisible =
+						this.listeOngletsInvisibles.includes(aGenreOnglet);
+					if (lEstInvisible) {
+						lEstOngletAccessible = false;
+					}
+				}
+			}
+		}
+		return lEstOngletAccessible;
+	}
 	_ajouterOnglet(aJSON, aProfondeur, aOngletPere) {
 		const lOnglet = new ObjetElement_1.ObjetElement().fromJSON(aJSON);
 		if (
@@ -949,5 +994,24 @@ class ObjetEtatUtilisateur extends ObjetEtatUtilisateurCP_1.ObjetEtatUtilisateur
 			}
 		}
 	}
+	setListeAppareilsMobile(aListe) {
+		const lListe = new ObjetListeElements_1.ObjetListeElements();
+		for (let lIndex = 0; lIndex < aListe.length; lIndex++) {
+			lListe.add(
+				ObjetElement_1.ObjetElement.create(
+					Object.assign(
+						{
+							Genre:
+								TypeSecurisationCompte_1.TypeGenreSourceConnexion
+									.GSC_ApplicationMobile,
+						},
+						aListe[lIndex],
+					),
+				),
+			);
+		}
+		this.listeAppareilsMobile = lListe;
+	}
+	inverserEtatAssistantSaisie() {}
 }
 exports.ObjetEtatUtilisateur = ObjetEtatUtilisateur;

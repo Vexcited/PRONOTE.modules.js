@@ -10,9 +10,12 @@ const TypeArrierePlanAuthentification_1 = require("TypeArrierePlanAuthentificati
 const ObjetBandeauEspace_1 = require("ObjetBandeauEspace");
 const InterfaceBandeauPiedCommune_1 = require("InterfaceBandeauPiedCommune");
 const UtilitaireMenuContextuelNatif_1 = require("UtilitaireMenuContextuelNatif");
+const AccessApp_1 = require("AccessApp");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const GlossaireCP_1 = require("GlossaireCP");
 class UtilitairePageCommune {
 	constructor() {
-		this.application = GApplication;
+		this.application = (0, AccessApp_1.getApp)();
 		this.PositionFocus = 1;
 		this.Id = GUID_1.GUID.getId();
 		this.idWrapper = this.Id + "_wrapper";
@@ -56,10 +59,13 @@ class UtilitairePageCommune {
 		ObjetHtml_1.GHtml.setHtml(this.parametres.id, this._construire(), {
 			controleur: this.controleur,
 		});
+		(0, AccessApp_1.getApp)()
+			.getObjetParametres()
+			.setDocumentTitle(GlossaireCP_1.TradGlossaireCP.PageCommune);
 		if (this.parametres.objetContenu) {
 			this.parametres.objetContenu.initialiser();
 		}
-		if (GNavigateur.getToucheAltNum) {
+		if (ObjetNavigateur_1.Navigateur.getToucheAltNum) {
 			$("body").on("keyup", { aObjet: this }, this._raccourciClavierEspace);
 		}
 		UtilitaireMenuContextuelNatif_1.UtilitaireMenuContextuelNatif.desactiverSurElement(
@@ -71,7 +77,7 @@ class UtilitairePageCommune {
 	}
 	_getControleur(aInstance) {
 		return {
-			getIdentiteBandeau: function () {
+			getIdentiteBandeau() {
 				return {
 					class: ObjetBandeauEspace_1.ObjetBandeauEspace,
 					pere: {},
@@ -82,7 +88,7 @@ class UtilitairePageCommune {
 					},
 				};
 			},
-			getIdentiteFooter: function () {
+			getIdentiteFooter() {
 				return {
 					pere: {},
 					class: InterfaceBandeauPiedCommune_1.InterfaceBandeauPiedCommune,
@@ -105,7 +111,7 @@ class UtilitairePageCommune {
 		};
 	}
 	_raccourciClavierEspace(event) {
-		const J = GNavigateur.getToucheAltNum(
+		const J = ObjetNavigateur_1.Navigateur.getToucheAltNum(
 			1,
 			event.data.aObjet.listeBoutons.count(),
 		);
@@ -118,7 +124,7 @@ class UtilitairePageCommune {
 		}
 	}
 	_construire() {
-		const lHtml = [];
+		const H = [];
 		let lObjetImage = {};
 		lObjetImage =
 			this.parametres.imageConnexion ||
@@ -183,7 +189,7 @@ class UtilitairePageCommune {
 			lObjetImage.applicationNom = "espace-primaire ";
 		}
 		if (lObjetImage.urlImageFond || lObjetImage.classImageFond) {
-			lHtml.push(
+			H.push(
 				'<div class="ImageFond ' + lObjetImage.classImageFond + '" style="',
 				lObjetImage.couleurFondBg
 					? "background-color: " + lObjetImage.couleurFondBg + "; "
@@ -195,7 +201,7 @@ class UtilitairePageCommune {
 					: "",
 				"position:absolute;z-index:-15;width:100%;height:100%;min-height:calc(100% - 50px);",
 				lObjetImage.widthImageSuite && lObjetImage.urlImageSuite
-					? GNavigateur.clientL > lObjetImage.widthImageSuite
+					? ObjetNavigateur_1.Navigateur.clientL > lObjetImage.widthImageSuite
 						? "min-width:" + lObjetImage.widthImageSuite + "px;"
 						: ""
 					: "",
@@ -203,39 +209,39 @@ class UtilitairePageCommune {
 			);
 		}
 		if (this.avecFondFichier) {
-			lHtml.push(
+			H.push(
 				'<div class="ImageFond ' +
 					lObjetImage.classImageFond +
 					'" style="background-color:' +
 					lObjetImage.couleurFondBg +
 					";",
 			);
-			lHtml.push(
+			H.push(
 				" background-image:url('" +
 					(this.parametres.urlFondEcran || "") +
 					"'); ",
 			);
-			lHtml.push(' position:absolute;z-index:-15;width:100%;height:100%;">');
-			lHtml.push("</div>");
+			H.push(' position:absolute;z-index:-15;width:100%;height:100%;">');
+			H.push("</div>");
 		}
-		lHtml.push(
+		H.push(
 			'<div id="',
 			this.idWrapper,
 			'" class="' +
 				(lObjetImage.classeImage || "") +
 				'" style="position:absolute;width:100%;height:100%;min-height:650px;overflow:hidden;text-align:center;',
 			lObjetImage.widthImageSuite && lObjetImage.urlImageSuite
-				? GNavigateur.clientL > lObjetImage.widthImageSuite
+				? ObjetNavigateur_1.Navigateur.clientL > lObjetImage.widthImageSuite
 					? "min-width:" + lObjetImage.widthImageSuite + "px;"
 					: ""
 				: "",
 			'">',
 		);
-		lHtml.push(
+		H.push(
 			'<div ie-identite="getIdentiteBandeau" role="presentation" style="position:relative;width: 100%;z-index:101;"></div>',
 		);
 		if (lObjetImage.srcImage) {
-			lHtml.push(
+			H.push(
 				'<div style="position:absolute;left: 0px; bottom: 0px;height:80%;z-index:0;">',
 			);
 			if (
@@ -244,7 +250,7 @@ class UtilitairePageCommune {
 				lObjetImage.texteLien &&
 				lObjetImage.suiviLien
 			) {
-				lHtml.push(
+				H.push(
 					'<a href="' +
 						lObjetImage.lien +
 						'" class="Texte12 LienLouvre" onclick="$.get(\'' +
@@ -252,7 +258,7 @@ class UtilitairePageCommune {
 						"');\">",
 				);
 			}
-			lHtml.push(
+			H.push(
 				'<img id="' +
 					this.idImage +
 					'" aria-hidden="true" ' +
@@ -271,7 +277,7 @@ class UtilitairePageCommune {
 				lObjetImage.texteLien &&
 				lObjetImage.suiviLien
 			) {
-				lHtml.push(
+				H.push(
 					'<div style="position: absolute;bottom:' +
 						lObjetImage.bottomLien +
 						";left:" +
@@ -285,10 +291,10 @@ class UtilitairePageCommune {
 						"</div></a>",
 				);
 			}
-			lHtml.push("</div>");
+			H.push("</div>");
 		}
 		if (this.parametres.objetContenu) {
-			lHtml.push(
+			H.push(
 				'<div id="',
 				this.parametres.objetContenu.getNom(),
 				'" style="position:absolute;width:100%;height:100%;overflow:hidden;"></div>',
@@ -297,10 +303,10 @@ class UtilitairePageCommune {
 			if (!lObjetImage.couleurConnexion) {
 				lObjetImage.couleurConnexion = "#FFF";
 			}
-			lHtml.push(
+			H.push(
 				'<div class="InlineBlock AlignementMilieuVertical full-height"></div>',
 			);
-			lHtml.push(
+			H.push(
 				'<div class="' +
 					(this.application.estEDT || this.application.estPrimaire
 						? lObjetImage.applicationNom
@@ -309,14 +315,14 @@ class UtilitairePageCommune {
 					(lObjetImage.srcImage ? " image-aside" : "") +
 					'">',
 			);
-			lHtml.push(
+			H.push(
 				'<div class="logo-espace-edt bloc-elem"></div>',
 				'<div class="illustration-container bloc-elem">',
 				'<div class="illus-rond"></div>',
 				'<div class="logo-pronote-primaire"></div>',
 				"</div>",
 			);
-			lHtml.push(
+			H.push(
 				'<nav id="',
 				this.idConnect,
 				'" class="bloc-elem choix-profil-contain">',
@@ -324,7 +330,7 @@ class UtilitairePageCommune {
 			);
 			for (let I = 0; I < this.listeBoutons.count(); I++) {
 				const lBouton = this.listeBoutons.get(I);
-				lHtml.push(
+				H.push(
 					"<li>",
 					'<a id="',
 					this.idBouton + I,
@@ -341,9 +347,11 @@ class UtilitairePageCommune {
 					'class="btn-connexion"',
 					ObjetHtml_1.GHtml.composeAttr("ie-node", "nodeBouton", [I]),
 					">",
+					'<div class="img-btn-bg">',
 					'<span class="img-btn ',
 					this._getImageEspace(lBouton.Genre),
 					'"></span>',
+					"</div>",
 					'<span class="libelle">',
 					lBouton.getLibelle(),
 					"</span>",
@@ -351,29 +359,29 @@ class UtilitairePageCommune {
 					"</li>",
 				);
 			}
-			lHtml.push("</ul>", "</nav>", "</div>");
+			H.push("</ul>", "</nav>", "</div>");
 		}
 		if (
 			!!this.parametres.mentionsPagesPubliques &&
 			!!this.parametres.mentionsPagesPubliques.lien
 		) {
-			lHtml.push(
+			H.push(
 				'<div style="position:absolute; bottom:1rem; z-index:101; left:50%;">',
 				this.parametres.mentionsPagesPubliques.lien,
 				"</div>",
 			);
 		}
-		lHtml.push(
+		H.push(
 			'<div ie-identite="getIdentiteFooter" role="presentation" style="position:absolute;width: 100%;z-index:101; bottom:0;"></div>',
 		);
-		lHtml.push("</div>");
+		H.push("</div>");
 		if (
 			lObjetImage.urlImageFond &&
 			lObjetImage.heightImageSuite &&
 			lObjetImage.widthImageSuite &&
 			lObjetImage.urlImageSuite
 		) {
-			lHtml.push(
+			H.push(
 				'<div id="' +
 					this.idImageSuite +
 					'" onclick="$(\'#' +
@@ -383,25 +391,25 @@ class UtilitairePageCommune {
 					'" style="display: none;position:absolute;width:100%;height:calc(100% - 50px);min-height:' +
 					lObjetImage.heightImageSuite +
 					"px;" +
-					(GNavigateur.clientL > lObjetImage.widthImageSuite
+					(ObjetNavigateur_1.Navigateur.clientL > lObjetImage.widthImageSuite
 						? "min-width:" + lObjetImage.widthImageSuite + "px"
 						: "") +
 					";padding-bottom:50px;z-index:1;background-image: url(" +
 					lObjetImage.urlImageFond +
 					');">',
 			);
-			lHtml.push(
+			H.push(
 				'<div style="background-position:center center;background-repeat: no-repeat;width:100%;height:100%;background-image:url(' +
 					lObjetImage.urlImageSuite +
 					');"></div>',
 			);
-			lHtml.push('<div style="position:absolute; bottom: 10px;right:10px;">');
+			H.push('<div style="position:absolute; bottom: 10px;right:10px;">');
 			if (
 				lObjetImage.lienLogo &&
 				lObjetImage.styleLogo &&
 				lObjetImage.suiviLogo
 			) {
-				lHtml.push(
+				H.push(
 					'<a href="' +
 						lObjetImage.lienLogo +
 						'" style="float: right; margin-right: 10px;' +
@@ -417,7 +425,7 @@ class UtilitairePageCommune {
 				lObjetImage.texteLienSuite &&
 				lObjetImage.suiviLienSuite
 			) {
-				lHtml.push(
+				H.push(
 					'<a href="' +
 						lObjetImage.lienSuite +
 						'" style="float: right; margin: 10px;" class="Texte12 LienLouvre" onclick="$.get(\'' +
@@ -427,10 +435,10 @@ class UtilitairePageCommune {
 						"</a>",
 				);
 			}
-			lHtml.push("</div>");
-			lHtml.push("</div>");
+			H.push("</div>");
+			H.push("</div>");
 		}
-		return lHtml.join("");
+		return H.join("");
 	}
 	_getImageEspace(aEspace) {
 		let lImageEspace = "Icone_EspaceInvite";
@@ -457,19 +465,19 @@ class UtilitairePageCommune {
 				lImageEspace = "Icone_EspaceAdministratif";
 				break;
 			case Enumere_Espace_1.EGenreEspace.PrimProfesseur:
-				lImageEspace = "Icone_EspaceEnseignant";
+				lImageEspace = "Icone_EspacePrimEnseignant";
 				break;
 			case Enumere_Espace_1.EGenreEspace.PrimParent:
-				lImageEspace = "Icone_EspaceParent";
+				lImageEspace = "Icone_EspacePrimParent";
 				break;
 			case Enumere_Espace_1.EGenreEspace.PrimEleve:
-				lImageEspace = "Icone_EspaceEtudiant";
+				lImageEspace = "Icone_EspacePrimEtudiant";
 				break;
 			case Enumere_Espace_1.EGenreEspace.Accompagnant:
 				lImageEspace = "Icone_EspaceAccompagnant";
 				break;
 			case Enumere_Espace_1.EGenreEspace.PrimAccompagnant:
-				lImageEspace = "Icone_EspaceAccompagnant";
+				lImageEspace = "Icone_EspacePrimAccompagnant";
 				break;
 			case Enumere_Espace_1.EGenreEspace.Inscription:
 				lImageEspace = "Icone_EspaceInscription";
@@ -484,7 +492,7 @@ class UtilitairePageCommune {
 				lImageEspace = "Icone_EspaceMairie";
 				break;
 			case Enumere_Espace_1.EGenreEspace.PrimDirection:
-				lImageEspace = "Icone_EspaceAdministratif";
+				lImageEspace = "Icone_EspacePrimAdministratif";
 				break;
 		}
 		return lImageEspace;

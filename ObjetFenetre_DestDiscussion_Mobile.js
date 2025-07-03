@@ -55,7 +55,7 @@ class ObjetFenetre_DestDiscussion_Mobile extends ObjetFenetre_1.ObjetFenetre {
 				),
 			),
 			IE.jsx.str("div", {
-				id: this.getInstance(this.identListe).getNom(),
+				id: this.getNomInstance(this.identListe),
 				class: "full-height",
 			}),
 		);

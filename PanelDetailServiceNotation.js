@@ -1,7 +1,4 @@
-exports.TypeMoyReferenceBulletin =
-	exports.ModeCalculMoyenneServicePere =
-	exports.PanelDetailServiceNotation =
-		void 0;
+exports.PanelDetailServiceNotation = void 0;
 const ObjetChaine_1 = require("ObjetChaine");
 const ObjetHtml_1 = require("ObjetHtml");
 const ObjetStyle_1 = require("ObjetStyle");
@@ -14,29 +11,8 @@ const ObjetInterface_1 = require("ObjetInterface");
 const ToucheClavier_1 = require("ToucheClavier");
 const TypeNote_1 = require("TypeNote");
 const Enumere_Arrondi_1 = require("Enumere_Arrondi");
-var ModeCalculMoyenneServicePere;
-(function (ModeCalculMoyenneServicePere) {
-	ModeCalculMoyenneServicePere[
-		(ModeCalculMoyenneServicePere["MoyDesSousServices"] = 0)
-	] = "MoyDesSousServices";
-	ModeCalculMoyenneServicePere[
-		(ModeCalculMoyenneServicePere["MoyDesDevoirs"] = 1)
-	] = "MoyDesDevoirs";
-})(
-	ModeCalculMoyenneServicePere ||
-		(exports.ModeCalculMoyenneServicePere = ModeCalculMoyenneServicePere = {}),
-);
-var TypeMoyReferenceBulletin;
-(function (TypeMoyReferenceBulletin) {
-	TypeMoyReferenceBulletin[(TypeMoyReferenceBulletin["ElevesDuGroupe"] = 0)] =
-		"ElevesDuGroupe";
-	TypeMoyReferenceBulletin[
-		(TypeMoyReferenceBulletin["ElevesDeMemeClasse"] = 1)
-	] = "ElevesDeMemeClasse";
-})(
-	TypeMoyReferenceBulletin ||
-		(exports.TypeMoyReferenceBulletin = TypeMoyReferenceBulletin = {}),
-);
+const AccessApp_1 = require("AccessApp");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
 class PanelDetailServiceNotation extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
@@ -60,6 +36,97 @@ class PanelDetailServiceNotation extends ObjetInterface_1.ObjetInterface {
 				{ keydown: this.surKeyDown, keypress: this.surKeyPress },
 				{ instance: this },
 			);
+	}
+	jsxComboModelPrecisionArrondi(aGenreRessourceArrondi) {
+		return {
+			init: (aCombo) => {
+				const lWAIZone = [];
+				if (
+					aGenreRessourceArrondi ===
+					Enumere_RessourceArrondi_1.EGenreRessourceArrondi.EleveEtudiant
+				) {
+					lWAIZone.push(this.getTraductionEleve(), " : ");
+				} else if (
+					aGenreRessourceArrondi ===
+					Enumere_RessourceArrondi_1.EGenreRessourceArrondi.ClassePromotion
+				) {
+					lWAIZone.push(this.getTraductionClasse(), " : ");
+				}
+				lWAIZone.push(this.getTraductionArrondir());
+				aCombo.setOptionsObjetSaisie({
+					longueur: 50,
+					labelWAICellule: lWAIZone.join(""),
+				});
+			},
+			getDonnees: (aListe) => {
+				if (!aListe) {
+					return this.listeArrondis;
+				}
+			},
+			getIndiceSelection: () => {
+				const lElementConcerne = this.Service ? this.Service : this.module;
+				let lIndice = 0;
+				if (
+					!!this.listeArrondis &&
+					!!lElementConcerne &&
+					!!lElementConcerne.periode &&
+					!!lElementConcerne.periode.arrondis
+				) {
+					const lPrecisionArrondi =
+						lElementConcerne.periode.arrondis[
+							aGenreRessourceArrondi
+						].getPrecision();
+					lIndice = this.listeArrondis.getIndiceElementParFiltre((D) => {
+						return D.precision === lPrecisionArrondi;
+					});
+				}
+				return Math.max(lIndice, 0);
+			},
+			event: (aParams) => {
+				if (
+					aParams.genreEvenement ===
+						Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+							.selection &&
+					aParams.combo.estUneInteractionUtilisateur() &&
+					!!aParams.element
+				) {
+					const lElementConcerne = this.Service ? this.Service : this.module;
+					if (
+						!!lElementConcerne &&
+						!!lElementConcerne.periode &&
+						!!lElementConcerne.periode.arrondis
+					) {
+						const lPrecisionSelectionnee = aParams.element.precision;
+						const lObjetArrondis =
+							lElementConcerne.periode.arrondis[aGenreRessourceArrondi];
+						lObjetArrondis.setPrecision(lPrecisionSelectionnee);
+						if (lPrecisionSelectionnee === 0.01) {
+							lObjetArrondis.setGenre(Enumere_Arrondi_1.EGenreArrondi.sans);
+						} else if (
+							lObjetArrondis.getGenre() === Enumere_Arrondi_1.EGenreArrondi.sans
+						) {
+							lObjetArrondis.setGenre(
+								Enumere_Arrondi_1.EGenreArrondi.superieur,
+							);
+						}
+						lElementConcerne.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+						lElementConcerne.periode.setEtat(
+							Enumere_Etat_1.EGenreEtat.Modification,
+						);
+						this.callback.appel();
+					}
+				}
+			},
+			getDisabled: () => {
+				let lEstEditable = false;
+				if (!this.cloture && !!this.Actif) {
+					lEstEditable =
+						!!this.autorisations &&
+						!!this.autorisations.modifierParametresServices;
+				}
+				return !lEstEditable;
+			},
+		};
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
@@ -264,9 +331,12 @@ class PanelDetailServiceNotation extends ObjetInterface_1.ObjetInterface {
 						!!aInstance.Service.periode.moyenneParSousMatiere;
 					return (
 						(aModeCalculMoy ===
-							ModeCalculMoyenneServicePere.MoyDesSousServices &&
+							PanelDetailServiceNotation.ModeCalculMoyenneServicePere
+								.MoyDesSousServices &&
 							lEstMoyenneParSousMatiere) ||
-						(aModeCalculMoy === ModeCalculMoyenneServicePere.MoyDesDevoirs &&
+						(aModeCalculMoy ===
+							PanelDetailServiceNotation.ModeCalculMoyenneServicePere
+								.MoyDesDevoirs &&
 							!lEstMoyenneParSousMatiere)
 					);
 				},
@@ -274,7 +344,9 @@ class PanelDetailServiceNotation extends ObjetInterface_1.ObjetInterface {
 					if (!!aInstance.Service && !!aInstance.Service.periode) {
 						let lEstMoyenneParSousMatiere;
 						if (
-							aModeCalculMoy === ModeCalculMoyenneServicePere.MoyDesSousServices
+							aModeCalculMoy ===
+							PanelDetailServiceNotation.ModeCalculMoyenneServicePere
+								.MoyDesSousServices
 						) {
 							lEstMoyenneParSousMatiere = !!aValeur;
 						} else {
@@ -308,10 +380,12 @@ class PanelDetailServiceNotation extends ObjetInterface_1.ObjetInterface {
 						!!aInstance.Service.periode.moyenneBulletinSurClasse;
 					return (
 						(aTypeMoyenneReference ===
-							TypeMoyReferenceBulletin.ElevesDuGroupe &&
+							PanelDetailServiceNotation.TypeMoyReferenceBulletin
+								.ElevesDuGroupe &&
 							!lEstMoyReferenceDeClasse) ||
 						(aTypeMoyenneReference ===
-							TypeMoyReferenceBulletin.ElevesDeMemeClasse &&
+							PanelDetailServiceNotation.TypeMoyReferenceBulletin
+								.ElevesDeMemeClasse &&
 							!!lEstMoyReferenceDeClasse)
 					);
 				},
@@ -319,7 +393,8 @@ class PanelDetailServiceNotation extends ObjetInterface_1.ObjetInterface {
 					if (!!aInstance.Service && !!aInstance.Service.periode) {
 						let lEstMoyReferenceDeClasse;
 						if (
-							aTypeMoyenneReference === TypeMoyReferenceBulletin.ElevesDuGroupe
+							aTypeMoyenneReference ===
+							PanelDetailServiceNotation.TypeMoyReferenceBulletin.ElevesDuGroupe
 						) {
 							lEstMoyReferenceDeClasse = !aValeur;
 						} else {
@@ -335,100 +410,6 @@ class PanelDetailServiceNotation extends ObjetInterface_1.ObjetInterface {
 					let lEstEditable = false;
 					if (!aInstance.cloture && !!aInstance.Actif) {
 						lEstEditable = true;
-					}
-					return !lEstEditable;
-				},
-			},
-			comboPrecisionArrondi: {
-				init(aGenreRessourceArrondi, aCombo) {
-					const lWAIZone = [];
-					if (
-						aGenreRessourceArrondi ===
-						Enumere_RessourceArrondi_1.EGenreRessourceArrondi.EleveEtudiant
-					) {
-						lWAIZone.push(aInstance.getTraductionEleve(), " : ");
-					} else if (
-						aGenreRessourceArrondi ===
-						Enumere_RessourceArrondi_1.EGenreRessourceArrondi.ClassePromotion
-					) {
-						lWAIZone.push(aInstance.getTraductionClasse(), " : ");
-					}
-					lWAIZone.push(aInstance.getTraductionArrondir());
-					aCombo.setOptionsObjetSaisie({
-						longueur: 50,
-						labelWAICellule: lWAIZone.join(""),
-					});
-				},
-				getDonnees(aGenreRessourceArrondi, aDonnees) {
-					if (!aDonnees) {
-						return aInstance.listeArrondis;
-					}
-				},
-				getIndiceSelection(aGenreRessourceArrondi) {
-					const lElementConcerne = aInstance.Service
-						? aInstance.Service
-						: aInstance.module;
-					let lIndice = 0;
-					if (
-						!!aInstance.listeArrondis &&
-						!!lElementConcerne &&
-						!!lElementConcerne.periode &&
-						!!lElementConcerne.periode.arrondis
-					) {
-						const lPrecisionArrondi =
-							lElementConcerne.periode.arrondis[
-								aGenreRessourceArrondi
-							].getPrecision();
-						lIndice = aInstance.listeArrondis.getIndiceElementParFiltre((D) => {
-							return D.precision === lPrecisionArrondi;
-						});
-					}
-					return Math.max(lIndice, 0);
-				},
-				event(aGenreRessourceArrondi, aParametres, aCombo) {
-					if (
-						aParametres.genreEvenement ===
-							Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
-								.selection &&
-						aCombo.estUneInteractionUtilisateur() &&
-						!!aParametres.element
-					) {
-						const lElementConcerne = aInstance.Service
-							? aInstance.Service
-							: aInstance.module;
-						if (
-							!!lElementConcerne &&
-							!!lElementConcerne.periode &&
-							!!lElementConcerne.periode.arrondis
-						) {
-							const lPrecisionSelectionnee = aParametres.element.precision;
-							const lObjetArrondis =
-								lElementConcerne.periode.arrondis[aGenreRessourceArrondi];
-							lObjetArrondis.setPrecision(lPrecisionSelectionnee);
-							if (lPrecisionSelectionnee === 0.01) {
-								lObjetArrondis.setGenre(Enumere_Arrondi_1.EGenreArrondi.sans);
-							} else if (
-								lObjetArrondis.getGenre() ===
-								Enumere_Arrondi_1.EGenreArrondi.sans
-							) {
-								lObjetArrondis.setGenre(
-									Enumere_Arrondi_1.EGenreArrondi.superieur,
-								);
-							}
-							lElementConcerne.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
-							lElementConcerne.periode.setEtat(
-								Enumere_Etat_1.EGenreEtat.Modification,
-							);
-							aInstance.callback.appel();
-						}
-					}
-				},
-				getDisabled() {
-					let lEstEditable = false;
-					if (!aInstance.cloture && !!aInstance.Actif) {
-						lEstEditable =
-							!!aInstance.autorisations &&
-							!!aInstance.autorisations.modifierParametresServices;
 					}
 					return !lEstEditable;
 				},
@@ -536,18 +517,36 @@ class PanelDetailServiceNotation extends ObjetInterface_1.ObjetInterface {
 	composeDevoirSupMoy() {
 		const H = [];
 		H.push(
-			'<ie-checkbox ie-model="cbAvecDevoirSuperieurMoyenne" ie-display="estCbDevoirSuperieurMoyenneVisible">',
-			this.getTraductionDevoirSupMoy(),
-			"</ie-checkbox>",
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"ie-checkbox",
+					{
+						"ie-model": "cbAvecDevoirSuperieurMoyenne",
+						"ie-if": "estCbDevoirSuperieurMoyenneVisible",
+					},
+					this.getTraductionDevoirSupMoy(),
+				),
+			),
 		);
 		return H.join("");
 	}
 	composeBonusMalus() {
 		const H = [];
 		H.push(
-			'<ie-checkbox ie-model="cbBonusMalus" ie-display="estCbBonusMalusVisible">',
-			this.getTraductionBonusMalus(),
-			"</ie-checkbox>",
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"ie-checkbox",
+					{
+						"ie-model": "cbBonusMalus",
+						"ie-display": "estCbBonusMalusVisible",
+					},
+					this.getTraductionBonusMalus(),
+				),
+			),
 		);
 		return H.join("");
 	}
@@ -560,20 +559,44 @@ class PanelDetailServiceNotation extends ObjetInterface_1.ObjetInterface {
 		);
 		T.push("<legend>", this.getTraductionPonderer(), "</legend>");
 		T.push(
-			'<div class="flex-contain flex-center m-top-l">',
-			'<ie-checkbox ie-model="cbPonderationNote(true)">',
-			this.getTraductionNotePlusHaute(),
-			"</ie-checkbox>",
-			'<ie-inputnote ie-model="inputPonderationNote(true)" ie-display="estInputPonderationNoteVisible(true)" class="round-style m-left-l" style="width:4rem;"></ie-inputnote>',
-			"</div>",
+			IE.jsx.str(
+				"div",
+				{ class: "flex-contain flex-center m-top-l" },
+				IE.jsx.str(
+					"ie-checkbox",
+					{ "ie-model": "cbPonderationNote(true)" },
+					this.getTraductionNotePlusHaute(),
+				),
+				IE.jsx.str("ie-inputnote", {
+					"ie-model": "inputPonderationNote(true)",
+					"ie-display": "estInputPonderationNoteVisible(true)",
+					"aria-label": this.getTraductionNotePlusHaute(),
+					class: "m-left-l",
+					style: "width:4rem;",
+				}),
+			),
 		);
 		T.push(
-			'<div class="flex-contain flex-center m-top-l">',
-			'<ie-checkbox ie-model="cbPonderationNote(false)">',
-			this.getTraductionNotePlusBasse(),
-			"</ie-checkbox>",
-			'<ie-inputnote ie-model="inputPonderationNote(false)" ie-display="estInputPonderationNoteVisible(false)" class="round-style m-left-l" style="width:4rem;"></ie-inputnote>',
-			"</div>",
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"div",
+					{ class: "flex-contain flex-center m-top-l" },
+					IE.jsx.str(
+						"ie-checkbox",
+						{ "ie-model": "cbPonderationNote(false)" },
+						this.getTraductionNotePlusBasse(),
+					),
+					IE.jsx.str("ie-inputnote", {
+						"ie-model": "inputPonderationNote(false)",
+						"ie-display": "estInputPonderationNoteVisible(false)",
+						"aria-label": this.getTraductionNotePlusBasse(),
+						class: "m-left-l",
+						style: "width:4rem;",
+					}),
+				),
+			),
 		);
 		T.push("</fieldset>");
 		return T.join("");
@@ -596,7 +619,7 @@ class PanelDetailServiceNotation extends ObjetInterface_1.ObjetInterface {
 		T.push(
 			'<input id="',
 			AId,
-			'_Input" type="text" class="AvecMain round-style" style="width:50px;" onfocus="' +
+			'_Input" type="text" class="AvecMain" style="width:50px;" onfocus="' +
 				this.Nom +
 				'.surSelection (id)" onblur="',
 			this.Nom,
@@ -628,7 +651,13 @@ class PanelDetailServiceNotation extends ObjetInterface_1.ObjetInterface {
 		const lAvecLettre = false;
 		const lAvecVirgule = TypeNote_1.TypeNote.avecVirgule();
 		const lAvecMoins = false;
-		if (!GNavigateur.estCaractereNote(lAvecLettre, lAvecVirgule, lAvecMoins)) {
+		if (
+			!ObjetNavigateur_1.Navigateur.estCaractereNote(
+				lAvecLettre,
+				lAvecVirgule,
+				lAvecMoins,
+			)
+		) {
 			return false;
 		}
 	}
@@ -662,13 +691,15 @@ class PanelDetailServiceNotation extends ObjetInterface_1.ObjetInterface {
 		} else if (!lNote.estUneNoteValide(lNoteMin, lNoteMax, false)) {
 			ObjetHtml_1.GHtml.setValue(aId, this.note.getNote());
 			ObjetHtml_1.GHtml.setSelectionEdit(aId);
-			GApplication.getMessage().afficher({
-				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-				message: ObjetChaine_1.GChaine.format(
-					this.getTraductionErreurSaisieNote(),
-					[lNoteMin.getNote(), lNoteMax.getNote()],
-				),
-			});
+			(0, AccessApp_1.getApp)()
+				.getMessage()
+				.afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+					message: ObjetChaine_1.GChaine.format(
+						this.getTraductionErreurSaisieNote(),
+						[lNoteMin.getNote(), lNoteMax.getNote()],
+					),
+				});
 		}
 	}
 	surEdition(aIdCourant) {
@@ -784,3 +815,33 @@ class PanelDetailServiceNotation extends ObjetInterface_1.ObjetInterface {
 	}
 }
 exports.PanelDetailServiceNotation = PanelDetailServiceNotation;
+(function (PanelDetailServiceNotation) {
+	let ModeCalculMoyenneServicePere;
+	(function (ModeCalculMoyenneServicePere) {
+		ModeCalculMoyenneServicePere[
+			(ModeCalculMoyenneServicePere["MoyDesSousServices"] = 0)
+		] = "MoyDesSousServices";
+		ModeCalculMoyenneServicePere[
+			(ModeCalculMoyenneServicePere["MoyDesDevoirs"] = 1)
+		] = "MoyDesDevoirs";
+	})(
+		(ModeCalculMoyenneServicePere =
+			PanelDetailServiceNotation.ModeCalculMoyenneServicePere ||
+			(PanelDetailServiceNotation.ModeCalculMoyenneServicePere = {})),
+	);
+	let TypeMoyReferenceBulletin;
+	(function (TypeMoyReferenceBulletin) {
+		TypeMoyReferenceBulletin[(TypeMoyReferenceBulletin["ElevesDuGroupe"] = 0)] =
+			"ElevesDuGroupe";
+		TypeMoyReferenceBulletin[
+			(TypeMoyReferenceBulletin["ElevesDeMemeClasse"] = 1)
+		] = "ElevesDeMemeClasse";
+	})(
+		(TypeMoyReferenceBulletin =
+			PanelDetailServiceNotation.TypeMoyReferenceBulletin ||
+			(PanelDetailServiceNotation.TypeMoyReferenceBulletin = {})),
+	);
+})(
+	PanelDetailServiceNotation ||
+		(exports.PanelDetailServiceNotation = PanelDetailServiceNotation = {}),
+);

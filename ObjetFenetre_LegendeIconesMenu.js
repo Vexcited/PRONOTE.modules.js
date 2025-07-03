@@ -37,8 +37,8 @@ class ObjetFenetre_LegendeIconesMenu extends ObjetFenetre_1.ObjetFenetre {
 					const lStyle =
 						aLabel && aLabel.couleur ? `style="color:${aLabel.couleur}"` : "";
 					H.push(
-						`<i class="${TypeOrigineCreationLabelAlimentaire_1.TypeOrigineCreationLabelAlimentaireUtil.getClassIcone(aLabel.getGenre())} i-medium" ${lStyle} title="${aLabel.getLibelle()}" aria-label="${aLabel.getLibelle()}" ></i>`,
-						`<span aria-hidden="true">${aLabel.getLibelle()}</span>`,
+						`<i class="${TypeOrigineCreationLabelAlimentaire_1.TypeOrigineCreationLabelAlimentaireUtil.getClassIcone(aLabel.getGenre())} i-medium" ${lStyle} role="presentation"></i>`,
+						`<span>${aLabel.getLibelle()}</span>`,
 					);
 				}
 				H.push(`</div>`);
@@ -64,7 +64,7 @@ class ObjetFenetre_LegendeIconesMenu extends ObjetFenetre_1.ObjetFenetre {
 					const lCouleur =
 						aAllergene && aAllergene.couleur ? aAllergene.couleur : "";
 					H.push(
-						`<i class="${TypeOrigineCreationAllergeneAlimentaire_1.TypeOrigineCreationAllergeneAlimentaireUtil.getClassIcone(aAllergene.getGenre())} i-medium" style="color:${lCouleur}" title="${aAllergene.getLibelle()}" aria-label="${aAllergene.getLibelle()}" ></i><span aria-hidden="true">${aAllergene.getLibelle()}</span>`,
+						`<i class="${TypeOrigineCreationAllergeneAlimentaire_1.TypeOrigineCreationAllergeneAlimentaireUtil.getClassIcone(aAllergene.getGenre())} i-medium" style="color:${lCouleur}" role="presentation"></i><span>${aAllergene.getLibelle()}</span>`,
 					);
 				}
 				H.push(`</div>`);

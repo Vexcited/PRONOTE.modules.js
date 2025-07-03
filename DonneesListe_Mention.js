@@ -1,6 +1,7 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class DonneesListe_Mention extends ObjetDonneesListe {
+exports.DonneesListe_Mention = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class DonneesListe_Mention extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees) {
 		super(aDonnees);
 		this.setOptions({
@@ -38,20 +39,22 @@ class DonneesListe_Mention extends ObjetDonneesListe {
 	getTypeValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_Mention.colonnes.imprimee:
-				return ObjetDonneesListe.ETypeCellule.Coche;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Coche;
 		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		if (aParams.idColonne === DonneesListe_Mention.colonnes.imprimee) {
 			if (!aParams.article.existeNumero()) {
-				return GTraductions.getValeur("Appreciations.HintAucuneMention");
+				return ObjetTraduction_1.GTraductions.getValeur(
+					"Appreciations.HintAucuneMention",
+				);
 			} else if (aParams.article.imprimee) {
-				return GTraductions.getValeur(
+				return ObjetTraduction_1.GTraductions.getValeur(
 					"Appreciations.HintImprimeeDansLesDocuments",
 				);
 			} else {
-				return GTraductions.getValeur(
+				return ObjetTraduction_1.GTraductions.getValeur(
 					"Appreciations.HintNonImprimeeDansLesDocuments",
 				);
 			}
@@ -59,8 +62,17 @@ class DonneesListe_Mention extends ObjetDonneesListe {
 		return "";
 	}
 }
-DonneesListe_Mention.colonnes = {
-	libelle: "Mention_libelle",
-	imprimee: "Mention_imprimee",
-};
-module.exports = { DonneesListe_Mention };
+exports.DonneesListe_Mention = DonneesListe_Mention;
+(function (DonneesListe_Mention) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["libelle"] = "Mention_libelle";
+		colonnes["imprimee"] = "Mention_imprimee";
+	})(
+		(colonnes =
+			DonneesListe_Mention.colonnes || (DonneesListe_Mention.colonnes = {})),
+	);
+})(
+	DonneesListe_Mention ||
+		(exports.DonneesListe_Mention = DonneesListe_Mention = {}),
+);

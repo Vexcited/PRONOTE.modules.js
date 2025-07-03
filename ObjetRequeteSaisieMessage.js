@@ -6,7 +6,6 @@ const TypeChaineHtml_1 = require("TypeChaineHtml");
 const TypeGenreDiscussion_1 = require("TypeGenreDiscussion");
 const Toast_1 = require("Toast");
 const ObjetTraduction_1 = require("ObjetTraduction");
-const tag_1 = require("tag");
 class ObjetRequeteSaisieMessage extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	async lancerRequete(aParam) {
 		const lParam = Object.assign({ avecHtml: false }, aParam);
@@ -66,9 +65,19 @@ class ObjetRequeteSaisieMessage extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 				} else {
 					this.JSON.bouton = lParam.bouton;
 					this.JSON.estCreationCarnetLiaison = lParam.estCreationCarnetLiaison;
+					this.JSON.estCreationDossierDecrochage =
+						lParam.estCreationDossierDecrochage;
+					this.JSON.estCreationRechercheDeStage =
+						lParam.estCreationRechercheDeStage;
 					this.JSON.genreDiscussion = lParam.genreDiscussion;
 					if (lParam.estCreationCarnetLiaison) {
 						this.JSON.eleveCarnetLiaison = lParam.eleveCarnetLiaison;
+					}
+					if (lParam.estCreationDossierDecrochage) {
+						this.JSON.dossier = lParam.dossier;
+					}
+					if (lParam.estCreationRechercheDeStage) {
+						this.JSON.rechercheDeStage = lParam.rechercheDeStage;
 					}
 					if (
 						lParam.genreDiscussion ===
@@ -211,18 +220,22 @@ class ObjetRequeteSaisieMessage extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 			aParams.JSONRapportSaisie &&
 			aParams.JSONRapportSaisie.messageRefusDest
 		) {
-			await GApplication.getMessage().afficher({
-				message:
-					(0, tag_1.tag)(
-						"div",
-						aParams.JSONRapportSaisie.messageRefusDest.titre,
-					) +
-					(0, tag_1.tag)("br") +
-					(0, tag_1.tag)(
-						"div",
-						aParams.JSONRapportSaisie.messageRefusDest.message,
-					),
-			});
+			const lStrMessage = IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"div",
+					null,
+					aParams.JSONRapportSaisie.messageRefusDest.titre,
+				),
+				IE.jsx.str("br", null),
+				IE.jsx.str(
+					"div",
+					null,
+					aParams.JSONRapportSaisie.messageRefusDest.message,
+				),
+			);
+			await GApplication.getMessage().afficher({ message: lStrMessage });
 		}
 		return aParams;
 	}

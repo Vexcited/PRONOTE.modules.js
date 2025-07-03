@@ -1,52 +1,53 @@
-const { ObjetInvocateur, Invocateur } = require("Invocateur.js");
-const { GHtml } = require("ObjetHtml.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { EGenreImpression } = require("Enumere_GenreImpression.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	_InterfaceBulletinCompetences,
-} = require("_InterfaceBulletinCompetences.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { EGenreOnglet } = require("Enumere_Onglet.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const MultipleObjetDocumentsATelecharger = require("ObjetDocumentsATelecharger.js");
-const { ObjetSaisiePN } = require("ObjetSaisiePN.js");
-const { TypeContexteBulletin } = require("TypeContexteBulletin.js");
-const { TypeHttpGenerationPDFSco } = require("TypeHttpGenerationPDFSco.js");
-const { InterfacePiedBulletin } = require("InterfacePiedBulletin.js");
-const ObjetRequeteSaisieAccuseReceptionDocument = require("ObjetRequeteSaisieAccuseReceptionDocument.js");
-const { TypeReleveBulletin } = require("TypeReleveBulletin.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { EGenreMessage } = require("Enumere_Message.js");
-class InterfaceBulletinCompetences_Consultation extends _InterfaceBulletinCompetences {
+exports.InterfaceBulletinCompetences_Consultation = void 0;
+const Invocateur_1 = require("Invocateur");
+const ObjetHtml_1 = require("ObjetHtml");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const Enumere_GenreImpression_1 = require("Enumere_GenreImpression");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const _InterfaceBulletinCompetences_1 = require("_InterfaceBulletinCompetences");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const Enumere_Onglet_1 = require("Enumere_Onglet");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const MultipleObjetDocumentsATelecharger = require("ObjetDocumentsATelecharger");
+const ObjetSaisiePN_1 = require("ObjetSaisiePN");
+const TypeContexteBulletin_1 = require("TypeContexteBulletin");
+const TypeHttpGenerationPDFSco_1 = require("TypeHttpGenerationPDFSco");
+const InterfacePiedBulletin_1 = require("InterfacePiedBulletin");
+const ObjetRequeteSaisieAccuseReceptionDocument_1 = require("ObjetRequeteSaisieAccuseReceptionDocument");
+const TypeReleveBulletin_1 = require("TypeReleveBulletin");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const Enumere_Message_1 = require("Enumere_Message");
+class InterfaceBulletinCompetences_Consultation extends _InterfaceBulletinCompetences_1._InterfaceBulletinCompetences {
 	constructor(...aParams) {
 		super(...aParams);
 		this.avecGestionAccuseReception =
-			[EGenreEspace.PrimParent, EGenreEspace.Parent].includes(
-				GEtatUtilisateur.GenreEspace,
-			) &&
-			(GEtatUtilisateur.pourPrimaire() ||
-				GApplication.droits.get(TypeDroits.fonctionnalites.gestionARBulletins));
+			[
+				Enumere_Espace_1.EGenreEspace.PrimParent,
+				Enumere_Espace_1.EGenreEspace.Parent,
+			].includes(GEtatUtilisateur.GenreEspace) &&
+			(this.etatUtilisateurSco.pourPrimaire() ||
+				this.applicationSco.droits.get(
+					ObjetDroitsPN_1.TypeDroits.fonctionnalites.gestionARBulletins,
+				));
 	}
 	construireInstances() {
 		super.construireInstances();
-		this.identPiedPage = this.add(InterfacePiedBulletin);
+		this.identPiedPage = this.add(
+			InterfacePiedBulletin_1.InterfacePiedBulletin,
+		);
 		this.identCombo = this.add(
-			ObjetSaisiePN,
+			ObjetSaisiePN_1.ObjetSaisiePN,
 			this.evenementSurCombo,
 			this.initialiserCombo,
 		);
-		this.genreMessage = EGenreMessage.AucunBulletinDeCompetencesPourEleve;
 		if (
 			[
-				EGenreEspace.Eleve,
-				EGenreEspace.PrimEleve,
-				EGenreEspace.PrimParent,
-				EGenreEspace.Parent,
-				EGenreEspace.Accompagnant,
-				EGenreEspace.Tuteur,
+				Enumere_Espace_1.EGenreEspace.Eleve,
+				Enumere_Espace_1.EGenreEspace.PrimEleve,
+				Enumere_Espace_1.EGenreEspace.PrimParent,
+				Enumere_Espace_1.EGenreEspace.Parent,
+				Enumere_Espace_1.EGenreEspace.Accompagnant,
+				Enumere_Espace_1.EGenreEspace.Tuteur,
 			].includes(GEtatUtilisateur.GenreEspace) &&
 			MultipleObjetDocumentsATelecharger
 		) {
@@ -61,15 +62,19 @@ class InterfaceBulletinCompetences_Consultation extends _InterfaceBulletinCompet
 		this.AddSurZone.push({ blocGauche: true });
 		if (this.avecGestionAccuseReception && !this.estPourClasse()) {
 			this.AddSurZone.push({
-				html:
-					'<ie-checkbox class="AlignementMilieuVertical" ie-model="cbAccuseReception" ie-display="visibiliteAR">' +
-					GTraductions.getValeur(
+				html: IE.jsx.str(
+					"ie-checkbox",
+					{
+						class: "AlignementMilieuVertical",
+						"ie-model": this.jsxModeleCheckboxAccuseReception.bind(this),
+						"ie-display": this.jsxDisplayAccuseReception.bind(this),
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
 						"BulletinEtReleve.JAiPrisConnaissanceDuBilanPeriodique",
-					) +
-					"</ie-checkbox>",
+					),
+				),
 			});
 		}
-		this.AddSurZone.push({ html: this.getHtmlBoutonBandeauGraphe() });
 		this.AddSurZone.push({ blocDroit: true });
 	}
 	construireStructureAffichageAutre() {
@@ -78,68 +83,70 @@ class InterfaceBulletinCompetences_Consultation extends _InterfaceBulletinCompet
 		if (this.getInstance(this.identDocumentsATelecharger)) {
 			H.push(
 				'<div class="Table BorderBox" id="' +
-					this.getInstance(this.identDocumentsATelecharger).getNom() +
+					this.getNomInstance(this.identDocumentsATelecharger) +
 					'" style="display:none;max-width: 70rem;"></div>',
 			);
 		}
 		return H.join("");
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			visibiliteAR: function () {
-				const lResponsableAR = aInstance._getResponsableAccuseReception();
-				return (
-					!aInstance.avecMessage &&
-					aInstance.avecGestionAccuseReception &&
-					!!lResponsableAR
-				);
-			}.bind(aInstance),
-			cbAccuseReception: {
-				getValue: function () {
-					const lResponsableAR = aInstance._getResponsableAccuseReception();
-					return !!lResponsableAR ? lResponsableAR.aPrisConnaissance : false;
-				},
-				setValue: function (aValue) {
-					const lResponsableAR = aInstance._getResponsableAccuseReception();
-					if (!!lResponsableAR) {
-						lResponsableAR.aPrisConnaissance = aValue;
-						new ObjetRequeteSaisieAccuseReceptionDocument(
-							aInstance,
-						).lancerRequete({
-							periode: GEtatUtilisateur.Navigation.getRessource(
-								EGenreRessource.Periode,
-							),
-							aPrisConnaissance: aValue,
-						});
-					}
-				},
-				getDisabled: function () {
-					const lResponsableAR = aInstance._getResponsableAccuseReception();
-					return !!lResponsableAR ? lResponsableAR.aPrisConnaissance : true;
-				},
+	jsxDisplayAccuseReception() {
+		const lResponsableAR = this._getResponsableAccuseReception();
+		return (
+			!this.avecMessage && this.avecGestionAccuseReception && !!lResponsableAR
+		);
+	}
+	jsxModeleCheckboxAccuseReception() {
+		return {
+			getValue: () => {
+				const lResponsableAR = this._getResponsableAccuseReception();
+				return !!lResponsableAR ? lResponsableAR.aPrisConnaissance : false;
 			},
-		});
+			setValue: (aValue) => {
+				const lResponsableAR = this._getResponsableAccuseReception();
+				if (!!lResponsableAR) {
+					lResponsableAR.aPrisConnaissance = aValue;
+					new ObjetRequeteSaisieAccuseReceptionDocument_1.ObjetRequeteSaisieAccuseReceptionDocument(
+						this,
+					).lancerRequete({
+						periode: this.etatUtilisateurSco.Navigation.getRessource(
+							Enumere_Ressource_1.EGenreRessource.Periode,
+						),
+						aPrisConnaissance: aValue,
+					});
+				}
+			},
+			getDisabled: () => {
+				const lResponsableAR = this._getResponsableAccuseReception();
+				return !!lResponsableAR ? lResponsableAR.aPrisConnaissance : true;
+			},
+		};
 	}
 	recupererDonnees() {
 		if (this.getInstance(this.identCombo)) {
 			this.IdPremierElement = this.getInstance(
 				this.identCombo,
 			).getPremierElement();
-			this.listePeriodes = GEtatUtilisateur.getOngletListePeriodes();
-			if (this.listePeriodes && this.listePeriodes.count()) {
+			const lListePeriodes = this.etatUtilisateurSco.getOngletListePeriodes();
+			if (lListePeriodes && lListePeriodes.count()) {
 				this.getInstance(this.identCombo).setVisible(true);
-				this.getInstance(this.identCombo).setDonnees(this.listePeriodes);
+				this.getInstance(this.identCombo).setDonnees(lListePeriodes);
 				this.getInstance(this.identCombo).setSelectionParElement(
-					GEtatUtilisateur.getPeriode(),
+					this.etatUtilisateurSco.getPeriode(),
 					0,
 				);
 			} else {
 				this.getInstance(this.identCombo).setVisible(false);
-				this.evenementAfficherMessage(this.genreMessage);
+				this.evenementAfficherMessage(
+					Enumere_Message_1.EGenreMessage.AucunBulletinDeCompetencesPourEleve,
+				);
 				this.getInstance(this.identCombo).IdPremierElement =
 					this.idMessageActionRequise;
 			}
 		}
+	}
+	getAriaLabelListe() {
+		var _a, _b;
+		return `${this.etatUtilisateurSco.getLibelleLongOnglet()} ${((_a = this.etatUtilisateurSco.getPeriode()) === null || _a === void 0 ? void 0 : _a.getLibelle()) || ""} ${((_b = this.onglet) === null || _b === void 0 ? void 0 : _b.getLibelle()) || ""}`.trim();
 	}
 	_getResponsableAccuseReception() {
 		let lReponsableAccuseReception = null;
@@ -157,39 +164,48 @@ class InterfaceBulletinCompetences_Consultation extends _InterfaceBulletinCompet
 	estPourClasse() {
 		return (
 			GEtatUtilisateur.getGenreOnglet() ===
-			EGenreOnglet.BulletinCompetencesClasse
+			Enumere_Onglet_1.EGenreOnglet.BulletinCompetencesClasse
 		);
 	}
 	estJaugeCliquable() {
 		return (
-			GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.BulletinCompetences ||
-			GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.ReleveDeCompetences
+			GEtatUtilisateur.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.BulletinCompetences ||
+			GEtatUtilisateur.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.ReleveDeCompetences
 		);
 	}
 	_getParametresPDF() {
 		return {
-			genreGenerationPDF: TypeHttpGenerationPDFSco.BulletinDeCompetences,
-			periode: GEtatUtilisateur.Navigation.getRessource(
-				EGenreRessource.Periode,
+			genreGenerationPDF:
+				TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco
+					.BulletinDeCompetences,
+			periode: this.etatUtilisateurSco.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.Periode,
 			),
 			avecChoixGraphe:
 				GEtatUtilisateur.getGenreOnglet() ===
-					EGenreOnglet.BulletinCompetences ||
-				GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.ReleveDeCompetences,
+					Enumere_Onglet_1.EGenreOnglet.BulletinCompetences ||
+				GEtatUtilisateur.getGenreOnglet() ===
+					Enumere_Onglet_1.EGenreOnglet.ReleveDeCompetences,
 			avecCodeCompetences: GEtatUtilisateur.estAvecCodeCompetences(),
 		};
 	}
 	getParametresPiedPageEleve() {
 		return {
-			typeReleveBulletin: TypeReleveBulletin.BulletinCompetences,
-			typeContexteBulletin: TypeContexteBulletin.CB_Eleve,
+			typeReleveBulletin:
+				TypeReleveBulletin_1.TypeReleveBulletin.BulletinCompetences,
+			typeContexteBulletin:
+				TypeContexteBulletin_1.TypeContexteBulletin.CB_Eleve,
 			avecSaisie: false,
 		};
 	}
 	getParametresPiedPageClasse() {
 		return {
-			typeReleveBulletin: TypeReleveBulletin.BulletinCompetences,
-			typeContexteBulletin: TypeContexteBulletin.CB_Classe,
+			typeReleveBulletin:
+				TypeReleveBulletin_1.TypeReleveBulletin.BulletinCompetences,
+			typeContexteBulletin:
+				TypeContexteBulletin_1.TypeContexteBulletin.CB_Classe,
 			avecSaisie: false,
 		};
 	}
@@ -198,13 +214,18 @@ class InterfaceBulletinCompetences_Consultation extends _InterfaceBulletinCompet
 	}
 	initialiserCombo(aInstance) {
 		aInstance.setOptionsObjetSaisie({
-			labelWAICellule: GTraductions.getValeur("WAI.ListeSelectionPeriode"),
+			labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+				"WAI.ListeSelectionPeriode",
+			),
 		});
 	}
 	evenementSurCombo(aParams) {
-		if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
-			GEtatUtilisateur.Navigation.setRessource(
-				EGenreRessource.Periode,
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
+			this.etatUtilisateurSco.Navigation.setRessource(
+				Enumere_Ressource_1.EGenreRessource.Periode,
 				aParams.element,
 			);
 			if (
@@ -212,26 +233,26 @@ class InterfaceBulletinCompetences_Consultation extends _InterfaceBulletinCompet
 				aParams.element.estAnneesPrecedentes &&
 				this.getInstance(this.identDocumentsATelecharger)
 			) {
-				GHtml.setDisplay(
-					this.getInstance(this.identDocumentsATelecharger).getNom(),
+				ObjetHtml_1.GHtml.setDisplay(
+					this.getNomInstance(this.identDocumentsATelecharger),
 					true,
 				);
-				GHtml.setDisplay(this.idBulletin, false);
+				ObjetHtml_1.GHtml.setDisplay(this.idBulletin, false);
 				this.getInstance(this.identDocumentsATelecharger).setDonnees({
 					avecCompetences: true,
 				});
-				Invocateur.evenement(
-					ObjetInvocateur.events.activationImpression,
-					EGenreImpression.Aucune,
+				Invocateur_1.Invocateur.evenement(
+					Invocateur_1.ObjetInvocateur.events.activationImpression,
+					Enumere_GenreImpression_1.EGenreImpression.Aucune,
 				);
 			} else {
 				if (this.getInstance(this.identDocumentsATelecharger)) {
-					GHtml.setDisplay(
-						this.getInstance(this.identDocumentsATelecharger).getNom(),
+					ObjetHtml_1.GHtml.setDisplay(
+						this.getNomInstance(this.identDocumentsATelecharger),
 						false,
 					);
 				}
-				GHtml.setDisplay(this.idBulletin, true);
+				ObjetHtml_1.GHtml.setDisplay(this.idBulletin, true);
 				this._evenementDernierMenuDeroulant();
 			}
 		}
@@ -240,4 +261,5 @@ class InterfaceBulletinCompetences_Consultation extends _InterfaceBulletinCompet
 		super._evenementDernierMenuDeroulant();
 	}
 }
-module.exports = InterfaceBulletinCompetences_Consultation;
+exports.InterfaceBulletinCompetences_Consultation =
+	InterfaceBulletinCompetences_Consultation;

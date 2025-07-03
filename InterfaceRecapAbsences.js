@@ -1,4 +1,5 @@
-exports.InterfaceRecapAbsences = void 0;
+exports.InterfaceRecapAbsences = exports.ObjetRequeteRecapAbsencesEleves =
+	void 0;
 const ObjetDroitsPN_1 = require("ObjetDroitsPN");
 const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
 const _InterfaceRecapVS_1 = require("_InterfaceRecapVS");
@@ -22,9 +23,11 @@ const TypeHttpGenerationPDFSco_1 = require("TypeHttpGenerationPDFSco");
 const ObjetRequeteDetailAbsences_1 = require("ObjetRequeteDetailAbsences");
 const ObjetRequeteListeRegimesEleve_1 = require("ObjetRequeteListeRegimesEleve");
 const ObjetFenetre_ListePassageInfirmerie_1 = require("ObjetFenetre_ListePassageInfirmerie");
+class ObjetRequeteRecapAbsencesEleves extends ObjetRequeteJSON_1.ObjetRequeteConsultation {}
+exports.ObjetRequeteRecapAbsencesEleves = ObjetRequeteRecapAbsencesEleves;
 CollectionRequetes_1.Requetes.inscrire(
 	"RecapAbsencesEleves",
-	ObjetRequeteJSON_1.ObjetRequeteConsultation,
+	ObjetRequeteRecapAbsencesEleves,
 );
 class InterfaceRecapAbsences extends _InterfaceRecapVS_1._InterfaceRecapVS {
 	constructor(...aParams) {
@@ -70,6 +73,8 @@ class InterfaceRecapAbsences extends _InterfaceRecapVS_1._InterfaceRecapVS {
 			avecMotifsAbsence: true,
 			avecMotifsAbsRepas: this.droits.avecChoixRepas,
 			avecMotifsAbsInternat: this.droits.avecChoixInternat,
+			avecMotifsRetardInternat: this.droits.avecChoixInternat,
+			avecCreneauxAppelAbsInternat: this.droits.avecChoixInternat,
 			avecMotifsRetard: true,
 			avecMotifsInfirmerie: this.droits.avecInfirmerie,
 			avecIssuesInfirmerie: this.droits.avecInfirmerie,
@@ -95,11 +100,18 @@ class InterfaceRecapAbsences extends _InterfaceRecapVS_1._InterfaceRecapVS {
 			motifsAbsRepas: new ObjetListeElements_1.ObjetListeElements(),
 			avecGpeAbsInternat: this.droits.avecChoixInternat,
 			motifsAbsInternat: new ObjetListeElements_1.ObjetListeElements(),
+			creneauxAppelAbsInternat: new ObjetListeElements_1.ObjetListeElements(),
+			avecGpeRetardInternat: this.droits.avecChoixInternat,
+			motifsRetardInternat: new ObjetListeElements_1.ObjetListeElements(),
+			creneauxAppelRetardInternat:
+				new ObjetListeElements_1.ObjetListeElements(),
 			avecGpeRetard: true,
 			motifsRetard: new ObjetListeElements_1.ObjetListeElements(),
 			uniquementRetardSup: false,
 			borneDureeRetard: 0,
+			borneNbRetardInternat: 0,
 			uniquementRetardInjustifie: false,
+			uniquementRetardInternatSup: false,
 			avecGpeInfirmerie: this.droits.avecInfirmerie,
 			motifsInfirmerie: new ObjetListeElements_1.ObjetListeElements(),
 			issuesInfirmerie: new ObjetListeElements_1.ObjetListeElements(),
@@ -145,10 +157,19 @@ class InterfaceRecapAbsences extends _InterfaceRecapVS_1._InterfaceRecapVS {
 		aParam.criteresFiltres.motifsAbsInternat.setSerialisateurJSON({
 			ignorerEtatsElements: true,
 		});
+		aParam.criteresFiltres.creneauxAppelAbsInternat.setSerialisateurJSON({
+			ignorerEtatsElements: true,
+		});
+		aParam.criteresFiltres.creneauxAppelRetardInternat.setSerialisateurJSON({
+			ignorerEtatsElements: true,
+		});
 		aParam.criteresFiltres.motifsAbsRepas.setSerialisateurJSON({
 			ignorerEtatsElements: true,
 		});
 		aParam.criteresFiltres.motifsRetard.setSerialisateurJSON({
+			ignorerEtatsElements: true,
+		});
+		aParam.criteresFiltres.motifsRetardInternat.setSerialisateurJSON({
 			ignorerEtatsElements: true,
 		});
 		aParam.criteresFiltres.motifsInfirmerie.setSerialisateurJSON({
@@ -157,8 +178,7 @@ class InterfaceRecapAbsences extends _InterfaceRecapVS_1._InterfaceRecapVS {
 		aParam.criteresFiltres.issuesInfirmerie.setSerialisateurJSON({
 			ignorerEtatsElements: true,
 		});
-		(0, CollectionRequetes_1.Requetes)(
-			"RecapAbsencesEleves",
+		new ObjetRequeteRecapAbsencesEleves(
 			this,
 			this.surRecupererDonneesRecap.bind(this, aParam),
 		).lancerRequete({
@@ -170,27 +190,34 @@ class InterfaceRecapAbsences extends _InterfaceRecapVS_1._InterfaceRecapVS {
 		});
 	}
 	afficherListeDetailAbs(aListe) {
+		let lFenetreDetailAbs = this.getInstance(this.identFenetreDetailAbs);
 		aListe.setTri([ObjetTri_1.ObjetTri.init("Position")]);
 		aListe.trier(Enumere_TriElement_1.EGenreTriElement.Decroissant);
-		this.getInstance(this.identFenetreDetailAbs).setDonnees(aListe);
+		lFenetreDetailAbs.setDonnees(aListe);
 	}
 	aFaireSurRecupererCriteresSelection(aParam) {
 		$.extend(this._parametres.criteresFiltres, {
 			motifsAbsences: aParam.listeMotifsAbsenceEleve,
 			motifsRetard: aParam.listeMotifsRetards,
+			motifsRetardInternat: aParam.listeMotifsRetardsInternat,
 			motifsInfirmerie: aParam.listeMotifsInfirmerie,
 			issuesInfirmerie: aParam.listeIssuesInfirmerie,
 			motifsAbsRepas: aParam.listeMotifsAbsenceRepas,
 			motifsAbsInternat: aParam.listeMotifsAbsenceInternat,
+			creneauxAppelAbsInternat: aParam.listeCreneauxAppelAbsInternat,
+			creneauxAppelRetardInternat: aParam.listeCreneauxAppelRetardInternat,
 		});
 		this.getInstance(this.identParamEtFiltres).setDonnees({
 			selection: this._parametres.criteresFiltres,
 			motifsAbsences: aParam.listeMotifsAbsenceEleve,
 			motifsRetard: aParam.listeMotifsRetards,
+			motifsRetardInternat: aParam.listeMotifsRetardsInternat,
 			motifsInfirmerie: aParam.listeMotifsInfirmerie,
 			issuesInfirmerie: aParam.listeIssuesInfirmerie,
 			motifsAbsRepas: aParam.listeMotifsAbsenceRepas,
 			motifsAbsInternat: aParam.listeMotifsAbsenceInternat,
+			creneauxAppelAbsInternat: aParam.listeCreneauxAppelAbsInternat,
+			creneauxAppelRetardInternat: aParam.listeCreneauxAppelRetardInternat,
 		});
 	}
 	_initListe(aInstance) {
@@ -203,6 +230,9 @@ class InterfaceRecapAbsences extends _InterfaceRecapVS_1._InterfaceRecapVS {
 		if (!this.droits.avecChoixInternat) {
 			lColonnesCachees.push(
 				DonneesListe_RecapAbs_1.DonneesListe_RecapAbs.colonnes.nbAbsInternat,
+			);
+			lColonnesCachees.push(
+				DonneesListe_RecapAbs_1.DonneesListe_RecapAbs.colonnes.nbRetardInternat,
 			);
 		}
 		if (!this.droits.gestionEtendueEleves) {
@@ -259,6 +289,12 @@ class InterfaceRecapAbsences extends _InterfaceRecapVS_1._InterfaceRecapVS {
 							Enumere_Ressource_1.EGenreRessource.AbsenceInternat;
 						lListeEvntVS = aParametres.article.listeAbsInternat;
 						break;
+					case DonneesListe_RecapAbs_1.DonneesListe_RecapAbs.colonnes
+						.nbRetardInternat:
+						lGenreRessource =
+							Enumere_Ressource_1.EGenreRessource.RetardInternat;
+						lListeEvntVS = aParametres.article.listeRetardInternat;
+						break;
 					case DonneesListe_RecapAbs_1.DonneesListe_RecapAbs.colonnes.nbRetards:
 						lGenreRessource = Enumere_Ressource_1.EGenreRessource.Retard;
 						lListeEvntVS = aParametres.article.listeRetard;
@@ -283,6 +319,8 @@ class InterfaceRecapAbsences extends _InterfaceRecapVS_1._InterfaceRecapVS {
 					avecMotifsAbsence: false,
 					avecMotifsAbsRepas: false,
 					avecMotifsAbsInternat: false,
+					avecMotifsRetardInternat: false,
+					avecCreneauxAppelAbsInternat: false,
 					avecMotifsRetard: false,
 					avecMotifsInfirmerie: false,
 					avecIssuesInfirmerie: false,
@@ -343,6 +381,14 @@ class InterfaceRecapAbsences extends _InterfaceRecapVS_1._InterfaceRecapVS {
 				DonneesListe_RecapAbs_1.DonneesListe_RecapAbs.colonnes.nbAbsInternat,
 			);
 		}
+		if (
+			!this.droits.avecChoixInternat ||
+			!this._parametres.criteresFiltres.avecGpeRetardInternat
+		) {
+			lColonnesCachees.push(
+				DonneesListe_RecapAbs_1.DonneesListe_RecapAbs.colonnes.nbRetardInternat,
+			);
+		}
 		if (!this.droits.gestionEtendueEleves) {
 			lColonnesCachees.push(
 				DonneesListe_RecapAbs_1.DonneesListe_RecapAbs.colonnes.regimes,
@@ -389,6 +435,7 @@ class InterfaceRecapAbsences extends _InterfaceRecapVS_1._InterfaceRecapVS {
 		);
 		const lStrDate = ObjetDate_1.GDate.formatDate(lDate, "%JJ/%MM/%AAAA");
 		const lTitre = [aDonnee.eleve.getLibelle()];
+		let lFenetreDetailAbs = this.getInstance(this.identFenetreDetailAbs);
 		switch (aGenreRessourceCourante) {
 			case Enumere_Ressource_1.EGenreRessource.Absence: {
 				let lNbDJ;
@@ -447,8 +494,11 @@ class InterfaceRecapAbsences extends _InterfaceRecapVS_1._InterfaceRecapVS {
 					lTypeCompta !==
 					TypeChoixComptabilisation_1.TypeChoixComptabilisation.HeuresDeCours
 				) {
-					this.getInstance(this.identFenetreDetailAbs).setOptionsFenetre({
-						titre: lTitre.join(" - "),
+					lFenetreDetailAbs.setOptionsFenetre({ titre: lTitre.join(" - ") });
+					lFenetreDetailAbs.setParametres({
+						avecLibelleDateSurPremiereColonne: false,
+						avecDuree: false,
+						avecDureeAbsence: false,
 					});
 					this.afficherListeDetailAbs(aParam.listeAbsences);
 				} else {
@@ -473,10 +523,8 @@ class InterfaceRecapAbsences extends _InterfaceRecapVS_1._InterfaceRecapVS {
 						[aDonnee.nbAbsRepas, lStrDate],
 					),
 				);
-				this.getInstance(this.identFenetreDetailAbs).setOptionsFenetre({
-					titre: lTitre.join(" - "),
-				});
-				this.getInstance(this.identFenetreDetailAbs).setParametres({
+				lFenetreDetailAbs.setOptionsFenetre({ titre: lTitre.join(" - ") });
+				lFenetreDetailAbs.setParametres({
 					avecLibelleDateSurPremiereColonne: true,
 				});
 				this.afficherListeDetailAbs(aParam.listeAbsRepas);
@@ -490,10 +538,30 @@ class InterfaceRecapAbsences extends _InterfaceRecapVS_1._InterfaceRecapVS {
 						[aDonnee.nbAbsInternat, lStrDate],
 					),
 				);
-				this.getInstance(this.identFenetreDetailAbs).setOptionsFenetre({
-					titre: lTitre.join(" - "),
+				lFenetreDetailAbs.setOptionsFenetre({ titre: lTitre.join(" - ") });
+				lFenetreDetailAbs.setParametres({
+					avecLibelleDateSurPremiereColonne: false,
+					avecDuree: false,
+					avecDureeAbsence: false,
 				});
 				this.afficherListeDetailAbs(aParam.listeAbsInternat);
+				break;
+			case Enumere_Ressource_1.EGenreRessource.RetardInternat:
+				lTitre.push(
+					ObjetTraduction_1.GTraductions.getValeur(
+						aDonnee.nbRetardInternat > 1
+							? "AbsenceVS.retardsInternatDepuis"
+							: "AbsenceVS.retardInternatDepuis",
+						[aDonnee.nbRetardInternat, lStrDate],
+					),
+				);
+				lFenetreDetailAbs.setOptionsFenetre({ titre: lTitre.join(" - ") });
+				lFenetreDetailAbs.setParametres({
+					avecLibelleDateSurPremiereColonne: true,
+					avecDuree: true,
+					avecDureeAbsence: false,
+				});
+				this.afficherListeDetailAbs(aParam.listeRetardInternat);
 				break;
 			case Enumere_Ressource_1.EGenreRessource.Retard:
 				lTitre.push(
@@ -504,12 +572,11 @@ class InterfaceRecapAbsences extends _InterfaceRecapVS_1._InterfaceRecapVS {
 						[aDonnee.nbRetards, lStrDate],
 					),
 				);
-				this.getInstance(this.identFenetreDetailAbs).setOptionsFenetre({
-					titre: lTitre.join(" - "),
-				});
-				this.getInstance(this.identFenetreDetailAbs).setParametres({
+				lFenetreDetailAbs.setOptionsFenetre({ titre: lTitre.join(" - ") });
+				lFenetreDetailAbs.setParametres({
 					avecLibelleDateSurPremiereColonne: true,
 					avecDuree: true,
+					avecDureeAbsence: false,
 				});
 				this.afficherListeDetailAbs(aParam.listeRetards);
 				break;
@@ -750,6 +817,16 @@ class InterfaceRecapAbsences extends _InterfaceRecapVS_1._InterfaceRecapVS {
 					),
 				},
 			],
+			taille: 60,
+		});
+		lColonnes.push({
+			id: DonneesListe_RecapAbs_1.DonneesListe_RecapAbs.colonnes
+				.nbRetardInternat,
+			titre: {
+				libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+					"RecapAbs.colRetardInternat",
+				).replace(" ", "<br>"),
+			},
 			taille: 60,
 		});
 		lColonnes.push({

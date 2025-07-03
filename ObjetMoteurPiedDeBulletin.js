@@ -1,35 +1,31 @@
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	TypeModuleFonctionnelPiedBulletin,
-} = require("TypeModuleFonctionnelPiedBulletin.js");
-const { TypeContexteBulletin } = require("TypeContexteBulletin.js");
-const {
-	TypeModeAffichagePiedBulletin,
-} = require("TypeModeAffichagePiedBulletin.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { TypeGenreAppreciation } = require("TypeGenreAppreciation.js");
-const {
-	EGenreAppreciationGenerale,
-} = require("Enumere_AppreciationGenerale.js");
-const { TypeReleveBulletin } = require("TypeReleveBulletin.js");
-const { ObjetMoteurGrilleSaisie } = require("ObjetMoteurGrilleSaisie.js");
+exports.ObjetMoteurPiedDeBulletin = void 0;
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TypeModuleFonctionnelPiedBulletin_1 = require("TypeModuleFonctionnelPiedBulletin");
+const TypeContexteBulletin_1 = require("TypeContexteBulletin");
+const TypeModeAffichagePiedBulletin_1 = require("TypeModeAffichagePiedBulletin");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const TypeGenreAppreciation_1 = require("TypeGenreAppreciation");
+const Enumere_AppreciationGenerale_1 = require("Enumere_AppreciationGenerale");
+const TypeReleveBulletin_1 = require("TypeReleveBulletin");
+const ObjetMoteurGrilleSaisie_1 = require("ObjetMoteurGrilleSaisie");
 class ObjetMoteurPiedDeBulletin {
 	constructor() {
-		this.moteurGrille = new ObjetMoteurGrilleSaisie();
+		this.moteurGrille = new ObjetMoteurGrilleSaisie_1.ObjetMoteurGrilleSaisie();
 	}
 	getContexteBulletin(aParam) {
 		switch (aParam.typeReleveBulletin) {
-			case TypeReleveBulletin.BulletinNotes: {
+			case TypeReleveBulletin_1.TypeReleveBulletin.BulletinNotes: {
 				const lCtxEleve =
 					aParam !== null && aParam !== undefined && aParam.estCtxEleve;
 				return lCtxEleve
-					? TypeContexteBulletin.CB_Eleve
-					: TypeContexteBulletin.CB_Classe;
+					? TypeContexteBulletin_1.TypeContexteBulletin.CB_Eleve
+					: TypeContexteBulletin_1.TypeContexteBulletin.CB_Classe;
 			}
-			case TypeReleveBulletin.ReleveDeNotes:
-				return TypeContexteBulletin.CB_Eleve;
-			case TypeReleveBulletin.AppreciationsBulletinProfesseur:
-				return TypeContexteBulletin.CB_Classe;
+			case TypeReleveBulletin_1.TypeReleveBulletin.ReleveDeNotes:
+				return TypeContexteBulletin_1.TypeContexteBulletin.CB_Eleve;
+			case TypeReleveBulletin_1.TypeReleveBulletin
+				.AppreciationsBulletinProfesseur:
+				return TypeContexteBulletin_1.TypeContexteBulletin.CB_Classe;
 			default:
 		}
 	}
@@ -37,64 +33,101 @@ class ObjetMoteurPiedDeBulletin {
 		const lContexteBulletin = aParam.typeContexteBulletin;
 		const lAvecSaisie = aParam.avecSaisie;
 		switch (aParam.typeReleveBulletin) {
-			case TypeReleveBulletin.BulletinNotes:
+			case TypeReleveBulletin_1.TypeReleveBulletin.BulletinNotes:
 				if (lAvecSaisie) {
-					return lContexteBulletin === TypeContexteBulletin.CB_Eleve
+					return lContexteBulletin ===
+						TypeContexteBulletin_1.TypeContexteBulletin.CB_Eleve
 						? [
-								TypeModuleFonctionnelPiedBulletin.MFPB_Projets,
-								TypeModuleFonctionnelPiedBulletin.MFPB_VieScolaire,
-							]
-						: [TypeModuleFonctionnelPiedBulletin.MFPB_VieScolaire];
-				} else {
-					return lContexteBulletin === TypeContexteBulletin.CB_Eleve
-						? [
-								TypeModuleFonctionnelPiedBulletin.MFPB_ParcoursEducatif,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Competences,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Projets,
-								TypeModuleFonctionnelPiedBulletin.MFPB_VieScolaire,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Certificats,
-							]
-						: [TypeModuleFonctionnelPiedBulletin.MFPB_VieScolaire];
-				}
-			case TypeReleveBulletin.ReleveDeNotes:
-				return [
-					TypeModuleFonctionnelPiedBulletin.MFPB_Projets,
-					TypeModuleFonctionnelPiedBulletin.MFPB_VieScolaire,
-				];
-			case TypeReleveBulletin.BulletinCompetences:
-				if (lAvecSaisie) {
-					return lContexteBulletin === TypeContexteBulletin.CB_Eleve
-						? [
-								TypeModuleFonctionnelPiedBulletin.MFPB_Projets,
-								TypeModuleFonctionnelPiedBulletin.MFPB_VieScolaire,
-							]
-						: [TypeModuleFonctionnelPiedBulletin.MFPB_VieScolaire];
-				} else {
-					return lContexteBulletin === TypeContexteBulletin.CB_Eleve
-						? [
-								TypeModuleFonctionnelPiedBulletin.MFPB_ParcoursEducatif,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Projets,
-								TypeModuleFonctionnelPiedBulletin.MFPB_VieScolaire,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Certificats,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Projets,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_VieScolaire,
 							]
 						: [
-								TypeModuleFonctionnelPiedBulletin.MFPB_ParcoursEducatif,
-								TypeModuleFonctionnelPiedBulletin.MFPB_VieScolaire,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_VieScolaire,
+							];
+				} else {
+					return lContexteBulletin ===
+						TypeContexteBulletin_1.TypeContexteBulletin.CB_Eleve
+						? [
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_ParcoursEducatif,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Competences,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Projets,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_VieScolaire,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Certificats,
+							]
+						: [
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_VieScolaire,
 							];
 				}
-			case TypeReleveBulletin.ReleveCompetences:
+			case TypeReleveBulletin_1.TypeReleveBulletin.ReleveDeNotes:
+				return [
+					TypeModuleFonctionnelPiedBulletin_1.TypeModuleFonctionnelPiedBulletin
+						.MFPB_Projets,
+					TypeModuleFonctionnelPiedBulletin_1.TypeModuleFonctionnelPiedBulletin
+						.MFPB_VieScolaire,
+				];
+			case TypeReleveBulletin_1.TypeReleveBulletin.BulletinCompetences:
+				if (lAvecSaisie) {
+					return lContexteBulletin ===
+						TypeContexteBulletin_1.TypeContexteBulletin.CB_Eleve
+						? [
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Projets,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_VieScolaire,
+							]
+						: [
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_VieScolaire,
+							];
+				} else {
+					return lContexteBulletin ===
+						TypeContexteBulletin_1.TypeContexteBulletin.CB_Eleve
+						? [
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_ParcoursEducatif,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Projets,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_VieScolaire,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Certificats,
+							]
+						: [
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_ParcoursEducatif,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_VieScolaire,
+							];
+				}
+			case TypeReleveBulletin_1.TypeReleveBulletin.ReleveCompetences:
 				return lAvecSaisie
 					? [
-							TypeModuleFonctionnelPiedBulletin.MFPB_Projets,
-							TypeModuleFonctionnelPiedBulletin.MFPB_VieScolaire,
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_Projets,
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_VieScolaire,
 						]
 					: [
-							TypeModuleFonctionnelPiedBulletin.MFPB_ParcoursEducatif,
-							TypeModuleFonctionnelPiedBulletin.MFPB_Projets,
-							TypeModuleFonctionnelPiedBulletin.MFPB_VieScolaire,
-							TypeModuleFonctionnelPiedBulletin.MFPB_Certificats,
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_ParcoursEducatif,
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_Projets,
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_VieScolaire,
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_Certificats,
 						];
-			case TypeReleveBulletin.AppreciationsBulletinParEleve:
+			case TypeReleveBulletin_1.TypeReleveBulletin
+				.AppreciationsBulletinParEleve:
 				return [];
 			default:
 		}
@@ -103,104 +136,168 @@ class ObjetMoteurPiedDeBulletin {
 		const lAvecSaisie = aParam.avecSaisie;
 		const lContexteBulletin = aParam.typeContexteBulletin;
 		switch (aParam.typeReleveBulletin) {
-			case TypeReleveBulletin.BulletinNotes:
+			case TypeReleveBulletin_1.TypeReleveBulletin.BulletinNotes:
 				if (lAvecSaisie) {
-					return lContexteBulletin === TypeContexteBulletin.CB_Eleve
+					return lContexteBulletin ===
+						TypeContexteBulletin_1.TypeContexteBulletin.CB_Eleve
 						? [
-								TypeModuleFonctionnelPiedBulletin.MFPB_ParcoursEducatif,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Competences,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Stages,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Certificats,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Credits,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Engagements,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_ParcoursEducatif,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Competences,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Stages,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Certificats,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Credits,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Engagements,
 							]
 						: [
-								TypeModuleFonctionnelPiedBulletin.MFPB_ParcoursEducatif,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Mentions,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_ParcoursEducatif,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Mentions,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
 							];
 				} else {
-					return lContexteBulletin === TypeContexteBulletin.CB_Eleve
+					return lContexteBulletin ===
+						TypeContexteBulletin_1.TypeContexteBulletin.CB_Eleve
 						? [
-								TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Stages,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Legende,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Credits,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Engagements,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Stages,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Legende,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Credits,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Engagements,
 							]
 						: [
-								TypeModuleFonctionnelPiedBulletin.MFPB_ParcoursEducatif,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Mentions,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_ParcoursEducatif,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Mentions,
 							];
 				}
-			case TypeReleveBulletin.ReleveDeNotes:
+			case TypeReleveBulletin_1.TypeReleveBulletin.ReleveDeNotes:
 				return [
-					TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
-					TypeModuleFonctionnelPiedBulletin.MFPB_Engagements,
+					TypeModuleFonctionnelPiedBulletin_1.TypeModuleFonctionnelPiedBulletin
+						.MFPB_Appreciations,
+					TypeModuleFonctionnelPiedBulletin_1.TypeModuleFonctionnelPiedBulletin
+						.MFPB_Engagements,
 				];
-			case TypeReleveBulletin.BulletinCompetences:
+			case TypeReleveBulletin_1.TypeReleveBulletin.BulletinCompetences:
 				if (lAvecSaisie) {
-					return lContexteBulletin === TypeContexteBulletin.CB_Eleve
+					return lContexteBulletin ===
+						TypeContexteBulletin_1.TypeContexteBulletin.CB_Eleve
 						? [
-								TypeModuleFonctionnelPiedBulletin.MFPB_ParcoursEducatif,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Competences,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Stages,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Certificats,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Engagements,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_ParcoursEducatif,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Competences,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Stages,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Certificats,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Engagements,
 							]
 						: [
-								TypeModuleFonctionnelPiedBulletin.MFPB_ParcoursEducatif,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Mentions,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_ParcoursEducatif,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Mentions,
 							];
 				} else {
-					return lContexteBulletin === TypeContexteBulletin.CB_Eleve
+					return lContexteBulletin ===
+						TypeContexteBulletin_1.TypeContexteBulletin.CB_Eleve
 						? [
-								TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Competences,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Stages,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Legende,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Engagements,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Competences,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Stages,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Legende,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Engagements,
 							]
 						: [
-								TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Mentions,
-								TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Mentions,
+								TypeModuleFonctionnelPiedBulletin_1
+									.TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
 							];
 				}
-			case TypeReleveBulletin.ReleveCompetences:
+			case TypeReleveBulletin_1.TypeReleveBulletin.ReleveCompetences:
 				return lAvecSaisie
 					? [
-							TypeModuleFonctionnelPiedBulletin.MFPB_ParcoursEducatif,
-							TypeModuleFonctionnelPiedBulletin.MFPB_Competences,
-							TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
-							TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
-							TypeModuleFonctionnelPiedBulletin.MFPB_Stages,
-							TypeModuleFonctionnelPiedBulletin.MFPB_Certificats,
-							TypeModuleFonctionnelPiedBulletin.MFPB_Engagements,
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_ParcoursEducatif,
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_Competences,
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_Stages,
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_Certificats,
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_Engagements,
 						]
 					: [
-							TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
-							TypeModuleFonctionnelPiedBulletin.MFPB_Competences,
-							TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
-							TypeModuleFonctionnelPiedBulletin.MFPB_Stages,
-							TypeModuleFonctionnelPiedBulletin.MFPB_Legende,
-							TypeModuleFonctionnelPiedBulletin.MFPB_Engagements,
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_Competences,
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_Stages,
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_Legende,
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_Engagements,
 						];
-			case TypeReleveBulletin.AppreciationsBulletinParEleve:
+			case TypeReleveBulletin_1.TypeReleveBulletin
+				.AppreciationsBulletinParEleve:
 				return [
-					TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations_Annuelles,
-					TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations_Generales_Annuelles,
+					TypeModuleFonctionnelPiedBulletin_1.TypeModuleFonctionnelPiedBulletin
+						.MFPB_Appreciations_Annuelles,
+					TypeModuleFonctionnelPiedBulletin_1.TypeModuleFonctionnelPiedBulletin
+						.MFPB_Appreciations_Generales_Annuelles,
 				];
 			default:
 		}
@@ -253,10 +350,12 @@ class ObjetMoteurPiedDeBulletin {
 	}
 	estGenreApprConseilDeClasse(aGenreAppr) {
 		switch (aGenreAppr) {
-			case EGenreAppreciationGenerale.AG_Assiduite:
-			case EGenreAppreciationGenerale.AG_Autonomie:
-			case EGenreAppreciationGenerale.AG_Globale:
-			case EGenreAppreciationGenerale.AG_Mention:
+			case Enumere_AppreciationGenerale_1.EGenreAppreciationGenerale
+				.AG_Assiduite:
+			case Enumere_AppreciationGenerale_1.EGenreAppreciationGenerale
+				.AG_Autonomie:
+			case Enumere_AppreciationGenerale_1.EGenreAppreciationGenerale.AG_Globale:
+			case Enumere_AppreciationGenerale_1.EGenreAppreciationGenerale.AG_Mention:
 				return true;
 			default:
 				return false;
@@ -265,7 +364,8 @@ class ObjetMoteurPiedDeBulletin {
 	estMention(aParam) {
 		return (
 			!!aParam.appreciation &&
-			aParam.appreciation.Genre === EGenreAppreciationGenerale.AG_Mention
+			aParam.appreciation.Genre ===
+				Enumere_AppreciationGenerale_1.EGenreAppreciationGenerale.AG_Mention
 		);
 	}
 	estAppreciationCommentaire(aParam) {
@@ -276,9 +376,12 @@ class ObjetMoteurPiedDeBulletin {
 	}
 	estGenreApprCommentaire(aGenreAppr) {
 		switch (aGenreAppr) {
-			case EGenreAppreciationGenerale.AG_Commentaire1:
-			case EGenreAppreciationGenerale.AG_Commentaire2:
-			case EGenreAppreciationGenerale.AG_Commentaire3:
+			case Enumere_AppreciationGenerale_1.EGenreAppreciationGenerale
+				.AG_Commentaire1:
+			case Enumere_AppreciationGenerale_1.EGenreAppreciationGenerale
+				.AG_Commentaire2:
+			case Enumere_AppreciationGenerale_1.EGenreAppreciationGenerale
+				.AG_Commentaire3:
 				return true;
 			default:
 				return false;
@@ -292,7 +395,7 @@ class ObjetMoteurPiedDeBulletin {
 	}
 	estGenreApprCPE(aGenreAppr) {
 		switch (aGenreAppr) {
-			case EGenreAppreciationGenerale.AG_CPE:
+			case Enumere_AppreciationGenerale_1.EGenreAppreciationGenerale.AG_CPE:
 				return true;
 			default:
 				return false;
@@ -303,44 +406,54 @@ class ObjetMoteurPiedDeBulletin {
 			aParam.estCtxApprGenerale === true ||
 			this.estGenreApprGenerale(aParam.genreAppr)
 		) {
-			return aParam.typeReleveBulletin === TypeReleveBulletin.ReleveDeNotes
-				? TypeGenreAppreciation.GA_Releve_Generale
+			return aParam.typeReleveBulletin ===
+				TypeReleveBulletin_1.TypeReleveBulletin.ReleveDeNotes
+				? TypeGenreAppreciation_1.TypeGenreAppreciation.GA_Releve_Generale
 				: aParam.genreAppr !== null &&
 						aParam.genreAppr !== undefined &&
 						this.estGenreApprCPE(aParam.genreAppr)
-					? TypeGenreAppreciation.GA_Bulletin_CPE
-					: TypeGenreAppreciation.GA_Bulletin_Generale;
+					? TypeGenreAppreciation_1.TypeGenreAppreciation.GA_Bulletin_CPE
+					: TypeGenreAppreciation_1.TypeGenreAppreciation.GA_Bulletin_Generale;
 		} else if (
 			this.estGenreApprConseilDeClasse(aParam.genreAppr) ||
 			this.estGenreApprCommentaire(aParam.genreAppr)
 		) {
-			return TypeGenreAppreciation.GA_Bulletin_Generale;
+			return TypeGenreAppreciation_1.TypeGenreAppreciation.GA_Bulletin_Generale;
 		} else if (this.estGenreApprCPE(aParam.genreAppr)) {
-			return TypeGenreAppreciation.GA_Bulletin_CPE;
+			return TypeGenreAppreciation_1.TypeGenreAppreciation.GA_Bulletin_CPE;
 		}
 		return null;
 	}
 	avecAppCPE(aParam) {
 		return (
-			aParam.typeReleveBulletin === TypeReleveBulletin.BulletinNotes ||
-			aParam.typeReleveBulletin === TypeReleveBulletin.BulletinCompetences
+			aParam.typeReleveBulletin ===
+				TypeReleveBulletin_1.TypeReleveBulletin.BulletinNotes ||
+			aParam.typeReleveBulletin ===
+				TypeReleveBulletin_1.TypeReleveBulletin.BulletinCompetences
 		);
 	}
 	avecAppConseilDeClasse(aParam) {
 		return (
-			aParam.typeReleveBulletin === TypeReleveBulletin.BulletinNotes ||
-			aParam.typeReleveBulletin === TypeReleveBulletin.BulletinCompetences
+			aParam.typeReleveBulletin ===
+				TypeReleveBulletin_1.TypeReleveBulletin.BulletinNotes ||
+			aParam.typeReleveBulletin ===
+				TypeReleveBulletin_1.TypeReleveBulletin.BulletinCompetences
 		);
 	}
 	avecAppCommentaire(aParam) {
 		return (
-			(aParam.typeReleveBulletin === TypeReleveBulletin.BulletinNotes ||
-				aParam.typeReleveBulletin === TypeReleveBulletin.BulletinCompetences) &&
-			aParam.contexte === TypeContexteBulletin.CB_Eleve
+			(aParam.typeReleveBulletin ===
+				TypeReleveBulletin_1.TypeReleveBulletin.BulletinNotes ||
+				aParam.typeReleveBulletin ===
+					TypeReleveBulletin_1.TypeReleveBulletin.BulletinCompetences) &&
+			aParam.contexte === TypeContexteBulletin_1.TypeContexteBulletin.CB_Eleve
 		);
 	}
 	avecAppAG(aParam) {
-		return aParam.typeReleveBulletin === TypeReleveBulletin.ReleveDeNotes;
+		return (
+			aParam.typeReleveBulletin ===
+			TypeReleveBulletin_1.TypeReleveBulletin.ReleveDeNotes
+		);
 	}
 	evenementOuvrirMentions(aParam) {
 		const lFenetre = aParam.instanceFenetre;
@@ -352,15 +465,17 @@ class ObjetMoteurPiedDeBulletin {
 	initialiserMentions(aParam) {
 		const lFenetre = aParam.instanceFenetre;
 		lFenetre.setParametresMention(
-			GTraductions.getValeur("Appreciations.Mentions"),
+			ObjetTraduction_1.GTraductions.getValeur("Appreciations.Mentions"),
 		);
 		lFenetre.setOptionsFenetre({
-			titre: GTraductions.getValeur("Appreciations.SaisieMentions"),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"Appreciations.SaisieMentions",
+			),
 			largeur: 300,
 			hauteur: 300,
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 		});
 	}
@@ -401,14 +516,14 @@ class ObjetMoteurPiedDeBulletin {
 		}
 	}
 	validerDonneesMentionSurValider(aParam) {
-		aParam.article.setEtat(EGenreEtat.Modification);
+		aParam.article.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 		const lAppreciation = aParam.appreciation;
 		const lElmtSelectionne = aParam.eltSelectionne;
 		if (lElmtSelectionne && lElmtSelectionne.existeNumero()) {
-			lAppreciation.setEtat(EGenreEtat.Modification);
+			lAppreciation.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 			lAppreciation.setLibelle(lElmtSelectionne.getLibelle());
 		} else {
-			lAppreciation.setEtat(EGenreEtat.Suppression);
+			lAppreciation.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 			lAppreciation.Libelle = "";
 		}
 		lAppreciation.setNumero(lElmtSelectionne.getNumero());
@@ -452,50 +567,75 @@ class ObjetMoteurPiedDeBulletin {
 		);
 	}
 }
+exports.ObjetMoteurPiedDeBulletin = ObjetMoteurPiedDeBulletin;
 function _getModulesParDefaut(aParam) {
 	const lAvecSaisie = aParam.avecSaisie;
 	const lContexteBulletin = aParam.typeContexteBulletin;
 	switch (aParam.typeReleveBulletin) {
-		case TypeReleveBulletin.BulletinNotes:
+		case TypeReleveBulletin_1.TypeReleveBulletin.BulletinNotes:
 			if (lAvecSaisie) {
-				return lContexteBulletin === TypeContexteBulletin.CB_Eleve
+				return lContexteBulletin ===
+					TypeContexteBulletin_1.TypeContexteBulletin.CB_Eleve
 					? [
-							TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
-							TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
 						]
-					: [TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations];
+					: [
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
+						];
 			} else {
 				return null;
 			}
-		case TypeReleveBulletin.ReleveDeNotes:
-			return lAvecSaisie
-				? [TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations]
-				: null;
-		case TypeReleveBulletin.BulletinCompetences:
-			if (lAvecSaisie) {
-				return lContexteBulletin === TypeContexteBulletin.CB_Eleve
-					? [
-							TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
-							TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
-						]
-					: [TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations];
-			} else {
-				return lContexteBulletin === TypeContexteBulletin.CB_Eleve
-					? null
-					: [TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations];
-			}
-		case TypeReleveBulletin.ReleveCompetences:
+		case TypeReleveBulletin_1.TypeReleveBulletin.ReleveDeNotes:
 			return lAvecSaisie
 				? [
-						TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
-						TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
+						TypeModuleFonctionnelPiedBulletin_1
+							.TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
 					]
 				: null;
-		case TypeReleveBulletin.AppreciationsBulletinParEleve:
+		case TypeReleveBulletin_1.TypeReleveBulletin.BulletinCompetences:
+			if (lAvecSaisie) {
+				return lContexteBulletin ===
+					TypeContexteBulletin_1.TypeContexteBulletin.CB_Eleve
+					? [
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
+						]
+					: [
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
+						];
+			} else {
+				return lContexteBulletin ===
+					TypeContexteBulletin_1.TypeContexteBulletin.CB_Eleve
+					? null
+					: [
+							TypeModuleFonctionnelPiedBulletin_1
+								.TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
+						];
+			}
+		case TypeReleveBulletin_1.TypeReleveBulletin.ReleveCompetences:
+			return lAvecSaisie
+				? [
+						TypeModuleFonctionnelPiedBulletin_1
+							.TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
+						TypeModuleFonctionnelPiedBulletin_1
+							.TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
+					]
+				: null;
+		case TypeReleveBulletin_1.TypeReleveBulletin.AppreciationsBulletinParEleve:
 			return [
-				TypeModuleFonctionnelPiedBulletin.MFPB_Orientations,
-				TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations,
-				TypeModuleFonctionnelPiedBulletin.MFPB_Appreciations_Annuelles,
+				TypeModuleFonctionnelPiedBulletin_1.TypeModuleFonctionnelPiedBulletin
+					.MFPB_Orientations,
+				TypeModuleFonctionnelPiedBulletin_1.TypeModuleFonctionnelPiedBulletin
+					.MFPB_Appreciations,
+				TypeModuleFonctionnelPiedBulletin_1.TypeModuleFonctionnelPiedBulletin
+					.MFPB_Appreciations_Annuelles,
 			];
 		default:
 	}
@@ -503,18 +643,16 @@ function _getModulesParDefaut(aParam) {
 function _getModeAffichage(aParam) {
 	if (
 		aParam.typeReleveBulletin ===
-		TypeReleveBulletin.AppreciationsBulletinParEleve
+		TypeReleveBulletin_1.TypeReleveBulletin.AppreciationsBulletinParEleve
 	) {
-		return TypeModeAffichagePiedBulletin.MAPB_Onglets;
+		return TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+			.MAPB_Onglets;
 	}
 	const lAvecSaisie = aParam.avecSaisie;
-	if (GEtatUtilisateur.estModeAccessible()) {
-		return TypeModeAffichagePiedBulletin.MAPB_Accessible;
-	} else {
-		return lAvecSaisie
-			? TypeModeAffichagePiedBulletin.MAPB_Onglets
-			: TypeModeAffichagePiedBulletin.MAPB_Lineaire;
-	}
+	return lAvecSaisie
+		? TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin.MAPB_Onglets
+		: TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
+				.MAPB_Lineaire;
 }
 function _majAppreciation(aParam) {
 	const lDonnees = aParam.instanceListe.getListeArticles();
@@ -543,4 +681,3 @@ function _majAppreciation(aParam) {
 	} else {
 	}
 }
-module.exports = { ObjetMoteurPiedDeBulletin };

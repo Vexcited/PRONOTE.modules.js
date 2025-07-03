@@ -36,11 +36,11 @@ class ObjetIdentification {
 		if (LEleve) {
 			const LListeGroupes = LEleve.ListeGroupes;
 			const N = !!LListeGroupes ? LListeGroupes.count() : 0;
-			const T = [];
+			const H = [];
 			for (let I = 0; I < N; I++) {
-				T.push(LListeGroupes.getLibelle(I));
+				H.push(LListeGroupes.getLibelle(I));
 			}
-			return T.join(", ");
+			return H.join(", ");
 		}
 		return "";
 	}

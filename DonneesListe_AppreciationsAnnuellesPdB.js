@@ -1,22 +1,20 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { ObjetMoteurReleveBulletin } = require("ObjetMoteurReleveBulletin.js");
-const { ObjetMoteurGrilleSaisie } = require("ObjetMoteurGrilleSaisie.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const {
-	EGenreAppreciationGenerale,
-} = require("Enumere_AppreciationGenerale.js");
-const {
-	EGenreNiveauDAcquisitionUtil,
-} = require("Enumere_NiveauDAcquisition.js");
-const { ObjetMoteurAssistantSaisie } = require("ObjetMoteurAssistantSaisie.js");
-const { EGenreEvolutionUtil } = require("Enumere_Evolution.js");
-const { TypePositionnementUtil } = require("TypePositionnement.js");
-class DonneesListe_AppreciationsAnnuellesPdB extends ObjetDonneesListe {
+exports.DonneesListe_AppreciationsAnnuellesPdB = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetMoteurReleveBulletin_1 = require("ObjetMoteurReleveBulletin");
+const ObjetMoteurGrilleSaisie_1 = require("ObjetMoteurGrilleSaisie");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_AppreciationGenerale_1 = require("Enumere_AppreciationGenerale");
+const Enumere_NiveauDAcquisition_1 = require("Enumere_NiveauDAcquisition");
+const ObjetMoteurAssistantSaisie_1 = require("ObjetMoteurAssistantSaisie");
+const Enumere_Evolution_1 = require("Enumere_Evolution");
+const TypePositionnement_1 = require("TypePositionnement");
+class DonneesListe_AppreciationsAnnuellesPdB extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParam) {
 		super(aDonnees);
-		this.moteur = new ObjetMoteurReleveBulletin();
-		this.moteurAssSaisie = new ObjetMoteurAssistantSaisie();
-		this.moteurGrille = new ObjetMoteurGrilleSaisie();
+		this.moteur = new ObjetMoteurReleveBulletin_1.ObjetMoteurReleveBulletin();
+		this.moteurAssSaisie =
+			new ObjetMoteurAssistantSaisie_1.ObjetMoteurAssistantSaisie();
+		this.moteurGrille = new ObjetMoteurGrilleSaisie_1.ObjetMoteurGrilleSaisie();
 		this.initMenuContextuel = aParam.initMenuContextuel;
 		this.param = $.extend(
 			{
@@ -31,7 +29,8 @@ class DonneesListe_AppreciationsAnnuellesPdB extends ObjetDonneesListe {
 		);
 		this.setOptions({
 			hauteurMinCellule: 48,
-			hauteurMinContenuCellule: ObjetDonneesListe.hauteurMinCellule,
+			hauteurMinContenuCellule:
+				ObjetDonneesListe_1.ObjetDonneesListe.hauteurMinCellule,
 		});
 	}
 	getAppreciation(aParams) {
@@ -59,18 +58,18 @@ class DonneesListe_AppreciationsAnnuellesPdB extends ObjetDonneesListe {
 	getTypeValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_AppreciationsAnnuellesPdB.colonnes.moyenneLSU:
-				return ObjetDonneesListe.ETypeCellule.Note;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Note;
 			case DonneesListe_AppreciationsAnnuellesPdB.colonnes.periode:
 			case DonneesListe_AppreciationsAnnuellesPdB.colonnes.nbDevoirs:
 			case DonneesListe_AppreciationsAnnuellesPdB.colonnes.nbEvals:
 			case DonneesListe_AppreciationsAnnuellesPdB.colonnes.nbAbs:
 			case DonneesListe_AppreciationsAnnuellesPdB.colonnes.nbRetard:
-				return ObjetDonneesListe.ETypeCellule.Texte;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 			default:
 				return aParams.declarationColonne.genre ===
-					EGenreAppreciationGenerale.AG_Mention
-					? ObjetDonneesListe.ETypeCellule.Texte
-					: ObjetDonneesListe.ETypeCellule.ZoneTexte;
+					Enumere_AppreciationGenerale_1.EGenreAppreciationGenerale.AG_Mention
+					? ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte
+					: ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.ZoneTexte;
 		}
 	}
 	getValeur(aParams) {
@@ -86,7 +85,7 @@ class DonneesListe_AppreciationsAnnuellesPdB extends ObjetDonneesListe {
 			case DonneesListe_AppreciationsAnnuellesPdB.colonnes.nbRetard:
 				return aParams.article.retards;
 			case DonneesListe_AppreciationsAnnuellesPdB.colonnes.evolution:
-				return EGenreEvolutionUtil.getImage(
+				return Enumere_Evolution_1.EGenreEvolutionUtil.getImage(
 					!!aParams.article.evolution
 						? aParams.article.evolution.getGenre()
 						: 0,
@@ -99,14 +98,16 @@ class DonneesListe_AppreciationsAnnuellesPdB extends ObjetDonneesListe {
 						GParametres.listeNiveauxDAcquisitions.getElementParNumero(
 							aParams.article.niveauDAcquisition.getNumero(),
 						);
-					return EGenreNiveauDAcquisitionUtil.getImagePositionnement({
-						niveauDAcquisition: lNiveauDAcquisition,
-						genrePositionnement:
-							TypePositionnementUtil.getGenrePositionnementParDefaut(
-								aParams.article.typePositionnementClasse,
-							),
-						avecPrefixe: true,
-					});
+					return Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImagePositionnement(
+						{
+							niveauDAcquisition: lNiveauDAcquisition,
+							genrePositionnement:
+								TypePositionnement_1.TypePositionnementUtil.getGenrePositionnementParDefaut(
+									aParams.article.typePositionnementClasse,
+								),
+							avecPrefixe: true,
+						},
+					);
 				}
 				return aParams.article.niveauDAcquisition
 					? aParams.article.niveauDAcquisition
@@ -131,16 +132,16 @@ class DonneesListe_AppreciationsAnnuellesPdB extends ObjetDonneesListe {
 	getCouleurCellule(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_AppreciationsAnnuellesPdB.colonnes.periode:
-				return ObjetDonneesListe.ECouleurCellule.Fixe;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Fixe;
 			case DonneesListe_AppreciationsAnnuellesPdB.colonnes.nbDevoirs:
 			case DonneesListe_AppreciationsAnnuellesPdB.colonnes.nbEvals:
 			case DonneesListe_AppreciationsAnnuellesPdB.colonnes.nbAbs:
 			case DonneesListe_AppreciationsAnnuellesPdB.colonnes.nbRetard:
-				return ObjetDonneesListe.ECouleurCellule.Gris;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Gris;
 			default:
-				return _estEditable(this, aParams)
-					? ObjetDonneesListe.ECouleurCellule.Blanc
-					: ObjetDonneesListe.ECouleurCellule.Gris;
+				return this._estEditable(aParams)
+					? ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc
+					: ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Gris;
 		}
 	}
 	getClass(aParams) {
@@ -161,12 +162,12 @@ class DonneesListe_AppreciationsAnnuellesPdB extends ObjetDonneesListe {
 		}
 		return T.join(" ");
 	}
-	getClassCelluleConteneur(aParams, I, D) {
+	getClassCelluleConteneur(aParams) {
 		const T = [];
 		if (
-			_estEditable(this, aParams) &&
+			this._estEditable(aParams) &&
 			this.moteurAssSaisie.avecAssistantSaisieActif({
-				appreciation: D,
+				appreciation: aParams.article,
 				typeReleveBulletin: this.param.typeReleveBulletin,
 				contexte: this.param.contexte,
 			})
@@ -177,9 +178,9 @@ class DonneesListe_AppreciationsAnnuellesPdB extends ObjetDonneesListe {
 	}
 	avecEvenementEdition(aParams) {
 		return (
-			_estEditable(this, aParams) &&
+			this._estEditable(aParams) &&
 			(aParams.declarationColonne.genre ===
-				EGenreAppreciationGenerale.AG_Mention ||
+				Enumere_AppreciationGenerale_1.EGenreAppreciationGenerale.AG_Mention ||
 				aParams.idColonne ===
 					DonneesListe_AppreciationsAnnuellesPdB.colonnes.niveauDAcquisition ||
 				this.moteurAssSaisie.avecAssistantSaisieActif({
@@ -190,13 +191,13 @@ class DonneesListe_AppreciationsAnnuellesPdB extends ObjetDonneesListe {
 		);
 	}
 	avecEdition(aParams) {
-		return _estEditable(this, aParams);
+		return this._estEditable(aParams);
 	}
 	avecMenuContextuel(aParams) {
 		return (
 			aParams.idColonne ===
 				DonneesListe_AppreciationsAnnuellesPdB.colonnes.niveauDAcquisition &&
-			_estEditable(this, aParams)
+			this._estEditable(aParams)
 		);
 	}
 	remplirMenuContextuel(aParametres) {
@@ -208,12 +209,12 @@ class DonneesListe_AppreciationsAnnuellesPdB extends ObjetDonneesListe {
 			DonneesListe_AppreciationsAnnuellesPdB.colonnes.moyenneLSU
 		) {
 			aParams.article.moyenneLSU = V;
-			aParams.article.setEtat(EGenreEtat.Modification);
+			aParams.article.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 		} else {
 			const lAppr = this.getAppreciation(aParams);
 			if (lAppr) {
 				lAppr.setLibelle(!!V ? V.trim() : "");
-				lAppr.setEtat(EGenreEtat.Modification);
+				lAppr.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 			}
 			if (
 				this.param.avecValidationAuto === true &&
@@ -225,7 +226,7 @@ class DonneesListe_AppreciationsAnnuellesPdB extends ObjetDonneesListe {
 					appreciation: lAppr,
 					periode: aParams.article,
 					global: this.param.global,
-					suivante: { orientationVertical: false },
+					suivante: { orientationVerticale: false },
 				});
 			}
 		}
@@ -234,7 +235,7 @@ class DonneesListe_AppreciationsAnnuellesPdB extends ObjetDonneesListe {
 		return true;
 	}
 	getControleCaracteresInput(aParams) {
-		if (_estEditable(this, aParams)) {
+		if (this._estEditable(aParams)) {
 			const listeAppreciations = this.param.global
 				? aParams.article.listeAppreciationsGenerales
 				: aParams.article.listeAppreciations;
@@ -253,45 +254,58 @@ class DonneesListe_AppreciationsAnnuellesPdB extends ObjetDonneesListe {
 	avecSelection() {
 		return true;
 	}
-}
-DonneesListe_AppreciationsAnnuellesPdB.colonnes = {
-	periode: "periode",
-	evolution: "evolution",
-	niveauDAcquisition: "niveauDAcquisition",
-	moyenneLSU: "moyenneLSU",
-	nbDevoirs: "nbDevoirs",
-	nbEvals: "nbEvals",
-	nbAbs: "nbAbs",
-	nbRetard: "nbRetard",
-	appreciation: "appreciation",
-};
-function _estEditable(aInstance, aParams) {
-	const lColonneNonEditable = [
-		DonneesListe_AppreciationsAnnuellesPdB.colonnes.periode,
-		DonneesListe_AppreciationsAnnuellesPdB.colonnes.evolution,
-		DonneesListe_AppreciationsAnnuellesPdB.colonnes.nbDevoirs,
-		DonneesListe_AppreciationsAnnuellesPdB.colonnes.nbAbs,
-		DonneesListe_AppreciationsAnnuellesPdB.colonnes.nbRetard,
-		DonneesListe_AppreciationsAnnuellesPdB.colonnes.nbEvals,
-	];
-	if (lColonneNonEditable.includes(aParams.idColonne)) {
+	_estEditable(aParams) {
+		const lColonneNonEditable = [
+			DonneesListe_AppreciationsAnnuellesPdB.colonnes.periode,
+			DonneesListe_AppreciationsAnnuellesPdB.colonnes.evolution,
+			DonneesListe_AppreciationsAnnuellesPdB.colonnes.nbDevoirs,
+			DonneesListe_AppreciationsAnnuellesPdB.colonnes.nbAbs,
+			DonneesListe_AppreciationsAnnuellesPdB.colonnes.nbRetard,
+			DonneesListe_AppreciationsAnnuellesPdB.colonnes.nbEvals,
+		];
+		if (lColonneNonEditable.includes(aParams.idColonne)) {
+			return false;
+		}
+		if (
+			[
+				DonneesListe_AppreciationsAnnuellesPdB.colonnes.niveauDAcquisition,
+				DonneesListe_AppreciationsAnnuellesPdB.colonnes.moyenneLSU,
+			].includes(aParams.idColonne)
+		) {
+			return aParams.article.Editable && !aParams.article.cloture;
+		}
+		const lAppreciation = this.getAppreciation(aParams);
+		if (lAppreciation) {
+			if (this.param.global) {
+				return aParams.article.EditableGenerale && !lAppreciation.cloture;
+			}
+			return lAppreciation.Editable && !lAppreciation.cloture;
+		}
 		return false;
 	}
-	if (
-		[
-			DonneesListe_AppreciationsAnnuellesPdB.colonnes.niveauDAcquisition,
-			DonneesListe_AppreciationsAnnuellesPdB.colonnes.moyenneLSU,
-		].includes(aParams.idColonne)
-	) {
-		return aParams.article.Editable && !aParams.article.cloture;
-	}
-	const lAppreciation = aInstance.getAppreciation(aParams);
-	if (lAppreciation) {
-		if (aInstance.param.global) {
-			return aParams.article.EditableGenerale && !lAppreciation.cloture;
-		}
-		return lAppreciation.Editable && !lAppreciation.cloture;
-	}
-	return false;
 }
-module.exports = { DonneesListe_AppreciationsAnnuellesPdB };
+exports.DonneesListe_AppreciationsAnnuellesPdB =
+	DonneesListe_AppreciationsAnnuellesPdB;
+(function (DonneesListe_AppreciationsAnnuellesPdB) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["periode"] = "periode";
+		colonnes["evolution"] = "evolution";
+		colonnes["niveauDAcquisition"] = "niveauDAcquisition";
+		colonnes["moyenneLSU"] = "moyenneLSU";
+		colonnes["nbDevoirs"] = "nbDevoirs";
+		colonnes["nbEvals"] = "nbEvals";
+		colonnes["nbAbs"] = "nbAbs";
+		colonnes["nbRetard"] = "nbRetard";
+		colonnes["appreciation"] = "appreciation";
+	})(
+		(colonnes =
+			DonneesListe_AppreciationsAnnuellesPdB.colonnes ||
+			(DonneesListe_AppreciationsAnnuellesPdB.colonnes = {})),
+	);
+})(
+	DonneesListe_AppreciationsAnnuellesPdB ||
+		(exports.DonneesListe_AppreciationsAnnuellesPdB =
+			DonneesListe_AppreciationsAnnuellesPdB =
+				{}),
+);

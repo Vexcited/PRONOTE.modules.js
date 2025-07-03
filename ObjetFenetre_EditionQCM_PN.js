@@ -6,10 +6,11 @@ const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetFenetre_EditionQCM_1 = require("ObjetFenetre_EditionQCM");
 const ObjetFenetre_SelectionNiveauProgression_1 = require("ObjetFenetre_SelectionNiveauProgression");
 const ObjetCelluleMultiSelectionThemes_1 = require("ObjetCelluleMultiSelectionThemes");
+const AccessApp_1 = require("AccessApp");
 class ObjetFenetre_EditionQCM_PN extends ObjetFenetre_EditionQCM_1.ObjetFenetre_EditionQCM {
 	constructor(...aParams) {
 		super(...aParams);
-		const lApplicationSco = GApplication;
+		const lApplicationSco = (0, AccessApp_1.getApp)();
 		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
 		const lEstPourPrimaire = this.etatUtilisateurSco.pourPrimaire();
 		Object.assign(this.optionsAffichage, {
@@ -46,8 +47,9 @@ class ObjetFenetre_EditionQCM_PN extends ObjetFenetre_EditionQCM_1.ObjetFenetre_
 					},
 					initialiser: function (aInstanceFenetre) {
 						aInstanceFenetre.setOptionsFenetre({
-							titre:
-								ObjetTraduction_1.GTraductions.getValeur("SaisieQCM.Niveau"),
+							titre: ObjetTraduction_1.GTraductions.getValeur(
+								"SaisieQCM.SelectionnerNiveau",
+							),
 							largeur: 300,
 							hauteur: 400,
 							listeBoutons: [

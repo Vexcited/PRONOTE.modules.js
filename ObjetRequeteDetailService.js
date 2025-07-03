@@ -1,19 +1,9 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteDetailService extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
-	lancerRequete(aService) {
-		this.JSON = { Service: aService };
-		return this.appelAsynchrone();
-	}
-	actionApresRequete() {
-		this.callbackReussite.appel({
-			ListeSousMatieres: this.JSONReponse.ListeSousMatieres,
-			ListeSousServices: this.JSONReponse.ListeSousServices,
-		});
-	}
-}
-Requetes.inscrire("DetailService", ObjetRequeteDetailService);
-module.exports = { ObjetRequeteDetailService };
+exports.ObjetRequeteDetailService = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteDetailService extends ObjetRequeteJSON_1.ObjetRequeteConsultation {}
+exports.ObjetRequeteDetailService = ObjetRequeteDetailService;
+CollectionRequetes_1.Requetes.inscrire(
+	"DetailService",
+	ObjetRequeteDetailService,
+);

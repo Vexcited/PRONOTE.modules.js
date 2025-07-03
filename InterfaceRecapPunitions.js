@@ -1,4 +1,4 @@
-exports.InterfaceRecapPunitions = void 0;
+exports.InterfaceRecapPunitions = exports.ObjetRequeteRecapPunitions = void 0;
 const ObjetDroitsPN_1 = require("ObjetDroitsPN");
 const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
 const _InterfaceRecapVS_1 = require("_InterfaceRecapVS");
@@ -17,9 +17,11 @@ const Enumere_Ressource_1 = require("Enumere_Ressource");
 const TypeHttpGenerationPDFSco_1 = require("TypeHttpGenerationPDFSco");
 const ObjetRequeteDetailAbsences_1 = require("ObjetRequeteDetailAbsences");
 const ObjetRequeteListeRegimesEleve_1 = require("ObjetRequeteListeRegimesEleve");
+class ObjetRequeteRecapPunitions extends ObjetRequeteJSON_1.ObjetRequeteConsultation {}
+exports.ObjetRequeteRecapPunitions = ObjetRequeteRecapPunitions;
 CollectionRequetes_1.Requetes.inscrire(
 	"RecapPunitions",
-	ObjetRequeteJSON_1.ObjetRequeteConsultation,
+	ObjetRequeteRecapPunitions,
 );
 class InterfaceRecapPunitions extends _InterfaceRecapVS_1._InterfaceRecapVS {
 	constructor(...aParams) {
@@ -58,6 +60,13 @@ class InterfaceRecapPunitions extends _InterfaceRecapVS_1._InterfaceRecapVS {
 			!this.applicationSco.droits.get(
 				ObjetDroitsPN_1.TypeDroits.punition.avecRecapSanctions,
 			);
+		const lCacherMC =
+			!this._parametres.criteresFiltres.avecMesuresConservatoires;
+		const lCacherCommissions =
+			!this._parametres.criteresFiltres.avecCommissions ||
+			!this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.fonctionnalites.avecCommissions,
+			);
 		if (lCacherColPunition && !!this._parametres.listeNaturePunition) {
 			this._parametres.listeNaturePunition.parcourir(
 				(aNaturePunition, aIndice) => {
@@ -78,6 +87,22 @@ class InterfaceRecapPunitions extends _InterfaceRecapVS_1._InterfaceRecapVS {
 				},
 			);
 		}
+		if (lCacherCommissions && !!this._parametres.listeNatureCommissions) {
+			this._parametres.listeNatureCommissions.parcourir(
+				(aNatureCommission, aIndice) => {
+					lColonnesCachees.push(
+						DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
+							.prefixe_commission + aIndice,
+					);
+				},
+			);
+		}
+		if (lCacherMC) {
+			lColonnesCachees.push(
+				DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
+					.mesuresConservatoire,
+			);
+		}
 		if (!this.droits.avecChoixRepas && !this.droits.avecChoixInternat) {
 			lColonnesCachees.push(
 				DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
@@ -95,8 +120,7 @@ class InterfaceRecapPunitions extends _InterfaceRecapVS_1._InterfaceRecapVS {
 		aParam.criteresFiltres.motifsPunitions.setSerialisateurJSON({
 			ignorerEtatsElements: true,
 		});
-		(0, CollectionRequetes_1.Requetes)(
-			"RecapPunitions",
+		new ObjetRequeteRecapPunitions(
 			this,
 			this.surRecupererDonneesRecap.bind(this, aParam),
 		).lancerRequete({
@@ -143,12 +167,29 @@ class InterfaceRecapPunitions extends _InterfaceRecapVS_1._InterfaceRecapVS {
 				const lEstColonneSanction = lDonneesListe.estColonneSanction(
 					aParametres.idColonne,
 				);
-				if (lEstColonnePunition || lEstColonneSanction) {
+				const lEstColonneCommission = lDonneesListe.estColonneCommission(
+					aParametres.idColonne,
+				);
+				const lEstColonneMC =
+					aParametres.idColonne ===
+					DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
+						.mesuresConservatoire;
+				if (
+					lEstColonnePunition ||
+					lEstColonneSanction ||
+					lEstColonneCommission ||
+					lEstColonneMC
+				) {
 					let lGenreAbsence;
 					if (lEstColonnePunition) {
 						lGenreAbsence = Enumere_Ressource_1.EGenreRessource.Punition;
-					} else {
+					} else if (lEstColonneSanction) {
 						lGenreAbsence = Enumere_Ressource_1.EGenreRessource.Sanction;
+					} else if (lEstColonneCommission) {
+						lGenreAbsence = Enumere_Ressource_1.EGenreRessource.Commission;
+					} else {
+						lGenreAbsence =
+							Enumere_Ressource_1.EGenreRessource.MesureConservatoire;
 					}
 					let lNatureAbsence;
 					if (lEstColonnePunition) {
@@ -157,12 +198,19 @@ class InterfaceRecapPunitions extends _InterfaceRecapVS_1._InterfaceRecapVS {
 						);
 						lNatureAbsence =
 							aParametres.article.listeRubriquePunition.get(lIndicePunition);
-					} else {
+					} else if (lEstColonneSanction) {
 						const lIndiceSanction = lDonneesListe.getIndiceSanctionDeColonne(
 							aParametres.idColonne,
 						);
 						lNatureAbsence =
 							aParametres.article.listeRubriqueSanction.get(lIndiceSanction);
+					} else if (lEstColonneCommission) {
+						const lIndiceCommission =
+							lDonneesListe.getIndiceCommissionDeColonne(aParametres.idColonne);
+						lNatureAbsence =
+							aParametres.article.listeCommissions.get(lIndiceCommission);
+					} else {
+						lNatureAbsence = aParametres.article.mesureConservatoire;
 					}
 					const lDetailAbsenceCourante = {
 						genreAbsence: lGenreAbsence,
@@ -201,6 +249,7 @@ class InterfaceRecapPunitions extends _InterfaceRecapVS_1._InterfaceRecapVS {
 			avecMotifsAbsence: false,
 			avecMotifsAbsRepas: false,
 			avecMotifsAbsInternat: false,
+			avecMotifsRetardInternat: false,
 			avecMotifsRetard: false,
 			avecMotifsInfirmerie: false,
 			avecIssuesInfirmerie: false,
@@ -209,6 +258,7 @@ class InterfaceRecapPunitions extends _InterfaceRecapVS_1._InterfaceRecapVS {
 			avecMotifsPunition: true,
 			avecPunitions: true,
 			avecSanctions: true,
+			avecCommissions: true,
 		});
 	}
 	getCriteresSelectionParDefaut() {
@@ -220,6 +270,8 @@ class InterfaceRecapPunitions extends _InterfaceRecapVS_1._InterfaceRecapVS {
 			motifsPunitions: new ObjetListeElements_1.ObjetListeElements(),
 			uniquementFilles: true,
 			uniquementGarcons: true,
+			avecMesuresConservatoires: true,
+			avecCommissions: true,
 		};
 	}
 	aFaireSurRecupererCriteresSelection(aParam) {
@@ -251,6 +303,18 @@ class InterfaceRecapPunitions extends _InterfaceRecapVS_1._InterfaceRecapVS {
 				.dateNaissance,
 			titre: ObjetTraduction_1.GTraductions.getValeur("RecapAbs.colNaiss"),
 			taille: 100,
+		});
+		lColonnes.push({
+			id: DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
+				.age,
+			titre: ObjetTraduction_1.GTraductions.getValeur("RecapAbs.colAge"),
+			taille: 40,
+		});
+		lColonnes.push({
+			id: DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
+				.sexe,
+			titre: ObjetTraduction_1.GTraductions.getValeur("RecapAbs.colSexe"),
+			taille: 30,
 		});
 		lColonnes.push({
 			id: DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
@@ -316,6 +380,41 @@ class InterfaceRecapPunitions extends _InterfaceRecapVS_1._InterfaceRecapVS {
 					.regimes,
 			);
 		}
+		lColonnes.push({
+			id: DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
+				.mesuresConservatoire,
+			titre: {
+				libelle: ObjetTraduction_1.GTraductions.getValeur("RecapPunition.MC"),
+				title: ObjetTraduction_1.GTraductions.getValeur(
+					"RecapPunition.mesuresConservatoires",
+				),
+			},
+			taille: 70,
+		});
+		$.extend(this._parametres, {
+			listeNatureCommissions: aParam.listeNatureCommission,
+		});
+		if (!!this._parametres.listeNatureCommissions) {
+			this._parametres.listeNatureCommissions.parcourir(
+				(aNatureCommission, aIndice) => {
+					lColonnes.push({
+						id:
+							DonneesListe_RecapPunitions_1.DonneesListe_RecapPunitions.colonnes
+								.prefixe_commission + aIndice,
+						titre: [
+							{
+								libelle: ObjetTraduction_1.GTraductions.getValeur(
+									"RecapPunition.commissions",
+								),
+								avecFusionColonne: true,
+							},
+							{ libelle: aNatureCommission.getLibelle() },
+						],
+						taille: 70,
+					});
+				},
+			);
+		}
 		this.getInstance(this.identRecap).setOptionsListe(
 			{
 				colonnes: lColonnes,
@@ -346,20 +445,51 @@ class InterfaceRecapPunitions extends _InterfaceRecapVS_1._InterfaceRecapVS {
 				lNbAbs++;
 			}
 		}
-		lTitre.push(
-			ObjetChaine_1.GChaine.format(
-				ObjetTraduction_1.GTraductions.getValeur(
-					lNbAbs > 1 ? "AbsenceVS.sanctionsDepuis" : "AbsenceVS.sanctionDepuis",
-				),
-				[lNbAbs, aDetailAbsenceCourante.absence.getLibelle(), lStrDate],
-			),
-		);
+		switch (aDetailAbsenceCourante.genreAbsence) {
+			case Enumere_Ressource_1.EGenreRessource.MesureConservatoire:
+				lTitre.push(
+					ObjetChaine_1.GChaine.format(
+						ObjetTraduction_1.GTraductions.getValeur(
+							lNbAbs > 1
+								? "AbsenceVS.mesuresConservatoiresDepuis"
+								: "AbsenceVS.mesureConservatoireDepuis",
+						),
+						[lNbAbs, lStrDate],
+					),
+				);
+				break;
+			case Enumere_Ressource_1.EGenreRessource.Commission:
+				lTitre.push(
+					ObjetChaine_1.GChaine.format(
+						ObjetTraduction_1.GTraductions.getValeur(
+							lNbAbs > 1
+								? "AbsenceVS.commissionsDepuis"
+								: "AbsenceVS.commissionDepuis",
+						),
+						[lNbAbs, aDetailAbsenceCourante.absence.getLibelle(), lStrDate],
+					),
+				);
+				break;
+			default:
+				lTitre.push(
+					ObjetChaine_1.GChaine.format(
+						ObjetTraduction_1.GTraductions.getValeur(
+							lNbAbs > 1
+								? "AbsenceVS.sanctionsDepuis"
+								: "AbsenceVS.sanctionDepuis",
+						),
+						[lNbAbs, aDetailAbsenceCourante.absence.getLibelle(), lStrDate],
+					),
+				);
+		}
 		this.getInstance(this.identFenetreAbsParCours).setOptionsFenetre({
 			titre: lTitre.join(" - "),
 		});
-		const lGenreAbsence = aDetailAbsenceCourante.absence.estExclusion
-			? Enumere_Ressource_1.EGenreRessource.Exclusion
-			: aDetailAbsenceCourante.genreAbsence;
+		const lGenreAbsence =
+			"estExclusion" in aDetailAbsenceCourante.absence &&
+			aDetailAbsenceCourante.absence.estExclusion
+				? Enumere_Ressource_1.EGenreRessource.Exclusion
+				: aDetailAbsenceCourante.genreAbsence;
 		this.getInstance(this.identFenetreAbsParCours).setDonnees(
 			null,
 			null,

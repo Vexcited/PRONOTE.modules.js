@@ -1,42 +1,41 @@
-const {
-	EGenreRessource,
-	EGenreRessourceUtil,
-} = require("Enumere_Ressource.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { TypeGenreInternetIndividu } = require("TypeGenreInternetIndividu.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { ObjetRequeteListePublics } = require("ObjetRequeteListePublics.js");
-const {
-	ObjetFenetre_SelectionClasseGroupe,
-} = require("ObjetFenetre_SelectionClasseGroupe.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	TypeGenreCumulSelectionPublic,
-} = require("ObjetFenetre_SelectionPublic.js");
-const {
-	ObjetFenetre_SelectionPublic_PN,
-} = require("ObjetFenetre_SelectionPublic_PN.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { UtilitaireMessagerie } = require("UtilitaireMessagerie.js");
-const { UtilitaireListePublics } = require("UtilitaireListePublics.js");
-const { TypeThemeBouton } = require("Type_ThemeBouton.js");
+exports.MoteurDestinatairesPN = void 0;
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const TypeGenreInternetIndividu_1 = require("TypeGenreInternetIndividu");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetRequeteListePublics_1 = require("ObjetRequeteListePublics");
+const ObjetFenetre_SelectionClasseGroupe_1 = require("ObjetFenetre_SelectionClasseGroupe");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetFenetre_SelectionPublic_1 = require("ObjetFenetre_SelectionPublic");
+const ObjetFenetre_SelectionPublic_PN_1 = require("ObjetFenetre_SelectionPublic_PN");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetElement_1 = require("ObjetElement");
+const UtilitaireMessagerie_1 = require("UtilitaireMessagerie");
+const UtilitaireListePublics_1 = require("UtilitaireListePublics");
+const Type_ThemeBouton_1 = require("Type_ThemeBouton");
+const AccessApp_1 = require("AccessApp");
+const jsx_1 = require("jsx");
 class MoteurDestinatairesPN {
+	constructor() {
+		this.applicationSco = (0, AccessApp_1.getApp)();
+	}
 	estGenrePublicEntite(aParam) {
 		if (aParam.donnee === null || aParam.donnee === undefined) {
 			return false;
 		}
 		const lGenresPublicEntite = aParam.donnee.genresPublicEntite;
 		switch (aParam.genreRessource) {
-			case EGenreRessource.Responsable:
+			case Enumere_Ressource_1.EGenreRessource.Responsable:
 				return (
 					lGenresPublicEntite.contains(
-						TypeGenreInternetIndividu.InternetIndividu_ParentEleve,
+						TypeGenreInternetIndividu_1.TypeGenreInternetIndividu
+							.InternetIndividu_ParentEleve,
 					) ||
 					lGenresPublicEntite.contains(
-						TypeGenreInternetIndividu.InternetIndividu_Parent,
+						TypeGenreInternetIndividu_1.TypeGenreInternetIndividu
+							.InternetIndividu_Parent,
 					)
 				);
 			default:
@@ -51,7 +50,7 @@ class MoteurDestinatairesPN {
 		}
 		const lGenresPublicEntite = aParam.donnee.genresPublicEntite;
 		const lRelatifEleve =
-			aParam.genreRessource === EGenreRessource.Responsable
+			aParam.genreRessource === Enumere_Ressource_1.EGenreRessource.Responsable
 				? aParam.valeur === true
 					? true
 					: this.estRelatifEleve(aParam)
@@ -75,17 +74,19 @@ class MoteurDestinatairesPN {
 		}
 		const lGenresPublicEntite = aParam.donnee.genresPublicEntite;
 		switch (aParam.genreRessource) {
-			case EGenreRessource.Responsable:
+			case Enumere_Ressource_1.EGenreRessource.Responsable:
 				if (
 					lGenresPublicEntite.contains(
-						TypeGenreInternetIndividu.InternetIndividu_ParentEleve,
+						TypeGenreInternetIndividu_1.TypeGenreInternetIndividu
+							.InternetIndividu_ParentEleve,
 					)
 				) {
 					return true;
 				}
 				if (
 					lGenresPublicEntite.contains(
-						TypeGenreInternetIndividu.InternetIndividu_Parent,
+						TypeGenreInternetIndividu_1.TypeGenreInternetIndividu
+							.InternetIndividu_Parent,
 					)
 				) {
 					return false;
@@ -100,7 +101,7 @@ class MoteurDestinatairesPN {
 		}
 		const lGenresPublicEntite = aParam.donnee.genresPublicEntite;
 		switch (aParam.genreRessource) {
-			case EGenreRessource.Responsable:
+			case Enumere_Ressource_1.EGenreRessource.Responsable:
 				lGenresPublicEntite.add(
 					_toInternetIndividu.call(
 						this,
@@ -122,38 +123,44 @@ class MoteurDestinatairesPN {
 	getDonneesPublic(aParam) {
 		const lGenreRessource = aParam.genreRessource;
 		const lEstResponsableAResponsable = [
-			EGenreEspace.Parent,
-			EGenreEspace.Mobile_Parent,
+			Enumere_Espace_1.EGenreEspace.Parent,
+			Enumere_Espace_1.EGenreEspace.Mobile_Parent,
 		].includes(GEtatUtilisateur.GenreEspace);
 		const lParams = {
 			genres: [lGenreRessource],
 			sansFiltreSurEleve:
-				GApplication.droits.get(TypeDroits.communication.toutesClasses) ||
-				aParam.forcerSansFiltreSurEleve === true,
+				this.applicationSco.droits.get(
+					ObjetDroitsPN_1.TypeDroits.communication.toutesClasses,
+				) || aParam.forcerSansFiltreSurEleve === true,
 			entreResponsables: lEstResponsableAResponsable,
 			avecFonctionPersonnel: true,
 			avecInfoRencontresSepareesDesResponsables:
 				!!aParam.avecInfoRencontresSepareesDesResponsables,
 			eleve: aParam.eleve,
 			avecInfoResponsablePreferentiel: !!aParam.avecInfoResponsablePreferentiel,
+			avecUniquementResponsableDelegue:
+				lGenreRessource === Enumere_Ressource_1.EGenreRessource.Responsable &&
+				aParam.avecUniquementResponsableDelegue,
+			estCtxModeleActualite: !!aParam.estCtxModeleActualite,
 		};
 		if (lEstResponsableAResponsable) {
 			lParams["avecFiltreDelegues"] = true;
 		}
-		return new ObjetRequeteListePublics(
+		return new ObjetRequeteListePublics_1.ObjetRequeteListePublics(
 			this,
 			aParam.clbck ? aParam.clbck.bind(this) : null,
 		).lancerRequete(lParams);
 	}
 	getTitreSelectRessource(aParam) {
 		const lGenreRessource = aParam.genreRessource;
-		return EGenreRessourceUtil.getTitreFenetreSelectionRessource(
+		return Enumere_Ressource_1.EGenreRessourceUtil.getTitreFenetreSelectionRessource(
 			lGenreRessource,
+			aParam.singulier,
 		);
 	}
 	ouvrirModaleSelectionRessource(aParam) {
-		const lModaleSelect = ObjetFenetre.creerInstanceFenetre(
-			ObjetFenetre_SelectionClasseGroupe,
+		const lModaleSelect = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_SelectionClasseGroupe_1.ObjetFenetre_SelectionClasseGroupe,
 			{
 				pere: this,
 				evenement: function (
@@ -168,7 +175,7 @@ class MoteurDestinatairesPN {
 							});
 						aParam.donnee.listePublicEntite = lEntitesAutreGenre;
 						aParam.donnee.listePublicEntite.add(
-							MethodesObjet.dupliquer(aListeRessourcesSelect),
+							MethodesObjet_1.MethodesObjet.dupliquer(aListeRessourcesSelect),
 						);
 						aParam.donnee.avecModificationPublic = true;
 						aParam.clbck();
@@ -177,26 +184,36 @@ class MoteurDestinatairesPN {
 			},
 		);
 		const lGenreRessource = aParam.genreRessource;
-		const lAvecClasse = lGenreRessource === EGenreRessource.Classe;
-		const lListeClassesGroupes = GEtatUtilisateur.getListeClasses({
-			avecClasse: lAvecClasse,
-			avecGroupe: lGenreRessource === EGenreRessource.Groupe,
-			uniquementClasseEnseignee: [
-				EGenreEspace.Professeur,
-				EGenreEspace.Mobile_Professeur,
-			].includes(GEtatUtilisateur.GenreEspace)
-				? !GApplication.droits.get(TypeDroits.communication.toutesClasses)
-				: false,
-		});
+		const lAvecClasse =
+			lGenreRessource === Enumere_Ressource_1.EGenreRessource.Classe;
+		const lListeClassesGroupes = this.applicationSco
+			.getEtatUtilisateur()
+			.getListeClasses({
+				avecClasse: lAvecClasse,
+				avecGroupe:
+					lGenreRessource === Enumere_Ressource_1.EGenreRessource.Groupe,
+				uniquementClasseEnseignee: [
+					Enumere_Espace_1.EGenreEspace.Professeur,
+					Enumere_Espace_1.EGenreEspace.Mobile_Professeur,
+				].includes(GEtatUtilisateur.GenreEspace)
+					? !this.applicationSco.droits.get(
+							ObjetDroitsPN_1.TypeDroits.communication.toutesClasses,
+						)
+					: false,
+			});
 		const lTitre =
-			lGenreRessource === EGenreRessource.Classe
-				? GTraductions.getValeur("fenetreSelectionClasseGroupe.titreClasses")
-				: GTraductions.getValeur("fenetreSelectionClasseGroupe.titreGroupes");
+			lGenreRessource === Enumere_Ressource_1.EGenreRessource.Classe
+				? ObjetTraduction_1.GTraductions.getValeur(
+						"fenetreSelectionClasseGroupe.titreClasses",
+					)
+				: ObjetTraduction_1.GTraductions.getValeur(
+						"fenetreSelectionClasseGroupe.titreGroupes",
+					);
 		lModaleSelect.setSelectionObligatoire(false);
 		lModaleSelect.setAvecCumul(lAvecClasse);
 		lModaleSelect.setDonnees({
 			listeRessources: lListeClassesGroupes,
-			listeRessourcesSelectionnees: MethodesObjet.dupliquer(
+			listeRessourcesSelectionnees: MethodesObjet_1.MethodesObjet.dupliquer(
 				aParam.donnee.listePublicEntite,
 			),
 			genreRessource: lGenreRessource,
@@ -205,22 +222,28 @@ class MoteurDestinatairesPN {
 	}
 	ouvrirModaleSelectionPublic(aParam) {
 		const lAvecFiltreDelegues =
-			[EGenreEspace.Parent, EGenreEspace.Mobile_Parent].includes(
-				GEtatUtilisateur.GenreEspace,
-			) && aParam.genreRessource === EGenreRessource.Responsable;
+			[
+				Enumere_Espace_1.EGenreEspace.Parent,
+				Enumere_Espace_1.EGenreEspace.Mobile_Parent,
+			].includes(GEtatUtilisateur.GenreEspace) &&
+			aParam.genreRessource === Enumere_Ressource_1.EGenreRessource.Responsable;
 		aParam = Object.assign(
 			{ avecCoche: true, avecFiltreDelegues: lAvecFiltreDelegues },
 			aParam,
 		);
 		this.getDonneesPublic({
 			genreRessource: aParam.genreRessource,
+			forcerSansFiltreSurEleve: aParam.forcerSansFiltreSurEleve,
 			eleve: aParam.eleve,
+			avecUniquementResponsableDelegue: aParam.avecUniquementResponsableDelegue,
+			estCtxModeleActualite: aParam.estCtxModeleActualite,
 		}).then((aDonnees) => {
 			this.openModaleSelectPublic({
 				listePublicDonnee: aParam.listePublicDonnee,
 				clbck: aParam.clbck,
 				titre: this.getTitreSelectRessource({
 					genreRessource: aParam.genreRessource,
+					singulier: !aParam.avecCoche,
 				}),
 				genreRessource: aParam.genreRessource,
 				listeRessources: aDonnees.listePublic,
@@ -237,55 +260,42 @@ class MoteurDestinatairesPN {
 				avecFiltreDelegues: aParam.avecFiltreDelegues,
 				avecFiltreSelonAcceptRdv: aParam.avecFiltreSelonAcceptRdv,
 				avecDirEnseignant: aParam.avecDirEnseignant,
+				listeRessourceDesactiver: aParam.listeRessourceDesactiver,
 			});
 		});
 	}
 	automatiserSelectionPublic(aParam) {
 		this.getDonneesPublic({
 			genreRessource: aParam.genreRessource,
-			clbck: function (aDonnees) {
+			clbck: (aDonnees) => {
 				const lListeComplet = aDonnees.listePublic;
 				if (aParam.donnee.listePublicIndividu.count() === 0) {
-					let lClasse = null;
-					let lEstClasseUnique = true;
-					lListeComplet.parcourir((aElt) => {
-						if (aElt.classes && aElt.classes.count() === 1) {
-							const lClasseCourante = aElt.classes.get(0);
-							if (lClasse === null) {
-								lClasse = lClasseCourante;
-							} else {
-								if (lClasse.getNumero() !== lClasseCourante.getNumero()) {
-									lEstClasseUnique = false;
-								}
-							}
-						} else {
-							lEstClasseUnique = false;
-						}
-					});
-					if (lEstClasseUnique === true) {
+					if (lListeComplet.count() === 1) {
 						aParam.donnee.listePublicIndividu =
 							lListeComplet.getListeElements();
 						aParam.donnee.avecModificationPublic = true;
 						aParam.clbck();
 					}
 				}
-			}.bind(this),
+			},
 		});
 	}
 	openModaleSelectPublic(aParam) {
 		const lGenreRessource = aParam.genreRessource;
 		const lAvecCoche = "avecCoche" in aParam ? aParam.avecCoche : true;
 		const lValeurParDefautAvecFiltreDelegues =
-			aParam.genreRessource === EGenreRessource.Responsable &&
-			[EGenreEspace.Parent, EGenreEspace.Mobile_Parent].includes(
-				GEtatUtilisateur.GenreEspace,
-			);
+			aParam.genreRessource ===
+				Enumere_Ressource_1.EGenreRessource.Responsable &&
+			[
+				Enumere_Espace_1.EGenreEspace.Parent,
+				Enumere_Espace_1.EGenreEspace.Mobile_Parent,
+			].includes(GEtatUtilisateur.GenreEspace);
 		const lAvecFiltreDelegues =
 			"avecFiltreDelegues" in aParam
 				? aParam.avecFiltreDelegues
 				: lValeurParDefautAvecFiltreDelegues;
-		const lModaleSelect = ObjetFenetre.creerInstanceFenetre(
-			ObjetFenetre_SelectionPublic_PN,
+		const lModaleSelect = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_SelectionPublic_PN_1.ObjetFenetre_SelectionPublic_PN,
 			{
 				pere: this,
 				evenement: function (
@@ -300,7 +310,7 @@ class MoteurDestinatairesPN {
 							});
 						aParam.listePublicDonnee = lPublicAutresGenres;
 						aParam.listePublicDonnee.add(
-							MethodesObjet.dupliquer(aListeRessourcesSelect),
+							MethodesObjet_1.MethodesObjet.dupliquer(aListeRessourcesSelect),
 						);
 						aParam.clbck({
 							listePublicDonnee: aParam.listePublicDonnee,
@@ -311,119 +321,146 @@ class MoteurDestinatairesPN {
 			},
 			{ titre: aParam.titre },
 		);
-		const lListeCumuls = new ObjetListeElements();
+		const lListeCumuls = new ObjetListeElements_1.ObjetListeElements();
 		switch (lGenreRessource) {
-			case EGenreRessource.Eleve:
-			case EGenreRessource.Responsable: {
+			case Enumere_Ressource_1.EGenreRessource.Eleve:
+			case Enumere_Ressource_1.EGenreRessource.Responsable: {
 				lListeCumuls.addElement(
-					new ObjetElement(
-						GTraductions.getValeur("destinataires.Cumul.Classe"),
+					new ObjetElement_1.ObjetElement(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"destinataires.Cumul.Classe",
+						),
 						0,
-						TypeGenreCumulSelectionPublic.classe,
+						ObjetFenetre_SelectionPublic_1.TypeGenreCumulSelectionPublic.classe,
 						0,
 					),
 				);
 				lListeCumuls.addElement(
-					new ObjetElement(
-						GTraductions.getValeur("destinataires.Cumul.Groupe"),
+					new ObjetElement_1.ObjetElement(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"destinataires.Cumul.Groupe",
+						),
 						0,
-						TypeGenreCumulSelectionPublic.groupe,
+						ObjetFenetre_SelectionPublic_1.TypeGenreCumulSelectionPublic.groupe,
 						1,
 					),
 				);
 				lListeCumuls.addElement(
-					new ObjetElement(
-						GTraductions.getValeur("destinataires.Cumul.Alphabetique"),
+					new ObjetElement_1.ObjetElement(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"destinataires.Cumul.Alphabetique",
+						),
 						0,
-						TypeGenreCumulSelectionPublic.initial,
+						ObjetFenetre_SelectionPublic_1.TypeGenreCumulSelectionPublic
+							.initial,
 						2,
 					),
 				);
-				if (lGenreRessource === EGenreRessource.Responsable) {
+				if (
+					lGenreRessource === Enumere_Ressource_1.EGenreRessource.Responsable
+				) {
 					lListeCumuls.addElement(
-						new ObjetElement(
-							GTraductions.getValeur("destinataires.Cumul.NomDesEleves"),
+						new ObjetElement_1.ObjetElement(
+							ObjetTraduction_1.GTraductions.getValeur(
+								"destinataires.Cumul.NomDesEleves",
+							),
 							0,
-							TypeGenreCumulSelectionPublic.nomEleves,
+							ObjetFenetre_SelectionPublic_1.TypeGenreCumulSelectionPublic
+								.nomEleves,
 						),
 					);
 				}
 				if (aParam.listeServicesPeriscolaire) {
 					lListeCumuls.addElement(
-						new ObjetElement(
-							GTraductions.getValeur(
+						new ObjetElement_1.ObjetElement(
+							ObjetTraduction_1.GTraductions.getValeur(
 								"destinataires.Cumul.ServicesPeriscolaire",
 							),
 							0,
-							TypeGenreCumulSelectionPublic.servicesPeriscolaire,
+							ObjetFenetre_SelectionPublic_1.TypeGenreCumulSelectionPublic
+								.servicesPeriscolaire,
 						),
 					);
 				}
 				if (aParam.listeProjetsAcc) {
 					lListeCumuls.addElement(
-						new ObjetElement(
-							GTraductions.getValeur("actualites.Cumul.ProjetsAccompagnement"),
+						new ObjetElement_1.ObjetElement(
+							ObjetTraduction_1.GTraductions.getValeur(
+								"actualites.Cumul.ProjetsAccompagnement",
+							),
 							0,
-							TypeGenreCumulSelectionPublic.projetsAccompagnement,
+							ObjetFenetre_SelectionPublic_1.TypeGenreCumulSelectionPublic
+								.projetsAccompagnement,
 						),
 					);
 				}
 				if (aParam.listeFamilles) {
 					aParam.listeFamilles.parcourir((aFamille) => {
-						const lFiltreFamille = new ObjetElement(
+						const lFiltreFamille = new ObjetElement_1.ObjetElement(
 							aFamille.getLibelle(),
 							0,
-							TypeGenreCumulSelectionPublic.famille,
+							ObjetFenetre_SelectionPublic_1.TypeGenreCumulSelectionPublic
+								.famille,
 						);
 						lFiltreFamille.famille = aFamille;
 						lListeCumuls.addElement(lFiltreFamille);
 					});
 				}
 				lModaleSelect.setListeCumuls(lListeCumuls);
-				lModaleSelect.setGenreCumulActif(TypeGenreCumulSelectionPublic.classe);
+				lModaleSelect.setGenreCumulActif(
+					ObjetFenetre_SelectionPublic_1.TypeGenreCumulSelectionPublic.classe,
+				);
 				lModaleSelect.setOptions({
 					getInfosSuppZonePrincipale(aParams) {
-						return UtilitaireListePublics.getLibelleSuppListePublics(
+						return UtilitaireListePublics_1.UtilitaireListePublics.getLibelleSuppListePublics(
 							aParams.article,
 						);
 					},
 				});
 				break;
 			}
-			case EGenreRessource.Personnel:
+			case Enumere_Ressource_1.EGenreRessource.Personnel:
 				lListeCumuls.add(
-					new ObjetElement(
-						GTraductions.getValeur("Fenetre_SelectionPublic.Cumul.Aucun"),
+					new ObjetElement_1.ObjetElement(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_SelectionPublic.Cumul.Aucun",
+						),
 						0,
-						TypeGenreCumulSelectionPublic.sans,
+						ObjetFenetre_SelectionPublic_1.TypeGenreCumulSelectionPublic.sans,
 						0,
 					),
 				);
 				lListeCumuls.add(
-					new ObjetElement(
-						GTraductions.getValeur("actualites.Cumul.Fonction"),
+					new ObjetElement_1.ObjetElement(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"actualites.Cumul.Fonction",
+						),
 						0,
-						TypeGenreCumulSelectionPublic.fonction,
+						ObjetFenetre_SelectionPublic_1.TypeGenreCumulSelectionPublic
+							.fonction,
 						1,
 					),
 				);
 				lModaleSelect.setListeCumuls(lListeCumuls);
 				lModaleSelect.setGenreCumulActif(
-					TypeGenreCumulSelectionPublic.fonction,
+					ObjetFenetre_SelectionPublic_1.TypeGenreCumulSelectionPublic.fonction,
 				);
 				lModaleSelect.setOptions({
 					getInfosSuppZonePrincipale(aParams) {
 						return lModaleSelect.getGenreCumul() !==
-							TypeGenreCumulSelectionPublic.fonction
-							? UtilitaireMessagerie.getLibelleSuppListePublics(aParams.article)
+							ObjetFenetre_SelectionPublic_1.TypeGenreCumulSelectionPublic
+								.fonction
+							? UtilitaireMessagerie_1.UtilitaireMessagerie.getLibelleSuppListePublics(
+									aParams.article,
+								)
 							: "";
 					},
 				});
 				break;
-			case EGenreRessource.Enseignant:
+			case Enumere_Ressource_1.EGenreRessource.Enseignant:
 				lModaleSelect.setOptions({
 					getInfosSuppZonePrincipale(aParams) {
-						return UtilitaireListePublics.getLibelleSuppListePublics(
+						return UtilitaireListePublics_1.UtilitaireListePublics.getLibelleSuppListePublics(
 							aParams.article,
 						);
 					},
@@ -446,6 +483,9 @@ class MoteurDestinatairesPN {
 					: false,
 			avecDirEnseignant: aParam.avecDirEnseignant,
 		});
+		lModaleSelect.setOptionsFenetreSelectionRessource({
+			listeRessourceDesactiver: aParam.listeRessourceDesactiver,
+		});
 		if (!lAvecCoche) {
 			lModaleSelect.setOptionsFenetreSelectionRessource({
 				optionsDonneesListe: {
@@ -458,8 +498,8 @@ class MoteurDestinatairesPN {
 			lModaleSelect.setOptionsFenetre({
 				listeBoutons: [
 					{
-						libelle: GTraductions.getValeur("Fermer"),
-						theme: TypeThemeBouton.secondaire,
+						libelle: ObjetTraduction_1.GTraductions.getValeur("Fermer"),
+						theme: Type_ThemeBouton_1.TypeThemeBouton.secondaire,
 					},
 				],
 			});
@@ -479,15 +519,17 @@ class MoteurDestinatairesPN {
 			aParam.node,
 			'()" class="itemDest flex-contain conteneurIcon">',
 		);
-		H.push('<i class="icon_group"></i>');
+		H.push(IE.jsx.str("i", { role: "presentation", class: "icon_group" }));
 		H.push(
 			'<div class="strIcon">',
-			GTraductions.getValeur("destinataires.respDesClasses"),
+			ObjetTraduction_1.GTraductions.getValeur("destinataires.respDesClasses"),
 			' <span class="strNumber" id="',
 			aParam.idCompteur,
 			'"> (0) </span></div>',
 		);
-		H.push('<i class="icon_angle_right"></i>');
+		H.push(
+			IE.jsx.str("i", { role: "presentation", class: "icon_angle_right" }),
+		);
 		H.push("</div>");
 		return H.join("");
 	}
@@ -497,56 +539,69 @@ class MoteurDestinatairesPN {
 			'<div ie-node="',
 			aParam.node,
 			"(",
-			EGenreRessource.Classe,
+			Enumere_Ressource_1.EGenreRessource.Classe,
 			')" class="itemDest flex-contain conteneurIcon">',
 		);
-		H.push('<i class="icon_group"></i>');
+		H.push(IE.jsx.str("i", { role: "presentation", class: "icon_group" }));
 		H.push(
 			'<div class="strIcon">',
-			GTraductions.getValeur("destinataires.respDesClasses"),
+			ObjetTraduction_1.GTraductions.getValeur("destinataires.respDesClasses"),
 			' <span class="strNumber" id="',
 			aParam.idCompteur,
 			'"> (0) </span></div>',
 		);
-		H.push('<i class="icon_angle_right"></i>');
+		H.push(
+			IE.jsx.str("i", { role: "presentation", class: "icon_angle_right" }),
+		);
 		H.push("</div>");
 		return H.join("");
 	}
 	construireHtmlDestPrimaireResponsables(aParam) {
-		const H = [];
-		H.push(
-			_construireHtmlSelectionDeRessource.call(this, {
-				node: aParam.node,
-				genreRessource: EGenreRessource.Responsable,
-				strRessource: GTraductions.getValeur("destinataires.responsables"),
-				idCompteur: aParam.idCompteur,
-			}),
-		);
-		return H.join("");
+		var _a;
+		return _construireHtmlSelectionDeRessource.call(this, {
+			node: aParam.node,
+			genreRessource: Enumere_Ressource_1.EGenreRessource.Responsable,
+			strRessource: ObjetTraduction_1.GTraductions.getValeur(
+				"destinataires.responsables",
+			),
+			idCompteur: aParam.idCompteur,
+			ariaLabel:
+				(_a = aParam.ariaLabel) !== null && _a !== void 0
+					? _a
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"WAI.SelectionResponsable",
+						),
+		});
 	}
 	construireHtmlDestPrimaireProfs(aParam) {
-		const H = [];
-		H.push(
-			_construireHtmlSelectionDeRessource.call(this, {
-				node: aParam.node,
-				genreRessource: EGenreRessource.Enseignant,
-				strRessource: GTraductions.getValeur("destinataires.professeurs"),
-				idCompteur: aParam.idCompteur,
-			}),
-		);
-		return H.join("");
+		var _a;
+		return _construireHtmlSelectionDeRessource.call(this, {
+			node: aParam.node,
+			genreRessource: Enumere_Ressource_1.EGenreRessource.Enseignant,
+			strRessource: ObjetTraduction_1.GTraductions.getValeur(
+				"destinataires.professeurs",
+			),
+			idCompteur: aParam.idCompteur,
+			ariaLabel:
+				(_a = aParam.ariaLabel) !== null && _a !== void 0
+					? _a
+					: ObjetTraduction_1.GTraductions.getValeur("WAI.SelectionProfesseur"),
+		});
 	}
 	construireHtmlDestPrimairePersonnels(aParam) {
-		const H = [];
-		H.push(
-			_construireHtmlSelectionDeRessource.call(this, {
-				node: aParam.node,
-				genreRessource: EGenreRessource.Personnel,
-				strRessource: GTraductions.getValeur("destinataires.personnels"),
-				idCompteur: aParam.idCompteur,
-			}),
-		);
-		return H.join("");
+		var _a;
+		return _construireHtmlSelectionDeRessource.call(this, {
+			node: aParam.node,
+			genreRessource: Enumere_Ressource_1.EGenreRessource.Personnel,
+			strRessource: ObjetTraduction_1.GTraductions.getValeur(
+				"destinataires.personnels",
+			),
+			idCompteur: aParam.idCompteur,
+			ariaLabel:
+				(_a = aParam.ariaLabel) !== null && _a !== void 0
+					? _a
+					: ObjetTraduction_1.GTraductions.getValeur("WAI.SelectionPersonnel"),
+		});
 	}
 	construireHtmlDestPrimaireDirecteur(aParam) {
 		const H = [];
@@ -560,63 +615,69 @@ class MoteurDestinatairesPN {
 		return H.join("");
 	}
 	surSelectEntitesPrimaireRespClasses(aParam) {
-		if (!GEtatUtilisateur.pourPrimaire()) {
+		if (!this.applicationSco.getEtatUtilisateur().pourPrimaire()) {
 			return;
 		}
 		const lDonnee = aParam.donnee;
 		const lNbClasses = lDonnee.listePublicEntite
 			.getListeElements((D) => {
-				return D.getGenre() === EGenreRessource.Classe;
+				return D.getGenre() === Enumere_Ressource_1.EGenreRessource.Classe;
 			})
 			.getNbrElementsExistes();
 		const lEstCoche = lDonnee.genresPublicEntite.contains(
-			TypeGenreInternetIndividu.InternetIndividu_Parent,
+			TypeGenreInternetIndividu_1.TypeGenreInternetIndividu
+				.InternetIndividu_Parent,
 		);
 		if (lNbClasses > 0) {
 			if (!lEstCoche) {
 				lDonnee.genresPublicEntite.add(
-					TypeGenreInternetIndividu.InternetIndividu_Parent,
+					TypeGenreInternetIndividu_1.TypeGenreInternetIndividu
+						.InternetIndividu_Parent,
 				);
 			}
 		} else {
 			if (lEstCoche) {
 				lDonnee.genresPublicEntite.remove(
-					TypeGenreInternetIndividu.InternetIndividu_Parent,
+					TypeGenreInternetIndividu_1.TypeGenreInternetIndividu
+						.InternetIndividu_Parent,
 				);
 			}
 		}
 	}
 }
+exports.MoteurDestinatairesPN = MoteurDestinatairesPN;
 function _toInternetIndividu(aGenreRessource, aRelatifEleve) {
 	switch (aGenreRessource) {
-		case EGenreRessource.Enseignant:
-			return TypeGenreInternetIndividu.InternetIndividu_Professeur;
-		case EGenreRessource.Eleve:
-			return TypeGenreInternetIndividu.InternetIndividu_Eleve;
-		case EGenreRessource.Responsable:
+		case Enumere_Ressource_1.EGenreRessource.Enseignant:
+			return TypeGenreInternetIndividu_1.TypeGenreInternetIndividu
+				.InternetIndividu_Professeur;
+		case Enumere_Ressource_1.EGenreRessource.Eleve:
+			return TypeGenreInternetIndividu_1.TypeGenreInternetIndividu
+				.InternetIndividu_Eleve;
+		case Enumere_Ressource_1.EGenreRessource.Responsable:
 			return aRelatifEleve
-				? TypeGenreInternetIndividu.InternetIndividu_ParentEleve
-				: TypeGenreInternetIndividu.InternetIndividu_Parent;
-		case EGenreRessource.MaitreDeStage:
-			return TypeGenreInternetIndividu.InternetIndividu_MaitreDeStageEleve;
-		case EGenreRessource.Personnel:
-			return TypeGenreInternetIndividu.InternetIndividu_Personnel;
+				? TypeGenreInternetIndividu_1.TypeGenreInternetIndividu
+						.InternetIndividu_ParentEleve
+				: TypeGenreInternetIndividu_1.TypeGenreInternetIndividu
+						.InternetIndividu_Parent;
+		case Enumere_Ressource_1.EGenreRessource.MaitreDeStage:
+			return TypeGenreInternetIndividu_1.TypeGenreInternetIndividu
+				.InternetIndividu_MaitreDeStageEleve;
+		case Enumere_Ressource_1.EGenreRessource.Personnel:
+			return TypeGenreInternetIndividu_1.TypeGenreInternetIndividu
+				.InternetIndividu_Personnel;
 	}
 }
 function _construireHtmlSelectionDeRessource(aParam) {
-	const H = [];
-	H.push(
-		'<ie-btnselecteur class="m-bottom-l" ie-model="getSelectRessource" ie-node="',
-		aParam.node,
-		"(",
-		aParam.genreRessource,
-		')">',
+	return IE.jsx.str(
+		"ie-btnselecteur",
+		{
+			class: "m-bottom-l",
+			"ie-model": "getSelectRessource",
+			"aria-label": aParam.ariaLabel,
+			"ie-node": (0, jsx_1.jsxFuncAttr)(aParam.node, [aParam.genreRessource]),
+		},
 		aParam.strRessource,
-		' <span class="strNumber" id="',
-		aParam.idCompteur,
-		'"></span>',
-		"</ie-btnselecteur>",
+		IE.jsx.str("span", { class: "strNumber", id: aParam.idCompteur }),
 	);
-	return H.join("");
 }
-module.exports = { MoteurDestinatairesPN };

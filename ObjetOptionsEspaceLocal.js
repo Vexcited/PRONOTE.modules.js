@@ -3,6 +3,7 @@ const LocalStorage_1 = require("LocalStorage");
 const ThemesCouleurs_1 = require("ThemesCouleurs");
 const TypeThemeCouleur_1 = require("TypeThemeCouleur");
 const MethodesObjet_1 = require("MethodesObjet");
+const AccessApp_1 = require("AccessApp");
 class ObjetOptionsEspaceLocal {
 	constructor(aOptions) {
 		this.options = $.extend(
@@ -46,12 +47,6 @@ class ObjetOptionsEspaceLocal {
 	}
 	setAvecCodeCompetences(aModeAccessible) {
 		this.setOptionEspace("avecCC", aModeAccessible);
-	}
-	getAvecThemeAccessible() {
-		return !!this.getOptionEspace("themeA");
-	}
-	setAvecThemeAccessible(aThemeAccessible) {
-		this.setOptionEspace("themeA", aThemeAccessible);
 	}
 	getChoixDarkMode() {
 		let lResult = this.getOptionEspace("choix-darkmode");

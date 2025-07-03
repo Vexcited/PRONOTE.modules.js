@@ -1,5 +1,5 @@
 exports.ObjetSaisieMotDePasseCP = void 0;
-const IEHtml = require("IEHtml");
+const IEHtml_1 = require("IEHtml");
 const ObjetHtml_1 = require("ObjetHtml");
 const LienPolitiqueMotDePasse_1 = require("LienPolitiqueMotDePasse");
 const ObjetTraduction_1 = require("ObjetTraduction");
@@ -7,6 +7,7 @@ const ToucheClavier_1 = require("ToucheClavier");
 const ValidationMotDePasse_1 = require("ValidationMotDePasse");
 const GUID_1 = require("GUID");
 const ObjetIdentite_1 = require("ObjetIdentite");
+const AccessApp_1 = require("AccessApp");
 const C_TailleMaxMotDePasse = 32;
 const C_TailleMinLogin = 2;
 const C_TailleMaxLogin = 128;
@@ -27,9 +28,9 @@ class ObjetSaisieMotDePasseCP extends ObjetIdentite_1.Identite {
 			avecMdpNouveauDifferentDeActuel: true,
 			pourMobile: false,
 			attrInputActuel:
-				'type = "password" autocomplete = "new-password" aria-required="true"',
+				'type="password" autocomplete="new-password" aria-required="true"',
 			attrInputNouveau:
-				'type = "password" autocomplete = "new-password" aria-required="true"',
+				'type="password" autocomplete="new-password" aria-required="true"',
 			messageExplication: "",
 			libelleMDPActuel: ObjetTraduction_1.GTraductions.getValeur(
 				"saisieMDP.MotDePasseActuel",
@@ -105,9 +106,7 @@ class ObjetSaisieMotDePasseCP extends ObjetIdentite_1.Identite {
 						aInstance.mdp.nouveau = aValue;
 					},
 					getDisabled: function () {
-						return (
-							aInstance.mdp.actuel.length === 0 && aInstance._avecMDPActuel()
-						);
+						return aInstance.getDisabledNouveauMDP();
 					},
 					node: function () {
 						$(this.node).on("keyup", (event) => {
@@ -125,11 +124,7 @@ class ObjetSaisieMotDePasseCP extends ObjetIdentite_1.Identite {
 						aInstance.mdp.confirmation = aValue;
 					},
 					getDisabled: function () {
-						return (
-							(aInstance.mdp.actuel.length === 0 &&
-								aInstance._avecMDPActuel()) ||
-							aInstance.mdp.nouveau.length === 0
-						);
+						return aInstance.getDisabledConfirmationMDP();
 					},
 					node: function () {
 						$(this.node).on("keyup", (event) => {
@@ -141,12 +136,6 @@ class ObjetSaisieMotDePasseCP extends ObjetIdentite_1.Identite {
 							}
 						});
 					},
-					getHint: function () {
-						return aInstance.mdp.confirmation.length === 0 ||
-							aInstance.mdp.confirmation === aInstance.mdp.nouveau
-							? null
-							: aInstance.options.libelleConfirmationIncorrecte;
-					},
 				},
 			},
 			montrerMasquerMotDePasse: {
@@ -157,26 +146,39 @@ class ObjetSaisieMotDePasseCP extends ObjetIdentite_1.Identite {
 							? lTarget.attr("type", "text")
 							: lTarget.attr("type", "password");
 					},
+					getTitle(aId) {
+						return $("#" + aId).attr("type") === "password"
+							? ObjetTraduction_1.GTraductions.getValeur("connexion.VoirMDP")
+							: ObjetTraduction_1.GTraductions.getValeur(
+									"connexion.masquerMDP",
+								);
+					},
+					getDisabled(aId) {
+						switch (aId) {
+							case aInstance.ids.input1:
+								return false;
+							case aInstance.ids.input2:
+								return aInstance.getDisabledNouveauMDP();
+							case aInstance.ids.input3:
+								return aInstance.getDisabledConfirmationMDP();
+						}
+						return true;
+					},
 				},
 				getClass(aId) {
 					return $("#" + aId).attr("type") === "password"
 						? "icon_eye_open"
 						: "icon_eye_close";
 				},
-				getTitle(aId) {
-					return $("#" + aId).attr("type") === "password"
-						? ObjetTraduction_1.GTraductions.getValeur("connexion.VoirMDP")
-						: ObjetTraduction_1.GTraductions.getValeur("connexion.masquerMDP");
-				},
 			},
 			getClassMDPActuel() {
 				return aInstance.avecErreurMDPActuel ? "is-dirty" : "";
 			},
-			getClassNewMDP() {
+			getClassNewMDP(aEstNouveauMDP) {
 				if (aInstance.avecErreurMDPNouveau) {
 					return "is-dirty";
 				}
-				switch (aInstance._getEtatNewPassword()) {
+				switch (aInstance._getEtatNewPassword(aEstNouveauMDP)) {
 					case "disabled":
 						return "is-disabled";
 				}
@@ -228,7 +230,8 @@ class ObjetSaisieMotDePasseCP extends ObjetIdentite_1.Identite {
 						});
 					},
 					(aParams) => {
-						return GApplication.getMessage()
+						return (0, AccessApp_1.getApp)()
+							.getMessage()
 							.afficher({
 								titre: this.options.libelleEchecModification,
 								message: aParams ? aParams.message || "" : "",
@@ -252,7 +255,8 @@ class ObjetSaisieMotDePasseCP extends ObjetIdentite_1.Identite {
 				},
 				() => {
 					this._requeteSaisieEnCours = false;
-					return GApplication.getMessage()
+					return (0, AccessApp_1.getApp)()
+						.getMessage()
 						.afficher({ message: this.options.libelleEchecModification })
 						.then(() => {
 							this.options.callbackApresValidation({ avecErreur: true });
@@ -289,7 +293,7 @@ class ObjetSaisieMotDePasseCP extends ObjetIdentite_1.Identite {
 		);
 		if (this._avecMDPActuel()) {
 			H.push(
-				'   <label for="',
+				'   <label class="m-bottom" for="',
 				this.ids.input1,
 				'">',
 				this.options.libelleMDPActuel,
@@ -304,8 +308,6 @@ class ObjetSaisieMotDePasseCP extends ObjetIdentite_1.Identite {
 				this.ids.input1,
 				"')\" ie-model=\"montrerMasquerMotDePasse.getModel('",
 				this.ids.input1,
-				"')\" ie-title=\"montrerMasquerMotDePasse.getTitle('",
-				this.ids.input1,
 				"')\"></ie-btnicon>",
 				"   </div>",
 			);
@@ -317,12 +319,12 @@ class ObjetSaisieMotDePasseCP extends ObjetIdentite_1.Identite {
 			);
 		}
 		H.push(
-			'   <label for="',
+			'   <label class="m-bottom" for="',
 			this.ids.input2,
 			'">',
 			this.options.libelleNewMDP,
 			" *</label>",
-			'   <div class="as-input as-password confirm-wrapper" ie-class="getClassNewMDP">',
+			'   <div class="as-input as-password confirm-wrapper" ie-class="getClassNewMDP(true)">',
 			'       <input ie-model="mdp.nouveau" class="full-width" id="',
 			this.ids.input2,
 			'" ',
@@ -332,28 +334,24 @@ class ObjetSaisieMotDePasseCP extends ObjetIdentite_1.Identite {
 			this.ids.input2,
 			"')\" ie-model=\"montrerMasquerMotDePasse.getModel('",
 			this.ids.input2,
-			"')\" ie-title=\"montrerMasquerMotDePasse.getTitle('",
-			this.ids.input2,
 			"')\"></ie-btnicon>",
 			"   </div>",
 		);
 		H.push(
-			'   <label for="',
+			'   <label class="m-bottom" for="',
 			this.ids.input3,
 			'">',
 			this.options.libelleConfirmNewMDP,
 			" *</label>",
-			'   <div class="as-input as-password confirm-wrapper" ie-class="getClassNewMDP">',
+			'   <div class="as-input as-password confirm-wrapper" ie-class="getClassNewMDP(false)">',
 			'       <input ie-model="mdp.confirmation" class="full-width" id="',
 			this.ids.input3,
 			'" ',
 			this.options.attrInputNouveau,
-			' ie-hint="getHint" ie-attr="getAttrNewMDP(true)"/>',
+			' ie-attr="getAttrNewMDP(true)"/>',
 			"       <ie-btnicon ie-class=\"montrerMasquerMotDePasse.getClass('",
 			this.ids.input3,
 			"')\" ie-model=\"montrerMasquerMotDePasse.getModel('",
-			this.ids.input3,
-			"')\" ie-title=\"montrerMasquerMotDePasse.getTitle('",
 			this.ids.input3,
 			"')\"></ie-btnicon>",
 			"   </div>",
@@ -379,14 +377,41 @@ class ObjetSaisieMotDePasseCP extends ObjetIdentite_1.Identite {
 			H.push(
 				IE.jsx.str(
 					"div",
-					{ class: "link-as-button" },
+					{ class: "link-icon" },
 					LienPolitiqueMotDePasse_1.TLienPolitiqueMotDePasse.getLien(),
 				),
 			);
 		}
-		H.push('<div style="display:none"><input type="password" /></div>');
-		H.push('<div style="display:none"><input type="password" /></div>');
-		H.push('<div style="display:none"><input type="password" /></div>');
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ style: "display:none" },
+				IE.jsx.str("input", {
+					type: "password",
+					class: IEHtml_1.default.Styles.debugWAIInputIgnoreAssert,
+				}),
+			),
+		);
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ style: "display:none" },
+				IE.jsx.str("input", {
+					type: "password",
+					class: IEHtml_1.default.Styles.debugWAIInputIgnoreAssert,
+				}),
+			),
+		);
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ style: "display:none" },
+				IE.jsx.str("input", {
+					type: "password",
+					class: IEHtml_1.default.Styles.debugWAIInputIgnoreAssert,
+				}),
+			),
+		);
 		H.push("</div>");
 		return H.join("");
 	}
@@ -458,14 +483,15 @@ class ObjetSaisieMotDePasseCP extends ObjetIdentite_1.Identite {
 					).attr("aria-describedby", this.ids.validateur);
 				}
 			}
-			return GApplication.getMessage()
+			return (0, AccessApp_1.getApp)()
+				.getMessage()
 				.afficher({
 					titre: this.options.libelleEchecModification,
 					message: lMessage,
 				})
 				.then(() => {
 					ObjetHtml_1.GHtml.setFocus(lIdFocus);
-					IEHtml.refresh();
+					IEHtml_1.default.refresh(true);
 				});
 		} else {
 			if (lParams.avecErreur) {
@@ -475,15 +501,19 @@ class ObjetSaisieMotDePasseCP extends ObjetIdentite_1.Identite {
 			let lPromise = Promise.resolve();
 			if (!lParams.messageDejaAffiche) {
 				if (lParams.avecErreur) {
-					lPromise = GApplication.getMessage().afficher({
-						message:
-							this.options.libelleEchecModification +
-							(lParams.messageErreur ? "<br><br>" + lParams.messageErreur : ""),
-					});
+					lPromise = (0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({
+							message:
+								this.options.libelleEchecModification +
+								(lParams.messageErreur
+									? "<br><br>" + lParams.messageErreur
+									: ""),
+						});
 				} else if (this.options.avecMessageReussiteModif) {
-					lPromise = GApplication.getMessage().afficher({
-						message: this.options.libelleReussiteModification,
-					});
+					lPromise = (0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({ message: this.options.libelleReussiteModification });
 				}
 			}
 			lPromise.then(() => {
@@ -506,7 +536,8 @@ class ObjetSaisieMotDePasseCP extends ObjetIdentite_1.Identite {
 		) {
 			this.mdp.nouveau = "";
 			this.mdp.confirmation = "";
-			GApplication.getMessage()
+			(0, AccessApp_1.getApp)()
+				.getMessage()
 				.afficher({ message: this.options.libelleConfirmationIncorrecte })
 				.then(() => {
 					$(`#${this.ids.validateurDiffConfirm.escapeJQ()}`).html(
@@ -526,19 +557,32 @@ class ObjetSaisieMotDePasseCP extends ObjetIdentite_1.Identite {
 						);
 					}
 					ObjetHtml_1.GHtml.setFocus(this.ids.input2);
-					IEHtml.refresh();
+					IEHtml_1.default.refresh(true);
 				});
 			return false;
 		}
 		return true;
 	}
-	_getEtatNewPassword() {
-		return this.mdp.actuel.length === 0 && this._avecMDPActuel()
-			? "disabled"
-			: this.mdp.confirmation.length === 0 ||
-					this.mdp.confirmation === this.mdp.nouveau
-				? "valid"
-				: "invalid";
+	getDisabledNouveauMDP() {
+		return this.mdp.actuel.length === 0 && this._avecMDPActuel();
+	}
+	getDisabledConfirmationMDP() {
+		return (
+			(this.mdp.actuel.length === 0 && this._avecMDPActuel()) ||
+			this.mdp.nouveau.length === 0
+		);
+	}
+	_getEtatNewPassword(aEstNouveauMDP) {
+		if (aEstNouveauMDP && this.getDisabledNouveauMDP()) {
+			return "disabled";
+		}
+		if (!aEstNouveauMDP && this.getDisabledConfirmationMDP()) {
+			return "disabled";
+		}
+		return this.mdp.confirmation.length === 0 ||
+			this.mdp.confirmation === this.mdp.nouveau
+			? "valid"
+			: "invalid";
 	}
 }
 exports.ObjetSaisieMotDePasseCP = ObjetSaisieMotDePasseCP;

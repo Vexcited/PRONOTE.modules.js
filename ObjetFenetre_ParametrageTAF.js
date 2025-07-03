@@ -1,182 +1,223 @@
-const { GStyle } = require("ObjetStyle.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { TypeNiveauDifficulteUtil } = require("TypeNiveauDifficulte.js");
-const { GUID } = require("GUID.js");
-class ObjetFenetre_ParametrageTAF extends ObjetFenetre {
+exports.ObjetFenetre_ParametrageTAF = void 0;
+const ObjetStyle_1 = require("ObjetStyle");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TypeNiveauDifficulte_1 = require("TypeNiveauDifficulte");
+const GUID_1 = require("GUID");
+const AccessApp_1 = require("AccessApp");
+class ObjetFenetre_ParametrageTAF extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
+		this.appSco = (0, AccessApp_1.getApp)();
 		this.setOptionsFenetre({
-			titre: GTraductions.getValeur(
+			titre: ObjetTraduction_1.GTraductions.getValeur(
 				"CahierDeTexte.paramTaf.SaisieTAFsPreferences",
 			),
-			listeBoutons: [GTraductions.getValeur("Fermer")],
+			listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
 			largeur: 400,
 		});
+		this.duree = this.appSco.parametresUtilisateur.get("CDT.TAF.Duree");
 	}
-	getControleur() {
-		this.duree = GApplication.parametresUtilisateur.get("CDT.TAF.Duree");
+	jsxModeleCheckboxMiseEnForme() {
+		return {
+			getValue: () => {
+				return this.appSco.parametresUtilisateur.get(
+					"CDT.TAF.ActiverMiseEnForme",
+				);
+			},
+			setValue: (aValue) => {
+				this.appSco.parametresUtilisateur.set(
+					"CDT.TAF.ActiverMiseEnForme",
+					aValue,
+				);
+			},
+		};
+	}
+	jsxModeleRadioDuree(aEstAucune) {
+		return {
+			getValue: () => {
+				return aEstAucune ? this.duree === 0 : this.duree > 0;
+			},
+			setValue: (aValue) => {
+				if (aEstAucune) {
+					this.duree = 0;
+				} else {
+					if (!this.duree) {
+						this.duree = ObjetFenetre_ParametrageTAF.cDureeDefaut;
+					}
+				}
+				this.appSco.parametresUtilisateur.set("CDT.TAF.Duree", this.duree);
+			},
+			getName: () => {
+				return `${this.Nom}_Duree`;
+			},
+		};
+	}
+	jsxModeleInputDuree() {
 		let lValueInput = this.duree;
-		return $.extend(true, super.getControleur(this), {
-			cbMiseEnForme: {
-				getValue: function () {
-					return GApplication.parametresUtilisateur.get(
-						"CDT.TAF.ActiverMiseEnForme",
-					);
-				},
-				setValue: function (aValue) {
-					GApplication.parametresUtilisateur.set(
-						"CDT.TAF.ActiverMiseEnForme",
-						aValue,
-					);
-				},
+		return {
+			getValue: () => {
+				return (
+					lValueInput || ObjetFenetre_ParametrageTAF.cDureeDefaut
+				).toString();
 			},
-			rbDuree: {
-				getValue: function (aEstAucune) {
-					return aEstAucune
-						? this.instance.duree === 0
-						: this.instance.duree > 0;
-				},
-				setValue: function (aEstAucune) {
-					if (aEstAucune) {
-						this.instance.duree = 0;
-					} else {
-						lValueInput =
-							lValueInput || ObjetFenetre_ParametrageTAF.cDureeDefaut;
-						this.instance.duree = lValueInput;
-					}
-					GApplication.parametresUtilisateur.set(
-						"CDT.TAF.Duree",
-						this.instance.duree,
-					);
-				},
+			setValue: (aValue) => {
+				lValueInput = parseInt(aValue);
 			},
-			inputDuree: {
-				getValue: function () {
-					return lValueInput || ObjetFenetre_ParametrageTAF.cDureeDefaut;
-				},
-				setValue: function (aValue) {
-					lValueInput = aValue;
-				},
-				exitChange: function () {
-					lValueInput = this.instance.duree = parseInt(lValueInput || 0, 10);
-					GApplication.parametresUtilisateur.set(
-						"CDT.TAF.Duree",
-						this.instance.duree,
-					);
-				},
-				getDisabled: function () {
-					return this.instance.duree === 0;
-				},
+			exitChange: () => {
+				this.duree = lValueInput;
+				this.appSco.parametresUtilisateur.set("CDT.TAF.Duree", this.duree);
 			},
-			getStyleMinutes: function () {
-				return {
-					color:
-						this.instance.duree === 0
-							? GCouleur.nonEditable.texte
-							: GCouleur.noir,
-				};
+			getDisabled: () => {
+				return this.duree === 0;
 			},
-			comboNiveau: {
-				init: function (aInstance) {
-					aInstance.setOptionsObjetSaisie({
-						labelWAICellule: GTraductions.getValeur(
-							"CahierDeTexte.paramTaf.NiveauDifficulteParDef",
-						),
-					});
-				},
-				getDonnees: function (aDonnees) {
-					if (aDonnees) {
-						return;
-					}
-					if (!this.instance.listeNiveaux) {
-						this.instance.listeNiveaux = TypeNiveauDifficulteUtil.toListe();
-					}
-					return this.instance.listeNiveaux;
-				},
-				getIndiceSelection: function () {
-					return GApplication.parametresUtilisateur.get(
+		};
+	}
+	jsxGetStyleSpanMinutes() {
+		return {
+			color: this.duree === 0 ? GCouleur.nonEditable.texte : GCouleur.noir,
+		};
+	}
+	jsxComboModelNiveau() {
+		return {
+			init: (aCombo) => {
+				aCombo.setOptionsObjetSaisie({
+					labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+						"CahierDeTexte.paramTaf.NiveauDifficulteParDef",
+					),
+				});
+			},
+			getDonnees: (aListe) => {
+				if (aListe) {
+					return;
+				}
+				if (!this.listeNiveaux) {
+					this.listeNiveaux =
+						TypeNiveauDifficulte_1.TypeNiveauDifficulteUtil.toListe();
+				}
+				return this.listeNiveaux;
+			},
+			getIndiceSelection: () => {
+				return this.appSco.parametresUtilisateur.get(
+					"CDT.TAF.NiveauDifficulte",
+				);
+			},
+			event: (aParams) => {
+				if (
+					aParams.genreEvenement ===
+						Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+							.selection &&
+					aParams.element
+				) {
+					this.appSco.parametresUtilisateur.set(
 						"CDT.TAF.NiveauDifficulte",
+						aParams.element.getGenre(),
 					);
-				},
-				event: function (aParametres) {
-					if (
-						aParametres.genreEvenement ===
-							EGenreEvenementObjetSaisie.selection &&
-						aParametres.element
-					) {
-						GApplication.parametresUtilisateur.set(
-							"CDT.TAF.NiveauDifficulte",
-							aParametres.element.getGenre(),
-						);
-					}
-				},
+				}
 			},
-		});
+		};
 	}
 	composeContenu() {
-		const H = [],
-			lLargeurLibelle = 160;
-		H.push('<div class="Espace">');
+		const lLargeurLibelle = 160;
+		const lIdLegend = GUID_1.GUID.getId();
+		const lIdMinutes = GUID_1.GUID.getId();
+		const H = [];
 		H.push(
-			"<div>",
-			'<ie-checkbox ie-model="cbMiseEnForme">',
-			GTraductions.getValeur("CahierDeTexte.paramTaf.ActiverMiseEnForme"),
-			"</ie-checkbox>",
-			"</div>",
+			IE.jsx.str(
+				"div",
+				{ class: "Espace" },
+				IE.jsx.str(
+					"div",
+					null,
+					IE.jsx.str(
+						"ie-checkbox",
+						{ "ie-model": this.jsxModeleCheckboxMiseEnForme.bind(this) },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"CahierDeTexte.paramTaf.ActiverMiseEnForme",
+						),
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{
+						role: "group",
+						class: "EspaceHaut NoWrap",
+						"aria-labelledby": lIdLegend,
+					},
+					IE.jsx.str(
+						"div",
+						{
+							id: lIdLegend,
+							class: "InlineBlock AlignementMilieuVertical",
+							style: ObjetStyle_1.GStyle.composeWidth(lLargeurLibelle),
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"CahierDeTexte.paramTaf.DureeEstimeeParDef",
+						),
+					),
+					IE.jsx.str(
+						"div",
+						{ class: "InlineBlock AlignementMilieuVertical PetitEspaceDroit" },
+						IE.jsx.str(
+							"ie-radio",
+							{ "ie-model": this.jsxModeleRadioDuree.bind(this, false) },
+							IE.jsx.str("input", {
+								"aria-labelledby": lIdMinutes,
+								"ie-model": this.jsxModeleInputDuree.bind(this),
+								"ie-mask": "/[^0-9]/i",
+								maxlength: "10",
+								class: "CelluleTexte",
+								style: ObjetStyle_1.GStyle.composeWidth(40),
+							}),
+							IE.jsx.str(
+								"span",
+								{
+									id: lIdMinutes,
+									class: "EspaceGauche",
+									"ie-style": this.jsxGetStyleSpanMinutes.bind(this),
+								},
+								ObjetTraduction_1.GTraductions.getValeur(
+									"CahierDeTexte.paramTaf.DureeMinutes",
+								),
+							),
+						),
+					),
+					IE.jsx.str(
+						"div",
+						{ class: "InlineBlock AlignementMilieuVertical EspaceGauche" },
+						IE.jsx.str(
+							"ie-radio",
+							{ "ie-model": this.jsxModeleRadioDuree.bind(this, true) },
+							ObjetTraduction_1.GTraductions.getValeur("Aucune"),
+						),
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "EspaceHaut NoWrap" },
+					IE.jsx.str(
+						"div",
+						{
+							class: "InlineBlock AlignementMilieuVertical",
+							style: ObjetStyle_1.GStyle.composeWidth(lLargeurLibelle),
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"CahierDeTexte.paramTaf.NiveauDifficulteParDef",
+						),
+					),
+					IE.jsx.str(
+						"div",
+						{ class: "InlineBlock AlignementMilieuVertical" },
+						IE.jsx.str("ie-combo", {
+							"ie-model": this.jsxComboModelNiveau.bind(this),
+						}),
+					),
+				),
+			),
 		);
-		const lIdLegend = GUID.getId();
-		const lIdMinutes = GUID.getId();
-		H.push(
-			'<div role="group" class="EspaceHaut NoWrap" aria-labelledby="',
-			lIdLegend,
-			'">',
-			'<div id="',
-			lIdLegend,
-			'" class="InlineBlock AlignementMilieuVertical" style="',
-			GStyle.composeWidth(lLargeurLibelle),
-			'">',
-			GTraductions.getValeur("CahierDeTexte.paramTaf.DureeEstimeeParDef"),
-			"</div>",
-			'<div class="InlineBlock AlignementMilieuVertical PetitEspaceDroit">',
-			'<ie-radio ie-model="rbDuree(false)">',
-			'<input aria-labelledby="',
-			lIdMinutes,
-			'" ie-model="inputDuree" ie-mask="/[^0-9]/i" maxlength="10" class="CelluleTexte" style="',
-			GStyle.composeWidth(40),
-			'"/>',
-			'<span id="',
-			lIdMinutes,
-			'" class="EspaceGauche" ie-style="getStyleMinutes">',
-			GTraductions.getValeur("CahierDeTexte.paramTaf.DureeMinutes"),
-			"</span>",
-			"</ie-radio>",
-			"</div>",
-			'<div class="InlineBlock AlignementMilieuVertical EspaceGauche">',
-			'<ie-radio ie-model="rbDuree(true)">',
-			GTraductions.getValeur("Aucune"),
-			"</ie-radio>",
-			"</div>",
-			"</div>",
-		);
-		H.push(
-			'<div class="EspaceHaut NoWrap">',
-			'<div class="InlineBlock AlignementMilieuVertical" style="',
-			GStyle.composeWidth(lLargeurLibelle),
-			'">',
-			GTraductions.getValeur("CahierDeTexte.paramTaf.NiveauDifficulteParDef"),
-			"</div>",
-			'<div class="InlineBlock AlignementMilieuVertical">',
-			'<ie-combo ie-model="comboNiveau"></ie-combo>',
-			"</div>",
-			"</div>",
-		);
-		H.push("</div>");
 		return H.join("");
 	}
 }
+exports.ObjetFenetre_ParametrageTAF = ObjetFenetre_ParametrageTAF;
 ObjetFenetre_ParametrageTAF.cDureeDefaut = 15;
-module.exports = { ObjetFenetre_ParametrageTAF };

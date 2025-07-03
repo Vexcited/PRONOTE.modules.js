@@ -1,26 +1,27 @@
-const { TypeFusionTitreListe } = require("TypeFusionTitreListe.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const ObjetRequeteListeElevesGAEV = require("ObjetRequeteListeElevesGAEV.js");
-class ObjetFenetre_ChoixEleveNonGAEV extends ObjetFenetre {
+exports.ObjetFenetre_ChoixEleveNonGAEV = void 0;
+const TypeFusionTitreListe_1 = require("TypeFusionTitreListe");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetRequeteListeElevesGAEV_1 = require("ObjetRequeteListeElevesGAEV");
+class ObjetFenetre_ChoixEleveNonGAEV extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.setOptionsFenetre({
-			titre: GTraductions.getValeur("ChoixEleveGAEV.titre"),
+			titre: ObjetTraduction_1.GTraductions.getValeur("ChoixEleveGAEV.titre"),
 			largeur: 500,
 			hauteur: 600,
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 		});
 	}
-	getControleur() {
+	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(this), {
 			fenetreBtn: {
 				getDisabled: function (aBoutonRepeat) {
@@ -28,9 +29,9 @@ class ObjetFenetre_ChoixEleveNonGAEV extends ObjetFenetre {
 						return false;
 					}
 					return (
-						!this.instance.donnees ||
-						!this.instance.donnees.selections ||
-						this.instance.donnees.selections.count() === 0
+						!aInstance.donnees ||
+						!aInstance.donnees.selections ||
+						aInstance.donnees.selections.count() === 0
 					);
 				},
 			},
@@ -38,9 +39,9 @@ class ObjetFenetre_ChoixEleveNonGAEV extends ObjetFenetre {
 	}
 	construireInstances() {
 		this.identListe = this.add(
-			ObjetListe,
-			_evenementListeEleves,
-			_initialiserListeEleves,
+			ObjetListe_1.ObjetListe,
+			this._evenementListeEleves,
+			this._initialiserListeEleves,
 		);
 	}
 	setDonnees(aGroupe, aDomaine) {
@@ -48,11 +49,11 @@ class ObjetFenetre_ChoixEleveNonGAEV extends ObjetFenetre {
 			groupe: aGroupe,
 			domaine: aDomaine,
 			liste: null,
-			selections: new ObjetListeElements(),
+			selections: new ObjetListeElements_1.ObjetListeElements(),
 		};
-		new ObjetRequeteListeElevesGAEV(
+		new ObjetRequeteListeElevesGAEV_1.ObjetRequeteListeElevesGAEV(
 			this,
-			_actionSurRequeteListeElevesGAEV,
+			this._actionSurRequeteListeElevesGAEV,
 		).lancerRequete({
 			groupe: this.donnees.groupe,
 			domaine: this.donnees.domaine,
@@ -61,9 +62,10 @@ class ObjetFenetre_ChoixEleveNonGAEV extends ObjetFenetre {
 	composeContenu() {
 		const T = [];
 		T.push(
-			'<div id="',
-			this.getNomInstance(this.identListe),
-			'" style="width:100%; height:100%"></div>',
+			IE.jsx.str("div", {
+				id: this.getNomInstance(this.identListe),
+				style: "width:100%; height:100%",
+			}),
 		);
 		return T.join("");
 	}
@@ -71,80 +73,95 @@ class ObjetFenetre_ChoixEleveNonGAEV extends ObjetFenetre {
 		this.fermer();
 		this.callback.appel(aGenreBouton === 1, this.donnees.selections);
 	}
-}
-function _initialiserListeEleves(aInstance) {
-	aInstance.setOptionsListe({
-		colonnes: [
-			{
-				id: DonneesListe_ElevesNonGAEV.colonnes.nom,
-				titre: GTraductions.getValeur("ChoixEleveGAEV.colonne.nom"),
-				taille: "100%",
-			},
-			{
-				id: DonneesListe_ElevesNonGAEV.colonnes.indispo,
-				titre: TypeFusionTitreListe.FusionGauche,
-				taille: 20,
-			},
-			{
-				id: DonneesListe_ElevesNonGAEV.colonnes.option,
-				titre: GTraductions.getValeur("ChoixEleveGAEV.colonne.options"),
-				taille: 250,
-			},
-		],
-		colonnesSansBordureDroit: [DonneesListe_ElevesNonGAEV.colonnes.nom],
-	});
-}
-function _actionSurRequeteDemandeElevesDeClasse(aClasse, aJSON) {
-	aClasse.listeEleves = aJSON.listeEleves;
-	_actualiserListe.call(this, true);
-}
-function _evenementListeEleves(aParametres) {
-	switch (aParametres.genreEvenement) {
-		case EGenreEvenementListe.Deploiement:
-			if (!aParametres.article.listeEleves) {
-				new ObjetRequeteListeElevesGAEV(
-					this,
-					_actionSurRequeteDemandeElevesDeClasse.bind(
-						this,
+	_initialiserListeEleves(aInstance) {
+		const lColonnes = [];
+		lColonnes.push({
+			id: DonneesListe_ElevesNonGAEV.colonnes.nom,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"ChoixEleveGAEV.colonne.nom",
+			),
+			taille: "100%",
+		});
+		lColonnes.push({
+			id: DonneesListe_ElevesNonGAEV.colonnes.indispo,
+			titre: TypeFusionTitreListe_1.TypeFusionTitreListe.FusionGauche,
+			taille: 20,
+		});
+		lColonnes.push({
+			id: DonneesListe_ElevesNonGAEV.colonnes.option,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"ChoixEleveGAEV.colonne.options",
+			),
+			taille: 250,
+		});
+		aInstance.setOptionsListe({
+			colonnes: lColonnes,
+			colonnesSansBordureDroit: [DonneesListe_ElevesNonGAEV.colonnes.nom],
+		});
+	}
+	_evenementListeEleves(aParametres) {
+		switch (aParametres.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Deploiement:
+				if (
+					ObjetFenetre_ChoixEleveNonGAEV.estUnArticleClasse(
 						aParametres.article,
-					),
-				).lancerRequete({
-					groupe: this.donnees.groupe,
-					domaine: this.donnees.domaine,
-					classeDemande: aParametres.article,
-				});
-			} else {
-				this.getInstance(this.identListe).setListeElementsSelection(
-					this.donnees.selections,
-				);
-			}
-			break;
-		case EGenreEvenementListe.Selection:
-			this.donnees.selections = this.getInstance(
-				this.identListe,
-			).getListeElementsSelection();
-			break;
+					) &&
+					!aParametres.article.listeEleves
+				) {
+					new ObjetRequeteListeElevesGAEV_1.ObjetRequeteListeElevesGAEV(
+						this,
+						this._actionSurRequeteDemandeElevesDeClasse.bind(
+							this,
+							aParametres.article,
+						),
+					).lancerRequete({
+						groupe: this.donnees.groupe,
+						domaine: this.donnees.domaine,
+						classeDemande: aParametres.article,
+					});
+				} else {
+					this.getInstance(this.identListe).setListeElementsSelection(
+						this.donnees.selections,
+					);
+				}
+				break;
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Selection:
+				this.donnees.selections = this.getInstance(
+					this.identListe,
+				).getListeElementsSelection();
+				break;
+		}
+	}
+	_actionSurRequeteDemandeElevesDeClasse(aClasse, aJSON) {
+		aClasse.listeEleves = aJSON.listeEleves;
+		this._actualiserListe(true);
+	}
+	_actualiserListe(aConserverScroll = false) {
+		const lListe = this.getInstance(this.identListe);
+		lListe.setDonnees(
+			new DonneesListe_ElevesNonGAEV(this.donnees.liste),
+			null,
+			{ conserverPositionScroll: aConserverScroll },
+		);
+		lListe.setListeElementsSelection(this.donnees.selections);
+	}
+	_actionSurRequeteListeElevesGAEV(aJSON) {
+		this.afficher();
+		this.donnees.liste = aJSON.listeClasses;
+		aJSON.listeClasses.parcourir((aElement) => {
+			aElement.estUnDeploiement = true;
+			aElement.estDeploye = false;
+		});
+		this._actualiserListe();
+	}
+	static estUnArticleClasse(aObjet) {
+		return "avecEleve" in aObjet;
 	}
 }
-function _actualiserListe(aConserverScroll) {
-	const lListe = this.getInstance(this.identListe);
-	lListe.setDonnees(new DonneesListe_ElevesNonGAEV(this.donnees.liste), null, {
-		conserverPositionScroll: aConserverScroll,
-	});
-	lListe.setListeElementsSelection(this.donnees.selections);
-}
-function _actionSurRequeteListeElevesGAEV(aJSON) {
-	this.afficher();
-	this.donnees.liste = aJSON.listeClasses;
-	aJSON.listeClasses.parcourir((aElement) => {
-		aElement.estUnDeploiement = true;
-		aElement.estDeploye = false;
-	});
-	_actualiserListe.call(this);
-}
-class DonneesListe_ElevesNonGAEV extends ObjetDonneesListe {
+exports.ObjetFenetre_ChoixEleveNonGAEV = ObjetFenetre_ChoixEleveNonGAEV;
+class DonneesListe_ElevesNonGAEV extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees) {
-		const lListe = new ObjetListeElements();
+		const lListe = new ObjetListeElements_1.ObjetListeElements();
 		aDonnees.parcourir((aClasse) => {
 			lListe.addElement(aClasse);
 			if (aClasse.listeEleves) {
@@ -166,10 +183,9 @@ class DonneesListe_ElevesNonGAEV extends ObjetDonneesListe {
 	getTypeValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_ElevesNonGAEV.colonnes.indispo:
-				return ObjetDonneesListe.ETypeCellule.Html;
-			default:
-				return ObjetDonneesListe.ETypeCellule.Texte;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 		}
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
 	avecMenuContextuel() {
 		return false;
@@ -185,17 +201,28 @@ class DonneesListe_ElevesNonGAEV extends ObjetDonneesListe {
 			case DonneesListe_ElevesNonGAEV.colonnes.nom:
 				return aParams.article.getLibelle();
 			case DonneesListe_ElevesNonGAEV.colonnes.indispo:
-				if (aParams.article.indispoTotale) {
+				if (
+					!ObjetFenetre_ChoixEleveNonGAEV.estUnArticleClasse(aParams.article) &&
+					aParams.article.indispoTotale
+				) {
 					return '<div class="Image_CoursExportPNCoursRouge"></div>';
 				}
-				if (aParams.article.indispoPartielle) {
+				if (
+					!ObjetFenetre_ChoixEleveNonGAEV.estUnArticleClasse(aParams.article) &&
+					aParams.article.indispoPartielle
+				) {
 					return '<div class="Image_CoursExportPNCoursOrange"></div>';
 				}
 				return "";
 			case DonneesListe_ElevesNonGAEV.colonnes.option:
-				return aParams.article.options;
-			default:
+				if (
+					!ObjetFenetre_ChoixEleveNonGAEV.estUnArticleClasse(aParams.article)
+				) {
+					return aParams.article.options;
+				}
+				return "";
 		}
+		return "";
 	}
 	fusionCelluleAvecColonnePrecedente(aParams) {
 		return (
@@ -204,31 +231,44 @@ class DonneesListe_ElevesNonGAEV extends ObjetDonneesListe {
 		);
 	}
 	getClass(aParams) {
-		return aParams.article.estUnDeploiement && aParams.article.avecEleve
-			? "Gras AvecMain"
-			: "";
+		const lClasses = [];
+		if (aParams.article.estUnDeploiement) {
+			if (
+				ObjetFenetre_ChoixEleveNonGAEV.estUnArticleClasse(aParams.article) &&
+				aParams.article.avecEleve
+			) {
+				lClasses.push("Gras", "AvecMain");
+			}
+		}
+		return lClasses.join(" ");
 	}
 	getCouleurCellule(aParams) {
 		return aParams.article.estUnDeploiement
-			? ObjetDonneesListe.ECouleurCellule.Deploiement
-			: ObjetDonneesListe.ECouleurCellule.Gris;
+			? ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Deploiement
+			: ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Gris;
 	}
 	getTri() {
 		return [
-			ObjetTri.initRecursif("pere", [
-				ObjetTri.init((aElement) => {
-					return !aElement.avecEleve;
+			ObjetTri_1.ObjetTri.initRecursif("pere", [
+				ObjetTri_1.ObjetTri.init((aElement) => {
+					return (
+						ObjetFenetre_ChoixEleveNonGAEV.estUnArticleClasse(aElement) &&
+						!aElement.avecEleve
+					);
 				}),
-				ObjetTri.init("Libelle"),
+				ObjetTri_1.ObjetTri.init("Libelle"),
 			]),
 		];
 	}
-	getHintForce(aParams) {
-		if (
-			aParams.idColonne === DonneesListe_ElevesNonGAEV.colonnes.indispo &&
-			aParams.article.hintIndispo
-		) {
-			return aParams.article.hintIndispo;
+	getTooltip(aParams) {
+		switch (aParams.idColonne) {
+			case DonneesListe_ElevesNonGAEV.colonnes.indispo:
+				if (
+					!ObjetFenetre_ChoixEleveNonGAEV.estUnArticleClasse(aParams.article) &&
+					aParams.article.hintIndispo
+				) {
+					return aParams.article.hintIndispo;
+				}
 		}
 		return "";
 	}
@@ -238,4 +278,3 @@ DonneesListe_ElevesNonGAEV.colonnes = {
 	indispo: "indispo",
 	option: "option",
 };
-module.exports = ObjetFenetre_ChoixEleveNonGAEV;

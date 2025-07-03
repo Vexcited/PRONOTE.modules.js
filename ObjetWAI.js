@@ -4,6 +4,7 @@ exports.EGenreAttribut =
 	exports.GObjetWAI =
 	exports.ObjetWAI =
 		void 0;
+const GlossaireWAI_1 = require("GlossaireWAI");
 const GUID_1 = require("GUID");
 const ObjetTraduction_1 = require("ObjetTraduction");
 var EGenreObjet;
@@ -153,8 +154,7 @@ class ObjetWAI {
 	constructor() {
 		this.idMessagesAide = GUID_1.GUID.getId();
 		this.InfoWai = [];
-		this.InfoWai[EGenreObjet.Aide] =
-			ObjetTraduction_1.GTraductions.getValeur("Navigation.Aide");
+		this.InfoWai[EGenreObjet.Aide] = GlossaireWAI_1.TradGlossaireWAI.wai.Aide;
 		this.InfoWai[EGenreObjet.Tableau] =
 			ObjetTraduction_1.GTraductions.getValeur("Navigation.Tableau");
 		this.InfoWai[EGenreObjet.AvecValidation] =
@@ -322,7 +322,7 @@ class ObjetWAI {
 		return this.InfoWai[AEnum];
 	}
 	strRole(AEnum) {
-		return this.WaiRole[AEnum] || "";
+		return this.WaiRole[AEnum] || false;
 	}
 	getRole(AEnum) {
 		return 'role="' + this.strRole(AEnum) + '"';

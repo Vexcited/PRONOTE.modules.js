@@ -57,24 +57,18 @@ class InterfaceRecapitulatifVS extends ObjetInterfacePageCP_1.InterfacePageCP {
 			guidRef: GUID_1.GUID.getId(),
 		};
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			btnRetourEcranPrec: {
-				event: () => {
-					if (!this.retourAccueil) {
-						this.revenirSurEcranPrecedent();
-					} else {
-						this.etatUtilisateurSco.setPage({
-							Onglet: Enumere_Onglet_1.EGenreOnglet.Accueil,
-						});
-						if (GEtatUtilisateur.getGenreOnglet()) {
-							const lGenreOnglet = GEtatUtilisateur.getGenreOnglet();
-							GInterface.evenementSurOnglet(lGenreOnglet);
-						}
-					}
-				},
-			},
-		});
+	revenirSurEcranPrecedent() {
+		if (!this.retourAccueil) {
+			super.revenirSurEcranPrecedent();
+		} else {
+			this.etatUtilisateurSco.setPage({
+				Onglet: Enumere_Onglet_1.EGenreOnglet.Accueil,
+			});
+			if (GEtatUtilisateur.getGenreOnglet()) {
+				const lGenreOnglet = GEtatUtilisateur.getGenreOnglet();
+				GInterface.evenementSurOnglet(lGenreOnglet);
+			}
+		}
 	}
 	construireInstances() {
 		this.identListe = this.add(
@@ -86,7 +80,10 @@ class InterfaceRecapitulatifVS extends ObjetInterfacePageCP_1.InterfacePageCP {
 			ObjetVSListeDetails_1.ObjetVSListeDetails,
 			this.evenementListeDetails,
 			(aInstance) => {
-				aInstance.setOptions({ avecBascule: this.optionsEcrans.avecBascule });
+				aInstance.setOptions({
+					avecBascule: this.optionsEcrans.avecBascule,
+					funcTitreListe: () => this.getTitreListe(),
+				});
 			},
 		);
 		this.identDetailElement = this.add(
@@ -102,7 +99,7 @@ class InterfaceRecapitulatifVS extends ObjetInterfacePageCP_1.InterfacePageCP {
 			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 	}
 	construireStructureAffichageAutre() {
-		const lHtml = [];
+		const H = [];
 		const lClass = [];
 		if (this.optionsEcrans.avecBascule) {
 			lClass.push("avecBascule");
@@ -114,14 +111,14 @@ class InterfaceRecapitulatifVS extends ObjetInterfacePageCP_1.InterfacePageCP {
 		} else {
 			lClass.push("espace-recapVS");
 		}
-		lHtml.push(
+		H.push(
 			'<div class="ifc_RecapVS	ObjetFenetre_Edition_Contenu ',
 			lClass.join(" "),
 			'">',
 		);
 		lClass.pop();
 		lClass.push("ifc_RecapVS_EcranRecap");
-		lHtml.push(
+		H.push(
 			'<div id="',
 			this.getIdDeNiveau({ niveauEcran: 0 }),
 			'"',
@@ -129,46 +126,46 @@ class InterfaceRecapitulatifVS extends ObjetInterfacePageCP_1.InterfacePageCP {
 			lClass.join(" "),
 			'">',
 		);
-		lHtml.push(
+		H.push(
 			'<div id="',
-			this.getInstance(this.identListe).getNom(),
+			this.getNomInstance(this.identListe),
 			'" style="height:100%;" class="FlatListeEvenementsVS ',
 			this.etatUtilisateurSco.pourPrimaire() ? "EspaceHaut" : "",
 			'"></div>',
 		);
-		lHtml.push("</div>");
+		H.push("</div>");
 		lClass.pop();
 		lClass.push("ifc_RecapVS_EcranListe");
-		lHtml.push(
+		H.push(
 			'<div id="',
 			this.getIdDeNiveau({ niveauEcran: 1 }),
 			'" class="',
 			lClass.join(" "),
 			'">',
 		);
-		lHtml.push(
+		H.push(
 			'<div id="',
-			this.getInstance(this.identListeDetails).getNom(),
+			this.getNomInstance(this.identListeDetails),
 			'" class="ifc_RecapVS_EcranListe_Content"></div>',
 		);
-		lHtml.push("</div>");
+		H.push("</div>");
 		lClass.pop();
 		lClass.push("ifc_RecapVS_EcranElement");
-		lHtml.push(
+		H.push(
 			'<div id="',
 			this.getIdDeNiveau({ niveauEcran: 2 }),
 			'" class="',
 			lClass.join(" "),
 			'">',
 		);
-		lHtml.push(
+		H.push(
 			'<div id="',
-			this.getInstance(this.identDetailElement).getNom(),
+			this.getNomInstance(this.identDetailElement),
 			'" class="ifc_RecapVS_EcranElement_Content contenu-edition"></div>',
 		);
-		lHtml.push("</div>");
-		lHtml.push("</div>");
-		return lHtml.join("");
+		H.push("</div>");
+		H.push("</div>");
+		return H.join("");
 	}
 	construireEcran(aEcran) {
 		let lHtmlBandeau = "";
@@ -326,7 +323,12 @@ class InterfaceRecapitulatifVS extends ObjetInterfacePageCP_1.InterfacePageCP {
 				this.utilitaireAbsence.avecCommandeDeclarerUneAbsence() ||
 				this.utilitaireAbsence.avecCommandeDeclarerUneDispensePonctuelle() ||
 				this.utilitaireAbsence.avecCommandeDeclarerUneDispenseLongue(),
+			ariaLabel: () => this.getTitreListe(),
 		});
+	}
+	getTitreListe() {
+		var _a;
+		return `${this.etatUtilisateurSco.getLibelleLongOnglet()} ${((_a = this.periodeCourant) === null || _a === void 0 ? void 0 : _a.getLibelle()) || ""}`.trim();
 	}
 	evenementListeEvenementsVS(aParametres) {
 		switch (aParametres.genreEvenement) {
@@ -557,7 +559,7 @@ class InterfaceRecapitulatifVS extends ObjetInterfacePageCP_1.InterfacePageCP {
 							ObjetFenetre_DetailElementVS_1.ObjetFenetre_DetailElementVS,
 							{
 								pere: this,
-								evenement: (aTypeEvenement, aDonnees) => {
+								evenement: (aNumeroBouton, aDonnees) => {
 									this.utilitaireAbsence.eventApresFiche.call(this, lElement, {
 										element: aDonnees.element,
 										documents: aDonnees.documents,
@@ -572,7 +574,16 @@ class InterfaceRecapitulatifVS extends ObjetInterfacePageCP_1.InterfacePageCP {
 								},
 							},
 						);
-					lFenetreDetailElement.setDonnees(lElmPourSaisie);
+					const lPropCommentaireObligatoire =
+						lElmPourSaisie.getGenre() ===
+						Enumere_Ressource_1.EGenreRessource.Absence
+							? "commentaireAbsenceObligatoire"
+							: "commentaireRetardObligatoire";
+					const lAvecCommentaireObligatoire =
+						!!this.donnees[lPropCommentaireObligatoire];
+					lFenetreDetailElement.setDonnees(lElmPourSaisie, {
+						avecCommentaireObligatoire: lAvecCommentaireObligatoire,
+					});
 				}
 				break;
 			case ObjetVSListeDetails_1.ObjetVSListeDetails.evenement
@@ -1092,6 +1103,8 @@ function _estAutorise(aRecap, aAutorisations) {
 				return !!aAutorisations.mesureConservatoire;
 			case Enumere_Ressource_1.EGenreRessource.Commission:
 				return !!aAutorisations.commission;
+			case Enumere_Ressource_1.EGenreRessource.RetardInternat:
+				return !!aAutorisations.retardInternat;
 			default:
 				return false;
 		}

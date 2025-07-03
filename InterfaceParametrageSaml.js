@@ -1,17 +1,17 @@
 exports.InterfaceParametrageSaml = void 0;
 require("IEHtml.MrFiche.js");
 const AppelSOAP_1 = require("AppelSOAP");
-const ObjetHtml_1 = require("ObjetHtml");
 const ObjetStyle_1 = require("ObjetStyle");
 const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetInterface_1 = require("ObjetInterface");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const WSGestionSaml_1 = require("WSGestionSaml");
 const ObjetFenetre_ParametrageSaml_1 = require("ObjetFenetre_ParametrageSaml");
+const AccessApp_1 = require("AccessApp");
 class InterfaceParametrageSaml extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
-		this.objetApplicationConsoles = GApplication;
+		this.objetApplicationConsoles = (0, AccessApp_1.getApp)();
 		this.messagesEvenements =
 			this.objetApplicationConsoles.msgEvnts.getMessagesUnite(
 				"InterfaceParametrageSaml.js",
@@ -48,152 +48,162 @@ class InterfaceParametrageSaml extends ObjetInterface_1.ObjetInterface {
 		super.free();
 		clearTimeout(this.timeoutEtatEnCours);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			inputNomDelegation: {
-				getValue() {
-					return aInstance.infosDelegation.nom;
-				},
-				setValue(aValue) {
-					aInstance.infosDelegation.nom = aValue;
-				},
-				getDisabled() {
-					return aInstance.avecParametresInactifs();
-				},
+	jsxModelInputNomDelegation() {
+		return {
+			getValue: () => {
+				return this.infosDelegation.nom;
 			},
-			btnParametres: {
-				event() {
-					const lFenetreParametrageSaml =
-						ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
-							ObjetFenetre_ParametrageSaml_1.ObjetFenetre_ParametrageSaml,
-							{
-								pere: aInstance,
-								evenement: aInstance.evenementSurFenetreParametrage,
-								initialiser(aInstanceFenetre) {
-									aInstanceFenetre.setOptionsFenetresParametragSaml({
-										largeurLibelle: aInstance.optionsSaml.largeurLibelleFenetre,
-									});
-								},
+			setValue: (aValue) => {
+				this.infosDelegation.nom = aValue;
+			},
+			getDisabled: () => {
+				return this.avecParametresInactifs();
+			},
+		};
+	}
+	jsxModelBoutonParametres() {
+		return {
+			event: () => {
+				const lFenetreParametrageSaml =
+					ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+						ObjetFenetre_ParametrageSaml_1.ObjetFenetre_ParametrageSaml,
+						{
+							pere: this,
+							evenement: (aNumeroBouton, aParametres) => {
+								this.evenementSurFenetreParametrage(aParametres);
 							},
-						);
-					lFenetreParametrageSaml.setDonnees(aInstance.parametresSaml);
-				},
-				getDisabled() {
-					return (
-						aInstance.estEnService() ||
-						!aInstance.parametresSaml.urlMetadataServeur ||
-						aInstance.statutContactServeurSvcW !==
-							WSGestionSaml_1.ETypeStatutContactServeurSamlSvcW.Scs_Contacte
+							initialiser(aInstanceFenetre) {
+								aInstanceFenetre.setOptionsFenetresParametragSaml({
+									largeurLibelle: this.optionsSaml.largeurLibelleFenetre,
+								});
+							},
+						},
 					);
-				},
+				lFenetreParametrageSaml.setDonnees(this.parametresSaml);
 			},
-			getStyleTexte() {
-				return {
-					color: aInstance.avecParametresInactifs()
-						? GCouleur.nonEditable.texte
-						: "black",
-				};
-			},
-			inputURL: {
-				getValue() {
-					return aInstance.parametresSaml.urlMetadataServeur;
-				},
-				setValue(aValue) {
-					aInstance.parametresSaml.urlMetadataServeur = aValue;
-				},
-				exitChange(aValue) {
-					aInstance.parametresSaml.urlMetadataServeur = aValue;
-					if (aInstance.parametresSaml.urlMetadataServeur !== "") {
-						aInstance.fenetre.setBoutonActif(1, false);
-						return aInstance.soapVerifierAdresseMetadata(0);
-					}
-				},
-				getDisabled: function () {
-					return (
-						aInstance.avecParametresInactifs() ||
-						aInstance.optionsSaml.bloquerSaisieUrl
-					);
-				},
-			},
-			getEtatLogin() {
-				return aInstance.getEtatLogin();
-			},
-			getUrlPubliqueMetaData() {
-				return aInstance.urlFederationMetataClient || "";
-			},
-			cbAcces: {
-				getValue(aNomProp) {
-					return aInstance.parametresSaml[aNomProp];
-				},
-				setValue(aNomProp, aNomMethode, aValue) {
-					aInstance.parametresSaml[aNomProp] = aValue;
-				},
-				getDisabled() {
-					return aInstance.avecParametresInactifs();
-				},
-			},
-			lienAcces(aNomPropUrl, aNomPropCB) {
-				if (!aInstance.parametresSaml[aNomPropUrl]) {
-					return "";
-				}
-				const lAvecClic =
-					aInstance.parametresSaml[aNomPropCB] &&
-					aInstance.avecParametresInactifs() &&
-					aInstance.estEnService();
-				return !lAvecClic
-					? '<span class="EspaceGauche Texte10 AvecSelectionTexte Gras">' +
-							aInstance.parametresSaml[aNomPropUrl] +
-							"</span>"
-					: '<a href="' +
-							aInstance.parametresSaml[aNomPropUrl] +
-							'" class="EspaceGauche Texte10 AvecSelectionTexte LienConsole" target="_blank">' +
-							aInstance.parametresSaml[aNomPropUrl] +
-							"</a>";
-			},
-			getHtmlURLPublique() {
-				return aInstance.parametresSaml.urlPublique;
-			},
-			getDownloadConfig() {
-				if (!aInstance.avecParametresInactifs()) {
-					return ObjetTraduction_1.GTraductions.getValeur(
-						"saml.TelechargerMetadata",
-					);
-				}
+			getDisabled: () => {
 				return (
-					'<a href="download/configurationSaml.xml" target="_blank">' +
-					ObjetTraduction_1.GTraductions.getValeur("saml.TelechargerMetadata") +
-					"</a>"
+					this.estEnService() ||
+					!this.parametresSaml.urlMetadataServeur ||
+					this.statutContactServeurSvcW !==
+						WSGestionSaml_1.ETypeStatutContactServeurSamlSvcW.Scs_Contacte
 				);
 			},
-			cbAuthControleur: {
-				getValue() {
-					return aInstance.parametresSaml.accesDirectAuxEspaces;
-				},
-				setValue(aValue) {
-					aInstance.parametresSaml.accesDirectAuxEspaces = aValue;
-				},
-				getDisabled() {
-					return aInstance.avecParametresInactifs();
-				},
+		};
+	}
+	jsxGetStyleTexte() {
+		return {
+			color: this.avecParametresInactifs()
+				? (0, AccessApp_1.getApp)().getCouleur().nonEditable.texte
+				: "black",
+		};
+	}
+	jsxModelInputUrl() {
+		return {
+			getValue: () => {
+				return this.parametresSaml.urlMetadataServeur;
 			},
-			rbAuthControleur: {
-				getValue(aEstToutLeTemp) {
-					return (
-						aInstance.parametresSaml.accesDirectToutLeTemps === aEstToutLeTemp
-					);
-				},
-				setValue(aValue) {
-					aInstance.parametresSaml.accesDirectToutLeTemps = aValue;
-					aInstance.parametresSaml.accesDirectPasDeReponse = !aValue;
-				},
-				getDisabled() {
-					return (
-						!aInstance.parametresSaml.accesDirectAuxEspaces ||
-						aInstance.avecParametresInactifs()
-					);
-				},
+			setValue: (aValue) => {
+				this.parametresSaml.urlMetadataServeur = aValue;
 			},
-		});
+			exitChange: (aValue) => {
+				this.parametresSaml.urlMetadataServeur = aValue;
+				if (this.parametresSaml.urlMetadataServeur !== "") {
+					this.fenetre.setBoutonActif(1, false);
+					return this.soapVerifierAdresseMetadata(0);
+				}
+			},
+			getDisabled: () => {
+				return (
+					this.avecParametresInactifs() || this.optionsSaml.bloquerSaisieUrl
+				);
+			},
+		};
+	}
+	jsxHtmlEtatLogin() {
+		return this.getEtatLogin();
+	}
+	jsxGetUrlPubliqueMetaData() {
+		return this.urlFederationMetataClient || "";
+	}
+	jsxModelCheckboxAcces(aNomProp) {
+		return {
+			getValue: () => {
+				return this.parametresSaml[aNomProp];
+			},
+			setValue: (aValue) => {
+				this.parametresSaml[aNomProp] = aValue;
+			},
+			getDisabled: () => {
+				return this.avecParametresInactifs();
+			},
+		};
+	}
+	jsxHtmlLienAcces(aNomPropUrl, aNomPropCB) {
+		if (!this.parametresSaml[aNomPropUrl]) {
+			return "";
+		}
+		const lAvecClic =
+			this.parametresSaml[aNomPropCB] &&
+			this.avecParametresInactifs() &&
+			this.estEnService();
+		return !lAvecClic
+			? '<span class="EspaceGauche Texte10 AvecSelectionTexte Gras">' +
+					this.parametresSaml[aNomPropUrl] +
+					"</span>"
+			: '<a href="' +
+					this.parametresSaml[aNomPropUrl] +
+					'" class="EspaceGauche Texte10 AvecSelectionTexte LienConsole" target="_blank">' +
+					this.parametresSaml[aNomPropUrl] +
+					"</a>";
+	}
+	jsxGetHtmlURLPublique() {
+		return this.parametresSaml.urlPublique;
+	}
+	jsxGetDownloadConfig() {
+		if (!this.avecParametresInactifs()) {
+			return ObjetTraduction_1.GTraductions.getValeur(
+				"saml.TelechargerMetadata",
+			);
+		}
+		return (
+			'<a href="download/configurationSaml.xml" target="_blank">' +
+			ObjetTraduction_1.GTraductions.getValeur("saml.TelechargerMetadata") +
+			"</a>"
+		);
+	}
+	jsxModelCheckboxAccesDirectAuxEspaces() {
+		return {
+			getValue: () => {
+				return this.parametresSaml.accesDirectAuxEspaces;
+			},
+			setValue: (aValue) => {
+				this.parametresSaml.accesDirectAuxEspaces = aValue;
+			},
+			getDisabled: () => {
+				return this.avecParametresInactifs();
+			},
+		};
+	}
+	jsxModelRadioTypeAccesDirect(aEstToutLeTemp) {
+		return {
+			getValue: () => {
+				return this.parametresSaml.accesDirectToutLeTemps === aEstToutLeTemp;
+			},
+			setValue: (aValue) => {
+				this.parametresSaml.accesDirectToutLeTemps = aValue;
+				this.parametresSaml.accesDirectPasDeReponse = !aValue;
+			},
+			getName: () => {
+				return `${this.Nom}_TypeAccesDirect`;
+			},
+			getDisabled: () => {
+				return (
+					!this.parametresSaml.accesDirectAuxEspaces ||
+					this.avecParametresInactifs()
+				);
+			},
+		};
 	}
 	construireStructureAffichage() {
 		const H = [];
@@ -277,159 +287,279 @@ class InterfaceParametrageSaml extends ObjetInterface_1.ObjetInterface {
 		return H.join("");
 	}
 	composePage() {
+		const lZoneURLPointNet = [];
+		if (this.optionsSaml.avecURLPointNet) {
+			lZoneURLPointNet.push(
+				IE.jsx.str(
+					"div",
+					{ style: "padding-top:10px;" },
+					IE.jsx.str(
+						"div",
+						null,
+						ObjetTraduction_1.GTraductions.getValeur("saml.UrlPublique"),
+					),
+					IE.jsx.str("div", {
+						class: "EspaceGauche PetitEspaceHaut Gras AvecSelectionTexte",
+						"ie-html": this.jsxGetUrlPubliqueMetaData.bind(this),
+					}),
+				),
+			);
+		}
+		const lZoneAccesDirectEspace = [];
+		if (this.optionsSaml.avecAccesDirectEspaces) {
+			lZoneAccesDirectEspace.push(
+				IE.jsx.str(
+					"div",
+					{ style: "padding-top:10px;" },
+					IE.jsx.str(
+						"div",
+						null,
+						IE.jsx.str(
+							"ie-checkbox",
+							{
+								"ie-model": this.jsxModelCheckboxAcces.bind(
+									this,
+									"accesDirectAuxEspaces",
+								),
+							},
+							ObjetTraduction_1.GTraductions.getValeur("saml.LoginDirect"),
+						),
+					),
+					IE.jsx.str("div", {
+						"ie-html": this.jsxHtmlLienAcces.bind(
+							this,
+							"urlAccesDirect",
+							"accesDirectAuxEspaces",
+						),
+					}),
+				),
+			);
+		}
+		const lZoneAccesInvite = [];
+		if (this.optionsSaml.avecAccesInvite) {
+			lZoneAccesInvite.push(
+				IE.jsx.str(
+					"div",
+					{ style: "padding-top:10px;" },
+					IE.jsx.str(
+						"div",
+						null,
+						IE.jsx.str(
+							"ie-checkbox",
+							{
+								"ie-model": this.jsxModelCheckboxAcces.bind(
+									this,
+									"accesInviteSansSaml",
+								),
+							},
+							ObjetTraduction_1.GTraductions.getValeur("saml.EspaceInvite"),
+						),
+					),
+					IE.jsx.str("div", {
+						"ie-html": this.jsxHtmlLienAcces.bind(
+							this,
+							"urlAccesInviteSansSaml",
+							"accesInviteSansSaml",
+						),
+					}),
+				),
+			);
+		}
+		const lZoneUrlPubliqueServeur = [];
+		if (this.optionsSaml.avecUrlPubliqueServeur) {
+			lZoneUrlPubliqueServeur.push(
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
+						"div",
+						{ style: "padding-top:10px; display:flex; align-items:center;" },
+						IE.jsx.str(
+							"div",
+							null,
+							ObjetTraduction_1.GTraductions.getValeur("saml.UrlPublique"),
+						),
+					),
+					IE.jsx.str("div", {
+						style: "padding-top:5px; padding-left:10px;",
+						class: "Gras AvecSelectionTexte",
+						"ie-html": this.jsxGetHtmlURLPublique.bind(this),
+					}),
+				),
+			);
+		}
+		const lZoneDownloadConfig = [];
+		if (this.optionsSaml.avecDownloadConfig) {
+			lZoneDownloadConfig.push(
+				IE.jsx.str(
+					"div",
+					{ style: "padding-top:10px; display:flex; align-items:center;" },
+					IE.jsx.str("div", {
+						"ie-html": this.jsxGetDownloadConfig.bind(this),
+					}),
+					IE.jsx.str("div", {
+						"ie-mrfiche": "saml.MFicheTelechargerMetadataSaml",
+						class: "PetitEspaceGauche",
+					}),
+				),
+			);
+		}
+		const lZoneAuthentificationServeur = [];
+		if (this.optionsSaml.avecAuthentificationServeur) {
+			lZoneAuthentificationServeur.push(
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
+						"div",
+						{ style: "padding-top:10px;" },
+						IE.jsx.str(
+							"div",
+							{ style: "display:flex; align-items:center;" },
+							IE.jsx.str(
+								"ie-checkbox",
+								{
+									"ie-model":
+										this.jsxModelCheckboxAccesDirectAuxEspaces.bind(this),
+								},
+								ObjetTraduction_1.GTraductions.getValeur("saml.LoginDirect"),
+							),
+							IE.jsx.str("div", {
+								"ie-mrfiche": "saml.MFicheLoginDirect",
+								class: "PetitEspaceGauche",
+							}),
+						),
+					),
+					IE.jsx.str(
+						"div",
+						{ style: "padding-top:5px; padding-left:15px;" },
+						IE.jsx.str(
+							"div",
+							null,
+							IE.jsx.str(
+								"ie-radio",
+								{
+									"ie-model": this.jsxModelRadioTypeAccesDirect.bind(
+										this,
+										true,
+									),
+								},
+								ObjetTraduction_1.GTraductions.getValeur(
+									"saml.DirectToutLeTemps",
+								),
+							),
+						),
+						IE.jsx.str(
+							"div",
+							null,
+							IE.jsx.str(
+								"ie-radio",
+								{
+									"ie-model": this.jsxModelRadioTypeAccesDirect.bind(
+										this,
+										false,
+									),
+								},
+								ObjetTraduction_1.GTraductions.getValeur(
+									"saml.DirectPasDeReponse",
+								),
+							),
+						),
+					),
+				),
+			);
+		}
 		const H = [];
 		H.push(
-			'<div class="flex-contain flex-center">',
-			'<div class="fluid-bloc">',
-			'<span class="p-left">',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"pageParametresDeleguerLAuthentification.NomDeLaDelegation",
-			) + " :",
-			"</span>",
-			'<input ie-model="inputNomDelegation" style="width:450px;" />',
-			"</div>",
-			'<ie-bouton ie-model="btnParametres" style="min-width:300px;" class="small-bt">',
-			ObjetTraduction_1.GTraductions.getValeur("saml.Parametres"),
-			"</ie-bouton>",
-			"</div>",
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"div",
+					{ class: "flex-contain flex-center" },
+					IE.jsx.str(
+						"div",
+						{ class: "fluid-bloc" },
+						IE.jsx.str(
+							"span",
+							{ class: "p-left" },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"pageParametresDeleguerLAuthentification.NomDeLaDelegation",
+							),
+							" :",
+						),
+						IE.jsx.str("input", {
+							"ie-model": this.jsxModelInputNomDelegation.bind(this),
+							"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+								"pageParametresDeleguerLAuthentification.NomDeLaDelegation",
+							),
+							style: "width:450px;",
+						}),
+					),
+					IE.jsx.str(
+						"ie-bouton",
+						{
+							"ie-model": this.jsxModelBoutonParametres.bind(this),
+							style: "min-width:300px;",
+							class: "small-bt",
+						},
+						ObjetTraduction_1.GTraductions.getValeur("saml.Parametres"),
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "Espace" },
+					IE.jsx.str(
+						"div",
+						{
+							"ie-style": this.jsxGetStyleTexte.bind(this),
+							class: "AvecSelectionTexte",
+						},
+						IE.jsx.str(
+							"div",
+							{ style: "display:flex; align-items:center;" },
+							IE.jsx.str(
+								"div",
+								null,
+								ObjetTraduction_1.GTraductions.getValeur("saml.UrlServeurSaml"),
+							),
+							this.optionsSaml.avecMrFicheURLServeur
+								? '<div ie-mrfiche="saml.MFicheUrlServeurSaml" class="PetitEspaceGauche"></div>'
+								: "",
+						),
+						IE.jsx.str(
+							"div",
+							{ style: "padding-top:5px; padding-left:10px;" },
+							IE.jsx.str("input", {
+								type: "text",
+								"ie-model": this.jsxModelInputUrl.bind(this),
+								"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+									"saml.UrlServeurSaml",
+								),
+								"ie-selecttextfocus": true,
+								"ie-trim": true,
+								class: "Gras",
+								style:
+									"width:100%; height:20px;" +
+									ObjetStyle_1.GStyle.composeCouleurBordure(
+										(0, AccessApp_1.getApp)().getCouleur().noir,
+									),
+							}),
+						),
+						IE.jsx.str("div", {
+							class: "PetitEspaceHaut",
+							"ie-html": this.jsxHtmlEtatLogin.bind(this),
+						}),
+						lZoneURLPointNet.join(""),
+						lZoneAccesDirectEspace.join(""),
+						lZoneAccesInvite.join(""),
+						lZoneUrlPubliqueServeur.join(""),
+						lZoneDownloadConfig.join(""),
+						lZoneAuthentificationServeur.join(""),
+					),
+				),
+			),
 		);
-		H.push('<div class="Espace">');
-		H.push('<div ie-style="getStyleTexte" class="AvecSelectionTexte">');
-		H.push(
-			'<div style="display:flex; align-items:center;">',
-			"<div>",
-			ObjetTraduction_1.GTraductions.getValeur("saml.UrlServeurSaml"),
-			"</div>",
-			this.optionsSaml.avecMrFicheURLServeur
-				? '<div ie-mrfiche="saml.MFicheUrlServeurSaml" class="PetitEspaceGauche"></div>'
-				: "",
-			"</div>",
-		);
-		H.push(
-			'<div style="padding-top:5px; padding-left:10px;">',
-			'<input type="text" ie-model="inputURL" ie-selecttextfocus ie-trim class="Gras" style="width:100%; height:20px;',
-			ObjetStyle_1.GStyle.composeCouleurBordure(GCouleur.noir),
-			'" />',
-			"</div>",
-		);
-		H.push('<div class="PetitEspaceHaut" ie-html="getEtatLogin"></div>');
-		if (this.optionsSaml.avecURLPointNet) {
-			H.push('<div style="padding-top:10px;">');
-			H.push(
-				"<div>",
-				ObjetTraduction_1.GTraductions.getValeur("saml.UrlPublique"),
-				"</div>",
-			);
-			H.push(
-				'<div class="EspaceGauche PetitEspaceHaut Gras AvecSelectionTexte" ie-html="getUrlPubliqueMetaData"></div>',
-			);
-			H.push("</div>");
-		}
-		if (this.optionsSaml.avecAccesDirectEspaces) {
-			H.push('<div style="padding-top:10px;">');
-			H.push(
-				"<div>",
-				"<ie-checkbox ",
-				ObjetHtml_1.GHtml.composeAttr("ie-model", "cbAcces", [
-					"accesDirectAuxEspaces",
-					"SetAccesDirectAuxEspacesSaml",
-				]),
-				">",
-				ObjetTraduction_1.GTraductions.getValeur("saml.LoginDirect"),
-				"</ie-checkbox>",
-				"</div>",
-			);
-			H.push(
-				"<div ",
-				ObjetHtml_1.GHtml.composeAttr("ie-html", "lienAcces", [
-					"urlAccesDirect",
-					"accesDirectAuxEspaces",
-				]),
-				'"></div>',
-			);
-			H.push("</div>");
-		}
-		if (this.optionsSaml.avecAccesInvite) {
-			H.push('<div style="padding-top:10px;">');
-			H.push(
-				"<div>",
-				"<ie-checkbox ",
-				ObjetHtml_1.GHtml.composeAttr("ie-model", "cbAcces", [
-					"accesInviteSansCAS",
-					"SetAccesInviteSansSaml",
-				]),
-				">",
-				ObjetTraduction_1.GTraductions.getValeur("saml.EspaceInvite"),
-				"</ie-checkbox>",
-				"</div>",
-			);
-			H.push(
-				"<div ",
-				ObjetHtml_1.GHtml.composeAttr("ie-html", "lienAcces", [
-					"urlAccesInviteSansCAS",
-					"accesInviteSansCAS",
-				]),
-				'"></div>',
-			);
-			H.push("</div>");
-		}
-		if (this.optionsSaml.avecUrlPubliqueServeur) {
-			H.push(
-				'<div style="padding-top:10px; display:flex; align-items:center;">',
-				"<div>",
-				ObjetTraduction_1.GTraductions.getValeur("saml.UrlPublique"),
-				"</div>",
-				"</div>",
-			);
-			H.push(
-				'<div style="padding-top:5px; padding-left:10px;" class="Gras AvecSelectionTexte" ie-html="getHtmlURLPublique">',
-				"</div>",
-			);
-		}
-		if (this.optionsSaml.avecDownloadConfig) {
-			H.push(
-				'<div style="padding-top:10px; display:flex; align-items:center;">',
-				'<div ie-html="getDownloadConfig"></div>',
-				'<div ie-mrfiche="saml.MFicheTelechargerMetadataSaml" class="PetitEspaceGauche"></div>',
-				"</div>",
-			);
-		}
-		if (this.optionsSaml.avecAuthentificationServeur) {
-			H.push('<div style="padding-top:10px;">');
-			H.push(
-				'<div style="display:flex; align-items:center;">',
-				"<ie-checkbox ",
-				ObjetHtml_1.GHtml.composeAttr("ie-model", "cbAuthControleur"),
-				">",
-				ObjetTraduction_1.GTraductions.getValeur("saml.LoginDirect"),
-				"</ie-checkbox>",
-				'<div ie-mrfiche="saml.MFicheLoginDirect" class="PetitEspaceGauche"></div>',
-				"</div>",
-			);
-			H.push("</div>");
-			H.push('<div style="padding-top:5px; padding-left:15px;">');
-			H.push(
-				"<div>",
-				"<ie-radio ",
-				ObjetHtml_1.GHtml.composeAttr("ie-model", "rbAuthControleur", [true]),
-				">",
-				ObjetTraduction_1.GTraductions.getValeur("saml.DirectToutLeTemps"),
-				"</ie-radio>",
-				"</div>",
-			);
-			H.push(
-				"<div>",
-				"<ie-radio ",
-				ObjetHtml_1.GHtml.composeAttr("ie-model", "rbAuthControleur", [false]),
-				">",
-				ObjetTraduction_1.GTraductions.getValeur("saml.DirectPasDeReponse"),
-				"</ie-radio>",
-				"</div>",
-			);
-			H.push("</div>");
-		}
-		H.push("</div>");
-		H.push("</div>");
 		return H.join("");
 	}
 	soapVerifierAdresseMetadata(aCompteur) {
@@ -449,8 +579,9 @@ class InterfaceParametrageSaml extends ObjetInterface_1.ObjetInterface {
 			},
 		})
 			.then((aDonnees) => {
-				const lResultatInterrogationMetadata =
-					aDonnees.getElement("return").valeur;
+				const lResultatInterrogationMetadata = aDonnees
+					.getElement("return")
+					.getValeur();
 				this.statutContactServeurSvcW =
 					lResultatInterrogationMetadata.statutContactServeur;
 				const lParametresSamlVerifie =
@@ -488,7 +619,9 @@ class InterfaceParametrageSaml extends ObjetInterface_1.ObjetInterface {
 					.setValeur(this.infosDelegation.idParametres);
 			},
 		}).then((aDonnees) => {
-			this.urlFederationMetataClient = aDonnees.getElement("return").valeur;
+			this.urlFederationMetataClient = aDonnees
+				.getElement("return")
+				.getValeur();
 			this.donneesRecues = true;
 			this.statutContactServeurSvcW =
 				this.parametresSaml.urlMetadataServeur !== ""

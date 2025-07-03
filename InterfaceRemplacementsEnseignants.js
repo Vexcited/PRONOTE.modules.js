@@ -30,15 +30,6 @@ class InterfaceRemplacementsEnseignants extends ObjetInterfacePageCP_1.Interface
 				TypeAffichageRemplacements_1.TypeAffichageRemplacements.tarPropositions,
 			);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			btnRetourEcranPrec: {
-				event: () => {
-					this._evntRetourEcranPrec();
-				},
-			},
-		});
-	}
 	setParametresGeneraux() {
 		this.GenreStructure =
 			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
@@ -152,7 +143,7 @@ class InterfaceRemplacementsEnseignants extends ObjetInterfacePageCP_1.Interface
 						class: ["liste", "typeAffichage"],
 					},
 					IE.jsx.str("div", {
-						id: this.getInstance(this.identListeTypeAffichage).getNom(),
+						id: this.getNomInstance(this.identListeTypeAffichage),
 						class: ["full-height"],
 					}),
 				),
@@ -164,7 +155,7 @@ class InterfaceRemplacementsEnseignants extends ObjetInterfacePageCP_1.Interface
 						tabindex: "0",
 					},
 					IE.jsx.str("div", {
-						id: this.getInstance(this.identListeRemplacements).getNom(),
+						id: this.getNomInstance(this.identListeRemplacements),
 						class: ["full-height"],
 					}),
 				),

@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieElectionVotant extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieElectionVotant = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieElectionVotant extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParam) {
 		this.JSON.election = aParam.election.toJSONAll();
 		aParam.election.vote.setSerialisateurJSON({ ignorerEtatsElements: true });
@@ -11,5 +9,8 @@ class ObjetRequeteSaisieElectionVotant extends ObjetRequeteSaisie {
 		return this.appelAsynchrone();
 	}
 }
-Requetes.inscrire("SaisieElectionVotant", ObjetRequeteSaisieElectionVotant);
-module.exports = { ObjetRequeteSaisieElectionVotant };
+exports.ObjetRequeteSaisieElectionVotant = ObjetRequeteSaisieElectionVotant;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieElectionVotant",
+	ObjetRequeteSaisieElectionVotant,
+);

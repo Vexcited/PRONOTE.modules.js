@@ -95,19 +95,7 @@ class DonneesListe_FiltresQCM extends ObjetDonneesListeFlatDesign_1.ObjetDonnees
 	}
 	getTitreZonePrincipale(aParams) {
 		const lStrIcone = [];
-		if (
-			aParams.article.getGenre() ===
-			DonneesListe_FiltresQCM.Genres.FiltreStandard
-		) {
-			const lNomClasseIcone = this.getIconeFiltre(aParams.article.getNumero());
-			if (!!lNomClasseIcone) {
-				lStrIcone.push(
-					'<i class="',
-					lNomClasseIcone,
-					'" aria-hidden="true"></i>',
-				);
-			}
-		} else if (this.estUneCategorie(aParams.article)) {
+		if (this.estUneCategorie(aParams.article)) {
 			lStrIcone.push(
 				UtilitaireQCM_1.UtilitaireQCM.dessineIconeCategorieQCM(
 					aParams.article.couleur,
@@ -127,6 +115,14 @@ class DonneesListe_FiltresQCM extends ObjetDonneesListeFlatDesign_1.ObjetDonnees
 			"</span>",
 		);
 		return H.join("");
+	}
+	getIconeGaucheContenuFormate(aParams) {
+		if (
+			aParams.article.getGenre() ===
+			DonneesListe_FiltresQCM.Genres.FiltreStandard
+		) {
+			return this.getIconeFiltre(aParams.article.getNumero());
+		}
 	}
 	getZoneComplementaire(aParams) {
 		const H = [];

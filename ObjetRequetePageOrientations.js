@@ -1,48 +1,56 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetTri } = require("ObjetTri.js");
-class ObjetRequetePageOrientations extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequetePageOrientations = exports.NSOrientation = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTri_1 = require("ObjetTri");
+var NSOrientation;
+(function (NSOrientation) {
+	let EGenreRessource;
+	(function (EGenreRessource) {
+		EGenreRessource[(EGenreRessource["orientation"] = 0)] = "orientation";
+		EGenreRessource[(EGenreRessource["specialite"] = 1)] = "specialite";
+		EGenreRessource[(EGenreRessource["option"] = 2)] = "option";
+		EGenreRessource[(EGenreRessource["lv1"] = 3)] = "lv1";
+		EGenreRessource[(EGenreRessource["lv2"] = 4)] = "lv2";
+		EGenreRessource[(EGenreRessource["lvAutre"] = 5)] = "lvAutre";
+	})(
+		(EGenreRessource =
+			NSOrientation.EGenreRessource || (NSOrientation.EGenreRessource = {})),
+	);
+})(NSOrientation || (exports.NSOrientation = NSOrientation = {}));
+class ObjetRequetePageOrientations extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	actionApresRequete() {
 		const lParam = {};
 		lParam.Message = this.JSONReponse.Message;
 		if (!lParam.Message) {
-			lParam.TexteNiveau = this.JSONReponse.TexteNiveau;
+			lParam.texteNiveau = this.JSONReponse.texteNiveau;
 			if (this.JSONReponse.listeOrientations) {
 				lParam.listeOrientations = _organiseListeOrientation.call(
 					this,
 					this.JSONReponse.listeOrientations,
 				);
 			}
-			lParam.Parametres = this.JSONReponse.Parametres;
-			lParam.Niveau = this.JSONReponse.Niveau
-				? new ObjetElement().fromJSON(this.JSONReponse.Niveau)
-				: null;
-			lParam.InfosEleve = this.JSONReponse.InfosEleve;
-			lParam.ListeMaquettes = this.JSONReponse.listeMaquettes;
 			lParam.listeRubriques = this.JSONReponse.listeRubriques;
-			lParam.masquerPictoEtab = this.JSONReponse.masquerPictoEtab;
 			lParam.estNiveauPremiere = this.JSONReponse.estNiveauPremiere;
 			lParam.estMultiNiveau = this.JSONReponse.estMultiNiveau;
-			lParam.rubriqueLV = this.JSONReponse.rubriqueLV;
 		}
 		this.callbackReussite.appel(lParam);
 	}
 }
-Requetes.inscrire("PageOrientations", ObjetRequetePageOrientations);
+exports.ObjetRequetePageOrientations = ObjetRequetePageOrientations;
+CollectionRequetes_1.Requetes.inscrire(
+	"PageOrientations",
+	ObjetRequetePageOrientations,
+);
 function _organiseListeOrientation(aListeOrientations) {
-	aListeOrientations.setTri(
-		ObjetTri.init((a) => {
+	aListeOrientations.setTri([
+		ObjetTri_1.ObjetTri.init((a) => {
 			return a.voieMefStat5;
 		}),
-	);
+	]);
 	aListeOrientations.trier();
 	let lVoieCourante;
-	const lListeOrganisee = new ObjetListeElements();
+	const lListeOrganisee = new ObjetListeElements_1.ObjetListeElements();
 	aListeOrientations.parcourir((a) => {
 		if (!a.getNumero()) {
 			if (a.voieMefStat5 !== lVoieCourante) {
@@ -55,4 +63,3 @@ function _organiseListeOrientation(aListeOrientations) {
 	});
 	return lListeOrganisee;
 }
-module.exports = { ObjetRequetePageOrientations };

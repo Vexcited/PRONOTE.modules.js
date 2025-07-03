@@ -1,5 +1,6 @@
 exports.DonneesListe_SelectionRessource_fd = void 0;
 const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const AccessApp_1 = require("AccessApp");
 class DonneesListe_SelectionRessource_fd extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees) {
 		super(aDonnees);
@@ -23,14 +24,16 @@ class DonneesListe_SelectionRessource_fd extends ObjetDonneesListeFlatDesign_1.O
 		return aParams.article.nonEditable;
 	}
 	getStyle(aParams) {
-		return aParams.article.getActif() ? "" : `color:${GCouleur.rouge};`;
+		return aParams.article.getActif()
+			? ""
+			: `color:${(0, AccessApp_1.getApp)().getCouleur().rouge};`;
 	}
 	getClass(aParams) {
 		return this._options && this._options.getClassRessource
 			? this._options.getClassRessource(aParams.article)
 			: "";
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		return this._options && this._options.getHintRessource
 			? this._options.getHintRessource(aParams.article)
 			: "";

@@ -18,8 +18,8 @@ UtilitaireStage.composeLibelleDatePeriodesEntreLe = function (aPeriodes) {
 		for (let i = 0; i < aPeriodes.count(); i++) {
 			const lPeriode = aPeriodes.get(i);
 			const lStr = _composeLibelleDatePeriodeEntreLe(lPeriode);
-			if (!!lStr) {
-				lLibelle.push(lStr);
+			if (!!lStr.libelle) {
+				lLibelle.push(lStr.libelle);
 			}
 		}
 	}
@@ -64,14 +64,14 @@ function _composeLibelleDatePeriode(aPeriode) {
 }
 UtilitaireStage.composeLibelleDatePeriodeEntreLe = function (aPeriode) {
 	const lResult = _composeLibelleDatePeriodeEntreLe(aPeriode);
-	return lResult
-		? ObjetTraduction_1.GTraductions.getValeur("OffreStage.entre") +
-				" " +
-				lResult
+	return lResult.libelle
+		? (lResult.avecEntreLe
+				? ObjetTraduction_1.GTraductions.getValeur("OffreStage.entre") + " "
+				: "") + lResult.libelle
 		: "";
 };
 function _composeLibelleDatePeriodeEntreLe(aPeriode) {
-	let lLibelle = "";
+	const lResult = { libelle: "", avecEntreLe: false };
 	if (
 		!!aPeriode &&
 		aPeriode.existe() &&
@@ -79,19 +79,20 @@ function _composeLibelleDatePeriodeEntreLe(aPeriode) {
 		aPeriode.dateDebut.getTime() > 0
 	) {
 		if (ObjetDate_1.GDate.estDateEgale(aPeriode.dateDebut, aPeriode.dateFin)) {
-			lLibelle =
+			lResult.libelle =
 				ObjetTraduction_1.GTraductions.getValeur("Le") +
 				" " +
 				ObjetDate_1.GDate.formatDate(aPeriode.dateDebut, "%JJ/%MM/%AA");
 		} else {
-			lLibelle = ObjetTraduction_1.GTraductions.getValeur(
+			lResult.libelle = ObjetTraduction_1.GTraductions.getValeur(
 				"OffreStage.entreLeXEtLeX",
 				[
 					ObjetDate_1.GDate.formatDate(aPeriode.dateDebut, "%JJ/%MM/%AA"),
 					ObjetDate_1.GDate.formatDate(aPeriode.dateFin, "%JJ/%MM/%AA"),
 				],
 			);
+			lResult.avecEntreLe = true;
 		}
 	}
-	return lLibelle;
+	return lResult;
 }

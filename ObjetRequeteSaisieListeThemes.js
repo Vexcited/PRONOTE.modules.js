@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieListeThemes extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieListeThemes = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieListeThemes extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParametres) {
 		$.extend(this.JSON, aParametres);
 		if (this.JSON.ListeThemes) {
@@ -16,5 +14,8 @@ class ObjetRequeteSaisieListeThemes extends ObjetRequeteSaisie {
 		return this.appelAsynchrone();
 	}
 }
-Requetes.inscrire("SaisieListeThemes", ObjetRequeteSaisieListeThemes);
-module.exports = ObjetRequeteSaisieListeThemes;
+exports.ObjetRequeteSaisieListeThemes = ObjetRequeteSaisieListeThemes;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieListeThemes",
+	ObjetRequeteSaisieListeThemes,
+);

@@ -1,83 +1,55 @@
-const { _InterfacePageDossiers } = require("_InterfacePageDossiers.js");
-const { ObjetRequetePageDossiers } = require("ObjetRequetePageDossiers.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { DonneesListe_Dossiers } = require("DonneesListe_Dossiers.js");
-class InterfacePageDossiers_Consultation extends _InterfacePageDossiers {
-	construireInstances() {
-		this.identListeDossiers = this.add(
-			ObjetListe,
-			this.evenementListeDossiers,
-			this._initListe,
-		);
-	}
+exports.InterfacePageDossiers_Consultation = void 0;
+const _InterfacePageDossiers_1 = require("_InterfacePageDossiers");
+const ObjetListe_1 = require("ObjetListe");
+const DonneesListe_Dossiers_1 = require("DonneesListe_Dossiers");
+const GlossaireDossierVieScolaire_1 = require("GlossaireDossierVieScolaire");
+class InterfacePageDossiers_Consultation extends _InterfacePageDossiers_1._InterfacePageDossiers {
 	recupererDonnees() {
-		new ObjetRequetePageDossiers(
-			this,
-			this.actionSurRequetePageDossiers,
-		).lancerRequete();
+		this.lancerRequeteDonnees();
 	}
-	_initListe(aInstance) {
-		const lTraductionTitres = GTraductions.getValeur(
-			"dossierVieScolaire.listeTitres",
-		);
+	initialiserListe(aInstance) {
 		const lColonnes = [
 			{
-				id: DonneesListe_Dossiers.colonnes.evenement,
-				titre: lTraductionTitres[0],
+				id: DonneesListe_Dossiers_1.DonneesListe_Dossiers.colonnes.evenement,
+				titre:
+					GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire
+						.Evenement,
 				taille: 120,
 			},
 			{
-				id: DonneesListe_Dossiers.colonnes.date,
-				titre: lTraductionTitres[1],
+				id: DonneesListe_Dossiers_1.DonneesListe_Dossiers.colonnes.date,
+				titre:
+					GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire.Date,
 				taille: 145,
 			},
 			{
-				id: DonneesListe_Dossiers.colonnes.responsable,
-				titre: lTraductionTitres[2],
+				id: DonneesListe_Dossiers_1.DonneesListe_Dossiers.colonnes.responsable,
+				titre:
+					GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire
+						.DemandeurRespAdministratif,
 				taille: 160,
 			},
 			{
-				id: DonneesListe_Dossiers.colonnes.interlocuteur,
-				titre: lTraductionTitres[3],
+				id: DonneesListe_Dossiers_1.DonneesListe_Dossiers.colonnes
+					.interlocuteur,
+				titre:
+					GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire
+						.Interlocuteur,
 				taille: 160,
 			},
 			{
-				id: DonneesListe_Dossiers.colonnes.complementInfo,
-				titre: lTraductionTitres[4],
+				id: DonneesListe_Dossiers_1.DonneesListe_Dossiers.colonnes
+					.complementInfo,
+				titre:
+					GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire
+						.ComplementDInformation,
 				taille: "100%",
 			},
-			{
-				id: DonneesListe_Dossiers.colonnes.pieceJointe,
-				titre: { classeCssImage: "Image_Trombone" },
-				taille: 24,
-			},
-			{
-				id: DonneesListe_Dossiers.colonnes.publie,
-				titre: lTraductionTitres[6],
-				taille: 30,
-			},
-			{
-				id: DonneesListe_Dossiers.colonnes.accesRestreint,
-				titre: { classeCssImage: "Image_AccesRestreint" },
-				taille: 30,
-				hint: GTraductions.getValeur("dossierVS.restreindreAcces"),
-			},
-			{ id: DonneesListe_Dossiers.colonnes.genre, titre: "", taille: 30 },
-			{ id: DonneesListe_Dossiers.colonnes.rang, titre: "", taille: 30 },
 		];
 		aInstance.setOptionsListe({
 			colonnes: lColonnes,
-			colonnesCachees: [
-				DonneesListe_Dossiers.colonnes.genre,
-				DonneesListe_Dossiers.colonnes.publie,
-				DonneesListe_Dossiers.colonnes.pieceJointe,
-				DonneesListe_Dossiers.colonnes.rang,
-				DonneesListe_Dossiers.colonnes.accesRestreint,
-			],
-			avecLigneCreation: false,
-			boutons: [{ genre: ObjetListe.typeBouton.deployer }],
+			boutons: [{ genre: ObjetListe_1.ObjetListe.typeBouton.deployer }],
 		});
 	}
 }
-module.exports = { InterfacePageDossiers_Consultation };
+exports.InterfacePageDossiers_Consultation = InterfacePageDossiers_Consultation;

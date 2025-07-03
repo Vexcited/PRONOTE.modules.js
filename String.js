@@ -209,3 +209,11 @@ if (!String.prototype.includes) {
 		}
 	};
 }
+if (!String.prototype.replaceAll) {
+	String.prototype.replaceAll = function (search, replacement) {
+		if (typeof search !== "string" && !(search instanceof RegExp)) {
+		}
+		const pattern = search instanceof RegExp ? search : new RegExp(search, "g");
+		return this.replace(pattern, replacement);
+	};
+}

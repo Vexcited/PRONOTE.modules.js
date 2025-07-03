@@ -1,14 +1,12 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-class ObjetRequetePageDossiers extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequetePageDossiers = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetListeElements_1 = require("ObjetListeElements");
+class ObjetRequetePageDossiers extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	actionApresRequete() {
 		const lListeGenres = this.JSONReponse.listeGenres
 			? this.JSONReponse.listeGenres
-			: new ObjetListeElements();
+			: new ObjetListeElements_1.ObjetListeElements();
 		const lListeDossiers = this.JSONReponse.listeDossiers;
 		if (!!lListeDossiers) {
 			lListeDossiers.parcourir((aElement) => {
@@ -19,7 +17,7 @@ class ObjetRequetePageDossiers extends ObjetRequeteConsultation {
 		}
 		const lListePJEleve = this.JSONReponse.listeDJEleve
 			? this.JSONReponse.listeDJEleve
-			: new ObjetListeElements();
+			: new ObjetListeElements_1.ObjetListeElements();
 		const lMessage = this.JSONReponse.message ? this.JSONReponse.message : "";
 		this.callbackReussite.appel({
 			listeGenres: lListeGenres,
@@ -29,5 +27,8 @@ class ObjetRequetePageDossiers extends ObjetRequeteConsultation {
 		});
 	}
 }
-Requetes.inscrire("PageDossiers", ObjetRequetePageDossiers);
-module.exports = { ObjetRequetePageDossiers };
+exports.ObjetRequetePageDossiers = ObjetRequetePageDossiers;
+CollectionRequetes_1.Requetes.inscrire(
+	"PageDossiers",
+	ObjetRequetePageDossiers,
+);

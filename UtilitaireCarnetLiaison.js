@@ -1,12 +1,11 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const {
-	TypeBoutonCreationMessagerie,
-} = require("TypeBoutonCreationMessagerie.js");
-const { ObjetFenetre_Message } = require("ObjetFenetre_Message.js");
-const { UtilitaireMessagerie } = require("UtilitaireMessagerie.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
+exports.UtilitaireCarnetLiaison = UtilitaireCarnetLiaison;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const TypeBoutonCreationMessagerie_1 = require("TypeBoutonCreationMessagerie");
+const ObjetFenetre_Message_1 = require("ObjetFenetre_Message");
+const UtilitaireMessagerie_1 = require("UtilitaireMessagerie");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
 function UtilitaireCarnetLiaison() {}
 UtilitaireCarnetLiaison.creerDiscussion = function (
 	aListeDestinataires,
@@ -18,8 +17,8 @@ UtilitaireCarnetLiaison.creerDiscussion = function (
 	if (!aEleveConcerne) {
 		return;
 	}
-	const lFenetreMessage = ObjetFenetre.creerInstanceFenetre(
-		ObjetFenetre_Message,
+	const lFenetreMessage = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+		ObjetFenetre_Message_1.ObjetFenetre_Message,
 		{
 			pere: this,
 			evenement: function (aNumeroBouton) {
@@ -34,20 +33,22 @@ UtilitaireCarnetLiaison.creerDiscussion = function (
 	);
 	let lTitreFenetre;
 	let lLegende = "";
-	if (GEtatUtilisateur.GenreEspace === EGenreEspace.PrimParent) {
-		lLegende = GTraductions.getValeur(
+	if (
+		GEtatUtilisateur.GenreEspace === Enumere_Espace_1.EGenreEspace.PrimParent
+	) {
+		lLegende = ObjetTraduction_1.GTraductions.getValeur(
 			"MessagerieCarnetLiaison.AvertissementMessagesPublics",
 		);
 	}
 	if (
-		GEtatUtilisateur.GenreEspace === EGenreEspace.PrimParent &&
+		GEtatUtilisateur.GenreEspace === Enumere_Espace_1.EGenreEspace.PrimParent &&
 		!aEleveConcerne
 	) {
-		lTitreFenetre = GTraductions.getValeur(
+		lTitreFenetre = ObjetTraduction_1.GTraductions.getValeur(
 			"MessagerieCarnetLiaison.TitreFenetreNouveauPourVotreEnfant",
 		);
 	} else {
-		lTitreFenetre = GTraductions.getValeur(
+		lTitreFenetre = ObjetTraduction_1.GTraductions.getValeur(
 			"MessagerieCarnetLiaison.TitreFenetreNouveauPourLEleve",
 			[aEleveConcerne.getLibelle()],
 		);
@@ -69,10 +70,10 @@ UtilitaireCarnetLiaison.creerDiscussion = function (
 UtilitaireCarnetLiaison.creerDiscussionRaccourciParent = () => {
 	const lMembre = GEtatUtilisateur.getMembre();
 	UtilitaireCarnetLiaison.creerDiscussion(
-		UtilitaireMessagerie.getListeDestCarnetLiaisonDElevePrimParent(
+		UtilitaireMessagerie_1.UtilitaireMessagerie.getListeDestCarnetLiaisonDElevePrimParent(
 			lMembre.getNumero(),
 		),
-		EGenreRessource.Enseignant,
+		Enumere_Ressource_1.EGenreRessource.Enseignant,
 		lMembre,
 		null,
 		true,
@@ -83,7 +84,7 @@ UtilitaireCarnetLiaison.ouvreFenetreDiscussions = function (
 	aEleve,
 	aCallback,
 ) {
-	const lFenetreDiscussions = ObjetFenetre.creerInstanceFenetre(
+	const lFenetreDiscussions = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
 		aClasseFenetreDiscussion,
 		{
 			pere: this,
@@ -96,19 +97,21 @@ UtilitaireCarnetLiaison.ouvreFenetreDiscussions = function (
 				aInstance.setOptions({
 					avecListeDiscussions: true,
 					avecBoutonCreation: true,
-					typeBoutonCreation: TypeBoutonCreationMessagerie.CarnetLiaison,
+					typeBoutonCreation:
+						TypeBoutonCreationMessagerie_1.TypeBoutonCreationMessagerie
+							.CarnetLiaison,
 				});
 				aInstance.setOptionsFenetre({
 					titre: "",
 					largeur: 550 + 400,
 					hauteur: 600,
-					listeBoutons: [GTraductions.getValeur("Fermer")],
+					listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
 				});
 			},
 		},
 	);
 	lFenetreDiscussions.setDonnees({
-		titreFenetre: GTraductions.getValeur(
+		titreFenetre: ObjetTraduction_1.GTraductions.getValeur(
 			"MessagerieCarnetLiaison.TitreFenetreDiscussions",
 			[aEleve.getLibelle()],
 		),
@@ -117,4 +120,3 @@ UtilitaireCarnetLiaison.ouvreFenetreDiscussions = function (
 		eleveCarnetLiaison: aEleve,
 	});
 };
-module.exports = UtilitaireCarnetLiaison;

@@ -3,7 +3,7 @@ const _ObjetEntete_1 = require("_ObjetEntete");
 const ObjetHtml_1 = require("ObjetHtml");
 const Enumere_Espace_1 = require("Enumere_Espace");
 const GUID_1 = require("GUID");
-const ObjetFenetre_SelecteurMembre_1 = require("ObjetFenetre_SelecteurMembre");
+const ObjetFenetre_SelecteurMembrePN_1 = require("ObjetFenetre_SelecteurMembrePN");
 const ObjetTraduction_1 = require("ObjetTraduction");
 class ObjetEnteteMobile extends _ObjetEntete_1._ObjetEnteteMobile {
 	constructor(...aParams) {
@@ -12,12 +12,13 @@ class ObjetEnteteMobile extends _ObjetEntete_1._ObjetEnteteMobile {
 		this.interfaceMobile = GInterface;
 		this.idSelecteurMembre = GUID_1.GUID.getId();
 		this.C_NbreRecherche = 10;
+		this.avecMembre = false;
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
 			selecteurMembre: {
 				event() {
-					ObjetFenetre_SelecteurMembre_1.ObjetFenetre_SelecteurMembre.ouvrir();
+					ObjetFenetre_SelecteurMembrePN_1.ObjetFenetre_SelecteurMembrePN.ouvrir();
 				},
 				getLibelle() {
 					var _a;
@@ -29,10 +30,14 @@ class ObjetEnteteMobile extends _ObjetEntete_1._ObjetEnteteMobile {
 						: "";
 				},
 				getIcone() {
-					return IE.jsx.str("i", { class: "icon_angle_down" });
+					return "icon_angle_down";
 				},
 			},
 		});
+	}
+	setAvecMembre(aAvecMembre) {
+		this.avecMembre = aAvecMembre;
+		this.actualiserTitre();
 	}
 	actualiserTitre() {
 		const lTitre = { titre: "", sousTitre: "", avecImage: false };
@@ -60,7 +65,7 @@ class ObjetEnteteMobile extends _ObjetEntete_1._ObjetEnteteMobile {
 				GEtatUtilisateur.getMembre().getLibelle();
 		}
 		let lStrTitre = "";
-		if (GParametres.avecMembre) {
+		if (GParametres.avecMembre && this.avecMembre) {
 			lStrTitre = IE.jsx.str("ie-btnselecteur", {
 				"ie-model": "selecteurMembre",
 				class: "disable-dark-mode",

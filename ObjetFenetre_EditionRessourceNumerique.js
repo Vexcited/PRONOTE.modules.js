@@ -1,48 +1,47 @@
-const { GChaine } = require("ObjetChaine.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { TypeThemeBouton } = require("Type_ThemeBouton.js");
-const { EGenreAction } = require("Enumere_Action.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-class ObjetFenetre_EditionRessourceNumerique extends ObjetFenetre {
+exports.ObjetFenetre_EditionRessourceNumerique = void 0;
+const ObjetChaine_1 = require("ObjetChaine");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Type_ThemeBouton_1 = require("Type_ThemeBouton");
+const Enumere_Action_1 = require("Enumere_Action");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+class ObjetFenetre_EditionRessourceNumerique extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
-		this.ressourceNumerique;
 		const lOptionsFenetre = {
-			titre: GTraductions.getValeur("Fenetre_EditionRessourceNumerique.titre"),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"Fenetre_EditionRessourceNumerique.titre",
+			),
 			largeur: 460,
 			hauteurMin: 280,
 			listeBoutons: [
 				{
-					libelle: GTraductions.getValeur("Annuler"),
-					theme: TypeThemeBouton.secondaire,
+					libelle: ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+					theme: Type_ThemeBouton_1.TypeThemeBouton.secondaire,
 					action: ObjetFenetre_EditionRessourceNumerique.genreAction.annuler,
 				},
 				{
-					libelle: GTraductions.getValeur("Valider"),
+					libelle: ObjetTraduction_1.GTraductions.getValeur("Valider"),
 					valider: true,
-					theme: TypeThemeBouton.primaire,
+					theme: Type_ThemeBouton_1.TypeThemeBouton.primaire,
 					action: ObjetFenetre_EditionRessourceNumerique.genreAction.valider,
 				},
 			],
 		};
 		this.boutonOuvrir = {
-			libelle: GTraductions.getValeur(
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
 				"Fenetre_EditionRessourceNumerique.ouvrir",
 			),
-			theme: TypeThemeBouton.primaire,
+			theme: Type_ThemeBouton_1.TypeThemeBouton.primaire,
 			action: ObjetFenetre_EditionRessourceNumerique.genreAction.ouvrir,
 		};
 		this.boutonSupprimer = {
-			libelle: GTraductions.getValeur("Supprimer"),
-			theme: TypeThemeBouton.secondaire,
+			libelle: ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
+			theme: Type_ThemeBouton_1.TypeThemeBouton.secondaire,
 			action: ObjetFenetre_EditionRessourceNumerique.genreAction.supprimer,
 		};
 		this.setOptionsFenetre(lOptionsFenetre);
-	}
-	setOptions(aOptions) {
-		$.extend(this.options, aOptions);
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
@@ -54,7 +53,8 @@ class ObjetFenetre_EditionRessourceNumerique extends ObjetFenetre {
 					) {
 						return (
 							!aInstance.ressourceNumerique ||
-							aInstance.ressourceNumerique.getEtat() === EGenreEtat.Aucun
+							aInstance.ressourceNumerique.getEtat() ===
+								Enumere_Etat_1.EGenreEtat.Aucun
 						);
 					}
 					return false;
@@ -64,28 +64,27 @@ class ObjetFenetre_EditionRessourceNumerique extends ObjetFenetre {
 				event: function () {
 					GApplication.getMessage()
 						.afficher({
-							type: EGenreBoiteMessage.Confirmation,
-							message: GTraductions.getValeur(
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+							message: ObjetTraduction_1.GTraductions.getValeur(
 								"Fenetre_EditionRessourceNumerique.suppression",
 							),
 						})
-						.then(
-							function (aAccepte) {
-								if (aAccepte === EGenreAction.Valider) {
-									this.surValidation(
-										ObjetFenetre_EditionRessourceNumerique.genreAction
-											.supprimer,
-									);
-								}
-							}.bind(aInstance),
-						);
+						.then(function (aAccepte) {
+							if (aAccepte === Enumere_Action_1.EGenreAction.Valider) {
+								aInstance.surValidation(
+									ObjetFenetre_EditionRessourceNumerique.genreAction.supprimer,
+								);
+							}
+						});
 				},
 			},
 			btnOuvrir: {
 				event: function () {
 					if (!!aInstance.ressourceNumerique) {
 						window.open(
-							GChaine.creerUrlBruteLienExterne(aInstance.ressourceNumerique),
+							ObjetChaine_1.GChaine.creerUrlBruteLienExterne(
+								aInstance.ressourceNumerique,
+							),
 						);
 					}
 				},
@@ -103,7 +102,9 @@ class ObjetFenetre_EditionRessourceNumerique extends ObjetFenetre {
 						aInstance.ressourceNumerique.getLibelle() !== aValue
 					) {
 						aInstance.ressourceNumerique.setLibelle(aValue);
-						aInstance.ressourceNumerique.setEtat(EGenreEtat.Modification);
+						aInstance.ressourceNumerique.setEtat(
+							Enumere_Etat_1.EGenreEtat.Modification,
+						);
 					}
 				},
 				getDisabled: function () {
@@ -123,7 +124,9 @@ class ObjetFenetre_EditionRessourceNumerique extends ObjetFenetre {
 						aInstance.ressourceNumerique.commentaire !== aValue
 					) {
 						aInstance.ressourceNumerique.commentaire = aValue;
-						aInstance.ressourceNumerique.setEtat(EGenreEtat.Modification);
+						aInstance.ressourceNumerique.setEtat(
+							Enumere_Etat_1.EGenreEtat.Modification,
+						);
 					}
 				},
 				getDisabled: function () {
@@ -141,7 +144,7 @@ class ObjetFenetre_EditionRessourceNumerique extends ObjetFenetre {
 		const H = [];
 		H.push(
 			'<span class="OFERN_Obligatoire">* ',
-			GTraductions.getValeur(
+			ObjetTraduction_1.GTraductions.getValeur(
 				"Fenetre_EditionRessourceNumerique.champObligatoire",
 			),
 			"</span>",
@@ -162,7 +165,9 @@ class ObjetFenetre_EditionRessourceNumerique extends ObjetFenetre {
 		T.push('<div class="OFERN_Main">');
 		T.push(
 			'<div class="OFERN_LigneTitre"><span>',
-			GTraductions.getValeur("Fenetre_EditionRessourceNumerique.label"),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"Fenetre_EditionRessourceNumerique.label",
+			),
 			' : *</span><ie-bouton class="' + this.boutonOuvrir.theme + '"',
 			' ie-model="btnOuvrir">',
 			this.boutonOuvrir.libelle,
@@ -171,7 +176,9 @@ class ObjetFenetre_EditionRessourceNumerique extends ObjetFenetre {
 		T.push('<div class="OFERN_Titre"><input ie-model="titre" /></div>');
 		T.push(
 			'<div class="OFERN_LigneCommentaire">',
-			GTraductions.getValeur("Fenetre_EditionRessourceNumerique.commentaire"),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"Fenetre_EditionRessourceNumerique.commentaire",
+			),
 			" :</div>",
 		);
 		T.push(
@@ -189,17 +196,30 @@ class ObjetFenetre_EditionRessourceNumerique extends ObjetFenetre {
 		this.fermer();
 	}
 	static ouvrir(aParams) {
-		const lFenetre = ObjetFenetre.creerInstanceFenetre(
+		const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
 			ObjetFenetre_EditionRessourceNumerique,
 			{ pere: aParams.instance, evenement: aParams.callback },
 		);
 		lFenetre.setDonnees(aParams.ressource);
 	}
 }
-ObjetFenetre_EditionRessourceNumerique.genreAction = {
-	annuler: 0,
-	valider: 1,
-	supprimer: 2,
-	ouvrir: 3,
-};
-module.exports = ObjetFenetre_EditionRessourceNumerique;
+exports.ObjetFenetre_EditionRessourceNumerique =
+	ObjetFenetre_EditionRessourceNumerique;
+(function (ObjetFenetre_EditionRessourceNumerique) {
+	let genreAction;
+	(function (genreAction) {
+		genreAction[(genreAction["annuler"] = 0)] = "annuler";
+		genreAction[(genreAction["valider"] = 1)] = "valider";
+		genreAction[(genreAction["supprimer"] = 2)] = "supprimer";
+		genreAction[(genreAction["ouvrir"] = 3)] = "ouvrir";
+	})(
+		(genreAction =
+			ObjetFenetre_EditionRessourceNumerique.genreAction ||
+			(ObjetFenetre_EditionRessourceNumerique.genreAction = {})),
+	);
+})(
+	ObjetFenetre_EditionRessourceNumerique ||
+		(exports.ObjetFenetre_EditionRessourceNumerique =
+			ObjetFenetre_EditionRessourceNumerique =
+				{}),
+);

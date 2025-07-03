@@ -1,6 +1,7 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GStyle } = require("ObjetStyle.js");
-class DonneesListe_ServicesEvaluationsPrim extends ObjetDonneesListe {
+exports.DonneesListe_ServicesEvaluationsPrim = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetStyle_1 = require("ObjetStyle");
+class DonneesListe_ServicesEvaluationsPrim extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees) {
 		super(aDonnees);
 		this.setOptions({
@@ -13,7 +14,7 @@ class DonneesListe_ServicesEvaluationsPrim extends ObjetDonneesListe {
 		});
 	}
 	getTypeValeur() {
-		return ObjetDonneesListe.ETypeCellule.Html;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 	}
 	getValeur(aParams) {
 		switch (aParams.idColonne) {
@@ -28,9 +29,9 @@ class DonneesListe_ServicesEvaluationsPrim extends ObjetDonneesListe {
 					lLibelle.push(
 						'<div style="display:flex; align-items:center;">',
 						'<div style="',
-						GStyle.composeHeight(lHeight),
+						ObjetStyle_1.GStyle.composeHeight(lHeight),
 						"min-width:6px; margin-right: 3px; " +
-							GStyle.composeCouleurFond(aParams.article.couleur),
+							ObjetStyle_1.GStyle.composeCouleurFond(aParams.article.couleur),
 						lBorder,
 						'"></div>',
 						"<div >",
@@ -67,12 +68,13 @@ class DonneesListe_ServicesEvaluationsPrim extends ObjetDonneesListe {
 			((aParams.article.cumul || 1) - 1) * this.options.indentationCelluleEnfant
 		);
 	}
-	avecAlternanceCouleurLigne(aParamsCellule) {
-		return aParamsCellule.article.cumul === 1;
+	avecAlternanceCouleurLigne(aParams) {
+		return aParams.article.cumul === 1;
 	}
 }
+exports.DonneesListe_ServicesEvaluationsPrim =
+	DonneesListe_ServicesEvaluationsPrim;
 DonneesListe_ServicesEvaluationsPrim.colonnes = {
 	libelle: "libelle",
 	classeGroupe: "classeGroupe",
 };
-module.exports = { DonneesListe_ServicesEvaluationsPrim };

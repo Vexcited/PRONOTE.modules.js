@@ -1,25 +1,25 @@
-const { ObjetIdentite_Mobile } = require("ObjetIdentite_Mobile.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { TUtilitaireRencontre } = require("UtilitaireRencontres.js");
-const { Identite } = require("ObjetIdentite.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const DonneesListe_RencontresDesiderata = require("DonneesListe_RencontresDesiderata.js");
-const ObjetRequeteSaisieRencontreDesiderata = require("ObjetRequeteSaisieRencontreDesiderata.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const ObjetSaisieIndisponibilite = require("ObjetSaisieIndisponibilite.js");
-const { ObjetBoutonFlottant } = require("ObjetBoutonFlottant.js");
-const { GUID } = require("GUID.js");
-const { GDate } = require("ObjetDate.js");
-const { GHtml } = require("ObjetHtml.js");
-class PageRencontresDesiderata extends ObjetIdentite_Mobile {
-	constructor(...aParams) {
-		super(...aParams);
+exports.PageRencontresDesiderata = void 0;
+const ObjetIdentite_Mobile_1 = require("ObjetIdentite_Mobile");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const UtilitaireRencontres_1 = require("UtilitaireRencontres");
+const ObjetListe_1 = require("ObjetListe");
+const DonneesListe_RencontresDesiderata_1 = require("DonneesListe_RencontresDesiderata");
+const ObjetRequeteSaisieRencontreDesiderata_1 = require("ObjetRequeteSaisieRencontreDesiderata");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetSaisieIndisponibilite_1 = require("ObjetSaisieIndisponibilite");
+const ObjetBoutonFlottant_1 = require("ObjetBoutonFlottant");
+const GUID_1 = require("GUID");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetHtml_1 = require("ObjetHtml");
+const AccessApp_1 = require("AccessApp");
+class PageRencontresDesiderata extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
+	constructor() {
+		super(...arguments);
 		this.donneesRecues = false;
-		this.msgInfoDate = GUID.getId();
-		this.nbreNonRenseigne = GUID.getId();
+		this.msgInfoDate = GUID_1.GUID.getId();
+		this.nbreNonRenseigne = GUID_1.GUID.getId();
 		this.donnees = {
 			sessionRencontre: null,
 			indisponibilites: null,
@@ -27,20 +27,18 @@ class PageRencontresDesiderata extends ObjetIdentite_Mobile {
 			classeSelectionnee: null,
 		};
 		this.nombreVoeuxNonRenseigne = null;
-		this.instanceListe = Identite.creerInstance(ObjetListe, {
-			pere: this,
-			evenement: _evenementListeRencontres.bind(this),
-		});
-		this.identIndisponibilite = Identite.creerInstance(
-			ObjetSaisieIndisponibilite,
-			{ pere: this, evenement: _evenementSaisieIndispo.bind(this) },
-		);
+		this.instanceListe = new ObjetListe_1.ObjetListe({ pere: this });
+		this.identIndisponibilite =
+			new ObjetSaisieIndisponibilite_1.ObjetSaisieIndisponibilite({
+				pere: this,
+				evenement: this._evenementSaisieIndispo.bind(this),
+			});
 	}
 	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
+		return $.extend(true, super.getControleur(aInstance), {
 			getIdentiteBouton: function () {
 				return {
-					class: ObjetBoutonFlottant,
+					class: ObjetBoutonFlottant_1.ObjetBoutonFlottant,
 					pere: this,
 					init: function (aBtn) {
 						aInstance.identBtnFlottant = aBtn;
@@ -49,7 +47,9 @@ class PageRencontresDesiderata extends ObjetIdentite_Mobile {
 								{
 									primaire: true,
 									icone: "icon_legende",
-									callback: _afficherLegende.bind(aInstance),
+									callback: aInstance._afficherLegende.bind(aInstance),
+									ariaLabel:
+										ObjetTraduction_1.GTraductions.getValeur("Legende"),
 								},
 							],
 						};
@@ -59,7 +59,7 @@ class PageRencontresDesiderata extends ObjetIdentite_Mobile {
 			},
 			btnLegende: {
 				getDisplay: function () {
-					return (
+					return !!(
 						aInstance.desiderata &&
 						aInstance.desiderata.autorisations &&
 						aInstance.desiderata.autorisations.listeVoeux
@@ -76,9 +76,10 @@ class PageRencontresDesiderata extends ObjetIdentite_Mobile {
 			},
 			getNombreNonRenseigne: function () {
 				return aInstance.nombreVoeuxNonRenseigne
-					? GTraductions.getValeur("Rencontres.desiderata.NonRenseignes", [
-							aInstance.nombreVoeuxNonRenseigne,
-						])
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"Rencontres.desiderata.NonRenseignes",
+							[aInstance.nombreVoeuxNonRenseigne],
+						)
 					: "";
 			},
 			disponibilite: {
@@ -113,11 +114,11 @@ class PageRencontresDesiderata extends ObjetIdentite_Mobile {
 			'<p class="m-left-l m-top-l" ie-html="information.getHtml" ie-display="information.getDisplay"></p>',
 		);
 		H.push(
-			`<h4 class="m-left-l ie-titre" ie-display="disponibilite.getDisplay">${GTraductions.getValeur("Rencontres.MesDisponibilites")}</h4>`,
+			`<h4 class="m-left-l ie-titre" ie-display="disponibilite.getDisplay">${ObjetTraduction_1.GTraductions.getValeur("Rencontres.MesDisponibilites")}</h4>`,
 		);
 		H.push('<div id="', this.identIndisponibilite.getNom(), '"></div>');
 		H.push(
-			`<h4 class="m-left-l ie-titre" ie-display="desiderata.getDisplay">${GTraductions.getValeur("Rencontres.PriorisationRencontres")}</h4>`,
+			`<h4 class="m-left-l ie-titre" ie-display="desiderata.getDisplay">${ObjetTraduction_1.GTraductions.getValeur("Rencontres.PriorisationRencontres")}</h4>`,
 		);
 		H.push(
 			`<div id="${this.nbreNonRenseigne}" class="flex-contain justify-between m-left-l m-top-s" ><div ie-html="getNombreNonRenseigne"></div></div>`,
@@ -128,7 +129,9 @@ class PageRencontresDesiderata extends ObjetIdentite_Mobile {
 			'"></div>',
 		);
 		if (!this.identBtnFlottant) {
-			$("#" + GInterface.idZonePrincipale).ieHtmlAppend(
+			$(
+				"#" + (0, AccessApp_1.getApp)().getInterfaceMobile().idZonePrincipale,
+			).ieHtmlAppend(
 				'<div class="is-sticky" ie-display="btnLegende.getDisplay" ie-identite="getIdentiteBouton" ></div>',
 				{ controleur: this.controleur, avecCommentaireConstructeur: false },
 			);
@@ -138,42 +141,45 @@ class PageRencontresDesiderata extends ObjetIdentite_Mobile {
 	actualiserListe() {
 		let lListeRencontres;
 		if (this.desiderata) {
-			if (GEtatUtilisateur.GenreEspace === EGenreEspace.Mobile_Parent) {
+			if (
+				GEtatUtilisateur.GenreEspace ===
+				Enumere_Espace_1.EGenreEspace.Mobile_Parent
+			) {
 				this.desiderata.listeRencontres.setTri([
-					ObjetTri.init((D) => {
+					ObjetTri_1.ObjetTri.init((D) => {
 						return D.strMatiereFonction || "";
 					}),
 				]);
 				this.desiderata.listeRencontres.trier();
 				lListeRencontres =
-					TUtilitaireRencontre.formaterListeRencontresAvecProfesseurs(
+					UtilitaireRencontres_1.TUtilitaireRencontre.formaterListeRencontresAvecProfesseurs(
 						this.desiderata.listeRencontres,
 					);
 			} else {
 				this.desiderata.listeRencontres.setTri([
-					ObjetTri.init((D) => {
+					ObjetTri_1.ObjetTri.init((D) => {
 						return D.classe.getLibelle();
 					}),
-					ObjetTri.init((D) => {
+					ObjetTri_1.ObjetTri.init((D) => {
 						return D.eleve.getLibelle();
 					}),
-					ObjetTri.init((D) => {
+					ObjetTri_1.ObjetTri.init((D) => {
 						return D.eleve.getNumero();
 					}),
-					ObjetTri.init((D) => {
+					ObjetTri_1.ObjetTri.init((D) => {
 						return D.strMatiereFonction || "";
 					}),
-					ObjetTri.init((D) => {
+					ObjetTri_1.ObjetTri.init((D) => {
 						return D.strResponsables || "";
 					}),
 				]);
 				this.desiderata.listeRencontres.trier();
 				lListeRencontres =
-					TUtilitaireRencontre.formaterListeRencontresAvecParents(
+					UtilitaireRencontres_1.TUtilitaireRencontre.formaterListeRencontresAvecParents(
 						this.desiderata.listeRencontres,
 					);
 			}
-			const lDateCourante = GDate.getDateCourante();
+			const lDateCourante = ObjetDate_1.GDate.getDateCourante();
 			const lLibelle = [];
 			let lAvecImageAucuneDonnees = false;
 			if (
@@ -184,26 +190,40 @@ class PageRencontresDesiderata extends ObjetIdentite_Mobile {
 				if (lDateCourante < this.desiderata.dateDebutSaisie) {
 					lAvecImageAucuneDonnees = true;
 					lLibelle.push(
-						GTraductions.getValeur("Rencontres.desiderata.saisieEntre", [
-							GDate.formatDate(
-								this.desiderata.dateDebutSaisie,
-								"%JJ/%MM/%AAAA",
-							),
-							GDate.formatDate(this.desiderata.dateFinSaisie, "%JJ/%MM/%AAAA"),
-						]),
+						ObjetTraduction_1.GTraductions.getValeur(
+							"Rencontres.desiderata.saisieEntre",
+							[
+								ObjetDate_1.GDate.formatDate(
+									this.desiderata.dateDebutSaisie,
+									"%JJ/%MM/%AAAA",
+								),
+								ObjetDate_1.GDate.formatDate(
+									this.desiderata.dateFinSaisie,
+									"%JJ/%MM/%AAAA",
+								),
+							],
+						),
 					);
 				} else if (
 					lDateCourante >= this.desiderata.dateDebutSaisie &&
 					lDateCourante <= this.desiderata.dateFinSaisie
 				) {
 					lLibelle.push(
-						GTraductions.getValeur("Rencontres.desiderata.saisieJusquA", [
-							GDate.formatDate(this.desiderata.dateFinSaisie, "%JJ/%MM/%AAAA"),
-						]),
+						ObjetTraduction_1.GTraductions.getValeur(
+							"Rencontres.desiderata.saisieJusquA",
+							[
+								ObjetDate_1.GDate.formatDate(
+									this.desiderata.dateFinSaisie,
+									"%JJ/%MM/%AAAA",
+								),
+							],
+						),
 					);
 				} else if (lDateCourante > this.desiderata.dateFinSaisie) {
 					lLibelle.push(
-						GTraductions.getValeur("Rencontres.desiderata.saisieCloturee"),
+						ObjetTraduction_1.GTraductions.getValeur(
+							"Rencontres.desiderata.saisieCloturee",
+						),
 					);
 				}
 			}
@@ -212,10 +232,13 @@ class PageRencontresDesiderata extends ObjetIdentite_Mobile {
 				if (lAvecImageAucuneDonnees) {
 					lMessage = this.composeAucuneDonnee(lLibelle.join(" "));
 				}
-				GHtml.setHtml(this.msgInfoDate, lMessage, { instance: this });
+				ObjetHtml_1.GHtml.setHtml(this.msgInfoDate, lMessage, {
+					instance: this,
+				});
 			}
 			const lAvecEleve =
-				GEtatUtilisateur.GenreEspace !== EGenreEspace.Mobile_Parent;
+				GEtatUtilisateur.GenreEspace !==
+				Enumere_Espace_1.EGenreEspace.Mobile_Parent;
 			this.listeRencontres = lListeRencontres;
 			this.nombreVoeuxNonRenseigne = this.listeRencontres
 				.getListeElements((aRencontre) => {
@@ -223,14 +246,23 @@ class PageRencontresDesiderata extends ObjetIdentite_Mobile {
 				})
 				.count();
 			this.instanceListe
-				.setOptionsListe({ skin: ObjetListe.skin.flatDesign })
+				.setOptionsListe({ skin: ObjetListe_1.ObjetListe.skin.flatDesign })
 				.setDonnees(
-					new DonneesListe_RencontresDesiderata(lListeRencontres, {
-						avecEleve: lAvecEleve,
-						avecSaisie: this.desiderata.avecSaisie,
-						autorisations: this.desiderata.autorisations,
-						callbackDuree: _modifierDuree.bind(this),
-					}).setOptions({ avecSelection: false }),
+					new DonneesListe_RencontresDesiderata_1.DonneesListe_RencontresDesiderata(
+						lListeRencontres,
+						{
+							avecEleve: lAvecEleve,
+							avecSaisie: this.desiderata.avecSaisie,
+							autorisations: this.desiderata.autorisations,
+							callbackDuree: this._modifierDuree.bind(this),
+							callbackEditionDesiderata: (aRencontre) => {
+								const lListeRencontres =
+									new ObjetListeElements_1.ObjetListeElements([aRencontre]);
+								this.valider(lListeRencontres);
+								this.actualiserListe();
+							},
+						},
+					).setOptions({ avecSelection: false }),
 					null,
 					{ conserverPositionScroll: true },
 				);
@@ -246,45 +278,36 @@ class PageRencontresDesiderata extends ObjetIdentite_Mobile {
 		}
 	}
 	valider(aRencontres) {
-		new ObjetRequeteSaisieRencontreDesiderata(
+		new ObjetRequeteSaisieRencontreDesiderata_1.ObjetRequeteSaisieRencontreDesiderata(
 			this,
-			this.actionSurValidation,
 		).lancerRequete({ session: this.session, listeRencontres: aRencontres });
 	}
-	free(...aParams) {
-		super.free(...aParams);
+	free() {
+		super.free();
 		if (this.identBtnFlottant) {
 			$("#" + this.identBtnFlottant.getNom().escapeJQ()).remove();
 		}
 	}
-}
-function _evenementListeRencontres(aParams) {
-	switch (aParams.genreEvenement) {
-		case EGenreEvenementListe.ApresEdition: {
-			const lListeRencontres = new ObjetListeElements();
-			lListeRencontres.add(aParams.article);
-			this.valider(lListeRencontres);
-			this.actualiserListe();
-			break;
-		}
+	_modifierDuree(aRencontre) {
+		const lListeRencontres = new ObjetListeElements_1.ObjetListeElements([
+			aRencontre,
+		]);
+		this.valider(lListeRencontres);
+		this.actualiserListe();
+	}
+	_afficherLegende() {
+		const lListeVoeux =
+			this.desiderata &&
+			this.desiderata.autorisations &&
+			this.desiderata.autorisations.listeVoeux
+				? this.desiderata.autorisations.listeVoeux
+				: null;
+		UtilitaireRencontres_1.TUtilitaireRencontre.ouvrirFenetreLegende(
+			lListeVoeux,
+		);
+	}
+	_evenementSaisieIndispo() {
+		this.Evenement();
 	}
 }
-function _modifierDuree(aRencontre) {
-	const lListeRencontres = new ObjetListeElements();
-	lListeRencontres.add(aRencontre);
-	this.valider(lListeRencontres);
-	this.actualiserListe();
-}
-function _afficherLegende() {
-	const lListeVoeux =
-		this.desiderata &&
-		this.desiderata.autorisations &&
-		this.desiderata.autorisations.listeVoeux
-			? this.desiderata.autorisations.listeVoeux
-			: null;
-	TUtilitaireRencontre.ouvrirFenetreLegende(lListeVoeux);
-}
-function _evenementSaisieIndispo() {
-	this.Evenement();
-}
-module.exports = PageRencontresDesiderata;
+exports.PageRencontresDesiderata = PageRencontresDesiderata;

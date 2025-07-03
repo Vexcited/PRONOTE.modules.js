@@ -1,44 +1,51 @@
-const { PageSaisieAbsences } = require("PageSaisieAbsences.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GHtml } = require("ObjetHtml.js");
-const { GStyle } = require("ObjetStyle.js");
-const { EStructureAffichage } = require("Enumere_StructureAffichage.js");
-const { GClass } = require("ObjetClass.js");
-const { ObjetInterface } = require("ObjetInterface.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { ObjetGestionnaireMotifs } = require("ObjetGestionnaireMotifs.js");
-const {
-	EGenreEvenementSaisieAbsence,
-} = require("Enumere_EvenementSaisieAbsences.js");
-class ObjetAffichagePageSaisieAbsences_Journee extends ObjetInterface {
+exports.InterfacePageSaisieAbsences_Journee = void 0;
+const PageSaisieAbsences_1 = require("PageSaisieAbsences");
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetStyle_1 = require("ObjetStyle");
+const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
+const ObjetClass_1 = require("ObjetClass");
+const ObjetInterface_1 = require("ObjetInterface");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetGestionnaireMotifs_1 = require("ObjetGestionnaireMotifs");
+const Enumere_EvenementSaisieAbsences_1 = require("Enumere_EvenementSaisieAbsences");
+const AccessApp_1 = require("AccessApp");
+class InterfacePageSaisieAbsences_Journee extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
+		this.appScoEspace = (0, AccessApp_1.getApp)();
+		this.etatUtilScoEspace = this.appScoEspace.getEtatUtilisateur();
+		this.parametresSco = this.appScoEspace.getObjetParametres();
 		this.TexteRetard = "5'";
-		this.TexteExclusion = GTraductions.getValeur("AbsenceVS.ExclusionAbr");
-		this.TexteInfirmerie = GTraductions.getValeur("AbsenceVS.InfirmerieAbr");
+		this.TexteExclusion = ObjetTraduction_1.GTraductions.getValeur(
+			"AbsenceVS.ExclusionAbr",
+		);
+		this.TexteInfirmerie = ObjetTraduction_1.GTraductions.getValeur(
+			"AbsenceVS.InfirmerieAbr",
+		);
 		this.CouleurAbsence = "#fdce40";
 		this.CouleurRetard = "#3333cc";
-		this.CouleurExclusion = "var(--color-red)";
+		this.CouleurExclusion = "var(--color-red-moyen)";
 		this.CouleurInfirmerie = "#008000";
+		this.genreAbsenceActif = Enumere_Ressource_1.EGenreRessource.Absence;
 		this.options = {
 			avecSaisiePunition: false,
 			avecSaisieExclusion: false,
 			avecSaisiePassageInfirmerie: false,
 			avecSaisieRetard: false,
 		};
-		this.genreAbsenceActif = EGenreRessource.Absence;
 	}
 	construireInstances() {
 		this.IdentAbsences = this.add(
-			PageSaisieAbsences,
+			PageSaisieAbsences_1.PageSaisieAbsences,
 			this.evenementAbsences,
 			this.initialiserAbsences,
 		);
 		if (this.options.avecSaisieExclusion) {
 			this.identGestionnaireMotifs = this.add(
-				ObjetGestionnaireMotifs,
-				_surGestionnaireMotifs.bind(this),
+				ObjetGestionnaireMotifs_1.ObjetGestionnaireMotifs,
+				this._surGestionnaireMotifs.bind(this),
 			);
 		}
 	}
@@ -54,16 +61,13 @@ class ObjetAffichagePageSaisieAbsences_Journee extends ObjetInterface {
 						.getInstance(aInstance.IdentAbsences)
 						.setTypeAbsence(aGenreAbsence);
 					switch (aGenreAbsence) {
-						case EGenreRessource.Retard:
-							GHtml.setFocus(aInstance.Nom + "_DureeRetard");
+						case Enumere_Ressource_1.EGenreRessource.Retard:
+							ObjetHtml_1.GHtml.setFocus(aInstance.Nom + "_DureeRetard");
 							break;
 					}
 				},
 				getDisabled: function (aGenreAbsence) {
-					return !_genreAbsenceAutoriseSurCoursCourant.call(
-						aInstance,
-						aGenreAbsence,
-					);
+					return !aInstance._genreAbsenceAutoriseSurCoursCourant(aGenreAbsence);
 				},
 			},
 			btnSaisiePunition: {
@@ -73,9 +77,10 @@ class ObjetAffichagePageSaisieAbsences_Journee extends ObjetInterface {
 				getDisabled() {
 					let lEstActif = false;
 					if (aInstance.getActif()) {
-						const lEleveSelectionne = GEtatUtilisateur.Navigation.getRessource(
-							EGenreRessource.Eleve,
-						);
+						const lEleveSelectionne =
+							aInstance.etatUtilScoEspace.Navigation.getRessource(
+								Enumere_Ressource_1.EGenreRessource.Eleve,
+							);
 						if (!!lEleveSelectionne) {
 							lEstActif = true;
 							if (
@@ -103,7 +108,9 @@ class ObjetAffichagePageSaisieAbsences_Journee extends ObjetInterface {
 				},
 			},
 			getHintBtnListePunitions() {
-				return GTraductions.getValeur("Absence.HintBoutonVoirPunition");
+				return ObjetTraduction_1.GTraductions.getValeur(
+					"Absence.HintBoutonVoirPunition",
+				);
 			},
 		});
 	}
@@ -111,15 +118,16 @@ class ObjetAffichagePageSaisieAbsences_Journee extends ObjetInterface {
 		$.extend(this.options, aOptions);
 	}
 	setDonneesBandeauAbsences(ADureeRetard, AListeMotifsExclusion) {
-		GHtml.setDisplay(this.Nom + "_BandeauAbsences", true);
-		if (MethodesObjet.isNumber(ADureeRetard)) {
+		ObjetHtml_1.GHtml.setDisplay(this.Nom + "_BandeauAbsences", true);
+		if (MethodesObjet_1.MethodesObjet.isNumber(ADureeRetard)) {
 			this.DureeRetard = ADureeRetard;
-			GHtml.setValue(this.Nom + "_DureeRetard", "" + ADureeRetard);
+			ObjetHtml_1.GHtml.setValue(this.Nom + "_DureeRetard", "" + ADureeRetard);
 		}
 		this.listeMotifsExclusion = AListeMotifsExclusion;
 	}
 	setParametresGeneraux() {
-		this.GenreStructure = EStructureAffichage.Autre;
+		this.GenreStructure =
+			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 	}
 	construireStructureAffichageAutre() {
 		const H = [];
@@ -146,14 +154,16 @@ class ObjetAffichagePageSaisieAbsences_Journee extends ObjetInterface {
 		);
 		lHtml.push(
 			'<fieldset class="',
-			GClass.getZone(),
+			ObjetClass_1.GClass.getZone(),
 			'" style="margin:0 2px 2px 0; padding:0;">',
 			'<legend class="',
-			GClass.getLegende(),
+			ObjetClass_1.GClass.getLegende(),
 			'">',
-			GTraductions.getValeur("AbsenceVS.LegendeFeuilleAppel"),
+			ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.LegendeFeuilleAppel"),
 			"</legend>",
-			'<table style="' + GStyle.composeHeight(lHauteurContenu) + '">',
+			'<table style="' +
+				ObjetStyle_1.GStyle.composeHeight(lHauteurContenu) +
+				'">',
 			"<tr>",
 		);
 		lHtml.push(
@@ -161,9 +171,9 @@ class ObjetAffichagePageSaisieAbsences_Journee extends ObjetInterface {
 			"<table><tr>",
 			"<td>",
 			'<ie-radio ie-model="radioTypeAbsence(',
-			EGenreRessource.Absence,
+			Enumere_Ressource_1.EGenreRessource.Absence,
 			')">',
-			GTraductions.getValeur("Absence.Absence"),
+			ObjetTraduction_1.GTraductions.getValeur("Absence.Absence"),
 			"</ie-radio>",
 			"</td>",
 			'<td class="PetitEspaceGauche"><div style="width:15px; border:1px solid darkgray; background-color: ',
@@ -178,12 +188,12 @@ class ObjetAffichagePageSaisieAbsences_Journee extends ObjetInterface {
 				"<table><tr>",
 				"<td>",
 				'<ie-radio ie-model="radioTypeAbsence(',
-				EGenreRessource.Retard,
+				Enumere_Ressource_1.EGenreRessource.Retard,
 				')">',
-				GTraductions.getValeur("Absence.Retard"),
+				ObjetTraduction_1.GTraductions.getValeur("Absence.Retard"),
 				"</ie-radio>",
 				"</td>",
-				'<td class="PetitEspaceGauche"><input type="text" size="3" maxlength="3" style="width:30px;" tabindex="-1" class="Texte10 CelluleTexte" id="',
+				'<td class="PetitEspaceGauche"><input type="text" maxlength="3" style="width:30px;" tabindex="-1" class="Texte10 CelluleTexte" id="',
 				this.Nom,
 				'_DureeRetard" onchange="',
 				this.Nom,
@@ -191,7 +201,7 @@ class ObjetAffichagePageSaisieAbsences_Journee extends ObjetInterface {
 				this.Nom,
 				'.surKeyPressDureeRetard (event)" /></td>',
 				'<td class="Texte10 Gras EspaceGauche">' +
-					GTraductions.getValeur("Absence.minute") +
+					ObjetTraduction_1.GTraductions.getValeur("Absence.minute") +
 					"</td>",
 				"</tr></table>",
 				"</td>",
@@ -203,9 +213,9 @@ class ObjetAffichagePageSaisieAbsences_Journee extends ObjetInterface {
 				"<table><tr>",
 				"<td>",
 				'<ie-radio ie-model="radioTypeAbsence(',
-				EGenreRessource.Exclusion,
+				Enumere_Ressource_1.EGenreRessource.Exclusion,
 				')">',
-				GTraductions.getValeur("Absence.Exclusion"),
+				ObjetTraduction_1.GTraductions.getValeur("Absence.Exclusion"),
 				"</ie-radio>",
 				"</td>",
 				'<td class="EspaceGauche Gras" style="color:',
@@ -223,9 +233,9 @@ class ObjetAffichagePageSaisieAbsences_Journee extends ObjetInterface {
 				"<table><tr>",
 				"<td>",
 				'<ie-radio ie-model="radioTypeAbsence(',
-				EGenreRessource.Infirmerie,
+				Enumere_Ressource_1.EGenreRessource.Infirmerie,
 				')">',
-				GTraductions.getValeur("Absence.Infirmerie"),
+				ObjetTraduction_1.GTraductions.getValeur("Absence.Infirmerie"),
 				"</ie-radio>",
 				"</td>",
 				'<td class="EspaceGauche Gras" style="color:',
@@ -242,26 +252,28 @@ class ObjetAffichagePageSaisieAbsences_Journee extends ObjetInterface {
 			lHtml.push(
 				'<td class="EspaceGauche">',
 				'<fieldset class="',
-				GClass.getZone(),
+				ObjetClass_1.GClass.getZone(),
 				'" style="margin:0px 2px 2px 2px; padding:0px;">',
 				'<legend class="',
-				GClass.getLegende(),
+				ObjetClass_1.GClass.getLegende(),
 				'">',
-				GTraductions.getValeur("Absence.TitrePunitions"),
+				ObjetTraduction_1.GTraductions.getValeur("Absence.TitrePunitions"),
 				"</legend>",
-				'<table style="' + GStyle.composeHeight(lHauteurContenu) + '"><tr>',
+				'<table style="' +
+					ObjetStyle_1.GStyle.composeHeight(lHauteurContenu) +
+					'"><tr>',
 			);
 			lHtml.push(
 				'<td class="EspaceGauche"><div class="Image_IconePunition"></div></td>',
 			);
 			lHtml.push(
 				'<td><ie-bouton ie-model="btnSaisiePunition">',
-				GTraductions.getValeur("AbsenceVS.SaisirPunition"),
+				ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.SaisirPunition"),
 				"</ie-bouton></td>",
 			);
 			lHtml.push(
 				'<td><ie-bouton ie-model="btnListePunitions" ie-title="getHintBtnListePunitions">',
-				GTraductions.getValeur("AbsenceVS.Liste"),
+				ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.Liste"),
 				"</ie-bouton></td>",
 			);
 			lHtml.push("</tr></table>", "</fieldset>", "</td>");
@@ -277,14 +289,15 @@ class ObjetAffichagePageSaisieAbsences_Journee extends ObjetInterface {
 			this.CouleurInfirmerie,
 		);
 		aInstance.setParametres(
-			GParametres.PlacesParJour,
-			GParametres.PlacesParHeure,
-			GParametres.LibellesHeures,
+			this.parametresSco.PlacesParJour,
+			this.parametresSco.PlacesParHeure,
+			this.parametresSco.LibellesHeures,
 		);
 	}
 	evenementAbsences(aEvent, aObjet) {
 		switch (aEvent) {
-			case EGenreEvenementSaisieAbsence.CreerExclusion:
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.CreerExclusion:
 				if (!this.options.avecSaisieExclusion) {
 					return;
 				}
@@ -293,39 +306,48 @@ class ObjetAffichagePageSaisieAbsences_Journee extends ObjetInterface {
 					avecSetDonnees: true,
 				});
 				break;
-			case EGenreEvenementSaisieAbsence.SelectionEleve:
+			case Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.SelectionEleve:
 				if (this.options.avecSaisiePunition) {
 					this.$refresh();
 				}
-				return this.callback.appel(arguments[0], arguments[1]);
+				return this.callback.appel(aEvent, aObjet);
 			default:
-				return this.callback.appel(arguments[0], arguments[1]);
+				return this.callback.appel(aEvent, aObjet);
 		}
 	}
 	_evenementSurBoutonListePunitions() {
 		if (!this.options.avecSaisiePunition) {
 			return;
 		}
-		this.callback.appel(EGenreEvenementSaisieAbsence.PunitionListe);
+		this.callback.appel(
+			Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.PunitionListe,
+		);
 	}
 	_evenementSurBoutonSaisiePunitions() {
 		if (!this.options.avecSaisiePunition) {
 			return;
 		}
-		this.callback.appel(EGenreEvenementSaisieAbsence.PunitionSaisie);
+		this.callback.appel(
+			Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.PunitionSaisie,
+		);
 	}
 	evenementSurDureeRetard(AValeur) {
 		const LDuree = parseInt(AValeur, 10);
 		if (!isNaN(LDuree) && LDuree >= 1 && LDuree <= 999) {
 			this.DureeRetard = LDuree;
 		}
-		GHtml.setValue(this.Nom + "_DureeRetard", this.DureeRetard);
+		ObjetHtml_1.GHtml.setValue(this.Nom + "_DureeRetard", this.DureeRetard);
 		this.getInstance(this.IdentAbsences).setDonneesDureeRetard(
 			this.DureeRetard,
 		);
-		this.callback.appel(EGenreEvenementSaisieAbsence.DureeRetard, {
-			dureeRetard: this.DureeRetard,
-		});
+		this.callback.appel(
+			Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+				.DureeRetard,
+			{ dureeRetard: this.DureeRetard },
+		);
 	}
 	surKeyPressDureeRetard(aEvent) {
 		GNavigateur.setCaractereTouche(aEvent);
@@ -336,29 +358,33 @@ class ObjetAffichagePageSaisieAbsences_Journee extends ObjetInterface {
 	recupererDonnees() {}
 	setActif(aEstActif) {
 		super.setActif(aEstActif);
-		GHtml.setDisplay(this.getInstance(this.IdentAbsences).getNom(), aEstActif);
+		ObjetHtml_1.GHtml.setDisplay(
+			this.getInstance(this.IdentAbsences).getNom(),
+			aEstActif,
+		);
 	}
 	setDeplacementBornes(aEstDeplace) {
 		this.getInstance(this.IdentAbsences).setAvecDeplacementBornes(aEstDeplace);
 	}
 	afficher(aMessage) {
-		GHtml.setDisplay(this.getInstance(this.IdentAbsences).getNom(), true);
-		GHtml.setDisplay(this.Nom + "_BandeauAbsences", false);
+		ObjetHtml_1.GHtml.setDisplay(
+			this.getInstance(this.IdentAbsences).getNom(),
+			true,
+		);
+		ObjetHtml_1.GHtml.setDisplay(this.Nom + "_BandeauAbsences", false);
 		this.getInstance(this.IdentAbsences).afficher(aMessage);
 	}
 	setDonneesAbsences(aObjet) {
 		this.coursSelectionne = aObjet ? aObjet.cours : null;
-		if (
-			!_genreAbsenceAutoriseSurCoursCourant.call(this, this.genreAbsenceActif)
-		) {
-			this.genreAbsenceActif = EGenreRessource.Absence;
+		if (!this._genreAbsenceAutoriseSurCoursCourant(this.genreAbsenceActif)) {
+			this.genreAbsenceActif = Enumere_Ressource_1.EGenreRessource.Absence;
 		}
 		this.enAffichage = true;
 		const lIdBandeau = this.Nom + "_BandeauAbsences";
-		GHtml.setDisplay(lIdBandeau, false);
+		ObjetHtml_1.GHtml.setDisplay(lIdBandeau, false);
 		if (aObjet) {
 			aObjet.callbackAvecGrille = function () {
-				GHtml.setDisplay(lIdBandeau, true);
+				ObjetHtml_1.GHtml.setDisplay(lIdBandeau, true);
 			};
 		}
 		this.getInstance(this.IdentAbsences).setDonnees(aObjet);
@@ -370,7 +396,7 @@ class ObjetAffichagePageSaisieAbsences_Journee extends ObjetInterface {
 	setPlacesSaisie(aDebut, aFin) {
 		this.getInstance(this.IdentAbsences).setDonneesPlacesSaisie(aDebut, aFin);
 	}
-	retourAbsence(aNumeroEleve, aRessourceAbsence) {
+	retourAbsence(aNumeroEleve, aRessourceAbsence, aBidon) {
 		this.getInstance(this.IdentAbsences).evenementAbsence(
 			aNumeroEleve,
 			aRessourceAbsence,
@@ -379,29 +405,35 @@ class ObjetAffichagePageSaisieAbsences_Journee extends ObjetInterface {
 	actualiserPunitionsEleve(aNumeroEleve) {
 		this.getInstance(this.IdentAbsences).actualiserPunitionsEleve(aNumeroEleve);
 	}
-}
-function _genreAbsenceAutoriseSurCoursCourant(aGenreAbsence) {
-	if (this.coursSelectionne && this.coursSelectionne.estSortiePedagogique) {
-		return (
-			aGenreAbsence !== EGenreRessource.Infirmerie &&
-			aGenreAbsence !== EGenreRessource.Exclusion
-		);
-	}
-	return true;
-}
-function _surGestionnaireMotifs(aParam) {
-	if (aParam.event === ObjetGestionnaireMotifs.genreEvent.actualiserDonnees) {
-		if (aParam.genreBouton === 1) {
-			this.objAbsence.listeMotifs = aParam.liste;
-			this.callback.appel(
-				EGenreEvenementSaisieAbsence.ActionSurAbsence,
-				this.objAbsence,
+	_genreAbsenceAutoriseSurCoursCourant(aGenreAbsence) {
+		if (this.coursSelectionne && this.coursSelectionne.estSortiePedagogique) {
+			return (
+				aGenreAbsence !== Enumere_Ressource_1.EGenreRessource.Infirmerie &&
+				aGenreAbsence !== Enumere_Ressource_1.EGenreRessource.Exclusion
 			);
-		} else {
-			if (this.objAbsence && this.objAbsence.callbackAnnulation) {
-				this.objAbsence.callbackAnnulation();
+		}
+		return true;
+	}
+	_surGestionnaireMotifs(aParam) {
+		if (
+			aParam.event ===
+			ObjetGestionnaireMotifs_1.ObjetGestionnaireMotifs.genreEvent
+				.actualiserDonnees
+		) {
+			if (aParam.genreBouton === 1) {
+				this.objAbsence.listeMotifs = aParam.liste;
+				this.callback.appel(
+					Enumere_EvenementSaisieAbsences_1.EGenreEvenementSaisieAbsence
+						.ActionSurAbsence,
+					this.objAbsence,
+				);
+			} else {
+				if (this.objAbsence && this.objAbsence.callbackAnnulation) {
+					this.objAbsence.callbackAnnulation();
+				}
 			}
 		}
 	}
 }
-module.exports = { ObjetAffichagePageSaisieAbsences_Journee };
+exports.InterfacePageSaisieAbsences_Journee =
+	InterfacePageSaisieAbsences_Journee;

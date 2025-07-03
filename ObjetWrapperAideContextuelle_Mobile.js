@@ -1,6 +1,6 @@
-const { ObjetAideContextuelle } = require("ObjetAideContextuelle.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { tag } = require("tag.js");
+exports.ObjetWrapperAideContextuelle_Mobile = void 0;
+const ObjetAideContextuelle_1 = require("ObjetAideContextuelle");
+const ObjetFenetre_1 = require("ObjetFenetre");
 class ObjetWrapperAideContextuelle_Mobile {
 	constructor(aDonnees) {
 		this.donnees = aDonnees;
@@ -9,7 +9,7 @@ class ObjetWrapperAideContextuelle_Mobile {
 		this.onglet = aOnglet;
 		this.nombre = aNombre;
 		if (!this.instanceAide) {
-			this.instanceAide = ObjetFenetre.creerInstanceFenetre(
+			this.instanceAide = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
 				_ObjetFenetreAideContextuelle_Mobile,
 				{ pere: this.donnees.pere },
 				{
@@ -26,12 +26,13 @@ class ObjetWrapperAideContextuelle_Mobile {
 		}
 	}
 }
-class _ObjetFenetreAideContextuelle_Mobile extends ObjetFenetre {
+exports.ObjetWrapperAideContextuelle_Mobile =
+	ObjetWrapperAideContextuelle_Mobile;
+class _ObjetFenetreAideContextuelle_Mobile extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.setOptionsFenetre({
 			fermerFenetreSurClicHorsFenetre: true,
-			heightMax_mobile: true,
 			listeBoutons: [],
 			avecCroixFermeture: false,
 			themeMenuDark: true,
@@ -39,7 +40,7 @@ class _ObjetFenetreAideContextuelle_Mobile extends ObjetFenetre {
 	}
 	construireInstances() {
 		this.identAide = this.add(
-			ObjetAideContextuelle,
+			ObjetAideContextuelle_1.ObjetAideContextuelle,
 			() => {
 				this.fermer();
 			},
@@ -49,10 +50,9 @@ class _ObjetFenetreAideContextuelle_Mobile extends ObjetFenetre {
 		);
 	}
 	composeContenu() {
-		return tag("div", {
-			id: this.getInstance(this.identAide).Nom,
-			style: "height:100%",
+		return IE.jsx.str("div", {
+			id: this.getNomInstance(this.identAide),
+			style: "height:100%;",
 		});
 	}
 }
-module.exports = { ObjetWrapperAideContextuelle_Mobile };

@@ -45,13 +45,13 @@ class ObjetFenetre_Progression extends ObjetFenetre_1.ObjetFenetre {
 		);
 	}
 	composeContenu() {
-		const T = [];
-		T.push(
+		const H = [];
+		H.push(
 			'<div id="' +
 				this.getNomInstance(this.identListeProgression) +
 				'" style="width: 100%; height: 100%"></div>',
 		);
-		return T.join("");
+		return H.join("");
 	}
 	setEtatSaisie() {}
 	setDonnees(aParametres) {

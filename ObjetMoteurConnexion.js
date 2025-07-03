@@ -1,8 +1,7 @@
-exports.EtatMoteurConnexion = exports.ObjetMoteurConnexion = void 0;
+exports.ObjetMoteurConnexion = exports.EtatMoteurConnexion = void 0;
 const LocalStorage_1 = require("LocalStorage");
 const ObjetElement_1 = require("ObjetElement");
 const MethodesObjet_1 = require("MethodesObjet");
-const CollectionRequetes_1 = require("CollectionRequetes");
 const Enumere_Cryptage_1 = require("Enumere_Cryptage");
 const ObjetCryptage_1 = require("ObjetCryptage");
 const ObjetTraduction_1 = require("ObjetTraduction");
@@ -10,7 +9,9 @@ const Enumere_ErreurAcces_1 = require("Enumere_ErreurAcces");
 const TypeSecurisationCompte_1 = require("TypeSecurisationCompte");
 const UtilitaireDeconnexion_1 = require("UtilitaireDeconnexion");
 const ObjetRequeteSecurisationCompte_1 = require("ObjetRequeteSecurisationCompte");
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
 const ValidationMotDePasse_1 = require("ValidationMotDePasse");
+const AccessApp_1 = require("AccessApp");
 var EtatMoteurConnexion;
 (function (EtatMoteurConnexion) {
 	EtatMoteurConnexion[(EtatMoteurConnexion["aucun"] = 0)] = "aucun";
@@ -36,20 +37,23 @@ var EtatMoteurConnexion;
 class ObjetMoteurConnexion {
 	constructor() {
 		this.avecControleReglesMDP = false;
-		this.application = GApplication;
+		this.application = (0, AccessApp_1.getApp)();
 		this.const = {
-			Cookie_Identification: GApplication.nomProduit + "_Identification",
-			Cookie_Authentification: GApplication.nomProduit + "_Authentification",
-			Cookie_Espace: GApplication.nomProduit + "_Espace",
-			Cookie_estCAS: GApplication.nomProduit + "_EstCas",
+			Cookie_Identification:
+				(0, AccessApp_1.getApp)().nomProduit + "_Identification",
+			Cookie_Authentification:
+				(0, AccessApp_1.getApp)().nomProduit + "_Authentification",
+			Cookie_Espace: (0, AccessApp_1.getApp)().nomProduit + "_Espace",
+			Cookie_estCAS: (0, AccessApp_1.getApp)().nomProduit + "_EstCas",
 		};
 		this.reset(true);
 	}
 	reset(aFull = false) {
 		this.stockageMDPActif =
-			LocalStorage_1.IELocalStorage.actif && !GApplication.getDemo();
+			LocalStorage_1.IELocalStorage.actif &&
+			!(0, AccessApp_1.getApp)().getDemo();
 		this.avecStockageMDP = false;
-		this.estAppliMobile = GApplication.estAppliMobile;
+		this.estAppliMobile = (0, AccessApp_1.getApp)().estAppliMobile;
 		this.modeValidationAppliMobile =
 			MethodesObjet_1.MethodesObjet.isFunction(
 				GParametres.getCookieValidationAppli,
@@ -75,6 +79,7 @@ class ObjetMoteurConnexion {
 		this.tokenSAV = "";
 		this.erreurCode = Enumere_ErreurAcces_1.EGenreErreurAcces.Aucune;
 		this.erreur = { erreurTitre: null, erreurMessage: null };
+		this.informationsAppareil = null;
 		if (aFull) {
 			this.stockageMDPActive = false;
 			this.genreEspace = null;
@@ -82,8 +87,8 @@ class ObjetMoteurConnexion {
 			this.requetes = {
 				parametres: null,
 				listeRessources: null,
-				identification: null,
-				authentification: null,
+				getRequeteIdent: null,
+				getRequeteAuth: null,
 			};
 		}
 		this.etat = EtatMoteurConnexion.aucun;
@@ -91,8 +96,8 @@ class ObjetMoteurConnexion {
 	init(aParam) {
 		this.callback = aParam.callback;
 		this.requetes.listeRessources = aParam.requetes.listeRessources || null;
-		this.requetes.identification = aParam.requetes.identification || null;
-		this.requetes.authentification = aParam.requetes.authentification || null;
+		this.requetes.getRequeteIdent = aParam.requetes.getRequeteIdent || null;
+		this.requetes.getRequeteAuth = aParam.requetes.getRequeteAuth || null;
 		this.stockageMDPActive = aParam.stockageMDPActive || false;
 		this.etat = EtatMoteurConnexion.aucun;
 		this.genreEspace = GEtatUtilisateur.getNumeroGenreEspace();
@@ -154,12 +159,7 @@ class ObjetMoteurConnexion {
 		}
 	}
 	getMotDePasseBrut() {
-		var _a;
-		return (
-			((_a = this.motDePasse.getLibelle()) === null || _a === void 0
-				? void 0
-				: _a.trim()) || ""
-		);
+		return this.motDePasse.getLibelle() || "";
 	}
 	getMotDePasse(aPourVisu = false) {
 		let lMotDePasse = this.getMotDePasseBrut();
@@ -175,11 +175,11 @@ class ObjetMoteurConnexion {
 			? "********"
 			: aPourVisu && !!lMotDePasse
 				? lMotDePasse
-				: !!lMotDePasse
+				: !!lMotDePasse && lMotDePasse.trim
 					? forge.md.sha256
 							.create()
 							.update(this.alea)
-							.update(forge.util.encodeUtf8(lMotDePasse))
+							.update(forge.util.encodeUtf8(lMotDePasse.trim()))
 							.digest()
 							.toHex()
 							.toUpperCase()
@@ -301,22 +301,23 @@ class ObjetMoteurConnexion {
 			}
 			this.avecControleReglesMDP = aIdentificationManuelle;
 			this.etat = EtatMoteurConnexion.enIdentification;
-			const lReponse = await (0, CollectionRequetes_1.Requetes)(
-				this.requetes.identification,
-				this,
-			).lancerRequete({
-				genreConnexion: this.genreConnexion,
-				genreEspace: this.genreEspace,
-				identifiant: this.getLogin(),
-				pourENT: this.pourENT,
-				enConnexionAuto: this.enConnexionAuto,
-				demandeConnexionAuto: this.demandeConnexionAuto,
-				enConnexionAppliMobile: this.enConnexionAppliMobile,
-				demandeConnexionAppliMobile: this.demandeConnexionAppliMobile,
-				demandeConnexionAppliMobileJeton: this.demandeConnexionAppliMobileJeton,
-				uuidAppliMobile: this.uuidAppliMobile,
-				loginTokenSAV: this.loginTokenSAV,
-			});
+			const lReponse = await this.requetes
+				.getRequeteIdent(this)
+				.lancerRequete({
+					genreConnexion: this.genreConnexion,
+					genreEspace: this.genreEspace,
+					identifiant: this.getLogin(),
+					pourENT: this.pourENT,
+					enConnexionAuto: this.enConnexionAuto,
+					demandeConnexionAuto: this.demandeConnexionAuto,
+					enConnexionAppliMobile: this.enConnexionAppliMobile,
+					demandeConnexionAppliMobile: this.demandeConnexionAppliMobile,
+					demandeConnexionAppliMobileJeton:
+						this.demandeConnexionAppliMobileJeton,
+					uuidAppliMobile: this.uuidAppliMobile,
+					loginTokenSAV: this.loginTokenSAV,
+					informationsAppareil: this.informationsAppareil,
+				});
 			this.apresIdentification(lReponse);
 		} else {
 			this.etat = EtatMoteurConnexion.malInitialise;
@@ -340,25 +341,24 @@ class ObjetMoteurConnexion {
 	}
 	async authentification(aNouveauChallenge) {
 		this.etat = EtatMoteurConnexion.enAuthentification;
-		const lReponse = await (0, CollectionRequetes_1.Requetes)(
-			this.requetes.authentification,
-			this,
-		).lancerRequete({
-			genreConnexion: this.genreConnexion,
-			identifiant: this.getLogin(),
-			pourENT: this.pourENT,
-			ressourceInternet: this.ressourceInternet,
-			nomRessource: this.nomRessource,
-			genreRecherche: this.genreRecherche,
-			enConnexionAuto: this.enConnexionAuto,
-			demandeConnexionAuto: this.demandeConnexionAuto,
-			enConnexionAppliMobile: this.enConnexionAppliMobile,
-			demandeConnexionAppliMobile: this.demandeConnexionAppliMobile,
-			demandeConnexionAppliMobileJeton: this.demandeConnexionAppliMobileJeton,
-			uuidAppliMobile: this.uuidAppliMobile,
-			loginTokenSAV: this.loginTokenSAV,
-			challenge: aNouveauChallenge,
-		});
+		const lReponse = await this.requetes
+			.getRequeteAuth(this)
+			.lancerRequete({
+				genreConnexion: this.genreConnexion,
+				identifiant: this.getLogin(),
+				pourENT: this.pourENT,
+				ressourceInternet: this.ressourceInternet,
+				nomRessource: this.nomRessource,
+				genreRecherche: this.genreRecherche,
+				enConnexionAuto: this.enConnexionAuto,
+				demandeConnexionAuto: this.demandeConnexionAuto,
+				enConnexionAppliMobile: this.enConnexionAppliMobile,
+				demandeConnexionAppliMobile: this.demandeConnexionAppliMobile,
+				demandeConnexionAppliMobileJeton: this.demandeConnexionAppliMobileJeton,
+				uuidAppliMobile: this.uuidAppliMobile,
+				loginTokenSAV: this.loginTokenSAV,
+				challenge: aNouveauChallenge,
+			});
 		this.apresAuthentification(lReponse);
 	}
 	apresAuthentification(aParam) {
@@ -716,6 +716,7 @@ class ObjetMoteurConnexion {
 			);
 	}
 	_authentifieTotalement(aParam) {
+		var _a;
 		this.etat = EtatMoteurConnexion.authentifie;
 		if (this.avecControleReglesMDP && !this.pourENT && !this.tokenSAV) {
 			const lEtatUtil = this.application.getEtatUtilisateur();
@@ -725,7 +726,9 @@ class ObjetMoteurConnexion {
 			) {
 				if (
 					!ValidationMotDePasse_1.ValidationMotDePasse.leMotDePasseRespecteReglesSecurite(
-						this.getMotDePasseBrut(),
+						(_a = this.getMotDePasseBrut()) === null || _a === void 0
+							? void 0
+							: _a.trim(),
 						lEtatUtil.reglesSaisieMotDePasse,
 					)
 				) {
@@ -738,3 +741,14 @@ class ObjetMoteurConnexion {
 	}
 }
 exports.ObjetMoteurConnexion = ObjetMoteurConnexion;
+(function (ObjetMoteurConnexion) {
+	class ObjetRequeteIdentificationCP extends ObjetRequeteJSON_1.ObjetRequeteConsultation {}
+	ObjetMoteurConnexion.ObjetRequeteIdentificationCP =
+		ObjetRequeteIdentificationCP;
+	class ObjetRequeteAuthentificationCP extends ObjetRequeteJSON_1.ObjetRequeteConsultation {}
+	ObjetMoteurConnexion.ObjetRequeteAuthentificationCP =
+		ObjetRequeteAuthentificationCP;
+})(
+	ObjetMoteurConnexion ||
+		(exports.ObjetMoteurConnexion = ObjetMoteurConnexion = {}),
+);

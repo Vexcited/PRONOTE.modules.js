@@ -1,17 +1,13 @@
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-const { GChaine } = require("ObjetChaine.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { tag } = require("tag.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class DonneesListe_Trombi extends ObjetDonneesListeFlatDesign {
+exports.DonneesListe_Trombi = void 0;
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class DonneesListe_Trombi extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees) {
 		super(aDonnees);
 		this.setOptions({
 			avecSelection: true,
-			avecSuppression: false,
-			avecEvnt_ApresEdition: false,
 			avecEvnt_SelectionClick: true,
 			avecTri: false,
 			avecBoutonActionLigne: false,
@@ -27,40 +23,45 @@ class DonneesListe_Trombi extends ObjetDonneesListeFlatDesign {
 		return H.join("");
 	}
 	composePhoto(aEleve) {
-		const lHtml = [];
+		const H = [];
 		let lAvecPhoto =
 			!!aEleve &&
-			GApplication.droits.get(TypeDroits.eleves.consulterPhotosEleves);
-		lHtml.push(
-			tag(
+			GApplication.droits.get(
+				ObjetDroitsPN_1.TypeDroits.eleves.consulterPhotosEleves,
+			);
+		H.push(
+			IE.jsx.str(
 				"figure",
 				{ class: "identite-vignette" },
-				tag("img", {
+				IE.jsx.str("img", {
 					"ie-load-src": lAvecPhoto
-						? GChaine.creerUrlBruteLienExterne(aEleve, { libelle: "photo.jpg" })
+						? ObjetChaine_1.GChaine.creerUrlBruteLienExterne(aEleve, {
+								libelle: "photo.jpg",
+							})
 						: false,
 					"ie-imgviewer": true,
 					class: "img-portrait",
-					"aria-hidden": "true",
+					alt: aEleve.getLibelle(),
+					"data-libelle": aEleve.getLibelle(),
 				}),
 			),
 		);
-		return lHtml.join("");
+		return H.join("");
 	}
 	getTotal(aEstHeader) {
 		if (aEstHeader) {
 			const lNbLignes = this.Donnees.count();
-			let lTitre = GTraductions.getValeur("Eleve");
+			let lTitre = ObjetTraduction_1.GTraductions.getValeur("Eleve");
 			if (lNbLignes) {
 				lTitre =
 					lNbLignes +
 					" " +
-					GTraductions.getValeur(
+					ObjetTraduction_1.GTraductions.getValeur(
 						lNbLignes > 1 ? "Etudiants" : "Etudiant",
 					).toLowerCase();
 			}
-			return { html: lTitre, avecEtiquette: false };
+			return { getHtml: () => lTitre, avecEtiquette: false };
 		}
 	}
 }
-module.exports = { DonneesListe_Trombi };
+exports.DonneesListe_Trombi = DonneesListe_Trombi;

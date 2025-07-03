@@ -1,10 +1,11 @@
-const { GChaine } = require("ObjetChaine.js");
-const { GHtml } = require("ObjetHtml.js");
-const { GPosition } = require("ObjetPosition.js");
-const { GStyle } = require("ObjetStyle.js");
-const { Identite } = require("ObjetIdentite.js");
-const { GObjetWAI, EGenreAttribut } = require("ObjetWAI.js");
-class ObjetZoneTexte extends Identite {
+exports.ObjetZoneTexte = void 0;
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetPosition_1 = require("ObjetPosition");
+const ObjetStyle_1 = require("ObjetStyle");
+const ObjetIdentite_1 = require("ObjetIdentite");
+const ObjetWAI_1 = require("ObjetWAI");
+class ObjetZoneTexte extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
 		this.idTable = this.Nom + "_IdTable";
@@ -26,22 +27,24 @@ class ObjetZoneTexte extends Identite {
 		H.push(
 			'<div id="' + this.idTable + '" ',
 			this._options.largeur
-				? ' style="' + GStyle.composeWidth(this._options.largeur) + '"'
+				? ' style="' +
+						ObjetStyle_1.GStyle.composeWidth(this._options.largeur) +
+						'"'
 				: "",
 			">",
 		);
 		H.push(
 			"<span ",
 			this._options.describedby
-				? GObjetWAI.composeAttribut({
-						genre: EGenreAttribut.describedby,
+				? ObjetWAI_1.GObjetWAI.composeAttribut({
+						genre: ObjetWAI_1.EGenreAttribut.describedby,
 						valeur: this._options.describedby + " " + this.idLibelle,
 					})
 				: "",
 			' id="' +
 				this.idLibelle +
 				'" class="Texte10 Gras Insecable" style="' +
-				GStyle.composeCouleurTexte(this.couleurTexte) +
+				ObjetStyle_1.GStyle.composeCouleurTexte(this.couleurTexte) +
 				'"></span>',
 		);
 		H.push("</div>");
@@ -49,14 +52,14 @@ class ObjetZoneTexte extends Identite {
 	}
 	setDonnees(aLibelle) {
 		if (this.avecRetaillage) {
-			GPosition.setWidth(
+			ObjetPosition_1.GPosition.setWidth(
 				this.idTable,
-				GChaine.getLongueurChaine(aLibelle, 10, true) + 4,
+				ObjetChaine_1.GChaine.getLongueurChaine(aLibelle, 10, true) + 4,
 			);
 		}
 		const lTab = aLibelle ? aLibelle.split("\n") : [];
 		this.Libelle = lTab.join("<br>");
-		GHtml.setHtml(this.idLibelle, this.Libelle, {
+		ObjetHtml_1.GHtml.setHtml(this.idLibelle, this.Libelle, {
 			controleur: this.controleur,
 		});
 		const lThis = this;
@@ -69,7 +72,7 @@ class ObjetZoneTexte extends Identite {
 			});
 	}
 	setTabIndex(aTabIndex) {
-		GHtml.setTabIndex(this.idLibelle, aTabIndex);
+		ObjetHtml_1.GHtml.setTabIndex(this.idLibelle, aTabIndex);
 	}
 }
-module.exports = { ObjetZoneTexte };
+exports.ObjetZoneTexte = ObjetZoneTexte;

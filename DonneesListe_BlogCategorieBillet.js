@@ -6,15 +6,15 @@ const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
 const Enumere_Action_1 = require("Enumere_Action");
 const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
 const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const AccessApp_1 = require("AccessApp");
 class DonneesListe_BlogCategorieBillet extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees, aAvecEdition = false) {
 		super(aDonnees);
-		this.applicationSco = GApplication;
+		this.applicationSco = (0, AccessApp_1.getApp)();
 		this._avecEditionCategorie = aAvecEdition;
 		this.setOptions({
 			avecEvnt_Selection: true,
 			avecEvnt_SelectionDblClick: true,
-			avecEvnt_Suppression: aAvecEdition,
 			flatDesignMinimal: true,
 		});
 	}

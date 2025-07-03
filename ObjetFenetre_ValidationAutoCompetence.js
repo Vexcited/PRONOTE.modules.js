@@ -1,23 +1,31 @@
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { EGenreOnglet } = require("Enumere_Onglet.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { ObjetHint } = require("ObjetHint.js");
-const {
-	ObjetRequeteValidationAutoCompetences,
-} = require("ObjetRequeteValidationAutoCompetences.js");
-const {
-	TypeModeCalculPositionnementService,
-	TypeModeCalculPositionnementServiceUtil,
-} = require("TypeModeCalculPositionnementService.js");
-const { ObjetJSON } = require("ObjetJSON.js");
-const TypeEvenementValidationAutoCompetences = {
-	Saisie: "saisie",
-	AfficherPreferencesCalcul: "afficherPrefCalcul",
-};
-class ObjetFenetre_ValidationAutoCompetence extends ObjetFenetre {
+exports.TypeEvenementValidationAutoCompetences =
+	exports.ObjetFenetre_ValidationAutoCompetence = void 0;
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const Enumere_Onglet_1 = require("Enumere_Onglet");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetHint_1 = require("ObjetHint");
+const ObjetRequeteValidationAutoCompetences_1 = require("ObjetRequeteValidationAutoCompetences");
+const TypeModeCalculPositionnementService_1 = require("TypeModeCalculPositionnementService");
+const ObjetJSON_1 = require("ObjetJSON");
+const AccessApp_1 = require("AccessApp");
+var TypeEvenementValidationAutoCompetences;
+(function (TypeEvenementValidationAutoCompetences) {
+	TypeEvenementValidationAutoCompetences["Saisie"] = "saisie";
+	TypeEvenementValidationAutoCompetences["AfficherPreferencesCalcul"] =
+		"afficherPrefCalcul";
+})(
+	TypeEvenementValidationAutoCompetences ||
+		(exports.TypeEvenementValidationAutoCompetences =
+			TypeEvenementValidationAutoCompetences =
+				{}),
+);
+class ObjetFenetre_ValidationAutoCompetence extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
+		this.applicationSco = (0, AccessApp_1.getApp)();
+		this.etatUtilisateurSco = this.applicationSco.getEtatUtilisateur();
+		this.parametresSco = this.applicationSco.getObjetParametres();
 		this.options = {
 			estCompetenceNumerique: false,
 			estPourLaClasse: false,
@@ -32,45 +40,60 @@ class ObjetFenetre_ValidationAutoCompetence extends ObjetFenetre {
 			periode: null,
 			service: null,
 			listeEleves: null,
-			modeCalcul: TypeModeCalculPositionnementService.tMCPS_Defaut,
+			modeCalcul:
+				TypeModeCalculPositionnementService_1
+					.TypeModeCalculPositionnementService.tMCPS_Defaut,
 			donneesModeCalcul: null,
 		};
 		this.setOptionsFenetre({
-			titre: getTitreObjetMessage.bind(this),
+			titre: this.getTitreObjetMessage.bind(this),
 			largeur: 600,
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 		});
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
-			getLibelleModeCalcul(aModeCalcul) {
-				return TypeModeCalculPositionnementServiceUtil.getLibelleComplet(
+	jsxModelRadioChoixModeCalcul(aModeCalcul) {
+		return {
+			getValue: () => {
+				return this.donnees.modeCalcul === aModeCalcul;
+			},
+			setValue: (aValue) => {
+				this.donnees.modeCalcul = aModeCalcul;
+				this.applicationSco.parametresUtilisateur.set(
+					"CalculPositionnementEleveParClasse.ModeCalcul",
 					aModeCalcul,
-					aInstance.donnees.donneesModeCalcul,
 				);
 			},
-			btnAfficherPreferencesCalcul: {
-				event() {
-					aInstance.callback.appel(
-						TypeEvenementValidationAutoCompetences.AfficherPreferencesCalcul,
-					);
-				},
-				getTitle() {
-					return GTraductions.getValeur(
-						"FenetrePreferencesCalculPositionnement.MesPreferencesCalculPos",
-					);
-				},
+			getName: () => {
+				return `${this.Nom}_ChoixModeCalcul`;
 			},
+		};
+	}
+	jsxModeleBoutonPreferencesCalcul() {
+		return {
+			event: () => {
+				this.callback.appel(
+					TypeEvenementValidationAutoCompetences.AfficherPreferencesCalcul,
+				);
+			},
+			getTitle: () => {
+				return ObjetTraduction_1.GTraductions.getValeur(
+					"FenetrePreferencesCalculPositionnement.MesPreferencesCalculPos",
+				);
+			},
+		};
+	}
+	getControleur(aInstance) {
+		return $.extend(true, super.getControleur(aInstance), {
 			surRadioChoixModeCalcul: {
 				getValue(aModeCalcul) {
 					return aInstance.donnees.modeCalcul === aModeCalcul;
 				},
 				setValue(aModeCalcul) {
 					aInstance.donnees.modeCalcul = aModeCalcul;
-					GApplication.parametresUtilisateur.set(
+					aInstance.applicationSco.parametresUtilisateur.set(
 						"CalculPositionnementEleveParClasse.ModeCalcul",
 						aModeCalcul,
 					);
@@ -78,17 +101,17 @@ class ObjetFenetre_ValidationAutoCompetence extends ObjetFenetre {
 			},
 			cbRemplacerExistants: {
 				getValue() {
-					return GEtatUtilisateur.remplacerNiveauxDAcquisitions;
+					return aInstance.etatUtilisateurSco.remplacerNiveauxDAcquisitions;
 				},
 				setValue(aValue) {
-					GEtatUtilisateur.remplacerNiveauxDAcquisitions = aValue;
+					aInstance.etatUtilisateurSco.remplacerNiveauxDAcquisitions = aValue;
 				},
 			},
 			surAfficherMrFiche: {
 				event() {
 					const lJSONMrFiche = aInstance._getJSONMrFiche();
 					if (!!lJSONMrFiche) {
-						ObjetHint.start(lJSONMrFiche.html, { sansDelai: true });
+						ObjetHint_1.ObjetHint.start(lJSONMrFiche.html, { sansDelai: true });
 					}
 				},
 			},
@@ -97,12 +120,13 @@ class ObjetFenetre_ValidationAutoCompetence extends ObjetFenetre {
 	_getJSONMrFiche() {
 		let lJsonMrFiche = null;
 		if (!!this.options.mrFiche) {
-			lJsonMrFiche = ObjetJSON.parse(this.options.mrFiche);
+			lJsonMrFiche = ObjetJSON_1.ObjetJSON.parse(this.options.mrFiche);
 		}
 		return lJsonMrFiche;
 	}
 	setOptions(aOptions) {
 		Object.assign(this.options, aOptions);
+		return this;
 	}
 	setDonnees(aDonnees) {
 		Object.assign(this.donnees, aDonnees);
@@ -112,10 +136,10 @@ class ObjetFenetre_ValidationAutoCompetence extends ObjetFenetre {
 	}
 	composeContenu() {
 		const lMessage = [];
-		const lStrDetailExplication = getStrDetailExplication.call(this);
+		const lStrDetailExplication = this.getStrDetailExplication();
 		if (!!lStrDetailExplication) {
 			lMessage.push("<div>", lStrDetailExplication, "</div>");
-			const lOptionsLi = getTableauOptionsDetailCalcul.call(this);
+			const lOptionsLi = this.getTableauOptionsDetailCalcul();
 			if (lOptionsLi.length > 0) {
 				lMessage.push("<div>");
 				lMessage.push('<ul class="browser-default">');
@@ -126,7 +150,7 @@ class ObjetFenetre_ValidationAutoCompetence extends ObjetFenetre {
 				lMessage.push("</div>");
 			}
 		}
-		const lStrDetailSuite = getStrDetailExplicationSuite.call(this);
+		const lStrDetailSuite = this.getStrDetailExplicationSuite();
 		if (lStrDetailSuite.length > 0) {
 			const lClasses = [];
 			if (lMessage.length > 0) {
@@ -138,59 +162,77 @@ class ObjetFenetre_ValidationAutoCompetence extends ObjetFenetre {
 		}
 		if (
 			this.options.avecChoixCalcul &&
-			GParametres.general.SansValidationNivIntermediairesDsValidAuto
+			this.parametresSco.general.SansValidationNivIntermediairesDsValidAuto
 		) {
-			this.donnees.modeCalcul = GApplication.parametresUtilisateur.get(
+			this.donnees.modeCalcul = this.applicationSco.parametresUtilisateur.get(
 				"CalculPositionnementEleveParClasse.ModeCalcul",
 			);
 			if (!this.donnees.modeCalcul && this.donnees.modeCalcul !== 0) {
 				this.donnees.modeCalcul =
-					TypeModeCalculPositionnementService.tMCPS_Defaut;
+					TypeModeCalculPositionnementService_1.TypeModeCalculPositionnementService.tMCPS_Defaut;
 			}
 			this.donnees.donneesModeCalcul = {
-				dernieresEvaluations: GApplication.parametresUtilisateur.get(
+				dernieresEvaluations: this.applicationSco.parametresUtilisateur.get(
 					"CalculPositionnementEleveParClasse.NDernieresEvaluations",
 				),
-				meilleuresEvals: GApplication.parametresUtilisateur.get(
+				meilleuresEvals: this.applicationSco.parametresUtilisateur.get(
 					"CalculPositionnementEleveParClasse.NMeilleuresEvaluations",
 				),
 			};
 			lMessage.push(
-				'<div class="EspaceHaut10">',
-				GTraductions.getValeur(
-					"competences.fenetreValidationAuto.IndiquezModeCalcul",
+				IE.jsx.str(
+					"div",
+					{ class: "EspaceHaut10" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"competences.fenetreValidationAuto.IndiquezModeCalcul",
+					),
+					IE.jsx.str("ie-btnicon", {
+						style: "float: right;",
+						"ie-model": this.jsxModeleBoutonPreferencesCalcul.bind(this),
+						class: "icon_cog",
+					}),
 				),
-				'<ie-btnicon style="float: right;" ie-model="btnAfficherPreferencesCalcul" class="icon_cog"></ie-btnicon>',
-				"</div>",
 			);
 			lMessage.push('<div class="EspaceGauche">');
-			for (const sModeCalcul in TypeModeCalculPositionnementServiceUtil.getListe()) {
+			for (const sModeCalcul in TypeModeCalculPositionnementService_1.TypeModeCalculPositionnementServiceUtil.getListe()) {
 				const lModeCalcul = parseInt(sModeCalcul);
 				lMessage.push(
-					'<div class="PetitEspaceHaut">',
-					'<ie-radio ie-html="getLibelleModeCalcul(',
-					lModeCalcul,
-					')" class="AlignementMilieuVertical" ie-model="surRadioChoixModeCalcul(',
-					lModeCalcul,
-					')">',
-					"</ie-radio>",
-					"</div>",
+					IE.jsx.str(
+						"div",
+						{ class: "PetitEspaceHaut" },
+						IE.jsx.str(
+							"ie-radio",
+							{
+								class: "AlignementMilieuVertical",
+								"ie-model": this.jsxModelRadioChoixModeCalcul.bind(
+									this,
+									lModeCalcul,
+								),
+							},
+							TypeModeCalculPositionnementService_1.TypeModeCalculPositionnementServiceUtil.getLibelleComplet(
+								lModeCalcul,
+								this.donnees.donneesModeCalcul,
+							),
+						),
+					),
 				);
 			}
 			lMessage.push("</div>");
 		} else {
 			lMessage.push(
-				'<div class="GrandEspaceHaut">',
-				GTraductions.getValeur(
-					"competences.fenetreValidationAuto.QuestionContinuer",
+				IE.jsx.str(
+					"div",
+					{ class: "GrandEspaceHaut" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"competences.fenetreValidationAuto.QuestionContinuer",
+					),
 				),
-				"</div>",
 			);
 		}
 		lMessage.push(
 			'<div class="m-top-xl m-left">',
 			'<ie-checkbox ie-model="cbRemplacerExistants">',
-			getMessageRemplacerExistants.call(this),
+			this.getMessageRemplacerExistants(),
 			"</ie-checkbox>",
 			"</div>",
 		);
@@ -217,27 +259,35 @@ class ObjetFenetre_ValidationAutoCompetence extends ObjetFenetre {
 		}
 	}
 	lancerRequeteSaisie() {
-		const lAvecService = [EGenreOnglet.BilanParDomaine].includes(
-			GEtatUtilisateur.getGenreOnglet(),
-		);
+		const lAvecService = [
+			Enumere_Onglet_1.EGenreOnglet.BilanParDomaine,
+		].includes(this.etatUtilisateurSco.getGenreOnglet());
 		const lAvecPeriode = [
-			EGenreOnglet.BilanFinDeCycle,
-			EGenreOnglet.ReleveEvaluationsParClasse,
-		].includes(GEtatUtilisateur.getGenreOnglet());
+			Enumere_Onglet_1.EGenreOnglet.BilanFinDeCycle,
+			Enumere_Onglet_1.EGenreOnglet.ReleveEvaluationsParClasse,
+		].includes(this.etatUtilisateurSco.getGenreOnglet());
 		const lPalier = !!this.donnees.palier
 			? this.donnees.palier
-			: GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Palier);
+			: this.etatUtilisateurSco.Navigation.getRessource(
+					Enumere_Ressource_1.EGenreRessource.Palier,
+				);
 		const lListePiliers = !!this.donnees.listePiliers
 			? this.donnees.listePiliers
-			: GEtatUtilisateur.Navigation.getRessources(EGenreRessource.Pilier);
+			: this.etatUtilisateurSco.Navigation.getRessources(
+					Enumere_Ressource_1.EGenreRessource.Pilier,
+				);
 		const lListeEleves = !!this.donnees.listeEleves
 			? this.donnees.listeEleves
-			: GEtatUtilisateur.Navigation.getRessources(EGenreRessource.Eleve);
+			: this.etatUtilisateurSco.Navigation.getRessources(
+					Enumere_Ressource_1.EGenreRessource.Eleve,
+				);
 		let lService = null;
 		if (lAvecService) {
 			lService = !!this.donnees.service
 				? this.donnees.service
-				: GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Service);
+				: this.etatUtilisateurSco.Navigation.getRessource(
+						Enumere_Ressource_1.EGenreRessource.Service,
+					);
 		}
 		let lPeriode = null;
 		if (lAvecPeriode) {
@@ -247,7 +297,7 @@ class ObjetFenetre_ValidationAutoCompetence extends ObjetFenetre {
 		if (this.options.avecChoixCalcul) {
 			lModeCalcul = this.donnees.modeCalcul;
 		}
-		new ObjetRequeteValidationAutoCompetences(
+		new ObjetRequeteValidationAutoCompetences_1.ObjetRequeteValidationAutoCompetences(
 			this,
 			this.surRequeteSaisie,
 		).lancerRequete({
@@ -258,180 +308,183 @@ class ObjetFenetre_ValidationAutoCompetence extends ObjetFenetre {
 			listeEleves: lListeEleves,
 			modeCalcul: lModeCalcul,
 			remplacerNiveauxDAcquisitions:
-				GEtatUtilisateur.remplacerNiveauxDAcquisitions,
+				this.etatUtilisateurSco.remplacerNiveauxDAcquisitions,
 		});
 	}
 	surRequeteSaisie() {
 		this.callback.appel(TypeEvenementValidationAutoCompetences.Saisie);
 		this.fermer();
 	}
-}
-function _estMultiDomaines() {
-	return !!this.donnees.listePiliers && this.donnees.listePiliers.count() > 1;
-}
-function getTitreObjetMessage() {
-	let lTitre;
-	if (!!this.options.estCompetenceNumerique) {
-		lTitre = GTraductions.getValeur(
-			"competences.fenetreValidationAuto.titre.validationAutoCN",
-		);
-	} else if (_estMultiDomaines.call(this)) {
-		if (!!this.options.estPourLaClasse) {
-			lTitre = GTraductions.getValeur(
-				"competences.fenetreValidationAuto.titre.validationAutoDesComposantesDesClasses",
+	_estMultiDomaines() {
+		return !!this.donnees.listePiliers && this.donnees.listePiliers.count() > 1;
+	}
+	getTitreObjetMessage() {
+		let lTitre;
+		if (!!this.options.estCompetenceNumerique) {
+			lTitre = ObjetTraduction_1.GTraductions.getValeur(
+				"competences.fenetreValidationAuto.titre.validationAutoCN",
 			);
-		} else {
-			lTitre = GTraductions.getValeur(
-				"competences.fenetreValidationAuto.titre.validationAutoDesComposantes",
+		} else if (this._estMultiDomaines()) {
+			if (!!this.options.estPourLaClasse) {
+				lTitre = ObjetTraduction_1.GTraductions.getValeur(
+					"competences.fenetreValidationAuto.titre.validationAutoDesComposantesDesClasses",
+				);
+			} else {
+				lTitre = ObjetTraduction_1.GTraductions.getValeur(
+					"competences.fenetreValidationAuto.titre.validationAutoDesComposantes",
+				);
+			}
+		}
+		if (!lTitre) {
+			lTitre = ObjetTraduction_1.GTraductions.getValeur(
+				"competences.fenetreValidationAuto.titre.validationAuto",
 			);
 		}
+		return lTitre;
 	}
-	if (!lTitre) {
-		lTitre = GTraductions.getValeur(
-			"competences.fenetreValidationAuto.titre.validationAuto",
-		);
+	getLibellesNiveauxAcquis() {
+		const lLibelles = [];
+		this.parametresSco.listeNiveauxDAcquisitions.parcourir((aNiveauGlobal) => {
+			if (!!aNiveauGlobal && !!aNiveauGlobal.estAcqui) {
+				lLibelles.push(aNiveauGlobal.getLibelle());
+			}
+		});
+		return lLibelles.join(", ");
 	}
-	return lTitre;
-}
-function getLibellesNiveauxAcquis() {
-	const lLibelles = [];
-	GParametres.listeNiveauxDAcquisitions.parcourir((aNiveauGlobal) => {
-		if (!!aNiveauGlobal && !!aNiveauGlobal.estAcqui) {
-			lLibelles.push(aNiveauGlobal.getLibelle());
-		}
-	});
-	return lLibelles.join(", ");
-}
-function estPourPrimaire() {
-	return GEtatUtilisateur.pourPrimaire();
-}
-function getStrDetailExplication() {
-	const H = [];
-	if (
-		this.options.estCompetenceNumerique ||
-		this.options.estValidationCECRLLV
-	) {
-		if (!estPourPrimaire()) {
+	estPourPrimaire() {
+		return this.etatUtilisateurSco.pourPrimaire();
+	}
+	getStrDetailExplication() {
+		const H = [];
+		if (
+			this.options.estCompetenceNumerique ||
+			this.options.estValidationCECRLLV
+		) {
+			if (!this.estPourPrimaire()) {
+				H.push(
+					ObjetTraduction_1.GTraductions.getValeur(
+						"competences.fenetreValidationAuto.ExplicationCalculCN",
+					),
+				);
+			}
+		} else if (this.options.estValidationCECRLDomaine) {
 			H.push(
-				GTraductions.getValeur(
-					"competences.fenetreValidationAuto.ExplicationCalculCN",
-				),
-			);
-		}
-	} else if (this.options.estValidationCECRLDomaine) {
-		H.push(
-			GTraductions.getValeur(
-				"competences.fenetreValidationAuto.ExplicationCalculCECRLDomaine",
-			),
-		);
-	} else {
-		H.push(
-			GTraductions.getValeur(
-				"competences.fenetreValidationAuto.ExplicationCalcul",
-			),
-		);
-	}
-	return H.join("");
-}
-function getTableauOptionsDetailCalcul() {
-	const H = [];
-	if (
-		this.options.estCompetenceNumerique ||
-		this.options.estValidationCECRLLV
-	) {
-		H.push(
-			GTraductions.getValeur(
-				"competences.fenetreValidationAuto.OptionNivAcquisCN",
-				[getLibellesNiveauxAcquis()],
-			),
-		);
-	} else if (!this.options.estValidationCECRLDomaine) {
-		if (GParametres.general.SansValidationNivIntermediairesDsValidAuto) {
-			H.push(
-				GTraductions.getValeur(
-					"competences.fenetreValidationAuto.CalculParEvaluations",
+				ObjetTraduction_1.GTraductions.getValeur(
+					"competences.fenetreValidationAuto.ExplicationCalculCECRLDomaine",
 				),
 			);
 		} else {
 			H.push(
-				GTraductions.getValeur(
-					"competences.fenetreValidationAuto.CalculParNiveauxMaitrise",
+				ObjetTraduction_1.GTraductions.getValeur(
+					"competences.fenetreValidationAuto.ExplicationCalcul",
 				),
 			);
 		}
+		return H.join("");
 	}
-	if (!this.donnees.periode || !this.donnees.periode.existeNumero()) {
-		if (!this.options.estValidationCECRLDomaine) {
+	getTableauOptionsDetailCalcul() {
+		const H = [];
+		if (
+			this.options.estCompetenceNumerique ||
+			this.options.estValidationCECRLLV
+		) {
+			H.push(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"competences.fenetreValidationAuto.OptionNivAcquisCN",
+					[this.getLibellesNiveauxAcquis()],
+				),
+			);
+		} else if (!this.options.estValidationCECRLDomaine) {
 			if (
-				!(this.options.estCompetenceNumerique && estPourPrimaire()) ||
-				this.options.estValidationCECRLLV
+				this.parametresSco.general.SansValidationNivIntermediairesDsValidAuto
 			) {
-				if (GParametres.general.NeComptabiliserQueEvalsAnneeScoDsValidAuto) {
-					H.push(
-						GTraductions.getValeur(
-							"competences.fenetreValidationAuto.EvaluationsAnneeEnCours",
-						),
-					);
-				} else {
-					H.push(
-						GTraductions.getValeur(
-							"competences.fenetreValidationAuto.EvaluationsCycle",
-						),
-					);
+				H.push(
+					ObjetTraduction_1.GTraductions.getValeur(
+						"competences.fenetreValidationAuto.CalculParEvaluations",
+					),
+				);
+			} else {
+				H.push(
+					ObjetTraduction_1.GTraductions.getValeur(
+						"competences.fenetreValidationAuto.CalculParNiveauxMaitrise",
+					),
+				);
+			}
+		}
+		if (!this.donnees.periode || !this.donnees.periode.existeNumero()) {
+			if (!this.options.estValidationCECRLDomaine) {
+				if (
+					!(this.options.estCompetenceNumerique && this.estPourPrimaire()) ||
+					this.options.estValidationCECRLLV
+				) {
+					if (
+						this.parametresSco.general
+							.NeComptabiliserQueEvalsAnneeScoDsValidAuto
+					) {
+						H.push(
+							ObjetTraduction_1.GTraductions.getValeur(
+								"competences.fenetreValidationAuto.EvaluationsAnneeEnCours",
+							),
+						);
+					} else {
+						H.push(
+							ObjetTraduction_1.GTraductions.getValeur(
+								"competences.fenetreValidationAuto.EvaluationsCycle",
+							),
+						);
+					}
 				}
 			}
 		}
+		if (
+			!this.options.estValidationCECRLDomaine &&
+			!this.options.estValidationCECRLLV &&
+			!this.options.estCompetenceNumerique
+		) {
+			if (this.parametresSco.general.PondererMatieresSelonLeurCoeffDsDomaine) {
+				H.push(
+					ObjetTraduction_1.GTraductions.getValeur(
+						"competences.fenetreValidationAuto.EnPonderantMatieres",
+					),
+				);
+			}
+		}
+		return H;
 	}
-	if (
-		!this.options.estValidationCECRLDomaine &&
-		!this.options.estValidationCECRLLV &&
-		!this.options.estCompetenceNumerique
-	) {
-		if (GParametres.general.PondererMatieresSelonLeurCoeffDsDomaine) {
+	getStrDetailExplicationSuite() {
+		const H = [];
+		if (
+			this.options.estCompetenceNumerique ||
+			this.options.estValidationCECRLLV
+		) {
 			H.push(
-				GTraductions.getValeur(
-					"competences.fenetreValidationAuto.EnPonderantMatieres",
+				ObjetTraduction_1.GTraductions.getValeur(
+					"competences.fenetreValidationAuto.ExplicationCalculAuto3CN",
 				),
 			);
 		}
+		return H.join("");
 	}
-	return H;
-}
-function getStrDetailExplicationSuite() {
-	const H = [];
-	if (
-		this.options.estCompetenceNumerique ||
-		this.options.estValidationCECRLLV
-	) {
-		H.push(
-			GTraductions.getValeur(
-				"competences.fenetreValidationAuto.ExplicationCalculAuto3CN",
-			),
-		);
+	getMessageRemplacerExistants() {
+		const lMessageRemplacerExistants = [];
+		if (
+			this.options.estCompetenceNumerique ||
+			this.options.estValidationCECRLLV
+		) {
+			lMessageRemplacerExistants.push(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"competences.fenetreValidationAuto.RemplacerExistantsCN",
+				),
+			);
+		} else {
+			lMessageRemplacerExistants.push(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"competences.fenetreValidationAuto.RemplacerExistants",
+				),
+			);
+		}
+		return lMessageRemplacerExistants.join("");
 	}
-	return H.join("");
 }
-function getMessageRemplacerExistants() {
-	const lMessageRemplacerExistants = [];
-	if (
-		this.options.estCompetenceNumerique ||
-		this.options.estValidationCECRLLV
-	) {
-		lMessageRemplacerExistants.push(
-			GTraductions.getValeur(
-				"competences.fenetreValidationAuto.RemplacerExistantsCN",
-			),
-		);
-	} else {
-		lMessageRemplacerExistants.push(
-			GTraductions.getValeur(
-				"competences.fenetreValidationAuto.RemplacerExistants",
-			),
-		);
-	}
-	return lMessageRemplacerExistants.join("");
-}
-module.exports = {
-	ObjetFenetre_ValidationAutoCompetence,
-	TypeEvenementValidationAutoCompetences,
-};
+exports.ObjetFenetre_ValidationAutoCompetence =
+	ObjetFenetre_ValidationAutoCompetence;

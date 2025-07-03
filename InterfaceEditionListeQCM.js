@@ -3,7 +3,6 @@ const ObjetRequeteExportQCM_1 = require("ObjetRequeteExportQCM");
 const ObjetRequeteSaisieCopieQCM_1 = require("ObjetRequeteSaisieCopieQCM");
 const ObjetRequeteSaisieSuppressionQCM_1 = require("ObjetRequeteSaisieSuppressionQCM");
 const DonneesListe_QCM_1 = require("DonneesListe_QCM");
-const ObjetChaine_1 = require("ObjetChaine");
 const ObjetHtml_1 = require("ObjetHtml");
 const ControleSaisieEvenement_1 = require("ControleSaisieEvenement");
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
@@ -28,6 +27,7 @@ const ObjetFenetre_SelectionQCM_1 = require("ObjetFenetre_SelectionQCM");
 const TypeEtatExecutionQCMPourRepondant_1 = require("TypeEtatExecutionQCMPourRepondant");
 const ObjetFenetre_Periode_1 = require("ObjetFenetre_Periode");
 const DonneesListe_ResultatsQCM_1 = require("DonneesListe_ResultatsQCM");
+const AccessApp_1 = require("AccessApp");
 const C_TailleMaxImportXmlQCM = 52428800;
 var GenreMenuContextuel;
 (function (GenreMenuContextuel) {
@@ -57,8 +57,6 @@ var GenreMenuContextuel;
 		"gmc_supprimerCollab";
 	GenreMenuContextuel[(GenreMenuContextuel["gmc_supprimerExec"] = 13)] =
 		"gmc_supprimerExec";
-	GenreMenuContextuel[(GenreMenuContextuel["gmc_importNathan"] = 14)] =
-		"gmc_importNathan";
 })(GenreMenuContextuel || (GenreMenuContextuel = {}));
 class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
@@ -73,7 +71,6 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 			avecImportFichier: false,
 			avecProprietaire: false,
 			estProprietaireEditable: true,
-			avecImportNathan: false,
 			maxSize: C_TailleMaxImportXmlQCM,
 			avecAssocDevoirs: true,
 			avecAssocEvaluations: false,
@@ -84,7 +81,7 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 			avecContributeurs: false,
 			verrouilleEditionMatiereAvecCompetences: false,
 			avecBoutonPartageQCM: false,
-			avecValidationAuto: false,
+			avecValidationAuto: true,
 			avecMenuContexteListe: true,
 			avecSelectionClasseObligatoire: false,
 			avecAssocActivite: false,
@@ -99,8 +96,13 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 		return aElt && aElt.getGenre() === this.genreExecQCM;
 	}
 	actionSurResultatsQCM(aParam) {
+		let lQCM;
+		if (this.estUneExecutionQCM(this.element)) {
+			lQCM = this.element.QCM;
+		} else {
+			lQCM = this.element;
+		}
 		const lEstUneExecution = this.estUneExecutionQCM(this.element);
-		const lQCM = lEstUneExecution ? this.element.QCM : this.element;
 		if (!!this.qcm) {
 			lQCM.contenuQCM = this.qcm;
 		}
@@ -129,14 +131,12 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 		if (this.estUneExecutionQCM(this.element)) {
 			return fnLExecutionEstSansNote(this.element);
 		}
-		for (let i = 0; i < this.listeQCM.count(); i++) {
-			const lElt = this.listeQCM.get(i);
-			if (
-				this.estUneExecutionQCM(lElt) &&
-				lElt.pere &&
-				lElt.pere.getNumero() === this.element.getNumero()
-			) {
-				return fnLExecutionEstSansNote(lElt);
+		for (const lElt of this.listeQCM) {
+			if (this.estUneExecutionQCM(lElt)) {
+				const lPere = lElt.pere;
+				if (lPere && lPere.getNumero() === this.element.getNumero()) {
+					return fnLExecutionEstSansNote(lElt);
+				}
 			}
 		}
 		return false;
@@ -183,7 +183,7 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 		}
 	}
 	construireInstancesImportQCM() {
-		if (this.options.avecImportBiblio || this.options.avecImportNathan) {
+		if (this.options.avecImportBiblio) {
 			this.identFenetreSelectionQCM = this.addFenetre(
 				ObjetFenetre_SelectionQCM_1.ObjetFenetre_SelectionQCM,
 				this.evenementSurSelectionQCM,
@@ -268,12 +268,14 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 						afficherCopieCachee: aAfficherCopieCachee,
 					});
 				} else {
-					GApplication.getMessage().afficher({
-						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-						message: ObjetTraduction_1.GTraductions.getValeur(
-							"SaisieQCM.QCMnonTermine",
-						),
-					});
+					(0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+							message: ObjetTraduction_1.GTraductions.getValeur(
+								"SaisieQCM.QCMnonTermine",
+							),
+						});
 				}
 			}
 		}
@@ -354,17 +356,6 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 				});
 				break;
 			}
-			case DonneesListe_QCM_1.DonneesListe_QCM.GenreCommande
-				.AjoutQuestionsNathan: {
-				lInstanceFenetre.setConstructeurRequeteListeQCMCumuls(
-					this.contructeurRequeteListeQCMCumuls,
-				);
-				lInstanceFenetre.setDonnees({
-					typeBibilioQCM:
-						ObjetFenetre_SelectionQCMQuestion_1.TypeBibliothequeQCM.Editeur,
-				});
-				break;
-			}
 			default: {
 				const lDonneesRetourNav = {
 					instance: this.identListeQCM,
@@ -385,11 +376,6 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 					case DonneesListe_QCM_1.DonneesListe_QCM.GenreCommande
 						.ImportQCMBiblio: {
 						lDonneesRetourNav.donnees = { qcmEtab: true };
-						break;
-					}
-					case DonneesListe_QCM_1.DonneesListe_QCM.GenreCommande
-						.ImportQCMNathan: {
-						lDonneesRetourNav.donnees = { qcmNathan: true };
 						break;
 					}
 					case DonneesListe_QCM_1.DonneesListe_QCM.GenreCommande
@@ -430,40 +416,46 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 							aElement.estSupprimable === false &&
 							!!aElement.msgSuppression
 						) {
-							GApplication.getMessage().afficher({
-								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-								message: aElement.msgSuppression,
-							});
+							(0, AccessApp_1.getApp)()
+								.getMessage()
+								.afficher({
+									type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+									message: aElement.msgSuppression,
+								});
 						} else {
-							GApplication.getMessage().afficher({
-								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
-								message: lDonneesRetourNav.element.estUneExecution
-									? ObjetTraduction_1.GTraductions.getValeur(
-											"SaisieQCM.ConfirmDeleteExeQCM",
-										)
-									: ObjetTraduction_1.GTraductions.getValeur(
-											"SaisieQCM.ConfirmDeleteQCM",
-										),
-								callback: this.suppressionExecutionQCM.bind(
-									this,
-									lDonneesRetourNav,
-								),
-							});
+							(0, AccessApp_1.getApp)()
+								.getMessage()
+								.afficher({
+									type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+									message: lDonneesRetourNav.element.estUneExecution
+										? ObjetTraduction_1.GTraductions.getValeur(
+												"SaisieQCM.ConfirmDeleteExeQCM",
+											)
+										: ObjetTraduction_1.GTraductions.getValeur(
+												"SaisieQCM.ConfirmDeleteQCM",
+											),
+									callback: this.suppressionExecutionQCM.bind(
+										this,
+										lDonneesRetourNav,
+									),
+								});
 						}
 						return;
 					}
 					case DonneesListe_QCM_1.DonneesListe_QCM.GenreCommande.TafToDevoir: {
 						lDonneesRetourNav.element = aElement;
-						GApplication.getMessage().afficher({
-							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
-							message: ObjetTraduction_1.GTraductions.getValeur(
-								"SaisieQCM.ConfirmTafToDevoir",
-							),
-							callback: this.convertirExecQCMTafToDevoir.bind(
-								this,
-								lDonneesRetourNav,
-							),
-						});
+						(0, AccessApp_1.getApp)()
+							.getMessage()
+							.afficher({
+								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+								message: ObjetTraduction_1.GTraductions.getValeur(
+									"SaisieQCM.ConfirmTafToDevoir",
+								),
+								callback: this.convertirExecQCMTafToDevoir.bind(
+									this,
+									lDonneesRetourNav,
+								),
+							});
 						return;
 					}
 				}
@@ -495,20 +487,7 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 		});
 	}
 	actionExportQCM(aParam) {
-		if (aParam.filtrees > 0) {
-			GApplication.getMessage().afficher({
-				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-				message: ObjetTraduction_1.GTraductions.getValeur(
-					"SaisieQCM.QuestionsFiltrees",
-					[aParam.filtrees],
-				),
-				callback: function () {
-					window.open(ObjetChaine_1.GChaine.encoderUrl(aParam.url));
-				},
-			});
-		} else {
-			window.open(ObjetChaine_1.GChaine.encoderUrl(aParam.url));
-		}
+		window.open(aParam.url);
 	}
 	executeCommandeCopierVers(aElementQCM) {
 		const lListe = new ObjetListeElements_1.ObjetListeElements();
@@ -538,7 +517,7 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 	}
 	associerNouvelleEvaluation(aQcmSelectionne) {}
 	actionSurImport(aJSONRapport) {
-		if (GApplication.getDemo()) {
+		if ((0, AccessApp_1.getApp)().getDemo()) {
 			alert(ObjetTraduction_1.GTraductions.getValeur("Demo.Message"));
 		} else {
 			let lMsg;
@@ -553,33 +532,37 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 				);
 			}
 			const lThis = this;
-			GApplication.getMessage().afficher({
-				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-				message: lMsg,
-				callback: function () {
-					lThis.callback.appel({
-						genreEvnt: InterfaceEditionListeQCM.GenreEvenement.copieQCM,
-					});
-				},
-			});
+			(0, AccessApp_1.getApp)()
+				.getMessage()
+				.afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+					message: lMsg,
+					callback: function () {
+						lThis.callback.appel({
+							genreEvnt: InterfaceEditionListeQCM.GenreEvenement.copieQCM,
+						});
+					},
+				});
 		}
 	}
 	actionCopieQCM() {
-		if (GApplication.getDemo()) {
+		if ((0, AccessApp_1.getApp)().getDemo()) {
 			alert(ObjetTraduction_1.GTraductions.getValeur("Demo.Message"));
 		} else {
 			const lThis = this;
-			GApplication.getMessage().afficher({
-				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-				message: ObjetTraduction_1.GTraductions.getValeur(
-					"SaisieQCM.copieqcm.ok",
-				),
-				callback: function () {
-					lThis.callback.appel({
-						genreEvnt: InterfaceEditionListeQCM.GenreEvenement.copieQCM,
-					});
-				},
-			});
+			(0, AccessApp_1.getApp)()
+				.getMessage()
+				.afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+					message: ObjetTraduction_1.GTraductions.getValeur(
+						"SaisieQCM.copieqcm.ok",
+					),
+					callback: function () {
+						lThis.callback.appel({
+							genreEvnt: InterfaceEditionListeQCM.GenreEvenement.copieQCM,
+						});
+					},
+				});
 		}
 	}
 	actionSurListeQCMCumuls(aListeQCM, aMessage) {
@@ -621,7 +604,7 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 						let lAUneExec = false;
 						aInstance.listeQCM.parcourir((aElement) => {
 							if (
-								aElement.getGenre() === aInstance.genreExecQCM &&
+								aInstance.estUneExecutionQCM(aElement) &&
 								aElement.QCM &&
 								aInstance.element.egalParNumeroEtGenre(aElement.QCM.getNumero())
 							) {
@@ -656,12 +639,14 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 						aInstance,
 						aInstance.actionCopieQCM,
 					).lancerRequete({ uploadCloud: true });
-					GApplication.getMessage().afficher({
-						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-						message: ObjetTraduction_1.GTraductions.getValeur(
-							"QCM_Divers.uploadCloudArrierePlan",
-						),
-					});
+					(0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+							message: ObjetTraduction_1.GTraductions.getValeur(
+								"QCM_Divers.uploadCloudArrierePlan",
+							),
+						});
 				},
 			},
 			btnNouveau: {
@@ -693,12 +678,6 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 									GenreMenuContextuel.gmc_importBibliotheque,
 								);
 							}
-							if (aInstance.options.avecImportNathan) {
-								aInstance._addCommandeMenuContextuel(
-									aInstanceMenu,
-									GenreMenuContextuel.gmc_importNathan,
-								);
-							}
 						},
 					});
 				},
@@ -708,8 +687,7 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 							!aInstance.classePrimSelectionne) ||
 						!(
 							aInstance.options.avecImportFichier ||
-							aInstance.options.avecImportBiblio ||
-							aInstance.options.avecImportNathan
+							aInstance.options.avecImportBiblio
 						)
 					);
 				},
@@ -1150,8 +1128,11 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 			id: DonneesListe_QCM_1.DonneesListe_QCM.colonnes.statutPrive,
 			taille: 20,
 			titre: {
-				libelleHtml:
-					'<i class="icon_sondage_bibliotheque" style="font-size:1.4rem;"></i>',
+				libelleHtml: IE.jsx.str("i", {
+					class: "icon_sondage_bibliotheque",
+					role: "presentation",
+					style: "font-size:1.4rem;",
+				}),
 			},
 			hint: ObjetTraduction_1.GTraductions.getValeur(
 				"SaisieQCM.HintBibliotheque",
@@ -1218,11 +1199,8 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 			!!this.listeMatieresPrim && this.listeMatieresPrim.count() > 0
 				? this.listeMatieresPrim
 				: this.listeMatieres;
-		lFenetreSaisieQCM.setDonnees(
-			this.element,
-			lMatieres,
-			this.listeCategoriesQCM,
-		);
+		const lQCM = this.element;
+		lFenetreSaisieQCM.setDonnees(lQCM, lMatieres, this.listeCategoriesQCM);
 	}
 	evenementFenetreEditionQCM(aNumeroBouton, aParams) {
 		if (aNumeroBouton === 1) {
@@ -1255,9 +1233,9 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 			}
 		}
 	}
-	evntSurListeQCM(aParametres, aGenreEvenement, I, J) {
+	evntSurListeQCM(aParametres) {
 		let lChangementDeQCM = true;
-		const lElementSelectionne = this.listeQCM.get(J);
+		const lElementSelectionne = aParametres.article;
 		lChangementDeQCM =
 			!lElementSelectionne ||
 			this.element === null ||
@@ -1515,15 +1493,17 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 						this.envoyerRequeteSaisieQCMDevoir(aParam);
 					} else {
 						const lThis = this;
-						GApplication.getMessage().afficher({
-							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
-							message: ObjetTraduction_1.GTraductions.getValeur(
-								"QCM_Divers.msgQuestionAttribuerNotes",
-							),
-							callback: function (aAccepte) {
-								lThis.evntApresConfirmAttribuerNotes(aParam, aAccepte);
-							},
-						});
+						(0, AccessApp_1.getApp)()
+							.getMessage()
+							.afficher({
+								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+								message: ObjetTraduction_1.GTraductions.getValeur(
+									"QCM_Divers.msgQuestionAttribuerNotes",
+								),
+								callback: function (aAccepte) {
+									lThis.evntApresConfirmAttribuerNotes(aParam, aAccepte);
+								},
+							});
 					}
 				}
 				break;
@@ -1561,14 +1541,17 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 			),
 		});
 	}
-	evntSurFenetrePeriode(aGenreEvenement, aPeriodeDevoir) {
+	evntSurFenetrePeriode(aNumeroBouton, aPeriodeDevoir) {
 		let lPeriode;
-		switch (aGenreEvenement) {
+		switch (aNumeroBouton) {
 			case 0: {
 				break;
 			}
 			case 1: {
-				if (this.options.avecRegrouperPeriodes) {
+				if (
+					this.options.avecRegrouperPeriodes &&
+					aPeriodeDevoir instanceof ObjetListeElements_1.ObjetListeElements
+				) {
 					const lListePeriodesDejaActive = [];
 					for (let i = 0; i < this.selection_PeriodeDevoir.count(); i++) {
 						lPeriode = this.selection_PeriodeDevoir.get(i);
@@ -1601,7 +1584,7 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 							this.selection_PeriodeDevoir.addElement(lElementPeriode);
 						}
 					}
-				} else {
+				} else if (aPeriodeDevoir instanceof ObjetElement_1.ObjetElement) {
 					if (
 						this.selection_PeriodeDevoir.getNumero() !==
 						aPeriodeDevoir.getNumero()
@@ -1624,12 +1607,14 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 								Enumere_Etat_1.EGenreEtat.Modification,
 							);
 						} else {
-							GApplication.getMessage().afficher({
-								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-								message: ObjetTraduction_1.GTraductions.getValeur(
-									"Notes.PeriodeDejaAffectee",
-								),
-							});
+							(0, AccessApp_1.getApp)()
+								.getMessage()
+								.afficher({
+									type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+									message: ObjetTraduction_1.GTraductions.getValeur(
+										"Notes.PeriodeDejaAffectee",
+									),
+								});
 						}
 					}
 				}
@@ -1667,9 +1652,7 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 				case DonneesListe_QCM_1.DonneesListe_QCM.GenreCommande
 					.AjoutQuestionsCollab:
 				case DonneesListe_QCM_1.DonneesListe_QCM.GenreCommande
-					.AjoutQuestionsEtab:
-				case DonneesListe_QCM_1.DonneesListe_QCM.GenreCommande
-					.AjoutQuestionsNathan: {
+					.AjoutQuestionsEtab: {
 					const lInstanceFenetre = this.getInstance(
 						this.identFenetreSelectionQCMQuestion,
 					);
@@ -1679,9 +1662,8 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 					lInstanceFenetre.setDonnees(aParam.donnees);
 					break;
 				}
-				case DonneesListe_QCM_1.DonneesListe_QCM.GenreCommande.ImportQCMBiblio:
 				case DonneesListe_QCM_1.DonneesListe_QCM.GenreCommande
-					.ImportQCMNathan: {
+					.ImportQCMBiblio: {
 					new this.contructeurRequeteListeQCMCumuls(
 						this,
 						this.actionSurListeQCMCumuls,
@@ -1737,10 +1719,12 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 						const lMsg = ObjetTraduction_1.GTraductions.getValeur(
 							"SaisieQCM.TafNonCloture",
 						);
-						GApplication.getMessage().afficher({
-							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-							message: lMsg,
-						});
+						(0, AccessApp_1.getApp)()
+							.getMessage()
+							.afficher({
+								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+								message: lMsg,
+							});
 					} else {
 						this.associerDevoir(lExecQCM);
 					}
@@ -1798,31 +1782,11 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 					},
 				);
 				break;
-			case GenreMenuContextuel.gmc_importNathan:
-				aMenu.add(
-					ObjetTraduction_1.GTraductions.getValeur(
-						"QCM_Divers.MnuImportQCMBiblioNathan",
-					),
-					this.options.avecImportNathan,
-					function () {
-						(0, ControleSaisieEvenement_1.ControleSaisieEvenement)(() => {
-							const lDonneesRetourNav = {
-								instance: this.identListeQCM,
-								action:
-									DonneesListe_QCM_1.DonneesListe_QCM.GenreCommande
-										.ImportQCMNathan,
-								donnees: { qcmNathan: true },
-							};
-							this._retourSurNavigation(lDonneesRetourNav);
-						});
-					},
-				);
-				break;
 			case GenreMenuContextuel.gmc_assocDevoir:
 				if (this.droits.avecGestionNotation) {
 					aMenu.add(
 						ObjetTraduction_1.GTraductions.getValeur("SaisieQCM.CreerDevoir"),
-						!GApplication.getModeExclusif() &&
+						!(0, AccessApp_1.getApp)().getModeExclusif() &&
 							this.listeServices.count() > 0 &&
 							this.droits.avecSaisieDevoirs,
 						function () {
@@ -1843,7 +1807,7 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 			case GenreMenuContextuel.gmc_assocEvaluation:
 				aMenu.add(
 					ObjetTraduction_1.GTraductions.getValeur("SaisieQCM.CreerEvaluation"),
-					!GApplication.getModeExclusif() &&
+					!(0, AccessApp_1.getApp)().getModeExclusif() &&
 						this.avecServicesEvaluation &&
 						this.droits.avecSaisieEvaluations,
 					function () {
@@ -1863,7 +1827,7 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 			case GenreMenuContextuel.gmc_assocCDT:
 				aMenu.add(
 					ObjetTraduction_1.GTraductions.getValeur("SaisieQCM.CDTPourLeQCM"),
-					!GApplication.getModeExclusif() &&
+					!(0, AccessApp_1.getApp)().getModeExclusif() &&
 						this.droits.avecSaisieCahierDeTexte,
 					function () {
 						(0, ControleSaisieEvenement_1.ControleSaisieEvenement)(() => {
@@ -1884,7 +1848,7 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 					ObjetTraduction_1.GTraductions.getValeur(
 						"QCM_Divers.Menu.AssocierActivite",
 					),
-					!GApplication.getModeExclusif() &&
+					!(0, AccessApp_1.getApp)().getModeExclusif() &&
 						this.droits.avecSaisieCahierDeTexte,
 					function () {
 						(0, ControleSaisieEvenement_1.ControleSaisieEvenement)(() => {
@@ -1905,7 +1869,7 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 					ObjetTraduction_1.GTraductions.getValeur(
 						"QCM_Divers.Menu.AssocierTAF",
 					),
-					!GApplication.getModeExclusif() &&
+					!(0, AccessApp_1.getApp)().getModeExclusif() &&
 						this.droits.avecSaisieCahierDeTexte,
 					function () {
 						(0, ControleSaisieEvenement_1.ControleSaisieEvenement)(() => {
@@ -1932,7 +1896,8 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 						);
 						aInstanceItemMenu.add(
 							lLibelleCommande,
-							!GApplication.getModeExclusif() && !this.element.estVerrouille,
+							!(0, AccessApp_1.getApp)().getModeExclusif() &&
+								!this.element.estVerrouille,
 							() => {
 								const lInstanceFenetre = this.getInstance(
 									this.identFenetreSelectionQCMQuestion,
@@ -1953,7 +1918,8 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 							);
 							aInstanceItemMenu.add(
 								lLibelleCommande,
-								!GApplication.getModeExclusif() && !this.element.estVerrouille,
+								!(0, AccessApp_1.getApp)().getModeExclusif() &&
+									!this.element.estVerrouille,
 								() => {
 									const lInstanceFenetre = this.getInstance(
 										this.identFenetreSelectionQCMQuestion,
@@ -1975,7 +1941,8 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 							);
 							aInstanceItemMenu.add(
 								lLibelleCommande,
-								!GApplication.getModeExclusif() && !this.element.estVerrouille,
+								!(0, AccessApp_1.getApp)().getModeExclusif() &&
+									!this.element.estVerrouille,
 								() => {
 									const lInstanceFenetre = this.getInstance(
 										this.identFenetreSelectionQCMQuestion,
@@ -1991,35 +1958,13 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 								},
 							);
 						}
-						if (this.options.avecImportNathan) {
-							lLibelleCommande = ObjetTraduction_1.GTraductions.getValeur(
-								"QCM_Divers.MnuImportQCMBiblioNathan",
-							);
-							aInstanceItemMenu.add(
-								lLibelleCommande,
-								!GApplication.getModeExclusif() && !this.element.estVerrouille,
-								() => {
-									const lInstanceFenetre = this.getInstance(
-										this.identFenetreSelectionQCMQuestion,
-									);
-									lInstanceFenetre.setConstructeurRequeteListeQCMCumuls(
-										this.contructeurRequeteListeQCMCumuls,
-									);
-									lInstanceFenetre.setDonnees({
-										typeBibilioQCM:
-											ObjetFenetre_SelectionQCMQuestion_1.TypeBibliothequeQCM
-												.Editeur,
-									});
-								},
-							);
-						}
 					},
 				);
 				break;
 			case GenreMenuContextuel.gmc_modifier:
 				aMenu.add(
 					ObjetTraduction_1.GTraductions.getValeur("liste.modifier"),
-					!GApplication.getModeExclusif() &&
+					!(0, AccessApp_1.getApp)().getModeExclusif() &&
 						this.element.getGenre() === this.genreQCM,
 					function () {
 						this.ouvrirFenetreEditionQCM();
@@ -2029,7 +1974,7 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 			case GenreMenuContextuel.gmc_dupliquer:
 				aMenu.add(
 					ObjetTraduction_1.GTraductions.getValeur("QCM_Divers.DupliquerQCM"),
-					!GApplication.getModeExclusif() &&
+					!(0, AccessApp_1.getApp)().getModeExclusif() &&
 						this.element.getGenre() === this.genreQCM,
 					function () {
 						const lListe = new ObjetListeElements_1.ObjetListeElements();
@@ -2048,7 +1993,8 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 			case GenreMenuContextuel.gmc_supprimerCollab:
 				aMenu.add(
 					ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
-					!GApplication.getModeExclusif() && !this.element.avecVerrouCollab,
+					!(0, AccessApp_1.getApp)().getModeExclusif() &&
+						!this.element.avecVerrouCollab,
 					() => {
 						this.getInstance(this.identListeQCM).surSuppression();
 					},
@@ -2057,7 +2003,7 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 			case GenreMenuContextuel.gmc_supprimer:
 				aMenu.add(
 					ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
-					!GApplication.getModeExclusif(),
+					!(0, AccessApp_1.getApp)().getModeExclusif(),
 					() => {
 						this.getInstance(this.identListeQCM).surSuppression();
 					},
@@ -2066,7 +2012,7 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 			case GenreMenuContextuel.gmc_supprimerExec:
 				aMenu.add(
 					ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
-					!GApplication.getModeExclusif(),
+					!(0, AccessApp_1.getApp)().getModeExclusif(),
 					function () {
 						(0, ControleSaisieEvenement_1.ControleSaisieEvenement)(() => {
 							const lDonneesRetourNav = {
@@ -2083,25 +2029,30 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 								this.element.estSupprimable === false &&
 								!!this.element.msgSuppression
 							) {
-								GApplication.getMessage().afficher({
-									type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-									message: this.element.msgSuppression,
-								});
+								(0, AccessApp_1.getApp)()
+									.getMessage()
+									.afficher({
+										type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+										message: this.element.msgSuppression,
+									});
 							} else {
-								GApplication.getMessage().afficher({
-									type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
-									message: lDonneesRetourNav.element.estUneExecution
-										? ObjetTraduction_1.GTraductions.getValeur(
-												"SaisieQCM.ConfirmDeleteExeQCM",
-											)
-										: ObjetTraduction_1.GTraductions.getValeur(
-												"SaisieQCM.ConfirmDeleteQCM",
-											),
-									callback: this.suppressionExecutionQCM.bind(
-										this,
-										lDonneesRetourNav,
-									),
-								});
+								(0, AccessApp_1.getApp)()
+									.getMessage()
+									.afficher({
+										type: Enumere_BoiteMessage_1.EGenreBoiteMessage
+											.Confirmation,
+										message: lDonneesRetourNav.element.estUneExecution
+											? ObjetTraduction_1.GTraductions.getValeur(
+													"SaisieQCM.ConfirmDeleteExeQCM",
+												)
+											: ObjetTraduction_1.GTraductions.getValeur(
+													"SaisieQCM.ConfirmDeleteQCM",
+												),
+										callback: this.suppressionExecutionQCM.bind(
+											this,
+											lDonneesRetourNav,
+										),
+									});
 							}
 						});
 					},
@@ -2112,29 +2063,36 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 		}
 	}
 	_createIEBoutonImage(aParam) {
-		const H = [
-			'<ie-bouton class="MargeDroit AlignementMilieuVertical bouton-carre" ie-model="',
-			aParam.ieModel,
-			'" ie-icon="',
-			aParam.ieIcon,
-			'" ie-iconsize="2.4rem"',
-			aParam.ieSelecFile ? " ie-selecfile" : "",
-			">",
-			aParam.libelle,
-			"</ie-bouton>",
-		];
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"ie-bouton",
+					{
+						class: "MargeDroit AlignementMilieuVertical bouton-carre",
+						"ie-model": aParam.ieModel,
+						"ie-icon": aParam.ieIcon,
+						"ie-iconsize": "2.4rem",
+						"ie-selecfile": !!aParam.ieSelecFile,
+					},
+					aParam.libelle,
+				),
+			),
+		);
 		return H.join("");
 	}
 	ouvrirFenetreDevoir(aEltQcm, aEltServiceDefaut) {
 		let lListeServices;
 		const lEstCtxExecQCMTAF =
-			aEltQcm.Genre === this.genreExecQCM && aEltQcm.estUnTAF === true;
+			this.estUneExecutionQCM(aEltQcm) && aEltQcm.estUnTAF === true;
 		if (lEstCtxExecQCMTAF) {
 			lListeServices = this.listeServices.getListeElements((aElement) => {
 				const lElt = aEltQcm.listeServices.getElementParNumero(
 					aElement.getNumero(),
 				);
-				return lElt !== null && lElt !== undefined;
+				return !!lElt;
 			});
 		} else {
 			lListeServices = this.listeServices;
@@ -2167,14 +2125,20 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 				lBaremeParDefautNotation,
 				!lEstCtxExecQCMTAF,
 			);
-			this.getInstance(this.idFenetreDevoir).evntSurSelectionQCM(1, aEltQcm);
+			const lElementExecOuQCM = this.element;
+			this.getInstance(this.idFenetreDevoir).evntSurSelectionQCM(
+				1,
+				lElementExecOuQCM,
+			);
 		} else {
-			GApplication.getMessage().afficher({
-				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-				message: ObjetTraduction_1.GTraductions.getValeur(
-					"QCM_Divers.msgAucunServicePourDevoir",
-				),
-			});
+			(0, AccessApp_1.getApp)()
+				.getMessage()
+				.afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+					message: ObjetTraduction_1.GTraductions.getValeur(
+						"QCM_Divers.msgAucunServicePourDevoir",
+					),
+				});
 		}
 	}
 	evntApresConfirmAttribuerNotes(aParam, aGenreAction) {

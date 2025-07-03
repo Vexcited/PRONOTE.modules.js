@@ -20,15 +20,10 @@ const ObjetTabOnglets_1 = require("ObjetTabOnglets");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const TypeGenreExerciceDeQuestionnaire_1 = require("TypeGenreExerciceDeQuestionnaire");
 const TypeModeCorrectionQCM_1 = require("TypeModeCorrectionQCM");
-const CollectionRequetes_1 = require("CollectionRequetes");
-const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
 const UtilitaireQCM_1 = require("UtilitaireQCM");
 const TypeNumerotation_1 = require("TypeNumerotation");
 const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
-CollectionRequetes_1.Requetes.inscrire(
-	"SaisieQCMQuestionNote",
-	ObjetRequeteJSON_1.ObjetRequeteSaisie,
-);
+const AccessApp_1 = require("AccessApp");
 var GenreOngletDetailSelection;
 (function (GenreOngletDetailSelection) {
 	GenreOngletDetailSelection[
@@ -649,7 +644,6 @@ class InterfaceEditionDetailSelectionQCM extends ObjetInterface_1.ObjetInterface
 							: this.qcm.listeQuestions.get(0).note,
 					enonce: "",
 					image: "",
-					editeur: new ObjetElement_1.ObjetElement(),
 					casesensitive: true,
 					questionNonValidee: true,
 					nouvellePosition: this.qcm.listeQuestions.count(),
@@ -682,24 +676,28 @@ class InterfaceEditionDetailSelectionQCM extends ObjetInterface_1.ObjetInterface
 						listePaliersDesReferentielsUniques:
 							this.element.listePaliersDesReferentielsUniques,
 					});
-				} else if (!GApplication.getMessage().EnAffichage) {
-					GApplication.getMessage().afficher({
-						message: ObjetTraduction_1.GTraductions.getValeur(
-							"SaisieQCM.BaremeQCMMax",
-							[GParametres.maxNombrePointsQCM],
-						),
-					});
+				} else if (!(0, AccessApp_1.getApp)().getMessage().EnAffichage) {
+					(0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({
+							message: ObjetTraduction_1.GTraductions.getValeur(
+								"SaisieQCM.BaremeQCMMax",
+								[GParametres.maxNombrePointsQCM],
+							),
+						});
 				}
 				break;
 			}
 			case ObjetSaisieQCM_1.ObjetSaisieQCM.TypeCallback.SupprimerQuestion:
-				GApplication.getMessage().afficher({
-					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
-					message: ObjetTraduction_1.GTraductions.getValeur(
-						"QCM_Divers.ConfirmDeleteQuestion",
-					),
-					callback: this.surSuppressionQuestion.bind(this),
-				});
+				(0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+						message: ObjetTraduction_1.GTraductions.getValeur(
+							"QCM_Divers.ConfirmDeleteQuestion",
+						),
+						callback: this.surSuppressionQuestion.bind(this),
+					});
 				break;
 			case ObjetSaisieQCM_1.ObjetSaisieQCM.TypeCallback.DupliquerQuestion: {
 				const lNbPointFutur =
@@ -708,13 +706,15 @@ class InterfaceEditionDetailSelectionQCM extends ObjetInterface_1.ObjetInterface
 				if (lNbPointFutur < GParametres.maxNombrePointsQCM) {
 					this.surDupliquerQuestion();
 				} else {
-					if (!GApplication.getMessage().EnAffichage) {
-						GApplication.getMessage().afficher({
-							message: ObjetTraduction_1.GTraductions.getValeur(
-								"SaisieQCM.BaremeQCMMax",
-								[GParametres.maxNombrePointsQCM],
-							),
-						});
+					if (!(0, AccessApp_1.getApp)().getMessage().EnAffichage) {
+						(0, AccessApp_1.getApp)()
+							.getMessage()
+							.afficher({
+								message: ObjetTraduction_1.GTraductions.getValeur(
+									"SaisieQCM.BaremeQCMMax",
+									[GParametres.maxNombrePointsQCM],
+								),
+							});
 					}
 				}
 				break;
@@ -953,6 +953,19 @@ class InterfaceEditionDetailSelectionQCM extends ObjetInterface_1.ObjetInterface
 					aReponse.associationB.hashContenu = lHashContenu;
 					aReponse.bonneReponse.hashContenu = lHashContenu;
 				});
+			} else if (
+				lEltQuestion.getGenre() ===
+				TypeGenreExerciceDeQuestionnaire_1.TypeGenreExerciceDeQuestionnaire
+					.GEQ_SpellAnswer
+			) {
+				let lBonneReponse = "";
+				if (
+					lEltQuestion.listeReponses &&
+					lEltQuestion.listeReponses.count() > 0
+				) {
+					lBonneReponse = lEltQuestion.listeReponses.get(0).getLibelle() || "";
+				}
+				lEltQuestion.longueurReponseEpellation = lBonneReponse.length;
 			}
 			lElementPourVisuQuestion.QCM.listeQuestions.addElement(
 				lEltQuestion,
@@ -1053,13 +1066,15 @@ class InterfaceEditionDetailSelectionQCM extends ObjetInterface_1.ObjetInterface
 				lValeur * lNbQuestionsEnCopie + this.calculNbPointAutresQuestions() >
 				GParametres.maxNombrePointsQCM
 			) {
-				if (!GApplication.getMessage().EnAffichage) {
-					GApplication.getMessage().afficher({
-						message: ObjetTraduction_1.GTraductions.getValeur(
-							"SaisieQCM.BaremeQCMMax",
-							[GParametres.maxNombrePointsQCM],
-						),
-					});
+				if (!(0, AccessApp_1.getApp)().getMessage().EnAffichage) {
+					(0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({
+							message: ObjetTraduction_1.GTraductions.getValeur(
+								"SaisieQCM.BaremeQCMMax",
+								[GParametres.maxNombrePointsQCM],
+							),
+						});
 				}
 			} else {
 				if (
@@ -1102,13 +1117,15 @@ class InterfaceEditionDetailSelectionQCM extends ObjetInterface_1.ObjetInterface
 						aEltBareme.getPosition() !==
 						this.qcm.listeQuestions.get(lPremierPasEnCopie).note
 					) {
-						if (!GApplication.getMessage().EnAffichage) {
-							GApplication.getMessage().afficher({
-								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-								message: ObjetTraduction_1.GTraductions.getValeur(
-									"FenetreParamExecutionQCM.msgBareme",
-								),
-							});
+						if (!(0, AccessApp_1.getApp)().getMessage().EnAffichage) {
+							(0, AccessApp_1.getApp)()
+								.getMessage()
+								.afficher({
+									type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+									message: ObjetTraduction_1.GTraductions.getValeur(
+										"FenetreParamExecutionQCM.msgBareme",
+									),
+								});
 						}
 					}
 				}

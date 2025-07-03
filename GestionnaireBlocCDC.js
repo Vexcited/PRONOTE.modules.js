@@ -1,25 +1,33 @@
-const { GStyle } = require("ObjetStyle.js");
-const { TypeThemeBouton } = require("Type_ThemeBouton.js");
-const { GDate } = require("ObjetDate.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { GestionnaireBlocPN } = require("GestionnaireBlocPN.js");
-const { ObjetBlocPN } = require("GestionnaireBlocPN.js");
-const { EGenreBloc } = require("Enumere_Bloc.js");
-const { EModeAffichageTimeline } = require("Enumere_ModeAffichageTimeline.js");
-const { EGenreOnglet } = require("Enumere_Onglet.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const {
-	TypeOrigineCreationCategorieCahierDeTexte,
-	TypeOrigineCreationCategorieCahierDeTexteUtil,
-} = require("TypeOrigineCreationCategorieCahierDeTexte.js");
-const { UtilitaireUrl } = require("UtilitaireUrl.js");
-const EGenreBtnActionBlocCDC = { executionQCM: 1, navigationTAF: 2 };
-class GestionnaireBlocCDC extends GestionnaireBlocPN {
+exports.GestionnaireBlocCDC = exports.EGenreBtnActionBlocCDC = void 0;
+const ObjetStyle_1 = require("ObjetStyle");
+const Type_ThemeBouton_1 = require("Type_ThemeBouton");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const GestionnaireBlocPN_1 = require("GestionnaireBlocPN");
+const GestionnaireBlocPN_2 = require("GestionnaireBlocPN");
+const Enumere_Bloc_1 = require("Enumere_Bloc");
+const Enumere_ModeAffichageTimeline_1 = require("Enumere_ModeAffichageTimeline");
+const Enumere_Onglet_1 = require("Enumere_Onglet");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const TypeOrigineCreationCategorieCahierDeTexte_1 = require("TypeOrigineCreationCategorieCahierDeTexte");
+const UtilitaireUrl_1 = require("UtilitaireUrl");
+var EGenreBtnActionBlocCDC;
+(function (EGenreBtnActionBlocCDC) {
+	EGenreBtnActionBlocCDC[(EGenreBtnActionBlocCDC["executionQCM"] = 1)] =
+		"executionQCM";
+	EGenreBtnActionBlocCDC[(EGenreBtnActionBlocCDC["navigationTAF"] = 2)] =
+		"navigationTAF";
+})(
+	EGenreBtnActionBlocCDC ||
+		(exports.EGenreBtnActionBlocCDC = EGenreBtnActionBlocCDC = {}),
+);
+class GestionnaireBlocCDC extends GestionnaireBlocPN_1.GestionnaireBlocPN {
 	constructor(...aParams) {
 		super(...aParams);
-		this.setGenreBloc(EGenreBloc.ContenuDeCours);
+		this.setGenreBloc(Enumere_Bloc_1.EGenreBloc.ContenuDeCours);
 		const lOptions = {
-			modeAffichage: EModeAffichageTimeline.classique,
+			modeAffichage:
+				Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.classique,
 			initPlie: false,
 			callBackTitre: undefined,
 			avecNomProfDansTitre: true,
@@ -39,21 +47,23 @@ class GestionnaireBlocCDC extends GestionnaireBlocPN {
 		return lParamBloc;
 	}
 }
-class ObjetBlocCDC extends ObjetBlocPN {
-	constructor(...aParams) {
-		super(...aParams);
-		this.peuFaireTAF = [EGenreEspace.Eleve, EGenreEspace.Mobile_Eleve].includes(
-			GEtatUtilisateur.GenreEspace,
-		);
+exports.GestionnaireBlocCDC = GestionnaireBlocCDC;
+class ObjetBlocCDC extends GestionnaireBlocPN_2.ObjetBlocPN {
+	constructor() {
+		super(...arguments);
+		this.peuFaireTAF = [
+			Enumere_Espace_1.EGenreEspace.Eleve,
+			Enumere_Espace_1.EGenreEspace.Mobile_Eleve,
+		].includes(GEtatUtilisateur.GenreEspace);
 		this.pourEleve = [
-			EGenreEspace.Eleve,
-			EGenreEspace.Mobile_Eleve,
-			EGenreEspace.Parent,
-			EGenreEspace.Mobile_Parent,
-			EGenreEspace.Accompagnant,
-			EGenreEspace.Mobile_Accompagnant,
-			EGenreEspace.Tuteur,
-			EGenreEspace.Mobile_Tuteur,
+			Enumere_Espace_1.EGenreEspace.Eleve,
+			Enumere_Espace_1.EGenreEspace.Mobile_Eleve,
+			Enumere_Espace_1.EGenreEspace.Parent,
+			Enumere_Espace_1.EGenreEspace.Mobile_Parent,
+			Enumere_Espace_1.EGenreEspace.Accompagnant,
+			Enumere_Espace_1.EGenreEspace.Mobile_Accompagnant,
+			Enumere_Espace_1.EGenreEspace.Tuteur,
+			Enumere_Espace_1.EGenreEspace.Mobile_Tuteur,
 		].includes(GEtatUtilisateur.GenreEspace);
 	}
 	getControleur(aInstance) {
@@ -100,35 +110,40 @@ class ObjetBlocCDC extends ObjetBlocPN {
 					'px;"';
 			}
 			H.push('<div class="PourFenetreBloc_Contenu"', lStyle, ">");
-			if (lDonnee && lDonnee.listeContenus) {
+			if (lDonnee && "listeContenus" in lDonnee && lDonnee.listeContenus) {
 				for (let i = 0; i < lDonnee.listeContenus.count(); i++) {
 					const lContenu = lDonnee.listeContenus.get(i);
-					H.push(_composeContenu.call(this, lContenu, i));
+					H.push(this._composeContenu(lContenu, i));
 				}
 			}
 			const lOngletPublie = GEtatUtilisateur.listeOnglets.getElementParGenre(
-				EGenreOnglet.CDT_TAF,
+				Enumere_Onglet_1.EGenreOnglet.CDT_TAF,
 			);
 			if (
+				lDonnee &&
+				"dateTAF" in lDonnee &&
 				lDonnee.dateTAF &&
-				(this._options.modeAffichage === EModeAffichageTimeline.classique ||
-					this._options.modeAffichage === EModeAffichageTimeline.compact) &&
+				(this._options.modeAffichage ===
+					Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.classique ||
+					this._options.modeAffichage ===
+						Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.compact) &&
 				!this._options.cacherBoutonTAF &&
 				!!lOngletPublie &&
 				!!lOngletPublie.Actif
 			) {
 				H.push(
 					'<div class="EspaceGauche EspaceBas"><ie-bouton ie-model="navigationTAF" class="',
-					TypeThemeBouton.secondaire,
+					Type_ThemeBouton_1.TypeThemeBouton.secondaire,
 					'" style="width:',
 					150,
 					'px; white-space: normal; height: auto; padding: 3px 0; margin-top: 5px;">',
-					GTraductions.getValeur("CahierDeTexte.voirTAF"),
+					ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.voirTAF"),
 					"</ie-bouton></div>",
 				);
 			}
 			if (
 				lDonnee &&
+				"listeElementsProgrammeCDT" in lDonnee &&
 				lDonnee.listeElementsProgrammeCDT &&
 				lDonnee.listeElementsProgrammeCDT.count()
 			) {
@@ -157,7 +172,8 @@ class ObjetBlocCDC extends ObjetBlocPN {
 	}
 	eventPropagationTitre(event) {
 		if (
-			this._options.modeAffichage === EModeAffichageTimeline.grille &&
+			this._options.modeAffichage ===
+				Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.grille &&
 			event.target &&
 			!event.target.className.includes("celluleMarqueur")
 		) {
@@ -179,18 +195,22 @@ class ObjetBlocCDC extends ObjetBlocPN {
 	}
 	getPremierCategorieDSouEva() {
 		const lResult = [];
+		const lGenreDejaAjoutes = [];
 		const lDonnee = this.getDonnee();
-		if (lDonnee && lDonnee.listeContenus) {
+		if (lDonnee && "listeContenus" in lDonnee && lDonnee.listeContenus) {
 			for (let i = 0; i < lDonnee.listeContenus.count(); i++) {
 				const lContenu = lDonnee.listeContenus.get(i);
 				if (
 					[
-						TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Devoir,
-						TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Evaluation,
+						TypeOrigineCreationCategorieCahierDeTexte_1
+							.TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Devoir,
+						TypeOrigineCreationCategorieCahierDeTexte_1
+							.TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Evaluation,
 					].includes(lContenu.categorie.getGenre()) &&
-					!lResult.includes(lContenu.categorie.getGenre())
+					!lGenreDejaAjoutes.includes(lContenu.categorie.getGenre())
 				) {
-					lResult.push(lContenu.categorie.getGenre());
+					lResult.push(lContenu.categorie);
+					lGenreDejaAjoutes.push(lContenu.categorie.getGenre());
 				}
 			}
 		}
@@ -198,7 +218,10 @@ class ObjetBlocCDC extends ObjetBlocPN {
 	}
 	getTitre() {
 		const lHtml = [];
-		if (this._options.modeAffichage !== EModeAffichageTimeline.compact) {
+		if (
+			this._options.modeAffichage !==
+			Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.compact
+		) {
 			lHtml.push(
 				"<div>",
 				this.donnee
@@ -211,6 +234,7 @@ class ObjetBlocCDC extends ObjetBlocPN {
 			const lDonneeCDC = this.getDonnee();
 			if (
 				!!lDonneeCDC &&
+				"listeContenus" in lDonneeCDC &&
 				!!lDonneeCDC.listeContenus &&
 				lDonneeCDC.listeContenus.count() > 0
 			) {
@@ -231,35 +255,37 @@ class ObjetBlocCDC extends ObjetBlocPN {
 	getInfoSsTitre() {
 		const T = [];
 		const lDonnee = this.getDonnee();
-		const lGenres = this.getPremierCategorieDSouEva();
+		const lCategories = this.getPremierCategorieDSouEva();
 		if (
-			this._options.modeAffichage === EModeAffichageTimeline.grille &&
-			lGenres.length > 0
+			this._options.modeAffichage ===
+				Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.grille &&
+			lCategories.length > 0
 		) {
 			T.push('<div class="NoWrap" style="float:right;">');
-			for (const item in lGenres) {
+			for (const lCategorie of lCategories) {
 				T.push(
-					'<div class="InlineBlock PetitEspaceGauche AlignementMilieuVertical">',
-					_composeSymboleCategorie(lGenres[item]),
-					"</div>",
+					`<i class="${TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.getIcone(lCategorie.getGenre())}" role="presentation">${lCategorie.libelleIcone || ""}</i>`,
 				);
 			}
 			T.push("</div>");
 		}
 		if (this._options.avecNomProfDansTitre) {
-			if (lDonnee.listeProfesseurs) {
+			if ("listeProfesseurs" in lDonnee && lDonnee.listeProfesseurs) {
 				T.push(lDonnee.listeProfesseurs.getTableauLibelles().join(", "));
 			}
 		}
 		if (
 			this._options.avecTitrePremierContenuDansTitre &&
+			"listeContenus" in lDonnee &&
 			lDonnee.listeContenus &&
 			lDonnee.listeContenus.count() > 0
 		) {
 			T.push(lDonnee.listeContenus.getLibelle(0));
 		}
 		return {
-			avecInfo: this._options.modeAffichage !== EModeAffichageTimeline.compact,
+			avecInfo:
+				this._options.modeAffichage !==
+				Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.compact,
 			strInfo: T.join(""),
 		};
 	}
@@ -268,24 +294,33 @@ class ObjetBlocCDC extends ObjetBlocPN {
 		const lDonnee = this.getDonnee();
 		if (lDonnee && lDonnee.Date) {
 			const lDonneeHoraire = [];
-			if (this._options.modeAffichage !== EModeAffichageTimeline.compact) {
+			if (
+				this._options.modeAffichage !==
+				Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.compact
+			) {
 				lDonneeHoraire.push(
 					"<div>",
-					GDate.formatDate(
+					ObjetDate_1.GDate.formatDate(
 						lDonnee.Date,
-						GTraductions.getValeur("De").ucfirst() + " %hh%sh%mm",
+						ObjetTraduction_1.GTraductions.getValeur("De").ucfirst() +
+							" %hh%sh%mm",
 					),
-					lDonnee.DateFin
-						? GDate.formatDate(
+					"DateFin" in lDonnee && lDonnee.DateFin
+						? ObjetDate_1.GDate.formatDate(
 								lDonnee.DateFin,
-								" " + GTraductions.getValeur("A") + " %hh%sh%mm",
+								" " +
+									ObjetTraduction_1.GTraductions.getValeur("A") +
+									" %hh%sh%mm",
 							)
 						: "",
 					"</div>",
 				);
 			}
 			const lStyleSpan = [];
-			if (this._options.modeAffichage === EModeAffichageTimeline.compact) {
+			if (
+				this._options.modeAffichage ===
+				Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.compact
+			) {
 				lStyleSpan.push("font-weight: 500;");
 				lStyleSpan.push("font-size: 1.3em;");
 			}
@@ -295,7 +330,7 @@ class ObjetBlocCDC extends ObjetBlocPN {
 				lStyleSpan.join(""),
 				'">',
 				this._options.formatDate
-					? GDate.formatDate(lDonnee.Date, this._options.formatDate)
+					? ObjetDate_1.GDate.formatDate(lDonnee.Date, this._options.formatDate)
 					: "",
 				"</span>",
 				lDonneeHoraire.join(""),
@@ -303,20 +338,24 @@ class ObjetBlocCDC extends ObjetBlocPN {
 			);
 		}
 		return {
-			avecInfo: this._options.modeAffichage !== EModeAffichageTimeline.grille,
+			avecInfo:
+				this._options.modeAffichage !==
+				Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.grille,
 			strInfo: lHtml.join(""),
 			alignement: "AlignementDroit AlignementHaut",
 		};
 	}
 	avecOmbre() {
 		return (
-			this._options.modeAffichage === EModeAffichageTimeline.classique &&
+			this._options.modeAffichage ===
+				Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.classique &&
 			this._options.avecOmbre !== false
 		);
 	}
 	avecBordure() {
 		return (
-			this._options.modeAffichage === EModeAffichageTimeline.grille &&
+			this._options.modeAffichage ===
+				Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.grille &&
 			this._options.avecBordure
 		);
 	}
@@ -332,7 +371,7 @@ class ObjetBlocCDC extends ObjetBlocPN {
 	getContenu(aIndiceContenu) {
 		let lContenu;
 		const lDonnee = this.getDonnee();
-		if (lDonnee && lDonnee.listeContenus) {
+		if (lDonnee && "listeContenus" in lDonnee && lDonnee.listeContenus) {
 			lContenu = lDonnee.listeContenus.get(aIndiceContenu);
 		}
 		return lContenu;
@@ -353,26 +392,81 @@ class ObjetBlocCDC extends ObjetBlocPN {
 		}
 		return lQCM;
 	}
-	getTabBtnActions() {}
+	getTabBtnActions() {
+		return;
+	}
 	avecMenuContextuel() {
 		return false;
 	}
-}
-function _composeSymboleCategorie(aGenre) {
-	const T = [];
-	T.push(
-		'<div class="',
-		TypeOrigineCreationCategorieCahierDeTexteUtil.getImage(aGenre),
-		' AlignementHaut" style="width:17px"></div>',
-	);
-	return T.join("");
+	_composeContenu(aContenu, aIndice) {
+		const lHtml = [];
+		if (aIndice > 0) {
+			lHtml.push(
+				'<div class="EspaceHaut">',
+				_composeSeparateur(GCouleur.themeNeutre.moyen1),
+				"</div>",
+			);
+		}
+		const lTestImage =
+			aContenu.categorie &&
+			aContenu.categorie.getGenre() &&
+			TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.estTypeAvecIcone(
+				aContenu.categorie.getGenre(),
+			);
+		lHtml.push(
+			'<div class="EspaceGauche EspaceHaut PetitEspaceBas AvecSelectionTexte">',
+		);
+		if (lTestImage || aContenu.categorie.Libelle || aContenu.getLibelle()) {
+			let lAfficheCommeBlocTitre = false;
+			let lTitreContenu = "";
+			if (
+				this._options.modeAffichage !==
+					Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.compact ||
+				aIndice > 0
+			) {
+				lTitreContenu = aContenu.getLibelle();
+				if (
+					this._options.modeAffichage ===
+					Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.compact
+				) {
+					lAfficheCommeBlocTitre = true;
+				}
+			}
+			lHtml.push(
+				'<div class="flex-contain">',
+				'<div class="',
+				lAfficheCommeBlocTitre ? " Bloc_Titre" : "",
+				' fluid-bloc">',
+				lTitreContenu,
+				"</div>",
+				aContenu.categorie.Libelle
+					? '<div class="fix-bloc p-left-s">' +
+							aContenu.categorie.Libelle +
+							"</div>"
+					: "",
+				!lTestImage
+					? ""
+					: `<i class="${TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.getIcone(aContenu.categorie.getGenre())}" role="presentation">${aContenu.categorie.libelleIcone || ""}</i>`,
+				"</div>",
+			);
+		}
+		lHtml.push("<div>", aContenu.descriptif, "</div>");
+		lHtml.push("</div>");
+		if (
+			(aContenu.ListePieceJointe && aContenu.ListePieceJointe.count() > 0) ||
+			(aContenu.listeExecutionQCM && aContenu.listeExecutionQCM.count() > 0)
+		) {
+			lHtml.push(_composeEspaceDocuments.call(this, aContenu, aIndice));
+		}
+		return lHtml.join("");
+	}
 }
 function _composeElementsProgramme(aDonnee) {
 	const lHtml = [];
 	lHtml.push(
 		'<div class="Espace">',
 		'<div class="Gras">',
-		GTraductions.getValeur("CahierDeTexte.ElementsProgramme"),
+		ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.ElementsProgramme"),
 		" :",
 		"</div>",
 		"<ul>",
@@ -391,72 +485,12 @@ function _composeSeparateur(aCouleur, aLargeurEnPourcentage) {
 		'<hr style="' + lWidth + "border: solid 1px; color: " + aCouleur + '" />'
 	);
 }
-function _composeContenu(aContenu, aIndice) {
-	const lHtml = [];
-	if (aIndice > 0) {
-		lHtml.push(
-			'<div class="EspaceHaut">',
-			_composeSeparateur(GCouleur.themeNeutre.moyen1),
-			"</div>",
-		);
-	}
-	const lTestImage =
-		aContenu.categorie &&
-		aContenu.categorie.getGenre() &&
-		TypeOrigineCreationCategorieCahierDeTexteUtil.estTypeAvecImage(
-			aContenu.categorie.getGenre(),
-		);
-	lHtml.push(
-		'<div class="EspaceGauche EspaceHaut PetitEspaceBas AvecSelectionTexte">',
-	);
-	if (lTestImage || aContenu.categorie.Libelle || aContenu.getLibelle()) {
-		let lAfficheCommeBlocTitre = false;
-		let lTitreContenu = "";
-		if (
-			this._options.modeAffichage !== EModeAffichageTimeline.compact ||
-			aIndice > 0
-		) {
-			lTitreContenu = aContenu.getLibelle();
-			if (this._options.modeAffichage === EModeAffichageTimeline.compact) {
-				lAfficheCommeBlocTitre = true;
-			}
-		}
-		lHtml.push(
-			'<div class="NoWrap AlignementGauche" style="display:flex; align-items: flex-start;">',
-			'<div class="',
-			lAfficheCommeBlocTitre ? " Bloc_Titre" : "",
-			'" style="flex: 1 1 auto;">',
-			lTitreContenu,
-			"</div>",
-			aContenu.categorie.Libelle
-				? '<div style="flex: none; padding-left: 3px;">' +
-						aContenu.categorie.Libelle +
-						"</div>"
-				: "",
-			!lTestImage
-				? ""
-				: '<div style="flex: none; padding-left: 5px;">' +
-						_composeSymboleCategorie(aContenu.categorie.getGenre()) +
-						"</div>",
-			"</div>",
-		);
-	}
-	lHtml.push("<div>", aContenu.descriptif, "</div>");
-	lHtml.push("</div>");
-	if (
-		(aContenu.ListePieceJointe && aContenu.ListePieceJointe.count() > 0) ||
-		(aContenu.listeExecutionQCM && aContenu.listeExecutionQCM.count() > 0)
-	) {
-		lHtml.push(_composeEspaceDocuments.call(this, aContenu, aIndice));
-	}
-	return lHtml.join("");
-}
 function _composeEspaceDocuments(aContenu, aIndiceContenu) {
 	const H = [];
 	let lListeDocuments = "";
 	const lListeQCM = [];
 	if (aContenu.ListePieceJointe) {
-		lListeDocuments = UtilitaireUrl.construireListeUrls(
+		lListeDocuments = UtilitaireUrl_1.UtilitaireUrl.construireListeUrls(
 			aContenu.ListePieceJointe,
 		);
 	}
@@ -476,21 +510,23 @@ function _composeEspaceDocuments(aContenu, aIndiceContenu) {
 	}
 	H.push(
 		'<div class="Espace" style="',
-		GStyle.composeCouleurFond(GCouleur.fond),
+		ObjetStyle_1.GStyle.composeCouleurFond(GCouleur.fond),
 		'margin:10px 5px;">',
 	);
 	H.push(
 		'<div style="',
-		GStyle.composeCouleurTexte(GCouleur.grisTresFonce),
+		ObjetStyle_1.GStyle.composeCouleurTexte(GCouleur.grisTresFonce),
 		'">',
-		GTraductions.getValeur("Agenda.Documents"),
+		ObjetTraduction_1.GTraductions.getValeur("Agenda.Documents"),
 		"</div>",
 	);
 	H.push("<div>", lListeDocuments, "</div>");
 	if (aContenu.listeExecutionQCM && aContenu.listeExecutionQCM.count()) {
 		H.push(
-			'<i class="icon_qcm ThemeCat-pedagogie AlignementMilieuVertical"></i><div class="InlineBlock">',
-			GTraductions.getValeur("ExecutionQCM.RepondreQCMContenu"),
+			'<i role="presentation" class="icon_qcm ThemeCat-pedagogie AlignementMilieuVertical"></i><div class="InlineBlock">',
+			ObjetTraduction_1.GTraductions.getValeur(
+				"ExecutionQCM.RepondreQCMContenu",
+			),
 			" : </div>",
 			'<div class="InlineBlock">',
 			lListeQCM.join(""),
@@ -500,4 +536,3 @@ function _composeEspaceDocuments(aContenu, aIndiceContenu) {
 	H.push("</div>");
 	return H.join("");
 }
-module.exports = { GestionnaireBlocCDC, EGenreBtnActionBlocCDC };

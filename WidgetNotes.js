@@ -11,7 +11,13 @@ const TypeFichierExterneHttpSco_1 = require("TypeFichierExterneHttpSco");
 const Enumere_EvenementWidget_1 = require("Enumere_EvenementWidget");
 const ObjetWidget_1 = require("ObjetWidget");
 const MethodesObjet_1 = require("MethodesObjet");
+const AccessApp_1 = require("AccessApp");
 class WidgetNotes extends ObjetWidget_1.Widget.ObjetWidget {
+	constructor(...aParams) {
+		super(...aParams);
+		const lApplicationSco = (0, AccessApp_1.getApp)();
+		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
+	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(this), {
 			nodeDernieresNoteMatiere(aIndex) {
@@ -23,14 +29,13 @@ class WidgetNotes extends ObjetWidget_1.Widget.ObjetWidget {
 							.filter("a[target=_blank]").length === 0
 					) {
 						const lDevoir = aInstance.donnees.listeDevoirs.get(aIndex);
-						const lGEtatUtilisateur = GEtatUtilisateur;
-						lGEtatUtilisateur.Navigation.setRessource(
+						aInstance.etatUtilisateurSco.Navigation.setRessource(
 							Enumere_Ressource_1.EGenreRessource.Devoir,
 							lDevoir,
 						);
 						aInstance.donnees.page.periode = lDevoir.periode;
 						let lPageDestination;
-						if (lGEtatUtilisateur.estEspaceMobile()) {
+						if (aInstance.etatUtilisateurSco.estEspaceMobile()) {
 							lPageDestination = {
 								genreOngletDest: aInstance.donnees.page.Onglet,
 								page: aInstance.donnees.page,
@@ -63,6 +68,22 @@ class WidgetNotes extends ObjetWidget_1.Widget.ObjetWidget {
 	}
 	construire(aParams) {
 		this.donnees = aParams.donnees;
+		const lWidget = {
+			getHtml: this.composeWidgetNotes.bind(this),
+			nbrElements: this.donnees.listeDevoirs.count(),
+			afficherMessage: this.donnees.listeDevoirs.count() === 0,
+			getPage: () => {
+				if (this.donnees.listeDevoirs.count()) {
+					this.donnees.page.periode =
+						this.donnees.listeDevoirs.getPremierElement().periode;
+				}
+				return this.donnees.page;
+			},
+		};
+		$.extend(true, this.donnees, lWidget);
+		aParams.construireWidget(this.donnees);
+	}
+	composeWidgetNotes() {
 		const H = [];
 		if (this.donnees.listeDevoirs.count() > 0) {
 			this.donnees.listeDevoirs.setTri([
@@ -82,20 +103,7 @@ class WidgetNotes extends ObjetWidget_1.Widget.ObjetWidget {
 			}
 			H.push("</ul>");
 		}
-		const lWidget = {
-			html: H.join(""),
-			nbrElements: this.donnees.listeDevoirs.count(),
-			afficherMessage: this.donnees.listeDevoirs.count() === 0,
-			getPage: () => {
-				if (this.donnees.listeDevoirs.count()) {
-					this.donnees.page.periode =
-						this.donnees.listeDevoirs.getPremierElement().periode;
-				}
-				return this.donnees.page;
-			},
-		};
-		$.extend(true, this.donnees, lWidget);
-		aParams.construireWidget(this.donnees);
+		return H.join("");
 	}
 	composeNote(aDevoir, aIndex, aAvecLienDetail) {
 		const lNoteAuDessusBareme =
@@ -116,7 +124,7 @@ class WidgetNotes extends ObjetWidget_1.Widget.ObjetWidget {
 		const lStrClasse = "";
 		const lStrClasseAria = "";
 		const lStrEtoile = lNoteAuDessusBareme
-			? '<i class="m-right icon icon_star" aria-label="' +
+			? '<i role="img" class="m-right icon icon_star" aria-label="' +
 				ObjetTraduction_1.GTraductions.getValeur("accueil.noteAuDessusBareme") +
 				'" title="' +
 				ObjetTraduction_1.GTraductions.getValeur("accueil.noteAuDessusBareme") +
@@ -139,9 +147,12 @@ class WidgetNotes extends ObjetWidget_1.Widget.ObjetWidget {
 					]));
 		const lStrCommentaireSurNote = aDevoir.commentaireSurNote
 			? IE.jsx.str("i", {
+					role: "img",
 					class: "m-right icon icon_comment_vide",
 					title:
-						ObjetTraduction_1.GTraductions.getValeur("Notes.remarque") +
+						ObjetTraduction_1.GTraductions.getValeur(
+							"DernieresNotes.Detail.CommentaireProf",
+						) +
 						" : " +
 						aDevoir.commentaireSurNote,
 				})
@@ -270,14 +281,13 @@ class WidgetNotes extends ObjetWidget_1.Widget.ObjetWidget {
 		}
 	}
 	setDevoirWidgetSelectionne(aDevoir) {
-		const lGEtatUtilisateur = GEtatUtilisateur;
-		if (!lGEtatUtilisateur.infosSupp) {
-			lGEtatUtilisateur.infosSupp = {};
+		if (!this.etatUtilisateurSco.infosSupp) {
+			this.etatUtilisateurSco.infosSupp = {};
 		}
-		if (!lGEtatUtilisateur.infosSupp.DernieresNotesMobile) {
-			lGEtatUtilisateur.infosSupp.DernieresNotesMobile = {};
+		if (!this.etatUtilisateurSco.infosSupp.DernieresNotesMobile) {
+			this.etatUtilisateurSco.infosSupp.DernieresNotesMobile = {};
 		}
-		lGEtatUtilisateur.infosSupp.DernieresNotesMobile.devoirWidgetSelectionne =
+		this.etatUtilisateurSco.infosSupp.DernieresNotesMobile.devoirWidgetSelectionne =
 			aDevoir;
 	}
 }

@@ -1,0 +1,15 @@
+tinymce.addI18n("es.iEMathquill_dlg", {
+	title: "Editeur d'équation",
+	Symboles: "Symboles",
+	Operateurs: "Opérateurs",
+	Relations: "Relations",
+	Fleches: "Flèches",
+	Divers: "Divers",
+	Delimiteurs: "Délimiteurs",
+	Formules: "Formules",
+	editionLatex: "Edition au format laTeX",
+	editionMathquill: "Edition en ligne",
+	choixRendu: "Choix du rendu",
+	genererImage: "Générer l'image",
+	renduVolumineux: "L'image à générer est trop volumineuse.",
+});

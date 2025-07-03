@@ -1,55 +1,58 @@
-const { MethodesObjet } = require("MethodesObjet.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	ObjetRequeteSaisieEvaluations,
-} = require("ObjetRequeteSaisieEvaluations.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const {
-	InterfaceCompetencesParEvaluation,
-	EGenreEvenementCompetencesParEvaluation,
-} = require("InterfaceCompetencesParEvaluation.js");
-const { GHtml } = require("ObjetHtml.js");
-const { TUtilitaireCompetences } = require("UtilitaireCompetences.js");
-const {
-	TypeGenreValidationCompetence,
-} = require("TypeGenreValidationCompetence.js");
-const { TypeModeInfosADE } = require("TypeModeAssociationDevoirEvaluation.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { UtilitaireBoutonBandeau } = require("UtilitaireBoutonBandeau.js");
-const {
-	ObjetRequeteSaisieNotesUnitaire,
-} = require("ObjetRequeteSaisieNotesUnitaire.js");
-class ObjetFenetre_CompetencesParEvaluation extends ObjetFenetre {
+exports.ObjetFenetre_CompetencesParEvaluation = void 0;
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetRequeteSaisieEvaluations_1 = require("ObjetRequeteSaisieEvaluations");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const InterfaceCompetencesParEvaluation_1 = require("InterfaceCompetencesParEvaluation");
+const ObjetHtml_1 = require("ObjetHtml");
+const UtilitaireCompetences_1 = require("UtilitaireCompetences");
+const TypeGenreValidationCompetence_1 = require("TypeGenreValidationCompetence");
+const TypeModeAssociationDevoirEvaluation_1 = require("TypeModeAssociationDevoirEvaluation");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const UtilitaireBoutonBandeau_1 = require("UtilitaireBoutonBandeau");
+const ObjetRequeteSaisieNotesUnitaire_1 = require("ObjetRequeteSaisieNotesUnitaire");
+const AccessApp_1 = require("AccessApp");
+class ObjetFenetre_CompetencesParEvaluation extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
-		if (GEtatUtilisateur.competences_modeSaisieClavierVertical === undefined) {
-			GEtatUtilisateur.competences_modeSaisieClavierVertical = true;
+		this.applicationScoEspace = (0, AccessApp_1.getApp)();
+		this.etatUtilisateurScoEspace =
+			this.applicationScoEspace.getEtatUtilisateur();
+		if (
+			this.etatUtilisateurScoEspace.competences_modeSaisieClavierVertical ===
+			undefined
+		) {
+			this.etatUtilisateurScoEspace.competences_modeSaisieClavierVertical = true;
 		}
 		this.setOptionsFenetre({
-			titre: GTraductions.getValeur("Notes.TitreCompetencesParEvaluation"),
-			listeBoutons: [GTraductions.getValeur("Fermer")],
-			hauteurAdapteContenu: true,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"Notes.TitreCompetencesParEvaluation",
+			),
+			listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
 			largeur: 790,
 		});
 		this.estFenetreEditionCommentaireSurNoteUniquement = false;
 	}
 	construireInstances() {
 		this.identCompetencesParEvaluation = this.add(
-			InterfaceCompetencesParEvaluation,
+			InterfaceCompetencesParEvaluation_1.InterfaceCompetencesParEvaluation,
 			this._evenementSurCompetencesParEvaluation,
 		);
 	}
 	setDonnees(aParams, aOptionsAffichage) {
-		const lDevoirDuplique = MethodesObjet.dupliquer(aParams.devoir);
+		const lDevoirDuplique = MethodesObjet_1.MethodesObjet.dupliquer(
+			aParams.devoir,
+		);
 		lDevoirDuplique.evaluation = null;
-		lDevoirDuplique.modeAssociation = TypeModeInfosADE.tMIADE_Modification;
+		lDevoirDuplique.modeAssociation =
+			TypeModeAssociationDevoirEvaluation_1.TypeModeInfosADE.tMIADE_Modification;
 		if (aParams.devoir && aParams.devoir.evaluation) {
 			aParams.devoir.evaluation.devoir = lDevoirDuplique;
 		}
-		this.listeEvaluations = new ObjetListeElements();
+		this.listeEvaluations = new ObjetListeElements_1.ObjetListeElements();
 		if (aParams.devoir.evaluation) {
 			this.listeEvaluations.addElement(aParams.devoir.evaluation);
 		}
@@ -76,8 +79,10 @@ class ObjetFenetre_CompetencesParEvaluation extends ObjetFenetre {
 		H.push(
 			'<div class="m-bottom" style="display: flex; justify-content: end; gap: 0.5rem;">',
 			'<span ie-html="getLibelleDevoir"></span>',
-			`<div ie-if="btnMrFiche.avecBtn">${UtilitaireBoutonBandeau.getHtmlBtnMonsieurFiche("btnMrFiche")}</div>`,
-			UtilitaireBoutonBandeau.getHtmlBtnSaisieHorizontalVertical("btnHV"),
+			`<div ie-if="btnMrFiche.avecBtn">${UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnMonsieurFiche("btnMrFiche")}</div>`,
+			UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnSaisieHorizontalVertical(
+				"btnHV",
+			),
 			"</div>",
 		);
 		H.push(
@@ -88,35 +93,50 @@ class ObjetFenetre_CompetencesParEvaluation extends ObjetFenetre {
 		return H.join("");
 	}
 	saisieNotesUnitaire(aParamEvnt) {
-		if (GApplication.droits.get(TypeDroits.estEnConsultation)) {
+		if (
+			this.applicationScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.estEnConsultation,
+			)
+		) {
 			return;
 		}
-		new ObjetRequeteSaisieNotesUnitaire(this, () => {
-			if (aParamEvnt && aParamEvnt.eleve) {
-				aParamEvnt.eleve.setEtat(EGenreEtat.Aucun);
-				if (aParamEvnt.devoir && aParamEvnt.devoir.listeEleves) {
-					const lEleveDuDevoir =
-						aParamEvnt.devoir.listeEleves.getElementParNumero(
-							aParamEvnt.eleve.getNumero(),
-						);
-					if (lEleveDuDevoir) {
-						lEleveDuDevoir.setEtat(EGenreEtat.Aucun);
+		new ObjetRequeteSaisieNotesUnitaire_1.ObjetRequeteSaisieNotesUnitaire(
+			this,
+			() => {
+				if (aParamEvnt && aParamEvnt.eleve) {
+					aParamEvnt.eleve.setEtat(Enumere_Etat_1.EGenreEtat.Aucun);
+					if (aParamEvnt.devoir && aParamEvnt.devoir.listeEleves) {
+						const lEleveDuDevoir =
+							aParamEvnt.devoir.listeEleves.getElementParNumero(
+								aParamEvnt.eleve.getNumero(),
+							);
+						if (lEleveDuDevoir) {
+							lEleveDuDevoir.setEtat(Enumere_Etat_1.EGenreEtat.Aucun);
+						}
 					}
 				}
-			}
-		}).lancerRequete(aParamEvnt);
+			},
+		).lancerRequete(aParamEvnt);
 	}
 	saisieUnitaire() {
-		if (!GApplication.droits.get(TypeDroits.estEnConsultation)) {
+		if (
+			!this.applicationScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.estEnConsultation,
+			)
+		) {
 			const lListeEvaluations = this.listeEvaluations;
-			new ObjetRequeteSaisieEvaluations(this)
+			new ObjetRequeteSaisieEvaluations_1.ObjetRequeteSaisieEvaluations(this)
 				.setOptions({
 					sansBlocageInterface: true,
 					afficherMessageErreur: false,
 				})
 				.lancerRequete(
-					GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Service),
-					GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Classe),
+					this.etatUtilisateurScoEspace.Navigation.getRessource(
+						Enumere_Ressource_1.EGenreRessource.Service,
+					),
+					this.etatUtilisateurScoEspace.Navigation.getRessource(
+						Enumere_Ressource_1.EGenreRessource.Classe,
+					),
 					lListeEvaluations,
 				);
 			if (!!lListeEvaluations) {
@@ -124,11 +144,11 @@ class ObjetFenetre_CompetencesParEvaluation extends ObjetFenetre {
 					if (aEval.listeEleves) {
 						aEval.listeEleves.parcourir((aEleve) => {
 							if (aEleve.pourValidation()) {
-								aEleve.setEtat(EGenreEtat.Aucun);
+								aEleve.setEtat(Enumere_Etat_1.EGenreEtat.Aucun);
 								if (!!aEleve.listeCompetences) {
 									aEleve.listeCompetences.parcourir((aCompetence) => {
 										if (aCompetence.pourValidation()) {
-											aCompetence.setEtat(EGenreEtat.Aucun);
+											aCompetence.setEtat(Enumere_Etat_1.EGenreEtat.Aucun);
 										}
 									});
 								}
@@ -145,18 +165,23 @@ class ObjetFenetre_CompetencesParEvaluation extends ObjetFenetre {
 				D.enCache = false;
 			});
 		}
-		_surFermerFenetre.call(this, aNumeroBouton);
+		this.callback.appel(aNumeroBouton);
+		this.fermer();
 	}
 	_evenementSurCompetencesParEvaluation(aGenre, aParams) {
 		switch (aGenre) {
-			case EGenreEvenementCompetencesParEvaluation.recupererDonnees:
+			case InterfaceCompetencesParEvaluation_1
+				.EGenreEvenementCompetencesParEvaluation.recupererDonnees:
 				this.positionnerFenetre();
 				break;
-			case EGenreEvenementCompetencesParEvaluation.editerCompetence:
+			case InterfaceCompetencesParEvaluation_1
+				.EGenreEvenementCompetencesParEvaluation.editerCompetence:
 				this.saisieUnitaire();
 				break;
-			case EGenreEvenementCompetencesParEvaluation.editionNote:
-			case EGenreEvenementCompetencesParEvaluation.editionCommentaireSurNote:
+			case InterfaceCompetencesParEvaluation_1
+				.EGenreEvenementCompetencesParEvaluation.editionNote:
+			case InterfaceCompetencesParEvaluation_1
+				.EGenreEvenementCompetencesParEvaluation.editionCommentaireSurNote:
 				this.estFenetreEditionCommentaireSurNoteUniquement
 					? this.saisieNotesUnitaire(aParams)
 					: this.saisieUnitaire();
@@ -170,17 +195,20 @@ class ObjetFenetre_CompetencesParEvaluation extends ObjetFenetre {
 			},
 			btnMrFiche: {
 				event() {
-					const lElement = this.node;
-					TUtilitaireCompetences.afficherAideSaisieNiveauMaitrise({
-						genreChoixValidationCompetence:
-							TypeGenreValidationCompetence.tGVC_EvaluationEtItem,
-						callback: function () {
-							GHtml.setFocus(lElement);
+					const lElement = null;
+					UtilitaireCompetences_1.TUtilitaireCompetences.afficherAideSaisieNiveauMaitrise(
+						{
+							genreChoixValidationCompetence:
+								TypeGenreValidationCompetence_1.TypeGenreValidationCompetence
+									.tGVC_EvaluationEtItem,
+							callback: function () {
+								ObjetHtml_1.GHtml.setFocus(lElement);
+							},
 						},
-					});
+					);
 				},
 				getTitle() {
-					return GTraductions.getValeur(
+					return ObjetTraduction_1.GTraductions.getValeur(
 						"competences.TitreAideSaisieNivMaitrise",
 					);
 				},
@@ -190,20 +218,28 @@ class ObjetFenetre_CompetencesParEvaluation extends ObjetFenetre {
 			},
 			btnHV: {
 				event() {
-					GEtatUtilisateur.competences_modeSaisieClavierVertical =
-						!GEtatUtilisateur.competences_modeSaisieClavierVertical;
+					aInstance.etatUtilisateurScoEspace.competences_modeSaisieClavierVertical =
+						!aInstance.etatUtilisateurScoEspace
+							.competences_modeSaisieClavierVertical;
 				},
 				getSelection() {
-					return GEtatUtilisateur.competences_modeSaisieClavierVertical;
+					return aInstance.etatUtilisateurScoEspace
+						.competences_modeSaisieClavierVertical;
 				},
 				getTitle() {
-					return GEtatUtilisateur.competences_modeSaisieClavierVertical
-						? GTraductions.getValeur("competences.SensDeSaisieHorizontal")
-						: GTraductions.getValeur("competences.SensDeSaisieVertical");
+					return aInstance.etatUtilisateurScoEspace
+						.competences_modeSaisieClavierVertical
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"competences.SensDeSaisieHorizontal",
+							)
+						: ObjetTraduction_1.GTraductions.getValeur(
+								"competences.SensDeSaisieVertical",
+							);
 				},
 				getClassesMixIcon() {
-					return UtilitaireBoutonBandeau.getClassesMixIconSaisieHorizontalVertical(
-						GEtatUtilisateur.competences_modeSaisieClavierVertical,
+					return UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getClassesMixIconSaisieHorizontalVertical(
+						aInstance.etatUtilisateurScoEspace
+							.competences_modeSaisieClavierVertical,
 					);
 				},
 			},
@@ -213,17 +249,20 @@ class ObjetFenetre_CompetencesParEvaluation extends ObjetFenetre {
 		this.estFenetreEditionCommentaireSurNoteUniquement = aValeur;
 	}
 	updateTitre() {
-		let lTitre = GTraductions.getValeur("Notes.TitreCompetencesParEvaluation");
+		let lTitre = ObjetTraduction_1.GTraductions.getValeur(
+			"Notes.TitreCompetencesParEvaluation",
+		);
 		if (
-			this.getInstance(this.identCompetencesParEvaluation)
-				.afficherCommentaireSurNote
+			this.getInstance(
+				this.identCompetencesParEvaluation,
+			).avecAffichageCommentaireSurNote()
 		) {
 			if (this.estFenetreEditionCommentaireSurNoteUniquement) {
-				lTitre = GTraductions.getValeur(
+				lTitre = ObjetTraduction_1.GTraductions.getValeur(
 					"Notes.TitreCompetencesParEvaluationRemarquesUniquement",
 				);
 			} else {
-				lTitre = GTraductions.getValeur(
+				lTitre = ObjetTraduction_1.GTraductions.getValeur(
 					"Notes.TitreCompetencesParEvaluationEtRemarque",
 				);
 			}
@@ -231,8 +270,5 @@ class ObjetFenetre_CompetencesParEvaluation extends ObjetFenetre {
 		this.setOptionsFenetre({ titre: lTitre });
 	}
 }
-function _surFermerFenetre(aNumeroBouton) {
-	this.callback.appel(aNumeroBouton);
-	this.fermer();
-}
-module.exports = ObjetFenetre_CompetencesParEvaluation;
+exports.ObjetFenetre_CompetencesParEvaluation =
+	ObjetFenetre_CompetencesParEvaluation;

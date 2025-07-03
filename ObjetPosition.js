@@ -1,10 +1,16 @@
-exports.GPosition = void 0;
+exports.GPosition = exports.ObjetPosition = void 0;
 const MethodesObjet_1 = require("MethodesObjet");
 const ObjetHtml_1 = require("ObjetHtml");
 const ObjetStyle_1 = require("ObjetStyle");
 class ObjetPosition {
 	constructor() {
 		this._cacheFontSize = null;
+		$(window).one("load", () => {
+			this._cacheFontSize = null;
+		});
+	}
+	setNavigateur(aNavigateur) {
+		this.navigateur = aNavigateur;
 	}
 	getWidth(aId) {
 		const lElement = ObjetHtml_1.GHtml.getElement(aId);
@@ -256,15 +262,15 @@ class ObjetPosition {
 			lLeft = lLeft || window.visualViewport.offsetLeft;
 			lTop = lTop || window.visualViewport.offsetTop;
 		}
-		if (GNavigateur.isTactile && window.visualViewport) {
+		if (this.navigateur.isTactile && window.visualViewport) {
 			lWidth = window.visualViewport.width;
 			lHeight = window.visualViewport.height;
-		} else if (GNavigateur.isTactile && window.innerHeight) {
+		} else if (this.navigateur.isTactile && window.innerHeight) {
 			lWidth = window.innerWidth;
 			lHeight = window.innerHeight;
 		} else {
-			lWidth = GNavigateur.clientL;
-			lHeight = GNavigateur.clientH;
+			lWidth = this.navigateur.clientL;
+			lHeight = this.navigateur.clientH;
 		}
 		const lWidthId = this.getWidth(aId),
 			lHeightId = this.getHeight(aId);
@@ -275,7 +281,7 @@ class ObjetPosition {
 				width: lWidthId,
 				height: lHeightId,
 			};
-			_ramenerPositionDansLAffichage(lPosition);
+			this._ramenerPositionDansLAffichage(lPosition);
 			this.setPosition(
 				aId,
 				Math.max(0, lPosition.x),
@@ -287,18 +293,18 @@ class ObjetPosition {
 	placer(aId, aLeft, aTop, aEcartBordEcran) {
 		let lX1 = MethodesObjet_1.MethodesObjet.isNumber(aLeft)
 			? aLeft
-			: GNavigateur.pointerX || 0;
+			: this.navigateur.pointerX || 0;
 		const lX2 = lX1 + this.getWidth(aId);
 		let lY1 = MethodesObjet_1.MethodesObjet.isNumber(aTop)
 			? aTop
-			: GNavigateur.pointerY || 0;
+			: this.navigateur.pointerY || 0;
 		const lY2 = lY1 + this.getHeight(aId);
 		const lEcartBordEcran = $.extend({ x: 2, y: 2 }, aEcartBordEcran);
-		if (lX2 + lEcartBordEcran.x > GNavigateur.ecranL) {
-			lX1 = GNavigateur.ecranL - this.getWidth(aId) - lEcartBordEcran.x;
+		if (lX2 + lEcartBordEcran.x > this.navigateur.ecranL) {
+			lX1 = this.navigateur.ecranL - this.getWidth(aId) - lEcartBordEcran.x;
 		}
-		if (lY2 + lEcartBordEcran.y > GNavigateur.ecranH) {
-			lY1 = GNavigateur.ecranH - this.getHeight(aId) - lEcartBordEcran.y;
+		if (lY2 + lEcartBordEcran.y > this.navigateur.ecranH) {
+			lY1 = this.navigateur.ecranH - this.getHeight(aId) - lEcartBordEcran.y;
 		}
 		this.setPosition(
 			aId,
@@ -308,7 +314,7 @@ class ObjetPosition {
 		);
 	}
 	placerFiche(aId, aIdSource, aVisible, aDecalage) {
-		const lPositionSource = _getPositionElement(aIdSource);
+		const lPositionSource = this._getPositionElement(aIdSource);
 		this.placerFicheSource(
 			aId,
 			lPositionSource.x,
@@ -333,24 +339,30 @@ class ObjetPosition {
 					? ObjetHtml_1.GHtml.getElement(aId).style.visibility === "visible"
 					: aVisible,
 			lDecalage = $.extend({ x: 6, y: 0 }, aDecalage);
-		const lPosition = _getPositionElement(aId),
+		const lPosition = this._getPositionElement(aId),
 			lPositionSource = {
 				x: aX1Source,
 				y: aY1Source,
 				width: aX2Source - aX1Source,
 				height: aY2Source - aY1Source,
 			};
-		_ramenerPositionDansLAffichage(lPosition);
-		if (!lVisible || _avecChevauchement(lPosition, lPositionSource)) {
+		this._ramenerPositionDansLAffichage(lPosition);
+		if (!lVisible || this._avecChevauchement(lPosition, lPositionSource)) {
 			lPosition.x = lPositionSource.x + lPositionSource.width;
-			if (lPosition.x + lPosition.width + lDecalage.x > GNavigateur.ecranL) {
+			if (
+				lPosition.x + lPosition.width + lDecalage.x >
+				this.navigateur.ecranL
+			) {
 				lPosition.x = Math.max(aX1Source - lPosition.width - lDecalage.x, 1);
 			} else {
 				lPosition.x += lDecalage.x;
 			}
 			if (!lVisible) {
 				lPosition.y = lPositionSource.y;
-				if (lPosition.y + lPosition.height + lDecalage.y > GNavigateur.ecranH) {
+				if (
+					lPosition.y + lPosition.height + lDecalage.y >
+					this.navigateur.ecranH
+				) {
 					lPosition.y = Math.max(
 						lPositionSource.y +
 							lPositionSource.height -
@@ -363,8 +375,8 @@ class ObjetPosition {
 				}
 			}
 		}
-		_modifierPositionSiChevauchement(lPosition, lPositionSource);
-		_ramenerPositionDansLAffichage(lPosition);
+		this._modifierPositionSiChevauchement(lPosition, lPositionSource);
+		this._ramenerPositionDansLAffichage(lPosition);
 		if (lPosition.x < 10) {
 			lPosition.x = 10;
 		}
@@ -379,9 +391,9 @@ class ObjetPosition {
 		);
 	}
 	deplacerSiChevauchement(aIdMobile, aIdReference) {
-		const lPosition = _getPositionElement(aIdMobile),
-			lPositionSource = _getPositionElement(aIdReference);
-		_modifierPositionSiChevauchement(lPosition, lPositionSource);
+		const lPosition = this._getPositionElement(aIdMobile),
+			lPositionSource = this._getPositionElement(aIdReference);
+		this._modifierPositionSiChevauchement(lPosition, lPositionSource);
 		this.setPosition(
 			aIdMobile,
 			Math.max(0, lPosition.x),
@@ -516,67 +528,65 @@ class ObjetPosition {
 				lRectScroll.width;
 		}
 	}
-}
-function _ramenerPositionDansLAffichage(aPosition) {
-	if (aPosition.x + aPosition.width > GNavigateur.ecranL) {
-		aPosition.x = Math.max(0, GNavigateur.ecranL - aPosition.width);
-	}
-	if (aPosition.y + aPosition.height > GNavigateur.ecranH) {
-		aPosition.y = Math.max(0, GNavigateur.ecranH - aPosition.height);
-	}
-}
-function _avecChevauchement(aPosition, aPositionSource) {
-	return (
-		aPosition.x < aPositionSource.x + aPositionSource.width &&
-		aPosition.x + aPosition.width > aPositionSource.x &&
-		aPosition.y < aPositionSource.y + aPositionSource.height &&
-		aPosition.y + aPosition.height > aPositionSource.y
-	);
-}
-function _getPositionElement(aElement) {
-	const lX = GPosition.getLeft(aElement),
-		lY = GPosition.getTop(aElement),
-		lWidth = GPosition.getWidth(aElement),
-		lHeight = GPosition.getHeight(aElement);
-	return { x: lX, y: lY, width: lWidth, height: lHeight };
-}
-function _modifierPositionSiChevauchement(aPositionMobile, aPositionSource) {
-	if (aPositionMobile.x + aPositionMobile.width > GNavigateur.ecranL) {
-		aPositionMobile.x = GNavigateur.ecranL - aPositionMobile.width;
-	}
-	if (aPositionMobile.y + aPositionMobile.height > GNavigateur.ecranH) {
-		aPositionMobile.y = GNavigateur.ecranH - aPositionMobile.height;
-	}
-	if (_avecChevauchement(aPositionMobile, aPositionSource)) {
-		aPositionMobile.x = aPositionSource.x + aPositionSource.width + 6;
-		if (aPositionMobile.x + aPositionMobile.width > GNavigateur.ecranL) {
-			aPositionMobile.x = Math.max(
-				aPositionSource.x - aPositionMobile.width,
-				1,
-			);
+	_ramenerPositionDansLAffichage(aPosition) {
+		if (aPosition.x + aPosition.width > this.navigateur.ecranL) {
+			aPosition.x = Math.max(0, this.navigateur.ecranL - aPosition.width);
+		}
+		if (aPosition.y + aPosition.height > this.navigateur.ecranH) {
+			aPosition.y = Math.max(0, this.navigateur.ecranH - aPosition.height);
 		}
 	}
-	if (aPositionMobile.x + aPositionMobile.width > GNavigateur.ecranL) {
-		aPositionMobile.x = GNavigateur.ecranL - aPositionMobile.width;
+	_avecChevauchement(aPosition, aPositionSource) {
+		return (
+			aPosition.x < aPositionSource.x + aPositionSource.width &&
+			aPosition.x + aPosition.width > aPositionSource.x &&
+			aPosition.y < aPositionSource.y + aPositionSource.height &&
+			aPosition.y + aPosition.height > aPositionSource.y
+		);
 	}
-	if (aPositionMobile.x < 6) {
-		aPositionMobile.x = 6;
+	_getPositionElement(aElement) {
+		const lX = GPosition.getLeft(aElement),
+			lY = GPosition.getTop(aElement),
+			lWidth = GPosition.getWidth(aElement),
+			lHeight = GPosition.getHeight(aElement);
+		return { x: lX, y: lY, width: lWidth, height: lHeight };
 	}
-	if (_avecChevauchement(aPositionMobile, aPositionSource)) {
-		aPositionMobile.y = aPositionSource.y + aPositionSource.height + 6;
-		if (aPositionMobile.y + aPositionMobile.height > GNavigateur.ecranH) {
-			aPositionMobile.y = Math.max(
-				aPositionSource.y - aPositionMobile.height,
-				1,
-			);
+	_modifierPositionSiChevauchement(aPositionMobile, aPositionSource) {
+		if (aPositionMobile.x + aPositionMobile.width > this.navigateur.ecranL) {
+			aPositionMobile.x = this.navigateur.ecranL - aPositionMobile.width;
+		}
+		if (aPositionMobile.y + aPositionMobile.height > this.navigateur.ecranH) {
+			aPositionMobile.y = this.navigateur.ecranH - aPositionMobile.height;
+		}
+		if (this._avecChevauchement(aPositionMobile, aPositionSource)) {
+			aPositionMobile.x = aPositionSource.x + aPositionSource.width + 6;
+			if (aPositionMobile.x + aPositionMobile.width > this.navigateur.ecranL) {
+				aPositionMobile.x = Math.max(
+					aPositionSource.x - aPositionMobile.width,
+					1,
+				);
+			}
+		}
+		if (aPositionMobile.x + aPositionMobile.width > this.navigateur.ecranL) {
+			aPositionMobile.x = this.navigateur.ecranL - aPositionMobile.width;
+		}
+		if (aPositionMobile.x < 6) {
+			aPositionMobile.x = 6;
+		}
+		if (this._avecChevauchement(aPositionMobile, aPositionSource)) {
+			aPositionMobile.y = aPositionSource.y + aPositionSource.height + 6;
+			if (aPositionMobile.y + aPositionMobile.height > this.navigateur.ecranH) {
+				aPositionMobile.y = Math.max(
+					aPositionSource.y - aPositionMobile.height,
+					1,
+				);
+			}
+		}
+		if (aPositionMobile.y + aPositionMobile.height > this.navigateur.ecranH) {
+			aPositionMobile.y = this.navigateur.ecranH - aPositionMobile.height;
 		}
 	}
-	if (aPositionMobile.y + aPositionMobile.height > GNavigateur.ecranH) {
-		aPositionMobile.y = GNavigateur.ecranH - aPositionMobile.height;
-	}
 }
+exports.ObjetPosition = ObjetPosition;
 const GPosition = new ObjetPosition();
 exports.GPosition = GPosition;
-$(window).one("load", () => {
-	GPosition._cacheFontSize = null;
-});

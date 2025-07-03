@@ -1,133 +1,182 @@
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { TypeEnsembleNombre } = require("TypeEnsembleNombre.js");
-const {
-	EGenreRessourcePedagogique,
-	EGenreRessourcePedagogiqueUtil,
-} = require("Enumere_RessourcePedagogique.js");
-const { InterfacePage } = require("InterfacePage.js");
-const { tag } = require("tag.js");
-class _InterfaceRessourcePedagogique extends InterfacePage {
+exports._InterfaceRessourcePedagogique = void 0;
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TypeEnsembleNombre_1 = require("TypeEnsembleNombre");
+const Enumere_RessourcePedagogique_1 = require("Enumere_RessourcePedagogique");
+const InterfacePage_1 = require("InterfacePage");
+const AccessApp_1 = require("AccessApp");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+class _InterfaceRessourcePedagogique extends InterfacePage_1.InterfacePage {
 	constructor(...aParams) {
 		super(...aParams);
+		this.appScoEspace = (0, AccessApp_1.getApp)();
+		this.etatUtilScoEspace = this.appScoEspace.getEtatUtilisateur();
 		this.avecDocumentCloud = true;
-		this.parametres = { avecGenres: new TypeEnsembleNombre() };
+		this.parametres = {
+			avecGenres: new TypeEnsembleNombre_1.TypeEnsembleNombre(),
+		};
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			cb: {
-				getValue: function (aGenre) {
-					return aInstance.parametres.avecGenres.contains(aGenre);
-				},
-				setValue: function (aGenre, aValue) {
-					if (aValue) {
-						aInstance.parametres.avecGenres.add(aGenre);
-						if (
-							!aInstance.avecDocumentCloud &&
-							aGenre === EGenreRessourcePedagogique.documentJoint
-						) {
-							aInstance.parametres.avecGenres.add(
-								EGenreRessourcePedagogique.documentCloud,
-							);
-						}
-					} else {
-						aInstance.parametres.avecGenres.remove(aGenre);
-						if (
-							!aInstance.avecDocumentCloud &&
-							aGenre === EGenreRessourcePedagogique.documentJoint
-						) {
-							aInstance.parametres.avecGenres.remove(
-								EGenreRessourcePedagogique.documentCloud,
-							);
-						}
-					}
-					GEtatUtilisateur.Navigation.avecGenresRessourcePedagogique =
-						aInstance.parametres.avecGenres;
-					aInstance._actualiserAffichage();
-				},
-				getLibelle: function (aGenre) {
-					return _getLibelleDeGenre.call(aInstance, aGenre);
-				},
+	jsxModeleCheckboxGenreRessPeda(aGenre) {
+		return {
+			getValue: () => {
+				return this.parametres.avecGenres.contains(aGenre);
 			},
-		});
+			setValue: (aValue) => {
+				if (aValue) {
+					this.parametres.avecGenres.add(aGenre);
+					if (
+						!this.avecDocumentCloud &&
+						aGenre ===
+							Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique
+								.documentJoint
+					) {
+						this.parametres.avecGenres.add(
+							Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique
+								.documentCloud,
+						);
+					}
+				} else {
+					this.parametres.avecGenres.remove(aGenre);
+					if (
+						!this.avecDocumentCloud &&
+						aGenre ===
+							Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique
+								.documentJoint
+					) {
+						this.parametres.avecGenres.remove(
+							Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique
+								.documentCloud,
+						);
+					}
+				}
+				this.etatUtilScoEspace.avecGenresRessourcePedagogique =
+					this.parametres.avecGenres;
+				this._actualiserAffichage();
+			},
+			getLibelle: () => {
+				return this._getLibelleDeGenre(aGenre);
+			},
+		};
 	}
 	composerCBs(aAvecKiosque, aAvecDocumentCloud, aAvecQCMs, aAvecTravauxRendus) {
 		const T = [];
 		this.avecDocumentCloud = aAvecDocumentCloud;
 		T.push('<div class="flex-contain f-wrap flex-center m-x-nega-l m-y-nega">');
-		for (const lKey of MethodesObjet.enumKeys(EGenreRessourcePedagogique)) {
-			const lGenre = EGenreRessourcePedagogique[lKey];
-			if (!MethodesObjet.isFunction(lGenre)) {
+		for (const lKey of MethodesObjet_1.MethodesObjet.enumKeys(
+			Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique,
+		)) {
+			const lGenre =
+				Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique[lKey];
+			if (!MethodesObjet_1.MethodesObjet.isFunction(lGenre)) {
 				let lVisible = true;
 				switch (lGenre) {
-					case EGenreRessourcePedagogique.kiosque:
+					case Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique
+						.kiosque:
 						lVisible = aAvecKiosque;
 						break;
-					case EGenreRessourcePedagogique.documentCloud:
+					case Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique
+						.documentCloud:
 						lVisible = aAvecDocumentCloud;
 						break;
-					case EGenreRessourcePedagogique.QCM:
+					case Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique.QCM:
 						lVisible = aAvecQCMs;
 						break;
-					case EGenreRessourcePedagogique.travailRendu:
+					case Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique
+						.travailRendu:
 						lVisible = aAvecTravauxRendus;
 						break;
 				}
 				if (lVisible) {
-					T.push(_composerCB.call(this, lGenre));
+					T.push(this._composerCB(lGenre));
 				}
 			}
 		}
 		T.push("</div>");
 		return T.join("");
 	}
-}
-function _composerCB(aGenre) {
-	if (
-		aGenre === EGenreRessourcePedagogique.kiosque &&
-		!GEtatUtilisateur.autorisationKiosque
-	) {
-		return "";
-	}
-	if (
-		aGenre === EGenreRessourcePedagogique.documentCloud &&
-		!GEtatUtilisateur.autorisationCloud
-	) {
-		return "";
-	}
-	const lHtml = [];
-	const lClasseIcone = EGenreRessourcePedagogiqueUtil.getIcone(aGenre);
-	lHtml.push(
-		tag("ie-checkbox", {
-			"ie-model": tag.funcAttr("cb", aGenre),
-			class: ["as-chips m-x-l m-y"],
-			"ie-icon": lClasseIcone,
-		}),
-	);
-	return lHtml.join("");
-}
-function _getLibelleDeGenre(aGenre) {
-	switch (aGenre) {
-		case EGenreRessourcePedagogique.documentJoint:
-			return GTraductions.getValeur("RessourcePedagogique.DocJoint");
-		case EGenreRessourcePedagogique.site:
-			return GTraductions.getValeur("RessourcePedagogique.SitesWeb");
-		case EGenreRessourcePedagogique.QCM:
-			return GTraductions.getValeur("RessourcePedagogique.IDevoirs");
-		case EGenreRessourcePedagogique.sujet:
-			return GTraductions.getValeur("RessourcePedagogique.Sujets");
-		case EGenreRessourcePedagogique.corrige:
-			return GTraductions.getValeur("RessourcePedagogique.Corriges");
-		case EGenreRessourcePedagogique.travailRendu:
-			return GTraductions.getValeur("RessourcePedagogique.TravauxRendus");
-		case EGenreRessourcePedagogique.kiosque:
-			return this.parametres.avecLienKiosque
-				? GTraductions.getValeur("RessourcePedagogique.LiensKiosque")
-				: GTraductions.getValeur("RessourcePedagogique.Kiosque");
-		case EGenreRessourcePedagogique.documentCloud:
-			return GTraductions.getValeur("RessourcePedagogique.Cloud");
-		default:
+	_composerCB(aGenre) {
+		if (
+			aGenre ===
+				Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique.kiosque &&
+			!this.etatUtilScoEspace.autorisationKiosque
+		) {
 			return "";
+		}
+		if (
+			aGenre ===
+				Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique
+					.documentCloud &&
+			!this.etatUtilScoEspace.autorisationCloud
+		) {
+			return "";
+		}
+		if (
+			aGenre ===
+				Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique.QCM &&
+			!this.appScoEspace.droits.get(
+				ObjetDroitsPN_1.TypeDroits.fonctionnalites.gestionQCM,
+			)
+		) {
+			return "";
+		}
+		const lClasseIcone =
+			Enumere_RessourcePedagogique_1.EGenreRessourcePedagogiqueUtil.getIcone(
+				aGenre,
+			);
+		const lHtml = [];
+		lHtml.push(
+			IE.jsx.str("ie-checkbox", {
+				"ie-model": this.jsxModeleCheckboxGenreRessPeda.bind(this, aGenre),
+				class: "as-chips m-x-l m-y",
+				"ie-icon": lClasseIcone,
+			}),
+		);
+		return lHtml.join("");
+	}
+	_getLibelleDeGenre(aGenre) {
+		switch (aGenre) {
+			case Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique
+				.documentJoint:
+				return ObjetTraduction_1.GTraductions.getValeur(
+					"RessourcePedagogique.DocJoint",
+				);
+			case Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique.site:
+				return ObjetTraduction_1.GTraductions.getValeur(
+					"RessourcePedagogique.SitesWeb",
+				);
+			case Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique.QCM:
+				return ObjetTraduction_1.GTraductions.getValeur(
+					"RessourcePedagogique.IDevoirs",
+				);
+			case Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique.sujet:
+				return ObjetTraduction_1.GTraductions.getValeur(
+					"RessourcePedagogique.Sujets",
+				);
+			case Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique.corrige:
+				return ObjetTraduction_1.GTraductions.getValeur(
+					"RessourcePedagogique.Corriges",
+				);
+			case Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique
+				.travailRendu:
+				return ObjetTraduction_1.GTraductions.getValeur(
+					"RessourcePedagogique.TravauxRendus",
+				);
+			case Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique.kiosque:
+				return this.parametres.avecLienKiosque
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"RessourcePedagogique.LiensKiosque",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"RessourcePedagogique.Kiosque",
+						);
+			case Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique
+				.documentCloud:
+				return ObjetTraduction_1.GTraductions.getValeur(
+					"RessourcePedagogique.Cloud",
+				);
+			default:
+				return "";
+		}
 	}
 }
-module.exports = { _InterfaceRessourcePedagogique };
+exports._InterfaceRessourcePedagogique = _InterfaceRessourcePedagogique;

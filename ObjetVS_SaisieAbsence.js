@@ -13,6 +13,7 @@ const Type_ThemeBouton_1 = require("Type_ThemeBouton");
 const GUID_1 = require("GUID");
 const Enumere_Action_1 = require("Enumere_Action");
 const UtilitaireUrl_1 = require("UtilitaireUrl");
+const AccessApp_1 = require("AccessApp");
 class ObjetVS_SaisieAbsence extends ObjetIdentite_1.Identite {
 	constructor() {
 		super(...arguments);
@@ -21,6 +22,7 @@ class ObjetVS_SaisieAbsence extends ObjetIdentite_1.Identite {
 		this.parametres = {
 			avecHoraire: false,
 			avecSuppression: false,
+			avecSelectionJourSurJourFerie: false,
 			saisieDJavecPasHoraire: false,
 			afficherNew: false,
 		};
@@ -113,16 +115,18 @@ class ObjetVS_SaisieAbsence extends ObjetIdentite_1.Identite {
 				lDateMax,
 				"%JJ/%MM/%AAAA",
 			);
-			GApplication.getMessage().afficher({
-				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-				message: ObjetTraduction_1.GTraductions.getValeur(
-					"AbsenceVS.DateLimiteDeclaration",
-					[lDateMaxFormatee],
-				),
-				callback: function () {
-					lThis.selecDateDebut.setDonnees(lDateOriginale);
-				},
-			});
+			(0, AccessApp_1.getApp)()
+				.getMessage()
+				.afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+					message: ObjetTraduction_1.GTraductions.getValeur(
+						"AbsenceVS.DateLimiteDeclaration",
+						[lDateMaxFormatee],
+					),
+					callback: function () {
+						lThis.selecDateDebut.setDonnees(lDateOriginale);
+					},
+				});
 		}
 	}
 	_surDateFin(aDate) {
@@ -325,20 +329,22 @@ class ObjetVS_SaisieAbsence extends ObjetIdentite_1.Identite {
 			},
 			btnSupp: {
 				event: function () {
-					GApplication.getMessage().afficher({
-						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
-						message: ObjetTraduction_1.GTraductions.getValeur(
-							"AbsenceVS.confirmezSuppression",
-						),
-						callback: function (aGenreAction) {
-							if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
-								aInstance.absenceTraitee.setEtat(
-									Enumere_Etat_1.EGenreEtat.Suppression,
-								);
-								aInstance.surValidation(aInstance.boutons.supprimer);
-							}
-						},
-					});
+					(0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+							message: ObjetTraduction_1.GTraductions.getValeur(
+								"AbsenceVS.confirmezSuppression",
+							),
+							callback: function (aGenreAction) {
+								if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
+									aInstance.absenceTraitee.setEtat(
+										Enumere_Etat_1.EGenreEtat.Suppression,
+									);
+									aInstance.surValidation(aInstance.boutons.supprimer);
+								}
+							},
+						});
 				},
 			},
 			radioDuDemiJournee: {
@@ -429,12 +435,14 @@ class ObjetVS_SaisieAbsence extends ObjetIdentite_1.Identite {
 							);
 						}
 						if (lDate < aInstance.absenceTraitee.debut.date) {
-							GApplication.getMessage().afficher({
-								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-								message: ObjetTraduction_1.GTraductions.getValeur(
-									"AbsenceVS.dateFinAvantDebut",
-								),
-							});
+							(0, AccessApp_1.getApp)()
+								.getMessage()
+								.afficher({
+									type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+									message: ObjetTraduction_1.GTraductions.getValeur(
+										"AbsenceVS.dateFinAvantDebut",
+									),
+								});
 						} else {
 							aInstance.absenceTraitee.fin.estMatin = aEstMatin;
 							aInstance.absenceTraitee.fin.date = lDate;
@@ -486,12 +494,7 @@ class ObjetVS_SaisieAbsence extends ObjetIdentite_1.Identite {
 						lClass.push("sansCommentaire");
 					}
 					if (!IE.estMobile) {
-						lClass.push(
-							"txt-comment",
-							"round-style",
-							"fluid-bloc",
-							"min-height-commentaire",
-						);
+						lClass.push("txt-comment", "fluid-bloc", "min-height-commentaire");
 					}
 				}
 				return lClass.join(" ");
@@ -516,7 +519,7 @@ class ObjetVS_SaisieAbsence extends ObjetIdentite_1.Identite {
 					);
 				},
 				getIcone() {
-					return '<i class="icon_piece_jointe"></i>';
+					return "icon_piece_jointe";
 				},
 				getLibelle() {
 					return ObjetTraduction_1.GTraductions.getValeur(
@@ -617,13 +620,17 @@ class ObjetVS_SaisieAbsence extends ObjetIdentite_1.Identite {
 								lNbMaxJoursDeclarationAbsence,
 							)
 						: GParametres.DerniereDate;
+				let lListeJoursFeriesPourSelecteur = GParametres.JoursFeries;
+				if (aInstance.parametres.avecSelectionJourSurJourFerie) {
+					lListeJoursFeriesPourSelecteur = null;
+				}
 				lSelecteur.setParametresFenetre(
 					GParametres.PremierLundi,
 					lDate,
 					lDateMax,
 					GParametres.JoursOuvres,
 					null,
-					GParametres.JoursFeries,
+					lListeJoursFeriesPourSelecteur,
 					null,
 				);
 				if (aEstDebut && aInstance.absenceTraitee.debut.date) {
@@ -787,7 +794,7 @@ class ObjetVS_SaisieAbsence extends ObjetIdentite_1.Identite {
 							{
 								required: true,
 								forcerBoutonDeploiement: true,
-								labelledById: aInstance.ids.labelMotif,
+								ariaLabelledBy: aInstance.ids.labelMotif,
 							},
 							_getOptionsCombo.call(aInstanceCombo),
 						);
@@ -801,7 +808,7 @@ class ObjetVS_SaisieAbsence extends ObjetIdentite_1.Identite {
 							placeHolder: ObjetTraduction_1.GTraductions.getValeur(
 								"AbsenceVS.aPreciser",
 							),
-							labelledById: aInstance.ids.labelMotif,
+							ariaLabelledBy: aInstance.ids.labelMotif,
 						});
 					}
 				},
@@ -930,12 +937,14 @@ class ObjetVS_SaisieAbsence extends ObjetIdentite_1.Identite {
 							aInstance.heureMidi.getMinutes(),
 						);
 						if (lDate < aInstance.absenceTraitee.debut.date) {
-							GApplication.getMessage().afficher({
-								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-								message: ObjetTraduction_1.GTraductions.getValeur(
-									"AbsenceVS.dateFinAvantDebut",
-								),
-							});
+							(0, AccessApp_1.getApp)()
+								.getMessage()
+								.afficher({
+									type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+									message: ObjetTraduction_1.GTraductions.getValeur(
+										"AbsenceVS.dateFinAvantDebut",
+									),
+								});
 						} else {
 							aInstance.absenceTraitee.fin.date = lDate;
 							aInstance.absenceTraitee.fin.estMatin =
@@ -1059,7 +1068,7 @@ class ObjetVS_SaisieAbsence extends ObjetIdentite_1.Identite {
 							min: this.strDebut,
 							max: this.strFin,
 							"ie-model": "debut.heure",
-							class: ["round-style", "fea-time"],
+							class: "fea-time",
 						}),
 					),
 				),
@@ -1143,7 +1152,7 @@ class ObjetVS_SaisieAbsence extends ObjetIdentite_1.Identite {
 							min: this.strDebut,
 							max: this.strFin,
 							"ie-model": "fin.heure",
-							class: ["round-style", "fea-time"],
+							class: "fea-time",
 						}),
 					),
 				),
@@ -1275,6 +1284,7 @@ function _composeHeadMobile() {
 			{ class: ["navheader", "no-bg", "header-titre"] },
 			IE.jsx.str("ie-btnimage", {
 				"ie-model": "btnFermer",
+				"aria-label": ObjetTraduction_1.GTraductions.getValeur("Precedent"),
 				class: ["fleche-nav", "icon_retour_mobile", "btnImageIcon"],
 			}),
 			IE.jsx.str(
@@ -1291,24 +1301,28 @@ function _composeHeadMobile() {
 }
 function _composeJustificatif() {
 	return IE.jsx.str(
-		"div",
-		{ class: ["field-contain", "border-bottom", "p-bottom-xl"] },
+		IE.jsx.fragment,
+		null,
 		IE.jsx.str(
 			"div",
-			{ class: ["pj-global-conteneur"] },
-			IE.jsx.str("ie-btnselecteur", {
-				"ie-model": "telechargerJustificatif",
-				role: "button",
-				"ie-selecfile": true,
-				class: ["pj"],
-				title: ObjetTraduction_1.GTraductions.getValeur(
-					"AbsenceVS.TelechargerUnJustifcatif",
-				),
-			}),
-			IE.jsx.str("div", {
-				class: ["pj-liste-conteneur"],
-				"ie-html": "getLibellePJ",
-			}),
+			{ class: ["field-contain", "border-bottom", "p-bottom-xl"] },
+			IE.jsx.str(
+				"div",
+				{ class: ["pj-global-conteneur"] },
+				IE.jsx.str("ie-btnselecteur", {
+					"ie-model": "telechargerJustificatif",
+					role: "button",
+					"ie-selecfile": true,
+					class: ["pj"],
+					"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+						"AbsenceVS.TelechargerUnJustifcatif",
+					),
+				}),
+				IE.jsx.str("div", {
+					class: ["pj-liste-conteneur"],
+					"ie-html": "getLibellePJ",
+				}),
+			),
 		),
 	);
 }

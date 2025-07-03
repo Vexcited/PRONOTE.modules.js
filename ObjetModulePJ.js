@@ -4,8 +4,8 @@ require("IEHtml.SelecFile.js");
 const ObjetIdentite_1 = require("ObjetIdentite");
 const UtilitaireUrl_1 = require("UtilitaireUrl");
 const ToucheClavier_1 = require("ToucheClavier");
-const tag_1 = require("tag");
-const ObjetChaine_1 = require("ObjetChaine");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Tooltip_1 = require("Tooltip");
 class ObjetModulePJ extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
@@ -18,7 +18,9 @@ class ObjetModulePJ extends ObjetIdentite_1.Identite {
 			forcerEvenementSurClickIcon: false,
 			IEModelChipsPJ: null,
 			controleur: null,
-			title: "",
+			title: ObjetTraduction_1.GTraductions.getValeur(
+				"selecteurPJ.ajoutNouvellePJ",
+			),
 			maxWidthLibelle: 0,
 			addFiles: null,
 			getDisabledFiles: null,
@@ -105,7 +107,6 @@ class ObjetModulePJ extends ObjetIdentite_1.Identite {
 		if (!this._avecDonnees) {
 			return "";
 		}
-		const H = [];
 		const lImage = IE.jsx.str("i", {
 			role: "presentation",
 			class:
@@ -115,49 +116,46 @@ class ObjetModulePJ extends ObjetIdentite_1.Identite {
 					? "icon_globe"
 					: "icon_piece_jointe"),
 		});
-		H.push(
-			'<div class="pj-global-conteneur flex-gap-s" ie-node="getNodeConteneur" ie-class="getClassNodeConteneur">',
-		);
-		H.push(
-			'<div id="',
-			this.getNomTrombone(),
-			'" role="button" ie-node="nodeTrombone" class="flex-inline-contain" tabindex="0"',
-			this.options.title
-				? ' title="' +
-						ObjetChaine_1.GChaine.toTitle(this.options.title) +
-						'" aria-label="' +
-						ObjetChaine_1.GChaine.toTitle(this.options.title) +
-						'"'
-				: "",
+		const lAvecModele =
 			this.options.genrePJ !==
 				Enumere_DocumentJoint_1.EGenreDocumentJoint.Url &&
-				!this.options.forcerEvenementSurClickIcon
-				? ' ie-model="trombone" ie-selecfile '
+			!this.options.forcerEvenementSurClickIcon;
+		return IE.jsx.str(
+			"div",
+			{
+				class: "pj-global-conteneur flex-gap-s",
+				"ie-node": "getNodeConteneur",
+				"ie-class": "getClassNodeConteneur",
+			},
+			IE.jsx.str(
+				"div",
+				{
+					id: this.getNomTrombone(),
+					role: "button",
+					"ie-node": "nodeTrombone",
+					class: "flex-inline-contain",
+					tabindex: "0",
+					"aria-label": this.options.title ? this.options.title : false,
+					"data-tooltip": Tooltip_1.Tooltip.Type.default,
+					"ie-model": lAvecModele ? "trombone" : false,
+					"ie-selecfile": lAvecModele,
+				},
+				this.options.libelleSelecteur
+					? IE.jsx.str(
+							"div",
+							{ class: "select-file" },
+							lImage,
+							IE.jsx.str("span", null, this.options.libelleSelecteur),
+						)
+					: IE.jsx.str("div", { class: "select-file" }, lImage),
+			),
+			this.idOrigPJ && !this.options.masquerListeChips
+				? IE.jsx.str("div", {
+						id: this.id_libellesPJ,
+						class: "pj-liste-conteneur",
+					})
 				: "",
-			">",
-			this.options.libelleSelecteur
-				? (0, tag_1.tag)(
-						"div",
-						{ class: "select-file" },
-						lImage,
-						(0, tag_1.tag)(
-							"span",
-							{ class: "" },
-							this.options.libelleSelecteur,
-						),
-					)
-				: (0, tag_1.tag)("div", { class: "select-file" }, lImage),
-			"</div>",
 		);
-		if (this.idOrigPJ && !this.options.masquerListeChips) {
-			H.push(
-				'<div id="',
-				this.id_libellesPJ,
-				'" class="pj-liste-conteneur"></div>',
-			);
-		}
-		H.push("</div>");
-		return H.join("");
 	}
 	setDonnees(aParam) {
 		this._avecDonnees = true;

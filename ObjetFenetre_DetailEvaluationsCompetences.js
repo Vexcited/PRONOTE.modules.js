@@ -1,32 +1,42 @@
-const { GUID } = require("GUID.js");
-const { GHtml } = require("ObjetHtml.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	EGenreNiveauDAcquisitionUtil,
-} = require("Enumere_NiveauDAcquisition.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { TUtilitaireCompetences } = require("UtilitaireCompetences.js");
-const {
-	TypeGenreValidationCompetence,
-} = require("TypeGenreValidationCompetence.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { GDate } = require("ObjetDate.js");
-const TypeLigneDetailEvaluationsCompetences = {
-	Matiere: 0,
-	Evaluation: 1,
-	Competence: 2,
-};
-class ObjetFenetre_DetailEvaluationsCompetences extends ObjetFenetre {
-	constructor(...aParams) {
-		super(...aParams);
-		this.idStrDomaine = GUID.getId();
+exports.ObjetFenetre_DetailEvaluationsCompetences = void 0;
+const GUID_1 = require("GUID");
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_NiveauDAcquisition_1 = require("Enumere_NiveauDAcquisition");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const UtilitaireCompetences_1 = require("UtilitaireCompetences");
+const TypeGenreValidationCompetence_1 = require("TypeGenreValidationCompetence");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetDate_1 = require("ObjetDate");
+var TypeLigneDetailEvaluationsCompetences;
+(function (TypeLigneDetailEvaluationsCompetences) {
+	TypeLigneDetailEvaluationsCompetences[
+		(TypeLigneDetailEvaluationsCompetences["Matiere"] = 0)
+	] = "Matiere";
+	TypeLigneDetailEvaluationsCompetences[
+		(TypeLigneDetailEvaluationsCompetences["Evaluation"] = 1)
+	] = "Evaluation";
+	TypeLigneDetailEvaluationsCompetences[
+		(TypeLigneDetailEvaluationsCompetences["Competence"] = 2)
+	] = "Competence";
+})(
+	TypeLigneDetailEvaluationsCompetences ||
+		(TypeLigneDetailEvaluationsCompetences = {}),
+);
+class ObjetFenetre_DetailEvaluationsCompetences extends ObjetFenetre_1.ObjetFenetre {
+	constructor() {
+		super(...arguments);
+		this.idStrDomaine = GUID_1.GUID.getId();
 	}
 	construireInstances() {
-		this.identListeEvaluations = this.add(ObjetListe, _surEvenementListe);
+		this.identListeEvaluations = this.add(
+			ObjetListe_1.ObjetListe,
+			this._surEvenementListe,
+		);
 	}
 	composeContenu() {
 		const T = [];
@@ -76,7 +86,10 @@ class ObjetFenetre_DetailEvaluationsCompetences extends ObjetFenetre {
 			lLibelleComplementaire = aElt.strElmtCompetence;
 		}
 		if (!!lLibelleComplementaire) {
-			GHtml.setHtml(this.idStrDomaine.escapeJQ(), lLibelleComplementaire);
+			ObjetHtml_1.GHtml.setHtml(
+				this.idStrDomaine.escapeJQ(),
+				lLibelleComplementaire,
+			);
 			$("#" + this.idStrDomaine.escapeJQ()).removeClass("hide");
 			const lHauteurDomaine = $(
 				"#" + this.idStrDomaine.escapeJQ(),
@@ -92,7 +105,7 @@ class ObjetFenetre_DetailEvaluationsCompetences extends ObjetFenetre {
 				"100%",
 			);
 		}
-		const lListePourAffichage = new ObjetListeElements();
+		const lListePourAffichage = new ObjetListeElements_1.ObjetListeElements();
 		if (!!aJSON.listeLignes) {
 			let lEltPereCourant0;
 			let lEltPereCourant1;
@@ -124,24 +137,26 @@ class ObjetFenetre_DetailEvaluationsCompetences extends ObjetFenetre {
 		}
 		const lObjetListe = this.getInstance(this.identListeEvaluations);
 		if (!!aParametres && aParametres.affichageListeSimplifiee) {
-			_initListeColonnesAffichageSimplifie(lObjetListe);
+			this._initListeColonnesAffichageSimplifie(lObjetListe);
 		} else {
-			_initListeColonnesDefault(lObjetListe, aJSON.titreColonneEvaluation);
+			this._initListeColonnesDefault(lObjetListe, aJSON.titreColonneEvaluation);
 		}
 		lObjetListe.setDonnees(
 			new DonneesListe_DetailEvaluationsCompetences(lListePourAffichage, {
-				callbackRemplirMenuContextuel: _remplirMenuContextuelListe.bind(this),
+				callbackRemplirMenuContextuel:
+					this._remplirMenuContextuelListe.bind(this),
 			}),
 		);
 	}
 	surValidation(aNumeroBouton) {
-		const lListeElementsModifies = new ObjetListeElements();
+		const lListeElementsModifies =
+			new ObjetListeElements_1.ObjetListeElements();
 		const lListeElementsComp = this.getInstance(
 			this.identListeEvaluations,
 		).getListeArticles();
 		if (!!lListeElementsComp) {
 			lListeElementsComp.parcourir((D) => {
-				if (!!D && D.getEtat() !== EGenreEtat.Aucun) {
+				if (!!D && D.getEtat() !== Enumere_Etat_1.EGenreEtat.Aucun) {
 					lListeElementsModifies.addElement(D);
 				}
 			});
@@ -151,82 +166,93 @@ class ObjetFenetre_DetailEvaluationsCompetences extends ObjetFenetre {
 			this.callback.appel(aNumeroBouton, lListeElementsModifies);
 		}
 	}
-}
-function _initListeColonnesDefault(aInstance, aTitreColonneEvaluation) {
-	const lColonnes = [];
-	lColonnes.push({
-		id: DonneesListe_DetailEvaluationsCompetences.genreColonne.evaluation,
-		titre: aTitreColonneEvaluation,
-		taille: "100%",
-	});
-	lColonnes.push({
-		id: DonneesListe_DetailEvaluationsCompetences.genreColonne.coefficient,
-		titre: GTraductions.getValeur("competences.colonne.coef"),
-		taille: 50,
-	});
-	lColonnes.push({
-		id: DonneesListe_DetailEvaluationsCompetences.genreColonne.niveauAcqu,
-		titre: GTraductions.getValeur("competences.niveau"),
-		taille: 50,
-	});
-	aInstance.setOptionsListe({
-		colonnes: lColonnes,
-		boutons: [{ genre: ObjetListe.typeBouton.deployer }],
-	});
-}
-function _initListeColonnesAffichageSimplifie(aInstance) {
-	const lColonnes = [];
-	lColonnes.push({
-		id: DonneesListe_DetailEvaluationsCompetences.genreColonne.dateEvaluation,
-		titre: "",
-		taille: 70,
-	});
-	lColonnes.push({
-		id: DonneesListe_DetailEvaluationsCompetences.genreColonne.evaluation,
-		titre: "",
-		taille: "100%",
-	});
-	lColonnes.push({
-		id: DonneesListe_DetailEvaluationsCompetences.genreColonne.niveauAcqu,
-		titre: "",
-		taille: 50,
-	});
-	aInstance.setOptionsListe({ colonnes: lColonnes });
-}
-function _surEvenementListe(aParametres, aGenreEvenement) {
-	switch (aGenreEvenement) {
-		case EGenreEvenementListe.Edition:
-			if (
-				aParametres.idColonne ===
-				DonneesListe_DetailEvaluationsCompetences.genreColonne.niveauAcqu
-			) {
-				aParametres.ouvrirMenuContextuel();
-			}
-			break;
+	_initListeColonnesDefault(aInstance, aTitreColonneEvaluation) {
+		const lColonnes = [];
+		lColonnes.push({
+			id: DonneesListe_DetailEvaluationsCompetences.genreColonne.evaluation,
+			titre: aTitreColonneEvaluation,
+			taille: "100%",
+		});
+		lColonnes.push({
+			id: DonneesListe_DetailEvaluationsCompetences.genreColonne.coefficient,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"competences.colonne.coef",
+			),
+			taille: 50,
+		});
+		lColonnes.push({
+			id: DonneesListe_DetailEvaluationsCompetences.genreColonne.niveauAcqu,
+			titre: ObjetTraduction_1.GTraductions.getValeur("competences.niveau"),
+			taille: 50,
+		});
+		aInstance.setOptionsListe({
+			colonnes: lColonnes,
+			boutons: [{ genre: ObjetListe_1.ObjetListe.typeBouton.deployer }],
+			ariaLabel: this.optionsFenetre.titre,
+		});
+	}
+	_initListeColonnesAffichageSimplifie(aInstance) {
+		const lColonnes = [];
+		lColonnes.push({
+			id: DonneesListe_DetailEvaluationsCompetences.genreColonne.dateEvaluation,
+			titre: "",
+			taille: 70,
+		});
+		lColonnes.push({
+			id: DonneesListe_DetailEvaluationsCompetences.genreColonne.evaluation,
+			titre: "",
+			taille: "100%",
+		});
+		lColonnes.push({
+			id: DonneesListe_DetailEvaluationsCompetences.genreColonne.niveauAcqu,
+			titre: "",
+			taille: 50,
+		});
+		aInstance.setOptionsListe({
+			colonnes: lColonnes,
+			ariaLabel: this.optionsFenetre.titre,
+		});
+	}
+	_surEvenementListe(aParametres) {
+		switch (aParametres.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Edition:
+				if (
+					aParametres.idColonne ===
+					DonneesListe_DetailEvaluationsCompetences.genreColonne.niveauAcqu
+				) {
+					aParametres.ouvrirMenuContextuel();
+				}
+				break;
+		}
+	}
+	_remplirMenuContextuelListe(aParametres) {
+		const lAvecDispense = true;
+		UtilitaireCompetences_1.TUtilitaireCompetences.initMenuContextuelNiveauAcquisition(
+			{
+				instance: this,
+				menuContextuel: aParametres.menuContextuel,
+				genreChoixValidationCompetence:
+					TypeGenreValidationCompetence_1.TypeGenreValidationCompetence
+						.tGVC_Competence,
+				callbackNiveau: this._surSelectionNiveauAcquisition.bind(
+					this,
+					aParametres.article,
+				),
+				avecDispense: lAvecDispense,
+			},
+		);
+	}
+	_surSelectionNiveauAcquisition(aArticle, aNiveau) {
+		if (!!aArticle) {
+			aArticle.niveauAcqu = aNiveau;
+			aArticle.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+			this.getInstance(this.identListeEvaluations).actualiser(true, true);
+		}
 	}
 }
-function _remplirMenuContextuelListe(aParametres) {
-	const lAvecDispense = true;
-	TUtilitaireCompetences.initMenuContextuelNiveauAcquisition({
-		instance: this,
-		menuContextuel: aParametres.menuContextuel,
-		genreChoixValidationCompetence:
-			TypeGenreValidationCompetence.tGVC_Competence,
-		callbackNiveau: _surSelectionNiveauAcquisition.bind(
-			this,
-			aParametres.article,
-		),
-		avecDispense: lAvecDispense,
-	});
-}
-function _surSelectionNiveauAcquisition(aArticle, aNiveau) {
-	if (!!aArticle) {
-		aArticle.niveauAcqu = aNiveau;
-		aArticle.setEtat(EGenreEtat.Modification);
-		this.getInstance(this.identListeEvaluations).actualiser(true, true);
-	}
-}
-class DonneesListe_DetailEvaluationsCompetences extends ObjetDonneesListe {
+exports.ObjetFenetre_DetailEvaluationsCompetences =
+	ObjetFenetre_DetailEvaluationsCompetences;
+class DonneesListe_DetailEvaluationsCompetences extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParams) {
 		super(aDonnees);
 		this.param = Object.assign(
@@ -242,7 +268,7 @@ class DonneesListe_DetailEvaluationsCompetences extends ObjetDonneesListe {
 	}
 	getCouleurCellule(aParams) {
 		if (!!aParams.article && aParams.article.estUnDeploiement) {
-			return ObjetDonneesListe.ECouleurCellule.Deploiement;
+			return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Deploiement;
 		}
 	}
 	avecImageSurColonneDeploiement(aParams) {
@@ -272,7 +298,10 @@ class DonneesListe_DetailEvaluationsCompetences extends ObjetDonneesListe {
 			case DonneesListe_DetailEvaluationsCompetences.genreColonne
 				.dateEvaluation:
 				return !!aParams.article.dateEvaluation
-					? GDate.formatDate(aParams.article.dateEvaluation, "%JJ/%MM/%AAAA")
+					? ObjetDate_1.GDate.formatDate(
+							aParams.article.dateEvaluation,
+							"%JJ/%MM/%AAAA",
+						)
 					: "";
 			case DonneesListe_DetailEvaluationsCompetences.genreColonne.evaluation:
 				return aParams.article.getLibelle();
@@ -291,13 +320,17 @@ class DonneesListe_DetailEvaluationsCompetences extends ObjetDonneesListe {
 							aParams.article.niveauAcqu.getGenre(),
 						);
 					lHtmlNivAcquisition.push(
-						EGenreNiveauDAcquisitionUtil.getImage(lNiveauAcquiGlobal, {
-							avecTitle: false,
-						}),
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+							lNiveauAcquiGlobal,
+						),
 					);
 					if (!!lNiveauAcqui.observation) {
 						lHtmlNivAcquisition.push(
-							'<i style="position:absolute; right:0px; bottom:0px;" class=" icon_comment"></i>',
+							IE.jsx.str("i", {
+								style: "position:absolute; right:0px; bottom:0px;",
+								class: " icon_comment",
+								role: "presentation",
+							}),
 						);
 					}
 				}
@@ -306,7 +339,7 @@ class DonneesListe_DetailEvaluationsCompetences extends ObjetDonneesListe {
 		}
 		return "";
 	}
-	getHintHtmlForce(aParams) {
+	getTooltip(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_DetailEvaluationsCompetences.genreColonne.coefficient:
 				return !!aParams.article ? aParams.article.hintCoef : "";
@@ -324,7 +357,7 @@ class DonneesListe_DetailEvaluationsCompetences extends ObjetDonneesListe {
 						);
 					if (!!lNiveauDAcquisitionGlobal) {
 						lHintNiveauAcqui.push(
-							EGenreNiveauDAcquisitionUtil.getLibelle(
+							Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getLibelle(
 								lNiveauDAcquisitionGlobal,
 							),
 						);
@@ -338,7 +371,9 @@ class DonneesListe_DetailEvaluationsCompetences extends ObjetDonneesListe {
 						if (!!lNiveauAcqui.observationPubliee) {
 							lHintNiveauAcqui.push(
 								" (",
-								GTraductions.getValeur("competences.PublieSurEspaceParent"),
+								ObjetTraduction_1.GTraductions.getValeur(
+									"competences.PublieSurEspaceParent",
+								),
 								")",
 							);
 						}
@@ -377,15 +412,24 @@ class DonneesListe_DetailEvaluationsCompetences extends ObjetDonneesListe {
 			aParams.idColonne ===
 			DonneesListe_DetailEvaluationsCompetences.genreColonne.niveauAcqu
 		) {
-			return ObjetDonneesListe.ETypeCellule.Html;
+			return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
 }
-DonneesListe_DetailEvaluationsCompetences.genreColonne = {
-	dateEvaluation: "DetailEvalComp_dateEvaluation",
-	evaluation: "DetailEvalComp_evaluation",
-	coefficient: "DetailEvalComp_coefficient",
-	niveauAcqu: "DetailEvalComp_niveau",
-};
-module.exports = { ObjetFenetre_DetailEvaluationsCompetences };
+(function (DonneesListe_DetailEvaluationsCompetences) {
+	let genreColonne;
+	(function (genreColonne) {
+		genreColonne["dateEvaluation"] = "DetailEvalComp_dateEvaluation";
+		genreColonne["evaluation"] = "DetailEvalComp_evaluation";
+		genreColonne["coefficient"] = "DetailEvalComp_coefficient";
+		genreColonne["niveauAcqu"] = "DetailEvalComp_niveau";
+	})(
+		(genreColonne =
+			DonneesListe_DetailEvaluationsCompetences.genreColonne ||
+			(DonneesListe_DetailEvaluationsCompetences.genreColonne = {})),
+	);
+})(
+	DonneesListe_DetailEvaluationsCompetences ||
+		(DonneesListe_DetailEvaluationsCompetences = {}),
+);

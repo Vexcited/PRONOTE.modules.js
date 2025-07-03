@@ -4,11 +4,12 @@ const ObjetChaine_1 = require("ObjetChaine");
 const ObjetStyle_2 = require("ObjetStyle");
 const ObjetIdentite_1 = require("ObjetIdentite");
 const ObjetTraduction_1 = require("ObjetTraduction");
+const AccessApp_1 = require("AccessApp");
 class ObjetInfoBase extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
-		this.objetApplicationConsoles = GApplication;
-		this.objetCouleurConsoles = GCouleur;
+		this.objetApplicationConsoles = (0, AccessApp_1.getApp)();
+		this.objetCouleurConsoles = this.objetApplicationConsoles.getCouleur();
 		this.donneesRecues = false;
 	}
 	setParametres(aNomBase) {
@@ -37,7 +38,7 @@ class ObjetInfoBase extends ObjetIdentite_1.Identite {
 		if (this.donneesRecues) {
 			const H = [];
 			H.push(
-				'<table id="',
+				'<table role="presentation" id="',
 				this.Nom,
 				'_Bandeau" class="Texte11 full-width" style="height:28px;">',
 				"<tr>",
@@ -54,7 +55,7 @@ class ObjetInfoBase extends ObjetIdentite_1.Identite {
 				ObjetStyle_2.GStyle.composeCouleurBordure(
 					this.estServeurHttpActif()
 						? this.objetCouleurConsoles.enService.texte
-						: GCouleur.texte,
+						: (0, AccessApp_1.getApp)().getCouleur().texte,
 					1,
 					ObjetStyle_1.EGenreBordure.droite,
 				),

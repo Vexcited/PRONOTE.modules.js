@@ -5,10 +5,11 @@ const ObjetDonneesListe_1 = require("ObjetDonneesListe");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const Enumere_Ressource_1 = require("Enumere_Ressource");
 const UtilitaireCompetences_1 = require("UtilitaireCompetences");
+const AccessApp_1 = require("AccessApp");
 class DonneesListe_Saisie_Competences extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParam) {
 		super(aDonnees);
-		const lApplicationSco = GApplication;
+		const lApplicationSco = (0, AccessApp_1.getApp)();
 		const lEtatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
 		this.parametresSco = lApplicationSco.getObjetParametres();
 		this.elementsStockageCopierColler =
@@ -163,6 +164,8 @@ class DonneesListe_Saisie_Competences extends ObjetDonneesListe_1.ObjetDonneesLi
 				return aParams.article.elmtSignifiantEditable || false;
 			case DonneesListe_Saisie_Competences.colonnes.evaluable:
 				return aParams.article.evaluableEditable || false;
+			case DonneesListe_Saisie_Competences.colonnes.partage:
+				return aParams.article.estPartageEditable || false;
 			case DonneesListe_Saisie_Competences.colonnes.niveaux:
 				return aParams.article.niveauxEditable || false;
 		}
@@ -197,6 +200,10 @@ class DonneesListe_Saisie_Competences extends ObjetDonneesListe_1.ObjetDonneesLi
 			aParams.idColonne === DonneesListe_Saisie_Competences.colonnes.evaluable
 		) {
 			aParams.article.evaluable = !!V;
+		} else if (
+			aParams.idColonne === DonneesListe_Saisie_Competences.colonnes.partage
+		) {
+			aParams.article.estPartage = !!V;
 		} else {
 			const lValeur = V.trim();
 			if (
@@ -241,6 +248,7 @@ class DonneesListe_Saisie_Competences extends ObjetDonneesListe_1.ObjetDonneesLi
 			case DonneesListe_Saisie_Competences.colonnes.coefficient:
 				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Note;
 			case DonneesListe_Saisie_Competences.colonnes.evaluable:
+			case DonneesListe_Saisie_Competences.colonnes.partage:
 				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Coche;
 		}
 		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
@@ -358,6 +366,8 @@ class DonneesListe_Saisie_Competences extends ObjetDonneesListe_1.ObjetDonneesLi
 				return aParams.article.libelleElmtSignifiant || "";
 			case DonneesListe_Saisie_Competences.colonnes.evaluable:
 				return !!aParams.article.evaluable;
+			case DonneesListe_Saisie_Competences.colonnes.partage:
+				return !!aParams.article.estPartage;
 			case DonneesListe_Saisie_Competences.colonnes.nb_evaluations:
 				return aParams.article.nbEvals || "";
 			case DonneesListe_Saisie_Competences.colonnes.nb_evaluationsHisto:
@@ -389,7 +399,7 @@ class DonneesListe_Saisie_Competences extends ObjetDonneesListe_1.ObjetDonneesLi
 		}
 		return "";
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		if (
 			aParams.idColonne ===
 			DonneesListe_Saisie_Competences.colonnes.domainesAssocies
@@ -625,6 +635,7 @@ DonneesListe_Saisie_Competences.colonnes = {
 	domainesAssocies: "cpt_saisie_domainesAssoc",
 	elmtsSignifiants: "cpt_saisie_elmtsSignigiants",
 	evaluable: "cpt_saisie_evaluable",
+	partage: "cpt_saisie_partage",
 	nb_evaluations: "cpt_saisie_nbEvaluations",
 	nb_evaluationsHisto: "cpt_saisie_nbEvaluationsHisto",
 	auteur: "cpt_saisie_auteur",

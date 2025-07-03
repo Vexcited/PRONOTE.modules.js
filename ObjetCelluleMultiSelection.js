@@ -36,6 +36,7 @@ class ObjetCelluleMultiSelection extends ObjetIdentite_1.Identite {
 			largeurFenetre: 300,
 			hauteurFenetre: 250,
 			avecAuMoinsUnEltSelectionne: false,
+			positionnerFenetreSousId: true,
 		});
 	}
 	detruireInstances() {
@@ -57,9 +58,9 @@ class ObjetCelluleMultiSelection extends ObjetIdentite_1.Identite {
 			classTexte: this.options.classTexte,
 			avecZoneSaisie: false,
 			placeHolder: this.options.placeHolder,
-			labelWAI: this.options.labelWAI,
-			labelledById: this.options.labelledByWAI,
-			describedById: this.options.describedById,
+			ariaLabel: this.options.ariaLabel,
+			ariaLabelledBy: this.options.ariaLabelledBy,
+			ariaDescribedBy: this.options.ariaDescribedBy,
 			roleWAI: ObjetWAI_1.EGenreRole.Combobox,
 			popupWAI: "dialog",
 		});
@@ -184,7 +185,9 @@ class ObjetCelluleMultiSelection extends ObjetIdentite_1.Identite {
 			? new this.options.donneesListe(this.donnees, this.options.paramListe)
 			: new DonneesListe_CelluleMultiSelection(this.donnees);
 		this.fenetre.setDonnees(this.donneesListe, false);
-		this.fenetre.positionnerSousId(this.Nom);
+		if (this.options.positionnerFenetreSousId) {
+			this.fenetre.positionnerSousId(this.Nom);
+		}
 	}
 	_nbrCochees() {
 		let lNombre = 0;

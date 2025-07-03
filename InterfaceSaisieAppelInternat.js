@@ -8,7 +8,6 @@ const ObjetDate_1 = require("ObjetDate");
 const ObjetRequeteCreneauxAppelsInternat_1 = require("ObjetRequeteCreneauxAppelsInternat");
 const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
 const ObjetTraduction_1 = require("ObjetTraduction");
-const jsx_1 = require("jsx");
 const ObjetDroitsPN_1 = require("ObjetDroitsPN");
 const ObjetChaine_1 = require("ObjetChaine");
 const GUID_1 = require("GUID");
@@ -32,15 +31,6 @@ class InterfaceSaisieAppelInternat extends ObjetInterfacePageCP_1.InterfacePageC
 				InterfaceSaisieAppelInternat.genreEcran.listeCreneaux,
 				InterfaceSaisieAppelInternat.genreEcran.listeAppel,
 			],
-		});
-	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			btnRetourEcranPrec: {
-				event: () => {
-					this._evntRetourEcranPrec();
-				},
-			},
 		});
 	}
 	setParametresGeneraux() {
@@ -146,6 +136,7 @@ class InterfaceSaisieAppelInternat extends ObjetInterfacePageCP_1.InterfacePageC
 						lCreneau.getLibelle(),
 					);
 				}
+				const lIdInfosAppel = this.Nom + "infosAppel";
 				const lBoutons = [];
 				lBoutons.push({
 					controleur: {
@@ -177,12 +168,18 @@ class InterfaceSaisieAppelInternat extends ObjetInterfacePageCP_1.InterfacePageC
 							);
 						},
 					},
-					html: IE.jsx.str("div", { "ie-html": "getInfoAppel" }),
+					html: IE.jsx.str("div", {
+						id: lIdInfosAppel,
+						"ie-html": "getInfoAppel",
+					}),
 				});
 				lBoutons.push({ genre: ObjetListe_1.ObjetListe.typeBouton.rechercher });
 				lBoutons.push({ genre: ObjetListe_1.ObjetListe.typeBouton.deployer });
 				this.getInstance(this.identListeAppel)
-					.setOptionsListe({ boutons: lBoutons })
+					.setOptionsListe({
+						ariaDescribedBy: lIdInfosAppel,
+						boutons: lBoutons,
+					})
 					.setDonnees(
 						new DonneesListe_RessourcesAppelsInternat(
 							lCreneau.listeRessources,
@@ -215,7 +212,7 @@ class InterfaceSaisieAppelInternat extends ObjetInterfacePageCP_1.InterfacePageC
 						class: "liste-creneaux",
 					},
 					IE.jsx.str("div", {
-						id: this.getInstance(this.identListeCreneaux).getNom(),
+						id: this.getNomInstance(this.identListeCreneaux),
 						class: ["full-height"],
 					}),
 				),
@@ -226,7 +223,7 @@ class InterfaceSaisieAppelInternat extends ObjetInterfacePageCP_1.InterfacePageC
 						class: "appel-internat",
 					},
 					IE.jsx.str("div", {
-						id: this.getInstance(this.identListeAppel).getNom(),
+						id: this.getNomInstance(this.identListeAppel),
 						class: ["full-height"],
 					}),
 				),
@@ -308,54 +305,27 @@ class DonneesListe_CreneauxAppelsInternat extends ObjetDonneesListeFlatDesign_1.
 		super(...aParams);
 		this.setOptions({ avecBoutonActionLigne: false, avecEvnt_Selection: true });
 	}
-	getControleur(aInstance, aInstanceListe) {
-		return $.extend(true, super.getControleur(aInstance, aInstanceListe), {
-			avecIcone: (aNumero) => {
-				var _a;
-				const lCreneau = aInstance.Donnees.getElementParNumero(aNumero);
-				return !!((_a =
-					lCreneau === null || lCreneau === void 0
-						? void 0
-						: lCreneau.listeRessourcesCumul) === null || _a === void 0
-					? void 0
-					: _a.count());
-			},
-			getAttrIcone: (aNumero) => {
-				const lCreneau = aInstance.Donnees.getElementParNumero(aNumero);
-				const lTexte = lCreneau.estAppelTermine
-					? ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.AppelFait")
-					: ObjetTraduction_1.GTraductions.getValeur(
-							"AppelInternat.appelNonFait",
-						);
-				return {
-					"aria-label": lTexte,
-					title: lTexte,
-					class:
-						(lCreneau.estAppelTermine
-							? "Image_AppelFait"
-							: "Image_AppelNonFait") + " m-left",
-				};
-			},
-			getInfosCreneau: (aNumero) => {
-				var _a;
-				const lCreneau = aInstance.Donnees.getElementParNumero(aNumero);
-				return (
-					(_a = lCreneau.listeRessourcesCumul) === null || _a === void 0
-						? void 0
-						: _a.count()
-				)
-					? lCreneau.estAppelTermine
-						? ObjetTraduction_1.GTraductions.getValeur(
-								"AppelInternat.nbAbsencesSurCreneau",
-								[lCreneau.nbAbsences, lCreneau.nbElevesAttendus],
-							)
-						: ObjetTraduction_1.GTraductions.getValeur(
-								"AppelInternat.nbPrevusSurCreneau",
-								[lCreneau.nbElevesAttendus],
-							)
-					: "";
-			},
-		});
+	jsxIfAvecIcone(aCreneau) {
+		if (aCreneau && aCreneau.listeRessourcesCumul) {
+			return aCreneau.listeRessourcesCumul.count() > 0;
+		}
+		return false;
+	}
+	jsxFuncAttrIcone(aCreneau) {
+		const lTexte =
+			aCreneau && aCreneau.estAppelTermine
+				? ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.AppelFait")
+				: ObjetTraduction_1.GTraductions.getValeur(
+						"AppelInternat.appelNonFait",
+					);
+		return {
+			"aria-label": lTexte,
+			title: lTexte,
+			class:
+				(aCreneau && aCreneau.estAppelTermine
+					? "Image_AppelFait"
+					: "Image_AppelNonFait") + " m-left",
+		};
 	}
 	getTitreZonePrincipale(aParams) {
 		return IE.jsx.str(
@@ -364,14 +334,8 @@ class DonneesListe_CreneauxAppelsInternat extends ObjetDonneesListeFlatDesign_1.
 			aParams.article.getLibelle(),
 			IE.jsx.str("div", {
 				role: "img",
-				"ie-if": (0, jsx_1.jsxFuncAttr)(
-					"avecIcone",
-					aParams.article.getNumero(),
-				),
-				"ie-attr": (0, jsx_1.jsxFuncAttr)(
-					"getAttrIcone",
-					aParams.article.getNumero(),
-				),
+				"ie-if": this.jsxIfAvecIcone.bind(this, aParams.article),
+				"ie-attr": this.jsxFuncAttrIcone.bind(this, aParams.article),
 				"aria-label": ObjetTraduction_1.GTraductions.getValeur(
 					"AppelInternat.appelNonFait",
 				),
@@ -391,19 +355,36 @@ class DonneesListe_CreneauxAppelsInternat extends ObjetDonneesListeFlatDesign_1.
 			lLibelle,
 		);
 	}
+	jsxGetHtmlInfosCreneau(aCreneau) {
+		let lHtml = "";
+		if (
+			aCreneau &&
+			aCreneau.listeRessourcesCumul &&
+			aCreneau.listeRessourcesCumul.count() > 0
+		) {
+			if (aCreneau.estAppelTermine) {
+				lHtml = ObjetTraduction_1.GTraductions.getValeur(
+					"AppelInternat.nbAbsencesSurCreneau",
+					[aCreneau.nbAbsences, aCreneau.nbElevesAttendus],
+				);
+			} else {
+				lHtml = ObjetTraduction_1.GTraductions.getValeur(
+					"AppelInternat.nbPrevusSurCreneau",
+					[aCreneau.nbElevesAttendus],
+				);
+			}
+		}
+		return lHtml;
+	}
 	getZoneComplementaire(aParams) {
 		return IE.jsx.str("div", {
-			"ie-html": (0, jsx_1.jsxFuncAttr)(
-				"getInfosCreneau",
-				aParams.article.getNumero(),
-			),
+			"ie-html": this.jsxGetHtmlInfosCreneau.bind(this, aParams.article),
 		});
 	}
 }
 class DonneesListe_RessourcesAppelsInternat extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aListeDonnees, aCallback) {
 		super(aListeDonnees);
-		this.idLabelSwitch = GUID_1.GUID.getId() + "_";
 		this.callback = aCallback;
 		this.setOptions({ avecBoutonActionLigne: false, avecSelection: false });
 	}
@@ -415,163 +396,6 @@ class DonneesListe_RessourcesAppelsInternat extends ObjetDonneesListeFlatDesign_
 				}),
 			]),
 		];
-	}
-	getControleur(aInstance, aInstanceListe) {
-		return $.extend(true, super.getControleur(aInstance, aInstanceListe), {
-			nodePhotoEleve() {
-				$(this.node).on("error", function () {
-					$(this).attr("src", "FichiersRessource/PortraitSilhouette.png");
-				});
-			},
-			infosAbsenceRessource: (aNumero) => {
-				const lRessource = aInstance.Donnees.getElementParNumero(aNumero);
-				const lNbAbsences = ObjetTraduction_1.GTraductions.getValeur(
-					"AppelInternat.nbElevesAbsent",
-					[lRessource.nbAbsences],
-				);
-				const lNbRetards = ObjetTraduction_1.GTraductions.getValeur(
-					"AppelInternat.nbElevesRetard",
-					[lRessource.nbRetards],
-				);
-				const lStrNbAbsence =
-					lRessource.nbAbsences && lRessource.nbRetards
-						? lNbAbsences + ", " + lNbRetards
-						: lRessource.nbAbsences
-							? lNbAbsences
-							: lRessource.nbRetards
-								? lNbRetards
-								: ObjetTraduction_1.GTraductions.getValeur(
-										"AppelInternat.aucunEleveAbsent",
-									);
-				return lStrNbAbsence;
-			},
-			attrSW: (aNumero) => {
-				const lRessource = aInstance.Donnees.getElementParNumero(aNumero);
-				return {
-					"aria-label": lRessource.estAppelFait
-						? ObjetTraduction_1.GTraductions.getValeur("Oui")
-						: ObjetTraduction_1.GTraductions.getValeur("Non"),
-				};
-			},
-			swAppelfait: {
-				getValue: (aNumero) => {
-					return aInstance.Donnees.getElementParNumero(aNumero).estAppelFait;
-				},
-				setValue: (aNumero, aValeur) => {
-					const lRessource = aInstance.Donnees.getElementParNumero(aNumero);
-					lRessource.estAppelFait = aValeur;
-					this.callback(lRessource);
-				},
-			},
-			attrCB: (aNumero) => {
-				const lEleve = aInstance.Donnees.getElementParNumero(aNumero);
-				return {
-					"aria-label": lEleve.estAbsent
-						? ObjetTraduction_1.GTraductions.getValeur(
-								"AppelInternat.boutonAbsent",
-							)
-						: lEleve.estEnRetard
-							? ObjetTraduction_1.GTraductions.getValeur(
-									"AppelInternat.boutonRetard",
-								)
-							: ObjetTraduction_1.GTraductions.getValeur(
-									"AppelInternat.wai.present",
-								),
-				};
-			},
-			cbAbsence: {
-				getValue: (aNumero) => {
-					return aInstance.Donnees.getElementParNumero(aNumero).estAbsent;
-				},
-				setValue: (aNumero, aValeur) => {
-					const lEleve = aInstance.Donnees.getElementParNumero(aNumero);
-					const lFunc = (aEleve) => {
-						if (aEleve.pere.estAppelFait) {
-							GApplication.getMessage().afficher({
-								message: ObjetTraduction_1.GTraductions.getValeur(
-									"AppelInternat.messConfirmezModifFeuilleAppel",
-								),
-								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
-								callback: (aAccepte) => {
-									if (aAccepte === Enumere_Action_1.EGenreAction.Valider) {
-										aEleve.pere.estAppelFait = false;
-										this.callback(aEleve.pere);
-										this.surCBAbsence(aEleve, aValeur);
-									}
-								},
-							});
-						} else {
-							this.surCBAbsence(aEleve, aValeur);
-						}
-					};
-					if (lEleve.enStage && lEleve.avecConfirmationEnStage && aValeur) {
-						GApplication.getMessage().afficher({
-							message: ObjetTraduction_1.GTraductions.getValeur(
-								"AppelInternat.messConfirmezSaisieAbsenceInternatSurStage",
-							),
-							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
-							callback: (aAccepte) => {
-								if (aAccepte === Enumere_Action_1.EGenreAction.Valider) {
-									lFunc(lEleve);
-								}
-							},
-						});
-					} else {
-						lFunc(lEleve);
-					}
-				},
-				getDisabled: (aNumero) => {
-					const lEleve = aInstance.Donnees.getElementParNumero(aNumero);
-					return lEleve.estExclu || lEleve.enMesureConservatoire;
-				},
-			},
-			cbRetard: {
-				getValue: (aNumero) => {
-					return aInstance.Donnees.getElementParNumero(aNumero).estEnRetard;
-				},
-				setValue: (aNumero, aValeur) => {
-					const lEleve = aInstance.Donnees.getElementParNumero(aNumero);
-					const lFunc = (aEleve) => {
-						if (lEleve.pere.estAppelFait) {
-							GApplication.getMessage().afficher({
-								message: ObjetTraduction_1.GTraductions.getValeur(
-									"AppelInternat.messConfirmezModifFeuilleAppel",
-								),
-								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
-								callback: (aAccepte) => {
-									if (aAccepte === Enumere_Action_1.EGenreAction.Valider) {
-										lEleve.pere.estAppelFait = false;
-										this.callback(lEleve.pere);
-										this.surCBRetard(lEleve, aValeur);
-									}
-								},
-							});
-						} else {
-							this.surCBRetard(lEleve, aValeur);
-						}
-					};
-					if (lEleve.enStage && lEleve.avecConfirmationEnStage && aValeur) {
-						GApplication.getMessage().afficher({
-							message: ObjetTraduction_1.GTraductions.getValeur(
-								"AppelInternat.messConfirmezSaisieRetardInternatSurStage",
-							),
-							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
-							callback: (aAccepte) => {
-								if (aAccepte === Enumere_Action_1.EGenreAction.Valider) {
-									lFunc(lEleve);
-								}
-							},
-						});
-					} else {
-						lFunc(lEleve);
-					}
-				},
-				getDisabled: (aNumero) => {
-					const lEleve = aInstance.Donnees.getElementParNumero(aNumero);
-					return lEleve.estExclu || lEleve.enMesureConservatoire;
-				},
-			},
-		});
 	}
 	surCBAbsence(aEleve, aValeur) {
 		aEleve.estAbsent = aValeur;
@@ -594,20 +418,21 @@ class DonneesListe_RessourcesAppelsInternat extends ObjetDonneesListeFlatDesign_
 	getZoneGauche(aParams) {
 		if (!aParams.article.estCumul) {
 			const lEleve = aParams.article;
-			let lAvecPhoto = GApplication.droits.get(
+			const lAvecPhoto = GApplication.droits.get(
 				ObjetDroitsPN_1.TypeDroits.eleves.consulterPhotosEleves,
 			);
+			const lLibelle = (lEleve && lEleve.getLibelle()) || "";
 			return IE.jsx.str("img", {
-				src: lAvecPhoto ? false : "FichiersRessource/PortraitSilhouette.png",
 				"ie-load-src": lAvecPhoto
 					? ObjetChaine_1.GChaine.creerUrlBruteLienExterne(lEleve, {
 							libelle: "photo.jpg",
 						})
 					: false,
-				"ie-node": (0, jsx_1.jsxFuncAttr)("nodePhotoEleve"),
+				class: "img-portrait",
+				"ie-imgviewer": true,
 				style: "width: 3.5rem;height: 4rem;",
-				alt: "",
-				"aria-hidden": "true",
+				alt: lLibelle,
+				"data-libelle": lLibelle,
 			});
 		}
 	}
@@ -654,91 +479,231 @@ class DonneesListe_RessourcesAppelsInternat extends ObjetDonneesListeFlatDesign_
 			return IE.jsx.str("div", null, lEleve.strClasse);
 		}
 	}
-	getZoneMessageLarge(aParams) {
-		if (aParams.article.estCumul) {
-			return IE.jsx.str(
-				IE.jsx.fragment,
-				null,
-				IE.jsx.str("div", {
-					"ie-html": (0, jsx_1.jsxFuncAttr)(
-						"infosAbsenceRessource",
-						aParams.article.getNumero(),
-					),
-				}),
-				IE.jsx.str(
-					"div",
-					{ class: "flex-contain" },
-					IE.jsx.str(
-						"label",
-						{ id: this.idLabelSwitch + aParams.ligne },
-						ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.AppelFait"),
-						" :",
-					),
-					IE.jsx.str(
-						"ie-switch",
-						{
-							class: "m-left-auto",
-							"ie-model": (0, jsx_1.jsxFuncAttr)(
-								"swAppelfait",
-								aParams.article.getNumero(),
+	jsxGetHtmlInfosAbsenceRessource(aRessource) {
+		const lNbAbsences = ObjetTraduction_1.GTraductions.getValeur(
+			"AppelInternat.nbElevesAbsent",
+			[aRessource.nbAbsences],
+		);
+		const lNbRetards = ObjetTraduction_1.GTraductions.getValeur(
+			"AppelInternat.nbElevesRetard",
+			[aRessource.nbRetards],
+		);
+		const lStrNbAbsence =
+			aRessource.nbAbsences && aRessource.nbRetards
+				? lNbAbsences + ", " + lNbRetards
+				: aRessource.nbAbsences
+					? lNbAbsences
+					: aRessource.nbRetards
+						? lNbRetards
+						: ObjetTraduction_1.GTraductions.getValeur(
+								"AppelInternat.aucunEleveAbsent",
+							);
+		return lStrNbAbsence;
+	}
+	jsxModeleSwitchAppelFait(aRessource) {
+		return {
+			getValue: () => {
+				return aRessource ? aRessource.estAppelFait : false;
+			},
+			setValue: (aValue) => {
+				if (aRessource) {
+					aRessource.estAppelFait = aValue;
+					this.callback(aRessource);
+				}
+			},
+		};
+	}
+	jsxFuncAttrBlocCheckbox(aEleve) {
+		let lAriaLabel = "";
+		if (aEleve) {
+			if (aEleve.estAbsent) {
+				lAriaLabel = ObjetTraduction_1.GTraductions.getValeur(
+					"AppelInternat.boutonAbsent",
+				);
+			} else if (aEleve.estEnRetard) {
+				lAriaLabel = ObjetTraduction_1.GTraductions.getValeur(
+					"AppelInternat.boutonRetard",
+				);
+			} else {
+				lAriaLabel = ObjetTraduction_1.GTraductions.getValeur(
+					"AppelInternat.wai.present",
+				);
+			}
+		}
+		return { "aria-label": lAriaLabel };
+	}
+	jsxModeleCheckboxAbsence(aEleve) {
+		return {
+			getValue: () => {
+				return aEleve && aEleve.estAbsent;
+			},
+			setValue: (aValue) => {
+				const lFunc = (aFnEleve) => {
+					if (aFnEleve.pere.estAppelFait) {
+						GApplication.getMessage().afficher({
+							message: ObjetTraduction_1.GTraductions.getValeur(
+								"AppelInternat.messConfirmezModifFeuilleAppel",
 							),
-							"aria-describedby": this.idLabelSwitch + aParams.ligne,
-							"ie-attr": (0, jsx_1.jsxFuncAttr)(
-								"attrSW",
-								aParams.article.getNumero(),
-							),
-						},
-						IE.jsx.str(
-							"span",
-							null,
-							ObjetTraduction_1.GTraductions.getValeur("Non"),
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+							callback: (aAccepte) => {
+								if (aAccepte === Enumere_Action_1.EGenreAction.Valider) {
+									aFnEleve.pere.estAppelFait = false;
+									this.callback(aFnEleve.pere);
+									this.surCBAbsence(aFnEleve, aValue);
+								}
+							},
+						});
+					} else {
+						this.surCBAbsence(aFnEleve, aValue);
+					}
+				};
+				if (
+					aEleve &&
+					aEleve.enStage &&
+					aEleve.avecConfirmationEnStage &&
+					aValue
+				) {
+					GApplication.getMessage().afficher({
+						message: ObjetTraduction_1.GTraductions.getValeur(
+							"AppelInternat.messConfirmezSaisieAbsenceInternatSurStage",
 						),
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+						callback: (aAccepte) => {
+							if (aAccepte === Enumere_Action_1.EGenreAction.Valider) {
+								lFunc(aEleve);
+							}
+						},
+					});
+				} else {
+					lFunc(aEleve);
+				}
+			},
+			getDisabled: () => {
+				return !aEleve || aEleve.estExclu || aEleve.enMesureConservatoire;
+			},
+		};
+	}
+	jsxModeleCheckboxRetard(aEleve) {
+		return {
+			getValue: () => {
+				return aEleve && aEleve.estEnRetard;
+			},
+			setValue: (aValue) => {
+				const lFunc = (aFnEleve) => {
+					if (aFnEleve.pere.estAppelFait) {
+						GApplication.getMessage().afficher({
+							message: ObjetTraduction_1.GTraductions.getValeur(
+								"AppelInternat.messConfirmezModifFeuilleAppel",
+							),
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+							callback: (aAccepte) => {
+								if (aAccepte === Enumere_Action_1.EGenreAction.Valider) {
+									aFnEleve.pere.estAppelFait = false;
+									this.callback(aFnEleve.pere);
+									this.surCBRetard(aFnEleve, aValue);
+								}
+							},
+						});
+					} else {
+						this.surCBRetard(aFnEleve, aValue);
+					}
+				};
+				if (
+					aEleve &&
+					aEleve.enStage &&
+					aEleve.avecConfirmationEnStage &&
+					aValue
+				) {
+					GApplication.getMessage().afficher({
+						message: ObjetTraduction_1.GTraductions.getValeur(
+							"AppelInternat.messConfirmezSaisieRetardInternatSurStage",
+						),
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+						callback: (aAccepte) => {
+							if (aAccepte === Enumere_Action_1.EGenreAction.Valider) {
+								lFunc(aEleve);
+							}
+						},
+					});
+				} else {
+					lFunc(aEleve);
+				}
+			},
+			getDisabled: () => {
+				return !aEleve || aEleve.estExclu || aEleve.enMesureConservatoire;
+			},
+		};
+	}
+	getZoneMessageLarge(aParams) {
+		const H = [];
+		if (aParams.article.estCumul) {
+			H.push(
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str("div", {
+						"ie-html": this.jsxGetHtmlInfosAbsenceRessource.bind(
+							this,
+							aParams.article,
+						),
+					}),
+					IE.jsx.str(
+						"div",
+						{ class: "flex-contain" },
 						IE.jsx.str(
-							"span",
-							null,
-							ObjetTraduction_1.GTraductions.getValeur("Oui"),
+							"ie-switch",
+							{
+								class: "m-left-auto",
+								"ie-model": this.jsxModeleSwitchAppelFait.bind(
+									this,
+									aParams.article,
+								),
+							},
+							ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.AppelFait"),
 						),
 					),
 				),
 			);
 		} else {
-			return IE.jsx.str(
-				"div",
-				{
-					role: "group",
-					class: "text-right",
-					"ie-attr": (0, jsx_1.jsxFuncAttr)(
-						"attrCB",
-						aParams.article.getNumero(),
-					),
-				},
+			H.push(
 				IE.jsx.str(
-					"ie-checkbox",
+					"div",
 					{
-						"ie-model": (0, jsx_1.jsxFuncAttr)(
-							"cbAbsence",
-							aParams.article.getNumero(),
-						),
-						class: "as-chips rouge avecCouleur-is-disabled m-all",
+						role: "group",
+						class: "flex-contain justify-end",
+						"ie-attr": this.jsxFuncAttrBlocCheckbox.bind(this, aParams.article),
 					},
-					ObjetTraduction_1.GTraductions.getValeur(
-						"AppelInternat.boutonAbsent",
+					IE.jsx.str(
+						"ie-checkbox",
+						{
+							"ie-model": this.jsxModeleCheckboxAbsence.bind(
+								this,
+								aParams.article,
+							),
+							class: "as-chips rouge avecCouleur-is-disabled m-all",
+							title: aParams.article.motifAbsent,
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"AppelInternat.boutonAbsent",
+						),
 					),
-				),
-				IE.jsx.str(
-					"ie-checkbox",
-					{
-						"ie-model": (0, jsx_1.jsxFuncAttr)(
-							"cbRetard",
-							aParams.article.getNumero(),
+					IE.jsx.str(
+						"ie-checkbox",
+						{
+							"ie-model": this.jsxModeleCheckboxRetard.bind(
+								this,
+								aParams.article,
+							),
+							class: "as-chips light-jaune avecCouleur-is-disabled m-all",
+							title: aParams.article.motifRetard,
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"AppelInternat.boutonRetard",
 						),
-						class: "as-chips light-jaune avecCouleur-is-disabled m-all",
-					},
-					ObjetTraduction_1.GTraductions.getValeur(
-						"AppelInternat.boutonRetard",
 					),
 				),
 			);
 		}
+		return H.join("");
 	}
 }

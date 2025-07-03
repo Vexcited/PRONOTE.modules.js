@@ -1,15 +1,12 @@
-const { GDate } = require("ObjetDate.js");
-const { GChaine } = require("ObjetChaine.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { EGenreTriElement } = require("Enumere_TriElement.js");
-const { TypeGenreObservationVS } = require("TypeGenreObservationVS.js");
-class DonneesListe_Encouragements extends ObjetDonneesListe {
-	constructor(aDonnees) {
-		super(aDonnees);
-	}
+exports.DonneesListe_Encouragements = void 0;
+const ObjetDate_1 = require("ObjetDate");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_TriElement_1 = require("Enumere_TriElement");
+const TypeGenreObservationVS_1 = require("TypeGenreObservationVS");
+class DonneesListe_Encouragements extends ObjetDonneesListe_1.ObjetDonneesListe {
 	avecEdition(aParams) {
 		return (
 			aParams.article.demandeur.Numero ===
@@ -18,6 +15,7 @@ class DonneesListe_Encouragements extends ObjetDonneesListe {
 			[
 				DonneesListe_Encouragements.colonnes.date,
 				DonneesListe_Encouragements.colonnes.commentaire,
+				DonneesListe_Encouragements.colonnes.dateFinMiseEnEvidence,
 				DonneesListe_Encouragements.colonnes.publie,
 			].includes(aParams.idColonne)
 		);
@@ -32,10 +30,10 @@ class DonneesListe_Encouragements extends ObjetDonneesListe {
 	avecEvenementCreation() {
 		return true;
 	}
-	avecEvenementSelection() {
+	avecEvenementSelection(aParams) {
 		return true;
 	}
-	avecEvenementSuppression() {
+	avecEvenementSuppression(aParams) {
 		return true;
 	}
 	avecEvenementEdition(aParams) {
@@ -45,35 +43,50 @@ class DonneesListe_Encouragements extends ObjetDonneesListe {
 			aParams.article.visuWeb === false
 		);
 	}
-	avecEvenementApresEdition() {
+	avecEvenementApresEdition(aParams) {
 		return true;
 	}
 	getValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_Encouragements.colonnes.date:
 				if ((aParams.article.date, aParams.article.date.getHours() === 0)) {
-					return GDate.formatDate(
+					return ObjetDate_1.GDate.formatDate(
 						aParams.article.date,
-						GTraductions.getValeur("Dates.LeDate", ["%JJ/%MM/%AAAA"]),
+						ObjetTraduction_1.GTraductions.getValeur("Dates.LeDate", [
+							"%JJ/%MM/%AAAA",
+						]),
 					);
 				} else {
-					return GDate.formatDate(
+					return ObjetDate_1.GDate.formatDate(
 						aParams.article.date,
-						GTraductions.getValeur("Dates.LeDateDebutAHeureDebut", [
-							"%JJ/%MM/%AAAA",
-							"%hh%sh%mm",
-						]),
+						ObjetTraduction_1.GTraductions.getValeur(
+							"Dates.LeDateDebutAHeureDebut",
+							["%JJ/%MM/%AAAA", "%hh%sh%mm"],
+						),
 					);
 				}
 			case DonneesListe_Encouragements.colonnes.saisiePar:
 				return aParams.article.demandeur.Libelle;
 			case DonneesListe_Encouragements.colonnes.commentaire:
 				return aParams.article.commentaire
-					? GChaine.replaceRCToHTML(aParams.article.commentaire)
+					? ObjetChaine_1.GChaine.replaceRCToHTML(aParams.article.commentaire)
 					: "";
+			case DonneesListe_Encouragements.colonnes.dateFinMiseEnEvidence: {
+				if (aParams.article.dateFinMiseEnEvidence) {
+					return ObjetDate_1.GDate.formatDate(
+						aParams.article.dateFinMiseEnEvidence,
+						"%JJ/%MM/%AAAA",
+					);
+				} else {
+					return "";
+				}
+			}
 			case DonneesListe_Encouragements.colonnes.vue:
 				return aParams.article.visuWeb !== false
-					? GDate.formatDate(aParams.article.visuWeb, "%JJ/%MM/%AAAA")
+					? ObjetDate_1.GDate.formatDate(
+							aParams.article.visuWeb,
+							"%JJ/%MM/%AAAA",
+						)
 					: "";
 			case DonneesListe_Encouragements.colonnes.publie:
 				return aParams.article.estPubliee;
@@ -81,18 +94,21 @@ class DonneesListe_Encouragements extends ObjetDonneesListe {
 				return "";
 		}
 	}
-	getVisible(D) {
-		return D.Genre === TypeGenreObservationVS.OVS_Encouragement;
+	getVisible(aDonnee) {
+		return (
+			aDonnee.Genre ===
+			TypeGenreObservationVS_1.TypeGenreObservationVS.OVS_Encouragement
+		);
 	}
 	getTypeValeur(aParams) {
 		if (aParams.article) {
 			switch (aParams.idColonne) {
 				case DonneesListe_Encouragements.colonnes.commentaire:
-					return ObjetDonneesListe.ETypeCellule.Html;
+					return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 				case DonneesListe_Encouragements.colonnes.publie:
-					return ObjetDonneesListe.ETypeCellule.Coche;
+					return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Coche;
 				default:
-					return ObjetDonneesListe.ETypeCellule.Texte;
+					return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 			}
 		}
 	}
@@ -103,11 +119,11 @@ class DonneesListe_Encouragements extends ObjetDonneesListe {
 			lId = this.getId(aColonneDeTri);
 			switch (lId) {
 				case DonneesListe_Encouragements.colonnes.date:
-					lTris.push(ObjetTri.init("date", aGenreTri));
+					lTris.push(ObjetTri_1.ObjetTri.init("date", aGenreTri));
 					break;
 				default:
 					lTris.push(
-						ObjetTri.init(
+						ObjetTri_1.ObjetTri.init(
 							this.getValeurPourTri.bind(this, aColonneDeTri),
 							aGenreTri,
 						),
@@ -116,70 +132,39 @@ class DonneesListe_Encouragements extends ObjetDonneesListe {
 			}
 		}
 		if (lId !== DonneesListe_Encouragements.colonnes.date) {
-			lTris.push(ObjetTri.init("date", EGenreTriElement.Decroissant));
+			lTris.push(
+				ObjetTri_1.ObjetTri.init(
+					"date",
+					Enumere_TriElement_1.EGenreTriElement.Decroissant,
+				),
+			);
 		}
 		if (lId !== DonneesListe_Encouragements.colonnes.saisiePar) {
 			lTris.push(
-				ObjetTri.init((D) => {
+				ObjetTri_1.ObjetTri.init((D) => {
 					return D.demandeur ? D.demandeur.Libelle : "";
-				}, EGenreTriElement.Croissant),
+				}, Enumere_TriElement_1.EGenreTriElement.Croissant),
 			);
 		}
 		return lTris;
 	}
 }
-DonneesListe_Encouragements.colonnes = {
-	date: "vs_encouragements_date",
-	saisiePar: "vs_encouragements_saisiePar",
-	commentaire: "vs_encouragements_commentaire",
-	vue: "vs_encouragements_vue",
-	publie: "vs_encouragemnets_publie",
-};
-function _getColonnes() {
-	const lColonnes = [];
-	lColonnes.push({
-		id: DonneesListe_Encouragements.colonnes.date,
-		taille: 125,
-		titre: { libelle: GTraductions.getValeur("Date") },
-	});
-	lColonnes.push({
-		id: DonneesListe_Encouragements.colonnes.saisiePar,
-		taille: ObjetListe.initColonne(50, 200, 250),
-		titre: {
-			libelle: GTraductions.getValeur("CarnetCorrespondance.Redacteur"),
-		},
-	});
-	lColonnes.push({
-		id: DonneesListe_Encouragements.colonnes.commentaire,
-		taille: ObjetListe.initColonne(80, 280, 840),
-		titre: {
-			libelle: GTraductions.getValeur("CarnetCorrespondance.Encouragement"),
-		},
-	});
-	lColonnes.push({
-		id: DonneesListe_Encouragements.colonnes.publie,
-		taille: 20,
-		titre: {
-			title: GTraductions.getValeur("CarnetCorrespondance.Publie"),
-			classeCssImage: "Image_Publie",
-		},
-	});
-	lColonnes.push({
-		id: DonneesListe_Encouragements.colonnes.vue,
-		taille: 60,
-		titre: { libelle: GTraductions.getValeur("CarnetCorrespondance.Vue") },
-	});
-	return lColonnes;
-}
-DonneesListe_Encouragements.options = {
-	colonnes: _getColonnes(),
-	colonnesCachees: [],
-	hauteurAdapteContenu: true,
-	listeCreations: 0,
-	avecLigneCreation: true,
-	titreCreation: GTraductions.getValeur(
-		"CarnetCorrespondance.NouvelEncouragement",
-	),
-	piedDeListe: null,
-};
-module.exports = { DonneesListe_Encouragements };
+exports.DonneesListe_Encouragements = DonneesListe_Encouragements;
+(function (DonneesListe_Encouragements) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["date"] = "vs_encouragements_date";
+		colonnes["saisiePar"] = "vs_encouragements_saisiePar";
+		colonnes["commentaire"] = "vs_encouragements_commentaire";
+		colonnes["dateFinMiseEnEvidence"] = "vs_encouragements_miseEnEvidence";
+		colonnes["vue"] = "vs_encouragements_vue";
+		colonnes["publie"] = "vs_encouragemnets_publie";
+	})(
+		(colonnes =
+			DonneesListe_Encouragements.colonnes ||
+			(DonneesListe_Encouragements.colonnes = {})),
+	);
+})(
+	DonneesListe_Encouragements ||
+		(exports.DonneesListe_Encouragements = DonneesListe_Encouragements = {}),
+);

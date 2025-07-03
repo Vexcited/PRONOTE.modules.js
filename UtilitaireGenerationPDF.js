@@ -1,11 +1,12 @@
 exports.GenerationPDF = void 0;
 const ObjetRequeteGenerationPDF_1 = require("ObjetRequeteGenerationPDF");
 const Invocateur_1 = require("Invocateur");
-const ObjetChaine_1 = require("ObjetChaine");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const Enumere_MessageHtml_1 = require("Enumere_MessageHtml");
 const UtilitaireOAuth2_1 = require("UtilitaireOAuth2");
 const MethodesObjet_1 = require("MethodesObjet");
+const AccessApp_1 = require("AccessApp");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
 const GenerationPDF = {
 	genererPDF(aParam) {
 		if (aParam.cloudCible) {
@@ -14,9 +15,9 @@ const GenerationPDF = {
 				.then(
 					(aJSON) => {
 						if (aJSON && aJSON.message) {
-							return GApplication.getMessage().afficher({
-								message: aJSON.message,
-							});
+							return (0, AccessApp_1.getApp)()
+								.getMessage()
+								.afficher({ message: aJSON.message });
 						}
 					},
 					(aJSON) => {
@@ -25,7 +26,8 @@ const GenerationPDF = {
 				);
 		}
 		const lAvecProblemeOuvertureWindow = !!(
-			GNavigateur.isAndroid || GApplication.estAppliMobile
+			ObjetNavigateur_1.Navigateur.isAndroid ||
+			(0, AccessApp_1.getApp)().estAppliMobile
 		);
 		let lWindowPDF = null;
 		if (!lAvecProblemeOuvertureWindow && !aParam.cloudCible) {
@@ -63,7 +65,8 @@ function _actionSurRequeteGenerationPDF(
 		if (aWindowPDF && aWindowPDF.close) {
 			aWindowPDF.close();
 		}
-		return GApplication.getMessage()
+		return (0, AccessApp_1.getApp)()
+			.getMessage()
 			.afficher({ message: aJSON.message })
 			.then(() => {});
 	}
@@ -71,13 +74,14 @@ function _actionSurRequeteGenerationPDF(
 		if (aWindowPDF && aWindowPDF.close) {
 			aWindowPDF.close();
 		}
-		return GApplication.getMessage()
+		return (0, AccessApp_1.getApp)()
+			.getMessage()
 			.afficher({
 				message: ObjetTraduction_1.GTraductions.getValeur("requete.erreur"),
 			})
 			.then(() => {});
 	}
-	const lUrl = ObjetChaine_1.GChaine.encoderUrl(aJSON.url);
+	const lUrl = aJSON.url;
 	if (!aAvecProblemeOuvertureWindow) {
 		if (aWindowPDF && aWindowPDF.location) {
 			let lTimeout = null;
@@ -118,7 +122,9 @@ function _surEchecRequetePDFVersCloud(aParamAppel, aJSON) {
 			MethodesObjet_1.MethodesObjet.isString(lMessage) &&
 			lMessage.length > 0
 		) {
-			return GApplication.getMessage().afficher({ message: lMessage });
+			return (0, AccessApp_1.getApp)()
+				.getMessage()
+				.afficher({ message: lMessage });
 		}
 		return;
 	}

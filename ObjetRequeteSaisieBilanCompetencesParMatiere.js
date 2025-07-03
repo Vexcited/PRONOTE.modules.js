@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieBilanCompetencesParMatiere extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieBilanCompetencesParMatiere = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieBilanCompetencesParMatiere extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParametres) {
 		$.extend(this.JSON, aParametres);
 		if (
@@ -11,28 +9,29 @@ class ObjetRequeteSaisieBilanCompetencesParMatiere extends ObjetRequeteSaisie {
 			this.JSON.listeElementsCompetences.existeElementPourValidation()
 		) {
 			this.JSON.listeElementsCompetences.setSerialisateurJSON({
-				methodeSerialisation: _serialiserElementCompetence,
+				methodeSerialisation: this._serialiserElementCompetence.bind(this),
 			});
 		}
 		return this.appelAsynchrone();
 	}
+	_serialiserElementCompetence(aElement, aJSON) {
+		if (
+			aElement.listeColonnesServices &&
+			aElement.listeColonnesServices.existeElementPourValidation()
+		) {
+			aElement.listeColonnesServices.setSerialisateurJSON({
+				methodeSerialisation: this._serialiserColonneService,
+			});
+			aJSON.listeColonnesServices = aElement.listeColonnesServices;
+		}
+	}
+	_serialiserColonneService(aElement, aJSON) {
+		aJSON.niveau = aElement.niveauAcqui;
+	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteSaisieBilanCompetencesParMatiere =
+	ObjetRequeteSaisieBilanCompetencesParMatiere;
+CollectionRequetes_1.Requetes.inscrire(
 	"SaisieBilanCompetencesParMatiere",
 	ObjetRequeteSaisieBilanCompetencesParMatiere,
 );
-function _serialiserElementCompetence(aElement, aJSON) {
-	if (
-		aElement.listeColonnesServices &&
-		aElement.listeColonnesServices.existeElementPourValidation()
-	) {
-		aElement.listeColonnesServices.setSerialisateurJSON({
-			methodeSerialisation: _serialiserColonneService,
-		});
-		aJSON.listeColonnesServices = aElement.listeColonnesServices;
-	}
-}
-function _serialiserColonneService(aElement, aJSON) {
-	aJSON.niveau = aElement.niveauAcqui;
-}
-module.exports = ObjetRequeteSaisieBilanCompetencesParMatiere;

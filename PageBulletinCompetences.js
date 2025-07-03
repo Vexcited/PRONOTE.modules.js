@@ -1,76 +1,72 @@
-const { MethodesObjet } = require("MethodesObjet.js");
-const { Identite } = require("ObjetIdentite.js");
-const { ObjetIdentite_Mobile } = require("ObjetIdentite_Mobile.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const {
-	UtilitaireBulletinEtReleve_Mobile,
-} = require("UtilitaireBulletinEtReleve_Mobile.js");
-const {
-	EGenreNiveauDAcquisition,
-	EGenreNiveauDAcquisitionUtil,
-} = require("Enumere_NiveauDAcquisition.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const {
-	UtilitaireDeserialiserPiedBulletin,
-} = require("UtilitaireDeserialiserPiedBulletin.js");
-const {
-	ObjetRequeteDetailEvaluationsCompetences,
-} = require("ObjetRequeteDetailEvaluationsCompetences.js");
-const {
-	TypeGenreColonneBulletinCompetence,
-} = require("TypeGenreColonneBulletinCompetence.js");
-const {
-	TypeGenreElementBulletinCompetence,
-} = require("TypeGenreElementBulletinCompetence.js");
-const {
-	TypeJaugeEvaluationBulletinCompetence,
-} = require("TypeJaugeEvaluationBulletinCompetence.js");
-const { TypePositionnement } = require("TypePositionnement.js");
-const { PiedDeBulletinMobile } = require("PiedDeBulletinMobile.js");
-const { TypeContexteBulletin } = require("TypeContexteBulletin.js");
-const { TypeReleveBulletin } = require("TypeReleveBulletin.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { tag } = require("tag.js");
-class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
+exports.PageBulletinCompetences = void 0;
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetIdentite_1 = require("ObjetIdentite");
+const ObjetIdentite_Mobile_1 = require("ObjetIdentite_Mobile");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const UtilitaireBulletinEtReleve_Mobile_1 = require("UtilitaireBulletinEtReleve_Mobile");
+const Enumere_NiveauDAcquisition_1 = require("Enumere_NiveauDAcquisition");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const UtilitaireDeserialiserPiedBulletin_1 = require("UtilitaireDeserialiserPiedBulletin");
+const ObjetRequeteDetailEvaluationsCompetences_1 = require("ObjetRequeteDetailEvaluationsCompetences");
+const TypeGenreColonneBulletinCompetence_1 = require("TypeGenreColonneBulletinCompetence");
+const TypeGenreElementBulletinCompetence_1 = require("TypeGenreElementBulletinCompetence");
+const TypeJaugeEvaluationBulletinCompetence_1 = require("TypeJaugeEvaluationBulletinCompetence");
+const TypePositionnement_1 = require("TypePositionnement");
+const PiedDeBulletinMobile_1 = require("PiedDeBulletinMobile");
+const TypeContexteBulletin_1 = require("TypeContexteBulletin");
+const TypeReleveBulletin_1 = require("TypeReleveBulletin");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const AccessApp_1 = require("AccessApp");
+class PageBulletinCompetences extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 	constructor(...aParams) {
 		super(...aParams);
+		const lApplicationSco = (0, AccessApp_1.getApp)();
+		this.etatUtiliteurSco = lApplicationSco.getEtatUtilisateur();
+		this.interfaceMobile = lApplicationSco.getInterfaceMobile();
 		this.donneesRecues = false;
 		this.estBilanParMatiere = false;
-		this.corpsDePage = this.Nom + "_corpsDePage";
-		this.listeEvaluations = this.Nom + "_listeEvaluations";
-		this.piedDePage = this.Nom + "_piedDeBulletin";
-		this.eltProg = this.Nom + "_elementsDuProgramme";
-		this.instancePiedDeBulletin = Identite.creerInstance(PiedDeBulletinMobile, {
-			pere: this,
-			evenement: null,
-		});
+		this.ids = {
+			corpsDePage: this.Nom + "_corpsDePage",
+			listeEvaluations: this.Nom + "_listeEvaluations",
+			eltProg: this.Nom + "_elementsDuProgramme",
+		};
+		this.instancePiedDeBulletin = ObjetIdentite_1.Identite.creerInstance(
+			PiedDeBulletinMobile_1.PiedDeBulletinMobile,
+			{ pere: this, evenement: null },
+		);
 		this.instancePiedDeBulletin.setDonneesContexte({
-			typeContexteBulletin: TypeContexteBulletin.CB_Eleve,
+			typeContexteBulletin:
+				TypeContexteBulletin_1.TypeContexteBulletin.CB_Eleve,
 			avecSaisie: false,
-			typeReleveBulletin: TypeReleveBulletin.BulletinCompetences,
+			typeReleveBulletin:
+				TypeReleveBulletin_1.TypeReleveBulletin.BulletinCompetences,
 		});
 	}
 	setDonnees(aDonneesCorpsDePage, aEstBilanParMatiere) {
 		if (!!aDonneesCorpsDePage.maquette) {
 			this.donnees = aDonneesCorpsDePage;
-			this.listeServices = new ObjetListeElements();
+			this.listeServices = new ObjetListeElements_1.ObjetListeElements();
 			this.estBilanParMatiere = aEstBilanParMatiere;
 			this.donneesRecues = true;
-			this.message = false;
+			this.message = "";
 		} else {
-			this.donnees = false;
+			this.donnees = null;
 			this.estBilanParMatiere = false;
 			this.donneesRecues = false;
-			this.message = false;
+			this.message = "";
 		}
 		this.afficher();
 		const lDonneesPiedDeBulletin =
-			new UtilitaireDeserialiserPiedBulletin().creerPiedDePage(this.donnees);
+			new UtilitaireDeserialiserPiedBulletin_1.UtilitaireDeserialiserPiedBulletin().creerPiedDePage(
+				this.donnees,
+			);
 		const lDonneesAbsences =
-			new UtilitaireDeserialiserPiedBulletin().creerAbsences(this.donnees);
+			new UtilitaireDeserialiserPiedBulletin_1.UtilitaireDeserialiserPiedBulletin().creerAbsences(
+				this.donnees,
+			);
 		this.instancePiedDeBulletin.setDonneesPiedDeBulletin(
 			lDonneesPiedDeBulletin,
 			lDonneesAbsences,
@@ -91,12 +87,12 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 		} else if (this.donneesRecues) {
 			this.formaterListes();
 			if (!!this.estBilanParMatiere) {
-				lHtml.push(this.composeCorpsDePage(this.estBilanParMatiere));
+				lHtml.push(this.composeCorpsDePage(this.estBilanParMatiere, "1"));
 			} else {
 				lHtml.push(this.composeCombo());
 				lHtml.push(
 					'<div id="',
-					this.corpsDePage,
+					this.ids.corpsDePage,
 					'">' +
 						this.composeCorpsDePage(this.estBilanParMatiere, "2") +
 						"</div>",
@@ -111,7 +107,9 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 		if (!!this.donnees && this.donnees.listeLignes.count()) {
 			this.donnees.listeLignes.parcourir((D) => {
 				if (
-					D.getGenre() === TypeGenreElementBulletinCompetence.tEBPM_SurMatiere
+					D.getGenre() ===
+					TypeGenreElementBulletinCompetence_1
+						.TypeGenreElementBulletinCompetence.tEBPM_SurMatiere
 				) {
 					D.estUnDeploiement = true;
 					D.estDeploye = true;
@@ -119,9 +117,11 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 				} else {
 					if (
 						D.getGenre() ===
-							TypeGenreElementBulletinCompetence.tEBPM_EltPilier ||
+							TypeGenreElementBulletinCompetence_1
+								.TypeGenreElementBulletinCompetence.tEBPM_EltPilier ||
 						(D.getGenre() ===
-							TypeGenreElementBulletinCompetence.tEBPM_Service &&
+							TypeGenreElementBulletinCompetence_1
+								.TypeGenreElementBulletinCompetence.tEBPM_Service &&
 							D.estDansRegroupement)
 					) {
 						D.pere = lRegroupement;
@@ -138,7 +138,7 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 			lElem = null,
 			lExisteRegroupement = false;
 		const lIdListeEvaluations =
-			this.listeEvaluations +
+			this.ids.listeEvaluations +
 			(!!aEstBilanParMatiere
 				? "_BilanParMatiere"
 				: "_BilanTransversal_" + aNumero);
@@ -161,7 +161,8 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 					lElem = this.donnees.listeLignes.get(i);
 					if (
 						lElem.getGenre() ===
-						TypeGenreElementBulletinCompetence.tEBPM_SurMatiere
+						TypeGenreElementBulletinCompetence_1
+							.TypeGenreElementBulletinCompetence.tEBPM_SurMatiere
 					) {
 						lHtml.push(
 							'<li class="collection-header collection-group with-action">',
@@ -171,7 +172,8 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 						lExisteRegroupement = true;
 					} else if (
 						lElem.getGenre() ===
-						TypeGenreElementBulletinCompetence.tEBPM_Service
+						TypeGenreElementBulletinCompetence_1
+							.TypeGenreElementBulletinCompetence.tEBPM_Service
 					) {
 						const lEstDansRegroupement = !!lElem.estDansRegroupement;
 						lHtml.push(
@@ -212,14 +214,16 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 						if (!!this.donnees.maquette.avecNiveauxPositionnements) {
 							if (lElem.posLSUNiveau) {
 								lGenrePositionnement =
-									this.donnees.typePositionnement ||
-									TypePositionnement.POS_Echelle;
+									this.donnees.positionnementClasse ||
+									TypePositionnement_1.TypePositionnement.POS_Echelle;
 								lHtml.push('<div class="nivMaitrise-eleve">');
 								lHtml.push(
-									EGenreNiveauDAcquisitionUtil.getImagePositionnement({
-										niveauDAcquisition: lElem.posLSUNiveau,
-										genrePositionnement: lGenrePositionnement,
-									}),
+									Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImagePositionnement(
+										{
+											niveauDAcquisition: lElem.posLSUNiveau,
+											genrePositionnement: lGenrePositionnement,
+										},
+									),
 								);
 								lHtml.push("</div>");
 							}
@@ -245,7 +249,8 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 					lElem = this.donnees.listeLignes.get(i);
 					if (
 						lElem.getGenre() ===
-						TypeGenreElementBulletinCompetence.tEBPM_SurMatiere
+						TypeGenreElementBulletinCompetence_1
+							.TypeGenreElementBulletinCompetence.tEBPM_SurMatiere
 					) {
 						lHtml.push(
 							'<li class="collection-header collection-group with-action">',
@@ -255,7 +260,8 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 						lExisteRegroupement = true;
 					} else if (
 						lElem.getGenre() ===
-							TypeGenreElementBulletinCompetence.tEBPM_Service &&
+							TypeGenreElementBulletinCompetence_1
+								.TypeGenreElementBulletinCompetence.tEBPM_Service &&
 						!!lElem.estDansRegroupement
 					) {
 						lHtml.push(
@@ -272,7 +278,8 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 						this.listeServices.addElement(lElem);
 					} else if (
 						lElem.getGenre() ===
-							TypeGenreElementBulletinCompetence.tEBPM_Service &&
+							TypeGenreElementBulletinCompetence_1
+								.TypeGenreElementBulletinCompetence.tEBPM_Service &&
 						!lElem.estDansRegroupement
 					) {
 						lHtml.push(
@@ -306,7 +313,8 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 					lElem = this.donnees.listeLignes.get(i);
 					if (
 						lElem.getGenre() ===
-						TypeGenreElementBulletinCompetence.tEBPM_SurMatiere
+						TypeGenreElementBulletinCompetence_1
+							.TypeGenreElementBulletinCompetence.tEBPM_SurMatiere
 					) {
 						lHtml.push(
 							'<li class="collection-header collection-group with-action">',
@@ -316,7 +324,8 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 						lExisteRegroupement = true;
 					} else if (
 						lElem.getGenre() ===
-							TypeGenreElementBulletinCompetence.tEBPM_Service &&
+							TypeGenreElementBulletinCompetence_1
+								.TypeGenreElementBulletinCompetence.tEBPM_Service &&
 						!!lElem.estDansRegroupement
 					) {
 						lHtml.push(
@@ -342,7 +351,8 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 						this.listeServices.addElement(lElem);
 					} else if (
 						lElem.getGenre() ===
-							TypeGenreElementBulletinCompetence.tEBPM_Service &&
+							TypeGenreElementBulletinCompetence_1
+								.TypeGenreElementBulletinCompetence.tEBPM_Service &&
 						!lElem.estDansRegroupement
 					) {
 						lHtml.push(
@@ -377,91 +387,92 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 		}
 		return lHtml.join("");
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			combo: {
-				init(aCombo) {
-					aCombo.setDonneesObjetSaisie({});
-					const lListe = new ObjetListeElements();
+	jsxComboModel() {
+		return {
+			init: (aCombo) => {
+				const lListe = new ObjetListeElements_1.ObjetListeElements();
+				lListe.add(
+					new ObjetElement_1.ObjetElement(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"competences.ToutesLesCompetences",
+						),
+						"2",
+					),
+				);
+				if (this.donnees.maquette.avecNiveauxPositionnements) {
 					lListe.add(
-						new ObjetElement(
-							GTraductions.getValeur("competences.ToutesLesCompetences"),
-							"2",
+						new ObjetElement_1.ObjetElement(
+							ObjetTraduction_1.GTraductions.getValeur(
+								"competences.PositionnementGeneral",
+							),
+							"1",
 						),
 					);
-					if (aInstance.donnees.maquette.avecNiveauxPositionnements) {
-						lListe.add(
-							new ObjetElement(
-								GTraductions.getValeur("competences.PositionnementGeneral"),
-								"1",
-							),
-						);
-					}
-					if (
-						!!aInstance.donnees.listeLignes &&
-						aInstance.donnees.listeLignes.count()
-					) {
-						let lElement = false,
-							lNbrEleme = aInstance.donnees.listeLignes.count(),
-							i = 0;
-						while (!lElement & (i < lNbrEleme)) {
-							if (
-								aInstance.donnees.listeLignes.getGenre(i) ===
-								TypeGenreColonneBulletinCompetence.tCBdC_EltPilier
-							) {
-								lElement = aInstance.donnees.listeLignes.get(i);
-							}
-							i++;
-						}
+				}
+				if (!!this.donnees.listeLignes && this.donnees.listeLignes.count()) {
+					let lElement = null;
+					const lNbrEleme = this.donnees.listeLignes.count();
+					let i = 0;
+					while (!lElement && i < lNbrEleme) {
 						if (
-							!!lElement &&
-							!!lElement.listeColonnesTransv &&
-							lElement.listeColonnesTransv.count()
+							this.donnees.listeLignes.getGenre(i) ===
+							TypeGenreColonneBulletinCompetence_1
+								.TypeGenreColonneBulletinCompetence.tCBdC_EltPilier
 						) {
-							lElement.listeColonnesTransv.parcourir((aElementCompetence) => {
-								lListe.add(aElementCompetence);
-							});
+							lElement = this.donnees.listeLignes.get(i);
 						}
+						i++;
 					}
-					aCombo.setDonnees(lListe, 0);
-				},
-				event(aParametresCombo) {
 					if (
-						aParametresCombo &&
-						aParametresCombo.estSelectionManuelle &&
-						aParametresCombo.element
+						!!lElement &&
+						!!lElement.listeColonnesTransv &&
+						lElement.listeColonnesTransv.count()
 					) {
-						$("#" + aInstance.corpsDePage.escapeJQ()).html(
-							aInstance.composeCorpsDePage(
-								aInstance.estBilanParMatiere,
-								aParametresCombo.element.getNumero(),
-							),
-						);
+						lElement.listeColonnesTransv.parcourir((aElementCompetence) => {
+							lListe.add(aElementCompetence);
+						});
 					}
-				},
+				}
+				aCombo.setDonneesObjetSaisie({ liste: lListe });
 			},
-		});
+			event: (aParams) => {
+				if (aParams && aParams.estSelectionManuelle && aParams.element) {
+					$("#" + this.ids.corpsDePage.escapeJQ()).html(
+						this.composeCorpsDePage(
+							this.estBilanParMatiere,
+							aParams.element.getNumero(),
+						),
+					);
+				}
+			},
+		};
 	}
 	composeCombo() {
-		const lHtml = [];
-		lHtml.push("<div>");
-		lHtml.push('<div class="right">');
-		lHtml.push(
-			tag("ie-combo", {
-				"ie-model": "combo",
-				class: "combo-mobile m-all large",
-			}),
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				"div",
+				null,
+				IE.jsx.str(
+					"div",
+					{ class: "right" },
+					IE.jsx.str("ie-combo", {
+						"ie-model": this.jsxComboModel.bind(this),
+						class: "combo-mobile m-all large",
+					}),
+				),
+				IE.jsx.str("div", { class: "clear" }),
+			),
 		);
-		lHtml.push("</div>");
-		lHtml.push('<div class="clear"></div>');
-		lHtml.push("</div>");
-		return lHtml.join("");
+		return H.join("");
 	}
 	ouvrirPanel(aNumeroService, aEstBilanParMatiere) {
 		const lResult = this.composePanel(aNumeroService, aEstBilanParMatiere);
-		GInterface.openPanel(lResult.html, {
+		this.interfaceMobile.openPanel(lResult.html, {
 			optionsFenetre: {
-				titre: GTraductions.getValeur("BulletinEtReleve.DetailsMatiere"),
+				titre: ObjetTraduction_1.GTraductions.getValeur(
+					"BulletinEtReleve.DetailsMatiere",
+				),
 				avecNavigation: !!lResult.service,
 				titreNavigation: () => {
 					return this.composeBandeauService(lResult.service);
@@ -475,16 +486,16 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 				},
 			},
 		});
-		$("#" + this.eltProg.escapeJQ())
+		$("#" + this.ids.eltProg.escapeJQ())
 			.children("ul")
 			.addClass("browser-default");
 	}
 	composePanel(aNumeroElement, aEstBilanParMatiere) {
-		const lResult = {};
+		const lResult = { service: null, html: "" };
 		const lHtml = [];
 		let lElemParent, lElem;
 		if (!!aEstBilanParMatiere) {
-			const lListeElement = new ObjetListeElements();
+			const lListeElement = new ObjetListeElements_1.ObjetListeElements();
 			for (
 				let i = 0, lNbrServices = this.donnees.listeLignes.count();
 				i < lNbrServices;
@@ -494,14 +505,18 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 				if (
 					lElem.getNumero() === aNumeroElement &&
 					(lElem.getGenre() ===
-						TypeGenreElementBulletinCompetence.tEBPM_Competence ||
+						TypeGenreElementBulletinCompetence_1
+							.TypeGenreElementBulletinCompetence.tEBPM_Competence ||
 						lElem.getGenre() ===
-							TypeGenreElementBulletinCompetence.tEBPM_EltPilier)
+							TypeGenreElementBulletinCompetence_1
+								.TypeGenreElementBulletinCompetence.tEBPM_EltPilier)
 				) {
 					lListeElement.addElement(lElem);
 				} else if (
 					lElem.getNumero() === aNumeroElement &&
-					lElem.getGenre() === TypeGenreElementBulletinCompetence.tEBPM_Service
+					lElem.getGenre() ===
+						TypeGenreElementBulletinCompetence_1
+							.TypeGenreElementBulletinCompetence.tEBPM_Service
 				) {
 					lResult.service = lElem;
 					lElemParent = lElem;
@@ -521,7 +536,8 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 				) {
 					lHtml.push('<div style="padding:10px 5px 5px 5px;">');
 					const lColonneEltProg = this.donnees.listeColonnes.getElementParGenre(
-						TypeGenreColonneBulletinCompetence.tCBdC_EltProg,
+						TypeGenreColonneBulletinCompetence_1
+							.TypeGenreColonneBulletinCompetence.tCBdC_EltProg,
 					);
 					const lLibellelColonneEltProg =
 						!!lColonneEltProg && lColonneEltProg.getLibelle() !== ""
@@ -532,7 +548,7 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 							lLibellelColonneEltProg +
 							"</div>",
 					);
-					lHtml.push('<div id="' + this.eltProg + '" class="Espace">');
+					lHtml.push('<div id="' + this.ids.eltProg + '" class="Espace">');
 					if (!!lElemParent.strEltProg && lElemParent.strEltProg !== "") {
 						lHtml.push(lElemParent.strEltProg);
 					}
@@ -545,7 +561,8 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 				if (!!lElemParent.appreciationA && lElemParent.appreciationA !== "") {
 					const lColonneAppreciationsParMatiere =
 						this.donnees.listeColonnes.getElementParGenre(
-							TypeGenreColonneBulletinCompetence.tCBdC_AppreciationA,
+							TypeGenreColonneBulletinCompetence_1
+								.TypeGenreColonneBulletinCompetence.tCBdC_AppreciationA,
 						);
 					const lLibelleAppreciationsParMatiere =
 						!!lColonneAppreciationsParMatiere &&
@@ -553,19 +570,19 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 							? lColonneAppreciationsParMatiere.getLibelle()
 							: "";
 					lHtml.push(
-						UtilitaireBulletinEtReleve_Mobile.composeAppreciation({
-							intituleDAppreciation: lLibelleAppreciationsParMatiere,
-							contenuDAppreciation: lElemParent.appreciationA,
-							styleBlockIntitule: "color : #616161;",
-							styleBlockContenu:
-								"border:1px solid #616161; background-color: #F1F1F1;",
-						}),
+						UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composeAppreciation(
+							{
+								intituleDAppreciation: lLibelleAppreciationsParMatiere,
+								contenuDAppreciation: lElemParent.appreciationA,
+							},
+						),
 					);
 				}
 				if (!!lElemParent.appreciationB && lElemParent.appreciationB !== "") {
 					const lColonneProgressionParMatiere =
 						this.donnees.listeColonnes.getElementParGenre(
-							TypeGenreColonneBulletinCompetence.tCBdC_AppreciationB,
+							TypeGenreColonneBulletinCompetence_1
+								.TypeGenreColonneBulletinCompetence.tCBdC_AppreciationB,
 						);
 					const lLibelleProgressionParMatiere =
 						!!lColonneProgressionParMatiere &&
@@ -573,19 +590,19 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 							? lColonneProgressionParMatiere.getLibelle()
 							: "";
 					lHtml.push(
-						UtilitaireBulletinEtReleve_Mobile.composeAppreciation({
-							intituleDAppreciation: lLibelleProgressionParMatiere,
-							contenuDAppreciation: lElemParent.appreciationB,
-							styleBlockIntitule: "color : #616161;",
-							styleBlockContenu:
-								"border:1px solid #616161; background-color: #F1F1F1;",
-						}),
+						UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composeAppreciation(
+							{
+								intituleDAppreciation: lLibelleProgressionParMatiere,
+								contenuDAppreciation: lElemParent.appreciationB,
+							},
+						),
 					);
 				}
 				if (!!lElemParent.appreciationC && lElemParent.appreciationC !== "") {
 					const lColonneConseilParMatiere =
 						this.donnees.listeColonnes.getElementParGenre(
-							TypeGenreColonneBulletinCompetence.tCBdC_AppreciationC,
+							TypeGenreColonneBulletinCompetence_1
+								.TypeGenreColonneBulletinCompetence.tCBdC_AppreciationC,
 						);
 					const lLibelleConseilParMatiere =
 						!!lColonneConseilParMatiere &&
@@ -593,13 +610,12 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 							? lColonneConseilParMatiere.getLibelle()
 							: "";
 					lHtml.push(
-						UtilitaireBulletinEtReleve_Mobile.composeAppreciation({
-							intituleDAppreciation: lLibelleConseilParMatiere,
-							contenuDAppreciation: lElemParent.appreciationC,
-							styleBlockIntitule: "color : #616161;",
-							styleBlockContenu:
-								"border:1px solid #616161; background-color: #F1F1F1;",
-						}),
+						UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composeAppreciation(
+							{
+								intituleDAppreciation: lLibelleConseilParMatiere,
+								contenuDAppreciation: lElemParent.appreciationC,
+							},
+						),
 					);
 				}
 			}
@@ -618,7 +634,8 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 			if (!!lElem && !!lElem.appreciationA && lElem.appreciationA !== "") {
 				const lColonneAppreciationsTabTransv =
 					this.donnees.listeColonnes.getElementParGenre(
-						TypeGenreColonneBulletinCompetence.tCBdC_AppreciationA,
+						TypeGenreColonneBulletinCompetence_1
+							.TypeGenreColonneBulletinCompetence.tCBdC_AppreciationA,
 					);
 				const lLibelleAppreciationsTabTransv =
 					!!lColonneAppreciationsTabTransv &&
@@ -626,19 +643,19 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 						? lColonneAppreciationsTabTransv.getLibelle()
 						: "";
 				lHtml.push(
-					UtilitaireBulletinEtReleve_Mobile.composeAppreciation({
-						intituleDAppreciation: lLibelleAppreciationsTabTransv,
-						contenuDAppreciation: lElem.appreciationA,
-						styleBlockIntitule: "color : #616161;",
-						styleBlockContenu:
-							"border:1px solid #616161; background-color: #F1F1F1;",
-					}),
+					UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composeAppreciation(
+						{
+							intituleDAppreciation: lLibelleAppreciationsTabTransv,
+							contenuDAppreciation: lElem.appreciationA,
+						},
+					),
 				);
 			}
 			if (!!lElem && !!lElem.appreciationB && lElem.appreciationB !== "") {
 				const lColonneProgressionTabTransv =
 					this.donnees.listeColonnes.getElementParGenre(
-						TypeGenreColonneBulletinCompetence.tCBdC_AppreciationB,
+						TypeGenreColonneBulletinCompetence_1
+							.TypeGenreColonneBulletinCompetence.tCBdC_AppreciationB,
 					);
 				const lLibelleProgressionTabTransv =
 					!!lColonneProgressionTabTransv &&
@@ -646,19 +663,19 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 						? lColonneProgressionTabTransv.getLibelle()
 						: "";
 				lHtml.push(
-					UtilitaireBulletinEtReleve_Mobile.composeAppreciation({
-						intituleDAppreciation: lLibelleProgressionTabTransv,
-						contenuDAppreciation: lElem.appreciationB,
-						styleBlockIntitule: "color : #616161;",
-						styleBlockContenu:
-							"border:1px solid #616161; background-color: #F1F1F1;",
-					}),
+					UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composeAppreciation(
+						{
+							intituleDAppreciation: lLibelleProgressionTabTransv,
+							contenuDAppreciation: lElem.appreciationB,
+						},
+					),
 				);
 			}
 			if (!!lElem && !!lElem.appreciationC && lElem.appreciationC !== "") {
 				const lColonneConseilTabTransv =
 					this.donnees.listeColonnes.getElementParGenre(
-						TypeGenreColonneBulletinCompetence.tCBdC_AppreciationC,
+						TypeGenreColonneBulletinCompetence_1
+							.TypeGenreColonneBulletinCompetence.tCBdC_AppreciationC,
 					);
 				const lLibelleConseilTabTransv =
 					!!lColonneConseilTabTransv &&
@@ -666,13 +683,12 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 						? lColonneConseilTabTransv.getLibelle()
 						: "";
 				lHtml.push(
-					UtilitaireBulletinEtReleve_Mobile.composeAppreciation({
-						intituleDAppreciation: lLibelleConseilTabTransv,
-						contenuDAppreciation: lElem.appreciationC,
-						styleBlockIntitule: "color : #616161;",
-						styleBlockContenu:
-							"border:1px solid #616161; background-color: #F1F1F1;",
-					}),
+					UtilitaireBulletinEtReleve_Mobile_1.UtilitaireBulletinEtReleve_Mobile.composeAppreciation(
+						{
+							intituleDAppreciation: lLibelleConseilTabTransv,
+							contenuDAppreciation: lElem.appreciationC,
+						},
+					),
 				);
 			}
 		}
@@ -682,7 +698,8 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 	composeBandeauService(aService) {
 		const lHtml = [];
 		const lPourcentageReussite = this.donnees.listeColonnes.getElementParGenre(
-			TypeGenreColonneBulletinCompetence.tCBdC_Pourcentage,
+			TypeGenreColonneBulletinCompetence_1.TypeGenreColonneBulletinCompetence
+				.tCBdC_Pourcentage,
 		);
 		lHtml.push("<span>" + aService.strServiceEtProf + "</span>");
 		lHtml.push('<div class="sub-titre-contain">');
@@ -694,7 +711,9 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 		) {
 			lHtml.push(
 				'<div class="per-cent">' +
-					GTraductions.getValeur("competences.TauxDeReussite") +
+					ObjetTraduction_1.GTraductions.getValeur(
+						"competences.TauxDeReussite",
+					) +
 					" " +
 					aService.pourcentage +
 					"%" +
@@ -704,11 +723,14 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 		if (!!aService.posLSUNiveau) {
 			lHtml.push(
 				'<div class="pastille-conteneur">' +
-					EGenreNiveauDAcquisitionUtil.getImagePositionnement({
-						niveauDAcquisition: aService.posLSUNiveau,
-						genrePositionnement:
-							this.donnees.typePositionnement || TypePositionnement.POS_Echelle,
-					}) +
+					Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImagePositionnement(
+						{
+							niveauDAcquisition: aService.posLSUNiveau,
+							genrePositionnement:
+								this.donnees.positionnementClasse ||
+								TypePositionnement_1.TypePositionnement.POS_Echelle,
+						},
+					) +
 					"</div>",
 			);
 		}
@@ -781,7 +803,9 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 										lHtml.push('<div class="nbr">', lNbr, "</div>");
 										lHtml.push(
 											"<div >",
-											EGenreNiveauDAcquisitionUtil.getImage(lNiveau),
+											Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+												lNiveau,
+											),
 											"</div>",
 										);
 										lHtml.push("</div>");
@@ -789,7 +813,9 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 								} else {
 									lHtml.push(
 										"<div >",
-										EGenreNiveauDAcquisitionUtil.getImage(lNiveau),
+										Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+											lNiveau,
+										),
 										"</div>",
 									);
 								}
@@ -822,14 +848,16 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 						if (lAUnNiveauAcquiSaisi) {
 							lHtml.push(
 								'<div class="secondary-content">',
-								EGenreNiveauDAcquisitionUtil.getImage(lCompetence.niveauAcqui),
+								Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+									lCompetence.niveauAcqui,
+								),
 								"</div>",
 							);
 						}
 						lHtml.push(
 							'<div class="secondary-content">',
 							" (",
-							EGenreNiveauDAcquisitionUtil.getImage(
+							Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
 								lCompetence.niveauAcquiCalc,
 							),
 							")",
@@ -839,13 +867,15 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 						if (lAUnNiveauAcquiSaisi) {
 							lHtml.push(
 								'<div class="secondary-content">',
-								EGenreNiveauDAcquisitionUtil.getImage(lCompetence.niveauAcqui),
+								Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+									lCompetence.niveauAcqui,
+								),
 								"</div>",
 							);
 						} else {
 							lHtml.push(
 								'<div class="secondary-content"',
-								EGenreNiveauDAcquisitionUtil.getImage(
+								Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
 									lCompetence.niveauAcquiCalc,
 								),
 								"</div>",
@@ -896,7 +926,7 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 								? "padding:0rem 0.2rem;"
 								: "",
 							'">',
-							EGenreNiveauDAcquisitionUtil.getImage(
+							Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
 								lObjetElementColonneTransv.niveauAcqui,
 							),
 							"</div>",
@@ -913,7 +943,7 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 							: "",
 						'">',
 						" (",
-						EGenreNiveauDAcquisitionUtil.getImage(
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
 							lObjetElementColonneTransv.niveauAcquiCalc,
 						),
 						")",
@@ -927,7 +957,7 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 								? "padding:0rem 0.2rem;"
 								: "",
 							'">',
-							EGenreNiveauDAcquisitionUtil.getImage(
+							Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
 								lObjetElementColonneTransv.niveauAcqui,
 							),
 							"</div>",
@@ -939,7 +969,7 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 								? "padding:0rem 0.2rem;"
 								: "",
 							'">',
-							EGenreNiveauDAcquisitionUtil.getImage(
+							Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
 								lObjetElementColonneTransv.niveauAcquiCalc,
 							),
 							"</div>",
@@ -957,7 +987,7 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 		const lInfos = [];
 		let lTotal = 0,
 			lElt;
-		const lListeNiveauxDAcquisitions = MethodesObjet.dupliquer(
+		const lListeNiveauxDAcquisitions = MethodesObjet_1.MethodesObjet.dupliquer(
 			GParametres.listeNiveauxDAcquisitions,
 		);
 		let lNiveau,
@@ -972,10 +1002,14 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 			: aElem.listeNiveaux;
 		const avecAbsent =
 			!lPourChronologique &&
-			aElem.getGenre() === TypeGenreElementBulletinCompetence.tEBPM_EltPilier;
+			aElem.getGenre() ===
+				TypeGenreElementBulletinCompetence_1.TypeGenreElementBulletinCompetence
+					.tEBPM_EltPilier;
 		const hint = aElem.hintNiveaux;
 		const pourPastille =
-			aElem.getGenre() === TypeGenreElementBulletinCompetence.tEBPM_EltPilier;
+			aElem.getGenre() ===
+			TypeGenreElementBulletinCompetence_1.TypeGenreElementBulletinCompetence
+				.tEBPM_EltPilier;
 		if (!!lPourChronologique && listeNiveaux && listeNiveaux.count()) {
 			lHtml.push(
 				'<li class="collection-header white valign-wrapper',
@@ -991,7 +1025,10 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 				lNiveau = lListeNiveauxDAcquisitions.getElementParGenre(
 					listeNiveaux.getGenre(i),
 				);
-				lCouleur = EGenreNiveauDAcquisitionUtil.getCouleur(lNiveau);
+				lCouleur =
+					Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getCouleur(
+						lNiveau,
+					);
 				lHtml.push(
 					'<div class="InlineBlock" style="width:2rem; height:2rem; border: 1px solid #343434; background-color:',
 					lCouleur,
@@ -1001,7 +1038,9 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 			lHtml.push("</li>");
 			return lHtml.join(lSeparateur);
 		}
-		lListeNiveauxDAcquisitions.setTri([ObjetTri.init("positionJauge")]);
+		lListeNiveauxDAcquisitions.setTri([
+			ObjetTri_1.ObjetTri.init("positionJauge"),
+		]);
 		lListeNiveauxDAcquisitions.trier();
 		for (let i = 0; i < n; i++) {
 			lNiveau = lListeNiveauxDAcquisitions.get(i);
@@ -1009,13 +1048,20 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 				lGenre = lNiveau.getGenre();
 				if (
 					avecAbsent ||
-					(lGenre !== EGenreNiveauDAcquisition.Absent &&
-						lGenre !== EGenreNiveauDAcquisition.NonEvalue)
+					(lGenre !==
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisition.Absent &&
+						lGenre !==
+							Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisition.NonEvalue)
 				) {
-					lCouleur = EGenreNiveauDAcquisitionUtil.getCouleur(lNiveau);
-					lImage = EGenreNiveauDAcquisitionUtil.getImage(lNiveau, {
-						avecTitle: !hint,
-					});
+					lCouleur =
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getCouleur(
+							lNiveau,
+						);
+					lImage =
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+							lNiveau,
+							{ avecTitle: !hint },
+						);
 					lNombre =
 						listeNiveaux && listeNiveaux.getElementParGenre(lGenre)
 							? listeNiveaux.getElementParGenre(lGenre).nbr
@@ -1074,7 +1120,8 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 	_estJaugeChronologique() {
 		return (
 			this.donnees.maquette.genreJauge ===
-			TypeJaugeEvaluationBulletinCompetence.tJBC_Chronologique
+			TypeJaugeEvaluationBulletinCompetence_1
+				.TypeJaugeEvaluationBulletinCompetence.tJBC_Chronologique
 		);
 	}
 	surClickProchainElement(aNumeroElement, aEstSuivant, aEstBilanParMatiere) {
@@ -1106,11 +1153,11 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 		}
 	}
 	getImagePastille(aElement, aNumero) {
+		const lHtml = [];
 		if (
 			!!aElement.listeColonnesTransv &&
 			aElement.listeColonnesTransv.count()
 		) {
-			const lHtml = [];
 			const lCompetence =
 					aElement.listeColonnesTransv.getElementParNumero(aNumero),
 				lExisteUnNiveauAcqui = !!lCompetence.niveauAcqui,
@@ -1123,14 +1170,18 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 				if (lAUnNiveauAcquiSaisi) {
 					lHtml.push(
 						'<div class="fix-bloc">',
-						EGenreNiveauDAcquisitionUtil.getImage(lCompetence.niveauAcqui),
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+							lCompetence.niveauAcqui,
+						),
 						"</div>",
 					);
 				}
 				lHtml.push(
 					'<div class="fix-bloc">',
 					" (",
-					EGenreNiveauDAcquisitionUtil.getImage(lCompetence.niveauAcquiCalc),
+					Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+						lCompetence.niveauAcquiCalc,
+					),
 					")",
 					"</div>",
 				);
@@ -1138,21 +1189,23 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 				if (lAUnNiveauAcquiSaisi) {
 					lHtml.push(
 						'<div class="fix-bloc">',
-						EGenreNiveauDAcquisitionUtil.getImage(lCompetence.niveauAcqui),
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+							lCompetence.niveauAcqui,
+						),
 						"</div>",
 					);
 				} else {
 					lHtml.push(
 						'<div class="fix-bloc"',
-						EGenreNiveauDAcquisitionUtil.getImage(lCompetence.niveauAcquiCalc),
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+							lCompetence.niveauAcquiCalc,
+						),
 						"</div>",
 					);
 				}
 			}
-			return lHtml.join("");
-		} else {
-			return false;
 		}
+		return lHtml.join("");
 	}
 	surClicJaugeEvaluations(aPositionElement) {
 		let lElement;
@@ -1170,77 +1223,79 @@ class ObjetBulletinCompetences extends ObjetIdentite_Mobile {
 			!!lElement.relationsESI &&
 			!!lElement.relationsESI.length
 		) {
-			new ObjetRequeteDetailEvaluationsCompetences(
+			new ObjetRequeteDetailEvaluationsCompetences_1.ObjetRequeteDetailEvaluationsCompetences(
 				this,
-				_surReponseRequeteDetailEvaluations.bind(this, lElement),
+				this._surReponseRequeteDetailEvaluations.bind(this, lElement),
 			).lancerRequete({
 				eleve: GEtatUtilisateur.getMembre(),
-				periode: GEtatUtilisateur.Navigation.getRessource(
-					EGenreRessource.Periode,
+				periode: this.etatUtiliteurSco.Navigation.getRessource(
+					Enumere_Ressource_1.EGenreRessource.Periode,
 				),
 				numRelESI: lElement.relationsESI,
 			});
 		}
 	}
-}
-function _surReponseRequeteDetailEvaluations(aLigne, aJSON) {
-	if (!!aLigne && !!aJSON) {
-		const lHtml = [];
-		lHtml.push('<ul class="collection with-header  bg-white bulletin">');
-		for (let i = 0, lNbrElem = aJSON.listeLignes.count(); i < lNbrElem; i++) {
-			const lElement = aJSON.listeLignes.get(i);
-			if (lElement.getGenre() === 0 || lElement.getGenre() === 1) {
-				lHtml.push(
-					'<li class="collection-header" style="border-bottom-color:#d1d1d1; background-color: #FFFFFF;">',
-				);
-				lHtml.push(
-					'<div class="InlineBlock left-align" style="width:80%; vertical-align:top;">',
-					lElement.getLibelle(),
-					"</div>",
-				);
-				if (!!lElement.strCoef) {
+	_surReponseRequeteDetailEvaluations(aLigne, aJSON) {
+		if (!!aLigne && !!aJSON) {
+			const lHtml = [];
+			lHtml.push('<ul class="collection with-header  bg-white bulletin">');
+			for (let i = 0, lNbrElem = aJSON.listeLignes.count(); i < lNbrElem; i++) {
+				const lElement = aJSON.listeLignes.get(i);
+				if (lElement.getGenre() === 0 || lElement.getGenre() === 1) {
+					lHtml.push('<li class="collection-header browser-default">');
 					lHtml.push(
-						'<div class="InlineBlock right-align" style="width:19%; vertical-align:top; padding-right:2px;">' +
-							GTraductions.getValeur("competences.colonne.coef") +
-							" " +
-							lElement.strCoef,
+						'<div class="InlineBlock left-align" style="width:80%; vertical-align:top;">',
+						lElement.getLibelle(),
 						"</div>",
 					);
-				}
-				lHtml.push("</li>");
-			} else {
-				const lNiveauAcqui = lElement.niveauAcqu;
-				const lNiveauAcquiGlobal =
-					GParametres.listeNiveauxDAcquisitions.getElementParGenre(
-						lNiveauAcqui.getGenre(),
+					if (!!lElement.strCoef) {
+						lHtml.push(
+							'<div class="InlineBlock right-align" style="width:19%; vertical-align:top; padding-right:2px;">' +
+								ObjetTraduction_1.GTraductions.getValeur(
+									"competences.colonne.coef",
+								) +
+								" " +
+								lElement.strCoef,
+							"</div>",
+						);
+					}
+					lHtml.push("</li>");
+				} else {
+					const lNiveauAcqui = lElement.niveauAcqu;
+					const lNiveauAcquiGlobal =
+						GParametres.listeNiveauxDAcquisitions.getElementParGenre(
+							lNiveauAcqui.getGenre(),
+						);
+					lHtml.push(
+						'<li class="collection-item">',
+						'<div style="padding-right: 2.5rem;">',
+						lElement.getLibelle(),
+						!!lNiveauAcqui && !!lNiveauAcqui.observation
+							? '<br/><span style="font-style: italic;">' +
+									lNiveauAcqui.observation +
+									"</span>"
+							: "",
+						"</div>",
+						'<div class="secondary-content" style="width: 2rem; text-align: center;',
+						!!GParametres.afficherAbbreviationNiveauDAcquisition
+							? "right:0.9rem"
+							: "",
+						'" >',
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+							lNiveauAcquiGlobal,
+						),
+						"</div>",
+						"</li>",
 					);
-				lHtml.push(
-					'<li class="collection-item">',
-					'<div style="padding-right: 2.5rem;">',
-					lElement.getLibelle(),
-					!!lNiveauAcqui && !!lNiveauAcqui.observation
-						? '<br/><span style="font-style: italic;">' +
-								lNiveauAcqui.observation +
-								"</span>"
-						: "",
-					"</div>",
-					'<div class="secondary-content" style="width: 2rem; text-align: center;',
-					!!GParametres.afficherAbbreviationNiveauDAcquisition
-						? "right:0.9rem"
-						: "",
-					'" >',
-					EGenreNiveauDAcquisitionUtil.getImage(lNiveauAcquiGlobal),
-					"</div>",
-					"</li>",
-				);
+				}
 			}
+			lHtml.push("</ul>");
+			ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+				ObjetFenetre_1.ObjetFenetre,
+				{ pere: this },
+				{ titre: aLigne.getLibelle(), fermerFenetreSurClicHorsFenetre: true },
+			).afficher(lHtml.join(""));
 		}
-		lHtml.push("</ul>");
-		ObjetFenetre.creerInstanceFenetre(
-			ObjetFenetre,
-			{ pere: this },
-			{ titre: aLigne.getLibelle(), fermerFenetreSurClicHorsFenetre: true },
-		).afficher(lHtml.join(""));
 	}
 }
-module.exports = ObjetBulletinCompetences;
+exports.PageBulletinCompetences = PageBulletinCompetences;

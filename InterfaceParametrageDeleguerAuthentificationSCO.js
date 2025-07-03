@@ -2,13 +2,13 @@ exports.InterfaceParametrageDeleguerAuthentificationSCO = void 0;
 const InterfaceParametrageDeleguerAuthentification_1 = require("InterfaceParametrageDeleguerAuthentification");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetElement_1 = require("ObjetElement");
-const ObjetTraduction_1 = require("ObjetTraduction");
 const WSPublicationServeurHttp_1 = require("WSPublicationServeurHttp");
 const WSGestionDelegationsAuthentification_1 = require("WSGestionDelegationsAuthentification");
 const InterfaceParametrageCASSCO_1 = require("InterfaceParametrageCASSCO");
 const InterfaceParametrageWsFedSco_1 = require("InterfaceParametrageWsFedSco");
 const InterfaceParametrageEduConnect_1 = require("InterfaceParametrageEduConnect");
 const InterfaceParametrageSamlSco_1 = require("InterfaceParametrageSamlSco");
+const InterfacePagePublication_1 = require("InterfacePagePublication");
 class InterfaceParametrageDeleguerAuthentificationSCO extends InterfaceParametrageDeleguerAuthentification_1.InterfaceParametrageDeleguerAuthentification {
 	constructor(...aParams) {
 		super(...aParams);
@@ -35,8 +35,7 @@ class InterfaceParametrageDeleguerAuthentificationSCO extends InterfaceParametra
 				: _b.getEtatActif()) === true
 		);
 	}
-	construireInstances() {
-		super.construireInstances();
+	construireInstancesParametrages() {
 		this.identZoneCAS = this.add(
 			InterfaceParametrageCASSCO_1.InterfaceParametrageCASSCO,
 		);
@@ -51,6 +50,21 @@ class InterfaceParametrageDeleguerAuthentificationSCO extends InterfaceParametra
 				InterfaceParametrageEduConnect_1.InterfaceParametrageEduConnect,
 			);
 		}
+	}
+	getInstanceParametrageCAS() {
+		return this.getInstance(this.identZoneCAS);
+	}
+	getInstanceParametrageWsFed() {
+		return this.getInstance(this.identZoneWsFed);
+	}
+	getInstanceParametrageWsSaml() {
+		return this.getInstance(this.identZoneSaml);
+	}
+	getInstanceParametrageEduConnect() {
+		if (this.objetApplicationConsoles.avecEduConnect) {
+			return this.getInstance(this.identZoneEduConnect);
+		}
+		return null;
 	}
 	getDonneesPourListe() {
 		var _a;
@@ -89,8 +103,8 @@ class InterfaceParametrageDeleguerAuthentificationSCO extends InterfaceParametra
 				lEspaceDeListe.typeEspace !== "Espace_PagePubliqueEtablissement"
 			) {
 				const lEspace = new ObjetElement_1.ObjetElement(
-					ObjetTraduction_1.GTraductions.getValeur(
-						"pageParametresPublication." + lEspaceDeListe.identifiant,
+					InterfacePagePublication_1.TraductionsNomsEspaceConsoleHttpCP.get(
+						lEspaceDeListe.identifiant,
 					),
 					null,
 					lEspaceDeListe.ordinal,

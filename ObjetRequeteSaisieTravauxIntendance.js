@@ -1,16 +1,12 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const {
-	TypeOrigineCreationAvanceeTravaux,
-} = require("TypeOrigineCreationAvanceeTravaux.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-class ObjetRequeteSaisieTravauxIntendance extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieTravauxIntendance = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const TypeOrigineCreationAvanceeTravaux_1 = require("TypeOrigineCreationAvanceeTravaux");
+const MethodesObjet_1 = require("MethodesObjet");
+class ObjetRequeteSaisieTravauxIntendance extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParam) {
 		aParam.listeTvx.setSerialisateurJSON({
-			methodeSerialisation: _serialisation.bind(this),
+			methodeSerialisation: _serialiserDemandeTravaux.bind(this),
 		});
 		if (aParam.ListeFichiers) {
 			aParam.ListeFichiers.setSerialisateurJSON({
@@ -20,18 +16,18 @@ class ObjetRequeteSaisieTravauxIntendance extends ObjetRequeteSaisie {
 		$.extend(this.JSON, aParam);
 		return this.appelAsynchrone();
 	}
-	actionApresRequete() {
-		this.callbackReussite.appel(this.JSONRapportSaisie);
-	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteSaisieTravauxIntendance =
+	ObjetRequeteSaisieTravauxIntendance;
+CollectionRequetes_1.Requetes.inscrire(
 	"SaisieTravauxIntendance",
 	ObjetRequeteSaisieTravauxIntendance,
 );
-function _serialisation(aElement, aJSON) {
+function _serialiserDemandeTravaux(aElement, aJSON) {
 	if (
 		aElement.etat.getGenre() ===
-			TypeOrigineCreationAvanceeTravaux.OCAT_Realise &&
+			TypeOrigineCreationAvanceeTravaux_1.TypeOrigineCreationAvanceeTravaux
+				.OCAT_Realise &&
 		!aElement.nouveauGenreTravaux
 	) {
 		if (
@@ -64,7 +60,7 @@ function _serialisation(aElement, aJSON) {
 		if (aElement.nature) {
 			aJSON.nature = aElement.nature.toJSON();
 		}
-		if (MethodesObjet.isNumeric(aElement.niveauDUrgence)) {
+		if (MethodesObjet_1.MethodesObjet.isNumeric(aElement.niveauDUrgence)) {
 			aJSON.niveauDUrgence = aElement.niveauDUrgence;
 		}
 		if (aElement.destination !== undefined) {
@@ -110,4 +106,3 @@ function _serialisationFichier(aElement, aJSON) {
 		aJSON.idFichier = "" + lIdFichier;
 	}
 }
-module.exports = ObjetRequeteSaisieTravauxIntendance;

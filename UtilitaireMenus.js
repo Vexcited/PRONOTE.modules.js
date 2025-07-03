@@ -205,7 +205,7 @@ exports.UtilitaireMenus = {
 					aAliment.listeAllergenesAlimentaire.count() > 0;
 				H.push(`<div class="aliment m-y-xl">`);
 				H.push(
-					`<div ${lAvecLabels || lAvecAllergene ? 'class="ctn-gauche"' : ""} >${aAliment.getLibelle()}</div>`,
+					`<div ${lAvecLabels || lAvecAllergene ? 'class="ctn-gauche"' : ""}>${aAliment.getLibelle()}</div>`,
 				);
 				if (lAvecLabels || lAvecAllergene) {
 					H.push(`<div class="ctn-droite flex-contain cols flex-gap ">`);

@@ -1,4 +1,5 @@
 exports.ObjetOptionsEspaceLocalPN = void 0;
+const AccessApp_1 = require("AccessApp");
 const ObjetOptionsEspaceLocal_1 = require("ObjetOptionsEspaceLocal");
 class ObjetOptionsEspaceLocalPN extends ObjetOptionsEspaceLocal_1.ObjetOptionsEspaceLocal {
 	getGenreConnexion() {
@@ -10,23 +11,27 @@ class ObjetOptionsEspaceLocalPN extends ObjetOptionsEspaceLocal_1.ObjetOptionsEs
 		this.setOptionsJSON(lJSON);
 	}
 	getSyntheseVocaleActif() {
-		const lApp = GApplication;
+		const lApp = (0, AccessApp_1.getApp)();
 		return lApp.estPrimaire && !!this.getOptionEspace("ieSVActive");
 	}
 	setSyntheseVocaleActif(aActif) {
-		const lApp = GApplication;
+		const lApp = (0, AccessApp_1.getApp)();
 		if (lApp.estPrimaire) {
 			this.setOptionEspace("ieSVActive", aActif);
+		} else {
 		}
 		return this;
 	}
 	getSyntheseVocaleAvecSurlignage() {
-		const lApp = GApplication;
+		const lApp = (0, AccessApp_1.getApp)();
 		return lApp.estPrimaire && !!this.getOptionEspace("ieSVSurLignage");
 	}
 	setSyntheseVocaleAvecSurlignage(aValeur) {
-		const lApp = GApplication;
-		if (lApp.estPrimaire) {
+		const lApp = (0, AccessApp_1.getApp)();
+		if (
+			lApp.estPrimaire ||
+			(lApp.getOptionsDebug() && lApp.getOptionsDebug().forcerSyntheseVocale)
+		) {
 			this.setOptionEspace("ieSVSurLignage", aValeur);
 		}
 		return this;

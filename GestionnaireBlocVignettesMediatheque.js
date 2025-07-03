@@ -1,13 +1,11 @@
-const { GestionnaireBlocDeBase } = require("GestionnaireBloc.js");
-const { ObjetVignetteMediatheque } = require("ObjetVignetteMediatheque.js");
-class GestionnaireBlocVignettesMediatheque extends GestionnaireBlocDeBase {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.GestionnaireBlocVignettesMediatheque = void 0;
+const GestionnaireBloc_1 = require("GestionnaireBloc");
+const ObjetVignetteMediatheque_1 = require("ObjetVignetteMediatheque");
+class GestionnaireBlocVignettesMediatheque extends GestionnaireBloc_1.GestionnaireBlocDeBase {
 	composeBloc(aDataBloc) {
 		const lInstance = this.getInstanceObjetMetier(
 			aDataBloc,
-			ObjetVignetteMediatheque,
+			ObjetVignetteMediatheque_1.ObjetVignetteMediatheque,
 		);
 		return {
 			html: this.composeZoneInstance(lInstance),
@@ -15,4 +13,5 @@ class GestionnaireBlocVignettesMediatheque extends GestionnaireBlocDeBase {
 		};
 	}
 }
-module.exports = { GestionnaireBlocVignettesMediatheque };
+exports.GestionnaireBlocVignettesMediatheque =
+	GestionnaireBlocVignettesMediatheque;

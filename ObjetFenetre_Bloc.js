@@ -1,14 +1,18 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { TypeThemeBouton } = require("Type_ThemeBouton.js");
-const { GPosition } = require("ObjetPosition.js");
-const { GHtml } = require("ObjetHtml.js");
-class ObjetFenetre_Bloc extends ObjetFenetre {
+exports.ObjetFenetre_Bloc = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Type_ThemeBouton_1 = require("Type_ThemeBouton");
+const ObjetPosition_1 = require("ObjetPosition");
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const AccessApp_1 = require("AccessApp");
+class ObjetFenetre_Bloc extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
-		this._donnees = { element: null, gestionnaireBloc: null };
 		this._idBloc = this.Nom + "_fenetre_bloc";
 		this.idScroll = this.Nom + "_scroll";
+		this.hauteurMax = ObjetNavigateur_1.Navigateur.ecranH - 120;
+		this._donnees = { element: null, gestionnaireBloc: null };
 		this.setOptionsFenetre({
 			avecTitre: false,
 			largeur: 600,
@@ -16,22 +20,21 @@ class ObjetFenetre_Bloc extends ObjetFenetre {
 			marge: 7,
 			listeBoutons: [
 				{
-					libelle: GTraductions.getValeur("Fermer"),
+					libelle: ObjetTraduction_1.GTraductions.getValeur("Fermer"),
 					index: 0,
-					theme: TypeThemeBouton.secondaire,
+					theme: Type_ThemeBouton_1.TypeThemeBouton.secondaire,
 				},
 			],
 			avecPaddingContenu: false,
 			positionnerFenetreSurAfficher: false,
 		});
 		this.setLargeurMin(this.optionsFenetre.largeurMin);
-		this.hauteurMax = GNavigateur.ecranH - 120;
 	}
 	setLargeurMin(aValeur) {
 		if (aValeur !== this.optionsFenetre.largeurMin) {
 			this.setOptionsFenetre({ largeurMin: aValeur });
 		}
-		this.largeurMax = GNavigateur.ecranL - 100;
+		this.largeurMax = ObjetNavigateur_1.Navigateur.ecranL - 100;
 		if (this.largeurMax < this.optionsFenetre.largeurMin) {
 			this.largeurMax = this.optionsFenetre.largeurMin;
 		}
@@ -61,12 +64,12 @@ class ObjetFenetre_Bloc extends ObjetFenetre {
 			let lElementAvecMarge = "";
 			if (aIndice > 0) {
 				lElementAvecMarge =
-					'<div style="margin: 2px 10px 5px 10px;" ><hr style="border-color: ' +
-					GCouleur.themeNeutre.light +
+					'<div style="margin: 2px 10px 5px 10px;"><hr style="border-color: ' +
+					(0, AccessApp_1.getApp)().getCouleur().themeNeutre.light +
 					';" /></div>';
 			}
 			lElementAvecMarge += "<div>" + lEltBloc.html + "</div>";
-			GHtml.addHtml(this._idBloc, lElementAvecMarge, {
+			ObjetHtml_1.GHtml.addHtml(this._idBloc, lElementAvecMarge, {
 				controleur: lEltBloc.controleur,
 			});
 		}
@@ -109,7 +112,7 @@ class ObjetFenetre_Bloc extends ObjetFenetre {
 	apresAfficher() {
 		if (!!this._donnees.gestionnaireBloc) {
 			this._donnees.gestionnaireBloc.refresh();
-			GPosition.placer(this.Nom, 0, 0);
+			ObjetPosition_1.GPosition.placer(this.Nom, 0, 0);
 			if (this.idScroll) {
 				const lJqScroll = $("#" + this.idScroll.escapeJQ());
 				if (lJqScroll.length === 1) {
@@ -157,14 +160,14 @@ class ObjetFenetre_Bloc extends ObjetFenetre {
 				}
 			}
 			if (this._donnees.coordonnees) {
-				GPosition.placer(
+				ObjetPosition_1.GPosition.placer(
 					this.Nom,
 					this._donnees.coordonnees.left,
 					this._donnees.coordonnees.top,
 				);
 				this.setCoordonnees();
 			} else {
-				GPosition.centrer(this.Nom);
+				ObjetPosition_1.GPosition.centrer(this.Nom);
 			}
 		}
 	}
@@ -175,30 +178,32 @@ class ObjetFenetre_Bloc extends ObjetFenetre {
 		} else {
 			const lHauteurZoneDeplacement = this.optionsFenetre.marge + 16;
 			T.push(
-				'<div class="ZoneDeplacementFenetre" ie-draggable="getDragFenetre" style="position:absolute;width:100%; height: ',
-				lHauteurZoneDeplacement,
-				"px; top: -",
-				lHauteurZoneDeplacement,
-				'px; left:0px; z-index:100;"></div>',
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str("div", {
+						class: "ZoneDeplacementFenetre",
+						"ie-draggable": this.getDragFenetre.bind(this),
+						style: `position:absolute;width:100%; height:${lHauteurZoneDeplacement}px; top: -${lHauteurZoneDeplacement}px; left:0px; z-index:100;`,
+					}),
+					IE.jsx.str(
+						"div",
+						{
+							id: this.idScroll,
+							class: "overflow-auto",
+							style: `width:100%; height:100%; max-height:${this.hauteurMax}px; max-width:${this.largeurMax}px;`,
+						},
+						IE.jsx.str("div", { id: this._idBloc, tabindex: "0" }),
+					),
+				),
 			);
-			T.push(
-				'<div id="',
-				this.idScroll,
-				'" class="overflow-auto" style="width:100%; height:100%; max-height:',
-				this.hauteurMax,
-				"px; max-width:",
-				this.largeurMax,
-				'px;">',
-			);
-			T.push('<div id="', this._idBloc, '" tabindex="0"></div>');
-			T.push("</div>");
 		}
 		return T.join("");
 	}
 	focusSurPremierElement() {
-		if (GHtml.elementExiste(this._idBloc)) {
-			GHtml.setFocus(this._idBloc);
+		if (ObjetHtml_1.GHtml.elementExiste(this._idBloc)) {
+			ObjetHtml_1.GHtml.setFocus(this._idBloc);
 		}
 	}
 }
-module.exports = { ObjetFenetre_Bloc };
+exports.ObjetFenetre_Bloc = ObjetFenetre_Bloc;

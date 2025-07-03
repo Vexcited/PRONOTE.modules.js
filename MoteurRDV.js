@@ -23,7 +23,6 @@ const Enumere_Ressource_1 = require("Enumere_Ressource");
 const ObjetListe_1 = require("ObjetListe");
 const GUID_1 = require("GUID");
 const ObjetTri_1 = require("ObjetTri");
-const jsx_1 = require("jsx");
 const MethodesObjet_1 = require("MethodesObjet");
 const ObjetChaine_1 = require("ObjetChaine");
 const Type_ThemeBouton_1 = require("Type_ThemeBouton");
@@ -295,7 +294,7 @@ class MoteurRDV {
 		return lInfoManquante
 			? IE.jsx.str(
 					"span",
-					{ class: "like-link" },
+					{ class: "like-link alert-color" },
 					lStrRaison,
 					IE.jsx.str("i", { class: "icon_justifier", "aria-hidden": "true" }),
 				)
@@ -708,6 +707,7 @@ class MoteurRDV {
 		lRDV.listeParticipantRDV = new ObjetListeElements_1.ObjetListeElements();
 		if (aNatureRDV === TypesRDV_4.TypeNatureRDV.tNRDV_EnSerie) {
 			lRDV.tabFamillesParticipantRDV = [];
+			lRDV.nbElevesConcernes = 0;
 			lRDV.estRdvSessionSerie = true;
 		} else if (
 			aNatureRDV === TypesRDV_4.TypeNatureRDV.tNRDV_EnSerieCreneauxImposes
@@ -1148,8 +1148,7 @@ class MoteurRDV {
 		let lMoteurRdv = this;
 		return {
 			getIcone() {
-				let lIcon = lMoteurRdv.getIconLieuRdv();
-				return IE.jsx.str("i", { class: lIcon, "aria-hidden": "true" });
+				return lMoteurRdv.getIconLieuRdv();
 			},
 			getLibelle: function () {
 				if (aPlageHoraireCreneaux && aPlageHoraireCreneaux.lieu) {
@@ -1170,12 +1169,16 @@ class MoteurRDV {
 								aGenreRessource,
 								aListeRessourcesSelectionnees,
 							) {
-								let lNbLieux = aListeRessourcesSelectionnees.count();
-								if (lNbLieux === 1) {
+								let lNbLieux =
+									aListeRessourcesSelectionnees === null ||
+									aListeRessourcesSelectionnees === void 0
+										? void 0
+										: aListeRessourcesSelectionnees.count();
+								if (aListeRessourcesSelectionnees || lNbLieux === 0) {
+									aPlageHoraireCreneaux.lieu = null;
+								} else if (lNbLieux === 1) {
 									aPlageHoraireCreneaux.lieu =
 										aListeRessourcesSelectionnees.get(0);
-								} else if (lNbLieux === 0) {
-									aPlageHoraireCreneaux.lieu = null;
 								} else {
 								}
 								aPlageHoraireCreneaux.setEtat(
@@ -1191,7 +1194,7 @@ class MoteurRDV {
 									},
 								};
 								const lTitre = ObjetTraduction_1.GTraductions.getValeur(
-									"TvxIntendance.FenetreSelectionLieu_Titre",
+									"RDV.FenetreSelectionLieu_Titre",
 								);
 								aInstance.paramsListe = lparamsListe;
 								aInstance.setOptionsFenetre({
@@ -1328,46 +1331,6 @@ class MoteurRDV {
 			},
 		};
 	}
-	_getChipsHeureCreneauPropose(aInstance, aRdv, aOptions) {
-		let lMoteurRdv = this;
-		return {
-			eventBtn: (aNumeroCreneau) => {
-				let lCreneau =
-					aRdv.session.listeCreneauxProposes.getElementParNumero(
-						aNumeroCreneau,
-					);
-				if (lCreneau) {
-					lCreneau.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
-					aRdv.session.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
-					aRdv.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
-				}
-			},
-			getOptions(aNumeroCreneau) {
-				let lCreneau =
-					aRdv.session.listeCreneauxProposes.getElementParNumero(
-						aNumeroCreneau,
-					);
-				return {
-					avecBtn:
-						aOptions.avecSuppressionCreneau &&
-						(!lMoteurRdv.estUnRdvEnSerie(aRdv) ||
-							(lCreneau &&
-								(!lMoteurRdv.estCreneauOccupe(lCreneau) ||
-									lCreneau.estSupprimable === true))),
-				};
-			},
-			getDisabled: function (aNumeroCreneau) {
-				return false;
-			},
-			getTitle(aNumeroCreneau) {
-				let lCreneau =
-					aRdv.session.listeCreneauxProposes.getElementParNumero(
-						aNumeroCreneau,
-					);
-				return lCreneau ? lMoteurRdv._getTitleCreneau(lCreneau) : "";
-			},
-		};
-	}
 	_getTitleCreneau(aCreneau) {
 		let lStrHint = "";
 		switch (aCreneau.etat) {
@@ -1453,27 +1416,25 @@ class MoteurRDV {
 			controleur: lControleur,
 		});
 	}
-	_getRadioSelectionCreneau(aInstance, aRdv, aOptions) {
-		let lMoteurRdv = this;
+	jsxModeleRadioSelectionCreneau(aRdv, aCreneau, aOptions) {
 		return {
-			getValue: function (aNumeroCreneau) {
-				return aRdv.creneau !== null && aRdv.creneau !== undefined
-					? aNumeroCreneau === aRdv.creneau.getNumero()
+			getValue: () => {
+				return aRdv && aRdv.creneau && aCreneau
+					? aCreneau.getNumero() === aRdv.creneau.getNumero()
 					: false;
 			},
-			setValue: function (aNumeroCreneau) {
-				let lCreneau =
-					aRdv.session.listeCreneauxProposes.getElementParNumero(
-						aNumeroCreneau,
-					);
-				if (lCreneau) {
-					aRdv.creneau = lCreneau;
+			setValue: (aValue) => {
+				if (aCreneau) {
+					aRdv.creneau = aCreneau;
 					aRdv.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
-					lMoteurRdv._getConfirmSurChoixCreneau(aRdv, aOptions);
+					this._getConfirmSurChoixCreneau(aRdv, aOptions);
 				}
 			},
-			getDisabled: function (aNumeroCreneau) {
+			getDisabled: () => {
 				return false;
+			},
+			getName: () => {
+				return `MoteurRDV_SelectionCrenea`;
 			},
 		};
 	}
@@ -1481,8 +1442,7 @@ class MoteurRDV {
 		let lMoteurRdv = this;
 		return {
 			getIcone() {
-				let lIcon = lMoteurRdv.getIconLieuRdv();
-				return IE.jsx.str("i", { class: lIcon, "aria-hidden": "true" });
+				return lMoteurRdv.getIconLieuRdv();
 			},
 			getLibelle: function () {
 				if (aCreneau && aCreneau.lieu) {
@@ -1503,11 +1463,15 @@ class MoteurRDV {
 								aGenreRessource,
 								aListeRessourcesSelectionnees,
 							) {
-								let lNbLieux = aListeRessourcesSelectionnees.count();
-								if (lNbLieux === 1) {
-									aCreneau.lieu = aListeRessourcesSelectionnees.get(0);
-								} else if (lNbLieux === 0) {
+								let lNbLieux =
+									aListeRessourcesSelectionnees === null ||
+									aListeRessourcesSelectionnees === void 0
+										? void 0
+										: aListeRessourcesSelectionnees.count();
+								if (!aListeRessourcesSelectionnees || lNbLieux === 0) {
 									aCreneau.lieu = null;
+								} else if (lNbLieux === 1) {
+									aCreneau.lieu = aListeRessourcesSelectionnees.get(0);
 								} else {
 								}
 								aCreneau.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
@@ -1521,7 +1485,7 @@ class MoteurRDV {
 									},
 								};
 								const lTitre = ObjetTraduction_1.GTraductions.getValeur(
-									"TvxIntendance.FenetreSelectionLieu_Titre",
+									"RDV.FenetreSelectionLieu_Titre",
 								);
 								aInstance.paramsListe = lparamsListe;
 								aInstance.setOptionsFenetre({
@@ -1562,7 +1526,7 @@ class MoteurRDV {
 			aRdv.telephone,
 		);
 		let lStrTelOnly = ObjetChaine_1.GChaine.formatTelephone(aRdv.telephone);
-		let lStrTelAvecEspaces = ObjetChaine_1.GChaine.geStrTelephoneAvecEspaces(
+		let lStrTelAvecEspaces = ObjetChaine_1.GChaine.getStrTelephoneAvecEspaces(
 			aRdv.telephone,
 		);
 		let lStrAff = IE.estMobile
@@ -1614,7 +1578,7 @@ class MoteurRDV {
 			{ class: "flex-contain" },
 			IE.jsx.str("input", {
 				"ie-model": "indTelCible",
-				class: "round-style m-right ",
+				class: "m-right ",
 				"ie-indicatiftel": true,
 				type: "text",
 				tabindex: "0",
@@ -1625,7 +1589,6 @@ class MoteurRDV {
 			IE.jsx.str("input", {
 				id: aIdTel,
 				"ie-model": "telCible",
-				class: "round-style",
 				"ie-telephone": true,
 				type: "text",
 				tabindex: "0",
@@ -2043,7 +2006,7 @@ class MoteurRDV {
 						required: true,
 						type: "time",
 						"ie-model": "inputHeureDebPlageCreneau",
-						class: "round-style like-input",
+						class: "like-input",
 						"aria-label":
 							ObjetTraduction_1.GTraductions.getValeur("RDV.hDebPlage"),
 					}),
@@ -2056,7 +2019,7 @@ class MoteurRDV {
 						required: true,
 						type: "time",
 						"ie-model": "inputHeureFinPlageCreneau",
-						class: "round-style like-input",
+						class: "like-input",
 						"aria-label":
 							ObjetTraduction_1.GTraductions.getValeur("RDV.hFinPlage"),
 					}),
@@ -2159,8 +2122,8 @@ class MoteurRDV {
 					required: true,
 					type: "time",
 					"ie-model": "inputHeureDebCreneau",
-					size: "3",
-					class: "round-style real-size",
+					style: { width: "5.4rem" },
+					class: "real-size",
 					"aria-label":
 						ObjetTraduction_1.GTraductions.getValeur("RDV.hDebCreneau"),
 				}),
@@ -2377,7 +2340,7 @@ class MoteurRDV {
 				H.push(
 					IE.jsx.str(
 						"div",
-						{ class: "TexteRougeFonce" },
+						{ class: "color-red-foncee" },
 						lStrPlusDeCreneauxReservable,
 					),
 				);
@@ -2405,7 +2368,7 @@ class MoteurRDV {
 							{ class: ["m-top-l"] },
 							IE.jsx.str(
 								"span",
-								{ class: "TexteRougeFonce" },
+								{ class: "color-red-foncee" },
 								lStrPlusDeCreneauxReservable,
 							),
 						)
@@ -2522,9 +2485,6 @@ class MoteurRDV {
 		return lEstPropositionEnCours && !this.estCtxResponsableDeRDV();
 	}
 	composeEtiquettesChoixCreneau(aInstance, aRdv, aListeCreneaux, aOptions) {
-		let lMoteurRdv = this;
-		aInstance.controleur["radioSelectionCreneau"] =
-			lMoteurRdv._getRadioSelectionCreneau(aInstance, aRdv, aOptions);
 		const H = [];
 		aListeCreneaux.parcourir((aCreneau) => {
 			if (!this.estCreneauOccupe(aCreneau) && !this.estCreneauPasse(aCreneau)) {
@@ -2532,11 +2492,13 @@ class MoteurRDV {
 					IE.jsx.str(
 						"ie-radio",
 						{
-							name: "radioSelectionCreneau",
-							title: this._getTitleCreneau(aCreneau),
-							"ie-model": (0, jsx_1.jsxFuncAttr)("radioSelectionCreneau", [
-								aCreneau.getNumero(),
-							]),
+							"ie-title": this.jsxGetTitleCreneau.bind(this, aCreneau),
+							"ie-model": this.jsxModeleRadioSelectionCreneau.bind(
+								this,
+								aRdv,
+								aCreneau,
+								aOptions,
+							),
 							class: [
 								"as-chips",
 								"tag-style",
@@ -2562,10 +2524,60 @@ class MoteurRDV {
 	getIconCreneauOccupe() {
 		return "icon_volume_horaire";
 	}
+	jsxModeleCheckboxHeureCreneauPropose(
+		aRdv,
+		aCreneau,
+		aAvecSuppressionCreneau,
+	) {
+		return {
+			eventBtn: () => {
+				if (aCreneau) {
+					aCreneau.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+					aRdv.session.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+					aRdv.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+				}
+			},
+			getOptions: () => {
+				return {
+					avecBtn:
+						aAvecSuppressionCreneau &&
+						(!this.estUnRdvEnSerie(aRdv) ||
+							(aCreneau &&
+								(!this.estCreneauOccupe(aCreneau) ||
+									aCreneau.estSupprimable === true))),
+				};
+			},
+			getDisabled: () => {
+				return false;
+			},
+		};
+	}
+	jsxGetTitleCreneau(aCreneau) {
+		let lStrHint = "";
+		switch (aCreneau.etat) {
+			case TypesRDV_2.TypeEtatCreneauSessionRDV.tecsrdv_Occupe:
+				lStrHint = ObjetTraduction_1.GTraductions.getValeur("RDV.occupe");
+				break;
+			case TypesRDV_2.TypeEtatCreneauSessionRDV.tecsrdv_Refuse:
+				lStrHint = ObjetTraduction_1.GTraductions.getValeur("RDV.refuse");
+				break;
+			default:
+				if (this.estCreneauPasse(aCreneau)) {
+					lStrHint = ObjetTraduction_1.GTraductions.getValeur("RDV.expire");
+				} else {
+					lStrHint =
+						aCreneau.modalite !==
+						TypesRDV_2.TypeModaliteCreneauRDV.tmcrdv_Presentiel
+							? TypesRDV_5.TypeModaliteCreneauRDVUtil.getStr(aCreneau.modalite)
+							: aCreneau.lieu
+								? aCreneau.lieu.getLibelle()
+								: "";
+				}
+				break;
+		}
+		return lStrHint;
+	}
 	composeEtiquettesCreneaux(aInstance, aRdv, aListeCreneaux, aOptions) {
-		let lMoteurRdv = this;
-		aInstance.controleur["chipsHeureCreneauPropose"] =
-			lMoteurRdv._getChipsHeureCreneauPropose(aInstance, aRdv, aOptions);
 		const H = [];
 		aListeCreneaux.parcourir((aCreneau) => {
 			if (aCreneau.existe()) {
@@ -2582,13 +2594,13 @@ class MoteurRDV {
 					IE.jsx.str(
 						"ie-chips",
 						{
-							"ie-model": (0, jsx_1.jsxFuncAttr)("chipsHeureCreneauPropose", [
-								aCreneau.getNumero(),
-							]),
-							"ie-title": (0, jsx_1.jsxFuncAttr)(
-								"chipsHeureCreneauPropose.getTitle",
-								[aCreneau.getNumero()],
+							"ie-model": this.jsxModeleCheckboxHeureCreneauPropose.bind(
+								this,
+								aRdv,
+								aCreneau,
+								aOptions.avecSuppressionCreneau,
 							),
+							"ie-title": this.jsxGetTitleCreneau.bind(this, aCreneau),
 							class: [lClassIcon],
 						},
 						ObjetDate_1.GDate.formatDate(aCreneau.debut, "%hh%sh%mm"),

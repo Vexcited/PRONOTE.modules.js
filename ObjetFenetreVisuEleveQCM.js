@@ -1,25 +1,25 @@
-const { ObjetVisuEleve } = require("ObjetVisuEleveQCM.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { TypeCallbackVisuEleveQCM } = require("ObjetVisuEleveQCM.js");
-const { ObjetRequeteQCMQuestions } = require("ObjetRequeteQCMQuestions.js");
-const {
-	ObjetRequeteSaisieQCMReponses,
-} = require("ObjetRequeteSaisieQCMReponses.js");
-class ObjetFenetreVisuEleveQCM extends ObjetFenetre {
+exports.ObjetFenetreVisuEleveQCM = void 0;
+const ObjetVisuEleveQCM_1 = require("ObjetVisuEleveQCM");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetVisuEleveQCM_2 = require("ObjetVisuEleveQCM");
+const ObjetRequeteQCMQuestions_1 = require("ObjetRequeteQCMQuestions");
+const ObjetRequeteSaisieQCMReponses_1 = require("ObjetRequeteSaisieQCMReponses");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+class ObjetFenetreVisuEleveQCM extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.eleve = null;
 		this.afficherCopieCachee = false;
 		this.idVisuEleve = this.Nom + "_VisuEleve";
-		this.objetVisuEleve = new ObjetVisuEleve(
+		this.objetVisuEleve = new ObjetVisuEleveQCM_1.ObjetVisuEleve(
 			this.Nom + ".objetVisuEleve",
 			this.evenementVisuEleve.bind(this),
 		);
 		this.setOptionsFenetre({
 			modale: true,
-			largeur: GNavigateur.clientL - 76,
-			hauteur: GNavigateur.clientH - 80,
-			hauteurMaxContenu: GNavigateur.clientH - 160 - 10,
+			largeur: ObjetNavigateur_1.Navigateur.clientL - 76,
+			hauteur: ObjetNavigateur_1.Navigateur.clientH - 80,
+			hauteurMaxContenu: ObjetNavigateur_1.Navigateur.clientH - 160 - 10,
 		});
 	}
 	composeContenu() {
@@ -65,12 +65,12 @@ class ObjetFenetreVisuEleveQCM extends ObjetFenetre {
 			return;
 		}
 		switch (aParam.action) {
-			case TypeCallbackVisuEleveQCM.get:
+			case ObjetVisuEleveQCM_2.TypeCallbackVisuEleveQCM.get:
 				if (
 					GEtatUtilisateur.estEspaceExecutionQCM() &&
 					aParam.pourInitialisation
 				) {
-					new ObjetRequeteSaisieQCMReponses(
+					new ObjetRequeteSaisieQCMReponses_1.ObjetRequeteSaisieQCMReponses(
 						this,
 						this._actionSurQCMInitialisation.bind(this, aParam),
 					).lancerRequete(aParam);
@@ -78,15 +78,15 @@ class ObjetFenetreVisuEleveQCM extends ObjetFenetre {
 					this._actionSurQCMInitialisation(aParam);
 				}
 				break;
-			case TypeCallbackVisuEleveQCM.set:
-				new ObjetRequeteSaisieQCMReponses(
+			case ObjetVisuEleveQCM_2.TypeCallbackVisuEleveQCM.set:
+				new ObjetRequeteSaisieQCMReponses_1.ObjetRequeteSaisieQCMReponses(
 					this,
 					this._actionSurSaisieReponses,
 				).lancerRequete(aParam);
 				break;
-			case TypeCallbackVisuEleveQCM.close:
+			case ObjetVisuEleveQCM_2.TypeCallbackVisuEleveQCM.close:
 				if (aParam.pourCloture && GEtatUtilisateur.estEspaceExecutionQCM()) {
-					new ObjetRequeteSaisieQCMReponses(
+					new ObjetRequeteSaisieQCMReponses_1.ObjetRequeteSaisieQCMReponses(
 						this,
 						this._actionSurSaisieReponses,
 					).lancerRequete(aParam);
@@ -96,8 +96,10 @@ class ObjetFenetreVisuEleveQCM extends ObjetFenetre {
 					this.fermer();
 				}
 				break;
-			case TypeCallbackVisuEleveQCM.croixFermeture:
-				this.callback.appel({ action: TypeCallbackVisuEleveQCM.close });
+			case ObjetVisuEleveQCM_2.TypeCallbackVisuEleveQCM.croixFermeture:
+				this.callback.appel({
+					action: ObjetVisuEleveQCM_2.TypeCallbackVisuEleveQCM.close,
+				});
 				break;
 		}
 	}
@@ -109,7 +111,7 @@ class ObjetFenetreVisuEleveQCM extends ObjetFenetre {
 			aParamsRequeteQCMInitialisation.afficherCopieCachee =
 				this.afficherCopieCachee;
 		}
-		new ObjetRequeteQCMQuestions(
+		new ObjetRequeteQCMQuestions_1.ObjetRequeteQCMQuestions(
 			this,
 			this._actionSurSaisieQCMQuestions,
 		).lancerRequete(aParamsRequeteQCMInitialisation);
@@ -120,7 +122,7 @@ class ObjetFenetreVisuEleveQCM extends ObjetFenetre {
 	_actionSurSaisieReponses(aParam) {
 		this.setDonneesReponse(aParam);
 	}
-	fermer(aSurInteractionUtilisateur) {
+	async fermer(aSurInteractionUtilisateur) {
 		const lEnAffichage = this.estAffiche();
 		super.fermer(aSurInteractionUtilisateur);
 		this.qcm = undefined;
@@ -135,9 +137,9 @@ class ObjetFenetreVisuEleveQCM extends ObjetFenetre {
 				: aSurInteractionUtilisateur;
 		if (lEnAffichage && lSurInteractionUtilisateur) {
 			this.evenementVisuEleve({
-				action: TypeCallbackVisuEleveQCM.croixFermeture,
+				action: ObjetVisuEleveQCM_2.TypeCallbackVisuEleveQCM.croixFermeture,
 			});
 		}
 	}
 }
-module.exports = { ObjetFenetreVisuEleveQCM };
+exports.ObjetFenetreVisuEleveQCM = ObjetFenetreVisuEleveQCM;

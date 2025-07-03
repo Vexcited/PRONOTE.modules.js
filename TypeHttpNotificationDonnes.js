@@ -34,6 +34,9 @@ var TypeHttpNotificationDonnes;
 	TypeHttpNotificationDonnes[
 		(TypeHttpNotificationDonnes["THND_Kiosque"] = 10)
 	] = "THND_Kiosque";
+	TypeHttpNotificationDonnes[
+		(TypeHttpNotificationDonnes["THND_NombreForumsNonLus"] = 11)
+	] = "THND_NombreForumsNonLus";
 })(
 	TypeHttpNotificationDonnes ||
 		(exports.TypeHttpNotificationDonnes = TypeHttpNotificationDonnes = {}),

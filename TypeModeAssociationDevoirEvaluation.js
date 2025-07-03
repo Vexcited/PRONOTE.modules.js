@@ -12,25 +12,27 @@ var TypeModeInfosADE;
 		"tMIADE_SuppressionA";
 })(TypeModeInfosADE || (exports.TypeModeInfosADE = TypeModeInfosADE = {}));
 const ObjetTraduction_1 = require("ObjetTraduction");
+const TradTypeModeAssociationDevoirEvaluation =
+	ObjetTraduction_1.TraductionsModule.getModule(
+		"TypeModeAssociationDevoirEvaluation",
+		{
+			CreerUnDevoir: "",
+			ModifierLeDevoir: "",
+			SupprimerLeDevoir: "",
+			SupprimerLeLienDevoirEvaluation: "",
+		},
+	);
 const TypeModeInfosADEUtil = {
 	getLibelle(aMode) {
 		switch (aMode) {
 			case TypeModeInfosADE.tMIADE_Creation:
-				return ObjetTraduction_1.GTraductions.getValeur(
-					"TypeModeAssociationDevoirEvaluation.CreerUnDevoir",
-				);
+				return TradTypeModeAssociationDevoirEvaluation.CreerUnDevoir;
 			case TypeModeInfosADE.tMIADE_Modification:
-				return ObjetTraduction_1.GTraductions.getValeur(
-					"TypeModeAssociationDevoirEvaluation.ModifierLeDevoir",
-				);
+				return TradTypeModeAssociationDevoirEvaluation.ModifierLeDevoir;
 			case TypeModeInfosADE.tMIADE_SuppressionD:
-				return ObjetTraduction_1.GTraductions.getValeur(
-					"TypeModeAssociationDevoirEvaluation.SupprimerLeDevoir",
-				);
+				return TradTypeModeAssociationDevoirEvaluation.SupprimerLeDevoir;
 			case TypeModeInfosADE.tMIADE_SuppressionA:
-				return ObjetTraduction_1.GTraductions.getValeur(
-					"TypeModeAssociationDevoirEvaluation.SupprimerLeLienDevoirEvaluation",
-				);
+				return TradTypeModeAssociationDevoirEvaluation.SupprimerLeLienDevoirEvaluation;
 		}
 		return "";
 	},

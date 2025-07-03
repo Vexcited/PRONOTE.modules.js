@@ -1,19 +1,17 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-class ObjetRequeteListeQCMCumuls extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteListeQCMCumuls = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+class ObjetRequeteListeQCMCumuls extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aParamJSON, aDonnees) {
 		this.JSON = aParamJSON;
 		this.donnees = aDonnees;
 		return this.appelAsynchrone();
 	}
 	actionApresRequete() {
-		const lListeQCM = new ObjetListeElements().fromJSON(
+		const lListeQCM = new ObjetListeElements_1.ObjetListeElements().fromJSON(
 			this.JSONReponse.listeQCM,
 			this._ajouterQCM.bind(this),
 		);
@@ -28,7 +26,8 @@ class ObjetRequeteListeQCMCumuls extends ObjetRequeteConsultation {
 				}
 			}
 			lQCM.estUnDeploiement =
-				lQCM.getGenre() && lQCM.getGenre() !== EGenreRessource.QCM;
+				lQCM.getGenre() &&
+				lQCM.getGenre() !== Enumere_Ressource_1.EGenreRessource.QCM;
 			lQCM.estDeploye = true;
 		}
 		this.callbackReussite.appel(
@@ -42,18 +41,22 @@ class ObjetRequeteListeQCMCumuls extends ObjetRequeteConsultation {
 	}
 	_ajouterQCM(aJSON, aElement) {
 		aElement.copieJSON(aJSON);
-		if (aElement.getGenre() === EGenreRessource.QCM) {
+		if (aElement.getGenre() === Enumere_Ressource_1.EGenreRessource.QCM) {
 			const lListeProprietes = ["proprietaire", "matiere", "niveau"];
 			for (const x in lListeProprietes) {
 				if (aJSON[lListeProprietes[x]]) {
-					aElement[lListeProprietes[x]] = new ObjetElement().fromJSON(
-						aJSON[lListeProprietes[x]],
-					);
+					aElement[lListeProprietes[x]] =
+						new ObjetElement_1.ObjetElement().fromJSON(
+							aJSON[lListeProprietes[x]],
+						);
 					aElement[lListeProprietes[x]].copieJSON(aJSON[lListeProprietes[x]]);
 				}
 			}
 		}
 	}
 }
-Requetes.inscrire("listeQCMCumuls", ObjetRequeteListeQCMCumuls);
-module.exports = { ObjetRequeteListeQCMCumuls };
+exports.ObjetRequeteListeQCMCumuls = ObjetRequeteListeQCMCumuls;
+CollectionRequetes_1.Requetes.inscrire(
+	"listeQCMCumuls",
+	ObjetRequeteListeQCMCumuls,
+);

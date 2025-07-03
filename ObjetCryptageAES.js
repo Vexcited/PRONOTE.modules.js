@@ -1,5 +1,5 @@
 exports.ObjetCryptageAES = void 0;
-require("DeclarationForge.js");
+require("DeclarationForge");
 class ObjetCryptageAES {
 	decrypter(aChaine, aCle, aIv) {
 		try {

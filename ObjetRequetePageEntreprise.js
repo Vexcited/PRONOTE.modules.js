@@ -1,26 +1,21 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetElement } = require("ObjetElement.js");
-class ObjetRequetePageEntreprise extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
-	lancerRequete() {
-		return this.appelAsynchrone();
-	}
+exports.ObjetRequetePageEntreprise = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetElement_1 = require("ObjetElement");
+class ObjetRequetePageEntreprise extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	actionApresRequete() {
 		if (this.JSONReponse.entreprise && this.JSONReponse.entreprise.civilites) {
 			this.JSONReponse.entreprise.civilites.trier();
 			this.JSONReponse.entreprise.civilites.insererElement(
-				new ObjetElement(" ", 0, 0, 0, true),
+				new ObjetElement_1.ObjetElement(" ", 0, 0, 0, true),
 				0,
 			);
 		}
-		this.callbackReussite.appel(
-			this.JSONReponse.entreprise,
-			this.JSONReponse.autorisations,
-		);
+		this.callbackReussite.appel(this.JSONReponse);
 	}
 }
-Requetes.inscrire("InfosEntreprise", ObjetRequetePageEntreprise);
-module.exports = ObjetRequetePageEntreprise;
+exports.ObjetRequetePageEntreprise = ObjetRequetePageEntreprise;
+CollectionRequetes_1.Requetes.inscrire(
+	"InfosEntreprise",
+	ObjetRequetePageEntreprise,
+);

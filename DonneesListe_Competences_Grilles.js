@@ -102,7 +102,7 @@ class DonneesListe_Competences_Grilles extends ObjetDonneesListe_1.ObjetDonneesL
 		}
 		return "";
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_Competences_Grilles.colonnes.classes:
 				return aParams.article.hintListeClasses || "";

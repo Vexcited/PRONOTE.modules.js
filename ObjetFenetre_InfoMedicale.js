@@ -1,101 +1,107 @@
-const { DonneesListe_InfoMedicale } = require("DonneesListe_InfoMedicale.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { EGenreTriElement } = require("Enumere_TriElement.js");
-const { ObjetTri } = require("ObjetTri.js");
-class ObjetFenetre_InfoMedicale extends ObjetFenetre {
+exports.ObjetFenetre_InfoMedicale = void 0;
+const DonneesListe_InfoMedicale_1 = require("DonneesListe_InfoMedicale");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetElement_1 = require("ObjetElement");
+const Enumere_TriElement_1 = require("Enumere_TriElement");
+const ObjetTri_1 = require("ObjetTri");
+class ObjetFenetre_InfoMedicale extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
-		this.listeInfoMedicale = new ObjetListeElements();
-		this.titreListe = GTraductions.getValeur("fenetreInfosMedicales.titre");
 	}
 	construireInstances() {
 		this.IdentListe = this.add(
-			ObjetListe,
-			_evenementListe.bind(this),
-			_initialiserListe.bind(this),
+			ObjetListe_1.ObjetListe,
+			this._evenementListe.bind(this),
+			this._initialiserListe.bind(this),
 		);
-	}
-	setParametresInfoMedicale(aTitreListe) {
-		this.titreListe = aTitreListe;
 	}
 	_formaterDonneesListeAllergies(aListeAllergies) {
 		if (aListeAllergies) {
-			const lTitreAlimentaire = GTraductions.getValeur(
-				"InfosMedicales.TitreAllergiesAlimentaires",
-			);
-			const lTitreAutres = GTraductions.getValeur(
-				"InfosMedicales.TitreAllergiesAutres",
-			);
-			let lListeAvecCumul = new ObjetListeElements();
-			let lElementTitre = new ObjetElement(lTitreAlimentaire);
-			lElementTitre.estUnDeploiement = true;
-			lElementTitre.estDeploye = true;
-			lElementTitre.estAlimentaire = true;
-			lListeAvecCumul.addElement(lElementTitre);
+			const lListeAvecCumul = new ObjetListeElements_1.ObjetListeElements();
+			const lElementTitreAlimentaire = ObjetElement_1.ObjetElement.create({
+				Libelle: ObjetTraduction_1.GTraductions.getValeur(
+					"InfosMedicales.TitreAllergiesAlimentaires",
+				),
+				estUnDeploiement: true,
+				estDeploye: false,
+				estAlimentaire: true,
+			});
+			lElementTitreAlimentaire.estUnDeploiement = true;
+			lElementTitreAlimentaire.estDeploye = false;
+			lElementTitreAlimentaire.estAlimentaire = true;
+			lListeAvecCumul.addElement(lElementTitreAlimentaire);
 			aListeAllergies.parcourir((aAllergie) => {
 				if (aAllergie.estAlimentaire) {
-					aAllergie.pere = lElementTitre;
+					aAllergie.pere = lElementTitreAlimentaire;
 					aAllergie.estUnDeploiement = false;
-					aAllergie.estDeploye = true;
+					aAllergie.estDeploye = false;
 					lListeAvecCumul.addElement(aAllergie);
 				}
 			});
-			lElementTitre = new ObjetElement(lTitreAutres);
-			lElementTitre.estUnDeploiement = true;
-			lElementTitre.estDeploye = true;
-			lElementTitre.estAlimentaire = false;
-			lListeAvecCumul.addElement(lElementTitre);
+			const lElementTitreAutres = ObjetElement_1.ObjetElement.create({
+				Libelle: ObjetTraduction_1.GTraductions.getValeur(
+					"InfosMedicales.TitreAllergiesAutres",
+				),
+				estUnDeploiement: true,
+				estDeploye: false,
+				estAlimentaire: false,
+			});
+			lListeAvecCumul.addElement(lElementTitreAutres);
 			aListeAllergies.parcourir((aAllergie) => {
 				if (!aAllergie.estAlimentaire) {
-					aAllergie.pere = lElementTitre;
-					aAllergie.estDeploye = true;
+					aAllergie.pere = lElementTitreAutres;
+					aAllergie.estDeploye = false;
 					aAllergie.estUnDeploiement = false;
 					lListeAvecCumul.addElement(aAllergie);
 				}
 			});
-			lListeAvecCumul.setTri(
-				ObjetTri.init("estAlimentaire", EGenreTriElement.Decroissant),
-			);
+			lListeAvecCumul.setTri([
+				ObjetTri_1.ObjetTri.init(
+					"estAlimentaire",
+					Enumere_TriElement_1.EGenreTriElement.Decroissant,
+				),
+			]);
 			lListeAvecCumul.trier();
 			return lListeAvecCumul;
 		}
+		return null;
 	}
-	setDonnees(aListeInfoMedicale, aEstListeAllergies) {
+	setListeAllergenes(aListeAllergenes) {
+		this.afficherFenetre(this._formaterDonneesListeAllergies(aListeAllergenes));
+	}
+	setListeRestrictionsAlimentaires(aListeRestrictionAlimentaire) {
+		this.afficherFenetre(aListeRestrictionAlimentaire);
+	}
+	afficherFenetre(aListeAAfficher) {
 		this.afficher();
-		const lListeAAfficher =
-			aEstListeAllergies === true
-				? this._formaterDonneesListeAllergies(aListeInfoMedicale)
-				: aListeInfoMedicale;
-		this.listeInfoMedicale = lListeAAfficher;
 		this.getInstance(this.IdentListe).setDonnees(
-			new DonneesListe_InfoMedicale(this.listeInfoMedicale),
+			new DonneesListe_InfoMedicale_1.DonneesListe_InfoMedicale(
+				aListeAAfficher,
+			),
 		);
 	}
-	reset() {
-		this.listeInfoMedicale = new ObjetListeElements();
+	_initialiserListe(aInstance) {
+		aInstance.setOptionsListe({
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+			nonEditable: false,
+		});
+	}
+	_evenementListe(aParametres) {
+		aParametres.article.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 	}
 	composeContenu() {
-		const lHTML = [];
-		lHTML.push(
-			'<div id="' +
-				this.getNomInstance(this.IdentListe) +
-				'" class="full-size"></div>',
+		const H = [];
+		H.push(
+			IE.jsx.str("div", {
+				id: this.getNomInstance(this.IdentListe),
+				class: "full-size",
+			}),
 		);
-		return lHTML.join("");
+		return H.join("");
 	}
 }
-function _evenementListe(aParametres) {
-	aParametres.article.setEtat(EGenreEtat.Modification);
-}
-function _initialiserListe(aInstance) {
-	aInstance.setOptionsListe({
-		skin: ObjetListe.skin.flatDesign,
-		nonEditable: false,
-	});
-}
-module.exports = { ObjetFenetre_InfoMedicale };
+exports.ObjetFenetre_InfoMedicale = ObjetFenetre_InfoMedicale;

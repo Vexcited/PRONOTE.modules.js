@@ -2,6 +2,7 @@ exports.ObjetFicheGraphe = void 0;
 const GUID_1 = require("GUID");
 const ObjetHtml_1 = require("ObjetHtml");
 const ObjetFiche_1 = require("ObjetFiche");
+const AccessApp_1 = require("AccessApp");
 class ObjetFicheGraphe extends ObjetFiche_1.ObjetFiche {
 	constructor(...aParams) {
 		super(...aParams);
@@ -58,7 +59,7 @@ class ObjetFicheGraphe extends ObjetFiche_1.ObjetFiche {
 				IE.jsx.fragment,
 				null,
 				IE.jsx.str("img", {
-					tabindex: this.graphe.alt ? "0" : "1",
+					tabindex: this.graphe.alt ? "0" : "-1",
 					alt: this.graphe.titre,
 					"aria-describedby": lIdDescr || false,
 					src: `data:image/png;base64,${this.graphe.image[this.choixGraphe]}`,
@@ -71,13 +72,18 @@ class ObjetFicheGraphe extends ObjetFiche_1.ObjetFiche {
 		}
 	}
 	composeContenu() {
+		var _a;
 		const lHtml = [];
 		if (this.param && this.param.filtres) {
 			for (let i in this.param.filtres) {
 				const lFiltre = this.param.filtres[i];
 				lHtml.push(
 					'<div class="EspaceHaut EspaceGauche">',
-					lFiltre.html,
+					lFiltre.html ||
+						((_a = lFiltre.getHtml) === null || _a === void 0
+							? void 0
+							: _a.call(lFiltre)) ||
+						"",
 					"</div>",
 				);
 			}
@@ -86,7 +92,7 @@ class ObjetFicheGraphe extends ObjetFiche_1.ObjetFiche {
 			lHtml.push(
 				'<div class="Espace">',
 				'<fieldset class="Texte10" style="border:1px solid ',
-				GCouleur.fenetre.intermediaire,
+				(0, AccessApp_1.getApp)().getCouleur().fenetre.intermediaire,
 				';">',
 				'<legend class="Espace">',
 				"<label>",

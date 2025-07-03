@@ -1,4 +1,4 @@
-exports.GUID = exports.GenerateurGUID = void 0;
+exports.UniqueNumberGenerator = exports.GUID = exports.GenerateurGUID = void 0;
 require("NamespaceIE");
 let lGUID_id = 1;
 let lGUID_ClassCss = 1;
@@ -40,3 +40,31 @@ let GUID = {
 	},
 };
 exports.GUID = GUID;
+class UniqueNumberGenerator {
+	constructor() {
+		this.currentNumber = 1;
+		this.releasedNumbers = new Set();
+		this.activeNumbers = new Set();
+	}
+	generate() {
+		let lNum;
+		if (this.releasedNumbers.size > 0) {
+			lNum = this.releasedNumbers.values().next().value;
+			this.releasedNumbers.delete(lNum);
+		} else {
+			lNum = this.currentNumber++;
+		}
+		this.activeNumbers.add(lNum);
+		return lNum;
+	}
+	release(num) {
+		if (this.activeNumbers.has(num)) {
+			this.activeNumbers.delete(num);
+			this.releasedNumbers.add(num);
+		}
+	}
+	isActive(num) {
+		return this.activeNumbers.has(num);
+	}
+}
+exports.UniqueNumberGenerator = UniqueNumberGenerator;

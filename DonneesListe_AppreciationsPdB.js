@@ -1,15 +1,18 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { ObjetMoteurReleveBulletin } = require("ObjetMoteurReleveBulletin.js");
-const { GChaine } = require("ObjetChaine.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { ObjetMoteurAssistantSaisie } = require("ObjetMoteurAssistantSaisie.js");
-const { ObjetMoteurPiedDeBulletin } = require("ObjetMoteurPiedDeBulletin.js");
-class DonneesListe_AppreciationsPdB extends ObjetDonneesListe {
+exports.DonneesListe_AppreciationsPdB = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetMoteurReleveBulletin_1 = require("ObjetMoteurReleveBulletin");
+const ObjetChaine_1 = require("ObjetChaine");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetMoteurAssistantSaisie_1 = require("ObjetMoteurAssistantSaisie");
+const ObjetMoteurPiedDeBulletin_1 = require("ObjetMoteurPiedDeBulletin");
+class DonneesListe_AppreciationsPdB extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParam) {
 		super(aDonnees);
-		this.moteur = new ObjetMoteurReleveBulletin();
-		this.moteurAssSaisie = new ObjetMoteurAssistantSaisie();
-		this.moteurPdB = new ObjetMoteurPiedDeBulletin();
+		this.moteur = new ObjetMoteurReleveBulletin_1.ObjetMoteurReleveBulletin();
+		this.moteurAssSaisie =
+			new ObjetMoteurAssistantSaisie_1.ObjetMoteurAssistantSaisie();
+		this.moteurPdB =
+			new ObjetMoteurPiedDeBulletin_1.ObjetMoteurPiedDeBulletin();
 		this.param = $.extend(
 			{
 				saisie: false,
@@ -26,7 +29,8 @@ class DonneesListe_AppreciationsPdB extends ObjetDonneesListe {
 		if (lNbrLignes > 0) {
 			this.setOptions({
 				hauteurMinCellule: lNbrLignes > 4 ? 40 : 160 / lNbrLignes,
-				hauteurMinContenuCellule: ObjetDonneesListe.hauteurMinCellule,
+				hauteurMinContenuCellule:
+					ObjetDonneesListe_1.ObjetDonneesListe.hauteurMinCellule,
 			});
 		}
 	}
@@ -36,9 +40,9 @@ class DonneesListe_AppreciationsPdB extends ObjetDonneesListe {
 	getTypeValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_AppreciationsPdB.colonnes.appreciation:
-				return ObjetDonneesListe.ETypeCellule.ZoneTexte;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.ZoneTexte;
 		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
 	getValeur(aParams) {
 		switch (aParams.idColonne) {
@@ -46,7 +50,7 @@ class DonneesListe_AppreciationsPdB extends ObjetDonneesListe {
 				return aParams.article.Intitule !== null &&
 					aParams.article.Intitule !== undefined &&
 					aParams.article.Intitule !== ""
-					? GChaine.avecEspaceSiVide(aParams.article.Intitule)
+					? ObjetChaine_1.GChaine.avecEspaceSiVide(aParams.article.Intitule)
 					: "";
 			case DonneesListe_AppreciationsPdB.colonnes.appreciation:
 				return aParams.article.ListeAppreciations.get(0).getLibelle();
@@ -56,12 +60,12 @@ class DonneesListe_AppreciationsPdB extends ObjetDonneesListe {
 	getClassCelluleConteneur(aParams) {
 		const D = aParams.article;
 		const T = [];
-		if (_estColAvecGras.call(this, aParams)) {
+		if (this._estColAvecGras(aParams)) {
 			T.push("Gras");
 		}
 		switch (aParams.idColonne) {
 			case DonneesListe_AppreciationsPdB.colonnes.appreciation:
-				if (!_estCellEditable.call(this, aParams)) {
+				if (!this._estCellEditable(aParams)) {
 					T.push("AvecInterdiction");
 				} else {
 					if (
@@ -82,25 +86,25 @@ class DonneesListe_AppreciationsPdB extends ObjetDonneesListe {
 	getCouleurCellule(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_AppreciationsPdB.colonnes.libelle:
-				return ObjetDonneesListe.ECouleurCellule.Fixe;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Fixe;
 			case DonneesListe_AppreciationsPdB.colonnes.appreciation:
-				if (_estCellEditable.call(this, aParams)) {
-					return ObjetDonneesListe.ECouleurCellule.Blanc;
+				if (this._estCellEditable(aParams)) {
+					return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
 				} else {
-					return ObjetDonneesListe.ECouleurCellule.Gris;
+					return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Gris;
 				}
 			default:
 				break;
 		}
 	}
 	avecEdition(aParams) {
-		return _estCellEditable.call(this, aParams);
+		return this._estCellEditable(aParams);
 	}
 	avecEvenementEdition(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_AppreciationsPdB.colonnes.appreciation:
 				return (
-					_estCellEditable.call(this, aParams) &&
+					this._estCellEditable(aParams) &&
 					(this.moteurPdB.estMention({ appreciation: aParams.article }) ||
 						this.moteurAssSaisie.avecAssistantSaisieActif({
 							estCtxPied: true,
@@ -140,7 +144,7 @@ class DonneesListe_AppreciationsPdB extends ObjetDonneesListe {
 					: null;
 				if (lAppr) {
 					lAppr.setLibelle(!!V ? V.trim() : "");
-					lAppr.setEtat(EGenreEtat.Modification);
+					lAppr.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 				}
 				if (
 					this.param.avecValidationAuto === true &&
@@ -159,24 +163,35 @@ class DonneesListe_AppreciationsPdB extends ObjetDonneesListe {
 	getHauteurMinCellule() {
 		return this.options.hauteurMinCellule;
 	}
-}
-DonneesListe_AppreciationsPdB.colonnes = {
-	libelle: "libelle",
-	appreciation: "appreciation",
-};
-function _estColAvecGras(aParams) {
-	return [DonneesListe_AppreciationsPdB.colonnes.libelle].includes(
-		aParams.idColonne,
-	);
-}
-function _estCellEditable(aParams) {
-	let lEditable;
-	switch (aParams.idColonne) {
-		case DonneesListe_AppreciationsPdB.colonnes.appreciation:
-			lEditable = aParams.article.Editable && !aParams.article.Cloture;
-			return this.param.saisie && lEditable;
-		default:
-			return false;
+	_estColAvecGras(aParams) {
+		return [DonneesListe_AppreciationsPdB.colonnes.libelle].includes(
+			aParams.idColonne,
+		);
+	}
+	_estCellEditable(aParams) {
+		let lEditable;
+		switch (aParams.idColonne) {
+			case DonneesListe_AppreciationsPdB.colonnes.appreciation:
+				lEditable = aParams.article.Editable && !aParams.article.Cloture;
+				return this.param.saisie && lEditable;
+			default:
+				return false;
+		}
 	}
 }
-module.exports = { DonneesListe_AppreciationsPdB };
+exports.DonneesListe_AppreciationsPdB = DonneesListe_AppreciationsPdB;
+(function (DonneesListe_AppreciationsPdB) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["libelle"] = "libelle";
+		colonnes["appreciation"] = "appreciation";
+	})(
+		(colonnes =
+			DonneesListe_AppreciationsPdB.colonnes ||
+			(DonneesListe_AppreciationsPdB.colonnes = {})),
+	);
+})(
+	DonneesListe_AppreciationsPdB ||
+		(exports.DonneesListe_AppreciationsPdB = DonneesListe_AppreciationsPdB =
+			{}),
+);

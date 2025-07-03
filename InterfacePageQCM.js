@@ -1,25 +1,25 @@
-const { ObjetVisuEleve } = require("ObjetVisuEleveQCM.js");
-const { ObjetRequeteQCMQuestions } = require("ObjetRequeteQCMQuestions.js");
-const { EStructureAffichage } = require("Enumere_StructureAffichage.js");
-const { InterfacePage_Mobile } = require("InterfacePage_Mobile.js");
-const {
-	TypeEtatExecutionQCMPourRepondant,
-} = require("TypeEtatExecutionQCMPourRepondant.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { EGenreOnglet } = require("Enumere_Onglet.js");
-const {
-	ObjetRequeteSaisieQCMReponses,
-} = require("ObjetRequeteSaisieQCMReponses.js");
-const { TypeCallbackVisuEleveQCM } = require("ObjetVisuEleveQCM.js");
-class ObjetAffichagePageQCM extends InterfacePage_Mobile {
+exports.InterfacePageQCM = void 0;
+const ObjetVisuEleveQCM_1 = require("ObjetVisuEleveQCM");
+const ObjetRequeteQCMQuestions_1 = require("ObjetRequeteQCMQuestions");
+const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
+const InterfacePage_Mobile_1 = require("InterfacePage_Mobile");
+const TypeEtatExecutionQCMPourRepondant_1 = require("TypeEtatExecutionQCMPourRepondant");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const Enumere_Onglet_1 = require("Enumere_Onglet");
+const ObjetRequeteSaisieQCMReponses_1 = require("ObjetRequeteSaisieQCMReponses");
+const ObjetVisuEleveQCM_2 = require("ObjetVisuEleveQCM");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const AccessApp_1 = require("AccessApp");
+class InterfacePageQCM extends InterfacePage_Mobile_1.InterfacePage_Mobile {
 	constructor(...aParams) {
 		super(...aParams);
 		this.idBandeau = this.Nom + ".bandeau";
 		this.idTitreQCM = this.Nom + ".titreQCM";
 		this.idBoutonsQCM = this.Nom + ".boutonsQCM";
-		this.idBoutonBack = this.Nom + ".boutonBack";
 		this.idVisuEleve = this.Nom + ".objetVisuEleve";
-		this.objetVisuEleve = new ObjetVisuEleve(
+		this.appScoMobile = (0, AccessApp_1.getApp)();
+		this.interfaceMobile = this.appScoMobile.getInterfaceMobile();
+		this.objetVisuEleve = new ObjetVisuEleveQCM_1.ObjetVisuEleve(
 			this.idVisuEleve,
 			this.evenementQCM.bind(this),
 		);
@@ -27,51 +27,59 @@ class ObjetAffichagePageQCM extends InterfacePage_Mobile {
 			idContenu: this.idVisuEleve.escapeJQ(),
 		});
 		this.ongletPrec = null;
-		this.couleurThemeQCMFonce = "#428ca5";
 	}
 	construireInstances() {
-		this.GenreStructure = EStructureAffichage.Autre;
+		this.GenreStructure =
+			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 	}
 	construireStructureAffichageAutre() {
-		const lHtml = [];
-		lHtml.push('<div class="Fenetre_QCM">');
-		lHtml.push('  <div id="' + this.idBandeau + '" class="header-conteneur">');
-		lHtml.push('     <ul class="icon-contain">');
-		lHtml.push(
-			'      <li><a class="iconic icon_retour_mobile" id="' +
-				this.idBoutonBack +
-				'" onclick="',
-			this.Nom,
-			'.fermer();"></a></li>',
+		return IE.jsx.str(
+			"div",
+			{ class: "Fenetre_QCM" },
+			IE.jsx.str(
+				"div",
+				{ id: this.idBandeau, class: "header-conteneur" },
+				IE.jsx.str(
+					"div",
+					{ class: "icon-contain" },
+					IE.jsx.str("ie-btnicon", {
+						class: "iconic icon_retour_mobile",
+						"ie-model": this.jsxModelBouton.bind(this),
+						"aria-label": ObjetTraduction_1.GTraductions.getValeur("Precedent"),
+					}),
+				),
+				IE.jsx.str("div", { class: "titres-contain", id: this.idTitreQCM }),
+			),
+			IE.jsx.str("div", { id: this.idVisuEleve, class: "main-conteneur" }),
 		);
-		lHtml.push("     </ul>");
-		lHtml.push(
-			'     <div class="titres-contain" id="' + this.idTitreQCM + '"></div>',
-		);
-		lHtml.push("   </div>");
-		lHtml.push(
-			' <div id="' + this.idVisuEleve + '" class="main-conteneur"></div>',
-		);
-		lHtml.push("</div>");
-		return lHtml.join("");
+	}
+	jsxModelBouton() {
+		return {
+			event: () => {
+				this.fermer();
+			},
+		};
 	}
 	setDonnees(aObjet, aOngletPrec) {
 		$(
 			"#" +
-				GInterface.getInstance(GInterface.identEnteteMobile)
-					.getNom()
+				this.interfaceMobile
+					.getNomInstance(this.interfaceMobile.identEnteteMobile)
 					.escapeJQ(),
 		).hide();
-		$("#" + GApplication.idLigneBandeau.escapeJQ()).hide();
+		$("#" + this.appScoMobile.idLigneBandeau.escapeJQ()).hide();
 		this.objetVisuEleve.setParametres({
 			idContenu: this.idVisuEleve.escapeJQ(),
 			modeProf:
-				GApplication.getDemo() ||
-				((GEtatUtilisateur.GenreEspace === EGenreEspace.Mobile_Parent ||
-					GEtatUtilisateur.GenreEspace === EGenreEspace.Mobile_Accompagnant) &&
+				this.appScoMobile.getDemo() ||
+				((GEtatUtilisateur.GenreEspace ===
+					Enumere_Espace_1.EGenreEspace.Mobile_Parent ||
+					GEtatUtilisateur.GenreEspace ===
+						Enumere_Espace_1.EGenreEspace.Mobile_Accompagnant) &&
 					(aObjet.executionQCM.etatCloture === undefined ||
 						aObjet.executionQCM.etatCloture ===
-							TypeEtatExecutionQCMPourRepondant.EQR_EnCours)),
+							TypeEtatExecutionQCMPourRepondant_1
+								.TypeEtatExecutionQCMPourRepondant.EQR_EnCours)),
 		});
 		this.objetVisuEleve.setDonnees(aObjet.executionQCM);
 		$("#" + this.idTitreQCM.escapeJQ()).html(
@@ -86,46 +94,52 @@ class ObjetAffichagePageQCM extends InterfacePage_Mobile {
 	restaurerMenu() {
 		$(
 			"#" +
-				GInterface.getInstance(GInterface.identEnteteMobile)
-					.getNom()
+				this.interfaceMobile
+					.getNomInstance(this.interfaceMobile.identEnteteMobile)
 					.escapeJQ(),
 		).show();
-		$("#" + GApplication.idLigneBandeau.escapeJQ()).show();
+		$("#" + this.appScoMobile.idLigneBandeau.escapeJQ()).show();
 	}
 	fermer() {
 		this.restaurerMenu();
-		GInterface.evenementSurOnglet(this.ongletPrec);
+		this.interfaceMobile.evenementSurOnglet(this.ongletPrec);
 	}
 	evenementQCM(aParam) {
 		if (aParam === undefined) {
 			return;
 		}
 		this.param = aParam;
-		if (this.param.action === TypeCallbackVisuEleveQCM.get) {
+		if (
+			this.param.action === ObjetVisuEleveQCM_2.TypeCallbackVisuEleveQCM.get
+		) {
 			if (
 				GEtatUtilisateur.estEspaceExecutionQCM() &&
 				aParam.pourInitialisation
 			) {
-				new ObjetRequeteSaisieQCMReponses(
+				new ObjetRequeteSaisieQCMReponses_1.ObjetRequeteSaisieQCMReponses(
 					this,
-					this.actionSurQCMInitialisation.bind(this, true),
+					this.actionSurQCMInitialisation.bind(this),
 				).lancerRequete(this.param);
 			} else {
 				this.actionSurQCMInitialisation();
 			}
-		} else if (this.param.action === TypeCallbackVisuEleveQCM.set) {
-			new ObjetRequeteSaisieQCMReponses(
+		} else if (
+			this.param.action === ObjetVisuEleveQCM_2.TypeCallbackVisuEleveQCM.set
+		) {
+			new ObjetRequeteSaisieQCMReponses_1.ObjetRequeteSaisieQCMReponses(
 				this,
 				this.actionSurSaisieReponses,
 			).lancerRequete(this.param);
-		} else if (this.param.action === TypeCallbackVisuEleveQCM.close) {
+		} else if (
+			this.param.action === ObjetVisuEleveQCM_2.TypeCallbackVisuEleveQCM.close
+		) {
 			if (this.param.pourCloture && GEtatUtilisateur.estEspaceExecutionQCM()) {
-				new ObjetRequeteSaisieQCMReponses(
+				new ObjetRequeteSaisieQCMReponses_1.ObjetRequeteSaisieQCMReponses(
 					this,
 					this.actionSurSaisieReponses,
 				).lancerRequete(this.param);
 				this.callback.appel({
-					genreOnglet: EGenreOnglet.QCM_Reponse,
+					genreOnglet: Enumere_Onglet_1.EGenreOnglet.QCM_Reponse,
 					genreOngletPrec: this.ongletPrec,
 				});
 			}
@@ -133,7 +147,7 @@ class ObjetAffichagePageQCM extends InterfacePage_Mobile {
 		}
 	}
 	actionSurQCMInitialisation() {
-		new ObjetRequeteQCMQuestions(
+		new ObjetRequeteQCMQuestions_1.ObjetRequeteQCMQuestions(
 			this,
 			this.actionSurSaisieQCMQuestions,
 		).lancerRequete(this.param);
@@ -145,4 +159,4 @@ class ObjetAffichagePageQCM extends InterfacePage_Mobile {
 		this.objetVisuEleve.setDonneesReponse(aParam);
 	}
 }
-module.exports = ObjetAffichagePageQCM;
+exports.InterfacePageQCM = InterfacePageQCM;

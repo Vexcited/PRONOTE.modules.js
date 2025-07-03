@@ -21,6 +21,14 @@ class DonneesListe_DetailAbsences extends ObjetDonneesListe_1.ObjetDonneesListe 
 	}
 	fusionCelluleAvecColonnePrecedente(aParams) {
 		if (this.cours) {
+			if (
+				[
+					Enumere_Ressource_1.EGenreRessource.Commission,
+					Enumere_Ressource_1.EGenreRessource.MesureConservatoire,
+				].includes(this.genreRessource)
+			) {
+				return aParams.colonne === 1;
+			}
 			return aParams.article.estUnDeploiement && aParams.colonne > 1;
 		} else {
 			return aParams.article.estUnDeploiement && aParams.colonne > 0;
@@ -49,6 +57,27 @@ class DonneesListe_DetailAbsences extends ObjetDonneesListe_1.ObjetDonneesListe 
 						lLibelle = aParams.article.getLibelle();
 					} else {
 						lLibelle = this.eleve.getLibelle();
+					}
+				} else if (
+					[
+						Enumere_Ressource_1.EGenreRessource.Commission,
+						Enumere_Ressource_1.EGenreRessource.MesureConservatoire,
+					].includes(this.genreRessource)
+				) {
+					if (aParams.article.dateDemande) {
+						return ObjetTraduction_1.GTraductions.getValeur(
+							"Dates.LeDateDebutAHeureDebut",
+							[
+								ObjetDate_1.GDate.formatDate(
+									aParams.article.dateDemande,
+									"%JJ/%MM/%AAAA",
+								),
+								ObjetDate_1.GDate.formatDate(
+									aParams.article.dateDemande,
+									"%hh:%mm",
+								),
+							],
+						);
 					}
 				}
 				return lLibelle;
@@ -195,6 +224,18 @@ class DonneesListe_DetailAbsences extends ObjetDonneesListe_1.ObjetDonneesListe 
 						this.genreRessource === Enumere_Ressource_1.EGenreRessource.Sanction
 					) {
 						return aParams.article.strMotifs;
+					} else if (
+						this.genreRessource ===
+						Enumere_Ressource_1.EGenreRessource.MesureConservatoire
+					) {
+						return aParams.article.strMotifs;
+					} else if (
+						this.genreRessource ===
+						Enumere_Ressource_1.EGenreRessource.Commission
+					) {
+						return aParams.article.president
+							? aParams.article.president.getLibelle()
+							: "";
 					}
 				} else {
 					return (
@@ -260,6 +301,18 @@ class DonneesListe_DetailAbsences extends ObjetDonneesListe_1.ObjetDonneesListe 
 						this.genreRessource === Enumere_Ressource_1.EGenreRessource.Sanction
 					) {
 						return aParams.article.strDemandeur || "";
+					} else if (
+						this.genreRessource ===
+						Enumere_Ressource_1.EGenreRessource.MesureConservatoire
+					) {
+						return aParams.article.strDemandeur || "";
+					} else if (
+						this.genreRessource ===
+						Enumere_Ressource_1.EGenreRessource.Commission
+					) {
+						return aParams.article.nature
+							? aParams.article.nature.getLibelle()
+							: "";
 					}
 				}
 				break;
@@ -275,6 +328,26 @@ class DonneesListe_DetailAbsences extends ObjetDonneesListe_1.ObjetDonneesListe 
 					this.genreRessource === Enumere_Ressource_1.EGenreRessource.Sanction
 				) {
 					return aParams.article.strDuree;
+				} else if (
+					this.genreRessource === Enumere_Ressource_1.EGenreRessource.Commission
+				) {
+					return aParams.article.strMotifs || "";
+				}
+				return "";
+			}
+			case 5: {
+				if (
+					this.genreRessource === Enumere_Ressource_1.EGenreRessource.Commission
+				) {
+					return aParams.article.circonstances || "";
+				}
+				return "";
+			}
+			case 6: {
+				if (
+					this.genreRessource === Enumere_Ressource_1.EGenreRessource.Commission
+				) {
+					return aParams.article.nbReponsesEducatives.toString() || "";
 				}
 				return "";
 			}
@@ -283,9 +356,18 @@ class DonneesListe_DetailAbsences extends ObjetDonneesListe_1.ObjetDonneesListe 
 	}
 	getTypeValeur(aParams) {
 		if (this.cours) {
-			if (aParams.colonne === 0 && aParams.article.estUnDeploiement) {
-				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule
-					.CocheDeploiement;
+			if (aParams.colonne === 0) {
+				if (aParams.article.estUnDeploiement) {
+					return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule
+						.CocheDeploiement;
+				} else if (
+					[
+						Enumere_Ressource_1.EGenreRessource.Commission,
+						Enumere_Ressource_1.EGenreRessource.MesureConservatoire,
+					].includes(this.genreRessource)
+				) {
+					return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
+				}
 			} else if (
 				(this.genreRessource === Enumere_Ressource_1.EGenreRessource.Absence ||
 					this.genreRessource === Enumere_Ressource_1.EGenreRessource.Retard) &&

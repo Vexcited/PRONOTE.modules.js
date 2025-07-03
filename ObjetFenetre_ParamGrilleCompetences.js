@@ -12,66 +12,71 @@ class ObjetFenetre_ParamGrilleCompetences extends ObjetFenetre_1.ObjetFenetre {
 		this.referentielAvecCoeffCompetence = null;
 		this.referentielAvecCoeffSousItem = null;
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			checkAffichageNbEvaluations: {
-				getValue() {
-					return aInstance.avecAffichageNbEvaluations;
-				},
-				setValue(aData) {
-					aInstance.avecAffichageNbEvaluations = aData;
-				},
+	jsxDisplayCoefficients() {
+		return this.avecGestionCoefficients;
+	}
+	jsxModelCheckboxAfficherNbEvaluations() {
+		return {
+			getValue: () => {
+				return this.avecAffichageNbEvaluations;
 			},
-			displayCoefficients() {
-				return aInstance.avecGestionCoefficients;
+			setValue: (aValue) => {
+				this.avecAffichageNbEvaluations = aValue;
 			},
-			checkGererSousItem: {
-				getValue() {
-					return !!aInstance.referentielAvecSousItem;
-				},
-				setValue(aData) {
-					aInstance.referentielAvecSousItem = aData;
-					if (!aData) {
-						aInstance.referentielAvecCoeffSousItem = false;
-					}
-				},
+		};
+	}
+	jsxModelCheckboxGererSousItems() {
+		return {
+			getValue: () => {
+				return !!this.referentielAvecSousItem;
 			},
-			checkCoeffElementPilier: {
-				getValue() {
-					return !!aInstance.referentielAvecCoeffElementPilier;
-				},
-				setValue(aData) {
-					aInstance.referentielAvecCoeffElementPilier = aData;
-				},
+			setValue: (aValue) => {
+				this.referentielAvecSousItem = aValue;
+				if (!aValue) {
+					this.referentielAvecCoeffSousItem = false;
+				}
 			},
-			checkCoeffCompetence: {
-				getValue() {
-					return !!aInstance.referentielAvecCoeffCompetence;
-				},
-				setValue(aData) {
-					aInstance.referentielAvecCoeffCompetence = aData;
-				},
+		};
+	}
+	jsxModelCheckboxCoefficientElementPilier() {
+		return {
+			getValue: () => {
+				return !!this.referentielAvecCoeffElementPilier;
 			},
-			checkCoeffSousItem: {
-				getDisabled() {
-					return !aInstance.referentielAvecSousItem;
-				},
-				getValue() {
-					return !!aInstance.referentielAvecCoeffSousItem;
-				},
-				setValue(aData) {
-					aInstance.referentielAvecCoeffSousItem = aData;
-				},
+			setValue: (aValue) => {
+				this.referentielAvecCoeffElementPilier = aValue;
 			},
-		});
+		};
+	}
+	jsxModelCheckboxCoefficientCompetence() {
+		return {
+			getValue: () => {
+				return !!this.referentielAvecCoeffCompetence;
+			},
+			setValue: (aValue) => {
+				this.referentielAvecCoeffCompetence = aValue;
+			},
+		};
+	}
+	jsxModelCheckboxCoefficientSousItem() {
+		return {
+			getValue: () => {
+				return !!this.referentielAvecCoeffSousItem;
+			},
+			setValue: (aValue) => {
+				this.referentielAvecCoeffSousItem = aValue;
+			},
+			getDisabled: () => {
+				return !this.referentielAvecSousItem;
+			},
+		};
 	}
 	composeContenu() {
-		const T = [];
-		T.push('<div class="Espace">');
-		T.push(
+		const H = [];
+		H.push(
 			IE.jsx.str(
-				IE.jsx.fragment,
-				null,
+				"div",
+				{ class: "Espace" },
 				IE.jsx.str(
 					"div",
 					null,
@@ -79,19 +84,13 @@ class ObjetFenetre_ParamGrilleCompetences extends ObjetFenetre_1.ObjetFenetre {
 						"ie-checkbox",
 						{
 							class: "AlignementMilieuVertical",
-							"ie-model": "checkGererSousItem",
+							"ie-model": this.jsxModelCheckboxGererSousItems.bind(this),
 						},
 						ObjetTraduction_1.GTraductions.getValeur(
 							"competencesGrilles.FenetreParametrage.GererSousItems",
 						),
 					),
 				),
-			),
-		);
-		T.push(
-			IE.jsx.str(
-				IE.jsx.fragment,
-				null,
 				IE.jsx.str(
 					"div",
 					{ class: "GrandEspaceHaut" },
@@ -99,49 +98,77 @@ class ObjetFenetre_ParamGrilleCompetences extends ObjetFenetre_1.ObjetFenetre {
 						"ie-checkbox",
 						{
 							class: "AlignementMilieuVertical",
-							"ie-model": "checkAffichageNbEvaluations",
+							"ie-model": this.jsxModelCheckboxAfficherNbEvaluations.bind(this),
 						},
 						ObjetTraduction_1.GTraductions.getValeur(
 							"competencesGrilles.FenetreParametrage.AfficherNbEvaluations",
 						),
 					),
 				),
+				IE.jsx.str(
+					"div",
+					{
+						class: "GrandEspaceHaut",
+						"ie-display": this.jsxDisplayCoefficients.bind(this),
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"competencesGrilles.FenetreParametrage.GererCoefficients",
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{
+						class: "EspaceGauche10",
+						"ie-display": this.jsxDisplayCoefficients.bind(this),
+					},
+					IE.jsx.str(
+						"div",
+						{ class: "PetitEspaceHaut" },
+						IE.jsx.str(
+							"ie-checkbox",
+							{
+								class: "AlignementMilieuVertical",
+								"ie-model":
+									this.jsxModelCheckboxCoefficientElementPilier.bind(this),
+							},
+							ObjetTraduction_1.GTraductions.getValeur(
+								"competencesGrilles.FenetreParametrage.CoefficientElmPilier",
+							),
+						),
+					),
+					IE.jsx.str(
+						"div",
+						{ class: "PetitEspaceHaut" },
+						IE.jsx.str(
+							"ie-checkbox",
+							{
+								class: "AlignementMilieuVertical",
+								"ie-model":
+									this.jsxModelCheckboxCoefficientCompetence.bind(this),
+							},
+							ObjetTraduction_1.GTraductions.getValeur(
+								"competencesGrilles.FenetreParametrage.CoefficientCompetence",
+							),
+						),
+					),
+					IE.jsx.str(
+						"div",
+						{ class: "PetitEspaceHaut" },
+						IE.jsx.str(
+							"ie-checkbox",
+							{
+								class: "AlignementMilieuVertical",
+								"ie-model": this.jsxModelCheckboxCoefficientSousItem.bind(this),
+							},
+							ObjetTraduction_1.GTraductions.getValeur(
+								"competencesGrilles.FenetreParametrage.CoefficientSousItem",
+							),
+						),
+					),
+				),
 			),
 		);
-		T.push(
-			'<div class="GrandEspaceHaut" ie-display="displayCoefficients">',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"competencesGrilles.FenetreParametrage.GererCoefficients",
-			),
-			"</div>",
-		);
-		T.push(
-			'<div class="EspaceGauche10" ie-display="displayCoefficients">',
-			'<div class="PetitEspaceHaut">',
-			'<ie-checkbox class="AlignementMilieuVertical" ie-model="checkCoeffElementPilier">',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"competencesGrilles.FenetreParametrage.CoefficientElmPilier",
-			),
-			"</ie-checkbox>",
-			"</div>",
-			'<div class="PetitEspaceHaut">',
-			'<ie-checkbox class="AlignementMilieuVertical" ie-model="checkCoeffCompetence">',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"competencesGrilles.FenetreParametrage.CoefficientCompetence",
-			),
-			"</ie-checkbox>",
-			"</div>",
-			'<div class="PetitEspaceHaut">',
-			'<ie-checkbox class="AlignementMilieuVertical" ie-model="checkCoeffSousItem">',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"competencesGrilles.FenetreParametrage.CoefficientSousItem",
-			),
-			"</ie-checkbox>",
-			"</div>",
-			"</div>",
-		);
-		T.push("</div>");
-		return T.join("");
+		return H.join("");
 	}
 	setDonnees(aGenreReferentiel, aReferentiel, aOptionsAffichage) {
 		this.avecAffichageNbEvaluations = aOptionsAffichage.afficherNbEvaluations;

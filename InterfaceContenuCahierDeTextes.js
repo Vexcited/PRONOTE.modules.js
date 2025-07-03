@@ -22,6 +22,7 @@ const ObjetListeElements_1 = require("ObjetListeElements");
 const UtilitaireBoutonBandeau_1 = require("UtilitaireBoutonBandeau");
 const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetFenetre_ParamExecutionQCM_1 = require("ObjetFenetre_ParamExecutionQCM");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
 class InterfaceContenuCahierDeTextes extends _InterfaceContenuEtTAFCahierDeTextes_1._InterfaceContenuEtTAFCahierDeTextes {
 	constructor(...aParams) {
 		super(...aParams);
@@ -136,17 +137,22 @@ class InterfaceContenuCahierDeTextes extends _InterfaceContenuEtTAFCahierDeTexte
 												.OCCCDT_Pre_Devoir
 										]
 									) {
-										aInstanceMenu.addCommande(
+										const lCommande = aInstanceMenu.addCommande(
 											EGenreEvenementContenuCahierDeTextes_1
 												.EGenreEvenementContenuCahierDeTextes.saisieDS,
 											ObjetTraduction_1.GTraductions.getValeur(
 												"CahierDeTexte.ProgrammerDS",
 											),
-										).image =
-											TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.getImage(
+										);
+										lCommande.icon =
+											TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.getIcone(
 												TypeOrigineCreationCategorieCahierDeTexte_1
 													.TypeOrigineCreationCategorieCahierDeTexte
 													.OCCCDT_Pre_Devoir,
+											);
+										lCommande.libelleIcone =
+											ObjetTraduction_1.GTraductions.getValeur(
+												"CahierDeTexte.iconeDS",
 											);
 									}
 									if (
@@ -156,17 +162,22 @@ class InterfaceContenuCahierDeTextes extends _InterfaceContenuEtTAFCahierDeTexte
 												.OCCCDT_Pre_Evaluation
 										]
 									) {
-										aInstanceMenu.addCommande(
+										const lCommande = aInstanceMenu.addCommande(
 											EGenreEvenementContenuCahierDeTextes_1
 												.EGenreEvenementContenuCahierDeTextes.saisieEval,
 											ObjetTraduction_1.GTraductions.getValeur(
 												"CahierDeTexte.ProgrammerEval",
 											),
-										).image =
-											TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.getImage(
+										);
+										lCommande.icon =
+											TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.getIcone(
 												TypeOrigineCreationCategorieCahierDeTexte_1
 													.TypeOrigineCreationCategorieCahierDeTexte
 													.OCCCDT_Pre_Evaluation,
+											);
+										lCommande.libelleIcone =
+											ObjetTraduction_1.GTraductions.getValeur(
+												"CahierDeTexte.iconeEval",
 											);
 									}
 								}
@@ -432,17 +443,68 @@ class InterfaceContenuCahierDeTextes extends _InterfaceContenuEtTAFCahierDeTexte
 				"</div>",
 			);
 		}
+		H.push('<div class="select-contain fluid-bloc">');
 		H.push(
-			`<div class="select-contain fluid-bloc">\n            <div class="field-contain titre">\n              <label class="m-bottom" for="${this.IdPremierElement}">${ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.titre")}</label>\n              <input class="round-style" style="width:100%;" id="${this.IdPremierElement}" onkeyup="${this.Nom}.evenementSurTitre (this)" onchange="${this.Nom}.evenementSurTitre (this)" />\n            </div>\n\n            <div class="field-contain">\n              <label class="m-bottom">${ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.categorie")}</label>\n              <div class="flex-contain flex-center">\n                <div id="${this.getInstance(this.identCombo).getNom()}" oncontextmenu="GNavigateur.stopperEvenement (event); return false;" class="m-right"></div>\n                <ie-bouton ie-model="btnCategorie" ie-display="getDisplayBtnCategorie" title="${ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.infoCategorie")}" oncontextmenu="GNavigateur.stopperEvenement (event); return false;">...</ie-bouton>\n              </div>\n            </div>`,
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"div",
+					{ class: "field-contain titre" },
+					IE.jsx.str(
+						"label",
+						{ class: "m-bottom", for: this.IdPremierElement },
+						ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.titre"),
+					),
+					IE.jsx.str("input", {
+						style: "width:100%;",
+						id: this.IdPremierElement,
+						onkeyup: this.Nom + ".evenementSurTitre (this)",
+						onchange: this.Nom + ".evenementSurTitre (this)",
+					}),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "field-contain" },
+					IE.jsx.str(
+						"label",
+						{ class: "m-bottom" },
+						ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.categorie"),
+					),
+					IE.jsx.str(
+						"div",
+						{ class: "flex-contain flex-center" },
+						IE.jsx.str("div", {
+							id: this.getNomInstance(this.identCombo),
+							oncontextmenu:
+								"GNavigateur.stopperEvenement (event); return false;",
+							class: "m-right",
+						}),
+						IE.jsx.str(
+							"ie-bouton",
+							{
+								"ie-model": "btnCategorie",
+								"ie-display": "getDisplayBtnCategorie",
+								"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+									"CahierDeTexte.infoCategorie",
+								),
+								oncontextmenu:
+									"GNavigateur.stopperEvenement (event); return false;",
+							},
+							"...",
+						),
+					),
+				),
+			),
 		);
 		if (this.identMultiSelectionTheme) {
 			H.push(
-				`<div class="field-contain themes">\n                <label class="m-bottom">${ObjetTraduction_1.GTraductions.getValeur("Themes")}</label>\n                <div id="${this.getInstance(this.identMultiSelectionTheme).getNom()}"></div>\n              </div>`,
+				`<div class="field-contain themes">\n                <label class="m-bottom">${ObjetTraduction_1.GTraductions.getValeur("Themes")}</label>\n                <div id="${this.getNomInstance(this.identMultiSelectionTheme)}"></div>\n              </div>`,
 			);
 		}
 		if (this.estAvecAffichageComboParcoursEducatif()) {
 			H.push(
-				`<div class="field-contain">\n                <label class="m-bottom">${ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.ParcoursEducatifs")}</label>\n                <div id="${this.getInstance(this.identCmbParcoursEducatifs).getNom()}" oncontextmenu="GNavigateur.stopperEvenement (event); return false;"></div>\n              </div>`,
+				`<div class="field-contain">\n                <label class="m-bottom">${ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.ParcoursEducatifs")}</label>\n                <div id="${this.getNomInstance(this.identCmbParcoursEducatifs)}" oncontextmenu="GNavigateur.stopperEvenement (event); return false;"></div>\n              </div>`,
 			);
 		}
 		H.push(
@@ -681,20 +743,25 @@ class InterfaceContenuCahierDeTextes extends _InterfaceContenuEtTAFCahierDeTexte
 		);
 		lListeCategories.trier();
 		lListeCategories.parcourir((D) => {
-			const lImage =
-				TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.getImage(
+			const lIcone =
+				TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.getIcone(
 					D.getGenre(),
 				);
-			if (lImage) {
-				D.libelleHtml =
-					'<div class="flex-contain flex-center full-width">' +
-					'<div class="fluid-bloc" ie-ellipsis>' +
-					ObjetChaine_1.GChaine.insecable(D.getLibelle()) +
-					"</div>" +
-					'<div class="fix-bloc m-x ' +
-					lImage +
-					'"></div>' +
-					"</div>";
+			if (lIcone) {
+				D.libelleHtml = IE.jsx.str(
+					"div",
+					{ class: "flex-contain flex-center full-width" },
+					IE.jsx.str(
+						"div",
+						{ class: "fluid-bloc", "ie-ellipsis": true },
+						ObjetChaine_1.GChaine.insecable(D.getLibelle()),
+					),
+					IE.jsx.str(
+						"i",
+						{ class: [lIcone], role: "presentation" },
+						D.libelleIcone || "",
+					),
+				);
 			}
 			if (D.getNumero() === 0) {
 				D.setLibelle(ObjetTraduction_1.GTraductions.getValeur("Aucune"));
@@ -730,7 +797,7 @@ class InterfaceContenuCahierDeTextes extends _InterfaceContenuEtTAFCahierDeTexte
 				this.contenu.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 			}
 			const lDescriptif = aHtml;
-			if (GNavigateur.withContentEditable) {
+			if (ObjetNavigateur_1.Navigateur.withContentEditable) {
 				this.contenu.descriptif = TinyInit_1.TinyInit.estContenuVide(
 					lDescriptif,
 				)
@@ -784,7 +851,7 @@ class InterfaceContenuCahierDeTextes extends _InterfaceContenuEtTAFCahierDeTexte
 		ObjetHtml_1.GHtml.setValue(this.Nom + "_Titre", this.contenu.getLibelle());
 		ObjetHtml_1.GHtml.setCursorAtEnd(this.Nom + "_Titre");
 		ObjetHtml_1.GHtml.setHtml(this.idDescriptif, this.contenu.descriptif);
-		if (GNavigateur.withContentEditable) {
+		if (ObjetNavigateur_1.Navigateur.withContentEditable) {
 			const lEditor = TinyInit_1.TinyInit.get(this.idDescriptif);
 			if (lEditor) {
 				this._affecterContenuTiny(lEditor, this.contenu.descriptif);
@@ -814,7 +881,7 @@ class InterfaceContenuCahierDeTextes extends _InterfaceContenuEtTAFCahierDeTexte
 	}
 	_actualiserTrainingQCM() {
 		function _surContextMenu(aEvent) {
-			GNavigateur.stopperEvenement(aEvent);
+			ObjetNavigateur_1.Navigateur.stopperEvenement(aEvent);
 			const lThis = aEvent.data.aObjet;
 			lThis.ouvrirMenuContextQCM(aEvent.data.aIndice);
 			return false;
@@ -887,7 +954,7 @@ class InterfaceContenuCahierDeTextes extends _InterfaceContenuEtTAFCahierDeTexte
 						);
 						H.push(
 							"<td><ie-btnicon ie-model=\"btnParametrerQCM('",
-							lExecutionQCM.getNumero(),
+							lExecutionQCM.getNumero().toString(),
 							'\')" class="icon_cog"></ie-btnicon></td>',
 						);
 						H.push("</tr>");

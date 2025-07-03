@@ -1,13 +1,20 @@
 exports.ObjetComposeHtml = void 0;
+const AccessApp_1 = require("AccessApp");
 const ObjetStyle_1 = require("ObjetStyle");
 class ObjetComposeHtml {
 	static bandeauConsole(aContenu, aTabBtnIcones) {
 		const H = [];
 		H.push(
 			'<table style="',
-			ObjetStyle_1.GStyle.composeCouleurFond(GCouleur.bandeau.fond),
-			ObjetStyle_1.GStyle.composeCouleurTexte(GCouleur.bandeau.texte),
-			ObjetStyle_1.GStyle.composeCouleurBordure(GCouleur.bandeau.fond),
+			ObjetStyle_1.GStyle.composeCouleurFond(
+				(0, AccessApp_1.getApp)().getCouleur().bandeau.fond,
+			),
+			ObjetStyle_1.GStyle.composeCouleurTexte(
+				(0, AccessApp_1.getApp)().getCouleur().bandeau.texte,
+			),
+			ObjetStyle_1.GStyle.composeCouleurBordure(
+				(0, AccessApp_1.getApp)().getCouleur().bandeau.fond,
+			),
 			'" class="Table cellspacing-1">',
 			"<tr>",
 			'<td class="Texte10 Gras PetitEspace">' + aContenu + "</td>",
@@ -35,7 +42,9 @@ class ObjetComposeHtml {
 		H.push(
 			'<table class="Table" style="',
 			ObjetStyle_1.GStyle.composeCouleurFond("white"),
-			ObjetStyle_1.GStyle.composeCouleurTexte(GCouleur.texte),
+			ObjetStyle_1.GStyle.composeCouleurTexte(
+				(0, AccessApp_1.getApp)().getCouleur().texte,
+			),
 			'">',
 			'<tr><td class="Texte10 AlignementHaut AlignementMilieu GrandEspaceHaut Gras">',
 			aMessage,

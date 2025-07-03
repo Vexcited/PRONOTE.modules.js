@@ -6,6 +6,11 @@ const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetDeserialiser_1 = require("ObjetDeserialiser");
 const ObjetTri_1 = require("ObjetTri");
 class ObjetRequetePageSaisieCahierDeTextes extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
+	constructor(...aParams) {
+		super(...aParams);
+		const lApplicationSco = GApplication;
+		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
+	}
 	lancerRequete(aParam) {
 		this.JSON = {
 			cours: new ObjetElement_1.ObjetElement(),
@@ -35,7 +40,8 @@ class ObjetRequetePageSaisieCahierDeTextes extends ObjetRequeteJSON_1.ObjetReque
 			voirTousLeCDTetCharge: false,
 		};
 		$.extend(lParam, this.JSONReponse);
-		GEtatUtilisateur.estEligibleParcours = this.JSONReponse.estEligibleParcours;
+		this.etatUtilisateurSco.estEligibleParcours =
+			this.JSONReponse.estEligibleParcours;
 		if (!!lParam.listeClassesEleves) {
 			lParam.listeClassesEleves.parcourir((aClasse) => {
 				if (!!aClasse.listeEleves) {

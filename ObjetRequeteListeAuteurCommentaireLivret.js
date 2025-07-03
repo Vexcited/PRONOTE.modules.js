@@ -1,10 +1,8 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { GCache } = require("Cache.js");
-class ObjetRequeteListeAuteurCommentaireLivret extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteListeAuteurCommentaireLivret = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const Cache_1 = require("Cache");
+class ObjetRequeteListeAuteurCommentaireLivret extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aParam) {
 		this.genreCommentaire = aParam.genre;
 		this.classe = aParam.classe;
@@ -15,13 +13,13 @@ class ObjetRequeteListeAuteurCommentaireLivret extends ObjetRequeteConsultation 
 			estParcoursDifferencie: this.estParcoursDifferencie,
 		};
 		if (
-			GCache &&
-			GCache.general.existeDonnee(
+			Cache_1.GCache &&
+			Cache_1.GCache.general.existeDonnee(
 				"listeAuteurCommentaireLivret" + "_" + this.genreCommentaire,
 			)
 		) {
 			this.callbackReussite.appel({
-				listeAuteurs: GCache.general.getDonnee(
+				listeAuteurs: Cache_1.GCache.general.getDonnee(
 					"listeAuteurCommentaireLivret" + "_" + this.genreCommentaire,
 				),
 				genre: this.genreCommentaire,
@@ -32,8 +30,8 @@ class ObjetRequeteListeAuteurCommentaireLivret extends ObjetRequeteConsultation 
 	}
 	actionApresRequete() {
 		const lObjet = { genre: this.genreCommentaire };
-		if (GCache) {
-			GCache.general.setDonnee(
+		if (Cache_1.GCache) {
+			Cache_1.GCache.general.setDonnee(
 				"listeAuteurCommentaireLivret" + "_" + this.genreCommentaire,
 				this.JSONReponse.listeAuteurs,
 			);
@@ -42,8 +40,9 @@ class ObjetRequeteListeAuteurCommentaireLivret extends ObjetRequeteConsultation 
 		this.callbackReussite.appel(lObjet);
 	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteListeAuteurCommentaireLivret =
+	ObjetRequeteListeAuteurCommentaireLivret;
+CollectionRequetes_1.Requetes.inscrire(
 	"ListeAuteurCommentaireLivret",
 	ObjetRequeteListeAuteurCommentaireLivret,
 );
-module.exports = { ObjetRequeteListeAuteurCommentaireLivret };

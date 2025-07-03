@@ -1,6 +1,5 @@
 exports._ObjetFenetre = void 0;
 const ObjetInterface_1 = require("ObjetInterface");
-const ObjetIdentite_1 = require("ObjetIdentite");
 const MethodesObjet_1 = require("MethodesObjet");
 const ObjetHtml_1 = require("ObjetHtml");
 const ObjetTraduction_1 = require("ObjetTraduction");
@@ -9,9 +8,11 @@ const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
 const IEZoneFenetre_1 = require("IEZoneFenetre");
 const MethodesTableau_1 = require("MethodesTableau");
 const GestionnaireModale_1 = require("GestionnaireModale");
+const Invocateur_1 = require("Invocateur");
+const ToucheClavier_1 = require("ToucheClavier");
 class _ObjetFenetre extends ObjetInterface_1.ObjetInterface {
-	constructor(...aParams) {
-		super(...aParams);
+	constructor(aParams, ...aSuiteDeprecated) {
+		super(aParams, ...aSuiteDeprecated);
 		this._structureBoutons = [];
 		this.__surDestructionApresFermeture_ = false;
 		this.optionsFenetre = {
@@ -30,7 +31,7 @@ class _ObjetFenetre extends ObjetInterface_1.ObjetInterface {
 		this.IdPremierElement = this.NomFenetre;
 		this.GenreStructure =
 			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
-		this.optionsInterne = { closeStart: null, closeEnd: null };
+		this.optionsInterne = { closeStart: () => {}, closeEnd: async () => {} };
 	}
 	setOptionsFenetre(aOptions) {
 		Object.assign(this.optionsFenetre, aOptions);
@@ -47,10 +48,13 @@ class _ObjetFenetre extends ObjetInterface_1.ObjetInterface {
 			this.$refreshSelf();
 		}
 	}
+	composeBoutons() {
+		return "";
+	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
 			$off: function () {
-				return !aInstance.EnAffichage;
+				return aInstance.estControleurOff();
 			},
 			listeBoutons() {
 				if (!aInstance._structureBoutons) {
@@ -117,6 +121,75 @@ class _ObjetFenetre extends ObjetInterface_1.ObjetInterface {
 	}
 	composeContenu() {
 		return "";
+	}
+	jsxNodeCreationNodeFenetre(aNode) {
+		const lInstance = this;
+		Invocateur_1.Invocateur.desabonner(
+			Invocateur_1.ObjetInvocateur.events.fermerFenetres,
+			this,
+		);
+		Invocateur_1.Invocateur.abonner(
+			Invocateur_1.ObjetInvocateur.events.fermerFenetres,
+			(aForcer) => {
+				if (
+					aForcer ||
+					this.optionsFenetre.avecAbonnementFermetureFenetreGenerale
+				) {
+					this.fermer();
+				}
+			},
+		);
+		$(aNode).on({
+			keyup(aEvent) {
+				if (aEvent.which === ToucheClavier_1.ToucheClavier.Echap) {
+					lInstance.eventSurCroixFermeture();
+				}
+			},
+			pointerdown() {
+				if (!IE.estMobile) {
+					GestionnaireModale_1.GestionnaireModale.enPremierPlan(
+						lInstance.getNom(),
+					);
+				}
+			},
+		});
+	}
+	focusSurPremierElement() {
+		if (ObjetHtml_1.GHtml.elementExiste(this.IdTitre)) {
+			ObjetHtml_1.GHtml.setFocus(this.IdTitre);
+			return;
+		}
+		this.focusSurPemierOuDernierElement(false);
+	}
+	focusSurPemierOuDernierElement(aDernierElementFocus) {
+		var _a;
+		const lTab = ObjetHtml_1.GHtml.getElementsFocusablesDElement(
+			this.NomFenetre,
+			{ avecTabindexNegatif: false },
+		);
+		if (lTab.length > 0) {
+			const lNode = aDernierElementFocus ? lTab[lTab.length - 1] : lTab[0];
+			(_a = lNode === null || lNode === void 0 ? void 0 : lNode.focus) ===
+				null || _a === void 0
+				? void 0
+				: _a.call(lNode);
+			let lFocusReussi = true;
+			try {
+				lFocusReussi = !!lNode && document.activeElement === lNode;
+			} catch (e) {}
+			if (lFocusReussi) {
+				return;
+			}
+		}
+		if (ObjetHtml_1.GHtml.elementExiste(this.IdTitre)) {
+			ObjetHtml_1.GHtml.setFocus(this.IdTitre);
+		} else {
+		}
+	}
+	jsxNodeFocusSurPremierOuDernierElement(aPrecedent, aNode) {
+		$(aNode).on("focus", () => {
+			this.focusSurPemierOuDernierElement(aPrecedent);
+		});
 	}
 	getBoutonNumero(aNumeroBouton) {
 		let lBouton = {};
@@ -236,6 +309,16 @@ class _ObjetFenetre extends ObjetInterface_1.ObjetInterface {
 	estAffiche() {
 		return this.EnAffichage === true;
 	}
+	jsxModeleBoutonCroixFermeture() {
+		return {
+			event: () => {
+				this.eventSurCroixFermeture();
+			},
+		};
+	}
+	eventSurCroixFermeture() {
+		this.surValidation(this.optionsFenetre.indiceCroixFermeture);
+	}
 	setBoutonFocus(aVal, avecDecalageFocus) {
 		let lIndice = aVal;
 		if (MethodesObjet_1.MethodesObjet.isObject(aVal)) {
@@ -277,44 +360,77 @@ class _ObjetFenetre extends ObjetInterface_1.ObjetInterface {
 	estObjetGraphiqueFenetre() {
 		return true;
 	}
-	static creerInstanceFenetre(aConstructeur, aParametres, aOptionsFenetre) {
-		if (!aParametres || !aParametres.pere) {
-			return;
-		}
-		const lInstance = ObjetIdentite_1.Identite.creerInstance(
-			aConstructeur,
-			aParametres,
-		);
-		const lParametres = $.extend(
-			{ initialiser: true, destructionSurFermeture: true, nomComplet: "" },
-			aParametres,
-		);
-		lInstance.destructionSurFermeture = lParametres.destructionSurFermeture;
-		if (aOptionsFenetre && aOptionsFenetre.zIndex) {
-			const lZIndex = aOptionsFenetre.zIndex;
-			lInstance.getZIndex = function () {
-				return lZIndex;
-			};
-		}
+	construireBouton(aBoutonRepeat, aMargin) {
+		return "";
+	}
+	getDragFenetre() {
+		return null;
+	}
+	estControleurOff() {
+		return !this.EnAffichage;
+	}
+	initAfficher(aParametres) {
+		var _a;
+		this.destructionSurFermeture =
+			(_a =
+				aParametres === null || aParametres === void 0
+					? void 0
+					: aParametres.destructionSurFermeture) !== null && _a !== void 0
+				? _a
+				: true;
 		IEZoneFenetre_1.ZoneFenetre.ajouterFenetre(
-			lParametres.nomComplet,
-			lInstance.getZIndex ? lInstance.getZIndex() : 1100,
+			this.getNom(),
+			this.getZIndex ? this.getZIndex() : 1100,
 		);
-		$("#" + lInstance.getNom().escapeJQ()).on("destroyed", () => {
-			if (lInstance.destructionSurFermeture) {
-				lInstance.free();
+		$("#" + this.getNom().escapeJQ()).on("destroyed", () => {
+			var _a;
+			(_a =
+				aParametres === null || aParametres === void 0
+					? void 0
+					: aParametres.surFermeture) === null || _a === void 0
+				? void 0
+				: _a.call(aParametres, this);
+			if (this.destructionSurFermeture) {
+				this.free();
 			}
 		});
-		if (aOptionsFenetre) {
-			lInstance.setOptionsFenetre(aOptionsFenetre);
+		if (
+			aParametres === null || aParametres === void 0
+				? void 0
+				: aParametres.options
+		) {
+			this.setOptionsFenetre(aParametres.options);
 		}
-		if (lParametres.initialiser) {
-			if (MethodesObjet_1.MethodesObjet.isFunction(lParametres.initialiser)) {
-				lParametres.initialiser.call(lParametres.pere, lInstance);
+		if (
+			(aParametres === null || aParametres === void 0
+				? void 0
+				: aParametres.initialiser) !== false
+		) {
+			if (
+				MethodesObjet_1.MethodesObjet.isFunction(
+					aParametres === null || aParametres === void 0
+						? void 0
+						: aParametres.initialiser,
+				)
+			) {
+				aParametres.initialiser.call(this.Pere, this);
 			}
-			lInstance.initialiser();
+			this.initialiser();
 		}
-		return lInstance;
+		return this;
+	}
+	static creerInstanceFenetre(aConstructeur, aParametres, aOptionsFenetre) {
+		return new aConstructeur(aParametres).initAfficher({
+			initialiser:
+				aParametres === null || aParametres === void 0
+					? void 0
+					: aParametres.initialiser,
+			destructionSurFermeture:
+				aParametres === null || aParametres === void 0
+					? void 0
+					: aParametres.destructionSurFermeture,
+			options: aOptionsFenetre,
+		});
 	}
 	static creerInstance() {
 		throw new Error("creerInstance incorrect");

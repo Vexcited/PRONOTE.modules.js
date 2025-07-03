@@ -1,10 +1,8 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { SerialiserQCM_PN } = require("SerialiserQCM_PN.js");
-class ObjetRequeteSaisieQCMEvaluation extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieQCMEvaluation = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const SerialiserQCM_PN_1 = require("SerialiserQCM_PN");
+class ObjetRequeteSaisieQCMEvaluation extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParametres) {
 		const lEvaluationJSON = aParametres.evaluation.toJSON();
 		lEvaluationJSON.service = aParametres.evaluation.service;
@@ -22,7 +20,7 @@ class ObjetRequeteSaisieQCMEvaluation extends ObjetRequeteSaisie {
 			nePasTrierPourValidation: true,
 		});
 		const lExecutionQCMJSON = aParametres.evaluation.executionQCM.toJSON();
-		new SerialiserQCM_PN().executionQCM(
+		new SerialiserQCM_PN_1.SerialiserQCM_PN().executionQCM(
 			aParametres.evaluation.executionQCM,
 			lExecutionQCMJSON,
 		);
@@ -34,11 +32,12 @@ class ObjetRequeteSaisieQCMEvaluation extends ObjetRequeteSaisie {
 		};
 		return this.appelAsynchrone();
 	}
-	actionApresRequete() {
-		this.callbackReussite.appel(this.JSONRapportSaisie);
-	}
 }
-Requetes.inscrire("SaisieQCMEvaluation", ObjetRequeteSaisieQCMEvaluation);
+exports.ObjetRequeteSaisieQCMEvaluation = ObjetRequeteSaisieQCMEvaluation;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieQCMEvaluation",
+	ObjetRequeteSaisieQCMEvaluation,
+);
 function serialiserCompetences(aElement, aJSON) {
 	aJSON.coefficient = aElement.coefficient;
 	aJSON.listeQuestions = aElement.listeQuestions.setSerialisateurJSON({
@@ -46,4 +45,3 @@ function serialiserCompetences(aElement, aJSON) {
 		nePasTrierPourValidation: true,
 	});
 }
-module.exports = { ObjetRequeteSaisieQCMEvaluation };

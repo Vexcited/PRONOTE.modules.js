@@ -16,6 +16,11 @@ var TypeEtatSatisfaction;
 		(exports.TypeEtatSatisfaction = TypeEtatSatisfaction = {}),
 );
 const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTraduction_2 = require("ObjetTraduction");
+const TradTypeEtatSatisfaction = ObjetTraduction_2.TraductionsModule.getModule(
+	"TypeEtatSatisfaction",
+	{ TresInsatisfait: "", Insatisfait: "", Satisfait: "", TresSatisfait: "" },
+);
 function _addClass(aParams) {
 	if (aParams && aParams.class) {
 		return aParams.class;
@@ -36,21 +41,13 @@ const TypeEtatSatisfactionUtil = {
 			case TypeEtatSatisfaction.Tes_NonEvalue:
 				return "";
 			case TypeEtatSatisfaction.Tes_TresInsatisfait:
-				return ObjetTraduction_1.GTraductions.getValeur(
-					"questionnaireStage.TresInsatisfait",
-				);
+				return TradTypeEtatSatisfaction.TresInsatisfait;
 			case TypeEtatSatisfaction.Tes_Insatisfait:
-				return ObjetTraduction_1.GTraductions.getValeur(
-					"questionnaireStage.Insatisfait",
-				);
+				return TradTypeEtatSatisfaction.Insatisfait;
 			case TypeEtatSatisfaction.Tes_Satisfait:
-				return ObjetTraduction_1.GTraductions.getValeur(
-					"questionnaireStage.Satisfait",
-				);
+				return TradTypeEtatSatisfaction.Satisfait;
 			case TypeEtatSatisfaction.Tes_TresSatisfait:
-				return ObjetTraduction_1.GTraductions.getValeur(
-					"questionnaireStage.TresSatisfait",
-				);
+				return TradTypeEtatSatisfaction.TresSatisfait;
 			default:
 				return "";
 		}

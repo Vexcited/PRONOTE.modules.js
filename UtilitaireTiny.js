@@ -4,7 +4,8 @@ const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetHtml_1 = require("ObjetHtml");
 const ObjetChaine_1 = require("ObjetChaine");
-const UtilitaireTiny = {
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+exports.UtilitaireTiny = {
 	ouvrirFenetreHtml(aParams) {
 		const lParams = Object.assign(
 			{
@@ -42,10 +43,9 @@ const UtilitaireTiny = {
 						libelle: ObjetTraduction_1.GTraductions.getValeur("Valider"),
 					},
 				],
-				empilerFenetre: false,
 				addParametresValidation: function () {
 					let lContent = "";
-					if (!GNavigateur.withContentEditable) {
+					if (!ObjetNavigateur_1.Navigateur.withContentEditable) {
 						lContent = ObjetHtml_1.GHtml.getValue(lFenetre.idEditeurHTML);
 					} else {
 						const lEditor = TinyInit_1.TinyInit.get(lFenetre.idEditeurHTML);
@@ -69,12 +69,11 @@ const UtilitaireTiny = {
 			},
 		);
 		const lHTML = [];
-		if (!GNavigateur.withContentEditable) {
+		if (!ObjetNavigateur_1.Navigateur.withContentEditable) {
 			lHTML.push(
 				IE.jsx.str("textarea", {
 					id: lFenetre.idEditeurHTML,
-					class: "Texte10 round-style",
-					style: "width:100%;height:100%",
+					class: "full-size",
 					maxlength: "0",
 				}),
 			);
@@ -84,8 +83,7 @@ const UtilitaireTiny = {
 			lHTML.push(
 				IE.jsx.str("div", {
 					id: lFenetre.idEditeurHTML,
-					class: "Texte10 round-style",
-					style: "width: 100%;",
+					class: "full-width is-tiny",
 				}),
 			);
 			lFenetre.afficher(lHTML.join(""));
@@ -94,8 +92,8 @@ const UtilitaireTiny = {
 				id: lFenetre.idEditeurHTML,
 				height: "100%",
 				readonly: lParams.readonly,
-				labelWAI:
-					lParams.labelWAI ||
+				ariaLabel:
+					lParams.ariaLabel ||
 					ObjetTraduction_1.GTraductions.getValeur("Tiny.WAITitre"),
 				editeurEquation: lParams.editeurEquation,
 				editeurEquationMaxFileSize: lParams.editeurEquationMaxFileSize,
@@ -108,8 +106,8 @@ const UtilitaireTiny = {
 				Object.assign(lObjet, {
 					autoresize_bottom_margin: 0,
 					autoresize_on_init: true,
-					min_height: 60,
-					max_height: (GNavigateur.ecranH * 60) / 100,
+					min_height: 200,
+					max_height: (ObjetNavigateur_1.Navigateur.ecranH * 60) / 100,
 					height: "",
 					plugins: ["autoresize"],
 				});
@@ -125,4 +123,3 @@ const UtilitaireTiny = {
 		return lFenetre;
 	},
 };
-exports.UtilitaireTiny = UtilitaireTiny;

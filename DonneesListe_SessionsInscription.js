@@ -1,13 +1,9 @@
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-const {
-	TypeOrigineCreationEtatDemandeInscriptionUtil,
-} = require("TypeOrigineCreationEtatDemandeInscription.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { GDate } = require("ObjetDate.js");
-const { tag } = require("tag.js");
-class DonneesListe_SessionsInscription extends ObjetDonneesListeFlatDesign {
+exports.DonneesListe_SessionsInscription = void 0;
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const TypeOrigineCreationEtatDemandeInscription_1 = require("TypeOrigineCreationEtatDemandeInscription");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetDate_1 = require("ObjetDate");
+class DonneesListe_SessionsInscription extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aListeSessions) {
 		super(aListeSessions);
 		this.setOptions({
@@ -26,9 +22,15 @@ class DonneesListe_SessionsInscription extends ObjetDonneesListeFlatDesign {
 	getZoneMessage(aParams) {
 		const lStr = [];
 		lStr.push(
-			GTraductions.getValeur("inscriptionsEtablissement.ouvertJusquau", [
-				GDate.formatDate(aParams.article.dateFin, "%JJ/%MM/%AAAA"),
-			]),
+			ObjetTraduction_1.GTraductions.getValeur(
+				"inscriptionsEtablissement.ouvertJusquau",
+				[
+					ObjetDate_1.GDate.formatDate(
+						aParams.article.dateFin,
+						"%JJ/%MM/%AAAA",
+					),
+				],
+			),
 		);
 		if (aParams.article.estUneDemande) {
 			lStr.push(aParams.article.nomElevePostulant);
@@ -42,25 +44,28 @@ class DonneesListe_SessionsInscription extends ObjetDonneesListeFlatDesign {
 		let lIcon = "";
 		let lLibelle = "";
 		if (aParams.article.estUneDemande) {
-			lIcon = TypeOrigineCreationEtatDemandeInscriptionUtil.getIcone(
-				aParams.article.etatDemande,
-			);
-			lLibelle = TypeOrigineCreationEtatDemandeInscriptionUtil.getLibelle(
-				aParams.article.etatDemande,
-			);
+			lIcon =
+				TypeOrigineCreationEtatDemandeInscription_1.TypeOrigineCreationEtatDemandeInscriptionUtil.getIcone(
+					aParams.article.etatDemande,
+				);
+			lLibelle =
+				TypeOrigineCreationEtatDemandeInscription_1.TypeOrigineCreationEtatDemandeInscriptionUtil.getLibelle(
+					aParams.article.etatDemande,
+				);
 		} else {
 			lIcon = "icon_th_list";
 			if (aParams.article.limiteAtteinte) {
-				lLibelle = GTraductions.getValeur(
+				lLibelle = ObjetTraduction_1.GTraductions.getValeur(
 					"inscriptionsEtablissement.limiteAtteinte",
 				);
 				lIcon += " mix-icon_remove";
 			}
 		}
-		return tag("i", { class: [lIcon], title: lLibelle });
+		return IE.jsx.str("i", {
+			class: lIcon,
+			"ie-tooltiplabel": lLibelle,
+			role: "presentation",
+		});
 	}
 }
-DonneesListe_SessionsInscription.colonnes = {
-	libelle: "sessionInscription_libelle",
-};
-module.exports = { DonneesListe_SessionsInscription };
+exports.DonneesListe_SessionsInscription = DonneesListe_SessionsInscription;

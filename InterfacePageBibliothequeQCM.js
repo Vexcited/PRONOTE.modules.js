@@ -7,6 +7,7 @@ const ObjetRequeteListeQCMCumuls_1 = require("ObjetRequeteListeQCMCumuls");
 const DonneesListe_Simple_1 = require("DonneesListe_Simple");
 const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetFenetre_Liste_1 = require("ObjetFenetre_Liste");
+const AccessApp_1 = require("AccessApp");
 class InterfacePageBibliothequeQCM extends InterfacePage_1.InterfacePage {
 	constructor(...aParams) {
 		super(...aParams);
@@ -56,7 +57,7 @@ exports.InterfacePageBibliothequeQCM = InterfacePageBibliothequeQCM;
 class PageBibliothequeQCM_PN extends PageBibliothequeQCM_1.PageBibliothequeQCM {
 	constructor(...aParams) {
 		super(...aParams);
-		const lApplicationSco = GApplication;
+		const lApplicationSco = (0, AccessApp_1.getApp)();
 		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
 		this.avecInfoClassePourCopie = this.etatUtilisateurSco.pourPrimaire();
 		this.avecGestionBaremeSurQuestion = !this.etatUtilisateurSco.pourPrimaire();
@@ -67,7 +68,7 @@ class PageBibliothequeQCM_PN extends PageBibliothequeQCM_1.PageBibliothequeQCM {
 			aCallback,
 		);
 	}
-	getClassePourCopiePromise() {
+	async getClassePourCopiePromise() {
 		const lListe = this.etatUtilisateurSco.listeClasses.getListeElements(
 			(aElement) => {
 				return (

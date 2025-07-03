@@ -1,15 +1,32 @@
 exports.TypeArrondi = void 0;
 const Enumere_ChampsJSON_1 = require("Enumere_ChampsJSON");
-const ObjetTraduction_1 = require("ObjetTraduction");
 const TypeHttpVariable_1 = require("TypeHttpVariable");
 const TypeNote_1 = require("TypeNote");
 const Enumere_Arrondi_1 = require("Enumere_Arrondi");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TradTypeArrondi = ObjetTraduction_1.TraductionsModule.getModule(
+	"TypeArrondi",
+	{ Sans: "", Dixieme: "", Quart: "", Demi: "", Point: "" },
+);
 class TypeArrondi {
 	constructor(aGenrePronote) {
 		this.precision = 0;
 		this.genre = Enumere_Arrondi_1.EGenreArrondi.sans;
 		this.precisionMini = 1 / Math.pow(10, TypeNote_1.TypeNote.decimalNotation);
 		this.toType(aGenrePronote);
+	}
+	static getLibelleSelonPrecision(aPrecision) {
+		switch (aPrecision) {
+			case 0.1:
+				return TradTypeArrondi.Dixieme;
+			case 0.25:
+				return TradTypeArrondi.Quart;
+			case 0.5:
+				return TradTypeArrondi.Demi;
+			case 1.0:
+				return TradTypeArrondi.Point;
+		}
+		return TradTypeArrondi.Sans;
 	}
 	getPrecision() {
 		return this.precision;
@@ -113,20 +130,7 @@ class TypeArrondi {
 		}
 	}
 	strPrecision() {
-		const lTrads = ObjetTraduction_1.GTraductions.getTabValeurs("Arrondi");
-		switch (this.precision) {
-			case this.precisionMini:
-				return lTrads[0];
-			case 0.1:
-				return lTrads[1];
-			case 0.25:
-				return lTrads[2];
-			case 0.5:
-				return lTrads[3];
-			case 1.0:
-				return lTrads[4];
-		}
-		return lTrads[0];
+		return TypeArrondi.getLibelleSelonPrecision(this.precision);
 	}
 	dupliquer() {
 		const lArrondi = new TypeArrondi(0);

@@ -1,10 +1,11 @@
-const { ObjetMoteurCDT } = require("ObjetMoteurCahierDeTextes.js");
-const { BlocCard } = require("BlocCard.js");
-class ObjetBlocSaisieEltPgm extends BlocCard {
+exports.ObjetBlocSaisieEltPgm = void 0;
+const ObjetMoteurCahierDeTextes_1 = require("ObjetMoteurCahierDeTextes");
+const BlocCard_1 = require("BlocCard");
+class ObjetBlocSaisieEltPgm extends BlocCard_1.BlocCard {
 	constructor(...aParams) {
 		super(...aParams);
+		this.moteurCDT = new ObjetMoteurCahierDeTextes_1.ObjetMoteurCDT();
 		this.donneesRecues = false;
-		this.moteurCDT = new ObjetMoteurCDT();
 	}
 	construireAffichage() {
 		return this.afficher();
@@ -24,7 +25,7 @@ class ObjetBlocSaisieEltPgm extends BlocCard {
 	}
 	composeDataCard(aParam) {
 		const lContenuPrincipal = this.composeHtmlPrincipal(aParam);
-		const lContenuSecondaire = this.composeHtmlSecondaire(aParam);
+		const lContenuSecondaire = this.composeHtmlSecondaire();
 		return {
 			editable: aParam.editable,
 			htmlInfoPrincipale: lContenuPrincipal,
@@ -44,4 +45,4 @@ class ObjetBlocSaisieEltPgm extends BlocCard {
 		return H.join("");
 	}
 }
-module.exports = { ObjetBlocSaisieEltPgm };
+exports.ObjetBlocSaisieEltPgm = ObjetBlocSaisieEltPgm;

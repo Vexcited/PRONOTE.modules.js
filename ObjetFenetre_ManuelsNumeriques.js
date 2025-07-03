@@ -1,64 +1,57 @@
-const {
-	ObjetRequeteConsultation,
-	ObjetRequeteSaisie,
-} = require("ObjetRequeteJSON.js");
-const { GChaine } = require("ObjetChaine.js");
-const { GDate } = require("ObjetDate.js");
-const { GImage } = require("ObjetImage.js");
-const { Invocateur } = require("Invocateur.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { CommunicationProduit } = require("CommunicationProduit.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { TypeEnsembleNombre } = require("TypeEnsembleNombre.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const ObjetRequetePanierRessourceKiosque = require("ObjetRequetePanierRessourceKiosque.js");
-const { TypeGenreApiKiosque } = require("TypeGenreApiKiosque.js");
-const { TypeThemeBouton } = require("Type_ThemeBouton.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const ObjetFenetre_EditionRessourceNumerique = require("ObjetFenetre_EditionRessourceNumerique.js");
-Requetes.inscrire("SaisiePanierRessourceKiosque", ObjetRequeteSaisie);
-Requetes.inscrire(
-	"listeManuelsRessourcesGranulaires",
-	ObjetRequeteConsultation,
-);
-const cDureeTimerKiosque = 20000;
-class ObjetFenetre_ManuelsNumeriques extends ObjetFenetre {
+exports.ObjetFenetre_ManuelsNumeriques = void 0;
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetImage_1 = require("ObjetImage");
+const Invocateur_1 = require("Invocateur");
+const MethodesObjet_1 = require("MethodesObjet");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TypeEnsembleNombre_1 = require("TypeEnsembleNombre");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetRequetePanierRessourceKiosque_1 = require("ObjetRequetePanierRessourceKiosque");
+const ObjetRequeteListeManuelsRessourcesGranulaires_1 = require("ObjetRequeteListeManuelsRessourcesGranulaires");
+const ObjetRequeteSaisiePanierRessourceKiosque_1 = require("ObjetRequeteSaisiePanierRessourceKiosque");
+const TypeGenreApiKiosque_1 = require("TypeGenreApiKiosque");
+const Type_ThemeBouton_1 = require("Type_ThemeBouton");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetFenetre_EditionRessourceNumerique_1 = require("ObjetFenetre_EditionRessourceNumerique");
+const AccessApp_1 = require("AccessApp");
+class ObjetFenetre_ManuelsNumeriques extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
+		this.etatUtilSco = (0, AccessApp_1.getApp)().getEtatUtilisateur();
 		this.options = {
 			avecMultiSelection: false,
 			sansAjouterLien: false,
 			avecRessourcesGranulaire: [
-				EGenreEspace.Professeur,
-				EGenreEspace.PrimProfesseur,
-				EGenreEspace.Mobile_Professeur,
-				EGenreEspace.Mobile_PrimProfesseur,
-				EGenreEspace.PrimDirection,
-				EGenreEspace.Mobile_PrimDirection,
-			].includes(GEtatUtilisateur.GenreEspace),
+				Enumere_Espace_1.EGenreEspace.Professeur,
+				Enumere_Espace_1.EGenreEspace.PrimProfesseur,
+				Enumere_Espace_1.EGenreEspace.Mobile_Professeur,
+				Enumere_Espace_1.EGenreEspace.Mobile_PrimProfesseur,
+				Enumere_Espace_1.EGenreEspace.PrimDirection,
+				Enumere_Espace_1.EGenreEspace.Mobile_PrimDirection,
+			].includes(this.etatUtilSco.GenreEspace),
 			avecNomEditeur: true,
 		};
-		this.listeSelectionnes = new ObjetListeElements();
+		this.listeSelectionnes = new ObjetListeElements_1.ObjetListeElements();
 		this.manuelSelectionne;
 		const lOptionsFenetre = {
-			titre: GTraductions.getValeur(
+			titre: ObjetTraduction_1.GTraductions.getValeur(
 				"FenetrePanierKiosque.titreManuelsNumeriques",
 			),
 			largeur: 342,
 			hauteurMin: 200,
 			listeBoutons: [
 				{
-					libelle: GTraductions.getValeur("Fermer"),
-					theme: TypeThemeBouton.secondaire,
+					libelle: ObjetTraduction_1.GTraductions.getValeur("Fermer"),
+					theme: Type_ThemeBouton_1.TypeThemeBouton.secondaire,
 					action: ObjetFenetre_ManuelsNumeriques.genreAction.fermer,
 				},
 			],
@@ -68,15 +61,15 @@ class ObjetFenetre_ManuelsNumeriques extends ObjetFenetre {
 			lOptionsFenetre.hauteur = 540;
 			if (!this.options.sansAjouterLien) {
 				lOptionsFenetre.listeBoutons.push({
-					libelle: GTraductions.getValeur(
+					libelle: ObjetTraduction_1.GTraductions.getValeur(
 						"FenetrePanierKiosque.bouton.ajouterLien",
 					),
 					valider: true,
-					theme: TypeThemeBouton.primaire,
+					theme: Type_ThemeBouton_1.TypeThemeBouton.primaire,
 					action: ObjetFenetre_ManuelsNumeriques.genreAction.ajouter,
 				});
 			}
-			lOptionsFenetre.titre = GTraductions.getValeur(
+			lOptionsFenetre.titre = ObjetTraduction_1.GTraductions.getValeur(
 				"FenetrePanierKiosque.titreRessourcesIssuesManuelsNumeriques",
 			);
 		}
@@ -84,20 +77,21 @@ class ObjetFenetre_ManuelsNumeriques extends ObjetFenetre {
 	}
 	setOptions(aOptions) {
 		$.extend(this.options, aOptions);
+		return this;
 	}
 	construireInstances() {
 		this.identListeManuels = this.add(
-			ObjetListe,
-			_evenementListeManuels.bind(this),
-			_initialiserListeManuels.bind(this),
+			ObjetListe_1.ObjetListe,
+			this._evenementListeManuels.bind(this),
+			this._initialiserListeManuels.bind(this),
 		);
 		this.identListe = this.add(
-			ObjetListe,
-			_evenementListeRessources.bind(this),
-			_initialiserListeRessources.bind(this),
+			ObjetListe_1.ObjetListe,
+			this._evenementListeRessources.bind(this),
+			this._initialiserListeRessources.bind(this),
 		);
 		if (this.options.avecRessourcesGranulaire) {
-			Invocateur.abonner(
+			Invocateur_1.Invocateur.abonner(
 				"notification_Kiosque",
 				this._notificationKiosque,
 				this,
@@ -106,17 +100,11 @@ class ObjetFenetre_ManuelsNumeriques extends ObjetFenetre {
 	}
 	detruireInstances() {
 		if (this.options.avecRessourcesGranulaire) {
-			Invocateur.desabonner("notification_Kiosque", this);
-			GApplication.getCommunication().setDureeTimerPresence(
-				CommunicationProduit.cDureeTimerPresence,
-			);
+			Invocateur_1.Invocateur.desabonner("notification_Kiosque", this);
 		}
 	}
 	_notificationKiosque() {
 		this.actualiserRessourcesGranulaire();
-		GApplication.getCommunication().setDureeTimerPresence(
-			CommunicationProduit.cDureeTimerPresence,
-		);
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
@@ -134,7 +122,7 @@ class ObjetFenetre_ManuelsNumeriques extends ObjetFenetre {
 			execManuel: function (aNumero) {
 				$(this.node).eventValidation(function () {
 					const lManuel = aInstance.listeManuels.getElementParNumero(aNumero);
-					_actionSelectionManuel.call(aInstance, lManuel);
+					aInstance._actionSelectionManuel(lManuel);
 					$(this).siblings().removeClass("mn-selected");
 					$(this).addClass("mn-selected");
 				});
@@ -156,13 +144,12 @@ class ObjetFenetre_ManuelsNumeriques extends ObjetFenetre {
 					if (
 						aInstance.manuelSelectionne &&
 						aInstance.manuelSelectionne.getGenre() ===
-							EGenreRessource.RessourceNumeriqueKiosque
+							Enumere_Ressource_1.EGenreRessource.RessourceNumeriqueKiosque
 					) {
-						GApplication.getCommunication().setDureeTimerPresence(
-							cDureeTimerKiosque,
-						);
 						window.open(
-							GChaine.creerUrlBruteLienExterne(aInstance.manuelSelectionne),
+							ObjetChaine_1.GChaine.creerUrlBruteLienExterne(
+								aInstance.manuelSelectionne,
+							),
 						);
 					}
 				},
@@ -170,7 +157,7 @@ class ObjetFenetre_ManuelsNumeriques extends ObjetFenetre {
 					return (
 						!aInstance.manuelSelectionne ||
 						aInstance.manuelSelectionne.getGenre() !==
-							EGenreRessource.RessourceNumeriqueKiosque
+							Enumere_Ressource_1.EGenreRessource.RessourceNumeriqueKiosque
 					);
 				},
 			},
@@ -192,25 +179,31 @@ class ObjetFenetre_ManuelsNumeriques extends ObjetFenetre {
 			this.manuelSelectionne = aParams.manuel;
 		}
 		this.genresApiKiosque =
-			aParams.genresApiKiosque || new TypeEnsembleNombre();
+			aParams.genresApiKiosque || new TypeEnsembleNombre_1.TypeEnsembleNombre();
 		this.pouriDevoir =
-			this.genresApiKiosque.contains(TypeGenreApiKiosque.Api_EnvoiNote) &&
-			GEtatUtilisateur.activerKiosqueEnvoiNote;
+			this.genresApiKiosque.contains(
+				TypeGenreApiKiosque_1.TypeGenreApiKiosque.Api_EnvoiNote,
+			) && this.etatUtilSco.activerKiosqueEnvoiNote;
 		this.pourExerciceNum =
-			this.genresApiKiosque.contains(TypeGenreApiKiosque.Api_RenduPJTAF) &&
-			GEtatUtilisateur.activerKiosqueRenduTAF;
-		this.actualiserDonneesKiosque(true);
+			this.genresApiKiosque.contains(
+				TypeGenreApiKiosque_1.TypeGenreApiKiosque.Api_RenduPJTAF,
+			) && this.etatUtilSco.activerKiosqueRenduTAF;
+		this.actualiserDonneesKiosque();
 	}
 	actualiserDonneesKiosque() {
 		if (this.options.avecRessourcesGranulaire) {
-			Requetes("listeManuelsRessourcesGranulaires", this)
+			new ObjetRequeteListeManuelsRessourcesGranulaires_1.ObjetRequeteListeManuelsRessourcesGranulaires(
+				this,
+			)
 				.lancerRequete({ genresApi: this.genresApiKiosque })
 				.then((aJSON) => {
 					this.listeManuels = aJSON.listeRessources;
-					new ObjetRequetePanierRessourceKiosque(
+					new ObjetRequetePanierRessourceKiosque_1.ObjetRequetePanierRessourceKiosque(
 						this,
 						this.apresRequeteDonnees,
-					).lancerRequete({ genresApi: new TypeEnsembleNombre() });
+					).lancerRequete({
+						genresApi: new TypeEnsembleNombre_1.TypeEnsembleNombre(),
+					});
 				});
 		} else {
 			this.apresRequeteDonnees();
@@ -218,16 +211,20 @@ class ObjetFenetre_ManuelsNumeriques extends ObjetFenetre {
 	}
 	actualiserRessourcesGranulaire() {
 		if (this.options.avecRessourcesGranulaire) {
-			new ObjetRequetePanierRessourceKiosque(
+			new ObjetRequetePanierRessourceKiosque_1.ObjetRequetePanierRessourceKiosque(
 				this,
 				this.apresActualisationDonnees,
-			).lancerRequete({ genresApi: new TypeEnsembleNombre() });
+			).lancerRequete({
+				genresApi: new TypeEnsembleNombre_1.TypeEnsembleNombre(),
+			});
 		}
 	}
 	apresActualisationDonnees(aJSON) {
-		this.listeRessourcesGranulaire = new ObjetListeElements();
+		this.listeRessourcesGranulaire =
+			new ObjetListeElements_1.ObjetListeElements();
 		if (aJSON) {
-			this.listeRessourcesGranulaire = new ObjetListeElements();
+			this.listeRessourcesGranulaire =
+				new ObjetListeElements_1.ObjetListeElements();
 			this.listeRessourceKiosque = aJSON.listeRessourceKiosque;
 			this.listeRessourceKiosque.parcourir(
 				(aElement, aIndice, alisteRessourceKiosque) => {
@@ -240,9 +237,11 @@ class ObjetFenetre_ManuelsNumeriques extends ObjetFenetre {
 						if (aElement.ressource) {
 							const lRessourcePere =
 								lPere && lPere.ressource ? lPere.ressource : null;
-							const lRessource = MethodesObjet.dupliquer(aElement.ressource);
+							const lRessource = MethodesObjet_1.MethodesObjet.dupliquer(
+								aElement.ressource,
+							);
 							lRessource.pere = lRessourcePere;
-							lRessource.estDeGenreApi = _estDeGenreApi.call(this, lRessource);
+							lRessource.estDeGenreApi = this._estDeGenreApi(lRessource);
 							this.listeRessourcesGranulaire.addElement(lRessource);
 						}
 					} else {
@@ -252,13 +251,13 @@ class ObjetFenetre_ManuelsNumeriques extends ObjetFenetre {
 				},
 			);
 		}
-		_actionSelectionManuel.call(this, this.manuelSelectionne);
+		this._actionSelectionManuel(this.manuelSelectionne);
 	}
 	apresRequeteDonnees(aJSON) {
 		const lObj = {
 			listeRessourceKiosque: null,
 			message: "",
-			listeRessourcesGranulaire: new ObjetListeElements(),
+			listeRessourcesGranulaire: new ObjetListeElements_1.ObjetListeElements(),
 			ressourcesSansManuel: null,
 		};
 		if (aJSON) {
@@ -275,21 +274,24 @@ class ObjetFenetre_ManuelsNumeriques extends ObjetFenetre {
 						if (aElement.ressource) {
 							const lRessourcePere =
 								lPere && lPere.ressource ? lPere.ressource : null;
-							const lRessource = MethodesObjet.dupliquer(aElement.ressource);
+							const lRessource = MethodesObjet_1.MethodesObjet.dupliquer(
+								aElement.ressource,
+							);
 							lRessource.pere = lRessourcePere;
-							lRessource.estDeGenreApi = _estDeGenreApi.call(this, lRessource);
+							lRessource.estDeGenreApi = this._estDeGenreApi(lRessource);
 							aObj.listeRessourcesGranulaire.addElement(lRessource);
 							if (
 								!aObj.ressourcesSansManuel &&
 								lRessourcePere &&
-								lRessourcePere.getGenre() === EGenreRessource.Aucune
+								lRessourcePere.getGenre() ===
+									Enumere_Ressource_1.EGenreRessource.Aucune
 							) {
-								aObj.ressourcesSansManuel = MethodesObjet.dupliquer(
-									lPere.ressource,
-								);
-								aObj.ressourcesSansManuel.titre = GTraductions.getValeur(
-									"FenetrePanierKiosque.anciensManuels",
-								);
+								aObj.ressourcesSansManuel =
+									MethodesObjet_1.MethodesObjet.dupliquer(lPere.ressource);
+								aObj.ressourcesSansManuel.titre =
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FenetrePanierKiosque.anciensManuels",
+									);
 							}
 						}
 					} else {
@@ -305,7 +307,7 @@ class ObjetFenetre_ManuelsNumeriques extends ObjetFenetre {
 		if (aParam.message) {
 			const lThis = this;
 			GApplication.getMessage().afficher({
-				type: EGenreBoiteMessage.Information,
+				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
 				message: aParam.message,
 				callback: function () {
 					lThis.callback.appel(0);
@@ -321,11 +323,13 @@ class ObjetFenetre_ManuelsNumeriques extends ObjetFenetre {
 				this.actualiser();
 				this.afficher();
 				this.listeManuels.setTri([
-					ObjetTri.init((D) => {
-						return D.getGenre() === EGenreRessource.Aucune ? 2 : 1;
+					ObjetTri_1.ObjetTri.init((D) => {
+						return D.getGenre() === Enumere_Ressource_1.EGenreRessource.Aucune
+							? 2
+							: 1;
 					}),
-					ObjetTri.init("Genre"),
-					ObjetTri.init("Libelle"),
+					ObjetTri_1.ObjetTri.init("Genre"),
+					ObjetTri_1.ObjetTri.init("Libelle"),
 				]);
 				this.listeManuels.trier();
 				this.getInstance(this.identListeManuels).setDonnees(
@@ -361,8 +365,8 @@ class ObjetFenetre_ManuelsNumeriques extends ObjetFenetre {
 		T.push('<div ie-class="getClass">');
 		T.push(
 			'<div class="OFMN_InfoAjout">',
-			GChaine.replaceRCToHTML(
-				GTraductions.getValeur(
+			ObjetChaine_1.GChaine.replaceRCToHTML(
+				ObjetTraduction_1.GTraductions.getValeur(
 					"FenetrePanierKiosque.infoAjoutRessourcesGranulaires",
 					['<i class="icon_exercice_numerique"></i>'],
 				),
@@ -379,8 +383,8 @@ class ObjetFenetre_ManuelsNumeriques extends ObjetFenetre {
 		T.push('  <div class="OFMN_SectionRessourcesGranulaires">');
 		T.push('    <div class="OFMN_SectionBoutons">');
 		T.push(
-			_createIEBoutonImage({
-				libelle: GTraductions.getValeur(
+			this._createIEBoutonImage({
+				libelle: ObjetTraduction_1.GTraductions.getValeur(
 					"FenetrePanierKiosque.ajouterUneRessource",
 				),
 				ieModel: "btnNouveau",
@@ -388,8 +392,10 @@ class ObjetFenetre_ManuelsNumeriques extends ObjetFenetre {
 			}),
 		);
 		T.push(
-			_createIEBoutonImage({
-				libelle: GTraductions.getValeur("FenetrePanierKiosque.actualiser"),
+			this._createIEBoutonImage({
+				libelle: ObjetTraduction_1.GTraductions.getValeur(
+					"FenetrePanierKiosque.actualiser",
+				),
 				ieModel: "btnActualiser",
 				ieIcon: "icon_refresh",
 			}),
@@ -410,7 +416,7 @@ class ObjetFenetre_ManuelsNumeriques extends ObjetFenetre {
 		if (this.listeManuels) {
 			T.push('<ul class="liste-clickable grouped-like">');
 			this.listeManuels.parcourir((aElement) => {
-				T.push(_composeManuel.call(this, aElement));
+				T.push(this._composeManuel(aElement));
 			});
 			T.push("</ul>");
 		}
@@ -434,11 +440,11 @@ class ObjetFenetre_ManuelsNumeriques extends ObjetFenetre {
 			? this.listeSelectionnes.count() > 0
 			: this.listeSelectionnes.count() === 1;
 		if (this.options.avecMultiSelection) {
-			let lLibelle = GTraductions.getValeur(
+			let lLibelle = ObjetTraduction_1.GTraductions.getValeur(
 				"FenetrePanierKiosque.bouton.ajouterLien",
 			);
 			if (this.listeSelectionnes.count() > 1) {
-				lLibelle = GTraductions.getValeur(
+				lLibelle = ObjetTraduction_1.GTraductions.getValeur(
 					"FenetrePanierKiosque.bouton.ajouterLiens",
 					[this.listeSelectionnes.count()],
 				);
@@ -448,7 +454,7 @@ class ObjetFenetre_ManuelsNumeriques extends ObjetFenetre {
 		return lActif;
 	}
 	static ouvrir(aParams) {
-		const lFenetre = ObjetFenetre.creerInstanceFenetre(
+		const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
 			ObjetFenetre_ManuelsNumeriques,
 			{ pere: aParams.instance, evenement: aParams.callback },
 		);
@@ -457,8 +463,8 @@ class ObjetFenetre_ManuelsNumeriques extends ObjetFenetre {
 			const lOptionsFenetre = {
 				listeBoutons: [
 					{
-						libelle: GTraductions.getValeur("Fermer"),
-						theme: TypeThemeBouton.secondaire,
+						libelle: ObjetTraduction_1.GTraductions.getValeur("Fermer"),
+						theme: Type_ThemeBouton_1.TypeThemeBouton.secondaire,
 						action: ObjetFenetre_ManuelsNumeriques.genreAction.fermer,
 					},
 				],
@@ -469,11 +475,11 @@ class ObjetFenetre_ManuelsNumeriques extends ObjetFenetre {
 			) {
 				if (!lFenetre.options.sansAjouterLien) {
 					lOptionsFenetre.listeBoutons.push({
-						libelle: GTraductions.getValeur(
+						libelle: ObjetTraduction_1.GTraductions.getValeur(
 							"FenetrePanierKiosque.bouton.ajouterLien",
 						),
 						valider: true,
-						theme: TypeThemeBouton.primaire,
+						theme: Type_ThemeBouton_1.TypeThemeBouton.primaire,
 						action: ObjetFenetre_ManuelsNumeriques.genreAction.ajouter,
 					});
 				}
@@ -482,237 +488,274 @@ class ObjetFenetre_ManuelsNumeriques extends ObjetFenetre {
 		}
 		lFenetre.afficherFenetre(aParams);
 	}
-}
-ObjetFenetre_ManuelsNumeriques.genreAction = { fermer: 0, ajouter: 1 };
-function _initialiserListeManuels(aInstance) {
-	const lColonnes = [{ id: "", taille: "100%" }];
-	aInstance.setOptionsListe({
-		colonnes: lColonnes,
-		skin: ObjetListe.skin.alternance,
-		hauteurZoneContenuListeMin: 100,
-		hauteurAdapteContenu: !(
-			this.options.avecRessourcesGranulaire || this.options.modeTest
-		),
-		hauteurMaxAdapteContenu: 400,
-		piedDeListe: {},
-	});
-}
-function _evenementListeManuels(aParametres) {
-	switch (aParametres.genreEvenement) {
-		case EGenreEvenementListe.Selection: {
-			const lManuel = this.listeManuels.getElementParNumero(
-				aParametres.article.getNumero(),
-			);
-			_actionSelectionManuel.call(this, lManuel);
-			break;
+	_initialiserListeManuels(aInstance) {
+		const lColonnes = [{ id: "", taille: "100%" }];
+		aInstance.setOptionsListe({
+			colonnes: lColonnes,
+			skin: ObjetListe_1.ObjetListe.skin.alternance,
+			hauteurZoneContenuListeMin: 100,
+			hauteurAdapteContenu: !(
+				this.options.avecRessourcesGranulaire || this.options.modeTest
+			),
+			hauteurMaxAdapteContenu: 400,
+			piedDeListe: {},
+		});
+	}
+	_evenementListeManuels(aParametres) {
+		switch (aParametres.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Selection: {
+				const lManuel = this.listeManuels.getElementParNumero(
+					aParametres.article.getNumero(),
+				);
+				this._actionSelectionManuel(lManuel);
+				break;
+			}
 		}
 	}
-}
-function _actionSelectionManuel(aManuel) {
-	this.manuelSelectionne = aManuel;
-	if (this.options.avecRessourcesGranulaire || this.options.modeTest) {
-		this.listeAffRessourcesGranulaire =
-			this.listeRessourcesGranulaire.getListeElements(
-				function (aElement) {
+	_actionSelectionManuel(aManuel) {
+		this.manuelSelectionne = aManuel;
+		if (this.options.avecRessourcesGranulaire || this.options.modeTest) {
+			this.listeAffRessourcesGranulaire =
+				this.listeRessourcesGranulaire.getListeElements((aElement) => {
 					return (
-						aElement.pere.getGenre() === this.getGenre() &&
-						aElement.pere.getNumero() === this.getNumero()
+						aElement.pere.getGenre() === this.manuelSelectionne.getGenre() &&
+						aElement.pere.getNumero() === this.manuelSelectionne.getNumero()
 					);
-				}.bind(this.manuelSelectionne),
-			);
-		this.getInstance(this.identListe).setDonnees(
-			new DonneesListe_Ressources(this.listeAffRessourcesGranulaire, {
-				instance: this,
-				avecMultiSelection: this.options.avecMultiSelection,
-			}),
-		);
-	} else {
-		window.open(GChaine.creerUrlBruteLienExterne(aManuel));
-	}
-}
-function _initialiserListeRessources(aInstance) {
-	const lColonnes = [
-		{ id: DonneesListe_Ressources.colonnes.description, taille: "100%" },
-		{ id: DonneesListe_Ressources.colonnes.icon, taille: 26 },
-		{ id: DonneesListe_Ressources.colonnes.date, taille: 80 },
-	];
-	aInstance.setOptionsListe({
-		colonnes: lColonnes,
-		skin: ObjetListe.skin.alternance,
-		hauteurAdapteContenu: false,
-		nonEditable: false,
-	});
-}
-function _evenementFenetreEdition(aParams) {
-	switch (aParams.genreBouton) {
-		case ObjetFenetre_EditionRessourceNumerique.genreAction.valider:
-			if (!!aParams.ressource) {
-				const lListeATraiter = new ObjetListeElements();
-				const lRessource = this.listeRessourcesGranulaire.getElementParNumero(
-					aParams.ressource.getNumero(),
-				);
-				if (!!lRessource) {
-					lRessource.setLibelle(aParams.ressource.getLibelle());
-					lRessource.commentaire = aParams.ressource.commentaire;
-					lRessource.setEtat(EGenreEtat.Modification);
-					lListeATraiter.addElement(lRessource);
-					lListeATraiter.setSerialisateurJSON({
-						methodeSerialisation: _serialiserRessource.bind(this),
-					});
-					Requetes(
-						"SaisiePanierRessourceKiosque",
-						this,
-						this.apresRequeteSaisie,
-					).lancerRequete({ ressources: lListeATraiter });
-				}
-			}
-			break;
-		case ObjetFenetre_EditionRessourceNumerique.genreAction.supprimer:
-			if (!!aParams.ressource) {
-				const lListeASupprimer = new ObjetListeElements();
-				aParams.ressource.setEtat(EGenreEtat.Suppression);
-				lListeASupprimer.addElement(aParams.ressource);
-				_suppressionRessources.call(this, lListeASupprimer);
-			}
-			break;
-		default:
-			break;
-	}
-}
-function _suppressionRessources(aListeASupprimer) {
-	Requetes(
-		"SaisiePanierRessourceKiosque",
-		this,
-		this.apresRequeteSaisie,
-	).lancerRequete({ ressources: aListeASupprimer });
-}
-function _evenementListeRessources(aParametres) {
-	switch (aParametres.genreEvenement) {
-		case EGenreEvenementListe.Selection:
-			this.listeSelectionnes = this.getInstance(
-				this.identListe,
-			).getListeElementsSelection();
-			this._mettreAJourBoutonAjouter();
-			break;
-		case EGenreEvenementListe.Edition:
-			if (!!aParametres.article) {
-				const lRessource = MethodesObjet.dupliquer(aParametres.article);
-				ObjetFenetre_EditionRessourceNumerique.ouvrir({
-					ressource: lRessource,
-					instance: this,
-					callback: _evenementFenetreEdition.bind(this),
 				});
-			}
-			break;
-		case EGenreEvenementListe.Suppression: {
-			const lListeASupprimer = new ObjetListeElements();
-			aParametres.listeSuppressions.parcourir(
-				function (aElement) {
+			this.getInstance(this.identListe).setDonnees(
+				new DonneesListe_Ressources(this.listeAffRessourcesGranulaire, {
+					instance: this,
+					avecMultiSelection: this.options.avecMultiSelection,
+				}),
+			);
+		} else {
+			window.open(ObjetChaine_1.GChaine.creerUrlBruteLienExterne(aManuel));
+		}
+	}
+	_initialiserListeRessources(aInstance) {
+		const lColonnes = [
+			{ id: DonneesListe_Ressources.colonnes.description, taille: "100%" },
+			{ id: DonneesListe_Ressources.colonnes.icon, taille: 26 },
+			{ id: DonneesListe_Ressources.colonnes.date, taille: 80 },
+		];
+		aInstance.setOptionsListe({
+			colonnes: lColonnes,
+			skin: ObjetListe_1.ObjetListe.skin.alternance,
+			hauteurAdapteContenu: false,
+			nonEditable: false,
+		});
+	}
+	_evenementFenetreEdition(aParams) {
+		switch (aParams.genreBouton) {
+			case ObjetFenetre_EditionRessourceNumerique_1
+				.ObjetFenetre_EditionRessourceNumerique.genreAction.valider:
+				if (!!aParams.ressource) {
+					const lListeATraiter = new ObjetListeElements_1.ObjetListeElements();
+					const lRessource = this.listeRessourcesGranulaire.getElementParNumero(
+						aParams.ressource.getNumero(),
+					);
+					if (!!lRessource) {
+						lRessource.setLibelle(aParams.ressource.getLibelle());
+						lRessource.commentaire = aParams.ressource.commentaire;
+						lRessource.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+						lListeATraiter.addElement(lRessource);
+						lListeATraiter.setSerialisateurJSON({
+							methodeSerialisation: this._serialiserRessource.bind(this),
+						});
+						new ObjetRequeteSaisiePanierRessourceKiosque_1.ObjetRequeteSaisiePanierRessourceKiosque(
+							this,
+							this.apresRequeteSaisie,
+						).lancerRequete({ ressources: lListeATraiter });
+					}
+				}
+				break;
+			case ObjetFenetre_EditionRessourceNumerique_1
+				.ObjetFenetre_EditionRessourceNumerique.genreAction.supprimer:
+				if (!!aParams.ressource) {
+					const lListeASupprimer =
+						new ObjetListeElements_1.ObjetListeElements();
+					aParams.ressource.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+					lListeASupprimer.addElement(aParams.ressource);
+					this._suppressionRessources(lListeASupprimer);
+				}
+				break;
+			default:
+				break;
+		}
+	}
+	_suppressionRessources(aListeASupprimer) {
+		new ObjetRequeteSaisiePanierRessourceKiosque_1.ObjetRequeteSaisiePanierRessourceKiosque(
+			this,
+			this.apresRequeteSaisie,
+		).lancerRequete({ ressources: aListeASupprimer });
+	}
+	_evenementListeRessources(aParametres) {
+		switch (aParametres.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Selection:
+				this.listeSelectionnes = this.getInstance(
+					this.identListe,
+				).getListeElementsSelection();
+				this._mettreAJourBoutonAjouter();
+				break;
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Edition:
+				if (!!aParametres.article) {
+					const lRessource = MethodesObjet_1.MethodesObjet.dupliquer(
+						aParametres.article,
+					);
+					ObjetFenetre_EditionRessourceNumerique_1.ObjetFenetre_EditionRessourceNumerique.ouvrir(
+						{
+							ressource: lRessource,
+							instance: this,
+							callback: this._evenementFenetreEdition.bind(this),
+						},
+					);
+				}
+				break;
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Suppression: {
+				const lListeASupprimer = new ObjetListeElements_1.ObjetListeElements();
+				aParametres.listeSuppressions.parcourir(function (aElement) {
 					if (
 						!!aElement &&
-						aElement.getGenre() === EGenreRessource.PanierRessourceKiosque
+						aElement.getGenre() ===
+							Enumere_Ressource_1.EGenreRessource.PanierRessourceKiosque
 					) {
-						aElement.setEtat(EGenreEtat.Suppression);
-						this.addElement(aElement);
+						aElement.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+						lListeASupprimer.addElement(aElement);
 					}
-				}.bind(lListeASupprimer),
+				});
+				this._suppressionRessources(lListeASupprimer);
+				return Enumere_EvenementListe_1.EGenreEvenementListe.Suppression;
+			}
+		}
+	}
+	_estDeGenreApi(aRessource) {
+		let lResult = false;
+		if (this.pouriDevoir) {
+			lResult = aRessource.apiSupport.contains(
+				TypeGenreApiKiosque_1.TypeGenreApiKiosque.Api_EnvoiNote,
 			);
-			_suppressionRessources.call(this, lListeASupprimer);
-			return EGenreEvenementListe.Suppression;
 		}
+		if (!lResult && this.pourExerciceNum) {
+			lResult = aRessource.apiSupport.contains(
+				TypeGenreApiKiosque_1.TypeGenreApiKiosque.Api_RenduPJTAF,
+			);
+		}
+		if (
+			!lResult &&
+			this.genresApiKiosque.contains(
+				TypeGenreApiKiosque_1.TypeGenreApiKiosque.Api_AjoutPanier,
+			) &&
+			aRessource.apiSupport.contains(
+				TypeGenreApiKiosque_1.TypeGenreApiKiosque.Api_AjoutPanier,
+			)
+		) {
+			if (!this.pouriDevoir && !this.pourExerciceNum) {
+				lResult =
+					!aRessource.apiSupport.contains(
+						TypeGenreApiKiosque_1.TypeGenreApiKiosque.Api_EnvoiNote,
+					) &&
+					!aRessource.apiSupport.contains(
+						TypeGenreApiKiosque_1.TypeGenreApiKiosque.Api_RenduPJTAF,
+					);
+			} else {
+				lResult = true;
+			}
+		}
+		return lResult;
 	}
-}
-function _estDeGenreApi(aRessource) {
-	let lResult = false;
-	if (this.pouriDevoir) {
-		lResult = aRessource.apiSupport.contains(TypeGenreApiKiosque.Api_EnvoiNote);
+	_createIEBoutonImage(aParam) {
+		let lPosition = "";
+		if (aParam.estADroit) {
+			lPosition = ' style="margin-left: auto;"';
+		}
+		const H = [
+			'<ie-bouton class="MargeDroit AlignementMilieuVertical bouton-carre" ie-model="',
+			aParam.ieModel,
+			'" ie-icon="',
+			aParam.ieIcon,
+			'" ie-iconsize="2.4rem"',
+			aParam.ieSelecFile ? " ie-selecfile" : "",
+			lPosition,
+			">",
+			aParam.libelle,
+			"</ie-bouton>",
+		];
+		return H.join("");
 	}
-	if (!lResult && this.pourExerciceNum) {
-		lResult = aRessource.apiSupport.contains(
-			TypeGenreApiKiosque.Api_RenduPJTAF,
-		);
-	}
-	if (
-		!lResult &&
-		this.genresApiKiosque.contains(TypeGenreApiKiosque.Api_AjoutPanier) &&
-		aRessource.apiSupport.contains(TypeGenreApiKiosque.Api_AjoutPanier)
-	) {
-		if (!this.pouriDevoir && !this.pourExerciceNum) {
-			lResult =
-				!aRessource.apiSupport.contains(TypeGenreApiKiosque.Api_EnvoiNote) &&
-				!aRessource.apiSupport.contains(TypeGenreApiKiosque.Api_RenduPJTAF);
+	_composeManuel(aManuel) {
+		const T = [];
+		if (aManuel.getGenre() === Enumere_Ressource_1.EGenreRessource.Aucune) {
+			T.push(
+				'<div class="OFMN_Manuel SansManuel" ie-hint="',
+				ObjetChaine_1.GChaine.toTitle(
+					ObjetTraduction_1.GTraductions.getValeur(
+						"FenetrePanierKiosque.infoAnciensManuels",
+					),
+				),
+				'">',
+			);
+			T.push(aManuel.titre);
+			T.push("</div>");
 		} else {
-			lResult = true;
-		}
-	}
-	return lResult;
-}
-function _createIEBoutonImage(aParam) {
-	let lPosition = "";
-	if (aParam.estADroit) {
-		lPosition = ' style="margin-left: auto;"';
-	}
-	const H = [
-		'<ie-bouton class="MargeDroit AlignementMilieuVertical bouton-carre" ie-model="',
-		aParam.ieModel,
-		'" ie-icon="',
-		aParam.ieIcon,
-		'" ie-iconsize="2.4rem"',
-		aParam.ieSelecFile ? " ie-selecfile" : "",
-		lPosition,
-		">",
-		aParam.libelle,
-		"</ie-bouton>",
-	];
-	return H.join("");
-}
-function _composeManuel(aManuel) {
-	const T = [];
-	if (aManuel.getGenre() === EGenreRessource.Aucune) {
-		T.push(
-			'<div class="OFMN_Manuel SansManuel" ie-hint="',
-			GChaine.toTitle(
-				GTraductions.getValeur("FenetrePanierKiosque.infoAnciensManuels"),
-			),
-			'">',
-		);
-		T.push(aManuel.titre);
-		T.push("</div>");
-	} else {
-		T.push('<div class="OFMN_Manuel">');
-		if (this.options.avecNomEditeur) {
-			T.push("<div");
-			if (aManuel.logo) {
-				if (aManuel.avecLien) {
+			T.push('<div class="OFMN_Manuel">');
+			if (this.options.avecNomEditeur) {
+				T.push("<div");
+				if (aManuel.logo) {
+					if (aManuel.avecLien) {
+						T.push(
+							' ie-hint="' +
+								ObjetTraduction_1.GTraductions.getValeur(
+									"CahierDeTexte.avecLien",
+								) +
+								'"',
+						);
+					}
 					T.push(
-						' ie-hint="' +
-							GTraductions.getValeur("CahierDeTexte.avecLien") +
-							'"',
+						' class="logo-contain">',
+						ObjetImage_1.GImage.composeImage(aManuel.logo),
+					);
+				} else {
+					T.push(
+						' class="libelle-contain">',
+						ObjetChaine_1.GChaine.insecable(aManuel.editeur),
 					);
 				}
-				T.push(' class="logo-contain">', GImage.composeImage(aManuel.logo));
-			} else {
-				T.push(' class="libelle-contain">', GChaine.insecable(aManuel.editeur));
+				T.push("</div>");
 			}
+			T.push(
+				'<div class="contain-wrapper" title="',
+				ObjetChaine_1.GChaine.toTitle(aManuel.description),
+				'" >',
+				"<span>",
+				aManuel.titre,
+				"</span>",
+			);
+			T.push("</div>");
 			T.push("</div>");
 		}
-		T.push(
-			'<div class="contain-wrapper" title="',
-			GChaine.toTitle(aManuel.description),
-			'" >',
-			"<span>",
-			aManuel.titre,
-			"</span>",
-		);
-		T.push("</div>");
-		T.push("</div>");
+		return T.join("");
 	}
-	return T.join("");
+	_serialiserRessource(aElement, aJSON) {
+		aJSON.commentaire = aElement.commentaire;
+	}
 }
-function _serialiserRessource(aElement, aJSON) {
-	aJSON.commentaire = aElement.commentaire;
-}
-class DonneesListe_ManuelsNumeriques extends ObjetDonneesListe {
+exports.ObjetFenetre_ManuelsNumeriques = ObjetFenetre_ManuelsNumeriques;
+(function (ObjetFenetre_ManuelsNumeriques) {
+	let genreAction;
+	(function (genreAction) {
+		genreAction[(genreAction["fermer"] = 0)] = "fermer";
+		genreAction[(genreAction["ajouter"] = 1)] = "ajouter";
+	})(
+		(genreAction =
+			ObjetFenetre_ManuelsNumeriques.genreAction ||
+			(ObjetFenetre_ManuelsNumeriques.genreAction = {})),
+	);
+})(
+	ObjetFenetre_ManuelsNumeriques ||
+		(exports.ObjetFenetre_ManuelsNumeriques = ObjetFenetre_ManuelsNumeriques =
+			{}),
+);
+class DonneesListe_ManuelsNumeriques extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aInstance) {
 		super(aDonnees);
 		this.instance = aInstance;
@@ -723,10 +766,10 @@ class DonneesListe_ManuelsNumeriques extends ObjetDonneesListe {
 		});
 	}
 	getValeur(aParams) {
-		return _composeManuel.call(this.instance, aParams.article);
+		return this.instance._composeManuel(aParams.article);
 	}
 }
-class DonneesListe_Ressources extends ObjetDonneesListe {
+class DonneesListe_Ressources extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParam) {
 		super(aDonnees);
 		this.instance = aParam.instance;
@@ -741,7 +784,7 @@ class DonneesListe_Ressources extends ObjetDonneesListe {
 		});
 	}
 	getTypeValeur() {
-		return ObjetDonneesListe.ETypeCellule.Html;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 	}
 	avecBordureDroite() {
 		return false;
@@ -762,7 +805,7 @@ class DonneesListe_Ressources extends ObjetDonneesListe {
 					);
 					lHtmlText.push(
 						'<div class="OFMN_Ressource_Commentaire">',
-						GChaine.replaceRCToHTML(aParams.article.commentaire),
+						ObjetChaine_1.GChaine.replaceRCToHTML(aParams.article.commentaire),
 						"</div>",
 					);
 					lHtmlText.push("</div>");
@@ -770,22 +813,23 @@ class DonneesListe_Ressources extends ObjetDonneesListe {
 				return lHtmlText.join("");
 			}
 			case DonneesListe_Ressources.colonnes.icon: {
+				const lEtatUtilSco = (0, AccessApp_1.getApp)().getEtatUtilisateur();
 				const lHtmlIcon = [];
 				lHtmlIcon.push('<div class="OFMN_Icon">');
 				if (
-					GEtatUtilisateur.activerKiosqueRenduTAF &&
+					lEtatUtilSco.activerKiosqueRenduTAF &&
 					aParams.article.apiSupport.contains(
-						TypeGenreApiKiosque.Api_RenduPJTAF,
+						TypeGenreApiKiosque_1.TypeGenreApiKiosque.Api_RenduPJTAF,
 					)
 				) {
-					const lIcon = GEtatUtilisateur.pourPrimaire()
-						? "icon_work"
-						: "icon_home";
+					const lIcon = lEtatUtilSco.pourPrimaire() ? "icon_work" : "icon_home";
 					lHtmlIcon.push('<i class="material-icons ', lIcon, '"></i>');
 				}
 				if (
-					GEtatUtilisateur.activerKiosqueEnvoiNote &&
-					aParams.article.apiSupport.contains(TypeGenreApiKiosque.Api_EnvoiNote)
+					lEtatUtilSco.activerKiosqueEnvoiNote &&
+					aParams.article.apiSupport.contains(
+						TypeGenreApiKiosque_1.TypeGenreApiKiosque.Api_EnvoiNote,
+					)
 				) {
 					lHtmlIcon.push('<i class="material-icons icon_saisie_note"></i>');
 				}
@@ -797,7 +841,10 @@ class DonneesListe_Ressources extends ObjetDonneesListe {
 				if (!!aParams.article && !!aParams.article.dateAjout) {
 					lStrDate =
 						'<div class="OFMN_Date">' +
-						GDate.formatDate(aParams.article.dateAjout, "[%JJ/%MM/%AAAA]") +
+						ObjetDate_1.GDate.formatDate(
+							aParams.article.dateAjout,
+							"[%JJ/%MM/%AAAA]",
+						) +
 						"</div>";
 				}
 				return lStrDate;
@@ -806,9 +853,15 @@ class DonneesListe_Ressources extends ObjetDonneesListe {
 		return "";
 	}
 }
-DonneesListe_Ressources.colonnes = {
-	description: "ofmn_Description",
-	icon: "ofmn_icon",
-	date: "ofmn_date",
-};
-module.exports = { ObjetFenetre_ManuelsNumeriques };
+(function (DonneesListe_Ressources) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["description"] = "ofmn_Description";
+		colonnes["icon"] = "ofmn_icon";
+		colonnes["date"] = "ofmn_date";
+	})(
+		(colonnes =
+			DonneesListe_Ressources.colonnes ||
+			(DonneesListe_Ressources.colonnes = {})),
+	);
+})(DonneesListe_Ressources || (DonneesListe_Ressources = {}));

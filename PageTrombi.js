@@ -1,18 +1,19 @@
-const { ObjetIdentite_Mobile } = require("ObjetIdentite_Mobile.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { DonneesListe_Trombi } = require("DonneesListe_Trombi.js");
-const { Identite } = require("ObjetIdentite.js");
-const { ObjetListe } = require("ObjetListe.js");
-const ObjetFenetre_FicheEleve = require("ObjetFenetre_FicheEleve.js");
-class ObjetTrombi extends ObjetIdentite_Mobile {
+exports.PageTrombi = void 0;
+const ObjetIdentite_Mobile_1 = require("ObjetIdentite_Mobile");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const DonneesListe_Trombi_1 = require("DonneesListe_Trombi");
+const ObjetIdentite_1 = require("ObjetIdentite");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetFenetre_FicheEleve_1 = require("ObjetFenetre_FicheEleve");
+class PageTrombi extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 	constructor(...aParams) {
 		super(...aParams);
-		this.instanceListe = Identite.creerInstance(ObjetListe, {
-			pere: this,
-			evenement: _evntSurListe.bind(this),
-		});
-		initOptions.call(this, this.instanceListe);
-		this.donnees = [];
+		this.instanceListe = ObjetIdentite_1.Identite.creerInstance(
+			ObjetListe_1.ObjetListe,
+			{ pere: this, evenement: this._evntSurListe.bind(this) },
+		);
+		this.initOptions(this.instanceListe);
+		this.donnees = {};
 	}
 	setDonnees(aListeRessourcesPourPhotos, aAvecTotal) {
 		this.donnees.listeEleves = aListeRessourcesPourPhotos;
@@ -31,36 +32,36 @@ class ObjetTrombi extends ObjetIdentite_Mobile {
 	}
 	actualiserListe() {
 		this.instanceListe.setDonnees(
-			new DonneesListe_Trombi(this.donnees.listeEleves),
+			new DonneesListe_Trombi_1.DonneesListe_Trombi(this.donnees.listeEleves),
 		);
 	}
-}
-function initOptions(aInstance) {
-	aInstance.setOptionsListe({
-		skin: ObjetListe.skin.flatDesign,
-		nonEditable: true,
-		scrollHorizontal: false,
-		avecModeAccessible: true,
-	});
-}
-function _evntSurListe(aParametres) {
-	switch (aParametres.genreEvenement) {
-		case EGenreEvenementListe.SelectionClick:
-			_afficherFicheEleve.call(this, aParametres.article.getNumero());
-			break;
-	}
-}
-function _afficherFicheEleve(aNumeroEleve) {
-	let lEleve;
-	if (!!this.donnees.listeEleves) {
-		lEleve = this.donnees.listeEleves.getElementParNumero(aNumeroEleve);
-	}
-	if (!!lEleve) {
-		ObjetFenetre_FicheEleve.ouvrir({
-			instance: this,
-			avecRequeteDonnees: true,
-			donnees: { eleve: lEleve, listeEleves: this.donnees.listeEleves },
+	initOptions(aInstance) {
+		aInstance.setOptionsListe({
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+			nonEditable: true,
+			scrollHorizontal: false,
+			avecModeAccessible: true,
 		});
 	}
+	_evntSurListe(aParametres) {
+		switch (aParametres.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.SelectionClick:
+				this._afficherFicheEleve(aParametres.article.getNumero());
+				break;
+		}
+	}
+	_afficherFicheEleve(aNumeroEleve) {
+		let lEleve;
+		if (!!this.donnees.listeEleves) {
+			lEleve = this.donnees.listeEleves.getElementParNumero(aNumeroEleve);
+		}
+		if (!!lEleve) {
+			ObjetFenetre_FicheEleve_1.ObjetFenetre_FicheEleve.ouvrir({
+				instance: this,
+				avecRequeteDonnees: true,
+				donnees: { eleve: lEleve, listeEleves: this.donnees.listeEleves },
+			});
+		}
+	}
 }
-module.exports = ObjetTrombi;
+exports.PageTrombi = PageTrombi;

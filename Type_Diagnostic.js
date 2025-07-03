@@ -146,50 +146,71 @@ var TypeDiagnostic;
 	TypeDiagnostic[
 		(TypeDiagnostic["DiagRemplacementHorsMemeSitePresence"] = 70)
 	] = "DiagRemplacementHorsMemeSitePresence";
-	TypeDiagnostic[(TypeDiagnostic["DiagConseilOccupeOO"] = 71)] =
+	TypeDiagnostic[(TypeDiagnostic["DiagCaCSuccessionInterdite"] = 71)] =
+		"DiagCaCSuccessionInterdite";
+	TypeDiagnostic[(TypeDiagnostic["DiagCaCQuinzaineImposee"] = 72)] =
+		"DiagCaCQuinzaineImposee";
+	TypeDiagnostic[(TypeDiagnostic["DiagCaCQuinzaineInterdite"] = 73)] =
+		"DiagCaCQuinzaineInterdite";
+	TypeDiagnostic[(TypeDiagnostic["DiagCaCOrdre"] = 74)] = "DiagCaCOrdre";
+	TypeDiagnostic[(TypeDiagnostic["DiagCaCRegroupementDJ"] = 75)] =
+		"DiagCaCRegroupementDJ";
+	TypeDiagnostic[(TypeDiagnostic["DiagCaCIncompatibiliteDJ"] = 76)] =
+		"DiagCaCIncompatibiliteDJ";
+	TypeDiagnostic[(TypeDiagnostic["DiagCaCRegroupement1J"] = 77)] =
+		"DiagCaCRegroupement1J";
+	TypeDiagnostic[(TypeDiagnostic["DiagCaCIncompatibilite1J"] = 78)] =
+		"DiagCaCIncompatibilite1J";
+	TypeDiagnostic[(TypeDiagnostic["DiagCaCRegroupementCustom"] = 79)] =
+		"DiagCaCRegroupementCustom";
+	TypeDiagnostic[(TypeDiagnostic["DiagCaCIncompatibiliteCustom"] = 80)] =
+		"DiagCaCIncompatibiliteCustom";
+	TypeDiagnostic[(TypeDiagnostic["DiagConseilOccupeOO"] = 81)] =
 		"DiagConseilOccupeOO";
-	TypeDiagnostic[(TypeDiagnostic["DiagConseilOccupeOOVerrou"] = 72)] =
+	TypeDiagnostic[(TypeDiagnostic["DiagConseilOccupeOOVerrou"] = 82)] =
 		"DiagConseilOccupeOOVerrou";
-	TypeDiagnostic[(TypeDiagnostic["DiagConseilOccupeOF"] = 73)] =
+	TypeDiagnostic[(TypeDiagnostic["DiagConseilOccupeOF"] = 83)] =
 		"DiagConseilOccupeOF";
-	TypeDiagnostic[(TypeDiagnostic["DiagConseilOccupeFO"] = 74)] =
+	TypeDiagnostic[(TypeDiagnostic["DiagConseilOccupeFO"] = 84)] =
 		"DiagConseilOccupeFO";
-	TypeDiagnostic[(TypeDiagnostic["DiagConseilOccupeFF"] = 75)] =
+	TypeDiagnostic[(TypeDiagnostic["DiagConseilOccupeFF"] = 85)] =
 		"DiagConseilOccupeFF";
-	TypeDiagnostic[(TypeDiagnostic["DiagMatieresEcartDj"] = 76)] =
+	TypeDiagnostic[(TypeDiagnostic["DiagMatieresEcartDj"] = 86)] =
 		"DiagMatieresEcartDj";
-	TypeDiagnostic[(TypeDiagnostic["DiagIndisponibiliteSouplePersonnel"] = 77)] =
+	TypeDiagnostic[(TypeDiagnostic["DiagIndisponibiliteSouplePersonnel"] = 87)] =
 		"DiagIndisponibiliteSouplePersonnel";
-	TypeDiagnostic[(TypeDiagnostic["DiagDemiPensionPasDeServiceSeul"] = 78)] =
+	TypeDiagnostic[(TypeDiagnostic["DiagDemiPensionPasDeServiceSeul"] = 88)] =
 		"DiagDemiPensionPasDeServiceSeul";
-	TypeDiagnostic[(TypeDiagnostic["DiagIndisponibiliteSoupleMateriel"] = 79)] =
+	TypeDiagnostic[(TypeDiagnostic["DiagIndisponibiliteSoupleMateriel"] = 89)] =
 		"DiagIndisponibiliteSoupleMateriel";
-	TypeDiagnostic[(TypeDiagnostic["DiagPauseRencontre"] = 80)] =
+	TypeDiagnostic[(TypeDiagnostic["DiagPauseRencontre"] = 90)] =
 		"DiagPauseRencontre";
-	TypeDiagnostic[(TypeDiagnostic["DiagInterrencontre"] = 81)] =
+	TypeDiagnostic[(TypeDiagnostic["DiagInterrencontre"] = 91)] =
 		"DiagInterrencontre";
-	TypeDiagnostic[(TypeDiagnostic["DiagMatiereOrdreClassePartiesFixe"] = 82)] =
+	TypeDiagnostic[(TypeDiagnostic["DiagMatiereOrdreClassePartiesFixe"] = 92)] =
 		"DiagMatiereOrdreClassePartiesFixe";
 	TypeDiagnostic[
-		(TypeDiagnostic["DiagMatiereOrdreClassePartiesComplexe"] = 83)
+		(TypeDiagnostic["DiagMatiereOrdreClassePartiesComplexe"] = 93)
 	] = "DiagMatiereOrdreClassePartiesComplexe";
 	TypeDiagnostic[
-		(TypeDiagnostic["DiagSitesIncompatiblesHeureTransitionRecreation"] = 84)
+		(TypeDiagnostic["DiagSitesIncompatiblesHeureTransitionRecreation"] = 94)
 	] = "DiagSitesIncompatiblesHeureTransitionRecreation";
-	TypeDiagnostic[(TypeDiagnostic["DiagOccupeSuperposable"] = 85)] =
+	TypeDiagnostic[(TypeDiagnostic["DiagOccupeSuperposable"] = 95)] =
 		"DiagOccupeSuperposable";
-	TypeDiagnostic[(TypeDiagnostic["DiagDebutCoursInterdit"] = 86)] =
+	TypeDiagnostic[(TypeDiagnostic["DiagDebutCoursInterdit"] = 96)] =
 		"DiagDebutCoursInterdit";
-	TypeDiagnostic[(TypeDiagnostic["DiagMaximumPresentielRessource"] = 87)] =
+	TypeDiagnostic[(TypeDiagnostic["DiagMaximumPresentielRessource"] = 97)] =
 		"DiagMaximumPresentielRessource";
-	TypeDiagnostic[(TypeDiagnostic["DiagItalieProfHoraireRisque"] = 88)] =
+	TypeDiagnostic[(TypeDiagnostic["DiagItalieProfHoraireRisque"] = 98)] =
 		"DiagItalieProfHoraireRisque";
-	TypeDiagnostic[(TypeDiagnostic["DiagItalieProfJourRisque"] = 89)] =
+	TypeDiagnostic[(TypeDiagnostic["DiagItalieProfJourRisque"] = 99)] =
 		"DiagItalieProfJourRisque";
-	TypeDiagnostic[(TypeDiagnostic["DiagOccupeCoursNonPrioritaire"] = 90)] =
+	TypeDiagnostic[(TypeDiagnostic["DiagOccupeCoursNonPrioritaire"] = 100)] =
 		"DiagOccupeCoursNonPrioritaire";
-	TypeDiagnostic[(TypeDiagnostic["DiagAbsenceOccupableRessource"] = 91)] =
+	TypeDiagnostic[(TypeDiagnostic["DiagAbsenceOccupableRessource"] = 101)] =
 		"DiagAbsenceOccupableRessource";
+	TypeDiagnostic[(TypeDiagnostic["DiagOccupeCoEnseignement"] = 102)] =
+		"DiagOccupeCoEnseignement";
 })(TypeDiagnostic || (exports.TypeDiagnostic = TypeDiagnostic = {}));
 const TypeDiagnosticUtil = {
 	getDiagnosticsDP() {

@@ -55,8 +55,8 @@ class ObjetFenetre_Memo extends ObjetFenetre_1.ObjetFenetre {
 		}
 	}
 	composeContenu() {
-		const T = [];
-		T.push(
+		const H = [];
+		H.push(
 			IE.jsx.str("ie-textareamax", {
 				"ie-model": "textarea",
 				id: this.idTextArea,
@@ -66,7 +66,7 @@ class ObjetFenetre_Memo extends ObjetFenetre_1.ObjetFenetre {
 				"aria-labelledby": this.IdTitre,
 			}),
 		);
-		return T.join("");
+		return H.join("");
 	}
 	surValidation(ANumeroBouton) {
 		this.fermer();

@@ -1,29 +1,14 @@
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-function TUtilitaireListePeriodes() {}
-(function () {
-	TUtilitaireListePeriodes.choix = {
-		aujourdhui: 1,
-		hier: 1,
-		demain: 1,
-		semaineCourante: 1,
-		semainePrecedente: 1,
-		semaineSuivante: 1,
-		moisCourant: 1,
-		periodes: 1,
-		annee: 1,
-		mois: 1,
-	};
-	MethodesObjet.indenterEnumere(TUtilitaireListePeriodes.choix);
-	TUtilitaireListePeriodes.construireListePeriodes = function (
-		aChoixPeriodes,
-		aOptions,
-	) {
-		const lListe = new ObjetListeElements(),
+exports.TUtilitaireListePeriodes = void 0;
+const AccessApp_1 = require("AccessApp");
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+class TUtilitaireListePeriodes {
+	static construireListePeriodes(aChoixPeriodes, aOptions) {
+		const lListe = new ObjetListeElements_1.ObjetListeElements(),
 			lOptions = $.extend(
 				{
 					dateDebut: GParametres.PremiereDate,
@@ -31,8 +16,9 @@ function TUtilitaireListePeriodes() {}
 					dansBornes: function (aDate) {
 						return (
 							(aDate > this.dateDebut ||
-								GDate.estJourEgal(aDate, this.dateDebut)) &&
-							(aDate < this.dateFin || GDate.estJourEgal(aDate, this.dateFin))
+								ObjetDate_1.GDate.estJourEgal(aDate, this.dateDebut)) &&
+							(aDate < this.dateFin ||
+								ObjetDate_1.GDate.estJourEgal(aDate, this.dateFin))
 						);
 					},
 					datesOK: function (aDateDebut, aDateFin) {
@@ -50,51 +36,63 @@ function TUtilitaireListePeriodes() {}
 				},
 				aOptions,
 			);
-		if (MethodesObjet.isArray(aChoixPeriodes)) {
+		if (MethodesObjet_1.MethodesObjet.isArray(aChoixPeriodes)) {
 			for (let i = 0; i < aChoixPeriodes.length; i++) {
-				_ajouterChoix(lListe, aChoixPeriodes[i], lOptions);
+				TUtilitaireListePeriodes._ajouterChoix(
+					lListe,
+					aChoixPeriodes[i],
+					lOptions,
+				);
 			}
 		}
 		return lListe;
-	};
-	function _ajouterChoix(aListe, aChoix, aOptions) {
+	}
+	static _ajouterChoix(aListe, aChoix, aOptions) {
 		let lElement = null;
 		let lDate;
 		let lDateDebut;
 		let lDateFin;
 		let lCycle;
 		function _ajouterElement(aLibelle, aDateDebut, aDateFin) {
-			const lElement = new ObjetElement(aLibelle);
-			lElement.dates = {
-				debut: aOptions.borner(aDateDebut),
-				fin: aOptions.borner(aDateFin),
-			};
-			lElement.choix = aChoix;
+			const lElement = ObjetElement_1.ObjetElement.create({
+				Libelle: aLibelle,
+				dates: {
+					debut: aOptions.borner(aDateDebut),
+					fin: aOptions.borner(aDateFin),
+				},
+				choix: aChoix,
+			});
 			aListe.addElement(lElement);
 		}
 		switch (aChoix) {
 			case TUtilitaireListePeriodes.choix.aujourdhui:
 				_ajouterElement(
-					GTraductions.getValeur("Aujourdhui").ucfirst(),
-					GDate.getDateCourante(),
-					GDate.getDateCourante(),
+					ObjetTraduction_1.GTraductions.getValeur("Aujourdhui").ucfirst(),
+					ObjetDate_1.GDate.getDateCourante(),
+					ObjetDate_1.GDate.getDateCourante(),
 				);
 				break;
 			case TUtilitaireListePeriodes.choix.hier:
-				lDate = GDate.getJourSuivant(GDate.getDateCourante(), -1);
+				lDate = ObjetDate_1.GDate.getJourSuivant(
+					ObjetDate_1.GDate.getDateCourante(),
+					-1,
+				);
 				if (aOptions.datesOK(lDate, lDate)) {
 					_ajouterElement(
-						GTraductions.getValeur("Hier").ucfirst(),
+						ObjetTraduction_1.GTraductions.getValeur("Hier").ucfirst(),
 						lDate,
 						lDate,
 					);
 				}
 				break;
 			case TUtilitaireListePeriodes.choix.demain:
-				lDate = GDate.getJourSuivant(GDate.getDateCourante(), 1);
+				lDate = ObjetDate_1.GDate.getJourSuivant(
+					ObjetDate_1.GDate.getDateCourante(),
+					1,
+				);
 				if (aOptions.datesOK(lDate, lDate)) {
 					_ajouterElement(
-						GTraductions.getValeur("Demain").ucfirst(),
+						ObjetTraduction_1.GTraductions.getValeur("Demain").ucfirst(),
 						lDate,
 						lDate,
 					);
@@ -106,7 +104,7 @@ function TUtilitaireListePeriodes() {}
 				lDateFin = IE.Cycles.dateFinCycle(lCycle);
 				if (aOptions.datesOK(lDateDebut, lDateFin)) {
 					_ajouterElement(
-						GTraductions.getValeur("SemaineEnCours"),
+						ObjetTraduction_1.GTraductions.getValeur("SemaineEnCours"),
 						lDateDebut,
 						lDateFin,
 					);
@@ -121,7 +119,7 @@ function TUtilitaireListePeriodes() {}
 				lDateFin = IE.Cycles.dateFinCycle(lCycle);
 				if (aOptions.datesOK(lDateDebut, lDateFin)) {
 					_ajouterElement(
-						GTraductions.getValeur("SemainePrecedente"),
+						ObjetTraduction_1.GTraductions.getValeur("SemainePrecedente"),
 						lDateDebut,
 						lDateFin,
 					);
@@ -136,50 +134,53 @@ function TUtilitaireListePeriodes() {}
 				lDateFin = IE.Cycles.dateFinCycle(lCycle);
 				if (aOptions.datesOK(lDateDebut, lDateFin)) {
 					_ajouterElement(
-						GTraductions.getValeur("SemaineSuivante"),
+						ObjetTraduction_1.GTraductions.getValeur("SemaineSuivante"),
 						lDateDebut,
 						lDateFin,
 					);
 				}
 				break;
 			case TUtilitaireListePeriodes.choix.moisCourant:
-				lDate = GDate.getDateCourante();
-				lDateDebut = GDate.getPremierJourDuMois(
+				lDate = ObjetDate_1.GDate.getDateCourante();
+				lDateDebut = ObjetDate_1.GDate.getPremierJourDuMois(
 					lDate.getFullYear(),
 					lDate.getMonth(),
 				);
-				lDateFin = GDate.getDernierJourDuMois(
+				lDateFin = ObjetDate_1.GDate.getDernierJourDuMois(
 					lDate.getFullYear(),
 					lDate.getMonth(),
 				);
 				if (aOptions.datesOK(lDateDebut, lDateFin)) {
 					_ajouterElement(
-						GTraductions.getValeur("MoisEnCours"),
+						ObjetTraduction_1.GTraductions.getValeur("MoisEnCours"),
 						lDateDebut,
 						lDateFin,
 					);
 				}
 				break;
 			case TUtilitaireListePeriodes.choix.periodes: {
-				const lListePeriodesSaisie = new ObjetListeElements();
-				GParametres.listePeriodes.parcourir((D) => {
-					if (
-						D.getGenre() > 0 &&
-						D.getGenre() !== 3 &&
-						aOptions.datesOK(D.dates.debut, D.dates.fin)
-					) {
-						lElement = MethodesObjet.dupliquer(D);
-						lElement.choix = aChoix;
-						lElement.dates.debut = aOptions.borner(D.dates.debut);
-						lElement.dates.fin = aOptions.borner(D.dates.fin);
-						lListePeriodesSaisie.addElement(lElement);
-					}
-				});
+				const lListePeriodesSaisie =
+					new ObjetListeElements_1.ObjetListeElements();
+				(0, AccessApp_1.getApp)()
+					.getObjetParametres()
+					.listePeriodes.parcourir((D) => {
+						if (
+							D.getGenre() > 0 &&
+							D.getGenre() !== 3 &&
+							aOptions.datesOK(D.dates.debut, D.dates.fin)
+						) {
+							lElement = MethodesObjet_1.MethodesObjet.dupliquer(D);
+							lElement.choix = aChoix;
+							lElement.dates.debut = aOptions.borner(D.dates.debut);
+							lElement.dates.fin = aOptions.borner(D.dates.fin);
+							lListePeriodesSaisie.addElement(lElement);
+						}
+					});
 				lListePeriodesSaisie.setTri([
-					ObjetTri.init((D) => {
+					ObjetTri_1.ObjetTri.init((D) => {
 						return D.getGenre() === 3 ? 0 : 1;
 					}),
-					ObjetTri.init((D) => {
+					ObjetTri_1.ObjetTri.init((D) => {
 						return D.getGenre();
 					}),
 				]);
@@ -188,20 +189,24 @@ function TUtilitaireListePeriodes() {}
 				break;
 			}
 			case TUtilitaireListePeriodes.choix.annee:
-				GParametres.listePeriodes.parcourir((D) => {
-					if (D.getGenre() === 3) {
-						lElement = MethodesObjet.dupliquer(D);
-						lElement.setLibelle(GTraductions.getValeur("AnneeComplete"));
-						lElement.choix = aChoix;
-						lElement.dates.debut = aOptions.borner(D.dates.debut);
-						lElement.dates.fin = aOptions.borner(D.dates.fin);
-						aListe.addElement(lElement);
-						return false;
-					}
-				});
+				(0, AccessApp_1.getApp)()
+					.getObjetParametres()
+					.listePeriodes.parcourir((D) => {
+						if (D.getGenre() === 3) {
+							lElement = MethodesObjet_1.MethodesObjet.dupliquer(D);
+							lElement.setLibelle(
+								ObjetTraduction_1.GTraductions.getValeur("AnneeComplete"),
+							);
+							lElement.choix = aChoix;
+							lElement.dates.debut = aOptions.borner(D.dates.debut);
+							lElement.dates.fin = aOptions.borner(D.dates.fin);
+							aListe.addElement(lElement);
+							return false;
+						}
+					});
 				break;
 			case TUtilitaireListePeriodes.choix.mois:
-				GDate.getListeMoisAPartirDeDate(
+				ObjetDate_1.GDate.getListeMoisAPartirDeDate(
 					aOptions.dateDebut,
 					aOptions.dateFin,
 				).parcourir((D) => {
@@ -211,5 +216,26 @@ function TUtilitaireListePeriodes() {}
 			default:
 		}
 	}
-})();
-module.exports = { TUtilitaireListePeriodes };
+}
+exports.TUtilitaireListePeriodes = TUtilitaireListePeriodes;
+(function (TUtilitaireListePeriodes) {
+	let choix;
+	(function (choix) {
+		choix[(choix["aujourdhui"] = 0)] = "aujourdhui";
+		choix[(choix["hier"] = 1)] = "hier";
+		choix[(choix["demain"] = 2)] = "demain";
+		choix[(choix["semaineCourante"] = 3)] = "semaineCourante";
+		choix[(choix["semainePrecedente"] = 4)] = "semainePrecedente";
+		choix[(choix["semaineSuivante"] = 5)] = "semaineSuivante";
+		choix[(choix["moisCourant"] = 6)] = "moisCourant";
+		choix[(choix["periodes"] = 7)] = "periodes";
+		choix[(choix["annee"] = 8)] = "annee";
+		choix[(choix["mois"] = 9)] = "mois";
+	})(
+		(choix =
+			TUtilitaireListePeriodes.choix || (TUtilitaireListePeriodes.choix = {})),
+	);
+})(
+	TUtilitaireListePeriodes ||
+		(exports.TUtilitaireListePeriodes = TUtilitaireListePeriodes = {}),
+);

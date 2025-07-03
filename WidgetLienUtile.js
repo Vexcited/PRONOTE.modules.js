@@ -6,7 +6,7 @@ class WidgetLienUtile extends ObjetWidget_1.Widget.ObjetWidget {
 	construire(aParams) {
 		this.donnees = aParams.donnees;
 		const lWidget = {
-			html: this.composeWidgetLienUtile(),
+			getHtml: this.composeWidgetLienUtile.bind(this),
 			nbrElements: this.donnees.listeLiens.count(),
 			afficherMessage: this.donnees.listeLiens.count() === 0,
 		};

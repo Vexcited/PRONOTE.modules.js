@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieRattachementCDT extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieRattachementCDT = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieRattachementCDT extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParam) {
 		this.JSON = { numeroSemaine: aParam.numeroSemaine };
 		if (aParam.cahierDeTextes) {
@@ -17,10 +15,9 @@ class ObjetRequeteSaisieRattachementCDT extends ObjetRequeteSaisie {
 		}
 		return this.appelAsynchrone();
 	}
-	actionApresRequete() {
-		const lParam = {};
-		this.callbackReussite.appel(lParam);
-	}
 }
-Requetes.inscrire("SaisieRattachementCDT", ObjetRequeteSaisieRattachementCDT);
-module.exports = { ObjetRequeteSaisieRattachementCDT };
+exports.ObjetRequeteSaisieRattachementCDT = ObjetRequeteSaisieRattachementCDT;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieRattachementCDT",
+	ObjetRequeteSaisieRattachementCDT,
+);

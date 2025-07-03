@@ -64,6 +64,19 @@ class ObjetEtatUtilisateur_Mobile extends ObjetEtatUtilisateur_1.ObjetEtatUtilis
 				if (lSeuleClassePrincipal && !aClasse.estPrincipal) {
 					lAccepteClasse = false;
 				}
+				if (aParams.uniquementClasseStagiaire) {
+					if (
+						aClasse.getGenre() === Enumere_Ressource_1.EGenreRessource.Classe &&
+						lAvecClasse
+					) {
+						lAccepteClasse = aClasse.estClasseDeMonStagiaire;
+					} else if (
+						lAvecGroupe &&
+						aClasse.getGenre() === Enumere_Ressource_1.EGenreRessource.Groupe
+					) {
+						lAccepteClasse = aClasse.estGroupeDeMonStagiaire;
+					}
+				}
 				if (lAccepteClasse) {
 					result.addElement(aClasse);
 				}

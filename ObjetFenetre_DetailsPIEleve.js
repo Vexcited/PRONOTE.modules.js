@@ -1,47 +1,53 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { ObjetSaisiePN } = require("ObjetSaisiePN.js");
-const { ObjetRequeteDetailsPIEleve } = require("ObjetRequeteDetailsPIEleve.js");
-const { GHtml } = require("ObjetHtml.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { GUID } = require("GUID.js");
-const { GDate } = require("ObjetDate.js");
-const { GChaine } = require("ObjetChaine.js");
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-class ObjetFenetre_DetailsPIEleve extends ObjetFenetre {
+exports.ObjetFenetre_DetailsPIEleve = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetSaisiePN_1 = require("ObjetSaisiePN");
+const ObjetRequeteDetailsPIEleve_1 = require("ObjetRequeteDetailsPIEleve");
+const ObjetHtml_1 = require("ObjetHtml");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const GUID_1 = require("GUID");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const AccessApp_1 = require("AccessApp");
+class ObjetFenetre_DetailsPIEleve extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
-		this.idDetailsProjet = GUID.getId();
+		this.idDetailsProjet = GUID_1.GUID.getId();
 		this.uniquementMatiereProf = false;
 		this.projet = null;
+		this.applicationSco = (0, AccessApp_1.getApp)();
 		this.setOptionsFenetre({
-			listeBoutons: [GTraductions.getValeur("Fermer")],
+			listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
 			largeur: 500,
 			hauteur: 150,
 		});
 	}
 	construireInstances() {
-		this.identListe = this.add(ObjetListe, null, this.initialiserListe);
+		this.identListe = this.add(
+			ObjetListe_1.ObjetListe,
+			null,
+			this.initialiserListe,
+		);
 		this.identCombo = this.add(
-			ObjetSaisiePN,
+			ObjetSaisiePN_1.ObjetSaisiePN,
 			this.evenementCombo,
 			this.initialiserCombo,
 		);
 	}
 	evenementCombo(aParams) {
-		if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
 			this.projet = this.listeProjetsEleve.getElementParNumero(
 				aParams.element.getNumero(),
 			);
-			GHtml.setHtml(
+			ObjetHtml_1.GHtml.setHtml(
 				this.idDetailsProjet,
 				this.composeDetailsProjet(this.projet),
 				{ controleur: this.controleur },
@@ -50,7 +56,7 @@ class ObjetFenetre_DetailsPIEleve extends ObjetFenetre {
 				this.projet.getNumero(),
 			);
 			if (!!lDetails) {
-				const lListeFiltree = new ObjetListeElements();
+				const lListeFiltree = new ObjetListeElements_1.ObjetListeElements();
 				lDetails.details.parcourir((aDonnee) => {
 					if (aDonnee.correspondMatiereProfesseur === true) {
 						lListeFiltree.addElement(aDonnee);
@@ -58,8 +64,7 @@ class ObjetFenetre_DetailsPIEleve extends ObjetFenetre {
 				});
 				this.listeAffichee = lDetails.details;
 				this.listeFiltree = lListeFiltree;
-				_actualiserListe.call(
-					this,
+				this._actualiserListe(
 					this.formatDonnees(
 						this.uniquementMatiereProf === true
 							? this.listeFiltree
@@ -74,7 +79,7 @@ class ObjetFenetre_DetailsPIEleve extends ObjetFenetre {
 		H.push('<div class="field-contain label-up border-bottom p-bottom-l">');
 		H.push("<div>");
 		H.push(
-			GTraductions.getValeur("FicheEleve.misEnPlace", [
+			ObjetTraduction_1.GTraductions.getValeur("FicheEleve.misEnPlace", [
 				aProjet.libelleCourt || aProjet.getLibelle(),
 			]),
 		);
@@ -84,22 +89,22 @@ class ObjetFenetre_DetailsPIEleve extends ObjetFenetre {
 		if (!!aProjet.dateDebut) {
 			H.push("&nbsp;");
 			H.push(
-				GTraductions.getValeur(
+				ObjetTraduction_1.GTraductions.getValeur(
 					"FicheEleve.aPartir",
 					typeof aProjet.dateDebut === "string"
 						? aProjet.dateDebut
-						: GDate.formatDate(aProjet.dateDebut, "%JJ/%MM/%AAAA"),
+						: ObjetDate_1.GDate.formatDate(aProjet.dateDebut, "%JJ/%MM/%AAAA"),
 				),
 			);
 		}
 		if (!!aProjet.dateFin) {
 			H.push("&nbsp;");
 			H.push(
-				GTraductions.getValeur(
+				ObjetTraduction_1.GTraductions.getValeur(
 					"FicheEleve.jusquau",
 					typeof aProjet.dateFin === "string"
 						? aProjet.dateFin
-						: GDate.formatDate(aProjet.dateFin, "%JJ/%MM/%AAAA"),
+						: ObjetDate_1.GDate.formatDate(aProjet.dateFin, "%JJ/%MM/%AAAA"),
 				),
 			);
 		}
@@ -110,10 +115,10 @@ class ObjetFenetre_DetailsPIEleve extends ObjetFenetre {
 		if (aProjet.documents && aProjet.documents.count()) {
 			H.push('<div class="m-top-l Texte10 SansMain">');
 			aProjet.documents.parcourir((aDocument) => {
-				const lURL = GChaine.composerUrlLienExterne({
+				const lURL = ObjetChaine_1.GChaine.composerUrlLienExterne({
 					documentJoint: aDocument,
 					libelleEcran: aDocument.getLibelle(),
-					genreRessource: EGenreRessource.DocJointEleve,
+					genreRessource: Enumere_Ressource_1.EGenreRessource.DocJointEleve,
 					maxWidth: 480,
 				});
 				H.push('<div class="m-all InlineBlock">', lURL, "</div>");
@@ -126,21 +131,31 @@ class ObjetFenetre_DetailsPIEleve extends ObjetFenetre {
 			H.push(
 				'<div class="ie-titre-petit Gras">',
 				aProjet.estAvecActions
-					? GTraductions.getValeur("FicheEleve.actions")
-					: GTraductions.getValeur("FicheEleve.amenagements"),
+					? ObjetTraduction_1.GTraductions.getValeur("FicheEleve.actions")
+					: ObjetTraduction_1.GTraductions.getValeur("FicheEleve.amenagements"),
 				"</div>",
 			);
-			H.push('<div ie-if="cbMetaMatiere.afficher">');
+			const lStrCbMetaMatieres = aProjet.estAvecActions
+				? ObjetTraduction_1.GTraductions.getValeur(
+						"FicheEleve.UniquementActionMesDisciplines",
+					)
+				: ObjetTraduction_1.GTraductions.getValeur(
+						"FicheEleve.UniquementAmenagementMesDisciplines",
+					);
 			H.push(
-				'<ie-checkbox class="m-top-l" ie-model="cbMetaMatiere">',
-				aProjet.estAvecActions
-					? GTraductions.getValeur("FicheEleve.UniquementActionMesDisciplines")
-					: GTraductions.getValeur(
-							"FicheEleve.UniquementAmenagementMesDisciplines",
-						),
-				"</ie-checkbox>",
+				IE.jsx.str(
+					"div",
+					{ "ie-if": this.jsxIfAffichageCbMetaMatiere.bind(this) },
+					IE.jsx.str(
+						"ie-checkbox",
+						{
+							class: "m-top-l",
+							"ie-model": this.jsxModeleCheckboxMetaMatiere.bind(this),
+						},
+						lStrCbMetaMatieres,
+					),
+				),
 			);
-			H.push("</div>");
 			H.push(
 				'<div class="m-top-l full-height full-width" id="',
 				this.getInstance(this.identListe).getNom(),
@@ -148,81 +163,93 @@ class ObjetFenetre_DetailsPIEleve extends ObjetFenetre {
 			);
 			H.push("</div>");
 			if (
-				[EGenreRessource.Enseignant].includes(
-					GEtatUtilisateur.getUtilisateur().getGenre(),
+				[Enumere_Ressource_1.EGenreRessource.Enseignant].includes(
+					this.applicationSco.getEtatUtilisateur().getUtilisateur().getGenre(),
 				)
 			) {
 				H.push(
-					'<div style="display:inline-flex" class="m-top-l"><span class="m-top m-right-l" ie-html="publication.getHtml(',
-					!!aProjet.publieFamille,
-					')"></span><div ie-class="publication.getClass(',
-					!!aProjet.publieFamille,
-					')"></div></div>',
+					IE.jsx.str(
+						"div",
+						{ style: "display:inline-flex", class: "m-top-l" },
+						IE.jsx.str("span", {
+							class: "m-top m-right-l",
+							"ie-html": this.jsxGetHtmlPublication.bind(
+								this,
+								!!aProjet.publieFamille,
+							),
+						}),
+						IE.jsx.str("div", {
+							"ie-class": this.jsxGetClassPublication.bind(
+								this,
+								!!aProjet.publieFamille,
+							),
+						}),
+					),
 				);
 			}
 		}
 		if (aProjet.consultableEquipePeda) {
 			H.push(
 				'<div class="m-top-l">',
-				GTraductions.getValeur("FicheEleve.consultable"),
+				ObjetTraduction_1.GTraductions.getValeur("FicheEleve.consultable"),
 				"</div>",
 			);
 		}
 		return H.join("");
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
-			cbMetaMatiere: {
-				getValue: function () {
-					return aInstance.uniquementMatiereProf;
-				},
-				setValue: function (aValue) {
-					if (aValue !== null && aValue !== undefined) {
-						aInstance.uniquementMatiereProf = aValue;
-						_actualiserListe.call(
-							aInstance,
-							aInstance.formatDonnees(
-								aValue === true
-									? aInstance.listeFiltree
-									: aInstance.listeAffichee,
-							),
-						);
-					}
-				},
-				afficher: function () {
-					return (
-						!GApplication.estPrimaire &&
-						!!aInstance.listeAffichee &&
-						aInstance.listeAffichee.count() > 0
+	jsxGetHtmlPublication(aEstPublie) {
+		return aEstPublie
+			? ObjetTraduction_1.GTraductions.getValeur(
+					"FicheEleve.verrouPublieFamille",
+				)
+			: ObjetTraduction_1.GTraductions.getValeur(
+					"FicheEleve.nonVerrouPublieFamille",
+				);
+	}
+	jsxGetClassPublication(aEstPublie) {
+		return aEstPublie ? "Image_Publie" : "Image_NonPublie";
+	}
+	jsxIfAffichageCbMetaMatiere() {
+		return (
+			!this.applicationSco.estPrimaire &&
+			!!this.listeAffichee &&
+			this.listeAffichee.count() > 0
+		);
+	}
+	jsxModeleCheckboxMetaMatiere() {
+		return {
+			getValue: () => {
+				return this.uniquementMatiereProf;
+			},
+			setValue: (aValue) => {
+				if (aValue !== null && aValue !== undefined) {
+					this.uniquementMatiereProf = aValue;
+					this._actualiserListe(
+						this.formatDonnees(
+							aValue === true ? this.listeFiltree : this.listeAffichee,
+						),
 					);
-				},
+				}
 			},
-			publication: {
-				getHtml(aEstPublie) {
-					return aEstPublie
-						? GTraductions.getValeur("FicheEleve.verrouPublieFamille")
-						: GTraductions.getValeur("FicheEleve.nonVerrouPublieFamille");
-				},
-				getClass(aEstPublie) {
-					return aEstPublie ? "Image_Publie" : "Image_NonPublie";
-				},
-			},
-		});
+		};
 	}
 	initialiserCombo(aObjet) {
 		aObjet.setOptionsObjetSaisie({
 			longueur: 160,
-			libelleHaut: GTraductions.getValeur("FicheEleve.choixProjetAcc"),
+			libelleHaut: ObjetTraduction_1.GTraductions.getValeur(
+				"FicheEleve.choixProjetAcc",
+			),
 		});
 	}
 	setDonnees(aParams) {
 		this.setOptionsFenetre({
-			titre: GTraductions.getValeur("FicheEleve.projetAccEleve", [
-				aParams.eleve.getLibelle(),
-			]),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"FicheEleve.projetAccEleve",
+				[aParams.eleve.getLibelle()],
+			),
 		});
 		if (!aParams.projet) {
-			new ObjetRequeteDetailsPIEleve(
+			new ObjetRequeteDetailsPIEleve_1.ObjetRequeteDetailsPIEleve(
 				this,
 				this._reponseRequeteAmenagementsEleve,
 			).lancerRequete({ eleve: aParams.eleve, matiere: aParams.matiere });
@@ -230,13 +257,13 @@ class ObjetFenetre_DetailsPIEleve extends ObjetFenetre {
 			this.projet = aParams.projet;
 			this.afficher();
 			this.getInstance(this.identCombo).setVisible(false);
-			GHtml.setHtml(
+			ObjetHtml_1.GHtml.setHtml(
 				this.idDetailsProjet,
 				this.composeDetailsProjet(this.projet),
 				{ controleur: this.controleur },
 			);
-			if (this.projet.details) {
-				_actualiserListe.call(this, this.formatDonnees(this.projet.details));
+			if ("details" in this.projet && this.projet.details) {
+				this._actualiserListe(this.formatDonnees(this.projet.details));
 			}
 		}
 	}
@@ -248,12 +275,12 @@ class ObjetFenetre_DetailsPIEleve extends ObjetFenetre {
 		if (aParams.listeProjetsEleve.count() > 1) {
 			this.getInstance(this.identCombo).initialiser();
 			this.getInstance(this.identCombo).setDonnees(this.listeProjetsEleve);
-			this.Instances[this.identCombo].setSelection(0);
+			this.getInstance(this.identCombo).setSelection(0);
 			this.getInstance(this.identCombo).setVisible(true);
 			this.getInstance(this.identCombo).setActif(true);
 		} else if (aParams.listeProjetsEleve.count() === 1) {
 			this.getInstance(this.identCombo).setVisible(false);
-			GHtml.setHtml(
+			ObjetHtml_1.GHtml.setHtml(
 				this.idDetailsProjet,
 				this.composeDetailsProjet(this.projet),
 				{ controleur: this.controleur },
@@ -265,8 +292,8 @@ class ObjetFenetre_DetailsPIEleve extends ObjetFenetre {
 			);
 			this.listeAffichee = !!lDetails
 				? lDetails.details
-				: new ObjetListeElements();
-			const lListeFiltree = new ObjetListeElements();
+				: new ObjetListeElements_1.ObjetListeElements();
+			const lListeFiltree = new ObjetListeElements_1.ObjetListeElements();
 			if (lDetails && lDetails.details) {
 				lDetails.details.parcourir((aDonnee) => {
 					if (aDonnee.correspondMatiereProfesseur === true) {
@@ -275,13 +302,13 @@ class ObjetFenetre_DetailsPIEleve extends ObjetFenetre {
 				});
 			}
 			this.listeFiltree = lListeFiltree;
-			_actualiserListe.call(this, this.formatDonnees(this.listeAffichee));
+			this._actualiserListe(this.formatDonnees(this.listeAffichee));
 		}
 	}
 	formatDonnees(aListe) {
 		aListe.setTri([
-			ObjetTri.init("numCategorie"),
-			ObjetTri.init("numeroAmenagement"),
+			ObjetTri_1.ObjetTri.init("numCategorie"),
+			ObjetTri_1.ObjetTri.init("numeroAmenagement"),
 		]);
 		aListe.trier();
 		let lPere;
@@ -300,7 +327,7 @@ class ObjetFenetre_DetailsPIEleve extends ObjetFenetre {
 	}
 	initialiserListe(aInstance) {
 		aInstance.setOptionsListe({
-			skin: ObjetListe.skin.flatDesign,
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
 			forcerOmbreScrollTop: true,
 			forcerOmbreScrollBottom: true,
 			hauteurAdapteContenu: true,
@@ -313,20 +340,23 @@ class ObjetFenetre_DetailsPIEleve extends ObjetFenetre {
 		T.push('<div class="m-top-l" id="', this.idDetailsProjet, '"></div>');
 		return T.join("");
 	}
+	_actualiserListe(aDonnees) {
+		this.getInstance(this.identListe).setDonnees(
+			new DonneesListe_Accompagnement(aDonnees),
+		);
+		this.getInstance(this.identListe).setOptionsListe({
+			messageContenuVide: this.projet.estAvecActions
+				? ObjetTraduction_1.GTraductions.getValeur("FicheEleve.aucuneAction")
+				: ObjetTraduction_1.GTraductions.getValeur(
+						"FicheEleve.aucunAmenagement",
+					),
+		});
+	}
 }
-function _actualiserListe(aDonnees) {
-	this.getInstance(this.identListe).setDonnees(
-		new DonneesListe_Accompagnement(aDonnees),
-	);
-	this.getInstance(this.identListe).setOptionsListe({
-		messageContenuVide: this.projet.estAvecActions
-			? GTraductions.getValeur("FicheEleve.aucuneAction")
-			: GTraductions.getValeur("FicheEleve.aucunAmenagement"),
-	});
-}
-class DonneesListe_Accompagnement extends ObjetDonneesListeFlatDesign {
-	constructor(...aParams) {
-		super(...aParams);
+exports.ObjetFenetre_DetailsPIEleve = ObjetFenetre_DetailsPIEleve;
+class DonneesListe_Accompagnement extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
+	constructor(aListe) {
+		super(aListe);
 		this.setOptions({
 			avecSelection: false,
 			avecBoutonActionLigne: false,
@@ -341,4 +371,3 @@ class DonneesListe_Accompagnement extends ObjetDonneesListeFlatDesign {
 		return aParams.article.estPere ? "" : aParams.article.getLibelle();
 	}
 }
-module.exports = { ObjetFenetre_DetailsPIEleve };

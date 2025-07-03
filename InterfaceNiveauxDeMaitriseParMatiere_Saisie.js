@@ -1,38 +1,30 @@
-const {
-	_InterfaceNiveauxDeMaitriseParMatiere,
-} = require("_InterfaceNiveauxDeMaitriseParMatiere.js");
-const {
-	ObjetFenetre_DetailEvaluationsCompetences,
-} = require("ObjetFenetre_DetailEvaluationsCompetences.js");
-const ObjetRequeteNiveauxDeMaitriseParMatiere = require("ObjetRequeteNiveauxDeMaitriseParMatiere.js");
-const { ObjetInvocateur, Invocateur } = require("Invocateur.js");
-const { EGenreImpression } = require("Enumere_GenreImpression.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const {
-	ObjetAffichagePageAvecMenusDeroulants,
-} = require("InterfacePageAvecMenusDeroulants.js");
-const {
-	ObjetRequeteDetailEvaluationsCompetences,
-} = require("ObjetRequeteDetailEvaluationsCompetences.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-class InterfaceNiveauxDeMaitriseParMatiere_Saisie extends _InterfaceNiveauxDeMaitriseParMatiere {
+exports.InterfaceNiveauxDeMaitriseParMatiere_Saisie = void 0;
+const _InterfaceNiveauxDeMaitriseParMatiere_1 = require("_InterfaceNiveauxDeMaitriseParMatiere");
+const ObjetFenetre_DetailEvaluationsCompetences_1 = require("ObjetFenetre_DetailEvaluationsCompetences");
+const ObjetRequeteNiveauxDeMaitriseParMatiere_1 = require("ObjetRequeteNiveauxDeMaitriseParMatiere");
+const Invocateur_1 = require("Invocateur");
+const Enumere_GenreImpression_1 = require("Enumere_GenreImpression");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const InterfacePageAvecMenusDeroulants_1 = require("InterfacePageAvecMenusDeroulants");
+const ObjetRequeteDetailEvaluationsCompetences_1 = require("ObjetRequeteDetailEvaluationsCompetences");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+class InterfaceNiveauxDeMaitriseParMatiere_Saisie extends _InterfaceNiveauxDeMaitriseParMatiere_1._InterfaceNiveauxDeMaitriseParMatiere {
 	constructor(...aParams) {
 		super(...aParams);
 	}
 	construireInstances() {
+		super.construireInstances();
 		this.identTripleCombo = this.add(
-			ObjetAffichagePageAvecMenusDeroulants,
+			InterfacePageAvecMenusDeroulants_1.ObjetAffichagePageAvecMenusDeroulants,
 			this._evenementSurDernierMenuDeroulant,
 			this._initialiserTripleCombo,
 		);
 		this.identFenetreDetailEvaluations = this.addFenetre(
-			ObjetFenetre_DetailEvaluationsCompetences,
-			_evenementFenetreDetailEvaluations,
-			_initFenetreDetailEvaluations,
+			ObjetFenetre_DetailEvaluationsCompetences_1.ObjetFenetre_DetailEvaluationsCompetences,
+			this._evenementFenetreDetailEvaluations,
+			this._initFenetreDetailEvaluations,
 		);
-		this.IdentPage = this.add(ObjetListe, _evenementSurListe.bind(this));
 	}
 	setParametresGeneraux() {
 		this.IdentZoneAlClient = this.IdentPage;
@@ -40,70 +32,83 @@ class InterfaceNiveauxDeMaitriseParMatiere_Saisie extends _InterfaceNiveauxDeMai
 	}
 	_initialiserTripleCombo(aInstance) {
 		aInstance.setParametres(
-			[EGenreRessource.Classe, EGenreRessource.Periode, EGenreRessource.Eleve],
+			[
+				Enumere_Ressource_1.EGenreRessource.Classe,
+				Enumere_Ressource_1.EGenreRessource.Periode,
+				Enumere_Ressource_1.EGenreRessource.Eleve,
+			],
 			true,
 		);
 	}
 	_evenementSurDernierMenuDeroulant() {
 		this.afficherBandeau(true);
-		Invocateur.evenement(
-			ObjetInvocateur.events.activationImpression,
-			EGenreImpression.Aucune,
+		Invocateur_1.Invocateur.evenement(
+			Invocateur_1.ObjetInvocateur.events.activationImpression,
+			Enumere_GenreImpression_1.EGenreImpression.Aucune,
 		);
-		new ObjetRequeteNiveauxDeMaitriseParMatiere(
+		new ObjetRequeteNiveauxDeMaitriseParMatiere_1.ObjetRequeteNiveauxDeMaitriseParMatiere(
 			this,
 			this._reponseRequeteNiveauxDeMaitriseParMatiere,
 		).lancerRequete({
-			classe: GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Classe),
-			periode: GEtatUtilisateur.Navigation.getRessource(
-				EGenreRessource.Periode,
+			classe: this.etatUtilisateurSco.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.Classe,
 			),
-			eleve: GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Eleve),
+			periode: this.etatUtilisateurSco.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.Periode,
+			),
+			eleve: this.etatUtilisateurSco.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.Eleve,
+			),
 		});
 	}
 	evenementAfficherMessage(aGenreMessage) {
 		super.evenementAfficherMessage(aGenreMessage);
 		this.surResizeInterface();
 	}
-}
-function _evenementSurListe(aParametres, aGenreEvenement) {
-	switch (aGenreEvenement) {
-		case EGenreEvenementListe.Selection:
-			new ObjetRequeteDetailEvaluationsCompetences(
-				this,
-				_reponseRequeteDetailEvaluations.bind(this, aParametres),
-			).lancerRequete({
-				eleve: GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Eleve),
-				pilier: aParametres.article.pilier,
-				periode: GEtatUtilisateur.Navigation.getRessource(
-					EGenreRessource.Periode,
-				),
-				numRelESI: aParametres.article.NumerosRelationsESI,
-			});
-			break;
+	_evenementSurListe(aParametres) {
+		switch (aParametres.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Selection:
+				new ObjetRequeteDetailEvaluationsCompetences_1.ObjetRequeteDetailEvaluationsCompetences(
+					this,
+					this._reponseRequeteDetailEvaluations.bind(this, aParametres),
+				).lancerRequete({
+					eleve: this.etatUtilisateurSco.Navigation.getRessource(
+						Enumere_Ressource_1.EGenreRessource.Eleve,
+					),
+					pilier: aParametres.article.pilier,
+					periode: this.etatUtilisateurSco.Navigation.getRessource(
+						Enumere_Ressource_1.EGenreRessource.Periode,
+					),
+					numRelESI: aParametres.article.NumerosRelationsESI,
+				});
+				break;
+		}
+	}
+	_initFenetreDetailEvaluations(aInstance) {
+		aInstance.setOptionsFenetre({
+			titre: "",
+			largeur: 700,
+			hauteur: 300,
+			listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
+		});
+	}
+	_evenementFenetreDetailEvaluations() {
+		IE.log.addLog(
+			"Saisie non gérée pour le moment ; saisie non permise par delphi",
+		);
+	}
+	_reponseRequeteDetailEvaluations(aParametres, aJSON) {
+		const lFenetre = this.getInstance(this.identFenetreDetailEvaluations);
+		const lTitreParDefaut = lFenetre.getTitreFenetreParDefaut(
+			this.etatUtilisateurSco.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.Eleve,
+			),
+			aParametres.article,
+		);
+		lFenetre.setDonnees(aParametres.article, aJSON, {
+			titreFenetre: lTitreParDefaut,
+		});
 	}
 }
-function _initFenetreDetailEvaluations(aInstance) {
-	aInstance.setOptionsFenetre({
-		titre: "",
-		largeur: 700,
-		hauteur: 300,
-		listeBoutons: [GTraductions.getValeur("Fermer")],
-	});
-}
-function _evenementFenetreDetailEvaluations() {
-	IE.log.addLog(
-		"Saisie non gérée pour le moment ; saisie non permise par delphi",
-	);
-}
-function _reponseRequeteDetailEvaluations(aParametres, aJSON) {
-	const lFenetre = this.getInstance(this.identFenetreDetailEvaluations);
-	const lTitreParDefaut = lFenetre.getTitreFenetreParDefaut(
-		GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Eleve),
-		aParametres.article,
-	);
-	lFenetre.setDonnees(aParametres.article, aJSON, {
-		titreFenetre: lTitreParDefaut,
-	});
-}
-module.exports = { InterfaceNiveauxDeMaitriseParMatiere_Saisie };
+exports.InterfaceNiveauxDeMaitriseParMatiere_Saisie =
+	InterfaceNiveauxDeMaitriseParMatiere_Saisie;

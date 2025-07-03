@@ -1,12 +1,9 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieActualitesNotification extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieActualitesNotification = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieActualitesNotification extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParam) {
-		this.saisieActualite = aParam.saisieActualite;
-		this.JSON.saisieActualite = this.saisieActualite;
+		this.JSON.saisieActualite = aParam.saisieActualite;
 		aParam.listeActualite.setSerialisateurJSON({ ignorerEtatsElements: true });
 		this.JSON.listeActualites = aParam.listeActualite;
 		if (aParam.avecNotificationParticipant) {
@@ -23,12 +20,10 @@ class ObjetRequeteSaisieActualitesNotification extends ObjetRequeteSaisie {
 		}
 		return this.appelAsynchrone();
 	}
-	actionApresRequete() {
-		this.callbackReussite.appel(this.JSONReponse);
-	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteSaisieActualitesNotification =
+	ObjetRequeteSaisieActualitesNotification;
+CollectionRequetes_1.Requetes.inscrire(
 	"SaisieActualitesNotification",
 	ObjetRequeteSaisieActualitesNotification,
 );
-module.exports = { ObjetRequeteSaisieActualitesNotification };

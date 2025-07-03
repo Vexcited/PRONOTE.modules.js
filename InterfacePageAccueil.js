@@ -2,39 +2,28 @@ exports.InterfacePageAccueil = void 0;
 const ObjetRequetePageAccueil_1 = require("ObjetRequetePageAccueil");
 const ObjetDroitsPN_1 = require("ObjetDroitsPN");
 const ObjetIdentite_1 = require("ObjetIdentite");
-const CollectionRequetes_1 = require("CollectionRequetes");
-const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
 const GUID_1 = require("GUID");
 const Invocateur_1 = require("Invocateur");
 const MethodesObjet_1 = require("MethodesObjet");
-const ObjetChaine_1 = require("ObjetChaine");
 const ObjetHtml_1 = require("ObjetHtml");
 const ObjetStyle_1 = require("ObjetStyle");
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
 const Enumere_Event_1 = require("Enumere_Event");
 const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
-const Enumere_TriElement_1 = require("Enumere_TriElement");
 const ObjetFenetreVisuEleveQCM_1 = require("ObjetFenetreVisuEleveQCM");
 const ObjetDate_1 = require("ObjetDate");
 const ObjetElement_1 = require("ObjetElement");
 const ObjetListeElements_1 = require("ObjetListeElements");
-const ObjetListeArborescente_1 = require("ObjetListeArborescente");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetTri_1 = require("ObjetTri");
 const UtilitaireWidget_1 = require("UtilitaireWidget");
 const Enumere_Espace_1 = require("Enumere_Espace");
-const Enumere_LienDS_1 = require("Enumere_LienDS");
 const Enumere_Onglet_1 = require("Enumere_Onglet");
-const Enumere_PossessionRessource_1 = require("Enumere_PossessionRessource");
 const Enumere_Ressource_1 = require("Enumere_Ressource");
-const Enumere_RessourcePedagogique_1 = require("Enumere_RessourcePedagogique");
 const InterfacePage_1 = require("InterfacePage");
 const ObjetFenetre_ParametresWidgets_1 = require("ObjetFenetre_ParametresWidgets");
 const ObjetRequeteFicheCDT_1 = require("ObjetRequeteFicheCDT");
-const ObjetUtilitaireAbsence_1 = require("ObjetUtilitaireAbsence");
-const UtilitaireMessagerie_1 = require("UtilitaireMessagerie");
 const Enumere_Widget_1 = require("Enumere_Widget");
-const UtilitaireQCM_1 = require("UtilitaireQCM");
 const UtilitaireCDT_1 = require("UtilitaireCDT");
 const GestionnaireBlocCDT_1 = require("GestionnaireBlocCDT");
 const GestionnaireBlocCDT_2 = require("GestionnaireBlocCDT");
@@ -45,22 +34,16 @@ const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetFenetre_Bloc_1 = require("ObjetFenetre_Bloc");
 const ObjetFenetre_ListeTAFFaits_1 = require("ObjetFenetre_ListeTAFFaits");
 const ObjetFenetre_ListeTAFFaits_2 = require("ObjetFenetre_ListeTAFFaits");
-const UtilitaireListeCoursAccessible_1 = require("UtilitaireListeCoursAccessible");
 const UtilitaireQCMPN_1 = require("UtilitaireQCMPN");
 const ObjetMoteurAccueilPN_1 = require("ObjetMoteurAccueilPN");
-const TypeEtatPublication_1 = require("TypeEtatPublication");
 const Enumere_EvenementWidget_1 = require("Enumere_EvenementWidget");
 const TypeDemiJournee_1 = require("TypeDemiJournee");
-const CommunicationProduit_1 = require("CommunicationProduit");
 const ObjetDeserialiser_1 = require("ObjetDeserialiser");
-const WidgetMenu_1 = require("WidgetMenu");
 const ObjetVisuEleveQCM_1 = require("ObjetVisuEleveQCM");
 const MultipleObjetRequeteSaisieAccueil = require("ObjetRequeteSaisieAccueil");
 const TypeAffichageRemplacements_1 = require("TypeAffichageRemplacements");
-CollectionRequetes_1.Requetes.inscrire(
-	"donneesContenusCDT",
-	ObjetRequeteJSON_1.ObjetRequeteConsultation,
-);
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const ObjetRequeteDonneesContenusCDT_1 = require("ObjetRequeteDonneesContenusCDT");
 class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 	constructor(...aParams) {
 		super(...aParams);
@@ -75,7 +58,6 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 		this.suffixIdWrapper = "_suffWrap";
 		this._classActualiteSaisieDirect = GUID_1.GUID.getClassCss();
 		this.genreColonne = this.moteur.genreColonne;
-		this.listeFiches = [];
 		this.tailleImages = 17;
 		this.etatUtilisateurSco.widgets =
 			this.applicationSco.parametresUtilisateur.get("widgets") || [];
@@ -150,7 +132,6 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 			modificationsEDT: { date: this.dateParDefaut },
 		};
 		this._classActualiteSaisieDirect = GUID_1.GUID.getClassCss();
-		this.listeFiches = [];
 		this.tailleImages = 17;
 		this.instancesWidgets = {};
 		Invocateur_1.Invocateur.abonner(
@@ -172,7 +153,7 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 					Enumere_Espace_1.EGenreEspace.Professeur
 			) {
 				this._changerColWrapper();
-				if (GNavigateur.isTactile) {
+				if (ObjetNavigateur_1.Navigateur.isTactile) {
 					this._forEachWidget((aWidget) => {
 						if (aWidget.resize) {
 							aWidget.resize();
@@ -189,9 +170,6 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 					aInstance.evtSurBtnParametresWidgets();
 					aEvent.preventDefault();
 					aEvent.stopImmediatePropagation();
-				},
-				getIcone() {
-					return '<i class="icon_cog"></i>';
 				},
 			},
 		});
@@ -226,6 +204,9 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 			conseilDeClasse: this.moteur.getDeclarationWidget(
 				Enumere_Widget_1.EGenreWidget.conseilDeClasse,
 			),
+			infosParcoursupLSL: this.moteur.getDeclarationWidget(
+				Enumere_Widget_1.EGenreWidget.InfosParcoursupLSL,
+			),
 			competences: this.moteur.getDeclarationWidget(
 				Enumere_Widget_1.EGenreWidget.competences,
 			),
@@ -254,6 +235,12 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 			elections: this.moteur.getDeclarationWidget(
 				Enumere_Widget_1.EGenreWidget.elections,
 			),
+			voteElecMembreBureau: this.moteur.getDeclarationWidget(
+				Enumere_Widget_1.EGenreWidget.voteElecMembreBureau,
+			),
+			voteElecElecteur: this.moteur.getDeclarationWidget(
+				Enumere_Widget_1.EGenreWidget.voteElecElecteur,
+			),
 			enseignementADistance: this.moteur.getDeclarationWidget(
 				Enumere_Widget_1.EGenreWidget.enseignementADistance,
 			),
@@ -264,7 +251,7 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 				Enumere_Widget_1.EGenreWidget.incidents,
 			),
 			intendanceExecute: this.moteur.getDeclarationWidget(
-				Enumere_Widget_1.EGenreWidget.Intendance_Execute,
+				Enumere_Widget_1.EGenreWidget.IntendanceExecute,
 			),
 			kiosque: this.moteur.getDeclarationWidget(
 				Enumere_Widget_1.EGenreWidget.kiosque,
@@ -307,7 +294,7 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 				Enumere_Widget_1.EGenreWidget.ressourcePedagogique,
 			),
 			tachesSecretariatExecute: this.moteur.getDeclarationWidget(
-				Enumere_Widget_1.EGenreWidget.tachesSecretariat_Execute,
+				Enumere_Widget_1.EGenreWidget.tachesSecretariatExecute,
 			),
 			maintenanceInfoExecute: this.moteur.getDeclarationWidget(
 				Enumere_Widget_1.EGenreWidget.maintenanceInfoExecute,
@@ -325,10 +312,10 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 				Enumere_Widget_1.EGenreWidget.absRetardsJustifiesParents,
 			),
 			blogFilActu: this.moteur.getDeclarationWidget(
-				Enumere_Widget_1.EGenreWidget.blog_filActu,
+				Enumere_Widget_1.EGenreWidget.blogFilActu,
 			),
 			commandeExecute: this.moteur.getDeclarationWidget(
-				Enumere_Widget_1.EGenreWidget.commande_Execute,
+				Enumere_Widget_1.EGenreWidget.commandeExecute,
 			),
 			modificationsEDT: this.moteur.getDeclarationWidget(
 				Enumere_Widget_1.EGenreWidget.modificationEDT,
@@ -375,13 +362,13 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 				Enumere_Widget_1.EGenreWidget.incidents,
 			),
 			intendanceExecute: this.moteur.getDeclarationWidget(
-				Enumere_Widget_1.EGenreWidget.Intendance_Execute,
+				Enumere_Widget_1.EGenreWidget.IntendanceExecute,
 			),
 			maintenanceInfoExecute: this.moteur.getDeclarationWidget(
 				Enumere_Widget_1.EGenreWidget.maintenanceInfoExecute,
 			),
 			commandeExecute: this.moteur.getDeclarationWidget(
-				Enumere_Widget_1.EGenreWidget.commande_Execute,
+				Enumere_Widget_1.EGenreWidget.commandeExecute,
 			),
 			QCM: this.moteur.getDeclarationWidget(Enumere_Widget_1.EGenreWidget.QCM),
 			travailAFaire: this.moteur.getDeclarationWidget(
@@ -403,7 +390,7 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 				Enumere_Widget_1.EGenreWidget.partenaireAgate,
 			),
 			blogFilActu: this.moteur.getDeclarationWidget(
-				Enumere_Widget_1.EGenreWidget.blog_filActu,
+				Enumere_Widget_1.EGenreWidget.blogFilActu,
 			),
 			TAFEtActivites: this.moteur.getDeclarationWidget(
 				Enumere_Widget_1.EGenreWidget.TAFEtActivites,
@@ -416,6 +403,12 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 			),
 			partenaireFAST: this.moteur.getDeclarationWidget(
 				Enumere_Widget_1.EGenreWidget.partenaireFAST,
+			),
+			voteElecMembreBureau: this.moteur.getDeclarationWidget(
+				Enumere_Widget_1.EGenreWidget.voteElecMembreBureau,
+			),
+			voteElecElecteur: this.moteur.getDeclarationWidget(
+				Enumere_Widget_1.EGenreWidget.voteElecElecteur,
 			),
 		};
 	}
@@ -431,6 +424,8 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 				return this.donnees.CDTNonSaisi;
 			case Enumere_Widget_1.EGenreWidget.conseilDeClasse:
 				return this.donnees.conseilDeClasse;
+			case Enumere_Widget_1.EGenreWidget.InfosParcoursupLSL:
+				return this.donnees.infosParcoursupLSL;
 			case Enumere_Widget_1.EGenreWidget.menuDeLaCantine:
 				return this.donnees.menuDeLaCantine;
 			case Enumere_Widget_1.EGenreWidget.vieScolaire:
@@ -475,9 +470,9 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 				return this.donnees.carnetDeCorrespondance;
 			case Enumere_Widget_1.EGenreWidget.TAFARendre:
 				return this.donnees.TAFARendre;
-			case Enumere_Widget_1.EGenreWidget.Intendance_Execute:
+			case Enumere_Widget_1.EGenreWidget.IntendanceExecute:
 				return this.donnees.intendanceExecute;
-			case Enumere_Widget_1.EGenreWidget.tachesSecretariat_Execute:
+			case Enumere_Widget_1.EGenreWidget.tachesSecretariatExecute:
 				return this.donnees.tachesSecretariatExecute;
 			case Enumere_Widget_1.EGenreWidget.maintenanceInfoExecute:
 				return this.donnees.maintenanceInfoExecute;
@@ -505,13 +500,17 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 				return this.donnees.connexionsEnCours;
 			case Enumere_Widget_1.EGenreWidget.elections:
 				return this.donnees.elections;
+			case Enumere_Widget_1.EGenreWidget.voteElecMembreBureau:
+				return this.donnees.voteElecMembreBureau;
+			case Enumere_Widget_1.EGenreWidget.voteElecElecteur:
+				return this.donnees.voteElecElecteur;
 			case Enumere_Widget_1.EGenreWidget.enseignementADistance:
 				return this.donnees.enseignementADistance;
-			case Enumere_Widget_1.EGenreWidget.blog_filActu:
+			case Enumere_Widget_1.EGenreWidget.blogFilActu:
 				return this.donnees.blogFilActu;
 			case Enumere_Widget_1.EGenreWidget.TAFEtActivites:
 				return this.donnees.TAFEtActivites;
-			case Enumere_Widget_1.EGenreWidget.commande_Execute:
+			case Enumere_Widget_1.EGenreWidget.commandeExecute:
 				return this.donnees.commandeExecute;
 			case Enumere_Widget_1.EGenreWidget.registreAppel:
 				return this.donnees.registreAppel;
@@ -666,8 +665,6 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 							lLignes[j].id +
 								UtilitaireWidget_1.UtilitaireWidget.suffixIdWidget,
 							'" class="widget ',
-							lLignes[j].themeCategorie,
-							" ",
 							lNomClasseWidget,
 							!!lWidgetCollapse || lWidgetCollapse === undefined
 								? " collapsible"
@@ -687,15 +684,7 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 			controleur: this.controleur,
 		});
 	}
-	addFiche(aFiche) {
-		this.listeFiches.push(aFiche);
-	}
 	fermerFiches() {
-		for (let i = 0; i < this.listeFiches.length; i++) {
-			if (this.listeFiches[i]) {
-				this.listeFiches[i].fermer();
-			}
-		}
 		if (this.fenetreCDT) {
 			this.fenetreCDT.fermer();
 		}
@@ -732,18 +721,6 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 		$(`#${this.applicationEspace.idLigneBandeau.escapeJQ()}`)
 			.show()
 			.addClass("sr-only");
-	}
-	avecLienKiosque(aKiosque) {
-		let lRessource;
-		if (aKiosque && aKiosque.listeRessources) {
-			for (let i = 0; i < aKiosque.listeRessources.count(); i++) {
-				lRessource = aKiosque.listeRessources.get(i);
-				if (lRessource.avecLien) {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 	evenementSurVisuEleve(aParam) {
 		if (aParam.action === ObjetVisuEleveQCM_1.TypeCallbackVisuEleveQCM.close) {
@@ -810,17 +787,6 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 			} else {
 				this.eviterFermeture = undefined;
 			}
-			if (
-				this.donneesRequete.widgets.includes(
-					Enumere_Widget_1.EGenreWidget.kiosque,
-				)
-			) {
-				this.applicationEspace
-					.getCommunication()
-					.setDureeTimerPresence(
-						CommunicationProduit_1.CommunicationProduit.cDureeTimerPresence,
-					);
-			}
 		}
 	}
 	traiterDonnees(aObjet) {
@@ -847,19 +813,16 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 			this.genreColonne[i].actif = lAvecColonneVisible;
 			this.genreColonne[i].visible = lAvecColonneVisible;
 		}
-		if (this.etatUtilisateurSco.estModeAccessible()) {
-			this.afficherListeAccessible();
-		} else {
-			this.actualiserAffichage();
-			this.surResizeInterface();
-		}
+		this.actualiserAffichage();
+		this.surResizeInterface();
 	}
 	actualiserAffichage() {
 		if (!this.DonneesRecues) {
 			return;
 		}
 		this.actualiserColonnes();
-		for (let i in this.donnees) {
+		let i;
+		for (i in this.donnees) {
 			if (
 				this.donnees[i] &&
 				this.donnees[i].construire &&
@@ -888,41 +851,26 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 					this.interfaceEspace
 						.getInstance(this.interfaceEspace.IdentBandeauEntete)
 						.idSecondMenu.escapeJQ() +
-					" > div:first .selected",
-			)
-				.removeClass("objetmenuprincipal_elementavecclic")
-				.append('<div id="dummyNode"></div>')
-				.find("#dummyNode")
-				.ieHtml(
-					'<ie-btnselecteur id="' +
-						this.idBoutonParametres +
-						'" ie-model="evtSurBtnParametresWidgets()" aria-label="' +
-						ObjetTraduction_1.GTraductions.getValeur(
-							"Accueil.ParametresWidgets",
-						) +
-						'" title="' +
-						ObjetTraduction_1.GTraductions.getValeur(
-							"Accueil.ParametresWidgets",
-						) +
-						'" class="choix-widgets"></ie-btnselecteur>',
-					{ controleur: this.controleur },
-				)
-				.children()
-				.unwrap("#dummyNode");
-			$("#" + this.applicationEspace.idBreadcrumb).attr(
-				"aria-owns",
-				this.idBoutonParametres,
+					" > div:first",
+			).ieHtmlAppend(
+				'<ie-btnicon id="' +
+					this.idBoutonParametres +
+					'" ie-model="evtSurBtnParametresWidgets" class="icon_cog bt-activable" aria-label="' +
+					ObjetTraduction_1.GTraductions.getValeur(
+						"Accueil.ParametresWidgets",
+					) +
+					'" title="' +
+					ObjetTraduction_1.GTraductions.getValeur(
+						"Accueil.ParametresWidgets",
+					) +
+					'"></ie-btnicon>',
+				{ controleur: this.controleur },
 			);
-		} else {
-			$(
-				"#" +
-					this.interfaceEspace
-						.getInstance(this.interfaceEspace.IdentBandeauEntete)
-						.idSecondMenu.escapeJQ() +
-					" > div:first .selected",
-			).removeClass("objetmenuprincipal_elementavecclic");
 		}
-		if (this.etatUtilisateurSco.derniereConnexion) {
+		if (
+			this.etatUtilisateurSco.derniereConnexion &&
+			!this.parametresSco.estAfficheDansENT
+		) {
 			const lIdMenu =
 				"#" +
 				this.interfaceEspace
@@ -972,10 +920,11 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 						lWidget.construire &&
 						lWidget.existeWidget.call(this)
 					) {
-						const lObjetWidget = new ObjetElement_1.ObjetElement();
-						lObjetWidget.widget = this.getWidget(aGenreWidget);
-						lObjetWidget.positionColonne = lColonne.position;
-						lObjetWidget.position = aIndice;
+						const lObjetWidget = ObjetElement_1.ObjetElement.create({
+							widget: this.getWidget(aGenreWidget),
+							positionColonne: lColonne.position,
+							position: aIndice,
+						});
 						lListeWidgets.addElement(lObjetWidget);
 					}
 				}
@@ -998,6 +947,11 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 			surToutVoir(aGenreWidget) {
 				$(this.node).eventValidation(() => {
 					lThis.surToutVoir(aGenreWidget);
+				});
+			},
+			surLienExterne(aGenreWidget) {
+				$(this.node).eventValidation(() => {
+					lThis.surLienExterne(aGenreWidget);
 				});
 			},
 			surFermer(aGenreWidget) {
@@ -1047,6 +1001,13 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 			Enumere_EvenementWidget_1.EGenreEvenementWidget.NavigationVersPage,
 			lWidget.getPage ? lWidget.getPage() : lWidget.page,
 		);
+	}
+	surLienExterne(aGenreWidget) {
+		const lWidget = this.getWidget(aGenreWidget);
+		const lInfos = lWidget.infosURLExterne();
+		if (lInfos !== undefined) {
+			lInfos.callbackLien();
+		}
 	}
 	surEvenementWidget(aGenreWidgetSource, aGenreEvenement, aDonnees, aListePJs) {
 		switch (aGenreEvenement) {
@@ -1223,11 +1184,12 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 	}
 	surResizeInterface() {
 		super.surResizeInterface();
-		if (this.etatUtilisateurSco.estModeAccessible()) {
-			this.afficherListeAccessible();
-		}
-		if (GNavigateur.isMacOs && GNavigateur.isSafari) {
-			for (const i in this.genreColonne) {
+		if (
+			ObjetNavigateur_1.Navigateur.isMacOs &&
+			ObjetNavigateur_1.Navigateur.isSafari
+		) {
+			let i;
+			for (i in this.genreColonne) {
 				if (
 					this.genreColonne[i].actif &&
 					$(
@@ -1252,10 +1214,10 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 				genreAffichage: aGenreAffichageCDT,
 				gestionnaire: GestionnaireBlocCDT_2.GestionnaireBlocCDT,
 			},
-			{ evenementSurBlocCDT: this.evenementSurBlocCDT.bind(this, aCtx) },
+			{ evenementSurBlocCDT: this.evenementSurBlocCDTAccueil.bind(this, aCtx) },
 		);
 	}
-	evenementSurBlocCDT(aCtx, aObjet, aElement, aGenreEvnt, aParam) {
+	evenementSurBlocCDTAccueil(aCtx, aObjet, aElement, aGenreEvnt, aParam) {
 		switch (aGenreEvnt) {
 			case GestionnaireBlocCDT_1.EGenreBtnActionBlocCDT.executionQCM:
 			case GestionnaireBlocCDT_1.EGenreBtnActionBlocCDT.voirQCM: {
@@ -1274,8 +1236,7 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 				);
 				break;
 			case GestionnaireBlocCDT_1.EGenreBtnActionBlocCDT.voirContenu:
-				(0, CollectionRequetes_1.Requetes)(
-					"donneesContenusCDT",
+				new ObjetRequeteDonneesContenusCDT_1.ObjetRequeteDonneesContenusCDT(
 					this,
 					this._actionApresRequeteDonneesContenusCDT,
 				).lancerRequete({ cahierDeTextes: aElement.cahierDeTextes });
@@ -1315,2134 +1276,6 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 			this.getInstance(this.identFenetreVisuQCM),
 			aExecutionQCM,
 		);
-	}
-	afficherListeAccessible() {
-		if (!this.DonneesRecues) {
-			return;
-		}
-		let lGenre, i, j, I, J, lDS, lMatiere, lRessource, lNoeudMatiere;
-		this.utilitaireAbsence =
-			new ObjetUtilitaireAbsence_1.ObjetUtilitaireAbsence();
-		const lIdListe = this.Nom + "_Liste";
-		this._objetListeArborescente =
-			new ObjetListeArborescente_1.ObjetListeArborescente(
-				lIdListe,
-				0,
-				this,
-				null,
-			);
-		const lRacine = this._objetListeArborescente.construireRacine();
-		this._objetListeArborescente.setParametres(false);
-		let lPremierElement = true;
-		let lTitre = "";
-		I = 0;
-		let lElement;
-		let lNoeudListeElements;
-		let lNoeudElement,
-			lDate,
-			lCours,
-			lClasse,
-			lAppelNonFait,
-			H,
-			lDateFormatee,
-			lCoursNonAssure,
-			lPersonnelsAbsents,
-			lNbr,
-			lNbr2,
-			lElt,
-			lNoeudElt,
-			lDatas,
-			lValeur;
-		if (
-			!!this.donnees.EDT &&
-			!!this.donnees.EDT.existeWidget &&
-			this.donnees.EDT.existeWidget.call(this)
-		) {
-			lTitre =
-				ObjetTraduction_1.GTraductions.getValeur("EDT.Cours") +
-				" " +
-				ObjetTraduction_1.GTraductions.getValeur("Du") +
-				" ";
-			UtilitaireListeCoursAccessible_1.UtilitaireListeCoursAccessible.remplir({
-				listeArborescente: this._objetListeArborescente,
-				nodeParent: lRacine,
-				listeCours: this.donnees.EDT.listeCours,
-				avecCoursAnnule: this.etatUtilisateurSco.getAvecCoursAnnule(),
-				avecCoursAnnulesSuperposes: !GEtatUtilisateur.estEspacePourEleve(),
-				jourDeploye: true,
-				getTitreJour: function (aJour) {
-					return (
-						lTitre + ObjetDate_1.GDate.formatDate(aJour, "%JJJJ %JJ %MMMM")
-					);
-				},
-			});
-		}
-		if (
-			!!this.donnees.devoirSurveille &&
-			!!this.donnees.devoirSurveille.existeWidget &&
-			this.donnees.devoirSurveille.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur("accueil.DS.titre");
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListeDS",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			for (i = 0; i < this.donnees.devoirSurveille.listeDS.count(); i++) {
-				lDS = this.donnees.devoirSurveille.listeDS.get(i);
-				if (lDS.getGenre() === Enumere_LienDS_1.EGenreLienDS.tGL_Devoir) {
-					lTitre =
-						ObjetDate_1.GDate.formatDate(
-							lDS.dateDebut,
-							"[" +
-								ObjetTraduction_1.GTraductions.getValeur("Le") +
-								" " +
-								"%JJJJ %J %MMM" +
-								"]" +
-								" " +
-								ObjetTraduction_1.GTraductions.getValeur("De") +
-								" " +
-								"%hh%sh%mm",
-						) +
-						ObjetDate_1.GDate.formatDate(
-							lDS.dateFin,
-							" " +
-								ObjetTraduction_1.GTraductions.getValeur("A") +
-								" " +
-								"%hh%sh%mm",
-						);
-					lNoeudElement = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-						lNoeudListeElements,
-						"",
-						lTitre,
-						"Gras",
-					);
-					this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-						lNoeudElement,
-						"",
-						lDS.matiere.getLibelle(),
-					);
-				}
-			}
-		}
-		if (
-			!!this.donnees.devoirSurveilleEvaluation &&
-			!!this.donnees.devoirSurveilleEvaluation.existeWidget &&
-			this.donnees.devoirSurveilleEvaluation.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur(
-				"accueil.DSEvaluation.titre",
-			);
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListeEva",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			for (i = 0; i < this.donnees.devoirSurveille.listeDS.count(); i++) {
-				lDS = this.donnees.devoirSurveille.listeDS.get(i);
-				if (lDS.getGenre() === Enumere_LienDS_1.EGenreLienDS.tGL_Evaluation) {
-					lTitre =
-						ObjetDate_1.GDate.formatDate(
-							lDS.dateDebut,
-							"[" +
-								ObjetTraduction_1.GTraductions.getValeur("Le") +
-								" " +
-								"%JJJJ %J %MMM" +
-								"]" +
-								" " +
-								ObjetTraduction_1.GTraductions.getValeur("De") +
-								" " +
-								"%hh%sh%mm",
-						) +
-						ObjetDate_1.GDate.formatDate(
-							lDS.dateFin,
-							" " +
-								ObjetTraduction_1.GTraductions.getValeur("A") +
-								" " +
-								"%hh%sh%mm",
-						);
-					lNoeudElement = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-						lNoeudListeElements,
-						"",
-						lTitre,
-						"Gras",
-					);
-					this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-						lNoeudElement,
-						"",
-						lDS.matiere.getLibelle(),
-					);
-				}
-			}
-		}
-		if (
-			!!this.donnees.travailAFaire &&
-			!!this.donnees.travailAFaire.existeWidget &&
-			this.donnees.travailAFaire.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur(
-				"accueil.travailAFaire.titre",
-			);
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListeTAF",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.travailAFaire.listeTAF.count() > 0) {
-				let lTaf;
-				const T = [];
-				for (let I = 0; I < this.donnees.travailAFaire.listeTAF.count(); I++) {
-					lTaf = this.donnees.travailAFaire.listeTAF.get(I);
-					lTaf.indice = I;
-					if (!T[lTaf.pourLe]) {
-						T[lTaf.pourLe] = [];
-					}
-					T[lTaf.pourLe].push(lTaf);
-				}
-				for (lDate in T) {
-					lMatiere = null;
-					const lDateLibelle = new Date(lDate);
-					lTitre =
-						(ObjetDate_1.GDate.estDateParticulier(lDateLibelle)
-							? ObjetTraduction_1.GTraductions.getValeur(
-									"accueil.pour",
-								).ucfirst()
-							: ObjetTraduction_1.GTraductions.getValeur(
-									"accueil.pourle",
-								).ucfirst()) +
-						" " +
-						ObjetDate_1.GDate.formatDate(
-							lDateLibelle,
-							"[" + "%JJJJ %J %MMM" + "]",
-						);
-					lNoeudElement = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-						lNoeudListeElements,
-						"",
-						lTitre,
-						"Gras",
-					);
-					for (J in T[lDate]) {
-						lTaf = T[lDate][J];
-						if (
-							!lMatiere ||
-							lMatiere.getNumero() !== lTaf.matiere.getNumero()
-						) {
-							lTitre = lTaf.matiere.getLibelle();
-							lNoeudMatiere =
-								this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-									lNoeudElement,
-									"",
-									lTitre,
-								);
-						}
-						if (lNoeudMatiere) {
-							this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-								lNoeudMatiere,
-								"",
-								lTaf.descriptif,
-							);
-							if (
-								lTaf.listeDocumentJoint &&
-								lTaf.listeDocumentJoint.count() > 0
-							) {
-								for (I = 0; I < lTaf.listeDocumentJoint.count(); I++) {
-									const lPieceJointe = lTaf.listeDocumentJoint.get(I);
-									lTitre = ObjetChaine_1.GChaine.composerUrlLienExterne({
-										documentJoint: lPieceJointe,
-										libelleEcran: lPieceJointe.getLibelle(),
-									});
-									this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-										lNoeudMatiere,
-										"",
-										lTitre,
-									);
-								}
-							}
-						}
-						lMatiere = lTaf.matiere;
-					}
-				}
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur("accueil.aucunTAF"),
-				);
-			}
-		}
-		if (
-			!!this.donnees.ressourcePedagogique &&
-			!!this.donnees.ressourcePedagogique.existeWidget &&
-			this.donnees.ressourcePedagogique.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur(
-				"accueil.ressourcePedagogique.titre",
-			);
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListeResPeda",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.ressourcePedagogique.listeRessources.count() > 0) {
-				for (
-					i = 0;
-					i < this.donnees.ressourcePedagogique.listeRessources.count();
-					i++
-				) {
-					lRessource = this.donnees.ressourcePedagogique.listeRessources.get(i);
-					lMatiere =
-						this.donnees.ressourcePedagogique.listeMatieres.getElementParNumero(
-							lRessource.matiere.getNumero(),
-						);
-					if (lMatiere && (!lMatiere.date || lRessource.date > lMatiere.date)) {
-						lMatiere.date = lRessource.date;
-					}
-				}
-				this.donnees.ressourcePedagogique.listeMatieres.setTri([
-					ObjetTri_1.ObjetTri.init(
-						"date",
-						Enumere_TriElement_1.EGenreTriElement.Decroissant,
-					),
-				]);
-				this.donnees.ressourcePedagogique.listeMatieres.trier();
-				this.donnees.ressourcePedagogique.listeRessources.setTri([
-					ObjetTri_1.ObjetTri.init(
-						"date",
-						Enumere_TriElement_1.EGenreTriElement.Decroissant,
-					),
-				]);
-				this.donnees.ressourcePedagogique.listeRessources.trier();
-				for (
-					i = 0;
-					i < this.donnees.ressourcePedagogique.listeRessources.count();
-					i++
-				) {
-					lRessource = this.donnees.ressourcePedagogique.listeRessources.get(i);
-					lMatiere =
-						this.donnees.ressourcePedagogique.listeMatieres.getElementParNumero(
-							lRessource.matiere.getNumero(),
-						);
-					lGenre = lRessource.getGenre();
-					if (
-						lGenre ===
-							Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique.QCM &&
-						UtilitaireQCM_1.UtilitaireQCM.estCorrige(lRessource.ressource)
-					) {
-						lGenre =
-							Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique.corrige;
-					}
-					lTitre =
-						(lMatiere ? lMatiere.getLibelle() + " - " : "") +
-						Enumere_RessourcePedagogique_1.EGenreRessourcePedagogiqueUtil.getLibelleDeGenreEtNombre(
-							lGenre,
-						);
-					lNoeudElement = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-						lNoeudListeElements,
-						"",
-						lTitre,
-						"Gras",
-					);
-					switch (lRessource.getGenre()) {
-						case Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique
-							.kiosque:
-							lTitre = lRessource.ressource.getLibelle();
-							break;
-						case Enumere_RessourcePedagogique_1.EGenreRessourcePedagogique.QCM:
-							lTitre =
-								lRessource.ressource.QCM.getLibelle() +
-								"&nbsp;" +
-								ObjetChaine_1.GChaine.format(
-									ObjetTraduction_1.GTraductions.getValeur(
-										"accueil.ressourcePedagogique.deposeLe",
-									),
-									[ObjetDate_1.GDate.formatDate(lRessource.date, "%JJ/%MM")],
-								);
-							break;
-						default:
-							lTitre =
-								Enumere_RessourcePedagogique_1.EGenreRessourcePedagogiqueUtil.composerURL(
-									lRessource.getGenre(),
-									lRessource.ressource,
-								) +
-								"&nbsp;" +
-								ObjetChaine_1.GChaine.format(
-									ObjetTraduction_1.GTraductions.getValeur(
-										"accueil.ressourcePedagogique.deposeLe",
-									),
-									[ObjetDate_1.GDate.formatDate(lRessource.date, "%JJ/%MM")],
-								);
-							break;
-					}
-					this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-						lNoeudElement,
-						"",
-						lTitre,
-					);
-				}
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur(
-						"accueil.ressourcePedagogique.aucuneRessourcePedagogique",
-					),
-				);
-			}
-		}
-		if (
-			!!this.donnees.vieScolaire &&
-			!!this.donnees.vieScolaire.existeWidget &&
-			this.donnees.vieScolaire.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur("accueil.vieScolaire");
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListeVieScolaire",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.vieScolaire.listeAbsences.count() > 0) {
-				for (I = 0; I < this.donnees.vieScolaire.listeAbsences.count(); I++) {
-					lElement = this.donnees.vieScolaire.listeAbsences.get(I);
-					lTitre =
-						this.utilitaireAbsence
-							.getChaineTraductionGenreAbsence({
-								genre: lElement.getGenre(),
-								singulier: true,
-								estUneCreationParent:
-									lElement.estUneCreationParent || !!lElement.auteur,
-								justifie: lElement.justifie,
-							})
-							.ucfirst() +
-						" " +
-						this.utilitaireAbsence.getDate(lElement, true);
-					lNoeudElement = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-						lNoeudListeElements,
-						"",
-						lTitre,
-						"Gras",
-					);
-					lTitre = this._getLigne2AbsenceAccessible(lElement);
-					if (lTitre) {
-						this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-							lNoeudElement,
-							"",
-							lTitre,
-						);
-					}
-					lTitre = this.utilitaireAbsence.getInfoAbsenceAccessible(lElement);
-					if (lTitre) {
-						this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-							lNoeudElement,
-							"",
-							lTitre,
-						);
-					}
-				}
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur("accueil.aucuneAbsence"),
-				);
-			}
-		}
-		let lEstBaremeParDefaut;
-		if (
-			!!this.donnees.notes &&
-			!!this.donnees.notes.existeWidget &&
-			this.donnees.notes.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur(
-				"accueil.dernieresNotes",
-			);
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListeDevoirs",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.notes.listeDevoirs.count() > 0) {
-				for (I = 0; I < this.donnees.notes.listeDevoirs.count(); I++) {
-					lElement = this.donnees.notes.listeDevoirs.get(I);
-					lEstBaremeParDefaut =
-						lElement.bareme.getValeur() ===
-						lElement.baremeParDefaut.getValeur();
-					lTitre =
-						lElement.service.getLibelle() +
-						" : " +
-						lElement.note.getNote() +
-						(lEstBaremeParDefaut || !lElement.note.estUneValeur()
-							? ""
-							: lElement.bareme.getBaremeEntier());
-					lNoeudElement = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-						lNoeudListeElements,
-						"",
-						lTitre,
-						"Gras",
-					);
-					this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-						lNoeudElement,
-						"",
-						ObjetDate_1.GDate.formatDate(
-							lElement.date,
-							"[" +
-								ObjetTraduction_1.GTraductions.getValeur("Le") +
-								" %J %MMMM" +
-								"]",
-						),
-					);
-					if (lElement.moyenne) {
-						this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-							lNoeudElement,
-							"",
-							ObjetTraduction_1.GTraductions.getValeur(
-								"accueil." +
-									(lElement.estEnGroupe ? "moyenneGroupe" : "moyenneClasse"),
-							) +
-								"&nbsp;:&nbsp;" +
-								lElement.moyenne.getNote() +
-								(lEstBaremeParDefaut() || !lElement.moyenne.estUneValeur()
-									? ""
-									: lElement.bareme.getBaremeEntier()),
-						);
-					}
-				}
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur("accueil.aucuneNote"),
-				);
-			}
-		}
-		if (
-			!!this.donnees.agenda &&
-			!!this.donnees.agenda.existeWidget &&
-			this.donnees.agenda.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur("accueil.agenda.titre");
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListeAgenda",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.agenda.listeEvenements.count() > 0) {
-				for (I = 0; I < this.donnees.agenda.listeEvenements.count(); I++) {
-					lElement = this.donnees.agenda.listeEvenements.get(I);
-					lTitre = lElement.getLibelle();
-					lNoeudElement = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-						lNoeudListeElements,
-						"",
-						lTitre,
-						"Gras",
-					);
-					if (lElement.listeEleves && lElement.listeEleves.length > 0) {
-						this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-							lNoeudElement,
-							"",
-							lElement.listeEleves.join(", "),
-						);
-					}
-					lTitre = this.donnees.agenda.listeEvenements
-						._getLibelleEvenement({ evenement: lElement })
-						.join("<br>");
-					if (lTitre) {
-						this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-							lNoeudElement,
-							"",
-							lTitre,
-						);
-					}
-					lTitre =
-						lElement.listeDocJoints && lElement.listeDocJoints.count() > 0
-							? _composeDocumentsAccessible.call(this, lElement.listeDocJoints)
-							: "";
-					if (lTitre) {
-						this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-							lNoeudElement,
-							"",
-							lTitre,
-						);
-					}
-				}
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur("accueil.aucuneAgenda"),
-				);
-			}
-		}
-		if (
-			!!this.donnees.actualites &&
-			!!this.donnees.actualites.existeWidget &&
-			this.donnees.actualites.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur("accueil.actualites");
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListeActualites",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (
-				this.donnees.actualites.listeModesAff[
-					TypeEtatPublication_1.TypeModeAff.MA_Reception
-				].listeActualites.count() > 0
-			) {
-				for (
-					I = 0;
-					I <
-					this.donnees.actualites.listeModesAff[
-						TypeEtatPublication_1.TypeModeAff.MA_Reception
-					].listeActualites.count();
-					I++
-				) {
-					lElement =
-						this.donnees.actualites.listeModesAff[
-							TypeEtatPublication_1.TypeModeAff.MA_Reception
-						].listeActualites.get(I);
-					lTitre =
-						lElement.categorie && lElement.categorie.existeNumero()
-							? lElement.categorie.getLibelle().toUpperCase() + " "
-							: "";
-					lTitre += lElement.getLibelle();
-					lNoeudElement = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-						lNoeudListeElements,
-						"",
-						lTitre,
-						"Gras",
-					);
-					lTitre = _composeDetailActualiteAccessible.call(this, lElement);
-					if (lTitre) {
-						this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-							lNoeudElement,
-							"",
-							lTitre,
-						);
-					}
-				}
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur("accueil.aucuneActualite"),
-				);
-			}
-		}
-		if (
-			!!this.donnees.elections &&
-			!!this.donnees.elections.existeWidget &&
-			this.donnees.elections.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur(
-				"accueil.elections.titre",
-			);
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListeElections",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.elections.listeElections.count() > 0) {
-				for (I = 0; I < this.donnees.elections.listeElections.count(); I++) {
-					lElement = this.donnees.elections.listeElections.get(I);
-					lTitre = lElement.getLibelle().toUpperCase();
-					lNoeudElement = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-						lNoeudListeElements,
-						"",
-						lTitre,
-						"Gras",
-					);
-				}
-			}
-		}
-		if (
-			!!this.donnees.discussions &&
-			!!this.donnees.discussions.existeWidget &&
-			this.donnees.discussions.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur(
-				"accueil.discussions.titre",
-			);
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListeDiscussions",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.discussions.listeMessagerie.count() > 0) {
-				for (I = 0; I < this.donnees.discussions.listeMessagerie.count(); I++) {
-					lElement = this.donnees.discussions.listeMessagerie.get(I);
-					lTitre =
-						UtilitaireMessagerie_1.UtilitaireMessagerie.getLibelleDiscussionAccessible(
-							lElement,
-						);
-					lNoeudElement = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-						lNoeudListeElements,
-						"",
-						lTitre,
-						"Gras",
-					);
-					lTitre =
-						UtilitaireMessagerie_1.UtilitaireMessagerie.getDetailDiscussionAccessible(
-							lElement,
-						);
-					if (lTitre) {
-						this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-							lNoeudElement,
-							"",
-							lTitre,
-						);
-					}
-				}
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur("accueil.aucuneActualite"),
-				);
-			}
-		}
-		if (
-			!!this.donnees.casier &&
-			!!this.donnees.casier.existeWidget &&
-			this.donnees.casier.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur("accueil.casier.titre");
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListeDocuments",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.casier.listeDocuments.count() > 0) {
-				for (I = 0; I < this.donnees.casier.listeDocuments.count(); I++) {
-					lElement = this.donnees.casier.listeDocuments.get(I);
-					lTitre =
-						'<span onclick="' +
-						this.Nom +
-						"._surDocumentCasier(" +
-						I +
-						')">' +
-						lElement.getLibelle() +
-						"</span>";
-					lNoeudElement = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-						lNoeudListeElements,
-						"",
-						lTitre,
-						"Gras",
-					);
-					lTitre =
-						ObjetTraduction_1.GTraductions.getValeur(
-							"accueil.casier.deposePar",
-							[lElement.infoDepositaire],
-						) +
-						" - " +
-						ObjetDate_1.GDate.formatDate(
-							lElement.date,
-							"[" + " %JJ %MMM" + "]",
-						);
-					this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-						lNoeudElement,
-						"",
-						lTitre,
-					);
-				}
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur("accueil.casier.message"),
-				);
-			}
-		}
-		if (
-			!!this.donnees.CDTNonSaisi &&
-			!!this.donnees.CDTNonSaisi.existeWidget &&
-			this.donnees.CDTNonSaisi.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur(
-				"accueil.CDTNonSaisi.titre",
-			);
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListeDocuments",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.CDTNonSaisi.listeCours.count() > 0) {
-				this.donnees.CDTNonSaisi.listeCours.setTri([
-					ObjetTri_1.ObjetTri.init("dateDebut"),
-				]);
-				this.donnees.CDTNonSaisi.listeCours.trier(
-					Enumere_TriElement_1.EGenreTriElement.Decroissant,
-				);
-				lDate = {};
-				for (i = 0; i < this.donnees.CDTNonSaisi.listeCours.count(); i++) {
-					lCours = this.donnees.CDTNonSaisi.listeCours.get(i);
-					lDateFormatee = ObjetDate_1.GDate.formatDate(
-						lCours.dateDebut,
-						"%JJJJ %JJ %MMM",
-					).ucfirst();
-					if (!lDate[lDateFormatee]) {
-						lDate[lDateFormatee] = [];
-					}
-					lDate[lDateFormatee].push(lCours);
-				}
-				for (const lNomDate in lDate) {
-					lNoeudElement = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-						lNoeudListeElements,
-						"",
-						lNomDate,
-						"Gras",
-					);
-					for (I = 0; I < lDate[lNomDate].length; I++) {
-						lCours = lDate[lNomDate][I];
-						lTitre =
-							lCours.strMatiere +
-							" - " +
-							lCours.strClasse +
-							" - " +
-							lCours.strHeure;
-						this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-							lNoeudElement,
-							"",
-							lTitre,
-						);
-					}
-				}
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur(
-						"accueil.CDTNonSaisi.message",
-					),
-				);
-			}
-		}
-		if (
-			!!this.donnees.appelNonFait &&
-			!!this.donnees.appelNonFait.existeWidget &&
-			this.donnees.appelNonFait.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur(
-				"accueil.appelNonFait.titre",
-			);
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_Listeappel",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.appelNonFait.listeAppelNonFait.count() > 0) {
-				this.donnees.appelNonFait.listeAppelNonFait.setTri([
-					ObjetTri_1.ObjetTri.init("dateDebut"),
-				]);
-				this.donnees.appelNonFait.listeAppelNonFait.trier(
-					Enumere_TriElement_1.EGenreTriElement.Decroissant,
-				);
-				H = {};
-				for (
-					I = 0;
-					I < this.donnees.appelNonFait.listeAppelNonFait.count();
-					I++
-				) {
-					lAppelNonFait = this.donnees.appelNonFait.listeAppelNonFait.get(I);
-					lDate = ObjetDate_1.GDate.formatDate(
-						lAppelNonFait.dateDebut,
-						"%JJJJ %JJ %MMM",
-					).ucfirst();
-					if (!H[lDate]) {
-						H[lDate] = [];
-					}
-					H[lDate].push(lAppelNonFait);
-				}
-				for (lDate in H) {
-					lNoeudElement = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-						lNoeudListeElements,
-						"",
-						lDate,
-						"Gras",
-					);
-					for (I = 0; I < H[lDate].length; I++) {
-						lAppelNonFait = H[lDate][I];
-						lTitre =
-							lAppelNonFait.strMatiere +
-							" - " +
-							lAppelNonFait.strClasse +
-							" - " +
-							lAppelNonFait.strHeure;
-						this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-							lNoeudElement,
-							"",
-							lTitre,
-						);
-					}
-				}
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur(
-						"accueil.appelNonFait.message",
-					),
-				);
-			}
-		}
-		if (
-			!!this.donnees.coursNonAssures &&
-			!!this.donnees.coursNonAssures.existeWidget &&
-			this.donnees.coursNonAssures.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur(
-				"accueil.coursNonAssures.titre",
-			);
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListeCours",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.coursNonAssures.listeCoursNonAssures.count() > 0) {
-				this.donnees.coursNonAssures.listeCoursNonAssures.setTri([
-					ObjetTri_1.ObjetTri.init("strProf"),
-					ObjetTri_1.ObjetTri.init("dateDuCours"),
-					ObjetTri_1.ObjetTri.init("placeDebut"),
-				]);
-				this.donnees.coursNonAssures.listeCoursNonAssures.trier();
-				H = {};
-				let lStrProfAccueil;
-				for (
-					let i = 0;
-					i < this.donnees.coursNonAssures.listeCoursNonAssures.count();
-					i++
-				) {
-					lCoursNonAssure =
-						this.donnees.coursNonAssures.listeCoursNonAssures.get(i);
-					if (!H[lCoursNonAssure.strProfAccueil]) {
-						H[lCoursNonAssure.strProfAccueil] = {};
-					}
-					lDateFormatee = ObjetDate_1.GDate.formatDate(
-						lCoursNonAssure.dateDuCours,
-						"%JJJJ %JJ %MMM",
-					).ucfirst();
-					if (!H[lCoursNonAssure.strProfAccueil][lDateFormatee]) {
-						H[lCoursNonAssure.strProfAccueil][lDateFormatee] = [];
-					}
-					H[lCoursNonAssure.strProfAccueil][lDateFormatee].push(
-						lCoursNonAssure,
-					);
-				}
-				for (lStrProfAccueil in H) {
-					lNoeudElement = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-						lNoeudListeElements,
-						"",
-						lStrProfAccueil,
-						"Gras",
-					);
-					for (lDateFormatee in H[lStrProfAccueil]) {
-						lElement = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-							lNoeudElement,
-							"",
-							lDateFormatee,
-							"Gras",
-						);
-						for (let j = 0; j < H[lStrProfAccueil][lDateFormatee].length; j++) {
-							lCoursNonAssure = H[lStrProfAccueil][lDateFormatee][j];
-							lTitre =
-								lCoursNonAssure.strDebut +
-								" - " +
-								lCoursNonAssure.strClasse +
-								(lCoursNonAssure.strSalle
-									? " - " + lCoursNonAssure.strSalle
-									: "") +
-								(lCoursNonAssure.strRemplacement
-									? " (" + lCoursNonAssure.strRemplacement + ")"
-									: "");
-							this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-								lElement,
-								"",
-								lTitre,
-							);
-						}
-					}
-				}
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur(
-						"accueil.coursNonAssures.message",
-					),
-				);
-			}
-		}
-		if (
-			!!this.donnees.personnelsAbsents &&
-			!!this.donnees.personnelsAbsents.existeWidget &&
-			this.donnees.personnelsAbsents.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur(
-				"accueil.personnelsAbsents.titre",
-			);
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListePersonnelsAbsents",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.personnelsAbsents.listePersonnelsAbsents.count() > 0) {
-				H = {};
-				for (
-					i = 0;
-					i < this.donnees.personnelsAbsents.listePersonnelsAbsents.count();
-					i++
-				) {
-					lPersonnelsAbsents =
-						this.donnees.personnelsAbsents.listePersonnelsAbsents.get(i);
-					if (!H[lPersonnelsAbsents.nom]) {
-						H[lPersonnelsAbsents.nom] = {};
-					}
-					for (j = 0; j < lPersonnelsAbsents.absences.count(); j++) {
-						const lDetailAbsence =
-							lPersonnelsAbsents.absences.get(j).detailAbsence;
-						if (!H[lPersonnelsAbsents.nom][lDetailAbsence]) {
-							H[lPersonnelsAbsents.nom][lDetailAbsence] = [];
-						}
-						H[lPersonnelsAbsents.nom][lDetailAbsence].push(lDetailAbsence);
-					}
-				}
-				for (const lStrPersonnel in H) {
-					lNoeudElement = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-						lNoeudListeElements,
-						"",
-						lStrPersonnel,
-						"Gras",
-					);
-					for (const lDetailAbsence in H[lStrPersonnel]) {
-						this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-							lNoeudElement,
-							"",
-							lDetailAbsence,
-						);
-					}
-				}
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur(
-						"accueil.personnelsAbsents.message",
-					),
-				);
-			}
-		}
-		if (
-			!!this.donnees.carnetDeCorrespondance &&
-			!!this.donnees.carnetDeCorrespondance.existeWidget &&
-			this.donnees.carnetDeCorrespondance.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur(
-				"accueil.carnetDeCorrespondance.titre",
-			);
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListeObservations",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.carnetDeCorrespondance.listeObservations.count() > 0) {
-				for (
-					i = 0;
-					i < this.donnees.carnetDeCorrespondance.listeObservations.count();
-					i++
-				) {
-					const lObservation =
-						this.donnees.carnetDeCorrespondance.listeObservations.get(i);
-					const aRessource = null;
-					if (
-						_estEleveDeRessourceAccessible.call(this, lObservation, aRessource)
-					) {
-						lTitre =
-							'<span onclick="' +
-							this.Nom +
-							"._surObservation(" +
-							i +
-							')">' +
-							lObservation.eleve.getLibelle() +
-							" - " +
-							lObservation.classe.getLibelle() +
-							"</span>";
-						lNoeudElement = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-							lNoeudListeElements,
-							"",
-							lTitre,
-							"Gras",
-						);
-						this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-							lNoeudElement,
-							"",
-							lObservation.strDate,
-						);
-					}
-				}
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur(
-						"accueil.carnetDeCorrespondance.message",
-					),
-				);
-			}
-		}
-		if (
-			!!this.donnees.TAFARendre &&
-			!!this.donnees.TAFARendre.existeWidget &&
-			this.donnees.TAFARendre.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur(
-				"accueil.TAFARendre.titre",
-			);
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListeTaf",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.TAFARendre.listeTAF.count() > 0) {
-				lClasse = "";
-				for (i = 0; i < this.donnees.TAFARendre.listeTAF.count(); i++) {
-					const lTAF = this.donnees.TAFARendre.listeTAF.get(i);
-					if (lClasse !== lTAF.classe) {
-						lClasse =
-							lTAF.classe + " : " + lTAF.nbrRendus + "/" + lTAF.nbrEleves;
-						lNoeudElement = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-							lNoeudListeElements,
-							"",
-							lClasse,
-							"Gras",
-						);
-						this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-							lNoeudElement,
-							"",
-							lTAF.descriptif,
-						);
-					}
-				}
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur("Aucun"),
-				);
-			}
-		}
-		if (
-			!!this.donnees.penseBete &&
-			!!this.donnees.penseBete.existeWidget &&
-			this.donnees.penseBete.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur(
-				"accueil.penseBete.titre",
-			);
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListePenseBete",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.penseBete.libelle) {
-				lNoeudElement = this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					this.donnees.penseBete.libelle,
-				);
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur("Aucune"),
-				);
-			}
-		}
-		if (
-			!!this.donnees.lienUtile &&
-			!!this.donnees.lienUtile.existeWidget &&
-			this.donnees.lienUtile.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur(
-				"accueil.lienUtile.titre",
-			);
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListelienUtile",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.lienUtile.listeLiens.count() > 0) {
-				for (i = 0; i < this.donnees.lienUtile.listeLiens.count(); i++) {
-					const lLien = this.donnees.lienUtile.listeLiens.get(i);
-					lNoeudElement = this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-						lNoeudListeElements,
-						"",
-						lLien.url,
-					);
-				}
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur("accueil.lienUtile.message"),
-				);
-			}
-		}
-		if (
-			!!this.donnees.ressources &&
-			!!this.donnees.ressources.existeWidget &&
-			this.donnees.ressources.existeWidget.call(this)
-		) {
-			lTitre = GEtatUtilisateur.existeGenreOnglet(
-				Enumere_Onglet_1.EGenreOnglet.ProgrammesBO,
-			)
-				? ObjetTraduction_1.GTraductions.getValeur(
-						"accueil.ressources.titreAvecBO",
-					)
-				: ObjetTraduction_1.GTraductions.getValeur(
-						"accueil.ressources.titreSansBO",
-					);
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListeRessources",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.ressources.listeMatieres.count() > 0) {
-				this.donnees.ressources.listeMatieres.setTri([
-					ObjetTri_1.ObjetTri.init("Libelle"),
-				]);
-				this.donnees.ressources.listeMatieres.trier();
-				H = {};
-				let lLibelleMatiere;
-				for (j = 0; j < this.donnees.ressources.listeMatieres.count(); j++) {
-					lMatiere = this.donnees.ressources.listeMatieres.get(j);
-					lLibelleMatiere = lMatiere.getLibelle();
-					if (!H[lLibelleMatiere]) {
-						H[lLibelleMatiere] = {};
-					}
-					if (
-						lMatiere.nbrRessources[
-							Enumere_PossessionRessource_1.EGenrePossessionRessource.mesQCM
-						] > 0
-					) {
-						H[lLibelleMatiere][
-							ObjetTraduction_1.GTraductions.getValeur(
-								"accueil.ressources.hint.MesQCM",
-							)
-						] =
-							ObjetTraduction_1.GTraductions.getValeur(
-								"accueil.ressources.hint.MesQCM",
-							) +
-							" : " +
-							lMatiere.nbrRessources[
-								Enumere_PossessionRessource_1.EGenrePossessionRessource.mesQCM
-							];
-					} else {
-						H[lLibelleMatiere][
-							ObjetTraduction_1.GTraductions.getValeur(
-								"accueil.ressources.hint.MesQCM",
-							)
-						] =
-							ObjetTraduction_1.GTraductions.getValeur(
-								"accueil.ressources.hint.MesQCM",
-							) +
-							" : " +
-							ObjetTraduction_1.GTraductions.getValeur("Aucun");
-					}
-					if (
-						lMatiere.nbrRessources[
-							Enumere_PossessionRessource_1.EGenrePossessionRessource.etabQCM
-						] +
-							lMatiere.nbrRessources[
-								Enumere_PossessionRessource_1.EGenrePossessionRessource
-									.nathanQCM
-							] >
-						0
-					) {
-						H[lLibelleMatiere][
-							ObjetTraduction_1.GTraductions.getValeur(
-								"accueil.ressources.hint.QCMPartages",
-							)
-						] =
-							ObjetTraduction_1.GTraductions.getValeur(
-								"accueil.ressources.hint.QCMPartages",
-							) +
-							" : " +
-							(lMatiere.nbrRessources[
-								Enumere_PossessionRessource_1.EGenrePossessionRessource.etabQCM
-							] +
-								lMatiere.nbrRessources[
-									Enumere_PossessionRessource_1.EGenrePossessionRessource
-										.nathanQCM
-								]);
-					} else {
-						H[lLibelleMatiere][
-							ObjetTraduction_1.GTraductions.getValeur(
-								"accueil.ressources.hint.QCMPartages",
-							)
-						] =
-							ObjetTraduction_1.GTraductions.getValeur(
-								"accueil.ressources.hint.QCMPartages",
-							) +
-							" : " +
-							ObjetTraduction_1.GTraductions.getValeur("Aucun");
-					}
-					if (
-						lMatiere.nbrRessources[
-							Enumere_PossessionRessource_1.EGenrePossessionRessource.mesProg
-						] > 0
-					) {
-						H[lLibelleMatiere][
-							ObjetTraduction_1.GTraductions.getValeur(
-								"accueil.ressources.hint.MesProgressions",
-							)
-						] =
-							ObjetTraduction_1.GTraductions.getValeur(
-								"accueil.ressources.hint.MesProgressions",
-							) +
-							" : " +
-							lMatiere.nbrRessources[
-								Enumere_PossessionRessource_1.EGenrePossessionRessource.mesProg
-							];
-					} else {
-						H[lLibelleMatiere][
-							ObjetTraduction_1.GTraductions.getValeur(
-								"accueil.ressources.hint.MesProgressions",
-							)
-						] =
-							ObjetTraduction_1.GTraductions.getValeur(
-								"accueil.ressources.hint.MesProgressions",
-							) +
-							" : " +
-							ObjetTraduction_1.GTraductions.getValeur("Aucun");
-					}
-					if (
-						lMatiere.nbrRessources[
-							Enumere_PossessionRessource_1.EGenrePossessionRessource.etabProg
-						] > 0
-					) {
-						H[lLibelleMatiere][
-							ObjetTraduction_1.GTraductions.getValeur(
-								"accueil.ressources.hint.ProgressionsPartagees",
-							)
-						] =
-							ObjetTraduction_1.GTraductions.getValeur(
-								"accueil.ressources.hint.ProgressionsPartagees",
-							) +
-							" : " +
-							lMatiere.nbrRessources[
-								Enumere_PossessionRessource_1.EGenrePossessionRessource.etabProg
-							];
-					} else {
-						H[lLibelleMatiere][
-							ObjetTraduction_1.GTraductions.getValeur(
-								"accueil.ressources.hint.ProgressionsPartagees",
-							)
-						] =
-							ObjetTraduction_1.GTraductions.getValeur(
-								"accueil.ressources.hint.ProgressionsPartagees",
-							) +
-							" : " +
-							ObjetTraduction_1.GTraductions.getValeur("Aucun");
-					}
-					if (
-						GEtatUtilisateur.existeGenreOnglet(
-							Enumere_Onglet_1.EGenreOnglet.ProgrammesBO,
-						)
-					) {
-						if (
-							lMatiere.nbrRessources[
-								Enumere_PossessionRessource_1.EGenrePossessionRessource.BOProg
-							] > 0
-						) {
-							H[lLibelleMatiere][
-								ObjetTraduction_1.GTraductions.getValeur(
-									"accueil.ressources.hint.ProgrammesBO",
-								)
-							] =
-								ObjetTraduction_1.GTraductions.getValeur(
-									"accueil.ressources.hint.ProgrammesBO",
-								) +
-								" : " +
-								lMatiere.nbrRessources[
-									Enumere_PossessionRessource_1.EGenrePossessionRessource.BOProg
-								];
-						} else {
-							H[lLibelleMatiere][
-								ObjetTraduction_1.GTraductions.getValeur(
-									"accueil.ressources.hint.ProgrammesBO",
-								)
-							] =
-								ObjetTraduction_1.GTraductions.getValeur(
-									"accueil.ressources.hint.ProgrammesBO",
-								) +
-								" : " +
-								ObjetTraduction_1.GTraductions.getValeur("Aucun");
-						}
-					}
-				}
-				for (lLibelleMatiere in H) {
-					lTitre = lLibelleMatiere;
-					lNoeudElement = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-						lNoeudListeElements,
-						"",
-						lTitre,
-						"Gras",
-					);
-					for (const prog in H[lLibelleMatiere]) {
-						this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-							lNoeudElement,
-							"",
-							H[lLibelleMatiere][prog],
-						);
-					}
-				}
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur("Aucun"),
-				);
-			}
-		}
-		if (
-			!!this.donnees.QCM &&
-			!!this.donnees.QCM.existeWidget &&
-			this.donnees.QCM.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur(
-				"accueil.executionsQCM",
-			);
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListeQCM",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.QCM.listeExecutionsQCM.count() > 0) {
-				for (I = 0; I < this.donnees.QCM.listeExecutionsQCM.count(); I++) {
-					const lExecutionsQCM = this.donnees.QCM.listeExecutionsQCM.get(I);
-					lDate = ObjetDate_1.GDate.strDates(
-						lExecutionsQCM.dateDebutPublication,
-						lExecutionsQCM.dateFinPublication,
-					).ucfirst();
-					lTitre = lDate + " : " + lExecutionsQCM.service.getLibelle();
-					this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-						lNoeudListeElements,
-						"",
-						lTitre,
-						"Gras",
-					);
-				}
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur(
-						"accueil.AucuneExecutionsQCM",
-					),
-				);
-			}
-		}
-		if (
-			!!this.donnees.conseilDeClasse &&
-			!!this.donnees.conseilDeClasse.existeWidget &&
-			this.donnees.conseilDeClasse.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur("accueil.CDC.titre");
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListeCDC",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.conseilDeClasse.listeClasses.count() > 0) {
-				this.donnees.conseilDeClasse.listeClasses.setTri([
-					ObjetTri_1.ObjetTri.init("Libelle"),
-				]);
-				this.donnees.conseilDeClasse.listeClasses.trier();
-				H = {};
-				let aPeriode;
-				const lListePeriodes = new ObjetListeElements_1.ObjetListeElements();
-				for (
-					i = 0;
-					i < this.donnees.conseilDeClasse.listeClasses.count();
-					i++
-				) {
-					lClasse = this.donnees.conseilDeClasse.listeClasses.get(i);
-					if (!lListePeriodes.getElementParElement(lClasse.periode)) {
-						lListePeriodes.addElement(lClasse.periode);
-					}
-					aPeriode = lClasse.periode;
-					const lLibellePeriode = aPeriode.getLibelle();
-					if (lClasse.periode.getNumero() === aPeriode.getNumero()) {
-						if (!H[lLibellePeriode]) {
-							H[lLibellePeriode] = {};
-						}
-						if (!H[lLibellePeriode][lClasse.getLibelle()]) {
-							H[lLibellePeriode][lClasse.getLibelle()] = [];
-						}
-						if (!lClasse.UniquementServicesSansNote) {
-							if (lClasse.notationEstCloturee) {
-								H[lLibellePeriode][lClasse.getLibelle()].push(
-									ObjetTraduction_1.GTraductions.getValeur(
-										"accueil.CDC.colonne.hint.devoirs",
-									) +
-										" : " +
-										lClasse.nbDevoirs +
-										"  -  " +
-										ObjetTraduction_1.GTraductions.getValeur(
-											"accueil.CDC.hint.Cloturee",
-										),
-								);
-							} else if (!!lClasse.dateClotureNotation) {
-								H[lLibellePeriode][lClasse.getLibelle()].push(
-									ObjetTraduction_1.GTraductions.getValeur(
-										"accueil.CDC.colonne.hint.devoirs",
-									) +
-										" : " +
-										lClasse.nbDevoirs +
-										"  -  " +
-										ObjetTraduction_1.GTraductions.getValeur(
-											"accueil.CDC.hint.ClotureDepuisLe",
-											[
-												ObjetDate_1.GDate.formatDate(
-													lClasse.dateClotureNotation,
-													"%JJ %MMMM",
-												),
-											],
-										),
-								);
-							} else {
-								H[lLibellePeriode][lClasse.getLibelle()].push(
-									ObjetTraduction_1.GTraductions.getValeur(
-										"accueil.CDC.colonne.hint.devoirs",
-									) +
-										" : " +
-										lClasse.nbDevoirs,
-								);
-							}
-						}
-						H[lLibellePeriode][lClasse.getLibelle()].push(
-							ObjetTraduction_1.GTraductions.getValeur(
-								"accueil.CDC.colonne.hint.evaluations",
-							) +
-								" : " +
-								lClasse.nbEvaluations,
-						);
-						if (lClasse.auMoinsUnEleveDsServicesAppr) {
-							const lStrNbAppSaisiesSurTotal =
-								lClasse.nbAppreciationsSaisies +
-								" / " +
-								lClasse.nbAppreciationsTotales;
-							if (lClasse.appEstCloturee) {
-								H[lLibellePeriode][lClasse.getLibelle()].push(
-									ObjetTraduction_1.GTraductions.getValeur(
-										"accueil.CDC.colonne.hint.apprSaisies",
-									) +
-										" : " +
-										lStrNbAppSaisiesSurTotal +
-										"  -  " +
-										ObjetTraduction_1.GTraductions.getValeur(
-											"accueil.CDC.hint.Cloturee",
-										),
-								);
-							} else if (!!lClasse.dateClotureApp) {
-								H[lLibellePeriode][lClasse.getLibelle()].push(
-									ObjetTraduction_1.GTraductions.getValeur(
-										"accueil.CDC.colonne.hint.apprSaisies",
-									) +
-										" : " +
-										lStrNbAppSaisiesSurTotal +
-										"  -  " +
-										ObjetTraduction_1.GTraductions.getValeur(
-											"accueil.CDC.hint.ClotureDepuisLe",
-											[
-												ObjetDate_1.GDate.formatDate(
-													lClasse.dateClotureApp,
-													"%JJ %MMMM",
-												),
-											],
-										),
-								);
-							} else {
-								H[lLibellePeriode][lClasse.getLibelle()].push(
-									ObjetTraduction_1.GTraductions.getValeur(
-										"accueil.CDC.colonne.hint.apprSaisies",
-									) +
-										" : " +
-										lStrNbAppSaisiesSurTotal,
-								);
-							}
-						}
-						if (lClasse.dateConseil) {
-							H[lLibellePeriode][lClasse.getLibelle()].push(
-								ObjetTraduction_1.GTraductions.getValeur(
-									"accueil.CDC.colonne.hint.dateConseilDeClasse",
-								) +
-									" : " +
-									[
-										ObjetDate_1.GDate.formatDate(
-											lClasse.dateConseil,
-											"%JJ %MMMM",
-										),
-									],
-							);
-						}
-					}
-				}
-				for (aPeriode in H) {
-					lNoeudElement = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-						lNoeudListeElements,
-						"",
-						aPeriode,
-						"Gras",
-					);
-					for (lClasse in H[aPeriode]) {
-						if ($.isArray(H[aPeriode][lClasse])) {
-							lElement = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-								lNoeudElement,
-								"",
-								lClasse,
-								"Gras",
-							);
-							for (i = 0; i < H[aPeriode][lClasse].length; i++) {
-								this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-									lElement,
-									"",
-									H[aPeriode][lClasse][i],
-								);
-							}
-						}
-					}
-				}
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur("aucun"),
-				);
-			}
-		}
-		if (
-			!!this.donnees.intendanceExecute &&
-			!!this.donnees.intendanceExecute.existeWidget &&
-			this.donnees.intendanceExecute.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur(
-				"TvxIntendance.Widget.Maintenance.Titre",
-			);
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_Listeligne",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.intendanceExecute.listeLignes.count() > 0) {
-				for (
-					i = 0, lNbr = this.donnees.intendanceExecute.listeLignes.count();
-					i < lNbr;
-					i++
-				) {
-					const lDonnee = this.donnees.intendanceExecute.listeLignes.get(i);
-					lTitre =
-						ObjetTraduction_1.GTraductions.getValeur(
-							"TvxIntendance.Widget.DemandeParLe",
-							[
-								lDonnee.demandeur.getLibelle(),
-								ObjetDate_1.GDate.formatDate(lDonnee.dateCreation, "%JJ %MMM"),
-							],
-						) + (lDonnee.detail ? " : " + lDonnee.detail : "");
-					this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-						lNoeudListeElements,
-						"",
-						lTitre,
-					);
-				}
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur(
-						"TvxIntendance.Widget.Maintenance.MsgAucun",
-					),
-				);
-			}
-		}
-		if (
-			!!this.donnees.tachesSecretariatExecute &&
-			!!this.donnees.tachesSecretariatExecute.existeWidget &&
-			this.donnees.tachesSecretariatExecute.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur(
-				"TvxIntendance.Widget.Secretariat.Titre",
-			);
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_Listeligne",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.tachesSecretariatExecute.listeLignes.count() > 0) {
-				for (
-					i = 0,
-						lNbr = this.donnees.tachesSecretariatExecute.listeLignes.count();
-					i < lNbr;
-					i++
-				) {
-					const lDonneeTacheSecExecute =
-						this.donnees.tachesSecretariatExecute.listeLignes.get(i);
-					lTitre =
-						ObjetTraduction_1.GTraductions.getValeur(
-							"TvxIntendance.Widget.DemandeParLe",
-							[
-								lDonneeTacheSecExecute.demandeur.getLibelle(),
-								ObjetDate_1.GDate.formatDate(
-									lDonneeTacheSecExecute.dateCreation,
-									"%JJ %MMM",
-								),
-							],
-						) +
-						(lDonneeTacheSecExecute.detail
-							? " : " + lDonneeTacheSecExecute.detail
-							: "");
-					this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-						lNoeudListeElements,
-						"",
-						lTitre,
-					);
-				}
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur(
-						"TvxIntendance.Widget.Secretariat.MsgAucun",
-					),
-				);
-			}
-		}
-		if (
-			!!this.donnees.maintenanceInfoExecute &&
-			!!this.donnees.maintenanceInfoExecute.existeWidget &&
-			this.donnees.maintenanceInfoExecute.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur(
-				"TvxIntendance.Widget.Secretariat.Titre",
-			);
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_Listeligne",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.maintenanceInfoExecute.listeLignes.count() > 0) {
-				for (
-					i = 0, lNbr = this.donnees.maintenanceInfoExecute.listeLignes.count();
-					i < lNbr;
-					i++
-				) {
-					const lDonneeTacheInfoExecute =
-						this.donnees.maintenanceInfoExecute.listeLignes.get(i);
-					lTitre =
-						ObjetTraduction_1.GTraductions.getValeur(
-							"TvxIntendance.Widget.DemandeParLe",
-							[
-								lDonneeTacheInfoExecute.demandeur.getLibelle(),
-								ObjetDate_1.GDate.formatDate(
-									lDonneeTacheInfoExecute.dateCreation,
-									"%JJ %MMM",
-								),
-							],
-						) +
-						(lDonneeTacheInfoExecute.detail
-							? " : " + lDonneeTacheInfoExecute.detail
-							: "");
-					this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-						lNoeudListeElements,
-						"",
-						lTitre,
-					);
-				}
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur(
-						"TvxIntendance.Widget.Secretariat.MsgAucun",
-					),
-				);
-			}
-		}
-		if (
-			!!this.donnees.maintenanceInfoExecute &&
-			!!this.donnees.maintenanceInfoExecute.existeWidget &&
-			this.donnees.maintenanceInfoExecute.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur(
-				"TvxIntendance.Widget.Secretariat.Titre",
-			);
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_Listeligne",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.maintenanceInfoExecute.listeLignes.count() > 0) {
-				for (
-					i = 0, lNbr = this.donnees.maintenanceInfoExecute.listeLignes.count();
-					i < lNbr;
-					i++
-				) {
-					const lDonneeTacheInfoExecute =
-						this.donnees.maintenanceInfoExecute.listeLignes.get(i);
-					lTitre =
-						ObjetTraduction_1.GTraductions.getValeur(
-							"TvxIntendance.Widget.DemandeParLe",
-							[
-								lDonneeTacheInfoExecute.demandeur.getLibelle(),
-								ObjetDate_1.GDate.formatDate(
-									lDonneeTacheInfoExecute.dateCreation,
-									"%JJ %MMM",
-								),
-							],
-						) +
-						(lDonneeTacheInfoExecute.detail
-							? " : " + lDonneeTacheInfoExecute.detail
-							: "");
-					this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-						lNoeudListeElements,
-						"",
-						lTitre,
-					);
-				}
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur(
-						"TvxIntendance.Widget.Secretariat.MsgAucun",
-					),
-				);
-			}
-		}
-		if (
-			!!this.donnees.menuDeLaCantine &&
-			!!this.donnees.menuDeLaCantine.existeWidget &&
-			this.donnees.menuDeLaCantine.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur("accueil.menu");
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListeMenu",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.menuDeLaCantine.listeRepas.count() > 0) {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					WidgetMenu_1.WidgetMenu.composeWidgetMenuAccessible(
-						this.donnees.menuDeLaCantine,
-					),
-				);
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur("accueil.pasDeMenu"),
-				);
-			}
-		}
-		if (
-			!!this.donnees.incidents &&
-			!!this.donnees.incidents.existeWidget &&
-			this.donnees.incidents.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur(
-				"accueil.incident.titre",
-			);
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListeCours",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			if (this.donnees.incidents.listeIncidents.count() > 0) {
-				for (
-					i = 0, lNbr = this.donnees.incidents.listeIncidents.count();
-					i < lNbr;
-					i++
-				) {
-					lElt = this.donnees.incidents.listeIncidents.get(i);
-					const lNoeudIncident =
-						this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-							lNoeudListeElements,
-							"",
-							lElt.strDate + " " + lElt.strSignale,
-							"Gras Texte11",
-						);
-					const lDatasIncident = [
-						[
-							ObjetTraduction_1.GTraductions.getValeur("fiche.incident.motifs"),
-							lElt.strMotifs,
-						],
-						[
-							ObjetTraduction_1.GTraductions.getValeur(
-								"fiche.incident.gravite",
-							),
-							lElt.strGravite,
-						],
-						[
-							ObjetTraduction_1.GTraductions.getValeur("fiche.incident.auteur"),
-							lElt.strAuteur,
-						],
-						[
-							ObjetTraduction_1.GTraductions.getValeur(
-								"fiche.incident.victime",
-							),
-							lElt.strVictime,
-						],
-						[
-							ObjetTraduction_1.GTraductions.getValeur("fiche.incident.temoin"),
-							lElt.strTemoin,
-						],
-					];
-					for (j = 0, lNbr2 = lDatasIncident.length; j < lNbr2; j++) {
-						lValeur = lDatasIncident[j][1];
-						if (lValeur !== undefined && lValeur !== null && lValeur !== "") {
-							this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-								lNoeudIncident,
-								"",
-								lDatasIncident[j][0] + " : " + lValeur,
-								"Texte11",
-							);
-						}
-					}
-					const lDetail = lElt.getLibelle();
-					if (lDetail !== "") {
-						this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-							lNoeudIncident,
-							"",
-							lDetail,
-							"Texte11",
-						);
-					}
-				}
-			} else {
-				this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-					lNoeudListeElements,
-					"",
-					ObjetTraduction_1.GTraductions.getValeur("accueil.incident.msgAucun"),
-				);
-			}
-		}
-		if (
-			!!this.donnees.donneesVS &&
-			!!this.donnees.donneesVS.existeWidget &&
-			this.donnees.donneesVS.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur(
-				"accueil.donneesVS.titre",
-			);
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListeDonneesVS",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			lNbr = this.donnees.donneesVS.listeDonneesVS.count();
-			if (lNbr > 0) {
-				for (i = 0; i < lNbr; i++) {
-					lElt = this.donnees.donneesVS.listeDonneesVS.get(i);
-					lNoeudElt = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-						lNoeudListeElements,
-						"",
-						lElt.strDate,
-						"Gras Texte11",
-					);
-					lNbr2 = this.donnees.donneesVS.strTypeDonnee.length;
-					lDatas = [];
-					for (j = 0; j < lNbr2; j++) {
-						lDatas.push([
-							this.donnees.donneesVS.strTypeDonnee[j],
-							lElt.listeDonnees[j].strValeur,
-						]);
-					}
-					for (j = 0, lNbr2 = lDatas.length; j < lNbr2; j++) {
-						lValeur = lDatas[j][1];
-						if (lValeur !== undefined && lValeur !== null && lValeur !== "") {
-							this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-								lNoeudElt,
-								"",
-								lDatas[j][0] + " : " + lValeur,
-								"Texte11",
-							);
-						}
-					}
-				}
-			}
-		}
-		if (
-			!!this.donnees.donneesProfs &&
-			!!this.donnees.donneesProfs.existeWidget &&
-			this.donnees.donneesProfs.existeWidget.call(this)
-		) {
-			lTitre = ObjetTraduction_1.GTraductions.getValeur(
-				"accueil.donneesProfs.titre",
-			);
-			lNoeudListeElements = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-				lRacine,
-				lIdListe + "_ListeDonneesProfs",
-				lTitre,
-				"Gras",
-				true,
-				lPremierElement,
-			);
-			lPremierElement = false;
-			lNbr = this.donnees.donneesProfs.listeDonneesProfs.count();
-			if (lNbr > 0) {
-				for (i = 0; i < lNbr; i++) {
-					lElt = this.donnees.donneesProfs.listeDonneesProfs.get(i);
-					lNoeudElt = this._objetListeArborescente.ajouterUnNoeudAuNoeud(
-						lNoeudListeElements,
-						"",
-						lElt.strDate,
-						"Gras Texte11",
-					);
-					lNbr2 = this.donnees.donneesProfs.strTypeDonnee.length;
-					lDatas = [];
-					for (j = 0; j < lNbr2; j++) {
-						lDatas.push([
-							this.donnees.donneesProfs.strTypeDonnee[j],
-							lElt.listeDonnees[j].strValeur,
-						]);
-					}
-					for (j = 0, lNbr2 = lDatas.length; j < lNbr2; j++) {
-						lValeur = lDatas[j][1];
-						if (lValeur !== undefined && lValeur !== null && lValeur !== "") {
-							this._objetListeArborescente.ajouterUneFeuilleAuNoeud(
-								lNoeudElt,
-								"",
-								lDatas[j][0] + " : " + lValeur,
-								"Texte11",
-							);
-						}
-					}
-				}
-			}
-		}
-		$("#" + this.Nom.escapeJQ()).addClass("AlignementHaut");
-		ObjetHtml_1.GHtml.setHtml(
-			this.Nom,
-			this._objetListeArborescente.construireAffichage(),
-		);
-		this._objetListeArborescente.setDonnees(lRacine);
 	}
 	_construireInstanceWidget(aDonneesWidget) {
 		if (this.instancesWidgets[aDonneesWidget.genre]) {
@@ -3587,7 +1420,7 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 		return lResult.ucfirst();
 	}
 	_changerColWrapper() {
-		const lWindowWidth = GNavigateur.clientL;
+		const lWindowWidth = ObjetNavigateur_1.Navigateur.clientL;
 		const lColsWarp1 = $(".cols-wrap1");
 		const lColsWarp2 = $(".cols-wrap2");
 		if (!this.applicationEspace.estEDT) {
@@ -3606,6 +1439,11 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 							.end()
 							.remove()
 					: "";
+				$(".wrapper-cols.emploidutemps, .wrapper-cols.cdt")
+					.wrapAll("<div/>")
+					.unwrap()
+					.end()
+					.remove();
 				$(".wrapper-cols.notes, .wrapper-cols.cdt").wrapAll(
 					'<div class="cols-wrap1" />',
 				);
@@ -3651,6 +1489,11 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 							.end()
 							.remove()
 					: "";
+				$(".wrapper-cols.emploidutemps, .wrapper-cols.cdt")
+					.wrapAll("<div/>")
+					.unwrap()
+					.end()
+					.remove();
 			}
 		}
 	}
@@ -3666,69 +1509,4 @@ function _initialiserFenetreParametresWidgets(aInstance) {
 		hauteur: 550,
 		listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
 	});
-}
-function _composeDetailActualiteAccessible(aActualite) {
-	const H = [];
-	for (
-		let I = 0;
-		aActualite.listeQuestions && I < aActualite.listeQuestions.count();
-		I++
-	) {
-		const lQuestion = aActualite.listeQuestions.get(I);
-		if (aActualite.estSondage) {
-			H.push('<div class="Souligne">', lQuestion.getLibelle(), "</div>");
-		}
-		H.push("<div>", lQuestion.texte, "</div>");
-		for (
-			let J = 0;
-			lQuestion.listePiecesJointes && J < lQuestion.listePiecesJointes.count();
-			J++
-		) {
-			const lDocumentJoint = lQuestion.listePiecesJointes.get(J);
-			const lURL = ObjetChaine_1.GChaine.composerUrlLienExterne({
-				documentJoint: lDocumentJoint,
-				libelleEcran: lDocumentJoint.getLibelle(),
-				genreRessource:
-					Enumere_Ressource_1.EGenreRessource.DocJointEtablissement,
-			});
-			H.push(lURL);
-		}
-	}
-	if (aActualite.signataire) {
-		H.push("<div>", aActualite.signataire, "</div>");
-	}
-	return H.join("");
-}
-function _composeDocumentsAccessible(aListeDocumentsJoints) {
-	const lHtml = [];
-	for (let I = 0; I < aListeDocumentsJoints.count(); I++) {
-		const lDocumentJoint = aListeDocumentsJoints.get(I);
-		lHtml.push(
-			ObjetChaine_1.GChaine.composerUrlLienExterne({
-				documentJoint: lDocumentJoint,
-				genreRessource:
-					Enumere_Ressource_1.EGenreRessource.DocJointEtablissement,
-			}),
-		);
-	}
-	return lHtml.join(", ");
-}
-function _estEleveDeRessourceAccessible(aObservation, aRessource) {
-	if (!aRessource) {
-		return true;
-	}
-	if (!aRessource.existeNumero()) {
-		return true;
-	}
-	if (aRessource.getGenre() === Enumere_Ressource_1.EGenreRessource.Classe) {
-		return aRessource.getNumero() === aObservation.classe.getNumero();
-	}
-	if (aRessource.getGenre() === Enumere_Ressource_1.EGenreRessource.Groupe) {
-		for (let i = 0; i < aObservation.listeGroupes.count(); i++) {
-			if (aRessource.getNumero() === aObservation.listeGroupes.getNumero(i)) {
-				return true;
-			}
-		}
-	}
-	return false;
 }

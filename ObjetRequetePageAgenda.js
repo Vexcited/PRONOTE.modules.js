@@ -1,38 +1,38 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { GStyle } = require("ObjetStyle.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GCache } = require("Cache.js");
-const { ObjetDeserialiser } = require("ObjetDeserialiser.js");
-class ObjetRequetePageAgenda extends ObjetRequeteConsultation {
+exports.ObjetRequetePageAgenda = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetStyle_1 = require("ObjetStyle");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const Cache_1 = require("Cache");
+const ObjetDeserialiser_1 = require("ObjetDeserialiser");
+class ObjetRequetePageAgenda extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	constructor(...aParams) {
 		super(...aParams);
 	}
-	lancerRequete(aNumeroSemaine) {
+	lancerRequete(aParams) {
 		this.JSON = {
-			NumeroSemaine: aNumeroSemaine,
+			NumeroSemaine: aParams.numeroSemaine,
+			avecEventsPasses: aParams.avecEventsPasses,
 			AvecListeClasses:
-				GCache && !GCache.agenda.existeDonnee("listeClassesGroupes"),
+				Cache_1.GCache &&
+				!Cache_1.GCache.agenda.existeDonnee("listeClassesGroupes"),
 		};
 		return this.appelAsynchrone();
 	}
 	actionApresRequete() {
-		const lParam = {
-			ListeClassesGroupes: null,
-			parametreExportICal: this.JSONReponse.ParametreExportiCal,
-			avecExportICal: this.JSONReponse.AvecExportiCal,
-		};
-		lParam.listeEvenements = new ObjetDeserialiser().getListeEvenements(
-			this.JSONReponse.ListeEvenements,
-		);
-		lParam.listeFamilles =
-			this.JSONReponse.listeFamilles || new ObjetListeElements();
-		lParam.listeFamilles.parcourir((aElement) => {
+		const lListeEvenements =
+			new ObjetDeserialiser_1.ObjetDeserialiser().getListeEvenements(
+				this.JSONReponse.ListeEvenements,
+			);
+		const lListeFamilles =
+			this.JSONReponse.listeFamilles ||
+			new ObjetListeElements_1.ObjetListeElements();
+		lListeFamilles.parcourir((aElement) => {
 			const lLibelleHtml = [];
 			lLibelleHtml.push(
 				'<span class="AlignementMilieuVertical InlineBlock" style="width: 12px; height: 12px;',
-				GStyle.composeCouleurFond(aElement.couleur),
+				ObjetStyle_1.GStyle.composeCouleurFond(aElement.couleur),
 				'"></span>',
 			);
 			lLibelleHtml.push(
@@ -42,38 +42,51 @@ class ObjetRequetePageAgenda extends ObjetRequeteConsultation {
 			);
 			aElement.libelleHtml = lLibelleHtml.join("");
 		});
-		lParam.listeJourDansMois =
-			this.JSONReponse.listeJourDansMois || new ObjetListeElements();
-		if (GCache) {
+		const lListeJourDansMois =
+			this.JSONReponse.listeJourDansMois ||
+			new ObjetListeElements_1.ObjetListeElements();
+		let lListeClassesGroupes;
+		if (Cache_1.GCache) {
 			if (this.JSONReponse.ListeClassesGroupes) {
-				lParam.listeClassesGroupes = new ObjetListeElements().fromJSON(
-					this.JSONReponse.ListeClassesGroupes,
-					_ajouterClassesGroupes.bind(this),
-				);
-				GCache.agenda.setDonnee(
+				lListeClassesGroupes =
+					new ObjetListeElements_1.ObjetListeElements().fromJSON(
+						this.JSONReponse.ListeClassesGroupes,
+						this._ajouterClassesGroupes.bind(this),
+					);
+				Cache_1.GCache.agenda.setDonnee(
 					"listeClassesGroupes",
-					lParam.listeClassesGroupes,
+					lListeClassesGroupes,
 				);
-			} else if (GCache.agenda.existeDonnee("listeClassesGroupes")) {
-				lParam.listeClassesGroupes = GCache.agenda.getDonnee(
+			} else if (Cache_1.GCache.agenda.existeDonnee("listeClassesGroupes")) {
+				lListeClassesGroupes = Cache_1.GCache.agenda.getDonnee(
 					"listeClassesGroupes",
 				);
 			}
 		}
-		lParam.dateFinPrevisionnel = this.JSONReponse.dateFinPrevisionnel;
-		lParam.dateDebutPrevisionnel = this.JSONReponse.dateDebutPrevisionnel;
+		const lParam = {
+			ListeClassesGroupes: null,
+			parametreExportICal: this.JSONReponse.ParametreExportiCal,
+			avecExportICal: this.JSONReponse.AvecExportiCal,
+			listeEvenements: lListeEvenements,
+			listeFamilles: lListeFamilles,
+			listeJourDansMois: lListeJourDansMois,
+			listeClassesGroupes: lListeClassesGroupes,
+			dateFinPrevisionnel: this.JSONReponse.dateFinPrevisionnel,
+			dateDebutPrevisionnel: this.JSONReponse.dateDebutPrevisionnel,
+		};
 		this.callbackReussite.appel(lParam);
 	}
-}
-Requetes.inscrire("PageAgenda", ObjetRequetePageAgenda);
-function _ajouterClassesGroupes(aJSON, aElement) {
-	if (aJSON.niveau) {
-		aElement.niveau = aJSON.niveau
-			? new ObjetElement().fromJSON(aJSON.niveau)
-			: null;
+	_ajouterClassesGroupes(aJSON, aElement) {
+		if (aJSON.niveau) {
+			aElement.niveau = aJSON.niveau
+				? new ObjetElement_1.ObjetElement().fromJSON(aJSON.niveau)
+				: null;
+		}
+		if (aJSON.EPeda) {
+			aElement.equipePedagogique =
+				new ObjetListeElements_1.ObjetListeElements().fromJSON(aJSON.EPeda);
+		}
 	}
-	if (aJSON.EPeda) {
-		aElement.equipePedagogique = new ObjetListeElements().fromJSON(aJSON.EPeda);
-	}
 }
-module.exports = { ObjetRequetePageAgenda };
+exports.ObjetRequetePageAgenda = ObjetRequetePageAgenda;
+CollectionRequetes_1.Requetes.inscrire("PageAgenda", ObjetRequetePageAgenda);

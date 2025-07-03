@@ -189,42 +189,9 @@ class DonneesListe_QCM extends ObjetDonneesListe_1.ObjetDonneesListe {
 					!aParametres.article.estVerrouille,
 			);
 		}
-		if (this.optionsQCM.avecImportNathan) {
-			lLibelleCommande = aAvecLibelleLong ? lPrefixeLibelleLong : "";
-			lLibelleCommande += ObjetTraduction_1.GTraductions.getValeur(
-				"QCM_Divers.MnuImportQCMBiblioNathan",
-			);
-			aMenuParent.addCommande(
-				DonneesListe_QCM.GenreCommande.AjoutQuestionsNathan,
-				lLibelleCommande,
-				this.avecEdition(aParametres) &&
-					!aParametres.nonEditable &&
-					!aParametres.article.estVerrouille,
-			);
-		}
 	}
 	_ajouterCommandesImport(aMenuParent, aParametresMenuContextuel) {
 		let lLibelleCommande;
-		if (this.optionsQCM.avecImportBiblio) {
-			lLibelleCommande = ObjetTraduction_1.GTraductions.getValeur(
-				"QCM_Divers.MnuImportQCMBiblioEtablissement",
-			);
-			aMenuParent.addCommande(
-				DonneesListe_QCM.GenreCommande.ImportQCMBiblio,
-				lLibelleCommande,
-				!aParametresMenuContextuel.nonEditable,
-			);
-		}
-		if (this.optionsQCM.avecImportNathan) {
-			lLibelleCommande = ObjetTraduction_1.GTraductions.getValeur(
-				"QCM_Divers.MnuImportQCMBiblioNathan",
-			);
-			aMenuParent.addCommande(
-				DonneesListe_QCM.GenreCommande.ImportQCMNathan,
-				lLibelleCommande,
-				!aParametresMenuContextuel.nonEditable,
-			);
-		}
 		if (this.optionsQCM.avecImportFichier) {
 			lLibelleCommande = ObjetTraduction_1.GTraductions.getValeur(
 				"QCM_Divers.MnuImportQCMFichier",
@@ -252,6 +219,16 @@ class DonneesListe_QCM extends ObjetDonneesListe_1.ObjetDonneesListe {
 			if (aExtend) {
 				$.extend(lElement, aExtend);
 			}
+		}
+		if (this.optionsQCM.avecImportBiblio) {
+			lLibelleCommande = ObjetTraduction_1.GTraductions.getValeur(
+				"QCM_Divers.MnuImportQCMBiblioEtablissement",
+			);
+			aMenuParent.addCommande(
+				DonneesListe_QCM.GenreCommande.ImportQCMBiblio,
+				lLibelleCommande,
+				!aParametresMenuContextuel.nonEditable,
+			);
 		}
 	}
 	initialisationObjetContextuel(aParametres) {
@@ -483,7 +460,7 @@ class DonneesListe_QCM extends ObjetDonneesListe_1.ObjetDonneesListe {
 					);
 					return [
 						'<div style="display:flex; flex-wrap:wrap; align-items:center;">',
-						'<div class="Texte12 EspaceDroit"><i class="' +
+						'<div class="Texte12 EspaceDroit"><i role="presentation" class="' +
 							lIcon +
 							'"></i></div>',
 						"<div ie-ellipsis>",
@@ -603,9 +580,13 @@ class DonneesListe_QCM extends ObjetDonneesListe_1.ObjetDonneesListe {
 				case DonneesListe_QCM.colonnes.statutPrive: {
 					const lHtmlStatutPrive = [];
 					if (!aParams.article.statutPrive) {
-						const lAriaLabel = this.getHintForce(aParams);
+						const lAriaLabel = this.getTooltip(aParams);
 						lHtmlStatutPrive.push(
-							`<i class="icon_sondage_bibliotheque" aria-label="${lAriaLabel}"></i>`,
+							IE.jsx.str("i", {
+								class: "icon_sondage_bibliotheque",
+								"aria-label": lAriaLabel,
+								role: "img",
+							}),
 						);
 					}
 					return lHtmlStatutPrive.join("");
@@ -613,7 +594,7 @@ class DonneesListe_QCM extends ObjetDonneesListe_1.ObjetDonneesListe {
 			}
 		}
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		if (aParams.idColonne === DonneesListe_QCM.colonnes.statutPrive) {
 			const lEstExecutionQCM = this._estUneExecQCM(aParams.article.getGenre());
 			if (!lEstExecutionQCM && !aParams.article.statutPrive) {
@@ -768,26 +749,23 @@ DonneesListe_QCM.colonnes = {
 		GenreCommande[(GenreCommande["ExportQCM"] = 2)] = "ExportQCM";
 		GenreCommande[(GenreCommande["CopierQCM"] = 3)] = "CopierQCM";
 		GenreCommande[(GenreCommande["ImportQCMBiblio"] = 4)] = "ImportQCMBiblio";
-		GenreCommande[(GenreCommande["ImportQCMNathan"] = 5)] = "ImportQCMNathan";
-		GenreCommande[(GenreCommande["CreerDevoir"] = 6)] = "CreerDevoir";
-		GenreCommande[(GenreCommande["CreerEvaluation"] = 7)] = "CreerEvaluation";
-		GenreCommande[(GenreCommande["AjouterExerciceCDT"] = 8)] =
+		GenreCommande[(GenreCommande["CreerDevoir"] = 5)] = "CreerDevoir";
+		GenreCommande[(GenreCommande["CreerEvaluation"] = 6)] = "CreerEvaluation";
+		GenreCommande[(GenreCommande["AjouterExerciceCDT"] = 7)] =
 			"AjouterExerciceCDT";
-		GenreCommande[(GenreCommande["SuppressionServeur"] = 9)] =
+		GenreCommande[(GenreCommande["SuppressionServeur"] = 8)] =
 			"SuppressionServeur";
-		GenreCommande[(GenreCommande["CopierQCMVers"] = 10)] = "CopierQCMVers";
-		GenreCommande[(GenreCommande["ImportQCMFichier"] = 11)] =
+		GenreCommande[(GenreCommande["CopierQCMVers"] = 9)] = "CopierQCMVers";
+		GenreCommande[(GenreCommande["ImportQCMFichier"] = 10)] =
 			"ImportQCMFichier";
-		GenreCommande[(GenreCommande["AjoutQuestionsPerso"] = 12)] =
+		GenreCommande[(GenreCommande["AjoutQuestionsPerso"] = 11)] =
 			"AjoutQuestionsPerso";
-		GenreCommande[(GenreCommande["AjoutQuestionsCollab"] = 13)] =
+		GenreCommande[(GenreCommande["AjoutQuestionsCollab"] = 12)] =
 			"AjoutQuestionsCollab";
-		GenreCommande[(GenreCommande["AjoutQuestionsEtab"] = 14)] =
+		GenreCommande[(GenreCommande["AjoutQuestionsEtab"] = 13)] =
 			"AjoutQuestionsEtab";
-		GenreCommande[(GenreCommande["AjoutQuestionsNathan"] = 15)] =
-			"AjoutQuestionsNathan";
-		GenreCommande[(GenreCommande["CreerActivite"] = 16)] = "CreerActivite";
-		GenreCommande[(GenreCommande["CreerTAF"] = 17)] = "CreerTAF";
+		GenreCommande[(GenreCommande["CreerActivite"] = 14)] = "CreerActivite";
+		GenreCommande[(GenreCommande["CreerTAF"] = 15)] = "CreerTAF";
 	})(
 		(GenreCommande =
 			DonneesListe_QCM.GenreCommande || (DonneesListe_QCM.GenreCommande = {})),

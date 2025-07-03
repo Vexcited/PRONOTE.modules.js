@@ -1,12 +1,11 @@
-const { EGenreCommandeMenu } = require("Enumere_CommandeMenu.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	TypeEtatRealisationPunitionUtil,
-} = require("TypeEtatRealisationPunition.js");
-const { ObjetUtilitaireAbsence } = require("ObjetUtilitaireAbsence.js");
-class DonneesListe_SaisiePunitions extends ObjetDonneesListe {
+exports.DonneesListe_SaisiePunitions = void 0;
+const Enumere_CommandeMenu_1 = require("Enumere_CommandeMenu");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TypeEtatRealisationPunition_1 = require("TypeEtatRealisationPunition");
+const ObjetUtilitaireAbsence_1 = require("ObjetUtilitaireAbsence");
+class DonneesListe_SaisiePunitions extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aAutorisations) {
 		super(aDonnees);
 		this._autorisations = aAutorisations;
@@ -15,7 +14,6 @@ class DonneesListe_SaisiePunitions extends ObjetDonneesListe {
 			avecEvnt_Selection: true,
 			avecEvnt_Creation: true,
 			avecEvnt_ApresSuppression: true,
-			hauteurMinCellule: 26,
 		});
 	}
 	avecEdition(aParams) {
@@ -42,13 +40,13 @@ class DonneesListe_SaisiePunitions extends ObjetDonneesListe {
 		if (this._autorisations.saisie) {
 			switch (aParams.idColonne) {
 				case DonneesListe_SaisiePunitions.colonnes.nature:
-					return ObjetDonneesListe.ECouleurCellule.Blanc;
+					return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
 				case DonneesListe_SaisiePunitions.colonnes.etat:
 					if (
 						!aParams.article.typesEtatPunition ||
 						aParams.article.typesEtatPunition.count() === 0
 					) {
-						return ObjetDonneesListe.ECouleurCellule.Blanc;
+						return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
 					}
 					break;
 			}
@@ -70,23 +68,28 @@ class DonneesListe_SaisiePunitions extends ObjetDonneesListe {
 		return !this._autorisations.saisie || !D.userEstProprietaire;
 	}
 	getMessageSuppressionImpossible() {
-		return GTraductions.getValeur("punition.suppressionImpossible");
+		return ObjetTraduction_1.GTraductions.getValeur(
+			"punition.suppressionImpossible",
+		);
 	}
 	getMessageSuppressionConfirmation() {
-		return GTraductions.getValeur("punition.suppressionConfirmation");
+		return ObjetTraduction_1.GTraductions.getValeur(
+			"punition.suppressionConfirmation",
+		);
 	}
 	getTypeValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_SaisiePunitions.colonnes.date:
-				return ObjetDonneesListe.ETypeCellule.DateCalendrier;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule
+					.DateCalendrier;
 			case DonneesListe_SaisiePunitions.colonnes.etat:
-				return ObjetDonneesListe.ETypeCellule.Image;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Image;
 			case DonneesListe_SaisiePunitions.colonnes.dossier:
-				return ObjetDonneesListe.ETypeCellule.Coche;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Coche;
 			case DonneesListe_SaisiePunitions.colonnes.publication:
-				return ObjetDonneesListe.ETypeCellule.Html;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
 	getValeur(aParams) {
 		switch (aParams.idColonne) {
@@ -101,19 +104,27 @@ class DonneesListe_SaisiePunitions extends ObjetDonneesListe {
 					? aParams.article.motifs.getTableauLibelles().join(", ")
 					: "";
 			case DonneesListe_SaisiePunitions.colonnes.etat:
-				return TypeEtatRealisationPunitionUtil.getClassImage(
+				return TypeEtatRealisationPunition_1.TypeEtatRealisationPunitionUtil.getClassImage(
 					aParams.article.typesEtatPunition,
 				);
 			case DonneesListe_SaisiePunitions.colonnes.dossier:
 				return !!aParams.article.publicationDossier;
 			case DonneesListe_SaisiePunitions.colonnes.publication:
-				return (
-					'<i class="' +
-					ObjetUtilitaireAbsence.getClassesIconePublicationPunition(
-						aParams.article.datePublication,
-					) +
-					'"></i>'
-				);
+				return IE.jsx.str("i", {
+					role: "img",
+					class:
+						ObjetUtilitaireAbsence_1.ObjetUtilitaireAbsence.getClassesIconePublicationPunition(
+							aParams.article.datePublication,
+						),
+					title:
+						ObjetUtilitaireAbsence_1.ObjetUtilitaireAbsence.getHintPublicationPunition(
+							aParams.article.datePublication,
+						),
+					"aria-label":
+						ObjetUtilitaireAbsence_1.ObjetUtilitaireAbsence.getHintPublicationPunition(
+							aParams.article.datePublication,
+						),
+				});
 		}
 		return "";
 	}
@@ -126,7 +137,7 @@ class DonneesListe_SaisiePunitions extends ObjetDonneesListe {
 		}
 		return lClasses.join(" ");
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		if (aParams.idColonne === DonneesListe_SaisiePunitions.colonnes.etat) {
 			return aParams.article.hintRealisation;
 		}
@@ -135,7 +146,7 @@ class DonneesListe_SaisiePunitions extends ObjetDonneesListe {
 	surEdition(aParams, aValeur) {
 		switch (aParams.idColonne) {
 			case DonneesListe_SaisiePunitions.colonnes.date:
-				if (GDate.estDateValide(aValeur)) {
+				if (ObjetDate_1.GDate.estDateValide(aValeur)) {
 					aParams.article.dateDemande = aValeur;
 				}
 				break;
@@ -150,13 +161,13 @@ class DonneesListe_SaisiePunitions extends ObjetDonneesListe {
 			const lProg = aParams.article.programmations.get(i);
 			if (
 				lProg.dateExecution &&
-				GDate.estAvantJour(lProg.dateExecution, lDateDernier)
+				ObjetDate_1.GDate.estAvantJour(lProg.dateExecution, lDateDernier)
 			) {
 				lDateDernier = lProg.dateExecution;
 			}
 			if (
 				lProg.dateRealisation &&
-				GDate.estAvantJour(lProg.dateRealisation, lDateDernier)
+				ObjetDate_1.GDate.estAvantJour(lProg.dateRealisation, lDateDernier)
 			) {
 				lDateDernier = lProg.dateRealisation;
 			}
@@ -164,7 +175,10 @@ class DonneesListe_SaisiePunitions extends ObjetDonneesListe {
 				lProg.report &&
 				lProg.report.existe() &&
 				lProg.report.dateExecution &&
-				GDate.estAvantJour(lProg.report.dateRealisation, lDateDernier)
+				ObjetDate_1.GDate.estAvantJour(
+					lProg.report.dateRealisation,
+					lDateDernier,
+				)
 			) {
 				lDateDernier = lProg.report.dateRealisation;
 			}
@@ -188,26 +202,36 @@ class DonneesListe_SaisiePunitions extends ObjetDonneesListe {
 		}
 		if (aParametres.avecCreation) {
 			aParametres.menuContextuel.addCommande(
-				EGenreCommandeMenu.Creation,
-				GTraductions.getValeur("liste.creer"),
+				Enumere_CommandeMenu_1.EGenreCommandeMenu.Creation,
+				ObjetTraduction_1.GTraductions.getValeur("liste.creer"),
 				!aParametres.nonEditable,
 			);
 		}
 		aParametres.menuContextuel.addCommande(
-			EGenreCommandeMenu.Suppression,
-			GTraductions.getValeur("liste.supprimer"),
+			Enumere_CommandeMenu_1.EGenreCommandeMenu.Suppression,
+			ObjetTraduction_1.GTraductions.getValeur("liste.supprimer"),
 			!aParametres.nonEditable &&
 				aParametres.avecSuppression &&
 				this._avecSuppression(aParametres),
 		);
 	}
 }
-DonneesListe_SaisiePunitions.colonnes = {
-	date: "DL_SaisiePunition_date",
-	nature: "DL_SaisiePunition_nature",
-	motif: "DL_SaisiePunition_motif",
-	etat: "DL_SaisiePunition_etat",
-	dossier: "DL_SaisiePunition_dossier",
-	publication: "DL_SaisiePunition_publication",
-};
-module.exports = { DonneesListe_SaisiePunitions };
+exports.DonneesListe_SaisiePunitions = DonneesListe_SaisiePunitions;
+(function (DonneesListe_SaisiePunitions) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["date"] = "DL_SaisiePunition_date";
+		colonnes["nature"] = "DL_SaisiePunition_nature";
+		colonnes["motif"] = "DL_SaisiePunition_motif";
+		colonnes["etat"] = "DL_SaisiePunition_etat";
+		colonnes["dossier"] = "DL_SaisiePunition_dossier";
+		colonnes["publication"] = "DL_SaisiePunition_publication";
+	})(
+		(colonnes =
+			DonneesListe_SaisiePunitions.colonnes ||
+			(DonneesListe_SaisiePunitions.colonnes = {})),
+	);
+})(
+	DonneesListe_SaisiePunitions ||
+		(exports.DonneesListe_SaisiePunitions = DonneesListe_SaisiePunitions = {}),
+);

@@ -48,7 +48,6 @@ class InterfaceRecapitulatifVS_Mobile extends InterfaceRecapitulatifVS_1.Interfa
 			this.listePeriodes,
 			this.positionPeriodeCourant,
 			null,
-			"",
 		);
 		this.basculerVisibiliteSurGenreEcran(this.getCtxEcran({ niveauEcran: 0 }));
 	}

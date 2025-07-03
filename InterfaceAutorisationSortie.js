@@ -1,44 +1,38 @@
-const { GHtml } = require("ObjetHtml.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { InterfacePage } = require("InterfacePage.js");
-class InterfaceAutorisationSortie extends InterfacePage {
+exports.InterfaceAutorisationSortie = void 0;
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const InterfacePage_1 = require("InterfacePage");
+class InterfaceAutorisationSortie extends InterfacePage_1.InterfacePage {
 	constructor(...aParams) {
 		super(...aParams);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			rbAutorisationSortie: {
-				getValue: function (aIndice) {
-					return (
-						aInstance.donnees.listeAutorisationsSortie
-							.get(aIndice)
-							.getNumero() === aInstance.donnees.selectionEleve.getNumero()
-					);
-				},
-				setValue: function (aIndice) {
-					if (aInstance.donnees.avecSaisie) {
-						aInstance.donnees.selectionEleve =
-							aInstance.donnees.listeAutorisationsSortie.get(aIndice);
-						aInstance.callback.appel();
-					}
-				},
+	jsxModeleRadioAutorisationSortie(aAutorisationSortie) {
+		return {
+			getValue: () => {
+				return (
+					aAutorisationSortie &&
+					aAutorisationSortie.getNumero() ===
+						this.donnees.selectionEleve.getNumero()
+				);
 			},
-		});
+			setValue: (aValue) => {
+				if (this.donnees.avecSaisie) {
+					this.donnees.selectionEleve = aAutorisationSortie;
+					this.callback.appel();
+				}
+			},
+			getName: () => {
+				return `${this.Nom}_AutorisationSortie`;
+			},
+		};
 	}
-	construireInstances() {}
 	construireAffichage() {
 		if (this.donneesRecues) {
 			return this.composePage();
-		} else {
-			return "";
 		}
+		return "";
 	}
 	composePage() {
-		const H = [];
-		H.push(this.composeContenuPage());
-		return H.join("");
-	}
-	composeContenuPage() {
 		const H = [];
 		if (this.donnees.avecSaisie) {
 			H.push(this.composeContenuPageEdit());
@@ -50,7 +44,9 @@ class InterfaceAutorisationSortie extends InterfacePage {
 	composeContenuPageEdit() {
 		const H = [];
 		H.push("<div>");
-		H.push(GTraductions.getValeur("AutorisationSortie.intro"));
+		H.push(
+			ObjetTraduction_1.GTraductions.getValeur("AutorisationSortie.intro"),
+		);
 		H.push("</div>");
 		H.push('<div class="GrandEspaceHaut">');
 		for (
@@ -65,15 +61,24 @@ class InterfaceAutorisationSortie extends InterfacePage {
 			if (lAutorisation.listeDetailHoraires.length > 0) {
 				lDescriptif += "<br>" + lAutorisation.listeDetailHoraires.join(" / ");
 			}
-			H.push('<div class="NoWrap" style="padding-bottom : 10px;">');
 			H.push(
-				'<ie-radio ie-model="rbAutorisationSortie(',
-				i,
-				')" class="InlineBlock AlignementHaut" style="margin-top:1px" >',
-				lDescriptif,
-				"</ie-radio>",
+				IE.jsx.str(
+					"div",
+					{ class: "NoWrap", style: "padding-bottom : 10px;" },
+					IE.jsx.str(
+						"ie-radio",
+						{
+							"ie-model": this.jsxModeleRadioAutorisationSortie.bind(
+								this,
+								lAutorisation,
+							),
+							class: "InlineBlock AlignementHaut",
+							style: "margin-top:1px",
+						},
+						lDescriptif,
+					),
+				),
 			);
-			H.push("</div>");
 		}
 		H.push("</div>");
 		return H.join("");
@@ -90,14 +95,24 @@ class InterfaceAutorisationSortie extends InterfacePage {
 			lDescriptif += "<br />" + lAutorisation.listeDetailHoraires.join(" / ");
 		}
 		const H = [];
-		H.push(`<p>${GTraductions.getValeur("AutorisationSortie.fixee")}</p>`);
-		H.push(`<p>${lDescriptif}</p>`);
+		H.push(
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"p",
+					{ class: "a-savoir-conteneur" },
+					ObjetTraduction_1.GTraductions.getValeur("AutorisationSortie.fixee"),
+				),
+				IE.jsx.str("p", { class: "a-savoir-conteneur" }, lDescriptif),
+			),
+		);
 		return H.join("");
 	}
 	setDonnees(aDonnees) {
 		this.donneesRecues = true;
 		this.donnees = aDonnees;
-		GHtml.setHtml(this.Nom, this.construireAffichage(), {
+		ObjetHtml_1.GHtml.setHtml(this.Nom, this.construireAffichage(), {
 			controleur: this.controleur,
 		});
 	}
@@ -105,4 +120,4 @@ class InterfaceAutorisationSortie extends InterfacePage {
 		return !!this.donnees ? this.donnees.selectionEleve : null;
 	}
 }
-module.exports = { InterfaceAutorisationSortie };
+exports.InterfaceAutorisationSortie = InterfaceAutorisationSortie;

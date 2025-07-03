@@ -1,69 +1,64 @@
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { InterfacePage } = require("InterfacePage.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { GChaine } = require("ObjetChaine.js");
-const {
-	ObjetRequeteConsultation,
-	ObjetRequeteSaisie,
-} = require("ObjetRequeteJSON.js");
-const {
-	ObjetCompte_AutorisationSortie,
-} = require("ObjetCompte_AutorisationSortie.js");
-const {
-	ObjetCompte_AutorisationImage,
-} = require("ObjetCompte_AutorisationImage.js");
-const { ObjetCompte_AutresContacts } = require("ObjetCompte_AutresContacts.js");
-const { EStructureAffichage } = require("Enumere_StructureAffichage.js");
-const {
-	ObjetRequeteSaisieCompteEnfant,
-} = require("ObjetRequeteSaisieCompteEnfant.js");
-const { DonneesListe_FiltreCompte } = require("DonneesListe_FiltreCompte.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { TypeFiltreAffichage } = require("Enumere_DonneesPersonnelles.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { GUID } = require("GUID.js");
-const { GHtml } = require("ObjetHtml.js");
-const { EGenreTypeContenu } = require("Enumere_DonneesPersonnelles.js");
-const {
-	UtilitairePageDonneesPersonnelles,
-} = require("UtilitairePageDonneesPersonnelles.js");
-const { PageInformationsMedicales } = require("PageInformationsMedicales.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const {
-	ObjetFenetre_DetailsPIEleve,
-} = require("ObjetFenetre_DetailsPIEleve.js");
-const {
-	ObjetFenetre_ModificationIdentifiantMDP,
-} = require("ObjetFenetre_ModificationIdentifiantMDP.js");
-const {
-	ObjetRequeteSaisieMotDePasseEleve,
-} = require("ObjetRequeteSaisieMotDePasseEleve.js");
-Requetes.inscrire("InfosEnfant", ObjetRequeteConsultation);
-Requetes.inscrire("SaisieAutorisationSortie", ObjetRequeteSaisie);
-Requetes.inscrire("SaisieAutorisationImage", ObjetRequeteSaisie);
-Requetes.inscrire("SaisieAutresContacts", ObjetRequeteSaisie);
-class InterfaceCompteInfosEnfantPrim extends InterfacePage {
+exports.genreEcran = exports.InterfaceCompteInfosEnfantPrim = void 0;
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const InterfacePage_1 = require("InterfacePage");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const ObjetCompte_AutorisationSortie_1 = require("ObjetCompte_AutorisationSortie");
+const ObjetCompte_AutorisationImage_1 = require("ObjetCompte_AutorisationImage");
+const ObjetCompte_AutresContacts_1 = require("ObjetCompte_AutresContacts");
+const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
+const ObjetRequeteSaisieCompteEnfant_1 = require("ObjetRequeteSaisieCompteEnfant");
+const DonneesListe_FiltreCompte_1 = require("DonneesListe_FiltreCompte");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetElement_1 = require("ObjetElement");
+const Enumere_DonneesPersonnelles_1 = require("Enumere_DonneesPersonnelles");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const GUID_1 = require("GUID");
+const ObjetHtml_1 = require("ObjetHtml");
+const Enumere_DonneesPersonnelles_2 = require("Enumere_DonneesPersonnelles");
+const UtilitairePageDonneesPersonnelles_1 = require("UtilitairePageDonneesPersonnelles");
+const PageInformationsMedicales_1 = require("PageInformationsMedicales");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_DetailsPIEleve_1 = require("ObjetFenetre_DetailsPIEleve");
+const ObjetFenetre_ModificationIdentifiantMDP_1 = require("ObjetFenetre_ModificationIdentifiantMDP");
+const ObjetRequeteSaisieMotDePasseEleve_1 = require("ObjetRequeteSaisieMotDePasseEleve");
+const AccessApp_1 = require("AccessApp");
+const ObjetRequeteInfosEnfant_1 = require("ObjetRequeteInfosEnfant");
+class ObjetRequeteSaisieAutorisationSortie extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieAutorisationSortie",
+	ObjetRequeteSaisieAutorisationSortie,
+);
+class ObjetRequeteSaisieAutorisationImage extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieAutorisationImage",
+	ObjetRequeteSaisieAutorisationImage,
+);
+class ObjetRequeteSaisieAutresContacts extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieAutresContacts",
+	ObjetRequeteSaisieAutresContacts,
+);
+class InterfaceCompteInfosEnfantPrim extends InterfacePage_1.InterfacePage {
 	constructor(...aParams) {
 		super(...aParams);
-		this.idMainPage = GUID.getId();
-		this.idContenu = GUID.getId();
+		this.appSco = (0, AccessApp_1.getApp)();
+		this.idMainPage = GUID_1.GUID.getId();
+		this.idContenu = GUID_1.GUID.getId();
 		this.idSecurisation = `${this.Nom}_secur`;
-		this.setOptionsEcrans({ nbNiveaux: 2, avecBascule: IE.estMobile });
 		this.parametres = {
 			largeurIdentifiantCompteEnfant: 120,
 			maskMDP: "*********",
 		};
 		this.ids = { mdpEnfant: `${this.Nom}_mdp_enfant` };
+		this.setOptionsEcrans({ nbNiveaux: 2, avecBascule: IE.estMobile });
 		this.contexte = {
 			guidRef: `${this.Nom}_contexte`,
 			niveauCourant: 0,
-			ecran: [
-				InterfaceCompteInfosEnfantPrim.genreEcran.principal,
-				InterfaceCompteInfosEnfantPrim.genreEcran.detail,
-			],
+			ecran: [genreEcran.principal, genreEcran.detail],
 			selection: [],
 		};
 	}
@@ -71,15 +66,12 @@ class InterfaceCompteInfosEnfantPrim extends InterfacePage {
 		return $.extend(
 			true,
 			super.getControleur(aInstance),
-			UtilitairePageDonneesPersonnelles.getControleur(aInstance),
+			UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.getControleur(
+				aInstance,
+			),
 			{
-				btnRetourEcranPrec: {
-					event() {
-						aInstance.revenirSurEcranPrecedent();
-					},
-				},
 				avecListeProjAcc() {
-					return (
+					return !!(
 						aInstance.donnees &&
 						aInstance.donnees.listeProjets &&
 						aInstance.donnees.listeProjets.count()
@@ -87,7 +79,7 @@ class InterfaceCompteInfosEnfantPrim extends InterfacePage {
 				},
 				modifierMdpEnfant: {
 					event() {
-						_surModifierMdpEnfant.call(aInstance);
+						aInstance._surModifierMdpEnfant();
 					},
 				},
 				getHtmlSecurisation() {
@@ -102,27 +94,35 @@ class InterfaceCompteInfosEnfantPrim extends InterfacePage {
 								? aInstance.donnees.informationsCompteMotDePasse
 								: aInstance.parametres.maskMDP,
 						};
-						return UtilitairePageDonneesPersonnelles.construireZoneGenerique(
-							GTraductions.getValeur("PageCompte.CompteEnfant"),
-							EGenreTypeContenu.InfosCompteEnfant,
+						return UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
+							ObjetTraduction_1.GTraductions.getValeur(
+								"PageCompte.CompteEnfant",
+							),
+							Enumere_DonneesPersonnelles_2.EGenreTypeContenu.InfosCompteEnfant,
 							lParams,
 						);
 					}
 					return "";
 				},
 				getHtmlListeProjAcc() {
-					return UtilitairePageDonneesPersonnelles.construireZoneGenerique(
-						GTraductions.getValeur("PageCompte.ProjetsAccompagnement"),
-						EGenreTypeContenu.ProjetsAccompagnement,
-						{ listeProjets: aInstance.donnees.listeProjets },
-					);
+					if (aInstance.donnees) {
+						return UtilitairePageDonneesPersonnelles_1.UtilitairePageDonneesPersonnelles.construireZoneGenerique(
+							ObjetTraduction_1.GTraductions.getValeur(
+								"PageCompte.ProjetsAccompagnement",
+							),
+							Enumere_DonneesPersonnelles_2.EGenreTypeContenu
+								.ProjetsAccompagnement,
+							{ listeProjets: aInstance.donnees.listeProjets },
+						);
+					}
+					return "";
 				},
 				afficherFenetreDetailsPIEleve: {
 					event(aNumero) {
 						if (aInstance.donnees && aInstance.donnees.listeProjets) {
 							const lProjet =
 								aInstance.donnees.listeProjets.getElementParNumero(aNumero);
-							_ouvrirFenetreDetailsPIEleve.call(aInstance, lProjet);
+							aInstance._ouvrirFenetreDetailsPIEleve(lProjet);
 						}
 					},
 				},
@@ -131,36 +131,36 @@ class InterfaceCompteInfosEnfantPrim extends InterfacePage {
 	}
 	construireInstances() {
 		this.identAutoriseSortie = this.add(
-			ObjetCompte_AutorisationSortie,
-			_evntAutorisationSaisie.bind(this),
+			ObjetCompte_AutorisationSortie_1.ObjetCompte_AutorisationSortie,
+			this._evntAutorisationSaisie.bind(this),
 		);
 		this.identAutoriseImage = this.add(
-			ObjetCompte_AutorisationImage,
-			_evntAutorisationImageSaisie.bind(this),
+			ObjetCompte_AutorisationImage_1.ObjetCompte_AutorisationImage,
+			this._evntAutorisationImageSaisie.bind(this),
 		);
 		this.identInformationsMedicales = this.add(
-			PageInformationsMedicales,
-			_evenementInformationsMedicales.bind(this),
+			PageInformationsMedicales_1.PageInformationsMedicales,
+			this._evenementInformationsMedicales.bind(this),
 		);
 		this.identAutresContacts = this.add(
-			ObjetCompte_AutresContacts,
-			_evntSaisieAutresContacts.bind(this),
+			ObjetCompte_AutresContacts_1.ObjetCompte_AutresContacts,
+			this._evntSaisieAutresContacts.bind(this),
 		);
 		this.identListe = this.add(
-			ObjetListe,
-			_evenementListe.bind(this),
-			_initListe,
+			ObjetListe_1.ObjetListe,
+			this._evenementListe.bind(this),
+			this._initListe,
 		);
 	}
 	setParametresGeneraux() {
 		this.avecBandeau = true;
-		this.GenreStructure = EStructureAffichage.Autre;
+		this.GenreStructure =
+			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 	}
 	recupererDonnees() {
-		Requetes(
-			"InfosEnfant",
+		new ObjetRequeteInfosEnfant_1.ObjetRequeteInfosEnfant(
 			this,
-			_actionApresRequete.bind(this),
+			this._actionApresRequete.bind(this),
 		).lancerRequete();
 	}
 	construireStructureAffichageAutre() {
@@ -188,24 +188,26 @@ class InterfaceCompteInfosEnfantPrim extends InterfacePage {
 		H.push(
 			`<div style="display: none;" class="compte-contain" id="${this.idSecurisation}">`,
 		);
-		H.push(`<div tabindex="0" ie-html="getHtmlSecurisation"></div>`);
+		H.push(`<div ie-html="getHtmlSecurisation"></div>`);
 		H.push("</div>");
 		H.push(
 			'    <div style="display: none;" class="compte-contain" id="',
 			this.idMainPage,
 			'">',
 		);
-		H.push(`      <div tabindex="0">`);
+		H.push(`      <div>`);
 		H.push(`<div class="item-conteneur">`);
 		H.push(
-			`<h4>${GTraductions.getValeur("InfosEnfantPrim.autoriseSortie.titreRubrique")}</h4>`,
+			`<h4>${ObjetTraduction_1.GTraductions.getValeur("InfosEnfantPrim.autoriseSortie.titreRubrique")}</h4>`,
 		);
 		H.push(
 			`<div  class="valeur-contain" id="${this.getInstance(this.identAutoriseSortie).getNom()}"></div>`,
 		);
 		H.push("</div>");
 		H.push(`<div class="item-conteneur">`);
-		H.push(`<h4>${GTraductions.getValeur("infosperso.Liste_DroitImage")}</h4>`);
+		H.push(
+			`<h4>${ObjetTraduction_1.GTraductions.getValeur("infosperso.Liste_DroitImage")}</h4>`,
+		);
 		H.push(
 			`<div  class="valeur-contain" id="${this.getInstance(this.identAutoriseImage).getNom()}"></div>`,
 		);
@@ -220,7 +222,7 @@ class InterfaceCompteInfosEnfantPrim extends InterfacePage {
 		);
 		H.push(`<div class="item-conteneur">`);
 		H.push(
-			`<h4>${GTraductions.getValeur("InfosEnfantPrim.autresContacts.titreRubrique")}</h4>`,
+			`<h4>${ObjetTraduction_1.GTraductions.getValeur("InfosEnfantPrim.autresContacts.titreRubrique")}</h4>`,
 		);
 		H.push(
 			`<div class="valeur-contain" id="${this.getInstance(this.identAutresContacts).getNom()}"></div>`,
@@ -233,18 +235,15 @@ class InterfaceCompteInfosEnfantPrim extends InterfacePage {
 		return H.join("");
 	}
 	construireEcran(aEcran) {
-		const lElement = this.getCtxSelection({ niveauEcran: 0 });
 		switch (aEcran.genreEcran) {
-			case InterfaceCompteInfosEnfantPrim.genreEcran.principal:
+			case genreEcran.principal:
 				if (this.optionsEcrans.avecBascule) {
 					this.setHtmlStructureAffichageBandeau("");
 				}
 				break;
-			case InterfaceCompteInfosEnfantPrim.genreEcran.detail:
-				this.setHtmlStructureAffichageBandeau(
-					this.construireBandeauEcran(lElement),
-				);
-				_actualiserAffichageDetails.call(this);
+			case genreEcran.detail:
+				this.setHtmlStructureAffichageBandeau(this.construireBandeauEcran());
+				this._actualiserAffichageDetails();
 				break;
 			default:
 		}
@@ -261,7 +260,7 @@ class InterfaceCompteInfosEnfantPrim extends InterfacePage {
 			this.identInformationsMedicales,
 		).getAllergiesModifie();
 		this.setEtatSaisie(false);
-		new ObjetRequeteSaisieCompteEnfant(
+		new ObjetRequeteSaisieCompteEnfant_1.ObjetRequeteSaisieCompteEnfant(
 			this,
 			this.actionSurValidation,
 		).lancerRequete({
@@ -270,202 +269,218 @@ class InterfaceCompteInfosEnfantPrim extends InterfacePage {
 			restrictionsAlimentaires: this.donnees.restrictionsAlimentaires,
 		});
 	}
-}
-InterfaceCompteInfosEnfantPrim.genreEcran = {
-	principal: "principal",
-	detail: "detail",
-};
-function _evenementInformationsMedicales() {
-	this.valider();
-}
-function _actionApresRequete(aJSON) {
-	if (aJSON) {
-		this.donneesRecues = true;
-		this.donnees = aJSON;
-		if (!!this.donnees.informationsCompte) {
-			const lAvecMotDePasseEnClair =
-				!!this.donnees.informationsCompte.MotDePasse;
-			this.donnees.informationsCompte.MotDePasse = lAvecMotDePasseEnClair
-				? GChaine.ajouterEntites(
-						GApplication.getCommunication().getChaineDechiffreeAES(
-							this.donnees.informationsCompte.MotDePasse,
+	_evenementInformationsMedicales() {
+		this.valider();
+	}
+	_actionApresRequete(aJSON) {
+		if (aJSON) {
+			this.donneesRecues = true;
+			this.donnees = aJSON;
+			if (!!this.donnees.informationsCompte) {
+				const lAvecMotDePasseEnClair =
+					!!this.donnees.informationsCompte.MotDePasse;
+				this.donnees.informationsCompte.MotDePasse = lAvecMotDePasseEnClair
+					? ObjetChaine_1.GChaine.ajouterEntites(
+							this.appSco
+								.getCommunication()
+								.getChaineDechiffreeAES(
+									this.donnees.informationsCompte.MotDePasse,
+								),
+						)
+					: "*****";
+				this.donnees.informationsCompte.Identifiant =
+					ObjetChaine_1.GChaine.ajouterEntites(
+						ObjetChaine_1.GChaine.ajouterEntites(
+							this.appSco
+								.getCommunication()
+								.getChaineDechiffreeAES(
+									this.donnees.informationsCompte.Identifiant,
+								),
 						),
-					)
-				: "*****";
-			this.donnees.informationsCompte.Identifiant = GChaine.ajouterEntites(
-				GChaine.ajouterEntites(
-					GApplication.getCommunication().getChaineDechiffreeAES(
-						this.donnees.informationsCompte.Identifiant,
-					),
+					);
+				this.donnees.informationsCompte.MotDePasseEnClair =
+					lAvecMotDePasseEnClair;
+			}
+			this.getInstance(this.identAutoriseSortie).setDonnees({
+				sortieAutorisee: aJSON.Informations.sortieAutorise,
+			});
+			const lParams = {
+				infosMedicales: aJSON.infosMedicales,
+				restrictionsAlimentaires: aJSON.restrictionsAlimentaires,
+				mangeALaCantine: aJSON.mangeALaCantine,
+				allergies: aJSON.allergies,
+				allergiesModifiables: aJSON.allergiesModifiables,
+				regimesAlimentairesModifiables: aJSON.regimesAlimentairesModifiables,
+			};
+			this.getInstance(this.identInformationsMedicales).setDonnees(lParams);
+			this.getInstance(this.identAutoriseImage).setDonnees({
+				autoriserImage: aJSON.Informations.autoriserImage,
+			});
+			this.getInstance(this.identAutresContacts).setDonnees({
+				listeAutresContacts: aJSON.Informations.listeAutresContacts,
+				listeLiensParente: aJSON.Informations.listeLiensParente,
+				listeContactsAutresEnfants:
+					aJSON.Informations.listeContactsAutresEnfants,
+			});
+			let lListe = new ObjetListeElements_1.ObjetListeElements();
+			let lElementTitre = new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"InfosEnfantPrim.compte.titre",
 				),
 			);
-			this.donnees.informationsCompte.MotDePasseEnClair =
-				lAvecMotDePasseEnClair;
-		}
-		this.getInstance(this.identAutoriseSortie).setDonnees({
-			sortieAutorisee: aJSON.Informations.sortieAutorise,
-		});
-		const lParams = {
-			infosMedicales: aJSON.infosMedicales,
-			restrictionsAlimentaires: aJSON.restrictionsAlimentaires,
-			mangeALaCantine: aJSON.mangeALaCantine,
-			allergies: aJSON.allergies,
-			allergiesModifiables: aJSON.allergiesModifiables,
-			regimesAlimentairesModifiables: aJSON.regimesAlimentairesModifiables,
-		};
-		this.getInstance(this.identInformationsMedicales).setDonnees(lParams);
-		this.getInstance(this.identAutoriseImage).setDonnees({
-			autoriserImage: aJSON.Informations.autoriserImage,
-		});
-		this.getInstance(this.identAutresContacts).setDonnees({
-			listeAutresContacts: aJSON.Informations.listeAutresContacts,
-			listeLiensParente: aJSON.Informations.listeLiensParente,
-			listeContactsAutresEnfants: aJSON.Informations.listeContactsAutresEnfants,
-		});
-		let lListe = new ObjetListeElements();
-		let lElementTitre = new ObjetElement(
-			GTraductions.getValeur("InfosEnfantPrim.compte.titre"),
-		);
-		lElementTitre.nonSelectionnable = true;
-		lElementTitre.estInterTitre = ObjetListe.typeInterTitre.h5;
-		lListe.addElement(lElementTitre);
-		this.saisieMdpEnfant =
-			GApplication.droits.get(TypeDroits.compte.avecSaisieMotDePasseEleve) &&
-			this.donnees.informationsCompte;
-		lListe.add(
-			new ObjetElement(
-				GTraductions.getValeur("InfosEnfantPrim.compte.profil"),
-				0,
-				TypeFiltreAffichage.profilPrimEnfant,
-			),
-		);
-		if (this.saisieMdpEnfant) {
+			lElementTitre.nonSelectionnable = true;
+			lElementTitre.estInterTitre = ObjetListe_1.ObjetListe.typeInterTitre.h5;
+			lListe.addElement(lElementTitre);
+			this.saisieMdpEnfant =
+				this.appSco.droits.get(
+					ObjetDroitsPN_1.TypeDroits.compte.avecSaisieMotDePasseEleve,
+				) && !!this.donnees.informationsCompte;
 			lListe.add(
-				new ObjetElement(
-					GTraductions.getValeur(
-						"ParametresUtilisateur.TitreSecurisationCompte",
+				new ObjetElement_1.ObjetElement(
+					ObjetTraduction_1.GTraductions.getValeur(
+						"InfosEnfantPrim.compte.profil",
 					),
 					0,
-					TypeFiltreAffichage.securisation,
+					Enumere_DonneesPersonnelles_1.TypeFiltreAffichage.profilPrimEnfant,
 				),
 			);
-		}
-		this.getInstance(this.identListe).setDonnees(
-			new DonneesListe_FiltreCompte(lListe).setOptions({
-				flatDesignMinimal: !IE.estMobile,
-			}),
-			0,
-		);
-		if (!IE.estMobile) {
-			this.getInstance(this.identListe).selectionnerLigne({ ligne: 1 });
-		}
-	}
-}
-function _surModifierMdpEnfant() {
-	ObjetFenetre.creerInstanceFenetre(ObjetFenetre_ModificationIdentifiantMDP, {
-		pere: this,
-		initialiser: function (aInstance) {
-			aInstance.changementMDP = true;
-			aInstance.changementMDPEleve = true;
-			aInstance.setOptionsFenetre({
-				optionsMDP: { classRequeteSaisie: ObjetRequeteSaisieMotDePasseEleve },
-			});
-		},
-	}).setDonnees(GEtatUtilisateur.reglesSaisieMotDePasse);
-}
-function _initListe(aInstance) {
-	aInstance.setOptionsListe({
-		skin: ObjetListe.skin.flatDesign,
-		hauteurAdapteContenu: true,
-		colonnesSansBordureDroit: [true],
-	});
-}
-function _evenementListe(aParametres) {
-	const lCellulesSelections = this.getInstance(
-		this.identListe,
-	).getTableauCellulesSelection();
-	this.ongletSelectionne = lCellulesSelections[0].article.getGenre();
-	let lEcranSrc, lEcranDest;
-	switch (aParametres.genreEvenement) {
-		case EGenreEvenementListe.SelectionClick:
-		case EGenreEvenementListe.ModificationSelection:
-			if (this.optionsEcrans.avecBascule) {
-				lEcranSrc = {
-					niveauEcran: 0,
-					genreEcran: this.getCtxEcran({ niveauEcran: 0 }),
-				};
-				lEcranDest = {
-					niveauEcran: 1,
-					genreEcran: this.getCtxEcran({ niveauEcran: 1 }),
-				};
-				this.basculerEcran(lEcranSrc, lEcranDest);
+			if (this.saisieMdpEnfant) {
+				lListe.add(
+					new ObjetElement_1.ObjetElement(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"ParametresUtilisateur.TitreSecurisationCompte",
+						),
+						0,
+						Enumere_DonneesPersonnelles_1.TypeFiltreAffichage.securisation,
+					),
+				);
 			}
-			break;
+			this.getInstance(this.identListe).setDonnees(
+				new DonneesListe_FiltreCompte_1.DonneesListe_FiltreCompte(
+					lListe,
+				).setOptions({ flatDesignMinimal: !IE.estMobile }),
+				0,
+			);
+			if (!IE.estMobile) {
+				this.getInstance(this.identListe).selectionnerLigne({ ligne: 1 });
+			}
+		}
 	}
-	_actualiserAffichageDetails.call(this);
-}
-function _actualiserAffichageDetails() {
-	const lSelection = this.getInstance(this.identListe).getElementSelection();
-	switch (lSelection.getGenre()) {
-		case TypeFiltreAffichage.profilPrimEnfant:
-			GHtml.setDisplay(this.idSecurisation, false);
-			GHtml.setDisplay(this.idMainPage, true);
-			break;
-		case TypeFiltreAffichage.securisation:
-			GHtml.setDisplay(this.idMainPage, false);
-			GHtml.setDisplay(this.idSecurisation, true);
-			break;
-		default:
-			break;
+	_surModifierMdpEnfant() {
+		ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_ModificationIdentifiantMDP_1.ObjetFenetre_ModificationIdentifiantMDP,
+			{
+				pere: this,
+				initialiser: function (aInstance) {
+					aInstance.changementMDP = true;
+					aInstance.changementMDPEleve = true;
+					aInstance.setOptionsFenetre({
+						optionsMDP: {
+							classRequeteSaisie:
+								ObjetRequeteSaisieMotDePasseEleve_1.ObjetRequeteSaisieMotDePasseEleve,
+						},
+					});
+				},
+			},
+		).setDonnees(GEtatUtilisateur.reglesSaisieMotDePasse);
+	}
+	_initListe(aInstance) {
+		aInstance.setOptionsListe({
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+			hauteurAdapteContenu: true,
+			colonnesSansBordureDroit: [true],
+		});
+	}
+	_evenementListe(aParametres) {
+		const lCellulesSelections = this.getInstance(
+			this.identListe,
+		).getTableauCellulesSelection();
+		this.ongletSelectionne = lCellulesSelections[0].article.getGenre();
+		let lEcranSrc, lEcranDest;
+		switch (aParametres.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.SelectionClick:
+			case Enumere_EvenementListe_1.EGenreEvenementListe.ModificationSelection:
+				if (this.optionsEcrans.avecBascule) {
+					lEcranSrc = {
+						niveauEcran: 0,
+						genreEcran: this.getCtxEcran({ niveauEcran: 0 }),
+					};
+					lEcranDest = {
+						niveauEcran: 1,
+						genreEcran: this.getCtxEcran({ niveauEcran: 1 }),
+					};
+					this.basculerEcran(lEcranSrc, lEcranDest);
+				}
+				break;
+		}
+		this._actualiserAffichageDetails();
+	}
+	_actualiserAffichageDetails() {
+		const lSelection = this.getInstance(this.identListe).getElementSelection();
+		switch (lSelection.getGenre()) {
+			case Enumere_DonneesPersonnelles_1.TypeFiltreAffichage.profilPrimEnfant:
+				ObjetHtml_1.GHtml.setDisplay(this.idSecurisation, false);
+				ObjetHtml_1.GHtml.setDisplay(this.idMainPage, true);
+				break;
+			case Enumere_DonneesPersonnelles_1.TypeFiltreAffichage.securisation:
+				ObjetHtml_1.GHtml.setDisplay(this.idMainPage, false);
+				ObjetHtml_1.GHtml.setDisplay(this.idSecurisation, true);
+				break;
+			default:
+				break;
+		}
+	}
+	_evntAutorisationSaisie(aParam) {
+		const lObjetSaisie = { estAutorise: aParam.estAutorise };
+		new ObjetRequeteSaisieAutorisationSortie(
+			this,
+			this._actionSurSaisie.bind(this),
+		).lancerRequete(lObjetSaisie);
+	}
+	_evntAutorisationImageSaisie(aParam) {
+		const lObjetSaisie = { avecImage: !aParam.estAutorise };
+		new ObjetRequeteSaisieAutorisationImage(
+			this,
+			this._actionSurSaisie.bind(this),
+		).lancerRequete(lObjetSaisie);
+	}
+	_evntSaisieAutresContacts(aParam) {
+		aParam.listeSaisie.setSerialisateurJSON({
+			methodeSerialisation: this._serialisationListeAutresContacts.bind(this),
+		});
+		new ObjetRequeteSaisieAutresContacts(
+			this,
+			this.actionSurValidation,
+		).lancerRequete(aParam);
+	}
+	_serialisationListeAutresContacts(aElement, aJSON) {
+		aJSON.nom = aElement.nom;
+		aJSON.prenom = aElement.prenom;
+		aJSON.indMobile = aElement.indMobile;
+		aJSON.indDomicile = aElement.indDomicile;
+		aJSON.indTravail = aElement.indTravail;
+		aJSON.telMobile = aElement.telMobile;
+		aJSON.telDomicile = aElement.telDomicile;
+		aJSON.telTravail = aElement.telTravail;
+		aJSON.appelSiUrgent = aElement.appelSiUrgent;
+		aJSON.autoriseARecuperer = aElement.autoriseARecuperer;
+		if (aElement.lienParente && aElement.lienParente.getNumero() !== 0) {
+			aJSON.lienParente = aElement.lienParente.toJSON();
+		}
+	}
+	_actionSurSaisie() {
+		this.recupererDonnees();
+	}
+	_ouvrirFenetreDetailsPIEleve(aProjet) {
+		ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_DetailsPIEleve_1.ObjetFenetre_DetailsPIEleve,
+			{ pere: this },
+		).setDonnees({ eleve: GEtatUtilisateur.getMembre(), projet: aProjet });
 	}
 }
-function _evntAutorisationSaisie(aParam) {
-	const lObjetSaisie = { estAutorise: aParam.estAutorise };
-	Requetes(
-		"SaisieAutorisationSortie",
-		this,
-		_actionSurSaisie.bind(this),
-	).lancerRequete(lObjetSaisie);
-}
-function _evntAutorisationImageSaisie(aParam) {
-	const lObjetSaisie = { avecImage: !aParam.estAutorise };
-	Requetes(
-		"SaisieAutorisationImage",
-		this,
-		_actionSurSaisie.bind(this),
-	).lancerRequete(lObjetSaisie);
-}
-function _evntSaisieAutresContacts(aParam) {
-	aParam.listeSaisie.setSerialisateurJSON({
-		methodeSerialisation: _serialisationListeAutresContacts.bind(this),
-	});
-	Requetes(
-		"SaisieAutresContacts",
-		this,
-		this.actionSurValidation,
-	).lancerRequete(aParam);
-}
-function _serialisationListeAutresContacts(aElement, aJSON) {
-	aJSON.nom = aElement.nom;
-	aJSON.prenom = aElement.prenom;
-	aJSON.indMobile = aElement.indMobile;
-	aJSON.indDomicile = aElement.indDomicile;
-	aJSON.indTravail = aElement.indTravail;
-	aJSON.telMobile = aElement.telMobile;
-	aJSON.telDomicile = aElement.telDomicile;
-	aJSON.telTravail = aElement.telTravail;
-	aJSON.appelSiUrgent = aElement.appelSiUrgent;
-	aJSON.autoriseARecuperer = aElement.autoriseARecuperer;
-	if (aElement.lienParente && aElement.lienParente.getNumero() !== 0) {
-		aJSON.lienParente = aElement.lienParente.toJSON();
-	}
-}
-function _actionSurSaisie() {
-	this.recupererDonnees();
-}
-function _ouvrirFenetreDetailsPIEleve(aProjet) {
-	ObjetFenetre.creerInstanceFenetre(ObjetFenetre_DetailsPIEleve, {
-		pere: this,
-	}).setDonnees({ eleve: GEtatUtilisateur.getMembre(), projet: aProjet });
-}
-module.exports = { InterfaceCompteInfosEnfantPrim };
+exports.InterfaceCompteInfosEnfantPrim = InterfaceCompteInfosEnfantPrim;
+var genreEcran;
+(function (genreEcran) {
+	genreEcran["principal"] = "principal";
+	genreEcran["detail"] = "detail";
+})(genreEcran || (exports.genreEcran = genreEcran = {}));

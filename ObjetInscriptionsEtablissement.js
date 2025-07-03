@@ -1,79 +1,69 @@
-const { Identite } = require("ObjetIdentite.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GHtml } = require("ObjetHtml.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { UtilitaireInscriptions } = require("UtilitaireInscriptions.js");
-const {
-	EModeValidation,
-	ETypeDonneeInscription,
-	EGroupeDonneeInscription,
-	EEtape,
-} = require("Enumere_Inscriptions.js");
-const { EGenreSaisie } = require("Enumere_Saisie.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GUID } = require("GUID.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const {
-	ObjetFenetre_GenerationPdfSco,
-} = require("ObjetFenetre_GenerationPdfSco.js");
-const { TypeHttpGenerationPDFSco } = require("TypeHttpGenerationPDFSco.js");
-const { GenerationPDF } = require("UtilitaireGenerationPDF.js");
-const { TypeThemeBouton } = require("Type_ThemeBouton.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { EGenreAction } = require("Enumere_Action.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { UtilitaireUrl } = require("UtilitaireUrl.js");
-const { TypeFichierExterneHttpSco } = require("TypeFichierExterneHttpSco.js");
-const {
-	ObjetRequeteRechercheListeDonnees,
-	TypeRechercheListe,
-} = require("ObjetRequeteRechercheListeDonnees.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { GChaine } = require("ObjetChaine.js");
-const { tag } = require("tag.js");
-const { ObjetCelluleDate } = require("ObjetCelluleDate.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { EGenreEvnt } = require("UtilitaireOrientation.js");
-const {
-	TypeOrigineCreationEtatDemandeInscriptionUtil,
-} = require("TypeOrigineCreationEtatDemandeInscription.js");
-const {
-	TypeDecisionDemandeInscription,
-	TypeDecisionDemandeInscriptionUtil,
-} = require("TypeDecisionDemandeInscription.js");
-const { ObjetFenetre_Liste } = require("ObjetFenetre_Liste.js");
-const { ObjetListe } = require("ObjetListe.js");
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-const { ObjetTabOnglets } = require("ObjetTabOnglets.js");
-class ObjetInscriptionsEtablissement extends Identite {
+exports.ObjetInscriptionsEtablissement = void 0;
+const ObjetIdentite_1 = require("ObjetIdentite");
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const UtilitaireInscriptions_1 = require("UtilitaireInscriptions");
+const Enumere_Inscriptions_1 = require("Enumere_Inscriptions");
+const Enumere_Saisie_1 = require("Enumere_Saisie");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const GUID_1 = require("GUID");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_GenerationPdfSco_1 = require("ObjetFenetre_GenerationPdfSco");
+const TypeHttpGenerationPDFSco_1 = require("TypeHttpGenerationPDFSco");
+const UtilitaireGenerationPDF_1 = require("UtilitaireGenerationPDF");
+const Type_ThemeBouton_1 = require("Type_ThemeBouton");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const Enumere_Action_1 = require("Enumere_Action");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const UtilitaireUrl_1 = require("UtilitaireUrl");
+const TypeFichierExterneHttpSco_1 = require("TypeFichierExterneHttpSco");
+const ObjetRequeteRechercheListeDonnees_1 = require("ObjetRequeteRechercheListeDonnees");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const ObjetChaine_1 = require("ObjetChaine");
+const tag_1 = require("tag");
+const ObjetCelluleDate_1 = require("ObjetCelluleDate");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const TypeOrigineCreationEtatDemandeInscription_1 = require("TypeOrigineCreationEtatDemandeInscription");
+const TypeDecisionDemandeInscription_1 = require("TypeDecisionDemandeInscription");
+const ObjetFenetre_Liste_1 = require("ObjetFenetre_Liste");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const ObjetTabOnglets_1 = require("ObjetTabOnglets");
+const ObjetRequetePageOrientations_1 = require("ObjetRequetePageOrientations");
+class ObjetInscriptionsEtablissement extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
-		this.champs = new ObjetListeElements();
-		this.listeCombo = { identite: [], responsables: [] };
-		this.idConteneurOptions = GUID.getId();
-		this.idListeDocuments = GUID.getId();
-		this.idDivResponsable = GUID.getId();
-		this.listeTabResponsables = null;
+		this.applicationSco = GApplication;
+		this.champs = new ObjetListeElements_1.ObjetListeElements();
+		this.listeCombo = {
+			identite: { ville: null, pays: null },
+			responsables: [],
+		};
+		this.idConteneurOptions = GUID_1.GUID.getId();
+		this.idListeDocuments = GUID_1.GUID.getId();
+		this.idDivResponsable = GUID_1.GUID.getId();
 		this.responsableSelectionne = null;
 	}
 	setListesSaisie(aListes) {
 		this.listes = aListes;
 	}
 	_getDonneesSauvegardeRecherche(aGroupe, aIndice) {
-		if ([EGroupeDonneeInscription.responsables].includes(aGroupe)) {
+		if (
+			[Enumere_Inscriptions_1.EGroupeDonneeInscription.responsables].includes(
+				aGroupe,
+			)
+		) {
 			if (!this.sauvegardeRecherches[aGroupe]) {
-				this.sauvegardeRecherches[aGroupe] = new ObjetListeElements();
+				this.sauvegardeRecherches[aGroupe] =
+					new ObjetListeElements_1.ObjetListeElements();
 			}
 			if (
-				!ObjetListeElements.prototype.isPrototypeOf(
+				!ObjetListeElements_1.ObjetListeElements.prototype.isPrototypeOf(
 					this.sauvegardeRecherches[aGroupe],
 				)
 			) {
@@ -84,7 +74,9 @@ class ObjetInscriptionsEtablissement extends Identite {
 				lResult = this.sauvegardeRecherches[aGroupe].get(aIndice);
 			}
 			if (aIndice >= 1 && !lResult) {
-				this.sauvegardeRecherches[aGroupe].addElement(new ObjetElement());
+				this.sauvegardeRecherches[aGroupe].addElement(
+					new ObjetElement_1.ObjetElement(),
+				);
 				lResult = this.sauvegardeRecherches[aGroupe].get(aIndice);
 			}
 			return lResult;
@@ -105,16 +97,18 @@ class ObjetInscriptionsEtablissement extends Identite {
 			typeRecherche: aObjetChamp.typeRecherche,
 			stringRecherche: aValue,
 		};
-		new ObjetRequeteRechercheListeDonnees(this)
+		new ObjetRequeteRechercheListeDonnees_1.ObjetRequeteRechercheListeDonnees(
+			this,
+		)
 			.setOptions({ sansBlocageInterface: true })
 			.lancerRequete(lParamsRequete)
 			.then((aJSON) => {
 				let lListe = aJSON.listeDonnees;
-				const lElement = new ObjetElement(
+				const lElement = new ObjetElement_1.ObjetElement(
 					"&lt;&nbsp;" + aObjetChamp.messageNonTrouve + "&nbsp;&gt;",
 				);
 				lElement.nonSelectionnable = true;
-				lListe.setTri([ObjetTri.init("Libelle")]);
+				lListe.setTri([ObjetTri_1.ObjetTri.init("Libelle")]);
 				lListe.trier();
 				if (!aObjetChamp.avecSaisieAlt && lListe.count() === 0) {
 					lListe.addElement(lElement);
@@ -128,7 +122,11 @@ class ObjetInscriptionsEtablissement extends Identite {
 		let lFamille = aObjetChamp.groupe;
 		let lType = aObjetChamp.type;
 		let lDonnee = this.donnees[lFamille];
-		if ([EGroupeDonneeInscription.responsables].includes(lFamille)) {
+		if (
+			[Enumere_Inscriptions_1.EGroupeDonneeInscription.responsables].includes(
+				lFamille,
+			)
+		) {
 			lDonnee = this.getResponsable(aObjetChamp.indiceResponsable);
 		}
 		if (!!lDonnee && !!lDonnee[lType]) {
@@ -136,7 +134,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 			lElement.setLibelle(aValue);
 			lElement.Numero = 0;
 		} else {
-			let lElement = new ObjetElement(aValue);
+			let lElement = new ObjetElement_1.ObjetElement(aValue);
 			lDonnee[lType] = lElement;
 		}
 	}
@@ -148,7 +146,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 		}
 	}
 	composePage() {
-		this.champs = new ObjetListeElements();
+		this.champs = new ObjetListeElements_1.ObjetListeElements();
 		if (this.estResume) {
 			return this.construireResume();
 		} else {
@@ -156,56 +154,63 @@ class ObjetInscriptionsEtablissement extends Identite {
 		}
 	}
 	composeEtape() {
-		const lHtml = [];
-		lHtml.push(
+		const H = [];
+		H.push(
 			'<div class="contenu-inscription flex-contain cols justify-between m-top-l">',
 		);
-		if (this.etape.getGenre() !== EEtape.consigne) {
-			lHtml.push(
-				tag(
+		if (this.etape.getGenre() !== Enumere_Inscriptions_1.EEtape.consigne) {
+			H.push(
+				IE.jsx.str(
 					"h3",
 					{ class: "m-bottom-xl" },
-					GTraductions.getValeur("inscriptionsEtablissement.titreEtape", [
-						this.etape.Position,
-						this.listeEtapes.count() - 1,
-						this.etape.getLibelle(),
-					]),
+					ObjetTraduction_1.GTraductions.getValeur(
+						"inscriptionsEtablissement.titreEtape",
+						[
+							this.etape.Position,
+							this.listeEtapes.count() - 1,
+							this.etape.getLibelle(),
+						],
+					),
 				),
 			);
 		}
 		switch (this.etape.getGenre()) {
-			case EEtape.consigne:
-				lHtml.push(this.composeConsigne());
+			case Enumere_Inscriptions_1.EEtape.consigne:
+				H.push(this.composeConsigne());
 				break;
-			case EEtape.identite:
-				lHtml.push(this.composeBlocIdentiteEnfant());
-				lHtml.push(this.ajouterChampObligatoire());
+			case Enumere_Inscriptions_1.EEtape.identite:
+				H.push(this.composeBlocIdentiteEnfant());
+				H.push(this.ajouterChampObligatoire());
 				break;
-			case EEtape.scolarite:
-				lHtml.push(this.composeBlocScolariteSouhaitee());
-				lHtml.push(this.ajouterChampObligatoire());
+			case Enumere_Inscriptions_1.EEtape.scolarite:
+				H.push(this.composeBlocScolariteSouhaitee());
+				H.push(this.ajouterChampObligatoire());
 				break;
-			case EEtape.responsables: {
-				lHtml.push(
-					tag("div", { "ie-identite": "getOngletResponsables" }),
-					tag("div", { id: this.idDivResponsable, class: "m-top-xl" }),
+			case Enumere_Inscriptions_1.EEtape.responsables: {
+				H.push(
+					IE.jsx.str(
+						IE.jsx.fragment,
+						null,
+						IE.jsx.str("div", { "ie-identite": "getOngletResponsables" }),
+						IE.jsx.str("div", { id: this.idDivResponsable, class: "m-top-xl" }),
+					),
 				);
-				lHtml.push(this.ajouterChampObligatoire());
+				H.push(this.ajouterChampObligatoire());
 				break;
 			}
-			case EEtape.fratrie:
-				lHtml.push(this.composeBlocFratrie());
+			case Enumere_Inscriptions_1.EEtape.fratrie:
+				H.push(this.composeBlocFratrie());
 				break;
-			case EEtape.champsLibre:
-				lHtml.push(this.composeBlocChampLibre());
+			case Enumere_Inscriptions_1.EEtape.champsLibre:
+				H.push(this.composeBlocChampLibre());
 				break;
-			case EEtape.documents:
+			case Enumere_Inscriptions_1.EEtape.documents:
 				if (
 					!!this.session &&
 					this.session.listeDocumentsAFournir &&
 					this.session.listeDocumentsAFournir.count() > 0
 				) {
-					lHtml.push(
+					H.push(
 						this.composeBlocDocumentsAFournir(
 							this.session.listeDocumentsAFournir,
 						),
@@ -216,10 +221,11 @@ class ObjetInscriptionsEtablissement extends Identite {
 					) {
 						this.donnees.scolariteActuelle.documentsFournis.parcourir(
 							(aDoc) => {
-								let lDocumentJoint = new ObjetElement(
+								let lDocumentJoint = new ObjetElement_1.ObjetElement(
 									aDoc.getLibelle(),
 									aDoc.getNumero(),
-									TypeFichierExterneHttpSco.DocJointInscription,
+									TypeFichierExterneHttpSco_1.TypeFichierExterneHttpSco
+										.DocJointInscription,
 								);
 								let lIndice =
 									this.session.listeDocumentsAFournir.getIndiceParLibelle(
@@ -234,95 +240,114 @@ class ObjetInscriptionsEtablissement extends Identite {
 			default:
 				break;
 		}
-		if (this.etape.getGenre() === EEtape.consigne) {
-			lHtml.push(
-				tag(
+		if (this.etape.getGenre() === Enumere_Inscriptions_1.EEtape.consigne) {
+			H.push(
+				IE.jsx.str(
 					"div",
 					{ class: "m-top-l flex-contain justify-center" },
-					tag(
+					IE.jsx.str(
 						"ie-bouton",
-						{ "ie-model": "btnSuivant", class: [TypeThemeBouton.primaire] },
-						GTraductions.getValeur(
+						{
+							"ie-model": "btnSuivant",
+							class: [Type_ThemeBouton_1.TypeThemeBouton.primaire],
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
 							"inscriptionsEtablissement.afficherFormulaire",
 						),
 					),
 				),
 			);
 		} else {
-			lHtml.push(
-				tag(
+			H.push(
+				IE.jsx.str(
 					"div",
 					{ class: "m-top-l flex-contain justify-end" },
-					tag(
+					IE.jsx.str(
 						"ie-bouton",
 						{
 							"ie-model": "btnPrecedent",
-							class: [TypeThemeBouton.neutre, "m-x-l"],
+							class: [Type_ThemeBouton_1.TypeThemeBouton.neutre, "m-x-l"],
 						},
-						GTraductions.getValeur("Precedent"),
+						ObjetTraduction_1.GTraductions.getValeur("Precedent"),
 					),
-					tag(
+					IE.jsx.str(
 						"ie-bouton",
-						{ "ie-model": "btnSuivant", class: [TypeThemeBouton.primaire] },
-						GTraductions.getValeur("Suivant"),
+						{
+							"ie-model": "btnSuivant",
+							class: [Type_ThemeBouton_1.TypeThemeBouton.primaire],
+						},
+						ObjetTraduction_1.GTraductions.getValeur("Suivant"),
 					),
 				),
 			);
 		}
 		if (this.etape.estDerniereEtape) {
-			lHtml.push(
-				tag(
+			H.push(
+				IE.jsx.str(
 					"div",
 					{ class: "m-top-xl flex-contain justify-end" },
-					tag(
+					IE.jsx.str(
 						"ie-bouton",
 						{
 							"ie-model": "btnAnnuler",
-							class: [TypeThemeBouton.secondaire, "m-x-l"],
+							class: [Type_ThemeBouton_1.TypeThemeBouton.secondaire, "m-x-l"],
 						},
-						GTraductions.getValeur("Annuler"),
+						ObjetTraduction_1.GTraductions.getValeur("Annuler"),
 					),
-					tag(
+					IE.jsx.str(
 						"ie-bouton",
-						{ "ie-model": "btnValider", class: [TypeThemeBouton.primaire] },
-						GTraductions.getValeur("inscriptionsEtablissement.envoyerDemande"),
+						{
+							"ie-model": "btnValider",
+							class: [Type_ThemeBouton_1.TypeThemeBouton.primaire],
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"inscriptionsEtablissement.envoyerDemande",
+						),
 					),
 				),
 			);
 		}
-		lHtml.push("</div>");
-		return lHtml.join("");
+		H.push("</div>");
+		return H.join("");
 	}
 	ajouterChampObligatoire() {
-		return tag(
-			"span",
-			{ class: "oie-champsobligatoire m-top" },
-			GTraductions.getValeur("inscriptionsEtablissement.champsObligatoires"),
+		return IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			IE.jsx.str(
+				"span",
+				{ class: "oie-champsobligatoire m-top" },
+				ObjetTraduction_1.GTraductions.getValeur(
+					"inscriptionsEtablissement.champsObligatoires",
+				),
+			),
 		);
 	}
 	setEtape(aEtape) {
 		this.etape = aEtape;
 		this.estResume = false;
 		this.afficher();
-		if (this.etape.getGenre() === EEtape.documents) {
-			_redessinnerDocumentsFournis.call(this);
+		if (this.etape.getGenre() === Enumere_Inscriptions_1.EEtape.documents) {
+			this._redessinnerDocumentsFournis();
 		}
 	}
 	surValider() {
 		if (this.verifierChamps()) {
 			GApplication.getMessage().afficher({
-				type: EGenreBoiteMessage.Confirmation,
-				message: GTraductions.getValeur(
+				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+				message: ObjetTraduction_1.GTraductions.getValeur(
 					"inscriptionsEtablissement.msgValidation",
 				),
 				callback: (aGenreAction) => {
-					if (aGenreAction === EGenreAction.Valider) {
+					if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
 						const lData = {
-							genre: ObjetInscriptionsEtablissement.genreEvenement.valider,
 							donnees: this.donnees,
 							listeDocuments: this.listeDocuments,
 						};
-						this.callback.appel(lData);
+						this.callback.appel(
+							ObjetInscriptionsEtablissement.GenreEvenement.valider,
+							lData,
+						);
 					}
 				},
 			});
@@ -330,61 +355,62 @@ class ObjetInscriptionsEtablissement extends Identite {
 	}
 	surSupprimer() {
 		GApplication.getMessage().afficher({
-			type: EGenreBoiteMessage.Confirmation,
-			message: GTraductions.getValeur(
+			type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+			message: ObjetTraduction_1.GTraductions.getValeur(
 				"inscriptionsEtablissement.msgConfirmationSuppression",
 			),
 			callback: (aGenreAction) => {
-				if (aGenreAction === EGenreAction.Valider) {
+				if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
 					const lData = {
-						genre: ObjetInscriptionsEtablissement.genreEvenement.supprimer,
 						donnees: this.donnees,
 						listeDocuments: this.listeDocuments,
 					};
-					this.callback.appel(lData);
+					this.callback.appel(
+						ObjetInscriptionsEtablissement.GenreEvenement.supprimer,
+						lData,
+					);
 				}
 			},
 		});
 	}
 	surAnnuler() {
 		GApplication.getMessage().afficher({
-			type: EGenreBoiteMessage.Confirmation,
-			message: GTraductions.getValeur(
+			type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+			message: ObjetTraduction_1.GTraductions.getValeur(
 				"inscriptionsEtablissement.msgConfirmationAnnulation",
 			),
 			callback: (aGenreAction) => {
-				if (aGenreAction === EGenreAction.Valider) {
-					const lData = {
-						genre: ObjetInscriptionsEtablissement.genreEvenement.annuler,
-					};
-					this.callback.appel(lData);
+				if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
+					this.callback.appel(
+						ObjetInscriptionsEtablissement.GenreEvenement.annuler,
+					);
 				}
 			},
 		});
 	}
 	verifierChamps(aAvecMessage = true) {
 		let lToutOK = true;
-		if (this.etape.getGenre() === EEtape.responsables) {
-			_validerAdresse.call(this);
+		if (this.etape.getGenre() === Enumere_Inscriptions_1.EEtape.responsables) {
+			this._validerAdresse();
 		}
 		if (this.champs && this.champs.count()) {
 			this.champs.parcourir((aChamp) => {
 				const lObj = $(`#${aChamp.id}`);
 				if (lObj) {
-					lObj.attr("aria-invalid", !aChamp.valide);
+					lObj.attr("aria-invalid", (!aChamp.valide).toString());
 				}
 				if (!aChamp.valide && !aChamp.optionnel) {
 					lToutOK = false;
 				}
 			});
 		}
-		if (this.etape.getGenre() === EEtape.scolarite) {
-			_validerOptionsFormation.call(this);
+		if (this.etape.getGenre() === Enumere_Inscriptions_1.EEtape.scolarite) {
+			this._validerOptionsFormation();
 			if (lToutOK && this.optionsFormation && this.optionsFormation.count()) {
 				this.optionsFormation.parcourir((aChamp) => {
 					const lObj = $(`#${aChamp.id}`);
 					if (lObj) {
-						lObj.attr("aria-invalid", !aChamp.valide);
+						lObj.attr("aria-invalid", (!aChamp.valide).toString());
 					}
 					if (!aChamp.valide && !aChamp.optionnel) {
 						lToutOK = false;
@@ -394,8 +420,8 @@ class ObjetInscriptionsEtablissement extends Identite {
 		}
 		if (!lToutOK && aAvecMessage) {
 			GApplication.getMessage().afficher({
-				type: EGenreBoiteMessage.Information,
-				message: GTraductions.getValeur(
+				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+				message: ObjetTraduction_1.GTraductions.getValeur(
 					"inscriptionsEtablissement.msgFormulaireInvalide",
 				),
 			});
@@ -403,189 +429,229 @@ class ObjetInscriptionsEtablissement extends Identite {
 		return lToutOK;
 	}
 	construireResume() {
-		const lHtml = [];
+		const H = [];
 		const lEtatDemande = this.donnees.resumeInscription.etatDemande;
 		const lDecision = this.donnees.resumeInscription.decision;
-		lHtml.push(
-			tag("h3", { class: "p-left m-top-xl" }, this.session.getLibelle()),
+		H.push(
+			IE.jsx.str("h3", { class: "p-left m-top-xl" }, this.session.getLibelle()),
 		);
-		lHtml.push(
-			tag(
+		H.push(
+			IE.jsx.str(
 				"p",
 				{ class: "p-left m-bottom-xl" },
 				this.donnees.resumeInscription.nomElevePostulant,
 			),
 		);
-		lHtml.push('<div class="resume-inscription">');
-		lHtml.push(
-			tag(
+		H.push('<div class="resume-inscription">');
+		H.push(
+			IE.jsx.str(
 				"div",
 				{ class: "flex-contain m-all" },
-				tag(
+				IE.jsx.str(
 					"p",
-					{ class: "" },
-					GTraductions.getValeur("inscriptionsEtablissement.formationDemandee"),
+					null,
+					ObjetTraduction_1.GTraductions.getValeur(
+						"inscriptionsEtablissement.formationDemandee",
+					),
 				),
-				tag(
+				IE.jsx.str(
 					"p",
 					{ class: "Gras" },
 					this.donnees.scolariteActuelle.formation.getLibelle(),
 				),
 			),
 		);
-		lHtml.push(
-			tag(
+		H.push(
+			IE.jsx.str(
 				"div",
 				{ class: "flex-contain m-all" },
-				tag(
+				IE.jsx.str(
 					"p",
-					{ class: "" },
-					GTraductions.getValeur("inscriptionsEtablissement.numeroDossier"),
+					null,
+					ObjetTraduction_1.GTraductions.getValeur(
+						"inscriptionsEtablissement.numeroDossier",
+					),
 				),
-				tag(
+				IE.jsx.str(
 					"p",
 					{ class: "Gras" },
 					this.donnees.resumeInscription.numeroDossier,
 				),
 			),
 		);
-		lHtml.push(
-			tag(
+		H.push(
+			IE.jsx.str(
 				"div",
 				{ class: "flex-contain m-all" },
-				tag(
+				IE.jsx.str(
 					"p",
-					{ class: "" },
-					GTraductions.getValeur("inscriptionsEtablissement.dateEnvoiDossier"),
+					null,
+					ObjetTraduction_1.GTraductions.getValeur(
+						"inscriptionsEtablissement.dateEnvoiDossier",
+					),
 				),
-				tag(
+				IE.jsx.str(
 					"p",
 					{ class: "Gras" },
-					GDate.formatDate(
+					ObjetDate_1.GDate.formatDate(
 						this.donnees.resumeInscription.dateDemande,
 						"%JJ/%MM/%AAAA",
 					),
 				),
 			),
 		);
-		lHtml.push(
-			tag(
+		H.push(
+			IE.jsx.str(
 				"div",
 				{ class: "flex-contain m-all" },
-				tag(
+				IE.jsx.str(
 					"p",
-					{ class: "" },
-					GTraductions.getValeur("inscriptionsEtablissement.etatDemande"),
+					null,
+					ObjetTraduction_1.GTraductions.getValeur(
+						"inscriptionsEtablissement.etatDemande",
+					),
 				),
-				tag(
+				IE.jsx.str(
 					"p",
 					{ class: "Gras" },
-					TypeOrigineCreationEtatDemandeInscriptionUtil.getLibelle(
+					TypeOrigineCreationEtatDemandeInscription_1.TypeOrigineCreationEtatDemandeInscriptionUtil.getLibelle(
 						lEtatDemande,
 					),
 				),
 			),
 		);
-		if (lDecision !== TypeDecisionDemandeInscription.ddi_EnCours) {
-			lHtml.push(
-				tag(
+		if (
+			lDecision !==
+			TypeDecisionDemandeInscription_1.TypeDecisionDemandeInscription
+				.ddi_EnCours
+		) {
+			H.push(
+				IE.jsx.str(
 					"div",
 					{ class: "flex-contain m-all" },
-					tag(
+					IE.jsx.str(
 						"p",
-						{ class: "" },
-						GTraductions.getValeur("inscriptionsEtablissement.decision"),
+						null,
+						ObjetTraduction_1.GTraductions.getValeur(
+							"inscriptionsEtablissement.decision",
+						),
 					),
-					tag(
+					IE.jsx.str(
 						"p",
 						{ class: "Gras" },
-						TypeDecisionDemandeInscriptionUtil.getLibelle(lDecision),
-						tag("i", {
+						TypeDecisionDemandeInscription_1.TypeDecisionDemandeInscriptionUtil.getLibelle(
+							lDecision,
+						),
+						IE.jsx.str("i", {
 							class: [
-								TypeDecisionDemandeInscriptionUtil.getClass(lDecision),
+								TypeDecisionDemandeInscription_1.TypeDecisionDemandeInscriptionUtil.getClass(
+									lDecision,
+								),
 								"m-left-l",
 							],
+							role: "presentation",
 						}),
 					),
 				),
 			);
 		}
-		lHtml.push(
-			tag(
+		H.push(
+			IE.jsx.str(
 				"ie-bouton",
 				{
-					class: [TypeThemeBouton.neutre, "m-top-xl m-bottom-big"],
+					class: [
+						Type_ThemeBouton_1.TypeThemeBouton.neutre,
+						"m-top-xl m-bottom-big",
+					],
 					"ie-model": "btnImpressionInscription",
 				},
-				GTraductions.getValeur("inscriptionsEtablissement.telechargerDemande"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"inscriptionsEtablissement.telechargerDemande",
+				),
 			),
 		);
 		if (this.donnees.resumeInscription.annotationEtat) {
-			lHtml.push(
-				tag(
-					"div",
-					{ class: "flex-contain flex-center m-bottom-l" },
-					tag("i", {
-						class: [
-							TypeOrigineCreationEtatDemandeInscriptionUtil.getIcone(
-								lEtatDemande,
+			H.push(
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
+						"div",
+						{ class: "flex-contain flex-center m-bottom-l" },
+						IE.jsx.str("i", {
+							class: [
+								TypeOrigineCreationEtatDemandeInscription_1.TypeOrigineCreationEtatDemandeInscriptionUtil.getIcone(
+									lEtatDemande,
+								),
+								"m-right-l icon",
+							],
+							role: "presentation",
+						}),
+						IE.jsx.str(
+							"h2",
+							{ class: "ie-titre" },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"inscriptionsEtablissement.annotation",
 							),
-							"m-right-l icon",
-						],
-					}),
-					tag(
-						"h2",
-						{ class: "ie-titre" },
-						GTraductions.getValeur("inscriptionsEtablissement.annotation"),
+						),
 					),
-				),
-				tag(
-					"div",
-					{ class: "m-top p-all-xl annotation-etat" },
-					this.donnees.resumeInscription.annotationEtat,
+					IE.jsx.str(
+						"div",
+						{ class: "m-top p-all-xl annotation-etat" },
+						this.donnees.resumeInscription.annotationEtat,
+					),
 				),
 			);
 		}
-		lHtml.push(
-			tag(
+		H.push(
+			IE.jsx.str(
 				"div",
 				{ class: "m-top-l flex-contain justify-end" },
-				tag(
+				IE.jsx.str(
 					"ie-bouton",
 					{
 						"ie-model": "btnSupprimer",
-						class: [TypeThemeBouton.secondaire, "m-x-l"],
+						class: [Type_ThemeBouton_1.TypeThemeBouton.secondaire, "m-x-l"],
 					},
-					GTraductions.getValeur("Supprimer"),
+					ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
 				),
-				tag(
+				IE.jsx.str(
 					"ie-bouton",
-					{ "ie-model": "btnModifier", class: [TypeThemeBouton.primaire] },
-					GTraductions.getValeur("inscriptionsEtablissement.modifierDemande"),
+					{
+						"ie-model": "btnModifier",
+						class: [Type_ThemeBouton_1.TypeThemeBouton.primaire],
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"inscriptionsEtablissement.modifierDemande",
+					),
 				),
 			),
 		);
-		lHtml.push("</div>");
-		return lHtml.join("");
+		H.push("</div>");
+		return H.join("");
 	}
 	composeConsigne() {
-		return tag(
+		return (0, tag_1.tag)(
 			"div",
 			{ class: ["oie_consigne", "flex-contain", "flex-cols"] },
 			(aTabs) => {
 				let lAvecEspace = false;
 				if (!!this.session.libelleConsigne) {
 					aTabs.push(
-						tag("span", this.session.libelleConsigne.replaceRCToHTML()),
+						IE.jsx.str(
+							"span",
+							null,
+							this.session.libelleConsigne.replaceRCToHTML(),
+						),
 					);
 					lAvecEspace = true;
 				}
 				if (!!this.session.documentsConsigne) {
 					aTabs.push(
-						tag(
+						IE.jsx.str(
 							"div",
-							{ class: [""] },
-							GChaine.composerUrlLienExterne({
+							null,
+							ObjetChaine_1.GChaine.composerUrlLienExterne({
 								documentJoint: this.session.documentsConsigne.get(0),
 							}),
 						),
@@ -593,12 +659,13 @@ class ObjetInscriptionsEtablissement extends Identite {
 					lAvecEspace = true;
 				}
 				aTabs.push(
-					tag(
+					IE.jsx.str(
 						"div",
 						{ class: [lAvecEspace ? "m-top-big" : "", "Gras"] },
-						tag(
+						IE.jsx.str(
 							"p",
-							GTraductions.getValeur(
+							null,
+							ObjetTraduction_1.GTraductions.getValeur(
 								"inscriptionsEtablissement.msgAvertissementConsigne",
 							),
 						),
@@ -608,22 +675,25 @@ class ObjetInscriptionsEtablissement extends Identite {
 		);
 	}
 	composeBlocResponsable(aIndice) {
-		this.champs = new ObjetListeElements();
+		this.champs = new ObjetListeElements_1.ObjetListeElements();
 		const lEstSupplementaire = aIndice > 0;
 		const lDonnees = this.getResponsable(aIndice);
 		const lDisabled =
 			!lEstSupplementaire &&
-			GEtatUtilisateur.GenreEspace !== EGenreEspace.Inscription;
-		const lHtml = [];
-		lHtml.push(`<div class="zone-formulaire">`);
-		lHtml.push("<div>");
+			GEtatUtilisateur.GenreEspace !==
+				Enumere_Espace_1.EGenreEspace.Inscription;
+		const H = [];
+		H.push(`<div class="zone-formulaire">`);
+		H.push("<div>");
 		let lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur("inscriptionsEtablissement.civilite"),
-			groupe: EGroupeDonneeInscription.responsables,
-			type: ETypeDonneeInscription.civilite,
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
+				"inscriptionsEtablissement.civilite",
+			),
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.responsables,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.civilite,
 			optionnel: true,
-			suffixe: aIndice,
-			modeValidation: EModeValidation.MV_All,
+			suffixe: aIndice.toString(),
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_All,
 			size: 40,
 			disabled: lDisabled,
 		});
@@ -634,58 +704,60 @@ class ObjetInscriptionsEtablissement extends Identite {
 						lDonnees.civilite.getLibelle(),
 					)
 				: -1;
-		lHtml.push(this.ajouterRecherche(lChamp));
+		H.push(this.ajouterRecherche(lChamp));
 		lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur("inscriptionsEtablissement.nom"),
-			groupe: EGroupeDonneeInscription.responsables,
-			type: ETypeDonneeInscription.nom,
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
+				"inscriptionsEtablissement.nom",
+			),
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.responsables,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.nom,
 			optionnel: lDisabled,
-			suffixe: aIndice,
-			modeValidation: EModeValidation.MV_Obligatoire,
+			suffixe: aIndice.toString(),
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_Obligatoire,
 			size: 40,
 			autocomplete: "family-name",
 			disabled: lDisabled,
 		});
-		lHtml.push(this.ajouterInput(lChamp));
-		_validerChamp.call(this, lChamp.getNumero(), !!lDonnees && !!lDonnees.nom);
+		H.push(this.ajouterInput(lChamp));
+		this._validerChamp(lChamp.getNumero(), !!lDonnees && !!lDonnees.nom);
 		lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur("inscriptionsEtablissement.nomNaissance"),
-			groupe: EGroupeDonneeInscription.responsables,
-			type: ETypeDonneeInscription.nomNaissance,
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
+				"inscriptionsEtablissement.nomNaissance",
+			),
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.responsables,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.nomNaissance,
 			optionnel: true,
-			suffixe: aIndice,
-			modeValidation: EModeValidation.MV_All,
+			suffixe: aIndice.toString(),
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_All,
 			size: 40,
 			disabled: lDisabled,
 		});
-		lHtml.push(this.ajouterInput(lChamp));
-		_validerChamp.call(this, lChamp.getNumero(), !!lDonnees && !!lDonnees.nom);
+		H.push(this.ajouterInput(lChamp));
+		this._validerChamp(lChamp.getNumero(), !!lDonnees && !!lDonnees.nom);
 		lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur("inscriptionsEtablissement.prenom"),
-			groupe: EGroupeDonneeInscription.responsables,
-			type: ETypeDonneeInscription.prenom,
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
+				"inscriptionsEtablissement.prenom",
+			),
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.responsables,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.prenom,
 			optionnel: lDisabled,
-			suffixe: aIndice,
-			modeValidation: EModeValidation.MV_Obligatoire,
+			suffixe: aIndice.toString(),
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_Obligatoire,
 			size: 40,
 			autocomplete: "given-name",
 			disabled: lDisabled,
 		});
-		lHtml.push(this.ajouterInput(lChamp));
-		_validerChamp.call(
-			this,
-			lChamp.getNumero(),
-			!!lDonnees && !!lDonnees.prenoms,
-		);
+		H.push(this.ajouterInput(lChamp));
+		this._validerChamp(lChamp.getNumero(), !!lDonnees && !!lDonnees.prenoms);
 		lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur(
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
 				"inscriptionsEtablissement.responsabilites",
 			),
-			groupe: EGroupeDonneeInscription.responsables,
-			type: ETypeDonneeInscription.responsabilite,
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.responsables,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.responsabilite,
 			optionnel: false,
-			suffixe: aIndice,
-			modeValidation: EModeValidation.MV_Obligatoire,
+			suffixe: aIndice.toString(),
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_Obligatoire,
 			size: 40,
 			disabled: false,
 		});
@@ -697,20 +769,21 @@ class ObjetInscriptionsEtablissement extends Identite {
 						lDonnees.niveauResponsabilite.getNumero(),
 					)
 				: -1;
-		lHtml.push(this.ajouterRecherche(lChamp));
-		_validerChamp.call(
-			this,
+		H.push(this.ajouterRecherche(lChamp));
+		this._validerChamp(
 			lChamp.getNumero(),
 			!!lDonnees && !!lDonnees.niveauResponsabilite,
 		);
 		if (this.listes.listeLienParente && this.listes.listeLienParente.count()) {
 			lChamp = new ObjetChampInscription({
-				libelle: GTraductions.getValeur("inscriptionsEtablissement.lien"),
-				groupe: EGroupeDonneeInscription.responsables,
-				type: ETypeDonneeInscription.parente,
+				libelle: ObjetTraduction_1.GTraductions.getValeur(
+					"inscriptionsEtablissement.lien",
+				),
+				groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.responsables,
+				type: Enumere_Inscriptions_1.ETypeDonneeInscription.parente,
 				optionnel: true,
-				suffixe: aIndice,
-				modeValidation: EModeValidation.MV_All,
+				suffixe: aIndice.toString(),
+				modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_All,
 				size: 40,
 				disabled: false,
 			});
@@ -721,130 +794,140 @@ class ObjetInscriptionsEtablissement extends Identite {
 							lDonnees.parente.getLibelle(),
 						)
 					: -1;
-			lHtml.push(this.ajouterRecherche(lChamp));
+			H.push(this.ajouterRecherche(lChamp));
 		}
 		if (this.session && this.session.avecResponsabilites) {
-			lHtml.push('<div class="oie-container-check p-top-l">');
+			H.push('<div class="oie-container-check p-top-l">');
 			lChamp = new ObjetChampInscription({
-				libelle: GTraductions.getValeur(
+				libelle: ObjetTraduction_1.GTraductions.getValeur(
 					"inscriptionsEtablissement.hebergeEnfant",
 				),
-				groupe: EGroupeDonneeInscription.responsables,
-				type: ETypeDonneeInscription.hebergeEnfant,
+				groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.responsables,
+				type: Enumere_Inscriptions_1.ETypeDonneeInscription.hebergeEnfant,
 				optionnel: true,
-				suffixe: aIndice,
-				modeValidation: EModeValidation.MV_All,
+				suffixe: aIndice.toString(),
+				modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_All,
 				size: 40,
 				disabled: false,
 			});
-			lHtml.push(this.ajouterCheckBox(lChamp));
+			H.push(this.ajouterCheckBox(lChamp));
 			lChamp = new ObjetChampInscription({
-				libelle: GTraductions.getValeur(
+				libelle: ObjetTraduction_1.GTraductions.getValeur(
 					"inscriptionsEtablissement.responsableFinancier",
 				),
-				groupe: EGroupeDonneeInscription.responsables,
-				type: ETypeDonneeInscription.responsableFinancier,
+				groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.responsables,
+				type: Enumere_Inscriptions_1.ETypeDonneeInscription
+					.responsableFinancier,
 				optionnel: true,
-				suffixe: aIndice,
-				modeValidation: EModeValidation.MV_All,
+				suffixe: aIndice.toString(),
+				modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_All,
 				size: 40,
 				disabled: false,
 			});
-			lHtml.push(this.ajouterCheckBox(lChamp));
+			H.push(this.ajouterCheckBox(lChamp));
 			lChamp = new ObjetChampInscription({
-				libelle: GTraductions.getValeur(
+				libelle: ObjetTraduction_1.GTraductions.getValeur(
 					"inscriptionsEtablissement.percoitAides",
 				),
-				groupe: EGroupeDonneeInscription.responsables,
-				type: ETypeDonneeInscription.percoitAides,
+				groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.responsables,
+				type: Enumere_Inscriptions_1.ETypeDonneeInscription.percoitAides,
 				optionnel: true,
-				suffixe: aIndice,
-				modeValidation: EModeValidation.MV_All,
+				suffixe: aIndice.toString(),
+				modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_All,
 				size: 40,
 				disabled: false,
 			});
-			lHtml.push(this.ajouterCheckBox(lChamp));
-			lHtml.push("</div>");
+			H.push(this.ajouterCheckBox(lChamp));
+			H.push("</div>");
 		}
 		const lObligatoire =
-			GEtatUtilisateur.GenreEspace === EGenreEspace.Inscription;
-		lHtml.push(
+			GEtatUtilisateur.GenreEspace ===
+			Enumere_Espace_1.EGenreEspace.Inscription;
+		H.push(
 			this.ajouterChampAdresse(
-				EGroupeDonneeInscription.responsables,
+				Enumere_Inscriptions_1.EGroupeDonneeInscription.responsables,
 				aIndice,
 				lDisabled,
 				lObligatoire,
 			),
 		);
 		lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur(
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
 				"inscriptionsEtablissement.telephoneMobile",
 			),
-			groupe: EGroupeDonneeInscription.responsables,
-			type: ETypeDonneeInscription.numeroTelMobile,
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.responsables,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.numeroTelMobile,
 			optionnel: lDisabled || !!lEstSupplementaire,
-			suffixe: aIndice,
-			modeValidation: EModeValidation.MV_Obligatoire,
+			suffixe: aIndice.toString(),
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_Obligatoire,
 			size: 40,
 			disabled: lDisabled,
 		});
-		lChamp.typeSup = ETypeDonneeInscription.indicatifTelMobile;
-		lHtml.push(this.ajouterInputTelephone(lChamp));
-		_validerChamp.call(
-			this,
+		lChamp.typeSup =
+			Enumere_Inscriptions_1.ETypeDonneeInscription.indicatifTelMobile;
+		H.push(this.ajouterInputTelephone(lChamp));
+		this._validerChamp(
 			lChamp.getNumero(),
 			!!lDonnees && !!lDonnees.numeroTelMobile,
 		);
 		lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur("inscriptionsEtablissement.telephone"),
-			groupe: EGroupeDonneeInscription.responsables,
-			type: ETypeDonneeInscription.numeroTelFixe,
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
+				"inscriptionsEtablissement.telephone",
+			),
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.responsables,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.numeroTelFixe,
 			optionnel: true,
-			suffixe: aIndice,
-			modeValidation: EModeValidation.MV_Telephone,
+			suffixe: aIndice.toString(),
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_Telephone,
 			size: 40,
 			disabled: lDisabled,
 		});
-		lChamp.typeSup = ETypeDonneeInscription.indicatifTelFixe;
-		lHtml.push(this.ajouterInputTelephone(lChamp));
+		lChamp.typeSup =
+			Enumere_Inscriptions_1.ETypeDonneeInscription.indicatifTelFixe;
+		H.push(this.ajouterInputTelephone(lChamp));
 		lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur("inscriptionsEtablissement.email"),
-			groupe: EGroupeDonneeInscription.responsables,
-			type: ETypeDonneeInscription.email,
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
+				"inscriptionsEtablissement.email",
+			),
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.responsables,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.email,
 			optionnel: true,
-			suffixe: aIndice,
-			modeValidation: EModeValidation.MV_Obligatoire,
+			suffixe: aIndice.toString(),
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_Obligatoire,
 			size: 40,
 			disabled: !lEstSupplementaire,
 		});
-		lChamp.typeSup = ETypeDonneeInscription.indicatifTelFixe;
-		lHtml.push(this.ajouterInput(lChamp));
-		lHtml.push("</div>");
-		lHtml.push(
+		lChamp.typeSup =
+			Enumere_Inscriptions_1.ETypeDonneeInscription.indicatifTelFixe;
+		H.push(this.ajouterInput(lChamp));
+		H.push("</div>");
+		H.push(
 			this.composeBlocInformationsAdministratives(aIndice, lDonnees, lDisabled),
 		);
-		lHtml.push("</div>");
-		return lHtml.join("");
+		H.push("</div>");
+		return H.join("");
 	}
 	composeBlocInformationsAdministratives(aIndice, aDonnees, aDisabled) {
-		const lHtml = [];
-		lHtml.push('<div class= "oie-info-admin">');
-		lHtml.push(
-			tag(
+		const H = [];
+		H.push('<div class="oie-info-admin">');
+		H.push(
+			(0, tag_1.tag)(
 				"h3",
 				{ class: "ie-titre-couleur m-y-xl" },
-				GTraductions.getValeur(
+				ObjetTraduction_1.GTraductions.getValeur(
 					"inscriptionsEtablissement.infosAdministrativesCourt",
 				),
 			),
 		);
 		let lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur("inscriptionsEtablissement.situation"),
-			groupe: EGroupeDonneeInscription.responsables,
-			type: ETypeDonneeInscription.situation,
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
+				"inscriptionsEtablissement.situation",
+			),
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.responsables,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.situation,
 			optionnel: true,
-			suffixe: aIndice,
-			modeValidation: EModeValidation.MV_All,
+			suffixe: aIndice.toString(),
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_All,
 			size: 40,
 			disabled: aDisabled,
 		});
@@ -856,174 +939,198 @@ class ObjetInscriptionsEtablissement extends Identite {
 						aDonnees.situation.getLibelle(),
 					)
 				: -1;
-		lHtml.push(this.ajouterRecherche(lChamp));
+		H.push(this.ajouterRecherche(lChamp));
 		lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur("inscriptionsEtablissement.profession"),
-			groupe: EGroupeDonneeInscription.responsables,
-			type: ETypeDonneeInscription.profession,
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
+				"inscriptionsEtablissement.profession",
+			),
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.responsables,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.profession,
 			optionnel: true,
-			suffixe: aIndice,
-			modeValidation: EModeValidation.MV_All,
+			suffixe: aIndice.toString(),
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_All,
 			size: 40,
 			disabled: aDisabled,
 		});
 		lChamp.indiceResponsable = aIndice;
-		lChamp.typeRecherche = TypeRechercheListe.trl_profession;
-		lChamp.messageNonTrouve = GTraductions.getValeur(
+		lChamp.typeRecherche =
+			ObjetRequeteRechercheListeDonnees_1.TypeRechercheListe.trl_profession;
+		lChamp.messageNonTrouve = ObjetTraduction_1.GTraductions.getValeur(
 			"inscriptionsEtablissement.professionNonTrouvee",
 		);
 		lChamp.avecSaisieAlt = false;
-		lHtml.push(this.ajouterRecherche(lChamp));
+		H.push(this.ajouterRecherche(lChamp));
 		lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur("inscriptionsEtablissement.telephone"),
-			groupe: EGroupeDonneeInscription.responsables,
-			type: ETypeDonneeInscription.numeroTelBureau,
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
+				"inscriptionsEtablissement.telephone",
+			),
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.responsables,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.numeroTelBureau,
 			optionnel: true,
-			suffixe: aIndice,
-			modeValidation: EModeValidation.MV_Telephone,
+			suffixe: aIndice.toString(),
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_Telephone,
 			size: 40,
 			disabled: aDisabled,
 		});
 		lChamp.indiceResponsable = aIndice;
-		lChamp.typeSup = ETypeDonneeInscription.indicatifTelBureau;
-		lHtml.push(this.ajouterInputTelephone(lChamp));
-		lHtml.push("</div>");
-		return lHtml.join("");
+		lChamp.typeSup =
+			Enumere_Inscriptions_1.ETypeDonneeInscription.indicatifTelBureau;
+		H.push(this.ajouterInputTelephone(lChamp));
+		H.push("</div>");
+		return H.join("");
 	}
 	composeBlocFratrie() {
-		const lHtml = [];
-		lHtml.push('<div class="zone-formulaire">');
+		const H = [];
+		H.push('<div class="zone-formulaire">');
 		let lIndexElement = this.donnees.fratrie.count();
 		this.donnees.fratrie.parcourir((aElement) => {
-			lHtml.push(
+			H.push(
 				this.ajouterInputLectureSeule(
-					GTraductions.getValeur("inscriptionsEtablissement.nom"),
+					ObjetTraduction_1.GTraductions.getValeur(
+						"inscriptionsEtablissement.nom",
+					),
 					aElement.Nom,
 				),
 			);
-			lHtml.push(
+			H.push(
 				this.ajouterInputLectureSeule(
-					GTraductions.getValeur("inscriptionsEtablissement.prenom"),
+					ObjetTraduction_1.GTraductions.getValeur(
+						"inscriptionsEtablissement.prenom",
+					),
 					aElement.Prenom,
 				),
 			);
-			lHtml.push(
+			H.push(
 				this.ajouterInputLectureSeule(
-					GTraductions.getValeur("inscriptionsEtablissement.classe"),
+					ObjetTraduction_1.GTraductions.getValeur(
+						"inscriptionsEtablissement.classe",
+					),
 					aElement.Classe,
 				),
 			);
 			if (lIndexElement-- !== 1) {
-				lHtml.push('<hr class="separateur m-bottom-xl"></hr>');
+				H.push('<hr class="separateur m-bottom-xl"></hr>');
 			}
 		});
-		lHtml.push("</div>");
-		return lHtml.join("");
+		H.push("</div>");
+		return H.join("");
 	}
 	composerOptions() {
-		const lHtml = [];
-		this.optionsFormation = new ObjetListeElements();
+		const H = [];
+		this.optionsFormation = new ObjetListeElements_1.ObjetListeElements();
 		let lChamp = new ObjetChampInscription({
 			libelle: "",
-			groupe: EGroupeDonneeInscription.scolariteActuelle,
-			type: ETypeDonneeInscription.options,
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.scolariteActuelle,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.options,
 			optionnel: false,
 			suffixe: "OBL1",
-			modeValidation: EModeValidation.MV_Obligatoire,
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_Obligatoire,
 			size: 40,
 		});
-		lChamp.Genre = EGenreEvnt.specialite;
+		lChamp.Genre =
+			ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource.specialite;
 		lChamp.listeElements = "obligatoires";
-		lHtml.push(this.ajouterComboOptions(lChamp));
+		H.push(this.ajouterComboOptions(lChamp));
 		lChamp = new ObjetChampInscription({
 			libelle: "",
-			groupe: EGroupeDonneeInscription.scolariteActuelle,
-			type: ETypeDonneeInscription.options,
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.scolariteActuelle,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.options,
 			optionnel: false,
 			suffixe: "LV",
-			modeValidation: EModeValidation.MV_All,
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_All,
 			size: 40,
 		});
-		lChamp.Genre = EGenreEvnt.lv1;
-		lChamp.ordreOptionDeGroupe = 1;
+		lChamp.Genre =
+			ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource.lv1;
 		lChamp.listeElements = "lve1";
-		lHtml.push(this.ajouterComboOptions(lChamp));
+		H.push(this.ajouterComboOptions(lChamp));
 		lChamp = new ObjetChampInscription({
 			libelle: "",
-			groupe: EGroupeDonneeInscription.scolariteActuelle,
-			type: ETypeDonneeInscription.options,
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.scolariteActuelle,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.options,
 			optionnel: false,
 			suffixe: "LV2",
-			modeValidation: EModeValidation.MV_All,
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_All,
 			size: 40,
 		});
-		lChamp.Genre = EGenreEvnt.lv2;
-		lChamp.ordreOptionDeGroupe = 2;
+		lChamp.Genre =
+			ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource.lv2;
 		lChamp.listeElements = "lve2";
-		lHtml.push(this.ajouterComboOptions(lChamp));
+		H.push(this.ajouterComboOptions(lChamp));
 		lChamp = new ObjetChampInscription({
 			libelle: "",
-			groupe: EGroupeDonneeInscription.scolariteActuelle,
-			type: ETypeDonneeInscription.options,
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.scolariteActuelle,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.options,
 			optionnel: true,
 			suffixe: "FAC1",
-			modeValidation: EModeValidation.MV_All,
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_All,
 			size: 40,
 		});
-		lChamp.Genre = EGenreEvnt.option;
+		lChamp.Genre =
+			ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource.option;
 		lChamp.listeElements = "facultatives";
-		lHtml.push(this.ajouterComboOptions(lChamp));
-		return lHtml.join("");
+		H.push(this.ajouterComboOptions(lChamp));
+		return H.join("");
 	}
 	composeBlocScolariteSouhaitee() {
 		const lHtml = [];
 		lHtml.push('<div class="zone-formulaire">');
 		let lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur("inscriptionsEtablissement.ine"),
-			groupe: EGroupeDonneeInscription.scolariteActuelle,
-			type: ETypeDonneeInscription.ine,
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
+				"inscriptionsEtablissement.ine",
+			),
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.scolariteActuelle,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.ine,
 			optionnel: true,
 			suffixe: "",
-			modeValidation: EModeValidation.MV_All,
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_All,
 			size: 40,
 		});
 		lHtml.push(this.ajouterInput(lChamp));
 		lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur("inscriptionsEtablissement.etabActuel"),
-			groupe: EGroupeDonneeInscription.scolariteActuelle,
-			type: ETypeDonneeInscription.etablissementActuel,
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
+				"inscriptionsEtablissement.etabActuel",
+			),
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.scolariteActuelle,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.etablissementActuel,
 			optionnel: true,
 			suffixe: "",
-			modeValidation: EModeValidation.MV_All,
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_All,
 			size: 40,
 		});
-		lChamp.typeRecherche = TypeRechercheListe.trl_etablissement;
-		lChamp.messageNonTrouve = GTraductions.getValeur(
+		lChamp.typeRecherche =
+			ObjetRequeteRechercheListeDonnees_1.TypeRechercheListe.trl_etablissement;
+		lChamp.messageNonTrouve = ObjetTraduction_1.GTraductions.getValeur(
 			"inscriptionsEtablissement.etablissementNonTrouve",
 		);
 		lChamp.avecSaisieAlt = true;
 		lHtml.push(this.ajouterRecherche(lChamp));
 		lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur("inscriptionsEtablissement.classe"),
-			groupe: EGroupeDonneeInscription.scolariteActuelle,
-			type: ETypeDonneeInscription.classeActuelle,
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
+				"inscriptionsEtablissement.classe",
+			),
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.scolariteActuelle,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.classeActuelle,
 			optionnel: true,
 			suffixe: "",
-			modeValidation: EModeValidation.MV_All,
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_All,
 			size: 40,
 		});
-		lChamp.typeSup = ETypeDonneeInscription.indicatifTelFixe;
+		lChamp.typeSup =
+			Enumere_Inscriptions_1.ETypeDonneeInscription.indicatifTelFixe;
 		lHtml.push(this.ajouterInput(lChamp));
 		if (this.session && this.session.avecProjetAccompagnement) {
 			lChamp = new ObjetChampInscription({
-				libelle: GTraductions.getValeur(
+				libelle: ObjetTraduction_1.GTraductions.getValeur(
 					"inscriptionsEtablissement.ProjetAccompagnement",
 				),
-				groupe: EGroupeDonneeInscription.scolariteActuelle,
-				type: ETypeDonneeInscription.projetsAccompagnement,
+				groupe:
+					Enumere_Inscriptions_1.EGroupeDonneeInscription.scolariteActuelle,
+				type: Enumere_Inscriptions_1.ETypeDonneeInscription
+					.projetsAccompagnement,
 				optionnel: true,
 				suffixe: "",
-				modeValidation: EModeValidation.MV_All,
+				modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_All,
 				size: 40,
 			});
 			lChamp.multiSelection = false;
@@ -1034,67 +1141,80 @@ class ObjetInscriptionsEtablissement extends Identite {
 				: -1;
 			lHtml.push(this.ajouterRecherche(lChamp));
 			lChamp = new ObjetChampInscription({
-				libelle: GTraductions.getValeur(
+				libelle: ObjetTraduction_1.GTraductions.getValeur(
 					"inscriptionsEtablissement.CommentaireProjets",
 				),
-				groupe: EGroupeDonneeInscription.scolariteActuelle,
-				type: ETypeDonneeInscription.commentairePA,
+				groupe:
+					Enumere_Inscriptions_1.EGroupeDonneeInscription.scolariteActuelle,
+				type: Enumere_Inscriptions_1.ETypeDonneeInscription.commentairePA,
 				optionnel: true,
 			});
 			lChamp.rows = "10";
 			lChamp.cols = "33";
-			lChamp.placeHolder = GTraductions.getValeur(
+			lChamp.placeHolder = ObjetTraduction_1.GTraductions.getValeur(
 				"inscriptionsEtablissement.CommentaireProjets",
 			);
 			lChamp.hideLabel = true;
 			lHtml.push(this.ajouterTextarea(lChamp));
 		}
 		lHtml.push(
-			tag(
+			(0, tag_1.tag)(
 				"h3",
 				{ class: "ie-titre-couleur m-y-xl" },
-				GTraductions.getValeur("inscriptionsEtablissement.scolariteSouhaitee"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"inscriptionsEtablissement.scolariteSouhaitee",
+				),
 			),
 		);
 		lChamp = new ObjetChampInscription({
-			libelle: GApplication.estPrimaire
-				? GTraductions.getValeur("inscriptionsEtablissement.classeSouhaitee")
-				: GTraductions.getValeur("inscriptionsEtablissement.formation"),
-			groupe: EGroupeDonneeInscription.scolariteActuelle,
-			type: ETypeDonneeInscription.formation,
+			libelle: this.applicationSco.estPrimaire
+				? ObjetTraduction_1.GTraductions.getValeur(
+						"inscriptionsEtablissement.classeSouhaitee",
+					)
+				: ObjetTraduction_1.GTraductions.getValeur(
+						"inscriptionsEtablissement.formation",
+					),
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.scolariteActuelle,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.formation,
 			optionnel: false,
 			suffixe: "",
-			modeValidation: EModeValidation.MV_Obligatoire,
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_Obligatoire,
 			size: 40,
 		});
 		lHtml.push(this.ajouterRecherche(lChamp));
 		lHtml.push(
-			tag(
+			(0, tag_1.tag)(
 				"div",
 				{ id: this.idConteneurOptions, class: ["ConteneurComboOptions"] },
 				this.composerOptions(),
 			),
 		);
 		lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur("inscriptionsEtablissement.redoublant"),
-			groupe: EGroupeDonneeInscription.scolariteActuelle,
-			type: ETypeDonneeInscription.redoublant,
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
+				"inscriptionsEtablissement.redoublant",
+			),
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.scolariteActuelle,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.redoublant,
 			optionnel: true,
 			suffixe: "",
-			modeValidation: EModeValidation.MV_All,
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_All,
 			size: 5,
 		});
-		lChamp.elements = new ObjetListeElements();
-		const lOui = new ObjetElement("oui");
-		lOui.value = GTraductions.getValeur("inscriptionsEtablissement.oui");
+		lChamp.elements = new ObjetListeElements_1.ObjetListeElements();
+		const lOui = new ObjetElement_1.ObjetElement("oui");
+		lOui.value = ObjetTraduction_1.GTraductions.getValeur(
+			"inscriptionsEtablissement.oui",
+		);
 		lOui.id = lChamp.id + "redoublantOui";
 		lOui.checked = this.donnees.scolariteActuelle
 			? this.donnees.scolariteActuelle.redoublant
 			: false;
 		lOui.valeurCoche = true;
 		lChamp.elements.addElement(lOui);
-		const lNon = new ObjetElement("non");
-		lNon.value = GTraductions.getValeur("inscriptionsEtablissement.non");
+		const lNon = new ObjetElement_1.ObjetElement("non");
+		lNon.value = ObjetTraduction_1.GTraductions.getValeur(
+			"inscriptionsEtablissement.non",
+		);
 		lNon.id = lChamp.id + "redoublantNon";
 		lNon.checked = this.donnees.scolariteActuelle
 			? !this.donnees.scolariteActuelle.redoublant
@@ -1102,14 +1222,17 @@ class ObjetInscriptionsEtablissement extends Identite {
 		lNon.valeurCoche = false;
 		lChamp.elements.addElement(lNon);
 		lHtml.push(this.ajouterInputRadio(lChamp));
-		if (!GApplication.estPrimaire) {
+		if (!this.applicationSco.estPrimaire) {
 			lChamp = new ObjetChampInscription({
-				libelle: GTraductions.getValeur("inscriptionsEtablissement.regime"),
-				groupe: EGroupeDonneeInscription.scolariteActuelle,
-				type: ETypeDonneeInscription.regime,
+				libelle: ObjetTraduction_1.GTraductions.getValeur(
+					"inscriptionsEtablissement.regime",
+				),
+				groupe:
+					Enumere_Inscriptions_1.EGroupeDonneeInscription.scolariteActuelle,
+				type: Enumere_Inscriptions_1.ETypeDonneeInscription.regime,
 				optionnel: true,
 				suffixe: "",
-				modeValidation: EModeValidation.MV_All,
+				modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_All,
 				size: 40,
 			});
 			lChamp.multiSelection = false;
@@ -1121,17 +1244,19 @@ class ObjetInscriptionsEtablissement extends Identite {
 			lHtml.push(this.ajouterRecherche(lChamp));
 		}
 		lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur("inscriptionsEtablissement.boursier"),
-			groupe: EGroupeDonneeInscription.scolariteActuelle,
-			type: ETypeDonneeInscription.boursier,
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
+				"inscriptionsEtablissement.boursier",
+			),
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.scolariteActuelle,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.boursier,
 			optionnel: true,
 			suffixe: "",
-			modeValidation: EModeValidation.MV_All,
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_All,
 			size: 5,
 		});
-		lChamp.elements = new ObjetListeElements();
-		const lOuiBoursier = new ObjetElement("oui");
-		lOuiBoursier.value = GTraductions.getValeur(
+		lChamp.elements = new ObjetListeElements_1.ObjetListeElements();
+		const lOuiBoursier = new ObjetElement_1.ObjetElement("oui");
+		lOuiBoursier.value = ObjetTraduction_1.GTraductions.getValeur(
 			"inscriptionsEtablissement.oui",
 		);
 		lOuiBoursier.id = lChamp.id + "boursierOui";
@@ -1140,8 +1265,8 @@ class ObjetInscriptionsEtablissement extends Identite {
 			: false;
 		lOuiBoursier.valeurCoche = true;
 		lChamp.elements.addElement(lOuiBoursier);
-		const lNonBoursier = new ObjetElement("non");
-		lNonBoursier.value = GTraductions.getValeur(
+		const lNonBoursier = new ObjetElement_1.ObjetElement("non");
+		lNonBoursier.value = ObjetTraduction_1.GTraductions.getValeur(
 			"inscriptionsEtablissement.non",
 		);
 		lNonBoursier.id = lChamp.id + "boursierNon";
@@ -1159,8 +1284,8 @@ class ObjetInscriptionsEtablissement extends Identite {
 		lHtml.push('<div class="zone-formulaire">');
 		const lChamp = new ObjetChampInscription({
 			libelle: this.session.libelleCommentaire,
-			groupe: EGroupeDonneeInscription.scolariteActuelle,
-			type: ETypeDonneeInscription.commentaire,
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.scolariteActuelle,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.commentaire,
 			optionnel: true,
 		});
 		lChamp.rows = "10";
@@ -1174,11 +1299,13 @@ class ObjetInscriptionsEtablissement extends Identite {
 		const lHtml = [];
 		lHtml.push('<div class="zone-formulaire">');
 		let lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur("inscriptionsEtablissement.civilite"),
-			groupe: EGroupeDonneeInscription.identite,
-			type: ETypeDonneeInscription.civilite,
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
+				"inscriptionsEtablissement.civilite",
+			),
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.identite,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.civilite,
 			optionnel: true,
-			modeValidation: EModeValidation.MV_All,
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_All,
 			size: 40,
 		});
 		lChamp.multiSelection = false;
@@ -1190,126 +1317,139 @@ class ObjetInscriptionsEtablissement extends Identite {
 				: -1;
 		lHtml.push(this.ajouterRecherche(lChamp));
 		lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur("inscriptionsEtablissement.nom"),
-			groupe: EGroupeDonneeInscription.identite,
-			type: ETypeDonneeInscription.nomEnfant,
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
+				"inscriptionsEtablissement.nom",
+			),
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.identite,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.nomEnfant,
 			optionnel: false,
 			suffixe: "",
-			modeValidation: EModeValidation.MV_Obligatoire,
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_Obligatoire,
 			size: 40,
 		});
 		lHtml.push(this.ajouterInput(lChamp));
-		_validerChamp.call(
-			this,
+		this._validerChamp(
 			lChamp.getNumero(),
 			!!this.donnees &&
 				!!this.donnees.identite &&
 				!!this.donnees.identite.nomEnfantPostulant,
 		);
 		lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur("inscriptionsEtablissement.prenom"),
-			groupe: EGroupeDonneeInscription.identite,
-			type: ETypeDonneeInscription.prenomEnfant,
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
+				"inscriptionsEtablissement.prenom",
+			),
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.identite,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.prenomEnfant,
 			optionnel: false,
 			suffixe: "",
-			modeValidation: EModeValidation.MV_Obligatoire,
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_Obligatoire,
 			size: 40,
 		});
 		lHtml.push(this.ajouterInput(lChamp));
-		_validerChamp.call(
-			this,
+		this._validerChamp(
 			lChamp.getNumero(),
 			!!this.donnees &&
 				!!this.donnees.identite &&
 				!!this.donnees.identite.prenomEnfantPostulant,
 		);
 		lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur("inscriptionsEtablissement.sexe"),
-			groupe: EGroupeDonneeInscription.identite,
-			type: ETypeDonneeInscription.sexe,
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
+				"inscriptionsEtablissement.sexe",
+			),
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.identite,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.sexe,
 			optionnel: true,
 			suffixe: "",
-			modeValidation: EModeValidation.MV_All,
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_All,
 			size: 5,
 		});
-		lChamp.elements = new ObjetListeElements();
-		const lGarcon = new ObjetElement("garcon");
-		lGarcon.value = GTraductions.getValeur("inscriptionsEtablissement.garcon");
+		lChamp.elements = new ObjetListeElements_1.ObjetListeElements();
+		const lGarcon = new ObjetElement_1.ObjetElement("garcon");
+		lGarcon.value = ObjetTraduction_1.GTraductions.getValeur(
+			"inscriptionsEtablissement.garcon",
+		);
 		lGarcon.id = lChamp.id + "sexeG";
 		lGarcon.checked = this.donnees.identite
 			? !this.donnees.identite.sexeEnfant
-			: 0;
+			: false;
 		lGarcon.valeurCoche = 0;
 		lChamp.elements.addElement(lGarcon);
-		const lFille = new ObjetElement("fille");
-		lFille.value = GTraductions.getValeur("inscriptionsEtablissement.fille");
+		const lFille = new ObjetElement_1.ObjetElement("fille");
+		lFille.value = ObjetTraduction_1.GTraductions.getValeur(
+			"inscriptionsEtablissement.fille",
+		);
 		lFille.id = lChamp.id + "sexeF";
 		lFille.checked = this.donnees.identite
-			? this.donnees.identite.sexeEnfant
-			: 1;
+			? !!this.donnees.identite.sexeEnfant
+			: true;
 		lFille.valeurCoche = 1;
 		lChamp.elements.addElement(lFille);
 		lHtml.push(this.ajouterInputRadio(lChamp));
 		lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur(
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
 				"inscriptionsEtablissement.dateNaissance",
 			),
-			groupe: EGroupeDonneeInscription.identite,
-			type: ETypeDonneeInscription.dateNaissance,
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.identite,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.dateNaissance,
 			optionnel: false,
 			suffixe: "",
-			modeValidation: EModeValidation.MV_Obligatoire,
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_Obligatoire,
 			size: 5,
 		});
 		lHtml.push(this.ajouterInputDateNaissance(lChamp));
-		_validerChamp.call(
-			this,
+		this._validerChamp(
 			lChamp.getNumero(),
 			!!this.donnees &&
 				!!this.donnees.identite &&
 				!!this.donnees.identite.dateNaissance,
 		);
 		lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur(
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
 				"inscriptionsEtablissement.villeNaissance",
 			),
-			groupe: EGroupeDonneeInscription.identite,
-			type: ETypeDonneeInscription.villeNaissance,
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.identite,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.villeNaissance,
 			optionnel: true,
 			suffixe: "",
-			modeValidation: EModeValidation.MV_All,
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_All,
 			size: 40,
 		});
-		lChamp.typeRecherche = TypeRechercheListe.trl_ville;
-		lChamp.messageNonTrouve = GTraductions.getValeur(
+		lChamp.typeRecherche =
+			ObjetRequeteRechercheListeDonnees_1.TypeRechercheListe.trl_ville;
+		lChamp.messageNonTrouve = ObjetTraduction_1.GTraductions.getValeur(
 			"inscriptionsEtablissement.villeNonTrouvee",
 		);
 		lChamp.avecSaisieAlt = true;
 		lHtml.push(this.ajouterRecherche(lChamp));
 		lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur(
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
 				"inscriptionsEtablissement.paysNaissance",
 			),
-			groupe: EGroupeDonneeInscription.identite,
-			type: ETypeDonneeInscription.paysNaissance,
+			groupe: Enumere_Inscriptions_1.EGroupeDonneeInscription.identite,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.paysNaissance,
 			optionnel: true,
 			suffixe: "",
-			modeValidation: EModeValidation.MV_All,
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_All,
 			size: 40,
 		});
-		lChamp.typeRecherche = TypeRechercheListe.trl_pays;
-		lChamp.messageNonTrouve = GTraductions.getValeur(
+		lChamp.typeRecherche =
+			ObjetRequeteRechercheListeDonnees_1.TypeRechercheListe.trl_pays;
+		lChamp.messageNonTrouve = ObjetTraduction_1.GTraductions.getValeur(
 			"inscriptionsEtablissement.paysNonTrouve",
 		);
 		lChamp.avecSaisieAlt = true;
 		lHtml.push(this.ajouterRecherche(lChamp));
-		lHtml.push(this.ajouterChampAdresse(EGroupeDonneeInscription.identite));
+		lHtml.push(
+			this.ajouterChampAdresse(
+				Enumere_Inscriptions_1.EGroupeDonneeInscription.identite,
+			),
+		);
 		lHtml.push("</div>");
 		return lHtml.join("");
 	}
 	ajouterChampAdresse(
 		aGroupeDonnee,
-		aIndiceResponsable,
+		aIndiceResponsable = 0,
 		aDisabled = false,
 		lObligatoire = false,
 	) {
@@ -1325,11 +1465,13 @@ class ObjetInscriptionsEtablissement extends Identite {
 		lHtml.push(
 			this.ajouterInput(
 				new ObjetChampInscription({
-					libelle: GTraductions.getValeur("inscriptionsEtablissement.CPVille"),
+					libelle: ObjetTraduction_1.GTraductions.getValeur(
+						"inscriptionsEtablissement.CPVille",
+					),
 					groupe: aGroupeDonnee,
-					type: ETypeDonneeInscription.codePostal,
+					type: Enumere_Inscriptions_1.ETypeDonneeInscription.codePostal,
 					optionnel: !lObligatoire,
-					modeValidation: EModeValidation.MV_Obligatoire,
+					modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_Obligatoire,
 					size: 40,
 					autocomplete: "postal-code",
 					disabled: aDisabled,
@@ -1337,36 +1479,42 @@ class ObjetInscriptionsEtablissement extends Identite {
 			),
 		);
 		let lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur("inscriptionsEtablissement.ville"),
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
+				"inscriptionsEtablissement.ville",
+			),
 			groupe: aGroupeDonnee,
-			type: ETypeDonneeInscription.ville,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.ville,
 			optionnel: !lObligatoire,
 			suffixe: "",
-			modeValidation: EModeValidation.MV_Obligatoire,
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_Obligatoire,
 			size: 40,
 			autocomplete: "address-level2",
 			disabled: aDisabled,
 		});
-		lChamp.typeRecherche = TypeRechercheListe.trl_ville;
-		lChamp.messageNonTrouve = GTraductions.getValeur(
+		lChamp.typeRecherche =
+			ObjetRequeteRechercheListeDonnees_1.TypeRechercheListe.trl_ville;
+		lChamp.messageNonTrouve = ObjetTraduction_1.GTraductions.getValeur(
 			"inscriptionsEtablissement.villeNonTrouvee",
 		);
 		lChamp.avecSaisieAlt = true;
 		lChamp.indiceResponsable = aIndiceResponsable;
 		lHtml.push(this.ajouterRecherche(lChamp));
 		lChamp = new ObjetChampInscription({
-			libelle: GTraductions.getValeur("inscriptionsEtablissement.pays"),
+			libelle: ObjetTraduction_1.GTraductions.getValeur(
+				"inscriptionsEtablissement.pays",
+			),
 			groupe: aGroupeDonnee,
-			type: ETypeDonneeInscription.pays,
+			type: Enumere_Inscriptions_1.ETypeDonneeInscription.pays,
 			optionnel: true,
 			suffixe: "",
-			modeValidation: EModeValidation.MV_All,
+			modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_All,
 			size: 40,
 			autocomplete: "address-level1",
 			disabled: aDisabled,
 		});
-		lChamp.typeRecherche = TypeRechercheListe.trl_pays;
-		lChamp.messageNonTrouve = GTraductions.getValeur(
+		lChamp.typeRecherche =
+			ObjetRequeteRechercheListeDonnees_1.TypeRechercheListe.trl_pays;
+		lChamp.messageNonTrouve = ObjetTraduction_1.GTraductions.getValeur(
 			"inscriptionsEtablissement.paysNonTrouve",
 		);
 		lChamp.indiceResponsable = aIndiceResponsable;
@@ -1385,14 +1533,15 @@ class ObjetInscriptionsEtablissement extends Identite {
 				'<div class="EspaceHaut EspaceBas" ie-model="selecFile(',
 				lIndice,
 				')" ie-selecfile>',
-				'<i class="icon_piece_jointe icon_personnalise_pj"></i>',
+				'<i class="icon_piece_jointe icon_personnalise_pj" role="presentation"></i>',
 				'<span class="PetitEspaceGauche">',
 				aElt.getLibelle(),
 				"</span>",
 				"</div>",
 			);
 			const lIdent = this.idListeDocuments + lIndice;
-			this.listeDocumentsFournis[lIndice] = new ObjetListeElements();
+			this.listeDocumentsFournis[lIndice] =
+				new ObjetListeElements_1.ObjetListeElements();
 			lHtml.push('<div id="', lIdent, '"></div>');
 			lHtml.push("</li>");
 		});
@@ -1404,26 +1553,27 @@ class ObjetInscriptionsEtablissement extends Identite {
 		const lElement = aDocument.eltFichier;
 		this.listeDocuments.addElement(lElement);
 		lElement.natureDocument = this.session.listeDocumentsAFournir.get(aIndice);
-		lElement.setEtat(EGenreEtat.Creation);
+		lElement.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 		this.listeDocumentsFournis[aIndice].addElement(lElement);
-		_redessinnerDocumentsFournis.call(this);
+		this._redessinnerDocumentsFournis();
 	}
 	getControleur(aInstance) {
 		return {
 			getOngletResponsables() {
 				return {
-					class: ObjetTabOnglets,
+					class: ObjetTabOnglets_1.ObjetTabOnglets,
 					pere: aInstance,
 					init: function (aInstanceTab) {
 						aInstanceTab.setOptions({ largeurOnglets: 180 });
 					},
 					start: function (aInstanceTab) {
 						aInstance.identTabs = aInstanceTab;
-						const lListeOngletResp = new ObjetListeElements();
+						const lListeOngletResp =
+							new ObjetListeElements_1.ObjetListeElements();
 						if (aInstance.session) {
 							for (let i = 0; i < aInstance.session.nbResponsables; i++) {
-								const lElement = new ObjetElement(
-									GTraductions.getValeur(
+								const lElement = new ObjetElement_1.ObjetElement(
+									ObjetTraduction_1.GTraductions.getValeur(
 										"inscriptionsEtablissement.responsable",
 										[i + 1],
 									),
@@ -1446,7 +1596,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 									aInstance.ongletSelectionne.indiceResponsable
 							) {
 								if (
-									!saisieResponsableEnCours.call(aInstance) ||
+									!aInstance.saisieResponsableEnCours() ||
 									aInstance.verifierChamps()
 								) {
 									aInstance.responsableSelectionne = aInstance.getResponsable(
@@ -1461,45 +1611,39 @@ class ObjetInscriptionsEtablissement extends Identite {
 								}
 							}
 							$(`#${aInstance.ongletSelectionne.idDiv}`).show();
-							GHtml.setHtml(
+							ObjetHtml_1.GHtml.setHtml(
 								aInstance.ongletSelectionne.idDiv,
 								aInstance.composeBlocResponsable(
 									aInstance.ongletSelectionne.indiceResponsable,
 								),
 								{ controleur: aInstance.controleur },
 							);
-							return false;
 						}
-					},
-					destroy: function () {
-						aInstance.listeTabResponsables = null;
 					},
 				};
 			},
 			btnImpressionInscription: {
 				event() {
 					if (aInstance.donnees) {
-						const lInstanceFenetre = ObjetFenetre.creerInstanceFenetre(
-							ObjetFenetre_GenerationPdfSco,
-							{
-								pere: this.instance,
-								evenement: function (
-									aNumeroBouton,
-									aParametresAffichage,
-									aOptionsPDF,
-								) {
-									if (aNumeroBouton === 1) {
-										GenerationPDF.genererPDF({
-											paramPDF: aParametresAffichage,
-											optionsPDF: aOptionsPDF,
-										});
-									}
+						const lInstanceFenetre =
+							ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+								ObjetFenetre_GenerationPdfSco_1.ObjetFenetre_GenerationPdfSco,
+								{
+									pere: aInstance,
+									evenement(aNumeroBouton, aParametresAffichage, aOptionsPDF) {
+										if (aNumeroBouton === 1) {
+											UtilitaireGenerationPDF_1.GenerationPDF.genererPDF({
+												paramPDF: aParametresAffichage,
+												optionsPDF: aOptionsPDF,
+											});
+										}
+									},
 								},
-							},
-						);
+							);
 						lInstanceFenetre.afficher({
 							genreGenerationPDF:
-								TypeHttpGenerationPDFSco.RecapDemandeInscription,
+								TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco
+									.RecapDemandeInscription,
 							inscription: aInstance.inscriptionCourante,
 						});
 					}
@@ -1517,27 +1661,29 @@ class ObjetInscriptionsEtablissement extends Identite {
 						let lElementEnSuppression =
 							lListeDocuments.getElementParElement(lElement);
 						if (!lElementEnSuppression) {
-							lElement.setEtat(EGenreEtat.Suppression);
+							lElement.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 							lListeDocuments.addElement(lElement);
 						} else {
-							if (lElement.getEtat() !== EGenreEtat.Creation) {
-								lElementEnSuppression.setEtat(EGenreEtat.Suppression);
+							if (lElement.getEtat() !== Enumere_Etat_1.EGenreEtat.Creation) {
+								lElementEnSuppression.setEtat(
+									Enumere_Etat_1.EGenreEtat.Suppression,
+								);
 							} else {
 								let lIndice = lListeDocuments.getIndiceParElement(lElement);
-								lElement.setEtat(EGenreEtat.Suppression);
+								lElement.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 								lListeDocuments.remove(lIndice);
 							}
 						}
-						_redessinnerDocumentsFournis.call(aInstance);
+						aInstance._redessinnerDocumentsFournis();
 					}
 				},
 			},
 			selecFile: {
 				getOptionsSelecFile() {
-					_redessinnerDocumentsFournis.call(aInstance);
+					aInstance._redessinnerDocumentsFournis();
 					return {
-						maxSize: GApplication.droits.get(
-							TypeDroits.tailleMaxDocJointEtablissement,
+						maxSize: aInstance.applicationSco.droits.get(
+							ObjetDroitsPN_1.TypeDroits.tailleMaxDocJointEtablissement,
 						),
 						maxFiles: 1,
 						multiple: false,
@@ -1561,7 +1707,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 						const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
 						if (!!lChamp) {
 							aCombo.setOptionsObjetSaisie({
-								mode: EGenreSaisie.Combo,
+								mode: Enumere_Saisie_1.EGenreSaisie.Combo,
 								initAutoSelectionAvecUnElement: false,
 								deroulerListeSeulementSiPlusieursElements: false,
 								multiSelection: lChamp.multiSelection,
@@ -1580,7 +1726,8 @@ class ObjetInscriptionsEtablissement extends Identite {
 					event(aNumeroChamp, aParametres) {
 						if (
 							aParametres.genreEvenement ===
-								EGenreEvenementObjetSaisie.selection &&
+								Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+									.selection &&
 							!!aParametres.element
 						) {
 							const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
@@ -1604,8 +1751,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 					},
 					setValue(aNumeroChamp, aValeur) {
 						aInstance.responsableSelectionne.nom = aValeur;
-						_validerChamp.call(
-							aInstance,
+						aInstance._validerChamp(
 							aNumeroChamp,
 							!!aInstance.responsableSelectionne.nom,
 						);
@@ -1637,8 +1783,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 					},
 					setValue(aNumeroChamp, aValeur) {
 						aInstance.responsableSelectionne.prenoms = aValeur;
-						_validerChamp.call(
-							aInstance,
+						aInstance._validerChamp(
 							aNumeroChamp,
 							!!aInstance.responsableSelectionne.prenoms,
 						);
@@ -1653,7 +1798,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 						const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
 						if (!!lChamp) {
 							aCombo.setOptionsObjetSaisie({
-								mode: EGenreSaisie.Combo,
+								mode: Enumere_Saisie_1.EGenreSaisie.Combo,
 								initAutoSelectionAvecUnElement: false,
 								deroulerListeSeulementSiPlusieursElements: false,
 								multiSelection: lChamp.multiSelection,
@@ -1671,7 +1816,8 @@ class ObjetInscriptionsEtablissement extends Identite {
 					event(aNumeroChamp, aParametres) {
 						if (
 							aParametres.genreEvenement ===
-								EGenreEvenementObjetSaisie.selection &&
+								Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+									.selection &&
 							!!aParametres.element
 						) {
 							const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
@@ -1756,8 +1902,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 					},
 					setValue(aNumeroChamp, aValeur) {
 						aInstance.responsableSelectionne.codePostal = aValeur;
-						_validerChamp.call(
-							aInstance,
+						aInstance._validerChamp(
 							aNumeroChamp,
 							!!aInstance.responsableSelectionne.codePostal,
 						);
@@ -1771,7 +1916,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 					init(aNumeroChamp, aCombo) {
 						const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
 						if (!!lChamp) {
-							_initialiserRecherche(aInstance, aCombo, lChamp);
+							aInstance._initialiserRecherche(aCombo, lChamp);
 							if (aInstance.listeCombo.responsables[lChamp.indiceResponsable]) {
 								aInstance.listeCombo.responsables[
 									lChamp.indiceResponsable
@@ -1793,7 +1938,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 						}
 					},
 					event(aNumeroChamp, aParametres, aCombo) {
-						_evenementRecherche(aInstance, aParametres, aCombo, aNumeroChamp);
+						aInstance._evenementRecherche(aParametres, aCombo, aNumeroChamp);
 					},
 					getDisabled(aNumeroChamp) {
 						const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
@@ -1804,7 +1949,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 					init(aNumeroChamp, aCombo) {
 						const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
 						if (!!lChamp) {
-							_initialiserRecherche(aInstance, aCombo, lChamp);
+							aInstance._initialiserRecherche(aCombo, lChamp);
 							if (aInstance.listeCombo.responsables[lChamp.indiceResponsable]) {
 								aInstance.listeCombo.responsables[
 									lChamp.indiceResponsable
@@ -1826,7 +1971,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 						}
 					},
 					event(aNumeroChamp, aParametres, aCombo) {
-						_evenementRecherche(aInstance, aParametres, aCombo, aNumeroChamp);
+						aInstance._evenementRecherche(aParametres, aCombo, aNumeroChamp);
 					},
 					getDisabled(aNumeroChamp) {
 						const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
@@ -1841,8 +1986,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 					},
 					setValue: function (aNumeroChamp, aValue) {
 						aInstance.responsableSelectionne.numeroTelFixe = aValue;
-						_validerChamp.call(
-							aInstance,
+						aInstance._validerChamp(
 							aNumeroChamp,
 							!!aInstance.responsableSelectionne.numeroTelFixe,
 						);
@@ -1874,8 +2018,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 					},
 					setValue: function (aNumeroChamp, aValue) {
 						aInstance.responsableSelectionne.numeroTelMobile = aValue;
-						_validerChamp.call(
-							aInstance,
+						aInstance._validerChamp(
 							aNumeroChamp,
 							!!aInstance.responsableSelectionne.numeroTelMobile,
 						);
@@ -1918,7 +2061,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 						const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
 						if (!!lChamp) {
 							aCombo.setOptionsObjetSaisie({
-								mode: EGenreSaisie.Combo,
+								mode: Enumere_Saisie_1.EGenreSaisie.Combo,
 								initAutoSelectionAvecUnElement: false,
 								deroulerListeSeulementSiPlusieursElements: false,
 								multiSelection: false,
@@ -1936,7 +2079,8 @@ class ObjetInscriptionsEtablissement extends Identite {
 					event(aNumeroChamp, aParametres) {
 						if (
 							aParametres.genreEvenement ===
-								EGenreEvenementObjetSaisie.selection &&
+								Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+									.selection &&
 							aParametres.element
 						) {
 							const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
@@ -1948,8 +2092,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 								aInstance.responsableSelectionne.niveauResponsabilite =
 									aParametres.element;
 								lChamp.selection = aParametres.indice;
-								_validerChamp.call(
-									aInstance,
+								aInstance._validerChamp(
 									aNumeroChamp,
 									!!aInstance.responsableSelectionne.niveauResponsabilite,
 								);
@@ -1966,7 +2109,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 						const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
 						if (!!lChamp) {
 							aCombo.setOptionsObjetSaisie({
-								mode: EGenreSaisie.Combo,
+								mode: Enumere_Saisie_1.EGenreSaisie.Combo,
 								initAutoSelectionAvecUnElement: false,
 								deroulerListeSeulementSiPlusieursElements: false,
 								multiSelection: false,
@@ -1984,7 +2127,8 @@ class ObjetInscriptionsEtablissement extends Identite {
 					event(aNumeroChamp, aParametres) {
 						if (
 							aParametres.genreEvenement ===
-								EGenreEvenementObjetSaisie.selection &&
+								Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+									.selection &&
 							aParametres.element
 						) {
 							const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
@@ -2008,7 +2152,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 					init(aNumeroChamp, aCombo) {
 						const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
 						if (!!lChamp) {
-							_initialiserRecherche(aInstance, aCombo, lChamp);
+							aInstance._initialiserRecherche(aCombo, lChamp);
 							if (
 								!!aInstance.donnees &&
 								!!aInstance.responsableSelectionne &&
@@ -2021,7 +2165,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 						}
 					},
 					event(aNumeroChamp, aParametres, aCombo) {
-						_evenementRecherche(aInstance, aParametres, aCombo, aNumeroChamp);
+						aInstance._evenementRecherche(aParametres, aCombo, aNumeroChamp);
 					},
 					getDisabled(aNumeroChamp) {
 						const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
@@ -2036,8 +2180,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 					},
 					setValue: function (aNumeroChamp, aValue) {
 						aInstance.responsableSelectionne.numeroTelBureau = aValue;
-						_validerChamp.call(
-							aInstance,
+						aInstance._validerChamp(
 							aNumeroChamp,
 							!!aInstance.responsableSelectionne.numeroTelBureau,
 						);
@@ -2068,7 +2211,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 						const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
 						if (!!lChamp) {
 							aCombo.setOptionsObjetSaisie({
-								mode: EGenreSaisie.Combo,
+								mode: Enumere_Saisie_1.EGenreSaisie.Combo,
 								initAutoSelectionAvecUnElement: false,
 								deroulerListeSeulementSiPlusieursElements: false,
 								multiSelection: lChamp.multiSelection,
@@ -2087,7 +2230,8 @@ class ObjetInscriptionsEtablissement extends Identite {
 					event(aNumeroChamp, aParametres) {
 						if (
 							aParametres.genreEvenement ===
-								EGenreEvenementObjetSaisie.selection &&
+								Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+									.selection &&
 							!!aParametres.element
 						) {
 							const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
@@ -2108,8 +2252,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 						aInstance.donnees.identite.nomEnfantPostulant = aValeur;
 					},
 					exitChange(aNumeroChamp) {
-						_validerChamp.call(
-							aInstance,
+						aInstance._validerChamp(
 							aNumeroChamp,
 							!!aInstance.donnees.identite.nomEnfantPostulant,
 						);
@@ -2123,15 +2266,13 @@ class ObjetInscriptionsEtablissement extends Identite {
 					},
 					setValue(aNumeroChamp, aValeur) {
 						aInstance.donnees.identite.prenomEnfantPostulant = aValeur;
-						_validerChamp.call(
-							aInstance,
+						aInstance._validerChamp(
 							aNumeroChamp,
 							!!aInstance.donnees.identite.prenomEnfantPostulant,
 						);
 					},
 					exitChange(aNumeroChamp) {
-						_validerChamp.call(
-							aInstance,
+						aInstance._validerChamp(
 							aNumeroChamp,
 							!!aInstance.donnees.identite.prenomEnfantPostulant,
 						);
@@ -2139,7 +2280,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 				},
 				dateNaissance: function (aNumeroChamp) {
 					return {
-						class: ObjetCelluleDate,
+						class: ObjetCelluleDate_1.ObjetCelluleDate,
 						pere: aInstance,
 						start: function (aInstanceDate) {
 							aInstanceDate.setOptions({
@@ -2156,7 +2297,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 						},
 						evenement: function (aDate) {
 							aInstance.donnees.identite.dateNaissance = aDate;
-							_validerChamp.call(aInstance, aNumeroChamp, !!aDate);
+							aInstance._validerChamp(aNumeroChamp, !!aDate);
 						},
 					};
 				},
@@ -2169,8 +2310,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 					},
 					setValue(aNumeroChamp, aValeurRadio) {
 						aInstance.donnees.identite.sexeEnfant = aValeurRadio;
-						_validerChamp.call(
-							aInstance,
+						aInstance._validerChamp(
 							aNumeroChamp,
 							aInstance.donnees.identite.sexeEnfant !== undefined,
 						);
@@ -2180,7 +2320,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 					init(aNumeroChamp, aCombo) {
 						const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
 						if (!!lChamp) {
-							_initialiserRecherche(aInstance, aCombo, lChamp);
+							aInstance._initialiserRecherche(aCombo, lChamp);
 							if (
 								!!aInstance.donnees &&
 								!!aInstance.donnees.identite &&
@@ -2193,14 +2333,14 @@ class ObjetInscriptionsEtablissement extends Identite {
 						}
 					},
 					event(aNumeroChamp, aParametres, aCombo) {
-						_evenementRecherche(aInstance, aParametres, aCombo, aNumeroChamp);
+						aInstance._evenementRecherche(aParametres, aCombo, aNumeroChamp);
 					},
 				},
 				paysNaissance: {
 					init(aNumeroChamp, aCombo) {
 						const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
 						if (!!lChamp) {
-							_initialiserRecherche(aInstance, aCombo, lChamp);
+							aInstance._initialiserRecherche(aCombo, lChamp);
 							if (
 								!!aInstance.donnees &&
 								!!aInstance.donnees.identite &&
@@ -2213,7 +2353,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 						}
 					},
 					event(aNumeroChamp, aParametres, aCombo) {
-						_evenementRecherche(aInstance, aParametres, aCombo, aNumeroChamp);
+						aInstance._evenementRecherche(aParametres, aCombo, aNumeroChamp);
 					},
 				},
 				ville: {
@@ -2221,7 +2361,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 						const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
 						if (!!lChamp) {
 							aInstance.listeCombo.identite.ville = aCombo;
-							_initialiserRecherche(aInstance, aCombo, lChamp);
+							aInstance._initialiserRecherche(aCombo, lChamp);
 							if (
 								!!aInstance.donnees &&
 								!!aInstance.donnees.identite &&
@@ -2234,7 +2374,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 						}
 					},
 					event(aNumeroChamp, aParametres, aCombo) {
-						_evenementRecherche(aInstance, aParametres, aCombo, aNumeroChamp);
+						aInstance._evenementRecherche(aParametres, aCombo, aNumeroChamp);
 					},
 				},
 				pays: {
@@ -2242,7 +2382,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 						const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
 						if (!!lChamp) {
 							aInstance.listeCombo.identite.pays = aCombo;
-							_initialiserRecherche(aInstance, aCombo, lChamp);
+							aInstance._initialiserRecherche(aCombo, lChamp);
 							if (
 								!!aInstance.donnees &&
 								!!aInstance.donnees.identite &&
@@ -2253,7 +2393,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 						}
 					},
 					event(aNumeroChamp, aParametres, aCombo) {
-						_evenementRecherche(aInstance, aParametres, aCombo, aNumeroChamp);
+						aInstance._evenementRecherche(aParametres, aCombo, aNumeroChamp);
 					},
 				},
 				codePostal: {
@@ -2264,8 +2404,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 					},
 					setValue(aNumeroChamp, aValeur) {
 						aInstance.donnees.identite.codePostal = aValeur;
-						_validerChamp.call(
-							aInstance,
+						aInstance._validerChamp(
 							aNumeroChamp,
 							!!aInstance.donnees.identite.codePostal,
 						);
@@ -2293,7 +2432,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 					init(aNumeroChamp, aCombo) {
 						const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
 						if (!!lChamp) {
-							_initialiserRecherche(aInstance, aCombo, lChamp);
+							aInstance._initialiserRecherche(aCombo, lChamp);
 							if (
 								!!aInstance.donnees &&
 								!!aInstance.donnees.scolariteActuelle &&
@@ -2306,7 +2445,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 						}
 					},
 					event(aNumeroChamp, aParametres, aCombo) {
-						_evenementRecherche(aInstance, aParametres, aCombo, aNumeroChamp);
+						aInstance._evenementRecherche(aParametres, aCombo, aNumeroChamp);
 					},
 				},
 				ine: {
@@ -2334,7 +2473,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 						const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
 						if (!!lChamp) {
 							aCombo.setOptionsObjetSaisie({
-								mode: EGenreSaisie.Combo,
+								mode: Enumere_Saisie_1.EGenreSaisie.Combo,
 								initAutoSelectionAvecUnElement: false,
 								deroulerListeSeulementSiPlusieursElements: false,
 								multiSelection: lChamp.multiSelection,
@@ -2352,7 +2491,8 @@ class ObjetInscriptionsEtablissement extends Identite {
 					event(aNumeroChamp, aParametres) {
 						if (
 							aParametres.genreEvenement ===
-								EGenreEvenementObjetSaisie.selection &&
+								Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+									.selection &&
 							!!aParametres.element
 						) {
 							const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
@@ -2386,7 +2526,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 						const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
 						if (!!lChamp) {
 							aInstanceCombo.setOptionsObjetSaisie({
-								mode: EGenreSaisie.Combo,
+								mode: Enumere_Saisie_1.EGenreSaisie.Combo,
 								estLargeurAuto: false,
 								longueur: 248,
 								libelleHaut:
@@ -2406,7 +2546,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 										lIndiceOrientation = aIndice;
 									}
 								});
-								_majListeOrientations(aInstance.listeOrientations);
+								aInstance._majListeOrientations(aInstance.listeOrientations);
 							}
 							aInstanceCombo.setDonneesObjetSaisie({
 								liste: aInstance.listeOrientations,
@@ -2417,7 +2557,8 @@ class ObjetInscriptionsEtablissement extends Identite {
 					event(aNumeroChamp, aParametres) {
 						if (
 							aParametres.genreEvenement ===
-							EGenreEvenementObjetSaisie.selection
+							Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+								.selection
 						) {
 							if (aInstance.donnees && aInstance.donnees.scolariteActuelle) {
 								if (
@@ -2427,10 +2568,10 @@ class ObjetInscriptionsEtablissement extends Identite {
 											aParametres.element.getNumero())
 								) {
 									aInstance.donnees.scolariteActuelle.optionsChoisies = {
-										obligatoires: new ObjetListeElements(),
-										facultatives: new ObjetListeElements(),
-										lv1: new ObjetListeElements(),
-										lv2: new ObjetListeElements(),
+										obligatoires: new ObjetListeElements_1.ObjetListeElements(),
+										facultatives: new ObjetListeElements_1.ObjetListeElements(),
+										lv1: new ObjetListeElements_1.ObjetListeElements(),
+										lv2: new ObjetListeElements_1.ObjetListeElements(),
 									};
 									aInstance.donnees.scolariteActuelle.formation =
 										aParametres.element;
@@ -2447,8 +2588,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 										aParametres.element;
 								}
 							}
-							_validerChamp.call(
-								aInstance,
+							aInstance._validerChamp(
 								aNumeroChamp,
 								!!aInstance.donnees.scolariteActuelle.formation,
 							);
@@ -2456,8 +2596,8 @@ class ObjetInscriptionsEtablissement extends Identite {
 					},
 				},
 				options: {
-					event(aNumeroChamp, aParametres) {
-						_afficherFenetreOptions.call(aInstance, aNumeroChamp, aParametres);
+					event(aNumeroChamp) {
+						aInstance._afficherFenetreOptions(aNumeroChamp);
 					},
 					getLibelle(aNumeroChamp) {
 						const lHtml = [];
@@ -2467,19 +2607,20 @@ class ObjetInscriptionsEtablissement extends Identite {
 							aInstance.donnees.scolariteActuelle &&
 							aInstance.donnees.scolariteActuelle.optionsChoisies
 						) {
-							const lListe = _getOptionsSelonGenre.call(
-								aInstance,
-								lChamp.getGenre(),
-							);
+							const lListe = aInstance._getOptionsSelonGenre(lChamp.getGenre());
 							if (lListe && lListe.count()) {
-								if (lChamp.getGenre() === EGenreEvnt.option) {
+								if (
+									lChamp.getGenre() ===
+									ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource
+										.option
+								) {
 									lListe.parcourir((aOption) => {
 										lHtml.push(
-											tag(
+											(0, tag_1.tag)(
 												"ie-chips",
 												{
 													class: "m-left",
-													"ie-model": tag.funcAttr(
+													"ie-model": tag_1.tag.funcAttr(
 														"scolariteActuelle.chipsOptions",
 														[lChamp.getGenre(), aOption.getNumero()],
 													),
@@ -2491,7 +2632,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 								} else {
 									lListe.parcourir((aOption) => {
 										lHtml.push(
-											tag(
+											IE.jsx.str(
 												"ie-chips",
 												{ class: "m-left" },
 												aOption.getLibelle(),
@@ -2514,17 +2655,21 @@ class ObjetInscriptionsEtablissement extends Identite {
 								aInstance.optionsFormation.getElementParNumero(aNumeroChamp);
 							if (lChamp) {
 								switch (lChamp.getGenre()) {
-									case EGenreEvnt.lv1:
-										lLibelle = `${GTraductions.getValeur("inscriptionsEtablissement.optionLV1")}* <span class="TexteRouge">${GTraductions.getValeur("inscriptionsEtablissement.attendues", [1])}</span>`;
+									case ObjetRequetePageOrientations_1.NSOrientation
+										.EGenreRessource.lv1:
+										lLibelle = `${ObjetTraduction_1.GTraductions.getValeur("inscriptionsEtablissement.optionLV1")}* <span class="color-red-moyen">${ObjetTraduction_1.GTraductions.getValeur("inscriptionsEtablissement.attendues", [1])}</span>`;
 										break;
-									case EGenreEvnt.lv2:
-										lLibelle = `${GTraductions.getValeur("inscriptionsEtablissement.optionLV2")}* <span class="TexteRouge">${GTraductions.getValeur("inscriptionsEtablissement.attendues", [1])}</span>`;
+									case ObjetRequetePageOrientations_1.NSOrientation
+										.EGenreRessource.lv2:
+										lLibelle = `${ObjetTraduction_1.GTraductions.getValeur("inscriptionsEtablissement.optionLV2")}* <span class="color-red-moyen">${ObjetTraduction_1.GTraductions.getValeur("inscriptionsEtablissement.attendues", [1])}</span>`;
 										break;
-									case EGenreEvnt.specialite:
-										lLibelle = `${GTraductions.getValeur("inscriptionsEtablissement.optionObligatoire")}* <span class="TexteRouge">${GTraductions.getValeur("inscriptionsEtablissement.attendues", [aInstance.donnees.scolariteActuelle.formation.nbObligatoires])}</span>`;
+									case ObjetRequetePageOrientations_1.NSOrientation
+										.EGenreRessource.specialite:
+										lLibelle = `${ObjetTraduction_1.GTraductions.getValeur("inscriptionsEtablissement.optionObligatoire")}* <span class="color-red-moyen">${ObjetTraduction_1.GTraductions.getValeur("inscriptionsEtablissement.attendues", [aInstance.donnees.scolariteActuelle.formation.nbObligatoires])}</span>`;
 										break;
-									case EGenreEvnt.option:
-										lLibelle = `${GTraductions.getValeur("inscriptionsEtablissement.optionFacultative")} <span class="TexteRouge">${GTraductions.getValeur("inscriptionsEtablissement.maximum", [aInstance.donnees.scolariteActuelle.formation.nbFacultatives])}</span>`;
+									case ObjetRequetePageOrientations_1.NSOrientation
+										.EGenreRessource.option:
+										lLibelle = `${ObjetTraduction_1.GTraductions.getValeur("inscriptionsEtablissement.optionFacultative")} <span class="color-red-moyen">${ObjetTraduction_1.GTraductions.getValeur("inscriptionsEtablissement.maximum", [aInstance.donnees.scolariteActuelle.formation.nbFacultatives])}</span>`;
 										break;
 									default:
 										break;
@@ -2536,7 +2681,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 					visible: function (aNumeroChamp) {
 						return (
 							aInstance.optionsFormation.count() &&
-							_getOptionVisible.call(aInstance, aNumeroChamp)
+							aInstance._getOptionVisible(aNumeroChamp)
 						);
 					},
 				},
@@ -2546,10 +2691,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 							aInstance.donnees.scolariteActuelle &&
 							aInstance.donnees.scolariteActuelle.optionsChoisies
 						) {
-							const lListe = _getOptionsSelonGenre.call(
-								aInstance,
-								aGenreOption,
-							);
+							const lListe = aInstance._getOptionsSelonGenre(aGenreOption);
 							if (lListe) {
 								lListe.removeFilter((aElement) => {
 									return aElement.getNumero() === aNumeroOption;
@@ -2570,8 +2712,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 					},
 					setValue(aNumeroChamp, aValeurRadio) {
 						aInstance.donnees.scolariteActuelle.redoublant = aValeurRadio;
-						_validerChamp.call(
-							aInstance,
+						aInstance._validerChamp(
 							aNumeroChamp,
 							aInstance.donnees.scolariteActuelle.redoublant !== undefined,
 						);
@@ -2582,7 +2723,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 						const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
 						if (!!lChamp) {
 							aCombo.setOptionsObjetSaisie({
-								mode: EGenreSaisie.Combo,
+								mode: Enumere_Saisie_1.EGenreSaisie.Combo,
 								initAutoSelectionAvecUnElement: false,
 								deroulerListeSeulementSiPlusieursElements: false,
 								multiSelection: false,
@@ -2600,7 +2741,8 @@ class ObjetInscriptionsEtablissement extends Identite {
 					event(aNumeroChamp, aParametres) {
 						if (
 							aParametres.genreEvenement ===
-								EGenreEvenementObjetSaisie.selection &&
+								Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+									.selection &&
 							aParametres.element
 						) {
 							const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
@@ -2630,8 +2772,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 					},
 					setValue(aNumeroChamp, aValeurRadio) {
 						aInstance.donnees.scolariteActuelle.boursier = aValeurRadio;
-						_validerChamp.call(
-							aInstance,
+						aInstance._validerChamp(
 							aNumeroChamp,
 							aInstance.donnees.scolariteActuelle.boursier !== undefined,
 						);
@@ -2648,19 +2789,11 @@ class ObjetInscriptionsEtablissement extends Identite {
 					},
 				},
 			},
-			inputReadOnly: {
-				getValue: function (aValue) {
-					return aValue || "";
-				},
-				getDisabled() {
-					return true;
-				},
-			},
 			btnPrecedent: {
 				event() {
-					aInstance.callback.appel({
-						genre: ObjetInscriptionsEtablissement.genreEvenement.precedent,
-					});
+					aInstance.callback.appel(
+						ObjetInscriptionsEtablissement.GenreEvenement.precedent,
+					);
 				},
 				getDisabled: function () {
 					return aInstance.etape.getNumero() === 0;
@@ -2669,16 +2802,16 @@ class ObjetInscriptionsEtablissement extends Identite {
 			btnCopierAdresse: {
 				event(aGroupeDonnee, aIndiceResponsable) {
 					switch (aGroupeDonnee) {
-						case EGroupeDonneeInscription.responsables: {
+						case Enumere_Inscriptions_1.EGroupeDonneeInscription.responsables: {
 							const lResponsable = aInstance.getResponsable(0);
 							if (aIndiceResponsable === 0) {
 								lResponsable.adresse = [...aInstance.donnees.identite.adresse];
 								lResponsable.codePostal = aInstance.donnees.identite.codePostal;
-								lResponsable.ville = MethodesObjet.dupliquer(
+								lResponsable.ville = MethodesObjet_1.MethodesObjet.dupliquer(
 									aInstance.donnees.identite.ville,
 									true,
 								);
-								lResponsable.pays = MethodesObjet.dupliquer(
+								lResponsable.pays = MethodesObjet_1.MethodesObjet.dupliquer(
 									aInstance.donnees.identite.pays,
 									true,
 								);
@@ -2708,14 +2841,16 @@ class ObjetInscriptionsEtablissement extends Identite {
 								if (lResponsable && lResponsableSupp) {
 									lResponsableSupp.adresse = [...lResponsable.adresse];
 									lResponsableSupp.codePostal = lResponsable.codePostal;
-									lResponsableSupp.ville = MethodesObjet.dupliquer(
-										lResponsable.ville,
-										true,
-									);
-									lResponsableSupp.pays = MethodesObjet.dupliquer(
-										lResponsable.pays,
-										true,
-									);
+									lResponsableSupp.ville =
+										MethodesObjet_1.MethodesObjet.dupliquer(
+											lResponsable.ville,
+											true,
+										);
+									lResponsableSupp.pays =
+										MethodesObjet_1.MethodesObjet.dupliquer(
+											lResponsable.pays,
+											true,
+										);
 								}
 								if (
 									aInstance.listeCombo &&
@@ -2736,7 +2871,7 @@ class ObjetInscriptionsEtablissement extends Identite {
 							}
 							break;
 						}
-						case EGroupeDonneeInscription.identite: {
+						case Enumere_Inscriptions_1.EGroupeDonneeInscription.identite: {
 							if (aInstance.donnees.responsables) {
 								const lResponsable = aInstance.getResponsable(0);
 								if (lResponsable) {
@@ -2745,14 +2880,16 @@ class ObjetInscriptionsEtablissement extends Identite {
 									];
 									aInstance.donnees.identite.codePostal =
 										lResponsable.codePostal;
-									aInstance.donnees.identite.ville = MethodesObjet.dupliquer(
-										lResponsable.ville,
-										true,
-									);
-									aInstance.donnees.identite.pays = MethodesObjet.dupliquer(
-										lResponsable.pays,
-										true,
-									);
+									aInstance.donnees.identite.ville =
+										MethodesObjet_1.MethodesObjet.dupliquer(
+											lResponsable.ville,
+											true,
+										);
+									aInstance.donnees.identite.pays =
+										MethodesObjet_1.MethodesObjet.dupliquer(
+											lResponsable.pays,
+											true,
+										);
 									if (aInstance.listeCombo && aInstance.listeCombo.identite) {
 										aInstance.listeCombo.identite.ville.setContenu(
 											aInstance.donnees.identite.ville.getLibelle(),
@@ -2771,13 +2908,16 @@ class ObjetInscriptionsEtablissement extends Identite {
 				},
 				getDisplay(aGroupeDonnee, aIndice) {
 					switch (aGroupeDonnee) {
-						case EGroupeDonneeInscription.responsables:
+						case Enumere_Inscriptions_1.EGroupeDonneeInscription.responsables:
 							return (
-								GEtatUtilisateur.GenreEspace === EGenreEspace.Inscription ||
-								aIndice > 0
+								GEtatUtilisateur.GenreEspace ===
+									Enumere_Espace_1.EGenreEspace.Inscription || aIndice > 0
 							);
-						case EGroupeDonneeInscription.identite:
-							return GEtatUtilisateur.GenreEspace === EGenreEspace.Parent;
+						case Enumere_Inscriptions_1.EGroupeDonneeInscription.identite:
+							return (
+								GEtatUtilisateur.GenreEspace ===
+								Enumere_Espace_1.EGenreEspace.Parent
+							);
 						default:
 							return false;
 					}
@@ -2786,9 +2926,9 @@ class ObjetInscriptionsEtablissement extends Identite {
 			btnSuivant: {
 				event() {
 					if (aInstance.verifierChamps()) {
-						aInstance.callback.appel({
-							genre: ObjetInscriptionsEtablissement.genreEvenement.suivant,
-						});
+						aInstance.callback.appel(
+							ObjetInscriptionsEtablissement.GenreEvenement.suivant,
+						);
 					}
 				},
 				getDisabled: function () {
@@ -2821,9 +2961,9 @@ class ObjetInscriptionsEtablissement extends Identite {
 			},
 			btnModifier: {
 				event() {
-					aInstance.callback.appel({
-						genre: ObjetInscriptionsEtablissement.genreEvenement.modifier,
-					});
+					aInstance.callback.appel(
+						ObjetInscriptionsEtablissement.GenreEvenement.modifier,
+					);
 				},
 				getDisabled() {
 					const lBoutonActif =
@@ -2840,12 +2980,17 @@ class ObjetInscriptionsEtablissement extends Identite {
 		if (
 			!!this.donnees &&
 			!!this.donnees.responsables &&
-			ObjetListeElements.prototype.isPrototypeOf(this.donnees.responsables)
+			ObjetListeElements_1.ObjetListeElements.prototype.isPrototypeOf(
+				this.donnees.responsables,
+			)
 		) {
 			if (this.donnees.responsables.count() > 0) {
 				lResult = this.donnees.responsables.get(aIndice);
 				if (lResult === undefined) {
-					this.donnees.responsables.addElement(new ObjetElement(), aIndice);
+					this.donnees.responsables.addElement(
+						new ObjetElement_1.ObjetElement(),
+						aIndice,
+					);
 					lResult = this.donnees.responsables.get(aIndice);
 				}
 			}
@@ -2854,11 +2999,11 @@ class ObjetInscriptionsEtablissement extends Identite {
 	}
 	vider() {
 		this.listeDocumentsFournis = [];
-		this.listeDocuments = new ObjetListeElements();
+		this.listeDocuments = new ObjetListeElements_1.ObjetListeElements();
 		this.donnees = undefined;
 		this.sauvegardeRecherches = undefined;
 		this.session = undefined;
-		this.listeOrientations = new ObjetListeElements();
+		this.listeOrientations = new ObjetListeElements_1.ObjetListeElements();
 		this.DonneesRecues = false;
 		this.estResume = undefined;
 		this.estEnCreation = undefined;
@@ -2866,15 +3011,17 @@ class ObjetInscriptionsEtablissement extends Identite {
 	}
 	setDonnees(aParams) {
 		this.listeDocumentsFournis = [];
-		this.listeDocuments = new ObjetListeElements();
+		this.listeDocuments = new ObjetListeElements_1.ObjetListeElements();
 		this.donnees = aParams.donnees;
-		this.sauvegardeRecherches = MethodesObjet.dupliquer(this.donnees);
+		this.sauvegardeRecherches = MethodesObjet_1.MethodesObjet.dupliquer(
+			this.donnees,
+		);
 		this.inscriptionCourante = aParams.inscriptionCourante;
 		this.session = aParams.session;
-		this.listeOrientations = new ObjetListeElements();
+		this.listeOrientations = new ObjetListeElements_1.ObjetListeElements();
 		if (this.session && this.session.orientations) {
 			this.listeOrientations = this.session.orientations;
-			this.listeOrientations.setTri([ObjetTri.init("Libelle")]);
+			this.listeOrientations.setTri([ObjetTri_1.ObjetTri.init("Libelle")]);
 			this.listeOrientations.trier();
 		}
 		this.DonneesRecues = true;
@@ -2891,38 +3038,38 @@ class ObjetInscriptionsEtablissement extends Identite {
 		const lParams = [aObjetChamp.getNumero()];
 		const lAttr = {
 			id: aObjetChamp.id,
-			class: ["round-style"],
 			type: "text",
-			"ie-model": tag.funcAttr(
+			"ie-model": tag_1.tag.funcAttr(
 				`${aObjetChamp.groupe}.${aObjetChamp.type}`,
 				lParams,
 			),
 			autocomplete: aObjetChamp.autocomplete,
 		};
 		if (aObjetChamp.placeHolder) {
-			lAttr.placeHolder = aObjetChamp.placeHolder;
+			lAttr["placeHolder"] = aObjetChamp.placeHolder;
 		}
 		if (!aObjetChamp.optionnel) {
 			lAttr["aria-required"] = "true";
 			lAttr["aria-invalid"] = "false";
 			lAttr["aria-errormessage"] = aObjetChamp.id + "_error";
 		}
+		lAttr["aria-label"] = aObjetChamp.getLibelle();
 		lHtml.push(
-			tag(
+			IE.jsx.str(
 				"div",
 				{ class: ["field-contain label-up p-bottom-l"] },
-				tag(
+				IE.jsx.str(
 					"label",
 					{ for: aObjetChamp.id, class: ["fix-bloc ie-titre-petit"] },
 					aObjetChamp.getLibelle() + (aObjetChamp.optionnel ? "" : "*"),
 				),
-				tag("input", lAttr),
+				IE.jsx.str("input", Object.assign({}, lAttr)),
 				aObjetChamp.optionnel
 					? ""
-					: tag(
+					: IE.jsx.str(
 							"span",
 							{ id: aObjetChamp.id + "_error", class: "errormessage" },
-							UtilitaireInscriptions.getMessageErreur(
+							UtilitaireInscriptions_1.UtilitaireInscriptions.getMessageErreur(
 								aObjetChamp.modeValidation,
 							),
 						),
@@ -2932,18 +3079,31 @@ class ObjetInscriptionsEtablissement extends Identite {
 		return lHtml.join("");
 	}
 	ajouterInputLectureSeule(aLabel, aValue) {
+		const lJsxInputReadOnly = (aValue) => {
+			return {
+				getValue: () => {
+					return aValue || "";
+				},
+				getDisabled: () => {
+					return true;
+				},
+			};
+		};
 		const lHtml = [];
-		const lId = GUID.getId();
+		const lId = GUID_1.GUID.getId();
 		lHtml.push(
-			tag(
+			IE.jsx.str(
 				"div",
-				{ class: ["field-contain label-up p-bottom-l"] },
-				tag("label", { for: lId, class: ["fix-bloc ie-titre-petit"] }, aLabel),
-				tag("input", {
-					id: lId,
-					class: ["round-style"],
+				{ class: "field-contain label-up p-bottom-l" },
+				IE.jsx.str(
+					"label",
+					{ for: lId, class: "fix-bloc ie-titre-petit" },
+					aLabel,
+				),
+				IE.jsx.str("input", {
 					type: "text",
-					"ie-model": tag.funcAttr(`inputReadOnly`, [aValue]),
+					id: lId,
+					"ie-model": lJsxInputReadOnly.bind(this, aValue),
 				}),
 			),
 		);
@@ -2952,15 +3112,15 @@ class ObjetInscriptionsEtablissement extends Identite {
 	ajouterCheckBox(aObjetChamp) {
 		const lHtml = [];
 		lHtml.push(
-			tag(
+			IE.jsx.str(
 				"div",
 				{ class: "field-contain label-up p-bottom-l" },
-				tag(
+				IE.jsx.str(
 					"ie-checkbox",
 					{
 						id: aObjetChamp.id,
-						class: ["oie_checkbox", "round-style"],
-						"ie-model": tag.funcAttr(
+						class: "oie_checkbox",
+						"ie-model": tag_1.tag.funcAttr(
 							`${aObjetChamp.groupe}.${aObjetChamp.type}`,
 							[aObjetChamp.getNumero()],
 						),
@@ -2976,30 +3136,32 @@ class ObjetInscriptionsEtablissement extends Identite {
 		const lHtml = [];
 		const lAttr = {
 			id: aObjetChamp.id,
-			class: "round-style ifc_textarea",
+			class: "ifc_textarea",
 			"max-length": "10000",
 			"ie-compteurmax": "10000",
-			"ie-model": tag.funcAttr(`${aObjetChamp.groupe}.${aObjetChamp.type}`, [
-				aObjetChamp.getNumero(),
-			]),
+			"ie-model": tag_1.tag.funcAttr(
+				`${aObjetChamp.groupe}.${aObjetChamp.type}`,
+				[aObjetChamp.getNumero()],
+			),
 		};
 		if (aObjetChamp.placeHolder) {
-			lAttr.placeHolder = aObjetChamp.placeHolder;
+			lAttr["placeHolder"] = aObjetChamp.placeHolder;
 		}
 		if (!aObjetChamp.optionnel) {
 			lAttr["aria-required"] = "true";
 		}
 		if (aObjetChamp.rows) {
-			lAttr.rows = aObjetChamp.rows;
+			lAttr["rows"] = aObjetChamp.rows;
 		}
 		if (aObjetChamp.cols) {
-			lAttr.cols = aObjetChamp.cols;
+			lAttr["cols"] = aObjetChamp.cols;
 		}
 		if (!aObjetChamp.optionnel) {
 			lAttr["aria-required"] = "true";
 			lAttr["aria-invalid"] = "false";
 			lAttr["aria-errormessage"] = aObjetChamp.id + "_error";
 		}
+		lAttr["aria-label"] = aObjetChamp.getLibelle();
 		const lAttLabel = {
 			for: aObjetChamp.id,
 			class: ["fix-bloc ie-titre-petit"],
@@ -3008,15 +3170,15 @@ class ObjetInscriptionsEtablissement extends Identite {
 			lAttLabel.class.push("sr-only");
 		}
 		lHtml.push(
-			tag(
+			IE.jsx.str(
 				"div",
 				{ class: ["field-contain label-up p-bottom-l"] },
-				tag(
+				IE.jsx.str(
 					"label",
-					lAttLabel,
+					Object.assign({}, lAttLabel),
 					aObjetChamp.getLibelle() + (aObjetChamp.optionnel ? "" : "*"),
 				),
-				tag("ie-textareamax", lAttr),
+				IE.jsx.str("ie-textareamax", Object.assign({}, lAttr)),
 			),
 		);
 		this.champs.addElement(aObjetChamp);
@@ -3024,32 +3186,28 @@ class ObjetInscriptionsEtablissement extends Identite {
 	}
 	ajouterInputDateNaissance(aObjetChamp) {
 		const lHtml = [];
-		const lAttr = { class: ["round-style"], type: "text" };
-		if (!aObjetChamp.optionnel) {
-			lAttr["aria-required"] = "true";
-			lAttr["aria-invalid"] = "false";
-			lAttr["aria-errormessage"] = aObjetChamp.id + "_error";
-		}
 		lHtml.push(
-			tag(
+			(0, tag_1.tag)(
 				"div",
 				{ class: ["field-contain label-up p-bottom-l"] },
-				tag(
+				(0, tag_1.tag)(
 					"label",
 					{ class: ["fix-bloc ie-titre-petit"] },
 					aObjetChamp.getLibelle() + (aObjetChamp.optionnel ? "" : "*"),
 				),
-				tag("div", { id: aObjetChamp.id, class: [] }),
-				tag("div", {
-					"ie-identite": tag.funcAttr(
+				(0, tag_1.tag)("div", { id: aObjetChamp.id, class: [] }),
+				(0, tag_1.tag)("div", {
+					"ie-identite": tag_1.tag.funcAttr(
 						`${aObjetChamp.groupe}.${aObjetChamp.type}`,
 						[aObjetChamp.getNumero()],
 					),
 				}),
-				tag(
+				(0, tag_1.tag)(
 					"span",
 					{ id: aObjetChamp.id + "_error", class: "errormessage" },
-					UtilitaireInscriptions.getMessageErreur(aObjetChamp.modeValidation),
+					UtilitaireInscriptions_1.UtilitaireInscriptions.getMessageErreur(
+						aObjetChamp.modeValidation,
+					),
 				),
 			),
 		);
@@ -3059,22 +3217,22 @@ class ObjetInscriptionsEtablissement extends Identite {
 	ajouterInputRadio(aObjetChamp) {
 		const lHtml = [];
 		lHtml.push(
-			tag(
+			(0, tag_1.tag)(
 				"div",
 				{ class: ["field-contain label-up p-bottom-l"] },
-				tag(
+				(0, tag_1.tag)(
 					"label",
 					{ class: ["fix-bloc ie-titre-petit"] },
 					aObjetChamp.getLibelle() + (aObjetChamp.optionnel ? "" : "*"),
 				),
-				tag(
+				(0, tag_1.tag)(
 					"div",
 					{ id: aObjetChamp.id, class: ["flex-contain flex-gap"] },
 					(aTab) => {
 						aObjetChamp.elements.parcourir((aElement) => {
 							const lAttr = {
 								id: aElement.id,
-								"ie-model": tag.funcAttr(
+								"ie-model": tag_1.tag.funcAttr(
 									`${aObjetChamp.groupe}.${aObjetChamp.type}`,
 									[aObjetChamp.getNumero(), aElement.valeurCoche],
 								),
@@ -3086,7 +3244,13 @@ class ObjetInscriptionsEtablissement extends Identite {
 							if (!aObjetChamp.optionnel) {
 								lAttr["aria-required"] = "true";
 							}
-							aTab.push(tag("ie-radio", lAttr, aElement.value));
+							aTab.push(
+								IE.jsx.str(
+									"ie-radio",
+									Object.assign({}, lAttr),
+									aElement.value,
+								),
+							);
 						});
 					},
 				),
@@ -3098,10 +3262,10 @@ class ObjetInscriptionsEtablissement extends Identite {
 	ajouterRecherche(aObjetChamp) {
 		const lHtml = [];
 		const lAttr = {
-			"ie-model": tag.funcAttr(`${aObjetChamp.groupe}.${aObjetChamp.type}`, [
-				aObjetChamp.getNumero(),
-			]),
-			class: "round-style",
+			"ie-model": tag_1.tag.funcAttr(
+				`${aObjetChamp.groupe}.${aObjetChamp.type}`,
+				[aObjetChamp.getNumero()],
+			),
 			name: aObjetChamp.autocomplete,
 		};
 		if (!aObjetChamp.optionnel) {
@@ -3109,16 +3273,19 @@ class ObjetInscriptionsEtablissement extends Identite {
 			lAttr["aria-invalid"] = "false";
 			lAttr["aria-errormessage"] = aObjetChamp.id + "_error";
 		}
+		lAttr["aria-label"] = aObjetChamp.getLibelle();
 		lHtml.push(
-			tag(
+			IE.jsx.str(
 				"div",
 				{ class: ["flex-contain p-bottom-l"], id: aObjetChamp.id },
-				tag("ie-combo", lAttr),
-			),
-			tag(
-				"span",
-				{ id: aObjetChamp.id + "_error", class: "errormessage" },
-				UtilitaireInscriptions.getMessageErreur(aObjetChamp.modeValidation),
+				IE.jsx.str("ie-combo", Object.assign({}, lAttr)),
+				IE.jsx.str(
+					"span",
+					{ id: aObjetChamp.id + "_error", class: "errormessage" },
+					UtilitaireInscriptions_1.UtilitaireInscriptions.getMessageErreur(
+						aObjetChamp.modeValidation,
+					),
+				),
 			),
 		);
 		this.champs.addElement(aObjetChamp);
@@ -3127,34 +3294,38 @@ class ObjetInscriptionsEtablissement extends Identite {
 	ajouterComboOptions(aObjetChamp) {
 		const lHtml = [];
 		lHtml.push(
-			tag(
+			(0, tag_1.tag)(
 				"div",
 				{
 					id: aObjetChamp.id,
 					class: ["field-contain label-up p-bottom-l"],
-					"ie-display": tag.funcAttr(
+					"ie-display": tag_1.tag.funcAttr(
 						`${aObjetChamp.groupe}.${aObjetChamp.type}.visible`,
 						[aObjetChamp.getNumero()],
 					),
 				},
-				tag("label", {
+				(0, tag_1.tag)("label", {
 					class: "fix-bloc ie-titre-petit",
-					"ie-html": tag.funcAttr(
+					"ie-html": tag_1.tag.funcAttr(
 						`${aObjetChamp.groupe}.${aObjetChamp.type}.getHtml`,
 						[aObjetChamp.getNumero()],
 					),
 				}),
-				tag("ie-btnselecteur", {
-					class: ["chips-inside round-style multilignes"],
-					"ie-model": tag.funcAttr(
+				(0, tag_1.tag)("ie-btnselecteur", {
+					class: ["chips-inside multilignes"],
+					"aria-label": aObjetChamp.type + " " + aObjetChamp.listeElements,
+					"ie-model": tag_1.tag.funcAttr(
 						`${aObjetChamp.groupe}.${aObjetChamp.type}`,
 						[aObjetChamp.getNumero()],
 					),
+					role: "button",
 				}),
-				tag(
+				(0, tag_1.tag)(
 					"span",
 					{ id: aObjetChamp.id + "_error", class: "errormessage" },
-					UtilitaireInscriptions.getMessageErreur(aObjetChamp.modeValidation),
+					UtilitaireInscriptions_1.UtilitaireInscriptions.getMessageErreur(
+						aObjetChamp.modeValidation,
+					),
 				),
 			),
 		);
@@ -3165,19 +3336,17 @@ class ObjetInscriptionsEtablissement extends Identite {
 		let lHtml = [];
 		const lAttr = {
 			id: aObjetChamp.id + "_tel",
-			class: ["round-style"],
 			"ie-telephone": "true",
-			"ie-model": tag.funcAttr(`${aObjetChamp.groupe}.${aObjetChamp.type}`, [
-				aObjetChamp.getNumero(),
-			]),
+			"ie-model": tag_1.tag.funcAttr(
+				`${aObjetChamp.groupe}.${aObjetChamp.type}`,
+				[aObjetChamp.getNumero()],
+			),
 			autocomplete: "tel-local",
 			placeHolder: aObjetChamp.placeHolder || "",
+			title: aObjetChamp.getLibelle(),
 		};
 		if (aObjetChamp.placeHolder) {
 			lAttr.placeHolder = aObjetChamp.placeHolder;
-		}
-		if (!aObjetChamp.optionnel) {
-			lAttr["aria-required"] = "true";
 		}
 		if (!aObjetChamp.optionnel) {
 			lAttr["aria-required"] = "true";
@@ -3185,38 +3354,43 @@ class ObjetInscriptionsEtablissement extends Identite {
 			lAttr["aria-errormessage"] = aObjetChamp.id + "_error";
 		}
 		lHtml.push(
-			tag(
+			(0, tag_1.tag)(
 				"div",
 				{ class: ["field-contain label-up p-bottom-l"], id: aObjetChamp.id },
-				tag(
+				(0, tag_1.tag)(
 					"label",
 					{ for: aObjetChamp.id, class: ["fix-bloc ie-titre-petit"] },
 					aObjetChamp.getLibelle() + (aObjetChamp.optionnel ? "" : "*"),
 				),
-				tag(
+				(0, tag_1.tag)(
 					"div",
 					{ class: [] },
-					tag("input", {
+					(0, tag_1.tag)("input", {
 						id: aObjetChamp.id + "Indicatif",
-						class: "round-style m-x",
+						class: "m-x",
 						"ie-indicatiftel": "true",
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"inscriptionsEtablissement.telephoneIndicatif",
+						),
 						size: "3",
 						autocomplete: "tel-country-code",
-						"ie-model": tag.funcAttr(
+						"ie-model": tag_1.tag.funcAttr(
 							`${aObjetChamp.groupe}.${aObjetChamp.typeSup}`,
 							[aObjetChamp.getNumero()],
 						),
 					}),
-					tag("input", lAttr),
+					(0, tag_1.tag)("input", lAttr),
 				),
 			),
 		);
 		if (!aObjetChamp.optionnel) {
 			lHtml.push(
-				tag(
+				IE.jsx.str(
 					"span",
 					{ id: aObjetChamp.id + "_error", class: "errormessage" },
-					UtilitaireInscriptions.getMessageErreur(aObjetChamp.modeValidation),
+					UtilitaireInscriptions_1.UtilitaireInscriptions.getMessageErreur(
+						aObjetChamp.modeValidation,
+					),
 				),
 			);
 		}
@@ -3225,53 +3399,55 @@ class ObjetInscriptionsEtablissement extends Identite {
 	}
 	ajouterInputAdresse(
 		aGroupeDonnee,
-		aIndiceResponsable,
-		aDisabled,
-		aObligatoire,
+		aIndiceResponsable = 0,
+		aDisabled = false,
+		aObligatoire = false,
 	) {
 		const lHtml = [];
 		const lLibelleBtn =
-			[EGroupeDonneeInscription.identite].includes(aGroupeDonnee) ||
-			aIndiceResponsable > 0
+			[Enumere_Inscriptions_1.EGroupeDonneeInscription.identite].includes(
+				aGroupeDonnee,
+			) || aIndiceResponsable > 0
 				? "inscriptionsEtablissement.copierAdresseResponsable"
 				: "inscriptionsEtablissement.copierAdresseEnfant";
-		const lChampsAdresse = new ObjetListeElements();
+		const lChampsAdresse = new ObjetListeElements_1.ObjetListeElements();
 		for (let i = 1; i <= 4; i++) {
 			let lChamp = new ObjetChampInscription({
 				libelle: "",
 				groupe: aGroupeDonnee,
-				type: ETypeDonneeInscription.adresse,
-				suffixe: i,
+				type: Enumere_Inscriptions_1.ETypeDonneeInscription.adresse,
+				suffixe: i.toString(),
 				optionnel: !aObligatoire,
-				modeValidation: EModeValidation.MV_Obligatoire,
+				modeValidation: Enumere_Inscriptions_1.EModeValidation.MV_Obligatoire,
 				size: 40,
 				autocomplete: "address-line" + i,
 				disabled: aDisabled,
 			});
 			lChampsAdresse.add(lChamp);
+			this.champs.add(lChamp);
 		}
-		this.champs.add(lChampsAdresse);
+		lHtml.push('<fieldset class="m-y-l flex-contain cols">');
 		lHtml.push(
-			'<fieldset class="m-y-l flex-contain cols">',
-			tag(
+			(0, tag_1.tag)(
 				"div",
 				{ class: "flex-contain flex-center justify-between m-bottom-l" },
-				tag(
+				(0, tag_1.tag)(
 					"legend",
-					GTraductions.getValeur("inscriptionsEtablissement.adresse") +
-						(aObligatoire ? "*" : ""),
+					ObjetTraduction_1.GTraductions.getValeur(
+						"inscriptionsEtablissement.adresse",
+					) + (aObligatoire ? "*" : ""),
 				),
-				tag(
+				(0, tag_1.tag)(
 					"ie-bouton",
 					{
-						"ie-model": tag.funcAttr("btnCopierAdresse", [
+						"ie-model": tag_1.tag.funcAttr("btnCopierAdresse", [
 							aGroupeDonnee,
 							aIndiceResponsable,
 						]),
-						class: [TypeThemeBouton.neutre, "small-bt"],
+						class: [Type_ThemeBouton_1.TypeThemeBouton.neutre, "small-bt"],
 						"ie-display": "btnCopierAdresse.getDisplay",
 					},
-					GTraductions.getValeur(lLibelleBtn),
+					ObjetTraduction_1.GTraductions.getValeur(lLibelleBtn),
 				),
 			),
 		);
@@ -3279,27 +3455,32 @@ class ObjetInscriptionsEtablissement extends Identite {
 		lChampsAdresse.parcourir((aChamp) => {
 			const lAttr = {
 				id: aChamp.id,
-				class: ["round-style m-bottom"],
+				class: ["m-bottom"],
 				type: "text",
 				"aria-required": "true",
 				"aria-invalid": "false",
 				"aria-errormessage": aChamp.id + "_error",
-				placeHolder: GTraductions.getValeur(
+				"aria-label": ObjetTraduction_1.GTraductions.getValeur(
 					"inscriptionsEtablissement.adresse" + aChamp.suffixe,
 				),
-				"ie-model": tag.funcAttr(
-					`${aGroupeDonnee}.${ETypeDonneeInscription.adresse}`,
+				placeHolder: ObjetTraduction_1.GTraductions.getValeur(
+					"inscriptionsEtablissement.adresse" + aChamp.suffixe,
+				),
+				"ie-model": tag_1.tag.funcAttr(
+					`${aGroupeDonnee}.${Enumere_Inscriptions_1.ETypeDonneeInscription.adresse}`,
 					[aChamp.getNumero(), aChamp.suffixe],
 				),
 				autocomplete: aChamp.autocomplete,
 			};
-			lHtml.push(tag("input", lAttr));
+			lHtml.push((0, tag_1.tag)("input", lAttr));
 		});
 		lHtml.push(
-			tag(
+			IE.jsx.str(
 				"span",
 				{ id: lChampsAdresse.get(0).id + "_error", class: "errormessage" },
-				UtilitaireInscriptions.getMessageErreur(EModeValidation.MV_Obligatoire),
+				UtilitaireInscriptions_1.UtilitaireInscriptions.getMessageErreur(
+					Enumere_Inscriptions_1.EModeValidation.MV_Obligatoire,
+				),
 			),
 		);
 		lHtml.push("</div>");
@@ -3310,16 +3491,18 @@ class ObjetInscriptionsEtablissement extends Identite {
 		const lFormation = this.donnees.scolariteActuelle.formation;
 		if (lFormation && aListeRessources) {
 			switch (aChamps.getGenre()) {
-				case EGenreEvnt.lv1:
+				case ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource.lv1:
 					return lFormation.avecLV1 && aListeRessources.count() === 1;
-				case EGenreEvnt.lv2:
+				case ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource.lv2:
 					return lFormation.avecLV2 && aListeRessources.count() === 1;
-				case EGenreEvnt.specialite:
+				case ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource
+					.specialite:
 					return (
 						lFormation.nbObligatoires &&
 						aListeRessources.count() === lFormation.nbObligatoires
 					);
-				case EGenreEvnt.option:
+				case ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource
+					.option:
 					return (
 						lFormation.nbFacultatives &&
 						aListeRessources.count() <= lFormation.nbFacultatives
@@ -3330,405 +3513,455 @@ class ObjetInscriptionsEtablissement extends Identite {
 		}
 		return false;
 	}
-}
-ObjetInscriptionsEtablissement.genreEvenement = {
-	annuler: "ev-oie-annuler",
-	valider: "ev-oie-valider",
-	precedent: "ev-oie-precedent",
-	suivant: "ev-oie-suivant",
-	modifier: "ev-oie-modifier",
-	supprimer: "ev-oie-supprimer",
-};
-function _validerChamp(aNumeroChamp, aEstValide) {
-	const lChamps = this.champs.getElementParNumero(aNumeroChamp);
-	if (!!lChamps) {
-		lChamps.valide = aEstValide;
-	}
-}
-function saisieResponsableEnCours() {
-	if (this.responsableSelectionne) {
-		const lAdresse = this.responsableSelectionne.adresse
-			? this.responsableSelectionne.adresse.join("")
-			: "";
-		return (
-			!!this.responsableSelectionne.nom ||
-			!!this.responsableSelectionne.prenoms ||
-			lAdresse !== "" ||
-			!!this.responsableSelectionne.codePostal ||
-			(!!this.responsableSelectionne.ville &&
-				this.responsableSelectionne.ville.getLibelle() !== "")
-		);
-	}
-	return false;
-}
-function _getOptionVisible(aNumeroChamp) {
-	if (
-		this.donnees &&
-		this.donnees.scolariteActuelle &&
-		this.donnees.scolariteActuelle.formation
-	) {
-		const lChamp = this.optionsFormation.getElementParNumero(aNumeroChamp);
-		if (!!lChamp) {
-			switch (lChamp.getGenre()) {
-				case EGenreEvnt.lv1:
-					return (
-						this.donnees.scolariteActuelle.formation.avecLV1 &&
-						this.listes &&
-						this.listes.listeLV1 &&
-						this.listes.listeLV1.count()
-					);
-				case EGenreEvnt.lv2:
-					return (
-						this.donnees.scolariteActuelle.formation.avecLV2 &&
-						this.listes &&
-						this.listes.listeLV2 &&
-						this.listes.listeLV2.count()
-					);
-				case EGenreEvnt.specialite:
-					return (
-						this.donnees.scolariteActuelle.formation.nbObligatoires > 0 &&
-						this.donnees.scolariteActuelle.formation.obligatoires &&
-						this.donnees.scolariteActuelle.formation.obligatoires.count() > 1
-					);
-				case EGenreEvnt.option:
-					return (
-						this.donnees.scolariteActuelle.formation.nbFacultatives > 0 &&
-						this.donnees.scolariteActuelle.formation.facultatives &&
-						this.donnees.scolariteActuelle.formation.facultatives.count() > 1
-					);
-				default:
-					return false;
-			}
+	_validerChamp(aNumeroChamp, aEstValide) {
+		const lChamps = this.champs.getElementParNumero(aNumeroChamp);
+		if (!!lChamps) {
+			lChamps.valide = aEstValide;
 		}
 	}
-	return false;
-}
-function _majListeOrientations(aListeOrientation) {
-	aListeOrientation.parcourir((aOrientation) => {
-		if (aOrientation.options) {
-			aOrientation.options.setTri([ObjetTri.init("Libelle")]);
-			aOrientation.options.trier();
-			aOrientation.obligatoires = new ObjetListeElements();
-			aOrientation.facultatives = new ObjetListeElements();
-			aOrientation.options.parcourir((aElement) => {
-				if (aElement.estSelectionnable) {
-					if (aElement.estSpecialite) {
-						if (aElement.estObligatoire) {
-							aOrientation.spes.addElement(aElement);
-						}
-					} else {
-						if (aElement.estObligatoire) {
-							aOrientation.obligatoires.addElement(aElement);
-						}
-						if (aElement.estFacultative) {
-							aOrientation.facultatives.addElement(aElement);
-						}
-					}
-				}
-			});
-		}
-	});
-}
-function _initialiserRecherche(aInstance, aCombo, aObjetChamp) {
-	aCombo.setOptionsObjetSaisie({
-		mode: EGenreSaisie.SaisieRecherche,
-		avecOuvertureDeroulantModale: false,
-		longueur: 250,
-		surEditionRecherche: function (aValeurRecherche, aCallback) {
-			aInstance._surEditionRechercheListe(
-				aObjetChamp,
-				aValeurRecherche,
-				aCallback,
-				aCombo,
+	saisieResponsableEnCours() {
+		if (this.responsableSelectionne) {
+			const lAdresse = this.responsableSelectionne.adresse
+				? this.responsableSelectionne.adresse.join("")
+				: "";
+			return (
+				!!this.responsableSelectionne.nom ||
+				!!this.responsableSelectionne.prenoms ||
+				lAdresse !== "" ||
+				!!this.responsableSelectionne.codePostal ||
+				(!!this.responsableSelectionne.ville &&
+					this.responsableSelectionne.ville.getLibelle() !== "")
 			);
-		},
-		nbCarMinRecherche: 3,
-		rechercheTout: ["", "*"],
-		libelleHaut: aObjetChamp.getLibelle() + (aObjetChamp.optionnel ? "" : "*"),
-		required: !aObjetChamp.optionnel,
-		avecEventSurFermetureListe: true,
-		getEstElementNonSelectionnable: function (aElement) {
-			return !aElement.existeNumero();
-		},
-	});
-}
-function _evenementRecherche(aInstance, aParametres, aCombo, aNumeroChamp) {
-	const lChamp = aInstance.champs.getElementParNumero(aNumeroChamp);
-	if (!!lChamp) {
-		const lFamille = lChamp.groupe;
-		const lType = lChamp.type;
-		let lDonnee = aInstance.donnees[lFamille];
-		if (
-			!!lDonnee &&
-			[EGroupeDonneeInscription.responsables].includes(lFamille)
-		) {
-			lDonnee = aInstance.getResponsable(lChamp.indiceResponsable);
 		}
-		if (aParametres.genreEvenement === EGenreEvenementObjetSaisie.deploiement) {
-			aCombo.avecSelectionUtilisateur = false;
-		}
-		if (
-			aParametres.genreEvenement === EGenreEvenementObjetSaisie.selection &&
-			aParametres.element &&
-			aCombo.estUneInteractionUtilisateur()
-		) {
-			if (!!lDonnee) {
-				lDonnee[lType] = aParametres.element;
-				aCombo.avecSelectionUtilisateur = true;
-			}
-		}
-		if (aParametres.genreEvenement === EGenreEvenementObjetSaisie.fermeture) {
-			if (
-				aCombo.ListeElements.count() === 1 &&
-				aCombo.ListeElements.get(0).existeNumero() &&
-				!lChamp.avecSaisieAlt
-			) {
-				if (!!lDonnee) {
-					lDonnee[lType] = aCombo.ListeElements.get(0);
-					aCombo.setContenu(lDonnee[lType].getLibelle());
-				}
-			} else {
-				if (
-					!!lChamp &&
-					aParametres.element === null &&
-					!aCombo.avecSelectionUtilisateur &&
-					!!lChamp.avecSaisieAlt
-				) {
-					const lSauvegarde = aInstance._getDonneesSauvegardeRecherche(
-						lFamille,
-						lChamp.indiceResponsable,
-					);
-					const lInfo = !!lSauvegarde ? lSauvegarde[lType] : "";
-					aInstance.saisieAlternative(lChamp, lInfo);
-				}
-			}
-		}
+		return false;
 	}
-}
-function _redessinnerDocumentsFournis() {
-	let lListe = this.listeDocumentsFournis;
-	for (let i = 0; i < lListe.length; i++) {
-		let lIdent = this.idListeDocuments + i;
-		GHtml.setHtml(
-			lIdent,
-			UtilitaireUrl.construireListeUrls(this.listeDocumentsFournis[i], {
-				separateur: " ",
-				IEModelChips: "chipsDocJoint",
-				genreRessource: TypeFichierExterneHttpSco.DocJointInscription,
-				argsIEModelChips: [i],
-				maxWidth: 300,
-			}),
-			{ controleur: this.controleur },
-		);
-	}
-}
-function _validerAdresse() {
-	if ([EEtape.responsables].includes(this.etape.getGenre())) {
-		const lListeChampAdresse = this.champs.getListeElements((aChamp) => {
-			return [
-				ETypeDonneeInscription.adresse,
-				ETypeDonneeInscription.ville,
-				ETypeDonneeInscription.codePostal,
-				ETypeDonneeInscription.pays,
-			].includes(aChamp.type);
-		});
-		const lDonnees =
-			this.etape.getGenre() === EEtape.identite
-				? this.donnees.identite
-				: this.responsableSelectionne;
-		if (lListeChampAdresse.count() && lDonnees && lDonnees.adresse) {
-			const lAdresse = lDonnees.adresse.join("");
-			lListeChampAdresse.parcourir((aChamp) => {
-				let lValide;
-				switch (aChamp.type) {
-					case ETypeDonneeInscription.adresse:
-						lValide = lAdresse !== "";
-						break;
-					case ETypeDonneeInscription.codePostal:
-						lValide = lDonnees.codePostal && lDonnees.codePostal !== "";
-						break;
-					case ETypeDonneeInscription.ville:
-						lValide = lDonnees.ville && lDonnees.ville.getLibelle() !== "";
-						break;
-					case ETypeDonneeInscription.pays:
-						lValide = true;
-						break;
-					default:
-						break;
-				}
-				aChamp.valide = lValide;
-			});
-		}
-	}
-}
-function _validerOptionsFormation() {
-	if ([EEtape.scolarite].includes(this.etape.getGenre())) {
-		if (
-			this.optionsFormation.count() &&
-			this.donnees.scolariteActuelle &&
-			this.donnees.scolariteActuelle.optionsChoisies
-		) {
-			this.optionsFormation.parcourir((aChamp) => {
-				if (aChamp.optionnel) {
-					return;
-				}
-				let lValide = false;
-				if (_getOptionVisible.call(this, aChamp.getNumero())) {
-					const lOptionChoisies = _getOptionsSelonGenre.call(
-						this,
-						aChamp.getGenre(),
-					);
-					lValide = lOptionChoisies && !!lOptionChoisies.count();
-				} else {
-					lValide = true;
-				}
-				aChamp.valide = lValide;
-			});
-		}
-	}
-}
-function _getOptionsSelonGenre(aGenre) {
-	let lOptions = null;
-	if (this.donnees.scolariteActuelle.optionsChoisies) {
-		switch (aGenre) {
-			case EGenreEvnt.lv1:
-				lOptions = this.donnees.scolariteActuelle.optionsChoisies.lv1;
-				break;
-			case EGenreEvnt.lv2:
-				lOptions = this.donnees.scolariteActuelle.optionsChoisies.lv2;
-				break;
-			case EGenreEvnt.specialite:
-				lOptions = this.donnees.scolariteActuelle.optionsChoisies.obligatoires;
-				break;
-			case EGenreEvnt.option:
-				lOptions = this.donnees.scolariteActuelle.optionsChoisies.facultatives;
-				break;
-			default:
-				break;
-		}
-	}
-	return lOptions;
-}
-function _afficherFenetreOptions(aNumeroChamp) {
-	const lChamp = this.optionsFormation.getElementParNumero(aNumeroChamp);
-	if (_getOptionVisible.call(this, aNumeroChamp)) {
-		let lListeRessources = new ObjetListeElements();
-		let lNbChoix = 0;
-		let lTitre = "";
-		switch (lChamp.getGenre()) {
-			case EGenreEvnt.lv1:
-				lListeRessources = this.listes.listeLV1;
-				lNbChoix = 1;
-				lTitre = `${GTraductions.getValeur("inscriptionsEtablissement.optionLV1")}* <span>${GTraductions.getValeur("inscriptionsEtablissement.attendues", [lNbChoix])}</span>`;
-				break;
-			case EGenreEvnt.lv2:
-				lListeRessources = this.listes.listeLV2;
-				lNbChoix = 1;
-				lTitre = `${GTraductions.getValeur("inscriptionsEtablissement.optionLV2")}* <span>${GTraductions.getValeur("inscriptionsEtablissement.attendues", [lNbChoix])}</span>`;
-				break;
-			case EGenreEvnt.specialite:
-				lListeRessources =
-					this.donnees.scolariteActuelle.formation.obligatoires;
-				lNbChoix = this.donnees.scolariteActuelle.formation.nbObligatoires;
-				lTitre = `${GTraductions.getValeur("inscriptionsEtablissement.optionObligatoire")}* <span>${GTraductions.getValeur("inscriptionsEtablissement.attendues", [lNbChoix])}</span>`;
-				break;
-			case EGenreEvnt.option:
-				lListeRessources =
-					this.donnees.scolariteActuelle.formation.facultatives;
-				lNbChoix = this.donnees.scolariteActuelle.formation.nbFacultatives;
-				lTitre = `${GTraductions.getValeur("inscriptionsEtablissement.optionFacultative")} <span>${GTraductions.getValeur("inscriptionsEtablissement.maximum", [lNbChoix])}</span>`;
-				break;
-			default:
-				break;
-		}
-		let lListe;
+	_getOptionVisible(aNumeroChamp) {
 		if (
 			this.donnees &&
 			this.donnees.scolariteActuelle &&
-			this.donnees.scolariteActuelle.optionsChoisies
+			this.donnees.scolariteActuelle.formation
 		) {
-			lListe = _getOptionsSelonGenre.call(this, lChamp.getGenre());
-		} else {
-			return;
-		}
-		const lListeSelection = lListe.getTableauNumeros();
-		lListeRessources.parcourir((aRessource) => {
-			aRessource.selectionne = lListeSelection.includes(aRessource.getNumero());
-		});
-		ObjetFenetre.creerInstanceFenetre(ObjetFenetre_Liste, {
-			pere: this,
-			evenement(aGenreBouton, aToto, aTata) {
-				if (aGenreBouton !== 1) {
-					this.instanceListeRessource.fermer();
-					return;
+			const lChamp = this.optionsFormation.getElementParNumero(aNumeroChamp);
+			if (!!lChamp) {
+				switch (lChamp.getGenre()) {
+					case ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource.lv1:
+						return (
+							this.donnees.scolariteActuelle.formation.avecLV1 &&
+							this.listes &&
+							this.listes.listeLV1 &&
+							this.listes.listeLV1.count() > 0
+						);
+					case ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource.lv2:
+						return (
+							this.donnees.scolariteActuelle.formation.avecLV2 &&
+							this.listes &&
+							this.listes.listeLV2 &&
+							this.listes.listeLV2.count() > 0
+						);
+					case ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource
+						.specialite:
+						return (
+							this.donnees.scolariteActuelle.formation.nbObligatoires > 0 &&
+							this.donnees.scolariteActuelle.formation.obligatoires &&
+							this.donnees.scolariteActuelle.formation.obligatoires.count() > 1
+						);
+					case ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource
+						.option:
+						return (
+							this.donnees.scolariteActuelle.formation.nbFacultatives > 0 &&
+							this.donnees.scolariteActuelle.formation.facultatives &&
+							this.donnees.scolariteActuelle.formation.facultatives.count() > 1
+						);
+					default:
+						return false;
 				}
-				if (lListeRessources) {
-					const lListeSelection = lListeRessources.getListeElements(
-						(aRessource) => {
-							return aRessource.selectionne;
-						},
-					);
-					if (this.donnees.scolariteActuelle.optionsChoisies) {
-						switch (lChamp.getGenre()) {
-							case EGenreEvnt.lv1:
-								this.donnees.scolariteActuelle.optionsChoisies.lv1 =
-									lListeSelection;
-								break;
-							case EGenreEvnt.lv2:
-								this.donnees.scolariteActuelle.optionsChoisies.lv2 =
-									lListeSelection;
-								break;
-							case EGenreEvnt.specialite:
-								if (this.validerNombreOptions(lChamp, lListeSelection)) {
-									this.donnees.scolariteActuelle.optionsChoisies.obligatoires =
-										lListeSelection;
-								} else {
-									GApplication.getMessage().afficher({
-										type: EGenreBoiteMessage.Information,
-										message: GTraductions.getValeur(
-											"inscriptionsEtablissement.msgOptionsObligatoires",
-											[this.donnees.scolariteActuelle.formation.nbObligatoires],
-										),
-									});
-									return;
-								}
-								break;
-							case EGenreEvnt.option:
-								this.donnees.scolariteActuelle.optionsChoisies.facultatives =
-									lListeSelection;
-								break;
+			}
+		}
+		return false;
+	}
+	_majListeOrientations(aListeOrientation) {
+		aListeOrientation.parcourir((aOrientation) => {
+			if (aOrientation.options) {
+				aOrientation.options.setTri([ObjetTri_1.ObjetTri.init("Libelle")]);
+				aOrientation.options.trier();
+				aOrientation.obligatoires =
+					new ObjetListeElements_1.ObjetListeElements();
+				aOrientation.facultatives =
+					new ObjetListeElements_1.ObjetListeElements();
+				aOrientation.options.parcourir((aElement) => {
+					if (aElement.estSelectionnable) {
+						if (aElement.estSpecialite) {
+							if (aElement.estObligatoire) {
+								aOrientation.spes.addElement(aElement);
+							}
+						} else {
+							if (aElement.estObligatoire) {
+								aOrientation.obligatoires.addElement(aElement);
+							}
+							if (aElement.estFacultative) {
+								aOrientation.facultatives.addElement(aElement);
+							}
 						}
 					}
-					this.instanceListeRessource.fermer();
-				}
-			},
-			initialiser(aInstance) {
-				this.instanceListeRessource = aInstance;
-				const lParamsListe = {
-					optionsListe: {
-						hauteurAdapteContenu: true,
-						hauteurMaxAdapteContenu: 300,
-						skin: ObjetListe.skin.flatDesign,
-					},
-				};
-				aInstance.setOptionsFenetre({
-					titre: lTitre,
-					largeur: 400,
-					hauteur: null,
-					listeBoutons: [
-						GTraductions.getValeur("Annuler"),
-						GTraductions.getValeur("Valider"),
-					],
 				});
-				aInstance.paramsListe = lParamsListe;
-				aInstance.setFermerSurValidation(false);
+			}
+		});
+	}
+	_initialiserRecherche(aCombo, aObjetChamp) {
+		aCombo.setOptionsObjetSaisie({
+			mode: Enumere_Saisie_1.EGenreSaisie.SaisieRecherche,
+			avecOuvertureDeroulantPopup: false,
+			longueur: 250,
+			surEditionRecherche: (aValeurRecherche, aCallback) => {
+				this._surEditionRechercheListe(
+					aObjetChamp,
+					aValeurRecherche,
+					aCallback,
+				);
 			},
-		}).setDonnees(
-			new DonneesListe_RessourceInscription(lListeRessources, lNbChoix),
-		);
+			nbCarMinRecherche: 3,
+			rechercheTout: ["", "*"],
+			libelleHaut:
+				aObjetChamp.getLibelle() + (aObjetChamp.optionnel ? "" : "*"),
+			required: !aObjetChamp.optionnel,
+			avecEventSurFermetureListe: true,
+			getEstElementNonSelectionnable: function (aElement) {
+				return !aElement.existeNumero();
+			},
+		});
+	}
+	_evenementRecherche(aParametres, aCombo, aNumeroChamp) {
+		const lChamp = this.champs.getElementParNumero(aNumeroChamp);
+		if (!!lChamp) {
+			const lFamille = lChamp.groupe;
+			const lType = lChamp.type;
+			let lDonnee = this.donnees[lFamille];
+			if (
+				!!lDonnee &&
+				lFamille ===
+					Enumere_Inscriptions_1.EGroupeDonneeInscription.responsables
+			) {
+				lDonnee = this.getResponsable(lChamp.indiceResponsable);
+			}
+			if (
+				aParametres.genreEvenement ===
+				Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.deploiement
+			) {
+				aCombo.avecSelectionUtilisateur = false;
+			}
+			if (
+				aParametres.genreEvenement ===
+					Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection &&
+				aParametres.element &&
+				aCombo.estUneInteractionUtilisateur()
+			) {
+				if (!!lDonnee) {
+					lDonnee[lType] = aParametres.element;
+					aCombo.avecSelectionUtilisateur = true;
+				}
+			}
+			if (
+				aParametres.genreEvenement ===
+				Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.fermeture
+			) {
+				if (
+					aCombo.getListeElements().count() === 1 &&
+					aCombo.getListeElements().get(0).existeNumero() &&
+					!lChamp.avecSaisieAlt
+				) {
+					if (!!lDonnee) {
+						lDonnee[lType] = aCombo.getListeElements().get(0);
+						aCombo.setContenu(lDonnee[lType].getLibelle());
+					}
+				} else {
+					if (
+						!!lChamp &&
+						aParametres.element === null &&
+						!aCombo.avecSelectionUtilisateur &&
+						!!lChamp.avecSaisieAlt
+					) {
+						const lSauvegarde = this._getDonneesSauvegardeRecherche(
+							lFamille,
+							lChamp.indiceResponsable,
+						);
+						const lInfo = !!lSauvegarde ? lSauvegarde[lType] : "";
+						this.saisieAlternative(lChamp, lInfo);
+					}
+				}
+			}
+		}
+	}
+	_redessinnerDocumentsFournis() {
+		let lListe = this.listeDocumentsFournis;
+		for (let i = 0; i < lListe.length; i++) {
+			let lIdent = this.idListeDocuments + i;
+			ObjetHtml_1.GHtml.setHtml(
+				lIdent,
+				UtilitaireUrl_1.UtilitaireUrl.construireListeUrls(
+					this.listeDocumentsFournis[i],
+					{
+						separateur: " ",
+						IEModelChips: "chipsDocJoint",
+						genreRessource:
+							TypeFichierExterneHttpSco_1.TypeFichierExterneHttpSco
+								.DocJointInscription,
+						argsIEModelChips: [i.toString()],
+						maxWidth: 300,
+					},
+				),
+				{ controleur: this.controleur },
+			);
+		}
+	}
+	_validerAdresse() {
+		if (
+			[Enumere_Inscriptions_1.EEtape.responsables].includes(
+				this.etape.getGenre(),
+			)
+		) {
+			const lListeChampAdresse = this.champs.getListeElements((aChamp) => {
+				return [
+					Enumere_Inscriptions_1.ETypeDonneeInscription.adresse,
+					Enumere_Inscriptions_1.ETypeDonneeInscription.ville,
+					Enumere_Inscriptions_1.ETypeDonneeInscription.codePostal,
+					Enumere_Inscriptions_1.ETypeDonneeInscription.pays,
+				].includes(aChamp.type);
+			});
+			const lDonnees =
+				this.etape.getGenre() === Enumere_Inscriptions_1.EEtape.identite
+					? this.donnees.identite
+					: this.responsableSelectionne;
+			if (lListeChampAdresse.count() && lDonnees && lDonnees.adresse) {
+				const lAdresse = lDonnees.adresse.join("");
+				lListeChampAdresse.parcourir((aChamp) => {
+					let lValide;
+					switch (aChamp.type) {
+						case Enumere_Inscriptions_1.ETypeDonneeInscription.adresse:
+							lValide = lAdresse !== "";
+							break;
+						case Enumere_Inscriptions_1.ETypeDonneeInscription.codePostal:
+							lValide = lDonnees.codePostal && lDonnees.codePostal !== "";
+							break;
+						case Enumere_Inscriptions_1.ETypeDonneeInscription.ville:
+							lValide = lDonnees.ville && lDonnees.ville.getLibelle() !== "";
+							break;
+						case Enumere_Inscriptions_1.ETypeDonneeInscription.pays:
+							lValide = true;
+							break;
+						default:
+							break;
+					}
+					aChamp.valide = lValide;
+				});
+			}
+		}
+	}
+	_validerOptionsFormation() {
+		if (
+			[Enumere_Inscriptions_1.EEtape.scolarite].includes(this.etape.getGenre())
+		) {
+			if (
+				this.optionsFormation.count() &&
+				this.donnees.scolariteActuelle &&
+				this.donnees.scolariteActuelle.optionsChoisies
+			) {
+				this.optionsFormation.parcourir((aChamp) => {
+					if (aChamp.optionnel) {
+						return;
+					}
+					let lValide = false;
+					if (this._getOptionVisible(aChamp.getNumero())) {
+						const lOptionChoisies = this._getOptionsSelonGenre(
+							aChamp.getGenre(),
+						);
+						lValide = lOptionChoisies && !!lOptionChoisies.count();
+					} else {
+						lValide = true;
+					}
+					aChamp.valide = lValide;
+				});
+			}
+		}
+	}
+	_getOptionsSelonGenre(aGenre) {
+		let lOptions = null;
+		if (this.donnees.scolariteActuelle.optionsChoisies) {
+			switch (aGenre) {
+				case ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource.lv1:
+					lOptions = this.donnees.scolariteActuelle.optionsChoisies.lv1;
+					break;
+				case ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource.lv2:
+					lOptions = this.donnees.scolariteActuelle.optionsChoisies.lv2;
+					break;
+				case ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource
+					.specialite:
+					lOptions =
+						this.donnees.scolariteActuelle.optionsChoisies.obligatoires;
+					break;
+				case ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource
+					.option:
+					lOptions =
+						this.donnees.scolariteActuelle.optionsChoisies.facultatives;
+					break;
+			}
+		}
+		return lOptions;
+	}
+	_afficherFenetreOptions(aNumeroChamp) {
+		const lChamp = this.optionsFormation.getElementParNumero(aNumeroChamp);
+		if (this._getOptionVisible(aNumeroChamp)) {
+			let lListeRessources = new ObjetListeElements_1.ObjetListeElements();
+			let lNbChoix = 0;
+			let lTitre = "";
+			switch (lChamp.getGenre()) {
+				case ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource.lv1:
+					lListeRessources = this.listes.listeLV1;
+					lNbChoix = 1;
+					lTitre = `${ObjetTraduction_1.GTraductions.getValeur("inscriptionsEtablissement.optionLV1")}* <span>${ObjetTraduction_1.GTraductions.getValeur("inscriptionsEtablissement.attendues", [lNbChoix])}</span>`;
+					break;
+				case ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource.lv2:
+					lListeRessources = this.listes.listeLV2;
+					lNbChoix = 1;
+					lTitre = `${ObjetTraduction_1.GTraductions.getValeur("inscriptionsEtablissement.optionLV2")}* <span>${ObjetTraduction_1.GTraductions.getValeur("inscriptionsEtablissement.attendues", [lNbChoix])}</span>`;
+					break;
+				case ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource
+					.specialite:
+					lListeRessources =
+						this.donnees.scolariteActuelle.formation.obligatoires;
+					lNbChoix = this.donnees.scolariteActuelle.formation.nbObligatoires;
+					lTitre = `${ObjetTraduction_1.GTraductions.getValeur("inscriptionsEtablissement.optionObligatoire")}* <span>${ObjetTraduction_1.GTraductions.getValeur("inscriptionsEtablissement.attendues", [lNbChoix])}</span>`;
+					break;
+				case ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource
+					.option:
+					lListeRessources =
+						this.donnees.scolariteActuelle.formation.facultatives;
+					lNbChoix = this.donnees.scolariteActuelle.formation.nbFacultatives;
+					lTitre = `${ObjetTraduction_1.GTraductions.getValeur("inscriptionsEtablissement.optionFacultative")} <span>${ObjetTraduction_1.GTraductions.getValeur("inscriptionsEtablissement.maximum", [lNbChoix])}</span>`;
+					break;
+			}
+			let lListe;
+			if (
+				this.donnees &&
+				this.donnees.scolariteActuelle &&
+				this.donnees.scolariteActuelle.optionsChoisies
+			) {
+				lListe = this._getOptionsSelonGenre(lChamp.getGenre());
+			} else {
+				return;
+			}
+			const lListeSelection = lListe.getTableauNumeros();
+			lListeRessources.parcourir((aRessource) => {
+				aRessource.selectionne = lListeSelection.includes(
+					aRessource.getNumero(),
+				);
+			});
+			const lFenetreListeRessources =
+				ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+					ObjetFenetre_Liste_1.ObjetFenetre_Liste,
+					{
+						pere: this,
+						evenement(aGenreBouton) {
+							if (aGenreBouton !== 1) {
+								lFenetreListeRessources.fermer();
+								return;
+							}
+							if (lListeRessources) {
+								const lListeSelection = lListeRessources.getListeElements(
+									(aRessource) => {
+										return aRessource.selectionne;
+									},
+								);
+								if (this.donnees.scolariteActuelle.optionsChoisies) {
+									switch (lChamp.getGenre()) {
+										case ObjetRequetePageOrientations_1.NSOrientation
+											.EGenreRessource.lv1:
+											this.donnees.scolariteActuelle.optionsChoisies.lv1 =
+												lListeSelection;
+											break;
+										case ObjetRequetePageOrientations_1.NSOrientation
+											.EGenreRessource.lv2:
+											this.donnees.scolariteActuelle.optionsChoisies.lv2 =
+												lListeSelection;
+											break;
+										case ObjetRequetePageOrientations_1.NSOrientation
+											.EGenreRessource.specialite:
+											if (this.validerNombreOptions(lChamp, lListeSelection)) {
+												this.donnees.scolariteActuelle.optionsChoisies.obligatoires =
+													lListeSelection;
+											} else {
+												GApplication.getMessage().afficher({
+													type: Enumere_BoiteMessage_1.EGenreBoiteMessage
+														.Information,
+													message: ObjetTraduction_1.GTraductions.getValeur(
+														"inscriptionsEtablissement.msgOptionsObligatoires",
+														[
+															this.donnees.scolariteActuelle.formation
+																.nbObligatoires,
+														],
+													),
+												});
+												return;
+											}
+											break;
+										case ObjetRequetePageOrientations_1.NSOrientation
+											.EGenreRessource.option:
+											this.donnees.scolariteActuelle.optionsChoisies.facultatives =
+												lListeSelection;
+											break;
+									}
+								}
+								lFenetreListeRessources.fermer();
+							}
+						},
+						initialiser(aInstance) {
+							const lParamsListe = {
+								optionsListe: {
+									hauteurAdapteContenu: true,
+									hauteurMaxAdapteContenu: 300,
+									skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+								},
+							};
+							aInstance.setOptionsFenetre({
+								titre: lTitre,
+								largeur: 400,
+								hauteur: null,
+								listeBoutons: [
+									ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+									ObjetTraduction_1.GTraductions.getValeur("Valider"),
+								],
+							});
+							aInstance.paramsListe = lParamsListe;
+							aInstance.setFermerSurValidation(false);
+						},
+					},
+				);
+			lFenetreListeRessources.setDonnees(
+				new DonneesListe_RessourceInscription(lListeRessources, lNbChoix),
+			);
+		}
 	}
 }
-class DonneesListe_RessourceInscription extends ObjetDonneesListeFlatDesign {
+exports.ObjetInscriptionsEtablissement = ObjetInscriptionsEtablissement;
+(function (ObjetInscriptionsEtablissement) {
+	let GenreEvenement;
+	(function (GenreEvenement) {
+		GenreEvenement["annuler"] = "ev-oie-annuler";
+		GenreEvenement["valider"] = "ev-oie-valider";
+		GenreEvenement["precedent"] = "ev-oie-precedent";
+		GenreEvenement["suivant"] = "ev-oie-suivant";
+		GenreEvenement["modifier"] = "ev-oie-modifier";
+		GenreEvenement["supprimer"] = "ev-oie-supprimer";
+	})(
+		(GenreEvenement =
+			ObjetInscriptionsEtablissement.GenreEvenement ||
+			(ObjetInscriptionsEtablissement.GenreEvenement = {})),
+	);
+})(
+	ObjetInscriptionsEtablissement ||
+		(exports.ObjetInscriptionsEtablissement = ObjetInscriptionsEtablissement =
+			{}),
+);
+class DonneesListe_RessourceInscription extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aListeRessources, aNombreChoix) {
 		super(aListeRessources);
 		this.nombreChoixPossible = aNombreChoix;
@@ -3761,27 +3994,23 @@ class DonneesListe_RessourceInscription extends ObjetDonneesListeFlatDesign {
 		aParams.article.selectionne = aValue;
 	}
 }
-class ObjetChampInscription extends ObjetElement {
+class ObjetChampInscription extends ObjetElement_1.ObjetElement {
 	constructor(aParams) {
-		super(aParams.libelle, GUID.getId());
-		this.ident = aParams.ident;
-		this.model = aParams.model || "";
+		super(aParams.libelle, GUID_1.GUID.getId());
 		this.type = aParams.type;
 		this.optionnel = aParams.optionnel === undefined ? true : aParams.optionnel;
 		this.groupe = aParams.groupe || "";
 		this.suffixe = aParams.suffixe || "";
 		this.modeValidation =
 			aParams.modeValidation === undefined
-				? EModeValidation.MV_All
+				? Enumere_Inscriptions_1.EModeValidation.MV_All
 				: aParams.modeValidation;
 		this.size = aParams.size || 100;
 		this.disabled = !!aParams.disabled;
 		this.valide = !!aParams.optionnel;
-		this.indiceOption = aParams.indiceOption || -1;
 		this.autocomplete = aParams.autocomplete || "";
 	}
 	get id() {
 		return `mi_oci_${this.groupe}_${this.type}_${this.suffixe}`;
 	}
 }
-module.exports = { ObjetInscriptionsEtablissement };

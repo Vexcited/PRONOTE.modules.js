@@ -9,10 +9,13 @@ const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
 const ToucheClavier_1 = require("ToucheClavier");
 const Enumere_ErreurAcces_1 = require("Enumere_ErreurAcces");
 const UtilitaireRedirection_1 = require("UtilitaireRedirection");
+const AccessApp_1 = require("AccessApp");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const GlossaireCP_1 = require("GlossaireCP");
 class _InterfaceConnexion extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
-		this.applicationProduit = GApplication;
+		this.applicationProduit = (0, AccessApp_1.getApp)();
 		this.moteurConnexion = null;
 		this.avecErreurSurClickConnecterPrecedent = false;
 		this.id = {
@@ -46,7 +49,7 @@ class _InterfaceConnexion extends ObjetInterface_1.ObjetInterface {
 			stockageMDPActive: false,
 			avecRecupIdMdp: false,
 			pourInscription: false,
-			requetes: { identification: "", authentification: "" },
+			requetes: { getRequeteIdent: null, getRequeteAuth: null },
 		};
 	}
 	setParametresGeneraux() {
@@ -83,8 +86,8 @@ class _InterfaceConnexion extends ObjetInterface_1.ObjetInterface {
 		this.moteurConnexion.init({
 			callback: this.callbackMoteur.bind(this),
 			requetes: {
-				identification: this.options.requetes.identification,
-				authentification: this.options.requetes.authentification,
+				getRequeteIdent: this.options.requetes.getRequeteIdent,
+				getRequeteAuth: this.options.requetes.getRequeteAuth,
 			},
 			stockageMDPActive: this.options.stockageMDPActive,
 		});
@@ -98,7 +101,7 @@ class _InterfaceConnexion extends ObjetInterface_1.ObjetInterface {
 					this.callbackSecurisationDoubleAuthPromise.bind(this),
 			});
 		}
-		if (GApplication.getDemo()) {
+		if ((0, AccessApp_1.getApp)().getDemo()) {
 			this.moteurConnexion.setLogin(
 				ObjetTraduction_1.GTraductions.getValeur("Demo.Identifiant"),
 			);
@@ -109,7 +112,7 @@ class _InterfaceConnexion extends ObjetInterface_1.ObjetInterface {
 			$("#" + this.id.motDePasse).attr("readonly", "true");
 			this.preremplir();
 		} else {
-			if (!GNavigateur.isIpad) {
+			if (!ObjetNavigateur_1.Navigateur.isIpad) {
 				$("#" + this.id.identification).focus();
 			}
 		}
@@ -118,6 +121,7 @@ class _InterfaceConnexion extends ObjetInterface_1.ObjetInterface {
 		} else if (this.applicationProduit.smartAppBanner) {
 			this.applicationProduit.smartAppBanner.show();
 		}
+		GParametres.setDocumentTitle(GlossaireCP_1.TradGlossaireCP.PageConnexion);
 	}
 	free() {
 		super.free();
@@ -164,12 +168,14 @@ class _InterfaceConnexion extends ObjetInterface_1.ObjetInterface {
 				this.avecErreurSurClickConnecterPrecedent = true;
 				this.signalerErreur(this.moteurConnexion.erreur.erreurMessage);
 				this.$refresh();
-				GApplication.getMessage().afficher({
-					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-					titre: this.moteurConnexion.erreur.erreurTitre,
-					message: this.moteurConnexion.erreur.erreurMessage,
-					callback: lAction,
-				});
+				(0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+						titre: this.moteurConnexion.erreur.erreurTitre,
+						message: this.moteurConnexion.erreur.erreurMessage,
+						callback: lAction,
+					});
 				this._echecAuthentification(aParams);
 				break;
 			}
@@ -203,7 +209,9 @@ class _InterfaceConnexion extends ObjetInterface_1.ObjetInterface {
 							break;
 					}
 					if (lMessage) {
-						GApplication.getMessage().afficher({ message: lMessage });
+						(0, AccessApp_1.getApp)()
+							.getMessage()
+							.afficher({ message: lMessage });
 					}
 				},
 				getTitle() {

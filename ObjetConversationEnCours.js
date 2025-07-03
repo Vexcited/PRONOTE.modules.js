@@ -3,6 +3,7 @@ const ObjetTraduction_1 = require("ObjetTraduction");
 const MoteurMessagerie_1 = require("MoteurMessagerie");
 const ObjetIdentite_1 = require("ObjetIdentite");
 const UtilitaireMessagerie_1 = require("UtilitaireMessagerie");
+const GlossaireMessagerie_1 = require("GlossaireMessagerie");
 class ObjetConversationEnCours extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
@@ -51,7 +52,11 @@ class ObjetConversationEnCours extends ObjetIdentite_1.Identite {
 		$("#" + this.Nom.escapeJQ()).addClass("ObjetConversationEnCours");
 		if (this.options.surFermer) {
 			H.push(
-				'<ie-btnimage ie-model="btnFerme" class="btnImageIcon icon_remove"></ie-btnimage>',
+				IE.jsx.str("ie-btnimage", {
+					"ie-model": "btnFerme",
+					class: "btnImageIcon icon_remove",
+					"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur("Fermer"),
+				}),
 			);
 		}
 		H.push('<div class="cec_conteneur" ie-node="getNodeConteneur">');
@@ -84,11 +89,11 @@ class ObjetConversationEnCours extends ObjetIdentite_1.Identite {
 			);
 		}
 		H.push(
-			'<a ie-node="getNodeQuitter" class="AvecMain">',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"Messagerie.QuitterModeInstantane",
+			IE.jsx.str(
+				"a",
+				{ "ie-node": "getNodeQuitter", class: "AvecMain" },
+				GlossaireMessagerie_1.TradGlossaireMessagerie.QuitterModeInstantane,
 			),
-			"</a>",
 		);
 		H.push("</div>");
 		H.push("</div>");

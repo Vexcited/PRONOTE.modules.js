@@ -1,192 +1,381 @@
-const { GTraductions } = require("ObjetTraduction.js");
-const { Identite } = require("ObjetIdentite.js");
-const {
-	TypeComparaisonRessourcesCoursCDT,
-} = require("TypeComparaisonRessourcesCoursCDT.js");
-const { TypeOptionPublicationCDT } = require("TypeOptionPublicationCDT.js");
-const {
-	ObjetRequeteSaisieParametresUtilisateurBase,
-} = require("ObjetRequeteSaisieParametresUtilisateurBase.js");
-class ObjetPreferenceCahierDeTexte extends Identite {
+exports.ObjetPreferenceCahierDeTexte = void 0;
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetIdentite_1 = require("ObjetIdentite");
+const TypeComparaisonRessourcesCoursCDT_1 = require("TypeComparaisonRessourcesCoursCDT");
+const TypeOptionPublicationCDT_1 = require("TypeOptionPublicationCDT");
+const ObjetRequeteSaisieParametresUtilisateurBase_1 = require("ObjetRequeteSaisieParametresUtilisateurBase");
+const AccessApp_1 = require("AccessApp");
+class ObjetPreferenceCahierDeTexte extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
+		this.applicationSco = (0, AccessApp_1.getApp)();
 	}
-	getControleur() {
-		return $.extend(true, super.getControleur(this), {
-			ifElementProgramme: function () {
-				return GApplication.parametresUtilisateur.get(
-					"CDT.ElementProgramme.AutorisationFonctionnelleElementProgramme",
+	jsxIfElementProgramme() {
+		return this.applicationSco.parametresUtilisateur.get(
+			"CDT.ElementProgramme.AutorisationFonctionnelleElementProgramme",
+		);
+	}
+	jsxIfParcoursEducatif() {
+		return this.applicationSco.parametresUtilisateur.get(
+			"CDT.ParcoursEducatifs.AutorisationFonctionnelleParcoursEducatifs",
+		);
+	}
+	jsxCbElementProgrammeSaisie() {
+		return {
+			getValue: () => {
+				return this.applicationSco.parametresUtilisateur.get(
+					"CDT.ElementProgramme.ActiverSaisie",
 				);
 			},
-			ifParcoursEducatif: function () {
-				return GApplication.parametresUtilisateur.get(
-					"CDT.ParcoursEducatifs.AutorisationFonctionnelleParcoursEducatifs",
+			setValue: (aValue) => {
+				this.applicationSco.parametresUtilisateur.set(
+					"CDT.ElementProgramme.ActiverSaisie",
+					aValue,
 				);
 			},
-			cbElementProgrammeSaisie: {
-				getValue: function () {
-					return GApplication.parametresUtilisateur.get(
-						"CDT.ElementProgramme.ActiverSaisie",
-					);
-				},
-				setValue: function (aValue) {
-					GApplication.parametresUtilisateur.set(
-						"CDT.ElementProgramme.ActiverSaisie",
-						aValue,
-					);
-				},
-				getDisabled: function () {
-					return GApplication.getModeExclusif();
-				},
+			getDisabled: () => {
+				return this.applicationSco.getModeExclusif();
 			},
-			cbMatiereIdentique: {
-				getValue: function () {
-					return GApplication.parametresUtilisateur.get(
-						"CDT.Navigation.MatiereIdentique",
-					);
-				},
-				setValue: function (aValue) {
-					GApplication.parametresUtilisateur.set(
-						"CDT.Navigation.MatiereIdentique",
-						aValue,
-					);
-				},
-				getDisabled: function () {
-					return GApplication.getModeExclusif();
-				},
+		};
+	}
+	jsxCbMatiereIdentique() {
+		return {
+			getValue: () => {
+				return this.applicationSco.parametresUtilisateur.get(
+					"CDT.Navigation.MatiereIdentique",
+				);
 			},
-			rbType: {
-				getValue: function (aGenre) {
-					return (
-						aGenre ===
-						GApplication.parametresUtilisateur.get("CDT.Navigation.TypeCours")
-					);
-				},
-				setValue: function (aGenre) {
-					GApplication.parametresUtilisateur.set(
+			setValue: (aValue) => {
+				this.applicationSco.parametresUtilisateur.set(
+					"CDT.Navigation.MatiereIdentique",
+					aValue,
+				);
+			},
+			getDisabled: () => {
+				return this.applicationSco.getModeExclusif();
+			},
+		};
+	}
+	jsxRbType(aGenre) {
+		return {
+			getValue: () => {
+				return (
+					aGenre ===
+					this.applicationSco.parametresUtilisateur.get(
 						"CDT.Navigation.TypeCours",
-						aGenre,
-					);
-				},
-				getDisabled: function () {
-					return GApplication.getModeExclusif();
-				},
+					)
+				);
 			},
-			cbPartagePJAutorisee: {
-				getValue: function () {
-					return GApplication.parametresUtilisateurBase.partagePJAutorisee;
-				},
-				setValue: function (aPartagePJAutorisee) {
-					GApplication.parametresUtilisateurBase.partagePJAutorisee =
-						aPartagePJAutorisee;
-					new ObjetRequeteSaisieParametresUtilisateurBase(this).lancerRequete(
-						GApplication.parametresUtilisateurBase,
-					);
-				},
-				getDisabled: function () {
-					return GApplication.getModeExclusif();
-				},
+			setValue: () => {
+				this.applicationSco.parametresUtilisateur.set(
+					"CDT.Navigation.TypeCours",
+					aGenre,
+				);
 			},
-			rbOptionPublication: {
-				getValue: function (aGenre) {
-					return (
-						aGenre ===
-						GApplication.parametresUtilisateurBase.optionPublicationCDT
-					);
-				},
-				setValue: function (aGenre) {
-					GApplication.parametresUtilisateurBase.optionPublicationCDT = aGenre;
-					new ObjetRequeteSaisieParametresUtilisateurBase(this).lancerRequete(
-						GApplication.parametresUtilisateurBase,
-					);
-				},
-				getDisabled: function () {
-					return GApplication.getModeExclusif();
-				},
+			getDisabled: () => {
+				return this.applicationSco.getModeExclusif();
 			},
-			cbActiverParcoursEducatifs: {
-				getValue: function () {
-					return GApplication.parametresUtilisateur.get(
-						"CDT.ParcoursEducatifs.ActiverSaisie",
-					);
-				},
-				setValue: function (aValue) {
-					GApplication.parametresUtilisateur.set(
-						"CDT.ParcoursEducatifs.ActiverSaisie",
-						aValue,
-					);
-				},
-				getDisabled: function () {
-					return GApplication.getModeExclusif();
-				},
+			getName: () => {
+				return `${this.Nom}_rbtype`;
 			},
-			cbActiverCommentaireSurSeance: {
-				getValue: function () {
-					return GApplication.parametresUtilisateur.get(
-						"CDT.Commentaire.ActiverSaisie",
-					);
-				},
-				setValue: function (aValue) {
-					GApplication.parametresUtilisateur.set(
-						"CDT.Commentaire.ActiverSaisie",
-						aValue,
-					);
-				},
-				getDisabled: function () {
-					return GApplication.getModeExclusif();
-				},
+		};
+	}
+	jsxCbPartagePJAutorisee() {
+		return {
+			getValue: () => {
+				return this.applicationSco.parametresUtilisateurBase.partagePJAutorisee;
 			},
-		});
+			setValue: (aPartagePJAutorisee) => {
+				this.applicationSco.parametresUtilisateurBase.partagePJAutorisee =
+					aPartagePJAutorisee;
+				new ObjetRequeteSaisieParametresUtilisateurBase_1.ObjetRequeteSaisieParametresUtilisateurBase(
+					this,
+				).lancerRequete(this.applicationSco.parametresUtilisateurBase);
+			},
+			getDisabled: () => {
+				return this.applicationSco.getModeExclusif();
+			},
+		};
+	}
+	jsxRbOptionPublication(aGenre) {
+		return {
+			getValue: () => {
+				return (
+					aGenre ===
+					this.applicationSco.parametresUtilisateurBase.optionPublicationCDT
+				);
+			},
+			setValue: () => {
+				this.applicationSco.parametresUtilisateurBase.optionPublicationCDT =
+					aGenre;
+				new ObjetRequeteSaisieParametresUtilisateurBase_1.ObjetRequeteSaisieParametresUtilisateurBase(
+					this,
+				).lancerRequete(this.applicationSco.parametresUtilisateurBase);
+			},
+			getDisabled: () => {
+				return this.applicationSco.getModeExclusif();
+			},
+			getName: () => {
+				return `${this.Nom}_rbOptionsPub`;
+			},
+		};
+	}
+	jsxCbActiverParcoursEducatifs() {
+		return {
+			getValue: () => {
+				return this.applicationSco.parametresUtilisateur.get(
+					"CDT.ParcoursEducatifs.ActiverSaisie",
+				);
+			},
+			setValue: (aValue) => {
+				this.applicationSco.parametresUtilisateur.set(
+					"CDT.ParcoursEducatifs.ActiverSaisie",
+					aValue,
+				);
+			},
+			getDisabled: () => {
+				return this.applicationSco.getModeExclusif();
+			},
+		};
+	}
+	jsxCbActiverCommentaireSurSeance() {
+		return {
+			getValue: () => {
+				return this.applicationSco.parametresUtilisateur.get(
+					"CDT.Commentaire.ActiverSaisie",
+				);
+			},
+			setValue: (aValue) => {
+				this.applicationSco.parametresUtilisateur.set(
+					"CDT.Commentaire.ActiverSaisie",
+					aValue,
+				);
+			},
+			getDisabled: () => {
+				return this.applicationSco.getModeExclusif();
+			},
+		};
+	}
+	jsxCbEleveDetache() {
+		return {
+			getValue: () => {
+				return this.applicationSco.parametresUtilisateur.get(
+					"CDT.TAF.AffecterParDefautElevesDetaches",
+				);
+			},
+			setValue: (aValue) => {
+				this.applicationSco.parametresUtilisateur.set(
+					"CDT.TAF.AffecterParDefautElevesDetaches",
+					aValue,
+				);
+			},
+			getDisabled: () => {
+				return this.applicationSco.getModeExclusif();
+			},
+		};
 	}
 	construireAffichage() {
-		const H = [];
-		H.push(
-			`<h2 ie-if="ifElementProgramme">${GTraductions.getValeur("infosperso.ElementProgramme")}</h2>`,
-		);
-		H.push(
-			`<div ie-if="ifElementProgramme" class="inner-item-contain">\n            <ie-checkbox ie-model="cbElementProgrammeSaisie">${GTraductions.getValeur("infosperso.ElementProgrammeSaisie")}</ie-checkbox>\n          </div>`,
-		);
-		const lLibelleNavigatonCoursCDT =
-			GTraductions.getValeur("infosperso.NavigationCoursCDT") + " : ";
-		H.push(
-			`<fieldset class="inner-item-contain flex-contain cols">\n            <legend class="sr-only">${lLibelleNavigatonCoursCDT}</legend>\n            <h2>${lLibelleNavigatonCoursCDT}</h2>\n\n              <ie-checkbox ie-model="cbMatiereIdentique">${GTraductions.getValeur("infosperso.CoursMatiereIdentique")}</ie-checkbox>\n\n              <ie-radio ie-model="rbType(${TypeComparaisonRessourcesCoursCDT.RessourcesIdentiques})">${GTraductions.getValeur("infosperso.CoursRessourceIdentique")}</ie-radio>\n\n              <ie-radio ie-model="rbType(${TypeComparaisonRessourcesCoursCDT.RessourcesCommunes})">${GTraductions.getValeur("infosperso.CoursRessourceCommune")}</ie-radio>\n\n              <ie-radio ie-model="rbType(${TypeComparaisonRessourcesCoursCDT.AuMoins1EleveEnCommun})">${GTraductions.getValeur("infosperso.CoursEleveCommun")}</ie-radio>\n          </fieldset>`,
-		);
-		H.push(
-			`<h2>${GTraductions.getValeur("infosperso.OptionsDePartage")} : </h2>`,
-		);
-		H.push(
-			`<div class="inner-item-contain">\n              <ie-checkbox ie-model="cbPartagePJAutorisee">${GTraductions.getValeur("infosperso.AutoriserConsultationPJAutresProfesseurs")}</ie-checkbox>\n          </div>`,
+		const lLibelleNavigatonCoursCDT = ObjetTraduction_1.GTraductions.getValeur(
+			"infosperso.NavigationCoursCDT",
 		);
 		const lLibelleOptionsPublicationAutoCDT =
-			GTraductions.getValeur("infosperso.OptionsPublicationAutoCDT") + " : ";
-		H.push(
-			`<fieldset class="inner-item-contain flex-contain cols">\n              <legend class="sr-only">${lLibelleOptionsPublicationAutoCDT}</legend>\n              <h2>${lLibelleOptionsPublicationAutoCDT}</h2>\n              <ie-radio ie-model="rbOptionPublication(${TypeOptionPublicationCDT.OPT_PublicationDebutCours})">${GTraductions.getValeur("infosperso.DesDebutCours")}</ie-radio>\n              <ie-radio ie-model="rbOptionPublication(${TypeOptionPublicationCDT.OPT_PublicationFinCours})">${GTraductions.getValeur("infosperso.ALaFinDuCours")}</ie-radio>\n          </fieldset>`,
+			ObjetTraduction_1.GTraductions.getValeur(
+				"infosperso.OptionsPublicationAutoCDT",
+			);
+		return IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			IE.jsx.str(
+				"fieldset",
+				{
+					"ie-if": this.jsxIfElementProgramme.bind(this),
+					class: "inner-item-contain",
+				},
+				IE.jsx.str(
+					"legend",
+					null,
+					ObjetTraduction_1.GTraductions.getValeur(
+						"infosperso.ElementProgramme",
+					),
+				),
+				IE.jsx.str(
+					"ie-checkbox",
+					{
+						class: "long-text",
+						"ie-model": this.jsxCbElementProgrammeSaisie.bind(this),
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"infosperso.ElementProgrammeSaisie",
+					),
+				),
+			),
+			IE.jsx.str(
+				"fieldset",
+				{ class: "inner-item-contain flex-contain cols" },
+				IE.jsx.str("legend", null, lLibelleNavigatonCoursCDT),
+				IE.jsx.str(
+					"ie-checkbox",
+					{
+						class: "m-bottom-xl",
+						"ie-model": this.jsxCbMatiereIdentique.bind(this),
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"infosperso.CoursMatiereIdentique",
+					),
+				),
+				IE.jsx.str(
+					"ie-radio",
+					{
+						class: "long-text",
+						"ie-model": this.jsxRbType.bind(
+							this,
+							TypeComparaisonRessourcesCoursCDT_1
+								.TypeComparaisonRessourcesCoursCDT.RessourcesIdentiques,
+						),
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"infosperso.CoursRessourceIdentique",
+					),
+				),
+				IE.jsx.str(
+					"ie-radio",
+					{
+						class: "long-text",
+						"ie-model": this.jsxRbType.bind(
+							this,
+							TypeComparaisonRessourcesCoursCDT_1
+								.TypeComparaisonRessourcesCoursCDT.RessourcesCommunes,
+						),
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"infosperso.CoursRessourceCommune",
+					),
+				),
+				IE.jsx.str(
+					"ie-radio",
+					{
+						class: "long-text",
+						"ie-model": this.jsxRbType.bind(
+							this,
+							TypeComparaisonRessourcesCoursCDT_1
+								.TypeComparaisonRessourcesCoursCDT.AuMoins1EleveEnCommun,
+						),
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"infosperso.CoursEleveCommun",
+					),
+				),
+			),
+			IE.jsx.str(
+				"fieldset",
+				{ class: "inner-item-contain" },
+				IE.jsx.str(
+					"legend",
+					null,
+					ObjetTraduction_1.GTraductions.getValeur(
+						"infosperso.OptionsDePartage",
+					),
+				),
+				IE.jsx.str(
+					"ie-checkbox",
+					{
+						class: "long-text",
+						"ie-model": this.jsxCbPartagePJAutorisee.bind(this),
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"infosperso.AutoriserConsultationPJAutresProfesseurs",
+					),
+				),
+			),
+			IE.jsx.str(
+				"fieldset",
+				{ class: "inner-item-contain flex-contain cols" },
+				IE.jsx.str("legend", null, lLibelleOptionsPublicationAutoCDT),
+				IE.jsx.str(
+					"ie-radio",
+					{
+						"ie-model": this.jsxRbOptionPublication.bind(
+							this,
+							TypeOptionPublicationCDT_1.TypeOptionPublicationCDT
+								.OPT_PublicationDebutCours,
+						),
+					},
+					ObjetTraduction_1.GTraductions.getValeur("infosperso.DesDebutCours"),
+				),
+				IE.jsx.str(
+					"ie-radio",
+					{
+						"ie-model": this.jsxRbOptionPublication.bind(
+							this,
+							TypeOptionPublicationCDT_1.TypeOptionPublicationCDT
+								.OPT_PublicationFinCours,
+						),
+					},
+					ObjetTraduction_1.GTraductions.getValeur("infosperso.ALaFinDuCours"),
+				),
+			),
+			IE.jsx.str(
+				"fieldset",
+				{ class: "inner-item-contain" },
+				IE.jsx.str(
+					"legend",
+					null,
+					ObjetTraduction_1.GTraductions.getValeur("infosperso.SaisieTAFs"),
+				),
+				IE.jsx.str(
+					"ie-checkbox",
+					{ class: "long-text", "ie-model": this.jsxCbEleveDetache.bind(this) },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"infosperso.AffecterElevesDetaches",
+					),
+				),
+			),
+			IE.jsx.str(
+				"fieldset",
+				{
+					"ie-if": this.jsxIfParcoursEducatif.bind(this),
+					class: "inner-item-contain",
+				},
+				IE.jsx.str(
+					"legend",
+					null,
+					ObjetTraduction_1.GTraductions.getValeur(
+						"infosperso.ParcoursEducatifs",
+					),
+				),
+				IE.jsx.str(
+					"ie-checkbox",
+					{
+						class: "long-text",
+						"ie-model": this.jsxCbActiverParcoursEducatifs.bind(this),
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"infosperso.ActiverParcoursEducatifs",
+					),
+				),
+			),
+			IE.jsx.str(
+				"fieldset",
+				{ class: "inner-item-contain" },
+				IE.jsx.str(
+					"legend",
+					null,
+					ObjetTraduction_1.GTraductions.getValeur(
+						"infosperso.SaisieCommentaireSurSeance",
+					),
+				),
+				IE.jsx.str(
+					"ie-checkbox",
+					{
+						class: "long-text",
+						"ie-model": this.jsxCbActiverCommentaireSurSeance.bind(this),
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"infosperso.ActiverSaisieCommentaireSurSeance",
+					),
+				),
+			),
 		);
-		H.push(
-			'<h2 ie-if="ifParcoursEducatif">',
-			GTraductions.getValeur("infosperso.ParcoursEducatifs"),
-			"</h2>",
-		);
-		H.push(
-			'<div ie-if="ifParcoursEducatif" class="inner-item-contain">',
-			'<ie-checkbox ie-model="cbActiverParcoursEducatifs">',
-			GTraductions.getValeur("infosperso.ActiverParcoursEducatifs"),
-			"</ie-checkbox>",
-			"</div>",
-		);
-		H.push(
-			"<h2>",
-			GTraductions.getValeur("infosperso.SaisieCommentaireSurSeance"),
-			"</h2>",
-		);
-		H.push(
-			'<div class="inner-item-contain">',
-			'<ie-checkbox ie-model="cbActiverCommentaireSurSeance">',
-			GTraductions.getValeur("infosperso.ActiverSaisieCommentaireSurSeance"),
-			"</ie-checkbox>",
-			"</div>",
-		);
-		return H.join("");
 	}
 }
-module.exports = { ObjetPreferenceCahierDeTexte };
+exports.ObjetPreferenceCahierDeTexte = ObjetPreferenceCahierDeTexte;

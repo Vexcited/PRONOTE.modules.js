@@ -2,7 +2,6 @@ exports.RechercheTexte = void 0;
 const ComparateurChaines_1 = require("ComparateurChaines");
 const ObjetChaine_1 = require("ObjetChaine");
 const ObjetPosition_1 = require("ObjetPosition");
-const tag_1 = require("tag");
 class RechercheTexte {
 	static getTabRechercheTexteNormalize(aStrSearch) {
 		let lRecherche =
@@ -146,7 +145,7 @@ class RechercheTexte {
 						$(aInfos.node)
 							.addClass(RechercheTexte.cssSurlignageConteneur)
 							.append(
-								(0, tag_1.tag)("div", {
+								IE.jsx.str("div", {
 									class: RechercheTexte.cssSurlignage,
 									style: `top:${lRect.y - lRectCellule.y}px; left:${lRect.x - lRectCellule.x}px; width:${lRect.width}px; height:${lRect.height}px;"`,
 								}),

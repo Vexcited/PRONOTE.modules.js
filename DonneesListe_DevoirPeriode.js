@@ -1,34 +1,14 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-function _getContexteColonnes(aNbrColonnesPeriodes) {
-	const lColonnes = [];
-	lColonnes.push({
-		id: DonneesListe_DevoirPeriode.colonnes.classe,
-		genreColonne: this.genreColonne.Classe,
-		titre: GTraductions.getValeur("FenetreDevoir.ElevesDe"),
-		taille: "50%",
-	});
-	for (let i = 0; i < aNbrColonnesPeriodes; i++) {
-		lColonnes.push({
-			id: DonneesListe_DevoirPeriode.colonnes.periode + "_" + i,
-			genreColonne: this.genreColonne.Periode,
-			rangColonne: i,
-			titre: this.param.regrouperPeriodes
-				? GTraductions.getValeur("FenetreDevoir.PeriodeNotation")
-				: GTraductions.getValeur("FenetreDevoir.PeriodeNotation")[i],
-			taille: aNbrColonnesPeriodes > 1 ? "25%" : "50%",
-		});
-	}
-	return lColonnes;
-}
-class DonneesListe_DevoirPeriode extends ObjetDonneesListe {
+exports.DonneesListe_DevoirPeriode = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class DonneesListe_DevoirPeriode extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParams) {
 		super(aDonnees);
+		this.genreColonne = { Classe: -1, Periode: -2 };
 		this.param = $.extend(
 			{ instance: null, nbrColonnesPeriodes: null, regrouperPeriodes: false },
 			aParams,
 		);
-		this.genreColonne = { Classe: -1, Periode: -2 };
 		this.setOptions({
 			avecEtatSaisie: false,
 			avecSuppression: false,
@@ -37,7 +17,7 @@ class DonneesListe_DevoirPeriode extends ObjetDonneesListe {
 			avecEdition: false,
 		});
 		this.param.instance.setOptionsListe({
-			colonnes: _getContexteColonnes.call(this, this.param.nbrColonnesPeriodes),
+			colonnes: this._getContexteColonnes(this.param.nbrColonnesPeriodes),
 			hauteurAdapteContenu: true,
 			hauteurMaxAdapteContenu: 121,
 		});
@@ -63,15 +43,52 @@ class DonneesListe_DevoirPeriode extends ObjetDonneesListe {
 		return "AvecMain";
 	}
 	getCouleurCellule(aParams) {
-		let lCouleurCellule = ObjetDonneesListe.ECouleurCellule.Fixe;
+		let lCouleurCellule =
+			ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Fixe;
 		if (aParams.declarationColonne.genreColonne === this.genreColonne.Periode) {
-			lCouleurCellule = ObjetDonneesListe.ECouleurCellule.Blanc;
+			lCouleurCellule =
+				ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
 		}
 		return lCouleurCellule;
 	}
+	_getContexteColonnes(aNbrColonnesPeriodes) {
+		const lColonnes = [];
+		lColonnes.push({
+			id: DonneesListe_DevoirPeriode.colonnes.classe,
+			genreColonne: this.genreColonne.Classe,
+			titre: ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.ElevesDe"),
+			taille: "50%",
+		});
+		for (let i = 0; i < aNbrColonnesPeriodes; i++) {
+			lColonnes.push({
+				id: DonneesListe_DevoirPeriode.colonnes.periode + "_" + i,
+				genreColonne: this.genreColonne.Periode,
+				rangColonne: i,
+				titre: this.param.regrouperPeriodes
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreDevoir.PeriodeNotation",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreDevoir.PeriodeNotation",
+						)[i],
+				taille: aNbrColonnesPeriodes > 1 ? "25%" : "50%",
+			});
+		}
+		return lColonnes;
+	}
 }
-DonneesListe_DevoirPeriode.colonnes = {
-	classe: "DevoirPeriode_classe",
-	periode: "DevoirPeriode_periode",
-};
-module.exports = { DonneesListe_DevoirPeriode };
+exports.DonneesListe_DevoirPeriode = DonneesListe_DevoirPeriode;
+(function (DonneesListe_DevoirPeriode) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["classe"] = "DevoirPeriode_classe";
+		colonnes["periode"] = "DevoirPeriode_periode";
+	})(
+		(colonnes =
+			DonneesListe_DevoirPeriode.colonnes ||
+			(DonneesListe_DevoirPeriode.colonnes = {})),
+	);
+})(
+	DonneesListe_DevoirPeriode ||
+		(exports.DonneesListe_DevoirPeriode = DonneesListe_DevoirPeriode = {}),
+);

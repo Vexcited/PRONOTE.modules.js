@@ -1,14 +1,34 @@
-exports.DonneesListe_FichiersCloud = void 0;
+exports.DonneesListe_FichiersCloud = exports.TradFichiersCloud = void 0;
 const Enumere_TriElement_1 = require("Enumere_TriElement");
 const ObjetTri_1 = require("ObjetTri");
 const TTypeElementCloud_1 = require("TTypeElementCloud");
 const TTypeElementCloud_2 = require("TTypeElementCloud");
-const ObjetTraduction_1 = require("ObjetTraduction");
 const Enumere_FormatDocJoint_1 = require("Enumere_FormatDocJoint");
 const ObjetChaine_1 = require("ObjetChaine");
-const tag_1 = require("tag");
 const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
 const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const TradFichiersCloud = ObjetTraduction_1.TraductionsModule.getModule(
+	"FichiersCloud",
+	{
+		TitreFichierCloud: "",
+		TailleFichierCloud: "",
+		PartagerFichierCloud: "",
+		ChoisirRepertoire_FichierCloud: "",
+		GlissezDeposer_Cloud: "",
+		Deposer_Cloud: "",
+		TitreFenetreFormat: "",
+		ExplicationFenetreFormat: "",
+		ConfirmationFenetreFormat: "",
+		FormatOrigine: "",
+		FormatPdf: "",
+		FormatPublication: "",
+		ActualisationRepertoire: "",
+		SelectionnerRepertoire_S: "",
+		Hint_Repertoire: "",
+	},
+);
+exports.TradFichiersCloud = TradFichiersCloud;
 class DonneesListe_FichiersCloud extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees) {
 		const lListe = new ObjetListeElements_1.ObjetListeElements().add(
@@ -45,9 +65,7 @@ class DonneesListe_FichiersCloud extends ObjetDonneesListeFlatDesign_1.ObjetDonn
 			aParams.article.getGenre() ===
 			TTypeElementCloud_1.TTypeElementCloud.tec_Dossier
 		) {
-			return ObjetTraduction_1.GTraductions.getValeur(
-				"FenetreCloud.Hint_Repertoire",
-			);
+			return TradFichiersCloud.Hint_Repertoire;
 		}
 		return "";
 	}
@@ -68,7 +86,7 @@ class DonneesListe_FichiersCloud extends ObjetDonneesListeFlatDesign_1.ObjetDonn
 		) {
 			const lStr = this.getZoneComplementaire(aParams);
 			if (lStr) {
-				return `${ObjetTraduction_1.GTraductions.getValeur("FenetreCloud.TailleFichierCloud")} : ${lStr}`;
+				return `${TradFichiersCloud.TailleFichierCloud} : ${lStr}`;
 			}
 		}
 		return ``;
@@ -82,17 +100,17 @@ class DonneesListe_FichiersCloud extends ObjetDonneesListeFlatDesign_1.ObjetDonn
 			const lVal =
 				aParams.article.formatPub ===
 				TTypeElementCloud_2.TypeFormatPublication.FP_Natif
-					? ObjetTraduction_1.GTraductions.getValeur(
-							"FenetreCloud.FormatOrigine",
-						)
+					? TradFichiersCloud.FormatOrigine
 					: aParams.article.formatPub ===
 							TTypeElementCloud_2.TypeFormatPublication.FP_Pdf
-						? ObjetTraduction_1.GTraductions.getValeur("FenetreCloud.FormatPdf")
+						? TradFichiersCloud.FormatPdf
 						: "-";
-			return (0, tag_1.tag)(
+			return IE.jsx.str(
 				"p",
-				{ class: "color-theme-foncee" },
-				`${ObjetTraduction_1.GTraductions.getValeur("FenetreCloud.FormatPublication")} : ${lVal}`,
+				null,
+				TradFichiersCloud.FormatPublication,
+				" : ",
+				lVal,
 			);
 		}
 		return "";

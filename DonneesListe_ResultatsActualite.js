@@ -1,8 +1,18 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const ETypeFiltreRepondus = { tous: 0, repondus: 1, nonRepondus: 2 };
-class DonneesListe_ResultatsActualite extends ObjetDonneesListe {
+exports.DonneesListe_ResultatsActualite = exports.ETypeFiltreRepondus = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const AccessApp_1 = require("AccessApp");
+var ETypeFiltreRepondus;
+(function (ETypeFiltreRepondus) {
+	ETypeFiltreRepondus[(ETypeFiltreRepondus["tous"] = 0)] = "tous";
+	ETypeFiltreRepondus[(ETypeFiltreRepondus["repondus"] = 1)] = "repondus";
+	ETypeFiltreRepondus[(ETypeFiltreRepondus["nonRepondus"] = 2)] = "nonRepondus";
+})(
+	ETypeFiltreRepondus ||
+		(exports.ETypeFiltreRepondus = ETypeFiltreRepondus = {}),
+);
+class DonneesListe_ResultatsActualite extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aParam, aUtilitaires) {
 		super(aParam.donnees);
 		this.pere = aParam.pere;
@@ -25,7 +35,7 @@ class DonneesListe_ResultatsActualite extends ObjetDonneesListe {
 	}
 	getTri() {
 		return [
-			ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.init((D) => {
 				return D.Position;
 			}),
 		];
@@ -39,9 +49,11 @@ class DonneesListe_ResultatsActualite extends ObjetDonneesListe {
 	}
 	getCouleurCellule(aParams) {
 		if (aParams.article.estCumul) {
-			return GCouleur.liste.cumul[aParams.article.niveauCumul];
+			return (0, AccessApp_1.getApp)().getCouleur().liste.cumul[
+				aParams.article.niveauCumul
+			];
 		}
-		return ObjetDonneesListe.ECouleurCellule.Blanc;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
 	}
 	avecImageSurColonneDeploiement(aParams) {
 		return (
@@ -75,7 +87,7 @@ class DonneesListe_ResultatsActualite extends ObjetDonneesListe {
 					switch (this.filtreRepondu) {
 						case ETypeFiltreRepondus.nonRepondus:
 							lLibelle.push(
-								GTraductions.getValeur(
+								ObjetTraduction_1.GTraductions.getValeur(
 									lNbManquantes < 2
 										? "infoSond.reponseManquanteSurNbTotal"
 										: "infoSond.reponsesManquantesSurNbTotal",
@@ -85,7 +97,7 @@ class DonneesListe_ResultatsActualite extends ObjetDonneesListe {
 							break;
 						default:
 							lLibelle.push(
-								GTraductions.getValeur(
+								ObjetTraduction_1.GTraductions.getValeur(
 									lNbRepondues < 2
 										? "infoSond.reponseSurNbTotal"
 										: "infoSond.reponsesSurNbTotal",
@@ -147,7 +159,7 @@ class DonneesListe_ResultatsActualite extends ObjetDonneesListe {
 				) {
 					return false;
 				} else {
-					return lDonnee.domaineReponse.getValeur(
+					return lDonnee.domaineReponse.contains(
 						aParams.declarationColonne.numeroChoix + 1,
 					);
 				}
@@ -156,11 +168,11 @@ class DonneesListe_ResultatsActualite extends ObjetDonneesListe {
 	getTypeValeur(aParams) {
 		switch (aParams.declarationColonne.genreColonne) {
 			case DonneesListe_ResultatsActualite.colonnes.destinataires:
-				return ObjetDonneesListe.ETypeCellule.Html;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 			case DonneesListe_ResultatsActualite.colonnes.prenom:
-				return ObjetDonneesListe.ETypeCellule.Texte;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 			case DonneesListe_ResultatsActualite.colonnes.classe:
-				return ObjetDonneesListe.ETypeCellule.Texte;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 			case DonneesListe_ResultatsActualite.colonnes.reponse: {
 				const lDonnee = aParams.article.listeReponses.getElementParNumero(
 					aParams.declarationColonne.numeroQuestion,
@@ -169,20 +181,20 @@ class DonneesListe_ResultatsActualite extends ObjetDonneesListe {
 					aParams.article.estCumul ||
 					this.utilitaires.genreReponse.estGenreTextuelle(lDonnee.getGenre())
 				) {
-					return ObjetDonneesListe.ETypeCellule.Texte;
+					return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 				} else {
-					return ObjetDonneesListe.ETypeCellule.Coche;
+					return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Coche;
 				}
 			}
 			default:
 				if (aParams.article.estCumul) {
-					return ObjetDonneesListe.ETypeCellule.Texte;
+					return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 				} else {
-					return ObjetDonneesListe.ETypeCellule.Coche;
+					return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Coche;
 				}
 		}
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		switch (aParams.declarationColonne.genreColonne) {
 			case DonneesListe_ResultatsActualite.colonnes.destinataires:
 				if (!aParams.article.estCumul) {
@@ -194,7 +206,7 @@ class DonneesListe_ResultatsActualite extends ObjetDonneesListe {
 					const lDonnee = aParams.article.listeReponses.getElementParNumero(
 						aParams.declarationColonne.numeroQuestion,
 					);
-					const lEstCoche = lDonnee.domaineReponse.getValeur(
+					const lEstCoche = lDonnee.domaineReponse.contains(
 						aParams.declarationColonne.numeroChoix + 1,
 					);
 					if (
@@ -252,20 +264,25 @@ class DonneesListe_ResultatsActualite extends ObjetDonneesListe {
 		if (aParametres.article.estCumul) {
 			aParametres.menuContextuel.addCommande(
 				DonneesListe_ResultatsActualite.genreCommande.graphique,
-				GTraductions.getValeur("actualites.Edition.MenuGrapheCumul", [
-					aParametres.article.getLibelle(),
-				]),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"actualites.Edition.MenuGrapheCumul",
+					[aParametres.article.getLibelle()],
+				),
 				!aParametres.nonEditable,
 			);
 			aParametres.menuContextuel.addCommande(
 				DonneesListe_ResultatsActualite.genreCommande.graphiqueTotal,
-				GTraductions.getValeur("actualites.Edition.MenuGrapheTotal"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"actualites.Edition.MenuGrapheTotal",
+				),
 				!aParametres.nonEditable,
 			);
 		} else {
 			aParametres.menuContextuel.addCommande(
 				DonneesListe_ResultatsActualite.genreCommande.graphiqueTotal,
-				GTraductions.getValeur("actualites.Edition.MenuGrapheTotal"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"actualites.Edition.MenuGrapheTotal",
+				),
 				!aParametres.nonEditable,
 			);
 			if (this.avecCommandeRenvoyerNotfication) {
@@ -277,7 +294,9 @@ class DonneesListe_ResultatsActualite extends ObjetDonneesListe {
 				}
 				aParametres.menuContextuel.addCommande(
 					DonneesListe_ResultatsActualite.genreCommande.renvoyerNotification,
-					GTraductions.getValeur("actualites.Edition.menuRenvoyerNotification"),
+					ObjetTraduction_1.GTraductions.getValeur(
+						"actualites.Edition.menuRenvoyerNotification",
+					),
 					lCommandeRenvoyerEditable,
 				);
 			}
@@ -291,17 +310,34 @@ class DonneesListe_ResultatsActualite extends ObjetDonneesListe {
 		return !this.utilitaires.genreReponse.estGenreAvecAR(this.genreActualite);
 	}
 }
-DonneesListe_ResultatsActualite.genreCommande = {
-	graphique: 0,
-	graphiqueTotal: 1,
-	supprimerReponse: 2,
-	renvoyerNotification: 3,
-};
-DonneesListe_ResultatsActualite.colonnes = {
-	destinataires: "destinataires",
-	prenom: "prenom",
-	classe: "classe",
-	reponse: "reponse",
-	choix: "choix",
-};
-module.exports = { ETypeFiltreRepondus, DonneesListe_ResultatsActualite };
+exports.DonneesListe_ResultatsActualite = DonneesListe_ResultatsActualite;
+(function (DonneesListe_ResultatsActualite) {
+	let genreCommande;
+	(function (genreCommande) {
+		genreCommande[(genreCommande["graphique"] = 0)] = "graphique";
+		genreCommande[(genreCommande["graphiqueTotal"] = 1)] = "graphiqueTotal";
+		genreCommande[(genreCommande["supprimerReponse"] = 2)] = "supprimerReponse";
+		genreCommande[(genreCommande["renvoyerNotification"] = 3)] =
+			"renvoyerNotification";
+	})(
+		(genreCommande =
+			DonneesListe_ResultatsActualite.genreCommande ||
+			(DonneesListe_ResultatsActualite.genreCommande = {})),
+	);
+	let colonnes;
+	(function (colonnes) {
+		colonnes["destinataires"] = "destinataires";
+		colonnes["prenom"] = "prenom";
+		colonnes["classe"] = "classe";
+		colonnes["reponse"] = "reponse";
+		colonnes["choix"] = "choix";
+	})(
+		(colonnes =
+			DonneesListe_ResultatsActualite.colonnes ||
+			(DonneesListe_ResultatsActualite.colonnes = {})),
+	);
+})(
+	DonneesListe_ResultatsActualite ||
+		(exports.DonneesListe_ResultatsActualite = DonneesListe_ResultatsActualite =
+			{}),
+);

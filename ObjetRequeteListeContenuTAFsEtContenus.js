@@ -1,12 +1,10 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { ObjetDeserialiser } = require("ObjetDeserialiser.js");
-class ObjetRequeteListeContenuTAFsEtContenus extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteListeContenuTAFsEtContenus = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetDeserialiser_1 = require("ObjetDeserialiser");
+class ObjetRequeteListeContenuTAFsEtContenus extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aListeElements) {
 		this.JSON.liste = aListeElements;
 		this.JSON.liste.setSerialisateurJSON({
@@ -16,17 +14,20 @@ class ObjetRequeteListeContenuTAFsEtContenus extends ObjetRequeteConsultation {
 		return this.appelAsynchrone();
 	}
 	actionApresRequete() {
-		const lObjetDeserialiser = new ObjetDeserialiser();
-		const lListeTAFs = new ObjetListeElements();
+		const lObjetDeserialiser = new ObjetDeserialiser_1.ObjetDeserialiser();
+		const lListeTAFs = new ObjetListeElements_1.ObjetListeElements();
 		if (!!this.JSONReponse.listeTravauxAFaire) {
 			lListeTAFs.add(this.JSONReponse.listeTravauxAFaire);
 			lListeTAFs.parcourir((aTaf) => {
 				lObjetDeserialiser.deserialiserTAF(aTaf);
 			});
-			lListeTAFs.setTri([ObjetTri.init("DonneLe"), ObjetTri.init("Genre")]);
+			lListeTAFs.setTri([
+				ObjetTri_1.ObjetTri.init("DonneLe"),
+				ObjetTri_1.ObjetTri.init("Genre"),
+			]);
 			lListeTAFs.trier();
 		}
-		const lListeContenus = new ObjetListeElements();
+		const lListeContenus = new ObjetListeElements_1.ObjetListeElements();
 		if (!!this.JSONReponse.listeContenus) {
 			lListeContenus.add(this.JSONReponse.listeContenus);
 			lListeContenus.parcourir((aContenuCours) => {
@@ -36,8 +37,9 @@ class ObjetRequeteListeContenuTAFsEtContenus extends ObjetRequeteConsultation {
 		this.callbackReussite.appel(lListeTAFs, lListeContenus);
 	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteListeContenuTAFsEtContenus =
+	ObjetRequeteListeContenuTAFsEtContenus;
+CollectionRequetes_1.Requetes.inscrire(
 	"ListeContenuTAFsEtContenus",
 	ObjetRequeteListeContenuTAFsEtContenus,
 );
-module.exports = ObjetRequeteListeContenuTAFsEtContenus;

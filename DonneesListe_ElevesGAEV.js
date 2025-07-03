@@ -1,9 +1,9 @@
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { GChaine } = require("ObjetChaine.js");
-const { TypeAbsencePartieGAEV } = require("TypeAbsencePartieGAEV.js");
-class DonneesListe_ElevesGAEV extends ObjetDonneesListe {
+exports.DonneesListe_ElevesGAEV = void 0;
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetChaine_1 = require("ObjetChaine");
+const TypeAbsencePartieGAEV_1 = require("TypeAbsencePartieGAEV");
+class DonneesListe_ElevesGAEV extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aFiltres, aTriCourant) {
 		super(aDonnees);
 		this.setOptions({
@@ -16,7 +16,7 @@ class DonneesListe_ElevesGAEV extends ObjetDonneesListe {
 		this.maTriDonnees = aTriCourant;
 	}
 	getEtatSurEdition() {
-		return EGenreEtat.Aucun;
+		return Enumere_Etat_1.EGenreEtat.Aucun;
 	}
 	avecEdition(aParams) {
 		if (aParams.idColonne === DonneesListe_ElevesGAEV.colonnes.coche) {
@@ -36,11 +36,11 @@ class DonneesListe_ElevesGAEV extends ObjetDonneesListe {
 	getTypeValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_ElevesGAEV.colonnes.coche:
-				return ObjetDonneesListe.ETypeCellule.Coche;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Coche;
 			case DonneesListe_ElevesGAEV.colonnes.diagnostic:
-				return ObjetDonneesListe.ETypeCellule.Html;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
 	getValeur(aParams) {
 		switch (aParams.idColonne) {
@@ -49,9 +49,9 @@ class DonneesListe_ElevesGAEV extends ObjetDonneesListe {
 					return aParams.article.estTotalementDesGroupes;
 				} else {
 					if (aParams.article.estTotalementDesGroupes) {
-						return ObjetDonneesListe.EGenreCoche.Verte;
+						return ObjetDonneesListe_1.ObjetDonneesListe.EGenreCoche.Verte;
 					} else if (aParams.article.estPartiellementDesGroupes) {
-						return ObjetDonneesListe.EGenreCoche.Grise;
+						return ObjetDonneesListe_1.ObjetDonneesListe.EGenreCoche.Grise;
 					}
 				}
 				return false;
@@ -73,11 +73,15 @@ class DonneesListe_ElevesGAEV extends ObjetDonneesListe {
 					aParams.article.diagsAbs.parcourir((aDiag) => {
 						H.push(
 							'<div class="',
-							_getImageAbsent(aDiag.genre),
+							TypeAbsencePartieGAEV_1.TypeAbsencePartieGAEVUtil.getImageAbsent(
+								aDiag.genre,
+							),
 							'" title="',
-							GChaine.toTitle(aDiag.message),
+							ObjetChaine_1.GChaine.toTitle(aDiag.message),
 							'" style="flex:none; padding-top: 3px; margin-right: 1px; text-align: center;">',
-							_getLettreAbsent(aDiag.genre),
+							TypeAbsencePartieGAEV_1.TypeAbsencePartieGAEVUtil.getLettreAbsent(
+								aDiag.genre,
+							),
 							"</div>",
 						);
 					});
@@ -110,12 +114,13 @@ class DonneesListe_ElevesGAEV extends ObjetDonneesListe {
 	}
 	getVisible(D) {
 		return (
-			D.visible &&
-			(this.filtres.dansLeGroupe ||
-				!(D.estTotalementDesGroupes || D.estPartiellementDesGroupes)) &&
-			(this.filtres.dansAutreGroupe || !D.estOccupe) &&
-			(this.filtres.aucunGroupe || !D.estLibre) &&
-			(!this.filtres.presents || !D.estAbsent)
+			(D.visible &&
+				(this.filtres.dansLeGroupe ||
+					!(D.estTotalementDesGroupes || D.estPartiellementDesGroupes)) &&
+				(this.filtres.dansAutreGroupe || !D.estOccupe) &&
+				(this.filtres.aucunGroupe || !D.estLibre) &&
+				(!this.filtres.presents || !D.estAbsent)) ||
+			!!D.modifEnCours
 		);
 	}
 	surEdition(aParams, V) {
@@ -130,23 +135,58 @@ class DonneesListe_ElevesGAEV extends ObjetDonneesListe {
 					aParams.article.estTotalementDesGroupes = V;
 				}
 				aParams.article.estPartiellementDesGroupes = false;
+				aParams.article.modifEnCours = true;
 				if (this.maTriDonnees === 1) {
 					if (aParams.article.pere) {
-						const lNbrEleves = getNbrEleves.call(this, aParams.article.pere);
+						const lNbrEleves = this.getNbrEleves(aParams.article.pere);
 						aParams.article.pere.estTotalementDesGroupes =
 							lNbrEleves[1] > 0
 								? lNbrEleves[1] === lNbrEleves[0]
-									? ObjetDonneesListe.EGenreCoche.Verte
-									: ObjetDonneesListe.EGenreCoche.Grise
-								: ObjetDonneesListe.EGenreCoche.Aucune;
+									? ObjetDonneesListe_1.ObjetDonneesListe.EGenreCoche.Verte
+									: ObjetDonneesListe_1.ObjetDonneesListe.EGenreCoche.Grise
+								: ObjetDonneesListe_1.ObjetDonneesListe.EGenreCoche.Aucune;
 					} else {
-						changerActifsEleves.call(this, aParams.article);
+						this.changerActifsEleves(aParams.article);
 					}
 				}
 				break;
 		}
 	}
+	getNbrEleves(aClasse) {
+		const N = [0, 0];
+		for (let I = 0, lNbr = this.Donnees.count(); I < lNbr; I++) {
+			const lEleve = this.Donnees.get(I);
+			if (lEleve.pere && lEleve.classe === aClasse.getLibelle()) {
+				N[0]++;
+				if (
+					lEleve.estTotalementDesGroupes ||
+					lEleve.estPartiellementDesGroupes
+				) {
+					N[1]++;
+				}
+			}
+		}
+		return N;
+	}
+	changerActifsEleves(aClasse) {
+		for (let I = 0, lNbr = this.Donnees.count(); I < lNbr; I++) {
+			const lEleve = this.Donnees.get(I);
+			if (
+				lEleve.pere &&
+				lEleve.classe === aClasse.getLibelle() &&
+				!lEleve.estFixe
+			) {
+				if (
+					lEleve.estTotalementDesGroupes !== aClasse.estTotalementDesGroupes
+				) {
+					lEleve.estTotalementDesGroupes = aClasse.estTotalementDesGroupes;
+					lEleve.estPartiellementDesGroupes = false;
+				}
+			}
+		}
+	}
 }
+exports.DonneesListe_ElevesGAEV = DonneesListe_ElevesGAEV;
 DonneesListe_ElevesGAEV.colonnes = {
 	coche: "DLElevesGAEV_coche",
 	nom: "DLElevesGAEV_nom",
@@ -154,59 +194,3 @@ DonneesListe_ElevesGAEV.colonnes = {
 	classe: "DLElevesGAEV_classe",
 	options: "DLElevesGAEV_options",
 };
-function getNbrEleves(aClasse) {
-	const N = [0, 0];
-	for (let I = 0, lNbr = this.Donnees.count(); I < lNbr; I++) {
-		const lEleve = this.Donnees.get(I);
-		if (lEleve.pere && lEleve.classe === aClasse.getLibelle()) {
-			N[0]++;
-			if (lEleve.estTotalementDesGroupes || lEleve.estPartiellementDesGroupes) {
-				N[1]++;
-			}
-		}
-	}
-	return N;
-}
-function _getImageAbsent(aGenre) {
-	switch (aGenre) {
-		case TypeAbsencePartieGAEV.AGAEVAbsent:
-			return "Image_DiagAbsClasse";
-		case TypeAbsencePartieGAEV.AGAEVStage:
-			return "Image_DiagStageEleve";
-		case TypeAbsencePartieGAEV.AGAEVClasseAbsente:
-			return "Image_DiagAbsClasse";
-		case TypeAbsencePartieGAEV.AGAEVExclusion:
-			return "Image_DiagEleveExclu";
-		default:
-	}
-	return "";
-}
-function _getLettreAbsent(aGenre) {
-	switch (aGenre) {
-		case TypeAbsencePartieGAEV.AGAEVAbsent:
-			return GTraductions.getValeur("ChoixEleveGAEV.LettreAbsenceEleve");
-		case TypeAbsencePartieGAEV.AGAEVStage:
-		case TypeAbsencePartieGAEV.AGAEVExclusion:
-			return "&nbsp;";
-		case TypeAbsencePartieGAEV.AGAEVClasseAbsente:
-			return GTraductions.getValeur("ChoixEleveGAEV.LettreAbsenceClasse");
-		default:
-	}
-	return "";
-}
-function changerActifsEleves(aClasse) {
-	for (let I = 0, lNbr = this.Donnees.count(); I < lNbr; I++) {
-		const lEleve = this.Donnees.get(I);
-		if (
-			lEleve.pere &&
-			lEleve.classe === aClasse.getLibelle() &&
-			!lEleve.estFixe
-		) {
-			if (lEleve.estTotalementDesGroupes !== aClasse.estTotalementDesGroupes) {
-				lEleve.estTotalementDesGroupes = aClasse.estTotalementDesGroupes;
-				lEleve.estPartiellementDesGroupes = false;
-			}
-		}
-	}
-}
-module.exports = DonneesListe_ElevesGAEV;

@@ -1,22 +1,26 @@
-const { ObjetCelluleDate } = require("ObjetCelluleDate.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class ObjetFenetre_SortieEleveGroupe extends ObjetFenetre {
+exports.ObjetFenetre_SortieEleveGroupe = void 0;
+const ObjetCelluleDate_1 = require("ObjetCelluleDate");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class ObjetFenetre_SortieEleveGroupe extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.setOptionsFenetre({
-			titre: GTraductions.getValeur("SortieEleveGroupe.EnleverUnEleveGroupe"),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"SortieEleveGroupe.EnleverUnEleveGroupe",
+			),
 			largeur: 300,
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 		});
 		this.donnees = {
 			cours: null,
-			semaine: null,
 			eleve: null,
+			groupe: null,
+			groupeSaisie: null,
 			surAnneeComplete: false,
 			date: null,
 		};
@@ -39,7 +43,7 @@ class ObjetFenetre_SortieEleveGroupe extends ObjetFenetre {
 				},
 				setValue: function (aAnnee) {
 					aInstance.donnees.surAnneeComplete = aAnnee;
-					_actualiserCelluleDate.call(aInstance);
+					aInstance._actualiserCelluleDate();
 				},
 				getDisabled: function (aAnnee) {
 					if (aAnnee) {
@@ -55,41 +59,43 @@ class ObjetFenetre_SortieEleveGroupe extends ObjetFenetre {
 	}
 	construireInstances() {
 		this.identDate = this.add(
-			ObjetCelluleDate,
-			function (aDate) {
-				if (
-					aDate < this.donnees.groupeSaisie.borneSortie.dateMessageInf &&
-					!GDate.estJourEgal(
-						aDate,
-						this.donnees.groupeSaisie.borneSortie.dateMessageInf,
-					) &&
-					this.donnees.groupeSaisie.borneSortie.messageInf
-				) {
-					GApplication.getMessage().afficher({
-						message: this.donnees.groupeSaisie.borneSortie.messageInf,
-					});
-					this.getInstance(this.identDate).setDonnees(this.donnees.date);
-					return;
-				}
-				this.donnees.date = aDate;
-			},
-			(aInstance) => {
-				aInstance.setParametresFenetre(
-					GParametres.PremierLundi,
-					GParametres.PremiereDate,
-					GParametres.DerniereDate,
-				);
-			},
+			ObjetCelluleDate_1.ObjetCelluleDate,
+			this.surChangementDate.bind(this),
+			this.initialiserCelluleDate,
 		);
+	}
+	initialiserCelluleDate(aInstance) {
+		aInstance.setParametresFenetre(
+			GParametres.PremierLundi,
+			GParametres.PremiereDate,
+			GParametres.DerniereDate,
+		);
+	}
+	surChangementDate(aDate) {
+		if (
+			aDate < this.donnees.groupeSaisie.borneSortie.dateMessageInf &&
+			!ObjetDate_1.GDate.estJourEgal(
+				aDate,
+				this.donnees.groupeSaisie.borneSortie.dateMessageInf,
+			) &&
+			this.donnees.groupeSaisie.borneSortie.messageInf
+		) {
+			GApplication.getMessage().afficher({
+				message: this.donnees.groupeSaisie.borneSortie.messageInf,
+			});
+			this.getInstance(this.identDate).setDonnees(this.donnees.date);
+			return;
+		}
+		this.donnees.date = aDate;
 	}
 	setDonnees(aDonnees) {
 		$.extend(this.donnees, aDonnees);
 		if (this.donnees.eleve && this.donnees.eleve.historiqueGroupes) {
-			this.donnees.eleve.historiqueGroupes.parcourir(function (aGroupe) {
+			this.donnees.eleve.historiqueGroupes.parcourir((aGroupe) => {
 				if (aGroupe.getNumero() === aDonnees.groupe.getNumero()) {
 					this.donnees.groupeSaisie = aGroupe;
 				}
-			}, this);
+			});
 			if (!this.donnees.groupeSaisie) {
 				return;
 			}
@@ -102,40 +108,77 @@ class ObjetFenetre_SortieEleveGroupe extends ObjetFenetre {
 				this.donnees.groupeSaisie.borneSortie.date.getTime(),
 			);
 			this.getInstance(this.identDate).setDonnees(this.donnees.date);
-			_actualiserCelluleDate.call(this);
+			this._actualiserCelluleDate();
 		}
 		this.afficher();
 	}
 	composeContenu() {
 		const T = [];
 		T.push(
-			'<div class="PetitEspace">',
-			'<div class="PetitEspaceBas" style="display:flex; align-items:center;">',
-			'<div class="PetitEspaceDroit Insecable" ie-html="getLibelleEleve"></div>',
-			'<div class="Image_FlecheSortie" style="flex:none;"></div>',
-			'<div class="PetitEspaceGauche Insecable" ie-html="getLibelleGroupe"></div>',
-			"</div>",
-			'<div class="EspaceBas EspaceHaut">',
-			GTraductions.getValeur("SortieEleveGroupe.RetirerEleveGroupe"),
-			"</div>",
-			'<div style="padding-left:10px;">',
-			'<div class="EspaceBas">',
-			'<ie-radio ie-model="rbChoixDate(true)">' +
-				GTraductions.getValeur("SortieEleveGroupe.SurAnneeComplete") +
-				"</ie-radio>",
-			"</div>",
-			"<div>",
-			'<div class="InlineBlock AlignementMilieuVertical PetitEspaceDroit">',
-			'<ie-radio ie-model="rbChoixDate(false)">' +
-				GTraductions.getValeur("Le") +
-				"</ie-radio>",
-			"</div>",
-			'<div class="InlineBlock AlignementMilieuVertical" id="',
-			this.getInstance(this.identDate).getNom(),
-			'"></div>',
-			"</div>",
-			"</div>",
-			"</div>",
+			IE.jsx.str(
+				"div",
+				{ class: "PetitEspace" },
+				IE.jsx.str(
+					"div",
+					{
+						class: "PetitEspaceBas",
+						style: "display:flex; align-items:center;",
+					},
+					IE.jsx.str("div", {
+						class: "PetitEspaceDroit Insecable",
+						"ie-html": "getLibelleEleve",
+					}),
+					IE.jsx.str("div", {
+						class: "Image_FlecheSortie",
+						style: "flex:none;",
+					}),
+					IE.jsx.str("div", {
+						class: "PetitEspaceGauche Insecable",
+						"ie-html": "getLibelleGroupe",
+					}),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "EspaceBas EspaceHaut" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"SortieEleveGroupe.RetirerEleveGroupe",
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{ style: "padding-left:10px;" },
+					IE.jsx.str(
+						"div",
+						{ class: "EspaceBas" },
+						IE.jsx.str(
+							"ie-radio",
+							{ "ie-model": "rbChoixDate(true)" },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"SortieEleveGroupe.SurAnneeComplete",
+							),
+						),
+					),
+					IE.jsx.str(
+						"div",
+						null,
+						IE.jsx.str(
+							"div",
+							{
+								class: "InlineBlock AlignementMilieuVertical PetitEspaceDroit",
+							},
+							IE.jsx.str(
+								"ie-radio",
+								{ "ie-model": "rbChoixDate(false)" },
+								ObjetTraduction_1.GTraductions.getValeur("Le"),
+							),
+						),
+						IE.jsx.str("div", {
+							class: "InlineBlock AlignementMilieuVertical",
+							id: this.getNomInstance(this.identDate),
+						}),
+					),
+				),
+			),
 		);
 		return T.join("");
 	}
@@ -147,8 +190,8 @@ class ObjetFenetre_SortieEleveGroupe extends ObjetFenetre {
 			this.donnees.date,
 		);
 	}
+	_actualiserCelluleDate() {
+		this.getInstance(this.identDate).setActif(!this.donnees.surAnneeComplete);
+	}
 }
-function _actualiserCelluleDate() {
-	this.getInstance(this.identDate).setActif(!this.donnees.surAnneeComplete);
-}
-module.exports = ObjetFenetre_SortieEleveGroupe;
+exports.ObjetFenetre_SortieEleveGroupe = ObjetFenetre_SortieEleveGroupe;

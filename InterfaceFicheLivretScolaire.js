@@ -1,84 +1,71 @@
-const { InterfacePage } = require("InterfacePage.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetListeArborescente } = require("ObjetListeArborescente.js");
-const {
-	DonneesListe_FicheLivretScolaire,
-} = require("DonneesListe_FicheLivretScolaire.js");
-const { ObjetMoteurReleveBulletin } = require("ObjetMoteurReleveBulletin.js");
-const { TypeReleveBulletin } = require("TypeReleveBulletin.js");
-const { ObjetPiedFicheScolaire } = require("ObjetPiedFicheScolaire.js");
-const { ObjetFicheGraphe } = require("ObjetFicheGraphe.js");
-const {
-	ObjetRequeteListeCompetencesLivretScolaire,
-} = require("ObjetRequeteListeCompetencesLivretScolaire.js");
-const { ObjetRequeteLivretScolaire } = require("ObjetRequeteLivretScolaire.js");
-const { ObjetInvocateur, Invocateur } = require("Invocateur.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GChaine } = require("ObjetChaine.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreAction } = require("Enumere_Action.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { EGenreImpression } = require("Enumere_GenreImpression.js");
-const { ObjetSaisie } = require("ObjetSaisie.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { EGenreEvntMenusDeroulants } = require("Enumere_EvntMenusDeroulants.js");
-const { EGenreOnglet } = require("Enumere_Onglet.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const MultipleObjetAffichagePageAvecMenusDeroulants = require("InterfacePageAvecMenusDeroulants.js");
-const ObjetAffichagePageAvecMenusDeroulants =
-	MultipleObjetAffichagePageAvecMenusDeroulants
-		? MultipleObjetAffichagePageAvecMenusDeroulants.ObjetAffichagePageAvecMenusDeroulants
-		: null;
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const {
-	ObjetFenetre_AssistantSaisie,
-} = require("ObjetFenetre_AssistantSaisie.js");
-const {
-	EBoutonFenetreAssistantSaisie,
-} = require("EBoutonFenetreAssistantSaisie.js");
-const {
-	ObjetRequeteSaisieLivretScolaire,
-} = require("ObjetRequeteSaisieLivretScolaire.js");
-const {
-	ObjetRequeteCalculCompetencesLivretScolaire,
-} = require("ObjetRequeteCalculCompetencesLivretScolaire.js");
-const { TypeHttpGenerationPDFSco } = require("TypeHttpGenerationPDFSco.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { EStructureAffichage } = require("Enumere_StructureAffichage.js");
-const { ETypeAppreciationUtil } = require("Enumere_TypeAppreciation.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { ObjetMoteurAssistantSaisie } = require("ObjetMoteurAssistantSaisie.js");
-const {
-	TypeOptionMaquetteLivretScolaireStandard,
-} = require("TypeOptionMaquetteLivretScolaireStandard.js");
-const { ToucheClavier } = require("ToucheClavier.js");
-const { UtilitaireBoutonBandeau } = require("UtilitaireBoutonBandeau.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const ObjetRequeteSaisieAccuseReceptionDocument = require("ObjetRequeteSaisieAccuseReceptionDocument.js");
-const {
-	ObjetFenetre_EditionAppreciationAnnuelleMS,
-} = require("ObjetFenetre_EditionAppreciationAnnuelleMS.js");
-class InterfaceFicheLivretScolaire extends InterfacePage {
-	constructor(...aParams) {
-		super(...aParams);
-		this.moteur = new ObjetMoteurReleveBulletin();
-		this.moteurAssSaisie = new ObjetMoteurAssistantSaisie();
+exports.InterfaceFicheLivretScolaire = void 0;
+const InterfacePage_1 = require("InterfacePage");
+const ObjetListe_1 = require("ObjetListe");
+const DonneesListe_FicheLivretScolaire_1 = require("DonneesListe_FicheLivretScolaire");
+const ObjetMoteurReleveBulletin_1 = require("ObjetMoteurReleveBulletin");
+const TypeReleveBulletin_1 = require("TypeReleveBulletin");
+const ObjetPiedFicheScolaire_1 = require("ObjetPiedFicheScolaire");
+const ObjetFicheGraphe_1 = require("ObjetFicheGraphe");
+const ObjetRequeteListeCompetencesLivretScolaire_1 = require("ObjetRequeteListeCompetencesLivretScolaire");
+const ObjetRequeteLivretScolaire_1 = require("ObjetRequeteLivretScolaire");
+const Invocateur_1 = require("Invocateur");
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetChaine_1 = require("ObjetChaine");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_Action_1 = require("Enumere_Action");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const Enumere_GenreImpression_1 = require("Enumere_GenreImpression");
+const ObjetSaisie_1 = require("ObjetSaisie");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const Enumere_EvntMenusDeroulants_1 = require("Enumere_EvntMenusDeroulants");
+const Enumere_Onglet_1 = require("Enumere_Onglet");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const MultipleObjetAffichagePageAvecMenusDeroulants = require("InterfacePageAvecMenusDeroulants");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_AssistantSaisie_1 = require("ObjetFenetre_AssistantSaisie");
+const EBoutonFenetreAssistantSaisie_1 = require("EBoutonFenetreAssistantSaisie");
+const ObjetRequeteSaisieLivretScolaire_1 = require("ObjetRequeteSaisieLivretScolaire");
+const ObjetRequeteCalculCompetencesLivretScolaire_1 = require("ObjetRequeteCalculCompetencesLivretScolaire");
+const TypeHttpGenerationPDFSco_1 = require("TypeHttpGenerationPDFSco");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
+const Enumere_TypeAppreciation_1 = require("Enumere_TypeAppreciation");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const ObjetMoteurAssistantSaisie_1 = require("ObjetMoteurAssistantSaisie");
+const TypeOptionMaquetteLivretScolaireStandard_1 = require("TypeOptionMaquetteLivretScolaireStandard");
+const ToucheClavier_1 = require("ToucheClavier");
+const UtilitaireBoutonBandeau_1 = require("UtilitaireBoutonBandeau");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const MultiObjetRequeteSaisieAccuseReceptionDocument = require("ObjetRequeteSaisieAccuseReceptionDocument");
+const ObjetFenetre_EditionAppreciationAnnuelleMS_1 = require("ObjetFenetre_EditionAppreciationAnnuelleMS");
+const AccessApp_1 = require("AccessApp");
+class InterfaceFicheLivretScolaire extends InterfacePage_1.InterfacePage {
+	constructor() {
+		super(...arguments);
+		this.appScoEspace = (0, AccessApp_1.getApp)();
+		this.etatUtilScoEspace = this.appScoEspace.getEtatUtilisateur();
+		this.moteur = new ObjetMoteurReleveBulletin_1.ObjetMoteurReleveBulletin();
+		this.moteurAssSaisie =
+			new ObjetMoteurAssistantSaisie_1.ObjetMoteurAssistantSaisie();
 		this.visuJauge = true;
 		this.donnees = { libelleBandeau: "", hintLibelleBandeau: "" };
 		this.avecGestionAccuseReception =
-			GEtatUtilisateur.GenreEspace === EGenreEspace.Parent;
+			this.etatUtilScoEspace.GenreEspace ===
+			Enumere_Espace_1.EGenreEspace.Parent;
 	}
 	construireInstances() {
 		this.listeClasseHistorique = null;
 		if (
-			GEtatUtilisateur.GenreEspace === EGenreEspace.Professeur &&
-			ObjetAffichagePageAvecMenusDeroulants
+			this.etatUtilScoEspace.GenreEspace ===
+				Enumere_Espace_1.EGenreEspace.Professeur &&
+			(MultipleObjetAffichagePageAvecMenusDeroulants === null ||
+			MultipleObjetAffichagePageAvecMenusDeroulants === void 0
+				? void 0
+				: MultipleObjetAffichagePageAvecMenusDeroulants.ObjetAffichagePageAvecMenusDeroulants)
 		) {
 			this.identTripleCombo = this.add(
-				ObjetAffichagePageAvecMenusDeroulants,
+				MultipleObjetAffichagePageAvecMenusDeroulants.ObjetAffichagePageAvecMenusDeroulants,
 				this.evenementSurDernierMenuDeroulant,
 				this.initialiserTripleCombo,
 			);
@@ -93,56 +80,58 @@ class InterfaceFicheLivretScolaire extends InterfacePage {
 			).getPremierElement();
 		}
 		if (
-			GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.LivretScolaire_Fiche
+			this.etatUtilScoEspace.getGenreOnglet() ===
+			Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche
 		) {
-			if (!GEtatUtilisateur.estModeAccessible()) {
-				this.IdentPage = this.add(
-					ObjetListe,
-					_evntSurListeLivret.bind(this),
-					_initListeLivret.bind(this),
-				);
-			} else {
-				this.IdentPage = this.add(ObjetListeArborescente, null, null);
-			}
-			this.IdentMoyGen = this.add(
-				ObjetListe,
-				null,
-				_initListeMoyenne.bind(this),
+			this.IdentPage = this.add(
+				ObjetListe_1.ObjetListe,
+				this._evntSurListeLivret.bind(this),
+				this._initListeLivret.bind(this),
 			);
-			this.IdentPied = this.add(ObjetPiedFicheScolaire, null, null);
+			this.IdentMoyGen = this.add(
+				ObjetListe_1.ObjetListe,
+				null,
+				this._initListeMoyenne.bind(this),
+			);
+			this.IdentPied = this.add(
+				ObjetPiedFicheScolaire_1.ObjetPiedFicheScolaire,
+				null,
+				null,
+			);
 		} else {
 			if (
-				GEtatUtilisateur.getGenreOnglet() ===
-				EGenreOnglet.LivretScolaire_Appreciations
+				this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Appreciations
 			) {
 				this.IdentAppreciations = this.add(
-					ObjetListe,
-					_evntSurListeLivret.bind(this),
+					ObjetListe_1.ObjetListe,
+					this._evntSurListeLivret.bind(this),
 					null,
 				);
 			}
 			if (
-				GEtatUtilisateur.getGenreOnglet() ===
-				EGenreOnglet.LivretScolaire_Competences
+				this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Competences
 			) {
 				this.IdentCompetences = this.add(
-					ObjetListe,
-					_evntSurListeCompetences.bind(this),
+					ObjetListe_1.ObjetListe,
+					this._evntSurListeCompetences.bind(this),
 					null,
 				);
 			}
 			this.IdentResultat = this.add(
-				ObjetListe,
+				ObjetListe_1.ObjetListe,
 				null,
-				_initListeResultat.bind(this),
+				this._initListeResultat.bind(this),
 			);
 		}
 		if (
-			[EGenreEspace.Eleve, EGenreEspace.Parent].includes(
-				GEtatUtilisateur.GenreEspace,
-			)
+			[
+				Enumere_Espace_1.EGenreEspace.Eleve,
+				Enumere_Espace_1.EGenreEspace.Parent,
+			].includes(this.etatUtilScoEspace.GenreEspace)
 		) {
-			const lEleve = GEtatUtilisateur.getMembre();
+			const lEleve = this.etatUtilScoEspace.getMembre();
 			const lNrDernierClasse = lEleve.Classe.getNumero();
 			if (lEleve && lEleve.listeClasseHistorique) {
 				this.listeClasseHistorique =
@@ -156,41 +145,57 @@ class InterfaceFicheLivretScolaire extends InterfacePage {
 		}
 		if (this.listeClasseHistorique && this.listeClasseHistorique.count() > 1) {
 			this.identCmbClasseHistorique = this.add(
-				ObjetSaisie,
+				ObjetSaisie_1.ObjetSaisie,
 				this.evenementClasseHistorique,
 				this.initialiserClasseHistorique,
 			);
 		}
 		if (this.avecAssistantSaisie()) {
 			this.identFenetreAssistantSaisie = this.add(
-				ObjetFenetre_AssistantSaisie,
-				_evntSurFenetreAssistantSaisie.bind(this),
+				ObjetFenetre_AssistantSaisie_1.ObjetFenetre_AssistantSaisie,
+				this._evntSurFenetreAssistantSaisie.bind(this),
 				this.moteurAssSaisie.initialiserFenetreAssistantSaisie,
 			);
 		}
-		if (GEtatUtilisateur.GenreEspace === EGenreEspace.Professeur) {
+		if (
+			this.etatUtilScoEspace.GenreEspace ===
+			Enumere_Espace_1.EGenreEspace.Professeur
+		) {
 			this.construireFicheEleveEtFichePhoto();
 		}
 		this.avecBoutonGraphe =
-			GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.LivretScolaire_Fiche;
+			this.etatUtilScoEspace.getGenreOnglet() ===
+			Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche;
 		if (this.avecBoutonGraphe) {
-			this.identFicheGraphe = this.add(ObjetFicheGraphe);
+			this.identFicheGraphe = this.add(ObjetFicheGraphe_1.ObjetFicheGraphe);
 		}
 	}
 	avecAssistantSaisie() {
 		return this.moteurAssSaisie.avecAssistantSaisie({
-			typeReleveBulletin: TypeReleveBulletin.LivretScolaire,
+			typeReleveBulletin:
+				TypeReleveBulletin_1.TypeReleveBulletin.LivretScolaire,
 		});
 	}
 	recupererDonnees() {
-		if (!this.Pere.EnConstruction) {
-			if (GEtatUtilisateur.GenreEspace === EGenreEspace.Professeur) {
-				new ObjetRequeteListeCompetencesLivretScolaire(
+		var _a, _b;
+		if (
+			!((_b =
+				(_a = this.Pere) === null || _a === void 0
+					? void 0
+					: _a.getEnConstruction) === null || _b === void 0
+				? void 0
+				: _b.call(_a))
+		) {
+			if (
+				this.etatUtilScoEspace.GenreEspace ===
+				Enumere_Espace_1.EGenreEspace.Professeur
+			) {
+				new ObjetRequeteListeCompetencesLivretScolaire_1.ObjetRequeteListeCompetencesLivretScolaire(
 					this,
 					this.actionSurListeCompetencesLivretScolaire,
 				).lancerRequete();
 			} else {
-				this.classeSelectionne = GEtatUtilisateur.getMembre().Classe;
+				this.classeSelectionne = this.etatUtilScoEspace.getMembre().Classe;
 				if (
 					this.listeClasseHistorique &&
 					this.listeClasseHistorique.count() > 1
@@ -219,28 +224,33 @@ class InterfaceFicheLivretScolaire extends InterfacePage {
 	}
 	setParametresGeneraux() {
 		if (
-			GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.LivretScolaire_Fiche
+			this.etatUtilScoEspace.getGenreOnglet() ===
+			Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche
 		) {
 			this.IdentZoneAlClient = this.IdentPage;
 		}
 		if (
-			GEtatUtilisateur.getGenreOnglet() ===
-			EGenreOnglet.LivretScolaire_Appreciations
+			this.etatUtilScoEspace.getGenreOnglet() ===
+			Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Appreciations
 		) {
 			this.IdentZoneAlClient = this.IdentAppreciations;
 		}
 		if (
-			GEtatUtilisateur.getGenreOnglet() ===
-			EGenreOnglet.LivretScolaire_Competences
+			this.etatUtilScoEspace.getGenreOnglet() ===
+			Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Competences
 		) {
 			this.IdentZoneAlClient = this.IdentCompetences;
 		}
-		this.GenreStructure = EStructureAffichage.Autre;
+		this.GenreStructure =
+			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 		this.AddSurZone = [];
-		if (MethodesObjet.isNumber(this.identTripleCombo)) {
+		if (MethodesObjet_1.MethodesObjet.isNumber(this.identTripleCombo)) {
 			this.AddSurZone.push(this.identTripleCombo);
 		}
-		if (GEtatUtilisateur.GenreEspace === EGenreEspace.Professeur) {
+		if (
+			this.etatUtilScoEspace.GenreEspace ===
+			Enumere_Espace_1.EGenreEspace.Professeur
+		) {
 			this.AddSurZone.push({
 				html: '<span ie-html="getInformationSorti" class="Italique"></span>',
 			});
@@ -251,27 +261,35 @@ class InterfaceFicheLivretScolaire extends InterfacePage {
 		if (this.listeClasseHistorique && this.listeClasseHistorique.count() > 1) {
 			this.AddSurZone.push(this.identCmbClasseHistorique);
 		}
-		if (GEtatUtilisateur.GenreEspace === EGenreEspace.Professeur) {
+		if (
+			this.etatUtilScoEspace.GenreEspace ===
+			Enumere_Espace_1.EGenreEspace.Professeur
+		) {
 			this.AddSurZone.push({
 				html: '<span ie-html="getInformationDatePublication"></span>',
 			});
 		}
 		if (
-			GEtatUtilisateur.GenreEspace === EGenreEspace.Professeur &&
-			GEtatUtilisateur.getGenreOnglet() ===
-				EGenreOnglet.LivretScolaire_Competences
+			this.etatUtilScoEspace.GenreEspace ===
+				Enumere_Espace_1.EGenreEspace.Professeur &&
+			this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Competences
 		) {
 			this.AddSurZone.push({ separateur: true });
 			this.AddSurZone.push({
 				html:
 					'<ie-checkbox class="livretscolaire ls-espace" ie-model="choixJauge" ie-display="choixJauge.visible">' +
-					GTraductions.getValeur("ficheScolaire.afficherResultatsEvals") +
+					ObjetTraduction_1.GTraductions.getValeur(
+						"ficheScolaire.afficherResultatsEvals",
+					) +
 					"</ie-checkbox>",
 			});
 			this.AddSurZone.push({
 				html:
 					'<ie-bouton class="livretscolaire ls-espace small-bt themeBoutonSecondaire" ie-model="calculeAuto" ie-display="calculeAuto.visible">' +
-					GTraductions.getValeur("ficheScolaire.calculerAutoEval") +
+					ObjetTraduction_1.GTraductions.getValeur(
+						"ficheScolaire.calculerAutoEval",
+					) +
 					"</ie-bouton>",
 			});
 		}
@@ -283,8 +301,8 @@ class InterfaceFicheLivretScolaire extends InterfacePage {
 			this.AddSurZone.push({ separateur: true });
 			if (this.avecAssistantSaisie()) {
 				this.AddSurZone.push({
-					html: UtilitaireBoutonBandeau.getHtmlBtnAssistantSaisie(
-						"btnAssistantSaisie",
+					html: UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnAssistantSaisie(
+						this.jsxModeleBoutonAssistantSaisie.bind(this),
 					),
 				});
 			}
@@ -300,9 +318,23 @@ class InterfaceFicheLivretScolaire extends InterfacePage {
 	}
 	estAvecBandeau() {
 		return (
-			GEtatUtilisateur.GenreEspace === EGenreEspace.Professeur ||
+			this.etatUtilScoEspace.GenreEspace ===
+				Enumere_Espace_1.EGenreEspace.Professeur ||
 			(this.listeClasseHistorique && this.listeClasseHistorique.count() > 1)
 		);
+	}
+	jsxModeleBoutonAssistantSaisie() {
+		return {
+			event: () => {
+				this._evntSurAssistant();
+			},
+			getTitle: () => {
+				return this.moteurAssSaisie.getTitleBoutonAssistantSaisie();
+			},
+			getSelection: () => {
+				return this.etatUtilScoEspace.assistantSaisieActif;
+			},
+		};
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
@@ -334,7 +366,7 @@ class InterfaceFicheLivretScolaire extends InterfacePage {
 				},
 				setValue: function (aValeur) {
 					aInstance.visuJauge = aValeur;
-					_initListeCompetences.bind(aInstance)(
+					aInstance._initListeCompetences(
 						aInstance.getInstance(aInstance.IdentCompetences),
 					);
 					aInstance.getInstance(aInstance.IdentCompetences).actualiser();
@@ -346,52 +378,72 @@ class InterfaceFicheLivretScolaire extends InterfacePage {
 			calculeAuto: {
 				event: function () {
 					const lmessage = [];
-					lmessage.push('<div class="livretscolaire">');
-					lmessage.push('<div class="ls-section-titre">');
+					const lchoixRemplacer = () => {
+						return {
+							getValue() {
+								if (
+									aInstance.etatUtilScoEspace.remplacerEvalCompetences ===
+									undefined
+								) {
+									aInstance.etatUtilScoEspace.remplacerEvalCompetences = false;
+								}
+								return aInstance.etatUtilScoEspace.remplacerEvalCompetences;
+							},
+							setValue(aValue) {
+								aInstance.etatUtilScoEspace.remplacerEvalCompetences = aValue;
+							},
+						};
+					};
 					lmessage.push(
-						'<div class="ls-titre">',
-						GTraductions.getValeur("ficheScolaire.msgAutoEval.titre"),
-						"</div>",
+						IE.jsx.str(
+							"div",
+							{ class: "livretscolaire" },
+							IE.jsx.str(
+								"div",
+								{ class: "ls-section-titre" },
+								IE.jsx.str(
+									"div",
+									{ class: "ls-titre" },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"ficheScolaire.msgAutoEval.titre",
+									),
+								),
+								IE.jsx.str("div", {
+									class: "ls-mrfiche",
+									"ie-mrfiche": "ficheScolaire.MFicheValidationCompetencesLSL",
+								}),
+							),
+							IE.jsx.str(
+								"div",
+								{ class: "ls-corps" },
+								ObjetTraduction_1.GTraductions.getValeur(
+									"ficheScolaire.msgAutoEval.texte",
+								),
+							),
+							IE.jsx.str(
+								"div",
+								{ class: "ls-choix" },
+								IE.jsx.str(
+									"ie-checkbox",
+									{ "ie-model": lchoixRemplacer },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"ficheScolaire.msgAutoEval.choix",
+									),
+								),
+							),
+						),
 					);
-					lmessage.push(
-						'<div class="ls-mrfiche" ie-mrfiche="ficheScolaire.MFicheValidationCompetencesLSL"></div>',
-					);
-					lmessage.push("</div>");
-					lmessage.push(
-						'<div class="ls-corps">',
-						GTraductions.getValeur("ficheScolaire.msgAutoEval.texte"),
-						"</div>",
-					);
-					lmessage.push(
-						'<div class="ls-choix"><ie-checkbox ie-model="choixRemplacer">',
-						GTraductions.getValeur("ficheScolaire.msgAutoEval.choix"),
-						"</ie-checkbox></div>",
-					);
-					lmessage.push("</div>");
 					const lThis = aInstance;
-					GApplication.getMessage().afficher({
-						type: EGenreBoiteMessage.Confirmation,
+					aInstance.appScoEspace.getMessage().afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
 						width: 450,
 						message: lmessage.join(""),
-						controleur: {
-							choixRemplacer: {
-								getValue: function () {
-									if (GEtatUtilisateur.remplacerEvalCompetences === undefined) {
-										GEtatUtilisateur.remplacerEvalCompetences = false;
-									}
-									return GEtatUtilisateur.remplacerEvalCompetences;
-								},
-								setValue: function (aValue) {
-									GEtatUtilisateur.remplacerEvalCompetences = aValue;
-								},
-							},
-						},
 						callback: function (aGenreAction) {
-							if (aGenreAction === EGenreAction.Valider) {
+							if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
 								lThis.calculCompetencesLivretScolaire(
-									GEtatUtilisateur.remplacerEvalCompetences,
+									aInstance.etatUtilScoEspace.remplacerEvalCompetences,
 								);
-								GEtatUtilisateur.remplacerEvalCompetences = false;
+								aInstance.etatUtilScoEspace.remplacerEvalCompetences = false;
 							}
 						},
 					});
@@ -405,17 +457,6 @@ class InterfaceFicheLivretScolaire extends InterfacePage {
 					return aInstance.donnees && aInstance.donnees.avecJauge;
 				},
 			},
-			btnAssistantSaisie: {
-				event() {
-					_evntSurAssistant.call(aInstance);
-				},
-				getTitle() {
-					return aInstance.moteurAssSaisie.getTitleBoutonAssistantSaisie();
-				},
-				getSelection() {
-					return GEtatUtilisateur.assistantSaisieActif;
-				},
-			},
 			cbAccuseReception: {
 				getValue: function () {
 					const lResponsableAR = aInstance._getResponsableAccuseReception();
@@ -425,7 +466,7 @@ class InterfaceFicheLivretScolaire extends InterfacePage {
 					const lResponsableAR = aInstance._getResponsableAccuseReception();
 					if (!!lResponsableAR) {
 						lResponsableAR.aPrisConnaissance = aValue;
-						new ObjetRequeteSaisieAccuseReceptionDocument(
+						new MultiObjetRequeteSaisieAccuseReceptionDocument.ObjetRequeteSaisieAccuseReceptionDocument(
 							aInstance,
 						).lancerRequete({
 							periode: aInstance.periodeSelectionnee,
@@ -450,39 +491,40 @@ class InterfaceFicheLivretScolaire extends InterfacePage {
 	}
 	calculCompetencesLivretScolaire(aRemplacer) {
 		const lObjet = {
-			genre: GEtatUtilisateur.getGenreOnglet(),
 			classe: this.classeSelectionne,
-			discipline: GEtatUtilisateur.Navigation.getRessource(
-				EGenreRessource.DisciplineLivretScolaire,
+			discipline: this.etatUtilScoEspace.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.DisciplineLivretScolaire,
 			),
 			nePasRemplacer: !aRemplacer,
 		};
-		new ObjetRequeteCalculCompetencesLivretScolaire(
+		new ObjetRequeteCalculCompetencesLivretScolaire_1.ObjetRequeteCalculCompetencesLivretScolaire(
 			this,
 			this.actionSurValidation,
 		).lancerRequete(lObjet);
 	}
 	getTitleBoutonGraphe() {
-		return GTraductions.getValeur("ficheScolaire.boutonGraphe");
+		return ObjetTraduction_1.GTraductions.getValeur(
+			"ficheScolaire.boutonGraphe",
+		);
 	}
 	initialiserTripleCombo(aInstance) {
-		switch (GEtatUtilisateur.getGenreOnglet()) {
-			case EGenreOnglet.LivretScolaire_Appreciations:
+		switch (this.etatUtilScoEspace.getGenreOnglet()) {
+			case Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Appreciations:
 				aInstance.setParametres([
-					EGenreRessource.Classe,
-					EGenreRessource.DisciplineLivretScolaire,
+					Enumere_Ressource_1.EGenreRessource.Classe,
+					Enumere_Ressource_1.EGenreRessource.DisciplineLivretScolaire,
 				]);
 				break;
-			case EGenreOnglet.LivretScolaire_Competences:
+			case Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Competences:
 				aInstance.setParametres([
-					EGenreRessource.Classe,
-					EGenreRessource.DisciplineLivretScolaire,
+					Enumere_Ressource_1.EGenreRessource.Classe,
+					Enumere_Ressource_1.EGenreRessource.DisciplineLivretScolaire,
 				]);
 				break;
 			default:
 				aInstance.setParametres([
-					EGenreRessource.Classe,
-					EGenreRessource.Eleve,
+					Enumere_Ressource_1.EGenreRessource.Classe,
+					Enumere_Ressource_1.EGenreRessource.Eleve,
 				]);
 				break;
 		}
@@ -490,9 +532,10 @@ class InterfaceFicheLivretScolaire extends InterfacePage {
 	}
 	construireStructureAffichageAutre() {
 		const H = [];
-		H.push('<div class="Espace BorderBox" style="_eight:100%;">');
+		H.push('<div class="Espace BorderBox" style="height:100%;">');
 		if (
-			GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.LivretScolaire_Fiche
+			this.etatUtilScoEspace.getGenreOnglet() ===
+			Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche
 		) {
 			H.push(
 				'<div id="',
@@ -511,8 +554,8 @@ class InterfaceFicheLivretScolaire extends InterfacePage {
 			);
 		} else {
 			if (
-				GEtatUtilisateur.getGenreOnglet() ===
-				EGenreOnglet.LivretScolaire_Appreciations
+				this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Appreciations
 			) {
 				H.push(
 					'<div id="',
@@ -521,8 +564,8 @@ class InterfaceFicheLivretScolaire extends InterfacePage {
 				);
 			}
 			if (
-				GEtatUtilisateur.getGenreOnglet() ===
-				EGenreOnglet.LivretScolaire_Competences
+				this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Competences
 			) {
 				H.push(
 					'<div id="',
@@ -541,7 +584,8 @@ class InterfaceFicheLivretScolaire extends InterfacePage {
 	}
 	evenementSurDernierMenuDeroulant() {
 		if (
-			GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.LivretScolaire_Fiche
+			this.etatUtilScoEspace.getGenreOnglet() ===
+			Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche
 		) {
 			this.surSelectionEleve();
 		}
@@ -549,11 +593,12 @@ class InterfaceFicheLivretScolaire extends InterfacePage {
 	}
 	evenementClasseHistorique(aParams) {
 		switch (aParams.genreEvenement) {
-			case EGenreEvenementObjetSaisie.selection:
+			case Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection:
 				this.classeSelectionne = aParams.element;
 				this.afficherPage();
 				break;
-			case EGenreEvenementObjetSaisie.deploiement:
+			case Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+				.deploiement:
 				break;
 			default:
 				break;
@@ -561,18 +606,21 @@ class InterfaceFicheLivretScolaire extends InterfacePage {
 	}
 	surEvntMenusDeroulants(aParam) {
 		super.surEvntMenusDeroulants(aParam);
-		const lClasse = GEtatUtilisateur.Navigation.getRessource(
-			EGenreRessource.Classe,
+		const lClasse = this.etatUtilScoEspace.Navigation.getRessource(
+			Enumere_Ressource_1.EGenreRessource.Classe,
 		);
 		if (
-			aParam.genreCombo === EGenreRessource.DisciplineLivretScolaire &&
-			aParam.genreEvenement === EGenreEvntMenusDeroulants.surOuvertureCombo &&
-			GEtatUtilisateur.getGenreOnglet() ===
-				EGenreOnglet.LivretScolaire_Competences
+			aParam.genreCombo ===
+				Enumere_Ressource_1.EGenreRessource.DisciplineLivretScolaire &&
+			aParam.genreEvenement ===
+				Enumere_EvntMenusDeroulants_1.EGenreEvntMenusDeroulants
+					.surOuvertureCombo &&
+			this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Competences
 		) {
 			if (
 				lClasse &&
-				lClasse.getGenre() === EGenreRessource.Classe &&
+				lClasse.getGenre() === Enumere_Ressource_1.EGenreRessource.Classe &&
 				!lClasse.avecFiliere
 			) {
 				this.bloquerDonneesAffichage = true;
@@ -581,46 +629,62 @@ class InterfaceFicheLivretScolaire extends InterfacePage {
 			}
 		}
 		if (
-			aParam.genreEvenement === EGenreEvntMenusDeroulants.ressourceNonTrouve &&
+			aParam.genreEvenement ===
+				Enumere_EvntMenusDeroulants_1.EGenreEvntMenusDeroulants
+					.ressourceNonTrouve &&
 			this.getInstance(this.IdentPied)
 		) {
 			this.getInstance(this.IdentPied).setDonnees(null);
 		}
 		if (
-			aParam.genreEvenement === EGenreEvntMenusDeroulants.ressourceNonTrouve &&
+			aParam.genreEvenement ===
+				Enumere_EvntMenusDeroulants_1.EGenreEvntMenusDeroulants
+					.ressourceNonTrouve &&
 			this.getInstance(this.IdentMoyGen)
 		) {
 			this.getInstance(this.IdentMoyGen).effacer();
 		}
 		if (
-			aParam.genreEvenement === EGenreEvntMenusDeroulants.ressourceNonTrouve &&
+			aParam.genreEvenement ===
+				Enumere_EvntMenusDeroulants_1.EGenreEvntMenusDeroulants
+					.ressourceNonTrouve &&
 			this.getInstance(this.IdentResultat)
 		) {
 			this.getInstance(this.IdentResultat).effacer();
 		}
 		if (
-			aParam.genreCombo === EGenreRessource.DisciplineLivretScolaire &&
+			aParam.genreCombo ===
+				Enumere_Ressource_1.EGenreRessource.DisciplineLivretScolaire &&
 			aParam.aucunElement &&
-			aParam.genreEvenement === EGenreEvntMenusDeroulants.ressourceNonTrouve
+			aParam.genreEvenement ===
+				Enumere_EvntMenusDeroulants_1.EGenreEvntMenusDeroulants
+					.ressourceNonTrouve
 		) {
 			if (
-				GEtatUtilisateur.getGenreOnglet() ===
-				EGenreOnglet.LivretScolaire_Competences
+				this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Competences
 			) {
-				if (lClasse && lClasse.getGenre() === EGenreRessource.Classe) {
+				if (
+					lClasse &&
+					lClasse.getGenre() === Enumere_Ressource_1.EGenreRessource.Classe
+				) {
 					this.evenementAfficherMessage(
-						GTraductions.getValeur("ficheScolaire.messageClasseSansFiliere"),
+						ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.messageClasseSansFiliere",
+						),
 					);
 				} else {
 					this.evenementAfficherMessage(
-						GTraductions.getValeur("ficheScolaire.messageGroupeSansFiliere"),
+						ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.messageGroupeSansFiliere",
+						),
 					);
 				}
 			}
 		}
-		Invocateur.evenement(
-			ObjetInvocateur.events.activationImpression,
-			EGenreImpression.Aucune,
+		Invocateur_1.Invocateur.evenement(
+			Invocateur_1.ObjetInvocateur.events.activationImpression,
+			Enumere_GenreImpression_1.EGenreImpression.Aucune,
 		);
 	}
 	actionSurListeCompetencesLivretScolaire(aDonnees) {
@@ -630,326 +694,348 @@ class InterfaceFicheLivretScolaire extends InterfacePage {
 		this.afficherBandeau(true);
 		this.donnees = aDonnees;
 		this.donnees.listeSaisie = this.listeSaisie;
-		this.donnees.classeSelectionne = GEtatUtilisateur.Navigation.getRessource(
-			EGenreRessource.Classe,
-		);
+		this.donnees.classeSelectionne =
+			this.etatUtilScoEspace.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.Classe,
+			);
 		this.listeAccusesReception = aDonnees.listeAccusesReception;
 		if (
-			GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.LivretScolaire_Fiche
+			this.etatUtilScoEspace.getGenreOnglet() ===
+			Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche
 		) {
 			this.setGraphe(null);
 			const lEleve =
-				GEtatUtilisateur.GenreEspace === EGenreEspace.Professeur
-					? GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Eleve)
-					: GEtatUtilisateur.getMembre();
+				this.etatUtilScoEspace.GenreEspace ===
+				Enumere_Espace_1.EGenreEspace.Professeur
+					? this.etatUtilScoEspace.Navigation.getRessource(
+							Enumere_Ressource_1.EGenreRessource.Eleve,
+						)
+					: this.etatUtilScoEspace.getMembre();
 			if (!!this.donnees.graphe) {
 				this.setGraphe({
 					image: [this.donnees.graphe],
-					titre: GChaine.format(
-						GTraductions.getValeur("ficheScolaire.titreGraphe"),
+					titre: ObjetChaine_1.GChaine.format(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreGraphe",
+						),
 						[lEleve.getLibelle()],
 					),
-					message: GTraductions.getValeur("ficheScolaire.pasDAffichageGraphe"),
+					message: ObjetTraduction_1.GTraductions.getValeur(
+						"ficheScolaire.pasDAffichageGraphe",
+					),
 				});
 			}
 			this.actualiserFicheGraphe();
 		}
-		if (
-			GEtatUtilisateur.estModeAccessible() &&
-			GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.LivretScolaire_Fiche
-		) {
-			this.getInstance(this.IdentPied).effacer();
-			this.getInstance(this.IdentMoyGen).effacer();
-			this.afficherListeAccessible();
+		if (this.donnees.message) {
+			this.evenementAfficherMessage(this.donnees.message);
 		} else {
-			if (this.donnees.message) {
-				this.evenementAfficherMessage(this.donnees.message);
-			} else {
-				if (
-					GEtatUtilisateur.getGenreOnglet() ===
-					EGenreOnglet.LivretScolaire_Fiche
-				) {
-					if (this.donnees.eleve.listeLivret.count() > 0) {
-						this.getInstance(this.IdentPied).setDonnees(
-							this.donnees.piedDePage,
-							this.donnees.estFilierePro,
-							this.donnees.estCasBACPRO,
-						);
-					} else {
-						this.getInstance(this.IdentPied).setDonnees(null);
-					}
-				}
-				let lTailleMax = null;
-				if (this.donnees.tailleMaxSaisie) {
-					lTailleMax = this.donnees.tailleMaxSaisie;
-				}
-				this.affichage = {};
-				this.affichage.avecRangEleve =
-					!this.donnees.options ||
-					this.donnees.options.contains(
-						TypeOptionMaquetteLivretScolaireStandard.OMLST_AvecRangEleve,
-					) ||
-					this.donnees.estFilierePro;
-				this.affichage.avecMoyenneEleve =
-					!this.donnees.options ||
-					this.donnees.options.contains(
-						TypeOptionMaquetteLivretScolaireStandard.OMLST_AvecMoyenneEleve,
-					) ||
-					this.donnees.estFilierePro;
-				this.affichage.avecMoyenneClasse =
-					this.donnees.genre === EGenreOnglet.LivretScolaire_Fiche &&
-					(!this.donnees.options ||
-						this.donnees.options.contains(
-							TypeOptionMaquetteLivretScolaireStandard.OMLST_AvecMoyenneClasse,
-						) ||
-						this.donnees.estFilierePro);
-				this.affichage.avecRepartition =
-					this.donnees.genre === EGenreOnglet.LivretScolaire_Fiche &&
-					(!this.donnees.options ||
-						this.donnees.options.contains(
-							TypeOptionMaquetteLivretScolaireStandard.OMLST_AvecRepartitionMoyenne,
-						) ||
-						this.donnees.estFilierePro);
-				this.affichage.avecCompetences =
-					this.donnees.genre === EGenreOnglet.LivretScolaire_Fiche &&
-					this.donnees.avecFiliere;
-				this.affichage.avecAppreciationsPeriode =
-					!this.donnees.options ||
-					this.donnees.options.contains(
-						TypeOptionMaquetteLivretScolaireStandard.OMLST_AvecAppreciationsParPeriode,
+			if (
+				this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche
+			) {
+				if (this.donnees.eleve.listeLivret.count() > 0) {
+					this.getInstance(this.IdentPied).setDonnees(
+						this.donnees.piedDePage,
+						this.donnees.estFilierePro,
+						this.donnees.estCasBACPRO,
 					);
-				this.affichage.avecAppreciations =
-					this.affichage.avecAppreciationsPeriode ||
-					(this.donnees.options.contains(
-						TypeOptionMaquetteLivretScolaireStandard.OMLST_AvecAppreciation,
-					) &&
-						this.donnees.options.contains(
-							TypeOptionMaquetteLivretScolaireStandard.OMLST_AvecMoyenneAnnuelle,
-						));
-				this.affichage.avecColonneAppreciationsAnnuelles =
-					this.donnees.options &&
-					(this.donnees.options.contains(
-						TypeOptionMaquetteLivretScolaireStandard.OMLST_AvecAppreciation,
+				} else {
+					this.getInstance(this.IdentPied).setDonnees(null);
+				}
+			}
+			let lTailleMax = null;
+			if (this.donnees.tailleMaxSaisie) {
+				lTailleMax = this.donnees.tailleMaxSaisie;
+			}
+			this.affichage = {};
+			this.affichage.avecRangEleve =
+				!this.donnees.options ||
+				this.donnees.options.contains(
+					TypeOptionMaquetteLivretScolaireStandard_1
+						.TypeOptionMaquetteLivretScolaireStandard.OMLST_AvecRangEleve,
+				) ||
+				this.donnees.estFilierePro;
+			this.affichage.avecMoyenneEleve =
+				!this.donnees.options ||
+				this.donnees.options.contains(
+					TypeOptionMaquetteLivretScolaireStandard_1
+						.TypeOptionMaquetteLivretScolaireStandard.OMLST_AvecMoyenneEleve,
+				) ||
+				this.donnees.estFilierePro;
+			this.affichage.avecMoyenneClasse =
+				this.donnees.genre ===
+					Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche &&
+				(!this.donnees.options ||
+					this.donnees.options.contains(
+						TypeOptionMaquetteLivretScolaireStandard_1
+							.TypeOptionMaquetteLivretScolaireStandard.OMLST_AvecMoyenneClasse,
 					) ||
-						this.donnees.estFilierePro) &&
-					(!this.donnees.options.contains(
-						TypeOptionMaquetteLivretScolaireStandard.OMLST_AvecMoyenneAnnuelle,
+					this.donnees.estFilierePro);
+			this.affichage.avecRepartition =
+				this.donnees.genre ===
+					Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche &&
+				(!this.donnees.options ||
+					this.donnees.options.contains(
+						TypeOptionMaquetteLivretScolaireStandard_1
+							.TypeOptionMaquetteLivretScolaireStandard
+							.OMLST_AvecRepartitionMoyenne,
 					) ||
-						(this.affichage.avecAppreciations &&
-							!this.affichage.avecAppreciationsPeriode));
-				if (
-					GEtatUtilisateur.getGenreOnglet() ===
-					EGenreOnglet.LivretScolaire_Fiche
-				) {
-					this.getInstance(this.IdentPage).setDonnees(
-						new DonneesListe_FicheLivretScolaire(
+					this.donnees.estFilierePro);
+			this.affichage.avecCompetences =
+				this.donnees.genre ===
+					Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche &&
+				this.donnees.avecFiliere;
+			this.affichage.avecAppreciationsPeriode =
+				!this.donnees.options ||
+				this.donnees.options.contains(
+					TypeOptionMaquetteLivretScolaireStandard_1
+						.TypeOptionMaquetteLivretScolaireStandard
+						.OMLST_AvecAppreciationsParPeriode,
+				);
+			this.affichage.avecAppreciations =
+				this.affichage.avecAppreciationsPeriode ||
+				(this.donnees.options.contains(
+					TypeOptionMaquetteLivretScolaireStandard_1
+						.TypeOptionMaquetteLivretScolaireStandard.OMLST_AvecAppreciation,
+				) &&
+					this.donnees.options.contains(
+						TypeOptionMaquetteLivretScolaireStandard_1
+							.TypeOptionMaquetteLivretScolaireStandard
+							.OMLST_AvecMoyenneAnnuelle,
+					));
+			this.affichage.avecColonneAppreciationsAnnuelles =
+				this.donnees.options &&
+				(this.donnees.options.contains(
+					TypeOptionMaquetteLivretScolaireStandard_1
+						.TypeOptionMaquetteLivretScolaireStandard.OMLST_AvecAppreciation,
+				) ||
+					this.donnees.estFilierePro) &&
+				(!this.donnees.options.contains(
+					TypeOptionMaquetteLivretScolaireStandard_1
+						.TypeOptionMaquetteLivretScolaireStandard.OMLST_AvecMoyenneAnnuelle,
+				) ||
+					(this.affichage.avecAppreciations &&
+						!this.affichage.avecAppreciationsPeriode));
+			if (
+				this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche
+			) {
+				this.getInstance(this.IdentPage).setDonnees(
+					new DonneesListe_FicheLivretScolaire_1.DonneesListe_FicheLivretScolaire(
+						{
+							donnees: this.donnees.eleve.listeLivret,
+							donneesClasse: this.donnees.classe.listeLivret,
+						},
+						{
+							affichage: this.affichage,
+							avecFiliere: this.donnees.avecFiliere,
+							initMenuContextuel: this._initMenuContextuel.bind(this),
+							instance: this.getInstance(this.IdentPage),
+							listeEvaluations: this.listeSaisie,
+							tailleMax: lTailleMax,
+							eleveRedoublant: this.donnees.eleve.estRedoublant,
+						},
+					),
+				);
+				if (!this.donnees.avecFiliere) {
+					this.getInstance(this.IdentMoyGen).setDonnees(
+						new DonneesListe_FicheLivretScolaire_1.DonneesListe_FicheLivretScolaire(
 							{
-								donnees: this.donnees.eleve.listeLivret,
-								donneesClasse: this.donnees.classe.listeLivret,
+								donnees: this.donnees.eleve.listeMoyenne,
+								donneesClasse: this.donnees.classe.listeMoyenne,
 							},
 							{
 								affichage: this.affichage,
 								avecFiliere: this.donnees.avecFiliere,
-								initMenuContextuel: _initMenuContextuel.bind(this),
-								instance: this.getInstance(this.IdentPage),
-								listeEvaluations: this.listeSaisie,
-								tailleMax: lTailleMax,
-								eleveRedoublant: this.donnees.eleve.estRedoublant,
-							},
-						),
-					);
-					if (!this.donnees.avecFiliere) {
-						this.getInstance(this.IdentMoyGen).setDonnees(
-							new DonneesListe_FicheLivretScolaire(
-								{
-									donnees: this.donnees.eleve.listeMoyenne,
-									donneesClasse: this.donnees.classe.listeMoyenne,
-								},
-								{
-									affichage: this.affichage,
-									avecFiliere: this.donnees.avecFiliere,
-									initMenuContextuel: null,
-									instance: this.getInstance(this.IdentMoyGen),
-									listeEvaluations: null,
-									tailleMax: null,
-								},
-							),
-						);
-					} else {
-						this.getInstance(this.IdentMoyGen).effacer();
-					}
-				} else {
-					if (
-						GEtatUtilisateur.getGenreOnglet() ===
-						EGenreOnglet.LivretScolaire_Appreciations
-					) {
-						_initListeAppreciations.bind(this)(
-							this.getInstance(this.IdentAppreciations),
-						);
-						this.getInstance(this.IdentAppreciations).setDonnees(
-							new DonneesListe_FicheLivretScolaire(
-								{
-									donnees: this.donnees.service.listeLivret,
-									donneesClasse: null,
-								},
-								{
-									affichage: this.affichage,
-									avecFiliere: null,
-									initMenuContextuel: null,
-									instance: this.getInstance(this.IdentAppreciations),
-									listeEvaluations: null,
-									tailleMax: lTailleMax,
-								},
-							),
-						);
-					}
-					if (
-						GEtatUtilisateur.getGenreOnglet() ===
-						EGenreOnglet.LivretScolaire_Competences
-					) {
-						_initListeCompetences.bind(this)(
-							this.getInstance(this.IdentCompetences),
-						);
-						this.getInstance(this.IdentCompetences).setDonnees(
-							new DonneesListe_FicheLivretScolaire(
-								{
-									donnees: this.donnees.service.listeLivret,
-									donneesClasse: null,
-								},
-								{
-									affichage: this.affichage,
-									avecFiliere: null,
-									initMenuContextuel: _initMenuContextuel.bind(this),
-									instance: this.getInstance(this.IdentCompetences),
-									listeEvaluations: this.listeSaisie,
-									tailleMax: lTailleMax,
-								},
-							),
-						);
-					}
-					this.getInstance(this.IdentResultat).setDonnees(
-						new DonneesListe_FicheLivretScolaire(
-							{
-								donnees: this.donnees.service.listeMoyenne,
-								donneesClasse: null,
-							},
-							{
-								affichage: null,
-								avecFiliere: null,
 								initMenuContextuel: null,
-								instance: this.getInstance(this.IdentResultat),
+								instance: this.getInstance(this.IdentMoyGen),
 								listeEvaluations: null,
 								tailleMax: null,
 							},
 						),
 					);
+				} else {
+					this.getInstance(this.IdentMoyGen).effacer();
 				}
-				if (this.estAvecBandeau()) {
-					this.donnees.libelleBandeau = "";
-					this.donnees.hintLibelleBandeau = "";
-					if (
-						(this.donnees.service &&
-							this.donnees.service.libelleEnseignement) ||
-						(this.donnees.eleve && this.donnees.eleve.libelleEnseignement)
-					) {
-						this.donnees.libelleBandeau = "&nbsp;";
-						const lLibelleEnseignement =
-							GEtatUtilisateur.getGenreOnglet() ===
-							EGenreOnglet.LivretScolaire_Fiche
-								? this.donnees.eleve.libelleEnseignement
-								: this.donnees.service.libelleEnseignement;
-						const lLibelle = GChaine.getChaine(
-							lLibelleEnseignement,
-							10,
-							true,
-							Math.ceil(
-								GChaine.getLongueurChaine(lLibelleEnseignement, 10, true),
+			} else {
+				if (
+					this.etatUtilScoEspace.getGenreOnglet() ===
+					Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Appreciations
+				) {
+					this._initListeAppreciations(
+						this.getInstance(this.IdentAppreciations),
+					);
+					this.getInstance(this.IdentAppreciations).setDonnees(
+						new DonneesListe_FicheLivretScolaire_1.DonneesListe_FicheLivretScolaire(
+							{
+								donnees: this.donnees.service.listeLivret,
+								donneesClasse: null,
+							},
+							{
+								affichage: this.affichage,
+								avecFiliere: null,
+								initMenuContextuel: null,
+								instance: this.getInstance(this.IdentAppreciations),
+								listeEvaluations: null,
+								tailleMax: lTailleMax,
+							},
+						),
+					);
+				}
+				if (
+					this.etatUtilScoEspace.getGenreOnglet() ===
+					Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Competences
+				) {
+					this._initListeCompetences(this.getInstance(this.IdentCompetences));
+					this.getInstance(this.IdentCompetences).setDonnees(
+						new DonneesListe_FicheLivretScolaire_1.DonneesListe_FicheLivretScolaire(
+							{
+								donnees: this.donnees.service.listeLivret,
+								donneesClasse: null,
+							},
+							{
+								affichage: this.affichage,
+								avecFiliere: null,
+								initMenuContextuel: this._initMenuContextuel.bind(this),
+								instance: this.getInstance(this.IdentCompetences),
+								listeEvaluations: this.listeSaisie,
+								tailleMax: lTailleMax,
+							},
+						),
+					);
+				}
+				this.getInstance(this.IdentResultat).setDonnees(
+					new DonneesListe_FicheLivretScolaire_1.DonneesListe_FicheLivretScolaire(
+						{ donnees: this.donnees.service.listeMoyenne, donneesClasse: null },
+						{
+							affichage: null,
+							avecFiliere: null,
+							initMenuContextuel: null,
+							instance: this.getInstance(this.IdentResultat),
+							listeEvaluations: null,
+							tailleMax: null,
+						},
+					),
+				);
+			}
+			if (this.estAvecBandeau()) {
+				this.donnees.libelleBandeau = "";
+				this.donnees.hintLibelleBandeau = "";
+				if (
+					(this.donnees.service && this.donnees.service.libelleEnseignement) ||
+					(this.donnees.eleve && this.donnees.eleve.libelleEnseignement)
+				) {
+					this.donnees.libelleBandeau = "&nbsp;";
+					const lLibelleEnseignement =
+						this.etatUtilScoEspace.getGenreOnglet() ===
+						Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche
+							? this.donnees.eleve.libelleEnseignement
+							: this.donnees.service.libelleEnseignement;
+					const lLibelle = ObjetChaine_1.GChaine.getChaine(
+						lLibelleEnseignement,
+						10,
+						true,
+						Math.ceil(
+							ObjetChaine_1.GChaine.getLongueurChaine(
+								lLibelleEnseignement,
+								10,
+								true,
 							),
-						);
-						this.donnees.libelleBandeau = lLibelle;
-						if (lLibelle !== lLibelleEnseignement) {
-							this.donnees.hintLibelleBandeau = lLibelleEnseignement;
-						}
+						),
+					);
+					this.donnees.libelleBandeau = lLibelle;
+					if (lLibelle !== lLibelleEnseignement) {
+						this.donnees.hintLibelleBandeau = lLibelleEnseignement;
 					}
 				}
-				this.surResizeInterface();
+			}
+			this.surResizeInterface();
+			if (
+				this.etatUtilScoEspace.getGenreOnglet() !==
+				Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Competences
+			) {
 				if (
-					GEtatUtilisateur.getGenreOnglet() !==
-					EGenreOnglet.LivretScolaire_Competences
+					!this._estSoumisADroitPourImprimer() ||
+					this.appScoEspace.droits.get(
+						ObjetDroitsPN_1.TypeDroits.autoriserImpressionBulletinReleveBrevet,
+					)
 				) {
-					if (
-						!_estSoumisADroitPourImprimer.call(this) ||
-						GApplication.droits.get(
-							TypeDroits.autoriserImpressionBulletinReleveBrevet,
-						)
-					) {
-						Invocateur.evenement(
-							ObjetInvocateur.events.activationImpression,
-							GEtatUtilisateur.getGenreOnglet() ===
-								EGenreOnglet.LivretScolaire_Fiche ||
-								GEtatUtilisateur.getGenreOnglet() ===
-									EGenreOnglet.LivretScolaire_Appreciations
-								? EGenreImpression.GenerationPDF
-								: EGenreImpression.Format,
-							this,
-							() => {
-								if (
-									GEtatUtilisateur.getGenreOnglet() ===
-									EGenreOnglet.LivretScolaire_Fiche
-								) {
-									return {
-										genreGenerationPDF: TypeHttpGenerationPDFSco.LivretScolaire,
-										eleve:
-											GEtatUtilisateur.GenreEspace === EGenreEspace.Professeur
-												? GEtatUtilisateur.Navigation.getRessource(
-														EGenreRessource.Eleve,
-													)
-												: GEtatUtilisateur.getMembre(),
-									};
-								}
-								const lMetaMatiere = GEtatUtilisateur.Navigation.getRessource(
-									EGenreRessource.DisciplineLivretScolaire,
-								);
+					Invocateur_1.Invocateur.evenement(
+						Invocateur_1.ObjetInvocateur.events.activationImpression,
+						this.etatUtilScoEspace.getGenreOnglet() ===
+							Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche ||
+							this.etatUtilScoEspace.getGenreOnglet() ===
+								Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Appreciations
+							? Enumere_GenreImpression_1.EGenreImpression.GenerationPDF
+							: Enumere_GenreImpression_1.EGenreImpression.Format,
+						this,
+						() => {
+							if (
+								this.etatUtilScoEspace.getGenreOnglet() ===
+								Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche
+							) {
 								return {
 									genreGenerationPDF:
-										TypeHttpGenerationPDFSco.LivretScolaire_Appreciations,
-									classe: this.classeSelectionne,
-									service: lMetaMatiere.service,
-									metaMatiere: lMetaMatiere,
-									genreEnseignement:
-										lMetaMatiere.typeEnseignement !== null ||
-										lMetaMatiere.typeEnseignement !== undefined
-											? lMetaMatiere.typeEnseignement
-											: undefined,
+										TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco
+											.LivretScolaire,
+									eleve:
+										this.etatUtilScoEspace.GenreEspace ===
+										Enumere_Espace_1.EGenreEspace.Professeur
+											? this.etatUtilScoEspace.Navigation.getRessource(
+													Enumere_Ressource_1.EGenreRessource.Eleve,
+												)
+											: this.etatUtilScoEspace.getMembre(),
 								};
-							},
-						);
-					}
+							}
+							const lMetaMatiere =
+								this.etatUtilScoEspace.Navigation.getRessource(
+									Enumere_Ressource_1.EGenreRessource.DisciplineLivretScolaire,
+								);
+							return {
+								genreGenerationPDF:
+									TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco
+										.LivretScolaire_Appreciations,
+								classe: this.classeSelectionne,
+								service: lMetaMatiere.service,
+								metaMatiere: lMetaMatiere,
+								genreEnseignement:
+									lMetaMatiere.typeEnseignement !== null ||
+									lMetaMatiere.typeEnseignement !== undefined
+										? lMetaMatiere.typeEnseignement
+										: undefined,
+							};
+						},
+					);
 				}
 			}
 		}
 	}
 	getListeTypesAppreciations() {
 		this.moteurAssSaisie.getListeTypesAppreciations({
-			typeReleveBulletin: TypeReleveBulletin.LivretScolaire,
-			clbck: function (aListeTypesAppreciations) {
+			typeReleveBulletin:
+				TypeReleveBulletin_1.TypeReleveBulletin.LivretScolaire,
+			clbck: (aListeTypesAppreciations) => {
 				this.listeTypesAppreciations = aListeTypesAppreciations;
-			}.bind(this),
+			},
 		});
 	}
 	traiterValidationAppreciationSelectionnee(aElmtAppreciationSelectionne) {
 		const lInstanceListe =
-			GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.LivretScolaire_Fiche
+			this.etatUtilScoEspace.getGenreOnglet() ===
+			Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche
 				? this.getInstance(this.IdentPage)
 				: this.getInstance(this.IdentAppreciations);
-		const lCell = lInstanceListe.Donnees.celluleCourante;
+		const lCell = lInstanceListe.getDonneesListe().celluleCourante;
 		this.setEtatSaisie(true);
-		lCell.setEtat(EGenreEtat.Modification);
+		lCell.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 		if (
 			aElmtAppreciationSelectionne &&
 			aElmtAppreciationSelectionne.existeNumero()
 		) {
-			lCell.appreciationAnnuelle.setEtat(EGenreEtat.Modification);
+			lCell.appreciationAnnuelle.setEtat(
+				Enumere_Etat_1.EGenreEtat.Modification,
+			);
 			lCell.appreciationAnnuelle.Libelle =
 				aElmtAppreciationSelectionne.getLibelle();
 			lCell.appreciation = aElmtAppreciationSelectionne.getLibelle();
@@ -959,17 +1045,20 @@ class InterfaceFicheLivretScolaire extends InterfacePage {
 		return this.donnees.eleve;
 	}
 	valider() {
-		this.donnees.genre = GEtatUtilisateur.getGenreOnglet();
+		this.donnees.genre = this.etatUtilScoEspace.getGenreOnglet();
 		this.donnees.listeTypesAppreciations = this.listeTypesAppreciations;
-		new ObjetRequeteSaisieLivretScolaire(
+		new ObjetRequeteSaisieLivretScolaire_1.ObjetRequeteSaisieLivretScolaire(
 			this,
 			this.actionSurValidation,
 		).lancerRequete(this.donnees);
 	}
 	afficherPage() {
-		if (GEtatUtilisateur.GenreEspace === EGenreEspace.Professeur) {
-			this.classeSelectionne = GEtatUtilisateur.Navigation.getRessource(
-				EGenreRessource.Classe,
+		if (
+			this.etatUtilScoEspace.GenreEspace ===
+			Enumere_Espace_1.EGenreEspace.Professeur
+		) {
+			this.classeSelectionne = this.etatUtilScoEspace.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.Classe,
 			);
 			this.getListeTypesAppreciations();
 		}
@@ -978,626 +1067,48 @@ class InterfaceFicheLivretScolaire extends InterfacePage {
 			this.getInstance(this.IdentPage).setDonnees(null);
 			if (this.getInstance(this.identTripleCombo)) {
 				this.getInstance(this.identTripleCombo).afficherCombo(
-					EGenreRessource.DisciplineLivretScolaire,
+					Enumere_Ressource_1.EGenreRessource.DisciplineLivretScolaire,
 					false,
 				);
 			}
 			return;
 		} else if (
-			GEtatUtilisateur.getGenreOnglet() ===
-				EGenreOnglet.LivretScolaire_Competences &&
+			this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Competences &&
 			this.getInstance(this.identTripleCombo)
 		) {
 			this.getInstance(this.identTripleCombo).afficherCombo(
-				EGenreRessource.DisciplineLivretScolaire,
+				Enumere_Ressource_1.EGenreRessource.DisciplineLivretScolaire,
 				true,
 			);
 		}
 		const lObjet = {
-			genre: GEtatUtilisateur.getGenreOnglet(),
+			genre: this.etatUtilScoEspace.getGenreOnglet(),
 			classe: this.classeSelectionne,
 		};
 		if (
-			GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.LivretScolaire_Fiche
+			this.etatUtilScoEspace.getGenreOnglet() ===
+			Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche
 		) {
 			lObjet.eleve =
-				GEtatUtilisateur.GenreEspace === EGenreEspace.Professeur
-					? GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Eleve)
-					: GEtatUtilisateur.getMembre();
+				this.etatUtilScoEspace.GenreEspace ===
+				Enumere_Espace_1.EGenreEspace.Professeur
+					? this.etatUtilScoEspace.Navigation.getRessource(
+							Enumere_Ressource_1.EGenreRessource.Eleve,
+						)
+					: this.etatUtilScoEspace.getMembre();
 		} else {
-			lObjet.discipline = GEtatUtilisateur.Navigation.getRessource(
-				EGenreRessource.DisciplineLivretScolaire,
+			lObjet.discipline = this.etatUtilScoEspace.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.DisciplineLivretScolaire,
 			);
 		}
-		new ObjetRequeteLivretScolaire(
+		new ObjetRequeteLivretScolaire_1.ObjetRequeteLivretScolaire(
 			this,
 			this.actionSurRecupererDonnees,
 		).lancerRequete(lObjet);
 	}
-	getPageImpression(AFormat) {
-		const H = [];
-		if (this.getInstance(this.IdentPage)) {
-			H.push(this.getInstance(this.IdentPage).composePage(true, AFormat));
-		}
-		if (this.getInstance(this.IdentPied)) {
-			H.push(this.getInstance(this.IdentPied).composeImpression(AFormat));
-		}
-		return {
-			titre1: GEtatUtilisateur.getLibelleImpression(
-				GTraductions.getValeur("ficheScolaire.livretScolaire"),
-				false,
-				true,
-				true,
-				false,
-				false,
-				false,
-			),
-			contenu: H.join(""),
-		};
-	}
 	surResizeInterface() {
 		super.surResizeInterface();
-	}
-	afficherListeAccessible() {
-		const lObjArborescent = this.Instances[this.IdentPage];
-		const lRacine = lObjArborescent.construireRacine();
-		let lNoeudGenreEnseignement,
-			lNoeudMetaMatiere,
-			lNoeudService,
-			lNoeudPeriode,
-			lNoeudCompetence,
-			lNoeudAppreciation,
-			lNoeudOnglet,
-			lNoeudRepartition;
-		let lNoeudRegroupement;
-		let lObjetNoeudCompetences;
-		let lMetaMatiere, lService, lCompetence, lAppreciation, lEvaluation;
-		let lElmEleve, lElmClasse;
-		let lID;
-		let lIDAppr;
-		const lClasseNoeud = "Gras EspaceGauche MargeHaut MargeBas";
-		const lClasseFeuille = "MargeHaut MargeBas";
-		if (this.donnees.message) {
-			lObjArborescent.ajouterUneFeuilleAuNoeud(
-				lRacine,
-				this.Nom + "_GenreEnseignement_0",
-				this.donnees.message,
-				lClasseFeuille,
-			);
-		} else {
-			if (this.donnees.avecFiliere) {
-				for (let i = 0; i < this.donnees.eleve.listeLivret.count(); i++) {
-					lElmEleve = this.donnees.eleve.listeLivret.get(i);
-					lElmClasse = this.donnees.classe.listeLivret.get(i);
-					if (!lElmEleve.pere) {
-						lMetaMatiere = null;
-						lService = null;
-						lID = this.Nom + "_GenreEnseignement_" + lElmEleve.getGenre();
-						lNoeudGenreEnseignement = lObjArborescent.ajouterUnNoeudAuNoeud(
-							lRacine,
-							lID,
-							lElmEleve.getLibelle(),
-							lClasseNoeud,
-							true,
-							true,
-						);
-					} else {
-						if (
-							!lMetaMatiere ||
-							lMetaMatiere.getNumero() !== lElmEleve.metaMatiere.getNumero()
-						) {
-							lMetaMatiere = lElmEleve.metaMatiere;
-							lService = null;
-							lID =
-								this.Nom +
-								"_Meta_" +
-								lElmEleve.pere.getGenre() +
-								"_" +
-								lMetaMatiere.getNumero();
-							lNoeudMetaMatiere = lObjArborescent.ajouterUnNoeudAuNoeud(
-								lNoeudGenreEnseignement,
-								lID,
-								lMetaMatiere.getLibelle(),
-								lClasseNoeud,
-								true,
-							);
-							lObjetNoeudCompetences =
-								lObjArborescent.construireUnNoeudPourNoeud(
-									lNoeudMetaMatiere,
-									this.Nom +
-										"_Competences_" +
-										lElmEleve.pere.getGenre() +
-										"_" +
-										lMetaMatiere.getNumero(),
-									GTraductions.getValeur(
-										"ficheScolaire.Accessible.Competences",
-									),
-									lClasseNoeud,
-								);
-						}
-						if (lElmEleve.service) {
-							if (
-								!lService ||
-								lService.getNumero() !== lElmEleve.service.getNumero()
-							) {
-								lService = lElmEleve.service;
-								lAppreciation = null;
-								lID =
-									this.Nom +
-									"_Service_" +
-									lElmEleve.pere.getGenre() +
-									"_" +
-									lMetaMatiere.getNumero() +
-									"_" +
-									lService.getNumero();
-								lNoeudService = lObjArborescent.ajouterUnNoeudAuNoeud(
-									lNoeudMetaMatiere,
-									lID,
-									lService.getLibelle(),
-									lClasseNoeud,
-									true,
-								);
-							}
-							if (lElmEleve.periode) {
-								lID =
-									this.Nom +
-									"_Periode_" +
-									lElmEleve.pere.getGenre() +
-									"_" +
-									lMetaMatiere.getNumero() +
-									"_" +
-									lService.getNumero() +
-									"_" +
-									lElmEleve.periode.getNumero();
-								lNoeudPeriode = lObjArborescent.ajouterUnNoeudAuNoeud(
-									lNoeudService,
-									lID,
-									lElmEleve.periode.getLibelle(),
-									lClasseNoeud,
-								);
-								this._construireFeuillesPeriode(
-									lElmEleve,
-									lElmClasse,
-									lObjArborescent,
-									lNoeudPeriode,
-									lID,
-									lClasseNoeud,
-									lClasseFeuille,
-								);
-							}
-							if (lElmEleve.appreciationAnnuelle) {
-								lAppreciation = lElmEleve.appreciationAnnuelle;
-								lIDAppr =
-									this.Nom +
-									"_Periode_" +
-									lElmEleve.pere.getGenre() +
-									"_" +
-									lMetaMatiere.getNumero() +
-									"_" +
-									lService.getNumero() +
-									"_" +
-									lAppreciation.getNumero();
-							}
-						}
-						if (
-							lAppreciation &&
-							lElmEleve.avecServices &&
-							(lElmEleve.dernierDuService || lElmEleve.derniereligne)
-						) {
-							let lLibelleAppreciation = lAppreciation
-								? lAppreciation.getLibelle()
-								: GTraductions.getValeur("ficheScolaire.Accessible.pasevalue");
-							if (lLibelleAppreciation === "") {
-								lLibelleAppreciation = GTraductions.getValeur(
-									"ficheScolaire.Accessible.pasevalue",
-								);
-							}
-							lNoeudAppreciation = lObjArborescent.ajouterUnNoeudAuNoeud(
-								lNoeudService,
-								lIDAppr,
-								GTraductions.getValeur("ficheScolaire.titreColAppreciations"),
-								lClasseNoeud,
-							);
-							lObjArborescent.ajouterUneFeuilleAuNoeud(
-								lNoeudAppreciation,
-								"",
-								lLibelleAppreciation,
-								lClasseFeuille,
-							);
-						}
-						if (lElmEleve.itemLivretScolaire) {
-							lCompetence = lElmEleve.itemLivretScolaire;
-							lID =
-								this.Nom +
-								"_Competence_" +
-								lElmEleve.pere.getGenre() +
-								"_" +
-								lMetaMatiere.getNumero() +
-								"_" +
-								lCompetence.getNumero();
-							lNoeudCompetence = lObjArborescent.ajouterUnNoeudAuNoeud(
-								lObjetNoeudCompetences.container,
-								lID,
-								lCompetence.getLibelle(),
-								lClasseNoeud,
-							);
-							lEvaluation =
-								lCompetence.evaluation && lCompetence.evaluation.getLibelle()
-									? lCompetence.evaluation.getLibelle()
-									: GTraductions.getValeur(
-											"ficheScolaire.Accessible.pasevalue",
-										);
-							lObjArborescent.ajouterUneFeuilleAuNoeud(
-								lNoeudCompetence,
-								lID + "_eval",
-								GTraductions.getValeur("ficheScolaire.Accessible.evaluation") +
-									" : " +
-									lEvaluation,
-								lClasseFeuille,
-							);
-						}
-						if (lElmEleve.derniereligne) {
-							lObjArborescent.ajouterArbreNoeudAuNoeud(
-								lNoeudMetaMatiere,
-								lObjetNoeudCompetences.noeud,
-							);
-						}
-					}
-				}
-			} else {
-				for (let i = 0; i < this.donnees.eleve.listeLivret.count(); i++) {
-					lElmEleve = this.donnees.eleve.listeLivret.get(i);
-					lElmClasse = this.donnees.classe.listeLivret.get(i);
-					if (!lElmEleve.avecRegroupement) {
-						lNoeudRegroupement = null;
-					}
-					if (lElmEleve.titreEnseignement) {
-						lID = this.Nom + "_Regroupement_" + lElmEleve.getGenre();
-						lNoeudRegroupement = lObjArborescent.ajouterUnNoeudAuNoeud(
-							lRacine,
-							lID,
-							lElmEleve.getLibelle(),
-							lClasseNoeud,
-							true,
-							true,
-						);
-						lService = null;
-					} else {
-						if (lElmEleve.avecRegroupement && !lNoeudRegroupement) {
-						}
-						if (
-							!lService ||
-							lService.getNumero() !== lElmEleve.service.getNumero()
-						) {
-							lService = lElmEleve.service;
-							const lNoeud = lNoeudRegroupement ? lNoeudRegroupement : lRacine;
-							lID = this.Nom + "_Service_" + lService.getNumero();
-							lNoeudService = lObjArborescent.ajouterUnNoeudAuNoeud(
-								lNoeud,
-								lID,
-								lService.getLibelle(),
-								lClasseNoeud,
-								true,
-							);
-						}
-					}
-					if (lService && lElmEleve.periode) {
-						lID =
-							this.Nom +
-							"_Periode_" +
-							lService.getNumero() +
-							"_" +
-							lElmEleve.periode.getNumero();
-						lNoeudPeriode = lObjArborescent.ajouterUnNoeudAuNoeud(
-							lNoeudService,
-							lID,
-							lElmEleve.periode.getLibelle(),
-							lClasseNoeud,
-						);
-						this._construireFeuillesPeriode(
-							lElmEleve,
-							lElmClasse,
-							lObjArborescent,
-							lNoeudPeriode,
-							lID,
-							lClasseNoeud,
-							lClasseFeuille,
-						);
-						if (lElmEleve.appreciation) {
-							lAppreciation =
-								GTraductions.getValeur("ficheScolaire.titreColAppreciations") +
-								" : " +
-								lElmEleve.appreciation;
-							lID =
-								this.Nom +
-								"_AppreciationPeriode_" +
-								lService.getNumero() +
-								"_" +
-								lElmEleve.periode.getNumero();
-							lObjArborescent.ajouterUneFeuilleAuNoeud(
-								lNoeudPeriode,
-								lID,
-								lAppreciation,
-								lClasseFeuille,
-							);
-						}
-					}
-				}
-			}
-			if (
-				GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.LivretScolaire_Fiche
-			) {
-				let lLibelleCommentaire, lLibelleAvis;
-				if (this.donnees.piedDePage.avecAvisCE) {
-					lID = this.Nom + "_Avis_";
-					const lLibelle = this.donnees.piedDePage.estIssueDUnBOLycee
-						? GTraductions.getValeur("ficheScolaire.AvisEnVueDuBac")
-						: GTraductions.getValeur("ficheScolaire.AvisDuChefDetablissement");
-					lNoeudOnglet = lObjArborescent.ajouterUnNoeudAuNoeud(
-						lRacine,
-						lID,
-						lLibelle,
-						lClasseNoeud,
-						false,
-					);
-					if (this.donnees.piedDePage.avisCE.infosLivret.avis) {
-						lLibelleAvis =
-							this.donnees.piedDePage.avisCE.infosLivret.avis.getLibelle();
-						lObjArborescent.ajouterUneFeuilleAuNoeud(
-							lNoeudOnglet,
-							lID,
-							lLibelleAvis,
-							lClasseFeuille,
-						);
-					}
-					if (this.donnees.piedDePage.avisCE.infosLivret.commentaire) {
-						lLibelleCommentaire =
-							this.donnees.piedDePage.avisCE.infosLivret.commentaire;
-						lObjArborescent.ajouterUneFeuilleAuNoeud(
-							lNoeudOnglet,
-							lID,
-							lLibelleCommentaire,
-							lClasseFeuille,
-						);
-					}
-					lID = this.Nom + "_Repartition_";
-					lNoeudRepartition = lObjArborescent.ajouterUnNoeudAuNoeud(
-						lRacine,
-						lID,
-						this.donnees.piedDePage.avisCE.libelleRepatition,
-						lClasseNoeud,
-						false,
-					);
-					this._construireRepartition(
-						lObjArborescent,
-						lNoeudRepartition,
-						lClasseFeuille,
-					);
-				}
-				if (this.donnees.piedDePage.avecEngagements) {
-					lID = this.Nom + "_Engagements_";
-					lNoeudOnglet = lObjArborescent.ajouterUnNoeudAuNoeud(
-						lRacine,
-						lID,
-						GTraductions.getValeur("ficheScolaire.Engagements"),
-						lClasseNoeud,
-						false,
-					);
-					if (this.donnees.piedDePage.engagements.listeEngagements) {
-						lLibelleAvis = this.donnees.piedDePage.engagements.listeEngagements
-							.getTableauLibelles()
-							.join(", ");
-						lObjArborescent.ajouterUneFeuilleAuNoeud(
-							lNoeudOnglet,
-							lID,
-							lLibelleAvis,
-							lClasseFeuille,
-						);
-					}
-					if (this.donnees.piedDePage.engagements.infosLivret.commentaire) {
-						lLibelleCommentaire =
-							this.donnees.piedDePage.engagements.infosLivret.commentaire;
-						lObjArborescent.ajouterUneFeuilleAuNoeud(
-							lNoeudOnglet,
-							lID,
-							lLibelleCommentaire,
-							lClasseFeuille,
-						);
-					}
-				}
-				if (this.donnees.piedDePage.avecInvestissement) {
-					lID = this.Nom + "_Investissement_";
-					lNoeudOnglet = lObjArborescent.ajouterUnNoeudAuNoeud(
-						lRacine,
-						lID,
-						GTraductions.getValeur("ficheScolaire.Investissement"),
-						lClasseNoeud,
-						false,
-					);
-					if (this.donnees.piedDePage.investissement.infosLivret.commentaire) {
-						lLibelleCommentaire =
-							this.donnees.piedDePage.investissement.infosLivret.commentaire;
-						lObjArborescent.ajouterUneFeuilleAuNoeud(
-							lNoeudOnglet,
-							lID,
-							lLibelleCommentaire,
-							lClasseFeuille,
-						);
-					}
-				}
-				if (this.donnees.piedDePage.avecPFMP) {
-				}
-			}
-		}
-		$("#" + lObjArborescent.Nom.escapeJQ()).replaceWith(
-			lObjArborescent.construireAffichage("100%"),
-		);
-		lObjArborescent.setDonnees(lRacine);
-	}
-	_construireFeuillesPeriode(
-		aElmEleve,
-		aElmClasse,
-		aObjArborescent,
-		aNoeudPeriode,
-		aID,
-		aClasseNoeud,
-		aClasseFeuille,
-	) {
-		const lRang = this._getClassementEleve(aElmEleve, aElmClasse);
-		let lLibelleMoyenneEleve,
-			lLibelleMoyenneClasse,
-			lLibelleInf8,
-			lLibelleDe8a12,
-			lLibelleSup12;
-		let lNoeudRepartition;
-		if (lRang > 0 && aElmClasse.rangTotal !== undefined) {
-			aObjArborescent.ajouterUneFeuilleAuNoeud(
-				aNoeudPeriode,
-				aID + "_rang",
-				GTraductions.getValeur("ficheScolaire.titreColRang") +
-					" : " +
-					lRang +
-					"/" +
-					aElmClasse.rangTotal,
-				aClasseFeuille,
-			);
-		}
-		lLibelleMoyenneEleve = aElmEleve.moyEleve.getNote();
-		if (lLibelleMoyenneEleve === "") {
-			lLibelleMoyenneEleve = GTraductions.getValeur(
-				"ficheScolaire.Accessible.pasevalue",
-			);
-		}
-		lLibelleMoyenneEleve =
-			GTraductions.getValeur("ficheScolaire.titreColMoyEleve") +
-			" : " +
-			lLibelleMoyenneEleve;
-		lLibelleMoyenneClasse = aElmClasse.moyClasse.getNote();
-		if (lLibelleMoyenneClasse === "") {
-			lLibelleMoyenneClasse = GTraductions.getValeur(
-				"ficheScolaire.Accessible.pasevalue",
-			);
-		}
-		lLibelleMoyenneClasse =
-			GTraductions.getValeur("ficheScolaire.titreColMoyClasse") +
-			" : " +
-			lLibelleMoyenneClasse;
-		aObjArborescent.ajouterUneFeuilleAuNoeud(
-			aNoeudPeriode,
-			aID + "_MoyEleve",
-			lLibelleMoyenneEleve,
-			aClasseFeuille,
-		);
-		aObjArborescent.ajouterUneFeuilleAuNoeud(
-			aNoeudPeriode,
-			aID + "_MoyClasse",
-			lLibelleMoyenneClasse,
-			aClasseFeuille,
-		);
-		lNoeudRepartition = aObjArborescent.ajouterUnNoeudAuNoeud(
-			aNoeudPeriode,
-			aID + "_Repartition",
-			GTraductions.getValeur(
-				"ficheScolaire.Accessible.RepartitionDesNotesDansLaClasse",
-			),
-			aClasseNoeud,
-			false,
-		);
-		if (aElmClasse.inf8) {
-			lLibelleInf8 =
-				GTraductions.getValeur("ficheScolaire.Accessible.inf8") +
-				" : " +
-				aElmClasse.inf8 +
-				" %";
-			aObjArborescent.ajouterUneFeuilleAuNoeud(
-				lNoeudRepartition,
-				aID + "_Inf8",
-				lLibelleInf8,
-				aClasseFeuille,
-			);
-		}
-		if (aElmClasse.de8a12) {
-			lLibelleDe8a12 =
-				GTraductions.getValeur("ficheScolaire.Accessible.de8a12") +
-				" : " +
-				aElmClasse.de8a12 +
-				" %";
-			aObjArborescent.ajouterUneFeuilleAuNoeud(
-				lNoeudRepartition,
-				aID + "_de8a12",
-				lLibelleDe8a12,
-				aClasseFeuille,
-			);
-		}
-		if (aElmClasse.sup12) {
-			lLibelleSup12 =
-				GTraductions.getValeur("ficheScolaire.Accessible.sup12") +
-				" : " +
-				aElmClasse.sup12 +
-				" %";
-			aObjArborescent.ajouterUneFeuilleAuNoeud(
-				lNoeudRepartition,
-				aID + "_sup12",
-				lLibelleSup12,
-				aClasseFeuille,
-			);
-		}
-	}
-	_getClassementEleve(aElmEleve, aElmClasse) {
-		const lMoyEleve = aElmEleve.moyEleve ? aElmEleve.moyEleve : 0;
-		if (!aElmClasse || !aElmClasse.tabMoyennes) {
-			return 0;
-		}
-		const lTabMoyenne = aElmClasse.tabMoyennes;
-		if (!lMoyEleve || !lMoyEleve.estUneValeur()) {
-			return 0;
-		}
-		let lRang = 1;
-		for (let i = 0; i < lTabMoyenne.length; i++) {
-			if (
-				lTabMoyenne[i].estUneValeur() &&
-				lTabMoyenne[i].getValeur() > lMoyEleve.getValeur()
-			) {
-				lRang += 1;
-			}
-		}
-		return lRang;
-	}
-	_construireRepartition(aObjArborescent, aNoeudRepartition, aClasseFeuille) {
-		const lObjPied = this.donnees.piedDePage.avisCE;
-		let lValeur,
-			lLibelleRepartition,
-			lID,
-			lNbAvisNonRemplis = lObjPied.nbElevesTotal;
-		for (let i = 0; i < lObjPied.listeAvis.count(); i++) {
-			let lAvis = lObjPied.listeAvis.get(i);
-			lNbAvisNonRemplis -= lAvis.nbEleves;
-			lValeur =
-				Math.round((lAvis.nbEleves * 10000) / lObjPied.nbElevesTotal) / 100;
-			lLibelleRepartition =
-				lValeur.toFixed(2) + " %" + " : " + lAvis.getLibelle();
-			lID = this.Nom + "_Repartition_" + i;
-			aObjArborescent.ajouterUneFeuilleAuNoeud(
-				aNoeudRepartition,
-				lID,
-				lLibelleRepartition,
-				aClasseFeuille,
-			);
-		}
-		lValeur =
-			Math.round((lNbAvisNonRemplis * 10000) / lObjPied.nbElevesTotal) / 100;
-		lLibelleRepartition =
-			lValeur.toFixed(2) +
-			" %" +
-			" : " +
-			GTraductions.getValeur("ficheScolaire.AvisNonRempli");
-		lID = this.Nom + "_Repartition_" + "AvisNonRempli";
-		aObjArborescent.ajouterUneFeuilleAuNoeud(
-			aNoeudRepartition,
-			lID,
-			lLibelleRepartition,
-			aClasseFeuille,
-		);
 	}
 	addSurZoneAccuseReception() {
 		if (this.avecGestionAccuseReception) {
@@ -1605,7 +1116,7 @@ class InterfaceFicheLivretScolaire extends InterfacePage {
 			this.AddSurZone.push({
 				html:
 					'<ie-checkbox class="AlignementMilieuVertical" ie-model="cbAccuseReception" ie-if="cbAccuseReception.estVisible">' +
-					GTraductions.getValeur(
+					ObjetTraduction_1.GTraductions.getValeur(
 						"BulletinEtReleve.JAiPrisConnaissanceDuBulletin",
 					) +
 					"</ie-checkbox>",
@@ -1627,248 +1138,513 @@ class InterfaceFicheLivretScolaire extends InterfacePage {
 		}
 		return lReponsableAccuseReception;
 	}
-}
-function _initMenuContextuel(aParametres) {
-	const lThis = this;
-	const lInstanceListe = _getInstanceListeSelonOnglet.call(this);
-	const lSelections = lInstanceListe.Donnees.celluleCourante,
-		lDonnees = lInstanceListe.Donnees,
-		lMenu = aParametres.menuContextuel,
-		lListeEval =
-			(lSelections.itemLivretScolaire &&
-				lSelections.itemLivretScolaire.estEvaluationLV) ||
-			(lSelections.listeCompetences &&
-				lSelections.listeCompetences.get(0).estEvaluationLV)
-				? lDonnees.parametres.listeEvaluations.listeEvaluationsLSLV
-				: lDonnees.parametres.listeEvaluations.listeEvaluationsLS;
-	lListeEval.parcourir((aElement) => {
-		aElement.tableauLibelles = [aElement.getLibelle()];
-		if (
-			aElement.getGenre() === undefined ||
-			aElement.getGenre() === null ||
-			aElement.getGenre() === -1
-		) {
-			aElement.raccourci = "0";
-		} else if (aElement.getGenre() === 0) {
-			aElement.raccourci = "N";
-		} else {
-			aElement.raccourci = aElement.getGenre().toString();
-		}
-		aElement.tableauLibelles.push(aElement.raccourci);
-	});
-	lDonnees.listeEval = lListeEval;
-	lMenu.setOptions({ lLargeurMin: 150, largeurColonneGauche: 0 });
-	lMenu.addTitre(
-		GTraductions.getValeur("ficheScolaire.titreSaisieEvaluations"),
-	);
-	for (let i = 0, lNbr = lListeEval.count(); i < lNbr; i++) {
-		const lEval = lListeEval.get(i);
-		lMenu.add(
-			lEval.tableauLibelles || lEval.getLibelle(),
-			true,
-			function () {
-				this.Donnees.evenementMenuContextuel(aParametres);
-				this.setEtatSaisie(true);
-				const lElmPage = $("#" + lThis.getNom().escapeJQ());
-				const lScroll = lElmPage.scrollTop();
-				this.actualiser(true);
-				lElmPage.scrollTop(lScroll);
-			},
-			{ data: i },
+	_initMenuContextuel(aParametres) {
+		const lThis = this;
+		const lInstanceListe = this._getInstanceListeSelonOnglet();
+		const lDonneesListe = lInstanceListe.getDonneesListe();
+		const lSelections = aParametres.article,
+			lMenu = aParametres.menuContextuel,
+			lListeEval =
+				(lSelections.itemLivretScolaire &&
+					lSelections.itemLivretScolaire.estEvaluationLV) ||
+				(lSelections.listeCompetences &&
+					lSelections.listeCompetences.get(0).estEvaluationLV)
+					? lDonneesListe.parametres.listeEvaluations.listeEvaluationsLSLV
+					: lDonneesListe.parametres.listeEvaluations.listeEvaluationsLS;
+		lListeEval.parcourir((aElement) => {
+			aElement.tableauLibelles = [aElement.getLibelle()];
+			if (
+				aElement.getGenre() === undefined ||
+				aElement.getGenre() === null ||
+				aElement.getGenre() === -1
+			) {
+				aElement.raccourci = "0";
+			} else if (aElement.getGenre() === 0) {
+				aElement.raccourci = "N";
+			} else {
+				aElement.raccourci = aElement.getGenre().toString();
+			}
+			aElement.tableauLibelles.push(aElement.raccourci);
+		});
+		lDonneesListe.listeEval = lListeEval;
+		lMenu.setOptions({ largeurColonneGauche: 0 });
+		lMenu.addTitre(
+			ObjetTraduction_1.GTraductions.getValeur(
+				"ficheScolaire.titreSaisieEvaluations",
+			),
 		);
+		for (let i = 0, lNbr = lListeEval.count(); i < lNbr; i++) {
+			const lEval = lListeEval.get(i);
+			lMenu.add(
+				lEval.tableauLibelles || lEval.getLibelle(),
+				true,
+				function (aLigne) {
+					const lParams = Object.assign(aParametres, {
+						ligneMenu: aLigne,
+						numeroMenu: 0,
+						avecActualisation: false,
+					});
+					lDonneesListe.evenementMenuContextuel(lParams);
+					lInstanceListe.setEtatSaisie(true);
+					const lElmPage = $("#" + lThis.getNom().escapeJQ());
+					const lScroll = lElmPage.scrollTop();
+					lInstanceListe.actualiser(true);
+					lElmPage.scrollTop(lScroll);
+				},
+				{ data: i },
+			);
+		}
 	}
-}
-function _initListeLivret(aInstance) {
-	aInstance.setOptionsListe({
-		colonnes: [
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.regroupement,
-				titre: {
-					title: GTraductions.getValeur("ficheScolaire.titreColDiscipline"),
-					libelleHtml: GTraductions.getValeur(
-						"ficheScolaire.titreColDiscipline",
-					),
-					estCoche: true,
+	_initListeLivret(aInstance) {
+		aInstance.setOptionsListe({
+			colonnes: [
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.regroupement,
+					titre: {
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColDiscipline",
+						),
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColDiscipline",
+						),
+						estCoche: true,
+					},
+					taille: 10,
 				},
-				taille: 5,
-			},
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.discipline,
-				titre: {
-					title: GTraductions.getValeur("ficheScolaire.titreColDiscipline"),
-					libelleHtml: GTraductions.getValeur(
-						"ficheScolaire.titreColDiscipline",
-					),
-					avecFusionColonne: true,
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.discipline,
+					titre: {
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColDiscipline",
+						),
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColDiscipline",
+						),
+						avecFusionColonne: true,
+					},
+					taille: 300,
 				},
-				taille: 300,
-			},
-			{ id: DonneesListe_FicheLivretScolaire.colonnes.periode, taille: 35 },
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.anciennesNotes,
-				titre: {
-					libelleHtml: GTraductions.getValeur(
-						"ficheScolaire.TitreColonneAnneePrecedente",
-					),
-					nbLignes: 2,
-					title: GTraductions.getValeur(
-						"ficheScolaire.HintColonneAnneePrecedente",
-					),
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.periode,
+					taille: 35,
 				},
-				taille: 25,
-			},
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.rang,
-				titre: {
-					libelleHtml: GTraductions.getValeur("ficheScolaire.titreColRang"),
-					nbLignes: 2,
-					title: GTraductions.getValeur("ficheScolaire.titreColRang"),
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.anciennesNotes,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.TitreColonneAnneePrecedente",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.HintColonneAnneePrecedente",
+						),
+					},
+					taille: 25,
 				},
-				taille: 40,
-			},
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.moyEleve,
-				titre: {
-					libelleHtml: GTraductions.getValeur(
-						"ficheScolaire.titreColAbbrMoyEleve",
-					),
-					nbLignes: 2,
-					title: GTraductions.getValeur("ficheScolaire.titreColMoyEleve"),
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.rang,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColRang",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColRang",
+						),
+					},
+					taille: 40,
 				},
-				taille: 40,
-			},
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.moyClasse,
-				titre: {
-					libelleHtml: GTraductions.getValeur(
-						"ficheScolaire.titreColAbbrMoyClasse",
-					),
-					nbLignes: 2,
-					title: GTraductions.getValeur("ficheScolaire.titreColMoyClasse"),
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.moyEleve,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColAbbrMoyEleve",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColMoyEleve",
+						),
+					},
+					taille: 40,
 				},
-				taille: 40,
-			},
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.inf8,
-				titre: {
-					libelleHtml: GTraductions.getValeur("ficheScolaire.titreColInf8"),
-					nbLignes: 2,
-					title: GTraductions.getValeur("ficheScolaire.Accessible.inf8"),
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.moyClasse,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColAbbrMoyClasse",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColMoyClasse",
+						),
+					},
+					taille: 40,
 				},
-				taille: 40,
-			},
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.de8a12,
-				titre: {
-					libelleHtml: GTraductions.getValeur("ficheScolaire.titreCol8A12"),
-					nbLignes: 2,
-					title: GTraductions.getValeur("ficheScolaire.Accessible.de8a12"),
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.inf8,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColInf8",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.Accessible.inf8",
+						),
+					},
+					taille: 40,
 				},
-				taille: 40,
-			},
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.sup12,
-				titre: {
-					libelleHtml: GTraductions.getValeur("ficheScolaire.titreColSup12"),
-					nbLignes: 2,
-					title: GTraductions.getValeur("ficheScolaire.Accessible.sup12"),
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.de8a12,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreCol8A12",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.Accessible.de8a12",
+						),
+					},
+					taille: 40,
 				},
-				taille: 40,
-			},
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.evaluation,
-				titre: {
-					libelleHtml: GTraductions.getValeur(
-						"ficheScolaire.titreColCompetences",
-					),
-					nbLignes: 2,
-					title: GTraductions.getValeur("ficheScolaire.titreColCompetences"),
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.sup12,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColSup12",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.Accessible.sup12",
+						),
+					},
+					taille: 40,
 				},
-				taille: "100%",
-			},
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.saisieEval,
-				titre: {
-					libelleHtml: GTraductions.getValeur(
-						"ficheScolaire.titreColCompetences",
-					),
-					nbLignes: 2,
-					title: GTraductions.getValeur("ficheScolaire.titreColCompetences"),
-					avecFusionColonne: true,
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.evaluation,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColCompetences",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColCompetences",
+						),
+					},
+					taille: "100%",
 				},
-				taille: 20,
-			},
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.appreciation,
-				titre: {
-					libelleHtml: GTraductions.getValeur(
-						"ficheScolaire.titreColAppreciations",
-					),
-					nbLignes: 2,
-					title: GTraductions.getValeur("ficheScolaire.titreColAppreciations"),
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.saisieEval,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColCompetences",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColCompetences",
+						),
+						avecFusionColonne: true,
+					},
+					taille: 20,
 				},
-				taille: "100%",
-			},
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle,
-				titre: {
-					libelleHtml: GTraductions.getValeur(
-						"ficheScolaire.titreColAppreciationsAnn",
-					),
-					nbLignes: 2,
-					title: GTraductions.getValeur(
-						"ficheScolaire.titreColAppreciationsAnn",
-					),
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.appreciation,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColAppreciations",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColAppreciations",
+						),
+					},
+					taille: "100%",
 				},
-				taille: "100%",
-			},
-		],
-		boutons: [
-			{ genre: ObjetListe.typeBouton.rechercher },
-			{ genre: ObjetListe.typeBouton.deployer },
-		],
-		hauteurAdapteContenu: Infinity,
-	});
-}
-function _initListeMoyenne(aInstance) {
-	aInstance.setOptionsListe({
-		colonnes: [
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColAppreciationsAnn",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColAppreciationsAnn",
+						),
+					},
+					taille: "100%",
+				},
+			],
+			boutons: [
+				{ genre: ObjetListe_1.ObjetListe.typeBouton.rechercher },
+				{ genre: ObjetListe_1.ObjetListe.typeBouton.deployer },
+			],
+			hauteurAdapteContenu: Infinity,
+		});
+	}
+	_initListeMoyenne(aInstance) {
+		aInstance.setOptionsListe({
+			colonnes: [
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.regroupement,
+					taille: 10,
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.discipline,
+					taille: 300,
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.periode,
+					taille: 35,
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.rang,
+					taille: 40,
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.moyEleve,
+					taille: 40,
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.moyClasse,
+					taille: 40,
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.inf8,
+					taille: 40,
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.de8a12,
+					taille: 40,
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.sup12,
+					taille: 40,
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.evaluation,
+					taille: "100%",
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.saisieEval,
+					taille: 20,
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.appreciation,
+					taille: "100%",
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle,
+					taille: "100%",
+				},
+			],
+			avecLigneCreation: false,
+			hauteurAdapteContenu: true,
+		});
+	}
+	_initListeAppreciations(aInstance) {
+		aInstance.setOptionsListe({
+			colonnes: [
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.regroupement,
+					titre: {
+						title: this.donnees.service.titre,
+						libelleHtml: this.donnees.service.titre,
+						estCoche: true,
+					},
+					taille: 5,
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.discipline,
+					titre: {
+						title: this.donnees.service.titre,
+						libelleHtml: this.donnees.service.titre,
+						avecFusionColonne: true,
+					},
+					taille: 300,
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.periode,
+					taille: 35,
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.rang,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColRang",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColRang",
+						),
+					},
+					taille: 40,
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.moyEleve,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColAbbrMoyEleve",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColMoyEleve",
+						),
+					},
+					taille: 40,
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.moyClasse,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColAbbrMoyClasse",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColMoyClasse",
+						),
+					},
+					taille: 40,
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.inf8,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColInf8",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.Accessible.inf8",
+						),
+					},
+					taille: 40,
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.de8a12,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreCol8A12",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.Accessible.de8a12",
+						),
+					},
+					taille: 40,
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.sup12,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColSup12",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.Accessible.sup12",
+						),
+					},
+					taille: 40,
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.evaluation,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColCompetences",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColCompetences",
+						),
+					},
+					taille: "100%",
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.saisieEval,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColCompetences",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColCompetences",
+						),
+						avecFusionColonne: true,
+					},
+					taille: 20,
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.appreciation,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"BulletinEtReleve.Appreciations",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"BulletinEtReleve.Appreciations",
+						),
+					},
+					taille: "100%",
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColAppreciationsAnn",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColAppreciationsAnn",
+						),
+					},
+					taille: "100%",
+				},
+			],
+			hauteurAdapteContenu: true,
+		});
+	}
+	_initListeCompetences(aInstance) {
+		const lColonnes = [
 			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.regroupement,
-				estCoche: true,
-				taille: 5,
-			},
-			{ id: DonneesListe_FicheLivretScolaire.colonnes.discipline, taille: 300 },
-			{ id: DonneesListe_FicheLivretScolaire.colonnes.periode, taille: 35 },
-			{ id: DonneesListe_FicheLivretScolaire.colonnes.rang, taille: 40 },
-			{ id: DonneesListe_FicheLivretScolaire.colonnes.moyEleve, taille: 40 },
-			{ id: DonneesListe_FicheLivretScolaire.colonnes.moyClasse, taille: 40 },
-			{ id: DonneesListe_FicheLivretScolaire.colonnes.inf8, taille: 40 },
-			{ id: DonneesListe_FicheLivretScolaire.colonnes.de8a12, taille: 40 },
-			{ id: DonneesListe_FicheLivretScolaire.colonnes.sup12, taille: 40 },
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.evaluation,
-				taille: "100%",
-			},
-			{ id: DonneesListe_FicheLivretScolaire.colonnes.saisieEval, taille: 20 },
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.appreciation,
-				taille: "100%",
-			},
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle,
-				taille: "100%",
-			},
-		],
-		avecLigneCreation: false,
-		hauteurAdapteContenu: true,
-	});
-}
-function _initListeAppreciations(aInstance) {
-	aInstance.setOptionsListe({
-		colonnes: [
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.regroupement,
+				id: DonneesListe_FicheLivretScolaire_1.DonneesListe_FicheLivretScolaire
+					.colonnes.regroupement,
 				titre: {
 					title: this.donnees.service.titre,
 					libelleHtml: this.donnees.service.titre,
@@ -1877,7 +1653,8 @@ function _initListeAppreciations(aInstance) {
 				taille: 5,
 			},
 			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.discipline,
+				id: DonneesListe_FicheLivretScolaire_1.DonneesListe_FicheLivretScolaire
+					.colonnes.discipline,
 				titre: {
 					title: this.donnees.service.titre,
 					libelleHtml: this.donnees.service.titre,
@@ -1885,618 +1662,573 @@ function _initListeAppreciations(aInstance) {
 				},
 				taille: 300,
 			},
-			{ id: DonneesListe_FicheLivretScolaire.colonnes.periode, taille: 35 },
 			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.rang,
+				id: DonneesListe_FicheLivretScolaire_1.DonneesListe_FicheLivretScolaire
+					.colonnes.periode,
+				taille: 35,
+			},
+			{
+				id: DonneesListe_FicheLivretScolaire_1.DonneesListe_FicheLivretScolaire
+					.colonnes.rang,
 				titre: {
-					libelleHtml: GTraductions.getValeur("ficheScolaire.titreColRang"),
+					libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+						"ficheScolaire.titreColRang",
+					),
 					nbLignes: 2,
-					title: GTraductions.getValeur("ficheScolaire.titreColRang"),
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"ficheScolaire.titreColRang",
+					),
 				},
 				taille: 40,
 			},
 			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.moyEleve,
+				id: DonneesListe_FicheLivretScolaire_1.DonneesListe_FicheLivretScolaire
+					.colonnes.moyEleve,
 				titre: {
-					libelleHtml: GTraductions.getValeur(
+					libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
 						"ficheScolaire.titreColAbbrMoyEleve",
 					),
 					nbLignes: 2,
-					title: GTraductions.getValeur("ficheScolaire.titreColMoyEleve"),
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"ficheScolaire.titreColMoyEleve",
+					),
 				},
 				taille: 40,
 			},
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.moyClasse,
-				titre: {
-					libelleHtml: GTraductions.getValeur(
-						"ficheScolaire.titreColAbbrMoyClasse",
-					),
-					nbLignes: 2,
-					title: GTraductions.getValeur("ficheScolaire.titreColMoyClasse"),
-				},
-				taille: 40,
-			},
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.inf8,
-				titre: {
-					libelleHtml: GTraductions.getValeur("ficheScolaire.titreColInf8"),
-					nbLignes: 2,
-					title: GTraductions.getValeur("ficheScolaire.Accessible.inf8"),
-				},
-				taille: 40,
-			},
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.de8a12,
-				titre: {
-					libelleHtml: GTraductions.getValeur("ficheScolaire.titreCol8A12"),
-					nbLignes: 2,
-					title: GTraductions.getValeur("ficheScolaire.Accessible.de8a12"),
-				},
-				taille: 40,
-			},
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.sup12,
-				titre: {
-					libelleHtml: GTraductions.getValeur("ficheScolaire.titreColSup12"),
-					nbLignes: 2,
-					title: GTraductions.getValeur("ficheScolaire.Accessible.sup12"),
-				},
-				taille: 40,
-			},
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.evaluation,
-				titre: {
-					libelleHtml: GTraductions.getValeur(
-						"ficheScolaire.titreColCompetences",
-					),
-					nbLignes: 2,
-					title: GTraductions.getValeur("ficheScolaire.titreColCompetences"),
-				},
-				taille: "100%",
-			},
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.saisieEval,
-				titre: {
-					libelleHtml: GTraductions.getValeur(
-						"ficheScolaire.titreColCompetences",
-					),
-					nbLignes: 2,
-					title: GTraductions.getValeur("ficheScolaire.titreColCompetences"),
-					avecFusionColonne: true,
-				},
-				taille: 20,
-			},
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.appreciation,
-				titre: {
-					libelleHtml: GTraductions.getValeur("BulletinEtReleve.Appreciations"),
-					nbLignes: 2,
-					title: GTraductions.getValeur("BulletinEtReleve.Appreciations"),
-				},
-				taille: "100%",
-			},
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle,
-				titre: {
-					libelleHtml: GTraductions.getValeur(
-						"ficheScolaire.titreColAppreciationsAnn",
-					),
-					nbLignes: 2,
-					title: GTraductions.getValeur(
-						"ficheScolaire.titreColAppreciationsAnn",
-					),
-				},
-				taille: "100%",
-			},
-		],
-		hauteurAdapteContenu: true,
-	});
-}
-function _initListeCompetences(aInstance) {
-	const lColonnes = [
-		{
-			id: DonneesListe_FicheLivretScolaire.colonnes.regroupement,
-			titre: {
-				title: this.donnees.service.titre,
-				libelleHtml: this.donnees.service.titre,
-				estCoche: true,
-			},
-			taille: 5,
-		},
-		{
-			id: DonneesListe_FicheLivretScolaire.colonnes.discipline,
-			titre: {
-				title: this.donnees.service.titre,
-				libelleHtml: this.donnees.service.titre,
-				avecFusionColonne: true,
-			},
-			taille: 300,
-		},
-		{ id: DonneesListe_FicheLivretScolaire.colonnes.periode, taille: 35 },
-		{
-			id: DonneesListe_FicheLivretScolaire.colonnes.rang,
-			titre: {
-				libelleHtml: GTraductions.getValeur("ficheScolaire.titreColRang"),
-				nbLignes: 2,
-				title: GTraductions.getValeur("ficheScolaire.titreColRang"),
-			},
-			taille: 40,
-		},
-		{
-			id: DonneesListe_FicheLivretScolaire.colonnes.moyEleve,
-			titre: {
-				libelleHtml: GTraductions.getValeur(
-					"ficheScolaire.titreColAbbrMoyEleve",
-				),
-				nbLignes: 2,
-				title: GTraductions.getValeur("ficheScolaire.titreColMoyEleve"),
-			},
-			taille: 40,
-		},
-	];
-	const lDiscipline = this.donnees.service.listeLivret.get(0);
-	const lListeCompetences =
-		lDiscipline && lDiscipline.listeCompetences
-			? lDiscipline.listeCompetences
-			: null;
-	if (!!lListeCompetences) {
-		for (let i = 0, lNbr = lListeCompetences.count(); i < lNbr; i++) {
-			if (this.donnees.avecJauge && this.visuJauge) {
+		];
+		const lDiscipline = this.donnees.service.listeLivret.get(0);
+		const lListeCompetences =
+			lDiscipline && lDiscipline.listeCompetences
+				? lDiscipline.listeCompetences
+				: null;
+		if (!!lListeCompetences) {
+			for (let i = 0, lNbr = lListeCompetences.count(); i < lNbr; i++) {
+				if (this.donnees.avecJauge && this.visuJauge) {
+					lColonnes.push({
+						id:
+							DonneesListe_FicheLivretScolaire_1
+								.DonneesListe_FicheLivretScolaire.colonnes.jaugeEval + i,
+						rangJauge: i,
+						titre: {
+							libelleHtml: lListeCompetences.get(i).getLibelle(),
+							title: lListeCompetences.get(i).getLibelle(),
+							avecFusionColonne: true,
+						},
+						taille: "80%",
+					});
+				}
 				lColonnes.push({
-					id: DonneesListe_FicheLivretScolaire.colonnes.jaugeEval + i,
-					rangJauge: i,
+					id:
+						DonneesListe_FicheLivretScolaire_1.DonneesListe_FicheLivretScolaire
+							.colonnes.saisieEval + i,
+					rangColonne: i,
 					titre: {
 						libelleHtml: lListeCompetences.get(i).getLibelle(),
 						title: lListeCompetences.get(i).getLibelle(),
 						avecFusionColonne: true,
 					},
-					taille: "80%",
+					taille: this.donnees.avecJauge && this.visuJauge ? "20%" : "100%",
 				});
 			}
-			lColonnes.push({
-				id: DonneesListe_FicheLivretScolaire.colonnes.saisieEval + i,
-				rangColonne: i,
-				titre: {
-					libelleHtml: lListeCompetences.get(i).getLibelle(),
-					title: lListeCompetences.get(i).getLibelle(),
-					avecFusionColonne: true,
-				},
-				taille: this.donnees.avecJauge && this.visuJauge ? "20%" : "100%",
-			});
+		} else {
 		}
-	} else {
+		aInstance.setOptionsListe({
+			colonnes: lColonnes,
+			hauteurAdapteContenu: Infinity,
+		});
 	}
-	aInstance.setOptionsListe({
-		colonnes: lColonnes,
-		hauteurAdapteContenu: Infinity,
-	});
-}
-function _initListeResultat(aInstance) {
-	aInstance.setOptionsListe({
-		colonnes: [
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.regroupement,
-				estCoche: true,
-				taille: 5,
-			},
-			{ id: DonneesListe_FicheLivretScolaire.colonnes.discipline, taille: 300 },
-			{ id: DonneesListe_FicheLivretScolaire.colonnes.periode, taille: 35 },
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.moyClasse,
-				titre: {
-					libelleHtml: GTraductions.getValeur(
-						"ficheScolaire.titreColAbbrMoyClasse",
-					),
-					nbLignes: 2,
-					title: GTraductions.getValeur("ficheScolaire.titreColMoyClasse"),
+	_initListeResultat(aInstance) {
+		aInstance.setOptionsListe({
+			colonnes: [
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.regroupement,
+					taille: 5,
 				},
-				taille: 40,
-			},
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.inf8,
-				titre: {
-					libelleHtml: GTraductions.getValeur("ficheScolaire.titreColInf8"),
-					nbLignes: 2,
-					title: GTraductions.getValeur("ficheScolaire.Accessible.inf8"),
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.discipline,
+					taille: 300,
 				},
-				taille: 40,
-			},
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.de8a12,
-				titre: {
-					libelleHtml: GTraductions.getValeur("ficheScolaire.titreCol8A12"),
-					nbLignes: 2,
-					title: GTraductions.getValeur("ficheScolaire.Accessible.de8a12"),
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.periode,
+					taille: 35,
 				},
-				taille: 40,
-			},
-			{
-				id: DonneesListe_FicheLivretScolaire.colonnes.sup12,
-				titre: {
-					libelleHtml: GTraductions.getValeur("ficheScolaire.titreColSup12"),
-					nbLignes: 2,
-					title: GTraductions.getValeur("ficheScolaire.Accessible.sup12"),
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.moyClasse,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColAbbrMoyClasse",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColMoyClasse",
+						),
+					},
+					taille: 40,
 				},
-				taille: 40,
-			},
-		],
-		avecLigneCreation: false,
-		hauteurAdapteContenu: true,
-	});
-}
-function _evenementFenetreEditionAppr(aParams) {
-	if (aParams.numeroBouton === 1) {
-		this.elementCourant.setEtat(EGenreEtat.Modification);
-		const lLibelle = [];
-		if (aParams.services) {
-			for (let index = 0; index < aParams.services.count(); index++) {
-				const lService = aParams.services.get(index);
-				const lServiceSaisie = this.elementCourant.services.getElementParNumero(
-					lService.getNumero(),
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.inf8,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColInf8",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.Accessible.inf8",
+						),
+					},
+					taille: 40,
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.de8a12,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreCol8A12",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.Accessible.de8a12",
+						),
+					},
+					taille: 40,
+				},
+				{
+					id: DonneesListe_FicheLivretScolaire_1
+						.DonneesListe_FicheLivretScolaire.colonnes.sup12,
+					titre: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.titreColSup12",
+						),
+						nbLignes: 2,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.Accessible.sup12",
+						),
+					},
+					taille: 40,
+				},
+			],
+			avecLigneCreation: false,
+			hauteurAdapteContenu: true,
+		});
+	}
+	_evenementFenetreEditionAppr(aParams) {
+		if (aParams.numeroBouton === 1) {
+			this.elementCourant.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+			const lLibelle = [];
+			if (aParams.services) {
+				for (let index = 0; index < aParams.services.count(); index++) {
+					const lService = aParams.services.get(index);
+					const lServiceSaisie =
+						this.elementCourant.services.getElementParNumero(
+							lService.getNumero(),
+						);
+					if (
+						lService.appreciationAnnuelle &&
+						lService.appreciationAnnuelle.getEtat() !==
+							Enumere_Etat_1.EGenreEtat.Aucun
+					) {
+						lServiceSaisie.appreciationAnnuelle.setLibelle(
+							lService.appreciationAnnuelle.getLibelle(),
+						);
+						lServiceSaisie.appreciationAnnuelle.setEtat(
+							Enumere_Etat_1.EGenreEtat.Modification,
+						);
+						lServiceSaisie.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+					}
+					lLibelle.push(lService.appreciationAnnuelle.getLibelle());
+				}
+				const lInstanceListe =
+					this.etatUtilScoEspace.getGenreOnglet() ===
+					Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche
+						? this.getInstance(this.IdentPage)
+						: this.getInstance(this.IdentAppreciations);
+				const lCell = lInstanceListe.getDonneesListe().celluleCourante;
+				this.setEtatSaisie(true);
+				lCell.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+				lCell.appreciationAnnuelle.setEtat(
+					Enumere_Etat_1.EGenreEtat.Modification,
 				);
-				if (
-					lService.appreciationAnnuelle &&
-					lService.appreciationAnnuelle.getEtat() !== EGenreEtat.Aucun
-				) {
-					lServiceSaisie.appreciationAnnuelle.setLibelle(
-						lService.appreciationAnnuelle.getLibelle(),
-					);
-					lServiceSaisie.appreciationAnnuelle.setEtat(EGenreEtat.Modification);
-					lServiceSaisie.setEtat(EGenreEtat.Modification);
-				}
-				lLibelle.push(lService.appreciationAnnuelle.getLibelle());
+				lCell.appreciationAnnuelle.Libelle = lLibelle.join("\n");
+				lCell.appreciation = lLibelle.join("\n");
+				lInstanceListe.actualiser(true);
 			}
-			const lInstanceListe =
-				GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.LivretScolaire_Fiche
-					? this.getInstance(this.IdentPage)
-					: this.getInstance(this.IdentAppreciations);
-			const lCell = lInstanceListe.Donnees.celluleCourante;
-			this.setEtatSaisie(true);
-			lCell.setEtat(EGenreEtat.Modification);
-			lCell.appreciationAnnuelle.setEtat(EGenreEtat.Modification);
-			lCell.appreciationAnnuelle.Libelle = lLibelle.join("\n");
-			lCell.appreciation = lLibelle.join("\n");
-			lInstanceListe.actualiser(true);
 		}
 	}
-}
-function _evenementSaisieAppreciationMultiService(aParam) {
-	if (GEtatUtilisateur.GenreEspace !== EGenreEspace.Professeur) {
-		return;
+	_evenementSaisieAppreciationMultiService(aParam) {
+		if (
+			this.etatUtilScoEspace.GenreEspace !==
+			Enumere_Espace_1.EGenreEspace.Professeur
+		) {
+			return;
+		}
+		this.elementCourant = aParam.article;
+		const lAppreciation = aParam.article.appreciation;
+		this.objCelluleAppreciation = $.extend(
+			{
+				article: aParam.article,
+				appreciation: lAppreciation,
+				idColonne: aParam.idColonne,
+			},
+			{ ctxPiedBulletin: false },
+		);
+		const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_EditionAppreciationAnnuelleMS_1.ObjetFenetre_EditionAppreciationAnnuelleMS,
+			{ pere: this, evenement: this._evenementFenetreEditionAppr.bind(this) },
+		);
+		lFenetre.setDonnees({
+			element: this.elementCourant,
+			services: this.elementCourant.services,
+			tailleMaxSaisie: this.moteur.getTailleMaxAppreciation({
+				estCtxPied: false,
+				eleve: this.getEleve(),
+				typeReleveBulletin:
+					TypeReleveBulletin_1.TypeReleveBulletin.LivretScolaire,
+				tailleMaxDonneesAffichage: this.donnees.tailleMaxSaisie,
+			}),
+			moteurAssSaisie: this.moteurAssSaisie,
+			listeTypesAppreciations: this.listeTypesAppreciations,
+		});
 	}
-	this.elementCourant = aParam.article;
-	const lAppreciation = aParam.article.appreciation;
-	this.objCelluleAppreciation = $.extend(
-		{
-			article: aParam.article,
-			appreciation: lAppreciation,
-			idColonne: aParam.idColonne,
-		},
-		{ ctxPiedBulletin: false },
-	);
-	const lFenetre = ObjetFenetre.creerInstanceFenetre(
-		ObjetFenetre_EditionAppreciationAnnuelleMS,
-		{
-			pere: this,
-			evenement: _evenementFenetreEditionAppr.bind(this),
-			initialiser: true,
-		},
-	);
-	lFenetre.setDonnees({
-		element: this.elementCourant,
-		services: this.elementCourant.services,
-		tailleMaxSaisie: this.moteur.getTailleMaxAppreciation({
-			estCtxPied: false,
-			eleve: this.getEleve(),
-			typeReleveBulletin: TypeReleveBulletin.LivretScolaire,
-			tailleMaxDonneesAffichage: this.donnees.tailleMaxSaisie,
-		}),
-		moteurAssSaisie: this.moteurAssSaisie,
-		listeTypesAppreciations: this.listeTypesAppreciations,
-	});
-}
-function _evntSurListeLivret(aParam) {
-	switch (aParam.genreEvenement) {
-		case EGenreEvenementListe.Edition:
-			if (
-				aParam.idColonne ===
-				DonneesListe_FicheLivretScolaire.colonnes.saisieEval
-			) {
-				aParam.ouvrirMenuContextuel();
-			} else if (
-				aParam.article.services &&
-				aParam.article.services.count() > 1
-			) {
-				_evenementSaisieAppreciationMultiService.call(this, aParam);
-			} else {
-				if (GEtatUtilisateur.assistantSaisieActif) {
-					const lAppreciation = aParam.article.appreciation;
-					this.moteurAssSaisie.evenementOuvrirAssistantSaisie({
-						instanceFenetreAssistantSaisie: this.getInstance(
-							this.identFenetreAssistantSaisie,
-						),
-						listeTypesAppreciations: this.listeTypesAppreciations,
-						tabTypeAppreciation: ETypeAppreciationUtil.getTypeAppreciation(
-							GEtatUtilisateur.getGenreOnglet(),
-							lAppreciation,
-							false,
-						),
-						tailleMaxAppreciation: this.moteur.getTailleMaxAppreciation({
-							estCtxPied: false,
-							eleve: this.getEleve(),
-							typeReleveBulletin: TypeReleveBulletin.LivretScolaire,
-							tailleMaxDonneesAffichage: this.donnees.tailleMaxSaisie,
-						}),
-					});
-					this.objCelluleAppreciation = $.extend(
-						{
-							article: aParam.article,
-							appreciation: lAppreciation,
-							idColonne: aParam.idColonne,
-						},
-						{ ctxPiedBulletin: false },
-					);
-				}
-			}
-			break;
-		case EGenreEvenementListe.KeyPressListe:
-			return _surKeyUpListe.call(this, aParam.event, false);
-		default:
-			break;
-	}
-}
-function _evntSurListeCompetences(aParam) {
-	switch (aParam.genreEvenement) {
-		case EGenreEvenementListe.Selection: {
-			let lNouvelleRessource = null;
-			const lListeCellulesSelectionnees =
-				aParam.instance.getTableauCellulesSelection();
-			if (
-				!!lListeCellulesSelectionnees &&
-				lListeCellulesSelectionnees.length > 0
-			) {
+	_evntSurListeLivret(aParam) {
+		switch (aParam.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Edition:
 				if (
-					lListeCellulesSelectionnees.length === 1 &&
-					!!lListeCellulesSelectionnees[0]
+					aParam.idColonne ===
+					DonneesListe_FicheLivretScolaire_1.DonneesListe_FicheLivretScolaire
+						.colonnes.saisieEval
 				) {
-					lNouvelleRessource = lListeCellulesSelectionnees[0].article;
+					aParam.ouvrirMenuContextuel();
+				} else if (
+					aParam.article.services &&
+					aParam.article.services.count() > 1
+				) {
+					this._evenementSaisieAppreciationMultiService(aParam);
 				} else {
-					for (let i = 0; i < lListeCellulesSelectionnees.length; i++) {
-						if (!!lListeCellulesSelectionnees[i]) {
-							const lCellule = lListeCellulesSelectionnees[i];
-							if (!lNouvelleRessource) {
-								lNouvelleRessource = lCellule.article;
-							} else if (
-								!!lCellule.article &&
-								lCellule.article.getNumero() !== lNouvelleRessource.getNumero()
-							) {
-								lNouvelleRessource = null;
-								break;
+					if (this.etatUtilScoEspace.assistantSaisieActif) {
+						const lAppreciation = aParam.article.appreciation;
+						this.moteurAssSaisie.evenementOuvrirAssistantSaisie({
+							instanceFenetreAssistantSaisie: this.getInstance(
+								this.identFenetreAssistantSaisie,
+							),
+							listeTypesAppreciations: this.listeTypesAppreciations,
+							tabTypeAppreciation:
+								Enumere_TypeAppreciation_1.ETypeAppreciationUtil.getTypeAppreciation(
+									this.etatUtilScoEspace.getGenreOnglet(),
+									lAppreciation,
+									false,
+								),
+							tailleMaxAppreciation: this.moteur.getTailleMaxAppreciation({
+								estCtxPied: false,
+								eleve: this.getEleve(),
+								typeReleveBulletin:
+									TypeReleveBulletin_1.TypeReleveBulletin.LivretScolaire,
+								tailleMaxDonneesAffichage: this.donnees.tailleMaxSaisie,
+							}),
+						});
+						this.objCelluleAppreciation = $.extend(
+							{
+								article: aParam.article,
+								appreciation: lAppreciation,
+								idColonne: aParam.idColonne,
+							},
+							{ ctxPiedBulletin: false },
+						);
+					}
+				}
+				break;
+			case Enumere_EvenementListe_1.EGenreEvenementListe.KeyPressListe:
+				return this._surKeyUpListe(aParam.event, false);
+			default:
+				break;
+		}
+	}
+	_evntSurListeCompetences(aParam) {
+		switch (aParam.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Selection: {
+				let lNouvelleRessource = null;
+				const lListeCellulesSelectionnees =
+					aParam.instance.getTableauCellulesSelection();
+				if (
+					!!lListeCellulesSelectionnees &&
+					lListeCellulesSelectionnees.length > 0
+				) {
+					if (
+						lListeCellulesSelectionnees.length === 1 &&
+						!!lListeCellulesSelectionnees[0]
+					) {
+						lNouvelleRessource = lListeCellulesSelectionnees[0].article;
+					} else {
+						for (let i = 0; i < lListeCellulesSelectionnees.length; i++) {
+							if (!!lListeCellulesSelectionnees[i]) {
+								const lCellule = lListeCellulesSelectionnees[i];
+								if (!lNouvelleRessource) {
+									lNouvelleRessource = lCellule.article;
+								} else if (
+									!!lCellule.article &&
+									lCellule.article.getNumero() !==
+										lNouvelleRessource.getNumero()
+								) {
+									lNouvelleRessource = null;
+									break;
+								}
 							}
 						}
 					}
 				}
-			}
-			const lRessourceActuelle = GEtatUtilisateur.Navigation.getRessource(
-				EGenreRessource.Eleve,
-			);
-			if (!!lRessourceActuelle || !!lNouvelleRessource) {
-				const lEleve = !!lNouvelleRessource
-					? lNouvelleRessource.eleve
-					: undefined;
-				if (
-					(!lRessourceActuelle && !!lEleve) ||
-					(!!lRessourceActuelle && !lEleve) ||
-					lRessourceActuelle.getNumero() !== lEleve.getNumero()
-				) {
-					GEtatUtilisateur.Navigation.setRessource(
-						EGenreRessource.Eleve,
-						lEleve,
+				const lRessourceActuelle =
+					this.etatUtilScoEspace.Navigation.getRessource(
+						Enumere_Ressource_1.EGenreRessource.Eleve,
 					);
+				if (!!lRessourceActuelle || !!lNouvelleRessource) {
+					const lEleve = !!lNouvelleRessource
+						? lNouvelleRessource.eleve
+						: undefined;
+					if (
+						(!lRessourceActuelle && !!lEleve) ||
+						(!!lRessourceActuelle && !lEleve) ||
+						lRessourceActuelle.getNumero() !== lEleve.getNumero()
+					) {
+						this.etatUtilScoEspace.Navigation.setRessource(
+							Enumere_Ressource_1.EGenreRessource.Eleve,
+							lEleve,
+						);
+					}
+				}
+				break;
+			}
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Edition:
+				aParam.ouvrirMenuContextuel();
+				break;
+			case Enumere_EvenementListe_1.EGenreEvenementListe.KeyPressListe:
+				return this._surKeyUpListe(aParam.event, true);
+			default:
+				break;
+		}
+	}
+	_surKeyUpListe(aEvent, aPourCompetences) {
+		const lListe = aPourCompetences
+			? this.getInstance(this.IdentCompetences)
+			: this.getInstance(this.IdentPage);
+		const lSelections = lListe.getTableauCellulesSelection();
+		let lSelectionCellule = null;
+		lSelections.forEach((aSelection) => {
+			if (
+				DonneesListe_FicheLivretScolaire_1.DonneesListe_FicheLivretScolaire.estUneColonneCompetence(
+					aSelection,
+				)
+			) {
+				lSelectionCellule = aSelection;
+				return false;
+			}
+		});
+		if (!!lSelectionCellule) {
+			let lCompetence = null;
+			if (aPourCompetences) {
+				lCompetence = lSelectionCellule.article.listeCompetences.get(
+					lSelectionCellule.declarationColonne.rangColonne,
+				);
+			} else {
+				lCompetence = lSelectionCellule.article.itemLivretScolaire;
+			}
+			const lListeEval =
+				!!lCompetence && lCompetence.estEvaluationLV
+					? this.listeSaisie.listeEvaluationsLSLV
+					: this.listeSaisie.listeEvaluationsLS;
+			const lCompetenceDEvent = this._getCompetencesDEventClavier(
+				aEvent,
+				lListeEval,
+			);
+			if (lCompetenceDEvent) {
+				lCompetence.evaluation = lCompetenceDEvent;
+				if (lCompetenceDEvent.getGenre() === -1) {
+					lCompetence.evaluation.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+				}
+				lSelectionCellule.article.setEtat(
+					Enumere_Etat_1.EGenreEtat.FilsModification,
+				);
+				lCompetence.setEtat(Enumere_Etat_1.EGenreEtat.FilsModification);
+				this.setEtatSaisie(true);
+				const lElmPage = $("#" + this.getNom().escapeJQ());
+				const lScroll = lElmPage.scrollTop();
+				lListe.actualiser(true);
+				lElmPage.scrollTop(lScroll);
+				lListe.selectionnerCelluleSuivante({
+					orientationVerticale: !aPourCompetences,
+					avecCelluleEditable: true,
+					entrerEdition: false,
+				});
+				return true;
+			}
+		}
+	}
+	_getCompetencesDEventClavier(aEvent, aListeCompetences) {
+		if (!aListeCompetences || !aEvent) {
+			return null;
+		}
+		if (aEvent.ctrlKey || aEvent.altKey) {
+			return null;
+		}
+		let lEventKey =
+			!!aEvent.key && !!aEvent.key.toLowerCase ? aEvent.key.toLowerCase() : "";
+		const lEstSupprimer =
+			aEvent.which === ToucheClavier_1.ToucheClavier.Supprimer ||
+			aEvent.which === ToucheClavier_1.ToucheClavier.Backspace ||
+			lEventKey === "0";
+		let lResult = null;
+		if (!!lEventKey || lEstSupprimer) {
+			if (lEstSupprimer) {
+				lResult = MethodesObjet_1.MethodesObjet.dupliquer(
+					aListeCompetences.getElementParGenre(-1),
+				);
+			} else {
+				if (lEventKey === "n") {
+					lEventKey = 0;
+				}
+				const lKeyValue = parseInt(lEventKey);
+				if (MethodesObjet_1.MethodesObjet.isNumber(lKeyValue)) {
+					aListeCompetences.parcourir((aCompetence) => {
+						if (lKeyValue === aCompetence.getGenre()) {
+							lResult = aCompetence;
+							return false;
+						}
+					});
 				}
 			}
-			break;
 		}
-		case EGenreEvenementListe.Edition:
-			aParam.ouvrirMenuContextuel();
-			break;
-		case EGenreEvenementListe.KeyPressListe:
-			return _surKeyUpListe.call(this, aParam.event, true);
-		default:
-			break;
+		return lResult;
 	}
-}
-function _surKeyUpListe(aEvent, aPourCompetences) {
-	const lListe = aPourCompetences
-		? this.getInstance(this.IdentCompetences)
-		: this.getInstance(this.IdentPage);
-	const lSelections = lListe.getTableauCellulesSelection();
-	let lSelectionCellule = null;
-	lSelections.forEach((aSelection) => {
-		if (DonneesListe_FicheLivretScolaire.estUneColonneCompetence(aSelection)) {
-			lSelectionCellule = aSelection;
-			return false;
-		}
-	});
-	if (!!lSelectionCellule) {
-		let lCompetence = null;
-		if (aPourCompetences) {
-			lCompetence = lSelectionCellule.article.listeCompetences.get(
-				lSelectionCellule.declarationColonne.rangColonne,
-			);
+	_getInstanceListeSelonOnglet() {
+		let lInstanceListe;
+		if (
+			this.etatUtilScoEspace.getGenreOnglet() ===
+			Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche
+		) {
+			lInstanceListe = this.getInstance(this.IdentPage);
+		} else if (
+			this.etatUtilScoEspace.getGenreOnglet() ===
+			Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Competences
+		) {
+			lInstanceListe = this.getInstance(this.IdentCompetences);
 		} else {
-			lCompetence = lSelectionCellule.article.itemLivretScolaire;
+			lInstanceListe = this.getInstance(this.IdentAppreciations);
 		}
-		const lListeEval =
-			!!lCompetence && lCompetence.estEvaluationLV
-				? this.listeSaisie.listeEvaluationsLSLV
-				: this.listeSaisie.listeEvaluationsLS;
-		const lCompetenceDEvent = _getCompetencesDEventClavier(aEvent, lListeEval);
-		if (lCompetenceDEvent) {
-			lCompetence.evaluation = lCompetenceDEvent;
-			if (lCompetenceDEvent.getGenre() === -1) {
-				lCompetence.evaluation.setEtat(EGenreEtat.Suppression);
-			}
-			lSelectionCellule.article.setEtat(EGenreEtat.FilsModification);
-			lCompetence.setEtat(EGenreEtat.FilsModification);
-			this.setEtatSaisie(true);
-			const lElmPage = $("#" + this.getNom().escapeJQ());
-			const lScroll = lElmPage.scrollTop();
-			lListe.actualiser(true);
-			lElmPage.scrollTop(lScroll);
-			lListe.selectionnerCelluleSuivante({
-				orientationVerticale: !aPourCompetences,
-				avecCelluleEditable: true,
-				entrerEdition: false,
+		return lInstanceListe;
+	}
+	_evntSurAssistant() {
+		const lInstanceListe = this._getInstanceListeSelonOnglet();
+		if (
+			this.etatUtilScoEspace.getGenreOnglet() ===
+			Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche
+		) {
+			this.moteurAssSaisie.evntBtnAssistant({
+				instanceListe: lInstanceListe,
+				instancePied: this.getInstance(this.IdentPied),
 			});
-			return true;
+		} else if (
+			this.etatUtilScoEspace.getGenreOnglet() ===
+			Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Appreciations
+		) {
+			this.moteurAssSaisie.evntBtnAssistant({
+				instanceListe: lInstanceListe,
+				instancePied: null,
+			});
 		}
 	}
-}
-function _getCompetencesDEventClavier(aEvent, aListeCompetences) {
-	if (!aListeCompetences || !aEvent) {
-		return null;
-	}
-	if (aEvent.ctrlKey || aEvent.altKey) {
-		return null;
-	}
-	let lEventKey =
-		!!aEvent.key && !!aEvent.key.toLowerCase ? aEvent.key.toLowerCase() : "";
-	const lEstSupprimer =
-		aEvent.which === ToucheClavier.Supprimer ||
-		aEvent.which === ToucheClavier.Backspace ||
-		lEventKey === "0";
-	let lResult = null;
-	if (!!lEventKey || lEstSupprimer) {
-		if (lEstSupprimer) {
-			lResult = MethodesObjet.dupliquer(
-				aListeCompetences.getElementParGenre(-1),
-			);
-		} else {
-			if (lEventKey === "n") {
-				lEventKey = 0;
-			}
-			const lKeyValue = parseInt(lEventKey);
-			if (MethodesObjet.isNumber(lKeyValue)) {
-				aListeCompetences.parcourir((aCompetence) => {
-					if (lKeyValue === aCompetence.getGenre()) {
-						lResult = aCompetence;
-						return false;
-					}
-				});
-			}
-		}
-	}
-	return lResult;
-}
-function _getInstanceListeSelonOnglet() {
-	let lInstanceListe;
-	if (GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.LivretScolaire_Fiche) {
-		lInstanceListe = this.getInstance(this.IdentPage);
-	} else if (
-		GEtatUtilisateur.getGenreOnglet() ===
-		EGenreOnglet.LivretScolaire_Competences
-	) {
-		lInstanceListe = this.getInstance(this.IdentCompetences);
-	} else {
-		lInstanceListe = this.getInstance(this.IdentAppreciations);
-	}
-	return lInstanceListe;
-}
-function _evntSurAssistant() {
-	const lInstanceListe = _getInstanceListeSelonOnglet.call(this);
-	if (GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.LivretScolaire_Fiche) {
-		this.moteurAssSaisie.evntBtnAssistant({
-			instanceListe: lInstanceListe,
-			instancePied: this.getInstance(this.IdentPied),
-		});
-	} else if (
-		GEtatUtilisateur.getGenreOnglet() ===
-		EGenreOnglet.LivretScolaire_Appreciations
-	) {
-		this.moteurAssSaisie.evntBtnAssistant({
-			instanceListe: lInstanceListe,
-			instancePied: null,
-		});
-	}
-}
-function _evntSurFenetreAssistantSaisie(aNumeroBouton) {
-	const lThis = this;
-	const lParam = {
-		instanceFenetreAssistantSaisie: this.getInstance(
-			this.identFenetreAssistantSaisie,
-		),
-		eventChangementUtiliserAssSaisie: function () {
-			const lInstanceListe = _getInstanceListeSelonOnglet.call(lThis);
-			lInstanceListe.actualiser(true);
-		},
-		evntClbck: surEvntAssSaisie.bind(this),
-		evntFinallyClbck: _surEvntFinallyAssSaisie.bind(this),
-	};
-	this.moteurAssSaisie.evenementAssistantSaisie(aNumeroBouton, lParam);
-}
-function _surEvntFinallyAssSaisie(aParam) {
-	const lInstanceListe = _getInstanceListeSelonOnglet.call(this);
-	if (lInstanceListe !== null && lInstanceListe !== undefined) {
-		switch (aParam.cmd) {
-			case EBoutonFenetreAssistantSaisie.Valider: {
+	_evntSurFenetreAssistantSaisie(aNumeroBouton) {
+		const lThis = this;
+		const lParam = {
+			instanceFenetreAssistantSaisie: this.getInstance(
+				this.identFenetreAssistantSaisie,
+			),
+			eventChangementUtiliserAssSaisie: function () {
+				const lInstanceListe = lThis._getInstanceListeSelonOnglet();
 				lInstanceListe.actualiser(true);
-				lInstanceListe.selectionnerCelluleSuivante({
-					orientationVerticale: true,
-					avecCelluleEditable: true,
-					entrerEdition: true,
-					avecSelection: false,
-				});
-			}
-		}
+			},
+			evntClbck: this.surEvntAssSaisie.bind(this),
+			evntFinallyClbck: this._surEvntFinallyAssSaisie.bind(this),
+		};
+		this.moteurAssSaisie.evenementAssistantSaisie(aNumeroBouton, lParam);
 	}
-}
-function surEvntAssSaisie(aParam) {
-	const lInstanceListe = _getInstanceListeSelonOnglet.call(this);
-	if (lInstanceListe !== null && lInstanceListe !== undefined) {
-		let lClbck;
-		switch (aParam.cmd) {
-			case EBoutonFenetreAssistantSaisie.Valider: {
-				lClbck = function () {
-					this.traiterValidationAppreciationSelectionnee(aParam.eltSelectionne);
-				}.bind(this);
-				break;
-			}
-			case EBoutonFenetreAssistantSaisie.PasserEnSaisie: {
-				lClbck = function () {
-					const lIdColonneAppreciation =
-						lInstanceListe._options.colonnesCachees.includes(
-							DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle,
-						)
-							? DonneesListe_FicheLivretScolaire.colonnes.appreciation
-							: DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle;
-					this.moteurAssSaisie.passerEnSaisie({
-						instanceListe: lInstanceListe,
-						idColonne: lIdColonneAppreciation,
-						ligneCell: lInstanceListe.Donnees.celluleCourante.Genre - 1,
+	_surEvntFinallyAssSaisie(aParam) {
+		const lInstanceListe = this._getInstanceListeSelonOnglet();
+		if (lInstanceListe !== null && lInstanceListe !== undefined) {
+			switch (aParam.cmd) {
+				case EBoutonFenetreAssistantSaisie_1.EBoutonFenetreAssistantSaisie
+					.Valider: {
+					lInstanceListe.actualiser(true);
+					lInstanceListe.selectionnerCelluleSuivante({
+						orientationVerticale: true,
+						avecCelluleEditable: true,
+						entrerEdition: true,
+						avecSelection: false,
 					});
-				}.bind(this);
-				break;
+				}
 			}
-			case EBoutonFenetreAssistantSaisie.Fermer:
-				lClbck = null;
-				break;
-			default:
 		}
-		this.moteurAssSaisie.saisirModifAssSaisieAvantTraitement({
-			estAssistantModifie: aParam.estAssistantModifie,
-			pere: this,
-			clbck: lClbck,
-		});
+	}
+	surEvntAssSaisie(aParam) {
+		const lInstanceListe = this._getInstanceListeSelonOnglet();
+		if (lInstanceListe !== null && lInstanceListe !== undefined) {
+			let lClbck;
+			switch (aParam.cmd) {
+				case EBoutonFenetreAssistantSaisie_1.EBoutonFenetreAssistantSaisie
+					.Valider: {
+					lClbck = () => {
+						this.traiterValidationAppreciationSelectionnee(
+							aParam.eltSelectionne,
+						);
+					};
+					break;
+				}
+				case EBoutonFenetreAssistantSaisie_1.EBoutonFenetreAssistantSaisie
+					.PasserEnSaisie: {
+					lClbck = () => {
+						const lIdColonneAppreciation = lInstanceListe
+							.getOptionsListe()
+							.colonnesCachees.includes(
+								DonneesListe_FicheLivretScolaire_1
+									.DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle,
+							)
+							? DonneesListe_FicheLivretScolaire_1
+									.DonneesListe_FicheLivretScolaire.colonnes.appreciation
+							: DonneesListe_FicheLivretScolaire_1
+									.DonneesListe_FicheLivretScolaire.colonnes.apprAnnuelle;
+						this.moteurAssSaisie.passerEnSaisie({
+							instanceListe: lInstanceListe,
+							idColonne: lIdColonneAppreciation,
+							ligneCell:
+								lInstanceListe.getDonneesListe().celluleCourante.Genre - 1,
+						});
+					};
+					break;
+				}
+				case EBoutonFenetreAssistantSaisie_1.EBoutonFenetreAssistantSaisie
+					.Fermer:
+					lClbck = null;
+					break;
+				default:
+			}
+			this.moteurAssSaisie.saisirModifAssSaisieAvantTraitement({
+				estAssistantModifie: aParam.estAssistantModifie,
+				pere: this,
+				clbck: lClbck,
+			});
+		}
+	}
+	_estSoumisADroitPourImprimer() {
+		return (
+			this.etatUtilScoEspace.getGenreOnglet() ===
+				Enumere_Onglet_1.EGenreOnglet.LivretScolaire_Fiche &&
+			[
+				Enumere_Espace_1.EGenreEspace.Professeur,
+				Enumere_Espace_1.EGenreEspace.Eleve,
+			].includes(this.etatUtilScoEspace.GenreEspace)
+		);
 	}
 }
-function _estSoumisADroitPourImprimer() {
-	return (
-		GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.LivretScolaire_Fiche &&
-		[EGenreEspace.Professeur, EGenreEspace.Eleve].includes(
-			GEtatUtilisateur.GenreEspace,
-		)
-	);
-}
-module.exports = InterfaceFicheLivretScolaire;
+exports.InterfaceFicheLivretScolaire = InterfaceFicheLivretScolaire;

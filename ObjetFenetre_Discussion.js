@@ -1,3 +1,4 @@
+var _a;
 exports.ObjetFenetre_Discussion = void 0;
 const Invocateur_1 = require("Invocateur");
 const MethodesObjet_1 = require("MethodesObjet");
@@ -7,6 +8,7 @@ const ObjetTraduction_1 = require("ObjetTraduction");
 const GestionnaireModale_1 = require("GestionnaireModale");
 const UtilitaireMessagerie_1 = require("UtilitaireMessagerie");
 const InterfaceListeMessagerie_1 = require("InterfaceListeMessagerie");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
 class ObjetFenetre_Discussion extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
@@ -184,3 +186,43 @@ class ObjetFenetre_Discussion extends ObjetFenetre_1.ObjetFenetre {
 	}
 }
 exports.ObjetFenetre_Discussion = ObjetFenetre_Discussion;
+_a = ObjetFenetre_Discussion;
+ObjetFenetre_Discussion.afficherDiscussionsCommunes = (aListeRessources) => {
+	const lFenetreDiscussionCommune =
+		ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(_a, {
+			pere: _a,
+			initialiser: function (aInstance) {
+				aInstance.setOptions({
+					avecListeDiscussions: true,
+					estDiscussionCommune: true,
+				});
+				aInstance.setOptionsFenetre({
+					modale: true,
+					largeur: 550 + 400,
+					hauteur: 600,
+				});
+			},
+		});
+	lFenetreDiscussionCommune.setDonnees({
+		listeRessources: aListeRessources,
+		callBackApresDonneesMessagerie: function (aSansDiscussion) {
+			if (aSansDiscussion) {
+				lFenetreDiscussionCommune.fermer();
+				let lLibelleRessources = "";
+				if (!!aListeRessources && aListeRessources.count() > 0) {
+					lLibelleRessources = aListeRessources
+						.getTableauLibelles()
+						.join(" / ");
+				}
+				GApplication.getMessage().afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+					message: ObjetTraduction_1.GTraductions.getValeur(
+						"Messagerie.AucuneDiscussionAvec",
+						[lLibelleRessources],
+					),
+				});
+			}
+		},
+		avecSelectionPremiereDiscussion: true,
+	});
+};

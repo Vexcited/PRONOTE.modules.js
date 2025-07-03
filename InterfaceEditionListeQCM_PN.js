@@ -24,7 +24,6 @@ const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
 const UtilitairePartenaire_1 = require("UtilitairePartenaire");
 const ObjetRequeteAccesSecurisePageProfil_1 = require("ObjetRequeteAccesSecurisePageProfil");
 const TypeGenreTravailAFaire_1 = require("TypeGenreTravailAFaire");
-const CollectionRequetes_1 = require("CollectionRequetes");
 const UtilitaireActiviteTAFPP_1 = require("UtilitaireActiviteTAFPP");
 const ObjetFenetre_EditionQCM_PN_1 = require("ObjetFenetre_EditionQCM_PN");
 const ObjetDroitsPN_1 = require("ObjetDroitsPN");
@@ -35,13 +34,16 @@ const ObjetFenetre_ResultatsQCM_PN_1 = require("ObjetFenetre_ResultatsQCM_PN");
 const ObjetRequeteSaisieQCMDevoir_1 = require("ObjetRequeteSaisieQCMDevoir");
 const DonneesListe_ResultatsQCM_1 = require("DonneesListe_ResultatsQCM");
 const TypeEvolutionResultatsQCM_1 = require("TypeEvolutionResultatsQCM");
+const ObjetRequeteListeElevesPourLesRessourcesALaDate_1 = require("ObjetRequeteListeElevesPourLesRessourcesALaDate");
+const AccessApp_1 = require("AccessApp");
+const UtilitaireSaisieCDT_1 = require("UtilitaireSaisieCDT");
 class InterfaceEditionListeQCM_PN extends InterfaceEditionListeQCM_1.InterfaceEditionListeQCM {
 	constructor(...aParams) {
 		super(...aParams);
 		DonneesListe_ResultatsQCM_1.DonneesListe_ResultatsQCM.setTypeEvolutionResultatsQCM(
 			TypeEvolutionResultatsQCM_1.TypeEvolutionResultats,
 		);
-		const lApplicationSco = GApplication;
+		const lApplicationSco = (0, AccessApp_1.getApp)();
 		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
 		$.extend(this.options, {
 			avecNiveau: !this.etatUtilisateurSco.pourPrimaire(),
@@ -246,11 +248,11 @@ class InterfaceEditionListeQCM_PN extends InterfaceEditionListeQCM_1.InterfaceEd
 		const lElementClasse = this.listeClasses.getElementParNumeroEtGenre(
 			aClasse.getNumero(),
 		);
-		const lClasse = new ObjetElement_1.ObjetElement(
-			lElementClasse.getLibelle(),
-			lElementClasse.getNumero(),
-			lElementClasse.getGenre(),
-		);
+		const lClasse = ObjetElement_1.ObjetElement.create({
+			Libelle: lElementClasse.getLibelle(),
+			Numero: lElementClasse.getNumero(),
+			Genre: lElementClasse.getGenre(),
+		});
 		lClasse.service = MethodesObjet_1.MethodesObjet.dupliquer(aClasse.service);
 		lClasse.listePeriodes = new ObjetListeElements_1.ObjetListeElements();
 		lClasse.listePeriodes.addElement(
@@ -296,36 +298,56 @@ class InterfaceEditionListeQCM_PN extends InterfaceEditionListeQCM_1.InterfaceEd
 			this.evenementFenetreEditionQCM,
 		);
 	}
-	evntFenetreCDT(aNumeroBouton) {
+	async evntFenetreCDT(aNumeroBouton) {
 		if (aNumeroBouton === 1) {
 			const lConteneurDonnees = this.getInstance(this.identFenetreQCMPourCDT);
-			new ObjetRequeteSaisieQCMPourCDT_1.ObjetRequeteSaisieQCMPourCDT(
-				this,
-				this._reponseSaisieQCMPourSaisie,
-			).lancerRequete({
-				cours:
-					lConteneurDonnees.getParametresFenetreQCMPourCDT().coursSelectionne,
-				numeroCycle: lConteneurDonnees.getParametresFenetreQCMPourCDT().cycle,
-				QCM: lConteneurDonnees.getParametresFenetreQCMPourCDT().QCM,
-				estPourTAF:
-					lConteneurDonnees.getParametresFenetreQCMPourCDT().QCMPourTAF,
-				dateTAF: lConteneurDonnees.getParametresFenetreQCMPourCDT().dateTAF,
-				cahier:
-					lConteneurDonnees.getParametresFenetreQCMPourCDT().coursSelectionne
-						.cahierDeTextes,
-			});
+			let lAccepteAffectation = true;
+			if (
+				lConteneurDonnees.getParametresFenetreQCMPourCDT().QCMPourTAF &&
+				lConteneurDonnees.getParametresFenetreQCMPourCDT().infosCours
+			) {
+				lAccepteAffectation =
+					await UtilitaireSaisieCDT_1.UtilitaireSaisieCDT.autoriserCreationTAF({
+						ajoutNouveauTAFInterdit:
+							lConteneurDonnees.getParametresFenetreQCMPourCDT().infosCours
+								.ajoutNouveauTAFInterdit,
+						messageSurNouveauTAF:
+							lConteneurDonnees.getParametresFenetreQCMPourCDT().infosCours
+								.messageSurNouveauTAF,
+					});
+			}
+			if (lAccepteAffectation) {
+				new ObjetRequeteSaisieQCMPourCDT_1.ObjetRequeteSaisieQCMPourCDT(this)
+					.lancerRequete({
+						cours:
+							lConteneurDonnees.getParametresFenetreQCMPourCDT()
+								.coursSelectionne,
+						numeroCycle:
+							lConteneurDonnees.getParametresFenetreQCMPourCDT().cycle,
+						QCM: lConteneurDonnees.getParametresFenetreQCMPourCDT().QCM,
+						estPourTAF:
+							lConteneurDonnees.getParametresFenetreQCMPourCDT().QCMPourTAF,
+						dateTAF: lConteneurDonnees.getParametresFenetreQCMPourCDT().dateTAF,
+						cahier:
+							lConteneurDonnees.getParametresFenetreQCMPourCDT()
+								.coursSelectionne.cahierDeTextes,
+					})
+					.then((aReponse) => {
+						if (
+							aReponse.genreReponse ===
+							ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+						) {
+							this.getInstance(this.identFenetreQCMPourCDT).fermer();
+							this.callback.appel({
+								genreEvnt:
+									InterfaceEditionListeQCM_1.InterfaceEditionListeQCM
+										.GenreEvenement.associeCdT,
+							});
+						}
+					});
+			}
 		} else {
 			this.getInstance(this.identFenetreQCMPourCDT).fermer();
-		}
-	}
-	_reponseSaisieQCMPourSaisie(aGenreReponse) {
-		if (aGenreReponse === ObjetRequeteJSON_1.EGenreReponseSaisie.succes) {
-			this.getInstance(this.identFenetreQCMPourCDT).fermer();
-			this.callback.appel({
-				genreEvnt:
-					InterfaceEditionListeQCM_1.InterfaceEditionListeQCM.GenreEvenement
-						.associeCdT,
-			});
 		}
 	}
 	setSelectionListe(aListeSelection) {
@@ -411,8 +433,15 @@ class InterfaceEditionListeQCM_PN extends InterfaceEditionListeQCM_1.InterfaceEd
 		) {
 			new ObjetRequeteAccesSecurisePageProfil_1.ObjetRequeteAccesSecurisePageProfil(
 				this,
-				this.actionSurRequetePartageQCM,
-			).lancerRequete({ listeQCM: true });
+			)
+				.lancerRequete({ listeQCM: true })
+				.then((aReponse) => {
+					this.actionSurRequetePartageQCM(
+						aReponse.titre,
+						aReponse.message,
+						aReponse.url,
+					);
+				});
 		}
 	}
 	actionSurRequetePartageQCM(aTitre, aMessage, aUrl) {
@@ -441,8 +470,7 @@ class InterfaceEditionListeQCM_PN extends InterfaceEditionListeQCM_1.InterfaceEd
 				QCM: aQCM,
 				matiere: aQCM.matiere,
 			});
-		(0, CollectionRequetes_1.Requetes)(
-			"ListeElevesPourLesRessourcesALaDate",
+		new ObjetRequeteListeElevesPourLesRessourcesALaDate_1.ObjetRequeteListeElevesPourLesRessourcesALaDate(
 			this,
 		)
 			.lancerRequete({ ressource: aRessource, date: lActivite.DateDebut })
@@ -479,8 +507,7 @@ class InterfaceEditionListeQCM_PN extends InterfaceEditionListeQCM_1.InterfaceEd
 				QCM: aQCM,
 				matiere: aQCM.matiere,
 			});
-		(0, CollectionRequetes_1.Requetes)(
-			"ListeElevesPourLesRessourcesALaDate",
+		new ObjetRequeteListeElevesPourLesRessourcesALaDate_1.ObjetRequeteListeElevesPourLesRessourcesALaDate(
 			this,
 		)
 			.lancerRequete({ ressource: aRessource, date: lTravail.DateDebut })

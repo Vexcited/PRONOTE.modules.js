@@ -1,64 +1,67 @@
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { GStyle } = require("ObjetStyle.js");
-const { GDate } = require("ObjetDate.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { GChaine } = require("ObjetChaine.js");
-const { TUtilitaireDuree } = require("UtilitaireDuree.js");
-const { GestionnaireBlocPN } = require("GestionnaireBlocPN.js");
-const { ObjetBlocPN } = require("GestionnaireBlocPN.js");
-const { EGenreBloc } = require("Enumere_Bloc.js");
-const { EModeAffichageTimeline } = require("Enumere_ModeAffichageTimeline.js");
-const { EGenreOnglet } = require("Enumere_Onglet.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const {
-	TypeNiveauDifficulte,
-	TypeNiveauDifficulteUtil,
-} = require("TypeNiveauDifficulte.js");
-const {
-	EGenreAffichageCahierDeTextes,
-} = require("Enumere_AffichageCahierDeTextes.js");
-const { TypeGenreRenduTAFUtil } = require("TypeGenreRenduTAF.js");
-const { EGenreBoutonBloc } = require("UtilitaireBloc.js");
-const { GImage } = require("ObjetImage.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetElement } = require("ObjetElement.js");
-const {
-	ObjetRequeteSaisieTAFFaitEleve,
-} = require("ObjetRequeteSaisieTAFFaitEleve.js");
-const ObjetRequeteSaisieTAFARendreEleve = require("ObjetRequeteSaisieTAFARendreEleve.js");
-const {
-	TypeOrigineCreationCategorieCahierDeTexte,
-	TypeOrigineCreationCategorieCahierDeTexteUtil,
-} = require("TypeOrigineCreationCategorieCahierDeTexte.js");
-const { TUtilitaireBloc } = require("UtilitaireBloc.js");
-const { UtilitaireQCM } = require("UtilitaireQCM.js");
-const { TypeFichierExterneHttpSco } = require("TypeFichierExterneHttpSco.js");
-const { UtilitaireUrl } = require("UtilitaireUrl.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetFenetre_CorrectionTaf } = require("ObjetFenetre_CorrectionTaf.js");
-const {
-	ObjetUtilitaireCahierDeTexte,
-} = require("ObjetUtilitaireCahierDeTexte.js");
-const EGenreBtnActionBlocCDT = {
-	documentRendu: 1,
-	executionQCM: 2,
-	consulter: 3,
-	supprimer: 4,
-	tafFait: 5,
-	executionKiosque: 6,
-	voirQCM: 7,
-	voirContenu: 8,
-	detailTAF: 9,
-	consulterCorrige: 10,
-};
-class GestionnaireBlocCDT extends GestionnaireBlocPN {
+exports.GestionnaireBlocCDT = exports.EGenreBtnActionBlocCDT = void 0;
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetStyle_1 = require("ObjetStyle");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetChaine_1 = require("ObjetChaine");
+const UtilitaireDuree_1 = require("UtilitaireDuree");
+const GestionnaireBlocPN_1 = require("GestionnaireBlocPN");
+const GestionnaireBlocPN_2 = require("GestionnaireBlocPN");
+const Enumere_Bloc_1 = require("Enumere_Bloc");
+const Enumere_ModeAffichageTimeline_1 = require("Enumere_ModeAffichageTimeline");
+const Enumere_Onglet_1 = require("Enumere_Onglet");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const TypeNiveauDifficulte_1 = require("TypeNiveauDifficulte");
+const Enumere_AffichageCahierDeTextes_1 = require("Enumere_AffichageCahierDeTextes");
+const TypeGenreRenduTAF_1 = require("TypeGenreRenduTAF");
+const UtilitaireBloc_1 = require("UtilitaireBloc");
+const ObjetImage_1 = require("ObjetImage");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetRequeteSaisieTAFFaitEleve_1 = require("ObjetRequeteSaisieTAFFaitEleve");
+const MultiObjetRequeteSaisieTAFARendreEleve = require("ObjetRequeteSaisieTAFARendreEleve");
+const TypeOrigineCreationCategorieCahierDeTexte_1 = require("TypeOrigineCreationCategorieCahierDeTexte");
+const UtilitaireBloc_2 = require("UtilitaireBloc");
+const UtilitaireQCM_1 = require("UtilitaireQCM");
+const TypeFichierExterneHttpSco_1 = require("TypeFichierExterneHttpSco");
+const UtilitaireUrl_1 = require("UtilitaireUrl");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_CorrectionTaf_1 = require("ObjetFenetre_CorrectionTaf");
+const ObjetUtilitaireCahierDeTexte_1 = require("ObjetUtilitaireCahierDeTexte");
+const AccessApp_1 = require("AccessApp");
+var EGenreBtnActionBlocCDT;
+(function (EGenreBtnActionBlocCDT) {
+	EGenreBtnActionBlocCDT[(EGenreBtnActionBlocCDT["documentRendu"] = 1)] =
+		"documentRendu";
+	EGenreBtnActionBlocCDT[(EGenreBtnActionBlocCDT["executionQCM"] = 2)] =
+		"executionQCM";
+	EGenreBtnActionBlocCDT[(EGenreBtnActionBlocCDT["consulter"] = 3)] =
+		"consulter";
+	EGenreBtnActionBlocCDT[(EGenreBtnActionBlocCDT["supprimer"] = 4)] =
+		"supprimer";
+	EGenreBtnActionBlocCDT[(EGenreBtnActionBlocCDT["tafFait"] = 5)] = "tafFait";
+	EGenreBtnActionBlocCDT[(EGenreBtnActionBlocCDT["executionKiosque"] = 6)] =
+		"executionKiosque";
+	EGenreBtnActionBlocCDT[(EGenreBtnActionBlocCDT["voirQCM"] = 7)] = "voirQCM";
+	EGenreBtnActionBlocCDT[(EGenreBtnActionBlocCDT["voirContenu"] = 8)] =
+		"voirContenu";
+	EGenreBtnActionBlocCDT[(EGenreBtnActionBlocCDT["detailTAF"] = 9)] =
+		"detailTAF";
+	EGenreBtnActionBlocCDT[(EGenreBtnActionBlocCDT["consulterCorrige"] = 10)] =
+		"consulterCorrige";
+})(
+	EGenreBtnActionBlocCDT ||
+		(exports.EGenreBtnActionBlocCDT = EGenreBtnActionBlocCDT = {}),
+);
+class GestionnaireBlocCDT extends GestionnaireBlocPN_1.GestionnaireBlocPN {
 	constructor(...aParams) {
 		super(...aParams);
-		this.setGenreBloc(EGenreBloc.CahiersDeTexte);
+		this.setGenreBloc(Enumere_Bloc_1.EGenreBloc.CahiersDeTexte);
 		const lOptions = {
-			modeAffichage: EModeAffichageTimeline.classique,
+			modeAffichage:
+				Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.classique,
 			initPlie: false,
 			callBackTitre: undefined,
 			sansLienQCM: false,
@@ -77,28 +80,31 @@ class GestionnaireBlocCDT extends GestionnaireBlocPN {
 		return lParamBloc;
 	}
 }
-class ObjetBlocCDT extends ObjetBlocPN {
-	constructor(...aParams) {
-		super(...aParams);
-		this.peuFaireTAF = [EGenreEspace.Eleve, EGenreEspace.Mobile_Eleve].includes(
-			GEtatUtilisateur.GenreEspace,
-		);
+exports.GestionnaireBlocCDT = GestionnaireBlocCDT;
+class ObjetBlocCDT extends GestionnaireBlocPN_2.ObjetBlocPN {
+	constructor() {
+		super(...arguments);
+		this.peuFaireTAF = [
+			Enumere_Espace_1.EGenreEspace.Eleve,
+			Enumere_Espace_1.EGenreEspace.Mobile_Eleve,
+		].includes(GEtatUtilisateur.GenreEspace);
 		this.pourEleve = [
-			EGenreEspace.Eleve,
-			EGenreEspace.Mobile_Eleve,
-			EGenreEspace.Parent,
-			EGenreEspace.Mobile_Parent,
-			EGenreEspace.Accompagnant,
-			EGenreEspace.Mobile_Accompagnant,
-			EGenreEspace.Tuteur,
-			EGenreEspace.Mobile_Tuteur,
+			Enumere_Espace_1.EGenreEspace.Eleve,
+			Enumere_Espace_1.EGenreEspace.Mobile_Eleve,
+			Enumere_Espace_1.EGenreEspace.Parent,
+			Enumere_Espace_1.EGenreEspace.Mobile_Parent,
+			Enumere_Espace_1.EGenreEspace.Accompagnant,
+			Enumere_Espace_1.EGenreEspace.Mobile_Accompagnant,
+			Enumere_Espace_1.EGenreEspace.Tuteur,
+			Enumere_Espace_1.EGenreEspace.Mobile_Tuteur,
 		].includes(GEtatUtilisateur.GenreEspace);
 		this.avecDetailTAF =
-			GEtatUtilisateur.GenreEspace === EGenreEspace.Professeur;
-		this.utilitaireCDT = new ObjetUtilitaireCahierDeTexte(
-			this.Nom + ".utilitaireCDT",
-			this,
-		);
+			GEtatUtilisateur.GenreEspace === Enumere_Espace_1.EGenreEspace.Professeur;
+		this.utilitaireCDT =
+			new ObjetUtilitaireCahierDeTexte_1.ObjetUtilitaireCahierDeTexte(
+				this.Nom + ".utilitaireCDT",
+				this,
+			);
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
@@ -172,16 +178,20 @@ class ObjetBlocCDT extends ObjetBlocPN {
 				getHint: function (aNumeroTAF) {
 					const lTAF = aInstance.getTAF(aNumeroTAF);
 					return lTAF.TAFFait || lTAF.QCMFait
-						? GTraductions.getValeur("accueil.hintTravailFait")
-						: GTraductions.getValeur("accueil.hintTravailAFaire");
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"accueil.hintTravailFait",
+							)
+						: ObjetTraduction_1.GTraductions.getValeur(
+								"accueil.hintTravailAFaire",
+							);
 				},
 				setValue: function (aNumeroTAF, aValue) {
 					const lTAF = aInstance.getTAF(aNumeroTAF);
 					lTAF.TAFFait = aValue;
-					lTAF.setEtat(EGenreEtat.Modification);
-					const lListe = new ObjetListeElements();
+					lTAF.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+					const lListe = new ObjetListeElements_1.ObjetListeElements();
 					lListe.addElement(lTAF);
-					new ObjetRequeteSaisieTAFFaitEleve(
+					new ObjetRequeteSaisieTAFFaitEleve_1.ObjetRequeteSaisieTAFFaitEleve(
 						aInstance,
 						aInstance._actionSurRequeteSaisieTAFFaitEleve.bind(
 							aInstance,
@@ -191,7 +201,7 @@ class ObjetBlocCDT extends ObjetBlocPN {
 				},
 				getDisabled: function (aNumeroTAF) {
 					const lTAF = aInstance.getTAF(aNumeroTAF);
-					return !_estAvecCocheTAFFait.call(aInstance, lTAF);
+					return !aInstance._estAvecCocheTAFFait(lTAF);
 				},
 				node: function () {
 					$(this.node).on({
@@ -204,7 +214,9 @@ class ObjetBlocCDT extends ObjetBlocPN {
 			btnSelecFile: {
 				getOptionsSelecFile: function () {
 					return {
-						maxSize: GApplication.droits.get(TypeDroits.tailleMaxRenduTafEleve),
+						maxSize: (0, AccessApp_1.getApp)().droits.get(
+							ObjetDroitsPN_1.TypeDroits.tailleMaxRenduTafEleve,
+						),
 					};
 				},
 				addFiles: this.evenementSurSelecFile.bind(this),
@@ -218,10 +230,11 @@ class ObjetBlocCDT extends ObjetBlocPN {
 				event: function (aNumeroTaf) {
 					const lTaf = aInstance.getTAF(aNumeroTaf);
 					if (!!lTaf) {
-						const lFenetreCorrectionTaf = ObjetFenetre.creerInstanceFenetre(
-							ObjetFenetre_CorrectionTaf,
-							{ pere: aInstance },
-						);
+						const lFenetreCorrectionTaf =
+							ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+								ObjetFenetre_CorrectionTaf_1.ObjetFenetre_CorrectionTaf,
+								{ pere: aInstance },
+							);
 						lFenetreCorrectionTaf.setTAF(lTaf);
 						lFenetreCorrectionTaf.afficher();
 					}
@@ -281,12 +294,12 @@ class ObjetBlocCDT extends ObjetBlocPN {
 		}
 		return lQCM;
 	}
-	_actionSurRequeteSaisieTAFFaitEleve(aNumeroTaf, aEvent) {
+	_actionSurRequeteSaisieTAFFaitEleve(aNumeroTaf) {
 		const lTAF = this.getTAF(aNumeroTaf);
 		this.declencherCallback({
 			donnee: lTAF,
 			genreEvnt: EGenreBtnActionBlocCDT.tafFait,
-			param: { event: aEvent },
+			param: {},
 		});
 	}
 	construireStructureAffichage() {
@@ -297,9 +310,10 @@ class ObjetBlocCDT extends ObjetBlocPN {
 				H.push(
 					'<div style="padding : 3px 6px 0px 6px;"><div class="InlineBlock AlignementMilieuVertical PourFenetreBloc_Contenu" style="width:100%">',
 					this.getGenreAffichage() ===
-						EGenreAffichageCahierDeTextes.TravailAFaire
-						? composePourTAF.call(this, lDonnee)
-						: composePourCours.call(this, lDonnee),
+						Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+							.TravailAFaire
+						? this.composePourTAF(lDonnee)
+						: this.composePourCours(lDonnee),
 					"</div></div>",
 				);
 			}
@@ -308,19 +322,19 @@ class ObjetBlocCDT extends ObjetBlocPN {
 	}
 	composePiecesJointes(aElement) {
 		const lHtml = [];
-		const lListeDocuments = UtilitaireUrl.construireListeUrls(
+		const lListeDocuments = UtilitaireUrl_1.UtilitaireUrl.construireListeUrls(
 			aElement.ListePieceJointe,
 		);
 		lHtml.push(
 			'<div class="Espace" style="',
-			GStyle.composeCouleurFond(GCouleur.fond),
+			ObjetStyle_1.GStyle.composeCouleurFond(GCouleur.fond),
 			'margin:5px 5px 1px 5px;">',
 		);
 		lHtml.push(
 			'<div style="',
-			GStyle.composeCouleurTexte(GCouleur.grisTresFonce),
+			ObjetStyle_1.GStyle.composeCouleurTexte(GCouleur.grisTresFonce),
 			'">',
-			GTraductions.getValeur("Agenda.Documents"),
+			ObjetTraduction_1.GTraductions.getValeur("Agenda.Documents"),
 			"</div>",
 		);
 		lHtml.push("<div>", lListeDocuments, " </div>");
@@ -339,9 +353,9 @@ class ObjetBlocCDT extends ObjetBlocPN {
 		let lPourLe, lNewPourLe;
 		T.push(
 			'<div style="margin-top: 3px; ',
-			GStyle.composeCouleur(
+			ObjetStyle_1.GStyle.composeCouleur(
 				GCouleur.themeNeutre.claire,
-				GCouleur.noire,
+				GCouleur.noir,
 				GCouleur.themeNeutre.claire,
 			),
 			'">',
@@ -359,7 +373,10 @@ class ObjetBlocCDT extends ObjetBlocPN {
 				if (!lBandeauDS) {
 					T.push(
 						'<div style="height:4px; ',
-						GStyle.composeCouleur(GCouleur.themeNeutre.legere, GCouleur.noire),
+						ObjetStyle_1.GStyle.composeCouleur(
+							GCouleur.themeNeutre.legere,
+							GCouleur.noir,
+						),
 						'">&nbsp;</div>',
 					);
 					lBandeauDS = true;
@@ -370,9 +387,14 @@ class ObjetBlocCDT extends ObjetBlocPN {
 						'<div class="InlineBlock GrandEspaceDroit AlignementMilieuVertical" >',
 						lElement.getLibelle(),
 						"</div>",
-						_composeSymboleCategorie(
-							TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Devoir,
+						'<i class="',
+						TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.getIcone(
+							TypeOrigineCreationCategorieCahierDeTexte_1
+								.TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Devoir,
 						),
+						'" role="presentation">',
+						ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.iconeDS"),
+						"</i>",
 						"</div>",
 					);
 				}
@@ -382,37 +404,46 @@ class ObjetBlocCDT extends ObjetBlocPN {
 						'<div class="InlineBlock GrandEspaceDroit AlignementMilieuVertical" >',
 						lElement.getLibelle(),
 						"</div>",
-						_composeSymboleCategorie(
-							TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Evaluation,
+						'<i class="',
+						TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.getIcone(
+							TypeOrigineCreationCategorieCahierDeTexte_1
+								.TypeOrigineCreationCategorieCahierDeTexte
+								.OCCCDT_Pre_Evaluation,
 						),
+						'" role="presentation">',
+						ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.iconeEval"),
+						"</i>",
 						"</div>",
 					);
 				}
 			} else {
 				const lNbJours = lElement.DonneLe
-					? GDate.getDifferenceJours(lElement.PourLe, lElement.DonneLe)
+					? ObjetDate_1.GDate.getDifferenceJours(
+							lElement.PourLe,
+							lElement.DonneLe,
+						)
 					: 0;
 				const lStrJours = (
 					lNbJours > 1
-						? GTraductions.getValeur("TAFEtContenu.jours")
-						: GTraductions.getValeur("TAFEtContenu.jour")
+						? ObjetTraduction_1.GTraductions.getValeur("TAFEtContenu.jours")
+						: ObjetTraduction_1.GTraductions.getValeur("TAFEtContenu.jour")
 				).toLowerCase();
 				lNewDonneLe = lElement.DonneLe
-					? GTraductions.getValeur("TAFEtContenu.donneLe") +
-						GDate.formatDate(lElement.DonneLe, " %JJ/%MM")
+					? ObjetTraduction_1.GTraductions.getValeur("TAFEtContenu.donneLe") +
+						ObjetDate_1.GDate.formatDate(lElement.DonneLe, " %JJ/%MM")
 					: "";
 				lNewPourLe = lElement.PourLe
-					? GTraductions.getValeur("CahierDeTexte.pourLe") +
-						GDate.formatDate(lElement.PourLe, " %JJ/%MM")
+					? ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.pourLe") +
+						ObjetDate_1.GDate.formatDate(lElement.PourLe, " %JJ/%MM")
 					: "";
 				T.push("<div>");
 				if (aPourLe) {
 					if (!lPourLe || lPourLe !== lNewPourLe) {
 						T.push(
 							'<div class="PetitEspaceHaut PetitEspaceBas" style="',
-							GStyle.composeCouleur(
+							ObjetStyle_1.GStyle.composeCouleur(
 								GCouleur.themeNeutre.claire,
-								GCouleur.noire,
+								GCouleur.noir,
 								GCouleur.themeNeutre.claire,
 							),
 							'">',
@@ -425,9 +456,9 @@ class ObjetBlocCDT extends ObjetBlocPN {
 					if (!lDonneLe || lDonneLe !== lNewDonneLe) {
 						T.push(
 							'<div class="PetitEspaceHaut PetitEspaceBas" style="',
-							GStyle.composeCouleur(
+							ObjetStyle_1.GStyle.composeCouleur(
 								GCouleur.themeNeutre.claire,
-								GCouleur.noire,
+								GCouleur.noir,
 								GCouleur.themeNeutre.claire,
 							),
 							'">',
@@ -446,8 +477,8 @@ class ObjetBlocCDT extends ObjetBlocPN {
 				}
 				T.push(
 					'<div class="PetitEspace" style="',
-					GStyle.composeWidthCalc(6),
-					GStyle.composeCouleur(GCouleur.blanc, GCouleur.noire),
+					ObjetStyle_1.GStyle.composeWidthCalc(6),
+					ObjetStyle_1.GStyle.composeCouleur(GCouleur.blanc, GCouleur.noir),
 					'">',
 				);
 				if (lCount > 0) {
@@ -462,22 +493,26 @@ class ObjetBlocCDT extends ObjetBlocPN {
 				T.push(
 					'<div class="InlineBlock AlignementHaut" style="min-width: 340px; margin-right: 5px;',
 					this.pourEleve
-						? GStyle.composeWidthCalc(this.getWidthActionsTAF() + 5)
+						? ObjetStyle_1.GStyle.composeWidthCalc(
+								this.getWidthActionsTAF() + 5,
+							)
 						: "width:100%;",
 					'">',
 				);
 				T.push(
 					'<div class="InlineBlock AlignementHaut" style="min-height: 18px; ',
-					_avecInfosTAF(lElement) ? GStyle.composeWidthCalc(36) : "width:100%;",
+					this._avecInfosTAF(lElement)
+						? ObjetStyle_1.GStyle.composeWidthCalc(36)
+						: "width:100%;",
 					'">',
 				);
-				T.push(composePublicTAF.call(this, lElement, I));
+				T.push(this.composePublicTAF(lElement, I));
 				const lEstQCM =
 					lElement.executionQCM && lElement.executionQCM.existeNumero();
 				T.push('<div class="NoWrap">');
 				if (lEstQCM) {
 					T.push(
-						'<i class="icon_qcm ThemeCat-pedagogie AlignementMilieuVertical" role="presentation"></i>',
+						'<i role="presentation" class="icon_qcm ThemeCat-pedagogie AlignementMilieuVertical" role="presentation"></i>',
 					);
 				}
 				const lPourQCM =
@@ -496,7 +531,7 @@ class ObjetBlocCDT extends ObjetBlocPN {
 				);
 				T.push("</div>");
 				T.push("</div>");
-				T.push(_composeInformationsTAF.call(this, lElement));
+				T.push(this._composeInformationsTAF(lElement));
 				if (
 					!!lElement.ListePieceJointe &&
 					lElement.ListePieceJointe.count() > 0
@@ -529,11 +564,13 @@ class ObjetBlocCDT extends ObjetBlocPN {
 		H.push(
 			'<div class="Insecable">',
 			aExecutionQCM.estEnPublication === true
-				? GTraductions.getValeur("ExecutionQCM.RepondreQCM")
-				: GDate.formatDate(
+				? ObjetTraduction_1.GTraductions.getValeur("ExecutionQCM.RepondreQCM")
+				: ObjetDate_1.GDate.formatDate(
 						aExecutionQCM.dateDebutPublication,
 						"" +
-							GTraductions.getValeur("ExecutionQCM.QCMPublieLe") +
+							ObjetTraduction_1.GTraductions.getValeur(
+								"ExecutionQCM.QCMPublieLe",
+							) +
 							" %J %MMMM",
 					),
 			" : ",
@@ -548,20 +585,22 @@ class ObjetBlocCDT extends ObjetBlocPN {
 	}
 	composeActionsTAF(aTaf) {
 		const T = [];
-		T.push(_composeSliderTAFFait.call(this, aTaf));
+		T.push(this._composeSliderTAFFait(aTaf));
 		if (!!aTaf.documentRendu) {
 			T.push("<div>");
-			const lLibelleConsultation = TypeGenreRenduTAFUtil.getLibelleConsultation(
-				aTaf.genreRendu,
-			);
+			const lLibelleConsultation =
+				TypeGenreRenduTAF_1.TypeGenreRenduTAFUtil.getLibelleConsultation(
+					aTaf.genreRendu,
+				);
 			let lIEModelChipsDocumentRendu = null;
 			if (this.peuFaireTAF && aTaf.peuRendre) {
 				lIEModelChipsDocumentRendu = "chipsDocumentRenduTAF";
 			}
 			T.push(
-				GChaine.composerUrlLienExterne({
+				ObjetChaine_1.GChaine.composerUrlLienExterne({
 					documentJoint: aTaf.documentRendu,
-					genreRessource: TypeFichierExterneHttpSco.TAFRenduEleve,
+					genreRessource:
+						TypeFichierExterneHttpSco_1.TypeFichierExterneHttpSco.TAFRenduEleve,
 					libelleEcran: lLibelleConsultation,
 					ieModelChips: lIEModelChipsDocumentRendu,
 					argsIEModel: [aTaf.getNumero()],
@@ -574,10 +613,12 @@ class ObjetBlocCDT extends ObjetBlocPN {
 					!!aTaf.documentCorrige && !aTaf.commentaireCorrige;
 				if (lContientQueLaCopieCorrigee) {
 					T.push(
-						GChaine.composerUrlLienExterne({
+						ObjetChaine_1.GChaine.composerUrlLienExterne({
 							documentJoint: aTaf.documentCorrige,
-							genreRessource: TypeFichierExterneHttpSco.TAFCorrigeRenduEleve,
-							libelleEcran: GTraductions.getValeur(
+							genreRessource:
+								TypeFichierExterneHttpSco_1.TypeFichierExterneHttpSco
+									.TAFCorrigeRenduEleve,
+							libelleEcran: ObjetTraduction_1.GTraductions.getValeur(
 								"CahierDeTexte.TAFARendre.Eleve.CopieCorrigeeParEnseignant",
 							),
 						}),
@@ -587,7 +628,7 @@ class ObjetBlocCDT extends ObjetBlocPN {
 						"<ie-chips ie-model=\"chipsCorrectionTAFEleve('",
 						aTaf.getNumero(),
 						"')\">",
-						GTraductions.getValeur(
+						ObjetTraduction_1.GTraductions.getValeur(
 							"CahierDeTexte.TAFARendre.Eleve.CorrectionDeLEnseignant",
 						),
 						"</ie-chips>",
@@ -600,7 +641,12 @@ class ObjetBlocCDT extends ObjetBlocPN {
 		if (!!lBoutons && lBoutons.length > 0) {
 			T.push("<div>");
 			lBoutons.forEach((aBouton) => {
-				T.push(TUtilitaireBloc.composeBtnAction(aBouton, aTaf.getNumero()));
+				T.push(
+					UtilitaireBloc_2.TUtilitaireBloc.composeBtnAction(
+						aBouton,
+						aTaf.getNumero(),
+					),
+				);
 			});
 			T.push("</div>");
 		}
@@ -608,16 +654,19 @@ class ObjetBlocCDT extends ObjetBlocPN {
 	}
 	getBtnActionsDeTaf(lDonnee) {
 		const lResult = [];
-		const lAvecERendu = TypeGenreRenduTAFUtil.estUnRenduEnligne(
-			lDonnee.genreRendu,
-		);
-		const lEstRenduPronote = TypeGenreRenduTAFUtil.estUnRenduEnligne(
-			lDonnee.genreRendu,
-			false,
-		);
-		const lAvecPRendu = TypeGenreRenduTAFUtil.estUnRenduPapier(
-			lDonnee.genreRendu,
-		);
+		const lAvecERendu =
+			TypeGenreRenduTAF_1.TypeGenreRenduTAFUtil.estUnRenduEnligne(
+				lDonnee.genreRendu,
+			);
+		const lEstRenduPronote =
+			TypeGenreRenduTAF_1.TypeGenreRenduTAFUtil.estUnRenduEnligne(
+				lDonnee.genreRendu,
+				false,
+			);
+		const lAvecPRendu =
+			TypeGenreRenduTAF_1.TypeGenreRenduTAFUtil.estUnRenduPapier(
+				lDonnee.genreRendu,
+			);
 		let lLibelle, lGenre;
 		if (
 			lAvecERendu &&
@@ -625,25 +674,23 @@ class ObjetBlocCDT extends ObjetBlocPN {
 		) {
 			if (this.avecDetailTAF && lDonnee.avecRendu) {
 				lLibelle =
-					GTraductions.getValeur("CahierDeTexte.TAFARendre.RenduPar") +
+					ObjetTraduction_1.GTraductions.getValeur(
+						"CahierDeTexte.TAFARendre.RenduPar",
+					) +
 					" " +
 					lDonnee.nbrRendus +
 					"/" +
 					lDonnee.nbrEleves;
 				lGenre = EGenreBtnActionBlocCDT.detailTAF;
 				lResult.push({
-					libelle: _composeLibelleBouton.call(
-						this,
-						lDonnee.genreRendu,
-						lLibelle,
-					),
+					libelle: this._composeLibelleBouton(lDonnee.genreRendu, lLibelle),
 					genreBtn: lGenre,
 					genreAffichage: lDonnee.estProfDuCours
-						? EGenreBoutonBloc.bouton
-						: EGenreBoutonBloc.texte,
+						? UtilitaireBloc_1.EGenreBoutonBloc.bouton
+						: UtilitaireBloc_1.EGenreBoutonBloc.texte,
 				});
 			} else {
-				lLibelle = TypeGenreRenduTAFUtil.getLibelleDeposer(
+				lLibelle = TypeGenreRenduTAF_1.TypeGenreRenduTAFUtil.getLibelleDeposer(
 					lDonnee.genreRendu,
 					this.peuFaireTAF,
 				);
@@ -652,23 +699,18 @@ class ObjetBlocCDT extends ObjetBlocPN {
 						? EGenreBtnActionBlocCDT.documentRendu
 						: EGenreBtnActionBlocCDT.executionKiosque;
 					lResult.push({
-						libelle: _composeLibelleBouton.call(
-							this,
-							lDonnee.genreRendu,
-							lLibelle,
-						),
+						libelle: this._composeLibelleBouton(lDonnee.genreRendu, lLibelle),
 						genreBtn: lGenre,
-						genreAffichage: EGenreBoutonBloc.bouton,
+						genreAffichage: UtilitaireBloc_1.EGenreBoutonBloc.bouton,
 					});
 				} else {
 					lResult.push({
-						libelle: _composeLibelleBouton.call(
-							this,
+						libelle: this._composeLibelleBouton(
 							lDonnee.genreRendu,
 							lLibelle,
 							true,
 						),
-						genreAffichage: EGenreBoutonBloc.texte,
+						genreAffichage: UtilitaireBloc_1.EGenreBoutonBloc.texte,
 					});
 				}
 			}
@@ -676,54 +718,57 @@ class ObjetBlocCDT extends ObjetBlocPN {
 		if (lAvecPRendu) {
 			if (this.avecDetailTAF && lDonnee.avecRendu) {
 				lLibelle =
-					GTraductions.getValeur("CahierDeTexte.TAFARendre.RenduPar") +
+					ObjetTraduction_1.GTraductions.getValeur(
+						"CahierDeTexte.TAFARendre.RenduPar",
+					) +
 					" " +
 					lDonnee.nbrRendus +
 					"/" +
 					lDonnee.nbrEleves;
 				lGenre = EGenreBtnActionBlocCDT.detailTAF;
 				lResult.push({
-					libelle: _composeLibelleBouton.call(
-						this,
-						lDonnee.genreRendu,
-						lLibelle,
-					),
+					libelle: this._composeLibelleBouton(lDonnee.genreRendu, lLibelle),
 					genreBtn: lGenre,
 					genreAffichage: lDonnee.estProfDuCours
-						? EGenreBoutonBloc.bouton
-						: EGenreBoutonBloc.texte,
+						? UtilitaireBloc_1.EGenreBoutonBloc.bouton
+						: UtilitaireBloc_1.EGenreBoutonBloc.texte,
 				});
 			} else {
 				lResult.push({
-					libelle: _composeLibelleBouton.call(
-						this,
+					libelle: this._composeLibelleBouton(
 						lDonnee.genreRendu,
-						TypeGenreRenduTAFUtil.getLibelleDeposer(lDonnee.genreRendu),
+						TypeGenreRenduTAF_1.TypeGenreRenduTAFUtil.getLibelleDeposer(
+							lDonnee.genreRendu,
+						),
 						true,
 					),
-					genreAffichage: EGenreBoutonBloc.texte,
+					genreAffichage: UtilitaireBloc_1.EGenreBoutonBloc.texte,
 				});
 			}
 		}
 		if (
 			this.pourEleve &&
 			lDonnee.executionQCM &&
-			UtilitaireQCM.estCliquable(lDonnee.executionQCM)
+			UtilitaireQCM_1.UtilitaireQCM.estCliquable(lDonnee.executionQCM)
 		) {
 			if (
 				!lDonnee.QCMFait ||
 				(GEtatUtilisateur.estEspacePourEleve() &&
-					UtilitaireQCM.estJouable(lDonnee.executionQCM))
+					UtilitaireQCM_1.UtilitaireQCM.estJouable(lDonnee.executionQCM))
 			) {
 				if (lDonnee.executionQCM.estEnPublication) {
 					lResult.push({
-						libelle: GTraductions.getValeur("TAFEtContenu.executerQCM"),
+						libelle: ObjetTraduction_1.GTraductions.getValeur(
+							"TAFEtContenu.executerQCM",
+						),
 						genreBtn: EGenreBtnActionBlocCDT.executionQCM,
 					});
 				}
 			} else {
 				lResult.push({
-					libelle: GTraductions.getValeur("TAFEtContenu.voirQCM"),
+					libelle: ObjetTraduction_1.GTraductions.getValeur(
+						"TAFEtContenu.voirQCM",
+					),
 					genreBtn: EGenreBtnActionBlocCDT.voirQCM,
 				});
 			}
@@ -735,7 +780,9 @@ class ObjetBlocCDT extends ObjetBlocPN {
 			!this._options.cacherBoutonContenu
 		) {
 			lResult.push({
-				libelle: GTraductions.getValeur("CahierDeTexte.TAFARendre.VoirContenu"),
+				libelle: ObjetTraduction_1.GTraductions.getValeur(
+					"CahierDeTexte.TAFARendre.VoirContenu",
+				),
 				genreBtn: EGenreBtnActionBlocCDT.voirContenu,
 			});
 		}
@@ -751,9 +798,12 @@ class ObjetBlocCDT extends ObjetBlocPN {
 			this.donnee.genreAffichage !== null &&
 			this.donnee.genreAffichage !== undefined
 				? this.donnee.genreAffichage
-				: GEtatUtilisateur.getGenreOnglet() === EGenreOnglet.CDT_TAF
-					? EGenreAffichageCahierDeTextes.TravailAFaire
-					: EGenreAffichageCahierDeTextes.ContenuDeCours;
+				: GEtatUtilisateur.getGenreOnglet() ===
+						Enumere_Onglet_1.EGenreOnglet.CDT_TAF
+					? Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+							.TravailAFaire
+					: Enumere_AffichageCahierDeTextes_1.EGenreAffichageCahierDeTextes
+							.ContenuDeCours;
 		return lGenreAffichage;
 	}
 	estBlocFerme() {
@@ -761,7 +811,8 @@ class ObjetBlocCDT extends ObjetBlocPN {
 	}
 	eventPropagationTitre(event) {
 		if (
-			this._options.modeAffichage === EModeAffichageTimeline.grille &&
+			this._options.modeAffichage ===
+				Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.grille &&
 			event.target &&
 			!event.target.className.includes("celluleMarqueur")
 		) {
@@ -801,13 +852,15 @@ class ObjetBlocCDT extends ObjetBlocPN {
 	}
 	avecOmbre() {
 		return (
-			this._options.modeAffichage !== EModeAffichageTimeline.grille &&
+			this._options.modeAffichage !==
+				Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.grille &&
 			this._options.avecOmbre !== false
 		);
 	}
 	avecBordure() {
 		return (
-			this._options.modeAffichage === EModeAffichageTimeline.grille &&
+			this._options.modeAffichage ===
+				Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.grille &&
 			this._options.avecBordure
 		);
 	}
@@ -827,17 +880,20 @@ class ObjetBlocCDT extends ObjetBlocPN {
 			lHtml.push(
 				'<div class="Espace">',
 				this._options.formatDate
-					? GDate.formatDate(lDonnee.Date, this._options.formatDate)
+					? ObjetDate_1.GDate.formatDate(lDonnee.Date, this._options.formatDate)
 					: "",
 				"<div>",
-				GDate.formatDate(
+				ObjetDate_1.GDate.formatDate(
 					lDonnee.Date,
-					GTraductions.getValeur("De").ucfirst() + " %hh%sh%mm",
+					ObjetTraduction_1.GTraductions.getValeur("De").ucfirst() +
+						" %hh%sh%mm",
 				),
 				lDonnee.DateFin
-					? GDate.formatDate(
+					? ObjetDate_1.GDate.formatDate(
 							lDonnee.DateFin,
-							" " + GTraductions.getValeur("A") + " %hh%sh%mm",
+							" " +
+								ObjetTraduction_1.GTraductions.getValeur("A") +
+								" %hh%sh%mm",
 						)
 					: "",
 				"</div>",
@@ -859,43 +915,47 @@ class ObjetBlocCDT extends ObjetBlocPN {
 		}
 	}
 	surSupprimer(aNumeroTAF) {
-		const lFichier = new ObjetElement(),
-			lListeFichiers = new ObjetListeElements();
+		const lFichier = new ObjetElement_1.ObjetElement(),
+			lListeFichiers = new ObjetListeElements_1.ObjetListeElements();
 		lListeFichiers.addElement(lFichier, 0);
-		lFichier.TAF = new ObjetElement("", aNumeroTAF);
-		lFichier.setEtat(EGenreEtat.Suppression);
-		new ObjetRequeteSaisieTAFARendreEleve(
+		lFichier.TAF = new ObjetElement_1.ObjetElement("", aNumeroTAF);
+		lFichier.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+		new MultiObjetRequeteSaisieTAFARendreEleve.ObjetRequeteSaisieTAFARendreEleve(
 			this,
 			this.actionSurRequeteSaisieTAFARendreEleve.bind(this, aNumeroTAF, true),
 		).lancerRequete(lListeFichiers);
 	}
 	evenementSurSelecFile(aParams, aNumeroArticle, aParamsInput) {
 		const lFichier = aParamsInput
-				? aParamsInput.eltFichier
-				: new ObjetElement(),
-			lListeFichiers = new ObjetListeElements();
+			? aParamsInput.eltFichier
+			: new ObjetElement_1.ObjetElement();
+		const lListeFichiers = new ObjetListeElements_1.ObjetListeElements();
 		const lTAF = this.getTAF(aNumeroArticle);
 		if (lFichier) {
 			lListeFichiers.addElement(lFichier, 0);
-			lFichier.TAF = new ObjetElement("", lTAF.getNumero());
-			lFichier.setEtat(EGenreEtat.Modification);
+			lFichier.TAF = new ObjetElement_1.ObjetElement("", lTAF.getNumero());
+			lFichier.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 		}
-		new ObjetRequeteSaisieTAFARendreEleve(
+		new MultiObjetRequeteSaisieTAFARendreEleve.ObjetRequeteSaisieTAFARendreEleve(
 			this,
-			this.actionSurRequeteSaisieTAFARendreEleve.bind(this, aNumeroArticle),
+			this.actionSurRequeteSaisieTAFARendreEleve.bind(
+				this,
+				aNumeroArticle,
+				false,
+			),
 		)
 			.addUpload({ listeFichiers: lListeFichiers })
 			.lancerRequete(lListeFichiers);
 	}
 	evenementSurSelecFilePhoto(aParams, aParamsInput) {
-		const lListeFichiers = new ObjetListeElements();
+		const lListeFichiers = new ObjetListeElements_1.ObjetListeElements();
 		const lFichiers = aParamsInput.listeFichiers;
 		const lTAF = this.getDonnee();
 		if (!!lFichiers && lFichiers.count() > 0) {
 			for (let x = 0; x < lFichiers.count(); x++) {
 				const lFichier = lFichiers.get(x);
-				lFichier.TAF = new ObjetElement("", lTAF.getNumero());
-				lFichier.setEtat(EGenreEtat.Creation);
+				lFichier.TAF = new ObjetElement_1.ObjetElement("", lTAF.getNumero());
+				lFichier.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 				lListeFichiers.addElement(lFichier);
 			}
 		}
@@ -910,396 +970,403 @@ class ObjetBlocCDT extends ObjetBlocPN {
 			param: {},
 		});
 	}
-}
-function composePourTAF(aDonnee) {
-	if (!aDonnee.Matiere.ressources) {
-		aDonnee.ListeTravailAFaire.setTri([
-			ObjetTri.init("PourLe"),
-			ObjetTri.init("Matiere.Libelle"),
-			ObjetTri.init((D) => {
-				return GDate.getJour(D.DonneLe);
-			}),
-			ObjetTri.init("Genre"),
-			ObjetTri.init("Libelle"),
-		]);
-		aDonnee.ListeTravailAFaire.trier();
+	composePourTAF(aDonnee) {
+		if (!aDonnee.Matiere.ressources) {
+			aDonnee.ListeTravailAFaire.setTri([
+				ObjetTri_1.ObjetTri.init("PourLe"),
+				ObjetTri_1.ObjetTri.init("Matiere.Libelle"),
+				ObjetTri_1.ObjetTri.init((D) => {
+					return ObjetDate_1.GDate.getJour(D.DonneLe);
+				}),
+				ObjetTri_1.ObjetTri.init("Genre"),
+				ObjetTri_1.ObjetTri.init("Libelle"),
+			]);
+			aDonnee.ListeTravailAFaire.trier();
+		}
+		return this.composeTAF(
+			aDonnee.Matiere,
+			aDonnee.ListeTravailAFaire,
+			undefined,
+		);
 	}
-	return this.composeTAF(
-		aDonnee.Matiere,
-		aDonnee.ListeTravailAFaire,
-		undefined,
-	);
-}
-function _composeSymboleCategorie(aGenre) {
-	const T = [];
-	T.push(
-		'<div class="',
-		TypeOrigineCreationCategorieCahierDeTexteUtil.getImage(aGenre),
-		' AlignementHaut" style="width:17px"></div>',
-	);
-	return T.join("");
-}
-function composePourCours(aDonnee) {
-	const lHtml = [];
-	for (let i = 0; i < aDonnee.listeContenus.count(); i++) {
-		const lContenu = aDonnee.listeContenus.get(i);
-		lHtml.push(_composeContenu.call(this, lContenu, i));
+	composePourCours(aDonnee) {
+		const lHtml = [];
+		for (let i = 0; i < aDonnee.listeContenus.count(); i++) {
+			const lContenu = aDonnee.listeContenus.get(i);
+			lHtml.push(this._composeContenu(lContenu, i));
+		}
+		if (
+			aDonnee &&
+			aDonnee.listeElementsProgrammeCDT &&
+			aDonnee.listeElementsProgrammeCDT.count()
+		) {
+			lHtml.push(this._composeElementsProgramme(aDonnee));
+		}
+		if (aDonnee.ListeTravailAFaire.count()) {
+			lHtml.push(
+				"<div>",
+				this.composeTAF(aDonnee.Matiere, aDonnee.ListeTravailAFaire, true),
+				"</div>",
+			);
+		}
+		return lHtml.join("");
 	}
-	if (
-		aDonnee &&
-		aDonnee.listeElementsProgrammeCDT &&
-		aDonnee.listeElementsProgrammeCDT.count()
-	) {
-		lHtml.push(_composeElementsProgramme.call(this, aDonnee));
-	}
-	if (aDonnee.ListeTravailAFaire.count()) {
+	_composeElementsProgramme(aDonnee) {
+		let lElementProgrammeCDT;
+		const lHtml = [];
+		if (aDonnee && aDonnee.listeContenus && aDonnee.listeContenus.count()) {
+			lHtml.push("<div><hr></div>");
+		}
 		lHtml.push(
+			'<div class="Espace">',
+			'<div class="Gras">',
+			ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.ElementsProgramme",
+			),
+			" :",
+			"</div>",
+			"<ul>",
+		);
+		for (let i = 0; i < aDonnee.listeElementsProgrammeCDT.count(); i++) {
+			lElementProgrammeCDT = aDonnee.listeElementsProgrammeCDT.get(i);
+			lHtml.push("<li>", lElementProgrammeCDT.getLibelle(), "</li>");
+		}
+		lHtml.push("</ul>", "</div>");
+		return lHtml.join("");
+	}
+	_composeContenu(aContenu, aIndice) {
+		const lHtml = [];
+		if (aIndice > 0) {
+			lHtml.push("<div><hr></div>");
+		}
+		lHtml.push('<div class="flex-contain">');
+		lHtml.push(
+			'<div class="fluid-bloc">',
 			"<div>",
-			this.composeTAF(aDonnee.Matiere, aDonnee.ListeTravailAFaire, true),
+			aContenu.Libelle,
+			aContenu.categorie.Libelle
+				? (aContenu.Libelle ? " - " : "") + aContenu.categorie.Libelle
+				: "",
+			"</div>",
+			'<div class="tiny-view">',
+			aContenu.descriptif,
+			"</div>",
 			"</div>",
 		);
-	}
-	return lHtml.join("");
-}
-function _composeElementsProgramme(aDonnee) {
-	let lElementProgrammeCDT;
-	const lHtml = [];
-	if (aDonnee && aDonnee.listeContenus && aDonnee.listeContenus.count()) {
-		lHtml.push("<div><hr></div>");
-	}
-	lHtml.push(
-		'<div class="Espace">',
-		'<div class="Gras">',
-		GTraductions.getValeur("CahierDeTexte.ElementsProgramme"),
-		" :",
-		"</div>",
-		"<ul>",
-	);
-	for (let i = 0; i < aDonnee.listeElementsProgrammeCDT.count(); i++) {
-		lElementProgrammeCDT = aDonnee.listeElementsProgrammeCDT.get(i);
-		lHtml.push("<li>", lElementProgrammeCDT.getLibelle(), "</li>");
-	}
-	lHtml.push("</ul>", "</div>");
-	return lHtml.join("");
-}
-function _composeContenu(aContenu, aIndice) {
-	const lHtml = [];
-	if (aIndice > 0) {
-		lHtml.push("<div><hr></div>");
-	}
-	lHtml.push('<div class="NoWrap">');
-	if (
-		aContenu.categorie &&
-		aContenu.categorie.getGenre() &&
-		TypeOrigineCreationCategorieCahierDeTexteUtil.estTypeAvecImage(
-			aContenu.categorie.getGenre(),
-		)
-	) {
-		lHtml.push(
-			'<div style="float:right;" class="EspaceDroit AlignementHaut" >',
-			_composeSymboleCategorie(aContenu.categorie.getGenre()),
-			"</div>",
-		);
-	}
-	lHtml.push(
-		'<div class="InlineBlock AlignementHaut">',
-		"<div>",
-		aContenu.Libelle,
-		aContenu.categorie.Libelle
-			? (aContenu.Libelle ? " - " : "") + aContenu.categorie.Libelle
-			: "",
-		"</div>",
-		'<div class="tiny-view">',
-		aContenu.descriptif,
-		"</div>",
-		"</div>",
-	);
-	lHtml.push("</div>");
-	if (
-		(aContenu.ListePieceJointe && aContenu.ListePieceJointe.count() > 0) ||
-		(aContenu.listeExecutionQCM && aContenu.listeExecutionQCM.count() > 0)
-	) {
-		lHtml.push(_composeEspaceDocuments.call(this, aContenu, aIndice));
-	}
-	return lHtml.join("");
-}
-function _composeEspaceDocuments(aContenu, aIndiceContenu) {
-	const H = [];
-	let lListeDocuments = "";
-	const lListeQCM = [];
-	let lIENode;
-	if (aContenu.ListePieceJointe) {
-		lListeDocuments = UtilitaireUrl.construireListeUrls(
-			aContenu.ListePieceJointe,
-		);
-	}
-	if (aContenu.listeExecutionQCM) {
-		for (let j = 0; j < aContenu.listeExecutionQCM.count(); j++) {
-			const lExecutionQCM = aContenu.listeExecutionQCM.get(j);
-			lIENode = ' ie-node="executerQCM(' + aIndiceContenu + ", " + j + ')"';
-			lListeQCM.push(
-				'<div aria-haspopup="dialog" tabindex="0" class="AvecMain Lien"',
-				lIENode,
-				">",
-				lExecutionQCM.QCM.getLibelle(),
-				"</div>",
+		if (
+			aContenu.categorie &&
+			aContenu.categorie.getGenre() &&
+			TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.estTypeAvecIcone(
+				aContenu.categorie.getGenre(),
+			)
+		) {
+			lHtml.push(
+				`<span><i class="${TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.getIcone(aContenu.categorie.getGenre())}" role="presentation">${aContenu.categorie.libelleIcone || ""}</i></span>`,
 			);
 		}
+		lHtml.push("</div>");
+		if (
+			(aContenu.ListePieceJointe && aContenu.ListePieceJointe.count() > 0) ||
+			(aContenu.listeExecutionQCM && aContenu.listeExecutionQCM.count() > 0)
+		) {
+			lHtml.push(this._composeEspaceDocuments(aContenu, aIndice));
+		}
+		return lHtml.join("");
 	}
-	H.push(
-		'<div class="Espace" style="',
-		GStyle.composeCouleurFond(GCouleur.fond),
-		'margin:10px 5px;">',
-	);
-	H.push(
-		'<div style="',
-		GStyle.composeCouleurTexte(GCouleur.grisTresFonce),
-		'">',
-		GTraductions.getValeur("Agenda.Documents"),
-		"</div>",
-	);
-	H.push("<div>", lListeDocuments, " </div>");
-	if (aContenu.listeExecutionQCM && aContenu.listeExecutionQCM.count()) {
-		H.push(
-			'<i class="icon_qcm ThemeCat-pedagogie AlignementMilieuVertical"></i><div class="InlineBlock">',
-			GTraductions.getValeur("ExecutionQCM.RepondreQCMContenu"),
-			" : </div>",
-			'<div class="InlineBlock">',
-			lListeQCM.join(""),
-			" </div>",
-		);
-	}
-	H.push("</div>");
-	return H.join("");
-}
-function _avecInfosTAF(aTaf) {
-	return (
-		aTaf.duree > 0 ||
-		(aTaf.executionQCM && aTaf.executionQCM.dureeMaxQCM) ||
-		aTaf.niveauDifficulte !== TypeNiveauDifficulte.ND_NonPrecise
-	);
-}
-function _composeInformationsTAF(aTaf) {
-	const T = [];
-	if (_avecInfosTAF(aTaf)) {
-		T.push(
-			'<div class="InlineBlock AlignementHaut SansMain" style="width:36px;">',
-			_getNiveauDifficulte(this._options.modeAffichage, aTaf),
-			_getDuree(aTaf),
-			"</div>",
-		);
-	}
-	return T.join("");
-}
-function composePublicTAF(aTaf, aIndice) {
-	const T = [];
-	if (this.avecDetailTAF) {
-		if (aTaf.nomPublic) {
-			T.push(
-				'<div class="InlineBlock">',
-				GImage.composeImage("Image_TAF_Public"),
-				"</div>",
-				'<span class="PetitEspaceGauche InlineBlock" style="',
-				GStyle.composeCouleurTexte(GCouleur.themeNeutre.foncee),
-				'">',
-				aTaf.pourTousLesEleves
-					? aTaf.nomPublic
-					: GTraductions.getValeur("CahierDeTexte.TAFARendre.eleves", [
-							aTaf.nbrEleves,
-						]),
-				"</span>",
+	_composeEspaceDocuments(aContenu, aIndiceContenu) {
+		const H = [];
+		let lListeDocuments = "";
+		const lListeQCM = [];
+		let lIENode;
+		if (aContenu.ListePieceJointe) {
+			lListeDocuments = UtilitaireUrl_1.UtilitaireUrl.construireListeUrls(
+				aContenu.ListePieceJointe,
 			);
 		}
-		let lLienRendus;
-		if (aTaf.avecRendu) {
-			lLienRendus = getLienTAFRendu(aTaf, aIndice);
-		} else {
-			lLienRendus = getLienTafFaitSelonEleve(aTaf, aIndice);
-		}
-		if (!!lLienRendus) {
-			T.push("&nbsp;-&nbsp;");
-			T.push(
-				'<span style="line-height: 14px;',
-				GStyle.composeCouleurTexte(GCouleur.themeNeutre.foncee),
-				'">',
-			);
-			T.push(lLienRendus);
-			T.push("</span>");
-		}
-	}
-	return T.join("");
-}
-function getLienTafFaitSelonEleve(aTaf, aIndice) {
-	const H = [];
-	H.push(
-		'<span aria-haspopup="dialog" tabindex="0" class="AvecMain LienAccueil" ie-node="renduTAF(\'' +
-			aTaf.getNumero() +
-			"', " +
-			aIndice +
-			')">',
-		GTraductions.getValeur("CahierDeTexte.TAFARendre.FaitPar"),
-		" ",
-		aTaf.nbrFaitsSelonEleve,
-		"/",
-		aTaf.nbrEleves,
-		"</span>",
-	);
-	return H.join("");
-}
-function getLienTAFRendu(aTaf, aIndice) {
-	const H = [];
-	const lAvecAction = aTaf && aTaf.avecRendu;
-	const lIENode =
-		" ie-node=\"renduTAF('" + aTaf.getNumero() + "', " + aIndice + ')"';
-	const lAction = lAvecAction
-		? 'aria-haspopup="dialog" tabindex="0" class="AvecMain LienAccueil" ' +
-			lIENode
-		: "";
-	H.push(
-		"<span ",
-		lAction,
-		">",
-		GTraductions.getValeur("CahierDeTexte.TAFARendre.RenduPar"),
-		" ",
-		aTaf.nbrRendus,
-		"/",
-		aTaf.nbrEleves,
-		"</span>",
-	);
-	return H.join("");
-}
-function _getNiveauDifficulte(aModeAffichage, aTAF) {
-	const H = [];
-	const lColor =
-		aModeAffichage === EModeAffichageTimeline.grille
-			? GCouleur.themeNeutre.foncee
-			: "#FFCC00";
-	if (aTAF && aTAF.niveauDifficulte) {
-		H.push(
-			'<div class="SansMain AlignementDroit" title="',
-			GTraductions.getValeur("CahierDeTexte.NiveauDifficulte"),
-			'">',
-			TypeNiveauDifficulteUtil.getImage(aTAF.niveauDifficulte, {
-				color: lColor,
-				avecTitle: true,
-			}),
-			"</div>",
-		);
-	}
-	return H.join("");
-}
-function _getDuree(lDonnee) {
-	const T = [];
-	if (
-		lDonnee &&
-		(lDonnee.duree ||
-			(lDonnee.executionQCM && lDonnee.executionQCM.dureeMaxQCM))
-	) {
-		let lDuree = lDonnee.duree;
-		if (lDonnee.executionQCM && lDonnee.executionQCM.dureeMaxQCM) {
-			const lMinutes = TUtilitaireDuree.dureeEnMin(
-				lDonnee.executionQCM.dureeMaxQCM,
-			);
-			const lMinutesSupplementaire =
-				lDonnee.executionQCM.dureeSupplementaire > 0
-					? TUtilitaireDuree.dureeEnMin(
-							lDonnee.executionQCM.dureeSupplementaire,
-						)
-					: 0;
-			lDuree = lMinutes + lMinutesSupplementaire;
-		}
-		const lFormatMin = lDuree > 60 ? "%mm" : "%xm";
-		const lStrDuree = GDate.formatDureeEnMillisecondes(
-			lDuree * 60 * 1000,
-			lDuree > 60 ? "%xh%sh" + lFormatMin : lFormatMin + "mn",
-		);
-		T.push(
-			'<div class="SansMain AlignementDroit" title="',
-			GTraductions.getValeur("CahierDeTexte.DureeEstimee"),
-			'">',
-			lStrDuree,
-			"</div>",
-		);
-	}
-	return T.join("");
-}
-function _composeLibelleBouton(aGenre, aLibelle, aAvecIcone) {
-	const T = [];
-	T.push('<div class="NoWrap" style="margin-left:auto; margin-right:auto;">');
-	if (aAvecIcone) {
-		T.push('<i class="icon_punition"></i>');
-	}
-	T.push(
-		'<div class="InlineBlock AlignementMilieuVertical PetitEspaceGauche" style="line-height: 0.95em; max-width: ',
-		this.getWidthActionsTAF() - 3 - 13,
-		'px;">',
-		aLibelle,
-		"</div>",
-	);
-	T.push("</div>");
-	return T.join("");
-}
-function _estAvecCocheTAFFait(aElement) {
-	const lEstRenduKiosque = TypeGenreRenduTAFUtil.estUnRenduKiosque(
-		aElement.genreRendu,
-	);
-	const lEstRendu =
-		TypeGenreRenduTAFUtil.estUnRenduEnligne(aElement.genreRendu, false) &&
-		!!aElement.documentRendu;
-	const lEstQCM = aElement.executionQCM && aElement.executionQCM.existeNumero();
-	if (!this.peuFaireTAF || lEstQCM || lEstRenduKiosque || lEstRendu) {
-		return false;
-	}
-	return true;
-}
-function _composeSliderTAFFait(aElement) {
-	const lHtml = [];
-	if (!_estAvecCocheTAFFait.call(this, aElement)) {
-		const lEstFait = aElement.TAFFait || aElement.QCMFait;
-		const lEstRendu =
-			TypeGenreRenduTAFUtil.estUnRenduEnligne(aElement.genreRendu, false) &&
-			!!aElement.documentRendu;
-		if (lEstFait || this.peuFaireTAF) {
-			if (!lEstFait || !lEstRendu) {
-				lHtml.push('<div style="display:flex; justify-content: flex-end;">');
-				lHtml.push(
-					'<div class="AlignementMilieu BorderBox SansMain" style="border-radius: 0.4rem; flex: 0 0 auto; margin: 0rem 0rem 0.4rem 0.8rem; padding: 0.4rem 0.8rem; color: ',
-					GCouleur.themeCouleur.sombre,
-					"; background: ",
-					GCouleur.themeCouleur.claire,
-					';">',
-					lEstFait
-						? GTraductions.getValeur("accueil.hintTravailFait")
-						: GTraductions.getValeur("accueil.hintTravailNonFait"),
+		if (aContenu.listeExecutionQCM) {
+			for (let j = 0; j < aContenu.listeExecutionQCM.count(); j++) {
+				const lExecutionQCM = aContenu.listeExecutionQCM.get(j);
+				lIENode = ' ie-node="executerQCM(' + aIndiceContenu + ", " + j + ')"';
+				lListeQCM.push(
+					'<div aria-haspopup="dialog" tabindex="0" class="AvecMain Lien"',
+					lIENode,
+					">",
+					lExecutionQCM.QCM.getLibelle(),
 					"</div>",
 				);
-				lHtml.push("</div>");
 			}
 		}
-	} else {
-		const lAvecERendu = TypeGenreRenduTAFUtil.estUnRenduEnligne(
-			aElement.genreRendu,
-			false,
+		H.push(
+			'<div class="Espace" style="',
+			ObjetStyle_1.GStyle.composeCouleurFond(GCouleur.fond),
+			'margin:10px 5px;">',
 		);
-		if (!lAvecERendu) {
-			lHtml.push(
-				'<div class="Espace AlignementDroit">',
-				"<ie-switch ie-model=\"cbFait('",
-				aElement.getNumero(),
-				"')\" ie-hint=\"cbFait.getHint('",
-				aElement.getNumero(),
-				"')\">",
-				"<span>",
-				GTraductions.getValeur("accueil.hintTravailNonFait"),
-				"</span>",
-				"<span>",
-				GTraductions.getValeur("accueil.hintTravailFait"),
-				"</span>",
-				"</ie-switch>",
+		H.push(
+			'<div style="',
+			ObjetStyle_1.GStyle.composeCouleurTexte(GCouleur.grisTresFonce),
+			'">',
+			ObjetTraduction_1.GTraductions.getValeur("Agenda.Documents"),
+			"</div>",
+		);
+		H.push("<div>", lListeDocuments, " </div>");
+		if (aContenu.listeExecutionQCM && aContenu.listeExecutionQCM.count()) {
+			H.push(
+				'<i role="presentation" class="icon_qcm ThemeCat-pedagogie AlignementMilieuVertical"></i><div class="InlineBlock">',
+				ObjetTraduction_1.GTraductions.getValeur(
+					"ExecutionQCM.RepondreQCMContenu",
+				),
+				" : </div>",
+				'<div class="InlineBlock">',
+				lListeQCM.join(""),
+				" </div>",
+			);
+		}
+		H.push("</div>");
+		return H.join("");
+	}
+	_avecInfosTAF(aTaf) {
+		return (
+			aTaf.duree > 0 ||
+			(aTaf.executionQCM && aTaf.executionQCM.dureeMaxQCM) ||
+			aTaf.niveauDifficulte !==
+				TypeNiveauDifficulte_1.TypeNiveauDifficulte.ND_NonPrecise
+		);
+	}
+	_composeInformationsTAF(aTaf) {
+		const T = [];
+		if (this._avecInfosTAF(aTaf)) {
+			T.push(
+				'<div class="InlineBlock AlignementHaut SansMain" style="width:36px;">',
+				this._getNiveauDifficulte(this._options.modeAffichage, aTaf),
+				this._getDuree(aTaf),
 				"</div>",
 			);
 		}
+		return T.join("");
 	}
-	return lHtml.join("");
+	composePublicTAF(aTaf, aIndice) {
+		const T = [];
+		if (this.avecDetailTAF) {
+			if (aTaf.nomPublic) {
+				T.push(
+					'<div class="InlineBlock">',
+					ObjetImage_1.GImage.composeImage("Image_TAF_Public"),
+					"</div>",
+					'<span class="PetitEspaceGauche InlineBlock" style="',
+					ObjetStyle_1.GStyle.composeCouleurTexte(GCouleur.themeNeutre.foncee),
+					'">',
+					aTaf.pourTousLesEleves
+						? aTaf.nomPublic
+						: ObjetTraduction_1.GTraductions.getValeur(
+								"CahierDeTexte.TAFARendre.eleves",
+								[aTaf.nbrEleves],
+							),
+					"</span>",
+				);
+			}
+			let lLienRendus;
+			if (aTaf.avecRendu) {
+				lLienRendus = this.getLienTAFRendu(aTaf, aIndice);
+			} else {
+				lLienRendus = this.getLienTafFaitSelonEleve(aTaf, aIndice);
+			}
+			if (!!lLienRendus) {
+				T.push("&nbsp;-&nbsp;");
+				T.push(
+					'<span style="line-height: 14px;',
+					ObjetStyle_1.GStyle.composeCouleurTexte(GCouleur.themeNeutre.foncee),
+					'">',
+				);
+				T.push(lLienRendus);
+				T.push("</span>");
+			}
+		}
+		return T.join("");
+	}
+	getLienTafFaitSelonEleve(aTaf, aIndice) {
+		const H = [];
+		H.push(
+			'<span aria-haspopup="dialog" tabindex="0" class="AvecMain LienAccueil" ie-node="renduTAF(\'' +
+				aTaf.getNumero() +
+				"', " +
+				aIndice +
+				')">',
+			ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.TAFARendre.FaitPar",
+			),
+			" ",
+			aTaf.nbrFaitsSelonEleve,
+			"/",
+			aTaf.nbrEleves,
+			"</span>",
+		);
+		return H.join("");
+	}
+	getLienTAFRendu(aTaf, aIndice) {
+		const H = [];
+		const lAvecAction = aTaf && aTaf.avecRendu;
+		const lIENode =
+			" ie-node=\"renduTAF('" + aTaf.getNumero() + "', " + aIndice + ')"';
+		const lAction = lAvecAction
+			? 'aria-haspopup="dialog" tabindex="0" class="AvecMain LienAccueil" ' +
+				lIENode
+			: "";
+		H.push(
+			"<span ",
+			lAction,
+			">",
+			ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.TAFARendre.RenduPar",
+			),
+			" ",
+			aTaf.nbrRendus,
+			"/",
+			aTaf.nbrEleves,
+			"</span>",
+		);
+		return H.join("");
+	}
+	_getNiveauDifficulte(aModeAffichage, aTAF) {
+		const H = [];
+		const lColor =
+			aModeAffichage ===
+			Enumere_ModeAffichageTimeline_1.EModeAffichageTimeline.grille
+				? GCouleur.themeNeutre.foncee
+				: "#FFCC00";
+		if (aTAF && aTAF.niveauDifficulte) {
+			H.push(
+				'<div class="SansMain AlignementDroit" title="',
+				ObjetTraduction_1.GTraductions.getValeur(
+					"CahierDeTexte.NiveauDifficulte",
+				),
+				'">',
+				TypeNiveauDifficulte_1.TypeNiveauDifficulteUtil.getImage(
+					aTAF.niveauDifficulte,
+					{ color: lColor, avecTitle: true },
+				),
+				"</div>",
+			);
+		}
+		return H.join("");
+	}
+	_getDuree(lDonnee) {
+		const T = [];
+		if (
+			lDonnee &&
+			(lDonnee.duree ||
+				(lDonnee.executionQCM && lDonnee.executionQCM.dureeMaxQCM))
+		) {
+			let lDuree = lDonnee.duree;
+			if (lDonnee.executionQCM && lDonnee.executionQCM.dureeMaxQCM) {
+				const lMinutes = UtilitaireDuree_1.TUtilitaireDuree.dureeEnMin(
+					lDonnee.executionQCM.dureeMaxQCM,
+				);
+				const lMinutesSupplementaire =
+					lDonnee.executionQCM.dureeSupplementaire > 0
+						? UtilitaireDuree_1.TUtilitaireDuree.dureeEnMin(
+								lDonnee.executionQCM.dureeSupplementaire,
+							)
+						: 0;
+				lDuree = lMinutes + lMinutesSupplementaire;
+			}
+			const lFormatMin = lDuree > 60 ? "%mm" : "%xm";
+			const lStrDuree = ObjetDate_1.GDate.formatDureeEnMillisecondes(
+				lDuree * 60 * 1000,
+				lDuree > 60 ? "%xh%sh" + lFormatMin : lFormatMin + "mn",
+			);
+			T.push(
+				'<div class="SansMain AlignementDroit" title="',
+				ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.DureeEstimee"),
+				'">',
+				lStrDuree,
+				"</div>",
+			);
+		}
+		return T.join("");
+	}
+	_composeLibelleBouton(aGenre, aLibelle, aAvecIcone) {
+		const T = [];
+		T.push('<div class="NoWrap" style="margin-left:auto; margin-right:auto;">');
+		if (aAvecIcone) {
+			T.push('<i class="icon_punition" role="presentation"></i>');
+		}
+		T.push(
+			'<div class="InlineBlock AlignementMilieuVertical PetitEspaceGauche" style="line-height: 0.95em; max-width: ',
+			this.getWidthActionsTAF() - 3 - 13,
+			'px;">',
+			aLibelle,
+			"</div>",
+		);
+		T.push("</div>");
+		return T.join("");
+	}
+	_estAvecCocheTAFFait(aElement) {
+		const lEstRenduKiosque =
+			TypeGenreRenduTAF_1.TypeGenreRenduTAFUtil.estUnRenduKiosque(
+				aElement.genreRendu,
+			);
+		const lEstRendu =
+			TypeGenreRenduTAF_1.TypeGenreRenduTAFUtil.estUnRenduEnligne(
+				aElement.genreRendu,
+				false,
+			) && !!aElement.documentRendu;
+		const lEstQCM =
+			aElement.executionQCM && aElement.executionQCM.existeNumero();
+		if (!this.peuFaireTAF || lEstQCM || lEstRenduKiosque || lEstRendu) {
+			return false;
+		}
+		return true;
+	}
+	_composeSliderTAFFait(aElement) {
+		const lHtml = [];
+		if (!this._estAvecCocheTAFFait(aElement)) {
+			const lEstFait = aElement.TAFFait || aElement.QCMFait;
+			const lEstRendu =
+				TypeGenreRenduTAF_1.TypeGenreRenduTAFUtil.estUnRenduEnligne(
+					aElement.genreRendu,
+					false,
+				) && !!aElement.documentRendu;
+			if (lEstFait || this.peuFaireTAF) {
+				if (!lEstFait || !lEstRendu) {
+					lHtml.push('<div style="display:flex; justify-content: flex-end;">');
+					lHtml.push(
+						'<div class="AlignementMilieu BorderBox SansMain" style="border-radius: 0.4rem; flex: 0 0 auto; margin: 0rem 0rem 0.4rem 0.8rem; padding: 0.4rem 0.8rem; color: ',
+						GCouleur.themeCouleur.sombre,
+						"; background: ",
+						GCouleur.themeCouleur.claire,
+						';">',
+						lEstFait
+							? ObjetTraduction_1.GTraductions.getValeur(
+									"accueil.hintTravailFait",
+								)
+							: ObjetTraduction_1.GTraductions.getValeur(
+									"accueil.hintTravailNonFait",
+								),
+						"</div>",
+					);
+					lHtml.push("</div>");
+				}
+			}
+		} else {
+			const lAvecERendu =
+				TypeGenreRenduTAF_1.TypeGenreRenduTAFUtil.estUnRenduEnligne(
+					aElement.genreRendu,
+					false,
+				);
+			if (!lAvecERendu) {
+				lHtml.push(
+					'<div class="Espace AlignementDroit">',
+					"<ie-switch ie-model=\"cbFait('",
+					aElement.getNumero(),
+					"')\" ie-hint=\"cbFait.getHint('",
+					aElement.getNumero(),
+					"')\">",
+					ObjetTraduction_1.GTraductions.getValeur("accueil.hintTravailFait"),
+					"</ie-switch>",
+					"</div>",
+				);
+			}
+		}
+		return lHtml.join("");
+	}
 }
-module.exports = { GestionnaireBlocCDT, EGenreBtnActionBlocCDT };

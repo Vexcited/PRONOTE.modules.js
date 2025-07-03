@@ -1,40 +1,43 @@
-const { EEvent } = require("Enumere_Event.js");
-const { ObjetCelluleBouton } = require("ObjetCelluleBouton.js");
-const { Identite } = require("ObjetIdentite.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { EGenreBoutonCellule } = require("ObjetCelluleBouton.js");
-const { ObjetGestionnaireMotifs } = require("ObjetGestionnaireMotifs.js");
-const { EGenreRole } = require("ObjetWAI.js");
-class ObjetCelluleMultiSelectionMotif extends Identite {
+exports.ObjetCelluleMultiSelectionMotif = void 0;
+const Enumere_Event_1 = require("Enumere_Event");
+const ObjetCelluleBouton_1 = require("ObjetCelluleBouton");
+const ObjetIdentite_1 = require("ObjetIdentite");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetCelluleBouton_2 = require("ObjetCelluleBouton");
+const ObjetGestionnaireMotifs_1 = require("ObjetGestionnaireMotifs");
+const ObjetWAI_1 = require("ObjetWAI");
+class ObjetCelluleMultiSelectionMotif extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
 		this.initOptions();
 	}
 	initOptions() {
 		this._options = {
-			genreBouton: EGenreBoutonCellule.Points,
+			genreBouton: ObjetCelluleBouton_2.EGenreBoutonCellule.Points,
 			classTexte: "",
 			largeurBouton: 248,
 			hauteurBouton: 18,
-			labelledById: "",
+			ariaLabelledBy: "",
 		};
 	}
 	setOptions(aOptions) {
 		$.extend(this._options, aOptions);
+		return this;
 	}
 	initialiser() {
-		this.cellule = new ObjetCelluleBouton(
+		this.cellule = new ObjetCelluleBouton_1.ObjetCelluleBouton(
 			this.Nom + ".cellule",
 			null,
 			this,
 			this.surCellule,
 		);
-		this.gestionnaireMotifs = new ObjetGestionnaireMotifs(
-			this.Nom + ".gestionnaireMotifs",
-			null,
-			this,
-			this.surGestionnaireMotifs,
-		);
+		this.gestionnaireMotifs =
+			new ObjetGestionnaireMotifs_1.ObjetGestionnaireMotifs(
+				this.Nom + ".gestionnaireMotifs",
+				null,
+				this,
+				this.surGestionnaireMotifs,
+			);
 		this.setPremierElement(this.cellule.NomEdit);
 		this.cellule.setOptionsObjetCelluleBouton({
 			estSaisissable: false,
@@ -42,9 +45,9 @@ class ObjetCelluleMultiSelectionMotif extends Identite {
 			hauteur: this._options.hauteurBouton,
 			largeur: this._options.largeurBouton,
 			classTexte: this._options.classTexte,
-			labelledById: this._options.labelledById,
+			ariaLabelledBy: this._options.ariaLabelledBy,
 			avecZoneSaisie: false,
-			roleWAI: EGenreRole.Combobox,
+			roleWAI: ObjetWAI_1.EGenreRole.Combobox,
 			popupWAI: "dialog",
 		});
 		if (!!this._options.gestionnaireMotifs) {
@@ -56,23 +59,17 @@ class ObjetCelluleMultiSelectionMotif extends Identite {
 		this.gestionnaireMotifs.initialiser();
 	}
 	construireAffichage() {
-		const H = [];
-		H.push(
-			'<div class="input-wrapper multi-choix" ie-class="getClassesDynamiques" id="',
-			this.cellule.getNom(),
-			'"></div>',
-		);
-		return H.join("");
-	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			getClassesDynamiques: function () {
-				const lClasses = [];
-				if (!aInstance.getActif()) {
-					lClasses.push("input-wrapper-disabled");
-				}
-				return lClasses.join(" ");
-			},
+		const getClassesDynamiques = () => {
+			const lClasses = [];
+			if (!this.getActif()) {
+				lClasses.push("input-wrapper-disabled");
+			}
+			return lClasses.join(" ");
+		};
+		return IE.jsx.str("div", {
+			class: "input-wrapper multi-choix",
+			"ie-class": getClassesDynamiques,
+			id: this.cellule.getNom(),
 		});
 	}
 	surCellule(aGenreEvent) {
@@ -80,10 +77,10 @@ class ObjetCelluleMultiSelectionMotif extends Identite {
 			return;
 		}
 		switch (aGenreEvent) {
-			case EEvent.SurClick:
+			case Enumere_Event_1.EEvent.SurClick:
 				this.gestionnaireMotifs.ouvrirFenetre();
 				break;
-			case EEvent.SurKeyUp:
+			case Enumere_Event_1.EEvent.SurKeyUp:
 				if (
 					GNavigateur.isToucheRetourChariot() ||
 					GNavigateur.isToucheFlecheBas()
@@ -95,7 +92,11 @@ class ObjetCelluleMultiSelectionMotif extends Identite {
 	}
 	surGestionnaireMotifs(aParam) {
 		this._actualiserCellule();
-		if (aParam.event === ObjetGestionnaireMotifs.genreEvent.actualiserDonnees) {
+		if (
+			aParam.event ===
+			ObjetGestionnaireMotifs_1.ObjetGestionnaireMotifs.genreEvent
+				.actualiserDonnees
+		) {
 			this.callback.appel(
 				aParam.genreBouton,
 				aParam.liste,
@@ -104,7 +105,7 @@ class ObjetCelluleMultiSelectionMotif extends Identite {
 		}
 	}
 	_actualiserCellule() {
-		let lListeSelectionne = new ObjetListeElements();
+		let lListeSelectionne = new ObjetListeElements_1.ObjetListeElements();
 		if (this.gestionnaireMotifs) {
 			lListeSelectionne = this.gestionnaireMotifs
 				.getDonnees()
@@ -129,4 +130,4 @@ class ObjetCelluleMultiSelectionMotif extends Identite {
 		this.$refreshSelf();
 	}
 }
-module.exports = { ObjetCelluleMultiSelectionMotif };
+exports.ObjetCelluleMultiSelectionMotif = ObjetCelluleMultiSelectionMotif;

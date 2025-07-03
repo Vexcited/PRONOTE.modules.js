@@ -9,6 +9,7 @@ const ObjetFenetre_Liste_1 = require("ObjetFenetre_Liste");
 const ObjetElement_1 = require("ObjetElement");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetTraduction_1 = require("ObjetTraduction");
+const AccessApp_1 = require("AccessApp");
 class ObjetFenetre_ParametrageSaml extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
@@ -82,7 +83,10 @@ class ObjetFenetre_ParametrageSaml extends ObjetFenetre_1.ObjetFenetre {
 	}
 	surValidation(aNumeroBouton) {
 		this.fermer();
-		this.callback.appel(aNumeroBouton === 1 ? this.parametresSaml : null);
+		this.callback.appel(
+			aNumeroBouton,
+			aNumeroBouton === 1 ? this.parametresSaml : null,
+		);
 	}
 	modifierRevendication(aRevendication) {
 		this.parametresSaml.identifiantUnique = aRevendication.uri;
@@ -134,7 +138,7 @@ class ObjetFenetre_ParametrageSaml extends ObjetFenetre_1.ObjetFenetre {
 		const lDonneesListe = new ObjetDonneesListe_1.ObjetDonneesListe(
 			lListeReference,
 		);
-		lDonneesListe.getHintForce = function (aParams) {
+		lDonneesListe.getTooltip = function (aParams) {
 			return aParams.article.uri;
 		};
 		lDonneesListe.setOptions({
@@ -207,7 +211,9 @@ class ObjetFenetre_ParametrageSaml extends ObjetFenetre_1.ObjetFenetre {
 			ObjetStyle_1.GStyle.composeWidth(
 				this.optionsFenetreParametrageSaml.largeurInput,
 			),
-			ObjetStyle_1.GStyle.composeCouleurBordure(GCouleur.noir),
+			ObjetStyle_1.GStyle.composeCouleurBordure(
+				(0, AccessApp_1.getApp)().getCouleur().noir,
+			),
 			'" />',
 			"</div>",
 			'<div class="InlineBlock AlignementMilieuVertical EspaceGauche">',

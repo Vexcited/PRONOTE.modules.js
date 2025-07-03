@@ -1,16 +1,12 @@
-const { PageOffresStages } = require("PageOffresStages.js");
-const {
-	ObjetRequeteListeOffresStages,
-} = require("ObjetRequeteListeOffresStages.js");
-const { InterfacePage } = require("InterfacePage.js");
-class PageOffresStagesPN extends InterfacePage {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.PageOffresStagesPN = void 0;
+const PageOffresStages_1 = require("PageOffresStages");
+const ObjetRequeteListeOffresStages_1 = require("ObjetRequeteListeOffresStages");
+const InterfacePage_1 = require("InterfacePage");
+class PageOffresStagesPN extends InterfacePage_1.InterfacePage {
 	construireInstances() {
 		this.identPage = this.add(
-			PageOffresStages,
-			_evntPageOffresStage.bind(this),
+			PageOffresStages_1.PageOffresStages,
+			null,
 			_initPageOffresStage.bind(this),
 		);
 	}
@@ -19,18 +15,16 @@ class PageOffresStagesPN extends InterfacePage {
 		this.IdentZoneAlClient = this.identPage;
 	}
 	recupererDonnees() {
-		new ObjetRequeteListeOffresStages(
+		new ObjetRequeteListeOffresStages_1.ObjetRequeteListeOffresStages(
 			this,
-			_actionSurRecupererListeOffres.bind(this),
+			this.actionSurRecupererListeOffres.bind(this),
 		).lancerRequete();
 	}
+	actionSurRecupererListeOffres(aParam) {
+		this.getInstance(this.identPage).setDonnees(aParam.listeEntreprises);
+	}
 }
-function _evntPageOffresStage() {}
+exports.PageOffresStagesPN = PageOffresStagesPN;
 function _initPageOffresStage(aInstance) {
 	aInstance.setOptions({ avecPeriode: true, avecPeriodeUnique: false });
 }
-function _actionSurRecupererListeOffres(aParam) {
-	this.listeEntreprises = aParam.listeEntreprises;
-	this.getInstance(this.identPage).setDonnees(this.listeEntreprises);
-}
-module.exports = { PageOffresStagesPN };

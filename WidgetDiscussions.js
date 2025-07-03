@@ -5,16 +5,17 @@ const Invocateur_1 = require("Invocateur");
 const Enumere_Onglet_1 = require("Enumere_Onglet");
 const ObjetWidget_1 = require("ObjetWidget");
 const jsx_1 = require("jsx");
+const AccessApp_1 = require("AccessApp");
 class WidgetDiscussions extends ObjetWidget_1.Widget.ObjetWidget {
 	constructor(...aParams) {
 		super(...aParams);
-		const lApplicationSco = GApplication;
+		const lApplicationSco = (0, AccessApp_1.getApp)();
 		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
 	}
 	construire(aParams) {
 		this.donnees = aParams.donnees;
 		const lWidget = {
-			html: this.composeWidgetDiscussions(),
+			getHtml: this.composeWidgetDiscussions.bind(this),
 			nbrElements: this.donnees.listeMessagerie
 				? this.donnees.listeMessagerie.count()
 				: 0,

@@ -8,17 +8,18 @@ const ObjetSaisie_1 = require("ObjetSaisie");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const Enumere_EvenementWidget_1 = require("Enumere_EvenementWidget");
 const ObjetWidget_1 = require("ObjetWidget");
+const AccessApp_1 = require("AccessApp");
 class WidgetDonneesProfs extends ObjetWidget_1.Widget.ObjetWidget {
 	constructor(...aParams) {
 		super(...aParams);
-		this.applicationSco = GApplication;
+		this.applicationSco = (0, AccessApp_1.getApp)();
 		this.etatUtilisateurSco = this.applicationSco.getEtatUtilisateur();
 	}
 	construire(aParams) {
 		this.donnees = aParams.donnees;
 		this.creerObjetsDonneesProfs();
 		const lWidget = {
-			html: this.composeWidgetDonneesProfs(),
+			getHtml: this.composeWidgetDonneesProfs.bind(this),
 			nbrElements: 0,
 			afficherMessage: this.donnees.listeDonneesProfs
 				? this.donnees.listeDonneesProfs.count() === 0

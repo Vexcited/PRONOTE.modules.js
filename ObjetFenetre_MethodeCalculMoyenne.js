@@ -8,6 +8,9 @@ class ObjetFenetre_MethodeCalculMoyenne extends ObjetFenetre_1.ObjetFenetre {
 		super(...aParams);
 		this.donneesRecues = false;
 	}
+	getParametresCalcul() {
+		return this.parametresCalcul;
+	}
 	composeTitreFormule() {
 		if (this.titreFenetre) {
 			this.setOptionsFenetre({ titre: this.titreFenetre + "&nbsp;" });
@@ -49,14 +52,20 @@ class ObjetFenetre_MethodeCalculMoyenne extends ObjetFenetre_1.ObjetFenetre {
 		const T = [];
 		if (this.donneesRecues) {
 			T.push(
-				'<div class="Texte10 Espace Gras" style="margin-bottom: 5px;">',
-				this.composeTitreFormule(),
-				"</div>",
-			);
-			T.push(
-				'<div class="Texte10 Espace FondBlanc MethodeCalculMoyenne">' +
-					this.formuleHTML +
-					"</div>",
+				IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
+						"div",
+						{ class: "Texte10 Espace Gras", style: "margin-bottom: 5px;" },
+						this.composeTitreFormule(),
+					),
+					IE.jsx.str(
+						"div",
+						{ class: "Texte10 Espace FondBlanc MethodeCalculMoyenne" },
+						this.formuleHTML,
+					),
+				),
 			);
 		}
 		return T.join("");

@@ -21,6 +21,8 @@ const ObjetFenetre_ChargeTAF_1 = require("ObjetFenetre_ChargeTAF");
 const ObjetCelluleMultiSelectionThemes_1 = require("ObjetCelluleMultiSelectionThemes");
 const EGenreEvenementContenuCahierDeTextes_1 = require("EGenreEvenementContenuCahierDeTextes");
 const ObjetFenetre_ParamExecutionQCM_1 = require("ObjetFenetre_ParamExecutionQCM");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const GUID_1 = require("GUID");
 class InterfaceTAFCahierDeTextes extends _InterfaceContenuEtTAFCahierDeTextes_1._InterfaceContenuEtTAFCahierDeTextes {
 	constructor(...aParams) {
 		super(...aParams);
@@ -56,7 +58,7 @@ class InterfaceTAFCahierDeTextes extends _InterfaceContenuEtTAFCahierDeTextes_1.
 			this._evenementSelectDate,
 			(aInstance) => {
 				aInstance.setOptionsObjetCelluleDate({
-					labelWAI: ObjetTraduction_1.GTraductions.getValeur(
+					ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
 						"CahierDeTexte.pourLe",
 					),
 				});
@@ -79,14 +81,55 @@ class InterfaceTAFCahierDeTextes extends _InterfaceContenuEtTAFCahierDeTextes_1.
 				aParametresAffichage.avecElevesConcernes;
 		}
 	}
+	jsxModeleRadioDureeEstimee(aEstAucune) {
+		return {
+			getValue: () => {
+				return (!this.taf || this.taf.duree === 0) === aEstAucune;
+			},
+			setValue: (aValue) => {
+				this.taf.duree = aEstAucune ? 0 : this.parametres.dureeTAFDefaut;
+				this.taf.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+				this.Pere.setEtatSaisie(true);
+			},
+			getDisabled: () => {
+				return !this._saisieAffichageAutorise();
+			},
+			getName: () => {
+				return `${this.Nom}_DureeEstimee`;
+			},
+		};
+	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
 			getHtmlEleves: function () {
-				if (
-					!aInstance.taf ||
-					aInstance.taf.estPourTous ||
-					!aInstance.taf.listeEleves
-				) {
+				var _a, _b, _c, _d, _e, _f;
+				const lAvecMessageTous =
+					(((_b =
+						(_a = aInstance.params) === null || _a === void 0
+							? void 0
+							: _a.listeTousEleves) === null || _b === void 0
+						? void 0
+						: _b.count()) ===
+						((_d =
+							(_c =
+								aInstance === null || aInstance === void 0
+									? void 0
+									: aInstance.taf) === null || _c === void 0
+								? void 0
+								: _c.listeEleves) === null || _d === void 0
+							? void 0
+							: _d.count()) ||
+						((_f =
+							(_e =
+								aInstance === null || aInstance === void 0
+									? void 0
+									: aInstance.taf) === null || _e === void 0
+								? void 0
+								: _e.listeEleves) === null || _f === void 0
+							? void 0
+							: _f.count()) === 0) &&
+					aInstance.taf.estPourTous;
+				if (!aInstance.taf || !aInstance.taf.listeEleves || lAvecMessageTous) {
 					return ObjetTraduction_1.GTraductions.getValeur(
 						"CahierDeTexte.tousLesEleves",
 					);
@@ -101,13 +144,13 @@ class InterfaceTAFCahierDeTextes extends _InterfaceContenuEtTAFCahierDeTextes_1.
 			},
 			getHtmDisponibilites: function () {
 				if (aInstance.taf && aInstance.taf.executionQCM) {
-					const lHtml = ObjetDate_1.GDate.formatDate(
+					const lStrDatePubli = ObjetDate_1.GDate.formatDate(
 						aInstance.taf.executionQCM.dateDebutPublication,
 						"%JJ/%MM - %hh%sh%mm",
 					);
 					let lStr = ObjetTraduction_1.GTraductions.getValeur(
 						"CahierDeTexte.taf.DisponibleAPartirDuNet",
-						[lHtml],
+						[lStrDatePubli],
 					);
 					if (
 						!aInstance.params ||
@@ -142,10 +185,12 @@ class InterfaceTAFCahierDeTextes extends _InterfaceContenuEtTAFCahierDeTextes_1.
 			},
 			btnChargeTAF: {
 				event: function () {
-					ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
-						ObjetFenetre_ChargeTAF_1.ObjetFenetre_ChargeTAF,
-						{ pere: aInstance },
-					).setDonnees(
+					const lFenetreChargeTAF =
+						ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+							ObjetFenetre_ChargeTAF_1.ObjetFenetre_ChargeTAF,
+							{ pere: aInstance },
+						);
+					lFenetreChargeTAF.setDonnees(
 						aInstance.params.cours,
 						aInstance.params.saisieCDT.listeClasses,
 						null,
@@ -154,21 +199,6 @@ class InterfaceTAFCahierDeTextes extends _InterfaceContenuEtTAFCahierDeTextes_1.
 				},
 				getDisplay: function () {
 					return aInstance.params.saisieCDT.voirTousLeCDTetCharge;
-				},
-			},
-			rbDuree: {
-				getValue: function (aAucune) {
-					return (!aInstance.taf || aInstance.taf.duree === 0) === aAucune;
-				},
-				setValue: function (aAucune) {
-					aInstance.taf.duree = aAucune
-						? 0
-						: aInstance.parametres.dureeTAFDefaut;
-					aInstance.taf.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
-					aInstance.Pere.setEtatSaisie(true);
-				},
-				getDisabled: function () {
-					return !aInstance._saisieAffichageAutorise();
 				},
 			},
 			inputDuree: {
@@ -340,46 +370,59 @@ class InterfaceTAFCahierDeTextes extends _InterfaceContenuEtTAFCahierDeTextes_1.
 		return this.taf;
 	}
 	construireStructureAffichageAutre() {
-		const T = [];
-		T.push('<div class="flex-contain cols full-width flex-gap-l">');
-		T.push(this._construireEntete());
-		if (this.taf.executionQCM) {
-			T.push(
-				'<div class="fluid-bloc">',
-				"<div>",
-				'<span class="semi-bold m-right-s">' +
-					ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.ExosQCM") +
-					" : </span>",
-				this.taf.descriptif,
-				"</div>",
-				'<p class="m-left-big m-y p-left-l">',
-				UtilitaireQCM_1.UtilitaireQCM.getStrResumeModalites(
-					this.taf.executionQCM,
-				),
-				"</p>",
-				'<p class="m-left-big m-y p-left-l" ie-html="getHtmDisponibilites"></p>',
-				"</div>",
-			);
-		} else {
-			T.push(
-				'<div class="fluid-bloc flex-contain flex-gap flex-start">',
-				'<div class="fix-bloc">',
-				this.construireBoutonsLiens(),
-				"</div>",
-				'<div class="fluid-bloc">',
-				this.construireEditeur(),
-				"</div>",
-				"</div>",
-			);
-			T.push(
-				'<div class="fix-bloc flex-contain m-left-xxl p-left" id="',
-				this.idDocsJoints,
-				'">',
-				"</div>",
-			);
-		}
-		T.push("</div>");
-		return T.join("");
+		return IE.jsx.str(
+			"div",
+			{ class: "flex-contain cols full-width flex-gap-l" },
+			this._construireEntete(),
+			this.taf.executionQCM
+				? IE.jsx.str(
+						"div",
+						{ class: "fluid-bloc" },
+						IE.jsx.str(
+							"div",
+							null,
+							IE.jsx.str(
+								"span",
+								{ class: "semi-bold m-right-s" },
+								ObjetTraduction_1.GTraductions.getValeur(
+									"CahierDeTexte.ExosQCM",
+								),
+								" : ",
+							),
+							" ",
+							this.taf.descriptif,
+						),
+						IE.jsx.str(
+							"p",
+							{ class: "m-left-big m-y p-left-l" },
+							UtilitaireQCM_1.UtilitaireQCM.getStrResumeModalites(
+								this.taf.executionQCM,
+							),
+						),
+						IE.jsx.str("p", {
+							class: "m-left-big m-y p-left-l",
+							"ie-html": "getHtmDisponibilites",
+						}),
+					)
+				: IE.jsx.str(
+						"div",
+						{ class: "fluid-bloc flex-contain flex-gap flex-start" },
+						IE.jsx.str(
+							"div",
+							{ class: "fix-bloc" },
+							this.construireBoutonsLiens(),
+						),
+						IE.jsx.str(
+							"div",
+							{ class: "fluid-bloc" },
+							this.construireEditeur(),
+						),
+					),
+			IE.jsx.str("div", {
+				class: "fix-bloc flex-contain m-left-xxl p-left",
+				id: this.idDocsJoints,
+			}),
+		);
 	}
 	_setDescriptif(aHtml) {
 		if (
@@ -392,7 +435,7 @@ class InterfaceTAFCahierDeTextes extends _InterfaceContenuEtTAFCahierDeTextes_1.
 				this.taf.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 			}
 			const lDescriptif = aHtml;
-			if (GNavigateur.withContentEditable) {
+			if (ObjetNavigateur_1.Navigateur.withContentEditable) {
 				this.taf.descriptif = TinyInit_1.TinyInit.estContenuVide(lDescriptif)
 					? ""
 					: lDescriptif;
@@ -418,21 +461,11 @@ class InterfaceTAFCahierDeTextes extends _InterfaceContenuEtTAFCahierDeTextes_1.
 		);
 		this.taf = this.params.contenu;
 		this.cahierDeTexteVerrouille = this.params.verrouille;
-		const lListeTousEleves = new ObjetListeElements_1.ObjetListeElements();
-		if (this.params.saisieCDT.listeClassesEleves) {
-			this.params.saisieCDT.listeClassesEleves.parcourir((aClasse) => {
-				if (!!aClasse.listeEleves) {
-					lListeTousEleves.add(aClasse.listeEleves);
-				}
-			});
-		}
-		lListeTousEleves.trier();
-		this.params.listeTousEleves = lListeTousEleves;
 	}
 	actualiserTAF() {
 		ObjetHtml_1.GHtml.setHtml(this.idDescriptif, this.taf.descriptif);
 		if (!this.taf.executionQCM) {
-			if (GNavigateur.withContentEditable) {
+			if (ObjetNavigateur_1.Navigateur.withContentEditable) {
 				const lEditor = TinyInit_1.TinyInit.get(this.idDescriptif);
 				if (lEditor) {
 					this._affecterContenuTiny(lEditor, this.taf.descriptif);
@@ -466,7 +499,7 @@ class InterfaceTAFCahierDeTextes extends _InterfaceContenuEtTAFCahierDeTextes_1.
 		}
 	}
 	focusSurPremierObjet() {
-		if (GNavigateur.withContentEditable) {
+		if (ObjetNavigateur_1.Navigateur.withContentEditable) {
 			const lEditor = TinyInit_1.TinyInit.get(this.idDescriptif);
 			if (lEditor && lEditor.initialized) {
 				try {
@@ -485,75 +518,137 @@ class InterfaceTAFCahierDeTextes extends _InterfaceContenuEtTAFCahierDeTextes_1.
 		return !this.cahierDeTexteVerrouille;
 	}
 	_construireEntete() {
-		const T = [];
-		T.push(
-			'<div class="flex-contain flex-center flex-gap justify-between">',
-			'<div class="flex-contain flex-center flex-gap fix-bloc">',
-			"<div>",
-			ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.pourLe"),
-			"</div>",
-			'<div id="' +
-				this.getInstance(this.identSelectDate).getNom() +
-				'"></div>',
-			!this.taf.executionQCM &&
-				!TypeGenreRenduTAF_1.TypeGenreRenduTAFUtil.estUnRenduKiosque(
-					this.taf.genreRendu,
-				)
-				? '<div><ie-combo ie-model="comboRendu"></ie-combo></div>'
-				: "",
-			this.taf.executionQCM
-				? [
-						'<ie-btnicon ie-model="btnQCM" class="icon_cog" title="',
-						ObjetTraduction_1.GTraductions.getValeur(
-							"CahierDeTexte.ParametresExeQCMTAF",
-						),
-						'"></ie-btnicon>',
-					].join("")
-				: "",
-			'<div class="Insecable" ie-html="getHtmlEleves"></div>',
-			'<ie-bouton ie-model="btnEleves">...</ie-bouton>',
-			"</div>",
-			'<ie-bouton class="m-left-l small-bt themeBoutonNeutre" ie-model="btnChargeTAF" ie-display="btnChargeTAF.getDisplay">',
-			ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.VoirLaChargeTAF"),
-			"</ie-bouton>",
-			"</div>",
-			'<div class="flex-contain flex-center flex-gap">',
-			!this.taf.executionQCM
-				? [
-						"<div>",
-						ObjetTraduction_1.GTraductions.getValeur(
-							"CahierDeTexte.DureeEstimee",
-						),
-						"</div>",
-						"<ie-radio",
-						ObjetHtml_1.GHtml.composeAttr("ie-model", "rbDuree", true),
-						">",
-						ObjetTraduction_1.GTraductions.getValeur("Aucune"),
-						"</ie-radio>",
-						"<ie-radio",
-						ObjetHtml_1.GHtml.composeAttr("ie-model", "rbDuree", false),
-						' class="m-right-xl">',
-						'<input ie-model="inputDuree" ie-mask="/[^0-9]/i" maxlength="10" class="m-x CelluleTexte" style="',
-						ObjetStyle_1.GStyle.composeWidth(40),
-						'"/>',
-						ObjetTraduction_1.GTraductions.getValeur("date.separateurMn"),
-						"</ie-radio>",
-					].join("")
-				: "",
-			'<ie-combo ie-model="comboDifficulte"></ie-combo>',
-			"</div>",
+		const lIdNbEleve = GUID_1.GUID.getId();
+		return IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			IE.jsx.str(
+				"div",
+				{ class: "flex-contain flex-center flex-gap justify-between" },
+				IE.jsx.str(
+					"div",
+					{ class: "flex-contain flex-center flex-gap fix-bloc" },
+					IE.jsx.str(
+						"div",
+						null,
+						ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.pourLe"),
+					),
+					IE.jsx.str("div", { id: this.getNomInstance(this.identSelectDate) }),
+					!this.taf.executionQCM &&
+						!TypeGenreRenduTAF_1.TypeGenreRenduTAFUtil.estUnRenduKiosque(
+							this.taf.genreRendu,
+						)
+						? IE.jsx.str(
+								"div",
+								null,
+								IE.jsx.str("ie-combo", { "ie-model": "comboRendu" }),
+							)
+						: "",
+					this.taf.executionQCM
+						? [
+								IE.jsx.str("ie-btnicon", {
+									"ie-model": "btnQCM",
+									class: "icon_cog",
+									title: ObjetTraduction_1.GTraductions.getValeur(
+										"CahierDeTexte.ParametresExeQCMTAF",
+									),
+								}),
+							].join("")
+						: "",
+					IE.jsx.str("label", {
+						class: "Insecable",
+						"ie-html": "getHtmlEleves",
+						id: lIdNbEleve,
+					}),
+					IE.jsx.str(
+						"ie-bouton",
+						{
+							"ie-model": "btnEleves",
+							"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+								"CahierDeTexte.titreFenetreTAFEleves",
+							),
+							"aria-describedby": lIdNbEleve,
+						},
+						"...",
+					),
+				),
+				IE.jsx.str(
+					"ie-bouton",
+					{
+						class: "m-left-l small-bt themeBoutonNeutre",
+						"ie-model": "btnChargeTAF",
+						"ie-display": "btnChargeTAF.getDisplay",
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"CahierDeTexte.VoirLaChargeTAF",
+					),
+				),
+			),
+			IE.jsx.str(
+				"div",
+				{ class: "flex-contain flex-center flex-gap" },
+				!this.taf.executionQCM
+					? [
+							IE.jsx.str(
+								IE.jsx.fragment,
+								null,
+								IE.jsx.str(
+									"label",
+									{ for: "idDuree" },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"CahierDeTexte.DureeEstimee",
+									),
+								),
+								IE.jsx.str(
+									"ie-radio",
+									{
+										"ie-model": this.jsxModeleRadioDureeEstimee.bind(
+											this,
+											true,
+										),
+									},
+									" ",
+									ObjetTraduction_1.GTraductions.getValeur("Aucune"),
+								),
+								IE.jsx.str(
+									"ie-radio",
+									{
+										"ie-model": this.jsxModeleRadioDureeEstimee.bind(
+											this,
+											false,
+										),
+										class: "m-right-xl",
+									},
+									IE.jsx.str("input", {
+										id: "idDuree",
+										"ie-model": "inputDuree",
+										"ie-mask": "/[^0-9]/i",
+										maxlength: "10",
+										class: "m-x CelluleTexte",
+										style: ObjetStyle_1.GStyle.composeWidth(40),
+									}),
+									ObjetTraduction_1.GTraductions.getValeur("date.separateurMn"),
+								),
+							),
+						].join("")
+					: "",
+				IE.jsx.str("ie-combo", { "ie-model": "comboDifficulte" }),
+			),
 			this.avecThemes
-				? '<div class="m-bottom-l">' +
-						'<label class="m-bottom-s">' +
-						ObjetTraduction_1.GTraductions.getValeur("Themes") +
-						"</label>" +
-						'<div id="' +
-						this.getInstance(this.identMultiSelectionTheme).getNom() +
-						'"></div>' +
-						"</div>"
+				? IE.jsx.str(
+						"div",
+						{ class: "m-bottom-l" },
+						IE.jsx.str(
+							"label",
+							{ class: "m-bottom-s" },
+							ObjetTraduction_1.GTraductions.getValeur("Themes"),
+						),
+						IE.jsx.str("div", {
+							id: this.getNomInstance(this.identMultiSelectionTheme),
+						}),
+					)
 				: "",
 		);
-		return T.join("");
 	}
 	_evenementSelectDate(aDate) {
 		this.taf.PourLe = aDate;

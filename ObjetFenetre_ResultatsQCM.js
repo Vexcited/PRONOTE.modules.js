@@ -19,6 +19,13 @@ const GUID_1 = require("GUID");
 const ObjetHtml_1 = require("ObjetHtml");
 const TypeHttpSaisieResultatQCM_1 = require("TypeHttpSaisieResultatQCM");
 const ObjetRequeteSaisieQCMResultat_1 = require("ObjetRequeteSaisieQCMResultat");
+const AccessApp_1 = require("AccessApp");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+class ObjetRequeteSaisieQCMQuestionNote extends ObjetRequeteJSON_1.ObjetRequeteSaisie {}
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieQCMQuestionNote",
+	ObjetRequeteSaisieQCMQuestionNote,
+);
 class ObjetFenetre_ResultatsQCM extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
@@ -32,8 +39,8 @@ class ObjetFenetre_ResultatsQCM extends ObjetFenetre_1.ObjetFenetre {
 			titre: ObjetTraduction_1.GTraductions.getValeur(
 				"SaisieQCM.SaisieResultats",
 			),
-			largeur: GNavigateur.clientL - 76,
-			hauteur: GNavigateur.clientH - 80,
+			largeur: ObjetNavigateur_1.Navigateur.clientL - 76,
+			hauteur: ObjetNavigateur_1.Navigateur.clientH - 80,
 			avecTailleSelonContenu: true,
 		});
 		this.cacheInfoCoursExecution = [];
@@ -74,18 +81,20 @@ class ObjetFenetre_ResultatsQCM extends ObjetFenetre_1.ObjetFenetre {
 					aParametres.article.getEtat() !== Enumere_Etat_1.EGenreEtat.Aucun
 				) {
 					const lThis = this;
-					GApplication.getMessage().afficher({
-						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
-						message: ObjetTraduction_1.GTraductions.getValeur(
-							"SaisieQCM.messageMajDevoir",
-						),
-						controleur: {},
-						callback: function (aParametres, aGenreAction) {
-							const lAvecMajDevoir =
-								aGenreAction === Enumere_Action_1.EGenreAction.Valider;
-							lThis.validerQCMQuestionNote(aParametres, lAvecMajDevoir);
-						}.bind(this, aParametres),
-					});
+					(0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+							message: ObjetTraduction_1.GTraductions.getValeur(
+								"SaisieQCM.messageMajDevoir",
+							),
+							controleur: {},
+							callback: function (aParametres, aGenreAction) {
+								const lAvecMajDevoir =
+									aGenreAction === Enumere_Action_1.EGenreAction.Valider;
+								lThis.validerQCMQuestionNote(aParametres, lAvecMajDevoir);
+							}.bind(this, aParametres),
+						});
 				}
 				break;
 		}
@@ -138,7 +147,8 @@ class ObjetFenetre_ResultatsQCM extends ObjetFenetre_1.ObjetFenetre {
 			this.getInstance(this.idResultatsQCM).effacer(this.donneesQCM.message);
 			ObjetHtml_1.GHtml.setDisplay(this.idLegende, false);
 		} else {
-			this.optionsFenetre.titre = ObjetTraduction_1.GTraductions.getValeur(
+			this.optionsFenetre.titre = "<span>";
+			this.optionsFenetre.titre += ObjetTraduction_1.GTraductions.getValeur(
 				"SaisieQCM.SaisieResultats",
 			);
 			this.optionsFenetre.titre += " : " + this.donneesQCM.QCM.getLibelle();
@@ -148,7 +158,7 @@ class ObjetFenetre_ResultatsQCM extends ObjetFenetre_1.ObjetFenetre {
 				);
 				this.optionsFenetre.titre +=
 					" (" +
-					'<i class="' +
+					'<i role="presentation" class="' +
 					lIcon +
 					'"></i><span class="m-left">' +
 					this.donneesQCM.elementRacine.getLibelle() +
@@ -156,6 +166,7 @@ class ObjetFenetre_ResultatsQCM extends ObjetFenetre_1.ObjetFenetre {
 					this.donneesQCM.elementRacine.nomPublic +
 					"</span>)";
 			}
+			this.optionsFenetre.titre += "</span>";
 			const lAvecPointsRectifies = this.verifierSiPointsRectifies(
 				this.donneesQCM.listeEleves,
 			);
@@ -371,7 +382,7 @@ class ObjetFenetre_ResultatsQCM extends ObjetFenetre_1.ObjetFenetre {
 		let lIndice = 1;
 		lOptions.listeQuestions.parcourir((aQuestion) => {
 			const lTitleHtml = [];
-			lTitleHtml.push('<div id="', lOptions.idQuest, lIndice, '" >');
+			lTitleHtml.push('<div id="', lOptions.idQuest, lIndice, '">');
 			lTitleHtml.push(
 				ObjetTraduction_1.GTraductions.getValeur("QCM_Divers.quest"),
 				lIndice,
@@ -485,7 +496,7 @@ class ObjetFenetre_ResultatsQCM extends ObjetFenetre_1.ObjetFenetre {
 			};
 			lObjetSaisie.reponse.note = new TypeNote_1.TypeNote(lReponse.note);
 			lObjetSaisie.reponse.majDevoir = aAvecMajDevoir;
-			(0, CollectionRequetes_1.Requetes)("SaisieQCMQuestionNote", this)
+			new ObjetRequeteSaisieQCMQuestionNote(this)
 				.lancerRequete(lObjetSaisie)
 				.then((aParams) => {
 					if (

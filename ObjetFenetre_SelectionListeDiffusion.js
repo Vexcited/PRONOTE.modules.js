@@ -1,76 +1,83 @@
-const { GChaine } = require("ObjetChaine.js");
-const { ObjetFenetre_Liste } = require("ObjetFenetre_Liste.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetListe } = require("ObjetListe.js");
-class ObjetFenetre_SelectionListeDiffusion extends ObjetFenetre_Liste {
+exports.ObjetFenetre_SelectionListeDiffusion = void 0;
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetFenetre_Liste_1 = require("ObjetFenetre_Liste");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetListe_1 = require("ObjetListe");
+const AccessApp_1 = require("AccessApp");
+class ObjetFenetre_SelectionListeDiffusion extends ObjetFenetre_Liste_1.ObjetFenetre_Liste {
 	constructor(...aParams) {
 		super(...aParams);
+		this.appSco = (0, AccessApp_1.getApp)();
 		this.uniquementMesListes =
-			GApplication.parametresUtilisateur.get(
+			this.appSco.parametresUtilisateur.get(
 				"listeDiffusion.uniquementMesListes",
 			) || false;
 		this.setOptionsFenetre({
 			modale: true,
-			titre: GTraductions.getValeur("listeDiffusion.titre"),
+			titre: ObjetTraduction_1.GTraductions.getValeur("listeDiffusion.titre"),
 			largeur: 300,
 			hauteur: 470,
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 		});
 	}
 	initialiserListe(aInstance) {
-		aInstance.setOptionsListe({ skin: ObjetListe.skin.flatDesign });
-	}
-	getControleur() {
-		return $.extend(true, super.getControleur(this), {
-			cbLesMiens: {
-				getValue: function () {
-					return GApplication.parametresUtilisateur.get(
-						"listeDiffusion.uniquementMesListes",
-					);
-				},
-				setValue: function (aValue) {
-					_evenementSurCB.call(this.instance, aValue);
-				},
-			},
+		aInstance.setOptionsListe({
+			ariaLabel: this.optionsFenetre.titre,
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
 		});
 	}
 	composeContenu() {
-		const T = [];
-		T.push('<div class="flex-contain cols full-size">');
-		T.push(
-			'<div class="fix-bloc p-all-l">',
-			'<ie-checkbox ie-model="cbLesMiens">',
-			GChaine.insecable(GTraductions.getValeur("listeDiffusion.lesMiens")),
-			"</ie-checkbox>",
-			"</div>",
+		const lcbLesMiens = () => {
+			return {
+				getValue: () => {
+					return this.appSco.parametresUtilisateur.get(
+						"listeDiffusion.uniquementMesListes",
+					);
+				},
+				setValue: (aValue) => {
+					this.evenementSurCB(aValue);
+				},
+			};
+		};
+		return IE.jsx.str(
+			"div",
+			{ class: "flex-contain cols full-size" },
+			IE.jsx.str(
+				"div",
+				{ class: "fix-bloc p-all-l" },
+				IE.jsx.str(
+					"ie-checkbox",
+					{ "ie-model": lcbLesMiens },
+					ObjetChaine_1.GChaine.insecable(
+						ObjetTraduction_1.GTraductions.getValeur("listeDiffusion.lesMiens"),
+					),
+				),
+			),
+			IE.jsx.str("div", {
+				class: "fluid-bloc",
+				id: this.getNomInstance(this.identListe),
+			}),
 		);
-		T.push(
-			'<div class="fluid-bloc" id="' +
-				this.getNomInstance(this.identListe) +
-				'">',
-			"</div>",
+	}
+	evenementSurCB(aValue) {
+		this.uniquementMesListes = !!aValue;
+		this.appSco.parametresUtilisateur.set(
+			"listeDiffusion.uniquementMesListes",
+			this.uniquementMesListes,
 		);
-		T.push("</div>");
-		return T.join("");
+		if (
+			this.getInstance(this.identListe) &&
+			this.getInstance(this.identListe).getDonneesListe()
+		) {
+			this.getInstance(this.identListe)
+				.getDonneesListe()
+				.setUniquementMesListes(this.uniquementMesListes);
+			this.getInstance(this.identListe).actualiser(true, false);
+		}
 	}
 }
-function _evenementSurCB(aValue) {
-	this.uniquementMesListes = !!aValue;
-	GApplication.parametresUtilisateur.set(
-		"listeDiffusion.uniquementMesListes",
-		this.uniquementMesListes,
-	);
-	if (
-		this.getInstance(this.identListe) &&
-		this.getInstance(this.identListe).getDonneesListe()
-	) {
-		this.getInstance(this.identListe)
-			.getDonneesListe()
-			.setUniquementMesListes(this.uniquementMesListes);
-		this.getInstance(this.identListe).actualiser(true, false);
-	}
-}
-module.exports = { ObjetFenetre_SelectionListeDiffusion };
+exports.ObjetFenetre_SelectionListeDiffusion =
+	ObjetFenetre_SelectionListeDiffusion;

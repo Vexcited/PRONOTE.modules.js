@@ -1,44 +1,36 @@
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { GDate } = require("ObjetDate.js");
-const { Identite } = require("ObjetIdentite.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { EGenreTriElement } = require("Enumere_TriElement.js");
-const { EGenreOnglet } = require("Enumere_Onglet.js");
-const {
-	ObjetRequeteSaisieTAFFaitEleve,
-} = require("ObjetRequeteSaisieTAFFaitEleve.js");
-const {
-	ObjetUtilitaireCahierDeTexte,
-} = require("ObjetUtilitaireCahierDeTexte.js");
-const { UtilitaireTAFEleves } = require("UtilitaireTAFEleves.js");
-const { UtilitaireContenuDeCours } = require("UtilitaireContenuDeCours.js");
-const { EGenreBtnActionBlocTAF } = require("GestionnaireBlocTAF.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const {
-	EGenreTypeRessourcesPedagogiques,
-} = require("Enumere_TypeRessourcesPedagogiques.js");
-const {
-	ObjetFenetre_ForumVisuPosts,
-} = require("ObjetFenetre_ForumVisuPosts.js");
-const { ObjetGalerieCarrousel } = require("ObjetGalerieCarrousel.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { TypeGenreMiniature } = require("TypeGenreMiniature.js");
-class PageCahierDeTexteEleve extends Identite {
-	constructor(...aParams) {
-		super(...aParams);
+exports.PageCahierDeTexteEleve = void 0;
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetIdentite_1 = require("ObjetIdentite");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_TriElement_1 = require("Enumere_TriElement");
+const Enumere_Onglet_1 = require("Enumere_Onglet");
+const ObjetRequeteSaisieTAFFaitEleve_1 = require("ObjetRequeteSaisieTAFFaitEleve");
+const ObjetUtilitaireCahierDeTexte_1 = require("ObjetUtilitaireCahierDeTexte");
+const UtilitaireTAFEleves_1 = require("UtilitaireTAFEleves");
+const UtilitaireContenuDeCours_1 = require("UtilitaireContenuDeCours");
+const GestionnaireBlocTAF_1 = require("GestionnaireBlocTAF");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const Enumere_TypeRessourcesPedagogiques_1 = require("Enumere_TypeRessourcesPedagogiques");
+const AccessApp_1 = require("AccessApp");
+class PageCahierDeTexteEleve extends ObjetIdentite_1.Identite {
+	constructor() {
+		super(...arguments);
 		this.cycleCourant = null;
-		this.utilitaireCDT = new ObjetUtilitaireCahierDeTexte(
-			this.Nom + ".utilitaireCDT",
-			this,
-			this.surUtilitaireCDT,
-		);
-		this.utilitaireTAFEleves = new UtilitaireTAFEleves();
-		this.utilitaireContenuDeCours = new UtilitaireContenuDeCours();
+		this.utilitaireCDT =
+			new ObjetUtilitaireCahierDeTexte_1.ObjetUtilitaireCahierDeTexte(
+				this.Nom + ".utilitaireCDT",
+				this,
+				this.surUtilitaireCDT,
+			);
+		this.utilitaireTAFEleves = new UtilitaireTAFEleves_1.UtilitaireTAFEleves();
+		this.utilitaireContenuDeCours =
+			new UtilitaireContenuDeCours_1.UtilitaireContenuDeCours();
 		this.idTaf = this.Nom + "_Taf_";
 	}
 	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
+		return $.extend(true, super.getControleur(aInstance), {
 			appelQCM: {
 				event: function (aNumero) {
 					aInstance.appelQCM(aNumero);
@@ -47,11 +39,6 @@ class PageCahierDeTexteEleve extends Identite {
 			appelQCMRessource: {
 				event: function (aNumero) {
 					aInstance.appelQCMRessource(aNumero);
-				},
-			},
-			appelForumRessource: {
-				event(aNumero) {
-					ObjetFenetre_ForumVisuPosts.afficher(aInstance, aNumero);
 				},
 			},
 			evenementTafFait: {
@@ -80,109 +67,38 @@ class PageCahierDeTexteEleve extends Identite {
 				},
 			},
 			nodeDeploiement: function () {
-				$(this.node).on({
-					click: function () {
-						const lIcone = $(this).children().first().children().first();
-						lIcone.toggleClass("icon_chevron_right");
-						lIcone.toggleClass("icon_chevron_down");
-						$(this).siblings().first().toggle(200);
-						aInstance.setInfoRessourceDeploye($(this));
-					},
+				$(this.node).eventValidation(() => {
+					$(this.node).attr("aria-expanded", (aIndex, aAttr) => {
+						return aAttr === "true" ? "false" : "true";
+					});
+					const lIcone = $(this.node).children().first().children().first();
+					lIcone.toggleClass("icon_chevron_right");
+					lIcone.toggleClass("icon_chevron_down");
+					$(this.node).siblings().first().toggle(200);
+					aInstance.setInfoRessourceDeploye($(this.node));
 				});
-			},
-			getCarrouselTAF(aNumeroTAF) {
-				return {
-					class: ObjetGalerieCarrousel,
-					pere: aInstance,
-					init: (aCarrousel) => {
-						aCarrousel.setOptions({
-							dimensionPhoto: 250,
-							nbMaxDiaposEnZoneVisible: 10,
-							justifieAGauche: true,
-							sansBlocLibelle: true,
-							altImage: GTraductions.getValeur("CahierDeTexte.altImage.TAF"),
-						});
-						aCarrousel.initialiser();
-					},
-					start: (aCarrousel) => {
-						let lTAF =
-							aInstance.ListeTravailAFaire.getElementParNumero(aNumeroTAF);
-						const lListeDiapos = new ObjetListeElements();
-						if (lTAF && lTAF.ListePieceJointe) {
-							lTAF.ListePieceJointe.parcourir((aPJ) => {
-								if (aPJ.avecMiniaturePossible) {
-									let lDiapo = new ObjetElement();
-									lDiapo.setLibelle(aPJ.getLibelle());
-									aPJ.miniature = TypeGenreMiniature.GM_500;
-									lDiapo.documentCasier = aPJ;
-									lListeDiapos.add(lDiapo);
-								}
-							});
-						}
-						aCarrousel.setDonnees({ listeDiapos: lListeDiapos });
-					},
-				};
-			},
-			getCarrouselCDC(aNumeroContenu) {
-				return {
-					class: ObjetGalerieCarrousel,
-					pere: aInstance,
-					init: (aCarrousel) => {
-						aCarrousel.setOptions({
-							dimensionPhoto: 250,
-							nbMaxDiaposEnZoneVisible: 10,
-							justifieAGauche: true,
-							sansBlocLibelle: true,
-							altImage: GTraductions.getValeur("CahierDeTexte.altImage.CDC"),
-						});
-						aCarrousel.initialiser();
-					},
-					start: (aCarrousel) => {
-						let lContenu;
-						aInstance.ListeCahierDeTextes.parcourir((aElement) => {
-							if (!!aElement.listeContenus) {
-								aElement.listeContenus.parcourir((aCDC) => {
-									if (aCDC.getNumero() === aNumeroContenu) {
-										lContenu = aCDC;
-									}
-								});
-							}
-						});
-						const lListeDiapos = new ObjetListeElements();
-						if (lContenu && lContenu.ListePieceJointe) {
-							lContenu.ListePieceJointe.parcourir((aPJ) => {
-								if (aPJ.avecMiniaturePossible) {
-									let lDiapo = new ObjetElement();
-									lDiapo.setLibelle(aPJ.getLibelle());
-									aPJ.miniature = TypeGenreMiniature.GM_500;
-									lDiapo.documentCasier = aPJ;
-									lListeDiapos.add(lDiapo);
-								}
-							});
-						}
-						aCarrousel.setDonnees({ listeDiapos: lListeDiapos });
-					},
-				};
 			},
 		});
 	}
 	setDonnees(aParams) {
 		this.genreOnglet = GEtatUtilisateur.getGenreOnglet();
 		this.avecFiltrage = aParams.avecFiltrage;
-		if (this.genreOnglet === EGenreOnglet.CDT_TAF) {
+		if (this.genreOnglet === Enumere_Onglet_1.EGenreOnglet.CDT_TAF) {
 			this.ListeTravailAFaire = aParams.liste;
 			this.actualiserTravailAFaire(this.ListeTravailAFaire);
 		} else {
 			this.ListeCahierDeTextes = aParams.liste;
-			this.actualiserContenuDeCours(this.ListeCahierDeTextes);
+			this.actualiserContenuDeCours();
 		}
 		this.afficher(null);
-		return this.avecDonnees;
 	}
 	actualiserContenuDeCours() {
 		if (this.ListeCahierDeTextes) {
 			this.ListeCahierDeTextes.setTri([
-				ObjetTri.init("Date", EGenreTriElement.Decroissant),
+				ObjetTri_1.ObjetTri.init(
+					"Date",
+					Enumere_TriElement_1.EGenreTriElement.Decroissant,
+				),
 			]).trier();
 		}
 	}
@@ -190,16 +106,16 @@ class PageCahierDeTexteEleve extends Identite {
 		if (aListeTravailAFaire) {
 			aListeTravailAFaire
 				.setTri([
-					ObjetTri.init("PourLe"),
-					ObjetTri.init("Matiere.Libelle"),
-					ObjetTri.init("DonneLe"),
-					ObjetTri.init("Genre"),
+					ObjetTri_1.ObjetTri.init("PourLe"),
+					ObjetTri_1.ObjetTri.init("Matiere.Libelle"),
+					ObjetTri_1.ObjetTri.init("DonneLe"),
+					ObjetTri_1.ObjetTri.init("Genre"),
 				])
 				.trier();
 		}
 	}
 	construireAffichage() {
-		return this.genreOnglet === EGenreOnglet.CDT_TAF
+		return this.genreOnglet === Enumere_Onglet_1.EGenreOnglet.CDT_TAF
 			? this.composePageTravailAFaire(this.ListeTravailAFaire)
 			: this.composePageContenu(this.ListeCahierDeTextes);
 	}
@@ -231,7 +147,9 @@ class PageCahierDeTexteEleve extends Identite {
 			lHtml.push(
 				'<div class="message-vide card card-nodata"><div class="card-content">' +
 					this.composeMessage(
-						GTraductions.getValeur("CahierDeTexte.AucunContenu"),
+						ObjetTraduction_1.GTraductions.getValeur(
+							"CahierDeTexte.AucunContenu",
+						),
 					) +
 					'</div><div class="Image_No_Data" aria-hidden="true"></div></div>',
 			);
@@ -245,7 +163,9 @@ class PageCahierDeTexteEleve extends Identite {
 		}
 		const lHtml = [];
 		lHtml.push('<div class="AvecSelectionTexte">');
-		GEtatUtilisateur.setNavigationDate(GDate.getDateCourante());
+		(0, AccessApp_1.getApp)()
+			.getEtatUtilisateur()
+			.setNavigationDate(ObjetDate_1.GDate.getDateCourante());
 		if (!!aListeTravailAFaire.count()) {
 			lHtml.push(
 				this.utilitaireTAFEleves.composePageTravailAFaire(
@@ -256,11 +176,6 @@ class PageCahierDeTexteEleve extends Identite {
 				),
 			);
 		} else {
-			lHtml.push(
-				this.composeAucuneDonnee(
-					GTraductions.getValeur("CahierDeTexte.AucunTAF"),
-				),
-			);
 		}
 		lHtml.push("</div>");
 		return lHtml.join("");
@@ -275,7 +190,7 @@ class PageCahierDeTexteEleve extends Identite {
 		return this.utilitaireTAFEleves.composeFicheTAF(
 			aDonnees.ListeTravailAFaire
 				? aDonnees.ListeTravailAFaire
-				: new ObjetListeElements().add(aDonnees),
+				: new ObjetListeElements_1.ObjetListeElements().add(aDonnees),
 			this.utilitaireCDT,
 			aControleur,
 			aEstChronologique,
@@ -287,7 +202,8 @@ class PageCahierDeTexteEleve extends Identite {
 	composeRessourcesPeda(aListeRessPeda, aType, aInfoRessourceDeploye) {
 		const lHtml = [];
 		switch (aType) {
-			case EGenreTypeRessourcesPedagogiques.SujetOuCorrige:
+			case Enumere_TypeRessourcesPedagogiques_1.EGenreTypeRessourcesPedagogiques
+				.SujetOuCorrige:
 				lHtml.push(
 					this.utilitaireContenuDeCours.composeRPSujetOuCorrige(
 						aListeRessPeda,
@@ -295,16 +211,17 @@ class PageCahierDeTexteEleve extends Identite {
 					),
 				);
 				break;
-			case EGenreTypeRessourcesPedagogiques.TravailRendu:
+			case Enumere_TypeRessourcesPedagogiques_1.EGenreTypeRessourcesPedagogiques
+				.TravailRendu:
 				lHtml.push(
 					this.utilitaireContenuDeCours.composeRPTravailRendu(
 						aListeRessPeda,
 						aInfoRessourceDeploye.travauxRendu,
-						this.controleur,
 					),
 				);
 				break;
-			case EGenreTypeRessourcesPedagogiques.QCM:
+			case Enumere_TypeRessourcesPedagogiques_1.EGenreTypeRessourcesPedagogiques
+				.QCM:
 				lHtml.push(
 					this.utilitaireContenuDeCours.composeRPQCM(
 						aListeRessPeda,
@@ -312,7 +229,8 @@ class PageCahierDeTexteEleve extends Identite {
 					),
 				);
 				break;
-			case EGenreTypeRessourcesPedagogiques.RessourcesGranulaires:
+			case Enumere_TypeRessourcesPedagogiques_1.EGenreTypeRessourcesPedagogiques
+				.RessourcesGranulaires:
 				lHtml.push(
 					this.utilitaireContenuDeCours.composeRPRessourcesGranulaires(
 						aListeRessPeda,
@@ -320,7 +238,8 @@ class PageCahierDeTexteEleve extends Identite {
 					),
 				);
 				break;
-			case EGenreTypeRessourcesPedagogiques.ForumPedagogique:
+			case Enumere_TypeRessourcesPedagogiques_1.EGenreTypeRessourcesPedagogiques
+				.ForumPedagogique:
 				lHtml.push(
 					this.utilitaireContenuDeCours.composeRPForumPedagogique(
 						aListeRessPeda,
@@ -328,7 +247,8 @@ class PageCahierDeTexteEleve extends Identite {
 					),
 				);
 				break;
-			case EGenreTypeRessourcesPedagogiques.Autre:
+			case Enumere_TypeRessourcesPedagogiques_1.EGenreTypeRessourcesPedagogiques
+				.Autre:
 				lHtml.push(
 					this.utilitaireContenuDeCours.composeRPAutre(
 						aListeRessPeda,
@@ -368,7 +288,7 @@ class PageCahierDeTexteEleve extends Identite {
 	appelCours(aNumero) {
 		const lTAF = this.ListeTravailAFaire.getElementParNumero(aNumero);
 		this.callback.appel({
-			GenreBtnAction: EGenreBtnActionBlocTAF.voirContenu,
+			GenreBtnAction: GestionnaireBlocTAF_1.EGenreBtnActionBlocTAF.voirContenu,
 			taf: lTAF,
 		});
 	}
@@ -379,7 +299,7 @@ class PageCahierDeTexteEleve extends Identite {
 	appelDetailTAF(aNumero) {
 		const lTAF = this.ListeTravailAFaire.getElementParNumero(aNumero);
 		this.callback.appel({
-			GenreBtnAction: EGenreBtnActionBlocTAF.detailTAF,
+			GenreBtnAction: GestionnaireBlocTAF_1.EGenreBtnActionBlocTAF.detailTAF,
 			taf: lTAF,
 		});
 	}
@@ -396,11 +316,11 @@ class PageCahierDeTexteEleve extends Identite {
 		} else {
 			lElement.TAFFait = true;
 		}
-		lElement.setEtat(EGenreEtat.Modification);
-		new ObjetRequeteSaisieTAFFaitEleve(
+		lElement.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+		new ObjetRequeteSaisieTAFFaitEleve_1.ObjetRequeteSaisieTAFFaitEleve(
 			this,
 			this.surEvenementTafFait,
 		).lancerRequete({ listeTAF: this.ListeTravailAFaire });
 	}
 }
-module.exports = { PageCahierDeTexteEleve };
+exports.PageCahierDeTexteEleve = PageCahierDeTexteEleve;

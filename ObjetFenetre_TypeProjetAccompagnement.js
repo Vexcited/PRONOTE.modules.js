@@ -1,27 +1,25 @@
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { ObjetElement } = require("ObjetElement.js");
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { EGenreAction } = require("Enumere_Action.js");
-class ObjetFenetre_TypeProjetAccompagnement extends ObjetFenetre {
+exports.ObjetFenetre_TypeProjetAccompagnement = void 0;
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const MethodesObjet_1 = require("MethodesObjet");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_Action_1 = require("Enumere_Action");
+class ObjetFenetre_TypeProjetAccompagnement extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.setOptionsFenetre({
-			titre: GTraductions.getValeur("Themes"),
+			titre: ObjetTraduction_1.GTraductions.getValeur("Themes"),
 			largeur: 400,
 			hauteur: 500,
-			heightMax_mobile: true,
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 			avecCroixFermeture: false,
 		});
@@ -29,9 +27,9 @@ class ObjetFenetre_TypeProjetAccompagnement extends ObjetFenetre {
 	}
 	construireInstances() {
 		this.identListeTypeProjetAcc = this.add(
-			ObjetListe,
-			evenementSurListe.bind(this),
-			_initialiserListe,
+			ObjetListe_1.ObjetListe,
+			this.evenementSurListe.bind(this),
+			this._initialiserListe,
 		);
 	}
 	getControleur(aInstance) {
@@ -55,67 +53,85 @@ class ObjetFenetre_TypeProjetAccompagnement extends ObjetFenetre {
 		});
 	}
 	setDonnees(aListeTypesProjet, aParam) {
-		this.donnees.listeTypesProjet = MethodesObjet.dupliquer(aListeTypesProjet);
+		this.donnees.listeTypesProjet =
+			MethodesObjet_1.MethodesObjet.dupliquer(aListeTypesProjet);
 		this.donnees.eleve = aParam.eleve;
 		this.afficher();
 		this.getInstance(this.identListeTypeProjetAcc).setDonnees(
-			new DonneesListe_TypeProjetAccompagnement(this.donnees.listeTypesProjet),
+			new DonneesListe_TypeProjetAccompagnement(this.donnees.listeTypesProjet, {
+				surModification: (aArticle) => {
+					this.ouvrirFenetreEditionType(aArticle);
+				},
+				surSuppression: (aArticle) => {
+					this.supprimerTypeProjetAccompagnement(aArticle);
+				},
+			}),
 		);
 	}
 	composeContenu() {
 		const lHtml = [];
 		lHtml.push(
-			'<div style="height:100%" id="',
-			this.getNomInstance(this.identListeTypeProjetAcc),
-			'"></div>',
+			IE.jsx.str("div", {
+				style: "height:100%",
+				id: this.getNomInstance(this.identListeTypeProjetAcc),
+			}),
 		);
 		return lHtml.join("");
 	}
 	ouvrirFenetreEditionType(aTypeProjet) {
 		let lTypeProjetSaisi;
 		if (aTypeProjet) {
-			lTypeProjetSaisi = MethodesObjet.dupliquer(aTypeProjet);
+			lTypeProjetSaisi = MethodesObjet_1.MethodesObjet.dupliquer(aTypeProjet);
 		} else {
-			lTypeProjetSaisi = new ObjetElement("");
+			lTypeProjetSaisi = new ObjetElement_1.ObjetElement("");
 			lTypeProjetSaisi.estSupprimable = true;
 			lTypeProjetSaisi.estModifiable = true;
 		}
-		const lFenetre = ObjetFenetre.creerInstanceFenetre(ObjetFenetre, {
-			pere: this,
-			evenement(aGenreBouton) {
-				if (aGenreBouton === 1 && lTypeProjetSaisi.pourValidation()) {
-					const lElementDeListeAvecLibelle =
-						this.donnees.listeTypesProjet.getElementParLibelle(
-							lTypeProjetSaisi.getLibelle(),
-						);
-					if (lElementDeListeAvecLibelle) {
-						GApplication.getMessage().afficher({
-							message: GTraductions.getValeur("FicheEleve.msgTypeProjetExiste"),
-						});
-					} else {
-						if (aTypeProjet) {
-							const lIndiceTypeExistant =
-								this.donnees.listeTypesProjet.getIndiceParElement(aTypeProjet);
-							if (lIndiceTypeExistant > -1) {
-								this.donnees.listeTypesProjet.remove(lIndiceTypeExistant);
+		const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_1.ObjetFenetre,
+			{
+				pere: this,
+				evenement(aGenreBouton) {
+					if (aGenreBouton === 1 && lTypeProjetSaisi.pourValidation()) {
+						const lElementDeListeAvecLibelle =
+							this.donnees.listeTypesProjet.getElementParLibelle(
+								lTypeProjetSaisi.getLibelle(),
+							);
+						if (lElementDeListeAvecLibelle) {
+							GApplication.getMessage().afficher({
+								message: ObjetTraduction_1.GTraductions.getValeur(
+									"FicheEleve.msgTypeProjetExiste",
+								),
+							});
+						} else {
+							if (aTypeProjet) {
+								const lIndiceTypeExistant =
+									this.donnees.listeTypesProjet.getIndiceParElement(
+										aTypeProjet,
+									);
+								if (lIndiceTypeExistant > -1) {
+									this.donnees.listeTypesProjet.remove(lIndiceTypeExistant);
+								}
 							}
+							this.donnees.listeTypesProjet.add(lTypeProjetSaisi);
+							this.getInstance(this.identListeTypeProjetAcc).actualiser(true);
 						}
-						this.donnees.listeTypesProjet.add(lTypeProjetSaisi);
-						this.getInstance(this.identListeTypeProjetAcc).actualiser(true);
 					}
-				}
+				},
+				initialiser(aInstance) {
+					aInstance.setOptionsFenetre({
+						titre: ObjetTraduction_1.GTraductions.getValeur(
+							"FicheEleve.typeDeProjet",
+						),
+						largeur: 300,
+						listeBoutons: [
+							ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+							ObjetTraduction_1.GTraductions.getValeur("Valider"),
+						],
+					});
+				},
 			},
-			initialiser(aInstance) {
-				aInstance.setOptionsFenetre({
-					titre: GTraductions.getValeur("FicheEleve.typeDeProjet"),
-					largeur: 300,
-					listeBoutons: [
-						GTraductions.getValeur("Annuler"),
-						GTraductions.getValeur("Valider"),
-					],
-				});
-			},
-		});
+		);
 		$.extend(lFenetre.controleur, {
 			inputLibelle: {
 				getValue() {
@@ -123,13 +139,13 @@ class ObjetFenetre_TypeProjetAccompagnement extends ObjetFenetre {
 				},
 				setValue(aValue) {
 					lTypeProjetSaisi.setLibelle(aValue);
-					lTypeProjetSaisi.setEtat(EGenreEtat.Modification);
+					lTypeProjetSaisi.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 				},
 			},
 		});
 		const lHtml =
-			'<input ie-model="inputLibelle" type="text" class="round-style" style="width:100%;" title="' +
-			GTraductions.getValeur("FicheEleve.type") +
+			'<input ie-model="inputLibelle" type="text"  style="width:100%;" title="' +
+			ObjetTraduction_1.GTraductions.getValeur("FicheEleve.type") +
 			'" />';
 		lFenetre.afficher(lHtml);
 	}
@@ -148,32 +164,40 @@ class ObjetFenetre_TypeProjetAccompagnement extends ObjetFenetre {
 		}
 		this.fermer();
 	}
-}
-function _initialiserListe(aInstance) {
-	aInstance.setOptionsListe({
-		skin: ObjetListe.skin.flatDesign,
-		avecLigneCreation: true,
-	});
-}
-function evenementSurListe(aParametres) {
-	switch (aParametres.genreEvenement) {
-		case EGenreEvenementListe.Selection:
-			break;
-		case EGenreEvenementListe.Creation:
-			this.ouvrirFenetreEditionType(aParametres.article);
-			break;
-		case EGenreEvenementListe.Edition:
-			this.ouvrirFenetreEditionType(aParametres.article);
-			break;
-		case EGenreEvenementListe.Suppression:
-			aParametres.article.setEtat(EGenreEtat.Suppression);
+	_initialiserListe(aInstance) {
+		aInstance.setOptionsListe({
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+			avecLigneCreation: true,
+		});
+	}
+	evenementSurListe(aParametres) {
+		switch (aParametres.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Selection:
+				break;
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Creation:
+				this.ouvrirFenetreEditionType(aParametres.article);
+				break;
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Edition:
+				this.ouvrirFenetreEditionType(aParametres.article);
+				break;
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Suppression:
+				this.supprimerTypeProjetAccompagnement(aParametres.article);
+				break;
+		}
+	}
+	supprimerTypeProjetAccompagnement(aTypeProjet) {
+		if (aTypeProjet) {
+			aTypeProjet.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 			this.getInstance(this.identListeTypeProjetAcc).actualiser(true);
-			break;
+		}
 	}
 }
-class DonneesListe_TypeProjetAccompagnement extends ObjetDonneesListeFlatDesign {
-	constructor(aDonnees) {
+exports.ObjetFenetre_TypeProjetAccompagnement =
+	ObjetFenetre_TypeProjetAccompagnement;
+class DonneesListe_TypeProjetAccompagnement extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
+	constructor(aDonnees, aCallbacks) {
 		super(aDonnees);
+		this.callbacks = aCallbacks;
 		this.setOptions({
 			avecEvnt_Creation: true,
 			avecEvnt_Selection: true,
@@ -191,31 +215,25 @@ class DonneesListe_TypeProjetAccompagnement extends ObjetDonneesListeFlatDesign 
 			return;
 		}
 		aParametres.menuContextuel.add(
-			GTraductions.getValeur("Modifier"),
+			ObjetTraduction_1.GTraductions.getValeur("Modifier"),
 			aParametres.article.estModifiable,
-			function () {
-				this.callback.appel({
-					article: aParametres.article,
-					genreEvenement: EGenreEvenementListe.Edition,
-				});
+			() => {
+				this.callbacks.surModification(aParametres.article);
 			},
 			{ icon: "icon_pencil" },
 		);
 		aParametres.menuContextuel.add(
-			GTraductions.getValeur("Supprimer"),
+			ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
 			aParametres.article.estSupprimable,
-			function () {
+			() => {
 				GApplication.getMessage().afficher({
-					type: EGenreBoiteMessage.Confirmation,
-					message: GTraductions.getValeur(
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+					message: ObjetTraduction_1.GTraductions.getValeur(
 						"FicheEleve.msgConfirmerSupprTypeProjet",
 					),
 					callback: (aGenreAction) => {
-						if (aGenreAction === EGenreAction.Valider) {
-							this.callback.appel({
-								article: aParametres.article,
-								genreEvenement: EGenreEvenementListe.Suppression,
-							});
+						if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
+							this.callbacks.surSuppression(aParametres.article);
 						}
 					},
 				});
@@ -227,12 +245,11 @@ class DonneesListe_TypeProjetAccompagnement extends ObjetDonneesListeFlatDesign 
 	getTri() {
 		const lTris = [];
 		lTris.push(
-			ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.init((D) => {
 				return !!D.getNumero();
 			}),
 		);
-		lTris.push(ObjetTri.init("Libelle"));
+		lTris.push(ObjetTri_1.ObjetTri.init("Libelle"));
 		return lTris;
 	}
 }
-module.exports = { ObjetFenetre_TypeProjetAccompagnement };

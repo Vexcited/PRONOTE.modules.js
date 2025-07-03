@@ -13,10 +13,11 @@ const UtilitaireConvertisseurPositionGrille_1 = require("UtilitaireConvertisseur
 const TypeHoraireGrillePlanning_1 = require("TypeHoraireGrillePlanning");
 const UtilitairePrefsGrilleStructure_1 = require("UtilitairePrefsGrilleStructure");
 const UtilitaireAbsencesGrille_1 = require("UtilitaireAbsencesGrille");
+const AccessApp_1 = require("AccessApp");
 class InterfaceGrilleEDT extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
-		this.applicationSco = GApplication;
+		this.applicationSco = (0, AccessApp_1.getApp)();
 		this.parametresSco = this.applicationSco.getObjetParametres();
 		this._options = {
 			avecGrilleMultiple: true,
@@ -73,7 +74,7 @@ class InterfaceGrilleEDT extends ObjetInterface_1.ObjetInterface {
 		const H = [];
 		H.push(
 			'<div id="' +
-				this.getInstance(this.IdentGrille).getNom() +
+				this.getNomInstance(this.IdentGrille) +
 				'" style="height: 100%; ',
 			this._options.minHeight
 				? "min-height:" + this._options.minHeight + "px;"
@@ -247,13 +248,13 @@ class InterfaceGrilleEDT extends ObjetInterface_1.ObjetInterface {
 				getLibelleTranche: !this._options.estPlanningParRessource
 					? null
 					: function (aParam) {
-							const T = [];
-							T.push(
+							const H = [];
+							H.push(
 								'<div ie-ellipsis style="width:',
 								aParam.width,
 								'px;">' + aParam.tranche.ressource.getLibelle() + "</div>",
 							);
-							return T.join("");
+							return H.join("");
 						},
 				getTailleLibelleTranche: !this._options.estPlanningParRessource
 					? null

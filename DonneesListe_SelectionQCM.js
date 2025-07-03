@@ -12,8 +12,6 @@ class DonneesListe_SelectionQCM extends ObjetDonneesListeFlatDesign_1.ObjetDonne
 		this.setOptions({
 			avecMultiSelection: this.multiSelection,
 			flatDesignMinimal: aParam.estFDMinimal,
-			avecEdition: false,
-			avecSuppression: false,
 			avecEvnt_Selection: true,
 			avecDeploiement: true,
 		});

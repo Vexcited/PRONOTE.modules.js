@@ -1,11 +1,10 @@
-const { EGenreEtat } = require("Enumere_Etat.js");
-const {
-	DonneesListe_CelluleMultiSelection,
-} = require("ObjetCelluleMultiSelection.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-class DonneesListe_SelectionMotifs extends DonneesListe_CelluleMultiSelection {
+exports.DonneesListe_SelectionMotifs = void 0;
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetCelluleMultiSelection_1 = require("ObjetCelluleMultiSelection");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+class DonneesListe_SelectionMotifs extends ObjetCelluleMultiSelection_1.DonneesListe_CelluleMultiSelection {
 	constructor(aDonnees, aParam) {
 		super(aDonnees);
 		this.param = {
@@ -18,10 +17,10 @@ class DonneesListe_SelectionMotifs extends DonneesListe_CelluleMultiSelection {
 	}
 	getTri() {
 		return [
-			ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.init((D) => {
 				return !D.ssMotif;
 			}),
-			ObjetTri.init("Libelle"),
+			ObjetTri_1.ObjetTri.init("Libelle"),
 		];
 	}
 	avecEdition(aParams) {
@@ -78,7 +77,7 @@ class DonneesListe_SelectionMotifs extends DonneesListe_CelluleMultiSelection {
 					this.param.avecEdition &&
 					!aParams.article.nonModifiable &&
 					!aParams.article.ssMotif &&
-					aParams.article.getEtat() !== EGenreEtat.Aucun
+					aParams.article.getEtat() !== Enumere_Etat_1.EGenreEtat.Aucun
 				);
 		}
 		return false;
@@ -94,18 +93,21 @@ class DonneesListe_SelectionMotifs extends DonneesListe_CelluleMultiSelection {
 	getMessageSuppressionImpossible(D) {
 		return (
 			D.msgSurSuppression ||
-			GTraductions.getValeur("liste.suppressionImpossible")
+			ObjetTraduction_1.GTraductions.getValeur("liste.suppressionImpossible")
 		);
 	}
 	getMessageSuppressionConfirmation(D) {
-		const lMessage = GTraductions.getValeur("motifs.msgSuppression", [
-			D.getLibelle(),
-		]);
+		const lMessage = ObjetTraduction_1.GTraductions.getValeur(
+			"motifs.msgSuppression",
+			[D.getLibelle()],
+		);
 		return lMessage
 			? lMessage +
 					"<br/><br/>" +
-					GTraductions.getValeur("motifs.msgSuppressionConfimation")
-			: GTraductions.getValeur("liste.suppressionSelection");
+					ObjetTraduction_1.GTraductions.getValeur(
+						"motifs.msgSuppressionConfimation",
+					)
+			: ObjetTraduction_1.GTraductions.getValeur("liste.suppressionSelection");
 	}
 	surCreation(D, V) {
 		D.Libelle = V[DonneesListe_SelectionMotifs.colonnes.motif];
@@ -116,11 +118,11 @@ class DonneesListe_SelectionMotifs extends DonneesListe_CelluleMultiSelection {
 	getTypeValeur(aParams) {
 		switch (aParams.colonne) {
 			case DonneesListe_SelectionMotifs.colonnes.coche:
-				return ObjetDonneesListe.ETypeCellule.Coche;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Coche;
 			case DonneesListe_SelectionMotifs.colonnes.dossier:
-				return ObjetDonneesListe.ETypeCellule.Html;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
 	getValeur(aParams) {
 		switch (aParams.colonne) {
@@ -132,11 +134,16 @@ class DonneesListe_SelectionMotifs extends DonneesListe_CelluleMultiSelection {
 				return aParams.article.getLibelle();
 			case DonneesListe_SelectionMotifs.colonnes.dossier:
 				return aParams.article.dossierObligatoire
-					? '<i class="icon_folder_close i-medium text-util-rouge-foncee" aria-label="' +
-							GTraductions.getValeur("liste.DossierObligatoire") +
-							'" title="' +
-							GTraductions.getValeur("liste.DossierObligatoire") +
-							'"></i>'
+					? IE.jsx.str("i", {
+							class: "icon_folder_close i-medium color-red-foncee",
+							role: "img",
+							"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+								"liste.DossierObligatoire",
+							),
+							title: ObjetTraduction_1.GTraductions.getValeur(
+								"liste.DossierObligatoire",
+							),
+						})
 					: "";
 			case DonneesListe_SelectionMotifs.colonnes.incident:
 				return !!aParams.article.sousCategorieDossier &&
@@ -146,7 +153,9 @@ class DonneesListe_SelectionMotifs extends DonneesListe_CelluleMultiSelection {
 		}
 		return "";
 	}
-	getCouleurCellule() {}
+	getCouleurCellule() {
+		return undefined;
+	}
 	surEdition(aParams, V) {
 		super.surEdition(aParams, V);
 		if (
@@ -155,7 +164,7 @@ class DonneesListe_SelectionMotifs extends DonneesListe_CelluleMultiSelection {
 			aParams.article.Libelle !== V
 		) {
 			aParams.article.Libelle = V;
-			aParams.article.setEtat(EGenreEtat.Modification);
+			aParams.article.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 		}
 		if (this.param.avecAucunExclusif) {
 			if (aParams.article.ssMotif) {
@@ -185,10 +194,20 @@ class DonneesListe_SelectionMotifs extends DonneesListe_CelluleMultiSelection {
 		return T;
 	}
 }
-DonneesListe_SelectionMotifs.colonnes = {
-	coche: 0,
-	motif: 1,
-	dossier: 2,
-	incident: 3,
-};
-module.exports = { DonneesListe_SelectionMotifs };
+exports.DonneesListe_SelectionMotifs = DonneesListe_SelectionMotifs;
+(function (DonneesListe_SelectionMotifs) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes[(colonnes["coche"] = 0)] = "coche";
+		colonnes[(colonnes["motif"] = 1)] = "motif";
+		colonnes[(colonnes["dossier"] = 2)] = "dossier";
+		colonnes[(colonnes["incident"] = 3)] = "incident";
+	})(
+		(colonnes =
+			DonneesListe_SelectionMotifs.colonnes ||
+			(DonneesListe_SelectionMotifs.colonnes = {})),
+	);
+})(
+	DonneesListe_SelectionMotifs ||
+		(exports.DonneesListe_SelectionMotifs = DonneesListe_SelectionMotifs = {}),
+);

@@ -42,7 +42,7 @@ class ObjetFenetre_SuiviStage extends ObjetFenetre_1.ObjetFenetre {
 			this._evenementSelecteurRespAdmin.bind(this),
 			(aInstance) => {
 				aInstance.setOptionsObjetSaisie({
-					labelledById: this.idLabelResp,
+					ariaLabelledBy: this.idLabelResp,
 					longueur: "100%",
 					avecDesignMobile: false,
 				});
@@ -61,6 +61,9 @@ class ObjetFenetre_SuiviStage extends ObjetFenetre_1.ObjetFenetre {
 				setValue: function (aValeur) {
 					if (!!aInstance.suivi) {
 						aInstance.suivi.avecHeure = aValeur;
+						if (!aValeur) {
+							aInstance.suivi.avecHeureFin = false;
+						}
 						aInstance.suivi.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 					}
 				},
@@ -83,6 +86,47 @@ class ObjetFenetre_SuiviStage extends ObjetFenetre_1.ObjetFenetre {
 				},
 				getDisabled: function () {
 					return !aInstance.suivi || !aInstance.suivi.avecHeure;
+				},
+			},
+			cbAvecHeureFin: {
+				getValue: function () {
+					return !!aInstance.suivi && !!aInstance.suivi.avecHeureFin;
+				},
+				setValue: function (aValeur) {
+					if (!!aInstance.suivi) {
+						aInstance.suivi.avecHeureFin = aValeur;
+						aInstance.suivi.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+						if (aValeur && aInstance.suivi.date) {
+							const lDateFin = new Date(aInstance.suivi.date);
+							lDateFin.setHours(aInstance.suivi.date.getHours() + 2);
+							aInstance.suivi.dateFin = lDateFin;
+						} else {
+							aInstance.suivi.dateFin = null;
+						}
+					}
+				},
+				getDisabled: function () {
+					return !aInstance.suivi || !aInstance.suivi.avecHeure;
+				},
+			},
+			inputHeureFin: {
+				getValue: function () {
+					const lDate = aInstance.suivi ? aInstance.suivi.dateFin : null;
+					return !!lDate ? ObjetDate_1.GDate.formatDate(lDate, "%hh:%mm") : "";
+				},
+				setValue: function (aValue, aParamsSetter) {
+					if (!!aInstance.suivi) {
+						const lDate = aInstance.suivi.dateFin;
+						if (!lDate) {
+							return;
+						}
+						lDate.setHours(aParamsSetter.time.heure);
+						lDate.setMinutes(aParamsSetter.time.minute);
+						aInstance.suivi.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+					}
+				},
+				getDisabled: function () {
+					return !aInstance.suivi || !aInstance.suivi.avecHeureFin;
 				},
 			},
 			comboEvenements: {
@@ -195,7 +239,7 @@ class ObjetFenetre_SuiviStage extends ObjetFenetre_1.ObjetFenetre {
 					);
 				},
 				getIcone() {
-					return '<i class="icon_piece_jointe"></i>';
+					return "icon_piece_jointe";
 				},
 			},
 			getLibellesPiecesJointes: function () {
@@ -292,6 +336,7 @@ class ObjetFenetre_SuiviStage extends ObjetFenetre_1.ObjetFenetre {
 	}
 	composeContenu() {
 		const H = [];
+		const lIdLabelCommentaire = GUID_1.GUID.getId();
 		H.push(
 			IE.jsx.str(
 				"div",
@@ -312,29 +357,60 @@ class ObjetFenetre_SuiviStage extends ObjetFenetre_1.ObjetFenetre {
 				),
 				IE.jsx.str(
 					"div",
-					{ class: "field-contain time-conteneur as-grid" },
+					{ class: "field-contain horaires-conteneur" },
 					IE.jsx.str(
-						"ie-checkbox",
-						{ "ie-model": "cbAvecHeure" },
-						ObjetTraduction_1.GTraductions.getValeur(
-							"FenetreSuiviStage.AfficherDate",
+						"div",
+						{ class: "horaire" },
+						IE.jsx.str(
+							"ie-checkbox",
+							{ "ie-model": "cbAvecHeure" },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"FenetreSuiviStage.AfficherHeureDebut",
+							),
+						),
+						IE.jsx.str(
+							"div",
+							{ id: "wrapperInputHeure", class: "wrapper-input" },
+							IE.jsx.str("label", {
+								for: "defHoraireSuivi",
+								"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+									"FenetreSuiviStage.DefinirHoraireSuivi",
+								),
+							}),
+							IE.jsx.str("input", {
+								id: "defHoraireSuivi",
+								type: "time",
+								"ie-model": "inputHeure",
+								class: "input-time",
+							}),
 						),
 					),
 					IE.jsx.str(
 						"div",
-						{ id: "wrapperInputHeure", class: "gd-self-end" },
-						IE.jsx.str("label", {
-							for: "defHoraireSuivi",
-							"aria-label": ObjetTraduction_1.GTraductions.getValeur(
-								"FenetreSuiviStage.DefinirHoraireSuivi",
+						{ class: "horaire" },
+						IE.jsx.str(
+							"ie-checkbox",
+							{ "ie-model": "cbAvecHeureFin" },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"FenetreSuiviStage.AfficherHeureFin",
 							),
-						}),
-						IE.jsx.str("input", {
-							id: "defHoraireSuivi",
-							type: "time",
-							"ie-model": "inputHeure",
-							class: "round-style input-time",
-						}),
+						),
+						IE.jsx.str(
+							"div",
+							{ id: "wrapperInputHeureFin", class: "wrapper-input" },
+							IE.jsx.str("label", {
+								for: "defHoraireFinSuivi",
+								"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+									"FenetreSuiviStage.DefinirHoraireSuiviFin",
+								),
+							}),
+							IE.jsx.str("input", {
+								id: "defHoraireFinSuivi",
+								type: "time",
+								"ie-model": "inputHeureFin",
+								class: "input-time",
+							}),
+						),
 					),
 				),
 				IE.jsx.str(
@@ -403,6 +479,7 @@ class ObjetFenetre_SuiviStage extends ObjetFenetre_1.ObjetFenetre {
 					IE.jsx.str(
 						"label",
 						{
+							id: lIdLabelCommentaire,
 							class: "only-mobile m-bottom m-top-l",
 							"ie-class": "getClassLabelCommentaire",
 						},
@@ -411,13 +488,13 @@ class ObjetFenetre_SuiviStage extends ObjetFenetre_1.ObjetFenetre {
 						),
 					),
 					IE.jsx.str("ie-textareamax", {
-						tabindex: "0",
-						class: "round-style txt-comment fluid-bloc full-width",
+						"aria-labelledby": lIdLabelCommentaire,
+						maxlength: "5000",
+						class: "txt-comment fluid-bloc full-width",
 						"ie-autoresize": true,
 						"ie-model": "txtCommentaire",
 						style:
-							"max-height: 11rem;" +
-							(!IE.estMobile ? `min-height:4rem;` : `overflow:auto;`),
+							"max-height: 11rem;" + (!IE.estMobile ? "" : `overflow:auto;`),
 						placeholder: ObjetTraduction_1.GTraductions.getValeur(
 							"FenetreSuiviStage.RedigezVotreCommentaire",
 						),
@@ -457,6 +534,10 @@ class ObjetFenetre_SuiviStage extends ObjetFenetre_1.ObjetFenetre {
 	evenementSelecteurDate(aDate) {
 		if (!ObjetDate_1.GDate.estJourEgal(this.suivi.date, aDate)) {
 			this.suivi.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+			if (this.suivi.date) {
+				aDate.setHours(this.suivi.date.getHours());
+				aDate.setMinutes(this.suivi.date.getMinutes());
+			}
 			this.suivi.date = aDate;
 		}
 	}
@@ -477,7 +558,7 @@ class ObjetFenetre_SuiviStage extends ObjetFenetre_1.ObjetFenetre {
 					aInstance.respAdminCBFiltrage = this.respAdminCBFiltrage;
 					aInstance.setOptionsFenetre({
 						titre: ObjetTraduction_1.GTraductions.getValeur(
-							"FenetreSuiviStage.RespAdmin",
+							"FenetreSuiviStage.SelectionnerRespAdmin",
 						),
 					});
 				},

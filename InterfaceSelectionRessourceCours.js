@@ -2,7 +2,6 @@ exports.InterfaceSelectionRessourceCours = void 0;
 const ObjetStyle_1 = require("ObjetStyle");
 const GUID_1 = require("GUID");
 const ObjetChaine_1 = require("ObjetChaine");
-const ObjetHtml_1 = require("ObjetHtml");
 const ObjetStyle_2 = require("ObjetStyle");
 const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
 const ObjetInterface_1 = require("ObjetInterface");
@@ -13,7 +12,9 @@ const TypeEnsembleNombre_1 = require("TypeEnsembleNombre");
 const Enumere_Ressource_1 = require("Enumere_Ressource");
 const Type_Diagnostic_1 = require("Type_Diagnostic");
 const Enumere_Espace_1 = require("Enumere_Espace");
-const tag_1 = require("tag");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const ToucheClavier_1 = require("ToucheClavier");
+const Tooltip_1 = require("Tooltip");
 class InterfaceSelectionRessourceCours extends ObjetInterface_1.ObjetInterface {
 	constructor() {
 		super(...arguments);
@@ -27,151 +28,105 @@ class InterfaceSelectionRessourceCours extends ObjetInterface_1.ObjetInterface {
 			Enumere_Espace_1.EGenreEspace.PrimAccompagnant,
 		].includes(GEtatUtilisateur.GenreEspace);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			getNodeTitreRessource: function (aGenreRessource) {
-				$(this.node).on("click", () => {
-					aInstance._ajoutDeGenreRessource(aGenreRessource);
-				});
+	jsxNodeRessource(aGenreRessource, aNumeroLigne, aNode) {
+		const lDescripteur = this._parametres.ressources[aGenreRessource];
+		if (
+			!lDescripteur ||
+			!lDescripteur.liste ||
+			!lDescripteur.liste.get(aNumeroLigne)
+		) {
+			return;
+		}
+		const lRessource = lDescripteur.liste.get(aNumeroLigne);
+		const lNonEditable =
+			this._parametres.nonEditable ||
+			(lDescripteur.fonctionNonEditable &&
+				lDescripteur.fonctionNonEditable(lRessource));
+		if (lNonEditable) {
+			return;
+		}
+		$(aNode).on({
+			click: () => {
+				if (this._parametres.callbackAjoutRessource) {
+					this._parametres.callbackAjoutRessource(aGenreRessource, lRessource);
+				}
 			},
-			btnAjout: {
-				event: function (aGenreRessource, aEvent) {
-					aEvent.stopPropagation();
-					aInstance._ajoutDeGenreRessource(aGenreRessource);
-				},
-			},
-			fantomeLigneSuppression: function (aGenreRessource, aNumeroLigne) {
-				const lDescripteur = aInstance._parametres.ressources[aGenreRessource];
-				if (
-					!lDescripteur ||
-					!lDescripteur.liste ||
-					!lDescripteur.liste.get(aNumeroLigne)
+			keyup: (aEvent) => {
+				if (ObjetNavigateur_1.Navigateur.isToucheSelection()) {
+					if (this._parametres.callbackAjoutRessource) {
+						this._parametres.callbackAjoutRessource(
+							aGenreRessource,
+							lRessource,
+						);
+					}
+				} else if (
+					ToucheClavier_1.ToucheClavierUtil.estEventSupprimer(aEvent)
 				) {
-					return;
+					if (
+						lDescripteur.avecSuppression &&
+						this._parametres.callbackSuppressionRessource
+					) {
+						this._parametres.callbackSuppressionRessource(
+							aGenreRessource,
+							aNumeroLigne,
+							lRessource,
+						);
+					}
 				}
-				const lRessource = lDescripteur.liste.get(aNumeroLigne);
-				return {
-					getIdZone: function () {
-						return $("#" + aInstance.getNom().escapeJQ() + " :first").get(0);
-					},
-					start: function (aParams) {
-						aParams.data.libelle = lRessource.getLibelle();
-					},
-					stop: function (aParams) {
-						if (aParams.data.horsZoneSuppression) {
-							aInstance._parametres.callbackSuppressionRessource(
-								aGenreRessource,
-								aNumeroLigne,
-								lRessource,
-							);
-						}
-					},
-					drag: function (aParams) {
-						aParams.data.horsZoneSuppression = aParams.horsZone;
-					},
-				};
 			},
-			getNodeRessource: function (aGenreRessource, aNumeroLigne) {
-				const lDescripteur = aInstance._parametres.ressources[aGenreRessource];
-				if (
-					!lDescripteur ||
-					!lDescripteur.liste ||
-					!lDescripteur.liste.get(aNumeroLigne)
-				) {
-					return;
-				}
-				const lRessource = lDescripteur.liste.get(aNumeroLigne);
-				const lNonEditable =
-					aInstance._parametres.nonEditable ||
-					(lDescripteur.fonctionNonEditable &&
-						lDescripteur.fonctionNonEditable(lRessource));
-				if (lNonEditable) {
-					return;
-				}
-				$(this.node).on({
-					click: function () {
-						if (aInstance._parametres.callbackAjoutRessource) {
-							aInstance._parametres.callbackAjoutRessource(
-								aGenreRessource,
-								lRessource,
-							);
-						}
-					},
-					keyup: function () {
-						if (GNavigateur.isToucheSelection()) {
-							if (aInstance._parametres.callbackAjoutRessource) {
-								aInstance._parametres.callbackAjoutRessource(
-									aGenreRessource,
-									lRessource,
-								);
-							}
-						} else if (GNavigateur.isToucheSupprimer()) {
-							if (
-								lDescripteur.avecSuppression &&
-								aInstance._parametres.callbackSuppressionRessource
-							) {
-								aInstance._parametres.callbackSuppressionRessource(
+			contextmenu: () => {
+				ObjetMenuContextuel_1.ObjetMenuContextuel.afficher({
+					pere: this,
+					initCommandes: (aMenu) => {
+						aMenu.add(
+							this._parametres.libelleMenuAjouterRessource,
+							true,
+							() => {
+								if (this._parametres.callbackAjoutRessource) {
+									this._parametres.callbackAjoutRessource(
+										aGenreRessource,
+										lRessource,
+									);
+								}
+							},
+						);
+						aMenu.add(
+							ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
+							!!this._parametres.callbackSuppressionRessource &&
+								lDescripteur.avecSuppression,
+							() => {
+								this._parametres.callbackSuppressionRessource(
 									aGenreRessource,
 									aNumeroLigne,
 									lRessource,
 								);
-							}
-						}
-					},
-					contextmenu: function () {
-						ObjetMenuContextuel_1.ObjetMenuContextuel.afficher({
-							pere: aInstance,
-							initCommandes: function (aMenu) {
-								aMenu.add(
-									aInstance._parametres.libelleMenuAjouterRessource,
-									true,
-									() => {
-										if (aInstance._parametres.callbackAjoutRessource) {
-											aInstance._parametres.callbackAjoutRessource(
-												aGenreRessource,
-												lRessource,
-											);
-										}
-									},
-								);
-								aMenu.add(
-									ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
-									!!aInstance._parametres.callbackSuppressionRessource &&
-										lDescripteur.avecSuppression,
-									() => {
-										aInstance._parametres.callbackSuppressionRessource(
-											aGenreRessource,
-											aNumeroLigne,
-											lRessource,
-										);
-									},
-								);
 							},
-						});
+						);
 					},
 				});
 			},
-			btnRessourceSupp: {
-				event: function (aGenreRessource, aNumeroLigne, aEvent) {
-					const lDescripteur =
-						aInstance._parametres.ressources[aGenreRessource];
-					if (
-						!lDescripteur ||
-						!lDescripteur.liste ||
-						!lDescripteur.liste.get(aNumeroLigne)
-					) {
-						return;
-					}
-					const lRessource = lDescripteur.liste.get(aNumeroLigne);
-					aEvent.stopPropagation();
-					aInstance._parametres.callbackSuppressionRessource(
-						aGenreRessource,
-						aNumeroLigne,
-						lRessource,
-					);
-				},
-			},
 		});
+	}
+	jsxModeleBoutonSupprimerRessource(aGenreRessource, aNumeroLigne) {
+		return {
+			event: (aEvent) => {
+				const lDescripteur = this._parametres.ressources[aGenreRessource];
+				if (
+					!lDescripteur ||
+					!lDescripteur.liste ||
+					!lDescripteur.liste.get(aNumeroLigne)
+				) {
+					return;
+				}
+				const lRessource = lDescripteur.liste.get(aNumeroLigne);
+				aEvent.stopPropagation();
+				this._parametres.callbackSuppressionRessource(
+					aGenreRessource,
+					aNumeroLigne,
+					lRessource,
+				);
+			},
+		};
 	}
 	setParametresGeneraux() {
 		this.GenreStructure =
@@ -293,22 +248,29 @@ class InterfaceSelectionRessourceCours extends ObjetInterface_1.ObjetInterface {
 			aDescripteurRessource.liste.count() > 0
 		) {
 			H.push(
-				'<div style="',
-				ObjetStyle_2.GStyle.composeCouleurBordure(
-					this._parametres.couleur.bordure,
-					1,
-					ObjetStyle_1.EGenreBordure.bas,
+				IE.jsx.str(
+					"div",
+					{
+						style: ObjetStyle_2.GStyle.composeCouleurBordure(
+							this._parametres.couleur.bordure,
+							1,
+							ObjetStyle_1.EGenreBordure.bas,
+						),
+						role: "group",
+						"aria-label": aDescripteurRessource.libelle,
+					},
+					this._construireListeGenreRessource(aDescripteurRessource),
 				),
-				'" ',
-				">",
 			);
-			H.push(this._construireListeGenreRessource(aDescripteurRessource));
-			H.push("</div>");
 		}
 		return H.join("");
 	}
+	jsxNodeTitreRessource(aGenreRessource, aNode) {
+		$(aNode).eventValidation(() => {
+			this._ajoutDeGenreRessource(aGenreRessource);
+		});
+	}
 	_construireTitreGenreRessource(aDescripteurRessource) {
-		const H = [];
 		const lNbElements = aDescripteurRessource.liste.count();
 		const lAvecAjout =
 				!this._parametres.nonEditable &&
@@ -319,82 +281,107 @@ class InterfaceSelectionRessourceCours extends ObjetInterface_1.ObjetInterface {
 				!this._parametres.nonEditable &&
 				!lAvecAjout &&
 				aDescripteurRessource.avecEdition;
-		H.push(
-			'<div style="',
-			ObjetStyle_2.GStyle.composeCouleurBordure(
-				this._parametres.couleur.bordure,
-				1,
-				ObjetStyle_1.EGenreBordure.bas,
-			),
-			ObjetStyle_2.GStyle.composeCouleurFond(
-				this._parametres.couleurFond ||
-					this._parametres.couleur.themeNeutre.moyen1,
-			),
-			'" ',
-			">",
-		);
-		H.push(
-			"<div ",
-			'class="LigneTitreRessource',
-			lAvecAjout || lAvecEditionSurAjout ? " LigneTitreRessourceEdition" : "",
-			'" ',
-			lAvecAjout || lAvecEditionSurAjout
-				? ObjetHtml_1.GHtml.composeAttr(
-						"ie-node",
-						"getNodeTitreRessource",
-						aDescripteurRessource.genre,
-					)
-				: "",
-			'style="',
-			ObjetStyle_2.GStyle.composeHeight(this._parametres.hauteurLigneTitre),
-			'">',
-		);
-		H.push(
-			'<div class="libelleTitreRessource" ie-ellipsis-fixe style="line-height:',
-			this._parametres.hauteurLigneTitre,
-			'px;">',
-			aDescripteurRessource.libelle,
-			"</div>",
-		);
-		if (lAvecAjout) {
-			H.push(
-				"<ie-btnicon",
-				ObjetHtml_1.GHtml.composeAttr(
-					"ie-model",
-					"btnAjout",
-					aDescripteurRessource.genre,
+		const lIdTitreGenre = `${this.Nom}_g${aDescripteurRessource.genre}_lib`;
+		return IE.jsx.str(
+			"div",
+			{
+				style:
+					ObjetStyle_2.GStyle.composeCouleurBordure(
+						this._parametres.couleur.bordure,
+						1,
+						ObjetStyle_1.EGenreBordure.bas,
+					) +
+					ObjetStyle_2.GStyle.composeCouleurFond(
+						this._parametres.couleurFond ||
+							this._parametres.couleur.themeNeutre.moyen1,
+					),
+			},
+			IE.jsx.str(
+				"div",
+				{
+					class: [
+						"LigneTitreRessource",
+						lAvecAjout || lAvecEditionSurAjout
+							? " LigneTitreRessourceEdition"
+							: "",
+					],
+					"ie-node":
+						lAvecAjout || lAvecEditionSurAjout
+							? this.jsxNodeTitreRessource.bind(
+									this,
+									aDescripteurRessource.genre,
+								)
+							: "",
+					style: ObjetStyle_2.GStyle.composeHeight(
+						this._parametres.hauteurLigneTitre,
+					),
+				},
+				IE.jsx.str(
+					"div",
+					{
+						id: lIdTitreGenre,
+						class: "libelleTitreRessource",
+						"ie-ellipsis-fixe": true,
+						style: { "line-height": this._parametres.hauteurLigneTitre + "px" },
+						role: lAvecEditionSurAjout && !lAvecAjout ? "button" : false,
+						tabindex: lAvecEditionSurAjout && !lAvecAjout ? "0" : false,
+						"aria-haspopup":
+							lAvecEditionSurAjout && !lAvecAjout ? "dialog" : false,
+					},
+					aDescripteurRessource.libelle,
 				),
-				'class="icon_plus_cercle color-neutre" title="',
-				ObjetTraduction_1.GTraductions.getValeur("diagnostic.AjouterRessource"),
-				'">',
-				"</ie-btnicon>",
-			);
-		}
-		if (aDescripteurRessource.afficherNombreRessources) {
-			H.push(
-				'<div class="PetitEspaceDroit PetitEspaceGauche AlignementDroit"',
-				' style="min-width:',
-				this._parametres.avecDiagnostic
-					? this._parametres.largeurColDiagno + 3
-					: 6 + 6,
-				'px;">',
-				lNbElements || "",
-				"</div>",
-			);
-		}
-		H.push("</div>");
-		if (aDescripteurRessource.filtre && aDescripteurRessource.filtre.html) {
-			if (aDescripteurRessource.filtre.controleur) {
-				$.extend(this.controleur, aDescripteurRessource.filtre.controleur);
-			}
-			H.push(
-				'<div class="Espace">',
-				aDescripteurRessource.filtre.html,
-				"</div>",
-			);
-		}
-		H.push("</div>");
-		return H.join("");
+				(H) => {
+					if (lAvecAjout) {
+						const lBtnAjout = () => {
+							return {
+								event: (aEvent) => {
+									aEvent.stopPropagation();
+									this._ajoutDeGenreRessource(aDescripteurRessource.genre);
+								},
+							};
+						};
+						H.push(
+							IE.jsx.str("ie-btnicon", {
+								"ie-model": lBtnAjout,
+								class: "icon_plus_cercle color-neutre",
+								"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+									"diagnostic.AjouterRessource",
+								),
+								"data-tooltip": Tooltip_1.Tooltip.Type.default,
+								"aria-haspopup": "dialog",
+								"aria-describedby": lIdTitreGenre,
+							}),
+						);
+					}
+					if (aDescripteurRessource.afficherNombreRessources) {
+						H.push(
+							'<div class="PetitEspaceDroit PetitEspaceGauche AlignementDroit"',
+							' style="min-width:',
+							this._parametres.avecDiagnostic
+								? this._parametres.largeurColDiagno + 3
+								: 6 + 6,
+							'px;">',
+							lNbElements || "",
+							"</div>",
+						);
+					}
+				},
+			),
+			(H) => {
+				if (aDescripteurRessource.filtre && aDescripteurRessource.filtre.html) {
+					if (aDescripteurRessource.filtre.controleur) {
+						$.extend(this.controleur, aDescripteurRessource.filtre.controleur);
+					}
+					H.push(
+						IE.jsx.str(
+							"div",
+							{ class: "Espace" },
+							aDescripteurRessource.filtre.html,
+						),
+					);
+				}
+			},
+		);
 	}
 	_construireListeGenreRessource(aDescripteurRessource) {
 		const H = [];
@@ -551,7 +538,13 @@ class InterfaceSelectionRessourceCours extends ObjetInterface_1.ObjetInterface {
 		) {
 			lChaineRessource = ObjetChaine_1.GChaine.format("%s %s", [
 				lChaineRessource,
-				(0, tag_1.tag)("i", { class: "icon_accompagnant" }),
+				IE.jsx.str("i", {
+					class: "icon_accompagnant",
+					role: "img",
+					"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+						"PersonnelAccompagnant",
+					),
+				}),
 			]);
 			if (aRessource.strEleves) {
 				lChaineRessource = ObjetChaine_1.GChaine.format("%s (%s)", [
@@ -608,7 +601,7 @@ class InterfaceSelectionRessourceCours extends ObjetInterface_1.ObjetInterface {
 				: ""
 			: " PastilleRessourceEditable";
 		H.push(
-			(0, tag_1.tag)(
+			IE.jsx.str(
 				"div",
 				{
 					style: this._parametres.avecDiagnostic
@@ -620,7 +613,7 @@ class InterfaceSelectionRessourceCours extends ObjetInterface_1.ObjetInterface {
 							)
 						: "width: 100%;",
 				},
-				(0, tag_1.tag)(
+				IE.jsx.str(
 					"div",
 					{
 						class: "LigneRessource",
@@ -630,7 +623,7 @@ class InterfaceSelectionRessourceCours extends ObjetInterface_1.ObjetInterface {
 							lHauteur +
 							"px;",
 					},
-					(0, tag_1.tag)(
+					IE.jsx.str(
 						"div",
 						{
 							style:
@@ -640,54 +633,81 @@ class InterfaceSelectionRessourceCours extends ObjetInterface_1.ObjetInterface {
 							class: `PastilleRessource ${lClassPastille}`,
 							"ie-node": lNonEditable
 								? false
-								: tag_1.tag.funcAttr("getNodeRessource", [
+								: this.jsxNodeRessource.bind(
+										this,
 										aDescripteurRessource.genre,
 										aLigneRessource,
-									]),
+									),
 							"aria-disabled": lNonEditable ? "true" : false,
 							"ie-draggable-fantome": lAvecSuppression
-								? tag_1.tag.funcAttr("fantomeLigneSuppression", [
+								? this.jsxFantomeLigneSuppression.bind(
+										this,
+										aRessource,
 										aDescripteurRessource.genre,
 										aLigneRessource,
-									])
+									)
 								: false,
-							tabindex: "0",
 						},
-						() => {
-							return [
-								aDescripteurRessource.htmlPastilleEntete
-									? aDescripteurRessource.htmlPastilleEntete(aRessource) || ""
+						aDescripteurRessource.htmlPastilleEntete
+							? aDescripteurRessource.htmlPastilleEntete(aRessource) || ""
+							: "",
+						IE.jsx.str(
+							"div",
+							{
+								style: lCouleurTexte
+									? ObjetStyle_2.GStyle.composeCouleurTexte(lCouleurTexte)
 									: "",
-								(0, tag_1.tag)(
-									"div",
-									{
-										style: lCouleurTexte
-											? ObjetStyle_2.GStyle.composeCouleurTexte(lCouleurTexte)
-											: "",
-										class: `TextePastille ${aRessource.absenceRessource && !this._parametres.avecDiagnostic ? " Barre" : ""}`,
-										title: lTitle ? lTitle : false,
-										"ie-ellipsis": true,
-									},
-									lChaineRessource,
-								),
-								lAvecSuppression
-									? (0, tag_1.tag)("ie-btnicon", {
-											"ie-model": tag_1.tag.funcAttr("btnRessourceSupp", [
-												aDescripteurRessource.genre,
-												aLigneRessource,
-											]),
-											title:
-												ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
-											class: "icon_remove color-neutre",
-										})
-									: "",
-							].join("");
-						},
+								class: `TextePastille ${aRessource.absenceRessource && !this._parametres.avecDiagnostic ? " Barre" : ""}`,
+								"ie-tooltipdescribe": lTitle ? lTitle : false,
+								"ie-ellipsis": true,
+								role: lNonEditable ? false : "button",
+								"aria-haspopup": lNonEditable ? false : "dialog",
+								tabindex: "0",
+							},
+							lChaineRessource,
+						),
+						lAvecSuppression
+							? IE.jsx.str("ie-btnicon", {
+									"ie-model": this.jsxModeleBoutonSupprimerRessource.bind(
+										this,
+										aDescripteurRessource.genre,
+										aLigneRessource,
+									),
+									"aria-label":
+										ObjetTraduction_1.GTraductions.getValeur("Supprimer") +
+										" " +
+										lChaineRessource,
+									"data-tooltip": Tooltip_1.Tooltip.Type.default,
+									class: "icon_remove color-neutre",
+								})
+							: "",
 					),
 				),
 			),
 		);
 		return H.join("");
+	}
+	jsxFantomeLigneSuppression(aRessource, aGenreRessource, aNumeroLigne) {
+		return {
+			getIdZone: () => {
+				return $("#" + this.getNom().escapeJQ() + " :first").get(0);
+			},
+			start: function (aParams) {
+				aParams.data.libelle = aRessource.getLibelle();
+			},
+			stop: (aParams) => {
+				if (aParams.data.horsZoneSuppression) {
+					this._parametres.callbackSuppressionRessource(
+						aGenreRessource,
+						aNumeroLigne,
+						aRessource,
+					);
+				}
+			},
+			drag: function (aParams) {
+				aParams.data.horsZoneSuppression = aParams.horsZone;
+			},
+		};
 	}
 	_construireDiagnosticDeRessource(
 		aRessource,
@@ -714,17 +734,16 @@ class InterfaceSelectionRessourceCours extends ObjetInterface_1.ObjetInterface {
 		const lDiagnostic = aDiagnosticRessource && aDiagnosticRessource.diag;
 		if (aDiagnosticRessource && aDiagnosticRessource.partiesLieesOccupees) {
 			H.push(
-				'<div class="AlignementMilieu Image_Diagnostic_LienManuel" ',
-				'title="',
-				ObjetChaine_1.GChaine.toTitle(
-					ObjetTraduction_1.GTraductions.getValeur(
-						"diagnostic.PartiesLieesOccupees",
-					) +
+				IE.jsx.str("div", {
+					class: "AlignementMilieu Image_Diagnostic_LienManuel",
+					role: "img",
+					"ie-tooltiplabel":
+						ObjetTraduction_1.GTraductions.getValeur(
+							"diagnostic.PartiesLieesOccupees",
+						) +
 						"\n" +
 						aDiagnosticRessource.partiesLieesOccupees,
-				),
-				'">',
-				"</div>",
+				}),
 			);
 		}
 		if (lDiagnostic) {
@@ -734,7 +753,14 @@ class InterfaceSelectionRessourceCours extends ObjetInterface_1.ObjetInterface {
 				)
 			) {
 				H.push(
-					'<i class="icon_lock" style="color: #ED5555; font-size:0.9rem;"></i>',
+					IE.jsx.str("i", {
+						class: "icon_lock",
+						style: "color: #ED5555; font-size:0.9rem;",
+						role: "img",
+						"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+							"EDT.CoursVerrouille",
+						),
+					}),
 				);
 			}
 			if (
@@ -808,9 +834,9 @@ class InterfaceSelectionRessourceCours extends ObjetInterface_1.ObjetInterface {
 				}
 				if (lTitle) {
 					H.push(
-						(0, tag_1.tag)("div", {
+						IE.jsx.str("div", {
 							class: "Image_Diagnostic_TOrange",
-							title: lTitle,
+							"ie-tooltiplabel": lTitle,
 						}),
 					);
 				}
@@ -820,134 +846,104 @@ class InterfaceSelectionRessourceCours extends ObjetInterface_1.ObjetInterface {
 		return H.join("");
 	}
 	_construireDiagnosticJourFerie() {
-		const lTitle = ObjetTraduction_1.GTraductions.getValeur(
-				"diagnostic.JourFerie",
-			),
-			H = [];
-		H.push(
-			'<div class="Texte9 Gras" ',
-			'style="',
-			ObjetStyle_2.GStyle.composeWidth(this._parametres.largeurDiagnosticImage),
-			ObjetStyle_2.GStyle.composeHeight(this._parametres.hauteurIconesDiagno),
-			"line-height:",
-			this._parametres.hauteurIconesDiagno,
-			"px;",
-			'" ',
-			'title="',
-			ObjetChaine_1.GChaine.toTitle(lTitle),
-			'">',
+		return IE.jsx.str(
+			"div",
+			{
+				role: "img",
+				class: "Texte9 Gras",
+				style: {
+					width: this._parametres.largeurDiagnosticImage,
+					height: this._parametres.hauteurIconesDiagno,
+					"line-height": this._parametres.hauteurIconesDiagno + "px",
+				},
+				"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+					"diagnostic.JourFerie",
+				),
+			},
 			ObjetTraduction_1.GTraductions.getValeur("diagnostic.JourFerie_Abrev"),
-			"</div>",
 		);
-		return H.join("");
 	}
 	_construireDiagnosticIndispoDure(aRessource) {
 		const lTitle = ObjetChaine_1.GChaine.format(
-				ObjetTraduction_1.GTraductions.getValeur(
-					"diagnostic.RessourceIndisponible",
-				),
-				[aRessource.getLibelle()],
+			ObjetTraduction_1.GTraductions.getValeur(
+				"diagnostic.RessourceIndisponible",
 			),
-			H = [];
-		H.push(
-			"<div ",
-			'style="',
-			ObjetStyle_2.GStyle.composeWidth(this._parametres.largeurDiagnosticImage),
-			ObjetStyle_2.GStyle.composeHeight(this._parametres.hauteurIconesDiagno),
-			"line-height:",
-			this._parametres.hauteurIconesDiagno,
-			"px;",
-			ObjetStyle_2.GStyle.composeCouleurFond(
-				this.couleur.diagnostic.indisponibilite,
-			),
-			'" ',
-			'title="',
-			ObjetChaine_1.GChaine.toTitle(lTitle),
-			'">',
-			"</div>",
+			[aRessource.getLibelle()],
 		);
-		return H.join("");
+		return IE.jsx.str("div", {
+			role: "img",
+			style: {
+				width: this._parametres.largeurDiagnosticImage,
+				height: this._parametres.hauteurIconesDiagno,
+				"line-height": `${this._parametres.hauteurIconesDiagno}px`,
+				"background-color": this.couleur.diagnostic.indisponibilite,
+			},
+			"ie-tooltiplabel": lTitle,
+		});
 	}
 	_construireDiagnosticAbsenceRessource() {
-		const H = [],
-			lTitle = ObjetTraduction_1.GTraductions.getValeur(
-				"diagnostic.RessourceAbsente",
-			);
-		H.push(
-			'<div class=" AlignementMilieu Texte9 Gras" ',
-			'style="',
-			ObjetStyle_2.GStyle.composeWidth(this._parametres.largeurDiagnosticImage),
-			ObjetStyle_2.GStyle.composeHeight(this._parametres.hauteurIconesDiagno),
-			"line-height:",
-			this._parametres.hauteurIconesDiagno,
-			"px;",
-			ObjetStyle_2.GStyle.composeCouleurFond(
-				this.couleur.diagnostic.absenceRessource,
-			),
-			ObjetStyle_2.GStyle.composeCouleurTexte(this.couleur.blanc),
-			'" ',
-			'title="',
-			ObjetChaine_1.GChaine.toTitle(lTitle),
-			'">',
+		return IE.jsx.str(
+			"div",
+			{
+				class: "AlignementMilieu Texte9 Gras",
+				role: "img",
+				style: {
+					width: this._parametres.largeurDiagnosticImage,
+					height: this._parametres.hauteurIconesDiagno,
+					"line-height": `${this._parametres.hauteurIconesDiagno}px`,
+					"background-color": this.couleur.diagnostic.absenceRessource,
+					color: this.couleur.blanc,
+				},
+				"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+					"diagnostic.RessourceAbsente",
+				),
+			},
 			ObjetTraduction_1.GTraductions.getValeur(
 				"diagnostic.AbsenceRessource_Abrev",
 			),
-			"</div>",
 		);
-		return H.join("");
 	}
 	_construireDiagnosticDP() {
-		const H = [],
-			lTitle = ObjetTraduction_1.GTraductions.getValeur(
-				"diagnostic.AucunServiceDemiPension",
-			);
-		H.push(
-			'<div class=" AlignementMilieu Texte9 Gras" ',
-			'style="',
-			ObjetStyle_2.GStyle.composeWidth(this._parametres.largeurDiagnosticImage),
-			"line-height:",
-			this._parametres.hauteurIconesDiagno,
-			"px;",
-			ObjetStyle_2.GStyle.composeCouleurFond(
-				this.couleur.diagnostic.demiPension,
-			),
-			ObjetStyle_2.GStyle.composeCouleurTexte(this.couleur.blanc),
-			'" ',
-			'title="',
-			ObjetChaine_1.GChaine.toTitle(lTitle),
-			'">',
+		return IE.jsx.str(
+			"div",
+			{
+				class: "AlignementMilieu Texte9 Gras",
+				role: "img",
+				style: {
+					width: this._parametres.largeurDiagnosticImage,
+					"line-height": `${this._parametres.hauteurIconesDiagno}px`,
+					"background-color": this.couleur.diagnostic.demiPension,
+					color: this.couleur.blanc,
+				},
+				"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+					"diagnostic.AucunServiceDemiPension",
+				),
+			},
 			ObjetTraduction_1.GTraductions.getValeur("diagnostic.DemiPension_Abrev"),
-			"</div>",
 		);
-		return H.join("");
 	}
 	_construireDiagnosticGAEV() {
-		const H = [],
-			lTitle = ObjetTraduction_1.GTraductions.getValeur(
-				"diagnostic.ChangementSemaineGAEV",
-			);
-		H.push(
-			'<div class=" AlignementMilieu Texte9 Gras" ',
-			'style="',
-			ObjetStyle_2.GStyle.composeWidth(this._parametres.largeurDiagnosticImage),
-			ObjetStyle_2.GStyle.composeHeight(this._parametres.hauteurIconesDiagno),
-			"line-height:",
-			this._parametres.hauteurIconesDiagno,
-			"px;",
-			ObjetStyle_2.GStyle.composeCouleurFond(this.couleur.diagnostic.gaev),
-			ObjetStyle_2.GStyle.composeCouleurTexte(this.couleur.blanc),
-			'" ',
-			'title="',
-			ObjetChaine_1.GChaine.toTitle(lTitle),
-			'">',
+		return IE.jsx.str(
+			"div",
+			{
+				role: "img",
+				class: "AlignementMilieu Texte9 Gras",
+				style: {
+					width: this._parametres.largeurDiagnosticImage,
+					height: this._parametres.hauteurIconesDiagno,
+					"line-height": `${this._parametres.hauteurIconesDiagno}px`,
+					"background-color": this.couleur.diagnostic.gaev,
+					color: this.couleur.blanc,
+				},
+				"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+					"diagnostic.ChangementSemaineGAEV",
+				),
+			},
 			ObjetTraduction_1.GTraductions.getValeur("diagnostic.GAEV_Abrev"),
-			"</div>",
 		);
-		return H.join("");
 	}
 	_construireDiagnosticSite(aRessource, aDiagnostics) {
-		const H = [],
-			lTitle = [];
+		const lTitle = [];
 		if (
 			aDiagnostics.contains(
 				Type_Diagnostic_1.TypeDiagnostic.DiagSitesIncompatiblesHeureTransition,
@@ -994,42 +990,35 @@ class InterfaceSelectionRessourceCours extends ObjetInterface_1.ObjetInterface {
 				),
 			);
 		}
-		H.push(
-			'<div class=" AlignementMilieu Texte9 Gras" ',
-			'style="',
-			ObjetStyle_2.GStyle.composeWidth(9),
-			"line-height:",
-			this._parametres.hauteurIconesDiagno,
-			"px;",
-			ObjetStyle_2.GStyle.composeCouleurFond(this.couleur.diagnostic.site),
-			ObjetStyle_2.GStyle.composeCouleurTexte(this.couleur.blanc),
-			'" ',
-			'title="',
-			ObjetChaine_1.GChaine.toTitle(lTitle.join("\n")),
-			'">',
+		return IE.jsx.str(
+			"div",
+			{
+				role: "img",
+				class: "AlignementMilieu Texte9 Gras",
+				style: {
+					width: 9,
+					"line-height": this._parametres.hauteurIconesDiagno + "px",
+					"background-color": this.couleur.diagnostic.site,
+					color: this.couleur.blanc,
+				},
+				"ie-tooltiplabel": lTitle.join("\n"),
+			},
 			ObjetTraduction_1.GTraductions.getValeur("diagnostic.Site_Abrev"),
-			"</div>",
 		);
-		return H.join("");
 	}
 	_construireDiagnosticIndispoEtab() {
-		const H = [],
-			lTitle = ObjetTraduction_1.GTraductions.getValeur(
+		return IE.jsx.str("div", {
+			role: "img",
+			class: "AlignementMilieu Texte9 Gras Image_Diagnostic_IndispoEtab",
+			style: {
+				width: 13,
+				"background-color": this.couleur.noir,
+				color: this.couleur.blanc,
+			},
+			"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
 				"diagnostic.DJNonTravaille",
-			);
-		H.push(
-			'<div class="AlignementMilieu Texte9 Gras Image_Diagnostic_IndispoEtab" ',
-			'style="',
-			ObjetStyle_2.GStyle.composeWidth(13),
-			ObjetStyle_2.GStyle.composeCouleurFond(this.couleur.noir),
-			ObjetStyle_2.GStyle.composeCouleurTexte(this.couleur.blanc),
-			'" ',
-			'title="',
-			ObjetChaine_1.GChaine.toTitle(lTitle),
-			'">',
-			"</div>",
-		);
-		return H.join("");
+			),
+		});
 	}
 }
 exports.InterfaceSelectionRessourceCours = InterfaceSelectionRessourceCours;

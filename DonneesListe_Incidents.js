@@ -1,12 +1,12 @@
-const { EGenreCommandeMenu } = require("Enumere_CommandeMenu.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const {
-	TypeGenreStatutProtagonisteIncident,
-} = require("TypeGenreStatutProtagonisteIncident.js");
-class DonneesListe_Incidents extends ObjetDonneesListe {
+exports.DonneesListe_Incidents = void 0;
+const Enumere_CommandeMenu_1 = require("Enumere_CommandeMenu");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const TypeGenreStatutProtagonisteIncident_1 = require("TypeGenreStatutProtagonisteIncident");
+const MethodesObjet_1 = require("MethodesObjet");
+class DonneesListe_Incidents extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(
 		aDonnees,
 		aUniquementMesIncidents,
@@ -17,8 +17,8 @@ class DonneesListe_Incidents extends ObjetDonneesListe {
 		this.uniquementMesIncidents = aUniquementMesIncidents;
 		this.uniquementNonRegle = aUniquementNonRegle;
 		this.avecSaisieVise = [
-			EGenreEspace.Administrateur,
-			EGenreEspace.PrimDirection,
+			Enumere_Espace_1.EGenreEspace.Administrateur,
+			Enumere_Espace_1.EGenreEspace.PrimDirection,
 		].includes(GEtatUtilisateur.GenreEspace);
 		this._avecSaisie = aAvecSaisie;
 		this.setOptions({
@@ -27,6 +27,12 @@ class DonneesListe_Incidents extends ObjetDonneesListe {
 			avecEvnt_ApresSuppression: true,
 			avecContenuTronque: true,
 		});
+	}
+	setUniquementMesIncidents(aValue) {
+		this.uniquementMesIncidents = aValue;
+	}
+	setUniquementNonRegle(aValue) {
+		this.uniquementNonRegle = aValue;
 	}
 	avecEdition(aParams) {
 		switch (aParams.idColonne) {
@@ -59,10 +65,17 @@ class DonneesListe_Incidents extends ObjetDonneesListe {
 		switch (aParams.idColonne) {
 			case DonneesListe_Incidents.colonnes.heure:
 				return aParams.article.avecEditHeure
-					? ObjetDonneesListe.ECouleurCellule.Blanc
+					? ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc
 					: null;
 		}
 		return null;
+	}
+	getClass(aParams) {
+		switch (aParams.idColonne) {
+			case DonneesListe_Incidents.colonnes.suitesDonnees:
+				return "ie-ellipsis";
+		}
+		return super.getClass(aParams);
 	}
 	avecEvenementEdition(aParams) {
 		switch (aParams.idColonne) {
@@ -92,6 +105,8 @@ class DonneesListe_Incidents extends ObjetDonneesListe {
 		const lArr = [];
 		let lListe;
 		switch (aParams.idColonne) {
+			case DonneesListe_Incidents.colonnes.id:
+				return aParams.article.id;
 			case DonneesListe_Incidents.colonnes.date:
 				return aParams.article.dateheure;
 			case DonneesListe_Incidents.colonnes.heure:
@@ -100,8 +115,15 @@ class DonneesListe_Incidents extends ObjetDonneesListe {
 							aParams.article.getNumero() +
 							"', " +
 							aParams.article.Etat +
-							')" class="browser-default" />'
-					: GDate.formatDate(aParams.article.dateheure, "%hh : %mm");
+							')" class="browser-default" aria-label="' +
+							ObjetTraduction_1.GTraductions.getValeur(
+								"incidents.heureIncident",
+							) +
+							'"/>'
+					: ObjetDate_1.GDate.formatDate(
+							aParams.article.dateheure,
+							"%hh : %mm",
+						);
 			case DonneesListe_Incidents.colonnes.motifs:
 				return aParams.article.listeMotifs.getTableauLibelles().join(", ");
 			case DonneesListe_Incidents.colonnes.lieu:
@@ -111,7 +133,9 @@ class DonneesListe_Incidents extends ObjetDonneesListe {
 			case DonneesListe_Incidents.colonnes.auteurs:
 				lListe = aParams.article.protagonistes.getListeElements((aElement) => {
 					return (
-						aElement.Genre === TypeGenreStatutProtagonisteIncident.GSP_Auteur &&
+						aElement.Genre ===
+							TypeGenreStatutProtagonisteIncident_1
+								.TypeGenreStatutProtagonisteIncident.GSP_Auteur &&
 						aElement.existe()
 					);
 				});
@@ -125,7 +149,8 @@ class DonneesListe_Incidents extends ObjetDonneesListe {
 				lListe = aParams.article.protagonistes.getListeElements((aElement) => {
 					return (
 						aElement.Genre ===
-							TypeGenreStatutProtagonisteIncident.GSP_Victime &&
+							TypeGenreStatutProtagonisteIncident_1
+								.TypeGenreStatutProtagonisteIncident.GSP_Victime &&
 						aElement.existe()
 					);
 				});
@@ -138,7 +163,9 @@ class DonneesListe_Incidents extends ObjetDonneesListe {
 			case DonneesListe_Incidents.colonnes.temoins:
 				lListe = aParams.article.protagonistes.getListeElements((aElement) => {
 					return (
-						aElement.Genre === TypeGenreStatutProtagonisteIncident.GSP_Temoin &&
+						aElement.Genre ===
+							TypeGenreStatutProtagonisteIncident_1
+								.TypeGenreStatutProtagonisteIncident.GSP_Temoin &&
 						aElement.existe()
 					);
 				});
@@ -162,23 +189,34 @@ class DonneesListe_Incidents extends ObjetDonneesListe {
 				return aParams.article.gravite + "/5";
 			case DonneesListe_Incidents.colonnes.rapporteur:
 				return aParams.article.rapporteur.getLibelle();
+			case DonneesListe_Incidents.colonnes.suitesDonnees:
+				return aParams.article.suitesDonnees;
 		}
 		return "";
 	}
 	getTypeValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_Incidents.colonnes.date:
-				return ObjetDonneesListe.ETypeCellule.DateCalendrier;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule
+					.DateCalendrier;
 			case DonneesListe_Incidents.colonnes.heure:
 				return aParams.article && aParams.article.avecEditHeure
-					? ObjetDonneesListe.ETypeCellule.Html
-					: ObjetDonneesListe.ETypeCellule.Texte;
+					? ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html
+					: ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 			case DonneesListe_Incidents.colonnes.vise:
 			case DonneesListe_Incidents.colonnes.regle:
 			case DonneesListe_Incidents.colonnes.faitDeViolence:
-				return ObjetDonneesListe.ETypeCellule.Coche;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Coche;
 		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
+	}
+	getTooltip(aParams) {
+		switch (aParams.idColonne) {
+			case DonneesListe_Incidents.colonnes.suitesDonnees:
+				return aParams.article.hintReponsesApportes;
+			default:
+				return super.getTooltip(aParams);
+		}
 	}
 	initialiserObjetGraphique(aParams, aInstance) {
 		aInstance.setParametres(
@@ -196,7 +234,10 @@ class DonneesListe_Incidents extends ObjetDonneesListe {
 	surEdition(aParams, V) {
 		switch (aParams.idColonne) {
 			case DonneesListe_Incidents.colonnes.date:
-				if (GDate.estDateValide(V)) {
+				if (
+					MethodesObjet_1.MethodesObjet.isDate(V) &&
+					ObjetDate_1.GDate.estDateValide(V)
+				) {
 					const lDate = new Date(
 						V.getFullYear(),
 						V.getMonth(),
@@ -233,8 +274,8 @@ class DonneesListe_Incidents extends ObjetDonneesListe {
 		return this._avecSaisie && aParams.article.estEditable;
 	}
 	getLibelleDraggable(aParams) {
-		return GTraductions.getValeur("incidents.IncidentDu", [
-			GDate.formatDate(aParams.article.dateheure, "%JJ/%MM/%AAAA"),
+		return ObjetTraduction_1.GTraductions.getValeur("incidents.IncidentDu", [
+			ObjetDate_1.GDate.formatDate(aParams.article.dateheure, "%JJ/%MM/%AAAA"),
 		]);
 	}
 	initialisationObjetContextuel(aParametres) {
@@ -243,28 +284,40 @@ class DonneesListe_Incidents extends ObjetDonneesListe {
 		}
 		if (this._avecSaisie) {
 			aParametres.menuContextuel.addCommande(
-				EGenreCommandeMenu.Suppression,
-				GTraductions.getValeur("liste.supprimer"),
+				Enumere_CommandeMenu_1.EGenreCommandeMenu.Suppression,
+				ObjetTraduction_1.GTraductions.getValeur("liste.supprimer"),
 				this.avecSuppression(aParametres) && !aParametres.nonEditable,
 			);
 		}
 		aParametres.menuContextuel.setDonnees();
 	}
 }
-DonneesListe_Incidents.colonnes = {
-	date: "0",
-	heure: "1",
-	motifs: "2",
-	lieu: "3",
-	details: "4",
-	auteurs: "5",
-	victimes: "6",
-	temoins: "7",
-	vise: "8",
-	regle: "9",
-	faitDeViolence: "10",
-	actionsEnvisagees: "11",
-	rapporteur: "12",
-	gravite: "13",
-};
-module.exports = { DonneesListe_Incidents };
+exports.DonneesListe_Incidents = DonneesListe_Incidents;
+(function (DonneesListe_Incidents) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["date"] = "0";
+		colonnes["heure"] = "1";
+		colonnes["motifs"] = "2";
+		colonnes["lieu"] = "3";
+		colonnes["details"] = "4";
+		colonnes["auteurs"] = "5";
+		colonnes["victimes"] = "6";
+		colonnes["temoins"] = "7";
+		colonnes["vise"] = "8";
+		colonnes["regle"] = "9";
+		colonnes["faitDeViolence"] = "10";
+		colonnes["actionsEnvisagees"] = "11";
+		colonnes["rapporteur"] = "12";
+		colonnes["gravite"] = "13";
+		colonnes["id"] = "14";
+		colonnes["suitesDonnees"] = "15";
+	})(
+		(colonnes =
+			DonneesListe_Incidents.colonnes ||
+			(DonneesListe_Incidents.colonnes = {})),
+	);
+})(
+	DonneesListe_Incidents ||
+		(exports.DonneesListe_Incidents = DonneesListe_Incidents = {}),
+);

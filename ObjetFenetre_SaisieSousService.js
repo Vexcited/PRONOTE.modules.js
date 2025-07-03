@@ -10,7 +10,7 @@ const ObjetElement_1 = require("ObjetElement");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetRequeteDetailService_1 = require("ObjetRequeteDetailService");
-const ObjetRequeteSaisieSousServices = require("ObjetRequeteSaisieSousServices");
+const ObjetRequeteSaisieSousServices_1 = require("ObjetRequeteSaisieSousServices");
 class ObjetFenetre_SaisieSousService extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
@@ -39,10 +39,14 @@ class ObjetFenetre_SaisieSousService extends ObjetFenetre_1.ObjetFenetre {
 	}
 	requeteDetailService(aService) {
 		this.service = aService;
-		new ObjetRequeteDetailService_1.ObjetRequeteDetailService(
-			this,
-			this._actionSurRequeteDetailService,
-		).lancerRequete(aService);
+		new ObjetRequeteDetailService_1.ObjetRequeteDetailService(this)
+			.lancerRequete({ Service: aService })
+			.then((aReponse) => {
+				this._setDonnees(
+					aReponse.ListeSousMatieres,
+					aReponse.ListeSousServices,
+				);
+			});
 	}
 	_setDonnees(aListeSousMatieres, aListeSousServices) {
 		if (this.service) {
@@ -227,12 +231,6 @@ class ObjetFenetre_SaisieSousService extends ObjetFenetre_1.ObjetFenetre {
 		});
 		this.fermer();
 	}
-	_actionSurRequeteDetailService(aParametres) {
-		this._setDonnees(
-			aParametres.ListeSousMatieres,
-			aParametres.ListeSousServices,
-		);
-	}
 	_creerSousService(aListeSousMatieresSelectionnees, aService) {
 		for (let i = 0; i < aListeSousMatieresSelectionnees.count(); i++) {
 			const lNewSousService = new ObjetElement_1.ObjetElement();
@@ -242,7 +240,7 @@ class ObjetFenetre_SaisieSousService extends ObjetFenetre_1.ObjetFenetre {
 		}
 		this.sousServiceModifie = true;
 		aService.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
-		new ObjetRequeteSaisieSousServices(
+		new ObjetRequeteSaisieSousServices_1.ObjetRequeteSaisieSousServices(
 			this,
 			this._actionSurSaisieDonnees,
 		).lancerRequete({
@@ -281,7 +279,7 @@ class ObjetFenetre_SaisieSousService extends ObjetFenetre_1.ObjetFenetre {
 					aGenreEvenement ===
 					Enumere_EvenementListe_1.EGenreEvenementListe.ApresEdition;
 				this.service.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
-				new ObjetRequeteSaisieSousServices(
+				new ObjetRequeteSaisieSousServices_1.ObjetRequeteSaisieSousServices(
 					this,
 					this._actionSurSaisieDonnees,
 				).lancerRequete({

@@ -12,6 +12,8 @@ const ObjetChaine_1 = require("ObjetChaine");
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
 const Enumere_Action_1 = require("Enumere_Action");
 const Type_ThemeBouton_1 = require("Type_ThemeBouton");
+const TraductionsDoubleAuth_1 = require("TraductionsDoubleAuth");
+const AccessApp_1 = require("AccessApp");
 var Etape;
 (function (Etape) {
 	Etape[(Etape["choixStrat"] = 0)] = "choixStrat";
@@ -168,9 +170,7 @@ class UtilitaireSecurisationCompte {
 					ObjetSaisieCodePIN_1.ObjetSaisieCodePIN.ModeSaisieValiderPIN
 						.ControlePIN;
 				let lAvecReinitPIN = aDonnees.avecReinitPIN;
-				let lTitre = ObjetTraduction_1.GTraductions.getValeur(
-					"DoubleAuth.TitreValiderCodePIN",
-				);
+				let lTitre = TraductionsDoubleAuth_1.TradDoubleAuth.TitreValiderCodePIN;
 				let lLibelleBouton =
 					ObjetTraduction_1.GTraductions.getValeur("Annuler");
 				if (
@@ -183,12 +183,10 @@ class UtilitaireSecurisationCompte {
 						ObjetSaisieCodePIN_1.ObjetSaisieCodePIN.ModeSaisieValiderPIN
 							.DefinirPIN;
 					lAvecReinitPIN = false;
-					lTitre = ObjetTraduction_1.GTraductions.getValeur(
-						"DoubleAuth.RenforcerSecuDefinirPIN",
-					);
+					lTitre =
+						TraductionsDoubleAuth_1.TradDoubleAuth.RenforcerSecuDefinirPIN;
 					if (aChaineEtape.precedent) {
-						lLibelleBouton =
-							ObjetTraduction_1.GTraductions.getValeur("DoubleAuth.Retour");
+						lLibelleBouton = TraductionsDoubleAuth_1.TradDoubleAuth.Retour;
 					}
 				}
 				const lResultFenetrePIN =
@@ -292,9 +290,7 @@ class ObjetFenetre_ChoixStrategie extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.setOptionsFenetre({
-			titre: ObjetTraduction_1.GTraductions.getValeur(
-				"DoubleAuth.RenforcerSecurite",
-			),
+			titre: TraductionsDoubleAuth_1.TradDoubleAuth.RenforcerSecurite,
 			listeBoutons: [
 				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
 				{
@@ -313,9 +309,7 @@ class ObjetFenetre_ChoixStrategie extends ObjetFenetre_1.ObjetFenetre {
 	async setDonnees(aDonnees, aResultSecu) {
 		const lParamsStrat = { mode: aResultSecu.mode };
 		const lResultPromise = super.afficher(
-			IE.jsx.str("div", {
-				id: this.getInstance(this.identChoixStrategie).getNom(),
-			}),
+			IE.jsx.str("div", { id: this.getNomInstance(this.identChoixStrategie) }),
 		);
 		this.getInstance(this.identChoixStrategie)
 			.setOptions({
@@ -357,7 +351,7 @@ class ObjetFenetre_PIN extends ObjetFenetre_1.ObjetFenetre {
 		);
 	}
 	composeContenu() {
-		return IE.jsx.str("div", { id: this.getInstance(this.identPIN).getNom() });
+		return IE.jsx.str("div", { id: this.getNomInstance(this.identPIN) });
 	}
 	setDonnees(aOptions) {
 		this.getInstance(this.identPIN)
@@ -386,7 +380,7 @@ class ObjetFenetre_Enregistrement extends ObjetFenetre_1.ObjetFenetre {
 		this.idInput = `${this.Nom}_inp`;
 		this.setOptionsFenetre({
 			listeBoutons: [
-				ObjetTraduction_1.GTraductions.getValeur("DoubleAuth.Annuler"),
+				TraductionsDoubleAuth_1.TradDoubleAuth.Annuler,
 				{
 					valider: true,
 					libelle: ObjetTraduction_1.GTraductions.getValeur("Valider"),
@@ -395,70 +389,65 @@ class ObjetFenetre_Enregistrement extends ObjetFenetre_1.ObjetFenetre {
 			largeur: cLargeurFenetre,
 		});
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			cbIdentification: {
-				getValue() {
-					return aInstance.cbIdentification;
-				},
-				setValue(aValue) {
-					aInstance.cbIdentification = aValue;
-					if (
-						aInstance.avecWarningIdentification &&
-						!aInstance.cbIdentification
-					) {
-						aInstance.avecWarningIdentification = false;
-						GApplication.getMessage().afficher({
-							message:
-								ObjetTraduction_1.GTraductions.getValeur(
-									"DoubleAuth.EnregistrerAppareilResterInconnu",
-								) +
-								"<br>" +
-								ObjetTraduction_1.GTraductions.getValeur(
-									"DoubleAuth.PersonnesConfiance",
-								),
-						});
-					}
-				},
+	jsxModeleCheckboxIdentification() {
+		return {
+			getValue: () => {
+				return this.cbIdentification;
 			},
-			inputIdentification: {
-				getValue() {
-					return aInstance.strIdentification;
-				},
-				setValue(aValue) {
-					aInstance.strIdentification = aValue;
-				},
-				getDisabled() {
-					return !aInstance.cbIdentification;
-				},
-				node() {
-					$(this.node).on("keyup", (aEvent) => {
-						if (aEvent.which === ToucheClavier_1.ToucheClavier.RetourChariot) {
-							for (
-								let lNumeroBouton = 0;
-								lNumeroBouton < aInstance.optionsFenetre.listeBoutons.length;
-								lNumeroBouton++
-							) {
-								const lBouton =
-									aInstance.optionsFenetre.listeBoutons[lNumeroBouton];
-								if (typeof lBouton === "string") {
-								} else if (lBouton.valider) {
-									aInstance.surValidation(lNumeroBouton);
-									return;
-								}
+			setValue: (aValue) => {
+				this.cbIdentification = aValue;
+				if (this.avecWarningIdentification && !this.cbIdentification) {
+					this.avecWarningIdentification = false;
+					(0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({
+							message:
+								TraductionsDoubleAuth_1.TradDoubleAuth
+									.EnregistrerAppareilResterInconnu +
+								"<br>" +
+								TraductionsDoubleAuth_1.TradDoubleAuth.PersonnesConfiance,
+						});
+				}
+			},
+		};
+	}
+	jsxModeleInputIdentification() {
+		return {
+			getValue: () => {
+				return this.strIdentification;
+			},
+			setValue: (aValue) => {
+				this.strIdentification = aValue;
+			},
+			getDisabled: () => {
+				return !this.cbIdentification;
+			},
+			node: (aNode) => {
+				$(aNode).on("keyup", (aEvent) => {
+					if (aEvent.which === ToucheClavier_1.ToucheClavier.RetourChariot) {
+						for (
+							let lNumeroBouton = 0;
+							lNumeroBouton < this.optionsFenetre.listeBoutons.length;
+							lNumeroBouton++
+						) {
+							const lBouton = this.optionsFenetre.listeBoutons[lNumeroBouton];
+							if (typeof lBouton === "string") {
+							} else if (lBouton.valider) {
+								this.surValidation(lNumeroBouton);
+								return;
 							}
 						}
-					});
-				},
+					}
+				});
 			},
-			getHtmlCompteurInput: function () {
-				return aInstance.strIdentification.length > 0
-					? aInstance.strIdentification.length +
-							"/" +
-							TypeSecurisationCompte_1.C_LibelleAppareilMaxLength
-					: "&nbsp;";
-			},
-		});
+		};
+	}
+	jsxGetHtmlCompteurInput() {
+		return this.strIdentification.length > 0
+			? this.strIdentification.length +
+					"/" +
+					TypeSecurisationCompte_1.C_LibelleAppareilMaxLength
+			: "&nbsp;";
 	}
 	compose() {
 		if (!this.donnees) {
@@ -482,20 +471,21 @@ class ObjetFenetre_Enregistrement extends ObjetFenetre_1.ObjetFenetre {
 				"p",
 				{ class: "m-bottom-xl", id: lIdLegende },
 				!lAvecChoixStrategie && !lAvecChoixCodePIN
-					? ObjetTraduction_1.GTraductions.getValeur(
-							"DoubleAuth.EnregistrerAppareilRappelNotif",
-						) + "<br>"
+					? TraductionsDoubleAuth_1.TradDoubleAuth
+							.EnregistrerAppareilRappelNotif + "<br>"
 					: "",
-				ObjetTraduction_1.GTraductions.getValeur(
-					"DoubleAuth.EnregistrerAppareilInfoIdentification",
-				),
+				TraductionsDoubleAuth_1.TradDoubleAuth
+					.EnregistrerAppareilInfoIdentification,
 			),
 			IE.jsx.str(
 				"ie-checkbox",
-				{ id: lIdCB, "ie-model": "cbIdentification", class: "m-bottom-xl" },
-				ObjetTraduction_1.GTraductions.getValeur(
-					"DoubleAuth.EnregistrerAppareilNommerAppareil",
-				),
+				{
+					id: lIdCB,
+					"ie-model": this.jsxModeleCheckboxIdentification.bind(this),
+					class: "m-bottom-xl",
+				},
+				TraductionsDoubleAuth_1.TradDoubleAuth
+					.EnregistrerAppareilNommerAppareil,
 			),
 			IE.jsx.str(
 				"div",
@@ -503,46 +493,41 @@ class ObjetFenetre_Enregistrement extends ObjetFenetre_1.ObjetFenetre {
 				IE.jsx.str(
 					"label",
 					{ for: this.idInput, class: "m-bottom-l" },
-					ObjetTraduction_1.GTraductions.getValeur(
-						"DoubleAuth.EnregistrerSousNom",
-					),
+					TraductionsDoubleAuth_1.TradDoubleAuth.EnregistrerSousNom,
 					" :",
 				),
 				IE.jsx.str("input", {
 					type: "text",
 					id: this.idInput,
-					"ie-model": "inputIdentification",
-					class: "round-style full-width",
+					"ie-model": this.jsxModeleInputIdentification.bind(this),
+					class: "full-width",
 					maxlength: TypeSecurisationCompte_1.C_LibelleAppareilMaxLength,
 					"ie-trim": true,
 					autocomplete: "new-password",
-					placeholder: ObjetTraduction_1.GTraductions.getValeur(
-						"DoubleAuth.EnregistrerAppareilSuggestions",
-					),
+					placeholder:
+						TraductionsDoubleAuth_1.TradDoubleAuth
+							.EnregistrerAppareilSuggestions,
 					"aria-describedby": [lIdCompteur, lIdLegende, lIdCB].join(" "),
 				}),
 				IE.jsx.str("div", {
-					"ie-html": "getHtmlCompteurInput",
+					"ie-html": this.jsxGetHtmlCompteurInput.bind(this),
 					class: "sc-compteurInput",
 				}),
 				IE.jsx.str(
 					"span",
 					{ class: "sr-only", id: lIdCompteur },
-					ObjetTraduction_1.GTraductions.getValeur(
-						"DoubleAuth.NbCaracteresMax_D",
+					TraductionsDoubleAuth_1.TradDoubleAuth.NbCaracteresMax_D.format(
 						TypeSecurisationCompte_1.C_LibelleAppareilMaxLength,
 					),
 				),
-				!lAvecChoixStrategie && GParametres.urlFAQEnregistrementDoubleAuth
+				GParametres.urlTutoEnregistrerAppareils
 					? IE.jsx.str(
 							"ie-chips",
 							{
 								class: "iconic icon_question_sign",
-								href: GParametres.urlFAQEnregistrementDoubleAuth,
+								href: GParametres.urlTutoEnregistrerAppareils,
 							},
-							ObjetTraduction_1.GTraductions.getValeur(
-								"DoubleAuth.LienFAQEnregistrement",
-							),
+							TraductionsDoubleAuth_1.TradDoubleAuth.LienFAQEnregistrement,
 						)
 					: "",
 			),
@@ -553,8 +538,8 @@ class ObjetFenetre_Enregistrement extends ObjetFenetre_1.ObjetFenetre {
 		this.setOptionsFenetre({
 			listeBoutons: [
 				aAvecRetour
-					? ObjetTraduction_1.GTraductions.getValeur("DoubleAuth.Retour")
-					: ObjetTraduction_1.GTraductions.getValeur("DoubleAuth.Annuler"),
+					? TraductionsDoubleAuth_1.TradDoubleAuth.Retour
+					: TraductionsDoubleAuth_1.TradDoubleAuth.Annuler,
 				{
 					valider: true,
 					libelle: ObjetTraduction_1.GTraductions.getValeur("Valider"),
@@ -578,12 +563,8 @@ class ObjetFenetre_Enregistrement extends ObjetFenetre_1.ObjetFenetre {
 		this.setOptionsFenetre({
 			titre:
 				!lAvecChoixStrategie && !lAvecChoixCodePIN
-					? ObjetTraduction_1.GTraductions.getValeur(
-							"DoubleAuth.ValiderTitreInconnu",
-						)
-					: ObjetTraduction_1.GTraductions.getValeur(
-							"DoubleAuth.EnregistrerAppareilTitre",
-						),
+					? TraductionsDoubleAuth_1.TradDoubleAuth.ValiderTitreInconnu
+					: TraductionsDoubleAuth_1.TradDoubleAuth.EnregistrerAppareilTitre,
 		});
 		const lPromise = super.afficher(this.compose());
 		$(`#${this.idInput.escapeJQ()}`).trigger("focus");
@@ -600,11 +581,13 @@ class ObjetFenetre_Enregistrement extends ObjetFenetre_1.ObjetFenetre {
 		const lParams = this.getParametresValidation(ANumeroBouton);
 		if (lParams.bouton && lParams.bouton.valider) {
 			if (this.cbIdentification && !this.strIdentification) {
-				await GApplication.getMessage().afficher({
-					message: ObjetTraduction_1.GTraductions.getValeur(
-						"DoubleAuth.EnregistrerAppareilNomInvalide",
-					),
-				});
+				await (0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
+						message:
+							TraductionsDoubleAuth_1.TradDoubleAuth
+								.EnregistrerAppareilNomInvalide,
+					});
 				this._focusInputIndentification();
 				return;
 			}
@@ -637,28 +620,28 @@ class ObjetFenetre_Enregistrement extends ObjetFenetre_1.ObjetFenetre {
 				});
 			if (lJSON && lJSON.dejaConnu) {
 				if (this.donnees.changementStrategieImpose) {
-					await GApplication.getMessage().afficher({
-						message: ObjetTraduction_1.GTraductions.getValeur(
-							"DoubleAuth.LibelleAppareilDejaUtilise",
-						),
-					});
+					await (0, AccessApp_1.getApp)()
+						.getMessage()
+						.afficher({
+							message:
+								TraductionsDoubleAuth_1.TradDoubleAuth
+									.LibelleAppareilDejaUtilise,
+						});
 					return false;
 				}
 				let lMessage = "";
 				if (
-					GApplication.estAppliMobile ||
+					(0, AccessApp_1.getApp)().estAppliMobile ||
 					!GParametres.urlFAQEnregistrementDoubleAuth
 				) {
-					lMessage = ObjetTraduction_1.GTraductions.getValeur(
-						"DoubleAuth.EnregistrerAppareilNomDejaUtilise",
-					);
+					lMessage =
+						TraductionsDoubleAuth_1.TradDoubleAuth
+							.EnregistrerAppareilNomDejaUtilise;
 				} else {
 					lMessage = IE.jsx.str(
 						IE.jsx.fragment,
 						null,
-						ObjetTraduction_1.GTraductions.getValeur(
-							"DoubleAuth.Message_SourceConnexion_1",
-						),
+						TraductionsDoubleAuth_1.TradDoubleAuth.Message_SourceConnexion_1,
 						IE.jsx.str("br", null),
 						IE.jsx.str("br", null),
 						IE.jsx.str(
@@ -667,21 +650,18 @@ class ObjetFenetre_Enregistrement extends ObjetFenetre_1.ObjetFenetre {
 							IE.jsx.str(
 								"li",
 								null,
-								ObjetTraduction_1.GTraductions.getValeur(
-									"DoubleAuth.Message_SourceConnexion_2",
-								),
+								TraductionsDoubleAuth_1.TradDoubleAuth
+									.Message_SourceConnexion_2,
 								IE.jsx.str(
 									"div",
 									{ style: "font-style: italic; padding:.3rem 0 .5rem 0;" },
-									ObjetTraduction_1.GTraductions.getValeur(
-										"DoubleAuth.Message_SourceConnexion_3_S",
+									TraductionsDoubleAuth_1.TradDoubleAuth.Message_SourceConnexion_3_S.format(
 										[
 											'<a href="' +
 												GParametres.urlFAQEnregistrementDoubleAuth +
 												'">' +
-												ObjetTraduction_1.GTraductions.getValeur(
-													"DoubleAuth.FAQEnregistrement",
-												) +
+												TraductionsDoubleAuth_1.TradDoubleAuth
+													.FAQEnregistrement +
 												"</a>",
 										],
 									),
@@ -690,28 +670,29 @@ class ObjetFenetre_Enregistrement extends ObjetFenetre_1.ObjetFenetre {
 							IE.jsx.str(
 								"li",
 								null,
-								ObjetTraduction_1.GTraductions.getValeur(
-									"DoubleAuth.Message_SourceConnexion_4",
-								),
+								TraductionsDoubleAuth_1.TradDoubleAuth
+									.Message_SourceConnexion_4,
 							),
 						),
 					);
 				}
-				const lGenreAction = await GApplication.getMessage().afficher({
-					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
-					message: lMessage,
-					listeBoutons: [
-						{
-							libelle: ObjetTraduction_1.GTraductions.getValeur("Annuler"),
-							theme: Type_ThemeBouton_1.TypeThemeBouton.secondaire,
-						},
-						{
-							libelle: ObjetTraduction_1.GTraductions.getValeur("Valider"),
-							theme: Type_ThemeBouton_1.TypeThemeBouton.primaire,
-							genreAction: Enumere_Action_1.EGenreAction.Valider,
-						},
-					],
-				});
+				const lGenreAction = await (0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+						message: lMessage,
+						listeBoutons: [
+							{
+								libelle: ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+								theme: Type_ThemeBouton_1.TypeThemeBouton.secondaire,
+							},
+							{
+								libelle: ObjetTraduction_1.GTraductions.getValeur("Valider"),
+								theme: Type_ThemeBouton_1.TypeThemeBouton.primaire,
+								genreAction: Enumere_Action_1.EGenreAction.Valider,
+							},
+						],
+					});
 				if (lGenreAction !== Enumere_Action_1.EGenreAction.Valider) {
 					return false;
 				}

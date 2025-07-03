@@ -18,6 +18,8 @@ const Enumere_TriElement_1 = require("Enumere_TriElement");
 const Enumere_Ressource_1 = require("Enumere_Ressource");
 const MethodesTableau_1 = require("MethodesTableau");
 const Enumere_Etat_1 = require("Enumere_Etat");
+const MethodesObjet_1 = require("MethodesObjet");
+const Enumere_Espace_1 = require("Enumere_Espace");
 class InterfaceRDV extends ObjetInterfacePageCP_1.InterfacePageCP {
 	constructor(...aParams) {
 		super(...aParams);
@@ -48,7 +50,7 @@ class InterfaceRDV extends ObjetInterfacePageCP_1.InterfacePageCP {
 					"section",
 					{ id: this.getIdDeNiveau({ niveauEcran: 0 }), class: ["liste-rdv"] },
 					IE.jsx.str("div", {
-						id: this.getInstance(this.identListeRDV).getNom(),
+						id: this.getNomInstance(this.identListeRDV),
 						class: ["full-height"],
 					}),
 				),
@@ -60,21 +62,12 @@ class InterfaceRDV extends ObjetInterfacePageCP_1.InterfacePageCP {
 						tabindex: "0",
 					},
 					IE.jsx.str("div", {
-						id: this.getInstance(this.identDetailRDV).getNom(),
+						id: this.getNomInstance(this.identDetailRDV),
 						class: ["full-height"],
 					}),
 				),
 			),
 		);
-	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			btnRetourEcranPrec: {
-				event: () => {
-					this._evntRetourEcranPrec();
-				},
-			},
-		});
 	}
 	recupererDonnees() {
 		this._requeteListeRDV();
@@ -120,10 +113,10 @@ class InterfaceRDV extends ObjetInterfacePageCP_1.InterfacePageCP {
 		H.push(this.moteurRDV.getHtmlResumeRDV(aRdv));
 		return this.construireBandeauEcran(H.join(""), { bgWhite: true });
 	}
-	_evntRetourEcranPrec() {
+	revenirSurEcranPrecedent() {
 		switch (this.getCtxEcran({ niveauEcran: this.contexte.niveauCourant })) {
 			case InterfaceRDV.genreEcran.detailRDV:
-				this.revenirSurEcranPrecedent();
+				super.revenirSurEcranPrecedent();
 				break;
 		}
 	}
@@ -176,6 +169,7 @@ class InterfaceRDV extends ObjetInterfacePageCP_1.InterfacePageCP {
 		let lSession;
 		let lTabStrClasses;
 		lListeElts.parcourir((D) => {
+			var _a;
 			if (this.moteurRDV.estUnRdvEnSerie(D)) {
 				if (D.estRdvSessionSerie) {
 					lCumul = D;
@@ -186,6 +180,8 @@ class InterfaceRDV extends ObjetInterfacePageCP_1.InterfacePageCP {
 						D.nbRdvValidesDeSession = 0;
 						D.nbTotalRdvDeSession = 0;
 						D.nbRdvAnnulesDeSession = 0;
+						D.nbElevesConcernes = 0;
+						D.tabElevesConcernes = [];
 					}
 					D.listeParticipantsAyantCreneau =
 						new ObjetListeElements_1.ObjetListeElements();
@@ -206,7 +202,27 @@ class InterfaceRDV extends ObjetInterfacePageCP_1.InterfacePageCP {
 					}
 				} else {
 					D.pere = lCumul;
-					D.session = lSession;
+					const lEstEspaceParent = [
+						Enumere_Espace_1.EGenreEspace.Parent,
+						Enumere_Espace_1.EGenreEspace.Mobile_Parent,
+						Enumere_Espace_1.EGenreEspace.PrimParent,
+						Enumere_Espace_1.EGenreEspace.Mobile_PrimParent,
+					].includes(
+						(_a =
+							GApplication === null || GApplication === void 0
+								? void 0
+								: GApplication.getEtatUtilisateur()) === null || _a === void 0
+							? void 0
+							: _a.GenreEspace,
+					);
+					if (lEstEspaceParent) {
+						D.session = MethodesObjet_1.MethodesObjet.dupliquer(lSession);
+						if (D.listeCreneauxProposes) {
+							D.session.listeCreneauxProposes = D.listeCreneauxProposes;
+						}
+					} else {
+						D.session = lSession;
+					}
 					D.dateDebSerie = lCumul.dateDebSerie;
 					D.dateFinSerie = lCumul.dateFinSerie;
 					lCumul.nbTotalRdvDeSession++;
@@ -222,6 +238,14 @@ class InterfaceRDV extends ObjetInterfacePageCP_1.InterfacePageCP {
 							lCumul.listeParticipantsSansCreneau.add(D.listeParticipantRDV);
 						}
 					} else {
+						if (lEstCtxResp) {
+							if (
+								!lCumul.tabElevesConcernes.includes(D.eleveConcerne.getNumero())
+							) {
+								lCumul.tabElevesConcernes.push(D.eleveConcerne.getNumero());
+								lCumul.nbElevesConcernes++;
+							}
+						}
 						if (this.moteurRDV.existeCreneauPourRdv(D)) {
 							lCumul.tabFamillesParticipantsAyantCreneau.push({
 								listeParticipantRDV: D.listeParticipantRDV,
@@ -388,16 +412,45 @@ class InterfaceRDV extends ObjetInterfacePageCP_1.InterfacePageCP {
 	_selectionnerRdvCourant() {
 		const lInstanceListe = this.getInstance(this.identListeRDV);
 		const lListeElts = this.donnees.listeRDV;
-		const lSelectionCourante = this.getCtxSelection({ niveauEcran: 0 });
-		if (lSelectionCourante !== null && lSelectionCourante !== undefined) {
-			const lListeResult = lListeElts.getListeElements((D) => {
-				return D.getNumero() === lSelectionCourante.getNumero();
-			});
-			if (lListeResult.count() === 1) {
-				let lDataASelectionner = lListeResult.get(0);
+		let lDataASelectionner;
+		let lInfoSelection = this.getCtxSelection({ niveauEcran: 0 });
+		if (lInfoSelection !== null && lInfoSelection !== undefined) {
+			if (lInfoSelection.estSessionDeRDVSerie) {
+				let lSession = lInfoSelection;
+				lDataASelectionner = lListeElts.getElementParFiltre((aRDV) => {
+					return (
+						aRDV.estRdvSessionSerie &&
+						aRDV.session !== null &&
+						aRDV.session !== undefined &&
+						aRDV.session.getNumero() === lSession.getNumero()
+					);
+				});
+			} else {
+				const lSelectionCourante = lInfoSelection;
+				const lListeResult = lListeElts.getListeElements((D) => {
+					return D.getNumero() === lSelectionCourante.getNumero();
+				});
+				if (lListeResult.count() === 1) {
+					lDataASelectionner = lListeResult.get(0);
+				} else {
+					lDataASelectionner = null;
+				}
+			}
+			if (lDataASelectionner !== null && lDataASelectionner !== undefined) {
 				this.setCtxSelection({ niveauEcran: 0, dataEcran: lDataASelectionner });
 				const lIndice = lListeElts.getIndiceElementParFiltre((D) => {
-					return D.getNumero() === lDataASelectionner.getNumero();
+					if (lDataASelectionner.estRdvSessionSerie) {
+						return (
+							D.estRdvSessionSerie &&
+							D.session !== null &&
+							D.session !== undefined &&
+							lDataASelectionner.session !== null &&
+							lDataASelectionner.session !== undefined &&
+							D.session.getNumero() === lDataASelectionner.session.getNumero()
+						);
+					} else {
+						return D.getNumero() === lDataASelectionner.getNumero();
+					}
 				});
 				if (lIndice !== null && lIndice !== undefined) {
 					lInstanceListe.selectionnerLigne({
@@ -604,9 +657,6 @@ class InterfaceRDV extends ObjetInterfacePageCP_1.InterfacePageCP {
 						});
 					}
 				},
-				initialiser: (aInstance) => {
-					aInstance.initFenetre();
-				},
 			},
 		);
 		lFenetre.setOptionsRDV({
@@ -690,9 +740,6 @@ class InterfaceRDV extends ObjetInterfacePageCP_1.InterfacePageCP {
 							});
 						}
 					},
-					initialiser: (aInstance) => {
-						aInstance.initFenetre();
-					},
 				},
 			);
 			lFenetre.setOptionsRDV({
@@ -717,9 +764,6 @@ class InterfaceRDV extends ObjetInterfacePageCP_1.InterfacePageCP {
 							rdv: aParams.rdv,
 						});
 					}
-				},
-				initialiser: (aInstance) => {
-					aInstance.initFenetre();
 				},
 			},
 		);
@@ -748,9 +792,6 @@ class InterfaceRDV extends ObjetInterfacePageCP_1.InterfacePageCP {
 						});
 					}
 				},
-				initialiser: (aInstance) => {
-					aInstance.initFenetre();
-				},
 			},
 		);
 		lFenetre.setOptionsRDV({
@@ -777,9 +818,6 @@ class InterfaceRDV extends ObjetInterfacePageCP_1.InterfacePageCP {
 						});
 					}
 				},
-				initialiser: (aInstance) => {
-					aInstance.initFenetre();
-				},
 			},
 		);
 		lFenetre.setOptionsRDV({
@@ -805,9 +843,6 @@ class InterfaceRDV extends ObjetInterfacePageCP_1.InterfacePageCP {
 							listePJs: aParams.listePJs,
 						});
 					}
-				},
-				initialiser: (aInstance) => {
-					aInstance.initFenetre();
 				},
 			},
 		);
@@ -837,6 +872,13 @@ class InterfaceRDV extends ObjetInterfacePageCP_1.InterfacePageCP {
 			) {
 				let lRdvCree = aReponseRdv.JSONRapportSaisie.rdvCree;
 				this.setCtxSelection({ niveauEcran: 0, dataEcran: lRdvCree });
+			} else if (
+				aReponseRdv.JSONRapportSaisie &&
+				aReponseRdv.JSONRapportSaisie.sessionCree
+			) {
+				let lSessionCree = aReponseRdv.JSONRapportSaisie.sessionCree;
+				lSessionCree.estSessionDeRDVSerie = true;
+				this.setCtxSelection({ niveauEcran: 0, dataEcran: lSessionCree });
 			}
 			if (aSansActualisation !== true) {
 				this.recupererDonnees();
@@ -857,9 +899,6 @@ class InterfaceRDV extends ObjetInterfacePageCP_1.InterfacePageCP {
 							listePJs: aParams.listePJs,
 						});
 					}
-				},
-				initialiser: (aInstance) => {
-					aInstance.initFenetre();
 				},
 			},
 		);

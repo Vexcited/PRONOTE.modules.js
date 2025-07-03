@@ -9,20 +9,17 @@ class ObjetOnglet extends ObjetIdentite_1.Identite {
 		super(...aParams);
 		this.NomTable = this.Nom + "_idTable";
 		this.NomCellule = this.Nom + "_idTd";
-	}
-	setParametres(aLibelle, aImages, aGenre, aPosition, aHint, aVisible, aActif) {
-		this.libelle = aLibelle !== null && aLibelle !== undefined ? aLibelle : "";
-		this.images = aImages;
-		this.genre = aGenre !== null && aGenre !== undefined ? aGenre : 0;
-		this.position =
-			aPosition !== null && aPosition !== undefined ? aPosition : this.genre;
-		this.hint = aHint !== null && aHint !== undefined ? aHint : "";
-		this.visible =
-			aVisible !== null && aVisible !== undefined ? aVisible : true;
-		this.actif = aActif !== null && aActif !== undefined ? aActif : true;
+		this.visible = true;
+		this.actif = true;
 		this.selectionne = false;
 		this.survol = false;
-		this.tailleImage = 25;
+	}
+	setParametres(aParametres) {
+		this.libelle = aParametres.libelle;
+		this.hint = aParametres.hint;
+		this.icone = aParametres.icone;
+		this.genre = aParametres.genre;
+		this.position = aParametres.position;
 	}
 	setParametresAffichage(aPAActif, aPAInactif) {
 		this.parametresAffichageActif =
@@ -56,148 +53,174 @@ class ObjetOnglet extends ObjetIdentite_1.Identite {
 		return H.join("");
 	}
 	afficherOnglet(aParametresAffichage) {
-		const H = [];
-		H.push(
-			'<table id="' +
-				this.NomTable +
-				'" style="height:' +
-				aParametresAffichage.getHauteur(this.selectionne, this.survol) +
-				"px;",
-		);
-		H.push(
-			"background-color : " +
-				aParametresAffichage.getCouleur(
-					this.selectionne,
-					this.survol && !this.selectionne,
-				) +
-				";",
-		);
-		H.push(
-			"border-top : " +
-				aParametresAffichage.getEpaisseurBordureCoinSuperieurGauche(
-					this.selectionne,
-					this.survol,
-				) +
-				"px solid " +
-				(aParametresAffichage.getAvecBordure(this.selectionne, this.survol)
-					? aParametresAffichage.getCouleurBordureCoinSuperieurGauche(
-							this.selectionne,
-							this.survol,
-						)
-					: aParametresAffichage.getCouleur(this.selectionne, this.survol)) +
-				";",
-		);
-		H.push(
-			"border-left : " +
-				aParametresAffichage.getEpaisseurBordureCoinSuperieurGauche(
-					this.selectionne,
-					this.survol,
-				) +
-				"px solid " +
-				(aParametresAffichage.getAvecBordure(this.selectionne, this.survol)
-					? aParametresAffichage.getCouleurBordureCoinSuperieurGauche(
-							this.selectionne,
-							this.survol,
-						)
-					: aParametresAffichage.getCouleur(this.selectionne, this.survol)) +
-				";",
-		);
-		H.push(
-			"border-right : " +
-				aParametresAffichage.getEpaisseurBordureCoinInferieurDroit(
-					this.selectionne,
-					this.survol,
-				) +
-				"px solid " +
-				(aParametresAffichage.getAvecBordure(this.selectionne, this.survol)
-					? aParametresAffichage.getCouleurBordureCoinInferieurDroit(
-							this.selectionne,
-							this.survol,
-						)
-					: aParametresAffichage.getCouleur(this.selectionne, this.survol)) +
-				';">',
-		);
-		H.push("<tr>");
-		H.push('<td id="' + this.NomCellule + '" tabindex="0"');
-		H.push(
-			' style="color : ' +
-				aParametresAffichage.getCouleurTexte(this.selectionne, this.survol) +
-				';" ',
-		);
-		H.push('class="AvecMain EspaceGauche ');
-		H.push(
+		const lClasses = [
+			"AvecMain EspaceGauche",
 			this.getClassTexteDepuisTaillePolice(
 				aParametresAffichage.getTailleTexte(this.selectionne, this.survol),
-			) + " ",
-		);
-		if (aParametresAffichage.getTexteGras(this.selectionne, this.survol)) {
-			H.push("Gras ");
-		}
-		if (aParametresAffichage.getTexteSouligne(this.selectionne, this.survol)) {
-			H.push("Souligne ");
-		}
+			),
+			aParametresAffichage.getTexteGras(this.selectionne, this.survol)
+				? "Gras"
+				: "",
+			aParametresAffichage.getTexteSouligne(this.selectionne, this.survol)
+				? "Souligne"
+				: "",
+		];
 		switch (
 			aParametresAffichage.getTexteAlignement(this.selectionne, this.survol)
 		) {
 			case Enumere_Divers_1.EAlignementHorizontal.gauche:
-				H.push("AlignementGauche ");
+				lClasses.push("AlignementGauche");
 				break;
 			case Enumere_Divers_1.EAlignementHorizontal.droit:
-				H.push("AlignementDroit ");
+				lClasses.push("AlignementDroit");
 				break;
 			case Enumere_Divers_1.EAlignementHorizontal.centre:
-				H.push("AlignementMilieu ");
+				lClasses.push("AlignementMilieu");
 				break;
 		}
-		H.push('" ');
-		H.push('title="' + this.hint + '" ');
-		H.push('onclick="' + this.Nom + '.surOnclick();" ');
-		H.push('onmouseover="' + this.Nom + '.surMouseOver();" ');
-		H.push('onmouseout="' + this.Nom + '.surMouseOut();" ');
-		H.push(">");
-		H.push('<div class="flex-contain flex-center">');
-		if (this.images) {
-			H.push(
-				'<div id="',
-				this.Nom,
-				'_image_0" style="flex:none; ',
-				ObjetStyle_1.GStyle.composeHeight(this.tailleImage),
-				ObjetStyle_1.GStyle.composeWidth(this.tailleImage),
-				this.selectionne ? "" : "display: none;",
-				'" class="m-right ',
-				this.images[0],
-				'">&nbsp;</div>',
-			);
-			H.push(
-				'<div id="',
-				this.Nom,
-				'_image_1" style="flex:none; ',
-				ObjetStyle_1.GStyle.composeHeight(this.tailleImage),
-				ObjetStyle_1.GStyle.composeWidth(this.tailleImage),
-				this.selectionne ? "display: none;" : "",
-				'" class="m-right ',
-				this.images[1],
-				'">&nbsp;</div>',
-			);
-		}
-		H.push(
-			'<div style="position:relative;">',
-			'<div style="position:relative; visibility:hidden;" class="Insecable p-right-l Gras">',
-			this.libelle,
-			"</div>",
-			'<div style="position:absolute;top:0;left:0;">',
-			this.libelle,
-			"</div>",
-			"</div>",
+		const lJSXNode = (aNode) => {
+			$(aNode)
+				.eventValidation(() => {
+					this.surOnclick(aNode.id);
+				})
+				.on({
+					mouseover: () => {
+						this.surMouseOver();
+					},
+					mouseout: () => {
+						this.surMouseOut();
+					},
+				});
+		};
+		return IE.jsx.str(
+			"table",
+			{
+				id: this.NomTable,
+				role: "presentation",
+				style: {
+					height: "100%",
+					"background-color": aParametresAffichage.getCouleur(
+						this.selectionne,
+						this.survol && !this.selectionne,
+					),
+					"border-top":
+						aParametresAffichage.getEpaisseurBordureCoinSuperieurGauche(
+							this.selectionne,
+							this.survol,
+						) +
+						"px solid " +
+						(aParametresAffichage.getAvecBordure(this.selectionne, this.survol)
+							? aParametresAffichage.getCouleurBordureCoinSuperieurGauche(
+									this.selectionne,
+									this.survol,
+								)
+							: aParametresAffichage.getCouleur(this.selectionne, this.survol)),
+					"border-left":
+						aParametresAffichage.getEpaisseurBordureCoinSuperieurGauche(
+							this.selectionne,
+							this.survol,
+						) +
+						"px solid " +
+						(aParametresAffichage.getAvecBordure(this.selectionne, this.survol)
+							? aParametresAffichage.getCouleurBordureCoinSuperieurGauche(
+									this.selectionne,
+									this.survol,
+								)
+							: aParametresAffichage.getCouleur(this.selectionne, this.survol)),
+					"border-right":
+						aParametresAffichage.getEpaisseurBordureCoinInferieurDroit(
+							this.selectionne,
+							this.survol,
+						) +
+						"px solid " +
+						(aParametresAffichage.getAvecBordure(this.selectionne, this.survol)
+							? aParametresAffichage.getCouleurBordureCoinInferieurDroit(
+									this.selectionne,
+									this.survol,
+								)
+							: aParametresAffichage.getCouleur(this.selectionne, this.survol)),
+				},
+			},
+			IE.jsx.str(
+				"tr",
+				null,
+				IE.jsx.str(
+					"td",
+					{
+						id: this.NomCellule,
+						tabindex: "0",
+						role: "button",
+						style: {
+							color: aParametresAffichage.getCouleurTexte(
+								this.selectionne,
+								this.survol,
+							),
+						},
+						class: lClasses,
+						title: this.hint,
+						"ie-node": lJSXNode,
+					},
+					IE.jsx.str(
+						"div",
+						{ class: "flex-contain flex-center" },
+						this.icone
+							? IE.jsx.str(
+									IE.jsx.fragment,
+									null,
+									IE.jsx.str(
+										"div",
+										{
+											id: `${this.Nom}_icone_0`,
+											style: this.selectionne ? "" : "display: none;",
+										},
+										IE.jsx.str("i", {
+											class: this.icone,
+											role: "presentation",
+										}),
+									),
+									IE.jsx.str(
+										"div",
+										{
+											id: `${this.Nom}_icone_1`,
+											class: "Inactif",
+											style: this.selectionne ? "display: none;" : "",
+										},
+										IE.jsx.str("i", {
+											class: this.icone,
+											role: "presentation",
+										}),
+									),
+								)
+							: "",
+						IE.jsx.str(
+							"div",
+							{ style: "position:relative;" },
+							IE.jsx.str(
+								"div",
+								{
+									style: "position:relative; visibility:hidden;",
+									class: "Insecable p-right-l Gras",
+								},
+								this.libelle,
+							),
+							IE.jsx.str(
+								"div",
+								{
+									style: "position:absolute;top:0;left:0;",
+									id: `${this.Nom}_libelle`,
+								},
+								" ",
+								this.libelle,
+							),
+						),
+					),
+				),
+			),
 		);
-		H.push("</div>");
-		H.push("</td>");
-		H.push("</tr>");
-		H.push("</table>");
-		return H.join("");
 	}
-	surOnclick() {
+	surOnclick(aId) {
 		this.callback.appel({ genre: this.genre, position: this.position });
+		ObjetHtml_1.GHtml.setFocus(aId, true);
 	}
 	surMouseOver() {
 		this.surEvenementSurvol(true);
@@ -219,10 +242,6 @@ class ObjetOnglet extends ObjetIdentite_1.Identite {
 				lParametresAffichage.getTailleTexte(this.selectionne, aSurvol),
 			),
 		);
-		ObjetStyle_1.GStyle.setGras(
-			this.NomCellule,
-			lParametresAffichage.getTexteGras(this.selectionne, aSurvol),
-		);
 		ObjetStyle_1.GStyle.setCouleurFond(
 			this.NomCellule,
 			lParametresAffichage.getCouleur(
@@ -230,12 +249,16 @@ class ObjetOnglet extends ObjetIdentite_1.Identite {
 				aSurvol && !this.selectionne,
 			),
 		);
+		ObjetStyle_1.GStyle.setGras(
+			this.Nom + "_libelle",
+			lParametresAffichage.getTexteGras(this.selectionne, aSurvol),
+		);
 		ObjetStyle_1.GStyle.setDisplay(
-			this.Nom + "_image_0",
+			this.Nom + "_icone_0",
 			aSurvol || this.selectionne,
 		);
 		ObjetStyle_1.GStyle.setDisplay(
-			this.Nom + "_image_1",
+			this.Nom + "_icone_1",
 			!(aSurvol || this.selectionne),
 		);
 	}

@@ -1,12 +1,24 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const TypeAffichageTitreColonneCompetence = {
-	AffichageLibelle: 0,
-	AffichageCode: 1,
-};
-class ObjetFenetre_ParamListeEvaluations extends ObjetFenetre {
-	constructor(...aParams) {
-		super(...aParams);
+exports.ObjetFenetre_ParamListeEvaluations =
+	exports.TypeAffichageTitreColonneCompetence = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+var TypeAffichageTitreColonneCompetence;
+(function (TypeAffichageTitreColonneCompetence) {
+	TypeAffichageTitreColonneCompetence[
+		(TypeAffichageTitreColonneCompetence["AffichageLibelle"] = 0)
+	] = "AffichageLibelle";
+	TypeAffichageTitreColonneCompetence[
+		(TypeAffichageTitreColonneCompetence["AffichageCode"] = 1)
+	] = "AffichageCode";
+})(
+	TypeAffichageTitreColonneCompetence ||
+		(exports.TypeAffichageTitreColonneCompetence =
+			TypeAffichageTitreColonneCompetence =
+				{}),
+);
+class ObjetFenetre_ParamListeEvaluations extends ObjetFenetre_1.ObjetFenetre {
+	constructor() {
+		super(...arguments);
 		this.avecOptionAfficherProjetsAcc = true;
 		this.afficherProjetsAccompagnement = false;
 		this.afficherPourcentageReussite = false;
@@ -14,49 +26,53 @@ class ObjetFenetre_ParamListeEvaluations extends ObjetFenetre {
 			TypeAffichageTitreColonneCompetence.AffichageLibelle;
 		this.hintPourcentageReussite = "";
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			checkAfficherProjetsAccompagnement: {
-				getValue: function () {
-					return aInstance.afficherProjetsAccompagnement;
-				},
-				setValue: function (aData) {
-					aInstance.afficherProjetsAccompagnement = aData;
-				},
+	jsxModelCheckboxAfficherProjetsAccompagnement() {
+		return {
+			getValue: () => {
+				return this.afficherProjetsAccompagnement;
 			},
-			displayOptionAfficherProjAcc: function () {
-				return aInstance.avecOptionAfficherProjetsAcc;
+			setValue: (aValue) => {
+				this.afficherProjetsAccompagnement = aValue;
 			},
-			checkAfficherPourcentageReussite: {
-				getValue: function () {
-					return aInstance.afficherPourcentageReussite;
-				},
-				setValue: function (aData) {
-					aInstance.afficherPourcentageReussite = aData;
-				},
+		};
+	}
+	jsxDisplayOptionAffProjetsAccompagnement() {
+		return this.avecOptionAfficherProjetsAcc;
+	}
+	jsxModelCheckboxAfficherPourcentage() {
+		return {
+			getValue: () => {
+				return this.afficherPourcentageReussite;
 			},
-			radioTypeAffichageTitreColonne: {
-				getValue: function (aTypeAffichage) {
-					return (
-						aInstance.typeAffichageTitreColonneCompetence === aTypeAffichage
-					);
-				},
-				setValue: function (aTypeAffichage) {
-					aInstance.typeAffichageTitreColonneCompetence = aTypeAffichage;
-				},
+			setValue: (aValue) => {
+				this.afficherPourcentageReussite = aValue;
 			},
-			aidePourcentageReussite: {
-				getDisplay: function () {
-					return (
-						!!aInstance.hintPourcentageReussite &&
-						aInstance.hintPourcentageReussite.length > 0
-					);
-				},
-				getTitle: function () {
-					return aInstance.hintPourcentageReussite;
-				},
+		};
+	}
+	jsxDisplayAidePourcentageReussite() {
+		return (
+			!!this.hintPourcentageReussite && this.hintPourcentageReussite.length > 0
+		);
+	}
+	jsxGetTitleAidePourcentage() {
+		return {
+			getTooltip: () => {
+				return this.hintPourcentageReussite;
 			},
-		});
+		};
+	}
+	jsxModelRadioTypeAffichageTitreColonne(aTypeAffichage) {
+		return {
+			getValue: () => {
+				return this.typeAffichageTitreColonneCompetence === aTypeAffichage;
+			},
+			setValue: (aValue) => {
+				this.typeAffichageTitreColonneCompetence = aTypeAffichage;
+			},
+			getName: () => {
+				return `${this.Nom}_TypeAffichageTitreColonne `;
+			},
+		};
 	}
 	composeContenu() {
 		const T = [];
@@ -64,7 +80,7 @@ class ObjetFenetre_ParamListeEvaluations extends ObjetFenetre {
 		T.push('<fieldset class="EspaceBas10">');
 		T.push(
 			"<legend>",
-			GTraductions.getValeur(
+			ObjetTraduction_1.GTraductions.getValeur(
 				"evaluations.FenetreParametrageAffichage.PersonnaliserColonnes",
 			),
 			"</legend>",
@@ -72,36 +88,65 @@ class ObjetFenetre_ParamListeEvaluations extends ObjetFenetre {
 		T.push('<div class="PetitEspaceHaut GrandEspaceGauche">');
 		_getTypesAffichageTitreColonneCompetence().forEach((D) => {
 			T.push(
-				'<div class="PetitEspaceHaut">',
-				'<ie-radio ie-model="radioTypeAffichageTitreColonne(',
-				D[0],
-				')" class="AlignementMilieuVertical PetitEspaceDroit">',
-				D[1],
-				"</ie-radio>",
-				"</div>",
+				IE.jsx.str(
+					"div",
+					{ class: "PetitEspaceHaut" },
+					IE.jsx.str(
+						"ie-radio",
+						{
+							"ie-model": this.jsxModelRadioTypeAffichageTitreColonne.bind(
+								this,
+								D[0],
+							),
+							class: "AlignementMilieuVertical PetitEspaceDroit",
+						},
+						D[1],
+					),
+				),
 			);
 		});
 		T.push(
-			'<div class="EspaceHaut">',
-			'<ie-checkbox class="AlignementMilieuVertical" ie-model="checkAfficherPourcentageReussite">',
-			GTraductions.getValeur(
-				"evaluations.FenetreParametrageAffichage.AfficherPourcentageReussite",
+			IE.jsx.str(
+				"div",
+				{ class: "EspaceHaut" },
+				IE.jsx.str(
+					"ie-checkbox",
+					{
+						class: "AlignementMilieuVertical",
+						"ie-model": this.jsxModelCheckboxAfficherPourcentage.bind(this),
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"evaluations.FenetreParametrageAffichage.AfficherPourcentageReussite",
+					),
+				),
+				IE.jsx.str("ie-btntooltip", {
+					class: "MargeGauche AlignementMilieuVertical",
+					"ie-display": this.jsxDisplayAidePourcentageReussite.bind(this),
+					"ie-model": this.jsxGetTitleAidePourcentage.bind(this),
+				}),
 			),
-			"</ie-checkbox>",
-			'<span ie-display="aidePourcentageReussite.getDisplay" ie-title="aidePourcentageReussite.getTitle" class="Image_Infos_Transparent InlineBlock MargeGauche AlignementMilieuVertical"></span>',
-			"</div>",
 		);
 		T.push("</div>");
 		T.push("</fieldset>");
 		T.push(
-			'<div ie-display="displayOptionAfficherProjAcc">',
-			'<ie-checkbox class="AlignementMilieuVertical" ie-model="checkAfficherProjetsAccompagnement">',
-			GTraductions.getValeur(
-				"evaluations.FenetreParametrageAffichage.AfficherProjetsAccompagnement",
+			IE.jsx.str(
+				"div",
+				{
+					"ie-display":
+						this.jsxDisplayOptionAffProjetsAccompagnement.bind(this),
+				},
+				IE.jsx.str(
+					"ie-checkbox",
+					{
+						class: "AlignementMilieuVertical",
+						"ie-model":
+							this.jsxModelCheckboxAfficherProjetsAccompagnement.bind(this),
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"evaluations.FenetreParametrageAffichage.AfficherProjetsAccompagnement",
+					),
+				),
 			),
-			"</ie-checkbox>",
-			"</label>",
-			"</div>",
 		);
 		T.push("</div>");
 		return T.join("");
@@ -124,23 +169,20 @@ class ObjetFenetre_ParamListeEvaluations extends ObjetFenetre {
 		});
 	}
 }
+exports.ObjetFenetre_ParamListeEvaluations = ObjetFenetre_ParamListeEvaluations;
 function _getTypesAffichageTitreColonneCompetence() {
 	const result = [];
 	result.push([
 		TypeAffichageTitreColonneCompetence.AffichageLibelle,
-		GTraductions.getValeur(
+		ObjetTraduction_1.GTraductions.getValeur(
 			"evaluations.FenetreParametrageAffichage.ColonnesAvecLibelleItem",
 		),
 	]);
 	result.push([
 		TypeAffichageTitreColonneCompetence.AffichageCode,
-		GTraductions.getValeur(
+		ObjetTraduction_1.GTraductions.getValeur(
 			"evaluations.FenetreParametrageAffichage.ColonnesAvecCodeItem",
 		),
 	]);
 	return result;
 }
-module.exports = {
-	ObjetFenetre_ParamListeEvaluations,
-	TypeAffichageTitreColonneCompetence,
-};

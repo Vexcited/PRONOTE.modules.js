@@ -1,87 +1,89 @@
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const {
-	ObjetRequetePageResultatsClasses,
-} = require("ObjetRequetePageResultatsClasses.js");
-const { ObjetInvocateur } = require("Invocateur.js");
-const { Invocateur } = require("Invocateur.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GStyle } = require("ObjetStyle.js");
-const { EGenreImpression } = require("Enumere_GenreImpression.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { InterfacePage } = require("InterfacePage.js");
-const {
-	ObjetAffichagePageAvecMenusDeroulants,
-} = require("InterfacePageAvecMenusDeroulants.js");
-const { TypeFusionTitreListe } = require("TypeFusionTitreListe.js");
-const {
-	ObjetFenetre_ParamResultats,
-} = require("ObjetFenetre_ParamResultats.js");
-const { ObjetTri } = require("ObjetTri.js");
-const {
-	DonneesListe_ResultatsClasse,
-} = require("DonneesListe_ResultatsClasse.js");
-const { ObjetSaisiePN } = require("ObjetSaisiePN.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { EGenreTotalAffiche } = require("Enumere_ResultatsClasse.js");
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { ObjetMenuContextuel } = require("ObjetMenuContextuel.js");
-const { GUID } = require("GUID.js");
-const { TypeHttpGenerationPDFSco } = require("TypeHttpGenerationPDFSco.js");
-const {
-	ObjetFenetre_MoyenneTableauResultats,
-} = require("ObjetFenetre_MoyenneTableauResultats.js");
-const { GHtml } = require("ObjetHtml.js");
-const { UtilitaireBoutonBandeau } = require("UtilitaireBoutonBandeau.js");
-class InterfacePageResultatsClasses extends InterfacePage {
+exports.InterfacePageResultatsClasses = void 0;
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetRequetePageResultatsClasses_1 = require("ObjetRequetePageResultatsClasses");
+const Invocateur_1 = require("Invocateur");
+const Invocateur_2 = require("Invocateur");
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetStyle_1 = require("ObjetStyle");
+const Enumere_GenreImpression_1 = require("Enumere_GenreImpression");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const InterfacePage_1 = require("InterfacePage");
+const InterfacePageAvecMenusDeroulants_1 = require("InterfacePageAvecMenusDeroulants");
+const TypeFusionTitreListe_1 = require("TypeFusionTitreListe");
+const ObjetFenetre_ParamResultats_1 = require("ObjetFenetre_ParamResultats");
+const ObjetTri_1 = require("ObjetTri");
+const DonneesListe_ResultatsClasse_1 = require("DonneesListe_ResultatsClasse");
+const ObjetSaisiePN_1 = require("ObjetSaisiePN");
+const ObjetElement_1 = require("ObjetElement");
+const Enumere_ResultatsClasse_1 = require("Enumere_ResultatsClasse");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const ObjetMenuContextuel_1 = require("ObjetMenuContextuel");
+const TypeHttpGenerationPDFSco_1 = require("TypeHttpGenerationPDFSco");
+const ObjetFenetre_MoyenneTableauResultats_1 = require("ObjetFenetre_MoyenneTableauResultats");
+const ObjetHtml_1 = require("ObjetHtml");
+const UtilitaireBoutonBandeau_1 = require("UtilitaireBoutonBandeau");
+class InterfacePageResultatsClasses extends InterfacePage_1.InterfacePage {
 	constructor(...aParams) {
 		super(...aParams);
-		GEtatUtilisateur.etatComboTypeMoyenne =
-			GEtatUtilisateur.etatComboTypeMoyenne
-				? GEtatUtilisateur.etatComboTypeMoyenne
-				: 0;
-		this.idTitreColonneNom = GUID.getId();
-		this.titreNom = GTraductions.getValeur("resultatsClasses.titres.nom");
-		this.avecGestionNotation = GApplication.droits.get(
-			TypeDroits.fonctionnalites.gestionNotation,
+		this.etatUtilisateurSco = this.applicationSco.getEtatUtilisateur();
+		if (this.etatUtilisateurSco.infosSupp) {
+			let lInfosSupp = this.getInfosSupp();
+			if (!lInfosSupp || !lInfosSupp.resultatsClasse_referentiel) {
+				lInfosSupp = {
+					resultatsClasse_referentiel: {
+						avecMediane: false,
+						avecHaute: false,
+						avecBasse: false,
+						avecAbsences: false,
+						avecCompetences: true,
+						avecSousServices: true,
+						uniquementSousServices: false,
+						matieresEquivalence: false,
+						parametresBulletin: true,
+						masquerSansNotes: false,
+						avecCouleurMoyenne: false,
+					},
+				};
+				this.etatUtilisateurSco.infosSupp["InterfacePageResultatsClasses"] =
+					lInfosSupp;
+			}
+		}
+		this.titreNom = ObjetTraduction_1.GTraductions.getValeur(
+			"resultatsClasses.titres.nom",
 		);
+		this.avecGestionNotation = this.applicationSco.droits.get(
+			ObjetDroitsPN_1.TypeDroits.fonctionnalites.gestionNotation,
+		);
+		this.typeMoyenneSelectionnee =
+			ObjetRequetePageResultatsClasses_1.ObjetRequetePageResultatsClasses.TypeMoyenneAffichee.Calculee;
 	}
-	initialiserMethodeCalculMoyenne(aInstance) {
-		aInstance.setOptionsFenetre({
-			modale: false,
-			titre: GTraductions.getValeur(
-				"BulletinEtReleve.TitreFenetreCalculMoyenne",
-			),
-			largeur: 600,
-			hauteur: 300,
-			listeBoutons: [GTraductions.getValeur("principal.fermer")],
-			largeurMin: 600,
-			hauteurMin: 150,
-		});
+	getInfosSupp() {
+		return this.etatUtilisateurSco.getInfosSupp(
+			"InterfacePageResultatsClasses",
+		);
 	}
 	construireInstances() {
 		this.identTripleCombo = this.add(
-			ObjetAffichagePageAvecMenusDeroulants,
+			InterfacePageAvecMenusDeroulants_1.ObjetAffichagePageAvecMenusDeroulants,
 			this.evenementSurDernierMenuDeroulant,
 			this.initialiserTripleCombo,
 		);
 		this.identComboTypeMoyenne = this.add(
-			ObjetSaisiePN,
+			ObjetSaisiePN_1.ObjetSaisiePN,
 			this.evenementCombo,
 			this.initialiserCombo,
 		);
-		this.identPage = this.add(ObjetListe, this.eventListe);
+		this.identPage = this.add(ObjetListe_1.ObjetListe, this.eventListe);
 		this.identFenetreParamResultats = this.addFenetre(
-			ObjetFenetre_ParamResultats,
-			_evntFenetreParamResultats,
-			_initFenetreParamResultats,
+			ObjetFenetre_ParamResultats_1.ObjetFenetre_ParamResultats,
+			this._evntFenetreParamResultats,
+			this._initFenetreParamResultats,
 		);
 		this.identFenetreMethodeCalculMoyenne = this.add(
-			ObjetFenetre_MoyenneTableauResultats,
+			ObjetFenetre_MoyenneTableauResultats_1.ObjetFenetre_MoyenneTableauResultats,
 			null,
 			this.initialiserMethodeCalculMoyenne,
 		);
@@ -95,75 +97,66 @@ class InterfacePageResultatsClasses extends InterfacePage {
 				'<span style="display:none;" id="' +
 				this.Nom +
 				'_LabelMoyenne">' +
-				GTraductions.getValeur("resultatsClasses.titres.moyenne") +
+				ObjetTraduction_1.GTraductions.getValeur(
+					"resultatsClasses.titres.moyenne",
+				) +
 				" : </span>",
 		});
 		this.AddSurZone.push(this.identComboTypeMoyenne);
 		this.AddSurZone.push({ separateur: true });
 		this.AddSurZone.push({
-			html: UtilitaireBoutonBandeau.getHtmlBtnParametrer("btnOptionsAffichage"),
+			html: UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnParametrer(
+				this.jsxModeleBoutonOptionsAffichage.bind(this),
+			),
 		});
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			btnOptionsAffichage: {
-				event() {
-					const lFenetreParam = aInstance.getInstance(
-						aInstance.identFenetreParamResultats,
-					);
-					const avecEtat =
-						GEtatUtilisateur.resultatsClasse_referentiel !== undefined;
-					lFenetreParam.setOptions({
-						avecDonneesItalie: aInstance.avecDonneesItalie,
-						avecMediane: avecEtat
-							? GEtatUtilisateur.resultatsClasse_referentiel.avecMediane
-							: false,
-						avecHaute: avecEtat
-							? GEtatUtilisateur.resultatsClasse_referentiel.avecHaute
-							: false,
-						avecBasse: avecEtat
-							? GEtatUtilisateur.resultatsClasse_referentiel.avecBasse
-							: false,
-						avecAbsences: avecEtat
-							? GEtatUtilisateur.resultatsClasse_referentiel.avecAbsences
-							: false,
-						avecCompetences: avecEtat
-							? GEtatUtilisateur.resultatsClasse_referentiel.avecCompetences
-							: true,
-						avecSousServices: avecEtat
-							? GEtatUtilisateur.resultatsClasse_referentiel.avecSousServices
-							: true,
-						uniquementSousServices: avecEtat
-							? GEtatUtilisateur.resultatsClasse_referentiel
-									.uniquementSousServices
-							: false,
-						matieresEquivalence: avecEtat
-							? GEtatUtilisateur.resultatsClasse_referentiel.matieresEquivalence
-							: false,
-						parametresBulletin: avecEtat
-							? GEtatUtilisateur.resultatsClasse_referentiel.parametresBulletin
-							: true,
-						masquerSansNotes: avecEtat
-							? GEtatUtilisateur.resultatsClasse_referentiel.masquerSansNotes
-							: false,
-						avecCouleurMoyenne: avecEtat
-							? GEtatUtilisateur.resultatsClasse_referentiel.avecCouleurMoyenne
-							: false,
-					});
-					lFenetreParam.afficher();
-				},
-				getSelection() {
-					return aInstance
-						.getInstance(aInstance.identFenetreParamResultats)
-						.estAffiche();
-				},
+	jsxModeleBoutonOptionsAffichage() {
+		return {
+			event: () => {
+				const lFenetreParam = this.getInstance(this.identFenetreParamResultats);
+				const lResultatReferentiel =
+					this.getInfosSupp().resultatsClasse_referentiel;
+				lFenetreParam.setDonnees({
+					avecDonneesItalie: this.avecDonneesItalie,
+					avecMediane: lResultatReferentiel.avecMediane,
+					avecHaute: lResultatReferentiel.avecHaute,
+					avecBasse: lResultatReferentiel.avecBasse,
+					avecAbsences: lResultatReferentiel.avecAbsences,
+					avecCompetences: lResultatReferentiel.avecCompetences,
+					avecSousServices: lResultatReferentiel.avecSousServices,
+					uniquementSousServices: lResultatReferentiel.uniquementSousServices,
+					matieresEquivalence: lResultatReferentiel.matieresEquivalence,
+					parametresBulletin: lResultatReferentiel.parametresBulletin,
+					masquerSansNotes: lResultatReferentiel.masquerSansNotes,
+					avecCouleurMoyenne: lResultatReferentiel.avecCouleurMoyenne,
+				});
+				lFenetreParam.afficher();
 			},
+			getSelection: () => {
+				return this.getInstance(this.identFenetreParamResultats).estAffiche();
+			},
+		};
+	}
+	initialiserMethodeCalculMoyenne(aInstance) {
+		aInstance.setOptionsFenetre({
+			modale: false,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"BulletinEtReleve.TitreFenetreCalculMoyenne",
+			),
+			largeur: 600,
+			hauteur: 300,
+			listeBoutons: [
+				ObjetTraduction_1.GTraductions.getValeur("principal.fermer"),
+			],
+			largeurMin: 600,
+			hauteurMin: 150,
 		});
 	}
 	eventListe(aParametres) {
 		if (
 			aParametres.idColonne ===
-				DonneesListe_ResultatsClasse.colonnes.moyenneGenerale ||
+				DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
+					.moyenneGenerale ||
 			aParametres.declarationColonne.estMoyenneRegroupement
 		) {
 			const lSource = aParametres.declarationColonne.estMoyenneRegroupement
@@ -184,134 +177,121 @@ class InterfacePageResultatsClasses extends InterfacePage {
 			}
 		}
 	}
-	initialiserCombo(aObjet) {
-		aObjet.setParametres(false, false, 160, false);
-		const listeTypesMoyennes = new ObjetListeElements()
-			.addElement(
-				new ObjetElement(
-					GTraductions.getValeur("resultatsClasses.options.calculee"),
-					0,
+	initialiserCombo(aInstance) {
+		aInstance.setOptionsObjetSaisie({ longueur: 160 });
+		const listeTypesMoyennes = new ObjetListeElements_1.ObjetListeElements();
+		listeTypesMoyennes.addElement(
+			new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"resultatsClasses.options.calculee",
 				),
-			)
-			.addElement(
-				new ObjetElement(
-					GTraductions.getValeur("resultatsClasses.options.proposee"),
-					1,
+				ObjetRequetePageResultatsClasses_1.ObjetRequetePageResultatsClasses
+					.TypeMoyenneAffichee.Calculee,
+			),
+		);
+		listeTypesMoyennes.addElement(
+			new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"resultatsClasses.options.proposee",
 				),
-			)
-			.addElement(
-				new ObjetElement(
-					GTraductions.getValeur("resultatsClasses.options.deliberee"),
-					2,
+				ObjetRequetePageResultatsClasses_1.ObjetRequetePageResultatsClasses
+					.TypeMoyenneAffichee.Proposee,
+			),
+		);
+		listeTypesMoyennes.addElement(
+			new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"resultatsClasses.options.deliberee",
 				),
-			);
-		aObjet.setDonnees(listeTypesMoyennes);
-		aObjet.setVisible(false);
+				ObjetRequetePageResultatsClasses_1.ObjetRequetePageResultatsClasses
+					.TypeMoyenneAffichee.Deliberee,
+			),
+		);
+		aInstance.setDonnees(listeTypesMoyennes);
+		aInstance.setVisible(false);
 	}
 	evenementCombo(aParams) {
-		if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
-			if (aParams.element.Numero !== GEtatUtilisateur.etatComboTypeMoyenne) {
-				new ObjetRequetePageResultatsClasses(
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
+			if (aParams.element.getNumero() !== this.typeMoyenneSelectionnee) {
+				this.typeMoyenneSelectionnee = aParams.element.getNumero();
+				const lResultatReferentiel =
+					this.getInfosSupp().resultatsClasse_referentiel;
+				const lParams = {
+					classe: this.ressource,
+					periode: this.periode,
+					absences: lResultatReferentiel.avecAbsences,
+					competences: lResultatReferentiel.avecCompetences,
+					afficherSousServices: lResultatReferentiel.avecSousServices,
+					afficherSeulementSousServices:
+						lResultatReferentiel.uniquementSousServices,
+					masquerSansNotes: lResultatReferentiel.masquerSansNotes,
+					avecCouleurMoyenne: lResultatReferentiel.avecCouleurMoyenne,
+					typeCalculMoyenne: aParams.element.Numero,
+				};
+				new ObjetRequetePageResultatsClasses_1.ObjetRequetePageResultatsClasses(
 					this,
 					this.actionSurRecupererDonnees,
-				).lancerRequete(
-					this.ressource,
-					this.periode,
-					GEtatUtilisateur.resultatsClasse_referentiel
-						? GEtatUtilisateur.resultatsClasse_referentiel.avecAbsences
-						: false,
-					GEtatUtilisateur.resultatsClasse_referentiel
-						? GEtatUtilisateur.resultatsClasse_referentiel.avecCompetences
-						: true,
-					GEtatUtilisateur.resultatsClasse_referentiel
-						? GEtatUtilisateur.resultatsClasse_referentiel.avecSousServices
-						: true,
-					GEtatUtilisateur.resultatsClasse_referentiel
-						? GEtatUtilisateur.resultatsClasse_referentiel
-								.uniquementSousServices
-						: false,
-					GEtatUtilisateur.resultatsClasse_referentiel
-						? GEtatUtilisateur.resultatsClasse_referentiel.matieresEquivalence
-						: false,
-					GEtatUtilisateur.resultatsClasse_referentiel
-						? GEtatUtilisateur.resultatsClasse_referentiel.parametresBulletin
-						: true,
-					GEtatUtilisateur.resultatsClasse_referentiel
-						? GEtatUtilisateur.resultatsClasse_referentiel.masquerSansNotes
-						: false,
-					GEtatUtilisateur.resultatsClasse_referentiel
-						? GEtatUtilisateur.resultatsClasse_referentiel.avecCouleurMoyenne
-						: false,
-					aParams.element.Numero,
-				);
+				).lancerRequete(lParams);
 			}
-			GEtatUtilisateur.etatComboTypeMoyenne = aParams.element.Numero;
 		}
 	}
 	initialiserTripleCombo(aInstance) {
-		aInstance.setParametres([EGenreRessource.Classe, EGenreRessource.Periode]);
+		aInstance.setParametres([
+			Enumere_Ressource_1.EGenreRessource.Classe,
+			Enumere_Ressource_1.EGenreRessource.Periode,
+		]);
 	}
 	evenementSurDernierMenuDeroulant() {
-		Invocateur.evenement(
-			ObjetInvocateur.events.activationImpression,
-			EGenreImpression.Aucune,
+		Invocateur_2.Invocateur.evenement(
+			Invocateur_1.ObjetInvocateur.events.activationImpression,
+			Enumere_GenreImpression_1.EGenreImpression.Aucune,
 		);
-		this.ressource = GEtatUtilisateur.Navigation.getRessource(
-			EGenreRessource.Classe,
+		this.ressource = this.etatUtilisateurSco.Navigation.getRessource(
+			Enumere_Ressource_1.EGenreRessource.Classe,
 		);
-		this.periode = GEtatUtilisateur.Navigation.getRessource(
-			EGenreRessource.Periode,
+		this.periode = this.etatUtilisateurSco.Navigation.getRessource(
+			Enumere_Ressource_1.EGenreRessource.Periode,
 		);
-		new ObjetRequetePageResultatsClasses(
+		const lResultatReferentiel =
+			this.getInfosSupp().resultatsClasse_referentiel;
+		const lParams = {
+			classe: this.ressource,
+			periode: this.periode,
+			absences: lResultatReferentiel.avecAbsences,
+			competences: lResultatReferentiel.avecCompetences,
+			afficherSousServices: lResultatReferentiel.avecSousServices,
+			afficherSeulementSousServices:
+				lResultatReferentiel.uniquementSousServices,
+			masquerSansNotes: lResultatReferentiel.masquerSansNotes,
+			avecCouleurMoyenne: lResultatReferentiel.avecCouleurMoyenne,
+			typeCalculMoyenne: this.typeMoyenneSelectionnee,
+		};
+		new ObjetRequetePageResultatsClasses_1.ObjetRequetePageResultatsClasses(
 			this,
 			this.actionSurRecupererDonnees,
-		).lancerRequete(
-			this.ressource,
-			this.periode,
-			GEtatUtilisateur.resultatsClasse_referentiel
-				? GEtatUtilisateur.resultatsClasse_referentiel.avecAbsences
-				: false,
-			GEtatUtilisateur.resultatsClasse_referentiel
-				? GEtatUtilisateur.resultatsClasse_referentiel.avecCompetences
-				: true,
-			GEtatUtilisateur.resultatsClasse_referentiel
-				? GEtatUtilisateur.resultatsClasse_referentiel.avecSousServices
-				: true,
-			GEtatUtilisateur.resultatsClasse_referentiel
-				? GEtatUtilisateur.resultatsClasse_referentiel.uniquementSousServices
-				: false,
-			GEtatUtilisateur.resultatsClasse_referentiel
-				? GEtatUtilisateur.resultatsClasse_referentiel.matieresEquivalence
-				: false,
-			GEtatUtilisateur.resultatsClasse_referentiel
-				? GEtatUtilisateur.resultatsClasse_referentiel.parametresBulletin
-				: true,
-			GEtatUtilisateur.resultatsClasse_referentiel
-				? GEtatUtilisateur.resultatsClasse_referentiel.masquerSansNotes
-				: false,
-			GEtatUtilisateur.resultatsClasse_referentiel
-				? GEtatUtilisateur.resultatsClasse_referentiel.avecCouleurMoyenne
-				: false,
-			GEtatUtilisateur.etatComboTypeMoyenne,
-		);
+		).lancerRequete(lParams);
 	}
 	actionSurRecupererDonnees(aDonneesAffichage) {
 		if (aDonneesAffichage) {
-			this.donneesAffichage = MethodesObjet.dupliquer(aDonneesAffichage);
+			this.donneesAffichage =
+				MethodesObjet_1.MethodesObjet.dupliquer(aDonneesAffichage);
 			this.afficherBandeau(true);
 			this.avecDonneesItalie = !!aDonneesAffichage.avecDonneesItalie;
-			Invocateur.evenement(
-				ObjetInvocateur.events.activationImpression,
-				EGenreImpression.GenerationPDF,
+			Invocateur_2.Invocateur.evenement(
+				Invocateur_1.ObjetInvocateur.events.activationImpression,
+				Enumere_GenreImpression_1.EGenreImpression.GenerationPDF,
 				this,
 				this.getParametresPDF.bind(this),
 			);
 		}
 		this.initialiserListe(aDonneesAffichage);
-		const lListeMiseEnForme = new ObjetListeElements();
+		const lListeMiseEnForme = new ObjetListeElements_1.ObjetListeElements();
 		aDonneesAffichage.resultats.setTri([
-			ObjetTri.init("ressource"),
-			ObjetTri.init("periode"),
+			ObjetTri_1.ObjetTri.init("ressource"),
+			ObjetTri_1.ObjetTri.init("periode"),
 		]);
 		aDonneesAffichage.resultats.trier();
 		let eltCourant;
@@ -326,7 +306,7 @@ class InterfacePageResultatsClasses extends InterfacePage {
 			lListeMiseEnForme.addElement(aElement);
 		});
 		this.listeMiseEnForme = lListeMiseEnForme;
-		this.nbColonnesDynamiques = aDonneesAffichage.nbColonnesDynamiques;
+		this.genrePositonnementClasse = aDonneesAffichage.genrePositonnementClasse;
 		this.moyenneGeneraleClasse = {
 			generale: aDonneesAffichage.moyenneGeneraleClasse,
 			haute: aDonneesAffichage.moyenneHauteClasse,
@@ -336,218 +316,261 @@ class InterfacePageResultatsClasses extends InterfacePage {
 		this.moyennes = aDonneesAffichage.moyennes;
 		this.anneeComplete = aDonneesAffichage.anneeComplete;
 		this.getInstance(this.identComboTypeMoyenne).setSelection(
-			GEtatUtilisateur.etatComboTypeMoyenne,
+			this.typeMoyenneSelectionnee,
 		);
-		GHtml.setDisplay(this.Nom + "_LabelMoyenne", this.avecDonneesItalie);
+		ObjetHtml_1.GHtml.setDisplay(
+			this.Nom + "_LabelMoyenne",
+			this.avecDonneesItalie,
+		);
 		if (this.avecDonneesItalie) {
 			this.afficherBandeau(true);
 			this.getInstance(this.identComboTypeMoyenne).setVisible(true);
 		}
-		if (!this.listeAffichee) {
-			this.listeAffichee = [
-				EGenreTotalAffiche.moyenneClasse,
-				EGenreTotalAffiche.moyenneGroupe,
-			];
-		}
-		if (!!GEtatUtilisateur.resultatsClasse_referentiel) {
-			if (
-				GEtatUtilisateur.resultatsClasse_referentiel.avecMediane &&
-				this.listeAffichee.indexOf(EGenreTotalAffiche.noteMediane) === -1
-			) {
-				this.listeAffichee.push(EGenreTotalAffiche.noteMediane);
+		const lListeColonneTotal = [
+			Enumere_ResultatsClasse_1.EGenreTotalAffiche.moyenneClasse,
+			Enumere_ResultatsClasse_1.EGenreTotalAffiche.moyenneGroupe,
+		];
+		const lResultatReferentiel =
+			this.getInfosSupp().resultatsClasse_referentiel;
+		if (lResultatReferentiel) {
+			if (lResultatReferentiel.avecMediane) {
+				lListeColonneTotal.push(
+					Enumere_ResultatsClasse_1.EGenreTotalAffiche.noteMediane,
+				);
 			}
-			if (
-				GEtatUtilisateur.resultatsClasse_referentiel.avecHaute &&
-				this.listeAffichee.indexOf(EGenreTotalAffiche.noteHaute) === -1
-			) {
-				this.listeAffichee.push(EGenreTotalAffiche.noteHaute);
+			if (lResultatReferentiel.avecHaute) {
+				lListeColonneTotal.push(
+					Enumere_ResultatsClasse_1.EGenreTotalAffiche.noteHaute,
+				);
 			}
-			if (
-				GEtatUtilisateur.resultatsClasse_referentiel.avecBasse &&
-				this.listeAffichee.indexOf(EGenreTotalAffiche.noteHaute) === -1
-			) {
-				this.listeAffichee.push(EGenreTotalAffiche.noteBasse);
+			if (lResultatReferentiel.avecBasse) {
+				lListeColonneTotal.push(
+					Enumere_ResultatsClasse_1.EGenreTotalAffiche.noteBasse,
+				);
 			}
 		}
-		const lDonnees = new DonneesListe_ResultatsClasse(lListeMiseEnForme, {
-			nbColonnes: aDonneesAffichage.nbColonnesDynamiques,
-			moyennes: aDonneesAffichage.moyennes,
-			moyenneClasse: this.moyenneGeneraleClasse,
-			anneeComplete: aDonneesAffichage.anneeComplete,
-			listeTotaux: this.listeAffichee,
-			avecDonneesItalie: this.avecDonneesItalie,
-			avecGestionNotation: this.avecGestionNotation,
-			genrePositonnementClasse: aDonneesAffichage.genrePositonnementClasse,
-		});
-		this.getInstance(this.identPage).setDonnees(lDonnees);
+		this.getInstance(this.identPage).setDonnees(
+			new DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse(
+				lListeMiseEnForme,
+				{
+					moyennes: aDonneesAffichage.moyennes,
+					moyenneClasse: this.moyenneGeneraleClasse,
+					anneeComplete: aDonneesAffichage.anneeComplete,
+					listeTotaux: lListeColonneTotal,
+					avecGestionNotation: this.avecGestionNotation,
+					avecDonneesItalie: this.avecDonneesItalie,
+					genrePositonnementClasse: this.genrePositonnementClasse,
+				},
+			),
+		);
+		this.getInstance(this.identPage)
+			.getDonneesListe()
+			.setTypeMoyenne(this.typeMoyenneSelectionnee);
 		GEtatUtilisateur.setTriListe({
 			liste: this.getInstance(this.identPage),
-			tri: DonneesListe_ResultatsClasse.colonnes.nom,
+			tri: DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
+				.nom,
 		});
 	}
 	initialiserListe(aList) {
-		let lColonnes;
-		const lColonneCarnetLiaisonDeLaClasse = [];
-		lColonneCarnetLiaisonDeLaClasse.push(
-			'<div id="',
-			this.idTitreColonneNom,
-			'">',
-			'<span ie-event="click->surClickColonneNom();" class="AvecMain PetitEspaceDroit">',
-			this.titreNom,
-			"</span>",
-			"</div>",
-		);
-		lColonnes = [
-			{ id: DonneesListe_ResultatsClasse.colonnes.ressource, taille: 1 },
-			{ id: DonneesListe_ResultatsClasse.colonnes.lignePere, taille: 1 },
-			{ id: DonneesListe_ResultatsClasse.colonnes.deploye, taille: 1 },
-			{
-				id: DonneesListe_ResultatsClasse.colonnes.nom,
-				titre: {
-					libelleHtml: lColonneCarnetLiaisonDeLaClasse.join(""),
-					libelle: GTraductions.getValeur("resultatsClasses.titres.nom"),
-					title: this.titreNom,
-					controleur: {
-						surClickColonneNom: function (aEvent) {
-							const lThis = this.instance.Pere;
-							const lListe = this.instance;
-							aEvent.stopPropagation();
-							ObjetMenuContextuel.afficher({
-								pere: lThis,
-								initCommandes: function (aMenu) {
-									aMenu.add(
-										GTraductions.getValeur("resultatsClasses.titres.nom"),
-										true,
-										() => {
-											lListe.getDonneesListe().afficherNom(true);
-											lThis.titreNom = GTraductions.getValeur(
+		const lColonnes = [];
+		lColonnes.push({
+			id: DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
+				.ressource,
+			taille: 1,
+		});
+		lColonnes.push({
+			id: DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
+				.lignePere,
+			taille: 1,
+		});
+		lColonnes.push({
+			id: DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
+				.deploye,
+			taille: 1,
+		});
+		lColonnes.push({
+			id: DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
+				.nom,
+			titre: {
+				getLibelleHtml: () => {
+					const lJsxNodeColonneNom = () => {
+						return {
+							event: (aEvent) => {
+								const lListe = this.getInstance(this.identPage);
+								aEvent.stopPropagation();
+								ObjetMenuContextuel_1.ObjetMenuContextuel.afficher({
+									pere: this,
+									initCommandes: (aMenu) => {
+										aMenu.add(
+											ObjetTraduction_1.GTraductions.getValeur(
 												"resultatsClasses.titres.nom",
-											);
-											lThis.initialiserListe(lThis.donneesAffichage);
-											lListe.setDonnees(lListe.getDonneesListe());
-										},
-									);
-									aMenu.add(
-										GTraductions.getValeur(
-											"resultatsClasses.titres.numeroNational",
-										),
-										true,
-										() => {
-											lListe.getDonneesListe().afficherNom(false);
-											lThis.titreNom = GTraductions.getValeur(
+											),
+											true,
+											() => {
+												lListe.getDonneesListe().afficherNom(true);
+												this.titreNom =
+													ObjetTraduction_1.GTraductions.getValeur(
+														"resultatsClasses.titres.nom",
+													);
+												this.initialiserListe(this.donneesAffichage);
+												lListe.setDonnees(lListe.getDonneesListe());
+											},
+										);
+										aMenu.add(
+											ObjetTraduction_1.GTraductions.getValeur(
 												"resultatsClasses.titres.numeroNational",
-											);
-											lThis.initialiserListe(lThis.donneesAffichage);
-											lListe.setDonnees(lListe.getDonneesListe());
-										},
-									);
-								},
-							});
-						},
+											),
+											true,
+											() => {
+												lListe.getDonneesListe().afficherNom(false);
+												this.titreNom =
+													ObjetTraduction_1.GTraductions.getValeur(
+														"resultatsClasses.titres.numeroNational",
+													);
+												this.initialiserListe(this.donneesAffichage);
+												lListe.setDonnees(lListe.getDonneesListe());
+											},
+										);
+									},
+								});
+							},
+						};
+					};
+					return IE.jsx.str(
+						"ie-bouton",
+						{ "ie-model": lJsxNodeColonneNom, "aria-haspopup": "menu" },
+						this.titreNom,
+					);
+				},
+				title: this.titreNom,
+			},
+			taille: 170,
+		});
+		lColonnes.push({
+			id: DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
+				.neLe,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"resultatsClasses.titres.neLe",
+			),
+			taille: 65,
+		});
+		lColonnes.push({
+			id: DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
+				.sexe,
+			titre: {
+				libelle: ObjetTraduction_1.GTraductions.getValeur(
+					"resultatsClasses.titres.sexe",
+				),
+				libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+					"resultatsClasses.titres.sexeCourt",
+				),
+				titleHtml: ObjetTraduction_1.GTraductions.getValeur(
+					"resultatsClasses.titres.sexe",
+				),
+			},
+			taille: 20,
+		});
+		lColonnes.push({
+			id: DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
+				.redoublant,
+			titre: {
+				libelle: ObjetTraduction_1.GTraductions.getValeur(
+					"resultatsClasses.titres.redoublantLong",
+				),
+				libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+					"resultatsClasses.titres.redoublantCourt",
+				),
+				titleHtml: ObjetTraduction_1.GTraductions.getValeur(
+					"resultatsClasses.titres.redoublantLong",
+				),
+			},
+			taille: 40,
+		});
+		lColonnes.push({
+			id: DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
+				.projetsAccompagnement,
+			titre: {
+				libelle: ObjetTraduction_1.GTraductions.getValeur(
+					"resultatsClasses.titres.projetAccLong",
+				),
+				libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+					"resultatsClasses.titres.projetAccCourt",
+				),
+				titleHtml: ObjetTraduction_1.GTraductions.getValeur(
+					"resultatsClasses.titres.projetAccLong",
+				),
+			},
+			taille: 80,
+		});
+		lColonnes.push({
+			id: DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
+				.dernierEtablissement,
+			titre: {
+				libelle: ObjetTraduction_1.GTraductions.getValeur(
+					"resultatsClasses.titres.dernierEtabLong",
+				),
+				libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+					"resultatsClasses.titres.dernierEtabCourt",
+				),
+				titleHtml: ObjetTraduction_1.GTraductions.getValeur(
+					"resultatsClasses.titres.dernierEtabLong",
+				),
+			},
+			taille: 120,
+		});
+		lColonnes.push({
+			id: DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
+				.absences,
+			titre: this.avecDonneesItalie
+				? {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"resultatsClasses.titres.volumeHoraire",
+						),
+					}
+				: {
+						libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"resultatsClasses.titres.absenceCourt",
+						),
+						titleHtml: ObjetTraduction_1.GTraductions.getValeur(
+							"resultatsClasses.titres.absenceLong",
+						),
 					},
-				},
-				taille: 150,
+			taille: 60,
+		});
+		lColonnes.push({
+			id: DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
+				.nombreRetards,
+			titre: {
+				libelle: ObjetTraduction_1.GTraductions.getValeur(
+					"resultatsClasses.titres.nbRetards",
+				),
+				libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
+					"resultatsClasses.titres.nbRetards",
+				),
 			},
-			{
-				id: DonneesListe_ResultatsClasse.colonnes.neLe,
-				titre: GTraductions.getValeur("resultatsClasses.titres.neLe"),
-				taille: 65,
-			},
-			{
-				id: DonneesListe_ResultatsClasse.colonnes.redoublant,
-				titre: {
-					libelle: GTraductions.getValeur(
-						"resultatsClasses.titres.redoublantLong",
-					),
-					libelleHtml: GTraductions.getValeur(
-						"resultatsClasses.titres.redoublantCourt",
-					),
-					titleHtml: GTraductions.getValeur(
-						"resultatsClasses.titres.redoublantLong",
-					),
-				},
-				taille: 40,
-			},
-			{
-				id: DonneesListe_ResultatsClasse.colonnes.projetsAccompagnement,
-				titre: {
-					libelle: GTraductions.getValeur(
-						"resultatsClasses.titres.projetAccLong",
-					),
-					libelleHtml: GTraductions.getValeur(
-						"resultatsClasses.titres.projetAccCourt",
-					),
-					titleHtml: GTraductions.getValeur(
-						"resultatsClasses.titres.projetAccLong",
-					),
-				},
-				taille: 80,
-			},
-			{
-				id: DonneesListe_ResultatsClasse.colonnes.dernierEtablissement,
-				titre: {
-					libelle: GTraductions.getValeur(
-						"resultatsClasses.titres.dernierEtabLong",
-					),
-					libelleHtml: GTraductions.getValeur(
-						"resultatsClasses.titres.dernierEtabCourt",
-					),
-					titleHtml: GTraductions.getValeur(
-						"resultatsClasses.titres.dernierEtabLong",
-					),
-				},
-				taille: 120,
-			},
-			{
-				id: DonneesListe_ResultatsClasse.colonnes.absences,
-				titre: this.avecDonneesItalie
-					? {
-							libelle: GTraductions.getValeur(
-								"resultatsClasses.titres.volumeHoraire",
-							),
-							libelleHtml: GTraductions.getValeur(
-								"resultatsClasses.titres.volumeHoraire",
-							),
-						}
-					: {
-							libelle: GTraductions.getValeur(
-								"resultatsClasses.titres.absenceLong",
-							),
-							libelleHtml: GTraductions.getValeur(
-								"resultatsClasses.titres.absenceCourt",
-							),
-							titleHtml: GTraductions.getValeur(
-								"resultatsClasses.titres.absenceLong",
-							),
-						},
-				taille: 60,
-			},
-			{
-				id: DonneesListe_ResultatsClasse.colonnes.nombreRetards,
-				titre: {
-					libelle: GTraductions.getValeur("resultatsClasses.titres.nbRetards"),
-					libelleHtml: GTraductions.getValeur(
-						"resultatsClasses.titres.nbRetards",
-					),
-				},
-				taille: 45,
-			},
-			{
-				id: DonneesListe_ResultatsClasse.colonnes.rang,
-				titre: GTraductions.getValeur("resultatsClasses.titres.rang"),
-				taille: 40,
-			},
-			{ id: DonneesListe_ResultatsClasse.colonnes.classe, taille: 40 },
-		];
+			taille: 45,
+		});
+		lColonnes.push({
+			id: DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
+				.rang,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"resultatsClasses.titres.rang",
+			),
+			taille: 40,
+		});
 		if (this.avecDonneesItalie) {
 			lColonnes.push({
-				id: DonneesListe_ResultatsClasse.colonnes.mention,
+				id: DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
+					.mention,
 				titre: [
 					{
-						libelle: GTraductions.getValeur("resultatsClasses.titres.mention"),
+						libelle: ObjetTraduction_1.GTraductions.getValeur(
+							"resultatsClasses.titres.mention",
+						),
 					},
 					{
-						libelle: GTraductions.getValeur(
+						libelle: ObjetTraduction_1.GTraductions.getValeur(
 							"resultatsClasses.titres.moyenneCourt",
 						),
 					},
@@ -555,21 +578,29 @@ class InterfacePageResultatsClasses extends InterfacePage {
 				taille: 100,
 			});
 			lColonnes.push({
-				id: DonneesListe_ResultatsClasse.colonnes.mentionV,
+				id: DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
+					.mentionV,
 				titre: [
-					{ libelle: TypeFusionTitreListe.FusionGauche },
-					{ libelle: GTraductions.getValeur("resultatsClasses.titres.um") },
+					{ libelle: TypeFusionTitreListe_1.TypeFusionTitreListe.FusionGauche },
+					{
+						libelle: ObjetTraduction_1.GTraductions.getValeur(
+							"resultatsClasses.titres.um",
+						),
+					},
 				],
 				taille: 30,
 			});
 			lColonnes.push({
-				id: DonneesListe_ResultatsClasse.colonnes.credits,
+				id: DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
+					.credits,
 				titre: [
 					{
-						libelle: GTraductions.getValeur("resultatsClasses.titres.credits"),
+						libelle: ObjetTraduction_1.GTraductions.getValeur(
+							"resultatsClasses.titres.credits",
+						),
 					},
 					{
-						libelle: GTraductions.getValeur(
+						libelle: ObjetTraduction_1.GTraductions.getValeur(
 							"resultatsClasses.titres.moyenneCourt",
 						),
 					},
@@ -577,26 +608,33 @@ class InterfacePageResultatsClasses extends InterfacePage {
 				taille: 70,
 			});
 			lColonnes.push({
-				id: DonneesListe_ResultatsClasse.colonnes.creditsV,
+				id: DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
+					.creditsV,
 				titre: [
-					{ libelle: TypeFusionTitreListe.FusionGauche },
-					{ libelle: GTraductions.getValeur("resultatsClasses.titres.um") },
+					{ libelle: TypeFusionTitreListe_1.TypeFusionTitreListe.FusionGauche },
+					{
+						libelle: ObjetTraduction_1.GTraductions.getValeur(
+							"resultatsClasses.titres.um",
+						),
+					},
 				],
 				taille: 30,
 			});
 			lColonnes.push({
-				id: DonneesListe_ResultatsClasse.colonnes.validite,
+				id: DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
+					.validite,
 				titre: {
-					libelleHtml: GTraductions.getValeur(
+					libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
 						"resultatsClasses.titres.validite",
 					),
 				},
 				taille: 60,
 			});
 			lColonnes.push({
-				id: DonneesListe_ResultatsClasse.colonnes.creditsTotaux,
+				id: DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
+					.creditsTotaux,
 				titre: {
-					libelleHtml: GTraductions.getValeur(
+					libelleHtml: ObjetTraduction_1.GTraductions.getValeur(
 						"resultatsClasses.titres.creditsTotaux",
 					),
 				},
@@ -605,15 +643,17 @@ class InterfacePageResultatsClasses extends InterfacePage {
 		}
 		if (this.avecGestionNotation) {
 			lColonnes.push({
-				id: DonneesListe_ResultatsClasse.colonnes.moyenneGenerale,
-				titre: GTraductions.getValeur("resultatsClasses.titres.moyenne"),
+				id: DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
+					.moyenneGenerale,
+				titre: ObjetTraduction_1.GTraductions.getValeur(
+					"resultatsClasses.titres.moyenne",
+				),
 				taille: 60,
 			});
 		}
-		const avecSousServices = GEtatUtilisateur.resultatsClasse_referentiel
-			? GEtatUtilisateur.resultatsClasse_referentiel.uniquementSousServices
-			: false;
-		const avecParamsBulletin = true;
+		const lAvecSousServices =
+			this.getInfosSupp().resultatsClasse_referentiel.uniquementSousServices;
+		const lAvecParamsBulletin = true;
 		let lAvecTitre1 = false;
 		for (let i = 0; i < aList.titresColonnes.count(); i++) {
 			lAvecTitre1 =
@@ -625,20 +665,24 @@ class InterfacePageResultatsClasses extends InterfacePage {
 			const lColonneCourante = aList.titresColonnes.get(i);
 			for (let j = 0; j <= 2; j++) {
 				const titre = [];
-				let lColonneTitre, lTypeColonne;
+				let lColonneTitre;
+				let lTypeColonne;
 				switch (j) {
 					case 0: {
 						lColonneTitre = lColonneCourante.ColMoy;
-						lTypeColonne = "moyenne";
+						lTypeColonne =
+							DonneesListe_ResultatsClasse_1.TypeColonneDyn.Moyenne;
 						break;
 					}
 					case 1:
 						lColonneTitre = lColonneCourante.ColPos;
-						lTypeColonne = "positionnement";
+						lTypeColonne =
+							DonneesListe_ResultatsClasse_1.TypeColonneDyn.Positionnement;
 						break;
 					case 2:
 						lColonneTitre = lColonneCourante.ColAbs;
-						lTypeColonne = "absence";
+						lTypeColonne =
+							DonneesListe_ResultatsClasse_1.TypeColonneDyn.Absence;
 						break;
 					default:
 				}
@@ -653,7 +697,7 @@ class InterfacePageResultatsClasses extends InterfacePage {
 							? '<div class="NoWrap ' +
 								lItalique +
 								'" style="' +
-								GStyle.composeCouleurBordure(couleurFond) +
+								ObjetStyle_1.GStyle.composeCouleurBordure(couleurFond) +
 								'">' +
 								lTitreLigne2 +
 								"</div>"
@@ -663,12 +707,14 @@ class InterfacePageResultatsClasses extends InterfacePage {
 					hint = hint.replace(/&lt;/g, "<");
 					hint = hint.replace(/&quot;/g, '"');
 					const lHintLigne2 =
-						lTypeColonne === "absence"
-							? GTraductions.getValeur(
+						lTypeColonne ===
+						DonneesListe_ResultatsClasse_1.TypeColonneDyn.Absence
+							? ObjetTraduction_1.GTraductions.getValeur(
 									"resultatsClasses.titres.absenceParServiceLong",
 								)
-							: lTypeColonne === "positionnement"
-								? GTraductions.getValeur(
+							: lTypeColonne ===
+									DonneesListe_ResultatsClasse_1.TypeColonneDyn.Positionnement
+								? ObjetTraduction_1.GTraductions.getValeur(
 										"resultatsClasses.titres.positionnement",
 									)
 								: hint;
@@ -677,7 +723,7 @@ class InterfacePageResultatsClasses extends InterfacePage {
 							titre.push({ libelleHtml: lTitreLigne1, titleHtml: hint });
 						}
 						titre.push({ libelle: lTitreLigne3, titleHtml: hint });
-					} else if (avecSousServices || avecParamsBulletin) {
+					} else if (lAvecSousServices || lAvecParamsBulletin) {
 						if (lAvecTitre1) {
 							titre.push({ libelle: lTitreLigne1, avecFusionColonne: true });
 						}
@@ -687,7 +733,7 @@ class InterfacePageResultatsClasses extends InterfacePage {
 							avecFusionColonne: lColonneTitre.estPere,
 							titleHtml: hint,
 						});
-						if (!avecSousServices) {
+						if (!lAvecSousServices) {
 							titre.push({
 								libelleCSV: lTitreLigne3,
 								libelle: lTitreLigne3,
@@ -703,12 +749,16 @@ class InterfacePageResultatsClasses extends InterfacePage {
 						titre.push({ libelle: lTitreLigne3, titleHtml: hint });
 					}
 					lColonnes.push({
-						id: DonneesListe_ResultatsClasse.colonnes.sousCol + i + "_" + j,
+						id:
+							DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse
+								.colonnes.prefixeColDyn +
+							"_" +
+							i +
+							"_" +
+							j,
 						estPere: lColonneTitre.estPere,
 						rangColonne: i,
-						idSousColonne: j,
 						typeColonne: lTypeColonne,
-						estTri: false,
 						titre: titre,
 						estMoyenneRegroupement: lColonneTitre.estMoyenneRegroupement,
 						taille: 50,
@@ -716,186 +766,197 @@ class InterfacePageResultatsClasses extends InterfacePage {
 				}
 			}
 		}
-		const boutons = [];
+		const lBoutonsListe = [];
 		if (
-			GEtatUtilisateur.Navigation.getRessource(
-				EGenreRessource.Periode,
+			this.etatUtilisateurSco.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.Periode,
 			).getGenre() === 1
 		) {
-			boutons.push({ genre: ObjetListe.typeBouton.deployer });
-		}
-		boutons.push({ genre: ObjetListe.typeBouton.exportCSV });
-		{
-			this.getInstance(this.identPage).setOptionsListe({
-				colonnes: lColonnes,
-				colonnesCachees: [
-					DonneesListe_ResultatsClasse.colonnes.ressource,
-					DonneesListe_ResultatsClasse.colonnes.lignePere,
-					DonneesListe_ResultatsClasse.colonnes.deploye,
-					DonneesListe_ResultatsClasse.colonnes.classe,
-				],
-				colonnesTriables: true,
-				avecLigneCreation: false,
-				avecSelection: false,
-				scrollHorizontal: this.avecDonneesItalie ? 17 : 11,
-				avecLigneTotal: this.avecGestionNotation,
-				hauteurAdapteContenu: true,
-				boutons: boutons,
+			lBoutonsListe.push({
+				genre: ObjetListe_1.ObjetListe.typeBouton.deployer,
 			});
 		}
+		lBoutonsListe.push(
+			{ genre: ObjetListe_1.ObjetListe.typeBouton.exportCSV },
+			{ genre: ObjetListe_1.ObjetListe.typeBouton.rechercher },
+		);
+		this.getInstance(this.identPage).setOptionsListe({
+			colonnes: lColonnes,
+			colonnesCachees: [
+				DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
+					.ressource,
+				DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
+					.lignePere,
+				DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
+					.deploye,
+			],
+			colonnesTriables: true,
+			avecLigneCreation: false,
+			scrollHorizontal: this.avecDonneesItalie ? 17 : 11,
+			avecLigneTotal: this.avecGestionNotation,
+			hauteurAdapteContenu: true,
+			boutons: lBoutonsListe,
+			ariaLabel: () => {
+				var _a, _b;
+				return `${this.etatUtilisateurSco.getLibelleLongOnglet()} ${((_a = this.etatUtilisateurSco.Navigation.getRessource(Enumere_Ressource_1.EGenreRessource.Classe)) === null || _a === void 0 ? void 0 : _a.getLibelle()) || ""} ${((_b = this.etatUtilisateurSco.Navigation.getRessource(Enumere_Ressource_1.EGenreRessource.Periode)) === null || _b === void 0 ? void 0 : _b.getLibelle()) || ""}`.trim();
+			},
+		});
 	}
 	getParametresPDF() {
+		const lResultatReferentiel =
+			this.getInfosSupp().resultatsClasse_referentiel;
 		return {
-			genreGenerationPDF: TypeHttpGenerationPDFSco.ResultatsClasse,
-			genreRessource: EGenreRessource.Eleve,
-			classe: GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Classe),
-			periode: GEtatUtilisateur.Navigation.getRessource(
-				EGenreRessource.Periode,
+			genreGenerationPDF:
+				TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.ResultatsClasse,
+			genreRessource: Enumere_Ressource_1.EGenreRessource.Eleve,
+			classe: this.etatUtilisateurSco.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.Classe,
 			),
-			typeMoyenne: GEtatUtilisateur.etatComboTypeMoyenne
-				? GEtatUtilisateur.etatComboTypeMoyenne
-				: 0,
-			matieresEquivalence: GEtatUtilisateur.resultatsClasse_referentiel
-				? GEtatUtilisateur.resultatsClasse_referentiel.matieresEquivalence
-				: false,
-			parametresBulletin: GEtatUtilisateur.resultatsClasse_referentiel
-				? GEtatUtilisateur.resultatsClasse_referentiel.parametresBulletin
-				: true,
-			avecAbsences: GEtatUtilisateur.resultatsClasse_referentiel
-				? GEtatUtilisateur.resultatsClasse_referentiel.avecAbsences
-				: false,
-			avecSansNotes: GEtatUtilisateur.resultatsClasse_referentiel
-				? GEtatUtilisateur.resultatsClasse_referentiel.avecCompetences
-				: true,
-			afficherSousServices: GEtatUtilisateur.resultatsClasse_referentiel
-				? GEtatUtilisateur.resultatsClasse_referentiel.avecSousServices
-				: true,
-			afficherServices: GEtatUtilisateur.resultatsClasse_referentiel
-				? !GEtatUtilisateur.resultatsClasse_referentiel.uniquementSousServices
-				: true,
-			avecMediane: GEtatUtilisateur.resultatsClasse_referentiel
-				? GEtatUtilisateur.resultatsClasse_referentiel.avecMediane
-				: false,
-			avecBasse: GEtatUtilisateur.resultatsClasse_referentiel
-				? GEtatUtilisateur.resultatsClasse_referentiel.avecBasse
-				: false,
-			avecHaute: GEtatUtilisateur.resultatsClasse_referentiel
-				? GEtatUtilisateur.resultatsClasse_referentiel.avecHaute
-				: false,
-			masquerSansNotes: GEtatUtilisateur.resultatsClasse_referentiel
-				? GEtatUtilisateur.resultatsClasse_referentiel.masquerSansNotes
-				: false,
+			periode: this.etatUtilisateurSco.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.Periode,
+			),
+			typeMoyenne: this.typeMoyenneSelectionnee,
+			matieresEquivalence: lResultatReferentiel.matieresEquivalence,
+			parametresBulletin: lResultatReferentiel.parametresBulletin,
+			avecAbsences: lResultatReferentiel.avecAbsences,
+			avecSansNotes: lResultatReferentiel.avecCompetences,
+			afficherSousServices: lResultatReferentiel.avecSousServices,
+			afficherServices: lResultatReferentiel.uniquementSousServices,
+			avecMediane: lResultatReferentiel.avecMediane,
+			avecBasse: lResultatReferentiel.avecBasse,
+			avecHaute: lResultatReferentiel.avecHaute,
+			masquerSansNotes: lResultatReferentiel.masquerSansNotes,
 			avecCodeCompetences: GEtatUtilisateur.estAvecCodeCompetences(),
 		};
 	}
-}
-function _initFenetreParamResultats(aInstance) {
-	aInstance.setContexte(this.avecDonneesItalie);
-	aInstance.setOptionsFenetre({
-		titre: GTraductions.getValeur(
-			"competencesGrilles.FenetreParametrage.Titre",
-		),
-		largeur: 600,
-		avecTailleSelonContenu: true,
-		listeBoutons: [
-			GTraductions.getValeur("Annuler"),
-			GTraductions.getValeur("Valider"),
-		],
-	});
-}
-function _evntFenetreParamResultats(aNumeroBouton, aParametresGrille) {
-	if (aNumeroBouton === 1) {
-		const listeAffichee = [EGenreTotalAffiche.moyenneClasse];
-		if (!!aParametresGrille.avecMediane) {
-			listeAffichee.push(EGenreTotalAffiche.noteMediane);
-		}
-		if (!!aParametresGrille.avecHaute) {
-			listeAffichee.push(EGenreTotalAffiche.noteHaute);
-		}
-		if (!!aParametresGrille.avecBasse) {
-			listeAffichee.push(EGenreTotalAffiche.noteBasse);
-		}
-		listeAffichee.push(EGenreTotalAffiche.moyenneGroupe);
-		const changerAbsences =
-			GEtatUtilisateur.resultatsClasse_referentiel.avecAbsences !==
-			aParametresGrille.avecAbsences;
-		const changerCompetences =
-			GEtatUtilisateur.resultatsClasse_referentiel.avecCompetences !==
-			aParametresGrille.avecCompetences;
-		const uniquementSousServices =
-			GEtatUtilisateur.resultatsClasse_referentiel.uniquementSousServices !==
-			aParametresGrille.uniquementSousServices;
-		const avecSousServices =
-			GEtatUtilisateur.resultatsClasse_referentiel.avecSousServices !==
-			aParametresGrille.avecSousServices;
-		const matieresEquivalence =
-			GEtatUtilisateur.resultatsClasse_referentiel.matieresEquivalence !==
-			aParametresGrille.matieresEquivalence;
-		const parametresBulletin =
-			GEtatUtilisateur.resultatsClasse_referentiel.parametresBulletin !==
-			aParametresGrille.parametresBulletin;
-		const masquerSansNotes =
-			GEtatUtilisateur.resultatsClasse_referentiel.masquerSansNotes !==
-			aParametresGrille.masquerSansNotes;
-		const avecCouleurMoyenne =
-			GEtatUtilisateur.resultatsClasse_referentiel.avecCouleurMoyenne !==
-			aParametresGrille.avecCouleurMoyenne;
-		this.listeAffichee = listeAffichee;
-		if (
-			changerAbsences ||
-			changerCompetences ||
-			uniquementSousServices ||
-			avecSousServices ||
-			matieresEquivalence ||
-			parametresBulletin ||
-			masquerSansNotes ||
-			avecCouleurMoyenne
-		) {
-			new ObjetRequetePageResultatsClasses(
-				this,
-				this.actionSurRecupererDonnees,
-			).lancerRequete(
-				this.ressource,
-				this.periode,
-				aParametresGrille.avecAbsences,
-				aParametresGrille.avecCompetences,
-				aParametresGrille.avecSousServices,
-				aParametresGrille.uniquementSousServices,
-				aParametresGrille.matieresEquivalence,
-				aParametresGrille.parametresBulletin,
-				aParametresGrille.masquerSansNotes,
-				aParametresGrille.avecCouleurMoyenne,
-				GEtatUtilisateur.etatComboTypeMoyenne,
-			);
-		} else {
-			const lDonnees = new DonneesListe_ResultatsClasse(this.listeMiseEnForme, {
-				nbColonnes: this.nbColonnesDynamiques,
-				moyennes: this.moyennes,
-				moyenneClasse: this.moyenneGeneraleClasse,
-				anneeComplete: this.anneeComplete,
-				listeTotaux: listeAffichee,
-				avecDonneesItalie: this.avecDonneesItalie,
-				avecGestionNotation: this.avecGestionNotation,
-			});
-			this.getInstance(this.identPage).setDonnees(lDonnees);
-		}
-		GEtatUtilisateur.setTriListe({
-			liste: this.getInstance(this.identPage),
-			tri: DonneesListe_ResultatsClasse.colonnes.nom,
+	_initFenetreParamResultats(aInstance) {
+		aInstance.setContexte(this.avecDonneesItalie);
+		aInstance.setOptionsFenetre({
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"competencesGrilles.FenetreParametrage.Titre",
+			),
+			largeur: 600,
+			avecTailleSelonContenu: true,
+			listeBoutons: [
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
+			],
 		});
 	}
-	GEtatUtilisateur.resultatsClasse_referentiel = {
-		avecMediane: aParametresGrille.avecMediane,
-		avecHaute: aParametresGrille.avecHaute,
-		avecBasse: aParametresGrille.avecBasse,
-		avecAbsences: aParametresGrille.avecAbsences,
-		avecCompetences: aParametresGrille.avecCompetences,
-		avecSousServices: aParametresGrille.avecSousServices,
-		uniquementSousServices: aParametresGrille.uniquementSousServices,
-		matieresEquivalence: aParametresGrille.matieresEquivalence,
-		parametresBulletin: aParametresGrille.parametresBulletin,
-		masquerSansNotes: aParametresGrille.masquerSansNotes,
-		avecCouleurMoyenne: aParametresGrille.avecCouleurMoyenne,
-	};
+	_evntFenetreParamResultats(aNumeroBouton, aParametresGrille) {
+		const lResultatReferentiel =
+			this.getInfosSupp().resultatsClasse_referentiel;
+		if (aNumeroBouton === 1) {
+			const lListeColonneTotal = [
+				Enumere_ResultatsClasse_1.EGenreTotalAffiche.moyenneClasse,
+			];
+			if (!!aParametresGrille.avecMediane) {
+				lListeColonneTotal.push(
+					Enumere_ResultatsClasse_1.EGenreTotalAffiche.noteMediane,
+				);
+			}
+			if (!!aParametresGrille.avecHaute) {
+				lListeColonneTotal.push(
+					Enumere_ResultatsClasse_1.EGenreTotalAffiche.noteHaute,
+				);
+			}
+			if (!!aParametresGrille.avecBasse) {
+				lListeColonneTotal.push(
+					Enumere_ResultatsClasse_1.EGenreTotalAffiche.noteBasse,
+				);
+			}
+			lListeColonneTotal.push(
+				Enumere_ResultatsClasse_1.EGenreTotalAffiche.moyenneGroupe,
+			);
+			const changerAbsences =
+				lResultatReferentiel.avecAbsences !== aParametresGrille.avecAbsences;
+			const changerCompetences =
+				lResultatReferentiel.avecCompetences !==
+				aParametresGrille.avecCompetences;
+			const uniquementSousServices =
+				lResultatReferentiel.uniquementSousServices !==
+				aParametresGrille.uniquementSousServices;
+			const avecSousServices =
+				lResultatReferentiel.avecSousServices !==
+				aParametresGrille.avecSousServices;
+			const matieresEquivalence =
+				lResultatReferentiel.matieresEquivalence !==
+				aParametresGrille.matieresEquivalence;
+			const parametresBulletin =
+				lResultatReferentiel.parametresBulletin !==
+				aParametresGrille.parametresBulletin;
+			const masquerSansNotes =
+				lResultatReferentiel.masquerSansNotes !==
+				aParametresGrille.masquerSansNotes;
+			const avecCouleurMoyenne =
+				lResultatReferentiel.avecCouleurMoyenne !==
+				aParametresGrille.avecCouleurMoyenne;
+			if (
+				changerAbsences ||
+				changerCompetences ||
+				uniquementSousServices ||
+				avecSousServices ||
+				matieresEquivalence ||
+				parametresBulletin ||
+				masquerSansNotes ||
+				avecCouleurMoyenne
+			) {
+				const lParams = {
+					classe: this.ressource,
+					periode: this.periode,
+					absences: aParametresGrille.avecAbsences,
+					competences: aParametresGrille.avecCompetences,
+					afficherSousServices: aParametresGrille.avecSousServices,
+					afficherSeulementSousServices:
+						aParametresGrille.uniquementSousServices,
+					masquerSansNotes: aParametresGrille.masquerSansNotes,
+					avecCouleurMoyenne: aParametresGrille.avecCouleurMoyenne,
+					typeCalculMoyenne: this.typeMoyenneSelectionnee,
+				};
+				new ObjetRequetePageResultatsClasses_1.ObjetRequetePageResultatsClasses(
+					this,
+					this.actionSurRecupererDonnees,
+				).lancerRequete(lParams);
+			} else {
+				this.getInstance(this.identPage).setDonnees(
+					new DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse(
+						this.listeMiseEnForme,
+						{
+							moyennes: this.moyennes,
+							moyenneClasse: this.moyenneGeneraleClasse,
+							anneeComplete: this.anneeComplete,
+							listeTotaux: lListeColonneTotal,
+							avecGestionNotation: this.avecGestionNotation,
+							avecDonneesItalie: this.avecDonneesItalie,
+							genrePositonnementClasse: this.genrePositonnementClasse,
+						},
+					),
+				);
+			}
+			GEtatUtilisateur.setTriListe({
+				liste: this.getInstance(this.identPage),
+				tri: DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse
+					.colonnes.nom,
+			});
+		}
+		(lResultatReferentiel.avecMediane = aParametresGrille.avecMediane),
+			(lResultatReferentiel.avecHaute = aParametresGrille.avecHaute),
+			(lResultatReferentiel.avecBasse = aParametresGrille.avecBasse),
+			(lResultatReferentiel.avecAbsences = aParametresGrille.avecAbsences),
+			(lResultatReferentiel.avecCompetences =
+				aParametresGrille.avecCompetences),
+			(lResultatReferentiel.avecSousServices =
+				aParametresGrille.avecSousServices),
+			(lResultatReferentiel.uniquementSousServices =
+				aParametresGrille.uniquementSousServices),
+			(lResultatReferentiel.matieresEquivalence =
+				aParametresGrille.matieresEquivalence),
+			(lResultatReferentiel.parametresBulletin =
+				aParametresGrille.parametresBulletin),
+			(lResultatReferentiel.masquerSansNotes =
+				aParametresGrille.masquerSansNotes),
+			(lResultatReferentiel.avecCouleurMoyenne =
+				aParametresGrille.avecCouleurMoyenne);
+	}
 }
-module.exports = InterfacePageResultatsClasses;
+exports.InterfacePageResultatsClasses = InterfacePageResultatsClasses;

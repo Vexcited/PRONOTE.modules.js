@@ -1,18 +1,21 @@
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { DonneesListe_Mention } = require("DonneesListe_Mention.js");
-class ObjetFenetre_Mention extends ObjetFenetre {
-	constructor(...aParams) {
-		super(...aParams);
-		this.listeMention = new ObjetListeElements();
-		this.titreListe = GTraductions.getValeur("Appreciations.Mentions");
+exports.ObjetFenetre_Mention = void 0;
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const DonneesListe_Mention_1 = require("DonneesListe_Mention");
+class ObjetFenetre_Mention extends ObjetFenetre_1.ObjetFenetre {
+	constructor() {
+		super(...arguments);
+		this.listeMention = new ObjetListeElements_1.ObjetListeElements();
+		this.titreListe = ObjetTraduction_1.GTraductions.getValeur(
+			"Appreciations.Mentions",
+		);
 	}
 	construireInstances() {
 		this.IdentListe = this.add(
-			ObjetListe,
+			ObjetListe_1.ObjetListe,
 			this.evenementSurListe,
 			this.initialiserListe,
 		);
@@ -20,12 +23,12 @@ class ObjetFenetre_Mention extends ObjetFenetre {
 	initialiserListe(aInstance) {
 		const lColonnes = [];
 		lColonnes.push({
-			id: DonneesListe_Mention.colonnes.libelle,
+			id: DonneesListe_Mention_1.DonneesListe_Mention.colonnes.libelle,
 			titre: this.titreListe,
 			taille: "100%",
 		});
 		lColonnes.push({
-			id: DonneesListe_Mention.colonnes.imprimee,
+			id: DonneesListe_Mention_1.DonneesListe_Mention.colonnes.imprimee,
 			titre: { classeCssImage: "Image_Publie" },
 			taille: 20,
 		});
@@ -40,11 +43,11 @@ class ObjetFenetre_Mention extends ObjetFenetre {
 		this.setBoutonActif(1, false);
 		this.initialiserListe(this.getInstance(this.IdentListe));
 		this.getInstance(this.IdentListe).setDonnees(
-			new DonneesListe_Mention(this.listeMention),
+			new DonneesListe_Mention_1.DonneesListe_Mention(this.listeMention),
 		);
 	}
 	reset() {
-		this.listeMention = new ObjetListeElements();
+		this.listeMention = new ObjetListeElements_1.ObjetListeElements();
 	}
 	composeContenu() {
 		const lHTML = [];
@@ -61,31 +64,24 @@ class ObjetFenetre_Mention extends ObjetFenetre {
 		}
 		return null;
 	}
-	evenementSurListe(aParametres, aGenreEvenementListe, I, J) {
+	evenementSurListe(aParametres) {
 		this.setBoutonActif(
 			1,
-			aGenreEvenementListe === EGenreEvenementListe.Selection,
+			aParametres.genreEvenement ===
+				Enumere_EvenementListe_1.EGenreEvenementListe.Selection,
 		);
-		this.posMention = J;
-		switch (aGenreEvenementListe) {
-			case EGenreEvenementListe.Selection:
+		this.posMention = aParametres.ligne;
+		switch (aParametres.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Selection:
 				this.surValidation(1);
 				break;
-			case EGenreEvenementListe.SelectionDblClick:
+			case Enumere_EvenementListe_1.EGenreEvenementListe.SelectionDblClick:
 				this.surValidation(1);
 				break;
-			case EGenreEvenementListe.Edition:
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Edition:
 				this.surValidation(1);
 				break;
-		}
-	}
-	traiterSelectionEleve(aLigne) {
-		if (aLigne) {
-			const lLibelleWAI = aLigne.ListeAppreciations.ListeElements[0].LibelleWAI;
-			this.getInstance(this.IdentListe).setOptionsListe({
-				labelWAI: lLibelleWAI,
-			});
 		}
 	}
 }
-module.exports = { ObjetFenetre_Mention };
+exports.ObjetFenetre_Mention = ObjetFenetre_Mention;

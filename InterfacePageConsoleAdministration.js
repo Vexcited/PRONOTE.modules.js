@@ -1,5 +1,4 @@
 exports.InterfacePageConsoleAdministration = void 0;
-const ObjetStyle_1 = require("ObjetStyle");
 const ObjetMenuOnglets_1 = require("ObjetMenuOnglets");
 const ParametresAffichageDivers_1 = require("ParametresAffichageDivers");
 const ParametresAffichageDivers_2 = require("ParametresAffichageDivers");
@@ -8,13 +7,13 @@ const ParametresAffichageDivers_4 = require("ParametresAffichageDivers");
 const ParametresAffichageMenuOnglets_1 = require("ParametresAffichageMenuOnglets");
 const ObjetOnglet_1 = require("ObjetOnglet");
 const ObjetPosition_1 = require("ObjetPosition");
-const ObjetStyle_2 = require("ObjetStyle");
 const Enumere_Divers_1 = require("Enumere_Divers");
 const Enumere_Onglet_Console_NET_1 = require("Enumere_Onglet_Console_NET");
 const ObjetInterface_1 = require("ObjetInterface");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ParametresAffichageOnglet_1 = require("ParametresAffichageOnglet");
 const MethodesObjet_1 = require("MethodesObjet");
+const AccessApp_1 = require("AccessApp");
 var EProfilConnexion;
 (function (EProfilConnexion) {
 	EProfilConnexion[(EProfilConnexion["spr"] = 1)] = "spr";
@@ -23,7 +22,7 @@ var EProfilConnexion;
 class InterfacePageConsoleAdministration extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
-		this.objetApplicationConsoles = GApplication;
+		this.objetApplicationConsoles = (0, AccessApp_1.getApp)();
 	}
 	construireInstances() {
 		this.identMenuOnglets = this.add(
@@ -34,40 +33,51 @@ class InterfacePageConsoleAdministration extends ObjetInterface_1.ObjetInterface
 		this.identPage = this.add(ObjetInterface_1.ObjetInterface);
 	}
 	construireStructureAffichage() {
-		const H = [];
 		const lLargeurBordure = 1;
 		const lHauteurMenuOnglets = 35 + lLargeurBordure;
-		const lStyle = "height: 100%; overflow-y: scroll;";
-		H.push(
-			'<div style="position:absolute; top: ' +
-				ObjetPosition_1.GPosition.getTop(this.Nom) +
-				'px; width:100%; bottom:0px;">',
+		const lStyleBordure = `${lLargeurBordure}px solid ${(0, AccessApp_1.getApp)().getCouleur().texte}`;
+		return IE.jsx.str(
+			"div",
+			{
+				style: {
+					position: "absolute",
+					top: ObjetPosition_1.GPosition.getTop(this.Nom),
+					width: "100%",
+					bottom: 0,
+				},
+			},
 			this.identMenuOnglets >= 0
-				? '<div id="' +
-						this.getInstance(this.identMenuOnglets).getNom() +
-						'" style="height:32px" class="AlignementBas EspaceHaut"></div>'
+				? IE.jsx.str("div", {
+						id: this.getInstance(this.identMenuOnglets).getNom(),
+						style: "height:32px",
+						class: "AlignementBas EspaceHaut",
+					})
 				: "",
 			this.identPage >= 0
-				? '<div style="position:absolute; top:' +
-						lHauteurMenuOnglets +
-						"px; bottom:0px; left:0px; right:0px;" +
-						ObjetStyle_2.GStyle.composeCouleurFond(GCouleur.blanc) +
-						ObjetStyle_2.GStyle.composeCouleurBordure(
-							GCouleur.texte,
-							lLargeurBordure,
-							ObjetStyle_1.EGenreBordure.bas +
-								ObjetStyle_1.EGenreBordure.droite +
-								ObjetStyle_1.EGenreBordure.gauche,
-						) +
-						' min-height:50px;" ><div id="' +
-						this.getInstance(this.identPage).getNom() +
-						'" style="' +
-						lStyle +
-						'"></div></div>'
+				? IE.jsx.str(
+						"div",
+						{
+							role: "main",
+							style: {
+								position: "absolute",
+								top: lHauteurMenuOnglets,
+								bottom: 0,
+								left: 0,
+								right: 0,
+								backgroundColor: (0, AccessApp_1.getApp)().getCouleur().blanc,
+								borderBottom: lStyleBordure,
+								borderRight: lStyleBordure,
+								borderLeft: lStyleBordure,
+								"min-height": 50,
+							},
+						},
+						IE.jsx.str("div", {
+							id: this.getInstance(this.identPage).getNom(),
+							style: { height: "100%", overflowY: "scroll" },
+						}),
+					)
 				: "",
-			"</div>",
 		);
-		return H.join("");
 	}
 	evenementMenuOnglets(aParamOnglet) {
 		this.objetApplicationConsoles.etatConsole.selectionCourante = aParamOnglet;
@@ -103,7 +113,10 @@ class InterfacePageConsoleAdministration extends ObjetInterface_1.ObjetInterface
 	initialiserMenuOnglets(aObjet) {
 		const lTexteActif =
 			new ParametresAffichageDivers_1.ParametresAffichageTexte("texte");
-		lTexteActif.setCouleur(GCouleur.texte, GCouleur.blanc);
+		lTexteActif.setCouleur(
+			(0, AccessApp_1.getApp)().getCouleur().texte,
+			(0, AccessApp_1.getApp)().getCouleur().blanc,
+		);
 		lTexteActif.setTaillePolice(10);
 		lTexteActif.setGras(false, true, true);
 		lTexteActif.setSouligne(false, false);
@@ -114,20 +127,24 @@ class InterfacePageConsoleAdministration extends ObjetInterface_1.ObjetInterface
 			new ParametresAffichageDivers_3.ParametresAffichageCoinBordure(
 				"coinSuperieurGauche",
 			);
-		lActifCoinBordureSupGauche.setCouleur(GCouleur.texte, GCouleur.texte);
+		lActifCoinBordureSupGauche.setCouleur(
+			(0, AccessApp_1.getApp)().getCouleur().texte,
+			(0, AccessApp_1.getApp)().getCouleur().texte,
+		);
 		lActifCoinBordureSupGauche.setEpaisseur(1);
 		const lActifCoinBordureInfDroit =
 			new ParametresAffichageDivers_3.ParametresAffichageCoinBordure(
 				"coinInferieurDroit",
 			);
-		lActifCoinBordureInfDroit.setCouleur(GCouleur.texte, GCouleur.texte);
+		lActifCoinBordureInfDroit.setCouleur(
+			(0, AccessApp_1.getApp)().getCouleur().texte,
+			(0, AccessApp_1.getApp)().getCouleur().texte,
+		);
 		lActifCoinBordureInfDroit.setEpaisseur(1);
 		const lActifOnglet =
 			new ParametresAffichageOnglet_1.ParametresAffichageOnglet(
 				"parametresAffichageActif",
-				200,
-				20,
-				GCouleur.intermediaire,
+				(0, AccessApp_1.getApp)().getCouleur().intermediaire,
 				lTexteActif,
 				new ParametresAffichageDivers_2.ParametresAffichageBordure(
 					"bordure",
@@ -137,9 +154,9 @@ class InterfacePageConsoleAdministration extends ObjetInterface_1.ObjetInterface
 				),
 			);
 		lActifOnglet.setCouleur(
-			GCouleur.blanc,
-			GCouleur.texte,
-			GCouleur.themeNeutre.moyen1,
+			(0, AccessApp_1.getApp)().getCouleur().blanc,
+			(0, AccessApp_1.getApp)().getCouleur().texte,
+			(0, AccessApp_1.getApp)().getCouleur().themeNeutre.moyen1,
 		);
 		const lParametresAffichage =
 			new ParametresAffichageMenuOnglets_1.ObjetParametresAffichageMenuOnglets(
@@ -158,47 +175,25 @@ class InterfacePageConsoleAdministration extends ObjetInterface_1.ObjetInterface
 			);
 		aObjet.setParametres(lParametresAffichage);
 	}
-	getImagesOnglet(aGenre) {
+	getIconeOnglet(aGenre) {
 		switch (aGenre) {
 			case Enumere_Onglet_Console_NET_1.EGenreOnglet_Console_NET.publication:
-				return [
-					"Image_Commande_ParametresPublication",
-					"Image_Commande_ParametresPublication_Inactif",
-				];
+				return "icon_rss";
 			case Enumere_Onglet_Console_NET_1.EGenreOnglet_Console_NET.ent:
-				return [
-					"Image_Commande_DeleguerAuthentification",
-					"Image_Commande_DeleguerAuthentification_Inactif",
-				];
+				return "icon_cle";
 			case Enumere_Onglet_Console_NET_1.EGenreOnglet_Console_NET
 				.authentificationWsFed:
-				return [
-					"Image_Commande_DeleguerAuthentification",
-					"Image_Commande_DeleguerAuthentification_Inactif",
-				];
+				return "icon_cle";
 			case Enumere_Onglet_Console_NET_1.EGenreOnglet_Console_NET.securite:
-				return [
-					"Image_Commande_ParametresSecurite",
-					"Image_Commande_ParametresSecurite_Inactif",
-				];
+				return "icon_lock";
 			case Enumere_Onglet_Console_NET_1.EGenreOnglet_Console_NET
 				.edtDansAutreSite:
-				return [
-					"Image_Commande_IntegrationEDT",
-					"Image_Commande_IntegrationEDT_Inactif",
-				];
+				return "icon_fiche_T_triple";
 			case Enumere_Onglet_Console_NET_1.EGenreOnglet_Console_NET
 				.panneauxLumineux:
-				return [
-					"Image_Commande_PanneauxLumineux",
-					"Image_Commande_PanneauxLumineux_Inactif",
-				];
-			default:
-				return [
-					"Image_Commande_ParametresPublication",
-					"Image_Commande_ParametresPublication_Inactif",
-				];
+				return "icon_desktop";
 		}
+		return "icon_rss";
 	}
 	ongletAutorisePourProfil(aGenreOnglet) {
 		return (
@@ -232,8 +227,7 @@ class InterfacePageConsoleAdministration extends ObjetInterface_1.ObjetInterface
 			this.objetApplicationConsoles.setProfilConnexion(EProfilConnexion.spr);
 		}
 	}
-	recupererDonnees() {
-		this.controlerValiditeDuProfil();
+	getGenresOngletDePosition() {
 		const lGenreOngletDePosition = [
 			Enumere_Onglet_Console_NET_1.EGenreOnglet_Console_NET.publication,
 			Enumere_Onglet_Console_NET_1.EGenreOnglet_Console_NET.ent,
@@ -241,6 +235,11 @@ class InterfacePageConsoleAdministration extends ObjetInterface_1.ObjetInterface
 			Enumere_Onglet_Console_NET_1.EGenreOnglet_Console_NET.securite,
 			Enumere_Onglet_Console_NET_1.EGenreOnglet_Console_NET.panneauxLumineux,
 		];
+		return lGenreOngletDePosition;
+	}
+	recupererDonnees() {
+		this.controlerValiditeDuProfil();
+		const lGenreOngletDePosition = this.getGenresOngletDePosition();
 		const lTabOnglets = [];
 		let lPos = 0;
 		for (let i = 0; i < lGenreOngletDePosition.length; i++) {
@@ -249,31 +248,30 @@ class InterfacePageConsoleAdministration extends ObjetInterface_1.ObjetInterface
 				this.ongletAutorisePourProfil(lGenreOnglet) &&
 				this.objetApplicationConsoles.getObjetGraphiqueParGenre(lGenreOnglet)
 			) {
+				const lHint = ObjetTraduction_1.GTraductions.getValeur(
+					"pageConsoleAdministration.hint",
+				)
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"pageConsoleAdministration.hint",
+						)[lGenreOnglet]
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"pageConsoleAdministration.onglets",
+						)[lGenreOnglet];
 				const lOnglet = new ObjetOnglet_1.ObjetOnglet(
 					this.getInstance(this.identMenuOnglets).getNom() + ".Instances",
 					lPos,
 					this,
 					this.evenementMenuOnglets,
 				);
-				lOnglet.setParametres(
-					ObjetTraduction_1.GTraductions.getValeur(
+				lOnglet.setParametres({
+					libelle: ObjetTraduction_1.GTraductions.getValeur(
 						"pageConsoleAdministration.onglets",
 					)[lGenreOnglet],
-					this.getImagesOnglet(lGenreOnglet),
-					lGenreOnglet,
-					lPos,
-					ObjetTraduction_1.GTraductions.getValeur(
-						"pageConsoleAdministration.hint",
-					)
-						? ObjetTraduction_1.GTraductions.getValeur(
-								"pageConsoleAdministration.hint",
-							)[lGenreOnglet]
-						: ObjetTraduction_1.GTraductions.getValeur(
-								"pageConsoleAdministration.onglets",
-							)[lGenreOnglet],
-					true,
-					true,
-				);
+					hint: lHint,
+					icone: this.getIconeOnglet(lGenreOnglet),
+					genre: lGenreOnglet,
+					position: lPos,
+				});
 				lTabOnglets.push(lOnglet);
 				lPos++;
 			}

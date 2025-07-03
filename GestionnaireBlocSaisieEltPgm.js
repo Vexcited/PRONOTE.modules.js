@@ -1,15 +1,13 @@
-const { GestionnaireBlocDeBase } = require("GestionnaireBloc.js");
-const { ObjetBlocSaisieEltPgm } = require("ObjetBlocSaisieEltPgm.js");
-const { Identite } = require("ObjetIdentite.js");
-const { BlocCard } = require("BlocCard.js");
-class GestionnaireBlocSaisieEltPgm extends GestionnaireBlocDeBase {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.GestionnaireBlocSaisieEltPgm = void 0;
+const GestionnaireBloc_1 = require("GestionnaireBloc");
+const ObjetBlocSaisieEltPgm_1 = require("ObjetBlocSaisieEltPgm");
+const ObjetIdentite_1 = require("ObjetIdentite");
+const BlocCard_1 = require("BlocCard");
+class GestionnaireBlocSaisieEltPgm extends GestionnaireBloc_1.GestionnaireBlocDeBase {
 	composeBloc(aDataBloc) {
 		const lInstance = this.getInstanceObjetMetier(
 			aDataBloc,
-			ObjetBlocSaisieEltPgm,
+			ObjetBlocSaisieEltPgm_1.ObjetBlocSaisieEltPgm,
 		);
 		return {
 			html: this.composeZoneInstance(lInstance),
@@ -17,8 +15,10 @@ class GestionnaireBlocSaisieEltPgm extends GestionnaireBlocDeBase {
 		};
 	}
 	composeBlocMsg(aMsg) {
-		const lBloc = Identite.creerInstance(BlocCard, { pere: this });
+		const lBloc = ObjetIdentite_1.Identite.creerInstance(BlocCard_1.BlocCard, {
+			pere: this,
+		});
 		return { html: lBloc.composeHtmlMsg(aMsg) };
 	}
 }
-module.exports = { GestionnaireBlocSaisieEltPgm };
+exports.GestionnaireBlocSaisieEltPgm = GestionnaireBlocSaisieEltPgm;

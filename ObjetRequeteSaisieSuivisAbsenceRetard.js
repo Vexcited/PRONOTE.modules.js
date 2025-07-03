@@ -1,10 +1,8 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-class ObjetRequeteSaisieSuivisAbsenceRetard extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieSuivisAbsenceRetard = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const Enumere_Etat_1 = require("Enumere_Etat");
+class ObjetRequeteSaisieSuivisAbsenceRetard extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(
 		aEleve,
 		aListeSuivisAbsenceRetard,
@@ -39,8 +37,8 @@ class ObjetRequeteSaisieSuivisAbsenceRetard extends ObjetRequeteSaisie {
 	_surValidationSuivi(aElement, aJSON) {
 		if (aElement.estPere) {
 			if (
-				aElement.getEtat() === EGenreEtat.Suppression ||
-				aElement.getEtat() === EGenreEtat.Creation
+				aElement.getEtat() === Enumere_Etat_1.EGenreEtat.Suppression ||
+				aElement.getEtat() === Enumere_Etat_1.EGenreEtat.Creation
 			) {
 				return false;
 			}
@@ -52,7 +50,7 @@ class ObjetRequeteSaisieSuivisAbsenceRetard extends ObjetRequeteSaisie {
 			if (!aElement.pourValidation()) {
 				return false;
 			}
-			if (aElement.getEtat() === EGenreEtat.Suppression) {
+			if (aElement.getEtat() === Enumere_Etat_1.EGenreEtat.Suppression) {
 				return true;
 			}
 			aJSON.pere = aElement.pere;
@@ -70,11 +68,12 @@ class ObjetRequeteSaisieSuivisAbsenceRetard extends ObjetRequeteSaisie {
 		}
 	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteSaisieSuivisAbsenceRetard =
+	ObjetRequeteSaisieSuivisAbsenceRetard;
+CollectionRequetes_1.Requetes.inscrire(
 	"SaisieSuivisAbsenceRetard",
 	ObjetRequeteSaisieSuivisAbsenceRetard,
 );
 function serialiserProjets(aProjet, aJSON) {
 	$.extend(aJSON, aProjet.copieToJSON());
 }
-module.exports = ObjetRequeteSaisieSuivisAbsenceRetard;

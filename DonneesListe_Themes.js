@@ -1,21 +1,19 @@
-const {
-	ObjetDonneesListeFlatDesign,
-} = require("ObjetDonneesListeFlatDesign.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const ObjetFenetre_EditionTheme = require("ObjetFenetre_EditionTheme.js");
-const { EGenreAction } = require("Enumere_Action.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const ObjetRequeteSaisieListeThemes = require("ObjetRequeteSaisieListeThemes.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-class DonneesListe_Themes extends ObjetDonneesListeFlatDesign {
+exports.DonneesListe_Themes = void 0;
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_EditionTheme_1 = require("ObjetFenetre_EditionTheme");
+const Enumere_Action_1 = require("Enumere_Action");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetRequeteSaisieListeThemes_1 = require("ObjetRequeteSaisieListeThemes");
+const MethodesObjet_1 = require("MethodesObjet");
+class DonneesListe_Themes extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees, aListeMatieres, aTailleLibelleTheme) {
 		super(aDonnees);
 		this.listeMatieres = aListeMatieres;
 		this.tailleLibelleTheme = aTailleLibelleTheme;
-		this.creerIndexUnique(["Libelle", "matiere.Numero"]);
 		this.setOptions({
 			avecCB: true,
 			avecCocheCBSurLigne: true,
@@ -26,7 +24,7 @@ class DonneesListe_Themes extends ObjetDonneesListeFlatDesign {
 		return aParams.article.getLibelle();
 	}
 	getInfosSuppZonePrincipale(aParams) {
-		return `${GTraductions.getValeur("Theme.auteur.creePar")} ${(!!aParams.article.auteur ? aParams.article.auteur.getLibelle() : GTraductions.getValeur("Theme.auteur.moi")) + (!!aParams.article.matiere ? ", " + aParams.article.matiere.getLibelle() : "")}`;
+		return `${ObjetTraduction_1.GTraductions.getValeur("Theme.auteur.creePar")} ${(!!aParams.article.auteur ? aParams.article.auteur.getLibelle() : ObjetTraduction_1.GTraductions.getValeur("Theme.auteur.moi")) + (!!aParams.article.matiere ? ", " + aParams.article.matiere.getLibelle() : "")}`;
 	}
 	avecBoutonActionLigne(aParams) {
 		return !!aParams.article && aParams.article.modificationAutorisee;
@@ -39,21 +37,21 @@ class DonneesListe_Themes extends ObjetDonneesListeFlatDesign {
 			return;
 		}
 		aParametres.menuContextuel.add(
-			GTraductions.getValeur("Modifier"),
+			ObjetTraduction_1.GTraductions.getValeur("Modifier"),
 			true,
-			function () {
-				_ouvrirFenetreEdition.call(this, aParametres);
+			() => {
+				this._ouvrirFenetreEdition(aParametres);
 			},
 			{ icon: "icon_pencil" },
 		);
 		aParametres.menuContextuel.add(
 			!aParametres.article.cmsActif
-				? GTraductions.getValeur("Theme.btn.selectionner")
-				: GTraductions.getValeur("Theme.btn.deselectionner"),
+				? ObjetTraduction_1.GTraductions.getValeur("Theme.btn.selectionner")
+				: ObjetTraduction_1.GTraductions.getValeur("Theme.btn.deselectionner"),
 			true,
-			function () {
+			() => {
 				aParametres.article.cmsActif = !aParametres.article.cmsActif;
-				this.actualiser();
+				this.paramsListe.liste.actualiser();
 			},
 			{
 				icon: !aParametres.article.cmsActif
@@ -62,28 +60,37 @@ class DonneesListe_Themes extends ObjetDonneesListeFlatDesign {
 			},
 		);
 		aParametres.menuContextuel.add(
-			GTraductions.getValeur("Supprimer"),
+			ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
 			true,
-			function () {
+			() => {
 				GApplication.getMessage().afficher({
-					type: EGenreBoiteMessage.Confirmation,
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
 					message: aParametres.article.estUtiliseParAuteur
-						? GTraductions.getValeur(
+						? ObjetTraduction_1.GTraductions.getValeur(
 								"Theme.msg.confSupprThemeUtiliseAuteur",
 								aParametres.article.getLibelle(),
 							)
-						: GTraductions.getValeur("Theme.msg.confSupprTheme"),
-					callback: function (aGenreAction) {
-						if (aGenreAction === EGenreAction.Valider) {
-							aParametres.article.setEtat(EGenreEtat.Suppression);
+						: ObjetTraduction_1.GTraductions.getValeur(
+								"Theme.msg.confSupprTheme",
+							),
+					callback: (aGenreAction) => {
+						if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
+							aParametres.article.setEtat(
+								Enumere_Etat_1.EGenreEtat.Suppression,
+							);
 							aParametres.article.cmsActif = false;
-							new ObjetRequeteSaisieListeThemes(this, () => {
-								this.actualiser();
-							}).lancerRequete({
-								ListeThemes: new ObjetListeElements().add(aParametres.article),
+							new ObjetRequeteSaisieListeThemes_1.ObjetRequeteSaisieListeThemes(
+								this,
+								() => {
+									this.paramsListe.liste.actualiser();
+								},
+							).lancerRequete({
+								ListeThemes: new ObjetListeElements_1.ObjetListeElements().add(
+									aParametres.article,
+								),
 							});
 						}
-					}.bind(this),
+					},
 				});
 			},
 			{ icon: "icon_trash" },
@@ -96,40 +103,47 @@ class DonneesListe_Themes extends ObjetDonneesListeFlatDesign {
 	setValueCB(aParams, aValue) {
 		aParams.article.cmsActif = aValue;
 	}
-}
-function _ouvrirFenetreEdition(aParams) {
-	const lFenetre = ObjetFenetre.creerInstanceFenetre(
-		ObjetFenetre_EditionTheme,
-		{
-			pere: this,
-			evenement: function (aTheme) {
-				const lTheme = aParams.article;
-				const lCopie = MethodesObjet.dupliquer(lTheme);
-				lTheme.setLibelle(aTheme.getLibelle());
-				lTheme.matiere = aTheme.matiere;
-				lTheme.setEtat(aTheme.Etat);
-				lTheme.cmsActif = aTheme.cmsActif;
-				new ObjetRequeteSaisieListeThemes(this, (aJSON) => {
-					if (
-						!!aJSON.JSONRapportSaisie &&
-						!!aJSON.JSONRapportSaisie._messagesErreur_
-					) {
-						lTheme.setLibelle(lCopie.getLibelle());
-						lTheme.matiere = lCopie.matiere;
-						lTheme.cmsActif = lCopie.cmsActif;
-						lTheme.setEtat(lCopie.Etat);
-						this.actualiser();
-					} else {
-						this.actualiser();
-					}
-				}).lancerRequete({ ListeThemes: new ObjetListeElements().add(aTheme) });
+	_ouvrirFenetreEdition(aParams) {
+		const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_EditionTheme_1.ObjetFenetre_EditionTheme,
+			{
+				pere: this,
+				evenement: function (aTheme) {
+					const lTheme = aParams.article;
+					const lCopie = MethodesObjet_1.MethodesObjet.dupliquer(lTheme);
+					lTheme.setLibelle(aTheme.getLibelle());
+					lTheme.matiere = aTheme.matiere;
+					lTheme.setEtat(aTheme.Etat);
+					lTheme.cmsActif = aTheme.cmsActif;
+					new ObjetRequeteSaisieListeThemes_1.ObjetRequeteSaisieListeThemes(
+						this,
+						(aJSON) => {
+							if (
+								!!aJSON.JSONRapportSaisie &&
+								!!aJSON.JSONRapportSaisie._messagesErreur_
+							) {
+								lTheme.setLibelle(lCopie.getLibelle());
+								lTheme.matiere = lCopie.matiere;
+								lTheme.cmsActif = lCopie.cmsActif;
+								lTheme.setEtat(lCopie.Etat);
+								this.paramsListe.liste.actualiser();
+							} else {
+								this.paramsListe.liste.actualiser();
+							}
+						},
+					).lancerRequete({
+						ListeThemes: new ObjetListeElements_1.ObjetListeElements().add(
+							aTheme,
+						),
+					});
+				},
 			},
-		},
-	);
-	lFenetre.setDonnees(aParams, {
-		listeMatieres: this.Donnees.listeMatieres,
-		tailleLibelleTheme: this.Donnees.tailleLibelleTheme,
-		listeThemes: this.Donnees.Donnees,
-	});
+		);
+		lFenetre.setDonnees(aParams, {
+			listeMatieres: this.listeMatieres,
+			tailleLibelleTheme: this.tailleLibelleTheme,
+			listeThemes: this.Donnees,
+		});
+	}
 }
-module.exports = DonneesListe_Themes;
+exports.DonneesListe_Themes = DonneesListe_Themes;

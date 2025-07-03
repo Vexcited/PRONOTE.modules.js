@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteCalculCompetencesLivretScolaire extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteCalculCompetencesLivretScolaire = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteCalculCompetencesLivretScolaire extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aObjet) {
 		this.JSON = {
 			classe: aObjet.classe,
@@ -23,8 +21,9 @@ class ObjetRequeteCalculCompetencesLivretScolaire extends ObjetRequeteSaisie {
 		return this.appelAsynchrone();
 	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteCalculCompetencesLivretScolaire =
+	ObjetRequeteCalculCompetencesLivretScolaire;
+CollectionRequetes_1.Requetes.inscrire(
 	"CalculCompetencesLivretScolaire",
 	ObjetRequeteCalculCompetencesLivretScolaire,
 );
-module.exports = { ObjetRequeteCalculCompetencesLivretScolaire };

@@ -25,6 +25,8 @@ var TypeRessourceAbsence;
 		"TR_Punition";
 	TypeRessourceAbsence[(TypeRessourceAbsence["TR_RetardInternat"] = 12)] =
 		"TR_RetardInternat";
+	TypeRessourceAbsence[(TypeRessourceAbsence["TR_Commission"] = 13)] =
+		"TR_Commission";
 })(
 	TypeRessourceAbsence ||
 		(exports.TypeRessourceAbsence = TypeRessourceAbsence = {}),
@@ -71,6 +73,9 @@ const TypeRessourceAbsenceUtil = {
 				break;
 			case TypeRessourceAbsence.TR_Punition:
 				lGenreRessource = Enumere_Ressource_1.EGenreRessource.Punition;
+				break;
+			case TypeRessourceAbsence.TR_Commission:
+				lGenreRessource = Enumere_Ressource_1.EGenreRessource.Commission;
 				break;
 			default:
 				break;

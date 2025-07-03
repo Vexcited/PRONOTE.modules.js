@@ -3,6 +3,7 @@ const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
 const CollectionRequetes_1 = require("CollectionRequetes");
 const Invocateur_1 = require("Invocateur");
 const ObjetTraduction_1 = require("ObjetTraduction");
+const AccessApp_1 = require("AccessApp");
 const UtilitaireOAuth2 = {
 	revocation(aIdOAuth2, aCallback) {
 		new ObjetRequeteOAuth2Attente()
@@ -32,14 +33,15 @@ const UtilitaireOAuth2 = {
 				if (aJSON.urlAuthorize) {
 					window.open(aJSON.urlAuthorize);
 					let lAvecInterruption = true;
-					const lPromiseMessage = GApplication.getMessage()
+					const lPromiseMessage = (0, AccessApp_1.getApp)()
+						.getMessage()
 						.afficher({
 							message: ObjetTraduction_1.GTraductions.getValeur(
 								"UtilitaireOAuth2.message",
 								[
 									IE.jsx.str(
 										"a",
-										{ href: aJSON.urlAuthorize, target: "_blank'" },
+										{ href: aJSON.urlAuthorize, target: "_blank" },
 										ObjetTraduction_1.GTraductions.getValeur(
 											"UtilitaireOAuth2.lien",
 										),
@@ -71,7 +73,7 @@ const UtilitaireOAuth2 = {
 						);
 					});
 					return Promise.race([lPromiseMessage, lPromiseNotif]).finally(() => {
-						GApplication.getMessage().fermer();
+						(0, AccessApp_1.getApp)().getMessage().fermer();
 						Invocateur_1.Invocateur.desabonner(lIdentAbonnement);
 					});
 				}
@@ -83,7 +85,8 @@ const UtilitaireOAuth2 = {
 				if (aError && aError.sansMessage) {
 					return Promise.reject();
 				}
-				return GApplication.getMessage()
+				return (0, AccessApp_1.getApp)()
+					.getMessage()
 					.afficher({
 						message:
 							aError ||

@@ -1,35 +1,19 @@
-const {
-	DonneesListe_RattachementCDT,
-} = require("DonneesListe_RattachementCDT.js");
-const { EGenreAction } = require("Enumere_Action.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class ObjetFenetre_RattachementCDT extends ObjetFenetre {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetFenetre_RattachementCDT = void 0;
+const DonneesListe_RattachementCDT_1 = require("DonneesListe_RattachementCDT");
+const Enumere_Action_1 = require("Enumere_Action");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class ObjetFenetre_RattachementCDT extends ObjetFenetre_1.ObjetFenetre {
 	construireInstances() {
 		this.identListeCDT = this.add(
-			ObjetListe,
+			ObjetListe_1.ObjetListe,
 			this.evenementSurlisteCDT,
 			this.initialiserlisteCDT,
 		);
-	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			btnSupprimer: {
-				event() {
-					aInstance.evenementSurBoutonSupprimer();
-				},
-				getDisabled() {
-					return !aInstance.selectionCourante;
-				},
-			},
-		});
 	}
 	setDonnees(alisteCDT, aAvecDrag, aOptionsDrag) {
 		this.listeCDT = alisteCDT;
@@ -53,14 +37,18 @@ class ObjetFenetre_RattachementCDT extends ObjetFenetre {
 			lHeightListe = lHeightListe - 32;
 			T.push(
 				'<div class="Texte10" style="height: 32px;">',
-				GTraductions.getValeur("CahierDeTexte.Rattachement.DragDrop"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"CahierDeTexte.Rattachement.DragDrop",
+				),
 				"</div>",
 			);
 		} else {
 			lHeightListe = lHeightListe - 18;
 			T.push(
 				'<div class="Texte10" style="height: 18px;">',
-				GTraductions.getValeur("CahierDeTexte.Rattachement.Selection"),
+				ObjetTraduction_1.GTraductions.getValeur(
+					"CahierDeTexte.Rattachement.Selection",
+				),
 				"</div>",
 			);
 		}
@@ -74,39 +62,62 @@ class ObjetFenetre_RattachementCDT extends ObjetFenetre {
 		return T.join("");
 	}
 	composeBas() {
-		const T = [];
-		T.push(
-			'<ie-bouton ie-model="btnSupprimer">',
-			GTraductions.getValeur("CahierDeTexte.Rattachement.SupprimerCDTSelect"),
-			"</ie-bouton>",
+		const lModelBtnSupprimer = () => {
+			return {
+				event: () => {
+					this.evenementSurBoutonSupprimer();
+				},
+				getDisabled: () => {
+					return !this.selectionCourante;
+				},
+			};
+		};
+		return IE.jsx.str(
+			"ie-bouton",
+			{ "ie-model": lModelBtnSupprimer },
+			ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.Rattachement.SupprimerCDTSelect",
+			),
 		);
-		return T.join("");
 	}
 	initialiserlisteCDT(aInstance) {
 		const lColonnes = [];
 		lColonnes.push({
-			id: DonneesListe_RattachementCDT.colonnes.Classe,
-			titre: GTraductions.getValeur("CahierDeTexte.Rattachement.ClasseGroupe"),
+			id: DonneesListe_RattachementCDT_1.DonneesListe_RattachementCDT.colonnes
+				.Classe,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.Rattachement.ClasseGroupe",
+			),
 			taille: 100,
 		});
 		lColonnes.push({
-			id: DonneesListe_RattachementCDT.colonnes.Titre,
-			titre: GTraductions.getValeur("CahierDeTexte.titre"),
+			id: DonneesListe_RattachementCDT_1.DonneesListe_RattachementCDT.colonnes
+				.Titre,
+			titre: ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.titre"),
 			taille: "100%",
 		});
 		lColonnes.push({
-			id: DonneesListe_RattachementCDT.colonnes.Categorie,
-			titre: GTraductions.getValeur("CahierDeTexte.categorie"),
+			id: DonneesListe_RattachementCDT_1.DonneesListe_RattachementCDT.colonnes
+				.Categorie,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.categorie",
+			),
 			taille: 100,
 		});
 		lColonnes.push({
-			id: DonneesListe_RattachementCDT.colonnes.NbrTAF,
-			titre: GTraductions.getValeur("CahierDeTexte.Rattachement.Travail"),
+			id: DonneesListe_RattachementCDT_1.DonneesListe_RattachementCDT.colonnes
+				.NbrTAF,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.Rattachement.Travail",
+			),
 			taille: 40,
 		});
 		lColonnes.push({
-			id: DonneesListe_RattachementCDT.colonnes.Date,
-			titre: GTraductions.getValeur("CahierDeTexte.Rattachement.AncienCours"),
+			id: DonneesListe_RattachementCDT_1.DonneesListe_RattachementCDT.colonnes
+				.Date,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.Rattachement.AncienCours",
+			),
 			taille: 100,
 		});
 		aInstance.setOptionsListe({ colonnes: lColonnes });
@@ -119,26 +130,28 @@ class ObjetFenetre_RattachementCDT extends ObjetFenetre {
 	}
 	evenementSurBoutonSupprimer() {
 		GApplication.getMessage().afficher({
-			type: EGenreBoiteMessage.Confirmation,
-			message: GTraductions.getValeur("CahierDeTexte.ConfirmerSuppressionCDT"),
+			type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+			message: ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.ConfirmerSuppressionCDT",
+			),
 			callback: this._apresConfirmationSuppressionCDT.bind(this),
 		});
 	}
 	_apresConfirmationSuppressionCDT(aGenreBouton) {
-		if (aGenreBouton === EGenreAction.Valider) {
-			this.selectionCourante.setEtat(EGenreEtat.Suppression);
+		if (aGenreBouton === Enumere_Action_1.EGenreAction.Valider) {
+			this.selectionCourante.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 			this.getInstance(this.identListeCDT).actualiser();
 		}
 	}
 	evenementSurlisteCDT(aParametres) {
 		switch (aParametres.genreEvenement) {
-			case EGenreEvenementListe.Selection:
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Selection:
 				this.selectionCourante = aParametres.article;
 				if (!this.avecDrag) {
 					this.setBoutonActif(1, true);
 				}
 				break;
-			case EGenreEvenementListe.ApresSuppression:
+			case Enumere_EvenementListe_1.EGenreEvenementListe.ApresSuppression:
 				this.setBoutonActif(1, false);
 				this.setEtatSaisie(false);
 				break;
@@ -146,7 +159,7 @@ class ObjetFenetre_RattachementCDT extends ObjetFenetre {
 	}
 	_actualiserListe() {
 		this.getInstance(this.identListeCDT).setDonnees(
-			new DonneesListe_RattachementCDT(
+			new DonneesListe_RattachementCDT_1.DonneesListe_RattachementCDT(
 				this.listeCDT,
 				this.avecDrag,
 				this,
@@ -165,4 +178,4 @@ class ObjetFenetre_RattachementCDT extends ObjetFenetre {
 		}
 	}
 }
-module.exports = { ObjetFenetre_RattachementCDT };
+exports.ObjetFenetre_RattachementCDT = ObjetFenetre_RattachementCDT;

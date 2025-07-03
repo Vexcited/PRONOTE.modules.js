@@ -1,42 +1,57 @@
-const {
-	EGenreEvenementObjetSaisie,
-} = require("Enumere_EvenementObjetSaisie.js");
-const { ObjetFenetreVisuEleveQCM } = require("ObjetFenetreVisuEleveQCM.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreMessage } = require("Enumere_Message.js");
-const { InterfacePiedBulletin } = require("InterfacePiedBulletin.js");
-const { ObjetSaisiePN } = require("ObjetSaisiePN.js");
-const { _InterfaceReleveDeNotes } = require("_InterfaceReleveDeNotes.js");
-const { EStructureAffichage } = require("Enumere_StructureAffichage.js");
-class InterfaceReleveDeNotes extends _InterfaceReleveDeNotes {
-	constructor(aNom, aIdent, aPere, aEvenement) {
-		const lParam = {
+exports.InterfaceReleveDeNotes_Consultation = void 0;
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const ObjetFenetreVisuEleveQCM_1 = require("ObjetFenetreVisuEleveQCM");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Message_1 = require("Enumere_Message");
+const InterfacePiedBulletin_1 = require("InterfacePiedBulletin");
+const ObjetSaisiePN_1 = require("ObjetSaisiePN");
+const _InterfaceReleveDeNotes_1 = require("_InterfaceReleveDeNotes");
+const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
+class InterfaceReleveDeNotes_Consultation extends _InterfaceReleveDeNotes_1._InterfaceReleveDeNotes {
+	constructor(...aParams) {
+		super(...aParams);
+		this.genreMessage = Enumere_Message_1.EGenreMessage.AucunRelevePourEleve;
+		this.initParams({
 			avecSaisie: false,
 			avecInfosEleve: false,
 			avecCorrige: true,
-		};
-		super(aNom, aIdent, aPere, aEvenement, lParam);
-		this.genreMessage = EGenreMessage.AucunRelevePourEleve;
+		});
 	}
 	instancierCombos() {
 		return this.add(
-			ObjetSaisiePN,
+			ObjetSaisiePN_1.ObjetSaisiePN,
 			this.evenementSurCombo,
 			this.initialiserCombo,
 		);
 	}
 	instancierPiedBulletin() {
-		return this.add(InterfacePiedBulletin, null, this._initPiedPage);
+		return this.add(
+			InterfacePiedBulletin_1.InterfacePiedBulletin,
+			null,
+			this._initPiedPage,
+		);
 	}
 	instancierFenetreVisuEleveQCM() {
-		return this.addFenetre(ObjetFenetreVisuEleveQCM);
+		return this.addFenetre(ObjetFenetreVisuEleveQCM_1.ObjetFenetreVisuEleveQCM);
+	}
+	initialiserBulletin(aListe) {
+		aListe.setOptionsListe({
+			ariaLabel: () => {
+				var _a;
+				return `${this.etatUtilScoEspace.getLibelleLongOnglet()} ${((_a = this.getPeriode()) === null || _a === void 0 ? void 0 : _a.getLibelle()) || ""}`.trim();
+			},
+		});
 	}
 	getEleve() {
-		return GEtatUtilisateur.getMembre();
+		return this.etatUtilScoEspace.getMembre();
+	}
+	getClasse() {
+		return undefined;
 	}
 	setParametresGeneraux() {
-		this.GenreStructure = EStructureAffichage.Autre;
-		this.AddSurZone = ["", this.identTripleCombo];
+		this.GenreStructure =
+			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
+		this.AddSurZone = [null, this.identTripleCombo];
 		this.IdentZoneAlClient = this.identListe;
 		this.avecBandeau = true;
 		this.addSurZoneAccuseReception();
@@ -44,13 +59,45 @@ class InterfaceReleveDeNotes extends _InterfaceReleveDeNotes {
 	addSurZoneAccuseReception() {
 		if (this.avecGestionAccuseReception) {
 			this.AddSurZone.push({ separateur: true });
+			const lvisibiliteAR = () => {
+				const lResponsableAR = this._getResponsableAccuseReception();
+				return (
+					!this.avecMessage &&
+					this.avecGestionAccuseReception &&
+					!!lResponsableAR
+				);
+			};
+			const lcbAccuseReception = () => {
+				return {
+					getValue: () => {
+						const lResponsableAR = this._getResponsableAccuseReception();
+						return !!lResponsableAR ? lResponsableAR.aPrisConnaissance : false;
+					},
+					setValue: (aValue) => {
+						const lResponsableAR = this._getResponsableAccuseReception();
+						if (!!lResponsableAR) {
+							lResponsableAR.aPrisConnaissance = aValue;
+							this.moteur.saisieAR({ periode: this.getPeriode() });
+						}
+					},
+					getDisabled: () => {
+						const lResponsableAR = this._getResponsableAccuseReception();
+						return !!lResponsableAR ? lResponsableAR.aPrisConnaissance : true;
+					},
+				};
+			};
 			this.AddSurZone.push({
-				html:
-					'<ie-checkbox class="AlignementMilieuVertical" ie-model="cbAccuseReception" ie-display="visibiliteAR">' +
-					GTraductions.getValeur(
+				html: IE.jsx.str(
+					"ie-checkbox",
+					{
+						class: "AlignementMilieuVertical",
+						"ie-model": lcbAccuseReception,
+						"ie-display": lvisibiliteAR,
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
 						"BulletinEtReleve.JAiPrisConnaissanceDuReleve",
-					) +
-					"</ie-checkbox>",
+					),
+				),
 			});
 			return true;
 		}
@@ -58,11 +105,16 @@ class InterfaceReleveDeNotes extends _InterfaceReleveDeNotes {
 	}
 	initialiserCombo(aInstance) {
 		aInstance.setOptionsObjetSaisie({
-			labelWAICellule: GTraductions.getValeur("WAI.ListeSelectionPeriode"),
+			labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+				"WAI.ListeSelectionPeriode",
+			),
 		});
 	}
 	evenementSurCombo(aParams) {
-		if (aParams.genreEvenement === EGenreEvenementObjetSaisie.selection) {
+		if (
+			aParams.genreEvenement ===
+			Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection
+		) {
 			this.fermerFenetreCalculMoy();
 			this.setPeriode(aParams.element);
 			const lParam = {
@@ -85,25 +137,25 @@ class InterfaceReleveDeNotes extends _InterfaceReleveDeNotes {
 		return $.extend(super.getParametresCalcul(aParamEvnt), {
 			libelleEleve: this.getEleve().getLibelle(),
 			numeroEleve: this.getEleve().getNumero(),
-			libelleClasse: GEtatUtilisateur.Identification.getLibelleClasse(),
-			numeroClasse: GEtatUtilisateur.Identification.getNumeroClasse(),
+			libelleClasse: this.etatUtilScoEspace.Identification.getLibelleClasse(),
+			numeroClasse: this.etatUtilScoEspace.Identification.getNumeroClasse(),
 		});
 	}
 	recupererDonnees() {
-		if (this.Instances[this.identTripleCombo]) {
+		if (this.getInstance(this.identTripleCombo)) {
 			this.IdPremierElement = this.getInstance(
 				this.identTripleCombo,
 			).getPremierElement();
-			this.listePeriodes = GEtatUtilisateur.getOngletListePeriodes();
+			this.listePeriodes = this.etatUtilScoEspace.getOngletListePeriodes();
 			if (this.listePeriodes && this.listePeriodes.count()) {
-				this.Instances[this.identTripleCombo].setVisible(true);
-				this.Instances[this.identTripleCombo].setDonnees(this.listePeriodes);
-				this.Instances[this.identTripleCombo].setSelectionParElement(
-					GEtatUtilisateur.getPeriode(),
+				this.getInstance(this.identTripleCombo).setVisible(true);
+				this.getInstance(this.identTripleCombo).setDonnees(this.listePeriodes);
+				this.getInstance(this.identTripleCombo).setSelectionParElement(
+					this.etatUtilScoEspace.getPeriode(),
 					0,
 				);
 			} else {
-				this.Instances[this.identTripleCombo].setVisible(false);
+				this.getInstance(this.identTripleCombo).setVisible(false);
 				this.evenementAfficherMessage(this.genreMessage);
 				this.IdPremierElement = this.idMessageActionRequise;
 			}
@@ -122,34 +174,6 @@ class InterfaceReleveDeNotes extends _InterfaceReleveDeNotes {
 		}
 		return lReponsableAccuseReception;
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			visibiliteAR: function () {
-				const lResponsableAR = aInstance._getResponsableAccuseReception();
-				return (
-					!aInstance.avecMessage &&
-					aInstance.avecGestionAccuseReception &&
-					!!lResponsableAR
-				);
-			},
-			cbAccuseReception: {
-				getValue: function () {
-					const lResponsableAR = aInstance._getResponsableAccuseReception();
-					return !!lResponsableAR ? lResponsableAR.aPrisConnaissance : false;
-				},
-				setValue: function (aValue) {
-					const lResponsableAR = aInstance._getResponsableAccuseReception();
-					if (!!lResponsableAR) {
-						lResponsableAR.aPrisConnaissance = aValue;
-						aInstance.moteur.saisieAR({ periode: aInstance.getPeriode() });
-					}
-				},
-				getDisabled: function () {
-					const lResponsableAR = aInstance._getResponsableAccuseReception();
-					return !!lResponsableAR ? lResponsableAR.aPrisConnaissance : true;
-				},
-			},
-		});
-	}
 }
-module.exports = InterfaceReleveDeNotes;
+exports.InterfaceReleveDeNotes_Consultation =
+	InterfaceReleveDeNotes_Consultation;

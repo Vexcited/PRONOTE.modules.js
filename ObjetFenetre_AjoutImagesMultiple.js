@@ -1,37 +1,44 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { UtilitaireUrl } = require("UtilitaireUrl.js");
-const { tag } = require("tag.js");
-const { EGenreDocumentJoint } = require("Enumere_DocumentJoint.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { GUID } = require("GUID.js");
-const { GHtml } = require("ObjetHtml.js");
-const { UtilitaireSelecFile } = require("UtilitaireSelecFile.js");
-const { EGenreAction } = require("Enumere_Action.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { UtilitaireTraitementImage } = require("UtilitaireTraitementImage.js");
-const { TypeThemeBouton } = require("Type_ThemeBouton.js");
-const { GChaine } = require("ObjetChaine.js");
-class ObjetFenetre_AjoutImagesMultiple extends ObjetFenetre {
+exports.ObjetFenetre_AjoutImagesMultiple = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const UtilitaireUrl_1 = require("UtilitaireUrl");
+const Enumere_DocumentJoint_1 = require("Enumere_DocumentJoint");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const GUID_1 = require("GUID");
+const ObjetHtml_1 = require("ObjetHtml");
+const UtilitaireSelecFile_1 = require("UtilitaireSelecFile");
+const Enumere_Action_1 = require("Enumere_Action");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const UtilitaireTraitementImage_1 = require("UtilitaireTraitementImage");
+const Type_ThemeBouton_1 = require("Type_ThemeBouton");
+const ObjetChaine_1 = require("ObjetChaine");
+const AccessApp_1 = require("AccessApp");
+const UtilitaireDocumentCP_1 = require("UtilitaireDocumentCP");
+class ObjetFenetre_AjoutImagesMultiple extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
-		this.id = { ctnChips: GUID.getId(), ctnImagesPreview: GUID.getId() };
-		this.options = { avecChipsPJ: false, avecPreview: true };
-		this.maxSize = GApplication.droits.get(
-			TypeDroits.tailleMaxDocJointEtablissement,
+		this.applicationSco = (0, AccessApp_1.getApp)();
+		this.id = {
+			ctnChips: GUID_1.GUID.getId(),
+			ctnImagesPreview: GUID_1.GUID.getId(),
+		};
+		this.optionsImagesMultiple = { avecChipsPJ: false, avecPreview: true };
+		this.maxSize = this.applicationSco.droits.get(
+			ObjetDroitsPN_1.TypeDroits.tailleMaxDocJointEtablissement,
 		);
 		this.setOptionsFenetre({
 			hauteurMaxContenu: 600,
 			modale: true,
-			titre: GTraductions.getValeur("fenetreAjoutImagesMultiple.titre"),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"fenetreAjoutImagesMultiple.titre",
+			),
 			largeur: 380,
 			hauteur: 200,
 			fermerFenetreSurClicHorsFenetre: true,
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 		});
 	}
@@ -44,84 +51,97 @@ class ObjetFenetre_AjoutImagesMultiple extends ObjetFenetre {
 						maxSize: aInstance.maxSize,
 						multiple: false,
 						avecTransformationFlux: false,
-						accept: UtilitaireTraitementImage.getTabMimePDFImage().join(", "),
+						accept:
+							UtilitaireTraitementImage_1.UtilitaireTraitementImage.getTabMimePDFImage().join(
+								", ",
+							),
 					};
 				},
 				addFiles: function (aParams) {
 					if (aParams.listeFichiers && aParams.listeFichiers.count() > 0) {
 						if (
-							!aInstance.utilitaire.estFichierValidePourPDF(
+							!UtilitaireDocumentCP_1.UtilitaireDocumentCP.estFichierValidePourPDF(
 								aParams.listeFichiers.get(0),
 							)
 						) {
 							GApplication.getMessage().afficher({
-								message: GChaine.format(
-									GTraductions.getValeur("inputFile.echecImagePDF_S"),
+								message: ObjetChaine_1.GChaine.format(
+									ObjetTraduction_1.GTraductions.getValeur(
+										"inputFile.echecImagePDF_S",
+									),
 									[aParams.listeFichiers.get(0).getLibelle() || ""],
 								),
 							});
 						} else {
-							_addFile.call(aInstance, aParams);
+							aInstance._addFile(aParams);
 						}
 					}
 				},
 			},
 			chips: {
-				eventBtn(aIndice) {
-					if (aInstance.options.avecChipsPJ) {
+				eventBtn: (aIndice) => {
+					if (aInstance.optionsImagesMultiple.avecChipsPJ) {
 						aInstance.liste.remove(aIndice);
-						_updateAffichage.call(aInstance);
+						aInstance._updateAffichage();
 					}
 				},
 			},
 			avecPreview() {
-				return aInstance && aInstance.options && aInstance.options.avecPreview;
+				return (
+					aInstance &&
+					aInstance.optionsImagesMultiple &&
+					aInstance.optionsImagesMultiple.avecPreview
+				);
 			},
 			avecChipsPJ() {
-				return aInstance && aInstance.options && aInstance.options.avecChipsPJ;
+				return (
+					aInstance &&
+					aInstance.optionsImagesMultiple &&
+					aInstance.optionsImagesMultiple.avecChipsPJ
+				);
 			},
 		});
 	}
 	setDonnees(aParam) {
-		this.liste = aParam.liste || new ObjetListeElements();
-		this.utilitaire = aParam.utilitaire;
-		this.listeInitial = MethodesObjet.dupliquer(this.liste);
+		this.liste = aParam.liste || new ObjetListeElements_1.ObjetListeElements();
 		this.afficher(this.composeContenu());
-		_updateAffichage.call(this);
+		this._updateAffichage();
 	}
 	composeContenu() {
-		const H = [];
-		H.push(
-			tag(
-				"div",
-				{ class: "ObjetFenetre_AjoutImagesMultiple", style: "height : 100%" },
-				tag(
-					"ie-bouton",
-					{
-						class: [TypeThemeBouton.primaire, "btn-width", "m-top-l"],
-						"ie-model": "btnAdd",
-						"ie-selecFile": true,
-					},
-					GTraductions.getValeur("fenetreAjoutImagesMultiple.deposerUneImage"),
-				),
-				tag("div", {
-					class: "ctnChips",
-					id: this.id.ctnChips,
-					"ie-if": "avecChipsPJ",
-				}),
-				tag("div", {
+		return IE.jsx.str(
+			"div",
+			{ class: "ObjetFenetre_AjoutImagesMultiple", style: "height : 100%" },
+			IE.jsx.str(
+				"ie-bouton",
+				{
 					class: [
-						"flex-contain cols",
+						Type_ThemeBouton_1.TypeThemeBouton.primaire,
+						"btn-width",
 						"m-top-l",
-						"flex-gap-l",
-						"ctnImagesPreview",
 					],
-					id: this.id.ctnImagesPreview,
-					"ie-if": "avecPreview",
-				}),
+					"ie-model": "btnAdd",
+					"ie-selecFile": true,
+				},
+				ObjetTraduction_1.GTraductions.getValeur(
+					"fenetreAjoutImagesMultiple.deposerUneImage",
+				),
 			),
+			IE.jsx.str("div", {
+				class: "ctnChips",
+				id: this.id.ctnChips,
+				"ie-if": "avecChipsPJ",
+			}),
+			IE.jsx.str("div", {
+				class: [
+					"flex-contain cols",
+					"m-top-l",
+					"flex-gap-l",
+					"ctnImagesPreview",
+				],
+				id: this.id.ctnImagesPreview,
+				"ie-if": "avecPreview",
+			}),
 		);
-		return H.join("");
 	}
 	surValidation(aNumeroBouton) {
 		if (aNumeroBouton === 1) {
@@ -129,16 +149,17 @@ class ObjetFenetre_AjoutImagesMultiple extends ObjetFenetre {
 				aElement.existe(),
 			);
 			if (lListeRetour.count() > 0) {
-				const lNomPDF = this.utilitaire.getNomPdfGenere();
+				const lNomPDF =
+					UtilitaireDocumentCP_1.UtilitaireDocumentCP.getNomPdfGenere();
 				const lMessagesErreur = [];
-				UtilitaireSelecFile.genererPdfAsync(
+				UtilitaireSelecFile_1.UtilitaireSelecFile.genererPdfAsync(
 					lListeRetour,
 					lMessagesErreur,
 					lNomPDF,
-					EGenreDocumentJoint.Fichier,
+					Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier,
 				).then(() => {
 					const lListeFichiersAEnvoyer =
-						UtilitaireSelecFile.controleTailleFichiers(
+						UtilitaireSelecFile_1.UtilitaireSelecFile.controleTailleFichiers(
 							lListeRetour,
 							lMessagesErreur,
 							this.maxSize,
@@ -150,8 +171,10 @@ class ObjetFenetre_AjoutImagesMultiple extends ObjetFenetre {
 					} else {
 						const lFichierPdfGenere = lListeFichiersAEnvoyer.get(0);
 						this.callback.appel(
-							EGenreAction.Valider,
-							new ObjetListeElements().add(lFichierPdfGenere),
+							Enumere_Action_1.EGenreAction.Valider,
+							new ObjetListeElements_1.ObjetListeElements().add(
+								lFichierPdfGenere,
+							),
 						);
 					}
 				});
@@ -159,41 +182,44 @@ class ObjetFenetre_AjoutImagesMultiple extends ObjetFenetre {
 		}
 		this.fermer();
 	}
-}
-function _updateAffichage() {
-	if (this.options.avecChipsPJ) {
-		GHtml.setHtml(
-			this.id.ctnChips,
-			UtilitaireUrl.construireListeUrls(this.liste, {
-				genreFiltre: EGenreDocumentJoint.Fichier,
-				genreRessource: EGenreRessource.DocumentJoint,
-				IEModelChips: "chips",
-				class: "icon_fichier_image",
-			}),
-			{ controleur: this.controleur },
-		);
-	}
-	if (this.options.avecPreview) {
-		_construireListeImage.call(this);
-	}
-}
-function _construireListeImage() {
-	GHtml.setHtml(this.id.ctnImagesPreview, "");
-	this.liste.parcourir((aImage, aIndex) => {
-		if (URL && URL.createObjectURL) {
-			const lURL = URL.createObjectURL(aImage.file);
-			if (lURL && aImage.file) {
-				const lId = `${this.Nom}_image_${aIndex}`;
-				GHtml.addHtml(this.id.ctnImagesPreview, tag("img", { id: lId }));
-				const lImg = $("#" + lId.escapeJQ());
-				lImg.attr("src", lURL);
-				lImg.on("destroyed", () => URL.revokeObjectURL(lURL));
-			}
+	_updateAffichage() {
+		if (this.optionsImagesMultiple.avecChipsPJ) {
+			ObjetHtml_1.GHtml.setHtml(
+				this.id.ctnChips,
+				UtilitaireUrl_1.UtilitaireUrl.construireListeUrls(this.liste, {
+					genreFiltre: Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier,
+					genreRessource: Enumere_Ressource_1.EGenreRessource.DocumentJoint,
+					IEModelChips: "chips",
+					class: "icon_fichier_image",
+				}),
+				{ controleur: this.controleur },
+			);
 		}
-	});
+		if (this.optionsImagesMultiple.avecPreview) {
+			this._construireListeImage();
+		}
+	}
+	_construireListeImage() {
+		ObjetHtml_1.GHtml.setHtml(this.id.ctnImagesPreview, "");
+		this.liste.parcourir((aImage, aIndex) => {
+			if (URL && URL.createObjectURL) {
+				const lURL = URL.createObjectURL(aImage.file);
+				if (lURL && aImage.file) {
+					const lId = `${this.Nom}_image_${aIndex}`;
+					ObjetHtml_1.GHtml.addHtml(
+						this.id.ctnImagesPreview,
+						IE.jsx.str("img", { id: lId }),
+					);
+					const lImg = $("#" + lId.escapeJQ());
+					lImg.attr("src", lURL);
+					lImg.on("destroyed", () => URL.revokeObjectURL(lURL));
+				}
+			}
+		});
+	}
+	_addFile(aParams) {
+		this.liste.add(aParams.listeFichiers);
+		this._updateAffichage();
+	}
 }
-function _addFile(aParams) {
-	this.liste.add(aParams.listeFichiers);
-	_updateAffichage.call(this);
-}
-module.exports = { ObjetFenetre_AjoutImagesMultiple };
+exports.ObjetFenetre_AjoutImagesMultiple = ObjetFenetre_AjoutImagesMultiple;

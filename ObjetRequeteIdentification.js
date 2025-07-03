@@ -1,8 +1,10 @@
 exports.ObjetRequeteIdentification = void 0;
-const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
 const CollectionRequetes_1 = require("CollectionRequetes");
 const ObjetTraduction_1 = require("ObjetTraduction");
-class ObjetRequeteIdentification extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
+const ObjetMoteurConnexion_1 = require("ObjetMoteurConnexion");
+const TypesRequeteJSON_1 = require("TypesRequeteJSON");
+class ObjetRequeteIdentification extends ObjetMoteurConnexion_1
+	.ObjetMoteurConnexion.ObjetRequeteIdentificationCP {
 	constructor(...aParams) {
 		super(...aParams);
 		this.setOptions({
@@ -16,6 +18,6 @@ class ObjetRequeteIdentification extends ObjetRequeteJSON_1.ObjetRequeteConsulta
 }
 exports.ObjetRequeteIdentification = ObjetRequeteIdentification;
 CollectionRequetes_1.Requetes.inscrire(
-	"Identification",
+	TypesRequeteJSON_1.ConstantesIdRequetesAjaxCP.identification,
 	ObjetRequeteIdentification,
 );

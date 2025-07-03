@@ -1,19 +1,15 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const {
-	TypeGenreLigneRecapDevoisEvalsEleve,
-} = require("TypeGenreLigneRecapDevoisEvalsEleve.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const {
-	EGenreNiveauDAcquisitionUtil,
-} = require("Enumere_NiveauDAcquisition.js");
+exports.DonneesListe_AppreciationsBulletinParEleve = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const TypeGenreLigneRecapDevoisEvalsEleve_1 = require("TypeGenreLigneRecapDevoisEvalsEleve");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const Enumere_NiveauDAcquisition_1 = require("Enumere_NiveauDAcquisition");
 const nombreCompetenceMax = 4;
-class DonneesListe_AppreciationsBulletinParEleve extends ObjetDonneesListe {
+class DonneesListe_AppreciationsBulletinParEleve extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aListeColonnesDevoirsEval, aOptionsAffichageListe) {
 		super(aDonnees);
 		this.ListeColonnesDevoirsEval = aListeColonnesDevoirsEval;
 		this.setOptions({
 			avecSelection: false,
-			avecEvenement: false,
 			avecEdition: false,
 			avecSuppression: false,
 			avecDeploiement: true,
@@ -80,11 +76,17 @@ class DonneesListe_AppreciationsBulletinParEleve extends ObjetDonneesListe {
 				if (lDevoir) {
 					if (
 						aParams.article.getGenre() ===
-						TypeGenreLigneRecapDevoisEvalsEleve.LigneElementComp
+						TypeGenreLigneRecapDevoisEvalsEleve_1
+							.TypeGenreLigneRecapDevoisEvalsEleve.LigneElementComp
 					) {
-						if (lDevoir.getGenre() === EGenreRessource.Devoir) {
+						if (
+							lDevoir.getGenre() === Enumere_Ressource_1.EGenreRessource.Devoir
+						) {
 							return "";
-						} else if (lDevoir.getGenre() === EGenreRessource.Evaluation) {
+						} else if (
+							lDevoir.getGenre() ===
+							Enumere_Ressource_1.EGenreRessource.Evaluation
+						) {
 							const lContenuCellule = [];
 							let lAvecTroisPoints = false;
 							if (lDevoir.listeNiveaux) {
@@ -102,7 +104,7 @@ class DonneesListe_AppreciationsBulletinParEleve extends ObjetDonneesListe {
 												lDevoir.listeNiveaux.getNumero(lNiveau),
 											);
 										lContenuCellule.push(
-											EGenreNiveauDAcquisitionUtil.getImage(
+											Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
 												lNiveauDAcquisition,
 												{ avecTitle: false },
 											),
@@ -118,9 +120,11 @@ class DonneesListe_AppreciationsBulletinParEleve extends ObjetDonneesListe {
 					}
 					if (
 						aParams.article.getGenre() ===
-						TypeGenreLigneRecapDevoisEvalsEleve.LigneTitreEval
+						TypeGenreLigneRecapDevoisEvalsEleve_1
+							.TypeGenreLigneRecapDevoisEvalsEleve.LigneTitreEval
 					) {
-						return lDevoir.getGenre() === EGenreRessource.Evaluation
+						return lDevoir.getGenre() ===
+							Enumere_Ressource_1.EGenreRessource.Evaluation
 							? lDevoir.getLibelle()
 							: "";
 					} else {
@@ -139,11 +143,11 @@ class DonneesListe_AppreciationsBulletinParEleve extends ObjetDonneesListe {
 	getTypeValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_AppreciationsBulletinParEleve.colonnes.genreLigne:
-				return ObjetDonneesListe.ETypeCellule.String;
+				return undefined;
 			case DonneesListe_AppreciationsBulletinParEleve.colonnes.moyenneAnnuelle:
-				return ObjetDonneesListe.ETypeCellule.Note;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Note;
 			default:
-				return ObjetDonneesListe.ETypeCellule.Html;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 		}
 	}
 	getClass(aParams) {
@@ -160,7 +164,8 @@ class DonneesListe_AppreciationsBulletinParEleve extends ObjetDonneesListe {
 	getColonneDeFusion(aParams) {
 		if (
 			aParams.article.getGenre() ===
-				TypeGenreLigneRecapDevoisEvalsEleve.LigneTitreEval &&
+				TypeGenreLigneRecapDevoisEvalsEleve_1
+					.TypeGenreLigneRecapDevoisEvalsEleve.LigneTitreEval &&
 			(aParams.idColonne ===
 				DonneesListe_AppreciationsBulletinParEleve.colonnes.moyenneAnnuelle ||
 				aParams.idColonne.startsWith(
@@ -169,15 +174,15 @@ class DonneesListe_AppreciationsBulletinParEleve extends ObjetDonneesListe {
 		) {
 			return DonneesListe_AppreciationsBulletinParEleve.colonnes.genreLigne;
 		}
-		return false;
+		return null;
 	}
 	getCouleurCellule(aParams) {
 		return aParams.article.estUnDeploiement
-			? ObjetDonneesListe.ECouleurCellule.Deploiement
+			? ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Deploiement
 			: aParams.idColonne ===
 					DonneesListe_AppreciationsBulletinParEleve.colonnes.genreLigne
-				? ObjetDonneesListe.ECouleurCellule.Fixe
-				: ObjetDonneesListe.ECouleurCellule.Gris;
+				? ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Fixe
+				: ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Gris;
 	}
 	avecImageSurColonneDeploiement(aParams) {
 		return (
@@ -195,48 +200,69 @@ class DonneesListe_AppreciationsBulletinParEleve extends ObjetDonneesListe {
 			].includes(aParams.idColonne)
 		);
 	}
-	getHintHtmlForce(aParams) {
+	getTooltip(aParams) {
 		if (
 			aParams.article.getGenre() ===
-			TypeGenreLigneRecapDevoisEvalsEleve.LigneElementComp
+			TypeGenreLigneRecapDevoisEvalsEleve_1.TypeGenreLigneRecapDevoisEvalsEleve
+				.LigneElementComp
 		) {
 			const lDevoir =
 				DonneesListe_AppreciationsBulletinParEleve.getDevoir(aParams);
 			if (lDevoir) {
 				if (
 					aParams.article.getGenre() ===
-					TypeGenreLigneRecapDevoisEvalsEleve.LigneElementComp
+					TypeGenreLigneRecapDevoisEvalsEleve_1
+						.TypeGenreLigneRecapDevoisEvalsEleve.LigneElementComp
 				) {
-					if (lDevoir.getGenre() === EGenreRessource.Devoir) {
+					if (
+						lDevoir.getGenre() === Enumere_Ressource_1.EGenreRessource.Devoir
+					) {
 						return "";
-					} else if (lDevoir.getGenre() === EGenreRessource.Evaluation) {
+					} else if (
+						lDevoir.getGenre() ===
+						Enumere_Ressource_1.EGenreRessource.Evaluation
+					) {
 						return _hintCompetence(lDevoir);
 					}
 				}
 			}
-		}
-		return "";
-	}
-	getHintForce(aParams) {
-		if (
+		} else if (
 			aParams.article.getGenre() ===
-			TypeGenreLigneRecapDevoisEvalsEleve.LigneTitreEval
+			TypeGenreLigneRecapDevoisEvalsEleve_1.TypeGenreLigneRecapDevoisEvalsEleve
+				.LigneTitreEval
 		) {
 			const lDevoir =
 				DonneesListe_AppreciationsBulletinParEleve.getDevoir(aParams);
-			if (lDevoir && lDevoir.getGenre() === EGenreRessource.Evaluation) {
+			if (
+				lDevoir &&
+				lDevoir.getGenre() === Enumere_Ressource_1.EGenreRessource.Evaluation
+			) {
 				return lDevoir.getLibelle();
 			}
 		}
 		return "";
 	}
 }
-DonneesListe_AppreciationsBulletinParEleve.colonnes = {
-	genreLigne: "genre ligne",
-	moyenneAnnuelle: "moyenne annuelle",
-	periode: "periode",
-	devoir: "devoir",
-};
+exports.DonneesListe_AppreciationsBulletinParEleve =
+	DonneesListe_AppreciationsBulletinParEleve;
+(function (DonneesListe_AppreciationsBulletinParEleve) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["genreLigne"] = "genre ligne";
+		colonnes["moyenneAnnuelle"] = "moyenne annuelle";
+		colonnes["periode"] = "periode";
+		colonnes["devoir"] = "devoir";
+	})(
+		(colonnes =
+			DonneesListe_AppreciationsBulletinParEleve.colonnes ||
+			(DonneesListe_AppreciationsBulletinParEleve.colonnes = {})),
+	);
+})(
+	DonneesListe_AppreciationsBulletinParEleve ||
+		(exports.DonneesListe_AppreciationsBulletinParEleve =
+			DonneesListe_AppreciationsBulletinParEleve =
+				{}),
+);
 function _hintCompetence(lDevoir) {
 	const lContenuCellule = [];
 	if (lDevoir.listeNiveaux) {
@@ -251,12 +277,13 @@ function _hintCompetence(lDevoir) {
 				const lNiveauDAcquisition = lDevoir.listeNiveaux.get(lNiveau);
 				const lCompetence = lNiveauDAcquisition.competence;
 				const lMaitrise = lNiveauDAcquisition.getLibelle();
-				const lImgPastille = EGenreNiveauDAcquisitionUtil.getImage(
-					GParametres.listeNiveauxDAcquisitions.getElementParNumero(
-						lNiveauDAcquisition.getNumero(),
-					),
-					{ avecTitle: false },
-				);
+				const lImgPastille =
+					Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
+						GParametres.listeNiveauxDAcquisitions.getElementParNumero(
+							lNiveauDAcquisition.getNumero(),
+						),
+						{ avecTitle: false },
+					);
 				lContenuCellule.push(
 					'<div class="EspaceHaut">',
 					lImgPastille,
@@ -279,9 +306,11 @@ function _estColAvecGras(aParams) {
 			DonneesListe_AppreciationsBulletinParEleve.colonnes.moyenneAnnuelle,
 		].includes(aParams.idColonne) ||
 		aParams.article.getGenre() ===
-			TypeGenreLigneRecapDevoisEvalsEleve.LigneNote ||
+			TypeGenreLigneRecapDevoisEvalsEleve_1.TypeGenreLigneRecapDevoisEvalsEleve
+				.LigneNote ||
 		aParams.article.getGenre() ===
-			TypeGenreLigneRecapDevoisEvalsEleve.LigneTitreEval
+			TypeGenreLigneRecapDevoisEvalsEleve_1.TypeGenreLigneRecapDevoisEvalsEleve
+				.LigneTitreEval
 	);
 }
 function _estColAvecAlignementDroit(aParams) {
@@ -290,4 +319,3 @@ function _estColAvecAlignementDroit(aParams) {
 		DonneesListe_AppreciationsBulletinParEleve.colonnes.genreLigne
 	);
 }
-module.exports = DonneesListe_AppreciationsBulletinParEleve;

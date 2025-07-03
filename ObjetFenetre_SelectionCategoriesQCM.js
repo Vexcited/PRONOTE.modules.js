@@ -12,6 +12,8 @@ const Enumere_Action_1 = require("Enumere_Action");
 const ObjetFenetre_SelecteurCouleur_1 = require("ObjetFenetre_SelecteurCouleur");
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
 const ObjetIndexsUnique_1 = require("ObjetIndexsUnique");
+const GUID_1 = require("GUID");
+const AccessApp_1 = require("AccessApp");
 class ObjetFenetre_SelectionCategoriesQCM extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
@@ -161,24 +163,27 @@ class ObjetFenetre_SelectionCategoriesQCM extends ObjetFenetre_1.ObjetFenetre {
 	_callbackSuppressionCategorie(aCategorieQCM) {
 		if (aCategorieQCM) {
 			const lThis = this;
-			GApplication.getMessage().afficher({
-				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
-				message: ObjetTraduction_1.GTraductions.getValeur(
-					"liste.suppressionSelection",
-				),
-				callback(aGenreAction) {
-					if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
-						aCategorieQCM.estCoche = false;
-						aCategorieQCM.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
-						lThis._lancerSaisie(
-							ObjetRequeteSaisieEtiquettesQCM_1.ObjetRequeteSaisieEtiquettesQCM
-								.CommandeRequete.SupprimerEtiquette,
-							aCategorieQCM,
-						);
-						lThis.getInstance(lThis.identListeEtiquettesQCM).actualiser();
-					}
-				},
-			});
+			(0, AccessApp_1.getApp)()
+				.getMessage()
+				.afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+					message: ObjetTraduction_1.GTraductions.getValeur(
+						"liste.suppressionSelection",
+					),
+					callback(aGenreAction) {
+						if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
+							aCategorieQCM.estCoche = false;
+							aCategorieQCM.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+							lThis._lancerSaisie(
+								ObjetRequeteSaisieEtiquettesQCM_1
+									.ObjetRequeteSaisieEtiquettesQCM.CommandeRequete
+									.SupprimerEtiquette,
+								aCategorieQCM,
+							);
+							lThis.getInstance(lThis.identListeEtiquettesQCM).actualiser();
+						}
+					},
+				});
 		}
 	}
 	ouvrirFenetreEditionCategorieQCM(aCategorieQCM) {
@@ -189,27 +194,29 @@ class ObjetFenetre_SelectionCategoriesQCM extends ObjetFenetre_1.ObjetFenetre {
 				ObjetFenetre_EditionCategorieQCM,
 				{
 					pere: this,
-					evenement(aCategorieQCM) {
-						if (aCategorieQCM && aCategorieQCM.pourValidation()) {
-							if (
-								aCategorieQCM.getEtat() === Enumere_Etat_1.EGenreEtat.Creation
-							) {
-								this._lancerSaisie(
-									ObjetRequeteSaisieEtiquettesQCM_1
-										.ObjetRequeteSaisieEtiquettesQCM.CommandeRequete
-										.CreerEtiquette,
-									aCategorieQCM,
-								);
-								lListeToutesCategoris.addElement(aCategorieQCM);
-							} else {
-								this._lancerSaisie(
-									ObjetRequeteSaisieEtiquettesQCM_1
-										.ObjetRequeteSaisieEtiquettesQCM.CommandeRequete
-										.ModifierEtiquette,
-									aCategorieQCM,
-								);
+					evenement(aNumeroBouton, aCategorieQCM) {
+						if (aNumeroBouton === 1) {
+							if (aCategorieQCM && aCategorieQCM.pourValidation()) {
+								if (
+									aCategorieQCM.getEtat() === Enumere_Etat_1.EGenreEtat.Creation
+								) {
+									this._lancerSaisie(
+										ObjetRequeteSaisieEtiquettesQCM_1
+											.ObjetRequeteSaisieEtiquettesQCM.CommandeRequete
+											.CreerEtiquette,
+										aCategorieQCM,
+									);
+									lListeToutesCategoris.addElement(aCategorieQCM);
+								} else {
+									this._lancerSaisie(
+										ObjetRequeteSaisieEtiquettesQCM_1
+											.ObjetRequeteSaisieEtiquettesQCM.CommandeRequete
+											.ModifierEtiquette,
+										aCategorieQCM,
+									);
+								}
+								lInstanceListe.actualiser();
 							}
-							lInstanceListe.actualiser();
 						}
 					},
 					initialiser(aInstanceFenetre) {
@@ -375,39 +382,62 @@ class ObjetFenetre_EditionCategorieQCM extends ObjetFenetre_1.ObjetFenetre {
 		});
 	}
 	composeContenu() {
-		const lLargeurLabels = "5rem";
-		const H = [];
-		H.push(
-			'<div class="field-contain">',
-			'<label style="min-width: ',
-			lLargeurLabels,
-			';">',
-			ObjetTraduction_1.GTraductions.getValeur("CategoriesQCM.Nom"),
-			"</label>",
-			'<input type="text" class="round-style full-width" ie-model="getLibelleCategorie" maxlength="1000" />',
-			"</div>",
+		const lLargeurLabels = "5rem;";
+		const lIdNom = GUID_1.GUID.getId();
+		const lIdAbr = GUID_1.GUID.getId();
+		const lIdCou = GUID_1.GUID.getId();
+		return IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			IE.jsx.str(
+				"div",
+				{ class: "field-contain" },
+				IE.jsx.str(
+					"label",
+					{ for: lIdNom, style: "min-width:" + lLargeurLabels },
+					ObjetTraduction_1.GTraductions.getValeur("CategoriesQCM.Nom"),
+				),
+				IE.jsx.str("input", {
+					id: lIdNom,
+					type: "text",
+					class: "full-width",
+					"ie-model": "getLibelleCategorie",
+					maxlength: "1000",
+				}),
+			),
+			IE.jsx.str(
+				"div",
+				{ class: "field-contain" },
+				IE.jsx.str(
+					"label",
+					{ for: lIdAbr, style: "min-width:" + lLargeurLabels },
+					ObjetTraduction_1.GTraductions.getValeur("CategoriesQCM.Abreviation"),
+				),
+				IE.jsx.str("input", {
+					id: lIdAbr,
+					type: "text",
+					class: "full-width",
+					"ie-model": "getAbreviationCategorie",
+					maxlength: "1",
+				}),
+			),
+			IE.jsx.str(
+				"div",
+				{ class: "field-contain" },
+				IE.jsx.str(
+					"label",
+					{ id: lIdCou, style: "min-width:" + lLargeurLabels },
+					ObjetTraduction_1.GTraductions.getValeur("CategoriesQCM.Couleur"),
+				),
+				IE.jsx.str("div", {
+					"aria-labelledby": lIdCou,
+					"ie-html": "getCouleurCategorie",
+					class: "like-input as-color-picker",
+					"ie-node": "nodeChampCouleur",
+					tabindex: "0",
+				}),
+			),
 		);
-		H.push(
-			'<div class="field-contain">',
-			'<label style="min-width: ',
-			lLargeurLabels,
-			';">',
-			ObjetTraduction_1.GTraductions.getValeur("CategoriesQCM.Abreviation"),
-			"</label>",
-			'<input type="text" class="round-style full-width" ie-model="getAbreviationCategorie" maxlength="1" />',
-			"</div>",
-		);
-		H.push(
-			'<div class="field-contain">',
-			'<label style="min-width: ',
-			lLargeurLabels,
-			';">',
-			ObjetTraduction_1.GTraductions.getValeur("CategoriesQCM.Couleur"),
-			"</label>",
-			'<div ie-html="getCouleurCategorie" class="like-input as-color-picker" ie-node="nodeChampCouleur" tabindex="0"></div>',
-			"</div>",
-		);
-		return H.join("");
 	}
 	setDonneesCategorieQCM(aCategorieQCM, aListeToutesCategoriesQCM) {
 		this.donnees.categorieQCM = aCategorieQCM;
@@ -417,12 +447,14 @@ class ObjetFenetre_EditionCategorieQCM extends ObjetFenetre_1.ObjetFenetre {
 	surValidation(aNumeroBouton) {
 		if (aNumeroBouton === 1) {
 			if (!this.donnees.categorieQCM.getLibelle()) {
-				GApplication.getMessage().afficher({
-					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-					message: ObjetTraduction_1.GTraductions.getValeur(
-						"CategoriesQCM.LibelleObligatoire",
-					),
-				});
+				(0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+						message: ObjetTraduction_1.GTraductions.getValeur(
+							"CategoriesQCM.LibelleObligatoire",
+						),
+					});
 				return;
 			}
 			let lTestLibelleExisteDeja = false;
@@ -448,13 +480,15 @@ class ObjetFenetre_EditionCategorieQCM extends ObjetFenetre_1.ObjetFenetre {
 					"liste.doublonNom",
 					[this.donnees.categorieQCM.getLibelle()],
 				);
-				GApplication.getMessage().afficher({
-					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-					message: lMessageDoublon,
-				});
+				(0, AccessApp_1.getApp)()
+					.getMessage()
+					.afficher({
+						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+						message: lMessageDoublon,
+					});
 				return;
 			}
-			this.callback.appel(this.donnees.categorieQCM);
+			this.callback.appel(aNumeroBouton, this.donnees.categorieQCM);
 			this.fermer();
 		} else {
 			this.fermer();

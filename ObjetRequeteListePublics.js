@@ -25,6 +25,9 @@ class ObjetRequeteListePublics extends ObjetRequeteJSON_1.ObjetRequeteConsultati
 			avecInfoRencontresSepareesDesResponsables:
 				!!aParam.avecInfoRencontresSepareesDesResponsables,
 			avecInfoResponsablePreferentiel: !!aParam.avecInfoResponsablePreferentiel,
+			avecUniquementResponsableDelegue:
+				!!aParam.avecUniquementResponsableDelegue,
+			estCtxModeleActualite: !!aParam.estCtxModeleActualite,
 		};
 		const lCleCache = this._getCle();
 		if (

@@ -2,20 +2,8 @@ exports.ParametresAffichageOnglet = void 0;
 const ParametresAffichage_1 = require("ParametresAffichage");
 const ParametresAffichageDivers_1 = require("ParametresAffichageDivers");
 class ParametresAffichageOnglet extends ParametresAffichage_1.ObjetParametresAffichage {
-	constructor(aNom, aLargeur, aHauteur, aCouleur, aTexte, aBordure, aImage) {
+	constructor(aNom, aCouleur, aTexte, aBordure, aImage) {
 		super(aNom);
-		this.addParametre(
-			new ParametresAffichage_1.ParametreAffichage(
-				"largeur",
-				aLargeur !== null && aLargeur !== undefined ? aLargeur : 100,
-			),
-		);
-		this.addParametre(
-			new ParametresAffichage_1.ParametreAffichage(
-				"hauteur",
-				aHauteur !== null && aHauteur !== undefined ? aHauteur : 15,
-			),
-		);
 		const lCouleur =
 			aCouleur !== null && aCouleur !== undefined ? aCouleur : "white";
 		this.addParametre(
@@ -35,12 +23,6 @@ class ParametresAffichageOnglet extends ParametresAffichage_1.ObjetParametresAff
 	}
 	setCouleur(aBase, aSelection, aSurvol) {
 		this.getParametre("couleur").setValeur(aBase, aSelection, aSurvol);
-	}
-	getLargeur(aSelectionne, aSurvol) {
-		return this.getParametre("largeur").getValeur(aSelectionne, aSurvol);
-	}
-	getHauteur(aSelectionne, aSurvol) {
-		return this.getParametre("hauteur").getValeur(aSelectionne, aSurvol);
 	}
 	getCouleur(aSelectionne, aSurvol) {
 		return this.getParametre("couleur").getValeur(aSelectionne, aSurvol);

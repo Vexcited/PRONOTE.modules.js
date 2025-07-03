@@ -799,7 +799,7 @@ const lPlugin = {
 	_removeMoodle: function (aMode) {
 		let lOriginalText = this.editor.selection.getContent({ format: "text" });
 		this.editor.execCommand("mceBeginUndoLevel");
-		this.editor.selection.setContent(lOriginalText);
+		this.editor.selection.setContent(lOriginalText, { no_events: true });
 		if (aMode === "MultiChoice" && this.options[aMode].oneList) {
 			this._removeOneListMultiChoice(aMode, lOriginalText);
 		}

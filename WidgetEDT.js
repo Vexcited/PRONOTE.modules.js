@@ -1,8 +1,6 @@
 exports.WidgetEDT = void 0;
 const ObjetDroitsPN_1 = require("ObjetDroitsPN");
 const MethodesObjet_1 = require("MethodesObjet");
-const ObjetHtml_1 = require("ObjetHtml");
-const ObjetPosition_1 = require("ObjetPosition");
 const Enumere_AffichageGrilleDate_1 = require("Enumere_AffichageGrilleDate");
 const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
 const Enumere_TriElement_1 = require("Enumere_TriElement");
@@ -30,6 +28,7 @@ const Enumere_EvenementWidget_1 = require("Enumere_EvenementWidget");
 const ObjetFenetre_EditionActualite_1 = require("ObjetFenetre_EditionActualite");
 const InterfaceGrilleEDT_1 = require("InterfaceGrilleEDT");
 const ObjetWidget_1 = require("ObjetWidget");
+const AccessApp_1 = require("AccessApp");
 var EGenreCommandeEDT;
 (function (EGenreCommandeEDT) {
 	EGenreCommandeEDT["onglet"] = "onglet";
@@ -42,7 +41,7 @@ var EGenreCommandeEDT;
 class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 	constructor(...aParams) {
 		super(...aParams);
-		this.applicationSco = GApplication;
+		this.applicationSco = (0, AccessApp_1.getApp)();
 		this.etatUtilisateurSco = this.applicationSco.getEtatUtilisateur();
 		this.parametresSco = this.applicationSco.getObjetParametres();
 		this.donneesGrille = {
@@ -56,94 +55,85 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 			prefsGrille: null,
 		};
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			WidgetEDT: {
-				btnCommande: {
-					event(aIndex) {
-						const lCommande = aInstance.listeCommandes.get(aIndex);
-						if (lCommande.initMenuContextuel) {
-							ObjetMenuContextuel_1.ObjetMenuContextuel.afficher({
-								pere: aInstance,
-								evenement: function () {},
-								initCommandes: lCommande.initMenuContextuel.bind(
-									aInstance,
-									aInstance.cours,
-								),
-							});
-						} else {
-							aInstance._surCommande(
-								lCommande.getGenre(),
-								lCommande.genreOnglet,
-							);
-						}
-					},
-					getDisabled(aIndex) {
-						if (!aInstance.listeCommandes) {
-							return true;
-						}
-						const lCommande = aInstance.listeCommandes.get(aIndex);
-						return (
-							!aInstance.cours ||
-							!aInstance.date ||
-							!aInstance._estCommandeActive(
-								lCommande,
-								aInstance.cours,
-								aInstance.date,
-							) ||
-							(lCommande.estVisible && !lCommande.estVisible(aInstance.cours))
-						);
-					},
-				},
-				avecBoutonCoursAnnules() {
-					const lAcces = aInstance.etatUtilisateurSco.getAcces();
-					return (
-						aInstance.etatUtilisateurSco.getAvecChoixCoursAnnule() &&
-						lAcces &&
-						lAcces.autoriseSurDate
-					);
-				},
-				btnInfosDetails: {
-					event() {
-						aInstance.grilleEDT
-							.getInstanceGrille()
-							.ouvrirFenetreDetailsGrille();
-					},
-				},
-				btnAfficherCoursAnnules: {
-					event() {
-						aInstance.etatUtilisateurSco.setAvecCoursAnnule(
-							!aInstance.etatUtilisateurSco.getAvecCoursAnnule(),
-						);
-						aInstance.donneesGrille.avecCoursAnnule =
-							aInstance.etatUtilisateurSco.getAvecCoursAnnule();
-						aInstance.cours = null;
-						aInstance.date = null;
-						aInstance.service = null;
-						aInstance.classe = null;
-						aInstance.grilleEDT.setDonnees(aInstance.donneesGrille);
-					},
-					getSelection() {
-						return aInstance.etatUtilisateurSco.getAvecCoursAnnule();
-					},
-					getTitle() {
-						if (aInstance.etatUtilisateurSco.getAvecCoursAnnule()) {
-							return ObjetTraduction_1.GTraductions.getValeur(
-								"EDT.MasquerCoursAnnules",
-							);
-						}
-						return ObjetTraduction_1.GTraductions.getValeur(
-							"EDT.AfficherCoursAnnules",
-						);
-					},
-					getClassesMixIcon() {
-						return UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getClassesMixIconAfficherCoursAnnules(
-							aInstance.etatUtilisateurSco.getAvecCoursAnnule(),
-						);
-					},
-				},
+	jsxBoutonCommande(aCommande) {
+		return {
+			event: () => {
+				if (aCommande) {
+					if (aCommande.initMenuContextuel) {
+						ObjetMenuContextuel_1.ObjetMenuContextuel.afficher({
+							pere: this,
+							evenement: function () {},
+							initCommandes: aCommande.initMenuContextuel.bind(
+								this,
+								this.cours,
+							),
+						});
+					} else {
+						this._surCommande(aCommande.getGenre(), aCommande.genreOnglet);
+					}
+				}
 			},
-		});
+			getDisabled: () => {
+				if (!this.listeCommandes || !aCommande) {
+					return true;
+				}
+				return (
+					!this.cours ||
+					!this.date ||
+					!this._estCommandeActive(aCommande, this.cours, this.date) ||
+					(aCommande.estVisible && !aCommande.estVisible(this.cours))
+				);
+			},
+		};
+	}
+	jsxAvecBoutonCoursAnnule() {
+		const lAcces = this.etatUtilisateurSco.getAcces();
+		return (
+			this.etatUtilisateurSco.getAvecChoixCoursAnnule() &&
+			lAcces &&
+			lAcces.autoriseSurDate
+		);
+	}
+	jsxModelBoutonAfficherCoursAnnule() {
+		return {
+			event: () => {
+				this.etatUtilisateurSco.setAvecCoursAnnule(
+					!this.etatUtilisateurSco.getAvecCoursAnnule(),
+				);
+				this.donneesGrille.avecCoursAnnule =
+					this.etatUtilisateurSco.getAvecCoursAnnule();
+				this.cours = null;
+				this.date = null;
+				this.service = null;
+				this.classe = null;
+				this.grilleEDT.setDonnees(this.donneesGrille);
+			},
+			getSelection: () => {
+				return this.etatUtilisateurSco.getAvecCoursAnnule();
+			},
+			getTitle: () => {
+				if (this.etatUtilisateurSco.getAvecCoursAnnule()) {
+					return ObjetTraduction_1.GTraductions.getValeur(
+						"EDT.MasquerCoursAnnules",
+					);
+				}
+				return ObjetTraduction_1.GTraductions.getValeur(
+					"EDT.AfficherCoursAnnules",
+				);
+			},
+		};
+	}
+	jsxGetClassesIconeBoutonAfficherCoursAnnule() {
+		return UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getClassesMixIconAfficherCoursAnnules(
+			this.etatUtilisateurSco.getAvecCoursAnnule(),
+		);
+	}
+	jsxModelBoutonInfosDetails() {
+		return {
+			event: () => {
+				this.grilleEDT.getInstanceGrille().ouvrirFenetreDetailsGrille();
+			},
+		};
 	}
 	construire(aParams) {
 		this.donnees = aParams.instance.donnees;
@@ -225,7 +215,7 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 			this._creerObjetsEDT();
 		}
 		const lWidget = {
-			html: this._composeWidgetEDT(),
+			getHtml: this._composeWidgetEDT.bind(this),
 			resize: () => {
 				if (!!this.grilleEDT) {
 					this.grilleEDT.getInstanceGrille().surPostResize();
@@ -243,9 +233,10 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 				{
 					html: IE.jsx.str(
 						"div",
-						{ "ie-if": "WidgetEDT.avecBoutonCoursAnnules" },
+						{ "ie-if": this.jsxAvecBoutonCoursAnnule.bind(this) },
 						UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnAfficherCoursAnnules(
-							"WidgetEDT.btnAfficherCoursAnnules",
+							this.jsxModelBoutonAfficherCoursAnnule.bind(this),
+							this.jsxGetClassesIconeBoutonAfficherCoursAnnule.bind(this),
 						),
 					),
 				},
@@ -254,7 +245,7 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 						"div",
 						{ class: "p-left-l" },
 						UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnInformationsGrille(
-							"WidgetEDT.btnInfosDetails",
+							this.jsxModelBoutonInfosDetails.bind(this),
 						),
 					),
 				},
@@ -267,7 +258,9 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 		}
 		const lCoursCourant = this.getCoursCourant();
 		if (lCoursCourant) {
-			this.grilleEDT.getInstanceGrille().selectionnerCours(lCoursCourant, true);
+			this.grilleEDT
+				.getInstanceGrille()
+				.selectionnerCours(lCoursCourant, true, true);
 		}
 	}
 	getCoursCourant() {
@@ -341,9 +334,7 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 		aInstance.setOptionsInterfaceGrilleEDT({
 			avecParametresUtilisateurs: true,
 			optionsGrille: {
-				tailleMINPasHoraire: GNavigateur.isLayoutTactile
-					? Math.max(10, 550 / this.parametresSco.PlacesParJour)
-					: 10,
+				tailleMINPasHoraire: 10,
 				tailleMAXPasHoraire: 75,
 				genreAffichageDate: !this.avecEDTDuJour
 					? Enumere_AffichageGrilleDate_1.EGenreAffichageGrilleDate
@@ -356,8 +347,6 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 					!this.avecEDTDuJour && this.listeCommandes.count() > 0
 				),
 				margeHauteur: 0,
-				avecScrollEnTactileH: true,
-				avecScrollEnTactileV: true,
 			},
 			evenementMouseDownPlace: () => {
 				this.cours = null;
@@ -412,11 +401,13 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 				}
 				break;
 			}
+			case Enumere_EvenementEDT_1.EGenreEvenementEDT.SurCours:
 			case Enumere_EvenementEDT_1.EGenreEvenementEDT.SurMenuContextuel: {
 				if (this.cours.coursMultiple) {
 					break;
 				}
 				if (
+					!aParam.selectionNonManuelle &&
 					[
 						Enumere_Espace_1.EGenreEspace.Professeur,
 						Enumere_Espace_1.EGenreEspace.PrimProfesseur,
@@ -424,8 +415,7 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 						Enumere_Espace_1.EGenreEspace.PrimDirection,
 					].includes(GEtatUtilisateur.GenreEspace)
 				) {
-					this._positionnementNavigationClavier(this.cours);
-					this._menuContextuel(this.cours, this.date);
+					this._menuContextuel(this.cours, this.date, aParam.id);
 				}
 				break;
 			}
@@ -589,16 +579,18 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 			);
 			if (this.listeCommandes.count() > 0) {
 				H.push('<div class="btn-commandes-wrapper">');
-				this.listeCommandes.parcourir((aCommande, aIndex) => {
+				this.listeCommandes.parcourir((aCommande) => {
 					if (aCommande.Genre !== null && aCommande.icon) {
 						H.push(
-							'<ie-btnimage class="',
-							aCommande.icon,
-							' btnImageIcon icon" ie-model="WidgetEDT.btnCommande(',
-							aIndex,
-							')" title="',
-							aCommande.getLibelle(),
-							'"></ie-btnimage>',
+							IE.jsx.str(
+								IE.jsx.fragment,
+								null,
+								IE.jsx.str("ie-btnimage", {
+									class: aCommande.icon + " btnImageIcon icon",
+									"ie-model": this.jsxBoutonCommande.bind(this, aCommande),
+									title: aCommande.getLibelle(),
+								}),
+							),
 						);
 					}
 				});
@@ -927,7 +919,7 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 			this.donnees.CDTNonSaisi.genre,
 		]);
 	}
-	_menuContextuel(aCours, aDate) {
+	_menuContextuel(aCours, aDate, aId) {
 		Promise.resolve()
 			.then(() => {
 				if (this.moduleSaisie) {
@@ -939,6 +931,7 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 			.then(() => {
 				ObjetMenuContextuel_1.ObjetMenuContextuel.afficher({
 					pere: this,
+					id: aId,
 					evenement: this._evenementSurMenuContextuel.bind(this),
 					initCommandes: this._initialiserMenuContextuel.bind(
 						this,
@@ -983,22 +976,6 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 				Enumere_EvenementWidget_1.EGenreEvenementWidget.EvenementPersonnalise,
 				lParamsRequeteFicheCDTSurContenu,
 			);
-		}
-	}
-	_positionnementNavigationClavier(aCours, aForcerNavigationClavier = false) {
-		if (GNavigateur.isToucheMenuContextuel() || aForcerNavigationClavier) {
-			const lPlace = aCours.Debut;
-			const lInstanceGrille = this.grilleEDT.getInstanceGrille();
-			const lPosition = lInstanceGrille.getPositionDePlace(lPlace);
-			const lElementGrille = ObjetHtml_1.GHtml.getElement(
-				lInstanceGrille.getIdCellulePrefixe(),
-			);
-			GNavigateur.pointerX =
-				(lPosition.x + 1) * lInstanceGrille.largeurCellule +
-				ObjetPosition_1.GPosition.getLeft(lElementGrille);
-			GNavigateur.pointerY =
-				lPosition.y * lInstanceGrille.hauteurCellule +
-				ObjetPosition_1.GPosition.getTop(lElementGrille);
 		}
 	}
 }

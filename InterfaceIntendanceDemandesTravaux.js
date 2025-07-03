@@ -1,106 +1,70 @@
-const { MethodesObjet } = require("MethodesObjet.js");
-const { EStructureAffichage } = require("Enumere_StructureAffichage.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { ObjetFicheDocumentsJoints } = require("ObjetFicheDocumentsJoints.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const {
-	DonneesListe_DemandesTravaux,
-} = require("DonneesListe_DemandesTravaux.js");
-const { InterfacePage } = require("InterfacePage.js");
-const {
-	ObjetFenetre_DemandesMissions,
-} = require("ObjetFenetre_DemandesMissions.js");
-const ObjetRequeteSaisieTravauxIntendance = require("ObjetRequeteSaisieTravauxIntendance.js");
-const MultipleObjetRequeteTravauxIntendance = require("ObjetRequeteTravauxIntendance.js");
-const { TypeHttpNotificationDonnes } = require("TypeHttpNotificationDonnes.js");
-const { ObjetMoteurTravaux } = require("ObjetMoteurTravaux.js");
-const { GDate } = require("ObjetDate.js");
-const { GUID } = require("GUID.js");
-const { ObjetInvocateur, Invocateur } = require("Invocateur.js");
-class InterfaceIntendanceDemandesTravaux extends InterfacePage {
+exports.InterfaceIntendanceDemandesTravaux = void 0;
+const MethodesObjet_1 = require("MethodesObjet");
+const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const DonneesListe_DemandesTravaux_1 = require("DonneesListe_DemandesTravaux");
+const InterfacePage_1 = require("InterfacePage");
+const ObjetFenetre_DemandesMissions_1 = require("ObjetFenetre_DemandesMissions");
+const ObjetRequeteSaisieTravauxIntendance_1 = require("ObjetRequeteSaisieTravauxIntendance");
+const ObjetRequeteTravauxIntendance_1 = require("ObjetRequeteTravauxIntendance");
+const TypeHttpNotificationDonnes_1 = require("TypeHttpNotificationDonnes");
+const ObjetMoteurTravaux_1 = require("ObjetMoteurTravaux");
+const ObjetDate_1 = require("ObjetDate");
+const GUID_1 = require("GUID");
+const Invocateur_1 = require("Invocateur");
+const AccessApp_1 = require("AccessApp");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const TypeNiveauDUrgence_1 = require("TypeNiveauDUrgence");
+class InterfaceIntendanceDemandesTravaux extends InterfacePage_1.InterfacePage {
 	constructor(...aParams) {
 		super(...aParams);
-		this.params = {
-			filtres: {
-				uniquementMesDemandes: false,
-				uniquementMesTravaux: false,
-				listeEtatsAvancement: new ObjetListeElements(),
-			},
-			genre: ObjetMoteurTravaux.getGenreTraveauxIntendance(),
-		};
-		this.idZoneAucuneDonnee = GUID.getId();
-		this.moteur = new ObjetMoteurTravaux({
-			droits: {
-				avecDemandeTravaux: this.getDroits().avecDemandeTravaux,
-				avecExecutionTravaux: this.getDroits().avecExecutionTravaux,
-				avecGestionTravaux: this.getDroits().avecGestionTravaux,
-			},
-		});
-		this.filtreCourant = null;
+		const lApplicationSco = (0, AccessApp_1.getApp)();
+		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
+		this.idZoneAucuneDonnee = GUID_1.GUID.getId();
+		this.moteur = new ObjetMoteurTravaux_1.ObjetMoteurTravaux();
 		this.elementSelectionnee = null;
-	}
-	getDroits() {
-		let lResult = ObjetMoteurTravaux.getDroits(this.params.genre);
-		return lResult;
 	}
 	construireInstances() {
 		this.identListe = this.add(
-			ObjetListe,
-			_evenementSurListe.bind(this),
-			_initialiserListe.bind(this),
+			ObjetListe_1.ObjetListe,
+			this._evenementSurListe.bind(this),
+			this._initialiserListe.bind(this),
 		);
-		this.identFenetreTravaux = this.addFenetre(
-			ObjetFenetre_DemandesMissions,
-			_evenementFenetreTravaux.bind(this),
-			_initialiserFenetreTravaux,
-		);
-		this.identFicheConsultationPJ = null;
-		if (ObjetFicheDocumentsJoints) {
-			this.identFicheConsultationPJ = this.addFenetre(
-				ObjetFicheDocumentsJoints,
-				null,
-				null,
-			);
-		}
 	}
 	construireStructureAffichageAutre() {
 		const H = [];
-		H.push('<div class="p-top full-height" style="max-width:65rem;"> ');
 		H.push(
-			'<div class="m-left full-height" id="',
-			this.getInstance(this.identListe).getNom(),
-			'"></div>',
+			IE.jsx.str(
+				"div",
+				{ class: "p-top full-height", style: "max-width:65rem;" },
+				IE.jsx.str("div", {
+					class: "m-left full-height",
+					id: this.getNomInstance(this.identListe),
+				}),
+				IE.jsx.str("div", {
+					class: "m-top-l m-left",
+					id: this.idZoneAucuneDonnee,
+				}),
+			),
 		);
-		H.push(
-			'<div class="m-top-l m-left" id="',
-			this.idZoneAucuneDonnee,
-			'"></div>',
-		);
-		H.push("</div>");
 		return H.join("");
 	}
 	setParametresGeneraux() {
 		this.IdentZoneAlClient = this.identListe;
-		this.GenreStructure = EStructureAffichage.Autre;
+		this.GenreStructure =
+			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
 		this.avecBandeau = true;
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {});
-	}
 	recupererDonnees() {
-		_envoieRequete.call(this);
+		this._envoieRequete();
 	}
 	getDemandeSelectionnee() {
-		const lListe = this.getInstance(this.identListe);
-		return lListe.getElementSelection();
-	}
-	setFiltre(aParams) {
-		this.filtreCourant = aParams;
+		return this.getInstance(this.identListe).getElementSelection();
 	}
 	_actionSurRequeteTravauxIntendance(aJSON) {
 		this.listeDemandesTvx = aJSON.listeLignes;
@@ -108,42 +72,46 @@ class InterfaceIntendanceDemandesTravaux extends InterfacePage {
 		this.listeNatureTvx = aJSON.listeNatureTvx;
 		this.listeEtatsAvancement = aJSON.listeEtatAvcmt;
 		if (
-			GEtatUtilisateur.listeDonnees &&
-			GEtatUtilisateur.listeDonnees[
-				TypeHttpNotificationDonnes.THND_ListeDocJointEtablissement
+			this.etatUtilisateurSco.listeDonnees &&
+			this.etatUtilisateurSco.listeDonnees[
+				TypeHttpNotificationDonnes_1.TypeHttpNotificationDonnes
+					.THND_ListeDocJointEtablissement
 			]
 		) {
-			this.listePiecesJointes = MethodesObjet.dupliquer(
-				GEtatUtilisateur.listeDonnees[
-					TypeHttpNotificationDonnes.THND_ListeDocJointEtablissement
+			this.listePiecesJointes = MethodesObjet_1.MethodesObjet.dupliquer(
+				this.etatUtilisateurSco.listeDonnees[
+					TypeHttpNotificationDonnes_1.TypeHttpNotificationDonnes
+						.THND_ListeDocJointEtablissement
 				],
 			);
 		}
-		this.listeNatureTvx.setTri([
-			ObjetTri.init("Genre", true),
-			ObjetTri.init("Libelle", true),
-		]);
-		this.listeNatureTvx.trier();
-		this.donneesListe = new DonneesListe_DemandesTravaux({
-			donnees: ObjetMoteurTravaux.formaterListe(this.listeDemandesTvx),
-			droits: {
-				avecDemandeTravaux: this.getDroits().avecDemandeTravaux,
-				avecExecutionTravaux: this.getDroits().avecExecutionTravaux,
-				avecGestionTravaux: this.getDroits().avecGestionTravaux,
-				avecTransfert: this.getDroits().avecTransfert,
-				uniquementMesDemandesTravaux:
-					this.getDroits().uniquementMesDemandesTravaux,
-			},
-			listeEtatsAvancements: this.listeEtatsAvancement,
-			listeNatureTvx: this.listeNatureTvx,
-			borneDescription: aJSON.borneDescription,
-			genre: this.params.genre,
-			callbackTransfererMission: this.surTransfertMission.bind(this),
-			setFiltre: this.setFiltre.bind(this),
-			filtreCourant: this.filtreCourant,
-		});
+		const lDonneesListe =
+			new DonneesListe_DemandesTravaux_1.DonneesListe_DemandesTravaux(
+				this.moteur.formaterListe(this.listeDemandesTvx),
+				{
+					callbacks: {
+						callbackModifierDemande: (aArticle) => {
+							this._ouvrirFenetreTravaux(false);
+						},
+						callbackDupliquerDemande: (aArticle) => {
+							this.dupliquerElementMission(aArticle);
+						},
+						callbackSupprimerDemande: (aArticle) => {
+							aArticle.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+							this._saisie();
+						},
+						callbackTransfererMission: this.surTransfertMission.bind(this),
+					},
+					donneesFiltre: {
+						listeEtatsAvancement: this.listeEtatsAvancement,
+						listeNiveauUrgence:
+							TypeNiveauDUrgence_1.TypeNiveauDUrgenceUtil.toListe(),
+						listeNatureTvx: this.listeNatureTvx,
+					},
+				},
+			);
 		const lInstanceListe = this.getInstance(this.identListe);
-		lInstanceListe.setDonnees(this.donneesListe);
+		lInstanceListe.setDonnees(lDonneesListe);
 		if (this.elementSelectionnee) {
 			const lIndice = lInstanceListe
 				.getListeArticles()
@@ -151,195 +119,202 @@ class InterfaceIntendanceDemandesTravaux extends InterfacePage {
 					this.elementSelectionnee.getNumero(),
 					this.elementSelectionnee.getGenre(),
 				);
-			if (MethodesObjet.isNumeric(lIndice)) {
+			if (MethodesObjet_1.MethodesObjet.isNumeric(lIndice)) {
 				lInstanceListe.selectionnerLigne({ ligne: lIndice, avecScroll: true });
 			}
 		}
 	}
 	surTransfertMission(aArticle) {
-		const lNouvelOnglet = ObjetMoteurTravaux.surTransfertMission(aArticle);
-		_saisie.call(this);
-		Invocateur.evenement(
-			ObjetInvocateur.events.navigationOnglet,
-			lNouvelOnglet,
+		aArticle.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+		this._saisie();
+		const lOngletDestination =
+			this.moteur.getOngletDestinationSelonGenreDemande(aArticle.getGenre());
+		Invocateur_1.Invocateur.evenement(
+			Invocateur_1.ObjetInvocateur.events.navigationOnglet,
+			lOngletDestination,
 		);
 	}
 	valider() {
-		_saisie.call(this);
+		this._saisie();
 	}
-	evntDupliquerElementMission(lArticle) {
+	dupliquerElementMission(aArticle) {
 		let lTitre = "";
-		const lDateCouranteFormat = GDate.formatDate(
-			GDate.getDateCourante(),
+		const lDateCouranteFormat = ObjetDate_1.GDate.formatDate(
+			ObjetDate_1.GDate.getDateCourante(),
 			"%JJ/%MM/%AAAA",
 		);
-		lTitre = GTraductions.getValeur("TvxIntendance.DupliquerLe", [
-			lDateCouranteFormat,
-		]);
-		this.getInstance(this.identFenetreTravaux).setOptionsFenetre({
-			titre: lTitre,
-		});
-		this.getInstance(this.identFenetreTravaux).setDonnees({
-			demandeCourante: lArticle,
-			droits: {
-				avecDemandeTravaux: this.getDroits().avecDemandeTravaux,
-				avecExecutionTravaux: this.getDroits().avecExecutionTravaux,
-				avecGestionTravaux: this.getDroits().avecGestionTravaux,
-				avecTransfert: this.getDroits().avecTransfert,
-			},
+		lTitre = ObjetTraduction_1.GTraductions.getValeur(
+			"TvxIntendance.DupliquerLe",
+			[lDateCouranteFormat],
+		);
+		const lFenetreDupliquerMission =
+			ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+				ObjetFenetre_DemandesMissions_1.ObjetFenetre_DemandesMissions,
+				{
+					pere: this,
+					evenement: (aGenreBouton, aDemande, aListeFichiers) => {
+						this._evenementFenetreTravaux(
+							aGenreBouton,
+							aDemande,
+							aListeFichiers,
+						);
+					},
+					initialiser: (aInstance) => {
+						aInstance.setOptionsFenetre({
+							titre: lTitre,
+							largeur: 450,
+							hauteur: 600,
+							listeBoutons: [
+								ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+								ObjetTraduction_1.GTraductions.getValeur("Valider"),
+							],
+							avecTailleSelonContenu: true,
+						});
+					},
+				},
+			);
+		lFenetreDupliquerMission.setDonnees({
+			demandeCourante: aArticle,
 			listeEtatsAvancement: this.listeEtatsAvancement,
 			listeNatureTvx: this.listeNatureTvx,
 			listeSallesLieu: this.listeSallesLieu,
-			listeLieux: this.listeLieux,
+			listeLieux: null,
 			listePJ: this.listePiecesJointes,
-			genreTravaux: this.params.genre,
 			estEnCreation: true,
 			estEnDuplication: true,
 		});
 	}
-}
-function _envoieRequete() {
-	new MultipleObjetRequeteTravauxIntendance.ObjetRequeteTravauxIntendance(
-		this,
-		this._actionSurRequeteTravauxIntendance,
-	).lancerRequete();
-}
-function _initialiserListe(aInstance) {
-	const lEspace = [
-		EGenreEspace.Mobile_PrimMairie,
-		EGenreEspace.PrimMairie,
-		EGenreEspace.Mobile_PrimDirection,
-		EGenreEspace.PrimDirection,
-	].includes(GEtatUtilisateur.GenreEspace);
-	aInstance.setOptionsListe({
-		skin: ObjetListe.skin.flatDesign,
-		messageContenuVide: lEspace
-			? GTraductions.getValeur("TvxIntendance.AucuneDemande")
-			: GTraductions.getValeur("TvxIntendance.AucuneMission"),
-		avecLigneCreation: this.getDroits().avecExecutionTravaux,
-		avecEvnt_Creation: true,
-		avecEvnt_SelectionClick: true,
-		boutons: [
-			{ genre: ObjetListe.typeBouton.rechercher },
-			{ genre: ObjetListe.typeBouton.filtrer },
-			{ genre: ObjetListe.typeBouton.deployer },
-		],
-	});
-	GEtatUtilisateur.setTriListe({
-		liste: aInstance,
-		tri: [ObjetMoteurTravaux.colonnes.dateCreation],
-	});
-}
-function _ouvrirFenetreTravaux(aEnCreation) {
-	let lTitre = "";
-	let lDateModificationFormat = "";
-	let lAvecDroitGestion =
-		this.moteur &&
-		this.moteur.param &&
-		this.moteur.param.droits &&
-		this.moteur.param.droits.avecGestionTravaux;
-	const lDemandeSelectionnee = this.getDemandeSelectionnee();
-	const lSeulementConsult =
-		!aEnCreation &&
-		lDemandeSelectionnee &&
-		lDemandeSelectionnee.seulementConsult &&
-		!lAvecDroitGestion;
-	if (!!lDemandeSelectionnee && !!lDemandeSelectionnee.dateCreation) {
-		lDateModificationFormat = lDemandeSelectionnee.dateCreation;
+	_envoieRequete() {
+		new ObjetRequeteTravauxIntendance_1.ObjetRequeteTravauxIntendance(
+			this,
+			this._actionSurRequeteTravauxIntendance,
+		).lancerRequete();
 	}
-	lTitre = ObjetMoteurTravaux.getTitreFenetre(
-		aEnCreation ? EGenreEtat.Creation : EGenreEtat.Modification,
-		this.params.genre,
-		lDateModificationFormat,
-		lSeulementConsult,
-	);
-	this.getInstance(this.identFenetreTravaux).setOptionsFenetre({
-		titre: lTitre,
-		listeBoutons: lSeulementConsult
-			? [GTraductions.getValeur("Fermer")]
-			: [GTraductions.getValeur("Annuler"), GTraductions.getValeur("Valider")],
-	});
-	this.getInstance(this.identFenetreTravaux).setDonnees({
-		demandeCourante: aEnCreation ? null : lDemandeSelectionnee,
-		droits: {
-			avecDemandeTravaux: this.getDroits().avecDemandeTravaux,
-			avecExecutionTravaux: this.getDroits().avecExecutionTravaux,
-			avecGestionTravaux: this.getDroits().avecGestionTravaux,
-			avecTransfert: this.getDroits().avecTransfert,
-		},
-		listeEtatsAvancement: this.listeEtatsAvancement,
-		listeNatureTvx: this.listeNatureTvx,
-		listeSallesLieu: this.listeSallesLieu,
-		listeLieux: this.listeLieux,
-		listePJ: this.listePiecesJointes,
-		genreTravaux: this.params.genre,
-		estEnCreation: aEnCreation,
-		callbackSupprimer: aEnCreation
-			? null
-			: (aElement) => {
-					const lElement = this.listeDemandesTvx.getElementParElement(aElement);
-					if (lElement) {
-						lElement.setEtat(EGenreEtat.Suppression);
-						_saisie.call(this);
-					}
+	_initialiserListe(aInstance) {
+		const lEspace = [
+			Enumere_Espace_1.EGenreEspace.Mobile_PrimMairie,
+			Enumere_Espace_1.EGenreEspace.PrimMairie,
+			Enumere_Espace_1.EGenreEspace.Mobile_PrimDirection,
+			Enumere_Espace_1.EGenreEspace.PrimDirection,
+		].includes(GEtatUtilisateur.GenreEspace);
+		aInstance.setOptionsListe({
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+			messageContenuVide: lEspace
+				? ObjetTraduction_1.GTraductions.getValeur(
+						"TvxIntendance.AucuneDemande",
+					)
+				: ObjetTraduction_1.GTraductions.getValeur(
+						"TvxIntendance.AucuneMission",
+					),
+			avecLigneCreation: this.moteur.avecDroitExecutant(),
+			boutons: [
+				{ genre: ObjetListe_1.ObjetListe.typeBouton.rechercher },
+				{ genre: ObjetListe_1.ObjetListe.typeBouton.filtrer },
+				{ genre: ObjetListe_1.ObjetListe.typeBouton.deployer },
+			],
+		});
+	}
+	_ouvrirFenetreTravaux(aEnCreation) {
+		let lAvecDroitGestion = this.moteur.avecDroitGestionTravaux();
+		const lDemandeSelectionnee = this.getDemandeSelectionnee();
+		const lSeulementConsult =
+			!aEnCreation &&
+			lDemandeSelectionnee &&
+			lDemandeSelectionnee.seulementConsult &&
+			!lAvecDroitGestion;
+		const lFenetreTravaux = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_DemandesMissions_1.ObjetFenetre_DemandesMissions,
+			{
+				pere: this,
+				evenement: (aGenreBouton, aDemande, aListeFichiers) => {
+					this._evenementFenetreTravaux(aGenreBouton, aDemande, aListeFichiers);
 				},
-	});
-}
-function _evenementSurListe(aParams) {
-	switch (aParams.genreEvenement) {
-		case EGenreEvenementListe.SelectionClick:
-		case EGenreEvenementListe.Edition:
-			this.elementSelectionnee = aParams.article;
-			_ouvrirFenetreTravaux.call(this, false);
-			break;
-		case EGenreEvenementListe.Creation:
-			if (aParams.estDuplication) {
-				this.evntDupliquerElementMission(aParams.article);
-				return;
-			}
-			_ouvrirFenetreTravaux.call(this, true);
-			break;
-		case EGenreEvenementListe.Suppression:
-			aParams.article.setEtat(EGenreEtat.Suppression);
-			_saisie.call(this);
-			break;
-	}
-}
-function _initialiserFenetreTravaux(aInstance) {
-	aInstance.setOptionsFenetre({
-		titre: "",
-		largeur: 450,
-		hauteur: 600,
-		listeBoutons: [
-			GTraductions.getValeur("Annuler"),
-			GTraductions.getValeur("Valider"),
-		],
-		avecTailleSelonContenu: true,
-	});
-}
-function _evenementFenetreTravaux(aGenreBouton, aDemande, aListeFichiers) {
-	if (aGenreBouton === 1) {
-		this.listeDemandesTvx = new ObjetListeElements();
-		this.listeDemandesTvx.addElement(aDemande);
-		this.listePiecesJointes = aListeFichiers;
-		_saisie.call(this);
-	}
-	if (aGenreBouton === "Supprimer") {
-		_saisie.call(this);
-	}
-}
-function _saisie() {
-	let lListeFichiers;
-	if (this.listePiecesJointes) {
-		lListeFichiers = this.listePiecesJointes.getListeElements((aElement) => {
-			return aElement.getEtat() !== EGenreEtat.Aucun;
+				initialiser: (aInstance) => {
+					let lDateCreation = null;
+					if (!!lDemandeSelectionnee && !!lDemandeSelectionnee.dateCreation) {
+						lDateCreation = lDemandeSelectionnee.dateCreation;
+					}
+					const lTitre = this.moteur.getTitreFenetre(
+						aEnCreation
+							? Enumere_Etat_1.EGenreEtat.Creation
+							: Enumere_Etat_1.EGenreEtat.Modification,
+						lDateCreation,
+						lSeulementConsult,
+					);
+					aInstance.setOptionsFenetre({
+						titre: lTitre,
+						largeur: 450,
+						hauteur: 600,
+						listeBoutons: lSeulementConsult
+							? [ObjetTraduction_1.GTraductions.getValeur("Fermer")]
+							: [
+									ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+									ObjetTraduction_1.GTraductions.getValeur("Valider"),
+								],
+						avecTailleSelonContenu: true,
+					});
+				},
+			},
+		);
+		lFenetreTravaux.setDonnees({
+			demandeCourante: aEnCreation ? null : lDemandeSelectionnee,
+			listeEtatsAvancement: this.listeEtatsAvancement,
+			listeNatureTvx: this.listeNatureTvx,
+			listeSallesLieu: this.listeSallesLieu,
+			listeLieux: null,
+			listePJ: this.listePiecesJointes,
+			estEnCreation: aEnCreation,
+			estEnDuplication: false,
+			callbackSupprimer: aEnCreation
+				? null
+				: (aElement) => {
+						const lElement =
+							this.listeDemandesTvx.getElementParElement(aElement);
+						if (lElement) {
+							lElement.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+							this._saisie();
+						}
+					},
 		});
 	}
-	new ObjetRequeteSaisieTravauxIntendance(this, _envoieRequete.bind(this))
-		.addUpload({ listeFichiers: this.listePiecesJointes })
-		.lancerRequete({
-			listeTvx: this.listeDemandesTvx,
-			ListeFichiers: lListeFichiers,
-		});
+	_evenementSurListe(aParams) {
+		switch (aParams.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.SelectionClick:
+				this.elementSelectionnee = aParams.article;
+				this._ouvrirFenetreTravaux(false);
+				break;
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Creation:
+				this._ouvrirFenetreTravaux(true);
+				break;
+		}
+	}
+	_evenementFenetreTravaux(aGenreBouton, aDemande, aListeFichiers) {
+		if (aGenreBouton === 1) {
+			this.listeDemandesTvx = new ObjetListeElements_1.ObjetListeElements();
+			this.listeDemandesTvx.addElement(aDemande);
+			this.listePiecesJointes = aListeFichiers;
+			this._saisie();
+		}
+		if (aGenreBouton === "Supprimer") {
+			this._saisie();
+		}
+	}
+	_saisie() {
+		let lListeFichiers;
+		if (this.listePiecesJointes) {
+			lListeFichiers = this.listePiecesJointes.getListeElements((aElement) => {
+				return aElement.getEtat() !== Enumere_Etat_1.EGenreEtat.Aucun;
+			});
+		}
+		new ObjetRequeteSaisieTravauxIntendance_1.ObjetRequeteSaisieTravauxIntendance(
+			this,
+			this._envoieRequete.bind(this),
+		)
+			.addUpload({ listeFichiers: this.listePiecesJointes })
+			.lancerRequete({
+				listeTvx: this.listeDemandesTvx,
+				ListeFichiers: lListeFichiers,
+			});
+	}
 }
-module.exports = { InterfaceIntendanceDemandesTravaux };
+exports.InterfaceIntendanceDemandesTravaux = InterfaceIntendanceDemandesTravaux;

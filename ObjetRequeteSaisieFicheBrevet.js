@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieFicheBrevet extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieFicheBrevet = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieFicheBrevet extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParam) {
 		this.JSON = {};
 		this.JSON.classe = aParam.classe;
@@ -20,8 +18,11 @@ class ObjetRequeteSaisieFicheBrevet extends ObjetRequeteSaisie {
 		return this.appelAsynchrone();
 	}
 }
-Requetes.inscrire("SaisieFicheBrevet", ObjetRequeteSaisieFicheBrevet);
+exports.ObjetRequeteSaisieFicheBrevet = ObjetRequeteSaisieFicheBrevet;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieFicheBrevet",
+	ObjetRequeteSaisieFicheBrevet,
+);
 function _serialisationPiliers(aPilier, aJSON) {
 	$.extend(aJSON, aPilier.copieToJSON());
 }
-module.exports = { ObjetRequeteSaisieFicheBrevet };

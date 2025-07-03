@@ -1,3 +1,4 @@
+const AccessApp_1 = require("AccessApp");
 const IEHtml = require("IEHtml");
 const ObjetHtml_1 = require("ObjetHtml");
 const ObjetStyle_1 = require("ObjetStyle");
@@ -37,34 +38,32 @@ function _creerMrFiche(
 	if (!aAttributValue) {
 		return true;
 	}
-	const lControleur = {
-		btnMrFiche: {
-			event: function () {
-				const lNode = this.node;
-				GApplication.getMessage()
+	const lModelMrFiche = () => {
+		return {
+			event: (aEvent, aNode) => {
+				(0, AccessApp_1.getApp)()
+					.getMessage()
 					.afficher({ idRessource: aAttributValue })
 					.then(() => {
-						ObjetHtml_1.GHtml.setFocus(lNode);
+						ObjetHtml_1.GHtml.setFocus(aNode);
 					});
 			},
-		},
+		};
 	};
-	const H = [
-		IE.jsx.str("ie-btnimage", {
-			"ie-model": "btnMrFiche",
-			class: aImage.class + " AvecMain",
-			style: ObjetStyle_1.GStyle.composeWidth(aImage.width),
-			title: ObjetTraduction_1.GTraductions.getTitreMFiche(aAttributValue),
-		}),
-	];
+	const lHtml = IE.jsx.str("ie-btnimage", {
+		"ie-model": lModelMrFiche,
+		class: aImage.class + " AvecMain",
+		style: ObjetStyle_1.GStyle.composeWidth(aImage.width),
+		"ie-tooltiplabel":
+			ObjetTraduction_1.GTraductions.getTitreMFiche(aAttributValue),
+	});
 	aOutils.addCommentaireDebug(
 		aContexteCourant.node,
 		'ie-mrfiche="' + aAttributValue + '"',
 	);
 	aOutils.injectHTML({
 		element: aContexteCourant.node,
-		html: H.join(""),
-		controleur: lControleur,
+		html: lHtml,
 		ignorerScroll: true,
 		contexte: aContexteCourant.contexte,
 	});

@@ -5,6 +5,7 @@ const ObjetStyle_1 = require("ObjetStyle");
 const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const MethodesObjet_1 = require("MethodesObjet");
+const AccessApp_1 = require("AccessApp");
 const const_tailleImageCouleur = 150;
 const lTabCouleurs = [
 	"#000000",
@@ -212,19 +213,27 @@ class ObjetFenetre_SelecteurCouleur extends ObjetFenetre_1.ObjetFenetre {
 		if (aCouleurObjet.couleur) {
 			this.couleur = {
 				couleur: aCouleurObjet.couleur,
-				RGB: GCouleur.couleurToRGB(aCouleurObjet.couleur),
-				HSL: GCouleur.couleurToHSV(aCouleurObjet.couleur),
+				RGB: (0, AccessApp_1.getApp)()
+					.getCouleur()
+					.couleurToRGB(aCouleurObjet.couleur),
+				HSL: (0, AccessApp_1.getApp)()
+					.getCouleur()
+					.couleurToHSV(aCouleurObjet.couleur),
 			};
 		} else if (aCouleurObjet.RGB) {
 			this.couleur = {
-				couleur: GCouleur.rgbToCouleur(aCouleurObjet.RGB),
+				couleur: (0, AccessApp_1.getApp)()
+					.getCouleur()
+					.rgbToCouleur(aCouleurObjet.RGB),
 				RGB: aCouleurObjet.RGB,
-				HSL: GCouleur.rgbToHSV(aCouleurObjet.RGB),
+				HSL: (0, AccessApp_1.getApp)().getCouleur().rgbToHSV(aCouleurObjet.RGB),
 			};
 		} else if (aCouleurObjet.HSL) {
 			this.couleur = {
-				couleur: GCouleur.hsvToCouleur(aCouleurObjet.HSL),
-				RGB: GCouleur.hsvToRGB(aCouleurObjet.HSL),
+				couleur: (0, AccessApp_1.getApp)()
+					.getCouleur()
+					.hsvToCouleur(aCouleurObjet.HSL),
+				RGB: (0, AccessApp_1.getApp)().getCouleur().hsvToRGB(aCouleurObjet.HSL),
 				HSL: aCouleurObjet.HSL,
 			};
 		} else {
@@ -257,7 +266,7 @@ class ObjetFenetre_SelecteurCouleur extends ObjetFenetre_1.ObjetFenetre {
 		const lHSLCarreCouleur = { h: this.couleur.HSL.h, s: 100, l: 100 };
 		$(".Image_ColorPicker").css(
 			"background-color",
-			GCouleur.hsvToCouleur(lHSLCarreCouleur),
+			(0, AccessApp_1.getApp)().getCouleur().hsvToCouleur(lHSLCarreCouleur),
 		);
 		const lPosition = {
 			left: Math.floor(
@@ -390,7 +399,6 @@ class ObjetFenetre_SelecteurCouleur extends ObjetFenetre_1.ObjetFenetre {
 		return this.Nom + "_editC_" + aGenre;
 	}
 	_composeSaisieCouleur(aGenreCouleur) {
-		const T = [];
 		let lLibelle;
 		switch (aGenreCouleur) {
 			case GenreCouleur.RGB_R:
@@ -412,16 +420,7 @@ class ObjetFenetre_SelecteurCouleur extends ObjetFenetre_1.ObjetFenetre {
 				lLibelle = "L";
 				break;
 		}
-		T.push(
-			'<div class="InlineBlock" style="',
-			ObjetStyle_1.GStyle.composeWidth(this.parametres.largeurLibelleEdit),
-			"padding-top:",
-			2,
-			'px;">',
-			lLibelle + " :",
-			"</div>",
-		);
-		T.push('<div class="InlineBlock">');
+		const lId = this._getIdEditCouleur(aGenreCouleur);
 		const lStyle =
 			ObjetStyle_1.GStyle.composeHeight(
 				this.parametres.tailleInputCouleur.height,
@@ -429,18 +428,34 @@ class ObjetFenetre_SelecteurCouleur extends ObjetFenetre_1.ObjetFenetre {
 			ObjetStyle_1.GStyle.composeWidth(
 				this.parametres.tailleInputCouleur.width,
 			);
-		T.push(
-			'<input id="',
-			this._getIdEditCouleur(aGenreCouleur),
-			'" class="round-style AlignementDroit" type="text" ',
-			'style="',
-			lStyle,
-			'" ',
-			'maxlength="3" ',
-			"/>",
+		return IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			IE.jsx.str(
+				"label",
+				{
+					for: lId,
+					class: "InlineBlock",
+					style:
+						ObjetStyle_1.GStyle.composeWidth(
+							this.parametres.largeurLibelleEdit,
+						) + "padding-top:2px;",
+				},
+				lLibelle,
+				" :",
+			),
+			IE.jsx.str(
+				"div",
+				{ class: "InlineBlock" },
+				IE.jsx.str("input", {
+					id: lId,
+					class: "AlignementDroit",
+					type: "text",
+					style: lStyle,
+					maxlength: "3",
+				}),
+			),
 		);
-		T.push("</div>");
-		return T.join("");
 	}
 	_ajouterEvents() {
 		let lData, lEventMap;

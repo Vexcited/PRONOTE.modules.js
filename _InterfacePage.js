@@ -6,6 +6,7 @@ const _InterfacePageProduit_1 = require("_InterfacePageProduit");
 const MethodesObjet_1 = require("MethodesObjet");
 const ObjetInterface_1 = require("ObjetInterface");
 const _ObjetInterfaceEspaceCP_1 = require("_ObjetInterfaceEspaceCP");
+const AccessApp_1 = require("AccessApp");
 class _InterfacePage extends _InterfacePageProduit_1._InterfacePageProduit {
 	constructor(...aParams) {
 		super(...aParams);
@@ -66,31 +67,40 @@ class _InterfacePage extends _InterfacePageProduit_1._InterfacePageProduit {
 				}
 			} else if (this.Instances[lInfos.ident] || lInfos.html) {
 				lHTML.push(
-					'<div id="',
-					lInfos.html
-						? this._idAddZoneBandeau + I
-						: this.Instances[lInfos.ident].getNom(),
-					'"',
-					lInfos.getDisplay ? ' ie-display="' + lInfos.getDisplay + '"' : "",
-					' class="element-bandeau-wrapper">',
-					lInfos.html && !lInfos.controleur ? lInfos.html : "",
-					"</div>",
+					IE.jsx.str(
+						"div",
+						{
+							id: lInfos.html
+								? this.getIdZoneBandeauDIndice(I)
+								: this.Instances[lInfos.ident].getNom(),
+							"ie-display": lInfos.getDisplay ? lInfos.getDisplay : "",
+							class: "element-bandeau-wrapper",
+						},
+						lInfos.html && !lInfos.controleur ? lInfos.html : "",
+					),
 				);
 			}
 		}
 		if (lGenrePourLargeurComplete === undefined) {
 			lHTML.push('<div class="objetBandeauEntete_fullsize"></div>');
 		}
-		ObjetHtml_1.GHtml.setDisplay(GApplication.idLigneBandeau, true);
-		ObjetHtml_1.GHtml.addHtml(GApplication.idLigneBandeau, lHTML.join(""), {
-			controleur: this.controleur,
-		});
+		ObjetHtml_1.GHtml.setDisplay(
+			(0, AccessApp_1.getApp)().idLigneBandeau,
+			true,
+		);
+		ObjetHtml_1.GHtml.addHtml(
+			(0, AccessApp_1.getApp)().idLigneBandeau,
+			lHTML.join(""),
+			{ controleur: this.controleur },
+		);
 		for (let I = 0; I < this.AddSurZone.length; I++) {
 			lInfos = lInfosSurZone[I];
 			if (lInfos.controleur) {
-				ObjetHtml_1.GHtml.setHtml(this._idAddZoneBandeau + I, lInfos.html, {
-					controleur: lInfos.controleur,
-				});
+				ObjetHtml_1.GHtml.setHtml(
+					this.getIdZoneBandeauDIndice(I),
+					lInfos.html,
+					{ controleur: lInfos.controleur },
+				);
 			}
 		}
 		if (
@@ -102,6 +112,9 @@ class _InterfacePage extends _InterfacePageProduit_1._InterfacePageProduit {
 		}
 		this.surResizeInterface();
 	}
+	getIdZoneBandeauDIndice(aIndice) {
+		return `${this._idAddZoneBandeau}_bandzone_${aIndice}`;
+	}
 	reinitialiser() {
 		super.reinitialiser();
 		this.AddSurZone = [];
@@ -109,14 +122,19 @@ class _InterfacePage extends _InterfacePageProduit_1._InterfacePageProduit {
 			this.Pere &&
 			this.Pere instanceof _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspaceCP
 		) {
-			$("#" + GApplication.idLigneBandeau.escapeJQ())
-				.children(":not(#" + GApplication.idBreadcrumb.escapeJQ() + ")")
+			$("#" + (0, AccessApp_1.getApp)().idLigneBandeau.escapeJQ())
+				.children(
+					":not(#" + (0, AccessApp_1.getApp)().idBreadcrumb.escapeJQ() + ")",
+				)
 				.remove();
 		}
 	}
 	setBandeau(aHtml) {
-		ObjetHtml_1.GHtml.setDisplay(GApplication.idLigneBandeau, true);
-		ObjetHtml_1.GHtml.addHtml(GApplication.idLigneBandeau, aHtml, {
+		ObjetHtml_1.GHtml.setDisplay(
+			(0, AccessApp_1.getApp)().idLigneBandeau,
+			true,
+		);
+		ObjetHtml_1.GHtml.addHtml((0, AccessApp_1.getApp)().idLigneBandeau, aHtml, {
 			controleur: this.controleur,
 		});
 		if (
@@ -138,7 +156,10 @@ class _InterfacePage extends _InterfacePageProduit_1._InterfacePageProduit {
 						? lInfos.ident
 						: null;
 				if (lInfos.html) {
-					ObjetStyle_1.GStyle.setVisible(this._idAddZoneBandeau + I, aAfficher);
+					ObjetStyle_1.GStyle.setVisible(
+						this.getIdZoneBandeauDIndice(I),
+						aAfficher,
+					);
 				} else if (this.conditionSuppAfficherBandeau(lIdent)) {
 					ObjetStyle_1.GStyle.setVisible(
 						this.Instances[lIdent].getNom(),

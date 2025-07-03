@@ -1,19 +1,19 @@
 exports.GHtml = exports.ObjetHtml = void 0;
-require("Divers.js");
+require("Divers");
 const MethodesObjet_1 = require("MethodesObjet");
 const IEHtml = require("IEHtml");
 const tag_1 = require("tag");
 const ObjetChaine_1 = require("ObjetChaine");
 const cTagsFocusables = [
 	"audio",
-	"button",
-	"canvas",
+	"button:not(:disabled)",
+	"canvas:not(:disabled)",
 	"details",
 	"iframe",
-	"input",
-	"select",
+	"input:not(:disabled)",
+	"select:not(:disabled)",
 	"summary",
-	"textarea",
+	"textarea:not(:disabled)",
 	"video",
 ];
 const cAttributsFocusables = [
@@ -250,7 +250,11 @@ class ObjetHtml {
 		const lTab = [];
 		if (lNode && lNode.querySelectorAll) {
 			const lOptions = Object.assign(
-				{ ignoreAriaHidden: true, ignoreRolePresentation: true },
+				{
+					ignoreAriaHidden: true,
+					ignoreRolePresentation: true,
+					avecTabindexNegatif: true,
+				},
 				aOptions,
 			);
 			const lNodes = lNode.querySelectorAll(cSelectorFocusables);
@@ -262,6 +266,12 @@ class ObjetHtml {
 					if (
 						lOptions.ignoreRolePresentation &&
 						["presentation", "none"].includes(lNode.role)
+					) {
+						return;
+					}
+					if (
+						!lOptions.avecTabindexNegatif &&
+						lNode.getAttribute("tabindex") === "-1"
 					) {
 						return;
 					}
@@ -478,11 +488,11 @@ class ObjetHtml {
 					const E = this.getElement(aId);
 					if (E) {
 						const begin = MethodesObjet_1.MethodesObjet.isNumber(aBegin)
-								? aBegin
-								: 0,
-							end = MethodesObjet_1.MethodesObjet.isNumber(aEnd)
-								? aEnd
-								: E.value.length;
+							? aBegin
+							: 0;
+						const end = MethodesObjet_1.MethodesObjet.isNumber(aEnd)
+							? aEnd
+							: E.value.length;
 						if (E.setSelectionRange) {
 							E.setSelectionRange(begin, end);
 						} else if (E.createTextRange) {

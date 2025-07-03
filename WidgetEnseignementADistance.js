@@ -10,7 +10,7 @@ class WidgetEnseignementADistance extends ObjetWidget_1.Widget.ObjetWidget {
 	construire(aParams) {
 		this.donnees = aParams.donnees;
 		const lWidget = {
-			html: this.composeWidgetEnseignementADistance(),
+			getHtml: this.composeWidgetEnseignementADistance.bind(this),
 			nbrElements: this.compterNombreLignesWidget(this.donnees),
 			afficherMessage: false,
 		};
@@ -33,7 +33,7 @@ class WidgetEnseignementADistance extends ObjetWidget_1.Widget.ObjetWidget {
 				);
 				lClassEnseignement = "at-home";
 			}
-			H.push('<li tabindex="0">', '<div class="wrap-as-column">');
+			H.push("<li>", '<div class="wrap-as-column">');
 			H.push(
 				'<div class="wrap">',
 				'<div class="date">',

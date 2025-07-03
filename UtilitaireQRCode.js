@@ -17,14 +17,21 @@ const UtilitaireQRCode = {
 			: "";
 	},
 	genererImageDOM(aStrValue, aParametres) {
-		return kjua({
+		const lParams = Object.assign({ masquerCurseur: true }, aParametres);
+		let lEltQrCode = kjua({
 			render: "image",
 			size:
-				(aParametres === null || aParametres === void 0
-					? void 0
-					: aParametres.taille) || 175,
+				(lParams === null || lParams === void 0 ? void 0 : lParams.taille) ||
+				175,
 			text: aStrValue,
 		});
+		if (lParams && lParams.alt) {
+			lEltQrCode.setAttribute("alt", lParams.alt);
+		}
+		if (lEltQrCode && lParams.masquerCurseur) {
+			lEltQrCode.classList.add("cursor-none");
+		}
+		return lEltQrCode;
 	},
 };
 exports.UtilitaireQRCode = UtilitaireQRCode;

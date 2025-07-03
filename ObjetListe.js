@@ -1,9 +1,11 @@
 exports.ObjetListe = void 0;
 const _ObjetListe_1 = require("_ObjetListe");
+const ObjetListe_Mobile_1 = require("ObjetListe_Mobile");
+const ObjetListe_Espace_1 = require("ObjetListe_Espace");
 class _ObjetListe extends _ObjetListe_1.ObjetListe {}
 exports.ObjetListe = _ObjetListe;
 if (IE.estMobile) {
-	exports.ObjetListe = _ObjetListe = require("ObjetListe_Mobile.js");
+	exports.ObjetListe = _ObjetListe = ObjetListe_Mobile_1.ObjetListe_Mobile;
 } else {
-	exports.ObjetListe = _ObjetListe = require("ObjetListe_Espace.js");
+	exports.ObjetListe = _ObjetListe = ObjetListe_Espace_1.ObjetListeEspace;
 }

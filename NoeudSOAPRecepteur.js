@@ -10,9 +10,11 @@ class NoeudSOAPRecepteur extends NoeudSOAP_1.NoeudSOAP {
 		this.identifiant = aCallback.identifiant;
 	}
 	traiterMessage(aMessageSOAP) {
-		let lDonneesReponse;
+		let lDonneesReponse = null;
 		try {
-			lDonneesReponse = this.DescriptionAppel.lireEnveloppeSoap(aMessageSOAP);
+			if (this.DescriptionAppel) {
+				lDonneesReponse = this.DescriptionAppel.lireEnveloppeSoap(aMessageSOAP);
+			}
 		} catch (e) {
 			lDonneesReponse = e;
 		}

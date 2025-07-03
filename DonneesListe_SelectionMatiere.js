@@ -23,7 +23,7 @@ class DonneesListe_SelectionMatiere extends ObjetDonneesListeFlatDesign_1.ObjetD
 			? '<div style="' +
 					ObjetStyle_1.GStyle.composeCouleurFond(aParams.article.couleur) +
 					'height:2rem;padding:0.2rem;border-radius:0.4rem;"></div>'
-			: '<div style="margin-right:0.4rem"></div>';
+			: '<div class="m-right"></div>';
 	}
 	getVisible(D) {
 		if (this.filtreUniquementEnseignees) {

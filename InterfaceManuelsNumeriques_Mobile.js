@@ -1,69 +1,66 @@
-const { InterfacePage_Mobile } = require("InterfacePage_Mobile.js");
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { GHtml } = require("ObjetHtml.js");
-const {
-	UtilitaireManuelsNumeriques,
-} = require("UtilitaireManuelsNumeriques.js");
-Requetes.inscrire("ManuelsNumeriques", ObjetRequeteConsultation);
-class InterfaceManuelsNumeriques_Mobile extends InterfacePage_Mobile {
+exports.InterfaceManuelsNumeriques_Mobile = void 0;
+const InterfacePage_Mobile_1 = require("InterfacePage_Mobile");
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const ObjetHtml_1 = require("ObjetHtml");
+const UtilitaireManuelsNumeriques_1 = require("UtilitaireManuelsNumeriques");
+class ObjetRequeteManuelsNumeriques extends ObjetRequeteJSON_1.ObjetRequeteConsultation {}
+CollectionRequetes_1.Requetes.inscrire(
+	"ManuelsNumeriques",
+	ObjetRequeteManuelsNumeriques,
+);
+class InterfaceManuelsNumeriques_Mobile extends InterfacePage_Mobile_1.InterfacePage_Mobile {
 	constructor(...aParams) {
 		super(...aParams);
 		this.options = {
 			avecNomEditeur: [
-				EGenreEspace.Mobile_Professeur,
-				EGenreEspace.Mobile_PrimProfesseur,
-				EGenreEspace.PrimDirection,
-				EGenreEspace.Mobile_PrimDirection,
+				Enumere_Espace_1.EGenreEspace.Mobile_Professeur,
+				Enumere_Espace_1.EGenreEspace.Mobile_PrimProfesseur,
+				Enumere_Espace_1.EGenreEspace.PrimDirection,
+				Enumere_Espace_1.EGenreEspace.Mobile_PrimDirection,
 			].includes(GEtatUtilisateur.GenreEspace),
 			avecDetailsRessources: [
-				EGenreEspace.Mobile_Professeur,
-				EGenreEspace.Mobile_PrimProfesseur,
-				EGenreEspace.PrimDirection,
-				EGenreEspace.Mobile_PrimDirection,
+				Enumere_Espace_1.EGenreEspace.Mobile_Professeur,
+				Enumere_Espace_1.EGenreEspace.Mobile_PrimProfesseur,
+				Enumere_Espace_1.EGenreEspace.PrimDirection,
+				Enumere_Espace_1.EGenreEspace.Mobile_PrimDirection,
 			].includes(GEtatUtilisateur.GenreEspace),
 			avecCumulMatiere: [
-				EGenreEspace.Mobile_Eleve,
-				EGenreEspace.Mobile_PrimEleve,
+				Enumere_Espace_1.EGenreEspace.Mobile_Eleve,
+				Enumere_Espace_1.EGenreEspace.Mobile_PrimEleve,
 			].includes(GEtatUtilisateur.GenreEspace),
 		};
 	}
 	recupererDonnees() {
 		this.actualiserDonnees();
 	}
-	actualiserDonnees() {
-		Requetes(
-			"ManuelsNumeriques",
+	async actualiserDonnees() {
+		const lReponse = await new ObjetRequeteManuelsNumeriques(
 			this,
-			_surRecupererDonnees.bind(this),
 		).lancerRequete();
-	}
-	getControleur() {
-		return $.extend(true, super.getControleur(this), {});
+		lReponse.kiosque.listeRessources.setTri([
+			ObjetTri_1.ObjetTri.init((D) => {
+				return D.matiere ? !D.matiere.existeNumero() : false;
+			}),
+			ObjetTri_1.ObjetTri.init((D) => {
+				return D.matiere ? D.matiere.getLibelle() : "";
+			}),
+			ObjetTri_1.ObjetTri.init("editeur"),
+			ObjetTri_1.ObjetTri.init("titre"),
+		]);
+		lReponse.kiosque.listeRessources.trier();
+		const lHtml = [];
+		lHtml.push(
+			UtilitaireManuelsNumeriques_1.UtilitaireManuelsNumeriques.composeListeManuelsNumeriquesMobile(
+				lReponse.kiosque.listeRessources,
+				this.options,
+			),
+		);
+		ObjetHtml_1.GHtml.setHtml(this.Nom, lHtml.join(""), {
+			controleur: this.controleur,
+		});
 	}
 }
-function _surRecupererDonnees(aJSON) {
-	aJSON.kiosque.listeRessources.setTri([
-		ObjetTri.init((D) => {
-			return D.matiere ? !D.matiere.existeNumero() : false;
-		}),
-		ObjetTri.init((D) => {
-			return D.matiere ? D.matiere.getLibelle() : "";
-		}),
-		ObjetTri.init("editeur"),
-		ObjetTri.init("titre"),
-	]);
-	aJSON.kiosque.listeRessources.trier();
-	const lHtml = [];
-	lHtml.push(
-		UtilitaireManuelsNumeriques.composeListeManuelsNumeriquesMobile(
-			aJSON.kiosque.listeRessources,
-			this.options,
-			this.controleur,
-		),
-	);
-	GHtml.setHtml(this.Nom, lHtml.join(""), { controleur: this.controleur });
-}
-module.exports = InterfaceManuelsNumeriques_Mobile;
+exports.InterfaceManuelsNumeriques_Mobile = InterfaceManuelsNumeriques_Mobile;

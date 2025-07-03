@@ -70,6 +70,10 @@ class ObjetUtilitaireAbsence {
 					return ObjetTraduction_1.GTraductions.getValeur(
 						"AbsenceVS.aucuneAbsenceInternat",
 					);
+				case Enumere_Ressource_1.EGenreRessource.RetardInternat:
+					return ObjetTraduction_1.GTraductions.getValeur(
+						"AbsenceVS.aucunRetardInternat",
+					);
 				case Enumere_Ressource_1.EGenreRessource.Retard:
 					return ObjetTraduction_1.GTraductions.getValeur(
 						"AbsenceVS.aucunRetard",
@@ -205,6 +209,14 @@ class ObjetUtilitaireAbsence {
 					return aObjet.singulier
 						? ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.retard")
 						: ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.retards");
+				case Enumere_Ressource_1.EGenreRessource.RetardInternat:
+					return aObjet.singulier
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"AbsenceVS.retardInternat",
+							)
+						: ObjetTraduction_1.GTraductions.getValeur(
+								"AbsenceVS.retardsInternat",
+							);
 				case Enumere_Ressource_1.EGenreRessource.Infirmerie:
 					return aObjet.singulier
 						? ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.infirmerie")
@@ -341,6 +353,8 @@ class ObjetUtilitaireAbsence {
 			case Enumere_Ressource_1.EGenreRessource.AbsenceInternat:
 				break;
 			case Enumere_Ressource_1.EGenreRessource.Retard:
+				break;
+			case Enumere_Ressource_1.EGenreRessource.RetardInternat:
 				break;
 			case Enumere_Ressource_1.EGenreRessource.Infirmerie:
 				H.push(this.getSymptomesMedicaux(aAbsence, true, false));
@@ -976,7 +990,7 @@ class ObjetUtilitaireAbsence {
 								});
 							}
 						} else if (aParams.callback) {
-							aParams.callback.call();
+							aParams.callback();
 						}
 					}
 				});
@@ -993,6 +1007,7 @@ class ObjetUtilitaireAbsence {
 			aAbsenceSaisie &&
 			lClassName &&
 			lClassName === "ObjetElement" &&
+			"getNumero" in aAbsenceSaisie &&
 			aAbsenceSaisie.getNumero() === aAbsenceOrig.getNumero()
 		) {
 			if (aAbsenceSaisie.message) {
@@ -1093,8 +1108,6 @@ class ObjetUtilitaireAbsence {
 					avecSaisie: aObjet.avecSaisie,
 					node: aObjet.node,
 					nodeEdition: aObjet.nodeEdition,
-					ieHintPJ: aObjet.ieHintPJ,
-					ieHintCommentaire: aObjet.ieHintCommentaire,
 				});
 				break;
 			case Enumere_Ressource_1.EGenreRessource.AbsenceRepas:
@@ -1114,9 +1127,10 @@ class ObjetUtilitaireAbsence {
 					avecSaisie: aObjet.avecSaisie,
 					node: aObjet.node,
 					nodeEdition: aObjet.nodeEdition,
-					ieHintPJ: aObjet.ieHintPJ,
-					ieHintCommentaire: aObjet.ieHintCommentaire,
 				});
+				break;
+			case Enumere_Ressource_1.EGenreRessource.RetardInternat:
+				this._remplirInfosAbsences(aObjet.element, {});
 				break;
 			case Enumere_Ressource_1.EGenreRessource.Incident:
 				this._remplirInfosIncident(aObjet.element, aObjet.model);
@@ -1329,6 +1343,7 @@ class ObjetUtilitaireAbsence {
 				}
 				return lResult;
 			}
+			case Enumere_Ressource_1.EGenreRessource.RetardInternat:
 			case Enumere_Ressource_1.EGenreRessource.AbsenceInternat:
 			case Enumere_Ressource_1.EGenreRessource.Sanction:
 				if (lEstJourEgal) {
@@ -1479,13 +1494,14 @@ class ObjetUtilitaireAbsence {
 				break;
 			case Enumere_Ressource_1.EGenreRessource.Incident:
 			case Enumere_Ressource_1.EGenreRessource.Retard:
+			case Enumere_Ressource_1.EGenreRessource.RetardInternat:
 				lResult.heure = ObjetTraduction_1.GTraductions.getValeur(
 					"Dates.AHeure",
 					[lResult.heureDebut],
 				);
 				lResult.date = ObjetTraduction_1.GTraductions.getValeur(
-					"Dates.DateDebutAHeureDebut",
-					[lResult.dateDebut, lResult.heureDebut],
+					"Dates.LeDate",
+					[lResult.dateDebut],
 				);
 				break;
 			case Enumere_Ressource_1.EGenreRessource.Punition: {
@@ -2051,6 +2067,12 @@ class ObjetUtilitaireAbsence {
 					: ObjetTraduction_1.GTraductions.getValeur(
 							"AbsenceVS.absencesInternat",
 						);
+			case Enumere_Ressource_1.EGenreRessource.RetardInternat:
+				return aObjet.singulier
+					? ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.retardInternat")
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"AbsenceVS.retardsInternat",
+						);
 			case Enumere_Ressource_1.EGenreRessource.Retard:
 				if (aObjet.aRegulariser) {
 					return ObjetTraduction_1.GTraductions.getValeur(
@@ -2294,53 +2316,72 @@ class ObjetUtilitaireAbsence {
 			ObjetFiche_SaisieAbsence_1.ObjetFiche_SaisieAbsence,
 			{
 				pere: this,
-				evenement: function (aNumeroBouton, aDonnees) {
+				evenement: async function (aNumeroBouton, aDonnees) {
+					var _a;
 					if (aNumeroBouton === 1) {
 						const lInstance = !!lParent.instance ? lParent.instance : lParent;
-						const lRequete =
-							new ObjetRequeteSaisieVieScolaire_1.ObjetRequeteSaisieVieScolaire(
+						const lAffMessageRefus = (aMessage) => {
+							if (
+								aMessage === null || aMessage === void 0
+									? void 0
+									: aMessage.ucfirst
+							) {
+								GApplication.getMessage().afficher({
+									titre: ObjetTraduction_1.GTraductions.getValeur(
+										"AbsenceVS.message.previsionAbsenceImpossible",
+									),
+									message: aMessage.ucfirst(),
+								});
+								return true;
+							}
+							return false;
+						};
+						const lReponseControle =
+							await new ObjetRequeteSaisieVieScolaire_1.ObjetRequeteSaisieVieScolaire(
 								lInstance,
-							);
+							).lancerRequete({
+								listeAbsences:
+									new ObjetListeElements_1.ObjetListeElements().addElement(
+										aDonnees,
+									),
+								estControle: true,
+							});
+						if (lAffMessageRefus(lReponseControle.JSONReponse.message)) {
+							return;
+						}
 						const lListeAbsences =
 							new ObjetListeElements_1.ObjetListeElements().addElement(
 								aDonnees,
 							);
-						lRequete
-							.addUpload({
-								listeFichiers: aDonnees.documents,
-								conserverIdFichier: true,
-							})
-							.lancerRequete({ listeAbsences: lListeAbsences })
-							.then((aParams) => {
-								if (
-									aParams.genreReponse &&
-									aParams.genreReponse ===
-										ObjetRequeteJSON_1.EGenreReponseSaisie.succes
-								) {
-									if (aParams.JSONReponse && aParams.JSONReponse.message) {
-										GApplication.getMessage().afficher({
-											titre: ObjetTraduction_1.GTraductions.getValeur(
-												"AbsenceVS.message.previsionAbsenceImpossible",
-											),
-											message: aParams.JSONReponse.message.ucfirst(),
-										});
-									} else {
-										lFenetre.fermer();
-										Toast_1.Toast.afficher({
-											msg: ObjetTraduction_1.GTraductions.getValeur(
-												"AbsenceVS.message.confirmerDeclaration",
-											),
-											type: Toast_1.ETypeToast.succes,
-										});
-										if (aParam.callbackApresSaisieAbsences) {
-											Object.assign(aParams, {
-												absenceAjoutee: lAbsenceAjoutee,
-											});
-											aParam.callbackApresSaisieAbsences(aParams);
-										}
-									}
-								}
-							});
+						const lReponse =
+							await new ObjetRequeteSaisieVieScolaire_1.ObjetRequeteSaisieVieScolaire(
+								lInstance,
+							)
+								.addUpload({ listeFichiers: aDonnees.documents })
+								.lancerRequete({ listeAbsences: lListeAbsences });
+						if (
+							lAffMessageRefus(
+								(_a =
+									lReponse === null || lReponse === void 0
+										? void 0
+										: lReponse.JSONReponse) === null || _a === void 0
+									? void 0
+									: _a.message,
+							)
+						) {
+							return;
+						}
+						lFenetre.fermer();
+						Toast_1.Toast.afficher({
+							msg: ObjetTraduction_1.GTraductions.getValeur(
+								"AbsenceVS.message.confirmerDeclaration",
+							),
+							type: Toast_1.ETypeToast.succes,
+						});
+						if (aParam.callbackApresSaisieAbsences) {
+							Object.assign(lReponse, { absenceAjoutee: lAbsenceAjoutee });
+							aParam.callbackApresSaisieAbsences(lReponse);
+						}
 					}
 				},
 				initialiser(aFenetre) {
@@ -2940,10 +2981,17 @@ class ObjetUtilitaireAbsence {
 			aElement.html.content.push("<div>" + aElement.html.nbrHeures + "</div>");
 		}
 		if (!!aElement.duree) {
-			aElement.html.duree =
-				aElement.duree +
-				" " +
-				ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.minutes");
+			if (
+				aElement.getGenre() ===
+				Enumere_Ressource_1.EGenreRessource.RetardInternat
+			) {
+				aElement.html.duree = `${UtilitaireDuree_1.TUtilitaireDuree.dureeEnMin(aElement.duree)} ${ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.minutes")}`;
+			} else {
+				aElement.html.duree =
+					aElement.duree +
+					" " +
+					ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.minutes");
+			}
 			aElement.html.content.push("<div>" + aElement.html.duree + "</div>");
 		}
 		if (aElement.infosMotif.existe()) {
@@ -3020,9 +3068,20 @@ class ObjetUtilitaireAbsence {
 			if (!aParams.avecBascule) {
 				aElement.html.content.push('<div class="sectionVSIcones">');
 				let lIconDocs = "";
-				if (aElement.html.avecDocuments && aParams.ieHintPJ) {
-					lIconDocs =
-						'<i class="icon_piece_jointe" ' + aParams.ieHintPJ + "></i>";
+				if (aElement.html.avecDocuments && aElement.documents) {
+					const lHints = [];
+					for (const lDoc of aElement.documents) {
+						if (lDoc.hint) {
+							lHints.push(lDoc.hint);
+						}
+					}
+					if (lHints.length > 0) {
+						lIconDocs = IE.jsx.str("i", {
+							class: "icon_piece_jointe",
+							role: "img",
+							"ie-tooltiplabel": lHints.join("\n"),
+						});
+					}
 				}
 				aElement.html.content.push(
 					'<div class="iconVSAbsence">',
@@ -3030,11 +3089,12 @@ class ObjetUtilitaireAbsence {
 					"</div>",
 				);
 				let lIconCommentaire;
-				if (!!aElement.html.commentaire && aParams.ieHintCommentaire) {
-					lIconCommentaire =
-						'<i class="icon_nouvelle_conversation" ' +
-						aParams.ieHintCommentaire +
-						"></i>";
+				if (!!aElement.html.commentaire) {
+					lIconCommentaire = IE.jsx.str("i", {
+						class: "icon_nouvelle_conversation",
+						role: "img",
+						"ie-tooltiplabel": aElement.html.commentaire,
+					});
 				}
 				aElement.html.content.push(
 					'<div class="iconVSAbsence">',
@@ -3086,7 +3146,7 @@ class ObjetUtilitaireAbsence {
 								ObjetTraduction_1.GTraductions.getValeur(
 									"AbsenceVS.jeJustifie",
 								),
-								' <i class="icon_justifier"></i></div>',
+								' <i class="icon_justifier" role="presentation"></i></div>',
 							);
 						}
 					}

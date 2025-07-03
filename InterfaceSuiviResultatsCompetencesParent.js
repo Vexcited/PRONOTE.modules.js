@@ -1,58 +1,63 @@
-const {
-	_InterfaceSuiviResultatsCompetences,
-} = require("_InterfaceSuiviResultatsCompetences.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-class InterfaceSuiviResultatsCompetencesParent extends _InterfaceSuiviResultatsCompetences {
+exports.InterfaceSuiviResultatsCompetencesParent = void 0;
+const _InterfaceSuiviResultatsCompetences_1 = require("_InterfaceSuiviResultatsCompetences");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+class InterfaceSuiviResultatsCompetencesParent extends _InterfaceSuiviResultatsCompetences_1._InterfaceSuiviResultatsCompetences {
 	constructor(...aParams) {
 		super(...aParams);
 	}
 	construireInstances() {
 		super.construireInstances();
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			comboSelectionPeriode: {
-				init(aCombo) {
-					aCombo.setOptionsObjetSaisie({
-						labelWAICellule: GTraductions.getValeur(
-							"WAI.ListeSelectionPeriode",
-						),
-					});
-				},
-				getDonnees(aDonnees) {
-					if (!aDonnees) {
-						return GEtatUtilisateur.getOngletListePeriodes();
-					}
-				},
-				getIndiceSelection() {
-					let lIndicePeriode = 0;
-					const lListePeriodes = GEtatUtilisateur.getOngletListePeriodes();
-					if (lListePeriodes) {
-						const lPeriodeNavigation = GEtatUtilisateur.Navigation.getRessource(
-							EGenreRessource.Periode,
-						);
-						if (lPeriodeNavigation) {
-							lIndicePeriode =
-								lListePeriodes.getIndiceParElement(lPeriodeNavigation);
-						}
-					}
-					return Math.max(lIndicePeriode, 0);
-				},
-				event(aParametres) {
-					if (aParametres.element) {
-						GEtatUtilisateur.Navigation.setRessource(
-							EGenreRessource.Periode,
-							aParametres.element,
-						);
-						aInstance.afficherPage();
-					}
-				},
+	jsxComboModelSelectionPeriode() {
+		return {
+			init: (aCombo) => {
+				aCombo.setOptionsObjetSaisie({
+					labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+						"WAI.ListeSelectionPeriode",
+					),
+				});
 			},
-		});
+			getDonnees: (aListe) => {
+				if (!aListe) {
+					return this.etatUtilisateurSco.getOngletListePeriodes();
+				}
+				return aListe;
+			},
+			getIndiceSelection: () => {
+				let lIndicePeriode = 0;
+				const lListePeriodes = this.etatUtilisateurSco.getOngletListePeriodes();
+				if (lListePeriodes) {
+					const lPeriodeNavigation =
+						this.etatUtilisateurSco.Navigation.getRessource(
+							Enumere_Ressource_1.EGenreRessource.Periode,
+						);
+					if (lPeriodeNavigation) {
+						lIndicePeriode =
+							lListePeriodes.getIndiceParElement(lPeriodeNavigation);
+					}
+				}
+				return Math.max(lIndicePeriode, 0);
+			},
+			event: (aParams) => {
+				if (aParams.element) {
+					this.etatUtilisateurSco.Navigation.setRessource(
+						Enumere_Ressource_1.EGenreRessource.Periode,
+						aParams.element,
+					);
+					this.afficherPage();
+				}
+			},
+		};
 	}
 	getElementsAddSurZoneSelection() {
-		return [{ html: '<ie-combo ie-model="comboSelectionPeriode"></ie-combo>' }];
+		return [
+			{
+				html: IE.jsx.str("ie-combo", {
+					"ie-model": this.jsxComboModelSelectionPeriode.bind(this),
+				}),
+			},
+		];
 	}
 	getElementsAddSurZoneParametrage() {
 		return [];
@@ -62,10 +67,13 @@ class InterfaceSuiviResultatsCompetencesParent extends _InterfaceSuiviResultatsC
 		return lEleve ? lEleve.Classe : null;
 	}
 	getEleveConcerne() {
-		return GEtatUtilisateur.getMembre();
+		return this.etatUtilisateurSco.getMembre();
 	}
 	getPeriodeConcernee() {
-		return GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Periode);
+		return this.etatUtilisateurSco.Navigation.getRessource(
+			Enumere_Ressource_1.EGenreRessource.Periode,
+		);
 	}
 }
-module.exports = { InterfaceSuiviResultatsCompetencesParent };
+exports.InterfaceSuiviResultatsCompetencesParent =
+	InterfaceSuiviResultatsCompetencesParent;

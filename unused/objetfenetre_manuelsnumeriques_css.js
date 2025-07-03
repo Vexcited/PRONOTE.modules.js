@@ -1,0 +1,20 @@
+exports.StylesObjetFenetre_ManuelsNumeriques = void 0;
+exports.StylesObjetFenetre_ManuelsNumeriques = {
+	OFManuelsNumeriques: "OFManuelsNumeriques",
+	sansRessources: "sansRessources",
+	OFMN_InfoAjout: "OFMN_InfoAjout",
+	OFMN_SectionListes: "OFMN_SectionListes",
+	OFMN_SectionRessourcesGranulaires: "OFMN_SectionRessourcesGranulaires",
+	OFMN_SectionManuels: "OFMN_SectionManuels",
+	OFMN_Manuel: "OFMN_Manuel",
+	SansManuel: "SansManuel",
+	logoContain: "logo-contain",
+	libelleContain: "libelle-contain",
+	OFMN_SectionBoutons: "OFMN_SectionBoutons",
+	OFMN_SectionListe: "OFMN_SectionListe",
+	OFMN_Ressource: "OFMN_Ressource",
+	OFMN_Ressource_Titre: "OFMN_Ressource_Titre",
+	OFMN_Ressource_Commentaire: "OFMN_Ressource_Commentaire",
+	OFMN_Date: "OFMN_Date",
+	OFMN_Icon: "OFMN_Icon",
+};

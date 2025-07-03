@@ -1,22 +1,21 @@
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const {
-	DonneesListe_RessourcesPedagogiquesProfesseur,
-} = require("DonneesListe_RessourcesPedagogiquesProfesseur.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-class ObjetFenetre_SelectionRessourcePedagogique extends ObjetFenetre {
+exports.ObjetFenetre_SelectionRessourcePedagogique = void 0;
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const DonneesListe_RessourcesPedagogiquesProfesseur_1 = require("DonneesListe_RessourcesPedagogiquesProfesseur");
+const ObjetListeElements_1 = require("ObjetListeElements");
+class ObjetFenetre_SelectionRessourcePedagogique extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.setOptionsFenetre({
-			titre: GTraductions.getValeur(
+			titre: ObjetTraduction_1.GTraductions.getValeur(
 				"RessourcePedagogique.RessourcesAffecteesADAutres",
 			),
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 			avecTailleSelonContenu: true,
 		});
@@ -24,25 +23,24 @@ class ObjetFenetre_SelectionRessourcePedagogique extends ObjetFenetre {
 			donnees: null,
 			publics: null,
 			listeMatieresParRessource: null,
-			genreAffiches: null,
 			selection: null,
 		};
 	}
-	getControleur() {
-		return $.extend(true, super.getControleur(this), {
+	getControleur(aInstance) {
+		return $.extend(true, super.getControleur(aInstance), {
 			fenetreBtn: {
 				getDisabled: function (aBoutonRepeat) {
 					return aBoutonRepeat.element.index === 0
 						? false
-						: !this.instance.parametres.selection;
+						: !aInstance.parametres.selection;
 				},
 			},
 		});
 	}
 	construireInstances() {
 		this.identListe = this.add(
-			ObjetListe,
-			_evenementSurListe.bind(this),
+			ObjetListe_1.ObjetListe,
+			this._evenementSurListe.bind(this),
 			_initialiserListe.bind(this),
 		);
 	}
@@ -69,36 +67,58 @@ class ObjetFenetre_SelectionRessourcePedagogique extends ObjetFenetre {
 		this.fermer();
 		this.callback.appel(ANumeroBouton === 1, this.parametres.selection);
 	}
+	_evenementSurListe(aParametres) {
+		switch (aParametres.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Selection:
+				this.parametres.selection = aParametres.article.estUnDeploiement
+					? null
+					: aParametres.article.donnee;
+				break;
+		}
+	}
 }
+exports.ObjetFenetre_SelectionRessourcePedagogique =
+	ObjetFenetre_SelectionRessourcePedagogique;
 function _initialiserListe(aInstance) {
 	aInstance.setOptionsListe({
 		colonnes: [
 			{
-				id: DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.type,
+				id: DonneesListe_RessourcesPedagogiquesProfesseur_1
+					.DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.type,
 				taille: 21,
 				titre: "",
 			},
 			{
-				id: DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.libelle,
+				id: DonneesListe_RessourcesPedagogiquesProfesseur_1
+					.DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.libelle,
 				taille: 300,
-				titre: GTraductions.getValeur("RessourcePedagogique.colonne.document"),
+				titre: ObjetTraduction_1.GTraductions.getValeur(
+					"RessourcePedagogique.colonne.document",
+				),
 			},
 			{
-				id: DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.commentaire,
+				id: DonneesListe_RessourcesPedagogiquesProfesseur_1
+					.DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.commentaire,
 				taille: 200,
-				titre: GTraductions.getValeur(
+				titre: ObjetTraduction_1.GTraductions.getValeur(
 					"RessourcePedagogique.colonne.commentaire",
 				),
 			},
 			{
-				id: DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.public,
+				id: DonneesListe_RessourcesPedagogiquesProfesseur_1
+					.DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.public,
 				taille: 80,
-				titre: GTraductions.getValeur("RessourcePedagogique.colonne.public"),
+				titre: ObjetTraduction_1.GTraductions.getValeur(
+					"RessourcePedagogique.colonne.public",
+				),
 			},
 			{
-				id: DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.date,
+				id: DonneesListe_RessourcesPedagogiquesProfesseur_1
+					.DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.date,
 				taille: 70,
-				titre: GTraductions.getValeur("RessourcePedagogique.colonne.deposeLe"),
+				titre: ObjetTraduction_1.GTraductions.getValeur(
+					"RessourcePedagogique.colonne.deposeLe",
+				),
 			},
 		],
 		hauteurMaxAdapteContenu: 400,
@@ -106,20 +126,12 @@ function _initialiserListe(aInstance) {
 	});
 	GEtatUtilisateur.setTriListe({
 		liste: aInstance,
-		tri: DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.libelle,
+		tri: DonneesListe_RessourcesPedagogiquesProfesseur_1
+			.DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.libelle,
 		identifiant: "fenetre_selectionRessourcePeda",
 	});
 }
-function _evenementSurListe(aParametres) {
-	switch (aParametres.genreEvenement) {
-		case EGenreEvenementListe.Selection:
-			this.parametres.selection = aParametres.article.estUnDeploiement
-				? null
-				: aParametres.article.donnee;
-			break;
-	}
-}
-class DonneesListe_RessourcesPedagogiquesProfesseur_Selection extends DonneesListe_RessourcesPedagogiquesProfesseur {
+class DonneesListe_RessourcesPedagogiquesProfesseur_Selection extends DonneesListe_RessourcesPedagogiquesProfesseur_1.DonneesListe_RessourcesPedagogiquesProfesseur {
 	constructor(aParam) {
 		aParam.listeMatieresAcceptes = null;
 		let lElement;
@@ -162,9 +174,11 @@ class DonneesListe_RessourcesPedagogiquesProfesseur_Selection extends DonneesLis
 	}
 	getValeur(aParams) {
 		switch (aParams.idColonne) {
-			case DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.libelle:
+			case DonneesListe_RessourcesPedagogiquesProfesseur_1
+				.DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.libelle:
 				return aParams.article.donnee.ressource.getLibelle();
-			case DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.public:
+			case DonneesListe_RessourcesPedagogiquesProfesseur_1
+				.DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.public:
 				return aParams.article.donnee.listePublics
 					.getTableauLibelles(null, true, true)
 					.join(", ");
@@ -173,10 +187,11 @@ class DonneesListe_RessourcesPedagogiquesProfesseur_Selection extends DonneesLis
 	}
 	getTypeValeur(aParams) {
 		switch (aParams.idColonne) {
-			case DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.type:
-				return ObjetDonneesListe.ETypeCellule.Html;
+			case DonneesListe_RessourcesPedagogiquesProfesseur_1
+				.DonneesListe_RessourcesPedagogiquesProfesseur.colonnes.type:
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
 	getClass() {
 		return "";
@@ -196,7 +211,7 @@ function _ressourceAcceptee(aParams, aRessource) {
 	if (aRessource.listePublics.count() === 0) {
 		return false;
 	}
-	const lPublicsCourantsTrouves = new ObjetListeElements();
+	const lPublicsCourantsTrouves = new ObjetListeElements_1.ObjetListeElements();
 	aRessource.listePublics.parcourir((D) => {
 		if (D.existe()) {
 			const lElementTrouve = aParams.publics.getElementParElement(D);
@@ -210,4 +225,3 @@ function _ressourceAcceptee(aParams, aRessource) {
 	}
 	return true;
 }
-module.exports = { ObjetFenetre_SelectionRessourcePedagogique };

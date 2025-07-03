@@ -1,5 +1,6 @@
 exports.AppelSOAP = void 0;
 const AppelMethodeDistante_1 = require("AppelMethodeDistante");
+const AccessApp_1 = require("AccessApp");
 const MethodesObjet_1 = require("MethodesObjet");
 const AppelSOAP = {
 	lancerAppel(aParametres) {
@@ -13,7 +14,7 @@ const AppelSOAP = {
 			},
 			aParametres,
 		);
-		const lObjetApplicationConsoles = GApplication;
+		const lObjetApplicationConsoles = (0, AccessApp_1.getApp)();
 		let lResult = new Promise((aResolve, aReject) => {
 			if (!lParametres.instance || !lParametres.port || !lParametres.methode) {
 				aReject();

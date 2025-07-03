@@ -2,6 +2,7 @@ exports.ObjetRequeteFonctionParametres = void 0;
 const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
 const CollectionRequetes_1 = require("CollectionRequetes");
 const UtilitaireIdentifiantNavigateur_1 = require("UtilitaireIdentifiantNavigateur");
+const TypesRequeteJSON_1 = require("TypesRequeteJSON");
 class ObjetRequeteFonctionParametres extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	lancerRequete(aObjet) {
 		this.JSON = {
@@ -22,6 +23,6 @@ class ObjetRequeteFonctionParametres extends ObjetRequeteJSON_1.ObjetRequeteCons
 }
 exports.ObjetRequeteFonctionParametres = ObjetRequeteFonctionParametres;
 CollectionRequetes_1.Requetes.inscrire(
-	"FonctionParametres",
+	TypesRequeteJSON_1.ConstantesIdRequetesAjaxCP.fonctionParametres,
 	ObjetRequeteFonctionParametres,
 );

@@ -115,6 +115,65 @@ class ObjetFenetre_EditionBilletBlog extends ObjetFenetre_1.ObjetFenetre {
 			this._initTiny();
 		}
 	}
+	jsxModeleCheckboxBilletEstPublie() {
+		return {
+			getValue: () => {
+				var _a;
+				return (_a = this.donnees.billetBlog) === null || _a === void 0
+					? void 0
+					: _a.estPublie;
+			},
+			setValue: (aValue) => {
+				if (this.donnees.billetBlog) {
+					this.donnees.billetBlog.estPublie = aValue;
+					this.donnees.billetBlog.setEtat(
+						Enumere_Etat_1.EGenreEtat.Modification,
+					);
+				}
+			},
+		};
+	}
+	jsxModeleRadioTypePublic(aEstPublicDuBlog) {
+		return {
+			getValue: () => {
+				var _a;
+				const lEstBilletPourPublicDuBlog =
+					(_a = this.donnees.billetBlog) === null || _a === void 0
+						? void 0
+						: _a.estPublicDuBlog;
+				return (
+					(aEstPublicDuBlog && lEstBilletPourPublicDuBlog) ||
+					(!aEstPublicDuBlog && !lEstBilletPourPublicDuBlog)
+				);
+			},
+			setValue: (aValue) => {
+				if (this.donnees.billetBlog && aValue) {
+					this.donnees.billetBlog.estPublicDuBlog = aEstPublicDuBlog;
+					this.donnees.billetBlog.setEtat(
+						Enumere_Etat_1.EGenreEtat.Modification,
+					);
+				}
+			},
+			getName: () => {
+				return `${this.Nom}_TypePublic`;
+			},
+			getDisabled: () => {
+				let lEstRadiosTypePublicActives = false;
+				if (this.donnees.billetBlog) {
+					lEstRadiosTypePublicActives = this.donnees.billetBlog.estPublie;
+					if (lEstRadiosTypePublicActives) {
+						const lListeElevesPossibles =
+							this.moteur.getElevesPossiblesPublicDuBlog(
+								this.donnees.billetBlog.blog,
+							);
+						lEstRadiosTypePublicActives =
+							!!lListeElevesPossibles && lListeElevesPossibles.count() > 0;
+					}
+				}
+				return !lEstRadiosTypePublicActives;
+			},
+		};
+	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
 			avecBtnSupprimerBilletBlog() {
@@ -179,7 +238,7 @@ class ObjetFenetre_EditionBilletBlog extends ObjetFenetre_1.ObjetFenetre {
 					return H.join("");
 				},
 				getIcone() {
-					return IE.jsx.str("i", { class: "icon_user" });
+					return "icon_user";
 				},
 			},
 			btnSelecteurCategorie: {
@@ -251,7 +310,7 @@ class ObjetFenetre_EditionBilletBlog extends ObjetFenetre_1.ObjetFenetre {
 					return lLibelleAjoutDoc;
 				},
 				getIcone() {
-					return IE.jsx.str("i", { class: "icon_piece_jointe" });
+					return "icon_piece_jointe";
 				},
 			},
 			getHtmlChipsDocumentsJoints() {
@@ -294,59 +353,6 @@ class ObjetFenetre_EditionBilletBlog extends ObjetFenetre_1.ObjetFenetre {
 				return (
 					aInstance.estEspaceProfesseur() || aInstance.estEspaceEtablissement()
 				);
-			},
-			cbPublie: {
-				getValue() {
-					var _a;
-					return (_a = aInstance.donnees.billetBlog) === null || _a === void 0
-						? void 0
-						: _a.estPublie;
-				},
-				setValue(aValeur) {
-					if (aInstance.donnees.billetBlog) {
-						aInstance.donnees.billetBlog.estPublie = aValeur;
-						aInstance.donnees.billetBlog.setEtat(
-							Enumere_Etat_1.EGenreEtat.Modification,
-						);
-					}
-				},
-			},
-			radioTypePublic: {
-				getValue(aEstPublicDuBlog) {
-					var _a;
-					const lEstBilletPourPublicDuBlog =
-						(_a = aInstance.donnees.billetBlog) === null || _a === void 0
-							? void 0
-							: _a.estPublicDuBlog;
-					return (
-						(aEstPublicDuBlog && lEstBilletPourPublicDuBlog) ||
-						(!aEstPublicDuBlog && !lEstBilletPourPublicDuBlog)
-					);
-				},
-				setValue(aEstPublicDuBlog, aValeur) {
-					if (aInstance.donnees.billetBlog && aValeur) {
-						aInstance.donnees.billetBlog.estPublicDuBlog = aEstPublicDuBlog;
-						aInstance.donnees.billetBlog.setEtat(
-							Enumere_Etat_1.EGenreEtat.Modification,
-						);
-					}
-				},
-				getDisabled() {
-					let lEstRadiosTypePublicActives = false;
-					if (aInstance.donnees.billetBlog) {
-						lEstRadiosTypePublicActives =
-							aInstance.donnees.billetBlog.estPublie;
-						if (lEstRadiosTypePublicActives) {
-							const lListeElevesPossibles =
-								aInstance.moteur.getElevesPossiblesPublicDuBlog(
-									aInstance.donnees.billetBlog.blog,
-								);
-							lEstRadiosTypePublicActives =
-								!!lListeElevesPossibles && lListeElevesPossibles.count() > 0;
-						}
-					}
-					return !lEstRadiosTypePublicActives;
-				},
 			},
 			btnSelecteurPublicBillet: {
 				event() {
@@ -511,7 +517,6 @@ class ObjetFenetre_EditionBilletBlog extends ObjetFenetre_1.ObjetFenetre {
 			lFenetreListeCategoriesBillet.setDonnees({
 				listeCategories: this.donnees.listeCategories,
 				categorie: aBilletBlog.categorie,
-				avecEdition: false,
 			});
 		}
 	}
@@ -543,8 +548,8 @@ class ObjetFenetre_EditionBilletBlog extends ObjetFenetre_1.ObjetFenetre {
 		return T.join("");
 	}
 	composeBas() {
-		const lHTML = [];
-		lHTML.push(
+		const H = [];
+		H.push(
 			IE.jsx.str(
 				IE.jsx.fragment,
 				null,
@@ -559,7 +564,7 @@ class ObjetFenetre_EditionBilletBlog extends ObjetFenetre_1.ObjetFenetre {
 				),
 			),
 		);
-		return lHTML.join("");
+		return H.join("");
 	}
 	_initTiny() {
 		var _a;
@@ -682,6 +687,7 @@ class ObjetFenetre_EditionBilletBlog extends ObjetFenetre_1.ObjetFenetre {
 		return T.join("");
 	}
 	_composeTitre() {
+		const lId = `${this.Nom}_inp_titre`;
 		const T = [];
 		T.push(
 			IE.jsx.str(
@@ -692,7 +698,7 @@ class ObjetFenetre_EditionBilletBlog extends ObjetFenetre_1.ObjetFenetre {
 					{ class: "LabelChamp" },
 					IE.jsx.str(
 						"label",
-						null,
+						{ for: lId },
 						this.composeStringAvecMarqueurChampObligatoire(
 							ObjetTraduction_1.GTraductions.getValeur("blog.billet.titre"),
 						),
@@ -701,8 +707,9 @@ class ObjetFenetre_EditionBilletBlog extends ObjetFenetre_1.ObjetFenetre {
 						"div",
 						null,
 						IE.jsx.str("input", {
+							id: lId,
 							type: "text",
-							class: "round-style full-width",
+							class: "full-width",
 							"ie-model": "titreBillet",
 							placeholder: ObjetTraduction_1.GTraductions.getValeur(
 								"blog.billet.rediger",
@@ -769,9 +776,7 @@ class ObjetFenetre_EditionBilletBlog extends ObjetFenetre_1.ObjetFenetre {
 				IE.jsx.str(
 					"div",
 					{ class: "ConteneurCarrousel" },
-					IE.jsx.str("div", {
-						id: this.getInstance(this.identGalerie).getNom(),
-					}),
+					IE.jsx.str("div", { id: this.getNomInstance(this.identGalerie) }),
 				),
 				IE.jsx.str("div", { "ie-html": "getHtmlChipsDocumentsJoints" }),
 			),
@@ -801,7 +806,7 @@ class ObjetFenetre_EditionBilletBlog extends ObjetFenetre_1.ObjetFenetre {
 						null,
 						IE.jsx.str(
 							"ie-checkbox",
-							{ "ie-model": "cbPublie" },
+							{ "ie-model": this.jsxModeleCheckboxBilletEstPublie.bind(this) },
 							ObjetTraduction_1.GTraductions.getValeur(
 								"blog.billet.etatPublie",
 							),
@@ -815,7 +820,7 @@ class ObjetFenetre_EditionBilletBlog extends ObjetFenetre_1.ObjetFenetre {
 							{ class: "m-top" },
 							IE.jsx.str(
 								"ie-radio",
-								{ "ie-model": "radioTypePublic(true)" },
+								{ "ie-model": this.jsxModeleRadioTypePublic.bind(this, true) },
 								ObjetTraduction_1.GTraductions.getValeur(
 									"blog.billet.auPublicDuBlog",
 								),
@@ -826,7 +831,7 @@ class ObjetFenetre_EditionBilletBlog extends ObjetFenetre_1.ObjetFenetre {
 							{ class: lClassesRadioPublicEleveFamille.join(" ") },
 							IE.jsx.str(
 								"ie-radio",
-								{ "ie-model": "radioTypePublic(false)" },
+								{ "ie-model": this.jsxModeleRadioTypePublic.bind(this, false) },
 								ObjetTraduction_1.GTraductions.getValeur(
 									"blog.billet.uniquementEleveEtFamille",
 								),
@@ -855,7 +860,7 @@ class ObjetFenetre_EditionBilletBlog extends ObjetFenetre_1.ObjetFenetre {
 				event: () => {
 					this._ouvrirFenetreSelectionDocsMediatheque(aBilletBlog);
 				},
-				class: "bg-util-vert-claire",
+				class: "bg-green-claire",
 			});
 		}
 		if (this.optionsDocuments.avecFichiersJoints) {
@@ -880,7 +885,7 @@ class ObjetFenetre_EditionBilletBlog extends ObjetFenetre_1.ObjetFenetre {
 						accept: "image/*",
 					},
 					selecFile: true,
-					class: "bg-util-marron-claire",
+					class: "bg-orange-claire",
 				});
 				lActions.push({
 					libelle: ObjetTraduction_1.GTraductions.getValeur(
@@ -902,7 +907,7 @@ class ObjetFenetre_EditionBilletBlog extends ObjetFenetre_1.ObjetFenetre {
 						accept: "image/*",
 					},
 					selecFile: true,
-					class: "bg-util-marron-claire",
+					class: "bg-orange-claire",
 				});
 			}
 			const lAvecCloud =
@@ -932,7 +937,7 @@ class ObjetFenetre_EditionBilletBlog extends ObjetFenetre_1.ObjetFenetre {
 					avecTransformationFlux_versCloud: lAvecCloud,
 				},
 				selecFile: true,
-				class: "bg-util-marron-claire",
+				class: "bg-orange-claire",
 			});
 			if (lAvecCloud) {
 				lActions.push({
@@ -943,8 +948,17 @@ class ObjetFenetre_EditionBilletBlog extends ObjetFenetre_1.ObjetFenetre {
 					event: () => {
 						this.ouvrirFenetreChoixListeCloud(aBilletBlog);
 					},
-					class: "bg-util-marron-claire",
+					class: "bg-orange-claire",
 				});
+			}
+			if (GEtatUtilisateur.avecCloudENEJDisponible()) {
+				const lActionENEJ =
+					ObjetFenetre_ActionContextuelle_1.ObjetFenetre_ActionContextuelle.getActionENEJ(
+						() => this.ouvrirFenetreCloudENEJ(aBilletBlog),
+					);
+				if (lActionENEJ) {
+					lActions.push(lActionENEJ);
+				}
 			}
 			lActions.push({
 				libelle: ObjetTraduction_1.GTraductions.getValeur(
@@ -957,7 +971,7 @@ class ObjetFenetre_EditionBilletBlog extends ObjetFenetre_1.ObjetFenetre {
 						genrePJ: Enumere_DocumentJoint_1.EGenreDocumentJoint.Url,
 					});
 				},
-				class: "bg-util-bleu-claire",
+				class: "bg-blue-claire",
 			});
 		}
 		if (lActions.length < 2) {
@@ -977,14 +991,7 @@ class ObjetFenetre_EditionBilletBlog extends ObjetFenetre_1.ObjetFenetre {
 			callbaskEvenement: (aLigne) => {
 				if (aLigne >= 0) {
 					const lService = this.etatUtilisateurSco.listeCloud.get(aLigne);
-					this.moteur.choisirFichierCloud({
-						instance: lThis,
-						element: aBillet,
-						numeroService: lService.getGenre(),
-						listeDocumentsJoints: this.listeClouds,
-						evntSelectFichierCloud: this._ajoutFichierCloud.bind(this),
-						evntValidFichierCloud: () => {},
-					});
+					lThis.choisirFichierCloud(aBillet, lService);
 				}
 			},
 			modeGestion:
@@ -994,6 +1001,19 @@ class ObjetFenetre_EditionBilletBlog extends ObjetFenetre_1.ObjetFenetre {
 		UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF.creerFenetreGestion(
 			lParams,
 		);
+	}
+	choisirFichierCloud(aBillet, aService) {
+		this.moteur.choisirFichierCloud({
+			instance: this,
+			element: aBillet,
+			numeroService: aService.getGenre(),
+			listeDocumentsJoints: this.listeClouds,
+			evntSelectFichierCloud: this._ajoutFichierCloud.bind(this),
+			evntValidFichierCloud: () => {},
+		});
+	}
+	ouvrirFenetreCloudENEJ(aBillet) {
+		this.choisirFichierCloud(aBillet, GEtatUtilisateur.getCloudENEJ());
 	}
 	_ajoutFichierCloud(aParamSelect) {
 		const lBillet = aParamSelect.element;
@@ -1046,6 +1066,10 @@ class ObjetFenetre_EditionBilletBlog extends ObjetFenetre_1.ObjetFenetre {
 	_ajouterRelationDocCasierAuBillet(aDocCasier, aBillet) {
 		const lDocRelation = ObjetElement_1.ObjetElement.create({
 			Numero: aDocCasier.getNumero(),
+			documentCasier: undefined,
+			libelle: undefined,
+			estDeMediatheque: undefined,
+			libelleEnModification: undefined,
 		});
 		lDocRelation.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 		lDocRelation.documentCasier = aDocCasier;

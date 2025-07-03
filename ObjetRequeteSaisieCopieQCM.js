@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieCopieQCM extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieCopieQCM = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieCopieQCM extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParam) {
 		if (aParam.QCM) {
 			aParam.QCM.setSerialisateurJSON({ ignorerEtatsElements: true });
@@ -24,5 +22,5 @@ class ObjetRequeteSaisieCopieQCM extends ObjetRequeteSaisie {
 		this.callbackReussite.appel(lRapport);
 	}
 }
-Requetes.inscrire("CopieQCM", ObjetRequeteSaisieCopieQCM);
-module.exports = { ObjetRequeteSaisieCopieQCM };
+exports.ObjetRequeteSaisieCopieQCM = ObjetRequeteSaisieCopieQCM;
+CollectionRequetes_1.Requetes.inscrire("CopieQCM", ObjetRequeteSaisieCopieQCM);

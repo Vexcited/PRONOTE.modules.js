@@ -6,6 +6,7 @@ const ObjetTraduction_1 = require("ObjetTraduction");
 const UtilitaireQRCode_1 = require("UtilitaireQRCode");
 require("DeclarationQRCode.js");
 const TypeGenreICal_1 = require("TypeGenreICal");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
 class ObjetFenetre_ICal extends _ObjetFenetre_ICal_1._ObjetFenetre_ICal {
 	constructor(...aParams) {
 		super(...aParams);
@@ -48,7 +49,7 @@ class ObjetFenetre_ICal extends _ObjetFenetre_ICal_1._ObjetFenetre_ICal {
 			"&param=" +
 			new forge.util.ByteBuffer(lParams).toHex();
 		ObjetHtml_1.GHtml.setLien(this.idHrefICal, lHref);
-		const lLienNavigateur = GNavigateur.getHost() + lHref;
+		const lLienNavigateur = ObjetNavigateur_1.Navigateur.getHost() + lHref;
 		ObjetHtml_1.GHtml.setValue(
 			this.idLienPermanent,
 			ObjetChaine_1.GChaine.encoderUrl(lLienNavigateur),

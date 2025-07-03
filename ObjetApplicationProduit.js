@@ -4,11 +4,14 @@ const GUID_1 = require("GUID");
 const Invocateur_1 = require("Invocateur");
 const ObjetDonneesCentraleNotifications_1 = require("ObjetDonneesCentraleNotifications");
 const ObjetTraduction_1 = require("ObjetTraduction");
-const ObjetWAI_1 = require("ObjetWAI");
 const ObjetHtml_1 = require("ObjetHtml");
 require("DeclarationJournauxCP.js");
 require("DeclarationFontMontserrat.js");
 require("DeclarationLottie");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const GlossaireCP_1 = require("GlossaireCP");
+const AccessApp_1 = require("AccessApp");
+const TypeThemeCouleur_1 = require("TypeThemeCouleur");
 var EtatApplication;
 (function (EtatApplication) {
 	EtatApplication[(EtatApplication["normal"] = 1)] = "normal";
@@ -16,7 +19,6 @@ var EtatApplication;
 })(EtatApplication || (exports.EtatApplication = EtatApplication = {}));
 global.GEtatUtilisateur = undefined;
 global.GParametres = undefined;
-global.GCouleur = undefined;
 global.GInterface = undefined;
 class ObjetApplicationProduit extends ObjetApplication_1.ObjetApplication {
 	constructor() {
@@ -55,9 +57,6 @@ class ObjetApplicationProduit extends ObjetApplication_1.ObjetApplication {
 	}
 	getObjetParametres() {
 		return GParametres;
-	}
-	getCouleur() {
-		return GCouleur;
 	}
 	getCommunication() {
 		return this.communication;
@@ -169,6 +168,9 @@ class ObjetApplicationProduit extends ObjetApplication_1.ObjetApplication {
 			true,
 		);
 		Invocateur_1.Invocateur.evenement("finSession");
+		Invocateur_1.Invocateur.evenement(
+			Invocateur_1.ObjetInvocateur.events.nettoyerJSX,
+		);
 		Invocateur_1.Invocateur.desabonner(
 			Invocateur_1.ObjetInvocateur.events.modificationModeExclusif,
 			this,
@@ -178,9 +180,7 @@ class ObjetApplicationProduit extends ObjetApplication_1.ObjetApplication {
 		Invocateur_1.Invocateur.desabonner(
 			Invocateur_1.ObjetInvocateur.events.autorisationRechargementPage,
 		);
-		if (window.GNavigateur) {
-			GNavigateur.viderCache();
-		}
+		ObjetNavigateur_1.Navigateur.viderCache();
 		if (lParametresFin.constructionPage) {
 			try {
 				this.construirePageFinSession(lParametresFin);
@@ -195,7 +195,7 @@ class ObjetApplicationProduit extends ObjetApplication_1.ObjetApplication {
 		this.communication = null;
 	}
 	construirePageFinSession(aParametres) {
-		if (this._unloadEnCours) {
+		if (this.unloadEnCours) {
 			return;
 		}
 		const lCouleur = { texte: "black", fond: "white", bordure: "black" };
@@ -230,7 +230,7 @@ class ObjetApplicationProduit extends ObjetApplication_1.ObjetApplication {
 		const lEstPrimaire = !!this.estPrimaire;
 		const T = [];
 		T.push(
-			`<div class="page-deconnexion ImageFond bg-espace-${!lEstPrimaire ? this.nomProduit.toLowerCase() : `primaire`}">`,
+			`<div class="page-deconnexion ImageFond bg-espace-${!lEstPrimaire ? "" : `primaire`}">`,
 		);
 		try {
 			T.push(this.construireEnTetePageFinSession(lParametresFin));
@@ -263,11 +263,30 @@ class ObjetApplicationProduit extends ObjetApplication_1.ObjetApplication {
 			T.push(IE.jsx.str("p", { class: "message" }, lMessage));
 		}
 		if (lGenreErreur !== 7 && !lParametresFin.sansBoutonSeConnecter) {
-			T.push(`<ie-bouton tabindex="0" class="themeBoutonPrimaire m-top"\n      ${ObjetWAI_1.GObjetWAI ? ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_1.EGenreRole.Button) : ""}
-      ${ObjetWAI_1.GObjetWAI ? ObjetWAI_1.GObjetWAI.composeAttribut({ genre: ObjetWAI_1.EGenreAttribut.describedby, valeur: "waispan_id" }) : ""}\n      onkeyup="if (GNavigateur.isToucheSelection()) window.location.reload()" onclick="window.location.reload ()">\n      ${ObjetTraduction_1.GTraductions.getValeur("connexion.SeConnecter")}</ie-bouton>`);
+			const lModel = () => {
+				return {
+					event() {
+						window.location.reload();
+					},
+				};
+			};
+			T.push(
+				IE.jsx.str(
+					"ie-bouton",
+					{
+						class: "themeBoutonPrimaire m-top",
+						"aria-describedby": "waispan_id",
+						"ie-model": lModel,
+					},
+					ObjetTraduction_1.GTraductions.getValeur("connexion.SeConnecter"),
+				),
+			);
 		}
 		T.push(`</div>`);
 		ObjetHtml_1.GHtml.setHtml(this.getIdConteneur(), T.join(""));
+		(0, AccessApp_1.getApp)()
+			.getObjetParametres()
+			.setDocumentTitle(GlossaireCP_1.TradGlossaireCP.PageDeconnexion);
 	}
 	construireEnTetePageFinSession(aParametres) {
 		return "";
@@ -280,5 +299,69 @@ class ObjetApplicationProduit extends ObjetApplication_1.ObjetApplication {
 	getPileAbonnement() {
 		return this.pileAbonnementInvocateur;
 	}
+	initApp(aParams) {
+		var _a, _b, _c;
+		this.estAppliMobile = true;
+		if (aParams.darkMode) {
+			const lModeSombreActive =
+				aParams.darkMode === "sombre" ||
+				(aParams.darkMode === "systeme" && aParams.darkModeSysteme === true);
+			this.getOptionsEspaceLocal().setChoixDarkMode(
+				lModeSombreActive
+					? TypeThemeCouleur_1.ChoixDarkMode.sombre
+					: TypeThemeCouleur_1.ChoixDarkMode.clair,
+			);
+		}
+		if (
+			(_c =
+				(_b =
+					(_a =
+						window === null || window === void 0 ? void 0 : window.webkit) ===
+						null || _a === void 0
+						? void 0
+						: _a.messageHandlers) === null || _b === void 0
+					? void 0
+					: _b.cordova_iab) === null || _c === void 0
+				? void 0
+				: _c.postMessage
+		) {
+			window.open = function (url) {
+				window.webkit.messageHandlers.cordova_iab.postMessage(
+					JSON.stringify({ action: "openLink", link: url }),
+				);
+				return null;
+			};
+		}
+	}
 }
 exports.ObjetApplicationProduit = ObjetApplicationProduit;
+$(document).on(
+	"click",
+	'*:not(.tab) > a[href][target="_blank"], *:not(.tab) > a[href]:not([target])',
+	function (aEvent) {
+		var _a, _b, _c, _d;
+		if (
+			((_a = global.GApplication) === null || _a === void 0
+				? void 0
+				: _a.estAppliMobile) &&
+			((_d =
+				(_c =
+					(_b =
+						window === null || window === void 0 ? void 0 : window.webkit) ===
+						null || _b === void 0
+						? void 0
+						: _b.messageHandlers) === null || _c === void 0
+					? void 0
+					: _c.cordova_iab) === null || _d === void 0
+				? void 0
+				: _d.postMessage)
+		) {
+			window.webkit.messageHandlers.cordova_iab.postMessage(
+				JSON.stringify({ action: "openLink", link: aEvent.currentTarget.href }),
+			);
+			aEvent.preventDefault();
+			aEvent.stopImmediatePropagation();
+			return false;
+		}
+	},
+);

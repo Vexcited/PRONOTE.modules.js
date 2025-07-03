@@ -313,101 +313,97 @@ class DonneesListe_RDV extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFl
 			this.clbckMenuCtx,
 		);
 	}
-	getControleurFiltres(aInstance, aInstanceListe) {
-		return $.extend(
-			true,
-			super.getControleurFiltres(aInstance, aInstanceListe),
-			{
-				cbRdvValides: {
-					getLibelle() {
-						return ObjetTraduction_1.GTraductions.getValeur(
-							"RDV.voirRdvValides",
+	jsxModeleCheckboxRendezVousDemandes() {
+		return {
+			getLibelle: () => {
+				return this.moteurRDV.estCtxResponsableDeRDV()
+					? ObjetTraduction_1.GTraductions.getValeur("RDV.voirRdvDemandes")
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"RDV.voirRdvDemandesEnCours",
 						);
-					},
-					getValue() {
-						return aInstance.filtres.voirRdvValides;
-					},
-					setValue(aValue) {
-						aInstance.filtres.voirRdvValides = aValue;
-						aInstance._actualiserFiltres();
-					},
-				},
-				cbRdvAnnules: {
-					getLibelle() {
-						return ObjetTraduction_1.GTraductions.getValeur(
-							"RDV.voirRdvAnnules",
-						);
-					},
-					getValue() {
-						return aInstance.filtres.voirRdvAnnules;
-					},
-					setValue(aValue) {
-						aInstance.filtres.voirRdvAnnules = aValue;
-						aInstance._actualiserFiltres();
-					},
-				},
-				cbRdvRefuses: {
-					getLibelle() {
-						return ObjetTraduction_1.GTraductions.getValeur(
-							"RDV.voirRdvRefuses",
-						);
-					},
-					getValue() {
-						return aInstance.filtres.voirRdvRefuses;
-					},
-					setValue(aValue) {
-						aInstance.filtres.voirRdvRefuses = aValue;
-						aInstance._actualiserFiltres();
-					},
-				},
-				cbRdvPasses: {
-					getLibelle() {
-						return ObjetTraduction_1.GTraductions.getValeur(
-							"RDV.voirRdvPasses",
-						);
-					},
-					getValue() {
-						return aInstance.filtres.voirRdvPasses;
-					},
-					setValue(aValue) {
-						aInstance.filtres.voirRdvPasses = aValue;
-						aInstance.clbckDemandeRdvPasses(aValue, aInstance.filtres);
-					},
-				},
-				cbRdvDemandes: {
-					getLibelle() {
-						return aInstance.moteurRDV.estCtxResponsableDeRDV()
-							? ObjetTraduction_1.GTraductions.getValeur("RDV.voirRdvDemandes")
-							: ObjetTraduction_1.GTraductions.getValeur(
-									"RDV.voirRdvDemandesEnCours",
-								);
-					},
-					getValue() {
-						return aInstance.filtres.voirRdvDemandes;
-					},
-					setValue(aValue) {
-						aInstance.filtres.voirRdvDemandes = aValue;
-						aInstance._actualiserFiltres();
-					},
-				},
-				cbRdvProposes: {
-					getLibelle() {
-						return aInstance.moteurRDV.estCtxResponsableDeRDV()
-							? ObjetTraduction_1.GTraductions.getValeur("RDV.voirRdvProposes")
-							: ObjetTraduction_1.GTraductions.getValeur(
-									"RDV.voirRdvProposesAValider",
-								);
-					},
-					getValue() {
-						return aInstance.filtres.voirRdvProposes;
-					},
-					setValue(aValue) {
-						aInstance.filtres.voirRdvProposes = aValue;
-						aInstance._actualiserFiltres();
-					},
-				},
 			},
-		);
+			getValue: () => {
+				return this.filtres.voirRdvDemandes;
+			},
+			setValue: (aValue) => {
+				this.filtres.voirRdvDemandes = aValue;
+				this._actualiserFiltres();
+			},
+		};
+	}
+	jsxModeleCheckboxRendezVousProposes() {
+		return {
+			getLibelle: () => {
+				return this.moteurRDV.estCtxResponsableDeRDV()
+					? ObjetTraduction_1.GTraductions.getValeur("RDV.voirRdvProposes")
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"RDV.voirRdvProposesAValider",
+						);
+			},
+			getValue: () => {
+				return this.filtres.voirRdvProposes;
+			},
+			setValue: (aValue) => {
+				this.filtres.voirRdvProposes = aValue;
+				this._actualiserFiltres();
+			},
+		};
+	}
+	jsxModeleCheckboxRendezVousValides() {
+		return {
+			getLibelle: () => {
+				return ObjetTraduction_1.GTraductions.getValeur("RDV.voirRdvValides");
+			},
+			getValue: () => {
+				return this.filtres.voirRdvValides;
+			},
+			setValue: (aValue) => {
+				this.filtres.voirRdvValides = aValue;
+				this._actualiserFiltres();
+			},
+		};
+	}
+	jsxModeleCheckboxRendezVousPasses() {
+		return {
+			getLibelle: () => {
+				return ObjetTraduction_1.GTraductions.getValeur("RDV.voirRdvPasses");
+			},
+			getValue: () => {
+				return this.filtres.voirRdvPasses;
+			},
+			setValue: (aValue) => {
+				this.filtres.voirRdvPasses = aValue;
+				this.clbckDemandeRdvPasses(aValue, this.filtres);
+			},
+		};
+	}
+	jsxModeleCheckboxRendezVousAnnules() {
+		return {
+			getLibelle: () => {
+				return ObjetTraduction_1.GTraductions.getValeur("RDV.voirRdvAnnules");
+			},
+			getValue: () => {
+				return this.filtres.voirRdvAnnules;
+			},
+			setValue: (aValue) => {
+				this.filtres.voirRdvAnnules = aValue;
+				this._actualiserFiltres();
+			},
+		};
+	}
+	jsxModeleCheckboxRendezVousRefuses() {
+		return {
+			getLibelle: () => {
+				return ObjetTraduction_1.GTraductions.getValeur("RDV.voirRdvRefuses");
+			},
+			getValue: () => {
+				return this.filtres.voirRdvRefuses;
+			},
+			setValue: (aValue) => {
+				this.filtres.voirRdvRefuses = aValue;
+				this._actualiserFiltres();
+			},
+		};
 	}
 	static getFiltresParDefaut(aParam) {
 		return {
@@ -459,12 +455,24 @@ class DonneesListe_RDV extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFl
 				IE.jsx.str(
 					"div",
 					{ class: "flex-contain cols flex-gap-l p-left-xl" },
-					IE.jsx.str("ie-checkbox", { "ie-model": "cbRdvDemandes" }),
-					IE.jsx.str("ie-checkbox", { "ie-model": "cbRdvProposes" }),
-					IE.jsx.str("ie-checkbox", { "ie-model": "cbRdvValides" }),
-					IE.jsx.str("ie-checkbox", { "ie-model": "cbRdvPasses" }),
-					IE.jsx.str("ie-checkbox", { "ie-model": "cbRdvAnnules" }),
-					IE.jsx.str("ie-checkbox", { "ie-model": "cbRdvRefuses" }),
+					IE.jsx.str("ie-checkbox", {
+						"ie-model": this.jsxModeleCheckboxRendezVousDemandes.bind(this),
+					}),
+					IE.jsx.str("ie-checkbox", {
+						"ie-model": this.jsxModeleCheckboxRendezVousProposes.bind(this),
+					}),
+					IE.jsx.str("ie-checkbox", {
+						"ie-model": this.jsxModeleCheckboxRendezVousValides.bind(this),
+					}),
+					IE.jsx.str("ie-checkbox", {
+						"ie-model": this.jsxModeleCheckboxRendezVousPasses.bind(this),
+					}),
+					IE.jsx.str("ie-checkbox", {
+						"ie-model": this.jsxModeleCheckboxRendezVousAnnules.bind(this),
+					}),
+					IE.jsx.str("ie-checkbox", {
+						"ie-model": this.jsxModeleCheckboxRendezVousRefuses.bind(this),
+					}),
 				),
 			),
 		);

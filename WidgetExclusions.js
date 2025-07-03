@@ -8,16 +8,17 @@ const ObjetSaisie_1 = require("ObjetSaisie");
 const Enumere_EvenementWidget_1 = require("Enumere_EvenementWidget");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetWidget_1 = require("ObjetWidget");
+const AccessApp_1 = require("AccessApp");
 class WidgetExclusions extends ObjetWidget_1.Widget.ObjetWidget {
 	constructor(...aParams) {
 		super(...aParams);
-		this.applicationSco = GApplication;
+		this.applicationSco = (0, AccessApp_1.getApp)();
 	}
 	construire(aParams) {
 		this.donnees = aParams.donnees;
 		this.creerObjetsExclusions();
 		const lWidget = {
-			html: this.composeWidgetExclusion(),
+			getHtml: this.composeWidgetExclusion.bind(this),
 			nbrElements: this.donnees.listeExclusions.count(),
 			afficherMessage: this.donnees.listeExclusions.count() === 0,
 			message: this.donnees.messageAucuneDonnee,

@@ -1,6 +1,6 @@
 exports.ObjetGrilleCours = void 0;
 const ObjetStyle_1 = require("ObjetStyle");
-const IEHtml = require("IEHtml");
+const IEHtml_1 = require("IEHtml");
 const GUID_1 = require("GUID");
 const ObjetHtml_1 = require("ObjetHtml");
 const ObjetPosition_1 = require("ObjetPosition");
@@ -10,8 +10,9 @@ const ObjetImage_1 = require("ObjetImage");
 const ObjetSupport_1 = require("ObjetSupport");
 const TypeEnsembleNombre_1 = require("TypeEnsembleNombre");
 const UtilitaireCss_1 = require("UtilitaireCss");
-const tag_1 = require("tag");
 const ObjetTri_1 = require("ObjetTri");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
+const AccessApp_1 = require("AccessApp");
 class ObjetGrilleCours {
 	constructor(aGrille) {
 		this.grille = aGrille;
@@ -28,7 +29,7 @@ class ObjetGrilleCours {
 			cadreSelection: {
 				tailleMax: 3,
 				tailleMin: 1,
-				couleur: GCouleur.grille.selectionCours,
+				couleur: (0, AccessApp_1.getApp)().getCouleur().grille.selectionCours,
 				tailleInterne: 1,
 				tailleExterne: 1,
 				couleurInterne: "white",
@@ -48,7 +49,6 @@ class ObjetGrilleCours {
 				tailleBoutonMinForceOppose: 9,
 				tailleBoutonMinExtreme: 4,
 			},
-			ieNodeImage: "nodeImageCours",
 			selection: new TypeEnsembleNombre_1.TypeEnsembleNombre(),
 			avecScrollSurSelectionCours: true,
 			id: lId,
@@ -58,39 +58,10 @@ class ObjetGrilleCours {
 			idContenu: lId + "_cont",
 			idCoursInterne: lId + "_coursInt",
 		};
-		this.grille.controleur.moduleCours = this.getControleur(this);
 	}
 	setParametres(aParametres) {
 		Object.assign(this.params, aParametres);
 		return this;
-	}
-	getControleur(aInstance) {
-		return {
-			getNodeSlider: function (aIndiceCours) {
-				$(this.node).on("mouseup", (aEvent) => {
-					if (
-						GNavigateur.BoutonSouris ===
-						Enumere_BoutonSouris_1.EGenreBoutonSouris.Droite
-					) {
-						return;
-					}
-					const lCours = aInstance.params.listeCours.get(aIndiceCours);
-					if (!lCours) {
-						return;
-					}
-					aEvent.stopPropagation();
-					lCours.numeroCouloir += 1;
-					if (lCours.numeroCouloir >= lCours.listeCours.nbCouloirs) {
-						lCours.numeroCouloir = 0;
-					}
-					aInstance.actualiserCours(aIndiceCours);
-				});
-			},
-			getHintCours: function (aIndiceCours) {
-				const lCours = aInstance.params.listeCours.get(aIndiceCours);
-				return lCours ? aInstance.getHintCours(lCours, aIndiceCours) : "";
-			},
-		};
 	}
 	getPlaceDebutCours(aCours, aPlaceReelle) {
 		return this.grille
@@ -162,7 +133,9 @@ class ObjetGrilleCours {
 			bottom: 1,
 			couleurFond: aCours.coursMultiple
 				? aCours.CouleurFond
-				: GCouleur.getCouleurTransformationCours(aCours.CouleurFond),
+				: (0, AccessApp_1.getApp)()
+						.getCouleur()
+						.getCouleurTransformationCours(aCours.CouleurFond),
 			couleurBordure: aCours.CouleurFond,
 		};
 	}
@@ -206,8 +179,8 @@ class ObjetGrilleCours {
 				? this.params.getClassCours(lCours, aValue.indice)
 				: "";
 			const lTab = lCours.horsHoraire ? HHorsGrille : T;
-			const lDroppable = this.params.getDroppableCours
-				? this.params.getDroppableCours(lCours, aValue.indice)
+			const lFuncDroppable = this.params.getJsxFuncDroppableCours
+				? this.params.getJsxFuncDroppableCours(lCours, aValue.indice)
 				: false;
 			const lEstAccessible = !lCours.coursMultiple;
 			lTab.push(
@@ -217,7 +190,6 @@ class ObjetGrilleCours {
 						id: this.getIdCours(aValue.indice),
 						tabindex: lEstAccessible ? "0" : false,
 						role: lEstAccessible ? "listitem" : "presentation",
-						"aria-haspopup": "dialog",
 						"aria-hidden": lEstAccessible ? false : "true",
 						class: [
 							"EmploiDuTemps_Element",
@@ -228,10 +200,10 @@ class ObjetGrilleCours {
 						style: ObjetStyle_2.GStyle.composeCouleurBordure(
 							this.params.couleurBordureCours,
 						),
-						"ie-node": this.params.getContenuNodeCours
-							? this.params.getContenuNodeCours(lCours, aValue.indice)
+						"ie-node": this.params.jsxNodeCours
+							? this.params.jsxNodeCours.bind(this, aValue.indice)
 							: false,
-						"ie-droppable": lDroppable ? lDroppable : false,
+						"ie-droppable": lFuncDroppable,
 					},
 					this._composeCours(lCours, aValue.indice),
 				),
@@ -277,7 +249,7 @@ class ObjetGrilleCours {
 					}
 				},
 			);
-			IEHtml.refresh();
+			IEHtml_1.default.refresh(true);
 		}
 	}
 	selectionnerCours(aIndiceCours, aSelectionne, aAvecMAJCouloir) {
@@ -329,7 +301,7 @@ class ObjetGrilleCours {
 				lElement.focus();
 			}
 		}
-		IEHtml.refresh();
+		IEHtml_1.default.refresh(true);
 	}
 	deselectionnerTout() {
 		this.params.selection.each((aIndex) => {
@@ -350,8 +322,7 @@ class ObjetGrilleCours {
 		return lResult;
 	}
 	_composeSelecteurCoursMultiple(aParams, aNumeroCouloir, aDernierBouton) {
-		const H = [],
-			lEcart =
+		const lEcart =
 				!aDernierBouton &&
 				aParams.taille > this.params.superpose.tailleBoutonMin
 					? 1
@@ -366,66 +337,103 @@ class ObjetGrilleCours {
 		const lTitle =
 			aNumeroCouloir !== this.params.superpose.const_valeurCouloirMoins &&
 			aNumeroCouloir !== this.params.superpose.const_valeurCouloirPlus
-				? 'title="' +
-					this._getNbCoursDeCouloir(aParams.cours, aNumeroCouloir) +
+				? this._getNbCoursDeCouloir(aParams.cours, aNumeroCouloir) +
 					" / " +
 					aParams.cours.listeCours.count() +
 					" " +
-					this.params.titleBoutonCoursMS +
-					'" '
+					this.params.titleBoutonCoursMS
 				: "";
 		const lPadding =
 			"padding:1px " +
 			(this.params.grilleInverse ? (lEcart ? "1px " : "0 ") : "1px ") +
 			(!this.params.grilleInverse ? (lEcart ? "1px " : "0 ") : "1px ") +
 			"1px;";
-		H.push(
-			'<div style="',
-			lPadding,
-			'"',
-			this.params.grilleInverse ? ' class="InlineBlock AlignementHaut"' : "",
-			">",
+		const lJsxGetNodeCoursSuperpose = (aNode) => {
+			$(aNode).on({
+				mouseup: (aEvent) => {
+					if (
+						ObjetNavigateur_1.Navigateur.BoutonSouris ===
+						Enumere_BoutonSouris_1.EGenreBoutonSouris.Droite
+					) {
+						return;
+					}
+					aEvent.stopPropagation();
+					if (
+						aNumeroCouloir === this.params.superpose.const_valeurCouloirMoins
+					) {
+						aParams.cours.numeroDefilementCouloir -= 1;
+						if (aParams.cours.numeroDefilementCouloir < 0) {
+							aParams.cours.numeroDefilementCouloir =
+								aParams.cours.listeCours.nbCouloirs - 1;
+						}
+					} else if (
+						aNumeroCouloir === this.params.superpose.const_valeurCouloirPlus
+					) {
+						aParams.cours.numeroDefilementCouloir += 1;
+						if (
+							aParams.cours.numeroDefilementCouloir >=
+							aParams.cours.listeCours.nbCouloirs
+						) {
+							aParams.cours.numeroDefilementCouloir = 0;
+						}
+					} else {
+						aParams.cours.numeroCouloir = aNumeroCouloir;
+					}
+					this.actualiserCours(aParams.indiceCours);
+					IEHtml_1.default.refresh();
+				},
+			});
+		};
+		const lJsxGetClassSelecCouloir = () => {
+			const lSelectionne = aNumeroCouloir === aParams.cours.numeroCouloir;
+			if (lSelectionne) {
+				return "selected";
+			}
+			return "";
+		};
+		return IE.jsx.str(
+			"div",
+			{
+				style: lPadding,
+				class: this.params.grilleInverse ? "InlineBlock AlignementHaut" : null,
+			},
+			IE.jsx.str(
+				"div",
+				{
+					class: "btn-choix-couloir",
+					"ie-node": lJsxGetNodeCoursSuperpose,
+					"ie-class": lJsxGetClassSelecCouloir,
+					style: {
+						overflow: "hidden",
+						height: lHeightCellule - 1,
+						width: lWidthCellule - 1,
+						"font-size": Math.max(
+							8,
+							Math.min(lWidthCellule, lHeightCellule) - 1,
+						),
+						"line-height": lHeightCellule + "px",
+					},
+					title: lTitle,
+				},
+				() => {
+					if (
+						aNumeroCouloir !== this.params.superpose.const_valeurCouloirMoins &&
+						aNumeroCouloir !== this.params.superpose.const_valeurCouloirPlus
+					) {
+						return aNumeroCouloir + 1;
+					}
+					const lIcon =
+						aNumeroCouloir === this.params.superpose.const_valeurCouloirMoins
+							? this.params.grilleInverse
+								? "icon_chevron_left"
+								: "icon_chevron_up"
+							: this.params.grilleInverse
+								? "icon_chevron_right"
+								: "icon_chevron_down";
+					return IE.jsx.str("i", { class: lIcon, role: "presentation" });
+				},
+			),
 		);
-		H.push(
-			'<div class="btn-choix-couloir" ',
-			ObjetHtml_1.GHtml.composeAttr("ie-node", "getNodeCoursSuperpose", [
-				aNumeroCouloir,
-			]),
-			ObjetHtml_1.GHtml.composeAttr("ie-class", "getClassSelecCouloir", [
-				aNumeroCouloir,
-			]),
-			'style="overflow:hidden;',
-			ObjetStyle_2.GStyle.composeHeight(lHeightCellule - 1) +
-				ObjetStyle_2.GStyle.composeWidth(lWidthCellule - 1) +
-				"font-size:" +
-				Math.max(8, Math.min(lWidthCellule, lHeightCellule) - 1) +
-				"px;" +
-				"line-height:" +
-				lHeightCellule +
-				"px;" +
-				'" ' +
-				lTitle +
-				">",
-		);
-		if (
-			aNumeroCouloir !== this.params.superpose.const_valeurCouloirMoins &&
-			aNumeroCouloir !== this.params.superpose.const_valeurCouloirPlus
-		) {
-			H.push(aNumeroCouloir + 1);
-		} else {
-			const lIcon =
-				aNumeroCouloir === this.params.superpose.const_valeurCouloirMoins
-					? this.params.grilleInverse
-						? "icon_chevron_left"
-						: "icon_chevron_up"
-					: this.params.grilleInverse
-						? "icon_chevron_right"
-						: "icon_chevron_down";
-			H.push((0, tag_1.tag)("i", { class: lIcon }));
-		}
-		H.push("</div>");
-		H.push("</div>");
-		return H.join("");
 	}
 	_composeSliderCoursMultiple(aParams) {
 		const H = [],
@@ -533,54 +541,6 @@ class ObjetGrilleCours {
 			ObjetPosition_1.GPosition.setWidth(lIdSlider, lTailleBoutonOppose);
 		}
 		lTaille = lTailleBoutonOppose;
-		const lThis = this,
-			lControleurCoursSuperpose = {
-				getNodeCoursSuperpose: function (aNumeroCouloir) {
-					const lControleur = this.controleur;
-					$(this.node).on({
-						mouseup: function (aEvent) {
-							if (
-								GNavigateur.BoutonSouris ===
-								Enumere_BoutonSouris_1.EGenreBoutonSouris.Droite
-							) {
-								return;
-							}
-							aEvent.stopPropagation();
-							if (
-								aNumeroCouloir ===
-								lThis.params.superpose.const_valeurCouloirMoins
-							) {
-								aCours.numeroDefilementCouloir -= 1;
-								if (aCours.numeroDefilementCouloir < 0) {
-									aCours.numeroDefilementCouloir =
-										aCours.listeCours.nbCouloirs - 1;
-								}
-							} else if (
-								aNumeroCouloir ===
-								lThis.params.superpose.const_valeurCouloirPlus
-							) {
-								aCours.numeroDefilementCouloir += 1;
-								if (
-									aCours.numeroDefilementCouloir >= aCours.listeCours.nbCouloirs
-								) {
-									aCours.numeroDefilementCouloir = 0;
-								}
-							} else {
-								aCours.numeroCouloir = aNumeroCouloir;
-							}
-							lThis.actualiserCours(aIndice);
-							lControleur.$refresh();
-						},
-					});
-				},
-				getClassSelecCouloir(aNumeroCouloir) {
-					const lSelectionne = aNumeroCouloir === aCours.numeroCouloir;
-					if (lSelectionne) {
-						return "selected";
-					}
-					return "";
-				},
-			};
 		aCours.listeCours.parcourir((aCoursSuperpose) => {
 			const lIndiceCours =
 				this._getIndiceCoursOrigineDeCoursSuperpose(aCoursSuperpose);
@@ -601,12 +561,13 @@ class ObjetGrilleCours {
 			ObjetHtml_1.GHtml.getElement(lIdSlider),
 			this._composeSliderCoursMultiple({
 				cours: aCours,
+				indiceCours: aIndice,
 				taille: lTailleBouton,
 				tailleOppose: lTailleBoutonOppose,
 				nbCouloirs: lNbCouloirs,
 				avecFleches: lAvecFleches,
 			}),
-			{ controleur: lControleurCoursSuperpose, ignorerScroll: true },
+			{ ignorerScroll: true },
 		);
 		if (this.grille.getOptions().decorateurAbsences) {
 			this.grille
@@ -644,6 +605,7 @@ class ObjetGrilleCours {
 		const lListe = aParams.liste;
 		lListe.largeur = 0;
 		lListe.parcourir((aImage) => {
+			var _a;
 			let lPrefixeImage = this.params.prefixeImageCours || "";
 			const lLibelle = aImage.getLibelle();
 			if (
@@ -655,6 +617,9 @@ class ObjetGrilleCours {
 			) {
 				lPrefixeImage = "";
 			}
+			if (aImage.estIcone) {
+				lPrefixeImage = "";
+			}
 			const lClassImage = lPrefixeImage + lLibelle;
 			const lLargeur =
 				(aImage.width
@@ -662,18 +627,9 @@ class ObjetGrilleCours {
 					: this._getLargeurImageDeClass(lClassImage)) || 20;
 			lListe.largeur += lLargeur + 1;
 			const lAvecEvenement =
-				aImage.getGenre() >= 0 && !!this.params.ieNodeImage;
-			const lTitle = aImage.hint && !aImage.title ? aImage.hint : false;
-			const lAriaLabel = aImage.ariaLabel || lTitle;
-			if (!lAriaLabel) {
-				IE.log.addLog(
-					`label/title manquant sur image de cours pour accessibilité`,
-				);
-			}
+				aImage.getGenre() >= 0 && !!this.params.jsxNodeImageCours;
 			const lAttrs = {
-				title: aImage.title ? aImage.title : false,
-				"ie-hint": lTitle,
-				"aria-label": lAriaLabel,
+				"ie-tooltiplabel-static": aImage.tooltip ? () => aImage.tooltip : false,
 			};
 			let lContenu = "";
 			if (aImage.html) {
@@ -711,20 +667,20 @@ class ObjetGrilleCours {
 				if (lAvecEvenement) {
 					lRole = "button";
 				} else {
-					lRole = lAriaLabel ? "img" : "presentation";
+					lRole = aImage.tooltip ? "img" : "presentation";
 				}
 			}
 			const lAttrsDiv = {
+				"aria-hidden": aImage.ariaHidden ? "true" : false,
 				style: aImage.style || false,
 				class:
 					this.grille.getOptions().avecSelection && lAvecEvenement
 						? "AvecMain"
 						: false,
 				"ie-node": lAvecEvenement
-					? tag_1.tag.funcAttr(this.params.ieNodeImage, [
-							aParams.indiceCours,
-							aImage.getGenre(),
-						])
+					? (_a = this.params.jsxNodeImageCours) === null || _a === void 0
+						? void 0
+						: _a.bind(this, aParams.indiceCours, aImage.getGenre())
 					: false,
 				role: lRole,
 				tabindex: lAvecEvenement && !aImage.btnImage ? "0" : false,
@@ -743,10 +699,7 @@ class ObjetGrilleCours {
 					break;
 				case ObjetGrilleCours.positionImage.basD:
 				case ObjetGrilleCours.positionImage.hautD:
-					lStylePosition = tag_1.tag.styleToStr(
-						"right",
-						(aParams.cadreCours.right || 0) + "px",
-					);
+					lStylePosition = "right:" + (aParams.cadreCours.right || 0) + "px;";
 					break;
 			}
 		}
@@ -762,24 +715,26 @@ class ObjetGrilleCours {
 			}
 			lStylePosition += "top:" + lTop + "px;";
 		} else {
-			lStylePosition += tag_1.tag.styleToStr(
-				"bottom",
-				(aParams.cadreCours.bottom || 0) + "px",
-			);
+			lStylePosition += "bottom:" + (aParams.cadreCours.bottom || 0) + "px;";
 		}
-		return (0, tag_1.tag)(
+		const lClasses = ["conteneur_image"];
+		if (lEstPositionHaute) {
+			lClasses.push("conteneur_image_haut");
+		} else {
+			lClasses.push("conteneur_image_bas");
+		}
+		if (
+			aParams.coin === ObjetGrilleCours.positionImage.centreB ||
+			aParams.coin === ObjetGrilleCours.positionImage.centreH
+		) {
+			lClasses.push("conteneur_image_centre");
+		}
+		return IE.jsx.str(
 			"div",
 			{
 				id: this._getIdImage(aParams.indiceCours, aParams.coin),
-				class: [
-					"conteneur_image",
-					lEstPositionHaute ? "conteneur_image_haut" : "conteneur_image_bas",
-					aParams.coin === ObjetGrilleCours.positionImage.centreB ||
-					aParams.coin === ObjetGrilleCours.positionImage.centreH
-						? " conteneur_image_centre"
-						: "",
-				],
 				style: lStylePosition,
+				class: lClasses.join(" "),
 			},
 			HContenu.join(""),
 		);
@@ -830,7 +785,7 @@ class ObjetGrilleCours {
 			});
 			const lHtmlImages = H.join("");
 			if (lHtmlImages && aNodeCours) {
-				IEHtml.injectHTML(
+				IEHtml_1.default.injectHTML(
 					aNodeCours,
 					lHtmlImages,
 					this.grille.controleur,
@@ -981,33 +936,54 @@ class ObjetGrilleCours {
 		}
 	}
 	composeCoursMS(I) {
-		const H = [];
-		H.push(
-			'<div class="Table Cours ',
-			this.params.classCoursMS,
-			'"',
-			' style="' +
-				ObjetStyle_2.GStyle.composeCouleurFond(this.params.couleurFondCoursMS) +
-				'">',
-			'<div id="' + this._getIdElementSlider(I) + '"',
-			ObjetHtml_1.GHtml.composeAttr("ie-node", "moduleCours.getNodeSlider", I),
-			' class="AvecMain cours-multiple-slider',
-			this.params.grilleInverse ? " NoWrap" : "",
-			'"',
-			' style="',
-			this.params.grilleInverse ? "width:100%;" : "height:100%;",
-			ObjetStyle_2.GStyle.composeCouleurFond(this.params.couleurFondSlider),
-			ObjetStyle_2.GStyle.composeCouleurBordure(
-				this.params.couleurBordureCours,
-				1,
-				this.params.grilleInverse
-					? ObjetStyle_1.EGenreBordure.bas
-					: ObjetStyle_1.EGenreBordure.droite,
-			),
-			'"></div>',
-			"</div>",
+		return IE.jsx.str(
+			"div",
+			{
+				class: "Table Cours " + this.params.classCoursMS,
+				style: ObjetStyle_2.GStyle.composeCouleurFond(
+					this.params.couleurFondCoursMS,
+				),
+			},
+			IE.jsx.str("div", {
+				id: this._getIdElementSlider(I),
+				"ie-node": this.getNodeSlider.bind(this, I),
+				class:
+					"AvecMain cours-multiple-slider" +
+					(this.params.grilleInverse ? " NoWrap" : ""),
+				style:
+					(this.params.grilleInverse ? "width:100%;" : "height:100%;") +
+					ObjetStyle_2.GStyle.composeCouleurFond(
+						this.params.couleurFondSlider,
+					) +
+					ObjetStyle_2.GStyle.composeCouleurBordure(
+						this.params.couleurBordureCours,
+						1,
+						this.params.grilleInverse
+							? ObjetStyle_1.EGenreBordure.bas
+							: ObjetStyle_1.EGenreBordure.droite,
+					),
+			}),
 		);
-		return H.join("");
+	}
+	getNodeSlider(aIndiceCours, aNode) {
+		$(aNode).on("mouseup", (aEvent) => {
+			if (
+				ObjetNavigateur_1.Navigateur.BoutonSouris ===
+				Enumere_BoutonSouris_1.EGenreBoutonSouris.Droite
+			) {
+				return;
+			}
+			const lCours = this.params.listeCours.get(aIndiceCours);
+			if (!lCours) {
+				return;
+			}
+			aEvent.stopPropagation();
+			lCours.numeroCouloir += 1;
+			if (lCours.numeroCouloir >= lCours.listeCours.nbCouloirs) {
+				lCours.numeroCouloir = 0;
+			}
+			this.actualiserCours(aIndiceCours);
+		});
 	}
 	_composeCadreSelection() {
 		const H = [];
@@ -1047,92 +1023,100 @@ class ObjetGrilleCours {
 		return H.join("");
 	}
 	composeCourssimple(I, aCours) {
-		const H = [];
 		const lCadreCours = this.getCadreCours(aCours);
 		const lDebutCoursHorsGrille = this.getPlaceCoursHorsGrille(aCours, true);
 		const lFinCoursHorsGrille = this.getPlaceCoursHorsGrille(aCours, false);
-		H.push(
-			'<div class="cours-simple" id="',
-			this.getIdInterneCours(I),
-			'" ',
-			ObjetHtml_1.GHtml.composeAttr(
-				this.params.coursAvecIEHint ? "ie-hint" : "ie-title",
-				"moduleCours.getHintCours",
-				I,
-			),
-			">",
+		return IE.jsx.str(
+			"div",
+			{
+				class: "cours-simple",
+				id: this.getIdInterneCours(I),
+				"ie-hint": this.params.coursAvecIEHint
+					? this.getHintCours.bind(this, aCours, I)
+					: false,
+				"ie-tooltipdescribe-static": this.params.coursAvecIEHint
+					? false
+					: this.getHintCours.bind(this, aCours, I),
+			},
+			() => {
+				let lHtml = IE.jsx.str(
+					"table",
+					{
+						role: "presentation",
+						class:
+							"Cours " +
+							(this.params.tailleTexteCours
+								? " Texte" + this.params.tailleTexteCours
+								: ""),
+						style:
+							ObjetStyle_2.GStyle.composeCouleurFond(lCadreCours.couleurFond) +
+							(lCadreCours.left > 0
+								? "border-width:" +
+									lCadreCours.top +
+									"px " +
+									lCadreCours.right +
+									"px " +
+									lCadreCours.bottom +
+									"px " +
+									lCadreCours.left +
+									"px; border-style:solid; border-color:" +
+									lCadreCours.couleurBordure
+								: "border:0"),
+					},
+					this.composeEnteteCours(I, aCours),
+					IE.jsx.str(
+						"tr",
+						null,
+						IE.jsx.str("td", {
+							id: this.getIdContenu(I),
+							style:
+								"padding:" +
+								this.params.paddingContenuCoursTop +
+								"px " +
+								this.params.paddingContenuCoursRight +
+								"px " +
+								this.params.paddingContenuCoursBottom +
+								"px " +
+								this.params.paddingContenuCoursLeft +
+								"px;",
+						}),
+					),
+				);
+				if (lDebutCoursHorsGrille || lFinCoursHorsGrille) {
+					lHtml = IE.jsx.str(
+						"div",
+						{
+							class: "Cours",
+							style:
+								ObjetStyle_2.GStyle.composeCouleurFond("white") +
+								(lDebutCoursHorsGrille
+									? "border-" +
+										(this.params.grilleInverse ? "left" : "top") +
+										"-style:dashed; border-" +
+										(this.params.grilleInverse ? "left" : "top") +
+										"-color:black;"
+									: "") +
+								(lFinCoursHorsGrille
+									? "border-" +
+										(this.params.grilleInverse ? "right" : "bottom") +
+										"-style:dashed; border-" +
+										(this.params.grilleInverse ? "right" : "bottom") +
+										"-color:black;"
+									: "") +
+								"border-width:" +
+								this.params.largeurBordureHorsGrille +
+								"px;",
+						},
+						lHtml,
+					);
+				}
+				const lHtmlDecorateur = this.construireDecorateurCours(aCours, I);
+				if (lHtmlDecorateur) {
+					lHtml += lHtmlDecorateur;
+				}
+				return lHtml;
+			},
 		);
-		if (lDebutCoursHorsGrille || lFinCoursHorsGrille) {
-			H.push(
-				'<div class="Cours" style="',
-				ObjetStyle_2.GStyle.composeCouleurFond("white"),
-				lDebutCoursHorsGrille
-					? "border-" +
-							(this.params.grilleInverse ? "left" : "top") +
-							"-style:dashed; border-" +
-							(this.params.grilleInverse ? "left" : "top") +
-							"-color:black;"
-					: "",
-				lFinCoursHorsGrille
-					? "border-" +
-							(this.params.grilleInverse ? "right" : "bottom") +
-							"-style:dashed; border-" +
-							(this.params.grilleInverse ? "right" : "bottom") +
-							"-color:black;"
-					: "",
-				"border-width:",
-				this.params.largeurBordureHorsGrille,
-				'px;"',
-				">",
-			);
-		}
-		H.push(
-			'<table role="presentation" class="Cours ',
-			this.params.tailleTexteCours
-				? " Texte" + this.params.tailleTexteCours
-				: "",
-			'" style="',
-			ObjetStyle_2.GStyle.composeCouleurFond(lCadreCours.couleurFond),
-			lCadreCours.left > 0
-				? "border-width:" +
-						lCadreCours.top +
-						"px " +
-						lCadreCours.right +
-						"px " +
-						lCadreCours.bottom +
-						"px " +
-						lCadreCours.left +
-						"px; border-style:solid; border-color:" +
-						lCadreCours.couleurBordure
-				: "border:0",
-			'">',
-		);
-		H.push(this.composeEnteteCours(I, aCours));
-		H.push(
-			'<tr><td  id="',
-			this.getIdContenu(I),
-			'"',
-			' style="padding:',
-			this.params.paddingContenuCoursTop + "px ",
-			this.params.paddingContenuCoursRight,
-			"px ",
-			this.params.paddingContenuCoursBottom,
-			"px ",
-			this.params.paddingContenuCoursLeft,
-			"px;",
-			'">',
-		);
-		H.push("</td></tr>");
-		H.push("</table>");
-		if (lDebutCoursHorsGrille || lFinCoursHorsGrille) {
-			H.push("</div>");
-		}
-		const lHtmlDecorateur = this.construireDecorateurCours(aCours, I);
-		if (lHtmlDecorateur) {
-			H.push(lHtmlDecorateur);
-		}
-		H.push("</div>");
-		return H.join("");
 	}
 	_composeCours(aCours, I) {
 		if (aCours.coursMultiple) {
@@ -1149,6 +1133,9 @@ class ObjetGrilleCours {
 					.getTabListeElements()
 					.indexOf(aCoursSuperpose.coursOrigine)
 			: aCoursSuperpose.indiceCoursOrigine;
+	}
+	getAriaLabelCours(aCours) {
+		return "";
 	}
 }
 exports.ObjetGrilleCours = ObjetGrilleCours;

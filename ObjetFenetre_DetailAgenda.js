@@ -1,14 +1,15 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GDate } = require("ObjetDate.js");
-const { GChaine } = require("ObjetChaine.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { UtilitaireVisios } = require("UtilitaireVisiosSco.js");
-const { tag } = require("tag.js");
-const { TypeGenreEvenementAgenda } = require("TypeGenreEvenementAgenda.js");
-const { UtilitaireUrl } = require("UtilitaireUrl.js");
-class ObjetFenetre_DetailAgenda extends ObjetFenetre {
+exports.ObjetFenetre_DetailAgenda = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetChaine_1 = require("ObjetChaine");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const UtilitaireVisiosSco_1 = require("UtilitaireVisiosSco");
+const TypeGenreEvenementAgenda_1 = require("TypeGenreEvenementAgenda");
+const UtilitaireUrl_1 = require("UtilitaireUrl");
+const MethodesObjet_1 = require("MethodesObjet");
+class ObjetFenetre_DetailAgenda extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.option = {
@@ -19,11 +20,11 @@ class ObjetFenetre_DetailAgenda extends ObjetFenetre {
 		this.setOptionsFenetre({
 			avecComposeBasInFooter: true,
 			positionSurSouris: !this.option.estFenetreAgenda,
-			titre: function () {
+			titre: () => {
 				return this.donnees
 					? `<span class="titreDetailAgenda" style="border-left-color:${this.donnees.CouleurCellule ? this.donnees.CouleurCellule : ""} ">${this.donnees.getLibelle()}</span>`
 					: "";
-			}.bind(this),
+			},
 		});
 	}
 	getControleur(aInstance) {
@@ -41,7 +42,7 @@ class ObjetFenetre_DetailAgenda extends ObjetFenetre {
 					aInstance.donnees.DateDebut &&
 					aInstance.donnees.DateFin
 				) {
-					lStrDates = GDate.strDates(
+					lStrDates = ObjetDate_1.GDate.strDates(
 						aInstance.donnees.DateDebut,
 						aInstance.donnees.DateFin,
 						{ sansHoraire: aInstance.donnees.sansHoraire },
@@ -65,7 +66,9 @@ class ObjetFenetre_DetailAgenda extends ObjetFenetre {
 					let lStrPartage = "";
 					if (!!aInstance.donnees) {
 						if (aInstance.donnees.publie) {
-							lStrPartage = GTraductions.getValeur("Agenda.EvenementPartage");
+							lStrPartage = ObjetTraduction_1.GTraductions.getValeur(
+								"Agenda.EvenementPartage",
+							);
 						}
 					}
 					return lStrPartage;
@@ -82,6 +85,7 @@ class ObjetFenetre_DetailAgenda extends ObjetFenetre {
 				getStr: function () {
 					let lStr = "";
 					if (
+						aInstance.donnees &&
 						!!aInstance.donnees.periodicite &&
 						aInstance.donnees.estPeriodique
 					) {
@@ -89,13 +93,13 @@ class ObjetFenetre_DetailAgenda extends ObjetFenetre {
 							let lChaine =
 								(aInstance.donnees.DateDebut &&
 									aInstance.donnees.DateFin &&
-									GDate.strDates(
+									ObjetDate_1.GDate.strDates(
 										aInstance.donnees.DateDebut,
 										aInstance.donnees.DateFin,
 										{ sansHoraire: aInstance.donnees.sansHoraire },
 									).trim()) ||
 								"";
-							lStr = `${lChaine} - ${tag("i", { class: "icons icon icon_refresh", "ie-hint": `<div>${GTraductions.getValeur("Agenda.EvenementModifie")}</div>` })} ${GTraductions.getValeur("Agenda.EvenementModifie")}`;
+							lStr = `${lChaine} - ${IE.jsx.str("i", { role: "presentation", class: "icons icon_refresh" })} ${ObjetTraduction_1.GTraductions.getValeur("Agenda.EvenementModifie")}`;
 						} else {
 							lStr = aInstance.donnees.periodicite.libelleDescription;
 						}
@@ -103,6 +107,9 @@ class ObjetFenetre_DetailAgenda extends ObjetFenetre {
 					return lStr;
 				},
 				getClass() {
+					if (!aInstance.donnees) {
+						return "";
+					}
 					const lClass = [];
 					lClass.push("ie-sous-titre");
 					if (
@@ -137,10 +144,10 @@ class ObjetFenetre_DetailAgenda extends ObjetFenetre {
 					aInstance.donnees.Commentaire.length > 0
 						? aInstance.donnees.Commentaire
 						: "";
-				if (GChaine.contientAuMoinsUneURL(lCommentaire)) {
-					lCommentaire = GChaine.ajouterLiensURL(lCommentaire);
+				if (ObjetChaine_1.GChaine.contientAuMoinsUneURL(lCommentaire)) {
+					lCommentaire = ObjetChaine_1.GChaine.ajouterLiensURL(lCommentaire);
 				}
-				return GChaine.replaceRCToHTML(lCommentaire);
+				return ObjetChaine_1.GChaine.replaceRCToHTML(lCommentaire);
 			},
 			estEditable: function () {
 				if (
@@ -180,7 +187,8 @@ class ObjetFenetre_DetailAgenda extends ObjetFenetre {
 					if (!!aInstance.evenementAgenda && aInstance.donnees) {
 						const lParam = {
 							article: aInstance.donnees,
-							genreEvenement: EGenreEvenementListe.Suppression,
+							genreEvenement:
+								Enumere_EvenementListe_1.EGenreEvenementListe.Suppression,
 						};
 						aInstance.evenementAgenda(lParam);
 						aInstance.fermer();
@@ -203,7 +211,9 @@ class ObjetFenetre_DetailAgenda extends ObjetFenetre {
 					}
 				},
 				composeConseilClasse: function () {
-					return _composeConseilClasse.call(this, aInstance.donnees);
+					return aInstance.donnees && aInstance.donnees.estConseilClasse
+						? aInstance._composeConseilClasse(aInstance.donnees)
+						: "";
 				},
 			},
 			avecPublicationPageEtablissement: function () {
@@ -214,16 +224,17 @@ class ObjetFenetre_DetailAgenda extends ObjetFenetre {
 					aInstance.donnees.publie &&
 					aInstance.option.estEspaceProf &&
 					(aInstance.donnees.getGenre() ===
-						TypeGenreEvenementAgenda.tgea_Standard ||
+						TypeGenreEvenementAgenda_1.TypeGenreEvenementAgenda.tgea_Standard ||
 						aInstance.donnees.getGenre() ===
-							TypeGenreEvenementAgenda.tgea_StandardPeriodique)
+							TypeGenreEvenementAgenda_1.TypeGenreEvenementAgenda
+								.tgea_StandardPeriodique)
 				) {
 					return true;
 				}
 				return false;
 			},
 			PublicationEtablisement: function () {
-				return GTraductions.getValeur(
+				return ObjetTraduction_1.GTraductions.getValeur(
 					"Fenetre_SaisieAgenda.partageSurPageEtablissement",
 				);
 			},
@@ -231,11 +242,18 @@ class ObjetFenetre_DetailAgenda extends ObjetFenetre {
 	}
 	setOptions(aOptions) {
 		Object.assign(this.option, aOptions);
+		return this;
 	}
 	setDonnees(aDonnees) {
 		this.donnees = aDonnees.detail;
 		this.afficher(this.composeContenu());
-		if (!!aDonnees.avecPublicationPageEtablissement) {
+		if (
+			"avecPublicationPageEtablissement" in aDonnees &&
+			aDonnees.avecPublicationPageEtablissement &&
+			MethodesObjet_1.MethodesObjet.isBoolean(
+				aDonnees.avecPublicationPageEtablissement,
+			)
+		) {
 			this.avecPublicationPageEtablissement =
 				aDonnees.avecPublicationPageEtablissement;
 		}
@@ -247,40 +265,91 @@ class ObjetFenetre_DetailAgenda extends ObjetFenetre {
 		}
 	}
 	composeContenu() {
-		const H = [];
-		H.push('<section class="FenetreDetailAgenda">');
-		H.push(
-			"<section>",
-			'<div ie-html="getDate" class="capitalize ie-sous-titre"></div>',
-			'<div ie-html="Publie.getStr" ie-if="Publie.estPublie" class="ie-sous-titre icons iconic icon_fiche_cours_partage"></div>',
-			`<div ie-if="avecPublicationPageEtablissement" ie-html="PublicationEtablisement" class="ie-sous-titre icons iconic icon_ecole"></div>`,
-			`<div ie-html="Periodique.getStr" title="${GTraductions.getValeur("Agenda.AgendaHintEvtPEriodique")}" ie-if="Periodique.estPeriodique" ie-class="Periodique.getClass"></div>`,
-			'<div ie-html="Auteur.getStrAuteur" ie-if="Auteur.avecAuteur" class="ie-sous-titre"></div>',
-			"</section>",
-			'<div ie-html="getCommentaire" ie-if="ConseilClasse.sansConseilClasse" class="m-top-xl commentaire"></div>',
-			'<div ie-html="ConseilClasse.composeConseilClasse" ie-if="ConseilClasse.avecConseilClasse" class="m-top-xl commentaire"></div>',
+		var _a, _b, _c, _d, _e, _f, _g;
+		const lAvecDocJoints =
+			((_b =
+				(_a = this.donnees) === null || _a === void 0
+					? void 0
+					: _a.listeDocJoints) === null || _b === void 0
+				? void 0
+				: _b.count()) > 0;
+		const lAvecListeFichiers =
+			((_d =
+				(_c = this.donnees) === null || _c === void 0
+					? void 0
+					: _c.listeFichiers) === null || _d === void 0
+				? void 0
+				: _d.count()) > 0;
+		return IE.jsx.str(
+			"section",
+			{ class: "FenetreDetailAgenda" },
+			IE.jsx.str(
+				"section",
+				null,
+				IE.jsx.str("div", {
+					"ie-html": "getDate",
+					class: "capitalize ie-sous-titre",
+				}),
+				IE.jsx.str("div", {
+					"ie-html": "Publie.getStr",
+					"ie-if": "Publie.estPublie",
+					class: "ie-sous-titre icons iconic icon_fiche_cours_partage",
+				}),
+				IE.jsx.str("div", {
+					"ie-if": "avecPublicationPageEtablissement",
+					"ie-html": "PublicationEtablisement",
+					class: "ie-sous-titre icons iconic icon_ecole",
+				}),
+				IE.jsx.str("div", {
+					"ie-html": "Periodique.getStr",
+					title: ObjetTraduction_1.GTraductions.getValeur(
+						"Agenda.AgendaHintEvtPEriodique",
+					),
+					"ie-if": "Periodique.estPeriodique",
+					"ie-class": "Periodique.getClass",
+				}),
+				IE.jsx.str("div", {
+					"ie-html": "Auteur.getStrAuteur",
+					"ie-if": "Auteur.avecAuteur",
+					class: "ie-sous-titre",
+				}),
+			),
+			IE.jsx.str("div", {
+				"ie-html": "getCommentaire",
+				"ie-if": "ConseilClasse.sansConseilClasse",
+				class: "m-top-xl commentaire",
+			}),
+			IE.jsx.str("div", {
+				"ie-html": "ConseilClasse.composeConseilClasse",
+				"ie-if": "ConseilClasse.avecConseilClasse",
+				class: "m-top-xl commentaire",
+			}),
+			(lAvecDocJoints || lAvecListeFichiers) &&
+				IE.jsx.str(
+					"section",
+					{ class: "ctnListeDocJoints" },
+					lAvecDocJoints &&
+						((_f =
+							(_e = this.donnees) === null || _e === void 0
+								? void 0
+								: _e.listeDocJoints) === null || _f === void 0
+							? void 0
+							: _f.getTableau((aDocumentJoint) =>
+									ObjetChaine_1.GChaine.composerUrlLienExterne({
+										documentJoint: aDocumentJoint,
+										genreRessource:
+											Enumere_Ressource_1.EGenreRessource.DocJointEtablissement,
+									}),
+								)),
+					lAvecListeFichiers &&
+						((_g = this.donnees) === null || _g === void 0
+							? void 0
+							: _g.listeFichiers) &&
+						UtilitaireUrl_1.UtilitaireUrl.construireListeUrls(
+							this.donnees.listeFichiers,
+						),
+				),
 		);
-		if (
-			this.donnees &&
-			((!!this.donnees.listeDocJoints && this.donnees.listeDocJoints.count()) ||
-				(!!this.donnees.listeFichiers && this.donnees.listeFichiers.count()))
-		) {
-			H.push('<section class="ctnListeDocJoints">');
-			this.donnees.listeDocJoints.parcourir((aDocumentJoint) => {
-				H.push(
-					GChaine.composerUrlLienExterne({
-						documentJoint: aDocumentJoint,
-						genreRessource: EGenreRessource.DocJointEtablissement,
-					}),
-				);
-			});
-			if (this.donnees.listeFichiers) {
-				H.push(UtilitaireUrl.construireListeUrls(this.donnees.listeFichiers));
-			}
-			H.push(" </section>");
-		}
-		H.push("</section>");
-		return H.join("");
 	}
 	surValidation(aIndice) {
 		if (
@@ -295,84 +364,112 @@ class ObjetFenetre_DetailAgenda extends ObjetFenetre {
 		this.fermer();
 	}
 	composeBas() {
-		const H = [];
-		H.push(
-			`\n        <section class="compose-bas">\n            <ie-btnicon title="${GTraductions.getValeur("Dupliquer")}" class="icon_dupliquer avecFond i-medium" ie-model="btnDupliquer" ie-if="estDuplicable"></ie-btnicon>\n            <ie-btnicon title="${GTraductions.getValeur("Supprimer")}" class="icon_trash avecFond i-medium" ie-model="btnSupprimer" ie-if="estEditable"></ie-btnicon>\n        </section>\n    `,
+		return IE.jsx.str(
+			"section",
+			{ class: "compose-bas" },
+			IE.jsx.str("ie-btnicon", {
+				title: ObjetTraduction_1.GTraductions.getValeur("Dupliquer"),
+				class: "icon_dupliquer avecFond i-medium",
+				"ie-model": "btnDupliquer",
+				"ie-if": "estDuplicable",
+			}),
+			IE.jsx.str("ie-btnicon", {
+				title: ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
+				class: "icon_trash avecFond i-medium",
+				"ie-model": "btnSupprimer",
+				"ie-if": "estEditable",
+			}),
 		);
+	}
+	_composeConseilClasse(aEvenement) {
+		const H = [];
+		const lPresidentCC = !!aEvenement.presidentCC
+			? ObjetTraduction_1.GTraductions.getValeur("Agenda.President") +
+				" : " +
+				aEvenement.presidentCC
+			: "";
+		let lProfPrincipaux = "";
+		if (
+			!!aEvenement.listeProfsPrincipaux &&
+			aEvenement.listeProfsPrincipaux.count() > 0
+		) {
+			lProfPrincipaux =
+				aEvenement.listeProfsPrincipaux.count() > 1
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"Agenda.ProfesseursPrincipaux",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"Agenda.ProfesseurPrincipal",
+						);
+			lProfPrincipaux +=
+				" : " + aEvenement.listeProfsPrincipaux.getTableauLibelles().join(", ");
+		}
+		let lParentDelegues = "";
+		if (
+			!!aEvenement.listeDeleguesParents &&
+			aEvenement.listeDeleguesParents.count() > 0
+		) {
+			lParentDelegues =
+				ObjetTraduction_1.GTraductions.getValeur("Agenda.ParentsDelegues") +
+				" : ";
+			lParentDelegues += aEvenement.listeDeleguesParents
+				.getTableauLibelles()
+				.join(", ");
+		}
+		let lElevesDelegues = "";
+		if (
+			!!aEvenement.listeDeleguesEleves &&
+			aEvenement.listeDeleguesEleves.count() > 0
+		) {
+			lElevesDelegues =
+				ObjetTraduction_1.GTraductions.getValeur("Agenda.ElevesDelegues") +
+				" : ";
+			lElevesDelegues += aEvenement.listeDeleguesEleves
+				.getTableauLibelles()
+				.join(", ");
+		}
+		H.push(
+			'<div class="Espace">',
+			'<ul class="list-as-menu">',
+			lPresidentCC ? "<li> " + lPresidentCC + "</li>" : "",
+			lProfPrincipaux ? "<li> " + lProfPrincipaux + "</li>" : "",
+			lParentDelegues ? "<li> " + lParentDelegues + "</li>" : "",
+			lElevesDelegues ? "<li> " + lElevesDelegues + "</li>" : "",
+			"</ul>",
+			"</div>",
+		);
+		if (aEvenement.visio && aEvenement.visio.url) {
+			H.push(
+				IE.jsx.str(
+					"div",
+					{ class: "agenda-cc-visio" },
+					IE.jsx.str(
+						"ie-chips",
+						{
+							class: [
+								"iconic",
+								UtilitaireVisiosSco_1.UtilitaireVisios.getNomIconePresenceVisios(),
+							],
+							href: ObjetChaine_1.GChaine.verifierURLHttp(aEvenement.visio.url),
+						},
+						aEvenement.visio.libelleLien ||
+							ObjetTraduction_1.GTraductions.getValeur(
+								"FenetreSaisieVisiosCours.AccederAuCoursVirtuel",
+							),
+					),
+					aEvenement.visio.commentaire
+						? IE.jsx.str(
+								"label",
+								null,
+								ObjetChaine_1.GChaine.replaceRCToHTML(
+									aEvenement.visio.commentaire,
+								),
+							)
+						: "",
+				),
+			);
+		}
 		return H.join("");
 	}
 }
-function _composeConseilClasse(aEvenement) {
-	const H = [];
-	const lPresidentCC = !!aEvenement.presidentCC
-		? GTraductions.getValeur("Agenda.President") +
-			" : " +
-			aEvenement.presidentCC
-		: "";
-	let lProfPrincipaux = "";
-	if (
-		!!aEvenement.listeProfsPrincipaux &&
-		aEvenement.listeProfsPrincipaux.count() > 0
-	) {
-		lProfPrincipaux =
-			aEvenement.listeProfsPrincipaux.count() > 1
-				? GTraductions.getValeur("Agenda.ProfesseursPrincipaux")
-				: GTraductions.getValeur("Agenda.ProfesseurPrincipal");
-		lProfPrincipaux +=
-			" : " + aEvenement.listeProfsPrincipaux.getTableauLibelles().join(", ");
-	}
-	let lParentDelegues = "";
-	if (
-		!!aEvenement.listeDeleguesParents &&
-		aEvenement.listeDeleguesParents.count() > 0
-	) {
-		lParentDelegues = GTraductions.getValeur("Agenda.ParentsDelegues") + " : ";
-		lParentDelegues += aEvenement.listeDeleguesParents
-			.getTableauLibelles()
-			.join(", ");
-	}
-	let lElevesDelegues = "";
-	if (
-		!!aEvenement.listeDeleguesEleves &&
-		aEvenement.listeDeleguesEleves.count() > 0
-	) {
-		lElevesDelegues = GTraductions.getValeur("Agenda.ElevesDelegues") + " : ";
-		lElevesDelegues += aEvenement.listeDeleguesEleves
-			.getTableauLibelles()
-			.join(", ");
-	}
-	H.push(
-		'<div class="Espace">',
-		'<ul class="list-as-menu">',
-		lPresidentCC ? "<li> " + lPresidentCC + "</li>" : "",
-		lProfPrincipaux ? "<li> " + lProfPrincipaux + "</li>" : "",
-		lParentDelegues ? "<li> " + lParentDelegues + "</li>" : "",
-		lElevesDelegues ? "<li> " + lElevesDelegues + "</li>" : "",
-		"</ul>",
-		"</div>",
-	);
-	if (aEvenement.visio && aEvenement.visio.url) {
-		H.push(
-			tag(
-				"div",
-				{ class: "agenda-cc-visio" },
-				tag(
-					"ie-chips",
-					{
-						class: ["iconic", UtilitaireVisios.getNomIconePresenceVisios()],
-						href: GChaine.verifierURLHttp(aEvenement.visio.url),
-					},
-					aEvenement.visio.libelleLien ||
-						GTraductions.getValeur(
-							"FenetreSaisieVisiosCours.AccederAuCoursVirtuel",
-						),
-				),
-				aEvenement.visio.commentaire
-					? tag("label", GChaine.replaceRCToHTML(aEvenement.visio.commentaire))
-					: "",
-			),
-		);
-	}
-	return H.join("");
-}
-module.exports = { ObjetFenetre_DetailAgenda };
+exports.ObjetFenetre_DetailAgenda = ObjetFenetre_DetailAgenda;

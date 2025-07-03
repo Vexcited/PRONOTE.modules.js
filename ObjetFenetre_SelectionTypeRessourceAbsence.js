@@ -1,18 +1,20 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const {
-	ObjetFenetre_SelectionRessource,
-} = require("ObjetFenetre_SelectionRessource.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class ObjetFenetre_SelectionTypeRessourceAbsence extends ObjetFenetre_SelectionRessource {
+exports.ObjetFenetre_SelectionTypeRessourceAbsence = void 0;
+const ObjetFenetre_SelectionRessource_1 = require("ObjetFenetre_SelectionRessource");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const ObjetListe_1 = require("ObjetListe");
+class ObjetFenetre_SelectionTypeRessourceAbsence extends ObjetFenetre_SelectionRessource_1.ObjetFenetre_SelectionRessource {
 	constructor(...aParams) {
 		super(...aParams);
 		this.setOptionsFenetre({
-			titre: GTraductions.getValeur("TypeDeDonnees"),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"SelectionnerTypesDeDonnees",
+			),
 			largeur: 350,
 			hauteur: 400,
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 		});
 		this.setSelectionObligatoire(true);
@@ -20,69 +22,44 @@ class ObjetFenetre_SelectionTypeRessourceAbsence extends ObjetFenetre_SelectionR
 		this.indexBtnValider = 1;
 	}
 	_initialiserListe(aInstance) {
-		const lColonnes = [];
-		lColonnes.push({
-			id: DonneesListeSelectionTypeRessourceAbsence.colonnes.coche,
-			titre: { estCoche: true },
-			taille: 20,
+		aInstance.setOptionsListe({
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+			avecCBToutCocher: true,
+			avecToutSelectionner: true,
+			boutons: [{ genre: ObjetListe_1.ObjetListe.typeBouton.rechercher }],
 		});
-		lColonnes.push({
-			id: DonneesListeSelectionTypeRessourceAbsence.colonnes.libelle,
-			titre: GTraductions.getValeur("Nom"),
-			taille: "100%",
-		});
-		aInstance.setOptionsListe({ colonnes: lColonnes, avecListeNeutre: true });
 	}
 	_actualiserListe() {
 		this.setBoutonActif(
 			this.indexBtnValider,
-			!this.selectionObligatoire || this._nbRessourcesCochees() > 0,
+			!this.estSelectionObligatoire() || this._nbRessourcesCochees() > 0,
 		);
 		this.getInstance(this.identListe).setDonnees(
 			new DonneesListeSelectionTypeRessourceAbsence(this.listeRessources),
 		);
 	}
 }
-class DonneesListeSelectionTypeRessourceAbsence extends ObjetDonneesListe {
+exports.ObjetFenetre_SelectionTypeRessourceAbsence =
+	ObjetFenetre_SelectionTypeRessourceAbsence;
+class DonneesListeSelectionTypeRessourceAbsence extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees) {
 		super(aDonnees);
 		this.setOptions({
-			avecSuppression: false,
-			avecEvnt_ApresEdition: true,
-			avecEtatSaisie: false,
 			avecTri: false,
+			avecSelection: false,
+			avecCB: true,
+			avecEvnt_CB: true,
+			avecCocheCBSurLigne: true,
+			avecBoutonActionLigne: false,
 		});
 	}
-	avecEdition(aParams) {
-		return (
-			aParams.idColonne ===
-			DonneesListeSelectionTypeRessourceAbsence.colonnes.coche
-		);
+	getTitreZonePrincipale(aParams) {
+		return aParams.article.getLibelle();
 	}
-	getTypeValeur(aParams) {
-		if (
-			aParams.idColonne ===
-			DonneesListeSelectionTypeRessourceAbsence.colonnes.coche
-		) {
-			return ObjetDonneesListe.ETypeCellule.Coche;
-		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+	getValueCB(aParams) {
+		return !!aParams.article.selectionne;
 	}
-	getValeur(aParams) {
-		switch (aParams.idColonne) {
-			case DonneesListeSelectionTypeRessourceAbsence.colonnes.coche:
-				return !!aParams.article.selectionne;
-			case DonneesListeSelectionTypeRessourceAbsence.colonnes.libelle:
-				return aParams.article.getLibelle();
-		}
-		return "";
-	}
-	surEdition(aParams, V) {
-		aParams.article.selectionne = V;
+	setValueCB(aParams, aValue) {
+		aParams.article.selectionne = aValue;
 	}
 }
-DonneesListeSelectionTypeRessourceAbsence.colonnes = {
-	coche: "SelTRA_coche",
-	libelle: "SelTRA_libelle",
-};
-module.exports = { ObjetFenetre_SelectionTypeRessourceAbsence };

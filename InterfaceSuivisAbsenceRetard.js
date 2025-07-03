@@ -1,43 +1,37 @@
-const { MethodesObjet } = require("MethodesObjet.js");
-const { GHtml } = require("ObjetHtml.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetFenetre_Liste } = require("ObjetFenetre_Liste.js");
-const { ObjetInterface } = require("ObjetInterface.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetElement } = require("ObjetElement.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { DonneesListe_Media } = require("DonneesListe_Media.js");
-const {
-	DonneesListe_SelectionPersonnel,
-} = require("DonneesListe_SelectionPersonnel.js");
-const {
-	DonneesListe_SuivisAbsenceRetard,
-} = require("DonneesListe_SuivisAbsenceRetard.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const {
-	ObjetFenetre_SaisieSuivisAbsenceRetard,
-} = require("ObjetFenetre_SaisieSuivisAbsenceRetard.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const {
-	ObjetFenetre_SelectionMotif,
-} = require("ObjetFenetre_SelectionMotif.js");
-const ObjetRequetePageSuivisAbsenceRetard = require("ObjetRequetePageSuivisAbsenceRetard.js");
-const ObjetRequeteSaisieSuivisAbsenceRetard = require("ObjetRequeteSaisieSuivisAbsenceRetard.js");
-const { GChaine } = require("ObjetChaine.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-class InterfaceSuivisAbsenceRetard extends ObjetInterface {
-	constructor(...aParams) {
-		super(...aParams);
-		this.listeDocuments = new ObjetListeElements();
+exports.InterfaceSuivisAbsenceRetard = void 0;
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetHtml_1 = require("ObjetHtml");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_Liste_1 = require("ObjetFenetre_Liste");
+const ObjetInterface_1 = require("ObjetInterface");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const DonneesListe_Media_1 = require("DonneesListe_Media");
+const DonneesListe_SelectionPersonnel_1 = require("DonneesListe_SelectionPersonnel");
+const DonneesListe_SuivisAbsenceRetard_1 = require("DonneesListe_SuivisAbsenceRetard");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetFenetre_SaisieSuivisAbsenceRetard_1 = require("ObjetFenetre_SaisieSuivisAbsenceRetard");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetFenetre_SelectionMotif_1 = require("ObjetFenetre_SelectionMotif");
+const ObjetRequetePageSuivisAbsenceRetard_1 = require("ObjetRequetePageSuivisAbsenceRetard");
+const ObjetRequeteSaisieSuivisAbsenceRetard_1 = require("ObjetRequeteSaisieSuivisAbsenceRetard");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const AccessApp_1 = require("AccessApp");
+class InterfaceSuivisAbsenceRetard extends ObjetInterface_1.ObjetInterface {
+	constructor() {
+		super(...arguments);
+		this.listeDocuments = new ObjetListeElements_1.ObjetListeElements();
 	}
 	construireInstances() {
 		this.identListe = this.add(
-			ObjetListe,
+			ObjetListe_1.ObjetListe,
 			this.evenementSurListe,
-			_initialiserListe,
+			this._initialiserListe,
 		);
 	}
 	setParametresGeneraux() {
@@ -55,110 +49,137 @@ class InterfaceSuivisAbsenceRetard extends ObjetInterface {
 		this.dateFin = aDateFin;
 		this.absence = aAbsence;
 		if (!this.eleve) {
-			GHtml.setDisplay(this.getInstance(this.identListe).getNom(), false);
+			ObjetHtml_1.GHtml.setDisplay(this.getNomInstance(this.identListe), false);
 		} else {
-			GHtml.setDisplay(this.getInstance(this.identListe).getNom(), true);
-			_requetePage.call(this);
+			ObjetHtml_1.GHtml.setDisplay(this.getNomInstance(this.identListe), true);
+			this._requetePage();
 		}
 	}
-	evenementSurListe(aParametres, aGenreEvenement, I, J) {
-		switch (aGenreEvenement) {
-			case EGenreEvenementListe.Edition: {
+	evenementSurListe(aParametres) {
+		switch (aParametres.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Edition: {
 				this._saisieEnCours = {
 					idColonne: aParametres.idColonne,
-					ligne: J,
+					ligne: aParametres.ligne,
 					donnee: aParametres.article,
 				};
 				switch (aParametres.idColonne) {
-					case DonneesListe_SuivisAbsenceRetard.colonnes.RA: {
+					case DonneesListe_SuivisAbsenceRetard_1
+						.DonneesListe_SuivisAbsenceRetard.colonnes.RA: {
 						aParametres.article.regle = !aParametres.article.regle;
 						this._actualiserApresSaisie(aParametres.article);
 						break;
 					}
-					case DonneesListe_SuivisAbsenceRetard.colonnes.certificat: {
+					case DonneesListe_SuivisAbsenceRetard_1
+						.DonneesListe_SuivisAbsenceRetard.colonnes.certificat: {
 						this._actualiserApresSaisie(aParametres.article);
 						break;
 					}
-					case DonneesListe_SuivisAbsenceRetard.colonnes.admin:
-					case DonneesListe_SuivisAbsenceRetard.colonnes.RespEl: {
-						const lListePersonnes =
+					case DonneesListe_SuivisAbsenceRetard_1
+						.DonneesListe_SuivisAbsenceRetard.colonnes.admin:
+					case DonneesListe_SuivisAbsenceRetard_1
+						.DonneesListe_SuivisAbsenceRetard.colonnes.RespEl: {
+						const lEstColInterlocuteur =
 							aParametres.idColonne ===
-							DonneesListe_SuivisAbsenceRetard.colonnes.RespEl
-								? this.listeInterlocuteurs
-								: this.listePersonnels;
-						ObjetFenetre.creerInstanceFenetre(ObjetFenetre_Liste, {
-							pere: this,
-							evenement: _evenementFenetre_Liste.bind(this, false),
-							initialiser: function (aInstance) {
-								const lColonnes = [];
-								lColonnes.push({
-									id: DonneesListe_SelectionPersonnel.colonnes.libelle,
-									taille: "100%",
-								});
-								const lParamsListe = {};
-								lParamsListe.optionsListe = {
-									colonnes: lColonnes,
-									hauteurAdapteContenu: true,
-									hauteurMaxAdapteContenu: 500,
-								};
-								aInstance.setOptionsFenetre({
-									titre: GTraductions.getValeur("SuivisAR.Selectionner"),
-									largeur: 300,
-									hauteur: null,
-									listeBoutons: [
-										GTraductions.getValeur("Annuler"),
-										GTraductions.getValeur("Valider"),
-									],
-								});
-								aInstance.paramsListe = lParamsListe;
-							},
-						}).setDonnees(new DonneesListe_SelectionPersonnel(lListePersonnes));
-						break;
-					}
-					case DonneesListe_SuivisAbsenceRetard.colonnes.nature: {
-						const lObjFenetreListe = ObjetFenetre.creerInstanceFenetre(
-							ObjetFenetre_Liste,
+							DonneesListe_SuivisAbsenceRetard_1
+								.DonneesListe_SuivisAbsenceRetard.colonnes.RespEl;
+						const lListePersonnes = lEstColInterlocuteur
+							? this.listeInterlocuteurs
+							: this.listePersonnels;
+						const lTitre = lEstColInterlocuteur
+							? ObjetTraduction_1.GTraductions.getValeur(
+									"SuivisAR.SelectionnerInterlocuteur",
+								)
+							: ObjetTraduction_1.GTraductions.getValeur(
+									"SuivisAR.SelectionnerRespAdmin",
+								);
+						ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+							ObjetFenetre_Liste_1.ObjetFenetre_Liste,
 							{
 								pere: this,
-								evenement: _evenementFenetre_Liste.bind(this, false),
+								evenement: this._evenementFenetreListe.bind(this, false),
 								initialiser: function (aInstance) {
-									const lColonnes = [];
-									lColonnes.push({
-										id: DonneesListe_Media.colonnes.code,
-										titre: GTraductions.getValeur("Code"),
-										taille: 40,
-									});
-									lColonnes.push({
-										id: DonneesListe_Media.colonnes.libelle,
-										titre: GTraductions.getValeur("SuivisAR.Intitule"),
-										taille: "100%",
-									});
 									const lParamsListe = {};
 									lParamsListe.optionsListe = {
-										colonnes: lColonnes,
+										skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+										ariaLabel: lTitre,
 										hauteurAdapteContenu: true,
 										hauteurMaxAdapteContenu: 500,
-										listeCreations: [0, 1],
-										avecLigneCreation: true,
 									};
-									const lTitreFenetre = aParametres.article.media.envoi
-										? GTraductions.getValeur("SuivisAR.EditionEnvois")
-										: GTraductions.getValeur("SuivisAR.EditionReceptions");
 									aInstance.setOptionsFenetre({
-										titre: lTitreFenetre,
-										largeur: 300,
+										titre: lTitre,
+										largeur: 400,
 										hauteur: null,
 										listeBoutons: [
-											GTraductions.getValeur("Annuler"),
-											GTraductions.getValeur("Valider"),
+											ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+											ObjetTraduction_1.GTraductions.getValeur("Valider"),
 										],
 									});
 									aInstance.paramsListe = lParamsListe;
 								},
 							},
+						).setDonnees(
+							new DonneesListe_SelectionPersonnel_1.DonneesListe_SelectionPersonnel(
+								lListePersonnes,
+							),
+							true,
 						);
+						break;
+					}
+					case DonneesListe_SuivisAbsenceRetard_1
+						.DonneesListe_SuivisAbsenceRetard.colonnes.nature: {
+						const lObjFenetreListe =
+							ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+								ObjetFenetre_Liste_1.ObjetFenetre_Liste,
+								{
+									pere: this,
+									evenement: this._evenementFenetreListe.bind(this, false),
+									initialiser: function (aInstance) {
+										const lColonnes = [];
+										lColonnes.push({
+											id: DonneesListe_Media_1.DonneesListe_Media.colonnes.code,
+											titre: ObjetTraduction_1.GTraductions.getValeur("Code"),
+											taille: 40,
+										});
+										lColonnes.push({
+											id: DonneesListe_Media_1.DonneesListe_Media.colonnes
+												.libelle,
+											titre:
+												ObjetTraduction_1.GTraductions.getValeur(
+													"SuivisAR.Intitule",
+												),
+											taille: "100%",
+										});
+										const lParamsListe = {};
+										lParamsListe.optionsListe = {
+											colonnes: lColonnes,
+											hauteurAdapteContenu: true,
+											hauteurMaxAdapteContenu: 500,
+											listeCreations: [0, 1],
+											avecLigneCreation: true,
+										};
+										const lTitreFenetre = aParametres.article.media.envoi
+											? ObjetTraduction_1.GTraductions.getValeur(
+													"SuivisAR.EditionEnvois",
+												)
+											: ObjetTraduction_1.GTraductions.getValeur(
+													"SuivisAR.EditionReceptions",
+												);
+										aInstance.setOptionsFenetre({
+											titre: lTitreFenetre,
+											largeur: 300,
+											hauteur: null,
+											listeBoutons: [
+												ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+												ObjetTraduction_1.GTraductions.getValeur("Valider"),
+											],
+										});
+										aInstance.paramsListe = lParamsListe;
+									},
+								},
+							);
 						lObjFenetreListe.setDonnees(
-							new DonneesListe_Media(
+							new DonneesListe_Media_1.DonneesListe_Media(
 								this.listeMedias,
 								!aParametres.article.media.envoi,
 								this.listeSuivisAbsenceRetard,
@@ -174,59 +195,62 @@ class InterfaceSuivisAbsenceRetard extends ObjetInterface {
 		this._saisieEnCours = { idColonne: aIdColonne, ligne: aLigne, donnee: D };
 		if (aLigne) {
 			switch (aLigne.getNumero()) {
-				case DonneesListe_SuivisAbsenceRetard.GenreCommandeMenu
-					.RemplacerCertificat:
+				case DonneesListe_SuivisAbsenceRetard_1.DonneesListe_SuivisAbsenceRetard
+					.GenreCommandeMenu.RemplacerCertificat:
 					this._actualiserApresSaisie(D);
 					break;
-				case DonneesListe_SuivisAbsenceRetard.GenreCommandeMenu
-					.SupprimerCertificat: {
+				case DonneesListe_SuivisAbsenceRetard_1.DonneesListe_SuivisAbsenceRetard
+					.GenreCommandeMenu.SupprimerCertificat: {
 					D.avecCertificat = false;
 					const lElement = D.certificat;
 					if (lElement) {
-						if (lElement.getEtat() === EGenreEtat.Creation) {
+						if (lElement.getEtat() === Enumere_Etat_1.EGenreEtat.Creation) {
 							this.listeDocuments.remove(
 								this.listeDocuments.getIndiceParNumeroEtGenre(
 									lElement.getNumero(),
 								),
 							);
 						} else {
-							lElement.suivi = new ObjetElement("", D.getNumero());
+							lElement.suivi = new ObjetElement_1.ObjetElement(
+								"",
+								D.getNumero(),
+							);
 							this.listeDocuments.addElement(lElement);
 						}
-						lElement.setEtat(EGenreEtat.Suppression);
+						lElement.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 					}
 					this._actualiserApresSaisie(D);
 					break;
 				}
-				case DonneesListe_SuivisAbsenceRetard.GenreCommandeMenu
-					.ConsulterCertificat:
+				case DonneesListe_SuivisAbsenceRetard_1.DonneesListe_SuivisAbsenceRetard
+					.GenreCommandeMenu.ConsulterCertificat:
 					window.open(
-						GChaine.creerUrlBruteLienExterne(D.certificat, {
-							genreRessource: EGenreRessource.DocJointEleve,
+						ObjetChaine_1.GChaine.creerUrlBruteLienExterne(D.certificat, {
+							genreRessource: Enumere_Ressource_1.EGenreRessource.DocJointEleve,
 						}),
 					);
 					break;
-				case DonneesListe_SuivisAbsenceRetard.GenreCommandeMenu.ReglerDossier:
+				case DonneesListe_SuivisAbsenceRetard_1.DonneesListe_SuivisAbsenceRetard
+					.GenreCommandeMenu.ReglerDossier:
 					D.regle = !D.regle;
 					this._actualiserApresSaisie(D);
 					break;
-				case DonneesListe_SuivisAbsenceRetard.GenreCommandeMenu.CreerSuivi:
+				case DonneesListe_SuivisAbsenceRetard_1.DonneesListe_SuivisAbsenceRetard
+					.GenreCommandeMenu.CreerSuivi:
 					this._ouvrirFenetreSaisie(D, true);
 					return;
-				case DonneesListe_SuivisAbsenceRetard.GenreCommandeMenu.ModifierMotif:
-					ObjetFenetre.creerInstanceFenetre(ObjetFenetre_SelectionMotif, {
-						pere: this,
-						evenement: function (aGenreBouton, aMotif) {
-							_evenementFenetre_Liste.call(
-								this,
-								true,
-								aGenreBouton,
-								aMotif,
-								true,
-							);
+				case DonneesListe_SuivisAbsenceRetard_1.DonneesListe_SuivisAbsenceRetard
+					.GenreCommandeMenu.ModifierMotif:
+					ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+						ObjetFenetre_SelectionMotif_1.ObjetFenetre_SelectionMotif,
+						{
+							pere: this,
+							evenement: function (aGenreBouton, aMotif) {
+								this._evenementFenetreListe(true, aGenreBouton, aMotif, true);
+							},
 						},
-					}).setDonnees(
-						D.getGenre() !== EGenreRessource.Retard
+					).setDonnees(
+						D.getGenre() !== Enumere_Ressource_1.EGenreRessource.Retard
 							? this.listeMotifsAbsenceEleve
 							: this.listeMotifsRetard,
 						false,
@@ -239,15 +263,18 @@ class InterfaceSuivisAbsenceRetard extends ObjetInterface {
 		this._ouvrirFenetreSaisie(D, true);
 	}
 	_actualiserApresSaisie(aDonnee) {
-		aDonnee.setEtat(EGenreEtat.Modification);
+		aDonnee.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 		this.setEtatSaisie(true);
 		this.getInstance(this.identListe).actualiser();
 	}
 	_ouvrirFenetreSaisie(aDonnee, aEnvoiParDefaut) {
-		ObjetFenetre.creerInstanceFenetre(ObjetFenetre_SaisieSuivisAbsenceRetard, {
-			pere: this,
-			evenement: _evenementSurFenetreSaisie.bind(this, aDonnee),
-		}).setDonnees(
+		ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_SaisieSuivisAbsenceRetard_1.ObjetFenetre_SaisieSuivisAbsenceRetard,
+			{
+				pere: this,
+				evenement: this._evenementSurFenetreSaisie.bind(this, aDonnee),
+			},
+		).setDonnees(
 			aEnvoiParDefaut,
 			this.listeMedias,
 			this.listeSuivisAbsenceRetard,
@@ -255,10 +282,11 @@ class InterfaceSuivisAbsenceRetard extends ObjetInterface {
 	}
 	valider(aCallback) {
 		this.setEtatSaisie(false);
-		const lRequete = new ObjetRequeteSaisieSuivisAbsenceRetard(
-			this,
-			aCallback ? aCallback : _requetePage,
-		);
+		const lRequete =
+			new ObjetRequeteSaisieSuivisAbsenceRetard_1.ObjetRequeteSaisieSuivisAbsenceRetard(
+				this,
+				aCallback ? aCallback : this._requetePage,
+			);
 		lRequete.addUpload({ listeFichiers: this.listeDocuments });
 		lRequete.lancerRequete(
 			this.eleve,
@@ -267,200 +295,234 @@ class InterfaceSuivisAbsenceRetard extends ObjetInterface {
 			this.listeDocuments,
 		);
 	}
-}
-function _initialiserListe(aInstance) {
-	const lColonnes = [];
-	lColonnes.push({
-		id: DonneesListe_SuivisAbsenceRetard.colonnes.date,
-		titre: GTraductions.getValeur("SuivisAR.Date"),
-		taille: 49,
-	});
-	lColonnes.push({
-		id: DonneesListe_SuivisAbsenceRetard.colonnes.nature,
-		titre: GTraductions.getValeur("SuivisAR.Nature"),
-		taille: 50,
-	});
-	lColonnes.push({
-		id: DonneesListe_SuivisAbsenceRetard.colonnes.heure,
-		titre: GTraductions.getValeur("SuivisAR.Heure"),
-		taille: 50,
-	});
-	lColonnes.push({
-		id: DonneesListe_SuivisAbsenceRetard.colonnes.lettre,
-		titre: GTraductions.getValeur("SuivisAR.Lettre"),
-		taille: 100,
-	});
-	lColonnes.push({
-		id: DonneesListe_SuivisAbsenceRetard.colonnes.admin,
-		titre: GTraductions.getValeur("SuivisAR.Admin"),
-		taille: ObjetListe.initColonne(100, 100, 150),
-	});
-	lColonnes.push({
-		id: DonneesListe_SuivisAbsenceRetard.colonnes.RespEl,
-		titre: GTraductions.getValeur("SuivisAR.ResponsableEleve"),
-		taille: ObjetListe.initColonne(100, 100, 150),
-	});
-	lColonnes.push({
-		id: DonneesListe_SuivisAbsenceRetard.colonnes.commentaire,
-		titre: GTraductions.getValeur("SuivisAR.Commentaire"),
-		taille: ObjetListe.initColonne(100, 40),
-	});
-	lColonnes.push({
-		id: DonneesListe_SuivisAbsenceRetard.colonnes.certificat,
-		titre: { classeCssImage: "Image_Trombone" },
-		taille: 25,
-	});
-	lColonnes.push({
-		id: DonneesListe_SuivisAbsenceRetard.colonnes.RA,
-		titre: GTraductions.getValeur("SuivisAR.RA"),
-		taille: 25,
-	});
-	aInstance.setOptionsListe({
-		colonnes: lColonnes,
-		scrollHorizontal: true,
-		nonEditable: !GApplication.droits.get(
-			TypeDroits.absences.avecSuiviAbsenceRetard,
-		),
-	});
-}
-function _reponseRequetePageSuivisAbsenceRetard(
-	aListeSuivisAbsenceRetard,
-	aListePersonnels,
-	aListeInterlocuteurs,
-	aListeMedias,
-	aListeMotifsAbsenceEleve,
-	aListeMotifsRetard,
-	aMessage,
-) {
-	this.listeSuivisAbsenceRetard = aListeSuivisAbsenceRetard;
-	this.listePersonnels = aListePersonnels;
-	this.listeInterlocuteurs = aListeInterlocuteurs;
-	this.listeMedias = aListeMedias;
-	this.listeMotifsAbsenceEleve = aListeMotifsAbsenceEleve;
-	this.listeMotifsRetard = aListeMotifsRetard;
-	if (aMessage) {
-		this.effacer(aMessage);
-	} else {
-		this.getInstance(this.identListe).setDonnees(
-			new DonneesListe_SuivisAbsenceRetard(
-				this.listeSuivisAbsenceRetard,
-				this._evenementSurMenuContextuelListe.bind(this),
-				this._evenementSurCreationSuivi.bind(this),
-			).setOptions({ saisie: saisieDocument.bind(this) }),
-		);
-	}
-}
-function saisieDocument(aDonnees, aListeFichiersUpload) {
-	if (
-		aDonnees.genreSaisie ===
-		DonneesListe_SuivisAbsenceRetard.genreAction.ModifierDocument
-	) {
-		const lElement = aDonnees.article.certificat;
-		lElement.setEtat(EGenreEtat.Suppression);
-		lElement.suivi = new ObjetElement("", aDonnees.article.getNumero());
-		this.listeDocuments.addElement(aDonnees.article.certificat);
-	}
-	this.listeDocuments.add(aListeFichiersUpload);
-	aDonnees.article.avecCertificat = true;
-	aDonnees.article.certificat = aListeFichiersUpload.get(0);
-	this._actualiserApresSaisie(aDonnees.article);
-	this.setEtatSaisie(true);
-}
-function _requetePage() {
-	this.listeDocuments = new ObjetListeElements();
-	new ObjetRequetePageSuivisAbsenceRetard(
-		this,
-		_reponseRequetePageSuivisAbsenceRetard,
-	).lancerRequete(this.eleve, this.dateDebut, this.dateFin, this.absence);
-}
-function _evenementFenetre_Liste(
-	aSurSaisieMotif,
-	aGenreBouton,
-	aSelection,
-	aAvecChangementListe,
-) {
-	if (aGenreBouton === 1) {
-		if (this._saisieEnCours) {
-			const lDonnee = this._saisieEnCours.donnee;
-			if (aSurSaisieMotif) {
-				if (aSelection && aSelection.getNumero()) {
-					lDonnee.motif = MethodesObjet.dupliquer(aSelection);
-					lDonnee.regle = !!aSelection.reglementAuto;
-				} else {
-					delete lDonnee.motif;
-				}
-			} else {
-				switch (this._saisieEnCours.idColonne) {
-					case DonneesListe_SuivisAbsenceRetard.colonnes.admin: {
-						const lAdmin = this.listePersonnels.get(aSelection);
-						lDonnee.personnel = null;
-						if (lAdmin.existeNumero()) {
-							lDonnee.personnel = lAdmin;
-						}
-						break;
-					}
-					case DonneesListe_SuivisAbsenceRetard.colonnes.RespEl: {
-						const lResponsable = this.listeInterlocuteurs.get(aSelection);
-						if (!lResponsable.existeNumero()) {
-							lDonnee.__surEditionAutre = true;
-							const lInstanceListe = this.getInstance(this.identListe);
-							const lNumeroColonne = lInstanceListe
-								.getDonneesListe()
-								.getNumeroColonneDId(this._saisieEnCours.idColonne);
-							lInstanceListe.demarrerEditionSurCellule(
-								this._saisieEnCours.ligne,
-								lNumeroColonne,
-							);
-							delete this._saisieEnCours;
-							return;
-						}
-						lDonnee.respEleve = lResponsable.getLibelle();
-						break;
-					}
-					case DonneesListe_SuivisAbsenceRetard.colonnes.nature:
-						lDonnee.media = this.listeMedias.get(aSelection);
-						break;
-				}
-			}
-			this._actualiserApresSaisie(lDonnee);
-			delete this._saisieEnCours;
-		}
-	} else {
-		if (aAvecChangementListe) {
-			switch (this._saisieEnCours.idColonne) {
-				case DonneesListe_SuivisAbsenceRetard.colonnes.nature:
-					this.getInstance(this.identListe).actualiser();
-					break;
-			}
-		}
-	}
-}
-function _evenementSurFenetreSaisie(aSuiviPere, aSurValidation, aMedia) {
-	if (aSurValidation && aMedia) {
-		const lSuivi = new ObjetElement();
-		lSuivi.setEtat(EGenreEtat.Creation);
-		const lDate = new Date();
-		lSuivi.date = GDate.getDateBornee(lDate);
-		lSuivi.date.setHours(lDate.getHours(), lDate.getMinutes(), 0, 0);
-		lSuivi.pere = aSuiviPere;
-		lSuivi.media = aMedia;
-		lSuivi.libelleLettre = "";
-		lSuivi.commentaire = "";
-		lSuivi.personnel = null;
-		lSuivi.respEleve = "";
-		this.listeInterlocuteurs.parcourir((aInterlocuteur) => {
-			if (aInterlocuteur.responsableLegal) {
-				lSuivi.respEleve = aInterlocuteur.getLibelle();
-				return false;
-			}
+	_initialiserListe(aInstance) {
+		const lColonnes = [];
+		lColonnes.push({
+			id: DonneesListe_SuivisAbsenceRetard_1.DonneesListe_SuivisAbsenceRetard
+				.colonnes.date,
+			titre: ObjetTraduction_1.GTraductions.getValeur("SuivisAR.Date"),
+			taille: 49,
 		});
-		lSuivi.regle = false;
-		this.listeSuivisAbsenceRetard.addElement(lSuivi);
-		aSuiviPere.estDeploye = true;
-		aSuiviPere.estUnDeploiement = true;
-		this._actualiserApresSaisie(lSuivi);
-	} else {
-		this.getInstance(this.identListe).actualiser();
+		lColonnes.push({
+			id: DonneesListe_SuivisAbsenceRetard_1.DonneesListe_SuivisAbsenceRetard
+				.colonnes.nature,
+			titre: ObjetTraduction_1.GTraductions.getValeur("SuivisAR.Nature"),
+			taille: 50,
+		});
+		lColonnes.push({
+			id: DonneesListe_SuivisAbsenceRetard_1.DonneesListe_SuivisAbsenceRetard
+				.colonnes.heure,
+			titre: ObjetTraduction_1.GTraductions.getValeur("SuivisAR.Heure"),
+			taille: 50,
+		});
+		lColonnes.push({
+			id: DonneesListe_SuivisAbsenceRetard_1.DonneesListe_SuivisAbsenceRetard
+				.colonnes.lettre,
+			titre: ObjetTraduction_1.GTraductions.getValeur("SuivisAR.Lettre"),
+			taille: 100,
+		});
+		lColonnes.push({
+			id: DonneesListe_SuivisAbsenceRetard_1.DonneesListe_SuivisAbsenceRetard
+				.colonnes.admin,
+			titre: ObjetTraduction_1.GTraductions.getValeur("SuivisAR.Admin"),
+			hint: ObjetTraduction_1.GTraductions.getValeur("SuivisAR.AdminLong"),
+			taille: ObjetListe_1.ObjetListe.initColonne(100, 100, 150),
+		});
+		lColonnes.push({
+			id: DonneesListe_SuivisAbsenceRetard_1.DonneesListe_SuivisAbsenceRetard
+				.colonnes.RespEl,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"SuivisAR.ResponsableEleve",
+			),
+			taille: ObjetListe_1.ObjetListe.initColonne(100, 100, 150),
+		});
+		lColonnes.push({
+			id: DonneesListe_SuivisAbsenceRetard_1.DonneesListe_SuivisAbsenceRetard
+				.colonnes.commentaire,
+			titre: ObjetTraduction_1.GTraductions.getValeur("SuivisAR.Commentaire"),
+			taille: ObjetListe_1.ObjetListe.initColonne(100, 40),
+		});
+		lColonnes.push({
+			id: DonneesListe_SuivisAbsenceRetard_1.DonneesListe_SuivisAbsenceRetard
+				.colonnes.certificat,
+			titre: {
+				getLibelleHtml: () =>
+					IE.jsx.str("i", {
+						class: "icon_piece_jointe",
+						role: "img",
+						"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+							"SuivisAR.Justificatif",
+						),
+					}),
+			},
+			taille: 25,
+		});
+		lColonnes.push({
+			id: DonneesListe_SuivisAbsenceRetard_1.DonneesListe_SuivisAbsenceRetard
+				.colonnes.RA,
+			titre: ObjetTraduction_1.GTraductions.getValeur("SuivisAR.RA"),
+			hint: ObjetTraduction_1.GTraductions.getValeur("SuivisAR.RALong"),
+			taille: 25,
+		});
+		aInstance.setOptionsListe({
+			colonnes: lColonnes,
+			scrollHorizontal: true,
+			nonEditable: !(0, AccessApp_1.getApp)().droits.get(
+				ObjetDroitsPN_1.TypeDroits.absences.avecSuiviAbsenceRetard,
+			),
+		});
+	}
+	_reponseRequetePageSuivisAbsenceRetard(
+		aListeSuivisAbsenceRetard,
+		aListePersonnels,
+		aListeInterlocuteurs,
+		aListeMedias,
+		aListeMotifsAbsenceEleve,
+		aListeMotifsRetard,
+		aMessage,
+	) {
+		this.listeSuivisAbsenceRetard = aListeSuivisAbsenceRetard;
+		this.listePersonnels = aListePersonnels;
+		this.listeInterlocuteurs = aListeInterlocuteurs;
+		this.listeMedias = aListeMedias;
+		this.listeMotifsAbsenceEleve = aListeMotifsAbsenceEleve;
+		this.listeMotifsRetard = aListeMotifsRetard;
+		if (aMessage) {
+			this.effacer(aMessage);
+		} else {
+			this.getInstance(this.identListe).setDonnees(
+				new DonneesListe_SuivisAbsenceRetard_1.DonneesListe_SuivisAbsenceRetard(
+					this.listeSuivisAbsenceRetard,
+					this._evenementSurMenuContextuelListe.bind(this),
+					this._evenementSurCreationSuivi.bind(this),
+				).setOptions({ saisie: this.saisieDocument.bind(this) }),
+			);
+		}
+	}
+	saisieDocument(aDonnees, aListeFichiersUpload) {
+		if (
+			aDonnees.genreSaisie ===
+			DonneesListe_SuivisAbsenceRetard_1.DonneesListe_SuivisAbsenceRetard
+				.genreAction.ModifierDocument
+		) {
+			const lElement = aDonnees.article.certificat;
+			lElement.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+			lElement.suivi = new ObjetElement_1.ObjetElement(
+				"",
+				aDonnees.article.getNumero(),
+			);
+			this.listeDocuments.addElement(aDonnees.article.certificat);
+		}
+		this.listeDocuments.add(aListeFichiersUpload);
+		aDonnees.article.avecCertificat = true;
+		aDonnees.article.certificat = aListeFichiersUpload.get(0);
+		this._actualiserApresSaisie(aDonnees.article);
+		this.setEtatSaisie(true);
+	}
+	_requetePage() {
+		this.listeDocuments = new ObjetListeElements_1.ObjetListeElements();
+		new ObjetRequetePageSuivisAbsenceRetard_1.ObjetRequetePageSuivisAbsenceRetard(
+			this,
+			this._reponseRequetePageSuivisAbsenceRetard,
+		).lancerRequete(this.eleve, this.dateDebut, this.dateFin, this.absence);
+	}
+	_evenementFenetreListe(
+		aSurSaisieMotif,
+		aGenreBouton,
+		aSelection,
+		aAvecChangementListe,
+	) {
+		if (aGenreBouton === 1) {
+			if (this._saisieEnCours) {
+				const lDonnee = this._saisieEnCours.donnee;
+				if (aSurSaisieMotif) {
+					if (
+						aSelection &&
+						aSelection instanceof ObjetElement_1.ObjetElement &&
+						aSelection.getNumero()
+					) {
+						lDonnee.motif = MethodesObjet_1.MethodesObjet.dupliquer(aSelection);
+						lDonnee.regle = !!aSelection.reglementAuto;
+					} else {
+						delete lDonnee.motif;
+					}
+				} else {
+					switch (this._saisieEnCours.idColonne) {
+						case DonneesListe_SuivisAbsenceRetard_1
+							.DonneesListe_SuivisAbsenceRetard.colonnes.admin: {
+							const lAdmin = this.listePersonnels.get(aSelection);
+							lDonnee.personnel = null;
+							if (lAdmin.existeNumero()) {
+								lDonnee.personnel = lAdmin;
+							}
+							break;
+						}
+						case DonneesListe_SuivisAbsenceRetard_1
+							.DonneesListe_SuivisAbsenceRetard.colonnes.RespEl: {
+							const lResponsable = this.listeInterlocuteurs.get(aSelection);
+							if (!lResponsable.existeNumero()) {
+								lDonnee.__surEditionAutre = true;
+								const lInstanceListe = this.getInstance(this.identListe);
+								const lNumeroColonne = lInstanceListe
+									.getDonneesListe()
+									.getNumeroColonneDId(this._saisieEnCours.idColonne);
+								lInstanceListe.demarrerEditionSurCellule(
+									this._saisieEnCours.ligne,
+									lNumeroColonne,
+								);
+								delete this._saisieEnCours;
+								return;
+							}
+							lDonnee.respEleve = lResponsable.getLibelle();
+							break;
+						}
+						case DonneesListe_SuivisAbsenceRetard_1
+							.DonneesListe_SuivisAbsenceRetard.colonnes.nature:
+							lDonnee.media = this.listeMedias.get(aSelection);
+							break;
+					}
+				}
+				this._actualiserApresSaisie(lDonnee);
+				delete this._saisieEnCours;
+			}
+		} else {
+			if (aAvecChangementListe) {
+				switch (this._saisieEnCours.idColonne) {
+					case DonneesListe_SuivisAbsenceRetard_1
+						.DonneesListe_SuivisAbsenceRetard.colonnes.nature:
+						this.getInstance(this.identListe).actualiser();
+						break;
+				}
+			}
+		}
+	}
+	_evenementSurFenetreSaisie(aSuiviPere, aSurValidation, aMedia) {
+		if (aSurValidation && aMedia) {
+			const lSuivi = new ObjetElement_1.ObjetElement();
+			lSuivi.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
+			const lDate = new Date();
+			lSuivi.date = ObjetDate_1.GDate.getDateBornee(lDate);
+			lSuivi.date.setHours(lDate.getHours(), lDate.getMinutes(), 0, 0);
+			lSuivi.pere = aSuiviPere;
+			lSuivi.media = aMedia;
+			lSuivi.libelleLettre = "";
+			lSuivi.commentaire = "";
+			lSuivi.personnel = null;
+			lSuivi.respEleve = "";
+			this.listeInterlocuteurs.parcourir((aInterlocuteur) => {
+				if (aInterlocuteur.responsableLegal) {
+					lSuivi.respEleve = aInterlocuteur.getLibelle();
+					return false;
+				}
+			});
+			lSuivi.regle = false;
+			this.listeSuivisAbsenceRetard.addElement(lSuivi);
+			aSuiviPere.estDeploye = true;
+			aSuiviPere.estUnDeploiement = true;
+			this._actualiserApresSaisie(lSuivi);
+		} else {
+			this.getInstance(this.identListe).actualiser();
+		}
 	}
 }
-module.exports = { InterfaceSuivisAbsenceRetard };
+exports.InterfaceSuivisAbsenceRetard = InterfaceSuivisAbsenceRetard;

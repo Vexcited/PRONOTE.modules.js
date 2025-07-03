@@ -1,6 +1,7 @@
 exports.DonneesListe_SelectionRessource = void 0;
 const ObjetStyle_1 = require("ObjetStyle");
 const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const AccessApp_1 = require("AccessApp");
 class DonneesListe_SelectionRessource extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees) {
 		super(aDonnees);
@@ -62,7 +63,9 @@ class DonneesListe_SelectionRessource extends ObjetDonneesListe_1.ObjetDonneesLi
 			case 1:
 				return aParams.article.getActif()
 					? ""
-					: ObjetStyle_1.GStyle.composeCouleurTexte(GCouleur.rouge);
+					: ObjetStyle_1.GStyle.composeCouleurTexte(
+							(0, AccessApp_1.getApp)().getCouleur().rouge,
+						);
 		}
 		return "";
 	}
@@ -82,7 +85,7 @@ class DonneesListe_SelectionRessource extends ObjetDonneesListe_1.ObjetDonneesLi
 			return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Deploiement;
 		}
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		switch (aParams.colonne) {
 			case 1:
 				return this._options && this._options.getHintRessource

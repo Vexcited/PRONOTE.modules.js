@@ -29,8 +29,7 @@ var EGenreWidget;
 		"carnetDeCorrespondance";
 	EGenreWidget[(EGenreWidget["Encouragement"] = 24)] = "Encouragement";
 	EGenreWidget[(EGenreWidget["TAFARendre"] = 25)] = "TAFARendre";
-	EGenreWidget[(EGenreWidget["Intendance_Execute"] = 26)] =
-		"Intendance_Execute";
+	EGenreWidget[(EGenreWidget["IntendanceExecute"] = 26)] = "IntendanceExecute";
 	EGenreWidget[(EGenreWidget["lienUtile"] = 27)] = "lienUtile";
 	EGenreWidget[(EGenreWidget["partenaireCDI"] = 28)] = "partenaireCDI";
 	EGenreWidget[(EGenreWidget["partenaireAgate"] = 29)] = "partenaireAgate";
@@ -42,8 +41,8 @@ var EGenreWidget;
 	EGenreWidget[(EGenreWidget["connexionsEnCours"] = 35)] = "connexionsEnCours";
 	EGenreWidget[(EGenreWidget["partenaireARD"] = 36)] = "partenaireARD";
 	EGenreWidget[(EGenreWidget["personnelsAbsents"] = 37)] = "personnelsAbsents";
-	EGenreWidget[(EGenreWidget["tachesSecretariat_Execute"] = 38)] =
-		"tachesSecretariat_Execute";
+	EGenreWidget[(EGenreWidget["tachesSecretariatExecute"] = 38)] =
+		"tachesSecretariatExecute";
 	EGenreWidget[(EGenreWidget["Planning"] = 39)] = "Planning";
 	EGenreWidget[(EGenreWidget["elections"] = 40)] = "elections";
 	EGenreWidget[(EGenreWidget["activite"] = 41)] = "activite";
@@ -52,7 +51,7 @@ var EGenreWidget;
 	EGenreWidget[(EGenreWidget["TAFPrimaire"] = 43)] = "TAFPrimaire";
 	EGenreWidget[(EGenreWidget["absRetardsJustifiesParents"] = 44)] =
 		"absRetardsJustifiesParents";
-	EGenreWidget[(EGenreWidget["blog_filActu"] = 45)] = "blog_filActu";
+	EGenreWidget[(EGenreWidget["blogFilActu"] = 45)] = "blogFilActu";
 	EGenreWidget[(EGenreWidget["maintenanceInfoExecute"] = 46)] =
 		"maintenanceInfoExecute";
 	EGenreWidget[(EGenreWidget["TAFEtActivites"] = 47)] = "TAFEtActivites";
@@ -60,7 +59,7 @@ var EGenreWidget;
 	EGenreWidget[(EGenreWidget["exclusions"] = 49)] = "exclusions";
 	EGenreWidget[(EGenreWidget["partenaireApplicam"] = 50)] =
 		"partenaireApplicam";
-	EGenreWidget[(EGenreWidget["commande_Execute"] = 51)] = "commande_Execute";
+	EGenreWidget[(EGenreWidget["commandeExecute"] = 51)] = "commandeExecute";
 	EGenreWidget[(EGenreWidget["registreAppel"] = 52)] = "registreAppel";
 	EGenreWidget[(EGenreWidget["previsionnelAbsServiceAnnexe"] = 53)] =
 		"previsionnelAbsServiceAnnexe";
@@ -68,6 +67,11 @@ var EGenreWidget;
 	EGenreWidget[(EGenreWidget["modificationEDT"] = 55)] = "modificationEDT";
 	EGenreWidget[(EGenreWidget["RemplacementsEnseignants"] = 56)] =
 		"RemplacementsEnseignants";
+	EGenreWidget[(EGenreWidget["voteElecMembreBureau"] = 57)] =
+		"voteElecMembreBureau";
+	EGenreWidget[(EGenreWidget["voteElecElecteur"] = 58)] = "voteElecElecteur";
+	EGenreWidget[(EGenreWidget["InfosParcoursupLSL"] = 59)] =
+		"InfosParcoursupLSL";
 })(EGenreWidget || (exports.EGenreWidget = EGenreWidget = {}));
 const MethodesObjet_1 = require("MethodesObjet");
 const EGenreWidgetUtil = {

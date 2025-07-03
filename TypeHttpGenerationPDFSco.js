@@ -112,6 +112,9 @@ var TypeHttpGenerationPDFSco;
 	TypeHttpGenerationPDFSco[(TypeHttpGenerationPDFSco["Evaluation"] = 43)] =
 		"Evaluation";
 	TypeHttpGenerationPDFSco[(TypeHttpGenerationPDFSco["Blog"] = 44)] = "Blog";
+	TypeHttpGenerationPDFSco[
+		(TypeHttpGenerationPDFSco["RencontrePlanning"] = 45)
+	] = "RencontrePlanning";
 })(
 	TypeHttpGenerationPDFSco ||
 		(exports.TypeHttpGenerationPDFSco = TypeHttpGenerationPDFSco = {}),

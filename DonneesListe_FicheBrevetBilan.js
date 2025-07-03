@@ -1,6 +1,7 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class DonneesListe_FicheBrevetBilan extends ObjetDonneesListe {
+exports.DonneesListe_FicheBrevetBilan = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class DonneesListe_FicheBrevetBilan extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aBrevet) {
 		super(aBrevet.listeBrevet);
 		this.brevet = aBrevet;
@@ -27,7 +28,9 @@ class DonneesListe_FicheBrevetBilan extends ObjetDonneesListe {
 	getContenuTotal(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_FicheBrevetBilan.colonnes.bilan:
-				return GTraductions.getValeur("FicheBrevet.TotalDesPoints");
+				return ObjetTraduction_1.GTraductions.getValeur(
+					"FicheBrevet.TotalDesPoints",
+				);
 			case DonneesListe_FicheBrevetBilan.colonnes.points:
 				return this.brevet.totalPoints ? this.brevet.totalPoints.getNote() : "";
 			case DonneesListe_FicheBrevetBilan.colonnes.bareme:
@@ -56,9 +59,20 @@ class DonneesListe_FicheBrevetBilan extends ObjetDonneesListe {
 		return lClasses.join(" ");
 	}
 }
-DonneesListe_FicheBrevetBilan.colonnes = {
-	bilan: "FicheBrevetBilan",
-	points: "FicheBrevetBilanPoints",
-	bareme: "FicheBrevetBilanBareme",
-};
-module.exports = { DonneesListe_FicheBrevetBilan };
+exports.DonneesListe_FicheBrevetBilan = DonneesListe_FicheBrevetBilan;
+(function (DonneesListe_FicheBrevetBilan) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["bilan"] = "FicheBrevetBilan";
+		colonnes["points"] = "FicheBrevetBilanPoints";
+		colonnes["bareme"] = "FicheBrevetBilanBareme";
+	})(
+		(colonnes =
+			DonneesListe_FicheBrevetBilan.colonnes ||
+			(DonneesListe_FicheBrevetBilan.colonnes = {})),
+	);
+})(
+	DonneesListe_FicheBrevetBilan ||
+		(exports.DonneesListe_FicheBrevetBilan = DonneesListe_FicheBrevetBilan =
+			{}),
+);

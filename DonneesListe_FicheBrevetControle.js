@@ -1,6 +1,7 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class DonneesListe_FicheBrevetControle extends ObjetDonneesListe {
+exports.DonneesListe_FicheBrevetControle = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class DonneesListe_FicheBrevetControle extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aControlFinal) {
 		super(aControlFinal.listeControleFinal);
 		this.controlFinal = aControlFinal;
@@ -21,7 +22,7 @@ class DonneesListe_FicheBrevetControle extends ObjetDonneesListe {
 		}
 		return "";
 	}
-	getHintHtmlForce(aParams) {
+	getTooltip(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_FicheBrevetControle.colonnes.controle:
 				return aParams.article.hint || "";
@@ -31,7 +32,9 @@ class DonneesListe_FicheBrevetControle extends ObjetDonneesListe {
 	getContenuTotal(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_FicheBrevetControle.colonnes.controle:
-				return GTraductions.getValeur("FicheBrevet.TotalDesPoints");
+				return ObjetTraduction_1.GTraductions.getValeur(
+					"FicheBrevet.TotalDesPoints",
+				);
 			case DonneesListe_FicheBrevetControle.colonnes.points:
 				return this.controlFinal.totalPoints.getNote();
 			case DonneesListe_FicheBrevetControle.colonnes.bareme:
@@ -60,9 +63,21 @@ class DonneesListe_FicheBrevetControle extends ObjetDonneesListe {
 		return lClasses.join(" ");
 	}
 }
-DonneesListe_FicheBrevetControle.colonnes = {
-	controle: "FicheBrevetControle",
-	points: "FicheBrevetControlePoints",
-	bareme: "FicheBrevetControleBareme",
-};
-module.exports = { DonneesListe_FicheBrevetControle };
+exports.DonneesListe_FicheBrevetControle = DonneesListe_FicheBrevetControle;
+(function (DonneesListe_FicheBrevetControle) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["controle"] = "FicheBrevetControle";
+		colonnes["points"] = "FicheBrevetControlePoints";
+		colonnes["bareme"] = "FicheBrevetControleBareme";
+	})(
+		(colonnes =
+			DonneesListe_FicheBrevetControle.colonnes ||
+			(DonneesListe_FicheBrevetControle.colonnes = {})),
+	);
+})(
+	DonneesListe_FicheBrevetControle ||
+		(exports.DonneesListe_FicheBrevetControle =
+			DonneesListe_FicheBrevetControle =
+				{}),
+);

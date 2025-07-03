@@ -1,14 +1,11 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetDocumentsATelecharger } = require("ObjetDocumentsATelecharger.js");
-class ObjetFenetre_BulletinBIA extends ObjetFenetre {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetFenetre_BulletinBIA = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetDocumentsATelecharger_1 = require("ObjetDocumentsATelecharger");
+class ObjetFenetre_BulletinBIA extends ObjetFenetre_1.ObjetFenetre {
 	construireInstances() {
-		this.identDoc = this.add(ObjetDocumentsATelecharger);
-	}
-	setOptionsFenetre(aParams) {
-		super.setOptionsFenetre(aParams);
+		this.identDoc = this.add(
+			ObjetDocumentsATelecharger_1.ObjetDocumentsATelecharger,
+		);
 	}
 	setDonnees(aDonnees) {
 		this.getInstance(this.identDoc).setDonnees(aDonnees);
@@ -17,10 +14,10 @@ class ObjetFenetre_BulletinBIA extends ObjetFenetre {
 		const T = [];
 		T.push(
 			'<div class="Espace Table BorderBox full-width" id="',
-			this.getInstance(this.identDoc).getNom(),
+			this.getNomInstance(this.identDoc),
 			'"></div>',
 		);
 		return T.join("");
 	}
 }
-module.exports = { ObjetFenetre_BulletinBIA };
+exports.ObjetFenetre_BulletinBIA = ObjetFenetre_BulletinBIA;

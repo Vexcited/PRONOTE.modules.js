@@ -35,17 +35,15 @@ class ObjetFenetre_ChoixDossierCopieCDT extends ObjetFenetre_1.ObjetFenetre {
 			dossierProgressionSelection: null,
 		};
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			cbAvecTAF: {
-				getValue() {
-					return ObjetFenetre_ChoixDossierCopieCDT.inclureTAF;
-				},
-				setValue(aValue) {
-					ObjetFenetre_ChoixDossierCopieCDT.inclureTAF = aValue;
-				},
+	jsxModeleCheckboxAvecTAF() {
+		return {
+			getValue: () => {
+				return ObjetFenetre_ChoixDossierCopieCDT.inclureTAF;
 			},
-		});
+			setValue: (aValue) => {
+				ObjetFenetre_ChoixDossierCopieCDT.inclureTAF = aValue;
+			},
+		};
 	}
 	construireInstances() {
 		this.identCombo = this.add(
@@ -60,44 +58,52 @@ class ObjetFenetre_ChoixDossierCopieCDT extends ObjetFenetre_1.ObjetFenetre {
 		);
 	}
 	composeContenu() {
-		const lHtml = [];
-		lHtml.push('<div class="full-height flex-contain cols">');
-		lHtml.push(
-			'<div id="',
-			this.idMessage,
-			'" class="EspaceBas" style="display:none"></div>',
-		);
-		lHtml.push(
-			'<div class="Texte10 PetitEspaceBas">',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"CahierDeTexte.ChoixProgression",
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "full-height flex-contain cols" },
+				IE.jsx.str("div", {
+					id: this.idMessage,
+					class: "EspaceBas",
+					style: "display:none",
+				}),
+				IE.jsx.str(
+					"div",
+					{ class: "Texte10 PetitEspaceBas" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"CahierDeTexte.ChoixProgression",
+					),
+				),
+				IE.jsx.str("div", {
+					class: "PetitEspaceBas",
+					id: this.getNomInstance(this.identCombo),
+				}),
+				IE.jsx.str(
+					"div",
+					{ class: "Texte10 PetitEspaceBas EspaceHaut" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"CahierDeTexte.ChoixDossier",
+					),
+				),
+				IE.jsx.str("div", {
+					id: this.getNomInstance(this.identTreeView),
+					class: "fluid-bloc",
+				}),
+				IE.jsx.str(
+					"div",
+					{ class: "EspaceHaut" },
+					IE.jsx.str(
+						"ie-checkbox",
+						{ "ie-model": this.jsxModeleCheckboxAvecTAF.bind(this) },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"CahierDeTexte.InclureLesTAFs",
+						),
+					),
+				),
 			),
-			"</div>",
 		);
-		lHtml.push(
-			'<div class="PetitEspaceBas" id="',
-			this.getNomInstance(this.identCombo),
-			'"></div>',
-		);
-		lHtml.push(
-			'<div class="Texte10 PetitEspaceBas EspaceHaut">',
-			ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.ChoixDossier"),
-			"</div>",
-		);
-		lHtml.push(
-			'<div id="',
-			this.getNomInstance(this.identTreeView),
-			'" class="fluid-bloc"></div>',
-		);
-		lHtml.push(
-			'<div class="EspaceHaut">',
-			'<ie-checkbox ie-model="cbAvecTAF">',
-			ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.InclureLesTAFs"),
-			"</ie-checkbox>",
-			"</div>",
-		);
-		lHtml.push("</div>");
-		return lHtml.join("");
+		return H.join("");
 	}
 	afficherChoixDossierCopieCDT(aCours, aCahierDeTexte) {
 		this.donnees.cahier = aCahierDeTexte;
@@ -144,7 +150,7 @@ class ObjetFenetre_ChoixDossierCopieCDT extends ObjetFenetre_1.ObjetFenetre {
 	finRetaillage() {
 		super.finRetaillage();
 		ObjetStyle_1.GStyle.setVisible(
-			this.getInstance(this.identTreeView).getNom(),
+			this.getNomInstance(this.identTreeView),
 			true,
 		);
 		this.getInstance(this.identTreeView)._surResize(false);

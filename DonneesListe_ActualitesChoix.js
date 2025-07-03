@@ -1,30 +1,11 @@
-const { EGenreCommandeMenu } = require("Enumere_CommandeMenu.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { TypeDomaine } = require("TypeDomaine.js");
-function _modifierRangChoix(aChoix, aDecalage) {
-	const lOldRang = aChoix.rang;
-	const lNewRang = lOldRang + aDecalage;
-	let lIndice = this.Donnees.getIndiceElementParFiltre((aElement) => {
-		return aElement.existe() && aElement.rang === lNewRang;
-	});
-	if (lIndice > -1) {
-		const lElmRangConflit = this.Donnees.get(lIndice);
-		lElmRangConflit.rang = lOldRang;
-		lElmRangConflit.setEtat(EGenreEtat.Modification);
-	}
-	aChoix.rang = lNewRang;
-	aChoix.setEtat(EGenreEtat.Modification);
-	this.Donnees.trier();
-	const lNumero = aChoix.getNumero();
-	lIndice = this.Donnees.getIndiceElementParFiltre((aElement) => {
-		return aElement.existe() && aElement.getNumero() === lNumero;
-	});
-	return lIndice;
-}
-class DonneesListe_ActualitesChoix extends ObjetDonneesListe {
+exports.DonneesListe_ActualitesChoix = void 0;
+const Enumere_CommandeMenu_1 = require("Enumere_CommandeMenu");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const TypeDomaine_1 = require("TypeDomaine");
+class DonneesListe_ActualitesChoix extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aCallbackMenuContextuel, aAvecLimiteDomaine) {
 		super(aDonnees);
 		this.callbackMenuContextuel = aCallbackMenuContextuel;
@@ -42,13 +23,14 @@ class DonneesListe_ActualitesChoix extends ObjetDonneesListe {
 	}
 	getTri(aColonneDeTri, aGenreTri) {
 		const lTris = [];
-		lTris.push(ObjetTri.init("rang", aGenreTri));
+		lTris.push(ObjetTri_1.ObjetTri.init("rang", aGenreTri));
 		return lTris;
 	}
 	avecEvenementCreation() {
 		return (
 			this.avecLimiteDomaine &&
-			this.Donnees.getNbrElementsExistes() >= TypeDomaine.C_MaxDomaineCycle - 1
+			this.Donnees.getNbrElementsExistes() >=
+				TypeDomaine_1.TypeDomaine.C_MaxDomaineCycle - 1
 		);
 	}
 	surCreation(D, V) {
@@ -62,8 +44,8 @@ class DonneesListe_ActualitesChoix extends ObjetDonneesListe {
 			}
 		});
 		if (lChoixReponseLibre) {
-			D.setEtat(EGenreEtat.Creation);
-			_modifierRangChoix.call(this, D, -1);
+			D.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
+			this._modifierRangChoix(D, -1);
 		}
 	}
 	surEdition(aParams, V) {
@@ -76,7 +58,7 @@ class DonneesListe_ActualitesChoix extends ObjetDonneesListe {
 			if (lChoix.existe() && lChoix.getNumero() !== D.getNumero()) {
 				if (lChoix.rang !== lRang) {
 					lChoix.rang = lRang;
-					lChoix.setEtat(EGenreEtat.Modification);
+					lChoix.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 				}
 				lRang++;
 			} else {
@@ -85,7 +67,7 @@ class DonneesListe_ActualitesChoix extends ObjetDonneesListe {
 		}
 		D.rang = 0;
 		this.Donnees.trier();
-		D.setEtat(EGenreEtat.Suppression);
+		D.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 	}
 	getVisible(D) {
 		if (D && D.existe() && D.estReponseLibre) {
@@ -98,25 +80,25 @@ class DonneesListe_ActualitesChoix extends ObjetDonneesListe {
 			return;
 		}
 		aParametres.menuContextuel.addCommande(
-			EGenreCommandeMenu.Edition,
-			GTraductions.getValeur("liste.modifier"),
+			Enumere_CommandeMenu_1.EGenreCommandeMenu.Edition,
+			ObjetTraduction_1.GTraductions.getValeur("liste.modifier"),
 			this.avecEdition(aParametres) && !aParametres.nonEditable,
 		);
 		aParametres.menuContextuel.addSeparateur();
 		aParametres.menuContextuel.addCommande(
 			DonneesListe_ActualitesChoix.genreAction.monter,
-			GTraductions.getValeur("actualites.choix.monter"),
+			ObjetTraduction_1.GTraductions.getValeur("actualites.choix.monter"),
 			aParametres.article.rang > 1,
 		);
 		aParametres.menuContextuel.addCommande(
 			DonneesListe_ActualitesChoix.genreAction.descendre,
-			GTraductions.getValeur("actualites.choix.descendre"),
+			ObjetTraduction_1.GTraductions.getValeur("actualites.choix.descendre"),
 			aParametres.article.rang < this.Donnees.getNbrElementsExistes(),
 		);
 		aParametres.menuContextuel.addSeparateur();
 		aParametres.menuContextuel.addCommande(
-			EGenreCommandeMenu.Suppression,
-			GTraductions.getValeur("liste.supprimer"),
+			Enumere_CommandeMenu_1.EGenreCommandeMenu.Suppression,
+			ObjetTraduction_1.GTraductions.getValeur("liste.supprimer"),
 			this.avecSuppression(aParametres) && !aParametres.nonEditable,
 		);
 		aParametres.menuContextuel.setDonnees();
@@ -126,13 +108,13 @@ class DonneesListe_ActualitesChoix extends ObjetDonneesListe {
 		switch (aParametres.numeroMenu) {
 			case DonneesListe_ActualitesChoix.genreAction.monter:
 				if (aParametres.article.rang > 1) {
-					lIndice = _modifierRangChoix.call(this, aParametres.article, -1);
+					lIndice = this._modifierRangChoix(aParametres.article, -1);
 					this.callbackMenuContextuel(aParametres.numeroMenu, lIndice);
 				}
 				break;
 			case DonneesListe_ActualitesChoix.genreAction.descendre:
 				if (aParametres.article.rang < this.Donnees.getNbrElementsExistes()) {
-					lIndice = _modifierRangChoix.call(this, aParametres.article, 1);
+					lIndice = this._modifierRangChoix(aParametres.article, 1);
 					this.callbackMenuContextuel(aParametres.numeroMenu, lIndice);
 				}
 				break;
@@ -141,13 +123,52 @@ class DonneesListe_ActualitesChoix extends ObjetDonneesListe {
 		}
 	}
 	surDeplacementElementSurLigne(aParamsLigneDestination, aParamsSource) {
-		_modifierRangChoix.call(
-			this,
+		this._modifierRangChoix(
 			aParamsSource.article,
 			aParamsLigneDestination.ligne - aParamsSource.ligne,
 		);
 	}
+	_modifierRangChoix(aChoix, aDecalage) {
+		const lOldRang = aChoix.rang;
+		const lNewRang = lOldRang + aDecalage;
+		let lIndice = this.Donnees.getIndiceElementParFiltre((aElement) => {
+			return aElement.existe() && aElement.rang === lNewRang;
+		});
+		if (lIndice > -1) {
+			const lElmRangConflit = this.Donnees.get(lIndice);
+			lElmRangConflit.rang = lOldRang;
+			lElmRangConflit.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+		}
+		aChoix.rang = lNewRang;
+		aChoix.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+		this.Donnees.trier();
+		const lNumero = aChoix.getNumero();
+		lIndice = this.Donnees.getIndiceElementParFiltre((aElement) => {
+			return aElement.existe() && aElement.getNumero() === lNumero;
+		});
+		return lIndice;
+	}
 }
-DonneesListe_ActualitesChoix.colonnes = { libelle: "DLChoix_libelle" };
-DonneesListe_ActualitesChoix.genreAction = { monter: 1, descendre: 2 };
-module.exports = { DonneesListe_ActualitesChoix };
+exports.DonneesListe_ActualitesChoix = DonneesListe_ActualitesChoix;
+(function (DonneesListe_ActualitesChoix) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["libelle"] = "DLChoix_libelle";
+	})(
+		(colonnes =
+			DonneesListe_ActualitesChoix.colonnes ||
+			(DonneesListe_ActualitesChoix.colonnes = {})),
+	);
+	let genreAction;
+	(function (genreAction) {
+		genreAction[(genreAction["monter"] = 1)] = "monter";
+		genreAction[(genreAction["descendre"] = 2)] = "descendre";
+	})(
+		(genreAction =
+			DonneesListe_ActualitesChoix.genreAction ||
+			(DonneesListe_ActualitesChoix.genreAction = {})),
+	);
+})(
+	DonneesListe_ActualitesChoix ||
+		(exports.DonneesListe_ActualitesChoix = DonneesListe_ActualitesChoix = {}),
+);

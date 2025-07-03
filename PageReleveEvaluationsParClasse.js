@@ -1,30 +1,33 @@
-const { GTraductions } = require("ObjetTraduction.js");
-const { _PageReleveEvaluations } = require("_PageReleveEvaluations.js");
-const {
-	DonneesListe_ReleveDEvaluations,
-} = require("DonneesListe_ReleveDEvaluations.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const {
-	TypeGenreValidationCompetence,
-} = require("TypeGenreValidationCompetence.js");
-const { TUtilitaireCompetences } = require("UtilitaireCompetences.js");
-class PageReleveEvaluationsParClasse extends _PageReleveEvaluations {
+exports.PageReleveEvaluationsParClasse = void 0;
+const ObjetTraduction_1 = require("ObjetTraduction");
+const _PageReleveEvaluations_1 = require("_PageReleveEvaluations");
+const DonneesListe_ReleveDEvaluations_1 = require("DonneesListe_ReleveDEvaluations");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const TypeGenreValidationCompetence_1 = require("TypeGenreValidationCompetence");
+const UtilitaireCompetences_1 = require("UtilitaireCompetences");
+const ObjetRequeteReleveDEvaluations_1 = require("ObjetRequeteReleveDEvaluations");
+class PageReleveEvaluationsParClasse extends _PageReleveEvaluations_1._PageReleveEvaluations {
 	constructor(...aParams) {
 		super(...aParams);
-		this.typeAffichage = this.constantes.AffichageParClasse;
+		this.typeAffichage =
+			ObjetRequeteReleveDEvaluations_1.ObjetRequeteReleveDEvaluations.TypeAffichage.AffichageParClasse;
 	}
 	_getListeParametresMenuDeroulant() {
 		return [
-			EGenreRessource.Classe,
-			EGenreRessource.Periode,
-			EGenreRessource.Palier,
-			EGenreRessource.Pilier,
+			Enumere_Ressource_1.EGenreRessource.Classe,
+			Enumere_Ressource_1.EGenreRessource.Periode,
+			Enumere_Ressource_1.EGenreRessource.Palier,
+			Enumere_Ressource_1.EGenreRessource.Pilier,
 		];
 	}
-	_getParametresSupplementairesRequetes() {
+	_getParametresSupplementairesRequetes(aEstRequeteSaisie = false) {
 		return {
-			palier: GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Palier),
-			pilier: GEtatUtilisateur.Navigation.getRessource(EGenreRessource.Pilier),
+			palier: this.etatUtilisateurSco.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.Palier,
+			),
+			pilier: this.etatUtilisateurSco.Navigation.getRessource(
+				Enumere_Ressource_1.EGenreRessource.Pilier,
+			),
 		};
 	}
 	_ajouteCommandesSupplementairesMenuContextuel(aSelections, aMenuContextuel) {
@@ -32,23 +35,27 @@ class PageReleveEvaluationsParClasse extends _PageReleveEvaluations {
 		aSelections.forEach((aSelection) => {
 			if (
 				aSelection.idColonne ===
-				DonneesListe_ReleveDEvaluations.colonnes.niv_acqui_domaine
+				DonneesListe_ReleveDEvaluations_1.DonneesListe_ReleveDEvaluations
+					.colonnes.niv_acqui_domaine
 			) {
 				lNivAcquiPilierEditable = true;
 			}
 		});
 		const lEstUnPilierLVESelectionne = this.estPilierLVESelectionne();
 		aMenuContextuel.addSousMenu(
-			GTraductions.getValeur(
+			ObjetTraduction_1.GTraductions.getValeur(
 				"releve_evaluations.menucontextuel.ModifierNivAcquiDomaine",
 			),
 			(aInstance) => {
 				const lListeNiveauxAcquiPilier =
-					TUtilitaireCompetences.getListeNiveauxDAcquisitionsPourMenu({
-						genreChoixValidationCompetence:
-							TypeGenreValidationCompetence.tGVC_Competence,
-						avecDispense: lEstUnPilierLVESelectionne,
-					});
+					UtilitaireCompetences_1.TUtilitaireCompetences.getListeNiveauxDAcquisitionsPourMenu(
+						{
+							genreChoixValidationCompetence:
+								TypeGenreValidationCompetence_1.TypeGenreValidationCompetence
+									.tGVC_Competence,
+							avecDispense: lEstUnPilierLVESelectionne,
+						},
+					);
 				lListeNiveauxAcquiPilier.parcourir((D) => {
 					aInstance.add(
 						D.Libelle,
@@ -67,4 +74,4 @@ class PageReleveEvaluationsParClasse extends _PageReleveEvaluations {
 		);
 	}
 }
-module.exports = { PageReleveEvaluationsParClasse };
+exports.PageReleveEvaluationsParClasse = PageReleveEvaluationsParClasse;

@@ -7,6 +7,7 @@ const ObjetElement_1 = require("ObjetElement");
 const Enumere_AffichageFicheStage_1 = require("Enumere_AffichageFicheStage");
 const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
 const ObjetTraduction_1 = require("ObjetTraduction");
+const AccessApp_1 = require("AccessApp");
 class InterfaceFicheStageCP_Mobile extends InterfacePage_Mobile_1.InterfacePage_Mobile {
 	constructor() {
 		super(...arguments);
@@ -17,6 +18,7 @@ class InterfaceFicheStageCP_Mobile extends InterfacePage_Mobile_1.InterfacePage_
 			this.identCmbEtudiant = this.add(
 				ObjetSelection_1.ObjetSelection,
 				this.evntCmbEtudiant,
+				this.initCmbEtudiant,
 			);
 		}
 		this.identCmbStage = this.add(
@@ -79,16 +81,16 @@ class InterfaceFicheStageCP_Mobile extends InterfacePage_Mobile_1.InterfacePage_
 		return IE.jsx.str(
 			IE.jsx.fragment,
 			null,
-			IE.jsx.str("div", { id: this.getInstance(this.identPage).getNom() }),
-			IE.jsx.str("div", { id: this.getInstance(this.identPageSuivi).getNom() }),
+			IE.jsx.str("div", { id: this.getNomInstance(this.identPage) }),
+			IE.jsx.str("div", { id: this.getNomInstance(this.identPageSuivi) }),
 		);
 	}
 	surEvenementPageStage(aParam) {
 		if (!aParam) {
 			this.recupererDonnees();
 		} else if (aParam.suivi) {
-			$("#" + this.getInstance(this.identPage).getNom().escapeJQ()).hide();
-			$("#" + GApplication.idLigneBandeau.escapeJQ()).hide();
+			$("#" + this.getNomInstance(this.identPage).escapeJQ()).hide();
+			$("#" + (0, AccessApp_1.getApp)().idLigneBandeau.escapeJQ()).hide();
 			this.getInstance(this.identPageSuivi).setDonnees(
 				aParam.suivi,
 				this.stage,
@@ -97,7 +99,7 @@ class InterfaceFicheStageCP_Mobile extends InterfacePage_Mobile_1.InterfacePage_
 					lieux: this.listeLieuxSuiviStage,
 				},
 			);
-			$("#" + this.getInstance(this.identPageSuivi).getNom().escapeJQ()).show();
+			$("#" + this.getNomInstance(this.identPageSuivi).escapeJQ()).show();
 		}
 	}
 }

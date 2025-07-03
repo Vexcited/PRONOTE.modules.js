@@ -2,15 +2,14 @@ exports.ObjetFenetre_SaisieTypeNote = void 0;
 const ObjetHtml_1 = require("ObjetHtml");
 const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetTraduction_1 = require("ObjetTraduction");
+const TypeNote_1 = require("TypeNote");
 const UtilsInputNote_EspaceMobile_1 = require("UtilsInputNote_EspaceMobile");
-require("IEHtml.InputNote.js");
+require("IEHtml.InputNote");
 class ObjetFenetre_SaisieTypeNote extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.valeur = null;
-		this.labelChamps = ObjetTraduction_1.GTraductions.getValeur(
-			"InputNote.LabelChamps",
-		);
+		this.labelChamps = TypeNote_1.TradTypeNote.InputNote.LabelChamps;
 		this.idInputNote = this.Nom + "_Valeur";
 		this.optionsInputNote = (0,
 		UtilsInputNote_EspaceMobile_1.UtilsInputNoteInitOptions)();
@@ -49,7 +48,7 @@ class ObjetFenetre_SaisieTypeNote extends ObjetFenetre_1.ObjetFenetre {
 			"</label>",
 			'<ie-inputnote ie-model="inputnote" type="text" id="',
 			this.idInputNote,
-			'" class="round-style"></ie-inputnote>',
+			'" ></ie-inputnote>',
 			"</div>",
 		);
 		return T.join("");

@@ -23,7 +23,6 @@ const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetElement_1 = require("ObjetElement");
 const Enumere_DonneesPersonnelles_6 = require("Enumere_DonneesPersonnelles");
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
-const tag_1 = require("tag");
 const UtilitaireChangementLangue_1 = require("UtilitaireChangementLangue");
 const ObjetFenetre_Liste_1 = require("ObjetFenetre_Liste");
 const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
@@ -36,7 +35,7 @@ const ObjetFenetre_ActionContextuelle_1 = require("ObjetFenetre_ActionContextuel
 const Enumere_DocumentJoint_1 = require("Enumere_DocumentJoint");
 const ObjetFenetreSignatureNumeriqueConteneur = require("ObjetFenetre_SignatureNumerique");
 const ObjetPreferenceCahierDeTexte_1 = require("ObjetPreferenceCahierDeTexte");
-const TypeThemeCouleur_1 = require("TypeThemeCouleur");
+const UtilitaireDarkMode_1 = require("UtilitaireDarkMode");
 const UtilitaireSyntheseVocale_1 = require("UtilitaireSyntheseVocale");
 const GUID_1 = require("GUID");
 const jsx_1 = require("jsx");
@@ -87,9 +86,7 @@ UtilitairePageDonneesPersonnelles.construireZoneGenerique = function (
 			H.push(aParams.numeroINE);
 			break;
 		case Enumere_DonneesPersonnelles_1.EGenreTypeContenu.AutorisationSortie:
-			H.push(
-				'<div tabindex="0" id="' + aParams.identiteAutorisations + '"></div>',
-			);
+			H.push('<div id="' + aParams.identiteAutorisations + '"></div>');
 			break;
 		case Enumere_DonneesPersonnelles_1.EGenreTypeContenu
 			.ProjetsAccompagnement: {
@@ -102,40 +99,11 @@ UtilitairePageDonneesPersonnelles.construireZoneGenerique = function (
 			);
 			break;
 		}
-		case Enumere_DonneesPersonnelles_1.EGenreTypeContenu.Medecin:
-			H.push(this.composeMedecin());
-			break;
-		case Enumere_DonneesPersonnelles_1.EGenreTypeContenu.Allergies:
-			if (!lEtatUtilisateur.estEspaceMobile()) {
-				H.push(
-					'<div tabindex="0" id="' +
-						aParams.identiteInfosAllergies +
-						'"></div>',
-				);
-			}
-			break;
-		case Enumere_DonneesPersonnelles_1.EGenreTypeContenu.Informations:
-			H.push(_construireInformations(aParams));
-			break;
-		case Enumere_DonneesPersonnelles_1.EGenreTypeContenu.PreferencesContact:
-			H.push(_construirePreferencesContact(aParams));
-			break;
-		case Enumere_DonneesPersonnelles_1.EGenreTypeContenu
-			.AutorisationsSupplementaires:
-			H.push(_construireAutorisationsSupp(aParams));
-			break;
-		case Enumere_DonneesPersonnelles_1.EGenreTypeContenu.AutorisationsMessages:
-			H.push(_construireAutorisationsMessages(aParams));
-			break;
 		case Enumere_DonneesPersonnelles_1.EGenreTypeContenu.CommunicationParents:
 			H.push(_construireCommunicationsParents(aParams));
 			break;
-		case Enumere_DonneesPersonnelles_1.EGenreTypeContenu
-			.ContenuCommunicationParents:
-			H.push(_construireContenuCommunicationsParents(aParams));
-			break;
 		case Enumere_DonneesPersonnelles_1.EGenreTypeContenu.sourcesConnexions:
-			H.push('<div tabindex="0" id="', aParams.idSourcesConnexions, '"></div>');
+			H.push('<div id="', aParams.idSourcesConnexions, '"></div>');
 			break;
 		case Enumere_DonneesPersonnelles_1.EGenreTypeContenu.Signature:
 			H.push(_construireSignature(aParams));
@@ -174,13 +142,11 @@ UtilitairePageDonneesPersonnelles.construireZoneGenerique = function (
 			break;
 		case Enumere_DonneesPersonnelles_1.EGenreTypeContenu.messagerieSignature:
 			H.push(
-				(0, tag_1.tag)("div", {
-					"ie-identite": "getIdentiteMessagerieSignature",
-				}),
+				IE.jsx.str("div", { "ie-identite": "getIdentiteMessagerieSignature" }),
 			);
 			break;
 		case Enumere_DonneesPersonnelles_1.EGenreTypeContenu.Deconnexion:
-			H.push((0, tag_1.tag)("div", { "ie-identite": "getIdentiteMessagerie" }));
+			H.push(IE.jsx.str("div", { "ie-identite": "getIdentiteMessagerie" }));
 			break;
 		case Enumere_DonneesPersonnelles_1.EGenreTypeContenu.Accessibilite:
 			H.push(_construireAccessibilite());
@@ -190,6 +156,11 @@ UtilitairePageDonneesPersonnelles.construireZoneGenerique = function (
 			break;
 		case Enumere_DonneesPersonnelles_1.EGenreTypeContenu.iCal:
 			H.push(_construirePageICal());
+			break;
+		case Enumere_DonneesPersonnelles_1.EGenreTypeContenu.listeAppareilsMobile:
+			H.push('<div id="', aParams.idAppareilsMobile, '"></div>');
+			break;
+		default:
 			break;
 	}
 	const lContenu = H.join("");
@@ -259,203 +230,6 @@ UtilitairePageDonneesPersonnelles.getControleur = function (aInstance) {
 			},
 			getDisabled: function () {
 				return false;
-			},
-		},
-		indFixeMedecin: {
-			getValue: function () {
-				return aInstance.donnees.infosMedicales.medecin["indFixe"];
-			},
-			setValue: function (aValue) {
-				aInstance.donnees.infosMedicales.medecin["indFixe"] = aValue;
-				aInstance.setEtatSaisie(true);
-			},
-		},
-		telFixeMedecin: {
-			getValue: function () {
-				return aInstance.donnees.infosMedicales.medecin["telFixe"];
-			},
-			setValue: function (aValue) {
-				aInstance.donnees.infosMedicales.medecin["telFixe"] = aValue;
-				aInstance.setEtatSaisie(true);
-			},
-		},
-		indPortMedecin: {
-			getValue: function () {
-				return aInstance.donnees.infosMedicales.medecin["indMobile"];
-			},
-			setValue: function (aValue) {
-				aInstance.donnees.infosMedicales.medecin["indMobile"] = aValue;
-				aInstance.setEtatSaisie(true);
-			},
-		},
-		telPortMedecin: {
-			getValue: function () {
-				return aInstance.donnees.infosMedicales.medecin["telMobile"];
-			},
-			setValue: function (aValue) {
-				aInstance.donnees.infosMedicales.medecin["telMobile"] = aValue;
-				aInstance.setEtatSaisie(true);
-			},
-		},
-		nomMedecin: {
-			getValue: function () {
-				return aInstance.donnees.infosMedicales.medecin["nomMedecin"];
-			},
-			setValue: function (aValue) {
-				aInstance.donnees.infosMedicales.medecin["nomMedecin"] = aValue;
-				aInstance.setEtatSaisie(true);
-			},
-		},
-		adresseMedecin: {
-			getValue(aIndex) {
-				return aInstance.donnees.infosMedicales.medecin[`adresse${aIndex}`];
-			},
-			setValue(aIndex, aValue) {
-				aInstance.donnees.infosMedicales.medecin[`adresse${aIndex}`] = aValue;
-				aInstance.setEtatSaisie(true);
-			},
-		},
-		CPMedecin: {
-			getValue: function () {
-				return aInstance.donnees.infosMedicales.medecin["codePostal"];
-			},
-			setValue: function (aValue) {
-				aInstance.donnees.infosMedicales.medecin["codePostal"] = aValue;
-				aInstance.setEtatSaisie(true);
-			},
-		},
-		VilleMedecin: {
-			getValue: function () {
-				return aInstance.donnees.infosMedicales.medecin["libellePostal"];
-			},
-			setValue: function (aValue) {
-				aInstance.donnees.infosMedicales.medecin["libellePostal"] = aValue;
-				aInstance.setEtatSaisie(true);
-			},
-		},
-		libellePreferencesContact: {
-			getLibelle: function () {
-				const libelle = [];
-				let lTexteEmail = "";
-				if (aInstance.donnees.Autorisations.SMSAutorise) {
-					libelle.push(
-						ObjetTraduction_1.GTraductions.getValeur("infosperso.SMS"),
-					);
-				}
-				if (aInstance.donnees.Autorisations.emailAutorise) {
-					lTexteEmail =
-						ObjetTraduction_1.GTraductions.getValeur("infosperso.Email");
-				}
-				if (
-					aInstance.donnees.Autorisations.eMailEtablissementAutorise !== null &&
-					aInstance.donnees.Autorisations.eMailParentAutorise !== null &&
-					lEtatUtilisateur.GenreEspace !==
-						Enumere_Espace_1.EGenreEspace.Parent &&
-					lEtatUtilisateur.GenreEspace !==
-						Enumere_Espace_1.EGenreEspace.Mobile_Parent
-				) {
-					const libelleDetails = [];
-					if (aInstance.donnees.Autorisations.eMailEtablissementAutorise) {
-						libelleDetails.push(
-							ObjetTraduction_1.GTraductions.getValeur(
-								"infosperso.EmailEtablissement",
-							).toLowerCase(),
-						);
-					}
-					if (aInstance.donnees.Autorisations.eMailParentAutorise) {
-						libelleDetails.push(
-							ObjetTraduction_1.GTraductions.getValeur(
-								"infosperso.EMailParents",
-							).toLowerCase(),
-						);
-					}
-					if (
-						aInstance.donnees.Autorisations.eMailEtablissementAutorise ||
-						aInstance.donnees.Autorisations.eMailParentAutorise
-					) {
-						lTexteEmail += " (" + libelleDetails.join(", ") + ")";
-					}
-				}
-				if (aInstance.donnees.Autorisations.emailAutorise) {
-					libelle.push(lTexteEmail);
-				}
-				if (aInstance.donnees.Autorisations.courrierPapierAutorise) {
-					libelle.push(
-						ObjetTraduction_1.GTraductions.getValeur("infosperso.Papier"),
-					);
-				}
-				return libelle.join(", ");
-			},
-		},
-		libelleCommunicationParents: {
-			getLibelle: function () {
-				const libelle = [];
-				if (
-					aInstance.donnees.Autorisations
-						.optionCommunicationActivationdiscussion
-				) {
-					libelle.push(
-						ObjetTraduction_1.GTraductions.getValeur(
-							"infosperso.communiquerEmail",
-						),
-					);
-				}
-				if (
-					aInstance.donnees.Autorisations.optionCommunicationPublicationMail
-				) {
-					libelle.push(
-						ObjetTraduction_1.GTraductions.getValeur(
-							"infosperso.discussionsAvecParents",
-						),
-					);
-				}
-				return libelle.join(", ");
-			},
-		},
-		libelleInformations: {
-			getLibelle: function () {
-				const libelle = [];
-				if (aInstance.donnees.Autorisations.estDestinataireInfosGenerales) {
-					libelle.push(
-						ObjetTraduction_1.GTraductions.getValeur(
-							"infosperso.titreInfosGen",
-						),
-					);
-				}
-				for (
-					let i = 0;
-					i < aInstance.donnees.Autorisations.listeEleves.count();
-					i++
-				) {
-					const lEleve = aInstance.donnees.Autorisations.listeEleves.get(i);
-					const libellesEleve = [];
-					libelle.push("<div> ");
-					libelle.push(lEleve.getLibelle() + " : ");
-					if (lEleve.estDestinataireBulletin) {
-						libellesEleve.push(
-							ObjetTraduction_1.GTraductions.getValeur(
-								"infosperso.titreBulletin",
-							),
-						);
-					}
-					if (lEleve.estDestinataireInfosEleve) {
-						libellesEleve.push(
-							ObjetTraduction_1.GTraductions.getValeur(
-								"infosperso.titreInfosEleve",
-							),
-						);
-					}
-					if (lEleve.estDestinataireInfosProfesseur) {
-						libellesEleve.push(
-							ObjetTraduction_1.GTraductions.getValeur(
-								"infosperso.titreInfosProf",
-							),
-						);
-					}
-					libelle.push(libellesEleve.join(", "));
-					libelle.push("</div>");
-				}
-				return libelle.join("");
 			},
 		},
 		eMail: {
@@ -810,7 +584,7 @@ UtilitairePageDonneesPersonnelles.getControleur = function (aInstance) {
 					labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
 						"PreferencesNotifications.delaiTemporisation",
 					),
-					describedById: aId,
+					ariaDescribedBy: aId,
 					deroulerListeSeulementSiPlusieursElements: false,
 					initAutoSelectionAvecUnElement: false,
 				});
@@ -844,33 +618,6 @@ UtilitairePageDonneesPersonnelles.getControleur = function (aInstance) {
 				}
 			},
 		},
-		estConsultable: {
-			getValue: function () {
-				return aInstance.donnees.infosMedicales.estConsultable;
-			},
-			setValue: function (aValue) {
-				aInstance.donnees.infosMedicales.estConsultable = aValue;
-				aInstance.valider();
-			},
-		},
-		autoriseConsultationAllergies: {
-			getValue: function () {
-				return aInstance.donnees.allergies.autoriseConsultationAllergies;
-			},
-			setValue: function (aValue) {
-				aInstance.donnees.allergies.autoriseConsultationAllergies = aValue;
-				aInstance.valider();
-			},
-		},
-		autoriseHospitalisation: {
-			getValue: function () {
-				return aInstance.donnees.infosMedicales.autoriseHospitalisation;
-			},
-			setValue: function (aValue) {
-				aInstance.donnees.infosMedicales.autoriseHospitalisation = aValue;
-				aInstance.valider();
-			},
-		},
 		delaiNotifTravaux: {
 			init: function (aId, aCombo) {
 				aCombo.setOptionsObjetSaisie({
@@ -880,7 +627,7 @@ UtilitairePageDonneesPersonnelles.getControleur = function (aInstance) {
 					labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
 						"PreferencesNotifications.delaiTemporisation",
 					),
-					describedById: aId,
+					ariaDescribedBy: aId,
 					deroulerListeSeulementSiPlusieursElements: false,
 					initAutoSelectionAvecUnElement: false,
 				});
@@ -961,87 +708,12 @@ UtilitairePageDonneesPersonnelles.getControleur = function (aInstance) {
 				$(this)
 					.closest("div")
 					.append(
-						'<i class="icone-alternative icon_uniF2BD" aria-hidden="true"></i>',
+						'<i class="icone-alternative icon_uniF2BD" role="presentation"></i>',
 					);
 				$(this).remove();
 			});
 		},
-		comboDarkMode: {
-			init(aCombo) {
-				const lListe = new ObjetListeElements_1.ObjetListeElements();
-				lListe.add([
-					ObjetElement_1.ObjetElement.create({
-						Libelle:
-							ObjetTraduction_1.GTraductions.getValeur("modeSombre.claire"),
-						Genre: TypeThemeCouleur_1.ChoixDarkMode.clair,
-					}),
-					ObjetElement_1.ObjetElement.create({
-						Libelle:
-							ObjetTraduction_1.GTraductions.getValeur("modeSombre.sombre"),
-						Genre: TypeThemeCouleur_1.ChoixDarkMode.sombre,
-					}),
-					ObjetElement_1.ObjetElement.create({
-						Libelle:
-							ObjetTraduction_1.GTraductions.getValeur("modeSombre.systeme"),
-						Genre: TypeThemeCouleur_1.ChoixDarkMode.systeme,
-					}),
-				]);
-				const lChoixDarkMode = lApp.getOptionsEspaceLocal().getChoixDarkMode();
-				let lIndice = 0;
-				lListe.parcourir((aElement, aIndice) => {
-					if (aElement.getGenre() === lChoixDarkMode) {
-						lIndice = aIndice;
-						return false;
-					}
-				});
-				aCombo.setDonneesObjetSaisie({
-					liste: lListe,
-					selection: lIndice,
-					options: {
-						labelWAICellule:
-							ObjetTraduction_1.GTraductions.getValeur("modeSombre.theme"),
-						getContenuElement: (aParamsLigne) => {
-							let lIcon = "";
-							switch (aParamsLigne.element.getGenre()) {
-								case TypeThemeCouleur_1.ChoixDarkMode.clair: {
-									lIcon = "icon_sun";
-									break;
-								}
-								case TypeThemeCouleur_1.ChoixDarkMode.sombre: {
-									lIcon = "icon_lune";
-									break;
-								}
-								case TypeThemeCouleur_1.ChoixDarkMode.systeme: {
-									lIcon = "icon_mobile_phone";
-									break;
-								}
-								default:
-							}
-							return IE.jsx.str(
-								"span",
-								{ class: ["iconic", lIcon] },
-								aParamsLigne.element.getLibelle(),
-							);
-							return IE.jsx.str(
-								"div",
-								{ class: "icon-container" },
-								IE.jsx.str("i", { class: lIcon, role: "presentation" }),
-								IE.jsx.str("span", null, aParamsLigne.element.getLibelle()),
-							);
-						},
-					},
-				});
-			},
-			event(aParams) {
-				if (aParams.estSelectionManuelle && aParams.element) {
-					const lChoix = aParams.element.getGenre();
-					lApp.getOptionsEspaceLocal().setChoixDarkMode(lChoix);
-					if (GApplication.estAppliMobile) {
-						window.messageData.push({ action: "darkMode", data: lChoix });
-					}
-				}
-			},
-		},
+		comboDarkMode: UtilitaireDarkMode_1.UtilitaireDarkMode.getControleurCombo(),
 		radioAutorisationResponsable: {
 			getValue: function (aGenre) {
 				return (
@@ -1123,7 +795,7 @@ function _ouvrirFenetreChoixActionsAjoutSignature(aIdOrigine) {
 				lFenetreSignatureNumerique.afficher();
 			}
 		},
-		class: "bg-util-vert-claire",
+		class: "bg-green-claire",
 	});
 	if (lEtatUtilisateur.avecGestionAppareilPhoto()) {
 		lActions.push({
@@ -1138,7 +810,7 @@ function _ouvrirFenetreChoixActionsAjoutSignature(aIdOrigine) {
 				capture: "environment",
 			}),
 			selecFile: true,
-			class: "bg-util-marron-claire",
+			class: "bg-orange-claire",
 		});
 	}
 	const lAvecCloud = false;
@@ -1160,7 +832,7 @@ function _ouvrirFenetreChoixActionsAjoutSignature(aIdOrigine) {
 			{ avecTransformationFlux_versCloud: lAvecCloud },
 		),
 		selecFile: true,
-		class: "bg-util-marron-claire",
+		class: "bg-orange-claire",
 	});
 	ObjetFenetre_ActionContextuelle_1.ObjetFenetre_ActionContextuelle.ouvrir(
 		lActions,
@@ -1200,6 +872,7 @@ function _construireProjetsAccompagnement(aParams, aAvecControlePublication) {
 				{
 					avecLibelleConsultationEquipePeda: true,
 					avecControlePublication: !!aAvecControlePublication,
+					avecEdition: false,
 				},
 			),
 		);
@@ -1207,303 +880,6 @@ function _construireProjetsAccompagnement(aParams, aAvecControlePublication) {
 	H.push("</div>");
 	return H.join("");
 }
-function _construirePreferencesContact(aParams) {
-	const H = [];
-	H.push('<div id="', aParams.id, '" class="WhiteSpaceNormal InlineBlock">');
-	H.push(
-		'<div ie-model="libellePreferencesContact" class="Texte9" ie-html="getLibelle"></div>',
-	);
-	H.push("</div>");
-	return H.join("");
-}
-function _construireInformations(aParams) {
-	const H = [];
-	H.push('<div id="', aParams.id, '" class="WhiteSpaceNormal InlineBlock">');
-	H.push('<div ie-model="libelleInformations" ie-html="getLibelle"></div>');
-	H.push("</div>");
-	return H.join("");
-}
-function _construireContenuCommunicationsParents(aParams) {
-	const H = [];
-	H.push('<div id="', aParams.id, '" class="WhiteSpaceNormal InlineBlock">');
-	H.push(
-		'<div ie-model="libelleCommunicationParents" class="Texte9" ie-html="getLibelle"></div>',
-	);
-	H.push("</div>");
-	return H.join("");
-}
-UtilitairePageDonneesPersonnelles.composeMedecin = function () {
-	const lLargeurIndicatif = 36,
-		lLargeurTel = 110;
-	return IE.jsx.str(
-		IE.jsx.fragment,
-		null,
-		IE.jsx.str(
-			"h3",
-			{ tabindex: "0" },
-			ObjetTraduction_1.GTraductions.getValeur(
-				"InfosMedicales.MedecinTraitant",
-			),
-		),
-		IE.jsx.str(
-			"div",
-			{ class: "item-contain" },
-			IE.jsx.str(
-				"div",
-				{ class: "item-value" },
-				IE.jsx.str(
-					"label",
-					{ for: "idNom", class: "ie-titre-petit flex-contain cols flex-gap" },
-					ObjetTraduction_1.GTraductions.getValeur("InfosMedicales.NomMedecin"),
-					IE.jsx.str("input", {
-						type: "text",
-						id: "idNom",
-						name: "idNom",
-						title: ObjetTraduction_1.GTraductions.getValeur(
-							"InfosMedicales.TitreNom",
-						),
-						placeholder: ObjetTraduction_1.GTraductions.getValeur(
-							"InfosMedicales.TitreNom",
-						),
-						"ie-model": "nomMedecin",
-						size: "50",
-						maxlength: "50",
-						class: "round-style",
-						tabindex: "0",
-					}),
-				),
-			),
-		),
-		IE.jsx.str(
-			"div",
-			{ class: "item-contain" },
-			IE.jsx.str(
-				"div",
-				{ class: "item-value" },
-				IE.jsx.str(
-					"label",
-					{ class: "ie-titre-petit flex-contain cols flex-gap" },
-					ObjetTraduction_1.GTraductions.getValeur("InfosMedicales.adresse1"),
-					IE.jsx.str("input", {
-						type: "text",
-						id: "idAdresse1",
-						title: ObjetTraduction_1.GTraductions.getValeur(
-							"InfosMedicales.adresse1",
-						),
-						size: "50",
-						maxlength: "50",
-						class: "round-style",
-						"ie-model": (0, jsx_1.jsxFuncAttr)("adresseMedecin", "1"),
-						tabindex: "0",
-					}),
-					IE.jsx.str("input", {
-						type: "text",
-						id: "idAdresse2",
-						title: ObjetTraduction_1.GTraductions.getValeur(
-							"InfosMedicales.adresse1",
-						),
-						size: "50",
-						maxlength: "50",
-						class: "round-style",
-						"ie-model": (0, jsx_1.jsxFuncAttr)("adresseMedecin", "2"),
-						tabindex: "0",
-					}),
-					IE.jsx.str("input", {
-						type: "text",
-						id: "idAdresse3",
-						title: ObjetTraduction_1.GTraductions.getValeur(
-							"InfosMedicales.adresse1",
-						),
-						size: "50",
-						maxlength: "50",
-						class: "round-style",
-						"ie-model": (0, jsx_1.jsxFuncAttr)("adresseMedecin", "3"),
-						tabindex: "0",
-					}),
-					IE.jsx.str("input", {
-						type: "text",
-						title: ObjetTraduction_1.GTraductions.getValeur(
-							"InfosMedicales.adresse1",
-						),
-						size: "50",
-						maxlength: "50",
-						class: "round-style",
-						"ie-model": (0, jsx_1.jsxFuncAttr)("adresseMedecin", "4"),
-						tabindex: "0",
-					}),
-				),
-			),
-		),
-		IE.jsx.str(
-			"div",
-			{ class: "item-contain" },
-			IE.jsx.str(
-				"div",
-				{ class: "item-value" },
-				IE.jsx.str(
-					"div",
-					{ class: "ie-titre-petit flex-contain cols flex-gap" },
-					IE.jsx.str(
-						"span",
-						{ "aria-hidden": "true" },
-						ObjetTraduction_1.GTraductions.getValeur("InfosMedicales.cpVille"),
-					),
-					IE.jsx.str(
-						"div",
-						{ class: "flex-contain as-input" },
-						IE.jsx.str(
-							"label",
-							{ for: "idCpMedecin", class: "sr-only" },
-							ObjetTraduction_1.GTraductions.getValeur(
-								"InfosMedicales.CodePostal",
-							),
-						),
-						IE.jsx.str("input", {
-							type: "text",
-							id: "idCpMedecin",
-							maxlength: "8",
-							title: ObjetTraduction_1.GTraductions.getValeur(
-								"InfosMedicales.CodePostal",
-							),
-							"ie-model": "CPMedecin",
-							tabindex: "0",
-							style: "width: 6.5rem; margin-right:.4rem",
-						}),
-						IE.jsx.str("span", { class: "avec-separateur" }),
-						IE.jsx.str(
-							"label",
-							{ for: "idVilleMedecin", class: "sr-only" },
-							ObjetTraduction_1.GTraductions.getValeur("InfosMedicales.Ville"),
-						),
-						IE.jsx.str("input", {
-							id: "idVilleMedecin",
-							type: "text",
-							title: ObjetTraduction_1.GTraductions.getValeur(
-								"InfosMedicales.Ville",
-							),
-							"ie-model": "VilleMedecin",
-							tabindex: "0",
-							style: ObjetStyle_1.GStyle.composeWidth(lLargeurTel),
-						}),
-					),
-				),
-			),
-		),
-		IE.jsx.str(
-			"div",
-			{
-				class: "item-contain icon_home",
-				title: ObjetTraduction_1.GTraductions.getValeur(
-					"InfosMedicales.Telephone",
-				),
-			},
-			IE.jsx.str(
-				"div",
-				{ class: "flex-contain" },
-				IE.jsx.str(
-					"label",
-					{ for: "idIndFixeMedecin", class: "sr-only" },
-					ObjetTraduction_1.GTraductions.getValeur(
-						"InfosMedicales.IndicatifTelephone",
-					),
-				),
-				IE.jsx.str("input", {
-					id: "idIndFixeMedecin",
-					"ie-model": "indFixeMedecin",
-					class: "round-style m-right ",
-					"ie-indicatiftel": true,
-					style:
-						ObjetStyle_1.GStyle.composeWidth(lLargeurIndicatif) +
-						"; margin-right:.4rem",
-					type: "text",
-					title: ObjetTraduction_1.GTraductions.getValeur(
-						"InfosMedicales.IndicatifTelephone",
-					),
-					tabindex: "0",
-				}),
-				IE.jsx.str(
-					"label",
-					{ for: "idTelFixeMedecin", class: "sr-only" },
-					ObjetTraduction_1.GTraductions.getValeur("InfosMedicales.Telephone"),
-				),
-				IE.jsx.str("input", {
-					id: "idTelFixeMedecin",
-					"ie-model": "telFixeMedecin",
-					class: "round-style",
-					"ie-telephone": true,
-					style: ObjetStyle_1.GStyle.composeWidth(lLargeurTel),
-					type: "text",
-					title: ObjetTraduction_1.GTraductions.getValeur(
-						"InfosMedicales.TitreTelephone",
-					),
-					tabindex: "0",
-				}),
-			),
-		),
-		IE.jsx.str(
-			"div",
-			{
-				class: "item-contain icon_mobile_phone",
-				title: ObjetTraduction_1.GTraductions.getValeur(
-					"InfosMedicales.MobileTelephone",
-				),
-			},
-			IE.jsx.str(
-				"div",
-				{ class: "flex-contain" },
-				IE.jsx.str(
-					"label",
-					{ for: "idIndPortMedecin", class: "sr-only" },
-					ObjetTraduction_1.GTraductions.getValeur(
-						"InfosMedicales.IndicatifTelephone",
-					),
-				),
-				IE.jsx.str("input", {
-					id: "idIndPortMedecin",
-					"ie-model": "indPortMedecin",
-					class: "round-style m-right",
-					"ie-indicatiftel": true,
-					style:
-						ObjetStyle_1.GStyle.composeWidth(lLargeurIndicatif) +
-						"; margin-right:.4rem",
-					type: "text",
-					title: ObjetTraduction_1.GTraductions.getValeur(
-						"InfosMedicales.IndicatifTelephone",
-					),
-					tabindex: "0",
-				}),
-				IE.jsx.str(
-					"label",
-					{ for: "idTelPortMedecin", class: "sr-only" },
-					ObjetTraduction_1.GTraductions.getValeur("infosperso.SMS"),
-				),
-				IE.jsx.str("input", {
-					id: "idTelPortMedecin",
-					"ie-model": "telPortMedecin",
-					class: "round-style",
-					"ie-telephone": true,
-					style: ObjetStyle_1.GStyle.composeWidth(lLargeurTel),
-					type: "text",
-					title: ObjetTraduction_1.GTraductions.getValeur(
-						"InfosMedicales.MobileTelephone",
-					),
-					tabindex: "0",
-				}),
-			),
-		),
-		IE.jsx.str(
-			"div",
-			{ class: "switch-contain" },
-			UtilitairePageDonneesPersonnelles.composerSwitch(
-				Enumere_DonneesPersonnelles_3.EListeIds.cbAutoriserHospitalisation,
-				ObjetTraduction_1.GTraductions.getValeur(
-					"infosperso.autoriserHospitalisation",
-				),
-				"autoriseHospitalisation",
-			),
-		),
-	);
-};
 function _construireCoordonnees(aParams) {
 	const lApp = GApplication;
 	const lEtatUtilisateur = lApp.getEtatUtilisateur();
@@ -1522,7 +898,6 @@ function _construireCoordonnees(aParams) {
 	) {
 		lSrcPhoto = "data:image/png;base64," + lIndividu.photoBase64;
 	}
-	H.push(`<div class="bloc-identite">`);
 	const lInfosNominatives = [];
 	if (aParams.civilite) {
 		lInfosNominatives.push(aParams.civilite);
@@ -1542,77 +917,207 @@ function _construireCoordonnees(aParams) {
 				{ class: "photo-contain" },
 				IE.jsx.str("img", {
 					"ie-load-src": lSrcPhoto,
-					"ie-imgviewer": true,
 					alt: aParams.droitImageAutoriser
 						? ""
 						: ObjetTraduction_1.GTraductions.getValeur(
 								"PhotoNonAutoriseeDe_S",
 								[lStrNominatif],
 							),
-					role: aParams.droitImageAutoriser ? "presentation" : "",
+					role: aParams.droitImageAutoriser ? "presentation" : false,
 					"ie-node": "nodePhoto()",
 				}),
 			),
 		);
 	} else {
 		lHtmlPhoto.push(
-			'<i class="icone-alternative icon_uniF2BD" aria-hidden="true"></i>',
+			IE.jsx.str("i", {
+				class: "icone-alternative icon_uniF2BD",
+				role: "presentation",
+			}),
 		);
 	}
-	H.push(lHtmlPhoto.join(""));
+	H.push(IE.jsx.str("div", { class: "bloc-identite" }, lHtmlPhoto.join("")));
 	if (lStrNominatif.length > 0) {
-		H.push('<div class="info-principale">', lStrNominatif, "</div>");
+		H.push(
+			IE.jsx.str(
+				"dl",
+				{ class: "groupe-champs-conteneur" },
+				IE.jsx.str(
+					"div",
+					{ class: "champ-conteneur" },
+					IE.jsx.str(
+						"dt",
+						{ class: "champ-libelle icon_user" },
+						ObjetTraduction_1.GTraductions.getValeur("infosperso.libelleNom"),
+					),
+					IE.jsx.str(
+						"dd",
+						{ class: "champ-valeur info-principale" },
+						lStrNominatif,
+					),
+				),
+			),
+		);
 	}
 	if (aParams.avecInfosEntreprise) {
 		if (aParams.entreprise) {
 			H.push(
-				'<div class="info-principale">',
-				aParams.entreprise.getLibelle(),
-				"</div>",
+				IE.jsx.str(
+					"div",
+					{ class: "info-principale" },
+					"aParams.entreprise.getLibelle()",
+				),
 				!!aParams.entreprise.nomCommercial
-					? '<div class="info-secondaire">' +
-							aParams.entreprise.nomCommercial +
-							"</div>"
+					? IE.jsx.str(
+							"div",
+							{ class: "info-secondaire" },
+							aParams.entreprise.nomCommercial,
+						)
 					: "",
 			);
 		}
 		if (aParams.fonction) {
 			H.push(
-				'<div class="info-secondaire">',
-				aParams.fonction.getLibelle(),
-				"</div>",
+				IE.jsx.str(
+					"div",
+					{ class: "info-secondaire" },
+					aParams.fonction.getLibelle(),
+				),
 			);
 		}
 	}
 	const lInfosAdresses = [];
 	if (aParams.adresse1) {
-		lInfosAdresses.push(aParams.adresse1);
+		lInfosAdresses.push(
+			IE.jsx.str(
+				"div",
+				{ class: "champ-conteneur" },
+				IE.jsx.str(
+					"dt",
+					{ class: "champ-libelle icon_envelope" },
+					ObjetTraduction_1.GTraductions.getValeur("infosperso.libelleAdresse"),
+				),
+				IE.jsx.str("dd", { class: "champ-valeur" }, aParams.adresse1),
+			),
+		);
 	}
 	if (aParams.adresse2) {
-		lInfosAdresses.push(aParams.adresse2);
+		lInfosAdresses.push(
+			IE.jsx.str(
+				"div",
+				{ class: "champ-conteneur" },
+				IE.jsx.str(
+					"dt",
+					{ class: "champ-libelle icon_envelope" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"infosperso.libelleAdresse2",
+					),
+				),
+				IE.jsx.str("dd", { class: "champ-valeur" }, aParams.adresse2),
+			),
+		);
 	}
 	if (aParams.adresse3) {
-		lInfosAdresses.push(aParams.adresse3);
+		lInfosAdresses.push(
+			IE.jsx.str(
+				"div",
+				{ class: "champ-conteneur" },
+				IE.jsx.str(
+					"dt",
+					{ class: "champ-libelle icon_envelope" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"infosperso.libelleAdresse3",
+					),
+				),
+				IE.jsx.str("dd", { class: "champ-valeur" }, aParams.adresse3),
+			),
+		);
 	}
 	if (aParams.adresse4) {
-		lInfosAdresses.push(aParams.adresse4);
+		lInfosAdresses.push(
+			IE.jsx.str(
+				"div",
+				{ class: "champ-conteneur" },
+				IE.jsx.str(
+					"dt",
+					{ class: "champ-libelle icon_envelope" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"infosperso.libelleAdresse4",
+					),
+				),
+				IE.jsx.str("dd", { class: "champ-valeur" }, aParams.adresse4),
+			),
+		);
 	}
 	if (aParams.codePostal || aParams.ville) {
-		lInfosAdresses.push(aParams.codePostal + " " + aParams.ville);
+		lInfosAdresses.push(
+			IE.jsx.str(
+				"div",
+				{ class: "champ-conteneur" },
+				IE.jsx.str(
+					"dt",
+					{ class: "champ-libelle icon_envelope" },
+					ObjetTraduction_1.GTraductions.getValeur("infosperso.cpVille"),
+				),
+				IE.jsx.str(
+					"dd",
+					{ class: "champ-valeur" },
+					aParams.codePostal,
+					" ",
+					aParams.ville,
+				),
+			),
+		);
 	}
 	if (aParams.province) {
-		lInfosAdresses.push(aParams.province);
+		lInfosAdresses.push(
+			IE.jsx.str(
+				"div",
+				{ class: "champ-conteneur" },
+				IE.jsx.str(
+					"dt",
+					{ class: "champ-libelle icon_envelope" },
+					ObjetTraduction_1.GTraductions.getValeur("infosperso.province"),
+				),
+				IE.jsx.str("dd", { class: "champ-valeur" }, aParams.province),
+			),
+		);
 	}
 	if (aParams.pays) {
-		lInfosAdresses.push(aParams.pays);
+		lInfosAdresses.push(
+			IE.jsx.str(
+				"div",
+				{ class: "champ-conteneur" },
+				IE.jsx.str(
+					"dt",
+					{ class: "champ-libelle icon_envelope" },
+					ObjetTraduction_1.GTraductions.getValeur("infosperso.pays"),
+				),
+				IE.jsx.str("dd", { class: "champ-valeur" }, aParams.pays),
+			),
+		);
 	}
 	H.push(
-		'<div class="info-secondaire">',
-		lInfosAdresses.join("<br/>"),
-		"</div>",
+		IE.jsx.str(
+			"dl",
+			{ class: "groupe-champs-conteneur" },
+			lInfosAdresses.join(""),
+		),
 	);
-	H.push(_composeZoneTelephone.bind(this)(aParams));
-	H.push("</div>");
+	H.push(
+		IE.jsx.str(
+			"div",
+			{ class: "groupe-champs-conteneur" },
+			_composeZoneTelephone.bind(this)(aParams),
+		),
+	);
+	H.push(
+		IE.jsx.str(
+			"div",
+			{ class: "groupe-champs-conteneur" },
+			_composeEmail.bind(this)(aParams),
+		),
+	);
 	return H.join("");
 }
 function _composeZoneTelephone(aParams) {
@@ -1639,13 +1144,13 @@ function _composeZoneTelephone(aParams) {
 			),
 		);
 	}
-	H.push(_composeEmail.bind(this)(aParams));
 	return H.join("");
 }
 function _composeTelephone(aParams, aGenre) {
 	const lApp = GApplication;
 	const lEtatUtilisateur = lApp.getEtatUtilisateur();
 	const H = [];
+	let lLibelle = "";
 	let lIndicatif = "";
 	let lTel = "";
 	let lClassIcone = "";
@@ -1654,6 +1159,9 @@ function _composeTelephone(aParams, aGenre) {
 	let lPlaceholderChamps;
 	switch (aGenre) {
 		case Enumere_DonneesPersonnelles_2.EGenreTelephone.telFixe:
+			lLibelle = ObjetTraduction_1.GTraductions.getValeur(
+				"infosperso.libelleTelFixe",
+			);
 			lTel = "telephoneFixe";
 			lIndicatif = "indicatifFixe";
 			lClassIcone = "icon_home";
@@ -1665,6 +1173,9 @@ function _composeTelephone(aParams, aGenre) {
 			);
 			break;
 		case Enumere_DonneesPersonnelles_2.EGenreTelephone.telPort:
+			lLibelle = ObjetTraduction_1.GTraductions.getValeur(
+				"infosperso.libelleTelPort",
+			);
 			lTel = "telephonePortable";
 			lIndicatif = "indicatifTel";
 			lClassIcone = "icon_mobile_phone";
@@ -1675,6 +1186,9 @@ function _composeTelephone(aParams, aGenre) {
 			);
 			break;
 		case Enumere_DonneesPersonnelles_2.EGenreTelephone.fax:
+			lLibelle = ObjetTraduction_1.GTraductions.getValeur(
+				"infosperso.libelleFax",
+			);
 			lTel = "fax";
 			lIndicatif = "indicatifFax";
 			lClassIcone = "icon_tel_fax";
@@ -1704,18 +1218,19 @@ function _composeTelephone(aParams, aGenre) {
 		lApp.droits.get(
 			ObjetDroitsPN_1.TypeDroits.compte.avecSaisieInfosPersoCoordonnees,
 		) && lAvecCbReserveAdmin;
+	H.push(`<div class="champ-conteneur">`);
 	H.push(
-		`<div class="item-contain ${lClassIcone}" aria-label="${lTitleChamps}" title="${lTitleChamps}">`,
+		`<div class="champ-libelle ${lClassIcone}" aria-label="${lTitleChamps}" title="${lTitleChamps}">${lLibelle}</div>`,
 	);
 	H.push(
-		`<div class="item-value">\n            <div class="flex-contain ">\n              <input ie-model="tel('${lIndicatif}')" class="round-style m-right " ie-indicatiftel ie-etatsaisie  style="${ObjetStyle_1.GStyle.composeWidth(aParams.largeurIndicatif)};margin-right:.4rem" type="text" ${lTitleChampsIndicatif ? `aria-label="${lTitleChampsIndicatif}" title="${lTitleChampsIndicatif}"` : ""} tabindex="0"/>\n              <input ie-model="tel('${lTel}')" class="round-style" ie-telephone ie-etatsaisie style="${ObjetStyle_1.GStyle.composeWidth(aParams.largeurTel)}" type="text" ${lPlaceholderChamps ? ` placeholder="${lPlaceholderChamps}"` : ""} ${lTitleChamps ? `aria-label="${lTitleChamps}" title="${lTitleChamps}" ` : ""} tabindex="0" />\n            </div>`,
+		`<div class="champ-valeur">\n\n              <input ie-model="tel('${lIndicatif}')" class="m-right " ie-indicatiftel ie-etatsaisie  style="${ObjetStyle_1.GStyle.composeWidth(aParams.largeurIndicatif)};margin-right:.4rem" type="text" ${lTitleChampsIndicatif ? `aria-label="${lTitleChampsIndicatif}" title="${lTitleChampsIndicatif}"` : ""}/>\n              <input ie-model="tel('${lTel}')" ie-telephone ie-etatsaisie type="text" ${lPlaceholderChamps ? ` placeholder="${lPlaceholderChamps}"` : ""} ${lTitleChamps ? `aria-label="${lTitleChamps}" title="${lTitleChamps}" ` : ""} />`,
 	);
+	H.push(`</div>`);
 	if (lDroitsModif) {
 		H.push(
-			`<ie-checkbox ie-model="cbTelReserveAdministration">${ObjetTraduction_1.GTraductions.getValeur("infosperso.reserveAdministration")}</ie-checkbox>`,
+			`<ie-checkbox class="m-top" ie-model="cbTelReserveAdministration">${ObjetTraduction_1.GTraductions.getValeur("infosperso.reserveAdministration")}</ie-checkbox>`,
 		);
 	}
-	H.push(`</div>`);
 	H.push(`</div>`);
 	return H.join("");
 }
@@ -1737,32 +1252,36 @@ function _composeEmail(aParams) {
 		Enumere_Espace_1.EGenreEspace.Professeur,
 		Enumere_Espace_1.EGenreEspace.Mobile_Professeur,
 	].includes(lEtatUtilisateur.GenreEspace);
-	const lDroitsModif =
-		lApp.droits.get(
-			ObjetDroitsPN_1.TypeDroits.compte.avecSaisieInfosPersoCoordonnees,
-		) && lAvecCbReserveAdmin;
+	H.push(`<div class="champ-conteneur">`);
 	H.push(
-		`<div class="item-contain icon_arobase ${lDroitsModif ? ` flex-start` : ` flex-center`} " aria-label="${ObjetTraduction_1.GTraductions.getValeur("infosperso.infoEmail")}" title="${ObjetTraduction_1.GTraductions.getValeur("infosperso.infoEmail")}">`,
+		IE.jsx.str(
+			"div",
+			{
+				class: "champ-libelle icon_arobase",
+				title: ObjetTraduction_1.GTraductions.getValeur("infosperso.infoEmail"),
+			},
+			ObjetTraduction_1.GTraductions.getValeur("infosperso.Email"),
+		),
 	);
 	if (
 		lApp.droits.get(
 			ObjetDroitsPN_1.TypeDroits.compte.avecSaisieInfosPersoCoordonnees,
 		)
 	) {
-		H.push(`<div class="item-value">`);
+		H.push(`<div class="champ-valeur">`);
 		H.push(
-			`<input class="round-style" ${IE.estMobile ? "" : `style="${ObjetStyle_1.GStyle.composeWidth(aParams.largeurEmail)}"`} type="text" ie-model="eMail" maxlength="255" id="${Enumere_DonneesPersonnelles_3.EListeIds.email}" placeholder="${ObjetTraduction_1.GTraductions.getValeur("infosperso.infoEmail")}" value="${aParams.eMail || ""}" aria-label="${ObjetTraduction_1.GTraductions.getValeur("infosperso.infoEmail")}" title="${ObjetTraduction_1.GTraductions.getValeur("infosperso.infoEmail")}" tabindex="0" />`,
+			`<input  ${IE.estMobile ? "" : `style="${ObjetStyle_1.GStyle.composeWidth(aParams.largeurEmail)}"`} type="text" ie-model="eMail" maxlength="255" id="${Enumere_DonneesPersonnelles_3.EListeIds.email}" placeholder="${ObjetTraduction_1.GTraductions.getValeur("infosperso.infoEmail")}" value="${aParams.eMail || ""}" aria-label="${ObjetTraduction_1.GTraductions.getValeur("infosperso.infoEmail")}" title="${ObjetTraduction_1.GTraductions.getValeur("infosperso.infoEmail")}" />`,
 		);
+		H.push(`</div>`);
 		if (lAvecCbReserveAdmin) {
 			H.push(
-				`<ie-checkbox ie-model="cbEmailReserveAdministration">${ObjetTraduction_1.GTraductions.getValeur("infosperso.reserveAdministration")}</ie-checkbox>`,
+				`<ie-checkbox  class="m-top"  ie-model="cbEmailReserveAdministration">${ObjetTraduction_1.GTraductions.getValeur("infosperso.reserveAdministration")}</ie-checkbox>`,
 			);
 		}
-		H.push(`</div>`);
 	} else {
 		if (aParams.eMail) {
 			H.push(
-				'<div class="item-value"><span>',
+				'<div class="champ-valeur"><span>',
 				aParams.eMail || "",
 				"</span></div>",
 			);
@@ -1780,7 +1299,7 @@ function _construireInformationsCompteEnfant(aParams) {
 		`<div class="item-conteneur-inner">\n            <h2 >${ObjetTraduction_1.GTraductions.getValeur("PageCompte.Identifiant")} :</h2>\n            <div class=valeur-contain">\n              <div class="flex-contain flex-center justify-between">\n                <div class="libelle-identification">${aParams.identifiant}</div>\n              </div>\n            </div>\n          </div>`,
 	);
 	H.push(
-		`<div class="item-conteneur-inner no-line">\n          <h2>${ObjetTraduction_1.GTraductions.getValeur("PageCompte.MotDePasse")} :</h2>\n          <div class=valeur-contain">\n            <div class="flex-contain flex-center justify-between">\n              <div class="libelle-identification mdp">${aParams.informationsCompteMotDePasse}</div>\n              <ie-bouton id="${Enumere_DonneesPersonnelles_3.EListeIds.mdpEnfant}"${aParams.model ? ` ie-model="${aParams.model}"` : ""} tabindex="0">${ObjetTraduction_1.GTraductions.getValeur("PageCompte.Modifier")}</ie-bouton>\n            </div>\n          </div>\n        </div>`,
+		`<div class="item-conteneur-inner no-line">\n          <h2>${ObjetTraduction_1.GTraductions.getValeur("PageCompte.MotDePasse")} :</h2>\n          <div class=valeur-contain">\n            <div class="flex-contain flex-center justify-between">\n              <div class="libelle-identification mdp">${aParams.informationsCompteMotDePasse}</div>\n              <ie-bouton id="${Enumere_DonneesPersonnelles_3.EListeIds.mdpEnfant}"${aParams.model ? ` ie-model="${aParams.model}"` : ""} >${ObjetTraduction_1.GTraductions.getValeur("PageCompte.Modifier")}</ie-bouton>\n            </div>\n          </div>\n        </div>`,
 	);
 	return H.join("");
 }
@@ -1834,20 +1353,18 @@ function _construireNotifications(
 					lIdCBNotifEmail,
 				),
 			);
-			if (!lEtatUtilisateur.estEspaceMobile()) {
-				H.push(
-					IE.jsx.str(
-						"div",
-						{ class: "temporisation-contain" },
-						ObjetTraduction_1.GTraductions.getValeur(
-							"PreferencesNotifications.delaiTemporisation",
-						),
-						IE.jsx.str("ie-combo", {
-							"ie-model": (0, jsx_1.jsxFuncAttr)("delaiNotif", lIdCBNotifEmail),
-						}),
+			H.push(
+				IE.jsx.str(
+					"div",
+					{ class: "temporisation-contain" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"PreferencesNotifications.delaiTemporisation",
 					),
-				);
-			}
+					IE.jsx.str("ie-combo", {
+						"ie-model": (0, jsx_1.jsxFuncAttr)("delaiNotif", lIdCBNotifEmail),
+					}),
+				),
+			);
 			H.push("</div>");
 			if (
 				!lEtatUtilisateur.pourPrimaire() &&
@@ -1865,23 +1382,21 @@ function _construireNotifications(
 						lIdCBNotifTravaux,
 					),
 				);
-				if (!lEtatUtilisateur.estEspaceMobile()) {
-					H.push(
-						IE.jsx.str(
-							"div",
-							{ class: "temporisation-contain" },
-							ObjetTraduction_1.GTraductions.getValeur(
-								"PreferencesNotifications.delaiTemporisation",
-							),
-							IE.jsx.str("ie-combo", {
-								"ie-model": (0, jsx_1.jsxFuncAttr)(
-									"delaiNotifTravaux",
-									lIdCBNotifTravaux,
-								),
-							}),
+				H.push(
+					IE.jsx.str(
+						"div",
+						{ class: "temporisation-contain" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"PreferencesNotifications.delaiTemporisation",
 						),
-					);
-				}
+						IE.jsx.str("ie-combo", {
+							"ie-model": (0, jsx_1.jsxFuncAttr)(
+								"delaiNotifTravaux",
+								lIdCBNotifTravaux,
+							),
+						}),
+					),
+				);
 				H.push("</div>");
 			}
 		}
@@ -1915,7 +1430,7 @@ function _construireMotDePasse(aParams) {
 	H.push('<div class="flex-contain flex-center justify-between">');
 	H.push(
 		'<div class="libelle-identification mdp">',
-		'<span tabindex="0">',
+		"<span>",
 		aParams.maskMdp,
 		"</span>",
 		"</div>",
@@ -1923,7 +1438,7 @@ function _construireMotDePasse(aParams) {
 	H.push(
 		'<ie-bouton id="',
 		Enumere_DonneesPersonnelles_3.EListeIds.mdp,
-		'" tabindex="0">',
+		'">',
 		ObjetTraduction_1.GTraductions.getValeur("PageCompte.Modifier"),
 		"</ie-bouton>",
 	);
@@ -1937,7 +1452,7 @@ function _construireIdentifiant(aParams) {
 	H.push(`<div class="flex-contain flex-center justify-between">`);
 	H.push(
 		'<div class="libelle-identification">',
-		'<span tabindex="0">',
+		"<span>",
 		lEtatUtilisateur.estEspaceMobile()
 			? aParams.chaine
 			: ObjetChaine_1.GChaine.ajouterEntites(
@@ -1957,7 +1472,7 @@ function _construireIdentifiant(aParams) {
 		H.push(
 			'<ie-bouton id="',
 			Enumere_DonneesPersonnelles_3.EListeIds.identifiant,
-			'" tabindex="0">',
+			'">',
 			ObjetTraduction_1.GTraductions.getValeur("PageCompte.Modifier"),
 			"</ie-bouton>",
 		);
@@ -1969,8 +1484,6 @@ function _construireDroitImage() {
 	const lApp = GApplication;
 	const lEtatUtilisateur = lApp.getEtatUtilisateur();
 	const H = [];
-	H.push('<div class="WhiteSpaceNormal InlineBlock">');
-	H.push('<div class="AlignementHaut">');
 	let lLibelleCheckboxDroitImage;
 	if (
 		[
@@ -2002,13 +1515,8 @@ function _construireDroitImage() {
 		);
 	}
 	H.push(
-		UtilitairePageDonneesPersonnelles.composerCheckbox(
-			lLibelleCheckboxDroitImage,
-			"switchAutoriserImage",
-		),
+		`<div class="champ-conteneur"><ie-switch class="long-text" ie-model="switchAutoriserImage">${lLibelleCheckboxDroitImage}</ie-switch></div>`,
 	);
-	H.push("</div>");
-	H.push("</div>");
 	return H.join("");
 }
 function _construirePagePersonnalisation(aControleur) {
@@ -2026,9 +1534,9 @@ function _construirePagePersonnalisation(aControleur) {
 		H.push(
 			IE.jsx.str(
 				"div",
-				{ class: "choice-contain" },
+				{ class: "champ-conteneur" },
 				IE.jsx.str(
-					"ie-checkbox",
+					"ie-switch",
 					{ "ie-model": "accueil.cbAfficherPageAccueil" },
 					ObjetTraduction_1.GTraductions.getValeur(
 						"infosperso.AfficherAccueilDemarrage",
@@ -2060,7 +1568,9 @@ function _construirePagePersonnalisation(aControleur) {
 		);
 	}
 	if (
-		lApp.estPrimaire &&
+		(lApp.estPrimaire ||
+			(lApp.getOptionsDebug() &&
+				lApp.getOptionsDebug().forcerSyntheseVocale)) &&
 		(UtilitaireSyntheseVocale_1.SyntheseVocale.supportee || lApp.estAppliMobile)
 	) {
 		H.push(
@@ -2145,10 +1655,7 @@ function _construirePageICal() {
 			),
 			IE.jsx.str(
 				"fieldset",
-				{
-					"ie-if": "iCal.avecChoix",
-					class: "m-top-l flex-contain cols flex-stretch",
-				},
+				{ "ie-if": "iCal.avecChoix", class: "m-top-l flex-contain cols" },
 				IE.jsx.str(
 					"ie-checkbox",
 					{
@@ -2208,7 +1715,6 @@ function _construirePageICal() {
 				"ie-bouton",
 				{
 					class: lClass,
-					"ie-icon": "icon_ical",
 					"ie-model": "iCal.exporter",
 					"aria-label": ObjetTraduction_1.GTraductions.getValeur(
 						"iCal.modes.ponctuelle.boutonAlt",
@@ -2236,7 +1742,7 @@ function _construirePageICal() {
 			IE.jsx.str("input", {
 				"ie-model": "iCal.lienPermanent",
 				type: "text",
-				class: "m-top self-stretch round-style",
+				class: "to-copy-paste full-width",
 				onclick: "this.select()",
 				readonly: "readonly",
 				"aria-label": ObjetTraduction_1.GTraductions.getValeur(
@@ -2269,24 +1775,24 @@ function _construirePageICal() {
 function _construireGeneralitesProfesseur() {
 	const lApp = GApplication;
 	const H = [];
-	if (!IE.estMobile) {
-		H.push(`<div class="inner-item-contain flex-contain cols">\n              <ie-checkbox ie-model="generalites.cbMasquerDonneesAutresProfesseurs">\n                ${ObjetTraduction_1.GTraductions.getValeur("infosperso.MasquerDonneesAutresProfesseurs")}
-              </ie-checkbox>`);
-	}
-	H.push(`<ie-checkbox ie-model="generalites.cbAvecGestionDesThemes">\n                ${ObjetTraduction_1.GTraductions.getValeur("infosperso.AvecGestionDesThemes")}
-              </ie-checkbox>`);
+	H.push(
+		`<div class="groupe-champs-conteneur">\n    <div class="champ-conteneur">\n    <ie-switch class="long-text" ie-model="generalites.cbMasquerDonneesAutresProfesseurs">\n      ${ObjetTraduction_1.GTraductions.getValeur("infosperso.MasquerDonneesAutresProfesseurs")}\n    </ie-switch>\n    </div>`,
+	);
+	H.push(
+		`<div class="champ-conteneur">\n    <ie-switch class="long-text"  ie-model="generalites.cbAvecGestionDesThemes">\n      ${ObjetTraduction_1.GTraductions.getValeur("infosperso.AvecGestionDesThemes")}\n    </ie-switch>\n    </div>`,
+	);
 	if (lApp.getObject("transformationFlux")) {
+		H.push(`<div class="champ-conteneur">`);
 		H.push(
-			(0, tag_1.tag)(
-				"ie-checkbox",
+			IE.jsx.str(
+				"ie-switch",
 				{ "ie-model": "generalites.cbTransformationFlux" },
 				ObjetTraduction_1.GTraductions.getValeur("ActiverCompressionAutoPDF"),
 			),
 		);
-	}
-	if (!IE.estMobile) {
 		H.push(`</div>`);
 	}
+	H.push(`</div>`);
 	return H.join("");
 }
 function _construireAutorisations(aParams) {
@@ -2299,7 +1805,7 @@ function _construireAutorisations(aParams) {
 		: ObjetTraduction_1.GTraductions.getValeur(
 				"infosperso.titreDestinataireConsultation",
 			);
-	H.push(IE.jsx.str("p", { tabindex: "0" }, lTitre));
+	H.push(IE.jsx.str("p", null, lTitre));
 	H.push(
 		`<div class="bloc-autorisation" role="group" aria-label="${lTitre.toAttrValue()}">`,
 	);
@@ -2586,7 +2092,7 @@ function _construireAutorisationsMessages(aParams) {
 		);
 		H.push(lElemDiscussionProfs);
 		H.push(lElemDiscussionPersonnels);
-		H.push('<div class="">', lElemDiscussionParents);
+		H.push("<div>", lElemDiscussionParents);
 		if (aParams.msgListePublicsParents) {
 			H.push(
 				_composeChoixDiscussion({
@@ -2598,7 +2104,7 @@ function _construireAutorisationsMessages(aParams) {
 			);
 		}
 		H.push("</div>");
-		H.push('<div class="">', lElemDiscussionEleves);
+		H.push('<div class="bloc-autorisation">', lElemDiscussionEleves);
 		if (aParams.msgListePublicsEleves) {
 			H.push(
 				_composeChoixDiscussion({
@@ -2641,8 +2147,7 @@ function _composeChoixDiscussion(aParams) {
 		IE.jsx.str(
 			"div",
 			{
-				class:
-					"flex-contain cols m-left-big flex-gap-l m-top-nega-l m-bottom-l",
+				class: "sous-bloc",
 				"ie-display": aParams.estPourResponsable
 					? "avecChoixParent"
 					: "avecChoixEleve",
@@ -2657,7 +2162,7 @@ function _composeChoixDiscussion(aParams) {
 			].map((aGenre) => {
 				return IE.jsx.str(
 					"div",
-					{ class: "flex-contain flex-center flex-gap" },
+					{ class: "choice-contain" },
 					IE.jsx.str(
 						"ie-radio",
 						{
@@ -2681,7 +2186,7 @@ function _composeChoixDiscussion(aParams) {
 								IE.jsx.str(
 									"ie-bouton",
 									{
-										"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+										"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
 											"infosperso.wai.boutonAccepteDiscussionAvecXPourClasses",
 											aParams.libelle.toLowerCase(),
 										),
@@ -2765,17 +2270,15 @@ function _construireTitreAvecImages(aTitre, aGenre, aParams) {
 }
 function _construireAutorisationsSupp(aParams) {
 	const lApp = GApplication;
-	const lHtml = [];
+	const H = [];
 	if (aParams.listeEleves.count() > 0) {
-		lHtml.push(
-			'<h2 tabindex="0">',
+		H.push(
+			"<h2>",
 			ObjetTraduction_1.GTraductions.getValeur("infosperso.titreRecevoir"),
 			"</h2>",
 		);
-		lHtml.push(
-			'<div class="',
-			!IE.estMobile ? "bloc-decalage-gauche" : "",
-			'">',
+		H.push(
+			'<div class="bloc-autorisation">',
 			UtilitairePageDonneesPersonnelles.composerCheckbox(
 				_construireTitreAvecImages(
 					ObjetTraduction_1.GTraductions.getValeur("infosperso.titreInfosGen"),
@@ -2788,12 +2291,12 @@ function _construireAutorisationsSupp(aParams) {
 		);
 		for (let i = 0; i < aParams.listeEleves.count(); i++) {
 			const lEleve = aParams.listeEleves.get(i);
-			lHtml.push('<h3 tabindex="0">', lEleve.getLibelle(), "</h3>");
-			lHtml.push(
-				`<div class="bloc-decalage-gauche" role="group" aria-label="${lEleve.getLibelle().toAttrValue()}">`,
+			H.push("<h3>", lEleve.getLibelle(), "</h3>");
+			H.push(
+				`<div class="bloc-autorisation" role="group" aria-label="${lEleve.getLibelle().toAttrValue()}">`,
 			);
 			if (!lApp.estEDT) {
-				lHtml.push(
+				H.push(
 					UtilitairePageDonneesPersonnelles.composerCheckbox(
 						_construireTitreAvecImages(
 							ObjetTraduction_1.GTraductions.getValeur(
@@ -2806,7 +2309,7 @@ function _construireAutorisationsSupp(aParams) {
 					),
 				);
 			}
-			lHtml.push(
+			H.push(
 				UtilitairePageDonneesPersonnelles.composerCheckbox(
 					_construireTitreAvecImages(
 						ObjetTraduction_1.GTraductions.getValeur(
@@ -2818,7 +2321,7 @@ function _construireAutorisationsSupp(aParams) {
 					"switchInfosEleve(" + i + ")",
 				),
 			);
-			lHtml.push(
+			H.push(
 				UtilitairePageDonneesPersonnelles.composerCheckbox(
 					_construireTitreAvecImages(
 						ObjetTraduction_1.GTraductions.getValeur(
@@ -2830,10 +2333,10 @@ function _construireAutorisationsSupp(aParams) {
 					"switchInfosProfs(" + i + ")",
 				),
 			);
-			lHtml.push("</div>");
+			H.push("</div>");
 		}
 	}
-	return lHtml.join("");
+	return H.join("");
 }
 UtilitairePageDonneesPersonnelles.composerSwitch = function (
 	aID,
@@ -2851,56 +2354,83 @@ UtilitairePageDonneesPersonnelles.composerSwitch = function (
 function _construireAccessibilite() {
 	const H = [];
 	H.push(
-		(0, tag_1.tag)("div", {
-			class: "inner-item-contain flex-contain cols",
+		IE.jsx.str("div", {
+			class: "groupe-champs-conteneur",
 			"ie-identite": "getIdentiteAccessibilite",
 		}),
 	);
 	return H.join("");
 }
 function _construireSignature(aParams) {
-	const H = [];
-	if (!!aParams.signature && !!aParams.signature.logo) {
-		const lImgSignature = "data:image/png;base64," + aParams.signature.logo;
-		H.push(
-			'<div class="ie-titre-petit flex-contain flex-center justify-between">',
-			`<span>${ObjetTraduction_1.GTraductions.getValeur("infosperso.apercu")}</span>`,
-			'<ie-btnicon ie-model="btnSupprimerImageSignature" class="bt-activable bt-large icon_trash"></ie-btnicon>',
-			"</div>",
-			'<div class="bloc-signature-wrapper">',
-			'<figure class="signature-contain">',
-			`<img src="${lImgSignature}" />`,
-			"</figure>",
-			"</div>",
-		);
-	} else {
-		H.push(
-			'<ie-bouton id="',
-			Enumere_DonneesPersonnelles_3.EListeIds.bntAjouterSignature,
-			'" ie-model="btnAjouterImageSignature(\'',
-			Enumere_DonneesPersonnelles_3.EListeIds.bntAjouterSignature,
-			"')\">",
-			ObjetTraduction_1.GTraductions.getValeur(
-				"infosperso.btnImporterSignature",
+	var _a, _b;
+	const lImgSignature = (
+		(_a = aParams.signature) === null || _a === void 0
+			? void 0
+			: _a.logo
+	)
+		? "data:image/png;base64," + aParams.signature.logo
+		: "";
+	return IE.jsx.str(
+		"div",
+		null,
+		((_b = aParams.signature) === null || _b === void 0 ? void 0 : _b.logo)
+			? IE.jsx.str(
+					IE.jsx.fragment,
+					null,
+					IE.jsx.str(
+						"div",
+						{
+							class: "ie-titre-petit flex-contain flex-center justify-between",
+						},
+						IE.jsx.str(
+							"span",
+							null,
+							ObjetTraduction_1.GTraductions.getValeur("infosperso.apercu"),
+						),
+						IE.jsx.str("ie-btnicon", {
+							"ie-model": "btnSupprimerImageSignature",
+							class: "bt-activable bt-large icon_trash",
+						}),
+					),
+					IE.jsx.str(
+						"div",
+						{ class: "bloc-signature-wrapper" },
+						IE.jsx.str(
+							"figure",
+							{ class: "signature-contain" },
+							IE.jsx.str("img", { src: lImgSignature, role: "presentation" }),
+						),
+					),
+				)
+			: IE.jsx.str(
+					"ie-bouton",
+					{
+						id: Enumere_DonneesPersonnelles_3.EListeIds.bntAjouterSignature,
+						"ie-model": (0, jsx_1.jsxFuncAttr)("btnAjouterImageSignature", [
+							Enumere_DonneesPersonnelles_3.EListeIds.bntAjouterSignature,
+						]),
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"infosperso.btnImporterSignature",
+					),
+				),
+		IE.jsx.str(
+			"div",
+			{ class: "switch-contain m-top" },
+			UtilitairePageDonneesPersonnelles.composerSwitch(
+				Enumere_DonneesPersonnelles_3.EListeIds.autoriserSignature,
+				ObjetTraduction_1.GTraductions.getValeur(
+					"infosperso.autoriserSignature",
+				),
+				"switchAutoriserSignature",
 			),
-			"</ie-bouton>",
-		);
-	}
-	H.push(
-		'<div class="switch-contain m-top">',
-		UtilitairePageDonneesPersonnelles.composerSwitch(
-			Enumere_DonneesPersonnelles_3.EListeIds.autoriserSignature,
-			ObjetTraduction_1.GTraductions.getValeur("infosperso.autoriserSignature"),
-			"switchAutoriserSignature",
 		),
-		"</div>",
 	);
-	return H.join("");
 }
 function _construireCDT() {
 	const H = [];
 	H.push(
-		(0, tag_1.tag)("div", {
+		IE.jsx.str("div", {
 			class: "inner-item-contain flex-contain cols",
 			"ie-identite": "getIdentiteCahierDeTexte",
 		}),
@@ -2929,10 +2459,10 @@ UtilitairePageDonneesPersonnelles.composerCheckbox = function (
 ) {
 	return IE.jsx.str(
 		"div",
-		{ class: "choice-contain" },
+		{ class: "choice-contain long-text" },
 		IE.jsx.str(
 			"ie-checkbox",
-			{ id: !!aId && aId, "ie-model": aModel, tabindex: "0" },
+			{ id: !!aId && aId, "ie-model": aModel },
 			aLibelle,
 		),
 	);
@@ -3139,18 +2669,6 @@ UtilitairePageDonneesPersonnelles.getListeFiltresAff = function (
 		);
 	}
 	if (
-		!!aDonnes.Signature &&
-		UtilitairePageDonneesPersonnelles.avecSignature()
-	) {
-		lListe.add(
-			new ObjetElement_1.ObjetElement(
-				ObjetTraduction_1.GTraductions.getValeur("infosperso.Liste_Signature"),
-				0,
-				Enumere_DonneesPersonnelles_6.TypeFiltreAffichage.signature,
-			),
-		);
-	}
-	if (
 		aParametres.avecInfosAutorisations ||
 		UtilitairePageDonneesPersonnelles.avecNotifications(aDonnes) ||
 		lApp.droits.get(
@@ -3192,15 +2710,18 @@ UtilitairePageDonneesPersonnelles.getListeFiltresAff = function (
 			),
 		);
 	}
-	if (lEtatUtilisateur.messagerieSignature) {
+	const lAvecSignature =
+		(!!aDonnes.Signature &&
+			UtilitairePageDonneesPersonnelles.avecSignature()) ||
+		lEtatUtilisateur.messagerieSignature;
+	if (lAvecSignature) {
 		lListe.add(
 			new ObjetElement_1.ObjetElement({
 				Libelle: ObjetTraduction_1.GTraductions.getValeur(
-					"infosperso.MessagerieSignature",
+					"infosperso.Liste_Signature",
 				),
 				Numero: 0,
-				Genre:
-					Enumere_DonneesPersonnelles_6.TypeFiltreAffichage.messagerieSignature,
+				Genre: Enumere_DonneesPersonnelles_6.TypeFiltreAffichage.signature,
 			}),
 		);
 	}
@@ -3445,6 +2966,53 @@ UtilitairePageDonneesPersonnelles.getStructurePourValidation = function (
 		};
 	}
 	return true;
+};
+UtilitairePageDonneesPersonnelles.getListeDelaiNotif = function () {
+	return new ObjetListeElements_1.ObjetListeElements()
+		.addElement(
+			new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"PreferencesNotifications.15min",
+				),
+				15,
+			),
+		)
+		.addElement(
+			new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"PreferencesNotifications.30min",
+				),
+				30,
+			),
+		)
+		.addElement(
+			new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur("PreferencesNotifications.1h"),
+				60,
+			),
+		)
+		.addElement(
+			new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur("PreferencesNotifications.4h"),
+				240,
+			),
+		)
+		.addElement(
+			new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"PreferencesNotifications.12h",
+				),
+				720,
+			),
+		)
+		.addElement(
+			new ObjetElement_1.ObjetElement(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"PreferencesNotifications.24h",
+				),
+				1440,
+			),
+		);
 };
 function _btnPublicMsg(aInstance, aListePublics) {
 	const lListeArticles = new ObjetListeElements_1.ObjetListeElements();

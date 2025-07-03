@@ -21,17 +21,15 @@ class ObjetFicheIncident extends ObjetFiche_1.ObjetFiche {
 		this.incident = aIncident;
 		this.afficher();
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
-			CBEstVise: {
-				getValue() {
-					return aInstance.incident.estVise;
-				},
-				setValue() {
-					aInstance.surSelectionEstVise();
-				},
+	jsxModeleCheckboxEstVise() {
+		return {
+			getValue: () => {
+				return this.incident.estVise;
 			},
-		});
+			setValue: (aValue) => {
+				this.surSelectionEstVise();
+			},
+		};
 	}
 	surSelectionEstVise() {
 		this.incident.estVise = true;
@@ -122,15 +120,21 @@ class ObjetFicheIncident extends ObjetFiche_1.ObjetFiche {
 			].includes(GEtatUtilisateur.getNumeroGenreEspace())
 		) {
 			H.push(
-				'<div class="AvecMain GrandEspaceHaut">',
-				'<ie-checkbox ie-model="CBEstVise" id="',
-				this.idEstVise,
-				'">&nbsp;',
-				ObjetTraduction_1.GTraductions.getValeur(
-					"fiche.incident.labelCocheVise",
+				IE.jsx.str(
+					"div",
+					{ class: "AvecMain GrandEspaceHaut" },
+					IE.jsx.str(
+						"ie-checkbox",
+						{
+							"ie-model": this.jsxModeleCheckboxEstVise.bind(this),
+							id: this.idEstVise,
+						},
+						"\u00A0",
+						ObjetTraduction_1.GTraductions.getValeur(
+							"fiche.incident.labelCocheVise",
+						),
+					),
 				),
-				" </ie-checkbox>",
-				"</div>",
 			);
 		}
 		H.push("</div>");

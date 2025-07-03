@@ -1,16 +1,16 @@
-const { Identite } = require("ObjetIdentite.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const ObjetFenetre_SaisieDisposRencontre = require("ObjetFenetre_SaisieDisposRencontre.js");
-const ObjetRequeteSaisieRencontreIndisponibilites = require("ObjetRequeteSaisieRencontreIndisponibilites.js");
-const { GHtml } = require("ObjetHtml.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { tag } = require("tag.js");
-const { GDate } = require("ObjetDate.js");
-const { TUtilitaireRencontre } = require("UtilitaireRencontres.js");
-const { TypeEnsembleNombre } = require("TypeEnsembleNombre.js");
-class ObjetSaisieIndisponibilite extends Identite {
-	constructor(...aParams) {
-		super(...aParams);
+exports.ObjetSaisieIndisponibilite = void 0;
+const ObjetIdentite_1 = require("ObjetIdentite");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_SaisieDisposRencontre_1 = require("ObjetFenetre_SaisieDisposRencontre");
+const ObjetRequeteSaisieRencontreIndisponibilites_1 = require("ObjetRequeteSaisieRencontreIndisponibilites");
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetDate_1 = require("ObjetDate");
+const UtilitaireRencontres_1 = require("UtilitaireRencontres");
+const TypeEnsembleNombre_1 = require("TypeEnsembleNombre");
+class ObjetSaisieIndisponibilite extends ObjetIdentite_1.Identite {
+	constructor() {
+		super(...arguments);
 		this.donneesRecues = false;
 	}
 	setDonnees(aDonnees) {
@@ -22,138 +22,168 @@ class ObjetSaisieIndisponibilite extends Identite {
 			this.indisponibilites.dureeSession;
 		this.pas = 5;
 		this.placesDisponibilites =
-			TUtilitaireRencontre.calculePlacesDisponibilites(
+			UtilitaireRencontres_1.TUtilitaireRencontre.calculePlacesDisponibilites(
 				this.indisponibilites.placeDebutSession,
 				this.placeFinSession,
 				this.pas,
 				this.indisponibilites.placesIndisponibilitesPersonnelles,
 			);
 		this.placesDisponibilites.parcourir((aPlage) => {
-			aPlage.dateDebut = TUtilitaireRencontre.getPlaceEnDate(aPlage.placeDebut);
-			aPlage.dateFin = TUtilitaireRencontre.getPlaceEnDate(aPlage.placeFin);
+			aPlage.dateDebut =
+				UtilitaireRencontres_1.TUtilitaireRencontre.getPlaceEnDate(
+					aPlage.placeDebut,
+				);
+			aPlage.dateFin =
+				UtilitaireRencontres_1.TUtilitaireRencontre.getPlaceEnDate(
+					aPlage.placeFin,
+				);
 		});
 		this.actualiser();
 	}
 	actualiser() {
-		GHtml.setHtml(this.Nom, this.construireAffichage(), {
+		ObjetHtml_1.GHtml.setHtml(this.Nom, this.construireAffichage(), {
 			controleur: this.controleur,
-		});
-	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
-			btnModifier: {
-				event: function () {
-					_ouvrirFenetreModifierDispo.call(aInstance);
-				},
-			},
 		});
 	}
 	construireAffichage() {
 		if (this.donneesRecues) {
-			return _composeDisponibilites.call(this);
+			return this._composeDisponibilites();
 		}
 		return "";
 	}
-}
-function _ouvrirFenetreModifierDispo() {
-	const lParam = {
-		heureDebutSession: TUtilitaireRencontre.getPlaceEnDate(
-			this.indisponibilites.placeDebutSession,
-		),
-		heureFinSession: TUtilitaireRencontre.getPlaceEnDate(this.placeFinSession),
-		listePlagesDispos: this.placesDisponibilites,
-	};
-	ObjetFenetre.creerInstanceFenetre(ObjetFenetre_SaisieDisposRencontre, {
-		pere: this,
-		evenement: function (aNumeroBouton, aListeDispos) {
-			if (aNumeroBouton === 1) {
-				this.placesDisponibilites = aListeDispos;
-				this.actualiser();
-				const lPlacesIndisponibilitesPersonnelles =
-					_calculePlacesIndisponibles.call(this, aListeDispos);
-				new ObjetRequeteSaisieRencontreIndisponibilites(
-					this,
-					this.Evenement,
-				).lancerRequete({
-					session: this.session,
-					indisponibilites: lPlacesIndisponibilitesPersonnelles,
-				});
-			}
-		},
-	}).setDonnees(lParam);
-}
-function _composeDisponibilites() {
-	const H = [];
-	const lDispos = [];
-	if (this.placesDisponibilites) {
-		this.placesDisponibilites.parcourir((aPlage) => {
-			if (aPlage.dateDebut && aPlage.dateFin) {
-				lDispos.push(
-					`<li>${GTraductions.getValeur("Rencontres.DeA", [GDate.formatDate(aPlage.dateDebut, "%hh:%mm"), GDate.formatDate(aPlage.dateFin, "%hh:%mm")])}</li>`,
-				);
-			}
-		});
+	_ouvrirFenetreModifierDispo() {
+		const lParam = {
+			heureDebutSession:
+				UtilitaireRencontres_1.TUtilitaireRencontre.getPlaceEnDate(
+					this.indisponibilites.placeDebutSession,
+				),
+			heureFinSession:
+				UtilitaireRencontres_1.TUtilitaireRencontre.getPlaceEnDate(
+					this.placeFinSession,
+				),
+			listePlagesDispos: this.placesDisponibilites,
+		};
+		ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_SaisieDisposRencontre_1.ObjetFenetre_SaisieDisposRencontre,
+			{
+				pere: this,
+				evenement: function (aNumeroBouton, aListeDispos) {
+					if (aNumeroBouton === 1) {
+						this.placesDisponibilites = aListeDispos;
+						this.actualiser();
+						const lPlacesIndisponibilitesPersonnelles =
+							this._calculePlacesIndisponibles(aListeDispos);
+						new ObjetRequeteSaisieRencontreIndisponibilites_1.ObjetRequeteSaisieRencontreIndisponibilites(
+							this,
+							this.Evenement,
+						).lancerRequete({
+							session: this.session,
+							indisponibilites: lPlacesIndisponibilitesPersonnelles,
+						});
+					}
+				},
+			},
+		).setDonnees(lParam);
 	}
-	H.push(
-		tag(
-			"div",
-			{ class: ["zone-indisponiblites"] },
-			tag("span", GTraductions.getValeur("Rencontres.disponiblePourLaSession")),
-			tag("ul", { class: ["liste-disponibilites"] }, lDispos.join("")),
-			tag(
+	jsxModeleBtnModifier() {
+		return {
+			event: () => {
+				this._ouvrirFenetreModifierDispo();
+			},
+		};
+	}
+	_composeDisponibilites() {
+		const H = [];
+		const lDispos = [];
+		if (this.placesDisponibilites) {
+			this.placesDisponibilites.parcourir((aPlage) => {
+				if (aPlage.dateDebut && aPlage.dateFin) {
+					lDispos.push(
+						IE.jsx.str(
+							"li",
+							null,
+							ObjetTraduction_1.GTraductions.getValeur("Rencontres.DeA", [
+								ObjetDate_1.GDate.formatDate(aPlage.dateDebut, "%hh:%mm"),
+								ObjetDate_1.GDate.formatDate(aPlage.dateFin, "%hh:%mm"),
+							]),
+						),
+					);
+				}
+			});
+		}
+		H.push(
+			IE.jsx.str(
 				"div",
-				{ class: ["flex-contain", "self-end", "m-right-l", "m-bottom-xl"] },
-				tag(
-					"ie-bouton",
-					{ "ie-model": "btnModifier", class: ["themeBoutonNeutre"] },
-					GTraductions.getValeur("Modifier"),
+				{ class: ["zone-indisponiblites"] },
+				IE.jsx.str(
+					"span",
+					null,
+					ObjetTraduction_1.GTraductions.getValeur(
+						"Rencontres.disponiblePourLaSession",
+					),
+				),
+				IE.jsx.str("ul", { class: ["liste-disponibilites"] }, lDispos.join("")),
+				IE.jsx.str(
+					"div",
+					{ class: ["flex-contain", "self-end", "m-right-l", "m-bottom-xl"] },
+					IE.jsx.str(
+						"ie-bouton",
+						{
+							"ie-model": this.jsxModeleBtnModifier.bind(this),
+							class: ["themeBoutonNeutre"],
+						},
+						ObjetTraduction_1.GTraductions.getValeur("Modifier"),
+					),
 				),
 			),
-		),
-	);
-	return H.join("");
-}
-function _calculePlacesIndisponibles(aListeDisponibilites) {
-	const lPlaceDebutHeurePleine =
-		TUtilitaireRencontre.getPlaceHeurePleinePrecedente(
-			this.indisponibilites.placeDebutSession,
-			this.pas,
 		);
-	const lFuncPlaceEstContenueDans = function (aPlace, aListeDisponibilites) {
-		let lEstContenue = false;
-		const lDatePourPlace = TUtilitaireRencontre.getPlaceEnDate(aPlace);
-		let lBorneDebut = null;
-		let lBorneFin = null;
-		aListeDisponibilites.parcourir((aPlage) => {
-			lBorneDebut = aPlage.dateDebut;
-			lBorneFin = aPlage.dateFin;
-			if (
-				(!lBorneDebut || lDatePourPlace >= lBorneDebut) &&
-				(!lBorneFin || lDatePourPlace < lBorneFin)
-			) {
-				lEstContenue = true;
-				return;
-			}
-		});
-		return lEstContenue;
-	};
-	const lPlacesDisponibilitesPersonnelles = new TypeEnsembleNombre();
-	const lPlacesIndisponibilitesPersonnelles = new TypeEnsembleNombre();
-	for (
-		let i = this.indisponibilites.placeDebutSession;
-		i < this.placeFinSession;
-		i += this.pas
-	) {
-		if (lFuncPlaceEstContenueDans(i, aListeDisponibilites)) {
-			lPlacesDisponibilitesPersonnelles.add(
-				(i - lPlaceDebutHeurePleine) / this.pas,
-			);
-		} else {
-			lPlacesIndisponibilitesPersonnelles.add(
-				(i - lPlaceDebutHeurePleine) / this.pas,
-			);
-		}
+		return H.join("");
 	}
-	return lPlacesIndisponibilitesPersonnelles;
+	_calculePlacesIndisponibles(aListeDisponibilites) {
+		const lPlaceDebutHeurePleine =
+			UtilitaireRencontres_1.TUtilitaireRencontre.getPlaceHeurePleinePrecedente(
+				this.indisponibilites.placeDebutSession,
+				this.pas,
+			);
+		const lFuncPlaceEstContenueDans = function (aPlace, aListeDisponibilites) {
+			let lEstContenue = false;
+			const lDatePourPlace =
+				UtilitaireRencontres_1.TUtilitaireRencontre.getPlaceEnDate(aPlace);
+			let lBorneDebut = null;
+			let lBorneFin = null;
+			aListeDisponibilites.parcourir((aPlage) => {
+				lBorneDebut = aPlage.dateDebut;
+				lBorneFin = aPlage.dateFin;
+				if (
+					(!lBorneDebut || lDatePourPlace >= lBorneDebut) &&
+					(!lBorneFin || lDatePourPlace < lBorneFin)
+				) {
+					lEstContenue = true;
+					return;
+				}
+			});
+			return lEstContenue;
+		};
+		const lPlacesDisponibilitesPersonnelles =
+			new TypeEnsembleNombre_1.TypeEnsembleNombre();
+		const lPlacesIndisponibilitesPersonnelles =
+			new TypeEnsembleNombre_1.TypeEnsembleNombre();
+		for (
+			let i = this.indisponibilites.placeDebutSession;
+			i < this.placeFinSession;
+			i += this.pas
+		) {
+			if (lFuncPlaceEstContenueDans(i, aListeDisponibilites)) {
+				lPlacesDisponibilitesPersonnelles.add(
+					(i - lPlaceDebutHeurePleine) / this.pas,
+				);
+			} else {
+				lPlacesIndisponibilitesPersonnelles.add(
+					(i - lPlaceDebutHeurePleine) / this.pas,
+				);
+			}
+		}
+		return lPlacesIndisponibilitesPersonnelles;
+	}
 }
-module.exports = ObjetSaisieIndisponibilite;
+exports.ObjetSaisieIndisponibilite = ObjetSaisieIndisponibilite;

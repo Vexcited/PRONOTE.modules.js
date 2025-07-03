@@ -1,11 +1,13 @@
-const { GChaine } = require("ObjetChaine.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class DonneesListe_CDTsPrecedents extends ObjetDonneesListe {
+exports.DonneesListe_CDTsPrecedents = void 0;
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class DonneesListe_CDTsPrecedents extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aNbVisibles) {
 		aDonnees.parcourir((aArticle) => {
 			aArticle.estUnDeploiement = true;
+			aArticle.estDeploye = false;
 		});
 		super(aDonnees);
 		this.nbVisibles = aNbVisibles;
@@ -19,9 +21,10 @@ class DonneesListe_CDTsPrecedents extends ObjetDonneesListe {
 	getTypeValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_CDTsPrecedents.colonnes.deploiement:
-				return ObjetDonneesListe.ETypeCellule.CocheDeploiement;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule
+					.CocheDeploiement;
 		}
-		return ObjetDonneesListe.ETypeCellule.Html;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 	}
 	getValeur(aParams) {
 		const T = [];
@@ -40,7 +43,9 @@ class DonneesListe_CDTsPrecedents extends ObjetDonneesListe {
 						if (aContenu.listeQCMs && aContenu.listeQCMs.length > 0) {
 							lHtml.push(
 								'<span class="Gras EspaceHaut">',
-								GTraductions.getValeur("CahierDeTexte.Contenu_QCMAssocie"),
+								ObjetTraduction_1.GTraductions.getValeur(
+									"CahierDeTexte.Contenu_QCMAssocie",
+								),
 								"</span>",
 							);
 							lHtml.push(
@@ -72,8 +77,12 @@ class DonneesListe_CDTsPrecedents extends ObjetDonneesListe {
 						lAvecElementsProg ? "Gras" : "Italique",
 						'">',
 						lAvecElementsProg
-							? GTraductions.getValeur("CahierDeTexte.ElementsProgramme")
-							: GTraductions.getValeur("CahierDeTexte.SansContenu"),
+							? ObjetTraduction_1.GTraductions.getValeur(
+									"CahierDeTexte.ElementsProgramme",
+								)
+							: ObjetTraduction_1.GTraductions.getValeur(
+									"CahierDeTexte.SansContenu",
+								),
 						"</span>",
 					);
 				}
@@ -82,7 +91,9 @@ class DonneesListe_CDTsPrecedents extends ObjetDonneesListe {
 						T.push(
 							"<br/>",
 							'<div class="Gras">',
-							GTraductions.getValeur("CahierDeTexte.ElementsProgramme"),
+							ObjetTraduction_1.GTraductions.getValeur(
+								"CahierDeTexte.ElementsProgramme",
+							),
 							"</div>",
 						);
 					}
@@ -99,8 +110,12 @@ class DonneesListe_CDTsPrecedents extends ObjetDonneesListe {
 					T.push(
 						'<span class="Italique">',
 						aParams.article.tafs.count() === 1
-							? GTraductions.getValeur("CahierDeTexte.TravailAFaire")
-							: GTraductions.getValeur("CahierDeTexte.TravauxAFaire"),
+							? ObjetTraduction_1.GTraductions.getValeur(
+									"CahierDeTexte.TravailAFaire",
+								)
+							: ObjetTraduction_1.GTraductions.getValeur(
+									"CahierDeTexte.TravauxAFaire",
+								),
 						"</span>",
 					);
 					if (aParams.article.estDeploye) {
@@ -127,12 +142,14 @@ class DonneesListe_CDTsPrecedents extends ObjetDonneesListe {
 		}
 		return lStyles.join("");
 	}
-	getHintForce(aParams) {
+	getTooltip(aParams) {
 		if (aParams.idColonne === DonneesListe_CDTsPrecedents.colonnes.contenu) {
-			return GChaine.format(
-				GTraductions.getValeur("CahierDeTexte.HintCDTRecapitulatif"),
+			return ObjetChaine_1.GChaine.format(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"CahierDeTexte.HintCDTRecapitulatif",
+				),
 				[
-					GDate.formatDate(aParams.article.date, "%JJ/%MM/%AAAA"),
+					ObjetDate_1.GDate.formatDate(aParams.article.date, "%JJ/%MM/%AAAA"),
 					aParams.article.strPublics,
 					aParams.article.strProfs,
 				],
@@ -144,11 +161,22 @@ class DonneesListe_CDTsPrecedents extends ObjetDonneesListe {
 		return J >= this.Donnees.count() - this.nbVisibles;
 	}
 }
-DonneesListe_CDTsPrecedents.colonnes = {
-	deploiement: "deploiement",
-	contenu: "contenu",
-	taf: "taf",
-};
+exports.DonneesListe_CDTsPrecedents = DonneesListe_CDTsPrecedents;
+(function (DonneesListe_CDTsPrecedents) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["deploiement"] = "deploiement";
+		colonnes["contenu"] = "contenu";
+		colonnes["taf"] = "taf";
+	})(
+		(colonnes =
+			DonneesListe_CDTsPrecedents.colonnes ||
+			(DonneesListe_CDTsPrecedents.colonnes = {})),
+	);
+})(
+	DonneesListe_CDTsPrecedents ||
+		(exports.DonneesListe_CDTsPrecedents = DonneesListe_CDTsPrecedents = {}),
+);
 function _getTitreContenu(aContenu) {
 	const T = [];
 	if (aContenu.categorie && aContenu.categorie.getLibelle()) {
@@ -159,11 +187,10 @@ function _getTitreContenu(aContenu) {
 	}
 	let lClass;
 	if (T.length === 0) {
-		T.push(GTraductions.getValeur("CahierDeTexte.SansTitre"));
+		T.push(ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.SansTitre"));
 		lClass = "Italique";
 	} else {
 		lClass = "Gras";
 	}
 	return '<span class="' + lClass + '">' + T.join(" -- ") + "</span>";
 }
-module.exports = { DonneesListe_CDTsPrecedents };

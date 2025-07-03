@@ -1,17 +1,15 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { TypeNote } = require("TypeNote.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	EGenreNiveauDAcquisition,
-	EGenreNiveauDAcquisitionUtil,
-} = require("Enumere_NiveauDAcquisition.js");
-const { EGenreCommandeMenu } = require("Enumere_CommandeMenu.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
+exports.DonneesListe_EvaluationsQCM = void 0;
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const TypeNote_1 = require("TypeNote");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_NiveauDAcquisition_1 = require("Enumere_NiveauDAcquisition");
+const Enumere_CommandeMenu_1 = require("Enumere_CommandeMenu");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const Enumere_Etat_1 = require("Enumere_Etat");
 const CommandeMenuContextuelCompetencesQCM = {
 	ChoisirCompetenceDansReferentiel: "cmdMenu_ChoixCompetenceDansReferentiel",
 };
-class DonneesListe_EvaluationsQCM extends ObjetDonneesListe {
+class DonneesListe_EvaluationsQCM extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aOptions) {
 		super(aDonnees);
 		if (aOptions) {
@@ -36,7 +34,7 @@ class DonneesListe_EvaluationsQCM extends ObjetDonneesListe {
 		this.Donnees.parcourir((aElementListe) => {
 			if (
 				aElementListe !== aArticle &&
-				aElementListe.getEtat() !== EGenreEtat.Suppression &&
+				aElementListe.getEtat() !== Enumere_Etat_1.EGenreEtat.Suppression &&
 				aElementListe.getLibelle() === V
 			) {
 				lEstUnLibelleUnique = false;
@@ -52,11 +50,13 @@ class DonneesListe_EvaluationsQCM extends ObjetDonneesListe {
 			case DonneesListe_EvaluationsQCM.colonnes.maitrise: {
 				let lGenreNiveau;
 				if (aParams.article.tbMaitrise) {
-					lGenreNiveau = EGenreNiveauDAcquisition.Expert;
+					lGenreNiveau =
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisition.Expert;
 				} else {
-					lGenreNiveau = EGenreNiveauDAcquisition.Acquis;
+					lGenreNiveau =
+						Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisition.Acquis;
 				}
-				return EGenreNiveauDAcquisitionUtil.getImage(
+				return Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImage(
 					GParametres.listeNiveauxDAcquisitions.getElementParGenre(
 						lGenreNiveau,
 					),
@@ -64,7 +64,7 @@ class DonneesListe_EvaluationsQCM extends ObjetDonneesListe {
 			}
 			case DonneesListe_EvaluationsQCM.colonnes.coef:
 				return aParams.article
-					? new TypeNote(aParams.article.coefficient)
+					? new TypeNote_1.TypeNote(aParams.article.coefficient)
 					: null;
 			default:
 				break;
@@ -74,13 +74,13 @@ class DonneesListe_EvaluationsQCM extends ObjetDonneesListe {
 	getTypeValeur(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_EvaluationsQCM.colonnes.maitrise:
-				return ObjetDonneesListe.ETypeCellule.Html;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 			case DonneesListe_EvaluationsQCM.colonnes.coef:
-				return ObjetDonneesListe.ETypeCellule.Note;
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Note;
 		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
 	}
-	getHintHtmlForce(aParams) {
+	getTooltip(aParams) {
 		switch (aParams.idColonne) {
 			case DonneesListe_EvaluationsQCM.colonnes.libelle:
 				if (aParams.article && aParams.article.palier) {
@@ -125,7 +125,7 @@ class DonneesListe_EvaluationsQCM extends ObjetDonneesListe {
 		switch (aParams.idColonne) {
 			case DonneesListe_EvaluationsQCM.colonnes.maitrise:
 				if (this.avecEditionTBMaitrise) {
-					return ObjetDonneesListe.ECouleurCellule.Blanc;
+					return ObjetDonneesListe_1.ObjetDonneesListe.ECouleurCellule.Blanc;
 				}
 				break;
 		}
@@ -172,7 +172,7 @@ class DonneesListe_EvaluationsQCM extends ObjetDonneesListe {
 			}
 			aParametres.menuContextuel.addCommande(
 				CommandeMenuContextuelCompetencesQCM.ChoisirCompetenceDansReferentiel,
-				GTraductions.getValeur(
+				ObjetTraduction_1.GTraductions.getValeur(
 					"QCM_Divers.listeCompetences.ChoisirCompetencesParmiExistantes",
 				),
 			);
@@ -181,14 +181,14 @@ class DonneesListe_EvaluationsQCM extends ObjetDonneesListe {
 				this.listePaliersDesReferentielsUniques.count() > 1
 			) {
 				aParametres.menuContextuel.addSousMenu(
-					GTraductions.getValeur(
+					ObjetTraduction_1.GTraductions.getValeur(
 						"QCM_Divers.listeCompetences.SaisirNouvelleCompetence",
 					),
 					(aInstanceSousMenu) => {
 						for (const lPalierRefUnique of this
 							.listePaliersDesReferentielsUniques) {
 							aInstanceSousMenu.addCommande(
-								EGenreCommandeMenu.Creation,
+								Enumere_CommandeMenu_1.EGenreCommandeMenu.Creation,
 								lPalierRefUnique.getLibelle(),
 								true,
 								{ palierRefUniqueConcerne: lPalierRefUnique },
@@ -200,8 +200,8 @@ class DonneesListe_EvaluationsQCM extends ObjetDonneesListe {
 				const lPalierReferentielUniqueConcerne =
 					this.listePaliersDesReferentielsUniques.get(0);
 				aParametres.menuContextuel.addCommande(
-					EGenreCommandeMenu.Creation,
-					GTraductions.getValeur(
+					Enumere_CommandeMenu_1.EGenreCommandeMenu.Creation,
+					ObjetTraduction_1.GTraductions.getValeur(
 						"QCM_Divers.listeCompetences.SaisirNouvelleCompetence",
 					),
 					true,
@@ -210,8 +210,8 @@ class DonneesListe_EvaluationsQCM extends ObjetDonneesListe {
 			}
 		} else {
 			lCommande = aParametres.menuContextuel.addCommande(
-				EGenreCommandeMenu.Suppression,
-				GTraductions.getValeur("liste.supprimer"),
+				Enumere_CommandeMenu_1.EGenreCommandeMenu.Suppression,
+				ObjetTraduction_1.GTraductions.getValeur("liste.supprimer"),
 				!aParametres.nonEditable &&
 					aParametres &&
 					aParametres.avecSuppression &&
@@ -245,7 +245,7 @@ class DonneesListe_EvaluationsQCM extends ObjetDonneesListe {
 			const lEstUnLibelleUnique = this._estUnLibelleUnique(D, lLibelle);
 			if (lEstUnLibelleUnique) {
 				D.Numero = "0";
-				D.Genre = EGenreRessource.Competence;
+				D.Genre = Enumere_Ressource_1.EGenreRessource.Competence;
 				D.coefficient = 1;
 				D.setLibelle(lLibelle);
 			} else {
@@ -253,53 +253,67 @@ class DonneesListe_EvaluationsQCM extends ObjetDonneesListe {
 			}
 		}
 	}
-}
-DonneesListe_EvaluationsQCM.getOptionsListe = function (aPourEdition) {
-	const lColonnes = [
-		{
-			id: DonneesListe_EvaluationsQCM.colonnes.libelle,
-			taille: "100%",
-			titre: GTraductions.getValeur(
-				"QCM_Divers.listeCompetences.colLibelleCompetences",
-			),
-		},
-		{
-			id: DonneesListe_EvaluationsQCM.colonnes.maitrise,
-			taille: 40,
-			titre: GTraductions.getValeur("QCM_Divers.listeCompetences.colMaitrise"),
-			hint: GTraductions.getValeur(
-				"QCM_Divers.listeCompetences.hintColMaitrise",
-			),
-		},
-		{
-			id: DonneesListe_EvaluationsQCM.colonnes.coef,
-			taille: 40,
-			titre: GTraductions.getValeur("QCM_Divers.listeCompetences.colCoef"),
-		},
-	];
-	const lOptions = {
-		colonnes: lColonnes,
-		colonnesCachees: [],
-		avecListeNeutre: true,
-		hauteurAdapteContenu: true,
-		hauteurMaxAdapteContenu: 150,
-		paddingCelluleTB: 3,
-	};
-	if (aPourEdition) {
-		$.extend(lOptions, {
-			titreCreation: GTraductions.getValeur(
-				"QCM_Divers.listeCompetences.ajouterCompetences",
-			),
-			avecLigneCreation: true,
-			listeCreations: 0,
-			hauteurMaxAdapteContenu: 130,
-		});
+	static getOptionsListe(aPourEdition) {
+		const lColonnes = [
+			{
+				id: DonneesListe_EvaluationsQCM.colonnes.libelle,
+				taille: "100%",
+				titre: ObjetTraduction_1.GTraductions.getValeur(
+					"QCM_Divers.listeCompetences.colLibelleCompetences",
+				),
+			},
+			{
+				id: DonneesListe_EvaluationsQCM.colonnes.maitrise,
+				taille: 40,
+				titre: ObjetTraduction_1.GTraductions.getValeur(
+					"QCM_Divers.listeCompetences.colMaitrise",
+				),
+				hint: ObjetTraduction_1.GTraductions.getValeur(
+					"QCM_Divers.listeCompetences.hintColMaitrise",
+				),
+			},
+			{
+				id: DonneesListe_EvaluationsQCM.colonnes.coef,
+				taille: 40,
+				titre: ObjetTraduction_1.GTraductions.getValeur(
+					"QCM_Divers.listeCompetences.colCoef",
+				),
+			},
+		];
+		const lOptions = {
+			colonnes: lColonnes,
+			colonnesCachees: [],
+			avecListeNeutre: true,
+			hauteurAdapteContenu: true,
+			hauteurMaxAdapteContenu: 150,
+			paddingCelluleTB: 3,
+		};
+		if (aPourEdition) {
+			$.extend(lOptions, {
+				titreCreation: ObjetTraduction_1.GTraductions.getValeur(
+					"QCM_Divers.listeCompetences.ajouterCompetences",
+				),
+				avecLigneCreation: true,
+				listeCreations: 0,
+				hauteurMaxAdapteContenu: 130,
+			});
+		}
+		return lOptions;
 	}
-	return lOptions;
-};
-DonneesListe_EvaluationsQCM.colonnes = {
-	libelle: "DL_EvalQCM_Libelle",
-	maitrise: "DL_EvalQCM_Maitrise",
-	coef: "DL_EvalQCM_Coeff",
-};
-module.exports = { DonneesListe_EvaluationsQCM };
+}
+exports.DonneesListe_EvaluationsQCM = DonneesListe_EvaluationsQCM;
+(function (DonneesListe_EvaluationsQCM) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["libelle"] = "DL_EvalQCM_Libelle";
+		colonnes["maitrise"] = "DL_EvalQCM_Maitrise";
+		colonnes["coef"] = "DL_EvalQCM_Coeff";
+	})(
+		(colonnes =
+			DonneesListe_EvaluationsQCM.colonnes ||
+			(DonneesListe_EvaluationsQCM.colonnes = {})),
+	);
+})(
+	DonneesListe_EvaluationsQCM ||
+		(exports.DonneesListe_EvaluationsQCM = DonneesListe_EvaluationsQCM = {}),
+);

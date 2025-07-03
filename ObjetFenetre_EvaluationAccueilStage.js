@@ -1,29 +1,26 @@
-const { GStyle } = require("ObjetStyle.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const {
-	DonneesListe_EvaluationAccueilStage,
-} = require("DonneesListe_EvaluationAccueilStage.js");
-const {
-	TypeEtatSatisfaction,
-	TypeEtatSatisfactionUtil,
-} = require("TypeEtatSatisfaction.js");
-const { GUID } = require("GUID.js");
-class ObjetFenetre_EvaluationAccueilStage extends ObjetFenetre {
+exports.ObjetFenetre_EvaluationAccueilStage = void 0;
+const ObjetStyle_1 = require("ObjetStyle");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const DonneesListe_EvaluationAccueilStage_1 = require("DonneesListe_EvaluationAccueilStage");
+const TypeEtatSatisfaction_1 = require("TypeEtatSatisfaction");
+const GUID_1 = require("GUID");
+class ObjetFenetre_EvaluationAccueilStage extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.donnees = {
-			listeQuestions: new ObjetListeElements(),
+			listeQuestions: new ObjetListeElements_1.ObjetListeElements(),
 			observation: "",
 			editable: false,
-			typeSatisfaction: TypeEtatSatisfaction.Tes_NonEvalue,
+			typeSatisfaction:
+				TypeEtatSatisfaction_1.TypeEtatSatisfaction.Tes_NonEvalue,
 		};
 	}
 	construireInstances() {
 		this.identListeEvaluation = this.add(
-			ObjetListe,
+			ObjetListe_1.ObjetListe,
 			null,
 			this.initialiserListeEvaluation,
 		);
@@ -32,80 +29,94 @@ class ObjetFenetre_EvaluationAccueilStage extends ObjetFenetre {
 		$.extend(this.donnees, aParam);
 		this.afficher();
 		this.getInstance(this.identListeEvaluation).setDonnees(
-			new DonneesListe_EvaluationAccueilStage(
+			new DonneesListe_EvaluationAccueilStage_1.DonneesListe_EvaluationAccueilStage(
 				this.donnees.listeQuestions,
 				this.donnees.editable,
 			),
 		);
 	}
 	composeContenu() {
+		const lIdObservation = GUID_1.GUID.getId();
 		const T = [];
-		T.push('<div class="NoWrap EspaceBas EspaceHaut">');
 		T.push(
-			'<div class="Gras InlineBlock AlignementMilieuVertical EspaceDroit">',
-		);
-		T.push(
-			GTraductions.getValeur("questionnaireStage.EvaluationAccueilStagiaire"),
-		);
-		T.push("</div>");
-		T.push(
-			'<div class="InlineBlock AlignementMilieuVertical" ie-html="imageSatisfaction"></div>',
-		);
-		T.push("</div>");
-		T.push(
-			'<div class="EspaceHaut EspaceBas" id="',
-			this.getInstance(this.identListeEvaluation).getNom(),
-			'"></div>',
-		);
-		const lIdObservation = GUID.getId();
-		T.push(
-			'<div id="',
-			lIdObservation,
-			'" class="Gras EspaceHaut">',
-			GTraductions.getValeur("questionnaireStage.Observations"),
-			"</div>",
-		);
-		T.push(
-			'<div><ie-textareamax aria-labelledby="',
-			lIdObservation,
-			'" ie-model="observation" maxlength="1000" style="',
-			GStyle.composeWidth(778),
-			GStyle.composeHeight(120),
-			'" ></ie-textareamax></div>',
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"div",
+					{ class: "NoWrap EspaceBas EspaceHaut" },
+					IE.jsx.str(
+						"div",
+						{ class: "Gras InlineBlock AlignementMilieuVertical EspaceDroit" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"questionnaireStage.EvaluationAccueilStagiaire",
+						),
+					),
+					IE.jsx.str("div", {
+						class: "InlineBlock AlignementMilieuVertical",
+						"ie-html": this.jsxGetHtmlEtatSatisfaction.bind(this),
+					}),
+				),
+				IE.jsx.str("div", {
+					class: "EspaceHaut EspaceBas",
+					id: this.getNomInstance(this.identListeEvaluation),
+				}),
+				IE.jsx.str(
+					"div",
+					{ id: lIdObservation, class: "Gras EspaceHaut" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"questionnaireStage.Observations",
+					),
+				),
+				IE.jsx.str(
+					"div",
+					null,
+					IE.jsx.str("ie-textareamax", {
+						"aria-labelledby": lIdObservation,
+						"ie-model": this.jsxModeleTextareaObservation.bind(this),
+						maxlength: "1000",
+						style:
+							ObjetStyle_1.GStyle.composeWidth(778) +
+							ObjetStyle_1.GStyle.composeHeight(120),
+					}),
+				),
+			),
 		);
 		return T.join("");
 	}
 	initialiserListeEvaluation(aInstance) {
-		DonneesListe_EvaluationAccueilStage.init(aInstance);
-	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			observation: {
-				getValue: function () {
-					return aInstance.donnees.observation
-						? aInstance.donnees.observation
-						: "";
-				},
-				setValue: function (aValue) {
-					if (aInstance.donnees.observation !== aValue) {
-						aInstance.donnees.observation = aValue;
-						aInstance.setEtatSaisie(true);
-					}
-				},
-				getDisabled: function () {
-					return !aInstance.donnees.editable;
-				},
-			},
-			imageSatisfaction: function () {
-				const lHtml = [];
-				lHtml.push(
-					'<div class="',
-					TypeEtatSatisfactionUtil.getImage(aInstance.donnees.typeSatisfaction),
-					'"></div>',
-				);
-				return lHtml.join("");
-			},
+		DonneesListe_EvaluationAccueilStage_1.DonneesListe_EvaluationAccueilStage.init(
+			aInstance,
+		);
+		aInstance.setOptionsListe({
+			ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
+				"questionnaireStage.EvaluationAccueilStagiaire",
+			),
 		});
 	}
+	jsxGetHtmlEtatSatisfaction() {
+		return IE.jsx.str("div", {
+			class: TypeEtatSatisfaction_1.TypeEtatSatisfactionUtil.getImage(
+				this.donnees.typeSatisfaction,
+			),
+		});
+	}
+	jsxModeleTextareaObservation() {
+		return {
+			getValue: () => {
+				return this.donnees.observation ? this.donnees.observation : "";
+			},
+			setValue: (aValue) => {
+				if (this.donnees.observation !== aValue) {
+					this.donnees.observation = aValue;
+					this.setEtatSaisie(true);
+				}
+			},
+			getDisabled: () => {
+				return !this.donnees.editable;
+			},
+		};
+	}
 }
-module.exports = { ObjetFenetre_EvaluationAccueilStage };
+exports.ObjetFenetre_EvaluationAccueilStage =
+	ObjetFenetre_EvaluationAccueilStage;

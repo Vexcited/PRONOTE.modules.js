@@ -47,37 +47,37 @@ class ObjetFenetre_ListeProgramme extends ObjetFenetre_1.ObjetFenetre {
 		);
 	}
 	composeContenu() {
-		const lHtml = [];
-		lHtml.push('<div class="full-height flex-contain cols">');
-		lHtml.push('<div class="PetitEspaceBas fix-bloc">');
-		lHtml.push(
+		const H = [];
+		H.push('<div class="full-height flex-contain cols">');
+		H.push('<div class="PetitEspaceBas fix-bloc">');
+		H.push(
 			'<div class="Texte10 PetitEspaceDroit InlineBlock AlignementMilieuVertical">',
 			ObjetTraduction_1.GTraductions.getValeur("progression.DES_COMBONIVEAUX"),
 			"</div>",
 		);
-		lHtml.push(
+		H.push(
 			'<div class="InlineBlock AlignementMilieuVertical" id="' +
 				this.getNomInstance(this.identCombo) +
 				'"></div>',
 		);
-		lHtml.push(
+		H.push(
 			'<div class="InlineBlock AlignementMilieuVertical EspaceGauche" id="' +
 				this.getNomInstance(this.identComboFiliere) +
 				'" style="display:none"></div>',
 		);
-		lHtml.push(
+		H.push(
 			'<div id="',
 			this.idCycle,
 			'" class="InlineBlock AlignementMilieuVertical EspaceGauche"></div>',
 		);
-		lHtml.push("</div>");
-		lHtml.push(
+		H.push("</div>");
+		H.push(
 			'<div id="' +
 				this.getNomInstance(this.identListe) +
 				'" class="fluid-bloc"></div>',
 		);
-		lHtml.push("</div>");
-		return lHtml.join("");
+		H.push("</div>");
+		return H.join("");
 	}
 	_actualiserListe(
 		aListeProgrammes,

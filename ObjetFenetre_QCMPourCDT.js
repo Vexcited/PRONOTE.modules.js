@@ -170,21 +170,17 @@ class ObjetFenetre_QCMPourCDT extends ObjetFenetre_1.ObjetFenetre {
 		}
 	}
 	composeContenu() {
-		const T = [];
-		T.push('<div style="display:flex; flex-direction: column; height: 100%;">');
-		T.push(
+		const H = [];
+		H.push('<div style="display:flex; flex-direction: column; height: 100%;">');
+		H.push('<div id="', this.getNomInstance(this.identCalendrier), '"></div>');
+		H.push(
 			'<div id="',
-			this.getInstance(this.identCalendrier).getNom(),
-			'"></div>',
-		);
-		T.push(
-			'<div id="',
-			this.getInstance(this.identGrille).getNom(),
+			this.getNomInstance(this.identGrille),
 			'" style="position:relative; flex: 1 1 auto;"></div>',
 		);
-		T.push(this._construirePied());
-		T.push("</div>");
-		return T.join("");
+		H.push(this._construirePied());
+		H.push("</div>");
+		return H.join("");
 	}
 	surFixerTaille() {
 		super.surFixerTaille();
@@ -281,7 +277,6 @@ class ObjetFenetre_QCMPourCDT extends ObjetFenetre_1.ObjetFenetre {
 	_initialiserGrille(aInstance) {
 		aInstance.setOptionsInterfaceGrilleEDT({
 			optionsGrille: {
-				avecModeTactile: false,
 				couleurLibellesLignes: GCouleur.fenetre.texte,
 				couleurLibellesColonnes: GCouleur.fenetre.texte,
 			},
@@ -438,21 +433,21 @@ class ObjetFenetre_QCMPourCDT extends ObjetFenetre_1.ObjetFenetre {
 		);
 	}
 	_construirePied() {
-		const T = [];
-		T.push('<div class="Texte10">', this.utilLienBtns.construire(), "</div>");
-		T.push(
+		const H = [];
+		H.push('<div class="Texte10">', this.utilLienBtns.construire(), "</div>");
+		H.push(
 			this._construireSeparateur(
 				ObjetTraduction_1.GTraductions.getValeur("QCM.PourCDT.CommentCDT"),
 			),
 		);
-		T.push(
+		H.push(
 			'<div class="Texte10" style="',
 			ObjetStyle_2.GStyle.composeHeight(this._parametres.hauteurPied),
 			'">',
 		);
-		T.push('<div style="padding-left:40px; padding-bottom:5px;">');
-		T.push('<div id="', this.ids.PiedAvecCours, '" style="display:none">');
-		T.push(
+		H.push('<div style="padding-left:40px; padding-bottom:5px;">');
+		H.push('<div id="', this.ids.PiedAvecCours, '" style="display:none">');
+		H.push(
 			"<div>",
 			'<ie-radio ie-model="radioDestinationQCM(',
 			TypeDestinationQCM.PourContenu,
@@ -461,7 +456,7 @@ class ObjetFenetre_QCMPourCDT extends ObjetFenetre_1.ObjetFenetre {
 			"</ie-radio>",
 			"</div>",
 		);
-		T.push(
+		H.push(
 			"<div>",
 			'<ie-radio ie-model="radioDestinationQCM(',
 			TypeDestinationQCM.PourTAF,
@@ -469,25 +464,25 @@ class ObjetFenetre_QCMPourCDT extends ObjetFenetre_1.ObjetFenetre {
 			ObjetTraduction_1.GTraductions.getValeur("QCM.PourCDT.CommentTAF"),
 			"</ie-radio>",
 			'<div class="InlineBlock MargeGauche" id="',
-			this.getInstance(this.identSelectDate).getNom(),
+			this.getNomInstance(this.identSelectDate),
 			'"></div>',
 			"</div>",
 		);
-		T.push("</div>");
-		T.push('<div id="', this.ids.PiedSansCours, '" class="EspaceHaut">');
-		T.push(
+		H.push("</div>");
+		H.push('<div id="', this.ids.PiedSansCours, '" class="EspaceHaut">');
+		H.push(
 			ObjetTraduction_1.GTraductions.getValeur(
 				"QCM.PourCDT.SansSelectionCours",
 			),
 		);
-		T.push("</div>");
-		T.push("</div>");
-		T.push("</div>");
-		return T.join("");
+		H.push("</div>");
+		H.push("</div>");
+		H.push("</div>");
+		return H.join("");
 	}
 	_construireSeparateur(aLibelle) {
-		const T = [];
-		T.push(
+		const H = [];
+		H.push(
 			'<ul class="Texte10" style="padding:0 10px 5px 15px; margin:0; list-style-type:disc;">',
 			'<li style="position:relative;">',
 			'<div style="position:absolute;left:0; right:0; bottom : 4px;',
@@ -505,7 +500,7 @@ class ObjetFenetre_QCMPourCDT extends ObjetFenetre_1.ObjetFenetre {
 			"</li>",
 			"</ul>",
 		);
-		return T.join("");
+		return H.join("");
 	}
 }
 exports.ObjetFenetre_QCMPourCDT = ObjetFenetre_QCMPourCDT;

@@ -23,16 +23,19 @@ class _ObjetFenetre_DetailElementVS extends ObjetFenetre_1.ObjetFenetre {
 		H.push(
 			'<div class="theme-cat-viescolaire">',
 			'<div id="',
-			this.getInstance(this.identDetailElementVS).getNom(),
+			this.getNomInstance(this.identDetailElementVS),
 			'"></div>',
 			"</div>",
 		);
 		return H.join("");
 	}
-	setDonnees(aElementVS) {
+	setDonnees(aElementVS, aOptionsAffichage) {
 		const lCopieElementVS = MethodesObjet_1.MethodesObjet.dupliquer(aElementVS);
 		this.donnees.elementVS = lCopieElementVS;
-		this.getInstance(this.identDetailElementVS).setDonnees(lCopieElementVS);
+		this.getInstance(this.identDetailElementVS).setDonnees(
+			lCopieElementVS,
+			aOptionsAffichage,
+		);
 		this.afficher();
 	}
 	surEvenementDetailElementVS(aTypeEvenement, aDonnees) {
@@ -41,7 +44,7 @@ class _ObjetFenetre_DetailElementVS extends ObjetFenetre_1.ObjetFenetre {
 			aTypeEvenement !==
 			_ObjetDetailElementVS_1.TypeBoutonFenetreDetailElementVS.Annuler
 		) {
-			this.callback.appel(aTypeEvenement, {
+			this.callback.appel(1, {
 				element: aDonnees.element,
 				documents: aDonnees.listeDocuments,
 			});

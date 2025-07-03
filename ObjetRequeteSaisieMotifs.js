@@ -1,11 +1,9 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetTri } = require("ObjetTri.js");
-class ObjetRequeteSaisieMotifs extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieMotifs = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTri_1 = require("ObjetTri");
+class ObjetRequeteSaisieMotifs extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParam) {
 		this.param = {};
 		Object.assign(this.param, aParam);
@@ -17,45 +15,46 @@ class ObjetRequeteSaisieMotifs extends ObjetRequeteSaisie {
 		return this.appelAsynchrone();
 	}
 	actionApresRequete() {
-		this.listeMotifsCree =
+		const lListeMotifsCree =
 			this.JSONRapportSaisie && this.JSONRapportSaisie.motifsCree
 				? this.JSONRapportSaisie.motifsCree
-				: new ObjetListeElements();
+				: new ObjetListeElements_1.ObjetListeElements();
 		const lListeMotifs =
 			this.JSONReponse && this.JSONReponse.motifs
 				? this.JSONReponse.motifs
-				: new ObjetListeElements();
+				: new ObjetListeElements_1.ObjetListeElements();
 		lListeMotifs.setTri([
-			ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.init((D) => {
 				return !D.ssMotif;
-			}, ObjetTri.init("Libelle")),
+			}),
+			ObjetTri_1.ObjetTri.init("Libelle"),
 		]);
 		lListeMotifs.trier();
-		const lListeMotifsSelect = lListeMotifs.getListeElements(
-			_getElementsSelectionnes.bind(this),
-		);
+		const lListeMotifsSelect = lListeMotifs.getListeElements((aElement) => {
+			let lResult = false;
+			const lElmCree = lListeMotifsCree.getElementParNumero(
+				aElement.getNumero(),
+			);
+			if (
+				(!!lElmCree &&
+					!!this.param.selection.getElementParNumero(lElmCree.nrOrigin)) ||
+				(!lElmCree &&
+					!!this.param.selection.getElementParNumero(aElement.getNumero()))
+			) {
+				lResult = true;
+			}
+			return lResult;
+		});
 		this.callbackReussite.appel(lListeMotifsSelect, lListeMotifs);
 	}
 }
-Requetes.inscrire("SaisieMotifs", ObjetRequeteSaisieMotifs);
+exports.ObjetRequeteSaisieMotifs = ObjetRequeteSaisieMotifs;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieMotifs",
+	ObjetRequeteSaisieMotifs,
+);
 function _serialiser_Motifs(aMotif, aJSON) {
 	if (aMotif.sousCategorieDossier) {
 		aJSON.sousCategorieDossier = aMotif.sousCategorieDossier.toJSON();
 	}
 }
-function _getElementsSelectionnes(aElement) {
-	let lResult = false;
-	const lElmCree = this.listeMotifsCree.getElementParNumero(
-		aElement.getNumero(),
-	);
-	if (
-		(!!lElmCree &&
-			!!this.param.selection.getElementParNumero(lElmCree.nrOrigin)) ||
-		(!lElmCree &&
-			!!this.param.selection.getElementParNumero(aElement.getNumero()))
-	) {
-		lResult = true;
-	}
-	return lResult;
-}
-module.exports = { ObjetRequeteSaisieMotifs };

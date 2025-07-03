@@ -1,25 +1,31 @@
-exports.ActionneurCentraleNotificationsSco = void 0;
+exports.ActionneurCentraleNotificationsSco =
+	exports.TypeIdNotificationSessionHttp = void 0;
 const Enumere_Onglet_1 = require("Enumere_Onglet");
 const MethodesObjet_1 = require("MethodesObjet");
 const Invocateur_1 = require("Invocateur");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const ControleSaisieEvenement_1 = require("ControleSaisieEvenement");
 const ActionneurCentraleNotificationsCP_1 = require("ActionneurCentraleNotificationsCP");
-const ObjetElement_1 = require("ObjetElement");
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
 const UtilitairePartenaire_1 = require("UtilitairePartenaire");
-const ObjetRequeteURLSignataire_1 = require("ObjetRequeteURLSignataire");
 const DocumentsATelecharger_1 = require("DocumentsATelecharger");
-const Enumere_AffichageFicheStage_1 = require("Enumere_AffichageFicheStage");
 const Enumere_Espace_1 = require("Enumere_Espace");
-const Enumere_Ressource_1 = require("Enumere_Ressource");
-const ObjetChaine_1 = require("ObjetChaine");
-const C_IdDiscussions = "Discussions";
-const C_IdCasiers = "Casiers";
-const C_IdInformations = "Informations";
-const C_IdSujetsForum = "SujetsForum";
-const C_IdDemandeRemplacements = "DemandeRemplacements";
-const C_IdSignatairePref = "Signataire_";
+const UtilitaireCasier_1 = require("UtilitaireCasier");
+var TypeIdNotificationSessionHttp;
+(function (TypeIdNotificationSessionHttp) {
+	TypeIdNotificationSessionHttp["insh_IdDiscussions"] = "insh_IdDiscussions";
+	TypeIdNotificationSessionHttp["insh_IdCasiers"] = "insh_IdCasiers";
+	TypeIdNotificationSessionHttp["insh_IdInformations"] = "insh_IdInformations";
+	TypeIdNotificationSessionHttp["insh_IdSujetsForum"] = "insh_IdSujetsForum";
+	TypeIdNotificationSessionHttp["insh_IdDemandeRemplacements"] =
+		"insh_IdDemandeRemplacements";
+	TypeIdNotificationSessionHttp["insh_IdDocumentASigner"] =
+		"insh_IdDocumentASigner";
+})(
+	TypeIdNotificationSessionHttp ||
+		(exports.TypeIdNotificationSessionHttp = TypeIdNotificationSessionHttp =
+			{}),
+);
 class ActionneurCentraleNotificationsSco extends ActionneurCentraleNotificationsCP_1.ActionneurCentraleNotificationsCP {
 	constructor() {
 		super(...arguments);
@@ -40,7 +46,6 @@ class ActionneurCentraleNotificationsSco extends ActionneurCentraleNotifications
 		}
 	}
 	actionNotification(aNotification) {
-		var _a, _b, _c, _d;
 		let lOnglet = null;
 		let lChangerMembre = null;
 		if (aNotification.ouvrirFicheEtab) {
@@ -60,24 +65,6 @@ class ActionneurCentraleNotificationsSco extends ActionneurCentraleNotifications
 				);
 			}
 			Invocateur_1.Invocateur.evenement("ouvrir_ficheEtab");
-			return;
-		}
-		if (aNotification.ouvrirLienSignataire) {
-			UtilitairePartenaire_1.TUtilitairePartenaire.ouvrirPatience();
-			if (ObjetRequeteURLSignataire_1.ObjetRequeteURLSignataire) {
-				const lObj = {
-					typeAction: ObjetRequeteURLSignataire_1.TypeActionSignataire.signer,
-				};
-				if (aNotification.signataire) {
-					lObj.signataire = aNotification.signataire;
-				} else if (aNotification.bundle) {
-					lObj.bundle = aNotification.bundle;
-				}
-				new ObjetRequeteURLSignataire_1.ObjetRequeteURLSignataire(
-					this,
-					this.actionSurRequeteURLSignataire,
-				).lancerRequete(lObj);
-			}
 			return;
 		}
 		if (
@@ -114,31 +101,77 @@ class ActionneurCentraleNotificationsSco extends ActionneurCentraleNotifications
 		if (aNotification.notifBillet) {
 			this.etatUtilisateurPN.setContexteBilletBlog(aNotification.notifBillet);
 		}
-		if (aNotification.id.startsWith(C_IdSignatairePref)) {
-			return;
-		}
 		if (!MethodesObjet_1.MethodesObjet.isNumber(lOnglet)) {
 			switch (aNotification.id) {
-				case C_IdDiscussions:
+				case TypeIdNotificationSessionHttp.insh_IdDiscussions:
 					lOnglet = Enumere_Onglet_1.EGenreOnglet.Messagerie;
 					break;
-				case C_IdCasiers:
+				case TypeIdNotificationSessionHttp.insh_IdCasiers:
 					lOnglet = Enumere_Onglet_1.EGenreOnglet.Casier_MonCasier;
 					break;
-				case C_IdInformations:
+				case TypeIdNotificationSessionHttp.insh_IdInformations:
 					lOnglet = Enumere_Onglet_1.EGenreOnglet.Informations;
 					break;
-				case C_IdSujetsForum:
+				case TypeIdNotificationSessionHttp.insh_IdSujetsForum:
 					lOnglet = Enumere_Onglet_1.EGenreOnglet.ForumPedagogique;
 					break;
-				case C_IdDemandeRemplacements:
+				case TypeIdNotificationSessionHttp.insh_IdDocumentASigner:
 					lOnglet = Enumere_Onglet_1.EGenreOnglet.RemplacementsEnseignants;
 					break;
+				case TypeIdNotificationSessionHttp.insh_IdDemandeRemplacements: {
+					if (
+						[
+							Enumere_Espace_1.EGenreEspace.Parent,
+							Enumere_Espace_1.EGenreEspace.Mobile_Parent,
+							Enumere_Espace_1.EGenreEspace.Eleve,
+							Enumere_Espace_1.EGenreEspace.Mobile_Eleve,
+						].includes(this.etatUtilisateurPN.GenreEspace)
+					) {
+						lOnglet = Enumere_Onglet_1.EGenreOnglet.DocumentsATelecharger;
+					} else {
+						lOnglet = Enumere_Onglet_1.EGenreOnglet.Casier_MonCasier;
+					}
+					break;
+				}
 				default:
 			}
 		}
 		if (
-			aNotification.id === C_IdDemandeRemplacements &&
+			aNotification.id === TypeIdNotificationSessionHttp.insh_IdDocumentASigner
+		) {
+			let lGenreRubrique;
+			if (lOnglet === Enumere_Onglet_1.EGenreOnglet.Casier_MonCasier) {
+				lGenreRubrique =
+					UtilitaireCasier_1.UtilitaireCasier.EGenreRubriqueCasier
+						.documentsASigner;
+			} else {
+				lGenreRubrique =
+					DocumentsATelecharger_1.DocumentsATelecharger.GenreRubriqueDAT
+						.documentsASigner;
+			}
+			this.etatUtilisateurPN.setPage({
+				Onglet: lOnglet,
+				genreRubrique: lGenreRubrique,
+			});
+		}
+		if (aNotification.id === TypeIdNotificationSessionHttp.insh_IdCasiers) {
+			let lGenreRubrique;
+			if (lOnglet === Enumere_Onglet_1.EGenreOnglet.Casier_MonCasier) {
+				lGenreRubrique =
+					UtilitaireCasier_1.UtilitaireCasier.EGenreRubriqueCasier.monCasier;
+			} else {
+				lGenreRubrique =
+					DocumentsATelecharger_1.DocumentsATelecharger.GenreRubriqueDAT
+						.documents;
+			}
+			this.etatUtilisateurPN.setPage({
+				Onglet: lOnglet,
+				genreRubrique: lGenreRubrique,
+			});
+		}
+		if (
+			aNotification.id ===
+				TypeIdNotificationSessionHttp.insh_IdDemandeRemplacements &&
 			aNotification.genreAffichage !== undefined
 		) {
 			this.etatUtilisateurPN.setContexteRemplacementsEnseignant({
@@ -173,124 +206,15 @@ class ActionneurCentraleNotificationsSco extends ActionneurCentraleNotifications
 			(aNotification.modeleDocument &&
 				MethodesObjet_1.MethodesObjet.isNumeric(lOnglet))
 		) {
-			const lLibelleOnglet =
-				(_b =
-					(_a =
-						this.etatUtilisateurPN.listeOnglets.getElementParGenre(lOnglet)) ===
-						null || _a === void 0
-						? void 0
-						: _a.getLibelle) === null || _b === void 0
-					? void 0
-					: _b.call(_a);
-			if (lLibelleOnglet) {
-				this.etatUtilisateurPN.getInfosSupp(lLibelleOnglet).genreRubrique =
-					aNotification.collecteDocument
-						? DocumentsATelecharger_1.DocumentsATelecharger.GenreRubriqueDAT
-								.documentsAFournir
-						: DocumentsATelecharger_1.DocumentsATelecharger.GenreRubriqueDAT
-								.documents;
-			}
-		}
-		if (aNotification.documentSignature) {
-			if (aNotification.documentSignature.sansAccesAffichage) {
-				if (!aNotification.documentSignature.documentArchive) {
-					UtilitairePartenaire_1.TUtilitairePartenaire.ouvrirPatience();
-					if (ObjetRequeteURLSignataire_1.ObjetRequeteURLSignataire) {
-						const lObj = {
-							typeAction:
-								ObjetRequeteURLSignataire_1.TypeActionSignataire.voirDocument,
-							document: aNotification.documentSignature,
-						};
-						new ObjetRequeteURLSignataire_1.ObjetRequeteURLSignataire(this)
-							.lancerRequete(lObj)
-							.then((aJSON) => {
-								if (aJSON.message) {
-									UtilitairePartenaire_1.TUtilitairePartenaire.fermerPatience();
-									GApplication.getMessage().afficher({
-										type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-										titre: "",
-										message: aJSON.message,
-									});
-								} else if (aJSON.url) {
-									UtilitairePartenaire_1.TUtilitairePartenaire.ouvrirUrl(
-										aJSON.url,
-									);
-								} else {
-									UtilitairePartenaire_1.TUtilitairePartenaire.fermerPatience();
-								}
-							});
-					}
-				} else {
-					const lDocument = new ObjetElement_1.ObjetElement(
-						aNotification.documentSignature.documentArchive.getLibelle(),
-						aNotification.documentSignature.getNumero(),
-						aNotification.documentSignature.documentArchive.getGenre(),
-					);
-					const lURL =
-						ObjetChaine_1.GChaine.creerUrlBruteLienExterne(lDocument);
-					if (lURL) {
-						window.open(lURL);
-					}
-				}
-				return;
-			} else {
-				const lLibelleOnglet =
-					(_d =
-						(_c =
-							this.etatUtilisateurPN.listeOnglets.getElementParGenre(
-								lOnglet,
-							)) === null || _c === void 0
-							? void 0
-							: _c.getLibelle) === null || _d === void 0
-						? void 0
-						: _d.call(_c);
-				if (lLibelleOnglet) {
-					const lInfosOnglet =
-						this.etatUtilisateurPN.getInfosSupp(lLibelleOnglet);
-					lInfosOnglet.genreAffichage =
-						Enumere_AffichageFicheStage_1.EGenreAffichageFicheStage.Details;
-					if (aNotification.eleve) {
-						lInfosOnglet.eleve = aNotification.eleve;
-					}
-					if (aNotification.stage) {
-						this.etatUtilisateurPN.Navigation.setRessource(
-							Enumere_Ressource_1.EGenreRessource.Stage,
-							aNotification.stage,
-						);
-					}
-					if (
-						[
-							Enumere_Espace_1.EGenreEspace.Professeur,
-							Enumere_Espace_1.EGenreEspace.Etablissement,
-						].includes(this.etatUtilisateurPN.GenreEspace)
-					) {
-						if (aNotification.classe) {
-							this.etatUtilisateurPN.setClasse(aNotification.classe);
-						}
-						if (aNotification.eleve) {
-							this.etatUtilisateurPN.Navigation.setRessource(
-								Enumere_Ressource_1.EGenreRessource.Eleve,
-								aNotification.eleve,
-							);
-						}
-					} else if (
-						[
-							Enumere_Espace_1.EGenreEspace.Parent,
-							Enumere_Espace_1.EGenreEspace.Mobile_Parent,
-							Enumere_Espace_1.EGenreEspace.Entreprise,
-						].includes(this.etatUtilisateurPN.GenreEspace)
-					) {
-						if (
-							aNotification.eleve &&
-							!this.etatUtilisateurPN
-								.getMembre()
-								.egalParNumeroEtGenre(aNotification.eleve.getNumero())
-						) {
-							lChangerMembre = aNotification.eleve;
-						}
-					}
-				}
-			}
+			const lGenreRubrique = aNotification.collecteDocument
+				? DocumentsATelecharger_1.DocumentsATelecharger.GenreRubriqueDAT
+						.documentsAFournir
+				: DocumentsATelecharger_1.DocumentsATelecharger.GenreRubriqueDAT
+						.documents;
+			this.etatUtilisateurPN.setPage({
+				Onglet: lOnglet,
+				genreRubrique: lGenreRubrique,
+			});
 		}
 		if (this._estOngletVisible(lOnglet)) {
 			(0, ControleSaisieEvenement_1.ControleSaisieEvenement)(() => {

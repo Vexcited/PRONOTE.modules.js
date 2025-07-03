@@ -24,7 +24,7 @@ class ModaleBottomSheet extends ObjetIdentite_1.Identite {
 					Object.assign(aFenetre.controleur, this.controleur);
 					aFenetre.setOptionsFenetre({
 						fermerFenetreSurClicHorsFenetre: true,
-						heightMax_mobile: false,
+						avecTailleSelonContenuMobile: true,
 						listeBoutons: [],
 						avecCroixFermeture: false,
 						sansPaddingContenu: true,

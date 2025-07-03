@@ -6,6 +6,7 @@ const Enumere_Etat_1 = require("Enumere_Etat");
 const _InterfaceContenuEtTAFCahierDeTextes_1 = require("_InterfaceContenuEtTAFCahierDeTextes");
 const Enumere_ElementCDT_1 = require("Enumere_ElementCDT");
 const EGenreEvenementContenuCahierDeTextes_1 = require("EGenreEvenementContenuCahierDeTextes");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
 class InterfaceTAFProgression extends _InterfaceContenuEtTAFCahierDeTextes_1._InterfaceContenuEtTAFCahierDeTextes {
 	constructor(...aParams) {
 		super(...aParams);
@@ -22,9 +23,9 @@ class InterfaceTAFProgression extends _InterfaceContenuEtTAFCahierDeTextes_1._In
 		return this.taf;
 	}
 	construireStructureAffichageAutre() {
-		const T = [];
-		T.push('<div class="flex-contain full-width flex-gap-l p-top-l">');
-		T.push(
+		const H = [];
+		H.push('<div class="flex-contain full-width flex-gap-l p-top-l">');
+		H.push(
 			'<div class="fix-bloc flex-contain flex-gap flex-start m-bottom-l">',
 			this.construireBoutonsLiens(),
 			"</div>",
@@ -33,17 +34,17 @@ class InterfaceTAFProgression extends _InterfaceContenuEtTAFCahierDeTextes_1._In
 			"</div>",
 			"</div>",
 		);
-		T.push(
+		H.push(
 			'<div class="fix-bloc flex-contain m-left-xxl p-left" id="',
 			this.idDocsJoints,
 			'">',
 			"</div>",
 		);
-		T.push("</div>");
-		return T.join("");
+		H.push("</div>");
+		return H.join("");
 	}
 	focusSurPremierObjet() {
-		if (GNavigateur.withContentEditable) {
+		if (ObjetNavigateur_1.Navigateur.withContentEditable) {
 			const lEditor = TinyInit_1.TinyInit.get(this.idDescriptif);
 			if (lEditor && lEditor.initialized) {
 				try {
@@ -69,7 +70,7 @@ class InterfaceTAFProgression extends _InterfaceContenuEtTAFCahierDeTextes_1._In
 				this.taf.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 			}
 			const lDescriptif = aHtml;
-			if (GNavigateur.withContentEditable) {
+			if (ObjetNavigateur_1.Navigateur.withContentEditable) {
 				this.taf.descriptif = TinyInit_1.TinyInit.estContenuVide(lDescriptif)
 					? ""
 					: lDescriptif;
@@ -98,7 +99,7 @@ class InterfaceTAFProgression extends _InterfaceContenuEtTAFCahierDeTextes_1._In
 			this.recupererDonnees();
 		}
 		ObjetHtml_1.GHtml.setHtml(this.idDescriptif, this.taf.descriptif);
-		if (GNavigateur.withContentEditable) {
+		if (ObjetNavigateur_1.Navigateur.withContentEditable) {
 			const lEditor = TinyInit_1.TinyInit.get(this.idDescriptif);
 			if (lEditor) {
 				this._affecterContenuTiny(lEditor, this.taf.descriptif);

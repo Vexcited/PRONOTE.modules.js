@@ -14,7 +14,7 @@ class WidgetRemplacementsEnseignants extends ObjetWidget_1.Widget.ObjetWidget {
 				TypeAffichageRemplacements_1.TypeAffichageRemplacements.tarPropositions,
 			);
 		const lWidget = {
-			html: this.composeWidgetRemplacementsEnseignants(),
+			getHtml: this.composeWidgetRemplacementsEnseignants.bind(this),
 			nbrElements:
 				(_a = this.donnees.listeRemplacements) === null || _a === void 0
 					? void 0
@@ -26,36 +26,38 @@ class WidgetRemplacementsEnseignants extends ObjetWidget_1.Widget.ObjetWidget {
 		$.extend(true, this.donnees, lWidget);
 		aParams.construireWidget(this.donnees);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
-			CheckProposition: {
-				getValue: function (aLigne, aAccept) {
-					const lElement = aInstance.donnees.listeRemplacements.get(aLigne);
-					if (!!lElement) {
-						if (aAccept) {
-							return lElement.genreReponse === Type3Etats_1.Type3Etats.TE_Oui;
-						} else {
-							return lElement.genreReponse === Type3Etats_1.Type3Etats.TE_Non;
-						}
+	jsxModeleCheckboxProposition(aRemplacement, aAccept) {
+		return {
+			getValue: () => {
+				if (aRemplacement) {
+					if (aAccept) {
+						return (
+							aRemplacement.genreReponse === Type3Etats_1.Type3Etats.TE_Oui
+						);
+					} else {
+						return (
+							aRemplacement.genreReponse === Type3Etats_1.Type3Etats.TE_Non
+						);
 					}
-					return false;
-				},
-				setValue: function (aLigne, aAccept, aValue) {
-					const lElement = aInstance.donnees.listeRemplacements.get(aLigne);
+				}
+				return false;
+			},
+			setValue: (aValue) => {
+				if (aRemplacement) {
 					if (aValue) {
-						lElement.genreReponse = aAccept
+						aRemplacement.genreReponse = aAccept
 							? Type3Etats_1.Type3Etats.TE_Oui
 							: Type3Etats_1.Type3Etats.TE_Non;
 					} else {
-						lElement.genreReponse = Type3Etats_1.Type3Etats.TE_Inconnu;
+						aRemplacement.genreReponse = Type3Etats_1.Type3Etats.TE_Inconnu;
 					}
-					aInstance.moteur
+					this.moteur
 						.requeteSaisieRemplacements({
-							genreLigne: lElement.getGenre(),
-							cours: lElement.cours,
-							annulation: lElement.annulation,
-							cycle: lElement.cycle,
-							genreReponse: lElement.genreReponse,
+							genreLigne: aRemplacement.getGenre(),
+							cours: aRemplacement.cours,
+							annulation: aRemplacement.annulation,
+							cycle: aRemplacement.cycle,
+							genreReponse: aRemplacement.genreReponse,
 						})
 						.then((aJSON) => {
 							if (
@@ -71,98 +73,97 @@ class WidgetRemplacementsEnseignants extends ObjetWidget_1.Widget.ObjetWidget {
 								});
 							}
 						});
-				},
-			},
-			getAriaLabel: function (aLigne) {
-				const lElement = aInstance.donnees.listeRemplacements.get(aLigne);
-				let lLabel;
-				switch (lElement.genreReponse) {
-					case Type3Etats_1.Type3Etats.TE_Oui:
-						lLabel = ObjetTraduction_1.GTraductions.getValeur(
-							"RemplacementsEnseignants.proposition.hintoui",
-						);
-						break;
-					case Type3Etats_1.Type3Etats.TE_Non:
-						lLabel = ObjetTraduction_1.GTraductions.getValeur(
-							"RemplacementsEnseignants.proposition.hintnon",
-						);
-						break;
-					case Type3Etats_1.Type3Etats.TE_Inconnu:
-						lLabel = ObjetTraduction_1.GTraductions.getValeur(
-							"RemplacementsEnseignants.proposition.hintinconnu",
-						);
-						break;
-					default:
-						return;
 				}
-				return { "aria-label": lLabel };
 			},
-		});
+		};
+	}
+	jsxFuncAttrAriaLabel(aRemplacement) {
+		let lLabel = "";
+		if (aRemplacement) {
+			switch (aRemplacement.genreReponse) {
+				case Type3Etats_1.Type3Etats.TE_Oui:
+					lLabel = ObjetTraduction_1.GTraductions.getValeur(
+						"RemplacementsEnseignants.proposition.hintoui",
+					);
+					break;
+				case Type3Etats_1.Type3Etats.TE_Non:
+					lLabel = ObjetTraduction_1.GTraductions.getValeur(
+						"RemplacementsEnseignants.proposition.hintnon",
+					);
+					break;
+				case Type3Etats_1.Type3Etats.TE_Inconnu:
+					lLabel = ObjetTraduction_1.GTraductions.getValeur(
+						"RemplacementsEnseignants.proposition.hintinconnu",
+					);
+					break;
+				default:
+					break;
+			}
+		}
+		return { "aria-label": lLabel };
 	}
 	composeWidgetRemplacementsEnseignants() {
-		const lHtml = [];
+		const H = [];
 		if (
 			this.donnees.listeRemplacements &&
 			this.donnees.listeRemplacements.count()
 		) {
-			lHtml.push('<ul role="list" class="liste-unclickable">');
-			for (let i = 0; i < this.donnees.listeRemplacements.count(); i++) {
-				const lRemplacement = this.donnees.listeRemplacements.get(i);
-				lHtml.push(
+			H.push('<ul class="liste-unclickable">');
+			for (const lRemplacement of this.donnees.listeRemplacements) {
+				H.push(
 					IE.jsx.str(
 						"li",
 						{ tabindex: "0" },
-						this.composeRemplacement(lRemplacement, i),
+						this.composeRemplacement(lRemplacement),
 					),
 				);
 			}
-			lHtml.push("</ul>");
+			H.push("</ul>");
 		}
-		return lHtml.join("");
+		return H.join("");
 	}
-	composeRemplacement(aArticle, aLigne) {
+	composeRemplacement(aArticle) {
 		return IE.jsx.str(
-			IE.jsx.fragment,
-			null,
+			"div",
+			{ class: "flex-contain zone-remplacement" },
 			IE.jsx.str(
 				"div",
-				{ class: "flex-contain zone-remplacement" },
+				{ class: "fix-bloc zone-gauche p-right" },
+				this.moteur.construireDate(aArticle),
+			),
+			IE.jsx.str(
+				"div",
+				{ class: "fluid-bloc zone-centrale" },
 				IE.jsx.str(
 					"div",
-					{ class: "fix-bloc zone-gauche p-right" },
-					this.moteur.construireDate(aArticle),
+					{ class: "flex-contain zone-contenu" },
+					IE.jsx.str(
+						"div",
+						{ class: "fluid-bloc zone-principal" },
+						IE.jsx.str(
+							"div",
+							{ class: "zone-titre semi-bold p-bottom-s" },
+							this.moteur.construireTitre(aArticle),
+						),
+						IE.jsx.str(
+							"div",
+							{ class: "zone-soustitre p-bottom-s" },
+							this.moteur.construireSousTitre(aArticle),
+						),
+					),
+					IE.jsx.str(
+						"div",
+						{ class: "fix-bloc zone-complementaire" },
+						this.moteur.getZoneReponse(aArticle, {
+							cbProposition: this.jsxModeleCheckboxProposition.bind(this),
+							getAriaLabelProposition: this.jsxFuncAttrAriaLabel.bind(this),
+						}),
+					),
 				),
 				IE.jsx.str(
 					"div",
-					{ class: "fluid-bloc zone-centrale" },
-					IE.jsx.str(
-						"div",
-						{ class: "flex-contain zone-contenu" },
-						IE.jsx.str(
-							"div",
-							{ class: "fluid-bloc zone-principal" },
-							IE.jsx.str(
-								"div",
-								{ class: "zone-titre semi-bold p-bottom-s" },
-								this.moteur.construireTitre(aArticle),
-							),
-							IE.jsx.str(
-								"div",
-								{ class: "zone-soustitre p-bottom-s" },
-								this.moteur.construireSousTitre(aArticle),
-							),
-						),
-						IE.jsx.str(
-							"div",
-							{ class: "fix-bloc zone-complementaire" },
-							this.moteur.getZoneReponse(aArticle, aLigne),
-						),
-					),
-					IE.jsx.str(
-						"div",
-						{ class: "zone-message" },
-						this.moteur.construireMessage(aArticle),
-					),
+					{ class: "zone-message" },
+					this.moteur.construireMessage(aArticle),
 				),
 			),
 		);

@@ -3,9 +3,9 @@ const ObjetDate_1 = require("ObjetDate");
 const ObjetIdentite_1 = require("ObjetIdentite");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const EGenreDirectionSlide_1 = require("EGenreDirectionSlide");
-const UtilitaireEDTJournalier_1 = require("UtilitaireEDTJournalier");
 const ObjetHtml_1 = require("ObjetHtml");
 const ObjetListeElements_1 = require("ObjetListeElements");
+const UtilitaireEDTJournalier_1 = require("UtilitaireEDTJournalier");
 class ObjetCours extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
@@ -183,7 +183,7 @@ class ObjetCours extends ObjetIdentite_1.Identite {
 						)
 					: "",
 			);
-			H.push('<ul class="liste-cours" role="list">');
+			H.push('<ul class="liste-cours">');
 			this.listeCoursFormate.parcourir((aCours, aIndex) => {
 				H.push(
 					UtilitaireEDTJournalier_1.UtilitaireEDTJournalier.composeCours.call(

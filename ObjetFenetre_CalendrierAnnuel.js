@@ -1,4 +1,5 @@
 exports.ObjetFenetre_CalendrierAnnuel = void 0;
+const AccessApp_1 = require("AccessApp");
 const ObjetCalendrierAnnuel_1 = require("ObjetCalendrierAnnuel");
 const ObjetFenetre_1 = require("ObjetFenetre");
 class ObjetFenetre_CalendrierAnnuel extends ObjetFenetre_1.ObjetFenetre {
@@ -12,9 +13,10 @@ class ObjetFenetre_CalendrierAnnuel extends ObjetFenetre_1.ObjetFenetre {
 	composeContenu() {
 		const T = [];
 		T.push(
-			'<div id="',
-			this.getInstance(this.idCalendrier).getNom(),
-			'" style="width:100%;height:100%;"></div>',
+			IE.jsx.str("div", {
+				id: this.getNomInstance(this.idCalendrier),
+				style: "width:100%;height:100%;",
+			}),
 		);
 		return T.join("");
 	}
@@ -52,8 +54,8 @@ class ObjetFenetre_CalendrierAnnuel extends ObjetFenetre_1.ObjetFenetre {
 			carnet: {
 				donnees: aDonneesCarnet,
 				variables: ["date"],
-				couleur: GCouleur.selection.fond,
-				texte: { couleur: GCouleur.blanc },
+				couleur: (0, AccessApp_1.getApp)().getCouleur().selection.fond,
+				texte: { couleur: (0, AccessApp_1.getApp)().getCouleur().blanc },
 				symbolImpression: "X",
 			},
 		});

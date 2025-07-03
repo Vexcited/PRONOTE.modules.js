@@ -8,13 +8,13 @@ const ObjetRequetePageCommune_1 = require("ObjetRequetePageCommune");
 const Enumere_Espace_1 = require("Enumere_Espace");
 const CommunicationProduit_1 = require("CommunicationProduit");
 const Invocateur_1 = require("Invocateur");
-const CollectionRequetes_1 = require("CollectionRequetes");
-const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
 const ThemesCouleurs_1 = require("ThemesCouleurs");
 const _ObjetCouleur_1 = require("_ObjetCouleur");
 const UtilitairePagePubliqueEtablissement_1 = require("UtilitairePagePubliqueEtablissement");
 const UtilitairePageCommune_1 = require("UtilitairePageCommune");
 const ObjetEtatUtilisateur_1 = require("ObjetEtatUtilisateur");
+const ObjetParametresCommunSco_1 = require("ObjetParametresCommunSco");
+const ObjetRequetePagePubliqueEtablissement_1 = require("ObjetRequetePagePubliqueEtablissement");
 class ObjetApplicationCommunSco extends ObjetApplicationProduit_1.ObjetApplicationProduit {
 	async lancer(aParametres) {
 		this.setDemo(!!aParametres.d);
@@ -37,26 +37,29 @@ class ObjetApplicationCommunSco extends ObjetApplicationProduit_1.ObjetApplicati
 		);
 	}
 	actionSurRecupererDonnees(aParam) {
-		global.GParametres = Object.assign({}, aParam);
+		const lParametres = (global.GParametres =
+			new ObjetParametresCommunSco_1.ObjetParametresCommunSco(aParam));
 		global.GEtatUtilisateur = new ObjetEtatUtilisateur_1.ObjetEtatUtilisateur(
 			this.numeroEspace,
 		);
 		ThemesCouleurs_1.ThemesCouleurs.setTheme(aParam.Theme);
 		global.GCouleur = new _ObjetCouleur_1._ObjetCouleur();
 		let lParam = Object.assign({ id: this.getIdConteneur() }, aParam);
-		if (GParametres.avecPagePubliqueEtab === true) {
+		if (lParametres.avecPagePubliqueEtab === true) {
 			this.utilitairePagePubliqueEtablissement =
 				new UtilitairePagePubliqueEtablissement_1.UtilitairePagePubliqueEtablissement(
-					{ estSurMobile: false, estPrimaire: this.estPrimaire },
+					{
+						estSurMobile: false,
+						estPrimaire: this.estPrimaire,
+						parametresCommun: lParametres,
+					},
 				);
 			this.utilitairePagePubliqueEtablissement.initGlobales();
 			this.donneesRequete =
 				this.utilitairePagePubliqueEtablissement.initDonneesRequete();
-			CollectionRequetes_1.Requetes.inscrire(
-				"PagePubliqueEtablissement",
-				ObjetRequeteJSON_1.ObjetRequeteConsultation,
-			);
-			(0, CollectionRequetes_1.Requetes)("PagePubliqueEtablissement", this)
+			new ObjetRequetePagePubliqueEtablissement_1.ObjetRequetePagePubliqueEtablissement(
+				this,
+			)
 				.lancerRequete(this.donneesRequete)
 				.then((aParam) => {
 					$.extend(lParam, aParam);
@@ -69,8 +72,8 @@ class ObjetApplicationCommunSco extends ObjetApplicationProduit_1.ObjetApplicati
 			$.extend(lParam, {
 				initBandeau: function (aBandeau) {
 					aBandeau.setParametres({
-						logoDepartementImage: GParametres.logoDepartementImage,
-						logoDepartementLien: GParametres.logoDepartementLien,
+						logoDepartementImage: lParametres.logoDepartementImage,
+						logoDepartementLien: lParametres.logoDepartementLien,
 					});
 				},
 			});

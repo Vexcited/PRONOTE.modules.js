@@ -10,10 +10,12 @@ const ObjetFenetre_ManuelsNumeriques_1 = require("ObjetFenetre_ManuelsNumeriques
 const Enumere_EvenementWidget_1 = require("Enumere_EvenementWidget");
 const ObjetWidget_1 = require("ObjetWidget");
 require("IEHtml.MrFiche.js");
+const AccessApp_1 = require("AccessApp");
 class WidgetKiosque extends ObjetWidget_1.Widget.ObjetWidget {
 	constructor(...aParams) {
 		super(...aParams);
-		this.etatUtilisateurSco = GEtatUtilisateur;
+		const lApplicationSco = (0, AccessApp_1.getApp)();
+		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
 	}
 	_notificationKiosque() {
 		this.callback.appel(
@@ -64,7 +66,7 @@ class WidgetKiosque extends ObjetWidget_1.Widget.ObjetWidget {
 			].includes(this.etatUtilisateurSco.GenreEspace),
 		};
 		const lWidget = {
-			html: this.composeWidgetKiosque(),
+			getHtml: this.composeWidgetKiosque.bind(this),
 			nbrElements:
 				(_a = this.donnees.listeRessources) === null || _a === void 0
 					? void 0
@@ -279,8 +281,15 @@ class WidgetKiosque extends ObjetWidget_1.Widget.ObjetWidget {
 						: ObjetTraduction_1.GTraductions.getValeur(
 								"WidgetKiosque.infoRessourcesExtrait.aucune",
 							);
+				const lTypeTAF = this.etatUtilisateurSco.pourPrimaire()
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"WidgetKiosque.infoRessourcesExtrait.tafpp",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"WidgetKiosque.infoRessourcesExtrait.taf",
+						);
 				lHint.push(
-					'<div class="infobulle-titre"><i class="material-icons icon_taf"></i> ',
+					'<div class="infobulle-titre"><i class="material-icons icon_taf" role="presentation"></i> ',
 					lTtitre,
 					"</div>",
 				);
@@ -293,17 +302,10 @@ class WidgetKiosque extends ObjetWidget_1.Widget.ObjetWidget {
 						"</div>",
 					);
 					if (lAvecApiRenduTAF) {
-						const lTypeTAF = this.etatUtilisateurSco.pourPrimaire()
-							? ObjetTraduction_1.GTraductions.getValeur(
-									"WidgetKiosque.infoRessourcesExtrait.tafpp",
-								)
-							: ObjetTraduction_1.GTraductions.getValeur(
-									"WidgetKiosque.infoRessourcesExtrait.taf",
-								);
 						lHint.push(
 							'<div class="infobulle-type"><i class="material-icons ',
 							lIcon,
-							'"></i> ',
+							'" role="presentation"></i> ',
 							lTypeTAF,
 							lNbrApiAjout > 0 ? " : " + lNbrApiRenduTAF : "",
 							"</div>",
@@ -311,7 +313,7 @@ class WidgetKiosque extends ObjetWidget_1.Widget.ObjetWidget {
 					}
 					if (lAvecApiEnvoiNote) {
 						lHint.push(
-							'<div class="infobulle-type"><i class="material-icons icon_saisie_note"></i> ',
+							'<div class="infobulle-type"><i class="material-icons icon_saisie_note" role="presentation"></i> ',
 							ObjetTraduction_1.GTraductions.getValeur(
 								"WidgetKiosque.infoRessourcesExtrait.idevoir",
 							),
@@ -339,7 +341,11 @@ class WidgetKiosque extends ObjetWidget_1.Widget.ObjetWidget {
 				}
 				if (lAvecApiAjout) {
 					H.push('<div class="', lClassSummary.join(" "), '">');
-					H.push('<i class="material-icons icon_taf"></i>');
+					H.push(
+						'<i class="material-icons icon_taf" role="img" aria-label="',
+						lTtitre,
+						'"></i>',
+					);
 					if (lNbrApiAjout > 0) {
 						H.push("<span>" + lNbrApiAjout + "</span>");
 					}
@@ -347,7 +353,13 @@ class WidgetKiosque extends ObjetWidget_1.Widget.ObjetWidget {
 				}
 				if (lAvecApiRenduTAF) {
 					H.push('<div class="', lClassSummary.join(" "), '">');
-					H.push('<i class="material-icons ', lIcon, '"></i>');
+					H.push(
+						'<i class="material-icons ',
+						lIcon,
+						'" role="img" aria-label="',
+						lTypeTAF,
+						'"></i>',
+					);
 					if (lNbrApiRenduTAF > 0) {
 						H.push("<span>" + lNbrApiRenduTAF + "</span>");
 					}
@@ -355,7 +367,9 @@ class WidgetKiosque extends ObjetWidget_1.Widget.ObjetWidget {
 				}
 				if (lAvecApiEnvoiNote) {
 					H.push('<div class="', lClassSummary.join(" "), '">');
-					H.push('<i class="material-icons icon_saisie_note"></i>');
+					H.push(
+						'<i class="material-icons icon_saisie_note" role="presentation"></i>',
+					);
 					if (lNbrApiEnvoiNote > 0) {
 						H.push("<span>" + lNbrApiEnvoiNote + "</span>");
 					}

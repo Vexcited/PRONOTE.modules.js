@@ -1,12 +1,10 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { EGenreRessourceArrondi } = require("Enumere_RessourceArrondi.js");
-const { ObjetSerialiser } = require("ObjetSerialiser.js");
-const { SerialiserQCM_PN } = require("SerialiserQCM_PN.js");
-class ObjetRequeteSaisieNotes extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieNotes = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const Enumere_RessourceArrondi_1 = require("Enumere_RessourceArrondi");
+const ObjetSerialiser_1 = require("ObjetSerialiser");
+const SerialiserQCM_PN_1 = require("SerialiserQCM_PN");
+class ObjetRequeteSaisieNotes extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParam) {
 		this.JSON = { periode: aParam.periode, service: aParam.service.toJSON() };
 		if (!!aParam.service) {
@@ -29,9 +27,13 @@ class ObjetRequeteSaisieNotes extends ObjetRequeteSaisie {
 			this.JSON.service.ponderationNotePlusBasse =
 				aParam.service.periode.ponderationNotePlusBasse;
 			this.JSON.service.arrondiEleve =
-				aParam.service.periode.arrondis[EGenreRessourceArrondi.EleveEtudiant];
+				aParam.service.periode.arrondis[
+					Enumere_RessourceArrondi_1.EGenreRessourceArrondi.EleveEtudiant
+				];
 			this.JSON.service.arrondiClasse =
-				aParam.service.periode.arrondis[EGenreRessourceArrondi.ClassePromotion];
+				aParam.service.periode.arrondis[
+					Enumere_RessourceArrondi_1.EGenreRessourceArrondi.ClassePromotion
+				];
 		}
 		if (!!aParam.listeEleves) {
 			aParam.listeEleves.setSerialisateurJSON({
@@ -58,7 +60,8 @@ class ObjetRequeteSaisieNotes extends ObjetRequeteSaisie {
 		this.callbackReussite.appel(this.JSONRapportSaisie);
 	}
 }
-Requetes.inscrire("SaisieNotes", ObjetRequeteSaisieNotes);
+exports.ObjetRequeteSaisieNotes = ObjetRequeteSaisieNotes;
+CollectionRequetes_1.Requetes.inscrire("SaisieNotes", ObjetRequeteSaisieNotes);
 function _serialiseEleve(aPeriode, aElement, AJSON) {
 	let lPeriodeEleve = null;
 	if (!!aPeriode && !!aElement.listePeriodes) {
@@ -96,7 +99,7 @@ function _serialiseDevoir(aService, aElement, AJSON) {
 	}
 	if (!!aElement.executionQCM && aElement.executionQCM.pourValidation()) {
 		AJSON.executionQCM = aElement.executionQCM.toJSON();
-		new SerialiserQCM_PN().executionQCM(
+		new SerialiserQCM_PN_1.SerialiserQCM_PN().executionQCM(
 			aElement.executionQCM,
 			AJSON.executionQCM,
 		);
@@ -117,7 +120,7 @@ function _serialiseDevoir(aService, aElement, AJSON) {
 	}
 	if (!!aElement.execKiosque && aElement.execKiosque.pourValidation()) {
 		AJSON.execKiosque = aElement.execKiosque.toJSON();
-		new ObjetSerialiser().executionKiosque(
+		new ObjetSerialiser_1.ObjetSerialiser().executionKiosque(
 			aElement.execKiosque,
 			AJSON.execKiosque,
 		);
@@ -203,4 +206,3 @@ function _serialisationListeSujetsEtCorriges(aElement, aJSON) {
 		aJSON.url = aElement.url;
 	}
 }
-module.exports = { ObjetRequeteSaisieNotes };

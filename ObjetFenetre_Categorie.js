@@ -128,27 +128,26 @@ class ObjetFenetre_Categorie extends ObjetFenetre_1.ObjetFenetre {
 				},
 			},
 		});
-		const lHtml = [];
-		lHtml.push(
+		const H = [];
+		H.push(
 			IE.jsx.str("input", {
 				"ie-model": "inputLibelle",
 				type: "text",
-				class: "round-style",
 				style: "width:100%;",
 				"aria-label": lTitreFenetre,
 			}),
 		);
-		lFenetre.afficher(lHtml);
+		lFenetre.afficher(H);
 	}
 	composeContenu() {
-		const lHtml = [];
-		lHtml.push(
+		const H = [];
+		H.push(
 			IE.jsx.str("div", {
 				style: "height:100%",
 				id: this.getNomInstance(this.identListeCategories),
 			}),
 		);
-		return lHtml.join("");
+		return H.join("");
 	}
 	_initialiserListe(aInstance) {
 		aInstance.setOptionsListe({
@@ -179,28 +178,26 @@ exports.ObjetFenetre_Categorie = ObjetFenetre_Categorie;
 class DonneesListe_CategorieListe extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees) {
 		super(aDonnees);
-		this.creerIndexUnique("Libelle");
 		this.setOptions({
 			avecEvnt_Selection: true,
 			avecEvnt_Creation: true,
-			avecEvnt_Suppression: true,
 			avecTri: false,
 		});
 	}
 	getZoneComplementaire(aParams) {
 		const H = [];
-		if (
-			TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.estTypeAvecImage(
+		const lIcone =
+			TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.getIcone(
 				aParams.article.getGenre(),
-			)
-		) {
-			const lImage =
-				TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.getImage(
-					aParams.article.getGenre(),
-				);
-			if (!!lImage) {
-				H.push(IE.jsx.str("div", { class: lImage }));
-			}
+			);
+		if (!!lIcone) {
+			H.push(
+				IE.jsx.str(
+					"i",
+					{ class: [lIcone], role: "presentation" },
+					aParams.article.libelleIcone || "",
+				),
+			);
 		}
 		return H.join("");
 	}

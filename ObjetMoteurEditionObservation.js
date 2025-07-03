@@ -1,16 +1,17 @@
-const { GChaine } = require("ObjetChaine.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-const { GDate } = require("ObjetDate.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreRessource } = require("Enumere_Ressource.js");
-const { TypeGenreObservationVS } = require("TypeGenreObservationVS.js");
+exports.ObjetMoteurEditionObservation = void 0;
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const TypeGenreObservationVS_1 = require("TypeGenreObservationVS");
 class ObjetMoteurEditionObservation {
-	constructor(aParent) {
-		const lSelf = this;
-		$.extend(true, aParent.controleur, this.getControleur());
-		aParent.getMoteur = function () {
-			return lSelf;
-		};
+	constructor() {
+		this.avecDate = true;
+		this.disabled = false;
+		this.existeDateVisu = false;
+		this.estEnConsultationUniquement = false;
+		this.avecBoutonSuppression = false;
+		this.numBoutonAnnuler = 0;
+		this.numBoutonValider = 1;
 		this.observation = null;
 		this.commentaireOrigine = null;
 		this.checkPublieOrigine = null;
@@ -24,14 +25,15 @@ class ObjetMoteurEditionObservation {
 		this.numBoutonAnnuler = 0;
 		this.numBoutonValider = 1;
 		this.listeBoutons = [
-			GTraductions.getValeur("Annuler"),
-			GTraductions.getValeur("Valider"),
+			ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+			ObjetTraduction_1.GTraductions.getValeur("Valider"),
 		];
 	}
 	init(aParam) {
 		this.observation = aParam.observation;
 		this.commentaireOrigine = aParam.observation.commentaire;
 		this.checkPublieOrigine = aParam.observation.estPubliee;
+		this.dateMiseEnEvidenceOrigine = aParam.observation.dateFinMiseEnEvidence;
 		this.dateOrigine = aParam.observation.date;
 		this.numeroObservation = aParam.numeroObservation;
 		this.genreEtat = aParam.genreEtat;
@@ -43,157 +45,105 @@ class ObjetMoteurEditionObservation {
 				? false
 				: !aParam.actif;
 		if (this.disabled) {
-			this.listeBoutons = [GTraductions.getValeur("Fermer")];
+			this.listeBoutons = [ObjetTraduction_1.GTraductions.getValeur("Fermer")];
 		}
-		this.existeDateVisu = !!(
-			this.observation.dateVisu !== false &&
-			this.observation.dateVisu !== undefined
-		);
+		this.existeDateVisu = this.observation.dateVisu !== undefined;
 		this.estEnConsultationUniquement =
 			(aParam.observation.avecARObservation && this.existeDateVisu) ||
 			this.disabled;
 		this.avecBoutonSuppression =
 			!this.disabled &&
-			this.genreEtat === EGenreEtat.Suppression &&
-			this.observation.dateVisu === false;
+			this.genreEtat === Enumere_Etat_1.EGenreEtat.Suppression &&
+			this.observation.dateVisu === undefined;
 		if (this.avecBoutonSuppression) {
-			this.listeBoutons.unshift(GTraductions.getValeur("Supprimer"));
+			this.listeBoutons.unshift(
+				ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
+			);
 			this.numBoutonSupprimer = 0;
 			this.numBoutonAnnuler = 1;
 			this.numBoutonValider = 2;
 		}
+		if (aParam.maxlengthCommentaire) {
+			this.maxlengthCommentaire = aParam.maxlengthCommentaire;
+		}
 	}
 	getTitre() {
-		if (this.typeObservation === TypeGenreObservationVS.OVS_ObservationParent) {
-			return GTraductions.getValeur("Observations.ObservationsParents");
-		} else if (
-			this.typeObservation === TypeGenreObservationVS.OVS_Encouragement
+		if (
+			this.typeObservation ===
+			TypeGenreObservationVS_1.TypeGenreObservationVS.OVS_ObservationParent
 		) {
-			return GTraductions.getValeur("Observations.Encouragements");
+			return ObjetTraduction_1.GTraductions.getValeur(
+				"Observations.ObservationsParents",
+			);
 		} else if (
-			(this.typeObservation === TypeGenreObservationVS.OVS_Autres ||
-				this.typeObservation === TypeGenreObservationVS.OVS_DefautCarnet) &&
+			this.typeObservation ===
+			TypeGenreObservationVS_1.TypeGenreObservationVS.OVS_Encouragement
+		) {
+			return ObjetTraduction_1.GTraductions.getValeur(
+				"Observations.Encouragements",
+			);
+		} else if (
+			(this.typeObservation ===
+				TypeGenreObservationVS_1.TypeGenreObservationVS.OVS_Autres ||
+				this.typeObservation ===
+					TypeGenreObservationVS_1.TypeGenreObservationVS.OVS_DefautCarnet) &&
 			this.observation &&
 			this.observation.observation &&
 			this.observation.observation.getLibelle()
 		) {
 			return this.observation.observation.getLibelle();
-		} else if (this.observation.getGenre() === EGenreRessource.Dispense) {
+		} else if (
+			this.observation.getGenre() ===
+			Enumere_Ressource_1.EGenreRessource.Dispense
+		) {
 			return this.disabled
-				? GTraductions.getValeur(
+				? ObjetTraduction_1.GTraductions.getValeur(
 						"Observations.ObservationsDispenseNE",
 					).ucfirst()
-				: GTraductions.getValeur("Observations.ObservationsDispense");
+				: ObjetTraduction_1.GTraductions.getValeur(
+						"Observations.ObservationsDispense",
+					);
 		} else {
 			return this.observation && this.observation.estPubliee
-				? GTraductions.getValeur("Observations.ObservationsPublie")
-				: GTraductions.getValeur("Observations.ObservationsNonPublie");
+				? ObjetTraduction_1.GTraductions.getValeur(
+						"Observations.ObservationsPublie",
+					)
+				: ObjetTraduction_1.GTraductions.getValeur(
+						"Observations.ObservationsNonPublie",
+					);
 		}
-	}
-	getControleur() {
-		return {
-			commentaire: {
-				getValue: function () {
-					return this.instance.getMoteur().observation &&
-						this.instance.getMoteur().observation.commentaire
-						? this.instance.getMoteur().observation.commentaire
-						: "";
-				},
-				setValue: function (aValue) {
-					this.instance.getMoteur().observation.commentaire = aValue;
-				},
-				getDisabled: function () {
-					if (this.instance.getMoteur().disabled) {
-						const lAttr = this.node.attributes["placeholder"];
-						lAttr.nodeValue = "";
-					}
-					return (
-						this.instance.getMoteur().existeDateVisu ||
-						this.instance.getMoteur().disabled
-					);
-				},
-			},
-			checkPublie: {
-				getValue: function () {
-					return (
-						this.instance.getMoteur().observation &&
-						this.instance.getMoteur().observation.estPubliee === true
-					);
-				},
-				setValue: function (aValue) {
-					this.instance.getMoteur().observation.estPubliee = aValue;
-				},
-				getLibelle: function () {
-					const lHtml = [];
-					lHtml.push(GTraductions.getValeur("AbsenceVS.PublierParentsEleves"));
-					return lHtml.join("");
-				},
-				getDisabled: function () {
-					return (
-						this.instance.getMoteur().existeDateVisu ||
-						this.instance.getMoteur().disabled
-					);
-				},
-			},
-			iconePublie: function () {
-				const lObservation = this.instance.getMoteur().observation;
-				return lObservation && lObservation.estPubliee
-					? ""
-					: " mix-icon_remove ";
-			},
-			visibilitePubliable: function () {
-				return this.instance.getMoteur().publiable
-					? { display: "" }
-					: { display: "none" };
-			},
-			visibiliteMessageVisu: function () {
-				return this.instance.getMoteur().existeDateVisu
-					? { display: "" }
-					: { display: "none" };
-			},
-			messageVisu: function () {
-				return this.instance.getMoteur().existeDateVisu
-					? GChaine.format(
-							GTraductions.getValeur("AbsenceVS.ObservationLueWebLe"),
-							[
-								GDate.formatDate(
-									this.instance.getMoteur().observation.dateVisu,
-									"%JJ/%MM/%AAAA",
-								),
-							],
-						)
-					: "";
-			},
-		};
 	}
 	validationActif(aCommentaire) {
 		return (
-			(this.typeObservation !== TypeGenreObservationVS.OVS_ObservationParent &&
-				this.typeObservation !== TypeGenreObservationVS.OVS_Encouragement) ||
+			(this.typeObservation !==
+				TypeGenreObservationVS_1.TypeGenreObservationVS.OVS_ObservationParent &&
+				this.typeObservation !==
+					TypeGenreObservationVS_1.TypeGenreObservationVS.OVS_Encouragement) ||
 			aCommentaire.trim() !== ""
 		);
 	}
 	surValidation(aNumeroBouton) {
 		let lResult = false;
 		if (aNumeroBouton === this.numBoutonSupprimer) {
-			this.observation.setEtat(EGenreEtat.Suppression);
+			this.observation.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 			lResult = true;
 		} else if (
 			(aNumeroBouton === this.numBoutonAnnuler || aNumeroBouton === -1) &&
 			!this.estEnConsultationUniquement
 		) {
 			this.observation.commentaire = this.commentaireOrigine;
+			this.observation.dateFinMiseEnEvidence = this.dateMiseEnEvidenceOrigine;
 			this.observation.estPubliee = this.checkPublieOrigine;
 			this.observation.date = this.dateOrigine;
-			if (this.genreEtat === EGenreEtat.Creation) {
-				this.observation.setEtat(EGenreEtat.Suppression);
+			if (this.genreEtat === Enumere_Etat_1.EGenreEtat.Creation) {
+				this.observation.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
 			}
 			lResult = true;
 		} else if (aNumeroBouton === this.numBoutonValider) {
-			this.observation.setEtat(EGenreEtat.Modification);
+			this.observation.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 			lResult = true;
 		}
 		return lResult;
 	}
 }
-module.exports = { ObjetMoteurEditionObservation };
+exports.ObjetMoteurEditionObservation = ObjetMoteurEditionObservation;

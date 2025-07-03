@@ -1,29 +1,31 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { tag } = require("tag.js");
-const { TypeThemeBouton } = require("Type_ThemeBouton.js");
-const { EGenreBoiteMessage } = require("Enumere_BoiteMessage.js");
-const { MethodesObjet } = require("MethodesObjet.js");
-const { ObjetIndexsUnique } = require("ObjetIndexsUnique.js");
-const { EGenreEtat } = require("Enumere_Etat.js");
-class ObjetFenetre_EditionListeDiffusion extends ObjetFenetre {
+exports.ObjetFenetre_EditionListeDiffusion = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Type_ThemeBouton_1 = require("Type_ThemeBouton");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetIndexsUnique_1 = require("ObjetIndexsUnique");
+const Enumere_Etat_1 = require("Enumere_Etat");
+class ObjetFenetre_EditionListeDiffusion extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
-		this._indexsUnique = new ObjetIndexsUnique();
+		this._indexsUnique = new ObjetIndexsUnique_1.ObjetIndexsUnique();
 		this._indexsUnique.ajouterIndex(["Libelle", "libelleAuteur"]);
 		this.setOptionsFenetre({
-			titre: GTraductions.getValeur("listeDiffusion.creation"),
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"listeDiffusion.creation",
+			),
 			largeur: 360,
 			avecTailleSelonContenu: true,
 			listeBoutons: [
 				{
-					libelle: GTraductions.getValeur("Annuler"),
-					theme: TypeThemeBouton.secondaire,
+					libelle: ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+					theme: Type_ThemeBouton_1.TypeThemeBouton.secondaire,
 					valider: false,
 				},
 				{
-					libelle: GTraductions.getValeur("Valider"),
-					theme: TypeThemeBouton.primaire,
+					libelle: ObjetTraduction_1.GTraductions.getValeur("Valider"),
+					theme: Type_ThemeBouton_1.TypeThemeBouton.primaire,
 					valider: true,
 				},
 			],
@@ -35,41 +37,38 @@ class ObjetFenetre_EditionListeDiffusion extends ObjetFenetre {
 			},
 		});
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			inputTitre: {
-				getValue: function () {
-					return aInstance.donnees && aInstance.donnees.element
-						? aInstance.donnees.element.getLibelle()
-						: "";
-				},
-				setValue: function (aValue) {
-					aInstance.donnees.element.setLibelle(aValue);
-				},
-			},
-		});
-	}
 	setDonnees(aDonnees) {
-		this.donnees = MethodesObjet.dupliquer(aDonnees);
+		this.donnees = MethodesObjet_1.MethodesObjet.dupliquer(aDonnees);
 		this.afficher();
 	}
 	composeContenu() {
-		const T = [];
-		T.push(
-			tag("input", {
-				"ie-model": "inputTitre",
-				class: ["ofeld_libelle", "round-style"],
-			}),
-		);
-		return T.join("");
+		const linputTitre = () => {
+			return {
+				getValue: () => {
+					return this.donnees && this.donnees.element
+						? this.donnees.element.getLibelle()
+						: "";
+				},
+				setValue: (aValue) => {
+					this.donnees.element.setLibelle(aValue);
+				},
+			};
+		};
+		return IE.jsx.str("input", {
+			"ie-model": linputTitre,
+			class: ["ofeld_libelle"],
+			"aria-labelledby": this.IdTitre,
+		});
 	}
 	surValidation(aNumeroBouton) {
 		const lBouton = this.getBoutonNumero(aNumeroBouton);
 		if (lBouton && lBouton.valider) {
 			if (!this.donnees.element.getLibelle()) {
 				GApplication.getMessage().afficher({
-					type: EGenreBoiteMessage.Information,
-					message: GTraductions.getValeur("CategoriesQCM.LibelleObligatoire"),
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+					message: ObjetTraduction_1.GTraductions.getValeur(
+						"CategoriesQCM.LibelleObligatoire",
+					),
 				});
 				return;
 			}
@@ -82,7 +81,7 @@ class ObjetFenetre_EditionListeDiffusion extends ObjetFenetre {
 							lElement.getNumero(),
 							lElement.getGenre(),
 						) &&
-						aElement.Etat !== EGenreEtat.Suppression
+						aElement.Etat !== Enumere_Etat_1.EGenreEtat.Suppression
 					) {
 						if (this._indexsUnique.estDoublon(lElement, aElement)) {
 							lTestLibelleExisteDeja = true;
@@ -92,11 +91,12 @@ class ObjetFenetre_EditionListeDiffusion extends ObjetFenetre {
 				});
 			}
 			if (lTestLibelleExisteDeja) {
-				const lMessageDoublon = GTraductions.getValeur("liste.doublonNom", [
-					this.donnees.element.getLibelle(),
-				]);
+				const lMessageDoublon = ObjetTraduction_1.GTraductions.getValeur(
+					"liste.doublonNom",
+					[this.donnees.element.getLibelle()],
+				);
 				GApplication.getMessage().afficher({
-					type: EGenreBoiteMessage.Information,
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
 					message: lMessageDoublon,
 				});
 				return;
@@ -107,7 +107,7 @@ class ObjetFenetre_EditionListeDiffusion extends ObjetFenetre {
 		}
 	}
 	static ouvrir(aParams) {
-		const lFenetre = ObjetFenetre.creerInstanceFenetre(
+		const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
 			ObjetFenetre_EditionListeDiffusion,
 			{ pere: aParams.instance, evenement: aParams.evenement },
 		);
@@ -117,4 +117,4 @@ class ObjetFenetre_EditionListeDiffusion extends ObjetFenetre {
 		lFenetre.setDonnees(aParams.donnees);
 	}
 }
-module.exports = { ObjetFenetre_EditionListeDiffusion };
+exports.ObjetFenetre_EditionListeDiffusion = ObjetFenetre_EditionListeDiffusion;

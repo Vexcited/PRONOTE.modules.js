@@ -7,7 +7,7 @@ class WidgetIntendanceExecute extends ObjetWidget_1.Widget.ObjetWidget {
 	construire(aParams) {
 		this.donnees = aParams.donnees;
 		const lWidget = {
-			html: this.composeWidgetIntendanceExecute(),
+			getHtml: this.composeWidgetIntendanceExecute.bind(this),
 			nbrElements: this.donnees.listeLignes
 				? this.donnees.listeLignes.count()
 				: 0,

@@ -1,31 +1,27 @@
-const { ObjetListe } = require("ObjetListe.js");
-const { ObjetIdentite_Mobile } = require("ObjetIdentite_Mobile.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { TypeEtatCours } = require("TypeEtatCours.js");
-const { ObjetTri } = require("ObjetTri.js");
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { tag } = require("tag.js");
-const { GUID } = require("GUID.js");
-const {
-	DonneesListe_RencontresPlanning,
-} = require("DonneesListe_RencontresPlanning.js");
-Requetes.inscrire("SaisieRencontreAEuLieu", ObjetRequeteSaisie);
-class PageRencontresPlanning extends ObjetIdentite_Mobile {
-	constructor(...aParams) {
-		super(...aParams);
+exports.PageRencontresPlanning = void 0;
+const ObjetListe_1 = require("ObjetListe");
+const ObjetIdentite_Mobile_1 = require("ObjetIdentite_Mobile");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const TypeEtatCours_1 = require("TypeEtatCours");
+const ObjetTri_1 = require("ObjetTri");
+const GUID_1 = require("GUID");
+const DonneesListe_RencontresPlanning_1 = require("DonneesListe_RencontresPlanning");
+const ObjetRequeteSaisieRencontreAEuLieu_1 = require("ObjetRequeteSaisieRencontreAEuLieu");
+class PageRencontresPlanning extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
+	constructor() {
+		super(...arguments);
 		this.donneesRecues = false;
-		this.idRencontres = GUID.getId();
+		this.idRencontres = GUID_1.GUID.getId();
 		this.donnees = { message: null, listeRencontres: null };
 		this.avecFiltreRencontresNonPlacees = [
-			EGenreEspace.Mobile_Professeur,
-			EGenreEspace.Mobile_Etablissement,
+			Enumere_Espace_1.EGenreEspace.Mobile_Professeur,
+			Enumere_Espace_1.EGenreEspace.Mobile_Etablissement,
 		].includes(GEtatUtilisateur.GenreEspace);
 		this.afficherRencontresNonPlacees = false;
 	}
 	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
+		return $.extend(true, super.getControleur(aInstance), {
 			cbAfficherNonPlanifiees: {
 				getValue: function () {
 					return !!aInstance.afficherRencontresNonPlacees;
@@ -40,8 +36,8 @@ class PageRencontresPlanning extends ObjetIdentite_Mobile {
 				getDisplay: function () {
 					return (
 						[
-							EGenreEspace.Mobile_Professeur,
-							EGenreEspace.Mobile_Etablissement,
+							Enumere_Espace_1.EGenreEspace.Mobile_Professeur,
+							Enumere_Espace_1.EGenreEspace.Mobile_Etablissement,
 						].includes(GEtatUtilisateur.GenreEspace) &&
 						aInstance.donnees.listeRencontres &&
 						aInstance.donnees.listeRencontres.count() > 0
@@ -50,33 +46,33 @@ class PageRencontresPlanning extends ObjetIdentite_Mobile {
 			},
 			getIdentiteListe: function () {
 				return {
-					class: ObjetListe,
+					class: ObjetListe_1.ObjetListe,
 					pere: aInstance,
-					evenement: function (aRencontre, aVisio) {
-						Requetes(
-							"SaisieRencontreAEuLieu",
-							aInstance,
-							aInstance.callback.evenement,
-						).lancerRequete({
-							rencontre: aRencontre.toJSONAll(),
-							visio: aVisio ? aVisio.lienVisio.toJSONAll() : null,
-						});
-					},
 					start: function (aListe) {
 						aInstance.instanceListe = aListe;
 						aListe.setOptionsListe({
 							colonnes: [{ taille: "100%" }],
-							skin: ObjetListe.skin.flatDesign,
-							messageContenuVide: GTraductions.getValeur(
+							skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+							messageContenuVide: ObjetTraduction_1.GTraductions.getValeur(
 								"Rencontres.aucuneRencontrePlanifiee",
 							),
 							nonEditableSurModeExclusif: true,
 						});
 						aListe.setDonnees(
-							new DonneesListe_RencontresPlanning(
+							new DonneesListe_RencontresPlanning_1.DonneesListe_RencontresPlanning(
 								aInstance.donnees.listeRencontres,
 								aInstance.afficherRencontresNonPlacees,
-								{ callbackVisio: _validerVisio.bind(this) },
+								{
+									callback: (aRencontre, aVisio) => {
+										new ObjetRequeteSaisieRencontreAEuLieu_1.ObjetRequeteSaisieRencontreAEuLieu(
+											aInstance,
+											aInstance.callback.evenement,
+										).lancerRequete({
+											rencontre: aRencontre.toJSONAll(),
+											visio: aVisio ? aVisio.lienVisio.toJSONAll() : undefined,
+										});
+									},
+								},
 							),
 							null,
 							{ conserverPositionScroll: true },
@@ -101,15 +97,15 @@ class PageRencontresPlanning extends ObjetIdentite_Mobile {
 					!!aDonnees.listeRencontres
 				) {
 					lListeRencontres = aDonnees.listeRencontres.getListeElements((D) => {
-						return _estUneRencontrePlacee(D);
+						return this._estUneRencontrePlacee(D);
 					});
 				} else {
 					lListeRencontres = aDonnees.listeRencontres;
 				}
 				if (!!lListeRencontres && lListeRencontres.count() > 0) {
 					lListeRencontres.setTri([
-						ObjetTri.init("place"),
-						ObjetTri.init((D) => {
+						ObjetTri_1.ObjetTri.init("place"),
+						ObjetTri_1.ObjetTri.init((D) => {
 							return D.eleve ? D.eleve.getLibelle() : "";
 						}),
 					]);
@@ -134,48 +130,47 @@ class PageRencontresPlanning extends ObjetIdentite_Mobile {
 		const lHtml = [];
 		if (!!this.donnees.message) {
 			lHtml.push(
-				'<div id="PRP_message" class="m-xl" >',
-				this.composeAucuneDonnee(this.donnees.message),
-				"</div>",
+				IE.jsx.str(
+					"div",
+					{ id: "PRP_message", class: "m-xl" },
+					this.composeAucuneDonnee(this.donnees.message),
+				),
 			);
 		} else {
 			lHtml.push(
-				tag(
+				IE.jsx.str(
 					"div",
 					{
 						id: this.idRencontres,
-						class: ["flex-contain cols"],
-						style: "height:100%",
+						class: "flex-contain cols",
+						style: "height:100%;",
 					},
-					tag(
+					IE.jsx.str(
 						"ie-checkbox",
 						{
 							"ie-model": "cbAfficherNonPlanifiees",
 							"ie-display": "cbAfficherNonPlanifiees.getDisplay",
-							class: ["fix-bloc p-all-xl"],
+							class: "fix-bloc p-all-xl",
 						},
-						GTraductions.getValeur("Rencontres.afficherNonPlanifiees"),
+						ObjetTraduction_1.GTraductions.getValeur(
+							"Rencontres.afficherNonPlanifiees",
+						),
 					),
-					tag("div", {
+					IE.jsx.str("div", {
 						"ie-identite": "getIdentiteListe",
-						class: ["fluid-bloc"],
+						class: "fluid-bloc",
 					}),
 				),
 			);
 		}
 		return lHtml.join("");
 	}
-}
-function _estUneRencontrePlacee(aRencontre) {
-	return (
-		!!aRencontre &&
-		(aRencontre.etat === TypeEtatCours.Impose ||
-			aRencontre.etat === TypeEtatCours.Pose)
-	);
-}
-function _validerVisio(aVisio, aRencontre) {
-	if (aVisio.lienVisio) {
-		this.evenement(aRencontre, aVisio);
+	_estUneRencontrePlacee(aRencontre) {
+		return (
+			!!aRencontre &&
+			(aRencontre.etat === TypeEtatCours_1.TypeEtatCours.Impose ||
+				aRencontre.etat === TypeEtatCours_1.TypeEtatCours.Pose)
+		);
 	}
 }
-module.exports = PageRencontresPlanning;
+exports.PageRencontresPlanning = PageRencontresPlanning;

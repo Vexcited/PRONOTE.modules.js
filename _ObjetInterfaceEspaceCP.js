@@ -1,5 +1,5 @@
 exports._ObjetInterfaceEspaceCP = void 0;
-require("DeclarationJQuery.js");
+require("DeclarationJQuery");
 const Invocateur_1 = require("Invocateur");
 const ControleSaisieEvenement_1 = require("ControleSaisieEvenement");
 const Enumere_Action_1 = require("Enumere_Action");
@@ -8,10 +8,11 @@ const ObjetFenetre_Impression_1 = require("ObjetFenetre_Impression");
 const ObjetFenetre_LienPdf_1 = require("ObjetFenetre_LienPdf");
 const ObjetInterface_1 = require("ObjetInterface");
 const ObjetTraduction_1 = require("ObjetTraduction");
-const Type_ThemeBouton_1 = require("Type_ThemeBouton");
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
 const GestionnaireModale_1 = require("GestionnaireModale");
 const ToucheClavier_1 = require("ToucheClavier");
+const AccessApp_1 = require("AccessApp");
+const ObjetNavigateur_1 = require("ObjetNavigateur");
 class _ObjetInterfaceEspaceCP extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
@@ -57,7 +58,6 @@ class _ObjetInterfaceEspaceCP extends ObjetInterface_1.ObjetInterface {
 		this.IdentFenetreImpression = this.addFenetre(
 			ObjetFenetre_Impression_1.ObjetFenetre_Impression,
 			this.surEvenementFenetreImpression,
-			this._initialiserFenetreImpression,
 		);
 		this.identFenetreLienPDF = this.addFenetre(
 			ObjetFenetre_LienPdf_1.ObjetFenetre_LienPdf,
@@ -68,28 +68,42 @@ class _ObjetInterfaceEspaceCP extends ObjetInterface_1.ObjetInterface {
 			this,
 		);
 	}
-	surEvenementSurImpression() {
+	async surEvenementSurImpression() {
 		if (!GEtatUtilisateur.impressionCourante) {
 			return;
 		}
+		let lGenreAction = Enumere_Action_1.EGenreAction.Valider;
 		if (GEtatUtilisateur.EtatSaisie) {
-			GApplication.getMessage().afficher({
-				type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
-				message:
-					GEtatUtilisateur.impressionCourante.etat ===
-					Enumere_GenreImpression_1.EGenreImpression.GenerationPDF
-						? ObjetTraduction_1.GTraductions.getValeur(
-								"GenerationPDF.MessageAlerteGenerationPdf",
-							)
-						: ObjetTraduction_1.GTraductions.getValeur(
-								"fenetreImpression.MessageAlerteImpression",
-							),
-				callback: this._surEvenementSurImpressionApresConfirmation,
-			});
+			lGenreAction = await (0, AccessApp_1.getApp)()
+				.getMessage()
+				.afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+					message:
+						GEtatUtilisateur.impressionCourante.etat ===
+						Enumere_GenreImpression_1.EGenreImpression.GenerationPDF
+							? ObjetTraduction_1.GTraductions.getValeur(
+									"GenerationPDF.MessageAlerteGenerationPdf",
+								)
+							: ObjetTraduction_1.GTraductions.getValeur(
+									"fenetreImpression.MessageAlerteImpression",
+								),
+				});
+		}
+		if (lGenreAction === Enumere_Action_1.EGenreAction.Valider) {
+			if (
+				GEtatUtilisateur.impressionCourante.etat ===
+				Enumere_GenreImpression_1.EGenreImpression.GenerationPDF
+			) {
+				this.getInstance(this.identFenetreGenerationPdf).afficher(
+					GEtatUtilisateur.impressionCourante.callback(),
+				);
+			} else {
+				this.getInstance(this.IdentFenetreImpression).imprimer(
+					GEtatUtilisateur.impressionCourante,
+				);
+			}
 		} else {
-			this._surEvenementSurImpressionApresConfirmation(
-				Enumere_Action_1.EGenreAction.Valider,
-			);
+			this.surEvenementFenetreImpression();
 		}
 	}
 	estPageIdentification() {
@@ -97,8 +111,8 @@ class _ObjetInterfaceEspaceCP extends ObjetInterface_1.ObjetInterface {
 	}
 	confirmationDeconnexion(aData) {
 		if (
-			!GApplication.getDemo() &&
-			GNavigateur.interactionUtilisateur &&
+			!(0, AccessApp_1.getApp)().getDemo() &&
+			ObjetNavigateur_1.Navigateur.interactionUtilisateur &&
 			window.GEtatUtilisateur &&
 			GEtatUtilisateur.EtatSaisie
 		) {
@@ -117,8 +131,8 @@ class _ObjetInterfaceEspaceCP extends ObjetInterface_1.ObjetInterface {
 			if (this.estPageIdentification()) {
 				return true;
 			}
-			GNavigateur.bloquerValeurEvenement(aEvent.originalEvent);
-			if (GNavigateur.getBloquerClavier()) {
+			ObjetNavigateur_1.Navigateur.bloquerValeurEvenement(aEvent.originalEvent);
+			if (ObjetNavigateur_1.Navigateur.getBloquerClavier()) {
 				return true;
 			}
 			if (this.__blocageDelaiF5__) {
@@ -146,7 +160,7 @@ class _ObjetInterfaceEspaceCP extends ObjetInterface_1.ObjetInterface {
 			if (this.estPageIdentification()) {
 				return true;
 			}
-			GNavigateur.bloquerValeurEvenement(aEvent.originalEvent);
+			ObjetNavigateur_1.Navigateur.bloquerValeurEvenement(aEvent.originalEvent);
 			this.evenementSurAide();
 			return true;
 		}
@@ -179,40 +193,8 @@ class _ObjetInterfaceEspaceCP extends ObjetInterface_1.ObjetInterface {
 	retourSurNavigation(aParametres) {}
 	evenementSurAide() {}
 	setFocusPremierObjet() {}
-	_initialiserFenetreImpression(aInstance) {
-		aInstance.setOptionsFenetre({
-			titre: ObjetTraduction_1.GTraductions.getValeur("ApercuAvantImpression"),
-			largeur: 800,
-			hauteur: 550,
-			listeBoutons: [
-				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
-				{
-					libelle: ObjetTraduction_1.GTraductions.getValeur("Imprimer"),
-					theme: Type_ThemeBouton_1.TypeThemeBouton.primaire,
-				},
-			],
-		});
-	}
 	_ouvrirFenetreLienPDF(aUrl) {
 		this.getInstance(this.identFenetreLienPDF).setDonneesLienPDF(aUrl);
-	}
-	_surEvenementSurImpressionApresConfirmation(aAccepte) {
-		if (aAccepte === Enumere_Action_1.EGenreAction.Valider) {
-			if (
-				GEtatUtilisateur.impressionCourante.etat ===
-				Enumere_GenreImpression_1.EGenreImpression.GenerationPDF
-			) {
-				this.getInstance(this.identFenetreGenerationPdf).afficher(
-					GEtatUtilisateur.impressionCourante.callback(),
-				);
-			} else {
-				this.getInstance(this.IdentFenetreImpression).imprimer(
-					GEtatUtilisateur.impressionCourante,
-				);
-			}
-		} else {
-			this.surEvenementFenetreImpression();
-		}
 	}
 }
 exports._ObjetInterfaceEspaceCP = _ObjetInterfaceEspaceCP;

@@ -1,27 +1,16 @@
-const { ObjetRequeteConsultation } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const { ObjetTri } = require("ObjetTri.js");
-class ObjetRequeteFicheEleve extends ObjetRequeteConsultation {
-	constructor(...aParams) {
-		super(...aParams);
-	}
-	lancerRequete(aParam) {
-		this.JSON = {
-			Eleve: { N: aParam.numeroEleve },
-			AvecEleve: aParam.avecEleve,
-			AvecResponsables: aParam.avecResponsables,
-			AvecAutresContacts: aParam.avecAutresContacts,
-		};
-		return this.appelAsynchrone();
-	}
+exports.ObjetRequeteFicheEleve = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetTri_1 = require("ObjetTri");
+class ObjetRequeteFicheEleve extends ObjetRequeteJSON_1.ObjetRequeteConsultation {
 	actionApresRequete() {
 		if (
 			this.JSONReponse.Scolarite &&
 			this.JSONReponse.Scolarite.listeAttestations
 		) {
 			this.JSONReponse.Scolarite.listeAttestations.setTri([
-				ObjetTri.init("abbreviation"),
+				ObjetTri_1.ObjetTri.init("abbreviation"),
 			]);
 			this.JSONReponse.Scolarite.listeAttestations.trier();
 		}
@@ -33,10 +22,10 @@ class ObjetRequeteFicheEleve extends ObjetRequeteConsultation {
 			this.JSONReponse.listeAttestations,
 			this.JSONReponse.Responsables
 				? this.JSONReponse.Responsables
-				: new ObjetListeElements(),
+				: new ObjetListeElements_1.ObjetListeElements(),
 			this.JSONReponse.listeMemosEleves,
 		);
 	}
 }
-Requetes.inscrire("FicheEleve", ObjetRequeteFicheEleve);
-module.exports = { ObjetRequeteFicheEleve };
+exports.ObjetRequeteFicheEleve = ObjetRequeteFicheEleve;
+CollectionRequetes_1.Requetes.inscrire("FicheEleve", ObjetRequeteFicheEleve);

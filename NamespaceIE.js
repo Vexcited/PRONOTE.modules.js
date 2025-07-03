@@ -1,6 +1,4 @@
-let IE = { Identite: { collection: {} }, outilsUses: null, fModule: null };
 (function () {
-	IE.outilsUses = function () {};
 	let dictionnaire = { require: {}, full: {}, cache: {} };
 	let lGlobal = window || {};
 	if (!String.prototype.endsWith) {
@@ -91,48 +89,60 @@ let IE = { Identite: { collection: {} }, outilsUses: null, fModule: null };
 		}
 		return null;
 	}
-	function _fModule(aParams) {
-		let lModule = {
-			parent: null,
-			exports: {},
-			filename: aParams.fn,
-			childrens: [],
-			loaded: false,
-			load: function (aParent) {
-				this.parent = aParent;
-				if (this.loaded) {
-					return;
-				}
-				this.loaded = true;
-				if (aParent) {
-					aParent.childrens.push(this);
-				}
-				aParams.f.call(this.exports, this.exports, this.require, this, lGlobal);
-				dictionnaire.full[this.filename] = this.exports;
-				if (dictionnaire.require[this.filename]) {
-					delete dictionnaire.require[this.filename];
-				}
-			},
-			require: function require(aChemin) {
-				let lChemin = aChemin;
-				if (lChemin && !lChemin.endsWith(".css") && !lChemin.endsWith(".js")) {
-					lChemin += ".js";
-				}
-				let lExports = _getExport(lChemin, lModule);
-				return lExports;
-			},
-		};
-		lModule.require.main = lModule;
-		lModule.require.ressource = function () {};
-		if (aParams.s !== 0) {
-			lModule.load();
-		} else {
-			dictionnaire.require[lModule.filename] = lModule.require;
-		}
-	}
-	IE.fModule = _fModule;
 	window.require = function require(aChemin) {
 		let lExports = _getExport(aChemin);
 		return lExports;
 	};
+	class ClassIE {
+		constructor() {
+			this.Identite = { collection: {} };
+		}
+		fModule(aParams) {
+			let lModule = {
+				parent: undefined,
+				exports: {},
+				filename: aParams.fn,
+				childrens: [],
+				loaded: false,
+				load: function (aParent) {
+					this.parent = aParent;
+					if (this.loaded) {
+						return;
+					}
+					this.loaded = true;
+					if (aParent) {
+						aParent.childrens.push(this);
+					}
+					aParams.f.call(
+						this.exports,
+						this.exports,
+						this.require,
+						this,
+						lGlobal,
+					);
+					dictionnaire.full[this.filename] = this.exports;
+					if (dictionnaire.require[this.filename]) {
+						delete dictionnaire.require[this.filename];
+					}
+				},
+				require: function require(aChemin) {
+					let lChemin = aChemin;
+					if (lChemin && !lChemin.endsWith(".js")) {
+						lChemin += ".js";
+					}
+					let lExports = _getExport(lChemin, lModule);
+					return lExports;
+				},
+			};
+			lModule.require.main = lModule;
+			lModule.require.ressource = function () {};
+			if (aParams.s !== 0) {
+				lModule.load();
+			} else {
+				dictionnaire.require[lModule.filename] = lModule.require;
+			}
+		}
+		outilsUses() {}
+	}
+	window.IE = new ClassIE();
 })();

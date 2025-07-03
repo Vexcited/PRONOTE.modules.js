@@ -1,16 +1,23 @@
-const PageEntreprise = require("PageEntreprise.js");
-const ObjetRequetePageEntreprise = require("ObjetRequetePageEntreprise.js");
-const ObjetRequeteSaisieEntreprise = require("ObjetRequeteSaisieEntreprise.js");
-const { InterfacePage } = require("InterfacePage.js");
-const EGenreActionInfoEntreprise = { Valider: 0, Edition: 1 };
-class InterfacePageEntreprise extends InterfacePage {
-	constructor(...aParams) {
-		super(...aParams);
+exports.InterfacePageEntreprise = void 0;
+const PageEntreprise_1 = require("PageEntreprise");
+const ObjetRequetePageEntreprise_1 = require("ObjetRequetePageEntreprise");
+const ObjetRequeteSaisieEntreprise_1 = require("ObjetRequeteSaisieEntreprise");
+const ObjetInterfacePageCP_1 = require("ObjetInterfacePageCP");
+var EGenreActionInfoEntreprise;
+(function (EGenreActionInfoEntreprise) {
+	EGenreActionInfoEntreprise[(EGenreActionInfoEntreprise["Valider"] = 0)] =
+		"Valider";
+	EGenreActionInfoEntreprise[(EGenreActionInfoEntreprise["Edition"] = 1)] =
+		"Edition";
+})(EGenreActionInfoEntreprise || (EGenreActionInfoEntreprise = {}));
+class InterfacePageEntreprise extends ObjetInterfacePageCP_1.InterfacePageCP {
+	constructor() {
+		super(...arguments);
 		this.indexContactCourant = 0;
 	}
 	construireInstances() {
 		this.identPage = this.add(
-			PageEntreprise,
+			PageEntreprise_1.PageEntreprise,
 			this.evenementEntreprise,
 			this.initialiserEntreprise,
 		);
@@ -23,19 +30,14 @@ class InterfacePageEntreprise extends InterfacePage {
 		this.avecBandeau = true;
 		this.IdentZoneAlClient = this.identPage;
 	}
-	requeteEntreprise() {
-		new ObjetRequetePageEntreprise(
-			this,
-			this.surReponseRequeteEntreprise,
-		).lancerRequete();
-	}
-	surReponseRequeteEntreprise(aEntreprise, aAutorisations) {
-		this.actualiserInfoEntreprise(aEntreprise, aAutorisations);
-	}
-	actualiserInfoEntreprise(aEntreprise, aAutorisations) {
+	async requeteEntreprise() {
+		const lReponse =
+			await new ObjetRequetePageEntreprise_1.ObjetRequetePageEntreprise(
+				this,
+			).lancerRequete();
 		this.getInstance(this.identPage).setDonnees(
-			aEntreprise,
-			aAutorisations,
+			lReponse.entreprise,
+			lReponse.autorisations,
 			this.indexContactCourant,
 		);
 	}
@@ -48,14 +50,11 @@ class InterfacePageEntreprise extends InterfacePage {
 				break;
 		}
 	}
-	evenementSaisieEntreprise(aEntreprise) {
-		new ObjetRequeteSaisieEntreprise(
+	async evenementSaisieEntreprise(aEntreprise) {
+		await new ObjetRequeteSaisieEntreprise_1.ObjetRequeteSaisieEntreprise(
 			this,
-			this.surReponseRequeteSaisieEntreprise,
 		).lancerRequete(aEntreprise);
-	}
-	surReponseRequeteSaisieEntreprise() {
-		this.requeteEntreprise();
+		await this.requeteEntreprise();
 	}
 	valider() {
 		this.indexContactCourant = this.getInstance(
@@ -68,4 +67,4 @@ class InterfacePageEntreprise extends InterfacePage {
 		this.getInstance(this.identPage).actualiserAffichage(true);
 	}
 }
-module.exports = { InterfacePageEntreprise };
+exports.InterfacePageEntreprise = InterfacePageEntreprise;

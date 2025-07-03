@@ -1,14 +1,13 @@
-const { GDate } = require("ObjetDate.js");
-const {
-	ObjetUtilitaireDevoirEvaluation,
-} = require("ObjetUtilitaireDevoirEvaluation.js");
+exports.ObjetUtilitaireDevoir = void 0;
+const ObjetDate_1 = require("ObjetDate");
+const ObjetUtilitaireDevoirEvaluation_1 = require("ObjetUtilitaireDevoirEvaluation");
 const ObjetUtilitaireDevoir = {
 	getDatePublicationDevoirParDefaut(aDateDevoir) {
-		return GDate.getDateBornee(
-			ObjetUtilitaireDevoirEvaluation.getProchaineDateOuvreePourPublication(
+		return ObjetDate_1.GDate.getDateBornee(
+			ObjetUtilitaireDevoirEvaluation_1.ObjetUtilitaireDevoirEvaluation.getProchaineDateOuvreePourPublication(
 				aDateDevoir,
 			),
 		);
 	},
 };
-module.exports = { ObjetUtilitaireDevoir };
+exports.ObjetUtilitaireDevoir = ObjetUtilitaireDevoir;

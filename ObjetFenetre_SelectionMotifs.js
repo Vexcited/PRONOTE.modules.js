@@ -1,19 +1,18 @@
-const { ObjectCouleurCellule } = require("_ObjetCouleur.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const {
-	ObjetFenetre_SelectionRessource,
-} = require("ObjetFenetre_SelectionRessource.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { ObjetTri } = require("ObjetTri.js");
-class ObjetFenetre_SelectionMotifs extends ObjetFenetre_SelectionRessource {
+exports.ObjetFenetre_SelectionMotifs = void 0;
+const ObjetFenetre_SelectionRessource_1 = require("ObjetFenetre_SelectionRessource");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const ObjetListe_1 = require("ObjetListe");
+class ObjetFenetre_SelectionMotifs extends ObjetFenetre_SelectionRessource_1.ObjetFenetre_SelectionRessource {
 	constructor(...aParams) {
 		super(...aParams);
 		this.setOptionsFenetre({
-			largeur: 300,
-			hauteur: 400,
+			largeur: 450,
+			hauteur: 700,
 			listeBoutons: [
-				GTraductions.getValeur("Annuler"),
-				GTraductions.getValeur("Valider"),
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
 			],
 		});
 		this.indexBtnValider = 1;
@@ -32,90 +31,64 @@ class ObjetFenetre_SelectionMotifs extends ObjetFenetre_SelectionRessource {
 	_actualiserListe() {
 		this.setBoutonActif(
 			this.indexBtnValider,
-			!this.selectionObligatoire || this._nbRessourcesCochees() > 0,
+			!this.estSelectionObligatoire() || this._nbRessourcesCochees() > 0,
 		);
 		this.getInstance(this.identListe).setDonnees(
 			new DonneesListe_SelectionMotifs(this.listeRessources),
 		);
 	}
 	_initialiserListe(aInstance) {
-		const lColonnes = [];
-		lColonnes.push({
-			id: DonneesListe_SelectionMotifs.colonnes.coche,
-			titre: this._options.avecCocheRessources ? { estCoche: true } : "",
-			taille: 20,
-		});
-		lColonnes.push({
-			id: DonneesListe_SelectionMotifs.colonnes.couleur,
-			titre: "",
-			taille: 20,
-		});
-		lColonnes.push({
-			id: DonneesListe_SelectionMotifs.colonnes.libelle,
-			titre: GTraductions.getValeur("Nom"),
-			taille: "100%",
-		});
-		aInstance.setOptionsListe({ colonnes: lColonnes, avecListeNeutre: true });
+		let lOptions = {
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+			avecCBToutCocher: !!this._options.avecCocheRessources,
+			forcerOmbreScrollBottom: true,
+			boutons: [{ genre: ObjetListe_1.ObjetListe.typeBouton.rechercher }],
+		};
+		aInstance.setOptionsListe(lOptions);
 	}
 }
-class DonneesListe_SelectionMotifs extends ObjetDonneesListe {
+exports.ObjetFenetre_SelectionMotifs = ObjetFenetre_SelectionMotifs;
+class DonneesListe_SelectionMotifs extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees) {
 		super(aDonnees);
 		this.setOptions({
-			avecSuppression: false,
-			avecEvnt_ApresEdition: true,
-			avecEtatSaisie: false,
+			avecSelection: false,
+			avecTri: true,
+			avecCB: true,
+			avecEvnt_CB: true,
+			avecCocheCBSurLigne: true,
+			avecBoutonActionLigne: false,
 		});
 	}
-	avecEdition(aParams) {
-		return aParams.idColonne === DonneesListe_SelectionMotifs.colonnes.coche;
+	getDisabledCB(aParams) {
+		let D = aParams.article;
+		return !!D.nonEditable;
 	}
-	getTypeValeur(aParams) {
-		switch (aParams.idColonne) {
-			case DonneesListe_SelectionMotifs.colonnes.coche:
-				return ObjetDonneesListe.ETypeCellule.Coche;
-		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
+	getValueCB(aParams) {
+		return aParams.article ? aParams.article.selectionne : false;
 	}
-	getValeur(aParams) {
-		switch (aParams.idColonne) {
-			case DonneesListe_SelectionMotifs.colonnes.coche:
-				return !!aParams.article.selectionne;
-			case DonneesListe_SelectionMotifs.colonnes.libelle:
-				return aParams.article.getLibelle() || "";
-		}
-		return "";
+	setValueCB(aParams, aValue) {
+		aParams.article.selectionne = aValue;
 	}
-	surEdition(aParams, V) {
-		aParams.article.selectionne = V;
+	getTitreZonePrincipale(aParams) {
+		let D = aParams.article;
+		return D.getLibelle();
 	}
-	getCouleurCellule(aParams) {
-		let lCouleurCellule = null;
-		switch (aParams.idColonne) {
-			case DonneesListe_SelectionMotifs.colonnes.couleur:
-				lCouleurCellule = new ObjectCouleurCellule(
-					aParams.article.couleur,
-					aParams.article.couleur,
-					GCouleur.fenetre.bordure,
-				);
-				break;
-		}
-		return lCouleurCellule;
+	getZoneGauche(aParams) {
+		return "couleur" in aParams.article && aParams.article.couleur
+			? '<div class="couleur ie-line-color static only-color" style="--color-line:' +
+					aParams.article.couleur +
+					'"></div>'
+			: '<div class="m-right"></div>';
 	}
 	getTri() {
 		const lTris = [];
 		lTris.push(
-			ObjetTri.init((D) => {
+			ObjetTri_1.ObjetTri.init((D) => {
 				return !D.nonConnu;
 			}),
 		);
-		lTris.push(ObjetTri.init("Libelle"));
+		lTris.push(ObjetTri_1.ObjetTri.init("Libelle"));
 		return lTris;
 	}
 }
-DonneesListe_SelectionMotifs.colonnes = {
-	coche: "DL_SelectionMotifs_coche",
-	couleur: "DL_SelectionMotifs_couleur",
-	libelle: "DL_SelectionMotifs_libelle",
-};
-module.exports = { ObjetFenetre_SelectionMotifs };

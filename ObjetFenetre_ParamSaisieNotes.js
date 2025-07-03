@@ -1,53 +1,69 @@
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class ObjetFenetre_ParamSaisieNotes extends ObjetFenetre {
+exports.ObjetFenetre_ParamSaisieNotes = void 0;
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class ObjetFenetre_ParamSaisieNotes extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.afficherProjetsAccompagnement = false;
 		this.afficherMoyenneBrute = false;
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			checkAfficherProjetsAccompagnement: {
-				getValue: function () {
-					return aInstance.afficherProjetsAccompagnement;
-				},
-				setValue: function (aData) {
-					aInstance.afficherProjetsAccompagnement = aData;
-				},
+	jsxModelCheckboxAfficherProjetsAccompagnement() {
+		return {
+			getValue: () => {
+				return this.afficherProjetsAccompagnement;
 			},
-			checkAfficherMoyenneBrute: {
-				getValue: function () {
-					return aInstance.afficherMoyenneBrute;
-				},
-				setValue: function (aData) {
-					aInstance.afficherMoyenneBrute = aData;
-				},
+			setValue: (aValue) => {
+				this.afficherProjetsAccompagnement = aValue;
 			},
-		});
+		};
+	}
+	jsxModelCheckboxAfficherMoyenneBrute() {
+		return {
+			getValue: () => {
+				return this.afficherMoyenneBrute;
+			},
+			setValue: (aValue) => {
+				this.afficherMoyenneBrute = aValue;
+			},
+		};
 	}
 	composeContenu() {
 		const T = [];
-		T.push('<div class="Espace">');
 		T.push(
-			"<div>",
-			'<ie-checkbox class="AlignementMilieuVertical" ie-model="checkAfficherProjetsAccompagnement">',
-			GTraductions.getValeur(
-				"Notes.FenetreParametrageAffichage.AfficherProjetsAccompagnement",
+			IE.jsx.str(
+				"div",
+				{ class: "Espace" },
+				IE.jsx.str(
+					"div",
+					null,
+					IE.jsx.str(
+						"ie-checkbox",
+						{
+							class: "AlignementMilieuVertical",
+							"ie-model":
+								this.jsxModelCheckboxAfficherProjetsAccompagnement.bind(this),
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"Notes.FenetreParametrageAffichage.AfficherProjetsAccompagnement",
+						),
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "EspaceHaut" },
+					IE.jsx.str(
+						"ie-checkbox",
+						{
+							class: "AlignementMilieuVertical",
+							"ie-model": this.jsxModelCheckboxAfficherMoyenneBrute.bind(this),
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"Notes.FenetreParametrageAffichage.AfficherMoyenneBrute",
+						),
+					),
+				),
 			),
-			"</ie-checkbox>",
-			"</div>",
 		);
-		T.push(
-			'<div class="EspaceHaut">',
-			'<ie-checkbox class="AlignementMilieuVertical" ie-model="checkAfficherMoyenneBrute">',
-			GTraductions.getValeur(
-				"Notes.FenetreParametrageAffichage.AfficherMoyenneBrute",
-			),
-			"</ie-checkbox>",
-			"</div>",
-		);
-		T.push("</div>");
 		return T.join("");
 	}
 	setDonnees(aDonnees) {
@@ -62,4 +78,4 @@ class ObjetFenetre_ParamSaisieNotes extends ObjetFenetre {
 		});
 	}
 }
-module.exports = { ObjetFenetre_ParamSaisieNotes };
+exports.ObjetFenetre_ParamSaisieNotes = ObjetFenetre_ParamSaisieNotes;

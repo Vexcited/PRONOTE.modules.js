@@ -1,66 +1,50 @@
-const { _ObjetAffichageBandeauPied } = require("_InterfaceBandeauPied.js");
-const { EGenreCommande } = require("Enumere_Commande.js");
-const { TypeDroits } = require("ObjetDroitsPN.js");
-const { EGenreEspace } = require("Enumere_Espace.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { UtilitaireRedirection } = require("UtilitaireRedirection.js");
-class ObjetAffichageBandeauPied extends _ObjetAffichageBandeauPied {
+exports.ObjetAffichageBandeauPied = void 0;
+const _InterfaceBandeauPied_1 = require("_InterfaceBandeauPied");
+const Enumere_Commande_1 = require("Enumere_Commande");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const Enumere_Espace_1 = require("Enumere_Espace");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const UtilitaireRedirection_1 = require("UtilitaireRedirection");
+const AccessApp_1 = require("AccessApp");
+const Tooltip_1 = require("Tooltip");
+class ObjetAffichageBandeauPied extends _InterfaceBandeauPied_1._ObjetAffichageBandeauPied {
 	constructor(...aParams) {
 		super(...aParams);
+		this.appSco = (0, AccessApp_1.getApp)();
+		this.parametresSco = this.appSco.getObjetParametres();
 		this.options = {
-			mention: GParametres.publierMentions,
+			mention: this.parametresSco.publierMentions,
 			siteIndex:
-				GParametres.urlSiteIndexEducation || "https://www.index-education.com",
-			urlInfosHebergement: GParametres.urlInfosHebergement,
-			logoProduitCss: GParametres.logoProduitCss || "",
-			estHebergeEnFrance: GParametres.estHebergeEnFrance,
-			pageEtablissement: GParametres.PageEtablissement || "",
+				this.parametresSco.urlSiteIndexEducation ||
+				"https://www.index-education.com",
+			urlInfosHebergement: this.parametresSco.urlInfosHebergement,
+			logoProduitCss: this.parametresSco.logoProduitCss || "",
+			estHebergeEnFrance: this.parametresSco.estHebergeEnFrance,
+			pageEtablissement: this.parametresSco.PageEtablissement || "",
 			avecBoutonMasquer: true,
-			urlDeclarationAccessibilite: GParametres.urlDeclarationAccessibilite,
-			accessibiliteNonConforme: GParametres.accessibiliteNonConforme,
+			urlDeclarationAccessibilite:
+				this.parametresSco.urlDeclarationAccessibilite,
+			accessibiliteNonConforme: this.parametresSco.accessibiliteNonConforme,
 		};
-	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(this), {
-			nodeCanope: function () {
-				$(this.node).eventValidation(() => {
-					window.open(GParametres.urlCanope);
-				});
-			},
-			nodePageEtab: function () {
-				$(this.node).eventValidation(() => {
-					let lUrl = window.location.href.split("/");
-					lUrl.pop();
-					lUrl = lUrl.join("/") + "/";
-					window.open(
-						lUrl +
-							aInstance.options.pageEtablissement +
-							new UtilitaireRedirection().getParametresUrl(),
-					);
-				});
-			},
-		});
 	}
 	getCommande(aGenreCommande) {
 		switch (aGenreCommande) {
 			case this.genreCommande.forum:
-				return EGenreCommande.Forum;
+				return Enumere_Commande_1.EGenreCommande.Forum;
 			case this.genreCommande.twitter:
-				return EGenreCommande.Twitter;
+				return Enumere_Commande_1.EGenreCommande.Twitter;
 			case this.genreCommande.videos:
-				return EGenreCommande.Videos;
+				return Enumere_Commande_1.EGenreCommande.Videos;
 			case this.genreCommande.profil:
-				return EGenreCommande.Profil;
-			case this.genreCommande.communication:
-				return EGenreCommande.Communication;
+				return Enumere_Commande_1.EGenreCommande.Profil;
 			default:
 				return false;
 		}
 	}
 	evenementBouton(aParam, aGenreBouton) {
 		if (aParam.genreCmd === this.getCommande(this.genreCommande.twitter)) {
-			if (!!GParametres.urlAccesTwitter) {
-				window.open(GParametres.urlAccesTwitter);
+			if (!!this.parametresSco.urlAccesTwitter) {
+				window.open(this.parametresSco.urlAccesTwitter);
 			}
 			return;
 		}
@@ -68,8 +52,9 @@ class ObjetAffichageBandeauPied extends _ObjetAffichageBandeauPied {
 	}
 	avecTwitter() {
 		return (
-			GApplication.droits.get(TypeDroits.fonctionnalites.gestionTwitter) &&
-			!!GParametres.urlAccesTwitter
+			this.appSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.fonctionnalites.gestionTwitter,
+			) && !!this.parametresSco.urlAccesTwitter
 		);
 	}
 	avecPlanSite() {
@@ -78,77 +63,109 @@ class ObjetAffichageBandeauPied extends _ObjetAffichageBandeauPied {
 	avecBoutonAccesProfil() {
 		return (
 			!GNavigateur.isIOS &&
-			GEtatUtilisateur.GenreEspace !== EGenreEspace.Inscription
+			GEtatUtilisateur.GenreEspace !== Enumere_Espace_1.EGenreEspace.Inscription
 		);
 	}
 	composeBoutonAccesProfil() {
-		const H = [];
-		const lStrTuto = GApplication.estEDT
-			? GTraductions.getValeur("PiedPage.tutosForum")
-			: GTraductions.getValeur("PiedPage.tutosForumQCM");
-		H.push(
-			'<div role="button" tabindex="0" class="ibp-pill icon_light_bulb" ie-node="nodePied(' +
-				this.getCommande(this.genreCommande.profil) +
-				')" ie-hint="',
-			lStrTuto,
-			" : ",
-			'">',
-			'<div class="kb-conteneur">',
-			'<p class="as-title">',
-			GTraductions.getValeur("PiedPage.toutSavoirPronote"),
-			"</p>",
-			"<p>",
-			lStrTuto,
-			"</p>",
-			"</div>",
-			"</div>",
+		const lStrTuto = this.appSco.estEDT
+			? ObjetTraduction_1.GTraductions.getValeur("PiedPage.tutosForum")
+			: ObjetTraduction_1.GTraductions.getValeur("PiedPage.tutosForumQCM");
+		return IE.jsx.str(
+			"div",
+			{
+				role: "link",
+				tabindex: "0",
+				class: "ibp-pill icon_light_bulb",
+				"ie-node": this.jsxNodePied.bind(
+					this,
+					this.getCommande(this.genreCommande.profil),
+				),
+				"ie-tooltiplabel": `${ObjetTraduction_1.GTraductions.getValeur("PiedPage.toutSavoirPronote")}\n${lStrTuto}`,
+			},
+			IE.jsx.str(
+				"div",
+				{ class: "kb-conteneur ellipsis-multilignes nb3" },
+				IE.jsx.str(
+					"p",
+					{ class: "as-title" },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"PiedPage.toutSavoirPronote",
+					),
+				),
+				IE.jsx.str("p", null, lStrTuto),
+			),
 		);
-		return H.join("");
 	}
 	avecBoutonPersonnaliseProduit() {
 		return (
 			!GNavigateur.isIOS &&
 			[
-				EGenreEspace.Professeur,
-				EGenreEspace.Mobile_Professeur,
-				EGenreEspace.PrimProfesseur,
-				EGenreEspace.Mobile_PrimProfesseur,
-				EGenreEspace.PrimDirection,
-				EGenreEspace.Mobile_PrimDirection,
+				Enumere_Espace_1.EGenreEspace.Professeur,
+				Enumere_Espace_1.EGenreEspace.Mobile_Professeur,
+				Enumere_Espace_1.EGenreEspace.PrimProfesseur,
+				Enumere_Espace_1.EGenreEspace.Mobile_PrimProfesseur,
+				Enumere_Espace_1.EGenreEspace.PrimDirection,
+				Enumere_Espace_1.EGenreEspace.Mobile_PrimDirection,
 			].includes(GEtatUtilisateur.GenreEspace) &&
-			GParametres.estHebergeEnFrance &&
-			!!GParametres.urlCanope
+			this.parametresSco.estHebergeEnFrance &&
+			!!this.parametresSco.urlCanope
 		);
 	}
 	composeBoutonPersonnaliseProduit() {
-		const H = [];
-		H.push(
-			'<div class="ibp-pill partenaire-canope" ie-node="nodeCanope" ie-hint="',
-			GTraductions.getValeur("PiedPage.Canope"),
-			'"><ie-btnimage class="btnImageIcon Image_Partenaire_Canope_2022" role="button" tabindex="0" aria-label="',
-			GTraductions.getValeur("PiedPage.Canope"),
-			'"></ie-btnimage></div>',
+		const lnodeCanope = (aNode) => {
+			$(aNode).eventValidation(() => {
+				window.open(this.parametresSco.urlCanope);
+			});
+		};
+		return IE.jsx.str(
+			"div",
+			{ class: "ibp-pill partenaire-canope", "ie-node": lnodeCanope },
+			IE.jsx.str("ie-btnimage", {
+				class: "btnImageIcon Image_Partenaire_Canope_2022",
+				role: "link",
+				"aria-label":
+					ObjetTraduction_1.GTraductions.getValeur("PiedPage.Canope"),
+			}),
 		);
-		return H.join("");
 	}
 	avecBoutonPageEtablissement() {
 		return !!this.options.pageEtablissement;
 	}
 	composeBoutonPageEtablissement() {
-		const H = [];
-		H.push(
-			'<div tabindex="0" role="button" class="ibp-pill icon_ecole" aria-label="',
-			GTraductions.getValeur("PiedPage.PageEtablissement"),
-			'" ie-node="nodePageEtab" ie-hint="',
-			GTraductions.getValeur("PiedPage.PageEtablissement"),
-			'"><p class="help-text">',
-			GTraductions.getValeur("PiedPage.PageEtablissement"),
-			"</p></a></div>",
+		const lnodePageEtab = (aNode) => {
+			$(aNode).eventValidation(() => {
+				let lUrl = window.location.href.split("/");
+				lUrl.pop();
+				const lStrlUrl = lUrl.join("/") + "/";
+				window.open(
+					lStrlUrl +
+						this.options.pageEtablissement +
+						new UtilitaireRedirection_1.UtilitaireRedirection().getParametresUrl(),
+				);
+			});
+		};
+		return IE.jsx.str(
+			"div",
+			{
+				tabindex: "0",
+				role: "link",
+				class: "ibp-pill icon_ecole",
+				"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+					"PiedPage.PageEtablissement",
+				),
+				"ie-node": lnodePageEtab,
+				"data-tooltip": Tooltip_1.Tooltip.Type.default,
+			},
+			IE.jsx.str(
+				"p",
+				{ class: "help-text" },
+				" ",
+				ObjetTraduction_1.GTraductions.getValeur("PiedPage.PageEtablissement"),
+			),
 		);
-		return H.join("");
 	}
 	espacesISO27001() {
-		return !GEtatUtilisateur.pourPrimaire();
+		return !this.appSco.getEtatUtilisateur().pourPrimaire();
 	}
 }
-module.exports = ObjetAffichageBandeauPied;
+exports.ObjetAffichageBandeauPied = ObjetAffichageBandeauPied;

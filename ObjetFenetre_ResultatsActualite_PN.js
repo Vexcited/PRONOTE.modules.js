@@ -1,20 +1,18 @@
-const {
-	ObjetFenetre_ResultatsActualite,
-} = require("ObjetFenetre_ResultatsActualite.js");
-const {
-	ObjetRequeteSaisieActualitesNotification,
-} = require("ObjetRequeteSaisieActualitesNotification.js");
-const { ObjetListeElements } = require("ObjetListeElements.js");
-const {
-	ObjetRequetePageActualitesResultats,
-} = require("ObjetRequetePageActualitesResultats.js");
-const { TypeEvenementCallback } = require("ObjetResultatsActualite.js");
-class ObjetFenetre_ResultatsActualite_PN extends ObjetFenetre_ResultatsActualite {
+exports.ObjetFenetre_ResultatsActualite_PN = void 0;
+const ObjetFenetre_ResultatsActualite_1 = require("ObjetFenetre_ResultatsActualite");
+const ObjetRequeteSaisieActualitesNotification_1 = require("ObjetRequeteSaisieActualitesNotification");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetRequetePageActualitesResultats_1 = require("ObjetRequetePageActualitesResultats");
+const ObjetResultatsActualite_1 = require("ObjetResultatsActualite");
+class ObjetFenetre_ResultatsActualite_PN extends ObjetFenetre_ResultatsActualite_1.ObjetFenetre_ResultatsActualite {
 	constructor(...aParams) {
 		super(...aParams);
 	}
 	evenementResultats(aTypeCommande, aDonnees) {
-		if (aTypeCommande === TypeEvenementCallback.RenvoyerNotification) {
+		if (
+			aTypeCommande ===
+			ObjetResultatsActualite_1.TypeEvenementCallback.RenvoyerNotification
+		) {
 			this._requeteNotification(
 				aDonnees.actualite,
 				aDonnees.participantSelectionne,
@@ -31,7 +29,9 @@ class ObjetFenetre_ResultatsActualite_PN extends ObjetFenetre_ResultatsActualite
 		});
 	}
 	lancerRequeteRecupererResultatsActualite(aDonneesRequete, aCallback) {
-		new ObjetRequetePageActualitesResultats(this)
+		new ObjetRequetePageActualitesResultats_1.ObjetRequetePageActualitesResultats(
+			this,
+		)
 			.lancerRequete({
 				actualite: aDonneesRequete.actualite,
 				avecCumulClasses: aDonneesRequete.avecCumulClasses,
@@ -43,15 +43,20 @@ class ObjetFenetre_ResultatsActualite_PN extends ObjetFenetre_ResultatsActualite
 	_requeteNotification(aActualite, aParticipantSelectionne) {
 		const lOptions = {
 			saisieActualite: true,
-			listeActualite: new ObjetListeElements().add(aActualite),
+			listeActualite: new ObjetListeElements_1.ObjetListeElements().add(
+				aActualite,
+			),
 		};
 		if (aParticipantSelectionne) {
 			lOptions.avecNotificationParticipantSelection = true;
-			lOptions.participantSelectionne = new ObjetListeElements().add(
-				aParticipantSelectionne,
-			);
+			lOptions.participantSelectionne =
+				new ObjetListeElements_1.ObjetListeElements().add(
+					aParticipantSelectionne,
+				);
 		}
-		new ObjetRequeteSaisieActualitesNotification(this).lancerRequete(lOptions);
+		new ObjetRequeteSaisieActualitesNotification_1.ObjetRequeteSaisieActualitesNotification(
+			this,
+		).lancerRequete(lOptions);
 	}
 }
-module.exports = { ObjetFenetre_ResultatsActualite_PN };
+exports.ObjetFenetre_ResultatsActualite_PN = ObjetFenetre_ResultatsActualite_PN;

@@ -1,20 +1,20 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-const { GTraductions } = require("ObjetTraduction.js");
-class ObjetRequeteSaisieURLPartenaireCDI extends ObjetRequeteSaisie {
+exports.ObjetRequeteSaisieURLPartenaireCDI = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ObjetTraduction_1 = require("ObjetTraduction");
+class ObjetRequeteSaisieURLPartenaireCDI extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	constructor(...aParams) {
 		super(...aParams);
-		this.setOptions({ avecControleModeExclusif: false });
-	}
-	lancerRequete(aDonnees) {
-		this.JSON.url = aDonnees.url;
-		return this.appelAsynchrone({
-			messageDetail: GTraductions.getValeur("requete.VeuillezPatienter"),
+		this.setOptions({
+			avecControleModeExclusif: false,
+			messageDetail: ObjetTraduction_1.GTraductions.getValeur(
+				"requete.VeuillezPatienter",
+			),
 		});
 	}
-	actionApresRequete() {
-		this.callbackReussite.appel(this.JSONRapportSaisie.urlSSO);
-	}
 }
-Requetes.inscrire("SaisieURLPartenaireCDI", ObjetRequeteSaisieURLPartenaireCDI);
-module.exports = { ObjetRequeteSaisieURLPartenaireCDI };
+exports.ObjetRequeteSaisieURLPartenaireCDI = ObjetRequeteSaisieURLPartenaireCDI;
+CollectionRequetes_1.Requetes.inscrire(
+	"SaisieURLPartenaireCDI",
+	ObjetRequeteSaisieURLPartenaireCDI,
+);

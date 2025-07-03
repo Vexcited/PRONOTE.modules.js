@@ -64,7 +64,7 @@ class ObjetFenetre_DetailsNote extends ObjetFenetre_1.ObjetFenetre {
 	composeContenu() {
 		const T = [];
 		if (!!this.element) {
-			T.push('<section tabindex="0" class="Zone-DetailsNotes">');
+			T.push('<section class="Zone-DetailsNotes">');
 			if (
 				!this.estUnService &&
 				!!this.donnees &&

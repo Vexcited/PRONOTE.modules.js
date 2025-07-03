@@ -253,11 +253,16 @@ class ParametreTableauNomsEtValeurs {
 		) {
 			const lParametre = this.parametres[lIndice];
 			const lNom = lParametre.nom;
-			const lValeur = aValeur.getElement(lNom).valeur;
-			if (lValeur !== null) {
+			const lElem = aValeur.getElement(lNom);
+			if (lElem && lElem.getValeur()) {
 				const lElement = aDocumentXml.createElementNS(aEspaceNommage, lNom);
 				aNoeudXml.appendChild(lElement);
-				lParametre.serialiser(aDocumentXml, lElement, lValeur, aEspaceNommage);
+				lParametre.serialiser(
+					aDocumentXml,
+					lElement,
+					lElem.getValeur(),
+					aEspaceNommage,
+				);
 			}
 		}
 	}

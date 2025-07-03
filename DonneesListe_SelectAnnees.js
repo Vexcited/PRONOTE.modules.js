@@ -1,52 +1,35 @@
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-class DonneesListe_SelectAnnees extends ObjetDonneesListe {
+exports.DonneesListe_SelectAnnees_Fd = void 0;
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+class DonneesListe_SelectAnnees_Fd extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees) {
 		super(aDonnees);
+		this.donnees = aDonnees;
 		this.setOptions({
-			avecSuppression: false,
-			avecEvnt_Selection: true,
-			avecEvnt_ApresEdition: true,
-			avecEtatSaisie: false,
+			avecCB: true,
+			avecEvnt_CB: true,
+			avecCocheCBSurLigne: true,
+			avecSelection: false,
+			avecBoutonActionLigne: false,
 		});
 	}
+	getTitreZonePrincipale(aDonnee) {
+		return aDonnee.article.getLibelle();
+	}
+	getValueCB(aParams) {
+		return aParams.article.cmsActif;
+	}
 	_getNbrAnneesActives() {
-		return this.Donnees.getListeElements((D) => {
-			return !!D.cmsActif;
-		}).count();
+		return this.donnees
+			.getListeElements((D) => {
+				return !!D.cmsActif;
+			})
+			.count();
 	}
-	avecMenuContextuel() {
-		return false;
-	}
-	avecEdition(aParams) {
-		return aParams.idColonne === DonneesListe_SelectAnnees.colonnes.coche;
-	}
-	getValeur(aParams) {
-		switch (aParams.idColonne) {
-			case DonneesListe_SelectAnnees.colonnes.coche:
-				return !!aParams.article.cmsActif;
-			case DonneesListe_SelectAnnees.colonnes.libelle:
-				return aParams.article.getLibelle();
-		}
-		return "";
-	}
-	getTypeValeur(aParams) {
-		switch (aParams.idColonne) {
-			case DonneesListe_SelectAnnees.colonnes.coche:
-				return ObjetDonneesListe.ETypeCellule.Coche;
-		}
-		return ObjetDonneesListe.ETypeCellule.Texte;
-	}
-	surEdition(aParams, V) {
-		if (aParams.idColonne === DonneesListe_SelectAnnees.colonnes.coche) {
-			aParams.article.cmsActif = V;
-			if (this._getNbrAnneesActives() === 0) {
-				aParams.article.cmsActif = true;
-			}
+	setValueCB(aParams, aValue) {
+		aParams.article.cmsActif = aValue;
+		if (this._getNbrAnneesActives() === 0) {
+			aParams.article.cmsActif = true;
 		}
 	}
 }
-DonneesListe_SelectAnnees.colonnes = {
-	coche: "SelectAnnees_coche",
-	libelle: "SelectAnnees_libelle",
-};
-module.exports = DonneesListe_SelectAnnees;
+exports.DonneesListe_SelectAnnees_Fd = DonneesListe_SelectAnnees_Fd;

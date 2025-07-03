@@ -1,4 +1,4 @@
-exports.UtilitaireMAJServeur = void 0;
+exports.TradUtilitaireMAJServeur = exports.UtilitaireMAJServeur = void 0;
 const Invocateur_1 = require("Invocateur");
 const MethodesObjet_1 = require("MethodesObjet");
 const ControleSaisieEvenement_1 = require("ControleSaisieEvenement");
@@ -6,8 +6,6 @@ const ObjetDate_1 = require("ObjetDate");
 const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetHtml_1 = require("ObjetHtml");
-const ObjetWAI_1 = require("ObjetWAI");
-const ObjetWAI_2 = require("ObjetWAI");
 const UtilitaireDuree_1 = require("UtilitaireDuree");
 const GestionnaireModale_1 = require("GestionnaireModale");
 const ObjetChaine_1 = require("ObjetChaine");
@@ -22,28 +20,14 @@ exports.UtilitaireMAJServeur = {
 			options: {
 				afficherMessageDelaiLong: true,
 				afficherMessageImminentEleve: false,
-				messageTitreFenetre: ObjetTraduction_1.GTraductions.getValeur(
-					"MAJServeur.MAJ_Titre",
-				),
-				messageFenetreMAJPrevue: ObjetTraduction_1.GTraductions.getValeur(
-					"MAJServeur.MAJ_Prevue_S",
-				),
+				messageTitreFenetre: TradUtilitaireMAJServeur.MAJ_Titre,
+				messageFenetreMAJPrevue: TradUtilitaireMAJServeur.MAJ_Prevue_S,
 				messageFenetreMAJImminentEleve:
-					ObjetTraduction_1.GTraductions.getValeur(
-						"MAJServeur.MAJ_Imminente_Eleve_S",
-					),
-				messageFenetreMAJImminent: ObjetTraduction_1.GTraductions.getValeur(
-					"MAJServeur.MAJ_Imminente_S",
-				),
-				messageAnnule: ObjetTraduction_1.GTraductions.getValeur(
-					"MAJServeur.MAJ_Annulee",
-				),
-				messageAttenteMAJ: ObjetTraduction_1.GTraductions.getValeur(
-					"MAJServeur.MAJ_Attente",
-				),
-				messageMAJEffectue: ObjetTraduction_1.GTraductions.getValeur(
-					"MAJServeur.MAJ_Effectue",
-				),
+					TradUtilitaireMAJServeur.MAJ_Imminente_Eleve_S,
+				messageFenetreMAJImminent: TradUtilitaireMAJServeur.MAJ_Imminente_S,
+				messageAnnule: TradUtilitaireMAJServeur.MAJ_Annulee,
+				messageAttenteMAJ: TradUtilitaireMAJServeur.MAJ_Attente,
+				messageMAJEffectue: TradUtilitaireMAJServeur.MAJ_Effectue,
 				cssImage: "",
 			},
 		};
@@ -57,12 +41,10 @@ exports.UtilitaireMAJServeur = {
 		Invocateur_1.Invocateur.abonner(
 			ObjetRequeteJSON_1.utils.getIdentNotification("MAJAnnulation"),
 			() => {
-				clearTimeout(lUtil.timeoutDetectionMAJImminente);
 				clearTimeout(lUtil.timeoutRechargment);
-				if (GApplication.SESSION_FINI) {
+				if ((0, AccessApp_1.getApp)().SESSION_FINI) {
 					return;
 				}
-				GApplication.getCommunication().setMAJServeurEnCours(false);
 				_ouvrirFenetreSplash({
 					util: lUtil,
 					init: function (aFenetre) {
@@ -77,8 +59,6 @@ const lDelaiRepeatRequeteFinMAJ = 10 * 1000;
 const lDureeAttenteMAJPourRequete = 10 * 60 * 1000;
 const lDelaiMAJAvertissement = 4 * 60 * 1000;
 const lDelaiDeconnexion = 1 * 60 * 1000;
-const lDelaiPresencePreparationAvertissement =
-	lDelaiMAJAvertissement + lDelaiDeconnexion;
 function _ouvrirFenetreSplash(aParams) {
 	if (aParams.util.fenetre) {
 		aParams.util.fenetre.fermer();
@@ -112,9 +92,6 @@ function _notificationMAJ(aUtil, aDuree) {
 	if (!MethodesObjet_1.MethodesObjet.isNumber(aDuree)) {
 		return;
 	}
-	if (aUtil.timeoutDetectionMAJImminente) {
-		clearTimeout(aUtil.timeoutDetectionMAJImminente);
-	}
 	let lTimeoutRechargementEcoule = false;
 	let lDureeMs = UtilitaireDuree_1.TUtilitaireDuree.dureeEnMs(aDuree);
 	const lDateMAJReelle = new Date(Date.now() + lDureeMs + lDelaiDeconnexion);
@@ -138,14 +115,6 @@ function _notificationMAJ(aUtil, aDuree) {
 	if (lDureeMs < 1000) {
 		return;
 	}
-	if (lEstDelaiLong) {
-		aUtil.timeoutDetectionMAJImminente = setTimeout(
-			() => {
-				GApplication.getCommunication().setMAJServeurEnCours(true);
-			},
-			Math.max(0, lDureeMs - lDelaiPresencePreparationAvertissement),
-		);
-	}
 	if (!lEstDelaiLong || aUtil.options.afficherMessageDelaiLong) {
 		aUtil.deconnexionAvecFenetreOuverte = true;
 		_ouvrirFenetreSplash({
@@ -167,7 +136,7 @@ function _deconnexion(aUtil) {
 	const lCallback = function () {
 		UtilitaireDeconnexion_1.UtilitaireDeconnexion.requeteDeconnexion().then(
 			() => {
-				GApplication.finSession({
+				(0, AccessApp_1.getApp)().finSession({
 					constructionPage: true,
 					statut: 0,
 					sansBoutonSeConnecter: true,
@@ -175,7 +144,7 @@ function _deconnexion(aUtil) {
 						Titre: ObjetTraduction_1.GTraductions.getValeur(
 							"connexion.MessageVeuillezPatienter",
 						),
-						Message: !GApplication.estAppliMobile
+						Message: !(0, AccessApp_1.getApp)().estAppliMobile
 							? IE.jsx.str(
 									"div",
 									{ id: aUtil.idMessage },
@@ -189,7 +158,7 @@ function _deconnexion(aUtil) {
 							: aUtil.options.messageAttenteMAJ,
 					},
 				});
-				if (!GApplication.estAppliMobile) {
+				if (!(0, AccessApp_1.getApp)().estAppliMobile) {
 					aUtil.dateMSDemarrageAttente = Date.now();
 					setTimeout(() => {
 						_gererRechargementPage(aUtil);
@@ -202,27 +171,29 @@ function _deconnexion(aUtil) {
 }
 function _messageFinMAJ(aUtil) {
 	$(document).find(".pageDeconnexion_titre").remove();
+	const lModel = () => {
+		return {
+			event() {
+				window.location.reload();
+			},
+		};
+	};
 	ObjetHtml_1.GHtml.setHtml(
 		aUtil.idMessage,
-		[
-			'<div style="padding-bottom:3px; padding-top: 10px;">',
-			aUtil.options.messageMAJEffectue,
-			"</div>",
-			'<div tabindex="0" ',
-			ObjetWAI_2.GObjetWAI
-				? ObjetWAI_2.GObjetWAI.composeRole(ObjetWAI_1.EGenreRole.Button)
-				: "",
-			ObjetWAI_2.GObjetWAI
-				? ObjetWAI_2.GObjetWAI.composeAttribut({
-						genre: ObjetWAI_2.EGenreAttribut.describedby,
-						valeur: "waispan_id",
-					})
-				: "",
-			'class="AvecMain Souligne"',
-			'onkeyup="if (GNavigateur.isToucheSelection()) window.location.reload()" onclick="window.location.reload ()">',
-			ObjetTraduction_1.GTraductions.getValeur("connexion.SeConnecter"),
-			"</div>",
-		].join(""),
+		IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			IE.jsx.str(
+				"div",
+				{ style: "padding-bottom:3px; padding-top: 10px;" },
+				aUtil.options.messageMAJEffectue,
+			),
+			IE.jsx.str(
+				"ie-bouton",
+				{ "ie-model": lModel },
+				ObjetTraduction_1.GTraductions.getValeur("connexion.SeConnecter"),
+			),
+		),
 	);
 }
 function _gererRechargementPage(aUtil) {
@@ -298,3 +269,18 @@ class ObjetFenetre_SplashMAJServeur extends ObjetFenetre_1.ObjetFenetre {
 		return T.join("");
 	}
 }
+const ObjetTraduction_2 = require("ObjetTraduction");
+const AccessApp_1 = require("AccessApp");
+const TradUtilitaireMAJServeur = ObjetTraduction_2.TraductionsModule.getModule(
+	"UtilitaireMAJServeur",
+	{
+		MAJ_Titre: "",
+		MAJ_Prevue_S: "",
+		MAJ_Imminente_Eleve_S: "",
+		MAJ_Imminente_S: "",
+		MAJ_Annulee: "",
+		MAJ_Attente: "",
+		MAJ_Effectue: "",
+	},
+);
+exports.TradUtilitaireMAJServeur = TradUtilitaireMAJServeur;

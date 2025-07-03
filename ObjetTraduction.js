@@ -1,7 +1,8 @@
-exports.GTraductions = void 0;
+exports.GTraductions = exports.TraductionsModule = void 0;
 const MethodesObjet_1 = require("MethodesObjet");
-require("Divers.js");
-const trad = require("traductions.js");
+require("Divers");
+const DeclarationTraductions = require("traductions");
+const AccessApp_1 = require("AccessApp");
 class ObjetTraduction {
 	getValeur(aNom, aTableauRemplacements) {
 		return this._getValeur(aNom, aTableauRemplacements);
@@ -12,10 +13,6 @@ class ObjetTraduction {
 			return lVal;
 		}
 		return lVal;
-	}
-	hasTabValeurs(aNom) {
-		let lValeur = MethodesObjet_1.MethodesObjet.get(this, aNom);
-		return !!lValeur && Array.isArray(lValeur);
 	}
 	getTitreMFiche(aIdRessource) {
 		const lChaine = this.getValeur(aIdRessource);
@@ -44,6 +41,10 @@ class ObjetTraduction {
 	add(aNom, aValeur, aAccepteTableau) {
 		try {
 			let lNomDernierNoeud = aNom;
+			if (typeof aValeur === "function") {
+				aValeur.call(this, aNom);
+				return;
+			}
 			let lObjet = this;
 			if (aNom.indexOf(".") > 0) {
 				const T = aNom.split(".");
@@ -71,13 +72,61 @@ class ObjetTraduction {
 			}
 		} catch (e) {}
 	}
+	getModule(aNomModule) {
+		const lObj = this[`$${aNomModule}`];
+		return lObj;
+	}
 	_passerEnCleDeTraductionsDEBUG(aChaine) {}
 }
-const GTraductions = new ObjetTraduction();
-exports.GTraductions = GTraductions;
-if (trad) {
-	const lFunc = function (aNom, aValeur, aAccepteTableau) {
-		GTraductions.add(aNom, aValeur, aAccepteTableau);
-	};
-	trad(lFunc);
+class TraductionsModule {
+	static getModule(aNomModule, aModele) {
+		const lObj = Traductions[`$${aNomModule}`];
+		if (!lObj) {
+			return aModele;
+		}
+		TraductionsModule.populate(lObj, aModele, aNomModule);
+		return lObj;
+	}
+	static format(aTrad, aFormat) {
+		var _a;
+		return (
+			((_a = aTrad === null || aTrad === void 0 ? void 0 : aTrad.format) ===
+				null || _a === void 0
+				? void 0
+				: _a.call(aTrad, aFormat)) || ""
+		);
+	}
+	static populate(aTradDict, aModel, aNomModule) {
+		for (const lKey of Object.keys(aModel)) {
+			const lValModel = aModel[lKey];
+			if (typeof lValModel === "string") {
+				if (typeof aTradDict[lKey] !== "string") {
+					aTradDict[lKey] = "";
+				}
+			} else if (typeof lValModel === "number") {
+				if (typeof aTradDict[lKey] !== "number") {
+					aTradDict[lKey] = "";
+				}
+			} else if (lValModel && Array.isArray(lValModel)) {
+				if (!aTradDict[lKey]) {
+					aTradDict[lKey] = lValModel;
+				}
+			} else if (lValModel && typeof lValModel === "object") {
+				if (!aTradDict[lKey]) {
+					aTradDict[lKey] = {};
+				}
+				TraductionsModule.populate(aTradDict[lKey], lValModel, aNomModule);
+			} else {
+			}
+		}
+	}
 }
+exports.TraductionsModule = TraductionsModule;
+const Traductions = new ObjetTraduction();
+if (DeclarationTraductions && DeclarationTraductions.trad) {
+	const lFunc = function (aNom, aValeur, aAccepteTableau) {
+		Traductions.add(aNom, aValeur, aAccepteTableau);
+	};
+	DeclarationTraductions.trad(lFunc);
+}
+exports.GTraductions = Traductions;

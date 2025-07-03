@@ -1,121 +1,143 @@
-const { EGenreEvenementListe } = require("Enumere_EvenementListe.js");
-const { GDate } = require("ObjetDate.js");
-const { ObjetDonneesListe } = require("ObjetDonneesListe.js");
-const { ObjetFenetre } = require("ObjetFenetre.js");
-const { ObjetListe } = require("ObjetListe.js");
-const { GTraductions } = require("ObjetTraduction.js");
-const { TUtilitaireDuree } = require("UtilitaireDuree.js");
-class ObjetFenetre_Punition extends ObjetFenetre {
+exports.ObjetFenetre_Punition = void 0;
+const AccessApp_1 = require("AccessApp");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const UtilitaireDuree_1 = require("UtilitaireDuree");
+class ObjetFenetre_Punition extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
 		this.seulementSansDossier = false;
 	}
 	construireInstances() {
 		this.identListe = this.add(
-			ObjetListe,
-			_evenementListePunitions.bind(this),
-			_initialiserListePunitions,
+			ObjetListe_1.ObjetListe,
+			this._evenementListePunitions.bind(this),
+			this._initialiserListePunitions,
 		);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			cbPunitionsSansDossier: {
-				getValue() {
-					return !!aInstance.seulementSansDossier;
-				},
-				setValue(aDonnees) {
-					aInstance.seulementSansDossier = !!aDonnees;
-					aInstance
-						.getInstance(aInstance.identListe)
-						.setDonnees(
-							new DonneesListe_ListePunitions(
-								aInstance.listePunitions,
-								aInstance.seulementSansDossier,
-							),
-						);
-				},
-			},
+	_initialiserListePunitions(aInstance) {
+		const lColonnes = [];
+		lColonnes.push({
+			id: DonneesListe_ListePunitions.colonnes.date,
+			titre: ObjetTraduction_1.GTraductions.getValeur("fenetrePunition.date"),
+			taille: 60,
 		});
+		lColonnes.push({
+			id: DonneesListe_ListePunitions.colonnes.naturePunition,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"fenetrePunition.punition",
+			),
+			taille: "100%",
+		});
+		lColonnes.push({
+			id: DonneesListe_ListePunitions.colonnes.motif,
+			titre: ObjetTraduction_1.GTraductions.getValeur("fenetrePunition.motif"),
+			taille: 120,
+		});
+		lColonnes.push({
+			id: DonneesListe_ListePunitions.colonnes.demandeur,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"fenetrePunition.demandeur",
+			),
+			taille: 100,
+		});
+		lColonnes.push({
+			id: DonneesListe_ListePunitions.colonnes.dateProgrammation,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"fenetrePunition.programmeeLe",
+			),
+			taille: 100,
+		});
+		lColonnes.push({
+			id: DonneesListe_ListePunitions.colonnes.dateRealisation,
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"fenetrePunition.realiseeLe",
+			),
+			taille: 80,
+		});
+		aInstance.setOptionsListe({ colonnes: lColonnes, nonEditable: true });
+	}
+	_evenementListePunitions(aParametres) {
+		this.setBoutonActif(
+			1,
+			aParametres.genreEvenement ===
+				Enumere_EvenementListe_1.EGenreEvenementListe.Selection,
+		);
+	}
+	jsxModeleCheckboxSeulementSansDossier() {
+		return {
+			getValue: () => {
+				return !!this.seulementSansDossier;
+			},
+			setValue: (aValue) => {
+				this.seulementSansDossier = aValue;
+				this.getInstance(this.identListe).setDonnees(
+					new DonneesListe_ListePunitions(
+						this.listePunitions,
+						this.seulementSansDossier,
+					),
+				);
+			},
+		};
 	}
 	setDonnees(aListePunitions) {
 		this.afficher();
 		this.setBoutonActif(1, false);
+		this.listePunitions = aListePunitions;
 		this.getInstance(this.identListe).setDonnees(
 			new DonneesListe_ListePunitions(
-				(this.listePunitions = aListePunitions),
+				aListePunitions,
 				this.seulementSansDossier,
 			),
 		);
 	}
 	composeContenu() {
-		const lHtml = [];
-		lHtml.push(
-			'<div class="flex-contain cols full-height">',
-			'<div class="fix-bloc"><ie-checkbox ie-model="cbPunitionsSansDossier">',
-			GTraductions.getValeur("fenetrePunition.nonAffectees"),
-			"</ie-checkbox></div>",
-			'<div class="fluid-bloc" id="',
-			this.getNomInstance(this.identListe),
-			'"></div>',
-			"</div>",
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "flex-contain cols full-height" },
+				IE.jsx.str(
+					"div",
+					{ class: "fix-bloc" },
+					IE.jsx.str(
+						"ie-checkbox",
+						{
+							"ie-model": this.jsxModeleCheckboxSeulementSansDossier.bind(this),
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"fenetrePunition.nonAffectees",
+						),
+					),
+				),
+				IE.jsx.str("div", {
+					class: "fluid-bloc",
+					id: this.getNomInstance(this.identListe),
+				}),
+			),
 		);
-		return lHtml.join("");
+		return H.join("");
 	}
 	surValidation(aNumeroBouton) {
-		this.callback.appel(
-			aNumeroBouton,
-			this.listePunitions
-				? this.listePunitions.get(
-						this.getInstance(this.identListe).getSelection(),
-					)
-				: null,
-		);
+		const lPunition = this.listePunitions
+			? this.listePunitions.get(
+					this.getInstance(this.identListe).getSelection(),
+				)
+			: null;
+		this.callback.appel(aNumeroBouton, lPunition);
 		this.fermer();
 	}
 }
-function _initialiserListePunitions(aInstance) {
-	const lColonnes = [];
-	lColonnes.push({
-		id: DonneesListe_ListePunitions.colonnes.date,
-		titre: GTraductions.getValeur("fenetrePunition.date"),
-		taille: 60,
-	});
-	lColonnes.push({
-		id: DonneesListe_ListePunitions.colonnes.naturePunition,
-		titre: GTraductions.getValeur("fenetrePunition.punition"),
-		taille: "100%",
-	});
-	lColonnes.push({
-		id: DonneesListe_ListePunitions.colonnes.motif,
-		titre: GTraductions.getValeur("fenetrePunition.motif"),
-		taille: 120,
-	});
-	lColonnes.push({
-		id: DonneesListe_ListePunitions.colonnes.demandeur,
-		titre: GTraductions.getValeur("fenetrePunition.demandeur"),
-		taille: 100,
-	});
-	lColonnes.push({
-		id: DonneesListe_ListePunitions.colonnes.dateProgrammation,
-		titre: GTraductions.getValeur("fenetrePunition.programmeeLe"),
-		taille: 100,
-	});
-	lColonnes.push({
-		id: DonneesListe_ListePunitions.colonnes.dateRealisation,
-		titre: GTraductions.getValeur("fenetrePunition.realiseeLe"),
-		taille: 80,
-	});
-	aInstance.setOptionsListe({ colonnes: lColonnes, nonEditable: true });
-}
-function _evenementListePunitions(aParametres) {
-	this.setBoutonActif(
-		1,
-		aParametres.genreEvenement === EGenreEvenementListe.Selection,
-	);
-}
-class DonneesListe_ListePunitions extends ObjetDonneesListe {
+exports.ObjetFenetre_Punition = ObjetFenetre_Punition;
+class DonneesListe_ListePunitions extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aSeulementSansDossier) {
 		super(aDonnees);
+		const lApplicationSco = (0, AccessApp_1.getApp)();
+		this.parametresSco = lApplicationSco.getObjetParametres();
 		this.seulementSansDossier = aSeulementSansDossier;
 		this.setOptions({ avecContenuTronque: true, avecEvnt_Selection: true });
 	}
@@ -130,7 +152,10 @@ class DonneesListe_ListePunitions extends ObjetDonneesListe {
 		switch (aParams.idColonne) {
 			case DonneesListe_ListePunitions.colonnes.date:
 				return !!aParams.article.dateDemande
-					? GDate.formatDate(aParams.article.dateDemande, "%JJ/%MM/%AAAA")
+					? ObjetDate_1.GDate.formatDate(
+							aParams.article.dateDemande,
+							"%JJ/%MM/%AAAA",
+						)
 					: "";
 			case DonneesListe_ListePunitions.colonnes.naturePunition:
 				if (!!aParams.article.naturePunition) {
@@ -138,8 +163,8 @@ class DonneesListe_ListePunitions extends ObjetDonneesListe {
 				}
 				if (!!aParams.article.duree) {
 					lValeur.push(
-						GDate.formatDureeEnMillisecondes(
-							TUtilitaireDuree.minEnMs(aParams.article.duree),
+						ObjetDate_1.GDate.formatDureeEnMillisecondes(
+							UtilitaireDuree_1.TUtilitaireDuree.minEnMs(aParams.article.duree),
 						),
 					);
 				}
@@ -156,7 +181,7 @@ class DonneesListe_ListePunitions extends ObjetDonneesListe {
 			case DonneesListe_ListePunitions.colonnes.dateProgrammation:
 				if (!!aParams.article.dateProgrammation) {
 					lValeur.push(
-						GDate.formatDate(
+						ObjetDate_1.GDate.formatDate(
 							aParams.article.dateProgrammation,
 							"%JJ/%MM/%AAAA",
 						),
@@ -164,16 +189,21 @@ class DonneesListe_ListePunitions extends ObjetDonneesListe {
 					if (!!aParams.article.placeExecution) {
 						lValeur.push(
 							" ",
-							GTraductions.getValeur("A"),
+							ObjetTraduction_1.GTraductions.getValeur("A"),
 							" ",
-							GParametres.getLibelleHeure(aParams.article.placeExecution),
+							this.parametresSco.getLibelleHeure(
+								aParams.article.placeExecution,
+							),
 						);
 					}
 				}
 				return lValeur.join("");
 			case DonneesListe_ListePunitions.colonnes.dateRealisation:
 				return aParams.article.dateRealisation
-					? GDate.formatDate(aParams.article.dateRealisation, "%JJ/%MM/%AAAA")
+					? ObjetDate_1.GDate.formatDate(
+							aParams.article.dateRealisation,
+							"%JJ/%MM/%AAAA",
+						)
 					: "";
 		}
 		return "";
@@ -187,4 +217,3 @@ DonneesListe_ListePunitions.colonnes = {
 	dateProgrammation: "DL_ListePunitions_dateProg",
 	dateRealisation: "DL_ListePunitions_dateReal",
 };
-module.exports = { ObjetFenetre_Punition };

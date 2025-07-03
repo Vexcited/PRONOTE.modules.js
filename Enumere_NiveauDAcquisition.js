@@ -1,5 +1,8 @@
 exports.EGenreNiveauDAcquisitionUtil = exports.EGenreNiveauDAcquisition =
 	void 0;
+const TypeNote_1 = require("TypeNote");
+const UtilitaireNiveauAcquisition_1 = require("UtilitaireNiveauAcquisition");
+const AccessApp_1 = require("AccessApp");
 var EGenreNiveauDAcquisition;
 (function (EGenreNiveauDAcquisition) {
 	EGenreNiveauDAcquisition[(EGenreNiveauDAcquisition["Multiple"] = 100)] =
@@ -28,10 +31,7 @@ var EGenreNiveauDAcquisition;
 	EGenreNiveauDAcquisition ||
 		(exports.EGenreNiveauDAcquisition = EGenreNiveauDAcquisition = {}),
 );
-const TypeNote_1 = require("TypeNote");
-const ObjetChaine_1 = require("ObjetChaine");
-const UtilitaireNiveauAcquisition_1 = require("UtilitaireNiveauAcquisition");
-const EGenreNiveauDAcquisitionUtil = {
+exports.EGenreNiveauDAcquisitionUtil = {
 	ordre() {
 		return [
 			EGenreNiveauDAcquisition.Expert,
@@ -70,17 +70,29 @@ const EGenreNiveauDAcquisitionUtil = {
 				GEtatUtilisateur.estAvecCodeCompetences()
 			) {
 				H.push(
-					"<span",
-					lValeurTitle ? ' title="' + lValeurTitle + '"' : "",
-					lLibelleNiveau
-						? ` aria-label="${ObjetChaine_1.GChaine.toTitle(lLibelleNiveau)}"`
-						: "",
-					">",
-					EGenreNiveauDAcquisitionUtil.getAbbreviation(
-						aNiveauAcquisition,
-						aParams,
+					IE.jsx.str(
+						"span",
+						{
+							"ie-tooltiplabel": (
+								aParams === null || aParams === void 0
+									? void 0
+									: aParams.avecTitle
+							)
+								? lLibelleNiveau
+								: false,
+							"aria-label": (
+								aParams === null || aParams === void 0
+									? void 0
+									: aParams.avecTitle
+							)
+								? false
+								: lLibelleNiveau,
+						},
+						exports.EGenreNiveauDAcquisitionUtil.getAbbreviation(
+							aNiveauAcquisition,
+							aParams,
+						),
 					),
-					"</span>",
 				);
 			} else if (lGenreNiveauAcquisition >= EGenreNiveauDAcquisition.Expert) {
 				const lCouleurIcon = getCouleurIcone(aNiveauAcquisition);
@@ -88,18 +100,19 @@ const EGenreNiveauDAcquisitionUtil = {
 				if (lGenreNiveauAcquisition === EGenreNiveauDAcquisition.Expert) {
 					lContenuPastille = {
 						valeur: "+",
-						couleur: GCouleur.getCouleurCorrespondance(lCouleurIcon),
+						couleur: (0, AccessApp_1.getApp)()
+							.getCouleur()
+							.getCouleurCorrespondance(lCouleurIcon),
 					};
 				}
 				H.push(
 					UtilitaireNiveauAcquisition_1.UtilitaireNiveauAcquisition.getHtmlPastille(
 						{
 							estAnnotation:
-								EGenreNiveauDAcquisitionUtil.estUneAnnotation(
+								exports.EGenreNiveauDAcquisitionUtil.estUneAnnotation(
 									aNiveauAcquisition,
 								),
 							title: lValeurTitle,
-							libelleImage: lLibelleNiveau,
 							nomIcone: getNomIcone(aNiveauAcquisition),
 							couleurIcone: lCouleurIcon,
 							contenu: lContenuPastille,
@@ -151,14 +164,11 @@ const EGenreNiveauDAcquisitionUtil = {
 				GEtatUtilisateur.estAvecCodeCompetences()
 			) {
 				H.push(
-					"<span",
-					lValeurTitle ? ' title="' + lValeurTitle + '"' : "",
-					lLibelle
-						? ` aria-label="${ObjetChaine_1.GChaine.toTitle(lLibelle)}"`
-						: "",
-					">",
-					getAbbreviationPositionnement(lNiveauDAcquisition, aParams),
-					"</span>",
+					IE.jsx.str(
+						"span",
+						{ "ie-tooltiplabel": lLibelle },
+						getAbbreviationPositionnement(lNiveauDAcquisition, aParams),
+					),
 				);
 			} else if (
 				lNiveauDAcquisition.getGenre() >= EGenreNiveauDAcquisition.Expert
@@ -184,19 +194,19 @@ const EGenreNiveauDAcquisitionUtil = {
 					lContenuPastille = { valeur: 1 };
 				}
 				if (!!lContenuPastille) {
-					lContenuPastille.couleur =
-						GCouleur.getCouleurCorrespondance(lCouleurIcone);
+					lContenuPastille.couleur = (0, AccessApp_1.getApp)()
+						.getCouleur()
+						.getCouleurCorrespondance(lCouleurIcone);
 				}
 				H.push(
 					UtilitaireNiveauAcquisition_1.UtilitaireNiveauAcquisition.getHtmlPastille(
 						{
 							estPastillePositionnement: true,
 							estAnnotation:
-								EGenreNiveauDAcquisitionUtil.estUneAnnotation(
+								exports.EGenreNiveauDAcquisitionUtil.estUneAnnotation(
 									lNiveauDAcquisition,
 								),
 							title: lValeurTitle,
-							libelleImage: lLibelle,
 							nomIcone: getNomIcone(lNiveauDAcquisition),
 							couleurIcone: lCouleurIcone,
 							contenu: lContenuPastille,
@@ -208,6 +218,9 @@ const EGenreNiveauDAcquisitionUtil = {
 		return H.join("");
 	},
 	getLibellePositionnement(aParams) {
+		if (!aParams.niveauDAcquisition) {
+			return "";
+		}
 		const lPositionnement =
 			!!aParams.niveauDAcquisition.listePositionnements.count()
 				? aParams.niveauDAcquisition.listePositionnements.getElementParGenre(
@@ -220,7 +233,6 @@ const EGenreNiveauDAcquisitionUtil = {
 			: aParams.niveauDAcquisition.getLibelle();
 	},
 };
-exports.EGenreNiveauDAcquisitionUtil = EGenreNiveauDAcquisitionUtil;
 function getNomIcone(aNiveauAcquisition) {
 	let lNomIcone;
 	if (!!aNiveauAcquisition) {
@@ -240,11 +252,13 @@ function getNomIcone(aNiveauAcquisition) {
 function getCouleurIcone(aNiveauAcquisition) {
 	let lCouleurIcon;
 	if (!!aNiveauAcquisition) {
-		if (EGenreNiveauDAcquisitionUtil.estUneAnnotation(aNiveauAcquisition)) {
+		if (
+			exports.EGenreNiveauDAcquisitionUtil.estUneAnnotation(aNiveauAcquisition)
+		) {
 			lCouleurIcon = "#009ee1";
 		} else {
 			lCouleurIcon =
-				EGenreNiveauDAcquisitionUtil.getCouleur(aNiveauAcquisition);
+				exports.EGenreNiveauDAcquisitionUtil.getCouleur(aNiveauAcquisition);
 		}
 	}
 	return lCouleurIcon;
@@ -264,7 +278,7 @@ function getAbbreviationPositionnement(aNiveauAcquisition, aParams) {
 			? lPositionnement.abbreviationAvecPrefixe
 			: lPositionnement.abbreviation;
 	} else {
-		result = EGenreNiveauDAcquisitionUtil.getAbbreviation(
+		result = exports.EGenreNiveauDAcquisitionUtil.getAbbreviation(
 			aNiveauAcquisition,
 			aParams,
 		);

@@ -1,4 +1,7 @@
-exports.InterfaceSuiviElevesTutores = void 0;
+exports.InterfaceSuiviElevesTutores =
+	exports.ObjetRequeteListeAvisProfesseurs =
+	exports.ObjetRequeteSuiviElevesTutores =
+		void 0;
 const CollectionRequetes_1 = require("CollectionRequetes");
 const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
 const Invocateur_1 = require("Invocateur");
@@ -22,13 +25,17 @@ const ObjetTri_1 = require("ObjetTri");
 const Enumere_TriElement_1 = require("Enumere_TriElement");
 const ObjetRequeteDetailAbsences_1 = require("ObjetRequeteDetailAbsences");
 const ObjetFenetre_DetailAbsences_1 = require("ObjetFenetre_DetailAbsences");
+class ObjetRequeteSuiviElevesTutores extends ObjetRequeteJSON_1.ObjetRequeteConsultation {}
+exports.ObjetRequeteSuiviElevesTutores = ObjetRequeteSuiviElevesTutores;
 CollectionRequetes_1.Requetes.inscrire(
 	"SuiviElevesTutores",
-	ObjetRequeteJSON_1.ObjetRequeteConsultation,
+	ObjetRequeteSuiviElevesTutores,
 );
+class ObjetRequeteListeAvisProfesseurs extends ObjetRequeteJSON_1.ObjetRequeteConsultation {}
+exports.ObjetRequeteListeAvisProfesseurs = ObjetRequeteListeAvisProfesseurs;
 CollectionRequetes_1.Requetes.inscrire(
 	"ListeAvisProfesseurs",
-	ObjetRequeteJSON_1.ObjetRequeteConsultation,
+	ObjetRequeteListeAvisProfesseurs,
 );
 class InterfaceSuiviElevesTutores extends InterfacePage_1.InterfacePage {
 	constructor(...aParams) {
@@ -103,12 +110,10 @@ class InterfaceSuiviElevesTutores extends InterfacePage_1.InterfacePage {
 	construireStructureAffichageAutre() {
 		const H = [];
 		H.push(
-			'<div id="InterfaceSuiviElevesTutores" ',
-			GNavigateur.isLayoutTactile ? ' class="height-auto"' : "",
-			">",
+			'<div id="InterfaceSuiviElevesTutores">',
 			'<div id="ZoneListeEleves">',
 			'<div id="',
-			this.getInstance(this.identListeEleves).getNom(),
+			this.getNomInstance(this.identListeEleves),
 			'"></div>',
 			"</div>",
 			'<div id="',
@@ -139,8 +144,7 @@ class InterfaceSuiviElevesTutores extends InterfacePage_1.InterfacePage {
 	}
 	evenementSurDernierMenuDeroulant() {
 		this._effacerCacheDonnees();
-		(0, CollectionRequetes_1.Requetes)(
-			"SuiviElevesTutores",
+		new ObjetRequeteSuiviElevesTutores(
 			this,
 			this.actionSurRecupererDonnees.bind(this),
 		).lancerRequete({
@@ -162,7 +166,7 @@ class InterfaceSuiviElevesTutores extends InterfacePage_1.InterfacePage {
 				Invocateur_1.ObjetInvocateur.events.activationImpression,
 				Enumere_GenreImpression_1.EGenreImpression.GenerationPDF,
 				this,
-				this._getParametresPDF,
+				this._getParametresPDF.bind(this),
 			);
 			$("#" + this.ids.zoneDetailSuiviEleve).show();
 			const lListeEleves = this.getInstance(this.identListeEleves);
@@ -342,8 +346,7 @@ class InterfaceSuiviElevesTutores extends InterfacePage_1.InterfacePage {
 							this.cacheDonneesEleve[aParametres.article.getNumero()],
 						);
 					} else {
-						(0, CollectionRequetes_1.Requetes)(
-							"ListeAvisProfesseurs",
+						new ObjetRequeteListeAvisProfesseurs(
 							this,
 							this.surRecuperationListeAvisProfesseurDEleve.bind(this),
 						).lancerRequete({
@@ -602,7 +605,7 @@ class InterfaceSuiviElevesTutores extends InterfacePage_1.InterfacePage {
 		H.push("</div>");
 		H.push(
 			'<div style="height: calc(100% - 7.5rem);" id="',
-			this.getInstance(this.identListeAvisProf).getNom(),
+			this.getNomInstance(this.identListeAvisProf),
 			'"></div>',
 		);
 		return H.join("");

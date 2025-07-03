@@ -3,13 +3,14 @@ require("IEHtml.Chips.js");
 const ObjetChaine_1 = require("ObjetChaine");
 const tag_1 = require("tag");
 const ObjetTraduction_1 = require("ObjetTraduction");
+const AccessApp_1 = require("AccessApp");
+const MethodesObjet_1 = require("MethodesObjet");
 exports.UtilitaireAudio = {
 	IconeLecture: "icon_play_sign",
 	IconePause: "icon_pause",
 	IconeStop: "icon_pause",
 	ExceptionFichierNonValide: 0,
 	construitChipsAudio: function (aInfoChips) {
-		const H = [];
 		const lInfosChips = Object.assign(
 			{
 				base64Audio: "",
@@ -23,20 +24,6 @@ exports.UtilitaireAudio = {
 			},
 			aInfoChips,
 		);
-		H.push("<ie-chips");
-		if (!!lInfosChips.idChips) {
-			H.push(' id="', lInfosChips.idChips, '"');
-		}
-		if (!!lInfosChips.ieModel) {
-			H.push(
-				" ",
-				tag_1.tag.composeAttr(
-					"ie-model",
-					lInfosChips.ieModel,
-					lInfosChips.argsIEModel,
-				),
-			);
-		}
 		lInfosChips.classes.push("ChipsAudio");
 		lInfosChips.classes.push("iconic", this.IconeLecture);
 		if (!lInfosChips.libelle) {
@@ -45,7 +32,6 @@ exports.UtilitaireAudio = {
 		if (!lInfosChips.ieModel) {
 			lInfosChips.classes.push("avec-event");
 		}
-		H.push(' class="', lInfosChips.classes.join(" "), '">');
 		let lSrc;
 		let lType;
 		if (!!lInfosChips.url) {
@@ -63,19 +49,26 @@ exports.UtilitaireAudio = {
 		} else {
 			lSrc = "data:audio/mp3;base64," + lInfosChips.base64Audio;
 		}
-		H.push(
-			'<audio><source src="',
-			lSrc,
-			'"',
-			lType ? ' type="' + lType + '"' : "",
+		return IE.jsx.str(
+			"ie-chips",
+			{
+				id: lInfosChips.idChips,
+				"ie-model": MethodesObjet_1.MethodesObjet.isString(lInfosChips.ieModel)
+					? tag_1.tag.funcAttr(lInfosChips.ieModel, lInfosChips.argsIEModel)
+					: lInfosChips.ieModel || false,
+				class: lInfosChips.classes,
+			},
+			IE.jsx.str(
+				"audio",
+				null,
+				IE.jsx.str("source", {
+					src: lSrc,
+					type: lType || false,
+					id: lInfosChips.idAudio || false,
+				}),
+			),
+			IE.jsx.str("span", null, lInfosChips.libelle),
 		);
-		if (!!lInfosChips.idAudio) {
-			H.push(' id="', lInfosChips.idAudio, '"');
-		}
-		H.push("></audio>");
-		H.push("<span>", lInfosChips.libelle, "</span>");
-		H.push("</ie-chips>");
-		return H.join("");
 	},
 	jouerAudio: function (aElementAudio) {
 		if (!!aElementAudio && aElementAudio.duration > 0) {
@@ -168,14 +161,16 @@ exports.UtilitaireAudio = {
 		});
 	},
 	messageErreurFormat: function (aFichier) {
-		GApplication.getMessage().afficher({
-			message: ObjetChaine_1.GChaine.format(
-				ObjetTraduction_1.GTraductions.getValeur(
-					"EnregistrementAudio.echecFormat",
+		(0, AccessApp_1.getApp)()
+			.getMessage()
+			.afficher({
+				message: ObjetChaine_1.GChaine.format(
+					ObjetTraduction_1.GTraductions.getValeur(
+						"EnregistrementAudio.echecFormat",
+					),
+					[aFichier.getLibelle() || ""],
 				),
-				[aFichier.getLibelle() || ""],
-			),
-		});
+			});
 	},
 	executeClicChipsParDefaut: function (aNodeChips) {
 		$(aNodeChips)

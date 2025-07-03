@@ -62,13 +62,13 @@ const TypeOrigineCreationAvanceeTravauxUtil = {
 			case TypeOrigineCreationAvanceeTravaux.OCAT_EnAttente:
 				return "icon_edt_permanence";
 			case TypeOrigineCreationAvanceeTravaux.OCAT_Accepte:
-				return "icon_check_fin text-util-bleu-foncee";
+				return "icon_check_fin color-blue-foncee";
 			case TypeOrigineCreationAvanceeTravaux.OCAT_Realise:
-				return "icon_double_check text-util-vert-foncee";
+				return "icon_double_check color-green-foncee";
 			case TypeOrigineCreationAvanceeTravaux.OCAT_Refuse:
-				return "icon_fermeture_widget text-util-rouge-foncee";
+				return "icon_fermeture_widget color-red-foncee";
 			case TypeOrigineCreationAvanceeTravaux.OCAT_ALEtude:
-				return "icon_sous_discussion text-util-orange-moyen";
+				return "icon_sous_discussion color-orange-moyen";
 			case TypeOrigineCreationAvanceeTravaux.OCAT_Utilisateur:
 				return "";
 			default:

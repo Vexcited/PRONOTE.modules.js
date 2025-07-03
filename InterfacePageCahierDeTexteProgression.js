@@ -15,9 +15,9 @@ const Enumere_Ressource_1 = require("Enumere_Ressource");
 const InterfaceTAFProgression_1 = require("InterfaceTAFProgression");
 const ObjetFenetre_Categorie_1 = require("ObjetFenetre_Categorie");
 const ObjetFenetre_FichiersCloud_1 = require("ObjetFenetre_FichiersCloud");
-const ObjetFenetre_PieceJointe = require("ObjetFenetre_PieceJointe");
+const ObjetFenetre_PieceJointe_1 = require("ObjetFenetre_PieceJointe");
 const ObjetRequeteListeCDTProgressions_1 = require("ObjetRequeteListeCDTProgressions");
-const ObjetRequeteListeContenuTAFsEtContenus = require("ObjetRequeteListeContenuTAFsEtContenus");
+const ObjetRequeteListeContenuTAFsEtContenus_1 = require("ObjetRequeteListeContenuTAFsEtContenus");
 const ObjetRequeteSaisieCDTProgressions_1 = require("ObjetRequeteSaisieCDTProgressions");
 const UtilitaireVisuProgression_1 = require("UtilitaireVisuProgression");
 const InterfaceContenuCahierDeTextes_1 = require("InterfaceContenuCahierDeTextes");
@@ -55,7 +55,7 @@ class InterfacePageCahierDeTexteProgression extends _InterfacePageSaisieCahierDe
 			this._initSelectionProgression,
 		);
 		this.identEditionPieceJointe = this.add(
-			ObjetFenetre_PieceJointe,
+			ObjetFenetre_PieceJointe_1.ObjetFenetre_PieceJointe,
 			this.evenementEditionDocumentJoint,
 		);
 		this.identFenetreEditionCategorie = this.add(
@@ -137,7 +137,7 @@ class InterfacePageCahierDeTexteProgression extends _InterfacePageSaisieCahierDe
 		H.push(
 			'<div class="InterfacePageCahierDeTexteProgression">',
 			'<div id="',
-			this.getInstance(this.identSelectionProgression).getNom(),
+			this.getNomInstance(this.identSelectionProgression),
 			'"></div>',
 			"<div>",
 			'<div style="flex: none; padding-bottom: 5px;">',
@@ -488,7 +488,7 @@ class InterfacePageCahierDeTexteProgression extends _InterfacePageSaisieCahierDe
 					ObjetHtml_1.GHtml.addHtml(
 						this.Nom + "_Contenus",
 						'<div id="' +
-							this.getInstance(this.identContenus[0]).getNom() +
+							this.getNomInstance(this.identContenus[0]) +
 							'"></div>',
 					);
 					this.getInstance(this.identContenus[0]).cahierDeTexteVerrouille =
@@ -510,7 +510,7 @@ class InterfacePageCahierDeTexteProgression extends _InterfacePageSaisieCahierDe
 					ObjetHtml_1.GHtml.addHtml(
 						this.Nom + "_Contenus",
 						'<div id="' +
-							this.getInstance(this.identContenus[0]).getNom() +
+							this.getNomInstance(this.identContenus[0]) +
 							'"></div>',
 					);
 					this.getInstance(this.identContenus[0]).cahierDeTexteVerrouille =
@@ -797,7 +797,7 @@ class InterfacePageCahierDeTexteProgression extends _InterfacePageSaisieCahierDe
 						);
 				}
 				if (lListeElementsAff.count() > 0) {
-					new ObjetRequeteListeContenuTAFsEtContenus(
+					new ObjetRequeteListeContenuTAFsEtContenus_1.ObjetRequeteListeContenuTAFsEtContenus(
 						this,
 						this._surReponseListeContenuTAFsEtContenus.bind(
 							this,

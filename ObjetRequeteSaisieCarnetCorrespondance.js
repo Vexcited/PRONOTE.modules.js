@@ -1,9 +1,7 @@
-const { ObjetRequeteSaisie } = require("ObjetRequeteJSON.js");
-const { Requetes } = require("CollectionRequetes.js");
-class ObjetRequeteSaisieCarnetCorrespondance extends ObjetRequeteSaisie {
-	constructor(...aParams) {
-		super(...aParams);
-	}
+exports.ObjetRequeteSaisieCarnetCorrespondance = void 0;
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+class ObjetRequeteSaisieCarnetCorrespondance extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aEleve, aListeObservations) {
 		this.JSON = { eleve: aEleve };
 		if (!!aListeObservations) {
@@ -13,14 +11,18 @@ class ObjetRequeteSaisieCarnetCorrespondance extends ObjetRequeteSaisie {
 					aJSON.commentaire = aObs.commentaire;
 					aJSON.date = aObs.date;
 					aJSON.estPubliee = aObs.estPubliee;
+					if (aObs.dateFinMiseEnEvidence) {
+						aJSON.dateFinMiseEnEvidence = aObs.dateFinMiseEnEvidence;
+					}
 				},
 			});
 		}
 		return this.appelAsynchrone();
 	}
 }
-Requetes.inscrire(
+exports.ObjetRequeteSaisieCarnetCorrespondance =
+	ObjetRequeteSaisieCarnetCorrespondance;
+CollectionRequetes_1.Requetes.inscrire(
 	"SaisieCarnetCorrespondance",
 	ObjetRequeteSaisieCarnetCorrespondance,
 );
-module.exports = ObjetRequeteSaisieCarnetCorrespondance;
