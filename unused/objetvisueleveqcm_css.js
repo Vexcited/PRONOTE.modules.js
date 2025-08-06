@@ -58,6 +58,7 @@ exports.StylesObjetVisuEleveQCM = {
 	nbrPoint: "nbr-point",
 	contenuQuestion: "contenu-question",
 	wrapperEnonceQuestionQCM: "wrapperEnonceQuestionQCM",
+	browserDefault: "browser-default",
 	mediaContain: "media-contain",
 	PageModalite: "PageModalite",
 	PageConsignes: "PageConsignes",

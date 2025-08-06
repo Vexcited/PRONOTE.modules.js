@@ -143,7 +143,7 @@ class MoteurNotes {
 	}
 	creerDevoirParDefaut(aParam) {
 		const lDevoir = new ObjetElement_1.ObjetElement();
-		const lDateCourante = ObjetDate_1.GDate.getDateCourante();
+		const lDateCourante = ObjetDate_1.GDate.getDateCourante(true);
 		lDevoir.service = aParam.service;
 		lDevoir.estDevoirEditable = lDevoir.service.getActif();
 		lDevoir.matiere = MethodesObjet_1.MethodesObjet.dupliquer(aParam.matiere);

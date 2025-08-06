@@ -133,7 +133,7 @@ class PageOrientation extends ObjetIdentite_1.Identite {
 							? void 0
 							: _a.avecSaisie;
 					},
-					class: "btn-valider m-all",
+					class: "btn-valider m-all-xl",
 					"ie-model": this.jsxModelBoutonValider.bind(this),
 				},
 				this.estIntentionProvisoire
@@ -450,7 +450,7 @@ class PageOrientation extends ObjetIdentite_1.Identite {
 							? void 0
 							: _a.avecSaisie;
 					},
-					class: "btn-valider m-all",
+					class: "btn-valider m-all-xl",
 					"ie-model": this.jsxModelBoutonValider.bind(this),
 				},
 				GlossaireOrientation_1.TradGlossaireOrientation.LanguesOptions.bouton,

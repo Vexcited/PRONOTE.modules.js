@@ -25,6 +25,7 @@ class _ObjetAffichageBandeauPied extends ObjetIdentite_1.Identite {
 		};
 		this.options = {
 			mention: "",
+			urlConfidentialite: "",
 			siteIndex: "https://www.index-education.com",
 			urlInfosHebergement: "",
 			logoProduitCss: "",
@@ -127,19 +128,7 @@ class _ObjetAffichageBandeauPied extends ObjetIdentite_1.Identite {
 			IE.jsx.str(
 				"p",
 				null,
-				`${ObjetTraduction_1.GTraductions.getValeur("PiedPage.CookieInfo_Message_1")} ${ObjetTraduction_1.GTraductions.getValeur("PiedPage.CookieInfo_Message_2")} `,
-				IE.jsx.str(
-					"span",
-					{
-						role: "button",
-						tabindex: "0",
-						class: "as-link",
-						"ie-node": "btnMention",
-						"aria-haspopup": "dialog",
-					},
-					ObjetTraduction_1.GTraductions.getValeur("PiedPage.mentionsLegales"),
-					".",
-				),
+				`${ObjetTraduction_1.GTraductions.getValeur("PiedPage.CookieInfo_Message_1")} ${ObjetTraduction_1.GTraductions.getValeur("PiedPage.CookieInfo_Message_2", [IE.jsx.str("a", { href: this.options.urlConfidentialite, class: "as-link" }, ObjetTraduction_1.GTraductions.getValeur("PiedPage.PolitiqueConfidentialite"), ".")])} `,
 			),
 			IE.jsx.str(
 				"ie-bouton",
@@ -307,6 +296,19 @@ class _ObjetAffichageBandeauPied extends ObjetIdentite_1.Identite {
 			);
 			H.push("<hr />");
 		}
+		if (this.options.urlConfidentialite) {
+			H.push(
+				IE.jsx.str(
+					"a",
+					{
+						class: "ibp-command confidentialite",
+						href: this.options.urlConfidentialite,
+					},
+					ObjetTraduction_1.GTraductions.getValeur("PiedPage.Confidentialite"),
+				),
+			);
+			H.push("<hr />");
+		}
 		if (this.options.urlDeclarationAccessibilite) {
 			H.push(
 				IE.jsx.str(
@@ -328,6 +330,11 @@ class _ObjetAffichageBandeauPied extends ObjetIdentite_1.Identite {
 				),
 			);
 		}
+		const lGetNodeSite = (aNode) => {
+			$(aNode).eventValidation(() => {
+				window.open(this.options.urlInfosHebergement);
+			});
+		};
 		if (this.avecPlanSite()) {
 			const lbtnPlanSite = (aNode) => {
 				$(aNode).eventValidation(() => {
@@ -346,18 +353,10 @@ class _ObjetAffichageBandeauPied extends ObjetIdentite_1.Identite {
 					},
 					ObjetTraduction_1.GTraductions.getValeur("PiedPage.planSite"),
 				),
+				IE.jsx.str("hr", null),
 			);
-			if (lAvecLibelleHeberge) {
-				H.push("<hr />");
-			}
 		}
-		H.push("</div>");
 		if (lAvecLibelleHeberge) {
-			const lGetNode = (aNode) => {
-				$(aNode).eventValidation(() => {
-					window.open(this.options.urlInfosHebergement);
-				});
-			};
 			H.push(
 				IE.jsx.str(
 					"div",
@@ -365,12 +364,14 @@ class _ObjetAffichageBandeauPied extends ObjetIdentite_1.Identite {
 						role: "link",
 						tabindex: "0",
 						class: "host-france-container ibp-command",
-						"ie-node": ObjetNavigateur_1.Navigateur.isIOS ? false : lGetNode,
+						"ie-node": ObjetNavigateur_1.Navigateur.isIOS
+							? false
+							: lGetNodeSite,
 					},
 					this.espacesISO27001()
 						? '<span class="certif-27001">' +
 								ObjetTraduction_1.GTraductions.getValeur(
-									"PiedPage.certifISO27001",
+									"PiedPage.SecNumCloud",
 								) +
 								"</span>"
 						: "",
@@ -381,19 +382,27 @@ class _ObjetAffichageBandeauPied extends ObjetIdentite_1.Identite {
 							"PiedPage.hebergementDonneesFrance",
 						),
 					),
-					IE.jsx.str("hr", null),
-					IE.jsx.str("span", {
-						class: "logo-index-inverse",
-						"aria-hidden": "true",
-					}),
-					IE.jsx.str(
-						"div",
-						{ class: "flex-contain cols text-start" },
-						ObjetTraduction_1.GTraductions.getValeur("PiedPage.IndexEducation"),
-					),
 				),
 			);
 		}
+		H.push("</div>");
+		H.push(
+			IE.jsx.str(
+				"div",
+				{
+					role: "link",
+					tabindex: "0",
+					class: "host-france-container ibp-command",
+					"ie-node": ObjetNavigateur_1.Navigateur.isIOS ? false : lGetNodeSite,
+				},
+				IE.jsx.str("span", {
+					class: "logo-index-inverse",
+					"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+						"PiedPage.IndexEducation",
+					),
+				}),
+			),
+		);
 		H.push('<div class="knowledge-container">');
 		if (this.avecBoutonPersonnaliseProduit()) {
 			H.push(this.composeBoutonPersonnaliseProduit());

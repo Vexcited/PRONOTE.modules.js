@@ -252,7 +252,12 @@ class ObjetPiedPageAppreciationsBulletin_Professeur extends ObjetIdentite_1.Iden
 					aInstance._ouvrirFenetreParamAppreciation();
 				},
 				getTitle: function () {
-					return aInstance.donnees.appreciation
+					var _a;
+					return (
+						(_a = aInstance.donnees.appreciation) === null || _a === void 0
+							? void 0
+							: _a.strHintParamApp
+					)
 						? ObjetChaine_1.GChaine.enleverEntites(
 								aInstance.donnees.appreciation.strHintParamApp,
 							)
@@ -588,7 +593,7 @@ class ObjetPiedPageAppreciationsBulletin_Professeur extends ObjetIdentite_1.Iden
 		T.push('<ul class="flex-contain cols flex-gap-s">');
 		if (this.donnees.pied && this.donnees.pied.profs) {
 			this.donnees.pied.profs.sort();
-			T.push("<li>", this.donnees.pied.profs.join(""), "</li>");
+			T.push("<li>", this.donnees.pied.profs.join("<br/>"), "</li>");
 		}
 		if (
 			this.donnees.strMoyClasse !== null &&

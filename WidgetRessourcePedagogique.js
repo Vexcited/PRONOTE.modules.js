@@ -82,17 +82,7 @@ class WidgetRessourcePedagogique extends ObjetWidget_1.Widget.ObjetWidget {
 					lSuffixe,
 				),
 			);
-		const lAriaLabel =
-			(lMatiere ? lMatiere.getLibelle() : "") +
-			" " +
-			ObjetChaine_1.GChaine.format(
-				ObjetTraduction_1.GTraductions.getValeur(
-					"accueil.ressourcePedagogique.deposeLe",
-				),
-				[ObjetDate_1.GDate.formatDate(aDocument.date, "%J %MMMM")],
-			) +
-			" ";
-		H.push(`<li tabindex="0" aria-label="${lAriaLabel}">\n    <div class="wrap">\n      ${lMatiere ? `<h3 class="ie-line-color static" style="--color-line: ${lMatiere.couleur};">${lMatiere.getLibelle()}</h3>` : ``}
+		H.push(`<li>\n    <div class="wrap">\n      ${lMatiere ? `<h3 class="ie-line-color static" style="--color-line: ${lMatiere.couleur};">${lMatiere.getLibelle()}</h3>` : ``}
       <div class="pj-date-contain">`);
 		if (
 			aDocument.getGenre() ===

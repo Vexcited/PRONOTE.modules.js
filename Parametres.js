@@ -72,6 +72,7 @@ class ObjetParametres extends ObjetParametresCP_1.ObjetParametresCP {
 		this.urlCanope = lJGeneral.urlCanope;
 		this.urlDeclarationAccessibilite = lJGeneral.urlDeclarationAccessibilite;
 		this.accessibiliteNonConforme = lJGeneral.accessibiliteNonConforme;
+		this.urlConfidentialite = aJSON.urlConfidentialite;
 		this.labelLienProduit = aJSON.labelLienProduit;
 		this.urlLogo = lJGeneral.urlLogo;
 		this.logoDepartementImage = lJGeneral.logoDepartementImage;

@@ -323,6 +323,9 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 			remplacementsenseignants: this.moteur.getDeclarationWidget(
 				Enumere_Widget_1.EGenreWidget.RemplacementsEnseignants,
 			),
+			documentsASigner: this.moteur.getDeclarationWidget(
+				Enumere_Widget_1.EGenreWidget.documentsASigner,
+			),
 		};
 	}
 	declarerWidgetsPourPrimaire() {
@@ -409,6 +412,9 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 			),
 			voteElecElecteur: this.moteur.getDeclarationWidget(
 				Enumere_Widget_1.EGenreWidget.voteElecElecteur,
+			),
+			documentsASigner: this.moteur.getDeclarationWidget(
+				Enumere_Widget_1.EGenreWidget.documentsASigner,
 			),
 		};
 	}
@@ -522,6 +528,8 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 				return this.donnees.modificationsEDT;
 			case Enumere_Widget_1.EGenreWidget.RemplacementsEnseignants:
 				return this.donnees.remplacementsenseignants;
+			case Enumere_Widget_1.EGenreWidget.documentsASigner:
+				return this.donnees.documentsASigner;
 		}
 	}
 	construireInstances() {
@@ -756,7 +764,8 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 				this.donnees.EDT.absences = null;
 			}
 			if (aObjet.planning && this.donnees.planning) {
-				this.donnees.planning.listeRessourcesPlanning = [];
+				this.donnees.planning.listeRessourcesPlanning =
+					new ObjetListeElements_1.ObjetListeElements();
 			}
 			$.extend(true, this.donnees, aObjet);
 			for (const i in aObjet) {
@@ -1133,8 +1142,8 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 		);
 	}
 	actualiserVisibiliteColonnes() {
-		for (const i in this.genreColonne) {
-			const lColonne = this.genreColonne[i];
+		for (const aGenreColonne in this.genreColonne) {
+			const lColonne = this.genreColonne[aGenreColonne];
 			lColonne.visible =
 				lColonne.liste.filter((aGenreWidget) => {
 					if (aGenreWidget !== null) {
@@ -1144,15 +1153,21 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 						);
 					}
 				}).length > 0;
-			const lColVisibility = $(
-				"#" + (this.idColonne + lColonne.genre).escapeJQ(),
-			);
-			const lGlobalContainer = lColVisibility.parent(
-				".widgets-global-container",
-			);
+			lColonne.actif =
+				lColonne.liste.filter((aGenreWidget) => {
+					if (aGenreWidget !== null) {
+						return (
+							this.etatUtilisateurSco.widgets[aGenreWidget] &&
+							this.etatUtilisateurSco.widgets[aGenreWidget].actif
+						);
+					}
+				}).length > 0;
+			const lGlobalContainer = $(".widgets-global-container");
 			lColonne.visible
 				? ""
-				: lGlobalContainer.addClass("no-" + lColVisibility.attr("class"));
+				: !lColonne.actif
+					? lGlobalContainer.addClass("no-" + aGenreColonne.toLowerCase())
+					: "";
 		}
 		clearTimeout(this._timeoutActualiserScroll);
 		this._timeoutActualiserScroll = setTimeout(

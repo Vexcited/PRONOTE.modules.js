@@ -77,7 +77,7 @@ class InterfaceIntendanceDemandesTravaux extends ObjetInterfacePageCP_1.Interfac
 				break;
 		}
 	}
-	evntDupliquerElementMission(lArticle) {
+	evntDupliquerElementMission(aArticle) {
 		const lDateCourante = ObjetDate_1.GDate.getDateCourante();
 		const lDateCouranteFormat = ObjetDate_1.GDate.formatDate(
 			lDateCourante,
@@ -108,7 +108,7 @@ class InterfaceIntendanceDemandesTravaux extends ObjetInterfacePageCP_1.Interfac
 			},
 		);
 		lFenetreTravaux.setDonnees({
-			demandeCourante: lArticle,
+			demandeCourante: aArticle,
 			listeEtatsAvancement: this.listeEtatsAvancement,
 			listeNatureTvx: this.listeNatureTvx,
 			listeSallesLieu: this.listeSallesLieu,

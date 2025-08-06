@@ -76,9 +76,6 @@ class ObjetSaisieMotDePasseCP extends ObjetIdentite_1.Identite {
 				),
 			);
 		}
-		ObjetHtml_1.GHtml.setFocus(
-			!this._avecMDPActuel() ? this.ids.input2 : this.ids.input1,
-		);
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {

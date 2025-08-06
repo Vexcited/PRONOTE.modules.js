@@ -138,7 +138,7 @@ class ParamAffRecapAbsences extends ObjetInterface_1.ObjetInterface {
 								return lSelection.uniquementRetardInternatSup;
 						}
 					}
-					return "";
+					return false;
 				},
 				setValue(aGenre, aValue) {
 					const lSelection = aInstance.selection;

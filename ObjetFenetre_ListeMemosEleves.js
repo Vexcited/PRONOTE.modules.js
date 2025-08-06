@@ -263,11 +263,10 @@ class ObjetFenetre_ListeMemosEleves extends ObjetFenetre_1.ObjetFenetre {
 						typeObservation: aParametres.article.typeObservation,
 						publiable: true,
 						avecDate: false,
-						actif:
+						actif: !(
 							this.parametresMemosEleves.forcerConsultation ||
 							lArticle.editable === false
-								? false
-								: aParametres.article.typeObservation.editable,
+						),
 						maxlengthCommentaire: 1000,
 					};
 					const lThis = this;

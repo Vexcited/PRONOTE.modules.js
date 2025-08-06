@@ -471,13 +471,13 @@ class ObjetFenetre_SaisieAgenda extends ObjetFenetre_1.ObjetFenetre {
 				null,
 				IE.jsx.str(
 					"section",
-					{ class: "flex-contain cols ObjetFenetre_SaisieAgenda" },
+					{ class: "ObjetFenetre_SaisieAgenda" },
 					IE.jsx.str(
 						"article",
-						{ class: "field-contain p-y-l label-up border-bottom" },
+						{ class: "field-contain label-up" },
 						IE.jsx.str(
 							"label",
-							{ for: this.id.inputTitre, class: "fix-bloc" },
+							{ for: this.id.inputTitre, class: "ie-titre-petit" },
 							ObjetTraduction_1.GTraductions.getValeur(
 								"Fenetre_SaisieAgenda.TitreEvenement",
 							),
@@ -494,10 +494,10 @@ class ObjetFenetre_SaisieAgenda extends ObjetFenetre_1.ObjetFenetre {
 					),
 					IE.jsx.str(
 						"article",
-						{ class: "field-contain label-up border-bottom p-bottom" },
+						{ class: "field-contain label-up" },
 						IE.jsx.str(
 							"label",
-							{ for: this.id.inputCtnEvent, class: "fix-bloc" },
+							{ for: this.id.inputCtnEvent, class: "ie-titre-petit" },
 							ObjetTraduction_1.GTraductions.getValeur(
 								"Fenetre_SaisieAgenda.ContenueEvenement",
 							),
@@ -515,10 +515,10 @@ class ObjetFenetre_SaisieAgenda extends ObjetFenetre_1.ObjetFenetre {
 					),
 					IE.jsx.str(
 						"article",
-						{ class: "field-contain label-up border-bottom p-bottom-l" },
+						{ class: "field-contain label-up" },
 						IE.jsx.str(
 							"label",
-							{ class: "fix-bloc", id: this.id.labeComboSelecCategorie },
+							{ class: "ie-titre-petit", id: this.id.labeComboSelecCategorie },
 							ObjetTraduction_1.GTraductions.getValeur(
 								"Fenetre_SaisieAgenda.Categorie",
 							),
@@ -526,10 +526,10 @@ class ObjetFenetre_SaisieAgenda extends ObjetFenetre_1.ObjetFenetre {
 						IE.jsx.str("ie-combo", { "ie-model": "comboSelecCategorie" }),
 					),
 					IE.jsx.str(
-						"section",
-						{ class: "field-contain label-up border-bottom p-bottom-l" },
+						"article",
+						{ class: "field-contain label-up p-top-l" },
 						IE.jsx.str("div", {
-							class: "pj-global-conteneur no-line",
+							class: "pj-global-conteneur",
 							id: this.getNomInstance(this.identPJ),
 						}),
 						IE.jsx.str("div", {
@@ -542,100 +542,90 @@ class ObjetFenetre_SaisieAgenda extends ObjetFenetre_1.ObjetFenetre {
 						}),
 					),
 					IE.jsx.str(
-						"section",
-						{ class: "field-contain label-up border-bottom" },
+						"article",
+						{ class: "field-contain ctn-date", id: this.id.blocDate },
 						IE.jsx.str(
-							"article",
-							{ class: "periode-contain ctn-date", id: this.id.blocDate },
-							IE.jsx.str(
-								"span",
-								{ class: "label-gauche" },
-								ObjetTraduction_1.GTraductions.getValeur(
-									"Fenetre_SaisieAgenda.FenetrePeriodiciteDu",
-								),
+							"span",
+							{ class: "label-gauche" },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"Fenetre_SaisieAgenda.FenetrePeriodiciteDu",
 							),
-							IE.jsx.str("div", {
-								id: this.getNomInstance(this.identDateDebut),
-								class: "fluid-bloc",
-							}),
-							IE.jsx.str(
-								"span",
-								{ class: "label-gauche" },
-								ObjetTraduction_1.GTraductions.getValeur(
-									"Fenetre_SaisieAgenda.FenetrePeriodiciteAu",
-								).toLowerCase(),
-							),
-							IE.jsx.str("div", {
-								id: this.getNomInstance(this.identDateFin),
-								class: "m-all fluid-bloc",
-							}),
 						),
+						IE.jsx.str("div", { id: this.getNomInstance(this.identDateDebut) }),
 						IE.jsx.str(
-							"section",
-							null,
-							IE.jsx.str(
-								"section",
-								{ id: this.id.blocHeure },
-								IE.jsx.str(
-									"ie-switch",
-									{
-										"ie-model": "switchHoraire",
-										"aria-label": ObjetTraduction_1.GTraductions.getValeur(
-											"Fenetre_SaisieAgenda.AvecHoraire",
-										),
-									},
-									ObjetTraduction_1.GTraductions.getValeur(
-										"Fenetre_SaisieAgenda.AvecHoraire",
-									),
-								),
-								IE.jsx.str(
-									"article",
-									{ class: "ctn-time", id: this.id.ctnHeure },
-									IE.jsx.str(
-										"div",
-										{ class: "hours-contain" },
-										IE.jsx.str("input", {
-											type: "time",
-											"aria-label": ObjetTraduction_1.GTraductions.getValeur(
-												"Fenetre_SaisieAgenda.WAI.heureDebut",
-											),
-											"ie-model": "inputTimeHoraire.heureDebut",
-										}),
-									),
-									IE.jsx.str(
-										"div",
-										{ class: "hours-contain" },
-										IE.jsx.str("input", {
-											type: "time",
-											"aria-label": ObjetTraduction_1.GTraductions.getValeur(
-												"Fenetre_SaisieAgenda.WAI.heureFin",
-											),
-											"ie-model": "inputTimeHoraire.heureFin",
-										}),
-									),
-								),
-							),
-							IE.jsx.str("ie-btnselecteur", {
-								id: this.id.ctnPeriodicite,
-								class: "m-y",
-								"ie-model": "selecteurPeriodicite",
-								"aria-label": this.evenement.estPeriodique
-									? ObjetTraduction_1.GTraductions.getValeur(
-											"Fenetre_SaisieAgenda.ModifierLaPeriodicite",
-										)
-									: ObjetTraduction_1.GTraductions.getValeur(
-											"Fenetre_SaisieAgenda.DefinirPeriodicite",
-										),
-							}),
-							IE.jsx.str("article", {
-								id: this.id.libellePeriodicite,
-								class: "m-all-l",
-							}),
+							"span",
+							{ class: "label-gauche" },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"Fenetre_SaisieAgenda.FenetrePeriodiciteAu",
+							).toLowerCase(),
 						),
+						IE.jsx.str("div", { id: this.getNomInstance(this.identDateFin) }),
 					),
 					IE.jsx.str(
-						"section",
-						{ class: "field-contain label-up" },
+						"article",
+						{ class: "field-contain label-up flex-gap p-top-l" },
+						IE.jsx.str(
+							"div",
+							{ id: this.id.blocHeure },
+							IE.jsx.str(
+								"ie-switch",
+								{
+									"ie-model": "switchHoraire",
+									"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+										"Fenetre_SaisieAgenda.AvecHoraire",
+									),
+								},
+								ObjetTraduction_1.GTraductions.getValeur(
+									"Fenetre_SaisieAgenda.AvecHoraire",
+								),
+							),
+							IE.jsx.str(
+								"div",
+								{ class: "ctn-time", id: this.id.ctnHeure },
+								IE.jsx.str(
+									"div",
+									{ class: "hours-contain" },
+									IE.jsx.str("input", {
+										type: "time",
+										"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+											"Fenetre_SaisieAgenda.WAI.heureDebut",
+										),
+										"ie-model": "inputTimeHoraire.heureDebut",
+									}),
+								),
+								IE.jsx.str(
+									"div",
+									{ class: "hours-contain" },
+									IE.jsx.str("input", {
+										type: "time",
+										"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+											"Fenetre_SaisieAgenda.WAI.heureFin",
+										),
+										"ie-model": "inputTimeHoraire.heureFin",
+									}),
+								),
+							),
+						),
+						IE.jsx.str("ie-btnselecteur", {
+							id: this.id.ctnPeriodicite,
+							class: "",
+							"ie-model": "selecteurPeriodicite",
+							"aria-label": this.evenement.estPeriodique
+								? ObjetTraduction_1.GTraductions.getValeur(
+										"Fenetre_SaisieAgenda.ModifierLaPeriodicite",
+									)
+								: ObjetTraduction_1.GTraductions.getValeur(
+										"Fenetre_SaisieAgenda.DefinirPeriodicite",
+									),
+						}),
+						IE.jsx.str("div", {
+							id: this.id.libellePeriodicite,
+							class: "m-all-l",
+						}),
+					),
+					IE.jsx.str(
+						"article",
+						{ class: "field-contain label-up flex-gap p-top-xl" },
 						IE.jsx.str(
 							"ie-switch",
 							{
@@ -646,11 +636,15 @@ class ObjetFenetre_SaisieAgenda extends ObjetFenetre_1.ObjetFenetre {
 							},
 							IE.jsx.str("i", {
 								class:
-									"iconic icon_fiche_cours_partage color-theme i-medium m-right-l fix-bloc",
+									" icon_fiche_cours_partage color-theme i-medium fix-block",
 								role: "presentation",
 							}),
-							ObjetTraduction_1.GTraductions.getValeur(
-								"Fenetre_SaisieAgenda.Publie",
+							IE.jsx.str(
+								"span",
+								null,
+								ObjetTraduction_1.GTraductions.getValeur(
+									"Fenetre_SaisieAgenda.Publie",
+								),
 							),
 						),
 						IE.jsx.str(

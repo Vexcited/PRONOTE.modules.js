@@ -118,6 +118,21 @@ class ObjetFenetre_ParametrageTAF extends ObjetFenetre_1.ObjetFenetre {
 			},
 		};
 	}
+	jsxCbEleveDetache() {
+		return {
+			getValue: () =>
+				this.appSco.parametresUtilisateur.get(
+					"CDT.TAF.AffecterParDefautElevesDetaches",
+				),
+			setValue: (aValue) => {
+				this.appSco.parametresUtilisateur.set(
+					"CDT.TAF.AffecterParDefautElevesDetaches",
+					aValue,
+				);
+			},
+			getDisabled: () => this.appSco.getModeExclusif(),
+		};
+	}
 	composeContenu() {
 		const lLargeurLibelle = 160;
 		const lIdLegend = GUID_1.GUID.getId();
@@ -135,6 +150,20 @@ class ObjetFenetre_ParametrageTAF extends ObjetFenetre_1.ObjetFenetre {
 						{ "ie-model": this.jsxModeleCheckboxMiseEnForme.bind(this) },
 						ObjetTraduction_1.GTraductions.getValeur(
 							"CahierDeTexte.paramTaf.ActiverMiseEnForme",
+						),
+					),
+				),
+				IE.jsx.str(
+					"div",
+					null,
+					IE.jsx.str(
+						"ie-checkbox",
+						{
+							class: "long-text",
+							"ie-model": this.jsxCbEleveDetache.bind(this),
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"CahierDeTexte.paramTaf.AffecterElevesDetaches",
 						),
 					),
 				),

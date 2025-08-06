@@ -1032,6 +1032,13 @@ class ObjetFenetre_SaisieSujetForumPedagogique extends ObjetFenetre_1.ObjetFenet
 									this._compteurRessources(aPourMembre, aGenreRessource) === 0
 								) {
 									this.sujet.avecHoraires = false;
+								} else if (
+									aPourMembre &&
+									aGenreRessource ===
+										Enumere_Ressource_1.EGenreRessource.Eleve &&
+									this._compteurRessources(aPourMembre, aGenreRessource) > 0
+								) {
+									this.sujet.avecHoraires = true;
 								}
 							}
 						},

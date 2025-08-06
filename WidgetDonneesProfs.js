@@ -60,15 +60,13 @@ class WidgetDonneesProfs extends ObjetWidget_1.Widget.ObjetWidget {
 				for (let i = 0; i < lNbrLignes; i++) {
 					H.push("<tr>");
 					H.push(
-						'<th scope="row" tabindex="0"><span title="',
-						this.donnees.strTypeDonnee[i],
-						'">',
+						'<th scope="row"><span>',
 						this.donnees.strTypeDonnee[i],
 						"</span></th>",
 					);
 					for (let j = 0, lNbr = lListe.count(); j < lNbr; j++) {
 						H.push(
-							'<td tabindex="0"><span>',
+							"<td><span>",
 							lListe.get(j).listeDonnees[i].strValeur,
 							"</span></td>",
 						);

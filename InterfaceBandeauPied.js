@@ -14,6 +14,7 @@ class ObjetAffichageBandeauPied extends _InterfaceBandeauPied_1._ObjetAffichageB
 		this.parametresSco = this.appSco.getObjetParametres();
 		this.options = {
 			mention: this.parametresSco.publierMentions,
+			urlConfidentialite: this.parametresSco.urlConfidentialite,
 			siteIndex:
 				this.parametresSco.urlSiteIndexEducation ||
 				"https://www.index-education.com",

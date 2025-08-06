@@ -54,11 +54,19 @@ class ObjetFenetre_EditionListeDiffusion extends ObjetFenetre_1.ObjetFenetre {
 				},
 			};
 		};
-		return IE.jsx.str("input", {
-			"ie-model": linputTitre,
-			class: ["ofeld_libelle"],
-			"aria-labelledby": this.IdTitre,
-		});
+		return IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			IE.jsx.str(
+				"div",
+				{ class: "field-contain" },
+				IE.jsx.str("input", {
+					"ie-model": linputTitre,
+					class: ["ofeld_libelle"],
+					"aria-labelledby": this.IdTitre,
+				}),
+			),
+		);
 	}
 	surValidation(aNumeroBouton) {
 		const lBouton = this.getBoutonNumero(aNumeroBouton);

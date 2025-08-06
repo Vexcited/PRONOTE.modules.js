@@ -80,7 +80,7 @@ class ObjetModulePJ extends ObjetIdentite_1.Identite {
 				addFiles: function (aParams) {
 					if (aInstance.options.addFiles) {
 						aInstance.options.addFiles(aParams);
-						this.controleur.$refreshSelf();
+						this.controleur.$refresh();
 					}
 				},
 				getDisabled: function () {
@@ -110,7 +110,7 @@ class ObjetModulePJ extends ObjetIdentite_1.Identite {
 		const lImage = IE.jsx.str("i", {
 			role: "presentation",
 			class:
-				"btnImage pj-icon " +
+				"btnImage pj-icon bt-activable bt-large m-right " +
 				(this.options.genrePJ ===
 				Enumere_DocumentJoint_1.EGenreDocumentJoint.Url
 					? "icon_globe"

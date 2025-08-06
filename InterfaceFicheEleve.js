@@ -864,7 +864,7 @@ class InterfaceFicheEleve extends ObjetInterface_1.ObjetInterface {
 				this.identiteEleve.villeNaiss
 					? IE.jsx.str(
 							"p",
-							null,
+							{ class: "p-left" },
 							ObjetTraduction_1.GTraductions.getValeur("FicheEleve.a"),
 							" ",
 							this.identiteEleve.villeNaiss,

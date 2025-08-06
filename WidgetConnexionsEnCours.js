@@ -40,16 +40,11 @@ class WidgetConnexionsEnCours extends ObjetWidget_1.Widget.ObjetWidget {
 			const lEnteteColonneEDT = this.donnees.avecEDT
 				? IE.jsx.str(
 						"th",
-						{
-							scope: "col",
-							title: ObjetTraduction_1.GTraductions.getValeur(
-								"accueil.connexionsEnCours.hintConnexionsEDT",
-							),
-						},
+						{ scope: "col" },
 						IE.jsx.str("i", {
 							class: "icon_connexion_edt",
 							role: "img",
-							"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+							"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
 								"accueil.connexionsEnCours.hintConnexionsEDT",
 							),
 						}),
@@ -65,33 +60,23 @@ class WidgetConnexionsEnCours extends ObjetWidget_1.Widget.ObjetWidget {
 						IE.jsx.str("td", null),
 						IE.jsx.str(
 							"th",
-							{
-								scope: "col",
-								title: ObjetTraduction_1.GTraductions.getValeur(
-									"accueil.connexionsEnCours.hintConnexionsEspaces",
-								),
-							},
+							{ scope: "col" },
 							IE.jsx.str("i", {
 								class: "icon_connexion_http",
 								role: "img",
-								"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+								"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
 									"accueil.connexionsEnCours.hintConnexionsEspaces",
 								),
 							}),
 						),
 						IE.jsx.str(
 							"th",
-							{
-								scope: "col",
-								title: ObjetTraduction_1.GTraductions.getValeur(
-									"accueil.connexionsEnCours.hintConnexionsPronote",
-								),
-							},
+							{ scope: "col" },
 							IE.jsx.str("i", {
 								class: "icon_connexion_pronote",
 								role: "img",
-								"aria-label": ObjetTraduction_1.GTraductions.getValeur(
-									"accueil.connexionsEnCours.hintConnexionsEspaces",
+								"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+									"accueil.connexionsEnCours.hintConnexionsPronote",
 								),
 							}),
 						),
@@ -101,11 +86,7 @@ class WidgetConnexionsEnCours extends ObjetWidget_1.Widget.ObjetWidget {
 			);
 			for (const lLigne of this.donnees.listeConnexions) {
 				const lLigneEDT = this.donnees.avecEDT
-					? IE.jsx.str(
-							"td",
-							{ tabindex: "0" },
-							IE.jsx.str("span", null, lLigne.nbEDT),
-						)
+					? IE.jsx.str("td", null, IE.jsx.str("span", null, lLigne.nbEDT))
 					: "";
 				H.push(
 					IE.jsx.str(
@@ -121,16 +102,8 @@ class WidgetConnexionsEnCours extends ObjetWidget_1.Widget.ObjetWidget {
 								lLigne.nbLicenceDispo,
 							),
 						),
-						IE.jsx.str(
-							"td",
-							{ tabindex: "0" },
-							IE.jsx.str("span", null, lLigne.nbLeger),
-						),
-						IE.jsx.str(
-							"td",
-							{ tabindex: "0" },
-							IE.jsx.str("span", null, lLigne.nbLourdPN),
-						),
+						IE.jsx.str("td", null, IE.jsx.str("span", null, lLigne.nbLeger)),
+						IE.jsx.str("td", null, IE.jsx.str("span", null, lLigne.nbLourdPN)),
 						lLigneEDT,
 					),
 				);

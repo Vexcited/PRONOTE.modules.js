@@ -42,7 +42,7 @@ exports.StylesObjetCentraleNotifications = {
 	cn_section_secPeriscolaire: "cn_section_secPeriscolaire",
 	cn_section_secForum: "cn_section_secForum",
 	cn_section_secPartenaires: "cn_section_secPartenaires",
-	cn_section_secAutres: "cn_section_secAutres",
 	cn_section_secSignature: "cn_section_secSignature",
 	cn_section_secEmploiDuTemps: "cn_section_secEmploiDuTemps",
+	cn_section_secAutres: "cn_section_secAutres",
 };

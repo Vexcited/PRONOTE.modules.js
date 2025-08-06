@@ -497,18 +497,17 @@ class PageMissionsDemande extends ObjetIdentite_1.Identite {
 			null,
 			IE.jsx.str(
 				"div",
-				{ class: "field-contain in-row p-y-l" },
+				{ class: "field-contain in-row echeance" },
 				IE.jsx.str(
 					"label",
-					{ class: ["ie-titre-petit"], style: lWidthLabel },
+					{ class: ["ie-titre-petit"] },
 					ObjetTraduction_1.GTraductions.getValeur(
 						"TvxIntendance.fenetre.echeance",
 					),
 				),
 				IE.jsx.str("div", {
-					class: "flex-contain flex-center flex-gap justify-end",
+					class: "date-echeance",
 					id: this.identDateEcheance.getNom(),
-					style: lWidthLabel,
 				}),
 			),
 		);

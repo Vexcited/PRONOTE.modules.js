@@ -1,6 +1,6 @@
 exports.UtilitaireCouleur = void 0;
 const MethodesObjet_1 = require("MethodesObjet");
-const UtilitaireCouleur = {
+exports.UtilitaireCouleur = {
 	hslDelphiMax: 240,
 	couleurToRGB: function (aHex) {
 		if (
@@ -206,12 +206,54 @@ const UtilitaireCouleur = {
 		}
 		return ratio;
 	},
+	findContrastVariant(aCouleurATrouver, aCouleurOpposee, aMinRatio = 4.5) {
+		const lBaseRgb = this.couleurToRGB(aCouleurATrouver);
+		const lTargetRgb = this.couleurToRGB(aCouleurOpposee);
+		if (this.contrastRatio(lBaseRgb, lTargetRgb) >= aMinRatio) {
+			return aCouleurATrouver;
+		}
+		const lBaseHsl = this.rgbToHSV(lBaseRgb);
+		const lLuminanceBase = lBaseHsl.l;
+		const lLuminanceAgainst = this.rgbToHSV(lTargetRgb).l;
+		const lFindSup =
+			lLuminanceBase === lLuminanceAgainst
+				? lLuminanceBase < 50
+				: lLuminanceBase > lLuminanceAgainst;
+		let lLow = lFindSup ? lLuminanceBase : 0;
+		let lHigh = lFindSup ? 100 : lLuminanceBase;
+		let lBest = null;
+		for (let i = 0; i < 20; i++) {
+			if (lHigh <= lLow) {
+				return lBest;
+			}
+			const lMid = (lLow + lHigh) / 2;
+			const lTestRgb = this.hsvToRGB(
+				Object.assign(Object.assign({}, lBaseHsl), { l: lMid }),
+			);
+			const lContrast = this.contrastRatio(lTestRgb, lTargetRgb);
+			if (lContrast >= aMinRatio) {
+				lBest = this.rgbToCouleur(lTestRgb);
+				if (lFindSup) {
+					lHigh = lMid;
+				} else {
+					lLow = lMid;
+				}
+			} else {
+				if (lFindSup) {
+					lLow = lMid;
+				} else {
+					lHigh = lMid;
+				}
+			}
+		}
+		return lBest;
+	},
 	relativeLum(aColor) {
 		let lRGB = null;
 		if (MethodesObjet_1.MethodesObjet.isString(aColor)) {
 			lRGB = this.couleurToRGB(aColor);
 		} else if (aColor && "r" in aColor) {
-			lRGB = aColor;
+			lRGB = Object.assign({}, aColor);
 		}
 		if (!lRGB) {
 			return 1;
@@ -233,4 +275,3 @@ const UtilitaireCouleur = {
 		return lum;
 	},
 };
-exports.UtilitaireCouleur = UtilitaireCouleur;

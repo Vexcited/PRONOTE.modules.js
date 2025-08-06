@@ -4,8 +4,8 @@ var TypeEtatSignatureSignataire;
 	TypeEtatSignatureSignataire[(TypeEtatSignatureSignataire["ESS_Init"] = 0)] =
 		"ESS_Init";
 	TypeEtatSignatureSignataire[
-		(TypeEtatSignatureSignataire["ESS_A_Suppr"] = 1)
-	] = "ESS_A_Suppr";
+		(TypeEtatSignatureSignataire["ESS_Inconnu"] = 1)
+	] = "ESS_Inconnu";
 	TypeEtatSignatureSignataire[
 		(TypeEtatSignatureSignataire["ESS_EnAttente"] = 2)
 	] = "ESS_EnAttente";
@@ -25,6 +25,9 @@ var TypeEtatSignatureSignataire;
 	] = "ESS_Expiree";
 	TypeEtatSignatureSignataire[(TypeEtatSignatureSignataire["ESS_Erreur"] = 8)] =
 		"ESS_Erreur";
+	TypeEtatSignatureSignataire[
+		(TypeEtatSignatureSignataire["ESS_Supprime"] = 9)
+	] = "ESS_Supprime";
 })(
 	TypeEtatSignatureSignataire ||
 		(exports.TypeEtatSignatureSignataire = TypeEtatSignatureSignataire = {}),

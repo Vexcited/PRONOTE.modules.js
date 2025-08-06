@@ -1018,7 +1018,7 @@ class PageSaisieAbsences extends ObjetIdentite_1.Identite {
 			this.Nom,
 			'.LigneSelectionnee =null;" onkeyup="' +
 				this.Nom +
-				'.surKeyUp();" class="fix-ancienne-feuille-appel" style="width:' +
+				'.surKeyUp();" class="fix-ancienne-feuille-appel TablePrincipaleFeuilleAppel" style="width:' +
 				(this.NbrElevesVisibles > 0
 					? LLargeurGrille + LLargeurZoneEleve + "px"
 					: "100%") +

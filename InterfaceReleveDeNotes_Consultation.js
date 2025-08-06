@@ -45,7 +45,7 @@ class InterfaceReleveDeNotes_Consultation extends _InterfaceReleveDeNotes_1._Int
 	getEleve() {
 		return this.etatUtilScoEspace.getMembre();
 	}
-	getClasse() {
+	getClasseGroupe() {
 		return undefined;
 	}
 	setParametresGeneraux() {

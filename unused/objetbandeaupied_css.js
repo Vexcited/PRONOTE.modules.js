@@ -31,6 +31,8 @@ exports.StylesObjetBandeauPied = {
 	siteMap: "site-map",
 	partenaireCanope: "partenaire-canope",
 	Image_Partenaire_Canope_2022: "Image_Partenaire_Canope_2022",
+	icon_twitter: "icon_twitter",
+	confidentialite: "confidentialite",
 	footerMobile: "footer-mobile",
 	blocUnique: "bloc-unique",
 };

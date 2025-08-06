@@ -15,7 +15,6 @@ const ObjetDate_1 = require("ObjetDate");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const TypeEnsembleNombre_1 = require("TypeEnsembleNombre");
-const Enumere_Espace_1 = require("Enumere_Espace");
 const InterfacePage_1 = require("InterfacePage");
 const TypeHttpNotificationDonnes_1 = require("TypeHttpNotificationDonnes");
 const Enumere_Event_1 = require("Enumere_Event");
@@ -23,7 +22,6 @@ const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
 const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
 const Enumere_Action_1 = require("Enumere_Action");
 const EGenreEvtAgenda_1 = require("EGenreEvtAgenda");
-const UtilitaireBoutonBandeau_1 = require("UtilitaireBoutonBandeau");
 const DonneesListe_Agenda_1 = require("DonneesListe_Agenda");
 const ObjetListe_1 = require("ObjetListe");
 const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
@@ -136,29 +134,7 @@ class InterfacePageAgenda extends InterfacePage_1.InterfacePage {
 	setParametresGeneraux() {
 		this.GenreStructure =
 			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
-		this.avecBandeau = true;
 		this.IdentZoneAlClient = this.identListeAgenda;
-		if (
-			[
-				Enumere_Espace_1.EGenreEspace.Professeur,
-				Enumere_Espace_1.EGenreEspace.Eleve,
-				Enumere_Espace_1.EGenreEspace.Parent,
-				Enumere_Espace_1.EGenreEspace.Etablissement,
-				Enumere_Espace_1.EGenreEspace.Administrateur,
-				Enumere_Espace_1.EGenreEspace.PrimParent,
-				Enumere_Espace_1.EGenreEspace.PrimProfesseur,
-				Enumere_Espace_1.EGenreEspace.PrimDirection,
-				Enumere_Espace_1.EGenreEspace.PrimMairie,
-			].includes(GEtatUtilisateur.GenreEspace)
-		) {
-			this.AddSurZone.push({ separateur: true });
-			this.AddSurZone.push({
-				html: UtilitaireBoutonBandeau_1.UtilitaireBoutonBandeau.getHtmlBtnICal(
-					"btnAfficherICal",
-				),
-				getDisplay: "avecBtnAfficherICal",
-			});
-		}
 	}
 	actifBtnCreerElementAgenda(aNbJoursEcoules) {
 		let lDate;

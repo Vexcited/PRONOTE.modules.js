@@ -14,7 +14,6 @@ class WidgetEDTJournalier extends ObjetWidget_1.Widget.ObjetWidget {
 	constructor(...aParams) {
 		super(...aParams);
 		this.applicationSco = (0, AccessApp_1.getApp)();
-		this.optionsFenetre = {};
 		this.parametres = {
 			avecCoursAnnule: true,
 			avecCoursAnnulesSuperposes: !GEtatUtilisateur.estEspacePourEleve(),
@@ -65,9 +64,12 @@ class WidgetEDTJournalier extends ObjetWidget_1.Widget.ObjetWidget {
 		return lListeCours;
 	}
 	construire(aParams) {
+		var _a;
 		this.donnees = aParams.donnees;
 		this.donneesRequete =
-			aParams.instance.donneesRequete && aParams.instance.donneesRequete.EDT;
+			(_a = aParams.instance.donneesRequete) === null || _a === void 0
+				? void 0
+				: _a.EDT;
 		this.donnees.jourSelectionne =
 			this.donneesRequete.date || this.donnees.dateSelection;
 		this.listeCours = this.formatListeCours(

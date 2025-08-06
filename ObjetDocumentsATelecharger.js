@@ -23,6 +23,8 @@ const ObjetDate_1 = require("ObjetDate");
 const UtilitaireDocumentSignature_1 = require("UtilitaireDocumentSignature");
 const AccessApp_1 = require("AccessApp");
 const GUID_1 = require("GUID");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_TriElement_1 = require("Enumere_TriElement");
 class ObjetDocumentsATelecharger extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
@@ -226,6 +228,19 @@ class ObjetDocumentsATelecharger extends ObjetInterface_1.ObjetInterface {
 				lListeResult.addElement(Object.assign(aElem, lParam), lIndex);
 				lIndex++;
 			});
+			const lTri = [
+				ObjetTri_1.ObjetTri.initRecursif("pere", [
+					ObjetTri_1.ObjetTri.init(
+						"annee",
+						Enumere_TriElement_1.EGenreTriElement.Decroissant,
+					),
+				]),
+				ObjetTri_1.ObjetTri.init("debutPeriodeNotation"),
+				ObjetTri_1.ObjetTri.init("libelleClasse"),
+				ObjetTri_1.ObjetTri.init("Libelle"),
+			];
+			lListeResult.setTri(lTri);
+			lListeResult.trier();
 			return lListeResult;
 		}
 	}
@@ -734,11 +749,28 @@ class DonneesListe_DocumentATelecharger extends ObjetDonneesListeFlatDesign_1.Ob
 		return H.join("");
 	}
 	initialisationObjetContextuel(aParams) {
+		var _a;
 		const lActions = new ObjetListeElements_1.ObjetListeElements();
 		if ("typeDocument" in aParams.article) {
 			switch (aParams.article.typeDocument) {
 				case Enumere_DocTelechargement_1.EGenreDocTelechargement
 					.documentCasier: {
+					if (
+						UtilitaireDocumentATelecharger_1.UtilitaireDocumentATelecharger.isObjetElementDestinataireResponsable(
+							aParams.article,
+						) &&
+						((_a = aParams.article.memo) === null || _a === void 0
+							? void 0
+							: _a.length)
+					) {
+						const lConsulterCommentaire =
+							UtilitaireDocumentATelecharger_1.UtilitaireDocumentATelecharger.getAction(
+								UtilitaireDocumentATelecharger_1.EGenreActionDAT
+									.consulterCommentaire,
+								aParams.article,
+							);
+						lActions.add(lConsulterCommentaire.actionMenuCtx);
+					}
 					const lSupprimer =
 						UtilitaireDocumentATelecharger_1.UtilitaireDocumentATelecharger.getAction(
 							UtilitaireDocumentATelecharger_1.EGenreActionDAT.supprimer,

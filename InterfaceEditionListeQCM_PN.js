@@ -226,7 +226,7 @@ class InterfaceEditionListeQCM_PN extends InterfaceEditionListeQCM_1.InterfaceEd
 		const lDevoir = new ObjetElement_1.ObjetElement();
 		lDevoir.service = aService;
 		lDevoir.estDevoirEditable = true;
-		lDevoir.date = ObjetDate_1.GDate.getDateCourante();
+		lDevoir.date = ObjetDate_1.GDate.getDateCourante(true);
 		lDevoir.coefficient = new TypeNote_1.TypeNote(1.0);
 		lDevoir.bareme = new TypeNote_1.TypeNote(
 			GParametres.baremeNotation.getValeur(),

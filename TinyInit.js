@@ -248,7 +248,10 @@ class ObjetTinyInit {
 			resize: false,
 			statusbar: false,
 			toolbar: this.getToolbar(aParam),
-			contextmenu: false,
+			contextmenu:
+				!aParam.clientLourd || aParam.toolbar === false
+					? ""
+					: "spellchecker | cut copy paste | link",
 			content_style:
 				`html {\n  height:100%;\n  ${lDarkMode ? `` : `background-color: white;\n  color: black;`}\n}\nbody {min-height:calc(100% - 10px);}\n.mce-content-body {\n  margin:0px;\n  padding: 5px !important;\n}` +
 				".mce-content-body[data-mce-placeholder]::before {" +

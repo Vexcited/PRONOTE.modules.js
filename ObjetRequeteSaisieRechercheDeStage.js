@@ -3,7 +3,7 @@ const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
 const CollectionRequetes_1 = require("CollectionRequetes");
 class ObjetRequeteSaisieRechercheDeStage extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	lancerRequete(aParams) {
-		var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+		var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 		this.JSON = {
 			action:
 				(_a = aParams.action) === null || _a === void 0
@@ -21,25 +21,27 @@ class ObjetRequeteSaisieRechercheDeStage extends ObjetRequeteJSON_1.ObjetRequete
 				(_d = aParams.entreprise) === null || _d === void 0
 					? void 0
 					: _d.toJSONAll(),
+			eleve:
+				(_e = aParams.eleve) === null || _e === void 0 ? void 0 : _e.toJSON(),
 			session: aParams.session.toJSON(),
 		};
 		if (
-			(_e = aParams.recherche) === null || _e === void 0
+			(_f = aParams.recherche) === null || _f === void 0
 				? void 0
-				: _e.entreprise
+				: _f.entreprise
 		) {
 			this.JSON.recherche.entreprise =
-				(_f = aParams.recherche) === null || _f === void 0
+				(_g = aParams.recherche) === null || _g === void 0
 					? void 0
-					: _f.entreprise.toJSONAll();
+					: _g.entreprise.toJSONAll();
 		}
-		if ((_g = aParams.action) === null || _g === void 0 ? void 0 : _g.listePJ) {
+		if ((_h = aParams.action) === null || _h === void 0 ? void 0 : _h.listePJ) {
 			this.JSON.action.listePJ = aParams.action.listePJ.setSerialisateurJSON({
 				methodeSerialisation: this.serialiserDocument.bind(this),
 			});
 		}
 		if (
-			(_h = aParams.evenement) === null || _h === void 0 ? void 0 : _h.listePJ
+			(_j = aParams.evenement) === null || _j === void 0 ? void 0 : _j.listePJ
 		) {
 			this.JSON.evenement.listePJ =
 				aParams.evenement.listePJ.setSerialisateurJSON({
@@ -47,7 +49,7 @@ class ObjetRequeteSaisieRechercheDeStage extends ObjetRequeteJSON_1.ObjetRequete
 				});
 		}
 		if (
-			(_j = aParams.recherche) === null || _j === void 0 ? void 0 : _j.listePJ
+			(_k = aParams.recherche) === null || _k === void 0 ? void 0 : _k.listePJ
 		) {
 			this.JSON.recherche.listePJ =
 				aParams.recherche.listePJ.setSerialisateurJSON({

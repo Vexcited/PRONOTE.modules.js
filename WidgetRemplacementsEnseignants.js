@@ -110,13 +110,7 @@ class WidgetRemplacementsEnseignants extends ObjetWidget_1.Widget.ObjetWidget {
 		) {
 			H.push('<ul class="liste-unclickable">');
 			for (const lRemplacement of this.donnees.listeRemplacements) {
-				H.push(
-					IE.jsx.str(
-						"li",
-						{ tabindex: "0" },
-						this.composeRemplacement(lRemplacement),
-					),
-				);
+				H.push(IE.jsx.str("li", null, this.composeRemplacement(lRemplacement)));
 			}
 			H.push("</ul>");
 		}

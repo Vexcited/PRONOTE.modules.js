@@ -126,7 +126,7 @@ class InterfacePageSaisieAbsences_Cours extends ObjetInterface_1.ObjetInterface 
 			H.push(
 				"<table ",
 				ObjetWAI_1.GObjetWAI.composeRole(ObjetWAI_2.EGenreRole.Grid),
-				' class="tableAbsenceGlobal">',
+				' class="tableAbsenceGlobal TablePrincipaleFeuilleAppel">',
 			);
 			H.push("<tr>");
 			H.push(
@@ -2087,8 +2087,7 @@ class InterfacePageSaisieAbsences_Cours extends ObjetInterface_1.ObjetInterface 
 								lColonne.Libelle +
 								" " +
 								lEleve.Libelle +
-								" " +
-								(lPourParents ? this.getTitleColonne(lColonne) : ""),
+								(lPourParents ? " " + this.getTitleColonne(lColonne) : ""),
 						}),
 						" ",
 						ObjetWAI_1.GObjetWAI.composeAttribut({

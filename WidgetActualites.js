@@ -100,7 +100,7 @@ class WidgetActualites extends ObjetWidget_1.Widget.ObjetWidget {
 						H.push("</ul></li>");
 					}
 					H.push(
-						'<li tabindex="0">',
+						"<li>",
 						'<div class="titre-parent Gras" role="heading" aria-level="3">',
 						lElement.getLibelle(),
 						"</div>",
@@ -163,10 +163,12 @@ class WidgetActualites extends ObjetWidget_1.Widget.ObjetWidget {
 				? "icon_diffuser_information"
 				: "icon_diffuser_sondage");
 		const lEstModeSansAuth = this.options.estModeSansAuth === true;
-		H.push("<li");
-		H.push(lEstModeSansAuth ? ' class="' + lClass + '"' : "");
-		H.push(lAriaLabel);
-		H.push(lEstModeSansAuth ? ' tabindex="0"' : "", ">");
+		H.push(
+			"<li",
+			lEstModeSansAuth ? ' class="' + lClass + '"' : "",
+			lAriaLabel,
+			">",
+		);
 		if (lEstModeSansAuth) {
 			H.push('<div class="full-width">');
 		} else {

@@ -98,7 +98,13 @@ class DonneesListe_RDV extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFl
 						lContientPJ ? IE.jsx.str("i", { class: "icon_piece_jointe" }) : "",
 						" ",
 						lEstRdvTelephonique
-							? IE.jsx.str("i", { class: "icon_phone m-left-s" })
+							? IE.jsx.str("i", {
+									class: "icon_phone m-left-s",
+									role: "img",
+									title: ObjetTraduction_1.GTraductions.getValeur(
+										"RDV.LegendeTelephonique",
+									),
+								})
 							: "",
 					)
 				: "",

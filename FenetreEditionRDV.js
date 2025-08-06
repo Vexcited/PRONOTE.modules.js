@@ -603,7 +603,10 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 					this.composeEditRDVCtxNonResp(),
 				);
 			} else {
-				let lLegende = IE.jsx.str("div", { "ie-html": "getHtmlLegende" });
+				let lLegende = IE.jsx.str("div", {
+					class: "no-border",
+					"ie-html": "getHtmlLegende",
+				});
 				switch (this.optionsRDV.natureRDV) {
 					case TypesRDV_2.TypeNatureRDV.tNRDV_CreneauImpose:
 						return IE.jsx.str(
@@ -754,13 +757,10 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 		H.push(
 			IE.jsx.str(
 				"div",
-				{ class: "field-contain label-up no-line" },
+				{ class: "field-contain label-up" },
 				IE.jsx.str(
 					"label",
-					{
-						for: this.ids.inputObjet,
-						class: "ie-titre-petit m-top-xl champ-requis",
-					},
+					{ for: this.ids.inputObjet, class: "ie-titre-petit champ-requis" },
 					ObjetTraduction_1.GTraductions.getValeur("RDV.MotifRdv"),
 				),
 				IE.jsx.str("input", {
@@ -779,12 +779,12 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 		H.push(
 			IE.jsx.str(
 				"div",
-				{ class: "field-contain label-up contenuRDV no-line" },
+				{ class: "field-contain label-up contenuRDV" },
 				IE.jsx.str(
 					"label",
 					{
 						for: this.ids.inputDescription,
-						class: "ie-titre-petit m-top-xl champ-requis",
+						class: "ie-titre-petit champ-requis",
 					},
 					ObjetTraduction_1.GTraductions.getValeur("RDV.Contenu"),
 				),
@@ -908,7 +908,7 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 			{ class: "field-contain label-up" },
 			IE.jsx.str(
 				"label",
-				{ class: "ie-titre-petit m-top-xl champ-requis" },
+				{ class: "ie-titre-petit champ-requis" },
 				ObjetTraduction_1.GTraductions.getValeur("RDV.propositionCreneaux"),
 			),
 			IE.jsx.str(
@@ -936,25 +936,21 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 	}
 	_composeSelectionCreneau() {
 		return IE.jsx.str(
-			"div",
-			{ class: "field-contain label-up p-y-l" },
+			"fieldset",
+			null,
 			IE.jsx.str(
-				"h2",
-				{ class: "ie-titre-couleur-petit m-bottom-l " },
+				"legend",
+				{ class: "ie-titre-couleur-petit" },
 				ObjetTraduction_1.GTraductions.getValeur("RDV.Creneau"),
 			),
-			IE.jsx.str(
-				"div",
-				{ class: "p-left-l" },
-				this.moteurRDV.composeSelectionCreneau(
-					this,
-					this.donnees.rdv,
-					this.donnees.rdv.creneau,
-					this._estCreneauEditable(),
-					this.listeModalites,
-					this.listeSallesLieux,
-					false,
-				),
+			this.moteurRDV.composeSelectionCreneau(
+				this,
+				this.donnees.rdv,
+				this.donnees.rdv.creneau,
+				this._estCreneauEditable(),
+				this.listeModalites,
+				this.listeSallesLieux,
+				false,
 			),
 		);
 	}
@@ -990,7 +986,7 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 					"label",
 					{
 						id: this.ids.labelResponsables,
-						class: "ie-titre-petit m-top-xl champ-requis",
+						class: "ie-titre-petit champ-requis",
 					},
 					ObjetTraduction_1.GTraductions.getValeur("RDV.responsables"),
 				),
@@ -1045,7 +1041,7 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 					"label",
 					{
 						id: this.ids.labelPublicCibleEleve,
-						class: "ie-titre-petit m-top-xl champ-requis",
+						class: "ie-titre-petit champ-requis",
 					},
 					ObjetTraduction_1.GTraductions.getValeur("Eleves"),
 					IE.jsx.str("ie-btnicon", {
@@ -1103,7 +1099,7 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 					"label",
 					{
 						id: this.ids.labelResponsables,
-						class: "ie-titre-petit m-top-xl champ-requis",
+						class: "ie-titre-petit champ-requis",
 					},
 					ObjetTraduction_1.GTraductions.getValeur("RDV.responsables"),
 					IE.jsx.str("ie-btnicon", {
@@ -1205,7 +1201,7 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 			{ class: "field-contain label-up" },
 			IE.jsx.str(
 				"label",
-				{ class: "ie-titre-petit m-top-xl" },
+				{ class: "ie-titre-petit" },
 				ObjetTraduction_1.GTraductions.getValeur("RDV.responsables"),
 			),
 			IE.jsx.str(
@@ -1225,7 +1221,7 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 			{ class: "field-contain label-up" },
 			IE.jsx.str(
 				"label",
-				{ class: "ie-titre-petit m-top-xl" },
+				{ class: "ie-titre-petit" },
 				ObjetTraduction_1.GTraductions.getValeur("Eleve"),
 			),
 			IE.jsx.str("div", null, aStrEleveConcerne),
@@ -1348,10 +1344,7 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 				{ class: "field-contain label-up" },
 				IE.jsx.str(
 					"label",
-					{
-						id: this.ids.labelRespRdv,
-						class: "ie-titre-petit m-top-xl champ-requis",
-					},
+					{ id: this.ids.labelRespRdv, class: "ie-titre-petit champ-requis" },
 					lStrRespRdv,
 				),
 				IE.jsx.str("ie-btnselecteur", {
@@ -1377,7 +1370,7 @@ class FenetreEditionRDV extends ObjetFenetre_1.ObjetFenetre {
 					"label",
 					{
 						id: this.ids.labelPublicCibleEleve,
-						class: "ie-titre-petit m-top-xl champ-requis",
+						class: "ie-titre-petit champ-requis",
 					},
 					ObjetTraduction_1.GTraductions.getValeur("Eleve"),
 				),

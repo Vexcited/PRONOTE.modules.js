@@ -157,6 +157,15 @@ class InterfaceConnexion_Mobile extends _InterfaceConnexion_1._InterfaceConnexio
 				cookiesMessage2: ObjetTraduction_1.GTraductions.getValeur(
 					"PiedPage.CookieInfo_Message_2",
 				),
+				politiqueConfidentialite: ObjetTraduction_1.GTraductions.getValeur(
+					"PiedPage.PolitiqueConfidentialite",
+				),
+				politiqueConfidentialiteMaj: ObjetTraduction_1.GTraductions.getValeur(
+					"PiedPage.PolitiqueConfidentialiteMaj",
+				),
+				confidentialite: ObjetTraduction_1.GTraductions.getValeur(
+					"PiedPage.Confidentialite",
+				),
 				fermer: ObjetTraduction_1.GTraductions.getValeur("Fermer"),
 				seSouvenirLabel: ObjetTraduction_1.GTraductions.getValeur(
 					"connexion.SeSouvenir",
@@ -187,6 +196,8 @@ class InterfaceConnexion_Mobile extends _InterfaceConnexion_1._InterfaceConnexio
 				afficherCookieInfo: !this.applicationSco.getDemo()
 					? this.afficherCookieInfo()
 					: false,
+				urlPolitiqueConfidentialite:
+					this.parametresSco.urlConfidentialite || "",
 			},
 			jsx: {
 				jsxNodeOuvrirMentionsLegales:

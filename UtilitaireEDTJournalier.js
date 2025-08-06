@@ -55,9 +55,9 @@ class UtilitaireEDTJournalier {
 			}.bind(this),
 		});
 		lListeCours.trier();
-		let aCoursPrecedent = null;
+		let lCoursPrecedent = null;
 		lListeCours.parcourir((aCours) => {
-			const lElement = _formatCours(aCours, aCoursPrecedent, {
+			const lElement = _formatCours(aCours, lCoursPrecedent, {
 				placeCourante: lPlaceCourante,
 				estJourCourant: lEstJourCourant,
 				avecTrouEDT: aParams.avecTrouEDT,
@@ -81,7 +81,7 @@ class UtilitaireEDTJournalier {
 			}
 			if (lElement) {
 				lListeDonnees.addElement(lElement);
-				aCoursPrecedent = lElement;
+				lCoursPrecedent = lElement;
 			}
 		});
 		lListeDonnees.setTri([ObjetTri_1.ObjetTri.init("debutPlaceJour")]);
@@ -971,17 +971,17 @@ function _ajouterDisponibilite(aListe, aListeDisponibilites, aDate) {
 	}
 }
 function _completerDonnees(aListe, aParams) {
-	let aCoursPrecedent = null;
+	let lCoursPrecedent = null;
 	const lTableauTrou = [];
 	aListe.parcourir((aCours) => {
 		if (
-			aCoursPrecedent &&
-			!aCoursPrecedent.ignorerTrou &&
-			aCours.debutPlaceJour !== aCoursPrecedent.finPlaceJour &&
+			lCoursPrecedent &&
+			!lCoursPrecedent.ignorerTrou &&
+			aCours.debutPlaceJour !== lCoursPrecedent.finPlaceJour &&
 			!aCours.ignorerTrou
 		) {
-			aCoursPrecedent.masquerHeureFin = true;
-			const lDebut = aCoursPrecedent.finPlaceJour;
+			lCoursPrecedent.masquerHeureFin = true;
+			const lDebut = lCoursPrecedent.finPlaceJour;
 			const lFin = aCours.debutPlaceJour;
 			const lEstDP =
 				(lDebut >= aParams.debutDemiPensionHebdo &&
@@ -1049,7 +1049,7 @@ function _completerDonnees(aListe, aParams) {
 				lTableauTrou.push({ debut: lDebut, fin: lFin, estDemiPension: lEstDP });
 			}
 		}
-		aCoursPrecedent = aCours;
+		lCoursPrecedent = aCours;
 	});
 	const lTableauFinal = [];
 	lTableauTrou.forEach((aTrou) => {

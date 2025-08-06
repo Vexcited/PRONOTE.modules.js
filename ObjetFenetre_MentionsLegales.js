@@ -2,7 +2,6 @@ exports.ObjetFenetre_MentionsLegales = void 0;
 const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetHtml_1 = require("ObjetHtml");
-const AccessApp_1 = require("AccessApp");
 class ObjetFenetre_MentionsLegales extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
@@ -78,59 +77,6 @@ class ObjetFenetre_MentionsLegales extends ObjetFenetre_1.ObjetFenetre {
 			);
 			H.push(aParametres.informationsComplementaires);
 		}
-		H.push(
-			IE.jsx.str(
-				"h2",
-				{ class: "ie-titre m-top-xxl m-bottom-xl" },
-				ObjetTraduction_1.GTraductions.getValeur(
-					"FenetreMentionsLegales.utilisationCookie",
-				),
-			),
-		);
-		H.push(
-			IE.jsx.str(
-				"p",
-				null,
-				ObjetTraduction_1.GTraductions.getValeur(
-					"FenetreMentionsLegales.informationCookie",
-					[(0, AccessApp_1.getApp)().nomProduit],
-				),
-				" ",
-				ObjetTraduction_1.GTraductions.getValeur(
-					"FenetreMentionsLegales.informationCookieSuite",
-					[(0, AccessApp_1.getApp)().nomProduit],
-				),
-			),
-		);
-		H.push(
-			IE.jsx.str(
-				"p",
-				{ class: "m-y" },
-				ObjetTraduction_1.GTraductions.getValeur(
-					"FenetreMentionsLegales.utilisationCookieTitre",
-				),
-			),
-		);
-		H.push(
-			IE.jsx.str(
-				"ul",
-				{ class: "dot m-left xl" },
-				IE.jsx.str(
-					"li",
-					null,
-					ObjetTraduction_1.GTraductions.getValeur(
-						"FenetreMentionsLegales.utilisationCookieCASTGC",
-					),
-				),
-				IE.jsx.str(
-					"li",
-					null,
-					ObjetTraduction_1.GTraductions.getValeur(
-						"FenetreMentionsLegales.utilisationCookieLang",
-					),
-				),
-			),
-		);
 		return H.join("");
 	}
 	setDonnees(aParam) {

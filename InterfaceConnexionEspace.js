@@ -313,7 +313,7 @@ class InterfaceConnexionEspace extends _InterfaceConnexion_1._InterfaceConnexion
 				lImageEspace = "Icone_EspacePrimEnseignant";
 				break;
 			case Enumere_Espace_1.EGenreEspace.PrimParent:
-				lImageEspace = "Icone_EspaceParent";
+				lImageEspace = "Icone_EspacPrimeParent";
 				break;
 			case Enumere_Espace_1.EGenreEspace.PrimEleve:
 				lImageEspace = "Icone_EspacePrimEtudiant";
@@ -322,7 +322,7 @@ class InterfaceConnexionEspace extends _InterfaceConnexion_1._InterfaceConnexion
 				lImageEspace = "Icone_EspaceAccompagnant";
 				break;
 			case Enumere_Espace_1.EGenreEspace.PrimAccompagnant:
-				lImageEspace = "Icone_EspaceAccompagnant";
+				lImageEspace = "Icone_EspacePrimAccompagnant";
 				break;
 			case Enumere_Espace_1.EGenreEspace.Tuteur:
 				lImageEspace = "Icone_EspaceTuteur";

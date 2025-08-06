@@ -86,7 +86,7 @@ class WidgetPersonnelsAbsents extends ObjetWidget_1.Widget.ObjetWidget {
 			H.push('<ul class="liste-dates">');
 			for (let i = 0, lNbr = lPersonnel.absences.count(); i < lNbr; i++) {
 				H.push(
-					'<li tabindex="0">',
+					"<li>",
 					'<div class="wrap">',
 					'<div class="bloc-date-conteneur">',
 					ObjetDate_1.GDate.formatDate(

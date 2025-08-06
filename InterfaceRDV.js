@@ -37,7 +37,6 @@ class InterfaceRDV extends ObjetInterfacePageCP_1.InterfacePageCP {
 	setParametresGeneraux() {
 		this.GenreStructure =
 			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
-		this.avecBandeau = true;
 	}
 	construireStructureAffichageAutre() {
 		return IE.jsx.str(

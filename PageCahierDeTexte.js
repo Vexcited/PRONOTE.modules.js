@@ -152,7 +152,7 @@ class PageCahierDeTexte extends ObjetIdentite_1.Identite {
 		this.DonneeSecondaireCourante = "";
 		this.DonneLeCourant = "";
 		this.PourImpression = aPourImpression ? aPourImpression : false;
-		this.PremierID = [];
+		this.PremierID = {};
 		this.PremierPrincipaleElement = "";
 		this.IDSecondairPrecedent = "";
 		this.IDPrincipalPrecedent = "";
@@ -804,7 +804,7 @@ class PageCahierDeTexte extends ObjetIdentite_1.Identite {
 		);
 		const lExecutionQCM = this.ListeCahierDeTextes.getElementParNumero(
 			lPos[1],
-		).ListeTravailAFaire.get(lPos[2]).executionQCM;
+		).ListeTravailAFaire.get(parseInt(lPos[2])).executionQCM;
 		this.callback.appel({ executionQCM: lExecutionQCM });
 	}
 	composeDevoirPourLe(aObjetTravailAFaire) {
@@ -873,7 +873,7 @@ class PageCahierDeTexte extends ObjetIdentite_1.Identite {
 		);
 		const lExecutionQCM = this.ListeCahierDeTextes.getElementParNumero(lPos[1])
 			.listeContenus.getElementParNumero(lPos[2])
-			.listeExecutionQCM.get(lPos[3]);
+			.listeExecutionQCM.get(parseInt(lPos[3]));
 		this.callback.appel({ executionQCM: lExecutionQCM });
 	}
 	composeFermetureTitreSecondaire() {

@@ -230,7 +230,7 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 			nodeBoutonAfficherMasquerMenuLateral() {
 				$(this.node).eventValidation(() => {
 					ObjetMenuPrincipal_1.ObjetMenuPrincipal.afficherMasquerMenuResponsive();
-					this.controleur.$refreshSelf();
+					this.controleur.$refresh();
 				});
 			},
 			getAttrBoutonAfficherMasquerMenuLateral() {

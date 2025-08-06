@@ -27,7 +27,6 @@ class InterfacePageEntreprise extends ObjetInterfacePageCP_1.InterfacePageCP {
 	}
 	recupererDonnees() {}
 	setParametresGeneraux() {
-		this.avecBandeau = true;
 		this.IdentZoneAlClient = this.identPage;
 	}
 	async requeteEntreprise() {

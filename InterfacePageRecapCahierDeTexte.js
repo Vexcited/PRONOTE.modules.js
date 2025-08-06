@@ -247,6 +247,12 @@ class InterfacePageRecapCahierDeTexte extends InterfacePage_1.InterfacePage {
 			);
 		}
 	}
+	getPageImpression() {
+		return {
+			titre1: "",
+			contenu: this.getInstance(this.IdentCahierDeTexte).composePage(true),
+		};
+	}
 	_evenementSurDernierMenuDeroulant() {
 		this._donneesMenusDeroulantsRecues = true;
 		this.afficherBandeau(true);

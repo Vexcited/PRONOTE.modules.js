@@ -187,19 +187,16 @@ const getHtml = (aParams) => {
 						null,
 						aParams.traductions.cookiesMessage1,
 						"\u00A0",
-						aParams.traductions.cookiesMessage2,
-						IE.jsx.str(
-							"span",
-							{
-								role: "button",
-								tabindex: "0",
-								class: "as-link m-left",
-								"ie-node": aParams.jsx.jsxNodeOuvrirMentionsLegales,
-								"aria-haspopup": "dialog",
-							},
-							aParams.traductions.mentionsLegales,
-							".",
-						),
+						aParams.traductions.cookiesMessage2.format([
+							IE.jsx.str(
+								"a",
+								{
+									href: aParams.options.urlPolitiqueConfidentialite,
+									class: "as-link",
+								},
+								aParams.traductions.politiqueConfidentialite,
+							),
+						]),
 					),
 					IE.jsx.str(
 						"ie-bouton",
@@ -231,15 +228,12 @@ const getHtml = (aParams) => {
 						},
 						aParams.traductions.mentionsLegales,
 					),
-				IE.jsx.str(
-					"a",
-					{
-						href: aParams.options.urlSiteIndexEducation,
-						title: aParams.options.titreLien,
-						target: "_blank",
-					},
-					aParams.options.texteLien,
-				),
+				aParams.options.urlPolitiqueConfidentialite &&
+					IE.jsx.str(
+						"a",
+						{ href: aParams.options.urlPolitiqueConfidentialite },
+						aParams.traductions.politiqueConfidentialiteMaj,
+					),
 			),
 		),
 	);

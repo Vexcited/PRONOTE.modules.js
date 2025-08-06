@@ -28,6 +28,7 @@ class MoteurDernieresNotes {
 								: aParams.bareme.getBaremeEntier()));
 	}
 	composeDetailsDevoir(aDevoir, aParams) {
+		var _a;
 		aParams = Object.assign({ avecFlechePrevSuiv: true }, aParams);
 		const H = [];
 		if (!!aDevoir) {
@@ -74,7 +75,10 @@ class MoteurDernieresNotes {
 				if (
 					aParams.libelleSessionRattrapage ||
 					aDevoir.estDS ||
-					aDevoir.commentaire
+					aDevoir.commentaire ||
+					((_a = aDevoir.ListeThemes) === null || _a === void 0
+						? void 0
+						: _a.count())
 				) {
 					H.push(
 						`<article class="infos-note flex-contain">`,

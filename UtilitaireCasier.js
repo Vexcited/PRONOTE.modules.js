@@ -39,8 +39,8 @@ var UtilitaireCasier;
 		] = "notificationOuvertureDoc";
 		EGenrefonctionnalite[(EGenrefonctionnalite["telecharger"] = 8)] =
 			"telecharger";
-		EGenrefonctionnalite[(EGenrefonctionnalite["consulterLeMemo"] = 9)] =
-			"consulterLeMemo";
+		EGenrefonctionnalite[(EGenrefonctionnalite["consulterLeCommentaire"] = 9)] =
+			"consulterLeCommentaire";
 		EGenrefonctionnalite[
 			(EGenrefonctionnalite["marquerLectureDocument"] = 10)
 		] = "marquerLectureDocument";
@@ -117,6 +117,14 @@ var UtilitaireCasier;
 			UtilitaireCasier.GenreDepotCollecte ||
 			(UtilitaireCasier.GenreDepotCollecte = {})),
 	);
+	UtilitaireCasier.getNotificationParDefaut = () => {
+		return {
+			avecNotif: false,
+			avecRelance: false,
+			dateNotif: new Date(),
+			nbrJourRelance: 1,
+		};
+	};
 	UtilitaireCasier.isObjetElementCollecteParDocument = (aElement) => {
 		return (
 			!!TypeCasier_1.TypeGenreCumulDocEleve[aElement.getGenre()] &&

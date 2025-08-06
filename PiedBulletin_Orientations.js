@@ -208,9 +208,9 @@ function construitRubriqueAvecListeVoeux(aRubrique) {
 								);
 						}
 						lHtmlRubrique.push(
-							'<span class="Bloc_TypeAvisConseil TypeAvis_',
-							aVoeu.reponseCC,
-							'" style="margin-right: 5px;">',
+							'<span class="Bloc_TypeAvisConseil TypeAvis_' +
+								aVoeu.reponseCC +
+								'" style="margin-right: 5px;">',
 							lAvisLibelle || "",
 							"</span>",
 						);

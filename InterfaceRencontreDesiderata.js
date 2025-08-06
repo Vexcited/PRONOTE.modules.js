@@ -93,7 +93,11 @@ class InterfaceRencontreDesiderata extends InterfacePage_1.InterfacePage {
 				if (aInstance.donnees && aInstance.donnees.listeRencontres) {
 					const lNombreVoeuxNonRenseigne = aInstance.donnees.listeRencontres
 						.getListeElements((aRencontre) => {
-							return !aRencontre.estUnDeploiement && !aRencontre.validationvoeu;
+							return (
+								!aRencontre.estUnEleve &&
+								!aRencontre.estUnDeploiement &&
+								!aRencontre.validationvoeu
+							);
 						})
 						.count();
 					return ObjetTraduction_1.GTraductions.getValeur(
@@ -311,7 +315,7 @@ class InterfaceRencontreDesiderata extends InterfacePage_1.InterfacePage {
 		const lListeVoeux = this._getListeVoeuxDisponiblesPourLaSession(
 			this.desiderata,
 		);
-		const lDateCourante = ObjetDate_1.GDate.getDateCourante();
+		const lDateCourante = ObjetDate_1.GDate.getDateCourante(true);
 		let lLibelle = "";
 		if (
 			this.autorisations &&

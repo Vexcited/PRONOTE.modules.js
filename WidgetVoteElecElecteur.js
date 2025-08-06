@@ -171,6 +171,11 @@ class WidgetVoteElecElecteur extends ObjetWidget_1.Widget.ObjetWidget {
 		aOperationEP.listeElections.parcourir((D) => {
 			lListeElections.push("<li>" + this.composeHtmlElection(D) + "</li>");
 		});
+		let lAvecOTPEtScelle =
+			aOperationEP.avecOTP &&
+			[TypeVoteElec_1.TypeEtatElectionP.EEP_ScelleeAvantScrutin].includes(
+				this.getEtatScrutin(aOperationEP),
+			);
 		return IE.jsx.str(
 			"div",
 			{
@@ -197,22 +202,15 @@ class WidgetVoteElecElecteur extends ObjetWidget_1.Widget.ObjetWidget {
 						{ class: "flex-contain cols p-bottom-l" },
 						IE.jsx.str(
 							"p",
-							{ class: "color-red-foncee" },
-							ObjetTraduction_1.GTraductions.getValeur(
-								"WidgetVoteElecElecteur.infosCoordOTP",
-							),
+							{ class: "color-red-foncee", style: "text-wrap:wrap;" },
+							lAvecOTPEtScelle
+								? ObjetTraduction_1.GTraductions.getValeur(
+										"WidgetVoteElecElecteur.infosCoordOTPCtxScellee",
+									)
+								: ObjetTraduction_1.GTraductions.getValeur(
+										"WidgetVoteElecElecteur.infosCoordOTP",
+									),
 						),
-						aOperationEP.strEmail
-							? IE.jsx.str(
-									"p",
-									null,
-									ObjetTraduction_1.GTraductions.getValeur(
-										"WidgetVoteElecElecteur.email",
-									) +
-										" : " +
-										aOperationEP.strEmail,
-								)
-							: "",
 						aOperationEP.strTel
 							? IE.jsx.str(
 									"p",
@@ -224,6 +222,26 @@ class WidgetVoteElecElecteur extends ObjetWidget_1.Widget.ObjetWidget {
 										aOperationEP.strTel,
 								)
 							: "",
+						aOperationEP.strEmail
+							? IE.jsx.str(
+									"p",
+									null,
+									ObjetTraduction_1.GTraductions.getValeur(
+										"WidgetVoteElecElecteur.email",
+									) +
+										" : " +
+										aOperationEP.strEmail,
+								)
+							: "",
+						lAvecOTPEtScelle
+							? ""
+							: IE.jsx.str(
+									"p",
+									{ class: "italic taille-s", style: "text-wrap:wrap;" },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"WidgetVoteElecElecteur.infoDesynchro",
+									),
+								),
 					)
 				: "",
 			IE.jsx.str(

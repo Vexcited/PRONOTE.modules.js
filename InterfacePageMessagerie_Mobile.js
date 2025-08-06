@@ -179,7 +179,12 @@ class InterfacePageMessagerie_Mobile extends InterfacePage_Mobile_1.InterfacePag
 									"Messagerie.TitreFenetreAvertissement",
 								),
 								event: function () {
-									aInstance.moteurMessagerie.ouvrirFenetreAvertissement(false);
+									aInstance.moteurMessagerie.ouvrirFenetreAvertissement(
+										false,
+										() => {
+											aInstance._retourListe();
+										},
+									);
 								},
 							});
 						}
@@ -210,7 +215,9 @@ class InterfacePageMessagerie_Mobile extends InterfacePage_Mobile_1.InterfacePag
 								},
 							});
 						}
-						aInstance.moteurMessagerie.ouvrirFenetreAvertissement(true);
+						aInstance.moteurMessagerie.ouvrirFenetreAvertissement(true, () => {
+							aInstance._retourListe();
+						});
 						aListe.setOptionsListe({
 							colonnes: [{ taille: "100%" }],
 							skin: ObjetListe_1.ObjetListe.skin.flatDesign,

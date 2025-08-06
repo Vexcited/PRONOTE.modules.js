@@ -228,13 +228,8 @@ class DonneesListe_Forum_ListeSujets extends ObjetDonneesListeFlatDesign_1.Objet
 					case TypesForumPedagogique_1.TypeRoleIndividuSujet.RIS_Auteur:
 						return aSujet.roles.contains(aRole);
 					case TypesForumPedagogique_1.TypeRoleIndividuSujet.RIS_Moderateur:
-						return (
-							aSujet.roles.contains(
-								TypesForumPedagogique_1.TypeRoleIndividuSujet.RIS_Moderateur,
-							) &&
-							!aSujet.roles.contains(
-								TypesForumPedagogique_1.TypeRoleIndividuSujet.RIS_Auteur,
-							)
+						return aSujet.roles.contains(
+							TypesForumPedagogique_1.TypeRoleIndividuSujet.RIS_Moderateur,
 						);
 					case TypesForumPedagogique_1.TypeRoleIndividuSujet.RIS_Membre:
 						return (

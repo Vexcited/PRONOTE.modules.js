@@ -343,10 +343,10 @@ class ObjetFenetre_SuiviStage extends ObjetFenetre_1.ObjetFenetre {
 				{ class: "flex-contain cols p-top-l" },
 				IE.jsx.str(
 					"div",
-					{ class: "field-contain no-line dates-contain as-grid" },
+					{ class: "field-contain dates-contain as-grid" },
 					IE.jsx.str(
 						"label",
-						null,
+						{ class: "ie-sous-titre" },
 						ObjetTraduction_1.GTraductions.getValeur("FenetreSuiviStage.Date"),
 						" : ",
 					),
@@ -372,6 +372,7 @@ class ObjetFenetre_SuiviStage extends ObjetFenetre_1.ObjetFenetre {
 							"div",
 							{ id: "wrapperInputHeure", class: "wrapper-input" },
 							IE.jsx.str("label", {
+								class: "ie-sous-titre",
 								for: "defHoraireSuivi",
 								"aria-label": ObjetTraduction_1.GTraductions.getValeur(
 									"FenetreSuiviStage.DefinirHoraireSuivi",
@@ -418,7 +419,7 @@ class ObjetFenetre_SuiviStage extends ObjetFenetre_1.ObjetFenetre {
 					{ class: "field-contain as-grid" },
 					IE.jsx.str(
 						"label",
-						null,
+						{ class: "ie-sous-titre" },
 						ObjetTraduction_1.GTraductions.getValeur(
 							"FenetreSuiviStage.Evenement",
 						),
@@ -426,7 +427,7 @@ class ObjetFenetre_SuiviStage extends ObjetFenetre_1.ObjetFenetre {
 					),
 					IE.jsx.str("ie-combo", {
 						"ie-model": "comboEvenements",
-						class: "full-width events-contain",
+						class: "   events-contain",
 					}),
 				),
 				IE.jsx.str(
@@ -434,7 +435,7 @@ class ObjetFenetre_SuiviStage extends ObjetFenetre_1.ObjetFenetre {
 					{ class: "field-contain as-grid" },
 					IE.jsx.str(
 						"label",
-						{ class: "fix-bloc" },
+						{ class: "fix-bloc ie-sous-titre" },
 						ObjetTraduction_1.GTraductions.getValeur("FenetreSuiviStage.Lieu"),
 						" : ",
 					),
@@ -461,9 +462,9 @@ class ObjetFenetre_SuiviStage extends ObjetFenetre_1.ObjetFenetre {
 				),
 				IE.jsx.str(
 					"div",
-					{ class: "pj-global-conteneur p-top-l p-bottom-xl" },
+					{ class: "field-contain" },
 					IE.jsx.str("ie-btnselecteur", {
-						class: "pj m-left-l",
+						class: "pj",
 						"ie-model": "modelAjouterPJ",
 						"ie-selecfile": true,
 						role: "button",
@@ -475,12 +476,12 @@ class ObjetFenetre_SuiviStage extends ObjetFenetre_1.ObjetFenetre {
 				),
 				IE.jsx.str(
 					"div",
-					{ class: "field-contain" },
+					{ class: "field-contain label-up" },
 					IE.jsx.str(
 						"label",
 						{
 							id: lIdLabelCommentaire,
-							class: "only-mobile m-bottom m-top-l",
+							class: "ie-sous-titre",
 							"ie-class": "getClassLabelCommentaire",
 						},
 						ObjetTraduction_1.GTraductions.getValeur(
@@ -502,8 +503,11 @@ class ObjetFenetre_SuiviStage extends ObjetFenetre_1.ObjetFenetre {
 				),
 				IE.jsx.str(
 					"div",
-					{ class: "public-team" },
-					IE.jsx.str("ie-checkbox", { "ie-model": "cbPublierSuivi" }),
+					{ class: "field-contain" },
+					IE.jsx.str("ie-checkbox", {
+						class: "long-text",
+						"ie-model": "cbPublierSuivi",
+					}),
 				),
 			),
 		);

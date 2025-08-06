@@ -1174,7 +1174,7 @@ class MoteurRDV {
 									aListeRessourcesSelectionnees === void 0
 										? void 0
 										: aListeRessourcesSelectionnees.count();
-								if (aListeRessourcesSelectionnees || lNbLieux === 0) {
+								if (!aListeRessourcesSelectionnees || lNbLieux === 0) {
 									aPlageHoraireCreneaux.lieu = null;
 								} else if (lNbLieux === 1) {
 									aPlageHoraireCreneaux.lieu =
@@ -2102,17 +2102,20 @@ class MoteurRDV {
 			null,
 			IE.jsx.str(
 				"div",
-				{ class: ["field-contain", "in-row", "no-line"] },
+				{ class: ["field-contain", "in-row"] },
 				IE.jsx.str(
 					"label",
 					{ class: "ie-titre-petit champ-requis" },
 					ObjetTraduction_1.GTraductions.getValeur("Date"),
 				),
-				IE.jsx.str("div", { "ie-identite": "getIdentiteDateCreneau" }),
+				IE.jsx.str("div", {
+					class: "date-creneau",
+					"ie-identite": "getIdentiteDateCreneau",
+				}),
 			),
 			IE.jsx.str(
 				"div",
-				{ class: ["field-contain", "in-row", "no-line"] },
+				{ class: ["field-contain", "in-row"] },
 				IE.jsx.str(
 					"label",
 					{ class: "ie-titre-petit champ-requis" },
@@ -2122,15 +2125,14 @@ class MoteurRDV {
 					required: true,
 					type: "time",
 					"ie-model": "inputHeureDebCreneau",
-					style: { width: "5.4rem" },
-					class: "real-size",
+					style: { width: "10rem" },
 					"aria-label":
 						ObjetTraduction_1.GTraductions.getValeur("RDV.hDebCreneau"),
 				}),
 			),
 			IE.jsx.str(
 				"div",
-				{ class: ["field-contain", "in-row", "no-line"] },
+				{ class: ["field-contain", "in-row"] },
 				IE.jsx.str(
 					"label",
 					{ id: lIdLabelComboModalite, class: "ie-titre-petit champ-requis" },
@@ -2143,7 +2145,7 @@ class MoteurRDV {
 			),
 			IE.jsx.str(
 				"div",
-				{ class: ["field-contain", "in-row", "no-line"] },
+				{ class: ["field-contain", "in-row"] },
 				IE.jsx.str(
 					"label",
 					{ id: lIdSelectLocalisation, class: "ie-titre-petit" },

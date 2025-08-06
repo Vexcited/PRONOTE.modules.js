@@ -20,5 +20,4 @@ exports.StylesObjetFenetre_EvenementPeriodicite = {
 	blocMensuelleRelatif: "bloc-mensuelle-relatif",
 	ctn: "ctn",
 	flexBetween: "flex-between",
-	inputNbr: "input-nbr",
 };

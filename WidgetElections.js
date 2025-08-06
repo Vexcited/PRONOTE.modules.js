@@ -270,7 +270,7 @@ class WidgetElections extends ObjetWidget_1.Widget.ObjetWidget {
 		const lTitre =
 			aElection.getLibelle() ||
 			ObjetTraduction_1.GTraductions.getValeur("accueil.elections.sansTitre");
-		H.push('<fieldset id="', lID, '" tabindex="-1">');
+		H.push('<fieldset class="no-border" id="', lID, '" tabindex="-1">');
 		const lFormat = "%JJ %MMMM %AAAA";
 		if (aElection.ouvert) {
 			H.push(

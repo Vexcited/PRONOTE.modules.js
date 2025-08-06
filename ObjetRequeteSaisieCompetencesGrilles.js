@@ -91,29 +91,52 @@ CollectionRequetes_1.Requetes.inscrire(
 	"SaisieCompetencesGrilles",
 	ObjetRequeteSaisieCompetencesGrilles,
 );
-exports.CommandeSaisieCompetencesGrilles = {
-	saisieClasses: "saisieClasses",
-	saisieReferentiel: "saisieReferentiel",
-	suppressionReferentiel: "suppressionReferentiel",
-	creationRelationReferentiel: "creationRelationReferentiel",
-	suppressionRelationReferentiel: "suppressionRelationReferentiel",
-	creationElementsCompetence: "creationElementsCompetence",
-	editionElementsCompetenceLibelle: "editionElementsCompetenceLibelle",
-	editionElementsCompetenceNivEquivalence:
-		"editionElementsCompetenceNivEquivalence",
-	editionElementsCompetenceLibelleBulletin:
-		"editionElementsCompetenceLibelleBulletin",
-	editionElementsCompetenceCoefficient: "editionElementsCompetenceCoefficient",
-	editionElementsCompetenceEvaluable: "editionElementsCompetenceEvaluable",
-	editionElementsCompetencePartage: "editionElementsCompetencePartage",
-	suppressionElementsCompetence: "suppressionElementsCompetence",
-	saisieDomainesDuSocleAssocie: "saisieDomainesDuSocleAssocie",
-	saisieElementSignifiant: "saisieElementSignifiant",
-	saisieRestrictionsNiveaux: "saisieRestrictionsNiveaux",
-	echOrdreReferentiels: "echangerOrdreReferentiels",
-	echOrdreElementsCompetence: "echangerOrdreElementsCompetence",
-	collerElementsCompetence: "collerElementsCompetence",
-	collerGrille: "collerGrille",
-	saisieParametrageGrille: "saisieParametrageGrille",
-	saisieElementCompetenceApprentissage: "saisieElementCompetenceApprentissage",
-};
+var CommandeSaisieCompetencesGrilles;
+(function (CommandeSaisieCompetencesGrilles) {
+	CommandeSaisieCompetencesGrilles["saisieClasses"] = "saisieClasses";
+	CommandeSaisieCompetencesGrilles["saisieReferentiel"] = "saisieReferentiel";
+	CommandeSaisieCompetencesGrilles["suppressionReferentiel"] =
+		"suppressionReferentiel";
+	CommandeSaisieCompetencesGrilles["creationRelationReferentiel"] =
+		"creationRelationReferentiel";
+	CommandeSaisieCompetencesGrilles["suppressionRelationReferentiel"] =
+		"suppressionRelationReferentiel";
+	CommandeSaisieCompetencesGrilles["creationElementsCompetence"] =
+		"creationElementsCompetence";
+	CommandeSaisieCompetencesGrilles["editionElementsCompetenceLibelle"] =
+		"editionElementsCompetenceLibelle";
+	CommandeSaisieCompetencesGrilles["editionElementsCompetenceNivEquivalence"] =
+		"editionElementsCompetenceNivEquivalence";
+	CommandeSaisieCompetencesGrilles["editionElementsCompetenceLibelleBulletin"] =
+		"editionElementsCompetenceLibelleBulletin";
+	CommandeSaisieCompetencesGrilles["editionElementsCompetenceCoefficient"] =
+		"editionElementsCompetenceCoefficient";
+	CommandeSaisieCompetencesGrilles["editionElementsCompetenceEvaluable"] =
+		"editionElementsCompetenceEvaluable";
+	CommandeSaisieCompetencesGrilles["editionElementsCompetencePartage"] =
+		"editionElementsCompetencePartage";
+	CommandeSaisieCompetencesGrilles["suppressionElementsCompetence"] =
+		"suppressionElementsCompetence";
+	CommandeSaisieCompetencesGrilles["saisieDomainesDuSocleAssocie"] =
+		"saisieDomainesDuSocleAssocie";
+	CommandeSaisieCompetencesGrilles["saisieElementSignifiant"] =
+		"saisieElementSignifiant";
+	CommandeSaisieCompetencesGrilles["saisieRestrictionsNiveaux"] =
+		"saisieRestrictionsNiveaux";
+	CommandeSaisieCompetencesGrilles["echOrdreReferentiels"] =
+		"echangerOrdreReferentiels";
+	CommandeSaisieCompetencesGrilles["echOrdreElementsCompetence"] =
+		"echangerOrdreElementsCompetence";
+	CommandeSaisieCompetencesGrilles["collerElementsCompetence"] =
+		"collerElementsCompetence";
+	CommandeSaisieCompetencesGrilles["collerGrille"] = "collerGrille";
+	CommandeSaisieCompetencesGrilles["saisieParametrageGrille"] =
+		"saisieParametrageGrille";
+	CommandeSaisieCompetencesGrilles["saisieElementCompetenceApprentissage"] =
+		"saisieElementCompetenceApprentissage";
+})(
+	CommandeSaisieCompetencesGrilles ||
+		(exports.CommandeSaisieCompetencesGrilles =
+			CommandeSaisieCompetencesGrilles =
+				{}),
+);

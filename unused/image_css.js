@@ -256,5 +256,7 @@ exports.StylesImage = {
 	iconsideIcon_lien_entrepartie: "iconside-icon_lien_entrepartie",
 	mixIcon_fiche_cours_partage: "mix-icon_fiche_cours_partage",
 	iconsideIcon_fiche_cours_partage: "iconside-icon_fiche_cours_partage",
+	mixIcon_envoyer: "mix-icon_envoyer",
+	iconsideIcon_envoyer: "iconside-icon_envoyer",
 	iconText: "icon-text",
 };

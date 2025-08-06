@@ -12,4 +12,6 @@ exports.StylesChoixDestinatairesParCriteres = {
 	critere: "ChoixDestinatairesP-critere-628165d",
 	cb: "ChoixDestinatairesP-cb-1caab242",
 	simple: "ChoixDestinatairesP-simple-3e7f73cd",
+	combiCriteres: "ChoixDestinatairesP-combi-criteres-c1c61ca9",
+	osCombo: "ChoixDestinatairesP-os-combo-5cf719de",
 };

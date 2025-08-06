@@ -130,6 +130,7 @@ class InterfacePiedBulletin extends ObjetInterface_1.ObjetInterface {
 		return T.join("");
 	}
 	setDonnees(aParam) {
+		var _a;
 		$.extend(true, this.params, aParam);
 		this.donneesRecues = true;
 		this._setDonneesModulesFonctionnels(aParam);
@@ -170,6 +171,15 @@ class InterfacePiedBulletin extends ObjetInterface_1.ObjetInterface {
 			});
 			if (!lExisteOngletVisible) {
 				this.ongletSelectionne = 0;
+			}
+			const lOnglet = this.listeOnglets.get(this.ongletSelectionne);
+			if (lOnglet === null || lOnglet === void 0 ? void 0 : lOnglet.invisible) {
+				this.ongletSelectionne =
+					(_a = this.listeOnglets.getIndiceElementParFiltre(
+						(aOnglet) => !aOnglet.invisible,
+					)) !== null && _a !== void 0
+						? _a
+						: 0;
 			}
 			this.getInstance(this.identOnglets).setDonnees(this.listeOnglets);
 			if (lExisteOngletVisible) {

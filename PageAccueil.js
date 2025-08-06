@@ -377,6 +377,7 @@ class ObjetAccueil extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 					Enumere_Widget_1.EGenreWidget.penseBete,
 					Enumere_Widget_1.EGenreWidget.RetourEspace,
 					Enumere_Widget_1.EGenreWidget.voteElecMembreBureau,
+					Enumere_Widget_1.EGenreWidget.documentsASigner,
 					Enumere_Widget_1.EGenreWidget.lienUtile,
 				);
 				result.push(Enumere_Widget_1.EGenreWidget.TAFEtActivites);
@@ -394,6 +395,7 @@ class ObjetAccueil extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 					Enumere_Widget_1.EGenreWidget.penseBete,
 					Enumere_Widget_1.EGenreWidget.RetourEspace,
 					Enumere_Widget_1.EGenreWidget.voteElecMembreBureau,
+					Enumere_Widget_1.EGenreWidget.documentsASigner,
 					Enumere_Widget_1.EGenreWidget.lienUtile,
 				);
 				if (this.parametresScoMobile.activerBlog) {
@@ -414,6 +416,7 @@ class ObjetAccueil extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 					Enumere_Widget_1.EGenreWidget.RetourEspace,
 					Enumere_Widget_1.EGenreWidget.voteElecMembreBureau,
 					Enumere_Widget_1.EGenreWidget.voteElecElecteur,
+					Enumere_Widget_1.EGenreWidget.documentsASigner,
 					Enumere_Widget_1.EGenreWidget.QCM,
 					Enumere_Widget_1.EGenreWidget.evenementRappel,
 					Enumere_Widget_1.EGenreWidget.TAFPrimaire,
@@ -436,6 +439,7 @@ class ObjetAccueil extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 			case Enumere_Espace_1.EGenreEspace.Mobile_PrimEleve:
 				result.push(
 					Enumere_Widget_1.EGenreWidget.RetourEspace,
+					Enumere_Widget_1.EGenreWidget.documentsASigner,
 					Enumere_Widget_1.EGenreWidget.QCM,
 					Enumere_Widget_1.EGenreWidget.TAFPrimaire,
 					Enumere_Widget_1.EGenreWidget.competences,
@@ -454,6 +458,7 @@ class ObjetAccueil extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 				result.push(
 					Enumere_Widget_1.EGenreWidget.RetourEspace,
 					Enumere_Widget_1.EGenreWidget.voteElecMembreBureau,
+					Enumere_Widget_1.EGenreWidget.documentsASigner,
 					Enumere_Widget_1.EGenreWidget.lienUtile,
 					Enumere_Widget_1.EGenreWidget.TAFPrimaire,
 				);
@@ -479,6 +484,7 @@ class ObjetAccueil extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 			case Enumere_Espace_1.EGenreEspace.Mobile_PrimMairie:
 				result.push(
 					Enumere_Widget_1.EGenreWidget.RetourEspace,
+					Enumere_Widget_1.EGenreWidget.documentsASigner,
 					Enumere_Widget_1.EGenreWidget.lienUtile,
 					Enumere_Widget_1.EGenreWidget.previsionnelAbsServiceAnnexe,
 					Enumere_Widget_1.EGenreWidget.actualites,
@@ -497,6 +503,7 @@ class ObjetAccueil extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 				result.push(
 					Enumere_Widget_1.EGenreWidget.RetourEspace,
 					Enumere_Widget_1.EGenreWidget.elections,
+					Enumere_Widget_1.EGenreWidget.documentsASigner,
 					Enumere_Widget_1.EGenreWidget.lienUtile,
 					Enumere_Widget_1.EGenreWidget.partenaireCDI,
 					Enumere_Widget_1.EGenreWidget.partenaireARD,
@@ -518,6 +525,7 @@ class ObjetAccueil extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 					Enumere_Widget_1.EGenreWidget.RetourEspace,
 					Enumere_Widget_1.EGenreWidget.voteElecMembreBureau,
 					Enumere_Widget_1.EGenreWidget.voteElecElecteur,
+					Enumere_Widget_1.EGenreWidget.documentsASigner,
 					Enumere_Widget_1.EGenreWidget.elections,
 					Enumere_Widget_1.EGenreWidget.lienUtile,
 					Enumere_Widget_1.EGenreWidget.partenaireCDI,
@@ -540,6 +548,7 @@ class ObjetAccueil extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 					Enumere_Widget_1.EGenreWidget.penseBete,
 					Enumere_Widget_1.EGenreWidget.RetourEspace,
 					Enumere_Widget_1.EGenreWidget.voteElecMembreBureau,
+					Enumere_Widget_1.EGenreWidget.documentsASigner,
 					Enumere_Widget_1.EGenreWidget.elections,
 					Enumere_Widget_1.EGenreWidget.lienUtile,
 					Enumere_Widget_1.EGenreWidget.partenaireCDI,
@@ -547,6 +556,7 @@ class ObjetAccueil extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 					Enumere_Widget_1.EGenreWidget.partenaireAgate,
 					Enumere_Widget_1.EGenreWidget.EDT,
 					Enumere_Widget_1.EGenreWidget.RemplacementsEnseignants,
+					Enumere_Widget_1.EGenreWidget.coursNonAssures,
 					Enumere_Widget_1.EGenreWidget.personnelsAbsents,
 					Enumere_Widget_1.EGenreWidget.appelNonFait,
 					Enumere_Widget_1.EGenreWidget.CDTNonSaisi,
@@ -562,6 +572,7 @@ class ObjetAccueil extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 					Enumere_Widget_1.EGenreWidget.penseBete,
 					Enumere_Widget_1.EGenreWidget.RetourEspace,
 					Enumere_Widget_1.EGenreWidget.voteElecMembreBureau,
+					Enumere_Widget_1.EGenreWidget.documentsASigner,
 					Enumere_Widget_1.EGenreWidget.elections,
 					Enumere_Widget_1.EGenreWidget.lienUtile,
 					Enumere_Widget_1.EGenreWidget.partenaireCDI,
@@ -586,6 +597,7 @@ class ObjetAccueil extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 					Enumere_Widget_1.EGenreWidget.penseBete,
 					Enumere_Widget_1.EGenreWidget.RetourEspace,
 					Enumere_Widget_1.EGenreWidget.voteElecMembreBureau,
+					Enumere_Widget_1.EGenreWidget.documentsASigner,
 					Enumere_Widget_1.EGenreWidget.elections,
 					Enumere_Widget_1.EGenreWidget.EDT,
 					Enumere_Widget_1.EGenreWidget.lienUtile,
@@ -607,6 +619,7 @@ class ObjetAccueil extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 					Enumere_Widget_1.EGenreWidget.RetourEspace,
 					Enumere_Widget_1.EGenreWidget.voteElecMembreBureau,
 					Enumere_Widget_1.EGenreWidget.elections,
+					Enumere_Widget_1.EGenreWidget.documentsASigner,
 					Enumere_Widget_1.EGenreWidget.lienUtile,
 					Enumere_Widget_1.EGenreWidget.partenaireARD,
 					Enumere_Widget_1.EGenreWidget.partenaireAgate,
@@ -620,6 +633,14 @@ class ObjetAccueil extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 					Enumere_Widget_1.EGenreWidget.competences,
 					Enumere_Widget_1.EGenreWidget.agenda,
 					Enumere_Widget_1.EGenreWidget.kiosque,
+				);
+				break;
+			case Enumere_Espace_1.EGenreEspace.Mobile_Entreprise:
+				result.push(
+					Enumere_Widget_1.EGenreWidget.RetourEspace,
+					Enumere_Widget_1.EGenreWidget.documentsASigner,
+					Enumere_Widget_1.EGenreWidget.actualites,
+					Enumere_Widget_1.EGenreWidget.agenda,
 				);
 				break;
 			case Enumere_Espace_1.EGenreEspace.Mobile_Tuteur:
@@ -685,6 +706,7 @@ class ObjetAccueil extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 			case Enumere_Widget_1.EGenreWidget.RemplacementsEnseignants:
 			case Enumere_Widget_1.EGenreWidget.voteElecMembreBureau:
 			case Enumere_Widget_1.EGenreWidget.voteElecElecteur:
+			case Enumere_Widget_1.EGenreWidget.documentsASigner:
 				result = this.moteur.getDeclarationWidget(aGenreWidget);
 				break;
 			default:

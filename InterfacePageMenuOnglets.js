@@ -373,6 +373,9 @@ class ObjetAffichagePageMenuOnglets extends _InterfacePageMenuOnglets_1._Interfa
 			this.afficherListe();
 		}
 	}
+	estAfficheDansENT() {
+		return this.applicationScoMobile.getObjetParametres().estAfficheDansENT;
+	}
 	getInfosComboMembre(aMembre) {
 		const lHtmlPhoto = [];
 		if (aMembre && aMembre.avecPhoto) {
@@ -396,7 +399,7 @@ class ObjetAffichagePageMenuOnglets extends _InterfacePageMenuOnglets_1._Interfa
 	actualiserTitre() {
 		if (
 			this.etatutilisateurScoMobile.derniereConnexion &&
-			!this.applicationScoMobile.getObjetParametres().estAfficheDansENT
+			!this.estAfficheDansENT()
 		) {
 			const lDerniereConnexion = ObjetTraduction_1.GTraductions.getValeur(
 				"accueil.PrecedenteConnection",
@@ -458,10 +461,7 @@ class ObjetAffichagePageMenuOnglets extends _InterfacePageMenuOnglets_1._Interfa
 		this.evenementListeOnglets(false);
 	}
 	avecBtnSeDeconnecter() {
-		if (
-			this.applicationScoMobile.getObjetParametres().estAfficheDansENT &&
-			!this.applicationScoMobile.estAppliMobile
-		) {
+		if (this.estAfficheDansENT() && !this.applicationScoMobile.estAppliMobile) {
 			return false;
 		}
 		return super.avecBtnSeDeconnecter();

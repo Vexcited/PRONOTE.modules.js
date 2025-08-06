@@ -396,7 +396,7 @@ class ObjetParametrageGenerationPdf_EDT extends ObjetParametrageGenerationPdf {
 				$(this.node).eventValidation(() => {
 					aInstance._optionsPDF.inversionGrille =
 						!aInstance._optionsPDF.inversionGrille;
-					this.controleur.$refreshSelf();
+					this.controleur.$refresh();
 				});
 			},
 			rbCouleur: {

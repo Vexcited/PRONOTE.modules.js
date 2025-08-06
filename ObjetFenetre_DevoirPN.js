@@ -32,12 +32,12 @@ const AccessApp_1 = require("AccessApp");
 class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir_1.ObjetFenetre_Devoir {
 	constructor(...aParams) {
 		super(...aParams);
-		this.aaplictionSco = (0, AccessApp_1.getApp)();
-		this.objetParametres = this.aaplictionSco.getObjetParametres();
+		this.applicationSco = (0, AccessApp_1.getApp)();
+		this.objetParametres = this.applicationSco.getObjetParametres();
 		this.idCompetencesEvaluees = this.Nom + "_competencesEvaluees";
 		this.avecQCMCompetences = true;
 		this.avecCategorieEvaluation = true;
-		this.avecThemes = this.aaplictionSco.parametresUtilisateur.get(
+		this.avecThemes = this.applicationSco.parametresUtilisateur.get(
 			"avecGestionDesThemes",
 		);
 		this.avecConsigneQCM = true;
@@ -164,7 +164,7 @@ class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir_1.ObjetFenetre_Devoir {
 				listeElements: null,
 				callback: null,
 				service:
-					(_a = this.aaplictionSco.getEtatUtilisateur()) === null ||
+					(_a = this.applicationSco.getEtatUtilisateur()) === null ||
 					_a === void 0
 						? void 0
 						: _a.getCloudENEJ(),
@@ -213,7 +213,7 @@ class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir_1.ObjetFenetre_Devoir {
 		});
 	}
 	getTailleMaxPieceJointe() {
-		return this.aaplictionSco.droits.get(
+		return this.applicationSco.droits.get(
 			ObjetDroitsPN_1.TypeDroits.tailleMaxDocJointEtablissement,
 		);
 	}
@@ -434,7 +434,7 @@ class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir_1.ObjetFenetre_Devoir {
 				setValue: async (aValue) => {
 					if (this.devoir) {
 						if (!aValue && this._avecUnCommentaireSurNote(this.devoir)) {
-							const lRes = await this.aaplictionSco
+							const lRes = await this.applicationSco
 								.getMessage()
 								.afficher({
 									type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
@@ -483,65 +483,129 @@ class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir_1.ObjetFenetre_Devoir {
 		}
 		return true;
 	}
+	leDevoirEstSurPeriodesIdentiques(aDevoir) {
+		let lResult = false;
+		if (aDevoir && aDevoir.listeClasses) {
+			const lFuncPeriodesSontIdentiques = (aPeriode1, aPeriode2) => {
+				let lSontIdentiques = false;
+				if (!aPeriode1) {
+					lSontIdentiques = !aPeriode2;
+				} else {
+					lSontIdentiques =
+						aPeriode2 && aPeriode1.getNumero() === aPeriode2.getNumero();
+				}
+				return lSontIdentiques;
+			};
+			lResult = true;
+			let lPeriodePrincipaleUnique = null;
+			let lPeriodeSecondaireUnique = null;
+			let lEstInitialise = false;
+			for (const lClasse of aDevoir.listeClasses) {
+				if (!lEstInitialise) {
+					if (lClasse.listePeriodes) {
+						if (lClasse.listePeriodes.count() > 0) {
+							lPeriodePrincipaleUnique = lClasse.listePeriodes.get(0);
+						}
+						if (lClasse.listePeriodes.count() > 1) {
+							lPeriodeSecondaireUnique = lClasse.listePeriodes.get(1);
+						}
+					}
+					lEstInitialise = true;
+					continue;
+				}
+				let lPeriodePrincipaleDeClasseCourante = null;
+				let lPeriodeSecondaireDeClasseCourante = null;
+				if (lClasse.listePeriodes) {
+					if (lClasse.listePeriodes.count() > 0) {
+						lPeriodePrincipaleDeClasseCourante = lClasse.listePeriodes.get(0);
+					}
+					if (lClasse.listePeriodes.count() > 1) {
+						lPeriodeSecondaireDeClasseCourante = lClasse.listePeriodes.get(1);
+					}
+				}
+				lResult =
+					lFuncPeriodesSontIdentiques(
+						lPeriodePrincipaleUnique,
+						lPeriodePrincipaleDeClasseCourante,
+					) &&
+					lFuncPeriodesSontIdentiques(
+						lPeriodeSecondaireUnique,
+						lPeriodeSecondaireDeClasseCourante,
+					);
+				if (!lResult) {
+					break;
+				}
+			}
+		}
+		return lResult;
+	}
 	evenementSurBtnCompetencesEvaluees() {
 		const lEstCloturePourEvaluation =
 			this.leDevoirEstSurUnePeriodeClotureePourEvaluation(this.devoir);
-		if (
-			!lEstCloturePourEvaluation &&
-			this.devoir.service.avecSaisieEvaluation
-		) {
-			const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
-				ObjetFenetre_Competences_1.ObjetFenetre_Competences,
-				{
-					pere: this,
-					evenement: this._evenementSurFenetreCompetences,
-					initialiser: function (aInstance) {
-						aInstance.setOptionsFenetre({
-							titre: ObjetTraduction_1.GTraductions.getValeur(
-								"competences.choixCompetencesConnaissancesAEvaluer",
-							),
-							largeur: 620,
-							hauteur: 420,
-							listeBoutons: [
-								ObjetTraduction_1.GTraductions.getValeur("Annuler"),
-								ObjetTraduction_1.GTraductions.getValeur("Valider"),
-							],
-						});
-					},
-				},
-			);
-			lFenetre.setDonnees({
-				listeCompetences: this.devoir.evaluation
-					? MethodesObjet_1.MethodesObjet.dupliquer(
-							this.devoir.evaluation.listeCompetences,
-						)
-					: new ObjetListeElements_1.ObjetListeElements(),
-				service: this.devoir.service,
-				classe: this.aaplictionSco
-					.getEtatUtilisateur()
-					.Navigation.getRessource(Enumere_Ressource_1.EGenreRessource.Classe),
-			});
-		} else {
-			if (lEstCloturePourEvaluation) {
-				this.aaplictionSco
-					.getMessage()
-					.afficher({
-						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-						message: ObjetTraduction_1.GTraductions.getValeur(
-							"FenetreDevoir.MsgModificationCompetencesImpossible",
-						),
-					});
-			} else if (!this.devoir.service.avecSaisieEvaluation) {
-				this.aaplictionSco
-					.getMessage()
-					.afficher({
-						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-						message: ObjetTraduction_1.GTraductions.getValeur(
-							"FenetreDevoir.MsgModificationCompetencesImpossibleProfDifferent",
-						),
-					});
-			}
+		if (lEstCloturePourEvaluation) {
+			this.applicationSco
+				.getMessage()
+				.afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+					message: ObjetTraduction_1.GTraductions.getValeur(
+						"FenetreDevoir.MsgModificationCompetencesImpossible",
+					),
+				});
+			return;
 		}
+		if (!this.leDevoirEstSurPeriodesIdentiques(this.devoir)) {
+			this.applicationSco
+				.getMessage()
+				.afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+					message: ObjetTraduction_1.GTraductions.getValeur(
+						"FenetreDevoir.MsgModificationCompetencesImpossibleMultiClasses",
+					),
+				});
+			return;
+		}
+		if (!this.devoir.service.avecSaisieEvaluation) {
+			this.applicationSco
+				.getMessage()
+				.afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+					message: ObjetTraduction_1.GTraductions.getValeur(
+						"FenetreDevoir.MsgModificationCompetencesImpossibleProfDifferent",
+					),
+				});
+			return;
+		}
+		const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_Competences_1.ObjetFenetre_Competences,
+			{
+				pere: this,
+				evenement: this._evenementSurFenetreCompetences,
+				initialiser: function (aInstance) {
+					aInstance.setOptionsFenetre({
+						titre: ObjetTraduction_1.GTraductions.getValeur(
+							"competences.choixCompetencesConnaissancesAEvaluer",
+						),
+						largeur: 620,
+						hauteur: 420,
+						listeBoutons: [
+							ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+							ObjetTraduction_1.GTraductions.getValeur("Valider"),
+						],
+					});
+				},
+			},
+		);
+		lFenetre.setDonnees({
+			listeCompetences: this.devoir.evaluation
+				? MethodesObjet_1.MethodesObjet.dupliquer(
+						this.devoir.evaluation.listeCompetences,
+					)
+				: new ObjetListeElements_1.ObjetListeElements(),
+			service: this.devoir.service,
+			classe: this.applicationSco
+				.getEtatUtilisateur()
+				.Navigation.getRessource(Enumere_Ressource_1.EGenreRessource.Classe),
+		});
 	}
 	evenementSurSuppressionEvaluationAssociee() {
 		const lDevoir = this.devoir;
@@ -553,7 +617,7 @@ class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir_1.ObjetFenetre_Devoir {
 			const lEstCloturePourEvaluation =
 				this.leDevoirEstSurUnePeriodeClotureePourEvaluation(lDevoir);
 			if (!lEstCloturePourEvaluation) {
-				this.aaplictionSco.getMessage().afficher({
+				this.applicationSco.getMessage().afficher({
 					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
 					message: ObjetTraduction_1.GTraductions.getValeur(
 						"FenetreDevoir.MsgConfirmSupprEval",
@@ -567,7 +631,7 @@ class ObjetFenetre_DevoirPN extends ObjetFenetre_Devoir_1.ObjetFenetre_Devoir {
 					},
 				});
 			} else {
-				this.aaplictionSco
+				this.applicationSco
 					.getMessage()
 					.afficher({
 						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,

@@ -175,7 +175,7 @@ class ObjetFenetreRecupIdMDP extends ObjetFenetre_1.ObjetFenetre {
 			event: () => {
 				const lTarget = ObjetHtml_1.GHtml.getElement(aId);
 				lTarget.type = lTarget.type === "password" ? "text" : "password";
-				this.controleur.$refreshSelf();
+				this.$refresh();
 			},
 			getTitle: () => {
 				const lTarget = ObjetHtml_1.GHtml.getElement(aId);

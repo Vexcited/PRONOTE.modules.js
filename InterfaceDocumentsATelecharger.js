@@ -414,6 +414,14 @@ class InterfaceDocumentsATelecharger extends _InterfaceDocuments_1._InterfaceDoc
 				.supprimer:
 				this.suppressionDocument(aParam.article);
 				break;
+			case UtilitaireDocumentATelecharger_1.EGenreEventDocumentMenuCtxDAT
+				.ouvrirFenetreCommentaire:
+				if ("memo" in aParam.article) {
+					this.ouvrirFenetreCommentaire(aParam.article.memo, {
+						titre: aParam.article.getLibelle(),
+					});
+				}
+				break;
 		}
 	}
 	surFermetureFenetreTelechargerEtClourd(aMarquerLuLeDocument, aDocument) {
@@ -511,25 +519,31 @@ class InterfaceDocumentsATelecharger extends _InterfaceDocuments_1._InterfaceDoc
 				break;
 			}
 			case Enumere_DocTelechargement_1.EGenreDocTelechargement.documentCasier: {
-				const lOuvrirTelechargerEtCloud =
-					UtilitaireDocumentATelecharger_1.UtilitaireDocumentATelecharger.getAction(
-						UtilitaireDocumentATelecharger_1.EGenreActionDAT
-							.ouvrirTelechargerEtCloud,
+				if (
+					UtilitaireDocumentATelecharger_1.UtilitaireDocumentATelecharger.isObjetElementDestinataireResponsable(
 						lDocument,
-						this.surFermetureFenetreTelechargerEtClourd.bind(this),
-					);
-				const lTelecharger =
-					UtilitaireDocumentATelecharger_1.UtilitaireDocumentATelecharger.getAction(
-						UtilitaireDocumentATelecharger_1.EGenreActionDAT.telecharger,
-						lDocument,
-					);
-				const lEstDocCloud =
-					lDocument.getGenre() ===
-					Enumere_DocumentJoint_1.EGenreDocumentJoint.Cloud;
-				if (lEstDocCloud) {
-					lCallback = lTelecharger.event;
-				} else {
-					lCallback = lOuvrirTelechargerEtCloud.event;
+					)
+				) {
+					const lOuvrirTelechargerEtCloud =
+						UtilitaireDocumentATelecharger_1.UtilitaireDocumentATelecharger.getAction(
+							UtilitaireDocumentATelecharger_1.EGenreActionDAT
+								.ouvrirTelechargerEtCloud,
+							lDocument,
+							this.surFermetureFenetreTelechargerEtClourd.bind(this),
+						);
+					const lTelecharger =
+						UtilitaireDocumentATelecharger_1.UtilitaireDocumentATelecharger.getAction(
+							UtilitaireDocumentATelecharger_1.EGenreActionDAT.telecharger,
+							lDocument,
+						);
+					const lEstDocCloud =
+						lDocument.documentCasier.getGenre() ===
+						Enumere_DocumentJoint_1.EGenreDocumentJoint.Cloud;
+					if (lEstDocCloud) {
+						lCallback = lTelecharger.event;
+					} else {
+						lCallback = lOuvrirTelechargerEtCloud.event;
+					}
 				}
 				break;
 			}
@@ -752,17 +766,19 @@ class InterfaceDocumentsATelecharger extends _InterfaceDocuments_1._InterfaceDoc
 							),
 			}),
 		);
-		lListe.add(
-			ObjetElement_1.ObjetElement.create({
-				Libelle: ObjetTraduction_1.GTraductions.getValeur(
-					"documentsATelecharger.bulletins",
-				),
-				icon: "icon_bulletin_officiel",
-				Genre:
-					DocumentsATelecharger_1.DocumentsATelecharger.GenreRubriqueDAT
-						.bulletins,
-			}),
-		);
+		if (!this.applicationSco.estEDT) {
+			lListe.add(
+				ObjetElement_1.ObjetElement.create({
+					Libelle: ObjetTraduction_1.GTraductions.getValeur(
+						"documentsATelecharger.bulletins",
+					),
+					icon: "icon_bulletin_officiel",
+					Genre:
+						DocumentsATelecharger_1.DocumentsATelecharger.GenreRubriqueDAT
+							.bulletins,
+				}),
+			);
+		}
 		if (this.avecAccesSignatureNumerique()) {
 			const lCompteurDocumentsASigner = this.listeDocumentsSignatureElecASigner
 				? this.listeDocumentsSignatureElecASigner

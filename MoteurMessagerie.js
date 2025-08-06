@@ -282,7 +282,7 @@ class MoteurMessagerie {
 		}
 		return lResult;
 	}
-	ouvrirFenetreAvertissement(aSurInitialisation) {
+	ouvrirFenetreAvertissement(aSurInitialisation, aClbckSurFermer) {
 		if (
 			aSurInitialisation &&
 			!uFenetreAvertissementASignaler &&
@@ -301,7 +301,7 @@ class MoteurMessagerie {
 		const lTitreFenetre = IE.jsx.str(
 			IE.jsx.fragment,
 			null,
-			IE.jsx.str("i", { class: "icon_warning_sign" }),
+			IE.jsx.str("i", { role: "presentation", class: "icon_warning_sign" }),
 			" ",
 			ObjetTraduction_1.GTraductions.getValeur(
 				"Messagerie.TitreFenetreAvertissement",
@@ -318,6 +318,9 @@ class MoteurMessagerie {
 				listeBoutons: [ObjetTraduction_1.GTraductions.getValeur("Fermer")],
 				callbackFermer: function () {
 					uFenetreAvertissement = null;
+					if (aClbckSurFermer) {
+						aClbckSurFermer();
+					}
 				},
 				identConservationCoordonnees: "FenetreAvertissMotMess",
 			},
@@ -1654,7 +1657,12 @@ class MoteurMessagerie {
 		const lControleur = {
 			combo: {
 				init: function (aCombo) {
-					aCombo.setOptionsObjetSaisie({ longueur: 35 });
+					aCombo.setOptionsObjetSaisie({
+						longueur: 35,
+						labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+							"Messagerie.WAI_nbMsgNonPurges",
+						),
+					});
 					aCombo.setDonnees(lListe, lIndiceSelection);
 				},
 				event: function (aParametres) {

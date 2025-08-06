@@ -154,26 +154,22 @@ class WidgetTAF extends ObjetWidget_1.Widget.ObjetWidget {
 	composeWidgetTAF() {
 		const H = [];
 		let lDate, lTaf;
-		const lDicoPourLeTaf = [];
+		const lDicoPourLeTaf = {};
 		if (this.donnees.listeTAF && this.donnees.listeTAF.count() > 0) {
 			H.push('<div class="conteneur-liste-CDT">');
 			H.push('<ul class="liste-imbriquee">');
 			for (let I = 0; I < this.donnees.listeTAF.count(); I++) {
 				lTaf = this.donnees.listeTAF.get(I);
 				lTaf.indice = I;
-				if (!lDicoPourLeTaf[lTaf.pourLe]) {
-					lDicoPourLeTaf[lTaf.pourLe] = [];
+				if (!lDicoPourLeTaf[lTaf.pourLe.toDateString()]) {
+					lDicoPourLeTaf[lTaf.pourLe.toDateString()] = [];
 				}
-				lDicoPourLeTaf[lTaf.pourLe].push(lTaf);
+				lDicoPourLeTaf[lTaf.pourLe.toDateString()].push(lTaf);
 			}
 			if (this.donnees.listeTAF.count() > 0) {
 				for (lDate in lDicoPourLeTaf) {
 					const lDateConcernee = new Date(lDate);
-					H.push(
-						'<li aria-labelledby="' +
-							this.getIdDate(lDateConcernee) +
-							'" tabindex="0">',
-					);
+					H.push("<li>");
 					H.push(this.composeDate(lDateConcernee));
 					H.push('<ul class="sub-liste cols">');
 					for (const i in lDicoPourLeTaf[lDate]) {
@@ -274,7 +270,7 @@ class WidgetTAF extends ObjetWidget_1.Widget.ObjetWidget {
 		H.push("</div>");
 		H.push(
 			' <div class="m-left">',
-			'<div tabindex="0" class="as-content ',
+			'<div class="as-content ',
 			" avecAction",
 			lEstFait && !lEstQCM ? " done" : "",
 			'" aria-labelledby="' + this.Nom + "_" + i + '">',

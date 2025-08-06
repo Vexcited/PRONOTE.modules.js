@@ -7,14 +7,33 @@ const ObjetTri_1 = require("ObjetTri");
 const ObjetHtml_1 = require("ObjetHtml");
 const ObjetWidget_1 = require("ObjetWidget");
 const ObjetTraduction_1 = require("ObjetTraduction");
+const UtilitaireWidget_1 = require("UtilitaireWidget");
 class WidgetCoursNonAssures extends ObjetWidget_1.Widget.ObjetWidget {
 	construire(aParams) {
+		var _a;
 		this.donnees = aParams.donnees;
 		this.idContenu = this.Nom + "_Contenu";
 		this.creerObjetsCoursNonAssures();
 		this.ProfCoursNonAssures.Selection = 0;
+		let lNbrElement = 0;
+		if (
+			((_a = this.donnees) === null || _a === void 0
+				? void 0
+				: _a.listeProfCoursNonAssures.count()) > 0 &&
+			this.donnees.listeCoursNonAssures
+		) {
+			let lNumeroProfSelection = this.donnees.listeProfCoursNonAssures
+				.get(this.ProfCoursNonAssures.Selection)
+				.getNumero();
+			lNbrElement = this.donnees.nbrElements = this.donnees.listeCoursNonAssures
+				.getListeElements((aCours) => {
+					return aCours.professeur.getNumero() === lNumeroProfSelection;
+				})
+				.count();
+		}
 		const lWidget = {
 			getHtml: this.composeWidgetCoursNonAssures.bind(this),
+			nbrElements: lNbrElement,
 			afficherMessage: this.donnees.listeCoursNonAssures
 				? this.donnees.listeCoursNonAssures.count() === 0
 				: true,
@@ -82,7 +101,14 @@ class WidgetCoursNonAssures extends ObjetWidget_1.Widget.ObjetWidget {
 				Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection &&
 			this.ProfCoursNonAssures.InteractionUtilisateur
 		) {
+			this.donnees.nbrElements = this.donnees.listeCoursNonAssures
+				.getListeElements((aCours) => {
+					return aCours.professeur.getNumero() === aParams.element.getNumero();
+				})
+				.count();
 			ObjetHtml_1.GHtml.setHtml(this.idContenu, this._composeCoursNonAssures());
+			UtilitaireWidget_1.UtilitaireWidget.actualiserFooter(this.donnees);
+			UtilitaireWidget_1.UtilitaireWidget.afficherMasquerListe(this.donnees);
 		}
 	}
 	_composeCoursNonAssures() {

@@ -606,6 +606,8 @@ class ObjetEtatUtilisateur extends ObjetEtatUtilisateurCP_1.ObjetEtatUtilisateur
 				Enumere_Espace_1.EGenreEspace.Mobile_PrimMairie,
 				Enumere_Espace_1.EGenreEspace.PrimDirection,
 				Enumere_Espace_1.EGenreEspace.Mobile_PrimDirection,
+				Enumere_Espace_1.EGenreEspace.Entreprise,
+				Enumere_Espace_1.EGenreEspace.Mobile_Entreprise,
 			].includes(this.GenreEspace) &&
 			lOnglet &&
 			lOnglet.Actif
@@ -685,6 +687,7 @@ class ObjetEtatUtilisateur extends ObjetEtatUtilisateurCP_1.ObjetEtatUtilisateur
 			Enumere_Espace_1.EGenreEspace.Mobile_PrimPeriscolaire,
 			Enumere_Espace_1.EGenreEspace.Mobile_PrimMairie,
 			Enumere_Espace_1.EGenreEspace.Mobile_PrimDirection,
+			Enumere_Espace_1.EGenreEspace.Mobile_Entreprise,
 		].includes(GEtatUtilisateur.GenreEspace);
 	}
 	estEspaceAvecMembre() {

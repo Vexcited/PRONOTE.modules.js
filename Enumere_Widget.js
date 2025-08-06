@@ -72,6 +72,7 @@ var EGenreWidget;
 	EGenreWidget[(EGenreWidget["voteElecElecteur"] = 58)] = "voteElecElecteur";
 	EGenreWidget[(EGenreWidget["InfosParcoursupLSL"] = 59)] =
 		"InfosParcoursupLSL";
+	EGenreWidget[(EGenreWidget["documentsASigner"] = 60)] = "documentsASigner";
 })(EGenreWidget || (exports.EGenreWidget = EGenreWidget = {}));
 const MethodesObjet_1 = require("MethodesObjet");
 const EGenreWidgetUtil = {

@@ -990,7 +990,7 @@ class InterfacePageSaisieAbsences extends InterfacePage_1.InterfacePage {
 		aInstance.setParametres(
 			ObjetDate_1.GDate.PremierLundi,
 			ObjetDate_1.GDate.premiereDate,
-			this.appScoEspace.getObjetParametres().DerniereDate,
+			ObjetDate_1.GDate.getDateCourante(),
 			this.appScoEspace.getObjetParametres().JoursOuvres,
 		);
 	}
@@ -1154,6 +1154,13 @@ class InterfacePageSaisieAbsences extends InterfacePage_1.InterfacePage {
 					);
 					this.surSelectionEleve();
 					this._actualiserEDTEleve();
+					if (this.getInstance(this.IdentFenetreChargeTAF).estAffiche()) {
+						this.getInstance(this.IdentFenetreChargeTAF).setDonnees(
+							this.paramCours.cours,
+							this.listeClasses,
+							this.Eleve,
+						);
+					}
 					this.$refreshSelf();
 				}
 				break;
@@ -3257,7 +3264,7 @@ class InterfacePageSaisieAbsences extends InterfacePage_1.InterfacePage {
 			$(
 				"#" +
 					this.getInstance(this.idSaisieAbsences).getNom().escapeJQ() +
-					" table:first",
+					" .TablePrincipaleFeuilleAppel",
 			).width(),
 		);
 		this._actualiserEDTEleve();

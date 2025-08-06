@@ -9,6 +9,7 @@ class InterfaceBandeauPiedCommune extends _InterfaceBandeauPied_1._ObjetAffichag
 		const lGParametres = GParametres;
 		this.options = {
 			mention: lGParametres.publierMentions,
+			urlConfidentialite: lGParametres.urlConfidentialite,
 			siteIndex:
 				lGParametres.urlSiteIndexEducation || "https://www.index-education.com",
 			urlInfosHebergement: lGParametres.urlInfosHebergement,

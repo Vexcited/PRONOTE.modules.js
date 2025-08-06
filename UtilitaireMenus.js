@@ -235,7 +235,7 @@ exports.UtilitaireMenus = {
 	},
 	composeAllergene: (aAllergene) => {
 		return aAllergene
-			? `<i role="img" alt="${aAllergene.getLibelle()}" class="i-medium icon ${TypeOrigineCreationAllergeneAlimentaire_1.TypeOrigineCreationAllergeneAlimentaireUtil.getClassIcone(aAllergene.getGenre())}" style="${aAllergene.couleur ? `color:${aAllergene.couleur}` : ""}" title="${aAllergene.getLibelle()}" ></i>`
+			? `<i role="img" ie-tooltiplabel="${aAllergene.getLibelle()}" class="i-medium icon ${TypeOrigineCreationAllergeneAlimentaire_1.TypeOrigineCreationAllergeneAlimentaireUtil.getClassIcone(aAllergene.getGenre())}" style="${aAllergene.couleur ? `color:${aAllergene.couleur}` : ""}"></i>`
 			: "";
 	},
 	composeLabel: (aLabel) => {
@@ -248,9 +248,9 @@ exports.UtilitaireMenus = {
 					.TypeOrigineCreationLabelAlimentaire.OCLA_Utilisateur &&
 			!!aLabel.icone
 		) {
-			return `<img class="img-icon" src="data:image/png;base64,${aLabel.icone}" alt="${aLabel.getLibelle()}" onerror="$(this).parent().remove();" title="${aLabel.getLibelle()}" />`;
+			return `<img class="img-icon" src="data:image/png;base64,${aLabel.icone}" alt="${aLabel.getLibelle()}" onerror="$(this).parent().remove();" ie-tooltiplabel="${aLabel.getLibelle()}" />`;
 		} else {
-			return `<i role="img" alt="${aLabel.getLibelle()}" class="i-medium icon ${TypeOrigineCreationLabelAlimentaire_1.TypeOrigineCreationLabelAlimentaireUtil.getClassIcone(aLabel.getGenre())}" style="${aLabel.couleur ? `color:${aLabel.couleur}` : ""}" title="${aLabel.getLibelle()}" ></i> `;
+			return `<i role="img" ie-tooltiplabel="${aLabel.getLibelle()}" class="i-medium icon ${TypeOrigineCreationLabelAlimentaire_1.TypeOrigineCreationLabelAlimentaireUtil.getClassIcone(aLabel.getGenre())}" style="${aLabel.couleur ? `color:${aLabel.couleur}` : ""}"></i> `;
 		}
 	},
 	formatDonnees: (aListeJours, aAvecRepasMidi, aAvecRepasSoir) => {

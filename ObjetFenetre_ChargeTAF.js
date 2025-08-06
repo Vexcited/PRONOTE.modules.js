@@ -400,9 +400,6 @@ class ObjetFenetre_ChargeTAF extends ObjetFenetre_1.ObjetFenetre {
 	}
 	_initGrilleCalendrier(aInstance) {
 		aInstance.setParametresGrilleCalendrier({
-			premiereDate: GParametres.PremiereDate,
-			derniereDate: GParametres.DerniereDate,
-			joursOuvres: GParametres.JoursOuvres,
 			griseJourAvant: false,
 			avecDonneesAvecFondBlanc: true,
 		});

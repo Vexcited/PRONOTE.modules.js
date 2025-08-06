@@ -73,7 +73,9 @@ class DonneesListe_CasierListeEleves extends ObjetDonneesListeFlatDesign_1.Objet
 		this.listeRadioBtn = [
 			{
 				libelle: this.estDepotParDocument
-					? ObjetTraduction_1.GTraductions.getValeur("Casier.tousLesEleves")
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"Casier.tousLesIndivdusConcernes",
+						)
 					: ObjetTraduction_1.GTraductions.getValeur("Casier.tousLesDocuments"),
 				indice: indiceRadioBtn.tous,
 			},
@@ -940,7 +942,12 @@ class DonneesListe_CasierListeEleves extends ObjetDonneesListeFlatDesign_1.Objet
 						? void 0
 						: _a.url
 				) {
-					window.open(aReponse.JSONReponse.url);
+					window.open(
+						ObjetChaine_1.GChaine.getURLComplete(
+							aReponse.JSONReponse.url,
+							true,
+						),
+					);
 				}
 			});
 	}

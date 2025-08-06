@@ -7,6 +7,7 @@ exports.StylesObjetMenuContextuel = {
 	imgContain: "img-contain",
 	iconeLarge: "icone-large",
 	mcIconContain: "mc-icon-contain",
+	iconText: "icon-text",
 	libelleContain: "libelle-contain",
 	BordureNavigationInactive: "BordureNavigationInactive",
 	libelle: "libelle",

@@ -64,7 +64,6 @@ class InterfacePageMenus extends InterfacePage_1.InterfacePage {
 	setParametresGeneraux() {
 		this.GenreStructure =
 			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
-		this.avecBandeau = true;
 	}
 	recupererDonnees() {
 		const lCelluleSemaine = this.getInstance(this.identCelluleSemaine);

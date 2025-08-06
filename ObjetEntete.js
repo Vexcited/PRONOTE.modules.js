@@ -5,11 +5,14 @@ const Enumere_Espace_1 = require("Enumere_Espace");
 const GUID_1 = require("GUID");
 const ObjetFenetre_SelecteurMembrePN_1 = require("ObjetFenetre_SelecteurMembrePN");
 const ObjetTraduction_1 = require("ObjetTraduction");
+const AccessApp_1 = require("AccessApp");
 class ObjetEnteteMobile extends _ObjetEntete_1._ObjetEnteteMobile {
 	constructor(...aParams) {
 		super(...aParams);
-		this.applicationScoMobile = GApplication;
+		this.applicationScoMobile = (0, AccessApp_1.getApp)();
 		this.interfaceMobile = GInterface;
+		this.etatUtilisateur = this.applicationScoMobile.getEtatUtilisateur();
+		this.parametres = this.applicationScoMobile.getObjetParametres();
 		this.idSelecteurMembre = GUID_1.GUID.getId();
 		this.C_NbreRecherche = 10;
 		this.avecMembre = false;
@@ -39,15 +42,22 @@ class ObjetEnteteMobile extends _ObjetEntete_1._ObjetEnteteMobile {
 		this.avecMembre = aAvecMembre;
 		this.actualiserTitre();
 	}
+	getImageUtilisateurOuMembre() {
+		if (this.parametres.estAfficheDansENT) {
+			return "";
+		}
+		return super.getImageUtilisateurOuMembre();
+	}
 	actualiserTitre() {
 		const lTitre = { titre: "", sousTitre: "", avecImage: false };
-		const lGenreOnglet = GEtatUtilisateur.getGenreOnglet();
+		const lGenreOnglet = this.etatUtilisateur.getGenreOnglet();
 		const lOnglet =
-			GEtatUtilisateur.listeOnglets.getElementParGenre(lGenreOnglet);
+			this.etatUtilisateur.listeOnglets.getElementParGenre(lGenreOnglet);
 		if (!!lOnglet) {
 			lTitre.titre = lOnglet.getLibelle();
 		}
-		lTitre.sousTitre = GEtatUtilisateur.getMembre().getLibelle();
+		const lAvecMembre = GParametres.avecMembre && this.avecMembre;
+		lTitre.sousTitre = this.etatUtilisateur.getMembre().getLibelle();
 		if (
 			[
 				Enumere_Espace_1.EGenreEspace.PrimParent,
@@ -58,14 +68,16 @@ class ObjetEnteteMobile extends _ObjetEntete_1._ObjetEnteteMobile {
 				Enumere_Espace_1.EGenreEspace.Mobile_Accompagnant,
 				Enumere_Espace_1.EGenreEspace.PrimAccompagnant,
 				Enumere_Espace_1.EGenreEspace.Mobile_PrimAccompagnant,
-			].includes(GEtatUtilisateur.GenreEspace)
+			].includes(this.etatUtilisateur.GenreEspace)
 		) {
 			lTitre.sousTitre =
-				GEtatUtilisateur.getMembre().libelleLong ||
-				GEtatUtilisateur.getMembre().getLibelle();
+				this.etatUtilisateur.getMembre().libelleLong ||
+				this.etatUtilisateur.getMembre().getLibelle();
+		} else if (this.parametres.estAfficheDansENT && !lAvecMembre) {
+			lTitre.sousTitre = "";
 		}
 		let lStrTitre = "";
-		if (GParametres.avecMembre && this.avecMembre) {
+		if (lAvecMembre) {
 			lStrTitre = IE.jsx.str("ie-btnselecteur", {
 				"ie-model": "selecteurMembre",
 				class: "disable-dark-mode",

@@ -247,6 +247,7 @@ class ObjetRequetePageAccueil extends ObjetRequeteJSON_1.ObjetRequeteConsultatio
 				registreAppel: this.JSONReponse.registreAppel,
 				previsionnelAbsServiceAnnexe:
 					this.JSONReponse.previsionnelAbsServiceAnnexe,
+				documentsASigner: this.JSONReponse.documentsASigner,
 				partenaireFAST: this.JSONReponse.partenaireFAST,
 				modificationsEDT: this.JSONReponse.modificationsEDT,
 				remplacementsenseignants: this.JSONReponse.remplacementsenseignants,

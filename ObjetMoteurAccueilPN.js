@@ -61,6 +61,7 @@ const MultipleWidgetModificationEDT = require("WidgetModificationEDT");
 const MultipleWidgetRemplacementsEnseignants = require("WidgetRemplacementsEnseignants");
 const MultipleWidgetVoteElecMembreBureau = require("WidgetVoteElecMembreBureau");
 const MultipleWidgetVoteElecElecteur = require("WidgetVoteElecElecteur");
+const MultipleWidgetDocumentsASigner = require("WidgetDocumentsASigner");
 const TypeAffichageRemplacements_1 = require("TypeAffichageRemplacements");
 const ObjetMoteurBlog_1 = require("ObjetMoteurBlog");
 const TypeEtatPublication_1 = require("TypeEtatPublication");
@@ -70,6 +71,10 @@ class ObjetMoteurAccueil {
 		this.parametresSco = GParametres;
 		this.applicationSco = GApplication;
 		this.moteurBlog = new ObjetMoteurBlog_1.ObjetMoteurBlog();
+		const lAvecWidgetDocumentsASignerDansColonne4 =
+			[Enumere_Espace_1.EGenreEspace.Etablissement].includes(
+				GEtatUtilisateur.GenreEspace,
+			) || this.etatUtilisateurSco.pourPrimaire();
 		this.genreColonne = {
 			agendaEtInformations: {
 				genre: 0,
@@ -77,6 +82,9 @@ class ObjetMoteurAccueil {
 				actif: false,
 				visible: true,
 				liste: [
+					lAvecWidgetDocumentsASignerDansColonne4
+						? null
+						: Enumere_Widget_1.EGenreWidget.documentsASigner,
 					GEtatUtilisateur.GenreEspace ===
 					Enumere_Espace_1.EGenreEspace.Etablissement
 						? null
@@ -240,6 +248,9 @@ class ObjetMoteurAccueil {
 				visible: true,
 				liste: [
 					Enumere_Widget_1.EGenreWidget.penseBete,
+					lAvecWidgetDocumentsASignerDansColonne4
+						? Enumere_Widget_1.EGenreWidget.documentsASigner
+						: null,
 					GEtatUtilisateur.GenreEspace ===
 					Enumere_Espace_1.EGenreEspace.Etablissement
 						? Enumere_Widget_1.EGenreWidget.partenaireCDI
@@ -415,6 +426,7 @@ class ObjetMoteurAccueil {
 		return false;
 	}
 	getDeclarationWidget(aGenreWidget) {
+		var _a, _b, _c, _d;
 		switch (aGenreWidget) {
 			case Enumere_Widget_1.EGenreWidget.activite:
 				return {
@@ -470,11 +482,13 @@ class ObjetMoteurAccueil {
 					existeWidget: () => {
 						return (
 							!this.donnees ||
-							(this.donnees.actualites &&
+							!!(
+								this.donnees.actualites &&
 								this.donnees.actualites.listeModesAff &&
 								this.donnees.actualites.listeModesAff[
 									TypeEtatPublication_1.TypeModeAff.MA_Reception
-								].listeActualites)
+								].listeActualites
+							)
 						);
 					},
 					isCollapsible: true,
@@ -495,7 +509,7 @@ class ObjetMoteurAccueil {
 						"accueil.aucuneAgenda",
 					),
 					existeWidget: () => {
-						return !this.donnees || this.donnees.agenda.listeEvenements;
+						return !this.donnees || !!this.donnees.agenda.listeEvenements;
 					},
 					isCollapsible: true,
 					semaineSelectionnee: this.numeroSemaineParDefaut,
@@ -612,7 +626,7 @@ class ObjetMoteurAccueil {
 						"accueil.casier.message",
 					),
 					existeWidget: () => {
-						return !this.donnees || this.donnees.casier.listeDocuments;
+						return !this.donnees || !!this.donnees.casier.listeDocuments;
 					},
 					isCollapsible: true,
 					themeCategorie: "ThemeCat-communication",
@@ -640,7 +654,7 @@ class ObjetMoteurAccueil {
 					existeWidget: () => {
 						return (
 							!this.donnees ||
-							this.donnees.carnetDeCorrespondance.listeObservations
+							!!this.donnees.carnetDeCorrespondance.listeObservations
 						);
 					},
 					isCollapsible: true,
@@ -741,8 +755,10 @@ class ObjetMoteurAccueil {
 					existeWidget: () => {
 						return (
 							!this.donnees ||
-							(this.donnees.competences.listeEvaluations &&
-								this.donnees.competences.listeEvaluations.count())
+							!!(
+								this.donnees.competences.listeEvaluations &&
+								this.donnees.competences.listeEvaluations.count()
+							)
 						);
 					},
 					isCollapsible: false,
@@ -794,7 +810,8 @@ class ObjetMoteurAccueil {
 					),
 					existeWidget: () => {
 						return (
-							!this.donnees || this.donnees.coursNonAssures.listeCoursNonAssures
+							!this.donnees ||
+							!!this.donnees.coursNonAssures.listeCoursNonAssures
 						);
 					},
 					isCollapsible: true,
@@ -820,7 +837,7 @@ class ObjetMoteurAccueil {
 						"accueil.aucunMessage",
 					),
 					existeWidget: () => {
-						return !this.donnees || this.donnees.discussions.listeMessagerie;
+						return !this.donnees || !!this.donnees.discussions.listeMessagerie;
 					},
 					isCollapsible: true,
 					themeCategorie: "ThemeCat-communication",
@@ -840,8 +857,10 @@ class ObjetMoteurAccueil {
 					existeWidget: () => {
 						return (
 							!this.donnees ||
-							(this.donnees.donneesProfs.listeDonneesProfs &&
-								this.donnees.donneesProfs.listeDonneesProfs.count())
+							!!(
+								this.donnees.donneesProfs.listeDonneesProfs &&
+								this.donnees.donneesProfs.listeDonneesProfs.count()
+							)
 						);
 					},
 					isCollapsible: false,
@@ -861,7 +880,7 @@ class ObjetMoteurAccueil {
 					),
 					message: "",
 					existeWidget: () => {
-						return !this.donnees || this.donnees.donneesVS.listeDonneesVS;
+						return !this.donnees || !!this.donnees.donneesVS.listeDonneesVS;
 					},
 					isCollapsible: false,
 					semaineSelectionnee: this.semaineSelectionnee,
@@ -1090,7 +1109,7 @@ class ObjetMoteurAccueil {
 						"accueil.exclusion.msgAucun",
 					),
 					existeWidget: () => {
-						return !this.donnees || this.donnees.exclusions.listeExclusions;
+						return !this.donnees || !!this.donnees.exclusions.listeExclusions;
 					},
 					isCollapsible: true,
 					semaineSelectionnee: this.numeroSemaineParDefaut,
@@ -1112,7 +1131,7 @@ class ObjetMoteurAccueil {
 						"accueil.incident.msgAucun",
 					),
 					existeWidget: () => {
-						return !this.donnees || this.donnees.incidents.listeIncidents;
+						return !this.donnees || !!this.donnees.incidents.listeIncidents;
 					},
 					isCollapsible: false,
 					semaineSelectionnee: this.numeroSemaineParDefaut,
@@ -1168,7 +1187,9 @@ class ObjetMoteurAccueil {
 									"TvxIntendance.Widget.Maintenance.MsgAucun",
 								),
 					existeWidget: () => {
-						return !this.donnees || this.donnees.intendanceExecute.listeLignes;
+						return (
+							!this.donnees || !!this.donnees.intendanceExecute.listeLignes
+						);
 					},
 					isCollapsible: true,
 					nbrItemsVisible: 5,
@@ -1296,8 +1317,10 @@ class ObjetMoteurAccueil {
 					existeWidget: () => {
 						return (
 							!this.donnees ||
-							(this.donnees.maintenanceInfoExecute &&
-								this.donnees.maintenanceInfoExecute.listeLignes)
+							!!(
+								this.donnees.maintenanceInfoExecute &&
+								this.donnees.maintenanceInfoExecute.listeLignes
+							)
 						);
 					},
 					isCollapsible: true,
@@ -1342,12 +1365,20 @@ class ObjetMoteurAccueil {
 					classWidget: MultipleWidgetLienUtile
 						? MultipleWidgetLienUtile.WidgetLienUtile
 						: null,
-					titre: ObjetTraduction_1.GTraductions.getValeur(
-						"accueil.lienUtile.titre",
-					),
-					hint: ObjetTraduction_1.GTraductions.getValeur(
-						"accueil.lienUtile.titre",
-					),
+					titre:
+						((_b =
+							(_a = this.donnees) === null || _a === void 0
+								? void 0
+								: _a.lienUtile) === null || _b === void 0
+							? void 0
+							: _b.titre) || "",
+					hint:
+						((_d =
+							(_c = this.donnees) === null || _c === void 0
+								? void 0
+								: _c.lienUtile) === null || _d === void 0
+							? void 0
+							: _d.titre) || "",
 					message: ObjetTraduction_1.GTraductions.getValeur(
 						"accueil.lienUtile.message",
 					),
@@ -1375,7 +1406,7 @@ class ObjetMoteurAccueil {
 					message:
 						ObjetTraduction_1.GTraductions.getValeur("accueil.pasDeMenu"),
 					existeWidget: () => {
-						return !this.donnees || this.donnees.menuDeLaCantine.listeRepas;
+						return !this.donnees || !!this.donnees.menuDeLaCantine.listeRepas;
 					},
 					isCollapsible: false,
 					semaineSelectionnee: this.numeroSemaineParDefaut,
@@ -1397,7 +1428,7 @@ class ObjetMoteurAccueil {
 					message:
 						ObjetTraduction_1.GTraductions.getValeur("accueil.aucuneNote"),
 					existeWidget: () => {
-						return !this.donnees || this.donnees.notes.listeDevoirs;
+						return !this.donnees || !!this.donnees.notes.listeDevoirs;
 					},
 					isCollapsible: false,
 					themeCategorie: "ThemeCat-resultat",
@@ -1418,7 +1449,7 @@ class ObjetMoteurAccueil {
 						"accueil.agate.msgAucun",
 					),
 					existeWidget: () => {
-						return !this.donnees || this.donnees.partenaireAgate.listePrix;
+						return !this.donnees || !!this.donnees.partenaireAgate.listePrix;
 					},
 					isCollapsible: false,
 					avecActualisation: true,
@@ -1441,7 +1472,7 @@ class ObjetMoteurAccueil {
 						return (
 							this.donnees &&
 							this.donnees.partenaireArd &&
-							this.donnees.partenaireArd.porteMonnaie
+							!!this.donnees.partenaireArd.porteMonnaie
 						);
 					},
 					isCollapsible: false,
@@ -1522,7 +1553,7 @@ class ObjetMoteurAccueil {
 					existeWidget: () => {
 						return (
 							!this.donnees ||
-							this.donnees.personnelsAbsents.listePersonnelsAbsents
+							!!this.donnees.personnelsAbsents.listePersonnelsAbsents
 						);
 					},
 					isCollapsible: true,
@@ -1543,7 +1574,7 @@ class ObjetMoteurAccueil {
 							this.donnees &&
 							this.donnees.planning &&
 							this.donnees.planning.listeRessourcesPlanning &&
-							this.donnees.planning.listeRessourcesPlanning.count()
+							this.donnees.planning.listeRessourcesPlanning.count() > 0
 						);
 					},
 					isCollapsible: false,
@@ -1569,8 +1600,10 @@ class ObjetMoteurAccueil {
 					existeWidget: () => {
 						return (
 							!this.donnees ||
-							(this.donnees.QCM.listeExecutionsQCM &&
-								this.donnees.QCM.listeExecutionsQCM.count())
+							!!(
+								this.donnees.QCM.listeExecutionsQCM &&
+								this.donnees.QCM.listeExecutionsQCM.count()
+							)
 						);
 					},
 					isCollapsible: false,
@@ -1597,7 +1630,7 @@ class ObjetMoteurAccueil {
 							this.donnees &&
 							this.donnees.ressources &&
 							this.donnees.ressources.listeMatieres &&
-							this.donnees.ressources.listeMatieres.count()
+							this.donnees.ressources.listeMatieres.count() > 0
 						);
 					},
 					classWidget: MultipleWidgetRessources
@@ -1626,7 +1659,8 @@ class ObjetMoteurAccueil {
 					),
 					existeWidget: () => {
 						return (
-							!this.donnees || this.donnees.ressourcePedagogique.listeRessources
+							!this.donnees ||
+							!!this.donnees.ressourcePedagogique.listeRessources
 						);
 					},
 					isCollapsible: false,
@@ -1671,7 +1705,7 @@ class ObjetMoteurAccueil {
 					existeWidget: () => {
 						return (
 							!this.donnees ||
-							(this.donnees.tableauDeBord && this.donnees.tableauDeBord.date)
+							!!(this.donnees.tableauDeBord && this.donnees.tableauDeBord.date)
 						);
 					},
 					maximise: true,
@@ -1743,7 +1777,7 @@ class ObjetMoteurAccueil {
 						"accueil.TAFARendre.msgAucun",
 					),
 					existeWidget: () => {
-						return !this.donnees || this.donnees.TAFARendre.listeTAF;
+						return !this.donnees || !!this.donnees.TAFARendre.listeTAF;
 					},
 					isCollapsible: false,
 					themeCategorie: "ThemeCat-pedagogie",
@@ -1795,7 +1829,7 @@ class ObjetMoteurAccueil {
 						"accueil.aucuneAbsence",
 					),
 					existeWidget: () => {
-						return !this.donnees || this.donnees.vieScolaire.listeAbsences;
+						return !this.donnees || !!this.donnees.vieScolaire.listeAbsences;
 					},
 					isCollapsible: false,
 					themeCategorie: "ThemeCat-viescolaire",
@@ -1893,8 +1927,10 @@ class ObjetMoteurAccueil {
 					existeWidget: () => {
 						return (
 							!this.donnees ||
-							(this.donnees.commandeExecute &&
-								this.donnees.commandeExecute.listeLignes)
+							!!(
+								this.donnees.commandeExecute &&
+								this.donnees.commandeExecute.listeLignes
+							)
 						);
 					},
 					isCollapsible: true,
@@ -1980,7 +2016,7 @@ class ObjetMoteurAccueil {
 						return (
 							this.donnees &&
 							this.donnees.remplacementsenseignants &&
-							this.donnees.remplacementsenseignants.listeRemplacements
+							!!this.donnees.remplacementsenseignants.listeRemplacements
 						);
 					},
 					isCollapsible: true,
@@ -1989,6 +2025,27 @@ class ObjetMoteurAccueil {
 						Onglet: Enumere_Onglet_1.EGenreOnglet.RemplacementsEnseignants,
 					},
 					themeCategorie: "ThemeCat-viescolaire",
+				};
+			case Enumere_Widget_1.EGenreWidget.documentsASigner:
+				return {
+					nomDonnees: "documentsASigner",
+					genre: Enumere_Widget_1.EGenreWidget.documentsASigner,
+					id: GUID_1.GUID.getId(),
+					classWidget: MultipleWidgetDocumentsASigner
+						? MultipleWidgetDocumentsASigner.WidgetDocumentsASigner
+						: null,
+					hint: ObjetTraduction_1.GTraductions.getValeur(
+						"accueil.documentsASigner.titre",
+					),
+					existeWidget: () => {
+						var _a, _b;
+						return !!((_b =
+							(_a = this.donnees) === null || _a === void 0
+								? void 0
+								: _a.documentsASigner) === null || _b === void 0
+							? void 0
+							: _b.nombreDocumentsDocumentsSignatures);
+					},
 				};
 			default:
 				break;

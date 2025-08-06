@@ -3,8 +3,8 @@ var TypeEtatSignatureDocument;
 (function (TypeEtatSignatureDocument) {
 	TypeEtatSignatureDocument[(TypeEtatSignatureDocument["ESD_Init"] = 0)] =
 		"ESD_Init";
-	TypeEtatSignatureDocument[(TypeEtatSignatureDocument["ESD_A_Suppr"] = 1)] =
-		"ESD_A_Suppr";
+	TypeEtatSignatureDocument[(TypeEtatSignatureDocument["ESD_Inconnu"] = 1)] =
+		"ESD_Inconnu";
 	TypeEtatSignatureDocument[(TypeEtatSignatureDocument["ESD_EnCours"] = 2)] =
 		"ESD_EnCours";
 	TypeEtatSignatureDocument[(TypeEtatSignatureDocument["ESD_Annulee"] = 3)] =

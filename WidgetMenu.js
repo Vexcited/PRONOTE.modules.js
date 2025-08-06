@@ -78,14 +78,14 @@ class WidgetMenu extends ObjetWidget_1.Widget.ObjetWidget {
 				if (lEstRepasDuSoir) {
 					H.push(`<div class="divider"></div>`);
 				}
-				H.push('<h3 class="underline" tabindex="0">');
+				H.push('<h3 class="underline">');
 				H.push(lLibelleRepas);
 				H.push("</h3>");
 			}
 			H.push('<ul class="one-line">');
 			for (let j = 0; j < lRepas.listePlats.count(); j++) {
 				const lPlat = lRepas.listePlats.get(j);
-				H.push('<li tabindex="0">', '<div class="conteneur-aliments">');
+				H.push("<li>", '<div class="conteneur-aliments">');
 				const lListeAliments = lPlat.listeAliments.trier();
 				lListeAliments.parcourir((aElement) => {
 					H.push(`<div class="aliment m-y-s">`);
@@ -216,20 +216,18 @@ class WidgetMenu extends ObjetWidget_1.Widget.ObjetWidget {
 				aElem.icone,
 				'" alt="' +
 					aElem.getLibelle() +
-					'" onerror="$(this).parent().remove();" title="',
+					'" onerror="$(this).parent().remove();" ie-tooltiplabel="',
 				aElem.getLibelle(),
 				'"/>',
 			);
 		} else {
 			H.push(
-				'<i role="img" aria-label="' +
+				'<i role="img" ie-tooltiplabel="' +
 					aElem.getLibelle() +
 					'" class="label-alimentaire icon ' +
 					this._getClassIcon(aElem.getGenre()) +
 					'" style="color:' +
 					aElem.couleur +
-					'" title="' +
-					aElem.getLibelle() +
 					'"></i>',
 			);
 		}

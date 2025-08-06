@@ -93,7 +93,6 @@ class InterfaceListeDiffusion extends ObjetInterfacePageCP_1.InterfacePageCP {
 	setParametresGeneraux() {
 		this.GenreStructure =
 			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
-		this.avecBandeau = true;
 	}
 	initialiserListe(aInstance) {
 		const lInstance = this;

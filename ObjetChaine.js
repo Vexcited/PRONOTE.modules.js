@@ -615,11 +615,17 @@ class ObjetChaine {
 				lInfoFichier,
 			);
 		if (aParam.forcerURLComplete) {
-			const lBalise = document.createElement("a");
-			lBalise.href = lUrl;
-			lUrl = lBalise.href;
+			lUrl = this.getURLComplete(lUrl);
 		}
 		return lUrl;
+	}
+	getURLComplete(aUrl, aAvecEncodage = false) {
+		if (aAvecEncodage) {
+			aUrl = this.encoderUrl(aUrl);
+		}
+		const lBalise = document.createElement("a");
+		lBalise.href = aUrl;
+		return lBalise.href;
 	}
 	composerUrlLienExterne(aParam) {
 		const lParam = {

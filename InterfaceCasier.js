@@ -36,7 +36,6 @@ const UtilitaireCasier_1 = require("UtilitaireCasier");
 class InterfaceCasier extends _InterfaceDocuments_1._InterfaceDocuments {
 	constructor(...aParams) {
 		super(...aParams);
-		this.applicationSco = GApplication;
 		this.titreFenetreRubrique =
 			ObjetTraduction_1.GTraductions.getValeur("Casier.natures");
 		this.classCssPrincipale = "InterfaceCasier";
@@ -100,9 +99,7 @@ class InterfaceCasier extends _InterfaceDocuments_1._InterfaceDocuments {
 	surSelectionComboClasse(aClasse) {
 		this.classeSelectionne = aClasse;
 		this.indiceComboClasseCollecteParEleve =
-			this.listeClasses.getIndiceElementParFiltre(
-				(aClasse) => aClasse === aClasse,
-			);
+			this.listeClasses.getIndiceParElement(aClasse);
 		this.requeteConsultation({
 			requete: {
 				classe: aClasse,
@@ -833,25 +830,11 @@ class InterfaceCasier extends _InterfaceDocuments_1._InterfaceDocuments {
 				break;
 			}
 			case DonneesListe_Casier_1.DonneesListe_Casier.EGenreCommande
-				.consulterLeMemo: {
+				.consulterLeCommentaire: {
 				if ("memo" in aParams.article && aParams.article.memo) {
-					const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
-						ObjetFenetre_1.ObjetFenetre,
-						{
-							pere: this,
-							initialiser(aFenetre) {
-								aFenetre.setOptionsFenetre({
-									largeurMin: 300,
-									avecTailleSelonContenu: true,
-									listeBoutons: [
-										ObjetTraduction_1.GTraductions.getValeur("Fermer"),
-									],
-									titre: aParams.article.getLibelle(),
-								});
-							},
-						},
-					);
-					lFenetre.afficher(`<p>${aParams.article.memo}</p>`);
+					this.ouvrirFenetreCommentaire(aParams.article.memo, {
+						titre: aParams.article.getLibelle(),
+					});
 				}
 				break;
 			}
@@ -1788,7 +1771,7 @@ class InterfaceCasier extends _InterfaceDocuments_1._InterfaceDocuments {
 					UtilitaireCasier_1.UtilitaireCasier.EGenrefonctionnalite
 						.notificationOuvertureDoc,
 					UtilitaireCasier_1.UtilitaireCasier.EGenrefonctionnalite
-						.consulterLeMemo,
+						.consulterLeCommentaire,
 					UtilitaireCasier_1.UtilitaireCasier.EGenrefonctionnalite
 						.remplacerFichier,
 				].includes(aFonctionnalite);
@@ -1797,7 +1780,7 @@ class InterfaceCasier extends _InterfaceDocuments_1._InterfaceDocuments {
 					UtilitaireCasier_1.UtilitaireCasier.EGenrefonctionnalite
 						.notificationOuvertureDoc,
 					UtilitaireCasier_1.UtilitaireCasier.EGenrefonctionnalite
-						.consulterLeMemo,
+						.consulterLeCommentaire,
 					UtilitaireCasier_1.UtilitaireCasier.EGenrefonctionnalite
 						.marquerLectureDocument,
 					UtilitaireCasier_1.UtilitaireCasier.EGenrefonctionnalite
@@ -1919,18 +1902,28 @@ class InterfaceCasier extends _InterfaceDocuments_1._InterfaceDocuments {
 			dateEcheance: new Date(),
 			genreDestinataireCollecte: lGenreDestinataireCollecte,
 			listeChampsEditables: [],
-			notification: {
-				avecNotif: false,
-				avecRelance: false,
-				dateNotif: new Date(),
-				nbrJourRelance: 1,
-			},
+			notification:
+				UtilitaireCasier_1.UtilitaireCasier.getNotificationParDefaut(),
 			listeIndividuAccesAutorise: new ObjetListeElements_1.ObjetListeElements(),
 			destinataires:
 				UtilitaireCasier_1.UtilitaireCasier.getDestinataireParDefaut([
 					lGenreDestinataire,
 				]),
 		});
+		const lAvecCompteurEleves = [
+			TypeCasier_1.TypeGenreCumulDocEleve.gcdeEleve,
+			TypeCasier_1.TypeGenreCumulDocEleve.gcdeRespEleve,
+		].includes(aGenre);
+		const lAvecCompteurResp = [
+			TypeCasier_1.TypeGenreCumulDocEleve.gcdeResp,
+			TypeCasier_1.TypeGenreCumulDocEleve.gcdeRespEleve,
+		].includes(aGenre);
+		if (lAvecCompteurEleves) {
+			lCollecte.nbrEleves = 0;
+		}
+		if (lAvecCompteurResp) {
+			lCollecte.nbrResponsables = 0;
+		}
 		lCollecte.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 		if (aAvecAccesAutorise) {
 			const lUtilisateur = this.etatUtilisateurSco.getUtilisateur();

@@ -393,7 +393,7 @@ class ObjetPanelEditionContenu extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobi
 					callbackChoixDepuisCloud: lAvecCloud
 						? () => {
 								UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF.ouvrirFenetreCloud().then(
-									this.callbackChoixDepuisCloud,
+									this.callbackChoixDepuisCloud.bind(this),
 								);
 							}
 						: null,
@@ -405,7 +405,7 @@ class ObjetPanelEditionContenu extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobi
 											service: GEtatUtilisateur.getCloudENEJ(),
 											instance: this,
 										},
-									).then(this.callbackChoixDepuisCloud);
+									).then(this.callbackChoixDepuisCloud.bind(this));
 								}
 							: null,
 				},

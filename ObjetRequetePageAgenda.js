@@ -64,7 +64,6 @@ class ObjetRequetePageAgenda extends ObjetRequeteJSON_1.ObjetRequeteConsultation
 			}
 		}
 		const lParam = {
-			ListeClassesGroupes: null,
 			parametreExportICal: this.JSONReponse.ParametreExportiCal,
 			avecExportICal: this.JSONReponse.AvecExportiCal,
 			listeEvenements: lListeEvenements,

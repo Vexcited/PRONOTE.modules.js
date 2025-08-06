@@ -12,6 +12,7 @@ const Enumere_EvenementWidget_1 = require("Enumere_EvenementWidget");
 const ObjetWidget_1 = require("ObjetWidget");
 const MethodesObjet_1 = require("MethodesObjet");
 const AccessApp_1 = require("AccessApp");
+const jsx_1 = require("jsx");
 class WidgetNotes extends ObjetWidget_1.Widget.ObjetWidget {
 	constructor(...aParams) {
 		super(...aParams);
@@ -94,18 +95,15 @@ class WidgetNotes extends ObjetWidget_1.Widget.ObjetWidget {
 				ObjetTri_1.ObjetTri.init("service.Libelle"),
 			]);
 			this.donnees.listeDevoirs.trier();
-			const lAvecLien = this.donnees.avecDetailDevoir;
 			H.push('<ul class="liste-clickable">');
 			for (let I = 0; I < this.donnees.listeDevoirs.count(); I++) {
-				H.push(
-					this.composeNote(this.donnees.listeDevoirs.get(I), I, lAvecLien),
-				);
+				H.push(this.composeNote(this.donnees.listeDevoirs.get(I), I));
 			}
 			H.push("</ul>");
 		}
 		return H.join("");
 	}
-	composeNote(aDevoir, aIndex, aAvecLienDetail) {
+	composeNote(aDevoir, aIndex) {
 		const lNoteAuDessusBareme =
 			aDevoir.note &&
 			aDevoir.bareme &&
@@ -212,60 +210,66 @@ class WidgetNotes extends ObjetWidget_1.Widget.ObjetWidget {
 		return IE.jsx.str(
 			"li",
 			{ id: this.Nom + "_notes_" + aIndex },
-			aAvecLienDetail
-				? `<a class="justify-between wrapper-link" tabindex="0" aria-label="${lWAI.toAttrValue()}" ie-node="nodeDernieresNoteMatiere(${aIndex})">`
-				: `<div class="justify-between wrapper-nolink" tabindex="0" aria-label="${lWAI.toAttrValue()}">`,
 			IE.jsx.str(
-				"div",
-				{ class: "wrap" },
-				IE.jsx.str(
-					"h3",
-					null,
-					IE.jsx.str("span", null, aDevoir.service.getLibelle()),
-				),
-				IE.jsx.str(
-					"div",
-					{ class: "infos-conteneur" },
-					IE.jsx.str("span", { class: "date" }, lStrDate),
-					lStrClasse
-						? IE.jsx.str("span", { class: "as-link" }, lStrClasse)
-						: "",
-					lArrayLiensSujetCorrige.length > 0
-						? IE.jsx.str(
-								"div",
-								{
-									class: "flex-contain flex-center full-width flex-gap-l m-top",
-								},
-								lArrayLiensSujetCorrige.join(" "),
-							)
-						: "",
-				),
-			),
-			lStrCommentaireSurNote &&
+				"a",
+				{
+					class: "justify-between wrapper-link",
+					tabindex: "0",
+					"aria-label": lWAI.toAttrValue(),
+					"ie-node": (0, jsx_1.jsxFuncAttr)("nodeDernieresNoteMatiere", aIndex),
+				},
 				IE.jsx.str(
 					"div",
-					{ class: ["p-top", IE.estMobile ? "fixed-mobile" : "fixed"] },
-					lStrCommentaireSurNote,
+					{ class: "wrap" },
+					IE.jsx.str(
+						"h3",
+						null,
+						IE.jsx.str("span", null, aDevoir.service.getLibelle()),
+					),
+					IE.jsx.str(
+						"div",
+						{ class: "infos-conteneur" },
+						IE.jsx.str("span", { class: "date" }, lStrDate),
+						lStrClasse
+							? IE.jsx.str("span", { class: "as-link" }, lStrClasse)
+							: "",
+						lArrayLiensSujetCorrige.length > 0
+							? IE.jsx.str(
+									"div",
+									{
+										class:
+											"flex-contain flex-center full-width flex-gap-l m-top",
+									},
+									lArrayLiensSujetCorrige.join(" "),
+								)
+							: "",
+					),
 				),
-			lStrEtoile &&
+				lStrCommentaireSurNote &&
+					IE.jsx.str(
+						"div",
+						{ class: ["p-top", IE.estMobile ? "fixed-mobile" : "fixed"] },
+						lStrCommentaireSurNote,
+					),
+				lStrEtoile &&
+					IE.jsx.str(
+						"div",
+						{
+							class: IE.estMobile
+								? ["p-top", "fixed-mobile"]
+								: ["p-top", "fixed"],
+						},
+						lStrEtoile,
+					),
 				IE.jsx.str(
 					"div",
 					{
-						class: IE.estMobile
-							? ["p-top", "fixed-mobile"]
-							: ["p-top", "fixed"],
+						class: ["as-info", "fixed"],
+						"aria-label": lStrNoteAria.toAttrValue(),
 					},
-					lStrEtoile,
+					lStrNote,
 				),
-			IE.jsx.str(
-				"div",
-				{
-					class: ["as-info", "fixed"],
-					"aria-label": lStrNoteAria.toAttrValue(),
-				},
-				lStrNote,
 			),
-			aAvecLienDetail ? "</a>" : "</div>",
 		);
 	}
 	surQCM(I) {

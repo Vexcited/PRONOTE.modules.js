@@ -516,20 +516,21 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 			) {
 				const lTypeConsultation =
 					TypeCasier_1.TypeConsultationDocumentCasier.CoDC_Depositaire;
-				const lInfosRubrique =
-					ObjetFenetre_DepotDocument_1.ObjetFenetre_DepotDocument.getRubriqueDepot(
-						lTypeConsultation,
-						true,
-					);
 				aInstanceMenu.add(
-					lInfosRubrique.libelle,
+					ObjetTraduction_1.GTraductions.getValeur(
+						"Casier.horsContexte.IntervenantDiffusion",
+					),
 					true,
 					() => {
 						ObjetFenetre_DepotDocument_1.ObjetFenetre_DepotDocument.ouvrirCreation(
 							lTypeConsultation,
 						);
 					},
-					{ icon: lInfosRubrique.icon },
+					{
+						icon: ObjetFenetre_DepotDocument_1.ObjetFenetre_DepotDocument.getIconRubriqueDepot(
+							lTypeConsultation,
+						),
+					},
 				);
 			}
 			if (
@@ -537,20 +538,21 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 			) {
 				const lTypeConsultation =
 					TypeCasier_1.TypeConsultationDocumentCasier.CoDC_DepResponsable;
-				const lInfosRubrique =
-					ObjetFenetre_DepotDocument_1.ObjetFenetre_DepotDocument.getRubriqueDepot(
-						lTypeConsultation,
-						true,
-					);
 				aInstanceMenu.add(
-					lInfosRubrique.libelle,
+					ObjetTraduction_1.GTraductions.getValeur(
+						"Casier.horsContexte.responsablesDiffusion",
+					),
 					true,
 					() => {
 						ObjetFenetre_DepotDocument_1.ObjetFenetre_DepotDocument.ouvrirCreation(
 							lTypeConsultation,
 						);
 					},
-					{ icon: lInfosRubrique.icon },
+					{
+						icon: ObjetFenetre_DepotDocument_1.ObjetFenetre_DepotDocument.getIconRubriqueDepot(
+							lTypeConsultation,
+						),
+					},
 				);
 			}
 		};

@@ -135,7 +135,9 @@ class ObjetUtilitaireCahierDeTexte {
 			lHtml.push("</ul>", "</div>", "</div>");
 		}
 		if (aElement.ListeTravailAFaire.count()) {
-			lHtml.push(this.composeTAF(aElement, aElement.ListeTravailAFaire, true));
+			lHtml.push(
+				this.composeTAF(aElement, aElement.ListeTravailAFaire, {}, true),
+			);
 		}
 		return lHtml.join("");
 	}
@@ -351,17 +353,24 @@ class ObjetUtilitaireCahierDeTexte {
 		if (aParam && aParam.avecDetailTAF) {
 			if (aTaf.nomPublic) {
 				T.push(
-					'<div class="items-contain">',
-					'<span class="fix-bloc Image_TAF_Public" aria-hidden="true"></span>',
-					'<span class="fluid-bloc">',
-					aTaf.pourTousLesEleves
-						? aTaf.nomPublic
-						: ObjetTraduction_1.GTraductions.getValeur(
-								"CahierDeTexte.TAFARendre.eleves",
-								[aTaf.nbrEleves],
-							),
-					"</span>",
-					"</div>",
+					IE.jsx.str(
+						"div",
+						{ class: "items-contain" },
+						IE.jsx.str("span", {
+							class: "fix-bloc Image_TAF_Public",
+							"aria-hidden": "true",
+						}),
+						IE.jsx.str(
+							"span",
+							{ class: "fluid-bloc" },
+							aTaf.pourTousLesEleves
+								? aTaf.nomPublic
+								: ObjetTraduction_1.GTraductions.getValeur(
+										"CahierDeTexte.TAFARendre.eleves",
+										[aTaf.nbrEleves],
+									),
+						),
+					),
 				);
 			}
 			if (aTaf.avecRendu) {
@@ -375,40 +384,60 @@ class ObjetUtilitaireCahierDeTexte {
 				aTaf.duree > 60 ? "%xh%sh" + lFormatMin : lFormatMin + "mn",
 			);
 			T.push(
-				'<div class="items-contain" title="',
-				ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.DureeEstimee"),
-				'">',
-				'<span class="fix-bloc Image_TAF_Duree" aria-hidden="true"></span>',
-				'<span class="fluid-bloc">',
-				lStrDuree,
-				"</span>",
-				"</div>",
+				IE.jsx.str(
+					"div",
+					{
+						class: "items-contain",
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"CahierDeTexte.DureeEstimee",
+						),
+					},
+					IE.jsx.str("span", {
+						class: "fix-bloc Image_TAF_Duree",
+						"aria-hidden": "true",
+					}),
+					IE.jsx.str("span", { class: "fluid-bloc" }, lStrDuree),
+				),
 			);
 		}
 		if (aTaf.niveauDifficulte) {
 			T.push(
-				'<div class="items-contain" title="',
-				ObjetTraduction_1.GTraductions.getValeur(
-					"CahierDeTexte.NiveauDifficulte",
+				IE.jsx.str(
+					"div",
+					{
+						class: "items-contain",
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"CahierDeTexte.NiveauDifficulte",
+						),
+					},
+					IE.jsx.str("span", {
+						class: "fix-bloc Image_TAF_Niveau",
+						"aria-hidden": "true",
+					}),
+					IE.jsx.str(
+						"span",
+						{ class: "fluid-bloc" },
+						TypeNiveauDifficulte_1.TypeNiveauDifficulteUtil.typeToStr(
+							aTaf.niveauDifficulte,
+						),
+					),
 				),
-				'">',
-				'<span class="fix-bloc Image_TAF_Niveau" aria-hidden="true"></span>',
-				'<span class="fluid-bloc">',
-				TypeNiveauDifficulte_1.TypeNiveauDifficulteUtil.typeToStr(
-					aTaf.niveauDifficulte,
-				),
-				"</span>",
-				"</div>",
 			);
 		}
 		T.push("</div>");
 		if (!!aTaf.ListeThemes && aTaf.ListeThemes.count()) {
 			T.push(
-				'<div class="theme-contain">',
-				ObjetTraduction_1.GTraductions.getValeur("Themes"),
-				" : <span>",
-				aTaf.ListeThemes.getTableauLibelles().join(", "),
-				"</span></div>",
+				IE.jsx.str(
+					"div",
+					{ class: "theme-contain" },
+					ObjetTraduction_1.GTraductions.getValeur("Themes"),
+					" : ",
+					IE.jsx.str(
+						"span",
+						null,
+						aTaf.ListeThemes.getTableauLibelles().join(", "),
+					),
+				),
 			);
 		}
 		return T.join("");
@@ -460,7 +489,7 @@ class ObjetUtilitaireCahierDeTexte {
 				"EnregistrementAudio.record",
 			),
 			icon: "icon_microphone",
-			event() {
+			event: () => {
 				this._executerDepotMedia(aTaf);
 			},
 			class: "bg-orange-claire",
@@ -472,7 +501,7 @@ class ObjetUtilitaireCahierDeTexte {
 			icon: "icon_folder_open",
 			selecFile: true,
 			optionsSelecFile: this._getOptionsSelecFile(),
-			event(aParamsInput) {
+			event: (aParamsInput) => {
 				if (!!aParamsInput && !!aParamsInput.eltFichier) {
 					UtilitaireAudio_1.UtilitaireAudio.estFichierAudioValide(
 						aParamsInput.eltFichier,
@@ -502,7 +531,7 @@ class ObjetUtilitaireCahierDeTexte {
 		} else if (aTaf && aTaf.Matiere) {
 			lLibelle = aTaf.Matiere.getLibelle();
 		}
-		if (aTaf && aTaf.pourLe) {
+		if (aTaf === null || aTaf === void 0 ? void 0 : aTaf.pourLe) {
 			lLibelle +=
 				" - " +
 				(ObjetDate_1.GDate.estDateParticulier(aTaf.pourLe)
@@ -567,26 +596,6 @@ class ObjetUtilitaireCahierDeTexte {
 			},
 		);
 		lObjetFenetreAjoutMultiple.afficher();
-	}
-	utilFicheFileTAF(aInstance, aNumero, aTaf, aParam) {
-		let lTaf = aTaf;
-		let lListeTaf = aParam.listeTAF;
-		if (!lListeTaf && aInstance.donnees) {
-			lListeTaf =
-				aInstance.donnees.listeTAF ||
-				(!!aInstance.donnees.travailAFaire
-					? aInstance.donnees.travailAFaire.listeTAF
-					: undefined);
-		}
-		if (lListeTaf) {
-			lTaf = lListeTaf.getElementParNumero(aNumero);
-		}
-		$(aInstance.node).eventValidation(
-			function (aTaf, aEvent) {
-				aEvent.stopPropagation();
-				aInstance._executerDepotFichierPourTAF(aTaf);
-			}.bind(aInstance, lTaf),
-		);
 	}
 	composeTAFARendrePourWidget(aTaf, aParam) {
 		const H = [];
@@ -1165,7 +1174,7 @@ class ObjetUtilitaireCahierDeTexte {
 			'">',
 			UtilitaireCDT_1.TUtilitaireCDT.strtMatiere(
 				aElement,
-				aElement.groupe,
+				aElement.listeGroupes,
 				false,
 			),
 			"</div>",
@@ -1194,7 +1203,7 @@ class ObjetUtilitaireCahierDeTexte {
 			'<div class="matiere-contain AvecMove">',
 			UtilitaireCDT_1.TUtilitaireCDT.strtMatiere(
 				aElement,
-				lAvecGroupe ? lElt.listeGroupes : false,
+				lAvecGroupe ? lElt.listeGroupes : null,
 				false,
 			),
 			"</div>",
@@ -1207,11 +1216,14 @@ class ObjetUtilitaireCahierDeTexte {
 	_composeSymboleCategorie(aGenre) {
 		const T = [];
 		T.push(
-			'<i class="',
-			TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.getIcone(
-				aGenre,
-			),
-			'" role="presentation" aria-hidden="true"></i>',
+			IE.jsx.str("i", {
+				class:
+					TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.getIcone(
+						aGenre,
+					),
+				role: "presentation",
+				"aria-hidden": "true",
+			}),
 		);
 		return T.join("");
 	}
@@ -1240,10 +1252,10 @@ class ObjetUtilitaireCahierDeTexte {
 		H.push("</ie-checkbox>");
 		return H.join("");
 	}
-	_composeLabelTAFFait(lElement) {
+	_composeLabelTAFFait(aElement) {
 		const H = [];
 		const lTitle =
-			!this.peuFaireTAF && lElement.TAFFait
+			!this.peuFaireTAF && aElement.TAFFait
 				? ' title="' +
 					ObjetTraduction_1.GTraductions.getValeur(
 						"accueil.hintParentTravailFait",
@@ -1255,7 +1267,7 @@ class ObjetUtilitaireCahierDeTexte {
 			"<div ",
 			lTitle,
 			" ie-html=\"labelTAFFait ('",
-			lElement.getNumero(),
+			aElement.getNumero(),
 			"')\"></div>",
 		);
 		return H.join("");
@@ -1361,21 +1373,6 @@ class ObjetUtilitaireCahierDeTexte {
 		lFenetreAudio.setDonnees(Enumere_Ressource_1.EGenreRessource.DocumentJoint);
 		lFenetreAudio.afficher();
 	}
-	_getFicheSelecFile(aTaf, aParam) {
-		const lThis = this;
-		if (aTaf && aTaf.avecRendu) {
-			if (!aParam.controleur) {
-				return "";
-			}
-			aParam.controleur.utilFicheFileTAF = function (aNumero) {
-				lThis.utilFicheFileTAF.call(this, lThis, aNumero, aTaf, aParam);
-			};
-			return ObjetHtml_1.GHtml.composeAttr("ie-node", "utilFicheFileTAF", [
-				aTaf.getNumero(),
-			]);
-		}
-		return "";
-	}
 	jsxNodeUtilFicheFileTaf(aTaf, aNode) {
 		if (!aTaf.avecRendu) {
 			return null;
@@ -1384,26 +1381,6 @@ class ObjetUtilitaireCahierDeTexte {
 			aEvent.stopPropagation();
 			this._executerDepotFichierPourTAF(aTaf);
 		});
-	}
-	_supprimerFichier(aTaf, aParam) {
-		if (aTaf && aTaf.avecRendu) {
-			if (!aParam.controleur) {
-				return "";
-			}
-			if (!aParam.controleur.supprimerFichier) {
-				aParam.controleur.supprimerFichier = function (aNumero) {
-					$(this.node)
-						.eventValidation((aNumero) => {
-							this.surSupprimer(aNumero);
-						})
-						.bind(this, aNumero);
-				};
-			}
-			return ObjetHtml_1.GHtml.composeAttr("ie-node", "supprimerFichier", [
-				aTaf.getNumero(),
-			]);
-		}
-		return "";
 	}
 	_composeIEModelChipsOuvrirFenetreCorrectionTAF(aTaf, aParam) {
 		const H = [];
@@ -1547,7 +1524,7 @@ class ObjetUtilitaireCahierDeTexte {
 				"</div>",
 			);
 			T.push(
-				`${lElt.estDevoir ? `<div class="icon-contain" aria-label="${ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.hintEstDS")}">${this._composeSymboleCategorie(TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Devoir)}</div>` : lElt.estEval ? `<div  class="icon-contain" aria-label="${ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.hintEstEvaluation")}">${this._composeSymboleCategorie(TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Evaluation)}</div>` : ""}`,
+				`${lElt.estDevoir ? `<div class="icon-contain" aria-label="${ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.hintEstDS")}">${this._composeSymboleCategorie(TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Devoir)}</div>` : lElt.estEval ? `<div class="icon-contain" aria-label="${ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.hintEstEvaluation")}">${this._composeSymboleCategorie(TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Evaluation)}</div>` : ""}`,
 			);
 			T.push("</div>");
 			if (aParam.avecDonneeLe) {

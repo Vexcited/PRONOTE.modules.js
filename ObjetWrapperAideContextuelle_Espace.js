@@ -194,6 +194,7 @@ class ObjetWrapperAideContextuelle_Espace extends ObjetIdentite_1.Identite {
 				timerOuverture: c_timer_ouverture,
 				onglet: this.onglet,
 				nombre: this.nombre,
+				simulerFenetre: true,
 			});
 			this.instanceAide.initialiser();
 			$(".bcne_conteneur_aide").addClass("bcne_open");

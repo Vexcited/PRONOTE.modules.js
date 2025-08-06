@@ -170,6 +170,7 @@ class ObjetWrapperCentraleNotifications_Espace extends ObjetIdentite_1.Identite 
 			this.instanceNotif.setOptions({
 				actionneur: this.options.actionneur,
 				timerOuverture: c_timer_ouverture,
+				simulerFenetre: true,
 			});
 			this.instanceNotif.initialiser();
 			$(".bcne_conteneur_notif").addClass("bcne_open");

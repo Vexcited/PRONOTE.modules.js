@@ -6,6 +6,7 @@ exports.StylesObjetListeEspaceMobile = {
 	liste_celluleGrid: "liste_celluleGrid",
 	voileBleuCellule: "voileBleuCellule",
 	selected: "selected",
+	iconesConteneur: "icones-conteneur",
 	liste_btnentete: "liste_btnentete",
 	enteteOmbree: "entete-ombree",
 	btnDeploiementEntete: "btn-deploiement-entete",

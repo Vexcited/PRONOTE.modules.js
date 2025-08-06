@@ -135,11 +135,11 @@ class Identite {
 			return this.Pere.getEtatSaisie();
 		}
 	}
-	$refresh() {
-		return this.controleur.$refresh();
+	$refresh(aForcerSynchrone) {
+		return IEHtml.refresh(aForcerSynchrone);
 	}
 	$refreshSelf() {
-		return this.controleur.$refreshSelf();
+		return IEHtml.refresh();
 	}
 	getControleur(aInstance) {
 		return {};

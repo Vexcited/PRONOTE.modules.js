@@ -1062,7 +1062,7 @@ class InterfacePageNotes extends InterfacePage_1.InterfacePage {
 		lDevoir.service = aService || this.Service;
 		lDevoir.estDevoirEditable = lDevoir.service.getActif();
 		lDevoir.matiere = MethodesObjet_1.MethodesObjet.dupliquer(this.Matiere);
-		lDevoir.date = ObjetDate_1.GDate.getDateCourante();
+		lDevoir.date = ObjetDate_1.GDate.getDateCourante(true);
 		lDevoir.coefficient = new TypeNote_1.TypeNote(1.0);
 		lDevoir.bareme = new TypeNote_1.TypeNote(this.baremeParDefaut.getValeur());
 		lDevoir.commentaire = "";

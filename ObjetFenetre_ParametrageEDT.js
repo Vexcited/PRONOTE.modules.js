@@ -154,7 +154,7 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 							aInstance._accesseurAxeParam(aTypePlanning),
 						),
 					);
-					aInstance.controleur.$refreshSelf();
+					aInstance.$refresh();
 					aInstance.avecModif = true;
 				});
 			},

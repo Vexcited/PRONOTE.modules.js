@@ -867,7 +867,7 @@ class ObjetPanelEditionDevoir extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobil
 		const H = [];
 		const lIdCBSur20 = this.ids.ramenerSur20;
 		H.push(
-			'<div class="field-contain devoirs-contain">',
+			'<div class="field-contain devoirs-contain tightened">',
 			'<ie-checkbox id="',
 			lIdCBSur20,
 			'" ie-model="checkSur20">',
@@ -959,10 +959,10 @@ class ObjetPanelEditionDevoir extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobil
 			H.push(this._composeSelectionService());
 			H.push(this._composeDateDevoir());
 			H.push(this._composeDatePublication());
-			H.push('<div class="pj-global-conteneur no-line p-y p-x-l">');
+			H.push('<div class="pj-global-conteneur tightened">');
 			H.push(this._composeSujet(aParam.devoir));
 			H.push("</div>");
-			H.push('<div class="pj-global-conteneur p-top p-bottom-l p-x-l">');
+			H.push('<div class="pj-global-conteneur tightened">');
 			H.push(this._composeCorrige(aParam.devoir));
 			H.push("</div>");
 			H.push(this._composeRemarque());
@@ -1161,18 +1161,18 @@ class ObjetPanelEditionDevoir extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobil
 		);
 	}
 	jsxNodeSelectDocument(aTypeFichierExterne, aNode) {
-		const lAvecFile =
-			aTypeFichierExterne ===
-			TypeFichierExterneHttpSco_1.TypeFichierExterneHttpSco.DevoirSujet
-				? this.moteurNotesCP._avecSujetDevoir({ devoir: this.devoir })
-				: this.moteurNotesCP._avecCorrigeDevoir({ devoir: this.devoir });
-		const lActif = !this._estDocumentNonEditable() && !lAvecFile;
-		const lListe =
-			aTypeFichierExterne ===
-			TypeFichierExterneHttpSco_1.TypeFichierExterneHttpSco.DevoirSujet
-				? this.devoir.listeSujets
-				: this.devoir.listeCorriges;
 		$(aNode).eventValidation((aEvent) => {
+			const lAvecFile =
+				aTypeFichierExterne ===
+				TypeFichierExterneHttpSco_1.TypeFichierExterneHttpSco.DevoirSujet
+					? this.moteurNotesCP._avecSujetDevoir({ devoir: this.devoir })
+					: this.moteurNotesCP._avecCorrigeDevoir({ devoir: this.devoir });
+			const lActif = !this._estDocumentNonEditable() && !lAvecFile;
+			const lListe =
+				aTypeFichierExterne ===
+				TypeFichierExterneHttpSco_1.TypeFichierExterneHttpSco.DevoirSujet
+					? this.devoir.listeSujets
+					: this.devoir.listeCorriges;
 			if (lActif) {
 				const lTabActions = [];
 				lTabActions.push({
@@ -1586,7 +1586,7 @@ class ObjetPanelEditionDevoir extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobil
 	_composeDevoirFacultatif(aDevoir) {
 		const H = [];
 		H.push(
-			'<div class="field-contain facultatif-contain">',
+			'<div class="field-contain facultatif-contain tightened">',
 			'<label class="active" id="',
 			this.ids.titreFacultatif,
 			'" for="',
@@ -1596,7 +1596,7 @@ class ObjetPanelEditionDevoir extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobil
 			"</label>",
 			'<div id="',
 			this.ids.zoneFacultatif,
-			'" class="flex-contain flex-center self-end m-bottom">',
+			'" class="zone-facultatif">',
 			this._composeZoneFacultatif(aDevoir),
 			"</div>",
 			"</div>",
@@ -1618,7 +1618,7 @@ class ObjetPanelEditionDevoir extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobil
 			'<div class="facultatif-carre" style="',
 			lbgCouleur,
 			'" ></div>',
-			'<ie-checkbox class="m-left" id="',
+			'<ie-checkbox id="',
 			lId,
 			'" ie-model="facultatif">',
 			lLabel,
@@ -1628,7 +1628,7 @@ class ObjetPanelEditionDevoir extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobil
 	}
 	_composeRemarque() {
 		const H = [];
-		H.push('<div class="field-contain">');
+		H.push('<div class="field-contain ">');
 		H.push(
 			`<ie-checkbox class="long-text" ie-model="CBRemarque">${ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.activerCommentaireSurNotes")}</ie-checkbox>`,
 		);

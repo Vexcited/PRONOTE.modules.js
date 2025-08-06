@@ -483,6 +483,7 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 			),
 			listePublic: new ObjetListeElements_1.ObjetListeElements(),
 			genreReponse: aGenre,
+			avecRecupModele: true,
 		});
 	}
 	ouvrirFenetreSaisieURL(aCours) {

@@ -295,7 +295,7 @@ class ObjetFenetre_ProgressionAffectationAuCours extends ObjetFenetre_1.ObjetFen
 		lInstanceDate.setDonnees(this.parametres.dateTAF);
 		this.afficher();
 		this._actualiserTreeView();
-		this.controleur.$refreshSelf(true);
+		this.$refresh(true);
 		this.surFixerTaille();
 	}
 	_actualiserTreeView() {

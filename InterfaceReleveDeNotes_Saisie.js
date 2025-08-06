@@ -51,7 +51,7 @@ class InterfaceReleveDeNotes_Saisie extends _InterfaceReleveDeNotes_1._Interface
 		aListe.setOptionsListe({
 			ariaLabel: () => {
 				var _a, _b, _c;
-				return `${this.etatUtilScoEspace.getLibelleLongOnglet()} ${((_a = this.getClasse()) === null || _a === void 0 ? void 0 : _a.getLibelle()) || ""} ${((_b = this.getPeriode()) === null || _b === void 0 ? void 0 : _b.getLibelle()) || ""} ${((_c = this.getEleve()) === null || _c === void 0 ? void 0 : _c.getLibelle()) || ""}`.trim();
+				return `${this.etatUtilScoEspace.getLibelleLongOnglet()} ${((_a = this.getClasseGroupe()) === null || _a === void 0 ? void 0 : _a.getLibelle()) || ""} ${((_b = this.getPeriode()) === null || _b === void 0 ? void 0 : _b.getLibelle()) || ""} ${((_c = this.getEleve()) === null || _c === void 0 ? void 0 : _c.getLibelle()) || ""}`.trim();
 			},
 		});
 	}
@@ -95,7 +95,7 @@ class InterfaceReleveDeNotes_Saisie extends _InterfaceReleveDeNotes_1._Interface
 			Enumere_Ressource_1.EGenreRessource.Eleve,
 		);
 	}
-	getClasse() {
+	getClasseGroupe() {
 		return this.etatUtilScoEspace.Navigation.getRessource(
 			Enumere_Ressource_1.EGenreRessource.Classe,
 		);
@@ -178,9 +178,12 @@ class InterfaceReleveDeNotes_Saisie extends _InterfaceReleveDeNotes_1._Interface
 			this.getListeTypesAppreciations();
 			this.setEtatSaisie(false);
 		}
+		const lClasseGroupe = this.getClasseGroupe();
+		const lEstUnGroupe =
+			lClasseGroupe.getGenre() === Enumere_Ressource_1.EGenreRessource.Groupe;
 		const lParam = {
 			numeroEleve: this.getEleve().getNumero(),
-			numeroClasse: this.getClasse().getNumero(),
+			numeroClasse: lEstUnGroupe ? 0 : lClasseGroupe.getNumero(),
 			genrePeriode: this.getPeriode().getGenre(),
 			numeroPeriode: this.getPeriode().getNumero(),
 		};
@@ -202,8 +205,8 @@ class InterfaceReleveDeNotes_Saisie extends _InterfaceReleveDeNotes_1._Interface
 		return $.extend(super.getParametresCalcul(aParamEvnt), {
 			libelleEleve: this.getEleve().getLibelle(),
 			numeroEleve: this.getEleve().getNumero(),
-			libelleClasse: this.getClasse().getLibelle(),
-			numeroClasse: this.getClasse().getNumero(),
+			libelleClasse: this.getClasseGroupe().getLibelle(),
+			numeroClasse: this.getClasseGroupe().getNumero(),
 		});
 	}
 	_evntSurAssistant() {
@@ -275,7 +278,7 @@ class InterfaceReleveDeNotes_Saisie extends _InterfaceReleveDeNotes_1._Interface
 		this.saisieAppreciation(
 			{ instanceListe: lListe, estCtxPied: lEstCtxPiedBulletin },
 			{
-				classe: this.getClasse(),
+				classe: this.getClasseGroupe(),
 				periode: this.getPeriode(),
 				eleve: this.getEleve(),
 				service: lService,

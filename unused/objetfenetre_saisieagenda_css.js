@@ -9,4 +9,6 @@ exports.StylesObjetFenetre_SaisieAgenda = {
 	ctnDestinataire: "ctn-destinataire",
 	ctnMessages: "ctn-messages",
 	defTxt: "def-txt",
+	pjGlobalConteneur: "pj-global-conteneur",
+	switch: "switch",
 };

@@ -137,6 +137,20 @@ class ObjetFenetre_DetailAgenda extends ObjetFenetre_1.ObjetFenetre {
 					return lStrAuteur;
 				},
 			},
+			NatureEvnt: {
+				avecStr: function () {
+					return (
+						!!aInstance.donnees &&
+						aInstance.donnees.Genre ===
+							TypeGenreEvenementAgenda_1.TypeGenreEvenementAgenda.tgea_JourFerie
+					);
+				},
+				getStr: function () {
+					return ObjetTraduction_1.GTraductions.getValeur(
+						"Agenda.evtTypeVacanceFerie",
+					);
+				},
+			},
 			getCommentaire: function () {
 				let lCommentaire =
 					!!aInstance.donnees &&
@@ -289,6 +303,11 @@ class ObjetFenetre_DetailAgenda extends ObjetFenetre_1.ObjetFenetre {
 				IE.jsx.str("div", {
 					"ie-html": "getDate",
 					class: "capitalize ie-sous-titre",
+				}),
+				IE.jsx.str("div", {
+					"ie-html": "NatureEvnt.getStr",
+					"ie-if": "NatureEvnt.avecStr",
+					class: "ie-sous-titre",
 				}),
 				IE.jsx.str("div", {
 					"ie-html": "Publie.getStr",

@@ -728,6 +728,18 @@ class InterfacePageListeEvaluations extends InterfacePage_1.InterfacePage {
 			lTitreFenetre = ObjetTraduction_1.GTraductions.getValeur(
 				"evaluations.ModifierEvaluation",
 			);
+			if (
+				lEvaluation &&
+				!lEvaluation.devoir &&
+				!lEvaluation.baremeDevoirDuService
+			) {
+				if (this.parametresCreationDevoir) {
+					lEvaluation.baremeDevoirDuService =
+						this.parametresCreationDevoir.baremeService;
+				} else if (lEvaluation.baremeDevoirParDefaut) {
+					lEvaluation.baremeDevoirDuService = lEvaluation.baremeDevoirParDefaut;
+				}
+			}
 		}
 		this.getInstance(this.identFenetreEvaluation).setOptionsFenetre({
 			titre: lTitreFenetre,

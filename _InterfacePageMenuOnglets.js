@@ -137,12 +137,16 @@ class _InterfacePagePageMenuOnglets extends InterfacePage_Mobile_1.InterfacePage
 	}
 	construireStructureAffichageAutre() {
 		const lHtml = [];
+		const lClass = ["user-container"];
 		lHtml.push('<section class="global-menu-container ">');
 		const lNomEtav = this.getLibelleEtablissement();
+		if (lNomEtav) {
+			lClass.push("avec-nom-etab");
+		}
 		lHtml.push(
 			IE.jsx.str(
 				"header",
-				{ class: ["user-container", !!lNomEtav && "avec-nom-etab"] },
+				{ class: lClass },
 				IE.jsx.str(
 					"div",
 					{ class: "user-container-profil" },
@@ -154,11 +158,26 @@ class _InterfacePagePageMenuOnglets extends InterfacePage_Mobile_1.InterfacePage
 									tabindex: "0",
 									class: "membre-combo",
 								},
-								this._construireEnteteRessource(GEtatUtilisateur.getMembre()),
+								this._construireEnteteRessource(
+									GEtatUtilisateur.getMembre(),
+									true,
+								),
 							)
 						: this._construireEnteteRessource(GEtatUtilisateur.getMembre()),
 				),
-				!!lNomEtav && IE.jsx.str("p", { class: "m-bottom-l" }, lNomEtav),
+				!!lNomEtav &&
+					IE.jsx.str(
+						"p",
+						{
+							class: [
+								"m-bottom-l",
+								this.estAfficheDansENT() &&
+									!this.avecListeRessources &&
+									"m-top-l",
+							],
+						},
+						lNomEtav,
+					),
 				IE.jsx.str("span", {
 					id: this.idDerniereConnexion,
 					class: "user-container-derniere-connexion",
@@ -424,11 +443,17 @@ class _InterfacePagePageMenuOnglets extends InterfacePage_Mobile_1.InterfacePage
 	getInfosComboMembre(aMembre) {
 		return null;
 	}
-	_construireEnteteRessource(aRessource) {
+	estAfficheDansENT() {
+		return false;
+	}
+	_construireEnteteRessource(aRessource, aDansCombo = false) {
 		const lInfos = this.getInfosComboMembre(aRessource);
 		const lClass = ["label-membre"];
 		if (this.avecListeRessources) {
 			lClass.push("avec-membre");
+		}
+		if (!aDansCombo && this.estAfficheDansENT()) {
+			return "";
 		}
 		return IE.jsx.str(
 			IE.jsx.fragment,

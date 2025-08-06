@@ -184,6 +184,14 @@ class DonneesListe_Agenda extends ObjetDonneesListeFlatDesign_1.ObjetDonneesList
 				? `<div class="ie-sous-titre">${lArticle.strAuteur}</div>`
 				: "";
 		H.push(lAuteur);
+		if (
+			lArticle.Genre ===
+			TypeGenreEvenementAgenda_1.TypeGenreEvenementAgenda.tgea_JourFerie
+		) {
+			H.push(
+				`<div class="ie-sous-titre">${ObjetTraduction_1.GTraductions.getValeur("Agenda.evtTypeVacanceFerie")}</div>`,
+			);
+		}
 		return H.join("");
 	}
 	getZoneMessage(aParams) {

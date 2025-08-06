@@ -19,6 +19,7 @@ class ObjetVS_SaisieAbsencePN extends ObjetVS_SaisieAbsence_1.ObjetVS_SaisieAbse
 			GParametres.PlacesParJour,
 		);
 		this.strFin = ObjetDate_1.GDate.formatDate(this.heureFin, "%hh:%mm");
+		this.avecInfoJustificationObligatoire = true;
 		this.heureMidi = ObjetDate_1.GDate.placeParJourEnDate(
 			this.parametresSco.PlaceDemiJournee,
 		);

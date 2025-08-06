@@ -301,6 +301,7 @@ class UtilitairePagePubliqueEtablissement {
 		}
 	}
 	declarerWidgets() {
+		var _a, _b, _c, _d;
 		return {
 			menuDeLaCantine: {
 				nomDonnees: "menuDeLaCantine",
@@ -324,12 +325,20 @@ class UtilitairePagePubliqueEtablissement {
 				genre: Enumere_Widget_1.EGenreWidget.lienUtile,
 				id: GUID_1.GUID.getId(),
 				classWidget: WidgetLienUtile_1.WidgetLienUtile,
-				titre: ObjetTraduction_1.GTraductions.getValeur(
-					"accueil.lienUtile.titre",
-				),
-				hint: ObjetTraduction_1.GTraductions.getValeur(
-					"accueil.lienUtile.titre",
-				),
+				titre:
+					((_b =
+						(_a = this.parametres) === null || _a === void 0
+							? void 0
+							: _a.lienUtile) === null || _b === void 0
+						? void 0
+						: _b.titre) || "",
+				hint:
+					((_d =
+						(_c = this.parametres) === null || _c === void 0
+							? void 0
+							: _c.lienUtile) === null || _d === void 0
+						? void 0
+						: _d.titre) || "",
 				message: ObjetTraduction_1.GTraductions.getValeur(
 					"accueil.lienUtile.message",
 				),
@@ -504,16 +513,25 @@ class UtilitairePagePubliqueEtablissement {
 		};
 	}
 	composeCookiesInfo() {
-		const H = [];
-		H.push(`<div class="cookies-disclaimer">`);
-		H.push(
-			`<p>${ObjetTraduction_1.GTraductions.getValeur("PiedPage.CookieInfo_Message_1")} ${ObjetTraduction_1.GTraductions.getValeur("PiedPage.CookieInfo_Message_2")} <span role="button" tabindex="0" class="as-link" ie-node="getNodeMentionsLegales" aria-haspopup="dialog">${ObjetTraduction_1.GTraductions.getValeur("PiedPage.mentionsLegales")}.</span></p>`,
+		return IE.jsx.str(
+			"div",
+			{ class: "cookies-disclaimer" },
+			IE.jsx.str(
+				"p",
+				null,
+				`${ObjetTraduction_1.GTraductions.getValeur("PiedPage.CookieInfo_Message_1")} ${ObjetTraduction_1.GTraductions.getValeur("PiedPage.CookieInfo_Message_2", [IE.jsx.str("a", { href: this.options.parametresCommun.urlConfidentialite, class: "as-link" }, ObjetTraduction_1.GTraductions.getValeur("PiedPage.PolitiqueConfidentialite"))])} `,
+			),
+			IE.jsx.str(
+				"ie-bouton",
+				{
+					tabindex: "0",
+					"aria-label": ObjetTraduction_1.GTraductions.getValeur("Fermer"),
+					"ie-hint": ObjetTraduction_1.GTraductions.getValeur("Fermer"),
+					"ie-node": "btnFermer",
+				},
+				ObjetTraduction_1.GTraductions.getValeur("Fermer"),
+			),
 		);
-		H.push(
-			`<ie-bouton tabindex="0" aria-label="${ObjetTraduction_1.GTraductions.getValeur("Fermer")}" ie-hint="${ObjetTraduction_1.GTraductions.getValeur("Fermer")}" ie-node="btnFermer">${ObjetTraduction_1.GTraductions.getValeur("Fermer")}</ie-bouton>`,
-		);
-		H.push(`</div>`);
-		return H.join("");
 	}
 	afficherCookieInfo() {
 		let lGenreEspace =
@@ -840,12 +858,17 @@ class UtilitairePagePubliqueEtablissement {
 		});
 	}
 	_construireLiensUtiles() {
+		var _a, _b;
 		return this._construireSectionWidget({
 			estVisible: this._estVisibleLiensUtiles(),
 			classWidget: "lienutile fluid-mobile",
-			titre: ObjetTraduction_1.GTraductions.getValeur(
-				"accueil.lienUtile.titre",
-			),
+			titre:
+				((_b =
+					(_a = this.widgets) === null || _a === void 0
+						? void 0
+						: _a.lienUtile) === null || _b === void 0
+					? void 0
+					: _b.titre) || "",
 			id: this.widgets.lienUtile.id,
 		});
 	}
@@ -1044,7 +1067,7 @@ class UtilitairePagePubliqueEtablissement {
 				this._espacesISO27001()
 					? '<span class="certif-27001">' +
 							ObjetTraduction_1.GTraductions.getValeur(
-								"pagePubliqueEtab.certifISO27001",
+								"pagePubliqueEtab.SecNumCloud",
 							) +
 							"</span>"
 					: "",

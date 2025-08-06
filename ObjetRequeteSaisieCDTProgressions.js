@@ -159,7 +159,7 @@ class ObjetRequeteSaisieCDTProgressions extends ObjetRequeteJSON_1.ObjetRequeteS
 		const lNb = aListeDossiers.count();
 		for (let i = 0; i < lNb; i++) {
 			let lElement = aListeDossiers.get(i);
-			if (lElement !== Enumere_Etat_1.EGenreEtat.Suppression) {
+			if (lElement.getEtat() !== Enumere_Etat_1.EGenreEtat.Suppression) {
 				if (lElement.ordre !== lElement._ordreOrigine) {
 					lElement.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 				}

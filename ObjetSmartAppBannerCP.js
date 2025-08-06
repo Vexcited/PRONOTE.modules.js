@@ -98,6 +98,12 @@ class ObjetSmartAppBannerCP {
 				lThis.isOpen = true;
 				$(this).addClass("smartbanner-show");
 				$(this).dequeue();
+			})
+			.on("click", (aEvent) => {
+				const lCroixFermeture = aEvent.target.closest(".smartbanner-close");
+				if (!lCroixFermeture) {
+					this.open();
+				}
 			});
 	}
 	hide(aEvent) {
@@ -155,7 +161,7 @@ class ObjetSmartAppBannerCP {
 			}
 			lIframe = document.createElement("iframe");
 			lTimeout = setTimeout(
-				this.openFallbackAndroid.bind(new Date().getTime()),
+				this.openFallbackAndroid.bind(this, new Date().getTime()),
 				this.options.delai,
 			);
 			lIframe.onload = function () {

@@ -593,7 +593,7 @@ class ObjetPanelEditionTAF extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 					callbackChoixDepuisCloud: lAvecCloud
 						? () => {
 								UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF.ouvrirFenetreCloud().then(
-									this.callbackChoixDepuisCloud,
+									this.callbackChoixDepuisCloud.bind(this),
 								);
 							}
 						: null,
@@ -605,7 +605,7 @@ class ObjetPanelEditionTAF extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 											service: GEtatUtilisateur.getCloudENEJ(),
 											instance: this,
 										},
-									).then(this.callbackChoixDepuisCloud);
+									).then(this.callbackChoixDepuisCloud.bind(this));
 								}
 							: null,
 				},

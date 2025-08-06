@@ -290,6 +290,9 @@ UtilitaireSaisieCDT.collerCDT = function (
 		return;
 	}
 	aCDTCible.publie = aCDTSource.publie;
+	if (aCDTCible.publie) {
+		aCDTCible.datePublication = aCDTSource.datePublication;
+	}
 	aCDTCible.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 	aCDTCible.listeContenus.parcourir((aContenu) => {
 		aContenu.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
@@ -320,6 +323,7 @@ UtilitaireSaisieCDT.collerCDT = function (
 			ignorerEtatsElements: true,
 		});
 	}
+	aCDTCible.commentairePrive = aCDTSource.commentairePrive;
 };
 UtilitaireSaisieCDT.getElementCategorieVide = function () {
 	return new ObjetElement_1.ObjetElement("", 0);

@@ -156,7 +156,6 @@ class ObjetFenetre_EvenementPeriodicite extends ObjetFenetre_1.ObjetFenetre {
 								: ObjetTraduction_1.GTraductions.getValeur(
 										"Fenetre_SaisieAgenda.WAI.jour",
 									),
-						iconeGauche: "icon_reorder",
 						mode: Enumere_Saisie_1.EGenreSaisie.Combo,
 						longueur: 80,
 						hauteur: 17,
@@ -303,7 +302,6 @@ class ObjetFenetre_EvenementPeriodicite extends ObjetFenetre_1.ObjetFenetre {
 					aCombo.setOptionsObjetSaisie({
 						mode: Enumere_Saisie_1.EGenreSaisie.Combo,
 						longueur: 150,
-						iconeGauche: IE.estMobile ? "icon_reorder" : "",
 						labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
 							"WAI.SelectionPeriodicite",
 						),
@@ -558,13 +556,13 @@ class ObjetFenetre_EvenementPeriodicite extends ObjetFenetre_1.ObjetFenetre {
 			T.push('<div class="divider"></div>');
 		}
 		T.push(
-			`\n        <section class="field-contain">\n            <article  class="bloc-selecteur-periodicite">\n                <ie-combo ie-model="comboSelectTypePeriodicite" class="combo-selecteur" ie-attr="comboSelectTypePeriodicite.getAttr" ></ie-combo>\n            </article>\n        </section>\n    `,
+			`\n        <section class="field-contain">\n            <article  class="bloc-selecteur-periodicite">\n                <ie-combo ie-model="comboSelectTypePeriodicite" ie-attr="comboSelectTypePeriodicite.getAttr" ></ie-combo>\n            </article>\n        </section>\n    `,
 		);
 		T.push(`<section class="field-contain">`);
-		T.push(`\n              <section ie-display="blocQuotidienne" class="bloc-quotidienne flex-between">\n                  <span class="m-right-l def-txt">${ObjetTraduction_1.GTraductions.getValeur("Fenetre_SaisieAgenda.FenetrePeriodiciteTousLes")}</span>\n                  <article>\n                      ${this._composeSaisieJour(0)}
+		T.push(`\n              <section ie-display="blocQuotidienne" class="bloc-quotidienne">\n                  <span class="m-right-l m-bottom def-txt">${ObjetTraduction_1.GTraductions.getValeur("Fenetre_SaisieAgenda.FenetrePeriodiciteTousLes")}</span>\n                  <article>\n                      ${this._composeSaisieJour(0)}
                       <p class="m-left-l def-txt like-span">${ObjetTraduction_1.GTraductions.getValeur("Fenetre_SaisieAgenda.FenetrePeriodiciteJours")}</p>\n                  </article>\n              </section>\n    `);
-		T.push(`\n              <section ie-display="blocHebdomadaire" class="bloc-hebdomadaire">\n                  <article class="ctn-haut flex-center">\n                      <span  class="m-right-l def-txt">${ObjetTraduction_1.GTraductions.getValeur("Fenetre_SaisieAgenda.FenetrePeriodiciteToutesLes")}</span>\n                      <article>\n                          ${this._composeSaisieSemaine(0)}
-                          <p class="m-left-l def-txt like-span">${ObjetTraduction_1.GTraductions.getValeur("Fenetre_SaisieAgenda.FenetrePeriodiciteSemaines")}</p>\n                      </article>\n                  </article>\n                  <article class="ctn-liste-jours">\n    `);
+		T.push(`\n              <section ie-display="blocHebdomadaire" class="bloc-hebdomadaire">\n                  <article class="ctn-haut">\n                      <span class="m-right-l m-bottom def-txt">${ObjetTraduction_1.GTraductions.getValeur("Fenetre_SaisieAgenda.FenetrePeriodiciteToutesLes")}</span>\n                      <div>\n                          ${this._composeSaisieSemaine(0)}
+                          <p class="m-left-l def-txt like-span">${ObjetTraduction_1.GTraductions.getValeur("Fenetre_SaisieAgenda.FenetrePeriodiciteSemaines")}</p>\n                      </div>\n                  </article>\n                  <article class="ctn-liste-jours">\n    `);
 		for (
 			let i = 0, lNbr = this.SaisieAgenda.listeJoursDeLaSemaine.count();
 			i < lNbr;
@@ -575,10 +573,10 @@ class ObjetFenetre_EvenementPeriodicite extends ObjetFenetre_1.ObjetFenetre {
 			);
 		}
 		T.push(`\n                  </article>\n              </section>\n    `);
-		T.push(`\n              <section ie-display="blocMensuelleAbsolue" class="bloc-mensuelle-absolue">\n                  <article class="ctn-haut">\n                      <span class="m-right-l def-txt">${ObjetTraduction_1.GTraductions.getValeur("Fenetre_SaisieAgenda.FenetrePeriodiciteLe")}</span>\n                      ${this._composeSaisieDate(0)}\n                  </article>\n                  <article class="ctn-bas">\n                      <span class="m-right-l def-txt">${ObjetTraduction_1.GTraductions.getValeur("Fenetre_SaisieAgenda.FenetrePeriodiciteTousLes")}</span>\n                      <article>\n                          ${this._composeSaisieMois(0)}
-                          <p class="m-left-l def-txt like-span">${ObjetTraduction_1.GTraductions.getValeur("Fenetre_SaisieAgenda.FenetrePeriodiciteMois")}</p>\n                      </article>\n                  </article>\n              </section>\n    `);
-		T.push(`\n              <section ie-display="blocMensuelleRelatif" class="bloc-mensuelle-relatif">\n                  <article>\n                      <ie-combo class="combo-selecteur" ie-model="ComboMensuelle(1)"></ie-combo>\n                  </article>\n                  <article>\n                      <ie-combo class="combo-selecteur" ie-model="ComboMensuelle(2)"></ie-combo>\n                  </article>\n                  <article class="ctn">\n                      <span  class="m-left-l m-right-l def-txt">${ObjetTraduction_1.GTraductions.getValeur("Fenetre_SaisieAgenda.FenetrePeriodiciteTousLes")}</span>\n                      <article>\n                        ${this._composeSaisieMois(1)}
-                        <p class="m-left-l def-txt like-span">${ObjetTraduction_1.GTraductions.getValeur("Fenetre_SaisieAgenda.FenetrePeriodiciteMois")}</p>\n                      </article>\n                  </article>\n              </section>\n    `);
+		T.push(`\n              <section ie-display="blocMensuelleAbsolue" class="bloc-mensuelle-absolue">\n                  <article class="ctn-haut">\n                      <span class="m-right-l def-txt">${ObjetTraduction_1.GTraductions.getValeur("Fenetre_SaisieAgenda.FenetrePeriodiciteLe")}</span>\n                      ${this._composeSaisieDate(0)}\n                  </article>\n                  <article class="ctn-bas">\n                      <span class="m-right-l def-txt">${ObjetTraduction_1.GTraductions.getValeur("Fenetre_SaisieAgenda.FenetrePeriodiciteTousLes")}</span>\n                      <div>\n                          ${this._composeSaisieMois(0)}
+                          <p class="m-left-l def-txt like-span">${ObjetTraduction_1.GTraductions.getValeur("Fenetre_SaisieAgenda.FenetrePeriodiciteMois")}</p>\n                      </div>\n                  </article>\n              </section>\n    `);
+		T.push(`\n              <section ie-display="blocMensuelleRelatif" class="bloc-mensuelle-relatif">\n                  <article>\n                      <ie-combo class="combo-selecteur" ie-model="ComboMensuelle(1)"></ie-combo>\n                  </article>\n                  <article>\n                      <ie-combo class="combo-selecteur" ie-model="ComboMensuelle(2)"></ie-combo>\n                  </article>\n                  <article class="ctn">\n                      <span class="m-left-l m-right-l def-txt">${ObjetTraduction_1.GTraductions.getValeur("Fenetre_SaisieAgenda.FenetrePeriodiciteTousLes")}</span>\n                      <div>\n                        ${this._composeSaisieMois(1)}
+                        <p class="m-left-l def-txt like-span">${ObjetTraduction_1.GTraductions.getValeur("Fenetre_SaisieAgenda.FenetrePeriodiciteMois")}</p>\n                      </div>\n                  </article>\n              </section>\n    `);
 		T.push(`</section>`);
 		return T.join("");
 	}
@@ -603,7 +601,7 @@ class ObjetFenetre_EvenementPeriodicite extends ObjetFenetre_1.ObjetFenetre {
 	}
 	_composeSaisieJour(aGenreEdit) {
 		const T = [];
-		const lStyle = ObjetStyle_1.GStyle.composeWidth(IE.estMobile ? 20 : 35);
+		const lStyle = ObjetStyle_1.GStyle.composeWidth(35);
 		T.push(
 			'<input id="',
 			this.Nom + "_editJ_" + aGenreEdit,
@@ -611,7 +609,6 @@ class ObjetFenetre_EvenementPeriodicite extends ObjetFenetre_1.ObjetFenetre {
 			'style="',
 			lStyle,
 			'" ',
-			'class="input-nbr"',
 			'maxlength="3" ',
 			'ie-model="inputJours"',
 			`ie-attr="inputJours.getAttr(${aGenreEdit})"`,
@@ -622,7 +619,7 @@ class ObjetFenetre_EvenementPeriodicite extends ObjetFenetre_1.ObjetFenetre {
 	}
 	_composeSaisieSemaine(aGenreEdit) {
 		const T = [];
-		const lStyle = ObjetStyle_1.GStyle.composeWidth(IE.estMobile ? 17 : 35);
+		const lStyle = ObjetStyle_1.GStyle.composeWidth(35);
 		T.push(
 			'<input id="',
 			this.Nom + "_editS_" + aGenreEdit,
@@ -630,7 +627,6 @@ class ObjetFenetre_EvenementPeriodicite extends ObjetFenetre_1.ObjetFenetre {
 			'style="',
 			lStyle,
 			'" ',
-			'class="input-nbr m-right-l"',
 			'maxlength="2" ',
 			'ie-model="inputSemaines"',
 			`ie-attr="inputSemaines.getAttr(${aGenreEdit})"`,
@@ -642,7 +638,7 @@ class ObjetFenetre_EvenementPeriodicite extends ObjetFenetre_1.ObjetFenetre {
 	}
 	_composeSaisieDate(aGenreEdit) {
 		const T = [];
-		const lStyle = ObjetStyle_1.GStyle.composeWidth(IE.estMobile ? 17 : 35);
+		const lStyle = ObjetStyle_1.GStyle.composeWidth(35);
 		T.push(
 			'<input id="',
 			this.Nom + "_editD_" + aGenreEdit,
@@ -651,7 +647,6 @@ class ObjetFenetre_EvenementPeriodicite extends ObjetFenetre_1.ObjetFenetre {
 			lStyle,
 			'" ',
 			'maxlength="2" ',
-			'class="input-nbr"',
 			`ie-model="inputDate"`,
 			`ie-attr="inputDate.getAttr(${aGenreEdit})"`,
 			'ie-mask="/[^0-9 ]+/g"',
@@ -661,7 +656,7 @@ class ObjetFenetre_EvenementPeriodicite extends ObjetFenetre_1.ObjetFenetre {
 	}
 	_composeSaisieMois(aGenreEdit) {
 		const T = [];
-		const lStyle = ObjetStyle_1.GStyle.composeWidth(IE.estMobile ? 17 : 35);
+		const lStyle = ObjetStyle_1.GStyle.composeWidth(35);
 		T.push(
 			'<input id="',
 			this.Nom + "_editM_" + aGenreEdit,
@@ -670,7 +665,6 @@ class ObjetFenetre_EvenementPeriodicite extends ObjetFenetre_1.ObjetFenetre {
 			lStyle,
 			'" ',
 			'maxlength="2" ',
-			'class="input-nbr"',
 			`ie-model="inputMois(${aGenreEdit})"`,
 			`ie-attr="inputMois.getAttr(${aGenreEdit})"`,
 			'ie-mask="/[^0-9 ]+/g"',

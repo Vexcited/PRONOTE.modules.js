@@ -193,7 +193,7 @@ class _InterfaceReleveDeNotes extends InterfacePage_1.InterfacePage {
 	}
 	_initPiedPage(aInstance) {
 		const lContexte = {
-			classe: this.getClasse(),
+			classe: this.getClasseGroupe(),
 			periode: this.getPeriode(),
 			eleve: this.getEleve(),
 			service: null,
@@ -252,7 +252,7 @@ class _InterfaceReleveDeNotes extends InterfacePage_1.InterfacePage {
 						estCtxPied: false,
 					},
 					{
-						classe: this.getClasse(),
+						classe: this.getClasseGroupe(),
 						periode: this.getPeriode(),
 						eleve: this.getEleve(),
 						service: lService,

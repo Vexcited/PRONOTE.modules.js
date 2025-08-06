@@ -499,11 +499,7 @@ class InterfaceSaisieApprGenerale extends InterfacePage_1.InterfacePage {
 			};
 		}
 		this.saisieAppreciation(
-			{
-				instanceListe: this.getInstance(this.identListe),
-				estCtxPied: false,
-				suivante: lSuivante,
-			},
+			{ instanceListe: this.getInstance(this.identListe), suivante: lSuivante },
 			{
 				classe: aParam.classe,
 				periode: this.getPeriode(),

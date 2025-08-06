@@ -4,6 +4,7 @@ exports.StylesObjetMenuPrincipal = {
 	objetmenuSecondaireWrapper: "objetmenuSecondaireWrapper",
 	focusedIn: "focused-in",
 	submenuWrapper: "submenu-wrapper",
+	withFooter: "with-footer",
 	objetmenuprincipal_membrephoto: "objetmenuprincipal_membrephoto",
 	menuContainer: "menu-container",
 	objetBandeauEntete_membres: "objetBandeauEntete_membres",

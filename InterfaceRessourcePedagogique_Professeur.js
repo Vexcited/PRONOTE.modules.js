@@ -31,6 +31,7 @@ const ObjetRequeteListeTousLesThemes_1 = require("ObjetRequeteListeTousLesThemes
 const MethodesObjet_1 = require("MethodesObjet");
 const ObjetFenetre_ListeThemes_1 = require("ObjetFenetre_ListeThemes");
 const ObjetFenetre_ActionContextuelle_1 = require("ObjetFenetre_ActionContextuelle");
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
 class InterfaceRessourcePedagogique_Professeur extends _InterfaceRessourcePedagogique_1._InterfaceRessourcePedagogique {
 	constructor(...aParams) {
 		super(...aParams);
@@ -154,26 +155,6 @@ class InterfaceRessourcePedagogique_Professeur extends _InterfaceRessourcePedago
 					const lParametres = {
 						type: DonneesListe_RessourcesPedagogiquesProfesseur_1
 							.DonneesListe_RessourcesPedagogiquesProfesseur.genreMenu.ajoutDoc,
-						element: null,
-					};
-					lThis._evenementInputFile(aParamsInput, lParametres);
-				}
-			},
-			class: "bg-orange-claire",
-		});
-		lTabActions.push({
-			libelle: ObjetTraduction_1.GTraductions.getValeur(
-				"RessourcePedagogique.AjoutDepuisMesSauvegardes",
-			),
-			icon: "icon_upload_alt",
-			selecFile: true,
-			optionsSelecFile: this._getOptionsSelecFile(true),
-			event(aParamsInput) {
-				if (aParamsInput) {
-					const lParametres = {
-						type: DonneesListe_RessourcesPedagogiquesProfesseur_1
-							.DonneesListe_RessourcesPedagogiquesProfesseur.genreMenu
-							.ajoutSauvegarde,
 						element: null,
 					};
 					lThis._evenementInputFile(aParamsInput, lParametres);
@@ -1322,8 +1303,11 @@ class InterfaceRessourcePedagogique_Professeur extends _InterfaceRessourcePedago
 			).lancerRequete({ annulerImport: true });
 		}
 	}
-	_reponseUploadFichier(aLibelleFichier, aSuccesSaisie) {
-		if (!aSuccesSaisie) {
+	_reponseUploadFichier(aLibelleFichier, aReponse) {
+		if (
+			!aReponse ||
+			aReponse.genreReponse !== ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+		) {
 			return;
 		}
 		ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
@@ -1363,7 +1347,7 @@ class InterfaceRessourcePedagogique_Professeur extends _InterfaceRessourcePedago
 					}
 				},
 			},
-		).setDonnees(aSuccesSaisie.JSONReponse);
+		).setDonnees(aReponse.JSONReponse);
 	}
 	_evenementInputFile(aParamUpload, aParametres) {
 		if (

@@ -302,7 +302,7 @@ class ObjetFenetre_ProjetAccompagnement extends ObjetFenetre_1.ObjetFenetre {
 					"label",
 					{
 						for: this.getNomInstance(this.identType),
-						class: "fix-bloc",
+						class: "ie-titre-petit",
 						style: "width: 4.5rem;",
 					},
 					ObjetTraduction_1.GTraductions.getValeur("FicheEleve.type"),
@@ -320,7 +320,7 @@ class ObjetFenetre_ProjetAccompagnement extends ObjetFenetre_1.ObjetFenetre {
 					"label",
 					{
 						for: this.getNomInstance(this.identMotif),
-						class: "fix-bloc ",
+						class: "ie-titre-petit ",
 						style: "width: 4.5rem;",
 					},
 					ObjetTraduction_1.GTraductions.getValeur("FicheEleve.motifs"),
@@ -333,7 +333,7 @@ class ObjetFenetre_ProjetAccompagnement extends ObjetFenetre_1.ObjetFenetre {
 				{ class: "field-contain" },
 				IE.jsx.str(
 					"label",
-					{ class: "fix-bloc label-up m-bottom-l" },
+					{ class: "ie-titre-petit" },
 					ObjetTraduction_1.GTraductions.getValeur("FicheEleve.commentaire"),
 					" : ",
 				),
@@ -351,9 +351,8 @@ class ObjetFenetre_ProjetAccompagnement extends ObjetFenetre_1.ObjetFenetre {
 			),
 			IE.jsx.str(
 				"div",
-				{ class: "field-contain label-up p-bottom-l" },
+				{ class: "field-contain label-up" },
 				IE.jsx.str("div", {
-					class: "pj-global-conteneur no-line",
 					id: this.getNomInstance(this.identSelecteurPJ),
 					title: ObjetTraduction_1.GTraductions.getValeur(
 						"FicheEleve.ajouterPJ",
@@ -361,18 +360,18 @@ class ObjetFenetre_ProjetAccompagnement extends ObjetFenetre_1.ObjetFenetre {
 				}),
 				IE.jsx.str("div", {
 					id: this.ids.docsJoints,
-					class: "pj-liste-conteneur m-top",
+					class: "pj-liste-conteneur",
 				}),
 			),
 			IE.jsx.str(
 				"div",
-				{ class: "field-contain periode-contain" },
+				{ class: "flex-contain flex-center flex-gap" },
 				IE.jsx.str(
 					"div",
-					{ class: "m-top m-right m-bottom" },
+					{ class: "field-contain label-up" },
 					IE.jsx.str(
 						"label",
-						{ class: "only-espace m-top-l " },
+						{ class: "ie-titre-petit" },
 						ObjetTraduction_1.GTraductions.getValeur("FicheEleve.DateDebut"),
 					),
 					IE.jsx.str("div", {
@@ -383,10 +382,10 @@ class ObjetFenetre_ProjetAccompagnement extends ObjetFenetre_1.ObjetFenetre {
 				),
 				IE.jsx.str(
 					"div",
-					{ class: "m-all" },
+					{ class: "field-contain label-up" },
 					IE.jsx.str(
 						"label",
-						{ class: "only-espace m-top-l" },
+						{ class: "ie-titre-petit" },
 						ObjetTraduction_1.GTraductions.getValeur("FicheEleve.DateFin"),
 					),
 					IE.jsx.str("div", {
@@ -402,7 +401,7 @@ class ObjetFenetre_ProjetAccompagnement extends ObjetFenetre_1.ObjetFenetre {
 					"ie-display": "cbConsultableEquipePeda.getDisplay",
 				},
 				IE.jsx.str("i", {
-					class: "icon_info_sondage_publier i-medium i-as-deco",
+					class: "icon_info_sondage_publier i-medium i-as-deco m-right",
 					role: "presentation",
 				}),
 				IE.jsx.str(

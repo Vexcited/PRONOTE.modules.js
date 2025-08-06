@@ -965,7 +965,7 @@ function _construireCoordonnees(aParams) {
 				IE.jsx.str(
 					"div",
 					{ class: "info-principale" },
-					"aParams.entreprise.getLibelle()",
+					aParams.entreprise.getLibelle(),
 				),
 				!!aParams.entreprise.nomCommercial
 					? IE.jsx.str(

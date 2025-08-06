@@ -218,7 +218,7 @@ class ObjetFenetre_Attestation extends ObjetFenetre_1.ObjetFenetre {
 				{ class: "field-contain" },
 				IE.jsx.str(
 					"label",
-					{ id: lIdType, class: ["fix-bloc"] },
+					{ id: lIdType, class: ["ie-titre-petit"] },
 					ObjetTraduction_1.GTraductions.getValeur("Attestation.type"),
 					" : ",
 				),
@@ -235,13 +235,13 @@ class ObjetFenetre_Attestation extends ObjetFenetre_1.ObjetFenetre {
 			IE.jsx.str(
 				"div",
 				{
-					class: "flex-contain m-top-l no-line",
+					class: "field-contain attestation-contain",
 					role: "group",
 					"aria-label": "GTraductions.getValeur('Attestation.etat')",
 				},
 				IE.jsx.str(
 					"label",
-					{ class: "m-right-l", "aria-hidden": "true" },
+					{ class: "ie-titre-petit", "aria-hidden": "true" },
 					ObjetTraduction_1.GTraductions.getValeur("Attestation.etat"),
 					" : ",
 				),

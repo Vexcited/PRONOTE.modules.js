@@ -56,7 +56,6 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 		this.idMessagerieDesactiveeHoraire = this.idReponse + "_mess_desact";
 		this.idDiscussion = GUID_1.GUID.getId();
 		this.idSectionListe = GUID_1.GUID.getId();
-		this.idBandeauGauche = this.applicationSco.idBreadcrumbPerso;
 		this.idBrouillonNonEnvoye = GUID_1.GUID.getId();
 		this.idVisuTransfert = GUID_1.GUID.getId();
 		this.idLibellePJ = GUID_1.GUID.getId();
@@ -846,18 +845,6 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 				(0, tag_1.tag)(
 					"div",
 					{ class: "ilm_gauche" },
-					(0, tag_1.tag)(
-						"div",
-						{ class: "ilm_gauche_entete" },
-						this.etatUtilisateurSco.pourThemePrimaire()
-							? ""
-							: (0, tag_1.tag)("h1", {
-									id: this.idBandeauGauche,
-									tabindex: "0",
-									"ie-ellipsis": true,
-									class: "titre-onglet",
-								}),
-					),
 					(0, tag_1.tag)("div", {
 						class: "ilm_gauche_liste",
 						id: this.getNomInstance(this.identListeEtiquette),
@@ -2805,7 +2792,7 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 			this._options.callbackActualisation({ apresListeMessages: true });
 		}
 		if (lFuncScrollMax) {
-			this.controleur.$refreshSelf().then(() => {
+			this.$refresh().then(() => {
 				lFuncScrollMax();
 			});
 		}

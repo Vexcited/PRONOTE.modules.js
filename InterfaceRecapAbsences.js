@@ -190,10 +190,12 @@ class InterfaceRecapAbsences extends _InterfaceRecapVS_1._InterfaceRecapVS {
 		});
 	}
 	afficherListeDetailAbs(aListe) {
-		let lFenetreDetailAbs = this.getInstance(this.identFenetreDetailAbs);
-		aListe.setTri([ObjetTri_1.ObjetTri.init("Position")]);
-		aListe.trier(Enumere_TriElement_1.EGenreTriElement.Decroissant);
-		lFenetreDetailAbs.setDonnees(aListe);
+		if (aListe) {
+			let lFenetreDetailAbs = this.getInstance(this.identFenetreDetailAbs);
+			aListe.setTri([ObjetTri_1.ObjetTri.init("Position")]);
+			aListe.trier(Enumere_TriElement_1.EGenreTriElement.Decroissant);
+			lFenetreDetailAbs.setDonnees(aListe);
+		}
 	}
 	aFaireSurRecupererCriteresSelection(aParam) {
 		$.extend(this._parametres.criteresFiltres, {
@@ -305,7 +307,9 @@ class InterfaceRecapAbsences extends _InterfaceRecapVS_1._InterfaceRecapVS {
 						lListeEvntVS = aParametres.article.listeInfirmerie;
 						break;
 				}
-				lListeEvntVS.setSerialisateurJSON({ ignorerEtatsElements: true });
+				if (lListeEvntVS) {
+					lListeEvntVS.setSerialisateurJSON({ ignorerEtatsElements: true });
+				}
 				new ObjetRequeteListeRegimesEleve_1.ObjetRequeteListeRegimesEleve(
 					this,
 					this.surRecupererDetailAbsences.bind(

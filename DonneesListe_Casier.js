@@ -15,6 +15,7 @@ const UtilitaireDocumentSignature_1 = require("UtilitaireDocumentSignature");
 const UtilitaireCasier_1 = require("UtilitaireCasier");
 const ObjetFenetre_ResultatsCasier_1 = require("ObjetFenetre_ResultatsCasier");
 const ObjetFenetre_1 = require("ObjetFenetre");
+const TypeCasier_1 = require("TypeCasier");
 class DonneesListe_Casier extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees, aParam) {
 		super(aDonnees);
@@ -93,7 +94,7 @@ class DonneesListe_Casier extends ObjetDonneesListeFlatDesign_1.ObjetDonneesList
 		this.visu = {
 			memo: this.estRubriqueMonCasier,
 			date: this.estRubriqueMonCasier,
-			destinataire: lEstDiffusion,
+			destinataire: lEstDiffusion || this.estRubriqueCollecteParDocument,
 			iconModifiable: this.estRubriqueMonCasier,
 			classes: false,
 			echeance: lEstCollecte,
@@ -573,6 +574,21 @@ class DonneesListe_Casier extends ObjetDonneesListeFlatDesign_1.ObjetDonneesList
 							);
 						}
 						break;
+					case UtilitaireCasier_1.UtilitaireCasier.EGenreRubriqueCasier
+						.collecteParDocument:
+						if (
+							UtilitaireCasier_1.UtilitaireCasier.isObjetElementCollecteParDocument(
+								aParams.article,
+							)
+						) {
+							const lLibelle = this.getLibelleDestinatairesCollecteParDoc(
+								aParams.article,
+							);
+							if (lLibelle) {
+								lDestinataires.push(lLibelle);
+							}
+						}
+						break;
 					default:
 						break;
 				}
@@ -637,6 +653,45 @@ class DonneesListe_Casier extends ObjetDonneesListeFlatDesign_1.ObjetDonneesList
 			}
 		}
 		return H.join("");
+	}
+	getLibelleDestinatairesCollecteParDoc(aArticle) {
+		switch (aArticle.getGenre()) {
+			case TypeCasier_1.TypeGenreCumulDocEleve.gcdeEleve:
+				if (aArticle.nbrEleves) {
+					return ObjetTraduction_1.GTraductions.getValeur(
+						aArticle.nbrEleves === 1
+							? "Casier.infosEleveCollecte"
+							: "Casier.infosElevesCollecte",
+						[aArticle.nbrEleves],
+					);
+				}
+				break;
+			case TypeCasier_1.TypeGenreCumulDocEleve.gcdeRespEleve:
+				if (aArticle.nbrEleves && aArticle.nbrResponsables) {
+					let lCle = "Casier.infosResponsablesElevesCollecte";
+					if (aArticle.nbrEleves === 1 && aArticle.nbrResponsables === 1) {
+						lCle = "Casier.infosResponsableEleveCollecte";
+					} else if (aArticle.nbrResponsables === 1) {
+						lCle = "Casier.infosResponsableElevesCollecte";
+					}
+					return ObjetTraduction_1.GTraductions.getValeur(lCle, [
+						aArticle.nbrResponsables,
+						aArticle.nbrEleves,
+					]);
+				}
+				break;
+			case TypeCasier_1.TypeGenreCumulDocEleve.gcdeResp:
+				if (aArticle.nbrResponsables) {
+					return ObjetTraduction_1.GTraductions.getValeur(
+						aArticle.nbrResponsables === 1
+							? "Casier.infosResponsableCollecte"
+							: "Casier.infosResponsablesCollecte",
+						[aArticle.nbrResponsables],
+					);
+				}
+				break;
+		}
+		return "";
 	}
 	getZoneComplementaire(aParams) {
 		const H = [];
@@ -824,18 +879,19 @@ class DonneesListe_Casier extends ObjetDonneesListeFlatDesign_1.ObjetDonneesList
 			lArticle.memo.length > 0 &&
 			this.avecFonctionnalite(
 				UtilitaireCasier_1.UtilitaireCasier.EGenrefonctionnalite
-					.consulterLeMemo,
+					.consulterLeCommentaire,
 				aParametres.article,
 			)
 		) {
 			lResult.push({
 				libelle: ObjetTraduction_1.GTraductions.getValeur(
-					"Casier.consulterLeMemo",
+					"Casier.consulterLeCommentaire",
 				),
 				actif: true,
 				callback: () =>
 					this.evenement({
-						numeroMenu: DonneesListe_Casier.EGenreCommande.consulterLeMemo,
+						numeroMenu:
+							DonneesListe_Casier.EGenreCommande.consulterLeCommentaire,
 						article: lArticle,
 					}),
 				extend: { icon: "icon_post_it_rempli theme_color_moyen1" },
@@ -1396,8 +1452,8 @@ exports.DonneesListe_Casier = DonneesListe_Casier;
 		EGenreCommande[(EGenreCommande["suppression"] = 9)] = "suppression";
 		EGenreCommande[(EGenreCommande["renommer"] = 10)] = "renommer";
 		EGenreCommande[(EGenreCommande["remplacer"] = 11)] = "remplacer";
-		EGenreCommande[(EGenreCommande["consulterLeMemo"] = 12)] =
-			"consulterLeMemo";
+		EGenreCommande[(EGenreCommande["consulterLeCommentaire"] = 12)] =
+			"consulterLeCommentaire";
 		EGenreCommande[(EGenreCommande["modifier"] = 13)] = "modifier";
 		EGenreCommande[(EGenreCommande["cloturer"] = 14)] = "cloturer";
 	})(

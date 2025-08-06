@@ -139,39 +139,12 @@ class InterfaceSaisieAppelInternat extends ObjetInterfacePageCP_1.InterfacePageC
 				const lIdInfosAppel = this.Nom + "infosAppel";
 				const lBoutons = [];
 				lBoutons.push({
-					controleur: {
-						getInfoAppel: () => {
-							return IE.jsx.str(
-								IE.jsx.fragment,
-								null,
-								IE.jsx.str(
-									"div",
-									null,
-									lCreneau.estAppelTermine
-										? ObjetTraduction_1.GTraductions.getValeur(
-												"AbsenceVS.AppelFait",
-											)
-										: ObjetTraduction_1.GTraductions.getValeur(
-												"AppelInternat.appelEnCours",
-											),
-								),
-								IE.jsx.str(
-									"div",
-									null,
-									ObjetTraduction_1.GTraductions.getValeur(
-										"AppelInternat.nbElevesAbsent",
-										[lCreneau.nbAbsences],
-									),
-									" / ",
-									lCreneau.nbElevesAttendus,
-								),
-							);
-						},
+					getHtml: () => {
+						return IE.jsx.str("div", {
+							id: lIdInfosAppel,
+							"ie-html": this.jsxGetetInfoAppel.bind(this),
+						});
 					},
-					html: IE.jsx.str("div", {
-						id: lIdInfosAppel,
-						"ie-html": "getInfoAppel",
-					}),
 				});
 				lBoutons.push({ genre: ObjetListe_1.ObjetListe.typeBouton.rechercher });
 				lBoutons.push({ genre: ObjetListe_1.ObjetListe.typeBouton.deployer });
@@ -189,6 +162,32 @@ class InterfaceSaisieAppelInternat extends ObjetInterfacePageCP_1.InterfacePageC
 				break;
 			}
 		}
+	}
+	jsxGetetInfoAppel() {
+		const lCreneau = this.getCtxSelection({ niveauEcran: 0 });
+		return IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			IE.jsx.str(
+				"div",
+				null,
+				lCreneau.estAppelTermine
+					? ObjetTraduction_1.GTraductions.getValeur("AbsenceVS.AppelFait")
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"AppelInternat.appelEnCours",
+						),
+			),
+			IE.jsx.str(
+				"div",
+				null,
+				ObjetTraduction_1.GTraductions.getValeur(
+					"AppelInternat.nbElevesAbsent",
+					[lCreneau.nbAbsences],
+				),
+				" / ",
+				lCreneau.nbElevesAttendus,
+			),
+		);
 	}
 	_evntRetourEcranPrec() {
 		switch (this.getCtxEcran({ niveauEcran: this.contexte.niveauCourant })) {

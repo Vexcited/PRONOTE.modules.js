@@ -2386,6 +2386,9 @@ class InterfacePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierDeText
 		ObjetHtml_1.GHtml.setHtml(this.idBandeauDroite, lTitreBandeau.join(""), {
 			controleur: this.controleur,
 		});
+		this.updatePublication(aCours, aCahierDeTexte);
+	}
+	updatePublication(aCours, aCahierDeTexte) {
 		if (aCours && aCours.DateDuCours) {
 			const lInstanceDate = this.getInstance(this.IdentDatePublication);
 			lInstanceDate.setParametresFenetre(
@@ -2525,6 +2528,7 @@ class InterfacePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierDeText
 			);
 			this._actualiserElementsProgramme();
 			this._actualiserListeCDTsPrecedents();
+			this.updatePublication(this.Cours, this.CahierDeTextes);
 		}
 		this.surResizeInterface();
 		if (this.CahierDeTextes) {

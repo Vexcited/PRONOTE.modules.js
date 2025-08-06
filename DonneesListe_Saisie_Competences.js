@@ -566,8 +566,8 @@ class DonneesListe_Saisie_Competences extends ObjetDonneesListe_1.ObjetDonneesLi
 			aParamsLigneDestination.article,
 		);
 	}
-	surSelectionLigne(J, D, aSelectionner) {
-		D.selectionne = aSelectionner;
+	surSelectionLigne(aLigne, aDonnee, aSelectionner) {
+		aDonnee.selectionne = aSelectionner;
 	}
 	_estCelluleAjout(aIdColonne, D, aAvecSousItems) {
 		if (D.Genre === Enumere_Ressource_1.EGenreRessource.ElementPilier) {

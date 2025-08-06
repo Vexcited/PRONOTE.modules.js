@@ -128,7 +128,7 @@ class DonneesListe_DernieresNotes extends ObjetDonneesListeFlatDesign_1.ObjetDon
 				lStrSousTitre += _getLibelleNote({
 					note: aParams.article.moyenne,
 					bareme: aParams.article.bareme,
-					baremParDefaut: aParams.article.baremeParDefaut,
+					baremeParDefaut: aParams.article.baremeParDefaut,
 				});
 				H.push(IE.jsx.str("span", { class: "ie-sous-titre" }, lStrSousTitre));
 			}

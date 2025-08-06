@@ -153,11 +153,10 @@ class ObjetFenetre_ChoixEleveGAEV extends ObjetFenetre_1.ObjetFenetre {
 				},
 			);
 			lElmClasse.estTotalementDesGroupes =
-				lListeElevesSelectionne.count() > 0
-					? lListeEleves.count() === lListeElevesSelectionne.count()
-						? true
-						: null
-					: "";
+				lListeElevesSelectionne.count() > 0 &&
+				lListeEleves.count() === lListeElevesSelectionne.count()
+					? true
+					: null;
 		}
 		this.listeEleves.add(lListeClasses);
 		const lListeTris = this.getListeTrisDisponibles();
