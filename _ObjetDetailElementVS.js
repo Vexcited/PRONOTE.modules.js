@@ -25,6 +25,7 @@ var TypeBoutonFenetreDetailElementVS;
 class _ObjetDetailElementVS extends ObjetIdentite_1.Identite {
 	constructor() {
 		super(...arguments);
+		this.avecInfoJustificationObligatoire = false;
 		this.idCommentaire = GUID_1.GUID.getId();
 		this.elementVS = null;
 		this.listeNouveauxDocuments = new ObjetListeElements_1.ObjetListeElements();
@@ -322,23 +323,39 @@ class _ObjetDetailElementVS extends ObjetIdentite_1.Identite {
 				},
 				getDisabled: function () {
 					var _a, _b;
-					return (
-						!aInstance.elementVS ||
-						(aInstance.optionsAffichage.avecCommentaireObligatoire &&
-							((_b =
-								(_a = aInstance.elementVS.justification) === null ||
-								_a === void 0
+					if (!aInstance.elementVS) {
+						return true;
+					}
+					let lConditionsValidationInterdit;
+					if (aInstance.elementVS.estUneCreationParent) {
+						lConditionsValidationInterdit =
+							aInstance.elementVS.getEtat() ===
+								Enumere_Etat_1.EGenreEtat.Aucun ||
+							!aInstance.elementVS.motifParent ||
+							(!!aInstance.elementVS.motifParent.justificationObligatoire &&
+								(!aInstance.elementVS.justification ||
+									aInstance.elementVS.justification.trim() === "") &&
+								(!aInstance.elementVS.documents ||
+									aInstance.elementVS.documents.getNbrElementsExistes() === 0));
+					} else {
+						lConditionsValidationInterdit =
+							(aInstance.optionsAffichage.avecCommentaireObligatoire &&
+								((_b =
+									(_a = aInstance.elementVS.justification) === null ||
+									_a === void 0
+										? void 0
+										: _a.trim()) === null || _b === void 0
 									? void 0
-									: _a.trim()) === null || _b === void 0
-								? void 0
-								: _b.length) === 0) ||
-						aInstance.elementVS.getEtat() === Enumere_Etat_1.EGenreEtat.Aucun ||
-						!(
-							(aInstance.elementVS.motifParent &&
-								aInstance.elementVS.motifParent.existeNumero()) ||
-							aInstance.elementVS.estMotifNonEncoreConnu === false
-						)
-					);
+									: _b.length) === 0) ||
+							aInstance.elementVS.getEtat() ===
+								Enumere_Etat_1.EGenreEtat.Aucun ||
+							!(
+								(aInstance.elementVS.motifParent &&
+									aInstance.elementVS.motifParent.existeNumero()) ||
+								aInstance.elementVS.estMotifNonEncoreConnu === false
+							);
+					}
+					return lConditionsValidationInterdit;
 				},
 				estVisible() {
 					return true;

@@ -128,7 +128,7 @@ class _ObjetAffichageBandeauPied extends ObjetIdentite_1.Identite {
 			IE.jsx.str(
 				"p",
 				null,
-				`${ObjetTraduction_1.GTraductions.getValeur("PiedPage.CookieInfo_Message_1")} ${ObjetTraduction_1.GTraductions.getValeur("PiedPage.CookieInfo_Message_2", [IE.jsx.str("a", { href: this.options.urlConfidentialite, class: "as-link" }, ObjetTraduction_1.GTraductions.getValeur("PiedPage.PolitiqueConfidentialite"), ".")])} `,
+				`${ObjetTraduction_1.GTraductions.getValeur("PiedPage.CookieInfo_Message_1")} ${ObjetTraduction_1.GTraductions.getValeur("PiedPage.CookieInfo_Message_2", [IE.jsx.str("a", { href: this.options.urlConfidentialite, class: "as-link" }, ObjetTraduction_1.GTraductions.getValeur("PiedPage.PolitiqueConfidentialite"))])} `,
 			),
 			IE.jsx.str(
 				"ie-bouton",
@@ -214,7 +214,7 @@ class _ObjetAffichageBandeauPied extends ObjetIdentite_1.Identite {
 	_composeAffichage() {
 		const H = [];
 		H.push(
-			'<footer id="',
+			'<footer role="contentinfo" id="',
 			this.Nom,
 			'_footer" class="ObjetBandeauPied disable-dark-mode focusVisibleContrasted ' +
 				(this.avecBoutonPersonnaliseProduit() ? " bpp-canope" : "") +

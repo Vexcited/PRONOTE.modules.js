@@ -2957,8 +2957,11 @@ class InterfacePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierDeText
 				IE.jsx.str("div", {
 					"ie-if": "contenu.afficherTraitSeparation",
 					class: "fix-bloc m-top m-bottom-l",
-					style:
-						"', GStyle.composeCouleurBordure(GCouleur.bordure, 1, EGenreBordure.haut), '",
+					style: ObjetStyle_1.GStyle.composeCouleurBordure(
+						GCouleur.bordure,
+						1,
+						ObjetStyle_1.EGenreBordure.haut,
+					),
 				}),
 			),
 		);

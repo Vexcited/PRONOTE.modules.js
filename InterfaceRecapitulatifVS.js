@@ -112,7 +112,7 @@ class InterfaceRecapitulatifVS extends ObjetInterfacePageCP_1.InterfacePageCP {
 			lClass.push("espace-recapVS");
 		}
 		H.push(
-			'<div class="ifc_RecapVS	ObjetFenetre_Edition_Contenu ',
+			'<div class="ifc_RecapVS ObjetFenetre_Edition_Contenu ',
 			lClass.join(" "),
 			'">',
 		);

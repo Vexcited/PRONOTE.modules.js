@@ -437,9 +437,7 @@ class DonneesListe_Evaluations extends ObjetDonneesListe_1.ObjetDonneesListe {
 				: "";
 		} else if (aParams.idColonne === DonneesListe_Evaluations.colonne.devoir) {
 			return !!aParams.article.devoir
-				? ObjetChaine_1.GChaine.ajouterEntites(
-						aParams.article.devoir.hintDevoir || "",
-					)
+				? aParams.article.devoir.hintDevoir || ""
 				: "";
 		}
 	}

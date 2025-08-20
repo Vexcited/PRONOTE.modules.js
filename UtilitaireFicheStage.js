@@ -345,7 +345,7 @@ function _composeBlocDetailsEntrepriseAccueil(aDonnees) {
 					role: "presentation",
 				}),
 				IE.jsx.str(
-					"div",
+					"h3",
 					{ class: "ie-titre" },
 					lEntreprise.getLibelle() +
 						(!!lEntreprise.estSiegeSocial
@@ -876,65 +876,110 @@ function _composeBlocDetailsHoraires(aDonnees) {
 		}
 		if (lAvecHoraire) {
 			H.push("<div>");
-			H.push('<div class="Bloc-entreprise-horaire">');
-			H.push(
-				IE.jsx.str(
-					"h3",
-					{ class: "ie-titre-petit" },
-					ObjetTraduction_1.GTraductions.getValeur("FicheStage.stageHoraires"),
-				),
-			);
-			lListeJours.parcourir((aJour) => {
-				if (aJour && aJour.horaires && aJour.horaires.count() > 0) {
-					H.push(
-						'<div class="flex-contain conteneur-journee">',
-						IE.jsx.str(
-							"div",
-							{ class: "Gras nom-journee", style: "width:6.5rem;" },
-							aJour.getLibelle(),
-						),
-					);
-					H.push("<div>");
-					for (let i = 0, lNbr = aJour.horaires.count(); i < lNbr; i++) {
-						if (i > 0) {
-							H.push(IE.jsx.str("span", null, " / "));
-						}
-						H.push(
-							IE.jsx.str("span", null, aJour.horaires.get(i).getLibelle()),
-						);
-					}
-					H.push("</div>");
-					H.push(
-						IE.jsx.str(
-							"div",
-							{ class: "Gras heure-journee" },
-							aJour.heuresJournee,
-						),
-					);
-					H.push("</div>");
-				}
-			});
 			H.push(
 				IE.jsx.str(
 					"div",
-					{ class: "flex-contain conteneur-total-hebdo" },
+					{ class: "Bloc-entreprise-horaire" },
 					IE.jsx.str(
-						"div",
-						{ class: "Gras ie-titre-petit titre-total avecMarginTop" },
-						ObjetTraduction_1.GTraductions.getValeur("FicheStage.totalHebdo"),
+						"table",
+						null,
+						IE.jsx.str(
+							"caption",
+							{ class: "Gras ie-titre-petit text-left m-bottom" },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"FicheStage.stageHoraires",
+							),
+						),
+						IE.jsx.str(
+							"thead",
+							{ class: "sr-only" },
+							IE.jsx.str(
+								"tr",
+								null,
+								IE.jsx.str(
+									"th",
+									{ scope: "col" },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.waiColJours",
+									),
+								),
+								IE.jsx.str(
+									"th",
+									{ scope: "col" },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.waiColHoraire",
+									),
+								),
+								IE.jsx.str(
+									"th",
+									{ scope: "col" },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.waiColDuree",
+									),
+								),
+							),
+						),
+						(H) => {
+							lListeJours.parcourir((aJour) => {
+								if (aJour && aJour.horaires && aJour.horaires.count() > 0) {
+									H.push(
+										IE.jsx.str(
+											"tr",
+											{ class: "conteneur-journee" },
+											IE.jsx.str(
+												"th",
+												{ scope: "row", class: "Gras nom-journee" },
+												aJour.getLibelle(),
+											),
+											IE.jsx.str("td", null, (aTabHoraires) => {
+												for (
+													let i = 0, lNbr = aJour.horaires.count();
+													i < lNbr;
+													i++
+												) {
+													if (i > 0) {
+														aTabHoraires.push(IE.jsx.str("span", null, " / "));
+													}
+													aTabHoraires.push(
+														IE.jsx.str(
+															"span",
+															null,
+															aJour.horaires.get(i).getLibelle(),
+														),
+													);
+												}
+											}),
+											IE.jsx.str(
+												"td",
+												{ class: "Gras heure-journee" },
+												aJour.heuresJournee,
+											),
+										),
+									);
+								}
+							});
+						},
 					),
 					IE.jsx.str(
 						"div",
-						{ class: "chips-total-stage" },
+						{ class: "flex-contain conteneur-total-hebdo" },
 						IE.jsx.str(
-							"ie-chips",
-							{ class: "tag-style" },
-							aDonnees.heuresHebdo,
+							"div",
+							{ class: "Gras ie-titre-petit titre-total avecMarginTop" },
+							ObjetTraduction_1.GTraductions.getValeur("FicheStage.totalHebdo"),
+						),
+						IE.jsx.str(
+							"div",
+							{ class: "chips-total-stage" },
+							IE.jsx.str(
+								"ie-chips",
+								{ class: "tag-style" },
+								aDonnees.heuresHebdo,
+							),
 						),
 					),
 				),
 			);
-			H.push("</div>");
 			H.push("</div>");
 		}
 		H.push("</div>");

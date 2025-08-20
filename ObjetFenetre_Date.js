@@ -4,6 +4,7 @@ const ObjetFenetre_1 = require("ObjetFenetre");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const MoteurSelecteurDate_1 = require("MoteurSelecteurDate");
+const MethodesObjet_1 = require("MethodesObjet");
 class ObjetFenetre_Date extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
@@ -68,7 +69,11 @@ class ObjetFenetre_Date extends ObjetFenetre_1.ObjetFenetre {
 				],
 			});
 		}
-		this.getInstance(this.identSelecteur).setDonnees(aDate);
+		const lInterface = this.getInstance(this.identSelecteur);
+		if (MethodesObjet_1.MethodesObjet.isString(this.optionsFenetre.titre)) {
+			lInterface.setAriaLabel(this.optionsFenetre.titre);
+		}
+		lInterface.setDonnees(aDate);
 	}
 	construireInstances() {
 		this.identSelecteur = this.add(

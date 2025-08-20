@@ -7,6 +7,7 @@ const IEZoneFenetre_1 = require("IEZoneFenetre");
 const ObjetHtml_1 = require("ObjetHtml");
 const ObjetChaine_1 = require("ObjetChaine");
 const GestionnaireModale_1 = require("GestionnaireModale");
+const IEHtml_1 = require("IEHtml");
 class ObjetWrapperAideContextuelle_Espace extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
@@ -99,6 +100,9 @@ class ObjetWrapperAideContextuelle_Espace extends ObjetIdentite_1.Identite {
 	}
 	construireAffichage() {
 		const H = [];
+		const lGetAttr = () => {
+			return { "aria-expanded": this.instanceAide ? "true" : "false" };
+		};
 		H.push('<div class="ObjetWrapperAideContextuelle_Espace">');
 		if (this.options.modeBtnEntete) {
 			H.push(
@@ -108,6 +112,7 @@ class ObjetWrapperAideContextuelle_Espace extends ObjetIdentite_1.Identite {
 					"aria-haspopup": "dialog",
 					class: "bcne_btn_entete",
 					"ie-class": "getClassBtnEntete",
+					"ie-attr": lGetAttr,
 				}),
 			);
 		} else {
@@ -116,6 +121,7 @@ class ObjetWrapperAideContextuelle_Espace extends ObjetIdentite_1.Identite {
 					class: "icon_base_connaissance btnImageIcon",
 					"ie-model": "btn",
 					"aria-haspopup": "dialog",
+					"ie-attr": lGetAttr,
 				}),
 			);
 		}
@@ -167,6 +173,7 @@ class ObjetWrapperAideContextuelle_Espace extends ObjetIdentite_1.Identite {
 					this._timerFermeture = setTimeout(() => {
 						this.instanceAide.free();
 						this.instanceAide = null;
+						IEHtml_1.default.refresh();
 					}, c_timer_ouverture);
 				},
 			});

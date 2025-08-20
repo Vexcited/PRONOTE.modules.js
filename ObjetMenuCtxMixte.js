@@ -3,10 +3,10 @@ const MethodesObjet_1 = require("MethodesObjet");
 const ObjetIdentite_1 = require("ObjetIdentite");
 const ObjetMenuContextuel_1 = require("ObjetMenuContextuel");
 const Enumere_MenuCtxModeMixte_1 = require("Enumere_MenuCtxModeMixte");
-const ObjetHtml_1 = require("ObjetHtml");
 const IEZoneFenetre_1 = require("IEZoneFenetre");
 const ObjetPosition_1 = require("ObjetPosition");
 const ObjetTraduction_1 = require("ObjetTraduction");
+const jsx_1 = require("jsx");
 class ObjetMenuCtxMixte extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
@@ -70,45 +70,66 @@ class ObjetMenuCtxMixte extends ObjetIdentite_1.Identite {
 		const lListeEllipsis = this._getListeCmdDeGenre(
 			Enumere_MenuCtxModeMixte_1.ETypeAffEnModeMixte.ellipsis,
 		);
-		const H = [];
-		H.push('<div class="ObjetMenuCtxMixte">');
-		lListeBtn.parcourir((D, aIndex) => {
-			H.push(
-				"<ie-bouton ",
-				ObjetHtml_1.GHtml.composeAttr("ie-model", "cmdMenuCtxMixte", [
-					Enumere_MenuCtxModeMixte_1.ETypeAffEnModeMixte.bouton,
-					aIndex,
-				]),
-				' class="eltBouton themeBoutonPrimaire">',
-				D.getLibelle(),
-				"</ie-bouton>",
-			);
+		return IE.jsx.str("ul", { class: "ObjetMenuCtxMixte" }, (H) => {
+			lListeBtn.parcourir((D, aIndex) => {
+				H.push(
+					IE.jsx.str(
+						"li",
+						null,
+						IE.jsx.str(
+							"ie-bouton",
+							{
+								"ie-model": (0, jsx_1.jsxFuncAttr)("cmdMenuCtxMixte", [
+									Enumere_MenuCtxModeMixte_1.ETypeAffEnModeMixte.bouton,
+									aIndex,
+								]),
+								class: "eltBouton themeBoutonPrimaire",
+							},
+							D.getLibelle(),
+						),
+					),
+				);
+			});
+			lListeIcones.parcourir((D, aIndex) => {
+				H.push(
+					IE.jsx.str(
+						"li",
+						null,
+						IE.jsx.str("ie-btnicon", {
+							"ie-model": (0, jsx_1.jsxFuncAttr)("cmdMenuCtxMixte", [
+								Enumere_MenuCtxModeMixte_1.ETypeAffEnModeMixte.icon,
+								aIndex,
+							]),
+							class: ["avecFond ", D.icon],
+							title: D.getLibelle(),
+						}),
+					),
+				);
+			});
+			if (lListeEllipsis.count() > 0 && this.options.avecBoutonEllipsis) {
+				const lGetAttrEllipsis = () => {
+					return {
+						"aria-expanded": this.menuContextuel.getEstAfficher()
+							? "true"
+							: "false",
+					};
+				};
+				H.push(
+					IE.jsx.str(
+						"li",
+						null,
+						IE.jsx.str("ie-btnicon", {
+							"ie-model": "cmdEllipsis",
+							class: "icon_ellipsis_vertical",
+							title:
+								ObjetTraduction_1.GTraductions.getValeur("liste.BtnAction"),
+							"aria-haspopup": "menu",
+							"ie-attr": lGetAttrEllipsis,
+						}),
+					),
+				);
+			}
 		});
-		lListeIcones.parcourir((D, aIndex) => {
-			H.push(
-				"<ie-btnicon ",
-				ObjetHtml_1.GHtml.composeAttr("ie-model", "cmdMenuCtxMixte", [
-					Enumere_MenuCtxModeMixte_1.ETypeAffEnModeMixte.icon,
-					aIndex,
-				]),
-				' class="avecFond ',
-				D.icon,
-				'" title="',
-				D.getLibelle(),
-				'"></ie-btnicon>',
-			);
-		});
-		if (lListeEllipsis.count() > 0 && this.options.avecBoutonEllipsis) {
-			H.push(
-				IE.jsx.str("ie-btnicon", {
-					"ie-model": "cmdEllipsis",
-					class: "icon_ellipsis_vertical",
-					title: ObjetTraduction_1.GTraductions.getValeur("liste.BtnAction"),
-				}),
-			);
-		}
-		H.push("</div>");
-		return H.join("");
 	}
 	actualiser() {
 		return this.afficher();

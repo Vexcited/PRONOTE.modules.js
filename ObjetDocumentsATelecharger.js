@@ -372,56 +372,44 @@ class DonneesListe_DocumentATelecharger extends ObjetDonneesListeFlatDesign_1.Ob
 		) {
 			const lListeEnfantsAvecLaMemeCategorie = this.Donnees.getListeElements(
 				(aI) => {
-					let lValue = false;
+					if (this.estDeploiement(aI)) {
+						return false;
+					}
+					const lEstMemeCategorieQueArticle =
+						"categorie" in aI &&
+						aI.categorie &&
+						"categorie" in aParams.article &&
+						aParams.article.categorie &&
+						aI.categorie.getNumero() === aParams.article.categorie.getNumero();
+					if (!lEstMemeCategorieQueArticle) {
+						return false;
+					}
+					if (
+						this.avecFiltreNonLus &&
+						this.filtre.cbNonLu &&
+						(!("estNonLu" in aI) || !aI.estNonLu)
+					) {
+						return false;
+					}
 					if (
 						UtilitaireDocumentSignature_1.TUtilitaireDocumentSignature.isDocumentSignature(
 							aI,
 						)
 					) {
 						if (
-							"categorie" in aI &&
-							aI.categorie &&
-							"categorie" in aParams.article &&
-							aParams.article.categorie &&
-							aI.categorie.getNumero() ===
-								aParams.article.categorie.getNumero() &&
-							!this.estDeploiement(aI)
+							this.avecFiltreNonSignes &&
+							this.filtre.cbNonSigne &&
+							!UtilitaireDocumentSignature_1.TUtilitaireDocumentSignature.estASigner(
+								aI,
+							) &&
+							!UtilitaireDocumentSignature_1.TUtilitaireDocumentSignature.enCoursDeSignature(
+								aI,
+							)
 						) {
-							lValue = true;
-							if (
-								this.avecFiltreNonSignes &&
-								this.filtre.cbNonSigne &&
-								!UtilitaireDocumentSignature_1.TUtilitaireDocumentSignature.estASigner(
-									aI,
-								) &&
-								!UtilitaireDocumentSignature_1.TUtilitaireDocumentSignature.enCoursDeSignature(
-									aI,
-								)
-							) {
-								lValue = false;
-							}
-						}
-					} else {
-						if (
-							"categorie" in aI &&
-							aI.categorie &&
-							"categorie" in aParams.article &&
-							aParams.article.categorie &&
-							aI.categorie.getNumero() ===
-								aParams.article.categorie.getNumero() &&
-							!this.estDeploiement(aI)
-						) {
-							lValue = true;
-							if (
-								this.avecFiltreNonLus &&
-								this.filtre.cbNonLu &&
-								(!("estNonLu" in aI) || !aI.estNonLu)
-							) {
-								lValue = false;
-							}
+							return false;
 						}
 					}
-					return lValue;
+					return true;
 				},
 			);
 			lParam = { compteur: lListeEnfantsAvecLaMemeCategorie.count() };
@@ -805,6 +793,9 @@ class DonneesListe_DocumentATelecharger extends ObjetDonneesListeFlatDesign_1.Ob
 						) &&
 						UtilitaireDocumentSignature_1.TUtilitaireDocumentSignature.documentArchive(
 							aParams.article,
+						) &&
+						UtilitaireDocumentSignature_1.TUtilitaireDocumentSignature.estSignataireDuDocument(
+							aParams.article,
 						)
 					) {
 						if (aParams.article.estNonLu) {
@@ -1154,6 +1145,9 @@ class DonneesListe_DocumentATelecharger extends ObjetDonneesListeFlatDesign_1.Ob
 				Enumere_DocTelechargement_1.EGenreDocTelechargement
 					.documentSigneFinalise &&
 			UtilitaireDocumentSignature_1.TUtilitaireDocumentSignature.documentArchive(
+				aParams.article,
+			) &&
+			UtilitaireDocumentSignature_1.TUtilitaireDocumentSignature.estSignataireDuDocument(
 				aParams.article,
 			);
 		return (

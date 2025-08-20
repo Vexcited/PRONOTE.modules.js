@@ -281,9 +281,11 @@ class DonneesListe_Casier extends ObjetDonneesListeFlatDesign_1.ObjetDonneesList
 				].includes(this.genreRubrique)
 			) {
 				if (!aParams.article.estUnElementInformatif) {
-					ObjetTraduction_1.GTraductions.getValeur("Casier.aSignerWai") +
+					return (
+						ObjetTraduction_1.GTraductions.getValeur("Casier.aSignerWai") +
 						" " +
-						aParams.article.getLibelle();
+						aParams.article.getLibelle()
+					);
 				}
 			} else {
 				return aParams.article.estUnDeploiement

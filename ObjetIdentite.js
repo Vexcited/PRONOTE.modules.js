@@ -44,7 +44,7 @@ class Identite {
 				this.Nom = lParametres.nomComplet || "";
 			} else {
 				lNomConstructionCollection = uGenerateurGUIDIdentite.get();
-				this.Nom = `IE.Identite.collection.${lNomConstructionCollection}` || "";
+				this.Nom = `IE.Identite.collection.${lNomConstructionCollection}`;
 				IE.Identite.collection[lNomConstructionCollection] = this;
 			}
 		}

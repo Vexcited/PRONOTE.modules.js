@@ -78,76 +78,49 @@ class PageInformationsMedicales extends ObjetInterface_1.ObjetInterface {
 		const lDoitEtreAffiche = !!this.donnees.infosMedicales;
 		const lAvecAllergies = this.allergiesModifiables;
 		const lAvecRegimes = this.regimesAlimentairesModifiables;
-		if (lEstPrimaire) {
-			H.push(
-				IE.jsx.str(
-					"h3",
-					null,
-					ObjetTraduction_1.GTraductions.getValeur("InfosMedicales.Titre"),
-				),
-			);
-		}
 		if (lDoitEtreAffiche) {
-			const lTitreInfoMedicale = [];
-			if (!lEstPrimaire) {
-				lTitreInfoMedicale.push(
-					IE.jsx.str(
-						"h2",
-						null,
-						ObjetTraduction_1.GTraductions.getValeur("InfosMedicales.Titre"),
-					),
-				);
-			}
 			H.push(
 				IE.jsx.str(
 					"div",
-					{ class: "item-conteneur" },
-					lTitreInfoMedicale.join(""),
-					IE.jsx.str(
-						"div",
-						{ class: ["valeur-contain", lEstPrimaire ? "sansMarges" : ""] },
-						this.composeMedecin(),
-					),
-				),
-			);
-			if (lEstPrimaire && this.donnees.allergies) {
-				H.push(
-					IE.jsx.str(
-						"h3",
-						null,
-						ObjetTraduction_1.GTraductions.getValeur(
-							"InfosMedicales.AllergiesAutres",
-						),
-					),
-				);
-			}
-			const lTitreAllergiesAutres = [];
-			if (!lEstPrimaire) {
-				lTitreAllergiesAutres.push(
+					{ class: ["item-conteneur"] },
 					IE.jsx.str(
 						"h2",
 						{ id: "asLabelIdCommentaire" },
-						ObjetTraduction_1.GTraductions.getValeur(
-							"InfosMedicales.AllergiesAutres",
+						ObjetTraduction_1.GTraductions.getValeur("InfosMedicales.Titre"),
+					),
+					IE.jsx.str(
+						"div",
+						{ class: ["valeur-contain", "sansMarges"] },
+						this.composeMedecin(),
+						lEstPrimaire ? "" : this._composeAutresAllergies(),
+						" ",
+					),
+				),
+			);
+			if (lEstPrimaire) {
+				if (this.donnees.allergies) {
+					H.push(
+						IE.jsx.str(
+							"h3",
+							null,
+							ObjetTraduction_1.GTraductions.getValeur(
+								"InfosMedicales.AllergiesAutres",
+							),
+						),
+					);
+				}
+				H.push(
+					IE.jsx.str(
+						"div",
+						{ class: "item-conteneur" },
+						IE.jsx.str(
+							"div",
+							{ class: ["valeur-contain", "sansMarges"] },
+							this._composeAutresAllergies(),
 						),
 					),
 				);
 			}
-			H.push(
-				IE.jsx.str(
-					"div",
-					{
-						class: "item-conteneur",
-						"ie-if": this.jsxIfAffichageZoneAllergies.bind(this),
-					},
-					lTitreAllergiesAutres.join(""),
-					IE.jsx.str(
-						"div",
-						{ class: ["valeur-contain", lEstPrimaire ? "sansMarges" : ""] },
-						this._composeAutresAllergies(),
-					),
-				),
-			);
 		}
 		H.push(
 			IE.jsx.str(
@@ -562,32 +535,6 @@ class PageInformationsMedicales extends ObjetInterface_1.ObjetInterface {
 					}),
 				),
 			);
-			H.push(
-				IE.jsx.str(
-					"p",
-					{ class: "a-savoir-conteneur" },
-					ObjetTraduction_1.GTraductions.getValeur(
-						"infosperso.infosMedicalesTitre",
-					),
-				),
-			);
-			H.push(
-				IE.jsx.str(
-					"div",
-					{ class: "champ-conteneur" },
-					IE.jsx.str(
-						"ie-switch",
-						{
-							class: "long-text",
-							"ie-model":
-								this.jsxModeleAutoriserConsultationAutresAllergies.bind(this),
-						},
-						ObjetTraduction_1.GTraductions.getValeur(
-							"infosperso.infosMedicalesConsultables",
-						),
-					),
-				),
-			);
 		} else {
 			H.push(
 				IE.jsx.str(
@@ -599,6 +546,32 @@ class PageInformationsMedicales extends ObjetInterface_1.ObjetInterface {
 				),
 			);
 		}
+		H.push(
+			IE.jsx.str(
+				"p",
+				{ class: "a-savoir-conteneur" },
+				ObjetTraduction_1.GTraductions.getValeur(
+					"infosperso.infosMedicalesTitre",
+				),
+			),
+		);
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "champ-conteneur" },
+				IE.jsx.str(
+					"ie-switch",
+					{
+						class: "long-text",
+						"ie-model":
+							this.jsxModeleAutoriserConsultationAutresAllergies.bind(this),
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"infosperso.infosMedicalesConsultables",
+					),
+				),
+			),
+		);
 		return H.join("");
 	}
 	jsxModeleNomMedecin() {
@@ -796,6 +769,7 @@ class PageInformationsMedicales extends ObjetInterface_1.ObjetInterface {
 		const lLargeurIndicatif = 36;
 		const lLargeurTel = 110;
 		const lStyle = { width: 380 };
+		const lEstPrimaire = this.applicationSco.estPrimaire;
 		return IE.jsx.str(
 			IE.jsx.fragment,
 			null,
@@ -1084,6 +1058,15 @@ class PageInformationsMedicales extends ObjetInterface_1.ObjetInterface {
 					),
 				),
 			),
+			!lEstPrimaire
+				? IE.jsx.str(
+						"h3",
+						null,
+						ObjetTraduction_1.GTraductions.getValeur(
+							"InfosMedicales.AutresInformations",
+						),
+					)
+				: "",
 			IE.jsx.str(
 				"div",
 				{ class: "groupe-champs-conteneur" },

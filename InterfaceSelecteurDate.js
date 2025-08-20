@@ -12,6 +12,7 @@ const ToucheClavier_1 = require("ToucheClavier");
 class InterfaceSelecteurDate extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
+		this.ariaLabel = "";
 		this.IdContenu = this.Nom + "_Contenu";
 		this.nbrLignes = 6;
 		this.nbrColonnes = 7;
@@ -24,6 +25,9 @@ class InterfaceSelecteurDate extends ObjetInterface_1.ObjetInterface {
 	}
 	setMoteurDate(aMoteurDate) {
 		this.moteurDate = aMoteurDate;
+	}
+	setAriaLabel(aTitre) {
+		this.ariaLabel = aTitre;
 	}
 	setParametresGeneraux() {
 		this.GenreStructure =
@@ -485,34 +489,43 @@ class InterfaceSelecteurDate extends ObjetInterface_1.ObjetInterface {
 			: 0;
 	}
 	_afficherJoursDeMoisCourant() {
-		const T = [];
-		T.push('<table class="full-width Texte10 EspaceHaut m-top-l" role="grid">');
-		T.push('<tr class="titre-jours" role="row">');
-		for (let J = 0; J < this.nbrColonnes; J++) {
-			const lJour = (J + this._getJourPremierSemaine()) % 7;
-			T.push(
-				IE.jsx.str(
-					"th",
-					{
-						role: "columnheader",
-						class: this.estJourSemaineOuvre(lJour) ? " ouvre" : "",
-						"aria-label":
-							ObjetTraduction_1.GTraductions.getValeur("Jours")[lJour],
-					},
-					ObjetTraduction_1.GTraductions.getValeur("JoursCourt")[lJour],
-				),
-			);
-		}
-		T.push("</tr>");
-		for (let I = 0; I < this.nbrLignes; I++) {
-			T.push('<tr class="jours" role="row">');
-			for (let J = 0; J < this.nbrColonnes; J++) {
-				T.push(this.composeJour(I, J));
-			}
-			T.push("</tr>");
-		}
-		T.push("</table>");
-		ObjetHtml_1.GHtml.setHtml(this.idJours, T.join(""), true);
+		let lHtml = IE.jsx.str(
+			"table",
+			{
+				class: "full-width Texte10 EspaceHaut m-top-l",
+				role: "grid",
+				"aria-label": this.ariaLabel,
+			},
+			IE.jsx.str("tr", { class: "titre-jours", role: "row" }, (T) => {
+				for (let J = 0; J < this.nbrColonnes; J++) {
+					const lJour = (J + this._getJourPremierSemaine()) % 7;
+					T.push(
+						IE.jsx.str(
+							"th",
+							{
+								role: "columnheader",
+								class: this.estJourSemaineOuvre(lJour) ? " ouvre" : "",
+								"aria-label":
+									ObjetTraduction_1.GTraductions.getValeur("Jours")[lJour],
+							},
+							ObjetTraduction_1.GTraductions.getValeur("JoursCourt")[lJour],
+						),
+					);
+				}
+			}),
+			(T) => {
+				for (let I = 0; I < this.nbrLignes; I++) {
+					T.push(
+						IE.jsx.str("tr", { class: "jours", role: "row" }, (aTabJour) => {
+							for (let J = 0; J < this.nbrColonnes; J++) {
+								aTabJour.push(this.composeJour(I, J));
+							}
+						}),
+					);
+				}
+			},
+		);
+		ObjetHtml_1.GHtml.setHtml(this.idJours, lHtml, true);
 	}
 	_surKeyUp(I, J, aEvent) {
 		if (ToucheClavier_1.ToucheClavierUtil.estEventSelection(aEvent)) {

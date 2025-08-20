@@ -588,6 +588,8 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 								null,
 								IE.jsx.str("ie-btnimage", {
 									class: aCommande.icon + " btnImageIcon icon",
+									role: aCommande.role || "button",
+									"aria-haspopup": aCommande.ariaHaspopup || false,
 									"ie-model": this.jsxBoutonCommande.bind(this, aCommande),
 									title: aCommande.getLibelle(),
 								}),
@@ -624,6 +626,7 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 			lCommande.genreOnglet =
 				Enumere_Onglet_1.EGenreOnglet.SaisieAbsences_AppelEtSuivi;
 			lCommande.icon = "icon_faire_appel ";
+			lCommande.role = "link";
 			lListeCommandes.addElement(lCommande);
 		}
 		if (
@@ -639,6 +642,7 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 			lCommande.genreOnglet =
 				Enumere_Onglet_1.EGenreOnglet.SaisieCahierDeTextes;
 			lCommande.icon = "icon_saisie_cahier_texte_V2";
+			lCommande.role = "link";
 			lListeCommandes.addElement(lCommande);
 		}
 		if (
@@ -653,6 +657,7 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 			);
 			lCommande.genreOnglet = Enumere_Onglet_1.EGenreOnglet.SaisieNotes;
 			lCommande.icon = "icon_saisie_note";
+			lCommande.role = "link";
 			lListeCommandes.addElement(lCommande);
 		}
 		if (
@@ -669,6 +674,7 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 			);
 			lCommande.genreOnglet = Enumere_Onglet_1.EGenreOnglet.Evaluation;
 			lCommande.icon = "icon_saisie_evaluation";
+			lCommande.role = "link";
 			lListeCommandes.addElement(lCommande);
 		}
 		if (
@@ -686,6 +692,7 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 			lCommande.genreOnglet =
 				Enumere_Onglet_1.EGenreOnglet.SaisieAppreciationsBulletin;
 			lCommande.icon = "icon_saisie_appreciation";
+			lCommande.role = "link";
 			lListeCommandes.addElement(lCommande);
 		}
 		if (this._estEspaceAvecSaisieLiensVisio()) {
@@ -698,6 +705,7 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 			);
 			lCommande.icon =
 				UtilitaireVisiosSco_1.UtilitaireVisios.getNomIconeParametrageVisios();
+			lCommande.ariaHaspopup = "dialog";
 			lListeCommandes.addElement(lCommande);
 		}
 		if (
@@ -717,6 +725,7 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 				EGenreCommandeEDT.information,
 			);
 			lCommande.icon = "icon_diffuser_information";
+			lCommande.ariaHaspopup = "dialog";
 			lListeCommandes.addElement(lCommande);
 			lCommande = new ObjetElement_1.ObjetElement(
 				ObjetTraduction_1.GTraductions.getValeur(
@@ -726,6 +735,7 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 				EGenreCommandeEDT.sondage,
 			);
 			lCommande.icon = "icon_diffuser_sondage";
+			lCommande.ariaHaspopup = "dialog";
 			lListeCommandes.addElement(lCommande);
 		}
 		if (
@@ -751,6 +761,7 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 					EGenreCommandeEDT.reservationDeSalles,
 				);
 				lCommande.icon = "icon_reservation_salle";
+				lCommande.ariaHaspopup = "menu";
 				lCommande.initMenuContextuel = function (aCours, aInstance) {
 					lThis.moduleSaisie.initMenuContextuelReservationDeCours(
 						aInstance,
@@ -779,6 +790,7 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 					EGenreCommandeEDT.reservationDeMateriels,
 				);
 				lCommande.icon = "icon_reservation_materiel";
+				lCommande.ariaHaspopup = "menu";
 				lCommande.initMenuContextuel = function (aCours, aInstance) {
 					lThis.moduleSaisie.initMenuContextuelReservationDeCours(
 						aInstance,
@@ -802,12 +814,14 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 					aCours,
 				);
 			};
+			lCommande.ariaHaspopup = "menu";
 			lListeCommandes.addElement(lCommande);
 			lCommande = new ObjetElement_1.ObjetElement("", null);
 			lCommande.addMenus = function (aInstanceMenu, aCours) {
 				aInstanceMenu.avecSeparateurSurSuivant();
 				lThis.moduleSaisie.initMenuContextuelSupprimer(aInstanceMenu, aCours);
 			};
+			lCommande.ariaHaspopup = "menu";
 			lListeCommandes.addElement(lCommande);
 		}
 		return lListeCommandes;

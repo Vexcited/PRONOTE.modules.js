@@ -728,11 +728,7 @@ class InterfacePageListeEvaluations extends InterfacePage_1.InterfacePage {
 			lTitreFenetre = ObjetTraduction_1.GTraductions.getValeur(
 				"evaluations.ModifierEvaluation",
 			);
-			if (
-				lEvaluation &&
-				!lEvaluation.devoir &&
-				!lEvaluation.baremeDevoirDuService
-			) {
+			if (lEvaluation && !lEvaluation.baremeDevoirDuService) {
 				if (this.parametresCreationDevoir) {
 					lEvaluation.baremeDevoirDuService =
 						this.parametresCreationDevoir.baremeService;

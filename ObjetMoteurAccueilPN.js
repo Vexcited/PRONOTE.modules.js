@@ -786,6 +786,7 @@ class ObjetMoteurAccueil {
 								Enumere_Espace_1.EGenreEspace.PrimDirection,
 								Enumere_Espace_1.EGenreEspace.Mobile_PrimDirection,
 							].includes(GEtatUtilisateur.GenreEspace) &&
+							!this.applicationSco.estEDT &&
 							(!this.donnees || !!this.donnees.connexionsEnCours)
 						);
 					},
@@ -2035,6 +2036,9 @@ class ObjetMoteurAccueil {
 						? MultipleWidgetDocumentsASigner.WidgetDocumentsASigner
 						: null,
 					hint: ObjetTraduction_1.GTraductions.getValeur(
+						"accueil.documentsASigner.titre",
+					),
+					titreDansParametrage: ObjetTraduction_1.GTraductions.getValeur(
 						"accueil.documentsASigner.titre",
 					),
 					existeWidget: () => {

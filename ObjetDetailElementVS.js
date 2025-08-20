@@ -6,6 +6,7 @@ const ObjetDroitsPN_1 = require("ObjetDroitsPN");
 class ObjetDetailElementVS extends _ObjetDetailElementVS_1._ObjetDetailElementVS {
 	constructor(...aParams) {
 		super(...aParams);
+		this.avecInfoJustificationObligatoire = true;
 		this.optionsAffichage.afficherNew = true;
 	}
 	getGenreRessourceDocumentJoint() {

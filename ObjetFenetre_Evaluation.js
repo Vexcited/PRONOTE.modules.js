@@ -1968,12 +1968,15 @@ class ObjetFenetre_Evaluation extends ObjetFenetre_1.ObjetFenetre {
 	_composePanelDevoir() {
 		const T = [];
 		T.push(
-			'<div class="flex-contain cols top-line" ie-display="panelDevoir.panelCreationVisible" ie-hint="panelDevoir.getHintPanelCreationModification">',
+			'<div class="flex-contain cols top-line" ie-hint="panelDevoir.getHintPanelCreationModification">',
 		);
 		T.push(
 			IE.jsx.str(
 				"div",
-				{ class: "field-contain" },
+				{
+					class: "field-contain",
+					"ie-display": "panelDevoir.panelCreationVisible",
+				},
 				IE.jsx.str(
 					"ie-checkbox",
 					{

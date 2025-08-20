@@ -143,10 +143,26 @@ class ObjetRequeteDocumentsATelecharger extends ObjetRequeteJSON_1.ObjetRequeteC
 								.documentSigneFinalise
 						: Enumere_DocTelechargement_1.EGenreDocTelechargement
 								.documentCasier;
-				const lElement = Object.assign(aDocument, {
-					annee: GParametres.PremiereDate.getFullYear(),
-					typeDocument: lTypeDoc,
-				});
+				let lElement;
+				if (
+					lTypeDoc ===
+						Enumere_DocTelechargement_1.EGenreDocTelechargement
+							.documentSigneFinalise &&
+					!UtilitaireDocumentSignature_1.TUtilitaireDocumentSignature.estSignataireDuDocument(
+						aDocument,
+					)
+				) {
+					lElement = Object.assign(aDocument, {
+						annee: GParametres.PremiereDate.getFullYear(),
+						typeDocument: lTypeDoc,
+						estNonLu: true,
+					});
+				} else {
+					lElement = Object.assign(aDocument, {
+						annee: GParametres.PremiereDate.getFullYear(),
+						typeDocument: lTypeDoc,
+					});
+				}
 				lListeDocument.addElement(lElement);
 			});
 		}

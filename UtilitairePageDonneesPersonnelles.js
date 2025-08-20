@@ -923,7 +923,7 @@ function _construireCoordonnees(aParams) {
 								"PhotoNonAutoriseeDe_S",
 								[lStrNominatif],
 							),
-					role: aParams.droitImageAutoriser ? "presentation" : false,
+					"aria-hidden": aParams.droitImageAutoriser ? "true" : false,
 					"ie-node": "nodePhoto()",
 				}),
 			),

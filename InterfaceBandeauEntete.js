@@ -894,6 +894,7 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 					"Commande.Communication.Actif",
 				),
 				"aria-haspopup": "menu",
+				"aria-expanded": "false",
 			}),
 		);
 	}

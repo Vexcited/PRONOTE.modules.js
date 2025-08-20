@@ -198,7 +198,7 @@ class InterfaceCompteInfosEnfantPrim extends InterfacePage_1.InterfacePage {
 		H.push(`      <div>`);
 		H.push(`<div class="item-conteneur">`);
 		H.push(
-			`<h4>${ObjetTraduction_1.GTraductions.getValeur("InfosEnfantPrim.autoriseSortie.titreRubrique")}</h4>`,
+			`<h2>${ObjetTraduction_1.GTraductions.getValeur("InfosEnfantPrim.autoriseSortie.titreRubrique")}</h2>`,
 		);
 		H.push(
 			`<div  class="valeur-contain" id="${this.getInstance(this.identAutoriseSortie).getNom()}"></div>`,
@@ -206,7 +206,7 @@ class InterfaceCompteInfosEnfantPrim extends InterfacePage_1.InterfacePage {
 		H.push("</div>");
 		H.push(`<div class="item-conteneur">`);
 		H.push(
-			`<h4>${ObjetTraduction_1.GTraductions.getValeur("infosperso.Liste_DroitImage")}</h4>`,
+			`<h2>${ObjetTraduction_1.GTraductions.getValeur("infosperso.Liste_DroitImage")}</h2>`,
 		);
 		H.push(
 			`<div  class="valeur-contain" id="${this.getInstance(this.identAutoriseImage).getNom()}"></div>`,
@@ -222,7 +222,7 @@ class InterfaceCompteInfosEnfantPrim extends InterfacePage_1.InterfacePage {
 		);
 		H.push(`<div class="item-conteneur">`);
 		H.push(
-			`<h4>${ObjetTraduction_1.GTraductions.getValeur("InfosEnfantPrim.autresContacts.titreRubrique")}</h4>`,
+			`<h2>${ObjetTraduction_1.GTraductions.getValeur("InfosEnfantPrim.autresContacts.titreRubrique")}</h2>`,
 		);
 		H.push(
 			`<div class="valeur-contain" id="${this.getInstance(this.identAutresContacts).getNom()}"></div>`,

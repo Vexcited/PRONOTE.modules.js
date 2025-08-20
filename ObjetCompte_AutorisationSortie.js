@@ -39,15 +39,19 @@ class ObjetCompte_AutorisationSortie extends ObjetIdentite_1.Identite {
 	}
 	_composeAutorisationSortie() {
 		const H = [];
-		H.push('<div class="NoWrap">');
 		H.push(
-			'<ie-switch ie-model="switchAutoriserSortie">',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"InfosEnfantPrim.autoriseSortie.libelleAutorisation",
+			IE.jsx.str(
+				"div",
+				{ class: "NoWrap" },
+				IE.jsx.str(
+					"ie-switch",
+					{ "ie-model": this.jsxModeleSw.bind(this) },
+					ObjetTraduction_1.GTraductions.getValeur(
+						"InfosEnfantPrim.autoriseSortie.libelleAutorisation",
+					),
+				),
 			),
-			"</ie-switch>",
 		);
-		H.push("</div>");
 		return H.join("");
 	}
 }

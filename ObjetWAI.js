@@ -294,7 +294,7 @@ class ObjetWAI {
 		this.WaiAttribut[EGenreAttribut.invalid] = "aria-invalid";
 		this.WaiAttribut[EGenreAttribut.label] = "aria-label";
 		this.WaiAttribut[EGenreAttribut.labelledby] = "aria-labelledby";
-		this.WaiAttribut[EGenreAttribut.level] = "	aria-level";
+		this.WaiAttribut[EGenreAttribut.level] = "aria-level";
 		this.WaiAttribut[EGenreAttribut.live] = "aria-live";
 		this.WaiAttribut[EGenreAttribut.multiline] = "aria-multiline";
 		this.WaiAttribut[EGenreAttribut.multiselectable] = "aria-multiselectable";

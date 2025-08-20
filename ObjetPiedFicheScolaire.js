@@ -43,6 +43,7 @@ class ObjetPiedFicheScolaire extends ObjetIdentite_1.Identite {
 		this.idLabelEngagements = GUID_1.GUID.getId();
 		this.idAvisInvestissement = GUID_1.GUID.getId();
 		this.idPFMP = GUID_1.GUID.getId();
+		this.idTitrePfmp = GUID_1.GUID.getId();
 		this.idParcoursDiff = GUID_1.GUID.getId();
 		this.combo = new ObjetSaisie_1.ObjetSaisie(
 			this.Nom + ".combo",
@@ -132,9 +133,7 @@ class ObjetPiedFicheScolaire extends ObjetIdentite_1.Identite {
 			},
 			nombreSemaines: {
 				getValue: function () {
-					return aInstance._donnees.pfmp && aInstance._donnees.pfmp.infosLSEleve
-						? aInstance._donnees.pfmp.infosLSEleve.nombreSemaines
-						: 0;
+					return aInstance._getNombreSemaines();
 				},
 				setValue: function (aValue) {
 					if (aValue) {
@@ -170,21 +169,12 @@ class ObjetPiedFicheScolaire extends ObjetIdentite_1.Identite {
 					);
 				},
 				visible: function () {
-					return (
-						!!aInstance._donnees &&
-						!!aInstance._donnees.pfmp &&
-						!!aInstance._donnees.pfmp.estNiveauTerminale
-					);
+					return aInstance._avecNombreSemainesVisible();
 				},
 			},
 			aLEtranger: {
 				getValue: function () {
-					return (
-						!!aInstance._donnees &&
-						!!aInstance._donnees.pfmp &&
-						!!aInstance._donnees.pfmp.infosLSEleve &&
-						!!aInstance._donnees.pfmp.infosLSEleve.aLEtranger
-					);
+					return aInstance._getALEtranger();
 				},
 				setValue: function (aValeur) {
 					aInstance._donnees.pfmp.infosLSEleve.aLEtranger = !!aValeur;
@@ -836,57 +826,198 @@ class ObjetPiedFicheScolaire extends ObjetIdentite_1.Identite {
 				: this._donnees.pfmp.infosLSEleve.estExportSynthese)
 		);
 	}
-	_composePFMPModeCAP() {
+	_composePFMPModeCAPNonEditable() {
+		var _a;
 		return IE.jsx.str(
 			"div",
-			{ id: this.idPFMP, class: "pfmp_section" },
-			IE.jsx.str("span", { class: "pfmp_titre" }, this._donnees.pfmp.titre),
+			{
+				id: this.idPFMP,
+				class: "pfmp_section",
+				role: "group",
+				"aria-labelledby": this.idTitrePfmp,
+			},
 			IE.jsx.str(
-				"div",
-				{ class: "pfmp_appr pfmp_sansInfo" },
-				IE.jsx.str(
-					"div",
-					{ class: "pfmp_exp_appr" },
-					IE.jsx.str("div", {
-						id: this.listePFMP.getNom(),
-						class: "pfmp_exp_detail",
-					}),
-				),
-				IE.jsx.str(
-					"div",
-					{ class: "pfmp_exp_synthese" },
-					IE.jsx.str("ie-textareamax", {
-						"ie-model": "synthese",
-						maxlength: this._donnees.pfmp.tailleMax,
-						"aria-label": ObjetTraduction_1.GTraductions.getValeur(
-							"ficheScolaire.pfmp.saisissezlaSyntheseCAP",
-						),
-						placeholder: ObjetTraduction_1.GTraductions.getValeur(
-							"ficheScolaire.pfmp.saisissezlaSyntheseCAP",
-						),
-						class: "pfmp_exp_detail ie-no-autoresize",
-					}),
-					IE.jsx.str(
-						"div",
-						{ class: "pfmp_exp_pied" },
-						ObjetTraduction_1.GTraductions.getValeur(
-							"ficheScolaire.pfmp.redigeePar",
-						),
-						IE.jsx.str("span", {
-							class: "pfmp_exp_auteur like-input",
-							"ie-html": "getAuteur",
-						}),
-					),
-				),
+				"h2",
+				{ id: this.idTitrePfmp, class: "Gras p-y ie-titre-petit" },
+				this._donnees.pfmp.titre,
 			),
+			IE.jsx.str(
+				"h3",
+				{ class: "m-top-l p-y ie-titre-petit theme_color_foncee Gras" },
+				ObjetTraduction_1.GTraductions.getValeur(
+					"ficheScolaire.pfmp.apprStageReferents",
+				) + " : ",
+			),
+			IE.jsx.str("div", {
+				"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+					"ficheScolaire.pfmp.apprStageReferents",
+				),
+				id: this.listePFMP.getNom(),
+				class: "m-top-l pfmp_exp_detail",
+			}),
+			this._donnees.pfmp.infosLSEleve.appreciation
+				? IE.jsx.str(
+						IE.jsx.fragment,
+						null,
+						IE.jsx.str(
+							"h3",
+							{ class: "m-top-l p-y ie-titre-petit theme_color_foncee Gras" },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"ficheScolaire.pfmp.syntheseRedigeePar",
+								[
+									(_a = this._donnees.pfmp.infosLSEleve.auteur) === null ||
+									_a === void 0
+										? void 0
+										: _a.getLibelle(),
+								],
+							) + " : ",
+						),
+						IE.jsx.str("p", null, this._donnees.pfmp.infosLSEleve.appreciation),
+					)
+				: "",
 		);
 	}
-	_composePFMP() {
-		const lModeAff = this._donnees.pfmp.modeAff;
+	_composePFMPModeCAP() {
 		if (
-			lModeAff === TypeModeDAffichagePFMP_1.TypeModeDAffichagePFMP.tMAPFMP_CAP
+			this.estNonEditable &&
+			[
+				Enumere_Espace_1.EGenreEspace.Eleve,
+				Enumere_Espace_1.EGenreEspace.Parent,
+			].includes(this.etatUtilScoEspace.GenreEspace)
 		) {
-			return this._composePFMPModeCAP();
+			return this._composePFMPModeCAPNonEditable();
+		} else {
+			return IE.jsx.str(
+				"div",
+				{ id: this.idPFMP, class: "pfmp_section" },
+				IE.jsx.str("span", { class: "pfmp_titre" }, this._donnees.pfmp.titre),
+				IE.jsx.str(
+					"div",
+					{ class: "pfmp_appr pfmp_sansInfo" },
+					IE.jsx.str(
+						"div",
+						{ class: "pfmp_exp_appr" },
+						IE.jsx.str("div", {
+							id: this.listePFMP.getNom(),
+							class: "pfmp_exp_detail",
+						}),
+					),
+					IE.jsx.str(
+						"div",
+						{ class: "pfmp_exp_synthese" },
+						IE.jsx.str("ie-textareamax", {
+							"ie-model": "synthese",
+							maxlength: this._donnees.pfmp.tailleMax,
+							"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+								"ficheScolaire.pfmp.saisissezlaSyntheseCAP",
+							),
+							placeholder: ObjetTraduction_1.GTraductions.getValeur(
+								"ficheScolaire.pfmp.saisissezlaSyntheseCAP",
+							),
+							class: "pfmp_exp_detail ie-no-autoresize",
+						}),
+						IE.jsx.str(
+							"div",
+							{ class: "pfmp_exp_pied" },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"ficheScolaire.pfmp.redigeePar",
+							),
+							IE.jsx.str("span", {
+								class: "pfmp_exp_auteur like-input",
+								"ie-html": "getAuteur",
+							}),
+						),
+					),
+				),
+			);
+		}
+	}
+	_composePFMPModePRONonEditable() {
+		var _a;
+		return IE.jsx.str(
+			"div",
+			{
+				id: this.idPFMP,
+				class: "pfmp_section",
+				role: "group",
+				"aria-labelledby": this.idTitrePfmp,
+			},
+			IE.jsx.str(
+				"h2",
+				{ id: this.idTitrePfmp, class: "Gras p-y ie-titre-petit" },
+				this._donnees.pfmp.titre,
+			),
+			this._avecNombreSemainesVisible()
+				? IE.jsx.str(
+						IE.jsx.fragment,
+						null,
+						IE.jsx.str(
+							"h3",
+							{ class: "m-top-l p-y ie-titre-petit theme_color_foncee Gras" },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"ficheScolaire.pfmp.libelleDuree",
+							) + " : ",
+						),
+						IE.jsx.str("p", null, this._getNombreSemaines()),
+					)
+				: "",
+			this._getALEtranger()
+				? IE.jsx.str(
+						"h3",
+						{ class: "m-top-l p-y ie-titre-petit theme_color_foncee Gras" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"ficheScolaire.pfmp.libelleEtranger",
+						),
+					)
+				: "",
+			this._avecExportSynthese()
+				? IE.jsx.str(
+						IE.jsx.fragment,
+						null,
+						IE.jsx.str(
+							"h3",
+							{ class: "m-top-l p-y ie-titre-petit theme_color_foncee Gras" },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"ficheScolaire.pfmp.syntheseRedigeePar",
+								[
+									(_a = this._donnees.pfmp.infosLSEleve.auteur) === null ||
+									_a === void 0
+										? void 0
+										: _a.getLibelle(),
+								],
+							) + " : ",
+						),
+						IE.jsx.str("p", null, this._donnees.pfmp.infosLSEleve.appreciation),
+					)
+				: IE.jsx.str(
+						IE.jsx.fragment,
+						null,
+						IE.jsx.str(
+							"h3",
+							{ class: "m-top-l p-y ie-titre-petit theme_color_foncee Gras" },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"ficheScolaire.pfmp.apprStageReferents",
+							) + " : ",
+						),
+						IE.jsx.str("div", {
+							"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+								"ficheScolaire.pfmp.apprStageReferents",
+							),
+							id: this.listePFMP.getNom(),
+							class: "m-top-l pfmp_exp_detail",
+						}),
+					),
+		);
+	}
+	_composePFMPModePRO() {
+		if (
+			this.estNonEditable &&
+			[
+				Enumere_Espace_1.EGenreEspace.Eleve,
+				Enumere_Espace_1.EGenreEspace.Parent,
+			].includes(this.etatUtilScoEspace.GenreEspace)
+		) {
+			return this._composePFMPModePRONonEditable();
 		} else {
 			const T = [];
 			T.push(`<div id="${this.idPFMP}" class="pfmp_section">`);
@@ -914,6 +1045,47 @@ class ObjetPiedFicheScolaire extends ObjetIdentite_1.Identite {
 			T.push("</div>");
 			T.push("</div>");
 			return T.join("");
+		}
+	}
+	_composePFMP() {
+		const lModeAff = this._donnees.pfmp.modeAff;
+		if (
+			lModeAff === TypeModeDAffichagePFMP_1.TypeModeDAffichagePFMP.tMAPFMP_CAP
+		) {
+			return this._composePFMPModeCAP();
+		} else {
+			return this._composePFMPModePRO();
+		}
+	}
+	_avecNombreSemainesVisible() {
+		return (
+			!!this._donnees &&
+			!!this._donnees.pfmp &&
+			!!this._donnees.pfmp.estNiveauTerminale
+		);
+	}
+	_getNombreSemaines() {
+		return this._donnees.pfmp && this._donnees.pfmp.infosLSEleve
+			? this._donnees.pfmp.infosLSEleve.nombreSemaines
+			: 0;
+	}
+	_getALEtranger() {
+		return (
+			!!this._donnees &&
+			!!this._donnees.pfmp &&
+			!!this._donnees.pfmp.infosLSEleve &&
+			!!this._donnees.pfmp.infosLSEleve.aLEtranger
+		);
+	}
+	_avecExportSynthese() {
+		if (
+			!!this._donnees &&
+			!!this._donnees.pfmp &&
+			!!this._donnees.pfmp.infosLSEleve
+		) {
+			return this._donnees.pfmp.infosLSEleve.estExportSynthese;
+		} else {
+			return false;
 		}
 	}
 	_composeAvisCE() {
@@ -1864,7 +2036,11 @@ class DonneesListe_PFMP extends ObjetDonneesListe_1.ObjetDonneesListe {
 					this.param.modeAff !==
 						TypeModeDAffichagePFMP_1.TypeModeDAffichagePFMP.tMAPFMP_CAP &&
 					aParams.article.exportable &&
-					!this.param.estExportSynthese
+					!this.param.estExportSynthese &&
+					![
+						Enumere_Espace_1.EGenreEspace.Eleve,
+						Enumere_Espace_1.EGenreEspace.Parent,
+					].includes((0, AccessApp_1.getApp)().getEtatUtilisateur().GenreEspace)
 				) {
 					return `<i class="icon_share" ie-tooltiplabel="${ObjetTraduction_1.GTraductions.getValeur("ficheScolaire.pfmp.legendeAppr", [this.param.tailleMax])}" role="img"></i>`;
 				}

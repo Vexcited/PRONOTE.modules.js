@@ -433,7 +433,13 @@ class InterfaceDocumentsATelecharger extends _InterfaceDocuments_1._InterfaceDoc
 		aMarquerLuLeDocument,
 		aDocument,
 	) {
-		if (aMarquerLuLeDocument && aDocument.estNonLu) {
+		if (
+			aMarquerLuLeDocument &&
+			aDocument.estNonLu &&
+			UtilitaireDocumentSignature_1.TUtilitaireDocumentSignature.estSignataireDuDocument(
+				aDocument,
+			)
+		) {
 			this.surMarquerLuDocSignature(aDocument);
 		}
 	}

@@ -646,7 +646,7 @@ class PageCahierDeTexte extends ObjetIdentite_1.Identite {
 		const lHtml = [];
 		lHtml.push(
 			'<div class="flex-contain flex-start justify-between">',
-			'<div class="fluid-bloc">',
+			'<div class="fluid-bloc tiny-view">',
 			aObjetTravailAFaire.descriptif,
 			"</div>",
 		);
@@ -709,11 +709,16 @@ class PageCahierDeTexte extends ObjetIdentite_1.Identite {
 				) + " : ";
 		const lHtml = [];
 		lHtml.push(
-			'<div class="flex-contain flex-start">',
-			'<div style="width:10rem;" class="fix-bloc semi-bold">',
-			ObjetChaine_1.GChaine.insecable(lLibelleDonneLe),
-			"</div>",
-			this.composeDevoir(aObjetTravailAFaire),
+			IE.jsx.str(
+				"div",
+				null,
+				IE.jsx.str(
+					"div",
+					{ class: "fix-bloc semi-bold" },
+					ObjetChaine_1.GChaine.insecable(lLibelleDonneLe),
+				),
+				this.composeDevoir(aObjetTravailAFaire),
+			),
 		);
 		return lHtml.join("");
 	}

@@ -7,6 +7,7 @@ const ObjetHtml_1 = require("ObjetHtml");
 const ObjetDonneesCentraleNotifications_1 = require("ObjetDonneesCentraleNotifications");
 const GestionnaireModale_1 = require("GestionnaireModale");
 const AccessApp_1 = require("AccessApp");
+const IEHtml_1 = require("IEHtml");
 class ObjetWrapperCentraleNotifications_Espace extends ObjetIdentite_1.Identite {
 	constructor(...aParams) {
 		super(...aParams);
@@ -90,6 +91,9 @@ class ObjetWrapperCentraleNotifications_Espace extends ObjetIdentite_1.Identite 
 		});
 	}
 	construireAffichage() {
+		const lGetAttr = () => {
+			return { "aria-expanded": this.instanceNotif ? "true" : "false" };
+		};
 		return IE.jsx.str(
 			"div",
 			{ class: "ObjetWrapperCentraleNotifications_Espace" },
@@ -97,14 +101,16 @@ class ObjetWrapperCentraleNotifications_Espace extends ObjetIdentite_1.Identite 
 				? IE.jsx.str("button", {
 						"ie-node": "getNodeBtn",
 						"ie-title": "btn.getTitle",
-						"aria-haspopup": "menu",
+						"aria-haspopup": "dialog",
 						class: "bcne_btn_entete",
 						"ie-class": "getClassBtnEntete",
+						"ie-attr": lGetAttr,
 					})
 				: IE.jsx.str("ie-btnimage", {
 						class: "image_centrale_notification btnImageIcon",
 						"ie-model": "btn",
 						"aria-haspopup": "dialog",
+						"ie-attr": lGetAttr,
 					}),
 			IE.jsx.str("div", {
 				"ie-html": "compteur.getHtml",
@@ -144,6 +150,7 @@ class ObjetWrapperCentraleNotifications_Espace extends ObjetIdentite_1.Identite 
 						this._timerFermeture = setTimeout(() => {
 							this.instanceNotif.free();
 							this.instanceNotif = null;
+							IEHtml_1.default.refresh();
 						}, c_timer_ouverture);
 					},
 				});

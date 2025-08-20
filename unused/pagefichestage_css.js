@@ -6,6 +6,7 @@ exports.StylesPageFicheStage = {
 	conteneurPageFicheStage: "conteneur-PageFicheStage",
 	conteneurFicheStage: "conteneur-FicheStage",
 	ieTitreCouleur: "ie-titre-couleur",
+	ieTitre: "ie-titre",
 	flexWrapper: "flex-wrapper",
 	sousSection: "sous-section",
 	conteneurInfo: "conteneur-info",

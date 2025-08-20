@@ -417,9 +417,6 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 		return this.etatUtilisateurSco.EtatSaisie;
 	}
 	evenementSurCommunication() {
-		this._ouvrirMenuContextuelSurBoutonCommunication();
-	}
-	_ouvrirMenuContextuelSurBoutonCommunication() {
 		const lFncCreationItemMenuContextuel = (aInstanceMenu) => {
 			const lAvecDiscussion =
 				this.applicationSco.droits.get(
@@ -556,10 +553,21 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 				);
 			}
 		};
+		const lId = this.getInstance(this.IdentBandeauEntete).NomBtnCommunication;
+		const lSetAriaExpanded = (aExpanded) => {
+			var _a;
+			(_a = ObjetHtml_1.GHtml.getElement(lId)) === null || _a === void 0
+				? void 0
+				: _a.setAttribute("aria-expanded", aExpanded ? "true" : "false");
+		};
+		lSetAriaExpanded(true);
 		ObjetMenuContextuel_1.ObjetMenuContextuel.afficher({
 			pere: this,
-			id: this.getInstance(this.IdentBandeauEntete).NomBtnCommunication,
+			id: lId,
 			initCommandes: lFncCreationItemMenuContextuel.bind(this),
+			destroy() {
+				lSetAriaExpanded(false);
+			},
 		});
 	}
 	evenementSurAide() {

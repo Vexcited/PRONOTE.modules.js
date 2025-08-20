@@ -328,9 +328,11 @@ const UtilitaireWidget = {
 				aWidget.nomDonnees === "actualites" &&
 				lWidgetComplet.find("ul ul").length > 1
 			) {
-				lListItems = lWidgetComplet.find("ul.liste-clickable");
+				lListItems = lWidgetComplet.find(
+					".content-container ul.liste-clickable",
+				);
 			} else {
-				lListItems = lWidgetComplet.find("ul");
+				lListItems = lWidgetComplet.find(".content-container ul");
 			}
 			let lItems = lListItems.find(
 				" > li:gt(" + (aWidget.nbrItemsVisible - 1) + ")",
@@ -347,6 +349,7 @@ const UtilitaireWidget = {
 				});
 			});
 			$(".btn-collapse", lWidgetComplet).eventValidation(function () {
+				var _a;
 				const lIconBt = $(this).find("i");
 				const more = lListItems.find("li.more");
 				lIconBt.hasClass("icon_eye_close")
@@ -358,19 +361,21 @@ const UtilitaireWidget = {
 						"accueil.hintCacherElements",
 					);
 					more.toggleClass("masked unmasked");
+					let lTabElements = [];
 					lItems.toArray().forEach((aNodeItems) => {
-						const lTabElements =
+						lTabElements = lTabElements.concat(
 							ObjetHtml_1.GHtml.getElementsFocusablesDElement(aNodeItems, {
 								ignoreAriaHidden: false,
-							});
-						lTabElements.forEach((aNode) => {
-							$(aNode).attr("tabindex", 0);
-						});
+							}),
+						);
 					});
-					more.attr("aria-hidden", "false");
-					if (more[0]) {
-						more[0].focus();
-					}
+					lTabElements.forEach((aNode) => {
+						$(aNode).attr("tabindex", 0);
+					});
+					more.attr("aria-hidden", null);
+					(_a = lTabElements[0]) === null || _a === void 0
+						? void 0
+						: _a.focus();
 					$(this).find("span.counter").text("-");
 				} else {
 					lAriaLabelBouton = ObjetTraduction_1.GTraductions.getValeur(
