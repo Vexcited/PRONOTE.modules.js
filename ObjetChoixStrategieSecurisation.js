@@ -313,6 +313,8 @@ class ObjetChoixStrategieSecurisation extends ObjetIdentite_1.Identite {
 					href: GParametres.urlTutoVideoSecurite,
 					target: "_blank",
 					class: "css_lienVideo iconic icon_question_sign",
+					"ie-tooltiplabel":
+						TraductionsDoubleAuth_1.TradDoubleAuth.EnSavoirPlusTitle,
 				},
 				TraductionsDoubleAuth_1.TradDoubleAuth.EnSavoirPlus,
 			),

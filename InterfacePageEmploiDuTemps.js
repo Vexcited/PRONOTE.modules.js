@@ -267,6 +267,13 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 				this.getInstance(this.IdentGrille).getInstanceGrille().surPreResize();
 				this.getInstance(this.IdentCalendrier).surPostResize();
 				this._actualiserGrilleEtListe();
+				if (this.etatUtilisateurSco.getAfficherListeElevesEDT()) {
+					ObjetHtml_1.GHtml.setFocus(
+						ObjetHtml_1.GHtml.getElementsFocusablesDElement(
+							this._getIdConteneurListeEleves(),
+						)[0],
+					);
+				}
 			},
 			getTitle: () => {
 				return this.etatUtilisateurSco.getAfficherListeElevesEDT()
@@ -556,14 +563,18 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 		this.AddSurZone.push({ blocGauche: true });
 		const H = [];
 		H.push(
-			'<ie-bouton class="small-bt themeBoutonNeutre" ie-model="btnAfficherICal">',
-		);
-		H.push(
-			ObjetTraduction_1.GTraductions.getValeur(
-				"iCal.fenetre.salles.PartagerSalles",
+			IE.jsx.str(
+				"ie-bouton",
+				{
+					class: "small-bt themeBoutonNeutre",
+					"ie-model": "btnAfficherICal",
+					"aria-haspopup": "dialog",
+				},
+				ObjetTraduction_1.GTraductions.getValeur(
+					"iCal.fenetre.salles.PartagerSalles",
+				),
 			),
 		);
-		H.push("</ie-bouton>");
 		if (this.donneesGrille.estPlanning) {
 			if (this.donneesGrille.estPlanningParRessource) {
 				this.AddSurZone.push({
@@ -819,6 +830,12 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 			getSelection: function () {
 				return lThis.listeAvecPhotos;
 			},
+			getDisabled: () => {
+				var _a;
+				return !((_a = this.paramCours) === null || _a === void 0
+					? void 0
+					: _a.cours);
+			},
 		};
 		const lTitreColonne = [];
 		lTitreColonne.push(
@@ -873,6 +890,7 @@ class ObjetAffichagePageEmploiDuTemps extends InterfacePage_1.InterfacePage {
 					? GlossaireEDT_1.TradGlossaireEDT.ListeElevesDe_S.format(lStr)
 					: GlossaireEDT_1.TradGlossaireEDT.ListeElevesSasnCours;
 			},
+			messageContenuVide: GlossaireEDT_1.TradGlossaireEDT.ListeElevesSasnCours,
 		});
 	}
 	initialiserFenetreICal(aInstance) {

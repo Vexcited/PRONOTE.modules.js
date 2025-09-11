@@ -179,9 +179,6 @@ class ObjetGrilleCours {
 				? this.params.getClassCours(lCours, aValue.indice)
 				: "";
 			const lTab = lCours.horsHoraire ? HHorsGrille : T;
-			const lFuncDroppable = this.params.getJsxFuncDroppableCours
-				? this.params.getJsxFuncDroppableCours(lCours, aValue.indice)
-				: false;
 			const lEstAccessible = !lCours.coursMultiple;
 			lTab.push(
 				IE.jsx.str(
@@ -190,6 +187,8 @@ class ObjetGrilleCours {
 						id: this.getIdCours(aValue.indice),
 						tabindex: lEstAccessible ? "0" : false,
 						role: lEstAccessible ? "listitem" : "presentation",
+						"aria-haspopup":
+							lEstAccessible && this.params.jsxNodeCours ? "dialog" : false,
 						"aria-hidden": lEstAccessible ? false : "true",
 						class: [
 							"EmploiDuTemps_Element",
@@ -203,7 +202,9 @@ class ObjetGrilleCours {
 						"ie-node": this.params.jsxNodeCours
 							? this.params.jsxNodeCours.bind(this, aValue.indice)
 							: false,
-						"ie-droppable": lFuncDroppable,
+						"ie-droppable": this.params.getJsxFuncDroppableCours
+							? this.params.getJsxFuncDroppableCours(lCours, aValue.indice)
+							: false,
 					},
 					this._composeCours(lCours, aValue.indice),
 				),
@@ -544,6 +545,9 @@ class ObjetGrilleCours {
 		aCours.listeCours.parcourir((aCoursSuperpose) => {
 			const lIndiceCours =
 				this._getIndiceCoursOrigineDeCoursSuperpose(aCoursSuperpose);
+			if (lIndiceCours < 0) {
+				return;
+			}
 			lTabIndiceCours.push(lIndiceCours);
 			if (!lTabIndicesCoursParCouloir[aCoursSuperpose.numeroCouloir]) {
 				lTabIndicesCoursParCouloir[aCoursSuperpose.numeroCouloir] = [];
@@ -552,10 +556,12 @@ class ObjetGrilleCours {
 				lIndiceCours,
 			);
 			const lCoursOrigine = this.params.listeCours.get(lIndiceCours);
-			lCoursOrigine.estCoursMSInvisibleCouloir =
-				aCoursSuperpose.numeroCouloir !== aCours.numeroCouloir;
-			lCoursOrigine._ecartCoursMS =
-				lTaille + (ObjetSupport_1.Support.bordureExterneDIV ? 0 : 1);
+			if (lCoursOrigine) {
+				lCoursOrigine.estCoursMSInvisibleCouloir =
+					aCoursSuperpose.numeroCouloir !== aCours.numeroCouloir;
+				lCoursOrigine._ecartCoursMS =
+					lTaille + (ObjetSupport_1.Support.bordureExterneDIV ? 0 : 1);
+			}
 		});
 		ObjetHtml_1.GHtml.setHtml(
 			ObjetHtml_1.GHtml.getElement(lIdSlider),
@@ -654,6 +660,7 @@ class ObjetGrilleCours {
 							class: lAttributsClasseImage,
 							style: lStylesImage.join(""),
 						}),
+						{ "aria-haspopup": aImage.ariaHasPopup || false },
 					),
 				);
 			} else {
@@ -663,9 +670,11 @@ class ObjetGrilleCours {
 				lContenu += aImage.getHtmlSupp();
 			}
 			let lRole = false;
+			let lAriahasPopup = false;
 			if (!aImage.btnImage) {
 				if (lAvecEvenement) {
 					lRole = "button";
+					lAriahasPopup = aImage.ariaHasPopup;
 				} else {
 					lRole = aImage.tooltip ? "img" : "presentation";
 				}
@@ -683,6 +692,7 @@ class ObjetGrilleCours {
 						: _a.bind(this, aParams.indiceCours, aImage.getGenre())
 					: false,
 				role: lRole,
+				"aria-haspopup": lAriahasPopup,
 				tabindex: lAvecEvenement && !aImage.btnImage ? "0" : false,
 			};
 			if (!aImage.btnImage) {
@@ -1022,21 +1032,24 @@ class ObjetGrilleCours {
 		H.push("</div>");
 		return H.join("");
 	}
-	composeCourssimple(I, aCours) {
+	composeCourssimple(aIndiceCours, aCours) {
 		const lCadreCours = this.getCadreCours(aCours);
 		const lDebutCoursHorsGrille = this.getPlaceCoursHorsGrille(aCours, true);
 		const lFinCoursHorsGrille = this.getPlaceCoursHorsGrille(aCours, false);
+		const lAriaLabel = this.getAriaLabelCours(aCours);
 		return IE.jsx.str(
 			"div",
 			{
 				class: "cours-simple",
-				id: this.getIdInterneCours(I),
+				id: this.getIdInterneCours(aIndiceCours),
+				role: lAriaLabel ? "group" : false,
+				"aria-label": lAriaLabel,
 				"ie-hint": this.params.coursAvecIEHint
-					? this.getHintCours.bind(this, aCours, I)
+					? this.getHintCours.bind(this, aCours, aIndiceCours)
 					: false,
 				"ie-tooltipdescribe-static": this.params.coursAvecIEHint
 					? false
-					: this.getHintCours.bind(this, aCours, I),
+					: this.getHintCours.bind(this, aCours, aIndiceCours),
 			},
 			() => {
 				let lHtml = IE.jsx.str(
@@ -1063,12 +1076,12 @@ class ObjetGrilleCours {
 									lCadreCours.couleurBordure
 								: "border:0"),
 					},
-					this.composeEnteteCours(I, aCours),
+					this.composeEnteteCours(aIndiceCours, aCours),
 					IE.jsx.str(
 						"tr",
 						null,
 						IE.jsx.str("td", {
-							id: this.getIdContenu(I),
+							id: this.getIdContenu(aIndiceCours),
 							style:
 								"padding:" +
 								this.params.paddingContenuCoursTop +
@@ -1110,7 +1123,10 @@ class ObjetGrilleCours {
 						lHtml,
 					);
 				}
-				const lHtmlDecorateur = this.construireDecorateurCours(aCours, I);
+				const lHtmlDecorateur = this.construireDecorateurCours(
+					aCours,
+					aIndiceCours,
+				);
 				if (lHtmlDecorateur) {
 					lHtml += lHtmlDecorateur;
 				}
@@ -1128,11 +1144,17 @@ class ObjetGrilleCours {
 		if (!aCoursSuperpose) {
 			return -1;
 		}
-		return aCoursSuperpose.coursOrigine
-			? this.params.listeCours
-					.getTabListeElements()
-					.indexOf(aCoursSuperpose.coursOrigine)
-			: aCoursSuperpose.indiceCoursOrigine;
+		if (aCoursSuperpose.coursOrigine) {
+			let lIndice = this.params.listeCours
+				.getTabListeElements()
+				.indexOf(aCoursSuperpose.coursOrigine);
+			if (lIndice >= 0) {
+				return lIndice;
+			}
+		}
+		return aCoursSuperpose.indiceCoursOrigine >= 0
+			? aCoursSuperpose.indiceCoursOrigine
+			: -1;
 	}
 	getAriaLabelCours(aCours) {
 		return "";

@@ -104,47 +104,7 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 				},
 			},
 			htmlAxe: function (aTypePlanning, aHorizontale) {
-				const lDefinitionAxes = {
-					v: aInstance.optionsFenetre.estEDT
-						? ObjetTraduction_1.GTraductions.getValeur(
-								"Fenetre_ParametrageEDT.Horaires",
-							)
-						: aTypePlanning ===
-								TypeHoraireGrillePlanning_1.TypeHoraireGrillePlanning.parSemaine
-							? ObjetTraduction_1.GTraductions.getValeur(
-									"Fenetre_ParametrageEDT.Jours",
-								) +
-								" / " +
-								ObjetTraduction_1.GTraductions.getValeur(
-									"Fenetre_ParametrageEDT.Horaires",
-								)
-							: ObjetTraduction_1.GTraductions.getValeur(
-									"Fenetre_ParametrageEDT.Horaires",
-								),
-					h: aInstance.optionsFenetre.estEDT
-						? ObjetTraduction_1.GTraductions.getValeur(
-								"Fenetre_ParametrageEDT.Jours",
-							)
-						: aTypePlanning ===
-								TypeHoraireGrillePlanning_1.TypeHoraireGrillePlanning.parJour
-							? ObjetTraduction_1.GTraductions.getValeur(
-									"Fenetre_ParametrageEDT.JoursRessourcesOuSemaines",
-								)
-							: ObjetTraduction_1.GTraductions.getValeur(
-									"Fenetre_ParametrageEDT.RessourcesOuSemaines",
-								),
-				};
-				return aHorizontale
-					? aInstance.applicationSco.parametresUtilisateur.get(
-							aInstance._accesseurAxeParam(aTypePlanning),
-						)
-						? lDefinitionAxes.v
-						: lDefinitionAxes.h
-					: aInstance.applicationSco.parametresUtilisateur.get(
-								aInstance._accesseurAxeParam(aTypePlanning),
-							)
-						? lDefinitionAxes.h
-						: lDefinitionAxes.v;
+				return aInstance.getHtmlAxe(aTypePlanning, aHorizontale);
 			},
 			nodeSurInversionAxe(aTypePlanning) {
 				$(this.node).eventValidation(() => {
@@ -636,6 +596,49 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 					),
 		});
 	}
+	getHtmlAxe(aTypePlanning, aHorizontale) {
+		const lDefinitionAxes = {
+			v: this.optionsFenetre.estEDT
+				? ObjetTraduction_1.GTraductions.getValeur(
+						"Fenetre_ParametrageEDT.Horaires",
+					)
+				: aTypePlanning ===
+						TypeHoraireGrillePlanning_1.TypeHoraireGrillePlanning.parSemaine
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_ParametrageEDT.Jours",
+						) +
+						" / " +
+						ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_ParametrageEDT.Horaires",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_ParametrageEDT.Horaires",
+						),
+			h: this.optionsFenetre.estEDT
+				? ObjetTraduction_1.GTraductions.getValeur(
+						"Fenetre_ParametrageEDT.Jours",
+					)
+				: aTypePlanning ===
+						TypeHoraireGrillePlanning_1.TypeHoraireGrillePlanning.parJour
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_ParametrageEDT.JoursRessourcesOuSemaines",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_ParametrageEDT.RessourcesOuSemaines",
+						),
+		};
+		return aHorizontale
+			? this.applicationSco.parametresUtilisateur.get(
+					this._accesseurAxeParam(aTypePlanning),
+				)
+				? lDefinitionAxes.v
+				: lDefinitionAxes.h
+			: this.applicationSco.parametresUtilisateur.get(
+						this._accesseurAxeParam(aTypePlanning),
+					)
+				? lDefinitionAxes.h
+				: lDefinitionAxes.v;
+	}
 	composeContenu() {
 		const H = [];
 		H.push('<div class="ObjetFenetre_ParametrageEDT">');
@@ -983,6 +986,34 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 		const lHeightLigne = 19;
 		const lWidthLibelle = this.optionsFenetre.estEDT ? 80 : 150;
 		const lEcartHeightTitre = this.optionsFenetre.estEDT ? 0 : lHeightTitre;
+		const lModelBtnInversionAxe = () => {
+			return {
+				event: () => {
+					this.applicationSco.parametresUtilisateur.set(
+						this._accesseurAxeParam(aTypePlanning),
+						!this.applicationSco.parametresUtilisateur.get(
+							this._accesseurAxeParam(aTypePlanning),
+						),
+					);
+					this.avecModif = true;
+				},
+				getTitle: () => {
+					return ObjetChaine_1.GChaine.format("%s:<br>%s - %s<br>%s - %s", [
+						ObjetTraduction_1.GTraductions.getValeur(
+							"GenerationPDF.EDT.HintAxes",
+						),
+						ObjetTraduction_1.GTraductions.getValeur(
+							"GenerationPDF.EDT.Horizontal",
+						),
+						this.getHtmlAxe(aTypePlanning, true),
+						ObjetTraduction_1.GTraductions.getValeur(
+							"GenerationPDF.EDT.Vertical",
+						),
+						this.getHtmlAxe(aTypePlanning, false),
+					]);
+				},
+			};
+		};
 		H.push('<div class="NoWrap">');
 		if (
 			aTypePlanning ===
@@ -1009,17 +1040,18 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 			);
 		}
 		H.push(
-			'<div class="InlineBlock EspaceGauche AlignementMilieuVertical" style="margin-top:',
-			lEcartHeightTitre,
-			'px;">',
-			"<ie-btnimage ",
-			ObjetHtml_1.GHtml.composeAttr(
-				"ie-model",
-				"btnInversionAxe",
-				aTypePlanning,
+			IE.jsx.str(
+				"div",
+				{
+					class: "InlineBlock EspaceGauche AlignementMilieuVertical",
+					style: `margin-top:${lEcartHeightTitre}px;`,
+				},
+				IE.jsx.str("ie-btnimage", {
+					"ie-model": lModelBtnInversionAxe,
+					class: "Image_IntervertirLigneDevant",
+					style: "width:10px",
+				}),
 			),
-			' class="Image_IntervertirLigneDevant" style="width:10px"></ie-btnimage>',
-			"</div>",
 		);
 		H.push(
 			'<div class="InlineBlock PetitEspaceGauche AlignementMilieuVertical">',
@@ -1089,17 +1121,20 @@ class ObjetFenetre_ParametrageEDT extends ObjetFenetre_1.ObjetFenetre {
 			"</div>",
 		);
 		H.push(
-			'<div class="InlineBlock PetitEspaceGauche AlignementMilieuVertical" style="margin-top:',
-			lEcartHeightTitre,
-			'px;">',
-			"<ie-btnimage ",
-			ObjetHtml_1.GHtml.composeAttr(
-				"ie-model",
-				"btnInversionAxe",
-				aTypePlanning,
+			IE.jsx.str(
+				"div",
+				{
+					class: "InlineBlock PetitEspaceGauche AlignementMilieuVertical",
+					style: `margin-top:${lEcartHeightTitre}px;`,
+					"aria-hidden": "true",
+				},
+				IE.jsx.str("ie-btnimage", {
+					tabindex: "-1",
+					"ie-model": lModelBtnInversionAxe,
+					class: "Image_IntervertirLigneDerriere",
+					style: "width:10px",
+				}),
 			),
-			' class="Image_IntervertirLigneDerriere" style="width:10px"></ie-btnimage>',
-			"</div>",
 		);
 		H.push("</div>");
 		return H.join("");

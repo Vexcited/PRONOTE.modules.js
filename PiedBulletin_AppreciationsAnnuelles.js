@@ -387,7 +387,6 @@ class PiedBulletin_AppreciationsAnnuelles extends ObjetInterface_1.ObjetInterfac
 			AvecSuppression: false,
 			avecLigneCreation: false,
 			colonnesTriables: false,
-			avecModeAccessible: true,
 			hauteurAdapteContenu: true,
 			nonEditableSurModeExclusif: true,
 			scrollHorizontal:

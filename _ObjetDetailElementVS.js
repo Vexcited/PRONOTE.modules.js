@@ -322,40 +322,52 @@ class _ObjetDetailElementVS extends ObjetIdentite_1.Identite {
 					aInstance.eventCallBackValider();
 				},
 				getDisabled: function () {
-					var _a, _b;
 					if (!aInstance.elementVS) {
 						return true;
 					}
-					let lConditionsValidationInterdit;
-					if (aInstance.elementVS.estUneCreationParent) {
-						lConditionsValidationInterdit =
+					const lMotifDejaSaisieVS =
+						aInstance.elementVS.aJustifierParParents &&
+						aInstance.elementVS.estMotifNonEncoreConnu === false;
+					if (lMotifDejaSaisieVS) {
+						let lMotifNecessiteJustification = false;
+						if (aInstance.elementVS.listeMotifs) {
+							aInstance.elementVS.listeMotifs.parcourir((aMotif) => {
+								lMotifNecessiteJustification = aMotif.justificationObligatoire;
+								if (lMotifNecessiteJustification) {
+									return false;
+								}
+							});
+						}
+						return (
 							aInstance.elementVS.getEtat() ===
 								Enumere_Etat_1.EGenreEtat.Aucun ||
-							!aInstance.elementVS.motifParent ||
+							(aInstance.optionsAffichage.avecCommentaireObligatoire &&
+								(!aInstance.elementVS.justification ||
+									aInstance.elementVS.justification.trim() === "")) ||
+							(!!lMotifNecessiteJustification &&
+								(!aInstance.elementVS.justification ||
+									aInstance.elementVS.justification.trim() === "") &&
+								(!aInstance.elementVS.documents ||
+									aInstance.elementVS.documents.getNbrElementsExistes() === 0))
+						);
+					} else {
+						return (
+							aInstance.elementVS.getEtat() ===
+								Enumere_Etat_1.EGenreEtat.Aucun ||
+							(aInstance.optionsAffichage.avecCommentaireObligatoire &&
+								(!aInstance.elementVS.justification ||
+									aInstance.elementVS.justification.trim() === "")) ||
+							!(
+								aInstance.elementVS.motifParent &&
+								aInstance.elementVS.motifParent.existeNumero()
+							) ||
 							(!!aInstance.elementVS.motifParent.justificationObligatoire &&
 								(!aInstance.elementVS.justification ||
 									aInstance.elementVS.justification.trim() === "") &&
 								(!aInstance.elementVS.documents ||
-									aInstance.elementVS.documents.getNbrElementsExistes() === 0));
-					} else {
-						lConditionsValidationInterdit =
-							(aInstance.optionsAffichage.avecCommentaireObligatoire &&
-								((_b =
-									(_a = aInstance.elementVS.justification) === null ||
-									_a === void 0
-										? void 0
-										: _a.trim()) === null || _b === void 0
-									? void 0
-									: _b.length) === 0) ||
-							aInstance.elementVS.getEtat() ===
-								Enumere_Etat_1.EGenreEtat.Aucun ||
-							!(
-								(aInstance.elementVS.motifParent &&
-									aInstance.elementVS.motifParent.existeNumero()) ||
-								aInstance.elementVS.estMotifNonEncoreConnu === false
-							);
+									aInstance.elementVS.documents.getNbrElementsExistes() === 0))
+						);
 					}
-					return lConditionsValidationInterdit;
 				},
 				estVisible() {
 					return true;
@@ -405,7 +417,7 @@ class _ObjetDetailElementVS extends ObjetIdentite_1.Identite {
 	}
 	_construireHeader() {
 		const H = [];
-		H.push("<h4>", this.elementVS.infosDate.strDate(), "</h4>");
+		H.push(IE.jsx.str("h2", null, this.elementVS.infosDate.strDate()));
 		if (!!this.elementVS.html.nbrHeures) {
 			H.push(
 				'<div class="LigneDetailDuree">',

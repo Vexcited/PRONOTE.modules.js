@@ -735,7 +735,6 @@ class DonneesListe_ReleveDeNotes extends ObjetDonneesListe_1.ObjetDonneesListe {
 			avecLigneTotal: this.param.affichage.AvecMoyenneGenerale,
 			colonnesTriables: false,
 			hauteurAdapteContenu: true,
-			avecModeAccessible: true,
 			nonEditableSurModeExclusif: true,
 		});
 	}

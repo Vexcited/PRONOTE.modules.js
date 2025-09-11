@@ -11,7 +11,7 @@ const TradGlossaireWAI = ObjetTraduction_1.TraductionsModule.getModule(
 		Decoche: "",
 		CochePartiel: "",
 		PeriodeCloturee: "",
-		TinyView: "",
+		ContenusExcluRGAA: "",
 	},
 );
 exports.TradGlossaireWAI = TradGlossaireWAI;

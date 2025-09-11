@@ -53,6 +53,7 @@ const UtilitaireMessagerie_1 = require("UtilitaireMessagerie");
 const ObjetFenetre_DepotDocument_1 = require("ObjetFenetre_DepotDocument");
 const TypeCasier_1 = require("TypeCasier");
 const AccessApp_1 = require("AccessApp");
+const ObjetFenetre_EnvoiEMail_1 = require("ObjetFenetre_EnvoiEMail");
 class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspaceCP {
 	constructor(...aParams) {
 		super(...aParams);
@@ -446,7 +447,7 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 							{ avecChoixDestinataires: true },
 						);
 					},
-					{ icon: "icon_nouvelle_discussion" },
+					{ icon: "icon_nouvelle_discussion", ariaHasPopup: "dialog" },
 				);
 			}
 			if (lAvecInfoSondage) {
@@ -495,7 +496,7 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 					() => {
 						lFnSurClicItemInfosSondages(true);
 					},
-					{ icon: "icon_diffuser_information" },
+					{ icon: "icon_diffuser_information", ariaHasPopup: "dialog" },
 				);
 				aInstanceMenu.add(
 					ObjetTraduction_1.GTraductions.getValeur(
@@ -505,7 +506,7 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 					() => {
 						lFnSurClicItemInfosSondages(false);
 					},
-					{ icon: "icon_diffuser_sondage" },
+					{ icon: "icon_diffuser_sondage", ariaHasPopup: "dialog" },
 				);
 			}
 			if (
@@ -527,6 +528,7 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 						icon: ObjetFenetre_DepotDocument_1.ObjetFenetre_DepotDocument.getIconRubriqueDepot(
 							lTypeConsultation,
 						),
+						ariaHasPopup: "dialog",
 					},
 				);
 			}
@@ -549,8 +551,80 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 						icon: ObjetFenetre_DepotDocument_1.ObjetFenetre_DepotDocument.getIconRubriqueDepot(
 							lTypeConsultation,
 						),
+						ariaHasPopup: "dialog",
 					},
 				);
+			}
+			const lAvecRedirectionOngletEleves =
+				this.etatUtilisateurSco.estOngletAutorise(
+					Enumere_Onglet_1.EGenreOnglet.ListeEleves,
+				);
+			const lAvecRedirectionOngletResponsables =
+				this.etatUtilisateurSco.estOngletAutorise(
+					Enumere_Onglet_1.EGenreOnglet.ListeResponsables,
+				);
+			const lAvecRedirectionOngletProfs =
+				this.etatUtilisateurSco.estOngletAutorise(
+					Enumere_Onglet_1.EGenreOnglet.ListeProfesseurs,
+				);
+			const lAvecRedirectionOngletEquipePeda =
+				this.etatUtilisateurSco.estOngletAutorise(
+					Enumere_Onglet_1.EGenreOnglet.EquipePedagogique,
+				);
+			const lAvecRedirectionOngletPersonnels =
+				this.etatUtilisateurSco.estOngletAutorise(
+					Enumere_Onglet_1.EGenreOnglet.ListePersonnels,
+				);
+			const lFnSurClicItemListeRessource = (aGenreOnglet, aIcon) => {
+				aInstanceMenu.add(
+					this.etatUtilisateurSco.getLibelleLongOnglet(aGenreOnglet),
+					this.etatUtilisateurSco.getGenreOnglet() !== aGenreOnglet,
+					() => {
+						this.changementManuelOnglet(aGenreOnglet);
+					},
+					{ icon: aIcon },
+				);
+			};
+			if (
+				lAvecRedirectionOngletEleves ||
+				lAvecRedirectionOngletResponsables ||
+				lAvecRedirectionOngletProfs ||
+				lAvecRedirectionOngletEquipePeda ||
+				lAvecRedirectionOngletPersonnels
+			) {
+				if (aInstanceMenu.getListeLignes().count()) {
+					aInstanceMenu.addSeparateur();
+				}
+				if (lAvecRedirectionOngletEleves) {
+					lFnSurClicItemListeRessource(
+						Enumere_Onglet_1.EGenreOnglet.ListeEleves,
+						"icon_liste_etudiant",
+					);
+				}
+				if (lAvecRedirectionOngletResponsables) {
+					lFnSurClicItemListeRessource(
+						Enumere_Onglet_1.EGenreOnglet.ListeResponsables,
+						"icon_parents",
+					);
+				}
+				if (lAvecRedirectionOngletProfs) {
+					lFnSurClicItemListeRessource(
+						Enumere_Onglet_1.EGenreOnglet.ListeProfesseurs,
+						"icon_enseignant_prof",
+					);
+				}
+				if (lAvecRedirectionOngletEquipePeda) {
+					lFnSurClicItemListeRessource(
+						Enumere_Onglet_1.EGenreOnglet.EquipePedagogique,
+						"icon_group",
+					);
+				}
+				if (lAvecRedirectionOngletPersonnels) {
+					lFnSurClicItemListeRessource(
+						Enumere_Onglet_1.EGenreOnglet.ListePersonnels,
+						"icon_intervenants",
+					);
+				}
 			}
 		};
 		const lId = this.getInstance(this.IdentBandeauEntete).NomBtnCommunication;
@@ -569,6 +643,13 @@ class ObjetInterfaceEspace extends _ObjetInterfaceEspaceCP_1._ObjetInterfaceEspa
 				lSetAriaExpanded(false);
 			},
 		});
+	}
+	ouvrirFenetreEnvoiEmail() {
+		const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_EnvoiEMail_1.ObjetFenetre_EnvoiEMail,
+			{ pere: this },
+		);
+		lFenetre.afficher();
 	}
 	evenementSurAide() {
 		if (this.parametresSco.urlAide) {

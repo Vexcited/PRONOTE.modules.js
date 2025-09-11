@@ -69,7 +69,7 @@ class WidgetVieScolaire extends ObjetWidget_1.Widget.ObjetWidget {
 									.listeReferentsVieScolaire,
 							);
 						},
-						{ icon: "icon_envoyer" },
+						{ icon: "icon_envoyer", ariaHasPopup: "dialog" },
 					);
 				}
 				if (this.utilitaireAbsence.avecCommandeDeclarerUneAbsence()) {
@@ -83,9 +83,11 @@ class WidgetVieScolaire extends ObjetWidget_1.Widget.ObjetWidget {
 								instanceAppel: this,
 								callbackApresSaisieAbsences:
 									this.callbackApresSaisieEvt.bind(this),
+								commentaireAbsenceObligatoire:
+									!!this.donnees.commentaireAbsenceObligatoire,
 							});
 						},
-						{ icon: "icon_absences_prevue" },
+						{ icon: "icon_absences_prevue", ariaHasPopup: "dialog" },
 					);
 				}
 				const lAvecAuMoinsUneMatiereDispensable =
@@ -113,7 +115,7 @@ class WidgetVieScolaire extends ObjetWidget_1.Widget.ObjetWidget {
 									},
 								);
 							},
-							{ icon: "icon_dispense" },
+							{ icon: "icon_dispense", ariaHasPopup: "dialog" },
 						);
 					}
 					if (this.utilitaireAbsence.avecCommandeDeclarerUneDispenseLongue()) {
@@ -132,7 +134,10 @@ class WidgetVieScolaire extends ObjetWidget_1.Widget.ObjetWidget {
 									},
 								);
 							},
-							{ icon: "icon_dispense mix-icon_time i-as-deco" },
+							{
+								icon: "icon_dispense mix-icon_time i-as-deco",
+								ariaHasPopup: "dialog",
+							},
 						);
 					}
 				}
@@ -174,7 +179,11 @@ class WidgetVieScolaire extends ObjetWidget_1.Widget.ObjetWidget {
 						{ class: "AlignementDroit p-right-xl" },
 						IE.jsx.str(
 							"ie-bouton",
-							{ class: "small-bt", "ie-model": "btnCommandesVieScolaire" },
+							{
+								class: "small-bt",
+								"ie-model": "btnCommandesVieScolaire",
+								"aria-haspopup": "menu",
+							},
 							ObjetTraduction_1.GTraductions.getValeur(
 								"AbsenceVS.ContacterLaVieScolaire",
 							),

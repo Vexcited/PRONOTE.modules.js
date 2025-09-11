@@ -22,6 +22,7 @@ const TypeContexteBulletin_1 = require("TypeContexteBulletin");
 const TypeModeAffichagePiedBulletin_1 = require("TypeModeAffichagePiedBulletin");
 const TypeModuleFonctionnelPiedBulletin_1 = require("TypeModuleFonctionnelPiedBulletin");
 const AccessApp_1 = require("AccessApp");
+const ObjetTraduction_1 = require("ObjetTraduction");
 class InterfacePiedBulletin extends ObjetInterface_1.ObjetInterface {
 	constructor(...aParams) {
 		super(...aParams);
@@ -720,6 +721,10 @@ class InterfacePiedBulletin extends ObjetInterface_1.ObjetInterface {
 				TypeModuleFonctionnelPiedBulletin_1.TypeModuleFonctionnelPiedBulletin
 					.MFPB_Competences,
 			),
+			ariaLabelBilanFinDeCycle: () => {
+				var _a;
+				return `${ObjetTraduction_1.GTraductions.getValeur("BulletinEtReleve.TitreBilanFinDeCycle")} ${((_a = (0, AccessApp_1.getApp)().getEtatUtilisateur().getPeriode()) === null || _a === void 0 ? void 0 : _a.getLibelle()) || ""}`.trim();
+			},
 		});
 	}
 	_initPBMentions(aInstance) {

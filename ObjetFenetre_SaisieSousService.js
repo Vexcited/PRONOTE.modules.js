@@ -204,7 +204,7 @@ class ObjetFenetre_SaisieSousService extends ObjetFenetre_1.ObjetFenetre {
 				'" class="m-y-l"></div>',
 		);
 		H.push(
-			'<ie-bouton class="m-bottom-l" ie-model="boutonCreationSousService">',
+			'<ie-bouton class="m-bottom-l" ie-model="boutonCreationSousService" aria-haspopup="dialog">',
 			ObjetTraduction_1.GTraductions.getValeur(
 				"servicesProfesseur.CreerSousService.CreerUnSousService",
 			),

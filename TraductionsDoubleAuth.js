@@ -7,6 +7,7 @@ const TradDoubleAuth = ObjetTraduction_1.TraductionsModule.getModule(
 		TitreValiderCodePIN: "",
 		RenforcerSecurite: "",
 		EnSavoirPlus: "",
+		EnSavoirPlusTitle: "",
 		LegendeStrategie: "",
 		LegendeStrategieCompte: "",
 		StrategieFort: "",

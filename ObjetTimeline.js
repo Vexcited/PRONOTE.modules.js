@@ -73,6 +73,7 @@ class ObjetTimeline extends ObjetInterface_1.ObjetInterface {
 		});
 		return UtilitaireHtml_1.UtilitaireHtml.composeGroupeRadiosBoutons({
 			id: aGroupeRadioId,
+			ariaLabel: ObjetTraduction_1.GTraductions.getValeur("ChoixTypeAffichage"),
 			listeRadios: lListeRadios,
 			selectedValue: aSelectedModeAffichage,
 		});

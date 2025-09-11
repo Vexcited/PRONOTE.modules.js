@@ -167,6 +167,8 @@ class InterfacePageResultatsClasses extends InterfacePage_1.InterfacePage {
 			const lParametresCalcul = {
 				libelleEleve: aParametres.article.nom,
 				html: lSource.FormuleHTML,
+				legende: lSource.FormuleLegende,
+				wai: lSource.FormuleWAI,
 				titreFenetre: lSource.chaineTitre,
 				moyenneNette: true,
 			};

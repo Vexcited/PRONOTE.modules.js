@@ -213,7 +213,13 @@ TUtilitaireInformations.initialiserNouveauItem = function (aParam) {
 		: ObjetTraduction_1.GTraductions.getValeur("actualites.Aucun");
 	lInformation.detailPublic = aParam.actualite
 		? aParam.actualite.detailPublic
-		: ObjetTraduction_1.GTraductions.getValeur("actualites.AucunDestinataire");
+		: IE.jsx.str(
+				"p",
+				null,
+				ObjetTraduction_1.GTraductions.getValeur(
+					"actualites.AucunDestinataire",
+				),
+			);
 	lInformation.avecModificationPublic = !!(
 		aParam.actualite || aParam.listePublic
 	);

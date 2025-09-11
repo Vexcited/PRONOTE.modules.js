@@ -296,6 +296,8 @@ const UtilitaireWidget = {
 				lNbElementsAffichables = aWidget.nbrElements - aWidget.nbrItemsVisible;
 			}
 			if (lNbElementsAffichables > 0) {
+				const lIdNbEltMasque =
+					aWidget.id + UtilitaireWidget.suffixIdFooter + "_NbEltMasque";
 				lJQFooter.show();
 				lJQFooter.ieHtml(
 					IE.jsx.str(
@@ -307,10 +309,11 @@ const UtilitaireWidget = {
 							"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
 								"accueil.hintAfficherElements",
 							),
+							"aria-describedby": lIdNbEltMasque,
 						},
 						IE.jsx.str("i", { class: "icon_eye_open", "aria-hidden": "true" }),
 						IE.jsx.str("span", { class: "counter" }, "+"),
-						lNbElementsAffichables,
+						IE.jsx.str("span", { id: lIdNbEltMasque }, lNbElementsAffichables),
 					),
 				);
 			}

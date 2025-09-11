@@ -95,6 +95,7 @@ class InterfaceListeDevoirSurTable extends InterfacePage_1.InterfacePage {
 							"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
 								"fenetreSelectionClasseGroupe.titre",
 							),
+							"aria-haspopup": "dialog",
 						},
 						"...",
 					),

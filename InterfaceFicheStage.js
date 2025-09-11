@@ -154,6 +154,7 @@ class ObjetInterfaceFicheStage extends InterfaceFicheStageCP_1.ObjetInterfaceFic
 			if (
 				UtilitaireRenseignementsEleve_1.UtilitairePhotoEleve.avecPhotoEleve()
 			) {
+				this.AddSurZone.push({ blocGauche: true });
 				this.AddSurZone.push({
 					html: UtilitaireRenseignementsEleve_1.UtilitaireFicheEleve.getHtmlBtnAfficherFicheEleve(
 						this,
@@ -164,6 +165,7 @@ class ObjetInterfaceFicheStage extends InterfaceFicheStageCP_1.ObjetInterfaceFic
 						this,
 					),
 				});
+				this.AddSurZone.push({ blocDroit: true });
 			}
 		}
 	}
@@ -461,6 +463,7 @@ class ObjetInterfaceFicheStage extends InterfaceFicheStageCP_1.ObjetInterfaceFic
 							"aria-label": ObjetTraduction_1.GTraductions.getValeur(
 								"FicheStage.detailInfoSignatureConvention",
 							),
+							"aria-haspopup": "dialog",
 						}),
 					),
 				),

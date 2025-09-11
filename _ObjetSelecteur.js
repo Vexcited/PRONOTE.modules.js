@@ -68,6 +68,7 @@ class _ObjetSelecteur extends ObjetInterface_1.ObjetInterface {
 							{
 								"ie-tooltiplabel": this._options.tooltip,
 								"ie-model": "btnSelecteur",
+								"aria-haspopup": "dialog",
 							},
 							"...",
 						),

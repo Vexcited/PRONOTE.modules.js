@@ -612,6 +612,7 @@ class ObjetDestinatairesActualite extends ObjetInterface_1.ObjetInterface {
 				class: Type_ThemeBouton_1.TypeThemeBouton.neutre,
 				"ie-tooltiplabel": lAriaLabel,
 				"aria-describedby": lAriaDescribedby,
+				"aria-haspopup": "dialog",
 			},
 			"...",
 		);
@@ -632,6 +633,7 @@ class ObjetDestinatairesActualite extends ObjetInterface_1.ObjetInterface {
 					this.id.labelResponsableAResponsable,
 					this.id.countResponsableAResponsable,
 				].join(" "),
+				"aria-haspopup": "dialog",
 			},
 			"...",
 		);
@@ -650,6 +652,7 @@ class ObjetDestinatairesActualite extends ObjetInterface_1.ObjetInterface {
 						Enumere_Ressource_1.EGenreRessource.Eleve,
 					),
 				"aria-describedby": [this.id.labelEleve, this.id.countEleve].join(" "),
+				"aria-haspopup": "dialog",
 			},
 			"...",
 		);
@@ -671,6 +674,7 @@ class ObjetDestinatairesActualite extends ObjetInterface_1.ObjetInterface {
 					this.id.labelProfesseur,
 					this.id.countProfesseur,
 				].join(" "),
+				"aria-haspopup": "dialog",
 			},
 			"...",
 		);
@@ -692,6 +696,7 @@ class ObjetDestinatairesActualite extends ObjetInterface_1.ObjetInterface {
 					this.id.labelResponsable,
 					this.id.countResponsable,
 				].join(" "),
+				"aria-haspopup": "dialog",
 			},
 			"...",
 		);
@@ -713,6 +718,7 @@ class ObjetDestinatairesActualite extends ObjetInterface_1.ObjetInterface {
 					this.id.labelPersonnel,
 					this.id.countPersonnel,
 				].join(" "),
+				"aria-haspopup": "dialog",
 			},
 			"...",
 		);
@@ -734,6 +740,7 @@ class ObjetDestinatairesActualite extends ObjetInterface_1.ObjetInterface {
 					this.id.labelMaitreDeStage,
 					this.id.countMaitreDeStage,
 				].join(" "),
+				"aria-haspopup": "dialog",
 			},
 			"...",
 		);
@@ -755,6 +762,7 @@ class ObjetDestinatairesActualite extends ObjetInterface_1.ObjetInterface {
 					this.id.labelInspecteur,
 					this.id.countInspecteur,
 				].join(" "),
+				"aria-haspopup": "dialog",
 			},
 			"...",
 		);

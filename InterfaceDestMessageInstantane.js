@@ -291,6 +291,7 @@ class InterfaceDestMessageInstantane extends ObjetInterface_1.ObjetInterface {
 							"ie-model": "btnContact",
 							class: "dmi_btnContact",
 							"ie-icon": "icon_contact_vs",
+							"aria-haspopup": "dialog",
 						},
 						ObjetTraduction_1.GTraductions.getValeur("Messagerie.ContacterVS"),
 					)

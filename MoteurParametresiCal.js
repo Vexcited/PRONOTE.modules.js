@@ -263,11 +263,10 @@ class MoteurParametresiCal {
 	completerInformationsLien(aArticle) {
 		const lVersion = GParametres.versionPN;
 		if (aArticle && aArticle.nom && aArticle.paramICal) {
-			const lGenre = aArticle.getGenre();
-			let lParams =
-				lGenre === TypeGenreICal_1.TypeGenreICal.ICal_Agenda ? "fh=1" : "";
-			lParams += "&o=" + lGenre;
-			aArticle.href = `ical/${aArticle.nom}.ics?icalsecurise=${aArticle.paramICal}&version=${lVersion}&param=${new forge.util.ByteBuffer(lParams).toHex()}`;
+			const lParamSuppl = aArticle.paramSuppl
+				? `&param=${aArticle.paramSuppl}`
+				: "";
+			aArticle.href = `ical/${aArticle.nom}.ics?icalsecurise=${aArticle.paramICal}&version=${lVersion}${lParamSuppl}`;
 			aArticle.lienNavigateur =
 				ObjetNavigateur_1.Navigateur.getHost() + aArticle.href;
 		}

@@ -541,6 +541,7 @@ class ObjetFenetre_ProjetAccompagnement extends ObjetFenetre_1.ObjetFenetre {
 			placeHolder: ObjetTraduction_1.GTraductions.getValeur(
 				"FicheEleve.aucunTypeDeProjet",
 			),
+			popupWAI: "dialog",
 		});
 	}
 	_evntType(aGenreEvent) {
@@ -592,6 +593,7 @@ class ObjetFenetre_ProjetAccompagnement extends ObjetFenetre_1.ObjetFenetre {
 			placeHolder: ObjetTraduction_1.GTraductions.getValeur(
 				"FicheEleve.aucunMotifProjet",
 			),
+			popupWAI: "dialog",
 		});
 	}
 	_evntMotif(aGenreEvent) {

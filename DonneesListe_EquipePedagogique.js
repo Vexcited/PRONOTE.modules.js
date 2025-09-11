@@ -5,6 +5,7 @@ const ObjetDroitsPN_1 = require("ObjetDroitsPN");
 const ObjetFenetre_Discussion_1 = require("ObjetFenetre_Discussion");
 const ObjetListeElements_1 = require("ObjetListeElements");
 const ObjetTraduction_1 = require("ObjetTraduction");
+const C_NBProfMax = 3;
 class DonneesListe_EquipePedagogique extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
 	constructor(aDonnees, estAffichageNom) {
 		super(aDonnees);
@@ -52,16 +53,13 @@ class DonneesListe_EquipePedagogique extends ObjetDonneesListeFlatDesign_1.Objet
 	}
 	getTitreZonePrincipale(aParams) {
 		let H = [];
-		if (this.estAffichageNom === true) {
+		if (this.estAffichageNom) {
 			H.push(
 				`<div ie-ellipsis class="ie-titre" >${aParams.article.getLibelle()}</div>`,
 			);
 		} else if (
-			this.estAffichageNom === false &&
 			aParams.article.getLibelle() !==
-				ObjetTraduction_1.GTraductions.getValeur(
-					"EquipePedagogique.sansMatiere",
-				)
+			ObjetTraduction_1.GTraductions.getValeur("EquipePedagogique.sansMatiere")
 		) {
 			if (aParams.article.volumeHoraire) {
 				H.push(
@@ -77,7 +75,7 @@ class DonneesListe_EquipePedagogique extends ObjetDonneesListeFlatDesign_1.Objet
 	}
 	getInfosSuppZonePrincipale(aParams) {
 		let H = [];
-		if (this.estAffichageNom === true) {
+		if (this.estAffichageNom) {
 			if (aParams.article.estProfesseurPrincipal) {
 				H.push(
 					`<div class="ie-sous-titre capitalize" ><i class="icon_star" role="presentation"></i> `,
@@ -117,12 +115,12 @@ class DonneesListe_EquipePedagogique extends ObjetDonneesListeFlatDesign_1.Objet
 					`<div class="ie-sous-titre capitalize">${aParams.article.fonction}</div>`,
 				);
 			}
-		} else if (this.estAffichageNom === false) {
+		} else {
 			if (aParams.article.listeProfesseursParMatiere) {
 				aParams.article.listeProfesseursParMatiere.parcourir((aProf) => {
 					if (aProf.matieres) {
 						aProf.matieres.parcourir((aProf2) => {
-							if (aProf2.estUneSousMatiere === true) {
+							if (aProf2.estUneSousMatiere) {
 								H.push(
 									`<div class="ie-sous-titre capitalize">${aProf2.getLibelle()}</div>`,
 								);
@@ -175,90 +173,88 @@ class DonneesListe_EquipePedagogique extends ObjetDonneesListeFlatDesign_1.Objet
 		return H.join("");
 	}
 	getTotal(aEstHeader) {
+		const _construireListeProf = (aListeProf, aEstPP) => {
+			if (aListeProf) {
+				const lLibelle = ObjetTraduction_1.GTraductions.getValeur(
+					aEstPP
+						? "EquipePedagogique.professeurPrincipal"
+						: "EquipePedagogique.tuteur",
+				);
+				if (
+					(aListeProf === null || aListeProf === void 0
+						? void 0
+						: aListeProf.count()) > C_NBProfMax
+				) {
+					return IE.jsx.str(
+						"div",
+						{ class: "m-bottom-l" },
+						IE.jsx.str(
+							"p",
+							{ "ie-ellipsis": true, class: "ie-titre" },
+							aListeProf.getTableauLibelles().join(", "),
+						),
+						IE.jsx.str(
+							"p",
+							{ class: "ie-sous-titre capitalize PetitEspaceBas" },
+							lLibelle,
+						),
+					);
+				} else {
+					return IE.jsx.str(
+						"dl",
+						null,
+						aListeProf.getTableau((aPP) =>
+							IE.jsx.str(
+								IE.jsx.fragment,
+								null,
+								IE.jsx.str("dt", { class: "ie-titre" }, aPP.getLibelle()),
+								IE.jsx.str(
+									"dd",
+									{ class: "ie-sous-titre capitalize PetitEspaceBas" },
+									lLibelle,
+								),
+							),
+						),
+					);
+				}
+			}
+		};
 		if (aEstHeader) {
 			const H = [];
-			if (this.estAffichageNom === true) {
-				this.getInfosSuppZonePrincipale;
-				const profPrinc = this.Donnees.getListeElements(
+			if (this.estAffichageNom) {
+				const lListeProfPP = this.Donnees.getListeElements(
 					(aElem) => aElem.estProfesseurPrincipal,
 				);
 				const lListeTuteurs = this.Donnees.getListeElements(
 					(aElem) => aElem.estTuteur,
 				);
-				profPrinc.parcourir((aPP) => {
-					H.push(`<div ie-ellipsis class="ie-titre">${aPP.Libelle}</div>`);
-					H.push(
-						`<div class="ie-sous-titre capitalize PetitEspaceBas"> `,
-						ObjetTraduction_1.GTraductions.getValeur(
-							"EquipePedagogique.professeurPrincipal",
-						),
-						`</div>`,
-					);
+				H.push(_construireListeProf(lListeProfPP, true));
+				H.push(_construireListeProf(lListeTuteurs, false));
+			} else {
+				const lUniqueNomProfPrincipal =
+					new ObjetListeElements_1.ObjetListeElements();
+				let lUniqueNomTuteur = new ObjetListeElements_1.ObjetListeElements();
+				this.Donnees.parcourir((aProf) => {
+					var _a;
+					(_a = aProf.listeProfesseursParMatiere) === null || _a === void 0
+						? void 0
+						: _a.parcourir((aProf) => {
+								if (aProf.estProfesseurPrincipal) {
+									if (lUniqueNomProfPrincipal.getElementParElement(aProf)) {
+										return;
+									}
+									lUniqueNomProfPrincipal.add(aProf);
+								}
+								if (aProf.estTuteur) {
+									if (lUniqueNomTuteur.getElementParElement(aProf)) {
+										return;
+									}
+									lUniqueNomTuteur.add(aProf);
+								}
+							});
 				});
-				lListeTuteurs.parcourir((aTuteur) => {
-					H.push(`<div ie-ellipsis class="ie-titre">${aTuteur.Libelle}</div>`);
-					H.push(
-						`<div class="ie-sous-titre capitalize PetitEspaceBas"> `,
-						ObjetTraduction_1.GTraductions.getValeur(
-							"EquipePedagogique.tuteur",
-						),
-						`</div>`,
-					);
-				});
-			}
-			if (this.estAffichageNom === false) {
-				const profPrinc = this.Donnees.getListeElements(
-					(aElem) => aElem.estProfesseurPrincipal,
-				);
-				const lListeTuteurs = this.Donnees.getListeElements(
-					(aElem) => aElem.estTuteur,
-				);
-				let uniqueNomProfPrincipal = [];
-				profPrinc.parcourir((aProf) => {
-					if (aProf.listeProfesseursParMatiere) {
-						aProf.listeProfesseursParMatiere.parcourir((aProf2) => {
-							if (
-								uniqueNomProfPrincipal.includes(aProf2.getLibelle()) === false
-							) {
-								uniqueNomProfPrincipal.push(aProf2.getLibelle());
-							}
-						});
-					}
-				});
-				for (let i = 0; i < uniqueNomProfPrincipal.length; i++) {
-					H.push(
-						`<div ie-ellipsis class="ie-titre">${uniqueNomProfPrincipal[i]}</div>`,
-					);
-					H.push(
-						`<div class="ie-sous-titre capitalize PetitEspaceBas"> `,
-						ObjetTraduction_1.GTraductions.getValeur(
-							"EquipePedagogique.professeurPrincipal",
-						),
-						`</div>`,
-					);
-				}
-				let uniqueNomTuteur = [];
-				lListeTuteurs.parcourir((aProf) => {
-					if (aProf.listeProfesseursParMatiere) {
-						aProf.listeProfesseursParMatiere.parcourir((aProf2) => {
-							if (uniqueNomTuteur.includes(aProf2.getLibelle()) === false) {
-								uniqueNomTuteur.push(aProf2.getLibelle());
-							}
-						});
-					}
-				});
-				for (let j = 0; j < uniqueNomTuteur.length; j++) {
-					H.push(
-						`<div ie-ellipsis class="ie-titre">${uniqueNomTuteur[j]}</div>`,
-					);
-					H.push(
-						`<div class="ie-sous-titre capitalize PetitEspaceBas"> `,
-						ObjetTraduction_1.GTraductions.getValeur(
-							"EquipePedagogique.tuteur",
-						),
-						`</div>`,
-					);
-				}
+				H.push(_construireListeProf(lUniqueNomProfPrincipal.trier(), true));
+				H.push(_construireListeProf(lUniqueNomTuteur.trier(), false));
 			}
 			return { getHtml: () => H.join("") };
 		}

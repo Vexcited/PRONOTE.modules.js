@@ -51,13 +51,20 @@ class PiedBulletin_VieScolaire extends ObjetIdentite_1.Identite {
 		const H = [];
 		if (T.length > 0) {
 			H.push(
-				'<h2 class="p-y ie-titre-petit Gras" style="',
-				ObjetStyle_1.GStyle.composeCouleurTexte(GCouleur.themeCouleur.foncee),
-				'">',
-				ObjetTraduction_1.GTraductions.getValeur("PiedDeBulletin.VieScolaire"),
-				"</h2>",
+				IE.jsx.str(
+					"h2",
+					{
+						class: "p-y ie-titre-petit Gras",
+						style: ObjetStyle_1.GStyle.composeCouleurTexte(
+							GCouleur.themeCouleur.foncee,
+						),
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"PiedDeBulletin.VieScolaire",
+					),
+				),
 			);
-			H.push(T.join(" - "));
+			H.push(IE.jsx.str("p", null, T.join(" - ")));
 		}
 		return H.join("");
 	}
@@ -99,7 +106,7 @@ class PiedBulletin_Stages extends ObjetIdentite_1.Identite {
 			aListeStages.parcourir((aStage) => {
 				T.push('<div class="EspaceBas">');
 				if (!!aStage.session) {
-					T.push("<div>", aStage.session, "</div>");
+					T.push("<p>", aStage.session, "</p>");
 				}
 				const lLibelleStage = [aStage.getLibelle()];
 				if (!!aStage.dateInterruption) {
@@ -113,11 +120,11 @@ class PiedBulletin_Stages extends ObjetIdentite_1.Identite {
 						),
 					);
 				}
-				T.push("<div>", lLibelleStage.join(""), "</div>");
+				T.push("<p>", lLibelleStage.join(""), "</p>");
 				if (!!aStage.listeMaitresDeStage) {
 					aStage.listeMaitresDeStage.parcourir((D) => {
 						T.push(
-							'<div class="EspaceGauche">',
+							'<p class="EspaceGauche">',
 							"<span>",
 							D.getLibelle(),
 							"  : ",
@@ -125,14 +132,14 @@ class PiedBulletin_Stages extends ObjetIdentite_1.Identite {
 							'<span class="Gras">',
 							D.appreciation || "",
 							"</span>",
-							"</div>",
+							"</p>",
 						);
 					});
 				}
 				if (!!aStage.listeProfesseurs) {
 					aStage.listeProfesseurs.parcourir((D) => {
 						T.push(
-							'<div class="EspaceGauche">',
+							'<p class="EspaceGauche">',
 							"<span>",
 							D.getLibelle(),
 							"  : ",
@@ -140,7 +147,7 @@ class PiedBulletin_Stages extends ObjetIdentite_1.Identite {
 							'<span class="Gras">',
 							D.appreciation || "",
 							"</span>",
-							"</div>",
+							"</p>",
 						);
 					});
 				}
@@ -197,12 +204,14 @@ class PiedBulletin_Mentions extends ObjetIdentite_1.Identite {
 					: "";
 			T.push('<div class="', lClass, '" >');
 			T.push(
-				'<div style="display: inline;">' +
+				IE.jsx.str(
+					"h2",
+					{ style: "display: inline;" },
 					ObjetTraduction_1.GTraductions.getValeur(
 						"PiedDeConseilDeClasse.Mentions",
-					) +
-					"&nbsp;:&nbsp;" +
-					"</div>",
+					),
+					" :",
+				),
 			);
 			const H = [];
 			for (let i = 0, lNbr = aParam.count(); i < lNbr; i++) {
@@ -210,9 +219,9 @@ class PiedBulletin_Mentions extends ObjetIdentite_1.Identite {
 				H.push(lElt.Nombre + "&nbsp;" + lElt.getLibelle());
 			}
 			T.push(
-				'<div style="display: inline;" class="Gras">',
+				'<p style="display: inline;" class="Gras">',
 				H.join(" - "),
-				"</div>",
+				"</p>",
 			);
 			T.push("</div>");
 		}
@@ -252,9 +261,7 @@ class PiedBulletin_Legende extends ObjetIdentite_1.Identite {
 	_construireLegende(aParam) {
 		const T = [];
 		if (aParam) {
-			T.push('<div class="Italique">');
-			T.push(aParam);
-			T.push("</div>");
+			T.push(IE.jsx.str("p", { class: "Italique" }, aParam));
 		}
 		return T.join("");
 	}

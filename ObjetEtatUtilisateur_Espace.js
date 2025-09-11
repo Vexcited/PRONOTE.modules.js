@@ -11,6 +11,7 @@ const Enumere_Connexion_1 = require("Enumere_Connexion");
 const Enumere_Espace_1 = require("Enumere_Espace");
 const Enumere_Onglet_1 = require("Enumere_Onglet");
 const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetFenetre_EnvoiEMail_1 = require("ObjetFenetre_EnvoiEMail");
 class ObjetEtatUtilisateur_Espace extends ObjetEtatUtilisateur_1.ObjetEtatUtilisateur {
 	constructor(aGenreEspace) {
 		super(aGenreEspace);
@@ -104,12 +105,35 @@ class ObjetEtatUtilisateur_Espace extends ObjetEtatUtilisateur_1.ObjetEtatUtilis
 			ObjetDroitsPN_1.TypeDroits.casierNumerique
 				.avecSaisieDocumentsCasiersResponsable,
 		);
+		const lAvecRedirectionOngletEleves = this.estOngletAutorise(
+			Enumere_Onglet_1.EGenreOnglet.ListeEleves,
+		);
+		const lAvecRedirectionOngletResponsables = this.estOngletAutorise(
+			Enumere_Onglet_1.EGenreOnglet.ListeResponsables,
+		);
+		const lAvecRedirectionOngletProfs = this.estOngletAutorise(
+			Enumere_Onglet_1.EGenreOnglet.ListeProfesseurs,
+		);
+		const lAvecRedirectionOngletEquipePeda = this.estOngletAutorise(
+			Enumere_Onglet_1.EGenreOnglet.EquipePedagogique,
+		);
+		const lAvecRedirectionOngletPersonnels = this.estOngletAutorise(
+			Enumere_Onglet_1.EGenreOnglet.ListePersonnels,
+		);
+		const lAvecEnvoiEmail =
+			ObjetFenetre_EnvoiEMail_1.ObjetFenetre_EnvoiEMail.avecAuMoinsUnTypeDeDestinatairesPossible();
 		return (
 			lEstEspaceAvecCommunication &&
 			(lAvecDiscussion ||
 				lAvecInfoSondage ||
 				lAvecDepotCasierIntervenant ||
-				lAvecDepotCasierResponsable)
+				lAvecDepotCasierResponsable ||
+				lAvecRedirectionOngletEleves ||
+				lAvecRedirectionOngletResponsables ||
+				lAvecRedirectionOngletProfs ||
+				lAvecRedirectionOngletEquipePeda ||
+				lAvecRedirectionOngletPersonnels ||
+				lAvecEnvoiEmail)
 		);
 	}
 	avecFenetreKiosque() {

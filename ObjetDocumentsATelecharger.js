@@ -320,7 +320,7 @@ class DonneesListe_DocumentATelecharger extends ObjetDonneesListeFlatDesign_1.Ob
 				ObjetElement_1.ObjetElement.create({
 					estTotal: true,
 					Libelle: ObjetTraduction_1.GTraductions.getValeur(
-						"documentsATelecharger.toutesLesNatures",
+						"Casier.toutesLesNatures",
 					),
 					couleur: undefined,
 				}),
@@ -963,17 +963,6 @@ class DonneesListe_DocumentATelecharger extends ObjetDonneesListeFlatDesign_1.Ob
 					{ "ie-model": this.jsxModeleCheckboxDocumentsNonSignes.bind(this) },
 					ObjetTraduction_1.GTraductions.getValeur("Casier.FiltreNonSignes"),
 				),
-			this.avecFiltreNonLus &&
-				IE.jsx.str(
-					"ie-checkbox",
-					{ "ie-model": this.jsxModeleCheckboxDocumentsNonLus.bind(this) },
-					ObjetTraduction_1.GTraductions.getValeur(
-						"documentsATelecharger.nonLus",
-					),
-				),
-			this.avecFiltreNonLus &&
-				this.avecFiltreCategorie &&
-				IE.jsx.str("div", { class: ["DAT_separateur", "m-y-l"] }),
 			this.avecFiltreCategorie &&
 				IE.jsx.str(
 					"label",
@@ -985,6 +974,15 @@ class DonneesListe_DocumentATelecharger extends ObjetDonneesListeFlatDesign_1.Ob
 					"ie-model": this.jsxComboModelFiltreCategories.bind(this),
 					class: "combo-sans-fleche",
 				}),
+			this.avecFiltreNonLus &&
+				this.avecFiltreCategorie &&
+				IE.jsx.str("div", { class: ["DAT_separateur", "m-y-xl"] }),
+			this.avecFiltreNonLus &&
+				IE.jsx.str(
+					"ie-checkbox",
+					{ "ie-model": this.jsxModeleCheckboxDocumentsNonLus.bind(this) },
+					ObjetTraduction_1.GTraductions.getValeur("Casier.FiltreNonLus"),
+				),
 		);
 	}
 	reinitFiltres() {

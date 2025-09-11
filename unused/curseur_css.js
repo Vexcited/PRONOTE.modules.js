@@ -9,7 +9,6 @@ exports.StylesCurseur = {
 	AvecInterdiction: "AvecInterdiction",
 	AvecMove: "AvecMove",
 	AvecTexte: "AvecTexte",
-	Curseur_ClickDroit: "Curseur_ClickDroit",
 	Curseur_DoubleClick: "Curseur_DoubleClick",
 	Curseur_Pinceau: "Curseur_Pinceau",
 	Curseur_PinceauVert: "Curseur_PinceauVert",

@@ -443,7 +443,11 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 							j++
 						) {
 							const lEltJ = lElt.listeRessources.get(j);
-							if (lEltJ.existeNumero() && lEltJ.avecDiscussion) {
+							if (
+								lEltJ.existeNumero() &&
+								"avecDiscussion" in lEltJ &&
+								lEltJ.avecDiscussion
+							) {
 								switch (j) {
 									case 0:
 										if (
@@ -638,7 +642,7 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 					id: this.idTypesDestinataire.eleve,
 					label: ObjetTraduction_1.GTraductions.getValeur("Messagerie.Eleves"),
 					actif: lAvecEleves,
-					estCoche: false,
+					estCoche: lAvecEleves,
 				};
 				if (this.destinataires.resp1.nbDest > 0) {
 					lAutresDestinataires.push({
@@ -683,7 +687,7 @@ class ObjetFenetre_Message extends ObjetFenetre_1.ObjetFenetre {
 					id: this.idTypesDestinataire.eleve,
 					label: this.destinataires.eleves.hintDest(),
 					actif: lAvecEleves,
-					estCoche: false,
+					estCoche: lAvecEleves,
 				};
 				if (this.destinataires.resp1.nbDest > 0) {
 					lAutresDestinataires.push({

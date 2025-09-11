@@ -780,6 +780,7 @@ class PageOrientation extends ObjetIdentite_1.Identite {
 						class: ["icon_trash", "avecFond"],
 						title:
 							GlossaireOrientation_1.TradGlossaireOrientation.SupprimerLeVoeux,
+						"aria-haspopup": "dialog",
 					}),
 				),
 			),

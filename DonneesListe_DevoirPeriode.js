@@ -1,6 +1,11 @@
 exports.DonneesListe_DevoirPeriode = void 0;
 const ObjetDonneesListe_1 = require("ObjetDonneesListe");
 const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTraduction_2 = require("ObjetTraduction");
+const TradDonneesListe_DevoirPeriode =
+	ObjetTraduction_2.TraductionsModule.getModule("DonneesListe_DevoirPeriode", {
+		labelListe: "",
+	});
 class DonneesListe_DevoirPeriode extends ObjetDonneesListe_1.ObjetDonneesListe {
 	constructor(aDonnees, aParams) {
 		super(aDonnees);
@@ -20,6 +25,7 @@ class DonneesListe_DevoirPeriode extends ObjetDonneesListe_1.ObjetDonneesListe {
 			colonnes: this._getContexteColonnes(this.param.nbrColonnesPeriodes),
 			hauteurAdapteContenu: true,
 			hauteurMaxAdapteContenu: 121,
+			ariaLabel: TradDonneesListe_DevoirPeriode.labelListe,
 		});
 	}
 	getValeur(aParams) {

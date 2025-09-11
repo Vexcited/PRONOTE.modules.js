@@ -56,6 +56,7 @@ function _creerMrFiche(
 		style: ObjetStyle_1.GStyle.composeWidth(aImage.width),
 		"ie-tooltiplabel":
 			ObjetTraduction_1.GTraductions.getTitreMFiche(aAttributValue),
+		"aria-haspopup": "dialog",
 	});
 	aOutils.addCommentaireDebug(
 		aContexteCourant.node,

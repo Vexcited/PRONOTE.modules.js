@@ -31,7 +31,7 @@ class ObjetFiche_SaisieAbsence extends ObjetFiche_1.ObjetFiche {
 	evntDetailVS(aGenre, aParams) {
 		this.callback.appel(aGenre, aParams);
 	}
-	setDonnees(aAbsence) {
+	setDonnees(aAbsence, aCommentaireAbsenceObligatoire) {
 		this.element = aAbsence;
 		this.afficherFiche({
 			positionSurSouris: true,
@@ -43,6 +43,7 @@ class ObjetFiche_SaisieAbsence extends ObjetFiche_1.ObjetFiche {
 			estConteneur: true,
 			listeMotifsAbsences: (0, AccessApp_1.getApp)().getEtatUtilisateur()
 				.listeMotifsAbsences,
+			commentaireAbsenceObligatoire: !!aCommentaireAbsenceObligatoire,
 		});
 	}
 	composeContenu() {

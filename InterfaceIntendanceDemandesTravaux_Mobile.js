@@ -37,7 +37,6 @@ class InterfaceIntendanceDemandesTravaux extends ObjetInterfacePageCP_1.Interfac
 	_initialiserListe(aInstance) {
 		aInstance.setOptionsListe({
 			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
-			avecModeAccessible: true,
 			avecLigneCreation: this.moteur.avecDroitExecutant(),
 			messageContenuVide:
 				GEtatUtilisateur.GenreEspace ===

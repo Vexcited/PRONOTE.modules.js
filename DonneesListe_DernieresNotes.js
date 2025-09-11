@@ -355,6 +355,7 @@ class DonneesListe_DernieresNotes extends ObjetDonneesListeFlatDesign_1.ObjetDon
 					{
 						class: "themeBoutonNeutre small-bt bg-white",
 						"ie-model": this.jsxAfficherCorrigerQCM.bind(this, aDevoir),
+						"aria-haspopup": "dialog",
 					},
 					ObjetTraduction_1.GTraductions.getValeur(
 						"ExecutionQCM.presentationCorrige.VisualiserCorrige",

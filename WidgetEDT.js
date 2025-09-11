@@ -343,9 +343,6 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 							.AvecFrequence,
 				frequences: this.parametresSco.frequences,
 				avecSelection: true,
-				avecMenuContextuel: !!(
-					!this.avecEDTDuJour && this.listeCommandes.count() > 0
-				),
 				margeHauteur: 0,
 			},
 			evenementMouseDownPlace: () => {
@@ -864,6 +861,7 @@ class WidgetEDT extends ObjetWidget_1.Widget.ObjetWidget {
 					lCommandeMenu.genreOnglet = lCommande.genreOnglet;
 					lCommandeMenu.icon = lCommande.icon;
 					lCommandeMenu.largeurImage = 22;
+					lCommandeMenu.ariaHasPopup = lCommande.ariaHaspopup;
 				}
 			}
 		}

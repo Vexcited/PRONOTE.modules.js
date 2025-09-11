@@ -320,7 +320,7 @@ class InterfaceEditionDetailSelectionQCM extends ObjetInterface_1.ObjetInterface
 			"</div>",
 			'<div class="flex-contain">',
 			`<div id="${this.getInstance(this.identOnglets).getNom()}" class="conteneur-tabs"></div>`,
-			`<ie-bouton class="themeBoutonPrimaire m-left-l" ie-icon="icon_notes_etoile" ie-model="btnResultats">${ObjetTraduction_1.GTraductions.getValeur("SaisieQCM.SaisieResultats")}</ie-bouton>`,
+			`<ie-bouton class="themeBoutonPrimaire m-left-l" ie-icon="icon_notes_etoile" ie-model="btnResultats" aria-haspopup="dialog">${ObjetTraduction_1.GTraductions.getValeur("SaisieQCM.SaisieResultats")}</ie-bouton>`,
 			"</div>",
 			`<div id="${this.idContenu}" class="tabs-contenu">`,
 			`<div class="full-height" id="${this.getInstance(this.idSaisieQCM).getNom()}">`,

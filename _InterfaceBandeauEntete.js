@@ -18,6 +18,7 @@ const ObjetMenuContextuel_1 = require("ObjetMenuContextuel");
 const AccessApp_1 = require("AccessApp");
 const ObjetNavigateur_1 = require("ObjetNavigateur");
 const Tooltip_1 = require("Tooltip");
+const GlossaireWAI_1 = require("GlossaireWAI");
 var GenreCommande;
 (function (GenreCommande) {
 	GenreCommande[(GenreCommande["accessibilite"] = 0)] = "accessibilite";
@@ -218,6 +219,13 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 	setParametresGeneraux() {
 		this.GenreStructure =
 			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
+	}
+	jsxModelBoutonDroite(aGenre) {
+		return {
+			event: () => {
+				this.evenementBouton({ genreCmd: aGenre });
+			},
+		};
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
@@ -523,9 +531,10 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 					: "",
 				'<div class="objetBandeauEntete_fullsize"></div>',
 				this.getInstance(this.identCommande)
-					? '<div class="menu-commandes" id="' +
-							this.getNomInstance(this.identCommande) +
-							'"></div>'
+					? IE.jsx.str("ul", {
+							class: "menu-commandes",
+							id: this.getNomInstance(this.identCommande),
+						})
 					: "",
 				"</div>",
 			);
@@ -555,9 +564,10 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 		if (this.getInstance(this.identMenuOngletsLudique)) {
 			lHtml.push(
 				this.getInstance(this.identCommande)
-					? '<div class="menu-commandes" id="' +
-							this.getNomInstance(this.identCommande) +
-							'"></div>'
+					? IE.jsx.str("ul", {
+							class: "menu-commandes",
+							id: this.getNomInstance(this.identCommande),
+						})
 					: "",
 				"</div>",
 			);
@@ -575,11 +585,16 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 		);
 	}
 	actualiserLibelleSecondMenu(aLibelle) {
-		const lHtml = this.composeTitreOnglet(aLibelle);
+		const lHtmlTitre = this.composeTitreOnglet(aLibelle);
 		if (this.getInstance(this.identMenuOngletsLudique)) {
-			$(`#${this.applicationProduit.idLigneBandeau.escapeJQ()}`).html(lHtml);
+			const lTitre = $(`#${this.applicationProduit.idBreadcrumb.escapeJQ()}`);
+			lTitre.remove();
+			const lBandeau = $(
+				`#${this.applicationProduit.idLigneBandeau.escapeJQ()}`,
+			);
+			lBandeau.prepend(lHtmlTitre);
 		} else {
-			$("#" + this.idSecondMenu.escapeJQ() + " >div:first").html(lHtml);
+			$("#" + this.idSecondMenu.escapeJQ() + " >div:first").html(lHtmlTitre);
 		}
 	}
 	actualiserListeMembres(AListeRessources) {
@@ -906,16 +921,18 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 	}
 	_getParametresBandeauEspace() {
 		return {
-			labelConteneur: ObjetNavigateur_1.Navigateur.isMacOs
-				? ObjetTraduction_1.GTraductions.getValeur(
-						"Navigation.AideRaccourcisClavierMacOs",
-					)
-				: ObjetTraduction_1.GTraductions.getValeur(
-						"Navigation.AideRaccourcisClavier",
-					) +
-					ObjetTraduction_1.GTraductions.getValeur(
-						"Navigation.AideRaccourcisClavierDetails",
-					),
+			labelConteneur:
+				(ObjetNavigateur_1.Navigateur.isMacOs
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"BandeauEntete.RaccourcisMacOs",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"Navigation.AideRaccourcisClavier",
+						) +
+						ObjetTraduction_1.GTraductions.getValeur(
+							"Navigation.AideRaccourcisClavierDetails",
+						)) +
+				(". " + GlossaireWAI_1.TradGlossaireWAI.ContenusExcluRGAA),
 			nomEtab: this.getLibelleEtablissement(),
 			urlLogoEtab: this.getUrlLogoEtablissement(),
 			logoDepartementImage: this.getLogoDepartementImage(),
@@ -966,30 +983,27 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 		if (this.avecCloudIndex()) {
 			lBoutonCloud.push(
 				IE.jsx.str(
-					IE.jsx.fragment,
+					"li",
 					null,
-					IE.jsx.str(
-						"span",
-						null,
-						IE.jsx.str("ie-btnimage", {
-							"ie-model":
-								"btnDroite(" +
-								this.getCommande(this.genreCommande.cloudIndex) +
-								")",
-							class: "icon_cloud_pronote btnImageIcon",
-							title: ObjetTraduction_1.GTraductions.getValeur(
-								"cloudIndex.utilisationCloud",
-							),
-						}),
-					),
+					IE.jsx.str("ie-btnimage", {
+						"ie-model": this.jsxModelBoutonDroite.bind(
+							this,
+							this.getCommande(this.genreCommande.cloudIndex),
+						),
+						class: "icon_cloud_pronote btnImageIcon",
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"cloudIndex.utilisationCloud",
+						),
+					}),
 				),
 			);
 		}
+		const lHtmlAlertePPMS = this.composeAlertePPMS();
+		const lExisteBtnAlertePPMS = !!lHtmlAlertePPMS;
 		const lExisteCentraleNotifications = !!this.getInstance(
 			this.identBoutonNotif,
 		);
 		const lExisteAideContextuelle = !!this.getInstance(this.identBoutonAide);
-		const lExisteBtnAlertePPMS = !!this.composeAlertePPMS();
 		const lSeparateur = [];
 		if (
 			lExisteCentraleNotifications ||
@@ -998,54 +1012,42 @@ class _ObjetAffichageBandeauEntete extends ObjetInterface_1.ObjetInterface {
 		) {
 			lSeparateur.push(
 				IE.jsx.str(
-					IE.jsx.fragment,
-					null,
-					IE.jsx.str("hr", { class: "objetBandeauEntete_sep_boutons" }),
+					"li",
+					{ class: "objetBandeauEntete_sep_boutons", "aria-hidden": "true" },
+					IE.jsx.str("hr", null),
 				),
 			);
 		}
 		const lDivBoutonCentraleNotifications = [];
 		if (lExisteCentraleNotifications) {
 			lDivBoutonCentraleNotifications.push(
-				IE.jsx.str(
-					IE.jsx.fragment,
-					null,
-					IE.jsx.str("div", {
-						id: this.getInstance(this.identBoutonNotif).getNom(),
-						class: "objetBandeauEntete_boutons_ifc",
-					}),
-				),
+				IE.jsx.str("li", {
+					id: this.getInstance(this.identBoutonNotif).getNom(),
+					class: "objetBandeauEntete_boutons_ifc",
+				}),
 			);
 		}
 		const lDivBoutonAideContextuelle = [];
 		if (lExisteAideContextuelle) {
 			lDivBoutonAideContextuelle.push(
-				IE.jsx.str(
-					IE.jsx.fragment,
-					null,
-					IE.jsx.str("div", {
-						id: this.getInstance(this.identBoutonAide).getNom(),
-						class: "objetBandeauEntete_boutons_ifc",
-					}),
-				),
+				IE.jsx.str("li", {
+					id: this.getInstance(this.identBoutonAide).getNom(),
+					class: "objetBandeauEntete_boutons_ifc",
+				}),
 			);
 		}
 		return IE.jsx.str(
-			IE.jsx.fragment,
-			null,
-			IE.jsx.str(
-				"div",
-				{ class: "objetBandeauEntete_boutons focusVisibleContrasted" },
-				lBoutonCloud.join(""),
-				this.composeBoutonHarcelement(),
-				this.composeBtnCommunication(this.NomBtnCommunication),
-				this.composeCreationAlertePPMS(),
-				this.composeConversation(),
-				lSeparateur.join(""),
-				lDivBoutonCentraleNotifications.join(""),
-				lDivBoutonAideContextuelle.join(""),
-				this.composeAlertePPMS(),
-			),
+			"ul",
+			{ class: "objetBandeauEntete_boutons focusVisibleContrasted" },
+			lBoutonCloud.join(""),
+			this.composeBoutonHarcelement(),
+			this.composeBtnCommunication(this.NomBtnCommunication),
+			this.composeCreationAlertePPMS(),
+			this.composeConversation(),
+			lSeparateur.join(""),
+			lDivBoutonCentraleNotifications.join(""),
+			lDivBoutonAideContextuelle.join(""),
+			lHtmlAlertePPMS,
 		);
 	}
 	_composeMembre(aParams) {

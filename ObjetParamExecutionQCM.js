@@ -2348,6 +2348,7 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 				IE.jsx.str("ie-bouton", {
 					"ie-model": "PersonnalisationPA.ExecutionQCM.btnPersonnalisation",
 					"ie-icon": "icon_star",
+					"aria-haspopup": "dialog",
 				}),
 			),
 		);
@@ -2382,6 +2383,7 @@ class ObjetParamExecutionQCM extends ObjetInterface_1.ObjetInterface {
 					IE.jsx.str("ie-btnicon", {
 						"ie-model": "Assouplissement.mrFicheReglesAssouplissement",
 						class: "icon_question bt-activable",
+						"aria-haspopup": "dialog",
 					}),
 				),
 				IE.jsx.str(

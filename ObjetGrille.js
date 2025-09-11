@@ -456,7 +456,6 @@ class ObjetGrille extends _ObjetGrille_1._ObjetGrille {
 			afficherFinSelonCours: false,
 			afficherCoursHorsHoraire: true,
 			avecSelection: true,
-			avecMenuContextuel: false,
 			avecDrop: false,
 			callbackAcceptDraggable: null,
 			callbackDropCellule: null,
@@ -1490,9 +1489,7 @@ class ObjetGrille extends _ObjetGrille_1._ObjetGrille {
 			getClassCours: (aCours) => {
 				const lClass = [];
 				if (this._options.avecSelectionCours) {
-					if (this._options.avecMenuContextuel) {
-						lClass.push("Curseur_ClickDroit");
-					} else if (
+					if (
 						this._options.avecSelection &&
 						aCours &&
 						aCours.avecSelection !== false
@@ -2214,10 +2211,9 @@ class ObjetGrille extends _ObjetGrille_1._ObjetGrille {
 			return true;
 		}
 		if (
-			(ObjetNavigateur_1.Navigateur.BoutonSouris ===
+			ObjetNavigateur_1.Navigateur.BoutonSouris ===
 				Enumere_BoutonSouris_1.EGenreBoutonSouris.Droite ||
-				ObjetNavigateur_1.Navigateur.isToucheMenuContextuel()) &&
-			this._options.avecMenuContextuel
+			ObjetNavigateur_1.Navigateur.isToucheMenuContextuel()
 		) {
 			return true;
 		}

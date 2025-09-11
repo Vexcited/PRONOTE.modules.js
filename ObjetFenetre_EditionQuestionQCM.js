@@ -477,7 +477,7 @@ class ObjetFenetre_EditionQuestionQCM extends ObjetFenetre_1.ObjetFenetre {
 		const H = [];
 		H.push('<div id="', this.idZoneBoutonApercu, '" class="InlineBlock">');
 		H.push(
-			'<ie-bouton ie-model="boutonApercu">',
+			'<ie-bouton ie-model="boutonApercu" aria-haspopup="dialog">',
 			ObjetTraduction_1.GTraductions.getValeur("QCM_Divers.ApercuQuestion"),
 			"</ie-bouton>",
 		);

@@ -108,14 +108,23 @@ UtilitairePageDonneesPersonnelles.construireZoneGenerique = function (
 		case Enumere_DonneesPersonnelles_1.EGenreTypeContenu.Signature:
 			H.push(_construireSignature(aParams));
 			break;
-		case Enumere_DonneesPersonnelles_1.EGenreTypeContenu.Generalites:
+		case Enumere_DonneesPersonnelles_1.EGenreTypeContenu.Generalites: {
+			const lPrimaireAvecTransformationFlux =
+				lApp.getObject("transformationFlux") &&
+				[
+					Enumere_Espace_1.EGenreEspace.PrimProfesseur,
+					Enumere_Espace_1.EGenreEspace.Mobile_PrimProfesseur,
+				].includes(lEtatUtilisateur.GenreEspace);
 			if (
 				[
 					Enumere_Espace_1.EGenreEspace.Professeur,
 					Enumere_Espace_1.EGenreEspace.Mobile_Professeur,
-				].includes(lEtatUtilisateur.GenreEspace)
+				].includes(lEtatUtilisateur.GenreEspace) ||
+				lPrimaireAvecTransformationFlux
 			) {
-				H.push(_construireGeneralitesProfesseur());
+				H.push(
+					_construireGeneralitesProfesseur(lPrimaireAvecTransformationFlux),
+				);
 			}
 			if (
 				[
@@ -129,6 +138,7 @@ UtilitairePageDonneesPersonnelles.construireZoneGenerique = function (
 				H.push(_construireEDT());
 			}
 			break;
+		}
 		case Enumere_DonneesPersonnelles_1.EGenreTypeContenu.CahierDeTexte:
 			if (
 				[
@@ -173,7 +183,9 @@ UtilitairePageDonneesPersonnelles.construireZoneGenerique = function (
 				"aria-label": aTitre,
 			},
 			aTitre ? IE.jsx.str("h2", null, aTitre) : "",
-			IE.jsx.str("div", { class: "valeur-contain" }, lContenu),
+			aTypeContenu === Enumere_DonneesPersonnelles_1.EGenreTypeContenu.INE
+				? IE.jsx.str("p", { class: "valeur-contain" }, lContenu)
+				: IE.jsx.str("div", { class: "valeur-contain" }, lContenu),
 		);
 	}
 	return "";
@@ -724,7 +736,7 @@ UtilitairePageDonneesPersonnelles.getControleur = function (aInstance) {
 			setValue: function (aGenre, aValue) {
 				aInstance.donnees.Autorisations.genreEntiteAutorisationResponsable =
 					aGenre;
-				aInstance.valider();
+				aInstance.setEtatSaisie(true);
 			},
 		},
 		radioAutorisationEleve: {
@@ -736,7 +748,7 @@ UtilitairePageDonneesPersonnelles.getControleur = function (aInstance) {
 			},
 			setValue: function (aGenre, aValue) {
 				aInstance.donnees.Autorisations.genreEntiteAutorisationEleve = aGenre;
-				aInstance.valider();
+				aInstance.setEtatSaisie(true);
 			},
 		},
 	};
@@ -1220,7 +1232,15 @@ function _composeTelephone(aParams, aGenre) {
 		) && lAvecCbReserveAdmin;
 	H.push(`<div class="champ-conteneur">`);
 	H.push(
-		`<div class="champ-libelle ${lClassIcone}" aria-label="${lTitleChamps}" title="${lTitleChamps}">${lLibelle}</div>`,
+		IE.jsx.str(
+			"p",
+			{
+				class: ["champ-libelle", lClassIcone],
+				"aria-label": lTitleChamps,
+				title: lTitleChamps,
+			},
+			lLibelle,
+		),
 	);
 	H.push(
 		`<div class="champ-valeur">\n\n              <input ie-model="tel('${lIndicatif}')" class="m-right " ie-indicatiftel ie-etatsaisie  style="${ObjetStyle_1.GStyle.composeWidth(aParams.largeurIndicatif)};margin-right:.4rem" type="text" ${lTitleChampsIndicatif ? `aria-label="${lTitleChampsIndicatif}" title="${lTitleChampsIndicatif}"` : ""}/>\n              <input ie-model="tel('${lTel}')" ie-telephone ie-etatsaisie type="text" ${lPlaceholderChamps ? ` placeholder="${lPlaceholderChamps}"` : ""} ${lTitleChamps ? `aria-label="${lTitleChamps}" title="${lTitleChamps}" ` : ""} />`,
@@ -1255,7 +1275,7 @@ function _composeEmail(aParams) {
 	H.push(`<div class="champ-conteneur">`);
 	H.push(
 		IE.jsx.str(
-			"div",
+			"p",
 			{
 				class: "champ-libelle icon_arobase",
 				title: ObjetTraduction_1.GTraductions.getValeur("infosperso.infoEmail"),
@@ -1296,10 +1316,10 @@ function _construireInformationsCompteEnfant(aParams) {
 		`<div class="texte-contain">\n            <p>${ObjetTraduction_1.GTraductions.getValeur("PageCompte.MsgEnfant1")}</p>\n            <p>${ObjetTraduction_1.GTraductions.getValeur("PageCompte.MsgEnfant2")}</p>\n          </div>`,
 	);
 	H.push(
-		`<div class="item-conteneur-inner">\n            <h2 >${ObjetTraduction_1.GTraductions.getValeur("PageCompte.Identifiant")} :</h2>\n            <div class=valeur-contain">\n              <div class="flex-contain flex-center justify-between">\n                <div class="libelle-identification">${aParams.identifiant}</div>\n              </div>\n            </div>\n          </div>`,
+		`<div class="item-conteneur-inner">\n            <h2 >${ObjetTraduction_1.GTraductions.getValeur("PageCompte.Identifiant")} :</h2>\n            <div class=valeur-contain">\n              <div class="flex-contain flex-center justify-between">\n                <p class="libelle-identification">${aParams.identifiant}</p>\n              </div>\n            </div>\n          </div>`,
 	);
 	H.push(
-		`<div class="item-conteneur-inner no-line">\n          <h2>${ObjetTraduction_1.GTraductions.getValeur("PageCompte.MotDePasse")} :</h2>\n          <div class=valeur-contain">\n            <div class="flex-contain flex-center justify-between">\n              <div class="libelle-identification mdp">${aParams.informationsCompteMotDePasse}</div>\n              <ie-bouton id="${Enumere_DonneesPersonnelles_3.EListeIds.mdpEnfant}"${aParams.model ? ` ie-model="${aParams.model}"` : ""} >${ObjetTraduction_1.GTraductions.getValeur("PageCompte.Modifier")}</ie-bouton>\n            </div>\n          </div>\n        </div>`,
+		`<div class="item-conteneur-inner no-line">\n          <h2>${ObjetTraduction_1.GTraductions.getValeur("PageCompte.MotDePasse")} :</h2>\n          <div class=valeur-contain">\n            <div class="flex-contain flex-center justify-between">\n              <p class="libelle-identification mdp">${aParams.informationsCompteMotDePasse}</p>\n              <ie-bouton id="${Enumere_DonneesPersonnelles_3.EListeIds.mdpEnfant}"${aParams.model ? ` ie-model="${aParams.model}"` : ""} aria-haspopup="dialog">${ObjetTraduction_1.GTraductions.getValeur("PageCompte.Modifier")}</ie-bouton>\n            </div>\n          </div>\n        </div>`,
 	);
 	return H.join("");
 }
@@ -1357,8 +1377,12 @@ function _construireNotifications(
 				IE.jsx.str(
 					"div",
 					{ class: "temporisation-contain" },
-					ObjetTraduction_1.GTraductions.getValeur(
-						"PreferencesNotifications.delaiTemporisation",
+					IE.jsx.str(
+						"p",
+						null,
+						ObjetTraduction_1.GTraductions.getValeur(
+							"PreferencesNotifications.delaiTemporisation",
+						),
 					),
 					IE.jsx.str("ie-combo", {
 						"ie-model": (0, jsx_1.jsxFuncAttr)("delaiNotif", lIdCBNotifEmail),
@@ -1386,8 +1410,12 @@ function _construireNotifications(
 					IE.jsx.str(
 						"div",
 						{ class: "temporisation-contain" },
-						ObjetTraduction_1.GTraductions.getValeur(
-							"PreferencesNotifications.delaiTemporisation",
+						IE.jsx.str(
+							"p",
+							null,
+							ObjetTraduction_1.GTraductions.getValeur(
+								"PreferencesNotifications.delaiTemporisation",
+							),
 						),
 						IE.jsx.str("ie-combo", {
 							"ie-model": (0, jsx_1.jsxFuncAttr)(
@@ -1403,8 +1431,12 @@ function _construireNotifications(
 		H.push("</div>");
 	} else {
 		H.push(
-			ObjetTraduction_1.GTraductions.getValeur(
-				"PreferencesNotifications.serveurNonConfigureNotif",
+			IE.jsx.str(
+				"p",
+				null,
+				ObjetTraduction_1.GTraductions.getValeur(
+					"PreferencesNotifications.serveurNonConfigureNotif",
+				),
 			),
 		);
 	}
@@ -1419,9 +1451,11 @@ function _construireDerniereConnexion() {
 		ObjetTraduction_1.GTraductions.getValeur("infosperso.SeparateurDateHeure") +
 		" %hh:%mm";
 	H.push(
-		'<div class="date">',
-		ObjetDate_1.GDate.formatDate(lEtatUtilisateur.derniereConnexion, lMasque),
-		"</div>",
+		IE.jsx.str(
+			"p",
+			{ class: "date" },
+			ObjetDate_1.GDate.formatDate(lEtatUtilisateur.derniereConnexion, lMasque),
+		),
 	);
 	return H.join("");
 }
@@ -1438,7 +1472,7 @@ function _construireMotDePasse(aParams) {
 	H.push(
 		'<ie-bouton id="',
 		Enumere_DonneesPersonnelles_3.EListeIds.mdp,
-		'">',
+		'" aria-haspopup="dialog">',
 		ObjetTraduction_1.GTraductions.getValeur("PageCompte.Modifier"),
 		"</ie-bouton>",
 	);
@@ -1472,7 +1506,7 @@ function _construireIdentifiant(aParams) {
 		H.push(
 			'<ie-bouton id="',
 			Enumere_DonneesPersonnelles_3.EListeIds.identifiant,
-			'">',
+			'" aria-haspopup="dialog">',
 			ObjetTraduction_1.GTraductions.getValeur("PageCompte.Modifier"),
 			"</ie-bouton>",
 		);
@@ -1719,6 +1753,7 @@ function _construirePageICal() {
 					"aria-label": ObjetTraduction_1.GTraductions.getValeur(
 						"iCal.modes.ponctuelle.boutonAlt",
 					),
+					"aria-haspopup": "dialog",
 				},
 				ObjetTraduction_1.GTraductions.getValeur(
 					"iCal.modes.ponctuelle.bouton",
@@ -1772,25 +1807,30 @@ function _construirePageICal() {
 	}
 	return H.join("");
 }
-function _construireGeneralitesProfesseur() {
+function _construireGeneralitesProfesseur(aUniquementFlux) {
 	const lApp = GApplication;
 	const H = [];
-	H.push(
-		`<div class="groupe-champs-conteneur">\n    <div class="champ-conteneur">\n    <ie-switch class="long-text" ie-model="generalites.cbMasquerDonneesAutresProfesseurs">\n      ${ObjetTraduction_1.GTraductions.getValeur("infosperso.MasquerDonneesAutresProfesseurs")}\n    </ie-switch>\n    </div>`,
-	);
-	H.push(
-		`<div class="champ-conteneur">\n    <ie-switch class="long-text"  ie-model="generalites.cbAvecGestionDesThemes">\n      ${ObjetTraduction_1.GTraductions.getValeur("infosperso.AvecGestionDesThemes")}\n    </ie-switch>\n    </div>`,
-	);
+	H.push(`<div class="groupe-champs-conteneur">`);
+	if (!aUniquementFlux) {
+		H.push(
+			`<div class="champ-conteneur">\n      <ie-switch class="long-text" ie-model="generalites.cbMasquerDonneesAutresProfesseurs">\n        ${ObjetTraduction_1.GTraductions.getValeur("infosperso.MasquerDonneesAutresProfesseurs")}\n      </ie-switch>\n      </div>`,
+		);
+		H.push(
+			`<div class="champ-conteneur">\n      <ie-switch class="long-text"  ie-model="generalites.cbAvecGestionDesThemes">\n        ${ObjetTraduction_1.GTraductions.getValeur("infosperso.AvecGestionDesThemes")}\n      </ie-switch>\n      </div>`,
+		);
+	}
 	if (lApp.getObject("transformationFlux")) {
-		H.push(`<div class="champ-conteneur">`);
 		H.push(
 			IE.jsx.str(
-				"ie-switch",
-				{ "ie-model": "generalites.cbTransformationFlux" },
-				ObjetTraduction_1.GTraductions.getValeur("ActiverCompressionAutoPDF"),
+				"div",
+				{ class: "champ-conteneur" },
+				IE.jsx.str(
+					"ie-switch",
+					{ "ie-model": "generalites.cbTransformationFlux" },
+					ObjetTraduction_1.GTraductions.getValeur("ActiverCompressionAutoPDF"),
+				),
 			),
 		);
-		H.push(`</div>`);
 	}
 	H.push(`</div>`);
 	return H.join("");
@@ -1878,7 +1918,11 @@ function _construireAutorisations(aParams) {
 						"switchEmailParentAutorise",
 					);
 			}
-			H.push('<div class="sous-bloc">');
+			H.push(
+				'<div class="sous-bloc" role="group" aria-label="',
+				ObjetTraduction_1.GTraductions.getValeur("infosperso.Email"),
+				'">',
+			);
 			H.push(lElemEmailEtablissementAutorise, lElemEmailParentAutorise);
 			H.push("</div>");
 		}
@@ -2096,7 +2140,9 @@ function _construireAutorisationsMessages(aParams) {
 		if (aParams.msgListePublicsParents) {
 			H.push(
 				_composeChoixDiscussion({
-					libelle: ObjetTraduction_1.GTraductions.getValeur("Responsables"),
+					libelle: ObjetTraduction_1.GTraductions.getValeur(
+						"infosperso.DiscussionsParents",
+					),
 					model: "btnMsgPublicMsgParents",
 					html: "getHtmlBtnMsgPublicMsgParents",
 					estPourResponsable: true,
@@ -2151,6 +2197,8 @@ function _composeChoixDiscussion(aParams) {
 				"ie-display": aParams.estPourResponsable
 					? "avecChoixParent"
 					: "avecChoixEleve",
+				role: "group",
+				"aria-label": aParams.libelle,
 			},
 			[
 				TypeGenreEntiteAutorisationDiscussion_1
@@ -2195,6 +2243,7 @@ function _composeChoixDiscussion(aParams) {
 										"ie-display": aParams.estPourResponsable
 											? "avecBtnMsgParent"
 											: "avecBtnMsgEleve",
+										"aria-haspopup": "dialog",
 									},
 									"...",
 								),
@@ -2748,11 +2797,18 @@ UtilitairePageDonneesPersonnelles.getListeFiltresAff = function (
 	lElementTitre.Genre =
 		Enumere_DonneesPersonnelles_6.TypeFiltreAffichage.interTitre;
 	lListe.addElement(lElementTitre);
+	const lPrimaireAvecTransformationFlux =
+		lApp.getObject("transformationFlux") &&
+		[
+			Enumere_Espace_1.EGenreEspace.PrimProfesseur,
+			Enumere_Espace_1.EGenreEspace.Mobile_PrimProfesseur,
+		].includes(lEtatUtilisateur.GenreEspace);
 	if (
 		[
 			Enumere_Espace_1.EGenreEspace.Professeur,
 			Enumere_Espace_1.EGenreEspace.Mobile_Professeur,
-		].includes(lEtatUtilisateur.GenreEspace)
+		].includes(lEtatUtilisateur.GenreEspace) ||
+		lPrimaireAvecTransformationFlux
 	) {
 		lListe.add(
 			new ObjetElement_1.ObjetElement(

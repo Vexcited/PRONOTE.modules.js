@@ -212,6 +212,7 @@ class ObjetModule_EDTSaisie {
 						ressourceRemplacee: aCours.matiere,
 					});
 				},
+				{ ariaHasPopup: "dialog" },
 			);
 		}
 		if (aCours.listeMatSaisieEPI && aCours.listeMatSaisieEPI.count() > 0) {
@@ -691,13 +692,21 @@ class ObjetModule_EDTSaisie {
 	}
 	_scinderCours(aCours) {
 		const H = [
-			'<div style="display:flex; align-items:center;">',
-			'<div class="EspaceDroit">',
-			ObjetTraduction_1.GTraductions.getValeur(
-				"SaisieCours.DureePremierCours",
-			) + "</div>",
-			'<ie-combo ie-model="combo"></ie-combo>',
-			"</div>",
+			IE.jsx.str(
+				"div",
+				{ style: "display:flex; align-items:center;" },
+				IE.jsx.str(
+					"div",
+					{ class: "EspaceDroit" },
+					"GTraductions.getValeur('SaisieCours.DureePremierCours')",
+				),
+				IE.jsx.str("ie-combo", {
+					"ie-model": "combo",
+					"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+						"SaisieCours.DureePremierCours",
+					),
+				}),
+			),
 		];
 		if (this._estCoursAvecCDT(aCours)) {
 			H.push(
@@ -873,6 +882,7 @@ class ObjetModule_EDTSaisie {
 				() => {
 					this._ouvrirFenetreMemo({ cours: aCours });
 				},
+				{ ariaHasPopup: "dialog" },
 			);
 			aInstanceMenu.avecSeparateurSurSuivant();
 		}

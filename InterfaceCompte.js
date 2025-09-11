@@ -10,7 +10,6 @@ const ObjetListe_1 = require("ObjetListe");
 const DonneesListe_FiltreCompte_1 = require("DonneesListe_FiltreCompte");
 const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
 const UtilitairePageDonneesPersonnelles_1 = require("UtilitairePageDonneesPersonnelles");
-const ObjetWAI_1 = require("ObjetWAI");
 const ObjetTraduction_1 = require("ObjetTraduction");
 const MultipleObjetFenetre_InstallPronote = require("ObjetFenetre_InstallPronote");
 const ObjetFicheAppliMobile_1 = require("ObjetFicheAppliMobile");
@@ -109,7 +108,44 @@ class ObjetInterfaceCompte extends InterfacePage_1.InterfacePage {
 				: "24px"
 			: 0;
 		H.push(
-			`<div class="ObjetCompte">\n              <div id="${this.getIdDeNiveau({ niveauEcran: 0 })}" class="menu-contain">\n\n                <div class="liste-contain" id="${this.getInstance(this.identListe).getNom()}" ${lHeightBtn !== 0 ? `style="max-height: calc(100% - calc(${lHeightBtn} + 40px));"` : ""}></div>\n              </div>\n              <div id="${this.getIdDeNiveau({ niveauEcran: 1 })}" class="details-contain" ${IE.estMobile ? `style="display: none;"` : ""}>\n                <div style="display: none;" id="${this.getInstance(this.identCompte).getNom()}" class="compte-contain"></div>\n              </div>\n              <div class="btns-contain">\n                ${this._construireBoutons()}\n              </div>\n            </div>`,
+			IE.jsx.str(
+				"div",
+				{ class: "ObjetCompte" },
+				IE.jsx.str(
+					"div",
+					{ id: this.getIdDeNiveau({ niveauEcran: 0 }), class: "menu-contain" },
+					IE.jsx.str("div", {
+						class: "liste-contain",
+						id: this.getInstance(this.identListe).getNom(),
+						style: {
+							maxHeight:
+								lHeightBtn !== 0 && `calc(100% - calc(${lHeightBtn} + 40px)`,
+						},
+					}),
+				),
+				IE.jsx.str(
+					"div",
+					{
+						id: this.getIdDeNiveau({ niveauEcran: 1 }),
+						class: "details-contain",
+						style: { display: IE.estMobile && "none" },
+					},
+					IE.jsx.str("div", {
+						style: "display: none;",
+						id: this.getInstance(this.identCompte).getNom(),
+						class: "compte-contain",
+					}),
+				),
+				((this.parametresSco.avecAccesMobile &&
+					!this.parametresSco.estAfficheDansENT) ||
+					(this.etatUtilSco.urlInstallClient &&
+						MultipleObjetFenetre_InstallPronote)) &&
+					IE.jsx.str(
+						"ul",
+						{ class: "btns-contain" },
+						this._construireBoutons(),
+					),
+			),
 		);
 		return H.join("");
 	}
@@ -248,15 +284,47 @@ class ObjetInterfaceCompte extends InterfacePage_1.InterfacePage {
 			this.parametresSco.avecAccesMobile &&
 			!this.parametresSco.estAfficheDansENT
 		) {
-			H.push(`<ie-bouton ie-icon="icon_qr_code" class="small-bt themeBoutonNeutre" ie-model="btnAppli" title="${ObjetTraduction_1.GTraductions.getValeur("Commande.QRCode.Actif")}"\n              ${ObjetWAI_1.GObjetWAI.composeAttribut({ genre: ObjetWAI_1.EGenreAttribut.label, valeur: ObjetTraduction_1.GTraductions.getValeur("Commande.QRCode.Actif") })}>\n              ${ObjetTraduction_1.GTraductions.getValeur("Commande.QRCode.Actif")}
-              </ie-bouton>`);
+			H.push(
+				IE.jsx.str(
+					"li",
+					null,
+					IE.jsx.str(
+						"ie-bouton",
+						{
+							"aria-haspopup": "dialog",
+							"ie-icon": "icon_qr_code",
+							class: "small-bt themeBoutonNeutre",
+							"ie-model": "btnAppli",
+						},
+						ObjetTraduction_1.GTraductions.getValeur("Commande.QRCode.Actif"),
+					),
+				),
+			);
 		}
 		if (
 			this.etatUtilSco.urlInstallClient &&
 			MultipleObjetFenetre_InstallPronote
 		) {
-			H.push(`<ie-bouton ie-icon="${this.appSco.estEDT ? `icon_connexion_edt` : `icon_connexion_pronote`}" class="small-bt themeBoutonNeutre" ie-model="btnClient" title="${ObjetTraduction_1.GTraductions.getValeur("Commande.TelechargerClient.Actif")}"\n              ${ObjetWAI_1.GObjetWAI.composeAttribut({ genre: ObjetWAI_1.EGenreAttribut.label, valeur: ObjetTraduction_1.GTraductions.getValeur("Commande.TelechargerClient.Actif") })}>\n              ${ObjetTraduction_1.GTraductions.getValeur("Commande.TelechargerClient.Actif")}
-              </ie-bouton>`);
+			H.push(
+				IE.jsx.str(
+					"li",
+					null,
+					IE.jsx.str(
+						"ie-bouton",
+						{
+							"aria-haspopup": "dialog",
+							"ie-icon": this.appSco.estEDT
+								? "icon_connexion_edt"
+								: "icon_connexion_pronote",
+							class: "small-bt themeBoutonNeutre",
+							"ie-model": "btnClient",
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"Commande.TelechargerClient.Actif",
+						),
+					),
+				),
+			);
 		}
 		return H.join("");
 	}

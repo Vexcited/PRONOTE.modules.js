@@ -2389,7 +2389,7 @@ class ObjetUtilitaireAbsence {
 				},
 			},
 		);
-		lFenetre.setDonnees(lAbsenceAjoutee);
+		lFenetre.setDonnees(lAbsenceAjoutee, aParam.commentaireAbsenceObligatoire);
 	}
 	static ajouterDispense(aParam) {
 		const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(

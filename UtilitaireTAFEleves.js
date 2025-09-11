@@ -436,7 +436,7 @@ class UtilitaireTAFEleves {
 				'<div class="btnCours">',
 				"<ie-bouton ie-model=\"appelCours('" +
 					aTravailAFaire.getNumero() +
-					'\')" class="themeBoutonNeutre small-bt">',
+					'\')" class="themeBoutonNeutre small-bt" aria-haspopup="dialog">',
 				ObjetTraduction_1.GTraductions.getValeur(
 					"CahierDeTexte.TAFARendre.VoirContenu",
 				),

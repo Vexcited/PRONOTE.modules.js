@@ -26,8 +26,8 @@ class ObjetPublication extends ObjetIdentite_1.Identite {
 			this,
 			this.surDateFin,
 		);
-		this.initDate(this.objDateDebut);
-		this.initDate(this.objDateFin);
+		this.initDate(this.objDateDebut, true);
+		this.initDate(this.objDateFin, false);
 		this.afficher();
 		this.objDateDebut.initialiser();
 		this.objDateFin.initialiser();
@@ -100,7 +100,12 @@ class ObjetPublication extends ObjetIdentite_1.Identite {
 			),
 		);
 	}
-	initDate(aInstance) {
+	initDate(aInstance, aEstDebut) {
+		aInstance.setOptionsObjetCelluleDate({
+			ariaLabel: aEstDebut
+				? ObjetTraduction_1.GTraductions.getValeur("aPartirDu")
+				: ObjetTraduction_1.GTraductions.getValeur("jusquAu"),
+		});
 		aInstance.setParametresFenetre(
 			window.GParametres.PremierLundi,
 			ObjetDate_1.GDate.getJourSuivant(window.GParametres.PremiereDate, -100),

@@ -70,6 +70,9 @@ class InterfaceDernieresNotes extends InterfacePage_1.InterfacePage {
 		this.AddSurZone.push(this.identComboPeriodes);
 		this.AddSurZone.push({
 			html:
+				'<div role="radiogroup" aria-label="' +
+				ObjetTraduction_1.GTraductions.getValeur("ChoixTypeAffichage") +
+				'">' +
 				'<ie-radio class="as-chips" ie-model="radioTriDevoirs(0)">' +
 				ObjetTraduction_1.GTraductions.getValeur(
 					"DernieresNotes.tri.Par_ordre_chronologique",
@@ -79,7 +82,8 @@ class InterfaceDernieresNotes extends InterfacePage_1.InterfacePage {
 				ObjetTraduction_1.GTraductions.getValeur(
 					"DernieresNotes.tri.Par_matiere",
 				) +
-				"</ie-radio>",
+				"</ie-radio>" +
+				"</div>",
 		});
 	}
 	getControleur(aInstance) {

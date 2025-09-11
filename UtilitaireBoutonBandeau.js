@@ -71,6 +71,7 @@ exports.UtilitaireBoutonBandeau = {
 		return IE.jsx.str("ie-btnicon", {
 			"ie-model": aModelBtnIcon,
 			class: "bt-activable icon_Defaut_de_carnet",
+			"aria-haspopup": "dialog",
 		});
 	},
 	getHtmlBtnAfficherMasquerZone(aModelBtnIcon) {
@@ -83,6 +84,7 @@ exports.UtilitaireBoutonBandeau = {
 		return IE.jsx.str("ie-btnicon", {
 			"ie-model": aIEModel,
 			class: "bt-activable icon_question",
+			"aria-haspopup": "dialog",
 		});
 	},
 	getHtmlBtnSaisieHorizontalVertical(aNomIEModel) {
@@ -125,12 +127,13 @@ exports.UtilitaireBoutonBandeau = {
 		});
 	},
 	getHtmlBtnICal(aNomIEModel) {
-		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_ical"></ie-btnicon>`;
+		return `<ie-btnicon ie-model="${aNomIEModel}" class="bt-activable icon_ical" aria-haspopup="dialog"></ie-btnicon>`;
 	},
 	getHtmlBtnMiseEnFormeTexte(aNomIEModel) {
 		return IE.jsx.str("ie-btnicon", {
 			"ie-model": aNomIEModel,
 			class: "bt-activable icon_font",
+			"aria-haspopup": "dialog",
 		});
 	},
 	getHtmlBtnCloud(aNomIEModel) {
@@ -186,12 +189,14 @@ exports.UtilitaireBoutonBandeau = {
 		return IE.jsx.str("ie-btnicon", {
 			"ie-model": aNomIEModel,
 			class: "bt-activable icon_magic",
+			"aria-haspopup": "menu",
 		});
 	},
 	getHtmlBtnListesDiffusion(aNomIEModel) {
 		return IE.jsx.str("ie-btnicon", {
 			"ie-model": aNomIEModel,
 			class: "bt-activable icon_groupes_accompagnement_personnalise",
+			"aria-haspopup": "dialog",
 		});
 	},
 	getHtmlBtnDiffuserInformation(aNomIEModel, aLabel) {

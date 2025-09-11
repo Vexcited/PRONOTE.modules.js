@@ -305,6 +305,7 @@ class ClasseUtilitaireContactVieScolaire_Espace extends UtilitaireContactVieScol
 								"Messagerie.ChoisirDestinataires",
 							),
 							"aria-describedby": lId,
+							"aria-haspopup": "dialog",
 						},
 						"...",
 					),

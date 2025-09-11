@@ -410,4 +410,5 @@ var EGenreOnglet;
 	EGenreOnglet[(EGenreOnglet["General_RemplacementsEnseignants"] = 287)] =
 		"General_RemplacementsEnseignants";
 	EGenreOnglet[(EGenreOnglet["RechercheDeStage"] = 288)] = "RechercheDeStage";
+	EGenreOnglet[(EGenreOnglet["MediaCentre"] = 289)] = "MediaCentre";
 })(EGenreOnglet || (exports.EGenreOnglet = EGenreOnglet = {}));

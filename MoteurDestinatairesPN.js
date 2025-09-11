@@ -141,6 +141,8 @@ class MoteurDestinatairesPN {
 			avecUniquementResponsableDelegue:
 				lGenreRessource === Enumere_Ressource_1.EGenreRessource.Responsable &&
 				aParam.avecUniquementResponsableDelegue,
+			avecEmail: !!aParam.avecEmail,
+			avecUniquementEmail: !!aParam.avecUniquementEmail,
 			estCtxModeleActualite: !!aParam.estCtxModeleActualite,
 		};
 		if (lEstResponsableAResponsable) {
@@ -234,6 +236,8 @@ class MoteurDestinatairesPN {
 		this.getDonneesPublic({
 			genreRessource: aParam.genreRessource,
 			forcerSansFiltreSurEleve: aParam.forcerSansFiltreSurEleve,
+			avecUniquementEmail: aParam.avecUniquementEmail,
+			avecEmail: aParam.avecEmail,
 			eleve: aParam.eleve,
 			avecUniquementResponsableDelegue: aParam.avecUniquementResponsableDelegue,
 			estCtxModeleActualite: aParam.estCtxModeleActualite,

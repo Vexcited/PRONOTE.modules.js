@@ -2300,7 +2300,7 @@ class DonneesListe_PageNotes extends ObjetDonneesListe_1.ObjetDonneesListe {
 					this.idBtnCreerDevoir +
 					'" ie-model="boutonCreerDevoir" class="small-bt ' +
 					Type_ThemeBouton_1.TypeThemeBouton.primaire +
-					'">' +
+					'" aria-haspopup="dialog">' +
 					ObjetTraduction_1.GTraductions.getValeur("Notes.CreerDevoir") +
 					"</ie-bouton></span>" +
 					(this.param.avecImport

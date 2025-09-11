@@ -859,6 +859,7 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 				),
 				ieModel: "btnNouveau",
 				ieIcon: "icon_nouveau_qcm",
+				haspopup: "dialog",
 			}),
 		);
 		if (!this.options.estModeCollab) {
@@ -872,6 +873,7 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 						: "btnImportFile",
 					ieIcon: "icon_download_alt",
 					ieSelecFile: !this.options.avecImportBiblio,
+					haspopup: "menu",
 				}),
 			);
 		}
@@ -883,6 +885,7 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 					),
 					ieModel: "btnAssocier",
 					ieIcon: "icon_qcm_associer",
+					haspopup: "menu",
 				}),
 			);
 		}
@@ -894,6 +897,7 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 					),
 					ieModel: "btnVisu",
 					ieIcon: "icon_eye_open",
+					haspopup: "dialog",
 				}),
 			);
 		}
@@ -918,6 +922,7 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 				),
 				ieModel: "btnAutres",
 				ieIcon: "icon_ellipsis_horizontal",
+				haspopup: "menu",
 			}),
 		);
 		if (this.options.avecVisuEleves && this.options.avecBoutonPartageQCM) {
@@ -929,6 +934,7 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 					),
 					ieModel: "btnPartageQCM",
 					ieIcon: "icon_fiche_cours_partage",
+					haspopup: "dialog",
 				}),
 			);
 		}
@@ -941,6 +947,7 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 					),
 					ieModel: "btnUploadQCM",
 					ieIcon: "icon_cloud",
+					haspopup: "dialog",
 				}),
 			);
 		}
@@ -951,6 +958,7 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 				),
 				ieModel: "btnResultats",
 				ieIcon: "icon_notes_etoile",
+				haspopup: "dialog",
 			}),
 		);
 		T.push("</div>");
@@ -2076,6 +2084,7 @@ class InterfaceEditionListeQCM extends ObjetInterface_1.ObjetInterface {
 						"ie-icon": aParam.ieIcon,
 						"ie-iconsize": "2.4rem",
 						"ie-selecfile": !!aParam.ieSelecFile,
+						"aria-haspopup": aParam.haspopup,
 					},
 					aParam.libelle,
 				),

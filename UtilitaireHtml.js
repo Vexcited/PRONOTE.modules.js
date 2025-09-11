@@ -7,51 +7,42 @@ const UtilitaireHtml = {
 			lClasses.push(aParams.class);
 		}
 		H.push(
-			'<div class="',
-			lClasses.join(" "),
-			'" id="',
-			aParams.id,
-			'" tabindex="-1">',
+			IE.jsx.str(
+				"div",
+				{
+					class: lClasses,
+					id: aParams.id,
+					role: "radiogroup",
+					"aria-label": aParams.ariaLabel,
+				},
+				" ",
+				(aTab) => {
+					for (let i = 0; i < aParams.listeRadios.length; i++) {
+						const lRadio = aParams.listeRadios[i];
+						if (!lRadio.id) {
+							lRadio.id = aParams.id + "_" + i;
+						}
+						const isChecked = !!aParams.selectedValue
+							? lRadio.value === aParams.selectedValue
+							: i === 0;
+						aTab.push(
+							IE.jsx.str(
+								IE.jsx.fragment,
+								null,
+								IE.jsx.str("input", {
+									name: aParams.id,
+									id: lRadio.id,
+									value: lRadio.value,
+									type: "radio",
+									checked: isChecked && "checked",
+								}),
+								IE.jsx.str("label", { for: lRadio.id }, lRadio.libelle),
+							),
+						);
+					}
+				},
+			),
 		);
-		for (let i = 0; i < aParams.listeRadios.length; i++) {
-			const lRadio = aParams.listeRadios[i];
-			if (!lRadio.id) {
-				lRadio.id = aParams.id + "_" + i;
-			}
-			const isChecked = !!aParams.selectedValue
-				? lRadio.value === aParams.selectedValue
-				: i === 0;
-			const lArrDataset = [];
-			if (!!lRadio.dataset) {
-				for (let j = 0; j < lRadio.dataset.length; j++) {
-					lArrDataset.push(
-						"data-" +
-							lRadio.dataset[j].name +
-							'="' +
-							lRadio.dataset[j].value +
-							'"',
-					);
-				}
-			}
-			H.push(
-				'<input name="',
-				aParams.id,
-				'" id="',
-				lRadio.id,
-				'" value="',
-				lRadio.value,
-				'" type="radio" ',
-				isChecked ? 'checked="checked" ' : "",
-				lArrDataset.join(" "),
-				" />",
-				'<label for="',
-				lRadio.id,
-				'">',
-				lRadio.libelle,
-				"</label>",
-			);
-		}
-		H.push("</div>");
 		return H.join("");
 	},
 	composeTitreAvecPuce(aLibelle, aParams) {

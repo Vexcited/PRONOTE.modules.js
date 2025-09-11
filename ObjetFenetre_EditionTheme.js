@@ -165,6 +165,7 @@ class ObjetFenetre_EditionTheme extends ObjetFenetre_1.ObjetFenetre {
 				IE.jsx.str("ie-btnicon", {
 					"ie-model": this.jsxModeleBoutonSupprimer.bind(this),
 					class: "icon_trash avecFond i-medium",
+					"aria-haspopup": "dialog",
 				}),
 			),
 		);

@@ -126,6 +126,7 @@ class ObjetFenetre_ActionContextuelle extends ObjetFenetre_1.ObjetFenetre {
 								title: aActions.libelle || "",
 								"ie-model": "action(" + i + ")",
 								"ie-selecFile": !!aActions.selecFile,
+								"aria-haspopup": "dialog",
 							}),
 							lLibelle,
 						),

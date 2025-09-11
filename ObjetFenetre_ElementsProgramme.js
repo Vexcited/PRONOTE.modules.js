@@ -858,7 +858,7 @@ class ObjetFenetre_ElementsProgramme extends ObjetFenetre_1.ObjetFenetre {
 			}),
 		);
 		T.push(
-			IE.jsx.str("div", {
+			IE.jsx.str("p", {
 				class: "EspaceHaut",
 				"ie-if": "estAfficherDansContexteBulletin()",
 				"ie-html": "getHtmlNbMax",
@@ -872,7 +872,7 @@ class ObjetFenetre_ElementsProgramme extends ObjetFenetre_1.ObjetFenetre {
 					"ie-if": this.jsxIfPanelComptabiliserPourBulletinVisible.bind(this),
 				},
 				IE.jsx.str(
-					"div",
+					"p",
 					{ class: "Gras" },
 					ObjetTraduction_1.GTraductions.getValeur(
 						"Fenetre_ElementsProgramme.SaisieCDT.ReportSurBulletin",
@@ -912,14 +912,14 @@ class ObjetFenetre_ElementsProgramme extends ObjetFenetre_1.ObjetFenetre {
 							}),
 						),
 						IE.jsx.str(
-							"div",
+							"p",
 							null,
 							ObjetTraduction_1.GTraductions.getValeur(
 								"Fenetre_ElementsProgramme.SaisieCDT.LimiteDuReport",
 							),
 						),
 					),
-					IE.jsx.str("div", {
+					IE.jsx.str("p", {
 						"ie-if": "panelComptabiliserPourBulletin.sansComboChoixServices",
 						"ie-html": "panelComptabiliserPourBulletin.getMessageAucunService",
 					}),
@@ -933,10 +933,14 @@ class ObjetFenetre_ElementsProgramme extends ObjetFenetre_1.ObjetFenetre {
 		if (!this.appSco.estPrimaire) {
 			lAffichageBoutonAffectation.push(
 				IE.jsx.str(
-					"ie-bouton",
-					{ "ie-model": "btnAffectation" },
-					ObjetTraduction_1.GTraductions.getValeur(
-						"Fenetre_ElementsProgramme.AffecterA",
+					"li",
+					null,
+					IE.jsx.str(
+						"ie-bouton",
+						{ "ie-model": "btnAffectation", "aria-haspopup": "dialog" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_ElementsProgramme.AffecterA",
+						),
 					),
 				),
 			);
@@ -944,14 +948,22 @@ class ObjetFenetre_ElementsProgramme extends ObjetFenetre_1.ObjetFenetre {
 		const T = [];
 		T.push(
 			IE.jsx.str(
-				"div",
+				"ul",
 				{ class: "flex-contain", "ie-if": "estAfficherDansContexteBulletin()" },
 				lAffichageBoutonAffectation.join(""),
 				IE.jsx.str(
-					"ie-bouton",
-					{ "ie-model": "btnOrdonnerElements", class: "MargeGauche" },
-					ObjetTraduction_1.GTraductions.getValeur(
-						"Fenetre_ElementsProgramme.OrdonnerElements",
+					"li",
+					null,
+					IE.jsx.str(
+						"ie-bouton",
+						{
+							"ie-model": "btnOrdonnerElements",
+							class: "MargeGauche",
+							"aria-haspopup": "dialog",
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"Fenetre_ElementsProgramme.OrdonnerElements",
+						),
 					),
 				),
 			),
@@ -1334,6 +1346,9 @@ class ObjetFenetre_ElementsProgramme extends ObjetFenetre_1.ObjetFenetre {
 				!this.appSco.droits.get(ObjetDroitsPN_1.TypeDroits.estEnConsultation),
 			titreCreation: ObjetTraduction_1.GTraductions.getValeur(
 				"Fenetre_ElementsProgramme.Liste.Creation",
+			),
+			ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
+				"Fenetre_ElementsProgramme.Liste.ariaLabel",
 			),
 			colonnesSansBordureDroit: [
 				DonneesListe_ElementsProgramme_1.DonneesListe_ElementsProgramme

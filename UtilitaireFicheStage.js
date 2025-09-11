@@ -416,127 +416,121 @@ function _composeBlocDetailsEntrepriseAccueil(aDonnees) {
 			!!lEntreprise.fax ||
 			!!lEntreprise.email
 		) {
-			H.push(`<div class="sous-section conteneur-info">`);
-			if (!!lEntreprise.mobile) {
-				H.push(
-					IE.jsx.str(
-						"div",
-						{
-							class: "lien-communication tel-mobile",
-							title: ObjetTraduction_1.GTraductions.getValeur(
-								"FicheStage.TelPortable",
-							),
-						},
+			H.push(
+				IE.jsx.str(
+					"ul",
+					{ class: "sous-section conteneur-info" },
+					!!lEntreprise.mobile &&
 						IE.jsx.str(
-							"a",
+							"li",
 							{
-								href:
-									"tel:" +
-									ObjetChaine_1.GChaine.formatTelephoneAvecIndicatif(
-										lEntreprise.indMobile,
-										lEntreprise.mobile,
-									),
-							},
-							ObjetChaine_1.GChaine.formatTelephone(lEntreprise.mobile),
-							IE.jsx.str(
-								"span",
-								{ class: "sr-only" },
-								ObjetTraduction_1.GTraductions.getValeur(
+								class: "lien-communication tel-mobile",
+								title: ObjetTraduction_1.GTraductions.getValeur(
 									"FicheStage.TelPortable",
 								),
-							),
-						),
-					),
-				);
-			}
-			if (!!lEntreprise.telFixe) {
-				H.push(
-					IE.jsx.str(
-						"div",
-						{
-							class: "lien-communication tel",
-							title:
-								ObjetTraduction_1.GTraductions.getValeur("FicheStage.TelFixe"),
-						},
-						IE.jsx.str(
-							"a",
-							{
-								href:
-									"tel:" +
-									ObjetChaine_1.GChaine.formatTelephoneAvecIndicatif(
-										lEntreprise.indFix,
-										lEntreprise.telFixe,
-									),
 							},
-							ObjetChaine_1.GChaine.formatTelephone(lEntreprise.telFixe),
 							IE.jsx.str(
-								"span",
-								{ class: "sr-only" },
-								ObjetTraduction_1.GTraductions.getValeur("FicheStage.TelFixe"),
-							),
-						),
-					),
-				);
-			}
-			if (!!lEntreprise.fax) {
-				H.push(
-					IE.jsx.str(
-						"div",
-						{
-							class: "lien-communication",
-							title: ObjetTraduction_1.GTraductions.getValeur("FicheStage.Fax"),
-						},
-						IE.jsx.str(
-							"a",
-							{
-								href:
-									"fax:" +
-									ObjetChaine_1.GChaine.formatTelephoneAvecIndicatif(
-										lEntreprise.indFax,
-										lEntreprise.fax,
+								"a",
+								{
+									href:
+										"tel:" +
+										ObjetChaine_1.GChaine.formatTelephoneAvecIndicatif(
+											lEntreprise.indMobile,
+											lEntreprise.mobile,
+										),
+								},
+								ObjetChaine_1.GChaine.formatTelephone(lEntreprise.mobile),
+								IE.jsx.str(
+									"span",
+									{ class: "sr-only" },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.TelPortable",
 									),
-							},
-							ObjetChaine_1.GChaine.formatTelephone(lEntreprise.fax),
-							IE.jsx.str(
-								"span",
-								{ class: "sr-only" },
-								ObjetTraduction_1.GTraductions.getValeur("FicheStage.Fax"),
-							),
-						),
-					),
-				);
-			}
-			if (!!lEntreprise.site) {
-				H.push(
-					IE.jsx.str(
-						"div",
-						{ class: "lien-communication" },
-						IE.jsx.str(
-							"a",
-							{
-								href: ObjetChaine_1.GChaine.encoderUrl(
-									ObjetChaine_1.GChaine.verifierURLHttp(lEntreprise.site),
 								),
-							},
-							lEntreprise.site,
+							),
 						),
-					),
-				);
-			}
-			if (!!lEntreprise.email) {
-				H.push(
-					IE.jsx.str(
-						"div",
-						{ class: "lien-communication" },
+					!!lEntreprise.telFixe &&
 						IE.jsx.str(
-							"a",
-							{ href: "mailto:" + lEntreprise.email, target: "_blank" },
-							lEntreprise.email,
+							"li",
+							{
+								class: "lien-communication tel",
+								title:
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.TelFixe",
+									),
+							},
+							IE.jsx.str(
+								"a",
+								{
+									href:
+										"tel:" +
+										ObjetChaine_1.GChaine.formatTelephoneAvecIndicatif(
+											lEntreprise.indFix,
+											lEntreprise.telFixe,
+										),
+								},
+								ObjetChaine_1.GChaine.formatTelephone(lEntreprise.telFixe),
+								IE.jsx.str(
+									"span",
+									{ class: "sr-only" },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.TelFixe",
+									),
+								),
+							),
 						),
-					),
-				);
-			}
-			H.push(`</div>`);
+					!!lEntreprise.fax &&
+						IE.jsx.str(
+							"li",
+							{
+								class: "lien-communication",
+								title:
+									ObjetTraduction_1.GTraductions.getValeur("FicheStage.Fax"),
+							},
+							IE.jsx.str(
+								"a",
+								{
+									href:
+										"fax:" +
+										ObjetChaine_1.GChaine.formatTelephoneAvecIndicatif(
+											lEntreprise.indFax,
+											lEntreprise.fax,
+										),
+								},
+								ObjetChaine_1.GChaine.formatTelephone(lEntreprise.fax),
+								IE.jsx.str(
+									"span",
+									{ class: "sr-only" },
+									ObjetTraduction_1.GTraductions.getValeur("FicheStage.Fax"),
+								),
+							),
+						),
+					!!lEntreprise.site &&
+						IE.jsx.str(
+							"li",
+							{ class: "lien-communication" },
+							IE.jsx.str(
+								"a",
+								{
+									href: ObjetChaine_1.GChaine.encoderUrl(
+										ObjetChaine_1.GChaine.verifierURLHttp(lEntreprise.site),
+									),
+								},
+								lEntreprise.site,
+							),
+						),
+					!!lEntreprise.email &&
+						IE.jsx.str(
+							"li",
+							{ class: "lien-communication" },
+							IE.jsx.str(
+								"a",
+								{ href: "mailto:" + lEntreprise.email, target: "_blank" },
+								lEntreprise.email,
+							),
+						),
+				),
+			);
 		}
 		if (lEntreprise.responsable || lEntreprise.commentairePublie) {
 			H.push("<div>");
@@ -595,107 +589,109 @@ function _composeBlocDetailsMDS(aDonnees) {
 					: "",
 			),
 		);
-		H.push(`<div class="sous-section conteneur-info">`);
-		if (!!aMDS.telPortable) {
+		if (!!aMDS.telPortable || !!aMDS.telFixe || !!aMDS.fax || !!aMDS.email) {
 			H.push(
 				IE.jsx.str(
-					"div",
-					{
-						class: "lien-communication tel-mobile",
-						title: ObjetTraduction_1.GTraductions.getValeur(
-							"FicheStage.MDS.Portable",
-						),
-					},
-					IE.jsx.str(
-						"a",
-						{
-							href:
-								"tel:" +
-								ObjetChaine_1.GChaine.formatTelephoneAvecIndicatif(
-									aMDS.indPortable,
-									aMDS.telPortable,
-								),
-						},
-						ObjetChaine_1.GChaine.formatTelephone(aMDS.telPortable),
+					"ul",
+					{ class: "sous-section conteneur-info" },
+					!!aMDS.telPortable &&
 						IE.jsx.str(
-							"span",
-							{ class: "sr-only" },
-							ObjetTraduction_1.GTraductions.getValeur(
-								"FicheStage.MDS.Portable",
+							"li",
+							{
+								class: "lien-communication tel-mobile",
+								title: ObjetTraduction_1.GTraductions.getValeur(
+									"FicheStage.MDS.Portable",
+								),
+							},
+							IE.jsx.str(
+								"a",
+								{
+									href:
+										"tel:" +
+										ObjetChaine_1.GChaine.formatTelephoneAvecIndicatif(
+											aMDS.indPortable,
+											aMDS.telPortable,
+										),
+								},
+								ObjetChaine_1.GChaine.formatTelephone(aMDS.telPortable),
+								IE.jsx.str(
+									"span",
+									{ class: "sr-only" },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.MDS.Portable",
+									),
+								),
 							),
 						),
-					),
-				),
-			);
-		}
-		if (!!aMDS.telFixe) {
-			H.push(
-				IE.jsx.str(
-					"div",
-					{
-						class: "lien-communication tel",
-						title: ObjetTraduction_1.GTraductions.getValeur(
-							"FicheStage.MDS.TelFixe",
-						),
-					},
-					IE.jsx.str(
-						"a",
-						{
-							href:
-								"tel:" +
-								ObjetChaine_1.GChaine.formatTelephoneAvecIndicatif(
-									aMDS.indFixe,
-									aMDS.telFixe,
-								),
-						},
-						ObjetChaine_1.GChaine.formatTelephone(aMDS.telFixe),
+					!!aMDS.telFixe &&
 						IE.jsx.str(
-							"span",
-							{ class: "sr-only" },
-							ObjetTraduction_1.GTraductions.getValeur(
-								"FicheStage.MDS.TelFixe",
+							"li",
+							{
+								class: "lien-communication tel",
+								title: ObjetTraduction_1.GTraductions.getValeur(
+									"FicheStage.MDS.TelFixe",
+								),
+							},
+							IE.jsx.str(
+								"a",
+								{
+									href:
+										"tel:" +
+										ObjetChaine_1.GChaine.formatTelephoneAvecIndicatif(
+											aMDS.indFixe,
+											aMDS.telFixe,
+										),
+								},
+								ObjetChaine_1.GChaine.formatTelephone(aMDS.telFixe),
+								IE.jsx.str(
+									"span",
+									{ class: "sr-only" },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.MDS.TelFixe",
+									),
+								),
 							),
 						),
-					),
-				),
-			);
-		}
-		if (!!aMDS.fax) {
-			H.push(
-				IE.jsx.str(
-					"div",
-					{
-						class: "lien-communication",
-						title:
-							ObjetTraduction_1.GTraductions.getValeur("FicheStage.MDS.Fax"),
-					},
-					IE.jsx.str(
-						"a",
-						{ href: "fax:" + ObjetChaine_1.GChaine.formatTelephone(aMDS.fax) },
-						ObjetChaine_1.GChaine.formatTelephone(aMDS.fax),
+					!!aMDS.fax &&
 						IE.jsx.str(
-							"span",
-							{ class: "sr-only" },
-							ObjetTraduction_1.GTraductions.getValeur("FicheStage.MDS.Fax"),
+							"li",
+							{
+								class: "lien-communication",
+								title:
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.MDS.Fax",
+									),
+							},
+							IE.jsx.str(
+								"a",
+								{
+									href:
+										"fax:" + ObjetChaine_1.GChaine.formatTelephone(aMDS.fax),
+								},
+								ObjetChaine_1.GChaine.formatTelephone(aMDS.fax),
+								IE.jsx.str(
+									"span",
+									{ class: "sr-only" },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"FicheStage.MDS.Fax",
+									),
+								),
+							),
 						),
-					),
+					!!aMDS.email &&
+						IE.jsx.str(
+							"li",
+							{ class: "lien-communication" },
+							IE.jsx.str(
+								"a",
+								{ href: "mailto:" + aMDS.email, target: "_blank" },
+								aMDS.email,
+							),
+						),
 				),
 			);
 		}
-		if (!!aMDS.email) {
-			H.push(
-				IE.jsx.str(
-					"div",
-					{ class: "lien-communication" },
-					IE.jsx.str(
-						"a",
-						{ href: "mailto:" + aMDS.email, target: "_blank" },
-						aMDS.email,
-					),
-				),
-			);
-		}
-		H.push(`</div>\n          </div>`);
+		H.push("</div>");
 	});
 	H.push("</div>");
 	H.push("</section>");
@@ -716,7 +712,7 @@ function _composeBlocDetailsReferents(aDonnees) {
 						: ObjetTraduction_1.GTraductions.getValeur("FicheStage.referent"),
 				),
 				IE.jsx.str(
-					"div",
+					"p",
 					{ class: "conteneur-enseignants" },
 					aDonnees.referents.getTableauLibelles().join(", "),
 				),
@@ -1218,6 +1214,9 @@ function _composeBlocAnnexes(aDonnees, aParams) {
 		aDonnees.sujet.getLibelle() ||
 		aDonnees.sujetDetaille
 	) {
+		const lTitre = ObjetTraduction_1.GTraductions.getValeur(
+			"FicheStage.annexe.stage",
+		);
 		H.push(
 			IE.jsx.str(
 				"div",
@@ -1225,11 +1224,7 @@ function _composeBlocAnnexes(aDonnees, aParams) {
 				IE.jsx.str(
 					"div",
 					{ class: "flex-contain justify-between flex-center flex-gap-l" },
-					IE.jsx.str(
-						"h2",
-						{ class: "ie-titre-couleur-lowercase" },
-						ObjetTraduction_1.GTraductions.getValeur("FicheStage.annexe.stage"),
-					),
+					IE.jsx.str("h2", { class: "ie-titre-couleur-lowercase" }, lTitre),
 					aParams.parametres.avecEdition
 						? IE.jsx.str("ie-btnicon", {
 								class: "fix-bloc icon_pencil i-medium avecFond m-bottom",
@@ -1240,46 +1235,49 @@ function _composeBlocAnnexes(aDonnees, aParams) {
 									aDonnees,
 									aParams,
 								),
-								title: ObjetTraduction_1.GTraductions.getValeur("Modifier"),
+								title:
+									ObjetTraduction_1.GTraductions.getValeur("Modifier") +
+									" - " +
+									lTitre,
+								"aria-haspopup": "dialog",
 							})
 						: "",
 				),
-				IE.jsx.str(
-					"div",
-					{ class: [!IE.estMobile ? "flex-contain " : "", "m-right-xxl"] },
-					aDonnees.sujet.getLibelle()
-						? IE.jsx.str(
+				(aDonnees.sujet.getLibelle() || aDonnees.sujetDetaille) &&
+					IE.jsx.str(
+						"dl",
+						{ class: [!IE.estMobile ? "flex-contain " : "", "m-right-xxl"] },
+						aDonnees.sujet.getLibelle() &&
+							IE.jsx.str(
 								"div",
 								{ class: "m-bottom-xl m-right-l sous-section" },
 								IE.jsx.str(
-									"div",
+									"dt",
 									{ class: "Gras ie-titre-petit" },
 									ObjetTraduction_1.GTraductions.getValeur(
 										"FicheStage.annexe.sujet",
 									),
 								),
-								IE.jsx.str("div", null, aDonnees.sujet.getLibelle()),
-							)
-						: "",
-					aDonnees.sujetDetaille
-						? IE.jsx.str(
+								IE.jsx.str("dd", null, aDonnees.sujet.getLibelle()),
+							),
+						aDonnees.sujetDetaille &&
+							IE.jsx.str(
 								"div",
 								{ class: "m-bottom-xl sous-section" },
 								IE.jsx.str(
-									"div",
+									"dt",
 									{ class: "Gras ie-titre-petit" },
 									ObjetTraduction_1.GTraductions.getValeur(
 										"FicheStage.annexe.sujetDetaille",
 									),
 								),
 								IE.jsx.str(
-									"div",
+									"dd",
 									null,
 									ObjetChaine_1.GChaine.replaceRCToHTML(aDonnees.sujetDetaille),
 								),
-							)
-						: "",
-				),
+							),
+					),
 			),
 		);
 	}
@@ -1288,6 +1286,9 @@ function _composeBlocAnnexes(aDonnees, aParams) {
 		aDonnees.activitesDejaRealisees ||
 		aDonnees.competencesMobilisees
 	) {
+		const lTitre = ObjetTraduction_1.GTraductions.getValeur(
+			"FicheStage.annexe.competencesEtActivites",
+		);
 		H.push(
 			IE.jsx.str(
 				"div",
@@ -1295,13 +1296,7 @@ function _composeBlocAnnexes(aDonnees, aParams) {
 				IE.jsx.str(
 					"div",
 					{ class: "flex-contain justify-between flex-center flex-gap-l" },
-					IE.jsx.str(
-						"h2",
-						{ class: "ie-titre-couleur-lowercase" },
-						ObjetTraduction_1.GTraductions.getValeur(
-							"FicheStage.annexe.competencesEtActivites",
-						),
-					),
+					IE.jsx.str("h2", { class: "ie-titre-couleur-lowercase" }, lTitre),
 					aParams.parametres.avecEdition
 						? IE.jsx.str("ie-btnicon", {
 								class: "fix-bloc icon_pencil i-medium avecFond m-bottom",
@@ -1312,58 +1307,64 @@ function _composeBlocAnnexes(aDonnees, aParams) {
 									aDonnees,
 									aParams,
 								),
-								title: ObjetTraduction_1.GTraductions.getValeur("Modifier"),
+								title:
+									ObjetTraduction_1.GTraductions.getValeur("Modifier") +
+									" - " +
+									lTitre,
+								"aria-haspopup": "dialog",
 							})
 						: "",
 				),
-				IE.jsx.str(
-					"div",
-					{ class: [!IE.estMobile ? "flex-contain " : "", "m-right-xxl"] },
-					aDonnees.activitesDejaRealisees
-						? IE.jsx.str(
+				(aDonnees.activitesDejaRealisees || aDonnees.competencesMobilisees) &&
+					IE.jsx.str(
+						"dl",
+						{ class: [!IE.estMobile ? "flex-contain " : "", "m-right-xxl"] },
+						aDonnees.activitesDejaRealisees &&
+							IE.jsx.str(
 								"div",
 								{ class: "m-bottom-xl m-right-l sous-section" },
 								IE.jsx.str(
-									"div",
+									"dt",
 									{ class: "Gras ie-titre-petit" },
 									ObjetTraduction_1.GTraductions.getValeur(
 										"FicheStage.annexe.activitesDejaRealisees",
 									),
 								),
 								IE.jsx.str(
-									"div",
+									"dd",
 									null,
 									ObjetChaine_1.GChaine.replaceRCToHTML(
 										aDonnees.activitesDejaRealisees,
 									),
 								),
-							)
-						: "",
-					aDonnees.competencesMobilisees
-						? IE.jsx.str(
+							),
+						aDonnees.competencesMobilisees &&
+							IE.jsx.str(
 								"div",
 								{ class: "m-bottom-xl sous-section" },
 								IE.jsx.str(
-									"div",
+									"dt",
 									{ class: "Gras ie-titre-petit" },
 									ObjetTraduction_1.GTraductions.getValeur(
 										"FicheStage.annexe.competencesMobilisees",
 									),
 								),
 								IE.jsx.str(
-									"div",
+									"dd",
 									null,
 									ObjetChaine_1.GChaine.replaceRCToHTML(
 										aDonnees.competencesMobilisees,
 									),
 								),
-							)
-						: "",
-				),
+							),
+					),
 			),
 		);
 	}
 	if (aParams.parametres.avecEdition || aDonnees.objectifs) {
+		const lTitre = ObjetTraduction_1.GTraductions.getValeur(
+			"FicheStage.annexe.objectifsAssignes",
+		);
 		H.push(
 			IE.jsx.str(
 				"div",
@@ -1371,13 +1372,7 @@ function _composeBlocAnnexes(aDonnees, aParams) {
 				IE.jsx.str(
 					"div",
 					{ class: "flex-contain justify-between flex-center flex-gap-l" },
-					IE.jsx.str(
-						"h2",
-						{ class: "ie-titre-couleur-lowercase" },
-						ObjetTraduction_1.GTraductions.getValeur(
-							"FicheStage.annexe.objectifsAssignes",
-						),
-					),
+					IE.jsx.str("h2", { class: "ie-titre-couleur-lowercase" }, lTitre),
 					aParams.parametres.avecEdition
 						? IE.jsx.str("ie-btnicon", {
 								class: "fix-bloc icon_pencil i-medium avecFond m-bottom",
@@ -1387,13 +1382,17 @@ function _composeBlocAnnexes(aDonnees, aParams) {
 									aDonnees,
 									aParams,
 								),
-								title: ObjetTraduction_1.GTraductions.getValeur("Modifier"),
+								title:
+									ObjetTraduction_1.GTraductions.getValeur("Modifier") +
+									" - " +
+									lTitre,
+								"aria-haspopup": "dialog",
 							})
 						: "",
 				),
 				aDonnees.objectifs
 					? IE.jsx.str(
-							"div",
+							"p",
 							{ class: "m-bottom-xl m-right-xxl" },
 							ObjetChaine_1.GChaine.replaceRCToHTML(aDonnees.objectifs),
 						)
@@ -1406,6 +1405,9 @@ function _composeBlocAnnexes(aDonnees, aParams) {
 		aDonnees.activitesPrevues ||
 		aDonnees.moyensMobilises
 	) {
+		const lTitre = ObjetTraduction_1.GTraductions.getValeur(
+			"FicheStage.annexe.activitesPrevuesAuCoursStage",
+		);
 		H.push(
 			IE.jsx.str(
 				"div",
@@ -1413,13 +1415,7 @@ function _composeBlocAnnexes(aDonnees, aParams) {
 				IE.jsx.str(
 					"div",
 					{ class: "flex-contain justify-between flex-center flex-gap-l" },
-					IE.jsx.str(
-						"h2",
-						{ class: "ie-titre-couleur-lowercase" },
-						ObjetTraduction_1.GTraductions.getValeur(
-							"FicheStage.annexe.activitesPrevuesAuCoursStage",
-						),
-					),
+					IE.jsx.str("h2", { class: "ie-titre-couleur-lowercase" }, lTitre),
 					aParams.parametres.avecEdition
 						? IE.jsx.str("ie-btnicon", {
 								class: "fix-bloc icon_pencil i-medium avecFond m-bottom",
@@ -1430,54 +1426,57 @@ function _composeBlocAnnexes(aDonnees, aParams) {
 									aDonnees,
 									aParams,
 								),
-								title: ObjetTraduction_1.GTraductions.getValeur("Modifier"),
+								title:
+									ObjetTraduction_1.GTraductions.getValeur("Modifier") +
+									" - " +
+									lTitre,
+								"aria-haspopup": "dialog",
 							})
 						: "",
 				),
-				IE.jsx.str(
-					"div",
-					{ class: [!IE.estMobile ? "flex-contain " : "", "m-right-xxl"] },
-					aDonnees.activitesPrevues
-						? IE.jsx.str(
+				(aDonnees.activitesPrevues || aDonnees.moyensMobilises) &&
+					IE.jsx.str(
+						"dl",
+						{ class: [!IE.estMobile ? "flex-contain " : "", "m-right-xxl"] },
+						aDonnees.activitesPrevues &&
+							IE.jsx.str(
 								"div",
 								{ class: "m-bottom-xl m-right-l sous-section" },
 								IE.jsx.str(
-									"div",
+									"dt",
 									{ class: "Gras ie-titre-petit" },
 									ObjetTraduction_1.GTraductions.getValeur(
 										"FicheStage.annexe.activitesPrevues",
 									),
 								),
 								IE.jsx.str(
-									"div",
+									"dd",
 									null,
 									ObjetChaine_1.GChaine.replaceRCToHTML(
 										aDonnees.activitesPrevues,
 									),
 								),
-							)
-						: "",
-					aDonnees.moyensMobilises
-						? IE.jsx.str(
+							),
+						aDonnees.moyensMobilises &&
+							IE.jsx.str(
 								"div",
 								{ class: "m-bottom-xl sous-section" },
 								IE.jsx.str(
-									"div",
+									"dt",
 									{ class: "Gras ie-titre-petit" },
 									ObjetTraduction_1.GTraductions.getValeur(
 										"FicheStage.annexe.moyensMobilises",
 									),
 								),
 								IE.jsx.str(
-									"div",
+									"dd",
 									null,
 									ObjetChaine_1.GChaine.replaceRCToHTML(
 										aDonnees.moyensMobilises,
 									),
 								),
-							)
-						: "",
-				),
+							),
+					),
 			),
 		);
 	}
@@ -1486,6 +1485,9 @@ function _composeBlocAnnexes(aDonnees, aParams) {
 		aDonnees.competencesVisees ||
 		(aDonnees.listeCompetencesVisees && aDonnees.listeCompetencesVisees.length)
 	) {
+		const lTitre = ObjetTraduction_1.GTraductions.getValeur(
+			"FicheStage.annexe.competencesVisees",
+		);
 		H.push(
 			IE.jsx.str(
 				"div",
@@ -1493,13 +1495,7 @@ function _composeBlocAnnexes(aDonnees, aParams) {
 				IE.jsx.str(
 					"div",
 					{ class: "flex-contain justify-between flex-center flex-gap-l" },
-					IE.jsx.str(
-						"h2",
-						{ class: "ie-titre-couleur-lowercase" },
-						ObjetTraduction_1.GTraductions.getValeur(
-							"FicheStage.annexe.competencesVisees",
-						),
-					),
+					IE.jsx.str("h2", { class: "ie-titre-couleur-lowercase" }, lTitre),
 					aParams.parametres.avecEdition
 						? IE.jsx.str("ie-btnicon", {
 								class: "fix-bloc icon_pencil i-medium avecFond m-bottom",
@@ -1510,13 +1506,17 @@ function _composeBlocAnnexes(aDonnees, aParams) {
 									aDonnees,
 									aParams,
 								),
-								title: ObjetTraduction_1.GTraductions.getValeur("Modifier"),
+								title:
+									ObjetTraduction_1.GTraductions.getValeur("Modifier") +
+									" - " +
+									lTitre,
+								"aria-haspopup": "dialog",
 							})
 						: "",
 				),
 				aDonnees.competencesVisees
 					? IE.jsx.str(
-							"div",
+							"p",
 							{ class: "m-bottom-xl m-right-xxl" },
 							ObjetChaine_1.GChaine.replaceRCToHTML(aDonnees.competencesVisees),
 						)
@@ -1532,6 +1532,9 @@ function _composeBlocAnnexes(aDonnees, aParams) {
 		aDonnees.avecTravauxAuxMineurs &&
 		(aParams.parametres.avecEdition || aDonnees.travauxAuxMineurs)
 	) {
+		const lTitre = ObjetTraduction_1.GTraductions.getValeur(
+			"FicheStage.annexe.travauxAuxMineurs",
+		);
 		H.push(
 			IE.jsx.str(
 				"div",
@@ -1539,13 +1542,7 @@ function _composeBlocAnnexes(aDonnees, aParams) {
 				IE.jsx.str(
 					"div",
 					{ class: "flex-contain justify-between flex-center flex-gap-l" },
-					IE.jsx.str(
-						"h2",
-						{ class: "ie-titre-couleur-lowercase" },
-						ObjetTraduction_1.GTraductions.getValeur(
-							"FicheStage.annexe.travauxAuxMineurs",
-						),
-					),
+					IE.jsx.str("h2", { class: "ie-titre-couleur-lowercase" }, lTitre),
 					aParams.parametres.avecEdition
 						? IE.jsx.str("ie-btnicon", {
 								class: "fix-bloc icon_pencil i-medium avecFond m-bottom",
@@ -1556,13 +1553,17 @@ function _composeBlocAnnexes(aDonnees, aParams) {
 									aDonnees,
 									aParams,
 								),
-								title: ObjetTraduction_1.GTraductions.getValeur("Modifier"),
+								title:
+									ObjetTraduction_1.GTraductions.getValeur("Modifier") +
+									" - " +
+									lTitre,
+								"aria-haspopup": "dialog",
 							})
 						: "",
 				),
 				aDonnees.travauxAuxMineurs
 					? IE.jsx.str(
-							"div",
+							"p",
 							{ class: "m-bottom-xl m-right-xxl" },
 							ObjetChaine_1.GChaine.replaceRCToHTML(aDonnees.travauxAuxMineurs),
 						)
@@ -1571,6 +1572,9 @@ function _composeBlocAnnexes(aDonnees, aParams) {
 		);
 	}
 	if (aParams.parametres.avecEdition || aDonnees.modalitesConcertation) {
+		const lTitre = ObjetTraduction_1.GTraductions.getValeur(
+			"FicheStage.annexe.modalitesDEncadrement",
+		);
 		H.push(
 			IE.jsx.str(
 				"div",
@@ -1578,13 +1582,7 @@ function _composeBlocAnnexes(aDonnees, aParams) {
 				IE.jsx.str(
 					"div",
 					{ class: "flex-contain justify-between flex-center flex-gap-l" },
-					IE.jsx.str(
-						"h2",
-						{ class: "ie-titre-couleur-lowercase" },
-						ObjetTraduction_1.GTraductions.getValeur(
-							"FicheStage.annexe.modalitesDEncadrement",
-						),
-					),
+					IE.jsx.str("h2", { class: "ie-titre-couleur-lowercase" }, lTitre),
 					aParams.parametres.avecEdition
 						? IE.jsx.str("ie-btnicon", {
 								class: "fix-bloc icon_pencil i-medium avecFond m-bottom",
@@ -1595,13 +1593,17 @@ function _composeBlocAnnexes(aDonnees, aParams) {
 									aDonnees,
 									aParams,
 								),
-								title: ObjetTraduction_1.GTraductions.getValeur("Modifier"),
+								title:
+									ObjetTraduction_1.GTraductions.getValeur("Modifier") +
+									" - " +
+									lTitre,
+								"aria-haspopup": "dialog",
 							})
 						: "",
 				),
 				aDonnees.modalitesConcertation
 					? IE.jsx.str(
-							"div",
+							"p",
 							{ class: "m-bottom-xl m-right-xxl" },
 							ObjetChaine_1.GChaine.replaceRCToHTML(
 								aDonnees.modalitesConcertation,
@@ -1618,6 +1620,9 @@ function _composeBlocAnnexes(aDonnees, aParams) {
 				.TMEMP_Aucune ||
 		aDonnees.modalitesEvaluation
 	) {
+		const lTitre = ObjetTraduction_1.GTraductions.getValeur(
+			"FicheStage.annexe.modalitesDeLaPeriodePro",
+		);
 		H.push(
 			IE.jsx.str(
 				"div",
@@ -1625,13 +1630,7 @@ function _composeBlocAnnexes(aDonnees, aParams) {
 				IE.jsx.str(
 					"div",
 					{ class: "flex-contain justify-between flex-center flex-gap-l" },
-					IE.jsx.str(
-						"h2",
-						{ class: "ie-titre-couleur-lowercase" },
-						ObjetTraduction_1.GTraductions.getValeur(
-							"FicheStage.annexe.modalitesDeLaPeriodePro",
-						),
-					),
+					IE.jsx.str("h2", { class: "ie-titre-couleur-lowercase" }, lTitre),
 					aParams.parametres.avecEdition
 						? IE.jsx.str("ie-btnicon", {
 								class: "fix-bloc icon_pencil i-medium avecFond m-bottom",
@@ -1642,54 +1641,60 @@ function _composeBlocAnnexes(aDonnees, aParams) {
 									aDonnees,
 									aParams,
 								),
-								title: ObjetTraduction_1.GTraductions.getValeur("Modifier"),
+								title:
+									ObjetTraduction_1.GTraductions.getValeur("Modifier") +
+									" - " +
+									lTitre,
+								"aria-haspopup": "dialog",
 							})
 						: "",
 				),
-				IE.jsx.str(
-					"div",
-					{ class: [!IE.estMobile ? "flex-contain " : "", "m-right-xxl"] },
-					aDonnees.typeModalitesEvaluation.getGenre() !==
-						TypesAnnexePedagogique_1.TypeModaliteDEvaluationMilieuProfessionnel
-							.TMEMP_Aucune
-						? IE.jsx.str(
+				(aDonnees.typeModalitesEvaluation.getGenre() !==
+					TypesAnnexePedagogique_1.TypeModaliteDEvaluationMilieuProfessionnel
+						.TMEMP_Aucune ||
+					aDonnees.modalitesEvaluation) &&
+					IE.jsx.str(
+						"dl",
+						{ class: [!IE.estMobile ? "flex-contain " : "", "m-right-xxl"] },
+						aDonnees.typeModalitesEvaluation.getGenre() !==
+							TypesAnnexePedagogique_1
+								.TypeModaliteDEvaluationMilieuProfessionnel.TMEMP_Aucune &&
+							IE.jsx.str(
 								"div",
 								{ class: "m-bottom-xl m-right-l sous-section" },
 								IE.jsx.str(
-									"div",
+									"dt",
 									{ class: "Gras ie-titre-petit" },
 									ObjetTraduction_1.GTraductions.getValeur(
 										"FicheStage.annexe.typeDEvaluation",
 									),
 								),
 								IE.jsx.str(
-									"div",
+									"dd",
 									null,
 									aDonnees.typeModalitesEvaluation.getLibelle(),
 								),
-							)
-						: "",
-					aDonnees.modalitesEvaluation
-						? IE.jsx.str(
+							),
+						aDonnees.modalitesEvaluation &&
+							IE.jsx.str(
 								"div",
 								{ class: "m-bottom-xl sous-section" },
 								IE.jsx.str(
-									"div",
+									"dt",
 									{ class: "Gras ie-titre-petit" },
 									ObjetTraduction_1.GTraductions.getValeur(
 										"FicheStage.annexe.modalitesDEvaluation",
 									),
 								),
 								IE.jsx.str(
-									"div",
+									"dd",
 									null,
 									ObjetChaine_1.GChaine.replaceRCToHTML(
 										aDonnees.modalitesEvaluation,
 									),
 								),
-							)
-						: "",
-				),
+							),
+					),
 			),
 		);
 	}
@@ -1768,7 +1773,11 @@ function _construireAppreciations(aDonnees, aLibelle) {
 					? IE.jsx.str("ie-btnicon", {
 							class: "icon_pencil i-medium avecFond",
 							"ie-model": "modifierAppreciation",
-							title: ObjetTraduction_1.GTraductions.getValeur("Modifier"),
+							title:
+								ObjetTraduction_1.GTraductions.getValeur("Modifier") +
+								" - " +
+								aLibelle,
+							"aria-haspopup": "dialog",
 						})
 					: "",
 			),
@@ -1781,7 +1790,11 @@ function _construireAppreciations(aDonnees, aLibelle) {
 						{ class: "nom-auteur" },
 						aAppreciation.getLibelle(),
 					),
-					IE.jsx.str("div", { class: "m-bottom" }, aAppreciation.appreciation),
+					IE.jsx.str(
+						"blockquote",
+						{ class: "m-bottom" },
+						aAppreciation.appreciation,
+					),
 				);
 			}),
 		);

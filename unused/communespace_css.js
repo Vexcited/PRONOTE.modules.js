@@ -3,5 +3,6 @@ exports.StylesCommunEspace = {
 	messageVide: "message-vide",
 	message: "message",
 	Image_No_Data: "Image_No_Data",
+	ThemePronote: "ThemePronote",
 	evitement: "evitement",
 };

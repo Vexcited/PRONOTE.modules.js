@@ -963,6 +963,9 @@ class DonneesListe_Absences extends ObjetDonneesListeFlatDesign_1.ObjetDonneesLi
 											lGenreEvenement,
 											aParams.article.getNumero(),
 										]),
+										"aria-haspopup": "dialog",
+										"aria-label":
+											lBtnLabel + " - " + aParams.article.infosDate.strDate(),
 									},
 									lBtnLabel,
 								),

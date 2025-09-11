@@ -54,6 +54,9 @@ class ObjetResultatsActualite extends ObjetIdentite_1.Identite {
 				},
 			],
 			hauteurAdapteContenu: false,
+			ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
+				"actualites.Question",
+			),
 		});
 		this.construireInstanceListeFlat();
 	}
@@ -69,7 +72,9 @@ class ObjetResultatsActualite extends ObjetIdentite_1.Identite {
 			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
 			nonEditable: true,
 			scrollHorizontal: false,
-			avecModeAccessible: true,
+			ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
+				"infoSond.labelListeResultat",
+			),
 		});
 	}
 	evenementListe() {}
@@ -424,6 +429,9 @@ class ObjetResultatsActualite extends ObjetIdentite_1.Identite {
 				lIdPremiereColonneScrollable ||
 				DonneesListe_ResultatsActualite_1.DonneesListe_ResultatsActualite
 					.colonnes.destinataires,
+			ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
+				"infoSond.labelListeResultat",
+			),
 		});
 	}
 	recupererDonnees() {}

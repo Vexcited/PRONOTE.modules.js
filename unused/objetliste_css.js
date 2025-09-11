@@ -41,7 +41,6 @@ exports.StylesObjetListe = {
 	listeHeriar: "liste-heriar",
 	liste_celluleGrid: "liste_celluleGrid",
 	voileDropCellule: "voileDropCellule",
-	voileBleuCellule: "voileBleuCellule",
 	voileBleuTitre: "voileBleuTitre",
 	conteneurTri_scroll: "conteneurTri_scroll",
 	tri_scroll_contenu: "tri_scroll_contenu",

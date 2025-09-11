@@ -40,7 +40,6 @@ class PageTrombi extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
 			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
 			nonEditable: true,
 			scrollHorizontal: false,
-			avecModeAccessible: true,
 		});
 	}
 	_evntSurListe(aParametres) {

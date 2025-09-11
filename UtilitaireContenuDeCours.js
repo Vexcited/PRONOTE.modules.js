@@ -152,7 +152,7 @@ class UtilitaireContenuDeCours {
 						'<div class="btnCours">',
 						"<ie-bouton ie-model=\"appelTAF('" +
 							lCahierDeTextes.getNumero() +
-							'\')" class="themeBoutonNeutre small-bt">',
+							'\')" class="themeBoutonNeutre small-bt" aria-haspopup="dialog">',
 						ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.voirTAF"),
 						"</ie-bouton>",
 						"</div>",
@@ -217,7 +217,7 @@ class UtilitaireContenuDeCours {
 				'<div class="btnCours">',
 				"<ie-bouton ie-model=\"appelTAF('" +
 					aCDT.getNumero() +
-					'\')" class="themeBoutonNeutre small-bt">',
+					'\')" class="themeBoutonNeutre small-bt" aria-haspopup="dialog">',
 				ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.voirTAF"),
 				"</ie-bouton>",
 				"</div>",

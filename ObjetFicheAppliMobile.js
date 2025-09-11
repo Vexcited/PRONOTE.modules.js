@@ -125,7 +125,10 @@ class ObjetFicheAppliMobile extends ObjetFenetre_1.ObjetFenetre {
 						{ style: { textAlign: "right" } },
 						IE.jsx.str(
 							"ie-bouton",
-							{ "ie-model": this.jsxModeleBoutonCode.bind(this) },
+							{
+								"ie-model": this.jsxModeleBoutonCode.bind(this),
+								"aria-haspopup": "dialog",
+							},
 							TraductionsAppliMobile_1.TradAppliMobile.GenererQRCode,
 						),
 					),

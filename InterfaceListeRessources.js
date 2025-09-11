@@ -131,6 +131,18 @@ class InterfaceListeRessources extends InterfacePage_1.InterfacePage {
 						),
 						taille: 140,
 					},
+					{
+						id: Colonnes.email,
+						titre: ObjetTraduction_1.GTraductions.getValeur(
+							"ListeRessources.email",
+						),
+						taille: 240,
+					},
+					{
+						id: Colonnes.eleves,
+						titre: ObjetTraduction_1.GTraductions.getValeur("Eleves"),
+						taille: 140,
+					},
 				];
 				lNumeroColonneTriDefaut = [Colonnes.nom, Colonnes.prenom];
 				break;
@@ -345,6 +357,7 @@ class DonneesListe_Ressources extends ObjetDonneesListe_1.ObjetDonneesListe {
 				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 			case Colonnes.couleurME:
 			case Colonnes.fonction:
+			case Colonnes.eleves:
 				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
 		}
 		return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
@@ -364,11 +377,15 @@ class DonneesListe_Ressources extends ObjetDonneesListe_1.ObjetDonneesListe {
 		return "";
 	}
 	getValeur(aParams) {
+		var _a, _b, _c, _d;
 		switch (aParams.idColonne) {
 			case Colonnes.civilite:
 				return aParams.article.civ;
 			case Colonnes.nom:
-				return aParams.article.getLibelle();
+				return aParams.article.getGenre() ===
+					Enumere_Ressource_1.EGenreRessource.Responsable && aParams.article.nom
+					? aParams.article.nom
+					: aParams.article.getLibelle();
 			case Colonnes.prenom:
 				return aParams.article.prenom;
 			case Colonnes.email:
@@ -385,6 +402,26 @@ class DonneesListe_Ressources extends ObjetDonneesListe_1.ObjetDonneesListe {
 				return aParams.article.discipline;
 			case Colonnes.classes:
 				return aParams.article.classes;
+			case Colonnes.eleves:
+				return ((_b =
+					(_a = aParams.article) === null || _a === void 0
+						? void 0
+						: _a.listeRessources) === null || _b === void 0
+					? void 0
+					: _b.count()) > 0
+					? IE.jsx.str(
+							"ul",
+							null,
+							(_d =
+								(_c = aParams.article) === null || _c === void 0
+									? void 0
+									: _c.listeRessources) === null || _d === void 0
+								? void 0
+								: _d.getTableau((aRessource) =>
+										IE.jsx.str("li", null, aRessource.getLibelle()),
+									),
+						)
+					: "";
 			case Colonnes.fonction: {
 				let lLibelle = aParams.article.fonction;
 				if (aParams.article.estAccompagnant) {
@@ -498,4 +535,5 @@ var Colonnes;
 	Colonnes["lve"] = "lve";
 	Colonnes["discipline"] = "discipline";
 	Colonnes["elevesTutores"] = "elevesTutores";
+	Colonnes["eleves"] = "eleves";
 })(Colonnes || (Colonnes = {}));

@@ -1169,6 +1169,7 @@ class InterfaceCasier extends _InterfaceDocuments_1._InterfaceDocuments {
 							"ie-model": this.jsxModeleBoutonMenuCtxListeEleves.bind(this),
 							title:
 								ObjetTraduction_1.GTraductions.getValeur("liste.BtnAction"),
+							"aria-haspopup": "menu",
 						}),
 				});
 				if (this.optionsEcrans.avecBascule) {

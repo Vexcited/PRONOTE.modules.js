@@ -150,210 +150,18 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 			getHtmlInfoPublicationDecaleeParents() {
 				return aInstance.getHtmlInfoPublicationDecaleeParents();
 			},
-			cbSujet: {
-				getValue() {
-					return aInstance._avecSujetDevoir();
-				},
-				setValue(aValue) {
-					if (!aValue && aInstance._avecSujetDevoir()) {
+			supprSujet: {
+				eventBtn: () => {
+					if (aInstance._avecSujetDevoir()) {
 						aInstance.surDemandeSuppressionSujet();
 					}
 				},
-				getDisabled() {
-					return (
-						!aInstance.Actif || !aInstance.devoir || aInstance.devoir.verrouille
-					);
-				},
 			},
-			selectSujetDevoir: function () {
-				$(this.node).eventValidation((aEvent) => {
-					const lThis = aInstance;
-					if (
-						aInstance.Actif &&
-						aInstance.devoir &&
-						!aInstance.devoir.verrouille &&
-						!aInstance._avecSujetDevoir()
-					) {
-						const lTabActions = [];
-						lTabActions.push({
-							libelle: IE.estMobile
-								? ObjetTraduction_1.GTraductions.getValeur(
-										"fenetre_ActionContextuelle.depuisMesDocuments",
-									)
-								: ObjetTraduction_1.GTraductions.getValeur(
-										"fenetre_ActionContextuelle.depuisMonPoste",
-									),
-							icon: "icon_folder_open",
-							selecFile: true,
-							optionsSelecFile: { maxSize: lThis.getTailleMaxPieceJointe() },
-							event(aParamsInput) {
-								if (aParamsInput) {
-									lThis.devoir.listeSujets.addElement(
-										aParamsInput.eltFichier,
-										0,
-									);
-									lThis.actualiserSujet();
-								}
-							},
-							class: "bg-orange-claire",
-						});
-						const lAvecCloud = GEtatUtilisateur.listeCloud.count() > 0;
-						if (lAvecCloud) {
-							const lParams = {
-								genre: lThis.getEGenreSujet(),
-								listeElements: lThis.devoir.listeSujets,
-								callback: lThis.actualiserSujet,
-							};
-							lTabActions.push({
-								libelle: ObjetTraduction_1.GTraductions.getValeur(
-									"fenetre_ActionContextuelle.depuisMonCloud",
-								),
-								icon: "icon_cloud",
-								event: function () {
-									lThis.ouvrirPJCloud(lParams);
-								}.bind(this),
-								class: "bg-orange-claire",
-							});
-							if (GEtatUtilisateur.avecCloudENEJDisponible()) {
-								const lActionENEJ =
-									ObjetFenetre_ActionContextuelle_1.ObjetFenetre_ActionContextuelle.getActionENEJ(
-										() => lThis.ouvrirPJCloudENEJ(lParams),
-									);
-								if (lActionENEJ) {
-									lTabActions.push(lActionENEJ);
-								}
-							}
-						}
-						ObjetFenetre_ActionContextuelle_1.ObjetFenetre_ActionContextuelle.ouvrir(
-							lTabActions,
-							{ pere: lThis },
-						);
-						aEvent.stopImmediatePropagation();
-						aEvent.preventDefault();
-					}
-				});
-			},
-			selecFileSujetDevoir: {
-				getOptionsSelecFile: function () {
-					return {
-						maxSize: aInstance.getTailleMaxPieceJointe(),
-						interrompreClick: true,
-					};
-				},
-				addFiles: function (aParams) {
-					aInstance.devoir.listeSujets.addElement(aParams.eltFichier, 0);
-					aInstance.actualiserSujet();
-				},
-				getDisabled: function () {
-					return (
-						!aInstance.Actif ||
-						!aInstance.devoir ||
-						aInstance.devoir.verrouille ||
-						aInstance._avecSujetDevoir()
-					);
-				},
-			},
-			cbCorrigeDevoir: {
-				getValue: function () {
-					return aInstance._avecCorrigeDevoir();
-				},
-				setValue: function (aValue) {
-					if (!aValue && aInstance._avecCorrigeDevoir()) {
+			supprCorrige: {
+				eventBtn: () => {
+					if (aInstance._avecCorrigeDevoir()) {
 						aInstance.surDemandeSuppressionCorrige();
 					}
-				},
-				getDisabled: function () {
-					return (
-						!aInstance.Actif || !aInstance.devoir || aInstance.devoir.verrouille
-					);
-				},
-			},
-			selectCorrigeDevoir: function () {
-				$(this.node).eventValidation((aEvent) => {
-					const lThis = aInstance;
-					if (
-						aInstance.Actif &&
-						aInstance.devoir &&
-						!aInstance.devoir.verrouille &&
-						!aInstance._avecCorrigeDevoir()
-					) {
-						const lTabActions = [];
-						lTabActions.push({
-							libelle: IE.estMobile
-								? ObjetTraduction_1.GTraductions.getValeur(
-										"fenetre_ActionContextuelle.depuisMesDocuments",
-									)
-								: ObjetTraduction_1.GTraductions.getValeur(
-										"fenetre_ActionContextuelle.depuisMonPoste",
-									),
-							icon: "icon_folder_open",
-							selecFile: true,
-							optionsSelecFile: { maxSize: lThis.getTailleMaxPieceJointe() },
-							event(aParamsInput) {
-								if (aParamsInput) {
-									lThis.devoir.listeCorriges.addElement(
-										aParamsInput.eltFichier,
-										0,
-									);
-									lThis.actualiserCorrige();
-								}
-							},
-							class: "bg-orange-claire",
-						});
-						const lAvecCloud = GEtatUtilisateur.listeCloud.count() > 0;
-						if (lAvecCloud) {
-							const lParams = {
-								genre: lThis.getEGenreCorrige(),
-								listeElements: lThis.devoir.listeCorriges,
-								callback: lThis.actualiserCorrige,
-							};
-							lTabActions.push({
-								libelle: ObjetTraduction_1.GTraductions.getValeur(
-									"fenetre_ActionContextuelle.depuisMonCloud",
-								),
-								icon: "icon_cloud",
-								event: function () {
-									lThis.ouvrirPJCloud(lParams);
-								}.bind(this),
-								class: "bg-orange-claire",
-							});
-							if (GEtatUtilisateur.avecCloudENEJDisponible()) {
-								const lActionENEJ =
-									ObjetFenetre_ActionContextuelle_1.ObjetFenetre_ActionContextuelle.getActionENEJ(
-										() => lThis.ouvrirPJCloudENEJ(lParams),
-									);
-								if (lActionENEJ) {
-									lTabActions.push(lActionENEJ);
-								}
-							}
-						}
-						ObjetFenetre_ActionContextuelle_1.ObjetFenetre_ActionContextuelle.ouvrir(
-							lTabActions,
-							{ pere: lThis },
-						);
-						aEvent.stopImmediatePropagation();
-						aEvent.preventDefault();
-					}
-				});
-			},
-			selecFileCorrigeDevoir: {
-				getOptionsSelecFile: function () {
-					return {
-						maxSize: aInstance.getTailleMaxPieceJointe(),
-						interrompreClick: true,
-					};
-				},
-				addFiles: function (aParams) {
-					aInstance.devoir.listeCorriges.addElement(aParams.eltFichier, 0);
-					aInstance.actualiserCorrige();
-				},
-				getDisabled: function () {
-					return (
-						!aInstance.Actif ||
-						!aInstance.devoir ||
-						aInstance.devoir.verrouille ||
-						aInstance._avecCorrigeDevoir()
-					);
 				},
 			},
 			cbCorrigeQCM: {
@@ -648,6 +456,129 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 			},
 		});
 	}
+	jsxModelBtnSelecteurSujetCorrigeDevoir(aEstSujet) {
+		return {
+			event: () => {
+				if (this.avecDepotCloud()) {
+					if (
+						this.Actif &&
+						this.devoir &&
+						!this.devoir.verrouille &&
+						((aEstSujet && !this._avecSujetDevoir()) ||
+							(!aEstSujet && !this._avecCorrigeDevoir()))
+					) {
+						const lTabActions = [];
+						lTabActions.push({
+							libelle: IE.estMobile
+								? ObjetTraduction_1.GTraductions.getValeur(
+										"fenetre_ActionContextuelle.depuisMesDocuments",
+									)
+								: ObjetTraduction_1.GTraductions.getValeur(
+										"fenetre_ActionContextuelle.depuisMonPoste",
+									),
+							icon: "icon_folder_open",
+							selecFile: true,
+							optionsSelecFile: { maxSize: this.getTailleMaxPieceJointe() },
+							event: (aParamsInput) => {
+								if (aParamsInput) {
+									if (aEstSujet) {
+										this.devoir.listeSujets.addElement(
+											aParamsInput.eltFichier,
+											0,
+										);
+										this.actualiserSujet();
+									} else {
+										this.devoir.listeCorriges.addElement(
+											aParamsInput.eltFichier,
+											0,
+										);
+										this.actualiserCorrige();
+									}
+								}
+							},
+							class: "bg-orange-claire",
+						});
+						const lAvecCloud = GEtatUtilisateur.listeCloud.count() > 0;
+						if (lAvecCloud) {
+							let lParams;
+							if (aEstSujet) {
+								lParams = {
+									genre: this.getEGenreSujet(),
+									listeElements: this.devoir.listeSujets,
+									callback: this.actualiserSujet,
+								};
+							} else {
+								lParams = {
+									genre: this.getEGenreCorrige(),
+									listeElements: this.devoir.listeCorriges,
+									callback: this.actualiserCorrige,
+								};
+							}
+							lTabActions.push({
+								libelle: ObjetTraduction_1.GTraductions.getValeur(
+									"fenetre_ActionContextuelle.depuisMonCloud",
+								),
+								icon: "icon_cloud",
+								event: () => {
+									this.ouvrirPJCloud(lParams);
+								},
+								class: "bg-orange-claire",
+							});
+							if (GEtatUtilisateur.avecCloudENEJDisponible()) {
+								const lActionENEJ =
+									ObjetFenetre_ActionContextuelle_1.ObjetFenetre_ActionContextuelle.getActionENEJ(
+										() => this.ouvrirPJCloudENEJ(lParams),
+									);
+								if (lActionENEJ) {
+									lTabActions.push(lActionENEJ);
+								}
+							}
+						}
+						ObjetFenetre_ActionContextuelle_1.ObjetFenetre_ActionContextuelle.ouvrir(
+							lTabActions,
+							{ pere: this },
+						);
+					}
+				}
+			},
+			getOptionsSelecFile: () => {
+				return {
+					maxSize: this.getTailleMaxPieceJointe(),
+					interrompreClick: true,
+				};
+			},
+			addFiles: (aParams) => {
+				if (aEstSujet) {
+					this.devoir.listeSujets.addElement(aParams.eltFichier, 0);
+					this.actualiserSujet();
+				} else {
+					this.devoir.listeCorriges.addElement(aParams.eltFichier, 0);
+					this.actualiserCorrige();
+				}
+			},
+			getLibelle: () => {
+				return aEstSujet
+					? ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreDevoir.ajouterLeSujet",
+						)
+					: ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreDevoir.ajouterLeCorrige",
+						);
+			},
+			getIcone: () => {
+				return "icon_piece_jointe";
+			},
+			getDisabled: () => {
+				return (
+					!this.Actif ||
+					!this.devoir ||
+					this.devoir.verrouille ||
+					(aEstSujet && this._avecSujetDevoir()) ||
+					(!aEstSujet && this._avecCorrigeDevoir())
+				);
+			},
+		};
+	}
 	ouvrirPJCloud(aParams) {}
 	ouvrirPJCloudENEJ(aParams) {}
 	construireInstances() {
@@ -891,7 +822,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 			`  <div class="field-contain fluid-bloc">\n                <p class="message" id="${this.idInfoPublicationDecaleeParents}" ie-html="getHtmlInfoPublicationDecaleeParents"></p>\n              </div>`,
 		);
 		T.push(`</div>`);
-		T.push(`<div class="flex-contain cols" style="padding-left:9.5rem;">`);
+		T.push(`<div class="flex-contain cols">`);
 		T.push(`<div id="${this.idSujet}" class="field-contain selecfile"></div>`);
 		T.push(
 			`<div id="${this.idCorrige}" class="field-contain selecfile"></div>`,
@@ -922,7 +853,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 				ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.Coefficient"),
 				this.IdCoefficient,
 				this.GenreEdition.coefficient,
-				"Gras m-right-l",
+				"Gras m-right",
 				this.TypeMrFiche.Bareme,
 				7,
 				62,
@@ -959,6 +890,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 							class: "m-left-l",
 							"ie-model": "btnCategorie",
 							"ie-display": "btnCategorie.estVisible",
+							"aria-haspopup": "dialog",
 						},
 						"...",
 					),
@@ -1121,7 +1053,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 				"ie-node": lGetNode,
 				maxlength: lMaxLength,
 				id: AId,
-				class: aClass ? " " + { aClass } : "",
+				class: aClass,
 				style: { width: aInputWidth },
 				"aria-label":
 					aAriaLabelSansTitre && !ATitre ? aAriaLabelSansTitre : false,
@@ -1129,7 +1061,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 		);
 		if (aTypeMonsieurFiche) {
 			T.push(
-				`<ie-btnicon ie-model="btnMrFiche('${aTypeMonsieurFiche}')" class="m-left icon_question bt-activable"></ie-btnicon>`,
+				`<ie-btnicon ie-model="btnMrFiche('${aTypeMonsieurFiche}')" class="m-left icon_question bt-activable" aria-haspopup="dialog"></ie-btnicon>`,
 			);
 		}
 		T.push("</div>");
@@ -1713,7 +1645,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 		this.actualiserCorrige();
 	}
 	actualiserSujet() {
-		ObjetHtml_1.GHtml.setHtml(this.idSujet, this._composeSujet(), {
+		ObjetHtml_1.GHtml.setHtml(this.idSujet, this._composeSujetCoriger(true), {
 			instance: this,
 		});
 	}
@@ -1725,47 +1657,42 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 	avecDepotCloud() {
 		return false;
 	}
-	_composeSujet() {
+	_composeSujetCoriger(aEstSujet) {
 		const H = [];
 		if (this._autoriseSujetEtCorrigeDevoir()) {
-			const lLibelle = ObjetTraduction_1.GTraductions.getValeur(
-				"FenetreDevoir.avecLeSujet",
-			);
-			const lmodel = this.avecDepotCloud()
-				? 'ie-node="selectSujetDevoir"'
-				: 'ie-model="selecFileSujetDevoir"';
 			H.push(
-				'<div class="label-contain" ',
-				lmodel,
-				this.avecDepotCloud() ? "" : " ie-selecfile",
-				' role="presentation">',
-			);
-			H.push(
-				'<ie-checkbox ie-model="cbSujet" ',
-				ObjetWAI_1.GObjetWAI.composeAttribut({
-					genre: ObjetWAI_1.EGenreAttribut.label,
-					valeur: lLibelle,
+				IE.jsx.str("ie-btnselecteur", {
+					role: "button",
+					"ie-model": this.jsxModelBtnSelecteurSujetCorrigeDevoir.bind(
+						this,
+						aEstSujet,
+					),
+					"ie-selecfile": !this.avecDepotCloud(),
+					class: "pj",
 				}),
-				" >",
-				lLibelle,
-				"</ie-checkbox>",
 			);
-			H.push("</div>");
-			if (this._avecSujetDevoir()) {
-				const lSujet = this.devoir.listeSujets.getPremierElement();
-				if (!!lSujet) {
-					H.push('<div class="chips-contain">');
-					H.push(
-						ObjetChaine_1.GChaine.composerUrlLienExterne({
-							documentJoint: lSujet,
-							genreDocumentJoint:
-								lSujet.genreDocument ||
-								Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier,
-							genreRessource: this.getEGenreSujet(),
-						}),
-					);
-					H.push("</div>");
-				}
+			const lPJ =
+				(aEstSujet &&
+					this._avecSujetDevoir() &&
+					this.devoir.listeSujets.getPremierElement()) ||
+				(!aEstSujet &&
+					this._avecCorrigeDevoir() &&
+					this.devoir.listeCorriges.getPremierElement());
+			if (!!lPJ) {
+				H.push('<div class="chips-contain">');
+				H.push(
+					ObjetChaine_1.GChaine.composerUrlLienExterne({
+						documentJoint: lPJ,
+						genreDocumentJoint:
+							lPJ.genreDocument ||
+							Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier,
+						genreRessource: aEstSujet
+							? this.getEGenreSujet()
+							: this.getEGenreCorrige(),
+						ieModelChips: aEstSujet ? "supprSujet" : "supprCorrige",
+					}),
+				);
+				H.push("</div>");
 			}
 		}
 		return H.join("");
@@ -1773,7 +1700,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 	_composeCorrige() {
 		const H = [];
 		if (this._autoriseSujetEtCorrigeDevoir()) {
-			H.push(this._composeCorrigeDevoir());
+			H.push(this._composeSujetCoriger(false));
 		} else {
 			H.push(this._composeAvecCorrigeQCM());
 		}
@@ -2009,6 +1936,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 							"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
 								"FenetreDevoir.AssocierAUnQCM",
 							),
+							"aria-haspopup": "dialog",
 						},
 						"...",
 					),
@@ -2314,7 +2242,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 	composeFacultatif() {
 		const T = [];
 		T.push(
-			`<ie-checkbox ie-model="cbFacultatif"><span id="${this.idLabelComboFacultatif}">${ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.Facultatif")}</span></ie-checkbox>\n              <span ie-style="getStyleCarreFacultatif" class="carre-facultatif"></span>\n              <div id="${this.getNomInstance(this.idComboFacultatif)}"></div>\n              <ie-btnicon ie-model="btnMrFiche('${this.TypeMrFiche.Facultatif}')" class="m-left icon_question bt-activable"></ie-btnicon>`,
+			`<ie-checkbox ie-model="cbFacultatif"><span id="${this.idLabelComboFacultatif}">${ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.Facultatif")}</span></ie-checkbox>\n              <span ie-style="getStyleCarreFacultatif" class="carre-facultatif"></span>\n              <div id="${this.getNomInstance(this.idComboFacultatif)}"></div>\n              <ie-btnicon ie-model="btnMrFiche('${this.TypeMrFiche.Facultatif}')" class="m-left icon_question bt-activable" aria-haspopup="dialog"></ie-btnicon>`,
 		);
 		return T.join("");
 	}

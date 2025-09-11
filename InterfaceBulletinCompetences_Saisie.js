@@ -102,6 +102,7 @@ class InterfaceBulletinCompetences_Saisie extends _InterfaceBulletinCompetences_
 						class:
 							Type_ThemeBouton_1.TypeThemeBouton.primaire +
 							" MargeGauche small-bt",
+						"aria-haspopup": "dialog",
 					},
 					ObjetTraduction_1.GTraductions.getValeur(
 						"competences.CalculerLesPositionnementsDeMaClasse",

@@ -114,7 +114,7 @@ class WidgetElections extends ObjetWidget_1.Widget.ObjetWidget {
 						!lCandidatEstSelectionne
 					);
 				}
-				return true;
+				return false;
 			},
 		};
 	}
@@ -439,6 +439,18 @@ class WidgetElections extends ObjetWidget_1.Widget.ObjetWidget {
 		}
 		return lChoixCandidat;
 	}
+	getIconeConstitutionListe(aElection, aCandidat) {
+		return IE.jsx.str("i", {
+			class: "icon icon_info_sign",
+			"ie-node": this.jsxNodeAfficherConstitutionListe(aElection, aCandidat),
+			"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+				"accueil.elections.afficherCandidatsConstitutifsDesListes",
+			),
+			tabindex: "0",
+			role: "button",
+			"aria-haspopup": "dialog",
+		});
+	}
 	_composeCBCandidat(aElection, aCandidat) {
 		const H = [];
 		H.push(
@@ -457,18 +469,8 @@ class WidgetElections extends ObjetWidget_1.Widget.ObjetWidget {
 					},
 					IE.jsx.str("span", { class: "libelle" }, aCandidat.getLibelle()),
 					aCandidat.getGenre() ===
-						TypeGenreCandidatElection_1.TypeGenreCandidatElection.GCE_Liste
-						? IE.jsx.str("i", {
-								class: "icon icon_info_sign",
-								"ie-node": this.jsxNodeAfficherConstitutionListe(
-									aElection,
-									aCandidat,
-								),
-								tabindex: "0",
-								role: "button",
-								"aria-haspopup": "dialog",
-							})
-						: "",
+						TypeGenreCandidatElection_1.TypeGenreCandidatElection.GCE_Liste &&
+						this.getIconeConstitutionListe(aElection, aCandidat),
 				),
 			),
 		);
@@ -494,18 +496,8 @@ class WidgetElections extends ObjetWidget_1.Widget.ObjetWidget {
 					},
 					IE.jsx.str("span", { class: "libelle" }, aCandidat.getLibelle()),
 					aCandidat.getGenre() ===
-						TypeGenreCandidatElection_1.TypeGenreCandidatElection.GCE_Liste
-						? IE.jsx.str("i", {
-								class: "icon icon_info_sign",
-								"ie-node": this.jsxNodeAfficherConstitutionListe(
-									aElection,
-									aCandidat,
-								),
-								tabindex: "0",
-								role: "button",
-								"aria-haspopup": "dialog",
-							})
-						: "",
+						TypeGenreCandidatElection_1.TypeGenreCandidatElection.GCE_Liste &&
+						this.getIconeConstitutionListe(aElection, aCandidat),
 				),
 			),
 		);

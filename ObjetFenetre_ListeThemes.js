@@ -162,6 +162,7 @@ class ObjetFenetre_ListeThemes extends ObjetFenetre_1.ObjetFenetre {
 			avecLigneCreation: true,
 			estBoutonCreationPiedFlottant_mobile: false,
 			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+			ariaLabel: this.optionsFenetre.titre,
 		});
 	}
 	evenementSurListe(aParametres) {

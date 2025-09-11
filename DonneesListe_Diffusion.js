@@ -165,6 +165,7 @@ class DonneesListe_Diffusion extends ObjetDonneesListeFlatDesign_1.ObjetDonneesL
 						typeAffEnModeMixte:
 							Enumere_MenuCtxModeMixte_1.ETypeAffEnModeMixte.icon,
 						data: aParametres.article,
+						ariaHasPopup: "dialog",
 					},
 				);
 			}
@@ -187,6 +188,7 @@ class DonneesListe_Diffusion extends ObjetDonneesListeFlatDesign_1.ObjetDonneesL
 						typeAffEnModeMixte:
 							Enumere_MenuCtxModeMixte_1.ETypeAffEnModeMixte.icon,
 						data: aParametres.article,
+						ariaHasPopup: "dialog",
 					},
 				);
 			}
@@ -209,6 +211,7 @@ class DonneesListe_Diffusion extends ObjetDonneesListeFlatDesign_1.ObjetDonneesL
 						typeAffEnModeMixte:
 							Enumere_MenuCtxModeMixte_1.ETypeAffEnModeMixte.icon,
 						data: aParametres.article,
+						ariaHasPopup: "dialog",
 					},
 				);
 			}

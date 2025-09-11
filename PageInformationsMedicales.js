@@ -361,9 +361,10 @@ class PageInformationsMedicales extends ObjetInterface_1.ObjetInterface {
 						{
 							"ie-model": this.jsxModeleBoutonAjouterAllergie.bind(this),
 							class: "themeBoutonNeutre",
-							title: ObjetTraduction_1.GTraductions.getValeur(
+							"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
 								"InfosMedicales.AjouterAllergie",
 							),
+							"aria-haspopup": "dialog",
 						},
 						ObjetTraduction_1.GTraductions.getValeur("Ajouter"),
 					),
@@ -456,9 +457,10 @@ class PageInformationsMedicales extends ObjetInterface_1.ObjetInterface {
 							"ie-model":
 								this.jsxModeleBoutonAjouterRestrictionAlimentaire.bind(this),
 							class: "themeBoutonNeutre",
-							title: ObjetTraduction_1.GTraductions.getValeur(
+							"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
 								"InfosMedicales.AjouterRestriction",
 							),
+							"aria-haspopup": "dialog",
 						},
 						ObjetTraduction_1.GTraductions.getValeur("Ajouter"),
 					),

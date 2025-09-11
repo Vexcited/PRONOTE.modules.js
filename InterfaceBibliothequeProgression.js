@@ -63,7 +63,7 @@ class InterfaceBibliothequeProgression extends InterfacePage_1.InterfacePage {
 							"progression.AjouterVosProgressions",
 						),
 					) +
-					'">' +
+					'" aria-haspopup="dialog">' +
 					ObjetTraduction_1.GTraductions.getValeur("CahierDeTexte.Ajouter") +
 					"</ie-bouton></div>",
 			},

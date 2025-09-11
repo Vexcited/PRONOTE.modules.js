@@ -15,4 +15,5 @@ var TypeClientRest;
 	TypeClientRest[(TypeClientRest["crClientNextCloud"] = 10)] =
 		"crClientNextCloud";
 	TypeClientRest[(TypeClientRest["crENEJ"] = 11)] = "crENEJ";
+	TypeClientRest[(TypeClientRest["crENEJGAR"] = 12)] = "crENEJGAR";
 })(TypeClientRest || (exports.TypeClientRest = TypeClientRest = {}));

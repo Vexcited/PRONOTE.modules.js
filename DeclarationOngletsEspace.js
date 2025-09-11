@@ -128,6 +128,8 @@ const MultipleInterfaceRDV = require("InterfaceRDV");
 const MultipleInterfaceRemplacementsEnseignants = require("InterfaceRemplacementsEnseignants");
 const MultipleInterfaceSaisieAppelInternat = require("InterfaceSaisieAppelInternat");
 const MultipleInterfaceRechercheDeStage = require("InterfaceRechercheDeStage");
+const MultipleInterfaceMediaCentre = require("InterfaceMediaCentre");
+const MultipleInteraceListePersonnels = require("InterfaceListePersonnels");
 function DeclarationOngletsEspace() {}
 DeclarationOngletsEspace.creerOnglet = function (
 	aGenreOnglet,
@@ -573,11 +575,21 @@ DeclarationOngletsEspace.creerOnglet = function (
 		case Enumere_Onglet_1.EGenreOnglet.Casier_Documents:
 		case Enumere_Onglet_1.EGenreOnglet.Casier_MonCasier:
 			return new MultipleInterfaceCasier.InterfaceCasier(aParamsConstructeur);
+		case Enumere_Onglet_1.EGenreOnglet.ListePersonnels:
+			return [
+				Enumere_Espace_1.EGenreEspace.Parent,
+				Enumere_Espace_1.EGenreEspace.Eleve,
+			].includes(GEtatUtilisateur.GenreEspace)
+				? new MultipleInteraceListePersonnels.InterfaceListePersonnels(
+						aParamsConstructeur,
+					)
+				: new MultipleInterfaceListeRessources.InterfaceListeRessources(
+						aParamsConstructeur,
+					);
 		case Enumere_Onglet_1.EGenreOnglet.ListeClasses:
 		case Enumere_Onglet_1.EGenreOnglet.ListeGroupes:
 		case Enumere_Onglet_1.EGenreOnglet.ListeProfesseurs:
 		case Enumere_Onglet_1.EGenreOnglet.ListeResponsables:
-		case Enumere_Onglet_1.EGenreOnglet.ListePersonnels:
 		case Enumere_Onglet_1.EGenreOnglet.ListeMatieres:
 			return new MultipleInterfaceListeRessources.InterfaceListeRessources(
 				aParamsConstructeur,
@@ -828,6 +840,10 @@ DeclarationOngletsEspace.creerOnglet = function (
 			);
 		case Enumere_Onglet_1.EGenreOnglet.RechercheDeStage:
 			return new MultipleInterfaceRechercheDeStage.InterfaceRechercheDeStage(
+				aParamsConstructeur,
+			);
+		case Enumere_Onglet_1.EGenreOnglet.MediaCentre:
+			return new MultipleInterfaceMediaCentre.InterfaceMediaCentre(
 				aParamsConstructeur,
 			);
 		default:

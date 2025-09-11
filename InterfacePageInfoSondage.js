@@ -184,6 +184,7 @@ class InterfacePageInfoSondage extends ObjetInterfacePageCP_1.InterfacePageCP {
 	initListeInfosSond(aInstance) {
 		aInstance.setOptionsListe({
 			avecLigneCreation: this.getAvecBtnNouveau(),
+			ariaHasPopupBtnCreation: IE.estMobile ? "dialog" : "menu",
 			nonEditableSurModeExclusif: true,
 		});
 	}
@@ -211,7 +212,7 @@ class InterfacePageInfoSondage extends ObjetInterfacePageCP_1.InterfacePageCP {
 									() => {
 										this.evntBtnCreerActuInfo();
 									},
-									{ icon: "icon_diffuser_information" },
+									{ icon: "icon_diffuser_information", ariaHasPopup: "dialog" },
 								);
 								aMenu.add(
 									ObjetTraduction_1.GTraductions.getValeur(
@@ -221,7 +222,7 @@ class InterfacePageInfoSondage extends ObjetInterfacePageCP_1.InterfacePageCP {
 									() => {
 										this.evntBtnCreerActuSondage();
 									},
-									{ icon: "icon_diffuser_sondage" },
+									{ icon: "icon_diffuser_sondage", ariaHasPopup: "dialog" },
 								);
 							} else {
 								if (this.avecModeles) {
@@ -235,7 +236,10 @@ class InterfacePageInfoSondage extends ObjetInterfacePageCP_1.InterfacePageCP {
 												estInfo: this.estModeItemDeTypeInfo(),
 											});
 										},
-										{ icon: "icon_sondage_bibliotheque" },
+										{
+											icon: "icon_sondage_bibliotheque",
+											ariaHasPopup: "dialog",
+										},
 									);
 									if (!IE.estMobile && this.estModeItemDeTypeSondage()) {
 										aMenu.add(
@@ -246,7 +250,7 @@ class InterfacePageInfoSondage extends ObjetInterfacePageCP_1.InterfacePageCP {
 											() => {
 												this.evntImportModele();
 											},
-											{ icon: "icon_download_alt" },
+											{ icon: "icon_download_alt", ariaHasPopup: "dialog" },
 										);
 									}
 								}

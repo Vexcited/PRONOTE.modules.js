@@ -502,6 +502,15 @@ class ObjetPiedPageAppreciationsBulletin_Professeur extends ObjetIdentite_1.Iden
 			lAvecAppreciation = !!this.donnees.appreciation,
 			lTailleColonneMatiere = 200;
 		T.push('<table class="full-size p-bottom">');
+		T.push(
+			IE.jsx.str(
+				"caption",
+				{ class: "sr-only" },
+				ObjetTraduction_1.GTraductions.getValeur(
+					"BulletinEtReleve.PiedBulletin",
+				),
+			),
+		);
 		T.push("<tr>");
 		T.push(
 			'<th style="',
@@ -533,14 +542,31 @@ class ObjetPiedPageAppreciationsBulletin_Professeur extends ObjetIdentite_1.Iden
 				'">',
 				'<div style="position:relative">',
 				this.lesElementsProgrammeSontEditables()
-					? '<div style="position:absolute; right:0; top:0;"><ie-btnimage class="Image_OrdonnerElmtProgrammes" style="width:16px;" ie-model="btnOrdonnerElements"></ie-btnimage></div>'
+					? IE.jsx.str(
+							"div",
+							{ style: "position:absolute; right:0; top:0;" },
+							IE.jsx.str("ie-btnimage", {
+								class: "Image_OrdonnerElmtProgrammes",
+								style: "width:16px;",
+								"ie-model": "btnOrdonnerElements",
+								"aria-haspopup": "dialog",
+							}),
+						)
 					: "",
 				this.lesElementsProgrammeSontEditables()
-					? '<span class="PetitEspaceDroit AlignementMilieuVertical"><ie-btnicon aria-label="' +
-							ObjetTraduction_1.GTraductions.getValeur(
-								"BulletinEtReleve.ElementsTravailles",
-							) +
-							'" class="icon_pencil" style="font-size:1.4rem;" ie-model="btnEditionElements"></ie-btnicon></span>'
+					? IE.jsx.str(
+							"span",
+							{ class: "PetitEspaceDroit AlignementMilieuVertical" },
+							IE.jsx.str("ie-btnicon", {
+								"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+									"BulletinEtReleve.ElementsTravailles",
+								),
+								class: "icon_pencil",
+								style: "font-size:1.4rem;",
+								"ie-model": "btnEditionElements",
+								"aria-haspopup": "menu",
+							}),
+						)
 					: "",
 				'<span class="AlignementMilieuVertical">',
 				ObjetTraduction_1.GTraductions.getValeur(

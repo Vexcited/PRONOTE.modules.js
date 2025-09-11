@@ -971,6 +971,7 @@ class ObjetFenetre_EditionActualite extends ObjetFenetre_1.ObjetFenetre {
 							this.id.labelBtnChoixIndividusPartage,
 							this.id.nbIndividusPartage,
 						].join(" "),
+						"aria-haspopup": "dialog",
 					},
 					"...",
 				),
@@ -1822,7 +1823,7 @@ class ObjetFenetre_EditionActualite extends ObjetFenetre_1.ObjetFenetre {
 			'" class="m-bottom-l m-left-big m-top-l">',
 		);
 		T.push(
-			'<ie-bouton ie-icon="icon_sondage_bibliotheque" ie-node="btnRecupModele.getNode" ie-title="btnRecupModele.getTitle" class="themeBoutonNeutre">',
+			'<ie-bouton ie-icon="icon_sondage_bibliotheque" ie-node="btnRecupModele.getNode" ie-title="btnRecupModele.getTitle" class="themeBoutonNeutre" aria-haspopup="dialog">',
 			ObjetTraduction_1.GTraductions.getValeur("actualites.recupererModele"),
 			"</ie-bouton>",
 		);

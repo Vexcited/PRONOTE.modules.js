@@ -14,11 +14,15 @@ class ObjetRequeteListePublics extends ObjetRequeteJSON_1.ObjetRequeteConsultati
 		this.sansFiltreSurEleve = aParam.sansFiltreSurEleve || false;
 		this.entreResponsables = aParam.entreResponsables;
 		this.pourMessagerie = aParam.pourMessagerie;
+		this.avecEmail = aParam.avecEmail;
+		this.avecUniquementEmail = aParam.avecUniquementEmail;
 		this.JSON = {
 			genres: new TypeEnsembleNombre_1.TypeEnsembleNombre().add(aParam.genres),
 			pourMessagerie: aParam.pourMessagerie,
 			sansFiltreSurEleve: this.sansFiltreSurEleve,
 			avecFonctionPersonnel: aParam.avecFonctionPersonnel || false,
+			avecEmail: aParam.avecEmail,
+			avecUniquementEmail: aParam.avecUniquementEmail,
 			avecFiltreDelegues: aParam.avecFiltreDelegues,
 			classe: aParam.classe,
 			eleve: aParam.eleve,
@@ -61,7 +65,7 @@ class ObjetRequeteListePublics extends ObjetRequeteJSON_1.ObjetRequeteConsultati
 		}
 	}
 	_getCle() {
-		return `listePublic_${this.genres.sort().join("_")}${this.sansFiltreSurEleve}_${this.entreResponsables}_${!!this.pourMessagerie}`;
+		return `listePublic_${this.genres.sort().join("_")}${this.sansFiltreSurEleve}_${this.entreResponsables}_${!!this.pourMessagerie}_${this.avecEmail}_${this.avecUniquementEmail}`;
 	}
 	actionApresRequete() {
 		if (Cache_1.GCache) {

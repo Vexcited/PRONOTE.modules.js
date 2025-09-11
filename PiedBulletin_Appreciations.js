@@ -223,7 +223,6 @@ class PiedBulletin_Appreciations extends ObjetInterface_1.ObjetInterface {
 			AvecSuppression: false,
 			avecLigneCreation: false,
 			colonnesTriables: false,
-			avecModeAccessible: true,
 			hauteurAdapteContenu: true,
 			nonEditableSurModeExclusif: true,
 			ariaLabel: ObjetTraduction_1.GTraductions.getValeur(
@@ -279,12 +278,12 @@ class PiedBulletin_Appreciations extends ObjetInterface_1.ObjetInterface {
 					const lLibelle = lElement.ListeAppreciations.get(0).getLibelle();
 					const lIntitule = lElement.Intitule;
 					if (lLibelle !== "" || aParam.avecContenuVide) {
-						H.push("<div>");
+						H.push("<p>");
 						if (lIntitule !== "") {
 							H.push("<span>" + lIntitule + "&nbsp;:&nbsp;" + "</span>");
 						}
 						H.push('<span class="Gras">' + lLibelle + "</span>");
-						H.push("</div>");
+						H.push("</p>");
 					}
 				}
 			}

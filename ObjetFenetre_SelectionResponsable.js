@@ -7,7 +7,8 @@ const ObjetTraduction_1 = require("ObjetTraduction");
 class ObjetFenetre_SelectionResponsable extends ObjetFenetre_1.ObjetFenetre {
 	constructor(...aParams) {
 		super(...aParams);
-		(this.filtreCBProfEquipePeda = false), (this.filtreCBPersConcernes = false);
+		this.filtreCBProfEquipePeda = false;
+		this.filtreCBPersConcernes = false;
 		this.setOptionsFenetre({
 			largeur: 400,
 			hauteur: 700,
@@ -22,27 +23,27 @@ class ObjetFenetre_SelectionResponsable extends ObjetFenetre_1.ObjetFenetre {
 			this._initialiserListe,
 		);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			cbFiltreProfEquipePeda: {
-				getValue() {
-					return aInstance.filtreCBProfEquipePeda;
-				},
-				setValue(aData) {
-					aInstance.filtreCBProfEquipePeda = aData;
-					aInstance._actualiserListe();
-				},
+	jsxModelCheckboxFiltreProfsEquipePeda() {
+		return {
+			getValue: () => {
+				return this.filtreCBProfEquipePeda;
 			},
-			cbFiltrePersConcernes: {
-				getValue() {
-					return aInstance.filtreCBPersConcernes;
-				},
-				setValue(aData) {
-					aInstance.filtreCBPersConcernes = aData;
-					aInstance._actualiserListe();
-				},
+			setValue: (aValue) => {
+				this.filtreCBProfEquipePeda = aValue;
+				this._actualiserListe();
 			},
-		});
+		};
+	}
+	jsxModelCheckboxFiltrePersonnelsConcernes() {
+		return {
+			getValue: () => {
+				return this.filtreCBPersConcernes;
+			},
+			setValue: (aValue) => {
+				this.filtreCBPersConcernes = aValue;
+				this._actualiserListe();
+			},
+		};
 	}
 	setDonnees(aListeResponsables) {
 		this.afficher();
@@ -63,20 +64,39 @@ class ObjetFenetre_SelectionResponsable extends ObjetFenetre_1.ObjetFenetre {
 		lHtml.push('<div class="flex-contain cols" style="height:100%">');
 		if (this.respAdminCBFiltrage) {
 			lHtml.push(
-				'<ie-checkbox class="Espace" ie-model="cbFiltreProfEquipePeda">',
-				this.respAdminCBFiltrage.cbProfEquipePeda,
-				"</ie-checkbox>",
-			);
-			lHtml.push(
-				'<ie-checkbox class="Espace" ie-model="cbFiltrePersConcernes">',
-				this.respAdminCBFiltrage.cbPersConcernes,
-				"</ie-checkbox>",
+				IE.jsx.str(
+					"div",
+					{
+						role: "group",
+						"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+							"FicheStage.fenetreRespAdmin.filtrerPar",
+						),
+					},
+					IE.jsx.str(
+						"ie-checkbox",
+						{
+							class: "Espace",
+							"ie-model": this.jsxModelCheckboxFiltreProfsEquipePeda.bind(this),
+						},
+						this.respAdminCBFiltrage.cbProfEquipePeda,
+					),
+					IE.jsx.str(
+						"ie-checkbox",
+						{
+							class: "Espace",
+							"ie-model":
+								this.jsxModelCheckboxFiltrePersonnelsConcernes.bind(this),
+						},
+						this.respAdminCBFiltrage.cbPersConcernes,
+					),
+				),
 			);
 		}
 		lHtml.push(
-			'<div class="fluid-bloc" id="',
-			this.getNomInstance(this.identListeResponsables),
-			'"></div>',
+			IE.jsx.str("div", {
+				class: "fluid-bloc",
+				id: this.getNomInstance(this.identListeResponsables),
+			}),
 		);
 		lHtml.push("</div>");
 		return lHtml.join("");

@@ -54,6 +54,9 @@ function _imageCategorieCCDT(
 	const lImage = new ObjetElement_1.ObjetElement(lCssIcone, null, aGenre);
 	lImage.width = 16;
 	lImage.tooltip = lTitle;
+	if (aGenre >= 0) {
+		lImage.ariaHasPopup = "dialog";
+	}
 	const lClassIcone = [lCssIcone, "i-small"];
 	if (aCours.AvecCdTPublie) {
 		lClassIcone.push("mix-icon_rond", "i-top", "i-small", "i-green");
@@ -121,6 +124,7 @@ function _ajouterImagesCDT(aCours, aListeImages, aAvecEvenement) {
 			lImage.width = 19;
 			lImage.tooltip =
 				ObjetTraduction_1.GTraductions.getValeur("EDT.AfficherCDT");
+			lImage.ariaHasPopup = "dialog";
 			aListeImages[
 				ObjetGrilleCours_1.ObjetGrilleCours.positionImage.basG
 			].addElement(lImage);
@@ -259,6 +263,7 @@ TUtilitaireGrilleImageCoursPN.getListeImagesCours = function (aCours, aParams) {
 		lImage.estImageDeFont = true;
 		lImage.tailleImageFont = "1.5rem";
 		lImage.btnImage = true;
+		lImage.ariaHasPopup = "dialog";
 		lListeImages[
 			ObjetGrilleCours_1.ObjetGrilleCours.positionImage.basG
 		].addElement(lImage);
@@ -323,6 +328,7 @@ TUtilitaireGrilleImageCoursPN.getListeImagesCours = function (aCours, aParams) {
 			);
 			lImage.btnImage = true;
 			lImage.width = 18;
+			lImage.ariaHasPopup = "dialog";
 			lListeImages[
 				ObjetGrilleCours_1.ObjetGrilleCours.positionImage.basG
 			].addElement(lImage);

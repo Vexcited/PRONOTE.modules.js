@@ -585,76 +585,6 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 		lParametres.avecImageCollectivite = this.getAvecImageCollectivite();
 		return Object.assign(super._getParametresBandeauEspace(), lParametres);
 	}
-	getControleur(aInstance) {
-		return $.extend(true, super.getControleur(aInstance), {
-			avecBoutonCommunication() {
-				return aInstance.etatUtilisateur.avecCommunication();
-			},
-			afficherAlertePPMS() {
-				return (
-					UtilitaireContactVieScolaire_Espace_1.UtilitaireContactVieScolaire_Espace.getListeAlertePPMSEnCours() &&
-					UtilitaireContactVieScolaire_Espace_1.UtilitaireContactVieScolaire_Espace.getListeAlertePPMSEnCours().count() >
-						0
-				);
-			},
-			btnAlertePPMS: {
-				event() {
-					UtilitaireContactVieScolaire_Espace_1.UtilitaireContactVieScolaire_Espace.afficherAlertePPMS();
-				},
-				getTitle() {
-					return ObjetTraduction_1.GTraductions.getValeur(
-						"Messagerie.AlerteEnseignantsPersonnels",
-					);
-				},
-			},
-			afficherBtnMessageInstant() {
-				return aInstance.applicationPN.droits.get(
-					ObjetDroitsPN_1.TypeDroits.communication.avecMessageInstantane,
-				);
-			},
-			btnMessageInstant: {
-				event() {
-					UtilitaireContactVieScolaire_Espace_1.UtilitaireContactVieScolaire_Espace.demarrerMessageInstantane();
-				},
-				getTitle() {
-					return `${ObjetTraduction_1.GTraductions.getValeur("Messagerie.EnvoiMessageInstantane")} - ${GlossaireMessagerie_1.TradGlossaireMessagerie.MessageInstantStatut_S.format(TypeStatutConnexion_1.TypeGenreStatutConnexionUtil.toLibelle(aInstance.applicationPN.donneesCentraleNotifications.statutConnexionCommunication))}`;
-				},
-			},
-			getClassIconeBtnmessageInstant() {
-				return (
-					"TypeGenreStatutConnexion-double-icone " +
-					TypeStatutConnexion_1.TypeGenreStatutConnexionUtil.getClassIcon(
-						aInstance.applicationPN.donneesCentraleNotifications
-							.statutConnexionCommunication,
-					)
-				);
-			},
-			afficherBtnCreerAlertePPMS() {
-				return aInstance.applicationPN.droits.get(
-					ObjetDroitsPN_1.TypeDroits.communication.lancerAlertesPPMS,
-				);
-			},
-			btnCreerAlertePPMS: {
-				event() {
-					UtilitaireContactVieScolaire_Espace_1.UtilitaireContactVieScolaire_Espace.creerAlertePPMS();
-				},
-				getTitle() {
-					return ObjetTraduction_1.GTraductions.getValeur(
-						"Messagerie.AlerteEnseignantsPersonnels",
-					);
-				},
-			},
-			btnStopHarcelement: {
-				event() {
-					const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
-						ObjetFenetreHarcelement_1.ObjetFenetreHarcelement,
-						{ pere: aInstance },
-					);
-					lFenetre.setDonnees();
-				},
-			},
-		});
-	}
 	avecCloudIndex() {
 		return this.etatUtilisateur.cloudIndexActif;
 	}
@@ -862,12 +792,31 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 				ObjetDroitsPN_1.TypeDroits.communication.estDestinataireChat,
 			)
 		) {
+			const lJsxAvecBoutonAlertePPMS = () => {
+				return (
+					UtilitaireContactVieScolaire_Espace_1.UtilitaireContactVieScolaire_Espace.getListeAlertePPMSEnCours() &&
+					UtilitaireContactVieScolaire_Espace_1.UtilitaireContactVieScolaire_Espace.getListeAlertePPMSEnCours().count() >
+						0
+				);
+			};
+			const lJsxBtnAlertePPMS = () => {
+				return {
+					event: () => {
+						UtilitaireContactVieScolaire_Espace_1.UtilitaireContactVieScolaire_Espace.afficherAlertePPMS();
+					},
+					getTitle: () => {
+						return ObjetTraduction_1.GTraductions.getValeur(
+							"Messagerie.AlerteEnseignantsPersonnels",
+						);
+					},
+				};
+			};
 			H.push(
 				IE.jsx.str(
-					"span",
-					{ "ie-if": "afficherAlertePPMS" },
+					"li",
+					{ "ie-if": lJsxAvecBoutonAlertePPMS },
 					IE.jsx.str("ie-btnimage", {
-						"ie-model": "btnAlertePPMS",
+						"ie-model": lJsxBtnAlertePPMS,
 						class: "icon_alert_ppms_notif btnImageIcon",
 					}),
 				),
@@ -876,14 +825,46 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 		return H.join("");
 	}
 	composeBoutonHarcelement() {
-		return UtilitaireHarcelement_1.UtilitaireHarcelement.avecBoutonHarcelement()
-			? `<div class="objetBandeauEntete_boutons_ifc"><ie-btnimage class="icon_stop_harcelement btnImageIcon badged-btn icon-title" ie-model="btnStopHarcelement" title="${ObjetTraduction_1.GTraductions.getValeur("Commande.Harcelement")}" aria-label="${ObjetTraduction_1.GTraductions.getValeur("Commande.Harcelement")}" ></ie-btnimage></div>`
-			: "";
+		const H = [];
+		if (UtilitaireHarcelement_1.UtilitaireHarcelement.avecBoutonHarcelement()) {
+			const lJsxBtnStopHarcelement = () => {
+				return {
+					event: () => {
+						const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+							ObjetFenetreHarcelement_1.ObjetFenetreHarcelement,
+							{ pere: this },
+						);
+						lFenetre.setDonnees();
+					},
+				};
+			};
+			H.push(
+				IE.jsx.str(
+					"li",
+					{ class: "objetBandeauEntete_boutons_ifc" },
+					IE.jsx.str("ie-btnimage", {
+						class: "icon_stop_harcelement btnImageIcon badged-btn icon-title",
+						"ie-model": lJsxBtnStopHarcelement,
+						title: ObjetTraduction_1.GTraductions.getValeur(
+							"Commande.Harcelement",
+						),
+						"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+							"Commande.Harcelement",
+						),
+						"aria-haspopup": "dialog",
+					}),
+				),
+			);
+		}
+		return H.join("");
 	}
 	composeBtnCommunication(aID) {
+		const lJsxFuncIfAvecBoutonCommunication = () => {
+			return this.etatUtilisateur.avecCommunication();
+		};
 		return IE.jsx.str(
-			"span",
-			{ "ie-if": "avecBoutonCommunication" },
+			"li",
+			{ "ie-if": lJsxFuncIfAvecBoutonCommunication },
 			IE.jsx.str("ie-btnimage", {
 				id: aID,
 				class: "icon_envoyer btnImageIcon",
@@ -905,12 +886,29 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 				ObjetDroitsPN_1.TypeDroits.communication.estDestinataireChat,
 			)
 		) {
+			const lJsxIfAffichageBoutonCreerAlertePPMS = () => {
+				return this.applicationPN.droits.get(
+					ObjetDroitsPN_1.TypeDroits.communication.lancerAlertesPPMS,
+				);
+			};
+			const lJsxModelBoutonCreerAlertePPMS = () => {
+				return {
+					event: () => {
+						UtilitaireContactVieScolaire_Espace_1.UtilitaireContactVieScolaire_Espace.creerAlertePPMS();
+					},
+					getTitle: () => {
+						return ObjetTraduction_1.GTraductions.getValeur(
+							"Messagerie.AlerteEnseignantsPersonnels",
+						);
+					},
+				};
+			};
 			H.push(
 				IE.jsx.str(
-					"span",
-					{ "ie-if": "afficherBtnCreerAlertePPMS" },
+					"li",
+					{ "ie-if": lJsxIfAffichageBoutonCreerAlertePPMS },
 					IE.jsx.str("ie-btnimage", {
-						"ie-model": "btnCreerAlertePPMS",
+						"ie-model": lJsxModelBoutonCreerAlertePPMS,
 						class: "icon_alerte_ppms btnImageIcon",
 						"aria-haspopup": "dialog",
 					}),
@@ -918,6 +916,30 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 			);
 		}
 		return H.join("");
+	}
+	jsxGetClassIconeBtnmessageInstant() {
+		return (
+			"TypeGenreStatutConnexion-double-icone " +
+			TypeStatutConnexion_1.TypeGenreStatutConnexionUtil.getClassIcon(
+				this.applicationPN.donneesCentraleNotifications
+					.statutConnexionCommunication,
+			)
+		);
+	}
+	jsxIfAffichageBtnMessageInstant() {
+		return this.applicationPN.droits.get(
+			ObjetDroitsPN_1.TypeDroits.communication.avecMessageInstantane,
+		);
+	}
+	jsxModeleBoutonMessageInstant() {
+		return {
+			event: () => {
+				UtilitaireContactVieScolaire_Espace_1.UtilitaireContactVieScolaire_Espace.demarrerMessageInstantane();
+			},
+			getTitle: () => {
+				return `${ObjetTraduction_1.GTraductions.getValeur("Messagerie.EnvoiMessageInstantane")} - ${GlossaireMessagerie_1.TradGlossaireMessagerie.MessageInstantStatut_S.format(TypeStatutConnexion_1.TypeGenreStatutConnexionUtil.toLibelle(this.applicationPN.donneesCentraleNotifications.statutConnexionCommunication))}`;
+			},
+		};
 	}
 	composeConversation() {
 		const H = [];
@@ -928,17 +950,20 @@ class ObjetAffichageBandeauEntete extends _InterfaceBandeauEntete_1._ObjetAffich
 		) {
 			H.push(
 				IE.jsx.str(
-					"span",
-					{ "ie-if": "afficherBtnMessageInstant", style: "position:relative" },
+					"li",
+					{
+						"ie-if": this.jsxIfAffichageBtnMessageInstant.bind(this),
+						style: "position:relative",
+					},
 					IE.jsx.str(
 						"ie-btnimage",
 						{
-							"ie-model": "btnMessageInstant",
+							"ie-model": this.jsxModeleBoutonMessageInstant.bind(this),
 							class: "icon_conversation_cours btnImageIcon",
 							"aria-haspopup": "dialog",
 						},
 						IE.jsx.str("i", {
-							"ie-class": "getClassIconeBtnmessageInstant",
+							"ie-class": this.jsxGetClassIconeBtnmessageInstant.bind(this),
 							role: "presentation",
 						}),
 					),

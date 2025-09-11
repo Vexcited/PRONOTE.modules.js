@@ -454,6 +454,8 @@ class _InterfaceBilanFinDeCycle extends InterfacePage_1.InterfacePage {
 				listePiliers: lListePiliers,
 				listeElevesDeClasse: lListeElevesDeClasse,
 				infoColonneNbPointsExamen: lInfosColonneNbPointsExamen,
+				getAriaLabelListe: () =>
+					`${this.etatUtilisateurSco.getLibelleLongOnglet()}`,
 			});
 			ObjetHtml_1.GHtml.setValue(this.idAppreciation, this.appreciation);
 			this.setGraphe(null);

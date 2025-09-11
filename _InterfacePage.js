@@ -42,11 +42,12 @@ class _InterfacePage extends _InterfacePageProduit_1._InterfacePageProduit {
 			}
 		}
 		if (lAlignementDroite && this.AddSurZone.length > 0) {
-			lHTML.push('<div class="objetBandeauEntete_fullsize"></div>');
+			lHTML.push(IE.jsx.str("div", { class: "objetBandeauEntete_fullsize" }));
 			if (lGenrePourLargeurComplete === undefined) {
 				lGenrePourLargeurComplete = true;
 			}
 		}
+		let lEstDansBlocUl = false;
 		let lCptBloc = 0;
 		for (let I = 0; I < this.AddSurZone.length; I++) {
 			lInfos = lInfosSurZone[I];
@@ -55,34 +56,43 @@ class _InterfacePage extends _InterfacePageProduit_1._InterfacePageProduit {
 					? this.GenreAffichage[lInfos.ident]
 					: null;
 			if (lInfos.blocGauche) {
-				lHTML.push('<div class="objetBandeauEntete_AddSurZone_wrapper">');
+				lHTML.push('<ul class="objetBandeauEntete_AddSurZone_wrapper">');
 				lCptBloc += 1;
+				lEstDansBlocUl = true;
 			} else if (lInfos.blocDroit) {
-				lHTML.push("</div>");
+				lEstDansBlocUl = false;
+				lHTML.push("</ul>");
 				lCptBloc -= 1;
 			} else if (lInfos.separateur) {
-				lHTML.push('<div class="objetBandeauEntete_fullsize"></div>');
+				lHTML.push(
+					lEstDansBlocUl
+						? IE.jsx.str("li", {
+								class: "objetBandeauEntete_fullsize",
+								"aria-hidden": "true",
+							})
+						: IE.jsx.str("div", { class: "objetBandeauEntete_fullsize" }),
+				);
 				if (lGenrePourLargeurComplete === undefined) {
 					lGenrePourLargeurComplete = true;
 				}
 			} else if (this.Instances[lInfos.ident] || lInfos.html) {
+				const lAttrs = {
+					id: lInfos.html
+						? this.getIdZoneBandeauDIndice(I)
+						: this.Instances[lInfos.ident].getNom(),
+					"ie-display": lInfos.getDisplay ? lInfos.getDisplay : "",
+					class: "element-bandeau-wrapper",
+				};
+				const lHtml = lInfos.html && !lInfos.controleur ? lInfos.html : "";
 				lHTML.push(
-					IE.jsx.str(
-						"div",
-						{
-							id: lInfos.html
-								? this.getIdZoneBandeauDIndice(I)
-								: this.Instances[lInfos.ident].getNom(),
-							"ie-display": lInfos.getDisplay ? lInfos.getDisplay : "",
-							class: "element-bandeau-wrapper",
-						},
-						lInfos.html && !lInfos.controleur ? lInfos.html : "",
-					),
+					lEstDansBlocUl
+						? IE.jsx.str("li", Object.assign({}, lAttrs), lHtml)
+						: IE.jsx.str("div", Object.assign({}, lAttrs), lHtml),
 				);
 			}
 		}
 		if (lGenrePourLargeurComplete === undefined) {
-			lHTML.push('<div class="objetBandeauEntete_fullsize"></div>');
+			lHTML.push(IE.jsx.str("div", { class: "objetBandeauEntete_fullsize" }));
 		}
 		ObjetHtml_1.GHtml.setDisplay(
 			(0, AccessApp_1.getApp)().idLigneBandeau,

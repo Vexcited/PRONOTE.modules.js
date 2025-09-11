@@ -11,6 +11,7 @@ const ObjetChaine_1 = require("ObjetChaine");
 const TypeFichierExterneHttpSco_1 = require("TypeFichierExterneHttpSco");
 const Enumere_DocumentJoint_1 = require("Enumere_DocumentJoint");
 const UtilitaireContactReferents_1 = require("UtilitaireContactReferents");
+const ObjetTabOnglets_1 = require("ObjetTabOnglets");
 class ObjetFicheEtablissement extends ObjetFiche_1.ObjetFiche {
 	constructor(...aParams) {
 		super(...aParams);
@@ -26,61 +27,60 @@ class ObjetFicheEtablissement extends ObjetFiche_1.ObjetFiche {
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(this), {
-			surSelection(I) {
-				$(this.node).on("click", function () {
-					if (aInstance.indiceEtablissementAffiche !== I) {
-						aInstance.indiceEtablissementAffiche = I;
-						$(this).siblings().removeClass("selectionne");
-						$(this).addClass("selectionne");
-						const lEtablissement = aInstance.listeEtablissements.get(I);
-						ObjetHtml_1.GHtml.setHtml(
-							aInstance.idInformation,
-							aInstance.composeInformations(lEtablissement),
-							{ controleur: aInstance.controleur },
-						);
-					}
-				});
-			},
 			accepterReglement: {
 				getValue() {
-					const lEtablissement = aInstance.listeEtablissements.get(
-						aInstance.indiceEtablissementAffiche,
-					);
-					return lEtablissement.relancerNotif;
+					return aInstance.etablissementAffiche.relancerNotif;
 				},
 				setValue(aValue) {
-					const lEtablissement = aInstance.listeEtablissements.get(
-						aInstance.indiceEtablissementAffiche,
-					);
-					lEtablissement.relancerNotif = true;
+					aInstance.etablissementAffiche.relancerNotif = true;
 					new ObjetRequeteSaisieAccepterReglement_1.ObjetRequeteSaisieAccepterReglement(
 						aInstance,
 					).lancerRequete({
-						etablissement: lEtablissement,
+						etablissement: aInstance.etablissementAffiche,
 						accepterReglement: aValue,
 					});
 				},
 				getDisabled() {
-					const lEtablissement = aInstance.listeEtablissements.get(
-						aInstance.indiceEtablissementAffiche,
-					);
-					return lEtablissement.relancerNotif;
+					return aInstance.etablissementAffiche.relancerNotif;
 				},
 			},
 			contacterReferentsVS: {
 				event() {
-					const lEtablissement = aInstance.listeEtablissements.get(
-						aInstance.indiceEtablissementAffiche,
-					);
-					if (lEtablissement && lEtablissement.listeReferentsVieScolaire) {
+					var _a;
+					if (
+						(_a = aInstance.etablissementAffiche) === null || _a === void 0
+							? void 0
+							: _a.listeReferentsVieScolaire
+					) {
 						UtilitaireContactReferents_1.UtilitaireContactReferents.contacterReferentsVieScolaire(
 							aInstance,
-							lEtablissement.listeReferentsVieScolaire,
+							aInstance.etablissementAffiche.listeReferentsVieScolaire,
 						);
 					}
 				},
 			},
 		});
+	}
+	jsxIdentiteOngletEtablissement() {
+		return {
+			class: ObjetTabOnglets_1.ObjetTabOnglets,
+			pere: this,
+			start: (aInstance) => {
+				aInstance.setDonnees(
+					this.listeEtablissements,
+					this.listeEtablissements.getIndiceParElement(
+						this.etablissementAffiche,
+					),
+				);
+			},
+			evenement: (aEtablissement) => {
+				ObjetHtml_1.GHtml.setHtml(
+					this.idInformation,
+					this.composeInformations(aEtablissement),
+					{ controleur: this.controleur },
+				);
+			},
+		};
 	}
 	setDonnees(aParams) {
 		var _a, _b;
@@ -116,42 +116,24 @@ class ObjetFicheEtablissement extends ObjetFiche_1.ObjetFiche {
 			}
 		}
 		if (this.listeEtablissements.count()) {
-			this.indiceEtablissementAffiche = 0;
+			this.etablissementAffiche = this.listeEtablissements.get(0);
 			this.afficherFiche({ centrerParDefaut: true });
 		}
 	}
 	composeContenu() {
 		const H = [];
-		let lClass, lEtablissement;
-		const lNbrEtablissement = this.listeEtablissements.count();
-		H.push('<div class="fiche-etablissement onglet">');
-		for (let i = 0; i < lNbrEtablissement; i++) {
-			lClass = this.indiceEtablissementAffiche === i ? "selectionne" : "";
-			H.push(
-				'<div class="' +
-					lClass +
-					' Espace Gras AvecMain" ie-node="surSelection(' +
-					i +
-					')">',
-				this.listeEtablissements.get(i).getLibelle()
-					? this.listeEtablissements.get(i).getLibelle()
-					: ObjetTraduction_1.GTraductions.getValeur(
-							"FicheEtablissement.Etablissement",
-						),
-				"</div>",
-			);
-		}
-		H.push("</div>");
-		lEtablissement = this.listeEtablissements.get(
-			this.indiceEtablissementAffiche,
+		H.push(
+			IE.jsx.str("div", {
+				"ie-identite": this.jsxIdentiteOngletEtablissement.bind(this),
+			}),
 		);
 		H.push(
-			'<div id="',
-			this.idInformation,
-			'" class="fiche-etablissement informations">',
+			IE.jsx.str(
+				"div",
+				{ id: this.idInformation, class: "fiche-etablissement informations" },
+				this.composeInformations(this.etablissementAffiche),
+			),
 		);
-		H.push(this.composeInformations(lEtablissement));
-		H.push("</div>");
 		return H.join("");
 	}
 	getOptionsParDefaut() {

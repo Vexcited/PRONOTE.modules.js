@@ -74,6 +74,7 @@ class InterfaceServicesProfesseur extends InterfacePage_1.InterfacePage {
 								"servicesProfesseur.CommandeCreerSousService",
 							),
 						),
+						"aria-haspopup": "dialog",
 					},
 					ObjetTraduction_1.GTraductions.getValeur(
 						"servicesProfesseur.CommandeCreerSousService",

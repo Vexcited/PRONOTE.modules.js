@@ -1090,7 +1090,7 @@ class MoteurMessagerie {
 									"Messagerie.Menu_TransfererLeMessage",
 								),
 						null,
-						{ icon: "icon_transferer_discussion" },
+						{ icon: "icon_transferer_discussion", ariaHasPopup: "dialog" },
 					);
 				}
 				break;
@@ -1157,7 +1157,7 @@ class MoteurMessagerie {
 									}
 								});
 						},
-						{ icon: "icon_warning_sign" },
+						{ icon: "icon_warning_sign", ariaHasPopup: "dialog" },
 						lActif,
 					);
 				}
@@ -1211,7 +1211,7 @@ class MoteurMessagerie {
 								},
 							);
 						},
-						{ icon: "icon_classer_discussion" },
+						{ icon: "icon_classer_discussion", ariaHasPopup: "dialog" },
 					);
 				}
 				break;
@@ -1443,7 +1443,7 @@ class MoteurMessagerie {
 								}
 							});
 						},
-						{ icon: "icon_edit" },
+						{ icon: "icon_edit", ariaHasPopup: "dialog" },
 					);
 				}
 				break;
@@ -1466,7 +1466,7 @@ class MoteurMessagerie {
 									"Messagerie.Menu_FenetreDiscussion",
 								),
 						null,
-						{ icon: "icon_affichage_widget" },
+						{ icon: "icon_affichage_widget", ariaHasPopup: "dialog" },
 					);
 				}
 				break;
@@ -1713,20 +1713,22 @@ class MoteurMessagerie {
 				largeur: 300,
 			},
 		);
-		lFenetre.controleur.input = {
-			getValue: function () {
-				return lObjet;
-			},
-			setValue: function (aValue) {
-				lObjet = aValue;
-			},
-			node: function () {
-				$(this.node).on("keyup", (aEvent) => {
-					if (aEvent.which === ToucheClavier_1.ToucheClavier.RetourChariot) {
-						lFenetre.setBoutonFocus({ valider: true });
-					}
-				});
-			},
+		const lModel = () => {
+			return {
+				getValue: function () {
+					return lObjet;
+				},
+				setValue: function (aValue) {
+					lObjet = aValue;
+				},
+				node: function (aNode) {
+					$(aNode).on("keyup", (aEvent) => {
+						if (aEvent.which === ToucheClavier_1.ToucheClavier.RetourChariot) {
+							lFenetre.setBoutonFocus({ valider: true });
+						}
+					});
+				},
+			};
 		};
 		lFenetre.controleur.fenetreBtn.getDisabled = function (aBoutonRepeat) {
 			return aBoutonRepeat.element.valider && !lObjet;
@@ -1748,10 +1750,13 @@ class MoteurMessagerie {
 					IE.jsx.str("input", {
 						type: "text",
 						class: "full-width",
-						"ie-model": "input",
+						"ie-model": lModel,
 						"ie-trim": "true",
 						maxlength:
 							UtilitaireMessagerie_1.UtilitaireMessagerie.C_TailleObjetMessage,
+						"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+							"Messagerie.SaisieObjetDiscussion",
+						),
 					}),
 				),
 			)

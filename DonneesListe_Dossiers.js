@@ -509,6 +509,7 @@ class DonneesListe_Dossiers extends ObjetDonneesListe_1.ObjetDonneesListe {
 					title:
 						GlossaireDossierVieScolaire_1.TradGlossaireDossierVieScolaire
 							.AjouterElement,
+					"aria-haspopup": "menu",
 				}),
 			);
 		}

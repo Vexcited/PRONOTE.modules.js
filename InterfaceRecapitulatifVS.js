@@ -247,6 +247,8 @@ class InterfaceRecapitulatifVS extends ObjetInterfacePageCP_1.InterfacePageCP {
 		ObjetUtilitaireAbsence_1.ObjetUtilitaireAbsence.ajouterAbsence({
 			instanceAppel: this,
 			callbackApresSaisieAbsences: this.callbackApresSaisieAbsences.bind(this),
+			commentaireAbsenceObligatoire:
+				!!this.donnees.commentaireAbsenceObligatoire,
 		});
 	}
 	callbackApresSaisieAbsences(aParams) {
@@ -323,6 +325,7 @@ class InterfaceRecapitulatifVS extends ObjetInterfacePageCP_1.InterfacePageCP {
 				this.utilitaireAbsence.avecCommandeDeclarerUneAbsence() ||
 				this.utilitaireAbsence.avecCommandeDeclarerUneDispensePonctuelle() ||
 				this.utilitaireAbsence.avecCommandeDeclarerUneDispenseLongue(),
+			ariaHasPopupBtnCreation: "menu",
 			ariaLabel: () => this.getTitreListe(),
 		});
 	}

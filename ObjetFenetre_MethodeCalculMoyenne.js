@@ -49,6 +49,7 @@ class ObjetFenetre_MethodeCalculMoyenne extends ObjetFenetre_1.ObjetFenetre {
 		]);
 	}
 	composeContenu() {
+		var _a, _b;
 		const T = [];
 		if (this.donneesRecues) {
 			T.push(
@@ -56,14 +57,32 @@ class ObjetFenetre_MethodeCalculMoyenne extends ObjetFenetre_1.ObjetFenetre {
 					IE.jsx.fragment,
 					null,
 					IE.jsx.str(
-						"div",
+						"h2",
 						{ class: "Texte10 Espace Gras", style: "margin-bottom: 5px;" },
 						this.composeTitreFormule(),
 					),
 					IE.jsx.str(
 						"div",
-						{ class: "Texte10 Espace FondBlanc MethodeCalculMoyenne" },
+						{
+							class: "Texte10 Espace FondBlanc MethodeCalculMoyenne",
+							"aria-hidden": (
+								(_a = this.formuleWAI) === null || _a === void 0
+									? void 0
+									: _a.length
+							)
+								? "true"
+								: false,
+						},
 						this.formuleHTML,
+					),
+					((_b = this.formuleWAI) === null || _b === void 0
+						? void 0
+						: _b.length) &&
+						IE.jsx.str("div", { class: "sr-only" }, this.formuleWAI),
+					IE.jsx.str(
+						"div",
+						{ class: "Texte10 Espace FondBlanc MethodeCalculMoyenne" },
+						this.formuleLegende,
 					),
 				),
 			);
@@ -77,6 +96,8 @@ class ObjetFenetre_MethodeCalculMoyenne extends ObjetFenetre_1.ObjetFenetre {
 				this,
 			).lancerRequete(aParametresCalcul);
 		this.formuleHTML = lJSONReponse.FormuleHTML;
+		this.formuleLegende = lJSONReponse.FormuleLegende;
+		this.formuleWAI = lJSONReponse.FormuleWAI;
 		this.donneesRecues = true;
 		if (IE.estMobile) {
 			this.afficher(this.composeContenu());

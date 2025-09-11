@@ -578,7 +578,7 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 				GInterface.getInstance(
 					this.interfaceEspace.IdentBandeauEntete,
 				).idSecondMenu.escapeJQ() +
-				" div.objetBandeauEntete_fullsize .precedenteConnexion",
+				" .objetBandeauEntete_fullsize .precedenteConnexion",
 		).remove();
 	}
 	surEvenementsFenetreParametresWidgets() {
@@ -862,17 +862,15 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 						.idSecondMenu.escapeJQ() +
 					" > div:first",
 			).ieHtmlAppend(
-				'<ie-btnicon id="' +
-					this.idBoutonParametres +
-					'" ie-model="evtSurBtnParametresWidgets" class="icon_cog bt-activable" aria-label="' +
-					ObjetTraduction_1.GTraductions.getValeur(
+				IE.jsx.str("ie-btnicon", {
+					id: this.idBoutonParametres,
+					"ie-model": "evtSurBtnParametresWidgets",
+					class: "icon_cog bt-activable",
+					"aria-haspopup": "dialog",
+					"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
 						"Accueil.ParametresWidgets",
-					) +
-					'" title="' +
-					ObjetTraduction_1.GTraductions.getValeur(
-						"Accueil.ParametresWidgets",
-					) +
-					'"></ie-btnicon>',
+					),
+				}),
 				{ controleur: this.controleur },
 			);
 		}
@@ -885,7 +883,7 @@ class InterfacePageAccueil extends InterfacePage_1.InterfacePage {
 				this.interfaceEspace
 					.getInstance(this.interfaceEspace.IdentBandeauEntete)
 					.idSecondMenu.escapeJQ() +
-				" div.objetBandeauEntete_fullsize";
+				" .objetBandeauEntete_fullsize";
 			$(lIdMenu + " .precedenteConnexion").remove();
 			$(lIdMenu).append(
 				[

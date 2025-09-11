@@ -72,7 +72,9 @@ class DonneesListe_Casier extends ObjetDonneesListeFlatDesign_1.ObjetDonneesList
 			this.listeCategories.insererElement(
 				ObjetElement_1.ObjetElement.create({
 					estTotal: true,
-					Libelle: ObjetTraduction_1.GTraductions.getValeur("Casier.toutes"),
+					Libelle: ObjetTraduction_1.GTraductions.getValeur(
+						"Casier.toutesLesNatures",
+					),
 					couleur: undefined,
 				}),
 				0,
@@ -896,7 +898,10 @@ class DonneesListe_Casier extends ObjetDonneesListeFlatDesign_1.ObjetDonneesList
 							DonneesListe_Casier.EGenreCommande.consulterLeCommentaire,
 						article: lArticle,
 					}),
-				extend: { icon: "icon_post_it_rempli theme_color_moyen1" },
+				extend: {
+					icon: "icon_post_it_rempli theme_color_moyen1",
+					ariaHasPopup: "dialog",
+				},
 			});
 		}
 		if (

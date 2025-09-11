@@ -50,99 +50,100 @@ class ObjetFenetre_SaisieDispense extends ObjetFenetre_1.ObjetFenetre {
 					return IE.jsx.str(
 						IE.jsx.fragment,
 						null,
-						IE.jsx.str(
-							"article",
-							{
-								"ie-if": "estSurCreation",
-								class: "field-contain label-up border-bottom p-bottom-xl",
-							},
-							IE.jsx.str("ie-combo", { "ie-model": "choixMatiere" }),
-							IE.jsx.str(
-								"p",
-								{ id: this.ids.describedMatiere, class: "m-top-xl" },
-								ObjetTraduction_1.GTraductions.getValeur(
-									"AbsenceVS.dispense.demandePossibleCertainesMatieres",
+						this.estCreation
+							? IE.jsx.str(
+									IE.jsx.fragment,
+									null,
+									IE.jsx.str(
+										"article",
+										{
+											class: "field-contain label-up border-bottom p-bottom-xl",
+										},
+										IE.jsx.str("ie-combo", { "ie-model": "choixMatiere" }),
+										IE.jsx.str(
+											"p",
+											{ id: this.ids.describedMatiere, class: "m-top-xl" },
+											ObjetTraduction_1.GTraductions.getValeur(
+												"AbsenceVS.dispense.demandePossibleCertainesMatieres",
+											),
+										),
+									),
+									IE.jsx.str(
+										"article",
+										{
+											class: "field-contain label-up border-bottom p-bottom-xl",
+										},
+										IE.jsx.str(
+											"label",
+											{ id: this.ids.labelDateDebut },
+											ObjetTraduction_1.GTraductions.getValeur("Debut"),
+										),
+										IE.jsx.str("div", {
+											"ie-identite": "getIdentSelectDate(true)",
+											class: "m-bottom-l",
+										}),
+										IE.jsx.str(
+											"label",
+											{ id: this.ids.labelDateFin },
+											ObjetTraduction_1.GTraductions.getValeur("Fin"),
+										),
+										IE.jsx.str("div", {
+											"ie-identite": "getIdentSelectDate(false)",
+										}),
+									),
+								)
+							: IE.jsx.str(
+									"article",
+									{ class: "field-contain border-bottom p-bottom-xl" },
+									IE.jsx.str(
+										"h2",
+										{ class: "ie-titre" },
+										this.getLibelleDeMatiere(),
+									),
 								),
-							),
-						),
-						IE.jsx.str(
-							"article",
-							{
-								"ie-if": "estSurCreation",
-								class: "field-contain label-up border-bottom p-bottom-xl",
-							},
-							IE.jsx.str(
-								"label",
-								{ id: this.ids.labelDateDebut },
-								ObjetTraduction_1.GTraductions.getValeur("Debut"),
-							),
-							IE.jsx.str("div", {
-								"ie-identite": "getIdentSelectDate(true)",
-								class: "m-bottom-l",
-							}),
-							IE.jsx.str(
-								"label",
-								{ id: this.ids.labelDateFin },
-								ObjetTraduction_1.GTraductions.getValeur("Fin"),
-							),
-							IE.jsx.str("div", { "ie-identite": "getIdentSelectDate(false)" }),
-						),
-						IE.jsx.str(
-							"article",
-							{
-								"ie-if": "estSurModification",
-								class: "field-contain border-bottom p-bottom-xl",
-							},
-							IE.jsx.str(
-								"h2",
-								{ class: "ie-titre" },
-								this.getLibelleDeMatiere(),
-							),
-						),
 						this.getHtmlJustificatifEtCommentaire(),
 					);
 				} else {
 					return IE.jsx.str(
 						IE.jsx.fragment,
 						null,
-						IE.jsx.str(
-							"article",
-							{
-								"ie-if": "estSurCreation",
-								class: "field-contain label-up border-bottom p-bottom-xl",
-							},
-							IE.jsx.str(
-								"label",
-								{ id: this.ids.labelCours },
-								ObjetTraduction_1.GTraductions.getValeur(
-									"AbsenceVS.dispense.labelCours",
+						this.estCreation
+							? IE.jsx.str(
+									"article",
+									{ class: "field-contain label-up border-bottom p-bottom-xl" },
+									IE.jsx.str(
+										"label",
+										{ id: this.ids.labelCours },
+										ObjetTraduction_1.GTraductions.getValeur(
+											"AbsenceVS.dispense.labelCours",
+										),
+									),
+									IE.jsx.str("ie-btnselecteur", {
+										"aria-labelledby": this.ids.labelCours,
+										"aria-describedby": this.ids.describedCours,
+										placeholder: ObjetTraduction_1.GTraductions.getValeur(
+											"AbsenceVS.dispense.placeholderCours",
+										),
+										"ie-model": "choixCours",
+										"aria-required": "true",
+									}),
+									IE.jsx.str(
+										"p",
+										{ id: this.ids.describedCours, class: "m-top-xl" },
+										ObjetTraduction_1.GTraductions.getValeur(
+											"AbsenceVS.dispense.demandePossibleCertainesMatieres",
+										),
+									),
+								)
+							: IE.jsx.str(
+									"article",
+									{ class: "field-contain border-bottom p-bottom-xl" },
+									IE.jsx.str(
+										"h2",
+										{ class: "ie-titre" },
+										this.getLibelleDuCours(),
+									),
 								),
-							),
-							IE.jsx.str("ie-btnselecteur", {
-								"aria-labelledby": this.ids.labelCours,
-								"aria-describedby": this.ids.describedCours,
-								placeholder: ObjetTraduction_1.GTraductions.getValeur(
-									"AbsenceVS.dispense.placeholderCours",
-								),
-								"ie-model": "choixCours",
-								"aria-required": "true",
-							}),
-							IE.jsx.str(
-								"p",
-								{ id: this.ids.describedCours, class: "m-top-xl" },
-								ObjetTraduction_1.GTraductions.getValeur(
-									"AbsenceVS.dispense.demandePossibleCertainesMatieres",
-								),
-							),
-						),
-						IE.jsx.str(
-							"article",
-							{
-								"ie-if": "estSurModification",
-								class: "field-contain border-bottom p-bottom-xl",
-							},
-							IE.jsx.str("h2", { class: "ie-titre" }, this.getLibelleDuCours()),
-						),
 						this.getHtmlJustificatifEtCommentaire(),
 					);
 				}
@@ -405,12 +406,6 @@ class ObjetFenetre_SaisieDispense extends ObjetFenetre_1.ObjetFenetre {
 					});
 				},
 			},
-			estSurCreation: () => {
-				return this.estCreation;
-			},
-			estSurModification: () => {
-				return !this.estCreation;
-			},
 		});
 	}
 	composeContenu() {
@@ -431,6 +426,7 @@ class ObjetFenetre_SaisieDispense extends ObjetFenetre_1.ObjetFenetre {
 					"ie-model": "btnSupprimer",
 					title: ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
 					class: "icon_trash avecFond i-medium",
+					"aria-haspopup": "dialog",
 				}),
 			),
 		);

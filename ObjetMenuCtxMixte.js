@@ -84,6 +84,7 @@ class ObjetMenuCtxMixte extends ObjetIdentite_1.Identite {
 									aIndex,
 								]),
 								class: "eltBouton themeBoutonPrimaire",
+								"aria-haspopup": D.ariaHasPopup || false,
 							},
 							D.getLibelle(),
 						),
@@ -102,6 +103,7 @@ class ObjetMenuCtxMixte extends ObjetIdentite_1.Identite {
 							]),
 							class: ["avecFond ", D.icon],
 							title: D.getLibelle(),
+							"aria-haspopup": D.ariaHasPopup || false,
 						}),
 					),
 				);

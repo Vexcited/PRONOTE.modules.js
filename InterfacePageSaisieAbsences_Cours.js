@@ -2172,6 +2172,7 @@ class InterfacePageSaisieAbsences_Cours extends ObjetInterface_1.ObjetInterface 
 									" " +
 									lContenuRecap,
 							}),
+							' aria-haspopup="dialog"',
 							">",
 							lContenuRecap,
 							"</div></td>",

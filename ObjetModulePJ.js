@@ -139,6 +139,7 @@ class ObjetModulePJ extends ObjetIdentite_1.Identite {
 					"data-tooltip": Tooltip_1.Tooltip.Type.default,
 					"ie-model": lAvecModele ? "trombone" : false,
 					"ie-selecfile": lAvecModele,
+					"aria-haspopup": "dialog",
 				},
 				this.options.libelleSelecteur
 					? IE.jsx.str(

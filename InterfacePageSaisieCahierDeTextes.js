@@ -2991,6 +2991,7 @@ class InterfacePageSaisieCahierDeTextes extends _InterfacePageSaisieCahierDeText
 						title: ObjetTraduction_1.GTraductions.getValeur(
 							"Fenetre_ElementsProgramme.Titre",
 						),
+						"aria-haspopup": "dialog",
 					}),
 					IE.jsx.str(
 						"span",

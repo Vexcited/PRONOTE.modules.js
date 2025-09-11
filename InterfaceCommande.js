@@ -206,33 +206,6 @@ class ObjetInterfaceCommande extends InterfaceCommandeCP_1.ObjetInterfaceCommand
 	jsxDisplayModeExclusif() {
 		return GApplication.getModeExclusif();
 	}
-	jsxGetHtmlEstEnModeExclusif() {
-		const H = [];
-		H.push(
-			IE.jsx.str(
-				"div",
-				{
-					class: "Texte12 Gras SansMain",
-					style: "background-color:#c15353;color:#ffffff;",
-					title: ObjetChaine_1.GChaine.toTitle(
-						ObjetTraduction_1.GTraductions.getValeur(
-							"ModeExclusif.EntrerModeExclusif",
-						),
-					),
-				},
-				IE.jsx.str(
-					"div",
-					{ class: "PetitEspace" },
-					ObjetChaine_1.GChaine.insecable(
-						ObjetTraduction_1.GTraductions.getValeur(
-							"ModeExclusif.ConsultationTemporaire",
-						),
-					),
-				),
-			),
-		);
-		return H.join("");
-	}
 	construireStructureAffichageAutre() {
 		const H = [];
 		if (
@@ -246,7 +219,7 @@ class ObjetInterfaceCommande extends InterfaceCommandeCP_1.ObjetInterfaceCommand
 		) {
 			H.push(
 				IE.jsx.str(
-					"div",
+					"li",
 					{ "ie-if": this.jsxIfAfficherBoutonImportExport.bind(this) },
 					IE.jsx.str("ie-btnimage", {
 						"ie-model": this.jsxModeleBoutonImport.bind(this),
@@ -262,7 +235,7 @@ class ObjetInterfaceCommande extends InterfaceCommandeCP_1.ObjetInterfaceCommand
 			);
 			H.push(
 				IE.jsx.str(
-					"div",
+					"li",
 					{
 						"ie-if": this.jsxIfAfficherBoutonImportExport.bind(this),
 						style: "margin-right:10px;",
@@ -282,52 +255,87 @@ class ObjetInterfaceCommande extends InterfaceCommandeCP_1.ObjetInterfaceCommand
 		}
 		if (this.etatUtilisateurPN.getAvecSaisie()) {
 			H.push(
-				IE.jsx.str("ie-btnicon", {
-					class: "icon_disquette_pleine btn-bandeau",
-					"ie-model": this.jsxModeleBoutonCommande.bind(
-						this,
-						Enumere_Commande_1.EGenreCommande.Validation,
-					),
-					"ie-if": this.jsxIfPresenceBouton.bind(
-						this,
-						Enumere_Commande_1.EGenreCommande.Validation,
-					),
-				}),
+				IE.jsx.str(
+					"li",
+					{
+						"ie-if": this.jsxIfPresenceBouton.bind(
+							this,
+							Enumere_Commande_1.EGenreCommande.Validation,
+						),
+					},
+					IE.jsx.str("ie-btnicon", {
+						class: "icon_disquette_pleine btn-bandeau",
+						"ie-model": this.jsxModeleBoutonCommande.bind(
+							this,
+							Enumere_Commande_1.EGenreCommande.Validation,
+						),
+					}),
+				),
 			);
 		}
 		H.push(
-			IE.jsx.str("ie-btnicon", {
-				class: "icon_print btn-bandeau",
-				"ie-model": this.jsxModeleBoutonCommande.bind(
-					this,
-					Enumere_Commande_1.EGenreCommande.ImpressionHTML,
-				),
-				"ie-if": this.jsxIfPresenceBouton.bind(
-					this,
-					Enumere_Commande_1.EGenreCommande.ImpressionHTML,
-				),
-				"aria-haspopup": "dialog",
-			}),
+			IE.jsx.str(
+				"li",
+				{
+					"ie-if": this.jsxIfPresenceBouton.bind(
+						this,
+						Enumere_Commande_1.EGenreCommande.ImpressionHTML,
+					),
+				},
+				IE.jsx.str("ie-btnicon", {
+					class: "icon_print btn-bandeau",
+					"ie-model": this.jsxModeleBoutonCommande.bind(
+						this,
+						Enumere_Commande_1.EGenreCommande.ImpressionHTML,
+					),
+					"aria-haspopup": "dialog",
+				}),
+			),
 		);
 		H.push(
-			IE.jsx.str("ie-btnicon", {
-				class: "icon_pdf btn-bandeau",
-				"ie-model": this.jsxModeleBoutonCommande.bind(
-					this,
-					Enumere_Commande_1.EGenreCommande.Impression,
-				),
-				"ie-if": this.jsxIfPresenceBouton.bind(
-					this,
-					Enumere_Commande_1.EGenreCommande.Impression,
-				),
-				"aria-haspopup": "dialog",
-			}),
+			IE.jsx.str(
+				"li",
+				{
+					"ie-if": this.jsxIfPresenceBouton.bind(
+						this,
+						Enumere_Commande_1.EGenreCommande.Impression,
+					),
+				},
+				IE.jsx.str("ie-btnicon", {
+					class: "icon_pdf btn-bandeau",
+					"ie-model": this.jsxModeleBoutonCommande.bind(
+						this,
+						Enumere_Commande_1.EGenreCommande.Impression,
+					),
+					"aria-haspopup": "dialog",
+				}),
+			),
 		);
 		H.push(
-			IE.jsx.str("div", {
-				"ie-display": this.jsxDisplayModeExclusif.bind(this),
-				"ie-html": this.jsxGetHtmlEstEnModeExclusif.bind(this),
-			}),
+			IE.jsx.str(
+				"li",
+				{ "ie-display": this.jsxDisplayModeExclusif.bind(this) },
+				IE.jsx.str(
+					"div",
+					{
+						class: "Texte12 Gras SansMain",
+						style: "background-color:#c15353;color:#ffffff;",
+						"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+							"ModeExclusif.EntrerModeExclusif",
+						),
+						role: "note",
+					},
+					IE.jsx.str(
+						"div",
+						{ class: "PetitEspace" },
+						ObjetChaine_1.GChaine.insecable(
+							ObjetTraduction_1.GTraductions.getValeur(
+								"ModeExclusif.ConsultationTemporaire",
+							),
+						),
+					),
+				),
+			),
 		);
 		return H.join("");
 	}

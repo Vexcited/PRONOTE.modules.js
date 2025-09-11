@@ -47,14 +47,14 @@ class PiedBulletin_ParcoursEducatif extends ObjetInterface_1.ObjetInterface {
 	}
 	construireStructureAffichageBandeau() {
 		const T = [];
-		T.push('<div class="EspaceBas EspaceHaut Gras">');
+		T.push('<p class="EspaceBas EspaceHaut Gras">');
 		T.push(
 			TypeModuleFonctionnelPiedBulletin_1.TypeModuleFonctionnelPiedBulletinUtil.getLibelle(
 				TypeModuleFonctionnelPiedBulletin_1.TypeModuleFonctionnelPiedBulletin
 					.MFPB_ParcoursEducatif,
 			),
 		);
-		T.push("</div>");
+		T.push("</p>");
 		return T.join("");
 	}
 	setDonnees(aParam) {

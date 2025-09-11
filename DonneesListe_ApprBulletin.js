@@ -430,6 +430,17 @@ class DonneesListe_ApprBulletin extends ObjetDonneesListe_1.ObjetDonneesListe {
 	estCelluleWAIRowHeader(aParams) {
 		return aParams.idColonne === DonneesListe_ApprBulletin.colonnes.eleve;
 	}
+	getAriaHasPopup(aParams) {
+		switch (aParams.idColonne) {
+			case DonneesListe_ApprBulletin.colonnes.jaugeEval: {
+				if (aParams.article.estService) {
+					return "dialog";
+				}
+				return false;
+			}
+		}
+		return false;
+	}
 	static getAppreciationDeColonne(aParams) {
 		const D = aParams.article;
 		switch (aParams.idColonne) {

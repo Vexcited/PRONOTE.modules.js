@@ -114,6 +114,7 @@ class PageBilanFinDeCycle extends ObjetInterface_1.ObjetInterface {
 		}
 		this.getInstance(this.identListe).setOptionsListe({
 			colonnesCachees: lColonnesCachees,
+			ariaLabel: aDonnees.getAriaLabelListe,
 		});
 		const lDonneesListe =
 			new DonneesListe_BilanFinDeCycle_1.DonneesListe_BilanFinDeCycle(

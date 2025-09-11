@@ -381,6 +381,8 @@ class _InterfaceReleveDeNotes extends InterfacePage_1.InterfacePage {
 				).MethodeCalcul;
 			return {
 				html: lMethodeCalcul.FormuleHTML,
+				legende: lMethodeCalcul.FormuleLegende,
+				wai: lMethodeCalcul.FormuleWAI,
 				titreFenetre: lMethodeCalcul.chaineTitre,
 				moyenneNette: true,
 			};
@@ -388,6 +390,8 @@ class _InterfaceReleveDeNotes extends InterfacePage_1.InterfacePage {
 			lMethodeCalcul = aParamEvnt.service.MethodeCalcul;
 			return {
 				html: lMethodeCalcul.FormuleHTML,
+				legende: lMethodeCalcul.FormuleLegende,
+				wai: lMethodeCalcul.FormuleWAI,
 				titreFenetre: lMethodeCalcul.chaineTitre,
 				moyenneNette: true,
 			};

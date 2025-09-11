@@ -464,6 +464,7 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 								IE.jsx.str("ie-btnicon", {
 									"ie-model": "destinataires.btnAjouter",
 									class: "icon_plus_cercle",
+									"aria-haspopup": "menu",
 								}),
 							),
 						),
@@ -1310,6 +1311,7 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 												ObjetTraduction_1.GTraductions.getValeur(
 													"liste.BtnAction",
 												),
+											"aria-haspopup": "menu",
 										})
 									: "",
 								IE.jsx.str("div", {

@@ -60,6 +60,7 @@ class InterfaceSaisieQCM extends _InterfacePage_1._InterfacePage {
 							"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
 								"SaisieQCM.Filtres.SelectionnerMatieres",
 							),
+							"aria-haspopup": "dialog",
 						},
 						"...",
 					),
@@ -81,6 +82,7 @@ class InterfaceSaisieQCM extends _InterfacePage_1._InterfacePage {
 							"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
 								"SaisieQCM.Filtres.SelectionnerNiveaux",
 							),
+							"aria-haspopup": "dialog",
 						},
 						"...",
 					),

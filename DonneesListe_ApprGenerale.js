@@ -452,6 +452,7 @@ class DonneesListe_ApprGenerale extends ObjetDonneesListe_1.ObjetDonneesListe {
 									"ie-model": lJsxModelBoutonAssSaisie,
 									"ie-class": lJsxClassBoutonAssSaisie,
 									class: "icon_pencil fix-bloc m-right-l",
+									"aria-haspopup": "dialog",
 									style: "font-size: 1.4rem;",
 									"aria-label": ObjetTraduction_1.GTraductions.getValeur(
 										"releve_evaluations.assistantSaisie.AffecterAppreciationAuxElevesSelectionnes",

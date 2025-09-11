@@ -56,7 +56,7 @@ const UtilitaireProjetAccompagnement = {
 		H.push(`</div>`);
 		if (aParams.avecEdition) {
 			H.push(
-				`<ie-btnicon class="icon icon_edit avecFond" role="button" title="${ObjetTraduction_1.GTraductions.getValeur("Modifier")}" ie-model="btnEditProjetAccompagnement('${aProjetAccompagnement.getNumero()}')"></ie-btnicon>`,
+				`<ie-btnicon class="icon icon_edit avecFond" role="button" title="${ObjetTraduction_1.GTraductions.getValeur("Modifier")}" ie-model="btnEditProjetAccompagnement('${aProjetAccompagnement.getNumero()}')" aria-haspopup="dialog"></ie-btnicon>`,
 			);
 		}
 		H.push(`</div>`);

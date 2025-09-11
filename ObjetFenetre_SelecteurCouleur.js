@@ -7,56 +7,6 @@ const ObjetTraduction_1 = require("ObjetTraduction");
 const MethodesObjet_1 = require("MethodesObjet");
 const AccessApp_1 = require("AccessApp");
 const const_tailleImageCouleur = 150;
-const lTabCouleurs = [
-	"#000000",
-	"#400000",
-	"#800000",
-	"#804040",
-	"#FF0000",
-	"#FF8080",
-	"#808000",
-	"#804000",
-	"#FF8000",
-	"#FF8040",
-	"#FFFF00",
-	"#FFFF80",
-	"#808040",
-	"#004000",
-	"#008000",
-	"#00FF00",
-	"#80FF00",
-	"#80FF80",
-	"#808080",
-	"#004040",
-	"#008040",
-	"#008080",
-	"#00FF40",
-	"#00FF80",
-	"#408080",
-	"#000080",
-	"#0000FF",
-	"#004080",
-	"#00FFFF",
-	"#80FFFF",
-	"#C0C0C0",
-	"#000040",
-	"#0000A0",
-	"#8080FF",
-	"#0080C0",
-	"#0080FF",
-	"#400040",
-	"#80424F",
-	"#800080",
-	"#800040",
-	"#8080C0",
-	"#FF80C0",
-	"#FFFFFF",
-	"#400080",
-	"#8000FF",
-	"#FF0080",
-	"#FF00FF",
-	"#FF80FF",
-];
 var GenreCouleur;
 (function (GenreCouleur) {
 	GenreCouleur[(GenreCouleur["RGB_R"] = 0)] = "RGB_R";
@@ -82,9 +32,7 @@ class ObjetFenetre_SelecteurCouleur extends ObjetFenetre_1.ObjetFenetre {
 			tailleInputCouleur: { width: 30, height: 18 },
 		};
 		this.setOptionsFenetre({
-			titre: ObjetTraduction_1.GTraductions.getValeur(
-				"Fenetre_SelecteurCouleur.Titre",
-			),
+			titre: TradObjetFenetre_SelecteurCouleur.titre,
 			listeBoutons: [
 				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
 				ObjetTraduction_1.GTraductions.getValeur("Valider"),
@@ -94,11 +42,6 @@ class ObjetFenetre_SelecteurCouleur extends ObjetFenetre_1.ObjetFenetre {
 	}
 	getControleur(aInstance) {
 		return $.extend(true, super.getControleur(aInstance), {
-			getNodeColor(aIndice) {
-				$(this.node).eventValidation(() => {
-					aInstance._actualiser({ couleur: lTabCouleurs[aIndice] });
-				});
-			},
 			getNodeColorPicker() {
 				$(this.node).on("pointerdown", function (aEvent) {
 					const lData = {
@@ -149,6 +92,24 @@ class ObjetFenetre_SelecteurCouleur extends ObjetFenetre_1.ObjetFenetre {
 			},
 		});
 	}
+	jsxModelRadioColor(aIndice) {
+		return {
+			getValue: () => {
+				var _a;
+				return (
+					((_a = this.couleur) === null || _a === void 0
+						? void 0
+						: _a.couleur) === lTabCouleurs[aIndice].couleur
+				);
+			},
+			setValue: (aValue) => {
+				this._actualiser({ couleur: lTabCouleurs[aIndice].couleur });
+			},
+			getName: () => {
+				return `${this.Nom}_jsxModelRadioColor`;
+			},
+		};
+	}
 	setDonnees(aCouleur) {
 		this.afficher();
 		ObjetPosition_1.GPosition.centrer(this.Nom);
@@ -162,19 +123,31 @@ class ObjetFenetre_SelecteurCouleur extends ObjetFenetre_1.ObjetFenetre {
 	composeContenu() {
 		const T = [];
 		T.push('<div class="conteneur">');
-		T.push('<div class="FSC_ConteneurPickColor">');
-		for (let i = 0; i < lTabCouleurs.length; i++) {
-			T.push(
-				'<div id="',
-				this.idCouleurPredef + i,
-				'" class="FSC_PickColor AvecMain" ie-node="getNodeColor(' +
-					i +
-					')" tabindex="0" style="' +
-					ObjetStyle_1.GStyle.composeCouleurFond(lTabCouleurs[i]) +
-					'"></div>',
-			);
-		}
-		T.push("</div>");
+		T.push(
+			IE.jsx.str(
+				"div",
+				{
+					class: "FSC_ConteneurPickColor",
+					role: "radiogroup",
+					"aria-label": TradObjetFenetre_SelecteurCouleur.radiogroup,
+				},
+				(aTab) => {
+					for (let i = 0; i < lTabCouleurs.length; i++) {
+						aTab.push(
+							IE.jsx.str("ie-radio", {
+								id: this.idCouleurPredef + i,
+								class: "FSC_PickColor AvecMain",
+								"ie-model": this.jsxModelRadioColor.bind(this, i),
+								style: ObjetStyle_1.GStyle.composeCouleurFond(
+									lTabCouleurs[i].couleur,
+								),
+								"aria-label": lTabCouleurs[i].ariaLabel,
+							}),
+						);
+					}
+				},
+			),
+		);
 		T.push('<div class="conteneur_droit">');
 		T.push(this._composeZoneChoix());
 		T.push(
@@ -599,3 +572,256 @@ class ObjetFenetre_SelecteurCouleur extends ObjetFenetre_1.ObjetFenetre {
 	}
 }
 exports.ObjetFenetre_SelecteurCouleur = ObjetFenetre_SelecteurCouleur;
+const ObjetTraduction_2 = require("ObjetTraduction");
+const TradObjetFenetre_SelecteurCouleur =
+	ObjetTraduction_2.TraductionsModule.getModule(
+		"ObjetFenetre_SelecteurCouleur",
+		{
+			titre: "",
+			radiogroup: "",
+			couleurWAI: {
+				Noir: "",
+				RougeTresFonce: "",
+				Bordeaux: "",
+				BrunRougeatre: "",
+				RougeVif: "",
+				RoseClair: "",
+				OliveFonce: "",
+				BrunFonce: "",
+				OrangeVif: "",
+				OrangeClair: "",
+				JauneVif: "",
+				JaunePale: "",
+				VertOlive: "",
+				VertSapin: "",
+				VertFonce: "",
+				VertVif: "",
+				VertAnis: "",
+				VertClair: "",
+				GrisMoyen: "",
+				VertCanard: "",
+				VertForet: "",
+				TurquoiseFonce: "",
+				VertFluo: "",
+				VertMenthe: "",
+				BleuVertGrise: "",
+				BleuMarine: "",
+				BleuVif: "",
+				BleuFonce: "",
+				Cyan: "",
+				BleuCielClair: "",
+				GrisClair: "",
+				BleuNuit: "",
+				BleuRoi: "",
+				BleuLavande: "",
+				BleuTurquoise: "",
+				BleuCiel: "",
+				VioletTresFonce: "",
+				TerreCuite: "",
+				VioletFonce: "",
+				RoseFonce: "",
+				BleuLavandeGris: "",
+				RoseBonbon: "",
+				Blanc: "",
+				VioletProfond: "",
+				VioletVif: "",
+				Fuchsia: "",
+				Magenta: "",
+				RosePale: "",
+			},
+		},
+	);
+const lTabCouleurs = [
+	{
+		couleur: "#000000",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.Noir,
+	},
+	{
+		couleur: "#400000",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.RougeTresFonce,
+	},
+	{
+		couleur: "#800000",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.Bordeaux,
+	},
+	{
+		couleur: "#804040",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.BrunRougeatre,
+	},
+	{
+		couleur: "#FF0000",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.RougeVif,
+	},
+	{
+		couleur: "#FF8080",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.RoseClair,
+	},
+	{
+		couleur: "#808000",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.OliveFonce,
+	},
+	{
+		couleur: "#804000",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.BrunFonce,
+	},
+	{
+		couleur: "#FF8000",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.OrangeVif,
+	},
+	{
+		couleur: "#FF8040",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.OrangeClair,
+	},
+	{
+		couleur: "#FFFF00",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.JauneVif,
+	},
+	{
+		couleur: "#FFFF80",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.JaunePale,
+	},
+	{
+		couleur: "#808040",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.VertOlive,
+	},
+	{
+		couleur: "#004000",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.VertSapin,
+	},
+	{
+		couleur: "#008000",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.VertFonce,
+	},
+	{
+		couleur: "#00FF00",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.VertVif,
+	},
+	{
+		couleur: "#80FF00",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.VertAnis,
+	},
+	{
+		couleur: "#80FF80",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.VertClair,
+	},
+	{
+		couleur: "#808080",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.GrisMoyen,
+	},
+	{
+		couleur: "#004040",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.VertCanard,
+	},
+	{
+		couleur: "#008040",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.VertForet,
+	},
+	{
+		couleur: "#008080",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.TurquoiseFonce,
+	},
+	{
+		couleur: "#00FF40",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.VertFluo,
+	},
+	{
+		couleur: "#00FF80",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.VertMenthe,
+	},
+	{
+		couleur: "#408080",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.BleuVertGrise,
+	},
+	{
+		couleur: "#000080",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.BleuMarine,
+	},
+	{
+		couleur: "#0000FF",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.BleuVif,
+	},
+	{
+		couleur: "#004080",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.BleuFonce,
+	},
+	{
+		couleur: "#00FFFF",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.Cyan,
+	},
+	{
+		couleur: "#80FFFF",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.BleuCielClair,
+	},
+	{
+		couleur: "#C0C0C0",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.GrisClair,
+	},
+	{
+		couleur: "#000040",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.BleuNuit,
+	},
+	{
+		couleur: "#0000A0",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.BleuRoi,
+	},
+	{
+		couleur: "#8080FF",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.BleuLavande,
+	},
+	{
+		couleur: "#0080C0",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.BleuTurquoise,
+	},
+	{
+		couleur: "#0080FF",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.BleuCiel,
+	},
+	{
+		couleur: "#400040",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.VioletTresFonce,
+	},
+	{
+		couleur: "#80424F",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.TerreCuite,
+	},
+	{
+		couleur: "#800080",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.VioletFonce,
+	},
+	{
+		couleur: "#800040",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.RoseFonce,
+	},
+	{
+		couleur: "#8080C0",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.BleuLavandeGris,
+	},
+	{
+		couleur: "#FF80C0",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.RoseBonbon,
+	},
+	{
+		couleur: "#FFFFFF",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.Blanc,
+	},
+	{
+		couleur: "#400080",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.VioletProfond,
+	},
+	{
+		couleur: "#8000FF",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.VioletVif,
+	},
+	{
+		couleur: "#FF0080",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.Fuchsia,
+	},
+	{
+		couleur: "#FF00FF",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.Magenta,
+	},
+	{
+		couleur: "#FF80FF",
+		ariaLabel: TradObjetFenetre_SelecteurCouleur.couleurWAI.RosePale,
+	},
+];

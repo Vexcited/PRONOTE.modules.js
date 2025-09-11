@@ -721,10 +721,7 @@ class ObjetSaisieAutreContact extends GestionnaireBlocPN_1.ObjetBlocPN {
 	}
 	_evntValiderContact() {
 		this.donnee.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
-		this.callback.appel({
-			donnee: this.donnee,
-			genreEvnt: EGenreEvntSaisieAutreContact.validation,
-		});
+		this.callback.appel(this.donnee, EGenreEvntSaisieAutreContact.validation);
 	}
 	_evntSuppressionContact(aGenreAction) {
 		if (aGenreAction !== Enumere_Action_1.EGenreAction.Valider) {

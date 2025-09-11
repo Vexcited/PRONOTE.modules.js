@@ -80,6 +80,8 @@ class InterfacePageEquipePedagogique extends InterfacePage_1.InterfacePage {
 		this.AddSurZone.push({
 			html: UtilitaireHtml_1.UtilitaireHtml.composeGroupeRadiosBoutons({
 				id: this.idZoneChxModeAff,
+				ariaLabel:
+					ObjetTraduction_1.GTraductions.getValeur("ChoixTypeAffichage"),
 				listeRadios: lListeRadios,
 				selectedValue: this.modeAffichage,
 			}),

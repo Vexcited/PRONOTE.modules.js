@@ -74,13 +74,13 @@ class PiedBulletin_Orientations extends ObjetInterface_1.ObjetInterface {
 								.ChoixEtPropositions;
 					}
 					T.push(
-						'<div class="PetitEspaceHaut PetitEspaceBas Gras" style="',
+						'<h2 class="PetitEspaceHaut PetitEspaceBas Gras" style="',
 						ObjetStyle_1.GStyle.composeCouleurTexte(
 							GCouleur.themeCouleur.foncee,
 						),
 						'">',
 						lTitreBloc,
-						"</div>",
+						"</h2>",
 					);
 					T.push(construitRubriqueAvecListeVoeux(aRubrique));
 				} else {

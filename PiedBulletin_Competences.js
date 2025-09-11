@@ -31,14 +31,14 @@ class PiedBulletin_Competences extends ObjetInterface_1.ObjetInterface {
 	}
 	construireStructureAffichageBandeau() {
 		const T = [];
-		T.push('<div class="EspaceBas EspaceHaut Gras">');
+		T.push('<p class="EspaceBas EspaceHaut Gras">');
 		T.push(
 			TypeModuleFonctionnelPiedBulletin_1.TypeModuleFonctionnelPiedBulletinUtil.getLibelle(
 				TypeModuleFonctionnelPiedBulletin_1.TypeModuleFonctionnelPiedBulletin
 					.MFPB_Competences,
 			),
 		);
-		T.push("</div>");
+		T.push("</p>");
 		return T.join("");
 	}
 	setDonnees(aParam) {
@@ -86,6 +86,7 @@ class PiedBulletin_Competences extends ObjetInterface_1.ObjetInterface {
 					avecValidationAuto: false,
 					listePiliers: this.params.listePiliers,
 					listeElevesDeClasse: null,
+					getAriaLabelListe: this.params.ariaLabelBilanFinDeCycle,
 				});
 				break;
 		}

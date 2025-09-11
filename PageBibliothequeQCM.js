@@ -128,7 +128,11 @@ class PageBibliothequeQCM extends ObjetInterface_1.ObjetInterface {
 								),
 								IE.jsx.str(
 									"ie-bouton",
-									{ id: this.idBoutonVisu, "ie-model": "btnVisu" },
+									{
+										id: this.idBoutonVisu,
+										"ie-model": "btnVisu",
+										"aria-haspopup": "dialog",
+									},
 									ObjetTraduction_1.GTraductions.getValeur(
 										"QCM_Divers.VisuEleve",
 									),

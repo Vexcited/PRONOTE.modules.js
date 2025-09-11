@@ -4,6 +4,7 @@ const ObjetTraduction_1 = require("ObjetTraduction");
 const ObjetDate_1 = require("ObjetDate");
 const Enumere_NiveauDAcquisition_1 = require("Enumere_NiveauDAcquisition");
 const MethodesObjet_1 = require("MethodesObjet");
+const jsx_1 = require("jsx");
 class MoteurDernieresNotes {
 	constructor() {}
 	composeNote(aNote, aParams = {}) {
@@ -37,40 +38,111 @@ class MoteurDernieresNotes {
 				: aDevoir.service.getLibelle();
 			if (!IE.estMobile) {
 				H.push(
-					`<header class="infos-note flex-contain">`,
-					`<!-- <i class="header-icon ${aDevoir.estDS ? "icon_DS" : "icon_saisie_note"}" ${aDevoir.estDS ? `aria-label="${ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.DevoirSurveille")}"` : `aria-hidden="true"`}></i> -->`,
-					`<div class="m-top-l">`,
-					`<div class="ie-titre">${lStrService}</div>`,
-					aDevoir.commentaire && aParams.commentaireEnTitre
-						? `<div class="ie-titre">${aDevoir.commentaire}</div>`
-						: "",
-					aParams.libelleSessionRattrapage || aDevoir.estDS
-						? `<div class="ie-titre">${aParams.libelleSessionRattrapage ? aParams.libelleSessionRattrapage + (aDevoir.estDS ? " - " : "") : ""}${aDevoir.estDS ? ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.DevoirSurveille") : ""}</div>`
-						: "",
-					aDevoir.commentaire && !aParams.commentaireEnTitre
-						? `<div class="ie-texte">${aDevoir.commentaire}</div>`
-						: "",
-					`<div class="ie-texte">${ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.Detail.NoteDu", [ObjetDate_1.GDate.formatDate(aDevoir.date, "%JJ %MMMM %AAAA")])}</div>`,
-					aDevoir.ListeThemes && aDevoir.ListeThemes.count()
-						? `<div class="ie-texte">${ObjetTraduction_1.GTraductions.getValeur("Themes")} : ${aDevoir.ListeThemes.getTableauLibelles().join(", ")}</div>`
-						: "",
-					`</div>`,
-					`</header>`,
+					IE.jsx.str(
+						"header",
+						{ class: "infos-note flex-contain" },
+						IE.jsx.str(
+							"div",
+							{ class: "m-top-l" },
+							IE.jsx.str("h2", { class: "ie-titre" }, lStrService),
+							aDevoir.commentaire && aParams.commentaireEnTitre
+								? IE.jsx.str("p", { class: "ie-titre" }, aDevoir.commentaire)
+								: "",
+							aParams.libelleSessionRattrapage || aDevoir.estDS
+								? IE.jsx.str(
+										"p",
+										{ class: "ie-titre" },
+										aParams.libelleSessionRattrapage
+											? aParams.libelleSessionRattrapage +
+													(aDevoir.estDS ? " - " : "")
+											: "",
+										aDevoir.estDS
+											? ObjetTraduction_1.GTraductions.getValeur(
+													"DernieresNotes.DevoirSurveille",
+												)
+											: "",
+									)
+								: "",
+							aDevoir.commentaire && !aParams.commentaireEnTitre
+								? IE.jsx.str("p", { class: "ie-texte" }, aDevoir.commentaire)
+								: "",
+							IE.jsx.str(
+								"p",
+								{ class: "ie-texte" },
+								ObjetTraduction_1.GTraductions.getValeur(
+									"DernieresNotes.Detail.NoteDu",
+									[
+										ObjetDate_1.GDate.formatDate(
+											aDevoir.date,
+											"%JJ %MMMM %AAAA",
+										),
+									],
+								),
+							),
+							aDevoir.ListeThemes && aDevoir.ListeThemes.count()
+								? IE.jsx.str(
+										"p",
+										{ class: "ie-texte" },
+										ObjetTraduction_1.GTraductions.getValeur("Themes"),
+										": ",
+										aDevoir.ListeThemes.getTableauLibelles().join(", "),
+									)
+								: "",
+						),
+					),
 				);
 			} else {
 				H.push(
-					`<header class="${aParams.avecFlechePrevSuiv ? "nav-prec-suiv" : "flex-contain justify-center"}">`,
-					aParams.avecFlechePrevSuiv
-						? `<ie-btnicon ie-model="surClicPrecSuiv('${aDevoir.getNumero()}',${aDevoir.getGenre()}, false)" class="icon_angle_left" aria-label="${ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.Detail.SelectionneDevPrec")}"></ie-btnicon>`
-						: "",
-					`<div class="text-center ie-titre">`,
-					`<div>${lStrService}</div>`,
-					`<div>${ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.Detail.NoteDu", [ObjetDate_1.GDate.formatDate(aDevoir.date, "%JJ %MMMM %AAAA")])}</div>`,
-					`</div>`,
-					aParams.avecFlechePrevSuiv
-						? `<ie-btnicon ie-model="surClicPrecSuiv('${aDevoir.getNumero()}',${aDevoir.getGenre()}, true)" class="icon_angle_right" aria-label="${ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.Detail.SelectionneDevSuiv")}"></ie-btnicon>`
-						: "",
-					`</header>`,
+					IE.jsx.str(
+						"header",
+						{
+							class: aParams.avecFlechePrevSuiv
+								? "nav-prec-suiv"
+								: "flex-contain justify-center",
+						},
+						aParams.avecFlechePrevSuiv &&
+							IE.jsx.str("ie-btnicon", {
+								"ie-model": (0, jsx_1.jsxFuncAttr)("surClicPrecSuiv", [
+									aDevoir.getNumero(),
+									aDevoir.getGenre(),
+									false,
+								]),
+								class: "icon_angle_left",
+								"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+									"DernieresNotes.Detail.SelectionneDevPrec",
+								),
+							}),
+						IE.jsx.str(
+							"div",
+							{ class: "text-center" },
+							IE.jsx.str("h2", { class: "ie-titre" }, lStrService),
+							IE.jsx.str(
+								"p",
+								{ class: "ie-texte" },
+								ObjetTraduction_1.GTraductions.getValeur(
+									"DernieresNotes.Detail.NoteDu",
+									[
+										ObjetDate_1.GDate.formatDate(
+											aDevoir.date,
+											"%JJ %MMMM %AAAA",
+										),
+									],
+								),
+							),
+						),
+						aParams.avecFlechePrevSuiv &&
+							IE.jsx.str("ie-btnicon", {
+								"ie-model": (0, jsx_1.jsxFuncAttr)("surClicPrecSuiv", [
+									aDevoir.getNumero(),
+									aDevoir.getGenre(),
+									true,
+								]),
+								class: "icon_angle_right",
+								"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+									"DernieresNotes.Detail.SelectionneDevSuiv",
+								),
+							}),
+					),
 				);
 				if (
 					aParams.libelleSessionRattrapage ||
@@ -81,23 +153,44 @@ class MoteurDernieresNotes {
 						: _a.count())
 				) {
 					H.push(
-						`<article class="infos-note flex-contain">`,
-						`<!-- <i class="header-icon ${aDevoir.estDS ? "icon_DS" : "icon_saisie_note"}" ${aDevoir.estDS ? `aria-label="${ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.DevoirSurveille")}"` : `aria-hidden="true"`}></i> -->`,
-						`<div>`,
-						aDevoir.commentaire && aParams.commentaireEnTitre
-							? `<div class="ie-titre">${aDevoir.commentaire}</div>`
-							: "",
-						aParams.libelleSessionRattrapage || aDevoir.estDS
-							? `<div class="ie-titre">${aParams.libelleSessionRattrapage ? aParams.libelleSessionRattrapage + (aDevoir.estDS ? " - " : "") : ""}${aDevoir.estDS ? ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.DevoirSurveille") : ""}</div>`
-							: "",
-						aDevoir.commentaire && !aParams.commentaireEnTitre
-							? `<div class="ie-texte">${aDevoir.commentaire}</div>`
-							: "",
-						aDevoir.ListeThemes && aDevoir.ListeThemes.count()
-							? `<div class="ie-texte">${ObjetTraduction_1.GTraductions.getValeur("Themes")} : ${aDevoir.ListeThemes.getTableauLibelles().join(", ")}</div>`
-							: "",
-						`</div>`,
-						`</article>`,
+						IE.jsx.str(
+							"article",
+							{ class: "infos-note flex-contain" },
+							IE.jsx.str(
+								"div",
+								null,
+								aDevoir.commentaire && aParams.commentaireEnTitre
+									? IE.jsx.str("p", { class: "ie-titre" }, aDevoir.commentaire)
+									: "",
+								aParams.libelleSessionRattrapage || aDevoir.estDS
+									? IE.jsx.str(
+											"p",
+											{ class: "ie-titre" },
+											aParams.libelleSessionRattrapage
+												? aParams.libelleSessionRattrapage +
+														(aDevoir.estDS ? " - " : "")
+												: "",
+											aDevoir.estDS
+												? ObjetTraduction_1.GTraductions.getValeur(
+														"DernieresNotes.DevoirSurveille",
+													)
+												: "",
+										)
+									: "",
+								aDevoir.commentaire && !aParams.commentaireEnTitre
+									? IE.jsx.str("p", { class: "ie-texte" }, aDevoir.commentaire)
+									: "",
+								aDevoir.ListeThemes && aDevoir.ListeThemes.count()
+									? IE.jsx.str(
+											"p",
+											{ class: "ie-texte" },
+											ObjetTraduction_1.GTraductions.getValeur("Themes"),
+											": ",
+											aDevoir.ListeThemes.getTableauLibelles().join(", "),
+										)
+									: "",
+							),
+						),
 					);
 				}
 			}
@@ -108,35 +201,126 @@ class MoteurDernieresNotes {
 				MethodesObjet_1.MethodesObjet.isString(aDevoir.commentaireSurNote) &&
 				aDevoir.commentaireSurNote.length > 0;
 			H.push(
-				`<article class="details m-y-xl">`,
-				`<div class="details-notes">`,
-				`<div class="ie-titre-couleur-lowercase"><span>${ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.Detail.NoteEtudiant")} : </span><span>${this.composeNote(aDevoir.note, { bareme: aDevoir.bareme, baremeParDefaut: aDevoir.baremeParDefaut })}${lAvecQCMRejouePlusieursFois ? " *" : ""}&nbsp;</span></div>`,
-				aDevoir.moyenne
-					? `<div class="ie-texte"><span>${aParams.libelleMoyenneDuPublicDevoir} :</span><span>${this.composeNote(aDevoir.moyenne, { bareme: aDevoir.bareme, baremeParDefaut: aDevoir.baremeParDefaut })}&nbsp;</span></div>`
-					: "",
-				`<div class="ie-texte"><span>${ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.Detail.NoteMax")} :</span><span>${this.composeNote(aDevoir.noteMax, { bareme: aDevoir.bareme, baremeParDefaut: aDevoir.baremeParDefaut })}&nbsp;</span></div>`,
-				`<div class="ie-texte"><span>${ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.Detail.NoteMin")} :</span><span>${this.composeNote(aDevoir.noteMin, { bareme: aDevoir.bareme, baremeParDefaut: aDevoir.baremeParDefaut })}&nbsp;</span></div>`,
-				`<div class="ie-texte"><span>${ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.Detail.Coefficient")} :</span><span>${aDevoir.coefficient}&nbsp;</span></div>`,
-				"</div>",
-				lAvecCommentaireSurNote
-					? IE.jsx.str(
+				IE.jsx.str(
+					"article",
+					{ class: "details m-y-xl" },
+					IE.jsx.str(
+						"dl",
+						{ class: "details-notes" },
+						IE.jsx.str(
 							"div",
-							{ class: ["comment-note"] },
+							{ class: "ie-titre-couleur-lowercase" },
 							IE.jsx.str(
-								"div",
-								{ class: "ie-titre" },
+								"dt",
+								null,
 								ObjetTraduction_1.GTraductions.getValeur(
-									"DernieresNotes.Detail.CommentaireProf",
+									"DernieresNotes.Detail.NoteEtudiant",
 								),
+								" : ",
 							),
 							IE.jsx.str(
-								"div",
-								{ class: "commentaire" },
-								aDevoir.commentaireSurNote,
+								"dd",
+								null,
+								this.composeNote(aDevoir.note, {
+									bareme: aDevoir.bareme,
+									baremeParDefaut: aDevoir.baremeParDefaut,
+								}),
+								lAvecQCMRejouePlusieursFois ? " *" : "",
 							),
-						)
-					: "",
-				"</article>",
+						),
+						aDevoir.moyenne
+							? IE.jsx.str(
+									"div",
+									{ class: "ie-texte" },
+									IE.jsx.str(
+										"dt",
+										null,
+										aParams.libelleMoyenneDuPublicDevoir,
+										" :",
+									),
+									IE.jsx.str(
+										"dd",
+										null,
+										this.composeNote(aDevoir.moyenne, {
+											bareme: aDevoir.bareme,
+											baremeParDefaut: aDevoir.baremeParDefaut,
+										}),
+									),
+								)
+							: "",
+						IE.jsx.str(
+							"div",
+							{ class: "ie-texte" },
+							IE.jsx.str(
+								"dt",
+								null,
+								ObjetTraduction_1.GTraductions.getValeur(
+									"DernieresNotes.Detail.NoteMax",
+								),
+								" :",
+							),
+							IE.jsx.str(
+								"dd",
+								null,
+								this.composeNote(aDevoir.noteMax, {
+									bareme: aDevoir.bareme,
+									baremeParDefaut: aDevoir.baremeParDefaut,
+								}),
+							),
+						),
+						IE.jsx.str(
+							"div",
+							{ class: "ie-texte" },
+							IE.jsx.str(
+								"dt",
+								null,
+								ObjetTraduction_1.GTraductions.getValeur(
+									"DernieresNotes.Detail.NoteMin",
+								),
+								" :",
+							),
+							IE.jsx.str(
+								"dd",
+								null,
+								this.composeNote(aDevoir.noteMin, {
+									bareme: aDevoir.bareme,
+									baremeParDefaut: aDevoir.baremeParDefaut,
+								}),
+							),
+						),
+						IE.jsx.str(
+							"div",
+							{ class: "ie-texte" },
+							IE.jsx.str(
+								"dt",
+								null,
+								ObjetTraduction_1.GTraductions.getValeur(
+									"DernieresNotes.Detail.Coefficient",
+								),
+								" :",
+							),
+							IE.jsx.str("dd", null, aDevoir.coefficient),
+						),
+					),
+					lAvecCommentaireSurNote
+						? IE.jsx.str(
+								"div",
+								{ class: ["comment-note"] },
+								IE.jsx.str(
+									"h3",
+									{ class: "ie-titre" },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"DernieresNotes.Detail.CommentaireProf",
+									),
+								),
+								IE.jsx.str(
+									"p",
+									{ class: "commentaire" },
+									aDevoir.commentaireSurNote,
+								),
+							)
+						: "",
+				),
 			);
 			let lLienKiosque;
 			if (!!aDevoir.execKiosque) {
@@ -199,35 +383,71 @@ class MoteurDernieresNotes {
 				(aDevoir.devoirInitial && aDevoir.devoirInitial.estRamenerSur20)
 			) {
 				H.push(
-					`<article>`,
-					aParams.piecesJointes &&
-						(aParams.piecesJointes.sujet ||
-							aParams.piecesJointes.corrige ||
-							(aParams.piecesJointes.qcm && !aParams.piecesJointes.estQCMBtn))
-						? `<div class="m-left-l details-pj">${aParams.piecesJointes.sujet || ""}${aParams.piecesJointes.corrige || ""}${aParams.piecesJointes.qcm && !aParams.piecesJointes.estQCMBtn ? aParams.piecesJointes.qcm : ""}</div>`
-						: "",
-					aParams.piecesJointes &&
-						aParams.piecesJointes.qcm &&
-						aParams.piecesJointes.estQCMBtn
-						? `<div class="m-left-l details-pj">${aParams.piecesJointes.qcm}</div>`
-						: "",
-					lLienKiosque
-						? `<div class="m-left-l details-pj">${lLienKiosque}</div>`
-						: "",
-					aParams.libelleInfoSessionRattrapage
-						? `<div class="m-left-l ie-titre-petit">${aParams.libelleInfoSessionRattrapage}</div>`
-						: "",
-					lStrQCMDejaRealise
-						? `<div class="m-left-l ie-titre-petit">${lStrQCMDejaRealise}</div>`
-						: "",
-					lStrDevFacultatif
-						? `<div class="m-left-l ie-titre-petit">${lStrDevFacultatif}</div>`
-						: "",
-					aDevoir.estRamenerSur20 ||
-						(aDevoir.devoirInitial && aDevoir.devoirInitial.estRamenerSur20)
-						? `<div class="m-left-l ie-titre-petit">${ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.Detail.NoteRameneeSur", [(aDevoir.baremeParDefaut ? aDevoir.baremeParDefaut : aDevoir.service ? aDevoir.service.baremeService : GParametres.baremeNotation).getValeur()])}</div>`
-						: "",
-					`</article>`,
+					IE.jsx.str(
+						"article",
+						null,
+						aParams.piecesJointes &&
+							(aParams.piecesJointes.sujet ||
+								aParams.piecesJointes.corrige ||
+								(aParams.piecesJointes.qcm && !aParams.piecesJointes.estQCMBtn))
+							? IE.jsx.str(
+									"div",
+									{ class: "m-left-l details-pj" },
+									aParams.piecesJointes.sujet || "",
+									aParams.piecesJointes.corrige || "",
+									aParams.piecesJointes.qcm && !aParams.piecesJointes.estQCMBtn
+										? aParams.piecesJointes.qcm
+										: "",
+								)
+							: "",
+						aParams.piecesJointes &&
+							aParams.piecesJointes.qcm &&
+							aParams.piecesJointes.estQCMBtn
+							? IE.jsx.str(
+									"div",
+									{ class: "m-left-l details-pj" },
+									aParams.piecesJointes.qcm,
+								)
+							: "",
+						lLienKiosque &&
+							IE.jsx.str("div", { class: "m-left-l details-pj" }, lLienKiosque),
+						aParams.libelleInfoSessionRattrapage &&
+							IE.jsx.str(
+								"p",
+								{ class: "m-left-l ie-titre-petit" },
+								aParams.libelleInfoSessionRattrapage,
+							),
+						lStrQCMDejaRealise &&
+							IE.jsx.str(
+								"p",
+								{ class: "m-left-l ie-titre-petit" },
+								lStrQCMDejaRealise,
+							),
+						lStrDevFacultatif &&
+							IE.jsx.str(
+								"p",
+								{ class: "m-left-l ie-titre-petit" },
+								lStrDevFacultatif,
+							),
+						aDevoir.estRamenerSur20 ||
+							(aDevoir.devoirInitial && aDevoir.devoirInitial.estRamenerSur20)
+							? IE.jsx.str(
+									"p",
+									{ class: "m-left-l ie-titre-petit" },
+									ObjetTraduction_1.GTraductions.getValeur(
+										"DernieresNotes.Detail.NoteRameneeSur",
+										[
+											(aDevoir.baremeParDefaut
+												? aDevoir.baremeParDefaut
+												: aDevoir.service
+													? aDevoir.service.baremeService
+													: GParametres.baremeNotation
+											).getValeur(),
+										],
+									),
+								)
+							: "",
+					),
 				);
 			}
 		}
@@ -241,19 +461,58 @@ class MoteurDernieresNotes {
 				: aService.getLibelle();
 			if (!IE.estMobile) {
 				H.push(
-					`<header class="infos-note flex-contain flex-center justify-between">`,
-					`<!--<i class="header-icon icon_saisie_note" aria-hidden="true"></i>-->`,
-					`<div class="ie-titre fluid-bloc m-right-l">${lStrService}</div>`,
-					`<ie-bouton ie-model="btnCalculMoyenne('${aService.getNumero()}')" class="small-bt fix-bloc">${ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.Detail.DetailsMethodeCalcMoy")}</ie-bouton>`,
-					`</header>`,
+					IE.jsx.str(
+						"header",
+						{ class: "infos-note flex-contain flex-center justify-between" },
+						IE.jsx.str(
+							"h2",
+							{ class: "ie-titre fluid-bloc m-right-l" },
+							lStrService,
+						),
+						IE.jsx.str(
+							"ie-bouton",
+							{
+								"ie-model": (0, jsx_1.jsxFuncAttr)("btnCalculMoyenne", [
+									aService.getNumero(),
+								]),
+								"aria-haspopup": "dialog",
+								class: "small-bt fix-bloc",
+							},
+							ObjetTraduction_1.GTraductions.getValeur(
+								"DernieresNotes.Detail.DetailsMethodeCalcMoy",
+							),
+						),
+					),
 				);
 			} else {
 				H.push(
-					'<header class="nav-prec-suiv">',
-					`<ie-btnicon ie-model="surClicPrecSuiv('${aService.getNumero()}',${aService.getGenre()}, false)" class="icon_angle_left" aria-label="${ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.Detail.SelectionneMatPrec")}"></ie-btnicon>`,
-					`<h4 class="ie-titre text-center">${lStrService}</h4>`,
-					`<ie-btnicon ie-model="surClicPrecSuiv('${aService.getNumero()}',${aService.getGenre()}, true)" class="icon_angle_right" aria-label="${ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.Detail.SelectionneMatSuiv")}"></ie-btnicon>`,
-					"</header>",
+					IE.jsx.str(
+						"header",
+						{ class: "nav-prec-suiv" },
+						IE.jsx.str("ie-btnicon", {
+							"ie-model": (0, jsx_1.jsxFuncAttr)("surClicPrecSuiv", [
+								aService.getNumero(),
+								aService.getGenre(),
+								false,
+							]),
+							class: "icon_angle_left",
+							"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+								"DernieresNotes.Detail.SelectionneMatPrec",
+							),
+						}),
+						IE.jsx.str("h2", { class: "ie-titre text-center" }, lStrService),
+						IE.jsx.str("ie-btnicon", {
+							"ie-model": (0, jsx_1.jsxFuncAttr)("surClicPrecSuiv", [
+								aService.getNumero(),
+								aService.getGenre(),
+								true,
+							]),
+							class: "icon_angle_right",
+							"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+								"DernieresNotes.Detail.SelectionneMatSuiv",
+							),
+						}),
+					),
 				);
 			}
 			if (!!aParams.avecAffichageComplet) {
@@ -308,46 +567,136 @@ class MoteurDernieresNotes {
 							: aService.nbNotesEleve || 0;
 				}
 				H.push(
-					'<article class="details m-y-xl">',
-					'<div class="details-notes">',
-					lMoyEtudiant
-						? `<div class="ie-titre-couleur-lowercase"><span>${ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.Detail.MoyenneEtudiant")} :</span><span>${lMoyEtudiant}&nbsp;</span></div>`
-						: "",
-					lMoyClasse
-						? `<div class="ie-texte"><span>${aParams.libelleMoyenneDuPublicService} :</span><span>${lMoyClasse}&nbsp;</span></div>`
-						: "",
-					lMoyMax
-						? `<div class="ie-texte"><span>${ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.Detail.MoyenneMax")} :</span><span>${lMoyMax}&nbsp;</span></div>`
-						: "",
-					lMoyMin
-						? `<div class="ie-texte"><span>${ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.Detail.MoyenneMin")} :</span><span>${lMoyMin}&nbsp;</span></div>`
-						: "",
-					lNbrNotes !== null
-						? `<div class="ie-texte"><span>${ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.Detail.NombreDeNotes")} :</span><span>${lNbrNotes}&nbsp;</span></div>`
-						: "",
-					"</div>",
-					"</article>",
+					IE.jsx.str(
+						"article",
+						{ class: "details m-y-xl" },
+						IE.jsx.str(
+							"dl",
+							{ class: "details-notes" },
+							lMoyEtudiant &&
+								IE.jsx.str(
+									"div",
+									{ class: "ie-titre-couleur-lowercase" },
+									IE.jsx.str(
+										"dt",
+										null,
+										ObjetTraduction_1.GTraductions.getValeur(
+											"DernieresNotes.Detail.MoyenneEtudiant",
+										),
+										" :",
+									),
+									IE.jsx.str("dd", null, lMoyEtudiant),
+								),
+							lMoyClasse &&
+								IE.jsx.str(
+									"div",
+									{ class: "ie-texte" },
+									IE.jsx.str(
+										"dt",
+										null,
+										aParams.libelleMoyenneDuPublicService,
+										" :",
+									),
+									IE.jsx.str("dd", null, lMoyClasse),
+								),
+							lMoyMax &&
+								IE.jsx.str(
+									"div",
+									{ class: "ie-texte" },
+									IE.jsx.str(
+										"dt",
+										null,
+										ObjetTraduction_1.GTraductions.getValeur(
+											"DernieresNotes.Detail.MoyenneMax",
+										),
+										" :",
+									),
+									IE.jsx.str("dd", null, lMoyMax),
+								),
+							lMoyMin &&
+								IE.jsx.str(
+									"div",
+									{ class: "ie-texte" },
+									IE.jsx.str(
+										"dt",
+										null,
+										ObjetTraduction_1.GTraductions.getValeur(
+											"DernieresNotes.Detail.MoyenneMin",
+										),
+										" :",
+									),
+									IE.jsx.str("dd", null, lMoyMin),
+								),
+							lNbrNotes !== null &&
+								IE.jsx.str(
+									"div",
+									{ class: "ie-texte" },
+									IE.jsx.str(
+										"dt",
+										null,
+										ObjetTraduction_1.GTraductions.getValeur(
+											"DernieresNotes.Detail.NombreDeNotes",
+										),
+										" :",
+									),
+									IE.jsx.str("dd", null, lNbrNotes),
+								),
+						),
+					),
 				);
 			}
 			if (aService.estMoyNR) {
 				H.push(
-					"<article>",
-					`<div class="m-left-l ie-titre-petit"><span class="notation_pastille_moy_NR m-right">${ObjetTraduction_1.GTraductions.getValeur("Notes.Colonne.TitreMoyNR")}</span>${ObjetTraduction_1.GTraductions.getValeur("Notes.Colonne.HintMoyenneNR")}</div>`,
-					"</article>",
+					IE.jsx.str(
+						"article",
+						null,
+						IE.jsx.str(
+							"p",
+							{ class: "m-left-l ie-titre-petit" },
+							IE.jsx.str(
+								"span",
+								{ class: "notation_pastille_moy_NR m-right" },
+								ObjetTraduction_1.GTraductions.getValeur(
+									"Notes.Colonne.TitreMoyNR",
+								),
+							),
+							ObjetTraduction_1.GTraductions.getValeur(
+								"Notes.Colonne.HintMoyenneNR",
+							),
+						),
+					),
 				);
 			}
 			if (!!aService.avecDetailDevoirsNonPublie) {
 				H.push(
-					'<article class="m-left-l">',
-					ObjetTraduction_1.GTraductions.getValeur(
-						"DernieresNotes.Detail.NoteDuServiceNonPubliees",
+					IE.jsx.str(
+						"p",
+						{ class: "m-left-l" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"DernieresNotes.Detail.NoteDuServiceNonPubliees",
+						),
 					),
-					"</article>",
 				);
 			}
 			if (IE.estMobile) {
 				H.push(
-					`<article class="btnMethodeCalcul"><ie-bouton ie-model="btnCalculMoyenne('${aService.getNumero()}')" class="small-bt">${ObjetTraduction_1.GTraductions.getValeur("DernieresNotes.Detail.DetailsMethodeCalcMoy")}</ie-bouton></article>`,
+					IE.jsx.str(
+						"article",
+						{ class: "btnMethodeCalcul" },
+						IE.jsx.str(
+							"ie-bouton",
+							{
+								"ie-model": (0, jsx_1.jsxFuncAttr)("btnCalculMoyenne", [
+									aService.getNumero(),
+								]),
+								"aria-haspopup": "dialog",
+								class: "small-bt",
+							},
+							ObjetTraduction_1.GTraductions.getValeur(
+								"DernieresNotes.Detail.DetailsMethodeCalcMoy",
+							),
+						),
+					),
 				);
 			}
 		}

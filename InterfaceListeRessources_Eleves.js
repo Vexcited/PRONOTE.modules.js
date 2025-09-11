@@ -491,6 +491,7 @@ class InterfaceListeRessources_Eleves extends InterfacePage_1.InterfacePage {
 								IE.jsx.str("ie-btnicon", {
 									"ie-model": jsxBtnParamPA.bind(lThis),
 									class: "icon_cog color-neutre m-left",
+									"aria-haspopup": "dialog",
 								}),
 							);
 						},
@@ -614,6 +615,7 @@ class InterfaceListeRessources_Eleves extends InterfacePage_1.InterfacePage {
 									title: ObjetTraduction_1.GTraductions.getValeur(
 										"ListeRessources.hintConfigurerPA",
 									),
+									"aria-haspopup": "dialog",
 								}),
 							);
 						},
@@ -1072,6 +1074,7 @@ class InterfaceListeRessources_Eleves extends InterfacePage_1.InterfacePage {
 											false,
 										),
 										class: "small-bt themeBoutonNeutre",
+										"aria-haspopup": "dialog",
 									},
 									ObjetTraduction_1.GTraductions.getValeur(
 										"fenetreCommunication.bouton.sondage",
@@ -1084,6 +1087,7 @@ class InterfaceListeRessources_Eleves extends InterfacePage_1.InterfacePage {
 									{
 										"ie-model": this.jsxGetModelBtnInfoSondage.bind(this, true),
 										class: "small-bt themeBoutonNeutre",
+										"aria-haspopup": "dialog",
 									},
 									ObjetTraduction_1.GTraductions.getValeur(
 										"fenetreCommunication.bouton.information",
@@ -1096,6 +1100,7 @@ class InterfaceListeRessources_Eleves extends InterfacePage_1.InterfacePage {
 									{
 										"ie-model": this.jsxGetModelBtnDiscussion.bind(this),
 										class: "small-bt themeBoutonNeutre",
+										"aria-haspopup": "dialog",
 									},
 									ObjetTraduction_1.GTraductions.getValeur(
 										"fenetreCommunication.bouton.demarrerDiscussion",
@@ -1108,6 +1113,7 @@ class InterfaceListeRessources_Eleves extends InterfacePage_1.InterfacePage {
 									{
 										"ie-model": this.jsxGetModelBtnDocument.bind(this),
 										class: "small-bt themeBoutonNeutre",
+										"aria-haspopup": "dialog",
 									},
 									ObjetTraduction_1.GTraductions.getValeur(
 										"Casier.diffuserDocument",
@@ -1560,19 +1566,30 @@ class DonneesListe_ListeRessourcesEleves extends ObjetDonneesListe_1.ObjetDonnee
 					? ObjetDate_1.GDate.formatDate(aParams.article.neLe, "%JJ/%MM/%AAAA")
 					: "";
 			case DonneesListe_ListeRessourcesEleves.colonnes.sexe:
-				return "sexe" in aParams.article
-					? IE.jsx.str("i", {
-							class: [
-								"i-medium",
-								TypeSexe_1.TypeSexeUtil.getClasse(aParams.article.sexe, false),
-							],
-							role: "presentation",
-						})
-					: "";
+				if (lSurExportCSV) {
+					return TypeSexe_1.TypeSexeUtil.getLibelle(aParams.article.sexe);
+				} else {
+					return "sexe" in aParams.article
+						? IE.jsx.str("i", {
+								class: [
+									"i-medium",
+									TypeSexe_1.TypeSexeUtil.getClasse(
+										aParams.article.sexe,
+										false,
+									),
+								],
+								role: "presentation",
+							})
+						: "";
+				}
 			case DonneesListe_ListeRessourcesEleves.colonnes.email:
-				return aParams.article.email
-					? ObjetChaine_1.GChaine.composerEmail(aParams.article.email)
-					: "";
+				if (lSurExportCSV) {
+					return aParams.article.email || "";
+				} else {
+					return aParams.article.email
+						? ObjetChaine_1.GChaine.composerEmail(aParams.article.email)
+						: "";
+				}
 			case DonneesListe_ListeRessourcesEleves.colonnes.classe:
 				return aParams.article.classe
 					? aParams.article.classe.getLibelle()

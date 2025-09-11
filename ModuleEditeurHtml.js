@@ -126,6 +126,7 @@ class ModuleEditeurHtml extends ObjetInterface_1.ObjetInterface {
 					!this.param.sideBySide &&
 					IE.jsx.str("ie-btnicon", {
 						"ie-model": "btn",
+						"aria-haspopup": "dialog",
 						"ie-node": "nodebtn",
 						id: this.idBoutonFenetre,
 						class: "bt-activable icon_font",
@@ -145,6 +146,7 @@ class ModuleEditeurHtml extends ObjetInterface_1.ObjetInterface {
 					IE.jsx.str("ie-btnicon", {
 						id: this.idBoutonFenetre,
 						"ie-model": "btn",
+						"aria-haspopup": "dialog",
 						"ie-node": "nodebtn",
 						class: "bt-activable icon_font",
 					}),

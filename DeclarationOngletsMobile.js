@@ -53,6 +53,8 @@ const MultipleInterfaceSaisieAppelInternat = require("InterfaceSaisieAppelIntern
 const MultipleInterfaceRechercheDeStage = require("InterfaceRechercheDeStage");
 const MultipleInterfacePageEntreprise = require("InterfacePageEntreprise");
 const MultiplePageSaisieOffresStagesPN = require("PageSaisieOffresStagesPN");
+const MultipleInterfaceMediaCentre = require("InterfaceMediaCentre");
+const MultipleInteraceListePersonnels = require("InterfaceListePersonnels");
 function DeclarationOngletsMobile() {}
 DeclarationOngletsMobile.creerOnglet = function (
 	aGenreOnglet,
@@ -272,6 +274,14 @@ DeclarationOngletsMobile.creerOnglet = function (
 			);
 		case Enumere_Onglet_1.EGenreOnglet.SaisieOffresStage:
 			return new MultiplePageSaisieOffresStagesPN.PageSaisieOffresStagesPN(
+				aParamsConstructeur,
+			);
+		case Enumere_Onglet_1.EGenreOnglet.MediaCentre:
+			return new MultipleInterfaceMediaCentre.InterfaceMediaCentre(
+				aParamsConstructeur,
+			);
+		case Enumere_Onglet_1.EGenreOnglet.ListePersonnels:
+			return new MultipleInteraceListePersonnels.InterfaceListePersonnels(
 				aParamsConstructeur,
 			);
 		default:

@@ -174,6 +174,7 @@ class InterfaceFicheEleve extends ObjetInterface_1.ObjetInterface {
 					"ie-if": this.jsxIfAvecBtnDiscussion.bind(this),
 					"ie-model": this.jsxGetModelBtnDiscussion.bind(this),
 					class: "small-bt themeBoutonNeutre",
+					"aria-haspopup": "dialog",
 				},
 				ObjetTraduction_1.GTraductions.getValeur(
 					"fenetreCommunication.bouton.demarrerDiscussion",
@@ -185,6 +186,7 @@ class InterfaceFicheEleve extends ObjetInterface_1.ObjetInterface {
 					"ie-if": this.jsxIfAvecBtnDocument.bind(this),
 					"ie-model": this.jsxGetModelBtnDocument.bind(this),
 					class: "small-bt themeBoutonNeutre",
+					"aria-haspopup": "dialog",
 				},
 				ObjetTraduction_1.GTraductions.getValeur("Casier.diffuserDocument"),
 			),
@@ -1385,6 +1387,7 @@ class InterfaceFicheEleve extends ObjetInterface_1.ObjetInterface {
 								this,
 								aAttestation,
 							),
+							"aria-haspopup": "dialog",
 						})
 					: "";
 				lAttestations.push(
@@ -1407,6 +1410,7 @@ class InterfaceFicheEleve extends ObjetInterface_1.ObjetInterface {
 					class: "icon_plus_fin avecFond m-right",
 					"ie-model": this.jsxModeleBoutonCreerAttestation.bind(this),
 					title: ObjetTraduction_1.GTraductions.getValeur("Attestation.titre"),
+					"aria-haspopup": "dialog",
 				})
 			: "";
 		T.push(
@@ -1733,6 +1737,7 @@ class InterfaceFicheEleve extends ObjetInterface_1.ObjetInterface {
 													this,
 													aResp,
 												),
+											"aria-haspopup": "dialog",
 										},
 										ObjetTraduction_1.GTraductions.getValeur(
 											"fenetreCommunication.bouton.discussionsCommunes",
@@ -1923,6 +1928,7 @@ class InterfaceFicheEleve extends ObjetInterface_1.ObjetInterface {
 					title: ObjetTraduction_1.GTraductions.getValeur(
 						"FicheEleve.nouveauProjetAccompagnement",
 					),
+					"aria-haspopup": "dialog",
 				})
 			: "";
 		T.push(
