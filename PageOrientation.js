@@ -1088,13 +1088,30 @@ class PageOrientation extends ObjetIdentite_1.Identite {
 			),
 		);
 	}
-	jsxModelBoutonValider(aDonneesAR) {
+	jsxModelBoutonValider() {
 		return {
 			event: () => {
 				this.saisie(false);
 			},
 			getDisabled: () => {
-				return false;
+				let lAvecModification = false;
+				if (this.rubriqueSelectionne) {
+					this.rubriqueSelectionne.listeVoeux.parcourir((aElement) => {
+						if (
+							[
+								Enumere_Etat_1.EGenreEtat.Creation,
+								Enumere_Etat_1.EGenreEtat.Modification,
+								Enumere_Etat_1.EGenreEtat.Suppression,
+							].includes(aElement.getEtat())
+						) {
+							lAvecModification = true;
+							return;
+						}
+					});
+				} else if (this.rubriqueLV) {
+					lAvecModification = true;
+				}
+				return !lAvecModification;
 			},
 		};
 	}
@@ -1336,6 +1353,9 @@ class PageOrientation extends ObjetIdentite_1.Identite {
 					}
 					this.rubriqueLV.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
 					aEvent.stopPropagation();
+				},
+				getOptions: function () {
+					return { avecBtn: false };
 				},
 			};
 		};

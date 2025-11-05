@@ -823,12 +823,13 @@ class InterfacePageResultatsClasses extends InterfacePage_1.InterfacePage {
 			avecAbsences: lResultatReferentiel.avecAbsences,
 			avecSansNotes: lResultatReferentiel.avecCompetences,
 			afficherSousServices: lResultatReferentiel.avecSousServices,
-			afficherServices: lResultatReferentiel.uniquementSousServices,
+			afficherServices: !lResultatReferentiel.uniquementSousServices,
 			avecMediane: lResultatReferentiel.avecMediane,
 			avecBasse: lResultatReferentiel.avecBasse,
 			avecHaute: lResultatReferentiel.avecHaute,
 			masquerSansNotes: lResultatReferentiel.masquerSansNotes,
 			avecCodeCompetences: GEtatUtilisateur.estAvecCodeCompetences(),
+			avecCouleurMoyenne: lResultatReferentiel.avecCouleurMoyenne,
 		};
 	}
 	_initFenetreParamResultats(aInstance) {

@@ -379,13 +379,20 @@ class ObjetFenetre_EvaluationQCM extends ObjetFenetre_1.ObjetFenetre {
 					"...",
 				),
 				IE.jsx.str("span", { "ie-html": "qcm.libelleQCM", class: "m-left" }),
+				IE.jsx.str("ie-btnicon", {
+					"ie-model": "qcm.btnOptionsExecution",
+					class: "icon_cog bt-activable m-left-l",
+					"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+						"FenetreDevoir.ParametresExeQCMDevoir",
+					),
+				}),
 			),
 		);
 		H.push(
 			`<div class="field-contain" ie-display="qcm.estChoixServiceVisible">\n              <label> ${ObjetTraduction_1.GTraductions.getValeur("evaluations.FenetreEvaluationQCM.QCMPourLeService")}</label>\n              <div id="${this.getInstance(this.identComboServices).getNom()}"></div>\n            </div>`,
 		);
 		H.push(
-			`<div class="field-contain" ie-display="qcm.reglagesVisible">\n              <label>${ObjetTraduction_1.GTraductions.getValeur("evaluations.FenetreEvaluationQCM.ReponsesEleveEntre")}</label>\n              <ie-btnicon ie-model="qcm.btnOptionsExecution" class="icon_cog bt-activable"></ie-btnicon>\n            </div>`,
+			`<div class="field-contain" ie-display="qcm.reglagesVisible">\n              <label>${ObjetTraduction_1.GTraductions.getValeur("evaluations.FenetreEvaluationQCM.ReponsesEleveEntre")}</label>\n\n            </div>`,
 		);
 		H.push(
 			`<div class="field-contain" ie-display="qcm.reglagesVisible">\n             <div id="${this.getInstance(this.identDisponibiliteQCM).getNom()}"></div>\n            </div>`,

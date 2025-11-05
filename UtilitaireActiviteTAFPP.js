@@ -437,8 +437,10 @@ exports.UtilitaireActiviteTAFPP = {
 								"FenetreListeTAFFaits.Titre",
 							),
 						},
-						"lStrLienNombreRendus",
+						lStrLienNombreRendus,
 					);
+				} else {
+					lStrLienNombreRendus = IE.jsx.str("span", null, lStrLienNombreRendus);
 				}
 			}
 		}

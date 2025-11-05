@@ -37,6 +37,12 @@ var TypeHttpNotificationDonnes;
 	TypeHttpNotificationDonnes[
 		(TypeHttpNotificationDonnes["THND_NombreForumsNonLus"] = 11)
 	] = "THND_NombreForumsNonLus";
+	TypeHttpNotificationDonnes[
+		(TypeHttpNotificationDonnes["THND_NombreBilletsAModerer"] = 12)
+	] = "THND_NombreBilletsAModerer";
+	TypeHttpNotificationDonnes[
+		(TypeHttpNotificationDonnes["THND_NombreCommentairesAModerer"] = 13)
+	] = "THND_NombreCommentairesAModerer";
 })(
 	TypeHttpNotificationDonnes ||
 		(exports.TypeHttpNotificationDonnes = TypeHttpNotificationDonnes = {}),

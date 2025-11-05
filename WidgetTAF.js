@@ -259,7 +259,7 @@ class WidgetTAF extends ObjetWidget_1.Widget.ObjetWidget {
 			"</div>",
 		);
 		H.push(
-			' <ie-chips class="tag-style ',
+			' <ie-chips class="fix-bloc tag-style',
 			lEstFait ? "ThemeCat-pedagogie" : "",
 			'">',
 			lEstFait

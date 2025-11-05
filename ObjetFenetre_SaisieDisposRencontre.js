@@ -180,13 +180,11 @@ class ObjetFenetre_SaisieDisposRencontre extends ObjetFenetre_1.ObjetFenetre {
 			},
 		};
 	}
-	jsxModeleBoutonSupprimerPlage(aPlage) {
+	jsxModeleBoutonSupprimerPlage(aIndice) {
 		return {
 			event: () => {
-				if (this.donnees && this.donnees.listePlagesDispos && aPlage) {
-					const lIndicePlage =
-						this.donnees.listePlagesDispos.getIndiceParElement(aPlage);
-					this.donnees.listePlagesDispos.remove(lIndicePlage);
+				if (this.donnees && this.donnees.listePlagesDispos) {
+					this.donnees.listePlagesDispos.remove(aIndice);
 				}
 			},
 		};
@@ -218,7 +216,7 @@ class ObjetFenetre_SaisieDisposRencontre extends ObjetFenetre_1.ObjetFenetre {
 			this.donnees.heureFinSession,
 			"%hh:%mm",
 		);
-		this.donnees.listePlagesDispos.parcourir((aPlage) => {
+		this.donnees.listePlagesDispos.parcourir((aPlage, aIndice) => {
 			H.push(
 				IE.jsx.str(
 					"div",
@@ -244,7 +242,7 @@ class ObjetFenetre_SaisieDisposRencontre extends ObjetFenetre_1.ObjetFenetre {
 						),
 					),
 					IE.jsx.str("ie-btnicon", {
-						"ie-model": this.jsxModeleBoutonSupprimerPlage.bind(this, aPlage),
+						"ie-model": this.jsxModeleBoutonSupprimerPlage.bind(this, aIndice),
 						class: "icon_trash m-left-xl bt-large avecFond",
 						title: ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
 					}),

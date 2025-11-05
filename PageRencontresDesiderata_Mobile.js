@@ -242,7 +242,11 @@ class PageRencontresDesiderata extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobi
 			this.listeRencontres = lListeRencontres;
 			this.nombreVoeuxNonRenseigne = this.listeRencontres
 				.getListeElements((aRencontre) => {
-					return !aRencontre.estUnDeploiement && !aRencontre.validationvoeu;
+					return (
+						!aRencontre.estUnEleve &&
+						!aRencontre.estUnDeploiement &&
+						!aRencontre.validationvoeu
+					);
 				})
 				.count();
 			this.instanceListe

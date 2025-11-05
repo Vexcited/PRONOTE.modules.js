@@ -418,6 +418,7 @@ class InterfaceListeMessagerie extends ObjetInterface_1.ObjetInterface {
 									),
 									class: Type_ThemeBouton_1.TypeThemeBouton.primaire,
 									"ie-ellipsis": true,
+									"data-genre": lGenre,
 								},
 								aBouton.getLibelle(),
 							),

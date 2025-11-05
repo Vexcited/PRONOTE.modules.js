@@ -409,7 +409,12 @@ class PanelDetailServiceNotation extends ObjetInterface_1.ObjetInterface {
 				getDisabled() {
 					let lEstEditable = false;
 					if (!aInstance.cloture && !!aInstance.Actif) {
-						lEstEditable = true;
+						if (
+							!!aInstance.autorisations &&
+							!!aInstance.autorisations.modifierParametresServices
+						) {
+							lEstEditable = true;
+						}
 					}
 					return !lEstEditable;
 				},

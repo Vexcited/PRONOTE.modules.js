@@ -16,6 +16,7 @@ exports.TypeDroits = {
 		modifierProfesseurs: 1,
 		modifierSalles: 1,
 		modifierMateriels: 1,
+		modifierLibelleCours: 1,
 		creerCours: 1,
 		creerCoursPermanenceFeuilleAppel: 1,
 		deplacerCours: 1,
@@ -254,6 +255,8 @@ class ObjetDroitsPN {
 				return this._droits.cours.modifierSalles && !lEstEnConsultation;
 			case exports.TypeDroits.cours.modifierMateriels:
 				return this._droits.cours.modifierMateriels && !lEstEnConsultation;
+			case exports.TypeDroits.cours.modifierLibelleCours:
+				return this._droits.cours.modifierLibelleCours && !lEstEnConsultation;
 			case exports.TypeDroits.cours.deplacerCours:
 				return this._droits.cours.deplacerCours && !lEstEnConsultation;
 			case exports.TypeDroits.cours.creerCours:
@@ -827,6 +830,7 @@ class ObjetDroitsPN {
 				modifierProfesseurs: false,
 				modifierSalles: false,
 				modifierMateriels: false,
+				modifierLibelleCours: false,
 				creerCours: false,
 				creerCoursPermanenceFeuilleAppel: false,
 				deplacerCours: false,

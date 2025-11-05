@@ -6,6 +6,7 @@ exports.StylesObjetFenetreHarcelement = {
 	BlocListeReferentsDEtablissement: "BlocListeReferentsDEtablissement",
 	BlocReferent: "BlocReferent",
 	LibelleReferent: "LibelleReferent",
+	ctnLienTitre: "ctn-lien-Titre",
 	ctnPhone: "ctn-phone",
 	numeroTel: "numero-tel",
 };

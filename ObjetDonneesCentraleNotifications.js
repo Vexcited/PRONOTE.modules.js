@@ -6,22 +6,19 @@ const ObjetFenetre_MessageDynamiqueDemarrage_1 = require("ObjetFenetre_MessageDy
 var TypeNotif;
 (function (TypeNotif) {
 	TypeNotif["surModification"] = "odcn_surModification";
-	TypeNotif["masquerNbNotifs"] = "odcn_masquerNbNotifs";
 })(TypeNotif || (TypeNotif = {}));
 class ObjetDonneesCentraleNotifications {
 	constructor() {
 		this.nbNotifs = 0;
+		this.modeSimulationCompteurNotif = false;
 		Invocateur_1.Invocateur.abonner(
 			ObjetRequeteJSON_1.utils.getIdentNotification("compteurCentraleNotif"),
 			(aCompteur) => {
+				this.finSimulationSuppressionNotif(false);
 				this.nbNotifs = aCompteur;
 				this._notifSurModification({ compteurCentraleNotif: true });
 			},
 		);
-		Invocateur_1.Invocateur.abonner(TypeNotif.masquerNbNotifs, (aNbNotifs) => {
-			this.nbNotifs = Math.max(0, this.nbNotifs - aNbNotifs);
-			this._notifSurModification({ masquerNbNotifs: true });
-		});
 	}
 	_notifSurModification(aParams) {
 		Invocateur_1.Invocateur.evenement(
@@ -34,6 +31,22 @@ class ObjetDonneesCentraleNotifications {
 	}
 	getDonnees(aParam) {
 		return { nbNotifs: this.nbNotifs };
+	}
+	simulerSuppressionNotif() {
+		if (!this.modeSimulationCompteurNotif) {
+			this.modeSimulationCompteurNotif = true;
+			this.nbNotifs = Math.max(0, this.nbNotifs - 1);
+			this._notifSurModification({ masquerNbNotifs: true });
+		}
+	}
+	finSimulationSuppressionNotif(aRollbackSimulation) {
+		if (this.modeSimulationCompteurNotif) {
+			this.modeSimulationCompteurNotif = false;
+			if (aRollbackSimulation) {
+				this.nbNotifs = Math.max(0, this.nbNotifs + 1);
+				this._notifSurModification({ masquerNbNotifs: true });
+			}
+		}
 	}
 	addMessagesDynamiques(aTabMessages) {
 		this.listeMessagesDynamiques = [];

@@ -1214,16 +1214,38 @@ class ObjetUtilitaireCahierDeTexte {
 		return T.join("");
 	}
 	_composeSymboleCategorie(aGenre) {
+		let lLibelle;
+		if (
+			aGenre ===
+			TypeOrigineCreationCategorieCahierDeTexte_1
+				.TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Devoir
+		) {
+			lLibelle = ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.iconeDS",
+			);
+		} else if (
+			aGenre ===
+			TypeOrigineCreationCategorieCahierDeTexte_1
+				.TypeOrigineCreationCategorieCahierDeTexte.OCCCDT_Pre_Evaluation
+		) {
+			lLibelle = ObjetTraduction_1.GTraductions.getValeur(
+				"CahierDeTexte.iconeEval",
+			);
+		}
 		const T = [];
 		T.push(
-			IE.jsx.str("i", {
-				class:
-					TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.getIcone(
-						aGenre,
-					),
-				role: "presentation",
-				"aria-hidden": "true",
-			}),
+			IE.jsx.str(
+				"i",
+				{
+					class:
+						TypeOrigineCreationCategorieCahierDeTexte_1.TypeOrigineCreationCategorieCahierDeTexteUtil.getIcone(
+							aGenre,
+						),
+					role: "presentation",
+					"aria-hidden": "true",
+				},
+				lLibelle !== null && lLibelle !== void 0 ? lLibelle : "",
+			),
 		);
 		return T.join("");
 	}

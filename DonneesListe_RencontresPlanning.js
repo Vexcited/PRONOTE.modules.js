@@ -284,7 +284,10 @@ class DonneesListe_RencontresPlanning extends ObjetDonneesListeFlatDesign_1.Obje
 				],
 				"ie-model": this.jsxModeleBoutonLienVisio.bind(this, aElement),
 				"ie-tooltipdescribe":
-					UtilitaireVisiosSco_1.UtilitaireVisios.getHintVisio(aElement.visio),
+					UtilitaireVisiosSco_1.UtilitaireVisios.getHintVisio.bind(
+						this,
+						aElement.visio,
+					),
 				"aria-label": lLabel,
 			});
 			return ([

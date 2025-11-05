@@ -85,6 +85,7 @@ exports.StylesWidgetsDashboard = {
 	hasTitle: "has-title",
 	listeImbriquee: "liste-imbriquee",
 	asHeader: "as-header",
+	matiereContain: "matiere-contain",
 	switch: "switch",
 	onWidgets: "on-widgets",
 	lever: "lever",

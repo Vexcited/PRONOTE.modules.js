@@ -4,6 +4,7 @@ const ObjetChaine_1 = require("ObjetChaine");
 const CollectionRequetes_1 = require("CollectionRequetes");
 const MethodesObjet_1 = require("MethodesObjet");
 const Enumere_Etat_1 = require("Enumere_Etat");
+const UtilitaireCasier_1 = require("UtilitaireCasier");
 class ObjetRequeteSaisieCasier extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	constructor(...aParams) {
 		super(...aParams);
@@ -128,20 +129,21 @@ class ObjetRequeteSaisieCasier extends ObjetRequeteJSON_1.ObjetRequeteSaisie {
 	}
 	_serialisation(aElement, aJSON) {
 		aJSON.memo = aElement.memo;
-		if ("listePersonnels" in aElement && aElement.listePersonnels) {
-			aJSON.listePersonnels = aElement.listePersonnels.toJSON();
-		}
-		if ("listeProfesseurs" in aElement && aElement.listeProfesseurs) {
-			aJSON.listeProfesseurs = aElement.listeProfesseurs.toJSON();
-		}
-		if ("listeMaitreStage" in aElement && aElement.listeMaitreStage) {
-			aJSON.listeMaitreStage = aElement.listeMaitreStage.toJSON();
-		}
 		if (
-			"listeEquipesPedagogique" in aElement &&
-			aElement.listeEquipesPedagogique
+			UtilitaireCasier_1.UtilitaireCasier.isObjetElementDepositaire(aElement)
 		) {
-			aJSON.listeEquipesPedagogique = aElement.listeEquipesPedagogique.toJSON();
+			const lPropsListe = [
+				"listePersonnels",
+				"listeProfesseurs",
+				"listeMaitreStage",
+				"listeEquipesPedagogique",
+			];
+			lPropsListe.forEach((aProps) => {
+				if (aElement[aProps]) {
+					aElement[aProps].setSerialisateurJSON({ ignorerEtatsElements: true });
+					aJSON[aProps] = aElement[aProps].toJSON();
+				}
+			});
 		}
 		if ("dateDebut" in aElement && aElement.dateDebut) {
 			aJSON.dateDebut = aElement.dateDebut;

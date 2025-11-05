@@ -423,8 +423,11 @@ class ObjetFenetre_PieceJointeCP extends ObjetFenetre_1.ObjetFenetre {
 				listeCreations: lListeCreations,
 				avecLigneCreation: true,
 				boutons: this.optionsFenetre.avecBoutonSupprimer
-					? [{ genre: ObjetListe_1.ObjetListe.typeBouton.supprimer }]
-					: [],
+					? [
+							{ genre: ObjetListe_1.ObjetListe.typeBouton.supprimer },
+							{ genre: ObjetListe_1.ObjetListe.typeBouton.rechercher },
+						]
+					: [{ genre: ObjetListe_1.ObjetListe.typeBouton.rechercher }],
 				colonnesCachees: lColonnesCachees,
 			},
 			true,

@@ -7,6 +7,8 @@ exports.StylesPnTheme = {
 	photoEspaceParent: "photoEspaceParent",
 	photoEspaceDirection: "photoEspaceDirection",
 	messagerieNouveauMessage: "messagerieNouveauMessage",
+	btnFloat: "btn-float",
+	primary: "primary",
 	widgetCommunicationMobile: "widgetCommunicationMobile",
 	collectionItem: "collection-item",
 };

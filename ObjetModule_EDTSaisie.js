@@ -2332,10 +2332,14 @@ class ObjetModule_EDTSaisie {
 			return;
 		}
 		let lAvecModif = false;
-		const lAvecEditionListe =
+		const lAvecEditionListe = !!(
 			aParametres.genreRessource ===
 				Enumere_Ressource_1.EGenreRessource.LibelleCours &&
-			this.options.avecRequeteLibelleCours;
+			this.options.avecRequeteLibelleCours &&
+			this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.cours.modifierLibelleCours,
+			)
+		);
 		const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
 			ObjetFenetre_SelectionRessourceCours_1.ObjetFenetre_SelectionRessourceCours,
 			{

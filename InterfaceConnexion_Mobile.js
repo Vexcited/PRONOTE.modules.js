@@ -179,6 +179,11 @@ class InterfaceConnexion_Mobile extends _InterfaceConnexion_1._InterfaceConnexio
 				retourEspace: ObjetTraduction_1.GTraductions.getValeur(
 					"mobile.accederVersionClassique",
 				),
+				accessibiliteConformite: ObjetTraduction_1.GTraductions.getValeur(
+					this.parametresSco.accessibiliteNonConforme
+						? "PiedPage.AccessibiliteNonConformite"
+						: "PiedPage.AccessibiliteConformite",
+				),
 			},
 			options: {
 				titreEtablissement: ObjetChaine_1.GChaine.avecEspaceSiVide(
@@ -196,6 +201,8 @@ class InterfaceConnexion_Mobile extends _InterfaceConnexion_1._InterfaceConnexio
 				afficherCookieInfo: !this.applicationSco.getDemo()
 					? this.afficherCookieInfo()
 					: false,
+				urlDeclarationAccessibilite:
+					this.parametresSco.urlDeclarationAccessibilite || "",
 				urlPolitiqueConfidentialite:
 					this.parametresSco.urlConfidentialite || "",
 			},

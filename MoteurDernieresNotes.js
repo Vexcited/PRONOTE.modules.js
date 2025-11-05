@@ -324,8 +324,9 @@ class MoteurDernieresNotes {
 			);
 			let lLienKiosque;
 			if (!!aDevoir.execKiosque) {
+				const lElm = aDevoir.execKiosque.noteDEleve || aDevoir.execKiosque;
 				lLienKiosque = ObjetChaine_1.GChaine.composerUrlLienExterne({
-					documentJoint: aDevoir.execKiosque,
+					documentJoint: lElm,
 					title: ObjetTraduction_1.GTraductions.getValeur("AfficherCopieEleve"),
 					libelleEcran:
 						ObjetTraduction_1.GTraductions.getValeur("AfficherCopieEleve"),

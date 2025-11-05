@@ -190,7 +190,7 @@ class DonneesListe_EquipePedagogique extends ObjetDonneesListeFlatDesign_1.Objet
 						{ class: "m-bottom-l" },
 						IE.jsx.str(
 							"p",
-							{ "ie-ellipsis": true, class: "ie-titre" },
+							{ class: "ie-titre" },
 							aListeProf.getTableauLibelles().join(", "),
 						),
 						IE.jsx.str(

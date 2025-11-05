@@ -426,6 +426,7 @@ class InterfaceListeRessources_Eleves extends InterfacePage_1.InterfacePage {
 							const lGetHtml = () => strTitreEleves(aInstance);
 							return IE.jsx.str("div", { "ie-html": lGetHtml });
 						},
+						libelleCSV: ObjetTraduction_1.GTraductions.getValeur("Etudiants"),
 					},
 					taille: 90,
 				},
@@ -528,11 +529,17 @@ class InterfaceListeRessources_Eleves extends InterfacePage_1.InterfacePage {
 							const lGetHtml = () => strTitreEleves(aInstance);
 							return IE.jsx.str("div", { "ie-html": lGetHtml });
 						},
+						libelleCSV: ObjetTraduction_1.GTraductions.getValeur("Etudiants"),
 					},
 					taille: "130",
 				},
 				{
 					id: DonneesListe_ListeRessourcesEleves.colonnes.valorisation,
+					titre: {
+						libelleCSV: ObjetTraduction_1.GTraductions.getValeur(
+							"AbsenceVS.titreValorisation",
+						),
+					},
 					taille: 18,
 				},
 				{
@@ -1556,11 +1563,11 @@ class DonneesListe_ListeRessourcesEleves extends ObjetDonneesListe_1.ObjetDonnee
 			case DonneesListe_ListeRessourcesEleves.colonnes.prenom:
 				return aParams.article.prenoms;
 			case DonneesListe_ListeRessourcesEleves.colonnes.valorisation:
-				return lSurExportCSV
-					? aParams.article.infoValorisation
-					: aParams.article.avecValorisation
-						? "icon_valorisation"
-						: "";
+				return aParams.article.avecValorisation
+					? lSurExportCSV
+						? aParams.article.infoValorisation
+						: "icon_valorisation"
+					: "";
 			case DonneesListe_ListeRessourcesEleves.colonnes.neLe:
 				return aParams.article.neLe
 					? ObjetDate_1.GDate.formatDate(aParams.article.neLe, "%JJ/%MM/%AAAA")

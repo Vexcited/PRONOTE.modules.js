@@ -224,9 +224,20 @@ const getHtml = (aParams) => {
 						"div",
 						{
 							class: "AvecMain",
+							role: "button",
+							"aria-haspopup": "dialog",
 							"ie-node": aParams.jsx.jsxNodeOuvrirMentionsLegales,
 						},
 						aParams.traductions.mentionsLegales,
+					),
+				aParams.options.urlDeclarationAccessibilite &&
+					IE.jsx.str(
+						"a",
+						{
+							class: "accessibilite",
+							href: aParams.options.urlDeclarationAccessibilite,
+						},
+						aParams.traductions.accessibiliteConformite,
 					),
 				aParams.options.urlPolitiqueConfidentialite &&
 					IE.jsx.str(

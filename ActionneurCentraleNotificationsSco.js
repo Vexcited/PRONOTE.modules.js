@@ -21,6 +21,10 @@ var TypeIdNotificationSessionHttp;
 		"insh_IdDemandeRemplacements";
 	TypeIdNotificationSessionHttp["insh_IdDocumentASigner"] =
 		"insh_IdDocumentASigner";
+	TypeIdNotificationSessionHttp["insh_IdBilletAModerer"] =
+		"insh_IdBilletAModerer";
+	TypeIdNotificationSessionHttp["insh_IdCommentaireAModerer"] =
+		"insh_IdCommentaireAModerer";
 })(
 	TypeIdNotificationSessionHttp ||
 		(exports.TypeIdNotificationSessionHttp = TypeIdNotificationSessionHttp =
@@ -115,10 +119,10 @@ class ActionneurCentraleNotificationsSco extends ActionneurCentraleNotifications
 				case TypeIdNotificationSessionHttp.insh_IdSujetsForum:
 					lOnglet = Enumere_Onglet_1.EGenreOnglet.ForumPedagogique;
 					break;
-				case TypeIdNotificationSessionHttp.insh_IdDocumentASigner:
+				case TypeIdNotificationSessionHttp.insh_IdDemandeRemplacements:
 					lOnglet = Enumere_Onglet_1.EGenreOnglet.RemplacementsEnseignants;
 					break;
-				case TypeIdNotificationSessionHttp.insh_IdDemandeRemplacements: {
+				case TypeIdNotificationSessionHttp.insh_IdDocumentASigner: {
 					if (
 						[
 							Enumere_Espace_1.EGenreEspace.Parent,

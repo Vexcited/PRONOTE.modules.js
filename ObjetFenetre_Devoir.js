@@ -796,6 +796,18 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 		T.push(
 			`<div class="flex-contain m-bottom-l" ie-if="estVerrouillageVisible">\n            <ie-checkbox ie-model="cbDevoirVerrouille">${ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.Verrouille")}</ie-checkbox>\n            <div class="locked-contain" ie-if="estDevoirVerrouille">\n                <i role="presentation" class="icon_lock locked"></i>\n            </div>\n          </div>`,
 		);
+		if (
+			GEtatUtilisateur.avecRessourcesEnvoiNote &&
+			GEtatUtilisateur.activerKiosqueEnvoiNote
+		) {
+			T.push(
+				'<div id="',
+				this.identZoneKiosque,
+				'" class="flex-contain cols">' +
+					this.composeAssociationDevoirKiosque() +
+					"</div>",
+			);
+		}
 		if (this.avecQCM) {
 			T.push(
 				`<div id="${this.identZoneQCM}">${this.composeAssociationDevoirQCM()}</div>`,
@@ -895,18 +907,6 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 						"...",
 					),
 				),
-			);
-		}
-		if (
-			GEtatUtilisateur.avecRessourcesEnvoiNote &&
-			GEtatUtilisateur.activerKiosqueEnvoiNote
-		) {
-			T.push(
-				'<div id="',
-				this.identZoneKiosque,
-				'" class="flex-contain cols">' +
-					this.composeAssociationDevoirKiosque() +
-					"</div>",
 			);
 		}
 		T.push(this.composeDevoirSurveille());
@@ -1822,6 +1822,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 	addIdentsQCM() {
 		this.identZoneQCM = this.Nom + "_ZoneQCM";
 		this.identDetailQCM = this.Nom + "_DetailQCM";
+		this.identDelaiQCM = this.Nom + "_DelaiQCM";
 		this.identLibelleAssociationQCM = this.Nom + "_LibelleAssocierQCM";
 	}
 	addIdentsKiosque() {
@@ -1873,9 +1874,9 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 		) {
 			T.push('<div class="field-contain">');
 			T.push(
-				'<label class="fix-bloc" id="',
+				'<div class="fix-bloc" id="',
 				this.identLibelleAssociationKiosque,
-				'"></label>',
+				'"></div>',
 			);
 			T.push(
 				IE.jsx.str(
@@ -1923,7 +1924,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 		const T = [];
 		if (this.avecQCM) {
 			T.push(
-				`<div class="field-contain as-grid">\n              <label id="${this.identLibelleAssociationQCM}"></label>`,
+				`<div class="field-contain flex-wrap">\n              <label id="${this.identLibelleAssociationQCM}"></label>`,
 			);
 			if (this.avecModifQCM) {
 				T.push(
@@ -1942,9 +1943,12 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 					),
 				);
 			}
+			T.push(
+				`<div id="${this.identDetailQCM}" class="m-left-l"><ie-btnicon ie-model="btnParametrerQCM" class="icon_cog bt-activable"></ie-btnicon></div>`,
+			);
 			T.push(`</div>`);
 			T.push(
-				`<div id="${this.identDetailQCM}" class="m-bottom-l">\n              <div class="field-contain">\n              <label>${ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.ReponseEleveEntre")}</label>\n                <ie-btnicon ie-model="btnParametrerQCM" class="icon_cog bt-activable"></ie-btnicon>\n              </div>\n              <div id="${this.getNomInstance(this.identDisponibiliteQCM)}"></div>\n            </div>`,
+				`<div id="${this.identDelaiQCM}" class="m-top-l">\n              <label class="m-bottom">${ObjetTraduction_1.GTraductions.getValeur("FenetreDevoir.ReponseEleveEntre")}</label>\n              <div class="field-contain p-bottom-xl">\n                <div id="${this.getNomInstance(this.identDisponibiliteQCM)}"></div>\n              </div>\n            </div>`,
 			);
 		}
 		return T.join("");
@@ -2116,6 +2120,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 		}
 	}
 	actualiserKiosque() {
+		var _a, _b;
 		if (this.devoir) {
 			if (
 				!!this.devoir.execKiosque &&
@@ -2136,6 +2141,14 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 					libelleEcran: ObjetTraduction_1.GTraductions.getValeur(
 						"FenetreDevoir.resultatKiosque",
 					),
+					infoSupp: {
+						urlStat: !!((_b =
+							(_a = this.devoir) === null || _a === void 0
+								? void 0
+								: _a.execKiosque) === null || _b === void 0
+							? void 0
+							: _b.urlStat),
+					},
 				});
 				ObjetHtml_1.GHtml.setHtml(
 					this.identLibelleAssociationKiosque,
@@ -2202,6 +2215,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 				);
 				if (this.avecDetailPublicationQCM && !lExecQCM.estUnTAF) {
 					ObjetStyle_1.GStyle.setDisplay(this.identDetailQCM, true);
+					ObjetStyle_1.GStyle.setDisplay(this.identDelaiQCM, true);
 					this.getInstance(this.identDisponibiliteQCM).setDonnees({
 						dateDebutPublication: lExecQCM.dateDebutPublication,
 						dateFinPublication: lExecQCM.dateFinPublication,
@@ -2210,6 +2224,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 					});
 				} else {
 					ObjetStyle_1.GStyle.setDisplay(this.identDetailQCM, false);
+					ObjetStyle_1.GStyle.setDisplay(this.identDelaiQCM, false);
 				}
 			} else {
 				if (
@@ -2235,6 +2250,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 						),
 					);
 					ObjetStyle_1.GStyle.setDisplay(this.identDetailQCM, false);
+					ObjetStyle_1.GStyle.setDisplay(this.identDelaiQCM, false);
 				}
 			}
 		}
