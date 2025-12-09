@@ -4,10 +4,10 @@ import { removeRecursiveForce } from "./remove-recursive-force";
 
 const EXPORT_REGEX = /},fn:(['"]).*?\1}\);/;
 const REQUIRE_FILENAME_REGEX = /require\((['"])(?<fileName>.*?)\1\);/g;
-const REQUIRE_CSS_REGEX = /require\((['"])([^'")]*?\.css)\1\)/g;
+const REQUIRE_CSS_REGEX =
+  /(const\s+\w+\s*=\s*)?require\((['"])([^'"]*?\.css)\2\);/g;
 
 const biome = new Biome();
-
 export async function processModules(
   modulesDirectory: string
 ): Promise<number> {
@@ -27,7 +27,7 @@ export async function processModules(
       let raw = await Bun.file(`${modulesDirectory}/${fileName}`).text();
 
       // Remove every CSS imports.
-      raw = raw.replace(REQUIRE_CSS_REGEX, "{}");
+      raw = raw.replace(REQUIRE_CSS_REGEX, "");
 
       // Remove spaces at start and end.
       raw = raw.trim();
