@@ -13,12 +13,14 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: vegardit/fast-apt-mirror.sh@v1
+
+      - uses: actions/checkout@v6
         with:
           ref: main
           path: main
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: modules
           path: modules
@@ -32,7 +34,7 @@ jobs:
           wget -O - https://dl.winehq.org/wine-builds/winehq.key | sudo gpg --dearmor -o /etc/apt/keyrings/winehq-archive.key -
           sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/noble/winehq-noble.sources
           sudo apt update
-          sudo apt install --install-recommends winehq-stable 
+          sudo apt install --install-recommends winehq-stable
 
       - name: extract modules
         run: |
@@ -50,7 +52,7 @@ jobs:
       - name: push
         run: |
           cd modules
-          
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
