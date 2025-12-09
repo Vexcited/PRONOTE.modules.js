@@ -1,7 +1,6 @@
 exports.StylesWidgetsDashboard = void 0;
 exports.StylesWidgetsDashboard = {
 	widget: "widget",
-	js: "js",
 	clickable: "clickable",
 	AvecMain: "AvecMain",
 	ctaConteneur: "cta-conteneur",

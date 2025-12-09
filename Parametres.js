@@ -161,7 +161,7 @@ class ObjetParametres extends ObjetParametresCP_1.ObjetParametresCP {
 		this.police = lJGeneral.Police;
 		this.taillePolice = lJGeneral.TaillePolice + "px";
 		this.collectivite = lJGeneral.Collectivite;
-		this.publicationSuiviStageParDefaut = lJGeneral.publicationSuiviStage;
+		this.publicationSuiviStageParDefaut = !!lJGeneral.publicationSuiviStage;
 		if (lJGeneral.maskTelephone) {
 			ObjetChaine_1.GChaine.maskTelephone = lJGeneral.maskTelephone;
 		}

@@ -1,3 +1,1822 @@
-exports.ObjetFenetreRename=exports.ObjetFenetre_DepotDocument=void 0;const Enumere_Etat_1=require("Enumere_Etat");const ObjetFenetre_1=require("ObjetFenetre");const ObjetTraduction_1=require("ObjetTraduction");const ObjetListeElements_1=require("ObjetListeElements");const UtilitaireUrl_1=require("UtilitaireUrl");const Enumere_EvenementObjetSaisie_1=require("Enumere_EvenementObjetSaisie");const Enumere_Ressource_1=require("Enumere_Ressource");const GUID_1=require("GUID");const UtilitaireDocument_1=require("UtilitaireDocument");const MethodesObjet_1=require("MethodesObjet");const Enumere_DocumentJoint_1=require("Enumere_DocumentJoint");const Enumere_BoiteMessage_1=require("Enumere_BoiteMessage");const TypeCasier_1=require("TypeCasier");const ObjetCelluleDate_1=require("ObjetCelluleDate");const ObjetDate_1=require("ObjetDate");const ObjetRequeteCasier_1=require("ObjetRequeteCasier");const ObjetElement_1=require("ObjetElement");const AccessApp_1=require("AccessApp");const ObjetChaine_1=require("ObjetChaine");const ObjetDroitsPN_1=require("ObjetDroitsPN");const ObjetRequeteListePublics_1=require("ObjetRequeteListePublics");const ObjetFenetre_SelectionPublic_PN_1=require("ObjetFenetre_SelectionPublic_PN");const ObjetFenetre_SelectionPublic_1=require("ObjetFenetre_SelectionPublic");const UtilitaireMessagerie_1=require("UtilitaireMessagerie");const ObjetRequeteSaisieCasier_1=require("ObjetRequeteSaisieCasier");const ObjetRequeteJSON_1=require("ObjetRequeteJSON");const Toast_1=require("Toast");const UtilitaireCasier_1=require("UtilitaireCasier");;const ObjetFenetre_ChoixDestinatairesParCriteres_1=require("ObjetFenetre_ChoixDestinatairesParCriteres");const ChoixDestinatairesParCriteres_1=require("ChoixDestinatairesParCriteres");const fonts_css_1=;class ObjetFenetre_DepotDocument extends ObjetFenetre_1.ObjetFenetre{constructor(...aParams){super(...aParams);this.id={ctnPieceJointe:GUID_1.GUID.getId(),selecteurPJ:GUID_1.GUID.getId(),champsObligatoire:GUID_1.GUID.getId(),labelComboCategories:GUID_1.GUID.getId()};this.setOptionsFenetre({avecTailleSelonContenu:true,largeur:400,listeBoutons:[ObjetTraduction_1.GTraductions.getValeur('Annuler'),ObjetTraduction_1.GTraductions.getValeur('Valider')],titre:ObjetTraduction_1.GTraductions.getValeur('Casier.diffuserDocument'),avecComposeBasInFooter:true});this.courant={ligneCourante:null,selectionIN:new ObjetListeElements_1.ObjetListeElements(),selectionOUT:new ObjetListeElements_1.ObjetListeElements()};this.optionsDepot={callbackApresDepot:false,genreSaisie:Enumere_Etat_1.EGenreEtat.Modification,avecChipsApresCreation:true};} getControleur(aInstance){return $.extend(true,super.getControleur(aInstance),{selecteurPJ:{event(){aInstance.surDeposerNouveau(aInstance.Nom);},getOptionsSelecFile(){return UtilitaireDocument_1.UtilitaireDocument.getOptionsSelecFile();},addFiles:function(aParams){if(aParams.eltFichier){aInstance.evenementSurDeposerNouveau(aParams);}},getIcone(){return`icon_piece_jointe`;},getLibelle(){return ObjetTraduction_1.GTraductions.getValeur('Casier.ajouterDoc')+' *';},getClass(){return aInstance._isDisabledPJ()?'is-disabled':'AvecMain';},getAttr(){return{'aria-disabled':aInstance._isDisabledPJ()};},getDisabled(){return aInstance._isDisabledPJ();}},documentCasier(){if(aInstance&&aInstance.document&&aInstance.document.getLibelle().length>0){return IE.jsx.str("div",{id:aInstance.id.ctnPieceJointe},UtilitaireUrl_1.UtilitaireUrl.construireListeUrls(new ObjetListeElements_1.ObjetListeElements().add(aInstance.document),{IEModelChips:'chipsPJ',class:'ie-ellipsis'}));} return'';},chipsPJ:{eventBtn:function(){aInstance.documentJoint=null;aInstance.document.documentCasier=null;aInstance.document.Libelle='';}.bind(aInstance)},btnRename:{event:async() =>{const lLibelle=await ObjetFenetreRename.ouvrir(aInstance.document.getLibelle(),this);if(lLibelle){aInstance.document.setLibelle(lLibelle);}},getDisabled(){return!(aInstance._isDisabledPJ());},if(){const lEstPasUnDocumentCloud=aInstance.document&&aInstance.document.documentCasier&&aInstance.document.documentCasier.Genre!==Enumere_DocumentJoint_1.EGenreDocumentJoint.Cloud;return aInstance._isDisabledPJ()&&lEstPasUnDocumentCloud;}},comboCategories:{init(aCombo){aCombo.setOptionsObjetSaisie({ariaLabelledBy:aInstance.id.labelComboCategories,required:true,getContenuElement:function(aParams){return IE.jsx.str("div",{class:"libelle ie-line-color",style:{'--color-line':aParams.element.couleur}},aParams.element.getLibelle());}});aCombo.setOptionsObjetSaisie({placeHolder:ObjetTraduction_1.GTraductions.getValeur('Casier.choisirUneCategorie')});},getDonnees(){if(aInstance.listeCategories){return aInstance.listeCategories;}},event(aParam){if(aParam.genreEvenement===Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie.selection&&aParam.element){aInstance.document.categorie=aParam.element;}},getIndiceSelection(){let lIndice= -1;if(aInstance&&aInstance.document&&aInstance.document.categorie){const lResult=aInstance.listeCategories.getIndiceElementParFiltre(aElement => aElement.getNumero()===aInstance.document.categorie.getNumero());if(lResult>=0){lIndice=lResult;}} return lIndice;}},inputMemo:{getValue(){return aInstance.document?aInstance.document.memo:'';},setValue(aValue){aInstance.document.memo=aValue;}},selecteurPersonnels:{getIconeHtml(){if(aInstance.document&&'avecEnvoiGroupePersonnel' in aInstance.document&&aInstance.document.avecEnvoiGroupePersonnel){return IE.jsx.str("i",{role:"presentation",class:"icon_group",title:ObjetTraduction_1.GTraductions.getValeur('Casier.deposeNouveauPersonnel')});} else{return aInstance.getIconeSelecteur();}},event(){aInstance.surSelectionRessource({genreRessource:Enumere_Ressource_1.EGenreRessource.Personnel,article:aInstance.document,avecDepotGroupe:aInstance.document&&'avecEnvoiGroupePersonnel' in aInstance.document&&aInstance.document.avecEnvoiGroupePersonnel});},getLibelle(){if(aInstance&&aInstance.document&&'infoPersonnel' in aInstance.document&&aInstance.document.infoPersonnel>0){return`${ObjetTraduction_1.GTraductions.getValeur('Casier.personnels')} (${aInstance.document.infoPersonnel})`;} return'';}},selecteurProfesseurs:{getIconeHtml(){if(aInstance.document&&'avecEnvoiGroupeProfesseur' in aInstance.document&&aInstance.document.avecEnvoiGroupeProfesseur){return IE.jsx.str("i",{role:"presentation",class:"icon_group",title:ObjetTraduction_1.GTraductions.getValeur('Casier.deposeNouveauProfesseur')});} else{return aInstance.getIconeSelecteur();}},event(){aInstance.surSelectionRessource({genreRessource:Enumere_Ressource_1.EGenreRessource.Enseignant,article:aInstance.document,avecDepotGroupe:'avecEnvoiGroupeProfesseur' in aInstance.document&&aInstance.document.avecEnvoiGroupeProfesseur});},getLibelle(){if(aInstance&&aInstance.document&&'infoProfesseur' in aInstance.document&&aInstance.document.infoProfesseur>0){return`${ObjetTraduction_1.GTraductions.getValeur('Casier.professeurs')} (${aInstance.document.infoProfesseur})`;} return'';}},selecteurMaitreDeStage:{event(){aInstance.surSelectionRessource({genreRessource:Enumere_Ressource_1.EGenreRessource.MaitreDeStage,article:aInstance.document,avecDepotGroupe:aInstance.document&&'avecEnvoiGroupeMaitreDeStage' in aInstance.document&&aInstance.document.avecEnvoiGroupeMaitreDeStage});},getLibelle(){if(aInstance&&aInstance.document&&'infoMaitreDeStage' in aInstance.document&&aInstance.document.infoMaitreDeStage>0){return`${ObjetTraduction_1.GTraductions.getValeur('Casier.maitresDeStage')} (${aInstance.document.infoMaitreDeStage})`;} return'';},avecSelecteur(){return!ObjetFenetre_DepotDocument.etatUtilisateurSco.pourPrimaire()&&aInstance.estIntervenant()&&!ObjetFenetre_DepotDocument.applicationSco.estEDT;}},selecteurEquipePedagogique:{event(){aInstance.surSelectionRessource({genreRessource:Enumere_Ressource_1.EGenreRessource.Classe,article:aInstance.document,avecDepotGroupe:'avecEnvoiGroupeClasse' in aInstance.document&&aInstance.document.avecEnvoiGroupeClasse});},getLibelle(){if(aInstance&&aInstance.document&&'infoEquipePedagogique' in aInstance.document&&aInstance.document.infoEquipePedagogique>0){return`${ObjetTraduction_1.GTraductions.getValeur('Casier.equipePedagogique')} (${aInstance.document.infoEquipePedagogique})`;} return'';}},selecteurResponsables:{getIconeHtml(){var _a,_b;if(UtilitaireCasier_1.UtilitaireCasier.isObjetElementDepositaireResponsable(aInstance.document)&&((_b=(_a=aInstance.document.destinataires)===null||_a===void 0?void 0:_a.responsables)===null||_b===void 0?void 0:_b.typeChoixTelechargement)===ChoixDestinatairesParCriteres_1.TypeChoixTelechargementDoc.CTD_Tous){return IE.jsx.str("i",{role:"presentation",class:"icon_group",title:ObjetTraduction_1.GTraductions.getValeur('Casier.deposeNouveauResponsable')});} else{return aInstance.getIconeSelecteur();}},event(){aInstance.surSelectionRessource({genreRessource:Enumere_Ressource_1.EGenreRessource.Responsable,article:aInstance.document});},getLibelle(){return aInstance.getLibelleSelecteurResponsable(Enumere_Ressource_1.EGenreRessource.Responsable);}},selecteurEleves:{getIconeHtml(){var _a,_b;if(UtilitaireCasier_1.UtilitaireCasier.isObjetElementDepositaireResponsable(aInstance.document)&&((_b=(_a=aInstance.document.destinataires)===null||_a===void 0?void 0:_a.eleves)===null||_b===void 0?void 0:_b.typeChoixTelechargement)===ChoixDestinatairesParCriteres_1.TypeChoixTelechargementDoc.CTD_Tous){return IE.jsx.str("i",{role:"presentation",class:"icon_group",title:ObjetTraduction_1.GTraductions.getValeur('Casier.deposeNouveauResponsable')});} else{return aInstance.getIconeSelecteur();}},event(){aInstance.surSelectionRessource({genreRessource:Enumere_Ressource_1.EGenreRessource.Eleve,article:aInstance.document});},getLibelle(){return aInstance.getLibelleSelecteurResponsable(Enumere_Ressource_1.EGenreRessource.Eleve);}},autorisationModifCB:{getValue:function(){return aInstance&&aInstance.document&&aInstance.document.estModifiableParDestinataires;},setValue:function(){aInstance.document.estModifiableParDestinataires=!aInstance.document.estModifiableParDestinataires;}},estResponsable(){return aInstance.estResponsable();},estIntervenant(){return aInstance.estIntervenant();},supprimer:{event:async() =>{await aInstance.supprimerDocument();aInstance.fermer();},avecBtn(){return aInstance.avecFct&&aInstance.avecFct.suppressionDoc&&aInstance.optionsDepot.genreSaisie===Enumere_Etat_1.EGenreEtat.Modification;}},selecteurDate:{dateDebut(){return{class:ObjetCelluleDate_1.ObjetCelluleDate,pere:aInstance,start(aInstanceDate){if(aInstanceDate&&aInstance.document&&'dateDebut' in aInstance.document&&aInstance.document.dateDebut){aInstanceDate.setDonnees(aInstance.document.dateDebut);}},init(aInstanceDate){aInstance.identDateDebut=aInstanceDate;aInstanceDate.setOptionsObjetCelluleDate({placeHolder:ObjetTraduction_1.GTraductions.getValeur('Casier.dateDeDebut'),largeurComposant:IE.estMobile?undefined:100});aInstance.initDate(aInstanceDate);},evenement:aInstance.evenementDateDebut.bind(aInstance)};},dateFin(){return{class:ObjetCelluleDate_1.ObjetCelluleDate,pere:aInstance,start(aInstanceDate){if(aInstanceDate&&aInstance.document&&'dateFin' in aInstance.document&&aInstance.document.dateFin){aInstanceDate.setDonnees(aInstance.document.dateFin);}},init(aInstanceDate){aInstance.identDateFin=aInstanceDate;aInstanceDate.setOptionsObjetCelluleDate({placeHolder:ObjetTraduction_1.GTraductions.getValeur('Casier.dateDeFin'),largeurComposant:IE.estMobile?undefined:100});aInstance.initDate(aInstanceDate);},evenement:aInstance.evenementDateFin.bind(aInstance)};}},pourDirecteurCB:{avecCB(){return ObjetFenetre_DepotDocument.etatUtilisateurSco.pourPrimaire()&&aInstance.estIntervenant();},getValue(){let lValue=false;if(aInstance&&aInstance.document&&'avecEnvoiDirecteur' in aInstance.document){lValue=aInstance.document.avecEnvoiDirecteur;} return lValue;},setValue(){if(aInstance&&aInstance.document&&'avecEnvoiDirecteur' in aInstance.document){aInstance.document.avecEnvoiDirecteur=!aInstance.document.avecEnvoiDirecteur;}}}});} getIconeSelecteur(){const lClass=fonts_css_1.StylesFonts.icon_ellipsis_horizontal;return IE.jsx.str("i",{role:"presentation",class:lClass});} getLibelleSelecteurResponsable(aGenreRessource){var _a,_b,_c,_d;if(UtilitaireCasier_1.UtilitaireCasier.isObjetElementDepositaireResponsable(this.document)){const lDestinataires=aGenreRessource===Enumere_Ressource_1.EGenreRessource.Responsable?(_b=(_a=this.document)===null||_a===void 0?void 0:_a.destinataires)===null||_b===void 0?void 0:_b.responsables:(_d=(_c=this.document)===null||_c===void 0?void 0:_c.destinataires)===null||_d===void 0?void 0:_d.eleves;return UtilitaireCasier_1.UtilitaireCasier.getLibelleSelecteurRessource(lDestinataires,aGenreRessource);} return'';} async afficherFenetre(){return await this.afficher(this.composeContenu());} setDonnees(aParams){this.avecFct=aParams.avecFct;this.typeConsultation=aParams.typeConsultation;this.documentOriginal=aParams.document;this.document=MethodesObjet_1.MethodesObjet.dupliquer(aParams.document);this.document.setEtat(this.optionsDepot.genreSaisie);this.documentJoint=aParams.documentJoint||null;this.listeCategories=aParams.listeCategories?aParams.listeCategories:new ObjetListeElements_1.ObjetListeElements();this.criteres=aParams.criteres;if(this.optionsDepot.genreSaisie===Enumere_Etat_1.EGenreEtat.Creation){this.setOptionsFenetre({titre:ObjetTraduction_1.GTraductions.getValeur('Casier.titreFenetreSaisieCreation')});} if(this.optionsDepot.genreSaisie===Enumere_Etat_1.EGenreEtat.Modification){this.setOptionsFenetre({titre:ObjetTraduction_1.GTraductions.getValeur('Casier.titreFenetreSaisieEdition')});} return this;} static async ouvrir(aParams){aParams=Object.assign({avecOuverturePjAuLancement:false,avecChipsApresCreation:true,avecSuppresionDoc:false},aParams);aParams.avecOuverturePjAuLancement=aParams.avecOuverturePjAuLancement&&aParams.genreSaisie===Enumere_Etat_1.EGenreEtat.Creation;if(![TypeCasier_1.TypeConsultationDocumentCasier.CoDC_Depositaire,TypeCasier_1.TypeConsultationDocumentCasier.CoDC_DepResponsable].includes(aParams.typeConsultation)){return;} if((aParams.typeConsultation===TypeCasier_1.TypeConsultationDocumentCasier.CoDC_Depositaire&&!ObjetFenetre_DepotDocument.avecDroitSaisieIntervenant())||(aParams.typeConsultation===TypeCasier_1.TypeConsultationDocumentCasier.CoDC_DepResponsable&&!ObjetFenetre_DepotDocument.avecDroitSaisieResponsable())){} const lFenetre=ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(ObjetFenetre_DepotDocument,{pere:this,evenement:(aParamEvenementFenetre) =>{if(aParamEvenementFenetre.genreEvenement===ObjetFenetre_DepotDocument.EGenreEvenementDepotDoc.apresDepotDocument){lFenetre.afficher();} switch(aParamEvenementFenetre.genreEvenement){case ObjetFenetre_DepotDocument.EGenreEvenementDepotDoc.apresDepotDocument:lFenetre.afficher();break;case ObjetFenetre_DepotDocument.EGenreEvenementDepotDoc.apresCreationEdition:if(aParams.callbackApresEdition){aParams.callbackApresEdition(aParamEvenementFenetre.typeConsultation);} break;}},initialiser(aFenetre){aFenetre.setOptionsDepot({genreSaisie:aParams.genreSaisie,callbackApresDepot:aParams.avecOuverturePjAuLancement,avecChipsApresCreation:aParams.avecChipsApresCreation});}});lFenetre.setDonnees({documentJoint:aParams.document,listeCategories:aParams.categories,document:aParams.document,typeConsultation:aParams.typeConsultation,criteres:aParams.criteres,avecFct:{suppressionDoc:aParams.avecSuppresionDoc}});if(aParams.avecOuverturePjAuLancement){lFenetre.surDeposerNouveau(lFenetre.getNom());} else{lFenetre.afficherFenetre();}} static async ouvrirCreation(aTypeConsultation,aSelectionDestinataires){let lDoc=aTypeConsultation===TypeCasier_1.TypeConsultationDocumentCasier.CoDC_Depositaire?ObjetFenetre_DepotDocument.getDocumentCasierPourIntervenant(aSelectionDestinataires):ObjetFenetre_DepotDocument.getDocumentCasierPourResponsable(aSelectionDestinataires);const lParams={genreSaisie:Enumere_Etat_1.EGenreEtat.Creation,typeConsultation:aTypeConsultation,document:lDoc,avecChipsApresCreation:true,avecSuppresionDoc:false,categories:new ObjetListeElements_1.ObjetListeElements()};switch(aTypeConsultation){case TypeCasier_1.TypeConsultationDocumentCasier.CoDC_DepResponsable:{const lCategoriesEtCriteres=await this.getCategoriesCasierEtCriteres();lParams.criteres=UtilitaireCasier_1.UtilitaireCasier.formatCriteres(lCategoriesEtCriteres.criteres);lParams.categories=lCategoriesEtCriteres.categories;break;} case TypeCasier_1.TypeConsultationDocumentCasier.CoDC_Depositaire:{lParams.categories=await this.getCategoriesCasier();break;} default:;break;} ObjetFenetre_DepotDocument.ouvrir(lParams);} static async getCategoriesCasier(){const lJson=await new ObjetRequeteCasier_1.ObjetRequeteCasier(this).lancerRequete({genreRequeteCasier:ObjetRequeteCasier_1.TypeGenreRequeteCasier.GRC_ListeCategorieCasier});return lJson.categories;} static async getCategoriesCasierEtCriteres(){const lJson=await new ObjetRequeteCasier_1.ObjetRequeteCasier(this).lancerRequete({genreRequeteCasier:ObjetRequeteCasier_1.TypeGenreRequeteCasier.GRC_ListeCriteresEtCategoriesCasier});return{categories:lJson.categories,criteres:lJson.criteres};} static avecDroitSaisieIntervenant(){return!!ObjetFenetre_DepotDocument.applicationSco.droits.get(ObjetDroitsPN_1.TypeDroits.casierNumerique.avecSaisieDocumentsCasiersIntervenant);} static avecDroitSaisieResponsable(){return!!ObjetFenetre_DepotDocument.applicationSco.droits.get(ObjetDroitsPN_1.TypeDroits.casierNumerique.avecSaisieDocumentsCasiersResponsable);} static avecDroitCommunicationToutesLesClasses(){return!!ObjetFenetre_DepotDocument.applicationSco.droits.get(ObjetDroitsPN_1.TypeDroits.communication.toutesClasses);} async supprimerDocument(){if(this.document){this.document.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);await this.requeteSaisie();}} surDeposerNouveau(aId){const lOptions={idCtn:aId};const lOptionsFichierCloud={avecMonoSelection:true};if(this.optionsDepot.genreSaisie===Enumere_Etat_1.EGenreEtat.Modification){const lEstCloud=this.documentOriginal.documentCasier.Genre===Enumere_DocumentJoint_1.EGenreDocumentJoint.Cloud;const lEstFichier=this.documentOriginal.documentCasier.Genre===Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier;lOptions.avecFichierDepuisCloud=lEstCloud;lOptions.avecFichierDepuisDocument=lEstFichier;if(lEstCloud){lOptions.fenetreFichierCloud=lOptionsFichierCloud;}} else{lOptions.fenetreFichierCloud=lOptionsFichierCloud;} lOptions.avecFichierDepuisCloud=GEtatUtilisateur.avecCloudDisponibles();UtilitaireDocument_1.UtilitaireDocument.ouvrirFenetreChoixTypeDeFichierADeposer.call(this,this.evenementSurDeposerNouveau.bind(this),lOptions);} setLibelleDocumentCasier(aValue){this.document.documentCasier.setLibelle(aValue);} setOptionsDepot(aOptionsDepot){Object.assign(this.optionsDepot,aOptionsDepot);} composeContenu(){if(!this.document){return'';} return(IE.jsx.str("section",null,IE.jsx.str("p",{class:"ie-titre-petit m-bottom-xl italic",id:this.id.champsObligatoire},"* ",ObjetTraduction_1.GTraductions.getValeur('Casier.champsObligatoire')),IE.jsx.str("article",{class:"field-contain flex-contain cols border-bottom"},IE.jsx.str("div",{class:"full-width m-bottom"},IE.jsx.str("ie-btnselecteur",{"ie-model":"selecteurPJ",role:"button",class:"pj",id:this.id.selecteurPJ,"aria-labelledby":this.id.champsObligatoire,"aria-required":'true',"ie-class":"selecteurPJ.getClass",tabindex:"0","ie-attr":"selecteurPJ.getAttr"}),IE.jsx.str("div",{class:"pj-liste-conteneur","ie-html":"documentCasier"})),IE.jsx.str("div",{"ie-if":"btnRename.if",class:['flex-contain','full-width','justify-end','m-y-l']},IE.jsx.str("ie-bouton",{"ie-model":"btnRename",class:"small-bt themeBoutonNeutre"},ObjetTraduction_1.GTraductions.getValeur('Casier.renommerLeDocument')))),IE.jsx.str("article",{class:"field-contain label-up"},IE.jsx.str("label",{class:"fix-bloc only-mobile",id:this.id.labelComboCategories},ObjetTraduction_1.GTraductions.getValeur('Casier.nature')," * : "),IE.jsx.str("ie-combo",{"ie-model":"comboCategories","aria-required":'true',class:['combo-sans-fleche',IE.estMobile&&'full-width']})),IE.jsx.str("article",{class:"field-contain label-up"},IE.jsx.str("label",{class:"fix-bloc only-mobile"},ObjetTraduction_1.GTraductions.getValeur('Casier.Colonne.Memo')," : "),IE.jsx.str("ie-textareamax",{"ie-model":"inputMemo","aria-label":ObjetTraduction_1.GTraductions.getValeur('Casier.Colonne.Memo'),style:{minHeight:!IE.estMobile&&'7rem'},placeholder:ObjetTraduction_1.GTraductions.getValeur('Casier.ajouterUnCommentaire'),maxlength:"10000"})),IE.jsx.str("article",{class:"field-contain flex-contain cols label-up"},IE.jsx.str("label",{class:"ie-titre-petit"},ObjetTraduction_1.GTraductions.getValeur('Casier.destinataires')," : "),IE.jsx.str("div",{class:"flex-contain cols flex-gap-l"},IE.jsx.str("ie-btnselecteur",{"aria-label":ObjetTraduction_1.GTraductions.getValeur('Casier.WAI.listeProfesseurs'),"ie-model":"selecteurProfesseurs",placeholder:ObjetTraduction_1.GTraductions.getValeur('Casier.professeurs'),"ie-if":"estIntervenant"}),IE.jsx.str("ie-btnselecteur",{"aria-label":ObjetTraduction_1.GTraductions.getValeur('Casier.WAI.listePersonnels'),"ie-model":"selecteurPersonnels",placeholder:ObjetTraduction_1.GTraductions.getValeur('Casier.personnels'),"ie-if":"estIntervenant"}),IE.jsx.str("ie-btnselecteur",{"aria-label":ObjetTraduction_1.GTraductions.getValeur('Casier.WAI.listeEquipePedagogique'),"ie-model":"selecteurEquipePedagogique",placeholder:ObjetTraduction_1.GTraductions.getValeur('Casier.equipePedagogique'),"ie-if":"estIntervenant"}),IE.jsx.str("ie-btnselecteur",{"aria-label":ObjetTraduction_1.GTraductions.getValeur('Casier.WAI.listeMaitreDeStage'),"ie-model":"selecteurMaitreDeStage",placeholder:ObjetTraduction_1.GTraductions.getValeur('Casier.maitresDeStage'),"ie-if":"selecteurMaitreDeStage.avecSelecteur"}),IE.jsx.str("ie-btnselecteur",{"aria-label":ObjetTraduction_1.GTraductions.getValeur('Casier.WAI.listeResponsables'),"ie-model":"selecteurResponsables",placeholder:ObjetTraduction_1.GTraductions.getValeur('Casier.choixResponsables'),"ie-if":"estResponsable"}),IE.jsx.str("ie-btnselecteur",{"aria-label":ObjetTraduction_1.GTraductions.getValeur('Casier.WAI.listeEleves'),"ie-model":"selecteurEleves",placeholder:ObjetTraduction_1.GTraductions.getValeur('Casier.choixEleves'),"ie-if":"estResponsable"}),IE.jsx.str("ie-checkbox",{"ie-model":"pourDirecteurCB","ie-if":"pourDirecteurCB.avecCB"},ObjetTraduction_1.GTraductions.getValeur('Casier.ajouterDirecteurDeLEcole')))),IE.jsx.str("article",{class:"field-contain flex-contain cols label-up","ie-if":"estResponsable"},IE.jsx.str("label",{class:"ie-titre-petit"},ObjetTraduction_1.GTraductions.getValeur('Casier.dateDePublication')," : "),IE.jsx.str("div",{class:"periode-contain ctn-date"},IE.jsx.str("p",null,ObjetTraduction_1.GTraductions.getValeur('Du').ucfirst()),IE.jsx.str("div",{"ie-identite":"selecteurDate.dateDebut"}),IE.jsx.str("p",null,ObjetTraduction_1.GTraductions.getValeur('Au').toLowerCase()),IE.jsx.str("div",{"ie-identite":"selecteurDate.dateFin"}))),IE.jsx.str("article",{class:"field-contain"},IE.jsx.str("ie-checkbox",{"ie-if":"estIntervenant",class:"long-text","ie-model":"autorisationModifCB"},ObjetTraduction_1.GTraductions.getValeur('Casier.AutorisationModification')))));} composeBas(){return(IE.jsx.str("div",{class:"compose-bas"},IE.jsx.str("ie-btnicon",{class:"icon_trash avecFond i-medium",title:ObjetTraduction_1.GTraductions.getValeur('Supprimer'),"ie-if":"supprimer.avecBtn","ie-model":"supprimer"})));} evenementSurDeposerNouveau(aParams){this.document.setLibelle(aParams.eltFichier.getLibelle());this.document.documentCasier=aParams.eltFichier;this.documentJoint=aParams.eltFichier;if(this.optionsDepot.callbackApresDepot){this.callback.appel({genreEvenement:ObjetFenetre_DepotDocument.EGenreEvenementDepotDoc.apresDepotDocument});}} surSelectionRessource(aParams){const lParam={liste:null,genre:aParams.genreRessource,avecDepotGroupe:aParams.avecDepotGroupe};switch(aParams.genreRessource){case Enumere_Ressource_1.EGenreRessource.Responsable:case Enumere_Ressource_1.EGenreRessource.Eleve:if(UtilitaireCasier_1.UtilitaireCasier.isObjetElementDepositaireResponsable(aParams.article)){this.ouvrirFenetreChoixDestinataires(aParams.article,aParams.genreRessource);} return;case Enumere_Ressource_1.EGenreRessource.Personnel:if(UtilitaireCasier_1.UtilitaireCasier.isObjetElementDepositaire(aParams.article)){lParam.liste=aParams.article.listePersonnels;} break;case Enumere_Ressource_1.EGenreRessource.Enseignant:if(UtilitaireCasier_1.UtilitaireCasier.isObjetElementDepositaire(aParams.article)){lParam.liste=aParams.article.listeProfesseurs;} break;case Enumere_Ressource_1.EGenreRessource.MaitreDeStage:if(UtilitaireCasier_1.UtilitaireCasier.isObjetElementDepositaire(aParams.article)){lParam.liste=aParams.article.listeMaitreStage;} break;case Enumere_Ressource_1.EGenreRessource.Classe:if(UtilitaireCasier_1.UtilitaireCasier.isObjetElementDepositaire(aParams.article)){lParam.liste=aParams.article.listeEquipesPedagogique;} break;default:return;} if(!('avecDepotGroupe' in lParam)){return;} if(lParam.liste){this.requeteListePublics(lParam);this.courant.ligneCourante=aParams.article;}} async ouvrirFenetreChoixDestinataires(aArticle,aGenreRessource){var _a,_b;const lEstResponsable=aGenreRessource===Enumere_Ressource_1.EGenreRessource.Responsable;const lTitre=lEstResponsable?ObjetTraduction_1.GTraductions.getValeur('Casier.TitreFenetreDestResponsables'):ObjetTraduction_1.GTraductions.getValeur('Casier.TitreFenetreElevesResponsables');const lFenetre=ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(ObjetFenetre_ChoixDestinatairesParCriteres_1.ObjetFenetre_ChoixDestinatairesParCriteres,{pere:this},{titre:lTitre});lFenetre.setTextePersonnalisable({choixCritereDisponibilite:ObjetTraduction_1.GTraductions.getValeur('Casier.choixCritereDisponibilite',[
-ObjetFenetre_ChoixDestinatairesParCriteres_1.ObjetFenetre_ChoixDestinatairesParCriteres.getLibelleRessource(aGenreRessource),UtilitaireCasier_1.UtilitaireCasier.getLibelleEspace(aGenreRessource)
-])});lFenetre.setOptionsDestinatairesParCriteres({avecLibelleEnfantsDansTotalIndiv:lEstResponsable});const lDestinataire=lEstResponsable?aArticle.destinataires.responsables:aArticle.destinataires.eleves;const lCriteresDisponibles=new Map();const lCriteres=new Map();if(!(((_a=lDestinataire===null||lDestinataire===void 0?void 0:lDestinataire.listeGenresIndivAssocieAuCriteres)===null||_a===void 0?void 0:_a.length)>0)){return;} lDestinataire.listeGenresIndivAssocieAuCriteres.forEach(aGenre =>{lCriteresDisponibles.set(aGenre,this.criteres.get(aGenre));lCriteres.set(aGenre,new Map());});const lParams={genreRessource:aGenreRessource,choix:lDestinataire.typeChoixTelechargement,genreDocumentTelechargeable:ChoixDestinatairesParCriteres_1.TypeGenreDocumentTelechargeable.TDT_DocumentCasier,criteresDisponibles:lCriteresDisponibles,listeGenresIndivAssocieAuCriteres:lDestinataire.listeGenresIndivAssocieAuCriteres,genreIndivAssocieAuCriteresSelectionne:lDestinataire.genreIndivAssocieAuCriteresSelectionne};switch(lDestinataire.typeChoixTelechargement){case ChoixDestinatairesParCriteres_1.TypeChoixTelechargementDoc.CTD_Nominatif:if(lDestinataire.listeDestinataires){lParams.listeRessourceSelectionnee=lDestinataire.listeDestinataires;} break;case ChoixDestinatairesParCriteres_1.TypeChoixTelechargementDoc.CTD_Critere:if(lDestinataire.listeCriteres){(_b=lDestinataire.listeCriteres)===null||_b===void 0?void 0:_b.forEach(aCritere =>{var _a,_b;const lCritere=lCriteres.get(aCritere.genreIndivAssocieAuCriteres);lCritere.set(aCritere.genre,{liste:(_a=aCritere.listeElements)!==null&&_a!==void 0?_a:new ObjetListeElements_1.ObjetListeElements(),value:(_b=aCritere.value)!==null&&_b!==void 0?_b:true,genreIndivAssocieAuCriteres:aCritere.genreIndivAssocieAuCriteres});});lParams.criteres=lCriteres;} break;} const lRes=await(lFenetre===null||lFenetre===void 0?void 0:lFenetre.setDonnees(lParams));if(lRes.numeroBouton===1){lDestinataire.typeChoixTelechargement=lRes.choix;let lListeDestinataires=new ObjetListeElements_1.ObjetListeElements();let lListeCriteres=[];switch(true){case ObjetFenetre_ChoixDestinatairesParCriteres_1.ObjetFenetre_ChoixDestinatairesParCriteres.isResolveNominativement(lRes):lListeDestinataires=lRes.listeRessourceSelectionnee;break;case ObjetFenetre_ChoixDestinatairesParCriteres_1.ObjetFenetre_ChoixDestinatairesParCriteres.isResolveCriteres(lRes):lListeCriteres=Array.from(lRes.criteres).map(([aGenre,aInfos]) =>{return{listeElements:aInfos.liste,genre:aGenre,value:aInfos.value,genreIndivAssocieAuCriteres:aInfos.genreIndivAssocieAuCriteres};});lDestinataire.genreIndivAssocieAuCriteresSelectionne=lRes.genreIndivAssocieAuCriteres;break;} lDestinataire.listeDestinataires=lListeDestinataires;lDestinataire.listeCriteres=lListeCriteres;}} requeteListePublics(aParams){const lParams={genres:[aParams.genre],avecFonctionPersonnel:true};if(aParams.sansFiltreSurEleve){lParams.sansFiltreSurEleve=true;} new ObjetRequeteListePublics_1.ObjetRequeteListePublics(this).lancerRequete(lParams).then(aDonnees => this.reponseRequeteListePublics(aDonnees,aParams));} async requeteSaisie(){const lParamsAddUpload={listeFichiers:new ObjetListeElements_1.ObjetListeElements()};if(this.documentJoint){const lEstDocumentCloud=this.documentJoint.getGenre()===Enumere_DocumentJoint_1.EGenreDocumentJoint.Cloud;if(lEstDocumentCloud){lParamsAddUpload.listeDJCloud=new ObjetListeElements_1.ObjetListeElements().add(this.documentJoint);} else{lParamsAddUpload.listeFichiers.add(this.documentJoint);}} const lRes=await new ObjetRequeteSaisieCasier_1.ObjetRequeteSaisieCasier(this).addUpload(lParamsAddUpload).lancerRequete({typeConsultation:this.typeConsultation,listeLignes:new ObjetListeElements_1.ObjetListeElements().add(this.document),genreSaisie:ObjetRequeteSaisieCasier_1.ObjetRequeteSaisieCasier.EGenreSaisie.saisieCasier});if(this.optionsDepot.avecChipsApresCreation&&this.optionsDepot.genreSaisie===Enumere_Etat_1.EGenreEtat.Creation&&lRes.genreReponse===ObjetRequeteJSON_1.EGenreReponseSaisie.succes){Toast_1.Toast.afficher({msg:ObjetTraduction_1.GTraductions.getValeur('Casier.documentDepose'),type:Toast_1.ETypeToast.succes});}} reponseRequeteListePublics(aDonnees,aParams){this.courant.selectionIN=new ObjetListeElements_1.ObjetListeElements();aDonnees.listePublic.parcourir(aElem =>{aElem.aSupprimeDoc=false;});aParams.liste.parcourir(aElem =>{if(aElem.existe()){this.courant.selectionIN.addElement(MethodesObjet_1.MethodesObjet.dupliquer(aElem));} if(aElem.aSupprimeDoc){let lElt2=aDonnees.listePublic.getElementParNumero(aElem.getNumero());if(lElt2){lElt2.aSupprimeDoc=true;}}});const lGenreRessource=aDonnees.genres[0];const lListeCoche=MethodesObjet_1.MethodesObjet.dupliquer(this.courant.selectionIN);let lLibelleDepotGroupe;switch(lGenreRessource){case Enumere_Ressource_1.EGenreRessource.Personnel:lLibelleDepotGroupe=ObjetTraduction_1.GTraductions.getValeur('Casier.deposerNouveauPersonnel');break;case Enumere_Ressource_1.EGenreRessource.Enseignant:lLibelleDepotGroupe=ObjetTraduction_1.GTraductions.getValeur('Casier.deposerNouveauProfesseur');break;case Enumere_Ressource_1.EGenreRessource.MaitreDeStage:lLibelleDepotGroupe=ObjetTraduction_1.GTraductions.getValeur('Casier.deposerNouveauMaitre');break;} let lGenreCumul=null;const lListeCumuls=new ObjetListeElements_1.ObjetListeElements();if(lGenreRessource===Enumere_Ressource_1.EGenreRessource.Personnel){lListeCumuls.add(new ObjetElement_1.ObjetElement(ObjetTraduction_1.GTraductions.getValeur('Fenetre_SelectionPublic.Cumul.Aucun'),0,ObjetFenetre_SelectionPublic_1.TypeGenreCumulSelectionPublic.sans,0));lListeCumuls.add(new ObjetElement_1.ObjetElement(ObjetTraduction_1.GTraductions.getValeur('actualites.Cumul.Fonction'),0,ObjetFenetre_SelectionPublic_1.TypeGenreCumulSelectionPublic.fonction,1));} this.fenetreSelectionPublic=ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(ObjetFenetre_SelectionPublic_PN_1.ObjetFenetre_SelectionPublic_PN,{pere:this,initialiser(aInstance){aInstance.setListeCumuls(lListeCumuls);if(lGenreCumul){aInstance.setGenreCumulActif(lGenreCumul);} if(lGenreRessource===Enumere_Ressource_1.EGenreRessource.Personnel){aInstance.setOptionsFenetreSelectionRessource({getInfosSuppZonePrincipale(aParams){return aInstance.getGenreCumul()!==ObjetFenetre_SelectionPublic_1.TypeGenreCumulSelectionPublic.fonction?UtilitaireMessagerie_1.UtilitaireMessagerie.getLibelleSuppListePublics(aParams.article):'';}});} aInstance.setSelectionObligatoire(false);aInstance.setOptionsFenetreSelectionRessource({avecCocheRessources:true,getClassRessource:function(D){return D.aSupprimeDoc?'Italique color-neutre-sombre':'';},getHintRessource:function(D){return D.aSupprimeDoc?ObjetTraduction_1.GTraductions.getValeur('Casier.HintDocSupprime'):'';}});},evenement(aGenreRessource,aListeRessourcesSelectionnees,aNumeroBouton){if(aNumeroBouton>0){const lListeOut=new ObjetListeElements_1.ObjetListeElements();let lValeurDepotGroupe=false;aListeRessourcesSelectionnees.parcourir(aRessource =>{if(!aRessource.estDepotgroupe){lListeOut.add(aRessource);} else{lValeurDepotGroupe=true;}});this.courant.selectionOUT=lListeOut;const lIn=this.courant.selectionIN;let lListeDonnees;let lLigne=this.courant.ligneCourante;switch(aGenreRessource){case Enumere_Ressource_1.EGenreRessource.Enseignant:{lLigne=lLigne;lLigne.listeProfesseurs=lListeOut;lListeDonnees=lLigne.listeProfesseurs;lLigne.avecEnvoiGroupeProfesseur=lValeurDepotGroupe;break;} case Enumere_Ressource_1.EGenreRessource.MaitreDeStage:{lLigne=lLigne;lLigne.listeMaitreStage=lListeOut;lListeDonnees=lLigne.listeMaitreStage;lLigne.avecEnvoiGroupeMaitreDeStage=lValeurDepotGroupe;break;} case Enumere_Ressource_1.EGenreRessource.Personnel:{lLigne=lLigne;lLigne.listePersonnels=lListeOut;lListeDonnees=lLigne.listePersonnels;lLigne.avecEnvoiGroupePersonnel=lValeurDepotGroupe;break;} case Enumere_Ressource_1.EGenreRessource.Classe:{lLigne=lLigne;lLigne.listeEquipesPedagogique=lListeOut;lListeDonnees=lLigne.listeEquipesPedagogique;break;} default:;break;} const lEstListeAvecModif=!lIn.listeIdentiqueParElementsOrdonnes(lListeDonnees);if(lLigne.getEtat()!==Enumere_Etat_1.EGenreEtat.Creation&&lEstListeAvecModif){lLigne.setEtat(Enumere_Etat_1.EGenreEtat.Modification);} lLigne=lLigne;lLigne.infoPersonnel=lLigne.listePersonnels.getNbrElementsExistes();lLigne.infoProfesseur=lLigne.listeProfesseurs.getNbrElementsExistes();lLigne.infoMaitreDeStage=lLigne.listeMaitreStage.getNbrElementsExistes();lLigne.infoEquipePedagogique=lLigne.listeEquipesPedagogique.getNbrElementsExistes();}}});let lElementDepotGroupe=null;if(lLibelleDepotGroupe){const lLibelleHtml=(IE.jsx.str("p",{class:['flex-contain','WhiteSpaceNormal']},IE.jsx.str("i",{class:['icon_group','m-right'],role:"presentation"}),IE.jsx.str("span",null,lLibelleDepotGroupe)));lElementDepotGroupe=ObjetElement_1.ObjetElement.create({Libelle:lLibelleHtml,selectionne:!!aParams.avecDepotGroupe,estDepotgroupe:true});} const lAvecEltAucun=![Enumere_Ressource_1.EGenreRessource.Classe,Enumere_Ressource_1.EGenreRessource.MaitreDeStage].includes(lGenreRessource);this.fenetreSelectionPublic.setAutoriseEltAucun(lAvecEltAucun);this.fenetreSelectionPublic.setListeElementsAPositionnerEnPremier(lElementDepotGroupe?new ObjetListeElements_1.ObjetListeElements().add(lElementDepotGroupe):null);this.fenetreSelectionPublic.setDonnees({listeRessources:aDonnees.listePublic,listeRessourcesSelectionnees:lListeCoche,genreRessource:lGenreRessource,titre:Enumere_Ressource_1.EGenreRessourceUtil.getTitreFenetreSelectionRessource(lGenreRessource),estGenreRessourceDUtilisateurConnecte:Enumere_Ressource_1.EGenreRessourceUtil.correspondAuGenreUtilisateurEspaceCourant(lGenreRessource),listeNiveauxResponsabilite:aDonnees.listeNiveauxResponsabilite});} evenementDateDebut(aDate){this._evenementDate(true,aDate);} evenementDateFin(aDate){this._evenementDate(false,aDate);} initDate(aInstanceDate){aInstanceDate.setParametresFenetre(window.GParametres.PremierLundi,ObjetDate_1.GDate.getJourSuivant(window.GParametres.PremiereDate,-100),ObjetDate_1.GDate.getJourSuivant(window.GParametres.DerniereDate,100));} async surValidation(aGenreBouton){if(aGenreBouton===1){if(!this.document.categorie||!this.document.documentCasier){let lMessage='';if(!this.document.documentCasier){lMessage=ObjetTraduction_1.GTraductions.getValeur('Casier.pjObligatoire');} if(!this.document.categorie){lMessage=ObjetTraduction_1.GTraductions.getValeur('Casier.categorieObligatoire');} if(!this.document.categorie&&!this.document.documentCasier){lMessage=ObjetTraduction_1.GTraductions.getValeur('Casier.champsMinimumRequis');} GApplication.getMessage().afficher({type:Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,message:lMessage});return;} if([Enumere_Etat_1.EGenreEtat.Creation,Enumere_Etat_1.EGenreEtat.Modification].includes(this.optionsDepot.genreSaisie)){this.document.setEtat(this.optionsDepot.genreSaisie);await this.requeteSaisie();this.callback.appel({genreEvenement:ObjetFenetre_DepotDocument.EGenreEvenementDepotDoc.apresCreationEdition,typeConsultation:this.typeConsultation});}} this.fermer();} estResponsable(){return this.typeConsultation===TypeCasier_1.TypeConsultationDocumentCasier.CoDC_DepResponsable;} estIntervenant(){return this.typeConsultation===TypeCasier_1.TypeConsultationDocumentCasier.CoDC_Depositaire;} _isDisabledPJ(){return this&&this.document&&this.document.getLibelle().length>0;} _evenementDate(aEstDateDebut,aDate){if(aEstDateDebut){this.document.dateDebut=aDate;if(this.document.dateFin&&this.document.dateDebut>this.document.dateFin){this.document.dateFin=new Date(this.document.dateDebut);}} else{this.document.dateFin=aDate;if(this.document.dateDebut&&this.document.dateDebut>this.document.dateFin){this.document.dateDebut=new Date(this.document.dateFin);}} if('dateDebut' in this.document&&this.document.dateDebut){this.identDateDebut.setDonnees(this.document.dateDebut);} if('dateFin' in this.document&&this.document.dateFin){this.identDateFin.setDonnees(this.document.dateFin);}} static getDocumentCasierPourIntervenant(aSelection){var _a,_b,_c,_d;return ObjetElement_1.ObjetElement.create({typeConsultation:TypeCasier_1.TypeConsultationDocumentCasier.CoDC_Depositaire,Libelle:'',Genre:Enumere_Ressource_1.EGenreRessource.DocumentCasier,acuseReception:0,hintAcuseReception:'',hintNomDocument:'',documentCasier:null,categorie:null,memo:'',infoPersonnel:0,hintPersonnel:'',listePersonnels:(_a=aSelection===null||aSelection===void 0?void 0:aSelection.get(Enumere_Ressource_1.EGenreRessource.Personnel))!==null&&_a!==void 0?_a:new ObjetListeElements_1.ObjetListeElements(),infoProfesseur:0,hintProfesseur:'',listeProfesseurs:(_b=aSelection===null||aSelection===void 0?void 0:aSelection.get(Enumere_Ressource_1.EGenreRessource.Enseignant))!==null&&_b!==void 0?_b:new ObjetListeElements_1.ObjetListeElements(),infoMaitreDeStage:0,hintMaitreDeStage:'',listeMaitreStage:(_c=aSelection===null||aSelection===void 0?void 0:aSelection.get(Enumere_Ressource_1.EGenreRessource.MaitreDeStage))!==null&&_c!==void 0?_c:new ObjetListeElements_1.ObjetListeElements(),infoEquipePedagogique:0,listeEquipesPedagogique:(_d=aSelection===null||aSelection===void 0?void 0:aSelection.get(Enumere_Ressource_1.EGenreRessource.Classe))!==null&&_d!==void 0?_d:new ObjetListeElements_1.ObjetListeElements(),date:new Date(),estModifiableParDestinataires:false,avecEnvoiGroupePersonnel:false,avecEnvoiGroupeProfesseur:false,avecEnvoiGroupeMaitreDeStage:false,avecEnvoiDirecteur:ObjetFenetre_DepotDocument.applicationSco.getEtatUtilisateur().pourPrimaire()?false:undefined,plusConsultable:undefined,avecEnvoiGroupeClasse:undefined,estModifiableParUtilisateur:undefined});} static getRubriqueDepot(aType,aHorsContexte){return{libelle:ObjetFenetre_DepotDocument.getLibelleRubriqueDepot(aType),icon:ObjetFenetre_DepotDocument.getIconRubriqueDepot(aType)};} static getIconRubriqueDepot(aType){return aType===TypeCasier_1.TypeConsultationDocumentCasier.CoDC_DepResponsable?'icon_enseignant_prof mix-icon_envoyer i-top':'icon_parents mix-icon_envoyer i-top';} static getLibelleRubriqueDepot(aType){return aType===TypeCasier_1.TypeConsultationDocumentCasier.CoDC_DepResponsable?ObjetTraduction_1.GTraductions.getValeur('Casier.responsablesDiffusion'):ObjetTraduction_1.GTraductions.getValeur('Casier.IntervenantDiffusion');} static getDocumentCasierPourResponsable(aSelection){var _a,_b;return ObjetElement_1.ObjetElement.create({typeConsultation:TypeCasier_1.TypeConsultationDocumentCasier.CoDC_DepResponsable,Libelle:'',Genre:Enumere_Ressource_1.EGenreRessource.DocumentCasier,acuseReception:0,hintAcuseReception:'',documentCasier:null,categorie:null,memo:'',date:new Date(),estModifiableParDestinataires:false,avecEnvoiGroupeResponsable:false,avecEnvoiGroupeEleve:false,dateDebut:null,dateFin:null,plusConsultable:undefined,hintNomDocument:undefined,estModifiableParUtilisateur:undefined,infoEleve:0,infoResponsable:0,destinataires:{responsables:UtilitaireCasier_1.UtilitaireCasier.getDestinataireCasierResponsableParDefaut([ChoixDestinatairesParCriteres_1.TypeGenreDestinataire.GD_Responsable,ChoixDestinatairesParCriteres_1.TypeGenreDestinataire.GD_Eleve],ChoixDestinatairesParCriteres_1.TypeChoixTelechargementDoc.CTD_Nominatif,(_a=aSelection===null||aSelection===void 0?void 0:aSelection.get(Enumere_Ressource_1.EGenreRessource.Responsable))!==null&&_a!==void 0?_a:new ObjetListeElements_1.ObjetListeElements()),eleves:UtilitaireCasier_1.UtilitaireCasier.getDestinataireCasierResponsableParDefaut([ChoixDestinatairesParCriteres_1.TypeGenreDestinataire.GD_Eleve],ChoixDestinatairesParCriteres_1.TypeChoixTelechargementDoc.CTD_Nominatif,(_b=aSelection===null||aSelection===void 0?void 0:aSelection.get(Enumere_Ressource_1.EGenreRessource.Eleve))!==null&&_b!==void 0?_b:new ObjetListeElements_1.ObjetListeElements())}});}} exports.ObjetFenetre_DepotDocument=ObjetFenetre_DepotDocument;ObjetFenetre_DepotDocument.applicationSco=(0,AccessApp_1.getApp)();ObjetFenetre_DepotDocument.etatUtilisateurSco=ObjetFenetre_DepotDocument.applicationSco.getEtatUtilisateur();(function(ObjetFenetre_DepotDocument){let EGenreEvenementDepotDoc;(function(EGenreEvenementDepotDoc){EGenreEvenementDepotDoc["apresDepotDocument"]="apresDepotDocument";EGenreEvenementDepotDoc["apresCreationEdition"]="apresCreationEdition";})(EGenreEvenementDepotDoc=ObjetFenetre_DepotDocument.EGenreEvenementDepotDoc||(ObjetFenetre_DepotDocument.EGenreEvenementDepotDoc={}));})(ObjetFenetre_DepotDocument||(exports.ObjetFenetre_DepotDocument=ObjetFenetre_DepotDocument={}));class ObjetFenetreRename extends ObjetFenetre_1.ObjetFenetre{constructor(...aParams){super(...aParams);this.libelle='';this.setOptionsFenetre({avecTailleSelonContenu:true,largeur:350,listeBoutons:[ObjetTraduction_1.GTraductions.getValeur('Annuler'),ObjetTraduction_1.GTraductions.getValeur('Valider')],titre:ObjetTraduction_1.GTraductions.getValeur('Casier.renommer'),addParametresValidation:this.addParametresValidation.bind(this)});} jsxModeleLibelle(){return{getValue:() =>{return this.libelle;},setValue:(aValue) =>{this.libelle=aValue;},getDisabled:() =>{return false;}};} async setDonnees(aLibelle){super.setDonnees;this.libelle=aLibelle;return await this.afficher(this.composeContenu());} static async ouvrir(aLibelle,aPere){const lFenetre=ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(ObjetFenetreRename,{pere:aPere});const lResult=await lFenetre.setDonnees(aLibelle?ObjetChaine_1.GChaine.extraireNomFichier(aLibelle):'');if(lResult.numeroBouton===1&&lResult.libelle){const lExtension=ObjetChaine_1.GChaine.extraireExtensionFichier(aLibelle);return`${lResult.libelle}.${lExtension}`;}} composeContenu(){if(!this.libelle){return'';} return IE.jsx.str("div",{class:['flex-contain','cols','flex-gap']},IE.jsx.str("label",null,ObjetTraduction_1.GTraductions.getValeur('Casier.nomDuDocument')," : "),IE.jsx.str("input",{type:"text","ie-model":this.jsxModeleLibelle.bind(this),"aria-label":ObjetTraduction_1.GTraductions.getValeur('Casier.nomDuDocument'),class:"full-width"}));} addParametresValidation(aParams){if(aParams.numeroBouton!==1){return;} return{libelle:this.libelle};}} exports.ObjetFenetreRename=ObjetFenetreRename;
+exports.ObjetFenetreRename = exports.ObjetFenetre_DepotDocument = void 0;
+const Enumere_Etat_1 = require("Enumere_Etat");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const UtilitaireUrl_1 = require("UtilitaireUrl");
+const Enumere_EvenementObjetSaisie_1 = require("Enumere_EvenementObjetSaisie");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const GUID_1 = require("GUID");
+const UtilitaireDocument_1 = require("UtilitaireDocument");
+const MethodesObjet_1 = require("MethodesObjet");
+const Enumere_DocumentJoint_1 = require("Enumere_DocumentJoint");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const TypeCasier_1 = require("TypeCasier");
+const ObjetCelluleDate_1 = require("ObjetCelluleDate");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetRequeteCasier_1 = require("ObjetRequeteCasier");
+const ObjetElement_1 = require("ObjetElement");
+const AccessApp_1 = require("AccessApp");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetRequeteListePublics_1 = require("ObjetRequeteListePublics");
+const ObjetFenetre_SelectionPublic_PN_1 = require("ObjetFenetre_SelectionPublic_PN");
+const ObjetFenetre_SelectionPublic_1 = require("ObjetFenetre_SelectionPublic");
+const UtilitaireMessagerie_1 = require("UtilitaireMessagerie");
+const ObjetRequeteSaisieCasier_1 = require("ObjetRequeteSaisieCasier");
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const Toast_1 = require("Toast");
+const UtilitaireCasier_1 = require("UtilitaireCasier");
+const ObjetFenetre_ChoixDestinatairesParCriteres_1 = require("ObjetFenetre_ChoixDestinatairesParCriteres");
+const ChoixDestinatairesParCriteres_1 = require("ChoixDestinatairesParCriteres");
+class ObjetFenetre_DepotDocument extends ObjetFenetre_1.ObjetFenetre {
+	constructor(...aParams) {
+		super(...aParams);
+		this.id = {
+			ctnPieceJointe: GUID_1.GUID.getId(),
+			selecteurPJ: GUID_1.GUID.getId(),
+			champsObligatoire: GUID_1.GUID.getId(),
+			labelComboCategories: GUID_1.GUID.getId(),
+		};
+		this.setOptionsFenetre({
+			avecTailleSelonContenu: true,
+			largeur: 400,
+			listeBoutons: [
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
+			],
+			titre: ObjetTraduction_1.GTraductions.getValeur(
+				"Casier.diffuserDocument",
+			),
+			avecComposeBasInFooter: true,
+		});
+		this.courant = {
+			ligneCourante: null,
+			selectionIN: new ObjetListeElements_1.ObjetListeElements(),
+			selectionOUT: new ObjetListeElements_1.ObjetListeElements(),
+		};
+		this.optionsDepot = {
+			callbackApresDepot: false,
+			genreSaisie: Enumere_Etat_1.EGenreEtat.Modification,
+			avecChipsApresCreation: true,
+		};
+	}
+	getControleur(aInstance) {
+		return $.extend(true, super.getControleur(aInstance), {
+			selecteurPJ: {
+				event() {
+					aInstance.surDeposerNouveau(aInstance.Nom);
+				},
+				getOptionsSelecFile() {
+					return UtilitaireDocument_1.UtilitaireDocument.getOptionsSelecFile();
+				},
+				addFiles: function (aParams) {
+					if (aParams.eltFichier) {
+						aInstance.evenementSurDeposerNouveau(aParams);
+					}
+				},
+				getIcone() {
+					return `icon_piece_jointe`;
+				},
+				getLibelle() {
+					return (
+						ObjetTraduction_1.GTraductions.getValeur("Casier.ajouterDoc") + " *"
+					);
+				},
+				getClass() {
+					return aInstance._isDisabledPJ() ? "is-disabled" : "AvecMain";
+				},
+				getAttr() {
+					return { "aria-disabled": aInstance._isDisabledPJ() };
+				},
+				getDisabled() {
+					return aInstance._isDisabledPJ();
+				},
+			},
+			documentCasier() {
+				if (
+					aInstance &&
+					aInstance.document &&
+					aInstance.document.getLibelle().length > 0
+				) {
+					return IE.jsx.str(
+						"div",
+						{ id: aInstance.id.ctnPieceJointe },
+						UtilitaireUrl_1.UtilitaireUrl.construireListeUrls(
+							new ObjetListeElements_1.ObjetListeElements().add(
+								aInstance.document,
+							),
+							{ IEModelChips: "chipsPJ", class: "ie-ellipsis" },
+						),
+					);
+				}
+				return "";
+			},
+			chipsPJ: {
+				eventBtn: function () {
+					aInstance.documentJoint = null;
+					aInstance.document.documentCasier = null;
+					aInstance.document.Libelle = "";
+				}.bind(aInstance),
+			},
+			btnRename: {
+				event: async () => {
+					const lLibelle = await ObjetFenetreRename.ouvrir(
+						aInstance.document.getLibelle(),
+						this,
+					);
+					if (lLibelle) {
+						aInstance.document.setLibelle(lLibelle);
+					}
+				},
+				getDisabled() {
+					return !aInstance._isDisabledPJ();
+				},
+				if() {
+					const lEstPasUnDocumentCloud =
+						aInstance.document &&
+						aInstance.document.documentCasier &&
+						aInstance.document.documentCasier.Genre !==
+							Enumere_DocumentJoint_1.EGenreDocumentJoint.Cloud;
+					return aInstance._isDisabledPJ() && lEstPasUnDocumentCloud;
+				},
+			},
+			comboCategories: {
+				init(aCombo) {
+					aCombo.setOptionsObjetSaisie({
+						ariaLabelledBy: aInstance.id.labelComboCategories,
+						required: true,
+						getContenuElement: function (aParams) {
+							return IE.jsx.str(
+								"div",
+								{
+									class: "libelle ie-line-color",
+									style: { "--color-line": aParams.element.couleur },
+								},
+								aParams.element.getLibelle(),
+							);
+						},
+					});
+					aCombo.setOptionsObjetSaisie({
+						placeHolder: ObjetTraduction_1.GTraductions.getValeur(
+							"Casier.choisirUneCategorie",
+						),
+					});
+				},
+				getDonnees() {
+					if (aInstance.listeCategories) {
+						return aInstance.listeCategories;
+					}
+				},
+				event(aParam) {
+					if (
+						aParam.genreEvenement ===
+							Enumere_EvenementObjetSaisie_1.EGenreEvenementObjetSaisie
+								.selection &&
+						aParam.element
+					) {
+						aInstance.document.categorie = aParam.element;
+					}
+				},
+				getIndiceSelection() {
+					let lIndice = -1;
+					if (aInstance && aInstance.document && aInstance.document.categorie) {
+						const lResult = aInstance.listeCategories.getIndiceElementParFiltre(
+							(aElement) =>
+								aElement.getNumero() ===
+								aInstance.document.categorie.getNumero(),
+						);
+						if (lResult >= 0) {
+							lIndice = lResult;
+						}
+					}
+					return lIndice;
+				},
+			},
+			inputMemo: {
+				getValue() {
+					return aInstance.document ? aInstance.document.memo : "";
+				},
+				setValue(aValue) {
+					aInstance.document.memo = aValue;
+				},
+			},
+			selecteurPersonnels: {
+				getIconeHtml() {
+					if (
+						aInstance.document &&
+						"avecEnvoiGroupePersonnel" in aInstance.document &&
+						aInstance.document.avecEnvoiGroupePersonnel
+					) {
+						return IE.jsx.str("i", {
+							role: "presentation",
+							class: "icon_group",
+							title: ObjetTraduction_1.GTraductions.getValeur(
+								"Casier.deposeNouveauPersonnel",
+							),
+						});
+					} else {
+						return aInstance.getIconeSelecteur();
+					}
+				},
+				event() {
+					aInstance.surSelectionRessource({
+						genreRessource: Enumere_Ressource_1.EGenreRessource.Personnel,
+						article: aInstance.document,
+						avecDepotGroupe:
+							aInstance.document &&
+							"avecEnvoiGroupePersonnel" in aInstance.document &&
+							aInstance.document.avecEnvoiGroupePersonnel,
+					});
+				},
+				getLibelle() {
+					if (
+						aInstance &&
+						aInstance.document &&
+						"infoPersonnel" in aInstance.document &&
+						aInstance.document.infoPersonnel > 0
+					) {
+						return `${ObjetTraduction_1.GTraductions.getValeur("Casier.personnels")} (${aInstance.document.infoPersonnel})`;
+					}
+					return "";
+				},
+			},
+			selecteurProfesseurs: {
+				getIconeHtml() {
+					if (
+						aInstance.document &&
+						"avecEnvoiGroupeProfesseur" in aInstance.document &&
+						aInstance.document.avecEnvoiGroupeProfesseur
+					) {
+						return IE.jsx.str("i", {
+							role: "presentation",
+							class: "icon_group",
+							title: ObjetTraduction_1.GTraductions.getValeur(
+								"Casier.deposeNouveauProfesseur",
+							),
+						});
+					} else {
+						return aInstance.getIconeSelecteur();
+					}
+				},
+				event() {
+					aInstance.surSelectionRessource({
+						genreRessource: Enumere_Ressource_1.EGenreRessource.Enseignant,
+						article: aInstance.document,
+						avecDepotGroupe:
+							"avecEnvoiGroupeProfesseur" in aInstance.document &&
+							aInstance.document.avecEnvoiGroupeProfesseur,
+					});
+				},
+				getLibelle() {
+					if (
+						aInstance &&
+						aInstance.document &&
+						"infoProfesseur" in aInstance.document &&
+						aInstance.document.infoProfesseur > 0
+					) {
+						return `${ObjetTraduction_1.GTraductions.getValeur("Casier.professeurs")} (${aInstance.document.infoProfesseur})`;
+					}
+					return "";
+				},
+			},
+			selecteurMaitreDeStage: {
+				event() {
+					aInstance.surSelectionRessource({
+						genreRessource: Enumere_Ressource_1.EGenreRessource.MaitreDeStage,
+						article: aInstance.document,
+						avecDepotGroupe:
+							aInstance.document &&
+							"avecEnvoiGroupeMaitreDeStage" in aInstance.document &&
+							aInstance.document.avecEnvoiGroupeMaitreDeStage,
+					});
+				},
+				getLibelle() {
+					if (
+						aInstance &&
+						aInstance.document &&
+						"infoMaitreDeStage" in aInstance.document &&
+						aInstance.document.infoMaitreDeStage > 0
+					) {
+						return `${ObjetTraduction_1.GTraductions.getValeur("Casier.maitresDeStage")} (${aInstance.document.infoMaitreDeStage})`;
+					}
+					return "";
+				},
+				avecSelecteur() {
+					return (
+						!ObjetFenetre_DepotDocument.etatUtilisateurSco.pourPrimaire() &&
+						aInstance.estIntervenant() &&
+						!ObjetFenetre_DepotDocument.applicationSco.estEDT
+					);
+				},
+			},
+			selecteurEquipePedagogique: {
+				event() {
+					aInstance.surSelectionRessource({
+						genreRessource: Enumere_Ressource_1.EGenreRessource.Classe,
+						article: aInstance.document,
+						avecDepotGroupe:
+							"avecEnvoiGroupeClasse" in aInstance.document &&
+							aInstance.document.avecEnvoiGroupeClasse,
+					});
+				},
+				getLibelle() {
+					if (
+						aInstance &&
+						aInstance.document &&
+						"infoEquipePedagogique" in aInstance.document &&
+						aInstance.document.infoEquipePedagogique > 0
+					) {
+						return `${ObjetTraduction_1.GTraductions.getValeur("Casier.equipePedagogique")} (${aInstance.document.infoEquipePedagogique})`;
+					}
+					return "";
+				},
+			},
+			selecteurResponsables: {
+				getIconeHtml() {
+					var _a, _b;
+					if (
+						UtilitaireCasier_1.UtilitaireCasier.isObjetElementDepositaireResponsable(
+							aInstance.document,
+						) &&
+						((_b =
+							(_a = aInstance.document.destinataires) === null || _a === void 0
+								? void 0
+								: _a.responsables) === null || _b === void 0
+							? void 0
+							: _b.typeChoixTelechargement) ===
+							ChoixDestinatairesParCriteres_1.TypeChoixTelechargementDoc
+								.CTD_Tous
+					) {
+						return IE.jsx.str("i", {
+							role: "presentation",
+							class: "icon_group",
+							title: ObjetTraduction_1.GTraductions.getValeur(
+								"Casier.deposeNouveauResponsable",
+							),
+						});
+					} else {
+						return aInstance.getIconeSelecteur();
+					}
+				},
+				event() {
+					aInstance.surSelectionRessource({
+						genreRessource: Enumere_Ressource_1.EGenreRessource.Responsable,
+						article: aInstance.document,
+					});
+				},
+				getLibelle() {
+					return aInstance.getLibelleSelecteurResponsable(
+						Enumere_Ressource_1.EGenreRessource.Responsable,
+					);
+				},
+			},
+			selecteurEleves: {
+				getIconeHtml() {
+					var _a, _b;
+					if (
+						UtilitaireCasier_1.UtilitaireCasier.isObjetElementDepositaireResponsable(
+							aInstance.document,
+						) &&
+						((_b =
+							(_a = aInstance.document.destinataires) === null || _a === void 0
+								? void 0
+								: _a.eleves) === null || _b === void 0
+							? void 0
+							: _b.typeChoixTelechargement) ===
+							ChoixDestinatairesParCriteres_1.TypeChoixTelechargementDoc
+								.CTD_Tous
+					) {
+						return IE.jsx.str("i", {
+							role: "presentation",
+							class: "icon_group",
+							title: ObjetTraduction_1.GTraductions.getValeur(
+								"Casier.deposeNouveauResponsable",
+							),
+						});
+					} else {
+						return aInstance.getIconeSelecteur();
+					}
+				},
+				event() {
+					aInstance.surSelectionRessource({
+						genreRessource: Enumere_Ressource_1.EGenreRessource.Eleve,
+						article: aInstance.document,
+					});
+				},
+				getLibelle() {
+					return aInstance.getLibelleSelecteurResponsable(
+						Enumere_Ressource_1.EGenreRessource.Eleve,
+					);
+				},
+			},
+			autorisationModifCB: {
+				getValue: function () {
+					return (
+						aInstance &&
+						aInstance.document &&
+						aInstance.document.estModifiableParDestinataires
+					);
+				},
+				setValue: function () {
+					aInstance.document.estModifiableParDestinataires =
+						!aInstance.document.estModifiableParDestinataires;
+				},
+			},
+			estResponsable() {
+				return aInstance.estResponsable();
+			},
+			estIntervenant() {
+				return aInstance.estIntervenant();
+			},
+			supprimer: {
+				event: async () => {
+					await aInstance.supprimerDocument();
+					aInstance.fermer();
+				},
+				avecBtn() {
+					return (
+						aInstance.avecFct &&
+						aInstance.avecFct.suppressionDoc &&
+						aInstance.optionsDepot.genreSaisie ===
+							Enumere_Etat_1.EGenreEtat.Modification
+					);
+				},
+			},
+			selecteurDate: {
+				dateDebut() {
+					return {
+						class: ObjetCelluleDate_1.ObjetCelluleDate,
+						pere: aInstance,
+						start(aInstanceDate) {
+							if (
+								aInstanceDate &&
+								aInstance.document &&
+								"dateDebut" in aInstance.document &&
+								aInstance.document.dateDebut
+							) {
+								aInstanceDate.setDonnees(aInstance.document.dateDebut);
+							}
+						},
+						init(aInstanceDate) {
+							aInstance.identDateDebut = aInstanceDate;
+							aInstanceDate.setOptionsObjetCelluleDate({
+								placeHolder:
+									ObjetTraduction_1.GTraductions.getValeur(
+										"Casier.dateDeDebut",
+									),
+								largeurComposant: IE.estMobile ? undefined : 100,
+							});
+							aInstance.initDate(aInstanceDate);
+						},
+						evenement: aInstance.evenementDateDebut.bind(aInstance),
+					};
+				},
+				dateFin() {
+					return {
+						class: ObjetCelluleDate_1.ObjetCelluleDate,
+						pere: aInstance,
+						start(aInstanceDate) {
+							if (
+								aInstanceDate &&
+								aInstance.document &&
+								"dateFin" in aInstance.document &&
+								aInstance.document.dateFin
+							) {
+								aInstanceDate.setDonnees(aInstance.document.dateFin);
+							}
+						},
+						init(aInstanceDate) {
+							aInstance.identDateFin = aInstanceDate;
+							aInstanceDate.setOptionsObjetCelluleDate({
+								placeHolder:
+									ObjetTraduction_1.GTraductions.getValeur("Casier.dateDeFin"),
+								largeurComposant: IE.estMobile ? undefined : 100,
+							});
+							aInstance.initDate(aInstanceDate);
+						},
+						evenement: aInstance.evenementDateFin.bind(aInstance),
+					};
+				},
+			},
+			pourDirecteurCB: {
+				avecCB() {
+					return (
+						ObjetFenetre_DepotDocument.etatUtilisateurSco.pourPrimaire() &&
+						aInstance.estIntervenant()
+					);
+				},
+				getValue() {
+					let lValue = false;
+					if (
+						aInstance &&
+						aInstance.document &&
+						"avecEnvoiDirecteur" in aInstance.document
+					) {
+						lValue = aInstance.document.avecEnvoiDirecteur;
+					}
+					return lValue;
+				},
+				setValue() {
+					if (
+						aInstance &&
+						aInstance.document &&
+						"avecEnvoiDirecteur" in aInstance.document
+					) {
+						aInstance.document.avecEnvoiDirecteur =
+							!aInstance.document.avecEnvoiDirecteur;
+					}
+				},
+			},
+		});
+	}
+	getIconeSelecteur() {
+		const lClass = fonts_css_1.StylesFonts.icon_ellipsis_horizontal;
+		return IE.jsx.str("i", { role: "presentation", class: lClass });
+	}
+	getLibelleSelecteurResponsable(aGenreRessource) {
+		var _a, _b, _c, _d;
+		if (
+			UtilitaireCasier_1.UtilitaireCasier.isObjetElementDepositaireResponsable(
+				this.document,
+			)
+		) {
+			const lDestinataires =
+				aGenreRessource === Enumere_Ressource_1.EGenreRessource.Responsable
+					? (_b =
+							(_a = this.document) === null || _a === void 0
+								? void 0
+								: _a.destinataires) === null || _b === void 0
+						? void 0
+						: _b.responsables
+					: (_d =
+								(_c = this.document) === null || _c === void 0
+									? void 0
+									: _c.destinataires) === null || _d === void 0
+						? void 0
+						: _d.eleves;
+			return UtilitaireCasier_1.UtilitaireCasier.getLibelleSelecteurRessource(
+				lDestinataires,
+				aGenreRessource,
+			);
+		}
+		return "";
+	}
+	async afficherFenetre() {
+		return await this.afficher(this.composeContenu());
+	}
+	setDonnees(aParams) {
+		this.avecFct = aParams.avecFct;
+		this.typeConsultation = aParams.typeConsultation;
+		this.documentOriginal = aParams.document;
+		this.document = MethodesObjet_1.MethodesObjet.dupliquer(aParams.document);
+		this.document.setEtat(this.optionsDepot.genreSaisie);
+		this.documentJoint = aParams.documentJoint || null;
+		this.listeCategories = aParams.listeCategories
+			? aParams.listeCategories
+			: new ObjetListeElements_1.ObjetListeElements();
+		this.criteres = aParams.criteres;
+		if (this.optionsDepot.genreSaisie === Enumere_Etat_1.EGenreEtat.Creation) {
+			this.setOptionsFenetre({
+				titre: ObjetTraduction_1.GTraductions.getValeur(
+					"Casier.titreFenetreSaisieCreation",
+				),
+			});
+		}
+		if (
+			this.optionsDepot.genreSaisie === Enumere_Etat_1.EGenreEtat.Modification
+		) {
+			this.setOptionsFenetre({
+				titre: ObjetTraduction_1.GTraductions.getValeur(
+					"Casier.titreFenetreSaisieEdition",
+				),
+			});
+		}
+		return this;
+	}
+	static async ouvrir(aParams) {
+		aParams = Object.assign(
+			{
+				avecOuverturePjAuLancement: false,
+				avecChipsApresCreation: true,
+				avecSuppresionDoc: false,
+			},
+			aParams,
+		);
+		aParams.avecOuverturePjAuLancement =
+			aParams.avecOuverturePjAuLancement &&
+			aParams.genreSaisie === Enumere_Etat_1.EGenreEtat.Creation;
+		if (
+			![
+				TypeCasier_1.TypeConsultationDocumentCasier.CoDC_Depositaire,
+				TypeCasier_1.TypeConsultationDocumentCasier.CoDC_DepResponsable,
+			].includes(aParams.typeConsultation)
+		) {
+			return;
+		}
+		if (
+			(aParams.typeConsultation ===
+				TypeCasier_1.TypeConsultationDocumentCasier.CoDC_Depositaire &&
+				!ObjetFenetre_DepotDocument.avecDroitSaisieIntervenant()) ||
+			(aParams.typeConsultation ===
+				TypeCasier_1.TypeConsultationDocumentCasier.CoDC_DepResponsable &&
+				!ObjetFenetre_DepotDocument.avecDroitSaisieResponsable())
+		) {
+		}
+		const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_DepotDocument,
+			{
+				pere: this,
+				evenement: (aParamEvenementFenetre) => {
+					if (
+						aParamEvenementFenetre.genreEvenement ===
+						ObjetFenetre_DepotDocument.EGenreEvenementDepotDoc
+							.apresDepotDocument
+					) {
+						lFenetre.afficher();
+					}
+					switch (aParamEvenementFenetre.genreEvenement) {
+						case ObjetFenetre_DepotDocument.EGenreEvenementDepotDoc
+							.apresDepotDocument:
+							lFenetre.afficher();
+							break;
+						case ObjetFenetre_DepotDocument.EGenreEvenementDepotDoc
+							.apresCreationEdition:
+							if (aParams.callbackApresEdition) {
+								aParams.callbackApresEdition(
+									aParamEvenementFenetre.typeConsultation,
+								);
+							}
+							break;
+					}
+				},
+				initialiser(aFenetre) {
+					aFenetre.setOptionsDepot({
+						genreSaisie: aParams.genreSaisie,
+						callbackApresDepot: aParams.avecOuverturePjAuLancement,
+						avecChipsApresCreation: aParams.avecChipsApresCreation,
+					});
+				},
+			},
+		);
+		lFenetre.setDonnees({
+			documentJoint: aParams.document,
+			listeCategories: aParams.categories,
+			document: aParams.document,
+			typeConsultation: aParams.typeConsultation,
+			criteres: aParams.criteres,
+			avecFct: { suppressionDoc: aParams.avecSuppresionDoc },
+		});
+		if (aParams.avecOuverturePjAuLancement) {
+			lFenetre.surDeposerNouveau(lFenetre.getNom());
+		} else {
+			lFenetre.afficherFenetre();
+		}
+	}
+	static async ouvrirCreation(aTypeConsultation, aSelectionDestinataires) {
+		let lDoc =
+			aTypeConsultation ===
+			TypeCasier_1.TypeConsultationDocumentCasier.CoDC_Depositaire
+				? ObjetFenetre_DepotDocument.getDocumentCasierPourIntervenant(
+						aSelectionDestinataires,
+					)
+				: ObjetFenetre_DepotDocument.getDocumentCasierPourResponsable(
+						aSelectionDestinataires,
+					);
+		const lParams = {
+			genreSaisie: Enumere_Etat_1.EGenreEtat.Creation,
+			typeConsultation: aTypeConsultation,
+			document: lDoc,
+			avecChipsApresCreation: true,
+			avecSuppresionDoc: false,
+			categories: new ObjetListeElements_1.ObjetListeElements(),
+		};
+		switch (aTypeConsultation) {
+			case TypeCasier_1.TypeConsultationDocumentCasier.CoDC_DepResponsable: {
+				const lCategoriesEtCriteres =
+					await this.getCategoriesCasierEtCriteres();
+				lParams.criteres = UtilitaireCasier_1.UtilitaireCasier.formatCriteres(
+					lCategoriesEtCriteres.criteres,
+				);
+				lParams.categories = lCategoriesEtCriteres.categories;
+				break;
+			}
+			case TypeCasier_1.TypeConsultationDocumentCasier.CoDC_Depositaire: {
+				lParams.categories = await this.getCategoriesCasier();
+				break;
+			}
+			default:
+				break;
+		}
+		ObjetFenetre_DepotDocument.ouvrir(lParams);
+	}
+	static async getCategoriesCasier() {
+		const lJson = await new ObjetRequeteCasier_1.ObjetRequeteCasier(
+			this,
+		).lancerRequete({
+			genreRequeteCasier:
+				ObjetRequeteCasier_1.TypeGenreRequeteCasier.GRC_ListeCategorieCasier,
+		});
+		return lJson.categories;
+	}
+	static async getCategoriesCasierEtCriteres() {
+		const lJson = await new ObjetRequeteCasier_1.ObjetRequeteCasier(
+			this,
+		).lancerRequete({
+			genreRequeteCasier:
+				ObjetRequeteCasier_1.TypeGenreRequeteCasier
+					.GRC_ListeCriteresEtCategoriesCasier,
+		});
+		return { categories: lJson.categories, criteres: lJson.criteres };
+	}
+	static avecDroitSaisieIntervenant() {
+		return !!ObjetFenetre_DepotDocument.applicationSco.droits.get(
+			ObjetDroitsPN_1.TypeDroits.casierNumerique
+				.avecSaisieDocumentsCasiersIntervenant,
+		);
+	}
+	static avecDroitSaisieResponsable() {
+		return !!ObjetFenetre_DepotDocument.applicationSco.droits.get(
+			ObjetDroitsPN_1.TypeDroits.casierNumerique
+				.avecSaisieDocumentsCasiersResponsable,
+		);
+	}
+	static avecDroitCommunicationToutesLesClasses() {
+		return !!ObjetFenetre_DepotDocument.applicationSco.droits.get(
+			ObjetDroitsPN_1.TypeDroits.communication.toutesClasses,
+		);
+	}
+	async supprimerDocument() {
+		if (this.document) {
+			this.document.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+			await this.requeteSaisie();
+		}
+	}
+	surDeposerNouveau(aId) {
+		const lOptions = { idCtn: aId };
+		const lOptionsFichierCloud = { avecMonoSelection: true };
+		if (
+			this.optionsDepot.genreSaisie === Enumere_Etat_1.EGenreEtat.Modification
+		) {
+			const lEstCloud =
+				this.documentOriginal.documentCasier.Genre ===
+				Enumere_DocumentJoint_1.EGenreDocumentJoint.Cloud;
+			const lEstFichier =
+				this.documentOriginal.documentCasier.Genre ===
+				Enumere_DocumentJoint_1.EGenreDocumentJoint.Fichier;
+			lOptions.avecFichierDepuisCloud = lEstCloud;
+			lOptions.avecFichierDepuisDocument = lEstFichier;
+			if (lEstCloud) {
+				lOptions.fenetreFichierCloud = lOptionsFichierCloud;
+			}
+		} else {
+			lOptions.fenetreFichierCloud = lOptionsFichierCloud;
+		}
+		lOptions.avecFichierDepuisCloud = GEtatUtilisateur.avecCloudDisponibles();
+		UtilitaireDocument_1.UtilitaireDocument.ouvrirFenetreChoixTypeDeFichierADeposer.call(
+			this,
+			this.evenementSurDeposerNouveau.bind(this),
+			lOptions,
+		);
+	}
+	setLibelleDocumentCasier(aValue) {
+		this.document.documentCasier.setLibelle(aValue);
+	}
+	setOptionsDepot(aOptionsDepot) {
+		Object.assign(this.optionsDepot, aOptionsDepot);
+	}
+	composeContenu() {
+		if (!this.document) {
+			return "";
+		}
+		return IE.jsx.str(
+			"section",
+			null,
+			IE.jsx.str(
+				"p",
+				{
+					class: "ie-titre-petit m-bottom-xl italic",
+					id: this.id.champsObligatoire,
+				},
+				"* ",
+				ObjetTraduction_1.GTraductions.getValeur("Casier.champsObligatoire"),
+			),
+			IE.jsx.str(
+				"article",
+				{ class: "field-contain flex-contain cols border-bottom" },
+				IE.jsx.str(
+					"div",
+					{ class: "full-width m-bottom" },
+					IE.jsx.str("ie-btnselecteur", {
+						"ie-model": "selecteurPJ",
+						role: "button",
+						class: "pj",
+						id: this.id.selecteurPJ,
+						"aria-labelledby": this.id.champsObligatoire,
+						"aria-required": "true",
+						"ie-class": "selecteurPJ.getClass",
+						tabindex: "0",
+						"ie-attr": "selecteurPJ.getAttr",
+					}),
+					IE.jsx.str("div", {
+						class: "pj-liste-conteneur",
+						"ie-html": "documentCasier",
+					}),
+				),
+				IE.jsx.str(
+					"div",
+					{
+						"ie-if": "btnRename.if",
+						class: ["flex-contain", "full-width", "justify-end", "m-y-l"],
+					},
+					IE.jsx.str(
+						"ie-bouton",
+						{ "ie-model": "btnRename", class: "small-bt themeBoutonNeutre" },
+						ObjetTraduction_1.GTraductions.getValeur(
+							"Casier.renommerLeDocument",
+						),
+					),
+				),
+			),
+			IE.jsx.str(
+				"article",
+				{ class: "field-contain label-up" },
+				IE.jsx.str(
+					"label",
+					{ class: "fix-bloc only-mobile", id: this.id.labelComboCategories },
+					ObjetTraduction_1.GTraductions.getValeur("Casier.nature"),
+					" * : ",
+				),
+				IE.jsx.str("ie-combo", {
+					"ie-model": "comboCategories",
+					"aria-required": "true",
+					class: ["combo-sans-fleche", IE.estMobile && "full-width"],
+				}),
+			),
+			IE.jsx.str(
+				"article",
+				{ class: "field-contain label-up" },
+				IE.jsx.str(
+					"label",
+					{ class: "fix-bloc only-mobile" },
+					ObjetTraduction_1.GTraductions.getValeur("Casier.Colonne.Memo"),
+					" : ",
+				),
+				IE.jsx.str("ie-textareamax", {
+					"ie-model": "inputMemo",
+					"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+						"Casier.Colonne.Memo",
+					),
+					style: { minHeight: !IE.estMobile && "7rem" },
+					placeholder: ObjetTraduction_1.GTraductions.getValeur(
+						"Casier.ajouterUnCommentaire",
+					),
+					maxlength: "10000",
+				}),
+			),
+			IE.jsx.str(
+				"article",
+				{ class: "field-contain flex-contain cols label-up" },
+				IE.jsx.str(
+					"label",
+					{ class: "ie-titre-petit" },
+					ObjetTraduction_1.GTraductions.getValeur("Casier.destinataires"),
+					" : ",
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "flex-contain cols flex-gap-l" },
+					IE.jsx.str("ie-btnselecteur", {
+						"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+							"Casier.WAI.listeProfesseurs",
+						),
+						"ie-model": "selecteurProfesseurs",
+						placeholder:
+							ObjetTraduction_1.GTraductions.getValeur("Casier.professeurs"),
+						"ie-if": "estIntervenant",
+					}),
+					IE.jsx.str("ie-btnselecteur", {
+						"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+							"Casier.WAI.listePersonnels",
+						),
+						"ie-model": "selecteurPersonnels",
+						placeholder:
+							ObjetTraduction_1.GTraductions.getValeur("Casier.personnels"),
+						"ie-if": "estIntervenant",
+					}),
+					IE.jsx.str("ie-btnselecteur", {
+						"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+							"Casier.WAI.listeEquipePedagogique",
+						),
+						"ie-model": "selecteurEquipePedagogique",
+						placeholder: ObjetTraduction_1.GTraductions.getValeur(
+							"Casier.equipePedagogique",
+						),
+						"ie-if": "estIntervenant",
+					}),
+					IE.jsx.str("ie-btnselecteur", {
+						"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+							"Casier.WAI.listeMaitreDeStage",
+						),
+						"ie-model": "selecteurMaitreDeStage",
+						placeholder: ObjetTraduction_1.GTraductions.getValeur(
+							"Casier.maitresDeStage",
+						),
+						"ie-if": "selecteurMaitreDeStage.avecSelecteur",
+					}),
+					IE.jsx.str("ie-btnselecteur", {
+						"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+							"Casier.WAI.listeResponsables",
+						),
+						"ie-model": "selecteurResponsables",
+						placeholder: ObjetTraduction_1.GTraductions.getValeur(
+							"Casier.choixResponsables",
+						),
+						"ie-if": "estResponsable",
+					}),
+					IE.jsx.str("ie-btnselecteur", {
+						"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+							"Casier.WAI.listeEleves",
+						),
+						"ie-model": "selecteurEleves",
+						placeholder:
+							ObjetTraduction_1.GTraductions.getValeur("Casier.choixEleves"),
+						"ie-if": "estResponsable",
+					}),
+					IE.jsx.str(
+						"ie-checkbox",
+						{
+							"ie-model": "pourDirecteurCB",
+							"ie-if": "pourDirecteurCB.avecCB",
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"Casier.ajouterDirecteurDeLEcole",
+						),
+					),
+				),
+			),
+			IE.jsx.str(
+				"article",
+				{
+					class: "field-contain flex-contain cols label-up",
+					"ie-if": "estResponsable",
+				},
+				IE.jsx.str(
+					"label",
+					{ class: "ie-titre-petit" },
+					ObjetTraduction_1.GTraductions.getValeur("Casier.dateDePublication"),
+					" : ",
+				),
+				IE.jsx.str(
+					"div",
+					{ class: "periode-contain ctn-date" },
+					IE.jsx.str(
+						"p",
+						null,
+						ObjetTraduction_1.GTraductions.getValeur("Du").ucfirst(),
+					),
+					IE.jsx.str("div", { "ie-identite": "selecteurDate.dateDebut" }),
+					IE.jsx.str(
+						"p",
+						null,
+						ObjetTraduction_1.GTraductions.getValeur("Au").toLowerCase(),
+					),
+					IE.jsx.str("div", { "ie-identite": "selecteurDate.dateFin" }),
+				),
+			),
+			IE.jsx.str(
+				"article",
+				{ class: "field-contain" },
+				IE.jsx.str(
+					"ie-checkbox",
+					{
+						"ie-if": "estIntervenant",
+						class: "long-text",
+						"ie-model": "autorisationModifCB",
+					},
+					ObjetTraduction_1.GTraductions.getValeur(
+						"Casier.AutorisationModification",
+					),
+				),
+			),
+		);
+	}
+	composeBas() {
+		return IE.jsx.str(
+			"div",
+			{ class: "compose-bas" },
+			IE.jsx.str("ie-btnicon", {
+				class: "icon_trash avecFond i-medium",
+				title: ObjetTraduction_1.GTraductions.getValeur("Supprimer"),
+				"ie-if": "supprimer.avecBtn",
+				"ie-model": "supprimer",
+			}),
+		);
+	}
+	evenementSurDeposerNouveau(aParams) {
+		this.document.setLibelle(aParams.eltFichier.getLibelle());
+		this.document.documentCasier = aParams.eltFichier;
+		this.documentJoint = aParams.eltFichier;
+		if (this.optionsDepot.callbackApresDepot) {
+			this.callback.appel({
+				genreEvenement:
+					ObjetFenetre_DepotDocument.EGenreEvenementDepotDoc.apresDepotDocument,
+			});
+		}
+	}
+	surSelectionRessource(aParams) {
+		const lParam = {
+			liste: null,
+			genre: aParams.genreRessource,
+			avecDepotGroupe: aParams.avecDepotGroupe,
+		};
+		switch (aParams.genreRessource) {
+			case Enumere_Ressource_1.EGenreRessource.Responsable:
+			case Enumere_Ressource_1.EGenreRessource.Eleve:
+				if (
+					UtilitaireCasier_1.UtilitaireCasier.isObjetElementDepositaireResponsable(
+						aParams.article,
+					)
+				) {
+					this.ouvrirFenetreChoixDestinataires(
+						aParams.article,
+						aParams.genreRessource,
+					);
+				}
+				return;
+			case Enumere_Ressource_1.EGenreRessource.Personnel:
+				if (
+					UtilitaireCasier_1.UtilitaireCasier.isObjetElementDepositaire(
+						aParams.article,
+					)
+				) {
+					lParam.liste = aParams.article.listePersonnels;
+				}
+				break;
+			case Enumere_Ressource_1.EGenreRessource.Enseignant:
+				if (
+					UtilitaireCasier_1.UtilitaireCasier.isObjetElementDepositaire(
+						aParams.article,
+					)
+				) {
+					lParam.liste = aParams.article.listeProfesseurs;
+				}
+				break;
+			case Enumere_Ressource_1.EGenreRessource.MaitreDeStage:
+				if (
+					UtilitaireCasier_1.UtilitaireCasier.isObjetElementDepositaire(
+						aParams.article,
+					)
+				) {
+					lParam.liste = aParams.article.listeMaitreStage;
+				}
+				break;
+			case Enumere_Ressource_1.EGenreRessource.Classe:
+				if (
+					UtilitaireCasier_1.UtilitaireCasier.isObjetElementDepositaire(
+						aParams.article,
+					)
+				) {
+					lParam.liste = aParams.article.listeEquipesPedagogique;
+				}
+				break;
+			default:
+				return;
+		}
+		if (!("avecDepotGroupe" in lParam)) {
+			return;
+		}
+		if (lParam.liste) {
+			this.requeteListePublics(lParam);
+			this.courant.ligneCourante = aParams.article;
+		}
+	}
+	async ouvrirFenetreChoixDestinataires(aArticle, aGenreRessource) {
+		var _a, _b;
+		const lEstResponsable =
+			aGenreRessource === Enumere_Ressource_1.EGenreRessource.Responsable;
+		const lTitre = lEstResponsable
+			? ObjetTraduction_1.GTraductions.getValeur(
+					"Casier.TitreFenetreDestResponsables",
+				)
+			: ObjetTraduction_1.GTraductions.getValeur(
+					"Casier.TitreFenetreElevesResponsables",
+				);
+		const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetre_ChoixDestinatairesParCriteres_1.ObjetFenetre_ChoixDestinatairesParCriteres,
+			{ pere: this },
+			{ titre: lTitre },
+		);
+		lFenetre.setTextePersonnalisable({
+			choixCritereDisponibilite: ObjetTraduction_1.GTraductions.getValeur(
+				"Casier.choixCritereDisponibilite",
+				[
+					ObjetFenetre_ChoixDestinatairesParCriteres_1.ObjetFenetre_ChoixDestinatairesParCriteres.getLibelleRessource(
+						aGenreRessource,
+					),
+					UtilitaireCasier_1.UtilitaireCasier.getLibelleEspace(aGenreRessource),
+				],
+			),
+		});
+		lFenetre.setOptionsDestinatairesParCriteres({
+			avecLibelleEnfantsDansTotalIndiv: lEstResponsable,
+		});
+		const lDestinataire = lEstResponsable
+			? aArticle.destinataires.responsables
+			: aArticle.destinataires.eleves;
+		const lCriteresDisponibles = new Map();
+		const lCriteres = new Map();
+		if (
+			!(
+				((_a =
+					lDestinataire === null || lDestinataire === void 0
+						? void 0
+						: lDestinataire.listeGenresIndivAssocieAuCriteres) === null ||
+				_a === void 0
+					? void 0
+					: _a.length) > 0
+			)
+		) {
+			return;
+		}
+		lDestinataire.listeGenresIndivAssocieAuCriteres.forEach((aGenre) => {
+			lCriteresDisponibles.set(aGenre, this.criteres.get(aGenre));
+			lCriteres.set(aGenre, new Map());
+		});
+		const lParams = {
+			genreRessource: aGenreRessource,
+			choix: lDestinataire.typeChoixTelechargement,
+			genreDocumentTelechargeable:
+				ChoixDestinatairesParCriteres_1.TypeGenreDocumentTelechargeable
+					.TDT_DocumentCasier,
+			criteresDisponibles: lCriteresDisponibles,
+			listeGenresIndivAssocieAuCriteres:
+				lDestinataire.listeGenresIndivAssocieAuCriteres,
+			genreIndivAssocieAuCriteresSelectionne:
+				lDestinataire.genreIndivAssocieAuCriteresSelectionne,
+		};
+		switch (lDestinataire.typeChoixTelechargement) {
+			case ChoixDestinatairesParCriteres_1.TypeChoixTelechargementDoc
+				.CTD_Nominatif:
+				if (lDestinataire.listeDestinataires) {
+					lParams.listeRessourceSelectionnee = lDestinataire.listeDestinataires;
+				}
+				break;
+			case ChoixDestinatairesParCriteres_1.TypeChoixTelechargementDoc
+				.CTD_Critere:
+				if (lDestinataire.listeCriteres) {
+					(_b = lDestinataire.listeCriteres) === null || _b === void 0
+						? void 0
+						: _b.forEach((aCritere) => {
+								var _a, _b;
+								const lCritere = lCriteres.get(
+									aCritere.genreIndivAssocieAuCriteres,
+								);
+								lCritere.set(aCritere.genre, {
+									liste:
+										(_a = aCritere.listeElements) !== null && _a !== void 0
+											? _a
+											: new ObjetListeElements_1.ObjetListeElements(),
+									value:
+										(_b = aCritere.value) !== null && _b !== void 0 ? _b : true,
+									genreIndivAssocieAuCriteres:
+										aCritere.genreIndivAssocieAuCriteres,
+								});
+							});
+					lParams.criteres = lCriteres;
+				}
+				break;
+		}
+		const lRes = await (lFenetre === null || lFenetre === void 0
+			? void 0
+			: lFenetre.setDonnees(lParams));
+		if (lRes.numeroBouton === 1) {
+			lDestinataire.typeChoixTelechargement = lRes.choix;
+			let lListeDestinataires = new ObjetListeElements_1.ObjetListeElements();
+			let lListeCriteres = [];
+			switch (true) {
+				case ObjetFenetre_ChoixDestinatairesParCriteres_1.ObjetFenetre_ChoixDestinatairesParCriteres.isResolveNominativement(
+					lRes,
+				):
+					lListeDestinataires = lRes.listeRessourceSelectionnee;
+					break;
+				case ObjetFenetre_ChoixDestinatairesParCriteres_1.ObjetFenetre_ChoixDestinatairesParCriteres.isResolveCriteres(
+					lRes,
+				):
+					lListeCriteres = Array.from(lRes.criteres).map(([aGenre, aInfos]) => {
+						return {
+							listeElements: aInfos.liste,
+							genre: aGenre,
+							value: aInfos.value,
+							genreIndivAssocieAuCriteres: aInfos.genreIndivAssocieAuCriteres,
+						};
+					});
+					lDestinataire.genreIndivAssocieAuCriteresSelectionne =
+						lRes.genreIndivAssocieAuCriteres;
+					break;
+			}
+			lDestinataire.listeDestinataires = lListeDestinataires;
+			lDestinataire.listeCriteres = lListeCriteres;
+		}
+	}
+	requeteListePublics(aParams) {
+		const lParams = { genres: [aParams.genre], avecFonctionPersonnel: true };
+		if (aParams.sansFiltreSurEleve) {
+			lParams.sansFiltreSurEleve = true;
+		}
+		new ObjetRequeteListePublics_1.ObjetRequeteListePublics(this)
+			.lancerRequete(lParams)
+			.then((aDonnees) => this.reponseRequeteListePublics(aDonnees, aParams));
+	}
+	async requeteSaisie() {
+		const lParamsAddUpload = {
+			listeFichiers: new ObjetListeElements_1.ObjetListeElements(),
+		};
+		if (this.documentJoint) {
+			const lEstDocumentCloud =
+				this.documentJoint.getGenre() ===
+				Enumere_DocumentJoint_1.EGenreDocumentJoint.Cloud;
+			if (lEstDocumentCloud) {
+				lParamsAddUpload.listeDJCloud =
+					new ObjetListeElements_1.ObjetListeElements().add(this.documentJoint);
+			} else {
+				lParamsAddUpload.listeFichiers.add(this.documentJoint);
+			}
+		}
+		const lRes = await new ObjetRequeteSaisieCasier_1.ObjetRequeteSaisieCasier(
+			this,
+		)
+			.addUpload(lParamsAddUpload)
+			.lancerRequete({
+				typeConsultation: this.typeConsultation,
+				listeLignes: new ObjetListeElements_1.ObjetListeElements().add(
+					this.document,
+				),
+				genreSaisie:
+					ObjetRequeteSaisieCasier_1.ObjetRequeteSaisieCasier.EGenreSaisie
+						.saisieCasier,
+			});
+		if (
+			this.optionsDepot.avecChipsApresCreation &&
+			this.optionsDepot.genreSaisie === Enumere_Etat_1.EGenreEtat.Creation &&
+			lRes.genreReponse === ObjetRequeteJSON_1.EGenreReponseSaisie.succes
+		) {
+			Toast_1.Toast.afficher({
+				msg: ObjetTraduction_1.GTraductions.getValeur("Casier.documentDepose"),
+				type: Toast_1.ETypeToast.succes,
+			});
+		}
+	}
+	reponseRequeteListePublics(aDonnees, aParams) {
+		this.courant.selectionIN = new ObjetListeElements_1.ObjetListeElements();
+		aDonnees.listePublic.parcourir((aElem) => {
+			aElem.aSupprimeDoc = false;
+		});
+		aParams.liste.parcourir((aElem) => {
+			if (aElem.existe()) {
+				this.courant.selectionIN.addElement(
+					MethodesObjet_1.MethodesObjet.dupliquer(aElem),
+				);
+			}
+			if (aElem.aSupprimeDoc) {
+				let lElt2 = aDonnees.listePublic.getElementParNumero(aElem.getNumero());
+				if (lElt2) {
+					lElt2.aSupprimeDoc = true;
+				}
+			}
+		});
+		const lGenreRessource = aDonnees.genres[0];
+		const lListeCoche = MethodesObjet_1.MethodesObjet.dupliquer(
+			this.courant.selectionIN,
+		);
+		let lLibelleDepotGroupe;
+		switch (lGenreRessource) {
+			case Enumere_Ressource_1.EGenreRessource.Personnel:
+				lLibelleDepotGroupe = ObjetTraduction_1.GTraductions.getValeur(
+					"Casier.deposerNouveauPersonnel",
+				);
+				break;
+			case Enumere_Ressource_1.EGenreRessource.Enseignant:
+				lLibelleDepotGroupe = ObjetTraduction_1.GTraductions.getValeur(
+					"Casier.deposerNouveauProfesseur",
+				);
+				break;
+			case Enumere_Ressource_1.EGenreRessource.MaitreDeStage:
+				lLibelleDepotGroupe = ObjetTraduction_1.GTraductions.getValeur(
+					"Casier.deposerNouveauMaitre",
+				);
+				break;
+		}
+		let lGenreCumul = null;
+		const lListeCumuls = new ObjetListeElements_1.ObjetListeElements();
+		if (lGenreRessource === Enumere_Ressource_1.EGenreRessource.Personnel) {
+			lListeCumuls.add(
+				new ObjetElement_1.ObjetElement(
+					ObjetTraduction_1.GTraductions.getValeur(
+						"Fenetre_SelectionPublic.Cumul.Aucun",
+					),
+					0,
+					ObjetFenetre_SelectionPublic_1.TypeGenreCumulSelectionPublic.sans,
+					0,
+				),
+			);
+			lListeCumuls.add(
+				new ObjetElement_1.ObjetElement(
+					ObjetTraduction_1.GTraductions.getValeur("actualites.Cumul.Fonction"),
+					0,
+					ObjetFenetre_SelectionPublic_1.TypeGenreCumulSelectionPublic.fonction,
+					1,
+				),
+			);
+		}
+		this.fenetreSelectionPublic =
+			ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+				ObjetFenetre_SelectionPublic_PN_1.ObjetFenetre_SelectionPublic_PN,
+				{
+					pere: this,
+					initialiser(aInstance) {
+						aInstance.setListeCumuls(lListeCumuls);
+						if (lGenreCumul) {
+							aInstance.setGenreCumulActif(lGenreCumul);
+						}
+						if (
+							lGenreRessource === Enumere_Ressource_1.EGenreRessource.Personnel
+						) {
+							aInstance.setOptionsFenetreSelectionRessource({
+								getInfosSuppZonePrincipale(aParams) {
+									return aInstance.getGenreCumul() !==
+										ObjetFenetre_SelectionPublic_1.TypeGenreCumulSelectionPublic
+											.fonction
+										? UtilitaireMessagerie_1.UtilitaireMessagerie.getLibelleSuppListePublics(
+												aParams.article,
+											)
+										: "";
+								},
+							});
+						}
+						aInstance.setSelectionObligatoire(false);
+						aInstance.setOptionsFenetreSelectionRessource({
+							avecCocheRessources: true,
+							getClassRessource: function (D) {
+								return D.aSupprimeDoc ? "Italique color-neutre-sombre" : "";
+							},
+							getHintRessource: function (D) {
+								return D.aSupprimeDoc
+									? ObjetTraduction_1.GTraductions.getValeur(
+											"Casier.HintDocSupprime",
+										)
+									: "";
+							},
+						});
+					},
+					evenement(
+						aGenreRessource,
+						aListeRessourcesSelectionnees,
+						aNumeroBouton,
+					) {
+						if (aNumeroBouton > 0) {
+							const lListeOut = new ObjetListeElements_1.ObjetListeElements();
+							let lValeurDepotGroupe = false;
+							aListeRessourcesSelectionnees.parcourir((aRessource) => {
+								if (!aRessource.estDepotgroupe) {
+									lListeOut.add(aRessource);
+								} else {
+									lValeurDepotGroupe = true;
+								}
+							});
+							this.courant.selectionOUT = lListeOut;
+							const lIn = this.courant.selectionIN;
+							let lListeDonnees;
+							let lLigne = this.courant.ligneCourante;
+							switch (aGenreRessource) {
+								case Enumere_Ressource_1.EGenreRessource.Enseignant: {
+									lLigne = lLigne;
+									lLigne.listeProfesseurs = lListeOut;
+									lListeDonnees = lLigne.listeProfesseurs;
+									lLigne.avecEnvoiGroupeProfesseur = lValeurDepotGroupe;
+									break;
+								}
+								case Enumere_Ressource_1.EGenreRessource.MaitreDeStage: {
+									lLigne = lLigne;
+									lLigne.listeMaitreStage = lListeOut;
+									lListeDonnees = lLigne.listeMaitreStage;
+									lLigne.avecEnvoiGroupeMaitreDeStage = lValeurDepotGroupe;
+									break;
+								}
+								case Enumere_Ressource_1.EGenreRessource.Personnel: {
+									lLigne = lLigne;
+									lLigne.listePersonnels = lListeOut;
+									lListeDonnees = lLigne.listePersonnels;
+									lLigne.avecEnvoiGroupePersonnel = lValeurDepotGroupe;
+									break;
+								}
+								case Enumere_Ressource_1.EGenreRessource.Classe: {
+									lLigne = lLigne;
+									lLigne.listeEquipesPedagogique = lListeOut;
+									lListeDonnees = lLigne.listeEquipesPedagogique;
+									break;
+								}
+								default:
+									break;
+							}
+							const lEstListeAvecModif =
+								!lIn.listeIdentiqueParElementsOrdonnes(lListeDonnees);
+							if (
+								lLigne.getEtat() !== Enumere_Etat_1.EGenreEtat.Creation &&
+								lEstListeAvecModif
+							) {
+								lLigne.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+							}
+							lLigne = lLigne;
+							lLigne.infoPersonnel =
+								lLigne.listePersonnels.getNbrElementsExistes();
+							lLigne.infoProfesseur =
+								lLigne.listeProfesseurs.getNbrElementsExistes();
+							lLigne.infoMaitreDeStage =
+								lLigne.listeMaitreStage.getNbrElementsExistes();
+							lLigne.infoEquipePedagogique =
+								lLigne.listeEquipesPedagogique.getNbrElementsExistes();
+						}
+					},
+				},
+			);
+		let lElementDepotGroupe = null;
+		if (lLibelleDepotGroupe) {
+			const lLibelleHtml = IE.jsx.str(
+				"p",
+				{ class: ["flex-contain", "WhiteSpaceNormal"] },
+				IE.jsx.str("i", {
+					class: ["icon_group", "m-right"],
+					role: "presentation",
+				}),
+				IE.jsx.str("span", null, lLibelleDepotGroupe),
+			);
+			lElementDepotGroupe = ObjetElement_1.ObjetElement.create({
+				Libelle: lLibelleHtml,
+				selectionne: !!aParams.avecDepotGroupe,
+				estDepotgroupe: true,
+			});
+		}
+		const lAvecEltAucun = ![
+			Enumere_Ressource_1.EGenreRessource.Classe,
+			Enumere_Ressource_1.EGenreRessource.MaitreDeStage,
+		].includes(lGenreRessource);
+		this.fenetreSelectionPublic.setAutoriseEltAucun(lAvecEltAucun);
+		this.fenetreSelectionPublic.setListeElementsAPositionnerEnPremier(
+			lElementDepotGroupe
+				? new ObjetListeElements_1.ObjetListeElements().add(lElementDepotGroupe)
+				: null,
+		);
+		this.fenetreSelectionPublic.setDonnees({
+			listeRessources: aDonnees.listePublic,
+			listeRessourcesSelectionnees: lListeCoche,
+			genreRessource: lGenreRessource,
+			titre:
+				Enumere_Ressource_1.EGenreRessourceUtil.getTitreFenetreSelectionRessource(
+					lGenreRessource,
+				),
+			estGenreRessourceDUtilisateurConnecte:
+				Enumere_Ressource_1.EGenreRessourceUtil.correspondAuGenreUtilisateurEspaceCourant(
+					lGenreRessource,
+				),
+			listeNiveauxResponsabilite: aDonnees.listeNiveauxResponsabilite,
+		});
+	}
+	evenementDateDebut(aDate) {
+		this._evenementDate(true, aDate);
+	}
+	evenementDateFin(aDate) {
+		this._evenementDate(false, aDate);
+	}
+	initDate(aInstanceDate) {
+		aInstanceDate.setParametresFenetre(
+			window.GParametres.PremierLundi,
+			ObjetDate_1.GDate.getJourSuivant(window.GParametres.PremiereDate, -100),
+			ObjetDate_1.GDate.getJourSuivant(window.GParametres.DerniereDate, 100),
+		);
+	}
+	async surValidation(aGenreBouton) {
+		if (aGenreBouton === 1) {
+			if (!this.document.categorie || !this.document.documentCasier) {
+				let lMessage = "";
+				if (!this.document.documentCasier) {
+					lMessage = ObjetTraduction_1.GTraductions.getValeur(
+						"Casier.pjObligatoire",
+					);
+				}
+				if (!this.document.categorie) {
+					lMessage = ObjetTraduction_1.GTraductions.getValeur(
+						"Casier.categorieObligatoire",
+					);
+				}
+				if (!this.document.categorie && !this.document.documentCasier) {
+					lMessage = ObjetTraduction_1.GTraductions.getValeur(
+						"Casier.champsMinimumRequis",
+					);
+				}
+				GApplication.getMessage().afficher({
+					type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+					message: lMessage,
+				});
+				return;
+			}
+			if (
+				[
+					Enumere_Etat_1.EGenreEtat.Creation,
+					Enumere_Etat_1.EGenreEtat.Modification,
+				].includes(this.optionsDepot.genreSaisie)
+			) {
+				this.document.setEtat(this.optionsDepot.genreSaisie);
+				await this.requeteSaisie();
+				this.callback.appel({
+					genreEvenement:
+						ObjetFenetre_DepotDocument.EGenreEvenementDepotDoc
+							.apresCreationEdition,
+					typeConsultation: this.typeConsultation,
+				});
+			}
+		}
+		this.fermer();
+	}
+	estResponsable() {
+		return (
+			this.typeConsultation ===
+			TypeCasier_1.TypeConsultationDocumentCasier.CoDC_DepResponsable
+		);
+	}
+	estIntervenant() {
+		return (
+			this.typeConsultation ===
+			TypeCasier_1.TypeConsultationDocumentCasier.CoDC_Depositaire
+		);
+	}
+	_isDisabledPJ() {
+		return this && this.document && this.document.getLibelle().length > 0;
+	}
+	_evenementDate(aEstDateDebut, aDate) {
+		if (aEstDateDebut) {
+			this.document.dateDebut = aDate;
+			if (
+				this.document.dateFin &&
+				this.document.dateDebut > this.document.dateFin
+			) {
+				this.document.dateFin = new Date(this.document.dateDebut);
+			}
+		} else {
+			this.document.dateFin = aDate;
+			if (
+				this.document.dateDebut &&
+				this.document.dateDebut > this.document.dateFin
+			) {
+				this.document.dateDebut = new Date(this.document.dateFin);
+			}
+		}
+		if ("dateDebut" in this.document && this.document.dateDebut) {
+			this.identDateDebut.setDonnees(this.document.dateDebut);
+		}
+		if ("dateFin" in this.document && this.document.dateFin) {
+			this.identDateFin.setDonnees(this.document.dateFin);
+		}
+	}
+	static getDocumentCasierPourIntervenant(aSelection) {
+		var _a, _b, _c, _d;
+		return ObjetElement_1.ObjetElement.create({
+			typeConsultation:
+				TypeCasier_1.TypeConsultationDocumentCasier.CoDC_Depositaire,
+			Libelle: "",
+			Genre: Enumere_Ressource_1.EGenreRessource.DocumentCasier,
+			acuseReception: 0,
+			hintAcuseReception: "",
+			hintNomDocument: "",
+			documentCasier: null,
+			categorie: null,
+			memo: "",
+			infoPersonnel: 0,
+			hintPersonnel: "",
+			listePersonnels:
+				(_a =
+					aSelection === null || aSelection === void 0
+						? void 0
+						: aSelection.get(Enumere_Ressource_1.EGenreRessource.Personnel)) !==
+					null && _a !== void 0
+					? _a
+					: new ObjetListeElements_1.ObjetListeElements(),
+			infoProfesseur: 0,
+			hintProfesseur: "",
+			listeProfesseurs:
+				(_b =
+					aSelection === null || aSelection === void 0
+						? void 0
+						: aSelection.get(
+								Enumere_Ressource_1.EGenreRessource.Enseignant,
+							)) !== null && _b !== void 0
+					? _b
+					: new ObjetListeElements_1.ObjetListeElements(),
+			infoMaitreDeStage: 0,
+			hintMaitreDeStage: "",
+			listeMaitreStage:
+				(_c =
+					aSelection === null || aSelection === void 0
+						? void 0
+						: aSelection.get(
+								Enumere_Ressource_1.EGenreRessource.MaitreDeStage,
+							)) !== null && _c !== void 0
+					? _c
+					: new ObjetListeElements_1.ObjetListeElements(),
+			infoEquipePedagogique: 0,
+			listeEquipesPedagogique:
+				(_d =
+					aSelection === null || aSelection === void 0
+						? void 0
+						: aSelection.get(Enumere_Ressource_1.EGenreRessource.Classe)) !==
+					null && _d !== void 0
+					? _d
+					: new ObjetListeElements_1.ObjetListeElements(),
+			date: new Date(),
+			estModifiableParDestinataires: false,
+			avecEnvoiGroupePersonnel: false,
+			avecEnvoiGroupeProfesseur: false,
+			avecEnvoiGroupeMaitreDeStage: false,
+			avecEnvoiDirecteur: ObjetFenetre_DepotDocument.applicationSco
+				.getEtatUtilisateur()
+				.pourPrimaire()
+				? false
+				: undefined,
+			plusConsultable: undefined,
+			avecEnvoiGroupeClasse: undefined,
+			estModifiableParUtilisateur: undefined,
+		});
+	}
+	static getRubriqueDepot(aType, aHorsContexte) {
+		return {
+			libelle: ObjetFenetre_DepotDocument.getLibelleRubriqueDepot(aType),
+			icon: ObjetFenetre_DepotDocument.getIconRubriqueDepot(aType),
+		};
+	}
+	static getIconRubriqueDepot(aType) {
+		return aType ===
+			TypeCasier_1.TypeConsultationDocumentCasier.CoDC_DepResponsable
+			? "icon_enseignant_prof mix-icon_envoyer i-top"
+			: "icon_parents mix-icon_envoyer i-top";
+	}
+	static getLibelleRubriqueDepot(aType) {
+		return aType ===
+			TypeCasier_1.TypeConsultationDocumentCasier.CoDC_DepResponsable
+			? ObjetTraduction_1.GTraductions.getValeur("Casier.responsablesDiffusion")
+			: ObjetTraduction_1.GTraductions.getValeur("Casier.IntervenantDiffusion");
+	}
+	static getDocumentCasierPourResponsable(aSelection) {
+		var _a, _b;
+		return ObjetElement_1.ObjetElement.create({
+			typeConsultation:
+				TypeCasier_1.TypeConsultationDocumentCasier.CoDC_DepResponsable,
+			Libelle: "",
+			Genre: Enumere_Ressource_1.EGenreRessource.DocumentCasier,
+			acuseReception: 0,
+			hintAcuseReception: "",
+			documentCasier: null,
+			categorie: null,
+			memo: "",
+			date: new Date(),
+			estModifiableParDestinataires: false,
+			avecEnvoiGroupeResponsable: false,
+			avecEnvoiGroupeEleve: false,
+			dateDebut: null,
+			dateFin: null,
+			plusConsultable: undefined,
+			hintNomDocument: undefined,
+			estModifiableParUtilisateur: undefined,
+			infoEleve: 0,
+			infoResponsable: 0,
+			destinataires: {
+				responsables:
+					UtilitaireCasier_1.UtilitaireCasier.getDestinataireCasierResponsableParDefaut(
+						[
+							ChoixDestinatairesParCriteres_1.TypeGenreDestinataire
+								.GD_Responsable,
+							ChoixDestinatairesParCriteres_1.TypeGenreDestinataire.GD_Eleve,
+						],
+						ChoixDestinatairesParCriteres_1.TypeChoixTelechargementDoc
+							.CTD_Nominatif,
+						(_a =
+							aSelection === null || aSelection === void 0
+								? void 0
+								: aSelection.get(
+										Enumere_Ressource_1.EGenreRessource.Responsable,
+									)) !== null && _a !== void 0
+							? _a
+							: new ObjetListeElements_1.ObjetListeElements(),
+					),
+				eleves:
+					UtilitaireCasier_1.UtilitaireCasier.getDestinataireCasierResponsableParDefaut(
+						[ChoixDestinatairesParCriteres_1.TypeGenreDestinataire.GD_Eleve],
+						ChoixDestinatairesParCriteres_1.TypeChoixTelechargementDoc
+							.CTD_Nominatif,
+						(_b =
+							aSelection === null || aSelection === void 0
+								? void 0
+								: aSelection.get(Enumere_Ressource_1.EGenreRessource.Eleve)) !==
+							null && _b !== void 0
+							? _b
+							: new ObjetListeElements_1.ObjetListeElements(),
+					),
+			},
+		});
+	}
+}
+exports.ObjetFenetre_DepotDocument = ObjetFenetre_DepotDocument;
+ObjetFenetre_DepotDocument.applicationSco = (0, AccessApp_1.getApp)();
+ObjetFenetre_DepotDocument.etatUtilisateurSco =
+	ObjetFenetre_DepotDocument.applicationSco.getEtatUtilisateur();
+(function (ObjetFenetre_DepotDocument) {
+	let EGenreEvenementDepotDoc;
+	(function (EGenreEvenementDepotDoc) {
+		EGenreEvenementDepotDoc["apresDepotDocument"] = "apresDepotDocument";
+		EGenreEvenementDepotDoc["apresCreationEdition"] = "apresCreationEdition";
+	})(
+		(EGenreEvenementDepotDoc =
+			ObjetFenetre_DepotDocument.EGenreEvenementDepotDoc ||
+			(ObjetFenetre_DepotDocument.EGenreEvenementDepotDoc = {})),
+	);
+})(
+	ObjetFenetre_DepotDocument ||
+		(exports.ObjetFenetre_DepotDocument = ObjetFenetre_DepotDocument = {}),
+);
+class ObjetFenetreRename extends ObjetFenetre_1.ObjetFenetre {
+	constructor(...aParams) {
+		super(...aParams);
+		this.libelle = "";
+		this.setOptionsFenetre({
+			avecTailleSelonContenu: true,
+			largeur: 350,
+			listeBoutons: [
+				ObjetTraduction_1.GTraductions.getValeur("Annuler"),
+				ObjetTraduction_1.GTraductions.getValeur("Valider"),
+			],
+			titre: ObjetTraduction_1.GTraductions.getValeur("Casier.renommer"),
+			addParametresValidation: this.addParametresValidation.bind(this),
+		});
+	}
+	jsxModeleLibelle() {
+		return {
+			getValue: () => {
+				return this.libelle;
+			},
+			setValue: (aValue) => {
+				this.libelle = aValue;
+			},
+			getDisabled: () => {
+				return false;
+			},
+		};
+	}
+	async setDonnees(aLibelle) {
+		super.setDonnees;
+		this.libelle = aLibelle;
+		return await this.afficher(this.composeContenu());
+	}
+	static async ouvrir(aLibelle, aPere) {
+		const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+			ObjetFenetreRename,
+			{ pere: aPere },
+		);
+		const lResult = await lFenetre.setDonnees(
+			aLibelle ? ObjetChaine_1.GChaine.extraireNomFichier(aLibelle) : "",
+		);
+		if (lResult.numeroBouton === 1 && lResult.libelle) {
+			const lExtension =
+				ObjetChaine_1.GChaine.extraireExtensionFichier(aLibelle);
+			return `${lResult.libelle}.${lExtension}`;
+		}
+	}
+	composeContenu() {
+		if (!this.libelle) {
+			return "";
+		}
+		return IE.jsx.str(
+			"div",
+			{ class: ["flex-contain", "cols", "flex-gap"] },
+			IE.jsx.str(
+				"label",
+				null,
+				ObjetTraduction_1.GTraductions.getValeur("Casier.nomDuDocument"),
+				" : ",
+			),
+			IE.jsx.str("input", {
+				type: "text",
+				"ie-model": this.jsxModeleLibelle.bind(this),
+				"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+					"Casier.nomDuDocument",
+				),
+				class: "full-width",
+			}),
+		);
+	}
+	addParametresValidation(aParams) {
+		if (aParams.numeroBouton !== 1) {
+			return;
+		}
+		return { libelle: this.libelle };
+	}
+}
+exports.ObjetFenetreRename = ObjetFenetreRename;

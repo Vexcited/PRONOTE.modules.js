@@ -1874,7 +1874,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 		) {
 			T.push('<div class="field-contain">');
 			T.push(
-				'<div class="fix-bloc" id="',
+				'<div class="flex-contain flex-center flex-gap flex-wrap max-width" id="',
 				this.identLibelleAssociationKiosque,
 				'"></div>',
 			);
@@ -2120,7 +2120,7 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 		}
 	}
 	actualiserKiosque() {
-		var _a, _b;
+		var _a, _b, _c, _d;
 		if (this.devoir) {
 			if (
 				!!this.devoir.execKiosque &&
@@ -2131,25 +2131,45 @@ class ObjetFenetre_Devoir extends ObjetFenetre_1.ObjetFenetre {
 				ObjetStyle_1.GStyle.setDisplay(this.identZoneKiosque, true);
 				ObjetStyle_1.GStyle.setDisplay(this.identZoneKiosque_mirroir, true);
 				ObjetHtml_1.GHtml.setDisplay(this.idBtnAssocierKiosque, false);
+				const lDocument = MethodesObjet_1.MethodesObjet.dupliquer(
+					this.devoir.execKiosque,
+				);
+				lDocument.Genre =
+					Enumere_DocumentJoint_1.EGenreDocumentJoint.LienKiosque;
 				const lLienRessource = ObjetChaine_1.GChaine.composerUrlLienExterne({
-					documentJoint: this.devoir.execKiosque,
+					documentJoint: lDocument,
 					libelleEcran: this.devoir.execKiosque.ressource.getLibelle(),
 					title: this.devoir.execKiosque.ressource.description,
 				});
-				const lLienStat = ObjetChaine_1.GChaine.composerUrlLienExterne({
-					documentJoint: this.devoir,
-					libelleEcran: ObjetTraduction_1.GTraductions.getValeur(
-						"FenetreDevoir.resultatKiosque",
-					),
-					infoSupp: {
-						urlStat: !!((_b =
-							(_a = this.devoir) === null || _a === void 0
-								? void 0
-								: _a.execKiosque) === null || _b === void 0
+				let lLienStat = "";
+				if (
+					!!((_b =
+						(_a = this.devoir) === null || _a === void 0
 							? void 0
-							: _b.urlStat),
-					},
-				});
+							: _a.execKiosque) === null || _b === void 0
+						? void 0
+						: _b.urlStat)
+				) {
+					const lDocResult = MethodesObjet_1.MethodesObjet.dupliquer(
+						this.devoir,
+					);
+					lDocResult.Genre =
+						Enumere_DocumentJoint_1.EGenreDocumentJoint.LienKiosque;
+					lLienStat = ObjetChaine_1.GChaine.composerUrlLienExterne({
+						documentJoint: lDocResult,
+						libelleEcran: ObjetTraduction_1.GTraductions.getValeur(
+							"FenetreDevoir.resultatKiosque",
+						),
+						infoSupp: {
+							urlStat: !!((_d =
+								(_c = this.devoir) === null || _c === void 0
+									? void 0
+									: _c.execKiosque) === null || _d === void 0
+								? void 0
+								: _d.urlStat),
+						},
+					});
+				}
 				ObjetHtml_1.GHtml.setHtml(
 					this.identLibelleAssociationKiosque,
 					ObjetTraduction_1.GTraductions.getValeur(

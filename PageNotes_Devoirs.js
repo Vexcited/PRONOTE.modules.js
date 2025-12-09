@@ -1,1 +1,923 @@
-exports.PageNotes_Devoirs=void 0;const ObjetIdentite_Mobile_1=require("ObjetIdentite_Mobile");const ObjetHtml_1=require("ObjetHtml");const ObjetDate_1=require("ObjetDate");const Enumere_TriElement_1=require("Enumere_TriElement");const ObjetTri_1=require("ObjetTri");const ObjetListe_1=require("ObjetListe");const ObjetIdentite_1=require("ObjetIdentite");const DonneesListe_Notes_1=require("DonneesListe_Notes");const ObjetListeElements_1=require("ObjetListeElements");const ObjetElement_1=require("ObjetElement");const Enumere_EvenementListe_1=require("Enumere_EvenementListe");const MoteurNotesCP_1=require("MoteurNotesCP");const MoteurNotes_1=require("MoteurNotes");const ObjetSelection_1=require("ObjetSelection");const ObjetPanelEditionDevoir_1=require("ObjetPanelEditionDevoir");const ObjetPanelMoyennesEleve_1=require("ObjetPanelMoyennesEleve");const Enumere_Ressource_1=require("Enumere_Ressource");const ObjetTraduction_1=require("ObjetTraduction");const ObjetWAI_1=require("ObjetWAI");const GUID_1=require("GUID");const Clavier_SaisieNote_1=require("Clavier_SaisieNote");const Enumere_Etat_1=require("Enumere_Etat");const TypeNote_1=require("TypeNote");const ObjetMoteurGrilleSaisie_1=require("ObjetMoteurGrilleSaisie");const ObjetFenetre_FicheEleve_1=require("ObjetFenetre_FicheEleve");const ObjetFenetre_1=require("ObjetFenetre");const ObjetFenetre_MethodeCalculMoyenne_1=require("ObjetFenetre_MethodeCalculMoyenne");const MethodesObjet_1=require("MethodesObjet");const Enumere_BoiteMessage_1=require("Enumere_BoiteMessage");const Enumere_Action_1=require("Enumere_Action");const ObjetChaine_1=require("ObjetChaine");const AccessApp_1=require("AccessApp");const IEHtml_Ripple_css_1=;const ObjetPanelEditionDevoir_2=require("ObjetPanelEditionDevoir");class PageNotes_Devoirs extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile{constructor(...aParams){super(...aParams);this.appScoMobile=(0,AccessApp_1.getApp)();this.interfaceScoMobile=this.appScoMobile.getInterfaceMobile();this.moteurGrille=new ObjetMoteurGrilleSaisie_1.ObjetMoteurGrilleSaisie();this.moteurNotes=new MoteurNotes_1.MoteurNotes();this.moteurNotesCP=new MoteurNotesCP_1.MoteurNotesCP(this.moteurNotes);this.ids={page:this.Nom+'_Notes_Devoirs',listeEleves:this.Nom+'_listeEleves',boutonPlus:this.Nom+'_btnPlus',msgAucun:GUID_1.GUID.getId(),inputCommentaireSurNote:GUID_1.GUID.getId()};this.dimensions={carreDevoirFac:20,hauteurComboDevoirSur2Lignes:68};this.donnees={listeEleves:null,listeDevoirs:null,listeClasses:null,service:null,periode:null,devoirSelectionne:null,baremeParDefaut:null,strInfoCloture:''};this.afficherComboDevoirSur2Lignes=false;this.eleveDevoirEnCourDeSaisie=null;this.instanceComboDevoir=ObjetIdentite_1.Identite.creerInstance(ObjetSelection_1.ObjetSelection,{pere:this,evenement:this._evntSelecteur.bind(this),options:{avecBoutonsPrecedentSuivant:false,labelWAICellule:ObjetTraduction_1.GTraductions.getValeur('Notes.SelectionnezDevoir')}});this._initSelecteur(this.instanceComboDevoir);this.instanceListeNotes=ObjetIdentite_1.Identite.creerInstance(ObjetListe_1.ObjetListe,{pere:this,evenement:this._evntSurListe.bind(this)});this.instancePanelEditionDevoir=ObjetIdentite_1.Identite.creerInstance(ObjetPanelEditionDevoir_1.ObjetPanelEditionDevoir,{pere:this,evenement:this._evntSurEditionDevoir.bind(this)});this.clavierSaisieNote=null;} getControleur(aInstance){return $.extend(true,super.getControleur(aInstance),{getInfoCloture:function(){return aInstance.strInfoCloture?aInstance.strInfoCloture:'';},getNodePage:function(){$('#'+aInstance.interfaceScoMobile.idZonePrincipale).ieHtmlAppend(IE.jsx.str("div",{id:aInstance.ids.boutonPlus,class:['is-sticky btn-float primary messagerieNouveauMessage',IEHtml_Ripple_css_1.StylesIEHtmlRipple.ieRipple,IEHtml_Ripple_css_1.StylesIEHtmlRipple.ieRippleClaire],"ie-event":"click->btnPlus.surCreerDevoir()","ie-display":"btnPlus.estVisible"}),{controleur:this.controleur});$(this.node).on('destroyed',function(){$('#'+aInstance.ids.boutonPlus.escapeJQ()).remove();});},btnPlus:{surCreerDevoir:function(){aInstance.ouvrirEditionDevoir(true);},estVisible:function(){return aInstance.donnees&&aInstance.donnees.listeDevoirs&&aInstance.donnees.listeDevoirs.count()===0&&aInstance.moteurNotes.avecCreationDevoir({service:aInstance.donnees.service,periode:aInstance.donnees.periode,clotureGlobal:aInstance.clotureGlobal});}},nodeEditDevoir:{event:function(){aInstance.ouvrirEditionDevoir(false);},getDisabled:function(){return(aInstance.donnees.devoirSelectionne===null)||(aInstance.donnees.devoirSelectionne===undefined);}},estCrayonVisible:function(){return(aInstance.donnees.listeDevoirs.count()>0);},estMessageVisible:function(){const lListeDevoirs=aInstance.donnees.listeDevoirs;const lListeEleves=aInstance.donnees.listeEleves;return((lListeDevoirs===null)||(lListeDevoirs===undefined)||lListeDevoirs.count()===0)||((lListeEleves===null)||(lListeEleves===undefined)||lListeEleves.count()===0);},inputCommentaireSurNote:{getValue(){if(aInstance.eleveDevoirEnCourDeSaisie&&aInstance.eleveDevoirEnCourDeSaisie.commentaire){return aInstance.eleveDevoirEnCourDeSaisie.commentaire;} return'';},setValue(aVal){if(aInstance.eleveDevoirEnCourDeSaisie){aInstance.eleveDevoirEnCourDeSaisie.commentaire=aVal;}},getDisabled(){if(aInstance.clavierSaisieNote){return aInstance.clavierSaisieNote.estNoteSaisieVide();} return true;},node(){$(this.node).on({'focusout_TextareaMax':function(){if(aInstance.clavierSaisieNote){aInstance._afficherpaveSaisie();this.classList.add('border-color-neutre');}},'focus':function(){if(aInstance.clavierSaisieNote){aInstance._masquerPaveSaisie();this.classList.remove('border-color-neutre');}}});}}});} setControleur(aController){Object.assign(this.controleur,aController);} setDonnees(aDonnees){let lSelectionCourante;if((aDonnees.selectionDevoir!==null)&&(aDonnees.selectionDevoir!==undefined)){lSelectionCourante=aDonnees.selectionDevoir;} else if(this.donnees.devoirSelectionne!==null){lSelectionCourante=this.donnees.devoirSelectionne;} Object.assign(this.donnees,aDonnees);this.moteurNotes.controlerElevesClotures({listeDevoirs:this.donnees.listeDevoirs,listeEleves:this.donnees.listeEleves});this.strInfoCloture=aDonnees.strInfoCloture;this.cloture=this.moteurNotes.laPeriodeEstClotureePourNotation({periode:this.donnees.periode,listeClasses:this.donnees.classe.getGenre()===Enumere_Ressource_1.EGenreRessource.Classe?new ObjetListeElements_1.ObjetListeElements().addElement(this.donnees.listeClasses.getElementParNumero(this.donnees.classe.getNumero())):this.donnees.listeClasses});this.clotureGlobal=this.moteurNotes.laPeriodeEstClotureePourNotation({periode:this.donnees.periode,listeClasses:this.donnees.listeClasses});if((this.donnees.listeDevoirs!==null)&&(this.donnees.listeDevoirs!==undefined)){this.afficherComboDevoirSur2Lignes=false;this.donnees.listeDevoirs.parcourir((D) =>{const lStrDate=ObjetDate_1.GDate.formatDate(D.date,'%JJ %MMM');const lStrDevoir=(D.commentaire!=='')?lStrDate+' ('+D.commentaire+')':lStrDate;D.setLibelle(lStrDevoir);D.Visible=this.moteurNotesCP.devoirExiste({devoir:D,periode:this.donnees.periode});D.libelleHtml=this._getHtmlDevoir({devoir:D});});this.donnees.listeDevoirs.parcourir((D) =>{D.libelleHtmlTitre=this._getHtmlTitreDevoir({devoir:D});});this.donnees.listeDevoirs.setTri([ObjetTri_1.ObjetTri.init('date',Enumere_TriElement_1.EGenreTriElement.Decroissant)]);this.donnees.listeDevoirs.trier();let lDevoir;if((lSelectionCourante!==null)&&(lSelectionCourante!==undefined)){lDevoir=this.donnees.listeDevoirs.getElementParNumero(lSelectionCourante.getNumero());} if((lDevoir!==null)&&(lDevoir!==undefined)){this.donnees.devoirSelectionne=lDevoir;} else{if(this.donnees.listeDevoirs.count()>0){this.donnees.devoirSelectionne=this.donnees.listeDevoirs.get(0);}}} this.moteurNotes.setContexte({periodeParDefaut:this.donnees.periode});this.afficher();this.instanceComboDevoir.setParametres({height:this.afficherComboDevoirSur2Lignes===true?this.dimensions.hauteurComboDevoirSur2Lignes:null});if(this.donnees.listeDevoirs.count()===0){this.instanceComboDevoir.setVisible(false);ObjetHtml_1.GHtml.setHtml(this.ids.msgAucun,this.composeAucuneDonnee(ObjetTraduction_1.GTraductions.getValeur('Notes.AucunDevoir')));} else{const lIndiceDevoirDefaut=this.donnees.listeDevoirs.getIndiceParElement(this.donnees.devoirSelectionne);this.instanceComboDevoir.setDonnees(this.donnees.listeDevoirs,lIndiceDevoirDefaut);}} _getHtmlTitreDevoir(aParam){const lHtml=this._getHtmlDevoir($.extend(aParam,{sansEspaceSiAucuneInfo:true}));if(this.afficherComboDevoirSur2Lignes){return'<div>'+lHtml+'</div>';} else{return lHtml;}} _getHtmlDevoir(aParam){const H=[];if(aParam&&aParam.devoir){const lDevoir=aParam.devoir;H.push('<div class="NoWrap" style="width:100%; height:100%">');const lAvecInfo=(lDevoir.commeUnBonus||lDevoir.commeUneNote||lDevoir.verrouille)||(aParam.sansEspaceSiAucuneInfo!==true);if(lAvecInfo){const lCouleur=this.moteurNotesCP.getBgColorDevoirFacultatif({commeUnBonus:lDevoir.commeUnBonus,commeUneNote:lDevoir.commeUneNote});const lbgCouleur='background-color : '+lCouleur+'; ';H.push('<div class="InlineBlock AlignementMilieuVertical AlignementMilieu MargeDroit" style="height:',this.dimensions.carreDevoirFac,'px; width:',this.dimensions.carreDevoirFac,'px; ',lbgCouleur,'">');if(lDevoir.verrouille){H.push('<div style="height:',this.dimensions.carreDevoirFac,'px; width:',this.dimensions.carreDevoirFac,'px; display: flex; align-items: center; justify-content: center;"><i class="icon_lock" style="font-size:14px; margin:0px;" role="presentation"></i></div>');} else{H.push('&nbsp;');} H.push('</div>');} const lAvecCoef=!lDevoir.coefficient.estCoefficientParDefaut();const lAvecBareme=lDevoir.bareme.getValeur()!==this.donnees.baremeParDefaut.getValeur();const lEstSousService=!lDevoir.service.estUnService;const lAvecLigne2=(lAvecCoef||lAvecBareme||lEstSousService);if(lAvecLigne2===true){this.afficherComboDevoirSur2Lignes=true;} H.push('<div style="height:100%; width:calc(100% - ',this.dimensions.carreDevoirFac,'px)" class="',lAvecInfo?'EspaceGauche':'',' InlineBlock AlignementMilieuVertical">');H.push('<div style="height:',lAvecLigne2?'50':'100','%" class="NoWrap">');H.push('<div style="height:100%; width:0px" class="InlineBlock AlignementMilieuVertical">&nbsp;</div>');H.push('<div class="ie-ellipsis InlineBlock AlignementMilieuVertical" style="line-height:1.1">');H.push(ObjetDate_1.GDate.formatDate(lDevoir.date,'%JJ %MMM'));if(lDevoir.commentaire){H.push(' - ',lDevoir.commentaire);} H.push('</div>');H.push('</div>');if(lAvecLigne2){H.push('<div style="height:50%" class="NoWrap">');H.push('<div style="height:100%; width:0px" class="InlineBlock AlignementMilieuVertical">&nbsp;</div>');H.push('<div class="ie-ellipsis InlineBlock AlignementMilieuVertical" style="line-height:1.1">');if(lAvecCoef){H.push(ObjetTraduction_1.GTraductions.getValeur('Notes.Coefficient')+' '+lDevoir.coefficient.getValeur());} if(lAvecBareme){H.push(lAvecCoef?' - ':'',ObjetTraduction_1.GTraductions.getValeur('Notes.NoteSur',[lDevoir.bareme.getValeur()]));} if(lEstSousService){H.push((lAvecBareme||lAvecCoef)?' - ':'',lDevoir.service.getLibelle());} H.push('</div>');H.push('</div>');} H.push('</div>');H.push('</div>');} return H.join('');} construireAffichage(){const H=[];if(!!this.donnees.listeEleves&&!!this.donnees.listeDevoirs){H.push('<div id="',this.ids.page,'" ie-node="getNodePage" class="flex-contain cols bg-white full-height fluid-bloc" >','<div class="flex-contain btn-avec-edition fix-bloc">','   <div id="',this.instanceComboDevoir.getNom(),'" class="fluid-bloc">','</div>','   <div class="fix-bloc p-left-xl"><ie-btnicon class="icon_pencil i-medium avecFond" ie-model="nodeEditDevoir" ie-display="estCrayonVisible" ',ObjetWAI_1.GObjetWAI.composeAttribut({genre:ObjetWAI_1.EGenreAttribut.label,valeur:ObjetTraduction_1.GTraductions.getValeur('Notes.ModifierDevoir')}),' ></ie-btnicon></div>','</div>','<div id="',this.ids.msgAucun,'" ie-display="estMessageVisible" class="fix-bloc"></div>','<span class="self-center" ie-html="getInfoCloture"></span>','<div class="fluid-bloc liste-notes" id="',this.instanceListeNotes.getNom(),'" ></div>','</div>');} return H.join('');} initListeNotes(){const lAvecLigneCreation=this.moteurNotes.avecCreationDevoir({service:this.donnees.service,periode:this.donnees.periode,clotureGlobal:this.clotureGlobal});this.instanceListeNotes.setOptionsListe({avecLigneCreation:lAvecLigneCreation,nonEditableSurModeExclusif:true,skin:ObjetListe_1.ObjetListe.skin.flatDesign,messageContenuVide:ObjetTraduction_1.GTraductions.getValeur('Notes.AucunEleve')});} callbackSurToucheClavierSaisieNote(){this.$refresh();} _afficherListe(){const lDonnees=this._formatterDonneesPourListe();const lListeDevoirs=this._formatterDevoirsPourListe();const lParamDonneesListe={devoirSelectionne:this.donnees.devoirSelectionne,instanceListe:this.instanceListeNotes,listeDevoirs:lListeDevoirs,listeEleves:this.donnees.listeEleves,avecDevoirs:true,service:this.donnees.service,periode:this.donnees.periode,moyGenerales:this.donnees.moyGenerales.tabGenerales,baremeParDefaut:this.donnees.baremeParDefaut,callbackMenuCtx:this._callbackMenuCtx.bind(this)};this.initListeNotes();this.donneesListeNotes=new DonneesListe_Notes_1.DonneesListe_Notes(lDonnees,lParamDonneesListe);this.instanceListeNotes.setDonnees(this.donneesListeNotes);} _formatterDonneesPourListe(){const lListeEleves=new ObjetListeElements_1.ObjetListeElements();this.donnees.listeEleves.parcourir((D) =>{const lEleve=new ObjetElement_1.ObjetElement(D.getLibelle(),D.getNumero(),undefined,D.getPosition());lEleve.listeDevoirs=new ObjetListeElements_1.ObjetListeElements();lEleve.moyennes=D.moyennes;if(D.classe!==null&&D.classe!==undefined){lEleve.classe=new ObjetElement_1.ObjetElement(D.classe.getLibelle(),D.classe.getNumero());} lListeEleves.addElement(lEleve);});this.donnees.listeDevoirs.parcourir((aDevoir) =>{lListeEleves.parcourir((aEleve) =>{const lDevoir=new ObjetElement_1.ObjetElement(aDevoir.getLibelle(),aDevoir.getNumero());lDevoir.date=aDevoir.date;lDevoir.commentaire=aDevoir.commentaire;const lEleveDevoir=aDevoir.listeEleves.getElementParNumero(aEleve.getNumero());if(lEleveDevoir!==null&&lEleveDevoir!==undefined){lDevoir.note=lEleveDevoir.Note;aEleve.listeDevoirs.addElement(lDevoir);}});});return lListeEleves;} _formatterDevoirsPourListe(){this.donnees.listeDevoirs.parcourir((aDevoir) =>{aDevoir.visible=(this.donnees.devoirSelectionne!==null)&&(this.donnees.devoirSelectionne!==undefined)?(aDevoir.getNumero()===this.donnees.devoirSelectionne.getNumero()):false;});return this.donnees.listeDevoirs;} _evntSurListe(aParams){switch(aParams.genreEvenement){case Enumere_EvenementListe_1.EGenreEvenementListe.Creation:this.ouvrirEditionDevoir(true);break;case Enumere_EvenementListe_1.EGenreEvenementListe.SelectionClick:{this._afficherFicheEleve(aParams.article.getNumero());break;} default:break;}} _initSelecteur(aInstance){aInstance.setParametres({avecBoutonsPrecedentSuivant:false,icone:null});} _evntSelecteur(aParam){if(aParam.element&&aParam.element.getNumero()!== -1){const lNumeroDevoir=aParam.element.getNumero();this.donnees.devoirSelectionne=this.donnees.listeDevoirs.getElementParNumero(lNumeroDevoir);this._afficherListe();}} _callbackMenuCtx(aParams){switch(aParams.genreCommande){case DonneesListe_Notes_1.EGenreCommandeMenuCtxNote.saisieNote:this._afficherClavier(aParams);break;case DonneesListe_Notes_1.EGenreCommandeMenuCtxNote.ouvrirFicheEleve:if(aParams.eleve){this._afficherFicheEleve(aParams.eleve.getNumero());} break;case DonneesListe_Notes_1.EGenreCommandeMenuCtxNote.afficherMoyenneAnciennesNotes:{this._afficherFicheMoyennes(aParams.article.getNumero());break;} case DonneesListe_Notes_1.EGenreCommandeMenuCtxNote.afficherCalculMoyenne:this._afficherCalculMoyenne(aParams);break;default:;break;}} getHtmlContexteClavierSaisieNote(aParams){const lEleve=aParams.eleve;const lDevoir=aParams.devoir;const H=[];H.push('<div class="Gras">');H.push(lEleve.getLibelle().toUpperCase());H.push('</div>');H.push('<div>');H.push(ObjetTraduction_1.GTraductions.getValeur('Notes.Bareme'),' ',lDevoir.bareme.getNote(),' - ',ObjetTraduction_1.GTraductions.getValeur('Notes.Coefficient'),' ',lDevoir.coefficient.getNote());H.push('</div>');return H.join('');} _afficherClavier(aInfo,aParams={}){if(this.clavierSaisieNote){this.clavierSaisieNote.fermer();this.clavierSaisieNote.free();this.clavierSaisieNote=null;} const lHtmlContenueAdditionnel=[];if(aInfo.devoir.avecCommentaireSurNoteEleve){lHtmlContenueAdditionnel.push(`<div class="p-x-l">`,`<label for="${this.ids.inputCommentaireSurNote}">${ObjetTraduction_1.GTraductions.getValeur('Notes.remarque')} :</label>`,`<ie-textareamax id="${this.ids.inputCommentaireSurNote}" class="border-color-neutre" ie-model="inputCommentaireSurNote" placeholder="${ObjetTraduction_1.GTraductions.getValeur('Notes.RenseignezUneNote')}"></ie-textareamax>`,`</div>`);} const lDevoir=aInfo.devoir;const lClavierSaisieNote=ObjetIdentite_1.Identite.creerInstance(Clavier_SaisieNote_1.Clavier_SaisieNote,{pere:this,evenement:(aNote) =>{if(!aNote){return;} if(!aNote.estUneNoteValide(new TypeNote_1.TypeNote(0),lDevoir.bareme,true,true)){GApplication.getMessage().afficher({type:Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,message:ObjetChaine_1.GChaine.format(ObjetTraduction_1.GTraductions.getValeur('Notes.Message.NoteSuperieureAuBareme'),[aNote.getValeur(),lDevoir.bareme.getValeur()]),avecDecalageFocusBouton:true}).then((aGenreAction) =>{if(aGenreAction===Enumere_Action_1.EGenreAction.Valider){this.majApresNoteClavier(aInfo,aNote);} else{this._afficherClavier(aInfo);}});} else{this.majApresNoteClavier(aInfo,aNote);}}});if(aInfo.devoir.avecCommentaireSurNoteEleve){Object.assign(lClavierSaisieNote.controleur,this.controleur);} lClavierSaisieNote.setCallbackSurTouche(this.callbackSurToucheClavierSaisieNote);lClavierSaisieNote.setOptions({valeurInit:aInfo.note.getNote(),metier:{avecAnnotations:true,avecSeparateurDecimal:true,avecSigneMoins:false,sansNotePossible:true,min:0,max:this.moteurNotesCP.getBaremeDevoirMaximal(),bareme:this.moteurNotesCP.getBaremeDuDevoir(lDevoir),htmlContexte:this.getHtmlContexteClavierSaisieNote(aInfo)},grille:{nbLignes:4},contenueAdditionnel:{avec:aInfo.devoir.avecCommentaireSurNoteEleve,html:lHtmlContenueAdditionnel.join('')}});this.clavierSaisieNote=lClavierSaisieNote;lClavierSaisieNote.afficher();this.eleveDevoirEnCourDeSaisie=MethodesObjet_1.MethodesObjet.dupliquer(aInfo.eleveDevoir);} _masquerPaveSaisie(){if(!this.clavierSaisieNote){return;} this.clavierSaisieNote.masquerClavier();this.clavierSaisieNote.setFocusSurNote(false);} _afficherpaveSaisie(){if(!this.clavierSaisieNote){return;} this.clavierSaisieNote.afficherClavier();this.clavierSaisieNote.setFocusSurNote(true);} majApresNoteClavier(aInfo,aNote){this.evntSurSaisieNoteClavier(aInfo,aNote);const lInfos=this.donneesListeNotes.getInfoArticleSuivant(aInfo.article);if(lInfos){this._afficherClavier(lInfos);}} evntSurSaisieNoteClavier(aBind,aValeurSaisie){if(aValeurSaisie===null){return;} const lEleveDevoir=aBind.eleveDevoir;if((lEleveDevoir!==null)&&(lEleveDevoir!==undefined)){lEleveDevoir.Note=aValeurSaisie;aBind.note=aValeurSaisie;const lAvecSaisieCommentaire=this.eleveDevoirEnCourDeSaisie&&'commentaire' in this.eleveDevoirEnCourDeSaisie&&!aValeurSaisie.estUneNoteVide();if(lAvecSaisieCommentaire){lEleveDevoir.commentaire=this.eleveDevoirEnCourDeSaisie.commentaire;} lEleveDevoir.setEtat(Enumere_Etat_1.EGenreEtat.Modification);} this.callback.appel({genreEvnt:PageNotes_Devoirs.genreEvnt.validerUnitaire,devoir:aBind.devoir,eleve:aBind.eleveDevoir,note:aBind.eleveDevoir.Note});this.callback.appel({genreEvnt:PageNotes_Devoirs.genreEvnt.majMoyennes,eleve:aBind.eleve,devoir:aBind.devoir,validationAuto:false});this.eleveDevoirEnCourDeSaisie=null;this._afficherListe();} _afficherFicheEleve(aNumeroEleve){let lEleve;if(!!this.donnees.listeEleves){lEleve=this.donnees.listeEleves.getElementParNumero(aNumeroEleve);} if(!!lEleve){ObjetFenetre_FicheEleve_1.ObjetFenetre_FicheEleve.ouvrir({instance:this,avecRequeteDonnees:true,donnees:{eleve:lEleve,listeEleves:this.donnees.listeEleves}});}} _afficherCalculMoyenne(aParams){if(!aParams.article||!aParams.article.classe){return;} const lParametresCalcul={libelleEleve:aParams.article.getLibelle(),numeroEleve:aParams.article.getNumero(),libelleClasse:aParams.article.classe.getLibelle(),numeroClasse:aParams.article.classe.getNumero(),libelleServiceNotation:this.donnees.service.getLibelle(),numeroServiceNotation:this.donnees.service.getNumero(),numeroPeriodeNotation:this.donnees.periode.getNumero(),genreChoixNotation:this.donnees.periode.getGenre(),moyenneTrimestrielle:true,pourMoyenneNette:true};const lFenetreMethodeCalculMoyenne=ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(ObjetFenetre_MethodeCalculMoyenne_1.ObjetFenetre_MethodeCalculMoyenne,{pere:this,initialiser:(aInstanceFenetre) =>{aInstanceFenetre.setOptionsFenetre({titre:ObjetTraduction_1.GTraductions.getValeur('BulletinEtReleve.TitreFenetreCalculMoyenne'),listeBoutons:[ObjetTraduction_1.GTraductions.getValeur('principal.fermer')]});}});lFenetreMethodeCalculMoyenne.setDonnees(lParametresCalcul);} _afficherFicheMoyennes(aNumeroEleve){let lEleve;if(!!this.donnees.listeEleves){lEleve=this.donnees.listeEleves.getElementParNumero(aNumeroEleve);} if(!!lEleve){const lInstance=ObjetIdentite_1.Identite.creerInstance(ObjetPanelMoyennesEleve_1.ObjetPanelMoyennesEleve,{pere:this});lInstance.setDonnees({eleve:lEleve,listeEleves:this.donnees.listeEleves,service:this.donnees.service,periode:this.donnees.periode,listeDevoirs:this.donnees.listeDevoirs,baremeParDefaut:this.donnees.baremeParDefaut,actif:this.donnees.service.getActif(),avecSsServices:this.moteurNotesCP.getAvecSousServices({forcerSansSousService:false,service:this.donnees.service})});}} ouvrirEditionDevoir(aEstCreation){let lInfosServices;if(aEstCreation){lInfosServices=this.moteurNotes.getInfosServicesDefaut({service:this.donnees.service,professeur:null});} const lDevoir=aEstCreation?this.moteurNotes.creerDevoirParDefaut({service:lInfosServices.serviceDefaut,periode:this.donnees.periode,matiere:this.donnees.service.matiere,listeEleves:this.donnees.listeEleves,listeClasses:this.donnees.listeClasses,baremeParDefaut:this.donnees.baremeParDefaut}):this.donnees.devoirSelectionne;const lParam={devoir:lDevoir,baremeParDefaut:this.donnees.baremeParDefaut,avecQCM:true,listeClasses:this.donnees.listeClasses,cloture:this.cloture,clotureGlobal:this.clotureGlobal,actif:this.donnees.service.getActif(),infosServices:lInfosServices,estCreation:aEstCreation};this.instancePanelEditionDevoir.setDonnees(lParam);this.interfaceScoMobile.openPanel(this.instancePanelEditionDevoir.getHtmlPanel(),{controleur:this.instancePanelEditionDevoir.controleur,optionsFenetre:{titre:this.instancePanelEditionDevoir.getTitrePanel(),sansPaddingContenu:true}});this.instancePanelEditionDevoir.updateContent();} _evntSurEditionDevoir(aCommande,aParam){switch(aCommande){case ObjetPanelEditionDevoir_2.CommandePanelEditionDevoir.Annuler:break;case ObjetPanelEditionDevoir_2.CommandePanelEditionDevoir.Valider:if(aParam.estCreation){if(aParam.devoir.service&&'listeEleves' in aParam.devoir.service&&aParam.devoir.service.listeEleves){aParam.devoir.listeEleves=this.moteurNotes.creerDevoirParDefautListeEleves({listeEleves:aParam.devoir.service.listeEleves});} this.moteurNotes.synchroniserSujetEtCorrige({devoir:aParam.devoir,listeSujets:this.donnees.listeSujets,listeCorriges:this.donnees.listeCorriges});this.donnees.listeDevoirs.addElement(aParam.devoir);} else{this.donnees.listeDevoirs.addElement(aParam.devoir,this.donnees.listeDevoirs.getIndiceParElement(aParam.devoir));this.moteurNotes.synchroniserSujetEtCorrige({devoir:aParam.devoir,listeSujets:this.donnees.listeSujets,listeCorriges:this.donnees.listeCorriges});this.moteurNotes.majNotesElevesSelonBaremeDuDevoir({devoir:aParam.devoir});} this.callback.appel({genreEvnt:PageNotes_Devoirs.genreEvnt.valider,estCreation:aParam.estCreation,validationAuto:true});break;case ObjetPanelEditionDevoir_2.CommandePanelEditionDevoir.Supprimer:this.donnees.listeDevoirs.addElement(aParam.devoir,this.donnees.listeDevoirs.getIndiceParElement(aParam.devoir));this.callback.appel({genreEvnt:PageNotes_Devoirs.genreEvnt.valider,validationAuto:true});break;default:;} this.interfaceScoMobile.closePanel();}} exports.PageNotes_Devoirs=PageNotes_Devoirs;(function(PageNotes_Devoirs){let genreEvnt;(function(genreEvnt){genreEvnt["valider"]="valider";genreEvnt["majMoyennes"]="majMoyennes";genreEvnt["validerUnitaire"]="validerUnitaire";})(genreEvnt=PageNotes_Devoirs.genreEvnt||(PageNotes_Devoirs.genreEvnt={}));})(PageNotes_Devoirs||(exports.PageNotes_Devoirs=PageNotes_Devoirs={}));
+exports.PageNotes_Devoirs = void 0;
+const ObjetIdentite_Mobile_1 = require("ObjetIdentite_Mobile");
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetDate_1 = require("ObjetDate");
+const Enumere_TriElement_1 = require("Enumere_TriElement");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetIdentite_1 = require("ObjetIdentite");
+const DonneesListe_Notes_1 = require("DonneesListe_Notes");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetElement_1 = require("ObjetElement");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const MoteurNotesCP_1 = require("MoteurNotesCP");
+const MoteurNotes_1 = require("MoteurNotes");
+const ObjetSelection_1 = require("ObjetSelection");
+const ObjetPanelEditionDevoir_1 = require("ObjetPanelEditionDevoir");
+const ObjetPanelMoyennesEleve_1 = require("ObjetPanelMoyennesEleve");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetWAI_1 = require("ObjetWAI");
+const GUID_1 = require("GUID");
+const Clavier_SaisieNote_1 = require("Clavier_SaisieNote");
+const Enumere_Etat_1 = require("Enumere_Etat");
+const TypeNote_1 = require("TypeNote");
+const ObjetMoteurGrilleSaisie_1 = require("ObjetMoteurGrilleSaisie");
+const ObjetFenetre_FicheEleve_1 = require("ObjetFenetre_FicheEleve");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_MethodeCalculMoyenne_1 = require("ObjetFenetre_MethodeCalculMoyenne");
+const MethodesObjet_1 = require("MethodesObjet");
+const Enumere_BoiteMessage_1 = require("Enumere_BoiteMessage");
+const Enumere_Action_1 = require("Enumere_Action");
+const ObjetChaine_1 = require("ObjetChaine");
+const AccessApp_1 = require("AccessApp");
+const ObjetPanelEditionDevoir_2 = require("ObjetPanelEditionDevoir");
+class PageNotes_Devoirs extends ObjetIdentite_Mobile_1.ObjetIdentite_Mobile {
+	constructor(...aParams) {
+		super(...aParams);
+		this.appScoMobile = (0, AccessApp_1.getApp)();
+		this.interfaceScoMobile = this.appScoMobile.getInterfaceMobile();
+		this.moteurGrille = new ObjetMoteurGrilleSaisie_1.ObjetMoteurGrilleSaisie();
+		this.moteurNotes = new MoteurNotes_1.MoteurNotes();
+		this.moteurNotesCP = new MoteurNotesCP_1.MoteurNotesCP(this.moteurNotes);
+		this.ids = {
+			page: this.Nom + "_Notes_Devoirs",
+			listeEleves: this.Nom + "_listeEleves",
+			boutonPlus: this.Nom + "_btnPlus",
+			msgAucun: GUID_1.GUID.getId(),
+			inputCommentaireSurNote: GUID_1.GUID.getId(),
+		};
+		this.dimensions = { carreDevoirFac: 20, hauteurComboDevoirSur2Lignes: 68 };
+		this.donnees = {
+			listeEleves: null,
+			listeDevoirs: null,
+			listeClasses: null,
+			service: null,
+			periode: null,
+			devoirSelectionne: null,
+			baremeParDefaut: null,
+			strInfoCloture: "",
+		};
+		this.afficherComboDevoirSur2Lignes = false;
+		this.eleveDevoirEnCourDeSaisie = null;
+		this.instanceComboDevoir = ObjetIdentite_1.Identite.creerInstance(
+			ObjetSelection_1.ObjetSelection,
+			{
+				pere: this,
+				evenement: this._evntSelecteur.bind(this),
+				options: {
+					avecBoutonsPrecedentSuivant: false,
+					labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+						"Notes.SelectionnezDevoir",
+					),
+				},
+			},
+		);
+		this._initSelecteur(this.instanceComboDevoir);
+		this.instanceListeNotes = ObjetIdentite_1.Identite.creerInstance(
+			ObjetListe_1.ObjetListe,
+			{ pere: this, evenement: this._evntSurListe.bind(this) },
+		);
+		this.instancePanelEditionDevoir = ObjetIdentite_1.Identite.creerInstance(
+			ObjetPanelEditionDevoir_1.ObjetPanelEditionDevoir,
+			{ pere: this, evenement: this._evntSurEditionDevoir.bind(this) },
+		);
+		this.clavierSaisieNote = null;
+	}
+	getControleur(aInstance) {
+		return $.extend(true, super.getControleur(aInstance), {
+			getInfoCloture: function () {
+				return aInstance.strInfoCloture ? aInstance.strInfoCloture : "";
+			},
+			getNodePage: function () {
+				$("#" + aInstance.interfaceScoMobile.idZonePrincipale).ieHtmlAppend(
+					IE.jsx.str("div", {
+						id: aInstance.ids.boutonPlus,
+						class: [
+							"is-sticky btn-float primary messagerieNouveauMessage",
+							IEHtml_Ripple_css_1.StylesIEHtmlRipple.ieRipple,
+							IEHtml_Ripple_css_1.StylesIEHtmlRipple.ieRippleClaire,
+						],
+						"ie-event": "click->btnPlus.surCreerDevoir()",
+						"ie-display": "btnPlus.estVisible",
+					}),
+					{ controleur: this.controleur },
+				);
+				$(this.node).on("destroyed", function () {
+					$("#" + aInstance.ids.boutonPlus.escapeJQ()).remove();
+				});
+			},
+			btnPlus: {
+				surCreerDevoir: function () {
+					aInstance.ouvrirEditionDevoir(true);
+				},
+				estVisible: function () {
+					return (
+						aInstance.donnees &&
+						aInstance.donnees.listeDevoirs &&
+						aInstance.donnees.listeDevoirs.count() === 0 &&
+						aInstance.moteurNotes.avecCreationDevoir({
+							service: aInstance.donnees.service,
+							periode: aInstance.donnees.periode,
+							clotureGlobal: aInstance.clotureGlobal,
+						})
+					);
+				},
+			},
+			nodeEditDevoir: {
+				event: function () {
+					aInstance.ouvrirEditionDevoir(false);
+				},
+				getDisabled: function () {
+					return (
+						aInstance.donnees.devoirSelectionne === null ||
+						aInstance.donnees.devoirSelectionne === undefined
+					);
+				},
+			},
+			estCrayonVisible: function () {
+				return aInstance.donnees.listeDevoirs.count() > 0;
+			},
+			estMessageVisible: function () {
+				const lListeDevoirs = aInstance.donnees.listeDevoirs;
+				const lListeEleves = aInstance.donnees.listeEleves;
+				return (
+					lListeDevoirs === null ||
+					lListeDevoirs === undefined ||
+					lListeDevoirs.count() === 0 ||
+					lListeEleves === null || lListeEleves === undefined ||
+					lListeEleves.count() === 0
+				);
+			},
+			inputCommentaireSurNote: {
+				getValue() {
+					if (
+						aInstance.eleveDevoirEnCourDeSaisie &&
+						aInstance.eleveDevoirEnCourDeSaisie.commentaire
+					) {
+						return aInstance.eleveDevoirEnCourDeSaisie.commentaire;
+					}
+					return "";
+				},
+				setValue(aVal) {
+					if (aInstance.eleveDevoirEnCourDeSaisie) {
+						aInstance.eleveDevoirEnCourDeSaisie.commentaire = aVal;
+					}
+				},
+				getDisabled() {
+					if (aInstance.clavierSaisieNote) {
+						return aInstance.clavierSaisieNote.estNoteSaisieVide();
+					}
+					return true;
+				},
+				node() {
+					$(this.node).on({
+						focusout_TextareaMax: function () {
+							if (aInstance.clavierSaisieNote) {
+								aInstance._afficherpaveSaisie();
+								this.classList.add("border-color-neutre");
+							}
+						},
+						focus: function () {
+							if (aInstance.clavierSaisieNote) {
+								aInstance._masquerPaveSaisie();
+								this.classList.remove("border-color-neutre");
+							}
+						},
+					});
+				},
+			},
+		});
+	}
+	setControleur(aController) {
+		Object.assign(this.controleur, aController);
+	}
+	setDonnees(aDonnees) {
+		let lSelectionCourante;
+		if (
+			aDonnees.selectionDevoir !== null &&
+			aDonnees.selectionDevoir !== undefined
+		) {
+			lSelectionCourante = aDonnees.selectionDevoir;
+		} else if (this.donnees.devoirSelectionne !== null) {
+			lSelectionCourante = this.donnees.devoirSelectionne;
+		}
+		Object.assign(this.donnees, aDonnees);
+		this.moteurNotes.controlerElevesClotures({
+			listeDevoirs: this.donnees.listeDevoirs,
+			listeEleves: this.donnees.listeEleves,
+		});
+		this.strInfoCloture = aDonnees.strInfoCloture;
+		this.cloture = this.moteurNotes.laPeriodeEstClotureePourNotation({
+			periode: this.donnees.periode,
+			listeClasses:
+				this.donnees.classe.getGenre() ===
+				Enumere_Ressource_1.EGenreRessource.Classe
+					? new ObjetListeElements_1.ObjetListeElements().addElement(
+							this.donnees.listeClasses.getElementParNumero(
+								this.donnees.classe.getNumero(),
+							),
+						)
+					: this.donnees.listeClasses,
+		});
+		this.clotureGlobal = this.moteurNotes.laPeriodeEstClotureePourNotation({
+			periode: this.donnees.periode,
+			listeClasses: this.donnees.listeClasses,
+		});
+		if (
+			this.donnees.listeDevoirs !== null &&
+			this.donnees.listeDevoirs !== undefined
+		) {
+			this.afficherComboDevoirSur2Lignes = false;
+			this.donnees.listeDevoirs.parcourir((D) => {
+				const lStrDate = ObjetDate_1.GDate.formatDate(D.date, "%JJ %MMM");
+				const lStrDevoir =
+					D.commentaire !== ""
+						? lStrDate + " (" + D.commentaire + ")"
+						: lStrDate;
+				D.setLibelle(lStrDevoir);
+				D.Visible = this.moteurNotesCP.devoirExiste({
+					devoir: D,
+					periode: this.donnees.periode,
+				});
+				D.libelleHtml = this._getHtmlDevoir({ devoir: D });
+			});
+			this.donnees.listeDevoirs.parcourir((D) => {
+				D.libelleHtmlTitre = this._getHtmlTitreDevoir({ devoir: D });
+			});
+			this.donnees.listeDevoirs.setTri([
+				ObjetTri_1.ObjetTri.init(
+					"date",
+					Enumere_TriElement_1.EGenreTriElement.Decroissant,
+				),
+			]);
+			this.donnees.listeDevoirs.trier();
+			let lDevoir;
+			if (lSelectionCourante !== null && lSelectionCourante !== undefined) {
+				lDevoir = this.donnees.listeDevoirs.getElementParNumero(
+					lSelectionCourante.getNumero(),
+				);
+			}
+			if (lDevoir !== null && lDevoir !== undefined) {
+				this.donnees.devoirSelectionne = lDevoir;
+			} else {
+				if (this.donnees.listeDevoirs.count() > 0) {
+					this.donnees.devoirSelectionne = this.donnees.listeDevoirs.get(0);
+				}
+			}
+		}
+		this.moteurNotes.setContexte({ periodeParDefaut: this.donnees.periode });
+		this.afficher();
+		this.instanceComboDevoir.setParametres({
+			height:
+				this.afficherComboDevoirSur2Lignes === true
+					? this.dimensions.hauteurComboDevoirSur2Lignes
+					: null,
+		});
+		if (this.donnees.listeDevoirs.count() === 0) {
+			this.instanceComboDevoir.setVisible(false);
+			ObjetHtml_1.GHtml.setHtml(
+				this.ids.msgAucun,
+				this.composeAucuneDonnee(
+					ObjetTraduction_1.GTraductions.getValeur("Notes.AucunDevoir"),
+				),
+			);
+		} else {
+			const lIndiceDevoirDefaut = this.donnees.listeDevoirs.getIndiceParElement(
+				this.donnees.devoirSelectionne,
+			);
+			this.instanceComboDevoir.setDonnees(
+				this.donnees.listeDevoirs,
+				lIndiceDevoirDefaut,
+			);
+		}
+	}
+	_getHtmlTitreDevoir(aParam) {
+		const lHtml = this._getHtmlDevoir(
+			$.extend(aParam, { sansEspaceSiAucuneInfo: true }),
+		);
+		if (this.afficherComboDevoirSur2Lignes) {
+			return "<div>" + lHtml + "</div>";
+		} else {
+			return lHtml;
+		}
+	}
+	_getHtmlDevoir(aParam) {
+		const H = [];
+		if (aParam && aParam.devoir) {
+			const lDevoir = aParam.devoir;
+			H.push('<div class="NoWrap" style="width:100%; height:100%">');
+			const lAvecInfo =
+				lDevoir.commeUnBonus ||
+				lDevoir.commeUneNote ||
+				lDevoir.verrouille ||
+				aParam.sansEspaceSiAucuneInfo !== true;
+			if (lAvecInfo) {
+				const lCouleur = this.moteurNotesCP.getBgColorDevoirFacultatif({
+					commeUnBonus: lDevoir.commeUnBonus,
+					commeUneNote: lDevoir.commeUneNote,
+				});
+				const lbgCouleur = "background-color : " + lCouleur + "; ";
+				H.push(
+					'<div class="InlineBlock AlignementMilieuVertical AlignementMilieu MargeDroit" style="height:',
+					this.dimensions.carreDevoirFac,
+					"px; width:",
+					this.dimensions.carreDevoirFac,
+					"px; ",
+					lbgCouleur,
+					'">',
+				);
+				if (lDevoir.verrouille) {
+					H.push(
+						'<div style="height:',
+						this.dimensions.carreDevoirFac,
+						"px; width:",
+						this.dimensions.carreDevoirFac,
+						'px; display: flex; align-items: center; justify-content: center;"><i class="icon_lock" style="font-size:14px; margin:0px;" role="presentation"></i></div>',
+					);
+				} else {
+					H.push("&nbsp;");
+				}
+				H.push("</div>");
+			}
+			const lAvecCoef = !lDevoir.coefficient.estCoefficientParDefaut();
+			const lAvecBareme =
+				lDevoir.bareme.getValeur() !== this.donnees.baremeParDefaut.getValeur();
+			const lEstSousService = !lDevoir.service.estUnService;
+			const lAvecLigne2 = lAvecCoef || lAvecBareme || lEstSousService;
+			if (lAvecLigne2 === true) {
+				this.afficherComboDevoirSur2Lignes = true;
+			}
+			H.push(
+				'<div style="height:100%; width:calc(100% - ',
+				this.dimensions.carreDevoirFac,
+				'px)" class="',
+				lAvecInfo ? "EspaceGauche" : "",
+				' InlineBlock AlignementMilieuVertical">',
+			);
+			H.push(
+				'<div style="height:',
+				lAvecLigne2 ? "50" : "100",
+				'%" class="NoWrap">',
+			);
+			H.push(
+				'<div style="height:100%; width:0px" class="InlineBlock AlignementMilieuVertical">&nbsp;</div>',
+			);
+			H.push(
+				'<div class="ie-ellipsis InlineBlock AlignementMilieuVertical" style="line-height:1.1">',
+			);
+			H.push(ObjetDate_1.GDate.formatDate(lDevoir.date, "%JJ %MMM"));
+			if (lDevoir.commentaire) {
+				H.push(" - ", lDevoir.commentaire);
+			}
+			H.push("</div>");
+			H.push("</div>");
+			if (lAvecLigne2) {
+				H.push('<div style="height:50%" class="NoWrap">');
+				H.push(
+					'<div style="height:100%; width:0px" class="InlineBlock AlignementMilieuVertical">&nbsp;</div>',
+				);
+				H.push(
+					'<div class="ie-ellipsis InlineBlock AlignementMilieuVertical" style="line-height:1.1">',
+				);
+				if (lAvecCoef) {
+					H.push(
+						ObjetTraduction_1.GTraductions.getValeur("Notes.Coefficient") +
+							" " +
+							lDevoir.coefficient.getValeur(),
+					);
+				}
+				if (lAvecBareme) {
+					H.push(
+						lAvecCoef ? " - " : "",
+						ObjetTraduction_1.GTraductions.getValeur("Notes.NoteSur", [
+							lDevoir.bareme.getValeur(),
+						]),
+					);
+				}
+				if (lEstSousService) {
+					H.push(
+						lAvecBareme || lAvecCoef ? " - " : "",
+						lDevoir.service.getLibelle(),
+					);
+				}
+				H.push("</div>");
+				H.push("</div>");
+			}
+			H.push("</div>");
+			H.push("</div>");
+		}
+		return H.join("");
+	}
+	construireAffichage() {
+		const H = [];
+		if (!!this.donnees.listeEleves && !!this.donnees.listeDevoirs) {
+			H.push(
+				'<div id="',
+				this.ids.page,
+				'" ie-node="getNodePage" class="flex-contain cols bg-white full-height fluid-bloc" >',
+				'<div class="flex-contain btn-avec-edition fix-bloc">',
+				'   <div id="',
+				this.instanceComboDevoir.getNom(),
+				'" class="fluid-bloc">',
+				"</div>",
+				'   <div class="fix-bloc p-left-xl"><ie-btnicon class="icon_pencil i-medium avecFond" ie-model="nodeEditDevoir" ie-display="estCrayonVisible" ',
+				ObjetWAI_1.GObjetWAI.composeAttribut({
+					genre: ObjetWAI_1.EGenreAttribut.label,
+					valeur: ObjetTraduction_1.GTraductions.getValeur(
+						"Notes.ModifierDevoir",
+					),
+				}),
+				" ></ie-btnicon></div>",
+				"</div>",
+				'<div id="',
+				this.ids.msgAucun,
+				'" ie-display="estMessageVisible" class="fix-bloc"></div>',
+				'<span class="self-center" ie-html="getInfoCloture"></span>',
+				'<div class="fluid-bloc liste-notes" id="',
+				this.instanceListeNotes.getNom(),
+				'" ></div>',
+				"</div>",
+			);
+		}
+		return H.join("");
+	}
+	initListeNotes() {
+		const lAvecLigneCreation = this.moteurNotes.avecCreationDevoir({
+			service: this.donnees.service,
+			periode: this.donnees.periode,
+			clotureGlobal: this.clotureGlobal,
+		});
+		this.instanceListeNotes.setOptionsListe({
+			avecLigneCreation: lAvecLigneCreation,
+			nonEditableSurModeExclusif: true,
+			skin: ObjetListe_1.ObjetListe.skin.flatDesign,
+			messageContenuVide:
+				ObjetTraduction_1.GTraductions.getValeur("Notes.AucunEleve"),
+		});
+	}
+	callbackSurToucheClavierSaisieNote() {
+		this.$refresh();
+	}
+	_afficherListe() {
+		const lDonnees = this._formatterDonneesPourListe();
+		const lListeDevoirs = this._formatterDevoirsPourListe();
+		const lParamDonneesListe = {
+			devoirSelectionne: this.donnees.devoirSelectionne,
+			instanceListe: this.instanceListeNotes,
+			listeDevoirs: lListeDevoirs,
+			listeEleves: this.donnees.listeEleves,
+			avecDevoirs: true,
+			service: this.donnees.service,
+			periode: this.donnees.periode,
+			moyGenerales: this.donnees.moyGenerales.tabGenerales,
+			baremeParDefaut: this.donnees.baremeParDefaut,
+			callbackMenuCtx: this._callbackMenuCtx.bind(this),
+		};
+		this.initListeNotes();
+		this.donneesListeNotes = new DonneesListe_Notes_1.DonneesListe_Notes(
+			lDonnees,
+			lParamDonneesListe,
+		);
+		this.instanceListeNotes.setDonnees(this.donneesListeNotes);
+	}
+	_formatterDonneesPourListe() {
+		const lListeEleves = new ObjetListeElements_1.ObjetListeElements();
+		this.donnees.listeEleves.parcourir((D) => {
+			const lEleve = new ObjetElement_1.ObjetElement(
+				D.getLibelle(),
+				D.getNumero(),
+				undefined,
+				D.getPosition(),
+			);
+			lEleve.listeDevoirs = new ObjetListeElements_1.ObjetListeElements();
+			lEleve.moyennes = D.moyennes;
+			if (D.classe !== null && D.classe !== undefined) {
+				lEleve.classe = new ObjetElement_1.ObjetElement(
+					D.classe.getLibelle(),
+					D.classe.getNumero(),
+				);
+			}
+			lListeEleves.addElement(lEleve);
+		});
+		this.donnees.listeDevoirs.parcourir((aDevoir) => {
+			lListeEleves.parcourir((aEleve) => {
+				const lDevoir = new ObjetElement_1.ObjetElement(
+					aDevoir.getLibelle(),
+					aDevoir.getNumero(),
+				);
+				lDevoir.date = aDevoir.date;
+				lDevoir.commentaire = aDevoir.commentaire;
+				const lEleveDevoir = aDevoir.listeEleves.getElementParNumero(
+					aEleve.getNumero(),
+				);
+				if (lEleveDevoir !== null && lEleveDevoir !== undefined) {
+					lDevoir.note = lEleveDevoir.Note;
+					aEleve.listeDevoirs.addElement(lDevoir);
+				}
+			});
+		});
+		return lListeEleves;
+	}
+	_formatterDevoirsPourListe() {
+		this.donnees.listeDevoirs.parcourir((aDevoir) => {
+			aDevoir.visible =
+				this.donnees.devoirSelectionne !== null &&
+				this.donnees.devoirSelectionne !== undefined
+					? aDevoir.getNumero() === this.donnees.devoirSelectionne.getNumero()
+					: false;
+		});
+		return this.donnees.listeDevoirs;
+	}
+	_evntSurListe(aParams) {
+		switch (aParams.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.Creation:
+				this.ouvrirEditionDevoir(true);
+				break;
+			case Enumere_EvenementListe_1.EGenreEvenementListe.SelectionClick: {
+				this._afficherFicheEleve(aParams.article.getNumero());
+				break;
+			}
+			default:
+				break;
+		}
+	}
+	_initSelecteur(aInstance) {
+		aInstance.setParametres({
+			avecBoutonsPrecedentSuivant: false,
+			icone: null,
+		});
+	}
+	_evntSelecteur(aParam) {
+		if (aParam.element && aParam.element.getNumero() !== -1) {
+			const lNumeroDevoir = aParam.element.getNumero();
+			this.donnees.devoirSelectionne =
+				this.donnees.listeDevoirs.getElementParNumero(lNumeroDevoir);
+			this._afficherListe();
+		}
+	}
+	_callbackMenuCtx(aParams) {
+		switch (aParams.genreCommande) {
+			case DonneesListe_Notes_1.EGenreCommandeMenuCtxNote.saisieNote:
+				this._afficherClavier(aParams);
+				break;
+			case DonneesListe_Notes_1.EGenreCommandeMenuCtxNote.ouvrirFicheEleve:
+				if (aParams.eleve) {
+					this._afficherFicheEleve(aParams.eleve.getNumero());
+				}
+				break;
+			case DonneesListe_Notes_1.EGenreCommandeMenuCtxNote
+				.afficherMoyenneAnciennesNotes: {
+				this._afficherFicheMoyennes(aParams.article.getNumero());
+				break;
+			}
+			case DonneesListe_Notes_1.EGenreCommandeMenuCtxNote.afficherCalculMoyenne:
+				this._afficherCalculMoyenne(aParams);
+				break;
+			default:
+				break;
+		}
+	}
+	getHtmlContexteClavierSaisieNote(aParams) {
+		const lEleve = aParams.eleve;
+		const lDevoir = aParams.devoir;
+		const H = [];
+		H.push('<div class="Gras">');
+		H.push(lEleve.getLibelle().toUpperCase());
+		H.push("</div>");
+		H.push("<div>");
+		H.push(
+			ObjetTraduction_1.GTraductions.getValeur("Notes.Bareme"),
+			" ",
+			lDevoir.bareme.getNote(),
+			" - ",
+			ObjetTraduction_1.GTraductions.getValeur("Notes.Coefficient"),
+			" ",
+			lDevoir.coefficient.getNote(),
+		);
+		H.push("</div>");
+		return H.join("");
+	}
+	_afficherClavier(aInfo, aParams = {}) {
+		if (this.clavierSaisieNote) {
+			this.clavierSaisieNote.fermer();
+			this.clavierSaisieNote.free();
+			this.clavierSaisieNote = null;
+		}
+		const lHtmlContenueAdditionnel = [];
+		if (aInfo.devoir.avecCommentaireSurNoteEleve) {
+			lHtmlContenueAdditionnel.push(
+				`<div class="p-x-l">`,
+				`<label for="${this.ids.inputCommentaireSurNote}">${ObjetTraduction_1.GTraductions.getValeur("Notes.remarque")} :</label>`,
+				`<ie-textareamax id="${this.ids.inputCommentaireSurNote}" class="border-color-neutre" ie-model="inputCommentaireSurNote" placeholder="${ObjetTraduction_1.GTraductions.getValeur("Notes.RenseignezUneNote")}"></ie-textareamax>`,
+				`</div>`,
+			);
+		}
+		const lDevoir = aInfo.devoir;
+		const lClavierSaisieNote = ObjetIdentite_1.Identite.creerInstance(
+			Clavier_SaisieNote_1.Clavier_SaisieNote,
+			{
+				pere: this,
+				evenement: (aNote) => {
+					if (!aNote) {
+						return;
+					}
+					if (
+						!aNote.estUneNoteValide(
+							new TypeNote_1.TypeNote(0),
+							lDevoir.bareme,
+							true,
+							true,
+						)
+					) {
+						GApplication.getMessage()
+							.afficher({
+								type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Confirmation,
+								message: ObjetChaine_1.GChaine.format(
+									ObjetTraduction_1.GTraductions.getValeur(
+										"Notes.Message.NoteSuperieureAuBareme",
+									),
+									[aNote.getValeur(), lDevoir.bareme.getValeur()],
+								),
+								avecDecalageFocusBouton: true,
+							})
+							.then((aGenreAction) => {
+								if (aGenreAction === Enumere_Action_1.EGenreAction.Valider) {
+									this.majApresNoteClavier(aInfo, aNote);
+								} else {
+									this._afficherClavier(aInfo);
+								}
+							});
+					} else {
+						this.majApresNoteClavier(aInfo, aNote);
+					}
+				},
+			},
+		);
+		if (aInfo.devoir.avecCommentaireSurNoteEleve) {
+			Object.assign(lClavierSaisieNote.controleur, this.controleur);
+		}
+		lClavierSaisieNote.setCallbackSurTouche(
+			this.callbackSurToucheClavierSaisieNote,
+		);
+		lClavierSaisieNote.setOptions({
+			valeurInit: aInfo.note.getNote(),
+			metier: {
+				avecAnnotations: true,
+				avecSeparateurDecimal: true,
+				avecSigneMoins: false,
+				sansNotePossible: true,
+				min: 0,
+				max: this.moteurNotesCP.getBaremeDevoirMaximal(),
+				bareme: this.moteurNotesCP.getBaremeDuDevoir(lDevoir),
+				htmlContexte: this.getHtmlContexteClavierSaisieNote(aInfo),
+			},
+			grille: { nbLignes: 4 },
+			contenueAdditionnel: {
+				avec: aInfo.devoir.avecCommentaireSurNoteEleve,
+				html: lHtmlContenueAdditionnel.join(""),
+			},
+		});
+		this.clavierSaisieNote = lClavierSaisieNote;
+		lClavierSaisieNote.afficher();
+		this.eleveDevoirEnCourDeSaisie = MethodesObjet_1.MethodesObjet.dupliquer(
+			aInfo.eleveDevoir,
+		);
+	}
+	_masquerPaveSaisie() {
+		if (!this.clavierSaisieNote) {
+			return;
+		}
+		this.clavierSaisieNote.masquerClavier();
+		this.clavierSaisieNote.setFocusSurNote(false);
+	}
+	_afficherpaveSaisie() {
+		if (!this.clavierSaisieNote) {
+			return;
+		}
+		this.clavierSaisieNote.afficherClavier();
+		this.clavierSaisieNote.setFocusSurNote(true);
+	}
+	majApresNoteClavier(aInfo, aNote) {
+		this.evntSurSaisieNoteClavier(aInfo, aNote);
+		const lInfos = this.donneesListeNotes.getInfoArticleSuivant(aInfo.article);
+		if (lInfos) {
+			this._afficherClavier(lInfos);
+		}
+	}
+	evntSurSaisieNoteClavier(aBind, aValeurSaisie) {
+		if (aValeurSaisie === null) {
+			return;
+		}
+		const lEleveDevoir = aBind.eleveDevoir;
+		if (lEleveDevoir !== null && lEleveDevoir !== undefined) {
+			lEleveDevoir.Note = aValeurSaisie;
+			aBind.note = aValeurSaisie;
+			const lAvecSaisieCommentaire =
+				this.eleveDevoirEnCourDeSaisie &&
+				"commentaire" in this.eleveDevoirEnCourDeSaisie &&
+				!aValeurSaisie.estUneNoteVide();
+			if (lAvecSaisieCommentaire) {
+				lEleveDevoir.commentaire = this.eleveDevoirEnCourDeSaisie.commentaire;
+			}
+			lEleveDevoir.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+		}
+		this.callback.appel({
+			genreEvnt: PageNotes_Devoirs.genreEvnt.validerUnitaire,
+			devoir: aBind.devoir,
+			eleve: aBind.eleveDevoir,
+			note: aBind.eleveDevoir.Note,
+		});
+		this.callback.appel({
+			genreEvnt: PageNotes_Devoirs.genreEvnt.majMoyennes,
+			eleve: aBind.eleve,
+			devoir: aBind.devoir,
+			validationAuto: false,
+		});
+		this.eleveDevoirEnCourDeSaisie = null;
+		this._afficherListe();
+	}
+	_afficherFicheEleve(aNumeroEleve) {
+		let lEleve;
+		if (!!this.donnees.listeEleves) {
+			lEleve = this.donnees.listeEleves.getElementParNumero(aNumeroEleve);
+		}
+		if (!!lEleve) {
+			ObjetFenetre_FicheEleve_1.ObjetFenetre_FicheEleve.ouvrir({
+				instance: this,
+				avecRequeteDonnees: true,
+				donnees: { eleve: lEleve, listeEleves: this.donnees.listeEleves },
+			});
+		}
+	}
+	_afficherCalculMoyenne(aParams) {
+		if (!aParams.article || !aParams.article.classe) {
+			return;
+		}
+		const lParametresCalcul = {
+			libelleEleve: aParams.article.getLibelle(),
+			numeroEleve: aParams.article.getNumero(),
+			libelleClasse: aParams.article.classe.getLibelle(),
+			numeroClasse: aParams.article.classe.getNumero(),
+			libelleServiceNotation: this.donnees.service.getLibelle(),
+			numeroServiceNotation: this.donnees.service.getNumero(),
+			numeroPeriodeNotation: this.donnees.periode.getNumero(),
+			genreChoixNotation: this.donnees.periode.getGenre(),
+			moyenneTrimestrielle: true,
+			pourMoyenneNette: true,
+		};
+		const lFenetreMethodeCalculMoyenne =
+			ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+				ObjetFenetre_MethodeCalculMoyenne_1.ObjetFenetre_MethodeCalculMoyenne,
+				{
+					pere: this,
+					initialiser: (aInstanceFenetre) => {
+						aInstanceFenetre.setOptionsFenetre({
+							titre: ObjetTraduction_1.GTraductions.getValeur(
+								"BulletinEtReleve.TitreFenetreCalculMoyenne",
+							),
+							listeBoutons: [
+								ObjetTraduction_1.GTraductions.getValeur("principal.fermer"),
+							],
+						});
+					},
+				},
+			);
+		lFenetreMethodeCalculMoyenne.setDonnees(lParametresCalcul);
+	}
+	_afficherFicheMoyennes(aNumeroEleve) {
+		let lEleve;
+		if (!!this.donnees.listeEleves) {
+			lEleve = this.donnees.listeEleves.getElementParNumero(aNumeroEleve);
+		}
+		if (!!lEleve) {
+			const lInstance = ObjetIdentite_1.Identite.creerInstance(
+				ObjetPanelMoyennesEleve_1.ObjetPanelMoyennesEleve,
+				{ pere: this },
+			);
+			lInstance.setDonnees({
+				eleve: lEleve,
+				listeEleves: this.donnees.listeEleves,
+				service: this.donnees.service,
+				periode: this.donnees.periode,
+				listeDevoirs: this.donnees.listeDevoirs,
+				baremeParDefaut: this.donnees.baremeParDefaut,
+				actif: this.donnees.service.getActif(),
+				avecSsServices: this.moteurNotesCP.getAvecSousServices({
+					forcerSansSousService: false,
+					service: this.donnees.service,
+				}),
+			});
+		}
+	}
+	ouvrirEditionDevoir(aEstCreation) {
+		let lInfosServices;
+		if (aEstCreation) {
+			lInfosServices = this.moteurNotes.getInfosServicesDefaut({
+				service: this.donnees.service,
+				professeur: null,
+			});
+		}
+		const lDevoir = aEstCreation
+			? this.moteurNotes.creerDevoirParDefaut({
+					service: lInfosServices.serviceDefaut,
+					periode: this.donnees.periode,
+					matiere: this.donnees.service.matiere,
+					listeEleves: this.donnees.listeEleves,
+					listeClasses: this.donnees.listeClasses,
+					baremeParDefaut: this.donnees.baremeParDefaut,
+				})
+			: this.donnees.devoirSelectionne;
+		const lParam = {
+			devoir: lDevoir,
+			baremeParDefaut: this.donnees.baremeParDefaut,
+			avecQCM: true,
+			listeClasses: this.donnees.listeClasses,
+			cloture: this.cloture,
+			clotureGlobal: this.clotureGlobal,
+			actif: this.donnees.service.getActif(),
+			infosServices: lInfosServices,
+			estCreation: aEstCreation,
+		};
+		this.instancePanelEditionDevoir.setDonnees(lParam);
+		this.interfaceScoMobile.openPanel(
+			this.instancePanelEditionDevoir.getHtmlPanel(),
+			{
+				controleur: this.instancePanelEditionDevoir.controleur,
+				optionsFenetre: {
+					titre: this.instancePanelEditionDevoir.getTitrePanel(),
+					sansPaddingContenu: true,
+				},
+			},
+		);
+		this.instancePanelEditionDevoir.updateContent();
+	}
+	_evntSurEditionDevoir(aCommande, aParam) {
+		switch (aCommande) {
+			case ObjetPanelEditionDevoir_2.CommandePanelEditionDevoir.Annuler:
+				break;
+			case ObjetPanelEditionDevoir_2.CommandePanelEditionDevoir.Valider:
+				if (aParam.estCreation) {
+					if (
+						aParam.devoir.service &&
+						"listeEleves" in aParam.devoir.service &&
+						aParam.devoir.service.listeEleves
+					) {
+						aParam.devoir.listeEleves =
+							this.moteurNotes.creerDevoirParDefautListeEleves({
+								listeEleves: aParam.devoir.service.listeEleves,
+							});
+					}
+					this.moteurNotes.synchroniserSujetEtCorrige({
+						devoir: aParam.devoir,
+						listeSujets: this.donnees.listeSujets,
+						listeCorriges: this.donnees.listeCorriges,
+					});
+					this.donnees.listeDevoirs.addElement(aParam.devoir);
+				} else {
+					this.donnees.listeDevoirs.addElement(
+						aParam.devoir,
+						this.donnees.listeDevoirs.getIndiceParElement(aParam.devoir),
+					);
+					this.moteurNotes.synchroniserSujetEtCorrige({
+						devoir: aParam.devoir,
+						listeSujets: this.donnees.listeSujets,
+						listeCorriges: this.donnees.listeCorriges,
+					});
+					this.moteurNotes.majNotesElevesSelonBaremeDuDevoir({
+						devoir: aParam.devoir,
+					});
+				}
+				this.callback.appel({
+					genreEvnt: PageNotes_Devoirs.genreEvnt.valider,
+					estCreation: aParam.estCreation,
+					validationAuto: true,
+				});
+				break;
+			case ObjetPanelEditionDevoir_2.CommandePanelEditionDevoir.Supprimer:
+				this.donnees.listeDevoirs.addElement(
+					aParam.devoir,
+					this.donnees.listeDevoirs.getIndiceParElement(aParam.devoir),
+				);
+				this.callback.appel({
+					genreEvnt: PageNotes_Devoirs.genreEvnt.valider,
+					validationAuto: true,
+				});
+				break;
+			default:
+		}
+		this.interfaceScoMobile.closePanel();
+	}
+}
+exports.PageNotes_Devoirs = PageNotes_Devoirs;
+(function (PageNotes_Devoirs) {
+	let genreEvnt;
+	(function (genreEvnt) {
+		genreEvnt["valider"] = "valider";
+		genreEvnt["majMoyennes"] = "majMoyennes";
+		genreEvnt["validerUnitaire"] = "validerUnitaire";
+	})(
+		(genreEvnt =
+			PageNotes_Devoirs.genreEvnt || (PageNotes_Devoirs.genreEvnt = {})),
+	);
+})(PageNotes_Devoirs || (exports.PageNotes_Devoirs = PageNotes_Devoirs = {}));

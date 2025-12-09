@@ -6,16 +6,42 @@ class ObjetRequeteSaisieFicheBrevet extends ObjetRequeteJSON_1.ObjetRequeteSaisi
 		this.JSON = {};
 		this.JSON.classe = aParam.classe;
 		this.JSON.eleve = aParam.eleve;
-		this.JSON.palier = aParam.palier;
+		if (aParam.palier) {
+			this.JSON.palier = aParam.palier;
+		}
 		this.JSON.recu = aParam.recu;
 		this.JSON.mention = aParam.mention;
-		aParam.listePiliers.setSerialisateurJSON({
-			methodeSerialisation: _serialisationPiliers.bind(this),
-		});
-		this.JSON.listePiliers = aParam.listePiliers;
-		this.JSON.complements = aParam.complements;
+		if (aParam.listePiliers) {
+			aParam.listePiliers.setSerialisateurJSON({
+				methodeSerialisation: _serialisationPiliers.bind(this),
+			});
+			this.JSON.listePiliers = aParam.listePiliers;
+		}
 		this.JSON.appGenerale = aParam.appGenerale;
+		if (aParam.listeControleContinu) {
+			aParam.listeControleContinu.setSerialisateurJSON({
+				methodeSerialisation: this.serialisationCC.bind(this),
+			});
+			this.JSON.listeControleContinu = aParam.listeControleContinu;
+		}
 		return this.appelAsynchrone();
+	}
+	serialisationCC(aElement, aJSON) {
+		if (!aElement.moyenneAnnuel) {
+			return;
+		}
+		if (
+			"moyenne" in aElement.moyenneAnnuel &&
+			!aElement.moyenneAnnuel.moyenne.estUneNoteVide()
+		) {
+			aJSON.moyenneAnnuel = aElement.moyenneAnnuel.moyenne;
+			const lProps = ["serviceEleve", "codeMatiereRef", "typeModaliteRef"];
+			lProps.forEach((aProps) => {
+				if (aProps in aElement) {
+					aJSON[aProps] = aElement[aProps];
+				}
+			});
+		}
 	}
 }
 exports.ObjetRequeteSaisieFicheBrevet = ObjetRequeteSaisieFicheBrevet;

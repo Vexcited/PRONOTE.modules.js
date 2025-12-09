@@ -1,3 +1,354 @@
-exports.WidgetRessources=void 0;const ObjetTraduction_1=require("ObjetTraduction");const ObjetTri_1=require("ObjetTri");const Enumere_Onglet_1=require("Enumere_Onglet");const Enumere_PossessionRessource_1=require("Enumere_PossessionRessource");const Enumere_EvenementWidget_1=require("Enumere_EvenementWidget");const ObjetWidget_1=require("ObjetWidget");const Divers_css_1=;const Tooltip_1=require("Tooltip");class WidgetRessources extends ObjetWidget_1.Widget.ObjetWidget{construire(aParams){this.donnees=aParams.donnees;const lWidget={getHtml:this.composeWidgetRessources.bind(this),nbrElements:null,afficherMessage:false};$.extend(true,this.donnees,lWidget);aParams.construireWidget(this.donnees);} getControleur(aInstance){return $.extend(true,super.getControleur(aInstance),{nodeRessource(aGenrePossessionRessource,aIndex){$(this.node).eventValidation((e) =>{aInstance._surRessources(aGenrePossessionRessource,aIndex);});}});} jsxNodeRessource(aGenrePossessionRessource,aIndex,aNode){$(aNode).eventValidation(() =>{this._surRessources(aGenrePossessionRessource,aIndex);});} construireBouton(aParams){return(IE.jsx.str("div",{class:['item-contain',aParams.icon,(aParams.actif?' AvecMain':''),aParams.actif?'':'item-contain-disabled'],"data-tooltip":Tooltip_1.Tooltip.Type.default,"data-tooltip-text":aParams.tooltip,tabindex:"0",role:"link","ie-node":aParams.actif?this.jsxNodeRessource.bind(this,aParams.genrePossession,aParams.indexPossession):false,"aria-disabled":aParams.actif?false:'true'},IE.jsx.str("span",null,aParams.actif?aParams.nb:0),IE.jsx.str("p",{class:Divers_css_1.StylesDivers.srOnly},aParams.tooltip)));} composeWidgetRessources(){if(!this.donnees.listeMatieres){return'';} this.donnees.listeMatieres.setTri([ObjetTri_1.ObjetTri.init('Libelle')]);this.donnees.listeMatieres.trier();const H=[];H.push('<ul class="liste-ressources">');for(let j=0;j<this.donnees.listeMatieres.count();j++){const lMatiere=this.donnees.listeMatieres.get(j);const lNbRessourcesMesQCM=lMatiere.nbrRessources[Enumere_PossessionRessource_1.EGenrePossessionRessource.mesQCM];const lNbRessourcesQCMEtablissement=lMatiere.nbrRessources[Enumere_PossessionRessource_1.EGenrePossessionRessource.etabQCM];if(lNbRessourcesMesQCM>0||lNbRessourcesQCMEtablissement>0||lMatiere.nbrRessources[Enumere_PossessionRessource_1.EGenrePossessionRessource.mesProg]>0&&GEtatUtilisateur.existeGenreOnglet(Enumere_Onglet_1.EGenreOnglet.CahierDeTexte_Progression)||lMatiere.nbrRessources[Enumere_PossessionRessource_1.EGenrePossessionRessource.etabProg]>0&&GEtatUtilisateur.existeGenreOnglet(Enumere_Onglet_1.EGenreOnglet.BibliothequeProgression)||GEtatUtilisateur.existeGenreOnglet(Enumere_Onglet_1.EGenreOnglet.ProgrammesBO)&&lMatiere.nbrRessources[Enumere_PossessionRessource_1.EGenrePossessionRessource.BOProg]>0){H.push(IE.jsx.str("li",null,IE.jsx.str("h3",null,lMatiere.getLibelle()),IE.jsx.str("div",{role:"group","aria-label":lMatiere.getLibelle()},(aTabLI) =>{if(lNbRessourcesMesQCM>0||lNbRessourcesQCMEtablissement>0){aTabLI.push(IE.jsx.str("div",{class:"row-contain",role:"group","aria-label":ObjetTraduction_1.GTraductions.getValeur('accueil.ressources.QCM')},IE.jsx.str("h4",null,ObjetTraduction_1.GTraductions.getValeur('accueil.ressources.QCM')),this.construireBouton({actif:lNbRessourcesMesQCM>0,nb:lNbRessourcesMesQCM,icon:'data-icon',tooltip:ObjetTraduction_1.GTraductions.getValeur('accueil.ressources.hint.MesQCM'),genrePossession:Enumere_PossessionRessource_1.EGenrePossessionRessource.mesQCM,indexPossession:j}),this.construireBouton({actif:lNbRessourcesQCMEtablissement>0,nb:lNbRessourcesQCMEtablissement,icon:'library-icon',tooltip:ObjetTraduction_1.GTraductions.getValeur('accueil.ressources.hint.QCMPartages'),genrePossession:Enumere_PossessionRessource_1.EGenrePossessionRessource.etabQCM,indexPossession:j})));} if(lMatiere.nbrRessources[Enumere_PossessionRessource_1.EGenrePossessionRessource.mesProg]>0&&GEtatUtilisateur.existeGenreOnglet(Enumere_Onglet_1.EGenreOnglet.CahierDeTexte_Progression)||lMatiere.nbrRessources[Enumere_PossessionRessource_1.EGenrePossessionRessource.etabProg]>0&&GEtatUtilisateur.existeGenreOnglet(Enumere_Onglet_1.EGenreOnglet.BibliothequeProgression)){aTabLI.push(IE.jsx.str("div",{class:"row-contain",role:"group","aria-label":ObjetTraduction_1.GTraductions.getValeur('accueil.ressources.Progressions')},IE.jsx.str("h4",null,ObjetTraduction_1.GTraductions.getValeur('accueil.ressources.Progressions')),this.construireBouton({actif:lMatiere.nbrRessources[Enumere_PossessionRessource_1.EGenrePossessionRessource.mesProg]>0&&GEtatUtilisateur.existeGenreOnglet(Enumere_Onglet_1.EGenreOnglet.CahierDeTexte_Progression),nb:lMatiere.nbrRessources[Enumere_PossessionRessource_1.EGenrePossessionRessource.mesProg],icon:'data-icon',tooltip:ObjetTraduction_1.GTraductions.getValeur('accueil.ressources.hint.MesProgressions'),genrePossession:Enumere_PossessionRessource_1.EGenrePossessionRessource.mesProg,indexPossession:j}),this.construireBouton({actif:lMatiere.nbrRessources[Enumere_PossessionRessource_1.EGenrePossessionRessource.etabProg]>0&&GEtatUtilisateur.existeGenreOnglet(Enumere_Onglet_1.EGenreOnglet.BibliothequeProgression),nb:lMatiere.nbrRessources[Enumere_PossessionRessource_1.EGenrePossessionRessource.etabProg],icon:'library-icon',tooltip:ObjetTraduction_1.GTraductions.getValeur('accueil.ressources.hint.ProgressionsPartagees'),genrePossession:Enumere_PossessionRessource_1.EGenrePossessionRessource.etabProg,indexPossession:j})));} if(GEtatUtilisateur.existeGenreOnglet(Enumere_Onglet_1.EGenreOnglet.ProgrammesBO)&&lMatiere.nbrRessources[Enumere_PossessionRessource_1.EGenrePossessionRessource.BOProg]>0){aTabLI.push(IE.jsx.str("div",{class:"row-contain",role:"group","aria-label":ObjetTraduction_1.GTraductions.getValeur('accueil.ressources.ProgrammesBO')},IE.jsx.str("h4",null,ObjetTraduction_1.GTraductions.getValeur('accueil.ressources.ProgrammesBO')),this.construireBouton({actif:true,nb:lMatiere.nbrRessources[Enumere_PossessionRessource_1.EGenrePossessionRessource.BOProg],icon:'pgm-bo',tooltip:ObjetTraduction_1.GTraductions.getValeur('accueil.ressources.hint.ProgrammesBO'),genrePossession:Enumere_PossessionRessource_1.EGenrePossessionRessource.BOProg,indexPossession:j})));}})));}} H.push('</ul>');H.push(IE.jsx.str(IE.jsx.fragment,null,IE.jsx.str("div",{class:"legende"},IE.jsx.str("span",{class:"data-icon","ie-tooltipdescribe":ObjetTraduction_1.GTraductions.getValeur('accueil.ressources.MesDonnees')},ObjetTraduction_1.GTraductions.getValeur('accueil.ressources.MesDonnees')),IE.jsx.str("span",{class:"library-icon","ie-tooltipdescribe":ObjetTraduction_1.GTraductions.getValeur('accueil.ressources.DonneesBibliotheque')},ObjetTraduction_1.GTraductions.getValeur('accueil.ressources.DonneesBibliotheque')))));return H.join('');} _surRessources(aGenre,j){const lOnglet=this.getOnglet(aGenre);const lPage={Onglet:lOnglet,indiceCumul:0,matiere:null};if(lOnglet===Enumere_Onglet_1.EGenreOnglet.ProgrammesBO){lPage.indiceCumul=1;lPage.matiere=this.donnees.listeMatieres.get(j);} this.callback.appel(this.donnees.genre,Enumere_EvenementWidget_1.EGenreEvenementWidget.NavigationVersPage,lPage);} getOnglet(aGenre){return[
-Enumere_Onglet_1.EGenreOnglet.QCM_Saisie,Enumere_Onglet_1.EGenreOnglet.QCM_Bibliotheque,Enumere_Onglet_1.EGenreOnglet.CahierDeTexte_Progression,Enumere_Onglet_1.EGenreOnglet.BibliothequeProgression,Enumere_Onglet_1.EGenreOnglet.ProgrammesBO
-][aGenre];}} exports.WidgetRessources=WidgetRessources;
+exports.WidgetRessources = void 0;
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetTri_1 = require("ObjetTri");
+const Enumere_Onglet_1 = require("Enumere_Onglet");
+const Enumere_PossessionRessource_1 = require("Enumere_PossessionRessource");
+const Enumere_EvenementWidget_1 = require("Enumere_EvenementWidget");
+const ObjetWidget_1 = require("ObjetWidget");
+const Tooltip_1 = require("Tooltip");
+class WidgetRessources extends ObjetWidget_1.Widget.ObjetWidget {
+	construire(aParams) {
+		this.donnees = aParams.donnees;
+		const lWidget = {
+			getHtml: this.composeWidgetRessources.bind(this),
+			nbrElements: null,
+			afficherMessage: false,
+		};
+		$.extend(true, this.donnees, lWidget);
+		aParams.construireWidget(this.donnees);
+	}
+	getControleur(aInstance) {
+		return $.extend(true, super.getControleur(aInstance), {
+			nodeRessource(aGenrePossessionRessource, aIndex) {
+				$(this.node).eventValidation((e) => {
+					aInstance._surRessources(aGenrePossessionRessource, aIndex);
+				});
+			},
+		});
+	}
+	jsxNodeRessource(aGenrePossessionRessource, aIndex, aNode) {
+		$(aNode).eventValidation(() => {
+			this._surRessources(aGenrePossessionRessource, aIndex);
+		});
+	}
+	construireBouton(aParams) {
+		return IE.jsx.str(
+			"div",
+			{
+				class: [
+					"item-contain",
+					aParams.icon,
+					aParams.actif ? " AvecMain" : "",
+					aParams.actif ? "" : "item-contain-disabled",
+				],
+				"data-tooltip": Tooltip_1.Tooltip.Type.default,
+				"data-tooltip-text": aParams.tooltip,
+				tabindex: "0",
+				role: "link",
+				"ie-node": aParams.actif
+					? this.jsxNodeRessource.bind(
+							this,
+							aParams.genrePossession,
+							aParams.indexPossession,
+						)
+					: false,
+				"aria-disabled": aParams.actif ? false : "true",
+			},
+			IE.jsx.str("span", null, aParams.actif ? aParams.nb : 0),
+			IE.jsx.str(
+				"p",
+				{ class: Divers_css_1.StylesDivers.srOnly },
+				aParams.tooltip,
+			),
+		);
+	}
+	composeWidgetRessources() {
+		if (!this.donnees.listeMatieres) {
+			return "";
+		}
+		this.donnees.listeMatieres.setTri([ObjetTri_1.ObjetTri.init("Libelle")]);
+		this.donnees.listeMatieres.trier();
+		const H = [];
+		H.push('<ul class="liste-ressources">');
+		for (let j = 0; j < this.donnees.listeMatieres.count(); j++) {
+			const lMatiere = this.donnees.listeMatieres.get(j);
+			const lNbRessourcesMesQCM =
+				lMatiere.nbrRessources[
+					Enumere_PossessionRessource_1.EGenrePossessionRessource.mesQCM
+				];
+			const lNbRessourcesQCMEtablissement =
+				lMatiere.nbrRessources[
+					Enumere_PossessionRessource_1.EGenrePossessionRessource.etabQCM
+				];
+			if (
+				lNbRessourcesMesQCM > 0 ||
+				lNbRessourcesQCMEtablissement > 0 ||
+				(lMatiere.nbrRessources[
+					Enumere_PossessionRessource_1.EGenrePossessionRessource.mesProg
+				] > 0 &&
+					GEtatUtilisateur.existeGenreOnglet(
+						Enumere_Onglet_1.EGenreOnglet.CahierDeTexte_Progression,
+					)) ||
+				(lMatiere.nbrRessources[
+					Enumere_PossessionRessource_1.EGenrePossessionRessource.etabProg
+				] > 0 &&
+					GEtatUtilisateur.existeGenreOnglet(
+						Enumere_Onglet_1.EGenreOnglet.BibliothequeProgression,
+					)) ||
+				(GEtatUtilisateur.existeGenreOnglet(
+					Enumere_Onglet_1.EGenreOnglet.ProgrammesBO,
+				) &&
+					lMatiere.nbrRessources[
+						Enumere_PossessionRessource_1.EGenrePossessionRessource.BOProg
+					] > 0)
+			) {
+				H.push(
+					IE.jsx.str(
+						"li",
+						null,
+						IE.jsx.str("h3", null, lMatiere.getLibelle()),
+						IE.jsx.str(
+							"div",
+							{ role: "group", "aria-label": lMatiere.getLibelle() },
+							(aTabLI) => {
+								if (
+									lNbRessourcesMesQCM > 0 ||
+									lNbRessourcesQCMEtablissement > 0
+								) {
+									aTabLI.push(
+										IE.jsx.str(
+											"div",
+											{
+												class: "row-contain",
+												role: "group",
+												"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+													"accueil.ressources.QCM",
+												),
+											},
+											IE.jsx.str(
+												"h4",
+												null,
+												ObjetTraduction_1.GTraductions.getValeur(
+													"accueil.ressources.QCM",
+												),
+											),
+											this.construireBouton({
+												actif: lNbRessourcesMesQCM > 0,
+												nb: lNbRessourcesMesQCM,
+												icon: "data-icon",
+												tooltip: ObjetTraduction_1.GTraductions.getValeur(
+													"accueil.ressources.hint.MesQCM",
+												),
+												genrePossession:
+													Enumere_PossessionRessource_1
+														.EGenrePossessionRessource.mesQCM,
+												indexPossession: j,
+											}),
+											this.construireBouton({
+												actif: lNbRessourcesQCMEtablissement > 0,
+												nb: lNbRessourcesQCMEtablissement,
+												icon: "library-icon",
+												tooltip: ObjetTraduction_1.GTraductions.getValeur(
+													"accueil.ressources.hint.QCMPartages",
+												),
+												genrePossession:
+													Enumere_PossessionRessource_1
+														.EGenrePossessionRessource.etabQCM,
+												indexPossession: j,
+											}),
+										),
+									);
+								}
+								if (
+									(lMatiere.nbrRessources[
+										Enumere_PossessionRessource_1.EGenrePossessionRessource
+											.mesProg
+									] > 0 &&
+										GEtatUtilisateur.existeGenreOnglet(
+											Enumere_Onglet_1.EGenreOnglet.CahierDeTexte_Progression,
+										)) ||
+									(lMatiere.nbrRessources[
+										Enumere_PossessionRessource_1.EGenrePossessionRessource
+											.etabProg
+									] > 0 &&
+										GEtatUtilisateur.existeGenreOnglet(
+											Enumere_Onglet_1.EGenreOnglet.BibliothequeProgression,
+										))
+								) {
+									aTabLI.push(
+										IE.jsx.str(
+											"div",
+											{
+												class: "row-contain",
+												role: "group",
+												"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+													"accueil.ressources.Progressions",
+												),
+											},
+											IE.jsx.str(
+												"h4",
+												null,
+												ObjetTraduction_1.GTraductions.getValeur(
+													"accueil.ressources.Progressions",
+												),
+											),
+											this.construireBouton({
+												actif:
+													lMatiere.nbrRessources[
+														Enumere_PossessionRessource_1
+															.EGenrePossessionRessource.mesProg
+													] > 0 &&
+													GEtatUtilisateur.existeGenreOnglet(
+														Enumere_Onglet_1.EGenreOnglet
+															.CahierDeTexte_Progression,
+													),
+												nb: lMatiere.nbrRessources[
+													Enumere_PossessionRessource_1
+														.EGenrePossessionRessource.mesProg
+												],
+												icon: "data-icon",
+												tooltip: ObjetTraduction_1.GTraductions.getValeur(
+													"accueil.ressources.hint.MesProgressions",
+												),
+												genrePossession:
+													Enumere_PossessionRessource_1
+														.EGenrePossessionRessource.mesProg,
+												indexPossession: j,
+											}),
+											this.construireBouton({
+												actif:
+													lMatiere.nbrRessources[
+														Enumere_PossessionRessource_1
+															.EGenrePossessionRessource.etabProg
+													] > 0 &&
+													GEtatUtilisateur.existeGenreOnglet(
+														Enumere_Onglet_1.EGenreOnglet
+															.BibliothequeProgression,
+													),
+												nb: lMatiere.nbrRessources[
+													Enumere_PossessionRessource_1
+														.EGenrePossessionRessource.etabProg
+												],
+												icon: "library-icon",
+												tooltip: ObjetTraduction_1.GTraductions.getValeur(
+													"accueil.ressources.hint.ProgressionsPartagees",
+												),
+												genrePossession:
+													Enumere_PossessionRessource_1
+														.EGenrePossessionRessource.etabProg,
+												indexPossession: j,
+											}),
+										),
+									);
+								}
+								if (
+									GEtatUtilisateur.existeGenreOnglet(
+										Enumere_Onglet_1.EGenreOnglet.ProgrammesBO,
+									) &&
+									lMatiere.nbrRessources[
+										Enumere_PossessionRessource_1.EGenrePossessionRessource
+											.BOProg
+									] > 0
+								) {
+									aTabLI.push(
+										IE.jsx.str(
+											"div",
+											{
+												class: "row-contain",
+												role: "group",
+												"aria-label": ObjetTraduction_1.GTraductions.getValeur(
+													"accueil.ressources.ProgrammesBO",
+												),
+											},
+											IE.jsx.str(
+												"h4",
+												null,
+												ObjetTraduction_1.GTraductions.getValeur(
+													"accueil.ressources.ProgrammesBO",
+												),
+											),
+											this.construireBouton({
+												actif: true,
+												nb: lMatiere.nbrRessources[
+													Enumere_PossessionRessource_1
+														.EGenrePossessionRessource.BOProg
+												],
+												icon: "pgm-bo",
+												tooltip: ObjetTraduction_1.GTraductions.getValeur(
+													"accueil.ressources.hint.ProgrammesBO",
+												),
+												genrePossession:
+													Enumere_PossessionRessource_1
+														.EGenrePossessionRessource.BOProg,
+												indexPossession: j,
+											}),
+										),
+									);
+								}
+							},
+						),
+					),
+				);
+			}
+		}
+		H.push("</ul>");
+		H.push(
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"div",
+					{ class: "legende" },
+					IE.jsx.str(
+						"span",
+						{
+							class: "data-icon",
+							"ie-tooltipdescribe": ObjetTraduction_1.GTraductions.getValeur(
+								"accueil.ressources.MesDonnees",
+							),
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"accueil.ressources.MesDonnees",
+						),
+					),
+					IE.jsx.str(
+						"span",
+						{
+							class: "library-icon",
+							"ie-tooltipdescribe": ObjetTraduction_1.GTraductions.getValeur(
+								"accueil.ressources.DonneesBibliotheque",
+							),
+						},
+						ObjetTraduction_1.GTraductions.getValeur(
+							"accueil.ressources.DonneesBibliotheque",
+						),
+					),
+				),
+			),
+		);
+		return H.join("");
+	}
+	_surRessources(aGenre, j) {
+		const lOnglet = this.getOnglet(aGenre);
+		const lPage = { Onglet: lOnglet, indiceCumul: 0, matiere: null };
+		if (lOnglet === Enumere_Onglet_1.EGenreOnglet.ProgrammesBO) {
+			lPage.indiceCumul = 1;
+			lPage.matiere = this.donnees.listeMatieres.get(j);
+		}
+		this.callback.appel(
+			this.donnees.genre,
+			Enumere_EvenementWidget_1.EGenreEvenementWidget.NavigationVersPage,
+			lPage,
+		);
+	}
+	getOnglet(aGenre) {
+		return [
+			Enumere_Onglet_1.EGenreOnglet.QCM_Saisie,
+			Enumere_Onglet_1.EGenreOnglet.QCM_Bibliotheque,
+			Enumere_Onglet_1.EGenreOnglet.CahierDeTexte_Progression,
+			Enumere_Onglet_1.EGenreOnglet.BibliothequeProgression,
+			Enumere_Onglet_1.EGenreOnglet.ProgrammesBO,
+		][aGenre];
+	}
+}
+exports.WidgetRessources = WidgetRessources;

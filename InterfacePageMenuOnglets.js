@@ -5,7 +5,6 @@ const ObjetListeElements_1 = require("ObjetListeElements");
 const Enumere_Espace_1 = require("Enumere_Espace");
 const Enumere_Onglet_1 = require("Enumere_Onglet");
 const _InterfacePageMenuOnglets_1 = require("_InterfacePageMenuOnglets");
-const ObjetChaine_1 = require("ObjetChaine");
 const ObjetDroitsPN_1 = require("ObjetDroitsPN");
 const UtilitaireContactVieScolaire_Mobile_1 = require("UtilitaireContactVieScolaire_Mobile");
 const ActionneurCentraleNotificationsSco_1 = require("ActionneurCentraleNotificationsSco");
@@ -378,11 +377,8 @@ class ObjetAffichagePageMenuOnglets extends _InterfacePageMenuOnglets_1._Interfa
 	}
 	getInfosComboMembre(aMembre) {
 		const lHtmlPhoto = [];
-		if (aMembre && aMembre.avecPhoto) {
-			const lUrlPhoto = ObjetChaine_1.GChaine.creerUrlBruteLienExterne(
-				aMembre,
-				{ libelle: "photo.jpg" },
-			);
+		if (aMembre && aMembre.avecPhoto && aMembre.photoBase64) {
+			const lUrlPhoto = "data:image/png;base64," + aMembre.photoBase64;
 			lHtmlPhoto.push(
 				'<img src="',
 				lUrlPhoto,

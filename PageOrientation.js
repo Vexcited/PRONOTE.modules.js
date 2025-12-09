@@ -1094,14 +1094,18 @@ class PageOrientation extends ObjetIdentite_1.Identite {
 				this.saisie(false);
 			},
 			getDisabled: () => {
+				var _a;
 				let lAvecModification = false;
 				if (this.rubriqueSelectionne) {
+					lAvecModification =
+						((_a = this.voeuxSupprimes) === null || _a === void 0
+							? void 0
+							: _a.count()) > 0;
 					this.rubriqueSelectionne.listeVoeux.parcourir((aElement) => {
 						if (
 							[
 								Enumere_Etat_1.EGenreEtat.Creation,
 								Enumere_Etat_1.EGenreEtat.Modification,
-								Enumere_Etat_1.EGenreEtat.Suppression,
 							].includes(aElement.getEtat())
 						) {
 							lAvecModification = true;
@@ -1129,6 +1133,7 @@ class PageOrientation extends ObjetIdentite_1.Identite {
 			setValue: (aValue) => {
 				aVoeux.commentaire = aValue;
 				aVoeux.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+				this.setEtatSaisie(true);
 			},
 		};
 	}
@@ -1180,6 +1185,7 @@ class PageOrientation extends ObjetIdentite_1.Identite {
 							return aElement.getNumero() === aSpecialite.getNumero();
 						});
 						aVoeux.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+						this.setEtatSaisie(true);
 					}
 					aEvent.stopPropagation();
 				},
@@ -1253,6 +1259,7 @@ class PageOrientation extends ObjetIdentite_1.Identite {
 						});
 					}
 					aVoeux.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+					this.setEtatSaisie(true);
 					aEvent.stopPropagation();
 				},
 			};
@@ -1327,8 +1334,10 @@ class PageOrientation extends ObjetIdentite_1.Identite {
 	jsxModelBtnSelecteurLangue(aGenreLangue) {
 		const jsxModeleChips = (aChips, aGenreLangue) => {
 			return {
+				getDisabled: () => {
+					return !this.rubriqueLV.avecSaisie;
+				},
 				eventBtn: (aEvent) => {
-					var _a;
 					if (this.rubriqueLV && aChips) {
 						switch (aGenreLangue) {
 							case ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource
@@ -1337,9 +1346,7 @@ class PageOrientation extends ObjetIdentite_1.Identite {
 								break;
 							case ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource
 								.lv2:
-								(_a = this.rubriqueLV) === null || _a === void 0
-									? void 0
-									: _a.LV2.setEtat(Enumere_Etat_1.EGenreEtat.Suppression);
+								this.rubriqueLV.LV2 = null;
 								break;
 							case ObjetRequetePageOrientations_1.NSOrientation.EGenreRessource
 								.lvAutre:
@@ -1352,10 +1359,11 @@ class PageOrientation extends ObjetIdentite_1.Identite {
 						}
 					}
 					this.rubriqueLV.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+					this.setEtatSaisie(true);
 					aEvent.stopPropagation();
 				},
-				getOptions: function () {
-					return { avecBtn: false };
+				getOptions: () => {
+					return { avecBtn: this.rubriqueLV.avecSaisie };
 				},
 			};
 		};
@@ -1404,19 +1412,24 @@ class PageOrientation extends ObjetIdentite_1.Identite {
 					default:
 						break;
 				}
-				if (lRessource.count() > 0) {
-					this.ouvrirFenetreRessource({
-						genre: aGenreLangue,
-						listeRessources: lRessource,
-					});
-				} else {
-					GApplication.getMessage().afficher({
-						type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
-						message:
-							GlossaireOrientation_1.TradGlossaireOrientation.Options
-								.AucuneOptionDisponible,
-					});
+				if (this.rubriqueLV.avecSaisie) {
+					if (lRessource.count() > 0) {
+						this.ouvrirFenetreRessource({
+							genre: aGenreLangue,
+							listeRessources: lRessource,
+						});
+					} else {
+						GApplication.getMessage().afficher({
+							type: Enumere_BoiteMessage_1.EGenreBoiteMessage.Information,
+							message:
+								GlossaireOrientation_1.TradGlossaireOrientation.Options
+									.AucuneOptionDisponible,
+						});
+					}
 				}
+			},
+			getDisabled: () => {
+				return !this.rubriqueLV.avecSaisie;
 			},
 			getLibelle: () => {
 				var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
@@ -1528,6 +1541,7 @@ class PageOrientation extends ObjetIdentite_1.Identite {
 								this.voeuxSupprimes.add(
 									MethodesObjet_1.MethodesObjet.dupliquer(aVoeux),
 								);
+								this.setEtatSaisie(true);
 								aVoeux.setNumero(0);
 								aVoeux.orientation = new ObjetElement_1.ObjetElement();
 								aVoeux.specialites =
@@ -1552,6 +1566,7 @@ class PageOrientation extends ObjetIdentite_1.Identite {
 			setValue: (aValue) => {
 				aVoeux.orientation.avecStageFamille = aValue;
 				aVoeux.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+				this.setEtatSaisie(true);
 			},
 		};
 	}
@@ -1805,6 +1820,10 @@ class PageOrientation extends ObjetIdentite_1.Identite {
 		this.rubriqueLV.LV1 = aDonnees.lv1;
 		this.rubriqueLV.LV2 = aDonnees.lv2;
 		this.rubriqueLV.setEtat(Enumere_Etat_1.EGenreEtat.Modification);
+		this.setEtatSaisie(true);
+	}
+	surValidation() {
+		this.saisie(false);
 	}
 	saisie(aSaisieAccuseAR) {
 		let lListeVoeux = new ObjetListeElements_1.ObjetListeElements();

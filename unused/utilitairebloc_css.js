@@ -1,7 +1,6 @@
 exports.StylesUtilitaireBloc = void 0;
 exports.StylesUtilitaireBloc = {
 	Timeline: "Timeline",
-	FlexContainer_FicheContact: "FlexContainer_FicheContact",
 	zDepth1: "z-depth-1",
 	zDepth3: "z-depth-3",
 	zDepth5: "z-depth-5",
@@ -34,6 +33,7 @@ exports.StylesUtilitaireBloc = {
 	SaisieContact_Fiche: "SaisieContact_Fiche",
 	FlexContainer_AutresContacts: "FlexContainer_AutresContacts",
 	FlexItem_AutresContacts: "FlexItem_AutresContacts",
+	FlexContainer_FicheContact: "FlexContainer_FicheContact",
 	FlexItem_ChampContact: "FlexItem_ChampContact",
 	FlexItem_BtnContact: "FlexItem_BtnContact",
 	buttonGroup: "buttonGroup",

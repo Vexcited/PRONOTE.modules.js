@@ -1,1 +1,600 @@
-exports.EGenreEventDocumentMenuCtxDAT=exports.EGenreActionDAT=exports.UtilitaireDocumentATelecharger=void 0;const UtilitaireGestionCloudEtPDF_1=require("UtilitaireGestionCloudEtPDF");const UtilitaireGenerationPDF_1=require("UtilitaireGenerationPDF");const TypeHttpGenerationPDFSco_1=require("TypeHttpGenerationPDFSco");const Enumere_DocTelechargement_1=require("Enumere_DocTelechargement");const ObjetElement_1=require("ObjetElement");const ObjetTraduction_1=require("ObjetTraduction");const UtilitaireDocument_1=require("UtilitaireDocument");const OptionsPDFSco_1=require("OptionsPDFSco");const ObjetDroitsPN_1=require("ObjetDroitsPN");const UtilitaireTraitementImage_1=require("UtilitaireTraitementImage");const ObjetFenetre_1=require("ObjetFenetre");const ObjetFenetre_GenerationPdfSco_1=require("ObjetFenetre_GenerationPdfSco");const Enumere_Ressource_1=require("Enumere_Ressource");const Divers_css_1=;exports.UtilitaireDocumentATelecharger={genererPDF(aParams){UtilitaireGenerationPDF_1.GenerationPDF.genererPDF(Object.assign({paramPDF:{avecDepot:true},cloudCible:false},aParams));},creeFenetreGestion(aParams){const lParams=Object.assign({modeGestion:UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF.modeGestion.PDFEtCloud,avecDepot:true,avecMessage:false,message:null,avecBtnTelecharger:false,callbackTelechargement:null},aParams);let lTitre='';switch(lParams.pdf.paramPDF.genreGenerationPDF){case TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.Bulletin:case TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.BulletinDeCompetences:case TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.BulletinBIA:lTitre='nomFichier' in lParams.pdf.paramPDF?lParams.pdf.paramPDF.nomFichier:'';break;case TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.ProjetAccompagnementPerso:lTitre='projet' in lParams.pdf.paramPDF?lParams.pdf.paramPDF.projet.getLibelle():'';break;case TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.FichierExterneTelechargeable:case TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.DocumentTelechargeableMembre:case TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.DocumentTelechargeable:lTitre=lParams.pdf.paramPDF.document&&lParams.pdf.paramPDF.document.Libelle?lParams.pdf.paramPDF.document.Libelle:'';break;case TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.FicheBrevet:break;default:;break;} const lOptions={callbaskEvenement:function(aLigne){const lService=GEtatUtilisateur.listeCloudDepotServeur.get(aLigne);const lCloud=!!lService?lService.getGenre():null;exports.UtilitaireDocumentATelecharger.genererPDF(Object.assign(lParams.pdf,{cloudCible:lCloud}));},titre:lTitre,modeGestion:lParams.modeGestion,avecDepot:lParams.avecDepot,avecMessage:lParams.avecMessage,message:lParams.message,avecBtnTelecharger:lParams.avecBtnTelecharger};if(lParams.callbackTelechargement){lOptions.callbackTelechargement=lParams.callbackTelechargement;} if(lParams.callbackFermeture){lOptions.callbackFermeture=lParams.callbackFermeture;} if(lParams.callbackParametrage){lOptions.callbackParametrage=lParams.callbackParametrage;} UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF.creerFenetreGestion(lOptions);},getParamPDF(aElement){const lParamPDF={avecDepot:true};switch(aElement.typeDocument){case Enumere_DocTelechargement_1.EGenreDocTelechargement.documents:case Enumere_DocTelechargement_1.EGenreDocTelechargement.documentMembre:{lParamPDF.genreGenerationPDF=aElement.typeDocument===Enumere_DocTelechargement_1.EGenreDocTelechargement.documentMembre?TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.DocumentTelechargeableMembre:TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.DocumentTelechargeable;const lMdoc=aElement;lParamPDF.document=lMdoc.document;if(lMdoc.document.contexte){lParamPDF.contexte=lMdoc.document.contexte;} break;} case Enumere_DocTelechargement_1.EGenreDocTelechargement.projetAcc:{lParamPDF.genreGenerationPDF=TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.ProjetAccompagnementPerso;const lProjetAcc=aElement;lParamPDF.projet=lProjetAcc.projet;break;} case Enumere_DocTelechargement_1.EGenreDocTelechargement.bulletinBIA:{lParamPDF.genreGenerationPDF=TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.BulletinBIA;const lBulletinBIA=aElement;lParamPDF.nomFichier=lBulletinBIA.bulletin.nomFichier;lParamPDF.ident=lBulletinBIA.bulletin.ident;lParamPDF.libellePeriodeNotation=lBulletinBIA.bulletin.libellePeriodeNotation;lParamPDF.libelleAnnee=lBulletinBIA.bulletin.libelleAnnee;break;} case Enumere_DocTelechargement_1.EGenreDocTelechargement.bulletinDeCompetences:case Enumere_DocTelechargement_1.EGenreDocTelechargement.bulletin:{const lBulletin=aElement;lParamPDF.nomFichier=(lBulletin.getLibelle())+(lBulletin.periode?' - '+lBulletin.periode.getLibelle():'')+(lBulletin.classe?' - '+lBulletin.classe.getLibelle():'');lParamPDF.genreGenerationPDF=lBulletin.typeDocument===Enumere_DocTelechargement_1.EGenreDocTelechargement.bulletinDeCompetences?TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.BulletinDeCompetences:TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.Bulletin,lParamPDF.periode=lBulletin.periode;lParamPDF.avecCodeCompetences=GEtatUtilisateur.estAvecCodeCompetences();if(lBulletin.typeDocument===Enumere_DocTelechargement_1.EGenreDocTelechargement.bulletinDeCompetences){lParamPDF.avecChoixGraphe=true;} delete lParamPDF.avecDepot;break;} case Enumere_DocTelechargement_1.EGenreDocTelechargement.documentCasier:{lParamPDF.genreGenerationPDF=TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.FichierExterneTelechargeable;lParamPDF.document=new ObjetElement_1.ObjetElement({Numero:aElement.getNumero(),Genre:0,Libelle:aElement.getLibelle()});break;} case Enumere_DocTelechargement_1.EGenreDocTelechargement.diplome:{lParamPDF.genreGenerationPDF=TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.FicheBrevet,lParamPDF.eleve=GEtatUtilisateur.getMembre();break;} case Enumere_DocTelechargement_1.EGenreDocTelechargement.documentSigneFinalise:{lParamPDF.genreGenerationPDF=TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.FichierExterneTelechargeable;const lDocSign=aElement;const lElement=new ObjetElement_1.ObjetElement(lDocSign.archive.getLibelle(),lDocSign.getNumero(),0);lParamPDF.document=lElement;break;} default:;lParamPDF.genreGenerationPDF=TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.DocumentTelechargeable,lParamPDF.document=aElement;break;} return lParamPDF;},getAction(aGenre,aDocument,aCallback,aParams){const lAction={libelle:'',icon:'',actif:true,callback:() =>{},actionMenuCtx:new ObjetElement_1.ObjetElement(),genreEvenement:EGenreEventDocumentMenuCtxDAT.aucune};const getParamCallback=() =>{const lParamPDF=exports.UtilitaireDocumentATelecharger.getParamPDF(aDocument);const lParamGenegerPDF={paramPDF:lParamPDF};const lParametreFenetreGestion={};const lOuvrirFenetreParametrage=(aGenreGenerationPDF) =>{const lFenetre=ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(ObjetFenetre_GenerationPdfSco_1.ObjetFenetre_GenerationPdfSco,{pere:this,evenement(aNumeroBouton,aParametresAffichage,aOptionsPDF){if(aNumeroBouton===1){lParamGenegerPDF.optionsPDF=aOptionsPDF;}}});lFenetre.afficher({genreGenerationPDF:aGenreGenerationPDF});};switch(aDocument.typeDocument){case Enumere_DocTelechargement_1.EGenreDocTelechargement.projetAcc:lParamGenegerPDF.optionsPDF=OptionsPDFSco_1.OptionsPDFSco.defaut;break;case Enumere_DocTelechargement_1.EGenreDocTelechargement.bulletin:lParamGenegerPDF.optionsPDF=OptionsPDFSco_1.OptionsPDFSco.Bulletin;lParametreFenetreGestion.callbackParametrage=() => lOuvrirFenetreParametrage(TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.Bulletin);break;case Enumere_DocTelechargement_1.EGenreDocTelechargement.bulletinDeCompetences:lParamGenegerPDF.optionsPDF=OptionsPDFSco_1.OptionsPDFSco.BulletinDeCompetences;lParametreFenetreGestion.callbackParametrage=() => lOuvrirFenetreParametrage(TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.BulletinDeCompetences);break;case Enumere_DocTelechargement_1.EGenreDocTelechargement.diplome:lParamGenegerPDF.optionsPDF=OptionsPDFSco_1.OptionsPDFSco.defaut;lParametreFenetreGestion.callbackParametrage=() => lOuvrirFenetreParametrage(TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.FicheBrevet);break;} lParametreFenetreGestion.pdf=lParamGenegerPDF;if('memo' in aDocument&&aDocument.memo.length>0){lParametreFenetreGestion.avecMessage=true;lParametreFenetreGestion.message=IE.jsx.str("p",{class:[Divers_css_1.StylesDivers.whiteSpacePreLine]},aDocument.memo);} switch(aGenre){case EGenreActionDAT.genererLePdf:return lParamGenegerPDF;case EGenreActionDAT.archiverSurMonCloud:return Object.assign(lParametreFenetreGestion,{modeGestion:UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF.modeGestion.Cloud});case EGenreActionDAT.ouvrirPDFEtCloud:return lParametreFenetreGestion;case EGenreActionDAT.ouvrirTelechargerEtCloud:return Object.assign(lParametreFenetreGestion,{modeGestion:UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF.modeGestion.Cloud,avecBtnTelecharger:true,callbackTelechargement:() => UtilitaireDocument_1.UtilitaireDocument.ouvrirUrl('documentCasier' in aDocument?aDocument.documentCasier:aDocument),callbackFermeture:(aParam) => aCallback?aCallback(aParam,aDocument):null});}};switch(aGenre){case EGenreActionDAT.genererLePdf:lAction.libelle=ObjetTraduction_1.GTraductions.getValeur('documentsATelecharger.genererLePdf');lAction.icon='icon_pdf';lAction.genreEvenement=EGenreEventDocumentMenuCtxDAT.genererLePdf;lAction.callback=() => exports.UtilitaireDocumentATelecharger.genererPDF(getParamCallback());break;case EGenreActionDAT.ouvrirPDFEtCloud:lAction.icon='icon_pdf';lAction.genreEvenement=EGenreEventDocumentMenuCtxDAT.ouvrirfenetrePdfEtClourd;lAction.callback=() => exports.UtilitaireDocumentATelecharger.creeFenetreGestion(getParamCallback());break;case EGenreActionDAT.archiverSurMonCloud:lAction.libelle=ObjetTraduction_1.GTraductions.getValeur('documentsATelecharger.archiverSurMonCloud');lAction.icon='icon_cloud';lAction.genreEvenement=EGenreEventDocumentMenuCtxDAT.archiverSurMonCloud;lAction.callback=() => exports.UtilitaireDocumentATelecharger.creeFenetreGestion(getParamCallback());break;case EGenreActionDAT.redeposerLeFichierRempli:lAction.libelle=ObjetTraduction_1.GTraductions.getValeur('documentsATelecharger.redeposerLeFichierRempli');lAction.genreEvenement=EGenreEventDocumentMenuCtxDAT.redeposerLeFichierRempli;break;case EGenreActionDAT.marquerNonLu:lAction.libelle=ObjetTraduction_1.GTraductions.getValeur('documentsATelecharger.marquerNonLu');lAction.icon='icon_eye_close';lAction.genreEvenement=EGenreEventDocumentMenuCtxDAT.marquerNonLu;break;case EGenreActionDAT.marquerLu:lAction.libelle=ObjetTraduction_1.GTraductions.getValeur('documentsATelecharger.marquerLu');lAction.icon='icon_eye_open';lAction.genreEvenement=EGenreEventDocumentMenuCtxDAT.marquerLu;break;case EGenreActionDAT.supprimer:lAction.libelle=ObjetTraduction_1.GTraductions.getValeur('documentsATelecharger.supprimerDuCasier');lAction.icon='icon_trash';lAction.genreEvenement=EGenreEventDocumentMenuCtxDAT.supprimer;break;case EGenreActionDAT.deposerLeFichier:{const lApplication=GApplication;lAction.libelle=ObjetTraduction_1.GTraductions.getValeur('documentsATelecharger.deposerLeFichier');lAction.icon='icon_download_alt';lAction.genreEvenement=EGenreEventDocumentMenuCtxDAT.deposerLeFichier;lAction.callback=function(){UtilitaireDocument_1.UtilitaireDocument.ouvrirFenetreChoixTypeDeFichierADeposer.call(this,aCallback,{optionsSelecFile:{prendrePlusieursImages:{avecResizeImage:true,multiple:false,avecTransformationFlux:false,accept:UtilitaireTraitementImage_1.UtilitaireTraitementImage.getTabMimePDFImage().join(', '),maxSize:lApplication.droits.get(ObjetDroitsPN_1.TypeDroits.tailleMaxDocJointEtablissement)},prendrePhoto:{genererPDFImages:true,nomPDFaGenerer:UtilitaireDocument_1.UtilitaireDocument.getNomPdfGenere(),avecResizeImage:true,multiple:false,maxSize:lApplication.droits.get(ObjetDroitsPN_1.TypeDroits.tailleMaxDocJointEtablissement)}},avecPrendrePhoto:true,avecFichierDepuisCloud:false,idCtn:aParams.id,avecPrendrePlusieursImages:false,callbackFichierDepuisDocument:aCallback});};break;} case EGenreActionDAT.telecharger:lAction.libelle=ObjetTraduction_1.GTraductions.getValeur('documentsATelecharger.telecharger');lAction.icon='icon_download_alt';lAction.genreEvenement=EGenreEventDocumentMenuCtxDAT.telecharger;lAction.callback=() => UtilitaireDocument_1.UtilitaireDocument.ouvrirUrl('documentCasier' in aDocument?aDocument.documentCasier:aDocument);break;case EGenreActionDAT.ouvrirTelechargerEtCloud:lAction.genreEvenement=EGenreEventDocumentMenuCtxDAT.ouvrirfenetreTelechargerEtClourd;lAction.callback=() => exports.UtilitaireDocumentATelecharger.creeFenetreGestion(getParamCallback());break;case EGenreActionDAT.ouvrirFenetreInfo:lAction.callback=() =>{const lFenetre=ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(ObjetFenetre_1.ObjetFenetre,{pere:this,initialiser(aFenetre){aFenetre.setOptionsFenetre({largeur:300,listeBoutons:[ObjetTraduction_1.GTraductions.getValeur('Fermer')],titre:aDocument.getLibelle()});}});lFenetre.afficher(IE.jsx.str("div",null,'message' in aDocument?aDocument.message:''));};break;case EGenreActionDAT.consulterCommentaire:lAction.libelle=ObjetTraduction_1.GTraductions.getValeur('Casier.consulterLeCommentaire');lAction.icon='icon_post_it_rempli';lAction.genreEvenement=EGenreEventDocumentMenuCtxDAT.ouvrirFenetreCommentaire;break;default:;break;} return{actionMenuCtx:ObjetElement_1.ObjetElement.create({Libelle:lAction.libelle,icon:lAction.icon,actif:lAction.actif,genreEvenement:lAction.genreEvenement}),event:lAction.callback};},getIconListeRubrique(aArticle,aParams){const lAvecIconCategorie='categorie' in aArticle&&aArticle.categorie&&aArticle.categorie.icon;const lAvecIcon=aArticle&&'icon' in aArticle&&aArticle.icon;if(lAvecIconCategorie||lAvecIcon){return`<i role="presentation" class="${lAvecIcon?lAvecIcon:lAvecIconCategorie}"></i>`;} else{const lParams=Object.assign({height:'1.5rem',width:'0.4rem',couleur:'#c0c0c0'},aParams);let lColor='';if('couleur' in aArticle&&aArticle.couleur){lColor=aArticle.couleur;} else if('categorie' in aArticle&&aArticle.categorie&&aArticle.categorie.couleur){lColor=aArticle.categorie.couleur;} lParams.couleur=lColor;return exports.UtilitaireDocumentATelecharger.getCouleurLigne(lParams);}},getCouleurLigne(aParams){const lParams=Object.assign({height:'1.5rem',width:'0.4rem',couleur:'#c0c0c0'},aParams);return IE.jsx.str("div",{class:"line-color",style:{borderRadius:'calc(0.4rem / 2)',width:lParams.width,height:lParams.height,backgroundColor:'var(--color-line)','--color-line':lParams.couleur}});},isMDOC(aElement){return'categorie' in aElement&&'document' in aElement;},isProjetAcc(aElement){return'categorie' in aElement&&'projet' in aElement;},isObjetElementDestinataireResponsable(aElement){return aElement.getGenre()===Enumere_Ressource_1.EGenreRessource.DocumentCasier;}};var EGenreActionDAT;(function(EGenreActionDAT){EGenreActionDAT[EGenreActionDAT["genererLePdf"]=1]="genererLePdf";EGenreActionDAT[EGenreActionDAT["archiverSurMonCloud"]=2]="archiverSurMonCloud";EGenreActionDAT[EGenreActionDAT["redeposerLeFichierRempli"]=3]="redeposerLeFichierRempli";EGenreActionDAT[EGenreActionDAT["marquerNonLu"]=4]="marquerNonLu";EGenreActionDAT[EGenreActionDAT["supprimer"]=5]="supprimer";EGenreActionDAT[EGenreActionDAT["deposerLeFichier"]=6]="deposerLeFichier";EGenreActionDAT[EGenreActionDAT["telecharger"]=7]="telecharger";EGenreActionDAT[EGenreActionDAT["ouvrirPDFEtCloud"]=8]="ouvrirPDFEtCloud";EGenreActionDAT[EGenreActionDAT["ouvrirTelechargerEtCloud"]=9]="ouvrirTelechargerEtCloud";EGenreActionDAT[EGenreActionDAT["ouvrirFenetreInfo"]=10]="ouvrirFenetreInfo";EGenreActionDAT[EGenreActionDAT["marquerLu"]=11]="marquerLu";EGenreActionDAT[EGenreActionDAT["consulterCommentaire"]=12]="consulterCommentaire";})(EGenreActionDAT||(exports.EGenreActionDAT=EGenreActionDAT={}));var EGenreEventDocumentMenuCtxDAT;(function(EGenreEventDocumentMenuCtxDAT){EGenreEventDocumentMenuCtxDAT[EGenreEventDocumentMenuCtxDAT["aucune"]=0]="aucune";EGenreEventDocumentMenuCtxDAT[EGenreEventDocumentMenuCtxDAT["depotCloud"]=1]="depotCloud";EGenreEventDocumentMenuCtxDAT[EGenreEventDocumentMenuCtxDAT["supprimer"]=2]="supprimer";EGenreEventDocumentMenuCtxDAT[EGenreEventDocumentMenuCtxDAT["marquerLu"]=3]="marquerLu";EGenreEventDocumentMenuCtxDAT[EGenreEventDocumentMenuCtxDAT["marquerNonLu"]=4]="marquerNonLu";EGenreEventDocumentMenuCtxDAT[EGenreEventDocumentMenuCtxDAT["btnRetour"]=5]="btnRetour";EGenreEventDocumentMenuCtxDAT[EGenreEventDocumentMenuCtxDAT["ouvrirfenetrePdfEtCloud"]=6]="ouvrirfenetrePdfEtCloud";EGenreEventDocumentMenuCtxDAT[EGenreEventDocumentMenuCtxDAT["genererLePdf"]=7]="genererLePdf";EGenreEventDocumentMenuCtxDAT[EGenreEventDocumentMenuCtxDAT["archiverSurMonCloud"]=8]="archiverSurMonCloud";EGenreEventDocumentMenuCtxDAT[EGenreEventDocumentMenuCtxDAT["redeposerLeFichierRempli"]=9]="redeposerLeFichierRempli";EGenreEventDocumentMenuCtxDAT[EGenreEventDocumentMenuCtxDAT["deposerLeFichier"]=10]="deposerLeFichier";EGenreEventDocumentMenuCtxDAT[EGenreEventDocumentMenuCtxDAT["telecharger"]=11]="telecharger";EGenreEventDocumentMenuCtxDAT[EGenreEventDocumentMenuCtxDAT["supprimerFichierDepose"]=12]="supprimerFichierDepose";EGenreEventDocumentMenuCtxDAT[EGenreEventDocumentMenuCtxDAT["ouvrirfenetreTelechargerEtClourd"]=13]="ouvrirfenetreTelechargerEtClourd";EGenreEventDocumentMenuCtxDAT[EGenreEventDocumentMenuCtxDAT["ouvrirfenetrePdfEtClourd"]=14]="ouvrirfenetrePdfEtClourd";EGenreEventDocumentMenuCtxDAT[EGenreEventDocumentMenuCtxDAT["ouvrirFenetreCommentaire"]=15]="ouvrirFenetreCommentaire";})(EGenreEventDocumentMenuCtxDAT||(exports.EGenreEventDocumentMenuCtxDAT=EGenreEventDocumentMenuCtxDAT={}));
+exports.EGenreEventDocumentMenuCtxDAT =
+	exports.EGenreActionDAT =
+	exports.UtilitaireDocumentATelecharger =
+		void 0;
+const UtilitaireGestionCloudEtPDF_1 = require("UtilitaireGestionCloudEtPDF");
+const UtilitaireGenerationPDF_1 = require("UtilitaireGenerationPDF");
+const TypeHttpGenerationPDFSco_1 = require("TypeHttpGenerationPDFSco");
+const Enumere_DocTelechargement_1 = require("Enumere_DocTelechargement");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const UtilitaireDocument_1 = require("UtilitaireDocument");
+const OptionsPDFSco_1 = require("OptionsPDFSco");
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const UtilitaireTraitementImage_1 = require("UtilitaireTraitementImage");
+const ObjetFenetre_1 = require("ObjetFenetre");
+const ObjetFenetre_GenerationPdfSco_1 = require("ObjetFenetre_GenerationPdfSco");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+exports.UtilitaireDocumentATelecharger = {
+	genererPDF(aParams) {
+		UtilitaireGenerationPDF_1.GenerationPDF.genererPDF(
+			Object.assign(
+				{ paramPDF: { avecDepot: true }, cloudCible: false },
+				aParams,
+			),
+		);
+	},
+	creeFenetreGestion(aParams) {
+		const lParams = Object.assign(
+			{
+				modeGestion:
+					UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF.modeGestion
+						.PDFEtCloud,
+				avecDepot: true,
+				avecMessage: false,
+				message: null,
+				avecBtnTelecharger: false,
+				callbackTelechargement: null,
+			},
+			aParams,
+		);
+		let lTitre = "";
+		switch (lParams.pdf.paramPDF.genreGenerationPDF) {
+			case TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.Bulletin:
+			case TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco
+				.BulletinDeCompetences:
+			case TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.BulletinBIA:
+				lTitre =
+					"nomFichier" in lParams.pdf.paramPDF
+						? lParams.pdf.paramPDF.nomFichier
+						: "";
+				break;
+			case TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco
+				.ProjetAccompagnementPerso:
+				lTitre =
+					"projet" in lParams.pdf.paramPDF
+						? lParams.pdf.paramPDF.projet.getLibelle()
+						: "";
+				break;
+			case TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco
+				.FichierExterneTelechargeable:
+			case TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco
+				.DocumentTelechargeableMembre:
+			case TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco
+				.DocumentTelechargeable:
+				lTitre =
+					lParams.pdf.paramPDF.document && lParams.pdf.paramPDF.document.Libelle
+						? lParams.pdf.paramPDF.document.Libelle
+						: "";
+				break;
+			case TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.FicheBrevet:
+				break;
+			default:
+				break;
+		}
+		const lOptions = {
+			callbaskEvenement: function (aLigne) {
+				const lService = GEtatUtilisateur.listeCloudDepotServeur.get(aLigne);
+				const lCloud = !!lService ? lService.getGenre() : null;
+				exports.UtilitaireDocumentATelecharger.genererPDF(
+					Object.assign(lParams.pdf, { cloudCible: lCloud }),
+				);
+			},
+			titre: lTitre,
+			modeGestion: lParams.modeGestion,
+			avecDepot: lParams.avecDepot,
+			avecMessage: lParams.avecMessage,
+			message: lParams.message,
+			avecBtnTelecharger: lParams.avecBtnTelecharger,
+		};
+		if (lParams.callbackTelechargement) {
+			lOptions.callbackTelechargement = lParams.callbackTelechargement;
+		}
+		if (lParams.callbackFermeture) {
+			lOptions.callbackFermeture = lParams.callbackFermeture;
+		}
+		if (lParams.callbackParametrage) {
+			lOptions.callbackParametrage = lParams.callbackParametrage;
+		}
+		UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF.creerFenetreGestion(
+			lOptions,
+		);
+	},
+	getParamPDF(aElement) {
+		const lParamPDF = { avecDepot: true };
+		switch (aElement.typeDocument) {
+			case Enumere_DocTelechargement_1.EGenreDocTelechargement.documents:
+			case Enumere_DocTelechargement_1.EGenreDocTelechargement.documentMembre: {
+				lParamPDF.genreGenerationPDF =
+					aElement.typeDocument ===
+					Enumere_DocTelechargement_1.EGenreDocTelechargement.documentMembre
+						? TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco
+								.DocumentTelechargeableMembre
+						: TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco
+								.DocumentTelechargeable;
+				const lMdoc = aElement;
+				lParamPDF.document = lMdoc.document;
+				if (lMdoc.document.contexte) {
+					lParamPDF.contexte = lMdoc.document.contexte;
+				}
+				break;
+			}
+			case Enumere_DocTelechargement_1.EGenreDocTelechargement.projetAcc: {
+				lParamPDF.genreGenerationPDF =
+					TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.ProjetAccompagnementPerso;
+				const lProjetAcc = aElement;
+				lParamPDF.projet = lProjetAcc.projet;
+				break;
+			}
+			case Enumere_DocTelechargement_1.EGenreDocTelechargement.bulletinBIA: {
+				lParamPDF.genreGenerationPDF =
+					TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.BulletinBIA;
+				const lBulletinBIA = aElement;
+				lParamPDF.nomFichier = lBulletinBIA.bulletin.nomFichier;
+				lParamPDF.ident = lBulletinBIA.bulletin.ident;
+				lParamPDF.libellePeriodeNotation =
+					lBulletinBIA.bulletin.libellePeriodeNotation;
+				lParamPDF.libelleAnnee = lBulletinBIA.bulletin.libelleAnnee;
+				break;
+			}
+			case Enumere_DocTelechargement_1.EGenreDocTelechargement
+				.bulletinDeCompetences:
+			case Enumere_DocTelechargement_1.EGenreDocTelechargement.bulletin: {
+				const lBulletin = aElement;
+				lParamPDF.nomFichier =
+					lBulletin.getLibelle() +
+					(lBulletin.periode ? " - " + lBulletin.periode.getLibelle() : "") +
+					(lBulletin.classe ? " - " + lBulletin.classe.getLibelle() : "");
+				(lParamPDF.genreGenerationPDF =
+					lBulletin.typeDocument ===
+					Enumere_DocTelechargement_1.EGenreDocTelechargement
+						.bulletinDeCompetences
+						? TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco
+								.BulletinDeCompetences
+						: TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.Bulletin),
+					(lParamPDF.periode = lBulletin.periode);
+				lParamPDF.avecCodeCompetences =
+					GEtatUtilisateur.estAvecCodeCompetences();
+				if (
+					lBulletin.typeDocument ===
+					Enumere_DocTelechargement_1.EGenreDocTelechargement
+						.bulletinDeCompetences
+				) {
+					lParamPDF.avecChoixGraphe = true;
+				}
+				delete lParamPDF.avecDepot;
+				break;
+			}
+			case Enumere_DocTelechargement_1.EGenreDocTelechargement.documentCasier: {
+				lParamPDF.genreGenerationPDF =
+					TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.FichierExterneTelechargeable;
+				lParamPDF.document = new ObjetElement_1.ObjetElement({
+					Numero: aElement.getNumero(),
+					Genre: 0,
+					Libelle: aElement.getLibelle(),
+				});
+				break;
+			}
+			case Enumere_DocTelechargement_1.EGenreDocTelechargement.diplome: {
+				(lParamPDF.genreGenerationPDF =
+					TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.FicheBrevet),
+					(lParamPDF.eleve = GEtatUtilisateur.getMembre());
+				break;
+			}
+			case Enumere_DocTelechargement_1.EGenreDocTelechargement
+				.documentSigneFinalise: {
+				lParamPDF.genreGenerationPDF =
+					TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.FichierExterneTelechargeable;
+				const lDocSign = aElement;
+				const lElement = new ObjetElement_1.ObjetElement(
+					lDocSign.archive.getLibelle(),
+					lDocSign.getNumero(),
+					0,
+				);
+				lParamPDF.document = lElement;
+				break;
+			}
+			default:
+				(lParamPDF.genreGenerationPDF =
+					TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.DocumentTelechargeable),
+					(lParamPDF.document = aElement);
+				break;
+		}
+		return lParamPDF;
+	},
+	getAction(aGenre, aDocument, aCallback, aParams) {
+		const lAction = {
+			libelle: "",
+			icon: "",
+			actif: true,
+			callback: () => {},
+			actionMenuCtx: new ObjetElement_1.ObjetElement(),
+			genreEvenement: EGenreEventDocumentMenuCtxDAT.aucune,
+		};
+		const getParamCallback = () => {
+			const lParamPDF =
+				exports.UtilitaireDocumentATelecharger.getParamPDF(aDocument);
+			const lParamGenegerPDF = { paramPDF: lParamPDF };
+			const lParametreFenetreGestion = {};
+			const lOuvrirFenetreParametrage = (aGenreGenerationPDF) => {
+				const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+					ObjetFenetre_GenerationPdfSco_1.ObjetFenetre_GenerationPdfSco,
+					{
+						pere: this,
+						evenement(aNumeroBouton, aParametresAffichage, aOptionsPDF) {
+							if (aNumeroBouton === 1) {
+								lParamGenegerPDF.optionsPDF = aOptionsPDF;
+							}
+						},
+					},
+				);
+				lFenetre.afficher({ genreGenerationPDF: aGenreGenerationPDF });
+			};
+			switch (aDocument.typeDocument) {
+				case Enumere_DocTelechargement_1.EGenreDocTelechargement.projetAcc:
+					lParamGenegerPDF.optionsPDF = OptionsPDFSco_1.OptionsPDFSco.defaut;
+					break;
+				case Enumere_DocTelechargement_1.EGenreDocTelechargement.bulletin:
+					lParamGenegerPDF.optionsPDF = OptionsPDFSco_1.OptionsPDFSco.Bulletin;
+					lParametreFenetreGestion.callbackParametrage = () =>
+						lOuvrirFenetreParametrage(
+							TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.Bulletin,
+						);
+					break;
+				case Enumere_DocTelechargement_1.EGenreDocTelechargement
+					.bulletinDeCompetences:
+					lParamGenegerPDF.optionsPDF =
+						OptionsPDFSco_1.OptionsPDFSco.BulletinDeCompetences;
+					lParametreFenetreGestion.callbackParametrage = () =>
+						lOuvrirFenetreParametrage(
+							TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco
+								.BulletinDeCompetences,
+						);
+					break;
+				case Enumere_DocTelechargement_1.EGenreDocTelechargement.diplome:
+					lParamGenegerPDF.optionsPDF = OptionsPDFSco_1.OptionsPDFSco.defaut;
+					lParametreFenetreGestion.callbackParametrage = () =>
+						lOuvrirFenetreParametrage(
+							TypeHttpGenerationPDFSco_1.TypeHttpGenerationPDFSco.FicheBrevet,
+						);
+					break;
+			}
+			lParametreFenetreGestion.pdf = lParamGenegerPDF;
+			if ("memo" in aDocument && aDocument.memo.length > 0) {
+				lParametreFenetreGestion.avecMessage = true;
+				lParametreFenetreGestion.message = IE.jsx.str(
+					"p",
+					{ class: [Divers_css_1.StylesDivers.whiteSpacePreLine] },
+					aDocument.memo,
+				);
+			}
+			switch (aGenre) {
+				case EGenreActionDAT.genererLePdf:
+					return lParamGenegerPDF;
+				case EGenreActionDAT.archiverSurMonCloud:
+					return Object.assign(lParametreFenetreGestion, {
+						modeGestion:
+							UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF
+								.modeGestion.Cloud,
+					});
+				case EGenreActionDAT.ouvrirPDFEtCloud:
+					return lParametreFenetreGestion;
+				case EGenreActionDAT.ouvrirTelechargerEtCloud:
+					return Object.assign(lParametreFenetreGestion, {
+						modeGestion:
+							UtilitaireGestionCloudEtPDF_1.UtilitaireGestionCloudEtPDF
+								.modeGestion.Cloud,
+						avecBtnTelecharger: true,
+						callbackTelechargement: () =>
+							UtilitaireDocument_1.UtilitaireDocument.ouvrirUrl(
+								"documentCasier" in aDocument
+									? aDocument.documentCasier
+									: aDocument,
+							),
+						callbackFermeture: (aParam) =>
+							aCallback ? aCallback(aParam, aDocument) : null,
+					});
+			}
+		};
+		switch (aGenre) {
+			case EGenreActionDAT.genererLePdf:
+				lAction.libelle = ObjetTraduction_1.GTraductions.getValeur(
+					"documentsATelecharger.genererLePdf",
+				);
+				lAction.icon = "icon_pdf";
+				lAction.genreEvenement = EGenreEventDocumentMenuCtxDAT.genererLePdf;
+				lAction.callback = () =>
+					exports.UtilitaireDocumentATelecharger.genererPDF(getParamCallback());
+				break;
+			case EGenreActionDAT.ouvrirPDFEtCloud:
+				lAction.icon = "icon_pdf";
+				lAction.genreEvenement =
+					EGenreEventDocumentMenuCtxDAT.ouvrirfenetrePdfEtClourd;
+				lAction.callback = () =>
+					exports.UtilitaireDocumentATelecharger.creeFenetreGestion(
+						getParamCallback(),
+					);
+				break;
+			case EGenreActionDAT.archiverSurMonCloud:
+				lAction.libelle = ObjetTraduction_1.GTraductions.getValeur(
+					"documentsATelecharger.archiverSurMonCloud",
+				);
+				lAction.icon = "icon_cloud";
+				lAction.genreEvenement =
+					EGenreEventDocumentMenuCtxDAT.archiverSurMonCloud;
+				lAction.callback = () =>
+					exports.UtilitaireDocumentATelecharger.creeFenetreGestion(
+						getParamCallback(),
+					);
+				break;
+			case EGenreActionDAT.redeposerLeFichierRempli:
+				lAction.libelle = ObjetTraduction_1.GTraductions.getValeur(
+					"documentsATelecharger.redeposerLeFichierRempli",
+				);
+				lAction.genreEvenement =
+					EGenreEventDocumentMenuCtxDAT.redeposerLeFichierRempli;
+				break;
+			case EGenreActionDAT.marquerNonLu:
+				lAction.libelle = ObjetTraduction_1.GTraductions.getValeur(
+					"documentsATelecharger.marquerNonLu",
+				);
+				lAction.icon = "icon_eye_close";
+				lAction.genreEvenement = EGenreEventDocumentMenuCtxDAT.marquerNonLu;
+				break;
+			case EGenreActionDAT.marquerLu:
+				lAction.libelle = ObjetTraduction_1.GTraductions.getValeur(
+					"documentsATelecharger.marquerLu",
+				);
+				lAction.icon = "icon_eye_open";
+				lAction.genreEvenement = EGenreEventDocumentMenuCtxDAT.marquerLu;
+				break;
+			case EGenreActionDAT.supprimer:
+				lAction.libelle = ObjetTraduction_1.GTraductions.getValeur(
+					"documentsATelecharger.supprimerDuCasier",
+				);
+				lAction.icon = "icon_trash";
+				lAction.genreEvenement = EGenreEventDocumentMenuCtxDAT.supprimer;
+				break;
+			case EGenreActionDAT.deposerLeFichier: {
+				const lApplication = GApplication;
+				lAction.libelle = ObjetTraduction_1.GTraductions.getValeur(
+					"documentsATelecharger.deposerLeFichier",
+				);
+				lAction.icon = "icon_download_alt";
+				lAction.genreEvenement = EGenreEventDocumentMenuCtxDAT.deposerLeFichier;
+				lAction.callback = function () {
+					UtilitaireDocument_1.UtilitaireDocument.ouvrirFenetreChoixTypeDeFichierADeposer.call(
+						this,
+						aCallback,
+						{
+							optionsSelecFile: {
+								prendrePlusieursImages: {
+									avecResizeImage: true,
+									multiple: false,
+									avecTransformationFlux: false,
+									accept:
+										UtilitaireTraitementImage_1.UtilitaireTraitementImage.getTabMimePDFImage().join(
+											", ",
+										),
+									maxSize: lApplication.droits.get(
+										ObjetDroitsPN_1.TypeDroits.tailleMaxDocJointEtablissement,
+									),
+								},
+								prendrePhoto: {
+									genererPDFImages: true,
+									nomPDFaGenerer:
+										UtilitaireDocument_1.UtilitaireDocument.getNomPdfGenere(),
+									avecResizeImage: true,
+									multiple: false,
+									maxSize: lApplication.droits.get(
+										ObjetDroitsPN_1.TypeDroits.tailleMaxDocJointEtablissement,
+									),
+								},
+							},
+							avecPrendrePhoto: true,
+							avecFichierDepuisCloud: false,
+							idCtn: aParams.id,
+							avecPrendrePlusieursImages: false,
+							callbackFichierDepuisDocument: aCallback,
+						},
+					);
+				};
+				break;
+			}
+			case EGenreActionDAT.telecharger:
+				lAction.libelle = ObjetTraduction_1.GTraductions.getValeur(
+					"documentsATelecharger.telecharger",
+				);
+				lAction.icon = "icon_download_alt";
+				lAction.genreEvenement = EGenreEventDocumentMenuCtxDAT.telecharger;
+				lAction.callback = () =>
+					UtilitaireDocument_1.UtilitaireDocument.ouvrirUrl(
+						"documentCasier" in aDocument
+							? aDocument.documentCasier
+							: aDocument,
+					);
+				break;
+			case EGenreActionDAT.ouvrirTelechargerEtCloud:
+				lAction.genreEvenement =
+					EGenreEventDocumentMenuCtxDAT.ouvrirfenetreTelechargerEtClourd;
+				lAction.callback = () =>
+					exports.UtilitaireDocumentATelecharger.creeFenetreGestion(
+						getParamCallback(),
+					);
+				break;
+			case EGenreActionDAT.ouvrirFenetreInfo:
+				lAction.callback = () => {
+					const lFenetre = ObjetFenetre_1.ObjetFenetre.creerInstanceFenetre(
+						ObjetFenetre_1.ObjetFenetre,
+						{
+							pere: this,
+							initialiser(aFenetre) {
+								aFenetre.setOptionsFenetre({
+									largeur: 300,
+									listeBoutons: [
+										ObjetTraduction_1.GTraductions.getValeur("Fermer"),
+									],
+									titre: aDocument.getLibelle(),
+								});
+							},
+						},
+					);
+					lFenetre.afficher(
+						IE.jsx.str(
+							"div",
+							null,
+							"message" in aDocument ? aDocument.message : "",
+						),
+					);
+				};
+				break;
+			case EGenreActionDAT.consulterCommentaire:
+				lAction.libelle = ObjetTraduction_1.GTraductions.getValeur(
+					"Casier.consulterLeCommentaire",
+				);
+				lAction.icon = "icon_post_it_rempli";
+				lAction.genreEvenement =
+					EGenreEventDocumentMenuCtxDAT.ouvrirFenetreCommentaire;
+				break;
+			default:
+				break;
+		}
+		return {
+			actionMenuCtx: ObjetElement_1.ObjetElement.create({
+				Libelle: lAction.libelle,
+				icon: lAction.icon,
+				actif: lAction.actif,
+				genreEvenement: lAction.genreEvenement,
+			}),
+			event: lAction.callback,
+		};
+	},
+	getIconListeRubrique(aArticle, aParams) {
+		const lAvecIconCategorie =
+			"categorie" in aArticle && aArticle.categorie && aArticle.categorie.icon;
+		const lAvecIcon = aArticle && "icon" in aArticle && aArticle.icon;
+		if (lAvecIconCategorie || lAvecIcon) {
+			return `<i role="presentation" class="${lAvecIcon ? lAvecIcon : lAvecIconCategorie}"></i>`;
+		} else {
+			const lParams = Object.assign(
+				{ height: "1.5rem", width: "0.4rem", couleur: "#c0c0c0" },
+				aParams,
+			);
+			let lColor = "";
+			if ("couleur" in aArticle && aArticle.couleur) {
+				lColor = aArticle.couleur;
+			} else if (
+				"categorie" in aArticle &&
+				aArticle.categorie &&
+				aArticle.categorie.couleur
+			) {
+				lColor = aArticle.categorie.couleur;
+			}
+			lParams.couleur = lColor;
+			return exports.UtilitaireDocumentATelecharger.getCouleurLigne(lParams);
+		}
+	},
+	getCouleurLigne(aParams) {
+		const lParams = Object.assign(
+			{ height: "1.5rem", width: "0.4rem", couleur: "#c0c0c0" },
+			aParams,
+		);
+		return IE.jsx.str("div", {
+			class: "line-color",
+			style: {
+				borderRadius: "calc(0.4rem / 2)",
+				width: lParams.width,
+				height: lParams.height,
+				backgroundColor: "var(--color-line)",
+				"--color-line": lParams.couleur,
+			},
+		});
+	},
+	isMDOC(aElement) {
+		return "categorie" in aElement && "document" in aElement;
+	},
+	isProjetAcc(aElement) {
+		return "categorie" in aElement && "projet" in aElement;
+	},
+	isObjetElementDestinataireResponsable(aElement) {
+		return (
+			aElement.getGenre() === Enumere_Ressource_1.EGenreRessource.DocumentCasier
+		);
+	},
+};
+var EGenreActionDAT;
+(function (EGenreActionDAT) {
+	EGenreActionDAT[(EGenreActionDAT["genererLePdf"] = 1)] = "genererLePdf";
+	EGenreActionDAT[(EGenreActionDAT["archiverSurMonCloud"] = 2)] =
+		"archiverSurMonCloud";
+	EGenreActionDAT[(EGenreActionDAT["redeposerLeFichierRempli"] = 3)] =
+		"redeposerLeFichierRempli";
+	EGenreActionDAT[(EGenreActionDAT["marquerNonLu"] = 4)] = "marquerNonLu";
+	EGenreActionDAT[(EGenreActionDAT["supprimer"] = 5)] = "supprimer";
+	EGenreActionDAT[(EGenreActionDAT["deposerLeFichier"] = 6)] =
+		"deposerLeFichier";
+	EGenreActionDAT[(EGenreActionDAT["telecharger"] = 7)] = "telecharger";
+	EGenreActionDAT[(EGenreActionDAT["ouvrirPDFEtCloud"] = 8)] =
+		"ouvrirPDFEtCloud";
+	EGenreActionDAT[(EGenreActionDAT["ouvrirTelechargerEtCloud"] = 9)] =
+		"ouvrirTelechargerEtCloud";
+	EGenreActionDAT[(EGenreActionDAT["ouvrirFenetreInfo"] = 10)] =
+		"ouvrirFenetreInfo";
+	EGenreActionDAT[(EGenreActionDAT["marquerLu"] = 11)] = "marquerLu";
+	EGenreActionDAT[(EGenreActionDAT["consulterCommentaire"] = 12)] =
+		"consulterCommentaire";
+})(EGenreActionDAT || (exports.EGenreActionDAT = EGenreActionDAT = {}));
+var EGenreEventDocumentMenuCtxDAT;
+(function (EGenreEventDocumentMenuCtxDAT) {
+	EGenreEventDocumentMenuCtxDAT[(EGenreEventDocumentMenuCtxDAT["aucune"] = 0)] =
+		"aucune";
+	EGenreEventDocumentMenuCtxDAT[
+		(EGenreEventDocumentMenuCtxDAT["depotCloud"] = 1)
+	] = "depotCloud";
+	EGenreEventDocumentMenuCtxDAT[
+		(EGenreEventDocumentMenuCtxDAT["supprimer"] = 2)
+	] = "supprimer";
+	EGenreEventDocumentMenuCtxDAT[
+		(EGenreEventDocumentMenuCtxDAT["marquerLu"] = 3)
+	] = "marquerLu";
+	EGenreEventDocumentMenuCtxDAT[
+		(EGenreEventDocumentMenuCtxDAT["marquerNonLu"] = 4)
+	] = "marquerNonLu";
+	EGenreEventDocumentMenuCtxDAT[
+		(EGenreEventDocumentMenuCtxDAT["btnRetour"] = 5)
+	] = "btnRetour";
+	EGenreEventDocumentMenuCtxDAT[
+		(EGenreEventDocumentMenuCtxDAT["ouvrirfenetrePdfEtCloud"] = 6)
+	] = "ouvrirfenetrePdfEtCloud";
+	EGenreEventDocumentMenuCtxDAT[
+		(EGenreEventDocumentMenuCtxDAT["genererLePdf"] = 7)
+	] = "genererLePdf";
+	EGenreEventDocumentMenuCtxDAT[
+		(EGenreEventDocumentMenuCtxDAT["archiverSurMonCloud"] = 8)
+	] = "archiverSurMonCloud";
+	EGenreEventDocumentMenuCtxDAT[
+		(EGenreEventDocumentMenuCtxDAT["redeposerLeFichierRempli"] = 9)
+	] = "redeposerLeFichierRempli";
+	EGenreEventDocumentMenuCtxDAT[
+		(EGenreEventDocumentMenuCtxDAT["deposerLeFichier"] = 10)
+	] = "deposerLeFichier";
+	EGenreEventDocumentMenuCtxDAT[
+		(EGenreEventDocumentMenuCtxDAT["telecharger"] = 11)
+	] = "telecharger";
+	EGenreEventDocumentMenuCtxDAT[
+		(EGenreEventDocumentMenuCtxDAT["supprimerFichierDepose"] = 12)
+	] = "supprimerFichierDepose";
+	EGenreEventDocumentMenuCtxDAT[
+		(EGenreEventDocumentMenuCtxDAT["ouvrirfenetreTelechargerEtClourd"] = 13)
+	] = "ouvrirfenetreTelechargerEtClourd";
+	EGenreEventDocumentMenuCtxDAT[
+		(EGenreEventDocumentMenuCtxDAT["ouvrirfenetrePdfEtClourd"] = 14)
+	] = "ouvrirfenetrePdfEtClourd";
+	EGenreEventDocumentMenuCtxDAT[
+		(EGenreEventDocumentMenuCtxDAT["ouvrirFenetreCommentaire"] = 15)
+	] = "ouvrirFenetreCommentaire";
+})(
+	EGenreEventDocumentMenuCtxDAT ||
+		(exports.EGenreEventDocumentMenuCtxDAT = EGenreEventDocumentMenuCtxDAT =
+			{}),
+);

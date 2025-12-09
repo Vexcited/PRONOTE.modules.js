@@ -27,7 +27,7 @@ class DonneesListe_ResultatsClasse extends ObjetDonneesListe_1.ObjetDonneesListe
 		this.avecGestionNotation = aParams.avecGestionNotation;
 		this.avecDonneesItalie = aParams.avecDonneesItalie;
 		this.genrePositonnementClasse = aParams.genrePositonnementClasse;
-		this.avecNom = true;
+		this.avecNom = aParams.avecNom;
 		this.listeTotaux = aParams.listeTotaux
 			? aParams.listeTotaux
 			: [
@@ -47,6 +47,9 @@ class DonneesListe_ResultatsClasse extends ObjetDonneesListe_1.ObjetDonneesListe
 	}
 	afficherNom(aAfficher) {
 		this.avecNom = aAfficher;
+	}
+	avecNomAffiche() {
+		return this.avecNom;
 	}
 	setTypeMoyenne(aTypeMoyenne) {
 		this.typeMoyenneAffichee = aTypeMoyenne;
@@ -273,16 +276,18 @@ class DonneesListe_ResultatsClasse extends ObjetDonneesListe_1.ObjetDonneesListe
 					return aParams.article.nbRetard > 0 ? aParams.article.nbRetard : "";
 				case DonneesListe_ResultatsClasse.colonnes.sexe:
 					return "sexe" in aParams.article
-						? IE.jsx.str("i", {
-								class: [
-									"i-medium",
-									TypeSexe_1.TypeSexeUtil.getClasse(
-										aParams.article.sexe,
-										false,
-									),
-								],
-								role: "presentation",
-							})
+						? aParams.surExportCSV
+							? TypeSexe_1.TypeSexeUtil.getLibelle(aParams.article.sexe)
+							: IE.jsx.str("i", {
+									class: [
+										"i-medium",
+										TypeSexe_1.TypeSexeUtil.getClasse(
+											aParams.article.sexe,
+											false,
+										),
+									],
+									role: "presentation",
+								})
 						: "";
 			}
 		}

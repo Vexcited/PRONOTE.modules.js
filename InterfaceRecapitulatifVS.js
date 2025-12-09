@@ -327,6 +327,7 @@ class InterfaceRecapitulatifVS extends ObjetInterfacePageCP_1.InterfacePageCP {
 				this.utilitaireAbsence.avecCommandeDeclarerUneDispenseLongue(),
 			ariaHasPopupBtnCreation: "menu",
 			ariaLabel: () => this.getTitreListe(),
+			forcerScrollV_mobile: true,
 		});
 	}
 	getTitreListe() {

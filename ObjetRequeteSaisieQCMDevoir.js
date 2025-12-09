@@ -72,6 +72,12 @@ CollectionRequetes_1.Requetes.inscrire(
 );
 function serialiserCompetences(aElement, aJSON) {
 	aJSON.coefficient = aElement.coefficient;
+	if (aElement.listeQuestions) {
+		aJSON.listeQuestions = aElement.listeQuestions.setSerialisateurJSON({
+			ignorerEtatsElements: true,
+			nePasTrierPourValidation: true,
+		});
+	}
 }
 function serialiserClasse(aElement, aJSON) {
 	aJSON.listePeriodes = aElement.listePeriodes;

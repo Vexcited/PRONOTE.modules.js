@@ -390,6 +390,7 @@ class ObjetPiedPageAppreciationsBulletin_Professeur extends ObjetIdentite_1.Iden
 				{
 					pere: this,
 					evenement: (aValider, aDonnees) => {
+						this.donnees.pied.avecSaisieListeElementsProgramme = true;
 						this._affecterElementsProgramme(
 							aValider,
 							aDonnees.listeElementsProgramme,

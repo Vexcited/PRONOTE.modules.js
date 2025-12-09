@@ -1,3 +1,1024 @@
-exports.ObjetAbsencesGrille=void 0;const ObjetDroitsPN_1=require("ObjetDroitsPN");const ObjetStyle_1=require("ObjetStyle");const ObjetChaine_1=require("ObjetChaine");const ObjetStyle_2=require("ObjetStyle");const ObjetDate_1=require("ObjetDate");const ObjetTraduction_1=require("ObjetTraduction");const Enumere_Ressource_1=require("Enumere_Ressource");const ObjetGrille_1=require("ObjetGrille");const TypeHttpSaisieAbsencesGrille_1=require("TypeHttpSaisieAbsencesGrille");const UtilitaireAbsencesGrille_1=require("UtilitaireAbsencesGrille");const UtilitaireGrilleImageCoursPN_1=require("UtilitaireGrilleImageCoursPN");const AbsencesGrille_module_css_1=;const GlossaireAbsencesGrille_1=require("GlossaireAbsencesGrille");const Divers_css_1=;const Curseur_css_1=;const UtilitaireCouleur_1=require("UtilitaireCouleur");const TypeRessourceAbsence_1=require("TypeRessourceAbsence");const fonts_css_1=;const Image_css_1=;const jsx_1=require("jsx");class ObjetAbsencesGrille extends ObjetGrille_1.ObjetGrille{constructor(...aParams){super(...aParams);this.idTitreRepas=`${this.Nom}_titrerepas`;this.idTitreIternat=`${this.Nom}_titrerinternat`;this.composeContenuPiedTranche=(aParams) =>{const T=[];const lJourCycle=this._options.convertisseurPosition.getNumeroJourDeTrancheHoraire({tranche:aParams.numeroTranche,horaire:0});const lDecorateur=this.getDecorateurAbsences();const lElementJour=lDecorateur.getElementDeJour(lJourCycle);let lAvecDP=false;if(lDecorateur.absences&&this.avecPiedDemiPension()&&![Enumere_Ressource_1.EGenreRessource.Retard].includes(this._options.choixAbsence)&&lElementJour&&lElementJour.DP){lAvecDP=true;switch(this._options.choixAbsence){case Enumere_Ressource_1.EGenreRessource.Absence:T.push(this._composeDemiPensionAbsence(aParams.numeroTranche,lElementJour.DP,aParams.derniereTranche));break;case Enumere_Ressource_1.EGenreRessource.Exclusion:T.push(this._composeDemiPensionExclusion(aParams.numeroTranche,lElementJour.DP,aParams.derniereTranche));break;default:;}} if(lDecorateur.absences&&lDecorateur.absences.avecInternat&&lElementJour&&lElementJour.internat){T.push(this._composeInternat({internat:lElementJour.internat,numeroColonne:aParams.numeroTranche,derniereColonne:aParams.derniereTranche,jourCycle:lJourCycle,avecDP:lAvecDP}));} return T.join('');};this.setOptions({avecSelectionCours:false,couleurFond:this.couleur.grilleOccupation.fond,couleurBordures:'black',couleurFondCoursSuperpose:this.couleur.grille.fond,hauteurLigneTitre:22,hauteurContenuTitre:17,avecZoomCtrlWheel:true,avecInitSelectionColonne:false,largeurReserve:500,avecPiedTranche:false,taillePiedTranche:0,hauteurCellulePiedGrille_DP:28,hauteurCellulePiedGrille_Internat:25,ieClassConteneurGrille:'getClassConteneurGrille',choixAbsence:Enumere_Ressource_1.EGenreRessource.Absence,motifAbsence:null,callbackSaisieAbsence:null,callbackMenuContextuelMotifAbsence:null,couleurLibelleExclu:'var(--color-red-moyen)',couleurLibelleExcluEtab:UtilitaireAbsencesGrille_1.TDecorateurAbsencesGrille.couleursAbsences.exclusionEtab,largeurTitreGauche:Math.max(40,ObjetChaine_1.GChaine.getLongueurChaineDansDiv(ObjetTraduction_1.GTraductions.getValeur('grilleAbsence.Internat'),10)+2),saisieAbsencesParDJ:this.applicationSco.droits.get(ObjetDroitsPN_1.TypeDroits.fonctionnalites.gestionAbsenceDJParUtilisateur),getNodeConteneurGrille:this._getNodeConteneurGrille.bind(this)});this.moduleCours.setParametres({filtresImagesUniquement:[
-UtilitaireGrilleImageCoursPN_1.TUtilitaireGrilleImageCoursPN.type.dispense,UtilitaireGrilleImageCoursPN_1.TUtilitaireGrilleImageCoursPN.type.aucunEleve,UtilitaireGrilleImageCoursPN_1.TUtilitaireGrilleImageCoursPN.type.appelFait,UtilitaireGrilleImageCoursPN_1.TUtilitaireGrilleImageCoursPN.type.devoir,UtilitaireGrilleImageCoursPN_1.TUtilitaireGrilleImageCoursPN.type.evaluation
-],avecVoileCoursObligDispense:false});} actualisationGabarit(aParams){aParams.placesPrecedentes.forEach((aPlace) =>{const lCouleur=this._options.decorateurAbsences.getCouleurFondDePlaceEDT(aPlace,this.getInfosDePlace(aPlace));this.traceCanvasFondRectDePlace(aPlace,lCouleur);});aParams.placesCourantes.forEach((aPlace) =>{const lInfosPlace=this.getInfosDePlace(aPlace),lGabarit=this._parametresGrille.gabarit;let lCouleur=this._options.decorateurAbsences.getCouleurFondDePlaceEDT(aPlace,this.getInfosDePlace(aPlace));if(!lInfosPlace.horsAnneScolaire&&!lInfosPlace.ferie&&lGabarit){if(lGabarit.ajout!==false){lCouleur=this._options.motifAbsence.couleur;} else{lCouleur=null;}} this.traceCanvasFondRectDePlace(aPlace,lCouleur);});} getPlaceAbsence(aPlace,aPlaceDebut){let lPlace=aPlace;if(aPlace>=0&&this._options.saisieAbsencesParDJ){const lTrancheHoraire=this.getTrancheHoraireDePlace(aPlace);if(lTrancheHoraire.horaire<this.parametresSco.PlaceDemiJournee){lPlace=this.getPlaceDeTrancheHoraire({tranche:lTrancheHoraire.tranche,horaire:aPlaceDebut?0:this.parametresSco.PlaceDemiJournee-1});} else{lPlace=this.getPlaceDeTrancheHoraire({tranche:lTrancheHoraire.tranche,horaire:aPlaceDebut?this.parametresSco.PlaceDemiJournee:this.parametresSco.PlacesParJour-1});}} return lPlace;} getControleur(aInstance){return $.extend(true,super.getControleur(aInstance),{getClassConteneurGrille:function(){switch(aInstance._options.choixAbsence){case Enumere_Ressource_1.EGenreRessource.Absence:return AbsencesGrille_module_css_1.StylesAbsencesGrille.Curseur_Absence;case Enumere_Ressource_1.EGenreRessource.Retard:return AbsencesGrille_module_css_1.StylesAbsencesGrille.Curseur_Retard;case Enumere_Ressource_1.EGenreRessource.Infirmerie:return AbsencesGrille_module_css_1.StylesAbsencesGrille.Curseur_Infirmerie;case Enumere_Ressource_1.EGenreRessource.Exclusion:return AbsencesGrille_module_css_1.StylesAbsencesGrille.Curseur_Exclusion;default:return'';}},afficherAbsenceExistantesSurCours:function(aPlace){const lGabarit=aInstance._parametresGrille.gabarit;if(lGabarit&&lGabarit.ajout===false){return aPlace<aInstance.getPlaceAbsence(lGabarit.placeDebut,true)||aPlace>=(aInstance.getPlaceAbsence(lGabarit.placeFin,false)+1);} return true;},afficherAbsenceSurCours:function(aPlace){const lGabarit=aInstance._parametresGrille.gabarit;if(!lGabarit){return false;} return lGabarit.ajout!==false&&aPlace>=aInstance.getPlaceAbsence(lGabarit.placeDebut,true)&&aPlace<(aInstance.getPlaceAbsence(lGabarit.placeFin,false)+1);},getStyleAbsenceSurCours:function(aPlace){var _a,_b;const lGrille=aInstance,lInfosPlace=lGrille.getInfosDePlace(aPlace);return{'background-color':lInfosPlace.horsAnneScolaire||lInfosPlace.ferie||(((_b=(_a=lGrille._parametresGrille)===null||_a===void 0?void 0:_a.gabarit)===null||_b===void 0?void 0:_b.ajout)===false)?'':lGrille._options.motifAbsence?lGrille._options.motifAbsence.couleur:'white'};},avecSaisieAbsenceJournee:function(aColonne){if(aInstance._options.choixAbsence!==Enumere_Ressource_1.EGenreRessource.Absence){return false;} if(aInstance._parametresGrille.multiSemaines){return false;} const lDate=aInstance._options.convertisseurPosition.getDateDeTrancheHoraire({tranche:aColonne,horaire:0});return ObjetDate_1.GDate.estDateDansAnneeScolaire(lDate)&&(!aInstance._options.joursFeries||!aInstance._options.joursFeries.getValeur(aInstance._options.convertisseurPosition.getJourAnneeDeTrancheHoraire({tranche:aColonne,horaire:0})));},getClassSaisieAbsenceJournee:function(aColonne){const lInterval=aInstance._getIntervalDeColonne(aColonne),lDecorateur=aInstance.getDecorateurAbsences();return lDecorateur.absencePresenteEntierementEntreLesPlaces(lInterval.placeDebut,lInterval.placeFin,aInstance._options.motifAbsence)?AbsencesGrille_module_css_1.StylesAbsencesGrille.Image_BtnSaisieAbsenceEnleverJournee1etat:AbsencesGrille_module_css_1.StylesAbsencesGrille.Image_BtnSaisieAbsenceJournee1etat;},avecSaisieDefautCarnet:function(aColonne){if(!aInstance.applicationSco.droits.get(ObjetDroitsPN_1.TypeDroits.absences.avecSaisieDefautCarnet)){return false;} if(aInstance._parametresGrille.multiSemaines){return false;} const lDate=aInstance._options.convertisseurPosition.getDateDeTrancheHoraire({tranche:aColonne,horaire:0});return ObjetDate_1.GDate.estDateDansAnneeScolaire(lDate)&&(!aInstance._options.joursFeries||!aInstance._options.joursFeries.getValeur(aInstance._options.convertisseurPosition.getJourAnneeDeTrancheHoraire({tranche:aColonne,horaire:0})));},getClassSaisieDefautCarnet:function(aColonne){return aInstance.getDecorateurAbsences().getOubliCarnetDeJour(aInstance._options.convertisseurPosition.getNumeroJourDeTrancheHoraire({tranche:aColonne,horaire:0}))?AbsencesGrille_module_css_1.StylesAbsencesGrille.Image_OubliCarnet1etatBarre:AbsencesGrille_module_css_1.StylesAbsencesGrille.Image_OubliCarnet1etat;},getNodeDemiPension:function(aColonne,aRepasMidi){const lGrille=aInstance;$(this.node).on('click',() =>{lGrille._options.callbackSaisieAbsence({genreSaisie:TypeHttpSaisieAbsencesGrille_1.TypeHttpSaisieAbsencesGrille.sag_DemiPension,date:lGrille._options.convertisseurPosition.getDateDeTrancheHoraire({tranche:aColonne,horaire:0}),repasMidi:aRepasMidi});});},getNodeDemiPensionExclusion:function(aColonne){const lGrille=aInstance;$(this.node).on('click',() =>{lGrille._options.callbackSaisieAbsence({genreSaisie:TypeHttpSaisieAbsencesGrille_1.TypeHttpSaisieAbsencesGrille.sag_DemiPension,date:lGrille._options.convertisseurPosition.getDateDeTrancheHoraire({tranche:aColonne,horaire:0})});});}});} setDonnees(aParams){const lDecorateur=this.getDecorateurAbsences();if(lDecorateur.absences){this.setOptions({afficherCoursHorsHoraire:false,avecPiedTranche:(this.avecPiedDemiPension()||!!lDecorateur.absences.avecInternat)&&[Enumere_Ressource_1.EGenreRessource.Exclusion,Enumere_Ressource_1.EGenreRessource.Absence,Enumere_Ressource_1.EGenreRessource.Retard].includes(this._options.choixAbsence),taillePiedTranche:(this.avecPiedDemiPension()?this._options.hauteurCellulePiedGrille_DP:0)+(!!lDecorateur.absences.avecInternat?this._options.hauteurCellulePiedGrille_Internat:0)+5});} aParams.multiSemaines=!!aParams.domaine&&aParams.domaine.getNbrValeurs()>1;super.setDonnees(aParams);} avecPiedDemiPension(){var _a,_b;return((_b=(_a=this.getDecorateurAbsences())===null||_a===void 0?void 0:_a.absences)===null||_b===void 0?void 0:_b.avecDemiPension)&&[Enumere_Ressource_1.EGenreRessource.Absence,Enumere_Ressource_1.EGenreRessource.Exclusion].includes(this._options.choixAbsence);} getClassCurseurDeCellule(aPlaceGrille){let lClass=super.getClassCurseurDeCellule(aPlaceGrille),lInfosPlace=this.getInfosDePlace(aPlaceGrille);if(lInfosPlace.horsAnneScolaire||lInfosPlace.ferie){lClass+=' AvecInterdiction';} return lClass;} composeTitresTranches(aColonne,ALargeur,aFormatColonnes){const lEventValidation=() =>{const lInterval=this._getIntervalDeColonne(aColonne);this._options.callbackSaisieAbsence({genreSaisie:TypeHttpSaisieAbsencesGrille_1.TypeHttpSaisieAbsencesGrille.sag_Grille,placeDebut:lInterval.placeDebut,placeFin:lInterval.placeFin,genre:Enumere_Ressource_1.EGenreRessource.Absence});};const lJSXgetTooltipSaisieAbsenceJournee=() =>{const lInterval=this._getIntervalDeColonne(aColonne),lDecorateur=this.getDecorateurAbsences();return lDecorateur.absencePresenteEntierementEntreLesPlaces(lInterval.placeDebut,lInterval.placeFin,this._options.motifAbsence)?ObjetTraduction_1.GTraductions.getValeur('grilleAbsence.HintEnleverAbsenceJournee'):ObjetTraduction_1.GTraductions.getValeur('grilleAbsence.HintSaisieAbsenceJournee');};const lEventValidationDefaut=() =>{this._options.callbackSaisieAbsence({genreSaisie:TypeHttpSaisieAbsencesGrille_1.TypeHttpSaisieAbsencesGrille.sag_defautCarnet,date:this._options.convertisseurPosition.getDateDeTrancheHoraire({tranche:aColonne,horaire:0})});};const lJSXgetTitleSaisieDefautCarnet=() =>{return this.getDecorateurAbsences().getOubliCarnetDeJour(this._options.convertisseurPosition.getNumeroJourDeTrancheHoraire({tranche:aColonne,horaire:0}))?ObjetTraduction_1.GTraductions.getValeur('grilleAbsence.HintEnleverCarnetOublieJournee'):ObjetTraduction_1.GTraductions.getValeur('grilleAbsence.HintSaisieCarnetOublieJournee');};return IE.jsx.str(IE.jsx.fragment,null,super.composeTitresTranches(aColonne,ALargeur,aFormatColonnes),IE.jsx.str("div",{role:"group","aria-labelledby":this.getIdTitreTrancheDate(aColonne)},IE.jsx.str("div",{"ie-class":(0,jsx_1.jsxFuncAttr)('getClassSaisieAbsenceJournee',aColonne),"ie-if":(0,jsx_1.jsxFuncAttr)('avecSaisieAbsenceJournee',aColonne),"ie-eventvalidation":lEventValidation,"ie-tooltiplabel":lJSXgetTooltipSaisieAbsenceJournee,role:"button",tabindex:"0",class:"AvecMain",style:"position:absolute; top:0; left:2px;"}),IE.jsx.str("div",{"ie-class":(0,jsx_1.jsxFuncAttr)('getClassSaisieDefautCarnet',aColonne),"ie-if":(0,jsx_1.jsxFuncAttr)('avecSaisieDefautCarnet',aColonne),"ie-eventvalidation":lEventValidationDefaut,"ie-tooltiplabel":lJSXgetTitleSaisieDefautCarnet,role:"button",tabindex:"0",class:"AvecMain",style:"position:absolute; top:0; right:2px;"})));} composeTitreHorairePiedTranche(){const T=[],lDecorateur=this.getDecorateurAbsences();if(!lDecorateur||!lDecorateur.absences){return'';} if(this.avecPiedDemiPension()){T.push(IE.jsx.str("div",{style:ObjetStyle_2.GStyle.composeHeight(this._options.hauteurCellulePiedGrille_DP),class:"AlignementMilieuVertical"},IE.jsx.str("div",{style:{'line-height':this._options.hauteurCellulePiedGrille_DP+'px'},id:this.idTitreRepas},ObjetTraduction_1.GTraductions.getValeur('grilleAbsence.Repas'))));} if(lDecorateur.absences.avecInternat){T.push(IE.jsx.str("div",{style:ObjetStyle_2.GStyle.composeHeight(this._options.hauteurCellulePiedGrille_Internat)+(this.avecPiedDemiPension()?'margin-top:5px;':''),class:"AlignementMilieuVertical"},IE.jsx.str("div",{style:{'line-height':this._options.hauteurCellulePiedGrille_Internat+'px'},id:this.idTitreIternat},ObjetTraduction_1.GTraductions.getValeur('grilleAbsence.Internat'))));} return T.join('');} getLargeurMaxGrille(){const lLargeur=super.getLargeurMaxGrille();return lLargeur-this._options.largeurReserve;} _getIntervalDeColonne(aColonne){const lInterval={placeDebut:0,placeFin:0},lJour=this._options.convertisseurPosition.getNumeroJourDeTrancheHoraire({tranche:aColonne,horaire:0});lInterval.placeDebut=lJour*this.parametresSco.PlacesParJour;lInterval.placeFin=lInterval.placeDebut+this.parametresSco.PlacesParJour-1;return lInterval;} _getNodeConteneurGrille(aNode){const lGrille=this;$(aNode).on('pointerdown',(aEvent) =>{if(aEvent&&aEvent.target){if(aEvent.target.classList&&aEvent.target.classList.contains('cours-multiple-slider')){return;} if(aEvent.target.closest&&aEvent.target.closest('.cours-multiple-slider')){return;}} const lPosition=lGrille.getPositionGrilleEvent(aEvent),lPlace=lGrille.getPlaceDePosition(lPosition),lInfosPlace=lGrille.getInfosDePlace(lPlace);if(lInfosPlace.horsAnneScolaire||lInfosPlace.ferie){return;} if(lGrille._parametresGrille.gabarit){let lAjout=true;if(lGrille._options.choixAbsence===Enumere_Ressource_1.EGenreRessource.Absence){const lAbsence=lGrille.getDecorateurAbsences().getAbsenceDePlace(lPlace,Enumere_Ressource_1.EGenreRessource.Absence);if(lAbsence&&lGrille._options.motifAbsence&&lAbsence.motif.getNumero()===lGrille._options.motifAbsence.getNumero()){lAjout=false;}} if(aEvent.pointerType==='mouse'&&aEvent.which!==1){return;} lGrille._parametresGrille.gabarit.ajout=lAjout;lGrille._parametresGrille.gabarit.demarrerCreation({place:lGrille.getPlaceDePosition(lPosition)});} else{lGrille._options.callbackSaisieAbsence({genreSaisie:TypeHttpSaisieAbsencesGrille_1.TypeHttpSaisieAbsencesGrille.sag_Grille,placeDebut:lPlace,placeFin:lPlace,genre:lGrille._options.choixAbsence});}});if(lGrille._options.choixAbsence===Enumere_Ressource_1.EGenreRessource.Absence){$(aNode).on('contextmenu',(aEvent) =>{const lPosition=lGrille.getPositionGrilleEvent(aEvent),lPlace=lGrille.getPlaceDePosition(lPosition);const lAbsence=lGrille.getDecorateurAbsences().getAbsenceDePlace(lPlace,Enumere_Ressource_1.EGenreRessource.Absence);if(lAbsence&&lAbsence.motif){lGrille._options.callbackMenuContextuelMotifAbsence(lAbsence.motif);}});}} _colonneEstFeriee(aNumeroColonne){return this._options.joursFeries.getValeur(this._options.convertisseurPosition.getJourAnneeDeTrancheHoraire({tranche:aNumeroColonne,horaire:0}));} _composeDemiPensionAbsence(aNumeroColonne,aDemiPension,aDerniereColonne){return(IE.jsx.str("div",{style:{height:this._options.hauteurCellulePiedGrille_DP,backgroundColor:this.getCouleurFond()},class:[AbsencesGrille_module_css_1.StylesAbsencesGrille.tranche,aDerniereColonne?AbsencesGrille_module_css_1.StylesAbsencesGrille.dernierTranche:''],role:"group","aria-labelledby":this.getIdTitreTrancheDate(aNumeroColonne)+' '+this.idTitreRepas},(T) =>{const lEventValidation=(aRepasMidi) =>{return() =>{this._options.callbackSaisieAbsence({genreSaisie:TypeHttpSaisieAbsencesGrille_1.TypeHttpSaisieAbsencesGrille.sag_DemiPension,date:this._options.convertisseurPosition.getDateDeTrancheHoraire({tranche:aNumeroColonne,horaire:0}),repasMidi:aRepasMidi});};};const lGetButton=(aMidi) =>{const lDP=aMidi?aDemiPension.midi:aDemiPension.soir;const lClasses=[fonts_css_1.StylesFonts.icon_food,Divers_css_1.StylesDivers.iMedium];if(lDP.icone.check){lClasses.push(Image_css_1.StylesImage.mixIcon_ok,Image_css_1.StylesImage.iGreen,Image_css_1.StylesImage.iTop);} else if(lDP.icone.delete){lClasses.push(Image_css_1.StylesImage.mixIcon_fermeture_widget,Image_css_1.StylesImage.iRed,Image_css_1.StylesImage.iTop);} const lIcon=IE.jsx.str("i",{class:lClasses,role:"presentation",style:{position:'relative'}},lDP.icone.text?IE.jsx.str("span",{class:[AbsencesGrille_module_css_1.StylesAbsencesGrille.iconeText,AbsencesGrille_module_css_1.StylesAbsencesGrille.textShadowWhite],role:"presentation"},lDP.icone.text):'');return IE.jsx.str("div",{class:[AbsencesGrille_module_css_1.StylesAbsencesGrille.buttonRepas,AbsencesGrille_module_css_1.StylesAbsencesGrille.buttonActive,aDemiPension.saisieAbsence?'AvecMain':''],"ie-tooltiplabel":lDP.hint+(lDP.motifAbsence?`\n${lDP.motifAbsence.getLibelle()}`:''),role:"button","aria-pressed":lDP.motifAbsence?'true':'false',tabindex:"0","ie-eventvalidation":aDemiPension.saisieAbsence?lEventValidation(aMidi):false,"aria-disabled":aDemiPension.saisieAbsence?false:'true'},IE.jsx.str("p",null,aMidi?GlossaireAbsencesGrille_1.TradGlossaireAbsencesGrille.midi:GlossaireAbsencesGrille_1.TradGlossaireAbsencesGrille.soir),lIcon,lDP.motifAbsence?IE.jsx.str("div",{class:[AbsencesGrille_module_css_1.StylesAbsencesGrille.motif],style:{backgroundColor:lDP.motifAbsence.couleur},"ie-tooltiplabel":lDP.motifAbsence.getLibelle(),role:"img"}):'');};if(aDemiPension.midi){T.push(lGetButton(true));} if(aDemiPension.soir){T.push(lGetButton(false));} if(aDemiPension.exclusion){T.push(IE.jsx.str("div",{class:"Gras Texte11",style:{color:this._options.couleurLibelleExclu,'line-height':this._options.hauteurCellulePiedGrille_DP+'px;'}},ObjetTraduction_1.GTraductions.getValeur('grilleAbsence.Exclu')));}}));} _composeDemiPensionExclusion(aNumeroColonne,aDemiPension,aDerniereColonne){const T=[];const lAvecAbsence=(aDemiPension.midi&&aDemiPension.midi.absent)||(aDemiPension.soir&&aDemiPension.soir.absent),lAvecSaisie=aDemiPension.saisieExclusion&&!lAvecAbsence;T.push('<div style="',ObjetStyle_2.GStyle.composeCouleurBordure(this.getCouleurBordures(),1,ObjetStyle_1.EGenreBordure.gauche+ObjetStyle_1.EGenreBordure.haut+ObjetStyle_1.EGenreBordure.bas+(aDerniereColonne?ObjetStyle_1.EGenreBordure.droite:0)),ObjetStyle_2.GStyle.composeHeight(this._options.hauteurCellulePiedGrille_DP-2),ObjetStyle_2.GStyle.composeCouleurFond(this.getCouleurFond()),'"',' class="Texte11 Gras',(lAvecSaisie?' AvecMain':''),'"',lAvecSaisie?' ie-node="getNodeDemiPensionExclusion('+aNumeroColonne+')"':'','>');if(this._colonneEstFeriee(aNumeroColonne)){T.push('<div style="line-height:',this._options.hauteurCellulePiedGrille_DP,'px;',ObjetStyle_2.GStyle.composeCouleurTexte(this.couleur.themeNeutre.moyen2),'">',ObjetTraduction_1.GTraductions.getValeur('Ferie'),'</div>');} else if(!aDemiPension.saisieExclusion&&this.estTrancheHoraireEnStage({tranche:aNumeroColonne,horaire:0})){T.push('<div style="line-height:',this._options.hauteurCellulePiedGrille_DP,'px;',ObjetStyle_2.GStyle.composeCouleurTexte('white'),'">',ObjetTraduction_1.GTraductions.getValeur('grilleAbsence.Stage'),'</div>');} else{if(aDemiPension.exclusion){T.push('<div style="',ObjetStyle_2.GStyle.composeCouleurTexte(this._options.couleurLibelleExclu),'line-height:',this._options.hauteurCellulePiedGrille_DP,'px;">',ObjetTraduction_1.GTraductions.getValeur('grilleAbsence.Exclu'),'</div>');} else if(lAvecAbsence){T.push('<div style="line-height:',this._options.hauteurCellulePiedGrille_DP,'px;">',ObjetTraduction_1.GTraductions.getValeur('grilleAbsence.AbsenceRepas'),'</div>');}} T.push('</div>');return T.join('');} _composeInternat(aParam){let lAvecSaisie=false;switch(this._options.choixAbsence){case Enumere_Ressource_1.EGenreRessource.Absence:lAvecSaisie=aParam.internat.saisieAbsence;break;case Enumere_Ressource_1.EGenreRessource.Retard:lAvecSaisie=aParam.internat.saisieRetard;break;case Enumere_Ressource_1.EGenreRessource.Exclusion:lAvecSaisie=aParam.internat.saisieExclusion;break;default:;} return(IE.jsx.str("div",{style:{height:this._options.hauteurCellulePiedGrille_Internat,backgroundColor:this.getCouleurFond()},class:[AbsencesGrille_module_css_1.StylesAbsencesGrille.tranche,aParam.derniereColonne?AbsencesGrille_module_css_1.StylesAbsencesGrille.dernierTranche:'',aParam.avecDP?Divers_css_1.StylesDivers.mTop:''],role:"group","aria-labelledby":this.getIdTitreTrancheDate(aParam.numeroColonne)+' '+this.idTitreIternat},() =>{if(!lAvecSaisie){if(this.estTrancheHoraireEnStage({tranche:aParam.numeroColonne,horaire:0})){return IE.jsx.str("span",null,ObjetTraduction_1.GTraductions.getValeur('grilleAbsence.Stage'));} const lElement=this.getDecorateurAbsences().getExclusionsEleveDeJourCycle(aParam.jourCycle);if(lElement&&lElement.exclusionsEtab){return IE.jsx.str("span",{style:{color:this._options.couleurLibelleExcluEtab}},ObjetTraduction_1.GTraductions.getValeur('grilleAbsence.ExcluEtab'));} if(this._options.choixAbsence!==Enumere_Ressource_1.EGenreRessource.Exclusion){return IE.jsx.str("span",{style:{color:this.couleur.themeNeutre.moyen1}},ObjetTraduction_1.GTraductions.getValeur('grilleAbsence.NonInscrit'));}} if(aParam.internat.exclusion){return IE.jsx.str("span",{style:{color:this._options.couleurLibelleExclu},class:AbsencesGrille_module_css_1.StylesAbsencesGrille.textShadowWhite,"ie-tooltiplabel":ObjetTraduction_1.GTraductions.getValeur('grilleAbsence.hintInternat.exclusion')},ObjetTraduction_1.GTraductions.getValeur('grilleAbsence.Exclu'));} if(lAvecSaisie&&aParam.internat.listeCreneaux){const T=[];for(const lCreneau of aParam.internat.listeCreneaux){const lMotif=this._options.choixAbsence===Enumere_Ressource_1.EGenreRessource.Absence?lCreneau.absence:lCreneau.retard;const lJSXEventValid=() =>{this._options.callbackSaisieAbsence({genreSaisie:TypeHttpSaisieAbsencesGrille_1.TypeHttpSaisieAbsencesGrille.sag_Internat,date:this._options.convertisseurPosition.getDateDeTrancheHoraire({tranche:aParam.numeroColonne,horaire:0}),creneauInternat:lCreneau});};T.push(IE.jsx.str("div",{tabindex:"0","ie-tooltiplabel":lCreneau.hint+(lMotif?'\n'+GlossaireAbsencesGrille_1.TradGlossaireAbsencesGrille.tabStrAbsence[TypeRessourceAbsence_1.TypeRessourceAbsence.TR_AbsenceInternat]:''),"ie-eventvalidation":lJSXEventValid,style:{backgroundColor:(lMotif===null||lMotif===void 0?void 0:lMotif.couleur)||null,color:(lMotif===null||lMotif===void 0?void 0:lMotif.couleur)?UtilitaireCouleur_1.UtilitaireCouleur.getContrastedColor(lMotif.couleur):null},"aria-pressed":lMotif?'true':'false',"ie-ellipsis":true,role:"button",class:[Curseur_css_1.StylesCurseur.AvecMain,AbsencesGrille_module_css_1.StylesAbsencesGrille.buttonActive]},lCreneau.getLibelle()));} return T.join('');}}));}} exports.ObjetAbsencesGrille=ObjetAbsencesGrille;
+exports.ObjetAbsencesGrille = void 0;
+const ObjetDroitsPN_1 = require("ObjetDroitsPN");
+const ObjetStyle_1 = require("ObjetStyle");
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetStyle_2 = require("ObjetStyle");
+const ObjetDate_1 = require("ObjetDate");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const ObjetGrille_1 = require("ObjetGrille");
+const TypeHttpSaisieAbsencesGrille_1 = require("TypeHttpSaisieAbsencesGrille");
+const UtilitaireAbsencesGrille_1 = require("UtilitaireAbsencesGrille");
+const UtilitaireGrilleImageCoursPN_1 = require("UtilitaireGrilleImageCoursPN");
+const GlossaireAbsencesGrille_1 = require("GlossaireAbsencesGrille");
+const UtilitaireCouleur_1 = require("UtilitaireCouleur");
+const TypeRessourceAbsence_1 = require("TypeRessourceAbsence");
+const jsx_1 = require("jsx");
+class ObjetAbsencesGrille extends ObjetGrille_1.ObjetGrille {
+	constructor(...aParams) {
+		super(...aParams);
+		this.idTitreRepas = `${this.Nom}_titrerepas`;
+		this.idTitreIternat = `${this.Nom}_titrerinternat`;
+		this.composeContenuPiedTranche = (aParams) => {
+			const T = [];
+			const lJourCycle =
+				this._options.convertisseurPosition.getNumeroJourDeTrancheHoraire({
+					tranche: aParams.numeroTranche,
+					horaire: 0,
+				});
+			const lDecorateur = this.getDecorateurAbsences();
+			const lElementJour = lDecorateur.getElementDeJour(lJourCycle);
+			let lAvecDP = false;
+			if (
+				lDecorateur.absences &&
+				this.avecPiedDemiPension() &&
+				![Enumere_Ressource_1.EGenreRessource.Retard].includes(
+					this._options.choixAbsence,
+				) &&
+				lElementJour &&
+				lElementJour.DP
+			) {
+				lAvecDP = true;
+				switch (this._options.choixAbsence) {
+					case Enumere_Ressource_1.EGenreRessource.Absence:
+						T.push(
+							this._composeDemiPensionAbsence(
+								aParams.numeroTranche,
+								lElementJour.DP,
+								aParams.derniereTranche,
+							),
+						);
+						break;
+					case Enumere_Ressource_1.EGenreRessource.Exclusion:
+						T.push(
+							this._composeDemiPensionExclusion(
+								aParams.numeroTranche,
+								lElementJour.DP,
+								aParams.derniereTranche,
+							),
+						);
+						break;
+					default:
+				}
+			}
+			if (
+				lDecorateur.absences &&
+				lDecorateur.absences.avecInternat &&
+				lElementJour &&
+				lElementJour.internat
+			) {
+				T.push(
+					this._composeInternat({
+						internat: lElementJour.internat,
+						numeroColonne: aParams.numeroTranche,
+						derniereColonne: aParams.derniereTranche,
+						jourCycle: lJourCycle,
+						avecDP: lAvecDP,
+					}),
+				);
+			}
+			return T.join("");
+		};
+		this.setOptions({
+			avecSelectionCours: false,
+			couleurFond: this.couleur.grilleOccupation.fond,
+			couleurBordures: "black",
+			couleurFondCoursSuperpose: this.couleur.grille.fond,
+			hauteurLigneTitre: 22,
+			hauteurContenuTitre: 17,
+			avecZoomCtrlWheel: true,
+			avecInitSelectionColonne: false,
+			largeurReserve: 500,
+			avecPiedTranche: false,
+			taillePiedTranche: 0,
+			hauteurCellulePiedGrille_DP: 28,
+			hauteurCellulePiedGrille_Internat: 25,
+			ieClassConteneurGrille: "getClassConteneurGrille",
+			choixAbsence: Enumere_Ressource_1.EGenreRessource.Absence,
+			motifAbsence: null,
+			callbackSaisieAbsence: null,
+			callbackMenuContextuelMotifAbsence: null,
+			couleurLibelleExclu: "var(--color-red-moyen)",
+			couleurLibelleExcluEtab:
+				UtilitaireAbsencesGrille_1.TDecorateurAbsencesGrille.couleursAbsences
+					.exclusionEtab,
+			largeurTitreGauche: Math.max(
+				40,
+				ObjetChaine_1.GChaine.getLongueurChaineDansDiv(
+					ObjetTraduction_1.GTraductions.getValeur("grilleAbsence.Internat"),
+					10,
+				) + 2,
+			),
+			saisieAbsencesParDJ: this.applicationSco.droits.get(
+				ObjetDroitsPN_1.TypeDroits.fonctionnalites
+					.gestionAbsenceDJParUtilisateur,
+			),
+			getNodeConteneurGrille: this._getNodeConteneurGrille.bind(this),
+		});
+		this.moduleCours.setParametres({
+			filtresImagesUniquement: [
+				UtilitaireGrilleImageCoursPN_1.TUtilitaireGrilleImageCoursPN.type
+					.dispense,
+				UtilitaireGrilleImageCoursPN_1.TUtilitaireGrilleImageCoursPN.type
+					.aucunEleve,
+				UtilitaireGrilleImageCoursPN_1.TUtilitaireGrilleImageCoursPN.type
+					.appelFait,
+				UtilitaireGrilleImageCoursPN_1.TUtilitaireGrilleImageCoursPN.type
+					.devoir,
+				UtilitaireGrilleImageCoursPN_1.TUtilitaireGrilleImageCoursPN.type
+					.evaluation,
+			],
+			avecVoileCoursObligDispense: false,
+		});
+	}
+	actualisationGabarit(aParams) {
+		aParams.placesPrecedentes.forEach((aPlace) => {
+			const lCouleur =
+				this._options.decorateurAbsences.getCouleurFondDePlaceEDT(
+					aPlace,
+					this.getInfosDePlace(aPlace),
+				);
+			this.traceCanvasFondRectDePlace(aPlace, lCouleur);
+		});
+		aParams.placesCourantes.forEach((aPlace) => {
+			const lInfosPlace = this.getInfosDePlace(aPlace),
+				lGabarit = this._parametresGrille.gabarit;
+			let lCouleur = this._options.decorateurAbsences.getCouleurFondDePlaceEDT(
+				aPlace,
+				this.getInfosDePlace(aPlace),
+			);
+			if (!lInfosPlace.horsAnneScolaire && !lInfosPlace.ferie && lGabarit) {
+				if (lGabarit.ajout !== false) {
+					lCouleur = this._options.motifAbsence.couleur;
+				} else {
+					lCouleur = null;
+				}
+			}
+			this.traceCanvasFondRectDePlace(aPlace, lCouleur);
+		});
+	}
+	getPlaceAbsence(aPlace, aPlaceDebut) {
+		let lPlace = aPlace;
+		if (aPlace >= 0 && this._options.saisieAbsencesParDJ) {
+			const lTrancheHoraire = this.getTrancheHoraireDePlace(aPlace);
+			if (lTrancheHoraire.horaire < this.parametresSco.PlaceDemiJournee) {
+				lPlace = this.getPlaceDeTrancheHoraire({
+					tranche: lTrancheHoraire.tranche,
+					horaire: aPlaceDebut ? 0 : this.parametresSco.PlaceDemiJournee - 1,
+				});
+			} else {
+				lPlace = this.getPlaceDeTrancheHoraire({
+					tranche: lTrancheHoraire.tranche,
+					horaire: aPlaceDebut
+						? this.parametresSco.PlaceDemiJournee
+						: this.parametresSco.PlacesParJour - 1,
+				});
+			}
+		}
+		return lPlace;
+	}
+	getControleur(aInstance) {
+		return $.extend(true, super.getControleur(aInstance), {
+			getClassConteneurGrille: function () {
+				switch (aInstance._options.choixAbsence) {
+					case Enumere_Ressource_1.EGenreRessource.Absence:
+						return AbsencesGrille_module_css_1.StylesAbsencesGrille
+							.Curseur_Absence;
+					case Enumere_Ressource_1.EGenreRessource.Retard:
+						return AbsencesGrille_module_css_1.StylesAbsencesGrille
+							.Curseur_Retard;
+					case Enumere_Ressource_1.EGenreRessource.Infirmerie:
+						return AbsencesGrille_module_css_1.StylesAbsencesGrille
+							.Curseur_Infirmerie;
+					case Enumere_Ressource_1.EGenreRessource.Exclusion:
+						return AbsencesGrille_module_css_1.StylesAbsencesGrille
+							.Curseur_Exclusion;
+					default:
+						return "";
+				}
+			},
+			afficherAbsenceExistantesSurCours: function (aPlace) {
+				const lGabarit = aInstance._parametresGrille.gabarit;
+				if (lGabarit && lGabarit.ajout === false) {
+					return (
+						aPlace < aInstance.getPlaceAbsence(lGabarit.placeDebut, true) ||
+						aPlace >= aInstance.getPlaceAbsence(lGabarit.placeFin, false) + 1
+					);
+				}
+				return true;
+			},
+			afficherAbsenceSurCours: function (aPlace) {
+				const lGabarit = aInstance._parametresGrille.gabarit;
+				if (!lGabarit) {
+					return false;
+				}
+				return (
+					lGabarit.ajout !== false &&
+					aPlace >= aInstance.getPlaceAbsence(lGabarit.placeDebut, true) &&
+					aPlace < aInstance.getPlaceAbsence(lGabarit.placeFin, false) + 1
+				);
+			},
+			getStyleAbsenceSurCours: function (aPlace) {
+				var _a, _b;
+				const lGrille = aInstance,
+					lInfosPlace = lGrille.getInfosDePlace(aPlace);
+				return {
+					"background-color":
+						lInfosPlace.horsAnneScolaire ||
+						lInfosPlace.ferie ||
+						((_b =
+							(_a = lGrille._parametresGrille) === null || _a === void 0
+								? void 0
+								: _a.gabarit) === null || _b === void 0
+							? void 0
+							: _b.ajout) === false
+							? ""
+							: lGrille._options.motifAbsence
+								? lGrille._options.motifAbsence.couleur
+								: "white",
+				};
+			},
+			avecSaisieAbsenceJournee: function (aColonne) {
+				if (
+					aInstance._options.choixAbsence !==
+					Enumere_Ressource_1.EGenreRessource.Absence
+				) {
+					return false;
+				}
+				if (aInstance._parametresGrille.multiSemaines) {
+					return false;
+				}
+				const lDate =
+					aInstance._options.convertisseurPosition.getDateDeTrancheHoraire({
+						tranche: aColonne,
+						horaire: 0,
+					});
+				return (
+					ObjetDate_1.GDate.estDateDansAnneeScolaire(lDate) &&
+					(!aInstance._options.joursFeries ||
+						!aInstance._options.joursFeries.getValeur(
+							aInstance._options.convertisseurPosition.getJourAnneeDeTrancheHoraire(
+								{ tranche: aColonne, horaire: 0 },
+							),
+						))
+				);
+			},
+			getClassSaisieAbsenceJournee: function (aColonne) {
+				const lInterval = aInstance._getIntervalDeColonne(aColonne),
+					lDecorateur = aInstance.getDecorateurAbsences();
+				return lDecorateur.absencePresenteEntierementEntreLesPlaces(
+					lInterval.placeDebut,
+					lInterval.placeFin,
+					aInstance._options.motifAbsence,
+				)
+					? AbsencesGrille_module_css_1.StylesAbsencesGrille
+							.Image_BtnSaisieAbsenceEnleverJournee1etat
+					: AbsencesGrille_module_css_1.StylesAbsencesGrille
+							.Image_BtnSaisieAbsenceJournee1etat;
+			},
+			avecSaisieDefautCarnet: function (aColonne) {
+				if (
+					!aInstance.applicationSco.droits.get(
+						ObjetDroitsPN_1.TypeDroits.absences.avecSaisieDefautCarnet,
+					)
+				) {
+					return false;
+				}
+				if (aInstance._parametresGrille.multiSemaines) {
+					return false;
+				}
+				const lDate =
+					aInstance._options.convertisseurPosition.getDateDeTrancheHoraire({
+						tranche: aColonne,
+						horaire: 0,
+					});
+				return (
+					ObjetDate_1.GDate.estDateDansAnneeScolaire(lDate) &&
+					(!aInstance._options.joursFeries ||
+						!aInstance._options.joursFeries.getValeur(
+							aInstance._options.convertisseurPosition.getJourAnneeDeTrancheHoraire(
+								{ tranche: aColonne, horaire: 0 },
+							),
+						))
+				);
+			},
+			getClassSaisieDefautCarnet: function (aColonne) {
+				return aInstance
+					.getDecorateurAbsences()
+					.getOubliCarnetDeJour(
+						aInstance._options.convertisseurPosition.getNumeroJourDeTrancheHoraire(
+							{ tranche: aColonne, horaire: 0 },
+						),
+					)
+					? AbsencesGrille_module_css_1.StylesAbsencesGrille
+							.Image_OubliCarnet1etatBarre
+					: AbsencesGrille_module_css_1.StylesAbsencesGrille
+							.Image_OubliCarnet1etat;
+			},
+			getNodeDemiPension: function (aColonne, aRepasMidi) {
+				const lGrille = aInstance;
+				$(this.node).on("click", () => {
+					lGrille._options.callbackSaisieAbsence({
+						genreSaisie:
+							TypeHttpSaisieAbsencesGrille_1.TypeHttpSaisieAbsencesGrille
+								.sag_DemiPension,
+						date: lGrille._options.convertisseurPosition.getDateDeTrancheHoraire(
+							{ tranche: aColonne, horaire: 0 },
+						),
+						repasMidi: aRepasMidi,
+					});
+				});
+			},
+			getNodeDemiPensionExclusion: function (aColonne) {
+				const lGrille = aInstance;
+				$(this.node).on("click", () => {
+					lGrille._options.callbackSaisieAbsence({
+						genreSaisie:
+							TypeHttpSaisieAbsencesGrille_1.TypeHttpSaisieAbsencesGrille
+								.sag_DemiPension,
+						date: lGrille._options.convertisseurPosition.getDateDeTrancheHoraire(
+							{ tranche: aColonne, horaire: 0 },
+						),
+					});
+				});
+			},
+		});
+	}
+	setDonnees(aParams) {
+		const lDecorateur = this.getDecorateurAbsences();
+		if (lDecorateur.absences) {
+			this.setOptions({
+				afficherCoursHorsHoraire: false,
+				avecPiedTranche:
+					(this.avecPiedDemiPension() || !!lDecorateur.absences.avecInternat) &&
+					[
+						Enumere_Ressource_1.EGenreRessource.Exclusion,
+						Enumere_Ressource_1.EGenreRessource.Absence,
+						Enumere_Ressource_1.EGenreRessource.Retard,
+					].includes(this._options.choixAbsence),
+				taillePiedTranche:
+					(this.avecPiedDemiPension()
+						? this._options.hauteurCellulePiedGrille_DP
+						: 0) +
+					(!!lDecorateur.absences.avecInternat
+						? this._options.hauteurCellulePiedGrille_Internat
+						: 0) +
+					5,
+			});
+		}
+		aParams.multiSemaines =
+			!!aParams.domaine && aParams.domaine.getNbrValeurs() > 1;
+		super.setDonnees(aParams);
+	}
+	avecPiedDemiPension() {
+		var _a, _b;
+		return (
+			((_b =
+				(_a = this.getDecorateurAbsences()) === null || _a === void 0
+					? void 0
+					: _a.absences) === null || _b === void 0
+				? void 0
+				: _b.avecDemiPension) &&
+			[
+				Enumere_Ressource_1.EGenreRessource.Absence,
+				Enumere_Ressource_1.EGenreRessource.Exclusion,
+			].includes(this._options.choixAbsence)
+		);
+	}
+	getClassCurseurDeCellule(aPlaceGrille) {
+		let lClass = super.getClassCurseurDeCellule(aPlaceGrille),
+			lInfosPlace = this.getInfosDePlace(aPlaceGrille);
+		if (lInfosPlace.horsAnneScolaire || lInfosPlace.ferie) {
+			lClass += " AvecInterdiction";
+		}
+		return lClass;
+	}
+	composeTitresTranches(aColonne, ALargeur, aFormatColonnes) {
+		const lEventValidation = () => {
+			const lInterval = this._getIntervalDeColonne(aColonne);
+			this._options.callbackSaisieAbsence({
+				genreSaisie:
+					TypeHttpSaisieAbsencesGrille_1.TypeHttpSaisieAbsencesGrille
+						.sag_Grille,
+				placeDebut: lInterval.placeDebut,
+				placeFin: lInterval.placeFin,
+				genre: Enumere_Ressource_1.EGenreRessource.Absence,
+			});
+		};
+		const lJSXgetTooltipSaisieAbsenceJournee = () => {
+			const lInterval = this._getIntervalDeColonne(aColonne),
+				lDecorateur = this.getDecorateurAbsences();
+			return lDecorateur.absencePresenteEntierementEntreLesPlaces(
+				lInterval.placeDebut,
+				lInterval.placeFin,
+				this._options.motifAbsence,
+			)
+				? ObjetTraduction_1.GTraductions.getValeur(
+						"grilleAbsence.HintEnleverAbsenceJournee",
+					)
+				: ObjetTraduction_1.GTraductions.getValeur(
+						"grilleAbsence.HintSaisieAbsenceJournee",
+					);
+		};
+		const lEventValidationDefaut = () => {
+			this._options.callbackSaisieAbsence({
+				genreSaisie:
+					TypeHttpSaisieAbsencesGrille_1.TypeHttpSaisieAbsencesGrille
+						.sag_defautCarnet,
+				date: this._options.convertisseurPosition.getDateDeTrancheHoraire({
+					tranche: aColonne,
+					horaire: 0,
+				}),
+			});
+		};
+		const lJSXgetTitleSaisieDefautCarnet = () => {
+			return this.getDecorateurAbsences().getOubliCarnetDeJour(
+				this._options.convertisseurPosition.getNumeroJourDeTrancheHoraire({
+					tranche: aColonne,
+					horaire: 0,
+				}),
+			)
+				? ObjetTraduction_1.GTraductions.getValeur(
+						"grilleAbsence.HintEnleverCarnetOublieJournee",
+					)
+				: ObjetTraduction_1.GTraductions.getValeur(
+						"grilleAbsence.HintSaisieCarnetOublieJournee",
+					);
+		};
+		return IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			super.composeTitresTranches(aColonne, ALargeur, aFormatColonnes),
+			IE.jsx.str(
+				"div",
+				{
+					role: "group",
+					"aria-labelledby": this.getIdTitreTrancheDate(aColonne),
+				},
+				IE.jsx.str("div", {
+					"ie-class": (0, jsx_1.jsxFuncAttr)(
+						"getClassSaisieAbsenceJournee",
+						aColonne,
+					),
+					"ie-if": (0, jsx_1.jsxFuncAttr)("avecSaisieAbsenceJournee", aColonne),
+					"ie-eventvalidation": lEventValidation,
+					"ie-tooltiplabel": lJSXgetTooltipSaisieAbsenceJournee,
+					role: "button",
+					tabindex: "0",
+					class: "AvecMain",
+					style: "position:absolute; top:0; left:2px;",
+				}),
+				IE.jsx.str("div", {
+					"ie-class": (0, jsx_1.jsxFuncAttr)(
+						"getClassSaisieDefautCarnet",
+						aColonne,
+					),
+					"ie-if": (0, jsx_1.jsxFuncAttr)("avecSaisieDefautCarnet", aColonne),
+					"ie-eventvalidation": lEventValidationDefaut,
+					"ie-tooltiplabel": lJSXgetTitleSaisieDefautCarnet,
+					role: "button",
+					tabindex: "0",
+					class: "AvecMain",
+					style: "position:absolute; top:0; right:2px;",
+				}),
+			),
+		);
+	}
+	composeTitreHorairePiedTranche() {
+		const T = [],
+			lDecorateur = this.getDecorateurAbsences();
+		if (!lDecorateur || !lDecorateur.absences) {
+			return "";
+		}
+		if (this.avecPiedDemiPension()) {
+			T.push(
+				IE.jsx.str(
+					"div",
+					{
+						style: ObjetStyle_2.GStyle.composeHeight(
+							this._options.hauteurCellulePiedGrille_DP,
+						),
+						class: "AlignementMilieuVertical",
+					},
+					IE.jsx.str(
+						"div",
+						{
+							style: {
+								"line-height": this._options.hauteurCellulePiedGrille_DP + "px",
+							},
+							id: this.idTitreRepas,
+						},
+						ObjetTraduction_1.GTraductions.getValeur("grilleAbsence.Repas"),
+					),
+				),
+			);
+		}
+		if (lDecorateur.absences.avecInternat) {
+			T.push(
+				IE.jsx.str(
+					"div",
+					{
+						style:
+							ObjetStyle_2.GStyle.composeHeight(
+								this._options.hauteurCellulePiedGrille_Internat,
+							) + (this.avecPiedDemiPension() ? "margin-top:5px;" : ""),
+						class: "AlignementMilieuVertical",
+					},
+					IE.jsx.str(
+						"div",
+						{
+							style: {
+								"line-height":
+									this._options.hauteurCellulePiedGrille_Internat + "px",
+							},
+							id: this.idTitreIternat,
+						},
+						ObjetTraduction_1.GTraductions.getValeur("grilleAbsence.Internat"),
+					),
+				),
+			);
+		}
+		return T.join("");
+	}
+	getLargeurMaxGrille() {
+		const lLargeur = super.getLargeurMaxGrille();
+		return lLargeur - this._options.largeurReserve;
+	}
+	_getIntervalDeColonne(aColonne) {
+		const lInterval = { placeDebut: 0, placeFin: 0 },
+			lJour = this._options.convertisseurPosition.getNumeroJourDeTrancheHoraire(
+				{ tranche: aColonne, horaire: 0 },
+			);
+		lInterval.placeDebut = lJour * this.parametresSco.PlacesParJour;
+		lInterval.placeFin =
+			lInterval.placeDebut + this.parametresSco.PlacesParJour - 1;
+		return lInterval;
+	}
+	_getNodeConteneurGrille(aNode) {
+		const lGrille = this;
+		$(aNode).on("pointerdown", (aEvent) => {
+			if (aEvent && aEvent.target) {
+				if (
+					aEvent.target.classList &&
+					aEvent.target.classList.contains("cours-multiple-slider")
+				) {
+					return;
+				}
+				if (
+					aEvent.target.closest &&
+					aEvent.target.closest(".cours-multiple-slider")
+				) {
+					return;
+				}
+			}
+			const lPosition = lGrille.getPositionGrilleEvent(aEvent),
+				lPlace = lGrille.getPlaceDePosition(lPosition),
+				lInfosPlace = lGrille.getInfosDePlace(lPlace);
+			if (lInfosPlace.horsAnneScolaire || lInfosPlace.ferie) {
+				return;
+			}
+			if (lGrille._parametresGrille.gabarit) {
+				let lAjout = true;
+				if (
+					lGrille._options.choixAbsence ===
+					Enumere_Ressource_1.EGenreRessource.Absence
+				) {
+					const lAbsence = lGrille
+						.getDecorateurAbsences()
+						.getAbsenceDePlace(
+							lPlace,
+							Enumere_Ressource_1.EGenreRessource.Absence,
+						);
+					if (
+						lAbsence &&
+						lGrille._options.motifAbsence &&
+						lAbsence.motif.getNumero() ===
+							lGrille._options.motifAbsence.getNumero()
+					) {
+						lAjout = false;
+					}
+				}
+				if (aEvent.pointerType === "mouse" && aEvent.which !== 1) {
+					return;
+				}
+				lGrille._parametresGrille.gabarit.ajout = lAjout;
+				lGrille._parametresGrille.gabarit.demarrerCreation({
+					place: lGrille.getPlaceDePosition(lPosition),
+				});
+			} else {
+				lGrille._options.callbackSaisieAbsence({
+					genreSaisie:
+						TypeHttpSaisieAbsencesGrille_1.TypeHttpSaisieAbsencesGrille
+							.sag_Grille,
+					placeDebut: lPlace,
+					placeFin: lPlace,
+					genre: lGrille._options.choixAbsence,
+				});
+			}
+		});
+		if (
+			lGrille._options.choixAbsence ===
+			Enumere_Ressource_1.EGenreRessource.Absence
+		) {
+			$(aNode).on("contextmenu", (aEvent) => {
+				const lPosition = lGrille.getPositionGrilleEvent(aEvent),
+					lPlace = lGrille.getPlaceDePosition(lPosition);
+				const lAbsence = lGrille
+					.getDecorateurAbsences()
+					.getAbsenceDePlace(
+						lPlace,
+						Enumere_Ressource_1.EGenreRessource.Absence,
+					);
+				if (lAbsence && lAbsence.motif) {
+					lGrille._options.callbackMenuContextuelMotifAbsence(lAbsence.motif);
+				}
+			});
+		}
+	}
+	_colonneEstFeriee(aNumeroColonne) {
+		return this._options.joursFeries.getValeur(
+			this._options.convertisseurPosition.getJourAnneeDeTrancheHoraire({
+				tranche: aNumeroColonne,
+				horaire: 0,
+			}),
+		);
+	}
+	_composeDemiPensionAbsence(aNumeroColonne, aDemiPension, aDerniereColonne) {
+		return IE.jsx.str(
+			"div",
+			{
+				style: {
+					height: this._options.hauteurCellulePiedGrille_DP,
+					backgroundColor: this.getCouleurFond(),
+				},
+				class: [
+					AbsencesGrille_module_css_1.StylesAbsencesGrille.tranche,
+					aDerniereColonne
+						? AbsencesGrille_module_css_1.StylesAbsencesGrille.dernierTranche
+						: "",
+				],
+				role: "group",
+				"aria-labelledby":
+					this.getIdTitreTrancheDate(aNumeroColonne) + " " + this.idTitreRepas,
+			},
+			(T) => {
+				const lEventValidation = (aRepasMidi) => {
+					return () => {
+						this._options.callbackSaisieAbsence({
+							genreSaisie:
+								TypeHttpSaisieAbsencesGrille_1.TypeHttpSaisieAbsencesGrille
+									.sag_DemiPension,
+							date: this._options.convertisseurPosition.getDateDeTrancheHoraire(
+								{ tranche: aNumeroColonne, horaire: 0 },
+							),
+							repasMidi: aRepasMidi,
+						});
+					};
+				};
+				const lGetButton = (aMidi) => {
+					const lDP = aMidi ? aDemiPension.midi : aDemiPension.soir;
+					const lClasses = [
+						fonts_css_1.StylesFonts.icon_food,
+						Divers_css_1.StylesDivers.iMedium,
+					];
+					if (lDP.icone.check) {
+						lClasses.push(
+							Image_css_1.StylesImage.mixIcon_ok,
+							Image_css_1.StylesImage.iGreen,
+							Image_css_1.StylesImage.iTop,
+						);
+					} else if (lDP.icone.delete) {
+						lClasses.push(
+							Image_css_1.StylesImage.mixIcon_fermeture_widget,
+							Image_css_1.StylesImage.iRed,
+							Image_css_1.StylesImage.iTop,
+						);
+					}
+					const lIcon = IE.jsx.str(
+						"i",
+						{
+							class: lClasses,
+							role: "presentation",
+							style: { position: "relative" },
+						},
+						lDP.icone.text
+							? IE.jsx.str(
+									"span",
+									{
+										class: [
+											AbsencesGrille_module_css_1.StylesAbsencesGrille
+												.iconeText,
+											AbsencesGrille_module_css_1.StylesAbsencesGrille
+												.textShadowWhite,
+										],
+										role: "presentation",
+									},
+									lDP.icone.text,
+								)
+							: "",
+					);
+					return IE.jsx.str(
+						"div",
+						{
+							class: [
+								AbsencesGrille_module_css_1.StylesAbsencesGrille.buttonRepas,
+								AbsencesGrille_module_css_1.StylesAbsencesGrille.buttonActive,
+								aDemiPension.saisieAbsence ? "AvecMain" : "",
+							],
+							"ie-tooltiplabel":
+								lDP.hint +
+								(lDP.motifAbsence ? `\n${lDP.motifAbsence.getLibelle()}` : ""),
+							role: "button",
+							"aria-pressed": lDP.motifAbsence ? "true" : "false",
+							tabindex: "0",
+							"ie-eventvalidation": aDemiPension.saisieAbsence
+								? lEventValidation(aMidi)
+								: false,
+							"aria-disabled": aDemiPension.saisieAbsence ? false : "true",
+						},
+						IE.jsx.str(
+							"p",
+							null,
+							aMidi
+								? GlossaireAbsencesGrille_1.TradGlossaireAbsencesGrille.midi
+								: GlossaireAbsencesGrille_1.TradGlossaireAbsencesGrille.soir,
+						),
+						lIcon,
+						lDP.motifAbsence
+							? IE.jsx.str("div", {
+									class: [
+										AbsencesGrille_module_css_1.StylesAbsencesGrille.motif,
+									],
+									style: { backgroundColor: lDP.motifAbsence.couleur },
+									"ie-tooltiplabel": lDP.motifAbsence.getLibelle(),
+									role: "img",
+								})
+							: "",
+					);
+				};
+				if (aDemiPension.midi) {
+					T.push(lGetButton(true));
+				}
+				if (aDemiPension.soir) {
+					T.push(lGetButton(false));
+				}
+				if (aDemiPension.exclusion) {
+					T.push(
+						IE.jsx.str(
+							"div",
+							{
+								class: "Gras Texte11",
+								style: {
+									color: this._options.couleurLibelleExclu,
+									"line-height":
+										this._options.hauteurCellulePiedGrille_DP + "px;",
+								},
+							},
+							ObjetTraduction_1.GTraductions.getValeur("grilleAbsence.Exclu"),
+						),
+					);
+				}
+			},
+		);
+	}
+	_composeDemiPensionExclusion(aNumeroColonne, aDemiPension, aDerniereColonne) {
+		const T = [];
+		const lAvecAbsence =
+				(aDemiPension.midi && aDemiPension.midi.absent) ||
+				(aDemiPension.soir && aDemiPension.soir.absent),
+			lAvecSaisie = aDemiPension.saisieExclusion && !lAvecAbsence;
+		T.push(
+			'<div style="',
+			ObjetStyle_2.GStyle.composeCouleurBordure(
+				this.getCouleurBordures(),
+				1,
+				ObjetStyle_1.EGenreBordure.gauche +
+					ObjetStyle_1.EGenreBordure.haut +
+					ObjetStyle_1.EGenreBordure.bas +
+					(aDerniereColonne ? ObjetStyle_1.EGenreBordure.droite : 0),
+			),
+			ObjetStyle_2.GStyle.composeHeight(
+				this._options.hauteurCellulePiedGrille_DP - 2,
+			),
+			ObjetStyle_2.GStyle.composeCouleurFond(this.getCouleurFond()),
+			'"',
+			' class="Texte11 Gras',
+			lAvecSaisie ? " AvecMain" : "",
+			'"',
+			lAvecSaisie
+				? ' ie-node="getNodeDemiPensionExclusion(' + aNumeroColonne + ')"'
+				: "",
+			">",
+		);
+		if (this._colonneEstFeriee(aNumeroColonne)) {
+			T.push(
+				'<div style="line-height:',
+				this._options.hauteurCellulePiedGrille_DP,
+				"px;",
+				ObjetStyle_2.GStyle.composeCouleurTexte(
+					this.couleur.themeNeutre.moyen2,
+				),
+				'">',
+				ObjetTraduction_1.GTraductions.getValeur("Ferie"),
+				"</div>",
+			);
+		} else if (
+			!aDemiPension.saisieExclusion &&
+			this.estTrancheHoraireEnStage({ tranche: aNumeroColonne, horaire: 0 })
+		) {
+			T.push(
+				'<div style="line-height:',
+				this._options.hauteurCellulePiedGrille_DP,
+				"px;",
+				ObjetStyle_2.GStyle.composeCouleurTexte("white"),
+				'">',
+				ObjetTraduction_1.GTraductions.getValeur("grilleAbsence.Stage"),
+				"</div>",
+			);
+		} else {
+			if (aDemiPension.exclusion) {
+				T.push(
+					'<div style="',
+					ObjetStyle_2.GStyle.composeCouleurTexte(
+						this._options.couleurLibelleExclu,
+					),
+					"line-height:",
+					this._options.hauteurCellulePiedGrille_DP,
+					'px;">',
+					ObjetTraduction_1.GTraductions.getValeur("grilleAbsence.Exclu"),
+					"</div>",
+				);
+			} else if (lAvecAbsence) {
+				T.push(
+					'<div style="line-height:',
+					this._options.hauteurCellulePiedGrille_DP,
+					'px;">',
+					ObjetTraduction_1.GTraductions.getValeur(
+						"grilleAbsence.AbsenceRepas",
+					),
+					"</div>",
+				);
+			}
+		}
+		T.push("</div>");
+		return T.join("");
+	}
+	_composeInternat(aParam) {
+		let lAvecSaisie = false;
+		switch (this._options.choixAbsence) {
+			case Enumere_Ressource_1.EGenreRessource.Absence:
+				lAvecSaisie = aParam.internat.saisieAbsence;
+				break;
+			case Enumere_Ressource_1.EGenreRessource.Retard:
+				lAvecSaisie = aParam.internat.saisieRetard;
+				break;
+			case Enumere_Ressource_1.EGenreRessource.Exclusion:
+				lAvecSaisie = aParam.internat.saisieExclusion;
+				break;
+			default:
+		}
+		return IE.jsx.str(
+			"div",
+			{
+				style: {
+					height: this._options.hauteurCellulePiedGrille_Internat,
+					backgroundColor: this.getCouleurFond(),
+				},
+				class: [
+					AbsencesGrille_module_css_1.StylesAbsencesGrille.tranche,
+					aParam.derniereColonne
+						? AbsencesGrille_module_css_1.StylesAbsencesGrille.dernierTranche
+						: "",
+					aParam.avecDP ? Divers_css_1.StylesDivers.mTop : "",
+				],
+				role: "group",
+				"aria-labelledby":
+					this.getIdTitreTrancheDate(aParam.numeroColonne) +
+					" " +
+					this.idTitreIternat,
+			},
+			() => {
+				if (!lAvecSaisie) {
+					if (
+						this.estTrancheHoraireEnStage({
+							tranche: aParam.numeroColonne,
+							horaire: 0,
+						})
+					) {
+						return IE.jsx.str(
+							"span",
+							null,
+							ObjetTraduction_1.GTraductions.getValeur("grilleAbsence.Stage"),
+						);
+					}
+					const lElement =
+						this.getDecorateurAbsences().getExclusionsEleveDeJourCycle(
+							aParam.jourCycle,
+						);
+					if (lElement && lElement.exclusionsEtab) {
+						return IE.jsx.str(
+							"span",
+							{ style: { color: this._options.couleurLibelleExcluEtab } },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"grilleAbsence.ExcluEtab",
+							),
+						);
+					}
+					if (
+						this._options.choixAbsence !==
+						Enumere_Ressource_1.EGenreRessource.Exclusion
+					) {
+						return IE.jsx.str(
+							"span",
+							{ style: { color: this.couleur.themeNeutre.moyen1 } },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"grilleAbsence.NonInscrit",
+							),
+						);
+					}
+				}
+				if (aParam.internat.exclusion) {
+					return IE.jsx.str(
+						"span",
+						{
+							style: { color: this._options.couleurLibelleExclu },
+							class:
+								AbsencesGrille_module_css_1.StylesAbsencesGrille
+									.textShadowWhite,
+							"ie-tooltiplabel": ObjetTraduction_1.GTraductions.getValeur(
+								"grilleAbsence.hintInternat.exclusion",
+							),
+						},
+						ObjetTraduction_1.GTraductions.getValeur("grilleAbsence.Exclu"),
+					);
+				}
+				if (lAvecSaisie && aParam.internat.listeCreneaux) {
+					const T = [];
+					for (const lCreneau of aParam.internat.listeCreneaux) {
+						const lMotif =
+							this._options.choixAbsence ===
+							Enumere_Ressource_1.EGenreRessource.Absence
+								? lCreneau.absence
+								: lCreneau.retard;
+						const lJSXEventValid = () => {
+							this._options.callbackSaisieAbsence({
+								genreSaisie:
+									TypeHttpSaisieAbsencesGrille_1.TypeHttpSaisieAbsencesGrille
+										.sag_Internat,
+								date: this._options.convertisseurPosition.getDateDeTrancheHoraire(
+									{ tranche: aParam.numeroColonne, horaire: 0 },
+								),
+								creneauInternat: lCreneau,
+							});
+						};
+						T.push(
+							IE.jsx.str(
+								"div",
+								{
+									tabindex: "0",
+									"ie-tooltiplabel":
+										lCreneau.hint +
+										(lMotif
+											? "\n" +
+												GlossaireAbsencesGrille_1.TradGlossaireAbsencesGrille
+													.tabStrAbsence[
+													TypeRessourceAbsence_1.TypeRessourceAbsence
+														.TR_AbsenceInternat
+												]
+											: ""),
+									"ie-eventvalidation": lJSXEventValid,
+									style: {
+										backgroundColor:
+											(lMotif === null || lMotif === void 0
+												? void 0
+												: lMotif.couleur) || null,
+										color: (
+											lMotif === null || lMotif === void 0
+												? void 0
+												: lMotif.couleur
+										)
+											? UtilitaireCouleur_1.UtilitaireCouleur.getContrastedColor(
+													lMotif.couleur,
+												)
+											: null,
+									},
+									"aria-pressed": lMotif ? "true" : "false",
+									"ie-ellipsis": true,
+									role: "button",
+									class: [
+										Curseur_css_1.StylesCurseur.AvecMain,
+										AbsencesGrille_module_css_1.StylesAbsencesGrille
+											.buttonActive,
+									],
+								},
+								lCreneau.getLibelle(),
+							),
+						);
+					}
+					return T.join("");
+				}
+			},
+		);
+	}
+}
+exports.ObjetAbsencesGrille = ObjetAbsencesGrille;

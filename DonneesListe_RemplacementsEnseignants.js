@@ -1007,7 +1007,7 @@ class DonneesListe_RemplacementsEnseignants extends ObjetDonneesListeFlatDesign_
 		);
 	}
 	estFiltresParDefaut() {
-		return this.moteur.estFiltreParDefault();
+		return false;
 	}
 }
 exports.DonneesListe_RemplacementsEnseignants =

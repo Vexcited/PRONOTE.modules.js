@@ -1,1 +1,485 @@
-exports._InterfaceSuiviResultatsCompetences=void 0;const InterfacePage_1=require("InterfacePage");const ObjetHtml_1=require("ObjetHtml");const Enumere_GenreImpression_1=require("Enumere_GenreImpression");const Invocateur_1=require("Invocateur");const ObjetTraduction_1=require("ObjetTraduction");const Enumere_StructureAffichage_1=require("Enumere_StructureAffichage");const ObjetListe_1=require("ObjetListe");const ObjetRequeteSuiviResultatsCompetences_1=require("ObjetRequeteSuiviResultatsCompetences");const DonneesListe_SuiviResultatsCompEleve_1=require("DonneesListe_SuiviResultatsCompEleve");const DonneesListe_SuiviResultatsCompClasse_1=require("DonneesListe_SuiviResultatsCompClasse");const Enumere_Ressource_1=require("Enumere_Ressource");const Enumere_EvenementListe_1=require("Enumere_EvenementListe");const InterfaceSuiviResultatsCompetences_css_1=;const AccessApp_1=require("AccessApp");const GlossaireSuiviResultatsCompetences_1=require("GlossaireSuiviResultatsCompetences");const UtilitaireCompetences_1=require("UtilitaireCompetences");class _InterfaceSuiviResultatsCompetences extends InterfacePage_1.InterfacePage{constructor(...aParams){super(...aParams);const lApplicationSco=(0,AccessApp_1.getApp)();this.etatUtilisateurSco=lApplicationSco.getEtatUtilisateur();this.ids={pageMessage:this.Nom+'_pageMessage',pageDonnees:this.Nom+'_pageDonnees',pageDonneesEleve:this.Nom+'_pageDonneesEleve',pageDonneesClasse:this.Nom+'_pageDonneesClasse'};this.donnees={listePaliers:null,palierSelectionne:null,titreCompetencesMaitrisees:'',titreCompetencesNonMaitrisees:''};this.optionsAffichage={seuilEchecs:75,seuilSucces:75,niveauReference:Enumere_Ressource_1.EGenreRessource.Competence,afficheJaugeChronologique:false};} estJaugeCliquable(){return false;} surClicJaugeEvaluations(aLigne){} jsxDisplayComboPalier(){return this.donnees.listePaliers&&this.donnees.listePaliers.count()>0;} jsxComboModelPalier(){return{init:(aCombo) =>{aCombo.setOptionsObjetSaisie({labelWAICellule:ObjetTraduction_1.GTraductions.getValeur('WAI.listeSelectionPalier')});},getDonnees:(aListe) =>{return this.donnees.listePaliers;},getIndiceSelection:() =>{let lIndice=0;if(this.donnees.palierSelectionne&&this.donnees.listePaliers){lIndice=this.donnees.listePaliers.getIndiceParElement(this.donnees.palierSelectionne);} return Math.max(lIndice,0);},event:(aParams) =>{if(aParams.estSelectionManuelle&&aParams.element){this.donnees.palierSelectionne=aParams.element;this.lancerRequeteRecuperationDonnees();}}};} jsxGetHtmlTitreCompetencesMaitrisees(){return this.donnees.titreCompetencesMaitrisees||GlossaireSuiviResultatsCompetences_1.TradGlossaireSuiviResultatsCompetences.ListeCompetencesMaitrisees;} jsxGetHtmlTitreCompetencesNonMaitrisees(){return this.donnees.titreCompetencesNonMaitrisees||GlossaireSuiviResultatsCompetences_1.TradGlossaireSuiviResultatsCompetences.ListeCompetencesNonMaitrisees;} construireInstances(){super.construireInstances();this.identListeEleveEchecs=this.add(ObjetListe_1.ObjetListe,this.evenemementSurListesEleve,this.initialiserListesEleve);this.identListeEleveSucces=this.add(ObjetListe_1.ObjetListe,this.evenemementSurListesEleve,this.initialiserListesEleve);this.identListeClasse=this.add(ObjetListe_1.ObjetListe,this.evenementSurListeClasse,this.initialiserListeClasse);} setParametresGeneraux(){this.GenreStructure=Enumere_StructureAffichage_1.EStructureAffichage.Autre;this.avecBandeau=true;this.AddSurZone=[];this.AddSurZone.push(...this.getElementsAddSurZoneSelection());this.AddSurZone.push({html:IE.jsx.str("ie-combo",{"ie-model":this.jsxComboModelPalier.bind(this),"ie-display":this.jsxDisplayComboPalier.bind(this)})});const lElementsAddSurZoneParametrage=this.getElementsAddSurZoneParametrage();if(lElementsAddSurZoneParametrage&&lElementsAddSurZoneParametrage.length>0){this.AddSurZone.push({separateur:true});this.AddSurZone.push({blocGauche:true});this.AddSurZone.push(...lElementsAddSurZoneParametrage);this.AddSurZone.push({blocDroit:true});}} construireStructureAffichageAutre(){const H=[];H.push(IE.jsx.str("div",{class:"SuiviResultatsCompetences interface_affV"},IE.jsx.str("div",{id:this.ids.pageMessage}),IE.jsx.str("div",{id:this.ids.pageDonnees,class:"PageDonnees interface_affV_client",style:"display:none;"},IE.jsx.str("div",{id:this.ids.pageDonneesEleve,class:InterfaceSuiviResultatsCompetences_css_1.StylesInterfaceSuiviResultatsCompetences.PageDonneesEleve,style:"display:none;"},IE.jsx.str("div",{class:[InterfaceSuiviResultatsCompetences_css_1.StylesInterfaceSuiviResultatsCompetences.PanelDonneesEleveListe,'m-bottom-l']},IE.jsx.str("div",{class:InterfaceSuiviResultatsCompetences_css_1.StylesInterfaceSuiviResultatsCompetences.BandeauTitreTypeResultats,"ie-html":this.jsxGetHtmlTitreCompetencesNonMaitrisees.bind(this)}),IE.jsx.str("div",{id:this.getNomInstance(this.identListeEleveEchecs)})),IE.jsx.str("div",{class:InterfaceSuiviResultatsCompetences_css_1.StylesInterfaceSuiviResultatsCompetences.PanelDonneesEleveListe},IE.jsx.str("div",{class:InterfaceSuiviResultatsCompetences_css_1.StylesInterfaceSuiviResultatsCompetences.BandeauTitreTypeResultats,"ie-html":this.jsxGetHtmlTitreCompetencesMaitrisees.bind(this)}),IE.jsx.str("div",{id:this.getNomInstance(this.identListeEleveSucces)}))),IE.jsx.str("div",{id:this.ids.pageDonneesClasse,style:"display:none;",class:"interface_affV"},IE.jsx.str("div",{class:"interface_affV_client"},IE.jsx.str("div",{id:this.getNomInstance(this.identListeClasse),class:"full-height"}))))));return H.join('');} evenementAfficherMessage(aGenreMessage){Invocateur_1.Invocateur.evenement(Invocateur_1.ObjetInvocateur.events.activationImpression,Enumere_GenreImpression_1.EGenreImpression.Aucune);ObjetHtml_1.GHtml.setDisplay(this.ids.pageMessage,true);ObjetHtml_1.GHtml.setDisplay(this.ids.pageDonnees,false);const lMessage=typeof(aGenreMessage)==='number'?ObjetTraduction_1.GTraductions.getValeur('Message')[aGenreMessage]:aGenreMessage;ObjetHtml_1.GHtml.setHtml(this.ids.pageMessage,this.composeMessage(lMessage));} afficherPage(){this.lancerRequeteRecuperationDonnees();} lancerRequeteRecuperationDonnees(){new ObjetRequeteSuiviResultatsCompetences_1.ObjetRequeteSuiviResultatsCompetences(this,this._actionSurRecupererResultatsSuivis).lancerRequete({classe:this.getClasseConcernee(),periode:this.getPeriodeConcernee(),eleve:this.getEleveConcerne(),seuilEchecs:this.optionsAffichage.seuilEchecs,seuilSucces:this.optionsAffichage.seuilSucces,niveauReference:this.optionsAffichage.niveauReference,palierSelectionne:this.donnees.palierSelectionne});} _actionSurRecupererResultatsSuivis(aJSON){ObjetHtml_1.GHtml.setDisplay(this.ids.pageMessage,false);ObjetHtml_1.GHtml.setDisplay(this.ids.pageDonnees,true);this.donnees.listePaliers=aJSON.listePaliers;this.donnees.palierSelectionne=aJSON.palierSelectionne;const lEleveConcerne=this.getEleveConcerne();const lAfficheDonneesEleve=(lEleveConcerne&&lEleveConcerne.existeNumero());ObjetHtml_1.GHtml.setDisplay(this.ids.pageDonneesEleve,lAfficheDonneesEleve);ObjetHtml_1.GHtml.setDisplay(this.ids.pageDonneesClasse,!lAfficheDonneesEleve);this.donnees.titreCompetencesNonMaitrisees='';this.donnees.titreCompetencesMaitrisees='';if(lAfficheDonneesEleve){this.donnees.titreCompetencesNonMaitrisees=aJSON.titreCompetencesNonMaitrisees;this._formaterDonneesListeCompetences(aJSON.listeCompetencesEchecs);this.donnees.titreCompetencesMaitrisees=aJSON.titreCompetencesMaitrisees;this._formaterDonneesListeCompetences(aJSON.listeCompetencesSucces);this.getInstance(this.identListeEleveEchecs).setDonnees(new DonneesListe_SuiviResultatsCompEleve_1.DonneesListe_SuiviResultatsCompEleve(aJSON.listeCompetencesEchecs,{avecJaugeCliquable:this.estJaugeCliquable()}));this.getInstance(this.identListeEleveSucces).setDonnees(new DonneesListe_SuiviResultatsCompEleve_1.DonneesListe_SuiviResultatsCompEleve(aJSON.listeCompetencesSucces,{avecJaugeCliquable:this.estJaugeCliquable()}));} else{this.getInstance(this.identListeClasse).setDonnees(new DonneesListe_SuiviResultatsCompClasse_1.DonneesListe_SuiviResultatsCompClasse(aJSON.listeEleves));}} _formaterDonneesListeCompetences(aListeCompetences){if(aListeCompetences){const lDerniersPeres=[];aListeCompetences.parcourir((D) =>{let lNivDepl=D.niveauDeploiement;if(lNivDepl>1){const lPereNiveauPrecedent=lDerniersPeres[lNivDepl-2];if(lPereNiveauPrecedent){D.pere=lPereNiveauPrecedent;lPereNiveauPrecedent.estUnDeploiement=true;lPereNiveauPrecedent.estDeploye=true;}} lDerniersPeres[lNivDepl-1]=D;});}} initialiserListesEleve(aInstance){const lColonnes=[];lColonnes.push({id:DonneesListe_SuiviResultatsCompEleve_1.DonneesListe_SuiviResultatsCompEleve.colonnes.libelle,titre:GlossaireSuiviResultatsCompetences_1.TradGlossaireSuiviResultatsCompetences.Colonnes.Items,taille:400});lColonnes.push({id:DonneesListe_SuiviResultatsCompEleve_1.DonneesListe_SuiviResultatsCompEleve.colonnes.jauge,titre:{getLibelleHtml:() =>{const lJSXModeleBoutonBasculeJauge=() =>{return{event:() =>{this.optionsAffichage.afficheJaugeChronologique=!this.optionsAffichage.afficheJaugeChronologique;this.miseAJourListeEleves();},getTitle:() =>{return this.optionsAffichage.afficheJaugeChronologique?ObjetTraduction_1.GTraductions.getValeur('BulletinEtReleve.hintBtnAfficherJaugeParNiveau'):ObjetTraduction_1.GTraductions.getValeur('BulletinEtReleve.hintBtnAfficherJaugeChronologique');}};};const lJsxGetClasseBoutonBasculeJauge=() =>{if(this.optionsAffichage.afficheJaugeChronologique){return UtilitaireCompetences_1.TUtilitaireCompetences.ClasseIconeJaugeChronologique;} return UtilitaireCompetences_1.TUtilitaireCompetences.ClasseIconeJaugeParNiveau;};const lLibelleColonneJauge=[];lLibelleColonneJauge.push(IE.jsx.str("div",{class:"flex-contain flex-center"},IE.jsx.str("ie-btnicon",{"ie-model":lJSXModeleBoutonBasculeJauge,"ie-class":lJsxGetClasseBoutonBasculeJauge,style:"width:18px;"}),IE.jsx.str("span",{class:"fluid-bloc"},GlossaireSuiviResultatsCompetences_1.TradGlossaireSuiviResultatsCompetences.Colonnes.Jauge)));return lLibelleColonneJauge.join('');}},taille:400});aInstance.setOptionsListe({colonnes:lColonnes,hauteurAdapteContenu:true,boutons:[{genre:ObjetListe_1.ObjetListe.typeBouton.deployer}]});} evenemementSurListesEleve(aParametres){switch(aParametres.genreEvenement){case Enumere_EvenementListe_1.EGenreEvenementListe.SelectionClick:if(aParametres.idColonne===DonneesListe_SuiviResultatsCompEleve_1.DonneesListe_SuiviResultatsCompEleve.colonnes.jauge&&this.estJaugeCliquable()){this.surClicJaugeEvaluations(aParametres.article);} break;}} miseAJourListeEleves(){const lParams={afficheJaugeChronologique:this.optionsAffichage.afficheJaugeChronologique};this.getInstance(this.identListeEleveEchecs).getDonneesListe().setOptionsAffichage(lParams);this.getInstance(this.identListeEleveSucces).getDonneesListe().setOptionsAffichage(lParams);this.getInstance(this.identListeEleveEchecs).actualiser(true);this.getInstance(this.identListeEleveSucces).actualiser(true);} initialiserListeClasse(aInstance){const lFuncConstruitTitreColonne=function(aClasseMixIcon,aClasseCouleurMixIcon,aTraduction){return'<i class="icon_sigma '+aClasseMixIcon+' '+aClasseCouleurMixIcon+' i-top" role="presentation"></i><span class="m-left">'+aTraduction+'</span>';};const lColonnes=[];lColonnes.push({id:DonneesListe_SuiviResultatsCompClasse_1.DonneesListe_SuiviResultatsCompClasse.colonnes.eleve,titre:GlossaireSuiviResultatsCompetences_1.TradGlossaireSuiviResultatsCompetences.Colonnes.Eleves,taille:300});lColonnes.push({id:DonneesListe_SuiviResultatsCompClasse_1.DonneesListe_SuiviResultatsCompClasse.colonnes.nbEchecs,titre:{libelleHtml:lFuncConstruitTitreColonne('mix-icon_remove','i-red',GlossaireSuiviResultatsCompetences_1.TradGlossaireSuiviResultatsCompetences.Colonnes.NbCompetencesEchecs),title:GlossaireSuiviResultatsCompetences_1.TradGlossaireSuiviResultatsCompetences.HintColonnes.NbCompetencesEchecs},taille:120});lColonnes.push({id:DonneesListe_SuiviResultatsCompClasse_1.DonneesListe_SuiviResultatsCompClasse.colonnes.nbSucces,titre:{libelleHtml:lFuncConstruitTitreColonne('mix-icon_ok','i-green',GlossaireSuiviResultatsCompetences_1.TradGlossaireSuiviResultatsCompetences.Colonnes.NbCompetencesSucces),title:GlossaireSuiviResultatsCompetences_1.TradGlossaireSuiviResultatsCompetences.HintColonnes.NbCompetencesSucces},taille:120});aInstance.setOptionsListe({colonnes:lColonnes});GEtatUtilisateur.setTriListe({liste:aInstance,tri:[DonneesListe_SuiviResultatsCompClasse_1.DonneesListe_SuiviResultatsCompClasse.colonnes.eleve]});} evenementSurListeClasse(aParametres){}} exports._InterfaceSuiviResultatsCompetences=_InterfaceSuiviResultatsCompetences;
+exports._InterfaceSuiviResultatsCompetences = void 0;
+const InterfacePage_1 = require("InterfacePage");
+const ObjetHtml_1 = require("ObjetHtml");
+const Enumere_GenreImpression_1 = require("Enumere_GenreImpression");
+const Invocateur_1 = require("Invocateur");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_StructureAffichage_1 = require("Enumere_StructureAffichage");
+const ObjetListe_1 = require("ObjetListe");
+const ObjetRequeteSuiviResultatsCompetences_1 = require("ObjetRequeteSuiviResultatsCompetences");
+const DonneesListe_SuiviResultatsCompEleve_1 = require("DonneesListe_SuiviResultatsCompEleve");
+const DonneesListe_SuiviResultatsCompClasse_1 = require("DonneesListe_SuiviResultatsCompClasse");
+const Enumere_Ressource_1 = require("Enumere_Ressource");
+const Enumere_EvenementListe_1 = require("Enumere_EvenementListe");
+const AccessApp_1 = require("AccessApp");
+const GlossaireSuiviResultatsCompetences_1 = require("GlossaireSuiviResultatsCompetences");
+const UtilitaireCompetences_1 = require("UtilitaireCompetences");
+class _InterfaceSuiviResultatsCompetences extends InterfacePage_1.InterfacePage {
+	constructor(...aParams) {
+		super(...aParams);
+		const lApplicationSco = (0, AccessApp_1.getApp)();
+		this.etatUtilisateurSco = lApplicationSco.getEtatUtilisateur();
+		this.ids = {
+			pageMessage: this.Nom + "_pageMessage",
+			pageDonnees: this.Nom + "_pageDonnees",
+			pageDonneesEleve: this.Nom + "_pageDonneesEleve",
+			pageDonneesClasse: this.Nom + "_pageDonneesClasse",
+		};
+		this.donnees = {
+			listePaliers: null,
+			palierSelectionne: null,
+			titreCompetencesMaitrisees: "",
+			titreCompetencesNonMaitrisees: "",
+		};
+		this.optionsAffichage = {
+			seuilEchecs: 75,
+			seuilSucces: 75,
+			niveauReference: Enumere_Ressource_1.EGenreRessource.Competence,
+			afficheJaugeChronologique: false,
+		};
+	}
+	estJaugeCliquable() {
+		return false;
+	}
+	surClicJaugeEvaluations(aLigne) {}
+	jsxDisplayComboPalier() {
+		return this.donnees.listePaliers && this.donnees.listePaliers.count() > 0;
+	}
+	jsxComboModelPalier() {
+		return {
+			init: (aCombo) => {
+				aCombo.setOptionsObjetSaisie({
+					labelWAICellule: ObjetTraduction_1.GTraductions.getValeur(
+						"WAI.listeSelectionPalier",
+					),
+				});
+			},
+			getDonnees: (aListe) => {
+				return this.donnees.listePaliers;
+			},
+			getIndiceSelection: () => {
+				let lIndice = 0;
+				if (this.donnees.palierSelectionne && this.donnees.listePaliers) {
+					lIndice = this.donnees.listePaliers.getIndiceParElement(
+						this.donnees.palierSelectionne,
+					);
+				}
+				return Math.max(lIndice, 0);
+			},
+			event: (aParams) => {
+				if (aParams.estSelectionManuelle && aParams.element) {
+					this.donnees.palierSelectionne = aParams.element;
+					this.lancerRequeteRecuperationDonnees();
+				}
+			},
+		};
+	}
+	jsxGetHtmlTitreCompetencesMaitrisees() {
+		return (
+			this.donnees.titreCompetencesMaitrisees ||
+			GlossaireSuiviResultatsCompetences_1
+				.TradGlossaireSuiviResultatsCompetences.ListeCompetencesMaitrisees
+		);
+	}
+	jsxGetHtmlTitreCompetencesNonMaitrisees() {
+		return (
+			this.donnees.titreCompetencesNonMaitrisees ||
+			GlossaireSuiviResultatsCompetences_1
+				.TradGlossaireSuiviResultatsCompetences.ListeCompetencesNonMaitrisees
+		);
+	}
+	construireInstances() {
+		super.construireInstances();
+		this.identListeEleveEchecs = this.add(
+			ObjetListe_1.ObjetListe,
+			this.evenemementSurListesEleve,
+			this.initialiserListesEleve,
+		);
+		this.identListeEleveSucces = this.add(
+			ObjetListe_1.ObjetListe,
+			this.evenemementSurListesEleve,
+			this.initialiserListesEleve,
+		);
+		this.identListeClasse = this.add(
+			ObjetListe_1.ObjetListe,
+			this.evenementSurListeClasse,
+			this.initialiserListeClasse,
+		);
+	}
+	setParametresGeneraux() {
+		this.GenreStructure =
+			Enumere_StructureAffichage_1.EStructureAffichage.Autre;
+		this.avecBandeau = true;
+		this.AddSurZone = [];
+		this.AddSurZone.push(...this.getElementsAddSurZoneSelection());
+		this.AddSurZone.push({
+			html: IE.jsx.str("ie-combo", {
+				"ie-model": this.jsxComboModelPalier.bind(this),
+				"ie-display": this.jsxDisplayComboPalier.bind(this),
+			}),
+		});
+		const lElementsAddSurZoneParametrage =
+			this.getElementsAddSurZoneParametrage();
+		if (
+			lElementsAddSurZoneParametrage &&
+			lElementsAddSurZoneParametrage.length > 0
+		) {
+			this.AddSurZone.push({ separateur: true });
+			this.AddSurZone.push({ blocGauche: true });
+			this.AddSurZone.push(...lElementsAddSurZoneParametrage);
+			this.AddSurZone.push({ blocDroit: true });
+		}
+	}
+	construireStructureAffichageAutre() {
+		const H = [];
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: "SuiviResultatsCompetences interface_affV" },
+				IE.jsx.str("div", { id: this.ids.pageMessage }),
+				IE.jsx.str(
+					"div",
+					{
+						id: this.ids.pageDonnees,
+						class: "PageDonnees interface_affV_client",
+						style: "display:none;",
+					},
+					IE.jsx.str(
+						"div",
+						{
+							id: this.ids.pageDonneesEleve,
+							class:
+								InterfaceSuiviResultatsCompetences_css_1
+									.StylesInterfaceSuiviResultatsCompetences.PageDonneesEleve,
+							style: "display:none;",
+						},
+						IE.jsx.str(
+							"div",
+							{
+								class: [
+									InterfaceSuiviResultatsCompetences_css_1
+										.StylesInterfaceSuiviResultatsCompetences
+										.PanelDonneesEleveListe,
+									"m-bottom-l",
+								],
+							},
+							IE.jsx.str("div", {
+								class:
+									InterfaceSuiviResultatsCompetences_css_1
+										.StylesInterfaceSuiviResultatsCompetences
+										.BandeauTitreTypeResultats,
+								"ie-html":
+									this.jsxGetHtmlTitreCompetencesNonMaitrisees.bind(this),
+							}),
+							IE.jsx.str("div", {
+								id: this.getNomInstance(this.identListeEleveEchecs),
+							}),
+						),
+						IE.jsx.str(
+							"div",
+							{
+								class:
+									InterfaceSuiviResultatsCompetences_css_1
+										.StylesInterfaceSuiviResultatsCompetences
+										.PanelDonneesEleveListe,
+							},
+							IE.jsx.str("div", {
+								class:
+									InterfaceSuiviResultatsCompetences_css_1
+										.StylesInterfaceSuiviResultatsCompetences
+										.BandeauTitreTypeResultats,
+								"ie-html": this.jsxGetHtmlTitreCompetencesMaitrisees.bind(this),
+							}),
+							IE.jsx.str("div", {
+								id: this.getNomInstance(this.identListeEleveSucces),
+							}),
+						),
+					),
+					IE.jsx.str(
+						"div",
+						{
+							id: this.ids.pageDonneesClasse,
+							style: "display:none;",
+							class: "interface_affV",
+						},
+						IE.jsx.str(
+							"div",
+							{ class: "interface_affV_client" },
+							IE.jsx.str("div", {
+								id: this.getNomInstance(this.identListeClasse),
+								class: "full-height",
+							}),
+						),
+					),
+				),
+			),
+		);
+		return H.join("");
+	}
+	evenementAfficherMessage(aGenreMessage) {
+		Invocateur_1.Invocateur.evenement(
+			Invocateur_1.ObjetInvocateur.events.activationImpression,
+			Enumere_GenreImpression_1.EGenreImpression.Aucune,
+		);
+		ObjetHtml_1.GHtml.setDisplay(this.ids.pageMessage, true);
+		ObjetHtml_1.GHtml.setDisplay(this.ids.pageDonnees, false);
+		const lMessage =
+			typeof aGenreMessage === "number"
+				? ObjetTraduction_1.GTraductions.getValeur("Message")[aGenreMessage]
+				: aGenreMessage;
+		ObjetHtml_1.GHtml.setHtml(
+			this.ids.pageMessage,
+			this.composeMessage(lMessage),
+		);
+	}
+	afficherPage() {
+		this.lancerRequeteRecuperationDonnees();
+	}
+	lancerRequeteRecuperationDonnees() {
+		new ObjetRequeteSuiviResultatsCompetences_1.ObjetRequeteSuiviResultatsCompetences(
+			this,
+			this._actionSurRecupererResultatsSuivis,
+		).lancerRequete({
+			classe: this.getClasseConcernee(),
+			periode: this.getPeriodeConcernee(),
+			eleve: this.getEleveConcerne(),
+			seuilEchecs: this.optionsAffichage.seuilEchecs,
+			seuilSucces: this.optionsAffichage.seuilSucces,
+			niveauReference: this.optionsAffichage.niveauReference,
+			palierSelectionne: this.donnees.palierSelectionne,
+		});
+	}
+	_actionSurRecupererResultatsSuivis(aJSON) {
+		ObjetHtml_1.GHtml.setDisplay(this.ids.pageMessage, false);
+		ObjetHtml_1.GHtml.setDisplay(this.ids.pageDonnees, true);
+		this.donnees.listePaliers = aJSON.listePaliers;
+		this.donnees.palierSelectionne = aJSON.palierSelectionne;
+		const lEleveConcerne = this.getEleveConcerne();
+		const lAfficheDonneesEleve =
+			lEleveConcerne && lEleveConcerne.existeNumero();
+		ObjetHtml_1.GHtml.setDisplay(
+			this.ids.pageDonneesEleve,
+			lAfficheDonneesEleve,
+		);
+		ObjetHtml_1.GHtml.setDisplay(
+			this.ids.pageDonneesClasse,
+			!lAfficheDonneesEleve,
+		);
+		this.donnees.titreCompetencesNonMaitrisees = "";
+		this.donnees.titreCompetencesMaitrisees = "";
+		if (lAfficheDonneesEleve) {
+			this.donnees.titreCompetencesNonMaitrisees =
+				aJSON.titreCompetencesNonMaitrisees;
+			this._formaterDonneesListeCompetences(aJSON.listeCompetencesEchecs);
+			this.donnees.titreCompetencesMaitrisees =
+				aJSON.titreCompetencesMaitrisees;
+			this._formaterDonneesListeCompetences(aJSON.listeCompetencesSucces);
+			this.getInstance(this.identListeEleveEchecs).setDonnees(
+				new DonneesListe_SuiviResultatsCompEleve_1.DonneesListe_SuiviResultatsCompEleve(
+					aJSON.listeCompetencesEchecs,
+					{ avecJaugeCliquable: this.estJaugeCliquable() },
+				),
+			);
+			this.getInstance(this.identListeEleveSucces).setDonnees(
+				new DonneesListe_SuiviResultatsCompEleve_1.DonneesListe_SuiviResultatsCompEleve(
+					aJSON.listeCompetencesSucces,
+					{ avecJaugeCliquable: this.estJaugeCliquable() },
+				),
+			);
+		} else {
+			this.getInstance(this.identListeClasse).setDonnees(
+				new DonneesListe_SuiviResultatsCompClasse_1.DonneesListe_SuiviResultatsCompClasse(
+					aJSON.listeEleves,
+				),
+			);
+		}
+	}
+	_formaterDonneesListeCompetences(aListeCompetences) {
+		if (aListeCompetences) {
+			const lDerniersPeres = [];
+			aListeCompetences.parcourir((D) => {
+				let lNivDepl = D.niveauDeploiement;
+				if (lNivDepl > 1) {
+					const lPereNiveauPrecedent = lDerniersPeres[lNivDepl - 2];
+					if (lPereNiveauPrecedent) {
+						D.pere = lPereNiveauPrecedent;
+						lPereNiveauPrecedent.estUnDeploiement = true;
+						lPereNiveauPrecedent.estDeploye = true;
+					}
+				}
+				lDerniersPeres[lNivDepl - 1] = D;
+			});
+		}
+	}
+	initialiserListesEleve(aInstance) {
+		const lColonnes = [];
+		lColonnes.push({
+			id: DonneesListe_SuiviResultatsCompEleve_1
+				.DonneesListe_SuiviResultatsCompEleve.colonnes.libelle,
+			titre:
+				GlossaireSuiviResultatsCompetences_1
+					.TradGlossaireSuiviResultatsCompetences.Colonnes.Items,
+			taille: 400,
+		});
+		lColonnes.push({
+			id: DonneesListe_SuiviResultatsCompEleve_1
+				.DonneesListe_SuiviResultatsCompEleve.colonnes.jauge,
+			titre: {
+				getLibelleHtml: () => {
+					const lJSXModeleBoutonBasculeJauge = () => {
+						return {
+							event: () => {
+								this.optionsAffichage.afficheJaugeChronologique =
+									!this.optionsAffichage.afficheJaugeChronologique;
+								this.miseAJourListeEleves();
+							},
+							getTitle: () => {
+								return this.optionsAffichage.afficheJaugeChronologique
+									? ObjetTraduction_1.GTraductions.getValeur(
+											"BulletinEtReleve.hintBtnAfficherJaugeParNiveau",
+										)
+									: ObjetTraduction_1.GTraductions.getValeur(
+											"BulletinEtReleve.hintBtnAfficherJaugeChronologique",
+										);
+							},
+						};
+					};
+					const lJsxGetClasseBoutonBasculeJauge = () => {
+						if (this.optionsAffichage.afficheJaugeChronologique) {
+							return UtilitaireCompetences_1.TUtilitaireCompetences
+								.ClasseIconeJaugeChronologique;
+						}
+						return UtilitaireCompetences_1.TUtilitaireCompetences
+							.ClasseIconeJaugeParNiveau;
+					};
+					const lLibelleColonneJauge = [];
+					lLibelleColonneJauge.push(
+						IE.jsx.str(
+							"div",
+							{ class: "flex-contain flex-center" },
+							IE.jsx.str("ie-btnicon", {
+								"ie-model": lJSXModeleBoutonBasculeJauge,
+								"ie-class": lJsxGetClasseBoutonBasculeJauge,
+								style: "width:18px;",
+							}),
+							IE.jsx.str(
+								"span",
+								{ class: "fluid-bloc" },
+								GlossaireSuiviResultatsCompetences_1
+									.TradGlossaireSuiviResultatsCompetences.Colonnes.Jauge,
+							),
+						),
+					);
+					return lLibelleColonneJauge.join("");
+				},
+			},
+			taille: 400,
+		});
+		aInstance.setOptionsListe({
+			colonnes: lColonnes,
+			hauteurAdapteContenu: true,
+			boutons: [{ genre: ObjetListe_1.ObjetListe.typeBouton.deployer }],
+		});
+	}
+	evenemementSurListesEleve(aParametres) {
+		switch (aParametres.genreEvenement) {
+			case Enumere_EvenementListe_1.EGenreEvenementListe.SelectionClick:
+				if (
+					aParametres.idColonne ===
+						DonneesListe_SuiviResultatsCompEleve_1
+							.DonneesListe_SuiviResultatsCompEleve.colonnes.jauge &&
+					this.estJaugeCliquable()
+				) {
+					this.surClicJaugeEvaluations(aParametres.article);
+				}
+				break;
+		}
+	}
+	miseAJourListeEleves() {
+		const lParams = {
+			afficheJaugeChronologique:
+				this.optionsAffichage.afficheJaugeChronologique,
+		};
+		this.getInstance(this.identListeEleveEchecs)
+			.getDonneesListe()
+			.setOptionsAffichage(lParams);
+		this.getInstance(this.identListeEleveSucces)
+			.getDonneesListe()
+			.setOptionsAffichage(lParams);
+		this.getInstance(this.identListeEleveEchecs).actualiser(true);
+		this.getInstance(this.identListeEleveSucces).actualiser(true);
+	}
+	initialiserListeClasse(aInstance) {
+		const lFuncConstruitTitreColonne = function (
+			aClasseMixIcon,
+			aClasseCouleurMixIcon,
+			aTraduction,
+		) {
+			return (
+				'<i class="icon_sigma ' +
+				aClasseMixIcon +
+				" " +
+				aClasseCouleurMixIcon +
+				' i-top" role="presentation"></i><span class="m-left">' +
+				aTraduction +
+				"</span>"
+			);
+		};
+		const lColonnes = [];
+		lColonnes.push({
+			id: DonneesListe_SuiviResultatsCompClasse_1
+				.DonneesListe_SuiviResultatsCompClasse.colonnes.eleve,
+			titre:
+				GlossaireSuiviResultatsCompetences_1
+					.TradGlossaireSuiviResultatsCompetences.Colonnes.Eleves,
+			taille: 300,
+		});
+		lColonnes.push({
+			id: DonneesListe_SuiviResultatsCompClasse_1
+				.DonneesListe_SuiviResultatsCompClasse.colonnes.nbEchecs,
+			titre: {
+				libelleHtml: lFuncConstruitTitreColonne(
+					"mix-icon_remove",
+					"i-red",
+					GlossaireSuiviResultatsCompetences_1
+						.TradGlossaireSuiviResultatsCompetences.Colonnes
+						.NbCompetencesEchecs,
+				),
+				title:
+					GlossaireSuiviResultatsCompetences_1
+						.TradGlossaireSuiviResultatsCompetences.HintColonnes
+						.NbCompetencesEchecs,
+			},
+			taille: 120,
+		});
+		lColonnes.push({
+			id: DonneesListe_SuiviResultatsCompClasse_1
+				.DonneesListe_SuiviResultatsCompClasse.colonnes.nbSucces,
+			titre: {
+				libelleHtml: lFuncConstruitTitreColonne(
+					"mix-icon_ok",
+					"i-green",
+					GlossaireSuiviResultatsCompetences_1
+						.TradGlossaireSuiviResultatsCompetences.Colonnes
+						.NbCompetencesSucces,
+				),
+				title:
+					GlossaireSuiviResultatsCompetences_1
+						.TradGlossaireSuiviResultatsCompetences.HintColonnes
+						.NbCompetencesSucces,
+			},
+			taille: 120,
+		});
+		aInstance.setOptionsListe({ colonnes: lColonnes });
+		GEtatUtilisateur.setTriListe({
+			liste: aInstance,
+			tri: [
+				DonneesListe_SuiviResultatsCompClasse_1
+					.DonneesListe_SuiviResultatsCompClasse.colonnes.eleve,
+			],
+		});
+	}
+	evenementSurListeClasse(aParametres) {}
+}
+exports._InterfaceSuiviResultatsCompetences =
+	_InterfaceSuiviResultatsCompetences;

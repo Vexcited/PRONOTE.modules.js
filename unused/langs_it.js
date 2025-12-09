@@ -26,8 +26,8 @@ tinymce.addI18n("it", {
 	"Increase indent": "Aumenta rientro",
 	Close: "Chiudi",
 	Formats: "Formati",
-	"Your browser doesn't support direct access to the clipboard. Please use the Ctrl+X/C/V keyboard shortcuts instead.":
-		"Il browser non supporta l'accesso diretto alla cartella degli appunti. Usare i tasti di scelta rapida Ctrl+X/C/V.",
+	"Your browser doesn't support direct access to the clipboard. Please use the Ctrl+X\/C\/V keyboard shortcuts instead.":
+		"Il browser non supporta l'accesso diretto alla cartella degli appunti. Usare i tasti di scelta rapida Ctrl+X\/C\/V.",
 	Headers: "Intestazioni",
 	"Header 1": "Intestazione 1",
 	"Header 2": "Intestazione 2",
@@ -80,7 +80,7 @@ tinymce.addI18n("it", {
 	"Restore last draft": "Ripristina l'ultima bozza.",
 	"Special characters...": "Caratteri speciali...",
 	"Source code": "Codice Sorgente",
-	"Insert/Edit code sample": "Inserisci/Modifica esempio di codice",
+	"Insert\/Edit code sample": "Inserisci\/Modifica esempio di codice",
 	Language: "Lingua",
 	"Code sample...": "Esempio di codice...",
 	"Color Picker": "Selezione colori",
@@ -120,7 +120,7 @@ tinymce.addI18n("it", {
 	Plugins: "Plugin",
 	"Handy Shortcuts": "Scorciatoia pratica",
 	"Horizontal line": "Linea Orizzontale",
-	"Insert/edit image": "Aggiungi/Modifica Immagine",
+	"Insert\/edit image": "Aggiungi\/Modifica Immagine",
 	"Image description": "Descrizione Immagine",
 	Source: "Fonte",
 	Dimensions: "Dimenzioni",
@@ -153,10 +153,10 @@ tinymce.addI18n("it", {
 	Invert: "Inverti",
 	Apply: "Applica",
 	Back: "Indietro",
-	"Insert date/time": "Inserisci Data/Ora",
-	"Date/time": "Data/Ora",
-	"Insert/Edit Link": "Inserisci/modifica collegamento",
-	"Insert/edit link": "Inserisci/Modifica Link",
+	"Insert date\/time": "Inserisci Data\/Ora",
+	"Date\/time": "Data\/Ora",
+	"Insert\/Edit Link": "Inserisci\/modifica collegamento",
+	"Insert\/edit link": "Inserisci\/Modifica Link",
 	"Text to display": "Testo da Visualizzare",
 	Url: "Url",
 	"Open link in...": "Apri collegamento in...",
@@ -169,12 +169,12 @@ tinymce.addI18n("it", {
 	"Paste or type a link": "Incolla o digita un collegamento",
 	"The URL you entered seems to be an email address. Do you want to add the required mailto: prefix?":
 		"L'URL inserito sembra essere un indirizzo email. Vuoi aggiungere il prefisso necessario mailto:?",
-	"The URL you entered seems to be an external link. Do you want to add the required http:// prefix?":
-		"L'URL inserito sembra essere un collegamento esterno. Vuoi aggiungere il prefisso necessario http://?",
+	"The URL you entered seems to be an external link. Do you want to add the required http:\/\/ prefix?":
+		"L'URL inserito sembra essere un collegamento esterno. Vuoi aggiungere il prefisso necessario http:\/\/?",
 	"Link list": "Elenco link",
 	"Insert video": "Inserisci Video",
-	"Insert/edit video": "Inserisci/Modifica Video",
-	"Insert/edit media": "Inserisci/Modifica Media",
+	"Insert\/edit video": "Inserisci\/Modifica Video",
+	"Insert\/edit media": "Inserisci\/Modifica Media",
 	"Alternative source": "Alternativo",
 	"Alternative source URL": "URL sorgente alternativa",
 	"Media poster (Image URL)":
@@ -197,7 +197,7 @@ tinymce.addI18n("it", {
 	"Find and replace...": "Trova e sostituisci...",
 	"Could not find the specified string.":
 		"Impossibile trovare la parola specifica.",
-	"Match case": "Maiuscole/Minuscole ",
+	"Match case": "Maiuscole\/Minuscole ",
 	"Find whole words only": "Trova solo parole intere",
 	"Spell check": "Controllo ortografia",
 	Ignore: "Ignora",
@@ -337,7 +337,7 @@ tinymce.addI18n("it", {
 	"yuan character": "simbolo dello yuan",
 	"yuan character, in hong kong and taiwan":
 		"simbolo dello yuan, Hong Kong e Taiwan",
-	"yen/yuan character variant one": "simbolo yen/yuan variante uno",
+	"yen\/yuan character variant one": "simbolo yen\/yuan variante uno",
 	"Loading emoticons...": "Caricamento emoticon in corso",
 	"Could not load emoticons": "Impossibile caricare emoticon",
 	People: "Persone",
@@ -377,7 +377,7 @@ tinymce.addI18n("it", {
 	Black: "Nero",
 	White: "Bianco",
 	"Switch to or from fullscreen mode":
-		"Attiva/disattiva la modalit\u00e0 schermo intero",
+		"Attiva\/disattiva la modalit\u00e0 schermo intero",
 	"Open help dialog": "Apri la finestra di aiuto",
 	history: "cronologia",
 	styles: "stili",

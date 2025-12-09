@@ -1,1 +1,467 @@
-exports.DonneesListe_SuiviPluriAnnuel=void 0;const ObjetChaine_1=require("ObjetChaine");const ObjetStyle_1=require("ObjetStyle");const ObjetDonneesListe_1=require("ObjetDonneesListe");const ObjetTraduction_1=require("ObjetTraduction");const Enumere_NiveauDAcquisition_1=require("Enumere_NiveauDAcquisition");const ObjetTri_1=require("ObjetTri");const ObjetStyle_2=require("ObjetStyle");const TypePositionnement_1=require("TypePositionnement");const Divers_css_1=;const Tooltip_1=require("Tooltip");class DonneesListe_SuiviPluriAnnuel extends ObjetDonneesListe_1.ObjetDonneesListe{constructor(aParams){super(aParams.listeDonnees);this.params=Object.assign({listeDonnees:null,listeTotal:null,infosGrapheTotal:[],avecMoyennesSaisies:false},aParams);this.setOptions({avecSelection:false,avecEdition:false,avecSuppression:false});} getValeur(aParams){switch(aParams.idColonne){case DonneesListe_SuiviPluriAnnuel.colonnes.matiere:return aParams.article.matiere;case DonneesListe_SuiviPluriAnnuel.colonnes.graphe:{return this._composeGraphique(aParams.article.infosGraphe);} default:return this._getValeurDynamique(aParams.colonne,aParams.article,aParams);}} getTri(){return[ObjetTri_1.ObjetTri.init('matiere')];} getTypeValeur(aParams){switch(aParams.idColonne){case DonneesListe_SuiviPluriAnnuel.colonnes.matiere:return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;default:return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;}} estCelluleWAIRowHeader(aParams){return aParams.idColonne===DonneesListe_SuiviPluriAnnuel.colonnes.matiere;} getCouleurCellule(aParams){switch(aParams.idColonne){case DonneesListe_SuiviPluriAnnuel.colonnes.matiere:return GCouleur.liste.nonEditable;default:return GCouleur.liste.editable;}} getContenuTotal(aParams){switch(aParams.idColonne){case DonneesListe_SuiviPluriAnnuel.colonnes.matiere:return this._getTitreTotalDynamique();case DonneesListe_SuiviPluriAnnuel.colonnes.graphe:return this._composeGraphique(this.params.infosGrapheTotal);default:return this._getValeurTotalDynamique(aParams);}} _getImgPastille(aDeNiveau){const lElement=GParametres.listeNiveauxDAcquisitions.getElementParGenre(aDeNiveau.getGenre());return Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImagePositionnement({niveauDAcquisition:lElement,avecTitle:false,genrePositionnement:TypePositionnement_1.TypePositionnementUtil.getGenrePositionnementParDefaut()});} _getHint(aParams){let lHint=[];const regexFwd=/#/gi;const regexBwd=/@#@/gi;const lPastilles=[aParams.image.replace(regexFwd,'@#@')];if(aParams.maitrise.listeDetails){for(let i=0;i<aParams.maitrise.listeDetails.count();i++){const lDetail=aParams.maitrise.listeDetails.get(i);let lCouleurPastille=this._getImgPastille(lDetail.niveau);lCouleurPastille=lCouleurPastille.replace(regexFwd,'@#@');lPastilles.push(lCouleurPastille);}} lHint.push(ObjetChaine_1.GChaine.format(aParams.maitrise.hint,lPastilles));let StrlHint=lHint.join('');StrlHint=StrlHint.replace(regexBwd,'#');return StrlHint;} _getValeurDynamique(aColonne,D,aParams){const idColonne=aParams.declarationColonne.id;const lClass=[];let lCoeff='';let lTitle='';lClass.push('InlineBlock');if(D[idColonne].suivi.appreciation!==undefined&&D[idColonne].suivi.appreciation!==''){lClass.push('Image_ListeCommentaire');lTitle=' title="'+D[idColonne].suivi.appreciation+'"';} if(D[idColonne].suivi.coefficient&&D[idColonne].suivi.moyenne&&D[idColonne].suivi.moyenne.valeur>0&&!D[idColonne].suivi.coefficient.estCoefficientParDefaut()){lCoeff=D[idColonne].suivi.coefficient;} const lHtml=[];lHtml.push('<div class="p-all-s flex-contain cols justify-center">');lHtml.push('<div>');lHtml.push('<div class="',lClass.join(' '),'" style="width:26px;height:16px;"');lHtml.push(lTitle);lHtml.push('></div>');const lAvecMoyenneEleve=(D[idColonne].suivi.moyenne&&D[idColonne].suivi.moyenne.valeur>0);const lAvecAnnotation=(!!D[idColonne].suivi.strAnnotation&&D[idColonne].suivi.strAnnotation!=='');let lAvecHint=lAvecAnnotation;let lStrHint=D[idColonne].suivi.hintAnnotation;let lClassMoyenne='InlineBlock AlignementMilieu Gras';const lStrMoyenne=[lAvecMoyenneEleve?D[idColonne].suivi.moyenne:lAvecAnnotation?D[idColonne].suivi.strAnnotation:'&nbsp;'];if(lAvecMoyenneEleve&&D[idColonne].suivi.facultatif){lAvecHint=true;lStrHint=ObjetTraduction_1.GTraductions.getValeur('SuiviPluriannuel.facultatif');if(D[idColonne].suivi.Bonus){lClassMoyenne=lClassMoyenne+' Italique';} else{lStrMoyenne.push('(',lStrMoyenne,')');}} lHtml.push(IE.jsx.str(IE.jsx.fragment,null,IE.jsx.str("div",{class:lClassMoyenne,style:"width:42px; vertical-align:top;","data-tooltip":lAvecHint?Tooltip_1.Tooltip.Type.default:false,"data-tooltip-text":lAvecHint?lStrHint:false},lStrMoyenne.join(''),lAvecHint?IE.jsx.str("span",{class:Divers_css_1.StylesDivers.srOnly},lStrHint):''),IE.jsx.str("div",{class:"InlineBlock",style:"font-size: 0.8em;width:26px;height:16px;"},lCoeff)));lHtml.push('</div>');const lAvecMoyenneClasse=(D[idColonne].suivi.moyenneClasse&&D[idColonne].suivi.moyenneClasse.valeur>0);lHtml.push(IE.jsx.str("div",{class:"AlignementMilieu Italique EspaceBas","data-tooltip":lAvecMoyenneClasse?Tooltip_1.Tooltip.Type.default:false,"data-tooltip-text":lAvecMoyenneClasse?ObjetTraduction_1.GTraductions.getValeur('SuiviPluriannuel.moyenneClasse'):false},lAvecMoyenneClasse?D[idColonne].suivi.moyenneClasse:'&nbsp;',lAvecMoyenneClasse?IE.jsx.str("span",{class:Divers_css_1.StylesDivers.srOnly},ObjetTraduction_1.GTraductions.getValeur('SuiviPluriannuel.moyenneClasse')):''));const lNbElt=D[idColonne].suivi.listeMaitrises?D[idColonne].suivi.listeMaitrises.count():0;if(lNbElt>0){lHtml.push('<div class="AlignementMilieu">');for(let i=0;i<lNbElt;i++){const lMaitrise=D[idColonne].suivi.listeMaitrises.get(i);const lImage=this._getImgPastille(lMaitrise.niveau);const lDonneesHint={maitrise:lMaitrise,image:lImage};let lEcart='';if(i===0){lEcart='padding-left: 7px;';} lHtml.push(IE.jsx.str("div",{class:"InlineBlock",style:`width:20px;${lEcart}`,"ie-tooltiplabel":this._getHint.bind(this,lDonneesHint)},lImage));} for(let j=lNbElt;j<D[idColonne].nbMaxPeriode;j++){lHtml.push('<div class="InlineBlock" style="width:20px;">&nbsp;</div>');} lHtml.push('</div>');} lHtml.push('</div>');return lHtml.join('');} _getTitreTotalDynamique(){if(this.params.avecMoyennesSaisies){const lHtml=[];lHtml.push('<div class="AlignementDroit">');lHtml.push(ObjetTraduction_1.GTraductions.getValeur('SuiviPluriannuel.moyenneGenerale'));lHtml.push('</div>');lHtml.push('<div class="AlignementDroit">');lHtml.push(ObjetTraduction_1.GTraductions.getValeur('SuiviPluriannuel.esito'));lHtml.push('</div>');lHtml.push('<div class="AlignementDroit">');lHtml.push(ObjetTraduction_1.GTraductions.getValeur('SuiviPluriannuel.assiduite'));lHtml.push('</div>');lHtml.push('<div class="AlignementDroit">');lHtml.push(ObjetTraduction_1.GTraductions.getValeur('SuiviPluriannuel.credit'));lHtml.push('</div>');return lHtml.join('');} else{return ObjetTraduction_1.GTraductions.getValeur('SuiviPluriannuel.moyenneGenerale');}} _getValeurTotalDynamique(aParams){const idColonne=aParams.declarationColonne.id;const lElement=this.params.listeTotal[idColonne];const lHtml=[];lHtml.push('<div class="PetitEspace">');lHtml.push('<div class="AlignementMilieu Gras PetitEspaceBas">',(lElement.moyenne&&lElement.moyenne.valeur>0)?lElement.moyenne:'&nbsp;','</div>');if(this.params.avecMoyennesSaisies){lHtml.push('<div ie-ellipsis-fixe class="AlignementMilieu" style="',ObjetStyle_1.GStyle.composeCouleurBordure(GCouleur.bordure,1,ObjetStyle_2.EGenreBordure.haut),'">');lHtml.push((lElement.strEsito&&lElement.strEsito!=='')?lElement.strEsito:'&nbsp;');lHtml.push('</div>');const lHint=lElement.hintAssiduite?'" ie-hint="'+lElement.hintAssiduite:'';lHtml.push('<div class="AlignementMilieu" style="',ObjetStyle_1.GStyle.composeCouleurBordure(GCouleur.bordure,1,ObjetStyle_2.EGenreBordure.haut),lHint,'">');lHtml.push((lElement.strAssiduite&&lElement.strAssiduite!=='')?lElement.strAssiduite:'&nbsp;');lHtml.push('</div>');lHtml.push('<div class="AlignementMilieu" style="',ObjetStyle_1.GStyle.composeCouleurBordure(GCouleur.bordure,1,ObjetStyle_2.EGenreBordure.haut),'">');lHtml.push((lElement.credits&&lElement.credits!=='')?lElement.credits:'&nbsp;');lHtml.push('</div>');} else{lHtml.push('<div class="AlignementMilieu Italique PetitEspaceBas">',(lElement.moyenneClasse&&lElement.moyenneClasse.valeur>0)?lElement.moyenneClasse:'&nbsp;','</div>');} lHtml.push('</div>');return lHtml.join('');} _composeGraphique(aAnnees){const T=[];T.push('<div class="AlignementMilieu">');if(aAnnees&&aAnnees.length>0){const lLargeur=20+20*aAnnees.length;let lRangAnnee=0;const lTooltip=this.getTooltipGraphe(aAnnees);T.push(IE.jsx.str("svg",{width:lLargeur,height:"60",role:"img","ie-tooltiplabel":lTooltip||false,"aria-hidden":lTooltip?false:'true'},(aTabSvg) =>{aAnnees.forEach((aAnnee) =>{if(aAnnee&&aAnnee.moyenne&&aAnnee.moyenne.estUneValeur()){aTabSvg.push(this._composeAnneeSVG(aAnnee,lRangAnnee));} lRangAnnee++;});},IE.jsx.str("line",{x1:"5",y1:"30",x2:lLargeur-5,y2:"30",stroke:"#c5c5c5","stroke-width":"0.5"})));} T.push('</div>');return T.join('');} getTooltipGraphe(aAnnees){let lTabLabel=[];aAnnees.forEach((aAnnee,aIndex) =>{if(aAnnee&&aAnnee.moyenne&&aAnnee.moyenne.estUneValeur()){const lDonnesAnnee=this.params.listeDonnees.get(0)[`annee${aIndex}`];if(lDonnesAnnee){lTabLabel.push(ObjetTraduction_1.GTraductions.getValeur('SuiviPluriannuel.WAIGraphe_SSS',[lDonnesAnnee.strAnnee,aAnnee.moyenne.getValeur(),aAnnee.bareme.getValeur()]));}}});return lTabLabel.join(', ');} getTooltip(aParams){switch(aParams.idColonne){case DonneesListe_SuiviPluriAnnuel.colonnes.graphe:return this.getTooltipGraphe(aParams.article.infosGraphe);} return'';} _composeAnneeSVG(aAnnee,aRang){const lImage=[];const lHauteur=40*aAnnee.moyenne.getValeur()/aAnnee.bareme.getValeur();const lTop=50-lHauteur;const lAbscisse=10+(20*aRang);lImage.push('  <rect x="',lAbscisse,'" y="',lTop,'" width="20" height="',lHauteur,'" fill="',aAnnee.couleur,'" />');return lImage.join('');}} exports.DonneesListe_SuiviPluriAnnuel=DonneesListe_SuiviPluriAnnuel;(function(DonneesListe_SuiviPluriAnnuel){let colonnes;(function(colonnes){colonnes["matiere"]="matiere";colonnes["graphe"]="graphe";colonnes["annee"]="annee";})(colonnes=DonneesListe_SuiviPluriAnnuel.colonnes||(DonneesListe_SuiviPluriAnnuel.colonnes={}));})(DonneesListe_SuiviPluriAnnuel||(exports.DonneesListe_SuiviPluriAnnuel=DonneesListe_SuiviPluriAnnuel={}));
+exports.DonneesListe_SuiviPluriAnnuel = void 0;
+const ObjetChaine_1 = require("ObjetChaine");
+const ObjetStyle_1 = require("ObjetStyle");
+const ObjetDonneesListe_1 = require("ObjetDonneesListe");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const Enumere_NiveauDAcquisition_1 = require("Enumere_NiveauDAcquisition");
+const ObjetTri_1 = require("ObjetTri");
+const ObjetStyle_2 = require("ObjetStyle");
+const TypePositionnement_1 = require("TypePositionnement");
+const Tooltip_1 = require("Tooltip");
+class DonneesListe_SuiviPluriAnnuel extends ObjetDonneesListe_1.ObjetDonneesListe {
+	constructor(aParams) {
+		super(aParams.listeDonnees);
+		this.params = Object.assign(
+			{
+				listeDonnees: null,
+				listeTotal: null,
+				infosGrapheTotal: [],
+				avecMoyennesSaisies: false,
+			},
+			aParams,
+		);
+		this.setOptions({
+			avecSelection: false,
+			avecEdition: false,
+			avecSuppression: false,
+		});
+	}
+	getValeur(aParams) {
+		switch (aParams.idColonne) {
+			case DonneesListe_SuiviPluriAnnuel.colonnes.matiere:
+				return aParams.article.matiere;
+			case DonneesListe_SuiviPluriAnnuel.colonnes.graphe: {
+				return this._composeGraphique(aParams.article.infosGraphe);
+			}
+			default:
+				return this._getValeurDynamique(
+					aParams.colonne,
+					aParams.article,
+					aParams,
+				);
+		}
+	}
+	getTri() {
+		return [ObjetTri_1.ObjetTri.init("matiere")];
+	}
+	getTypeValeur(aParams) {
+		switch (aParams.idColonne) {
+			case DonneesListe_SuiviPluriAnnuel.colonnes.matiere:
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Texte;
+			default:
+				return ObjetDonneesListe_1.ObjetDonneesListe.ETypeCellule.Html;
+		}
+	}
+	estCelluleWAIRowHeader(aParams) {
+		return aParams.idColonne === DonneesListe_SuiviPluriAnnuel.colonnes.matiere;
+	}
+	getCouleurCellule(aParams) {
+		switch (aParams.idColonne) {
+			case DonneesListe_SuiviPluriAnnuel.colonnes.matiere:
+				return GCouleur.liste.nonEditable;
+			default:
+				return GCouleur.liste.editable;
+		}
+	}
+	getContenuTotal(aParams) {
+		switch (aParams.idColonne) {
+			case DonneesListe_SuiviPluriAnnuel.colonnes.matiere:
+				return this._getTitreTotalDynamique();
+			case DonneesListe_SuiviPluriAnnuel.colonnes.graphe:
+				return this._composeGraphique(this.params.infosGrapheTotal);
+			default:
+				return this._getValeurTotalDynamique(aParams);
+		}
+	}
+	_getImgPastille(aDeNiveau) {
+		const lElement = GParametres.listeNiveauxDAcquisitions.getElementParGenre(
+			aDeNiveau.getGenre(),
+		);
+		return Enumere_NiveauDAcquisition_1.EGenreNiveauDAcquisitionUtil.getImagePositionnement(
+			{
+				niveauDAcquisition: lElement,
+				avecTitle: false,
+				genrePositionnement:
+					TypePositionnement_1.TypePositionnementUtil.getGenrePositionnementParDefaut(),
+			},
+		);
+	}
+	_getHint(aParams) {
+		let lHint = [];
+		const regexFwd = /#/gi;
+		const regexBwd = /@#@/gi;
+		const lPastilles = [aParams.image.replace(regexFwd, "@#@")];
+		if (aParams.maitrise.listeDetails) {
+			for (let i = 0; i < aParams.maitrise.listeDetails.count(); i++) {
+				const lDetail = aParams.maitrise.listeDetails.get(i);
+				let lCouleurPastille = this._getImgPastille(lDetail.niveau);
+				lCouleurPastille = lCouleurPastille.replace(regexFwd, "@#@");
+				lPastilles.push(lCouleurPastille);
+			}
+		}
+		lHint.push(ObjetChaine_1.GChaine.format(aParams.maitrise.hint, lPastilles));
+		let StrlHint = lHint.join("");
+		StrlHint = StrlHint.replace(regexBwd, "#");
+		return StrlHint;
+	}
+	_getValeurDynamique(aColonne, D, aParams) {
+		const idColonne = aParams.declarationColonne.id;
+		const lClass = [];
+		let lCoeff = "";
+		let lTitle = "";
+		lClass.push("InlineBlock");
+		if (
+			D[idColonne].suivi.appreciation !== undefined &&
+			D[idColonne].suivi.appreciation !== ""
+		) {
+			lClass.push("Image_ListeCommentaire");
+			lTitle = ' title="' + D[idColonne].suivi.appreciation + '"';
+		}
+		if (
+			D[idColonne].suivi.coefficient &&
+			D[idColonne].suivi.moyenne &&
+			D[idColonne].suivi.moyenne.valeur > 0 &&
+			!D[idColonne].suivi.coefficient.estCoefficientParDefaut()
+		) {
+			lCoeff = D[idColonne].suivi.coefficient;
+		}
+		const lHtml = [];
+		lHtml.push('<div class="p-all-s flex-contain cols justify-center">');
+		lHtml.push("<div>");
+		lHtml.push(
+			'<div class="',
+			lClass.join(" "),
+			'" style="width:26px;height:16px;"',
+		);
+		lHtml.push(lTitle);
+		lHtml.push("></div>");
+		const lAvecMoyenneEleve =
+			D[idColonne].suivi.moyenne && D[idColonne].suivi.moyenne.valeur > 0;
+		const lAvecAnnotation =
+			!!D[idColonne].suivi.strAnnotation &&
+			D[idColonne].suivi.strAnnotation !== "";
+		let lAvecHint = lAvecAnnotation;
+		let lStrHint = D[idColonne].suivi.hintAnnotation;
+		let lClassMoyenne = "InlineBlock AlignementMilieu Gras";
+		const lStrMoyenne = [
+			lAvecMoyenneEleve
+				? D[idColonne].suivi.moyenne
+				: lAvecAnnotation
+					? D[idColonne].suivi.strAnnotation
+					: "&nbsp;",
+		];
+		if (lAvecMoyenneEleve && D[idColonne].suivi.facultatif) {
+			lAvecHint = true;
+			lStrHint = ObjetTraduction_1.GTraductions.getValeur(
+				"SuiviPluriannuel.facultatif",
+			);
+			if (D[idColonne].suivi.Bonus) {
+				lClassMoyenne = lClassMoyenne + " Italique";
+			} else {
+				lStrMoyenne.push("(", lStrMoyenne, ")");
+			}
+		}
+		lHtml.push(
+			IE.jsx.str(
+				IE.jsx.fragment,
+				null,
+				IE.jsx.str(
+					"div",
+					{
+						class: lClassMoyenne,
+						style: "width:42px; vertical-align:top;",
+						"data-tooltip": lAvecHint ? Tooltip_1.Tooltip.Type.default : false,
+						"data-tooltip-text": lAvecHint ? lStrHint : false,
+					},
+					lStrMoyenne.join(""),
+					lAvecHint
+						? IE.jsx.str(
+								"span",
+								{ class: Divers_css_1.StylesDivers.srOnly },
+								lStrHint,
+							)
+						: "",
+				),
+				IE.jsx.str(
+					"div",
+					{
+						class: "InlineBlock",
+						style: "font-size: 0.8em;width:26px;height:16px;",
+					},
+					lCoeff,
+				),
+			),
+		);
+		lHtml.push("</div>");
+		const lAvecMoyenneClasse =
+			D[idColonne].suivi.moyenneClasse &&
+			D[idColonne].suivi.moyenneClasse.valeur > 0;
+		lHtml.push(
+			IE.jsx.str(
+				"div",
+				{
+					class: "AlignementMilieu Italique EspaceBas",
+					"data-tooltip": lAvecMoyenneClasse
+						? Tooltip_1.Tooltip.Type.default
+						: false,
+					"data-tooltip-text": lAvecMoyenneClasse
+						? ObjetTraduction_1.GTraductions.getValeur(
+								"SuiviPluriannuel.moyenneClasse",
+							)
+						: false,
+				},
+				lAvecMoyenneClasse ? D[idColonne].suivi.moyenneClasse : "&nbsp;",
+				lAvecMoyenneClasse
+					? IE.jsx.str(
+							"span",
+							{ class: Divers_css_1.StylesDivers.srOnly },
+							ObjetTraduction_1.GTraductions.getValeur(
+								"SuiviPluriannuel.moyenneClasse",
+							),
+						)
+					: "",
+			),
+		);
+		const lNbElt = D[idColonne].suivi.listeMaitrises
+			? D[idColonne].suivi.listeMaitrises.count()
+			: 0;
+		if (lNbElt > 0) {
+			lHtml.push('<div class="AlignementMilieu">');
+			for (let i = 0; i < lNbElt; i++) {
+				const lMaitrise = D[idColonne].suivi.listeMaitrises.get(i);
+				const lImage = this._getImgPastille(lMaitrise.niveau);
+				const lDonneesHint = { maitrise: lMaitrise, image: lImage };
+				let lEcart = "";
+				if (i === 0) {
+					lEcart = "padding-left: 7px;";
+				}
+				lHtml.push(
+					IE.jsx.str(
+						"div",
+						{
+							class: "InlineBlock",
+							style: `width:20px;${lEcart}`,
+							"ie-tooltiplabel": this._getHint.bind(this, lDonneesHint),
+						},
+						lImage,
+					),
+				);
+			}
+			for (let j = lNbElt; j < D[idColonne].nbMaxPeriode; j++) {
+				lHtml.push('<div class="InlineBlock" style="width:20px;">&nbsp;</div>');
+			}
+			lHtml.push("</div>");
+		}
+		lHtml.push("</div>");
+		return lHtml.join("");
+	}
+	_getTitreTotalDynamique() {
+		if (this.params.avecMoyennesSaisies) {
+			const lHtml = [];
+			lHtml.push('<div class="AlignementDroit">');
+			lHtml.push(
+				ObjetTraduction_1.GTraductions.getValeur(
+					"SuiviPluriannuel.moyenneGenerale",
+				),
+			);
+			lHtml.push("</div>");
+			lHtml.push('<div class="AlignementDroit">');
+			lHtml.push(
+				ObjetTraduction_1.GTraductions.getValeur("SuiviPluriannuel.esito"),
+			);
+			lHtml.push("</div>");
+			lHtml.push('<div class="AlignementDroit">');
+			lHtml.push(
+				ObjetTraduction_1.GTraductions.getValeur("SuiviPluriannuel.assiduite"),
+			);
+			lHtml.push("</div>");
+			lHtml.push('<div class="AlignementDroit">');
+			lHtml.push(
+				ObjetTraduction_1.GTraductions.getValeur("SuiviPluriannuel.credit"),
+			);
+			lHtml.push("</div>");
+			return lHtml.join("");
+		} else {
+			return ObjetTraduction_1.GTraductions.getValeur(
+				"SuiviPluriannuel.moyenneGenerale",
+			);
+		}
+	}
+	_getValeurTotalDynamique(aParams) {
+		const idColonne = aParams.declarationColonne.id;
+		const lElement = this.params.listeTotal[idColonne];
+		const lHtml = [];
+		lHtml.push('<div class="PetitEspace">');
+		lHtml.push(
+			'<div class="AlignementMilieu Gras PetitEspaceBas">',
+			lElement.moyenne && lElement.moyenne.valeur > 0
+				? lElement.moyenne
+				: "&nbsp;",
+			"</div>",
+		);
+		if (this.params.avecMoyennesSaisies) {
+			lHtml.push(
+				'<div ie-ellipsis-fixe class="AlignementMilieu" style="',
+				ObjetStyle_1.GStyle.composeCouleurBordure(
+					GCouleur.bordure,
+					1,
+					ObjetStyle_2.EGenreBordure.haut,
+				),
+				'">',
+			);
+			lHtml.push(
+				lElement.strEsito && lElement.strEsito !== ""
+					? lElement.strEsito
+					: "&nbsp;",
+			);
+			lHtml.push("</div>");
+			const lHint = lElement.hintAssiduite
+				? '" ie-hint="' + lElement.hintAssiduite
+				: "";
+			lHtml.push(
+				'<div class="AlignementMilieu" style="',
+				ObjetStyle_1.GStyle.composeCouleurBordure(
+					GCouleur.bordure,
+					1,
+					ObjetStyle_2.EGenreBordure.haut,
+				),
+				lHint,
+				'">',
+			);
+			lHtml.push(
+				lElement.strAssiduite && lElement.strAssiduite !== ""
+					? lElement.strAssiduite
+					: "&nbsp;",
+			);
+			lHtml.push("</div>");
+			lHtml.push(
+				'<div class="AlignementMilieu" style="',
+				ObjetStyle_1.GStyle.composeCouleurBordure(
+					GCouleur.bordure,
+					1,
+					ObjetStyle_2.EGenreBordure.haut,
+				),
+				'">',
+			);
+			lHtml.push(
+				lElement.credits && lElement.credits !== ""
+					? lElement.credits
+					: "&nbsp;",
+			);
+			lHtml.push("</div>");
+		} else {
+			lHtml.push(
+				'<div class="AlignementMilieu Italique PetitEspaceBas">',
+				lElement.moyenneClasse && lElement.moyenneClasse.valeur > 0
+					? lElement.moyenneClasse
+					: "&nbsp;",
+				"</div>",
+			);
+		}
+		lHtml.push("</div>");
+		return lHtml.join("");
+	}
+	_composeGraphique(aAnnees) {
+		const T = [];
+		T.push('<div class="AlignementMilieu">');
+		if (aAnnees && aAnnees.length > 0) {
+			const lLargeur = 20 + 20 * aAnnees.length;
+			let lRangAnnee = 0;
+			const lTooltip = this.getTooltipGraphe(aAnnees);
+			T.push(
+				IE.jsx.str(
+					"svg",
+					{
+						width: lLargeur,
+						height: "60",
+						role: "img",
+						"ie-tooltiplabel": lTooltip || false,
+						"aria-hidden": lTooltip ? false : "true",
+					},
+					(aTabSvg) => {
+						aAnnees.forEach((aAnnee) => {
+							if (aAnnee && aAnnee.moyenne && aAnnee.moyenne.estUneValeur()) {
+								aTabSvg.push(this._composeAnneeSVG(aAnnee, lRangAnnee));
+							}
+							lRangAnnee++;
+						});
+					},
+					IE.jsx.str("line", {
+						x1: "5",
+						y1: "30",
+						x2: lLargeur - 5,
+						y2: "30",
+						stroke: "#c5c5c5",
+						"stroke-width": "0.5",
+					}),
+				),
+			);
+		}
+		T.push("</div>");
+		return T.join("");
+	}
+	getTooltipGraphe(aAnnees) {
+		let lTabLabel = [];
+		aAnnees.forEach((aAnnee, aIndex) => {
+			if (aAnnee && aAnnee.moyenne && aAnnee.moyenne.estUneValeur()) {
+				const lDonnesAnnee = this.params.listeDonnees.get(0)[`annee${aIndex}`];
+				if (lDonnesAnnee) {
+					lTabLabel.push(
+						ObjetTraduction_1.GTraductions.getValeur(
+							"SuiviPluriannuel.WAIGraphe_SSS",
+							[
+								lDonnesAnnee.strAnnee,
+								aAnnee.moyenne.getValeur(),
+								aAnnee.bareme.getValeur(),
+							],
+						),
+					);
+				}
+			}
+		});
+		return lTabLabel.join(", ");
+	}
+	getTooltip(aParams) {
+		switch (aParams.idColonne) {
+			case DonneesListe_SuiviPluriAnnuel.colonnes.graphe:
+				return this.getTooltipGraphe(aParams.article.infosGraphe);
+		}
+		return "";
+	}
+	_composeAnneeSVG(aAnnee, aRang) {
+		const lImage = [];
+		const lHauteur =
+			(40 * aAnnee.moyenne.getValeur()) / aAnnee.bareme.getValeur();
+		const lTop = 50 - lHauteur;
+		const lAbscisse = 10 + 20 * aRang;
+		lImage.push(
+			'  <rect x="',
+			lAbscisse,
+			'" y="',
+			lTop,
+			'" width="20" height="',
+			lHauteur,
+			'" fill="',
+			aAnnee.couleur,
+			'" />',
+		);
+		return lImage.join("");
+	}
+}
+exports.DonneesListe_SuiviPluriAnnuel = DonneesListe_SuiviPluriAnnuel;
+(function (DonneesListe_SuiviPluriAnnuel) {
+	let colonnes;
+	(function (colonnes) {
+		colonnes["matiere"] = "matiere";
+		colonnes["graphe"] = "graphe";
+		colonnes["annee"] = "annee";
+	})(
+		(colonnes =
+			DonneesListe_SuiviPluriAnnuel.colonnes ||
+			(DonneesListe_SuiviPluriAnnuel.colonnes = {})),
+	);
+})(
+	DonneesListe_SuiviPluriAnnuel ||
+		(exports.DonneesListe_SuiviPluriAnnuel = DonneesListe_SuiviPluriAnnuel =
+			{}),
+);

@@ -15,6 +15,4 @@ exports.StylesUtilitaireTransformationFlux = {
 	transfoChips: "transfo-chips",
 	icon_cloud: "icon_cloud",
 	cbCloud: "cb-cloud",
-	loadingTest: "loading-test",
-	spinner_waiting: "spinner_waiting",
 };

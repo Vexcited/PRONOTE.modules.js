@@ -1,3 +1,428 @@
-exports.ObjetAideContextuelle=void 0;const ObjetIdentite_1=require("ObjetIdentite");const MethodesObjet_1=require("MethodesObjet");const ObjetRequeteJSON_1=require("ObjetRequeteJSON");const CollectionRequetes_1=require("CollectionRequetes");const ToucheClavier_1=require("ToucheClavier");const ObjetTraduction_1=require("ObjetTraduction");const ObjetHtml_1=require("ObjetHtml");const ObjetListeElements_1=require("ObjetListeElements");const ObjetElement_1=require("ObjetElement");;const Divers_css_1=;const ObjetAideContextuelle_css_1=;const ObjetTraduction_2=require("ObjetTraduction");const UtilitaireCouleur_1=require("UtilitaireCouleur");const TradObjetAideContextuelle=ObjetTraduction_2.TraductionsModule.getModule('ObjetAideContextuelle',{Titre:'',AucuneAide:'',VoirPlus:'',UneAide:'',XAide_D:''});class ObjetRequeteAideContextuelleDyn extends ObjetRequeteJSON_1.ObjetRequeteConsultation{} CollectionRequetes_1.Requetes.inscrire('AideContextuelleDyn',ObjetRequeteAideContextuelleDyn);class ObjetAideContextuelle extends ObjetIdentite_1.Identite{constructor(...aParams){super(...aParams);this.idContenu=this.Nom+'_contenu';this.optionsAideContextuelle={timerOuverture:null,onglet:null,nombre:0};} setOptionsAideContextuelle(aOptions){$.extend(this.optionsAideContextuelle,aOptions);} free(){super.free();$('#'+this.Nom.escapeJQ()).remove();} recupererDonnees(){if(this.optionsAideContextuelle.simulerFenetre&&!this.elementFocusPrec){this.elementFocusPrec=ObjetHtml_1.GHtml.getElementEnFocus();} this.ecran='';if(!!this.optionsAideContextuelle.onglet){const lGenre=this.optionsAideContextuelle.onglet.getGenre();if(MethodesObjet_1.MethodesObjet.isNumber(lGenre)){this.ecran=lGenre.toString();} else if(MethodesObjet_1.MethodesObjet.isString(lGenre)){this.ecran=lGenre;} if(this.optionsAideContextuelle.onglet.aides){this._actualiser(true);this.focusSurPemierOuDernierElement(false);} else{this._lancerRequeteRecuperationAideContextuelle(true);}}} getControleur(aInstance){return $.extend(true,super.getControleur(aInstance),{getNodeRacine(){$(this.node).on({'keyup':function(aEvent){if(aEvent.which===ToucheClavier_1.ToucheClavier.Echap){aInstance.fermer();}}});},btnFermer:{event:function(){aInstance.fermer();}},afficherAucuneAide:function(){return aInstance.optionsAideContextuelle.nombre===0;}});} fermer(){var _a,_b;$('#'+this.Nom.escapeJQ()+' .cn_scroll').addClass('cn_scroll_inactif');if(this.optionsAideContextuelle.simulerFenetre&&this.elementFocusPrec){try{(_b=(_a=this.elementFocusPrec).focus)===null||_b===void 0?void 0:_b.call(_a);} catch(e){} this.elementFocusPrec=undefined;} this.callback.appel();} construireAffichage(){var _a;return IE.jsx.str(IE.jsx.fragment,null,this.optionsAideContextuelle.simulerFenetre?IE.jsx.str("span",{class:Divers_css_1.StylesDivers.srOnly,tabindex:"0","ie-node":this.jsxNodeFocus.bind(this,true)}):'',IE.jsx.str("div",{"ie-node":"getNodeRacine",class:"ObjetAideContextuelle disable-dark-mode",role:"dialog","aria-modal":"true","aria-label":TradObjetAideContextuelle.Titre},IE.jsx.str("div",{class:ObjetAideContextuelle_css_1.StylesObjetAideContextuelle.cn_header},IE.jsx.str("div",{class:"Image_BaseDeConnaissance"}),IE.jsx.str("div",{class:"cn_titre_aide justify-between"},IE.jsx.str("div",{class:"flex-contain justify-between"},IE.jsx.str("h3",null,TradObjetAideContextuelle.Titre),IE.jsx.str("ie-btnimage",{"ie-model":"btnFermer",class:['icon_fermeture_widget btnImageIcon',Divers_css_1.StylesDivers.focusVisibleContrasted],title:ObjetTraduction_1.GTraductions.getValeur('Fermer')})),IE.jsx.str("div",{class:"flex-contain cn_support"},IE.jsx.str("a",{href:GParametres.aideContextuelle?(_a=GParametres.aideContextuelle)===null||_a===void 0?void 0:_a.url_accueil:'',class:Divers_css_1.StylesDivers.focusVisibleContrasted},TradObjetAideContextuelle.VoirPlus),IE.jsx.str("i",{class:"icon_external_link m-left","aria-hidden":"true"})))),IE.jsx.str("div",{"ie-if":"afficherAucuneAide",class:"cn_imgAucuneAide"},IE.jsx.str("div",null),TradObjetAideContextuelle.AucuneAide),IE.jsx.str("div",{class:"cn_liste_aide",id:this.idContenu})),this.optionsAideContextuelle.simulerFenetre?IE.jsx.str("span",{class:Divers_css_1.StylesDivers.srOnly,tabindex:"0","ie-node":this.jsxNodeFocus.bind(this,false)}):'');} jsxNodeFocus(aPrecedent,aNode){$(aNode).on('focus',() =>{this.focusSurPemierOuDernierElement(aPrecedent);});} focusSurPemierOuDernierElement(aPrec){var _a;const lElements=ObjetHtml_1.GHtml.getElementsFocusablesDElement(this.Nom);if(lElements.length>2){let lElement=aPrec?lElements[lElements.length-2]:lElements[1];(_a=lElement===null||lElement===void 0?void 0:lElement.focus)===null||_a===void 0?void 0:_a.call(lElement);}} getClasseCssSelonGenre(aGenre){switch(aGenre){case 1:return'aide-tutoriel';case 2:return'aide-mode-emploi';case 3:return'aide-faq';} return'';} _lancerRequeteRecuperationAideContextuelle(aSurDemarrage){if(this._requeteEnCours){return;} this._requeteEnCours=true;const lDemarrageAnimation=aSurDemarrage&&this.optionsAideContextuelle.timerOuverture>0;const lPromises=[
-new ObjetRequeteAideContextuelleDyn(this).lancerRequete({ecran:this.ecran}).then((aJSON) =>{this.optionsAideContextuelle.onglet.aides=new ObjetListeElements_1.ObjetListeElements();if(aJSON&&aJSON.typesupport){aJSON.typesupport.forEach((aObjet) =>{const lElement=new ObjetElement_1.ObjetElement().copieJSON(aObjet);lElement.Genre=lElement.id;lElement.Libelle=lElement.libelle;lElement.fiches=new ObjetListeElements_1.ObjetListeElements();lElement.icone=aObjet.educFont?(aObjet.educFont.startsWith('C_')?aObjet.educFont.slice(2):aObjet.educFont):'';if(aObjet.fiches){aObjet.fiches.forEach((aFiche,index) =>{const lFiche=new ObjetElement_1.ObjetElement().copieJSON(aFiche);lFiche.Genre=index;lFiche.Libelle=lElement.titre;if(aFiche.duree){const lMin=Math.floor(aFiche.duree/60);const lSec=aFiche.duree%60;lFiche.duree=lMin+'\''+lSec;} lElement.fiches.addElement(lFiche);});} this.optionsAideContextuelle.onglet.aides.addElement(lElement);});} if(!this.isDestroyed()){this._actualiser(aSurDemarrage);this.focusSurPemierOuDernierElement(false);}})
-];if(lDemarrageAnimation){lPromises.push(new Promise((aResolve) =>{setTimeout(() =>{aResolve();},this.optionsAideContextuelle.timerOuverture);}));} Promise.all(lPromises).then(() =>{$('#'+this.Nom.escapeJQ()+' .cn_scroll').removeClass('cn_scroll_inactif');}).finally(() =>{this._requeteEnCours=false;});} _actualiser(aSurDemarrage){const H=[];let lScrollTop=0;if(!aSurDemarrage){const lElement=$('#'+this.idContenu.escapeJQ()+' .cn_scroll').get(0);if(lElement&&lElement.scrollTop>0){lScrollTop=lElement.scrollTop;}} const lHashContrastedColor={};H.push(IE.jsx.str("div",{class:['cn_scroll',aSurDemarrage?' cn_scroll_inactif':'']},IE.jsx.str("div",{class:"cb_contenu_scroll"},(aTabOnglet) =>{if(this.optionsAideContextuelle.onglet&&this.optionsAideContextuelle.onglet.aides){this.optionsAideContextuelle.onglet.aides.parcourir((aType) =>{const lKey=`${aType.couleurFoncee}-${aType.couleurClaire}`;if(!lHashContrastedColor[lKey]){lHashContrastedColor[lKey]=UtilitaireCouleur_1.UtilitaireCouleur.findContrastVariant(aType.couleurFoncee,aType.couleurClaire)||aType.couleurFoncee;} aTabOnglet.push(IE.jsx.str("div",{class:`cn_section cn_section_${aType.getGenre()}`,role:"group","aria-label":aType.getLibelle()},IE.jsx.str("div",{class:[ObjetAideContextuelle_css_1.StylesObjetAideContextuelle.cn_header,ObjetAideContextuelle_css_1.StylesObjetAideContextuelle.cn_section_titre,this.getClasseCssSelonGenre(aType.getGenre())],style:{color:lHashContrastedColor[lKey],'background-color':aType.couleurClaire}},IE.jsx.str("div",{class:"sc_header_contenu"},aType.getLibelle())),IE.jsx.str("ul",{class:"sc_contenu"},(aTabContenu) =>{aType.fiches.parcourir((aFiche,aIndex) =>{aTabContenu.push(IE.jsx.str("li",null,IE.jsx.str("a",{href:aFiche.url,"ie-tooltipdescribe":aFiche.description&&aFiche.description!==aFiche.titre?aFiche.description:false},IE.jsx.str("div",{class:'sc_article_gauche '+this.getClasseCssSelonGenre(aType.getGenre())},IE.jsx.str("i",{class:aType.icone,style:{color:aType.couleurFoncee},"aria-hidden":"true"})),IE.jsx.str("div",{class:"sc_article_contenu"},aFiche.titre),aFiche.duree?IE.jsx.str("div",{class:"sc_article_duree iconic icon_time",style:{color:aType.couleurFoncee}},aFiche.duree):'')));});})));});}})));ObjetHtml_1.GHtml.setHtml(this.idContenu,H.join(''),{instance:this});if(lScrollTop>0){let lElement=$('#'+this.idContenu.escapeJQ()+' .cn_scroll').get(0);if(lElement){lElement.scrollTop=lScrollTop;}} const lDemarrageAnimation=aSurDemarrage&&this.optionsAideContextuelle.timerOuverture>0;const lPromises=[];if(lDemarrageAnimation){lPromises.push(new Promise((aResolve) =>{setTimeout(() =>{aResolve();},this.optionsAideContextuelle.timerOuverture);}));} Promise.all(lPromises).then(() =>{$('#'+this.Nom.escapeJQ()+' .cn_scroll').removeClass('cn_scroll_inactif');}).finally(() =>{this._requeteEnCours=false;});} static getLibelleNbAides(aNb){if(aNb>1){return TradObjetAideContextuelle.XAide_D.format(aNb);} if(aNb===1){return TradObjetAideContextuelle.UneAide;} return TradObjetAideContextuelle.AucuneAide;}} exports.ObjetAideContextuelle=ObjetAideContextuelle;
+exports.ObjetAideContextuelle = void 0;
+const ObjetIdentite_1 = require("ObjetIdentite");
+const MethodesObjet_1 = require("MethodesObjet");
+const ObjetRequeteJSON_1 = require("ObjetRequeteJSON");
+const CollectionRequetes_1 = require("CollectionRequetes");
+const ToucheClavier_1 = require("ToucheClavier");
+const ObjetTraduction_1 = require("ObjetTraduction");
+const ObjetHtml_1 = require("ObjetHtml");
+const ObjetListeElements_1 = require("ObjetListeElements");
+const ObjetElement_1 = require("ObjetElement");
+const ObjetTraduction_2 = require("ObjetTraduction");
+const UtilitaireCouleur_1 = require("UtilitaireCouleur");
+const TradObjetAideContextuelle = ObjetTraduction_2.TraductionsModule.getModule(
+	"ObjetAideContextuelle",
+	{ Titre: "", AucuneAide: "", VoirPlus: "", UneAide: "", XAide_D: "" },
+);
+class ObjetRequeteAideContextuelleDyn extends ObjetRequeteJSON_1.ObjetRequeteConsultation {}
+CollectionRequetes_1.Requetes.inscrire(
+	"AideContextuelleDyn",
+	ObjetRequeteAideContextuelleDyn,
+);
+class ObjetAideContextuelle extends ObjetIdentite_1.Identite {
+	constructor(...aParams) {
+		super(...aParams);
+		this.idContenu = this.Nom + "_contenu";
+		this.optionsAideContextuelle = {
+			timerOuverture: null,
+			onglet: null,
+			nombre: 0,
+		};
+	}
+	setOptionsAideContextuelle(aOptions) {
+		$.extend(this.optionsAideContextuelle, aOptions);
+	}
+	free() {
+		super.free();
+		$("#" + this.Nom.escapeJQ()).remove();
+	}
+	recupererDonnees() {
+		if (this.optionsAideContextuelle.simulerFenetre && !this.elementFocusPrec) {
+			this.elementFocusPrec = ObjetHtml_1.GHtml.getElementEnFocus();
+		}
+		this.ecran = "";
+		if (!!this.optionsAideContextuelle.onglet) {
+			const lGenre = this.optionsAideContextuelle.onglet.getGenre();
+			if (MethodesObjet_1.MethodesObjet.isNumber(lGenre)) {
+				this.ecran = lGenre.toString();
+			} else if (MethodesObjet_1.MethodesObjet.isString(lGenre)) {
+				this.ecran = lGenre;
+			}
+			if (this.optionsAideContextuelle.onglet.aides) {
+				this._actualiser(true);
+				this.focusSurPemierOuDernierElement(false);
+			} else {
+				this._lancerRequeteRecuperationAideContextuelle(true);
+			}
+		}
+	}
+	getControleur(aInstance) {
+		return $.extend(true, super.getControleur(aInstance), {
+			getNodeRacine() {
+				$(this.node).on({
+					keyup: function (aEvent) {
+						if (aEvent.which === ToucheClavier_1.ToucheClavier.Echap) {
+							aInstance.fermer();
+						}
+					},
+				});
+			},
+			btnFermer: {
+				event: function () {
+					aInstance.fermer();
+				},
+			},
+			afficherAucuneAide: function () {
+				return aInstance.optionsAideContextuelle.nombre === 0;
+			},
+		});
+	}
+	fermer() {
+		var _a, _b;
+		$("#" + this.Nom.escapeJQ() + " .cn_scroll").addClass("cn_scroll_inactif");
+		if (this.optionsAideContextuelle.simulerFenetre && this.elementFocusPrec) {
+			try {
+				(_b = (_a = this.elementFocusPrec).focus) === null || _b === void 0
+					? void 0
+					: _b.call(_a);
+			} catch (e) {}
+			this.elementFocusPrec = undefined;
+		}
+		this.callback.appel();
+	}
+	construireAffichage() {
+		var _a;
+		return IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			this.optionsAideContextuelle.simulerFenetre
+				? IE.jsx.str("span", {
+						class: Divers_css_1.StylesDivers.srOnly,
+						tabindex: "0",
+						"ie-node": this.jsxNodeFocus.bind(this, true),
+					})
+				: "",
+			IE.jsx.str(
+				"div",
+				{
+					"ie-node": "getNodeRacine",
+					class: "ObjetAideContextuelle disable-dark-mode",
+					role: "dialog",
+					"aria-modal": "true",
+					"aria-label": TradObjetAideContextuelle.Titre,
+				},
+				IE.jsx.str(
+					"div",
+					{
+						class:
+							ObjetAideContextuelle_css_1.StylesObjetAideContextuelle.cn_header,
+					},
+					IE.jsx.str("div", { class: "Image_BaseDeConnaissance" }),
+					IE.jsx.str(
+						"div",
+						{ class: "cn_titre_aide justify-between" },
+						IE.jsx.str(
+							"div",
+							{ class: "flex-contain justify-between" },
+							IE.jsx.str("h3", null, TradObjetAideContextuelle.Titre),
+							IE.jsx.str("ie-btnimage", {
+								"ie-model": "btnFermer",
+								class: [
+									"icon_fermeture_widget btnImageIcon",
+									Divers_css_1.StylesDivers.focusVisibleContrasted,
+								],
+								title: ObjetTraduction_1.GTraductions.getValeur("Fermer"),
+							}),
+						),
+						IE.jsx.str(
+							"div",
+							{ class: "flex-contain cn_support" },
+							IE.jsx.str(
+								"a",
+								{
+									href: GParametres.aideContextuelle
+										? (_a = GParametres.aideContextuelle) === null ||
+											_a === void 0
+											? void 0
+											: _a.url_accueil
+										: "",
+									class: Divers_css_1.StylesDivers.focusVisibleContrasted,
+								},
+								TradObjetAideContextuelle.VoirPlus,
+							),
+							IE.jsx.str("i", {
+								class: "icon_external_link m-left",
+								"aria-hidden": "true",
+							}),
+						),
+					),
+				),
+				IE.jsx.str(
+					"div",
+					{ "ie-if": "afficherAucuneAide", class: "cn_imgAucuneAide" },
+					IE.jsx.str("div", null),
+					TradObjetAideContextuelle.AucuneAide,
+				),
+				IE.jsx.str("div", { class: "cn_liste_aide", id: this.idContenu }),
+			),
+			this.optionsAideContextuelle.simulerFenetre
+				? IE.jsx.str("span", {
+						class: Divers_css_1.StylesDivers.srOnly,
+						tabindex: "0",
+						"ie-node": this.jsxNodeFocus.bind(this, false),
+					})
+				: "",
+		);
+	}
+	jsxNodeFocus(aPrecedent, aNode) {
+		$(aNode).on("focus", () => {
+			this.focusSurPemierOuDernierElement(aPrecedent);
+		});
+	}
+	focusSurPemierOuDernierElement(aPrec) {
+		var _a;
+		const lElements = ObjetHtml_1.GHtml.getElementsFocusablesDElement(this.Nom);
+		if (lElements.length > 2) {
+			let lElement = aPrec ? lElements[lElements.length - 2] : lElements[1];
+			(_a =
+				lElement === null || lElement === void 0 ? void 0 : lElement.focus) ===
+				null || _a === void 0
+				? void 0
+				: _a.call(lElement);
+		}
+	}
+	getClasseCssSelonGenre(aGenre) {
+		switch (aGenre) {
+			case 1:
+				return "aide-tutoriel";
+			case 2:
+				return "aide-mode-emploi";
+			case 3:
+				return "aide-faq";
+		}
+		return "";
+	}
+	_lancerRequeteRecuperationAideContextuelle(aSurDemarrage) {
+		if (this._requeteEnCours) {
+			return;
+		}
+		this._requeteEnCours = true;
+		const lDemarrageAnimation =
+			aSurDemarrage && this.optionsAideContextuelle.timerOuverture > 0;
+		const lPromises = [
+			new ObjetRequeteAideContextuelleDyn(this)
+				.lancerRequete({ ecran: this.ecran })
+				.then((aJSON) => {
+					this.optionsAideContextuelle.onglet.aides =
+						new ObjetListeElements_1.ObjetListeElements();
+					if (aJSON && aJSON.typesupport) {
+						aJSON.typesupport.forEach((aObjet) => {
+							const lElement = new ObjetElement_1.ObjetElement().copieJSON(
+								aObjet,
+							);
+							lElement.Genre = lElement.id;
+							lElement.Libelle = lElement.libelle;
+							lElement.fiches = new ObjetListeElements_1.ObjetListeElements();
+							lElement.icone = aObjet.educFont
+								? aObjet.educFont.startsWith("C_")
+									? aObjet.educFont.slice(2)
+									: aObjet.educFont
+								: "";
+							if (aObjet.fiches) {
+								aObjet.fiches.forEach((aFiche, index) => {
+									const lFiche = new ObjetElement_1.ObjetElement().copieJSON(
+										aFiche,
+									);
+									lFiche.Genre = index;
+									lFiche.Libelle = lElement.titre;
+									if (aFiche.duree) {
+										const lMin = Math.floor(aFiche.duree / 60);
+										const lSec = aFiche.duree % 60;
+										lFiche.duree = lMin + "'" + lSec;
+									}
+									lElement.fiches.addElement(lFiche);
+								});
+							}
+							this.optionsAideContextuelle.onglet.aides.addElement(lElement);
+						});
+					}
+					if (!this.isDestroyed()) {
+						this._actualiser(aSurDemarrage);
+						this.focusSurPemierOuDernierElement(false);
+					}
+				}),
+		];
+		if (lDemarrageAnimation) {
+			lPromises.push(
+				new Promise((aResolve) => {
+					setTimeout(() => {
+						aResolve();
+					}, this.optionsAideContextuelle.timerOuverture);
+				}),
+			);
+		}
+		Promise.all(lPromises)
+			.then(() => {
+				$("#" + this.Nom.escapeJQ() + " .cn_scroll").removeClass(
+					"cn_scroll_inactif",
+				);
+			})
+			.finally(() => {
+				this._requeteEnCours = false;
+			});
+	}
+	_actualiser(aSurDemarrage) {
+		const H = [];
+		let lScrollTop = 0;
+		if (!aSurDemarrage) {
+			const lElement = $("#" + this.idContenu.escapeJQ() + " .cn_scroll").get(
+				0,
+			);
+			if (lElement && lElement.scrollTop > 0) {
+				lScrollTop = lElement.scrollTop;
+			}
+		}
+		const lHashContrastedColor = {};
+		H.push(
+			IE.jsx.str(
+				"div",
+				{ class: ["cn_scroll", aSurDemarrage ? " cn_scroll_inactif" : ""] },
+				IE.jsx.str("div", { class: "cb_contenu_scroll" }, (aTabOnglet) => {
+					if (
+						this.optionsAideContextuelle.onglet &&
+						this.optionsAideContextuelle.onglet.aides
+					) {
+						this.optionsAideContextuelle.onglet.aides.parcourir((aType) => {
+							const lKey = `${aType.couleurFoncee}-${aType.couleurClaire}`;
+							if (!lHashContrastedColor[lKey]) {
+								lHashContrastedColor[lKey] =
+									UtilitaireCouleur_1.UtilitaireCouleur.findContrastVariant(
+										aType.couleurFoncee,
+										aType.couleurClaire,
+									) || aType.couleurFoncee;
+							}
+							aTabOnglet.push(
+								IE.jsx.str(
+									"div",
+									{
+										class: `cn_section cn_section_${aType.getGenre()}`,
+										role: "group",
+										"aria-label": aType.getLibelle(),
+									},
+									IE.jsx.str(
+										"div",
+										{
+											class: [
+												ObjetAideContextuelle_css_1.StylesObjetAideContextuelle
+													.cn_header,
+												ObjetAideContextuelle_css_1.StylesObjetAideContextuelle
+													.cn_section_titre,
+												this.getClasseCssSelonGenre(aType.getGenre()),
+											],
+											style: {
+												color: lHashContrastedColor[lKey],
+												"background-color": aType.couleurClaire,
+											},
+										},
+										IE.jsx.str(
+											"div",
+											{ class: "sc_header_contenu" },
+											aType.getLibelle(),
+										),
+									),
+									IE.jsx.str("ul", { class: "sc_contenu" }, (aTabContenu) => {
+										aType.fiches.parcourir((aFiche, aIndex) => {
+											aTabContenu.push(
+												IE.jsx.str(
+													"li",
+													null,
+													IE.jsx.str(
+														"a",
+														{
+															href: aFiche.url,
+															"ie-tooltipdescribe":
+																aFiche.description &&
+																aFiche.description !== aFiche.titre
+																	? aFiche.description
+																	: false,
+														},
+														IE.jsx.str(
+															"div",
+															{
+																class:
+																	"sc_article_gauche " +
+																	this.getClasseCssSelonGenre(aType.getGenre()),
+															},
+															IE.jsx.str("i", {
+																class: aType.icone,
+																style: { color: aType.couleurFoncee },
+																"aria-hidden": "true",
+															}),
+														),
+														IE.jsx.str(
+															"div",
+															{ class: "sc_article_contenu" },
+															aFiche.titre,
+														),
+														aFiche.duree
+															? IE.jsx.str(
+																	"div",
+																	{
+																		class: "sc_article_duree iconic icon_time",
+																		style: { color: aType.couleurFoncee },
+																	},
+																	aFiche.duree,
+																)
+															: "",
+													),
+												),
+											);
+										});
+									}),
+								),
+							);
+						});
+					}
+				}),
+			),
+		);
+		ObjetHtml_1.GHtml.setHtml(this.idContenu, H.join(""), { instance: this });
+		if (lScrollTop > 0) {
+			let lElement = $("#" + this.idContenu.escapeJQ() + " .cn_scroll").get(0);
+			if (lElement) {
+				lElement.scrollTop = lScrollTop;
+			}
+		}
+		const lDemarrageAnimation =
+			aSurDemarrage && this.optionsAideContextuelle.timerOuverture > 0;
+		const lPromises = [];
+		if (lDemarrageAnimation) {
+			lPromises.push(
+				new Promise((aResolve) => {
+					setTimeout(() => {
+						aResolve();
+					}, this.optionsAideContextuelle.timerOuverture);
+				}),
+			);
+		}
+		Promise.all(lPromises)
+			.then(() => {
+				$("#" + this.Nom.escapeJQ() + " .cn_scroll").removeClass(
+					"cn_scroll_inactif",
+				);
+			})
+			.finally(() => {
+				this._requeteEnCours = false;
+			});
+	}
+	static getLibelleNbAides(aNb) {
+		if (aNb > 1) {
+			return TradObjetAideContextuelle.XAide_D.format(aNb);
+		}
+		if (aNb === 1) {
+			return TradObjetAideContextuelle.UneAide;
+		}
+		return TradObjetAideContextuelle.AucuneAide;
+	}
+}
+exports.ObjetAideContextuelle = ObjetAideContextuelle;

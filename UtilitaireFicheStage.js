@@ -2087,6 +2087,8 @@ function _creerNouveauSuivi() {
 	lNouveauSuivi.date = ObjetDate_1.GDate.getDateHeureCourante();
 	lNouveauSuivi.avecSaisiePossible = true;
 	lNouveauSuivi.responsable = GEtatUtilisateur.getUtilisateur();
+	lNouveauSuivi.publier = (0,
+	AccessApp_1.getApp)().getObjetParametres().publicationSuiviStageParDefaut;
 	lNouveauSuivi.setEtat(Enumere_Etat_1.EGenreEtat.Creation);
 	return lNouveauSuivi;
 }

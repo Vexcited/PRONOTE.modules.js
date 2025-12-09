@@ -1,1 +1,130 @@
-exports.DonneesListe_TypePresentationMediaCentre=exports.DonneesListe_MediaCentre=void 0;const ObjetDonneesListeFlatDesign_1=require("ObjetDonneesListeFlatDesign");const UtilitairePartenaire_1=require("UtilitairePartenaire");const GlossaireMediaCentre_1=require("GlossaireMediaCentre");const Divers_css_1=;const MediaCentre_css_1=;class DonneesListe_MediaCentre extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign{constructor(aDonnees,aRubrique){super(aDonnees);this.rubrique=aRubrique;this.setOptions({avecSelection:false,avecEvnt_Selection:false,avecBoutonActionLigne:false});} getTitreZonePrincipale(aParams){const lArticle=aParams.article;return IE.jsx.str("div",null,lArticle.getLibelle());} getInfosSuppZonePrincipale(aParams){const lArticle=aParams.article;return IE.jsx.str("div",null,lArticle.nomEditeur);} getZoneMessage(aParams){const lArticle=aParams.article;const lResult=[];const lJSXLienExterne=() =>{return{event:() =>{UtilitairePartenaire_1.TUtilitairePartenaire.ouvrirUrl(lArticle.urlAccesRessource,true);}};};if(this.rubrique&&(this.rubrique.getGenre()==='')){lResult.push(IE.jsx.str("div",null,lArticle.typePresentation.getLibelle().ucfirst()));} lResult.push(IE.jsx.str("div",{class:[Divers_css_1.StylesDivers.mTopL,Divers_css_1.StylesDivers.italic,MediaCentre_css_1.StylesMediaCentre.idressource]},lArticle.idRessource));lResult.push(IE.jsx.str("div",{class:[Divers_css_1.StylesDivers.mTop,Divers_css_1.StylesDivers.flexContain,Divers_css_1.StylesDivers.justifyEnd]},IE.jsx.str("ie-bouton",{"ie-model":lJSXLienExterne.bind(this),role:"link","aria-label":GlossaireMediaCentre_1.TradGlossaireMediaCentre.ConsulterLienExterne},IE.jsx.str("span",{class:"flex-contain flex-center"},IE.jsx.str("span",null,GlossaireMediaCentre_1.TradGlossaireMediaCentre.Consulter),IE.jsx.str("i",{role:"presentation",class:"icon_external_link p-left-l"})))));return lResult.join('');} getZoneGauche(aParams){return IE.jsx.str("img",{src:aParams.article.urlVignette,alt:"","aria-hidden":"true"});} getVisible(aArticle){return aArticle.visible;}} exports.DonneesListe_MediaCentre=DonneesListe_MediaCentre;class DonneesListe_TypePresentationMediaCentre extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign{constructor(aDonnees){super(aDonnees);this.setOptions({flatDesignMinimal:true,avecEvnt_Selection:true,avecBoutonActionLigne:false});} getTitreZonePrincipale(aParams){const lArticle=aParams.article;return IE.jsx.str(IE.jsx.fragment,null,IE.jsx.str("div",null,IE.jsx.str("span",null,lArticle.getLibelle())));} getIconeGaucheContenuFormate(aParams){return aParams.article.icon;}} exports.DonneesListe_TypePresentationMediaCentre=DonneesListe_TypePresentationMediaCentre;
+exports.DonneesListe_TypePresentationMediaCentre =
+	exports.DonneesListe_MediaCentre = void 0;
+const ObjetDonneesListeFlatDesign_1 = require("ObjetDonneesListeFlatDesign");
+const UtilitairePartenaire_1 = require("UtilitairePartenaire");
+const GlossaireMediaCentre_1 = require("GlossaireMediaCentre");
+class DonneesListe_MediaCentre extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
+	constructor(aDonnees, aRubrique) {
+		super(aDonnees);
+		this.rubrique = aRubrique;
+		this.setOptions({
+			avecSelection: false,
+			avecEvnt_Selection: false,
+			avecBoutonActionLigne: false,
+		});
+	}
+	getTitreZonePrincipale(aParams) {
+		const lArticle = aParams.article;
+		return IE.jsx.str("div", null, lArticle.getLibelle());
+	}
+	getInfosSuppZonePrincipale(aParams) {
+		const lArticle = aParams.article;
+		return IE.jsx.str("div", null, lArticle.nomEditeur);
+	}
+	getZoneMessage(aParams) {
+		const lArticle = aParams.article;
+		const lResult = [];
+		const lJSXLienExterne = () => {
+			return {
+				event: () => {
+					UtilitairePartenaire_1.TUtilitairePartenaire.ouvrirUrl(
+						lArticle.urlAccesRessource,
+						true,
+					);
+				},
+			};
+		};
+		if (this.rubrique && this.rubrique.getGenre() === "") {
+			lResult.push(
+				IE.jsx.str(
+					"div",
+					null,
+					lArticle.typePresentation.getLibelle().ucfirst(),
+				),
+			);
+		}
+		lResult.push(
+			IE.jsx.str(
+				"div",
+				{
+					class: [
+						Divers_css_1.StylesDivers.mTopL,
+						Divers_css_1.StylesDivers.italic,
+						MediaCentre_css_1.StylesMediaCentre.idressource,
+					],
+				},
+				lArticle.idRessource,
+			),
+		);
+		lResult.push(
+			IE.jsx.str(
+				"div",
+				{
+					class: [
+						Divers_css_1.StylesDivers.mTop,
+						Divers_css_1.StylesDivers.flexContain,
+						Divers_css_1.StylesDivers.justifyEnd,
+					],
+				},
+				IE.jsx.str(
+					"ie-bouton",
+					{
+						"ie-model": lJSXLienExterne.bind(this),
+						role: "link",
+						"aria-label":
+							GlossaireMediaCentre_1.TradGlossaireMediaCentre
+								.ConsulterLienExterne,
+					},
+					IE.jsx.str(
+						"span",
+						{ class: "flex-contain flex-center" },
+						IE.jsx.str(
+							"span",
+							null,
+							GlossaireMediaCentre_1.TradGlossaireMediaCentre.Consulter,
+						),
+						IE.jsx.str("i", {
+							role: "presentation",
+							class: "icon_external_link p-left-l",
+						}),
+					),
+				),
+			),
+		);
+		return lResult.join("");
+	}
+	getZoneGauche(aParams) {
+		return IE.jsx.str("img", {
+			src: aParams.article.urlVignette,
+			alt: "",
+			"aria-hidden": "true",
+		});
+	}
+	getVisible(aArticle) {
+		return aArticle.visible;
+	}
+}
+exports.DonneesListe_MediaCentre = DonneesListe_MediaCentre;
+class DonneesListe_TypePresentationMediaCentre extends ObjetDonneesListeFlatDesign_1.ObjetDonneesListeFlatDesign {
+	constructor(aDonnees) {
+		super(aDonnees);
+		this.setOptions({
+			flatDesignMinimal: true,
+			avecEvnt_Selection: true,
+			avecBoutonActionLigne: false,
+		});
+	}
+	getTitreZonePrincipale(aParams) {
+		const lArticle = aParams.article;
+		return IE.jsx.str(
+			IE.jsx.fragment,
+			null,
+			IE.jsx.str("div", null, IE.jsx.str("span", null, lArticle.getLibelle())),
+		);
+	}
+	getIconeGaucheContenuFormate(aParams) {
+		return aParams.article.icon;
+	}
+}
+exports.DonneesListe_TypePresentationMediaCentre =
+	DonneesListe_TypePresentationMediaCentre;

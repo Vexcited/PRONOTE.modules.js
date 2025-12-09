@@ -131,9 +131,7 @@ class DonneesListe_PanierRessourceKiosque extends ObjetDonneesListe_1.ObjetDonne
 							),
 						);
 					} else {
-						lResult.push(
-							`&nbsp;<span class="Gras">${aParams.article.ressource.getLibelle()}</span>`,
-						);
+						lResult.push(aParams.article.ressource.getLibelle());
 					}
 				}
 				return lResult.join("");

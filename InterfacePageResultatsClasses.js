@@ -51,9 +51,7 @@ class InterfacePageResultatsClasses extends InterfacePage_1.InterfacePage {
 					lInfosSupp;
 			}
 		}
-		this.titreNom = ObjetTraduction_1.GTraductions.getValeur(
-			"resultatsClasses.titres.nom",
-		);
+		this.avecNom = true;
 		this.avecGestionNotation = this.applicationSco.droits.get(
 			ObjetDroitsPN_1.TypeDroits.fonctionnalites.gestionNotation,
 		);
@@ -362,6 +360,7 @@ class InterfacePageResultatsClasses extends InterfacePage_1.InterfacePage {
 					avecGestionNotation: this.avecGestionNotation,
 					avecDonneesItalie: this.avecDonneesItalie,
 					genrePositonnementClasse: this.genrePositonnementClasse,
+					avecNom: this.avecNom,
 				},
 			),
 		);
@@ -373,6 +372,13 @@ class InterfacePageResultatsClasses extends InterfacePage_1.InterfacePage {
 			tri: DonneesListe_ResultatsClasse_1.DonneesListe_ResultatsClasse.colonnes
 				.nom,
 		});
+	}
+	getTitreColonneNom() {
+		return this.avecNom
+			? ObjetTraduction_1.GTraductions.getValeur("resultatsClasses.titres.nom")
+			: ObjetTraduction_1.GTraductions.getValeur(
+					"resultatsClasses.titres.numeroNational",
+				);
 	}
 	initialiserListe(aList) {
 		const lColonnes = [];
@@ -410,11 +416,8 @@ class InterfacePageResultatsClasses extends InterfacePage_1.InterfacePage {
 											),
 											true,
 											() => {
-												lListe.getDonneesListe().afficherNom(true);
-												this.titreNom =
-													ObjetTraduction_1.GTraductions.getValeur(
-														"resultatsClasses.titres.nom",
-													);
+												this.avecNom = true;
+												lListe.getDonneesListe().afficherNom(this.avecNom);
 												this.initialiserListe(this.donneesAffichage);
 												lListe.setDonnees(lListe.getDonneesListe());
 											},
@@ -425,11 +428,8 @@ class InterfacePageResultatsClasses extends InterfacePage_1.InterfacePage {
 											),
 											true,
 											() => {
-												lListe.getDonneesListe().afficherNom(false);
-												this.titreNom =
-													ObjetTraduction_1.GTraductions.getValeur(
-														"resultatsClasses.titres.numeroNational",
-													);
+												this.avecNom = false;
+												lListe.getDonneesListe().afficherNom(this.avecNom);
 												this.initialiserListe(this.donneesAffichage);
 												lListe.setDonnees(lListe.getDonneesListe());
 											},
@@ -442,10 +442,10 @@ class InterfacePageResultatsClasses extends InterfacePage_1.InterfacePage {
 					return IE.jsx.str(
 						"ie-bouton",
 						{ "ie-model": lJsxNodeColonneNom, "aria-haspopup": "menu" },
-						this.titreNom,
+						this.getTitreColonneNom(),
 					);
 				},
-				title: this.titreNom,
+				title: this.getTitreColonneNom(),
 			},
 			taille: 170,
 		});
@@ -805,6 +805,7 @@ class InterfacePageResultatsClasses extends InterfacePage_1.InterfacePage {
 		});
 	}
 	getParametresPDF() {
+		var _a, _b;
 		const lResultatReferentiel =
 			this.getInfosSupp().resultatsClasse_referentiel;
 		return {
@@ -830,6 +831,13 @@ class InterfacePageResultatsClasses extends InterfacePage_1.InterfacePage {
 			masquerSansNotes: lResultatReferentiel.masquerSansNotes,
 			avecCodeCompetences: GEtatUtilisateur.estAvecCodeCompetences(),
 			avecCouleurMoyenne: lResultatReferentiel.avecCouleurMoyenne,
+			afficherNom:
+				(_b =
+					(_a = this.getInstance(this.identPage)) === null || _a === void 0
+						? void 0
+						: _a.getDonneesListe()) === null || _b === void 0
+					? void 0
+					: _b.avecNomAffiche(),
 		};
 	}
 	_initFenetreParamResultats(aInstance) {
@@ -932,6 +940,7 @@ class InterfacePageResultatsClasses extends InterfacePage_1.InterfacePage {
 							avecGestionNotation: this.avecGestionNotation,
 							avecDonneesItalie: this.avecDonneesItalie,
 							genrePositonnementClasse: this.genrePositonnementClasse,
+							avecNom: this.avecNom,
 						},
 					),
 				);

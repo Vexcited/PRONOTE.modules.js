@@ -26,8 +26,8 @@ tinymce.addI18n("fr_FR", {
 	"Increase indent": "Augmenter le retrait",
 	Close: "Fermer",
 	Formats: "Formats",
-	"Your browser doesn't support direct access to the clipboard. Please use the Ctrl+X/C/V keyboard shortcuts instead.":
-		"Votre navigateur ne supporte pas l\u2019acc\u00e8s direct au presse-papiers. Merci d'utiliser les raccourcis clavier Ctrl+X/C/V.",
+	"Your browser doesn't support direct access to the clipboard. Please use the Ctrl+X\/C\/V keyboard shortcuts instead.":
+		"Votre navigateur ne supporte pas l\u2019acc\u00e8s direct au presse-papiers. Merci d'utiliser les raccourcis clavier Ctrl+X\/C\/V.",
 	Headers: "En-t\u00eates",
 	"Header 1": "En-t\u00eate 1",
 	"Header 2": "En-t\u00eate 2",
@@ -80,7 +80,7 @@ tinymce.addI18n("fr_FR", {
 	"Restore last draft": "Restaurer le dernier brouillon",
 	"Special characters...": "Caract\u00e8res sp\u00e9ciaux...",
 	"Source code": "Code source",
-	"Insert/Edit code sample": "Ins\u00e9rer / modifier une exemple de code",
+	"Insert\/Edit code sample": "Ins\u00e9rer \/ modifier une exemple de code",
 	Language: "Langue",
 	"Code sample...": "Exemple de code...",
 	"Color Picker": "S\u00e9lecteur de couleurs",
@@ -120,7 +120,7 @@ tinymce.addI18n("fr_FR", {
 	Plugins: "Plugins",
 	"Handy Shortcuts": "Raccourcis utiles",
 	"Horizontal line": "Ligne horizontale",
-	"Insert/edit image": "Ins\u00e9rer/modifier une image",
+	"Insert\/edit image": "Ins\u00e9rer\/modifier une image",
 	"Image description": "Description de l'image",
 	Source: "Source",
 	Dimensions: "Dimensions",
@@ -153,15 +153,15 @@ tinymce.addI18n("fr_FR", {
 	Invert: "Inverser",
 	Apply: "Appliquer",
 	Back: "Retour",
-	"Insert date/time": "Ins\u00e9rer date/heure",
-	"Date/time": "Date/heure",
-	"Insert/Edit Link": "Ins\u00e9rer/Modifier lien",
-	"Insert/edit link": "Ins\u00e9rer/modifier un lien",
+	"Insert date\/time": "Ins\u00e9rer date\/heure",
+	"Date\/time": "Date\/heure",
+	"Insert\/Edit Link": "Ins\u00e9rer\/Modifier lien",
+	"Insert\/edit link": "Ins\u00e9rer\/modifier un lien",
 	"Text to display": "Texte \u00e0 afficher",
 	Url: "Url",
 	"Open link in...": "Ouvrir le lien dans...",
 	"Current window": "Fen\u00eatre active",
-	None: "n/a",
+	None: "n\/a",
 	"New window": "Nouvelle fen\u00eatre",
 	"Remove link": "Enlever le lien",
 	Anchors: "Ancres",
@@ -169,12 +169,12 @@ tinymce.addI18n("fr_FR", {
 	"Paste or type a link": "Coller ou taper un lien",
 	"The URL you entered seems to be an email address. Do you want to add the required mailto: prefix?":
 		"L'URL que vous avez entr\u00e9e semble \u00eatre une adresse e-mail. Voulez-vous ajouter le pr\u00e9fixe mailto: n\u00e9cessaire?",
-	"The URL you entered seems to be an external link. Do you want to add the required http:// prefix?":
-		"L'URL que vous avez entr\u00e9e semble \u00eatre un lien externe. Voulez-vous ajouter le pr\u00e9fixe http:// n\u00e9cessaire?",
+	"The URL you entered seems to be an external link. Do you want to add the required http:\/\/ prefix?":
+		"L'URL que vous avez entr\u00e9e semble \u00eatre un lien externe. Voulez-vous ajouter le pr\u00e9fixe http:\/\/ n\u00e9cessaire?",
 	"Link list": "Liste de liens",
 	"Insert video": "Ins\u00e9rer une vid\u00e9o",
-	"Insert/edit video": "Ins\u00e9rer/modifier une vid\u00e9o",
-	"Insert/edit media": "Ins\u00e9rer/modifier un m\u00e9dia",
+	"Insert\/edit video": "Ins\u00e9rer\/modifier une vid\u00e9o",
+	"Insert\/edit media": "Ins\u00e9rer\/modifier un m\u00e9dia",
 	"Alternative source": "Source alternative",
 	"Alternative source URL": "URL de la source alternative",
 	"Media poster (Image URL)": "Affiche de m\u00e9dia (URL de l'image)",
@@ -339,8 +339,8 @@ tinymce.addI18n("fr_FR", {
 	"yuan character": "Sinogramme Yuan",
 	"yuan character, in hong kong and taiwan":
 		"Sinogramme Yuan, Hong Kong et Taiwan",
-	"yen/yuan character variant one":
-		"Sinogramme Yen/Yuan, premi\u00e8re variante",
+	"yen\/yuan character variant one":
+		"Sinogramme Yen\/Yuan, premi\u00e8re variante",
 	"Loading emoticons...": "Chargement des \u00e9motic\u00f4nes en cours...",
 	"Could not load emoticons":
 		"\u00c9chec de chargement des \u00e9motic\u00f4nes",

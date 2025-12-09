@@ -206,11 +206,10 @@ class PiedBulletin_Mentions extends ObjetIdentite_1.Identite {
 			T.push(
 				IE.jsx.str(
 					"h2",
-					{ style: "display: inline;" },
+					{ class: "p-y ie-titre-petit Gras theme-color-foncee" },
 					ObjetTraduction_1.GTraductions.getValeur(
 						"PiedDeConseilDeClasse.Mentions",
 					),
-					" :",
 				),
 			);
 			const H = [];
@@ -218,11 +217,7 @@ class PiedBulletin_Mentions extends ObjetIdentite_1.Identite {
 				const lElt = aParam.get(i);
 				H.push(lElt.Nombre + "&nbsp;" + lElt.getLibelle());
 			}
-			T.push(
-				'<p style="display: inline;" class="Gras">',
-				H.join(" - "),
-				"</p>",
-			);
+			T.push("<p>", H.join(" - "), "</p>");
 			T.push("</div>");
 		}
 		return T.join("");
@@ -428,7 +423,7 @@ class PiedBulletin_Engagements extends ObjetIdentite_1.Identite {
 			case TypeModeAffichagePiedBulletin_1.TypeModeAffichagePiedBulletin
 				.MAPB_Lineaire:
 				H.push(
-					`<h2 class="p-y ie-titre-petit theme_color_foncee Gras">${ObjetTraduction_1.GTraductions.getValeur("PiedDeBulletin.Engagements")} :</h2><p>${lLibelle}</p>`,
+					`<h2 class="p-y ie-titre-petit theme_color_foncee Gras">${ObjetTraduction_1.GTraductions.getValeur("PiedDeBulletin.Engagements")}</h2><p>${lLibelle}</p>`,
 				);
 				break;
 		}

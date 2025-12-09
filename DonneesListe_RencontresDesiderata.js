@@ -81,9 +81,6 @@ class DonneesListe_RencontresDesiderata extends ObjetDonneesListeFlatDesign_1.Ob
 			? aArticle.responsables.getTableauLibelles().join(", ")
 			: "";
 	}
-	avecSeparateurLigneHautFlatdesign(aParams) {
-		return aParams.article.estUnDeploiement;
-	}
 	getZoneGauche(aParams) {
 		const lCouleurFond = aParams.article.couleurMatiere
 			? `style="${ObjetStyle_1.GStyle.composeCouleurFond(aParams.article.couleurMatiere)}"`
@@ -197,53 +194,59 @@ class DonneesListe_RencontresDesiderata extends ObjetDonneesListeFlatDesign_1.Ob
 		if (aParams.article.estUnDeploiement || aParams.article.estUnEleve) {
 			return;
 		}
-		const H = [];
 		const lClasse = IE.estMobile ? "m-left-nega-xl" : "justify-end";
-		H.push(
-			`<fieldset class="flex-contain m-top-l f-wrap ${lClasse}">\n      <legend class="sr-only">${this.getTitreZonePrincipale(aParams)}</legend>`,
-		);
-		if (this.autorisations && this.autorisations.listeVoeux) {
-			this.autorisations.listeVoeux.parcourir((aVoeu) => {
-				H.push(
-					IE.jsx.str(
-						"div",
-						{ class: ["voeux"] },
-						IE.jsx.str(
-							"ie-radio",
-							{
-								"ie-model": this.jsxModeleRbDesiderata.bind(
-									this,
-									aParams.article,
-									aVoeu,
-								),
-								class: [
-									"as-chips",
-									"m-right",
-									"m-bottom-l",
-									Enumere_VoeuRencontre_1.TypeVoeuRencontreUtil.getClass(
+		return IE.jsx.str(
+			"fieldset",
+			{ class: ["flex-contain m-top-l f-wrap no-border", lClasse] },
+			IE.jsx.str(
+				"legend",
+				{ class: "sr-only" },
+				this.getTitreZonePrincipale(aParams),
+			),
+			(aTab) => {
+				if (this.autorisations && this.autorisations.listeVoeux) {
+					this.autorisations.listeVoeux.parcourir((aVoeu) => {
+						aTab.push(
+							IE.jsx.str(
+								"div",
+								{ class: ["voeux"] },
+								IE.jsx.str(
+									"ie-radio",
+									{
+										"ie-model": this.jsxModeleRbDesiderata.bind(
+											this,
+											aParams.article,
+											aVoeu,
+										),
+										class: [
+											"as-chips",
+											"m-right",
+											"m-bottom-l",
+											Enumere_VoeuRencontre_1.TypeVoeuRencontreUtil.getClass(
+												aVoeu.getGenre(),
+											),
+										],
+									},
+									Enumere_VoeuRencontre_1.TypeVoeuRencontreUtil.getLibelle(
 										aVoeu.getGenre(),
 									),
-								],
-							},
-							Enumere_VoeuRencontre_1.TypeVoeuRencontreUtil.getLibelle(
-								aVoeu.getGenre(),
+								),
+								!!aVoeu.limiteNbSaisies
+									? IE.jsx.str(
+											"span",
+											{ class: "ie-titre-petit" },
+											ObjetTraduction_1.GTraductions.getValeur(
+												"Rencontres.max",
+												[aVoeu.limiteNbSaisies],
+											),
+										)
+									: "",
 							),
-						),
-						!!aVoeu.limiteNbSaisies
-							? IE.jsx.str(
-									"span",
-									{ class: "ie-titre-petit" },
-									ObjetTraduction_1.GTraductions.getValeur("Rencontres.max", [
-										aVoeu.limiteNbSaisies,
-									]),
-								)
-							: "",
-					),
-				);
-			});
-		}
-		H.push("</fieldset>");
-		return H.join("");
+						);
+					});
+				}
+			},
+		);
 	}
 	getZoneComplementaire(aParams) {
 		if (aParams.article.duree) {
