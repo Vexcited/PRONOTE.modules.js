@@ -3,9 +3,9 @@ import { Biome } from "@biomejs/js-api/nodejs";
 import { removeRecursiveForce } from "./remove-recursive-force";
 
 const EXPORT_REGEX = /},fn:(['"]).*?\1}\);/;
-const REQUIRE_FILENAME_REGEX = /require\((['"])(?<fileName>.*?)\1\);/g;
+const REQUIRE_FILENAME_REGEX = /require\((['"])(?<fileName>.*?)\1\)/g;
 const REQUIRE_CSS_REGEX =
-  /(const\s+\w+\s*=\s*)?require\((['"])([^'"]*?\.css)\2\);/g;
+  /(const\s+\w+\s*=\s*)?require\((['"])([^'"]*?\.css)\2\)/g;
 
 const biome = new Biome();
 export async function processModules(
@@ -68,6 +68,11 @@ export async function processModules(
       const { content } = biome.formatContent(projectKey, raw, {
         filePath: fileName + ".js",
       });
+
+      if (content.length === 0) {
+        console.log(`- ${fileName}.js since empty`);
+        return;
+      }
 
       modules[fileName] = content;
     })

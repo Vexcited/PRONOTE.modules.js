@@ -31,15 +31,15 @@ await unzip(path.join("data2", "exe", "PRONOTE.net.exe"), "PRONOTE");
 console.log("PRONOTE.NET has been extracted to 'PRONOTE' directory.");
 
 const modulesLength = await processModules(
-  path.join("PRONOTE", ".rsrc", "1036", "RCDATA"),
+  path.join("PRONOTE", ".rsrc", "1036", "RCDATA")
 );
 
 const version = await readVersionFromMetadata(
-  path.join("PRONOTE", ".rsrc", "1033", "version.txt"),
+  path.join("PRONOTE", ".rsrc", "1033", "version.txt")
 );
 
 console.log(
-  `Done! Processed ${modulesLength} modules within version ${version}`,
+  `Done! Processed ${modulesLength} modules within version ${version}`
 );
 
 // Writing the version to a file for easier grabing during CI.
